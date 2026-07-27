@@ -125,8 +125,8 @@
     "semantic_hash": "49bcf588a230ff9e255ca8f460edd217"
   },
   "README.md": {
-    "mtime": 1785168286.4048626,
-    "ast_hash": "cea48265041866f444d4936a44bcf893",
+    "mtime": 1785169238.820029,
+    "ast_hash": "4e776ba88c47448feb585730d9513650",
     "semantic_hash": ""
   },
   "agents/tdq-implementer.md": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/notes/user-level-install.md": {
-    "mtime": 1785168279.9182096,
-    "ast_hash": "15590036e0bafbe51d42ec859c45cd23",
+    "mtime": 1785169230.6898606,
+    "ast_hash": "df0adee63c1aff072160a71a6c10848e",
     "semantic_hash": ""
   },
   "docs/plan/tdq-workflow-plugin.md": {
@@ -180,8 +180,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-07-27.md": {
-    "mtime": 1785168664.9270043,
-    "ast_hash": "2bcaa229e3d27de9aa5c4d2149b26c84",
+    "mtime": 1785169252.7156396,
+    "ast_hash": "930cee3f83e61030f546f829d3918837",
     "semantic_hash": ""
   },
   "idea.md": {
