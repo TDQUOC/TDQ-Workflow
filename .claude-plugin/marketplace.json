@@ -1,0 +1,5 @@
+{
+  "name": "tdq-local",
+  "owner": { "name": "TDQ" },
+  "plugins": [{ "name": "tdq-workflow", "source": "./" }]
+}
