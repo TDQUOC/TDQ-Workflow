@@ -1,0 +1,8 @@
+{
+  "name": "tdq-workflow",
+  "version": "0.1.0",
+  "description": "Spec-driven workflow cho Claude Code: intake → analyze → spec → plan → implement → QC → report, với gate duyệt deterministic (user gõ tay), lane quick/full, working log và quy ước research Tavily.",
+  "author": {
+    "name": "TDQ"
+  }
+}

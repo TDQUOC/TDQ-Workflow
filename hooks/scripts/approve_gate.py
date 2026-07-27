@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""UserPromptExpansion gate for /tdq-workflow:tdq-approve.
+
+Runs ONLY when the USER typed the approve command themselves (the skill is
+disable-model-invocation, so the model cannot trigger this). Validates the
+request against state + the registered detail file, then sets the protected
+approval fields. Exit 2 blocks the command (stderr shown as feedback) and
+state is never changed on failure.
+"""
+import os
+import re
+import sys
+
+from _common import read_payload, payload_cwd, tdq_state
+
+USAGE = "Cách dùng: /tdq-workflow:tdq-approve spec|plan|quick"
+
+
+def block(msg):
+    print(msg, file=sys.stderr)
+    sys.exit(2)
+
+
+def main():
+    payload = read_payload()
+    cwd = payload_cwd(payload)
+    text = " ".join(
+        str(payload.get(k, "")) for k in
+        ("command_args", "args", "arguments", "prompt", "command", "expanded_prompt")
+    )
+    match = re.search(r"\b(spec|plan|quick)\b", text)
+    if not match:
+        block(f"Thiếu hoặc sai tham số. {USAGE}")
+    target = match.group(1)
+
+    state = tdq_state.load(cwd)
+    if state is None or not state.get("active_request"):
+        block("Chưa có request TDQ nào đang mở — không có gì để duyệt. " + USAGE)
+
+    if target == "quick":
+        if state.get("lane") != "quick":
+            block("Sai lane: duyệt quick chỉ dùng khi request đang mở ở lane quick.")
+        if state.get("quick_approved"):
+            block(f"Quick plan đã được duyệt lúc {state.get('quick_approved_at')} rồi.")
+        state["quick_approved"] = True
+        state["quick_approved_at"] = tdq_state.now_iso()
+        tdq_state.save(cwd, state)
+        print(
+            "[TDQ] USER APPROVED QUICK PLAN at {at}. MANDATORY ORDER: "
+            "(1) append the approved plan summary to docs/workinglog/<today>.md NOW, "
+            "(2) only then implement end-to-end in this turn, "
+            "(3) run the quick validate/test you promised, "
+            "(4) report briefly. All user-facing output in Vietnamese.".format(
+                at=state["quick_approved_at"])
+        )
+        return
+
+    if state.get("lane") != "full":
+        block(f"Sai lane: duyệt {target} chỉ dùng cho lane full.")
+
+    file_key = f"{target}_file"
+    ok_key = f"{target}_approved"
+    sha_key = f"{target}_sha256"
+    at_key = f"{target}_approved_at"
+
+    if target == "plan" and not state.get("spec_approved"):
+        block("Sai thứ tự: spec chưa được duyệt — duyệt spec trước (/tdq-workflow:tdq-approve spec).")
+    if state.get(ok_key):
+        block(f"{target.capitalize()} đã được duyệt lúc {state.get(at_key)} rồi.")
+    rel = state.get(file_key)
+    if not rel:
+        block(f"Chưa có {target} nào được đăng ký chờ duyệt — yêu cầu Claude hoàn thành và trình {target} trước.")
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    if not os.path.isfile(path) or os.path.getsize(path) == 0:
+        block(f"File {target} đã đăng ký ({rel}) không tồn tại hoặc rỗng — yêu cầu Claude kiểm tra lại trước khi duyệt.")
+
+    state[ok_key] = True
+    state[sha_key] = tdq_state.sha256_file(path)
+    state[at_key] = tdq_state.now_iso()
+    tdq_state.save(cwd, state)
+    if target == "spec":
+        nxt = ("create the plan (docs/tdq/plan/), register plan_file in state, present a <=100-line "
+               "summary with the approve instruction, then WAIT for plan approval.")
+    else:
+        nxt = ("ask the user for implement mode (main|subagent), set implement_mode + phase=implement, "
+               "then implement end-to-end in one turn, ticking plan tasks as you finish them.")
+    print(
+        f"[TDQ] USER APPROVED {target.upper()} {rel} "
+        f"(sha256 {state[sha_key][:12]}, {state[at_key]}). Next: {nxt} "
+        "All user-facing output in Vietnamese."
+    )
+
+
+if __name__ == "__main__":
+    main()
