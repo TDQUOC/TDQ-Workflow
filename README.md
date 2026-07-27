@@ -23,6 +23,8 @@ claude --plugin-dir /đường/dẫn/tới/TDQWorkflow
 ```
 Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/user-level-install.md`.
 
+**Bật workflow cho MỌI task**: hook chỉ enforce gate — để Claude chủ động đi đúng pipeline từ lúc nhận yêu cầu, dán block instruction trong `docs/notes/user-level-install.md` (mục 3) vào `~/.claude/CLAUDE.md` (user-level) hoặc `CLAUDE.md` root project (per-project). Block đã viết khớp với hook: lệnh duyệt, đường log `docs/workinglog/`, tick ngay khi task xong, graphify update cuối turn.
+
 ## Dùng hằng ngày
 
 1. Nêu yêu cầu → Claude dùng `tdq-start`: tóm tắt, đề xuất lane **quick** (việc nhỏ, rõ) hay **full** (feature/phức tạp) và hỏi bạn chọn.

@@ -123,5 +123,125 @@
     "mtime": 1785167850.8162906,
     "ast_hash": "49bcf588a230ff9e255ca8f460edd217",
     "semantic_hash": "49bcf588a230ff9e255ca8f460edd217"
+  },
+  "README.md": {
+    "mtime": 1785168286.4048626,
+    "ast_hash": "cea48265041866f444d4936a44bcf893",
+    "semantic_hash": ""
+  },
+  "agents/tdq-implementer.md": {
+    "mtime": 1785168109.7737107,
+    "ast_hash": "3a97071707b1cd2a2fe3466b00107686",
+    "semantic_hash": ""
+  },
+  "agents/tdq-qc-tester.md": {
+    "mtime": 1785168116.0261905,
+    "ast_hash": "c1501617c52d36d6f4cc88960329ade0",
+    "semantic_hash": ""
+  },
+  "agents/tdq-reviewer.md": {
+    "mtime": 1785168097.4014564,
+    "ast_hash": "f11131cf73849fee69241c2edc12bfed",
+    "semantic_hash": ""
+  },
+  "docs/notes/user-level-install.md": {
+    "mtime": 1785168279.9182096,
+    "ast_hash": "15590036e0bafbe51d42ec859c45cd23",
+    "semantic_hash": ""
+  },
+  "docs/plan/tdq-workflow-plugin.md": {
+    "mtime": 1785168345.9965813,
+    "ast_hash": "50e0550266a27b0ab0fb1e3185c04d3e",
+    "semantic_hash": ""
+  },
+  "docs/qc/skill-budget.md": {
+    "mtime": 1785168090.8011668,
+    "ast_hash": "712c12cc1b686d46b3ebed90834f450a",
+    "semantic_hash": ""
+  },
+  "docs/qc/smoke-e2e.md": {
+    "mtime": 1785168214.0206914,
+    "ast_hash": "39fbd8dfb3e8f1132be079c029c0ab43",
+    "semantic_hash": ""
+  },
+  "docs/qc/token-budget.md": {
+    "mtime": 1785168238.2150545,
+    "ast_hash": "093985b156a0c7fd5cd0f06d904d637b",
+    "semantic_hash": ""
+  },
+  "docs/reports/tdq-workflow-plugin.md": {
+    "mtime": 1785168314.6415095,
+    "ast_hash": "22061528f4447fe54ed2be8c2d21fe1a",
+    "semantic_hash": ""
+  },
+  "docs/spec/tdq-workflow-plugin.md": {
+    "mtime": 1785167480.382242,
+    "ast_hash": "dfc18341b32ac0ddcd521e8b5c594c21",
+    "semantic_hash": ""
+  },
+  "docs/workinglog/2026-07-27.md": {
+    "mtime": 1785168664.9270043,
+    "ast_hash": "2bcaa229e3d27de9aa5c4d2149b26c84",
+    "semantic_hash": ""
+  },
+  "idea.md": {
+    "mtime": 1785143898.1505146,
+    "ast_hash": "27f5db086e9d9c08c7edb0d8025fa462",
+    "semantic_hash": ""
+  },
+  "skills/tdq-analyze/SKILL.md": {
+    "mtime": 1785167954.7440693,
+    "ast_hash": "c3c955066583ac3204de0336a9191241",
+    "semantic_hash": ""
+  },
+  "skills/tdq-approve/SKILL.md": {
+    "mtime": 1785168053.1686683,
+    "ast_hash": "c328b9861fdfadbb66c92a9fdbfbf8a7",
+    "semantic_hash": ""
+  },
+  "skills/tdq-conventions/SKILL.md": {
+    "mtime": 1785167908.4601035,
+    "ast_hash": "d00534d96f2dd83fb7420718d14a209c",
+    "semantic_hash": ""
+  },
+  "skills/tdq-conventions/references/tavily.md": {
+    "mtime": 1785167920.1494749,
+    "ast_hash": "f906b2428a1a5a4df41b45f9f46c3530",
+    "semantic_hash": ""
+  },
+  "skills/tdq-implement/SKILL.md": {
+    "mtime": 1785168010.5238159,
+    "ast_hash": "008ceb92b3d207ea8ae2a94eaeee12ad",
+    "semantic_hash": ""
+  },
+  "skills/tdq-plan/SKILL.md": {
+    "mtime": 1785167993.496295,
+    "ast_hash": "e43ce9abbf60b06d41f5de979340e2c7",
+    "semantic_hash": ""
+  },
+  "skills/tdq-qc/SKILL.md": {
+    "mtime": 1785168032.1971867,
+    "ast_hash": "d239068545210d760766139a7e6094d5",
+    "semantic_hash": ""
+  },
+  "skills/tdq-report/SKILL.md": {
+    "mtime": 1785168045.5475087,
+    "ast_hash": "5b6d0c13b5d43540f4f42670f975ec6f",
+    "semantic_hash": ""
+  },
+  "skills/tdq-spec/SKILL.md": {
+    "mtime": 1785167978.8730054,
+    "ast_hash": "054cb4911ff266be4493f315f46ff7ec",
+    "semantic_hash": ""
+  },
+  "skills/tdq-start/SKILL.md": {
+    "mtime": 1785167940.99109,
+    "ast_hash": "cf28ce4af1714234f9a4c9660682ca34",
+    "semantic_hash": ""
+  },
+  "skills/tdq-status/SKILL.md": {
+    "mtime": 1785168064.941804,
+    "ast_hash": "8aa4b77366896c20735e49b072ea74da",
+    "semantic_hash": ""
   }
 }
