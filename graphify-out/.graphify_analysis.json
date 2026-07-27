@@ -1,0 +1,294 @@
+{
+  "communities": {
+    "0": [
+      "tests_helper",
+      "tests_helper_load_fixture",
+      "tests_helper_rationale_1",
+      "tests_helper_run_hook",
+      "tests_test_approve_gate",
+      "tests_test_approve_gate_rationale_1",
+      "tests_test_bash_gate",
+      "tests_test_bash_gate_rationale_1",
+      "tests_test_context_hooks",
+      "tests_test_context_hooks_rationale_1",
+      "tests_test_context_hooks_testsessionstart",
+      "tests_test_context_hooks_testsessionstart_setup",
+      "tests_test_context_hooks_testsessionstart_teardown",
+      "tests_test_context_hooks_testsessionstart_test_active_request_max_3_lines",
+      "tests_test_context_hooks_testsessionstart_test_no_state_silent",
+      "tests_test_e2e_chain",
+      "tests_test_e2e_chain_chainbase",
+      "tests_test_e2e_chain_chainbase_approve",
+      "tests_test_e2e_chain_chainbase_edit_src",
+      "tests_test_e2e_chain_chainbase_setup",
+      "tests_test_e2e_chain_chainbase_stop",
+      "tests_test_e2e_chain_chainbase_teardown",
+      "tests_test_e2e_chain_rationale_1",
+      "tests_test_e2e_chain_testfulllanechain",
+      "tests_test_e2e_chain_testfulllanechain_test_full_chain",
+      "tests_test_e2e_chain_testquicklanechain",
+      "tests_test_e2e_chain_testquicklanechain_test_quick_chain",
+      "tests_test_e2e_chain_today",
+      "tests_test_stop_gate",
+      "tests_test_stop_gate_rationale_1"
+    ],
+    "1": [
+      "hooks_scripts_approve_gate",
+      "hooks_scripts_approve_gate_block",
+      "hooks_scripts_approve_gate_main",
+      "hooks_scripts_bash_gate",
+      "hooks_scripts_bash_gate_clean",
+      "hooks_scripts_bash_gate_main",
+      "hooks_scripts_common",
+      "hooks_scripts_common_approve_hint",
+      "hooks_scripts_common_deny",
+      "hooks_scripts_common_payload_cwd",
+      "hooks_scripts_common_rationale_1",
+      "hooks_scripts_common_rationale_27",
+      "hooks_scripts_common_read_payload",
+      "hooks_scripts_edit_gate",
+      "hooks_scripts_edit_gate_main",
+      "hooks_scripts_edit_gate_within",
+      "hooks_scripts_prompt_context",
+      "hooks_scripts_prompt_context_main",
+      "hooks_scripts_session_start",
+      "hooks_scripts_session_start_main",
+      "hooks_scripts_session_start_mark",
+      "hooks_scripts_stop_gate",
+      "hooks_scripts_stop_gate_main"
+    ],
+    "2": [
+      "tests_helper_decision",
+      "tests_helper_rationale_52",
+      "tests_helper_write_state",
+      "tests_test_edit_gate",
+      "tests_test_edit_gate_now_iso",
+      "tests_test_edit_gate_rationale_1",
+      "tests_test_edit_gate_testeditgate",
+      "tests_test_edit_gate_testeditgate_edit",
+      "tests_test_edit_gate_testeditgate_setup",
+      "tests_test_edit_gate_testeditgate_teardown",
+      "tests_test_edit_gate_testeditgate_test_allow_docs_edit_while_blocked",
+      "tests_test_edit_gate_testeditgate_test_deny_src_when_full_unapproved",
+      "tests_test_edit_gate_testeditgate_test_deny_src_when_plan_pending",
+      "tests_test_edit_gate_testeditgate_test_deny_state_json_always",
+      "tests_test_edit_gate_testeditgate_test_full_approved_silent_when_sha_matches",
+      "tests_test_edit_gate_testeditgate_test_full_approved_warns_on_sha_drift",
+      "tests_test_edit_gate_testeditgate_test_no_state_allows",
+      "tests_test_edit_gate_testeditgate_test_quick_allow_after_log_appended",
+      "tests_test_edit_gate_testeditgate_test_quick_deny_log_not_updated",
+      "tests_test_edit_gate_testeditgate_test_quick_deny_unapproved"
+    ],
+    "3": [
+      "tests_helper_read_state",
+      "tests_test_approve_gate_approve",
+      "tests_test_approve_gate_testapprovegate",
+      "tests_test_approve_gate_testapprovegate_setup",
+      "tests_test_approve_gate_testapprovegate_teardown",
+      "tests_test_approve_gate_testapprovegate_test_green_plan_after_spec",
+      "tests_test_approve_gate_testapprovegate_test_green_quick",
+      "tests_test_approve_gate_testapprovegate_test_green_spec_sets_detail",
+      "tests_test_approve_gate_testapprovegate_test_red_already_approved",
+      "tests_test_approve_gate_testapprovegate_test_red_bad_argument",
+      "tests_test_approve_gate_testapprovegate_test_red_no_active_request",
+      "tests_test_approve_gate_testapprovegate_test_red_plan_before_spec",
+      "tests_test_approve_gate_testapprovegate_test_red_quick_wrong_lane",
+      "tests_test_approve_gate_testapprovegate_test_red_spec_file_empty",
+      "tests_test_approve_gate_testapprovegate_test_red_spec_file_missing",
+      "tests_test_approve_gate_testapprovegate_test_red_spec_not_registered"
+    ],
+    "4": [
+      "tests_helper_run_state_cli",
+      "tests_test_state",
+      "tests_test_state_rationale_1",
+      "tests_test_state_teststate",
+      "tests_test_state_teststate_setup",
+      "tests_test_state_teststate_teardown",
+      "tests_test_state_teststate_test_atomic_overwrite_keeps_valid_json",
+      "tests_test_state_teststate_test_cli_init_and_get",
+      "tests_test_state_teststate_test_cli_rejects_invalid_lane_phase_key",
+      "tests_test_state_teststate_test_cli_rejects_protected_keys",
+      "tests_test_state_teststate_test_cli_set_roundtrip",
+      "tests_test_state_teststate_test_default_schema_keys",
+      "tests_test_state_teststate_test_load_missing_returns_none"
+    ],
+    "5": [
+      "tests_test_bash_gate_testbashgate",
+      "tests_test_bash_gate_testbashgate_assert_allow",
+      "tests_test_bash_gate_testbashgate_assert_deny",
+      "tests_test_bash_gate_testbashgate_bash",
+      "tests_test_bash_gate_testbashgate_setup",
+      "tests_test_bash_gate_testbashgate_teardown",
+      "tests_test_bash_gate_testbashgate_test_allow_normal_branch",
+      "tests_test_bash_gate_testbashgate_test_allow_normal_commit",
+      "tests_test_bash_gate_testbashgate_test_allow_plain_commands",
+      "tests_test_bash_gate_testbashgate_test_allow_state_json_reads",
+      "tests_test_bash_gate_testbashgate_test_deny_ai_commit_messages",
+      "tests_test_bash_gate_testbashgate_test_deny_banned_branch_names",
+      "tests_test_bash_gate_testbashgate_test_deny_state_json_writes"
+    ],
+    "6": [
+      "scripts_tdq_state",
+      "scripts_tdq_state_cli",
+      "scripts_tdq_state_default_state",
+      "scripts_tdq_state_fail",
+      "scripts_tdq_state_load",
+      "scripts_tdq_state_now_iso",
+      "scripts_tdq_state_parse_value",
+      "scripts_tdq_state_rationale_57",
+      "scripts_tdq_state_rationale_71",
+      "scripts_tdq_state_save",
+      "scripts_tdq_state_sha256_file",
+      "scripts_tdq_state_state_path"
+    ],
+    "7": [
+      "tests_test_context_hooks_now_iso",
+      "tests_test_context_hooks_testpromptcontext",
+      "tests_test_context_hooks_testpromptcontext_ctx",
+      "tests_test_context_hooks_testpromptcontext_setup",
+      "tests_test_context_hooks_testpromptcontext_teardown",
+      "tests_test_context_hooks_testpromptcontext_test_full_implement_phase_line",
+      "tests_test_context_hooks_testpromptcontext_test_full_pending_spec_approval",
+      "tests_test_context_hooks_testpromptcontext_test_no_request_silent",
+      "tests_test_context_hooks_testpromptcontext_test_quick_approved_silent",
+      "tests_test_context_hooks_testpromptcontext_test_quick_unapproved",
+      "tests_test_context_hooks_testpromptcontext_test_spec_drift_warning"
+    ],
+    "8": [
+      "tests_helper_write_file",
+      "tests_test_stop_gate_teststopgate",
+      "tests_test_stop_gate_teststopgate_setup",
+      "tests_test_stop_gate_teststopgate_stop",
+      "tests_test_stop_gate_teststopgate_teardown",
+      "tests_test_stop_gate_teststopgate_test_block_when_change_after_log",
+      "tests_test_stop_gate_teststopgate_test_no_state_silent",
+      "tests_test_stop_gate_teststopgate_test_silent_when_log_is_newest",
+      "tests_test_stop_gate_teststopgate_test_stop_hook_active_silent",
+      "tests_test_stop_gate_teststopgate_today_log"
+    ]
+  },
+  "cohesion": {
+    "0": 0.12873563218390804,
+    "1": 0.2134387351778656,
+    "2": 0.25263157894736843,
+    "3": 0.25,
+    "4": 0.20512820512820512,
+    "5": 0.2692307692307692,
+    "6": 0.30303030303030304,
+    "7": 0.32727272727272727,
+    "8": 0.4
+  },
+  "gods": [
+    {
+      "id": "tests_helper_write_state",
+      "label": "write_state()",
+      "degree": 35
+    },
+    {
+      "id": "tests_helper_write_file",
+      "label": "write_file()",
+      "degree": 23
+    },
+    {
+      "id": "tests_helper_run_hook",
+      "label": "run_hook()",
+      "degree": 17
+    },
+    {
+      "id": "tests_helper_load_fixture",
+      "label": "load_fixture()",
+      "degree": 15
+    },
+    {
+      "id": "tests_helper_read_state",
+      "label": "read_state()",
+      "degree": 15
+    },
+    {
+      "id": "tests_test_approve_gate_approve",
+      "label": "approve()",
+      "degree": 14
+    },
+    {
+      "id": "tests_test_approve_gate_testapprovegate",
+      "label": "TestApproveGate",
+      "degree": 14
+    },
+    {
+      "id": "tests_test_edit_gate_testeditgate",
+      "label": "TestEditGate",
+      "degree": 14
+    },
+    {
+      "id": "hooks_scripts_common_read_payload",
+      "label": "read_payload()",
+      "degree": 13
+    },
+    {
+      "id": "tests_test_bash_gate_testbashgate",
+      "label": "TestBashGate",
+      "degree": 13
+    }
+  ],
+  "surprises": [
+    {
+      "source": "approve()",
+      "target": "run_hook()",
+      "source_files": [
+        "tests/test_approve_gate.py",
+        "tests/helper.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "approve()",
+      "target": "load_fixture()",
+      "source_files": [
+        "tests/test_approve_gate.py",
+        "tests/helper.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "read_payload()",
+      "source_files": [
+        "hooks/scripts/approve_gate.py",
+        "hooks/scripts/_common.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "main()",
+      "target": "read_payload()",
+      "source_files": [
+        "hooks/scripts/bash_gate.py",
+        "hooks/scripts/_common.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "main()",
+      "target": "read_payload()",
+      "source_files": [
+        "hooks/scripts/edit_gate.py",
+        "hooks/scripts/_common.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}
