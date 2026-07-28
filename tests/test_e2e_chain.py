@@ -61,9 +61,18 @@ class TestFullLaneChain(ChainBase):
         # 6. plan written + registered, user approves plan
         write_file(self.cwd, "docs/tdq/plan/demo.md", "# plan demo\n- [ ] T1\n")
         run_state_cli(self.cwd, "set", "phase=plan", "plan_file=docs/tdq/plan/demo.md")
+        # plan chưa khai báo mode thực thi → gate chặn, kể cả khi state đã có mode
+        run_state_cli(self.cwd, "set", "implement_mode=main")
+        rc, _, err = self.approve("plan")
+        self.assertEqual(rc, 2)
+        self.assertIn("mode", err)
+
+        write_file(self.cwd, "docs/tdq/plan/demo.md",
+                   "# plan demo\nMode thực thi: main — plan 1 task.\n- [ ] T1\n")
         rc, out, err = self.approve("plan")
         self.assertEqual(rc, 0, err)
         self.assertIn("APPROVED PLAN", out)
+        self.assertIn("main", out)
 
         # 7. implement unlocked
         run_state_cli(self.cwd, "set", "phase=implement")

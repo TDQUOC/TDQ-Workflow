@@ -35,11 +35,14 @@ def main():
 
     state = tdq_state.load(cwd)
     if state is None or not state.get("active_request"):
-        block("Chưa có request TDQ nào đang mở — không có gì để duyệt. " + USAGE)
+        block("Chưa có request TDQ nào đang mở — không có gì để duyệt. "
+              "Yêu cầu Claude chạy tdq-start (mở request + chọn lane) rồi trình lại "
+              "spec/plan để duyệt; đừng gõ lệnh duyệt trước bước đó. " + USAGE)
 
     if target == "quick":
         if state.get("lane") != "quick":
-            block("Sai lane: duyệt quick chỉ dùng khi request đang mở ở lane quick.")
+            block(f"Sai lane: request đang ở lane {state.get('lane')} — duyệt quick chỉ dùng cho lane "
+                  "quick. Yêu cầu Claude xác nhận lane đúng với việc đang làm rồi trình lại.")
         if state.get("quick_approved"):
             block(f"Quick plan đã được duyệt lúc {state.get('quick_approved_at')} rồi.")
         state["quick_approved"] = True
@@ -69,10 +72,29 @@ def main():
         block(f"{target.capitalize()} đã được duyệt lúc {state.get(at_key)} rồi.")
     rel = state.get(file_key)
     if not rel:
-        block(f"Chưa có {target} nào được đăng ký chờ duyệt — yêu cầu Claude hoàn thành và trình {target} trước.")
+        block(f"Chưa có {target} nào được đăng ký chờ duyệt — yêu cầu Claude hoàn thành {target} trong "
+              f"docs/tdq/{target}/, đăng ký {target}_file vào state rồi trình lại để duyệt.")
     path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
     if not os.path.isfile(path) or os.path.getsize(path) == 0:
         block(f"File {target} đã đăng ký ({rel}) không tồn tại hoặc rỗng — yêu cầu Claude kiểm tra lại trước khi duyệt.")
+
+    mode = None
+    if target == "plan":
+        # Mode must be declared INSIDE the plan the user is approving. state
+        # alone is not trusted: the model can set implement_mode itself, so the
+        # approved file is the source of truth and its sha256 pins the choice.
+        try:
+            with open(path, encoding="utf-8") as f:
+                plan_text = f.read()
+        except OSError:
+            plan_text = ""
+        m = re.search(r"Mode thực thi\**\s*:\s*\**\s*`?(main|subagent)\b", plan_text, re.IGNORECASE)
+        if not m:
+            block("Plan chưa khai báo mode thực thi — plan phải có đúng 1 dòng "
+                  "`Mode thực thi: main|subagent` kèm lý do để bạn duyệt cùng plan. "
+                  "Claude không được tự chốt mode ngoài plan.")
+        mode = m.group(1).lower()
+        state["implement_mode"] = mode
 
     state[ok_key] = True
     state[sha_key] = tdq_state.sha256_file(path)
@@ -82,7 +104,8 @@ def main():
         nxt = ("create the plan (docs/tdq/plan/), register plan_file in state, present a <=100-line "
                "summary with the approve instruction, then WAIT for plan approval.")
     else:
-        nxt = ("ask the user for implement mode (main|subagent), set implement_mode + phase=implement, "
+        nxt = (f"implement mode '{mode}' was approved together with this plan "
+               "(do NOT ask again, do NOT switch mode without a new user decision): set phase=implement, "
                "then implement end-to-end in one turn, ticking plan tasks as you finish them.")
     print(
         f"[TDQ] USER APPROVED {target.upper()} {rel} "

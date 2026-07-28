@@ -35,11 +35,11 @@ def main():
         return
 
     if state.get("spec_file") and not state.get("spec_approved"):
-        print(f"[TDQ] Phase {state.get('phase')} — đang chờ user duyệt spec: hiển thị "
+        print(f"[TDQ] Phase {state.get('phase')} — state CHƯA ghi nhận duyệt spec (không được coi là đã duyệt): hiển thị "
               f"➤ Để duyệt: gõ {APPROVE_CMD} spec · Góp ý: nhắn trực tiếp")
         return
     if state.get("spec_approved") and state.get("plan_file") and not state.get("plan_approved"):
-        print(f"[TDQ] Phase {state.get('phase')} — đang chờ user duyệt plan: hiển thị "
+        print(f"[TDQ] Phase {state.get('phase')} — state CHƯA ghi nhận duyệt plan (không được coi là đã duyệt): hiển thị "
               f"➤ Để duyệt: gõ {APPROVE_CMD} plan · Góp ý: nhắn trực tiếp")
         return
 

@@ -17,7 +17,9 @@ The `approve_gate` hook validates everything (active request, lane, order, regis
 
 ## Instructions for Claude when this command appears
 
-You only ever see this AFTER the user typed it and the hook accepted it. The hook's context message states what was approved and what to do next — follow it exactly:
+Approval is ONLY real when the `approve_gate` hook emitted its `[TDQ] USER APPROVED …` context line for this very command. If you see this command WITHOUT that hook line, the gate did NOT record the approval (hook misfire/misconfig): read `docs/tdq/state.json` to verify, and if the `*_approved` field is still false, tell the user the approval was not recorded and do NOT proceed — never infer approval from the user having typed the command.
+
+When the hook DID accept it, its context message states what was approved and what to do next — follow it exactly:
 - spec approved → proceed to tdq-plan (next turn).
 - plan approved → mark plan ĐÃ DUYỆT, then tdq-implement end-to-end in one turn, ticking each task immediately.
 - quick approved → FIRST append the approved plan summary to `docs/workinglog/<today>.md`, THEN implement (edits stay blocked until the log is written).

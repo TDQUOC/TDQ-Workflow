@@ -57,6 +57,20 @@ def decision(stdout):
     return hso.get("permissionDecision"), hso.get("permissionDecisionReason", "")
 
 
+def write_transcript(cwd, assistant_text, name="transcript.jsonl"):
+    """Minimal Claude Code transcript: one assistant message with text content."""
+    path = os.path.join(cwd, name)
+    lines = [
+        {"type": "user", "message": {"role": "user", "content": "yeu cau"}},
+        {"type": "assistant", "message": {"role": "assistant",
+                                          "content": [{"type": "text", "text": assistant_text}]}},
+    ]
+    with open(path, "w", encoding="utf-8") as f:
+        for line in lines:
+            f.write(json.dumps(line, ensure_ascii=False) + "\n")
+    return path
+
+
 def write_file(cwd, rel, content="x\n"):
     path = os.path.join(cwd, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)

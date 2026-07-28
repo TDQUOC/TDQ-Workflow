@@ -8,16 +8,18 @@ description: Execute an approved TDQ plan end-to-end in one turn - tick each tas
 Read [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved` (hooks enforce). User-facing updates in VI.
 
 ## Hard rules
-- **End-to-end in ONE turn.** Never stop mid-plan to ask "shall I continue". Stop only for a genuine scope change or a blocker only the user can resolve.
+- **End-to-end in ONE turn.** Never stop mid-plan to ask "shall I continue". Stop only for a genuine scope change, a missing/ambiguous `implement_mode` (see below), or a blocker only the user can resolve.
 - **Tick immediately.** The moment a task's test/validate passes, edit the plan file and mark that task `- [x]` BEFORE starting the next task. Never batch ticks for later — "several tasks done, none ticked" is a rule violation.
 - **Red → green.** For each task: run/write its check first (expect fail), implement, re-run until pass.
 - **No placeholders.** Missing info at this stage means analysis failed — surface it, don't stub it.
 - **Waiting on a subagent?** Wait for it or set up an automatic continuation trigger — do not end the turn while it runs.
 
-## Mode selection (state `implement_mode`)
-- `main` (default): implement in this conversation, task by task in plan order.
-- `subagent`: for large plans with independent phases — spawn `tdq-implementer` agents, each in its own git worktree (branch names must not start with `claude|antigravity|gemini|codex`). Merge worktrees back and verify the merge; remove stale worktrees.
-Set via `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set implement_mode=<main|subagent>`.
+## Mode (state `implement_mode` — decided by the USER, never by you)
+There is NO default mode. Read `implement_mode` from state and follow it:
+- `main`: implement in this conversation, task by task in plan order.
+- `subagent`: spawn `tdq-implementer` agents, each in its own git worktree (branch names must not start with `claude|antigravity|gemini|codex`). Merge worktrees back and verify the merge; remove stale worktrees.
+
+The mode comes from the `Mode thực thi:` line of the plan the user approved — the approve gate parses it there and writes it into state. Setting `implement_mode` yourself changes nothing: the gate overwrites it from the approved plan. If it is null, or you want a different mode than the approved one, STOP and ask the user; a mode change means revising the plan line and getting the plan approved again.
 
 ## Per-task loop
 1. Announce (1 dòng VI) which task is starting.

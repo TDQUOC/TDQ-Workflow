@@ -1,5 +1,6 @@
 {
   "name": "tdq-local",
+  "description": "Local marketplace cho plugin tdq-workflow (spec-driven workflow, gate duyệt cứng)",
   "owner": { "name": "TDQ" },
   "plugins": [{ "name": "tdq-workflow", "source": "./" }]
 }

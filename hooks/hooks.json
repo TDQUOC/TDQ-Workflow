@@ -23,7 +23,7 @@
     ],
     "UserPromptExpansion": [
       {
-        "matcher": "tdq-approve",
+        "matcher": "(tdq-workflow:)?tdq-approve",
         "hooks": [
           {
             "type": "command",

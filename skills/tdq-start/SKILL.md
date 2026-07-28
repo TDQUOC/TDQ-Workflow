@@ -16,8 +16,9 @@ Read [tdq-conventions](../tdq-conventions/SKILL.md) first. Act as a meticulous, 
    - **full** — feature/complex/risky: analyze & interview → spec (duyệt) → plan (duyệt) → implement → QC → report.
    Format (VI): 2–3 dòng tóm tắt việc, 1 dòng đề xuất lane kèm lý do, rồi hỏi "Bạn muốn chạy lane nào: quick hay full?". Wait for the answer.
 
-3. **Init state** with the chosen lane:
+3. **Init state** with the chosen lane — MANDATORY, and before any plan/spec is presented:
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>`
+   Never print the approve line while state has no open request in the matching lane: the user would type the command and the gate would refuse it. The Stop hook blocks the turn if you do. Same rule when work resumes after a `reset` — reopen the request first.
 
 4. **Route:**
    - **full** → set phase analyze (`... set phase=analyze`) and continue with [tdq-analyze](../tdq-analyze/SKILL.md).
