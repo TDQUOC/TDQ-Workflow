@@ -180,8 +180,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-07-27.md": {
-    "mtime": 1785169472.4431465,
-    "ast_hash": "b36bf6e2632938fe60c87a1bd4df4d5c",
+    "mtime": 1785170196.039076,
+    "ast_hash": "59cea5c0c1027c1eca36f73f4dcc113f",
     "semantic_hash": ""
   },
   "idea.md": {
@@ -195,13 +195,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-approve/SKILL.md": {
-    "mtime": 1785168053.1686683,
-    "ast_hash": "c328b9861fdfadbb66c92a9fdbfbf8a7",
+    "mtime": 1785173709.597629,
+    "ast_hash": "af978df3faf527c8d562751da6102705",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/SKILL.md": {
-    "mtime": 1785167908.4601035,
-    "ast_hash": "d00534d96f2dd83fb7420718d14a209c",
+    "mtime": 1785205176.6480403,
+    "ast_hash": "7185e3475f5e35c99bca31806834647f",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/tavily.md": {
@@ -210,13 +210,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-implement/SKILL.md": {
-    "mtime": 1785168010.5238159,
-    "ast_hash": "008ceb92b3d207ea8ae2a94eaeee12ad",
+    "mtime": 1785204733.8366387,
+    "ast_hash": "d03031eaf2f8e327fa8d0deac849a96f",
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1785167993.496295,
-    "ast_hash": "e43ce9abbf60b06d41f5de979340e2c7",
+    "mtime": 1785204727.6093001,
+    "ast_hash": "55db40062c6983a6169c9a8365bb83d0",
     "semantic_hash": ""
   },
   "skills/tdq-qc/SKILL.md": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-start/SKILL.md": {
-    "mtime": 1785167940.99109,
-    "ast_hash": "cf28ce4af1714234f9a4c9660682ca34",
+    "mtime": 1785205161.5094838,
+    "ast_hash": "d91966a5342a122c0fbbe1f990f62b6b",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -248,5 +248,10 @@
     "mtime": 1785173731.976677,
     "ast_hash": "af83e9decb3468f9fd2f128f1afa1d75",
     "semantic_hash": "af83e9decb3468f9fd2f128f1afa1d75"
+  },
+  "docs/workinglog/2026-07-28.md": {
+    "mtime": 1785205274.3578758,
+    "ast_hash": "13efc84ac1aa6f39c692c6f8c7157af5",
+    "semantic_hash": ""
   }
 }
