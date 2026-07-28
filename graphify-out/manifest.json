@@ -125,8 +125,8 @@
     "semantic_hash": "e1c23e91bff782f3fc3d3ff0974435a2"
   },
   "README.md": {
-    "mtime": 1785169238.820029,
-    "ast_hash": "4e776ba88c47448feb585730d9513650",
+    "mtime": 1785222775.5411074,
+    "ast_hash": "6f44a0aa9cb75ff031ccbe58e756b62c",
     "semantic_hash": ""
   },
   "agents/tdq-implementer.md": {
@@ -195,13 +195,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-approve/SKILL.md": {
-    "mtime": 1785173709.597629,
-    "ast_hash": "af978df3faf527c8d562751da6102705",
+    "mtime": 1785222758.0779119,
+    "ast_hash": "68d993fe348c18c279e927d9fe205d44",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/SKILL.md": {
-    "mtime": 1785205176.6480403,
-    "ast_hash": "7185e3475f5e35c99bca31806834647f",
+    "mtime": 1785222763.8497953,
+    "ast_hash": "5d82ca2468534112d377ed2915f00c8d",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/tavily.md": {
@@ -210,13 +210,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-implement/SKILL.md": {
-    "mtime": 1785204733.8366387,
-    "ast_hash": "d03031eaf2f8e327fa8d0deac849a96f",
+    "mtime": 1785222742.7819934,
+    "ast_hash": "94b2f6a57da5383260cdd14b8e552090",
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1785204727.6093001,
-    "ast_hash": "55db40062c6983a6169c9a8365bb83d0",
+    "mtime": 1785232829.7313876,
+    "ast_hash": "8aea273bf734e2307f56438e52f73f63",
     "semantic_hash": ""
   },
   "skills/tdq-qc/SKILL.md": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-start/SKILL.md": {
-    "mtime": 1785205161.5094838,
-    "ast_hash": "d91966a5342a122c0fbbe1f990f62b6b",
+    "mtime": 1785222748.3408358,
+    "ast_hash": "cf43a479584b3e2719c41fdb86d32e3c",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -250,8 +250,13 @@
     "semantic_hash": "af83e9decb3468f9fd2f128f1afa1d75"
   },
   "docs/workinglog/2026-07-28.md": {
-    "mtime": 1785205274.3578758,
-    "ast_hash": "13efc84ac1aa6f39c692c6f8c7157af5",
+    "mtime": 1785232869.6442864,
+    "ast_hash": "c48b5c29825570aa9a841e840761766c",
+    "semantic_hash": ""
+  },
+  "docs/tdq/requests/2026-07-28-ask-implement-mode.md": {
+    "mtime": 1785222150.2552285,
+    "ast_hash": "2464e921db09d5d92dca00caa3ff83de",
     "semantic_hash": ""
   }
 }
