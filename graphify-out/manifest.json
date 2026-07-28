@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1785205187.829804,
-    "ast_hash": "d9408f578a5bb502962bbca7025ac4eb",
-    "semantic_hash": "d9408f578a5bb502962bbca7025ac4eb"
+    "mtime": 1785232835.5308712,
+    "ast_hash": "5465d251a2f2496e40cec6dadd7fd8bf",
+    "semantic_hash": "5465d251a2f2496e40cec6dadd7fd8bf"
   },
   "hooks/hooks.json": {
     "mtime": 1785173672.051203,
@@ -15,9 +15,9 @@
     "semantic_hash": "916e03c169235c2559a54fa3bdb018a5"
   },
   "hooks/scripts/approve_gate.py": {
-    "mtime": 1785205154.7305334,
-    "ast_hash": "95239e64281a0d00f553b43f84f70bb0",
-    "semantic_hash": "95239e64281a0d00f553b43f84f70bb0"
+    "mtime": 1785232772.542243,
+    "ast_hash": "76dee48b6c0398c0e18a856d6cc5b312",
+    "semantic_hash": "76dee48b6c0398c0e18a856d6cc5b312"
   },
   "hooks/scripts/bash_gate.py": {
     "mtime": 1785167292.3844995,
@@ -40,14 +40,14 @@
     "semantic_hash": "716b03cebd5cbfdfae24da69f9b0f338"
   },
   "hooks/scripts/stop_gate.py": {
-    "mtime": 1785205107.075537,
-    "ast_hash": "b3610a5254e8625c0f0d0de643de4a6c",
-    "semantic_hash": "b3610a5254e8625c0f0d0de643de4a6c"
+    "mtime": 1785232813.9642441,
+    "ast_hash": "1cfa6108357ef0505613416d03ac4890",
+    "semantic_hash": "1cfa6108357ef0505613416d03ac4890"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1785167148.8292742,
-    "ast_hash": "c94c41a2ccce71a57f235e4d380c580b",
-    "semantic_hash": "c94c41a2ccce71a57f235e4d380c580b"
+    "mtime": 1785222608.3495162,
+    "ast_hash": "4eff7610409c835c1fc236493231d3d1",
+    "semantic_hash": "4eff7610409c835c1fc236493231d3d1"
   },
   "tests/fixtures/approve.json": {
     "mtime": 1785167490.7817154,
@@ -90,9 +90,9 @@
     "semantic_hash": "ba9ba669ce6913ab9c8196a6b3d1a0b7"
   },
   "tests/test_approve_gate.py": {
-    "mtime": 1785204675.834883,
-    "ast_hash": "a3f0e154f4fa7e5aa98f7b090bbac00f",
-    "semantic_hash": "a3f0e154f4fa7e5aa98f7b090bbac00f"
+    "mtime": 1785232755.5471723,
+    "ast_hash": "42b8af05eb17c79e348174b0f02dffc3",
+    "semantic_hash": "42b8af05eb17c79e348174b0f02dffc3"
   },
   "tests/test_bash_gate.py": {
     "mtime": 1785167804.2469566,
@@ -105,9 +105,9 @@
     "semantic_hash": "608370852c2975453ecfdd50f0000033"
   },
   "tests/test_e2e_chain.py": {
-    "mtime": 1785204690.8625994,
-    "ast_hash": "8665c8dcd7515aa797cd8f320289ab4e",
-    "semantic_hash": "8665c8dcd7515aa797cd8f320289ab4e"
+    "mtime": 1785222594.593251,
+    "ast_hash": "04dfd8d7df64d4b1eaa5cd614b223113",
+    "semantic_hash": "04dfd8d7df64d4b1eaa5cd614b223113"
   },
   "tests/test_edit_gate.py": {
     "mtime": 1785167785.807661,
@@ -115,14 +115,14 @@
     "semantic_hash": "75dc988401b993a56f99e0cd38e7c8ca"
   },
   "tests/test_state.py": {
-    "mtime": 1785167505.8439367,
-    "ast_hash": "a5bc14c565fbf730de1ad3d61fd03492",
-    "semantic_hash": "a5bc14c565fbf730de1ad3d61fd03492"
+    "mtime": 1785222604.9791703,
+    "ast_hash": "b14f1130b022d74df97cff0445a0c03e",
+    "semantic_hash": "b14f1130b022d74df97cff0445a0c03e"
   },
   "tests/test_stop_gate.py": {
-    "mtime": 1785205132.0541377,
-    "ast_hash": "29c10707583caa99b617a0613f65a910",
-    "semantic_hash": "29c10707583caa99b617a0613f65a910"
+    "mtime": 1785232794.4255428,
+    "ast_hash": "e1c23e91bff782f3fc3d3ff0974435a2",
+    "semantic_hash": "e1c23e91bff782f3fc3d3ff0974435a2"
   },
   "README.md": {
     "mtime": 1785169238.820029,

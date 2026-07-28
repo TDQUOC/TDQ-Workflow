@@ -82,7 +82,7 @@ class TestApproveGate(unittest.TestCase):
                     plan_file="docs/tdq/plan/x.md")
         write_file(self.cwd, "docs/tdq/spec/x.md")
         write_file(self.cwd, "docs/tdq/plan/x.md", "# plan\nMode thực thi: main — plan nhỏ.\n")
-        rc, out, err = approve(self.cwd, "plan")
+        rc, out, err = approve(self.cwd, "plan main")
         self.assertEqual(rc, 0, err)
         self.assertIn("APPROVED PLAN", out)
         state = read_state(self.cwd)
@@ -103,49 +103,97 @@ class TestApproveGate(unittest.TestCase):
         self.assertIn("lane", err)
         self.assertFalse(read_state(self.cwd)["quick_approved"])
 
-    def test_red_plan_without_implement_mode(self):
+    def plan_state(self, **overrides):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
-                    spec_approved=True, plan_file="docs/tdq/plan/p.md")
-        write_file(self.cwd, "docs/tdq/plan/p.md", "# plan\n- [ ] t1\n")
+                    spec_approved=True, plan_file="docs/tdq/plan/p.md", **overrides)
+
+    def test_red_plan_without_mode_argument(self):
+        # Mode is the USER's decision -> the approve command must carry it.
+        self.plan_state()
+        write_file(self.cwd, "docs/tdq/plan/p.md",
+                   "# plan\nMode thực thi: main — plan nhỏ.\n- [ ] t1\n")
         rc, _, err = approve(self.cwd, "plan")
         self.assertEqual(rc, 2)
-        self.assertIn("mode", err)
+        self.assertIn("mode", err.lower())
+        self.assertIn("subagent", err)
+        self.assertFalse(read_state(self.cwd)["plan_approved"])
+        self.assertIsNone(read_state(self.cwd)["implement_mode"])
+
+    def test_red_plan_without_proposed_mode_line(self):
+        self.plan_state()
+        write_file(self.cwd, "docs/tdq/plan/p.md", "# plan\n- [ ] t1\n")
+        rc, _, err = approve(self.cwd, "plan main")
+        self.assertEqual(rc, 2)
+        self.assertIn("Mode thực thi", err)
+        # message phải chỉ đúng file cần sửa
+        self.assertIn("docs/tdq/plan/p.md", err)
         self.assertFalse(read_state(self.cwd)["plan_approved"])
 
-    def test_green_plan_mode_comes_from_plan_file(self):
-        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
-                    spec_approved=True, plan_file="docs/tdq/plan/p.md")
+    def test_green_proposal_line_accepts_wording_variants(self):
+        # Gate không được ép đúng MỘT chuỗi: mọi nhãn chứa "mode" + ":" + giá trị
+        # đều là đề xuất hợp lệ (plan thật viết "Đề xuất mode: **main**").
+        variants = [
+            "Mode thực thi: main — tuần tự.",
+            "**Mode thực thi**: main",
+            "Ngày: x · Lane: full · Đề xuất mode: **main**",
+            "Mode đề xuất: `main`",
+            "Implement mode: MAIN",
+        ]
+        for line in variants:
+            with self.subTest(line=line):
+                self.plan_state()
+                write_file(self.cwd, "docs/tdq/plan/p.md", f"# plan\n{line}\n- [ ] t1\n")
+                rc, out, err = approve(self.cwd, "plan main")
+                self.assertEqual(rc, 0, err)
+                self.assertEqual(read_state(self.cwd)["implement_mode"], "main")
+
+    def test_red_mode_word_without_label_is_not_a_proposal(self):
+        # "main" xuất hiện lung tung trong plan không được tính là đề xuất mode.
+        self.plan_state()
+        write_file(self.cwd, "docs/tdq/plan/p.md",
+                   "# plan\n- [ ] merge nhánh main vào release\n- [ ] load model chính\n")
+        rc, _, err = approve(self.cwd, "plan main")
+        self.assertEqual(rc, 2)
+        self.assertIn("Mode thực thi", err)
+
+    def test_green_plan_mode_from_user_command(self):
+        self.plan_state()
         write_file(self.cwd, "docs/tdq/plan/p.md",
                    "# plan\n**Mode thực thi**: subagent — 3 phase độc lập.\n- [ ] t1\n")
-        rc, out, err = approve(self.cwd, "plan")
+        rc, out, err = approve(self.cwd, "plan subagent")
         self.assertEqual(rc, 0, err)
         self.assertIn("subagent", out)
-        self.assertNotIn("ask the user for implement mode", out)
         state = read_state(self.cwd)
         self.assertTrue(state["plan_approved"])
         self.assertEqual(state["implement_mode"], "subagent")
 
-    def test_red_plan_state_mode_cannot_bypass_plan_file(self):
-        # Model set implement_mode itself but never wrote it in the plan the
-        # user reviewed -> still blocked, state stays untouched.
-        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
-                    spec_approved=True, plan_file="docs/tdq/plan/p.md",
-                    implement_mode="main")
-        write_file(self.cwd, "docs/tdq/plan/p.md", "# plan\n- [ ] t1\n")
-        rc, _, err = approve(self.cwd, "plan")
-        self.assertEqual(rc, 2)
-        self.assertIn("mode", err)
-        self.assertFalse(read_state(self.cwd)["plan_approved"])
-
-    def test_plan_file_mode_overrides_state_mode(self):
-        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
-                    spec_approved=True, plan_file="docs/tdq/plan/p.md",
-                    implement_mode="subagent")
+    def test_green_user_mode_overrides_plan_proposal(self):
+        # Plan proposes subagent, user types main -> the user wins, loudly.
+        self.plan_state(implement_mode="subagent")
         write_file(self.cwd, "docs/tdq/plan/p.md",
-                   "# plan\nMode thực thi: main — tuần tự.\n- [ ] t1\n")
-        rc, out, err = approve(self.cwd, "plan")
+                   "# plan\nMode thực thi: subagent — nhiều phase.\n- [ ] t1\n")
+        rc, out, err = approve(self.cwd, "plan main")
         self.assertEqual(rc, 0, err)
         self.assertEqual(read_state(self.cwd)["implement_mode"], "main")
+        self.assertIn("đề xuất", out.lower() + err.lower())
+
+    def test_red_plan_state_mode_cannot_bypass_command(self):
+        # Model pre-set implement_mode in state -> worthless without the user's word.
+        self.plan_state(implement_mode="main")
+        write_file(self.cwd, "docs/tdq/plan/p.md",
+                   "# plan\nMode thực thi: main — tuần tự.\n- [ ] t1\n")
+        rc, _, err = approve(self.cwd, "plan")
+        self.assertEqual(rc, 2)
+        self.assertIn("mode", err.lower())
+        self.assertFalse(read_state(self.cwd)["plan_approved"])
+
+    def test_plan_output_does_not_forbid_asking(self):
+        self.plan_state()
+        write_file(self.cwd, "docs/tdq/plan/p.md",
+                   "# plan\nMode thực thi: main — tuần tự.\n- [ ] t1\n")
+        rc, out, err = approve(self.cwd, "plan main")
+        self.assertEqual(rc, 0, err)
+        self.assertNotIn("do NOT ask again", out)
 
     def test_hooks_json_matcher_fullmatches_namespaced_command(self):
         # Claude Code full-matches matcher against the FULL command name

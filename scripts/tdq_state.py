@@ -19,6 +19,8 @@ PROTECTED_KEYS = {
     "spec_approved", "spec_sha256", "spec_approved_at",
     "plan_approved", "plan_sha256", "plan_approved_at",
     "quick_approved", "quick_approved_at",
+    # decided by the USER in the approve command, written by the approve gate only
+    "implement_mode",
 }
 VALID_LANES = {"quick", "full", None}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}

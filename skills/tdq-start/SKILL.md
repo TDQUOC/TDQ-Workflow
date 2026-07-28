@@ -28,7 +28,7 @@ Read [tdq-conventions](../tdq-conventions/SKILL.md) first. Act as a meticulous, 
 
 1. Analyze briefly (read the code involved; interview only if something is genuinely unclear — never guess).
 2. Present in chat a plan of **≤ 10 lines (VI)**: what will be done, files touched, quick validate/test steps.
-3. Tell the user exactly: `➤ Để duyệt: gõ /tdq-workflow:tdq-approve quick · Góp ý: nhắn trực tiếp` — then STOP and wait. Edits outside `docs/` are blocked until approved.
+3. Tell the user exactly: `➤ Để duyệt: gõ /tdq-workflow:tdq-approve quick · Góp ý: nhắn trực tiếp` — then STOP and wait. Edits outside `docs/` are blocked until approved. Quick lane runs in the main conversation; if the work genuinely needs subagents/worktrees, ask the user first — never decide that yourself.
 4. After approval, the hook confirms. Then, in this order:
    1. Append the approved plan summary to `docs/workinglog/<today>.md` NOW (create the file if missing). Implementation stays blocked until this append happens.
    2. Implement end-to-end in one turn, run the quick validate/test, report the result briefly (VI).

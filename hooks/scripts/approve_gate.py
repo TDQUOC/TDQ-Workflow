@@ -13,7 +13,13 @@ import sys
 
 from _common import read_payload, payload_cwd, tdq_state
 
-USAGE = "Cách dùng: /tdq-workflow:tdq-approve spec|plan|quick"
+USAGE = "Cách dùng: /tdq-workflow:tdq-approve spec | plan <main|subagent> | quick"
+MODE_RE = re.compile(r"\b(main|subagent)\b", re.IGNORECASE)
+# Proposal line inside the plan. Deliberately tolerant of wording: any label
+# containing the word "mode" followed by ':' and the value counts ("Mode thực
+# thi: main", "Đề xuất mode: **main**", "Mode đề xuất: `subagent`"). A bare
+# "main" somewhere in the plan does NOT — the label is what makes it a proposal.
+PROPOSED_RE = re.compile(r"\bmode\b[^\n:]{0,40}:\s*[*`_ ]*(main|subagent)\b", re.IGNORECASE)
 
 
 def block(msg):
@@ -79,21 +85,32 @@ def main():
         block(f"File {target} đã đăng ký ({rel}) không tồn tại hoặc rỗng — yêu cầu Claude kiểm tra lại trước khi duyệt.")
 
     mode = None
+    proposed = None
     if target == "plan":
-        # Mode must be declared INSIDE the plan the user is approving. state
-        # alone is not trusted: the model can set implement_mode itself, so the
-        # approved file is the source of truth and its sha256 pins the choice.
+        # The implement mode is the USER's decision, so it comes from what the
+        # user TYPED. The plan may only PROPOSE one; neither the plan file nor
+        # state can decide it (the model controls both).
         try:
             with open(path, encoding="utf-8") as f:
                 plan_text = f.read()
         except OSError:
             plan_text = ""
-        m = re.search(r"Mode thực thi\**\s*:\s*\**\s*`?(main|subagent)\b", plan_text, re.IGNORECASE)
-        if not m:
-            block("Plan chưa khai báo mode thực thi — plan phải có đúng 1 dòng "
-                  "`Mode thực thi: main|subagent` kèm lý do để bạn duyệt cùng plan. "
-                  "Claude không được tự chốt mode ngoài plan.")
-        mode = m.group(1).lower()
+        pm = PROPOSED_RE.search(plan_text)
+        if not pm:
+            block(f"Plan {rel} chưa có dòng đề xuất mode. Yêu cầu Claude thêm vào plan một dòng "
+                  "dạng `Mode thực thi: main — <lý do>` (hoặc `Đề xuất mode: subagent — <lý do>`) "
+                  "rồi trình lại; nhãn phải chứa chữ 'mode' và dấu hai chấm trước giá trị. "
+                  "Mode thật vẫn do bạn gõ khi duyệt.")
+        proposed = pm.group(1).lower()
+
+        mm = MODE_RE.search(text)
+        if not mm:
+            block("Thiếu mode thực thi trong lệnh duyệt — mode là quyết định của BẠN, "
+                  "không phải của Claude. Gõ lại kèm mode: "
+                  "`/tdq-workflow:tdq-approve plan main` (làm tuần tự trong hội thoại này) "
+                  "hoặc `/tdq-workflow:tdq-approve plan subagent` (chia subagent, mỗi cái 1 worktree). "
+                  f"Plan đang đề xuất: {proposed}.")
+        mode = mm.group(1).lower()
         state["implement_mode"] = mode
 
     state[ok_key] = True
@@ -104,9 +121,12 @@ def main():
         nxt = ("create the plan (docs/tdq/plan/), register plan_file in state, present a <=100-line "
                "summary with the approve instruction, then WAIT for plan approval.")
     else:
-        nxt = (f"implement mode '{mode}' was approved together with this plan "
-               "(do NOT ask again, do NOT switch mode without a new user decision): set phase=implement, "
-               "then implement end-to-end in one turn, ticking plan tasks as you finish them.")
+        diff = "" if mode == proposed else (
+            f" (the user chose '{mode}' while the plan đề xuất '{proposed}' — follow the user, "
+            "and say so in Vietnamese when you report)")
+        nxt = (f"the USER chose implement mode '{mode}' in the approve command{diff}: set phase=implement, "
+               "then implement end-to-end in one turn, ticking plan tasks as you finish them. "
+               "Switching mode later requires a new user decision — never decide it yourself.")
     print(
         f"[TDQ] USER APPROVED {target.upper()} {rel} "
         f"(sha256 {state[sha_key][:12]}, {state[at_key]}). Next: {nxt} "

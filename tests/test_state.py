@@ -50,7 +50,7 @@ class TestState(unittest.TestCase):
     def test_cli_rejects_protected_keys(self):
         run_state_cli(self.cwd, "init", "r1", "full")
         for pair in ("spec_approved=true", "plan_approved=true", "quick_approved=true",
-                     "spec_sha256=abc", "plan_approved_at=now"):
+                     "spec_sha256=abc", "plan_approved_at=now", "implement_mode=main"):
             rc, _, err = run_state_cli(self.cwd, "set", pair)
             self.assertEqual(rc, 1, pair)
             self.assertIn("bảo vệ", err)

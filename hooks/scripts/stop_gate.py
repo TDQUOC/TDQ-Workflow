@@ -16,7 +16,13 @@ from datetime import datetime
 
 from _common import read_payload, payload_cwd, tdq_state
 
+# Only a real invitation line counts — merely NAMING the command inside a plan
+# or an explanation is not an invitation (that produced false blocks).
+INVITE_LINE_RE = re.compile(r"^[ \t>*-]*➤\s*Để duyệt\s*:.*$", re.MULTILINE)
 INVITE_RE = re.compile(r"/tdq-workflow:tdq-approve\s+(spec|plan|quick)\b")
+MODE_RE = re.compile(r"\b(main|subagent)\b", re.IGNORECASE)
+# same tolerance as approve_gate.PROPOSED_RE — keep the two in sync
+PROPOSED_RE = re.compile(r"\bmode\b[^\n:]{0,40}:\s*[*`_ ]*(main|subagent)\b", re.IGNORECASE)
 FIX = ("Sửa trước khi kết thúc turn: mở/chỉnh request bằng "
        "`python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py\" init <slug> <quick|full>` "
        "(và đăng ký spec_file/plan_file nếu là lane full), rồi trình lại và mời duyệt.")
@@ -51,7 +57,7 @@ def last_assistant_text(path):
     return ""
 
 
-def invite_problem(state, target, cwd):
+def invite_problem(state, target, cwd, line=""):
     """Vietnamese reason why this approve invitation cannot be honoured, or None."""
     if state is None or not state.get("active_request"):
         return ("Chưa có request TDQ nào đang mở nên lệnh duyệt sẽ bị gate từ chối — "
@@ -72,18 +78,32 @@ def invite_problem(state, target, cwd):
         path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
         if not os.path.isfile(path) or os.path.getsize(path) == 0:
             return f"File {target} đã đăng ký ({rel}) không tồn tại hoặc rỗng."
+        if target == "plan":
+            try:
+                with open(path, encoding="utf-8") as f:
+                    plan_text = f.read()
+            except OSError:
+                plan_text = ""
+            if not PROPOSED_RE.search(plan_text):
+                return (f"Plan {rel} chưa có dòng đề xuất mode — thêm một dòng dạng "
+                        "`Mode thực thi: main — <lý do>` vào plan trước khi mời duyệt, "
+                        "nếu không lệnh duyệt của user sẽ bị gate từ chối.")
+    if target == "plan" and not MODE_RE.search(line):
+        return ("Dòng mời duyệt plan thiếu mode — mode thực thi là quyết định của user, "
+                "dòng mời phải là `/tdq-workflow:tdq-approve plan main|subagent`.")
     return None
 
 
 def check_invite(payload, cwd, state):
     text = last_assistant_text(payload.get("transcript_path"))
-    match = INVITE_RE.search(text)
-    if not match:
-        return None
-    problem = invite_problem(state, match.group(1), cwd)
-    if not problem:
-        return None
-    return f"[TDQ] Dòng mời duyệt không hợp lệ: {problem} {FIX}"
+    for line in INVITE_LINE_RE.findall(text):
+        match = INVITE_RE.search(line)
+        if not match:
+            continue
+        problem = invite_problem(state, match.group(1), cwd, line)
+        if problem:
+            return f"[TDQ] Dòng mời duyệt không hợp lệ: {problem} {FIX}"
+    return None
 
 PRUNE = {".git", "node_modules", "__pycache__", ".venv", "venv", ".pytest_cache",
          ".claude", ".idea", "dist", "build", ".next", "target"}

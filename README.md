@@ -28,7 +28,7 @@ Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/use
 ## Dùng hằng ngày
 
 1. Nêu yêu cầu → Claude dùng `tdq-start`: tóm tắt, đề xuất lane **quick** (việc nhỏ, rõ) hay **full** (feature/phức tạp) và hỏi bạn chọn.
-2. Lane full: Claude interview đến khi hết mơ hồ → viết spec (VI) → bạn gõ `/tdq-workflow:tdq-approve spec` → plan (VI, task nào cũng có test) → `/tdq-workflow:tdq-approve plan` → implement end-to-end 1 turn, tick `[x]` ngay khi từng task pass → QC loop → report.
+2. Lane full: Claude interview đến khi hết mơ hồ → viết spec (VI) → bạn gõ `/tdq-workflow:tdq-approve spec` → plan (VI, task nào cũng có test) → Claude hỏi bạn chọn mode thực thi → `/tdq-workflow:tdq-approve plan main` (hoặc `plan subagent`) → implement end-to-end 1 turn, tick `[x]` ngay khi từng task pass → QC loop → report.
 3. Lane quick: plan ≤ 10 dòng trong chat → `/tdq-workflow:tdq-approve quick` → Claude ghi log rồi mới implement.
 4. Xem trạng thái bất kỳ lúc nào: `/tdq-workflow:tdq-status`.
 

@@ -19,7 +19,7 @@ There is NO default mode. Read `implement_mode` from state and follow it:
 - `main`: implement in this conversation, task by task in plan order.
 - `subagent`: spawn `tdq-implementer` agents, each in its own git worktree (branch names must not start with `claude|antigravity|gemini|codex`). Merge worktrees back and verify the merge; remove stale worktrees.
 
-The mode comes from the `Mode thực thi:` line of the plan the user approved — the approve gate parses it there and writes it into state. Setting `implement_mode` yourself changes nothing: the gate overwrites it from the approved plan. If it is null, or you want a different mode than the approved one, STOP and ask the user; a mode change means revising the plan line and getting the plan approved again.
+The mode comes from what the USER typed in the approve command (`/tdq-workflow:tdq-approve plan main|subagent`); the gate writes it into state. `implement_mode` is a protected state key — you cannot set it, and the plan's `Mode thực thi:` line is only the proposal shown to the user. If state has no mode, or you think another mode fits better, STOP and ask the user — never switch on your own.
 
 ## Per-task loop
 1. Announce (1 dòng VI) which task is starting.

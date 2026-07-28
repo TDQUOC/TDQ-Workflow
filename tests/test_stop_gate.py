@@ -77,8 +77,15 @@ class TestStopGateInvite(unittest.TestCase):
         self._tmp.cleanup()
         self._ttmp.cleanup()
 
-    def stop(self, invite_target, **overrides):
-        tp = write_transcript(self.tdir, "Plan xong.\n" + INVITE.format(t=invite_target))
+    def stop(self, invite_target, body="Plan xong.", **overrides):
+        tp = write_transcript(self.tdir, body + "\n" + INVITE.format(t=invite_target))
+        return run_hook("stop_gate.py",
+                        load_fixture("stop.json", cwd=self.cwd, transcript_path=tp, **overrides))
+
+    def stop_text(self, text, **overrides):
+        # log là file mới nhất -> loại nhánh chặn "repo đổi mà chưa log"
+        write_file(self.cwd, f"docs/workinglog/{datetime.date.today():%Y-%m-%d}.md", "# log\n")
+        tp = write_transcript(self.tdir, text)
         return run_hook("stop_gate.py",
                         load_fixture("stop.json", cwd=self.cwd, transcript_path=tp, **overrides))
 
@@ -108,6 +115,48 @@ class TestStopGateInvite(unittest.TestCase):
     def test_silent_when_invite_valid(self):
         write_state(self.cwd, active_request="r1", lane="quick")
         rc, out, _ = self.stop("quick")
+        self.assertEqual(rc, 0)
+        self.assertEqual(out, "")
+
+    def test_command_mentioned_in_body_is_not_an_invite(self):
+        # Nhắc TÊN LỆNH trong thân plan (vd mô tả cú pháp mới) không phải lời mời
+        # duyệt — chỉ dòng bắt đầu bằng "➤ Để duyệt:" mới tính.
+        write_state(self.cwd, active_request="r1", lane="quick")
+        body = "Bước 4: đổi dòng mời thành `/tdq-workflow:tdq-approve plan main|subagent`."
+        rc, out, _ = self.stop("quick", body=body)
+        self.assertEqual(rc, 0)
+        self.assertEqual(out, "")
+
+    def test_block_plan_invite_without_mode(self):
+        # Lane full, plan đã đăng ký: dòng mời duyệt plan phải kèm mode cho user chọn.
+        write_state(self.cwd, active_request="r1", lane="full", spec_approved=True,
+                    plan_file="docs/tdq/plan/p.md")
+        write_file(self.cwd, "docs/tdq/plan/p.md", "# plan\n")
+        rc, out, _ = self.stop_text(
+            "Plan xong.\n➤ Để duyệt: gõ /tdq-workflow:tdq-approve plan · Góp ý: nhắn trực tiếp")
+        self.assertEqual(rc, 0)
+        self.assertIn("mode", self.blocked(out).lower())
+
+    def test_block_invite_when_plan_file_has_no_mode_proposal(self):
+        # Bắt sớm ở turn trình plan, thay vì để user gõ lệnh rồi mới trượt.
+        write_state(self.cwd, active_request="r1", lane="full", spec_approved=True,
+                    plan_file="docs/tdq/plan/p.md")
+        write_file(self.cwd, "docs/tdq/plan/p.md", "# plan\n- [ ] t1\n")
+        rc, out, _ = self.stop_text(
+            "Plan xong.\n➤ Để duyệt: gõ /tdq-workflow:tdq-approve plan main|subagent · "
+            "Góp ý: nhắn trực tiếp")
+        self.assertEqual(rc, 0)
+        reason = self.blocked(out)
+        self.assertIn("đề xuất mode", reason.lower())
+        self.assertIn("docs/tdq/plan/p.md", reason)
+
+    def test_silent_plan_invite_with_mode(self):
+        write_state(self.cwd, active_request="r1", lane="full", spec_approved=True,
+                    plan_file="docs/tdq/plan/p.md")
+        write_file(self.cwd, "docs/tdq/plan/p.md", "# plan\nĐề xuất mode: **main**\n")
+        rc, out, _ = self.stop_text(
+            "Plan xong.\n➤ Để duyệt: gõ /tdq-workflow:tdq-approve plan main|subagent · "
+            "Góp ý: nhắn trực tiếp")
         self.assertEqual(rc, 0)
         self.assertEqual(out, "")
 

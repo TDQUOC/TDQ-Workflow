@@ -61,18 +61,28 @@ class TestFullLaneChain(ChainBase):
         # 6. plan written + registered, user approves plan
         write_file(self.cwd, "docs/tdq/plan/demo.md", "# plan demo\n- [ ] T1\n")
         run_state_cli(self.cwd, "set", "phase=plan", "plan_file=docs/tdq/plan/demo.md")
-        # plan chưa khai báo mode thực thi → gate chặn, kể cả khi state đã có mode
-        run_state_cli(self.cwd, "set", "implement_mode=main")
-        rc, _, err = self.approve("plan")
+        # implement_mode là field bảo vệ: Claude không set được qua CLI
+        rc, _, err = run_state_cli(self.cwd, "set", "implement_mode=main")
+        self.assertEqual(rc, 1)
+        self.assertIn("bảo vệ", err)
+
+        # plan chưa có dòng đề xuất mode → gate chặn
+        rc, _, err = self.approve("plan main")
         self.assertEqual(rc, 2)
-        self.assertIn("mode", err)
+        self.assertIn("Mode thực thi", err)
 
         write_file(self.cwd, "docs/tdq/plan/demo.md",
                    "# plan demo\nMode thực thi: main — plan 1 task.\n- [ ] T1\n")
-        rc, out, err = self.approve("plan")
+        # thiếu mode trong lệnh duyệt → gate chặn (mode do user gõ)
+        rc, _, err = self.approve("plan")
+        self.assertEqual(rc, 2)
+        self.assertIn("mode", err.lower())
+
+        rc, out, err = self.approve("plan main")
         self.assertEqual(rc, 0, err)
         self.assertIn("APPROVED PLAN", out)
         self.assertIn("main", out)
+        self.assertEqual(read_state(self.cwd)["implement_mode"], "main")
 
         # 7. implement unlocked
         run_state_cli(self.cwd, "set", "phase=implement")

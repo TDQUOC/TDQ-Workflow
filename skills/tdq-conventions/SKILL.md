@@ -30,7 +30,7 @@ Slug format: `YYYY-MM-DD-<kebab-title>`. Reuse the same slug across all folders 
 
 ## State
 - Read/write state ONLY via: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" <get|init|set|reset> ...`
-- Approval fields (`*_approved`, `*_sha256`, `*_approved_at`) are protected — only the user's `/tdq-workflow:tdq-approve` command can set them. Never try to bypass; hooks deny direct writes to state.json.
+- Approval fields (`*_approved`, `*_sha256`, `*_approved_at`) and `implement_mode` are protected — only the user's `/tdq-workflow:tdq-approve` command can set them. The implement mode is ALWAYS the user's decision: ask before writing the plan, and it is fixed by the mode the user types in the approve command. Never try to bypass; hooks deny direct writes to state.json.
 - An open request in the right lane must exist BEFORE you invite approval — an invitation the gate cannot honour wastes the user's move and is blocked by the Stop hook.
 - `reset` only when the user closes/abandons a request, never while work continues. To test the workflow itself, run against a throwaway project via `TDQ_PROJECT_DIR=/tmp/... python3 .../tdq_state.py ...` instead of touching the real state.
 
