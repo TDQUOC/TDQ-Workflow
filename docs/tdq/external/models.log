@@ -1,0 +1,5 @@
+[2026-07-30T22:54:34+07:00] list agy: 11 slug
+[2026-07-30T22:54:41+07:00] list codex: probe 5 slug — ok=3 unverified=2
+[2026-07-30T22:54:57+07:00] list codex: cache hit (3 ok)
+[2026-07-30T23:19:09+07:00] list codex: cache hit (3 ok)
+[2026-07-30T23:19:12+07:00] list agy: 11 slug
