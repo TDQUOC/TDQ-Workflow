@@ -11,10 +11,11 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_state  # noqa: E402
 
 
-def run_hook(script, payload):
+def run_hook(script, payload, env=None):
     proc = subprocess.run(
         [sys.executable, os.path.join(HOOKS, script)],
         input=json.dumps(payload), capture_output=True, text=True, timeout=30,
+        env=dict(os.environ, **(env or {})),
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -48,27 +49,27 @@ def run_state_cli(cwd, *args):
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
 
+def run_state_cli_in(cwd, *args):
+    """Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user
+    gõ lệnh từ một thư mục con của project)."""
+    env = {k: v for k, v in os.environ.items() if k != "TDQ_PROJECT_DIR"}
+    proc = subprocess.run(
+        [sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), *args],
+        capture_output=True, text=True, env=env, cwd=cwd, timeout=30,
+    )
+    return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
 def decision(stdout):
-    """Parse PreToolUse hook stdout -> (permissionDecision, reason)."""
+    """Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).
+
+    0.2.0: hook không còn deny; nội dung đáng kiểm là lời nhắc (additionalContext).
+    """
     if not stdout:
         return None, ""
     data = json.loads(stdout)
     hso = data.get("hookSpecificOutput", {})
-    return hso.get("permissionDecision"), hso.get("permissionDecisionReason", "")
-
-
-def write_transcript(cwd, assistant_text, name="transcript.jsonl"):
-    """Minimal Claude Code transcript: one assistant message with text content."""
-    path = os.path.join(cwd, name)
-    lines = [
-        {"type": "user", "message": {"role": "user", "content": "yeu cau"}},
-        {"type": "assistant", "message": {"role": "assistant",
-                                          "content": [{"type": "text", "text": assistant_text}]}},
-    ]
-    with open(path, "w", encoding="utf-8") as f:
-        for line in lines:
-            f.write(json.dumps(line, ensure_ascii=False) + "\n")
-    return path
+    return hso.get("permissionDecision"), hso.get("additionalContext", "")
 
 
 def write_file(cwd, rel, content="x\n"):

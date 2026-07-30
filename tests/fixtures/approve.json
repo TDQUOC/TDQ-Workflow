@@ -1,1 +1,0 @@
-{"hook_event_name": "UserPromptExpansion", "command_name": "tdq-workflow:tdq-approve", "command_args": "OVERRIDE", "cwd": "OVERRIDE"}

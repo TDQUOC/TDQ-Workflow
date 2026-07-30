@@ -1,56 +1,94 @@
 ---
 name: tdq-conventions
-description: Shared conventions for the TDQ workflow (doc tree, git naming, working log, research rules). Loaded by other tdq skills, not invoked directly.
+description: Quy ước chung của TDQ workflow (một-turn, state, duyệt, mã nhắc của hook, git, working log, research). Được các skill tdq-* khác nạp, không gọi trực tiếp.
 user-invocable: false
 ---
 
 # TDQ Conventions
 
-Shared rules for every TDQ workflow phase. Other tdq-* skills reference this file.
+Luật dùng chung cho mọi phase. Skill khác trỏ về file này thay vì chép lại.
+Mọi output cho user viết **tiếng Việt**.
 
-## Language
-- Internal reasoning and skill instructions: English.
-- ALL user-facing output (chat, spec, plan, report, questions, log entries): Vietnamese.
+## 1. Giao thức một turn (bắt buộc, làm đúng thứ tự)
 
-## Doc tree (in the user's project)
+1. Đầu turn: chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" next`.
+   Output cho biết đang ở phase nào, việc duy nhất phải làm, lệnh chuyển tiếp.
+2. Làm đúng việc của phase đó — không làm trước việc của phase sau.
+3. Thấy dòng `[TDQ:<MÃ>]` do hook chèn vào ngữ cảnh → **làm việc trong đó TRƯỚC**
+   mọi việc khác, xong in `✓ [TDQ:<MÃ>] <đã làm gì>`. Danh sách mã:
+   [references/reminder-codes.md](references/reminder-codes.md).
+4. Repo có thay đổi → append entry vào `docs/workinglog/<hôm nay>.md` **trong cùng turn**.
+5. Cuối turn: chạy lệnh chuyển tiếp của phase (nếu điều kiện `Xong khi` đã đạt).
+
+Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
+Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).
+
+## 2. Bảng phase
+
+Bảng đầy đủ (vào khi / việc duy nhất / lệnh chuyển tiếp / xong khi / cấm):
+[references/phases.md](references/phases.md) — file **tự sinh** từ hằng `PHASE_TABLE`
+trong `scripts/tdq_state.py`. Không chép lệnh sang chỗ khác, không sửa tay file đó.
+
+## 3. State
+
+- Đọc/ghi state **chỉ** qua CLI: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" <next|get|set|approve|init|reset>`.
+  Cấm sửa tay `docs/tdq/state.json` và `docs/tdq/STATE.md` (mirror tự sinh, chỉ để đọc).
+- `next` = câu trả lời cho "giờ làm gì". `get <key>` = đọc một trường.
+- `init <slug> <quick|full>` = **mở request mới**, xoá sạch mọi trường cũ (lane, phase,
+  spec/plan file, mọi dấu duyệt, implement_mode) và lưu slug cũ vào `previous_request`.
+  Chạy cho MỌI yêu cầu mới ngay khi user chốt lane. Nếu request cũ còn dở → nói rõ
+  slug/phase sẽ mất rồi **hỏi user trước**.
+- `reset` chỉ khi user đóng hẳn request. Muốn thử nghiệm workflow thì chạy vào project
+  rác: đặt `TDQ_PROJECT_DIR=/tmp/...` ngay trên chính lệnh đó (cấm dùng `||` fallback).
+- Mọi trục trặc của state chỉ là cảnh báo (exit 0). Exit 2 = gõ sai cú pháp lệnh.
+
+## 4. Ghi nhận duyệt
+
+User duyệt bằng chat thường — không có cú pháp bắt buộc, không có gate chặn user.
+Dấu hiệu duyệt, phản ví dụ, và lệnh phải chạy: [references/approval.md](references/approval.md).
+
+Ba luật không được phá:
+- Mơ hồ → **HỎI**, tuyệt đối không suy diễn là đã duyệt.
+- Duyệt spec ≠ duyệt plan. Chỉ ghi đúng thứ user nêu tên.
+- Mode thực thi luôn do USER chọn. Đề xuất thì được, tự chốt thì không.
+
+## 5. Cây tài liệu
+
 ```
 docs/tdq/
-  state.json          # workflow state — NEVER edit directly; use the CLI below
-  requests/<slug>.md  # original request + intake summary
-  questions/<slug>.md # interview Q&A
-  research/<slug>.md  # web research notes with sources
-  knowledge/<slug>.md # distilled decisions/constraints
-  spec/<slug>.md      # spec (VI)
-  plan/<slug>.md      # plan (VI, checkbox tasks)
-  qc/<slug>.md        # QC results
-  reports/<slug>.md   # final report (≤ 50 lines)
-docs/workinglog/YYYY-MM-DD.md   # daily working log (append at END of file)
+  state.json          # state — chỉ ghi qua CLI
+  STATE.md            # mirror tự sinh để đọc
+  requests/<slug>.md  questions/<slug>.md  research/<slug>.md  knowledge/<slug>.md
+  spec/<slug>.md      plan/<slug>.md       qc/<slug>.md        reports/<slug>.md
+docs/workinglog/YYYY-MM-DD.md
 ```
-Slug format: `YYYY-MM-DD-<kebab-title>`. Reuse the same slug across all folders for one request.
+Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung một slug ở mọi thư mục.
 
-## State
-- Read/write state ONLY via: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" <get|init|set|reset> ...`
-- Approval fields (`*_approved`, `*_sha256`, `*_approved_at`) and `implement_mode` are protected — only the user's `/tdq-workflow:tdq-approve` command can set them. The implement mode is ALWAYS the user's decision: ask before writing the plan, and it is fixed by the mode the user types in the approve command. Never try to bypass; hooks deny direct writes to state.json.
-- An open request in the right lane must exist BEFORE you invite approval — an invitation the gate cannot honour wastes the user's move and is blocked by the Stop hook.
-- `reset` only when the user closes/abandons a request, never while work continues. To test the workflow itself, run against a throwaway project via `TDQ_PROJECT_DIR=/tmp/... python3 .../tdq_state.py ...` instead of touching the real state.
+## 6. Working log
 
-## Git
-- Branch/commit/worktree names must NOT start with: `claude`, `antigravity`, `gemini`, `codex` (any case).
-- Commit messages must NOT contain "generated with <AI>", "được tạo cùng/với/bởi <AI>", or AI Co-Authored-By trailers.
-- Never commit or push unless the user explicitly asks.
+- Turn nào đổi repo → append vào CUỐI `docs/workinglog/<hôm nay>.md` (chưa có thì tạo).
+- Nội dung: giờ/ngữ cảnh, file đã đổi, lý do, test đã chạy (hoặc lý do chưa chạy).
+- Turn chỉ đọc/phân tích → không ghi. Turn chỉ sửa working log → không ghi thêm entry.
 
-## Working log (mandatory)
-- Any turn that changes the repo → append a short entry to `docs/workinglog/<today>.md` (create if missing).
-- Entry: time/context, files changed, why, tests run (or why not). Append at the END of the file — anchor on the true last entry.
-- If `graphify` is installed, also run its update command after logging.
+## 7. Git
 
-## Research
-- Web search: call `tavily-primary` tools first, always. On connection/auth/timeout/quota/tool error only, call the matching `tavily-backup` tool exactly once. Built-in WebSearch only after both fail AND the user approves. WebFetch is fine for known URLs.
-- Power usage patterns: see [references/tavily.md](references/tavily.md).
-- Every claim in specs/answers needs a source or a stated basis. Never invent facts.
-- Never put API keys in replies, logs, shell commands, or prompts.
+- Tên branch/commit/worktree **không** bắt đầu bằng `claude`, `antigravity`, `gemini`, `codex`.
+- Commit message **không** chứa "generated with <AI>", "được tạo cùng/với/bởi <AI>",
+  hay trailer Co-Authored-By của AI.
+- **Không** commit/push khi user chưa yêu cầu.
 
-## Quality bars
-- No placeholders, no TODO stubs, no mock data presented as real. If information is missing → interview the user instead of guessing.
-- Products built by this workflow ship with a logging service ON by default (timestamps, enough detail to debug).
-- Each plan task has its own test/validate step; tick `[x]` in the plan file IMMEDIATELY when a task's test passes — never batch ticks at end of turn.
+## 8. Research
+
+- Search web: gọi tool của `tavily-primary` trước, luôn luôn. Chỉ khi lỗi kết nối/xác
+  thực/timeout/quota/tool mới gọi `tavily-backup` đúng một lần. `WebSearch` built-in chỉ
+  dùng sau khi cả hai hỏng VÀ user duyệt. `WebFetch` dùng thẳng cho URL đã biết.
+- Mẫu dùng nâng cao: [references/tavily.md](references/tavily.md).
+- Mọi khẳng định phải có nguồn hoặc căn cứ nêu rõ. Không bịa.
+- Không đưa API key vào câu trả lời, log, lệnh shell hay prompt.
+
+## 9. Chất lượng
+
+- Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
+  Thiếu thông tin → hỏi user, đừng đoán.
+- Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt được qua config).
+- Mỗi task trong plan có test riêng; task pass là tick `[x]` NGAY, không gom cuối turn.

@@ -1,8 +1,9 @@
-"""B3 — bash_gate.py: git naming bans, AI commit-msg bans, state.json write bans."""
+"""B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json,
+không bao giờ chặn lệnh."""
 import tempfile
 import unittest
 
-from helper import run_hook, load_fixture, decision
+from helper import run_hook, load_fixture, decision, tdq_state
 
 
 class TestBashGate(unittest.TestCase):
@@ -14,60 +15,84 @@ class TestBashGate(unittest.TestCase):
         self._tmp.cleanup()
 
     def bash(self, command):
-        payload = load_fixture("bash_cmd.json", cwd=self.cwd)
+        # session riêng cho mỗi lệnh: hook dedupe 1 lần/mã/turn, dùng chung
+        # session sẽ khiến lệnh thứ hai im lặng và test hiểu nhầm là bỏ sót.
+        payload = load_fixture("bash_cmd.json", cwd=self.cwd, session_id=command[:40])
         payload["tool_input"] = {"command": command}
         return run_hook("bash_gate.py", payload)
 
-    def assert_deny(self, command, needle=None):
+    def assert_remind(self, command, needle=None):
         rc, out, _ = self.bash(command)
         self.assertEqual(rc, 0, command)
-        dec, reason = decision(out)
-        self.assertEqual(dec, "deny", command)
+        dec, context = decision(out)
+        self.assertEqual(dec, "allow", command)  # nhắc, KHÔNG chặn
+        self.assertNotIn('"deny"', out, command)
+        self.assertTrue(context, command)
         if needle:
-            self.assertIn(needle, reason)
+            self.assertIn(needle, context)
 
-    def assert_allow(self, command):
+    def assert_silent(self, command):
         rc, out, _ = self.bash(command)
         self.assertEqual(rc, 0, command)
         self.assertEqual(out, "", command)
 
-    def test_deny_banned_branch_names(self):
-        self.assert_deny("git checkout -b claude/fix-login")
-        self.assert_deny("git switch -c gemini-x")
-        self.assert_deny("git branch codex_feature")
-        self.assert_deny("git worktree add ../antigravity-wt")
-        self.assert_deny("git worktree add -b Claude-task ../wt")
+    def test_remind_banned_branch_names(self):
+        self.assert_remind("git checkout -b claude/fix-login", "quy ước")
+        self.assert_remind("git switch -c gemini-x")
+        self.assert_remind("git branch codex_feature")
+        self.assert_remind("git worktree add ../antigravity-wt")
+        self.assert_remind("git worktree add -b Claude-task ../wt")
 
-    def test_allow_normal_branch(self):
-        self.assert_allow("git checkout -b feature/tdq")
-        self.assert_allow("git switch -c fix/login-timeout")
-        self.assert_allow("git branch release-0.1")
+    def test_silent_normal_branch(self):
+        self.assert_silent("git checkout -b feature/tdq")
+        self.assert_silent("git switch -c fix/login-timeout")
+        self.assert_silent("git branch release-0.1")
 
-    def test_deny_ai_commit_messages(self):
-        self.assert_deny('git commit -m "fix: login (generated with Claude)"')
-        self.assert_deny('git commit -m "feat: x" -m "Co-Authored-By: Claude <noreply@anthropic.com>"')
-        self.assert_deny('git commit -m "chore: được tạo cùng với Claude"')
+    def test_remind_ai_commit_messages(self):
+        self.assert_remind('git commit -m "fix: login (generated with Claude)"')
+        self.assert_remind('git commit -m "feat: x" -m "Co-Authored-By: Claude <noreply@anthropic.com>"')
+        self.assert_remind('git commit -m "chore: được tạo cùng với Claude"')
 
-    def test_allow_normal_commit(self):
-        self.assert_allow('git commit -m "fix: login timeout khi token het han"')
+    def test_silent_normal_commit(self):
+        self.assert_silent('git commit -m "fix: login timeout khi token het han"')
 
-    def test_deny_state_json_writes(self):
-        self.assert_deny("echo '{}' > docs/tdq/state.json", "state.json")
-        self.assert_deny("echo x >> docs/tdq/state.json")
-        self.assert_deny("sed -i '' 's/false/true/' docs/tdq/state.json")
-        self.assert_deny("cat a.json | tee docs/tdq/state.json")
-        self.assert_deny("cp other.json docs/tdq/state.json")
-        self.assert_deny("mv other.json docs/tdq/state.json")
-        self.assert_deny('python3 -c "open(\'docs/tdq/state.json\',\'w\').write(\'{}\')"')
+    def test_remind_state_json_writes(self):
+        self.assert_remind("echo '{}' > docs/tdq/state.json", "tdq_state.py")
+        self.assert_remind("echo '{}' > docs/tdq/STATE.md", "tdq_state.py")
+        self.assert_remind("echo x >> docs/tdq/state.json")
+        self.assert_remind("sed -i '' 's/false/true/' docs/tdq/state.json")
+        self.assert_remind("cat a.json | tee docs/tdq/state.json")
+        self.assert_remind("cp other.json docs/tdq/state.json")
+        self.assert_remind("mv other.json docs/tdq/state.json")
+        self.assert_remind('python3 -c "open(\'docs/tdq/state.json\',\'w\').write(\'{}\')"')
 
-    def test_allow_state_json_reads(self):
-        self.assert_allow("cat docs/tdq/state.json")
-        self.assert_allow("jq .phase docs/tdq/state.json")
+    def test_silent_state_json_reads(self):
+        self.assert_silent("cat docs/tdq/state.json")
+        self.assert_silent("jq .phase docs/tdq/state.json")
 
-    def test_allow_plain_commands(self):
-        self.assert_allow("ls -la")
-        self.assert_allow("python3 -m unittest discover tests")
-        self.assert_allow("git status")
+    def test_silent_plain_commands(self):
+        self.assert_silent("ls -la")
+        self.assert_silent("python3 -m unittest discover tests")
+        self.assert_silent("git status")
+
+    def test_state_cli_approve_is_never_blocked(self):
+        # lệnh ghi state ĐÚNG cách (qua CLI) không được nhắc gì cả
+        self.assert_silent('python3 scripts/tdq_state.py approve plan --mode main --by "duyệt plan"')
+
+    def test_observes_state_cli_and_next(self):
+        self.bash("python3 scripts/tdq_state.py next")
+        rows = tdq_state.turn_log_read(self.cwd, session="python3 scripts/tdq_state.py next")
+        events = [r.get("event") for r in rows if r.get("kind") == "observe"]
+        self.assertIn("state_cli", events)
+        self.assertIn("next_run", events)
+
+    def test_observes_set_without_next(self):
+        cmd = "python3 scripts/tdq_state.py set phase=qc"
+        self.bash(cmd)
+        rows = tdq_state.turn_log_read(self.cwd, session=cmd[:40])
+        events = [r.get("event") for r in rows if r.get("kind") == "observe"]
+        self.assertIn("state_cli", events)
+        self.assertNotIn("next_run", events)
 
 
 if __name__ == "__main__":

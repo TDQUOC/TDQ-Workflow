@@ -1,47 +1,66 @@
 #!/usr/bin/env python3
-"""State helper for the TDQ workflow plugin (stdlib only).
+"""State helper cho plugin TDQ workflow (chỉ dùng stdlib).
 
-State lives at <project>/docs/tdq/state.json. All mutations must go through
-this module. Approval fields are PROTECTED: the CLI refuses to set them; only
-the approve gate hook (which imports this module directly) may change them,
-and it only does so when the user typed the approve command themselves.
+State máy đọc: <project>/docs/tdq/state.json — MỌI thay đổi phải đi qua module
+này. Bản mirror người/model đọc: <project>/docs/tdq/STATE.md, tự sinh lại sau
+mỗi lần ghi (không sửa tay).
+
+Nguyên tắc 0.3.0:
+- Không bao giờ exit != 0 vì lý do TRẠNG THÁI (state hỏng, enum sai, thiếu
+  request...). Chỉ sai CÚ PHÁP LỆNH mới exit 2. State không được phép trở thành
+  ngõ cụt.
+- `next` là nguồn duy nhất trả lời "đang ở đâu, làm gì tiếp" — hook gọi lại
+  chính hàm này thay vì chép lại chữ ở nơi thứ hai.
 """
 import hashlib
 import json
 import os
+import re
+import subprocess
 import sys
 import tempfile
 from datetime import datetime, timezone
 
 STATE_REL = os.path.join("docs", "tdq", "state.json")
+STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
+TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
 
-PROTECTED_KEYS = {
-    "spec_approved", "spec_sha256", "spec_approved_at",
-    "plan_approved", "plan_sha256", "plan_approved_at",
-    "quick_approved", "quick_approved_at",
-    # decided by the USER in the approve command, written by the approve gate only
-    "implement_mode",
-}
+APPROVE_TARGETS = ("spec", "plan", "quick")
+VALID_MODES = ("main", "subagent")
+BY_MAX = 200
 VALID_LANES = {"quick", "full", None}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}
+
+USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | init <slug> [quick|full] | "
+         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent] [--by \"<câu user>\"] | "
+         "reset | phases-doc")
+
+EXIT_SYNTAX = 2
 
 
 def default_state():
     return {
-        "schema_version": 1,
+        "schema_version": 3,
         "active_request": None,
+        # slug của request bị thay thế ở lần init gần nhất (chỉ để truy vết/log)
+        "previous_request": None,
         "lane": None,
         "phase": "idle",
         "spec_file": None,
         "spec_approved": False,
         "spec_sha256": None,
         "spec_approved_at": None,
+        # câu duyệt nguyên văn của user (cắt 200 ký tự) — dấu vết duy nhất còn
+        # lại sau khi bỏ hard gate, phải đối chiếu được với transcript
+        "spec_approved_by": None,
         "plan_file": None,
         "plan_approved": False,
         "plan_sha256": None,
         "plan_approved_at": None,
+        "plan_approved_by": None,
         "quick_approved": False,
         "quick_approved_at": None,
+        "quick_approved_by": None,
         "implement_mode": None,
         "updated_at": None,
     }
@@ -51,34 +70,144 @@ def state_path(cwd):
     return os.path.join(cwd, STATE_REL)
 
 
+def state_md_path(cwd):
+    return os.path.join(cwd, STATE_MD_REL)
+
+
+def turn_log_path(cwd):
+    return os.path.join(cwd, TURN_LOG_REL)
+
+
+_MISSING = object()
+PRUNE_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build",
+              ".next", "target", ".pytest_cache", ".idea", ".claude"}
+
+
+# ---------------------------------------------------------------- log service
+
+def log_enabled():
+    return os.environ.get("TDQ_LOG", "1") != "0"
+
+
+def _warn(msg):
+    """Cảnh báo ra stderr kèm timestamp (spec §4.1). Tắt bằng TDQ_LOG=0.
+
+    Không bao giờ log nội dung file hay giá trị nhạy cảm — chỉ đường dẫn và
+    tên trường.
+    """
+    if log_enabled():
+        print(f"[{now_iso()}] ⚠️ {msg}", file=sys.stderr)
+
+
+def _info(msg):
+    if log_enabled():
+        print(f"[{now_iso()}] ℹ️ {msg}", file=sys.stderr)
+
+
+def _fail(msg):
+    """Chỉ dùng cho SAI CÚ PHÁP LỆNH — exit 2 (spec §2.9.4)."""
+    print(msg, file=sys.stderr)
+    print(USAGE, file=sys.stderr)
+    sys.exit(EXIT_SYNTAX)
+
+
+# ------------------------------------------------------------- project root
+
+def resolve_project_dir(cwd=None, env=_MISSING):
+    """Project root cho state: TDQ_PROJECT_DIR > git root > thư mục đã có state > cwd.
+
+    Chạy CLI từ một thư mục con mà không resolve sẽ tạo 'state bóng' ngay tại
+    đó; hook (cwd = repo root) ghi một nơi, model đọc một nơi khác.
+    """
+    if env is _MISSING:
+        env = os.environ.get("TDQ_PROJECT_DIR")
+    if env:
+        return env
+    start = os.path.abspath(cwd or os.getcwd())
+    current, git_root, state_dir = start, None, None
+    while True:
+        if state_dir is None and os.path.isfile(state_path(current)):
+            state_dir = current
+        if git_root is None and os.path.exists(os.path.join(current, ".git")):
+            git_root = current
+        parent = os.path.dirname(current)
+        if parent == current:
+            break
+        current = parent
+    # git root thắng: một state lỡ tạo ở thư mục con không được phép chiếm quyền
+    return git_root or state_dir or start
+
+
+def find_shadow_states(root):
+    """State/mirror lạc chỗ: state.json ngoài root, hoặc STATE.md mồ côi (S6)."""
+    found = []
+    root = os.path.abspath(root)
+    canonical_state = os.path.normpath(state_path(root))
+    canonical_md = os.path.normpath(state_md_path(root))
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in PRUNE_DIRS]
+        if not dirpath.endswith(os.path.join("docs", "tdq")):
+            continue
+        has_state = "state.json" in files
+        if has_state:
+            path = os.path.normpath(os.path.join(dirpath, "state.json"))
+            if path != canonical_state:
+                found.append(os.path.relpath(path, root))
+        if "STATE.md" in files and not has_state:
+            path = os.path.normpath(os.path.join(dirpath, "STATE.md"))
+            if path != canonical_md or not os.path.isfile(canonical_state):
+                found.append(os.path.relpath(path, root) + " (mirror mồ côi, thiếu state.json)")
+    return sorted(found)
+
+
 def now_iso():
     return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
 
 
-def load(cwd):
-    """Return the state dict, or None if missing/corrupt."""
-    try:
-        with open(state_path(cwd), "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except (OSError, ValueError):
-        return None
-    if not isinstance(data, dict):
-        return None
-    base = default_state()
-    base.update({k: v for k, v in data.items() if k in base})
-    return base
+# ------------------------------------------------------------------ load/save
 
+def load(cwd, heal=True):
+    """Đọc state. Trả None khi chưa có file.
 
-def save(cwd, state):
-    """Atomic write (temp file + rename). Returns the saved state."""
-    state["updated_at"] = now_iso()
+    File hỏng (S2): đổi tên thành state.json.corrupt-<ts>, cảnh báo, trả None —
+    lệnh tiếp theo dựng lại state sạch. KHÔNG xoá dữ liệu cũ.
+    Khoá lạ được giữ nguyên (S3); khoá thiếu được bù từ default_state().
+    """
     path = state_path(cwd)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            raw = f.read()
+    except OSError:
+        return None
+    try:
+        data = json.loads(raw)
+        if not isinstance(data, dict):
+            raise ValueError("state không phải object")
+    except ValueError:
+        if heal:
+            stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            broken = f"{path}.corrupt-{stamp}"
+            try:
+                os.replace(path, broken)
+                _warn(f"state.json hỏng → đã giữ lại tại {os.path.basename(broken)}; "
+                      "state được dựng lại từ mặc định.")
+            except OSError:
+                _warn("state.json hỏng và không đổi tên được — dùng state mặc định.")
+        return None
+    state = default_state()
+    state.update(data)              # giữ nguyên cả khoá lạ (S3)
+    for key, value in default_state().items():
+        state.setdefault(key, value)
+    state["schema_version"] = default_state()["schema_version"]
+    return state
+
+
+def _atomic_write(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), prefix=".state-", suffix=".tmp")
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), prefix=".tdq-", suffix=".tmp")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(state, f, ensure_ascii=False, indent=2)
-            f.write("\n")
+            f.write(text)
         os.replace(tmp, path)
     finally:
         if os.path.exists(tmp):
@@ -86,6 +215,25 @@ def save(cwd, state):
                 os.remove(tmp)
             except OSError:
                 pass
+
+
+def save(cwd, state, expect_updated_at=_MISSING):
+    """Ghi nguyên tử state.json + sinh lại STATE.md (S1, mirror).
+
+    expect_updated_at: giá trị `updated_at` lúc đọc. Nếu trên đĩa đã khác →
+    có session khác vừa ghi: cảnh báo nhưng VẪN ghi (S7, không khoá đa phiên).
+    """
+    if expect_updated_at is not _MISSING:
+        on_disk = load(cwd, heal=False)
+        if on_disk and on_disk.get("updated_at") != expect_updated_at:
+            _warn(f"state đã bị ghi bởi tiến trình khác lúc {on_disk.get('updated_at')} — "
+                  "vẫn ghi đè, kiểm tra lại nếu đang chạy 2 session.")
+    state["updated_at"] = now_iso()
+    _atomic_write(state_path(cwd), json.dumps(state, ensure_ascii=False, indent=2) + "\n")
+    try:
+        _atomic_write(state_md_path(cwd), render_state_md(cwd, state))
+    except OSError as exc:                       # mirror hỏng không được chặn việc
+        _warn(f"không ghi được {STATE_MD_REL}: {exc.__class__.__name__}")
     return state
 
 
@@ -96,6 +244,518 @@ def sha256_file(path):
             h.update(chunk)
     return h.hexdigest()
 
+
+# ------------------------------------------- ảnh chụp hiệu ứng đầu turn (0.3.1)
+#
+# Sổ turn chỉ thấy được hành động đi qua tool Edit/Write; mọi thay đổi qua shell
+# đều vô hình. Hai helper dưới đây cho hook nhìn thẳng vào ĐĨA, nên không phụ
+# thuộc cú pháp lệnh bash (heredoc, pipe, biến... đều không đoán nổi bằng regex).
+
+GIT_STATUS_TIMEOUT = 2
+UNTRACKED_STAT_CAP = 200            # số FILE untracked được lấy dấu (không phải số dòng status)
+UNTRACKED_HASH_MAX_BYTES = 262144   # ≤256 KB thì băm nội dung; lớn hơn mới đành dùng size:mtime
+UNTRACKED_HASH_BUDGET = 4194304     # tổng số byte được đọc mỗi lần lấy vân tay
+
+# Thư mục "sổ sách" của workflow: state.json / STATE.md / sổ turn đổi gần như mỗi
+# turn — chính hook append sổ turn NGAY SAU khi chụp baseline. Tính chúng vào vân
+# tay thì turn read-only cũng bị coi là "đổi repo" (chặn oan 0.3.1).
+# Luôn viết bằng `/`: git in path bằng `/` trên mọi HĐH, dùng os.sep là tự tắt
+# bộ lọc khi chạy trên Windows.
+BOOKKEEPING_PATHS = ("docs/tdq", "docs/workinglog")
+_EXCLUDE = tuple(f":(top,exclude){p}" for p in BOOKKEEPING_PATHS)
+_ROOT_CACHE = {}
+
+
+def today_log_rel():
+    return os.path.join("docs", "workinglog", datetime.now().strftime("%Y-%m-%d") + ".md")
+
+
+def _git(cwd, *args):
+    """stdout (bytes) của lệnh git, hoặc None khi không chạy được."""
+    try:
+        proc = subprocess.run(["git", "-C", cwd, *args],
+                              capture_output=True, timeout=GIT_STATUS_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        _warn(f"git {args[0]} quá {GIT_STATUS_TIMEOUT}s tại {cwd} — bỏ qua bằng chứng đĩa")
+        return None
+    except (OSError, subprocess.SubprocessError) as exc:
+        _warn(f"không chạy được git {args[0]} ({type(exc).__name__}) — bỏ qua bằng chứng đĩa")
+        return None
+    # rc≠0 = "không phải git repo" / chưa có HEAD: chuyện bình thường, không log.
+    return proc.stdout if proc.returncode == 0 else None
+
+
+def repo_root(cwd):
+    """Gốc repo (porcelain in path theo gốc, không theo cwd). None nếu không phải repo."""
+    if cwd not in _ROOT_CACHE:
+        out = _git(cwd, "rev-parse", "--show-toplevel")
+        _ROOT_CACHE[cwd] = out.decode("utf-8", "replace").strip() if out else None
+    return _ROOT_CACHE[cwd]
+
+
+def _untracked_mark(path, budget):
+    """Dấu nhận dạng file untracked → (dấu, số byte đã đọc).
+
+    Ưu tiên NỘI DUNG: mtime đổi mà nội dung y nguyên (touch, formatter ghi đè
+    byte-identical) không phải là thay đổi — tính là thay đổi thì chặn oan.
+    """
+    if not os.path.isfile(path):
+        return None, 0
+    try:
+        st = os.stat(path)
+        if st.st_size <= UNTRACKED_HASH_MAX_BYTES and st.st_size <= budget:
+            return sha256_file(path), st.st_size
+        return f"{st.st_size}:{st.st_mtime_ns}", 0
+    except OSError:
+        return None, 0
+
+
+def repo_status_digest(cwd):
+    """Vân tay trạng thái làm việc của repo, hoặc None khi không lấy được.
+
+    Gồm cả `status --porcelain` (file mới/xoá/đổi tên) lẫn `diff HEAD` (nội dung),
+    vì porcelain KHÔNG đổi khi sửa tiếp một file vốn đã `M` — repo đang dở dang
+    thì đó là trường hợp thường gặp nhất, bỏ qua là bỏ lọt.
+    Sổ sách workflow bị loại trừ ngay từ pathspec của git (0.3.2).
+
+    None nghĩa là "không có bằng chứng", không phải "repo sạch" — nơi gọi phải
+    coi None là fallback về hành vi cũ.
+    """
+    status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    if status is None:
+        return None
+    # repo chưa có commit → không có HEAD → rc≠0 → b""
+    diff = _git(cwd, "diff", "HEAD", "--", ":(top)", *_EXCLUDE) or b""
+    h = hashlib.sha256(status + b"\0" + diff)
+    # File untracked: porcelain in `?? path` không đổi khi nội dung đổi, và `diff
+    # HEAD` không đụng tới chúng — phải tự lấy dấu mới không bỏ lọt (QC1.1).
+    root = repo_root(cwd) or cwd
+    budget, seen = UNTRACKED_HASH_BUDGET, 0
+    for line in status.decode("utf-8", "replace").splitlines():
+        if not line.startswith("?? "):
+            continue
+        seen += 1
+        if seen > UNTRACKED_STAT_CAP:
+            break
+        rel = line[3:].strip().strip('"')
+        mark, used = _untracked_mark(os.path.join(root, rel), budget)
+        budget -= used
+        if mark is not None:
+            h.update(f"\0{rel}:{mark}".encode())
+    return h.hexdigest()
+
+
+def repo_status_paths(cwd, limit=400):
+    """Path đang khác so với HEAD (bỏ cờ trạng thái, rename lấy vế đích).
+
+    Cùng vùng loại trừ với `repo_status_digest` — quyết định và đặt tên phải
+    nhìn đúng một tập path, lệch nhau là nguồn của chặn oan 0.3.1.
+    """
+    out = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    if out is None:
+        return []
+    paths = []
+    for line in out.decode("utf-8", "replace").splitlines():
+        if len(line) > 3:
+            path = line[3:].strip().strip('"')
+            paths.append(path.split(" -> ")[-1])
+        if len(paths) >= limit:
+            break
+    return paths
+
+
+def turn_snapshot(cwd):
+    """Trạng thái đầu turn: log hôm nay + vân tay repo + danh sách path đang bẩn."""
+    log_rel = today_log_rel()
+    try:
+        log_sha = sha256_file(os.path.join(cwd, log_rel))
+    except OSError:
+        log_sha = None
+    return {"log_rel": log_rel, "log_sha": log_sha,
+            "repo_sha": repo_status_digest(cwd), "repo_paths": repo_status_paths(cwd)}
+
+
+# --------------------------------------------------------- enum an toàn (S4)
+
+def effective_lane(state, warn=True):
+    lane = (state or {}).get("lane")
+    if lane in VALID_LANES:
+        return lane
+    if warn:
+        _warn(f"lane không hợp lệ trong state: {lane!r} — coi như chưa chọn lane.")
+    return None
+
+
+def effective_phase(state, warn=True):
+    phase = (state or {}).get("phase")
+    if phase in VALID_PHASES:
+        return phase
+    if warn:
+        _warn(f"phase không hợp lệ trong state: {phase!r} — coi như idle. "
+              "Khôi phục bằng: python3 scripts/tdq_state.py set phase=<idle|analyze|spec|plan|implement|qc|report>")
+    return "idle"
+
+
+def effective_mode(state, warn=True):
+    mode = (state or {}).get("implement_mode")
+    if mode in VALID_MODES or mode is None:
+        return mode
+    if warn:
+        _warn(f"implement_mode không hợp lệ: {mode!r} — coi như chưa chốt mode.")
+    return None
+
+
+# ------------------------------------------------------------- bảng phase
+
+# Nguồn sự thật DUY NHẤT cho câu hỏi "đang ở đâu, làm gì tiếp".
+# doc (tdq-conventions, portable/AGENTS.md) trích lại từ đây; test khoá cứng.
+PHASE_TABLE = {
+    "no_state": {
+        "entry": "Chưa có request TDQ nào đang mở",
+        "action": "Hỏi user chọn lane rồi mở request mới",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <quick|full>",
+        "checklist": [
+            "Tóm tắt yêu cầu của user thành 3–5 dòng",
+            "Hỏi user chọn lane: quick (việc nhỏ, rõ) hay full (Analysis→Spec→Plan→Implement→QC→Report)",
+            "Chạy lệnh init ở trên với slug theo công thức YYYY-MM-DD-<kebab ≤5 từ, không dấu>",
+            "Ghi yêu cầu nguyên văn vào docs/tdq/requests/<slug>.md",
+        ],
+        "done_when": "state.json có active_request và lane",
+        "forbidden": "Sửa code khi chưa mở request",
+    },
+    "analyze": {
+        "entry": "Đã có request, lane full",
+        "action": "Đọc code, research, interview user đến khi hết chỗ mơ hồ",
+        "cmd": "python3 scripts/tdq_state.py set phase=spec",
+        "checklist": [
+            "Kiểm kê năng lực (B0): chạy `python3 scripts/skill_inventory.py`, điền bảng "
+            "phán quyết vào docs/tdq/knowledge/<slug>.md mục 'Năng lực dùng được'",
+            "Đọc code/doc liên quan, ghi vào docs/tdq/research/<slug>.md",
+            "Hỏi user mọi điểm chưa rõ, ghi vào docs/tdq/questions/<slug>.md",
+            "Chốt quyết định vào docs/tdq/knowledge/<slug>.md",
+            "Hết câu hỏi làm đổi kết quả → chạy lệnh trên",
+        ],
+        "done_when": "Không còn câu hỏi nào làm thay đổi kết quả",
+        "forbidden": "Viết spec khi chưa hết mơ hồ",
+    },
+    "spec": {
+        "entry": "Đã phân tích xong",
+        "action": "Viết spec, đăng ký spec_file, trình tóm tắt rồi DỪNG chờ user duyệt",
+        "cmd": "python3 scripts/tdq_state.py approve spec --by \"<nguyên văn câu user>\"",
+        "checklist": [
+            "Viết docs/tdq/spec/<slug>.md (scope in/out, đầu ra, QC + DoD)",
+            "Chạy: python3 scripts/tdq_state.py set spec_file=docs/tdq/spec/<slug>.md",
+            "Trình tóm tắt spec ≤50 dòng trong chat",
+            "In: ➤ Duyệt: nhắn \"duyệt spec\" · Góp ý: nhắn trực tiếp — rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên",
+        ],
+        "done_when": "spec_approved = true",
+        "forbidden": "Viết plan trong cùng turn với spec; tự suy diễn là user đã duyệt",
+    },
+    "plan": {
+        "entry": "spec_approved = true",
+        "action": "Hỏi mode thực thi, viết plan, đăng ký plan_file, trình rồi DỪNG chờ duyệt",
+        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<nguyên văn>\"",
+        "checklist": [
+            "Hỏi user mode thực thi: main (tự làm) hay subagent (chia worktree)",
+            "Viết docs/tdq/plan/<slug>.md: mỗi task 1 việc + 1 test, có checkbox [ ]",
+            "Chạy: python3 scripts/tdq_state.py set plan_file=docs/tdq/plan/<slug>.md",
+            "Trình tóm tắt plan, in dòng mời duyệt, rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên",
+        ],
+        "done_when": "plan_approved = true và implement_mode khác null",
+        "forbidden": "Sửa code khi plan chưa duyệt; tự chọn mode thay user",
+    },
+    "implement": {
+        "entry": "plan_approved = true và implement_mode đã chốt",
+        "action": "Làm hết plan trong 1 turn, mỗi task red→green, tick [x] ngay khi pass",
+        "cmd": "python3 scripts/tdq_state.py set phase=qc",
+        "checklist": [
+            "Làm task theo đúng thứ tự trong plan",
+            "Mỗi task: viết test (đỏ) → code → test xanh → tick [x] vào plan NGAY",
+            "Không dừng giữa chừng để hỏi 'có tiếp không'",
+            "Xong hết task → chạy lệnh trên",
+        ],
+        "done_when": "Mọi task trong plan đã tick [x]",
+        "forbidden": "Dừng giữa chừng; gom tick vào cuối turn",
+    },
+    "qc": {
+        "entry": "Đã implement xong",
+        "action": "Chạy Definition of Done của spec, ghi kết quả, fail thì fix tiếp",
+        "cmd": "python3 scripts/tdq_state.py set phase=report",
+        "checklist": [
+            "Chạy đủ mục QC trong spec, ghi bằng chứng vào docs/tdq/qc/<slug>.md",
+            "FAIL → thêm task fix vào plan (không cần duyệt lại) rồi làm tiếp",
+            "Lặp đến khi mọi mục PASS",
+        ],
+        "done_when": "Mọi mục QC trong spec PASS, có bằng chứng",
+        "forbidden": "Bỏ qua test fail; báo PASS khi chưa chạy",
+    },
+    "report": {
+        "entry": "QC đã PASS",
+        "action": "Viết report ≤50 dòng rồi hỏi user có commit không",
+        "cmd": "python3 scripts/tdq_state.py set phase=idle",
+        "checklist": [
+            "Viết docs/tdq/reports/<slug>.md ≤50 dòng: đã làm gì, kết quả QC, giới hạn còn lại",
+            "Append working log docs/workinglog/<hôm nay>.md",
+            "Hỏi user: có commit không?",
+        ],
+        "done_when": "Report đã ghi và user đã được hỏi về commit",
+        "forbidden": "Tự commit hoặc push khi user chưa yêu cầu",
+    },
+    "idle": {
+        "entry": "Đã xong hoặc chưa mở request",
+        "action": "Chờ yêu cầu mới từ user",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <quick|full>",
+        "checklist": [
+            "Có yêu cầu mới → tóm tắt, hỏi lane, chạy lệnh init ở trên",
+        ],
+        "done_when": "Có request mới được mở",
+        "forbidden": "Đè request cũ còn dở mà chưa hỏi user",
+    },
+    "quick": {
+        "entry": "lane = quick",
+        "action": "Trình mini-plan ≤10 dòng → chờ duyệt → ghi working log TRƯỚC → rồi mới implement",
+        "cmd": "python3 scripts/tdq_state.py approve quick --by \"<nguyên văn câu user>\"",
+        "checklist": [
+            "Trình mini-plan ≤10 dòng: việc sẽ làm, file sẽ đụng, cách validate, "
+            "kèm 1 dòng 'Năng lực: <skill sẽ DÙNG hoặc không có>'",
+            "In: ➤ Duyệt: nhắn \"duyệt quick\" · Góp ý: nhắn trực tiếp — rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên",
+            "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
+            "Implement + validate, rồi cập nhật working log",
+        ],
+        "done_when": "quick_approved = true, log đã ghi, việc đã validate",
+        "forbidden": "Implement trước khi ghi working log",
+    },
+}
+
+
+PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "implement", "qc", "report",
+               "idle", "quick"]
+
+
+def render_phases_md():
+    """Sinh doc bảng phase từ PHASE_TABLE — doc KHÔNG được viết tay.
+
+    Chạy lại bằng: python3 scripts/tdq_state.py phases-doc > <file>
+    tests/test_phase_table.py::test_docs_match_constant khoá cứng sự đồng bộ này.
+    """
+    lines = [
+        "# Bảng phase TDQ (tự sinh — KHÔNG sửa tay)",
+        "",
+        "Sinh lại: `python3 scripts/tdq_state.py phases-doc > <file>`.",
+        "Nguồn: hằng `PHASE_TABLE` trong `scripts/tdq_state.py`.",
+        "Đang ở phase nào thì chỉ làm đúng việc của phase đó, xong chạy đúng lệnh của nó.",
+        "",
+        "| phase | vào khi | việc duy nhất | lệnh chuyển tiếp | xong khi | cấm |",
+        "|---|---|---|---|---|---|",
+    ]
+    def cell(text):
+        # `|` trong <quick|full> sẽ cắt ô của bảng markdown, kể cả trong backtick.
+        return str(text).replace("|", "\\|")
+
+    for name in PHASE_ORDER:
+        row = PHASE_TABLE[name]
+        lines.append("| `{}` | {} | {} | `{}` | {} | {} |".format(
+            name, cell(row["entry"]), cell(row["action"]), cell(row["cmd"]),
+            cell(row["done_when"]), cell(row["forbidden"])))
+    lines.append("")
+    lines.append("Lệnh nguyên văn (copy được, không có ký tự thoát):")
+    lines.append("")
+    lines.append("```")
+    for name in PHASE_ORDER:
+        lines.append(f"{name}: {PHASE_TABLE[name]['cmd']}")
+    lines.append("```")
+    lines.append("")
+    for name in PHASE_ORDER:
+        row = PHASE_TABLE[name]
+        lines.append(f"## {name}")
+        # lệnh trong checklist phải nằm trong inline-code thì mới copy đúng
+        # (và mới qua được rule R2 của scripts/doc_lint.py)
+        lines += [f"{i}. {re.sub(r'(python3 .+)$', r'`\\1`', item)}"
+                  for i, item in enumerate(row["checklist"], 1)]
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def phase_key(state):
+    """Khoá tra PHASE_TABLE cho state hiện tại."""
+    if not state or not state.get("active_request"):
+        return "no_state"
+    lane = effective_lane(state, warn=False)
+    if lane == "quick":
+        return "quick"
+    return effective_phase(state, warn=False)
+
+
+# ------------------------------------------------------------------ next
+
+def _mark(approved, registered):
+    if approved:
+        return "✔"
+    return "⏳ chờ duyệt" if registered else "—"
+
+
+def next_headline(cwd, state):
+    """Dòng 1 của `next` — cũng là toàn bộ output của `next --brief`."""
+    if not state or not state.get("active_request"):
+        return f"[TDQ:NEXT] chưa có request · phase idle · Project: {os.path.abspath(cwd)}"
+    # phase_key, không phải phase thô: lane quick giữ phase=idle nhưng vẫn còn
+    # việc phải làm — in "idle" khiến model tưởng đã xong (QC1.1).
+    return (f"[TDQ:NEXT] {state.get('active_request')} · lane {effective_lane(state, warn=False) or '?'} "
+            f"· phase {phase_key(state)} · Project: {os.path.abspath(cwd)}")
+
+
+def render_next(cwd, state, brief=False, compact=False):
+    """Khối 5 phần (spec §2.2), ≤20 dòng.
+
+    brief=True   → đúng 1 dòng tiêu đề (dùng cho UserPromptSubmit, mỗi turn).
+    compact=True → bỏ checklist, thêm con trỏ tới lệnh `next` (dùng cho
+                   SessionStart, nơi trần chỉ 600 ký tự và dòng luật phải nằm
+                   trên cùng — xem hooks/scripts/session_start.py).
+    """
+    if state and state.get("active_request"):
+        effective_lane(state)          # cảnh báo (kèm hướng dẫn khôi phục) nếu enum sai
+        effective_phase(state)
+    head = next_headline(cwd, state)
+    if brief:
+        return head
+    row = PHASE_TABLE[phase_key(state)]
+    lines = [head, f"Việc tiếp theo: {row['action']}", "Lệnh:", f"  {row['cmd']}"]
+    if compact:
+        lines.append("Checklist đầy đủ: python3 scripts/tdq_state.py next")
+    else:
+        lines.append("Checklist (copy vào câu trả lời, tick dần):")
+        lines += [f"- [ ] {item}" for item in row["checklist"]]
+    lines.append(f"Xong khi: {row['done_when']}")
+    return "\n".join(lines)
+
+
+def render_state_md(cwd, state):
+    """Mirror markdown ≤30 dòng cho agent/user đọc thẳng (spec §2.3.1)."""
+    state = state or default_state()
+    lane = effective_lane(state, warn=False)
+    row = PHASE_TABLE[phase_key(state)]
+    spec = state.get("spec_file") or "(chưa có)"
+    if state.get("spec_file"):
+        spec += " — " + ("✔ đã duyệt" if state.get("spec_approved") else "⏳ chờ duyệt")
+    plan = state.get("plan_file") or "(chưa có)"
+    if state.get("plan_file"):
+        plan += " — " + ("✔ đã duyệt" if state.get("plan_approved") else "⏳ chờ duyệt")
+    quick = "✔ đã duyệt" if state.get("quick_approved") else "⏳ chờ duyệt"
+    lines = [
+        "# TDQ STATE (tự sinh — không sửa tay)",
+        f"Cập nhật: {state.get('updated_at') or now_iso()} · Project: {os.path.abspath(cwd)} · schema 3",
+        "",
+        "| Trường | Giá trị |",
+        "|---|---|",
+        f"| Request | {state.get('active_request') or '(chưa có)'} |",
+        f"| Lane | {lane or '(chưa chọn)'} |",
+        f"| Phase | {effective_phase(state, warn=False)} |",
+        f"| Spec | {spec} |",
+        f"| Plan | {plan} |",
+        f"| Duyệt quick | {quick if lane == 'quick' else '(không áp dụng)'} |",
+        f"| Mode thực thi | {effective_mode(state, warn=False) or '(chưa chốt)'} |",
+        "",
+        "## Đang ở đâu",
+        f"{row['entry']}. Cấm: {row['forbidden']}.",
+        "",
+        "## Việc tiếp theo",
+        row["action"] + ".",
+        "```",
+        row["cmd"],
+        "```",
+        f"Xong khi: {row['done_when']}",
+        "",
+        "> Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------- sổ turn
+
+def turn_log_append(cwd, kind, session=None, **fields):
+    """Ghi một sự kiện vào sổ turn. Lỗi I/O → nuốt im lặng (hook không được hỏng)."""
+    row = {"ts": now_iso(), "session": session or "", "kind": kind}
+    row.update(fields)
+    path = turn_log_path(cwd)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+    return row
+
+
+TURN_STALE_SECONDS = 6 * 3600
+
+
+def _row_age_ok(row):
+    try:
+        ts = datetime.fromisoformat(row.get("ts", ""))
+    except ValueError:
+        return False
+    if ts.tzinfo is None:
+        ts = ts.astimezone()
+    return (datetime.now(timezone.utc) - ts.astimezone(timezone.utc)).total_seconds() <= TURN_STALE_SECONDS
+
+
+def turn_log_read(cwd, session=None):
+    """Các sự kiện của session hiện tại, bỏ qua dòng cũ hơn 6 giờ (RR12)."""
+    rows = []
+    try:
+        with open(turn_log_path(cwd), "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if not isinstance(row, dict):
+                    continue
+                if session is not None and row.get("session") != session:
+                    continue
+                if not _row_age_ok(row):
+                    continue
+                rows.append(row)
+    except OSError:
+        return []
+    return rows
+
+
+def turn_log_clear(cwd, session):
+    """Xoá dòng của session này (đầu turn). Dòng session khác giữ nguyên."""
+    path = turn_log_path(cwd)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            kept = []
+            for line in f:
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                try:
+                    row = json.loads(stripped)
+                except ValueError:
+                    continue
+                if isinstance(row, dict) and row.get("session") == session:
+                    continue
+                if isinstance(row, dict) and not _row_age_ok(row):
+                    continue
+                kept.append(line if line.endswith("\n") else line + "\n")
+    except OSError:
+        return
+    try:
+        _atomic_write(path, "".join(kept))
+    except OSError:
+        pass
+
+
+# ------------------------------------------------------------------- CLI
 
 def _parse_value(raw):
     lowered = raw.lower()
@@ -108,30 +768,153 @@ def _parse_value(raw):
     return raw
 
 
-def _fail(msg):
-    print(msg, file=sys.stderr)
-    sys.exit(1)
+DONE_PHASES = {"idle", "report"}
+
+
+def _unfinished(state):
+    """Request còn dở dang: chưa tới phase kết thúc, hoặc đã có gate được duyệt."""
+    if state.get("phase") not in DONE_PHASES:
+        return True
+    return any(state.get(k) for k in ("spec_approved", "plan_approved", "quick_approved"))
+
+
+def _parse_approve_args(rest):
+    """-> (target, mode, by). Chỉ lỗi khi cú pháp thật sự sai."""
+    if not rest:
+        _fail("Thiếu đối tượng duyệt (spec|plan|quick).")
+    target, mode, by = rest[0], None, None
+    if target not in APPROVE_TARGETS:
+        _fail(f"Đối tượng duyệt không hợp lệ: {target} (spec|plan|quick)")
+    i = 1
+    while i < len(rest):
+        flag = rest[i]
+        if flag in ("--mode", "--by"):
+            if i + 1 >= len(rest):
+                _fail(f"Thiếu giá trị cho {flag}")
+            value = rest[i + 1]
+            if flag == "--mode":
+                if value not in VALID_MODES:
+                    _fail("Mode không hợp lệ (main|subagent).")
+                mode = value
+            else:
+                by = value[:BY_MAX]
+            i += 2
+            continue
+        # cho phép "approve plan main" (user gõ tắt) — mode đứng ngay sau target
+        if flag in VALID_MODES and mode is None:
+            mode = flag
+            i += 1
+            continue
+        _fail(f"Tham số không hợp lệ: {flag}")
+    return target, mode, by
+
+
+def _cli_approve(cwd, rest):
+    """Ghi nhận việc user đã duyệt. Không phải gate: cảnh báo khi lệch nhưng
+    VẪN ghi và luôn exit 0 — bế tắc do gate là thứ 0.2.0 loại bỏ."""
+    target, mode, by = _parse_approve_args(rest)
+    state = load(cwd)
+    if state is None:
+        _warn("Chưa có state — dựng state mặc định rồi ghi nhận duyệt. Nên chạy init trước.")
+        state = default_state()
+    stamp = state.get("updated_at")
+
+    if state.get(f"{target}_approved"):
+        print(f"ℹ️ {target} đã duyệt lúc {state.get(f'{target}_approved_at')} — không ghi lại, đi tiếp bước sau.")
+        if mode and state.get("implement_mode") != mode:
+            state["implement_mode"] = mode
+            save(cwd, state, expect_updated_at=stamp)
+            print(f"ℹ️ Đã cập nhật implement_mode = {mode}.")
+        return
+
+    lane = effective_lane(state)
+    if not state.get("active_request"):
+        _warn("Chưa có request TDQ nào đang mở — vẫn ghi nhận, nhưng nên chạy init trước.")
+    if target == "quick" and lane != "quick":
+        _warn(f"Duyệt quick nhưng request đang ở lane {lane}.")
+    if target in ("spec", "plan") and lane != "full":
+        _warn(f"Duyệt {target} nhưng request đang ở lane {lane}.")
+    if target == "plan" and not state.get("spec_approved"):
+        _warn("Duyệt plan khi spec chưa được ghi nhận duyệt — kiểm tra lại thứ tự.")
+
+    if target in ("spec", "plan"):
+        rel = state.get(f"{target}_file")
+        if not rel:
+            _warn(f"Chưa đăng ký {target}_file trong state — không tính được sha256.")
+        else:
+            path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+            try:
+                state[f"{target}_sha256"] = sha256_file(path)
+            except OSError:
+                _warn(f"Không đọc được {rel} — bỏ qua sha256.")
+
+    state[f"{target}_approved"] = True
+    state[f"{target}_approved_at"] = now_iso()
+    state[f"{target}_approved_by"] = by
+    if mode:
+        state["implement_mode"] = mode
+    save(cwd, state, expect_updated_at=stamp)
+    if not by:
+        _warn("Thiếu --by \"<nguyên văn câu user>\" — nên ghi lại để còn đối chiếu ai duyệt cái gì.")
+    extra = f", mode {mode}" if mode else ""
+    print(f"✅ Đã ghi nhận user duyệt {target} lúc {state[f'{target}_approved_at']}{extra}.")
 
 
 def cli(argv):
-    cwd = os.environ.get("TDQ_PROJECT_DIR") or os.getcwd()
+    started_in = os.getcwd()
+    env = os.environ.get("TDQ_PROJECT_DIR")
+    cwd = resolve_project_dir(started_in)
+    if not env and os.path.realpath(cwd) != os.path.realpath(started_in):
+        _info(f"Project root: {cwd} (lệnh chạy từ {started_in})")
+    for shadow in find_shadow_states(cwd):
+        _warn(f"Phát hiện state thừa: {shadow} — chỉ {STATE_REL} ở project root có hiệu lực, "
+              "xoá file thừa để tránh đọc nhầm trạng thái duyệt.")
     if not argv:
-        _fail("Cách dùng: tdq_state.py get [key] | init <slug> [lane] | set k=v ... | reset")
+        _fail("Thiếu lệnh.")
     cmd = argv[0]
+
+    if cmd == "next":
+        brief = "--brief" in argv[1:]
+        for extra in argv[1:]:
+            if extra != "--brief":
+                _fail(f"Tham số không hợp lệ: {extra}")
+        print(render_next(cwd, load(cwd), brief=brief))
+        return
+
+    if cmd == "phases-doc":
+        # Không đọc/ghi state: chỉ đổ hằng PHASE_TABLE ra markdown.
+        print(render_phases_md(), end="")
+        return
 
     if cmd == "get":
         state = load(cwd) or default_state()
         if len(argv) > 1:
-            print(json.dumps(state.get(argv[1]), ensure_ascii=False))
+            key = argv[1]
+            if key not in state:
+                _warn(f"Key không có trong state: {key}")
+                print("")
+                return
+            value = state.get(key)
+            print("" if value is None else (json.dumps(value, ensure_ascii=False)
+                                            if not isinstance(value, str) else value))
         else:
             print(json.dumps(state, ensure_ascii=False, indent=2))
         return
 
     if cmd == "init":
         if len(argv) < 2:
-            _fail("Cách dùng: tdq_state.py init <slug> [quick|full]")
+            _fail("Thiếu slug. Công thức: YYYY-MM-DD-<kebab ≤5 từ, không dấu>")
+        # init = MỞ REQUEST MỚI: reset toàn bộ state (request, lane, phase,
+        # spec/plan file, mọi field duyệt, implement_mode). Nếu request đang mở
+        # còn dở dang thì cảnh báo ra stderr — vẫn thực hiện, nhưng có dấu vết.
+        old = load(cwd) or {}
+        old_slug = old.get("active_request")
         state = default_state()
         state["active_request"] = argv[1]
+        state["previous_request"] = old_slug
+        if old_slug and old_slug != argv[1] and _unfinished(old):
+            _warn(f"Ghi đè request '{old_slug}' (lane {old.get('lane')}, "
+                  f"phase {old.get('phase')}) — mọi trạng thái duyệt của request đó bị xoá.")
         if len(argv) > 2:
             if argv[2] not in ("quick", "full"):
                 _fail("Lane không hợp lệ (quick|full).")
@@ -143,16 +926,15 @@ def cli(argv):
     if cmd == "set":
         state = load(cwd)
         if state is None:
-            _fail("Chưa có state — chạy init trước.")
+            _warn("Chưa có state — dựng state mặc định rồi áp thay đổi. Nên chạy init trước.")
+            state = default_state()
+        stamp = state.get("updated_at")
+        if len(argv) < 2:
+            _fail("Thiếu cặp key=value.")
         for pair in argv[1:]:
             if "=" not in pair:
                 _fail(f"Tham số không hợp lệ: {pair} (cần dạng key=value)")
             key, raw = pair.split("=", 1)
-            if key in PROTECTED_KEYS:
-                _fail(
-                    f"Từ chối: '{key}' là field duyệt được bảo vệ — chỉ user gõ "
-                    "/tdq-workflow:tdq-approve mới set được (qua approve gate hook)."
-                )
             if key not in default_state():
                 _fail(f"Key không tồn tại trong schema: {key}")
             value = _parse_value(raw)
@@ -161,9 +943,12 @@ def cli(argv):
             if key == "phase" and value not in VALID_PHASES:
                 _fail("Phase không hợp lệ (idle|analyze|spec|plan|implement|qc|report).")
             state[key] = value
-        save(cwd, state)
+        save(cwd, state, expect_updated_at=stamp)
         print(json.dumps(state, ensure_ascii=False, indent=2))
         return
+
+    if cmd == "approve":
+        return _cli_approve(cwd, argv[1:])
 
     if cmd == "reset":
         save(cwd, default_state())

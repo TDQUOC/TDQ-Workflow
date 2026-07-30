@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""PreToolUse gate for Edit|Write|MultiEdit|NotebookEdit.
+"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — quan sát + nhắc, KHÔNG chặn.
 
-Hybrid gate: blocks file edits outside docs/** until the approval required by
-the current lane exists; the deny reason simultaneously reminds Claude what to
-finish and shows the exact approve command for the user. docs/** stays always
-writable so spec/plan/log work can proceed — the single exception is
-docs/tdq/state.json, which is protected from direct edits at all times.
+Hai việc, theo đúng thứ tự:
+1. Ghi `observe` vào sổ turn: `edit:<path>` cho mọi lần sửa file, `log_written`
+   khi file đó chính là working log hôm nay. Đây là bằng chứng mà `stop_gate`
+   dùng cuối turn — không phụ thuộc transcript, không phụ thuộc model tự khai.
+2. Phát mã nhắc khi cần: TDQ:STATE (định sửa tay state), TDQ:APPROVE (sửa code
+   khi gate của lane chưa duyệt), TDQ:LOG (repo đã đổi mà log hôm nay chưa có).
 """
-import json
 import os
-from datetime import datetime
 
-from _common import read_payload, payload_cwd, deny, approve_hint, tdq_state
+from _common import (echo_line, observe, payload_cwd, read_payload, remind, tdq_state)
+
+today_log_rel = tdq_state.today_log_rel      # một nguồn duy nhất, dùng chung với stop_gate
 
 
 def within(child, parent):
@@ -22,66 +23,65 @@ def main():
     payload = read_payload()
     tool_input = payload.get("tool_input") or {}
     target = tool_input.get("file_path") or tool_input.get("notebook_path") or ""
-    if not target:
+    if not target or not isinstance(target, str):
         return
     cwd = payload_cwd(payload)
     abs_target = os.path.realpath(target if os.path.isabs(target) else os.path.join(cwd, target))
-    state_file = os.path.realpath(tdq_state.state_path(cwd))
+    try:
+        rel_target = os.path.relpath(abs_target, os.path.realpath(cwd))
+    except ValueError:
+        rel_target = abs_target
 
-    if abs_target == state_file or abs_target.endswith(os.path.join("docs", "tdq", "state.json")):
-        deny("[TDQ GATE] docs/tdq/state.json là file trạng thái được bảo vệ — không Edit/Write trực tiếp. "
-             "Dùng scripts/tdq_state.py; field duyệt chỉ đổi khi user gõ /tdq-workflow:tdq-approve.")
+    log_rel = today_log_rel()
+    log_dir = os.path.realpath(os.path.join(cwd, "docs", "workinglog"))
+    is_log = within(abs_target, log_dir)
+
+    # (1) quan sát — luôn ghi, kể cả khi chưa có request nào đang mở
+    observe(cwd, payload, "edit", path=rel_target)
+    if is_log:
+        observe(cwd, payload, "log_written", path=rel_target)
+
+    # (2) nhắc
+    state_file = os.path.realpath(tdq_state.state_path(cwd))
+    state_md = os.path.realpath(tdq_state.state_md_path(cwd))
+    if abs_target in (state_file, state_md):
+        remind(cwd, payload, "TDQ:STATE", [
+            "Đừng sửa tay file trạng thái — ghi bằng CLI.",
+            "Cách làm: python3 scripts/tdq_state.py set <key>=<value> (hoặc approve/init/reset).",
+            echo_line("TDQ:STATE", "đã ghi state bằng CLI"),
+        ])
 
     state = tdq_state.load(cwd)
     if state is None or not state.get("active_request"):
         return
+    if within(abs_target, os.path.realpath(os.path.join(cwd, "docs"))):
+        return  # docs/** không cần nhắc: spec/plan/questions/research/log
 
-    docs_root = os.path.realpath(os.path.join(cwd, "docs"))
-    if within(abs_target, docs_root):
-        return  # docs/** always writable: spec/plan/questions/research/log
+    lane = tdq_state.effective_lane(state, warn=False)
+    pending = None
+    if lane == "full" and not state.get("spec_approved"):
+        pending = "spec"
+    elif lane == "full" and not state.get("plan_approved"):
+        pending = "plan"
+    elif lane == "quick" and not state.get("quick_approved"):
+        pending = "quick"
+    if pending:
+        mode = " --mode <main|subagent>" if pending == "plan" else ""
+        # Lệnh đặt trước lời khuyên: trần 200 ký tự, phần cắt phải là phần ít cần nhất.
+        remind(cwd, payload, "TDQ:APPROVE", [
+            f"Đang sửa file ngoài docs/ mà {pending} chưa được ghi nhận duyệt.",
+            f"User đã duyệt → python3 scripts/tdq_state.py approve {pending}{mode} "
+            f"--by \"<lời user>\".",
+            f"Chưa duyệt → trình {pending} rồi xin duyệt.",
+        ])
 
-    lane = state.get("lane")
-    if lane == "full":
-        if not state.get("spec_approved"):
-            deny("[TDQ GATE] Chưa được sửa file ngoài docs/ — SPEC chưa được user duyệt. Việc cần làm ngay: "
-                 "hoàn thành spec (docs/tdq/spec/), đăng ký spec_file vào state, trình user summary ≤50 dòng "
-                 f"và hiển thị đúng dòng: \"{approve_hint('spec')}\". Ghi file trong docs/** vẫn được phép.")
-        if not state.get("plan_approved"):
-            deny("[TDQ GATE] Chưa được sửa file ngoài docs/ — PLAN chưa được user duyệt. Việc cần làm ngay: "
-                 "hoàn thành plan (docs/tdq/plan/), đăng ký plan_file vào state, trình user summary ≤100 dòng "
-                 f"và hiển thị đúng dòng: \"{approve_hint('plan')}\". Ghi file trong docs/** vẫn được phép.")
-        rel, sha = state.get("spec_file"), state.get("spec_sha256")
-        if rel and sha:
-            path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
-            try:
-                drifted = tdq_state.sha256_file(path) != sha
-            except OSError:
-                drifted = True
-            if drifted:
-                print(json.dumps({
-                    "systemMessage": "⚠️ [TDQ] Spec đã thay đổi sau khi duyệt (sha256 lệch) — cần trình user duyệt lại spec."
-                }, ensure_ascii=False))
-        return
-
-    if lane == "quick":
-        if not state.get("quick_approved"):
-            deny("[TDQ GATE] Lane quick chưa được user duyệt — trình plan ngắn nhất có thể (≤10 dòng: việc sẽ làm, "
-                 "file sẽ đụng, cách quick validate/test) ngay trong chat và hiển thị đúng dòng: "
-                 f"\"{approve_hint('quick')}\". Ghi file trong docs/** vẫn được phép.")
-        try:
-            approved_ts = datetime.fromisoformat(state.get("quick_approved_at")).timestamp()
-        except (TypeError, ValueError):
-            return
-        today = datetime.now().strftime("%Y-%m-%d")
-        log_path = os.path.join(cwd, "docs", "workinglog", today + ".md")
-        try:
-            log_mtime = os.path.getmtime(log_path)
-        except OSError:
-            log_mtime = 0.0
-        if log_mtime <= approved_ts:
-            deny("[TDQ GATE] Quick đã duyệt nhưng summary plan CHƯA được append vào "
-                 f"docs/workinglog/{today}.md — ghi log trước, rồi mới implement.")
-        return
+    # repo đã đổi → nhắc working log ngay, đừng dồn tới Stop mới báo
+    if not os.path.isfile(os.path.join(cwd, log_rel)):
+        remind(cwd, payload, "TDQ:LOG", [
+            f"Turn này đổi repo — append entry vào {log_rel} trước khi kết thúc turn.",
+            "Cách làm: mở file, thêm mục \"## HH:MM — <việc>\" ở CUỐI file.",
+            echo_line("TDQ:LOG", f"đã append {log_rel}"),
+        ])
 
 
 if __name__ == "__main__":

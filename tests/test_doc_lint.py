@@ -1,0 +1,214 @@
+"""P5 — mỗi rule của scripts/doc_lint.py có 1 fixture bẩn + 1 fixture sạch.
+
+Lint là thứ duy nhất chặn doc trôi về dạng văn xuôi mà model nhỏ đọc sai, nên
+chính nó phải được kiểm: rule bắt đúng cái cần bắt và KHÔNG báo nhầm cái sạch.
+"""
+import os
+import subprocess
+import sys
+import tempfile
+import unittest
+
+from helper import ROOT
+
+LINT = os.path.join(ROOT, "scripts", "doc_lint.py")
+
+
+class LintBase(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+
+    def write(self, name, text, skill=None):
+        """Ghi fixture. `skill` → đặt vào skills/<skill>/SKILL.md giả để R6/R7 soi."""
+        path = os.path.join(self.tmp.name, *( [skill] if skill else [] ), name)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+        return path
+
+    def lint(self, *paths):
+        proc = subprocess.run([sys.executable, LINT, *paths],
+                              capture_output=True, text=True)
+        return proc.returncode, proc.stdout
+
+    def assert_hits(self, path, rule):
+        code, out = self.lint(path)
+        self.assertEqual(code, 1, f"phải báo vi phạm:\n{out}")
+        self.assertIn(f"[{rule}]", out, out)
+
+    def assert_clean(self, path):
+        code, out = self.lint(path)
+        self.assertEqual(code, 0, f"fixture sạch mà vẫn báo:\n{out}")
+
+
+class DocLintTest(LintBase):
+    # ------------------------------------------------------------ khung chạy
+    def test_runner_and_allow_comment(self):
+        self.assertEqual(self.lint()[0], 2, "không có đối số → exit 2")
+        dirty = "# T\n\n## Các bước\n\n1. Một\n3. Ba\n"
+        self.assert_hits(self.write("dirty.md", dirty), "R1")
+        allowed = "# T\n\n## Các bước\n\n1. Một\n<!-- doc-lint: allow R1 -->\n3. Ba\n"
+        self.assert_clean(self.write("allowed.md", allowed))
+        # allow sai mã thì không tắt được rule
+        wrong = "# T\n\n## Các bước\n\n1. Một\n<!-- doc-lint: allow R4 -->\n3. Ba\n"
+        self.assert_hits(self.write("wrong.md", wrong), "R1")
+
+    # ------------------------------------------------------------------- R1
+    def test_r1(self):
+        self.assert_hits(self.write("a.md", "# T\n\n## Các bước\n\n1. Một\n1. Lại một\n"), "R1")
+        self.assert_clean(self.write("b.md", "# T\n\n## Các bước\n\n1. Một\n2. Hai\n3. Ba\n"))
+        # ngoài mục "Các bước" thì số bước tự do
+        self.assert_clean(self.write("c.md", "# T\n\n## Ghi chú\n\n1. Một\n5. Năm\n"))
+
+    # ------------------------------------------------------------------- R2
+    def test_r2(self):
+        self.assert_hits(self.write("a.md", "# T\n\nChạy python3 scripts/tdq_state.py next.\n"), "R2")
+        self.assert_clean(self.write("b.md", "# T\n\n```\npython3 scripts/tdq_state.py next\n```\n"))
+
+    def test_r2_table_and_inline_ok(self):
+        table = "# T\n\n| phase | lệnh |\n|---|---|\n| spec | python3 scripts/tdq_state.py next |\n"
+        self.assert_clean(self.write("t.md", table))
+        inline = "# T\n\nChạy `python3 scripts/tdq_state.py next` rồi làm theo.\n"
+        self.assert_clean(self.write("i.md", inline))
+
+    # ------------------------------------------------------------------- R3
+    def test_r3(self):
+        body = "---\nname: tdq-spec\n---\n\n# S\n\n## Các bước\n\n1. Làm gì đó.\n"
+        self.assert_hits(self.write("SKILL.md", body + "\nreferences/spec-template.md\n",
+                                    skill="tdq-spec"), "R3")
+        ok = body + "\nreferences/spec-template.md\n\nXong khi: xong.\nBước kế tiếp: sang plan.\n"
+        self.assert_clean(self.write("SKILL.md", ok, skill="tdq-spec"))
+
+    # ------------------------------------------------------------------- R4
+    def test_r4_scoped(self):
+        self.assert_hits(self.write("a.md", "# T\n\n## Các bước\n\n1. Làm nếu cần.\n"), "R4")
+        # ngoài mục bước/luật → không soát
+        self.assert_clean(self.write("b.md", "# T\n\n## Ghi chú\n\nLàm nếu cần.\n"))
+        # có `→` làm rõ ngay sau → tha
+        self.assert_clean(self.write("c.md",
+                                     "# T\n\n## Các bước\n\n1. Làm nếu cần.\n   Rỗng → bỏ qua.\n"))
+
+    # ------------------------------------------------------------------- R5
+    def test_r5(self):
+        long_sentence = "một hai ba bốn năm " * 10 + "kết."
+        self.assert_hits(self.write("a.md", f"# T\n\n{long_sentence}\n"), "R5")
+        self.assert_clean(self.write("b.md", "# T\n\nCâu ngắn. Câu ngắn nữa.\n"))
+
+    # ------------------------------------------------------------------- R6
+    def test_r6(self):
+        self.assert_hits(self.write("big.md", "# T\n" + "dòng\n" * 600), "R6")
+        head = "---\nname: tdq-status\n---\n\nXong khi: x.\nBước kế tiếp: y.\n"
+        over = head + "ghi chú\n" * 100
+        self.assert_hits(self.write("SKILL.md", over, skill="tdq-status"), "R6")
+        self.assert_clean(self.write("SKILL.md", head, skill="tdq-status"))
+
+    # ------------------------------------------------------------------- R7
+    def test_r7(self):
+        body = "---\nname: tdq-plan\n---\n\nXong khi: x.\nBước kế tiếp: y.\n"
+        self.assert_hits(self.write("SKILL.md", body, skill="tdq-plan"), "R7")
+        ok = body + "\nKhuôn: [references/plan-template.md](references/plan-template.md)\n"
+        self.assert_clean(self.write("SKILL.md", ok, skill="tdq-plan"))
+        # skill không sinh file cho user thì không đòi template
+        self.assert_clean(self.write("SKILL.md", body, skill="tdq-status"))
+
+    # ------------------------------------------------------------- repo thật
+    def test_repo_docs_clean(self):
+        code, out = self.lint(os.path.join(ROOT, "skills"), os.path.join(ROOT, "portable"))
+        self.assertEqual(code, 0, f"doc trong repo còn vi phạm lint:\n{out}")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+
+SPEC_3B_OK = """# SPEC — X
+
+## 3b. Năng lực & công cụ
+
+| Skill | Nguồn | Phán quyết | Dùng ở đâu / Lý do loại |
+|---|---|---|---|
+| `dataviz` | built-in | DÙNG | vẽ biểu đồ đầu ra #2 |
+| `graphify` | user | KHÔNG | khác lĩnh vực |
+| `tdq-intake` | plugin:tdq-workflow | NỀN | workflow đang chạy |
+"""
+
+PLAN_CONTRACT_OK = """# PLAN — X
+
+- [ ] **T1.1** Vẽ biểu đồ — Test: chạy lệnh Kiểm
+  - Dùng: `dataviz`
+  - Nạp: gọi skill `dataviz` TRƯỚC bước đỏ của task này.
+  - Để: chọn dạng biểu đồ.
+  - Ra: `src/chart.tsx`.
+  - Kiểm: `test -f src/chart.tsx`
+  - Không dùng cho: layout trang.
+"""
+
+
+class R8Test(LintBase):
+    """R8 chỉ soi file nằm trong thư mục tên `spec/`."""
+
+    def test_r8_missing_3b(self):
+        self.assert_hits(self.write(os.path.join("spec", "a.md"), "# SPEC\n\n## 1. X\n"), "R8")
+
+    def test_r8_outside_spec_dir_ignored(self):
+        self.assert_clean(self.write("a.md", "# SPEC\n\n## 1. X\n"))
+
+    def test_r8_empty_table(self):
+        text = "# S\n\n## 3b. Năng lực & công cụ\n\n| Skill | Nguồn | Phán quyết | Ghi chú |\n|---|---|---|---|\n"
+        self.assert_hits(self.write(os.path.join("spec", "b.md"), text), "R8")
+
+    def test_r8_bad_decision(self):
+        text = SPEC_3B_OK.replace("| built-in | DÙNG |", "| built-in | CÓ THỂ |")
+        self.assert_hits(self.write(os.path.join("spec", "c.md"), text), "R8")
+
+    def test_r8_custom_reason(self):
+        text = SPEC_3B_OK.replace("khác lĩnh vực", "thấy không thích")
+        self.assert_hits(self.write(os.path.join("spec", "d.md"), text), "R8")
+
+    def test_r8_clean(self):
+        self.assert_clean(self.write(os.path.join("spec", "e.md"), SPEC_3B_OK))
+
+    def test_r8_file_level_allow(self):
+        """Spec viết trước 0.3.3: 1 dòng allow ở bất kỳ đâu miễn cả rule cho file đó."""
+        text = "# SPEC cũ\n<!-- doc-lint: allow R8 -->\n\n## 1. X\n"
+        self.assert_clean(self.write(os.path.join("spec", "f.md"), text))
+
+
+class PairTest(LintBase):
+    """--pair <spec> <plan>: mỗi DÙNG ở §3b phải có khối hợp đồng đủ 6 trường."""
+
+    def pair(self, spec_text, plan_text):
+        spec = self.write(os.path.join("spec", "s.md"), spec_text)
+        plan = self.write(os.path.join("plan", "p.md"), plan_text)
+        proc = subprocess.run([sys.executable, LINT, "--pair", spec, plan],
+                              capture_output=True, text=True)
+        return proc.returncode, proc.stdout
+
+    def test_pair_ok(self):
+        code, out = self.pair(SPEC_3B_OK, PLAN_CONTRACT_OK)
+        self.assertEqual(code, 0, out)
+
+    def test_pair_missing_field_named(self):
+        plan = PLAN_CONTRACT_OK.replace("  - Kiểm: `test -f src/chart.tsx`\n", "")
+        code, out = self.pair(SPEC_3B_OK, plan)
+        self.assertEqual(code, 1)
+        self.assertIn("Kiểm", out)
+        self.assertIn("dataviz", out)
+
+    def test_pair_dung_without_block(self):
+        code, out = self.pair(SPEC_3B_OK, "# PLAN — X\n\n- [ ] **T1.1** Không hợp đồng gì\n")
+        self.assertEqual(code, 1)
+        self.assertIn("dataviz", out)
+
+    def test_pair_nen_khong_need_no_block(self):
+        """NỀN và KHÔNG không đòi hợp đồng — chỉ DÙNG mới đòi."""
+        spec = SPEC_3B_OK.replace("| built-in | DÙNG | vẽ biểu đồ đầu ra #2 |",
+                                  "| built-in | KHÔNG | khác lĩnh vực |")
+        code, out = self.pair(spec, "# PLAN — X\n\n- [ ] **T1.1** Trơn\n")
+        self.assertEqual(code, 0, out)
+
+    def test_pair_bad_argc(self):
+        proc = subprocess.run([sys.executable, LINT, "--pair", "mot-file"],
+                              capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 2)

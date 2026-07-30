@@ -1,5 +1,5 @@
 {
-  "description": "TDQ workflow deterministic gates: approve/edit/bash/stop + state context injection",
+  "description": "TDQ workflow: nhắc nhở khi edit/bash + Stop remind working log + state context injection",
   "hooks": {
     "SessionStart": [
       {
@@ -17,17 +17,6 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prompt_context.py\""
-          }
-        ]
-      }
-    ],
-    "UserPromptExpansion": [
-      {
-        "matcher": "(tdq-workflow:)?tdq-approve",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/approve_gate.py\""
           }
         ]
       }

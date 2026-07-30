@@ -1,114 +1,107 @@
 #!/usr/bin/env python3
-"""Stop gate, two checks, blocking ONCE per turn (`stop_hook_active`):
+"""Stop — đối chiếu lời nhắc với HIỆU ỨNG thật, cuối turn.
 
-1. Invitation check: the approve line must never reach the user unless state can
-   actually honour it (open request, right lane, detail file registered, not
-   already approved). Otherwise the user types the command and gets refused.
-2. Working log check: if this turn changed the repo (a file is newer than
-   today's working log, within a recent window) but the log was not updated
-   afterwards, remind (working log + graphify + plan ticks).
+Nguồn dữ liệu duy nhất là sổ turn docs/tdq/.tdq-turn.jsonl (do 2 hook PreToolUse
+ghi). Hook này KHÔNG đọc transcript và KHÔNG tin dòng echo model tự in — 0.1.8
+từng đọc transcript và chặn nhầm turn hợp lệ vì transcript trễ, còn model yếu
+thì có thể in echo giả.
+
+Điểm CHẶN duy nhất: repo đổi mà working log hôm nay chưa được cập nhật.
+Mọi mã còn lại chỉ nhắc lại qua additionalContext.
+Trần: ≤4 dòng / 300 ký tự (spec §2.7). `stop_hook_active` → im lặng tuyệt đối.
+
+0.3.1 — sổ turn chỉ thấy hành động đi qua tool Edit/Write, nên thay đổi qua shell
+vô hình với nó: vừa chặn oan (log append bằng `cat >>`) vừa bỏ lọt (sửa repo bằng
+`sed -i`). Vì vậy hook đối chiếu thêm với ĐĨA: ảnh chụp `turn_start` do
+prompt_context ghi đầu turn so với trạng thái hiện tại. Không có ảnh chụp (turn
+không mở bằng user prompt, project không phải git repo) → rơi về đúng hành vi cũ.
 """
 import json
 import os
-import re
-import time
-from datetime import datetime
 
-from _common import read_payload, payload_cwd, tdq_state
+from _common import payload_cwd, read_payload, tdq_state, turn_rows
 
-# Only a real invitation line counts — merely NAMING the command inside a plan
-# or an explanation is not an invitation (that produced false blocks).
-INVITE_LINE_RE = re.compile(r"^[ \t>*-]*➤\s*Để duyệt\s*:.*$", re.MULTILINE)
-INVITE_RE = re.compile(r"/tdq-workflow:tdq-approve\s+(spec|plan|quick)\b")
-MODE_RE = re.compile(r"\b(main|subagent)\b", re.IGNORECASE)
-# same tolerance as approve_gate.PROPOSED_RE — keep the two in sync
-PROPOSED_RE = re.compile(r"\bmode\b[^\n:]{0,40}:\s*[*`_ ]*(main|subagent)\b", re.IGNORECASE)
-FIX = ("Sửa trước khi kết thúc turn: mở/chỉnh request bằng "
-       "`python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py\" init <slug> <quick|full>` "
-       "(và đăng ký spec_file/plan_file nếu là lane full), rồi trình lại và mời duyệt.")
+MAX_LINES = 4
+MAX_CHARS = 300
+MAX_PATH_CHARS = 60
+
+# Lưới an toàn thứ hai cho vùng sổ sách: `repo_status_paths` đã loại trừ sẵn bằng
+# pathspec của git, đây chỉ là chốt chặn khi bản git quá cũ không hiểu `:(top,exclude)`.
+# Dùng đúng danh sách của tdq_state để quyết định và đặt tên không bao giờ lệch nhau
+# (chính chỗ lệch đó là chặn oan 0.3.1), và khớp theo `/` vì git in path bằng `/`.
+BOOKKEEPING = tuple(p + "/" for p in tdq_state.BOOKKEEPING_PATHS)
+
+# mã → (sự kiện chứng minh đã làm, câu nhắc lại nếu thiếu)
+EFFECTS = {
+    "TDQ:NEXT": ("next_run", "chưa chạy `tdq_state.py next` — chạy để biết bước kế tiếp."),
+    "TDQ:STATE": ("state_cli", "chưa ghi state bằng CLI — dùng `tdq_state.py set|approve`."),
+}
 
 
-def last_assistant_text(path):
-    """Text of the most recent assistant message in the transcript (or '')."""
-    if not path or not os.path.isfile(path):
-        return ""
+def _snapshot(rows):
+    """Ảnh chụp đầu turn — lấy dòng MỚI NHẤT.
+
+    Bình thường mỗi turn chỉ có một dòng (turn_log_clear xoá sổ đầu turn). Nếu
+    việc xoá hụt thì dòng còn sót là của turn trước: lấy nó làm mốc là so với
+    trạng thái có thể cũ tới 6 giờ → gán oan thay đổi của turn cũ cho turn này.
+    """
+    found = None
+    for row in rows:
+        if row.get("kind") == "turn_start":
+            found = row
+    return found
+
+
+def _sha(path):
     try:
-        with open(path, encoding="utf-8") as f:
-            lines = f.readlines()
+        return tdq_state.sha256_file(path)
     except OSError:
-        return ""
-    for line in reversed(lines):
-        try:
-            entry = json.loads(line)
-        except ValueError:
+        return None
+
+
+def _log_changed(cwd, snap):
+    """Log hôm nay có đổi so với đầu turn không (bất kể ghi bằng cách nào)."""
+    log_rel = tdq_state.today_log_rel()
+    now = _sha(os.path.join(cwd, log_rel))
+    if now is None:
+        return False
+    before = snap.get("log_sha")
+    if snap.get("log_rel") != log_rel:
+        return True                      # turn vắt qua nửa đêm: file ngày mới đã có
+    if before is None:
+        return True                      # đầu turn chưa có file, giờ đã có
+    return isinstance(before, str) and now != before
+
+
+def _repo_changed(cwd, snap):
+    before = snap.get("repo_sha")
+    if not isinstance(before, str):
+        return False                     # không phải git repo / không lấy được
+    now = tdq_state.repo_status_digest(cwd)
+    if not isinstance(now, str):
+        # Đầu turn lấy được vân tay mà cuối turn thì không → có gì đó hỏng thật.
+        tdq_state._warn("stop_gate: cuối turn không lấy được vân tay repo — "
+                        "bỏ qua bằng chứng đĩa, chỉ còn dựa vào sổ turn")
+        return False
+    return now != before
+
+
+def _shell_changed_path(cwd, snap):
+    """Tên file để nêu trong lời chặn — ưu tiên file mới xuất hiện trong turn.
+
+    Chuỗi rỗng = thay đổi chỉ nằm ở sổ sách workflow → không tính là đổi repo.
+    """
+    before = snap.get("repo_paths")
+    before = set(before) if isinstance(before, list) else set()
+    fresh, known = "", ""
+    for path in tdq_state.repo_status_paths(cwd):
+        if not isinstance(path, str) or path.startswith(BOOKKEEPING):
             continue
-        message = entry.get("message") or {}
-        if entry.get("type") != "assistant" and message.get("role") != "assistant":
-            continue
-        content = message.get("content")
-        if isinstance(content, str):
-            return content
-        if isinstance(content, list):
-            parts = [c.get("text", "") for c in content
-                     if isinstance(c, dict) and c.get("type") == "text"]
-            text = "\n".join(p for p in parts if p)
-            if text.strip():
-                return text
-    return ""
-
-
-def invite_problem(state, target, cwd, line=""):
-    """Vietnamese reason why this approve invitation cannot be honoured, or None."""
-    if state is None or not state.get("active_request"):
-        return ("Chưa có request TDQ nào đang mở nên lệnh duyệt sẽ bị gate từ chối — "
-                "user gõ đúng lệnh vẫn không duyệt được.")
-    lane = state.get("lane")
-    if target == "quick" and lane != "quick":
-        return f"Mời duyệt quick nhưng request đang ở lane {lane} — gate chỉ nhận quick khi lane quick."
-    if target in ("spec", "plan") and lane != "full":
-        return f"Mời duyệt {target} nhưng request đang ở lane {lane} — gate chỉ nhận {target} khi lane full."
-    if state.get(f"{target}_approved"):
-        return f"{target} đã được duyệt rồi — đừng mời duyệt lại, đi tiếp bước sau."
-    if target == "plan" and not state.get("spec_approved"):
-        return "Mời duyệt plan khi spec chưa được duyệt — gate bắt đúng thứ tự spec trước."
-    if target in ("spec", "plan"):
-        rel = state.get(f"{target}_file")
-        if not rel:
-            return f"Chưa đăng ký {target}_file trong state — gate không biết duyệt file nào."
-        path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
-        if not os.path.isfile(path) or os.path.getsize(path) == 0:
-            return f"File {target} đã đăng ký ({rel}) không tồn tại hoặc rỗng."
-        if target == "plan":
-            try:
-                with open(path, encoding="utf-8") as f:
-                    plan_text = f.read()
-            except OSError:
-                plan_text = ""
-            if not PROPOSED_RE.search(plan_text):
-                return (f"Plan {rel} chưa có dòng đề xuất mode — thêm một dòng dạng "
-                        "`Mode thực thi: main — <lý do>` vào plan trước khi mời duyệt, "
-                        "nếu không lệnh duyệt của user sẽ bị gate từ chối.")
-    if target == "plan" and not MODE_RE.search(line):
-        return ("Dòng mời duyệt plan thiếu mode — mode thực thi là quyết định của user, "
-                "dòng mời phải là `/tdq-workflow:tdq-approve plan main|subagent`.")
-    return None
-
-
-def check_invite(payload, cwd, state):
-    text = last_assistant_text(payload.get("transcript_path"))
-    for line in INVITE_LINE_RE.findall(text):
-        match = INVITE_RE.search(line)
-        if not match:
-            continue
-        problem = invite_problem(state, match.group(1), cwd, line)
-        if problem:
-            return f"[TDQ] Dòng mời duyệt không hợp lệ: {problem} {FIX}"
-    return None
-
-PRUNE = {".git", "node_modules", "__pycache__", ".venv", "venv", ".pytest_cache",
-         ".claude", ".idea", "dist", "build", ".next", "target"}
-RECENT_WINDOW = 6 * 3600  # only changes in the last 6h count as "this session"
-MAX_ENTRIES = 20000
+        if path not in before:
+            fresh = fresh or path
+        else:
+            known = known or path
+    return (fresh or known)[:MAX_PATH_CHARS]
 
 
 def main():
@@ -117,57 +110,61 @@ def main():
         return
     cwd = payload_cwd(payload)
     state = tdq_state.load(cwd)
-
-    reason = check_invite(payload, cwd, state)
-    if reason:
-        print(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False))
-        return
-
     if state is None or not state.get("active_request"):
         return
 
-    today = datetime.now().strftime("%Y-%m-%d")
-    log_rel = os.path.join("docs", "workinglog", today + ".md")
-    log_path = os.path.join(cwd, log_rel)
-    try:
-        log_mtime = os.path.getmtime(log_path)
-    except OSError:
-        log_mtime = 0.0
-    floor = max(log_mtime, time.time() - RECENT_WINDOW)
+    rows = turn_rows(cwd, payload)
+    log_rel = tdq_state.today_log_rel()
+    log_dir = os.path.join("docs", "workinglog")
+    snap = _snapshot(rows)
 
-    state_file = os.path.realpath(tdq_state.state_path(cwd))
-    log_dir = os.path.realpath(os.path.join(cwd, "docs", "workinglog"))
+    edited = [r.get("path", "") for r in rows
+              if r.get("kind") == "observe" and r.get("event") == "edit"
+              and not str(r.get("path", "")).startswith(log_dir)]
+    logged = any(r.get("kind") == "observe" and r.get("event") == "log_written" for r in rows)
 
-    newer = None
-    seen = 0
-    for root, dirs, files in os.walk(cwd):
-        dirs[:] = [d for d in dirs if d not in PRUNE]
-        for name in files:
-            seen += 1
-            if seen > MAX_ENTRIES:
-                break
-            if name == ".DS_Store":
-                continue
-            path = os.path.join(root, name)
-            real = os.path.realpath(path)
-            if real == state_file or real.startswith(log_dir + os.sep):
-                continue
-            try:
-                if os.path.getmtime(path) > floor:
-                    newer = os.path.relpath(path, cwd)
-                    break
-            except OSError:
-                continue
-        if newer or seen > MAX_ENTRIES:
-            break
+    # Bằng chứng thứ hai, độc lập với tên tool: hiệu ứng thật trên đĩa.
+    culprit = edited[0] if edited else ""
+    source = "sổ turn" if culprit else "—"
+    if snap:
+        if not logged:
+            logged = _log_changed(cwd, snap)
+        if not culprit and _repo_changed(cwd, snap):
+            culprit = _shell_changed_path(cwd, snap)
+            source = "vân tay repo"
 
-    if not newer:
+    if culprit and not logged:
+        # §6: quyết định chặn phải truy vết được — chặn oan thì biết ngay do nguồn nào.
+        tdq_state._info(f"stop_gate: chặn TDQ:LOG · nguồn={source} · path={culprit}")
+        print(json.dumps({
+            "decision": "block",
+            "reason": (f"[TDQ:LOG] Turn này đổi repo ({culprit}) nhưng {log_rel} chưa được append. "
+                       "Thêm mục \"## HH:MM — <việc>\" ở CUỐI file (ngữ cảnh, file đổi, lý do, "
+                       "test đã chạy), tick [x] task plan đã xong, rồi mới kết thúc turn."),
+        }, ensure_ascii=False))
         return
+
+    reminded = {r.get("code") for r in rows if r.get("kind") == "remind"}
+    done = {r.get("event") for r in rows if r.get("kind") == "observe"}
+    hints = []
+    for code, (event, message) in EFFECTS.items():
+        if code in reminded and event not in done:
+            hints.append(f"[{code}] {message}")
+    if "TDQ:APPROVE" in reminded:
+        target = next((t for t in ("spec", "plan", "quick") if not state.get(f"{t}_approved")), None)
+        if target:
+            hints.append(f"[TDQ:APPROVE] {target} vẫn chưa được ghi nhận duyệt — "
+                         "user đã duyệt thì chạy `tdq_state.py approve`, chưa rõ thì HỎI.")
+    if "TDQ:GIT" in reminded:
+        hints.append("[TDQ:GIT] Kiểm lại tên branch/commit message theo quy ước trước khi đi tiếp.")
+
+    if not hints:
+        return
+    text = "\n".join(hints[:MAX_LINES])
+    if len(text) > MAX_CHARS:
+        text = text[:MAX_CHARS - 1].rstrip() + "…"
     print(json.dumps({
-        "decision": "block",
-        "reason": (f"[TDQ] Turn này có thay đổi repo (vd: {newer}) nhưng {log_rel} chưa được cập nhật sau đó — "
-                   "append entry working log (ngữ cảnh, file đổi, lý do, test đã chạy), chạy graphify update nếu có cài, "
-                   "và tick [x] các task plan đã xong. Làm xong rồi mới kết thúc turn."),
+        "hookSpecificOutput": {"hookEventName": "Stop", "additionalContext": text}
     }, ensure_ascii=False))
 
 

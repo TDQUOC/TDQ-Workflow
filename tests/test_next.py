@@ -1,0 +1,91 @@
+"""P1 — lệnh `next`, `next --brief`, `get <key>` (spec §2.2)."""
+import os
+import tempfile
+import unittest
+
+from helper import run_state_cli, tdq_state
+
+PARTS = ("[TDQ:NEXT]", "Việc tiếp theo:", "Lệnh:", "Checklist (copy vào câu trả lời, tick dần):",
+         "Xong khi:")
+
+
+class NextTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def test_next_no_state(self):
+        rc, out, _ = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0)
+        for part in PARTS:
+            self.assertIn(part, out)
+        self.assertIn("init", out)
+        self.assertIn("YYYY-MM-DD", out)          # công thức slug
+
+    def test_next_all_phases(self):
+        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        for phase in sorted(tdq_state.VALID_PHASES):
+            with self.subTest(phase=phase):
+                run_state_cli(self.cwd, "set", f"phase={phase}")
+                rc, out, err = run_state_cli(self.cwd, "next")
+                self.assertEqual(rc, 0, err)
+                for part in PARTS:
+                    self.assertIn(part, out, f"{phase}: thiếu {part}")
+                self.assertIn(f"phase {phase}", out)
+                self.assertLessEqual(len(out.splitlines()), 20, f"{phase} vượt 20 dòng")
+                self.assertIn("- [ ] ", out)
+
+    def test_next_quick_lane(self):
+        run_state_cli(self.cwd, "init", "2026-07-29-demo", "quick")
+        rc, out, _ = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0)
+        self.assertIn("mini-plan", out)
+        self.assertIn("approve quick", out)
+
+    def test_next_brief_single_line(self):
+        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        rc, out, _ = run_state_cli(self.cwd, "next", "--brief")
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(out.splitlines()), 1, out)
+        self.assertTrue(out.startswith("[TDQ:NEXT]"))
+        self.assertIn("Project: ", out)
+
+    def test_get_key(self):
+        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        rc, out, _ = run_state_cli(self.cwd, "get", "lane")
+        self.assertEqual((rc, out), (0, "full"))
+        rc, out, _ = run_state_cli(self.cwd, "get", "spec_approved")
+        self.assertEqual((rc, out), (0, "false"))
+        rc, out, _ = run_state_cli(self.cwd, "get", "plan_file")
+        self.assertEqual((rc, out), (0, ""))
+        rc, out, err = run_state_cli(self.cwd, "get", "khong_ton_tai")
+        self.assertEqual(rc, 0)
+        self.assertEqual(out, "")
+        self.assertIn("Key không có trong state", err)
+
+    def test_headline_shows_quick_for_quick_lane(self):
+        """QC1.1 — tiêu đề phải nói đúng phase mà thân bài đang dùng.
+
+        Lane quick giữ `phase` thô là `idle`, nhưng checklist lấy từ row `quick`;
+        in `phase idle` khiến model tin là không còn việc gì.
+        """
+        run_state_cli(self.cwd, "init", "2026-07-29-quick", "quick")
+        rc, out, _ = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0)
+        head = out.splitlines()[0]
+        self.assertIn("phase quick", head, head)
+        self.assertNotIn("phase idle", head, head)
+        rc, brief, _ = run_state_cli(self.cwd, "next", "--brief")
+        self.assertEqual((rc, brief), (0, head))
+
+    def test_get_full_json_unchanged(self):
+        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        rc, out, _ = run_state_cli(self.cwd, "get")
+        self.assertEqual(rc, 0)
+        import json
+        self.assertEqual(json.loads(out)["active_request"], "2026-07-29-demo")
+
+
+if __name__ == "__main__":
+    unittest.main()
