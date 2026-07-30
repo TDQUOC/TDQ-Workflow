@@ -99,13 +99,21 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("approve plan", out)
         self.assertIn("--mode main", out)
 
+    def test_plan_approval_captures_mode_external(self):
+        write_state(self.cwd, active_request="r1", lane="full",
+                    spec_approved=True, phase="plan",
+                    spec_file="docs/tdq/spec/r1.md", plan_file="docs/tdq/plan/r1.md")
+        rc, out, _ = self.ctx("duyệt plan mode external")
+        self.assertEqual(rc, 0)
+        self.assertIn("--mode external", out)
+
     def test_plan_approval_without_mode_leaves_placeholder(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     spec_sha256="abc", spec_approved_at=now_iso(),
                     plan_file="docs/tdq/plan/x.md")
         rc, out, _ = self.ctx("duyệt plan")
-        self.assertIn("--mode <main|subagent>", out)
+        self.assertIn("--mode <main|subagent|external>", out)
 
     def test_quick_approved_only_next_line(self):
         write_state(self.cwd, active_request="r1", lane="quick",

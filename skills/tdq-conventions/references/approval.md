@@ -17,6 +17,7 @@ Ví dụ ĐÚNG:
 | `ok plan, mode main` | `approve plan --mode main` |
 | `chốt cái này` (đang chờ quick) | `approve quick` |
 | `đồng ý, tiến hành plan mode subagent` | `approve plan --mode subagent` |
+| `duyệt plan mode external codex` | `approve plan --mode external` (engine ghi trong plan) |
 
 ## KHÔNG phải câu duyệt (phản ví dụ)
 
@@ -33,7 +34,7 @@ Mơ hồ → **HỎI**. Không bao giờ tự duyệt thay user.
 ## Lệnh phải chạy NGAY khi nhận ra
 
 ```
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent] --by "<nguyên văn câu user>"
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent|external] --by "<nguyên văn câu user>"
 ```
 
 - `--by` bắt buộc trên thực tế: đó là dấu vết duy nhất nối state với hội thoại.

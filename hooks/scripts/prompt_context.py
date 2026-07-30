@@ -25,7 +25,7 @@ OBJECT = re.compile(r"\b(spec|plan|quick|mini-?plan)\b", re.IGNORECASE)
 PRONOUN = re.compile(r"(cái\s*này|cai\s*nay|cái\s*đó|cai\s*do|cái\s*trên|cai\s*tren)", re.IGNORECASE)
 # Câu hỏi thì không phải câu duyệt, dù có đủ hai thành phần.
 QUESTION = re.compile(r"(\?|\bchưa\b|\bchua\b|\bkhông\b\s*$|\bko\b\s*$)", re.IGNORECASE)
-MODE = re.compile(r"\b(main|subagent)\b", re.IGNORECASE)
+MODE = re.compile(r"\b(main|subagent|external)\b", re.IGNORECASE)
 
 
 def looks_like_approval(prompt, target):
@@ -76,7 +76,7 @@ def main():
             mode = ""
             if pending == "plan":
                 found = MODE.search(prompt)
-                mode = f" --mode {found.group(1).lower()}" if found else " --mode <main|subagent>"
+                mode = f" --mode {found.group(1).lower()}" if found else " --mode <main|subagent|external>"
             lines.append(f"[TDQ:APPROVE] User vừa duyệt {pending} → chạy NGAY: "
                          f"python3 scripts/tdq_state.py approve {pending}{mode} "
                          f"--by \"{prompt[:60]}\"")

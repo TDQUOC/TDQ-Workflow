@@ -163,6 +163,30 @@ class TestState(unittest.TestCase):
         self.assertEqual(rc, 0, err)
         self.assertEqual(read_state(self.cwd)["implement_mode"], "subagent")
 
+    def test_approve_plan_mode_external(self):
+        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "approve", "spec")
+        rc, _, err = run_state_cli(self.cwd, "approve", "plan", "--mode", "external",
+                                   "--by", "duyệt plan mode external")
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(read_state(self.cwd)["implement_mode"], "external")
+        with open(os.path.join(self.cwd, "docs", "tdq", "STATE.md"),
+                  encoding="utf-8") as f:
+            self.assertIn("external", f.read())
+
+    def test_approve_quick_mode_external(self):
+        run_state_cli(self.cwd, "init", "r1", "quick")
+        rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--mode", "external",
+                                   "--by", "duyệt quick external")
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(read_state(self.cwd)["implement_mode"], "external")
+
+    def test_mode_mentions_include_external(self):
+        self.assertIn("external", tdq_state.USAGE)
+        self.assertIn("external", tdq_state.PHASE_TABLE["plan"]["cmd"])
+        self.assertTrue(any("external" in item for item in
+                            tdq_state.PHASE_TABLE["plan"]["checklist"]))
+
     def test_approve_is_idempotent(self):
         run_state_cli(self.cwd, "init", "r1", "quick")
         rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--by", "duyệt quick")

@@ -24,6 +24,8 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
    - `main`: tự làm tuần tự trong hội thoại này, theo đúng thứ tự task trong plan.
    - `subagent`: gọi agent `tdq-implementer`, mỗi agent một git worktree. Tên branch không
      bắt đầu bằng `claude|antigravity|gemini|codex`. Merge worktree về và kiểm tra merge; dọn worktree thừa.
+   - `external`: giao TỪNG task cho engine ngoài (codex | agy) trong MỘT worktree chung —
+     làm theo mục "Nhánh external" bên dưới.
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
 
 2. Vòng lặp mỗi task:
@@ -41,6 +43,42 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
 
 Xong khi: mọi task trong plan đã tick `[x]` và test suite xanh.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=qc`.
+
+## Nhánh external (Phần A, mode external)
+
+Bạn là ORCHESTRATOR: soạn gói task, gọi runner, verify, tick, merge. Engine ngoài chỉ code.
+
+- **Chuẩn bị.** Đọc engine + model map bằng
+  `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/external_task.py" parse-plan <plan>` (exit 1
+  → plan thiếu dòng máy-đọc, quay lại tdq-plan). Tạo worktree dùng chung:
+  `git worktree add ../tdq-ext-<slug> -b tdq-ext-<slug>`; ghi lại commit gốc
+  `base=$(git rev-parse HEAD)` để kiểm về sau.
+- **Vòng lặp mỗi task** (đúng thứ tự plan):
+  1. Phân độ khó task theo luật trong [tdq-plan](../tdq-plan/SKILL.md) mục "Chốt engine
+     + model" → chọn model slug từ map khó/TB/dễ.
+  2. Soạn gói task theo khuôn [references/external-task.md](references/external-task.md)
+     vào `docs/tdq/external/<slug>/<task-id>.task.md` (mục tiêu 1 câu, kể tên file, 1 lệnh
+     test, ràng buộc, report mẫu).
+  3. Gọi agent `codex-runner` hoặc `agy-runner` theo engine — **ĐỒNG BỘ**
+     (`run_in_background: false`) để turn build đứng chờ và TỰ tiếp tục ngay khi
+     runner xong, không phụ thuộc notification xuyên turn/phiên (notification không
+     sống qua restart phiên). Nhiều task độc lập có thể gọi nhiều agent đồng bộ trong
+     cùng một message để chạy song song. Agent bên trong vẫn chạy
+     `external_task.py run …` bằng Bash nền + poll (một attempt có thể tới 540s).
+  4. Verify — không tin report suông: tự chạy lại đúng lệnh test của task trong worktree.
+     Test pass → tick `- [x]` vào plan NGAY.
+  5. Runner trả `engine-failed` (script exit 1) hoặc verify fail → FALLBACK: bạn TỰ
+     implement task đó trong worktree (red→green như mode main) VÀ tự viết report
+     `docs/tdq/external/<slug>/<task-id>.json` đúng schema kèm `"fallback": "claude"`.
+- **Đóng worktree** (sau task cuối):
+  1. Kiểm engine không commit lạ: `git -C ../tdq-ext-<slug> log --oneline <base>..HEAD`
+     phải RỖNG (bạn tự commit thì tính riêng — engine bị cấm commit).
+  2. Diff-check: `git -C ../tdq-ext-<slug> diff --stat` — danh sách file phải khớp hợp
+     nhất `files_changed` của các report; file lạ → điều tra trước khi merge. Đối chiếu thêm `git -C <worktree> status --porcelain` để thấy cả file MỚI (untracked) — `diff --stat` chỉ thấy file đã track.
+  3. Merge về branch chính, xử lý conflict, chạy toàn suite, rồi
+     `git worktree remove ../tdq-ext-<slug>`.
+- Log từng lần gọi engine nằm ở `docs/tdq/external/<slug>/run.log` (service tự bật,
+  `TDQ_EXTERNAL_LOG=0` tắt) — dán vào QC khi cần bằng chứng.
 
 ## Phần B — QC (phase `qc`)
 

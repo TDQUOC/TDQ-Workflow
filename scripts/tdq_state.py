@@ -26,13 +26,13 @@ STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
 TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
 
 APPROVE_TARGETS = ("spec", "plan", "quick")
-VALID_MODES = ("main", "subagent")
+VALID_MODES = ("main", "subagent", "external")
 BY_MAX = 200
 VALID_LANES = {"quick", "full", None}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}
 
 USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | init <slug> [quick|full] | "
-         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent] [--by \"<câu user>\"] | "
+         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent|external] [--by \"<câu user>\"] | "
          "reset | phases-doc")
 
 EXIT_SYNTAX = 2
@@ -455,9 +455,9 @@ PHASE_TABLE = {
     "plan": {
         "entry": "spec_approved = true",
         "action": "Hỏi mode thực thi, viết plan, đăng ký plan_file, trình rồi DỪNG chờ duyệt",
-        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<nguyên văn>\"",
+        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent|external> --by \"<nguyên văn>\"",
         "checklist": [
-            "Hỏi user mode thực thi: main (tự làm) hay subagent (chia worktree)",
+            "Hỏi user mode thực thi: main (tự làm) / subagent (chia worktree) / external (giao codex|agy qua worktree)",
             "Viết docs/tdq/plan/<slug>.md: mỗi task 1 việc + 1 test, có checkbox [ ]",
             "Chạy: python3 scripts/tdq_state.py set plan_file=docs/tdq/plan/<slug>.md",
             "Trình tóm tắt plan, in dòng mời duyệt, rồi DỪNG",
@@ -794,7 +794,7 @@ def _parse_approve_args(rest):
             value = rest[i + 1]
             if flag == "--mode":
                 if value not in VALID_MODES:
-                    _fail("Mode không hợp lệ (main|subagent).")
+                    _fail("Mode không hợp lệ (main|subagent|external).")
                 mode = value
             else:
                 by = value[:BY_MAX]

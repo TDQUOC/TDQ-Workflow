@@ -74,10 +74,18 @@ Bước kế tiếp: `python3 scripts/tdq_state.py set phase=spec` rồi sang
 1. Phân tích ngắn: đọc đúng phần code liên quan. Chỉ interview khi thật sự chưa rõ.
 2. Trình **mini-plan ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
-3. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
-4. User duyệt → chạy `python3 scripts/tdq_state.py approve quick --by "<nguyên văn>"`.
-5. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
+   Muốn giao cho engine ngoài (user yêu cầu hoặc bạn đề xuất) → mini-plan kèm thêm đúng
+   1 dòng máy-đọc `Thực thi external: engine=<codex|agy> · khó=<slug>` — model default
+   lấy từ `python3 scripts/external_models.py list <engine>`
+   (luật chọn engine/model: [03-plan.md](03-plan.md) mục "Chốt engine + model").
+3. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
+4. User duyệt → chạy `python3 scripts/tdq_state.py approve quick [--mode external] --by "<nguyên văn>"` (chỉ thêm `--mode external` khi user nói external).
+5. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code —
+   quick external thì dòng `Thực thi external:` phải nằm trong working log ở bước này.
 6. Implement end-to-end trong 1 turn, chạy validate, báo kết quả ngắn gọn.
+   Quick external: KHÔNG tự code — làm đúng "Nhánh external" của
+   [04-build.md](04-build.md) (worktree `tdq-ext-<slug>`, gói task, chạy nền
+   external_task.py, verify, diff-check, merge), fallback tự làm khi engine hỏng.
 7. Append kết quả vào working log; hỏi user có commit không.
 
 Xong khi: `quick_approved = true`, log đã ghi, việc đã validate xong.

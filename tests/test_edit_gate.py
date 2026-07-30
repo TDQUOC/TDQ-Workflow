@@ -54,6 +54,13 @@ class TestEditGate(unittest.TestCase):
         rc, out, _ = self.edit("edit_src.json")
         self.assert_remind(out, "[TDQ:APPROVE]", "plan chưa được ghi nhận duyệt", "approve plan")
 
+    def test_plan_pending_mode_placeholder_lists_external(self):
+        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso())
+        rc, out, _ = self.edit("edit_src.json")
+        self.assert_remind(out, "main|subagent|external")
+
     def test_docs_edit_is_silent(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="spec")
         rc, out, _ = self.edit("edit_docs_spec.json")

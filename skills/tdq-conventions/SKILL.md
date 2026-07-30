@@ -50,7 +50,8 @@ Dấu hiệu duyệt, phản ví dụ, và lệnh phải chạy: [references/app
 Ba luật không được phá:
 - Mơ hồ → **HỎI**, tuyệt đối không suy diễn là đã duyệt.
 - Duyệt spec ≠ duyệt plan. Chỉ ghi đúng thứ user nêu tên.
-- Mode thực thi luôn do USER chọn. Đề xuất thì được, tự chốt thì không.
+- Mode thực thi luôn do USER chọn (main | subagent | external — external = giao từng
+  task cho engine ngoài codex/agy qua worktree). Đề xuất thì được, tự chốt thì không.
 
 ## 5. Cây tài liệu
 
@@ -60,6 +61,7 @@ docs/tdq/
   STATE.md            # mirror tự sinh để đọc
   requests/<slug>.md  questions/<slug>.md  research/<slug>.md  knowledge/<slug>.md
   spec/<slug>.md      plan/<slug>.md       qc/<slug>.md        reports/<slug>.md
+  external/<slug>/    # mode external: gói task, report JSON từng task, run.log
 docs/workinglog/YYYY-MM-DD.md
 ```
 Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung một slug ở mọi thư mục.

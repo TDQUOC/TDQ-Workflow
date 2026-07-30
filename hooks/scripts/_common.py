@@ -21,7 +21,7 @@ import tdq_state  # noqa: E402
 # 0.2.0 bỏ gate cứng; 0.3.0 bỏ luôn slash command duyệt — user duyệt bằng chat.
 APPROVE_HINTS = {
     "spec": 'nhắn "duyệt spec"',
-    "plan": 'nhắn "duyệt plan mode main" (hoặc subagent)',
+    "plan": 'nhắn "duyệt plan mode main" (hoặc subagent, external)',
     "quick": 'nhắn "duyệt quick"',
 }
 

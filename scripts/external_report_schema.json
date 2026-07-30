@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TDQ external task report",
+  "type": "object",
+  "required": ["task_id", "status", "files_changed", "test_cmd", "test_result", "notes"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "status": {"type": "string", "enum": ["done", "blocked"]},
+    "files_changed": {"type": "array", "items": {"type": "string"}},
+    "test_cmd": {"type": "string"},
+    "test_result": {"type": "string"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
