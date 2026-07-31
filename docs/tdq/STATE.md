@@ -1,24 +1,24 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-07-31T17:22:34+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-07-31T17:22:53+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
 | Request | 2026-07-31-hybrid-deep-search |
 | Lane | full |
-| Phase | report |
+| Phase | idle |
 | Spec | docs/tdq/spec/2026-07-31-hybrid-deep-search.md — ✔ đã duyệt |
 | Plan | docs/tdq/plan/2026-07-31-hybrid-deep-search.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 
 ## Đang ở đâu
-QC đã PASS. Cấm: Tự commit hoặc push khi user chưa yêu cầu.
+Đã xong hoặc chưa mở request. Cấm: Đè request cũ còn dở mà chưa hỏi user.
 
 ## Việc tiếp theo
-Viết report ≤50 dòng rồi hỏi user có commit không.
+Chờ yêu cầu mới từ user.
 ```
-python3 scripts/tdq_state.py set phase=idle
+python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <quick|full>
 ```
-Xong khi: Report đã ghi và user đã được hỏi về commit
+Xong khi: Có request mới được mở
 
 > Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.
