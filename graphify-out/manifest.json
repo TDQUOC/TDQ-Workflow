@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/tavily.md": {
-    "mtime": 1785167920.1494749,
-    "ast_hash": "f906b2428a1a5a4df41b45f9f46c3530",
+    "mtime": 1785485300.7919912,
+    "ast_hash": "945be2769028599cb993eda869bb1fc2",
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
@@ -265,8 +265,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1785342157.9110868,
-    "ast_hash": "92b61f0af75c4498fbe444be9d74c054",
+    "mtime": 1785485727.6923504,
+    "ast_hash": "fd66131d7d8f7b5af2c1ad51cbf0e29f",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1785430018.25238,
-    "ast_hash": "43f13360a009b06b7d5b30cfd8fc58fc",
+    "mtime": 1785486051.3061044,
+    "ast_hash": "484e92fb2da81721cce34f2aaae46a1b",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -530,13 +530,13 @@
     "semantic_hash": ""
   },
   "portable/README.md": {
-    "mtime": 1785342132.5094981,
-    "ast_hash": "2dd231458024d2af60c8afeacc5c5e99",
+    "mtime": 1785485545.2927828,
+    "ast_hash": "98acb3775a0afb70e6b5e76cf893c78c",
     "semantic_hash": ""
   },
   "portable/workflow/01-intake.md": {
-    "mtime": 1785426648.316251,
-    "ast_hash": "906ed715ce2a922db621a2a041b4aa96",
+    "mtime": 1785485343.098672,
+    "ast_hash": "5254900607d5247827c0e45fb049b88b",
     "semantic_hash": ""
   },
   "portable/workflow/02-spec.md": {
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/SKILL.md": {
-    "mtime": 1785426627.9653888,
-    "ast_hash": "c992663bfab161e100b6977dfedd093f",
+    "mtime": 1785485340.258287,
+    "ast_hash": "a43efdfdf4677f1fe678f9d902c75c88",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/interview.md": {
@@ -848,5 +848,110 @@
     "mtime": 1785485269.4548163,
     "ast_hash": "9f931436d2db5645037caa78b09459b6",
     "semantic_hash": "9f931436d2db5645037caa78b09459b6"
+  },
+  "docs/tdq/research/search/2026-07-31-trigger-test/agent-1.json": {
+    "mtime": 1785486692.963649,
+    "ast_hash": "55aafc20de2e874dd70d8919eb1f3e12",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-trigger-test/merged.json": {
+    "mtime": 1785486811.597028,
+    "ast_hash": "ec5e4a34216e53e1cd1fc93d9ab775a6",
+    "semantic_hash": ""
+  },
+  "agents/search-runner.md": {
+    "mtime": 1785486563.9783459,
+    "ast_hash": "59e1b4143bcd99e9a832e4f36a3e1315",
+    "semantic_hash": ""
+  },
+  "docs/tdq/knowledge/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785483375.308975,
+    "ast_hash": "97f0d6bd582f3914e4511745ff094143",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785486890.059023,
+    "ast_hash": "c38fe3d54eb3c887b93eb59ca93b266b",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785486834.751532,
+    "ast_hash": "cbdca98e1f4ee15fa745f3c79a0da1f0",
+    "semantic_hash": ""
+  },
+  "docs/tdq/questions/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785483365.6843328,
+    "ast_hash": "1abec54118d06ac48ef03cf48f5dc9ae",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785486897.8232317,
+    "ast_hash": "f3bf24be8dc3483876723b3e8a6d0165",
+    "semantic_hash": ""
+  },
+  "docs/tdq/requests/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785483360.5303354,
+    "ast_hash": "701593b6d412a7e495ee4515e255c547",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785482761.570604,
+    "ast_hash": "fe31402d5c262ec2457961c525f9fec3",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-failpath-demo/report.md": {
+    "mtime": 1785485885.9848332,
+    "ast_hash": "31380a6bf9df3041c864d75d9fc95963",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-mini-run-nolog/brief.md": {
+    "mtime": 1785485744.38966,
+    "ast_hash": "165250c5decf37f25a88590849a77393",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-mini-run/brief.md": {
+    "mtime": 1785485601.8224716,
+    "ast_hash": "165250c5decf37f25a88590849a77393",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-npm-versions/brief.md": {
+    "mtime": 1785485849.3064167,
+    "ast_hash": "e2d2436a0ff8af37f2863ee5d9e9214d",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-npm-versions/report.md": {
+    "mtime": 1785485936.597728,
+    "ast_hash": "5a8ec7db5f199fddd371a060d8ae8473",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-trigger-test/brief.md": {
+    "mtime": 1785486599.797461,
+    "ast_hash": "165250c5decf37f25a88590849a77393",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-trigger-test/report.md": {
+    "mtime": 1785486811.5971584,
+    "ast_hash": "eebaf33575416f03a16d22ef712243c6",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-07-31-agy-search-agent.md": {
+    "mtime": 1785483738.909235,
+    "ast_hash": "69d7ae5aac648de576aba19875e96ff5",
+    "semantic_hash": ""
+  },
+  "docs/workinglog/2026-07-31.md": {
+    "mtime": 1785486918.7493317,
+    "ast_hash": "777482a1d39a07e57e50086a6020fc6f",
+    "semantic_hash": ""
+  },
+  "portable/workflow/06-deep-search.md": {
+    "mtime": 1785485542.56703,
+    "ast_hash": "45ad2a08e876826f4e06fe4ece0553cb",
+    "semantic_hash": ""
+  },
+  "skills/tdq-conventions/references/deep-search.md": {
+    "mtime": 1785485297.9951053,
+    "ast_hash": "fb4f1eb867dbbb0f41051bc54763d68c",
+    "semantic_hash": ""
   }
 }
