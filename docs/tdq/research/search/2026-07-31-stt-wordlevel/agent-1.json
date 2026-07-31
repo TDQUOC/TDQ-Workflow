@@ -1,0 +1,58 @@
+{
+  "agent": 1,
+  "routes": [
+    "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Google Cloud Speech-to-Text hỗ trợ word-level timestamps trong chế độ Streaming Recognition bằng cách thiết lập cấu hình enableWordTimeOffsets là true. Các offset (startOffset, endOffset) được trả về trong danh sách words của kết quả nhận dạng final.",
+      "evidence_quote": "To obtain word-level timestamps (offsets) in Cloud Speech-to-Text for streaming requests, you must enable the feature in your configuration... Set the enableWordTimeOffsets parameter to true within your RecognitionConfig or StreamingRecognitionConfig. When enabled, the service includes a words list in the recognition response... Each WordInfo object in this list contains... startOffset... endOffset... For streaming results, this field is typically populated when is_final (or isFinal) is set to true.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 10,
+      "source_url": "https://cloud.google.com/speech-to-text/docs/async-time-offsets",
+      "url_alive": true
+    },
+    {
+      "claim": "Azure Speech Service hỗ trợ word-level timestamps trong real-time streaming thông qua Speech SDK bằng cách kích hoạt thuộc tính WordLevelTimestamps (hoặc RequestWordLevelTimestamps) và đặt OutputFormat thành Detailed. Kế quả nhận dạng chi tiết dạng JSON trả về danh sách Words chứa thông tin Offset và Duration của từng từ.",
+      "evidence_quote": "To enable word-level timestamps in Azure Speech Service during real-time streaming using the Speech SDK, you should configure your SpeechConfig object to request detailed output... config.RequestWordLevelTimestamps(); config.OutputFormat = OutputFormat.Detailed; ... You can retrieve the raw JSON response to parse the Words array, which contains the Word, Offset (start time), and Duration for each word.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 10,
+      "source_url": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/",
+      "url_alive": true
+    },
+    {
+      "claim": "OpenAI Audio Transcription API hỗ trợ tham số timestamp_granularities[] với giá trị [\"word\"] (khi response_format là verbose_json) để lấy word-level timestamp trong Whisper API, nhưng đối với OpenAI Realtime API (WebSocket audio streaming), timestamp word-level chưa phải là tính năng chuẩn có sẵn trong sự kiện streaming tức thì.",
+      "evidence_quote": "The timestamp_granularities parameter is an optional setting used in the OpenAI Audio Transcription API (specifically for the whisper-1 model) to request structured timestamp data for transcriptions... It allows you to specify whether you want the API to return timestamps at the word level, the segment level, or both... while there is no additional latency for segment timestamps, requesting word timestamps may incur additional latency.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 9,
+      "source_url": "https://platform.openai.com/docs/api-reference/audio/createTranscription",
+      "url_alive": true
+    },
+    {
+      "claim": "Google Cloud Speech-to-Text hỗ trợ word-level timestamp (time offset) cho tất cả các phương thức nhận dạng giọng nói bao gồm Streaming (realtime) bằng cách thiết lập tham số enableWordTimeOffsets thành true.",
+      "evidence_quote": "Cloud STT supports time offsets for all speech recognition methods: speech:recognize, speech:longrunningrecognize, and Streaming.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 10,
+      "source_url": "https://cloud.google.com/speech-to-text/docs/async-time-offsets",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"timestamp_granularities\" site:platform.openai.com/docs",
+    "\"wss://streaming.assemblyai.com\" site:assemblyai.com/docs",
+    "AssemblyAI streaming real-time word-level timestamps WebSocket API",
+    "Deepgram streaming word timestamps realtime API docs",
+    "site:assemblyai.com real-time streaming speech recognition word timestamps",
+    "site:assemblyai.com/docs \"Real-Time\" OR \"Streaming\"",
+    "site:assemblyai.com/docs \"Real-time\" speech to text",
+    "site:assemblyai.com/docs \"words\" \"start\" \"end\" real-time websocket",
+    "site:assemblyai.com/docs/ \"word\" \"start\" \"end\" streaming OR \"real-time\"",
+    "site:cloud.google.com/speech-to-text/docs \"streaming\" \"word\" \"timestamps\" OR \"offset\"",
+    "site:cloud.google.com/speech-to-text/docs/async-time-offsets OR streaming \"enableWordTimeOffsets\"",
+    "site:docs.assemblyai.com \"streaming\" \"words\" OR \"start\" \"end\" real-time",
+    "site:learn.microsoft.com \"speech\" \"word level\" OR \"WordLevelTimestamps\" \"streaming\" OR \"realtime\"",
+    "site:platform.openai.com/docs \"realtime\" \"word\" OR \"timestamp\" OR \"whisper\" streaming"
+  ]
+}

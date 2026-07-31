@@ -1,0 +1,128 @@
+{
+  "agent": 5,
+  "routes": [
+    "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Qdrant Query API (từ v1.10.0) hỗ trợ hybrid search chạy local/server-side thông qua cơ chế prefetch nhiều sub-queries (kết hợp dense vector và sparse vector như BM25/miniCOIL) và dung hợp kết quả bằng thuật toán RRF (Reciprocal Rank Fusion) hoặc DBSF (Distribution-Based Score Fusion).",
+      "evidence_quote": "The Query API (introduced in version 1.10.0) provides a unified, server-side interface for performing complex, multi-stage retrieval, including hybrid search where results from multiple vectors (e.g., dense and sparse) are combined. The fusion of results is achieved through the prefetch parameter, which allows you to execute multiple sub-queries in parallel, and a fusion method that determines how those results are merged.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Trong Qdrant, RRF dung hợp kết quả dựa trên vị trí thứ hạng (position/rank) để giải quyết xung đột thang điểm giữa dense và sparse retrieval, trong khi DBSF (từ v1.11.0) chuẩn hóa thống kê trên điểm số thực tế ((score - mean) / (3 * std_dev)).",
+      "evidence_quote": "Reciprocal Rank Fusion (RRF): RRF focuses on the rank (position) of results rather than their raw scores. It calculates a score for each document based on its position in each result set... Distribution-Based Score Fusion (DBSF): DBSF processes the actual scores returned by each search method. It performs statistical normalization on these scores (typically by calculating (score - mean) / (3 * std_dev)) before combining them.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Weaviate hỗ trợ hybrid search kết hợp vector search và keyword (BM25F) search out-of-the-box với tham số alpha (0 = BM25 thuần, 1 = vector thuần) và hai thuật toán fusion: relativeScoreFusion (mặc định từ v1.24, chuẩn hóa điểm về 0..1) và rankedFusion (tính theo thứ hạng).",
+      "evidence_quote": "Hybrid search combines the results of a vector search and a keyword (BM25F) search by fusing the two result sets. The fusion method and the relative weights are configurable. relativeScoreFusion: The default method since Weaviate v1.24. It normalizes the scores from both the vector and keyword searches so that the highest score becomes 1 and the lowest becomes 0.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://docs.weaviate.io/weaviate/search/hybrid",
+      "url_alive": true
+    },
+    {
+      "claim": "So sánh tính năng hybrid search local giữa 3 giải pháp: Weaviate hỗ trợ sẵn tích hợp BM25 + Vector với tham số cân bằng alpha; Qdrant mạnh về hiệu năng và cho phép khai báo đa truy vấn (dense + sparse vector) với RRF/DBSF server-side; pgvector tận dụng hạ tầng PostgreSQL sẵn có kết hợp TSVector full-text search.",
+      "evidence_quote": "Weaviate: Native, 'out-of-the-box' support for BM25 + Vector search. Qdrant: Supports dense + sparse vectors; requires more explicit fusion configuration. pgvector: Requires combining standard Postgres full-text search (TSVector) with vector similarity.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 9,
+      "source_url": "https://firecrawl.dev/blog/vector-database-hybrid-search-benchmark",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant Query API cho phép kết hợp các truy vấn lai và multi-stage thông qua tham số `prefetch` để thực hiện sub-requests trước khi áp dụng truy vấn chính lên kết quả.",
+      "evidence_quote": "The main component for making the combinations of queries possible is the `prefetch` parameter, which enables making sub-requests. Specifically, whenever a query has at least one prefetch, Qdrant will: 1. Perform the prefetch query (or queries), 2. Apply the main query over the results of its prefetch(es).",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant hỗ trợ các phương pháp dung hợp kết quả (fusion) từ nhiều truy vấn khác nhau như RRF (Reciprocal Rank Fusion) và DBSF (Distribution-Based Score Fusion).",
+      "evidence_quote": "Qdrant has a few ways of fusing the results from different queries: `rrf` and `dbsf`",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Từ v1.17.0, Qdrant hỗ trợ Weighted RRF cho phép cấu hình trọng số tương đối (relative weights) cho từng prefetch để tối ưu hoá khi một retriever hiệu quả hơn retriever khác.",
+      "evidence_quote": "The `rrf` query allows you to configure relative weights for each of the prefetches. For example, if you have two prefetches and assign a weight of 3.0 to the first and 1.0 to the second, a document ranked third in the first query scores the same as a document ranked first in the second query.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Distribution-Based Score Fusion (DBSF) (từ v1.11.0) giữ điểm thô của từng retriever và chuẩn hóa phân phối của chúng theo phạm vi 3-sigma trước khi tổng hợp điểm.",
+      "evidence_quote": "DBSF keeps the raw scores from each query but normalizes their distributions before combining. For each retriever's returned set, it computes the mean \\mu and sample standard deviation \\sigma, then normalizes every score using the 3-sigma extremes as endpoints:",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Trong truy vấn đa giai đoạn (Multi-Stage Queries), đối với các vector chỉ dùng để re-score, có thể tắt HNSW index bằng cách đặt m=0 để giải phóng bộ nhớ RAM.",
+      "evidence_quote": "Disable the HNSW index for vectors used only for rescoring by setting `m=0` in the vector's HNSW configuration. Rescoring does not use the HNSW index, so disabling it will free up memory.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+      "url_alive": true
+    },
+    {
+      "claim": "Weaviate Hybrid search kết hợp kết quả từ vector search và keyword search (BM25F) bằng cách dung hợp (fuse) hai tập kết quả, với phương pháp fusion và trọng số tương đối có thể cấu hình được.",
+      "evidence_quote": "Hybrid search combines the results of a vector search and a keyword (BM25F) search by fusing the two result sets. The fusion method and the relative weights are configurable.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 10,
+      "source_url": "https://docs.weaviate.io/weaviate/search/hybrid",
+      "url_alive": true
+    },
+    {
+      "claim": "Relative Score Fusion là phương pháp dung hợp kết quả hybrid mặc định trong Weaviate kể từ phiên bản v1.24.",
+      "evidence_quote": "Relative Score Fusion is the default fusion method starting in v1.24.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 9,
+      "source_url": "https://docs.weaviate.io/weaviate/search/hybrid",
+      "url_alive": true
+    },
+    {
+      "claim": "Tính năng autocut trong Weaviate bắt buộc phải sử dụng với phương pháp Relative Score Fusion vì nó dựa trên điểm số độ tương đồng thực tế để xác định điểm cắt (cutoff points), không thể áp dụng cho Ranked Fusion vốn dựa trên thứ hạng vị trí.",
+      "evidence_quote": "Autocut requires Relative Score Fusion method because it uses actual similarity scores to detect cutoff points. Autocut shouldn't be used with Ranked Fusion as this fusion method relies on ranking positions, not similarity scores.",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 9,
+      "source_url": "https://docs.weaviate.io/weaviate/search/hybrid",
+      "url_alive": true
+    },
+    {
+      "claim": "Toán tử keyword search (BM25) trong hybrid search của Weaviate xác định số token tối thiểu cần có trong một property được tìm kiếm, hỗ trợ các toán tử 'and' hoặc 'or' (mặc định).",
+      "evidence_quote": "Keyword (BM25) search operators define the minimum number of query tokens that must be present within a single searched property for an object to be returned. The options are and, or or (default).",
+      "route": "hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text",
+      "score": 9,
+      "source_url": "https://docs.weaviate.io/weaviate/search/hybrid",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Weaviate\" \"hybrid search\" \"alpha\" \"RRF\" \"relativeScoreFusion\"",
+    "\"https://qdrant.tech/\" \"hybrid\" \"fusion\"",
+    "\"hybrid search\" benchmark Qdrant vs Weaviate vs pgvector",
+    "\"pgvector\" \"hybrid search\" \"reciprocal rank fusion\" site:dev.to",
+    "\"pgvector\" \"hybrid search\" \"tsvector\" \"RRF\" PostgreSQL",
+    "Qdrant Query API BM25 miniCOIL sparse vector fusion RRF DBSF",
+    "https://dev.to/pgvector-hybrid-search-rrf",
+    "https://qdrant.tech/documentation/concepts/hybrid-queries/",
+    "site:dev.to pgvector hybrid search rrf",
+    "site:qdrant.tech \"Hybrid Search\" OR \"Reciprocal Rank Fusion\" documentation URL",
+    "site:qdrant.tech \"Query API\" hybrid search fusion rrf dbsf",
+    "site:qdrant.tech/docs/ \"hybrid search\" BM25 miniCOIL fusion RRF"
+  ]
+}

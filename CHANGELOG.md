@@ -2,6 +2,27 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.6.0 — 2026-07-31
+
+Deep search nâng thành flow hybrid 2 phase: phase 1 = agent `search-scout`
+(Claude + Tavily) chạy song song `search-runner` (agy) đi rộng nắm hướng;
+phase 2 = `search-runner` đào sâu theo ≤3 route Claude chốt; merge chung 1 lần.
+
+### Thêm
+- **`agents/search-scout.md`**: slot Claude scout cố định (agent 2, route `scout:`) —
+  search rộng qua tavily-primary, ghi `agent-2.json` đúng format file agent
+  (url_alive/not_found/queries_used), trả 3–5 route gợi ý cho phase 2.
+- **`search_task.py split --start-agent N`** (default 1): phase 2 đánh số agent từ 3
+  để chung run-dir với phase 1, merge một lần cuối.
+
+### Đổi
+- Default model agy: `gemini-3.6-flash-low` → **`gemini-3.6-flash-medium`**
+  (escalation giữ flash-high, ≤2 retry).
+- `deep-search.md` viết lại theo flow hybrid: slot cố định phase 1 (ngoại lệ luật
+  split), mục `## Hướng từ phase 1` + `brief-phase2.md`, 3 nhánh degrade
+  (agent 1 hỏng / scout-failed / cả hai hỏng), luôn chạy đủ 2 phase.
+- `tavily.md`, `portable/workflow/06-deep-search.md`, CLAUDE.md §10 đồng bộ flow mới.
+
 ## 0.5.0 — 2026-07-31
 
 Deep search mặc định đi qua agent `search-runner` + agy CLI: mọi logic dễ hỏng

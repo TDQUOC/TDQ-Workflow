@@ -1,0 +1,46 @@
+[2026-07-31T16:55:12+07:00] agent=1 agy=1.1.9 route=tổng quát: vector database chạy local cho RAG 2026 — lựa chọn call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=6 secs=40.6
+[2026-07-31T16:55:25+07:00] agent=1 agy=1.1.9 route=tổng quát: vector database chạy local cho RAG 2026 — lựa chọn call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=0 secs=13.0
+[2026-07-31T16:55:45+07:00] agent=1 agy=1.1.9 route=tổng quát: vector database chạy local cho RAG 2026 — lựa chọn call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=6 secs=19.6
+[2026-07-31T16:56:05+07:00] agent=1 agy=1.1.9 route=tổng quát: vector database chạy local cho RAG 2026 — lựa chọn call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=20.5
+[2026-07-31T16:57:16+07:00] agent=1 agy=1.1.9 route=điểm mạnh yếu call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=10 secs=71.0
+[2026-07-31T16:57:32+07:00] agent=1 agy=1.1.9 route=điểm mạnh yếu call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=15.7
+[2026-07-31T16:57:43+07:00] agent=1 agy=1.1.9 route=điểm mạnh yếu call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=11.6
+[2026-07-31T16:57:56+07:00] agent=1 agy=1.1.9 route=điểm mạnh yếu call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=6 secs=12.4
+[2026-07-31T16:59:18+07:00] agent=1 agy=1.1.9 route=số liệu call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=82.3
+[2026-07-31T16:59:39+07:00] agent=1 agy=1.1.9 route=số liệu call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=6 secs=21.1
+[2026-07-31T17:00:01+07:00] agent=1 agy=1.1.9 exit=0 findings=53 routes_failed=0 report=docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-1.json
+2026-07-31T09:54:47Z [agent-2] scout start — route: vector database chạy local cho RAG 2026
+2026-07-31T09:54:58Z [agent-2] query#1 (tavily-primary, advanced): best local self-hosted vector database for RAG 2026 comparison Qdrant Chroma Milvus LanceDB pgvector -> 8 results
+2026-07-31T09:55:07Z [agent-2] query#2 (tavily-primary, advanced): vector database benchmark 2025 QPS recall VectorDBBench Qdrant Milvus pgvector performance numbers -> 8 results
+2026-07-31T09:55:19Z [agent-2] query#3 (tavily-primary, advanced): embedded vector database Python sqlite-vec vs LanceDB vs Milvus Lite vs Chroma local RAG 2025 -> 8 results
+2026-07-31T09:55:31Z [agent-2] query#4 (tavily-primary, advanced): sqlite-vec vector search extension limits brute force performance 2025 -> 6 results
+2026-07-31T09:55:43Z [agent-2] query#5 (tavily-primary, advanced): Chroma 1.0 Rust rewrite performance Milvus Lite limitations embedded official docs 2025 -> 6 results
+2026-07-31T09:56:24Z [agent-2] query#6 (tavily-primary, advanced): Qdrant hybrid search BM25 miniCOIL payload filtering 2025 release notes local single node -> 6 results
+2026-07-31T09:56:24Z [agent-2] url-check https://www.tigerdata.com/blog/pgvector-vs-qdrant HEAD=200
+2026-07-31T09:56:29Z [agent-2] url-check https://aimultiple.com/open-source-vector-databases HEAD=200
+2026-07-31T09:56:30Z [agent-2] url-check https://alexgarcia.xyz/blog/2024/sqlite-vec-stable-release/index.html HEAD=200
+2026-07-31T09:56:31Z [agent-2] url-check https://github.com/milvus-io/milvus-lite HEAD=200
+2026-07-31T09:56:31Z [agent-2] url-check https://123ofai.com/qnalab/system-design/blocks/chromadb HEAD=403
+2026-07-31T09:56:31Z [agent-2] url-check https://encore.dev/articles/best-vector-databases HEAD=200
+2026-07-31T09:56:32Z [agent-2] url-check https://qdrant.tech/documentation/search/hybrid-queries HEAD=301
+2026-07-31T09:56:33Z [agent-2] url-check https://github.com/zilliztech/vectordbbench HEAD=200
+2026-07-31T09:56:33Z [agent-2] url-check https://docs.netapp.com/us-en/netapp-solutions-ai/vector-db/ai-vdb-perf-validation.html HEAD=200
+2026-07-31T09:56:35Z [agent-2] url-check https://www.firecrawl.dev/blog/best-vector-databases HEAD=200
+2026-07-31T09:56:35Z [agent-2] url-check https://medium.com/@stefentaime_10958/i-benchmarked-5-vector-databases-for-a-local-rag-only-one-actually-surprised-me-67d5abfd67f4 HEAD=403
+2026-07-31T09:56:36Z [agent-2] url-check https://milvus.io/docs/limitations.md HEAD=403
+2026-07-31T09:57:39Z [agent-2] wrote agent-2.json — 13 findings, 6 queries, all 12 source URLs alive (403 x3 = anti-bot alive)
+[2026-07-31T17:06:49+07:00] agent=3 agy=1.1.9 route=benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=49.8
+[2026-07-31T17:07:21+07:00] agent=3 agy=1.1.9 route=benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=7 secs=31.8
+[2026-07-31T17:07:23+07:00] agent=3 agy=1.1.9 exit=0 findings=11 routes_failed=0 report=docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-3.json
+[2026-07-31T17:07:06+07:00] agent=4 agy=1.1.9 route=giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=59.5
+[2026-07-31T17:07:27+07:00] agent=4 agy=1.1.9 route=giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=20.9
+[2026-07-31T17:08:36+07:00] agent=4 agy=1.1.9 route=giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=68.8
+[2026-07-31T17:08:49+07:00] agent=4 agy=1.1.9 route=giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=12.9
+[2026-07-31T17:08:55+07:00] agent=4 agy=1.1.9 exit=0 findings=12 routes_failed=0 report=docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-4.json
+[2026-07-31T17:07:18+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=66.2
+[2026-07-31T17:07:38+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=20.2
+[2026-07-31T17:07:58+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=20.5
+[2026-07-31T17:08:22+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=0 secs=23.9
+[2026-07-31T17:08:26+07:00] agent=5 drop url-chết: https://dev.to/pgvector-hybrid-search-rrf
+[2026-07-31T17:08:30+07:00] agent=5 agy=1.1.9 exit=0 findings=13 routes_failed=0 report=docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-5.json
+[2026-07-31T17:09:51+07:00] merge run=2026-07-31-vectordb-local-rag agents=5 findings=31 routes_failed=0

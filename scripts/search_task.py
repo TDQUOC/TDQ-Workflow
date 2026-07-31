@@ -6,8 +6,9 @@ check URL sống, dedup, rank tất định, log) nằm ở ĐÂY; model chỉ n
 đã đóng khung. Orchestrator (Claude) không tự chia route — gọi `split` rồi làm theo.
 
 Cách dùng:
-  search_task.py split --routes "r1,r2,…" [--max-agents N]
-      → JSON {"assignments": [{"agent": 1, "routes": […]}…]} — cap enforce bằng code.
+  search_task.py split --routes "r1,r2,…" [--max-agents N] [--start-agent K]
+      → JSON {"assignments": [{"agent": K, "routes": […]}…]} — cap enforce bằng code;
+        --start-agent (default 1) đánh số agent từ K (phase 2 hybrid dùng 3).
   search_task.py run --brief <file> --run-dir <dir> --agent <k> --routes "r1,r2"
                      [--model <slug>] [--escalation <slug>]
       → mỗi route: 1 call agy search + ≤TDQ_SEARCH_URLS_PER_ROUTE call đọc URL;
@@ -35,7 +36,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SCHEMA_PATH = os.path.join(SCRIPT_DIR, "search_report_schema.json")
 EXTERNAL_MODELS = os.path.join(SCRIPT_DIR, "external_models.py")
 
-DEFAULT_MODEL = "gemini-3.6-flash-low"
+DEFAULT_MODEL = "gemini-3.6-flash-medium"
 ESCALATION_MODEL = "gemini-3.6-flash-high"
 MAX_RETRIES = 2          # mỗi call: 1 attempt gốc + ≤2 retry (retry dùng escalation)
 HTTP_TIMEOUT = 15
@@ -50,7 +51,8 @@ ENV_DEFAULTS = {
 # 0 call đọc URL là cấu hình hợp lệ (chỉ search); các cap khác tối thiểu 1.
 ENV_MINIMUMS = {"TDQ_SEARCH_URLS_PER_ROUTE": 0}
 
-USAGE = ("usage: search_task.py split --routes <r1,r2,…> [--max-agents N] | "
+USAGE = ("usage: search_task.py split --routes <r1,r2,…> [--max-agents N] "
+         "[--start-agent K] | "
          "run --brief <f> --run-dir <dir> --agent <k> --routes <r1,r2> "
          "[--model <slug>] [--escalation <slug>] | merge <run-dir>")
 
@@ -133,7 +135,7 @@ def validate_report(data):
 # ----------------------------------------------------------------- lệnh agy
 
 # 3 luật grounded — chống trộn kiến thức training, chống injection, chống URL cụt.
-# Effort nằm trong model slug (flash-low/flash-high), agy không có flag riêng.
+# Effort nằm trong model slug (flash-medium/flash-high), agy không có flag riêng.
 GROUNDED_RULES = """\
 LUẬT BẮT BUỘC:
 1. Chỉ dùng evidence từ kết quả tool (search_web/read_url_content) trong phiên này.
@@ -168,17 +170,19 @@ def build_url_prompt(brief, route, url):
 
 # --------------------------------------------------------------------- split
 
-def split_routes(routes, max_agents, max_routes):
-    """-> (assignments, dropped). Chia route đều theo round-robin, cap bằng code."""
+def split_routes(routes, max_agents, max_routes, start_agent=1):
+    """-> (assignments, dropped). Chia route đều theo round-robin, cap bằng code.
+    start_agent: số agent đầu tiên (phase 2 hybrid đánh số từ 3)."""
     kept, dropped = routes[:max_routes], routes[max_routes:]
     n_agents = min(max_agents, len(kept))
-    assignments = [{"agent": k + 1, "routes": []} for k in range(n_agents)]
+    assignments = [{"agent": k + start_agent, "routes": []}
+                   for k in range(n_agents)]
     for i, route in enumerate(kept):
         assignments[i % n_agents]["routes"].append(route)
     return assignments, dropped
 
 
-def cmd_split(routes_raw, max_agents_flag):
+def cmd_split(routes_raw, max_agents_flag, start_agent=1):
     cfg = read_env()
     routes = [r.strip() for r in routes_raw.split(",") if r.strip()]
     if not routes:
@@ -186,7 +190,8 @@ def cmd_split(routes_raw, max_agents_flag):
         return 2
     max_agents = max_agents_flag or cfg["TDQ_SEARCH_MAX_AGENTS"]
     assignments, dropped = split_routes(routes, max_agents,
-                                        cfg["TDQ_SEARCH_MAX_ROUTES"])
+                                        cfg["TDQ_SEARCH_MAX_ROUTES"],
+                                        start_agent)
     if dropped:
         _warn(f"split: vượt TDQ_SEARCH_MAX_ROUTES={cfg['TDQ_SEARCH_MAX_ROUTES']} — "
               f"bỏ route: {', '.join(dropped)}")
@@ -577,7 +582,7 @@ def main(argv):
         return cmd_run(opts["brief"], opts["run_dir"], opts["agent"],
                        opts["routes"], opts["model"], opts["escalation"])
     if argv and argv[0] == "split":
-        opts = {"routes": None, "max_agents": None}
+        opts = {"routes": None, "max_agents": None, "start_agent": 1}
         rest = argv[1:]
         while rest:
             flag = rest.pop(0)
@@ -589,14 +594,20 @@ def main(argv):
                 except ValueError:
                     print(USAGE, file=sys.stderr)
                     return 2
+            elif flag == "--start-agent" and rest:
+                try:
+                    opts["start_agent"] = int(rest.pop(0))
+                except ValueError:
+                    print(USAGE, file=sys.stderr)
+                    return 2
             else:
                 print(USAGE, file=sys.stderr)
                 return 2
-        if opts["routes"] is None or (opts["max_agents"] is not None
-                                      and opts["max_agents"] < 1):
+        if opts["routes"] is None or opts["start_agent"] < 1 or (
+                opts["max_agents"] is not None and opts["max_agents"] < 1):
             print(USAGE, file=sys.stderr)
             return 2
-        return cmd_split(opts["routes"], opts["max_agents"])
+        return cmd_split(opts["routes"], opts["max_agents"], opts["start_agent"])
     print(USAGE, file=sys.stderr)
     return 2
 

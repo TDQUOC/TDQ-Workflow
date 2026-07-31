@@ -1,0 +1,20 @@
+2026-07-31T09:54:47Z [agent-2] scout start — route: vector database chạy local cho RAG 2026
+2026-07-31T09:54:58Z [agent-2] query#1 (tavily-primary, advanced): best local self-hosted vector database for RAG 2026 comparison Qdrant Chroma Milvus LanceDB pgvector -> 8 results
+2026-07-31T09:55:07Z [agent-2] query#2 (tavily-primary, advanced): vector database benchmark 2025 QPS recall VectorDBBench Qdrant Milvus pgvector performance numbers -> 8 results
+2026-07-31T09:55:19Z [agent-2] query#3 (tavily-primary, advanced): embedded vector database Python sqlite-vec vs LanceDB vs Milvus Lite vs Chroma local RAG 2025 -> 8 results
+2026-07-31T09:55:31Z [agent-2] query#4 (tavily-primary, advanced): sqlite-vec vector search extension limits brute force performance 2025 -> 6 results
+2026-07-31T09:55:43Z [agent-2] query#5 (tavily-primary, advanced): Chroma 1.0 Rust rewrite performance Milvus Lite limitations embedded official docs 2025 -> 6 results
+2026-07-31T09:56:24Z [agent-2] query#6 (tavily-primary, advanced): Qdrant hybrid search BM25 miniCOIL payload filtering 2025 release notes local single node -> 6 results
+2026-07-31T09:56:24Z [agent-2] url-check https://www.tigerdata.com/blog/pgvector-vs-qdrant HEAD=200
+2026-07-31T09:56:29Z [agent-2] url-check https://aimultiple.com/open-source-vector-databases HEAD=200
+2026-07-31T09:56:30Z [agent-2] url-check https://alexgarcia.xyz/blog/2024/sqlite-vec-stable-release/index.html HEAD=200
+2026-07-31T09:56:31Z [agent-2] url-check https://github.com/milvus-io/milvus-lite HEAD=200
+2026-07-31T09:56:31Z [agent-2] url-check https://123ofai.com/qnalab/system-design/blocks/chromadb HEAD=403
+2026-07-31T09:56:31Z [agent-2] url-check https://encore.dev/articles/best-vector-databases HEAD=200
+2026-07-31T09:56:32Z [agent-2] url-check https://qdrant.tech/documentation/search/hybrid-queries HEAD=301
+2026-07-31T09:56:33Z [agent-2] url-check https://github.com/zilliztech/vectordbbench HEAD=200
+2026-07-31T09:56:33Z [agent-2] url-check https://docs.netapp.com/us-en/netapp-solutions-ai/vector-db/ai-vdb-perf-validation.html HEAD=200
+2026-07-31T09:56:35Z [agent-2] url-check https://www.firecrawl.dev/blog/best-vector-databases HEAD=200
+2026-07-31T09:56:35Z [agent-2] url-check https://medium.com/@stefentaime_10958/i-benchmarked-5-vector-databases-for-a-local-rag-only-one-actually-surprised-me-67d5abfd67f4 HEAD=403
+2026-07-31T09:56:36Z [agent-2] url-check https://milvus.io/docs/limitations.md HEAD=403
+2026-07-31T09:57:39Z [agent-2] wrote agent-2.json — 13 findings, 6 queries, all 12 source URLs alive (403 x3 = anti-bot alive)

@@ -1,0 +1,61 @@
+{
+  "agent": 3,
+  "routes": [
+    "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Torchaudio hỗ trợ kỹ thuật forced alignment dựa trên CTC để tạo timestamp cho từng token/từ bằng thuật toán Viterbi decoding trên ma trận trellis (được tạo từ xác suất nhãn theo khung thời gian/emissions của mô hình Wav2Vec2).",
+      "evidence_quote": "The process of alignment looks like the following. 1. Estimate the frame-wise label probability from audio waveform 2. Generate the trellis matrix which represents the probability of labels aligned at time step. 3. Find the most likely path from the trellis matrix.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 9,
+      "source_url": "https://pytorch.org/audio/stable/tutorials/forced_alignment_tutorial.html",
+      "url_alive": true
+    },
+    {
+      "claim": "Thuật toán FastEmit giải quyết hạn chế trễ của CTC/Transducer trong chế độ streaming bằng cơ chế sequence-level emission regularization, giúp tạo timestamp/emission sớm mà không cần dữ liệu alignment bên ngoài, đạt mức giảm độ trễ 150-300 ms và hạ 90th percentile latency từ 210 ms xuống 30 ms trên dataset LibriSpeech.",
+      "evidence_quote": "In this work, we propose a sequence-level emission regularization method, named FastEmit, that applies latency regularization directly on per-sequence probability in training transducer models, and does not require any alignment. We demonstrate that FastEmit is more suitable to the sequence-level optimization of transducer models for streaming ASR by applying it on various end-to-end streaming ASR networks including RNN-Transducer, Transformer-Transducer, ConvNet-Transducer and Conformer-Transducer. We achieve 150-300 ms latency reduction with significantly better accuracy over previous techniques on a Voice Search test set. FastEmit also improves streaming ASR accuracy from 4.4%/8.9% to 3.1%/7.5% WER, meanwhile reduces 90th percentile latency from 210 ms to only 30 ms on LibriSpeech.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2010.11148",
+      "url_alive": true
+    },
+    {
+      "claim": "TorchAudio cung cấp API forced alignment dựa trên thuật toán CTC segmentation với hàm torchaudio.functional.forced_align() và mô hình tiền huấn luyện Wav2Vec2FABundle để căn chỉnh transcript với âm thanh.",
+      "evidence_quote": "TorchAudio now has a set of APIs designed for forced alignment. The CTC forced alignment API tutorial illustrates the usage of torchaudio.functional.forced_align(), which is the core API. If you are looking to align your corpus, we recommend to use torchaudio.pipelines.Wav2Vec2FABundle, which combines forced_align() and other support functions with pre-trained model specifically trained for forced-alignment.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 10,
+      "source_url": "https://pytorch.org/audio/stable/tutorials/forced_alignment_tutorial.html",
+      "url_alive": true
+    },
+    {
+      "claim": "Quy trình forced alignment CTC bao gồm ước tính xác suất nhãn theo từng khung hình (frame-wise label probability) từ Wav2Vec2, dựng ma trận trellis và truy vết ngược (backtracking) để tìm chuỗi căn chỉnh tối ưu.",
+      "evidence_quote": "The process of alignment looks like the following. 1. Estimate the frame-wise label probability from audio waveform 2. Generate the trellis matrix which represents the probability of labels aligned at time step. 3. Find the most likely path from the trellis matrix.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 9,
+      "source_url": "https://pytorch.org/audio/stable/tutorials/forced_alignment_tutorial.html",
+      "url_alive": true
+    },
+    {
+      "claim": "FastEmit là một phương pháp sequence-level emission regularization dành cho streaming ASR (Transducer models), giúp giảm độ trễ 150-300 ms trên tập test Voice Search và giảm độ trễ 90th percentile từ 210 ms xuống 30 ms trên LibriSpeech.",
+      "evidence_quote": "In this work, we propose a sequence-level emission regularization method, named FastEmit, that applies latency regularization directly on per-sequence probability in training transducer models, and does not require any alignment. We demonstrate that FastEmit is more suitable to the sequence-level optimization of transducer models for streaming ASR by applying it on various end-to-end streaming ASR networks including RNN-Transducer, Transformer-Transducer, ConvNet-Transducer and Conformer-Transducer. We achieve 150-300 ms latency reduction with significantly better accuracy over previous techniques on a Voice Search test set. FastEmit also improves streaming ASR accuracy from 4.4%/8.9% to 3.1%/7.5% WER, meanwhile reduces 90th percentile latency from 210 ms to only 30 ms on LibriSpeech.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2010.11148",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"CTC\" \"forced alignment\" streaming word-level timestamp latency",
+    "\"FastEmit\" CTC latency forced alignment word level timestamp",
+    "\"FastEmit: Low-latency Streaming Speech Recognition\" \"arXiv\"",
+    "\"FastEmit: Real-Time Streaming Speech Recognition\"",
+    "Deepgram word level timestamp streaming latency docs",
+    "NVIDIA NeMo streaming CTC word level timestamp forced alignment latency",
+    "forced alignment CTC streaming word level timestamp latency benchmark",
+    "forced alignment CTC timestamp torchaudio",
+    "torchaudio forced alignment CTC streaming word level timestamps docs"
+  ]
+}

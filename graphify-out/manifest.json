@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1785485569.5579987,
-    "ast_hash": "fd79db0b98d2eabaf4f39125e6e870c6",
-    "semantic_hash": "fd79db0b98d2eabaf4f39125e6e870c6"
+    "mtime": 1785491502.5215807,
+    "ast_hash": "a7471a1ec4fc95f6ee48d48969188096",
+    "semantic_hash": "a7471a1ec4fc95f6ee48d48969188096"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -840,24 +840,24 @@
     "semantic_hash": "28a7ef73909eb5eeb1ed8412852c2e03"
   },
   "scripts/search_task.py": {
-    "mtime": 1785485153.1515288,
-    "ast_hash": "7e9ad4168b5ae725727de022747cb581",
-    "semantic_hash": "7e9ad4168b5ae725727de022747cb581"
+    "mtime": 1785491230.7745442,
+    "ast_hash": "c5e0b7a59b079dc94bed51821d61bd7f",
+    "semantic_hash": "c5e0b7a59b079dc94bed51821d61bd7f"
   },
   "tests/test_search_task.py": {
-    "mtime": 1785485269.4548163,
-    "ast_hash": "9f931436d2db5645037caa78b09459b6",
-    "semantic_hash": "9f931436d2db5645037caa78b09459b6"
+    "mtime": 1785492888.748593,
+    "ast_hash": "8449669188d61861c785e75151b0367e",
+    "semantic_hash": "8449669188d61861c785e75151b0367e"
   },
   "docs/tdq/research/search/2026-07-31-trigger-test/agent-1.json": {
     "mtime": 1785486692.963649,
     "ast_hash": "55aafc20de2e874dd70d8919eb1f3e12",
-    "semantic_hash": ""
+    "semantic_hash": "55aafc20de2e874dd70d8919eb1f3e12"
   },
   "docs/tdq/research/search/2026-07-31-trigger-test/merged.json": {
     "mtime": 1785486811.597028,
     "ast_hash": "ec5e4a34216e53e1cd1fc93d9ab775a6",
-    "semantic_hash": ""
+    "semantic_hash": "ec5e4a34216e53e1cd1fc93d9ab775a6"
   },
   "agents/search-runner.md": {
     "mtime": 1785486563.9783459,
@@ -953,5 +953,75 @@
     "mtime": 1785485297.9951053,
     "ast_hash": "fb4f1eb867dbbb0f41051bc54763d68c",
     "semantic_hash": ""
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel-claude/agent-1.json": {
+    "mtime": 1785487525.2465246,
+    "ast_hash": "5e8f08dd07cc25b2e815e7567e582dee",
+    "semantic_hash": "5e8f08dd07cc25b2e815e7567e582dee"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel-claude/agent-2.json": {
+    "mtime": 1785487581.6982338,
+    "ast_hash": "7141ee0ff10cf60cd60a2f692b7d4c2c",
+    "semantic_hash": "7141ee0ff10cf60cd60a2f692b7d4c2c"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel-claude/agent-3.json": {
+    "mtime": 1785487570.4551508,
+    "ast_hash": "1d572708c4b4640c6b09b8b26a408c56",
+    "semantic_hash": "1d572708c4b4640c6b09b8b26a408c56"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel-claude/merged.json": {
+    "mtime": 1785487616.7865562,
+    "ast_hash": "12fd423cbc06f9df76e03d5b04bbfad6",
+    "semantic_hash": "12fd423cbc06f9df76e03d5b04bbfad6"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel/agent-1.json": {
+    "mtime": 1785487362.9843333,
+    "ast_hash": "2334f44c836f9acf0d9fe362ee1f1701",
+    "semantic_hash": "2334f44c836f9acf0d9fe362ee1f1701"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel/agent-2.json": {
+    "mtime": 1785487291.8064709,
+    "ast_hash": "3dfd624eab037a1868c0067bc553a27d",
+    "semantic_hash": "3dfd624eab037a1868c0067bc553a27d"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel/agent-3.json": {
+    "mtime": 1785487352.0746024,
+    "ast_hash": "7ea5f76d392a201fb68cf81fe9e9d17d",
+    "semantic_hash": "7ea5f76d392a201fb68cf81fe9e9d17d"
+  },
+  "docs/tdq/research/search/2026-07-31-stt-wordlevel/merged.json": {
+    "mtime": 1785487408.3724754,
+    "ast_hash": "e111ef9ffe5ff8e04acacc65c428d1cd",
+    "semantic_hash": "e111ef9ffe5ff8e04acacc65c428d1cd"
+  },
+  "docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-1.json": {
+    "mtime": 1785492001.4107616,
+    "ast_hash": "cc78c93e4fcffd5557ec3ced4759d491",
+    "semantic_hash": "cc78c93e4fcffd5557ec3ced4759d491"
+  },
+  "docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-2.json": {
+    "mtime": 1785491849.4437594,
+    "ast_hash": "c5ffd79c293c31497c510038ac0fa38a",
+    "semantic_hash": "c5ffd79c293c31497c510038ac0fa38a"
+  },
+  "docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-3.json": {
+    "mtime": 1785492443.9667687,
+    "ast_hash": "3b10309a2c93f9a69986b74da3880e03",
+    "semantic_hash": "3b10309a2c93f9a69986b74da3880e03"
+  },
+  "docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-4.json": {
+    "mtime": 1785492535.4063876,
+    "ast_hash": "083447a0d44b4a5641c2abc36df2d4ca",
+    "semantic_hash": "083447a0d44b4a5641c2abc36df2d4ca"
+  },
+  "docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-5.json": {
+    "mtime": 1785492510.5983515,
+    "ast_hash": "1e2884aee4ec35c3c68d927911a4592f",
+    "semantic_hash": "1e2884aee4ec35c3c68d927911a4592f"
+  },
+  "docs/tdq/research/search/2026-07-31-vectordb-local-rag/merged.json": {
+    "mtime": 1785492591.5567899,
+    "ast_hash": "fbdb85366d9f8f7cca3aa130f4aaf970",
+    "semantic_hash": "fbdb85366d9f8f7cca3aa130f4aaf970"
   }
 }

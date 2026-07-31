@@ -1,0 +1,64 @@
+{
+  "agent": 2,
+  "routes": [
+    "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "whisper_streaming (UFAL) hiện thực chế độ realtime streaming cho Whisper dựa trên word-level timestamp do faster-whisper sinh ra; transcript được commit bằng chính sách LocalAgreement (xác nhận sau 2 vòng lặp trên chunk audio mới).",
+      "evidence_quote": "However, it doesn't do any sentence segmentation, but Whisper produces punctuation and the libraries `faster-whisper` and `whisper_transcribed` make word-level timestamps. In short: we consecutively process new audio chunks, emit the transcripts that are confirmed by 2 iterations, and scroll the audio processing buffer on a timestamp of a confirmed complete sentence.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 8,
+      "source_url": "https://github.com/ufal/whisper_streaming",
+      "url_alive": true
+    },
+    {
+      "claim": "faster-whisper là backend được khuyến nghị cho realtime Whisper streaming, với chính sách streaming có độ trễ tự thích ứng (self-adaptive latency) theo độ phức tạp nguồn audio; bản thân faster-whisper có mục 'Word-level timestamps' trong README (bật qua word_timestamps=True).",
+      "evidence_quote": "Whisper-Streaming implements real-time mode for offline Whisper-like speech-to-text models with faster-whisper as the most recommended back-end. It implements a streaming policy with self-adaptive latency based on the actual source complexity, and demonstrates the state of the art.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 8,
+      "source_url": "https://github.com/SYSTRAN/faster-whisper",
+      "url_alive": true
+    },
+    {
+      "claim": "Cơ chế tạo word-level timestamp chính xác của WhisperX là forced alignment bằng model wav2vec2 (align output Whisper với model phoneme/CTC bên ngoài).",
+      "evidence_quote": "WhisperX is an award-winning Python library that offers speaker diarization and accurate word-level timestamps using wav2vec2 alignment",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 7,
+      "source_url": "https://github.com/SYSTRAN/faster-whisper",
+      "url_alive": true
+    },
+    {
+      "claim": "Vosk (nền Kaldi) là STT mã nguồn mở offline hỗ trợ streaming API với phản hồi zero-latency, model nhỏ (~50 MB), transcription từ vựng lớn liên tục — nền tảng để trả start/end từng từ trong kết quả JSON (bật qua SetWords).",
+      "evidence_quote": "Vosk models are small (50 Mb) but provide continuous large vocabulary transcription, zero-latency response with streaming API, reconfigurable vocabulary and speaker identification.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 8,
+      "source_url": "https://github.com/alphacep/vosk-api",
+      "url_alive": true
+    },
+    {
+      "claim": "NVIDIA Riva ASR hỗ trợ streaming mode trả intermediate transcript độ trễ thấp và có word-level timestamps + word-level confidences trong danh sách tính năng chính thức.",
+      "evidence_quote": "Riva ASR features include:\n\nSupport for offline and streaming use cases\n\nA streaming mode that returns intermediate transcripts with low latency\n\nGPU-accelerated feature extraction\n\nMultiple (and growing) acoustic model architecture options accelerated by\nNVIDIA TensorRT\n\nBeam search decoder based on n-gram language models\n\nVoice activity detection algorithms (CTC-based)\n\nAutomatic punctuation\n\nAbility to return top-N transcripts from beam decoder\n\nWord-level timestamps\n\nWord-level confidences",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 9,
+      "source_url": "https://docs.nvidia.com/deeplearning/riva/user-guide/docs/asr/asr-overview.html",
+      "url_alive": true
+    },
+    {
+      "claim": "NVIDIA Parakeet TDT 0.6B v3 (NeMo, 25 ngôn ngữ châu Âu) sinh timestamp ở mức char/word/segment mặc định khi transcribe với timestamps=True; kiến trúc FastConformer + TDT decoder (duration prediction) — dạng batch/offline, biến thể streaming là multitalker-parakeet-streaming-0.6b-v1.",
+      "evidence_quote": "output = asr_model.transcribe(['2086-149220-0033.wav'], timestamps=True)\n# by default, timestamps are enabled for char, word and segment level\nword_timestamps = output.timestamp['word'] # word level timestamps for first sample",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 8,
+      "source_url": "https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "faster-whisper word_timestamps streaming word-level timestamps",
+    "Vosk streaming speech recognition word timestamps result words start end",
+    "NVIDIA Riva streaming ASR word time offsets word-level timestamps documentation",
+    "NVIDIA Parakeet TDT word-level timestamps model card"
+  ]
+}

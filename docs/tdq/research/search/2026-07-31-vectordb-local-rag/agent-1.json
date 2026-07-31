@@ -1,0 +1,457 @@
+{
+  "agent": 1,
+  "routes": [
+    "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+    "điểm mạnh yếu",
+    "số liệu"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "LanceDB là vector database dạng embedded/serverless chạy trực tiếp trong môi trường Python không cần server riêng, lưu trữ dữ liệu dạng columnar trên file local, tối ưu cho RAG local.",
+      "evidence_quote": "LanceDB is a serverless, embedded vector database that is particularly well-suited for local Retrieval-Augmented Generation (RAG) workflows because it runs directly within your Python environment without requiring a separate server",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH7yMRf2OjTyFXsb4Q0tiNmwUM59qLv1fyt_ZlhLDdwI41qnWOno5aSvDqIeM7xF6KzriUlKJkzQ4vjSESI-mDK1nVbRMZ7pMj3B0JqwPqM_EMKYqd5i7ruaW-E0Y9gsBw09ER7pubr69hnblVDpzKz2bNgYoL9LX49_IIuwvZpcEuoS5CK",
+      "url_alive": true
+    },
+    {
+      "claim": "sqlite-vec là extension embedded của SQLite giúp lưu trữ và tìm kiếm vector trong 1 file SQLite duy nhất, hỗ trợ thực hiện hybrid search cùng dữ liệu SQL bằng một ngôn ngữ truy vấn duy nhất.",
+      "evidence_quote": "sqlite-vec is designed for developers who want to keep their entire RAG stack within a single SQLite database file. It is highly valued for being dependency-free and \"local-first.\" ... because it works as a SQLite extension, you can perform hybrid searches (combining SQL queries with vector similarity) using a single, unified query language.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Milvus Lite là bản triển khai Python thuần của Milvus database, dùng chung API với Milvus Standalone/Cloud, cho phép prototype local trước rồi chuyển sang cluster quy mô lớn chỉ bằng cách đổi URI kết nối.",
+      "evidence_quote": "Milvus Lite is a lightweight, pure-Python implementation of the enterprise-grade Milvus database. ... You can write your prototype using MilvusClient(\"./my_db.db\") and, with only a few configuration changes (updating the uri), switch to a high-performance, distributed Milvus cluster without rewriting your code.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant được đánh giá cao cho production RAG tự host nhờ engine Rust tối ưu SIMD, đạt độ trễ p99 thấp và khả năng lọc metadata vượt trội.",
+      "evidence_quote": "Qdrant is frequently cited for its superior p99 latency in real-time applications (e.g., voice agents) due to its SIMD-optimized Rust engine.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQNmIFzYDmDnY3XdWMspgWxSflAnN2opuJv9T7Mc4t9O7CzSi0KuqsZdBS0GJn_HuSeDdSkLRcDqOnMSO7xcCSYIHVhTPWw_JXr14bSPOBEoyigL1R-BKLkzEmzG17KRxGVLFOU5S9sQssjpUAHuqRSRN-SXA=",
+      "url_alive": true
+    },
+    {
+      "claim": "PostgreSQL với extension pgvector là lựa chọn hàng đầu cho RAG sản xuất ở quy mô dưới 100M vector khi ứng dụng đã dùng Postgres, giúp giảm bớt chi phí vận hành dịch vụ vector database riêng.",
+      "evidence_quote": "PostgreSQL with pgvector has become a dominant choice for production RAG. It is often favored not because it is the \"fastest\" in a synthetic vacuum, but because it eliminates the operational overhead of maintaining a separate vector-specific service for datasets under 100M vectors",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGfRE2NzmX3rUA6pq-nqB1YDGvsM9G_JHO-rtywD8Ry91nZTNR061IEu7gf3K9zTxkUxQ5IbJ6GwdS1YOeMb0YJwfSWsOQxe16AQUyknpAxAUCZTSOSLiAenXQB6kht9ja7Yi9fWhIrdtZR3JTG",
+      "url_alive": true
+    },
+    {
+      "claim": "Chroma là chuẩn chung cho lập trình RAG prototype local nhờ API Python thân thiện, nhưng không khuyến nghị cho quy mô sản xuất vượt quá 10 triệu vector.",
+      "evidence_quote": "Chroma is widely recognized as the industry standard for rapid prototyping but is generally not recommended for high-scale production environments exceeding 10M vectors.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF9bG_08kmcaG6qGHUs5-0X5mabFSkn4MnY3Yx7PXzS5ZhF9p_PlR2a8ueNZlZNEptsM4iqI2Zu0YAerv9ldKRDqXzuGVb57cXywbioxpk8JuSTKt2tMtIvnEVbKjF6phqlQJCxUWazW_k=",
+      "url_alive": true
+    },
+    {
+      "claim": "pgvector là mở rộng Postgres phù hợp cho các lượng công việc dưới 5 triệu vector với độ trễ truy vấn chấp nhận được từ 5 đến 50ms, cho phép lưu trữ vector và dữ liệu ứng dụng trong cùng bảng.",
+      "evidence_quote": "Workloads under 5 million vectors where query latency is acceptable at 5-50ms",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant là cơ sở dữ liệu vector mã nguồn mở viết bằng Rust, thiết kế chuyên biệt cho tìm kiếm vector với hiệu năng cao, hỗ trợ lọc payload và quantization (scalar/product) giúp tối ưu bộ nhớ.",
+      "evidence_quote": "Qdrant is an open-source vector database written in Rust. It's designed from the ground up for vector search, with a focus on performance, payload filtering, and a rich query API.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Chroma là CSDL embedding mã nguồn mở hỗ trợ chạy nhúng in-process hoặc mô hình client-server, tối ưu trải nghiệm lập trình viên và thử nghiệm nhanh cho tập dữ liệu nhỏ.",
+      "evidence_quote": "Chroma is an open-source embedding database focused on developer experience. It runs in-process (embedded) or as a client-server setup, making it the fastest path from zero to a working vector search.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB là vector database nhúng mã nguồn mở dựa trên định dạng cột Lance, chạy in-process với truy cập dữ liệu zero-copy và hỗ trợ index IVF-PQ trên đĩa cho tập dữ liệu lớn hơn RAM.",
+      "evidence_quote": "LanceDB is an open-source embedded vector database built on the Lance columnar format. It runs in-process with zero-copy access to data, making it fast for local workloads without a running server.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Weaviate hỗ trợ hybrid search kết hợp độ tương đồng vector với tìm kiếm từ khóa BM25, cùng các module vector hóa tự động.",
+      "evidence_quote": "Hybrid search combining vector similarity with BM25 keyword search",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Milvus được thiết kế cho quy mô lớn tới hàng tỷ vector nhưng phức tạp khi tự host ở mode distributed do yêu cầu etcd, MinIO/S3 và message queue.",
+      "evidence_quote": "Complex to self-host. Requires etcd, MinIO (or S3), and message queues in distributed mode",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant đạt p99 latency dưới 8ms ở quy mô 1 triệu vector trên phần cứng thông thường nhờ Rust HNSW engine tối ưu SIMD, là lựa chọn hàng đầu cho các bài toán RAG/AI agent yêu cầu độ trễ cực thấp trong năm 2026.",
+      "evidence_quote": "Rust-built with SIMD hardware optimizations. p99 latency under 8ms at 1M vectors on commodity hardware. The fastest vector database for real-time voice agents, fraud detection, and live chat systems.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQNmIFzYDmDnY3XdWMspgWxSflAnN2opuJv9T7Mc4t9O7CzSi0KuqsZdBS0GJn_HuSeDdSkLRcDqOnMSO7xcCSYIHVhTPWw_JXr14bSPOBEoyigL1R-BKLkzEmzG17KRxGVLFOU5S9sQssjpUAHuqRSRN-SXA=",
+      "url_alive": true
+    },
+    {
+      "claim": "Weaviate đạt khoảng 8,000 QPS cho truy vấn hybrid search (kết hợp dense vector và BM25 keyword), tuy nhiên nếu lọc (filter) đồng thời trên 50+ trường metadata có thể khiến QPS giảm 40-60%.",
+      "evidence_quote": "8,000 QPS with combined dense vector and BM25 keyword search in one query. Not the fastest in raw latency, but the fastest at delivering accurate hybrid results. Warning: filtering across 50+ metadata fields simultaneously can drop QPS by 40–60%.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQNmIFzYDmDnY3XdWMspgWxSflAnN2opuJv9T7Mc4t9O7CzSi0KuqsZdBS0GJn_HuSeDdSkLRcDqOnMSO7xcCSYIHVhTPWw_JXr14bSPOBEoyigL1R-BKLkzEmzG17KRxGVLFOU5S9sQssjpUAHuqRSRN-SXA=",
+      "url_alive": true
+    },
+    {
+      "claim": "Chroma phù hợp cho thử nghiệm và MVP với độ trễ dưới 90ms và dưới 1,000 QPS ở quy mô dưới 1 triệu vector, không nên sử dụng cho môi trường sản xuất vượt quá 10 triệu vector.",
+      "evidence_quote": "Under 90ms latency and under 1,000 QPS. Correct for prototyping, RAG learning, and MVPs under 1M vectors. Do not push Chroma past 10M production vectors",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 8,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQNmIFzYDmDnY3XdWMspgWxSflAnN2opuJv9T7Mc4t9O7CzSi0KuqsZdBS0GJn_HuSeDdSkLRcDqOnMSO7xcCSYIHVhTPWw_JXr14bSPOBEoyigL1R-BKLkzEmzG17KRxGVLFOU5S9sQssjpUAHuqRSRN-SXA=",
+      "url_alive": true
+    },
+    {
+      "claim": "Để tìm kiếm 10 triệu vector ở tốc độ dưới 10ms cần khoảng 64GB+ RAM chuyên dụng; nếu không đủ RAM phải chuyển sang IVF-PQ (chậm hơn 5 lần nhưng tiết kiệm 80% RAM).",
+      "evidence_quote": "To search 10M vectors at sub-10ms speed, you may need 64GB+ of dedicated RAM. The Scaling Law: If you cannot afford the RAM for the Fastest vector database performance, you must switch to IVF-PQ indexing, which is 5x slower but uses 80% less memory by compressing vectors into smaller subspaces.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQNmIFzYDmDnY3XdWMspgWxSflAnN2opuJv9T7Mc4t9O7CzSi0KuqsZdBS0GJn_HuSeDdSkLRcDqOnMSO7xcCSYIHVhTPWw_JXr14bSPOBEoyigL1R-BKLkzEmzG17KRxGVLFOU5S9sQssjpUAHuqRSRN-SXA=",
+      "url_alive": true
+    },
+    {
+      "claim": "Việc tinh chỉnh tham số HNSW (như ef_construct và M) trên một node Qdrant đơn lẻ giúp giảm thời gian truy vấn từ 2.4s xuống 400ms và cắt giảm độ trễ p99 tới 40%.",
+      "evidence_quote": "We moved their hot data into a Qdrant node and specifically tuned the HNSW ef_construct and M parameters to prioritize speed over recall. The delay dropped to 400ms.",
+      "route": "tổng quát: vector database chạy local cho RAG 2026 — lựa chọn",
+      "score": 8,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQNmIFzYDmDnY3XdWMspgWxSflAnN2opuJv9T7Mc4t9O7CzSi0KuqsZdBS0GJn_HuSeDdSkLRcDqOnMSO7xcCSYIHVhTPWw_JXr14bSPOBEoyigL1R-BKLkzEmzG17KRxGVLFOU5S9sQssjpUAHuqRSRN-SXA=",
+      "url_alive": true
+    },
+    {
+      "claim": "pgvector cho phép lưu trữ vector trực tiếp trong PostgreSQL, kế thừa tính năng tuân thủ ACID compliance, point-in-time recovery, truy vấn JOIN và tích hợp chặt chẽ với hệ sinh thái Postgres sẵn có.",
+      "evidence_quote": "Store your vectors with the rest of your data. Supports: exact and approximate nearest neighbor search, single-precision, half-precision, binary, and sparse vectors... Plus ACID compliance, point-in-time recovery, JOINs, and all of the other great features of Postgres",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/pgvector/pgvector",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB là thư viện vector search nhúng (embedded/in-process), tối ưu cho dữ liệu đa thức (multimodal), vận hành trên định dạng cột Lance với khả năng truy xuất zero-copy và không yêu cầu hạ tầng server phức tạp.",
+      "evidence_quote": "Developer-friendly OSS embedded retrieval library for multimodal AI. Search More; Manage Less... Built on top of the Lance columnar format. You can store, index, and search over petabytes of multimodal data and vectors with ease. Advanced Features: Zero-copy, automatic versioning, manage versions of your data without needing extra infrastructure.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant được viết bằng Rust cho tốc độ xử lý cao, ổn định dưới tải nặng và mạnh về khả năng lọc dữ liệu kèm theo (payload filtering) cho các tác vụ RAG và semantic matching.",
+      "evidence_quote": "Qdrant is written in Rust 🦀, which makes it fast and reliable even under high load... Qdrant is tailored for extended filtering support, making it useful for all sorts of neural-network or semantic-based matching, faceted search, and other applications.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant Edge cho phép chạy Qdrant dạng in-process nhúng trực tiếp trong ứng dụng local/edge, giúp giảm độ trễ và hỗ trợ hoạt động offline mà vẫn giữ nguyên API.",
+      "evidence_quote": "Qdrant Edge is a lightweight version of Qdrant designed for edge devices and resource-constrained environments. Unlike Qdrant Server, which uses a client-server architecture, Qdrant Edge runs inside the application process. Data is stored and queried locally and can be synchronized with a Qdrant server.",
+      "route": "điểm mạnh yếu",
+      "score": 8,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "sqlite-vec là extension C thuần cho SQLite, cực kỳ siêu nhẹ, zero-dependency, nhúng trực tiếp vào process và có thể chạy ở bất kỳ môi trường nào SQLite hỗ trợ.",
+      "evidence_quote": "Written in pure C, no dependencies, runs anywhere SQLite runs (Linux/MacOS/Windows, in the browser with WASM, Raspberry Pis, etc.)",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/asg017/sqlite-vec",
+      "url_alive": true
+    },
+    {
+      "claim": "sqlite-vec là thư viện ở giai đoạn pre-v1 nên chưa thực sự ổn định về mặt API lâu dài và có thể có breaking changes.",
+      "evidence_quote": "Important sqlite-vec is a pre-v1, so expect breaking changes!",
+      "route": "điểm mạnh yếu",
+      "score": 8,
+      "source_url": "https://github.com/asg017/sqlite-vec",
+      "url_alive": true
+    },
+    {
+      "claim": "FAISS (từ Meta) tối ưu hóa truy vấn vector mật độ cao ở quy mô cực lớn (hàng tỷ vector) nhờ các kỹ thuật nén nén mã hóa (quantization), hỗ trợ tăng tốc mạnh mẽ qua GPU nhưng không phải là một database hoàn chỉnh có quản lý metadata phức tạp.",
+      "evidence_quote": "Faiss contains several methods for similarity search... Some of the methods, like those based on binary vectors and compact quantization codes, solely use a compressed representation of the vectors and do not require to keep the original vectors. This generally comes at the cost of a less precise search but these methods can scale to billions of vectors in main memory on a single server.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/facebookresearch/faiss",
+      "url_alive": true
+    },
+    {
+      "claim": "ChromaDB tối ưu tối đa cho trải nghiệm lập trình viên, cho phép dựng prototype RAG cực kỳ đơn giản in-memory hoặc lưu local chỉ với vài dòng lệnh.",
+      "evidence_quote": "import chromadb # setup Chroma in-memory, for easy prototyping. Can add persistence easily! client = chromadb.Client()",
+      "route": "điểm mạnh yếu",
+      "score": 8,
+      "source_url": "https://github.com/chroma-core/chroma",
+      "url_alive": true
+    },
+    {
+      "claim": "Weaviate tích hợp sẵn khả năng kết hợp vector similarity search với lọc từ khóa (hybrid search / BM25) và RAG ngay trong một câu lệnh truy vấn duy nhất.",
+      "evidence_quote": "Weaviate is an open-source, cloud-native vector database that stores both objects and vectors, enabling semantic search at scale. It combines vector similarity search with keyword filtering, retrieval-augmented generation (RAG), and reranking in a single query interface.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/weaviate/weaviate",
+      "url_alive": true
+    },
+    {
+      "claim": "Milvus Lite cung cấp bản chạy nhúng local qua file .db hoặc gRPC server, hỗ trợ đầy đủ vector mật độ, BM25 sparse vector, hybrid search và chỉ mục FAISS dưới dạng Python thuần.",
+      "evidence_quote": "Milvus Lite is a lightweight version of Milvus for local development, notebooks, tests, and small-scale AI applications. It exposes the familiar pymilvus API through a local .db file or an embedded gRPC server... Dense vector search, sparse BM25 search, and hybrid search. FAISS-backed vector indexes and INVERTED scalar indexes.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/milvus-io/milvus-lite",
+      "url_alive": true
+    },
+    {
+      "claim": "pgvector hỗ trợ cả tìm kiếm hàng xóm gần nhất chính xác (exact) và gần đúng (approximate).",
+      "evidence_quote": "Store your vectors with the rest of your data. Supports:\n- exact and approximate nearest neighbor search",
+      "route": "điểm mạnh yếu",
+      "score": 10,
+      "source_url": "https://github.com/pgvector/pgvector",
+      "url_alive": true
+    },
+    {
+      "claim": "pgvector kết hợp tìm kiếm vector với các tính năng của Postgres như tuân thủ ACID, point-in-time recovery và JOINs.",
+      "evidence_quote": "Plus ACID compliance, point-in-time recovery, JOINs, and all of the other great features of Postgres",
+      "route": "điểm mạnh yếu",
+      "score": 10,
+      "source_url": "https://github.com/pgvector/pgvector",
+      "url_alive": true
+    },
+    {
+      "claim": "Chỉ mục HNSW có hiệu năng truy vấn tốt hơn IVFFlat về đánh đổi tốc độ-recall, nhưng thời gian xây dựng lâu hơn và tiêu tốn nhiều bộ nhớ hơn.",
+      "evidence_quote": "An HNSW index creates a multilayer graph. It has better query performance than IVFFlat (in terms of speed-recall tradeoff), but has slower build times and uses more memory.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/pgvector/pgvector",
+      "url_alive": true
+    },
+    {
+      "claim": "Kiểu vector mặc định hỗ trợ tối đa 2.000 chiều, halfvec hỗ trợ 4.000 chiều và bit (binary) hỗ trợ tới 64.000 chiều.",
+      "evidence_quote": "Supported types are:\n- vector - up to 2,000 dimensions\n- halfvec - up to 4,000 dimensions\n- bit - up to 64,000 dimensions",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/pgvector/pgvector",
+      "url_alive": true
+    },
+    {
+      "claim": "pgvector hỗ trợ Hybrid Search khi kết hợp cùng tính năng full-text search của Postgres.",
+      "evidence_quote": "Use together with Postgres full-text search for hybrid search.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/pgvector/pgvector",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB là thư viện truy vấn nhúng (embedded retrieval library) mã nguồn mở 100%, chạy local hoặc trên cloud không bị khóa nhà cung cấp (no vendor lock-in).",
+      "evidence_quote": "Open Source & Local: 100% open source, runs locally or in your cloud. No vendor lock-in.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB xây dựng trên định dạng cột Lance (Lance columnar format), cho phép tìm kiếm hàng tỷ vector trong vài milisecond và hỗ trợ lưu trữ dữ liệu đa thức quy mô petabyte.",
+      "evidence_quote": "LanceDB is designed for fast, scalable, and production-ready vector search. It is built on top of the Lance columnar format. You can store, index, and search over petabytes of multimodal data and vectors with ease.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB hỗ trợ tìm kiếm toàn diện gồm tìm kiếm tương đồng vector (vector similarity search), tìm kiếm văn bản đầy đủ (full-text search) và truy vấn SQL.",
+      "evidence_quote": "Comprehensive Search: Support for vector similarity search, full-text search and SQL.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB sở hữu tính năng zero-copy, tự động quản lý phiên bản dữ liệu (automatic versioning) không cần hạ tầng phụ trợ, hỗ trợ GPU khi build index và hỗ trợ SDK Python, Node.js, Rust.",
+      "evidence_quote": "Advanced Features: Zero-copy, automatic versioning, manage versions of your data without needing extra infrastructure. GPU support in building vector index.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant được viết bằng Rust giúp hệ thống chạy nhanh và tin cậy ngay cả dưới tải trọng cao.",
+      "evidence_quote": "Qdrant is written in Rust 🦀, which makes it fast and reliable even under high load.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant tích hợp sẵn Vector Quantization giúp giảm dung lượng RAM sử dụng tới 97% và tùy chỉnh đánh đổi giữa tốc độ tìm kiếm và độ chính xác.",
+      "evidence_quote": "Built-in quantization cuts RAM usage by up to 97% and lets you tune the trade-off between search speed and precision.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant hỗ trợ lọc nâng cao theo bất kỳ JSON payload nào đính kèm với vector bằng tập điều kiện phong phú (từ khóa, full-text, dải số, tọa độ địa lý...) kết hợp clauses should, must, must_not.",
+      "evidence_quote": "Attach any JSON payload to your vectors and filter on it using a rich set of conditions—keyword matching, full-text, numeric ranges, geo-locations, and more—combined with should, must, and must_not clauses.",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant hỗ trợ Hybrid Search kết hợp nhiều vector trong một query (semantic + keyword precision) với chiến lược hợp nhất kết quả như Reciprocal Rank Fusion (RRF) và Distribution-Based Score Fusion (DBSF).",
+      "evidence_quote": "Combine multiple vectors in a single query to get the best of semantic understanding and keyword precision, with results merged via configurable fusion strategies, such as Reciprocal Rank Fusion (RRF) and Distribution-Based Score Fusion (DBSF).",
+      "route": "điểm mạnh yếu",
+      "score": 9,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant Edge là phiên bản siêu nhẹ chạy trực tiếp trong application process dành cho thiết bị edge và môi trường giới hạn tài nguyên.",
+      "evidence_quote": "Qdrant Edge is a lightweight version of Qdrant designed for edge devices and resource-constrained environments. Unlike Qdrant Server, which uses a client-server architecture, Qdrant Edge runs inside the application process.",
+      "route": "điểm mạnh yếu",
+      "score": 8,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Cấu hình khởi chạy Docker mặc định của Qdrant là dạng deployment không bảo mật (không có xác thực) và mở ra toàn bộ giao diện mạng.",
+      "evidence_quote": "Note that this starts an insecure deployment without authentication, open to all network interfaces.",
+      "route": "điểm mạnh yếu",
+      "score": 8,
+      "source_url": "https://github.com/qdrant/qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Trên bộ dữ liệu 50 triệu vector Cohere (768 chiều) ở mức recall 99%, Postgres kết hợp với pgvector và pgvectorscale đạt throughput 471.57 QPS trên 1 node, cao gấp 11.4 lần so với Qdrant (41.47 QPS).",
+      "evidence_quote": "In terms of throughput at 99 % recall, Postgres with pgvector and pgvectorscale demonstrates significantly higher capacity on a single node, achieving 11.4x more throughput than Qdrant (471.57 queries per second vs. 41.47 QPS).",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở mốc recall 99% trên 50M vector, Qdrant có latency đơn truy vấn tốt hơn ở các bách phân vị cao: p50 30.75 ms (so với 31.07 ms), p95 36.73 ms (so với 60.42 ms) và p99 38.71 ms (so với 74.60 ms) so với Postgres (pgvector + pgvectorscale).",
+      "evidence_quote": "Qdrant delivers better single-query latency performance, with 1 % better p50 latency (30.75 ms vs. 31.07 ms), 39 % better p95 latency (36.73 ms vs. 60.42 ms), and 48 % better p99 latency (38.71 ms vs. 74.60 ms).",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Thời gian xây dựng chỉ mục (index build time) cho 50 triệu vector của pgvectorscale mất khoảng 11.1 giờ, trong khi Qdrant chỉ mất khoảng 3.3 giờ để xây dựng xong index tương tự.",
+      "evidence_quote": "Pgvectorscale took around 11.1 hours to build an index for 50M vectors. Qdrant took only around 3.3 hours to build the same index.",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Tại mức recall 90%, Postgres với pgvector và pgvectorscale xử lý được 1,589 QPS, cao gấp 4.4 lần so với Qdrant (360 QPS) trên 50 triệu vector.",
+      "evidence_quote": "At 90% recall, Postgres with pgvector and pgvectorscale achieves 4.4x higher throughput than Qdrant when searching over 50M embeddings, with Postgres able to handle 1,589 queries per second compared to Qdrant's 360.",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Tại mức recall 90%, Qdrant đạt độ trễ truy vấn thấp hơn ở mọi bách phân vị: p50 4.74 ms (vs 9.54 ms), p95 5.50 ms (vs 13.30 ms) và p99 5.79 ms (vs 15.73 ms) khi so với pgvector + pgvectorscale.",
+      "evidence_quote": "At a 90 % recall threshold, Qdrant achieves 50.3 % lower p50 query latency (4.74 ms vs. 9.54 ms), 58.6 % lower p95 latency (5.50 ms vs. 13.30 ms), and 63.2 % lower p99 query latency (5.79 ms vs. 15.73 ms).",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở mức recall 99% trên tập dữ liệu 50 triệu vector (768 chiều), Postgres kết hợp pgvector và pgvectorscale đạt throughput 471,57 QPS, cao gấp 11,4 lần so với Qdrant (41,47 QPS) trên một node.",
+      "evidence_quote": "In terms of throughput at 99 % recall, Postgres with pgvector and pgvectorscale demonstrates significantly higher capacity on a single node, achieving 11.4x more throughput than Qdrant (471.57 queries per second vs. 41.47 QPS).",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở ngưỡng recall 99%, Qdrant đạt độ trễ truy vấn thấp hơn ở các mức phần trăm đuôi (p50: 30.75 ms, p95: 36.73 ms, p99: 38.71 ms) so với Postgres với pgvector và pgvectorscale (p50: 31.07 ms, p95: 60.42 ms, p99: 74.60 ms).",
+      "evidence_quote": "At a 99 % recall threshold, both Postgres (with pgvector and pgvectorscale) and Qdrant achieve sub-100 ms maximum query latency. Qdrant delivers better single-query latency performance, with 1 % better p50 latency (30.75 ms vs. 31.07 ms), 39 % better p95 latency (36.73 ms vs. 60.42 ms), and 48 % better p99 latency (38.71 ms vs. 74.60 ms).",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở ngưỡng recall 90% trên 50 triệu vector, Postgres (pgvector + pgvectorscale) đạt throughput 1.589 QPS, gấp 4,4 lần Qdrant (360 QPS).",
+      "evidence_quote": "At 90% recall, Postgres with pgvector and pgvectorscale achieves 4.4x higher throughput than Qdrant when searching over 50M embeddings, with Postgres able to handle 1,589 queries per second compared to Qdrant's 360.",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở ngưỡng recall 90%, Qdrant có độ trễ p50 là 4,74 ms, p95 là 5,50 ms và p99 là 5,79 ms, thấp hơn đáng kể so với Postgres (p50: 9,54 ms, p95: 13,30 ms, p99: 15,73 ms).",
+      "evidence_quote": "At a 90 % recall threshold, Qdrant achieves 50.3 % lower p50 query latency (4.74 ms vs. 9.54 ms), 58.6 % lower p95 latency (5.50 ms vs. 13.30 ms), and 63.2 % lower p99 query latency (5.79 ms vs. 15.73 ms).",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant mất khoảng 3,3 giờ để xây dựng index cho 50 triệu vector, trong khi pgvectorscale mất khoảng 11,1 giờ do xử lý đơn luồng.",
+      "evidence_quote": "Pgvectorscale took around 11.1 hours to build an index for 50M vectors. Qdrant took only around 3.3 hours to build the same index.",
+      "route": "số liệu",
+      "score": 10,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    },
+    {
+      "claim": "Cấu hình máy chủ benchmark sử dụng phiên bản AWS r6id.4xlarge EC2 (16 vCPU, 128 GB RAM) và ổ đĩa SSD NVMe 950 GB gắn trực tiếp.",
+      "evidence_quote": "Database server machine details: We used AWS r6id.4xlarge EC2 machines, which have 16 vCPUs and 128 GB RAM. Disk storage used a 950 GB locally attached NVMe SSD.",
+      "route": "số liệu",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQW-TwESg19HphSPMO09u88YyyLQrKKGL56Z3_zgj3xpmzBL0JIFOnwpQRaVch5ltaQguU5TtGd9LYkfc-LNCvmEY8Co64DGnW-f_kEd6-ge59f8EUjZ3ghJnnot6b9ISwjRLILwy7",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Chroma\" benchmark QPS latency recall 100k 1M vectors 2024 OR 2025 OR 2026",
+    "\"LanceDB\" benchmark QPS latency recall RAM disk 2024 OR 2025 OR 2026",
+    "\"LanceDB\" embedded vector database python local RAG docs",
+    "\"Milvus Lite\" benchmark QPS latency recall 2024 OR 2025 OR 2026",
+    "\"pgvector\" HNSW benchmark QPS latency recall 1M vectors 2024 OR 2025 OR 2026",
+    "\"pgvectorscale\" \"qdrant\" benchmark \"471\" OR \"471.57\" QPS",
+    "\"pgvectorscale\" benchmark QPS latency recall 2024 OR 2025 OR 2026 timescale",
+    "\"qdrant\" benchmark qps latency memory recall 2025 OR 2024 OR 2026",
+    "\"sqlite-vec\" OR \"Milvus Lite\" vector database local python 2025 2026 RAG",
+    "\"sqlite-vec\" OR \"sqlite-vss\" benchmark QPS latency recall 2024 OR 2025 OR 2026",
+    "\"sqlite-vec\" advantages disadvantages benchmark qdrant lancedb",
+    "\"vector database benchmark\" \"qdrant\" \"lancedb\" \"pgvector\" \"chroma\" QPS recall 2025 2026",
+    "read_url_content:https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDfhwVbIs21AmD4Ynk6QPPzfa4fqoUvnPdLfzSGL35mrcm9tc0ZR9GyMTBV4t9R3X2T6ALs_J1VJcM58cYQaDdgdtBppgoc4HM-99nDseZO87KKI8umnHZyiQ5EnUoDgSIj93SIokn",
+    "site:github.com/pgvector/pgvector \"vector database\" OR \"performance\" OR \"limitations\"",
+    "site:qdrant.tech/benchmarks OR site:lancedb.github.io OR site:github.com/asgregorio/sqlite-vec vector database local RAG 2025 2026",
+    "vector database benchmark 2025 QPS recall RAM pgvector LanceDB Qdrant Chroma",
+    "vector database benchmark local RAG LanceDB Qdrant Chroma pgvector 2025 2026",
+    "vector database benchmark pros cons lancedb qdrant pgvector chroma 2025 2026",
+    "vector database comparison local RAG site:qdrant.tech OR site:lancedb.github.io OR site:chromadb.dev OR site:medium.com OR site:dev.to"
+  ]
+}

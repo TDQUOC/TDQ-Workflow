@@ -109,6 +109,20 @@ class EnvTest(unittest.TestCase):
             self.assertIn("TDQ_SEARCH_MAX_AGENTS", err, bad)
 
 
+class DefaultModelTest(unittest.TestCase):
+    """T1.1 (0.6.0) — default flash-medium, escalation flash-high, docs đồng bộ."""
+
+    def test_default_model_is_flash_medium(self):
+        self.assertEqual(search_task.DEFAULT_MODEL, "gemini-3.6-flash-medium")
+
+    def test_escalation_model_stays_flash_high(self):
+        self.assertEqual(search_task.ESCALATION_MODEL, "gemini-3.6-flash-high")
+
+    def test_no_stale_flash_low_anywhere_in_script(self):
+        with open(SCRIPT, encoding="utf-8") as f:
+            self.assertNotIn("flash-low", f.read())
+
+
 class SplitTest(unittest.TestCase):
     """T2.1 — cap agent enforce bằng code, chia đều route, cắt route thừa + warn."""
 
@@ -166,6 +180,24 @@ class SplitTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(len(json.loads(out)["assignments"]), 2)
 
+    def test_start_agent_3_numbers_from_3(self):
+        code, out, _ = self._split(["a", "b", "c"], ("--start-agent", "3"),
+                                   TDQ_SEARCH_MAX_AGENTS="3")
+        self.assertEqual(code, 0)
+        agents = [a["agent"] for a in json.loads(out)["assignments"]]
+        self.assertEqual(agents, [3, 4, 5])
+
+    def test_start_agent_default_is_1(self):
+        code, out, _ = self._split(["a", "b", "c"], TDQ_SEARCH_MAX_AGENTS="3")
+        self.assertEqual(code, 0)
+        agents = [a["agent"] for a in json.loads(out)["assignments"]]
+        self.assertEqual(agents, [1, 2, 3])
+
+    def test_start_agent_garbage_exit_2(self):
+        code, _, err = self._split(["a", "b"], ("--start-agent", "rác"))
+        self.assertEqual(code, 2)
+        self.assertIn("start-agent", err)
+
 
 class BuildCommandTest(unittest.TestCase):
     """T3.1 — lệnh agy đúng flags; prompt khuôn grounded đủ 3 luật.
@@ -204,7 +236,7 @@ class BuildCommandTest(unittest.TestCase):
 class StubBase(unittest.TestCase):
     """Dựng stub binary agy trong PATH + run-dir tạm. Không mạng, không binary thật."""
 
-    MODELS = "gemini-3.6-flash-low\ngemini-3.6-flash-high\n"
+    MODELS = "gemini-3.6-flash-medium\ngemini-3.6-flash-high\n"
 
     def setUp(self):
         import shutil
@@ -385,7 +417,7 @@ class RetryEscalationTest(StubBase):
         self.assertEqual(code, 0)
         calls = self.calls()
         self.assertEqual(len(calls), 2)
-        self.assertIn("gemini-3.6-flash-low", calls[0])
+        self.assertIn("gemini-3.6-flash-medium", calls[0])
         self.assertIn("gemini-3.6-flash-high", calls[1])
         self.assertIn("LỖI LẦN TRƯỚC", calls[1])
         self.assertIn("JSON", calls[1])
@@ -578,6 +610,18 @@ class SearchRunnerAgentTest(unittest.TestCase):
         head = text.split("---", 2)[1]
         self.assertRegex(head, r"name:\s*search-runner")
         self.assertIn("description:", head)
+        # QC1.1 (0.6.0): wrapper chỉ cần Bash + Read — tool schemas khác là token thừa
+        self.assertRegex(head, r"tools:\s*Bash,\s*Read")
+
+    def test_return_contract_summary_not_verbatim(self):
+        # QC1.1 (0.6.0): trả tóm tắt, KHÔNG dán JSON nguyên văn (đếm đôi token)
+        with open(self.PATH, encoding="utf-8") as f:
+            text = f.read()
+        self.assertNotIn("verbatim", text.lower())
+        low = text.lower()
+        self.assertTrue("tóm tắt" in low or "summary" in low)
+        for part in ("findings", "not_found", "agent-<k>.json"):
+            self.assertIn(part, text)
 
     def test_core_command_and_rules(self):
         with open(self.PATH, encoding="utf-8") as f:
@@ -590,6 +634,47 @@ class SearchRunnerAgentTest(unittest.TestCase):
         self.assertIn("orchestrator", low)          # không tự quyết fallback
         self.assertIn("synchronous", low)           # luật sync
         self.assertIn("không commit", low)
+
+
+class SearchScoutAgentTest(unittest.TestCase):
+    """0.6.0 — agent scout Claude+Tavily: vỏ mỏng, slot 2 phase 1 của flow hybrid."""
+
+    PATH = os.path.join(ROOT, "agents", "search-scout.md")
+
+    def _text(self):
+        with open(self.PATH, encoding="utf-8") as f:
+            return f.read()
+
+    def test_frontmatter(self):
+        text = self._text()
+        self.assertTrue(text.startswith("---\n"))
+        head = text.split("---", 2)[1]
+        self.assertRegex(head, r"name:\s*search-scout")
+        self.assertIn("description:", head)
+
+    def test_slot_and_output_format(self):
+        text = self._text()
+        self.assertIn("scout:", text)               # prefix route slot 2
+        self.assertIn("agent-2.json", text)         # format file agent, đúng slot
+        for field in ("url_alive", "not_found", "queries_used",
+                      "routes_failed", "evidence_quote"):
+            self.assertIn(field, text, field)
+
+    def test_route_suggestions_and_tavily_rules(self):
+        text = self._text()
+        self.assertIn("3–5 route", text)            # final message gợi ý route
+        self.assertIn("tavily-primary", text)
+        self.assertIn("tavily-extract", text)       # lấy quote khi cần
+        self.assertIn("curl", text)                 # tự check URL sống
+
+    def test_log_service_and_boundaries(self):
+        text = self._text()
+        self.assertIn("agent-2.log", text)
+        self.assertIn("TDQ_SEARCH_LOG", text)       # =0 thì tắt log
+        low = text.lower()
+        self.assertIn("orchestrator", low)
+        self.assertIn("không commit", low)
+        self.assertIn("merge", low)                 # cấm tự merge
 
 
 class DeepSearchDocTest(unittest.TestCase):
@@ -614,6 +699,24 @@ class DeepSearchDocTest(unittest.TestCase):
                        "spot-check",                # 7. verify nguồn top
                        "engine-failed",             # 8. fallback Tavily
                        "Tavily"):
+            self.assertIn(needle, text, needle)
+
+    def test_hybrid_flow_needles(self):
+        with open(self.DEEP, encoding="utf-8") as f:
+            text = f.read()
+        for needle in ("Phase 1",                   # flow 2 phase, luôn đủ
+                       "Phase 2",
+                       "tổng quát:",                # prefix slot 1 (agy rộng)
+                       "scout:",                    # prefix slot 2 (Claude)
+                       "search-scout",              # agent scout
+                       "--start-agent 3",           # phase 2 đánh số từ 3
+                       "brief-phase2.md",           # brief nối route đã chốt
+                       "Hướng từ phase 1",          # mục nối vào brief
+                       "ngoại lệ",                  # slot cố định ≠ luật split
+                       "scout-failed",              # định nghĩa degrade (b)
+                       "cả hai hỏng",               # degrade (c)
+                       "SAU merge",                 # dòng degrade ghi sau merge
+                       "gemini-3.6-flash-medium"):  # default model mới
             self.assertIn(needle, text, needle)
 
     def test_tavily_md_layering(self):
