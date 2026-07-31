@@ -26,6 +26,23 @@ def read(name):
         return f.read()
 
 
+class ReadOnlyAgentToolsTest(unittest.TestCase):
+    """A11 — agent chỉ-đọc phải khai `tools:` không có Edit/Write (mặc định là ALL)."""
+
+    NAMES = ("tdq-qc-tester.md", "tdq-reviewer.md")
+
+    def test_frontmatter_tools_read_only(self):
+        for name in self.NAMES:
+            with self.subTest(agent=name):
+                path = os.path.join(ROOT, "agents", name)
+                with open(path, encoding="utf-8") as f:
+                    head = f.read().split("---", 2)[1]
+                match = re.search(r"^tools:\s*(.+)$", head, re.MULTILINE)
+                self.assertIsNotNone(match, f"{name} thiếu dòng tools:")
+                self.assertNotIn("Edit", match.group(1))
+                self.assertNotIn("Write", match.group(1))
+
+
 class SkillShapeTest(unittest.TestCase):
     def assert_shape(self, name):
         path = os.path.join(SKILLS, name, "SKILL.md")

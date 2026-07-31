@@ -516,16 +516,19 @@ PHASE_TABLE = {
     "quick": {
         "entry": "lane = quick",
         "action": "Trình mini-plan ≤10 dòng → chờ duyệt → ghi working log TRƯỚC → rồi mới implement",
-        "cmd": "python3 scripts/tdq_state.py approve quick --by \"<nguyên văn câu user>\"",
+        # A26: khớp intake — quick cũng có biến thể external ("duyệt quick external")
+        "cmd": "python3 scripts/tdq_state.py approve quick [--mode external] --by \"<nguyên văn câu user>\"",
         "checklist": [
             "Trình mini-plan ≤10 dòng: việc sẽ làm, file sẽ đụng, cách validate, "
             "kèm 1 dòng 'Năng lực: <skill sẽ DÙNG hoặc không có>'",
-            "In: ➤ Duyệt: nhắn \"duyệt quick\" · Góp ý: nhắn trực tiếp — rồi DỪNG",
-            "User duyệt → chạy lệnh approve ở trên",
+            "In: ➤ Duyệt: nhắn \"duyệt quick\" (giao engine ngoài: \"duyệt quick external\") "
+            "· Góp ý: nhắn trực tiếp — rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên (chỉ thêm --mode external khi user nói external)",
             "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
             "Implement + validate, rồi cập nhật working log",
+            "Đóng việc: chạy `python3 scripts/tdq_state.py set phase=idle` — terminal của lane quick",
         ],
-        "done_when": "quick_approved = true, log đã ghi, việc đã validate",
+        "done_when": "quick_approved = true, log đã ghi, việc đã validate, phase đã về idle",
         "forbidden": "Implement trước khi ghi working log",
     },
 }
@@ -535,16 +538,27 @@ PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "implement", "qc", "report
                "idle", "quick"]
 
 
-def render_phases_md():
+_SCRIPT_PATH = re.compile(r"python3 scripts/(\S+\.py)")
+
+
+def plugin_root_cmd(cmd):
+    """A40: dạng lệnh cho doc chạy trong ngữ cảnh plugin (conventions §1)."""
+    return _SCRIPT_PATH.sub(r'python3 "${CLAUDE_PLUGIN_ROOT}/scripts/\1"', cmd)
+
+
+def render_phases_md(plugin_root=False):
     """Sinh doc bảng phase từ PHASE_TABLE — doc KHÔNG được viết tay.
 
     Chạy lại bằng: python3 scripts/tdq_state.py phases-doc > <file>
+    (thêm --plugin-root cho bản skills/tdq-conventions — path theo conventions §1).
     tests/test_phase_table.py::test_docs_match_constant khoá cứng sự đồng bộ này.
     """
+    conv = plugin_root_cmd if plugin_root else (lambda c: c)
     lines = [
         "# Bảng phase TDQ (tự sinh — KHÔNG sửa tay)",
         "",
-        "Sinh lại: `python3 scripts/tdq_state.py phases-doc > <file>`.",
+        "Sinh lại: `" + conv("python3 scripts/tdq_state.py") + " phases-doc"
+        + (" --plugin-root" if plugin_root else "") + " > <file>`.",
         "Nguồn: hằng `PHASE_TABLE` trong `scripts/tdq_state.py`.",
         "Đang ở phase nào thì chỉ làm đúng việc của phase đó, xong chạy đúng lệnh của nó.",
         "",
@@ -558,14 +572,14 @@ def render_phases_md():
     for name in PHASE_ORDER:
         row = PHASE_TABLE[name]
         lines.append("| `{}` | {} | {} | `{}` | {} | {} |".format(
-            name, cell(row["entry"]), cell(row["action"]), cell(row["cmd"]),
+            name, cell(row["entry"]), cell(row["action"]), cell(conv(row["cmd"])),
             cell(row["done_when"]), cell(row["forbidden"])))
     lines.append("")
     lines.append("Lệnh nguyên văn (copy được, không có ký tự thoát):")
     lines.append("")
     lines.append("```")
     for name in PHASE_ORDER:
-        lines.append(f"{name}: {PHASE_TABLE[name]['cmd']}")
+        lines.append(f"{name}: {conv(PHASE_TABLE[name]['cmd'])}")
     lines.append("```")
     lines.append("")
     for name in PHASE_ORDER:
@@ -573,7 +587,9 @@ def render_phases_md():
         lines.append(f"## {name}")
         # lệnh trong checklist phải nằm trong inline-code thì mới copy đúng
         # (và mới qua được rule R2 của scripts/doc_lint.py)
-        lines += [f"{i}. {re.sub(r'(python3 .+)$', r'`\\1`', item)}"
+        # item đã tự đặt inline-code thì giữ nguyên (tránh wrap đôi ``cmd`)
+        lines += [f"{i}. " + (conv(item) if "`" in item
+                              else re.sub(r"(python3 .+)$", r"`\1`", conv(item)))
                   for i, item in enumerate(row["checklist"], 1)]
         lines.append("")
     return "\n".join(lines).rstrip() + "\n"
@@ -585,6 +601,10 @@ def phase_key(state):
         return "no_state"
     lane = effective_lane(state, warn=False)
     if lane == "quick":
+        # A6: terminal cho lane quick — đã duyệt VÀ đã set phase=idle nghĩa là xong
+        # (approve quick đẩy phase=implement, nên idle sau đó chỉ có thể là chủ động đóng).
+        if state.get("quick_approved") and effective_phase(state, warn=False) == "idle":
+            return "idle"
         return "quick"
     return effective_phase(state, warn=False)
 
@@ -696,7 +716,7 @@ TURN_STALE_SECONDS = 6 * 3600
 def _row_age_ok(row):
     try:
         ts = datetime.fromisoformat(row.get("ts", ""))
-    except ValueError:
+    except (ValueError, TypeError):  # A18: ts số/None không được kéo chết hook
         return False
     if ts.tzinfo is None:
         ts = ts.astimezone()
@@ -853,6 +873,10 @@ def _cli_approve(cwd, rest):
     state[f"{target}_approved_by"] = by
     if mode:
         state["implement_mode"] = mode
+    if target == "quick":
+        # A6: quick không đi qua bảng phase — đẩy implement để `set phase=idle`
+        # lúc đóng việc trở thành terminal phân biệt được với idle trước duyệt.
+        state["phase"] = "implement"
     save(cwd, state, expect_updated_at=stamp)
     if not by:
         _warn("Thiếu --by \"<nguyên văn câu user>\" — nên ghi lại để còn đối chiếu ai duyệt cái gì.")
@@ -883,7 +907,10 @@ def cli(argv):
 
     if cmd == "phases-doc":
         # Không đọc/ghi state: chỉ đổ hằng PHASE_TABLE ra markdown.
-        print(render_phases_md(), end="")
+        extra = argv[1:]
+        if extra not in ([], ["--plugin-root"]):
+            _fail(f"Tham số không hợp lệ: {' '.join(extra)}")
+        print(render_phases_md(plugin_root=bool(extra)), end="")
         return
 
     if cmd == "get":

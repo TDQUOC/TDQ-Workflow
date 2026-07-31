@@ -187,6 +187,18 @@ class TestState(unittest.TestCase):
         self.assertTrue(any("external" in item for item in
                             tdq_state.PHASE_TABLE["plan"]["checklist"]))
 
+    def test_approve_quick_moves_phase_to_implement(self):
+        """A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal."""
+        run_state_cli(self.cwd, "init", "r1", "quick")
+        run_state_cli(self.cwd, "approve", "quick", "--by", "duyệt quick")
+        self.assertEqual(read_state(self.cwd)["phase"], "implement")
+
+    def test_row_age_ok_bad_ts_types(self):
+        """A18: ts kiểu số/None/thiếu không được crash hook."""
+        self.assertFalse(tdq_state._row_age_ok({"ts": 123}))
+        self.assertFalse(tdq_state._row_age_ok({"ts": None}))
+        self.assertFalse(tdq_state._row_age_ok({}))
+
     def test_approve_is_idempotent(self):
         run_state_cli(self.cwd, "init", "r1", "quick")
         rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--by", "duyệt quick")

@@ -15,6 +15,7 @@ Steps:
    `{"agent": 2, "routes": ["scout: <chủ đề>"], "routes_failed": [], "findings": [{"route", "claim", "source_url", "evidence_quote", "score", "url_alive"}...], "not_found": <bool>, "queries_used": [...]}`
    Every finding's `route` starts with `scout: `. Score 0–10 by confidence and source quality.
 5. Log service (bật mặc định): append ISO-timestamped lines to `<run-dir>/agent-2.log` as you go — each query, each URL check + status, final findings count. If env `TDQ_SEARCH_LOG=0`, skip writing the log file entirely.
+6. If BOTH tavily layers die (tavily-primary then tavily-backup: connection/auth/timeout/quota), do NOT leave the slot empty. Still write `<run-dir>/agent-2.json` with `"findings": [], "not_found": true, "routes_failed": ["scout: <chủ đề>"]` and log the failure. Put the literal marker `scout-failed` in your final message so the orchestrator degrades the run — the decision itself stays with the orchestrator.
 
 Rules:
 - Exactly ONE scout per run — never spawn other agents, never run `agy`, never run `search_task.py` (`split`/`run`/`merge` belong to the orchestrator / wrapper).

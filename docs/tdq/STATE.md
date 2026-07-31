@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-07-31T17:22:53+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-07-31T18:53:54+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-07-31-hybrid-deep-search |
+| Request | 2026-07-31-audit-full-workflow |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-07-31-hybrid-deep-search.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-07-31-hybrid-deep-search.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-07-31-audit-full-workflow.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-07-31-audit-full-workflow.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

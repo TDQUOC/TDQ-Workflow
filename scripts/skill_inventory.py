@@ -141,7 +141,9 @@ def inventory(project):
 
 
 def main(argv):
-    project = os.getcwd()
+    # A23: neo theo project thật (TDQ_PROJECT_DIR > git root > cwd) — chạy từ
+    # thư mục con không được mất nguồn skill `project`.
+    project = tdq_state.resolve_project_dir()
     args = list(argv)
     while args:
         arg = args.pop(0)

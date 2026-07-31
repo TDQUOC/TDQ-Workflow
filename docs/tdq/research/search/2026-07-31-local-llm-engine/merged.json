@@ -1,0 +1,455 @@
+{
+  "run_id": "2026-07-31-local-llm-engine",
+  "findings": [
+    {
+      "source_url": "https://ollama.com/blog/structured-outputs",
+      "routes": [
+        "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime"
+      ],
+      "claim": "Ollama hỗ trợ Structured Outputs bằng cách giới hạn output của model theo JSON schema (thông qua tham số format trong API) và hỗ trợ Tool Calling.",
+      "evidence_quote": "Ollama now supports structured outputs making it possible to constrain a model's output to a specific format defined by a JSON schema. The Ollama Python and JavaScript libraries have been updated to support structured outputs.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder/",
+      "routes": [
+        "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime"
+      ],
+      "claim": "Dòng model open-weights Qwen2.5-Coder được huấn luyện trên 5.5 trillion token nhằm tối ưu hóa vượt trội cho các tác vụ code và agentic workflow.",
+      "evidence_quote": "Qwen2.5-Coder builds on the strong Qwen2.5 and continues training on a larger scale of code data, including source code, text-code grounding data, and synthetic data, totaling 5.5 trillion tokens.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "routes": [
+        "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+        "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema"
+      ],
+      "claim": "llama.cpp sử dụng GBNF (GGML BNF) grammars để định hình và bắt buộc output của model phải tuân thủ chính xác các ràng buộc cấu trúc như JSON schema.",
+      "evidence_quote": "GBNF (GGML BNF) is a format for defining formal grammars to constrain model outputs in llama.cpp. For example, you can use it to force the model to generate valid JSON, or speak only in emojis.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "routes": [
+        "model"
+      ],
+      "claim": "DeepSeek-R1-Distill-Qwen-14B được fine-tune từ base model Qwen2.5-14B bằng cách sử dụng các mẫu dữ liệu suy luận (reasoning samples) được tạo ra từ DeepSeek-R1.",
+      "evidence_quote": "DeepSeek-R1-Distill-Qwen-14B | 69.7 | 80.0 | 93.9 | 59.1 | 53.1 | 1481",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "routes": [
+        "model"
+      ],
+      "claim": "Họ Qwen2.5-Coder cung cấp 6 quy mô kích thước mô hình bao gồm 0.5B, 1.5B, 3B, 7B, 14B và 32B đáp ứng đa dạng nhu cầu lập trình local và agent.",
+      "evidence_quote": "Qwen2.5-Coder 0.5B / 1.5B / 7B / 14B / 32B are licensed under Apache 2.0, while 3B is under Qwen-Research license;",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/dottxt-ai/outlines",
+      "routes": [
+        "kỹ thuật harden"
+      ],
+      "claim": "Outlines đảm bảo sinh đầu ra có cấu trúc (structured outputs) trực tiếp trong quá trình giải mã/sinh chữ (during generation) từ LLM thay vì dùng parser hay regex sửa lỗi sau generation.",
+      "evidence_quote": "Outlines is a library developed by dottxt... designed to make Large Language Models more reliable through constrained decoding and guided generation... Provides specialized processors to ensure generated content perfectly matches a provided JSON schema",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+      "routes": [
+        "kỹ thuật harden"
+      ],
+      "claim": "GBNF (GGML BNF) là định dạng formal grammar được tích hợp trong llama.cpp để ép buộc output của model tuân theo cấu trúc xác định (chẳng hạn ép buộc sinh JSON hợp lệ).",
+      "evidence_quote": "At each decoding step, the sampler identifies which tokens are valid according to the GBNF grammar. Any token that would violate the grammar is masked (its logit is set to negative infinity) before the selection process",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/jxnl/instructor",
+      "routes": [
+        "kỹ thuật harden"
+      ],
+      "claim": "Instructor sử dụng Pydantic để thực hiện validation, đảm bảo type safety và sinh JSON có cấu trúc đáng tin cậy từ bất kỳ LLM nào (bao gồm local LLM qua Ollama).",
+      "evidence_quote": "When you provide a response_model and encounter a Pydantic validation error (or JSON decoding error), Instructor can use the max_retries parameter to send the error context back to the LLM, allowing it to attempt to fix the output",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "routes": [
+        "kỹ thuật harden",
+        "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema"
+      ],
+      "claim": "XGrammar (với phiên bản XGrammar-2 phát hành 05/2026) hỗ trợ sinh dữ liệu có cấu trúc hiệu năng cao trên Apple Silicon thông qua gói metal (pip install \"xgrammar[metal]\").",
+      "evidence_quote": "The mask identifies tokens that are invalid according to the provided grammar (e.g., JSON schema, regex, or EBNF) and sets their logits to -\\infty. After a softmax operation, these invalid tokens have a probability of 0, ensuring the LLM only samples valid tokens",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/abs/2508.05118",
+      "routes": [
+        "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+      ],
+      "claim": "Mô hình 4B tham số được huấn luyện bằng EGPO (FunRL) đạt state-of-the-art trên Berkeley Function Calling Leaderboard (BFCL) trong nhóm cùng quy mô, vượt qua cả GPT-4o và Gemini-2.5.",
+      "evidence_quote": "On the challenging Berkeley Function Calling Leaderboard (BFCL), a 4B-parameter model trained with EGPO sets a new state-of-the-art among models of comparable size, surpassing a range of strong competitors, including GPT-4o and Gemini-2.5.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://gorilla.cs.berkeley.edu/leaderboard.html",
+      "routes": [
+        "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+      ],
+      "claim": "Berkeley Function Calling Leaderboard (BFCL V4) là bảng xếp hạng tiêu chuẩn đánh giá chính xác khả năng gọi hàm và sử dụng tool của các LLM.",
+      "evidence_quote": "Explore The Berkeley Function Calling Leaderboard (also called The Berkeley Tool Calling Leaderboard) to see the LLM's ability to call functions (aka tools) accurately.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/ggml-org/llama.cpp",
+      "routes": [
+        "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API"
+      ],
+      "claim": "llama.cpp tối ưu hóa native cho macOS Apple Silicon với vị thế first-class citizen thông qua ARM NEON, Accelerate và Metal framework.",
+      "evidence_quote": "The llama-server uses chat templates (typically enabled via the --jinja flag) to instruct the model on how to format tool definitions and output... Currently, llama-server cannot simultaneously use custom GBNF grammars and OpenAI-style tools; the server will return a 400 error if both are requested.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct",
+      "routes": [
+        "model"
+      ],
+      "claim": "Qwen2.5-Coder-14B-Instruct được Alibaba mở nguồn với 14.7B tham số, hỗ trợ ngữ cảnh tối đa 131,072 tokens (128K) thông qua kỹ thuật YaRN và tối ưu cho nhiệm vụ lập trình, sửa lỗi code và suy luận.",
+      "evidence_quote": "This repo contains the instruction-tuned 14B Qwen2.5-Coder model, which has the following features: ... Number of Parameters: 14.7B ... Context Length: Full 131,072 tokens",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/2511.05502",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Nghiên cứu so sánh học thuật (arXiv 2511.05502) đo MLX, MLC-LLM, Ollama, llama.cpp trên Apple Silicon: MLX và MLC-LLM dẫn đầu hiệu năng; Ollama (bản llama.cpp cũ) chậm hơn một bậc độ lớn về throughput; llama.cpp sụp throughput sau 32k token context (~1.2 tok/s) — chọn MLX làm baseline cho deployment Apple-first.",
+      "evidence_quote": "Our results show that MLX and MLC-LLM are the clear front-runners for high-performance LLM inference on Apple Silicon. ... Ollama: Ideal for prototyping and one-command local APIs, but an order of magnitude slower than MLX/MLC in throughput. ... llama.cpp: ... Throughput collapses beyond 32k tokens",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://ollama.com/blog/mlx",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Ollama đã chuyển backend Apple Silicon sang MLX (preview 30/03/2026, thay llama.cpp Metal) — nguồn chính thức Ollama, nhắm thẳng use case coding agent (Claude Code, OpenCode, Codex); trên máy đích macOS Apple Silicon đây là runtime mặc định đáng cân nhắc nhất vì giữ nguyên API Ollama nhưng ăn tốc độ MLX.",
+      "evidence_quote": "Today, we're previewing the fastest way to run Ollama on Apple silicon, powered by MLX, Apple's machine learning framework. This unlocks new performance to accelerate your most demanding work on macOS: Personal assistants like OpenClaw; Coding agents like Claude Code, OpenCode, or Codex",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://www.docker.com/blog/local-llm-tool-calling-a-practical-evaluation",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Đánh giá tool-calling thực nghiệm của Docker trên model local: Qwen3 14B (Q4_K_M) đạt Tool Selection F1 = 0.971, gần bằng GPT-4 (0.974); Qwen3 8B đạt 0.933 với latency ~1/2; quantization Q4 không làm giảm chất lượng tool-calling đáng kể — Qwen3 8B/14B là ứng viên số 1 nhóm ≤14B cho engine agent.",
+      "evidence_quote": "On the local side, Qwen 3 (14B) delivered outstanding results, nearly matching GPT-4 with a 0.971 F1 score... Qwen 3 (8B) also achieved an F1 score of 0.933, while cutting latency nearly in half... we experimented with both quantized and non-quantized variants for some models, and in all cases observed no significant difference in tool-calling behavior or performance.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/abs/2409.12186",
+      "routes": [
+        "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+      ],
+      "claim": "Dòng mô hình Qwen2.5-Coder (từ 0.5B đến 32B) được tiếp tục huấn luyện trên hơn 5.5 nghìn tỉ token, đạt kết quả state-of-the-art trên hơn 10 benchmark về mã nguồn bao gồm sinh mã, hoàn thành, suy luận và sửa lỗi.",
+      "evidence_quote": "This series includes six models: Qwen2.5-Coder-(0.5B/1.5B/3B/7B/14B/32B). As a code-specific model, Qwen2.5-Coder is built upon the Qwen2.5 architecture and continues pretrained on a vast corpus of over 5.5 trillion tokens. Through meticulous data cleaning, scalable synthetic data generation, and balanced data mixing, Qwen2.5-Coder demonstrates impressive code generation capabilities while retaining general and math skills. These models have been evaluated on a wide range of code-related tasks, achieving state-of-the-art (SOTA) performance across more than 10 benchmarks, including code generation, completion, reasoning, and repair, consistently outperforming larger models of the same model size.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/abs/2412.08905",
+      "routes": [
+        "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+      ],
+      "claim": "Mô hình Phi-4 14B được huấn luyện tập trung vào chất lượng dữ liệu tổng hợp, vượt qua mô hình teacher GPT-4 ở các bài đánh giá suy luận STEM.",
+      "evidence_quote": "We present phi-4, a 14-billion parameter language model developed with a training recipe that is centrally focused on data quality. Unlike most language models, where pre-training is based primarily on organic data sources such as web content or code, phi-4 strategically incorporates synthetic data throughout the training process. While previous models in the Phi family largely distill the capabilities of a teacher model (specifically GPT-4), phi-4 substantially surpasses its teacher model on STEM-focused QA capabilities, giving evidence that our data-generation and post-training techniques go beyond distillation.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/html/2409.12186v3",
+      "routes": [
+        "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+      ],
+      "claim": "Mô hình Qwen2.5-Coder-14B-Instruct và 7B-Instruct vượt qua các mô hình lớn hơn có tham số trên 20B như CodeStral-22B và DeepSeek-Coder-33B-Instruct trên các tác vụ sinh mã đa ngôn ngữ.",
+      "evidence_quote": "Both Qwen2.5-Coder-7B-Instruct and Qwen2.5-Coder-14B-Instruct even surpass larger models, like CodeStral-22B and DS-Coder-33B-Instruct (which have over 20 billion parameters), underscoring their strong code generation capabilities across multiple languages.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/html/2412.08905v1",
+      "routes": [
+        "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+      ],
+      "claim": "Phi-4 14B vượt Qwen-2.5-14B-Instruct trên 9/12 benchmark thử nghiệm (bao gồm GPQA, MATH, HumanEval/HumanEval+), nhưng bị thua ở các benchmark như SimpleQA và IFEval.",
+      "evidence_quote": "phi-4 outperforms the closest in-class contemporary model, Qwen-2.5-14B-Instruct, in 9 out of 12 benchmarks. While phi-4 underperforms relative to Qwen-2.5-14B-Instruct on the benchmark numbers for SimpleQA, DROP, and IFEval...",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+      "routes": [
+        "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema"
+      ],
+      "claim": "mlx-lm phụ thuộc vào các thư viện bên ngoài như Outlines hoặc llm-structured-output để thực thi constrained decoding / JSON Schema, trong khi máy chủ mlx_server native chưa hỗ trợ đầy đủ tham số response_format.",
+      "evidence_quote": "The most common way to achieve constrained decoding (guaranteed JSON schema compliance) with mlx-lm in Python is through the Outlines library. [...] If you are running an mlx_server, note that standard response_format requests in the current native server implementation may be ignored (resulting in unconstrained text).",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/ollama/ollama",
+      "routes": [
+        "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+        "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API"
+      ],
+      "claim": "Ollama hỗ trợ ép JSON Schema trên runner GGUF tiêu chuẩn, tuy nhiên backend runner MLX trên Apple Silicon bị ghi nhận lỗi bỏ qua tham số format (JSON Schema).",
+      "evidence_quote": "While Ollama’s standard GGUF-based runners support JSON schema enforcement, the MLX runner for Apple Silicon has been reported to ignore the format (JSON Schema) parameter",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/ml-explore/mlx-examples",
+      "routes": [
+        "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API"
+      ],
+      "claim": "mlx_lm.server cung cấp HTTP server tương thích OpenAI API cơ bản cho MLX trên macOS, nhưng để parse chính xác các delimiter tool call (như <tool_call>) trong workflow agent, các wrapper chuyên dụng như mlx-openai-server (với --tool-call-parser) hoặc vllm-mlx thường được ưu tiên sử dụng.",
+      "evidence_quote": "The mlx_lm library provides an OpenAI-compatible HTTP server that allows you to serve local MLX models... If you encounter issues with standard mlx-lm tool-call detection, it is usually because the model generates delimiters (like <tool_call>) that are tokenized as multiple sub-tokens. Using specialized servers like mlx-openai-server or vllm-mlx is generally preferred because they include optimized parsers",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://huggingface.co/microsoft/phi-4",
+      "routes": [
+        "model"
+      ],
+      "claim": "Microsoft Phi-4 (14B) được thiết kế chuyên biệt cho suy luận với dữ liệu tổng hợp (synthetic textbook data), đạt điểm cao trên các benchmark logic và lập trình như MMLU (84.8%), GPQA (56.1%), MATH (80.4%) và HumanEval (82.6%).",
+      "evidence_quote": "Microsoft’s Phi-4 (14B) is recognized for its strong performance on reasoning-centric benchmarks",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://blog.mlc.ai/2026/05/04/xgrammar-2-fast-customizable-structured-generation",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "XGrammar-2 (MLC, 05/2026): constrained decoding đảm bảo 100% output đúng cấu trúc bằng token mask, precompute mask cache lúc compile nên overhead lúc generate gần bằng 0 — thiết kế riêng cho tool calling và agent; XGrammar là backend mặc định của vLLM/SGLang/TensorRT-LLM/MLC-LLM.",
+      "evidence_quote": "XGrammar uses constrained decoding to ensure LLM outputs conform 100% to a given structure. At each decoding step, constrained decoding produces a mask that blocks invalid tokens according to the structure... XGrammar's key insight is precomputing an efficient token mask cache at compilation time, which substantially reduces mask generation time and achieves near-zero overhead during generation.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://developers.redhat.com/articles/2026/06/15/llamacpp-vs-vllm-choosing-right-local-llm-inference-engine",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "llama.cpp (llama-server) và vLLM đều expose OpenAI-compatible API — đổi engine chỉ là đổi URL, không phải viết lại code wrapper; llama.cpp/Ollama/LM Studio phù hợp máy cá nhân, vLLM cho serving đa user. Kiến trúc wrapper TDQ chỉ cần chuẩn OpenAI API là cắm được mọi runtime.",
+      "evidence_quote": "Both engines serve models through an OpenAI-compatible API endpoint. That means whether you're building RAG, AI agents, or any application that talks to an LLM, swapping between llama.cpp and vLLM (or a hosted API like OpenAI) is essentially a URL change. No code rewrite required.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://simonwillison.net/2025/Jul/31/qwen3-coder-flash",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Qwen3-Coder-30B-A3B-Instruct (Qwen3-Coder-Flash): 30.5B tổng nhưng chỉ 3.3B active (MoE) — chạy nhanh trên Mac 64GB, thậm chí 32GB nếu quantize; Simon Willison đánh giá là lựa chọn coding local vững nhất thời điểm đó. Ngoại lệ đáng cân nhắc ngoài dải dense ≤14B vì active params rất thấp.",
+      "evidence_quote": "It's 30.5B total parameters with 3.3B active at any one time. This means it will fit on a 64GB Mac—and even a 32GB Mac if you quantize it—and can run really fast thanks to that smaller set of active parameters. It's a non-thinking model that is specially trained for coding tasks.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://tmls.nyc/research/structured-outputs-constrained-decoding",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Constrained decoding chia 2 họ: FSM/regex (Outlines) nhanh nhưng không biểu diễn nesting; CFG engine (XGrammar, llama.cpp GBNF) xử lý được đệ quy/nesting của JSON Schema thật. Self-host: vLLM/SGLang tích hợp sẵn XGrammar+Outlines, llama.cpp có GBNF — đây là lớp harden schema NGOÀI model cho SLM.",
+      "evidence_quote": "Context-free grammar engines, exemplified by XGrammar and llama.cpp GBNF, handle the recursion and nesting that real JSON Schema requires... If you self-host, your serving stack matters: vLLM and SGLang integrate constrained decoding directly, with XGrammar and Outlines as common grammar backends, and llama.cpp ships GBNF grammars for local models.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://dev.to/brunocerberus/running-local-llms-on-apple-silicon-2ecm",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Setup thực chiến coding agent local trên Apple Silicon: mlx-lm server (OpenAI-compatible) + OpenCode + Qwen3-Coder; lưu ý bug tool parser phải đổi tool_parser_type từ json_tools sang qwen3_coder trong tokenizer_config.json cache thì tool call mới parse đúng — bằng chứng tool-calling qua mlx-lm hoạt động nhưng cần config đúng parser.",
+      "evidence_quote": "1. mlx-lm to serve the model on your Mac's GPU 2. OpenCode as the agentic coding interface 3. The right model --Qwen3-Coder-30B for the sweet spot... Change: \"tool_parser_type\": \"json_tools\" To: \"tool_parser_type\": \"qwen3_coder\" After restarting the server: everything worked perfectly. Tool calls parsed, files read, code edited",
+      "score": 7,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://icml.cc/virtual/2025/poster/46593",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "BFCL (Berkeley Function Calling Leaderboard, ICML 2025) là benchmark chuẩn de facto để đánh giá function calling — dùng để chấm model ≤14B trước khi chọn engine; kết quả BFCL cho thấy model SOTA vẫn yếu ở multi-turn/long-horizon (đúng vùng rủi ro của SLM trong agent loop).",
+      "evidence_quote": "Since its preview, BFCL has become the defacto standard for evaluating function-calls... we observe that while state-of-the-art LLMs excel at singleturn calls, memory, dynamic decision-making, and long-horizon reasoning remain open challenges.",
+      "score": 7,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://modal.com/resources/best-small-open-source-code-llms-ai-agents",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Nhóm model code chuyên dụng ≤14B đáng chú ý (Modal, 2026): SWE-agent-LM-7B (fine-tune từ Qwen2.5-Coder-7B-Instruct, Apache 2.0, tối ưu cho SWE-agent), Seed-Coder-8B-Instruct (ByteDance, MIT, mạnh nhất nhóm ~8B về code editing theo eval 2025), DeepCoder-14B (RL training tái lập được).",
+      "evidence_quote": "SWE-agent-LM-7B from the SWE-bench team is purpose-built for the SWE-agent framework. Fine-tuned from Qwen2.5-Coder-7B-Instruct on automatically generated software engineering tasks... ByteDance-Seed's Seed-Coder-8B-Instruct uses a model-centric data curation pipeline... reaching strong reported results at the 8B scale.",
+      "score": 7,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://tianpan.co/blog/2026-04-16-grammar-constrained-generation-output-reliability",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Grammar-constrained generation thay thế được validate-retry loop (retry chỉ đẩy xác suất fail vào tail latency + cost); overhead hiện đại gần 0: Guidance compile <60ms, XGrammar 0.12–0.30s, XGrammar-2 có Cross-Grammar Cache cho tool definition đổi động — khuyến nghị: schema cố định thì compile 1 lần lúc startup.",
+      "evidence_quote": "The validate-retry loop that most teams implement isn't a robust engineering pattern — it's a workaround that leaks failure probability into tail latency and costs. Grammar-constrained generation replaces probabilistic format compliance with formal guarantees, at a cost that modern engines have reduced to near zero.",
+      "score": 7,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://www.getmaxim.ai/articles/top-5-llm-routing-techniques",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Cascade routing (waterfall): chạy model nhỏ trước, validate chất lượng, fail thì escalate lên model mạnh — hiệu quả nhất chính xác cho case của TDQ: code generation (syntax check làm quality signal) và structured extraction (schema validation làm quality gate). Khớp thiết kế ≤3 attempt rồi fallback hiện có.",
+      "evidence_quote": "Cascading routing is most effective for: Question answering systems where correctness can be validated; Code generation where syntax checking provides clear quality signals; Structured data extraction where schema validation works as a quality gate",
+      "score": 7,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://www.codesota.com/llm/open-models",
+      "routes": [
+        "scout: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime, model, kỹ thuật harden"
+      ],
+      "claim": "Benchmark tổng hợp (CodeSOTA 2025–2026): Qwen 3 14B đạt 84.3% (MMLU) nhỉnh hơn Phi-4 14B 83.9% — hai model dense 14B mạnh nhất nhóm chạy local; Phi-4 có license MIT, Qwen3 Apache 2.0.",
+      "evidence_quote": "| 20 | Qwen 3 14B | Alibaba | 14B | 84.3% | — | — | — | | 21 | Phi-4 14B | Microsoft | 14B | 83.9% | — | — | — |",
+      "score": 6,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Exploring Superior Function Calls via Reinforcement Learning\" arxiv",
+    "\"FunRL\" \"Function Calling\" site:arxiv.org",
+    "\"FunRL\" \"Qwen2.5-Coder-7B-Instruct\" \"BFCL\" OR \"Berkeley\"",
+    "\"Gorilla\" \"Berkeley Function Calling Leaderboard\" \"Qwen2.5-Coder-7B-Instruct\" \"Phi-4\" score",
+    "\"Ollama\" MLX backend support JSON schema format structured outputs",
+    "\"Ollama\" structured outputs JSON schema format",
+    "\"Phi-4\" \"function calling\" OR \"tool calling\" benchmark score 14B",
+    "\"Qwen2.5-Coder\" \"BFCL\" tool calling score 7B 14B Q4 quantization accuracy loss",
+    "\"Qwen2.5-Coder\" \"function calling\" \"multi-turn\" \"quantization\" site:huggingface.co OR site:arxiv.org",
+    "\"Qwen2.5-Coder-14B\" OR \"Qwen2.5-Coder-7B\" benchmark HumanEval MBPP LiveCodeBench \"BFCL\"",
+    "\"Qwen2.5-Coder-14B-Instruct\" \"BFCL\" OR \"tool calling\" OR \"multi-turn\" OR \"quantization\"",
+    "\"Qwen2.5-Coder-7B-Instruct\" \"BFCL\" OR \"Berkeley Function Calling Leaderboard\" score",
+    "\"Qwen3\" \"8B\" \"14B\" \"tool calling\" OR \"BFCL\" OR \"quantization\"",
+    "\"XGrammar\" structured generation json schema LLM macOS mlx-lm llama.cpp",
+    "\"constrained decoding\" \"ollama\" \"llama.cpp\" GBNF json schema documentation",
+    "\"constrained decoding\" \"retry\" LLM agent \"JSON schema\" fallback model",
+    "\"https://github.com/ggml-org/llama.cpp\" GBNF grammar documentation",
+    "\"https://ollama.com/blog/structured-outputs\" OR \"https://ollama.com/blog/tool-calling\"",
+    "\"https://qwenlm.github.io/blog/qwen2.5-coder/\" OR \"qwen2.5-coder-7b-instruct\" \"qwen2.5-coder-14b-instruct\"",
+    "\"llama-server\" OR \"llama.cpp\" tool calling streaming OpenAI API JSON schema Apple Silicon metal",
+    "\"llama.cpp\" \"GBNF\" grammar structured output JSON schema",
+    "\"llama.cpp\" GBNF grammar JSON schema constrained decoding structured output",
+    "\"mlx-lm\" structured output json schema constrained decoding",
+    "\"retry\" \"validation\" \"instructor\" \"pydantic\" structured output LLM agent",
+    "BFCL benchmark Qwen3 Qwen2.5 Coder Phi-4 function calling tool calling 8B 14B",
+    "Berkeley Function Calling Leaderboard BFCL small model 7B 8B 14B function calling accuracy open source",
+    "DeepSeek-R1-Distill-Qwen-14B benchmark coding tool calling",
+    "DeepSeek-R1-Distill-Qwen-14B model card benchmark",
+    "Ollama MLX backend Apple Silicon 2026 release notes tool calling OpenAI API",
+    "Qwen2.5 Coder 14B benchmark tool calling code editing",
+    "Qwen2.5-Coder-14B-Instruct model card benchmark score",
+    "best open-weights LLM under 14B for coding agent tool calling 2025 benchmark Qwen3 Qwen2.5-Coder Llama Gemma Phi-4 DeepSeek",
+    "constrained decoding JSON schema enforcement small LLM grammar GBNF outlines xgrammar structured output reliability",
+    "constrained decoding JSON schema outlines vllm llama.cpp xgrammar",
+    "https://arxiv.org/abs/2409.12186",
+    "https://arxiv.org/abs/2508.05118",
+    "https://arxiv.org/html/2409.12186v3",
+    "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+    "https://github.com/dottxt-ai/outlines",
+    "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+    "https://github.com/jxnl/instructor",
+    "https://ollama.com/blog/structured-outputs",
+    "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+    "https://qwenlm.github.io/blog/qwen2.5-coder/",
+    "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+    "llama.cpp vs Ollama vs vLLM vs LM Studio vs MLX local LLM runtime comparison tool calling structured output Apple Silicon 2025",
+    "microsoft phi-4 model card benchmark score",
+    "mlx-lm server openai api tool calling streaming structured output apple silicon",
+    "ollama vs llama.cpp vs mlx-lm vs vllm tool calling structured output macOS Apple Silicon code agent",
+    "run Qwen3 coder small model locally macOS Apple Silicon MLX Ollama tool calling agent coding CLI 2025 2026",
+    "site:docs.vllm.ai \"structured outputs\" OR \"guided decoding\"",
+    "site:docs.vllm.ai/en/latest/serving/structured_outputs.html OR site:docs.vllm.ai/en/stable/serving/structured_outputs.html",
+    "site:github.com/dantic/instructor OR site:github.com/outlines-dev/outlines OR site:github.com/vllm-project/vllm \"guided decoding\" JSON schema",
+    "site:github.com/dottxt-ai/outlines OR site:github.com/outlines-dev/outlines \"constrained decoding\" OR \"guided generation\"",
+    "site:github.com/ggml-org/llama.cpp \"tool_calls\" OR \"tools\" \"llama-server\"",
+    "site:github.com/jxnl/instructor \"max_retries\"",
+    "site:github.com/ml-explore/mlx-examples \"mlx_lm\" structured JSON outlines",
+    "site:github.com/ml-explore/mlx-examples \"mlx_lm.server\" OR \"tool\" OR \"chat\"",
+    "site:github.com/ml-explore/mlx-examples/tree/main/llms/mlx_lm \"server\" OR \"openai\"",
+    "site:github.com/mlc-ai/xgrammar OR \"mlc-ai/xgrammar\" structured generation token mask",
+    "site:github.com/ollama/ollama \"tool calling\" structured output json format",
+    "site:github.com/ollama/ollama \"tool_calls\" streaming OpenAI compatibility",
+    "site:github.com/ollama/ollama/issues \"mlx\" \"format\" OR \"schema\" OR \"json\"",
+    "site:gorilla.cs.berkeley.edu/blogs \"Qwen\" \"Phi\" OR \"BFCL\"",
+    "site:ollama.com/blog \"tool calling\" OR \"tools\"",
+    "site:python.useinstructor.com \"max_retries\" validation error",
+    "small language model agent reliability retry with feedback validation loop fallback to stronger model cascade routing technique",
+    "vllm \"xgrammar\" OR \"outlines\" structured decoding JSON schema"
+  ],
+  "routes_failed": [],
+  "empty_routes": []
+}

@@ -1,0 +1,5 @@
+[2026-07-31T18:07:39+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=85.7
+[2026-07-31T18:07:50+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=2 secs=11.3
+[2026-07-31T18:08:10+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=20.1
+[2026-07-31T18:08:32+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=21.9
+[2026-07-31T18:08:34+07:00] agent=3 agy=1.1.9 exit=0 findings=13 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-3.json

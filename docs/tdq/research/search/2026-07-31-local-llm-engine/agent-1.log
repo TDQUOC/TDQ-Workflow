@@ -1,0 +1,13 @@
+[2026-07-31T17:59:08+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=105.8
+[2026-07-31T17:59:20+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=11.4
+[2026-07-31T17:59:31+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=11.2
+[2026-07-31T17:59:46+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=15.0
+[2026-07-31T18:01:04+07:00] agent=1 agy=1.1.9 route=model call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=78.2
+[2026-07-31T18:01:22+07:00] agent=1 agy=1.1.9 route=model call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=18.3
+[2026-07-31T18:01:39+07:00] agent=1 agy=1.1.9 route=model call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=16.3
+[2026-07-31T18:02:04+07:00] agent=1 agy=1.1.9 route=model call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=25.0
+[2026-07-31T18:03:04+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=59.9
+[2026-07-31T18:03:15+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=11.1
+[2026-07-31T18:03:27+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=12.0
+[2026-07-31T18:03:42+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=15.1
+[2026-07-31T18:03:54+07:00] agent=1 agy=1.1.9 exit=0 findings=44 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-1.json

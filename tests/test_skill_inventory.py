@@ -72,6 +72,22 @@ class InventoryBase(unittest.TestCase):
         return root
 
 
+class ProjectDirResolveTest(InventoryBase):
+    """A23 — không có --project thì neo theo TDQ_PROJECT_DIR, không lấy cwd mù."""
+
+    def test_env_project_dir_used_when_no_flag(self):
+        self.write("proj/.claude/skills/demo-skill/SKILL.md",
+                   skill_md("demo-skill"))
+        elsewhere = os.path.join(self.tmp.name, "elsewhere")
+        os.makedirs(elsewhere)
+        env = dict(os.environ, HOME=self.home, TDQ_PROJECT_DIR=self.project)
+        proc = subprocess.run(
+            [sys.executable, SCRIPT], capture_output=True, text=True,
+            env=env, timeout=30, cwd=elsewhere)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("demo-skill", proc.stdout)
+
+
 class CliTest(InventoryBase):
     def test_cli_exit_codes(self):
         """HOME rỗng → bảng rỗng nhưng exit 0; cờ lạ → exit 2 (sai cú pháp)."""

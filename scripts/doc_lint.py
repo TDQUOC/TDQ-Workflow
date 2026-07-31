@@ -51,8 +51,12 @@ class Doc:
 
     def __init__(self, path):
         self.path = path
-        with open(path, encoding="utf-8") as f:
-            self.lines = f.read().splitlines()
+        try:
+            with open(path, encoding="utf-8") as f:
+                self.lines = f.read().splitlines()
+        except OSError as exc:
+            # A20: file biến mất/không đọc được → message, không traceback thô
+            sys.exit(f"⚠️ không đọc được {path}: {exc}")
         self.in_fence = []
         fenced = False
         for line in self.lines:
@@ -350,6 +354,12 @@ def main(argv):
     if not argv:
         print("Cách dùng: doc_lint.py <file.md hoặc thư mục> | --pair <spec> <plan>",
               file=sys.stderr)
+        return EXIT_SYNTAX
+    # A19: path ma từng bị collect() bỏ lặng → exit 0 giả sạch. Chặn ngay đầu.
+    missing = [p for p in argv if not os.path.exists(p)]
+    if missing:
+        for p in missing:
+            print(f"⚠️ không tìm thấy: {p}", file=sys.stderr)
         return EXIT_SYNTAX
     problems = []
     for path in collect(argv):

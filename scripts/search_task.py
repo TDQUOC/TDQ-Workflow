@@ -90,8 +90,17 @@ def _log_enabled():
     return os.environ.get("TDQ_SEARCH_LOG", "1") != "0"
 
 
-with open(SCHEMA_PATH, encoding="utf-8") as _f:
-    _SCHEMA = json.load(_f)
+def _load_schema(path):
+    """A14: thiếu/hỏng file schema phải ra message rõ, không traceback thô."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError) as exc:
+        sys.exit(f"⚠️ không đọc được schema {path}: {exc} — "
+                 "kiểm tra file schema của plugin rồi chạy lại.")
+
+
+_SCHEMA = _load_schema(SCHEMA_PATH)
 # Luật URL MỘT chỗ duy nhất: đọc pattern từ schema, script không tự chế regex khác.
 URL_PATTERN = re.compile(
     _SCHEMA["properties"]["findings"]["items"]["properties"]["source_url"]["pattern"])
@@ -188,6 +197,11 @@ def cmd_split(routes_raw, max_agents_flag, start_agent=1):
     if not routes:
         _warn("split: không có route nào.")
         return 2
+    # A7: contract separator là DẤU PHẨY — chuỗi dùng ';' không tách được,
+    # còn route chứa dấu phẩy trong text sẽ bị tách nhầm thành nhiều route.
+    if ";" in routes_raw:
+        _warn("split: separator route là dấu phẩy — ';' KHÔNG tách route. "
+              "Viết route ngăn nhau bằng ',' và bỏ dấu phẩy bên trong text route.")
     max_agents = max_agents_flag or cfg["TDQ_SEARCH_MAX_AGENTS"]
     assignments, dropped = split_routes(routes, max_agents,
                                         cfg["TDQ_SEARCH_MAX_ROUTES"],
@@ -286,7 +300,7 @@ def call_agy(model, prompt, timeout_secs):
                               stdin=subprocess.DEVNULL, timeout=timeout_secs)
     except subprocess.TimeoutExpired:
         return None, f"timeout sau {timeout_secs}s (process bị kill)", "timeout", \
-            time.monotonic() - start
+            time.monotonic() - start, ""
     secs = time.monotonic() - start
     data, parse_err = _extract_structured(proc.stdout)
     errors = [parse_err] if parse_err else validate_report(data)
@@ -294,8 +308,10 @@ def call_agy(model, prompt, timeout_secs):
         stderr_tail = proc.stderr.strip().splitlines()[-3:]
         detail = "; ".join(errors) + (
             f" | stderr: {' / '.join(stderr_tail)}" if stderr_tail else "")
-        return None, detail, proc.returncode, secs
-    return data, None, proc.returncode, secs
+        raw = proc.stdout + ("\n--- STDERR ---\n" + proc.stderr
+                             if proc.stderr.strip() else "")
+        return None, detail, proc.returncode, secs, raw
+    return data, None, proc.returncode, secs, ""
 
 
 def call_with_retry(job, model, escalation, prompt, timeout_secs, logger,
@@ -309,14 +325,23 @@ def call_with_retry(job, model, escalation, prompt, timeout_secs, logger,
             full_prompt += (f"\n\n## LỖI LẦN TRƯỚC (attempt {attempt - 1})\n"
                             f"{last_error}\nHãy sửa và trả về DUY NHẤT một JSON "
                             "đúng schema.")
-        data, error, exit_code, secs = call_agy(used_model, full_prompt,
-                                                timeout_secs)
+        data, error, exit_code, secs, raw = call_agy(used_model, full_prompt,
+                                                     timeout_secs)
         findings = len(data["findings"]) if data else 0
         logger.write(f"{log_ctx} call={job} attempt={attempt} model={used_model} "
                      f"exit={exit_code} findings={findings} secs={secs:.1f}"
                      + (f" error={error}" if error else ""))
         if data is not None:
             return data
+        if raw:
+            # A4: persist raw output call hỏng cạnh log agent — để debug prompt/model
+            base = logger.path[:-4] if logger.path.endswith(".log") else logger.path
+            try:
+                with open(f"{base}.{job}-attempt{attempt}.raw.txt", "w",
+                          encoding="utf-8") as f:
+                    f.write(raw)
+            except OSError as exc:
+                _warn(f"không ghi được raw output: {exc}")
         last_error = error
     return None
 
@@ -347,8 +372,12 @@ def cmd_run(brief_file, run_dir, agent_k, routes_raw, model, escalation):
     os.makedirs(run_dir, exist_ok=True)
     brief_copy = os.path.join(run_dir, "brief.md")
     if not os.path.exists(brief_copy):
-        with open(brief_copy, "w", encoding="utf-8") as f:
+        # A16: ghi atomic (tmp theo pid + replace) — 2 agent copy song song không
+        # để lại brief cụt cho agent kia đọc.
+        tmp_copy = f"{brief_copy}.tmp{os.getpid()}"
+        with open(tmp_copy, "w", encoding="utf-8") as f:
             f.write(brief)
+        os.replace(tmp_copy, brief_copy)
     logger = _AgentLogger(run_dir, agent_k)
     timeout_secs = cfg["TDQ_SEARCH_TIMEOUT"]
     urls_cap = cfg["TDQ_SEARCH_URLS_PER_ROUTE"]
@@ -530,13 +559,18 @@ def cmd_merge(run_dir):
     if not agent_files:
         _warn(f"merge: không có agent-*.json nào trong {run_dir}.")
         return 2
-    reports = []
+    reports, broken = [], []
     for name in agent_files:
         try:
             with open(os.path.join(run_dir, name), encoding="utf-8") as f:
                 reports.append(json.load(f))
         except (OSError, ValueError) as exc:
+            broken.append(name)
             _warn(f"merge: bỏ qua {name} ({exc})")
+    # A15: TẤT CẢ file agent hỏng → exit 1, không được giả thành công merged rỗng
+    if not reports:
+        _warn(f"merge: cả {len(agent_files)} file agent đều hỏng — không merge được.")
+        return 1
     findings = merge_findings(reports)
     routes_failed = sorted({r for rep in reports
                             for r in rep.get("routes_failed", [])})
@@ -565,9 +599,11 @@ def cmd_merge(run_dir):
                 with open(os.path.join(run_dir, name), encoding="utf-8") as f:
                     out.write(f.read())
             out.write(f"[{_now()}] merge run={run_id} agents={len(reports)} "
-                      f"findings={len(findings)} routes_failed={len(routes_failed)}\n")
+                      f"agents_skipped={len(broken)} findings={len(findings)} "
+                      f"routes_failed={len(routes_failed)}\n")
     print(json.dumps({"run_id": run_id, "findings": len(findings),
-                      "not_found": merged["not_found"]}, ensure_ascii=False))
+                      "not_found": merged["not_found"],
+                      "agents_skipped": len(broken)}, ensure_ascii=False))
     return 0
 
 

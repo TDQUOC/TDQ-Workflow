@@ -1,0 +1,21 @@
+2026-07-31T10:57:36Z [agent-2 scout] start — route: scout: LLM local 3B-14B engine code-agent
+2026-07-31T10:57:53Z query1: llama.cpp vs Ollama vs vLLM vs LM Studio vs MLX local LLM runtime comparison tool calling structured output Apple Silicon 2025 — 8 results
+2026-07-31T10:57:53Z query2: best open-weights LLM under 14B for coding agent tool calling 2025 benchmark Qwen3 Qwen2.5-Coder Llama Gemma Phi-4 DeepSeek — 8 results
+2026-07-31T10:57:53Z query3: constrained decoding JSON schema enforcement small LLM grammar GBNF outlines xgrammar structured output reliability — 8 results
+2026-07-31T10:58:49Z query4: Berkeley Function Calling Leaderboard BFCL small model 7B 8B 14B function calling accuracy open source — 6 results
+2026-07-31T10:58:49Z query5: run Qwen3 coder small model locally macOS Apple Silicon MLX Ollama tool calling agent coding CLI 2025 2026 — 6 results
+2026-07-31T10:58:49Z query6: small language model agent reliability retry with feedback validation loop fallback to stronger model cascade routing technique — 6 results
+2026-07-31T10:58:49Z urlcheck HEAD=200 https://ollama.com/blog/mlx
+2026-07-31T10:58:50Z urlcheck HEAD=200 https://arxiv.org/pdf/2511.05502
+2026-07-31T10:58:50Z urlcheck HEAD=301 https://www.docker.com/blog/local-llm-tool-calling-a-practical-evaluation
+2026-07-31T10:58:50Z urlcheck HEAD=200 https://modal.com/resources/best-small-open-source-code-llms-ai-agents
+2026-07-31T10:58:50Z urlcheck HEAD=307 https://tmls.nyc/research/structured-outputs-constrained-decoding
+2026-07-31T10:58:51Z urlcheck HEAD=200 https://blog.mlc.ai/2026/05/04/xgrammar-2-fast-customizable-structured-generation
+2026-07-31T10:58:51Z urlcheck HEAD=200 https://tianpan.co/blog/2026-04-16-grammar-constrained-generation-output-reliability
+2026-07-31T10:58:52Z urlcheck HEAD=301 https://www.getmaxim.ai/articles/top-5-llm-routing-techniques
+2026-07-31T10:58:53Z urlcheck HEAD=200 https://icml.cc/virtual/2025/poster/46593
+2026-07-31T10:58:54Z urlcheck HEAD=301 https://simonwillison.net/2025/Jul/31/qwen3-coder-flash
+2026-07-31T10:58:54Z urlcheck HEAD=200 https://dev.to/brunocerberus/running-local-llms-on-apple-silicon-2ecm
+2026-07-31T10:58:56Z urlcheck HEAD=200 https://developers.redhat.com/articles/2026/06/15/llamacpp-vs-vllm-choosing-right-local-llm-inference-engine
+2026-07-31T10:58:57Z urlcheck HEAD=200 https://www.codesota.com/llm/open-models
+2026-07-31T11:00:07Z done — wrote agent-2.json with 13 findings (all url_alive=true), 6 queries used

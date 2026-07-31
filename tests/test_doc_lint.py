@@ -42,6 +42,34 @@ class LintBase(unittest.TestCase):
         self.assertEqual(code, 0, f"fixture sạch mà vẫn báo:\n{out}")
 
 
+class MissingPathTest(LintBase):
+    """A19/A20 — path không tồn tại phải báo lỗi tử tế + exit ≠0."""
+
+    def _lint_err(self, *paths):
+        proc = subprocess.run([sys.executable, LINT, *paths],
+                              capture_output=True, text=True)
+        return proc.returncode, proc.stdout, proc.stderr
+
+    def test_missing_path_no_md_suffix_exit_nonzero(self):
+        # A19: trước đây collect() bỏ lặng path ma không đuôi .md → exit 0
+        code, _, err = self._lint_err("/duong/dan/khong/ton/tai")
+        self.assertNotEqual(code, 0)
+        self.assertIn("không tìm thấy", err)
+
+    def test_missing_md_file_friendly_message(self):
+        # A20: path ma đuôi .md phải ra message, không traceback thô
+        code, _, err = self._lint_err("/duong/dan/khong/ton/tai.md")
+        self.assertNotEqual(code, 0)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("không tìm thấy", err)
+
+    def test_mixed_missing_and_real_still_reports_missing(self):
+        real = self.write("ok.md", "# Doc\n\nNội dung ngắn.\n")
+        code, _, err = self._lint_err(real, "/duong/dan/ma.md")
+        self.assertNotEqual(code, 0)
+        self.assertIn("không tìm thấy", err)
+
+
 class DocLintTest(LintBase):
     # ------------------------------------------------------------ khung chạy
     def test_runner_and_allow_comment(self):

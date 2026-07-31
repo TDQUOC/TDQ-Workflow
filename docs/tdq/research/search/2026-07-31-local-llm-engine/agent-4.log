@@ -1,0 +1,5 @@
+[2026-07-31T18:07:14+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=55.1
+[2026-07-31T18:07:41+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=26.8
+[2026-07-31T18:07:52+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=10.7
+[2026-07-31T18:08:03+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=11.4
+[2026-07-31T18:08:05+07:00] agent=4 agy=1.1.9 exit=0 findings=17 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-4.json

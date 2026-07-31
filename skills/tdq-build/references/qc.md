@@ -16,6 +16,8 @@ QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
    trường `Kiểm`; artifact ở trường `Ra` phải tồn tại. Không có artifact → sửa spec §3b
    dòng đó thành `KHÔNG` + lý do đóng, rồi chạy lại
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" --pair <spec> <plan>` đến khi exit 0.
+   Sửa spec ở đây làm sha256 lệch → hook sẽ đòi duyệt lại: trình user đúng 1 dòng diff
+   và xin duyệt lại spec (`approve spec`) ngay trong lượt QC, không để treo cảnh báo.
 
 ## Ghi kết quả
 

@@ -99,11 +99,19 @@ def main():
     _emit(lines)
 
 
+def _truncate(text, limit=MAX_CHARS):
+    if len(text) <= limit:
+        return text
+    cut = limit - 1
+    # A22: điểm cắt rơi giữa inline-code sẽ để lại nửa lệnh trông như lệnh thật —
+    # số backtick lẻ nghĩa là đang ở trong span, lùi về trước backtick mở.
+    if text[:cut].count("`") % 2 == 1:
+        cut = text.rfind("`", 0, cut)
+    return text[:cut].rstrip() + "…"
+
+
 def _emit(lines):
-    text = "\n".join(lines[:MAX_LINES])
-    if len(text) > MAX_CHARS:
-        text = text[:MAX_CHARS - 1].rstrip() + "…"
-    print(text)
+    print(_truncate("\n".join(lines[:MAX_LINES])))
 
 
 if __name__ == "__main__":

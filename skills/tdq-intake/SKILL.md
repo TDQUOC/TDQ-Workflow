@@ -78,9 +78,10 @@ rồi sang [tdq-spec](../tdq-spec/SKILL.md) ở **turn mới**.
 2. Trình **mini-plan ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
    Muốn giao cho engine ngoài (user yêu cầu hoặc bạn đề xuất) → mini-plan kèm thêm đúng
-   1 dòng máy-đọc `Thực thi external: engine=<codex|agy> · khó=<slug>` — model default
-   lấy từ `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/external_models.py" list <engine>`
-   (luật chọn engine/model: [tdq-plan](../tdq-plan/SKILL.md) mục "Chốt engine + model").
+   1 dòng máy-đọc `Thực thi external: engine=<codex|agy> · khó=<slug>`. Model default
+   = slug ĐẦU TIÊN (dòng 1, bỏ nhãn `(chưa xác minh)`) trong output của
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/external_models.py" list <engine>`.
+   Luật chọn engine/model: [tdq-plan](../tdq-plan/SKILL.md) mục "Chốt engine + model".
 3. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
 4. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--mode external] --by "<nguyên văn>"` (chỉ thêm `--mode external` khi user nói external).
 5. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code —

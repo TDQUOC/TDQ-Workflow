@@ -1,0 +1,50 @@
+[2026-07-31T17:59:08+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=105.8
+[2026-07-31T17:59:20+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=11.4
+[2026-07-31T17:59:31+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=11.2
+[2026-07-31T17:59:46+07:00] agent=1 agy=1.1.9 route=tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=15.0
+[2026-07-31T18:01:04+07:00] agent=1 agy=1.1.9 route=model call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=78.2
+[2026-07-31T18:01:22+07:00] agent=1 agy=1.1.9 route=model call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=18.3
+[2026-07-31T18:01:39+07:00] agent=1 agy=1.1.9 route=model call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=16.3
+[2026-07-31T18:02:04+07:00] agent=1 agy=1.1.9 route=model call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=25.0
+[2026-07-31T18:03:04+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=59.9
+[2026-07-31T18:03:15+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=11.1
+[2026-07-31T18:03:27+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=12.0
+[2026-07-31T18:03:42+07:00] agent=1 agy=1.1.9 route=kỹ thuật harden call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=15.1
+[2026-07-31T18:03:54+07:00] agent=1 agy=1.1.9 exit=0 findings=44 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-1.json
+2026-07-31T10:57:36Z [agent-2 scout] start — route: scout: LLM local 3B-14B engine code-agent
+2026-07-31T10:57:53Z query1: llama.cpp vs Ollama vs vLLM vs LM Studio vs MLX local LLM runtime comparison tool calling structured output Apple Silicon 2025 — 8 results
+2026-07-31T10:57:53Z query2: best open-weights LLM under 14B for coding agent tool calling 2025 benchmark Qwen3 Qwen2.5-Coder Llama Gemma Phi-4 DeepSeek — 8 results
+2026-07-31T10:57:53Z query3: constrained decoding JSON schema enforcement small LLM grammar GBNF outlines xgrammar structured output reliability — 8 results
+2026-07-31T10:58:49Z query4: Berkeley Function Calling Leaderboard BFCL small model 7B 8B 14B function calling accuracy open source — 6 results
+2026-07-31T10:58:49Z query5: run Qwen3 coder small model locally macOS Apple Silicon MLX Ollama tool calling agent coding CLI 2025 2026 — 6 results
+2026-07-31T10:58:49Z query6: small language model agent reliability retry with feedback validation loop fallback to stronger model cascade routing technique — 6 results
+2026-07-31T10:58:49Z urlcheck HEAD=200 https://ollama.com/blog/mlx
+2026-07-31T10:58:50Z urlcheck HEAD=200 https://arxiv.org/pdf/2511.05502
+2026-07-31T10:58:50Z urlcheck HEAD=301 https://www.docker.com/blog/local-llm-tool-calling-a-practical-evaluation
+2026-07-31T10:58:50Z urlcheck HEAD=200 https://modal.com/resources/best-small-open-source-code-llms-ai-agents
+2026-07-31T10:58:50Z urlcheck HEAD=307 https://tmls.nyc/research/structured-outputs-constrained-decoding
+2026-07-31T10:58:51Z urlcheck HEAD=200 https://blog.mlc.ai/2026/05/04/xgrammar-2-fast-customizable-structured-generation
+2026-07-31T10:58:51Z urlcheck HEAD=200 https://tianpan.co/blog/2026-04-16-grammar-constrained-generation-output-reliability
+2026-07-31T10:58:52Z urlcheck HEAD=301 https://www.getmaxim.ai/articles/top-5-llm-routing-techniques
+2026-07-31T10:58:53Z urlcheck HEAD=200 https://icml.cc/virtual/2025/poster/46593
+2026-07-31T10:58:54Z urlcheck HEAD=301 https://simonwillison.net/2025/Jul/31/qwen3-coder-flash
+2026-07-31T10:58:54Z urlcheck HEAD=200 https://dev.to/brunocerberus/running-local-llms-on-apple-silicon-2ecm
+2026-07-31T10:58:56Z urlcheck HEAD=200 https://developers.redhat.com/articles/2026/06/15/llamacpp-vs-vllm-choosing-right-local-llm-inference-engine
+2026-07-31T10:58:57Z urlcheck HEAD=200 https://www.codesota.com/llm/open-models
+2026-07-31T11:00:07Z done — wrote agent-2.json with 13 findings (all url_alive=true), 6 queries used
+[2026-07-31T18:07:39+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=85.7
+[2026-07-31T18:07:50+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=2 secs=11.3
+[2026-07-31T18:08:10+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=20.1
+[2026-07-31T18:08:32+07:00] agent=3 agy=1.1.9 route=đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4 call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=21.9
+[2026-07-31T18:08:34+07:00] agent=3 agy=1.1.9 exit=0 findings=13 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-3.json
+[2026-07-31T18:07:14+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=55.1
+[2026-07-31T18:07:41+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=26.8
+[2026-07-31T18:07:52+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=10.7
+[2026-07-31T18:08:03+07:00] agent=4 agy=1.1.9 route=constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=11.4
+[2026-07-31T18:08:05+07:00] agent=4 agy=1.1.9 exit=0 findings=17 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-4.json
+[2026-07-31T18:07:15+07:00] agent=5 agy=1.1.9 route=chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=50.4
+[2026-07-31T18:07:29+07:00] agent=5 agy=1.1.9 route=chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=13.7
+[2026-07-31T18:07:50+07:00] agent=5 agy=1.1.9 route=chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=3 secs=21.9
+[2026-07-31T18:08:03+07:00] agent=5 agy=1.1.9 route=chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=2 secs=12.1
+[2026-07-31T18:08:05+07:00] agent=5 agy=1.1.9 exit=0 findings=13 routes_failed=0 report=docs/tdq/research/search/2026-07-31-local-llm-engine/agent-5.json
+[2026-07-31T18:09:02+07:00] merge run=2026-07-31-local-llm-engine agents=5 findings=34 routes_failed=0

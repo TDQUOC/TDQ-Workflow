@@ -1,0 +1,131 @@
+{
+  "agent": 3,
+  "routes": [
+    "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Mô hình 4B tham số được huấn luyện bằng EGPO (FunRL) đạt state-of-the-art trên Berkeley Function Calling Leaderboard (BFCL) trong nhóm cùng quy mô, vượt qua cả GPT-4o và Gemini-2.5.",
+      "evidence_quote": "On the challenging Berkeley Function Calling Leaderboard (BFCL), a 4B-parameter model trained with EGPO sets a new state-of-the-art among models of comparable size, surpassing a range of strong competitors, including GPT-4o and Gemini-2.5.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 10,
+      "source_url": "https://arxiv.org/abs/2508.05118",
+      "url_alive": true
+    },
+    {
+      "claim": "Dòng mô hình Qwen2.5-Coder (từ 0.5B đến 32B) được tiếp tục huấn luyện trên hơn 5.5 nghìn tỉ token, đạt kết quả state-of-the-art trên hơn 10 benchmark về mã nguồn bao gồm sinh mã, hoàn thành, suy luận và sửa lỗi.",
+      "evidence_quote": "This series includes six models: Qwen2.5-Coder-(0.5B/1.5B/3B/7B/14B/32B). As a code-specific model, Qwen2.5-Coder is built upon the Qwen2.5 architecture and continues pretrained on a vast corpus of over 5.5 trillion tokens. Through meticulous data cleaning, scalable synthetic data generation, and balanced data mixing, Qwen2.5-Coder demonstrates impressive code generation capabilities while retaining general and math skills. These models have been evaluated on a wide range of code-related tasks, achieving state-of-the-art (SOTA) performance across more than 10 benchmarks, including code generation, completion, reasoning, and repair, consistently outperforming larger models of the same model size.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2409.12186",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình Phi-4 14B được huấn luyện tập trung vào chất lượng dữ liệu tổng hợp, vượt qua mô hình teacher GPT-4 ở các bài đánh giá suy luận STEM.",
+      "evidence_quote": "We present phi-4, a 14-billion parameter language model developed with a training recipe that is centrally focused on data quality. Unlike most language models, where pre-training is based primarily on organic data sources such as web content or code, phi-4 strategically incorporates synthetic data throughout the training process. While previous models in the Phi family largely distill the capabilities of a teacher model (specifically GPT-4), phi-4 substantially surpasses its teacher model on STEM-focused QA capabilities, giving evidence that our data-generation and post-training techniques go beyond distillation.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2412.08905",
+      "url_alive": true
+    },
+    {
+      "claim": "Berkeley Function Calling Leaderboard (BFCL V4) là bảng xếp hạng tiêu chuẩn đánh giá chính xác khả năng gọi hàm và sử dụng tool của các LLM.",
+      "evidence_quote": "Explore The Berkeley Function Calling Leaderboard (also called The Berkeley Tool Calling Leaderboard) to see the LLM's ability to call functions (aka tools) accurately.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 10,
+      "source_url": "https://gorilla.cs.berkeley.edu/leaderboard.html",
+      "url_alive": true
+    },
+    {
+      "claim": "Khung RL EGPO dựa trên GRPO tích hợp entropy của Chain-of-Thought (CoT) giúp mô hình 4B đạt SOTA mới trên Berkeley Function Calling Leaderboard (BFCL) ở quy mô tương đương, vượt qua GPT-4o và Gemini-2.5.",
+      "evidence_quote": "We propose \\textbf{EGPO}, a new RL framework built upon Group Relative Policy Optimization (GRPO), designed to address this challenge directly. The core of EGPO is an entropy-enhanced advantage function that integrates the entropy of the model's Chain-of-Thought (CoT) into the policy gradient computation. This encourages the generation of diverse reasoning strategies. To maintain optimization direction, the entropy bonus is carefully constrained by a clipping mechanism. Complemented by a strict, binary reward signal, EGPO effectively guides the model towards discovering structured and accurate tool invocation patterns. On the challenging Berkeley Function Calling Leaderboard (BFCL), a 4B-parameter model trained with EGPO sets a new state-of-the-art among models of comparable size, surpassing a range of strong competitors, including GPT-4o and Gemini-2.5.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2508.05118",
+      "url_alive": true
+    },
+    {
+      "claim": "Phương pháp SFT chuẩn thất bại trong việc tạo ra khả năng suy luận mạnh mẽ cho function calling, trong khi RL truyền thống gặp khó khăn với việc thăm dò kém hiệu quả.",
+      "evidence_quote": "Standard methods like Supervised Fine-Tuning (SFT) fail to instill robust reasoning, and traditional Reinforcement Learning (RL) struggles with inefficient exploration.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 8,
+      "source_url": "https://arxiv.org/abs/2508.05118",
+      "url_alive": true
+    },
+    {
+      "claim": "Họ Qwen2.5-Coder bao gồm 6 kích thước (0.5B, 1.5B, 3B, 7B, 14B, 32B), xây dựng trên kiến trúc Qwen2.5 và được pretrain trên hơn 5.5 nghìn tỷ token.",
+      "evidence_quote": "This series includes six models: Qwen2.5-Coder-(0.5B/1.5B/3B/7B/14B/32B). As a code-specific model, Qwen2.5-Coder is built upon the Qwen2.5 architecture and continues pretrained on a vast corpus of over 5.5 trillion tokens.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2409.12186",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình Qwen2.5-Coder-14B-Instruct và 7B-Instruct vượt qua các mô hình lớn hơn có tham số trên 20B như CodeStral-22B và DeepSeek-Coder-33B-Instruct trên các tác vụ sinh mã đa ngôn ngữ.",
+      "evidence_quote": "Both Qwen2.5-Coder-7B-Instruct and Qwen2.5-Coder-14B-Instruct even surpass larger models, like CodeStral-22B and DS-Coder-33B-Instruct (which have over 20 billion parameters), underscoring their strong code generation capabilities across multiple languages.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/html/2409.12186v3",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở bài kiểm tra hoàn thành mã nguồn cấp repository (RepoEval), Qwen2.5-Coder-14B đạt hiệu năng tương đương các mô hình có trên 20 tỷ tham số.",
+      "evidence_quote": "Furthermore, Qwen2.5-Coder-14B and Qwen2.5-Coder-7B achieve comparable performance to models with more than 20B parameters, while maintaining state-of-the-art results among models of similar size.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/html/2409.12186v3",
+      "url_alive": true
+    },
+    {
+      "claim": "Phi-4 14B được xây dựng dựa trên dữ liệu tổng hợp (synthetic data) xuyên suốt pre-training và post-training, nhằm đạt hiệu năng cao trên benchmark lý luận (STEM QA, MATH, HumanEval).",
+      "evidence_quote": "We present phi-4, a 14-billion parameter language model developed with a training recipe that is centrally focused on data quality. Unlike most language models, where pre-training is based primarily on organic data sources such as web content or code, phi-4 strategically incorporates synthetic data throughout the training process.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/abs/2412.08905",
+      "url_alive": true
+    },
+    {
+      "claim": "Phi-4 14B vượt Qwen-2.5-14B-Instruct trên 9/12 benchmark thử nghiệm (bao gồm GPQA, MATH, HumanEval/HumanEval+), nhưng bị thua ở các benchmark như SimpleQA và IFEval.",
+      "evidence_quote": "phi-4 outperforms the closest in-class contemporary model, Qwen-2.5-14B-Instruct, in 9 out of 12 benchmarks. While phi-4 underperforms relative to Qwen-2.5-14B-Instruct on the benchmark numbers for SimpleQA, DROP, and IFEval...",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/html/2412.08905v1",
+      "url_alive": true
+    },
+    {
+      "claim": "Phi-4 gặp điểm yếu rõ rệt ở khả năng tuân thủ định dạng/instruction nghiêm ngặt (IFEval) do tập dữ liệu huấn luyện ưu tiên QA và reasoning hơn là tuân thủ định dạng output.",
+      "evidence_quote": "IFEval reveals a real weakness of our model – it has trouble strictly following instructions. While strict instruction following was not an emphasis of our synthetic data generations for this model... it is less proficient at rigorously following detailed instructions, particularly those involving specific formatting requirements.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/html/2412.08905v1",
+      "url_alive": true
+    },
+    {
+      "claim": "Phi-4 được fine-tune chủ yếu cho các truy vấn đơn lượt (single-turn), sinh phản hồi Chain-of-Thought dài nên có thể ít tối ưu hơn cho các kịch bản hội thoại multi-turn/chat bot nếu không bổ sung kỹ thuật harden.",
+      "evidence_quote": "as our data contains a lot of chain-of-thought examples, phi-4 sometimes gives long elaborate answers even for simple problems—this might make user interactions tedious. We also note that while phi-4 can function as a chat bot, it has been fine-tuned to maximize performance on single-turn queries.",
+      "route": "đo sâu Qwen3 8B/14B và Phi-4 tool-calling ≤14B — BFCL / multi-turn / quantization Q4",
+      "score": 9,
+      "source_url": "https://arxiv.org/html/2412.08905v1",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Exploring Superior Function Calls via Reinforcement Learning\" arxiv",
+    "\"FunRL\" \"Function Calling\" site:arxiv.org",
+    "\"FunRL\" \"Qwen2.5-Coder-7B-Instruct\" \"BFCL\" OR \"Berkeley\"",
+    "\"Gorilla\" \"Berkeley Function Calling Leaderboard\" \"Qwen2.5-Coder-7B-Instruct\" \"Phi-4\" score",
+    "\"Phi-4\" \"function calling\" OR \"tool calling\" benchmark score 14B",
+    "\"Qwen2.5-Coder\" \"BFCL\" tool calling score 7B 14B Q4 quantization accuracy loss",
+    "\"Qwen2.5-Coder\" \"function calling\" \"multi-turn\" \"quantization\" site:huggingface.co OR site:arxiv.org",
+    "\"Qwen2.5-Coder-14B-Instruct\" \"BFCL\" OR \"tool calling\" OR \"multi-turn\" OR \"quantization\"",
+    "\"Qwen2.5-Coder-7B-Instruct\" \"BFCL\" OR \"Berkeley Function Calling Leaderboard\" score",
+    "\"Qwen3\" \"8B\" \"14B\" \"tool calling\" OR \"BFCL\" OR \"quantization\"",
+    "BFCL benchmark Qwen3 Qwen2.5 Coder Phi-4 function calling tool calling 8B 14B",
+    "https://arxiv.org/abs/2409.12186",
+    "https://arxiv.org/abs/2508.05118",
+    "https://arxiv.org/html/2409.12186v3",
+    "site:gorilla.cs.berkeley.edu/blogs \"Qwen\" \"Phi\" OR \"BFCL\""
+  ]
+}

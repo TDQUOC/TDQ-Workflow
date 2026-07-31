@@ -1,5 +1,6 @@
 """P1/P3 — PHASE_TABLE là nguồn sự thật duy nhất; doc phải khớp hằng trong code."""
 import os
+import re
 import unittest
 
 from helper import ROOT, tdq_state
@@ -39,15 +40,61 @@ class PhaseTableTest(unittest.TestCase):
         self.assertEqual(tdq_state.phase_key({"active_request": "r", "lane": "full",
                                               "phase": "sai"}), "idle")
 
+    def test_phase_key_quick_terminal(self):
+        """A6: lane quick phải có terminal — quick_approved + phase=idle là đã xong."""
+        base = {"active_request": "r", "lane": "quick"}
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "idle"}), "quick")
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "implement",
+                                              "quick_approved": True}), "quick")
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "idle",
+                                              "quick_approved": True}), "idle")
+
+    def test_render_no_regex_escape_artifact(self):
+        """Bug A1: escape sai trong re.sub → literal `\\1` thay vì lệnh thật."""
+        doc = tdq_state.render_phases_md()
+        self.assertNotIn("`\\1`", doc, "phases-doc chứa literal `\\1` — lệnh bị nuốt")
+        for line in doc.splitlines():
+            if re.match(r"^\d+\. ", line):
+                self.assertNotIn("``", line, f"wrap đôi hỏng inline-code: {line}")
+        for section in ("analyze", "spec", "plan"):
+            body = doc.split(f"## {section}\n", 1)[1].split("\n##", 1)[0]
+            self.assertIn("python3 scripts/", body,
+                          f"mục {section} mất lệnh python3 thật")
+        for section in ("spec", "plan"):
+            body = doc.split(f"## {section}\n", 1)[1].split("\n##", 1)[0]
+            self.assertIn("python3 scripts/tdq_state.py", body,
+                          f"mục {section} mất lệnh tdq_state.py thật")
+
+    def test_quick_row_external_variant_and_terminal(self):
+        """A26: dòng duyệt quick khớp intake (biến thể external); A6: có bước đóng."""
+        row = tdq_state.PHASE_TABLE["quick"]
+        self.assertIn("--mode external", row["cmd"])
+        joined = " ".join(row["checklist"])
+        self.assertIn("duyệt quick external", joined)
+        self.assertIn("set phase=idle", joined)
+
+    def test_render_plugin_root_variant(self):
+        """A40: bản chạy trong ngữ cảnh plugin phải in path plugin-root."""
+        doc = tdq_state.render_phases_md(plugin_root=True)
+        self.assertIn('python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py"', doc)
+        self.assertNotIn("python3 scripts/", doc)
+
     def test_docs_match_constant(self):
-        """Mỗi phase phải xuất hiện trong doc kèm đúng lệnh chuyển tiếp."""
+        """Mỗi phase phải xuất hiện trong doc kèm đúng lệnh chuyển tiếp.
+
+        A40: bản conventions (ngữ cảnh plugin) dùng lệnh dạng plugin-root;
+        bản portable (script nằm trong project) giữ path tương đối.
+        """
         for doc in DOC_FILES:
             self.assertTrue(os.path.isfile(doc), f"thiếu {doc}")
             text = open(doc, encoding="utf-8").read()
+            plugin_doc = "portable" not in doc
             for name, row in tdq_state.PHASE_TABLE.items():
                 with self.subTest(doc=os.path.basename(doc), phase=name):
                     self.assertIn(name, text, f"{doc}: thiếu phase {name}")
-                    self.assertIn(row["cmd"], text, f"{doc}: lệnh của {name} không khớp code")
+                    cmd = (tdq_state.plugin_root_cmd(row["cmd"]) if plugin_doc
+                           else row["cmd"])
+                    self.assertIn(cmd, text, f"{doc}: lệnh của {name} không khớp code")
 
 
 if __name__ == "__main__":

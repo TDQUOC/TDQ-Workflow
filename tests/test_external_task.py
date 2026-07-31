@@ -113,6 +113,21 @@ class RunnerAgentsTest(unittest.TestCase):
                 # runner không tự quyết fallback
                 self.assertIn("orchestrator", text.lower())
 
+    def test_wait_mechanism_and_exit_table(self):
+        for path in self.PATHS:
+            with self.subTest(agent=os.path.basename(path)):
+                with open(path, encoding="utf-8") as f:
+                    text = f.read()
+                low = text.lower()
+                # A5: chờ theo cơ chế thật — Bash nền đánh thức agent khi xong;
+                # cấm watcher sleep và luật "never end early" sai cơ chế
+                self.assertNotIn("sleep", low)
+                self.assertNotIn("end early", low)
+                self.assertIn("re-invoke", low)
+                # A9: bảng exit code đủ mã + hành xử từng mã
+                for code in ("| 0 |", "| 1 |", "| 2 |"):
+                    self.assertIn(code, text, code)
+
 
 class StubBase(unittest.TestCase):
     """Dựng stub binary codex/agy trong PATH + worktree/cwd tạm."""
@@ -292,6 +307,62 @@ class LogTest(StubBase):
         self.set_response(1, {"response": good_report(task_id="T9")})
         self.run_task("agy", env={"TDQ_EXTERNAL_TIMEOUT": "7"})
         self.assertIn("--print-timeout 7s", self.calls()[0])
+
+
+class HardenTest(StubBase):
+    """A4/A12/A13/A24 — artifact debug + feedback + stagger timeout + atomic write."""
+
+    def raw_path(self, attempt):
+        return os.path.join(self.project, "docs", "tdq", "external", "s1",
+                            f"T9.attempt{attempt}.raw.txt")
+
+    def test_failed_attempt_persists_raw_output(self):
+        # A4: attempt fail phải để lại raw stdout để debug prompt/model
+        self.set_response(1, "not json at all")
+        self.set_response(2, good_report(task_id="T9"))
+        code, _, _ = self.run_task("codex")
+        self.assertEqual(code, 0)
+        with open(self.raw_path(1), encoding="utf-8") as f:
+            self.assertIn("not json at all", f.read())
+
+    def test_retry_prompt_includes_prev_output_excerpt(self):
+        # A12: feedback retry phải kèm trích output attempt trước
+        self.set_response(1, "day la output sai DAUVET123")
+        self.set_response(2, good_report(task_id="T9"))
+        self.run_task("codex")
+        self.assertIn("DAUVET123", self.calls()[1])
+
+    def test_agy_print_timeout_staggered(self):
+        # A13: engine phải được deadline sớm hơn wrapper 30s (sàn 30, trần = wrapper)
+        self.set_response(1, {"response": good_report(task_id="T9")})
+        self.run_task("agy", env={"TDQ_EXTERNAL_TIMEOUT": "540"})
+        self.assertIn("--print-timeout 510s", self.calls()[0])
+
+    def test_report_write_leaves_no_tmp(self):
+        # A24: ghi report atomic — không còn file *.tmp sau khi xong
+        self.set_response(1, good_report(task_id="T9"))
+        self.run_task("codex")
+        report_dir = os.path.dirname(self.report_path())
+        self.assertTrue(os.path.exists(self.report_path()))
+        self.assertEqual([f for f in os.listdir(report_dir) if f.endswith(".tmp")], [])
+
+    def test_dirs_anchored_to_project_dir(self):
+        # A17: chạy từ cwd lạ + TDQ_PROJECT_DIR → report/log nằm trong project,
+        # không rắc docs/ theo cwd
+        elsewhere = os.path.join(self.tmp, "elsewhere")
+        os.makedirs(elsewhere)
+        self.set_response(1, good_report(task_id="T9"))
+        full_env = dict(os.environ, TDQ_PROJECT_DIR=self.project)
+        full_env["PATH"] = self.bin_dir
+        proc = subprocess.run(
+            [sys.executable, SCRIPT, "run", "--engine", "codex", "--model",
+             "m-test", "--task-file", self.task_file, "--worktree",
+             self.worktree, "--slug", "s1"],
+            capture_output=True, text=True, timeout=60, cwd=elsewhere,
+            env=full_env)
+        self.assertEqual(proc.returncode, 0)
+        self.assertTrue(os.path.exists(self.report_path()))
+        self.assertFalse(os.path.exists(os.path.join(elsewhere, "docs")))
 
 
 class ParsePlanTest(StubBase):

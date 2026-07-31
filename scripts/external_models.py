@@ -39,10 +39,27 @@ def _warn(msg):
     print(f"⚠️ {msg}", file=sys.stderr)
 
 
+def _project_dir():
+    """A17: neo output theo project (TDQ_PROJECT_DIR > git root > cwd) — chạy
+    từ thư mục con không được rắc docs/ theo cwd."""
+    env = os.environ.get("TDQ_PROJECT_DIR")
+    if env:
+        return env
+    start = os.getcwd()
+    current = start
+    while True:
+        if os.path.exists(os.path.join(current, ".git")):
+            return current
+        parent = os.path.dirname(current)
+        if parent == current:
+            return start
+        current = parent
+
+
 def _log(message):
     if os.environ.get("TDQ_EXTERNAL_LOG", "1") == "0":
         return
-    log_dir = os.path.join(os.getcwd(), "docs", "tdq", "external")
+    log_dir = os.path.join(_project_dir(), "docs", "tdq", "external")
     try:
         os.makedirs(log_dir, exist_ok=True)
         with open(os.path.join(log_dir, "models.log"), "a", encoding="utf-8") as f:

@@ -3,7 +3,11 @@ import datetime
 import tempfile
 import unittest
 
-from helper import run_hook, load_fixture, write_state, write_file, tdq_state
+import importlib.util
+import os
+
+from helper import (HOOKS, run_hook, load_fixture, write_state, write_file,
+                    tdq_state)
 
 
 def now_iso():
@@ -48,6 +52,37 @@ class TestSessionStart(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertIn("[TDQ:NEXT]", out)          # chưa có request → hướng dẫn mở request
         self.assertLessEqual(len(out.splitlines()), 12)
+
+
+class TestTruncation(unittest.TestCase):
+    """A22 — cắt MAX_CHARS không được đứt giữa inline-code (nửa lệnh = lệnh sai)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import sys
+        sys.path.insert(0, HOOKS)  # prompt_context import _common cạnh nó
+        cls.addClassCleanup(sys.path.remove, HOOKS)
+        spec = importlib.util.spec_from_file_location(
+            "prompt_context_mod", os.path.join(HOOKS, "prompt_context.py"))
+        cls.mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.mod)
+
+    def test_truncate_backs_off_before_open_backtick(self):
+        text = ("x" * 230
+                + " chạy `python3 scripts/tdq_state.py approve spec` xong")
+        out = self.mod._truncate(text)
+        self.assertLessEqual(len(out), 240)
+        self.assertEqual(out.count("`") % 2, 0, out)
+        self.assertNotIn("`python3", out)
+
+    def test_truncate_short_text_untouched(self):
+        self.assertEqual(self.mod._truncate("ngắn"), "ngắn")
+
+    def test_truncate_outside_inline_code_keeps_closed_span(self):
+        text = "`cmd ok` " + "y" * 300
+        out = self.mod._truncate(text)
+        self.assertLessEqual(len(out), 240)
+        self.assertIn("`cmd ok`", out)
 
 
 class TestPromptContext(unittest.TestCase):

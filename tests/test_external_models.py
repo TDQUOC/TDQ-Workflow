@@ -76,6 +76,21 @@ class AgyListTest(ModelsBase):
         self.assertEqual(code, 1)
         self.assertIn("⚠️", err)
 
+    def test_log_anchored_to_project_dir(self):
+        # A17: chạy từ cwd lạ + TDQ_PROJECT_DIR → models.log nằm trong project
+        elsewhere = os.path.join(self.tmp, "elsewhere")
+        os.makedirs(elsewhere)
+        full_env = dict(os.environ, HOME=self.home,
+                        TDQ_PROJECT_DIR=self.project)
+        full_env["PATH"] = self.bin_dir
+        proc = subprocess.run(
+            [sys.executable, SCRIPT, "list", "agy"], capture_output=True,
+            text=True, timeout=60, cwd=elsewhere, env=full_env)
+        self.assertEqual(proc.returncode, 0)
+        self.assertTrue(os.path.exists(os.path.join(
+            self.project, "docs", "tdq", "external", "models.log")))
+        self.assertFalse(os.path.exists(os.path.join(elsewhere, "docs")))
+
 
 class CodexProbeTest(ModelsBase):
     ENV = {"TDQ_CODEX_MODELS": "m-ok,m-bad"}

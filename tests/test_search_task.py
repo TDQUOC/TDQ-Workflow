@@ -532,6 +532,68 @@ class RunLayoutLogTest(StubBase):
         self.assertFalse(os.path.exists(self.agent_log()))
 
 
+class HardenTest(StubBase):
+    """A4/A7/A14/A15/A16 — persist raw, cảnh báo separator, schema guard,
+    merge đếm file hỏng, copy brief atomic."""
+
+    def _minimal_agent(self, k, broken=False):
+        os.makedirs(self.run_dir, exist_ok=True)
+        with open(self.agent_json(k), "w", encoding="utf-8") as f:
+            if broken:
+                f.write("{json hỏng")
+            else:
+                json.dump({"agent": k, "routes": [f"r{k}"], "routes_failed": [],
+                           "findings": [], "not_found": True,
+                           "queries_used": []}, f, ensure_ascii=False)
+
+    def test_split_warns_semicolon_separator(self):
+        # A7: separator là dấu phẩy — chuỗi dùng ';' phải có cảnh báo
+        code, _, err = self.run_cli("split", "--routes", "a; b; c")
+        self.assertEqual(code, 0)
+        self.assertIn("phẩy", err)
+
+    def test_failed_call_persists_raw_output(self):
+        # A4: mọi call fail phải để lại raw output để debug
+        for n in range(1, 8):
+            self.set_response(n, "khong phai json DAUVET99")
+        code, _, _ = self.run_agent()
+        self.assertEqual(code, 1)
+        raws = [f for f in os.listdir(self.run_dir) if f.endswith(".raw.txt")]
+        self.assertTrue(raws, "không có file .raw.txt nào sau khi call fail")
+        with open(os.path.join(self.run_dir, raws[0]), encoding="utf-8") as f:
+            self.assertIn("DAUVET99", f.read())
+
+    def test_merge_all_broken_exit_1(self):
+        # A15: TẤT CẢ file agent hỏng → không được exit 0 giả thành công
+        self._minimal_agent(1, broken=True)
+        code, _, err = self.run_cli("merge", self.run_dir)
+        self.assertEqual(code, 1)
+        self.assertIn("hỏng", err)
+
+    def test_merge_reports_skipped_count(self):
+        self._minimal_agent(1)
+        self._minimal_agent(2, broken=True)
+        code, out, _ = self.run_cli("merge", self.run_dir)
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out.strip().splitlines()[-1])
+                         .get("agents_skipped"), 1)
+
+    def test_schema_guard_clear_message(self):
+        # A14: thiếu file schema phải ra message rõ, không traceback thô
+        with self.assertRaises(SystemExit) as ctx:
+            search_task._load_schema("/duong/dan/khong/ton/tai.json")
+        self.assertIn("schema", str(ctx.exception.code))
+
+    def test_brief_copy_atomic_no_tmp_left(self):
+        # A16: copy brief atomic — không còn file tạm trong run-dir
+        self.set_response(1, good_report())
+        code, _, _ = self.run_agent()
+        self.assertEqual(code, 0)
+        self.assertTrue(os.path.exists(os.path.join(self.run_dir, "brief.md")))
+        self.assertEqual([f for f in os.listdir(self.run_dir)
+                          if ".tmp" in f], [])
+
+
 class MergeTest(StubBase):
     """T4.1 + T4.2 — dedup URL, rank tất định 5 khóa; merged.json + report ≤50 dòng
     + run.log gộp."""
@@ -635,6 +697,19 @@ class SearchRunnerAgentTest(unittest.TestCase):
         self.assertIn("synchronous", low)           # luật sync
         self.assertIn("không commit", low)
 
+    def test_wait_mechanism_and_exit_table(self):
+        with open(self.PATH, encoding="utf-8") as f:
+            text = f.read()
+        low = text.lower()
+        # A5: chờ theo cơ chế thật — Bash nền đánh thức agent khi xong;
+        # cấm watcher sleep và luật "never end early" sai cơ chế
+        self.assertNotIn("sleep", low)
+        self.assertNotIn("end early", low)
+        self.assertIn("re-invoke", low)
+        # A9: bảng exit code đủ 4 mã của search_task run + hành xử từng mã
+        for code in ("| 0 |", "| 1 |", "| 2 |", "| 3 |"):
+            self.assertIn(code, text, code)
+
 
 class SearchScoutAgentTest(unittest.TestCase):
     """0.6.0 — agent scout Claude+Tavily: vỏ mỏng, slot 2 phase 1 của flow hybrid."""
@@ -675,6 +750,12 @@ class SearchScoutAgentTest(unittest.TestCase):
         self.assertIn("orchestrator", low)
         self.assertIn("không commit", low)
         self.assertIn("merge", low)                 # cấm tự merge
+
+    def test_scout_failed_marker_when_tavily_dead(self):
+        # A10: cả 2 tầng tavily chết → vẫn ghi agent-2.json + marker scout-failed
+        text = self._text()
+        self.assertIn("scout-failed", text)
+        self.assertIn("tavily-backup", text)
 
 
 class DeepSearchDocTest(unittest.TestCase):

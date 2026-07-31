@@ -66,11 +66,28 @@ def _log_enabled():
     return os.environ.get("TDQ_EXTERNAL_LOG", "1") != "0"
 
 
+def _project_dir():
+    """A17: neo output theo project (TDQ_PROJECT_DIR > git root > cwd) — chạy
+    từ thư mục con không được rắc docs/ theo cwd."""
+    env = os.environ.get("TDQ_PROJECT_DIR")
+    if env:
+        return env
+    start = os.getcwd()
+    current = start
+    while True:
+        if os.path.exists(os.path.join(current, ".git")):
+            return current
+        parent = os.path.dirname(current)
+        if parent == current:
+            return start
+        current = parent
+
+
 def _log(slug, message):
-    """Append 1 dòng ISO-timestamp vào docs/tdq/external/<slug>/run.log (tính từ cwd)."""
+    """Append 1 dòng ISO-timestamp vào docs/tdq/external/<slug>/run.log của project."""
     if not _log_enabled():
         return
-    log_dir = os.path.join(os.getcwd(), "docs", "tdq", "external", slug)
+    log_dir = os.path.join(_project_dir(), "docs", "tdq", "external", slug)
     try:
         os.makedirs(log_dir, exist_ok=True)
         with open(os.path.join(log_dir, "run.log"), "a", encoding="utf-8") as f:
@@ -121,11 +138,14 @@ def build_command(engine, model, prompt, worktree, timeout_secs):
         ], None)
     # agy headless mặc định ghi file vào workspace scratch (~/.gemini/antigravity-cli/
     # scratch/) thay vì cwd — bắt buộc --add-dir path tuyệt đối để ghi đúng worktree.
+    # A13: engine phải hết giờ TRƯỚC wrapper 30s để kịp in report (sàn 30s,
+    # trần = timeout wrapper khi timeout quá nhỏ) — tránh race kill giữa lúc in.
+    engine_secs = min(timeout_secs, max(timeout_secs - 30, 30))
     return ([
         "agy", "-p", prompt, "--model", model, "--output-format", "json",
         "--json-schema", SCHEMA_PATH, "--dangerously-skip-permissions",
         "--add-dir", os.path.abspath(worktree),
-        "--print-timeout", f"{timeout_secs}s",
+        "--print-timeout", f"{engine_secs}s",
     ], worktree)
 
 
@@ -166,15 +186,19 @@ def run_task(engine, model, task_file, worktree, slug):
         return 1
     task_id = _task_id(base_prompt, task_file)
     timeout_secs = _timeout_secs()
-    report_dir = os.path.join(os.getcwd(), "docs", "tdq", "external", slug)
+    report_dir = os.path.join(_project_dir(), "docs", "tdq", "external", slug)
     report_path = os.path.join(report_dir, f"{task_id}.json")
     last_error = ""
 
+    last_raw = ""
     for attempt in range(1, MAX_ATTEMPTS + 1):
         prompt = base_prompt
         if last_error:
-            prompt += (f"\n\n## LỖI LẦN TRƯỚC (attempt {attempt - 1})\n{last_error}\n"
-                       "Hãy sửa và trả về DUY NHẤT một JSON đúng schema report.")
+            prompt += (f"\n\n## LỖI LẦN TRƯỚC (attempt {attempt - 1})\n{last_error}\n")
+            if last_raw:
+                # A12: model thấp cần thấy chính output sai của mình để sửa trúng chỗ
+                prompt += f"\n## OUTPUT LẦN TRƯỚC (trích cuối)\n{last_raw[-500:]}\n"
+            prompt += "Hãy sửa và trả về DUY NHẤT một JSON đúng schema report."
         argv, cwd = build_command(engine, model, prompt, worktree, timeout_secs)
         shown = " ".join(argv[:-1] if engine == "codex" else argv[:2]) + " …"
         try:
@@ -199,6 +223,16 @@ def run_task(engine, model, task_file, worktree, slug):
             stderr_tail = proc.stderr.strip().splitlines()[-3:]
             last_error = "; ".join(errors) + (
                 f" | stderr: {' / '.join(stderr_tail)}" if stderr_tail else "")
+            last_raw = proc.stdout.strip()
+            # A4: persist raw output của attempt hỏng — không có nó thì không
+            # debug được model đã trả gì để sửa prompt/gói task.
+            try:
+                os.makedirs(report_dir, exist_ok=True)
+                raw_path = os.path.join(report_dir, f"{task_id}.attempt{attempt}.raw.txt")
+                with open(raw_path, "w", encoding="utf-8") as f:
+                    f.write(proc.stdout + "\n--- STDERR ---\n" + proc.stderr)
+            except OSError as exc:
+                _warn(f"không ghi được raw output attempt {attempt}: {exc}")
             _log(slug, f"run task={task_id} engine={engine} model={model} "
                        f"attempt={attempt} exit={proc.returncode} "
                        f"validate=FAIL({'; '.join(errors)}) cmd={shown}")
@@ -207,9 +241,12 @@ def run_task(engine, model, task_file, worktree, slug):
             data["notes"] = (data.get("notes", "") +
                             f" [engine exit {proc.returncode} nhưng report hợp lệ]").strip()
         os.makedirs(report_dir, exist_ok=True)
-        with open(report_path, "w", encoding="utf-8") as f:
+        # A24: ghi atomic (tmp + replace) — crash giữa chừng không để lại JSON cụt
+        tmp_path = report_path + ".tmp"
+        with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             f.write("\n")
+        os.replace(tmp_path, report_path)
         _log(slug, f"run task={task_id} engine={engine} model={model} "
                    f"attempt={attempt} exit={proc.returncode} validate=OK "
                    f"report={os.path.relpath(report_path)} cmd={shown}")
