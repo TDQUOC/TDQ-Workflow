@@ -1,0 +1,31 @@
+{
+  "agent": 1,
+  "routes": [
+    "python.org official"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Python Release Python 3.13.2 là phiên bản được phát hành chính thức trên Python.org",
+      "evidence_quote": "<title>Python Release Python 3.13.2 | Python.org</title>",
+      "route": "python.org official",
+      "score": 10,
+      "source_url": "https://www.python.org/downloads/release/python-3132/",
+      "url_alive": true
+    },
+    {
+      "claim": "Phiên bản Python 3 stable được phát hành trong trang là Python 3.13.2.",
+      "evidence_quote": "Python Release Python 3.13.2",
+      "route": "python.org official",
+      "score": 10,
+      "source_url": "https://www.python.org/downloads/release/python-3132/",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Latest Python 3 Release\" site:python.org/downloads/release/",
+    "\"Python 3.13.\" site:python.org/downloads/",
+    "site:python.org latest stable Python 3 release"
+  ]
+}

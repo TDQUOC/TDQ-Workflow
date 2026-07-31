@@ -1,0 +1,16 @@
+{
+  "agent": 2,
+  "routes": [
+    "github releases của project"
+  ],
+  "routes_failed": [],
+  "findings": [],
+  "not_found": true,
+  "queries_used": [
+    "\"TypeScript\" \"Latest\" site:github.com/microsoft/TypeScript/releases",
+    "\"releases/tag/\" site:github.com/microsoft/TypeScript",
+    "site:github.com/anthropics/claude-code",
+    "site:github.com/anthropics/claude-code releases",
+    "site:github.com/microsoft/TypeScript releases"
+  ]
+}

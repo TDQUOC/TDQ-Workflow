@@ -1,0 +1,2 @@
+[2026-07-31T15:18:02+07:00] agent=2 agy=1.1.9 route=github releases của project call=search attempt=1 model=gemini-3.6-flash-low exit=0 findings=0 secs=31.1
+[2026-07-31T15:18:02+07:00] agent=2 agy=1.1.9 exit=0 findings=0 routes_failed=0 report=docs/tdq/research/search/2026-07-31-npm-versions/agent-2.json

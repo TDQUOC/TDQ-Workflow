@@ -1,5 +1,7 @@
 # Tavily power usage
 
+Layering: Tavily is the FAST search tier. DEEP search (multi-source ranking, deep URL reads) defaults to the `search-runner` agent — trigger criteria and flow in [deep-search.md](deep-search.md). Tavily also serves as the fallback when the agy engine reports `engine-failed` ≥2 times in a row.
+
 Primary/backup discipline: `tavily-primary` first for every call; on connection/auth/timeout/quota/tool error call the same tool on `tavily-backup` exactly once. Empty results are NOT errors — refine the query on primary instead of failing over. Never call primary and backup in parallel for the same query.
 
 ## Tool selection

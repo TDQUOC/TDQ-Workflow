@@ -1,0 +1,55 @@
+{
+  "agent": 1,
+  "routes": [
+    "npmjs.com trang package chính thức"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Phiên bản mới nhất (dist-tag latest) của package npm typescript là 7.0.2.",
+      "evidence_quote": "The latest version of the `typescript` package on npm is **7.0.2**, which was published on July 8, 2026",
+      "route": "npmjs.com trang package chính thức",
+      "score": 10,
+      "source_url": "https://www.npmjs.com/package/typescript",
+      "url_alive": true
+    },
+    {
+      "claim": "Phiên bản mới nhất (dist-tag latest) của package npm @anthropic-ai/claude-code là 2.1.220.",
+      "evidence_quote": "The latest version of the `@anthropic-ai/claude-code` package on npm is **2.1.220**, published on July 24, 2026",
+      "route": "npmjs.com trang package chính thức",
+      "score": 10,
+      "source_url": "https://www.npmjs.com/package/@anthropic-ai/claude-code",
+      "url_alive": true
+    },
+    {
+      "claim": "Phiên bản mới nhất (dist-tag latest) của package npm typescript là 7.0.2.",
+      "evidence_quote": "\"dist-tags\":{\"dev\":\"3.9.4\",\"tag-for-publishing-older-releases\":\"4.1.6\",\"insiders\":\"4.6.2-insiders.20220225\",\"beta\":\"6.0.0-beta\",\"rc\":\"7.0.1-rc\",\"latest\":\"7.0.2\",\"next\":\"7.1.0-dev.20260730.1\"}",
+      "route": "npmjs.com trang package chính thức",
+      "score": 10,
+      "source_url": "https://registry.npmjs.org/typescript",
+      "url_alive": true
+    },
+    {
+      "claim": "Phiên bản mới nhất của package npm @anthropic-ai/claude-code là 2.1.220",
+      "evidence_quote": "The latest version of `@anthropic-ai/claude-code` on the npm registry is **2.1.220**, which was published on July 24, 2026",
+      "route": "npmjs.com trang package chính thức",
+      "score": 9,
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGiDIoew3EwSGEQvVioN57TrUJFfbwePqUUS4PeM3H-APQRI_AfoQUV6re8vpZCsZ5L2paPiNEXSr_40f-oupMZKkAXnKR7qEODp1qB4bthYr21xgwMe-plNTQFZ41hQmtibFxrZSpWbZaA8eh_",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"@anthropic-ai/claude-code\" \"latest\" version npmjs.com",
+    "\"claude-code\" site:npmjs.com/package/@anthropic-ai/claude-code",
+    "\"typescript\" \"latest\" site:npmjs.com/package/typescript",
+    "\"version\" \"@anthropic-ai/claude-code\" site:npmjs.com/package/@anthropic-ai/claude-code",
+    "https://registry.npmjs.org/typescript",
+    "https://www.npmjs.com/package/@anthropic-ai/claude-code",
+    "https://www.npmjs.com/package/typescript",
+    "site:npmjs.com/package/@anthropic-ai/claude-code",
+    "site:npmjs.com/package/typescript",
+    "site:registry.npmjs.org/@anthropic-ai/claude-code/latest",
+    "site:registry.npmjs.org/typescript/latest"
+  ]
+}

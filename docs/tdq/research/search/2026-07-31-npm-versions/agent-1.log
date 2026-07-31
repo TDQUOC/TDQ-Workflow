@@ -1,0 +1,4 @@
+[2026-07-31T15:18:02+07:00] agent=1 agy=1.1.9 route=npmjs.com trang package chính thức call=search attempt=1 model=gemini-3.6-flash-low exit=0 findings=2 secs=32.7
+[2026-07-31T15:18:23+07:00] agent=1 agy=1.1.9 route=npmjs.com trang package chính thức call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=21.1
+[2026-07-31T15:18:43+07:00] agent=1 agy=1.1.9 route=npmjs.com trang package chính thức call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=20.4
+[2026-07-31T15:18:44+07:00] agent=1 agy=1.1.9 exit=0 findings=4 routes_failed=0 report=docs/tdq/research/search/2026-07-31-npm-versions/agent-1.json

@@ -7,3 +7,4 @@ Bản chạy ngoài Claude Code (Codex, Antigravity, agent bất kỳ). Không c
 2. Yêu cầu: **Python 3** (chỉ dùng thư viện chuẩn, không cài thêm gì).
 3. Trỏ agent đọc `AGENTS.md` đầu phiên; nó tự chạy `python3 scripts/tdq_state.py next` mỗi bước.
 4. Kiểm nhanh: `python3 scripts/tdq_state.py next` phải in phase hiện tại và việc kế tiếp.
+5. Deep search (cần agy CLI + `scripts/search_task.py`): xem `workflow/06-deep-search.md`.

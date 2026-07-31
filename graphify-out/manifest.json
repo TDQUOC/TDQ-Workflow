@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1785342162.610913,
-    "ast_hash": "2c49a035533d1818138801eea31f299f",
-    "semantic_hash": "2c49a035533d1818138801eea31f299f"
+    "mtime": 1785485569.5579987,
+    "ast_hash": "fd79db0b98d2eabaf4f39125e6e870c6",
+    "semantic_hash": "fd79db0b98d2eabaf4f39125e6e870c6"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -803,5 +803,50 @@
     "mtime": 1785426337.8238177,
     "ast_hash": "6329feef645f3719c5333d8ff767bd41",
     "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1785485561.2982607,
+    "ast_hash": "192392fd3d39b115c65a8735cd2f04fa",
+    "semantic_hash": "192392fd3d39b115c65a8735cd2f04fa"
+  },
+  "docs/tdq/research/search/2026-07-31-mini-run-nolog/agent-1.json": {
+    "mtime": 1785485777.895561,
+    "ast_hash": "2ab6f2b9e4ba407378c20b72415b8dbc",
+    "semantic_hash": "2ab6f2b9e4ba407378c20b72415b8dbc"
+  },
+  "docs/tdq/research/search/2026-07-31-mini-run/agent-1.json": {
+    "mtime": 1785485640.1902168,
+    "ast_hash": "69f89c4872253ce2304822149e7c7415",
+    "semantic_hash": "69f89c4872253ce2304822149e7c7415"
+  },
+  "docs/tdq/research/search/2026-07-31-npm-versions/agent-1.json": {
+    "mtime": 1785485924.4816594,
+    "ast_hash": "c38ca9c683a83235ba087d3aadcda1c0",
+    "semantic_hash": "c38ca9c683a83235ba087d3aadcda1c0"
+  },
+  "docs/tdq/research/search/2026-07-31-npm-versions/agent-2.json": {
+    "mtime": 1785485882.9013155,
+    "ast_hash": "94c0c8a20d5c960bb6a40e136fe4b5c1",
+    "semantic_hash": "94c0c8a20d5c960bb6a40e136fe4b5c1"
+  },
+  "docs/tdq/research/search/2026-07-31-npm-versions/merged.json": {
+    "mtime": 1785485936.5976293,
+    "ast_hash": "d74edcf91e255a2822c979128d55be4d",
+    "semantic_hash": "d74edcf91e255a2822c979128d55be4d"
+  },
+  "scripts/search_report_schema.json": {
+    "mtime": 1785484722.4983354,
+    "ast_hash": "28a7ef73909eb5eeb1ed8412852c2e03",
+    "semantic_hash": "28a7ef73909eb5eeb1ed8412852c2e03"
+  },
+  "scripts/search_task.py": {
+    "mtime": 1785485153.1515288,
+    "ast_hash": "7e9ad4168b5ae725727de022747cb581",
+    "semantic_hash": "7e9ad4168b5ae725727de022747cb581"
+  },
+  "tests/test_search_task.py": {
+    "mtime": 1785485269.4548163,
+    "ast_hash": "9f931436d2db5645037caa78b09459b6",
+    "semantic_hash": "9f931436d2db5645037caa78b09459b6"
   }
 }

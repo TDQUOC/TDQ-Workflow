@@ -48,7 +48,8 @@ Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
 3. **Research nhiều hướng.** 2–4 truy vấn khác góc nhìn qua `tavily-primary`
    (harness không có tavily → dùng công cụ search sẵn có của nó; lỗi mới đổi nguồn, không
    gọi song song). Lưu `docs/tdq/research/<slug>.md` dạng: truy vấn → nguồn → điều rút ra.
-   Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài.
+   Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài. Đủ tiêu chí deep
+   search (≥2 dấu hiệu) → theo workflow/06-deep-search.md.
 
 4. **Vòng interview.** Liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
    lỗi, hiệu năng, tương thích). Hỏi theo cụm 2–4 câu, mỗi câu kèm 2–4 phương án có

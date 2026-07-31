@@ -2,6 +2,26 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.5.0 — 2026-07-31
+
+Deep search mặc định đi qua agent `search-runner` + agy CLI: mọi logic dễ hỏng
+(cap, retry/escalation, schema, URL sống, dedup, rank tất định, log) nằm trong
+`scripts/search_task.py`; model cấp thấp chỉ nhận từng việc nhỏ đã đóng khung.
+
+### Thêm
+- **`scripts/search_task.py`** (`split` / `run` / `merge`): chia route round-robin theo
+  cap `TDQ_SEARCH_MAX_AGENTS`; mỗi route 1 lần search + đọc sâu ≤N URL qua agy
+  `--json-schema`; retry ≤2 với escalation model + đính lỗi cũ vào prompt; check URL
+  sống (HEAD→GET); merge dedup theo URL chuẩn hoá, rank tất định (route xác nhận →
+  URL sống → có quote → score); log per-agent ISO timestamp, `TDQ_SEARCH_LOG=0` tắt.
+- **`scripts/search_report_schema.json`**: schema report bắt buộc evidence quote +
+  `source_url` có path; nguồn duy nhất của luật URL.
+- **Agent `search-runner`** (vỏ mỏng chạy script) + tài liệu
+  `references/deep-search.md` (luật trigger ≥2 dấu hiệu, brief FULL data,
+  fallback Tavily khi `engine-failed` ≥2 lần); tầng search ghi ở `tavily.md`,
+  `tdq-intake` B3 và `portable/workflow/06-deep-search.md`.
+- **`.claude/settings.json`** (project): env block TDQ_SEARCH_* mặc định.
+
 ## 0.3.3 — 2026-07-29
 
 Workflow trước đây không hề rà soát skill phụ trợ đang có (audit: điểm mù, không phải

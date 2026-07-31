@@ -1,0 +1,25 @@
+{
+  "agent": 1,
+  "routes": [
+    "python.org official"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Phiên bản Python 3 stable mới nhất là Python 3.14.6, phát hành ngày 10/06/2026.",
+      "evidence_quote": "The latest stable Python 3 release is Python 3.14.6, released on June 10, 2026",
+      "route": "python.org official",
+      "score": 10,
+      "source_url": "https://www.python.org/downloads/",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Latest Python 3 Release\" site:python.org",
+    "latest stable python 3 release version python.org",
+    "site:python.org/downloads/ \"Python 3.\"",
+    "site:python.org/downloads/release/ \"Python 3.\"",
+    "site:www.python.org/downloads/ Python 3.13"
+  ]
+}

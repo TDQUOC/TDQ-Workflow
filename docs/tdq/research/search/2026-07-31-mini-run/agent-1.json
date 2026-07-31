@@ -1,0 +1,30 @@
+{
+  "agent": 1,
+  "routes": [
+    "python.org official"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Phiên bản Python 3 stable mới nhất hiện tại là Python 3.14.6 (phát hành ngày 10 tháng 6 năm 2026).",
+      "evidence_quote": "Latest Python 3 Release - Python 3.14.6",
+      "route": "python.org official",
+      "score": 10,
+      "source_url": "https://www.python.org/downloads/source/",
+      "url_alive": true
+    },
+    {
+      "claim": "Phiên bản Python 3 stable mới nhất hiện tại là Python 3.14.6.",
+      "evidence_quote": "Latest Python 3 Release - Python 3.14.6",
+      "route": "python.org official",
+      "score": 10,
+      "source_url": "https://www.python.org/downloads/source/",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "site:python.org Python stable release 3.x latest version",
+    "site:python.org/downloads/ \"Download Python\""
+  ]
+}

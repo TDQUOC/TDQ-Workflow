@@ -1,0 +1,24 @@
+{
+  "run_id": "2026-07-31-trigger-test",
+  "findings": [
+    {
+      "source_url": "https://www.python.org/downloads/release/python-3132/",
+      "routes": [
+        "python.org official"
+      ],
+      "claim": "Python Release Python 3.13.2 là phiên bản được phát hành chính thức trên Python.org",
+      "evidence_quote": "<title>Python Release Python 3.13.2 | Python.org</title>",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Latest Python 3 Release\" site:python.org/downloads/release/",
+    "\"Python 3.13.\" site:python.org/downloads/",
+    "site:python.org latest stable Python 3 release"
+  ],
+  "routes_failed": [],
+  "empty_routes": []
+}
