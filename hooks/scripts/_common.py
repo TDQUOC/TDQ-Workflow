@@ -10,6 +10,7 @@ và không tin dòng echo `✓ [TDQ:...]` do model tự in.
 """
 import json
 import os
+import re
 import sys
 
 _SCRIPTS_DIR = os.path.normpath(
@@ -21,9 +22,27 @@ import tdq_state  # noqa: E402
 # 0.2.0 bỏ gate cứng; 0.3.0 bỏ luôn slash command duyệt — user duyệt bằng chat.
 APPROVE_HINTS = {
     "spec": 'nhắn "duyệt spec"',
-    "plan": 'nhắn "duyệt plan mode main" (hoặc subagent, external)',
+    # {mode} = mode ĐÃ CHỐT trong plan (dòng "Mode thực thi:"), fallback main —
+    # hardcode main từng khiến user gõ sai mode so với plan đã chốt external.
+    "plan": 'nhắn "duyệt plan mode {mode}" (đổi được: main|subagent|external)',
     "quick": 'nhắn "duyệt quick"',
 }
+
+_PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent|external)", re.IGNORECASE)
+
+
+def plan_mode(cwd, state):
+    """Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi."""
+    rel = (state or {}).get("plan_file")
+    if not rel:
+        return None
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    try:
+        with open(path, encoding="utf-8") as f:
+            match = _PLAN_MODE.search(f.read())
+    except OSError:
+        return None
+    return match.group(1).lower() if match else None
 
 # Danh sách MÃ ĐÓNG (spec §2.1). Thêm mã mới phải sửa spec trước.
 CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT")
@@ -100,5 +119,8 @@ def echo_line(code, what):
     return f"Xong thì in: ✓ [{code}] {what}"
 
 
-def approve_hint(target):
-    return f"➤ Duyệt: {APPROVE_HINTS.get(target, 'nhắn duyệt')} · Góp ý: nhắn trực tiếp"
+def approve_hint(target, mode=None):
+    hint = APPROVE_HINTS.get(target, "nhắn duyệt")
+    if target == "plan":
+        hint = hint.format(mode=mode or "main")
+    return f"➤ Duyệt: {hint} · Góp ý: nhắn trực tiếp"

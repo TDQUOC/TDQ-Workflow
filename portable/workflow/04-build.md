@@ -6,6 +6,12 @@ Yêu cầu `plan_approved = true`. File này lo ba phase: `implement` → `qc` �
 
 - **End-to-end trong MỘT turn.** Không dừng giữa chừng hỏi "có tiếp không". Chỉ dừng khi
   đổi phạm vi thật sự, thiếu/mơ hồ `implement_mode`, hoặc gặp chặn chỉ user gỡ được.
+- **Chặn kỹ thuật → tự chọn đề xuất, không hỏi.** Gặp chặn kỹ thuật giữa build (worktree
+  thiếu nền, dependency, conflict…) mà bạn đã có phương án đề xuất → TỰ CHỌN phương án
+  đó. Ghi 1 dòng quyết định + lý do vào working log rồi làm tiếp. Được phép TỰ COMMIT để
+  gỡ chặn (message mô tả thay đổi, KHÔNG push, liệt kê commit đó trong report).
+  Chỉ còn dừng hỏi khi: đổi phạm vi spec/plan, hành động phá hủy/khó đảo ngoài commit,
+  hoặc thiếu input chỉ user có.
 - **Tick ngay.** Test của một task pass là sửa file plan đánh `- [x]` cho task đó TRƯỚC
   khi bắt task sau. Cấm gom tick cuối turn.
 - **Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass.
@@ -99,7 +105,8 @@ Bước kế tiếp: `python3 scripts/tdq_state.py set phase=report`.
 
 9. Trình report trong chat (nguyên văn hoặc tóm tắt ≤ 10 dòng + đường dẫn).
 
-10. **Hỏi user có commit không** — bắt buộc, và tuyệt đối không tự commit. User đồng ý →
+10. **Hỏi user có commit không** — bắt buộc, và không tự commit thành quả cuối (ngoại lệ
+    duy nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). User đồng ý →
     commit message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI; tên
     branch theo quy ước.
 

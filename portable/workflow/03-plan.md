@@ -40,7 +40,7 @@ Phase `plan`. Plan viết **tiếng Việt**. Yêu cầu `spec_approved = true`.
 5. **Trình bày & DỪNG.** Chat: tóm tắt plan ≤ 10 dòng (số phase/task, mode user đã chọn
    ở bước 1 + lý do, DoD; external thì kèm engine + model map), rồi in đúng dòng:
    ```
-   ➤ Duyệt: nhắn "duyệt plan mode main" (hoặc subagent, external) · Góp ý: nhắn trực tiếp
+   ➤ Duyệt: nhắn "duyệt plan mode <mode user đã chọn ở bước 1>" (đổi được: main|subagent|external) · Góp ý: nhắn trực tiếp
    ```
    Rồi **kết thúc turn**. Góp ý → sửa, trình lại, chờ tiếp.
 

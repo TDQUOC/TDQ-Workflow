@@ -13,7 +13,8 @@ import os
 import re
 import sys
 
-from _common import (approve_hint, payload_cwd, read_payload, session_id, tdq_state)
+from _common import (approve_hint, payload_cwd, plan_mode, read_payload,
+                     session_id, tdq_state)
 
 MAX_LINES = 3
 MAX_CHARS = 240
@@ -54,8 +55,18 @@ def main():
     # Ghi vào sổ, KHÔNG in ra context → không tốn token của model.
     tdq_state.turn_log_append(cwd, "turn_start", session=sid, **tdq_state.turn_snapshot(cwd))
 
+    # Không có request MỞ (mở = có active_request VÀ phase != idle) → nhắc intake.
+    # Dòng INTAKE đứng TRƯỚC để không bao giờ bị _truncate cắt cụt (cắt từ đuôi).
+    intake = ("[TDQ:INTAKE] Chưa có request mở — prompt KHÔNG thuộc vòng intake đang dở "
+              "thì mở tdq-intake trước khi làm gì khác.")
     state = tdq_state.load(cwd)
     if state is None or not state.get("active_request"):
+        _emit([intake])
+        return
+    # phase_key, không phải phase thô: lane quick đang chạy giữ phase=idle thô —
+    # so thô sẽ bắn INTAKE nhầm và nuốt mất dòng APPROVE của quick.
+    if tdq_state.phase_key(state) == "idle":
+        _emit([intake, tdq_state.render_next(cwd, state, brief=True)])
         return
 
     lane = tdq_state.effective_lane(state, warn=False)
@@ -71,18 +82,31 @@ def main():
     lines = [tdq_state.render_next(cwd, state, brief=True)]
 
     if pending:
+        # Dòng APPROVE đứng TRƯỚC NEXT: _truncate cắt từ đuôi — cắt path project
+        # còn hơn cắt cụt câu hint/câu lệnh approve (bug hint cụt 2026-08-02).
+        lines = []
         prompt = payload.get("prompt") or ""
+        planned = plan_mode(cwd, state) if pending == "plan" else None
         if looks_like_approval(prompt, pending):
             mode = ""
             if pending == "plan":
                 found = MODE.search(prompt)
-                mode = f" --mode {found.group(1).lower()}" if found else " --mode <main|subagent|external>"
+                said = found.group(1).lower() if found else None
+                if said and planned and said != planned:
+                    # Mode trong câu duyệt lệch mode ĐÃ CHỐT trong plan — không
+                    # được ghi nhận theo suy diễn, bắt agent HỎI user xác nhận.
+                    lines.append(f"[TDQ:APPROVE] ⚠️ Câu duyệt nói mode {said} nhưng plan chốt "
+                                 f"{planned} — HỎI user xác nhận mode trước, chưa chạy approve.")
+                    _emit(lines)
+                    return
+                mode = f" --mode {said}" if said else " --mode <main|subagent|external>"
             lines.append(f"[TDQ:APPROVE] User vừa duyệt {pending} → chạy NGAY: "
                          f"python3 scripts/tdq_state.py approve {pending}{mode} "
                          f"--by \"{prompt[:60]}\"")
         else:
             lines.append(f"[TDQ:APPROVE] Đang chờ duyệt {pending}. Prompt này KHÔNG rõ là câu duyệt "
-                         f"→ tuyệt đối không suy diễn: hoặc HỎI lại, hoặc in \"{approve_hint(pending)}\".")
+                         f"→ tuyệt đối không suy diễn: hoặc HỎI lại, hoặc in \"{approve_hint(pending, planned)}\".")
+        lines.append(tdq_state.render_next(cwd, state, brief=True))
         _emit(lines)
         return
 

@@ -1,6 +1,6 @@
 ---
 name: tdq-intake
-description: Mở một request TDQ mới - ghi lại yêu cầu, đề xuất lane quick/full, init state, rồi phân tích + interview đến khi hết mơ hồ. Dùng cho MỌI yêu cầu mới.
+description: Mở request TDQ mới - ghi yêu cầu, chọn lane, init state, phân tích + interview đến hết mơ hồ. Dùng cho MỌI prompt mới, kể cả câu hỏi/check/việc nhỏ.
 ---
 
 # TDQ Intake — mở request & phân tích
@@ -9,6 +9,10 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md) trước. Mọi output cho 
 Skill này lo hai phase: `no_state` → `analyze`.
 
 ## Phần A — Mở request (phase `no_state`)
+
+Định nghĩa "yêu cầu mới": MỌI prompt của user khi KHÔNG có request mở — request mở
+= có `active_request` VÀ `phase != idle`. Khi phase ≠ idle, message của user thuộc
+request đang chạy (duyệt, góp ý, trả lời interview), không mở request lồng.
 
 1. **Ghi lại yêu cầu.** Tạo `docs/tdq/requests/<slug>.md` với slug
    `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`: nguyên văn yêu cầu của user + cách hiểu

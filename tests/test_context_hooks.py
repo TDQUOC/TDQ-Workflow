@@ -125,6 +125,43 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("approve quick", out)
         self.assertIn("--by", out)
 
+    def _pending_plan(self, plan_body):
+        # spec đã duyệt, plan đã đăng ký nhưng chưa duyệt → pending = plan
+        write_file(self.cwd, "docs/tdq/plan/x.md", plan_body)
+        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file="docs/tdq/plan/x.md")
+
+    def test_plan_hint_uses_mode_from_plan_file(self):
+        # 2026-08-02: plan chốt external → hint phải nêu external, không hardcode main
+        self._pending_plan("# plan\nMode thực thi: external — task tự chứa\n")
+        rc, out, _ = self.ctx("tiếp tục")
+        self.assertIn('duyệt plan mode external', out)
+        self.assert_budget(out)
+
+    def test_plan_hint_without_mode_line_falls_back(self):
+        self._pending_plan("# plan\nchưa ghi mode\n")
+        rc, out, _ = self.ctx("tiếp tục")
+        self.assertIn('duyệt plan mode main', out)
+
+    def test_plan_approval_mode_mismatch_warns(self):
+        # user duyệt "mode main" trong khi plan chốt external → phải có cảnh báo lệch
+        self._pending_plan("# plan\nMode thực thi: external — lý do\n")
+        rc, out, _ = self.ctx("duyệt plan mode main")
+        self.assertIn("⚠️", out)
+        self.assertIn("main", out)
+        self.assertIn("external", out)
+        self.assertIn("HỎI", out)
+        self.assertNotIn("chạy NGAY", out)
+        self.assert_budget(out)
+
+    def test_plan_approval_mode_match_no_warn(self):
+        self._pending_plan("# plan\nMode thực thi: external — lý do\n")
+        rc, out, _ = self.ctx("duyệt plan mode external")
+        self.assertIn("--mode external", out)
+        self.assertNotIn("⚠️", out)
+
     def test_plan_approval_captures_mode(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
@@ -150,18 +187,24 @@ class TestPromptContext(unittest.TestCase):
         rc, out, _ = self.ctx("duyệt plan")
         self.assertIn("--mode <main|subagent|external>", out)
 
-    def test_quick_approved_only_next_line(self):
+    def test_quick_approved_terminal_intake_and_next(self):
+        # Quick đã duyệt + phase idle = request ĐÃ ĐÓNG → hợp đồng 2026-08-02:
+        # nhắc [TDQ:INTAKE] kèm [TDQ:NEXT], không còn [TDQ:APPROVE].
         write_state(self.cwd, active_request="r1", lane="quick",
                     quick_approved=True, quick_approved_at=now_iso())
         rc, out, _ = self.ctx()
-        self.assertEqual(len(out.splitlines()), 1)
+        self.assertEqual(len(out.splitlines()), 2)
+        self.assertIn("[TDQ:INTAKE]", out)
         self.assertIn("[TDQ:NEXT]", out)
         self.assertNotIn("[TDQ:APPROVE]", out)
 
-    def test_no_request_silent(self):
+    def test_no_request_prints_intake(self):
+        # Hợp đồng 2026-08-02: không state → nhắc [TDQ:INTAKE] (chi tiết ở
+        # tests/test_prompt_context.py).
         rc, out, _ = self.ctx()
         self.assertEqual(rc, 0)
-        self.assertEqual(out, "")
+        self.assertIn("[TDQ:INTAKE]", out)
+        self.assertNotIn("[TDQ:NEXT]", out)
 
     def test_full_implement_phase_line(self):
         spec = write_file(self.cwd, "docs/tdq/spec/x.md", "# spec\n")
