@@ -1,23 +1,23 @@
 # Graph Report - TDQWorkflow  (2026-08-02)
 
 ## Corpus Check
-- 252 files · ~188,687 words
+- 252 files · ~188,739 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2103 nodes · 3044 edges · 182 communities (152 shown, 30 thin omitted)
+- 2186 nodes · 3115 edges · 199 communities (168 shown, 31 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c17de405`
+- Built from commit: `3d9e18e4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - run_hook
 - tdq_state.py
-- write_state
+- TestStopGateDiskEffects
 - good_report
 - write_file
 - search_task.py
@@ -152,7 +152,7 @@
 - 2.3 Thiết kế state file
 - QC — kiểm chất lượng
 - Chọn lane: quick hay full
-- DefaultModelTest
+- TokenBudgetTest
 - QC — Smoke e2e (E1) — 2026-07-27
 - questions/2026-07-31-agy-search-agent.md
 - Questions — 2026-07-31-audit-full-workflow
@@ -163,6 +163,7 @@
 - Brief — Công nghệ speech-to-text word-level realtime (2026)
 - TDQ STATE (tự sinh — không sửa tay)
 - workflow/references/approval.md
+- helper.py
 - Ghi nhận duyệt
 - Mã nhắc của hook
 - TDQ Intake — mở request & phân tích
@@ -189,6 +190,22 @@
 - 2026-07-31-trigger-test/report.md
 - 2026-07-31-vectordb-local-rag/report.md
 - portable/README.md
+- TestBashGate
+- Working log — 2026-08-02
+- PLAN — TDQ workflow là default tuyệt đối + bỏ §5 superpower
+- SPEC — TDQ workflow là default tuyệt đối + bỏ mục superpower (mục 5 cũ)
+- write_state
+- TurnStartRowTest
+- KNOWLEDGE — 2026-08-02-tdq-default-cleanup
+- ResilienceTest
+- QC — TDQ workflow là default tuyệt đối + bỏ mục superpower
+- QUESTIONS — 2026-08-02-tdq-default-cleanup
+- REPORT — TDQ workflow là default tuyệt đối + bỏ mục superpower
+- RESEARCH — 2026-08-02-tdq-default-cleanup
+- REQUEST — Tự chọn theo đề xuất khi gặp chặn kỹ thuật giữa build
+- REQUEST — Check bump version + đồng bộ plugin repo ↔ user-level
+- REQUEST — Dòng duyệt plan gợi ý sai mode đã chốt
+- REQUEST — 2026-08-02-tdq-default-cleanup
 
 ## God Nodes (most connected - your core abstractions)
 1. `run_hook()` - 36 edges
@@ -217,19 +234,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (182 total, 30 thin omitted)
+## Communities (199 total, 31 thin omitted)
 
 ### Community 0 - "run_hook"
-Cohesion: 0.05
-Nodes (26): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., read_state(), run_hook(), B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json, TestBashGate (+18 more)
+Cohesion: 0.29
+Nodes (3): run_hook(), ProtocolTest, rows()
 
 ### Community 1 - "tdq_state.py"
 Cohesion: 0.06
 Nodes (64): _atomic_write(), cli(), _cli_approve(), default_state(), effective_lane(), effective_mode(), effective_phase(), _fail() (+56 more)
 
-### Community 2 - "write_state"
-Cohesion: 0.10
-Nodes (22): write_state(), stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm, P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được. (+14 more)
+### Community 2 - "TestStopGateDiskEffects"
+Cohesion: 0.12
+Nodes (15): P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được., Sửa repo hoàn toàn bằng shell (không `observe` nào) → phải chặn., Chỉ ghi state/sổ turn thì không phải "đổi repo" — tránh chặn oan mới. (+7 more)
 
 ### Community 3 - "good_report"
 Cohesion: 0.08
@@ -296,7 +313,7 @@ Cohesion: 0.07
 Nodes (27): 10. QC / test / validate cho chính plugin (checklist rule 9), 11. Deliverables (Expect_Output), 12. Giới hạn & rủi ro (minh bạch), 1. Ý tưởng & mục tiêu, 2.1 Trong scope (MVP), 2.2 Ngoài scope (MVP), 2. Scope, 3.1 Lazy load & ngân sách token (bắt buộc) (+19 more)
 
 ### Community 19 - "StubBase"
-Cohesion: 0.13
+Cohesion: 0.15
 Nodes (11): CallTimeoutTest, PreflightTest, Dựng stub binary agy trong PATH + run-dir tạm. Không mạng, không binary thật., Response cho call agy -p thứ n. agy bọc structured_output trong JSON vỏ., T3.2 — validate agy CLI + CẢ hai model slug qua external_models.py., T3.4 — retry ≤2 kèm lỗi cũ, retry dùng slug escalation., T3.6 — call quá TDQ_SEARCH_TIMEOUT bị kill, tính 1 lần fail → retry., T3.7 — run-dir đúng run-id, brief.md copy vào, log per-agent ISO, LOG=0 tắt. (+3 more)
 
 ### Community 20 - "Working log — 2026-07-31"
@@ -408,7 +425,7 @@ Cohesion: 0.31
 Nodes (3): Khuôn gói task cho engine ngoài (mode external), Các bước, TDQ Spec
 
 ### Community 50 - ".run_cli"
-Cohesion: 0.19
+Cohesion: 0.16
 Nodes (5): HardenTest, MergeTest, Chạy search_task.main IN-PROCESS: PATH → stub, HTTP → mock., A4/A7/A14/A15/A16 — persist raw, cảnh báo separator, schema guard,     merge đếm, T4.1 + T4.2 — dedup URL, rank tất định 5 khóa; merged.json + report ≤50 dòng
 
 ### Community 51 - "PLAN — Vá điểm mù verify-by-effect (0.3.1)"
@@ -603,6 +620,10 @@ Nodes (3): add(), Sample E2E cho mode external — task E2E-AGY (fallback do orc
 Cohesion: 0.43
 Nodes (3): add(), Sample module for E2E Codex tests., TestE2ECodex
 
+### Community 101 - "SearchRunnerAgentTest"
+Cohesion: 0.16
+Nodes (4): DefaultModelTest, T1.1 (0.6.0) — default flash-medium, escalation flash-high, docs đồng bộ., T5.1 — agent vỏ mỏng đúng khuôn runner (như RunnerAgentsTest bên external)., SearchRunnerAgentTest
+
 ### Community 102 - "KNOWLEDGE — instruction-hardening-7b (chốt trước khi viết spec)"
 Cohesion: 0.33
 Nodes (6): 1. Vấn đề cốt lõi, 2. Quyết định đã chốt, 3. Tiêu chí "model yếu đọc cũng làm đúng" (lint sẽ chấm), 4. Đánh đổi đã biết, 5. Chưa quyết (không chặn spec), KNOWLEDGE — instruction-hardening-7b (chốt trước khi viết spec)
@@ -735,6 +756,10 @@ Nodes (4): Chạy cái gì, Ghi kết quả, Khi FAIL, QC — kiểm chất lư�
 Cohesion: 0.40
 Nodes (4): Bảng quyết, Chọn lane: quick hay full, Khuôn câu hỏi (copy được), Luồng mỗi lane
 
+### Community 138 - "TokenBudgetTest"
+Cohesion: 0.24
+Nodes (4): budget(), Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
+
 ### Community 139 - "QC — Smoke e2e (E1) — 2026-07-27"
 Cohesion: 0.50
 Nodes (3): 1. Chain test 2 lane (hook thật, chạy subprocess), 2. Headless CLI thật (`claude -p --plugin-dir .`), QC — Smoke e2e (E1) — 2026-07-27
@@ -775,6 +800,10 @@ Nodes (3): TDQ STATE (tự sinh — không sửa tay), Việc tiếp theo, Đang
 Cohesion: 0.20
 Nodes (8): Ghi nhận duyệt, KHÔNG phải câu duyệt (phản ví dụ), Là câu duyệt khi có ĐỦ hai phần, Lệnh phải chạy NGAY khi nhận ra, Bảng 5 mã (danh sách đóng), Hook nhìn thấy thay đổi bằng cách nào, Mã nhắc của hook, Điểm chặn duy nhất
 
+### Community 149 - "helper.py"
+Cohesion: 0.14
+Nodes (15): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., read_state(), B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json, P2 — giao thức tuân thủ: nhắc có mã, quan sát hiệu ứng, đối chiếu ở Stop.  Nguyê, ChainBase (+7 more)
+
 ### Community 150 - "Ghi nhận duyệt"
 Cohesion: 0.50
 Nodes (4): Ghi nhận duyệt, KHÔNG phải câu duyệt (phản ví dụ), Là câu duyệt khi có ĐỦ hai phần, Lệnh phải chạy NGAY khi nhận ra
@@ -795,25 +824,77 @@ Nodes (3): Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình
 Cohesion: 0.67
 Nodes (3): Chốt engine + model (chỉ mode external), Các bước, TDQ Plan
 
+### Community 184 - "Working log — 2026-08-02"
+Cohesion: 0.12
+Nodes (15): 11:31 — Mở request tdq-default-cleanup, 11:36 — Analyze xong tdq-default-cleanup (lane full), 11:47 — Spec v1.1 tdq-default-cleanup, 11:52 — Plan tdq-default-cleanup trình duyệt, 12:01 — Build + QC + report tdq-default-cleanup (HOÀN THÀNH), 13:05 — Mở request fix-approve-hint-mode, 13:22 — Quick approved: fix-approve-hint-mode (mini-plan), 13:30 — Fix-approve-hint-mode HOÀN THÀNH (quick) (+7 more)
+
+### Community 186 - "PLAN — TDQ workflow là default tuyệt đối + bỏ §5 superpower"
+Cohesion: 0.18
+Nodes (10): Definition of Done, Năng lực → task, P0 — Nền (đã xong ở analyze), P1 — Hook [TDQ:INTAKE] (red → green), P2 — CLAUDE.md user-level, P3 — Skill tdq-intake, P4 — QC & đóng, PLAN — TDQ workflow là default tuyệt đối + bỏ §5 superpower (+2 more)
+
+### Community 187 - "SPEC — TDQ workflow là default tuyệt đối + bỏ mục superpower (mục 5 cũ)"
+Cohesion: 0.18
+Nodes (10): 1. Mục tiêu & phạm vi, 1b. Mapping số mục CLAUDE.md (cũ → mới, sau khi xóa §5), 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
+
+### Community 188 - "write_state"
+Cohesion: 0.22
+Nodes (6): write_state(), Sửa mỗi working log thì không tự đòi log lần nữa (tránh vòng lặp)., Mã đã nhắc mà không thấy hiệu ứng → nhắc lại qua additionalContext., StopGateBase, TestStopGate, TestStopGateHints
+
+### Community 190 - "KNOWLEDGE — 2026-08-02-tdq-default-cleanup"
+Cohesion: 0.25
+Nodes (7): Cách tiếp cận, KNOWLEDGE — 2026-08-02-tdq-default-cleanup, Nguồn, Năng lực dùng được, Phương án đã loại, Quyết định đã chốt (user trả lời vòng 1), Ràng buộc
+
+### Community 192 - "QC — TDQ workflow là default tuyệt đối + bỏ mục superpower"
+Cohesion: 0.33
+Nodes (5): Backup CLAUDE.md (T2.1), Bảng QC Q1–Q6, QC — TDQ workflow là default tuyệt đối + bỏ mục superpower, QC vòng 1 — 5 fail phát hiện ở T4.1, đã fix (QC1.1–QC1.3), Đối chiếu §5 superpower (cũ) → chỗ thay thế trong plugin
+
+### Community 193 - "QUESTIONS — 2026-08-02-tdq-default-cleanup"
+Cohesion: 0.40
+Nodes (4): QUESTIONS — 2026-08-02-tdq-default-cleanup, Trả lời (vòng 1 — 2026-08-02 11:35), Vòng 1 (chờ trả lời), Vòng 2 — không còn câu hỏi đổi kết quả
+
+### Community 194 - "REPORT — TDQ workflow là default tuyệt đối + bỏ mục superpower"
+Cohesion: 0.40
+Nodes (4): Lưu ý, QC, REPORT — TDQ workflow là default tuyệt đối + bỏ mục superpower, Đã làm
+
+### Community 195 - "RESEARCH — 2026-08-02-tdq-default-cleanup"
+Cohesion: 0.40
+Nodes (4): Kết luận thiết kế, RESEARCH — 2026-08-02-tdq-default-cleanup, Truy vấn 1: enforce workflow mỗi prompt — hook vs CLAUDE.md, Truy vấn 2: viết description skill để luôn trigger
+
+### Community 196 - "REQUEST — Tự chọn theo đề xuất khi gặp chặn kỹ thuật giữa build"
+Cohesion: 0.50
+Nodes (3): Cách hiểu đầu tiên, Nguyên văn yêu cầu, REQUEST — Tự chọn theo đề xuất khi gặp chặn kỹ thuật giữa build
+
+### Community 197 - "REQUEST — Check bump version + đồng bộ plugin repo ↔ user-level"
+Cohesion: 0.50
+Nodes (3): Cách hiểu đầu tiên, Nguyên văn yêu cầu, REQUEST — Check bump version + đồng bộ plugin repo ↔ user-level
+
+### Community 198 - "REQUEST — Dòng duyệt plan gợi ý sai mode đã chốt"
+Cohesion: 0.50
+Nodes (3): Cách hiểu đầu tiên, Nguyên văn yêu cầu, REQUEST — Dòng duyệt plan gợi ý sai mode đã chốt
+
+### Community 199 - "REQUEST — 2026-08-02-tdq-default-cleanup"
+Cohesion: 0.50
+Nodes (3): Cách hiểu đầu tiên, Nguyên văn yêu cầu, REQUEST — 2026-08-02-tdq-default-cleanup
+
 ## Knowledge Gaps
-- **787 isolated node(s):** `Các bước`, `Chốt engine + model (chỉ mode external)`, `Luật cứng (áp cho cả ba phase)`, `Phần A — Implement (phase `implement`)`, `Nhánh external (Phần A, mode external)` (+782 more)
+- **845 isolated node(s):** `11:31 — Mở request tdq-default-cleanup`, `11:36 — Analyze xong tdq-default-cleanup (lane full)`, `11:47 — Spec v1.1 tdq-default-cleanup`, `11:52 — Plan tdq-default-cleanup trình duyệt`, `12:01 — Build + QC + report tdq-default-cleanup (HOÀN THÀNH)` (+840 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **30 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **31 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `run_state_cli()` connect `run_state_cli` to `run_hook`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **Why does `write_state()` connect `write_state` to `run_hook`?**
-  _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **What connects `Các bước`, `Chốt engine + model (chỉ mode external)`, `Luật cứng (áp cho cả ba phase)` to the rest of the system?**
-  _787 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `run_hook` be split into smaller, more focused modules?**
-  _Cohesion score 0.050615901455767075 - nodes in this community are weakly interconnected._
+- **Why does `today_log_rel()` connect `tdq_state.py` to `_common.py`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `main()` connect `_common.py` to `tdq_state.py`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **What connects `11:31 — Mở request tdq-default-cleanup`, `11:36 — Analyze xong tdq-default-cleanup (lane full)`, `11:47 — Spec v1.1 tdq-default-cleanup` to the rest of the system?**
+  _845 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0648018648018648 - nodes in this community are weakly interconnected._
-- **Should `write_state` be split into smaller, more focused modules?**
-  _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
+- **Should `TestStopGateDiskEffects` be split into smaller, more focused modules?**
+  _Cohesion score 0.12436974789915967 - nodes in this community are weakly interconnected._
 - **Should `good_report` be split into smaller, more focused modules?**
   _Cohesion score 0.08022598870056497 - nodes in this community are weakly interconnected._
+- **Should `write_file` be split into smaller, more focused modules?**
+  _Cohesion score 0.06859903381642513 - nodes in this community are weakly interconnected._
