@@ -2,7 +2,7 @@
   ".claude-plugin/plugin.json": {
     "mtime": 1785653713.7186637,
     "ast_hash": "944bd9978fee4bd6a886cd9d6c2c47ca",
-    "semantic_hash": ""
+    "semantic_hash": "944bd9978fee4bd6a886cd9d6c2c47ca"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -670,14 +670,14 @@
     "semantic_hash": "c48a9515f0a6a9b440af8d200b465a0f"
   },
   "scripts/external_report_schema.json": {
-    "mtime": 1785427110.5711532,
-    "ast_hash": "339f739671aa4e5ed341d76126534d42",
-    "semantic_hash": "339f739671aa4e5ed341d76126534d42"
+    "mtime": 1785737673.9935808,
+    "ast_hash": "93facd94a046c1e784d5e3dae7c92441",
+    "semantic_hash": "93facd94a046c1e784d5e3dae7c92441"
   },
   "scripts/external_task.py": {
-    "mtime": 1785497388.0797822,
-    "ast_hash": "4144b41386c97060e6b8ddb24d98a19a",
-    "semantic_hash": "4144b41386c97060e6b8ddb24d98a19a"
+    "mtime": 1785737843.789614,
+    "ast_hash": "d630473df7e33aa8b1673363f77622a3",
+    "semantic_hash": "d630473df7e33aa8b1673363f77622a3"
   },
   "scripts/samples/e2e_agy.py": {
     "mtime": 1785427599.7937126,
@@ -705,9 +705,9 @@
     "semantic_hash": "64e7004447647eca3d1d390afaf31293"
   },
   "tests/test_external_task.py": {
-    "mtime": 1785497710.994202,
-    "ast_hash": "e5fdd1b1991539d3ab3bbb2bc103d577",
-    "semantic_hash": "e5fdd1b1991539d3ab3bbb2bc103d577"
+    "mtime": 1785738308.4311817,
+    "ast_hash": "e2441e0d16de61537b15903037e5e931",
+    "semantic_hash": "e2441e0d16de61537b15903037e5e931"
   },
   "docs/tdq/external/2026-07-30-sample-socketio-chat/S1.json": {
     "mtime": 1785428698.6962676,

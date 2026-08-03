@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""external_task.py — chạy MỘT task của plan qua engine ngoài (codex | agy).
+"""external_task.py — chạy task/gói plan qua engine ngoài (codex | agy).
+
+`run` chạy một task (quick lane); `run-plan` giao CẢ GÓI plan/phase/fix trong một
+lần gọi (lane full — spec 2026-08-03-check-external-assign-flow); `split-plan`
+chia plan >6 task theo ranh giới phase; `fix-rounds` là sổ đếm vòng mini-plan fix
+(≤2 vòng rồi fallback Claude).
 
 Lõi của mode thực thi `external`: ôm trọn phần dễ sai (build lệnh CLI đúng flag,
 timeout, parse/validate JSON theo schema, retry kèm feedback lỗi, log service,
@@ -26,6 +31,10 @@ import sys
 
 ENGINES = ("codex", "agy")
 MAX_ATTEMPTS = 3
+PLAN_MAX_ATTEMPTS = 2   # run-plan: gói dài, 2 attempt là trần (spec §3)
+PLAN_TIMEOUT_CAP = 3600
+MAX_TASKS_PER_PACKET = 6
+MAX_FIX_ROUNDS = 2
 DEFAULT_TIMEOUT = 540
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SCHEMA_PATH = os.path.join(SCRIPT_DIR, "external_report_schema.json")
@@ -35,11 +44,14 @@ _REQUIRED = (
     ("task_id", str), ("status", str), ("files_changed", list),
     ("test_cmd", str), ("test_result", str), ("notes", str),
 )
-_OPTIONAL = {"fallback": ("claude",)}
+_OPTIONAL = {"fallback": ("claude",), "kind": ("task",)}
 _STATUS = ("done", "blocked")
+_PLAN_REQUIRED = (("kind", str), ("status", str), ("tasks", list), ("notes", str))
 
-USAGE = ("usage: external_task.py run --engine <codex|agy> --model <slug> "
-         "--task-file <f> --worktree <dir> --slug <slug> | parse-plan <plan-file>")
+USAGE = ("usage: external_task.py run|run-plan --engine <codex|agy> --model <slug> "
+         "--task-file <f> --worktree <dir> --slug <slug> [--round <n>] "
+         "| parse-plan <plan-file> | split-plan <plan-file> "
+         "| fix-rounds add|status --slug <slug> [--tasks a,b --result pass|fail]")
 
 
 def _now():
@@ -97,7 +109,10 @@ def _log(slug, message):
 
 
 def validate_report(data):
-    """-> danh sách lỗi (rỗng = hợp lệ). Tự kiểm subset schema, không cần lib ngoài."""
+    """-> danh sách lỗi (rỗng = hợp lệ). Tự kiểm subset schema, không cần lib ngoài.
+    Discriminator `kind`: vắng hoặc "task" = report task; "plan" = report cả gói."""
+    if isinstance(data, dict) and data.get("kind") == "plan":
+        return _validate_plan_report(data)
     errors = []
     if not isinstance(data, dict):
         return [f"report phải là object JSON, nhận {type(data).__name__}"]
@@ -119,6 +134,58 @@ def validate_report(data):
         elif key in _OPTIONAL and value not in _OPTIONAL[key]:
             errors.append(f"khóa {key} chỉ nhận {_OPTIONAL[key]}")
     return errors
+
+
+def _validate_plan_report(data):
+    """Report gói plan: kind/status/tasks/notes; mỗi task con theo luật task report
+    VÀ test_result phải khác rỗng (engine bắt buộc tự verify — Q9)."""
+    errors = []
+    for key, kind in _PLAN_REQUIRED:
+        if key not in data:
+            errors.append(f"thiếu khóa bắt buộc: {key}")
+        elif not isinstance(data[key], kind):
+            errors.append(f"khóa {key} phải là {kind.__name__}")
+    if isinstance(data.get("status"), str) and data["status"] not in _STATUS:
+        errors.append(f"status phải thuộc {_STATUS}")
+    allowed = {k for k, _ in _PLAN_REQUIRED} | {"fallback"}
+    for key, value in data.items():
+        if key not in allowed:
+            errors.append(f"khóa lạ ngoài schema: {key}")
+        elif key == "fallback" and value not in _OPTIONAL["fallback"]:
+            errors.append(f"khóa fallback chỉ nhận {_OPTIONAL['fallback']}")
+    tasks = data.get("tasks")
+    if isinstance(tasks, list):
+        if not tasks:
+            errors.append("tasks không được rỗng")
+        for i, task in enumerate(tasks):
+            for err in validate_report(task):
+                errors.append(f"tasks[{i}]: {err}")
+            if (isinstance(task, dict)
+                    and isinstance(task.get("test_result"), str)
+                    and not task["test_result"].strip()):
+                errors.append(
+                    f"tasks[{i}]: test_result rỗng — engine phải tự chạy test "
+                    "từng task và ghi kết quả thật")
+    return errors
+
+
+def plan_timeout_secs(n_tasks):
+    """Timeout gói run-plan: 540s × số task, trần 3600s; env override thắng."""
+    raw = os.environ.get("TDQ_EXTERNAL_TIMEOUT", "")
+    try:
+        value = int(raw)
+        if value > 0:
+            return value
+    except ValueError:
+        if raw:
+            _warn(f"TDQ_EXTERNAL_TIMEOUT không hợp lệ: {raw!r} — dùng scale.")
+    return min(DEFAULT_TIMEOUT * max(n_tasks, 1), PLAN_TIMEOUT_CAP)
+
+
+def count_packet_tasks(text):
+    """Đếm `## TASK <id>` trong gói; không có heading nào → coi là 1 task."""
+    found = re.findall(r"(?m)^#{1,3}\s*TASK\s+\S+", text)
+    return len(found) if found else 1
 
 
 def _task_id(task_text, task_file):
@@ -166,32 +233,55 @@ def _extract_json(stdout):
     if not candidates:
         return None, "stdout không chứa JSON"
     data = candidates[0]
-    if isinstance(data, dict) and "response" in data and "task_id" not in data:
-        inner = data["response"]
-        if isinstance(inner, str):
-            try:
-                inner = json.loads(inner)
-            except ValueError:
-                return None, "trường response không phải JSON"
-        data = inner
+    if isinstance(data, dict) and "task_id" not in data and data.get("kind") != "plan":
+        # agy trả report đã parse sẵn ở structured_output; trường response của nó
+        # thường có văn xuôi bọc quanh nên ưu tiên structured_output trước.
+        structured = data.get("structured_output")
+        if isinstance(structured, dict) and (
+                "task_id" in structured or structured.get("kind") == "plan"):
+            return structured, None
+        if "response" in data:
+            inner = data["response"]
+            if isinstance(inner, str):
+                try:
+                    inner = json.loads(inner)
+                except ValueError:
+                    # Codex/agy có thể chèn text quanh khối JSON trong response.
+                    match = re.search(r"\{[^{}]*\"task_id\".*\}", inner, re.DOTALL)
+                    if not match:
+                        return None, "trường response không phải JSON"
+                    try:
+                        inner = json.loads(match.group(0))
+                    except ValueError:
+                        return None, "trường response không phải JSON"
+            data = inner
     return data, None
 
 
-def run_task(engine, model, task_file, worktree, slug):
+def run_task(engine, model, task_file, worktree, slug, plan_round=None):
+    """plan_round=None → chạy 1 task (`run`); số nguyên → chạy cả gói plan
+    (`run-plan`, report plan-round-<n>.json, 2 attempt, timeout scale theo gói)."""
     try:
         with open(task_file, encoding="utf-8") as f:
             base_prompt = f.read()
     except OSError as exc:
         _warn(f"không đọc được gói task: {exc}")
         return 1
-    task_id = _task_id(base_prompt, task_file)
-    timeout_secs = _timeout_secs()
+    plan_mode = plan_round is not None
+    if plan_mode:
+        task_id = f"plan-round-{plan_round}"
+        timeout_secs = plan_timeout_secs(count_packet_tasks(base_prompt))
+        max_attempts = PLAN_MAX_ATTEMPTS
+    else:
+        task_id = _task_id(base_prompt, task_file)
+        timeout_secs = _timeout_secs()
+        max_attempts = MAX_ATTEMPTS
     report_dir = os.path.join(_project_dir(), "docs", "tdq", "external", slug)
     report_path = os.path.join(report_dir, f"{task_id}.json")
     last_error = ""
 
     last_raw = ""
-    for attempt in range(1, MAX_ATTEMPTS + 1):
+    for attempt in range(1, max_attempts + 1):
         prompt = base_prompt
         if last_error:
             prompt += (f"\n\n## LỖI LẦN TRƯỚC (attempt {attempt - 1})\n{last_error}\n")
@@ -216,8 +306,12 @@ def run_task(engine, model, task_file, worktree, slug):
             continue
         data, parse_err = _extract_json(proc.stdout)
         errors = [parse_err] if parse_err else validate_report(data)
+        if not errors and plan_mode and data.get("kind") != "plan":
+            errors = ['run-plan đòi report kind="plan" (report task đơn không đủ)']
         # `fallback` là khóa CHỈ orchestrator được ghi — engine phát ra là sai.
-        if not errors and "fallback" in data:
+        if not errors and ("fallback" in data or (
+                plan_mode and any("fallback" in t for t in data.get("tasks", [])
+                                  if isinstance(t, dict)))):
             errors = ["khóa fallback chỉ do orchestrator ghi, engine không được phát"]
         if errors:
             stderr_tail = proc.stderr.strip().splitlines()[-3:]
@@ -254,8 +348,8 @@ def run_task(engine, model, task_file, worktree, slug):
         return 0
 
     _log(slug, f"run task={task_id} engine={engine} model={model}: "
-               f"hỏng cả {MAX_ATTEMPTS} attempt — lỗi cuối: {last_error}")
-    _warn(f"task {task_id}: hỏng cả {MAX_ATTEMPTS} attempt ({last_error}). "
+               f"hỏng cả {max_attempts} attempt — lỗi cuối: {last_error}")
+    _warn(f"task {task_id}: hỏng cả {max_attempts} attempt ({last_error}). "
           "Orchestrator tự implement (fallback: claude).")
     return 1
 
@@ -293,26 +387,148 @@ def parse_plan(plan_file):
     return 0
 
 
+def split_plan(plan_file):
+    """Chia plan thành các gói ≤ MAX_TASKS_PER_PACKET task, tôn trọng ranh giới
+    phase (`## P…`). In JSON [{"phase": <tên>, "tasks": [id…]}]."""
+    try:
+        with open(plan_file, encoding="utf-8") as f:
+            text = f.read()
+    except OSError as exc:
+        _warn(f"không đọc được plan: {exc}")
+        return 1
+    groups = []          # [(tên phase, [task id])]
+    current = ("", [])
+    for line in text.splitlines():
+        heading = re.match(r"^##\s+(P\S*.*)", line)
+        if heading:
+            if current[1]:
+                groups.append(current)
+            current = (heading.group(1).strip(), [])
+            continue
+        task = re.match(r"^- \[[ x]\] \*\*(\S+?)\*\*", line)
+        if task:
+            current[1].append(task.group(1))
+    if current[1]:
+        groups.append(current)
+    if not groups:
+        _warn("plan không có task checkbox nào.")
+        return 1
+    packets = []
+    for phase, tasks in groups:
+        for i in range(0, len(tasks), MAX_TASKS_PER_PACKET):
+            packets.append({"phase": phase,
+                            "tasks": tasks[i:i + MAX_TASKS_PER_PACKET]})
+    print(json.dumps(packets, ensure_ascii=False))
+    return 0
+
+
+def _fix_rounds_path(slug):
+    return os.path.join(_project_dir(), "docs", "tdq", "external", slug,
+                        "fix-rounds.json")
+
+
+def _load_fix_rounds(slug):
+    try:
+        with open(_fix_rounds_path(slug), encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {"rounds": []}
+
+
+def fix_rounds(slug, action, tasks=None, result=None):
+    """Sổ đếm vòng mini-plan fix. `add`: ghi 1 vòng (chặn vòng 3 — luật ≤2 vòng
+    rồi fallback Claude). `status`: in {"rounds": n, "next": fix|fallback|done}."""
+    data = _load_fix_rounds(slug)
+    rounds = data["rounds"]
+    if action == "status":
+        if rounds and rounds[-1].get("result") == "pass":
+            nxt = "done"
+        elif len(rounds) < MAX_FIX_ROUNDS:
+            nxt = "fix"
+        else:
+            nxt = "fallback"
+        print(json.dumps({"rounds": len(rounds), "next": nxt},
+                         ensure_ascii=False))
+        return 0
+    # action == "add"
+    if len(rounds) >= MAX_FIX_ROUNDS:
+        _warn(f"đã đủ {MAX_FIX_ROUNDS} vòng fix — không có vòng "
+              f"{len(rounds) + 1}, chuyển fallback Claude tự làm.")
+        return 1
+    if result not in ("pass", "fail"):
+        _warn("--result chỉ nhận pass|fail.")
+        return 2
+    rounds.append({"n": len(rounds) + 1,
+                   "tasks": [t for t in (tasks or "").split(",") if t],
+                   "result": result, "at": _now()})
+    path = _fix_rounds_path(slug)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(tmp, path)
+    _log(slug, f"fix-rounds add n={len(rounds)} result={result} "
+               f"tasks={rounds[-1]['tasks']}")
+    return 0
+
+
+def _parse_run_opts(rest, extra_flags=()):
+    """-> (opts, exit_code|None). Flag chung của run/run-plan."""
+    flags = ("--engine", "--model", "--task-file", "--worktree",
+             "--slug") + extra_flags
+    opts = {}
+    while rest:
+        flag = rest.pop(0)
+        if flag in flags and rest:
+            opts[flag[2:].replace("-", "_")] = rest.pop(0)
+        else:
+            return None, 2
+    missing = [k for k in ("engine", "model", "task_file", "worktree", "slug")
+               if k not in opts]
+    if missing or opts["engine"] not in ENGINES:
+        return None, 2
+    return opts, None
+
+
 def main(argv):
     if len(argv) >= 1 and argv[0] == "parse-plan" and len(argv) == 2:
         return parse_plan(argv[1])
-    if len(argv) >= 1 and argv[0] == "run":
-        opts = {}
+    if len(argv) >= 1 and argv[0] == "split-plan" and len(argv) == 2:
+        return split_plan(argv[1])
+    if len(argv) >= 1 and argv[0] == "fix-rounds":
         rest = argv[1:]
+        opts = {"action": None, "slug": None, "tasks": None, "result": None}
         while rest:
-            flag = rest.pop(0)
-            if flag in ("--engine", "--model", "--task-file", "--worktree", "--slug") and rest:
-                opts[flag[2:].replace("-", "_")] = rest.pop(0)
+            item = rest.pop(0)
+            if item in ("add", "status"):
+                opts["action"] = item
+            elif item in ("--slug", "--tasks", "--result") and rest:
+                opts[item[2:]] = rest.pop(0)
             else:
                 print(USAGE, file=sys.stderr)
                 return 2
-        missing = [k for k in ("engine", "model", "task_file", "worktree", "slug")
-                   if k not in opts]
-        if missing or opts["engine"] not in ENGINES:
+        if not opts["slug"] or opts["action"] not in ("add", "status"):
             print(USAGE, file=sys.stderr)
             return 2
+        return fix_rounds(opts["slug"], opts["action"], opts["tasks"],
+                          opts["result"])
+    if len(argv) >= 1 and argv[0] in ("run", "run-plan"):
+        plan_mode = argv[0] == "run-plan"
+        extra = ("--round",) if plan_mode else ()
+        opts, err = _parse_run_opts(argv[1:], extra)
+        if err is not None:
+            print(USAGE, file=sys.stderr)
+            return err
+        plan_round = None
+        if plan_mode:
+            try:
+                plan_round = int(opts.get("round", "1"))
+            except ValueError:
+                print(USAGE, file=sys.stderr)
+                return 2
         return run_task(opts["engine"], opts["model"], opts["task_file"],
-                        opts["worktree"], opts["slug"])
+                        opts["worktree"], opts["slug"], plan_round=plan_round)
     print(USAGE, file=sys.stderr)
     return 2
 

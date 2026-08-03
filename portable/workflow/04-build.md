@@ -25,8 +25,8 @@ Yêu cầu `plan_approved = true`. File này lo ba phase: `implement` → `qc` �
    - `subagent`: giao mỗi nhóm task cho một agent thực thi riêng, mỗi agent một git
      worktree. Tên branch không bắt đầu bằng `claude|antigravity|gemini|codex`.
      Merge worktree về và kiểm tra merge; dọn worktree thừa.
-   - `external`: giao TỪNG task cho engine ngoài (codex | agy) trong MỘT worktree chung —
-     làm theo mục "Nhánh external" bên dưới.
+   - `external`: giao CẢ PLAN (hoặc từng gói phase nếu plan lớn) cho engine ngoài
+     (codex | agy) trong MỘT worktree chung — làm theo mục "Nhánh external" bên dưới.
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
 
 2. Vòng lặp mỗi task:
@@ -45,29 +45,42 @@ Bước kế tiếp: `python3 scripts/tdq_state.py set phase=qc`.
 
 ## Nhánh external (Phần A, mode external)
 
-Bạn là ORCHESTRATOR: soạn gói task, gọi engine, verify, tick, merge. Engine ngoài chỉ code.
+Bạn là ORCHESTRATOR: soạn gói, gọi engine, verify, tick, merge. Engine ngoài chỉ code.
+Lane full giao CẢ PLAN một lần (chia gói phase khi plan lớn); quick lane vẫn dùng
+`run` một task như cũ.
 
-- **Chuẩn bị.** Đọc engine + model map bằng
+- **Chuẩn bị.** Đọc engine + model bằng
   `python3 scripts/external_task.py parse-plan <plan>` (exit 1 → plan thiếu dòng máy-đọc,
-  quay lại 03-plan). Tạo worktree dùng chung:
+  quay lại 03-plan). Lane full dùng model mức `khó` cho mọi gói. Tạo worktree dùng chung:
   `git worktree add ../tdq-ext-<slug> -b tdq-ext-<slug>`; ghi lại commit gốc
   `base=$(git rev-parse HEAD)` để kiểm về sau.
-- **Vòng lặp mỗi task** (đúng thứ tự plan):
-  1. Phân độ khó task theo luật ở [03-plan.md](03-plan.md) mục "Chốt engine + model"
-     → chọn model slug từ map khó/TB/dễ.
-  2. Soạn gói task theo khuôn [references/external-task.md](references/external-task.md)
-     vào `docs/tdq/external/<slug>/<task-id>.task.md` (mục tiêu 1 câu, kể tên file, 1 lệnh
-     test, ràng buộc, report mẫu).
-  3. Chạy nền và chờ xong:
-     `python3 scripts/external_task.py run --engine <codex|agy> --model <slug> --task-file <gói> --worktree ../tdq-ext-<slug> --slug <slug>`
-     (một attempt có thể tới 540s, tối đa 3 attempt — đừng chạy foreground có trần thời gian).
-     KHÔNG kết thúc turn khi script đang chạy — chờ trong turn (poll) để tự tiếp tục
-     verify/tick ngay khi xong, không phụ thuộc cơ chế báo xuyên turn/phiên.
-  4. Verify — không tin report suông: tự chạy lại đúng lệnh test của task trong worktree.
-     Test pass → tick `- [x]` vào plan NGAY.
-  5. Script exit 1 hoặc verify fail → FALLBACK: bạn TỰ implement task đó trong worktree
-     (red→green như mode main) VÀ tự viết report `docs/tdq/external/<slug>/<task-id>.json`
-     đúng schema kèm `"fallback": "claude"`.
+- **Chia gói.** Plan ≤6 task → MỘT gói duy nhất chứa cả plan. Plan >6 task (540s × n
+  vượt trần 3600s) → chạy `python3 scripts/external_task.py split-plan <plan>` chia gói
+  theo ranh giới phase, mỗi gói ≤6 task; gói sau CHỈ giao khi gói trước qua verify phase.
+- **Vòng lặp mỗi gói:**
+  1. Soạn gói theo khuôn GÓI PLAN của [references/external-task.md](references/external-task.md)
+     vào `docs/tdq/external/<slug>/plan-round-<n>.task.md`: mọi task (mục tiêu, file,
+     1 lệnh test/task), ràng buộc, report mẫu `kind="plan"`, mục BẮT BUỘC "tự verify"
+     (engine chạy test từng task, ghi `test_result` thật — verify tầng 1).
+  2. Chạy nền và chờ xong:
+     `python3 scripts/external_task.py run-plan --engine <codex|agy> --model <slug> --task-file <gói> --worktree ../tdq-ext-<slug> --slug <slug> --round <n>`
+     (timeout gói = 540s × số task, trần 3600s, tối đa 2 attempt — đừng chạy foreground
+     có trần thời gian). KHÔNG kết thúc turn khi script đang chạy — chờ trong turn (poll)
+     để tự tiếp tục verify/tick ngay khi xong.
+  3. **Verify PHASE (tầng 2)** — không tin report suông: tự chạy lại lệnh test của TỪNG
+     task trong gói tại worktree + đối chiếu `files_changed`. Task pass → tick `- [x]`
+     vào plan NGAY; task fail/thiếu → ghi vào danh sách chờ fix.
+- **Verify TỔNG (tầng 3, sau gói cuối):** chạy toàn bộ test suite trong worktree +
+  diff-check + `status --porcelain`. Tất cả pass → đóng worktree.
+- **Fix loop (≤2 vòng, đếm bằng `fix-rounds.json`):** còn task fail sau verify →
+  soạn gói MINI-PLAN FIX theo khuôn GÓI FIX (kèm "task đã PASS — không làm lại" và
+  "file cấm sửa"). Ghi sổ:
+  `python3 scripts/external_task.py fix-rounds add --slug <slug> --tasks <ids> --result fail`.
+  Giao lại qua `run-plan --round <n+1>`, verify lại như
+  tầng 2/3. `fix-rounds status` trả `fallback` (đủ 2 vòng) hoặc script exit 1 →
+  FALLBACK: bạn TỰ implement các task còn lại trong worktree (red→green như mode main)
+  VÀ tự viết report `docs/tdq/external/<slug>/<task-id>.json` đúng schema kèm
+  `"fallback": "claude"`.
 - **Đóng worktree** (sau task cuối):
   1. Kiểm engine không commit lạ: `git -C ../tdq-ext-<slug> log --oneline <base>..HEAD`
      phải RỖNG (bạn tự commit thì tính riêng — engine bị cấm commit).

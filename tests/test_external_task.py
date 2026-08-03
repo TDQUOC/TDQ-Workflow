@@ -33,8 +33,11 @@ class SchemaTest(unittest.TestCase):
     def test_schema_file_exists_and_valid_json(self):
         with open(SCHEMA, encoding="utf-8") as f:
             schema = json.load(f)
-        self.assertEqual(schema["type"], "object")
-        self.assertIn("task_id", schema["required"])
+        # T1.1: schema oneOf [task, plan] — nhánh task giữ required cũ
+        kinds = schema["oneOf"]
+        self.assertEqual(len(kinds), 2)
+        self.assertIn("task_id", kinds[0]["required"])
+        self.assertIn("tasks", kinds[1]["required"])
 
     def test_good_report_passes(self):
         self.assertEqual(external_task.validate_report(good_report()), [])
@@ -398,6 +401,296 @@ class ParsePlanTest(StubBase):
             code, _, err = self.run_cli("parse-plan", self._plan(line))
             self.assertEqual(code, 1, line)
             self.assertIn("⚠️", err)
+
+
+def good_plan_report(**overrides):
+    report = {
+        "kind": "plan",
+        "status": "done",
+        "tasks": [good_report(task_id="T1"), good_report(task_id="T2")],
+        "notes": "",
+    }
+    report.update(overrides)
+    return report
+
+
+class PlanSchemaTest(unittest.TestCase):
+    """T1.1 — discriminator kind: task|plan; vắng kind = task (hồi quy)."""
+
+    def test_task_report_without_kind_still_passes(self):
+        self.assertEqual(external_task.validate_report(good_report()), [])
+
+    def test_task_report_with_kind_task_passes(self):
+        self.assertEqual(
+            external_task.validate_report(good_report(kind="task")), [])
+
+    def test_plan_report_passes(self):
+        self.assertEqual(external_task.validate_report(good_plan_report()), [])
+
+    def test_plan_report_missing_tasks_fails(self):
+        report = good_plan_report()
+        del report["tasks"]
+        self.assertNotEqual(external_task.validate_report(report), [])
+
+    def test_plan_report_empty_tasks_fails(self):
+        self.assertNotEqual(
+            external_task.validate_report(good_plan_report(tasks=[])), [])
+
+    def test_plan_report_task_empty_test_result_fails(self):
+        # Q9: engine phải tự verify — test_result rỗng là chưa chạy test
+        bad = good_plan_report(tasks=[good_report(test_result="  ")])
+        self.assertNotEqual(external_task.validate_report(bad), [])
+
+    def test_plan_report_unknown_key_fails(self):
+        self.assertNotEqual(
+            external_task.validate_report(good_plan_report(extra="x")), [])
+
+    def test_schema_file_has_kind(self):
+        with open(SCHEMA, encoding="utf-8") as f:
+            self.assertIn("kind", f.read())
+
+
+class PlanTimeoutTest(unittest.TestCase):
+    """T1.2/Q7 — timeout theo số task trong gói: 540×n, trần 3600, env thắng."""
+
+    def setUp(self):
+        os.environ.pop("TDQ_EXTERNAL_TIMEOUT", None)
+
+    def tearDown(self):
+        os.environ.pop("TDQ_EXTERNAL_TIMEOUT", None)
+
+    def test_scale(self):
+        self.assertEqual(external_task.plan_timeout_secs(3), 1620)
+        self.assertEqual(external_task.plan_timeout_secs(7), 3600)
+        self.assertEqual(external_task.plan_timeout_secs(2), 1080)
+
+    def test_env_override_wins(self):
+        os.environ["TDQ_EXTERNAL_TIMEOUT"] = "99"
+        self.assertEqual(external_task.plan_timeout_secs(7), 99)
+
+    def test_count_tasks_from_packet(self):
+        text = "# GÓI PLAN\n## TASK T1\n...\n## TASK T2\n...\n## TASK T3\n"
+        self.assertEqual(external_task.count_packet_tasks(text), 3)
+        self.assertEqual(external_task.count_packet_tasks("no tasks"), 1)
+
+
+class RunPlanTest(StubBase):
+    """T1.3/Q2/Q9 — subcommand run-plan: 2 attempt, report plan-round-<n>.json."""
+
+    def _packet(self, n_tasks=2):
+        path = os.path.join(self.tmp, "packet.md")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("# GÓI PLAN s1\n")
+            for i in range(1, n_tasks + 1):
+                f.write(f"## TASK T{i}\nMục tiêu: demo.\n")
+        return path
+
+    def run_plan(self, engine="codex", env=None, n_tasks=2, extra=()):
+        return self.run_cli(
+            "run-plan", "--engine", engine, "--model", "m-test", "--task-file",
+            self._packet(n_tasks), "--worktree", self.worktree, "--slug", "s1",
+            *extra, env=env)
+
+    def plan_report_path(self, n=1):
+        return os.path.join(self.project, "docs", "tdq", "external", "s1",
+                            f"plan-round-{n}.json")
+
+    def test_ok_writes_plan_round_report(self):
+        self.set_response(1, good_plan_report())
+        code, out, _ = self.run_plan()
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["kind"], "plan")
+        with open(self.plan_report_path(1), encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["status"], "done")
+
+    def test_round_flag_names_report(self):
+        self.set_response(1, good_plan_report())
+        code, _, _ = self.run_plan(extra=("--round", "2"))
+        self.assertEqual(code, 0)
+        self.assertTrue(os.path.exists(self.plan_report_path(2)))
+
+    def test_two_attempts_only(self):
+        for n in (1, 2, 3):
+            self.set_response(n, "not json at all")
+        code, _, err = self.run_plan()
+        self.assertEqual(code, 1)
+        self.assertEqual(len(self.calls()), 2)
+        self.assertIn("fallback", err)
+
+    def test_task_report_rejected_retries(self):
+        # run-plan đòi kind=plan — report task đơn phải bị retry
+        self.set_response(1, good_report())
+        self.set_response(2, good_plan_report())
+        code, _, _ = self.run_plan()
+        self.assertEqual(code, 0)
+        self.assertEqual(len(self.calls()), 2)
+
+    def test_empty_test_result_retries(self):
+        # Q9: engine chưa tự verify → retry
+        self.set_response(1, good_plan_report(
+            tasks=[good_report(test_result="")]))
+        self.set_response(2, good_plan_report())
+        code, _, _ = self.run_plan()
+        self.assertEqual(code, 0)
+        self.assertEqual(len(self.calls()), 2)
+
+    def test_timeout_scales_with_packet_tasks(self):
+        # agy để lộ deadline qua --print-timeout: 2 task → 1080-30 = 1050s
+        self.set_response(1, {"response": good_plan_report()})
+        code, _, _ = self.run_plan("agy", n_tasks=2)
+        self.assertEqual(code, 0)
+        self.assertIn("--print-timeout 1050s", self.calls()[0])
+
+    def test_run_plan_logs_attempts(self):
+        # T5.1: run-plan ghi run.log; TDQ_EXTERNAL_LOG=0 tắt
+        self.set_response(1, good_plan_report())
+        self.run_plan()
+        with open(self.log_path(), encoding="utf-8") as f:
+            self.assertIn("plan-round-1", f.read())
+
+    def test_run_plan_log_disabled(self):
+        self.set_response(1, good_plan_report())
+        self.run_plan(env={"TDQ_EXTERNAL_LOG": "0"})
+        self.assertFalse(os.path.exists(self.log_path()))
+
+
+class SplitPlanTest(StubBase):
+    """T2.1/Q8 — chia gói ≤6 task, tôn trọng ranh giới phase."""
+
+    def _plan(self, text):
+        path = os.path.join(self.tmp, "bigplan.md")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+        return path
+
+    def test_seven_tasks_no_phase_two_packets(self):
+        body = "# PLAN\n" + "".join(
+            f"- [ ] **T{i}** việc — Test: t\n" for i in range(1, 8))
+        code, out, _ = self.run_cli("split-plan", self._plan(body))
+        self.assertEqual(code, 0)
+        packets = json.loads(out)
+        self.assertEqual(len(packets), 2)
+        self.assertEqual(packets[0]["tasks"],
+                         ["T1", "T2", "T3", "T4", "T5", "T6"])
+        self.assertEqual(packets[1]["tasks"], ["T7"])
+
+    def test_phase_boundaries_respected(self):
+        body = ("# PLAN\n## P1 — a\n" +
+                "".join(f"- [ ] **T1.{i}** v — Test: t\n" for i in range(1, 5)) +
+                "## P2 — b\n" +
+                "".join(f"- [ ] **T2.{i}** v — Test: t\n" for i in range(1, 4)))
+        code, out, _ = self.run_cli("split-plan", self._plan(body))
+        self.assertEqual(code, 0)
+        packets = json.loads(out)
+        self.assertEqual(len(packets), 2)
+        self.assertEqual(packets[0]["tasks"], ["T1.1", "T1.2", "T1.3", "T1.4"])
+        self.assertEqual(packets[1]["tasks"], ["T2.1", "T2.2", "T2.3"])
+
+
+class FixRoundsTest(StubBase):
+    """T2.2/Q6 — fix-rounds.json: luật dừng sau 2 vòng → fallback."""
+
+    def fx(self, *args, env=None):
+        return self.run_cli("fix-rounds", "--slug", "s1", *args, env=env)
+
+    def rounds_path(self):
+        return os.path.join(self.project, "docs", "tdq", "external", "s1",
+                            "fix-rounds.json")
+
+    def test_add_and_status(self):
+        code, _, _ = self.fx("add", "--tasks", "T1,T2", "--result", "fail")
+        self.assertEqual(code, 0)
+        code, out, _ = self.fx("status")
+        self.assertEqual(code, 0)
+        data = json.loads(out)
+        self.assertEqual(data["rounds"], 1)
+        self.assertEqual(data["next"], "fix")
+        with open(self.rounds_path(), encoding="utf-8") as f:
+            stored = json.load(f)
+        self.assertEqual(stored["rounds"][0]["tasks"], ["T1", "T2"])
+
+    def test_two_fails_then_fallback_no_round_three(self):
+        self.fx("add", "--tasks", "T1", "--result", "fail")
+        self.fx("add", "--tasks", "T1", "--result", "fail")
+        code, out, _ = self.fx("status")
+        self.assertEqual(json.loads(out)["next"], "fallback")
+        code, _, err = self.fx("add", "--tasks", "T1", "--result", "fail")
+        self.assertEqual(code, 1)
+        self.assertIn("fallback", err)
+
+    def test_pass_round_means_done(self):
+        self.fx("add", "--tasks", "T1", "--result", "pass")
+        _, out, _ = self.fx("status")
+        self.assertEqual(json.loads(out)["next"], "done")
+
+
+class TwoPhaseE2ETest(StubBase):
+    """T5.2/Q1/Q8 — E2E mock tầng script, vai orchestrator: chia 7 task
+    thành 2 gói theo phase, gọi run-plan tuần tự, gói 2 chỉ giao khi
+    report gói 1 status pass."""
+
+    def _write(self, name, text):
+        path = os.path.join(self.tmp, name)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+        return path
+
+    def _packet_file(self, n, task_ids):
+        body = f"# GÓI PLAN s1 — round {n}\n" + "".join(
+            f"## TASK {t}\nMục tiêu: demo.\nTest: true\n" for t in task_ids)
+        return self._write(f"plan-round-{n}.task.md", body)
+
+    def _run_packet(self, packet, round_no):
+        return self.run_cli(
+            "run-plan", "--engine", "codex", "--model", "m-test",
+            "--task-file", packet, "--worktree", self.worktree,
+            "--slug", "s1", "--round", str(round_no))
+
+    def test_two_phase_sequential_dispatch(self):
+        plan = self._write("plan.md", (
+            "# PLAN\n## P1 — a\n" +
+            "".join(f"- [ ] **T1.{i}** v — Test: t\n" for i in range(1, 5)) +
+            "## P2 — b\n" +
+            "".join(f"- [ ] **T2.{i}** v — Test: t\n" for i in range(1, 4))))
+        code, out, _ = self.run_cli("split-plan", plan)
+        self.assertEqual(code, 0)
+        packets = json.loads(out)
+        self.assertEqual(len(packets), 2)
+
+        # Gói 1
+        self.set_response(1, good_plan_report(tasks=[
+            good_report(task_id=t) for t in packets[0]["tasks"]]))
+        p1 = self._packet_file(1, packets[0]["tasks"])
+        code, out, _ = self._run_packet(p1, 1)
+        self.assertEqual(code, 0)
+        rep1 = json.loads(out)
+        self.assertEqual(rep1["status"], "done")
+        self.assertEqual(len(self.calls()), 1)  # gói 2 chưa được giao
+
+        # Gói 2 CHỈ giao khi gói 1 pass
+        self.assertTrue(all(t["status"] == "done" for t in rep1["tasks"]))
+        self.set_response(2, good_plan_report(tasks=[
+            good_report(task_id=t) for t in packets[1]["tasks"]]))
+        p2 = self._packet_file(2, packets[1]["tasks"])
+        code, out, _ = self._run_packet(p2, 2)
+        self.assertEqual(code, 0)
+        self.assertEqual(len(self.calls()), 2)
+        for n in (1, 2):
+            path = os.path.join(self.project, "docs", "tdq", "external",
+                                "s1", f"plan-round-{n}.json")
+            self.assertTrue(os.path.exists(path))
+
+    def test_blocked_first_packet_stops_dispatch(self):
+        self.set_response(1, good_plan_report(
+            status="blocked",
+            tasks=[good_report(task_id="T1.1", status="blocked")],
+            notes="thiếu quyết định"))
+        p1 = self._packet_file(1, ["T1.1"])
+        code, out, _ = self._run_packet(p1, 1)
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["status"], "blocked")
+        # Orchestrator thấy blocked → không giao gói 2: không có call thứ 2
+        self.assertEqual(len(self.calls()), 1)
 
 
 if __name__ == "__main__":

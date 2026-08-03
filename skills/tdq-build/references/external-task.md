@@ -1,8 +1,12 @@
-# Khuôn gói task cho engine ngoài (mode external)
+# Khuôn gói cho engine ngoài (mode external)
 
-Mỗi lần gọi engine = MỘT task. Copy khối dưới thành file tạm (vd
-`docs/tdq/external/<slug>/T<x>.task.md`) rồi điền — giữ NGUYÊN tên các mục.
-Viết cho model cấp thấp: mục tiêu 1 câu, kể tên file cụ thể, không bắt tự khám phá.
+Lane full: mỗi lần gọi engine = MỘT GÓI (cả plan, một phase, hoặc gói fix) qua
+`run-plan`. Quick lane: mỗi lần gọi = một task qua `run`. Viết cho model cấp thấp:
+mục tiêu 1 câu/task, kể tên file cụ thể, không bắt tự khám phá.
+
+## Khuôn 1 — GÓI TASK ĐƠN (quick lane, lệnh `run`)
+
+Copy khối dưới thành `docs/tdq/external/<slug>/T<x>.task.md` rồi điền — giữ NGUYÊN tên các mục.
 
 ```markdown
 # TASK <id — trùng id trong plan, vd T2.1>
@@ -35,6 +39,69 @@ Report mẫu (đúng schema — thay giá trị thật của bạn):
 }
 ```
 
-Ghi chú cho orchestrator (không đưa vào gói task):
+## Khuôn 2 — GÓI PLAN / PHASE (lane full, lệnh `run-plan`)
+
+Copy khối dưới thành `docs/tdq/external/<slug>/plan-round-<n>.task.md`. Mỗi task một
+mục `## TASK` (script đếm các mục này để tính timeout 540s × n, trần 3600s).
+
+```markdown
+# GÓI PLAN <slug> — round <n>
+
+Làm TUẦN TỰ các TASK bên dưới, đúng thứ tự. Xong hết mới trả report.
+
+## TASK <id>
+Mục tiêu: <1 câu>
+File: <danh sách file, tương đối từ root worktree>
+Test: <đúng 1 lệnh>
+
+## TASK <id kế>
+…
+
+Tự verify (BẮT BUỘC — verify tầng 1):
+- Sau MỖI task: chạy đúng lệnh ở mục Test của task đó đến khi pass.
+- Ghi output thật của lệnh test vào `test_result` của task trong report — để RỖNG là
+  report bị từ chối và phải làm lại.
+
+Ràng buộc:
+- CHỈ tạo/sửa file trong các mục File. Không đụng file khác, không đụng path ngoài worktree.
+- KHÔNG commit, không đổi branch, không chạy lệnh git ghi (git add/commit/push).
+- Trả lời cuối cùng = DUY NHẤT một JSON `kind="plan"` đúng schema report bên dưới.
+
+Report mẫu:
+```
+
+```json
+{
+  "kind": "plan",
+  "status": "done",
+  "tasks": [
+    {
+      "task_id": "T1.1",
+      "status": "done",
+      "files_changed": ["scripts/a.py"],
+      "test_cmd": "python3 -m unittest tests.test_a",
+      "test_result": "Ran 3 tests in 0.01s OK",
+      "notes": ""
+    }
+  ],
+  "notes": ""
+}
+```
+
+## Khuôn 3 — GÓI FIX (vòng mini-plan fix, lệnh `run-plan --round <n+1>`)
+
+Như Khuôn 2, THÊM 2 mục bảo vệ ngay sau tiêu đề (bắt buộc):
+
+```markdown
+Task đã PASS — không làm lại: <danh sách id đã qua verify — CẤM đụng tới>
+File cấm sửa: <file của các task đã pass — CẤM tạo/sửa/xóa>
+```
+
+Chỉ liệt kê `## TASK` cho các task cần fix, kèm mô tả lỗi verify vòng trước
+(lệnh test + output fail thật) để engine sửa trúng chỗ.
+
+## Ghi chú cho orchestrator (không đưa vào gói)
+
 - `status=blocked` khi engine bị chặn thật (thiếu quyết định, spec mâu thuẫn) — notes nêu lý do.
 - Log mỗi lần gọi nằm ở `docs/tdq/external/<slug>/run.log` (tự sinh, `TDQ_EXTERNAL_LOG=0` tắt).
+- Sổ vòng fix: `docs/tdq/external/<slug>/fix-rounds.json` — ghi qua `external_task.py fix-rounds add`, đủ 2 vòng → fallback Claude.

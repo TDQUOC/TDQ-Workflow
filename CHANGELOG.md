@@ -2,6 +2,12 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.6.2 — 2026-08-02
+
+Intake default tuyệt đối (mọi prompt mới → tdq-intake), hint duyệt plan theo mode
+động, tự chọn đề xuất khi gặp chặn kỹ thuật giữa build (được tự commit gỡ chặn,
+không push).
+
 ## 0.6.1 — 2026-07-31
 
 Audit toàn diện 0.6.0: 44 findings (A1–A44), 33 issue S/M fix có test riêng,
