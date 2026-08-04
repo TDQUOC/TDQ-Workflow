@@ -94,6 +94,48 @@ class TestBashGate(unittest.TestCase):
         self.assertIn("state_cli", events)
         self.assertNotIn("next_run", events)
 
+    def _signal(self, session, target, matched, mode_conflict=False):
+        tdq_state.turn_log_append(self.cwd, "signal", session=session,
+                                  event="approve_pending", target=target,
+                                  matched=matched, mode_conflict=mode_conflict)
+
+    def _pre_remind(self, session, code):
+        tdq_state.turn_log_append(self.cwd, "remind", session=session, code=code)
+
+    def test_approve_reminds_when_signal_mismatch(self):
+        cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
+        self._signal(cmd[:40], "spec", matched=False)
+        self.assert_remind(cmd, "TDQ:APPROVE")
+
+    def test_approve_silent_when_signal_matched(self):
+        cmd = 'python3 scripts/tdq_state.py approve plan --mode main --by "duyệt plan mode main"'
+        self._signal(cmd[:40], "plan", matched=True, mode_conflict=False)
+        self.assert_silent(cmd)
+
+    def test_setphase_reminds_when_signal_mismatch(self):
+        cmd_a = "python3 scripts/tdq_state.py set phase=plan"
+        self._signal(cmd_a[:40], "spec", matched=False)
+        self.assert_remind(cmd_a, "TDQ:APPROVE")
+
+        cmd_b = "python3 scripts/tdq_state.py set phase=implement"
+        self._signal(cmd_b[:40], "plan", matched=False)
+        self.assert_remind(cmd_b, "TDQ:APPROVE")
+
+    def test_setphase_silent_when_signal_matched(self):
+        cmd = "python3 scripts/tdq_state.py set phase=plan"
+        self._signal(cmd[:40], "spec", matched=True, mode_conflict=False)
+        self.assert_silent(cmd)
+
+    def test_failopen_no_signal_row(self):
+        cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
+        self.assert_silent(cmd)
+
+    def test_approve_not_swallowed_by_prior_edit_gate_remind(self):
+        cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
+        self._pre_remind(cmd[:40], "TDQ:APPROVE")
+        self._signal(cmd[:40], "spec", matched=False)
+        self.assert_remind(cmd, "TDQ:APPROVE")
+
 
 if __name__ == "__main__":
     unittest.main()

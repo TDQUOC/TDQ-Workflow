@@ -137,8 +137,8 @@ class ProtocolTest(unittest.TestCase):
         tdq_state.turn_log_append(self.cwd, "remind", session=SESSION, code="TDQ:LOG")
         tdq_state.turn_log_append(self.cwd, "remind", session="khac", code="TDQ:GIT")
         run_hook("prompt_context.py", self.payload("prompt.json", prompt="tiếp"))
-        # còn đúng ảnh chụp đầu turn mới, sạch dấu vết turn trước
-        self.assertEqual([r["kind"] for r in rows(self.cwd)], ["turn_start"])
+        # còn đúng ảnh chụp đầu turn mới + tín hiệu duyệt (2026-08-04), sạch dấu vết turn trước
+        self.assertEqual([r["kind"] for r in rows(self.cwd)], ["turn_start", "signal"])
         self.assertEqual(len(tdq_state.turn_log_read(self.cwd, session="khac")), 1)
 
     def test_approve_signal_and_counterexamples(self):

@@ -8,7 +8,7 @@
 import tempfile
 import unittest
 
-from helper import run_hook, write_state
+from helper import run_hook, write_state, tdq_state
 
 MAX_CHARS = 240
 INTAKE = "[TDQ:INTAKE]"
@@ -65,6 +65,57 @@ class TestIntakeReminder(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertNotIn(INTAKE, out)
         self.assertIn("[TDQ:NEXT]", out)
+
+
+class TestSignalWritten(unittest.TestCase):
+    """T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu
+    lại kết quả vào sổ turn (kind="signal") để bash_gate.py đối chiếu sau."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def _signal_rows(self, session):
+        rows = tdq_state.turn_log_read(self.cwd, session=session)
+        return [r for r in rows if r.get("kind") == "signal"]
+
+    def test_signal_written_matched_and_unmatched(self):
+        write_state(self.cwd, active_request="2026-08-04-x", lane="full",
+                    phase="spec", spec_file="docs/tdq/spec/x.md")
+        _run(self.cwd, "duyệt spec")
+        rows = self._signal_rows("s1")
+        self.assertEqual(len(rows), 1, rows)
+        row = rows[0]
+        self.assertEqual(row.get("event"), "approve_pending")
+        self.assertEqual(row.get("target"), "spec")
+        self.assertTrue(row.get("matched"))
+
+        _run(self.cwd, "tôi góp ý thêm chỗ này")
+        rows2 = self._signal_rows("s1")
+        self.assertEqual(len(rows2), 1, rows2)
+        self.assertFalse(rows2[0].get("matched"))
+
+    def test_signal_mode_conflict(self):
+        write_state(self.cwd, active_request="2026-08-04-x", lane="full",
+                    phase="plan", spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    plan_file="docs/tdq/plan/x.md")
+        write_file_plan_mode(self.cwd, "docs/tdq/plan/x.md", "subagent")
+        _run(self.cwd, "duyệt plan mode main")
+        rows = self._signal_rows("s1")
+        self.assertTrue(rows)
+        row = rows[-1]
+        self.assertEqual(row.get("target"), "plan")
+        self.assertTrue(row.get("matched"))
+        self.assertTrue(row.get("mode_conflict"))
+
+
+def write_file_plan_mode(cwd, rel, mode):
+    import os
+    path = os.path.join(cwd, rel)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(f"Mode thực thi: {mode}\n")
 
 
 if __name__ == "__main__":

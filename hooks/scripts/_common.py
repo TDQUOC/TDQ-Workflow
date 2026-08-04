@@ -115,6 +115,21 @@ def remind(cwd, payload, code, lines, event="PreToolUse"):
     sys.exit(0)
 
 
+def remind_force(cwd, payload, code, lines, event="PreToolUse"):
+    """Như `remind()` nhưng KHÔNG dedupe theo mã — dùng khi một mã đã bị hook
+    khác (vd. edit_gate.py) chiếm trong turn này mà nhắc này vẫn phải ra."""
+    tdq_state.turn_log_append(cwd, "remind", session=session_id(payload), code=code)
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": event,
+            "permissionDecision": "allow",
+            "permissionDecisionReason": "TDQ: nhắc nhở, không chặn.",
+            "additionalContext": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
+        }
+    }, ensure_ascii=False))
+    sys.exit(0)
+
+
 def echo_line(code, what):
     return f"Xong thì in: ✓ [{code}] {what}"
 

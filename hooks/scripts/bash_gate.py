@@ -13,7 +13,8 @@
 import os
 import re
 
-from _common import echo_line, observe, payload_cwd, read_payload, remind
+from _common import (echo_line, observe, payload_cwd, read_payload, remind,
+                     remind_force, turn_rows)
 
 BAN = re.compile(r"^(claude|antigravity|gemini|codex)", re.IGNORECASE)
 BRANCH_PATTERNS = [
@@ -38,6 +39,30 @@ STATE_WRITES = [
     re.compile(r"\bopen\([^)]*" + STATE),
 ]
 STATE_CLI = re.compile(r"tdq_state\.py\s+(\w[\w-]*)")
+APPROVE_CLI = re.compile(r"tdq_state\.py\s+approve\s+(spec|plan|quick)\b")
+SETPHASE_CLI = re.compile(r"tdq_state\.py\s+set\b.*?\bphase=(\w+)")
+NEXT_PHASE_TARGET = {"plan": "spec", "implement": "plan"}
+
+
+def _latest_signal(cwd, payload, target):
+    """Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)."""
+    for row in reversed(turn_rows(cwd, payload)):
+        if row.get("kind") == "signal" and row.get("target") == target:
+            return row
+    return None
+
+
+def _check_signal_mismatch(cwd, payload, target):
+    row = _latest_signal(cwd, payload, target)
+    if row is None:
+        return
+    if row.get("matched") is False or row.get("mode_conflict") is True:
+        remind_force(cwd, payload, "TDQ:APPROVE", [
+            f"Prompt gần nhất KHÔNG rõ là câu duyệt {target} (hoặc mode lệch) — DỪNG, "
+            "đừng chạy lệnh này.",
+            "Cách làm: HỎI lại user xác nhận duyệt trước khi gọi approve/set phase.",
+            echo_line("TDQ:APPROVE", "đã hỏi lại và có xác nhận rõ ràng"),
+        ])
 
 
 def _clean(raw):
@@ -57,7 +82,16 @@ def main():
         if sub == "next":
             observe(cwd, payload, "next_run")
 
-    # (2) nhắc
+    # (2) nhắc — chặn-tiến-phase (approve/set phase=) ưu tiên hơn GIT/STATE
+    approve_match = APPROVE_CLI.search(cmd)
+    if approve_match:
+        _check_signal_mismatch(cwd, payload, approve_match.group(1))
+    setphase_match = SETPHASE_CLI.search(cmd)
+    if setphase_match:
+        target = NEXT_PHASE_TARGET.get(setphase_match.group(1))
+        if target:
+            _check_signal_mismatch(cwd, payload, target)
+
     branch_names = []
     for pattern in BRANCH_PATTERNS:
         branch_names += [_clean(m) for m in pattern.findall(cmd)]

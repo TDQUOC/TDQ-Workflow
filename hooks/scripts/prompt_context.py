@@ -87,7 +87,10 @@ def main():
         lines = []
         prompt = payload.get("prompt") or ""
         planned = plan_mode(cwd, state) if pending == "plan" else None
-        if looks_like_approval(prompt, pending):
+        matched = looks_like_approval(prompt, pending)
+        tdq_state.turn_log_append(cwd, "signal", session=sid, event="approve_pending",
+                                  target=pending, matched=matched, mode_conflict=False)
+        if matched:
             mode = ""
             if pending == "plan":
                 found = MODE.search(prompt)
@@ -95,6 +98,8 @@ def main():
                 if said and planned and said != planned:
                     # Mode trong câu duyệt lệch mode ĐÃ CHỐT trong plan — không
                     # được ghi nhận theo suy diễn, bắt agent HỎI user xác nhận.
+                    tdq_state.turn_log_append(cwd, "signal", session=sid, event="approve_pending",
+                                              target=pending, matched=matched, mode_conflict=True)
                     lines.append(f"[TDQ:APPROVE] ⚠️ Câu duyệt nói mode {said} nhưng plan chốt "
                                  f"{planned} — HỎI user xác nhận mode trước, chưa chạy approve.")
                     _emit(lines)
