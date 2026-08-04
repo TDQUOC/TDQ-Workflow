@@ -452,6 +452,30 @@ class CheckTest(Fixture):
         os.makedirs(self.dest)
         self.assertEqual(self.check()[0], 2)
 
+    def test_broken_manifest_exits_2_without_traceback(self):
+        """Manifest hỏng là bundle không hợp lệ (2), không phải drift (1)."""
+        self.assertEqual(self.build()[0], 0)
+        with open(os.path.join(self.dest, "manifest.json"), "w") as f:
+            f.write("{khong phai json")
+        code, _, err = self.check()
+        self.assertEqual(code, 2)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("đọc không được", err)
+
+    def test_unknown_old_commit_says_so_instead_of_question_mark(self):
+        """SHA cũ không có trong repo thì nói thẳng, không in `(+?)`."""
+        self.assertEqual(self.build()[0], 0)
+        path = os.path.join(self.dest, "manifest.json")
+        with open(path, encoding="utf-8") as f:
+            manifest = json.load(f)
+        manifest["repo_commit"] = "deadbeef" * 5
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(manifest, f)
+        code, out, _ = self.check()
+        self.assertEqual(code, 1)
+        self.assertNotIn("+?", out)
+        self.assertIn("không so được", out)
+
 
 # ---------------------------------------------------------------- P5: tài liệu bundle
 

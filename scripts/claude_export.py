@@ -450,8 +450,12 @@ def cmd_check(args):
     if not os.path.isfile(manifest_path):
         log(f"không tìm thấy manifest.json trong {dest} — đây không phải bundle")
         return 2
-    with open(manifest_path, encoding="utf-8") as f:
-        manifest = json.load(f)
+    try:
+        with open(manifest_path, encoding="utf-8") as f:
+            manifest = json.load(f)
+    except (json.JSONDecodeError, UnicodeDecodeError) as err:
+        log(f"manifest.json đọc không được ({err}) — bundle hỏng, sinh lại bằng build")
+        return 2
     log(f"check bundle sinh lúc {manifest.get('exported_at', '?')}")
 
     drift = []
@@ -464,8 +468,9 @@ def cmd_check(args):
     head = _git_out(repo, "rev-parse", "HEAD")
     old = manifest.get("repo_commit", "")
     if head and old and head != old:
-        behind = _git_out(repo, "rev-list", "--count", f"{old}..{head}") or "?"
-        drift.append((REPO_DIR_NAME, f"commit {old[:8]} → {head[:8]} (+{behind})"))
+        behind = _git_out(repo, "rev-list", "--count", f"{old}..{head}")
+        gap = f"(+{behind})" if behind else "(không so được khoảng cách — SHA cũ không có trong repo)"
+        drift.append((REPO_DIR_NAME, f"commit {old[:8]} → {head[:8]} {gap}"))
     now_version = plugin_version(repo)
     if now_version and now_version != manifest.get("plugin_version"):
         drift.append((".claude-plugin/plugin.json",

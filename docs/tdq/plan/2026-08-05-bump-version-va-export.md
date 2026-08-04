@@ -76,26 +76,26 @@ Trạng thái plan: ĐÃ DUYỆT (2026-08-05T04:01:29+07:00, mode main)
 
 ## P6 — Sinh bundle thật + zip
 
-- [ ] **T6.1** Chạy `build` ghi đè `~/Documents/claude-code-export` kèm `--zip`; trước đó đổi tên zip cũ thành `claude-code-export.zip.bak-20260805` để có bản lùi — Test: lệnh exit 0, thư mục có `manifest.json` mới
-- [ ] **T6.2** Kiểm bundle theo Q4–Q6: không có `.DS_Store`/`state.json`/`graphify-out/20*`, có `tdqworkflow-repo/.git` log được, có `config/mcp-servers.json` đúng 2 server — Test: đúng 3 lệnh của spec §6 Q4, Q5, Q6
-- [ ] **T6.3** Kiểm Q7 (không lộ secret) và Q8 (manifest 8 khoá) — Test: `grep -rF` với giá trị lấy từ biến môi trường trả 0 kết quả; danh sách khoá manifest in ra đủ 8 tên
-- [ ] **T6.4** Kiểm Q9 và Q10: `check` ngay sau `build` cho exit 0; nhân bản bundle sang thư mục tạm, sửa 1 file rồi `check` lại phải exit 1 và nêu đúng tên file — Test: 2 exit code như trên
-- [ ] **T6.5** Kiểm Q11 rồi ghi 2 dòng mốc `2026-08-05` vào `claude-export/EXPORT_LOG.md` (kích thước bundle, số file, commit SHA, đường dẫn zip) — Test: `unzip -t ~/Documents/claude-code-export.zip` in `No errors detected` và `tail -2 claude-export/EXPORT_LOG.md` ra 2 dòng mốc mới
+- [x] **T6.1** Chạy `build` ghi đè `~/Documents/claude-code-export` kèm `--zip`; trước đó đổi tên zip cũ thành `claude-code-export.zip.bak-20260805` để có bản lùi — Test: lệnh exit 0, thư mục có `manifest.json` mới
+- [x] **T6.2** Kiểm bundle theo Q4–Q6: không có `.DS_Store`/`state.json`/`graphify-out/20*`, có `tdqworkflow-repo/.git` log được, có `config/mcp-servers.json` đúng 2 server — Test: đúng 3 lệnh của spec §6 Q4, Q5, Q6
+- [x] **T6.3** Kiểm Q7 (không lộ secret) và Q8 (manifest 8 khoá) — Test: `grep -rF` với giá trị lấy từ biến môi trường trả 0 kết quả; danh sách khoá manifest in ra đủ 8 tên
+- [x] **T6.4** Kiểm Q9 và Q10: `check` ngay sau `build` cho exit 0; nhân bản bundle sang thư mục tạm, sửa 1 file rồi `check` lại phải exit 1 và nêu đúng tên file — Test: 2 exit code như trên
+- [x] **T6.5** Kiểm Q11 rồi ghi 2 dòng mốc `2026-08-05` vào `claude-export/EXPORT_LOG.md` (kích thước bundle, số file, commit SHA, đường dẫn zip) — Test: `unzip -t ~/Documents/claude-code-export.zip` in `No errors detected` và `tail -2 claude-export/EXPORT_LOG.md` ra 2 dòng mốc mới
 
 **Xong P6 khi**: Q4–Q12 trừ Q1–Q3 đều có bằng chứng chạy thật, zip mới hợp lệ, bản lùi `.bak` còn giữ.
 
 ## P7 — Log & test bắt buộc
 
-- [ ] **T7.1** Log service bật mặc định: mọi bước của `build`/`check` có dòng log ISO timestamp ra stderr, tắt bằng `--quiet` — Test: ca `test_log_default_on` và `test_quiet_silences_log` trong `tests/test_claude_export.py`
-- [ ] **T7.2** Chạy toàn bộ suite bằng một lệnh — Test: `cd tests && python3 -m unittest discover -s . -p "test_*.py"` 0 fail, tổng số test ≥ 521
-- [ ] **T7.3** Lint tài liệu và rebuild code graph — Test: `python3 scripts/doc_lint.py claude-export skills portable docs/tdq` exit 0, rồi `graphify extract . --code-only` chạy xong
+- [x] **T7.1** Log service bật mặc định: mọi bước của `build`/`check` có dòng log ISO timestamp ra stderr, tắt bằng `--quiet` — Test: ca `test_log_default_on` và `test_quiet_silences_log` trong `tests/test_claude_export.py`
+- [x] **T7.2** Chạy toàn bộ suite bằng một lệnh — Test: `cd tests && python3 -m unittest discover -s . -p "test_*.py"` 0 fail, tổng số test ≥ 521
+- [x] **T7.3** Lint tài liệu và rebuild code graph — Test: `python3 scripts/doc_lint.py claude-export skills portable docs/tdq` exit 0, rồi `graphify extract . --code-only` chạy xong
   - Dùng: `graphify`
   - Nạp: gọi skill `graphify` TRƯỚC bước đỏ của task này. Agent ngoài không có skill system: đọc `~/.claude/skills/graphify/SKILL.md` rồi làm theo.
   - Để: dựng lại code graph sau khi thêm `scripts/claude_export.py` và test đi kèm.
   - Ra: `graphify-out/graph.json` và `graphify-out/GRAPH_REPORT.md` cập nhật.
   - Kiểm: `python3 -c "import json;print(len(json.load(open('graphify-out/graph.json'))['nodes']))"` in số node lớn hơn lần trước.
   - Không dùng cho: sinh tài liệu cho user — báo cáo do `tdq-build` viết.
-- [ ] **T7.4** Đối chiếu bundle vừa sinh với spec §6, cập nhật §7 của spec (đóng lại hoặc ghi câu hỏi mới phát sinh) — Test: `python3 scripts/doc_lint.py docs/tdq/spec` exit 0
+- [x] **T7.4** Đối chiếu bundle vừa sinh với spec §6, cập nhật §7 của spec (đóng lại hoặc ghi câu hỏi mới phát sinh) — Test: `python3 scripts/doc_lint.py docs/tdq/spec` exit 0
   - Dùng: `tdq-spec`
   - Nạp: gọi skill `tdq-spec` TRƯỚC bước đỏ của task này. Agent ngoài không có skill system: đọc `skills/tdq-spec/SKILL.md` rồi làm theo.
   - Để: giữ spec là nguồn chuẩn duy nhất của DoD, ghi lại chênh lệch giữa spec và thứ thật sự sinh ra.
@@ -121,6 +121,8 @@ Trạng thái plan: ĐÃ DUYỆT (2026-08-05T04:01:29+07:00, mode main)
   - Ra: `docs/tdq/reports/2026-08-05-bump-version-va-export.md`.
   - Kiểm: `wc -l < docs/tdq/reports/2026-08-05-bump-version-va-export.md` trả số ≤ 10.
   - Không dùng cho: tự chấm PASS cho chính mình — QC do agent khác chạy.
+- [x] **QC-2** Vá 2 khiếm khuyết QC báo: manifest hỏng phải exit `2` kèm thông điệp tiếng Việt thay vì traceback exit `1`; `check` không in `(+?)` khi SHA cũ không có trong repo — Test: `cd tests && python3 -m unittest test_claude_export.CheckTest` xanh với 2 ca mới
+- [x] **QC-3** Sinh lại bundle + zip sau khi vá để bản export mang đúng script đã sửa — Test: `git -C ~/Documents/claude-code-export/tdqworkflow-repo log --oneline -1` khớp HEAD mới và `check` ra `0 mục lệch`
 
 (Task fix phát sinh từ QC thêm vào ngay dưới dòng này.)
 

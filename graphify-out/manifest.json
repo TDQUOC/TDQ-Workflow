@@ -265,8 +265,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1785738048.8102422,
-    "ast_hash": "2b5db2e53c9ba71231636ffebafa33ab",
+    "mtime": 1785877319.7312639,
+    "ast_hash": "8b7c49fd72ebbee3a94f93ce123e29f8",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1785871272.5802212,
-    "ast_hash": "d3dd1ed7befa1388ba9ab90af2d3e0c5",
+    "mtime": 1785877289.5691547,
+    "ast_hash": "46dfc7d71cad1fddbb0ba84d4ecaaff7",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -1315,13 +1315,13 @@
     "semantic_hash": ""
   },
   "claude-export/INSTRUCTIONS.md": {
-    "mtime": 1785828155.4936924,
-    "ast_hash": "4e71dcfecd2114c6b17a951c83a9bdd7",
+    "mtime": 1785877894.517368,
+    "ast_hash": "3c9598be8fbcc4e0371f94eeebeb3ef3",
     "semantic_hash": ""
   },
   "claude-export/README.template.md": {
-    "mtime": 1785827409.3126957,
-    "ast_hash": "3b1cd14228c2cb327ee1901a0eedabde",
+    "mtime": 1785878077.0695724,
+    "ast_hash": "c4bbb49b8da2aafffc12f9612b0e1747",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-08-03-skill-vao-goi-external.md": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-05.md": {
-    "mtime": 1785871631.8500476,
-    "ast_hash": "3931a64813fd2af0dc49fabeda67fb15",
+    "mtime": 1785876673.082571,
+    "ast_hash": "669e75b5c44348aa8f9cdb6ee61c662c",
     "semantic_hash": ""
   },
   "portable/claude-md/CLAUDE.md": {
@@ -1693,5 +1693,35 @@
     "mtime": 1785877773.300672,
     "ast_hash": "2152429c282f158072f760ba7b260c7c",
     "semantic_hash": "2152429c282f158072f760ba7b260c7c"
+  },
+  "docs/tdq/knowledge/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785875611.6605873,
+    "ast_hash": "5b997e9f6fe9612caa49653e39c3b3fe",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785878102.1792061,
+    "ast_hash": "9a883956d53097b14b126a234b59aef5",
+    "semantic_hash": ""
+  },
+  "docs/tdq/questions/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785875280.7630665,
+    "ast_hash": "3f421ad44b6887c2481a23dfe827d353",
+    "semantic_hash": ""
+  },
+  "docs/tdq/requests/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785875053.8044446,
+    "ast_hash": "c7e847c02850b25c8d4f5c330e5eddcc",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785875235.6010776,
+    "ast_hash": "733451489dd22beabc3c06ce17388518",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785878213.1895988,
+    "ast_hash": "e8003568cd41cee6c6ebed0709994f60",
+    "semantic_hash": ""
   }
 }

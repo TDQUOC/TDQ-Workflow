@@ -160,3 +160,9 @@ nêu rõ số đo trước/sau · không có key thật ở bất kỳ đâu tro
   knowledge/research/plan cũ, chừa requests.
 - `git clone` chỉ lấy commit đã có, nên bundle phải sinh SAU khi commit. Bundle mang
   commit tại thời điểm build, không mang phần tick plan và report viết sau đó.
+- QC phát hiện: `check` chỉ đo drift phía NGUỒN, không kiểm tính toàn vẹn của chính
+  bundle. Xoá `tdqworkflow-repo/` hay sửa file ngay trong bundle thì `check` vẫn báo
+  `0 mục lệch`. Đúng câu chữ Q10 nhưng vẫn là lỗ hổng khi bundle rơi rụng file lúc
+  truyền sang máy khác. Cần request sau thêm lệnh `verify --dest` hash lại chính bundle.
+- Q3 trong §6 ghi PASS = exit 0 trên toàn `docs/tdq`, mâu thuẫn với nợ cũ nêu ở trên.
+  Đọc Q3 theo nghĩa: 0 vi phạm thuộc file của request này (đo được 0/101).
