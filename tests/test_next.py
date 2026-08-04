@@ -40,7 +40,9 @@ class NextTest(unittest.TestCase):
         run_state_cli(self.cwd, "init", "2026-07-29-demo", "quick")
         rc, out, _ = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
-        self.assertIn("mini-plan", out)
+        # lane quick mới: mini-spec/plan GỘP một file, có bước phân tích + interview
+        self.assertIn("mini-spec/plan", out)
+        self.assertIn("docs/tdq/plan/", out)
         self.assertIn("approve quick", out)
 
     def test_next_brief_single_line(self):

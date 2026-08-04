@@ -440,31 +440,34 @@ PHASE_TABLE = {
     },
     "spec": {
         "entry": "Đã phân tích xong",
-        "action": "Viết spec, đăng ký spec_file, trình tóm tắt rồi DỪNG chờ user duyệt",
+        "action": "Viết spec (kèm mục Lộ trình), đăng ký spec_file, trình tóm tắt rồi DỪNG chờ user duyệt",
         "cmd": "python3 scripts/tdq_state.py approve spec --by \"<nguyên văn câu user>\"",
         "checklist": [
-            "Viết docs/tdq/spec/<slug>.md (scope in/out, đầu ra, QC + DoD)",
+            "Viết docs/tdq/spec/<slug>.md (scope in/out, đầu ra, Lộ trình, QC + DoD)",
             "Chạy: python3 scripts/tdq_state.py set spec_file=docs/tdq/spec/<slug>.md",
             "Trình tóm tắt spec ≤50 dòng trong chat",
             "In: ➤ Duyệt: nhắn \"duyệt spec\" · Góp ý: nhắn trực tiếp — rồi DỪNG",
-            "User duyệt → chạy lệnh approve ở trên",
+            "User duyệt → chạy lệnh approve ở trên NGAY, rồi viết plan trong CÙNG turn "
+            "(không bắt user nhắn thêm câu nào)",
         ],
         "done_when": "spec_approved = true",
-        "forbidden": "Viết plan trong cùng turn với spec; tự suy diễn là user đã duyệt",
+        "forbidden": "Tự suy diễn là user đã duyệt; bắt user nhắn thêm một turn nữa mới viết plan",
     },
     "plan": {
         "entry": "spec_approved = true",
-        "action": "Hỏi mode thực thi, viết plan, đăng ký plan_file, trình rồi DỪNG chờ duyệt",
+        "action": "Viết plan kèm mode ĐỀ XUẤT, đăng ký plan_file, trình rồi DỪNG chờ duyệt",
         "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent|external> --by \"<nguyên văn>\"",
         "checklist": [
-            "Hỏi user mode thực thi: main (tự làm) / subagent (chia worktree) / external (giao codex|agy qua worktree)",
+            "ĐỀ XUẤT mode thực thi ngay trong plan (main|subagent|external) + lý do — "
+            "không hỏi riêng một lượt; user chốt mode lúc duyệt",
             "Viết docs/tdq/plan/<slug>.md: mỗi task 1 việc + 1 test, có checkbox [ ]",
             "Chạy: python3 scripts/tdq_state.py set plan_file=docs/tdq/plan/<slug>.md",
-            "Trình tóm tắt plan, in dòng mời duyệt, rồi DỪNG",
-            "User duyệt → chạy lệnh approve ở trên",
+            "Trình tóm tắt plan, in dòng mời duyệt kèm mode đề xuất, rồi DỪNG",
+            "User duyệt kèm mode → chạy lệnh approve ở trên NGAY, rồi build trong CÙNG turn",
         ],
         "done_when": "plan_approved = true và implement_mode khác null",
-        "forbidden": "Sửa code khi plan chưa duyệt; tự chọn mode thay user",
+        "forbidden": "Sửa code khi plan chưa duyệt; tự chọn mode thay user; "
+                     "bắt user nhắn thêm một turn nữa mới build",
     },
     "implement": {
         "entry": "plan_approved = true và implement_mode đã chốt",
@@ -515,11 +518,16 @@ PHASE_TABLE = {
     },
     "quick": {
         "entry": "lane = quick",
-        "action": "Trình mini-plan ≤10 dòng → chờ duyệt → ghi working log TRƯỚC → rồi mới implement",
+        "action": "Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → rồi mới implement",
         # A26: khớp intake — quick cũng có biến thể external ("duyệt quick external")
         "cmd": "python3 scripts/tdq_state.py approve quick [--mode external] --by \"<nguyên văn câu user>\"",
         "checklist": [
-            "Trình mini-plan ≤10 dòng: việc sẽ làm, file sẽ đụng, cách validate, "
+            "Phân tích: đọc code liên quan; có ẩn số bên ngoài (thư viện, API, phiên bản) "
+            "→ web search qua tavily-primary trước khi viết gì",
+            "Interview khi còn câu hỏi làm ĐỔI kết quả — theo luật interview.md, "
+            "kết thúc mỗi vòng bằng câu 'Bạn muốn bổ sung thêm gì không?'",
+            "Viết mini-spec/plan GỘP vào docs/tdq/plan/<slug>.md (≤40 dòng: scope in/out, "
+            "task có test, DoD) rồi trình tóm tắt ≤10 dòng trong chat, "
             "kèm 1 dòng 'Năng lực: <skill sẽ DÙNG hoặc không có>'",
             "In: ➤ Duyệt: nhắn \"duyệt quick\" (giao engine ngoài: \"duyệt quick external\") "
             "· Góp ý: nhắn trực tiếp — rồi DỪNG",

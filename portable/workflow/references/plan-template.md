@@ -6,7 +6,7 @@ Copy nguyên khối vào `docs/tdq/plan/<slug>.md` rồi điền.
 # PLAN — <tên việc>
 
 Ngày: YYYY-MM-DD · Spec: ../spec/<slug>.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
-Mode thực thi: main — <lý do 1–2 câu>
+Mode thực thi: main — <lý do 1–2 câu> (ĐỀ XUẤT, user chốt lúc duyệt)
 Trạng thái plan: CHỜ DUYỆT
 
 ## Năng lực → task
@@ -54,7 +54,9 @@ Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh ki�
 ## Dòng `Mode thực thi`
 
 - Phải nằm **một dòng riêng**, không ghép vào dòng header khác — công cụ đọc dòng này.
-- Đây chỉ là **đề xuất**. Mode ghi vào state là mode user nói lúc duyệt.
+- Đây chỉ là **đề xuất** của bạn — không hỏi user riêng một lượt cho mode.
+  Mode ghi vào state là mode user nói lúc duyệt: `duyệt plan mode <main|subagent|external>`.
+  User duyệt mà không nói mode → HỎI, không tự lấy đề xuất làm chốt.
 
 ## Kiểm trước khi trình
 

@@ -6,7 +6,7 @@ Copy nguyên khối vào `docs/tdq/plan/<slug>.md` rồi điền.
 # PLAN — <tên việc>
 
 Ngày: YYYY-MM-DD · Spec: ../spec/<slug>.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
-Mode thực thi: main — <lý do 1–2 câu>
+Mode thực thi: main — <lý do 1–2 câu> (ĐỀ XUẤT, user chốt lúc duyệt)
 Trạng thái plan: CHỜ DUYỆT
 
 ## Năng lực → task
@@ -36,12 +36,20 @@ Trạng thái plan: CHỜ DUYỆT
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤7 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
   - Dùng: `<tên skill>`
+- [ ] **T<x.z>** <task mà skill cần MCP tool> — Test: <...>
+  - Dùng: `<tên skill>` (mcp)
   - Nạp: gọi skill `<tên>` TRƯỚC bước đỏ của task này. Agent ngoài không có skill
     system: đọc `<đường dẫn>/SKILL.md` rồi làm theo.
   - Để: <việc cụ thể skill lo trong task này>
   - Ra: <artifact phải tồn tại sau task, có đường dẫn>
   - Kiểm: <một lệnh chạy được, PASS đo được>
   - Không dùng cho: <việc kề bên mà skill này KHÔNG được lan sang>
+
+Luật nhãn `(mcp)` — BẮT BUỘC ghi ngay khi lập plan: skill nào cần MCP tool lúc
+chạy (gọi server MCP, ví dụ tavily/notion) → dòng `Dùng:` phải kết thúc bằng nhãn
+` (mcp)` NGOÀI backtick, cuối dòng, đúng cú pháp spec §1. `split-plan` đọc nhãn
+này bằng máy: task có `(mcp)` KHÔNG vào gói external — Claude tự làm. Thiếu
+nhãn = engine ngoài nhận task không chạy nổi.
 
 ## Px — Log & test bắt buộc
 - [ ] **Tx.1** Log service bật mặc định (timestamp, mức log, tắt được qua config) — Test: <...>
@@ -54,7 +62,9 @@ Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh ki�
 ## Dòng `Mode thực thi`
 
 - Phải nằm **một dòng riêng**, không ghép vào dòng header khác — công cụ đọc dòng này.
-- Đây chỉ là **đề xuất**. Mode ghi vào state là mode user nói lúc duyệt.
+- Đây chỉ là **đề xuất** của Claude — không hỏi user riêng một lượt cho mode.
+  Mode ghi vào state là mode user nói lúc duyệt: `duyệt plan mode <main|subagent|external>`.
+  User duyệt mà không nói mode → HỎI, không tự lấy đề xuất làm chốt.
 
 ## Kiểm trước khi trình
 

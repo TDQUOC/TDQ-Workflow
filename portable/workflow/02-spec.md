@@ -1,22 +1,24 @@
 # 02 — Spec
 
-Phase `spec`. Spec viết **tiếng Việt**. **Không bao giờ** viết spec và plan trong cùng một turn.
+Phase `spec`. Spec viết **tiếng Việt**. User duyệt spec là viết plan NGAY trong cùng turn.
 
 ## Các bước
 
 1. **Viết** `docs/tdq/spec/<slug>.md` từ `docs/tdq/knowledge/<slug>.md`.
    Khuôn đầy đủ: [references/spec-template.md](references/spec-template.md).
-   Mục bắt buộc: mục tiêu & phạm vi (in/out) · đầu ra đo đếm được · cách tiếp cận + lý do ·
+   Mục bắt buộc: mục tiêu & phạm vi (in/out) · **Lộ trình** (chép từ knowledge: phase
+   nào chạy, phase nào bỏ, skill nào dùng, vì sao — user duyệt spec là duyệt luôn
+   lộ trình) · đầu ra đo đếm được · cách tiếp cận + lý do ·
    năng lực & công cụ (§3b — chép bảng phán quyết từ knowledge; dòng DÙNG ghi thêm
    `tương đương: <công cụ/cách làm>` vì agent ngoài không có skill system) ·
    yêu cầu bắt buộc (log service bật mặc định, không placeholder, test cho từng phần) ·
    ràng buộc & rủi ro · phạm vi QC + Definition of Done · câu hỏi còn mở.
    Mục "câu hỏi còn mở" PHẢI rỗng — còn câu hỏi thì quay lại phase `analyze`.
 
-2. **Tự review rồi nhờ review.** Đọc lại tìm chỗ hổng/mâu thuẫn, sửa. Chạy máy kiểm
-   (R8 kiểm §3b): `python3 scripts/doc_lint.py docs/tdq/spec/<slug>.md` đến khi exit 0.
-   Sau đó gọi agent phản biện của harness (không có thì đọc lại một lượt bằng vai người
-   phản biện) trên file spec; áp dụng góp ý đúng; góp ý bạn từ chối thì ghi lý do ở cuối spec.
+2. **Tự review.** Đọc lại tìm chỗ hổng/mâu thuẫn, sửa. Chạy máy kiểm
+   (R8 kiểm §3b): `python3 scripts/doc_lint.py docs/tdq/spec/<slug>.md`
+   đến khi exit 0.
+   Cần review sâu hơn thì user yêu cầu — khi đó mới gọi agent phản biện (tùy chọn).
 
 3. **Đăng ký file vào state:**
    ```
@@ -39,4 +41,5 @@ Phase `spec`. Spec viết **tiếng Việt**. **Không bao giờ** viết spec v
 
 Xong khi: `spec_approved = true` và `spec_file` trỏ đúng file đã trình.
 Bước kế tiếp: `python3 scripts/tdq_state.py set phase=plan` rồi sang
-[03-plan.md](03-plan.md) ở **turn mới**.
+[03-plan.md](03-plan.md) **NGAY trong cùng turn** — không bắt user
+nhắn thêm câu nào.

@@ -66,35 +66,49 @@ Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
 5. **Chốt kiến thức.** Viết `docs/tdq/knowledge/<slug>.md`: quyết định đã chốt, ràng buộc,
    cách tiếp cận đã chọn + lý do, phương án đã loại + lý do, nguồn.
 
+5b. **Quyết lộ trình.** Thêm mục `## Lộ trình` vào knowledge: bảng `Bước/phase | CÓ-BỎ |
+   Vì sao` cho từng bước còn lại (research thêm, QC độc lập bằng agent, review sâu,
+   chia subagent…). Khung bất biến không được bỏ: phân tích → spec/plan → implement →
+   report. Chỉ cắt bước THỪA cho chính việc này, nêu lý do; phân vân → GIỮ. Lộ trình
+   này chép nguyên sang spec §1b và user duyệt spec là duyệt luôn nó.
+
 6. **Kiểm cổng** trước khi đi tiếp:
    - Phạm vi cuối đã rõ chưa: làm ra gì, có gì mới, output cụ thể là gì?
    - Có cần model / download / cài đặt gì không?
    - Phạm vi QC/test/validate đã có chưa?
    Thiếu bất kỳ mục nào → quay lại bước 4.
 
-Xong khi: `knowledge/<slug>.md` đã viết và cả 3 câu hỏi kiểm cổng đều trả lời được.
+Xong khi: `knowledge/<slug>.md` (có mục Lộ trình) đã viết và cả 3 câu hỏi kiểm cổng đều
+trả lời được.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
-rồi sang [tdq-spec](../tdq-spec/SKILL.md) ở **turn mới**.
+rồi sang [tdq-spec](../tdq-spec/SKILL.md) — cùng turn nếu interview đã xong, còn phải
+hỏi user thì trình câu hỏi và dừng.
 
 ## Phần C — Lane quick
 
-1. Phân tích ngắn: đọc đúng phần code liên quan. Chỉ interview khi thật sự chưa rõ.
-2. Trình **mini-plan ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
+Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-lane.md](references/quick-lane.md).
+
+1. **Phân tích.** Đọc đúng phần code liên quan. Có ẩn số bên ngoài (thư viện, API,
+   phiên bản, cách làm chuẩn) → web search qua `tavily-primary` TRƯỚC khi viết gì;
+   thuần nội bộ thì bỏ qua và nói rõ vì sao. Còn câu hỏi làm ĐỔI kết quả → interview
+   theo [references/interview.md](references/interview.md) (kể cả ở quick, và vẫn kết
+   thúc vòng bằng câu "Bạn muốn bổ sung thêm gì không?").
+2. **Viết mini-spec/plan GỘP 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 dòng: phạm vi
+   in/out, task checkbox mỗi task một test, DoD. Khuôn: [quick-lane.md](references/quick-lane.md).
+3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
-   Muốn giao cho engine ngoài (user yêu cầu hoặc bạn đề xuất) → mini-plan kèm thêm đúng
-   1 dòng máy-đọc `Thực thi external: engine=<codex|agy> · khó=<slug>`. Model default
-   = slug ĐẦU TIÊN (dòng 1, bỏ nhãn `(chưa xác minh)`) trong output của
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/external_models.py" list <engine>`.
-   Luật chọn engine/model: [tdq-plan](../tdq-plan/SKILL.md) mục "Chốt engine + model".
-3. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
-4. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--mode external] --by "<nguyên văn>"` (chỉ thêm `--mode external` khi user nói external).
-5. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code —
+   Giao engine ngoài (user yêu cầu hoặc bạn đề xuất) → thêm đúng 1 dòng máy-đọc
+   `Thực thi external: engine=<codex|agy> · khó=<slug>`; luật chọn engine/model và
+   luật cấm external cho task `(mcp)`: [quick-lane.md](references/quick-lane.md).
+4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
+5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--mode external] --by "<nguyên văn>"` (chỉ thêm `--mode external` khi user nói external).
+6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code —
    quick external thì dòng `Thực thi external:` phải nằm trong working log ở bước này.
-6. Implement end-to-end trong 1 turn, chạy validate, báo kết quả ngắn gọn.
+7. Implement end-to-end trong 1 turn, chạy validate, báo kết quả ngắn gọn.
    Quick external: KHÔNG tự code — làm đúng "Nhánh external" của
    [tdq-build](../tdq-build/SKILL.md) (worktree `tdq-ext-<slug>`, gói task, runner,
    verify, diff-check, merge), fallback tự làm khi engine hỏng.
-7. Append kết quả vào working log; hỏi user có commit không.
+8. Append kết quả vào working log; hỏi user có commit không.
 
 Xong khi: `quick_approved = true`, log đã ghi, việc đã validate xong.
 Bước kế tiếp: hỏi user về commit; hết request thì `... set phase=idle`.

@@ -14,6 +14,15 @@ Trạng thái: CHỜ DUYỆT
 - Trong phạm vi: <gạch đầu dòng>
 - NGOÀI phạm vi: <gạch đầu dòng — nêu rõ để khỏi trôi việc>
 
+## 1b. Lộ trình
+Chép từ `knowledge/<slug>.md` mục "Lộ trình". User duyệt spec là duyệt luôn lộ trình này.
+
+| Bước/phase | Chạy? | Vì sao |
+|---|---|---|
+| Research web | CÓ/BỎ | <lý do> |
+| Interview | CÓ/BỎ | <lý do> |
+| QC độc lập (agent) | CÓ/BỎ | <lý do> |
+
 ## 2. Đầu ra cụ thể
 | # | Đầu ra | Đường dẫn/vị trí | Đo "xong" bằng |
 |---|---|---|---|
@@ -57,6 +66,7 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 ## Kiểm trước khi trình
 
 - Mọi đầu ra ở §2 đều có ít nhất một hạng mục QC ở §6.
+- §1b có mặt: mỗi bước/phase của workflow được ghi rõ CÓ chạy hay BỎ, kèm lý do.
 - §3b có mặt và mỗi skill trong bảng kiểm kê (knowledge) có đúng 1 dòng — máy kiểm bằng
   `doc_lint.py` rule R8.
 - Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính.

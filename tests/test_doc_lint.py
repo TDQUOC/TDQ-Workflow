@@ -240,3 +240,9 @@ class PairTest(LintBase):
         proc = subprocess.run([sys.executable, LINT, "--pair", "mot-file"],
                               capture_output=True, text=True)
         self.assertEqual(proc.returncode, 2)
+
+    def test_pair_ok_with_mcp_label(self):
+        """Nhãn `(mcp)` cuối dòng `- Dùng:` (cú pháp chuẩn) không được làm sai tên skill."""
+        plan = PLAN_CONTRACT_OK.replace("  - Dùng: `dataviz`\n", "  - Dùng: `dataviz` (mcp)\n")
+        code, out = self.pair(SPEC_3B_OK, plan)
+        self.assertEqual(code, 0, out)

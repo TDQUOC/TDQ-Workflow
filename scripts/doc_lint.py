@@ -277,7 +277,10 @@ def _plan_contracts(lines):
         stripped = line.strip()
         if not stripped.startswith("- Dùng:"):
             continue
-        name = stripped[len("- Dùng:"):].strip().strip("`*")
+        name = stripped[len("- Dùng:"):].strip()
+        if name.endswith("(mcp)"):
+            name = name[: -len("(mcp)")].strip()
+        name = name.strip("`*")
         fields = set()
         for j in range(i + 1, min(i + 1 + CONTRACT_SCAN, len(lines))):
             body = lines[j].strip()

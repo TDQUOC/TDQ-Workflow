@@ -88,7 +88,13 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 - Mọi khẳng định phải có nguồn hoặc căn cứ nêu rõ. Không bịa.
 - Không đưa API key vào câu trả lời, log, lệnh shell hay prompt.
 
-## 9. Chất lượng
+## 9. Sub-agent
+
+- Mỗi lần gọi agent: chọn `model` vừa đủ cho task (tham số `model` của Agent tool đè
+  frontmatter). `effort` cố định theo vai trong frontmatter, không đổi được lúc gọi.
+- Bảng mặc định theo vai + luật override: [references/subagent-tuning.md](references/subagent-tuning.md).
+
+## 10. Chất lượng
 
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
   Thiếu thông tin → hỏi user, đừng đoán.

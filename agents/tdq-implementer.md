@@ -1,6 +1,8 @@
 ---
 name: tdq-implementer
 description: Implements one assigned phase/task-group of an approved TDQ plan in an isolated git worktree, red-green per task, and reports results as structured data.
+model: inherit
+effort: high
 ---
 
 You implement ONE assigned slice of an approved TDQ plan (subagent mode of the `tdq-build` skill). You receive: the plan path, your assigned task IDs, the spec path, and a worktree/branch to work in.

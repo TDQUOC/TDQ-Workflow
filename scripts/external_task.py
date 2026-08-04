@@ -50,7 +50,9 @@ _PLAN_REQUIRED = (("kind", str), ("status", str), ("tasks", list), ("notes", str
 
 USAGE = ("usage: external_task.py run|run-plan --engine <codex|agy> --model <slug> "
          "--task-file <f> --worktree <dir> --slug <slug> [--round <n>] "
+         "[--plan-file <plan>] "
          "| parse-plan <plan-file> | split-plan <plan-file> "
+         "| skill-dump <tên>... "
          "| fix-rounds add|status --slug <slug> [--tasks a,b --result pass|fail]")
 
 
@@ -106,6 +108,13 @@ def _log(slug, message):
             f.write(f"[{_now()}] {message}\n")
     except OSError as exc:
         _warn(f"không ghi được log: {exc}")
+
+
+def _log_stderr(message):
+    """Log service cho lệnh KHÔNG có slug (split-plan, skill-dump): stderr,
+    timestamp ISO, cùng công tắc TDQ_EXTERNAL_LOG với run.log."""
+    if _log_enabled():
+        print(f"[{_now()}] {message}", file=sys.stderr)
 
 
 def validate_report(data):
@@ -182,14 +191,45 @@ def plan_timeout_secs(n_tasks):
     return min(DEFAULT_TIMEOUT * max(n_tasks, 1), PLAN_TIMEOUT_CAP)
 
 
+# Cú pháp chuẩn dòng `Dùng:` trong plan (spec 2026-08-03-skill-vao-goi-external §1):
+# `- Dùng: `<tên>`` hoặc `- Dùng: `<tên>` (mcp)` — nhãn (mcp) NGOÀI backtick, cuối dòng.
+_DUNG_LINE = re.compile(r"^\s*-\s*Dùng:\s*`(?P<name>[A-Za-z0-9_-]+)`"
+                        r"(?P<mcp>\s*\(mcp\))?\s*$")
+_TASK_LINE = re.compile(r"^- \[[ x]\] \*\*(?P<id>\S+?)\*\*")
+
+
+def parse_dung_lines(plan_text):
+    """-> {task_id: [(skill, is_mcp)]} theo cú pháp chuẩn; dòng lệch khuôn bỏ qua."""
+    result = {}
+    current = None
+    for line in plan_text.splitlines():
+        task = _TASK_LINE.match(line)
+        if task:
+            current = task.group("id")
+            continue
+        dung = _DUNG_LINE.match(line)
+        if dung and current:
+            result.setdefault(current, []).append(
+                (dung.group("name"), bool(dung.group("mcp"))))
+    return result
+
+
+def strip_skill_sections(text):
+    """Cắt bỏ từ dòng `## SKILL` ĐẦU TIÊN trở đi — nội dung skill dump (nguyên văn
+    SKILL.md + references, đặt CUỐI gói) không được đếm/parse là TASK."""
+    match = re.search(r"(?m)^##\s*SKILL\b", text)
+    return text[:match.start()] if match else text
+
+
 def count_packet_tasks(text):
     """Đếm `## TASK <id>` trong gói; không có heading nào → coi là 1 task."""
-    found = re.findall(r"(?m)^#{1,3}\s*TASK\s+\S+", text)
+    found = re.findall(r"(?m)^#{1,3}\s*TASK\s+\S+", strip_skill_sections(text))
     return len(found) if found else 1
 
 
 def _task_id(task_text, task_file):
-    match = re.search(r"^#\s*TASK\s+(\S+)", task_text, re.MULTILINE)
+    match = re.search(r"^#\s*TASK\s+(\S+)", strip_skill_sections(task_text),
+                      re.MULTILINE)
     if match:
         return match.group(1)
     return os.path.splitext(os.path.basename(task_file))[0]
@@ -258,15 +298,33 @@ def _extract_json(stdout):
     return data, None
 
 
-def run_task(engine, model, task_file, worktree, slug, plan_round=None):
+def run_task(engine, model, task_file, worktree, slug, plan_round=None,
+             plan_file=None):
     """plan_round=None → chạy 1 task (`run`); số nguyên → chạy cả gói plan
-    (`run-plan`, report plan-round-<n>.json, 2 attempt, timeout scale theo gói)."""
+    (`run-plan`, report plan-round-<n>.json, 2 attempt, timeout scale theo gói).
+    plan_file (chỉ run-plan): đối chiếu gói với khối `Dùng:` của plan —
+    thiếu skill/leak mcp → CẢNH BÁO + log, VẪN chạy engine."""
     try:
         with open(task_file, encoding="utf-8") as f:
             base_prompt = f.read()
     except OSError as exc:
         _warn(f"không đọc được gói task: {exc}")
         return 1
+    if plan_file:
+        try:
+            with open(plan_file, encoding="utf-8") as f:
+                plan_text = f.read()
+        except OSError as exc:
+            _warn(f"không đọc được plan (--plan-file): {exc}")
+            return 1
+        packet_lines = len(base_prompt.splitlines())
+        _log_stderr(f"run-plan: gói {packet_lines} dòng, đối chiếu skill với "
+                    f"{os.path.basename(plan_file)}")
+        _log(slug, f"run-plan plan-file={os.path.basename(plan_file)} "
+                   f"gói={packet_lines} dòng")
+        for warning in check_packet_skills(base_prompt, plan_text):
+            _log_stderr(f"CẢNH BÁO: {warning}")
+            _log(slug, f"cảnh báo skill: {warning}")
     plan_mode = plan_round is not None
     if plan_mode:
         task_id = f"plan-round-{plan_round}"
@@ -396,6 +454,7 @@ def split_plan(plan_file):
     except OSError as exc:
         _warn(f"không đọc được plan: {exc}")
         return 1
+    dung = parse_dung_lines(text)
     groups = []          # [(tên phase, [task id])]
     current = ("", [])
     for line in text.splitlines():
@@ -405,20 +464,152 @@ def split_plan(plan_file):
                 groups.append(current)
             current = (heading.group(1).strip(), [])
             continue
-        task = re.match(r"^- \[[ x]\] \*\*(\S+?)\*\*", line)
+        task = _TASK_LINE.match(line)
         if task:
-            current[1].append(task.group(1))
+            current[1].append(task.group("id"))
     if current[1]:
         groups.append(current)
     if not groups:
         _warn("plan không có task checkbox nào.")
         return 1
+
+    def _is_mcp(task_id):
+        return any(mcp for _, mcp in dung.get(task_id, []))
+
+    def _skills(task_ids):
+        seen, names = set(), []
+        for tid in task_ids:
+            for name, mcp in dung.get(tid, []):
+                if not mcp and name not in seen:
+                    seen.add(name)
+                    names.append(name)
+        return names
+
     packets = []
     for phase, tasks in groups:
-        for i in range(0, len(tasks), MAX_TASKS_PER_PACKET):
-            packets.append({"phase": phase,
-                            "tasks": tasks[i:i + MAX_TASKS_PER_PACKET]})
+        chunk = []
+
+        def _flush():
+            for i in range(0, len(chunk), MAX_TASKS_PER_PACKET):
+                part = chunk[i:i + MAX_TASKS_PER_PACKET]
+                packets.append({"phase": phase, "tasks": part,
+                                "skills": _skills(part)})
+            chunk.clear()
+
+        for tid in tasks:
+            if _is_mcp(tid):
+                # Task MCP: Claude tự làm — gói riêng, giữ nguyên vị trí.
+                _flush()
+                if packets and packets[-1].get("mcp") and \
+                        packets[-1]["phase"] == phase:
+                    packets[-1]["tasks"].append(tid)
+                else:
+                    packets.append({"phase": phase, "tasks": [tid], "mcp": True})
+            else:
+                chunk.append(tid)
+        _flush()
+    mcp_total = sum(len(p["tasks"]) for p in packets if p.get("mcp"))
+    _log_stderr(f"split-plan: {len(packets)} gói, {mcp_total} task mcp tách riêng")
     print(json.dumps(packets, ensure_ascii=False))
+    return 0
+
+
+def check_packet_skills(packet_text, plan_text):
+    """-> [cảnh báo] — lưới máy-kiểm (KHÔNG chặn): gói phải chứa mục
+    `## SKILL <tên> — ` cho từng skill của task trong gói; task gắn (mcp)
+    không được nằm trong gói engine. So khớp nguyên tên (không match tiền tố)."""
+    warnings = []
+    dung = parse_dung_lines(plan_text)
+    body = strip_skill_sections(packet_text)
+    packet_tasks = re.findall(r"(?m)^#{1,3}\s*TASK\s+(\S+)", body)
+    have = set(re.findall(r"(?m)^##\s*SKILL\s+(\S+)\s+—", packet_text))
+    for task in packet_tasks:
+        for skill, is_mcp in dung.get(task, []):
+            if is_mcp:
+                warnings.append(
+                    f"task {task} dùng skill `{skill}` (mcp) nhưng nằm trong "
+                    "gói engine — task mcp phải để Claude tự làm")
+            elif skill not in have:
+                warnings.append(
+                    f"gói thiếu mục `## SKILL {skill} — ` cho task {task} "
+                    "(plan khai báo Dùng)")
+    return warnings
+
+
+def skill_roots():
+    """Thứ tự resolve skill (spec 2026-08-03-skill-vao-goi-external §2#1):
+    `skills/` trong repo → `~/.claude/skills/` → thư mục skills của plugin đã cài."""
+    project = _project_dir()
+    home = os.path.expanduser("~")
+    roots = [os.path.join(project, "skills"),
+             os.path.join(home, ".claude", "skills")]
+    try:
+        sys.path.insert(0, SCRIPT_DIR)
+        import skill_inventory
+        roots += [d for _, d in
+                  skill_inventory._plugin_skill_dirs(home, project)]
+    except Exception as exc:  # thiếu module/plugin hỏng → vẫn còn 2 tầng đầu
+        _warn(f"không quét được skill plugin: {exc}")
+    return roots
+
+
+def resolve_skill(name, roots=None):
+    """-> thư mục skill hoặc None; trùng tên → nguồn đứng trước thắng + cảnh báo."""
+    hits = []
+    for root in (roots if roots is not None else skill_roots()):
+        candidate = os.path.join(root, name)
+        if os.path.isfile(os.path.join(candidate, "SKILL.md")):
+            hits.append(candidate)
+    if not hits:
+        return None
+    if len(hits) > 1:
+        _warn(f"skill {name!r} trùng tên ở {len(hits)} nguồn — "
+              f"dùng nguồn đứng trước: {hits[0]}")
+    return hits[0]
+
+
+def _strip_frontmatter(text):
+    """Bỏ khối frontmatter `---…---` đầu file (nếu có)."""
+    if text.startswith("---"):
+        end = re.search(r"(?m)^---\s*$", text[3:])
+        if end:
+            return text[3 + end.end():].lstrip("\n")
+    return text
+
+
+def skill_dump(names):
+    """In nguyên văn body SKILL.md (bỏ frontmatter) + toàn bộ references/*.md của
+    từng skill, mỗi file dưới header `## SKILL <tên> — <file>`. Thiếu skill → exit 1."""
+    import glob as _glob
+    roots = skill_roots()
+    missing = []
+    for name in names:
+        skill_dir = resolve_skill(name, roots)
+        if skill_dir is None:
+            missing.append(name)
+            continue
+        files = [("SKILL.md", os.path.join(skill_dir, "SKILL.md"))]
+        for path in sorted(_glob.glob(os.path.join(skill_dir, "references",
+                                                   "*.md"))):
+            files.append((f"references/{os.path.basename(path)}", path))
+        for label, path in files:
+            try:
+                with open(path, encoding="utf-8") as f:
+                    body = f.read()
+            except OSError as exc:
+                _warn(f"không đọc được {path}: {exc}")
+                missing.append(name)
+                break
+            if label == "SKILL.md":
+                body = _strip_frontmatter(body)
+            print(f"## SKILL {name} — {label}")
+            print(body.rstrip("\n"))
+            print()
+        _log_stderr(f"skill-dump: {name} ← {skill_dir} ({len(files)} file)")
+    if missing:
+        _log_stderr("skill-dump: KHÔNG tìm thấy skill: " + ", ".join(missing))
+        _warn("skill không tìm thấy: " + ", ".join(missing))
+        return 1
     return 0
 
 
@@ -496,6 +687,8 @@ def main(argv):
         return parse_plan(argv[1])
     if len(argv) >= 1 and argv[0] == "split-plan" and len(argv) == 2:
         return split_plan(argv[1])
+    if len(argv) >= 2 and argv[0] == "skill-dump":
+        return skill_dump(argv[1:])
     if len(argv) >= 1 and argv[0] == "fix-rounds":
         rest = argv[1:]
         opts = {"action": None, "slug": None, "tasks": None, "result": None}
@@ -515,7 +708,7 @@ def main(argv):
                           opts["result"])
     if len(argv) >= 1 and argv[0] in ("run", "run-plan"):
         plan_mode = argv[0] == "run-plan"
-        extra = ("--round",) if plan_mode else ()
+        extra = ("--round", "--plan-file") if plan_mode else ()
         opts, err = _parse_run_opts(argv[1:], extra)
         if err is not None:
             print(USAGE, file=sys.stderr)
@@ -528,7 +721,8 @@ def main(argv):
                 print(USAGE, file=sys.stderr)
                 return 2
         return run_task(opts["engine"], opts["model"], opts["task_file"],
-                        opts["worktree"], opts["slug"], plan_round=plan_round)
+                        opts["worktree"], opts["slug"], plan_round=plan_round,
+                        plan_file=opts.get("plan_file"))
     print(USAGE, file=sys.stderr)
     return 2
 

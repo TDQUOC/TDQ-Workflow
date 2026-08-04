@@ -17,9 +17,11 @@ Có **bất kỳ** ô nào rơi vào cột full → đề xuất **full**.
 
 ## Luồng mỗi lane
 
-- **quick**: phân tích ngắn → mini-plan ≤10 dòng trong chat → user duyệt → ghi working
-  log → implement → validate → báo cáo ngắn.
-- **full**: phân tích + interview → spec (chờ duyệt) → plan (chờ duyệt) → implement →
+- **quick**: phân tích (+ search/interview khi cần) → mini-spec/plan gộp 1 file, tóm tắt
+  ≤10 dòng trong chat → user duyệt (1 gate) → ghi working log → implement → validate →
+  báo cáo ngắn. Chi tiết: [quick-lane.md](quick-lane.md).
+- **full**: phân tích + interview → spec (chờ duyệt, duyệt xong viết plan ngay cùng
+  turn) → plan (chờ duyệt kèm mode, duyệt xong build ngay cùng turn) → implement →
   QC → report.
 
 ## Khuôn câu hỏi (copy được)

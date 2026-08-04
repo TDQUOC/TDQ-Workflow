@@ -12,8 +12,12 @@
 Intake ──► Analysis ──► Spec ──► Plan ──► Implement ──► QC ──► Report
  (lane?)   (interview)  [DUYỆT]  [DUYỆT]  (1 turn,      (loop   (≤50 dòng)
                                            tick ngay)    plan)
-Lane quick: Analysis ngắn ──► Plan ≤10 dòng trong chat ──► [DUYỆT] ──► ghi log ──► Implement
+Lane quick: Analysis (+search/interview khi cần) ──► mini-spec/plan gộp 1 file ──►
+            [DUYỆT] ──► ghi log ──► Implement
 ```
+
+Duyệt spec → viết plan NGAY trong cùng turn. Duyệt plan (kèm mode) → build NGAY trong
+cùng turn. Không bắt user nhắn thêm câu nào chỉ để đi tiếp.
 
 Chi tiết từng phase (đọc file tương ứng với phase đang ở, đừng đọc hết một lượt):
 

@@ -693,5 +693,309 @@ class TwoPhaseE2ETest(StubBase):
         self.assertEqual(len(self.calls()), 1)
 
 
+class SplitPlanMcpTest(StubBase):
+    """T1.2 (skill-vao-goi-external) — task (mcp) tách gói riêng, khóa skills."""
+
+    def _plan(self, text):
+        path = os.path.join(self.tmp, "mcpplan.md")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+        return path
+
+    def test_mcp_task_mid_phase_three_packets(self):
+        body = ("# PLAN\n## P1 — a\n"
+                "- [ ] **T1.1** v — Test: t\n"
+                "  - Dùng: `graphify`\n"
+                "- [ ] **T1.2** v — Test: t\n"
+                "  - Dùng: `notion` (mcp)\n"
+                "- [ ] **T1.3** v — Test: t\n")
+        code, out, err = self.run_cli("split-plan", self._plan(body))
+        self.assertEqual(code, 0)
+        packets = json.loads(out)
+        self.assertEqual(len(packets), 3)
+        self.assertEqual(packets[0]["tasks"], ["T1.1"])
+        self.assertNotIn("mcp", packets[0])
+        self.assertEqual(packets[0]["skills"], ["graphify"])
+        self.assertEqual(packets[1]["tasks"], ["T1.2"])
+        self.assertIs(packets[1]["mcp"], True)
+        self.assertEqual(packets[2]["tasks"], ["T1.3"])
+        self.assertEqual(packets[2]["skills"], [])
+        # Log service: lệnh không có slug → stderr có dòng timestamp
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T")
+
+    def test_no_mcp_keeps_single_packet(self):
+        body = ("# PLAN\n## P1 — a\n"
+                "- [ ] **T1.1** v — Test: t\n"
+                "  - Dùng: `tdq-build`\n"
+                "- [ ] **T1.2** v — Test: t\n")
+        code, out, _ = self.run_cli("split-plan", self._plan(body))
+        self.assertEqual(code, 0)
+        packets = json.loads(out)
+        self.assertEqual(len(packets), 1)
+        self.assertEqual(packets[0]["tasks"], ["T1.1", "T1.2"])
+        self.assertEqual(packets[0]["skills"], ["tdq-build"])
+
+
+class StripSkillSectionsTest(unittest.TestCase):
+    """T1.3 (skill-vao-goi-external) — nội dung sau `## SKILL` đầu tiên
+    không được đếm là TASK."""
+
+    PACKET = ("# GÓI PLAN s — round 1\n"
+              "## TASK T1\nMục tiêu: a.\nTest: true\n"
+              "## TASK T2\nMục tiêu: b.\nTest: true\n"
+              "## SKILL graphify — SKILL.md\n"
+              "nội dung skill có ví dụ:\n"
+              "## TASK T9\n(chỉ là ví dụ trong skill)\n"
+              "## SKILL graphify — references/usage.md\nthêm nữa\n")
+
+    def test_count_ignores_skill_sections(self):
+        self.assertEqual(external_task.count_packet_tasks(self.PACKET), 2)
+
+    def test_task_id_ignores_skill_sections(self):
+        text = ("## SKILL x — SKILL.md\n# TASK FAKE\n")
+        self.assertEqual(external_task._task_id(text, "/tmp/goi-abc.md"),
+                         "goi-abc")
+
+
+class SkillResolveTest(StubBase):
+    """T2.1 (skill-vao-goi-external) — resolver 3 tầng: repo → ~/.claude/skills
+    → plugin; trùng tên → nguồn trước thắng + cảnh báo."""
+
+    def _mk_skill(self, root, name, body="---\nname: x\n---\nNội dung.\n"):
+        d = os.path.join(root, name)
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "SKILL.md"), "w", encoding="utf-8") as f:
+            f.write(body)
+        return d
+
+    def setUp(self):
+        super().setUp()
+        self.home = os.path.join(self.tmp, "home")
+        self.repo_skills = os.path.join(self.project, "skills")
+        self.user_skills = os.path.join(self.home, ".claude", "skills")
+        os.makedirs(self.user_skills, exist_ok=True)
+        # Plugin giả: settings bật plugin, installed_plugins trỏ installPath
+        plug_install = os.path.join(self.home, "plug", "demo")
+        self.plugin_skills = os.path.join(plug_install, "skills")
+        os.makedirs(os.path.join(self.home, ".claude", "plugins"), exist_ok=True)
+        with open(os.path.join(self.home, ".claude", "settings.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump({"enabledPlugins": {"demo@m": True}}, f)
+        with open(os.path.join(self.home, ".claude", "plugins",
+                               "installed_plugins.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump({"plugins": {"demo@m": [
+                {"installPath": plug_install}]}}, f)
+        self._mk_skill(self.plugin_skills, "plug-only")
+
+    def env(self):
+        return {"HOME": self.home}
+
+    def test_tier2_user_skills(self):
+        self._mk_skill(self.user_skills, "user-only")
+        code, out, _ = self.run_cli("skill-dump", "user-only", env=self.env())
+        self.assertEqual(code, 0)
+        self.assertIn("## SKILL user-only — SKILL.md", out)
+
+    def test_tier3_plugin_skills(self):
+        code, out, _ = self.run_cli("skill-dump", "plug-only", env=self.env())
+        self.assertEqual(code, 0)
+        self.assertIn("## SKILL plug-only — SKILL.md", out)
+
+    def test_duplicate_repo_wins_with_warning(self):
+        self._mk_skill(self.repo_skills, "dup", "---\nname: d\n---\nREPO-BODY\n")
+        self._mk_skill(self.user_skills, "dup", "---\nname: d\n---\nUSER-BODY\n")
+        code, out, err = self.run_cli("skill-dump", "dup", env=self.env())
+        self.assertEqual(code, 0)
+        self.assertIn("REPO-BODY", out)
+        self.assertNotIn("USER-BODY", out)
+        self.assertIn("trùng tên", err)
+
+
+class SkillDumpTest(SkillResolveTest):
+    """T2.2 (skill-vao-goi-external) — dump nguyên văn + references, skill ma."""
+
+    def test_dump_body_and_references_in_order(self):
+        d = self._mk_skill(self.repo_skills, "full-skill",
+                           "---\nname: f\ndescription: x\n---\nBODY-CHÍNH\n")
+        refs = os.path.join(d, "references")
+        os.makedirs(refs)
+        for fname, content in (("a-ref.md", "REF-A"), ("b-ref.md", "REF-B")):
+            with open(os.path.join(refs, fname), "w", encoding="utf-8") as f:
+                f.write(content + "\n")
+        code, out, err = self.run_cli("skill-dump", "full-skill", env=self.env())
+        self.assertEqual(code, 0)
+        self.assertNotIn("frontmatter", out)
+        self.assertNotIn("name: f", out)          # frontmatter đã bỏ
+        i_skill = out.index("## SKILL full-skill — SKILL.md")
+        i_a = out.index("## SKILL full-skill — references/a-ref.md")
+        i_b = out.index("## SKILL full-skill — references/b-ref.md")
+        self.assertLess(i_skill, i_a)
+        self.assertLess(i_a, i_b)
+        self.assertIn("BODY-CHÍNH", out)
+        self.assertIn("REF-A", out)
+        self.assertIn("REF-B", out)
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T")   # log stderr timestamp
+
+    def test_missing_skill_exit_1(self):
+        code, _, err = self.run_cli("skill-dump", "khong-ton-tai",
+                                    env=self.env())
+        self.assertEqual(code, 1)
+        self.assertIn("khong-ton-tai", err)
+
+
+class CheckPacketSkillsTest(unittest.TestCase):
+    """T3.1 (skill-vao-goi-external) — hàm thuần đối chiếu gói ↔ plan."""
+
+    PLAN = ("# PLAN\n## P1 — a\n"
+            "- [ ] **T1** v — Test: t\n"
+            "  - Dùng: `notion` (mcp)\n"
+            "- [ ] **T2** v — Test: t\n"
+            "  - Dùng: `graphify`\n"
+            "- [ ] **T3** v — Test: t\n"
+            "  - Dùng: `notion-db`\n")
+
+    def packet(self, tasks, skills=()):
+        body = "# GÓI PLAN\n" + "".join(
+            f"## TASK {t}\nTest: true\n" for t in tasks)
+        for s in skills:
+            body += f"## SKILL {s} — SKILL.md\nnội dung\n"
+        return body
+
+    def test_missing_skill_warns(self):
+        warns = external_task.check_packet_skills(
+            self.packet(["T2"]), self.PLAN)
+        self.assertEqual(len(warns), 1)
+        self.assertIn("graphify", warns[0])
+
+    def test_full_packet_silent(self):
+        warns = external_task.check_packet_skills(
+            self.packet(["T2"], skills=["graphify"]), self.PLAN)
+        self.assertEqual(warns, [])
+
+    def test_mcp_leak_warns(self):
+        warns = external_task.check_packet_skills(
+            self.packet(["T1"]), self.PLAN)
+        self.assertEqual(len(warns), 1)
+        self.assertIn("mcp", warns[0])
+
+    def test_no_prefix_match(self):
+        # Gói có `## SKILL notion-db` KHÔNG được tính là có `notion` và ngược lại
+        warns = external_task.check_packet_skills(
+            self.packet(["T3"], skills=["notion"]), self.PLAN)
+        self.assertEqual(len(warns), 1)
+        self.assertIn("notion-db", warns[0])
+
+
+class RunPlanFileWarningTest(StubBase):
+    """T3.2 (skill-vao-goi-external) — run-plan --plan-file: cảnh báo, vẫn chạy."""
+
+    def _write(self, name, text):
+        path = os.path.join(self.tmp, name)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+        return path
+
+    def _go(self, with_flag):
+        plan = self._write("plan.md",
+                           "# PLAN\n## P1 — a\n"
+                           "- [ ] **T1** v — Test: t\n"
+                           "  - Dùng: `graphify`\n")
+        packet = self._write("packet.md",
+                             "# GÓI PLAN s1 — round 1\n"
+                             "## TASK T1\nMục tiêu: demo.\nTest: true\n")
+        self.set_response(1, good_plan_report(
+            tasks=[good_report(task_id="T1")]))
+        args = ["run-plan", "--engine", "codex", "--model", "m", "--task-file",
+                packet, "--worktree", self.worktree, "--slug", "s1",
+                "--round", "1"]
+        if with_flag:
+            args += ["--plan-file", plan]
+        return self.run_cli(*args)
+
+    def test_missing_skill_warns_but_runs(self):
+        code, out, err = self._go(with_flag=True)
+        self.assertEqual(code, 0)                      # exit theo engine (stub OK)
+        self.assertIn("## SKILL graphify", err)        # cảnh báo thiếu skill
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T") # timestamp stderr
+        self.assertIn("dòng", err)                     # log số dòng gói
+        self.assertEqual(json.loads(out)["kind"], "plan")
+
+    def test_without_flag_no_check(self):
+        code, _, err = self._go(with_flag=False)
+        self.assertEqual(code, 0)
+        self.assertNotIn("## SKILL", err)
+
+
+class LogServiceUnifiedTest(RunPlanFileWarningTest):
+    """T5.2 (skill-vao-goi-external) — 3 đường log cùng cơ chế: không slug →
+    stderr timestamp; có slug → run.log; TDQ_EXTERNAL_LOG=0 tắt cả."""
+
+    TS = r"\[\d{4}-\d{2}-\d{2}T"
+
+    def _skill_fixture(self):
+        d = os.path.join(self.project, "skills", "log-demo")
+        os.makedirs(d)
+        with open(os.path.join(d, "SKILL.md"), "w", encoding="utf-8") as f:
+            f.write("Nội dung.\n")
+
+    def test_skill_dump_stderr_timestamp_and_off_switch(self):
+        self._skill_fixture()
+        _, _, err = self.run_cli("skill-dump", "log-demo")
+        self.assertRegex(err, self.TS)
+        _, _, err = self.run_cli("skill-dump", "log-demo",
+                                 env={"TDQ_EXTERNAL_LOG": "0"})
+        self.assertNotRegex(err, self.TS)
+
+    def test_split_plan_stderr_timestamp_and_off_switch(self):
+        plan = self._write("lplan.md",
+                           "# PLAN\n## P1 — a\n- [ ] **T1** v — Test: t\n")
+        _, _, err = self.run_cli("split-plan", plan)
+        self.assertRegex(err, self.TS)
+        _, _, err = self.run_cli("split-plan", plan,
+                                 env={"TDQ_EXTERNAL_LOG": "0"})
+        self.assertNotRegex(err, self.TS)
+
+    def test_run_plan_warning_lands_in_slug_run_log(self):
+        self._go(with_flag=True)
+        with open(self.log_path(), encoding="utf-8") as f:
+            log = f.read()
+        self.assertRegex(log, self.TS)
+        self.assertIn("cảnh báo skill", log)
+        self.assertIn("dòng", log)          # số dòng gói
+
+
+class ParseDungLinesTest(unittest.TestCase):
+    """T1.1 (skill-vao-goi-external) — cú pháp chuẩn dòng `Dùng:` + nhãn (mcp)."""
+
+    PLAN = (
+        "# PLAN\n## P1 — a\n"
+        "- [ ] **T1.1** việc — Test: t\n"
+        "  - Dùng: `tdq-build`\n"
+        "  - Nạp: đọc skill.\n"
+        "- [ ] **T1.2** việc — Test: t\n"
+        "  - Dùng: `notion` (mcp)\n"
+        "- [ ] **T1.3** việc hai skill — Test: t\n"
+        "  - Dùng: `graphify`\n"
+        "  - Kiểm: lệnh\n"
+        "  - Dùng: `mongodb` (mcp)\n"
+        "- [ ] **T1.4** không skill — Test: t\n"
+    )
+
+    def test_variants(self):
+        parsed = external_task.parse_dung_lines(self.PLAN)
+        self.assertEqual(parsed["T1.1"], [("tdq-build", False)])
+        self.assertEqual(parsed["T1.2"], [("notion", True)])
+        self.assertEqual(parsed["T1.3"], [("graphify", False), ("mongodb", True)])
+        self.assertNotIn("T1.4", parsed)
+
+    def test_malformed_lines_ignored(self):
+        text = ("- [ ] **T2.1** v — Test: t\n"
+                "  - Dùng: no-backtick\n"
+                "  - Dùng: `bad name` (mcp)\n"
+                "  - Dùng: `ok-skill` (mcp) thừa đuôi\n")
+        self.assertEqual(external_task.parse_dung_lines(text), {})
+
+
 if __name__ == "__main__":
     unittest.main()

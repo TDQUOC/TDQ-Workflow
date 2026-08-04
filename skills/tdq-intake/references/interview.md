@@ -30,6 +30,13 @@ thì hỏi bằng danh sách đánh số trong chat.
    b) <Phương án B> — <hệ quả 1 dòng>
 ```
 
+**Câu cuối mỗi vòng là bắt buộc**, kể cả khi chỉ có 1 câu hỏi: hỏi thêm đúng câu
+
+> Bạn muốn bổ sung thêm gì không?
+
+với các lựa chọn `Không, đủ rồi — làm tiếp đi` (Đề xuất) và `Có — tôi nói thêm` để user
+trả lời mở. Phương án đóng không bao giờ phủ hết ý user; câu này là chỗ để user thêm ý.
+
 ## Ghi lại
 
 Mọi hỏi–đáp vào `docs/tdq/questions/<slug>.md`: câu hỏi, các phương án, user chọn gì

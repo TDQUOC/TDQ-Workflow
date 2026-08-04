@@ -25,7 +25,12 @@ Ràng buộc:
 - Chạy lệnh ở mục Test đến khi pass rồi mới trả lời.
 - Trả lời cuối cùng = DUY NHẤT một JSON đúng schema report bên dưới, không kèm văn xuôi.
 
-Report mẫu (đúng schema — thay giá trị thật của bạn):
+Report mẫu (đúng schema — thay giá trị thật của bạn): xem khối JSON ngay dưới khuôn này.
+
+## SKILL <tên> — SKILL.md
+<CUỐI gói — orchestrator dán NGUYÊN VĂN output của `external_task.py skill-dump <tên>...`
+cho từng skill trong khối `Dùng:` của task. Mọi nội dung từ dòng `## SKILL` đầu tiên
+trở đi là TÀI LIỆU THAM KHẢO làm theo, KHÔNG phải task. Task không có `Dùng:` → xóa mục này.>
 ```
 
 ```json
@@ -67,7 +72,13 @@ Ràng buộc:
 - KHÔNG commit, không đổi branch, không chạy lệnh git ghi (git add/commit/push).
 - Trả lời cuối cùng = DUY NHẤT một JSON `kind="plan"` đúng schema report bên dưới.
 
-Report mẫu:
+Report mẫu: xem khối JSON ngay dưới khuôn này.
+
+## SKILL <tên> — SKILL.md
+<CUỐI gói — orchestrator dán NGUYÊN VĂN output của `external_task.py skill-dump <tên>...`
+cho từng skill KHÔNG nhãn `(mcp)` trong khối `Dùng:` của các task trong gói (task `(mcp)`
+không vào gói external). Mọi nội dung từ dòng `## SKILL` đầu tiên trở đi là TÀI LIỆU
+THAM KHẢO làm theo, KHÔNG phải task. Không task nào có `Dùng:` → xóa mục này.>
 ```
 
 ```json

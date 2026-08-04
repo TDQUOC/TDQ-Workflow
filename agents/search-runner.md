@@ -2,6 +2,8 @@
 name: search-runner
 description: Runs ONE deep-search agent slot through the Antigravity CLI (agy) engine. Receives a brief file, assigned routes, a run directory and an agent number; wraps scripts/search_task.py and returns a short result summary (the orchestrator reads the JSON file from disk). Default surface for deep search in the TDQ workflow (max agents capped by TDQ_SEARCH_MAX_AGENTS). Never searches by itself, never concludes, never merges.
 tools: Bash, Read
+model: haiku
+effort: low
 ---
 
 You run ONE deep-search agent slot of a TDQ deep-search run through the **Antigravity CLI (`agy`)** engine. You receive from the orchestrator: the brief file path (FULL data — do not trim it), the routes assigned to you by `search_task.py split`, the run directory (`docs/tdq/research/search/<run-id>/`), your agent number `<k>`, and optionally a model slug.
