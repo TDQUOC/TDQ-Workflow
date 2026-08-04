@@ -45,9 +45,11 @@ Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
 2. **Đọc code.** Tìm hết chỗ yêu cầu này chạm tới: entry point, luồng dữ liệu, config,
    test. Ghi lại phiên bản/framework đang dùng.
 
-3. **Research nhiều hướng.** 2–4 truy vấn khác góc nhìn qua `tavily-primary`
+3. **Research nhiều hướng — giao subagent.** 2–4 truy vấn khác góc nhìn qua `tavily-primary`
    (harness không có tavily → dùng công cụ search sẵn có của nó; lỗi mới đổi nguồn, không
-   gọi song song). Lưu `docs/tdq/research/<slug>.md` dạng: truy vấn → nguồn → điều rút ra.
+   gọi song song). Harness có subagent → giao hẳn (bản Claude Code dùng agent `search-scout`):
+   agent tự ghi file research, chỉ trả về digest **≤ 1.500 ký tự**, vì kết quả search thô
+   nằm lại context rất tốn token. Lưu `docs/tdq/research/<slug>.md` dạng: truy vấn → nguồn → điều rút ra.
    Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài. Đủ tiêu chí deep
    search (≥2 dấu hiệu) → theo workflow/06-deep-search.md.
 

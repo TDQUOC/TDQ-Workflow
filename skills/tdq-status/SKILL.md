@@ -9,11 +9,13 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
 
 ## Các bước
 
-1. Chạy hai lệnh:
+1. Chạy hai lệnh (gộp vào MỘT lần gọi Bash bằng `&&`):
    ```
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" next
+   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" next --brief
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" get
    ```
+   Luôn dùng `next --brief` (121 ký tự) — chỉ bỏ `--brief` (1.350 ký tự) khi thật sự
+   cần checklist đầy đủ của phase, vì output đó bị mang vác lại ở mọi API call sau.
    Chưa có `active_request` → báo "Chưa có request TDQ nào đang chạy." kèm bước mở
    request mới, rồi dừng.
 
