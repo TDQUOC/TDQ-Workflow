@@ -72,3 +72,16 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 - Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính.
 - §7 rỗng.
 - Không câu nào dùng từ mơ hồ ("phù hợp", "tối ưu", "nếu cần") mà không kèm ngưỡng cụ thể.
+
+## Checklist scope — trả lời được hết mới trình
+
+| Câu hỏi | Trả lời phải nằm ở |
+|---|---|
+| Việc này làm RA cái gì? | §1 mục tiêu + §2 bảng đầu ra |
+| Có gì MỚI so với hiện trạng? | §3 cách tiếp cận |
+| Output cụ thể là file/lệnh/màn hình nào? | §2 cột đường dẫn/vị trí |
+| Có cần model không (tên, nơi chạy, chi phí)? | §1 phạm vi + §5 ràng buộc |
+| Có cần download/cài đặt gì không? | §5 ràng buộc — ghi rõ tên gói và bản |
+| QC/test/validate làm thế nào? | §6 bảng QC + DoD |
+
+Còn một ô chưa trả lời được → chưa đủ điều kiện trình spec, quay lại phase analyze.

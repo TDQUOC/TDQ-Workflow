@@ -12,7 +12,7 @@ Nguồn: hằng `PHASE_TABLE` trong `scripts/tdq_state.py`.
 | `plan` | spec_approved = true | Viết plan kèm mode ĐỀ XUẤT, đăng ký plan_file, trình rồi DỪNG chờ duyệt | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve plan --mode <main\|subagent\|external> --by "<nguyên văn>"` | plan_approved = true và implement_mode khác null | Sửa code khi plan chưa duyệt; tự chọn mode thay user; bắt user nhắn thêm một turn nữa mới build |
 | `implement` | plan_approved = true và implement_mode đã chốt | Làm hết plan trong 1 turn, mỗi task red→green, tick [x] ngay khi pass | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=qc` | Mọi task trong plan đã tick [x] | Dừng giữa chừng; gom tick vào cuối turn |
 | `qc` | Đã implement xong | Chạy Definition of Done của spec, ghi kết quả, fail thì fix tiếp | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report` | Mọi mục QC trong spec PASS, có bằng chứng | Bỏ qua test fail; báo PASS khi chưa chạy |
-| `report` | QC đã PASS | Viết report ≤50 dòng rồi hỏi user có commit không | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle` | Report đã ghi và user đã được hỏi về commit | Tự commit hoặc push khi user chưa yêu cầu |
+| `report` | QC đã PASS | Viết report ≤10 dòng rồi hỏi user có commit không | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle` | Report đã ghi và user đã được hỏi về commit | Tự commit hoặc push khi user chưa yêu cầu |
 | `idle` | Đã xong hoặc chưa mở request | Chờ yêu cầu mới từ user | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <YYYY-MM-DD-slug> <quick\|full>` | Có request mới được mở | Đè request cũ còn dở mà chưa hỏi user |
 | `quick` | lane = quick | Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → rồi mới implement | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--mode external] --by "<nguyên văn câu user>"` | quick_approved = true, log đã ghi, việc đã validate, phase đã về idle | Implement trước khi ghi working log |
 
@@ -69,7 +69,7 @@ quick: python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--mod
 3. Lặp đến khi mọi mục PASS
 
 ## report
-1. Viết docs/tdq/reports/<slug>.md ≤50 dòng: đã làm gì, kết quả QC, giới hạn còn lại
+1. Viết docs/tdq/reports/<slug>.md ≤10 dòng: đã làm gì, kết quả QC, giới hạn còn lại
 2. Append working log docs/workinglog/<hôm nay>.md
 3. Hỏi user: có commit không?
 

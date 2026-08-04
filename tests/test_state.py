@@ -40,6 +40,33 @@ class TestState(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual(out, "full")
 
+    def test_init_set_reset_in_mot_dong_khong_json(self):
+        """Tối ưu token: init/set/reset mặc định in 1 dòng, không dump nguyên state."""
+        for args in (("init", "2026-08-04-demo", "quick"),
+                     ("set", "phase=implement"),
+                     ("reset",)):
+            rc, out, _ = run_state_cli(self.cwd, *args)
+            with self.subTest(cmd=args[0]):
+                self.assertEqual(rc, 0)
+                self.assertEqual(len(out.splitlines()), 1, f"{args[0]}: phải đúng 1 dòng")
+                self.assertNotIn("{", out, f"{args[0]}: không được dump JSON")
+
+    def test_co_co_json_thi_in_lai_nguyen_state(self):
+        """Cần soi đầy đủ thì `--json` phải trả lại hành vi cũ."""
+        rc, out, _ = run_state_cli(self.cwd, "init", "2026-08-04-demo", "quick", "--json")
+        self.assertEqual(rc, 0)
+        self.assertEqual(json.loads(out)["active_request"], "2026-08-04-demo")
+        rc, out, _ = run_state_cli(self.cwd, "set", "phase=spec", "--json")
+        self.assertEqual(rc, 0)
+        self.assertEqual(json.loads(out)["phase"], "spec")
+
+    def test_dong_tom_tat_co_du_request_lane_phase(self):
+        run_state_cli(self.cwd, "init", "2026-08-04-demo", "quick")
+        rc, out, _ = run_state_cli(self.cwd, "set", "phase=implement")
+        self.assertEqual(rc, 0)
+        for chunk in ("2026-08-04-demo", "quick", "implement"):
+            self.assertIn(chunk, out)
+
     def test_cli_set_roundtrip(self):
         run_state_cli(self.cwd, "init", "r1", "full")
         rc, _, _ = run_state_cli(self.cwd, "set", "phase=spec", "spec_file=docs/tdq/spec/x.md")

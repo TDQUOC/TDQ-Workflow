@@ -13,7 +13,7 @@ Steps:
 1. From the MAIN project root (not the worktree), start the wrapper in the background — Bash tool with `run_in_background: true`, because one attempt may take long:
    - Quick lane (single task, up to 3 attempts × `TDQ_EXTERNAL_TIMEOUT`, default 540s):
      `python3 scripts/external_task.py run --engine agy --model <slug-được-giao> --task-file <gói-task> --worktree <worktree> --slug <slug>`
-   - Full lane (plan/phase/fix packet, up to 2 attempts; timeout = 540s × tasks in packet, capped at 3600s — one call may take up to 2×3600s):
+   - Full lane (plan/phase/fix packet), tối đa 2 attempt. Timeout = 540s × số task trong gói, trần 3600s. Một lời gọi có thể mất tới 2×3600s:
      `python3 scripts/external_task.py run-plan --engine agy --model <slug-được-giao> --task-file <gói-plan> --worktree <worktree> --slug <slug> --round <n> --plan-file <plan>`
      (`--plan-file` tùy chọn — truyền khi orchestrator giao: script đối chiếu gói với khối `Dùng:` của plan, thiếu skill chỉ cảnh báo + log, vẫn chạy engine)
 2. Wait for the harness to re-invoke you: a `run_in_background` command keeps running detached and the harness wakes you with its output and exit code when it exits. Do not poll, do not kill it, never run a second copy in parallel.
@@ -29,6 +29,7 @@ Rules:
 - Work only with the given packet file/worktree; never edit files in the worktree yourself.
 - Never commit, never touch `docs/tdq/state.json`.
 - Do not summarize away data — return raw values from the report (plan packets: per-task status/test_result list).
+- **Ngưỡng digest ≤ 1.500 ký tự** cho final message: cấm dán nguyên văn output của wrapper (stdout engine, diff, toàn bộ file report). Giữ đủ các trường bắt buộc dưới dạng ngắn; vượt ngưỡng thì cắt `notes`/`test_result` xuống dòng quyết định và trỏ đường dẫn file report — orchestrator tự đọc từ đĩa.
 - You are invoked SYNCHRONOUSLY by the orchestrator: complete the whole flow and return in this run. While the wrapper is still running, keep waiting for the background wake-up — only send your final message after the wrapper has exited.
 
 Return (as your final message): task/round id · exit code of the wrapper · status/files_changed/test_cmd/test_result/notes from the report (plan packets: the per-task list; or the wrapper's last stderr lines if exit non-zero) · report file path · the literal marker `engine-failed` when exit non-zero so the orchestrator applies its fallback.

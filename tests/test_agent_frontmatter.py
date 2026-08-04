@@ -76,5 +76,31 @@ class AgentFrontmatterTest(unittest.TestCase):
             self.assertIn(name[:-3], text, f"subagent-tuning.md thiếu dòng cho {name}")
 
 
+class AgentDigestLimitTest(unittest.TestCase):
+    """Request toi-uu-token-vong-2 (T5.1/T5.2) — agent trả DIGEST, không trả
+    nguyên output tool: thân agent phải nêu ngưỡng ≤ 1.500 ký tự và cấm dán thô."""
+
+    def agent_files(self):
+        return sorted(n for n in os.listdir(AGENTS) if n.endswith(".md"))
+
+    def _body(self, name):
+        with open(os.path.join(AGENTS, name), encoding="utf-8") as f:
+            text = f.read()
+        return text.split("---", 2)[2] if text.startswith("---\n") else text
+
+    def test_moi_agent_neu_nguong_digest(self):
+        for name in self.agent_files():
+            with self.subTest(agent=name):
+                self.assertIn("1.500 ký tự", self._body(name),
+                              f"{name}: thiếu ngưỡng digest ≤ 1.500 ký tự")
+
+    def test_moi_agent_cam_dan_output_tool_tho(self):
+        pattern = re.compile(r"(?i)(cấm|không) dán[^\n]{0,60}(thô|nguyên văn output|toàn bộ output)")
+        for name in self.agent_files():
+            with self.subTest(agent=name):
+                self.assertRegex(self._body(name), pattern,
+                                 f"{name}: thiếu câu cấm dán kết quả tool thô")
+
+
 if __name__ == "__main__":
     unittest.main()

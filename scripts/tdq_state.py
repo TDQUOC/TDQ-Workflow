@@ -496,10 +496,10 @@ PHASE_TABLE = {
     },
     "report": {
         "entry": "QC đã PASS",
-        "action": "Viết report ≤50 dòng rồi hỏi user có commit không",
+        "action": "Viết report ≤10 dòng rồi hỏi user có commit không",
         "cmd": "python3 scripts/tdq_state.py set phase=idle",
         "checklist": [
-            "Viết docs/tdq/reports/<slug>.md ≤50 dòng: đã làm gì, kết quả QC, giới hạn còn lại",
+            "Viết docs/tdq/reports/<slug>.md ≤10 dòng: đã làm gì, kết quả QC, giới hạn còn lại",
             "Append working log docs/workinglog/<hôm nay>.md",
             "Hỏi user: có commit không?",
         ],
@@ -892,6 +892,22 @@ def _cli_approve(cwd, rest):
     print(f"✅ Đã ghi nhận user duyệt {target} lúc {state[f'{target}_approved_at']}{extra}.")
 
 
+def _pop_json_flag(argv):
+    """Tách cờ `--json` khỏi argv. Mặc định CLI in 1 dòng tóm tắt cho nhẹ context;
+    có `--json` thì in lại nguyên state như trước (dùng khi cần soi/debug)."""
+    rest = [a for a in argv if a != "--json"]
+    return rest, len(rest) != len(argv)
+
+
+def _echo_state(cmd, state, want_json):
+    """In kết quả của lệnh ghi state: 1 dòng tóm tắt, hoặc nguyên JSON khi --json."""
+    if want_json:
+        print(json.dumps(state, ensure_ascii=False, indent=2))
+        return
+    print(f"✅ {cmd}: request={state.get('active_request')} "
+          f"lane={state.get('lane')} phase={state.get('phase')}")
+
+
 def cli(argv):
     started_in = os.getcwd()
     env = os.environ.get("TDQ_PROJECT_DIR")
@@ -937,6 +953,7 @@ def cli(argv):
         return
 
     if cmd == "init":
+        argv, want_json = _pop_json_flag(argv)
         if len(argv) < 2:
             _fail("Thiếu slug. Công thức: YYYY-MM-DD-<kebab ≤5 từ, không dấu>")
         # init = MỞ REQUEST MỚI: reset toàn bộ state (request, lane, phase,
@@ -955,10 +972,11 @@ def cli(argv):
                 _fail("Lane không hợp lệ (quick|full).")
             state["lane"] = argv[2]
         save(cwd, state)
-        print(json.dumps(state, ensure_ascii=False, indent=2))
+        _echo_state("init", state, want_json)
         return
 
     if cmd == "set":
+        argv, want_json = _pop_json_flag(argv)
         state = load(cwd)
         if state is None:
             _warn("Chưa có state — dựng state mặc định rồi áp thay đổi. Nên chạy init trước.")
@@ -979,15 +997,17 @@ def cli(argv):
                 _fail("Phase không hợp lệ (idle|analyze|spec|plan|implement|qc|report).")
             state[key] = value
         save(cwd, state, expect_updated_at=stamp)
-        print(json.dumps(state, ensure_ascii=False, indent=2))
+        _echo_state("set", state, want_json)
         return
 
     if cmd == "approve":
         return _cli_approve(cwd, argv[1:])
 
     if cmd == "reset":
-        save(cwd, default_state())
-        print("OK")
+        argv, want_json = _pop_json_flag(argv)
+        state = default_state()
+        save(cwd, state)
+        _echo_state("reset", state, want_json)
         return
 
     _fail(f"Lệnh không hợp lệ: {cmd}")

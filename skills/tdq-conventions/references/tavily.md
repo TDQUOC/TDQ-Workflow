@@ -4,6 +4,8 @@ Layering: Tavily is the FAST search tier. DEEP search (multi-source ranking, dee
 
 Primary/backup discipline: `tavily-primary` first for every call; on connection/auth/timeout/quota/tool error call the same tool on `tavily-backup` exactly once. Empty results are NOT errors — refine the query on primary instead of failing over. Never call primary and backup in parallel for the same query.
 
+Last resort: use the built-in `WebSearch` only after BOTH primary and backup have failed — state the error in one line, ask the user for permission and WAIT for approval. `WebFetch` needs no failover: use it directly on a known URL.
+
 ## Tool selection
 | Need | Tool |
 |---|---|

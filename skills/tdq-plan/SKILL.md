@@ -17,6 +17,8 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    - `external` — giao CẢ PLAN (chia gói theo phase khi plan lớn) cho engine ngoài
      Codex CLI / Antigravity CLI (agy) trong một worktree chung; hợp khi task rõ ràng,
      tự chứa, muốn tiết kiệm quota Claude.
+   Plan trên 6 task → mặc định ĐỀ XUẤT `subagent`, giao theo phase (cụm file rời nhau),
+   để hội thoại chính không phải giữ hết chi tiết; user vẫn là người chốt mode.
    Đề xuất external → làm mục "Chốt engine + model" bên dưới TRƯỚC khi viết plan
    (engine + model là thứ DUY NHẤT phải hỏi user ở phase này).
 

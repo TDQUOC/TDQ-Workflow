@@ -170,5 +170,101 @@ class PortableExternalSyncTest(unittest.TestCase):
         self.assertIn("(mcp)", text)
 
 
+class TokenOptimRulesTest(unittest.TestCase):
+    """Request thuc-thi-p0-token — 5 luật P0 cắt carry-cost phải nằm trong skill
+    (không nằm ở ~/.claude/CLAUDE.md, để context nền không phình)."""
+
+    def test_status_goi_next_brief(self):
+        """A4b — `next` đầy đủ 1.350 ký tự, `--brief` 121."""
+        self.assertIn("next --brief", _read("skills", "tdq-status", "SKILL.md"))
+
+    def test_conventions_cam_lint_ca_thu_muc(self):
+        """A5′ — nguồn thật của 2,6M carry-cost là lint cả thư mục (8.092 ký tự)."""
+        text = _read("skills", "tdq-conventions", "SKILL.md")
+        self.assertIn("doc_lint", text)
+        self.assertRegex(text, r"(?i)cấm.{0,40}thư mục|thư mục.{0,40}cấm")
+
+    def test_khong_skill_nao_con_day_lint_ca_thu_muc(self):
+        pattern = re.compile(r"doc_lint\.py[^\n]*\sdocs/tdq(?![\w/])")
+        for parts in (("skills", "tdq-conventions", "SKILL.md"),
+                      ("skills", "tdq-spec", "SKILL.md"),
+                      ("skills", "tdq-plan", "SKILL.md"),
+                      ("skills", "tdq-build", "references", "qc.md"),
+                      ("portable", "workflow", "02-spec.md"),
+                      ("portable", "workflow", "03-plan.md")):
+            with self.subTest(file=parts[-1]):
+                self.assertIsNone(pattern.search(_read(*parts)),
+                                  "còn dạy lint cả thư mục docs/tdq")
+
+    def test_conventions_co_luat_gop_lenh_bash(self):
+        """D1 — gộp 2–5 lệnh Bash độc lập vào 1 call (mỗi call = 1 API call)."""
+        text = _read("skills", "tdq-conventions", "SKILL.md")
+        self.assertRegex(text, r"(?i)gộp.{0,80}lệnh|lệnh.{0,80}gộp")
+        self.assertIn("&&", text)
+
+    def test_build_chay_test_theo_module(self):
+        """D2 — implement chạy test module; full suite đúng 1 lần ở QC."""
+        text = _read("skills", "tdq-build", "SKILL.md")
+        self.assertIn("test của module", text)
+        self.assertRegex(text, r"(?i)full suite.{0,120}(qc|đúng 1 lần|một lần)")
+
+    def test_intake_giao_research_cho_search_scout(self):
+        """B1 — research chạy trong subagent, main chỉ nhận digest ≤1.500 ký tự."""
+        text = _read("skills", "tdq-intake", "SKILL.md")
+        self.assertIn("search-scout", text)
+        self.assertIn("1.500 ký tự", text)
+
+    def test_portable_mang_cung_luat(self):
+        self.assertIn("search-scout", _read("portable", "workflow", "01-intake.md"))
+        self.assertIn("test của module", _read("portable", "workflow", "04-build.md"))
+
+
+class TokenOptimVong2RulesTest(unittest.TestCase):
+    """Request toi-uu-token-vong-2 (P4) — 8 luật vòng 2 phải nằm trong skill,
+    không nằm ở `~/.claude/CLAUDE.md`."""
+
+    def setUp(self):
+        self.conv = _read("skills", "tdq-conventions", "SKILL.md")
+
+    def test_b3_khong_chay_lai_next_khi_hook_da_in(self):
+        self.assertIn("[TDQ:NEXT]", self.conv)
+        self.assertRegex(self.conv, r"(?i)\[TDQ:NEXT\][^\n]{0,120}(không chạy|cấm chạy)")
+
+    def test_b2_gop_tool_call_doc_lap_trong_mot_luot(self):
+        self.assertRegex(self.conv, r"(?i)2–5 tool call|2-5 tool call")
+        self.assertRegex(self.conv, r"(?i)(cùng một lượt|cùng 1 lượt|một lượt)")
+
+    def test_c1_working_log_ghi_bang_tdq_finish(self):
+        self.assertIn("tdq_finish.py", self.conv)
+        self.assertRegex(self.conv, r"(?i)(cấm|không) Read lại")
+
+    def test_c2_nguong_200_dong_moi_read_theo_offset(self):
+        self.assertRegex(self.conv, r"(?i)200 dòng")
+        self.assertIn("offset", self.conv)
+
+    def test_d1_ten_agent_co_model_va_effort(self):
+        self.assertIn("<model>-<effort>_", self.conv)
+
+    def test_e2_khong_doi_model_effort_giua_phase_build(self):
+        self.assertRegex(
+            self.conv,
+            r"(?i)(không|cấm) đổi (model|`model`)[^\n]{0,80}(effort|`effort`)[^\n]{0,80}(phase|giữa chừng)")
+
+    def test_d4_plan_tren_6_task_de_xuat_subagent(self):
+        text = _read("skills", "tdq-plan", "SKILL.md")
+        self.assertRegex(text, r"(?i)(>|trên |hơn )\s?6 task")
+        self.assertRegex(text, r"(?i)đề xuất[^\n]{0,80}subagent")
+        self.assertRegex(text, r"(?i)user[^\n]{0,60}chốt")
+
+    def test_t43_build_dung_mot_lenh_tdq_finish(self):
+        text = _read("skills", "tdq-build", "SKILL.md")
+        self.assertIn("tdq_finish.py", text)
+
+    def test_portable_mang_cung_luat_vong_2(self):
+        self.assertIn("tdq_finish.py", _read("portable", "workflow", "04-build.md"))
+        self.assertRegex(_read("portable", "workflow", "03-plan.md"),
+                         r"(?i)(>|trên |hơn )\s?6 task")
+
+
 if __name__ == "__main__":
     unittest.main()

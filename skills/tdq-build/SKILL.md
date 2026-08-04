@@ -41,15 +41,16 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
       không lan sang việc ghi ở `Không dùng cho`. Không có khối → bỏ qua bước này.
    3. Đỏ: chạy check của task → xác nhận fail (hoặc viết test fail trước).
    4. Code: thay đổi nhỏ nhất mà đủ thoả task. Bám style code sẵn có.
-   5. Xanh: chạy lại đến khi pass. Dán kết quả thật — cấm tuyên bố xong khi chưa chạy.
+   5. Xanh: chạy lại đến khi pass, chỉ chạy **test của module** đang sửa — full suite
+      để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
    6. Tick `- [x]` cho task đó trong plan NGAY.
 
-3. Xong hết task: chạy toàn bộ test suite, append working log
-   (`docs/workinglog/<hôm nay>.md`, cuối file): task đã xong, file đã đổi, kết quả test.
-   Chạy cập nhật graphify nếu có cài.
+3. Xong hết task: chạy full suite ĐÚNG MỘT LẦN, rồi đóng sổ turn bằng MỘT lệnh
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file .md vừa sửa> --log "<task xong, file đổi, kết quả test>" --phase qc`
+   — lint đúng file, append working log, set phase, graphify: 4 việc trong 1 call.
 
 Xong khi: mọi task trong plan đã tick `[x]` và test suite xanh.
-Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=qc`.
+Bước kế tiếp: lệnh `tdq_finish.py … --phase qc` ở mục 3 (đã set phase luôn).
 
 ## Nhánh external (Phần A, mode external)
 
@@ -132,18 +133,17 @@ Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set p
 
 ## Phần C — Report (phase `report`)
 
-7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, **≤ 50 dòng** (đo bằng `wc -l`, quá
+7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, **≤ 10 dòng** (đo bằng `wc -l`, quá
    thì cắt gọn). Khuôn: [references/report-template.md](references/report-template.md).
 
-8. Đóng sổ: tick nốt checkbox còn sót, đổi header plan thành HOÀN THÀNH, append working
-   log, chạy cập nhật graphify nếu có.
+8. Đóng sổ: tick nốt checkbox còn sót, đổi header plan thành HOÀN THÀNH, rồi chạy
+   `tdq_finish.py --files <file vừa sửa> --log "<tóm tắt report>"` (working log + graphify).
 
 9. Trình report trong chat (nguyên văn hoặc tóm tắt ≤ 10 dòng + đường dẫn).
 
-10. **Hỏi user có commit không** — bắt buộc, và không tự commit thành quả cuối (ngoại lệ
-    duy nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). User đồng ý →
-    commit message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI; tên
-    branch theo quy ước.
+10. **Hỏi user có commit không** — bắt buộc, không tự commit thành quả cuối (ngoại lệ duy
+    nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). User đồng ý
+    → message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI; branch theo quy ước.
 
 Xong khi: report đã ghi và user đã được hỏi về commit.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`

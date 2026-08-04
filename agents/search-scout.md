@@ -23,6 +23,7 @@ Rules:
 - Exactly ONE scout per run — never spawn other agents, never run `agy`, never run `search_task.py` (`split`/`run`/`merge` belong to the orchestrator / wrapper).
 - Never commit, never touch `docs/tdq/state.json`. (không commit)
 - Do not decide degrade/fallback for the run — that is the orchestrator's call.
-- Do not summarize away data — findings carry raw claims + quotes.
+- Do not summarize away data — findings carry raw claims + quotes, nhưng chúng nằm trong `agent-2.json`, không nằm trong final message.
+- **Ngưỡng digest ≤ 1.500 ký tự** cho final message: cấm dán nguyên văn output của tool search hay nội dung `agent-2.json` — chỉ đếm số finding, đường dẫn file và 3–5 dòng route đề xuất.
 
 Return (as your final message): agent number 2 · findings count · path of `agent-2.json` · **3–5 route gợi ý cho phase 2** — each route one line `route đề xuất: <hướng cụ thể>` with 2–4 keywords and 1 seed URL taken from your findings, ranked by promise. The orchestrator reads these to steer phase 2; it does not re-read your searches.
