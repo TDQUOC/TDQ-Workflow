@@ -3,30 +3,35 @@
 ## 1. Giới thiệu bundle
 
 Bundle này là bản export cấu hình Claude Code từ máy nguồn (`{{SOURCE_MACHINE_NOTE}}`),
-sinh lúc `{{EXPORT_DATE}}` theo `claude-export/INSTRUCTIONS.md` của repo TDQWorkflow.
-Mục tiêu: dựng lại một máy Claude Code chạy **y hệt** máy nguồn — cùng plugin, cùng
-marketplace, cùng MCP server, cùng file cấu hình cá nhân (`CLAUDE.md`, `plugin-tiers.json`,
-skill/script global, memory `.remember/`) và cùng repo `TDQWorkflow`.
+sinh lúc `{{EXPORT_DATE}}` bằng `scripts/claude_export.py build` của repo TDQWorkflow,
+tại commit `{{REPO_COMMIT}}`. Mục tiêu: dựng lại một máy Claude Code chạy **y hệt** máy
+nguồn · cùng plugin, cùng marketplace, cùng MCP server, cùng file cấu hình cá nhân
+(`CLAUDE.md`, `plugin-tiers.json`, skill/script global, memory `.remember/`) và cùng
+repo `TDQWorkflow` kèm nguyên lịch sử git.
 
 Không có `keybindings.json` tuỳ chỉnh trên máy nguồn tại thời điểm export — máy đích
 dùng nguyên phím tắt mặc định của Claude Code, không cần copy/điền thêm gì ở mục này.
 
-Cấu trúc bundle sau khi export xong:
+Thứ tự làm: mục 2 → 3 → 4 → 5 → 6 → 7. Bỏ mục 6 thì Tavily và mọi MCP server khác
+sẽ không có trên máy đích.
+
+Cấu trúc bundle:
 ```
 {{EXPORT_DEST}}/
-├── manifest.json          # danh sách plugin/marketplace/mcp/CLI dependency/excluded — dữ liệu thật
+├── manifest.json           # plugin/marketplace/mcp/CLI + version plugin + commit SHA + sha256 file nguồn
 ├── README.md               # chính file này, đã điền
 ├── config/                 # file cấu hình global đã lọc secret
 │   ├── settings.json
 │   ├── CLAUDE.md
 │   ├── plugin-tiers.json
+│   ├── mcp-servers.json    # khối mcpServers tách từ ~/.claude.json của máy nguồn
 │   ├── skills-graphify/
 │   ├── remember/
 │   ├── statusline.sh
 │   ├── scripts/
 │   ├── installed_plugins.json
 │   └── known_marketplaces.json
-└── tdqworkflow-repo/        # copy toàn bộ repo TDQWorkflow (không có .git theo mặc định)
+└── tdqworkflow-repo/       # repo TDQWorkflow lấy bằng `git clone` — có `.git`, chỉ file tracked
 ```
 
 ## 2. CLI dependency cần cài
@@ -91,23 +96,47 @@ cp -R {{EXPORT_DEST}}/config/scripts ~/.claude/scripts
 cp -R {{EXPORT_DEST}}/tdqworkflow-repo ~/Documents/TDQWorkflow   # hoặc vị trí bạn muốn giữ repo
 ```
 
-`config/settings.json` đã được `INSTRUCTIONS.md` Bước 4 rewrite sẵn đường dẫn
+`config/settings.json` đã được `claude_export.py build` rewrite sẵn đường dẫn
 `extraKnownMarketplaces.tdq-local` trỏ đúng vị trí `tdqworkflow-repo/` BÊN TRONG bundle
-này — nếu bạn copy repo sang vị trí KHÁC vị trí gốc trong bundle (ví dụ dòng lệnh trên),
-phải sửa lại đường dẫn đó (và trường tương ứng trong `known_marketplaces.json`) cho khớp
-vị trí thật trên máy đích, nếu không plugin `tdq-workflow` sẽ không load được.
+này. Copy repo sang vị trí KHÁC vị trí gốc trong bundle (ví dụ dòng lệnh trên) thì phải
+sửa lại đường dẫn đó (và trường tương ứng trong `known_marketplaces.json`) cho khớp vị
+trí thật trên máy đích · không sửa thì plugin `tdq-workflow` sẽ không load được.
 
-Điền lại 2 API key đã bị lọc khỏi bundle (giá trị thật KHÔNG có trong bundle theo chủ đích):
-mở `~/.claude/settings.json`, thay 2 placeholder sau bằng key thật của bạn (xin key mới tại
-nhà cung cấp — Tavily — nếu bạn dùng chung MCP server này):
+Điền lại API key đã bị lọc khỏi bundle (giá trị thật KHÔNG có trong bundle theo chủ đích):
+mở `~/.claude/settings.json`, thay mọi placeholder dạng `<TÊN_BIẾN — điền lại>` bằng key
+thật của bạn. Với bộ này là 2 biến (xin key mới tại Tavily nếu bạn dùng chung MCP server):
 - `TAVILY_API_KEY_PRIMARY`
 - `TAVILY_API_KEY_BACKUP`
 
-## 6. Verify
+## 6. Khôi phục MCP server
+
+MCP scope `user` KHÔNG nằm trong `settings.json` mà nằm ở `~/.claude.json`, cùng file với
+`oauthAccount`/`machineID` của máy đích. Vì vậy bundle này **không** chứa `~/.claude.json`
+và bạn **không** được copy đè file đó — hỏng đăng nhập máy đích.
+
+Cách đúng là add lại từng server bằng CLI, đọc từ `config/mcp-servers.json`:
+
+```bash
+python3 -c 'import json,sys
+for n, c in json.load(open(sys.argv[1])).items():
+    print(n + "\t" + json.dumps(c))' "{{EXPORT_DEST}}/config/mcp-servers.json" |
+while IFS=$'\t' read -r name conf; do
+  claude mcp add-json "$name" "$conf" --scope user
+done
+claude mcp list          # đối chiếu tên server khớp config/mcp-servers.json
+```
+
+Header xác thực trong file đó là tham chiếu biến môi trường (`Bearer ${TAVILY_API_KEY_PRIMARY}`),
+không phải key thật — server chỉ chạy được sau khi bạn đã điền key ở mục 5.
+
+## 7. Verify
 
 ```bash
 claude --version
+claude doctor            # kiểm tra bản cài, quyền, cấu hình
 claude plugin list       # đối chiếu số lượng + tên plugin khớp manifest.json.plugins
+claude mcp list          # đối chiếu số lượng + tên server khớp manifest.json.mcp_servers
+git -C ~/Documents/TDQWorkflow log --oneline -1   # phải ra commit {{REPO_COMMIT}}
 ```
-Cả 2 lệnh chạy được không lỗi, và danh sách plugin ở lệnh thứ 2 khớp `manifest.json` là
-setup hoàn tất.
+Cả 5 lệnh chạy được không lỗi, danh sách plugin và MCP khớp `manifest.json`, commit của
+repo khớp `{{REPO_COMMIT}}` là setup hoàn tất.

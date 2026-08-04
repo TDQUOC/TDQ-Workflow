@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1785653713.7186637,
-    "ast_hash": "944bd9978fee4bd6a886cd9d6c2c47ca",
-    "semantic_hash": "944bd9978fee4bd6a886cd9d6c2c47ca"
+    "mtime": 1785877306.0330017,
+    "ast_hash": "61258f353b7b3951dde228a293908c0b",
+    "semantic_hash": "61258f353b7b3951dde228a293908c0b"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -42,7 +42,7 @@
   "scripts/tdq_state.py": {
     "mtime": 1785871174.7821007,
     "ast_hash": "b1e016cfe40bdb209bd22ba2597d11b9",
-    "semantic_hash": ""
+    "semantic_hash": "b1e016cfe40bdb209bd22ba2597d11b9"
   },
   "tests/fixtures/bash_cmd.json": {
     "mtime": 1785167490.77849,
@@ -1305,9 +1305,9 @@
     "semantic_hash": "cc3a4e9c40564a0fd9e84ee09e342b04"
   },
   "claude-export/MANIFEST.template.json": {
-    "mtime": 1785827306.8896027,
-    "ast_hash": "c43b26b9a47ef61bc564e74122d931e5",
-    "semantic_hash": "c43b26b9a47ef61bc564e74122d931e5"
+    "mtime": 1785877810.6307564,
+    "ast_hash": "405c55b995a19338d46e9165ee703b15",
+    "semantic_hash": "405c55b995a19338d46e9165ee703b15"
   },
   "claude-export/EXPORT_LOG.md": {
     "mtime": 1785827812.3920662,
@@ -1562,7 +1562,7 @@
   "tests/test_claude_md_core.py": {
     "mtime": 1785871174.7830498,
     "ast_hash": "2cdf7c37a3bb2f0e87b7378f395dfcb2",
-    "semantic_hash": ""
+    "semantic_hash": "2cdf7c37a3bb2f0e87b7378f395dfcb2"
   },
   "tests/test_tdq_finish.py": {
     "mtime": 1785869120.5685658,
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-05.md": {
-    "mtime": 1785871272.5537946,
-    "ast_hash": "697167ca5afdf71cf1d4c2532de99ba9",
+    "mtime": 1785871631.8500476,
+    "ast_hash": "3931a64813fd2af0dc49fabeda67fb15",
     "semantic_hash": ""
   },
   "portable/claude-md/CLAUDE.md": {
@@ -1683,5 +1683,15 @@
     "mtime": 1785868839.8222237,
     "ast_hash": "e50398fd093b39f4860643abd837daa7",
     "semantic_hash": ""
+  },
+  "scripts/claude_export.py": {
+    "mtime": 1785877681.5934823,
+    "ast_hash": "b18283bf451775590f77e1983b759e24",
+    "semantic_hash": "b18283bf451775590f77e1983b759e24"
+  },
+  "tests/test_claude_export.py": {
+    "mtime": 1785877773.300672,
+    "ast_hash": "2152429c282f158072f760ba7b260c7c",
+    "semantic_hash": "2152429c282f158072f760ba7b260c7c"
   }
 }

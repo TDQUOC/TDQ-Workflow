@@ -2,6 +2,22 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.7.0 — 2026-08-05
+
+Workflow linh hoạt: gộp gate spec → plan → build trong cùng turn, lane quick vẫn đủ
+bước tư duy, bỏ vòng review máy giữa spec và plan.
+
+Tối ưu token 2 vòng: `token_audit.py` sửa lỗi đếm theo dòng JSONL (lệch +62%), CLAUDE.md
+lõi rút còn 3,2 KB và đẩy luật chi tiết sang `skills/*/references`, gộp bookkeeping cuối
+turn về `tdq_finish.py`, đặt trần digest cho sub-agent, chuyển 10 LSP sang nạp theo yêu cầu.
+
+Report của request rút trần từ 50 xuống 10 dòng.
+
+Bộ export sang máy khác đổi từ 7 bước tay sang `scripts/claude_export.py` với 2 lệnh
+`build` và `check`: bản copy repo lấy bằng `git clone` (giữ `.git`, chỉ file tracked),
+mang theo cấu hình MCP để khôi phục bằng `claude mcp add-json`, manifest ghi phiên bản
+plugin + commit SHA + sha256 từng file, và `check` đo được độ lệch giữa bundle và máy nguồn.
+
 ## 0.6.2 — 2026-08-02
 
 Intake default tuyệt đối (mọi prompt mới → tdq-intake), hint duyệt plan theo mode

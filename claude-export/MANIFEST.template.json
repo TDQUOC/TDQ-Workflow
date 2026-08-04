@@ -1,7 +1,10 @@
 {
+  "plugin_version": "",
+  "repo_commit": "",
+  "exported_at": "",
   "plugins": {},
   "marketplaces": {},
   "mcp_servers": {},
   "cli_dependencies": {},
-  "excluded": []
+  "source_files": {}
 }
