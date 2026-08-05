@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-05)
 
 ## Corpus Check
-- 347 files · ~281,031 words
+- 347 files · ~281,169 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3297 nodes · 4523 edges · 318 communities (250 shown, 68 thin omitted)
+- 3298 nodes · 4524 edges · 316 communities (252 shown, 64 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f757f2b2`
+- Built from commit: `6e6e154a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -47,7 +47,7 @@
 - tdq_finish.py
 - ProtocolTest
 - TestEditGate
-- HardenTest
+- StubBase
 - Changelog
 - StateFileTest
 - .build
@@ -316,8 +316,6 @@
 - SearchRunnerAgentTest
 - QC — Bump 0.7.0 + bộ export Claude Code
 - reports/2026-08-05-bump-version-va-export.md
-- PlanTimeoutTest
-- DefaultModelTest
 - .test_reapprove_refreshes_sha256_after_file_changed
 - .test_reapprove_unchanged_file_stays_idempotent
 - .test_approve_quick_moves_phase_to_implement
@@ -352,7 +350,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (318 total, 68 thin omitted)
+## Communities (316 total, 64 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.06
@@ -435,7 +433,7 @@ Cohesion: 0.07
 Nodes (27): 10. QC / test / validate cho chính plugin (checklist rule 9), 11. Deliverables (Expect_Output), 12. Giới hạn & rủi ro (minh bạch), 1. Ý tưởng & mục tiêu, 2.1 Trong scope (MVP), 2.2 Ngoài scope (MVP), 2. Scope, 3.1 Lazy load & ngân sách token (bắt buộc) (+19 more)
 
 ### Community 21 - "StubBase"
-Cohesion: 0.13
+Cohesion: 0.15
 Nodes (11): CallTimeoutTest, PreflightTest, Dựng stub binary agy trong PATH + run-dir tạm. Không mạng, không binary thật., Response cho call agy -p thứ n. agy bọc structured_output trong JSON vỏ., T3.2 — validate agy CLI + CẢ hai model slug qua external_models.py., T3.4 — retry ≤2 kèm lỗi cũ, retry dùng slug escalation., T3.6 — call quá TDQ_SEARCH_TIMEOUT bị kill, tính 1 lần fail → retry., T3.7 — run-dir đúng run-id, brief.md copy vào, log per-agent ISO, LOG=0 tắt. (+3 more)
 
 ### Community 22 - "_project"
@@ -443,8 +441,8 @@ Cohesion: 0.15
 Nodes (12): DryRunTest, LogServiceTest, OutputSizeTest, _project(), Test cho scripts/tdq_finish.py — gộp 4 việc bookkeeping cuối turn thành 1 lệnh., T3.3 — log service bật mặc định, tắt bằng TDQ_LOG=0., T3.4 — mọi bước pass thì stdout ≤ 200 ký tự; chi tiết chỉ khi --verbose., Dựng project giả có state TDQ + 1 file .md sạch để lint. (+4 more)
 
 ### Community 24 - "test_external_task.py"
-Cohesion: 0.11
-Nodes (9): ParseDungLinesTest, Test external_task.py — lõi mode external (stub binary, không mạng)., Khuôn gói task (skills/tdq-build/references/external-task.md) đủ mục và     ví d, T1.3 (skill-vao-goi-external) — nội dung sau `## SKILL` đầu tiên     không được, 2 agent runner: tồn tại, frontmatter hợp lệ, nêu đúng chữ ký lệnh lõi., T1.1 (skill-vao-goi-external) — cú pháp chuẩn dòng `Dùng:` + nhãn (mcp)., RunnerAgentsTest, StripSkillSectionsTest (+1 more)
+Cohesion: 0.08
+Nodes (11): ParseDungLinesTest, PlanTimeoutTest, Test external_task.py — lõi mode external (stub binary, không mạng)., T1.2/Q7 — timeout theo số task trong gói: 540×n, trần 3600, env thắng., Khuôn gói task (skills/tdq-build/references/external-task.md) đủ mục và     ví d, T1.3 (skill-vao-goi-external) — nội dung sau `## SKILL` đầu tiên     không được, 2 agent runner: tồn tại, frontmatter hợp lệ, nêu đúng chữ ký lệnh lõi., T1.1 (skill-vao-goi-external) — cú pháp chuẩn dòng `Dùng:` + nhãn (mcp). (+3 more)
 
 ### Community 25 - "Working log — 2026-07-31"
 Cohesion: 0.08
@@ -455,8 +453,8 @@ Cohesion: 0.08
 Nodes (23): ~00:05–08:38 — Tổng kiểm workflow + audit 43 plugin (chỉ đọc/phân tích), 11:07 — Mở request mới: tối ưu plugin user-level + lazy-load (tdq-intake Phần A), 12:05 — Analyze request plugin-lazy-load (lane full), 12:3x — Đóng interview vòng 1, chốt knowledge, phase=spec, 14:16 — Viết spec plugin-lazy-load v1.0 (phase spec), 14:24 — Spec được duyệt, 14:25 — Viết plan plugin-lazy-load (phase plan), 14:46–15:00 — Implement end-to-end request plugin-lazy-load (mode main) + QC + report (+15 more)
 
 ### Community 28 - ".set_response"
-Cohesion: 0.15
-Nodes (6): FailTest, LogTest, -> [khối args của từng lần gọi] (prompt nhiều dòng nằm trọn trong khối)., T1.3/Q2/Q9 — subcommand run-plan: 2 attempt, report plan-round-<n>.json., RunPlanTest, RunTest
+Cohesion: 0.19
+Nodes (4): -> [khối args của từng lần gọi] (prompt nhiều dòng nằm trọn trong khối)., T1.3/Q2/Q9 — subcommand run-plan: 2 attempt, report plan-round-<n>.json., RunPlanTest, RunTest
 
 ### Community 29 - "tdq_finish.py"
 Cohesion: 0.16
@@ -469,6 +467,10 @@ Nodes (3): ProtocolTest, P2 — giao thức tuân thủ: nhắc có mã, quan s�
 ### Community 31 - "TestEditGate"
 Cohesion: 0.20
 Nodes (4): now_iso(), edit_gate.py (0.3.0) — quan sát vào sổ turn + nhắc; không bao giờ chặn., TestEditGate, today_log_rel()
+
+### Community 32 - "StubBase"
+Cohesion: 0.16
+Nodes (7): FailTest, HardenTest, LogTest, Dựng stub binary codex/agy trong PATH + worktree/cwd tạm., A4/A12/A13/A24 — artifact debug + feedback + stagger timeout + atomic write., RetryTest, StubBase
 
 ### Community 33 - "Changelog"
 Cohesion: 0.07
@@ -519,15 +521,15 @@ Cohesion: 0.19
 Nodes (8): decision(), load_fixture(), Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., budget(), P5 — ngân sách token của spec §2.7, đo thật chứ không phải khuyến nghị.  Mỗi ký, Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
 
 ### Community 45 - ".run_cli"
-Cohesion: 0.16
-Nodes (8): ParsePlanTest, Dựng stub binary codex/agy trong PATH + worktree/cwd tạm., T2.1/Q8 — chia gói ≤6 task, tôn trọng ranh giới phase., T1.2 (skill-vao-goi-external) — task (mcp) tách gói riêng, khóa skills., RetryTest, SplitPlanMcpTest, SplitPlanTest, StubBase
+Cohesion: 0.21
+Nodes (5): ParsePlanTest, T2.1/Q8 — chia gói ≤6 task, tôn trọng ranh giới phase., T1.2 (skill-vao-goi-external) — task (mcp) tách gói riêng, khóa skills., SplitPlanMcpTest, SplitPlanTest
 
 ### Community 46 - "_run"
 Cohesion: 0.21
 Nodes (6): prompt_context.py — nhắc [TDQ:INTAKE] khi KHÔNG có request mở (spec 2026-08-02)., T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu     lại, _run(), TestIntakeReminder, TestSignalWritten, write_file_plan_mode()
 
 ### Community 47 - ".run_cli"
-Cohesion: 0.19
+Cohesion: 0.16
 Nodes (5): HardenTest, MergeTest, Chạy search_task.main IN-PROCESS: PATH → stub, HTTP → mock., A4/A7/A14/A15/A16 — persist raw, cảnh báo separator, schema guard,     merge đếm, T4.1 + T4.2 — dedup URL, rank tất định 5 khóa; merged.json + report ≤50 dòng
 
 ### Community 48 - "SPEC — Vá điểm mù của verify-by-effect (sổ turn chỉ thấy Edit/Write)"
@@ -608,7 +610,7 @@ Nodes (12): Definition of Done, Giao việc theo phase (khi user chốt mode `su
 
 ### Community 67 - "Working log 2026-08-05"
 Cohesion: 0.12
-Nodes (15): 00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane), 00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai, 01:10 — Chốt interview vòng 2, viết knowledge + spec, 01:25 — User duyệt spec → viết plan (6 phase / 21 task), 02:04, 02:21, 02:27, 03:23 (+7 more)
+Nodes (16): 00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane), 00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai, 01:10 — Chốt interview vòng 2, viết knowledge + spec, 01:25 — User duyệt spec → viết plan (6 phase / 21 task), 02:04, 02:21, 02:27, 03:23 (+8 more)
 
 ### Community 68 - "test_claude_md_core.py"
 Cohesion: 0.19
@@ -1314,29 +1316,33 @@ Nodes (3): Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình
 Cohesion: 0.50
 Nodes (3): Checklist scope — trả lời được hết mới trình, Khuôn spec, Kiểm trước khi trình
 
+### Community 307 - "SearchRunnerAgentTest"
+Cohesion: 0.16
+Nodes (4): DefaultModelTest, T1.1 (0.6.0) — default flash-medium, escalation flash-high, docs đồng bộ., T5.1 — agent vỏ mỏng đúng khuôn runner (như RunnerAgentsTest bên external)., SearchRunnerAgentTest
+
 ### Community 308 - "QC — Bump 0.7.0 + bộ export Claude Code"
 Cohesion: 0.50
 Nodes (3): Defect QC phát hiện, Kết luận, QC — Bump 0.7.0 + bộ export Claude Code
 
 ## Knowledge Gaps
-- **1302 isolated node(s):** `0.7.0 — 2026-08-05`, `0.6.2 — 2026-08-02`, `Fix`, `Đổi`, `Thêm` (+1297 more)
+- **1303 isolated node(s):** `Mốc`, `00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane)`, `00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai`, `01:10 — Chốt interview vòng 2, viết knowledge + spec`, `01:25 — User duyệt spec → viết plan (6 phase / 21 task)` (+1298 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **68 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **64 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `write_state()` connect `.stop` to `helper.py`, `load_fixture`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `TurnLedgerTest` connect `TurnLedgerTest` to `helper.py`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Why does `TestState` connect `TestState` to `TestProjectRootResolution`, `.test_reapprove_refreshes_sha256_after_file_changed`, `.test_reapprove_unchanged_file_stays_idempotent`, `.test_approve_quick_moves_phase_to_implement`, `.test_row_age_ok_bad_ts_types`, `.test_init_set_reset_in_mot_dong_khong_json`, `.test_co_co_json_thi_in_lai_nguyen_state`?**
   _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **What connects `0.7.0 — 2026-08-05`, `0.6.2 — 2026-08-02`, `Fix` to the rest of the system?**
-  _1302 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Mốc`, `00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane)`, `00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai` to the rest of the system?**
+  _1303 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05829420970266041 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**
   _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
 - **Should `doc_lint.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0593990216631726 - nodes in this community are weakly interconnected._
+- **Should `external_task.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.08163265306122448 - nodes in this community are weakly interconnected._

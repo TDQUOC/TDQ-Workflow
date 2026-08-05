@@ -1310,8 +1310,8 @@
     "semantic_hash": "405c55b995a19338d46e9165ee703b15"
   },
   "claude-export/EXPORT_LOG.md": {
-    "mtime": 1785878929.6752546,
-    "ast_hash": "92325f629b6bf00fba790968031fd41b",
+    "mtime": 1785900379.2088883,
+    "ast_hash": "b5300f74055a28d869dc36e426cf4b72",
     "semantic_hash": ""
   },
   "claude-export/INSTRUCTIONS.md": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-05.md": {
-    "mtime": 1785900305.8067806,
-    "ast_hash": "a8f98a0e6d4c0518d0ea37b2d79af96b",
+    "mtime": 1785900385.4666836,
+    "ast_hash": "753053777ac97ac5f24d211f12c46bc1",
     "semantic_hash": ""
   },
   "portable/claude-md/CLAUDE.md": {
