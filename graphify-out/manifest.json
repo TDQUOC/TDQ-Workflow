@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1785900127.5262902,
-    "ast_hash": "3c3c484781dc23f380a3fca82f3adb00",
+    "mtime": 1785900514.5336342,
+    "ast_hash": "688a9fc78380aab4fd2fe0e418289fa2",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-05.md": {
-    "mtime": 1785900463.5531116,
-    "ast_hash": "0b33969a68603da20449d0d00d2369cb",
+    "mtime": 1785900514.493843,
+    "ast_hash": "de8291cb8f3c135c504fbfdb124926de",
     "semantic_hash": ""
   },
   "portable/claude-md/CLAUDE.md": {
@@ -1730,8 +1730,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/reports/2026-08-05-bump-version-va-export.md": {
-    "mtime": 1785879096.8041873,
-    "ast_hash": "e74a9a4c8b9223a99107e2a055bc560f",
+    "mtime": 1785900504.8622909,
+    "ast_hash": "fb56e20bd5d92aba34086923db6b1736",
     "semantic_hash": ""
   }
 }
