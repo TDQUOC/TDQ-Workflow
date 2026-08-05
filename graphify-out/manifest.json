@@ -40,9 +40,9 @@
     "semantic_hash": "9e3ec4d7314ace1d7f2421bc13bcd2a4"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1785871174.7821007,
-    "ast_hash": "b1e016cfe40bdb209bd22ba2597d11b9",
-    "semantic_hash": "b1e016cfe40bdb209bd22ba2597d11b9"
+    "mtime": 1785900099.8790872,
+    "ast_hash": "9aacd9e3011509a218d9ff26f3c4858d",
+    "semantic_hash": ""
   },
   "tests/fixtures/bash_cmd.json": {
     "mtime": 1785167490.77849,
@@ -100,9 +100,9 @@
     "semantic_hash": "5bba5293f979fc437f4ec36117339554"
   },
   "tests/test_state.py": {
-    "mtime": 1785857161.4907112,
-    "ast_hash": "0e3765d00650816599b6d38c69267aac",
-    "semantic_hash": "0e3765d00650816599b6d38c69267aac"
+    "mtime": 1785900120.6654322,
+    "ast_hash": "933f4ca426d439cfbd703e2cdc741ada",
+    "semantic_hash": ""
   },
   "tests/test_stop_gate.py": {
     "mtime": 1785338807.053962,
@@ -265,8 +265,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1785877319.7312639,
-    "ast_hash": "8b7c49fd72ebbee3a94f93ce123e29f8",
+    "mtime": 1785900228.3163166,
+    "ast_hash": "f6d0798eb97956ef581fe94785794dd6",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1785879159.336174,
-    "ast_hash": "c96a2b34f63e7a20286ddb41938ece98",
+    "mtime": 1785900127.5262902,
+    "ast_hash": "3c3c484781dc23f380a3fca82f3adb00",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-05.md": {
-    "mtime": 1785899875.0375767,
-    "ast_hash": "bb029bbe5831a86914ece4b8d21c5d72",
+    "mtime": 1785900305.8067806,
+    "ast_hash": "a8f98a0e6d4c0518d0ea37b2d79af96b",
     "semantic_hash": ""
   },
   "portable/claude-md/CLAUDE.md": {
