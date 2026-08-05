@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1785877289.5691547,
-    "ast_hash": "46dfc7d71cad1fddbb0ba84d4ecaaff7",
+    "mtime": 1785879159.336174,
+    "ast_hash": "c96a2b34f63e7a20286ddb41938ece98",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -1310,8 +1310,8 @@
     "semantic_hash": "405c55b995a19338d46e9165ee703b15"
   },
   "claude-export/EXPORT_LOG.md": {
-    "mtime": 1785878320.7869396,
-    "ast_hash": "f856513936ce59db570af86923cddee4",
+    "mtime": 1785878929.6752546,
+    "ast_hash": "92325f629b6bf00fba790968031fd41b",
     "semantic_hash": ""
   },
   "claude-export/INSTRUCTIONS.md": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-05.md": {
-    "mtime": 1785876673.082571,
-    "ast_hash": "669e75b5c44348aa8f9cdb6ee61c662c",
+    "mtime": 1785879147.9761467,
+    "ast_hash": "caf3b888165495bf0950453a196d7e4f",
     "semantic_hash": ""
   },
   "portable/claude-md/CLAUDE.md": {
@@ -1700,8 +1700,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/plan/2026-08-05-bump-version-va-export.md": {
-    "mtime": 1785878902.0366035,
-    "ast_hash": "964f4fda5227bf2f872bb07c32bc02f9",
+    "mtime": 1785878985.104097,
+    "ast_hash": "8c031725eea7d85fedccfafcc01ca159",
     "semantic_hash": ""
   },
   "docs/tdq/questions/2026-08-05-bump-version-va-export.md": {
@@ -1715,13 +1715,23 @@
     "semantic_hash": ""
   },
   "docs/tdq/research/2026-08-05-bump-version-va-export.md": {
-    "mtime": 1785875235.6010776,
-    "ast_hash": "733451489dd22beabc3c06ce17388518",
+    "mtime": 1785879060.6197674,
+    "ast_hash": "8e71e90cd83b1a5b83ee0f5fff05d57e",
     "semantic_hash": ""
   },
   "docs/tdq/spec/2026-08-05-bump-version-va-export.md": {
     "mtime": 1785878891.9686306,
     "ast_hash": "a2548668714297fe94dd012aaa11ba0e",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785879139.4461358,
+    "ast_hash": "9ed3e9234b34983ecb7a470dd33c253e",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-05-bump-version-va-export.md": {
+    "mtime": 1785879096.8041873,
+    "ast_hash": "e74a9a4c8b9223a99107e2a055bc560f",
     "semantic_hash": ""
   }
 }
