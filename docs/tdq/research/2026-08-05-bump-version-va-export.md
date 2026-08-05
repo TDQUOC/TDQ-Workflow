@@ -46,6 +46,25 @@ Nguồn: `code.claude.com/docs/en/plugin-marketplaces` · `codingnomads.com/clau
   → bundle nên trỏ `tdq-local` vào **thư mục repo**, đúng như Bước 4 đang làm.
 - Có thể ghim marketplace theo commit SHA cho cài lặp lại được — hiện bundle không ghim gì.
 
+## Truy vấn 4 — Xác minh lại cú pháp trước khi ghi vào README template
+
+Truy vấn: `claude mcp add-json --scope user restore MCP servers new machine claude doctor`
+Nguồn: `github.com/anthropics/claude-code/issues/16728` · `hackernoon.com/navigating-claude-code-mcp-servers-worth-adding`
+· kiểm tại chỗ trên máy nguồn với CLI `2.1.221`.
+
+Điều rút ra:
+
+- `claude mcp add-json [options] <name> <json>` còn đúng, cờ scope là `-s, --scope <scope>`
+  nhận `local | user | project`, mặc định `local` → README phải ghi rõ `--scope user`.
+- `claude doctor` còn đúng, mô tả: kiểm tra sức khoẻ bản cài, đọc settings không cần trust prompt.
+- Cảnh báo từ issue 16728: có báo cáo rằng từ `v2.0.8`, `--scope user` ghi sang
+  `~/.claude/.claude.json` theo từng project thay vì khoá `mcpServers` ở gốc `~/.claude.json`.
+- Kiểm thực tế trên máy này: `~/.claude/.claude.json` KHÔNG tồn tại, `projects[$HOME]`
+  không có `mcpServers`, 0 project nào có khối riêng, còn khoá gốc `mcpServers` của
+  `~/.claude.json` có đúng 2 server đang Connected. Vậy nguồn mà `claude_export.py` đọc
+  là đúng cho bản CLI này. Máy đích dùng bản CLI khác thì `claude mcp list` ở bước verify
+  là chỗ phát hiện lệch.
+
 ## Kết luận dùng cho spec
 
 1. Khối `mcpServers` copy được an toàn (chỉ chứa `${VAR}`) — lấp được lỗ hổng lớn nhất

@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-05)
 
 ## Corpus Check
-- 345 files · ~278,831 words
+- 345 files · ~279,159 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3276 nodes · 4498 edges · 309 communities (250 shown, 59 thin omitted)
+- 3281 nodes · 4507 edges · 311 communities (251 shown, 60 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `61244c6e`
+- Built from commit: `c4d57c20`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,7 +59,7 @@
 - test_agent_frontmatter.py
 - Spec — tối ưu token/time workflow (vòng 2)
 - plugin_tiers.py
-- test_e2e_chain.py
+- TestStopGateDiskEffects
 - .run_cli
 - _run
 - .run_cli
@@ -145,7 +145,7 @@
 - tdq-workflow — Plugin Claude Code
 - Deep search hybrid — Phase 1 (scout ∥ agy tổng quát) → Phase 2 (agy đào sâu)
 - Kiểm kê năng lực (bước B0)
-- Fixture
+- ReadMcpServersTest
 - DocsConsistencyTest
 - {{BUNDLE_NAME}} — Claude Code setup export
 - Hướng dẫn tự cài tdq-workflow ở user-level (thủ công)
@@ -286,7 +286,7 @@
 - requests/2026-08-03-check-external-assign-flow.md
 - requests/2026-08-04-export-claude-setup.md
 - Report — 2026-07-31-failpath-demo (fallback tavily)
-- EXPORT_LOG.md
+- EXPORT_LOG — Lịch sử sinh bundle export
 - skill-budget.md
 - token-budget.md
 - v0.1/README.md
@@ -315,6 +315,8 @@
 - RESEARCH — Bump version + export đầy đủ hơn
 - SearchRunnerAgentTest
 - DefaultModelTest
+- TokenBudgetTest
+- .dirty_repo
 
 ## God Nodes (most connected - your core abstractions)
 1. `write_state()` - 32 edges
@@ -343,15 +345,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (309 total, 59 thin omitted)
+## Communities (311 total, 60 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.06
 Nodes (68): _atomic_write(), cli(), _cli_approve(), default_state(), _echo_state(), effective_lane(), effective_mode(), effective_phase() (+60 more)
 
 ### Community 1 - ".stop"
-Cohesion: 0.10
-Nodes (22): write_state(), stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm, P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được. (+14 more)
+Cohesion: 0.20
+Nodes (7): write_state(), stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm, Sửa mỗi working log thì không tự đòi log lần nữa (tránh vòng lặp)., Mã đã nhắc mà không thấy hiệu ứng → nhắc lại qua additionalContext., StopGateBase, TestStopGate, TestStopGateHints
 
 ### Community 2 - "doc_lint.py"
 Cohesion: 0.06
@@ -478,8 +480,8 @@ Cohesion: 0.12
 Nodes (12): Khuôn AGENTS.md cho worktree external, Khuôn report, Kiểm trước khi trình, Bảng 5 mã (danh sách đóng), Hook nhìn thấy thay đổi bằng cách nào, Mã nhắc của hook, Điểm chặn duy nhất, Chốt engine + model (chỉ mode external) (+4 more)
 
 ### Community 36 - "helper.py"
-Cohesion: 0.12
-Nodes (13): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., run_hook(), P2/T2.12 — hook không bao giờ làm hỏng tool call (spec §4.7).  Mọi hook × mọi tr, ResilienceTest, budget() (+5 more)
+Cohesion: 0.13
+Nodes (15): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., read_state(), run_hook(), ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl (+7 more)
 
 ### Community 37 - "good_report"
 Cohesion: 0.16
@@ -509,9 +511,9 @@ Nodes (16): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Bảng phán quyết
 Cohesion: 0.34
 Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
 
-### Community 44 - "test_e2e_chain.py"
-Cohesion: 0.29
-Nodes (6): read_state(), ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl, TestFullLaneChain, TestQuickLaneChain, today()
+### Community 44 - "TestStopGateDiskEffects"
+Cohesion: 0.19
+Nodes (10): P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được., Sửa repo hoàn toàn bằng shell (không `observe` nào) → phải chặn., Chỉ ghi state/sổ turn thì không phải "đổi repo" — tránh chặn oan mới. (+2 more)
 
 ### Community 45 - ".run_cli"
 Cohesion: 0.16
@@ -542,8 +544,8 @@ Cohesion: 0.14
 Nodes (10): Sai lầm hay gặp, Thứ tự bắt buộc, Xử lý issue/lỗi do user báo, Bảng quyết, Chọn lane: quick hay full, Khuôn câu hỏi (copy được), Luồng mỗi lane, Giao engine ngoài (quick external) (+2 more)
 
 ### Community 52 - ".build"
-Cohesion: 0.18
-Nodes (4): BuildConfigTest, BuildGuardTest, BuildLogTest, BuildSecretScanTest
+Cohesion: 0.16
+Nodes (7): BuildConfigTest, BuildGuardTest, BuildLogTest, BuildSecretScanTest, BuildZipTest, Fixture, Dựng máy nguồn giả + đích trong thư mục tạm cho mỗi ca.
 
 ### Community 53 - "PhaseTableTest"
 Cohesion: 0.12
@@ -750,8 +752,8 @@ Cohesion: 0.20
 Nodes (10): analyze, Bảng phase TDQ (tự sinh — KHÔNG sửa tay), idle, implement, no_state, plan, qc, quick (+2 more)
 
 ### Community 106 - "CheckTest"
-Cohesion: 0.33
-Nodes (3): CheckTest, Mặc định tắt bước dò version CLI: 8 lệnh `--version` mỗi lần build là quá chậm., run_cli()
+Cohesion: 0.23
+Nodes (5): CheckTest, Mặc định tắt bước dò version CLI: 8 lệnh `--version` mỗi lần build là quá chậm., Manifest hỏng là bundle không hợp lệ (2), không phải drift (1)., SHA cũ không có trong repo thì nói thẳng, không in `(+?)`., run_cli()
 
 ### Community 107 - "test_portable_sync.py"
 Cohesion: 0.31
@@ -840,10 +842,6 @@ Nodes (9): Cap + config env, Deep search hybrid — Phase 1 (scout ∥ agy tổn
 ### Community 129 - "Kiểm kê năng lực (bước B0)"
 Cohesion: 0.22
 Nodes (8): 4 lý do loại (đóng — cấm tự chế lý do khác), Bảng quá dài, Các bước, Khuôn bảng (copy nguyên khối rồi điền), Kiểm kê năng lực (bước B0), Lane quick, Luật điền ô "Phán quyết", Số phận từng phán quyết ở các phase sau
-
-### Community 130 - "Fixture"
-Cohesion: 0.22
-Nodes (4): BuildZipTest, Fixture, Dựng máy nguồn giả + đích trong thư mục tạm cho mỗi ca., ReadMcpServersTest
 
 ### Community 131 - "DocsConsistencyTest"
 Cohesion: 0.25
@@ -1309,25 +1307,33 @@ Nodes (5): Chỗ chưa rõ (cần interview), Cách hiểu đầu tiên, Nguyên
 Cohesion: 0.33
 Nodes (5): Kết luận dùng cho spec, RESEARCH — Bump version + export đầy đủ hơn, Truy vấn 1 — Migrate cấu hình Claude Code sang máy mới, copy file nào, Truy vấn 2 — MCP server ở đâu, khôi phục thế nào bằng CLI, Truy vấn 3 — Marketplace local + cài plugin bằng CLI
 
+### Community 309 - "TokenBudgetTest"
+Cohesion: 0.24
+Nodes (4): budget(), Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
+
+### Community 310 - ".dirty_repo"
+Cohesion: 0.26
+Nodes (5): 0.3.2 — chặn oan do chính vân tay repo.      0.3.1 so vân tay TOÀN repo nhưng ch, Ghi đè y hệt byte / `touch` không phải là thay đổi repo., Không hồi quy: sửa file thật bằng shell vẫn phải chặn., §6 — quyết định chặn phải có dấu vết debug được., TestStopGateNoFalseBlock
+
 ## Knowledge Gaps
-- **1295 isolated node(s):** `0.7.0 — 2026-08-05`, `0.6.2 — 2026-08-02`, `Fix`, `Đổi`, `Thêm` (+1290 more)
+- **1295 isolated node(s):** `Mốc`, `Năng lực → task`, `Quy tắc thi hành (áp cho mọi task)`, `P1 — Bump 0.7.0`, `P2 — Khung `claude_export.py` + lớp thu thập nguồn` (+1290 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **59 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **60 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `write_state()` connect `.stop` to `helper.py`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Why does `today_log_rel()` connect `tdq_state.py` to `_common.py`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `main()` connect `_common.py` to `tdq_state.py`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **Why does `write_state()` connect `.stop` to `.dirty_repo`, `helper.py`, `TokenBudgetTest`, `TestStopGateDiskEffects`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `0.7.0 — 2026-08-05`, `0.6.2 — 2026-08-02`, `Fix` to the rest of the system?**
+- **What connects `Mốc`, `Năng lực → task`, `Quy tắc thi hành (áp cho mọi task)` to the rest of the system?**
   _1295 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.060041407867494824 - nodes in this community are weakly interconnected._
-- **Should `.stop` be split into smaller, more focused modules?**
-  _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
 - **Should `doc_lint.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0593990216631726 - nodes in this community are weakly interconnected._
+- **Should `external_task.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.08163265306122448 - nodes in this community are weakly interconnected._

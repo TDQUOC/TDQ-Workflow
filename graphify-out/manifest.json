@@ -1310,8 +1310,8 @@
     "semantic_hash": "405c55b995a19338d46e9165ee703b15"
   },
   "claude-export/EXPORT_LOG.md": {
-    "mtime": 1785827812.3920662,
-    "ast_hash": "e898f744f474baeaea3b0aed1755efd4",
+    "mtime": 1785878320.7869396,
+    "ast_hash": "f856513936ce59db570af86923cddee4",
     "semantic_hash": ""
   },
   "claude-export/INSTRUCTIONS.md": {
@@ -1685,14 +1685,14 @@
     "semantic_hash": ""
   },
   "scripts/claude_export.py": {
-    "mtime": 1785877681.5934823,
-    "ast_hash": "b18283bf451775590f77e1983b759e24",
-    "semantic_hash": "b18283bf451775590f77e1983b759e24"
+    "mtime": 1785878866.1916015,
+    "ast_hash": "84069b22948e5e516ee8078fc2a1e828",
+    "semantic_hash": "84069b22948e5e516ee8078fc2a1e828"
   },
   "tests/test_claude_export.py": {
-    "mtime": 1785877773.300672,
-    "ast_hash": "2152429c282f158072f760ba7b260c7c",
-    "semantic_hash": "2152429c282f158072f760ba7b260c7c"
+    "mtime": 1785878852.52909,
+    "ast_hash": "40fbb5e37f06af1280d97f94eefecb31",
+    "semantic_hash": "40fbb5e37f06af1280d97f94eefecb31"
   },
   "docs/tdq/knowledge/2026-08-05-bump-version-va-export.md": {
     "mtime": 1785875611.6605873,
@@ -1700,8 +1700,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/plan/2026-08-05-bump-version-va-export.md": {
-    "mtime": 1785878102.1792061,
-    "ast_hash": "9a883956d53097b14b126a234b59aef5",
+    "mtime": 1785878902.0366035,
+    "ast_hash": "964f4fda5227bf2f872bb07c32bc02f9",
     "semantic_hash": ""
   },
   "docs/tdq/questions/2026-08-05-bump-version-va-export.md": {
@@ -1720,8 +1720,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/spec/2026-08-05-bump-version-va-export.md": {
-    "mtime": 1785878213.1895988,
-    "ast_hash": "e8003568cd41cee6c6ebed0709994f60",
+    "mtime": 1785878891.9686306,
+    "ast_hash": "a2548668714297fe94dd012aaa11ba0e",
     "semantic_hash": ""
   }
 }

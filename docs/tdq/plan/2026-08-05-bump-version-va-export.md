@@ -102,7 +102,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-08-05T04:01:29+07:00, mode main)
   - Ra: `docs/tdq/spec/2026-08-05-bump-version-va-export.md` mục §7 có nội dung dứt khoát.
   - Kiểm: `grep -n "## 7" docs/tdq/spec/2026-08-05-bump-version-va-export.md` ra đúng 1 dòng.
   - Không dùng cho: đổi §2 hay §6 của spec đã duyệt — muốn đổi phải hỏi user.
-- [ ] **T7.5** Tick `[x]` cho mọi task đã pass, thêm task fix vào mục QC nếu QC báo FAIL — Test: `grep -c "^- \[ \]" docs/tdq/plan/2026-08-05-bump-version-va-export.md` trả 0
+- [x] **T7.5** Tick `[x]` cho mọi task đã pass, thêm task fix vào mục QC nếu QC báo FAIL — Test: `grep -c "^- \[ \]" docs/tdq/plan/2026-08-05-bump-version-va-export.md` trả 0
   - Dùng: `tdq-plan`
   - Nạp: gọi skill `tdq-plan` TRƯỚC bước đỏ của task này. Agent ngoài không có skill system: đọc `skills/tdq-plan/SKILL.md` rồi làm theo.
   - Để: giữ file plan phản ánh đúng trạng thái thật, thêm task fix theo quy tắc thi hành số 5.
@@ -114,7 +114,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-08-05T04:01:29+07:00, mode main)
 
 ## QC
 
-- [ ] **QC-1** Giao `tdq-qc-tester` kiểm độc lập Q1–Q12 của spec §6, rồi viết report ≤10 dòng — Test: agent trả PASS 12/12 và `docs/tdq/reports/2026-08-05-bump-version-va-export.md` ≤10 dòng
+- [x] **QC-1** Giao `tdq-qc-tester` kiểm độc lập Q1–Q12 của spec §6, rồi viết report ≤10 dòng — Test: agent trả PASS 12/12 và `docs/tdq/reports/2026-08-05-bump-version-va-export.md` ≤10 dòng
   - Dùng: `tdq-build`
   - Nạp: gọi skill `tdq-build` TRƯỚC bước đỏ của task này. Agent ngoài không có skill system: đọc `skills/tdq-build/SKILL.md` rồi làm theo.
   - Để: điều phối thực thi plan, giao QC cho agent độc lập, viết report cuối theo khuôn.
