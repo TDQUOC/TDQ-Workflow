@@ -38,7 +38,8 @@
 - Ghi duyệt/state CHỈ qua `scripts/tdq_state.py`; cấm sửa `docs/tdq/state.json` trực tiếp.
 - Gộp gate: duyệt spec → viết plan ngay trong turn đó; duyệt plan kèm mode
   (main | subagent | external) → build ngay trong turn đó. Duyệt plan không nói mode → HỎI.
-- Spec/plan/report viết tiếng Việt; report ≤ 10 dòng. Tick `[x]` ngay khi task pass test.
+- Spec/plan/report viết tiếng Việt; report ngắn gọn (khuyến nghị 10-20 dòng, không giới
+  hạn cứng). Tick `[x]` ngay khi task pass test.
 - Cuối turn có đổi code → chạy `graphify extract . --code-only`.
 - Chi tiết lane, mode external, deep search, sub-agent, QC: trong các skill `tdq-*`.
 

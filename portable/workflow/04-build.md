@@ -122,14 +122,14 @@ Bước kế tiếp: `python3 scripts/tdq_state.py set phase=report`.
 
 ## Phần C — Report (phase `report`)
 
-7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, **≤ 10 dòng** (đo bằng `wc -l`, quá
-   thì cắt gọn). Khuôn: [references/report-template.md](references/report-template.md).
+7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng, khuyến
+   nghị ~10-20 dòng. Khuôn: [references/report-template.md](references/report-template.md).
 
 8. Đóng sổ: tick nốt checkbox còn sót, đổi header plan thành HOÀN THÀNH, rồi chạy
    `tdq_finish.py --files <file vừa sửa> --log "<tóm tắt report>"` — append working
    log, chạy cập nhật code graph nếu có.
 
-9. Trình report trong chat (nguyên văn hoặc tóm tắt ≤ 10 dòng + đường dẫn).
+9. Trình report trong chat (nguyên văn hoặc tóm tắt ngắn gọn + đường dẫn).
 
 10. **Hỏi user có commit không** — bắt buộc, không tự commit thành quả cuối (ngoại lệ duy
     nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). User đồng ý

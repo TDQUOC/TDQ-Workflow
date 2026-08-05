@@ -496,10 +496,11 @@ PHASE_TABLE = {
     },
     "report": {
         "entry": "QC đã PASS",
-        "action": "Viết report ≤10 dòng rồi hỏi user có commit không",
+        "action": "Viết report ngắn gọn (khuyến nghị 10-20 dòng, không giới hạn cứng) rồi hỏi user có commit không",
         "cmd": "python3 scripts/tdq_state.py set phase=idle",
         "checklist": [
-            "Viết docs/tdq/reports/<slug>.md ≤10 dòng: đã làm gì, kết quả QC, giới hạn còn lại",
+            "Viết docs/tdq/reports/<slug>.md ngắn gọn (khuyến nghị 10-20 dòng): "
+            "đã làm gì, kết quả QC, giới hạn còn lại",
             "Append working log docs/workinglog/<hôm nay>.md",
             "Hỏi user: có commit không?",
         ],

@@ -1,8 +1,9 @@
 # Khuôn report
 
-`docs/tdq/reports/<slug>.md` — tiếng Việt, **≤ 10 dòng tổng cộng** kể cả dòng trống.
-Kiểm bằng `wc -l docs/tdq/reports/<slug>.md`. Ngắn nhưng không được mất sự thật: dồn
-mỗi mục thành MỘT dòng, ngăn ý bằng dấu `·`, số liệu lấy nguyên từ output thật.
+`docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng. Khuyến nghị
+**càng ngắn càng tốt, tầm 10-20 dòng là ổn**; dài hơn thì nói rõ vì sao (nhiều đề xuất,
+nhiều task…) thay vì cắt bớt sự thật. Dồn mỗi mục thành MỘT dòng, ngăn ý bằng dấu `·`,
+số liệu lấy nguyên từ output thật.
 
 ```markdown
 # REPORT — <tên việc> (`<slug>` · lane <lane> · mode <mode> · <n> task tick đủ)
@@ -17,7 +18,7 @@ Git: <chưa commit / commit nào đã tạo>
 
 ## Kiểm trước khi trình
 
-- ≤ 10 dòng (đo bằng `wc -l`); quá thì gộp dòng, cấm bỏ mục.
+- Không giới hạn cứng; khuyến nghị 10-20 dòng, ngắn nhất có thể mà không mất mục nào.
 - Mọi con số lấy từ output thật, không ước lượng. Phép đo có điều kiện méo thì nói rõ trong dòng "Kết quả".
 - Dòng "Giới hạn" không được bỏ trống khi còn việc dang dở — nói thật, không giấu.
 - Kết thúc bằng câu hỏi user có muốn commit không (hỏi trong chat, không viết trong file).

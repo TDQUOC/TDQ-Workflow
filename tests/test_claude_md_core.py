@@ -46,7 +46,7 @@ INVARIANTS = [
     ("§9② chỉ user duyệt", ["chỉ người dùng duyệt", "hỏi"]),
     ("§9③ state chỉ ghi qua script", ["tdq_state.py"]),
     ("§9④ gộp gate duyệt", ["duyệt plan"]),
-    ("§9⑤ doc tiếng Việt, report ≤10 dòng", ["tiếng việt", "10 dòng"]),
+    ("§9⑤ doc tiếng Việt, report ngắn gọn 10-20 dòng", ["tiếng việt", "10-20 dòng"]),
 ]
 
 

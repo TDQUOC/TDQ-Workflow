@@ -10,7 +10,7 @@
 
 ```
 Intake ──► Analysis ──► Spec ──► Plan ──► Implement ──► QC ──► Report
- (lane?)   (interview)  [DUYỆT]  [DUYỆT]  (1 turn,      (loop   (≤10 dòng)
+ (lane?)   (interview)  [DUYỆT]  [DUYỆT]  (1 turn,      (loop   (ngắn gọn)
                                            tick ngay)    plan)
 Lane quick: Analysis (+search/interview khi cần) ──► mini-spec/plan gộp 1 file ──►
             [DUYỆT] ──► ghi log ──► Implement
