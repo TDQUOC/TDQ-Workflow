@@ -13,4 +13,6 @@ ghi file này — cách ghi ở mục "Ghi log" của `INSTRUCTIONS.md`.
 - 2026-08-05 04:28 — EXPORT_DEST=/Users/truongdinhquoc/Documents/claude-code-export
 - 2026-08-05 04:28 — sinh lại sau khi vá 2 lỗi QC báo: 1642 file / 15 MB · zip 6,8 MB · commit c4d57c2 · 49 plugin + 2 marketplace + 2 MCP server · quét secret sạch · `check` ra 0 mục lệch
 - 2026-08-05 10:26 — EXPORT_DEST=/Users/truongdinhquoc/Documents/claude-code-export
-- 2026-08-05 10:26 — sinh lại sau khi vá `_cli_approve` và commit nốt tài liệu request: 1696 file / 17 MB · zip 8,2 MB · 49 plugin + 2 marketplace + 2 MCP server · quét secret sạch · `check` ra 0 mục lệch sau lần build cuối (build 2 lượt để bundle chứa luôn commit ghi chính mốc này)
+- 2026-08-05 10:26 — sinh lại sau khi vá `_cli_approve`: 1696 file / 17 MB · zip 8,2 MB · 49 plugin + 2 marketplace + 2 MCP server · quét secret sạch · `check` ra 0 mục lệch
+- 2026-08-05 10:27 — build lượt 2 sau khi commit mốc trên: 1709 file / 17 MB · zip 8,5 MB · commit `a5385093` · `check` ra 0 mục lệch · `unzip -t` No errors
+- Lưu ý đọc số: bundle mang theo `.git` nên mỗi commit mới thêm vài object, số file tăng dần qua các lượt build. Dòng mốc này được commit SAU lần build cuối, vậy `check` sẽ báo lệch đúng 1 commit cho tới lần `build` kế tiếp.
