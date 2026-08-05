@@ -2,6 +2,18 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.8.0 — 2026-08-05
+
+Audit toàn workflow (skills/scripts/hooks/rules) + 16 đề xuất P0/P1 áp dụng. Dedupe
+git status/turn_rows/prompt_context, nén `skill_dump()`. Tách nhánh external khỏi
+`tdq-build/SKILL.md`, tách Phần B `tdq-intake` sang reference, siết quick-lane. Chốt
+ngưỡng digest 1.500 ký tự cho 8 agent, sửa link cross-reference cũ, ghi rủi ro
+2-phiên. `tdq-intake/SKILL.md` 117→84 dòng, `tdq-build/SKILL.md` 150→90 dòng.
+
+Luật đặt tên sub-agent (`<model>-<effort>-<việc-kebab>`, vd `sonnet-low-research`)
+nâng từ chỗ chỉ nạp trong TDQ build lên tầng global `~/.claude/CLAUDE.md`, áp cho
+mọi lần gọi Agent tool; đồng bộ định dạng ở `tdq-conventions/SKILL.md` §9.
+
 ## 0.7.0 — 2026-08-05
 
 Workflow linh hoạt: gộp gate spec → plan → build trong cùng turn, lane quick vẫn đủ
@@ -130,10 +142,11 @@ lỗi mà 0.3.1 vá. Bản này sửa hết.
 
 ### Sửa
 - **Turn read-only không còn bị chặn.** 0.3.1 so vân tay TOÀN repo nhưng chỉ loại
-  trừ `docs/tdq/` lúc đặt tên file, nên chính việc hook append sổ turn sau khi chụp
-  ảnh đầu turn cũng làm vân tay đổi → mọi file bẩn có sẵn bị lôi ra làm vật tế thần,
-  kể cả trong turn chỉ đọc hoặc chỉ ghi state. Nay `docs/tdq/` và `docs/workinglog/`
-  bị loại trừ ngay từ **pathspec của git**, dùng chung cho cả quyết định lẫn đặt tên.
+  trừ `docs/tdq/` lúc đặt tên file. Vì vậy chính việc hook append sổ turn sau khi chụp
+  ảnh đầu turn cũng làm vân tay đổi. Hệ quả: mọi file bẩn có sẵn bị lôi ra làm vật tế
+  thần, kể cả trong turn chỉ đọc hoặc chỉ ghi state. Nay `docs/tdq/` và
+  `docs/workinglog/` bị loại trừ ngay từ **pathspec của git**, dùng chung cho cả
+  quyết định lẫn đặt tên.
 - **`touch` file untracked không còn bị chặn**: file untracked ≤256 KB được lấy dấu
   bằng **nội dung** thay vì `size:mtime` (ngân sách đọc 4 MB mỗi lần lấy vân tay).
 - **Windows**: tiền tố vùng loại trừ viết bằng `/` cứng — dùng `os.path.join` thì

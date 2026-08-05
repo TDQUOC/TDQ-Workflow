@@ -41,7 +41,8 @@
 - Spec/plan/report viết tiếng Việt; report ngắn gọn (khuyến nghị 10-20 dòng, không giới
   hạn cứng). Tick `[x]` ngay khi task pass test.
 - Cuối turn có đổi code → chạy `graphify extract . --code-only`.
-- Chi tiết lane, mode external, deep search, sub-agent, QC: trong các skill `tdq-*`.
+- Chi tiết lane, mode external, deep search, QC: trong các skill `tdq-*`.
+- Sub-agent: description mở đầu `<model>-<effort>-<việc>`, vd `sonnet-low-research`.
 
 ## 8. Việc chuyên biệt → đọc file tương ứng
 - User báo lỗi/issue → `skills/tdq-intake/references/issue-triage.md`.

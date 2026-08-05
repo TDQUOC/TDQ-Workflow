@@ -248,7 +248,7 @@ class TokenOptimVong2RulesTest(unittest.TestCase):
         self.assertIn("offset", self.conv)
 
     def test_d1_ten_agent_co_model_va_effort(self):
-        self.assertIn("<model>-<effort>_", self.conv)
+        self.assertIn("<model>-<effort>-", self.conv)
 
     def test_e2_khong_doi_model_effort_giua_phase_build(self):
         self.assertRegex(

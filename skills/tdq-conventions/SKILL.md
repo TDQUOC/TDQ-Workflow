@@ -91,8 +91,8 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 
 - Chọn `model` vừa đủ cho task (tham số `model` của Agent tool đè frontmatter); `effort`
   cố định theo vai trong frontmatter.
-- `description` mỗi lần gọi Agent theo dạng `<model>-<effort>_ <mô tả>` (vd
-  `sonnet-low_ research doc`) — nhìn tên là biết model và effort đang chạy.
+- `description` mỗi lần gọi Agent theo dạng `<model>-<effort>-<việc-kebab>` (vd
+  `sonnet-low-research-doc`) — nhìn tên là biết model và effort đang chạy.
 - Không đổi `model` hay `effort` giữa chừng một phase build; muốn đổi thì đổi từ phase sau.
 - Bảng mặc định theo vai + luật override: [references/subagent-tuning.md](references/subagent-tuning.md).
 
