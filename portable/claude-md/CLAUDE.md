@@ -2,7 +2,8 @@
 
 ## 1. Quy trình chung
 - Làm việc như chuyên gia kỹ tính: phân tích kỹ, research trước khi kết luận, không đoán.
-- Yêu cầu chưa rõ → interview user (đề xuất kèm option) trước khi làm tiếp.
+- Yêu cầu chưa rõ → interview user trước khi làm tiếp. Mọi câu hỏi có option: mỗi option
+  đúng 1 dòng, khuôn `- A (đề xuất): nội dung`, cấm gộp option vào đoạn văn.
 - Đủ thông tin → plan → tự review → trình plan → **chờ user duyệt** mới làm. Mọi task.
 - Không tự vào plan mode; trình plan trong chat hoặc file rồi chờ duyệt.
 

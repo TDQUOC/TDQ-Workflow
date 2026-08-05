@@ -8,10 +8,14 @@ Phase `no_state` → `analyze`. Mọi output cho user: **tiếng Việt**.
    `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`: nguyên văn yêu cầu của user + cách hiểu
    đầu tiên của bạn (mục tiêu, phạm vi đoán, chỗ chưa rõ).
 
-2. **Đề xuất lane rồi HỎI.** Trình bày đúng khuôn này trong chat:
-   - 2–3 dòng tóm tắt việc user muốn.
-   - 1 dòng đề xuất lane kèm lý do cho CHÍNH việc này.
-   - Câu hỏi: "Bạn muốn chạy lane nào: quick hay full?"
+2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Rồi 1 dòng đề
+   xuất lane kèm lý do cho CHÍNH việc này. Rồi câu hỏi "Bạn muốn chạy lane nào?" với
+   option mỗi dòng theo khuôn ở bước 4, phương án đề xuất luôn đứng ở A:
+
+   ```
+   - A (đề xuất): quick — <lý do hợp việc này>
+   - B: full — <lý do hợp việc này>
+   ```
 
    Chọn lane: **quick** khi việc nhỏ, phạm vi rõ, ≤ ~3 file, không có ẩn số bên ngoài,
    hỏng thì sửa lại rẻ. **full** khi có tính năng mới, đổi kiến trúc/dữ liệu, còn câu
@@ -54,12 +58,22 @@ Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
    search (≥2 dấu hiệu) → theo workflow/06-deep-search.md.
 
 4. **Vòng interview.** Liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
-   lỗi, hiệu năng, tương thích). Hỏi theo cụm 2–4 câu, mỗi câu kèm 2–4 phương án có
-   đánh dấu `(Đề xuất)` và lý do một dòng. Ghi hỏi–đáp vào `docs/tdq/questions/<slug>.md`.
+   lỗi, hiệu năng, tương thích). Hỏi theo cụm 2–4 câu, mỗi câu kèm 2–4 phương án.
+   **Luôn hỏi bằng danh sách trong chat**, khuôn bắt buộc:
+
+   ```
+   <số>. <Câu hỏi>
+   - A (đề xuất): <phương án> — <hệ quả 1 dòng>
+   - B: <phương án> — <hệ quả 1 dòng>
+   ```
+
+   Mỗi option đúng 1 dòng riêng, nhãn chữ HOA rồi dấu `:`. **Cấm gộp** nhiều option vào
+   một dòng hay nhét vào đoạn văn dạng `(a) … · (b) …`. Phương án bạn khuyên luôn là `A`
+   và mang nhãn `(đề xuất)`. Ghi hỏi–đáp vào `docs/tdq/questions/<slug>.md`.
    **Lặp** đến khi không còn câu hỏi nào làm đổi kết quả — nhiều vòng là bình thường.
    Không lấp chỗ trống bằng phỏng đoán. **Câu cuối mỗi vòng là bắt buộc**, kể cả khi chỉ
-   có 1 câu hỏi: hỏi thêm đúng câu "Bạn muốn bổ sung thêm gì không?" với hai lựa chọn
-   `Không, đủ rồi — làm tiếp đi` (Đề xuất) và `Có — tôi nói thêm`, để user trả lời mở.
+   có 1 câu hỏi: hỏi thêm đúng câu "Bạn muốn bổ sung thêm gì không?" với hai option
+   `- A (đề xuất): Không, đủ rồi — làm tiếp đi.` và `- B: Có — tôi nói thêm.`
 
 5. **Chốt kiến thức.** Viết `docs/tdq/knowledge/<slug>.md`: quyết định đã chốt, ràng buộc,
    cách tiếp cận đã chọn + lý do, phương án đã loại + lý do, nguồn.

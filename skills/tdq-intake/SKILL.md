@@ -18,11 +18,11 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`: nguyên văn yêu cầu của user + cách hiểu
    đầu tiên của bạn (mục tiêu, phạm vi đoán, chỗ chưa rõ).
 
-2. **Đề xuất lane rồi HỎI.** Trình bày đúng khuôn này trong chat:
-   - 2–3 dòng tóm tắt việc user muốn.
-   - 1 dòng đề xuất lane kèm lý do cho CHÍNH việc này.
-   - Câu hỏi: "Bạn muốn chạy lane nào: quick hay full?"
-
+2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Rồi 1 dòng đề
+   xuất lane kèm lý do cho CHÍNH việc này. Rồi câu hỏi "Bạn muốn chạy lane nào?" với
+   option mỗi dòng theo khuôn [references/interview.md](references/interview.md), phương
+   án đề xuất luôn đứng ở A:
+   `- A (đề xuất): quick — <lý do>` xuống dòng `- B: full — <lý do>`.
    Cách chọn: [references/lane-decision.md](references/lane-decision.md).
    **DỪNG chờ user trả lời.** Không tự chọn lane.
 

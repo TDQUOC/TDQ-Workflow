@@ -42,7 +42,7 @@
   "scripts/tdq_state.py": {
     "mtime": 1785900099.8790872,
     "ast_hash": "9aacd9e3011509a218d9ff26f3c4858d",
-    "semantic_hash": ""
+    "semantic_hash": "9aacd9e3011509a218d9ff26f3c4858d"
   },
   "tests/fixtures/bash_cmd.json": {
     "mtime": 1785167490.77849,
@@ -102,7 +102,7 @@
   "tests/test_state.py": {
     "mtime": 1785900120.6654322,
     "ast_hash": "933f4ca426d439cfbd703e2cdc741ada",
-    "semantic_hash": ""
+    "semantic_hash": "933f4ca426d439cfbd703e2cdc741ada"
   },
   "tests/test_stop_gate.py": {
     "mtime": 1785338807.053962,
@@ -1300,9 +1300,9 @@
     "semantic_hash": ""
   },
   "tests/test_skill_docs.py": {
-    "mtime": 1785869292.3196912,
-    "ast_hash": "cc3a4e9c40564a0fd9e84ee09e342b04",
-    "semantic_hash": "cc3a4e9c40564a0fd9e84ee09e342b04"
+    "mtime": 1785901257.5035625,
+    "ast_hash": "b45ac8f9c03628c88f90253e10cd84a0",
+    "semantic_hash": "b45ac8f9c03628c88f90253e10cd84a0"
   },
   "claude-export/MANIFEST.template.json": {
     "mtime": 1785877810.6307564,

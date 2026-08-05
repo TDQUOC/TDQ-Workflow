@@ -56,7 +56,8 @@ User duyệt spec xong là viết plan NGAY trong cùng turn.
    python3 scripts/tdq_state.py approve plan --mode <main|subagent|external> --by "<nguyên văn>"
    ```
    Mode chốt là mode user NÓI lúc duyệt (khác đề xuất cũng được).
-   User duyệt mà không nói mode → **HỎI**, đừng tự chọn.
+   User duyệt mà không nói mode → **HỎI**, đừng tự chọn, mỗi option một dòng theo khuôn
+   ở [01-intake.md](01-intake.md) bước 4.
    Ghi nhận xong thì build LUÔN trong cùng turn — không bắt user nhắn thêm câu nào.
 
 ## Chốt engine + model (chỉ mode external)

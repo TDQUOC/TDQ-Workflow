@@ -266,5 +266,61 @@ class TokenOptimVong2RulesTest(unittest.TestCase):
                          r"(?i)(>|trên |hơn )\s?6 task")
 
 
+class OptionMotDongTest(unittest.TestCase):
+    """Request format-cau-hoi-interview — mọi câu hỏi có option phải xuống dòng
+    từng option theo khuôn `- A (đề xuất): nội dung`, không gộp vào đoạn văn,
+    và không còn ưu tiên AskUserQuestion."""
+
+    # option có thể nằm trong khối lệnh thụt lề của danh sách đánh số → cho phép
+    # khoảng trắng đầu dòng, nhưng nhãn phải là đúng 1 chữ HOA rồi tới dấu `:`.
+    OPTION_LINE = re.compile(r"^\s*- [A-Z](?: \(đề xuất\))?: ", re.MULTILINE)
+
+    def setUp(self):
+        self.ref = _read("skills", "tdq-intake", "references", "interview.md")
+        self.skill = _read("skills", "tdq-intake", "SKILL.md")
+        self.portable = _read("portable", "workflow", "01-intake.md")
+
+    def test_khuon_mau_co_option_moi_dong(self):
+        for name, text in (("interview.md", self.ref),
+                           ("01-intake.md", self.portable)):
+            with self.subTest(file=name):
+                self.assertGreaterEqual(
+                    len(self.OPTION_LINE.findall(text)), 2,
+                    f"{name} thiếu khuôn `- A (đề xuất): …` mỗi option một dòng")
+
+    def test_de_xuat_dat_o_option_dau(self):
+        for name, text in (("interview.md", self.ref),
+                           ("01-intake.md", self.portable)):
+            with self.subTest(file=name):
+                first = self.OPTION_LINE.search(text)
+                self.assertIsNotNone(first, f"{name} không có option nào")
+                self.assertIn("(đề xuất)", first.group(0),
+                              f"{name}: option đầu tiên phải là phương án đề xuất")
+
+    def test_cam_gop_option_vao_doan_van(self):
+        for name, text in (("interview.md", self.ref),
+                           ("01-intake.md", self.portable)):
+            with self.subTest(file=name):
+                flat = re.sub(r"\s+", " ", text)
+                self.assertRegex(flat, r"(?i)(cấm|không) gộp.{0,60}(một dòng|đoạn văn)")
+
+    def test_chot_lane_cung_dung_khuon(self):
+        for name, text in (("SKILL.md", self.skill),
+                           ("01-intake.md", self.portable)):
+            with self.subTest(file=name):
+                self.assertRegex(text, r"- A \(đề xuất\): \*{0,2}quick")
+                self.assertRegex(text, r"- B: \*{0,2}full")
+
+    def test_khong_con_uu_tien_askuserquestion(self):
+        for name, text in (("interview.md", self.ref),
+                           ("SKILL.md", self.skill),
+                           ("01-intake.md", self.portable)):
+            with self.subTest(file=name):
+                self.assertNotIn("AskUserQuestion nếu có", text)
+
+    def test_luat_hoi_bang_danh_sach_trong_chat(self):
+        self.assertRegex(self.ref, r"(?i)luôn hỏi bằng danh sách")
+
+
 if __name__ == "__main__":
     unittest.main()

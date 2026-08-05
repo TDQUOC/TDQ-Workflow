@@ -20,22 +20,36 @@ thích trình bày.
 
 ## Hỏi thế nào
 
-Mỗi câu hỏi kèm **2–4 phương án cụ thể**, mỗi phương án 1 dòng tóm tắt hệ quả, phương
-án bạn khuyên đặt **đầu tiên** và ghi `(Đề xuất)`. Dùng AskUserQuestion nếu có; không có
-thì hỏi bằng danh sách đánh số trong chat.
+Mỗi câu hỏi kèm **2–4 phương án cụ thể**. **Luôn hỏi bằng danh sách trong chat** — không
+dùng AskUserQuestion, để user đọc được toàn bộ phương án cùng lúc và trả lời mở.
+
+Khuôn bắt buộc, dán đúng dạng này:
 
 ```
-1. <Câu hỏi>
-   a) <Phương án A> (Đề xuất) — <hệ quả 1 dòng>
-   b) <Phương án B> — <hệ quả 1 dòng>
+<số>. <Câu hỏi>
+- A (đề xuất): <phương án> — <hệ quả 1 dòng>
+- B: <phương án> — <hệ quả 1 dòng>
+- C: <phương án> — <hệ quả 1 dòng>
 ```
 
-**Câu cuối mỗi vòng là bắt buộc**, kể cả khi chỉ có 1 câu hỏi: hỏi thêm đúng câu
+Luật khuôn:
 
-> Bạn muốn bổ sung thêm gì không?
+- Mỗi option đúng **1 dòng riêng**, mở đầu bằng `- ` rồi nhãn chữ HOA `A`/`B`/`C`/`D`.
+- **Cấm gộp** nhiều option vào một dòng hay nhét vào đoạn văn dạng `(a) … · (b) …`.
+- Phương án bạn khuyên luôn là **A** và mang nhãn `(đề xuất)`; các option khác không có nhãn.
+- Sau nhãn là dấu `:` rồi nội dung. Hệ quả nối bằng ` — `, giữ trong cùng dòng đó.
+- Nhiều câu hỏi trong một vòng → đánh số câu `1.`, `2.` và mỗi câu có bảng option riêng.
+- Câu hỏi chốt lane, chốt mode, hỏi commit cũng theo đúng khuôn này.
 
-với các lựa chọn `Không, đủ rồi — làm tiếp đi` (Đề xuất) và `Có — tôi nói thêm` để user
-trả lời mở. Phương án đóng không bao giờ phủ hết ý user; câu này là chỗ để user thêm ý.
+**Câu cuối mỗi vòng là bắt buộc**, kể cả khi chỉ có 1 câu hỏi:
+
+```
+<số>. Bạn muốn bổ sung thêm gì không?
+- A (đề xuất): Không, đủ rồi — làm tiếp đi.
+- B: Có — tôi nói thêm.
+```
+
+Phương án đóng không bao giờ phủ hết ý user; câu này là chỗ để user thêm ý.
 
 ## Ghi lại
 

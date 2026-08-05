@@ -1,24 +1,24 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-05T10:28:34+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-05T10:38:35+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-05-bump-version-va-export |
-| Lane | full |
-| Phase | idle |
-| Spec | docs/tdq/spec/2026-08-05-bump-version-va-export.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-05-bump-version-va-export.md — ✔ đã duyệt |
-| Duyệt quick | (không áp dụng) |
-| Mode thực thi | main |
+| Request | 2026-08-05-format-cau-hoi-interview |
+| Lane | quick |
+| Phase | implement |
+| Spec | (chưa có) |
+| Plan | (chưa có) |
+| Duyệt quick | ✔ đã duyệt |
+| Mode thực thi | (chưa chốt) |
 
 ## Đang ở đâu
-Đã xong hoặc chưa mở request. Cấm: Đè request cũ còn dở mà chưa hỏi user.
+lane = quick. Cấm: Implement trước khi ghi working log.
 
 ## Việc tiếp theo
-Chờ yêu cầu mới từ user.
+Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → rồi mới implement.
 ```
-python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <quick|full>
+python3 scripts/tdq_state.py approve quick [--mode external] --by "<nguyên văn câu user>"
 ```
-Xong khi: Có request mới được mở
+Xong khi: quick_approved = true, log đã ghi, việc đã validate, phase đã về idle
 
 > Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.

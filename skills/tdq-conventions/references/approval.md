@@ -39,6 +39,8 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve <spec|plan|quick> [
 
 - `--by` bắt buộc trên thực tế: đó là dấu vết duy nhất nối state với hội thoại.
 - Duyệt lại lần nữa không phải lỗi (idempotent, exit 0).
-- `approve plan` mà user chưa nói mode → **HỎI mode trước**, đừng đoán.
+- `approve plan` mà user chưa nói mode → **HỎI mode trước**, đừng đoán. Hỏi theo khuôn
+  option mỗi dòng của [interview.md](../../tdq-intake/references/interview.md):
+  `- A (đề xuất): main — …` / `- B: subagent — …` / `- C: external — …`.
 - Mỗi lần duyệt cũng ghi 1 dòng vào `docs/workinglog/<hôm nay>.md`
   (duyệt gì, lúc nào, nguyên văn câu user).
