@@ -26,10 +26,14 @@ Có **bất kỳ** ô nào rơi vào cột full → đề xuất **full**.
 
 ## Khuôn câu hỏi (copy được)
 
+Đúng khuôn [interview.md](interview.md) — option mỗi dòng riêng, phương án đề xuất
+luôn ở `A`:
+
 ```
 Tóm tắt: <2–3 dòng việc user muốn>
-Đề xuất: lane <quick|full> — <lý do gắn với chính việc này>
-Bạn muốn chạy lane nào: quick hay full?
+1. Bạn muốn chạy lane nào?
+- A (đề xuất): quick — <lý do gắn với chính việc này>
+- B: full — <lý do gắn với chính việc này>
 ```
 
 Đang giữa chừng mà thấy chọn sai lane? Nói rõ vì sao, đề xuất đổi, **hỏi user** rồi mới

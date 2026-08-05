@@ -54,3 +54,7 @@ Giới hạn đã biết:
 - File untracked >256 KB chỉ lấy dấu `size:mtime`, có thể báo động giả.
 - Tên file trong lời chặn là **gợi ý**: không có file mới xuất hiện thì nêu file
   đang bẩn đầu tiên, có thể không phải file vừa sửa.
+- **2 phiên Claude Code cùng chạy trên 1 worktree chính**: vân tay repo là ảnh chụp
+  đĩa dùng chung cho cả worktree, không phân biệt phiên nào sửa. Phiên A không đổi
+  code vẫn có thể bị tính oan "đã đổi repo" nếu phiên B ghi đè file giữa lúc phiên A
+  đang chạy. Tránh bằng cách không chạy song song 2 phiên trên cùng một worktree.

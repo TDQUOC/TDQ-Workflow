@@ -310,7 +310,7 @@ def _untracked_mark(path, budget):
         return None, 0
 
 
-def repo_status_digest(cwd):
+def repo_status_digest(cwd, status=None):
     """Vân tay trạng thái làm việc của repo, hoặc None khi không lấy được.
 
     Gồm cả `status --porcelain` (file mới/xoá/đổi tên) lẫn `diff HEAD` (nội dung),
@@ -318,10 +318,14 @@ def repo_status_digest(cwd):
     thì đó là trường hợp thường gặp nhất, bỏ qua là bỏ lọt.
     Sổ sách workflow bị loại trừ ngay từ pathspec của git (0.3.2).
 
+    `status`: bytes `git status --porcelain` đã có sẵn (P0-2 — `turn_snapshot`
+    gọi 1 lần rồi truyền xuống, tránh gọi git 2 lần/turn). None → tự lấy.
+
     None nghĩa là "không có bằng chứng", không phải "repo sạch" — nơi gọi phải
     coi None là fallback về hành vi cũ.
     """
-    status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    if status is None:
+        status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
     if status is None:
         return None
     # repo chưa có commit → không có HEAD → rc≠0 → b""
@@ -345,13 +349,16 @@ def repo_status_digest(cwd):
     return h.hexdigest()
 
 
-def repo_status_paths(cwd, limit=400):
+def repo_status_paths(cwd, limit=400, status=None):
     """Path đang khác so với HEAD (bỏ cờ trạng thái, rename lấy vế đích).
 
     Cùng vùng loại trừ với `repo_status_digest` — quyết định và đặt tên phải
     nhìn đúng một tập path, lệch nhau là nguồn của chặn oan 0.3.1.
+
+    `status`: bytes `git status --porcelain` đã có sẵn (P0-2, xem `repo_status_digest`).
     """
-    out = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    out = status if status is not None else _git(
+        cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
     if out is None:
         return []
     paths = []
@@ -371,8 +378,10 @@ def turn_snapshot(cwd):
         log_sha = sha256_file(os.path.join(cwd, log_rel))
     except OSError:
         log_sha = None
+    status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
     return {"log_rel": log_rel, "log_sha": log_sha,
-            "repo_sha": repo_status_digest(cwd), "repo_paths": repo_status_paths(cwd)}
+            "repo_sha": repo_status_digest(cwd, status=status),
+            "repo_paths": repo_status_paths(cwd, status=status)}
 
 
 # --------------------------------------------------------- enum an toàn (S4)
@@ -780,6 +789,38 @@ def turn_log_clear(cwd, session):
         return
     try:
         _atomic_write(path, "".join(kept))
+    except OSError:
+        pass
+
+
+# ---------------------------------------------------------- context dedupe
+
+PROMPT_CONTEXT_REL = os.path.join("docs", "tdq", ".tdq-prompt-last.json")
+
+
+def prompt_context_path(cwd):
+    return os.path.join(cwd, PROMPT_CONTEXT_REL)
+
+
+def prompt_context_last(cwd, session):
+    """Digest nội dung [TDQ:...] đã in ở turn trước cho session này, None nếu chưa có."""
+    try:
+        with open(prompt_context_path(cwd), "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict) or data.get("session") != session:
+        return None
+    return data.get("digest")
+
+
+def prompt_context_save(cwd, session, digest):
+    """Ghi digest nội dung vừa in — turn_log_clear không đụng tới file này
+    (dedupe cần sống QUA nhiều turn, khác sổ turn bị xoá mỗi đầu turn)."""
+    path = prompt_context_path(cwd)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        _atomic_write(path, json.dumps({"session": session, "digest": digest}, ensure_ascii=False))
     except OSError:
         pass
 

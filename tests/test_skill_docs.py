@@ -80,7 +80,9 @@ class TdqBuildExternalBranchTest(unittest.TestCase):
     + 2 agent runner có `--plan-file`."""
 
     def setUp(self):
-        self.text = _read("skills", "tdq-build", "SKILL.md")
+        # T2.3 (toi-uu-p0-p1-workflow) tách "Nhánh external" ra khỏi SKILL.md —
+        # 6 cụm contract giờ sống ở references/external-build.md.
+        self.text = _read("skills", "tdq-build", "references", "external-build.md")
 
     def test_six_contract_phrases(self):
         low = self.text.lower()
@@ -118,7 +120,8 @@ class QuickLaneExternalSkillTest(unittest.TestCase):
     task quick dùng skill (mcp) → không duyệt external."""
 
     def test_tdq_build_quick_packet_gets_skill_dump(self):
-        text = _read("skills", "tdq-build", "SKILL.md")
+        # T2.3 tách nội dung này ra references/external-build.md.
+        text = _read("skills", "tdq-build", "references", "external-build.md")
         self.assertRegex(
             text, re.compile(r"quick.*?skill-dump|skill-dump.*?quick",
                              re.IGNORECASE | re.DOTALL))
@@ -210,12 +213,14 @@ class TokenOptimRulesTest(unittest.TestCase):
 
     def test_intake_giao_research_cho_search_scout(self):
         """B1 — research chạy trong subagent, main chỉ nhận digest ≤1.500 ký tự."""
-        text = _read("skills", "tdq-intake", "SKILL.md")
+        # T3.1 tách Phần B ra references/analyze-full.md.
+        text = _read("skills", "tdq-intake", "references", "analyze-full.md")
         self.assertIn("search-scout", text)
         self.assertIn("1.500 ký tự", text)
 
     def test_portable_mang_cung_luat(self):
-        self.assertIn("search-scout", _read("portable", "workflow", "01-intake.md"))
+        self.assertIn("search-scout",
+                      _read("portable", "workflow", "references", "analyze-full.md"))
         self.assertIn("test của module", _read("portable", "workflow", "04-build.md"))
 
 
@@ -279,6 +284,9 @@ class OptionMotDongTest(unittest.TestCase):
         self.ref = _read("skills", "tdq-intake", "references", "interview.md")
         self.skill = _read("skills", "tdq-intake", "SKILL.md")
         self.portable = _read("portable", "workflow", "01-intake.md")
+        # T3.1 tách phần "Vòng interview" (kèm luật cấm gộp option) ra
+        # references/analyze-full.md ở cả hai bản skill lẫn portable.
+        self.portable_analyze = _read("portable", "workflow", "references", "analyze-full.md")
 
     def test_khuon_mau_co_option_moi_dong(self):
         for name, text in (("interview.md", self.ref),
@@ -299,7 +307,7 @@ class OptionMotDongTest(unittest.TestCase):
 
     def test_cam_gop_option_vao_doan_van(self):
         for name, text in (("interview.md", self.ref),
-                           ("01-intake.md", self.portable)):
+                           ("analyze-full.md", self.portable_analyze)):
             with self.subTest(file=name):
                 flat = re.sub(r"\s+", " ", text)
                 self.assertRegex(flat, r"(?i)(cấm|không) gộp.{0,60}(một dòng|đoạn văn)")

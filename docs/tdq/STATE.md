@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-05T12:05:09+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-05T15:14:23+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-05-audit-toi-uu-workflow |
+| Request | 2026-08-05-toi-uu-p0-p1-workflow |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-05-audit-toi-uu-workflow.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-05-audit-toi-uu-workflow.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-05-toi-uu-p0-p1-workflow.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-05-toi-uu-p0-p1-workflow.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

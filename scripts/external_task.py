@@ -577,9 +577,49 @@ def _strip_frontmatter(text):
     return text
 
 
+_STRUCTURED_LINE = re.compile(r"^(#{1,6}\s|[-*]\s|\d+[.)]\s)")
+_LONG_PARA_WORDS = 40  # ngưỡng "dài" — cùng ngưỡng câu R5 của doc_lint.py
+
+
+def _compress_body(text):
+    """Giữ nguyên header/list/code-fence (khối hợp đồng máy-đọc + lệnh CLI cụ
+    thể); bỏ đoạn văn xuôi (không đầu dòng #/-/số thứ tự) dài hơn
+    `_LONG_PARA_WORDS` từ — đó là phần diễn giải lý do, không phải hành động."""
+    out = []
+    para = []
+
+    def flush():
+        if not para:
+            return
+        first = para[0].lstrip()
+        if _STRUCTURED_LINE.match(first) or len(" ".join(para).split()) <= _LONG_PARA_WORDS:
+            out.extend(para)
+        para.clear()
+
+    in_fence = False
+    for line in text.splitlines():
+        if line.strip().startswith("```"):
+            flush()
+            in_fence = not in_fence
+            out.append(line)
+            continue
+        if in_fence:
+            out.append(line)
+            continue
+        if line.strip() == "":
+            flush()
+            out.append(line)
+            continue
+        para.append(line)
+    flush()
+    return "\n".join(out)
+
+
 def skill_dump(names):
-    """In nguyên văn body SKILL.md (bỏ frontmatter) + toàn bộ references/*.md của
-    từng skill, mỗi file dưới header `## SKILL <tên> — <file>`. Thiếu skill → exit 1."""
+    """In body SKILL.md (bỏ frontmatter) + toàn bộ references/*.md của từng
+    skill — đã nén qua `_compress_body` (bỏ diễn giải dài, giữ khối hợp đồng +
+    lệnh CLI) — mỗi file dưới header `## SKILL <tên> — <file>`.
+    Thiếu skill → exit 1."""
     import glob as _glob
     roots = skill_roots()
     missing = []
@@ -602,6 +642,7 @@ def skill_dump(names):
                 break
             if label == "SKILL.md":
                 body = _strip_frontmatter(body)
+            body = _compress_body(body)
             print(f"## SKILL {name} — {label}")
             print(body.rstrip("\n"))
             print()

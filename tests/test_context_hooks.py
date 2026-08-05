@@ -111,6 +111,37 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("HỎI", out)
         self.assert_budget(out)
 
+    def test_repeated_identical_next_only_shrinks_on_second_turn(self):
+        """P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước
+        → turn sau in gọn hơn. Nhánh chờ duyệt mơ hồ KHÔNG được nén (xem
+        test_compliance_protocol.test_approve_signal_and_counterexamples) nên bài
+        test này dùng state không có pending để không đụng nhánh an toàn đó."""
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    plan_file="docs/tdq/plan/x.md", plan_approved=True,
+                    implement_mode="main")
+        rc1, out1, _ = self.ctx("tiếp tục", session="dedupe-1")
+        self.assertEqual(rc1, 0)
+        rc2, out2, _ = self.ctx("tiếp tục", session="dedupe-1")
+        self.assertEqual(rc2, 0)
+        self.assertNotEqual(out1, out2)
+        self.assertLess(len(out2), len(out1))
+
+    def test_changed_state_does_not_shrink(self):
+        """Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới."""
+        write_state(self.cwd, active_request="r1", lane="full", phase="spec",
+                    spec_file="docs/tdq/spec/x.md")
+        rc1, out1, _ = self.ctx("tiếp tục", session="dedupe-2")
+        self.assertEqual(rc1, 0)
+        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    plan_file="docs/tdq/plan/x.md")
+        rc2, out2, _ = self.ctx("tiếp tục", session="dedupe-2")
+        self.assertEqual(rc2, 0)
+        self.assertIn("[TDQ:APPROVE]", out2)
+        self.assertIn("KHÔNG rõ", out2)
+        self.assertIn("duyệt plan", out2)
+
     def test_pending_spec_with_real_approval(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="spec",
                     spec_file="docs/tdq/spec/x.md")

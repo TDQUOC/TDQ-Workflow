@@ -69,7 +69,7 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 ## 6. Working log
 
 - Turn nào đổi repo → `tdq_finish.py --log` append vào CUỐI `docs/workinglog/<hôm nay>.md`:
-  giờ/ngữ cảnh, file đã đổi, lý do, test đã chạy (hoặc lý do chưa chạy).
+  giờ, file đổi, lý do, test đã chạy. Cách hook nhận biết: [reminder-codes.md](references/reminder-codes.md).
 - Turn chỉ đọc/phân tích → không ghi. Turn chỉ sửa working log → không ghi thêm entry.
 
 ## 7. Git

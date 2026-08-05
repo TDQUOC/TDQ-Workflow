@@ -9,6 +9,7 @@ Ba việc:
 
 Trần ngân sách: ≤3 dòng / 240 ký tự (spec §2.7). Im lặng khi rảnh.
 """
+import hashlib
 import os
 import re
 import sys
@@ -61,12 +62,12 @@ def main():
               "thì mở tdq-intake trước khi làm gì khác.")
     state = tdq_state.load(cwd)
     if state is None or not state.get("active_request"):
-        _emit([intake])
+        _emit(cwd, sid, [intake])
         return
     # phase_key, không phải phase thô: lane quick đang chạy giữ phase=idle thô —
     # so thô sẽ bắn INTAKE nhầm và nuốt mất dòng APPROVE của quick.
     if tdq_state.phase_key(state) == "idle":
-        _emit([intake, tdq_state.render_next(cwd, state, brief=True)])
+        _emit(cwd, sid, [intake, tdq_state.render_next(cwd, state, brief=True)])
         return
 
     lane = tdq_state.effective_lane(state, warn=False)
@@ -102,7 +103,7 @@ def main():
                                               target=pending, matched=matched, mode_conflict=True)
                     lines.append(f"[TDQ:APPROVE] ⚠️ Câu duyệt nói mode {said} nhưng plan chốt "
                                  f"{planned} — HỎI user xác nhận mode trước, chưa chạy approve.")
-                    _emit(lines)
+                    _emit(cwd, sid, lines, critical=True)
                     return
                 mode = f" --mode {said}" if said else " --mode <main|subagent|external>"
             lines.append(f"[TDQ:APPROVE] User vừa duyệt {pending} → chạy NGAY: "
@@ -112,11 +113,14 @@ def main():
             lines.append(f"[TDQ:APPROVE] Đang chờ duyệt {pending}. Prompt này KHÔNG rõ là câu duyệt "
                          f"→ tuyệt đối không suy diễn: hoặc HỎI lại, hoặc in \"{approve_hint(pending, planned)}\".")
         lines.append(tdq_state.render_next(cwd, state, brief=True))
-        _emit(lines)
+        # Không dedupe: mỗi turn phải thấy lại cảnh báo "đừng suy diễn duyệt" —
+        # nén thành "(như turn trước)" ở đây sẽ nuốt mất chính cảnh báo an toàn đó.
+        _emit(cwd, sid, lines, critical=True)
         return
 
     # spec đã duyệt mà file đổi sau đó → cảnh báo (dấu vết duyệt không còn khớp)
     rel, sha = state.get("spec_file"), state.get("spec_sha256")
+    drifted = False
     if state.get("spec_approved") and rel and sha:
         path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
         try:
@@ -125,7 +129,7 @@ def main():
             drifted = True
         if drifted:
             lines.append("[TDQ:APPROVE] ⚠️ Spec đã đổi sau khi duyệt (sha256 lệch) — trình user duyệt lại.")
-    _emit(lines)
+    _emit(cwd, sid, lines, critical=drifted)
 
 
 def _truncate(text, limit=MAX_CHARS):
@@ -139,8 +143,26 @@ def _truncate(text, limit=MAX_CHARS):
     return text[:cut].rstrip() + "…"
 
 
-def _emit(lines):
-    print(_truncate("\n".join(lines[:MAX_LINES])))
+def _compact(text):
+    """Turn trước đã in y hệt nội dung này — thay bằng dòng ngắn cùng mã."""
+    match = re.match(r"^\[(TDQ:[A-Z]+)\]", text)
+    code = match.group(1) if match else "TDQ"
+    return f"[{code}] (như turn trước — chưa đổi)"
+
+
+def _emit(cwd, session, lines, critical=False):
+    """critical=True: cảnh báo/hành động riêng cho turn này (duyệt mơ hồ, mode
+    lệch, spec drift) — không bao giờ nén, kể cả trùng chữ với turn trước."""
+    text = _truncate("\n".join(lines[:MAX_LINES]))
+    if critical:
+        print(text)
+        return
+    digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    if tdq_state.prompt_context_last(cwd, session) == digest:
+        text = _compact(text)
+    else:
+        tdq_state.prompt_context_save(cwd, session, digest)
+    print(text)
 
 
 if __name__ == "__main__":

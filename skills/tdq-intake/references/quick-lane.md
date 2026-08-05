@@ -44,5 +44,6 @@ Quá 40 dòng nghĩa là việc này không còn "quick" — nói với user và
   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/external_models.py" list <engine>`.
 - Luật chọn engine: [tdq-plan](../../tdq-plan/SKILL.md) mục "Chốt engine + model".
 - Task dùng skill cần MCP tool (nhãn `(mcp)`) → **KHÔNG** giao external: engine ngoài
-  không gọi được MCP. Khuyên user chọn main hoặc subagent; user vẫn đòi external thì
-  nêu rõ rủi ro rồi làm theo user.
+  không gọi được MCP. Hard-block — không có đường override, khớp luật ở
+  `tdq-build/references/external-build.md`: gói `"mcp": true` luôn tự làm, không giao
+  engine. Khuyên user chọn main hoặc subagent cho task này.

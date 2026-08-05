@@ -80,10 +80,15 @@ def turn_rows(cwd, payload):
     return tdq_state.turn_log_read(cwd, session=session_id(payload))
 
 
-def already_reminded(cwd, payload, code):
-    """Mã này đã nhắc trong turn hiện tại chưa (dedupe 1 lần/mã/turn)."""
-    return any(r.get("kind") == "remind" and r.get("code") == code
-               for r in turn_rows(cwd, payload))
+def already_reminded(cwd, payload, code, rows=None):
+    """Mã này đã nhắc trong turn hiện tại chưa (dedupe 1 lần/mã/turn).
+
+    `rows`: sổ turn đã đọc sẵn (P0-3 — tránh đọc lại `.tdq-turn.jsonl` khi nơi
+    gọi đã có rows từ một lượt đọc khác trong cùng invoke). None → tự đọc.
+    """
+    if rows is None:
+        rows = turn_rows(cwd, payload)
+    return any(r.get("kind") == "remind" and r.get("code") == code for r in rows)
 
 
 def trim(lines):
@@ -95,13 +100,14 @@ def trim(lines):
     return text
 
 
-def remind(cwd, payload, code, lines, event="PreToolUse"):
+def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
     """Nhắc Claude kèm MÃ mà KHÔNG chặn tool, rồi thoát.
 
     Khuôn 3 dòng (spec §2.1): việc phải làm · cách làm · dòng echo cần in.
     Mã đã nhắc trong turn này thì im lặng (dedupe) để khỏi đốt token.
+    `rows`: sổ turn đã đọc sẵn — xem `already_reminded` (P0-3).
     """
-    if already_reminded(cwd, payload, code):
+    if already_reminded(cwd, payload, code, rows=rows):
         sys.exit(0)
     tdq_state.turn_log_append(cwd, "remind", session=session_id(payload), code=code)
     print(json.dumps({

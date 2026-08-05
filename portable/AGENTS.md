@@ -88,6 +88,8 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 - Turn nào đổi repo → append vào CUỐI `docs/workinglog/<hôm nay>.md` (chưa có thì tạo).
 - Nội dung: giờ/ngữ cảnh, file đã đổi, lý do, test đã chạy (hoặc lý do chưa chạy).
 - Turn chỉ đọc/phân tích → không ghi. Turn chỉ sửa working log → không ghi thêm entry.
+- Đóng xong 1 request/session dài → khuyến nghị chạy `/clear` trước khi mở request mới,
+  tránh context cũ kéo dài làm phình token của các turn sau.
 
 ## Git
 

@@ -5,6 +5,10 @@ QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
 ## Chạy cái gì
 
 1. **Toàn bộ test suite** bằng đúng lệnh ghi trong plan. Dán số test pass/fail thật.
+   Suite dài → chạy chế độ tóm tắt, đừng dán log dài vào chat: thêm cờ `-q` (hoặc dot
+   reporter của framework), hoặc redirect ra file rồi lọc phần fail:
+   `<lệnh test> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log` hay
+   `grep -iE "fail|error" /tmp/qc-run.log`. Chỉ dán nguyên văn khi có FAIL cần bằng chứng.
 2. **Từng hạng mục QC trong spec §6** — theo đúng lệnh và điều kiện PASS đã ghi.
 3. **Biên & đường lỗi**: input rỗng, input sai kiểu, file thiếu, quyền bị chặn, mạng hỏng.
    Sản phẩm phải báo lỗi rõ ràng, không stack trace trần cho người dùng cuối.

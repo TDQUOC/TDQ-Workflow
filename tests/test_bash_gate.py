@@ -1,9 +1,15 @@
 """B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json,
 không bao giờ chặn lệnh."""
+import importlib.util
+import io
+import json
+import os
+import sys
 import tempfile
 import unittest
+from unittest import mock
 
-from helper import run_hook, load_fixture, decision, tdq_state
+from helper import HOOKS, run_hook, load_fixture, decision, tdq_state
 
 
 class TestBashGate(unittest.TestCase):
@@ -135,6 +141,53 @@ class TestBashGate(unittest.TestCase):
         self._pre_remind(cmd[:40], "TDQ:APPROVE")
         self._signal(cmd[:40], "spec", matched=False)
         self.assert_remind(cmd, "TDQ:APPROVE")
+
+
+class TestBashGateSingleTurnRead(unittest.TestCase):
+    """P0-3 — 1 invoke `main()` chỉ đọc `.tdq-turn.jsonl` đúng 1 lần, dù cả
+    `_check_signal_mismatch` lẫn `remind()` đều cần dữ liệu sổ turn."""
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, HOOKS)
+        cls.addClassCleanup(sys.path.remove, HOOKS)
+        spec = importlib.util.spec_from_file_location(
+            "bash_gate_mod", os.path.join(HOOKS, "bash_gate.py"))
+        cls.mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.mod)
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def test_main_reads_turn_log_once(self):
+        cmd = ('git checkout -b claude/x && python3 scripts/tdq_state.py approve plan '
+               '--mode main --by "duyệt plan mode main"')
+        session = cmd[:40]
+        # signal khớp (matched=True) để _check_signal_mismatch KHÔNG remind_force/exit
+        # sớm — phải đi tiếp tới nhánh branch-name để remind() cũng cần đọc sổ turn.
+        tdq_state.turn_log_append(self.cwd, "signal", session=session,
+                                  event="approve_pending", target="plan",
+                                  matched=True, mode_conflict=False)
+        payload = {"cwd": self.cwd, "session_id": session,
+                   "tool_input": {"command": cmd}}
+
+        real_read = tdq_state.turn_log_read
+        calls = []
+
+        def counting_read(cwd, session=None):
+            calls.append(1)
+            return real_read(cwd, session=session)
+
+        stdin = io.StringIO(json.dumps(payload))
+        stdout = io.StringIO()
+        with mock.patch.object(tdq_state, "turn_log_read", side_effect=counting_read), \
+             mock.patch.object(sys, "stdin", stdin), \
+             mock.patch.object(sys, "stdout", stdout):
+            with self.assertRaises(SystemExit):
+                self.mod.main()
+        self.assertEqual(len(calls), 1)
 
 
 if __name__ == "__main__":

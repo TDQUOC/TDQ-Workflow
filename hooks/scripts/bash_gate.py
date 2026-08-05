@@ -44,16 +44,16 @@ SETPHASE_CLI = re.compile(r"tdq_state\.py\s+set\b.*?\bphase=(\w+)")
 NEXT_PHASE_TARGET = {"plan": "spec", "implement": "plan"}
 
 
-def _latest_signal(cwd, payload, target):
+def _latest_signal(rows, target):
     """Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)."""
-    for row in reversed(turn_rows(cwd, payload)):
+    for row in reversed(rows):
         if row.get("kind") == "signal" and row.get("target") == target:
             return row
     return None
 
 
-def _check_signal_mismatch(cwd, payload, target):
-    row = _latest_signal(cwd, payload, target)
+def _check_signal_mismatch(cwd, payload, target, rows):
+    row = _latest_signal(rows, target)
     if row is None:
         return
     if row.get("matched") is False or row.get("mode_conflict") is True:
@@ -75,6 +75,7 @@ def main():
     if not isinstance(cmd, str) or not cmd:
         return
     cwd = payload_cwd(payload)
+    rows = turn_rows(cwd, payload)  # P0-3: đọc 1 lần, dùng lại cho mọi kiểm tra dưới đây
 
     # (1) quan sát
     for sub in STATE_CLI.findall(cmd):
@@ -85,12 +86,12 @@ def main():
     # (2) nhắc — chặn-tiến-phase (approve/set phase=) ưu tiên hơn GIT/STATE
     approve_match = APPROVE_CLI.search(cmd)
     if approve_match:
-        _check_signal_mismatch(cwd, payload, approve_match.group(1))
+        _check_signal_mismatch(cwd, payload, approve_match.group(1), rows)
     setphase_match = SETPHASE_CLI.search(cmd)
     if setphase_match:
         target = NEXT_PHASE_TARGET.get(setphase_match.group(1))
         if target:
-            _check_signal_mismatch(cwd, payload, target)
+            _check_signal_mismatch(cwd, payload, target, rows)
 
     branch_names = []
     for pattern in BRANCH_PATTERNS:
@@ -106,7 +107,7 @@ def main():
                 f"Tên branch/worktree '{name}' phạm quy ước — đổi tên trước khi chạy.",
                 "Cách làm: bỏ tiền tố claude|antigravity|gemini|codex, đặt tên theo nội dung việc.",
                 echo_line("TDQ:GIT", "đã đổi tên đúng quy ước"),
-            ])
+            ], rows=rows)
 
     if re.search(r"git\b.*\bcommit\b", cmd, re.DOTALL):
         for pattern in BAD_MSG:
@@ -115,7 +116,7 @@ def main():
                     "Commit message mang dấu vết AI — phạm quy ước.",
                     "Cách làm: bỏ 'generated with …', 'được tạo cùng/với AI' và Co-Authored-By AI.",
                     echo_line("TDQ:GIT", "đã sửa commit message"),
-                ])
+                ], rows=rows)
 
     if re.search(STATE, cmd):
         for pattern in STATE_WRITES:
@@ -124,7 +125,7 @@ def main():
                     "Đừng ghi thẳng file trạng thái qua shell.",
                     "Cách làm: python3 scripts/tdq_state.py set|approve|init|reset.",
                     echo_line("TDQ:STATE", "đã ghi state bằng CLI"),
-                ])
+                ], rows=rows)
 
 
 if __name__ == "__main__":

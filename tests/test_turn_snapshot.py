@@ -7,6 +7,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 from helper import tdq_state, write_file
 
@@ -217,6 +218,21 @@ class SnapshotTest(unittest.TestCase):
     def test_today_log_rel_matches_snapshot(self):
         self.assertEqual(tdq_state.turn_snapshot(self.cwd)["log_rel"],
                          tdq_state.today_log_rel())
+
+    def test_snapshot_calls_git_status_once(self):
+        """P0-2 — digest + paths dùng chung 1 lần `git status`, không gọi 2 lần."""
+        git(self.cwd, "init", "-q")
+        real_git = tdq_state._git
+        status_calls = []
+
+        def counting_git(cwd, *args):
+            if args and args[0] == "status":
+                status_calls.append(args)
+            return real_git(cwd, *args)
+
+        with mock.patch.object(tdq_state, "_git", side_effect=counting_git):
+            tdq_state.turn_snapshot(self.cwd)
+        self.assertEqual(len(status_calls), 1)
 
 
 if __name__ == "__main__":

@@ -844,6 +844,34 @@ class SkillDumpTest(SkillResolveTest):
         self.assertIn("khong-ton-tai", err)
 
 
+class SkillDumpCompressionTest(SkillResolveTest):
+    """T1.4 (toi-uu-p0-p1-workflow) — chỉ giữ khối hợp đồng máy-đọc + lệnh CLI,
+    bỏ phần diễn giải dài, dump skill tdq-build THẬT trong repo (21.960 byte
+    nguyên văn — số đo trong knowledge P1-5)."""
+
+    def _raw_dump_bytes(self):
+        skill_dir = os.path.join(ROOT, "skills", "tdq-build")
+        total = 0
+        with open(os.path.join(skill_dir, "SKILL.md"), encoding="utf-8") as f:
+            total += len(external_task._strip_frontmatter(f.read()).encode("utf-8"))
+        refs_dir = os.path.join(skill_dir, "references")
+        for name in sorted(os.listdir(refs_dir)):
+            if name.endswith(".md"):
+                with open(os.path.join(refs_dir, name), encoding="utf-8") as f:
+                    total += len(f.read().encode("utf-8"))
+        return total
+
+    def test_dump_real_tdq_build_shrinks_and_keeps_contract_fields(self):
+        env = dict(self.env(), TDQ_PROJECT_DIR=ROOT)
+        code, out, _ = self.run_cli("skill-dump", "tdq-build", env=env)
+        self.assertEqual(code, 0)
+        for field in ("Dùng", "Nạp", "Để", "Ra", "Kiểm"):
+            self.assertIn(field, out)
+        self.assertIn("scripts/tdq_finish.py", out)  # lệnh CLI cụ thể phải còn
+        raw_bytes = self._raw_dump_bytes()
+        self.assertLess(len(out.encode("utf-8")), raw_bytes)
+
+
 class CheckPacketSkillsTest(unittest.TestCase):
     """T3.1 (skill-vao-goi-external) — hàm thuần đối chiếu gói ↔ plan."""
 
