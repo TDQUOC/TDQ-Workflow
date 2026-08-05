@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-05)
 
 ## Corpus Check
-- 347 files · ~280,419 words
+- 347 files · ~280,520 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3281 nodes · 4513 edges · 310 communities (254 shown, 56 thin omitted)
+- 3282 nodes · 4514 edges · 310 communities (253 shown, 57 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e88aa25d`
+- Built from commit: `64384b77`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,7 +41,7 @@
 - TestBashGate
 - test_external_task.py
 - Working log — 2026-07-31
-- test_search_task.py
+- DeepSearchDocTest
 - Working log — 2026-07-30
 - .set_response
 - tdq_finish.py
@@ -59,7 +59,7 @@
 - test_agent_frontmatter.py
 - Spec — tối ưu token/time workflow (vòng 2)
 - plugin_tiers.py
-- TokenBudgetTest
+- load_fixture
 - .run_cli
 - _run
 - .run_cli
@@ -67,12 +67,12 @@
 - Working log — 2026-08-02
 - skill_inventory.py
 - tdq-intake/SKILL.md
-- helper.py
+- test_e2e_chain.py
 - PhaseTableTest
 - PLAN — Kiểm kê & tận dụng skill phụ trợ (0.3.3)
 - Working log — 2026-07-27
 - Working log 2026-07-29
-- TestStopGateDiskEffects
+- helper.py
 - test_claude_export.py
 - PLAN — TDQ 0.3.0 (instruction-hardening-7b)
 - PLAN — Search agent "deep search" dùng agy CLI, tích hợp TDQ workflow
@@ -164,7 +164,7 @@
 - Research: 2026-08-04-export-claude-setup
 - Brief deep search — LLM local tham số thấp làm engine code-agent (2026-07-31)
 - 03-plan.md
-- good_finding
+- test_search_task.py
 - ._run_with
 - SearchScoutAgentTest
 - TurnStartRowTest
@@ -313,7 +313,7 @@
 - 2026-07-31-trigger-test/report.md
 - 2026-07-31-vectordb-local-rag/report.md
 - portable/README.md
-- .dirty_repo
+- SearchRunnerAgentTest
 - QC — Bump 0.7.0 + bộ export Claude Code
 - reports/2026-08-05-bump-version-va-export.md
 
@@ -344,15 +344,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (310 total, 56 thin omitted)
+## Communities (310 total, 57 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.06
 Nodes (68): _atomic_write(), cli(), _cli_approve(), default_state(), _echo_state(), effective_lane(), effective_mode(), effective_phase() (+60 more)
 
 ### Community 1 - ".stop"
-Cohesion: 0.20
-Nodes (7): write_state(), stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm, Sửa mỗi working log thì không tự đòi log lần nữa (tránh vòng lặp)., Mã đã nhắc mà không thấy hiệu ứng → nhắc lại qua additionalContext., StopGateBase, TestStopGate, TestStopGateHints
+Cohesion: 0.10
+Nodes (22): write_state(), stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm, P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được. (+14 more)
 
 ### Community 2 - "doc_lint.py"
 Cohesion: 0.06
@@ -431,8 +431,8 @@ Cohesion: 0.07
 Nodes (27): 10. QC / test / validate cho chính plugin (checklist rule 9), 11. Deliverables (Expect_Output), 12. Giới hạn & rủi ro (minh bạch), 1. Ý tưởng & mục tiêu, 2.1 Trong scope (MVP), 2.2 Ngoài scope (MVP), 2. Scope, 3.1 Lazy load & ngân sách token (bắt buộc) (+19 more)
 
 ### Community 21 - "StubBase"
-Cohesion: 0.16
-Nodes (10): good_report(), Dựng stub binary agy trong PATH + run-dir tạm. Không mạng, không binary thật., Response cho call agy -p thứ n. agy bọc structured_output trong JSON vỏ., T3.3 — 1 call search + ≤N call đọc URL; parse structured_output; gộp finding., T3.4 — retry ≤2 kèm lỗi cũ, retry dùng slug escalation., T3.7 — run-dir đúng run-id, brief.md copy vào, log per-agent ISO, LOG=0 tắt., RetryEscalationTest, RunLayoutLogTest (+2 more)
+Cohesion: 0.13
+Nodes (11): CallTimeoutTest, PreflightTest, Dựng stub binary agy trong PATH + run-dir tạm. Không mạng, không binary thật., Response cho call agy -p thứ n. agy bọc structured_output trong JSON vỏ., T3.2 — validate agy CLI + CẢ hai model slug qua external_models.py., T3.4 — retry ≤2 kèm lỗi cũ, retry dùng slug escalation., T3.6 — call quá TDQ_SEARCH_TIMEOUT bị kill, tính 1 lần fail → retry., T3.7 — run-dir đúng run-id, brief.md copy vào, log per-agent ISO, LOG=0 tắt. (+3 more)
 
 ### Community 22 - "_project"
 Cohesion: 0.15
@@ -445,10 +445,6 @@ Nodes (11): ParseDungLinesTest, PlanTimeoutTest, Test external_task.py — lõi 
 ### Community 25 - "Working log — 2026-07-31"
 Cohesion: 0.08
 Nodes (24): 14:14–14:22 — Research (không đổi repo, ghi gộp ở entry sau), 14:23–14:30 — TDQ intake + analyze: request 2026-07-31-agy-search-agent (lane full), 14:34–14:45 — Phase spec: 2026-07-31-agy-search-agent (bản 1.1, CHỜ DUYỆT), 14:47–14:55 — Phase plan: 2026-07-31-agy-search-agent (CHỜ DUYỆT), 15:00–15:25 — Build + QC 2026-07-31-agy-search-agent (mode main), 15:22–15:35 — QC vòng 2: fix trigger search-runner qua Agent tool, 15:36–15:40 — Trigger test PASS + đóng QC vòng 2 + commit 0.5.0, 15:39 — Benchmark deep search: Run A (agy) khởi động (+16 more)
-
-### Community 26 - "test_search_task.py"
-Cohesion: 0.08
-Nodes (11): CallTimeoutTest, DeepSearchDocTest, DefaultModelTest, PreflightTest, Test search_task.py — deep search điều phối multi-call agy (stub binary, không m, T1.1 (0.6.0) — default flash-medium, escalation flash-high, docs đồng bộ., T3.2 — validate agy CLI + CẢ hai model slug qua external_models.py., T3.6 — call quá TDQ_SEARCH_TIMEOUT bị kill, tính 1 lần fail → retry. (+3 more)
 
 ### Community 27 - "Working log — 2026-07-30"
 Cohesion: 0.08
@@ -479,8 +475,8 @@ Cohesion: 0.13
 Nodes (20): 0.1.0 — 2026-07-27, 0.1.4 — 2026-07-28, 0.1.6 — 2026-07-28, 0.2.0 — 2026-07-28, 0.3.0 — 2026-07-29, 0.3.1 — 2026-07-29, 0.3.2 — 2026-07-29, 0.3.3 — 2026-07-29 (+12 more)
 
 ### Community 34 - "StateFileTest"
-Cohesion: 0.19
-Nodes (6): Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user     gõ l, run_state_cli(), run_state_cli_in(), P1 — xử lý state file: S1–S8 của spec 0.3.0 (mỗi yêu cầu 1 test)., _read(), StateFileTest
+Cohesion: 0.21
+Nodes (4): run_state_cli(), P1 — xử lý state file: S1–S8 của spec 0.3.0 (mỗi yêu cầu 1 test)., _read(), StateFileTest
 
 ### Community 35 - ".build"
 Cohesion: 0.16
@@ -518,9 +514,9 @@ Nodes (16): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Bảng phán quyết
 Cohesion: 0.34
 Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
 
-### Community 44 - "TokenBudgetTest"
-Cohesion: 0.24
-Nodes (4): budget(), Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
+### Community 44 - "load_fixture"
+Cohesion: 0.19
+Nodes (8): decision(), load_fixture(), Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., budget(), P5 — ngân sách token của spec §2.7, đo thật chứ không phải khuyến nghị.  Mỗi ký, Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
 
 ### Community 45 - ".run_cli"
 Cohesion: 0.21
@@ -550,9 +546,9 @@ Nodes (15): _clean(), _enabled_plugins(), _frontmatter(), inventory(), _load_jso
 Cohesion: 0.14
 Nodes (10): Sai lầm hay gặp, Thứ tự bắt buộc, Xử lý issue/lỗi do user báo, Bảng quyết, Chọn lane: quick hay full, Khuôn câu hỏi (copy được), Luồng mỗi lane, Giao engine ngoài (quick external) (+2 more)
 
-### Community 52 - "helper.py"
-Cohesion: 0.13
-Nodes (15): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., read_state(), run_hook(), ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl (+7 more)
+### Community 52 - "test_e2e_chain.py"
+Cohesion: 0.29
+Nodes (6): read_state(), ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl, TestFullLaneChain, TestQuickLaneChain, today()
 
 ### Community 53 - "PhaseTableTest"
 Cohesion: 0.12
@@ -570,9 +566,9 @@ Nodes (14): ~16:30 — Lập spec cho TDQWorkflow plugin, ~16:50 — Đổi đư
 Cohesion: 0.13
 Nodes (14): ~00:05 — User duyệt spec 0.3.0 → viết plan, ~01:00–01:40 — Implement plan 0.3.0 end-to-end (P3 → P8), ~02:10 — Phân tích + viết spec fix điểm mù verify-by-effect, ~02:30 — User duyệt spec → viết plan, ~02:45–03:30 — Implement plan 0.3.1 end-to-end (mode main), ~04:00 — Audit toàn bộ tdq-workflow 0.3.1 (theo yêu cầu user), ~04:15 — User duyệt fix 0.3.2 → plan, ~04:20–05:00 — Implement 0.3.2 end-to-end (mode main) (+6 more)
 
-### Community 57 - "TestStopGateDiskEffects"
-Cohesion: 0.19
-Nodes (10): P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được., Sửa repo hoàn toàn bằng shell (không `observe` nào) → phải chặn., Chỉ ghi state/sổ turn thì không phải "đổi repo" — tránh chặn oan mới. (+2 more)
+### Community 57 - "helper.py"
+Cohesion: 0.18
+Nodes (7): Shared test utilities: run hook scripts as subprocesses with stdin JSON., Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user     gõ l, run_hook(), run_state_cli_in(), P2/T2.12 — hook không bao giờ làm hỏng tool call (spec §4.7).  Mọi hook × mọi tr, ResilienceTest, P2 — sổ turn docs/tdq/.tdq-turn.jsonl (T2.1, T2.2).
 
 ### Community 58 - "test_claude_export.py"
 Cohesion: 0.16
@@ -611,8 +607,8 @@ Cohesion: 0.15
 Nodes (12): Definition of Done, Giao việc theo phase (khi user chốt mode `subagent`), Mục QC (thêm task fix ở đây khi FAIL), Năng lực → task, P1 — Đo cho đúng trước đã (spec §4 nhóm E), P2 — Cắt context nền (spec §4 nhóm A), P3 — Một lệnh cuối turn (spec §4 nhóm B, task B1), P4 — Đưa luật vào skill và portable (spec §4 nhóm B, C, D, E) (+4 more)
 
 ### Community 67 - "Working log 2026-08-05"
-Cohesion: 0.14
-Nodes (13): 00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane), 00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai, 01:10 — Chốt interview vòng 2, viết knowledge + spec, 01:25 — User duyệt spec → viết plan (6 phase / 21 task), 02:04, 02:21, 02:27, 03:23 (+5 more)
+Cohesion: 0.13
+Nodes (14): 00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane), 00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai, 01:10 — Chốt interview vòng 2, viết knowledge + spec, 01:25 — User duyệt spec → viết plan (6 phase / 21 task), 02:04, 02:21, 02:27, 03:23 (+6 more)
 
 ### Community 68 - "test_claude_md_core.py"
 Cohesion: 0.19
@@ -930,9 +926,9 @@ Nodes (7): Brief deep search — LLM local tham số thấp làm engine code-age
 Cohesion: 0.25
 Nodes (6): 03 — Plan, Chốt engine + model (chỉ mode external), Các bước, Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình
 
-### Community 149 - "good_finding"
-Cohesion: 0.32
-Nodes (3): good_finding(), T1.1 — schema all-required, URL bắt buộc có path., SchemaTest
+### Community 149 - "test_search_task.py"
+Cohesion: 0.24
+Nodes (7): good_finding(), good_report(), Test search_task.py — deep search điều phối multi-call agy (stub binary, không m, T1.1 — schema all-required, URL bắt buộc có path., T3.3 — 1 call search + ≤N call đọc URL; parse structured_output; gộp finding., RunRouteTest, SchemaTest
 
 ### Community 154 - "INSTRUCTIONS — Dựng bundle export cấu hình Claude Code"
 Cohesion: 0.29
@@ -1121,6 +1117,10 @@ Nodes (6): Luật cứng (áp cho cả ba phase), Nhánh external (Phần A, mod
 ### Community 204 - "Vòng interview"
 Cohesion: 0.33
 Nodes (5): Ghi lại, Hỏi cái gì, Hỏi thế nào, Khi nào dừng, Vòng interview
+
+### Community 207 - "BuildCommandTest"
+Cohesion: 0.20
+Nodes (4): BuildCommandTest, DefaultModelTest, T1.1 (0.6.0) — default flash-medium, escalation flash-high, docs đồng bộ., T3.1 — lệnh agy đúng flags; prompt khuôn grounded đủ 3 luật.     Effort nằm tron
 
 ### Community 209 - "test_skill_docs.py"
 Cohesion: 0.33
@@ -1318,30 +1318,26 @@ Nodes (3): Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình
 Cohesion: 0.50
 Nodes (3): Checklist scope — trả lời được hết mới trình, Khuôn spec, Kiểm trước khi trình
 
-### Community 307 - ".dirty_repo"
-Cohesion: 0.26
-Nodes (5): 0.3.2 — chặn oan do chính vân tay repo.      0.3.1 so vân tay TOÀN repo nhưng ch, Ghi đè y hệt byte / `touch` không phải là thay đổi repo., Không hồi quy: sửa file thật bằng shell vẫn phải chặn., §6 — quyết định chặn phải có dấu vết debug được., TestStopGateNoFalseBlock
-
 ### Community 308 - "QC — Bump 0.7.0 + bộ export Claude Code"
 Cohesion: 0.50
 Nodes (3): Defect QC phát hiện, Kết luận, QC — Bump 0.7.0 + bộ export Claude Code
 
 ## Knowledge Gaps
-- **1289 isolated node(s):** `Mốc`, `Đang ở đâu`, `Việc tiếp theo`, `Năng lực → task`, `Quy tắc thi hành (áp cho mọi task)` (+1284 more)
+- **1290 isolated node(s):** `00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane)`, `00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai`, `01:10 — Chốt interview vòng 2, viết knowledge + spec`, `01:25 — User duyệt spec → viết plan (6 phase / 21 task)`, `02:04` (+1285 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **56 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `write_state()` connect `.stop` to `TestStopGateDiskEffects`, `.dirty_repo`, `helper.py`, `TokenBudgetTest`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `write_file()` connect `write_file` to `helper.py`, `TokenBudgetTest`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `Mốc`, `Đang ở đâu`, `Việc tiếp theo` to the rest of the system?**
-  _1289 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `write_state()` connect `.stop` to `helper.py`, `load_fixture`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **What connects `00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane)`, `00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai`, `01:10 — Chốt interview vòng 2, viết knowledge + spec` to the rest of the system?**
+  _1290 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.060041407867494824 - nodes in this community are weakly interconnected._
+- **Should `.stop` be split into smaller, more focused modules?**
+  _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
 - **Should `doc_lint.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0593990216631726 - nodes in this community are weakly interconnected._
 - **Should `external_task.py` be split into smaller, more focused modules?**

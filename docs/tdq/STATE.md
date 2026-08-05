@@ -1,5 +1,5 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-05T04:32:39+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-05T10:22:07+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|

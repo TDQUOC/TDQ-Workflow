@@ -837,6 +837,23 @@ def _parse_approve_args(rest):
     return target, mode, by
 
 
+def _file_changed_since_approval(cwd, state, target):
+    """True khi file spec/plan đã đổi nội dung so với lúc duyệt. Dùng để phân biệt
+    'duyệt lại lệnh thừa' với 'sửa file trong lúc QC rồi xin duyệt lại' — trường hợp
+    sau phải ghi lại sha256, không thì cảnh báo lệch sha treo vĩnh viễn."""
+    if target not in ("spec", "plan"):
+        return False
+    old = state.get(f"{target}_sha256")
+    rel = state.get(f"{target}_file")
+    if not old or not rel:
+        return False
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    try:
+        return sha256_file(path) != old
+    except OSError:
+        return False
+
+
 def _cli_approve(cwd, rest):
     """Ghi nhận việc user đã duyệt. Không phải gate: cảnh báo khi lệch nhưng
     VẪN ghi và luôn exit 0 — bế tắc do gate là thứ 0.2.0 loại bỏ."""
@@ -847,13 +864,14 @@ def _cli_approve(cwd, rest):
         state = default_state()
     stamp = state.get("updated_at")
 
-    if state.get(f"{target}_approved"):
+    if state.get(f"{target}_approved") and not _file_changed_since_approval(cwd, state, target):
         print(f"ℹ️ {target} đã duyệt lúc {state.get(f'{target}_approved_at')} — không ghi lại, đi tiếp bước sau.")
         if mode and state.get("implement_mode") != mode:
             state["implement_mode"] = mode
             save(cwd, state, expect_updated_at=stamp)
             print(f"ℹ️ Đã cập nhật implement_mode = {mode}.")
         return
+    reapproved = bool(state.get(f"{target}_approved"))
 
     lane = effective_lane(state)
     if not state.get("active_request"):
@@ -889,7 +907,11 @@ def _cli_approve(cwd, rest):
     if not by:
         _warn("Thiếu --by \"<nguyên văn câu user>\" — nên ghi lại để còn đối chiếu ai duyệt cái gì.")
     extra = f", mode {mode}" if mode else ""
-    print(f"✅ Đã ghi nhận user duyệt {target} lúc {state[f'{target}_approved_at']}{extra}.")
+    if reapproved:
+        print(f"✅ {target} đã sửa sau lần duyệt trước — ghi nhận user duyệt lại "
+              f"lúc {state[f'{target}_approved_at']}{extra}, sha256 đã cập nhật.")
+    else:
+        print(f"✅ Đã ghi nhận user duyệt {target} lúc {state[f'{target}_approved_at']}{extra}.")
 
 
 def _pop_json_flag(argv):

@@ -183,6 +183,47 @@ class TestState(unittest.TestCase):
         self.assertEqual(state["implement_mode"], "main")
         self.assertEqual(len(state["plan_approved_by"]), 200)
 
+    def test_reapprove_refreshes_sha256_after_file_changed(self):
+        """Sửa spec trong lúc QC rồi xin duyệt lại phải ghi được — nếu không,
+        cảnh báo "spec đã đổi sau khi duyệt" treo vĩnh viễn."""
+        run_state_cli(self.cwd, "init", "r1", "full")
+        spec = os.path.join(self.cwd, "docs", "tdq", "spec", "x.md")
+        os.makedirs(os.path.dirname(spec), exist_ok=True)
+        with open(spec, "w", encoding="utf-8") as f:
+            f.write("# spec\n")
+        run_state_cli(self.cwd, "set", "spec_file=docs/tdq/spec/x.md")
+        run_state_cli(self.cwd, "approve", "spec", "--by", "duyệt spec")
+        first = read_state(self.cwd)["spec_approved_at"]
+
+        with open(spec, "a", encoding="utf-8") as f:
+            f.write("\n## 7. Câu hỏi còn mở\n\n- thêm sau QC\n")
+        rc, out, err = run_state_cli(self.cwd, "approve", "spec", "--by", "approve spec")
+        self.assertEqual(rc, 0, err)
+        self.assertIn("duyệt lại", out)
+        state = read_state(self.cwd)
+        self.assertEqual(state["spec_sha256"], tdq_state.sha256_file(spec))
+        self.assertEqual(state["spec_approved_by"], "approve spec")
+        # dấu thời gian chỉ tới giây nên duyệt lại trong cùng giây vẫn bằng nhau —
+        # chỉ đòi không lùi về quá khứ.
+        self.assertGreaterEqual(state["spec_approved_at"], first)
+
+    def test_reapprove_unchanged_file_stays_idempotent(self):
+        """File không đổi thì duyệt lại là lệnh thừa — không ghi đè dấu duyệt cũ."""
+        run_state_cli(self.cwd, "init", "r1", "full")
+        spec = os.path.join(self.cwd, "docs", "tdq", "spec", "x.md")
+        os.makedirs(os.path.dirname(spec), exist_ok=True)
+        with open(spec, "w", encoding="utf-8") as f:
+            f.write("# spec\n")
+        run_state_cli(self.cwd, "set", "spec_file=docs/tdq/spec/x.md")
+        run_state_cli(self.cwd, "approve", "spec", "--by", "duyệt spec")
+        first = read_state(self.cwd)["spec_approved_at"]
+        rc, out, err = run_state_cli(self.cwd, "approve", "spec", "--by", "approve spec")
+        self.assertEqual(rc, 0, err)
+        self.assertIn("đã duyệt lúc", out)
+        state = read_state(self.cwd)
+        self.assertEqual(state["spec_approved_at"], first)
+        self.assertEqual(state["spec_approved_by"], "duyệt spec")
+
     def test_approve_accepts_bare_mode(self):
         run_state_cli(self.cwd, "init", "r1", "full")
         run_state_cli(self.cwd, "approve", "spec")

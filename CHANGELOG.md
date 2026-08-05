@@ -7,16 +7,20 @@ Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 Workflow linh hoạt: gộp gate spec → plan → build trong cùng turn, lane quick vẫn đủ
 bước tư duy, bỏ vòng review máy giữa spec và plan.
 
-Tối ưu token 2 vòng: `token_audit.py` sửa lỗi đếm theo dòng JSONL (lệch +62%), CLAUDE.md
-lõi rút còn 3,2 KB và đẩy luật chi tiết sang `skills/*/references`, gộp bookkeeping cuối
-turn về `tdq_finish.py`, đặt trần digest cho sub-agent, chuyển 10 LSP sang nạp theo yêu cầu.
+Tối ưu token 2 vòng: `token_audit.py` sửa lỗi đếm theo dòng JSONL (lệch +62%) · CLAUDE.md
+lõi rút còn 3,2 KB và đẩy luật chi tiết sang `skills/*/references`. Bookkeeping cuối turn
+gộp về `tdq_finish.py`, digest sub-agent có trần, 10 LSP chuyển sang nạp theo yêu cầu.
 
 Report của request rút trần từ 50 xuống 10 dòng.
 
 Bộ export sang máy khác đổi từ 7 bước tay sang `scripts/claude_export.py` với 2 lệnh
-`build` và `check`: bản copy repo lấy bằng `git clone` (giữ `.git`, chỉ file tracked),
-mang theo cấu hình MCP để khôi phục bằng `claude mcp add-json`, manifest ghi phiên bản
-plugin + commit SHA + sha256 từng file, và `check` đo được độ lệch giữa bundle và máy nguồn.
+`build` và `check`. Bản copy repo lấy bằng `git clone` (giữ `.git`, chỉ file tracked) ·
+cấu hình MCP đi kèm để khôi phục bằng `claude mcp add-json`. Manifest ghi phiên bản
+plugin + commit SHA + sha256 từng file, còn `check` đo độ lệch giữa bundle và máy nguồn.
+
+`approve spec|plan` nay ghi lại được khi file đã sửa sau lần duyệt trước. sha256 và dấu
+duyệt được làm mới thay vì bỏ qua · cảnh báo "đã đổi sau khi duyệt" không còn treo vĩnh
+viễn sau khi QC sửa spec. File không đổi thì lệnh vẫn là no-op như cũ.
 
 ## 0.6.2 — 2026-08-02
 

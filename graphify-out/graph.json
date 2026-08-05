@@ -4,369 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "label": "EXPORT_LOG.md",
-      "file_type": "document",
-      "source_file": "claude-export/EXPORT_LOG.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude_export_export_log",
-      "community": 266,
-      "community_name": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
-      "norm_label": "export_log.md"
-    },
-    {
-      "label": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
-      "file_type": "document",
-      "source_file": "claude-export/EXPORT_LOG.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude_export_export_log_export_log_l\u1ecbch_s\u1eed_sinh_bundle_export",
-      "community": 266,
-      "community_name": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
-      "norm_label": "export_log \u2014 lich su sinh bundle export"
-    },
-    {
-      "label": "M\u1ed1c",
-      "file_type": "document",
-      "source_file": "claude-export/EXPORT_LOG.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "claude_export_export_log_m\u1ed1c",
-      "community": 266,
-      "community_name": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
-      "norm_label": "moc"
-    },
-    {
-      "label": "STATE.md",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_state",
-      "community": 255,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "state.md"
-    },
-    {
-      "label": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
-      "community": 255,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "tdq state (tu sinh \u2014 khong sua tay)"
-    },
-    {
-      "label": "\u0110ang \u1edf \u0111\u00e2u",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u",
-      "community": 255,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "\u0111ang o \u0111au"
-    },
-    {
-      "label": "Vi\u1ec7c ti\u1ebfp theo",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo",
-      "community": 255,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "viec tiep theo"
-    },
-    {
-      "label": "plan/2026-08-05-bump-version-va-export.md",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "plan/2026-08-05-bump-version-va-export.md"
-    },
-    {
-      "label": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "plan \u2014 bump 0.7.0 + bo export claude code chay bang mot lenh"
-    },
-    {
-      "label": "N\u0103ng l\u1ef1c \u2192 task",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_n\u0103ng_l\u1ef1c_task",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "nang luc \u2192 task"
-    },
-    {
-      "label": "Quy t\u1eafc thi h\u00e0nh (\u00e1p cho m\u1ecdi task)",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_quy_t\u1eafc_thi_h\u00e0nh_\u00e1p_cho_m\u1ecdi_task",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "quy tac thi hanh (ap cho moi task)"
-    },
-    {
-      "label": "P1 \u2014 Bump 0.7.0",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p1_bump_0_7_0",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p1 \u2014 bump 0.7.0"
-    },
-    {
-      "label": "P2 \u2014 Khung `claude_export.py` + l\u1edbp thu th\u1eadp ngu\u1ed3n",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p2_khung_claude_export_py_l\u1edbp_thu_th\u1eadp_ngu\u1ed3n",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p2 \u2014 khung `claude_export.py` + lop thu thap nguon"
-    },
-    {
-      "label": "P3 \u2014 L\u1ec7nh `build`",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L44",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p3_l\u1ec7nh_build",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p3 \u2014 lenh `build`"
-    },
-    {
-      "label": "P4 \u2014 L\u1ec7nh `check` (\u0111o drift)",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p4_l\u1ec7nh_check_\u0111o_drift",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p4 \u2014 lenh `check` (\u0111o drift)"
-    },
-    {
-      "label": "P5 \u2014 T\u00e0i li\u1ec7u b\u1ed9 export",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L63",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p5_t\u00e0i_li\u1ec7u_b\u1ed9_export",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p5 \u2014 tai lieu bo export"
-    },
-    {
-      "label": "P6 \u2014 Sinh bundle th\u1eadt + zip",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L77",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p6_sinh_bundle_th\u1eadt_zip",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p6 \u2014 sinh bundle that + zip"
-    },
-    {
-      "label": "P7 \u2014 Log & test b\u1eaft bu\u1ed9c",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L87",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p7_log_test_b\u1eaft_bu\u1ed9c",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "p7 \u2014 log & test bat buoc"
-    },
-    {
-      "label": "QC",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L115",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_qc",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "qc"
-    },
-    {
-      "label": "Definition of Done",
-      "file_type": "document",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L129",
-      "_origin": "ast",
-      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_definition_of_done",
-      "community": 65,
-      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
-      "norm_label": "definition of done"
-    },
-    {
-      "label": "qc/2026-08-05-bump-version-va-export.md",
-      "file_type": "document",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export",
-      "community": 308,
-      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
-      "norm_label": "qc/2026-08-05-bump-version-va-export.md"
-    },
-    {
-      "label": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
-      "file_type": "document",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code",
-      "community": 308,
-      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
-      "norm_label": "qc \u2014 bump 0.7.0 + bo export claude code"
-    },
-    {
-      "label": "Defect QC ph\u00e1t hi\u1ec7n",
-      "file_type": "document",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export_defect_qc_ph\u00e1t_hi\u1ec7n",
-      "community": 308,
-      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
-      "norm_label": "defect qc phat hien"
-    },
-    {
-      "label": "K\u1ebft lu\u1eadn",
-      "file_type": "document",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn",
-      "community": 308,
-      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
-      "norm_label": "ket luan"
-    },
-    {
-      "label": "reports/2026-08-05-bump-version-va-export.md",
-      "file_type": "document",
-      "source_file": "docs/tdq/reports/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_reports_2026_08_05_bump_version_va_export",
-      "community": 309,
-      "community_name": "reports/2026-08-05-bump-version-va-export.md",
-      "norm_label": "reports/2026-08-05-bump-version-va-export.md"
-    },
-    {
-      "label": "REPORT \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code (`2026-08-05-bump-version-va-export` \u00b7 lane full \u00b7 mode main \u00b7 26/26 task tick \u0111\u1ee7)",
-      "file_type": "document",
-      "source_file": "docs/tdq/reports/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_reports_2026_08_05_bump_version_va_export_report_bump_0_7_0_b\u1ed9_export_claude_code_2026_08_05_bump_version_va_export_lane_full_mode_main_26_26_task_tick_\u0111\u1ee7",
-      "community": 309,
-      "community_name": "reports/2026-08-05-bump-version-va-export.md",
-      "norm_label": "report \u2014 bump 0.7.0 + bo export claude code (`2026-08-05-bump-version-va-export` \u00b7 lane full \u00b7 mode main \u00b7 26/26 task tick \u0111u)"
-    },
-    {
-      "label": "research/2026-08-05-bump-version-va-export.md",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "research/2026-08-05-bump-version-va-export.md"
-    },
-    {
-      "label": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "research \u2014 bump version + export \u0111ay \u0111u hon"
-    },
-    {
-      "label": "Truy v\u1ea5n 1 \u2014 Migrate c\u1ea5u h\u00ecnh Claude Code sang m\u00e1y m\u1edbi, copy file n\u00e0o",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L5",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_1_migrate_c\u1ea5u_h\u00ecnh_claude_code_sang_m\u00e1y_m\u1edbi_copy_file_n\u00e0o",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "truy van 1 \u2014 migrate cau hinh claude code sang may moi, copy file nao"
-    },
-    {
-      "label": "Truy v\u1ea5n 2 \u2014 MCP server \u1edf \u0111\u00e2u, kh\u00f4i ph\u1ee5c th\u1ebf n\u00e0o b\u1eb1ng CLI",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_2_mcp_server_\u1edf_\u0111\u00e2u_kh\u00f4i_ph\u1ee5c_th\u1ebf_n\u00e0o_b\u1eb1ng_cli",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "truy van 2 \u2014 mcp server o \u0111au, khoi phuc the nao bang cli"
-    },
-    {
-      "label": "Truy v\u1ea5n 3 \u2014 Marketplace local + c\u00e0i plugin b\u1eb1ng CLI",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_3_marketplace_local_c\u00e0i_plugin_b\u1eb1ng_cli",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "truy van 3 \u2014 marketplace local + cai plugin bang cli"
-    },
-    {
-      "label": "Truy v\u1ea5n 4 \u2014 X\u00e1c minh l\u1ea1i c\u00fa ph\u00e1p tr\u01b0\u1edbc khi ghi v\u00e0o README template",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L49",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_4_x\u00e1c_minh_l\u1ea1i_c\u00fa_ph\u00e1p_tr\u01b0\u1edbc_khi_ghi_v\u00e0o_readme_template",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "truy van 4 \u2014 xac minh lai cu phap truoc khi ghi vao readme template"
-    },
-    {
-      "label": "K\u1ebft lu\u1eadn d\u00f9ng cho spec",
-      "file_type": "document",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L68",
-      "_origin": "ast",
-      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn_d\u00f9ng_cho_spec",
-      "community": 194,
-      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
-      "norm_label": "ket luan dung cho spec"
-    },
-    {
       "label": "2026-08-05.md",
       "file_type": "document",
       "source_file": "docs/workinglog/2026-08-05.md",
@@ -519,6 +156,380 @@
       "community": 67,
       "community_name": "Working log 2026-08-05",
       "norm_label": "04:32"
+    },
+    {
+      "label": "10:17",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-05.md",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_05_10_17",
+      "community": 67,
+      "community_name": "Working log 2026-08-05",
+      "norm_label": "10:17"
+    },
+    {
+      "label": "EXPORT_LOG.md",
+      "file_type": "document",
+      "source_file": "claude-export/EXPORT_LOG.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 266,
+      "community_name": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
+      "norm_label": "export_log.md",
+      "id": "claude_export_export_log"
+    },
+    {
+      "label": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
+      "file_type": "document",
+      "source_file": "claude-export/EXPORT_LOG.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 266,
+      "community_name": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
+      "norm_label": "export_log \u2014 lich su sinh bundle export",
+      "id": "claude_export_export_log_export_log_l\u1ecbch_s\u1eed_sinh_bundle_export"
+    },
+    {
+      "label": "M\u1ed1c",
+      "file_type": "document",
+      "source_file": "claude-export/EXPORT_LOG.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 266,
+      "community_name": "EXPORT_LOG \u2014 L\u1ecbch s\u1eed sinh bundle export",
+      "norm_label": "moc",
+      "id": "claude_export_export_log_m\u1ed1c"
+    },
+    {
+      "label": "STATE.md",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 255,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "state.md",
+      "id": "docs_tdq_state"
+    },
+    {
+      "label": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 255,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "tdq state (tu sinh \u2014 khong sua tay)",
+      "id": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay"
+    },
+    {
+      "label": "\u0110ang \u1edf \u0111\u00e2u",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "community": 255,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "\u0111ang o \u0111au",
+      "id": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u"
+    },
+    {
+      "label": "Vi\u1ec7c ti\u1ebfp theo",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 255,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "viec tiep theo",
+      "id": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo"
+    },
+    {
+      "label": "plan/2026-08-05-bump-version-va-export.md",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "plan/2026-08-05-bump-version-va-export.md",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export"
+    },
+    {
+      "label": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "plan \u2014 bump 0.7.0 + bo export claude code chay bang mot lenh",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh"
+    },
+    {
+      "label": "N\u0103ng l\u1ef1c \u2192 task",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "nang luc \u2192 task",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_n\u0103ng_l\u1ef1c_task"
+    },
+    {
+      "label": "Quy t\u1eafc thi h\u00e0nh (\u00e1p cho m\u1ecdi task)",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "quy tac thi hanh (ap cho moi task)",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_quy_t\u1eafc_thi_h\u00e0nh_\u00e1p_cho_m\u1ecdi_task"
+    },
+    {
+      "label": "P1 \u2014 Bump 0.7.0",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p1 \u2014 bump 0.7.0",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p1_bump_0_7_0"
+    },
+    {
+      "label": "P2 \u2014 Khung `claude_export.py` + l\u1edbp thu th\u1eadp ngu\u1ed3n",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L34",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p2 \u2014 khung `claude_export.py` + lop thu thap nguon",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p2_khung_claude_export_py_l\u1edbp_thu_th\u1eadp_ngu\u1ed3n"
+    },
+    {
+      "label": "P3 \u2014 L\u1ec7nh `build`",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L44",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p3 \u2014 lenh `build`",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p3_l\u1ec7nh_build"
+    },
+    {
+      "label": "P4 \u2014 L\u1ec7nh `check` (\u0111o drift)",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p4 \u2014 lenh `check` (\u0111o drift)",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p4_l\u1ec7nh_check_\u0111o_drift"
+    },
+    {
+      "label": "P5 \u2014 T\u00e0i li\u1ec7u b\u1ed9 export",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p5 \u2014 tai lieu bo export",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p5_t\u00e0i_li\u1ec7u_b\u1ed9_export"
+    },
+    {
+      "label": "P6 \u2014 Sinh bundle th\u1eadt + zip",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L77",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p6 \u2014 sinh bundle that + zip",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p6_sinh_bundle_th\u1eadt_zip"
+    },
+    {
+      "label": "P7 \u2014 Log & test b\u1eaft bu\u1ed9c",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L87",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "p7 \u2014 log & test bat buoc",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_p7_log_test_b\u1eaft_bu\u1ed9c"
+    },
+    {
+      "label": "QC",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L115",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "qc",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_qc"
+    },
+    {
+      "label": "Definition of Done",
+      "file_type": "document",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L129",
+      "_origin": "ast",
+      "community": 65,
+      "community_name": "PLAN \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code ch\u1ea1y b\u1eb1ng m\u1ed9t l\u1ec7nh",
+      "norm_label": "definition of done",
+      "id": "docs_tdq_plan_2026_08_05_bump_version_va_export_definition_of_done"
+    },
+    {
+      "label": "qc/2026-08-05-bump-version-va-export.md",
+      "file_type": "document",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 308,
+      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
+      "norm_label": "qc/2026-08-05-bump-version-va-export.md",
+      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export"
+    },
+    {
+      "label": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
+      "file_type": "document",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 308,
+      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
+      "norm_label": "qc \u2014 bump 0.7.0 + bo export claude code",
+      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code"
+    },
+    {
+      "label": "Defect QC ph\u00e1t hi\u1ec7n",
+      "file_type": "document",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "community": 308,
+      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
+      "norm_label": "defect qc phat hien",
+      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export_defect_qc_ph\u00e1t_hi\u1ec7n"
+    },
+    {
+      "label": "K\u1ebft lu\u1eadn",
+      "file_type": "document",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "community": 308,
+      "community_name": "QC \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code",
+      "norm_label": "ket luan",
+      "id": "docs_tdq_qc_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn"
+    },
+    {
+      "label": "reports/2026-08-05-bump-version-va-export.md",
+      "file_type": "document",
+      "source_file": "docs/tdq/reports/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 309,
+      "community_name": "reports/2026-08-05-bump-version-va-export.md",
+      "norm_label": "reports/2026-08-05-bump-version-va-export.md",
+      "id": "docs_tdq_reports_2026_08_05_bump_version_va_export"
+    },
+    {
+      "label": "REPORT \u2014 Bump 0.7.0 + b\u1ed9 export Claude Code (`2026-08-05-bump-version-va-export` \u00b7 lane full \u00b7 mode main \u00b7 26/26 task tick \u0111\u1ee7)",
+      "file_type": "document",
+      "source_file": "docs/tdq/reports/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 309,
+      "community_name": "reports/2026-08-05-bump-version-va-export.md",
+      "norm_label": "report \u2014 bump 0.7.0 + bo export claude code (`2026-08-05-bump-version-va-export` \u00b7 lane full \u00b7 mode main \u00b7 26/26 task tick \u0111u)",
+      "id": "docs_tdq_reports_2026_08_05_bump_version_va_export_report_bump_0_7_0_b\u1ed9_export_claude_code_2026_08_05_bump_version_va_export_lane_full_mode_main_26_26_task_tick_\u0111\u1ee7"
+    },
+    {
+      "label": "research/2026-08-05-bump-version-va-export.md",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "research/2026-08-05-bump-version-va-export.md",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export"
+    },
+    {
+      "label": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "research \u2014 bump version + export \u0111ay \u0111u hon",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n"
+    },
+    {
+      "label": "Truy v\u1ea5n 1 \u2014 Migrate c\u1ea5u h\u00ecnh Claude Code sang m\u00e1y m\u1edbi, copy file n\u00e0o",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "truy van 1 \u2014 migrate cau hinh claude code sang may moi, copy file nao",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_1_migrate_c\u1ea5u_h\u00ecnh_claude_code_sang_m\u00e1y_m\u1edbi_copy_file_n\u00e0o"
+    },
+    {
+      "label": "Truy v\u1ea5n 2 \u2014 MCP server \u1edf \u0111\u00e2u, kh\u00f4i ph\u1ee5c th\u1ebf n\u00e0o b\u1eb1ng CLI",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "truy van 2 \u2014 mcp server o \u0111au, khoi phuc the nao bang cli",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_2_mcp_server_\u1edf_\u0111\u00e2u_kh\u00f4i_ph\u1ee5c_th\u1ebf_n\u00e0o_b\u1eb1ng_cli"
+    },
+    {
+      "label": "Truy v\u1ea5n 3 \u2014 Marketplace local + c\u00e0i plugin b\u1eb1ng CLI",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "truy van 3 \u2014 marketplace local + cai plugin bang cli",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_3_marketplace_local_c\u00e0i_plugin_b\u1eb1ng_cli"
+    },
+    {
+      "label": "Truy v\u1ea5n 4 \u2014 X\u00e1c minh l\u1ea1i c\u00fa ph\u00e1p tr\u01b0\u1edbc khi ghi v\u00e0o README template",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L49",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "truy van 4 \u2014 xac minh lai cu phap truoc khi ghi vao readme template",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_4_x\u00e1c_minh_l\u1ea1i_c\u00fa_ph\u00e1p_tr\u01b0\u1edbc_khi_ghi_v\u00e0o_readme_template"
+    },
+    {
+      "label": "K\u1ebft lu\u1eadn d\u00f9ng cho spec",
+      "file_type": "document",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L68",
+      "_origin": "ast",
+      "community": 194,
+      "community_name": "RESEARCH \u2014 Bump version + export \u0111\u1ea7y \u0111\u1ee7 h\u01a1n",
+      "norm_label": "ket luan dung cho spec",
+      "id": "docs_tdq_research_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn_d\u00f9ng_cho_spec"
     },
     {
       "label": "spec/2026-08-05-bump-version-va-export.md",
@@ -19644,7 +19655,7 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 26,
+      "community": 149,
       "community_name": "test_search_task.py",
       "norm_label": "test_search_task.py",
       "id": "tests_test_search_task"
@@ -19656,7 +19667,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": "good_finding()",
       "id": "tests_test_search_task_good_finding"
     },
@@ -19666,8 +19677,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "StubBase",
+      "community": 149,
+      "community_name": "test_search_task.py",
       "norm_label": "good_report()",
       "id": "tests_test_search_task_good_report"
     },
@@ -19678,7 +19689,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": "schematest",
       "id": "tests_test_search_task_schematest"
     },
@@ -19689,7 +19700,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": ".test_schema_file_exists_all_required()",
       "id": "tests_test_search_task_schematest_test_schema_file_exists_all_required"
     },
@@ -19700,7 +19711,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": ".test_valid_report_passes()",
       "id": "tests_test_search_task_schematest_test_valid_report_passes"
     },
@@ -19711,7 +19722,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": ".test_bare_domain_url_fails()",
       "id": "tests_test_search_task_schematest_test_bare_domain_url_fails"
     },
@@ -19722,7 +19733,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": ".test_missing_key_fails()",
       "id": "tests_test_search_task_schematest_test_missing_key_fails"
     },
@@ -19733,7 +19744,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": ".test_score_out_of_range_fails()",
       "id": "tests_test_search_task_schematest_test_score_out_of_range_fails"
     },
@@ -19798,8 +19809,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L112",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 207,
+      "community_name": "BuildCommandTest",
       "norm_label": "defaultmodeltest",
       "id": "tests_test_search_task_defaultmodeltest"
     },
@@ -19809,8 +19820,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L115",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 207,
+      "community_name": "BuildCommandTest",
       "norm_label": ".test_default_model_is_flash_medium()",
       "id": "tests_test_search_task_defaultmodeltest_test_default_model_is_flash_medium"
     },
@@ -19820,8 +19831,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L118",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 207,
+      "community_name": "BuildCommandTest",
       "norm_label": ".test_escalation_model_stays_flash_high()",
       "id": "tests_test_search_task_defaultmodeltest_test_escalation_model_stays_flash_high"
     },
@@ -19831,8 +19842,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L121",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 207,
+      "community_name": "BuildCommandTest",
       "norm_label": ".test_no_stale_flash_low_anywhere_in_script()",
       "id": "tests_test_search_task_defaultmodeltest_test_no_stale_flash_low_anywhere_in_script"
     },
@@ -20073,8 +20084,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L319",
       "_origin": "ast",
-      "community": 47,
-      "community_name": ".run_cli",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": "._http_status()",
       "id": "tests_test_search_task_stubbase_http_status"
     },
@@ -20128,8 +20139,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L351",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": "preflighttest",
       "id": "tests_test_search_task_preflighttest"
     },
@@ -20150,8 +20161,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L362",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": ".test_wrong_default_slug_engine_failed()",
       "id": "tests_test_search_task_preflighttest_test_wrong_default_slug_engine_failed"
     },
@@ -20161,8 +20172,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L369",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": ".test_agy_models_broken_engine_failed()",
       "id": "tests_test_search_task_preflighttest_test_agy_models_broken_engine_failed"
     },
@@ -20172,8 +20183,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L377",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "StubBase",
+      "community": 149,
+      "community_name": "test_search_task.py",
       "norm_label": "runroutetest",
       "id": "tests_test_search_task_runroutetest"
     },
@@ -20183,8 +20194,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L380",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "StubBase",
+      "community": 149,
+      "community_name": "test_search_task.py",
       "norm_label": ".test_search_plus_url_reads_capped()",
       "id": "tests_test_search_task_runroutetest_test_search_plus_url_reads_capped"
     },
@@ -20194,8 +20205,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L400",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "StubBase",
+      "community": 149,
+      "community_name": "test_search_task.py",
       "norm_label": ".test_not_found_route_accepted()",
       "id": "tests_test_search_task_runroutetest_test_not_found_route_accepted"
     },
@@ -20315,8 +20326,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L487",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": "calltimeouttest",
       "id": "tests_test_search_task_calltimeouttest"
     },
@@ -20458,8 +20469,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L587",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "StubBase",
+      "community": 47,
+      "community_name": ".run_cli",
       "norm_label": ".test_brief_copy_atomic_no_tmp_left()",
       "id": "tests_test_search_task_hardentest_test_brief_copy_atomic_no_tmp_left"
     },
@@ -20535,8 +20546,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L663",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 307,
+      "community_name": "SearchRunnerAgentTest",
       "norm_label": "searchrunneragenttest",
       "id": "tests_test_search_task_searchrunneragenttest"
     },
@@ -20546,8 +20557,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L668",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 307,
+      "community_name": "SearchRunnerAgentTest",
       "norm_label": ".test_frontmatter()",
       "id": "tests_test_search_task_searchrunneragenttest_test_frontmatter"
     },
@@ -20557,8 +20568,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L678",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 307,
+      "community_name": "SearchRunnerAgentTest",
       "norm_label": ".test_return_contract_summary_not_verbatim()",
       "id": "tests_test_search_task_searchrunneragenttest_test_return_contract_summary_not_verbatim"
     },
@@ -20568,8 +20579,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L688",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 307,
+      "community_name": "SearchRunnerAgentTest",
       "norm_label": ".test_core_command_and_rules()",
       "id": "tests_test_search_task_searchrunneragenttest_test_core_command_and_rules"
     },
@@ -20579,8 +20590,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L700",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 307,
+      "community_name": "SearchRunnerAgentTest",
       "norm_label": ".test_wait_mechanism_and_exit_table()",
       "id": "tests_test_search_task_searchrunneragenttest_test_wait_mechanism_and_exit_table"
     },
@@ -20668,7 +20679,7 @@
       "source_location": "L761",
       "_origin": "ast",
       "community": 26,
-      "community_name": "test_search_task.py",
+      "community_name": "DeepSearchDocTest",
       "norm_label": "deepsearchdoctest",
       "id": "tests_test_search_task_deepsearchdoctest"
     },
@@ -20679,7 +20690,7 @@
       "source_location": "L769",
       "_origin": "ast",
       "community": 26,
-      "community_name": "test_search_task.py",
+      "community_name": "DeepSearchDocTest",
       "norm_label": ".test_deep_search_eight_sections()",
       "id": "tests_test_search_task_deepsearchdoctest_test_deep_search_eight_sections"
     },
@@ -20690,7 +20701,7 @@
       "source_location": "L785",
       "_origin": "ast",
       "community": 26,
-      "community_name": "test_search_task.py",
+      "community_name": "DeepSearchDocTest",
       "norm_label": ".test_hybrid_flow_needles()",
       "id": "tests_test_search_task_deepsearchdoctest_test_hybrid_flow_needles"
     },
@@ -20701,7 +20712,7 @@
       "source_location": "L803",
       "_origin": "ast",
       "community": 26,
-      "community_name": "test_search_task.py",
+      "community_name": "DeepSearchDocTest",
       "norm_label": ".test_tavily_md_layering()",
       "id": "tests_test_search_task_deepsearchdoctest_test_tavily_md_layering"
     },
@@ -20712,7 +20723,7 @@
       "source_location": "L809",
       "_origin": "ast",
       "community": 26,
-      "community_name": "test_search_task.py",
+      "community_name": "DeepSearchDocTest",
       "norm_label": ".test_doc_lint_clean()",
       "id": "tests_test_search_task_deepsearchdoctest_test_doc_lint_clean"
     },
@@ -20722,7 +20733,7 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 26,
+      "community": 149,
       "community_name": "test_search_task.py",
       "norm_label": "test search_task.py \u2014 deep search \u0111ieu phoi multi-call agy (stub binary, khong m",
       "id": "tests_test_search_task_rationale_1"
@@ -20734,7 +20745,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "community": 149,
-      "community_name": "good_finding",
+      "community_name": "test_search_task.py",
       "norm_label": "t1.1 \u2014 schema all-required, url bat buoc co path.",
       "id": "tests_test_search_task_rationale_37"
     },
@@ -20755,8 +20766,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L113",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 207,
+      "community_name": "BuildCommandTest",
       "norm_label": "t1.1 (0.6.0) \u2014 default flash-medium, escalation flash-high, docs \u0111ong bo.",
       "id": "tests_test_search_task_rationale_113"
     },
@@ -20821,8 +20832,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L352",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": "t3.2 \u2014 validate agy cli + ca hai model slug qua external_models.py.",
       "id": "tests_test_search_task_rationale_352"
     },
@@ -20832,8 +20843,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L378",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "StubBase",
+      "community": 149,
+      "community_name": "test_search_task.py",
       "norm_label": "t3.3 \u2014 1 call search + \u2264n call \u0111oc url; parse structured_output; gop finding.",
       "id": "tests_test_search_task_rationale_378"
     },
@@ -20865,8 +20876,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L488",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 21,
+      "community_name": "StubBase",
       "norm_label": "t3.6 \u2014 call qua tdq_search_timeout bi kill, tinh 1 lan fail \u2192 retry.",
       "id": "tests_test_search_task_rationale_488"
     },
@@ -20909,8 +20920,8 @@
       "source_file": "tests/test_search_task.py",
       "source_location": "L664",
       "_origin": "ast",
-      "community": 26,
-      "community_name": "test_search_task.py",
+      "community": 307,
+      "community_name": "SearchRunnerAgentTest",
       "norm_label": "t5.1 \u2014 agent vo mong \u0111ung khuon runner (nhu runneragentstest ben external).",
       "id": "tests_test_search_task_rationale_664"
     },
@@ -20932,7 +20943,7 @@
       "source_location": "L762",
       "_origin": "ast",
       "community": 26,
-      "community_name": "test_search_task.py",
+      "community_name": "DeepSearchDocTest",
       "norm_label": "t5.2 \u2014 deep-search.md \u0111u 8 muc; t6.1 \u2014 tavily.md neu tang search.",
       "id": "tests_test_search_task_rationale_762"
     },
@@ -30743,7 +30754,7 @@
       "source_file": "tests/helper.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "helper.py",
       "id": "tests_helper"
@@ -30754,7 +30765,7 @@
       "source_file": "tests/helper.py",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "run_hook()",
       "id": "tests_helper_run_hook"
@@ -30765,8 +30776,8 @@
       "source_file": "tests/helper.py",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 52,
-      "community_name": "helper.py",
+      "community": 44,
+      "community_name": "load_fixture",
       "norm_label": "load_fixture()",
       "id": "tests_helper_load_fixture"
     },
@@ -30788,7 +30799,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "read_state()",
       "id": "tests_helper_read_state"
     },
@@ -30809,8 +30820,8 @@
       "source_file": "tests/helper.py",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 34,
-      "community_name": "StateFileTest",
+      "community": 57,
+      "community_name": "helper.py",
       "norm_label": "run_state_cli_in()",
       "id": "tests_helper_run_state_cli_in"
     },
@@ -30820,8 +30831,8 @@
       "source_file": "tests/helper.py",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 52,
-      "community_name": "helper.py",
+      "community": 44,
+      "community_name": "load_fixture",
       "norm_label": "decision()",
       "id": "tests_helper_decision"
     },
@@ -30842,7 +30853,7 @@
       "source_file": "tests/helper.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "shared test utilities: run hook scripts as subprocesses with stdin json.",
       "id": "tests_helper_rationale_1"
@@ -30853,8 +30864,8 @@
       "source_file": "tests/helper.py",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 34,
-      "community_name": "StateFileTest",
+      "community": 57,
+      "community_name": "helper.py",
       "norm_label": "chay cli voi process cwd = cwd va khong set tdq_project_dir (giong user     go l",
       "id": "tests_helper_rationale_53"
     },
@@ -30864,8 +30875,8 @@
       "source_file": "tests/helper.py",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 52,
-      "community_name": "helper.py",
+      "community": 44,
+      "community_name": "load_fixture",
       "norm_label": "parse pretooluse hook stdout -> (permissiondecision, additionalcontext).      0.",
       "id": "tests_helper_rationale_64"
     },
@@ -30975,7 +30986,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "test_e2e_chain.py",
       "id": "tests_test_e2e_chain"
     },
@@ -30986,7 +30997,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "today()",
       "id": "tests_test_e2e_chain_today"
     },
@@ -30997,7 +31008,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "chainbase",
       "id": "tests_test_e2e_chain_chainbase"
     },
@@ -31008,7 +31019,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".setup()",
       "id": "tests_test_e2e_chain_chainbase_setup"
     },
@@ -31019,7 +31030,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".new_turn()",
       "id": "tests_test_e2e_chain_chainbase_new_turn"
     },
@@ -31030,7 +31041,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".edit()",
       "id": "tests_test_e2e_chain_chainbase_edit"
     },
@@ -31041,7 +31052,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".approve()",
       "id": "tests_test_e2e_chain_chainbase_approve"
     },
@@ -31052,7 +31063,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".stop()",
       "id": "tests_test_e2e_chain_chainbase_stop"
     },
@@ -31063,7 +31074,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "testfulllanechain",
       "id": "tests_test_e2e_chain_testfulllanechain"
     },
@@ -31074,7 +31085,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".test_full_chain()",
       "id": "tests_test_e2e_chain_testfulllanechain_test_full_chain"
     },
@@ -31085,7 +31096,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "testquicklanechain",
       "id": "tests_test_e2e_chain_testquicklanechain"
     },
@@ -31096,7 +31107,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".test_quick_chain()",
       "id": "tests_test_e2e_chain_testquicklanechain_test_quick_chain"
     },
@@ -31107,7 +31118,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 52,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "e1 \u2014 chuoi end-to-end ca hai lane theo mo hinh 0.3.0.  user duyet bang chat \u2192 cl",
       "id": "tests_test_e2e_chain_rationale_1"
     },
@@ -31117,7 +31128,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "test_hook_resilience.py",
       "id": "tests_test_hook_resilience"
@@ -31128,7 +31139,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "resiliencetest",
       "id": "tests_test_hook_resilience_resiliencetest"
@@ -31139,7 +31150,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L25",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": ".setup()",
       "id": "tests_test_hook_resilience_resiliencetest_setup"
@@ -31150,7 +31161,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": ".test_corrupt_state()",
       "id": "tests_test_hook_resilience_resiliencetest_test_corrupt_state"
@@ -31161,7 +31172,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": ".test_readonly_docs_dir()",
       "id": "tests_test_hook_resilience_resiliencetest_test_readonly_docs_dir"
@@ -31172,7 +31183,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": ".test_missing_payload_keys()",
       "id": "tests_test_hook_resilience_resiliencetest_test_missing_payload_keys"
@@ -31183,7 +31194,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L62",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": ".test_invalid_json_stdin()",
       "id": "tests_test_hook_resilience_resiliencetest_test_invalid_json_stdin"
@@ -31194,7 +31205,7 @@
       "source_file": "tests/test_hook_resilience.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "p2/t2.12 \u2014 hook khong bao gio lam hong tool call (spec \u00a74.7).  moi hook \u00d7 moi tr",
       "id": "tests_test_hook_resilience_rationale_1"
@@ -31579,8 +31590,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".today_log()",
       "id": "tests_test_stop_gate_stopgatebase_today_log"
     },
@@ -31799,8 +31810,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L152",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "teststopgatediskeffects",
       "id": "tests_test_stop_gate_teststopgatediskeffects"
     },
@@ -31810,8 +31821,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L160",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".git()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_git"
     },
@@ -31821,8 +31832,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L163",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".snapshot()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_snapshot"
     },
@@ -31832,8 +31843,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".write()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_write"
     },
@@ -31843,8 +31854,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L176",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_shell_append_log_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_append_log_not_blocked"
     },
@@ -31854,8 +31865,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L187",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_shell_created_log_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_created_log_not_blocked"
     },
@@ -31865,8 +31876,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L196",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_untouched_log_still_blocks()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_untouched_log_still_blocks"
     },
@@ -31876,8 +31887,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L205",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_non_git_repo_log_via_shell_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_non_git_repo_log_via_shell_not_blocked"
     },
@@ -31887,8 +31898,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L217",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_shell_only_change_is_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_only_change_is_blocked"
     },
@@ -31898,8 +31909,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L228",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_shell_change_with_shell_log_is_silent()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_change_with_shell_log_is_silent"
     },
@@ -31909,8 +31920,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L237",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_state_bookkeeping_alone_does_not_block()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_state_bookkeeping_alone_does_not_block"
     },
@@ -31920,8 +31931,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L246",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_clean_git_repo_no_block()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_clean_git_repo_no_block"
     },
@@ -31953,8 +31964,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L270",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_last_turn_start_row_wins()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_last_turn_start_row_wins"
     },
@@ -31964,8 +31975,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L283",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "teststopgatenofalseblock",
       "id": "tests_test_stop_gate_teststopgatenofalseblock"
     },
@@ -31975,8 +31986,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L295",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".dirty_repo()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_dirty_repo"
     },
@@ -31986,8 +31997,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L302",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_readonly_turn_with_dirty_repo_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_readonly_turn_with_dirty_repo_not_blocked"
     },
@@ -31997,8 +32008,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L310",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_state_write_only_turn_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_state_write_only_turn_not_blocked"
     },
@@ -32008,8 +32019,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L317",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_touch_untracked_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_touch_untracked_not_blocked"
     },
@@ -32019,8 +32030,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L327",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_real_change_still_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_real_change_still_blocked"
     },
@@ -32030,8 +32041,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L335",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_block_logs_to_stderr()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_block_logs_to_stderr"
     },
@@ -32041,8 +32052,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L343",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": ".test_tdq_log_0_silences_stderr()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_tdq_log_0_silences_stderr"
     },
@@ -32085,8 +32096,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L153",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "p3 (0.3.1) \u2014 hieu ung that tren \u0111ia, khong chi tin so turn.      so turn chi ghi",
       "id": "tests_test_stop_gate_rationale_153"
     },
@@ -32096,8 +32107,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L164",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "gia lap prompt_context: chup trang thai \u0111ia luc mo turn.",
       "id": "tests_test_stop_gate_rationale_164"
     },
@@ -32107,8 +32118,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L177",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "bug goc: log append bang shell \u2192 khong co `log_written` \u2192 chan oan.",
       "id": "tests_test_stop_gate_rationale_177"
     },
@@ -32118,8 +32129,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L188",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "log hom nay chua ton tai \u0111au turn, \u0111uoc tao bang shell trong turn.",
       "id": "tests_test_stop_gate_rationale_188"
     },
@@ -32129,8 +32140,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L197",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "co anh chup nhung log khong \u0111oi \u2192 van phai chan.",
       "id": "tests_test_stop_gate_rationale_197"
     },
@@ -32140,8 +32151,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L206",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "khong phai git repo \u2192 repo_sha none, nhung chieu log van va \u0111uoc.",
       "id": "tests_test_stop_gate_rationale_206"
     },
@@ -32151,8 +32162,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L218",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "sua repo hoan toan bang shell (khong `observe` nao) \u2192 phai chan.",
       "id": "tests_test_stop_gate_rationale_218"
     },
@@ -32162,8 +32173,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L238",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "chi ghi state/so turn thi khong phai \"\u0111oi repo\" \u2014 tranh chan oan moi.",
       "id": "tests_test_stop_gate_rationale_238"
     },
@@ -32173,8 +32184,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L271",
       "_origin": "ast",
-      "community": 57,
-      "community_name": "TestStopGateDiskEffects",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "0.3.2 \u2014 so turn con sot dong cu (turn_log_clear hut) thi phai lay anh         ch",
       "id": "tests_test_stop_gate_rationale_271"
     },
@@ -32184,8 +32195,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L284",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "0.3.2 \u2014 chan oan do chinh van tay repo.      0.3.1 so van tay toan repo nhung ch",
       "id": "tests_test_stop_gate_rationale_284"
     },
@@ -32195,8 +32206,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L318",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "ghi \u0111e y het byte / `touch` khong phai la thay \u0111oi repo.",
       "id": "tests_test_stop_gate_rationale_318"
     },
@@ -32206,8 +32217,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L328",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "khong hoi quy: sua file that bang shell van phai chan.",
       "id": "tests_test_stop_gate_rationale_328"
     },
@@ -32217,8 +32228,8 @@
       "source_file": "tests/test_stop_gate.py",
       "source_location": "L336",
       "_origin": "ast",
-      "community": 307,
-      "community_name": ".dirty_repo",
+      "community": 1,
+      "community_name": ".stop",
       "norm_label": "\u00a76 \u2014 quyet \u0111inh chan phai co dau vet debug \u0111uoc.",
       "id": "tests_test_stop_gate_rationale_336"
     },
@@ -32228,8 +32239,8 @@
       "source_file": "tests/test_token_budget.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
-      "community_name": "helper.py",
+      "community": 44,
+      "community_name": "load_fixture",
       "norm_label": "test_token_budget.py",
       "id": "tests_test_token_budget"
     },
@@ -32240,7 +32251,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": "budget()",
       "id": "tests_test_token_budget_budget"
     },
@@ -32251,7 +32262,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": "tokenbudgettest",
       "id": "tests_test_token_budget_tokenbudgettest"
     },
@@ -32262,7 +32273,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".setup()",
       "id": "tests_test_token_budget_tokenbudgettest_setup"
     },
@@ -32273,7 +32284,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".each_phase()",
       "id": "tests_test_token_budget_tokenbudgettest_each_phase"
     },
@@ -32284,7 +32295,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_session_start()",
       "id": "tests_test_token_budget_tokenbudgettest_test_session_start"
     },
@@ -32295,7 +32306,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_user_prompt_submit()",
       "id": "tests_test_token_budget_tokenbudgettest_test_user_prompt_submit"
     },
@@ -32306,7 +32317,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_pre_tool_use()",
       "id": "tests_test_token_budget_tokenbudgettest_test_pre_tool_use"
     },
@@ -32317,7 +32328,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_stop()",
       "id": "tests_test_token_budget_tokenbudgettest_test_stop"
     },
@@ -32328,7 +32339,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_state_md_mirror()",
       "id": "tests_test_token_budget_tokenbudgettest_test_state_md_mirror"
     },
@@ -32339,7 +32350,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_next_output()",
       "id": "tests_test_token_budget_tokenbudgettest_test_next_output"
     },
@@ -32350,7 +32361,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_skill_descriptions_total()",
       "id": "tests_test_token_budget_tokenbudgettest_test_skill_descriptions_total"
     },
@@ -32361,7 +32372,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": ".test_reference_files_bounded()",
       "id": "tests_test_token_budget_tokenbudgettest_test_reference_files_bounded"
     },
@@ -32371,8 +32382,8 @@
       "source_file": "tests/test_token_budget.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
-      "community_name": "helper.py",
+      "community": 44,
+      "community_name": "load_fixture",
       "norm_label": "p5 \u2014 ngan sach token cua spec \u00a72.7, \u0111o that chu khong phai khuyen nghi.  moi ky",
       "id": "tests_test_token_budget_rationale_1"
     },
@@ -32383,7 +32394,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": "sinh state cho moi phase \u2014 tran phai \u0111ung o phase dai nhat, khong chi phase de.",
       "id": "tests_test_token_budget_rationale_28"
     },
@@ -32394,7 +32405,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "community": 44,
-      "community_name": "TokenBudgetTest",
+      "community_name": "load_fixture",
       "norm_label": "description cua moi skill luon nam trong context \u2014 tong phai gon.",
       "id": "tests_test_token_budget_rationale_77"
     },
@@ -32404,7 +32415,7 @@
       "source_file": "tests/test_turn_ledger.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "test_turn_ledger.py",
       "id": "tests_test_turn_ledger"
@@ -32580,7 +32591,7 @@
       "source_file": "tests/test_turn_ledger.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 57,
       "community_name": "helper.py",
       "norm_label": "p2 \u2014 so turn docs/tdq/.tdq-turn.jsonl (t2.1, t2.2).",
       "id": "tests_test_turn_ledger_rationale_1"
@@ -34782,8 +34793,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "claude_export.py",
-      "id": "scripts_claude_export",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export"
     },
     {
       "label": "_now()",
@@ -34793,8 +34804,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "_now()",
-      "id": "scripts_claude_export_now",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_now"
     },
     {
       "label": "set_log_level()",
@@ -34804,8 +34815,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "set_log_level()",
-      "id": "scripts_claude_export_set_log_level",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_set_log_level"
     },
     {
       "label": "log()",
@@ -34815,8 +34826,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "log()",
-      "id": "scripts_claude_export_log",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_log"
     },
     {
       "label": "sha256_of()",
@@ -34826,8 +34837,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "sha256_of()",
-      "id": "scripts_claude_export_sha256_of",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_sha256_of"
     },
     {
       "label": "read_mcp_servers()",
@@ -34837,8 +34848,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "read_mcp_servers()",
-      "id": "scripts_claude_export_read_mcp_servers",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_read_mcp_servers"
     },
     {
       "label": "harvest_secrets()",
@@ -34848,8 +34859,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "harvest_secrets()",
-      "id": "scripts_claude_export_harvest_secrets",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_harvest_secrets"
     },
     {
       "label": "_text_files()",
@@ -34859,8 +34870,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "_text_files()",
-      "id": "scripts_claude_export_text_files",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_text_files"
     },
     {
       "label": "scan_secrets()",
@@ -34870,8 +34881,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "scan_secrets()",
-      "id": "scripts_claude_export_scan_secrets",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_scan_secrets"
     },
     {
       "label": "redact_bundle()",
@@ -34881,8 +34892,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "redact_bundle()",
-      "id": "scripts_claude_export_redact_bundle",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_redact_bundle"
     },
     {
       "label": "collect_config_files()",
@@ -34892,8 +34903,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "collect_config_files()",
-      "id": "scripts_claude_export_collect_config_files",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_collect_config_files"
     },
     {
       "label": "_git_out()",
@@ -34903,8 +34914,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "_git_out()",
-      "id": "scripts_claude_export_git_out",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_git_out"
     },
     {
       "label": "plugin_version()",
@@ -34914,8 +34925,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "plugin_version()",
-      "id": "scripts_claude_export_plugin_version",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_plugin_version"
     },
     {
       "label": "dest_is_writable()",
@@ -34925,8 +34936,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "dest_is_writable()",
-      "id": "scripts_claude_export_dest_is_writable",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_dest_is_writable"
     },
     {
       "label": "clone_repo()",
@@ -34936,8 +34947,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "clone_repo()",
-      "id": "scripts_claude_export_clone_repo",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_clone_repo"
     },
     {
       "label": "copy_repo_memory()",
@@ -34947,8 +34958,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "copy_repo_memory()",
-      "id": "scripts_claude_export_copy_repo_memory",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_copy_repo_memory"
     },
     {
       "label": "copy_config()",
@@ -34958,8 +34969,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "copy_config()",
-      "id": "scripts_claude_export_copy_config",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_copy_config"
     },
     {
       "label": "rewrite_marketplace_path()",
@@ -34969,8 +34980,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "rewrite_marketplace_path()",
-      "id": "scripts_claude_export_rewrite_marketplace_path",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rewrite_marketplace_path"
     },
     {
       "label": "write_mcp_servers()",
@@ -34980,8 +34991,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "write_mcp_servers()",
-      "id": "scripts_claude_export_write_mcp_servers",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_write_mcp_servers"
     },
     {
       "label": "cli_versions()",
@@ -34991,8 +35002,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "cli_versions()",
-      "id": "scripts_claude_export_cli_versions",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_cli_versions"
     },
     {
       "label": "_load_json()",
@@ -35002,8 +35013,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "_load_json()",
-      "id": "scripts_claude_export_load_json",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_load_json"
     },
     {
       "label": "write_manifest()",
@@ -35013,8 +35024,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "write_manifest()",
-      "id": "scripts_claude_export_write_manifest",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_write_manifest"
     },
     {
       "label": "write_readme()",
@@ -35024,8 +35035,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "write_readme()",
-      "id": "scripts_claude_export_write_readme",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_write_readme"
     },
     {
       "label": "make_zip()",
@@ -35035,8 +35046,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "make_zip()",
-      "id": "scripts_claude_export_make_zip",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_make_zip"
     },
     {
       "label": "cmd_build()",
@@ -35046,8 +35057,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "cmd_build()",
-      "id": "scripts_claude_export_cmd_build",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_cmd_build"
     },
     {
       "label": "cmd_check()",
@@ -35057,8 +35068,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "cmd_check()",
-      "id": "scripts_claude_export_cmd_check",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_cmd_check"
     },
     {
       "label": "parse_args()",
@@ -35068,8 +35079,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "parse_args()",
-      "id": "scripts_claude_export_parse_args",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_parse_args"
     },
     {
       "label": "main()",
@@ -35079,8 +35090,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "main()",
-      "id": "scripts_claude_export_main",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_main"
     },
     {
       "label": "In 1 d\u00f2ng c\u00f3 timestamp ISO ra stderr. B\u1eadt m\u1eb7c \u0111\u1ecbnh, t\u1eaft b\u1eb1ng `--quiet`.",
@@ -35090,8 +35101,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "in 1 dong co timestamp iso ra stderr. bat mac \u0111inh, tat bang `--quiet`.",
-      "id": "scripts_claude_export_rationale_81",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_81"
     },
     {
       "label": "\u0110\u1ecdc kho\u00e1 `mcpServers` c\u1ee7a m\u1ed9t file ki\u1ec3u `~/.claude.json`. Ch\u1ec9 \u0111\u1ecdc, kh\u00f4ng ghi.",
@@ -35101,8 +35112,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "\u0111oc khoa `mcpservers` cua mot file kieu `~/.claude.json`. chi \u0111oc, khong ghi.",
-      "id": "scripts_claude_export_rationale_98",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_98"
     },
     {
       "label": "{t\u00ean bi\u1ebfn: gi\u00e1 tr\u1ecb th\u1eadt} l\u1ea5y t\u1eeb kh\u1ed1i `env` c\u1ee7a settings.json.      B\u1ecf qua gi\u00e1 tr",
@@ -35112,8 +35123,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "{ten bien: gia tri that} lay tu khoi `env` cua settings.json.      bo qua gia tr",
-      "id": "scripts_claude_export_rationale_109",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_109"
     },
     {
       "label": "\u0110\u01b0\u1eddng d\u1eabn m\u1ecdi file v\u0103n b\u1ea3n d\u01b0\u1edbi `root` c\u00f2n ch\u1ee9a m\u1ed9t trong `values`.",
@@ -35123,8 +35134,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "\u0111uong dan moi file van ban duoi `root` con chua mot trong `values`.",
-      "id": "scripts_claude_export_rationale_140",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_140"
     },
     {
       "label": "Thay m\u1ecdi gi\u00e1 tr\u1ecb key th\u1eadt trong bundle b\u1eb1ng placeholder. Tr\u1ea3 file \u0111\u00e3 s\u1eeda.",
@@ -35134,8 +35145,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "thay moi gia tri key that trong bundle bang placeholder. tra file \u0111a sua.",
-      "id": "scripts_claude_export_rationale_149",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_149"
     },
     {
       "label": "{\u0111\u01b0\u1eddng d\u1eabn trong bundle: \u0111\u01b0\u1eddng d\u1eabn ngu\u1ed3n} cho m\u1ecdi file c\u1ea5u h\u00ecnh mang theo.",
@@ -35145,8 +35156,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "{\u0111uong dan trong bundle: \u0111uong dan nguon} cho moi file cau hinh mang theo.",
-      "id": "scripts_claude_export_rationale_165",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_165"
     },
     {
       "label": "(\u0111\u01b0\u1ee3c ghi \u0111\u00e8?, l\u00fd do). Ch\u1ec9 ghi \u0111\u00e8 th\u01b0 m\u1ee5c tr\u1ed1ng ho\u1eb7c bundle do ch\u00ednh script sinh",
@@ -35156,8 +35167,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "(\u0111uoc ghi \u0111e?, ly do). chi ghi \u0111e thu muc trong hoac bundle do chinh script sinh",
-      "id": "scripts_claude_export_rationale_203",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_203"
     },
     {
       "label": "`.remember/` c\u1ee7a repo l\u00e0 untracked n\u00ean clone kh\u00f4ng mang theo \u2014 copy ri\u00eang.",
@@ -35167,8 +35178,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "`.remember/` cua repo la untracked nen clone khong mang theo \u2014 copy rieng.",
-      "id": "scripts_claude_export_rationale_234",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_234"
     },
     {
       "label": "Tr\u1ecf marketplace `tdq-local` v\u00e0o repo N\u1eb0M TRONG bundle, n\u1ebfu kh\u00f4ng plugin kh\u00f4ng lo",
@@ -35178,8 +35189,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "tro marketplace `tdq-local` vao repo nam trong bundle, neu khong plugin khong lo",
-      "id": "scripts_claude_export_rationale_265",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_265"
     },
     {
       "label": "Khung kho\u00e1 l\u1ea5y t\u1eeb MANIFEST.template.json \u0111\u1ec3 template v\u00e0 code kh\u00f4ng l\u1ec7ch nhau.",
@@ -35189,8 +35200,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "khung khoa lay tu manifest.template.json \u0111e template va code khong lech nhau.",
-      "id": "scripts_claude_export_rationale_325",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_325"
     },
     {
       "label": "N\u00e9n ra file t\u1ea1m r\u1ed3i m\u1edbi \u0111\u00e8 \u2014 h\u1ecfng gi\u1eefa ch\u1eebng th\u00ec b\u1ea3n zip c\u0169 v\u1eabn c\u00f2n.",
@@ -35200,8 +35211,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "nen ra file tam roi moi \u0111e \u2014 hong giua chung thi ban zip cu van con.",
-      "id": "scripts_claude_export_rationale_378",
-      "community_name": "claude_export.py"
+      "community_name": "claude_export.py",
+      "id": "scripts_claude_export_rationale_378"
     },
     {
       "label": "test_claude_export.py",
@@ -35211,8 +35222,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "test_claude_export.py",
-      "id": "tests_test_claude_export",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export"
     },
     {
       "label": "_git()",
@@ -35222,8 +35233,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "_git()",
-      "id": "tests_test_claude_export_git",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_git"
     },
     {
       "label": "make_repo()",
@@ -35233,8 +35244,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "make_repo()",
-      "id": "tests_test_claude_export_make_repo",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_make_repo"
     },
     {
       "label": "make_claude_home()",
@@ -35244,8 +35255,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "make_claude_home()",
-      "id": "tests_test_claude_export_make_claude_home",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_make_claude_home"
     },
     {
       "label": "run_cli()",
@@ -35255,8 +35266,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": "run_cli()",
-      "id": "tests_test_claude_export_run_cli",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_run_cli"
     },
     {
       "label": "Fixture",
@@ -35266,8 +35277,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "fixture",
-      "id": "tests_test_claude_export_fixture",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_fixture"
     },
     {
       "label": ".setUp()",
@@ -35277,8 +35288,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": ".setup()",
-      "id": "tests_test_claude_export_fixture_setup",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_fixture_setup"
     },
     {
       "label": ".build()",
@@ -35288,8 +35299,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".build()",
-      "id": "tests_test_claude_export_fixture_build",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_fixture_build"
     },
     {
       "label": ".read_manifest()",
@@ -35299,8 +35310,8 @@
       "_origin": "ast",
       "community": 205,
       "norm_label": ".read_manifest()",
-      "id": "tests_test_claude_export_fixture_read_manifest",
-      "community_name": "BuildManifestTest"
+      "community_name": "BuildManifestTest",
+      "id": "tests_test_claude_export_fixture_read_manifest"
     },
     {
       "label": "ParseArgsTest",
@@ -35310,8 +35321,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "parseargstest",
-      "id": "tests_test_claude_export_parseargstest",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_parseargstest"
     },
     {
       "label": ".test_two_subcommands()",
@@ -35321,8 +35332,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": ".test_two_subcommands()",
-      "id": "tests_test_claude_export_parseargstest_test_two_subcommands",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_parseargstest_test_two_subcommands"
     },
     {
       "label": ".test_unknown_subcommand_exits()",
@@ -35332,8 +35343,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": ".test_unknown_subcommand_exits()",
-      "id": "tests_test_claude_export_parseargstest_test_unknown_subcommand_exits",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_parseargstest_test_unknown_subcommand_exits"
     },
     {
       "label": "LogTest",
@@ -35343,8 +35354,8 @@
       "_origin": "ast",
       "community": 206,
       "norm_label": "logtest",
-      "id": "tests_test_claude_export_logtest",
-      "community_name": "LogTest"
+      "community_name": "LogTest",
+      "id": "tests_test_claude_export_logtest"
     },
     {
       "label": ".tearDown()",
@@ -35354,8 +35365,8 @@
       "_origin": "ast",
       "community": 206,
       "norm_label": ".teardown()",
-      "id": "tests_test_claude_export_logtest_teardown",
-      "community_name": "LogTest"
+      "community_name": "LogTest",
+      "id": "tests_test_claude_export_logtest_teardown"
     },
     {
       "label": "._capture()",
@@ -35365,8 +35376,8 @@
       "_origin": "ast",
       "community": 206,
       "norm_label": "._capture()",
-      "id": "tests_test_claude_export_logtest_capture",
-      "community_name": "LogTest"
+      "community_name": "LogTest",
+      "id": "tests_test_claude_export_logtest_capture"
     },
     {
       "label": ".test_log_default_on()",
@@ -35376,8 +35387,8 @@
       "_origin": "ast",
       "community": 206,
       "norm_label": ".test_log_default_on()",
-      "id": "tests_test_claude_export_logtest_test_log_default_on",
-      "community_name": "LogTest"
+      "community_name": "LogTest",
+      "id": "tests_test_claude_export_logtest_test_log_default_on"
     },
     {
       "label": ".test_quiet_silences_log()",
@@ -35387,8 +35398,8 @@
       "_origin": "ast",
       "community": 206,
       "norm_label": ".test_quiet_silences_log()",
-      "id": "tests_test_claude_export_logtest_test_quiet_silences_log",
-      "community_name": "LogTest"
+      "community_name": "LogTest",
+      "id": "tests_test_claude_export_logtest_test_quiet_silences_log"
     },
     {
       "label": ".test_verbose_adds_debug()",
@@ -35398,8 +35409,8 @@
       "_origin": "ast",
       "community": 206,
       "norm_label": ".test_verbose_adds_debug()",
-      "id": "tests_test_claude_export_logtest_test_verbose_adds_debug",
-      "community_name": "LogTest"
+      "community_name": "LogTest",
+      "id": "tests_test_claude_export_logtest_test_verbose_adds_debug"
     },
     {
       "label": "ReadMcpServersTest",
@@ -35409,8 +35420,8 @@
       "_origin": "ast",
       "community": 264,
       "norm_label": "readmcpserverstest",
-      "id": "tests_test_claude_export_readmcpserverstest",
-      "community_name": "ReadMcpServersTest"
+      "community_name": "ReadMcpServersTest",
+      "id": "tests_test_claude_export_readmcpserverstest"
     },
     {
       "label": ".test_reads_two_servers()",
@@ -35420,8 +35431,8 @@
       "_origin": "ast",
       "community": 264,
       "norm_label": ".test_reads_two_servers()",
-      "id": "tests_test_claude_export_readmcpserverstest_test_reads_two_servers",
-      "community_name": "ReadMcpServersTest"
+      "community_name": "ReadMcpServersTest",
+      "id": "tests_test_claude_export_readmcpserverstest_test_reads_two_servers"
     },
     {
       "label": ".test_missing_key_gives_empty_dict()",
@@ -35431,8 +35442,8 @@
       "_origin": "ast",
       "community": 264,
       "norm_label": ".test_missing_key_gives_empty_dict()",
-      "id": "tests_test_claude_export_readmcpserverstest_test_missing_key_gives_empty_dict",
-      "community_name": "ReadMcpServersTest"
+      "community_name": "ReadMcpServersTest",
+      "id": "tests_test_claude_export_readmcpserverstest_test_missing_key_gives_empty_dict"
     },
     {
       "label": ".test_missing_file_gives_empty_dict()",
@@ -35442,8 +35453,8 @@
       "_origin": "ast",
       "community": 264,
       "norm_label": ".test_missing_file_gives_empty_dict()",
-      "id": "tests_test_claude_export_readmcpserverstest_test_missing_file_gives_empty_dict",
-      "community_name": "ReadMcpServersTest"
+      "community_name": "ReadMcpServersTest",
+      "id": "tests_test_claude_export_readmcpserverstest_test_missing_file_gives_empty_dict"
     },
     {
       "label": "ScanSecretsTest",
@@ -35453,8 +35464,8 @@
       "_origin": "ast",
       "community": 231,
       "norm_label": "scansecretstest",
-      "id": "tests_test_claude_export_scansecretstest",
-      "community_name": "ScanSecretsTest"
+      "community_name": "ScanSecretsTest",
+      "id": "tests_test_claude_export_scansecretstest"
     },
     {
       "label": ".setUp()",
@@ -35464,8 +35475,8 @@
       "_origin": "ast",
       "community": 231,
       "norm_label": ".setup()",
-      "id": "tests_test_claude_export_scansecretstest_setup",
-      "community_name": "ScanSecretsTest"
+      "community_name": "ScanSecretsTest",
+      "id": "tests_test_claude_export_scansecretstest_setup"
     },
     {
       "label": ".test_finds_the_only_leaking_file()",
@@ -35475,8 +35486,8 @@
       "_origin": "ast",
       "community": 231,
       "norm_label": ".test_finds_the_only_leaking_file()",
-      "id": "tests_test_claude_export_scansecretstest_test_finds_the_only_leaking_file",
-      "community_name": "ScanSecretsTest"
+      "community_name": "ScanSecretsTest",
+      "id": "tests_test_claude_export_scansecretstest_test_finds_the_only_leaking_file"
     },
     {
       "label": ".test_clean_tree_gives_empty_list()",
@@ -35486,8 +35497,8 @@
       "_origin": "ast",
       "community": 231,
       "norm_label": ".test_clean_tree_gives_empty_list()",
-      "id": "tests_test_claude_export_scansecretstest_test_clean_tree_gives_empty_list",
-      "community_name": "ScanSecretsTest"
+      "community_name": "ScanSecretsTest",
+      "id": "tests_test_claude_export_scansecretstest_test_clean_tree_gives_empty_list"
     },
     {
       "label": ".test_ignores_empty_and_short_values()",
@@ -35497,8 +35508,8 @@
       "_origin": "ast",
       "community": 231,
       "norm_label": ".test_ignores_empty_and_short_values()",
-      "id": "tests_test_claude_export_scansecretstest_test_ignores_empty_and_short_values",
-      "community_name": "ScanSecretsTest"
+      "community_name": "ScanSecretsTest",
+      "id": "tests_test_claude_export_scansecretstest_test_ignores_empty_and_short_values"
     },
     {
       "label": "CollectConfigTest",
@@ -35508,8 +35519,8 @@
       "_origin": "ast",
       "community": 229,
       "norm_label": "collectconfigtest",
-      "id": "tests_test_claude_export_collectconfigtest",
-      "community_name": "CollectConfigTest"
+      "community_name": "CollectConfigTest",
+      "id": "tests_test_claude_export_collectconfigtest"
     },
     {
       "label": ".test_sha256_changes_with_one_byte()",
@@ -35519,8 +35530,8 @@
       "_origin": "ast",
       "community": 229,
       "norm_label": ".test_sha256_changes_with_one_byte()",
-      "id": "tests_test_claude_export_collectconfigtest_test_sha256_changes_with_one_byte",
-      "community_name": "CollectConfigTest"
+      "community_name": "CollectConfigTest",
+      "id": "tests_test_claude_export_collectconfigtest_test_sha256_changes_with_one_byte"
     },
     {
       "label": ".test_collects_files_and_dirs_of_claude_home()",
@@ -35530,8 +35541,8 @@
       "_origin": "ast",
       "community": 229,
       "norm_label": ".test_collects_files_and_dirs_of_claude_home()",
-      "id": "tests_test_claude_export_collectconfigtest_test_collects_files_and_dirs_of_claude_home",
-      "community_name": "CollectConfigTest"
+      "community_name": "CollectConfigTest",
+      "id": "tests_test_claude_export_collectconfigtest_test_collects_files_and_dirs_of_claude_home"
     },
     {
       "label": ".test_skips_missing_entries()",
@@ -35541,8 +35552,8 @@
       "_origin": "ast",
       "community": 229,
       "norm_label": ".test_skips_missing_entries()",
-      "id": "tests_test_claude_export_collectconfigtest_test_skips_missing_entries",
-      "community_name": "CollectConfigTest"
+      "community_name": "CollectConfigTest",
+      "id": "tests_test_claude_export_collectconfigtest_test_skips_missing_entries"
     },
     {
       "label": ".test_harvest_secrets_only_takes_real_values()",
@@ -35552,8 +35563,8 @@
       "_origin": "ast",
       "community": 229,
       "norm_label": ".test_harvest_secrets_only_takes_real_values()",
-      "id": "tests_test_claude_export_collectconfigtest_test_harvest_secrets_only_takes_real_values",
-      "community_name": "CollectConfigTest"
+      "community_name": "CollectConfigTest",
+      "id": "tests_test_claude_export_collectconfigtest_test_harvest_secrets_only_takes_real_values"
     },
     {
       "label": "BuildGuardTest",
@@ -35563,8 +35574,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "buildguardtest",
-      "id": "tests_test_claude_export_buildguardtest",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildguardtest"
     },
     {
       "label": ".test_empty_dest_is_allowed()",
@@ -35574,8 +35585,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_empty_dest_is_allowed()",
-      "id": "tests_test_claude_export_buildguardtest_test_empty_dest_is_allowed",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildguardtest_test_empty_dest_is_allowed"
     },
     {
       "label": ".test_own_bundle_is_overwritten()",
@@ -35585,8 +35596,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_own_bundle_is_overwritten()",
-      "id": "tests_test_claude_export_buildguardtest_test_own_bundle_is_overwritten",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildguardtest_test_own_bundle_is_overwritten"
     },
     {
       "label": ".test_foreign_dir_refused_with_exit_2()",
@@ -35596,8 +35607,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_foreign_dir_refused_with_exit_2()",
-      "id": "tests_test_claude_export_buildguardtest_test_foreign_dir_refused_with_exit_2",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildguardtest_test_foreign_dir_refused_with_exit_2"
     },
     {
       "label": "BuildRepoTest",
@@ -35607,8 +35618,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "buildrepotest",
-      "id": "tests_test_claude_export_buildrepotest",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_buildrepotest"
     },
     {
       "label": ".test_clone_keeps_git_and_drops_untracked()",
@@ -35618,8 +35629,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": ".test_clone_keeps_git_and_drops_untracked()",
-      "id": "tests_test_claude_export_buildrepotest_test_clone_keeps_git_and_drops_untracked",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_buildrepotest_test_clone_keeps_git_and_drops_untracked"
     },
     {
       "label": ".test_remember_copied_but_runtime_filtered()",
@@ -35629,8 +35640,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": ".test_remember_copied_but_runtime_filtered()",
-      "id": "tests_test_claude_export_buildrepotest_test_remember_copied_but_runtime_filtered",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_buildrepotest_test_remember_copied_but_runtime_filtered"
     },
     {
       "label": ".test_clone_head_matches_source()",
@@ -35640,8 +35651,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": ".test_clone_head_matches_source()",
-      "id": "tests_test_claude_export_buildrepotest_test_clone_head_matches_source",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_buildrepotest_test_clone_head_matches_source"
     },
     {
       "label": "BuildConfigTest",
@@ -35651,8 +35662,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "buildconfigtest",
-      "id": "tests_test_claude_export_buildconfigtest",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildconfigtest"
     },
     {
       "label": ".test_config_and_mcp_written()",
@@ -35662,8 +35673,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_config_and_mcp_written()",
-      "id": "tests_test_claude_export_buildconfigtest_test_config_and_mcp_written",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildconfigtest_test_config_and_mcp_written"
     },
     {
       "label": ".test_marketplace_path_rewritten_to_dest()",
@@ -35673,8 +35684,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_marketplace_path_rewritten_to_dest()",
-      "id": "tests_test_claude_export_buildconfigtest_test_marketplace_path_rewritten_to_dest",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildconfigtest_test_marketplace_path_rewritten_to_dest"
     },
     {
       "label": ".test_api_key_replaced_by_placeholder()",
@@ -35684,8 +35695,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_api_key_replaced_by_placeholder()",
-      "id": "tests_test_claude_export_buildconfigtest_test_api_key_replaced_by_placeholder",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildconfigtest_test_api_key_replaced_by_placeholder"
     },
     {
       "label": ".test_readme_written_from_template()",
@@ -35695,8 +35706,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_readme_written_from_template()",
-      "id": "tests_test_claude_export_buildconfigtest_test_readme_written_from_template",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildconfigtest_test_readme_written_from_template"
     },
     {
       "label": "BuildManifestTest",
@@ -35706,8 +35717,8 @@
       "_origin": "ast",
       "community": 205,
       "norm_label": "buildmanifesttest",
-      "id": "tests_test_claude_export_buildmanifesttest",
-      "community_name": "BuildManifestTest"
+      "community_name": "BuildManifestTest",
+      "id": "tests_test_claude_export_buildmanifesttest"
     },
     {
       "label": ".test_exactly_eight_keys()",
@@ -35717,8 +35728,8 @@
       "_origin": "ast",
       "community": 205,
       "norm_label": ".test_exactly_eight_keys()",
-      "id": "tests_test_claude_export_buildmanifesttest_test_exactly_eight_keys",
-      "community_name": "BuildManifestTest"
+      "community_name": "BuildManifestTest",
+      "id": "tests_test_claude_export_buildmanifesttest_test_exactly_eight_keys"
     },
     {
       "label": ".test_version_and_commit_match_source()",
@@ -35728,8 +35739,8 @@
       "_origin": "ast",
       "community": 205,
       "norm_label": ".test_version_and_commit_match_source()",
-      "id": "tests_test_claude_export_buildmanifesttest_test_version_and_commit_match_source",
-      "community_name": "BuildManifestTest"
+      "community_name": "BuildManifestTest",
+      "id": "tests_test_claude_export_buildmanifesttest_test_version_and_commit_match_source"
     },
     {
       "label": ".test_source_files_carry_path_and_sha()",
@@ -35739,8 +35750,8 @@
       "_origin": "ast",
       "community": 205,
       "norm_label": ".test_source_files_carry_path_and_sha()",
-      "id": "tests_test_claude_export_buildmanifesttest_test_source_files_carry_path_and_sha",
-      "community_name": "BuildManifestTest"
+      "community_name": "BuildManifestTest",
+      "id": "tests_test_claude_export_buildmanifesttest_test_source_files_carry_path_and_sha"
     },
     {
       "label": ".test_plugins_only_user_scope()",
@@ -35750,8 +35761,8 @@
       "_origin": "ast",
       "community": 205,
       "norm_label": ".test_plugins_only_user_scope()",
-      "id": "tests_test_claude_export_buildmanifesttest_test_plugins_only_user_scope",
-      "community_name": "BuildManifestTest"
+      "community_name": "BuildManifestTest",
+      "id": "tests_test_claude_export_buildmanifesttest_test_plugins_only_user_scope"
     },
     {
       "label": "BuildSecretScanTest",
@@ -35761,8 +35772,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "buildsecretscantest",
-      "id": "tests_test_claude_export_buildsecretscantest",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildsecretscantest"
     },
     {
       "label": ".test_leak_deletes_bundle_and_exits_3()",
@@ -35772,8 +35783,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_leak_deletes_bundle_and_exits_3()",
-      "id": "tests_test_claude_export_buildsecretscantest_test_leak_deletes_bundle_and_exits_3",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildsecretscantest_test_leak_deletes_bundle_and_exits_3"
     },
     {
       "label": ".test_clean_build_leaves_no_key_anywhere()",
@@ -35783,8 +35794,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_clean_build_leaves_no_key_anywhere()",
-      "id": "tests_test_claude_export_buildsecretscantest_test_clean_build_leaves_no_key_anywhere",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildsecretscantest_test_clean_build_leaves_no_key_anywhere"
     },
     {
       "label": "BuildZipTest",
@@ -35794,8 +35805,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "buildziptest",
-      "id": "tests_test_claude_export_buildziptest",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildziptest"
     },
     {
       "label": ".test_zip_is_valid_and_atomic()",
@@ -35805,8 +35816,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_zip_is_valid_and_atomic()",
-      "id": "tests_test_claude_export_buildziptest_test_zip_is_valid_and_atomic",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildziptest_test_zip_is_valid_and_atomic"
     },
     {
       "label": ".test_no_zip_flag_leaves_zip_untouched()",
@@ -35816,8 +35827,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_no_zip_flag_leaves_zip_untouched()",
-      "id": "tests_test_claude_export_buildziptest_test_no_zip_flag_leaves_zip_untouched",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildziptest_test_no_zip_flag_leaves_zip_untouched"
     },
     {
       "label": "BuildLogTest",
@@ -35827,8 +35838,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "buildlogtest",
-      "id": "tests_test_claude_export_buildlogtest",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildlogtest"
     },
     {
       "label": ".test_default_logs_to_stderr()",
@@ -35838,8 +35849,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_default_logs_to_stderr()",
-      "id": "tests_test_claude_export_buildlogtest_test_default_logs_to_stderr",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildlogtest_test_default_logs_to_stderr"
     },
     {
       "label": ".test_quiet_flag_silences_build()",
@@ -35849,8 +35860,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_quiet_flag_silences_build()",
-      "id": "tests_test_claude_export_buildlogtest_test_quiet_flag_silences_build",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_buildlogtest_test_quiet_flag_silences_build"
     },
     {
       "label": "CheckTest",
@@ -35860,8 +35871,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": "checktest",
-      "id": "tests_test_claude_export_checktest",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest"
     },
     {
       "label": ".check()",
@@ -35871,8 +35882,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".check()",
-      "id": "tests_test_claude_export_checktest_check",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_check"
     },
     {
       "label": ".test_clean_right_after_build()",
@@ -35882,8 +35893,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_clean_right_after_build()",
-      "id": "tests_test_claude_export_checktest_test_clean_right_after_build",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_clean_right_after_build"
     },
     {
       "label": ".test_config_drift_named_and_exit_1()",
@@ -35893,8 +35904,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_config_drift_named_and_exit_1()",
-      "id": "tests_test_claude_export_checktest_test_config_drift_named_and_exit_1",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_config_drift_named_and_exit_1"
     },
     {
       "label": ".test_missing_source_file_counts_as_drift()",
@@ -35904,8 +35915,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_missing_source_file_counts_as_drift()",
-      "id": "tests_test_claude_export_checktest_test_missing_source_file_counts_as_drift",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_missing_source_file_counts_as_drift"
     },
     {
       "label": ".test_repo_commit_drift_shows_both_sha()",
@@ -35915,8 +35926,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_repo_commit_drift_shows_both_sha()",
-      "id": "tests_test_claude_export_checktest_test_repo_commit_drift_shows_both_sha",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_repo_commit_drift_shows_both_sha"
     },
     {
       "label": ".test_plugin_version_drift_reported()",
@@ -35926,8 +35937,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_plugin_version_drift_reported()",
-      "id": "tests_test_claude_export_checktest_test_plugin_version_drift_reported",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_plugin_version_drift_reported"
     },
     {
       "label": ".test_missing_manifest_exits_2()",
@@ -35937,8 +35948,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_missing_manifest_exits_2()",
-      "id": "tests_test_claude_export_checktest_test_missing_manifest_exits_2",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_missing_manifest_exits_2"
     },
     {
       "label": ".test_broken_manifest_exits_2_without_traceback()",
@@ -35948,8 +35959,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_broken_manifest_exits_2_without_traceback()",
-      "id": "tests_test_claude_export_checktest_test_broken_manifest_exits_2_without_traceback",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_broken_manifest_exits_2_without_traceback"
     },
     {
       "label": ".test_unknown_old_commit_says_so_instead_of_question_mark()",
@@ -35959,8 +35970,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": ".test_unknown_old_commit_says_so_instead_of_question_mark()",
-      "id": "tests_test_claude_export_checktest_test_unknown_old_commit_says_so_instead_of_question_mark",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_checktest_test_unknown_old_commit_says_so_instead_of_question_mark"
     },
     {
       "label": "TemplateTest",
@@ -35970,8 +35981,8 @@
       "_origin": "ast",
       "community": 230,
       "norm_label": "templatetest",
-      "id": "tests_test_claude_export_templatetest",
-      "community_name": "TemplateTest"
+      "community_name": "TemplateTest",
+      "id": "tests_test_claude_export_templatetest"
     },
     {
       "label": ".test_manifest_template_has_the_eight_keys()",
@@ -35981,8 +35992,8 @@
       "_origin": "ast",
       "community": 230,
       "norm_label": ".test_manifest_template_has_the_eight_keys()",
-      "id": "tests_test_claude_export_templatetest_test_manifest_template_has_the_eight_keys",
-      "community_name": "TemplateTest"
+      "community_name": "TemplateTest",
+      "id": "tests_test_claude_export_templatetest_test_manifest_template_has_the_eight_keys"
     },
     {
       "label": ".test_readme_template_restores_mcp_and_verifies()",
@@ -35992,8 +36003,8 @@
       "_origin": "ast",
       "community": 230,
       "norm_label": ".test_readme_template_restores_mcp_and_verifies()",
-      "id": "tests_test_claude_export_templatetest_test_readme_template_restores_mcp_and_verifies",
-      "community_name": "TemplateTest"
+      "community_name": "TemplateTest",
+      "id": "tests_test_claude_export_templatetest_test_readme_template_restores_mcp_and_verifies"
     },
     {
       "label": ".test_instructions_document_the_two_commands()",
@@ -36003,8 +36014,8 @@
       "_origin": "ast",
       "community": 230,
       "norm_label": ".test_instructions_document_the_two_commands()",
-      "id": "tests_test_claude_export_templatetest_test_instructions_document_the_two_commands",
-      "community_name": "TemplateTest"
+      "community_name": "TemplateTest",
+      "id": "tests_test_claude_export_templatetest_test_instructions_document_the_two_commands"
     },
     {
       "label": "Test cho scripts/claude_export.py \u2014 b\u1ed9 export c\u1ea5u h\u00ecnh Claude Code sang m\u00e1y kh\u00e1c",
@@ -36014,8 +36025,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "test cho scripts/claude_export.py \u2014 bo export cau hinh claude code sang may khac",
-      "id": "tests_test_claude_export_rationale_1",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_rationale_1"
     },
     {
       "label": "Repo gi\u1ea3 c\u00f3 `.git` th\u1eadt, 1 file tracked, 1 file untracked b\u1ecb gitignore.",
@@ -36025,8 +36036,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "repo gia co `.git` that, 1 file tracked, 1 file untracked bi gitignore.",
-      "id": "tests_test_claude_export_rationale_34",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_rationale_34"
     },
     {
       "label": "`~/.claude` gi\u1ea3: settings.json c\u00f3 key th\u1eadt trong `env`, c\u00f9ng v\u00e0i file ph\u1ee5.",
@@ -36036,8 +36047,8 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "`~/.claude` gia: settings.json co key that trong `env`, cung vai file phu.",
-      "id": "tests_test_claude_export_rationale_66",
-      "community_name": "test_claude_export.py"
+      "community_name": "test_claude_export.py",
+      "id": "tests_test_claude_export_rationale_66"
     },
     {
       "label": "M\u1eb7c \u0111\u1ecbnh t\u1eaft b\u01b0\u1edbc d\u00f2 version CLI: 8 l\u1ec7nh `--version` m\u1ed7i l\u1ea7n build l\u00e0 qu\u00e1 ch\u1eadm.",
@@ -36047,8 +36058,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": "mac \u0111inh tat buoc do version cli: 8 lenh `--version` moi lan build la qua cham.",
-      "id": "tests_test_claude_export_rationale_107",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_rationale_107"
     },
     {
       "label": "D\u1ef1ng m\u00e1y ngu\u1ed3n gi\u1ea3 + \u0111\u00edch trong th\u01b0 m\u1ee5c t\u1ea1m cho m\u1ed7i ca.",
@@ -36058,8 +36069,8 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "dung may nguon gia + \u0111ich trong thu muc tam cho moi ca.",
-      "id": "tests_test_claude_export_rationale_115",
-      "community_name": ".build"
+      "community_name": ".build",
+      "id": "tests_test_claude_export_rationale_115"
     },
     {
       "label": "Manifest h\u1ecfng l\u00e0 bundle kh\u00f4ng h\u1ee3p l\u1ec7 (2), kh\u00f4ng ph\u1ea3i drift (1).",
@@ -36069,8 +36080,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": "manifest hong la bundle khong hop le (2), khong phai drift (1).",
-      "id": "tests_test_claude_export_rationale_456",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_rationale_456"
     },
     {
       "label": "SHA c\u0169 kh\u00f4ng c\u00f3 trong repo th\u00ec n\u00f3i th\u1eb3ng, kh\u00f4ng in `(+?)`.",
@@ -36080,8 +36091,8 @@
       "_origin": "ast",
       "community": 64,
       "norm_label": "sha cu khong co trong repo thi noi thang, khong in `(+?)`.",
-      "id": "tests_test_claude_export_rationale_466",
-      "community_name": "CheckTest"
+      "community_name": "CheckTest",
+      "id": "tests_test_claude_export_rationale_466"
     },
     {
       "label": "Template trong `claude-export/` l\u00e0 th\u1ee9 script n\u1ea1p th\u1eadt, kh\u00f4ng ph\u1ea3i v\u0103n b\u1ea3n trang",
@@ -36091,308 +36102,11 @@
       "_origin": "ast",
       "community": 230,
       "norm_label": "template trong `claude-export/` la thu script nap that, khong phai van ban trang",
-      "id": "tests_test_claude_export_rationale_483",
-      "community_name": "TemplateTest"
+      "community_name": "TemplateTest",
+      "id": "tests_test_claude_export_rationale_483"
     }
   ],
   "links": [
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "claude-export/EXPORT_LOG.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "claude_export_export_log",
-      "target": "claude_export_export_log_export_log_l\u1ecbch_s\u1eed_sinh_bundle_export",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "claude-export/EXPORT_LOG.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "claude_export_export_log_export_log_l\u1ecbch_s\u1eed_sinh_bundle_export",
-      "target": "claude_export_export_log_m\u1ed1c",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_state",
-      "target": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
-      "target": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
-      "target": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L129",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_definition_of_done",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_n\u0103ng_l\u1ef1c_task",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p1_bump_0_7_0",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p2_khung_claude_export_py_l\u1edbp_thu_th\u1eadp_ngu\u1ed3n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L44",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p3_l\u1ec7nh_build",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L55",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p4_l\u1ec7nh_check_\u0111o_drift",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L63",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p5_t\u00e0i_li\u1ec7u_b\u1ed9_export",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L77",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p6_sinh_bundle_th\u1eadt_zip",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L87",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p7_log_test_b\u1eaft_bu\u1ed9c",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L115",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_qc",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
-      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_quy_t\u1eafc_thi_h\u00e0nh_\u00e1p_cho_m\u1ecdi_task",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_qc_2026_08_05_bump_version_va_export",
-      "target": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L24",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code",
-      "target": "docs_tdq_qc_2026_08_05_bump_version_va_export_defect_qc_ph\u00e1t_hi\u1ec7n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
-      "source_location": "L31",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code",
-      "target": "docs_tdq_qc_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/reports/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_reports_2026_08_05_bump_version_va_export",
-      "target": "docs_tdq_reports_2026_08_05_bump_version_va_export_report_bump_0_7_0_b\u1ed9_export_claude_code_2026_08_05_bump_version_va_export_lane_full_mode_main_26_26_task_tick_\u0111\u1ee7",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_research_2026_08_05_bump_version_va_export",
-      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L68",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn_d\u00f9ng_cho_spec",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_1_migrate_c\u1ea5u_h\u00ecnh_claude_code_sang_m\u00e1y_m\u1edbi_copy_file_n\u00e0o",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_2_mcp_server_\u1edf_\u0111\u00e2u_kh\u00f4i_ph\u1ee5c_th\u1ebf_n\u00e0o_b\u1eb1ng_cli",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L36",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_3_marketplace_local_c\u00e0i_plugin_b\u1eb1ng_cli",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
-      "source_location": "L49",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
-      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_4_x\u00e1c_minh_l\u1ea1i_c\u00fa_ph\u00e1p_tr\u01b0\u1edbc_khi_ghi_v\u00e0o_readme_template",
-      "confidence_score": 1.0
-    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -36535,6 +36249,314 @@
       "source": "docs_workinglog_2026_08_05_working_log_2026_08_05",
       "target": "docs_workinglog_2026_08_05_04_32",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-05.md",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_05_working_log_2026_08_05",
+      "target": "docs_workinglog_2026_08_05_10_17",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "claude-export/EXPORT_LOG.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "claude_export_export_log",
+      "target": "claude_export_export_log_export_log_l\u1ecbch_s\u1eed_sinh_bundle_export"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "claude-export/EXPORT_LOG.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "claude_export_export_log_export_log_l\u1ecbch_s\u1eed_sinh_bundle_export",
+      "target": "claude_export_export_log_m\u1ed1c"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_state",
+      "target": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
+      "target": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
+      "target": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_definition_of_done"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_n\u0103ng_l\u1ef1c_task"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p1_bump_0_7_0"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p2_khung_claude_export_py_l\u1edbp_thu_th\u1eadp_ngu\u1ed3n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p3_l\u1ec7nh_build"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p4_l\u1ec7nh_check_\u0111o_drift"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p5_t\u00e0i_li\u1ec7u_b\u1ed9_export"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p6_sinh_bundle_th\u1eadt_zip"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_p7_log_test_b\u1eaft_bu\u1ed9c"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_qc"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/plan/2026-08-05-bump-version-va-export.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_plan_2026_08_05_bump_version_va_export_plan_bump_0_7_0_b\u1ed9_export_claude_code_ch\u1ea1y_b\u1eb1ng_m\u1ed9t_l\u1ec7nh",
+      "target": "docs_tdq_plan_2026_08_05_bump_version_va_export_quy_t\u1eafc_thi_h\u00e0nh_\u00e1p_cho_m\u1ecdi_task"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_qc_2026_08_05_bump_version_va_export",
+      "target": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code",
+      "target": "docs_tdq_qc_2026_08_05_bump_version_va_export_defect_qc_ph\u00e1t_hi\u1ec7n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/qc/2026-08-05-bump-version-va-export.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_qc_2026_08_05_bump_version_va_export_qc_bump_0_7_0_b\u1ed9_export_claude_code",
+      "target": "docs_tdq_qc_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/reports/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_reports_2026_08_05_bump_version_va_export",
+      "target": "docs_tdq_reports_2026_08_05_bump_version_va_export_report_bump_0_7_0_b\u1ed9_export_claude_code_2026_08_05_bump_version_va_export_lane_full_mode_main_26_26_task_tick_\u0111\u1ee7"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_research_2026_08_05_bump_version_va_export",
+      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
+      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_k\u1ebft_lu\u1eadn_d\u00f9ng_cho_spec"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
+      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_1_migrate_c\u1ea5u_h\u00ecnh_claude_code_sang_m\u00e1y_m\u1edbi_copy_file_n\u00e0o"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
+      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_2_mcp_server_\u1edf_\u0111\u00e2u_kh\u00f4i_ph\u1ee5c_th\u1ebf_n\u00e0o_b\u1eb1ng_cli"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
+      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_3_marketplace_local_c\u00e0i_plugin_b\u1eb1ng_cli"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/research/2026-08-05-bump-version-va-export.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_tdq_research_2026_08_05_bump_version_va_export_research_bump_version_export_\u0111\u1ea7y_\u0111\u1ee7_h\u01a1n",
+      "target": "docs_tdq_research_2026_08_05_bump_version_va_export_truy_v\u1ea5n_4_x\u00e1c_minh_l\u1ea1i_c\u00fa_ph\u00e1p_tr\u01b0\u1edbc_khi_ghi_v\u00e0o_readme_template"
     },
     {
       "relation": "contains",
@@ -87146,5 +87168,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e88aa25d9eac6d46d14b867ec23f300363000e19"
+  "built_at_commit": "64384b77ac2b2342bea2c9efb621ba8c698e6941"
 }
