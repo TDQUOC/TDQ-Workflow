@@ -1,0 +1,9 @@
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+TDQ_SEARCH_MAX_AGENTS = "3"
+TDQ_SEARCH_MAX_ROUTES = "5"
+TDQ_SEARCH_URLS_PER_ROUTE = "3"
+TDQ_SEARCH_TIMEOUT = "540"
+TDQ_SEARCH_LOG = "1"

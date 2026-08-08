@@ -1,0 +1,28 @@
+{
+  "kind": "plan",
+  "notes": "",
+  "status": "done",
+  "tasks": [
+    {
+      "files_changed": [
+        "refs/unity-skills-besty",
+        "refs/unity-skills-official"
+      ],
+      "notes": "commit besty=8e367c5ff407ce82ebbdedab32634a288940ba72, official=9abada45b75e7c2926d67523411412dbdb127f68",
+      "status": "done",
+      "task_id": "T1",
+      "test_cmd": "test -d refs/unity-skills-besty/.git && test -d refs/unity-skills-official/.git && git -C refs/unity-skills-besty log -1 --format=%H && git -C refs/unity-skills-official log -1 --format=%H",
+      "test_result": "8e367c5ff407ce82ebbdedab32634a288940ba72\n9abada45b75e7c2926d67523411412dbdb127f68"
+    },
+    {
+      "files_changed": [
+        "docs/tdq/research/unity-skills-inventory.md"
+      ],
+      "notes": "Besty: 76 skill, Official: 6 skill, Tong cong: 82 skill",
+      "status": "done",
+      "task_id": "T2",
+      "test_cmd": "test -f docs/tdq/research/unity-skills-inventory.md && grep -c '^|' docs/tdq/research/unity-skills-inventory.md && find refs -iname 'SKILL.md' | wc -l",
+      "test_result": "84\n      82"
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "run_id": "2026-08-05-clone-setting-codex",
+  "findings": [
+    {
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "routes": [
+        "scout: enterprise MCP allowlist identity matching",
+        "permission profiles requirements.toml thay sandbox_mode Codex"
+      ],
+      "claim": "Từ Codex 0.138.0 trở đi, Codex khuyến nghị sử dụng Permission Profiles với allowed_permission_profiles và managed default_permissions trong requirements.toml; Codex 0.137.0 và các phiên bản trước đó bỏ qua (ignore) hai cài đặt này.",
+      "evidence_quote": "If you configure an `mcp_servers` allowlist, the client enables an MCP server only when both its name and identity match an approved entry; otherwise, the client disables it.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://agentskills.io/home",
+      "routes": [
+        "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills"
+      ],
+      "claim": "Chuẩn SKILL.md là một open standard (Agent Skills) cho phép đóng gói hướng dẫn, scripts và tài nguyên tái sử dụng di động (portable) tương thích liên nền tảng giữa Claude Code, OpenAI Codex CLI, Cursor và Gemini CLI.",
+      "evidence_quote": "Discovery: When a task matches the description provided in the frontmatter, or when you explicitly invoke the skill (e.g., via $skill-name in the CLI), Codex activates it.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://agentskills.io/specification",
+      "routes": [
+        "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills"
+      ],
+      "claim": "OpenAI Codex CLI sử dụng chuẩn Agent Skill chính thức với cấu trúc thư mục chứa file SKILL.md bắt buộc (bao gồm YAML frontmatter name, description và phần hướng dẫn markdown), hoàn toàn tương tự Claude Code Skills.",
+      "evidence_quote": "In OpenAI Codex, a SKILL.md file is the required manifest file that defines an Agent Skill. Skills are modular, reusable packages of instructions and resources that teach Codex how to perform specific, repeatable workflows... Frontmatter (Required): The file must begin with YAML frontmatter containing a name and a description... Instructions (Required): The body of the file contains the detailed operational steps",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "routes": [
+        "permission profiles requirements.toml thay sandbox_mode Codex"
+      ],
+      "claim": "Field sandbox_mode cũ vẫn hỗ trợ tương thích ngược nhưng không hợp nhất (compose) với permission profiles mới. Nếu sandbox_mode xuất hiện trong file config hoặc CLI flag, Codex sẽ áp dụng cài đặt sandbox cũ thay vì default_permissions (ngoại trừ khi có allowed_permission_profiles được quản lý).",
+      "evidence_quote": "Permission profiles do not compose with the older sandbox settings. Configure either default_permissions and [permissions], or sandbox_mode / sandbox_workspace_write, but not both. If sandbox_mode appears in any loaded config file, you pass --sandbox, or the selected config profile sets sandbox_mode, Codex uses those older sandbox settings instead of default_permissions.",
+      "score": 10,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://learn.chatgpt.com/docs/config-file/config-reference",
+      "routes": [
+        "scout: config.toml hooks key chính thức",
+        "scout: AGENTS.md discovery config keys",
+        "scout: hooks event list chính thức"
+      ],
+      "claim": "config.toml có khối [hooks] chính thức dùng cùng schema event với hooks.json.",
+      "evidence_quote": "Key hooks | Type / Values table | Details Lifecycle hooks configured inline in config.toml. Uses the same event schema as hooks.json; see the Hooks guide for examples and supported events.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://developers.openai.com/plugins/build/plugins",
+      "routes": [
+        "scout: plugin manifest structure chính thức",
+        "scout: plugin hooks cần user trust"
+      ],
+      "claim": "Plugin Codex có manifest bắt buộc .codex-plugin/plugin.json, kèm skills/, hooks/hooks.json, .app.json, .mcp.json tùy chọn.",
+      "evidence_quote": "Every plugin has a manifest at `.codex-plugin/plugin.json`. It can also include a `skills/` directory, a `hooks/` directory for lifecycle hooks, an `.app.json` file that maps registered MCP server connections, an `.mcp.json` file that configures bundled MCP servers, and assets used to present the plugin across supported surfaces.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/openai/codex/commit/2e95e5602d5736ea5b3a41e89c20f9db0b820282",
+      "routes": [
+        "scout: mcp_servers TOML key format chính thức"
+      ],
+      "claim": "Top-level table trong config.toml phải là mcp_servers (snake_case), không phải mcpServers như Claude Code JSON.",
+      "evidence_quote": "The top-level table name must be `mcp_servers` ... The sub-table name (`server-name` in this example) can be anything you would like.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://developers.openai.com/codex",
+      "routes": [
+        "hooks.json schema field-by-field matcher command additionalContext"
+      ],
+      "claim": "Codex CLI hỗ trợ khai báo hooks thông qua file hooks.json hoặc khối inline [hooks] trong config.toml tại thư mục người dùng (~/.codex/) hoặc dự án (.codex/).",
+      "evidence_quote": "hooks can be defined in hooks.json files or inline within config.toml files located in your user directory (~/.codex/) or project-specific .codex/ directories",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/openai/codex/issues/17012",
+      "routes": [
+        "scout: config.toml schema chính thức"
+      ],
+      "claim": "config.toml chính thức hỗ trợ approval_policy, sandbox_mode, mcp_servers.*, features.*, plugins.*, hooks (khối); field cũ ask_for_approval/sandbox/experimental_use_rmcp_client/top-level [env] đang là bug tương thích.",
+      "evidence_quote": "The published schema rejects exactly these 4 top-level fields from the real config: `ask_for_approval = \"never\"` `sandbox = \"danger-full-access\"` `experimental_use_rmcp_client = true` top-level `[env]`",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://www.verdent.ai/guides/codex-agents-md-explained",
+      "routes": [
+        "scout: AGENTS.md discovery order chi tiết"
+      ],
+      "claim": "Global scope AGENTS.override.md/AGENTS.md tại ~/.codex/, project scope đi từ git root xuống cwd, file gần cwd hơn ưu tiên cao hơn, cap 32KiB mặc định.",
+      "evidence_quote": "Global scope: `~/.codex/AGENTS.override.md` if it exists, otherwise `~/.codex/AGENTS.md`. Only one file from this level. ... Total instruction size is capped at 32 KiB by default (project_doc_max_bytes).",
+      "score": 6,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://axiomstudio.ai/learn/codex-agent-skills",
+      "routes": [
+        "scout: Codex Skills cấu trúc & discovery repo-scoped"
+      ],
+      "claim": "Codex Agent Skills dùng SKILL.md + frontmatter YAML, quét .agents/skills/ từ cwd lên repo root, cộng user/admin/system locations; progressive disclosure tương tự Claude Code.",
+      "evidence_quote": "Codex reads skills from repository, user, admin, and system locations. For repositories, it scans .agents/skills in directories from the current working directory up to the repository root.",
+      "score": 6,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://blakecrosley.com/blog/claude-code-to-codex-migration",
+      "routes": [
+        "scout: hooks stable/experimental timeline"
+      ],
+      "claim": "Hooks bắt đầu experimental v0.99-0.116, PreToolUse/PostToolUse ~v0.117, UserPromptSubmit ~PR#14626 tháng 3/2026, stable từ v0.124.0 (23/4/2026), có thể khai inline trong config.toml từ đó.",
+      "evidence_quote": "Codex has hooks too... OpenAI's hooks doc shows `[features] codex_hooks = true` in `config.toml`, and my local `codex features list` reports `hooks` as stable and enabled on Codex CLI 0.130.0.",
+      "score": 5,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"SKILL.md\" \"Codex\" \"openai\" \"Claude Code\" skills",
+    "\"hooks.json\" \"additionalContextLimit\" \"matcher\" \"command\" \"statusMessage\" site:learn.chatgpt.com OR site:developers.openai.com OR site:github.com",
+    "\"requirements.toml\" \"Codex\" permission profiles sandbox_mode",
+    "Codex CLI AGENTS.md instructions file discovery global project priority",
+    "Codex CLI plugin marketplace manifest \"codex plugin add\" hooks lifecycle events official",
+    "Codex CLI skills SKILL.md \"codex skills\" official documentation",
+    "OpenAI Codex CLI config.toml schema mcp_servers approval_policy sandbox_mode profiles",
+    "codex cli hooks.json schema matcher command additionalContext",
+    "developers.openai.com codex config mcp_servers command args env official reference",
+    "developers.openai.com codex hooks SessionStart PreToolUse configuration reference stable",
+    "https://agentskills.io/home",
+    "https://agentskills.io/home.md",
+    "https://agentskills.io/specification",
+    "https://agentskills.io/specification.md",
+    "https://developers.openai.com/codex",
+    "https://developers.openai.com/codex/enterprise/managed-configuration",
+    "https://developers.openai.com/codex/permissions",
+    "https://learn.chatgpt.com/docs/config-file/config-reference",
+    "site:developers.openai.com \"skills\" OR \"SKILL.md\" OR \"custom prompts\" codex cli",
+    "site:developers.openai.com codex hooks matcher command additionalContext",
+    "site:developers.openai.com codex skills SKILL.md",
+    "site:developers.openai.com/codex hooks",
+    "site:developers.openai.com/codex hooks.json matcher command additionalContext",
+    "site:github.com/openai \"SKILL.md\" codex skills",
+    "site:learn.chatgpt.com \"permission profiles\" codex",
+    "tavily-extract: developers.openai.com/plugins/build/plugins, learn.chatgpt.com/docs/config-file/config-reference, developers.openai.com/codex/enterprise/managed-configuration"
+  ],
+  "routes_failed": [],
+  "empty_routes": [
+    "scout: clone-setting-to-codex Codex CLI config structure"
+  ]
+}

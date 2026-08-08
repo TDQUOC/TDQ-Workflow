@@ -49,9 +49,9 @@ CONFIG_FILES = (
     ("plugins/installed_plugins.json", "config/installed_plugins.json"),
     ("plugins/known_marketplaces.json", "config/known_marketplaces.json"),
 )
-# Thư mục của `~/.claude` mang theo → vị trí trong bundle.
+# Thư mục CỐ ĐỊNH của `~/.claude` mang theo → vị trí trong bundle. Riêng `skills/`
+# không hard-code từng tên ở đây — `_skill_dirs()` tự quét để không bỏ sót skill mới.
 CONFIG_DIRS = (
-    ("skills/graphify", "config/skills-graphify"),
     (".remember", "config/remember"),
     ("scripts", "config/scripts"),
 )
@@ -161,6 +161,22 @@ def redact_bundle(root, secrets):
     return changed
 
 
+def _skill_dirs(claude_home):
+    """(rel_src, rel_dest) cho MỌI skill user-level dưới `~/.claude/skills/`.
+
+    Tổng quát thay vì hard-code từng tên: skill mới cài (như `mem0-memory`) tự
+    được mang theo, không cần sửa code mỗi lần thêm skill.
+    """
+    root = os.path.join(claude_home, "skills")
+    if not os.path.isdir(root):
+        return ()
+    return tuple(
+        (f"skills/{name}", f"config/skills-{name}")
+        for name in sorted(os.listdir(root))
+        if os.path.isdir(os.path.join(root, name)) and name not in SKIP_DIRS
+    )
+
+
 def collect_config_files(claude_home):
     """{đường dẫn trong bundle: đường dẫn nguồn} cho mọi file cấu hình mang theo."""
     found = {}
@@ -168,7 +184,7 @@ def collect_config_files(claude_home):
         src = os.path.join(claude_home, rel_src)
         if os.path.isfile(src):
             found[rel_dest] = src
-    for rel_src, rel_dest in CONFIG_DIRS:
+    for rel_src, rel_dest in CONFIG_DIRS + _skill_dirs(claude_home):
         src_dir = os.path.join(claude_home, rel_src)
         if not os.path.isdir(src_dir):
             continue
@@ -219,35 +235,53 @@ def dest_is_writable(dest):
     return False, "đích có dữ liệu lạ: " + ", ".join(entries[:3])
 
 
-def clone_repo(repo, dest):
-    target = os.path.join(dest, REPO_DIR_NAME)
+def resolve_repos(args):
+    """{tên trong bundle: path tuyệt đối trên máy nguồn} cho MỌI repo cần clone.
+
+    Ưu tiên `local-repos.json` (đa repo); file không có/không tồn tại → rơi về
+    hành vi cũ: đúng 1 repo lấy từ `--repo`, tên `tdqworkflow-repo`.
+    """
+    path = args.local_repos
+    if path and os.path.isfile(path):
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        repos = {name: os.path.abspath(os.path.expanduser(p)) for name, p in data.items()}
+        log(f"đọc {len(repos)} repo từ {path}: {', '.join(sorted(repos))}")
+        return repos
+    repo = os.path.abspath(os.path.expanduser(args.repo))
+    log(f"không có local-repos.json ({path}) — dùng 1 repo qua --repo: {repo}", level="debug")
+    return {REPO_DIR_NAME: repo}
+
+
+def clone_repo(name, repo, dest):
+    target = os.path.join(dest, name)
     dirty = _git_out(repo, "status", "--porcelain")
     if dirty:
-        log(f"repo nguồn còn {len(dirty.splitlines())} file chưa commit — "
+        log(f"repo {name} nguồn còn {len(dirty.splitlines())} file chưa commit — "
             "clone chỉ lấy phần đã commit", level="info")
     subprocess.run(["git", "clone", "--quiet", repo, target], check=True, timeout=600)
-    log(f"clone repo → {target}", level="debug")
+    log(f"clone {name} → {target}")
     return target
 
 
-def copy_repo_memory(repo, dest):
+def copy_repo_memory(name, repo, dest):
     """`.remember/` của repo là untracked nên clone không mang theo — copy riêng."""
     src = os.path.join(repo, ".remember")
     if not os.path.isdir(src):
         return 0
-    target = os.path.join(dest, REPO_DIR_NAME, ".remember")
+    target = os.path.join(dest, name, ".remember")
     count = 0
     for dirpath, dirnames, names in os.walk(src):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
-        for name in sorted(names):
-            if name in SKIP_NAMES:
+        for name_ in sorted(names):
+            if name_ in SKIP_NAMES:
                 continue
-            rel = os.path.relpath(os.path.join(dirpath, name), src)
+            rel = os.path.relpath(os.path.join(dirpath, name_), src)
             out = os.path.join(target, rel)
             os.makedirs(os.path.dirname(out), exist_ok=True)
-            shutil.copy2(os.path.join(dirpath, name), out)
+            shutil.copy2(os.path.join(dirpath, name_), out)
             count += 1
-    log(f"copy {count} file .remember của repo (bỏ tmp/ và logs/)")
+    log(f"copy {count} file .remember của {name} (bỏ tmp/ và logs/)")
     return count
 
 
@@ -283,6 +317,30 @@ def rewrite_marketplace_path(dest):
         with open(known_path, "w", encoding="utf-8") as f:
             json.dump(known, f, ensure_ascii=False, indent=2)
     log(f"rewrite path marketplace tdq-local → {new_path}")
+
+
+def copy_launch_agents(repos, launch_agents_dir, dest):
+    """Copy plist LaunchAgent khớp tên repo local — CHỈ để tham khảo, không tự restore.
+
+    Quy ước tên: `com.<tên repo bỏ hậu tố "-repo">.gateway.plist`. `tdqworkflow-repo`
+    không có LaunchAgent riêng nên bị bỏ qua. Không thấy file khớp → im lặng bỏ qua,
+    không lỗi (LaunchAgent của repo đó có thể không tồn tại trên máy này).
+    """
+    copied = []
+    out_dir = os.path.join(dest, "config", "launch-agents")
+    for name in sorted(repos):
+        if name == REPO_DIR_NAME:
+            continue
+        base = name[:-len("-repo")] if name.endswith("-repo") else name
+        fname = f"com.{base}.gateway.plist"
+        src = os.path.join(launch_agents_dir, fname)
+        if not os.path.isfile(src):
+            continue
+        os.makedirs(out_dir, exist_ok=True)
+        shutil.copy2(src, os.path.join(out_dir, fname))
+        copied.append(fname)
+    log(f"copy {len(copied)} LaunchAgent plist tham khảo: {', '.join(copied) or 'không có'}")
+    return copied
 
 
 def write_mcp_servers(claude_json, dest):
@@ -321,8 +379,13 @@ def _load_json(path, default):
         return default
 
 
-def write_manifest(dest, repo, claude_home, files, servers):
-    """Khung khoá lấy từ MANIFEST.template.json để template và code không lệch nhau."""
+def write_manifest(dest, repos, claude_home, files, servers):
+    """Khung khoá lấy từ MANIFEST.template.json để template và code không lệch nhau.
+
+    `repos`: {tên: path nguồn} — 1 hoặc nhiều. `repo_commit`/`plugin_version` giữ
+    nguyên nghĩa cũ (SHA + version của `tdqworkflow-repo`) để không vỡ tương thích
+    ngược; khoá `repos` mới liệt kê ĐẦY ĐỦ mọi repo kèm commit riêng.
+    """
     manifest = _load_json(os.path.join(TEMPLATE_DIR, "MANIFEST.template.json"), {})
     plugins = _load_json(os.path.join(claude_home, "plugins", "installed_plugins.json"),
                          {}).get("plugins", {})
@@ -334,15 +397,21 @@ def write_manifest(dest, repo, claude_home, files, servers):
         os.path.join(claude_home, "plugins", "known_marketplaces.json"), {})
     manifest["mcp_servers"] = servers
     manifest["cli_dependencies"] = cli_versions()
-    manifest["plugin_version"] = plugin_version(repo)
-    manifest["repo_commit"] = _git_out(repo, "rev-parse", "HEAD")
+    main_repo = repos.get(REPO_DIR_NAME, "")
+    manifest["plugin_version"] = plugin_version(main_repo)
+    manifest["repo_commit"] = _git_out(main_repo, "rev-parse", "HEAD")
+    manifest["repos"] = {
+        name: {"source": path, "commit": _git_out(path, "rev-parse", "HEAD")}
+        for name, path in sorted(repos.items())
+    }
     manifest["exported_at"] = _now()
     manifest["source_files"] = {
         rel: {"source": src, "sha256": sha256_of(src)} for rel, src in sorted(files.items())
     }
     with open(os.path.join(dest, "manifest.json"), "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
-    log(f"ghi manifest.json ({len(manifest['source_files'])} file nguồn có sha256)")
+    log(f"ghi manifest.json ({len(manifest['repos'])} repo, "
+        f"{len(manifest['source_files'])} file nguồn có sha256)")
     return manifest
 
 
@@ -350,7 +419,11 @@ def write_readme(dest, manifest):
     template = os.path.join(TEMPLATE_DIR, "README.template.md")
     with open(template, encoding="utf-8") as f:
         text = f.read()
-    lines = ["| Marketplace | Nguồn |", "|---|---|"]
+    lines = ["| Repo local dependency | Path nguồn | Commit |", "|---|---|---|"]
+    for name, entry in sorted(manifest.get("repos", {}).items()):
+        lines.append(f"| `{name}` | `{entry.get('source', '?')}` | "
+                     f"`{(entry.get('commit') or '?')[:8]}` |")
+    lines += ["", "| Marketplace | Nguồn |", "|---|---|"]
     for name, entry in sorted(manifest["marketplaces"].items()):
         source = entry.get("source", {}) if isinstance(entry, dict) else {}
         lines.append(f"| `{name}` | `{source.get('path') or source.get('source', '?')}` |")
@@ -397,7 +470,6 @@ def make_zip(dest):
 
 def cmd_build(args):
     dest = os.path.abspath(os.path.expanduser(args.dest))
-    repo = os.path.abspath(os.path.expanduser(args.repo))
     home = os.path.abspath(os.path.expanduser(args.claude_home))
     claude_json = os.path.abspath(os.path.expanduser(
         args.claude_json or os.path.join(os.path.dirname(home), ".claude.json")))
@@ -412,15 +484,19 @@ def cmd_build(args):
     log(f"tìm thấy {len(secrets)} biến bí mật cần thay placeholder: "
         f"{', '.join(sorted(secrets)) or 'không có'}")
 
+    repos = resolve_repos(args)
+
     if os.path.isdir(dest):
         shutil.rmtree(dest)
     os.makedirs(dest)
-    clone_repo(repo, dest)
-    copy_repo_memory(repo, dest)
+    for name, repo_path in sorted(repos.items()):
+        clone_repo(name, repo_path, dest)
+        copy_repo_memory(name, repo_path, dest)
     files = copy_config(home, dest)
     servers = write_mcp_servers(claude_json, dest)
     rewrite_marketplace_path(dest)
-    manifest = write_manifest(dest, repo, home, files, servers)
+    copy_launch_agents(repos, os.path.abspath(os.path.expanduser(args.launch_agents_dir)), dest)
+    manifest = write_manifest(dest, repos, home, files, servers)
     write_readme(dest, manifest)
 
     changed = redact_bundle(dest, secrets)
@@ -436,7 +512,7 @@ def cmd_build(args):
     if args.zip:
         make_zip(dest)
     total = sum(len(names) for _, _, names in os.walk(dest))
-    log(f"xong · {total} file · commit {manifest['repo_commit'][:8]} · "
+    log(f"xong · {total} file · {len(repos)} repo · commit {manifest['repo_commit'][:8]} · "
         f"plugin {manifest['plugin_version']}")
     return 0
 
@@ -445,7 +521,6 @@ def cmd_build(args):
 
 def cmd_check(args):
     dest = os.path.abspath(os.path.expanduser(args.dest))
-    repo = os.path.abspath(os.path.expanduser(args.repo))
     manifest_path = os.path.join(dest, "manifest.json")
     if not os.path.isfile(manifest_path):
         log(f"không tìm thấy manifest.json trong {dest} — đây không phải bundle")
@@ -465,13 +540,26 @@ def cmd_check(args):
             drift.append((rel, "thiếu ở nguồn"))
         elif sha256_of(src) != entry.get("sha256"):
             drift.append((rel, "nội dung đã đổi"))
-    head = _git_out(repo, "rev-parse", "HEAD")
-    old = manifest.get("repo_commit", "")
-    if head and old and head != old:
-        behind = _git_out(repo, "rev-list", "--count", f"{old}..{head}")
-        gap = f"(+{behind})" if behind else "(không so được khoảng cách — SHA cũ không có trong repo)"
-        drift.append((REPO_DIR_NAME, f"commit {old[:8]} → {head[:8]} {gap}"))
-    now_version = plugin_version(repo)
+
+    # `repos`: bundle mới (N repo). Manifest cũ (trước bản hỗ trợ N repo) không có
+    # khoá này — rơi về đúng 1 repo qua `--repo`, dùng `repo_commit` cũ để tương thích.
+    repos = dict(manifest.get("repos") or {})
+    if REPO_DIR_NAME not in repos:
+        repos[REPO_DIR_NAME] = {"source": os.path.abspath(os.path.expanduser(args.repo)),
+                                "commit": manifest.get("repo_commit", "")}
+    for name, entry in sorted(repos.items()):
+        src = entry.get("source", "")
+        # `tdqworkflow-repo` so với khoá `repo_commit` cũ (tương thích ngược với bundle
+        # trước bản multi-repo); repo khác so với commit ghi riêng trong `repos`.
+        old = manifest.get("repo_commit", "") if name == REPO_DIR_NAME else entry.get("commit", "")
+        head = _git_out(src, "rev-parse", "HEAD") if src else ""
+        if head and old and head != old:
+            behind = _git_out(src, "rev-list", "--count", f"{old}..{head}")
+            gap = f"(+{behind})" if behind else "(không so được khoảng cách — SHA cũ không có trong repo)"
+            drift.append((name, f"commit {old[:8]} → {head[:8]} {gap}"))
+    main_source = repos.get(REPO_DIR_NAME, {}).get("source", "") \
+        or os.path.abspath(os.path.expanduser(args.repo))
+    now_version = plugin_version(main_source)
     if now_version and now_version != manifest.get("plugin_version"):
         drift.append((".claude-plugin/plugin.json",
                       f"version {manifest.get('plugin_version')} → {now_version}"))
@@ -505,6 +593,13 @@ def parse_args(argv):
             sub.add_argument("--zip", action="store_true", help="nén bundle thành .zip")
             sub.add_argument("--extra-secret", action="append", default=[],
                              help="chuỗi bí mật cần quét thêm; dính là huỷ bundle")
+            sub.add_argument("--local-repos",
+                             default=os.path.join(TEMPLATE_DIR, "local-repos.json"),
+                             help="JSON {tên: path} liệt kê MỌI repo local dependency; "
+                                  "không có/không tồn tại → rơi về 1 repo qua --repo")
+            sub.add_argument("--launch-agents-dir",
+                             default=os.path.expanduser("~/Library/LaunchAgents"),
+                             help="thư mục chứa .plist LaunchAgent để copy tham khảo")
     return parser.parse_args(argv)
 
 

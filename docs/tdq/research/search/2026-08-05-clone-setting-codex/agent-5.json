@@ -1,0 +1,67 @@
+{
+  "agent": 5,
+  "routes": [
+    "hooks.json schema field-by-field matcher command additionalContext"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Codex CLI hỗ trợ khai báo hooks thông qua file hooks.json hoặc khối inline [hooks] trong config.toml tại thư mục người dùng (~/.codex/) hoặc dự án (.codex/).",
+      "evidence_quote": "hooks can be defined in hooks.json files or inline within config.toml files located in your user directory (~/.codex/) or project-specific .codex/ directories",
+      "route": "hooks.json schema field-by-field matcher command additionalContext",
+      "score": 9,
+      "source_url": "https://developers.openai.com/codex",
+      "url_alive": true
+    },
+    {
+      "claim": "Field matcher sử dụng cú pháp Regex để lọc sự kiện hoặc tên tool (ví dụ \"^Bash$\"); có thể dùng \"*\", \"\" hoặc bỏ qua để áp dụng cho mọi sự kiện.",
+      "evidence_quote": "matcher: A regex string used to filter which events trigger the hook. For example, setting the matcher to \"Bash\" ensures the hook only runs when a Bash tool is involved. You can use \"*\", \"\", or omit the field entirely to match all occurrences of an event.",
+      "route": "hooks.json schema field-by-field matcher command additionalContext",
+      "score": 9,
+      "source_url": "https://developers.openai.com/codex",
+      "url_alive": true
+    },
+    {
+      "claim": "Field command bắt buộc khai báo câu lệnh shell hoặc script được thực thi khi hook kích hoạt, chạy tương đối theo thư mục làm việc hiện tại (cwd) của session.",
+      "evidence_quote": "command: The actual shell command or path to the script that should be executed when the hook triggers. These commands run with the session's current working directory (cwd).",
+      "route": "hooks.json schema field-by-field matcher command additionalContext",
+      "score": 9,
+      "source_url": "https://developers.openai.com/codex",
+      "url_alive": true
+    },
+    {
+      "claim": "Output của hook có thể trả về thông tin bổ sung qua stdout bằng JSON hookSpecificOutput.additionalContext, và lượng token được kiểm soát bởi field additionalContextLimit (mặc định 2500 token).",
+      "evidence_quote": "additionalContextLimit: An optional integer setting for command hooks. It defines a token threshold for additionalContext. If the output exceeds this limit, Codex saves the full text to disk and provides the model with a shorter preview to prevent excessive token usage",
+      "route": "hooks.json schema field-by-field matcher command additionalContext",
+      "score": 9,
+      "source_url": "https://developers.openai.com/codex",
+      "url_alive": true
+    },
+    {
+      "claim": "Codex hooks hỗ trợ các lifecycle event như PreToolUse, PostToolUse, SessionStart, SessionEnd, UserPromptSubmit.",
+      "evidence_quote": "Lifecycle Events: Hooks allow you to inject custom logic during various stages of the agent's operation, such as PreToolUse, PostToolUse, SessionStart, SessionEnd, UserPromptSubmit, and others",
+      "route": "hooks.json schema field-by-field matcher command additionalContext",
+      "score": 9,
+      "source_url": "https://developers.openai.com/codex",
+      "url_alive": true
+    },
+    {
+      "claim": "Field statusMessage là trường tuỳ chọn quy định thông điệp hiển thị cho người dùng trong lúc hook script đang được thực thi.",
+      "evidence_quote": "statusMessage: An optional field that defines a message displayed to the user while the hook is running",
+      "route": "hooks.json schema field-by-field matcher command additionalContext",
+      "score": 9,
+      "source_url": "https://developers.openai.com/codex",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"hooks.json\" \"additionalContextLimit\" \"matcher\" \"command\" \"statusMessage\" site:learn.chatgpt.com OR site:developers.openai.com OR site:github.com",
+    "codex cli hooks.json schema matcher command additionalContext",
+    "https://developers.openai.com/codex",
+    "https://learn.chatgpt.com/docs/config-file/config-reference",
+    "site:developers.openai.com codex hooks matcher command additionalContext",
+    "site:developers.openai.com/codex hooks",
+    "site:developers.openai.com/codex hooks.json matcher command additionalContext"
+  ]
+}

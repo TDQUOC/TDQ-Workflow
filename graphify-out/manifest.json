@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786209795.364198,
-    "ast_hash": "0893efd95187e9dd0c7d4627d4f4664c",
-    "semantic_hash": "0893efd95187e9dd0c7d4627d4f4664c"
+    "mtime": 1786213590.797041,
+    "ast_hash": "9c7ae65c82ed30d85b61726b8d8506a5",
+    "semantic_hash": ""
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786204389.510524,
-    "ast_hash": "c4bd9a4e1c23d6823cc17e25d54cb302",
+    "mtime": 1786212114.1725175,
+    "ast_hash": "ddcdf5f59ddfa3feb5ced857c8e7add4",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786209795.3649614,
-    "ast_hash": "1f5d1ce5603028c37f1e4d18bb9d97ea",
+    "mtime": 1786213612.2111673,
+    "ast_hash": "cce4319312de79292b187c456e866694",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786209601.7884521,
-    "ast_hash": "4ab34fed942b88664e04534d5a39971a",
+    "mtime": 1786212823.8696678,
+    "ast_hash": "e5f23e090e1f4eae1db66c677fdd128a",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -540,8 +540,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/phases.md": {
-    "mtime": 1786209125.9014544,
-    "ast_hash": "292a990df175d48411ad2b365090ec97",
+    "mtime": 1786212360.0026047,
+    "ast_hash": "8c81b090661bf0a18e23037b3779082e",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/reminder-codes.md": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/interview.md": {
-    "mtime": 1786204021.1100554,
-    "ast_hash": "cdb8a1e0d42c5561265cf8299845c524",
+    "mtime": 1786212393.791192,
+    "ast_hash": "d8889432705a7620e63cb6ce6adc7fa3",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/lane-decision.md": {
@@ -565,18 +565,18 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/skill-inventory.md": {
-    "mtime": 1786204021.1090896,
-    "ast_hash": "37802e10663849a20e4ba1e960d75dad",
+    "mtime": 1786212116.8867607,
+    "ast_hash": "e9a1e44313930c3e778e2a8f9506e66d",
     "semantic_hash": ""
   },
   "skills/tdq-plan/references/plan-template.md": {
-    "mtime": 1786202604.9159045,
-    "ast_hash": "66e30a6e568bc68b16ab1d62bbebbb2e",
+    "mtime": 1786212086.825163,
+    "ast_hash": "083ed1f0f137a0e481b02d5c4aab131b",
     "semantic_hash": ""
   },
   "skills/tdq-spec/references/spec-template.md": {
-    "mtime": 1786204031.0459418,
-    "ast_hash": "1aa08c73f65f1caa7836f17a2696648e",
+    "mtime": 1786212024.2648404,
+    "ast_hash": "1609352ab0d4a6aece99ecf90241848f",
     "semantic_hash": ""
   },
   "docs/tdq/external/2026-07-30-external-agent-mode/E2E-AGY.json": {
@@ -1840,8 +1840,8 @@
     "semantic_hash": ""
   },
   "docs/claude-md-mau.md": {
-    "mtime": 1786203526.5713933,
-    "ast_hash": "dc49db735d759d7d3002e996b5b00be0",
+    "mtime": 1786212579.177922,
+    "ast_hash": "3144bc92e19dce9514b854eac5b11c2a",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-08-08-giam-over-engineer-workflow.md": {
@@ -1885,13 +1885,38 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-09.md": {
-    "mtime": 1786209636.151597,
-    "ast_hash": "d1cfb19dc90a126e5cba0ad5f059790d",
+    "mtime": 1786212816.0326662,
+    "ast_hash": "a9a5f2419c75d14a7110257463a1e8c4",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/context-budget.md": {
     "mtime": 1786204346.6958842,
     "ast_hash": "4fc1bf98b8de8c779a30206c0766cd8d",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-09-cat-token-thua-workflow.md": {
+    "mtime": 1786211774.8185565,
+    "ast_hash": "01ca6eab75826a1fa428f6352b4fa7e3",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-09-cat-token-thua-workflow.md": {
+    "mtime": 1786212691.6989348,
+    "ast_hash": "b5add979927156653f54ef444b36fe68",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-09-cat-token-thua-workflow.md": {
+    "mtime": 1786212781.4823205,
+    "ast_hash": "79802815223d35a6fef057121871e281",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-09-cat-token-thua-workflow.md": {
+    "mtime": 1786212812.0433557,
+    "ast_hash": "3f6a36d9fcafc411b7c2dc46e5e20092",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-09-cat-token-thua-workflow.md": {
+    "mtime": 1786211753.8753757,
+    "ast_hash": "9578fbc4c05662c188bde675ac4d82c6",
     "semantic_hash": ""
   }
 }

@@ -1,0 +1,14 @@
+2026-08-05T12:49:24Z scout start: clone-setting-to-codex research
+2026-08-05T12:50:10Z CHECK https://developers.openai.com/plugins/build/plugins -> 200
+2026-08-05T12:50:10Z CHECK https://learn.chatgpt.com/docs/config-file/config-reference -> 200
+2026-08-05T12:50:10Z CHECK https://developers.openai.com/codex/enterprise/managed-configuration -> 200
+2026-08-05T12:50:12Z CHECK https://github.com/openai/codex/issues/17012 -> 200
+2026-08-05T12:50:14Z CHECK https://www.verdent.ai/guides/codex-agents-md-explained -> 200
+2026-08-05T12:50:15Z CHECK https://codex-best-practices-d67bea.pages.oit.duke.edu/best-practices/agents.html -> 200
+2026-08-05T12:50:16Z CHECK https://axiomstudio.ai/learn/codex-agent-skills -> 200
+2026-08-05T12:50:18Z CHECK https://blog.fsck.com/2025/12/19/codex-skills -> 200
+2026-08-05T12:50:19Z CHECK https://www.codex-marketplace.com/docs -> 200
+2026-08-05T12:50:21Z CHECK https://help.apiyi.com/en/codex-plugin-development-marketplace-guide-en.html -> 200
+2026-08-05T12:50:23Z CHECK https://www.verdent.ai/guides/codex-cli-mcp-setup-guide -> 200
+2026-08-05T12:50:28Z CHECK https://blakecrosley.com/blog/claude-code-to-codex-migration -> 200
+2026-08-05T12:52:07Z findings=11 written agent-2.json, report written docs/tdq/research/2026-08-05-clone-setting-codex.md

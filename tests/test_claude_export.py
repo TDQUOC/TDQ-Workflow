@@ -30,9 +30,9 @@ def _git(cwd, *args):
     ).stdout.strip()
 
 
-def make_repo(base):
+def make_repo(base, name="srcrepo"):
     """Repo giả có `.git` thật, 1 file tracked, 1 file untracked bị gitignore."""
-    repo = os.path.join(base, "srcrepo")
+    repo = os.path.join(base, name)
     os.makedirs(os.path.join(repo, ".claude-plugin"))
     with open(os.path.join(repo, ".claude-plugin", "plugin.json"), "w") as f:
         json.dump({"name": "tdq-workflow", "version": "9.9.9"}, f)
@@ -122,8 +122,13 @@ class Fixture(unittest.TestCase):
         self.dest = os.path.join(self.base, "bundle")
 
     def build(self, *extra, **kwargs):
+        # `--local-repos` mặc định trỏ file KHÔNG TỒN TẠI trong tempdir → script rơi
+        # về chế độ 1 repo qua `--repo` (giữ nguyên hành vi cũ cho mọi test không
+        # khai báo multi-repo). Không override thì mặc định sẽ đọc đúng
+        # `claude-export/local-repos.json` thật của repo này — vỡ cách ly test.
+        no_local_repos = os.path.join(self.base, "no-local-repos.json")
         return run_cli("build", "--dest", self.dest, "--claude-home", self.home,
-                       "--repo", self.repo, *extra, **kwargs)
+                       "--repo", self.repo, "--local-repos", no_local_repos, *extra, **kwargs)
 
     def read_manifest(self):
         with open(os.path.join(self.dest, "manifest.json"), encoding="utf-8") as f:
@@ -286,6 +291,125 @@ class BuildRepoTest(Fixture):
         self.assertEqual(src, got)
 
 
+class MultiRepoTest(Fixture):
+    """P2: nhiều repo local dependency đọc từ `local-repos.json`."""
+
+    def setUp(self):
+        super().setUp()
+        self.repo2 = make_repo(self.base, name="mem0fakerepo")
+        self.local_repos_path = os.path.join(self.base, "local-repos.json")
+        with open(self.local_repos_path, "w") as f:
+            json.dump({"tdqworkflow-repo": self.repo, "mem0-repo": self.repo2}, f)
+
+    def build2(self, *extra):
+        return self.build("--local-repos", self.local_repos_path, *extra)
+
+    def test_two_local_repos_are_cloned(self):
+        self.assertEqual(self.build2()[0], 0)
+        for name in ("tdqworkflow-repo", "mem0-repo"):
+            self.assertTrue(os.path.isdir(os.path.join(self.dest, name, ".git")),
+                            f"{name} thiếu .git")
+
+    def test_remember_copied_for_every_repo_with_it(self):
+        # repo2 cũng có `.remember/` (make_repo dựng giống repo1) — phải copy riêng,
+        # không chỉ repo đầu tiên trong danh sách.
+        self.assertEqual(self.build2()[0], 0)
+        mem2 = os.path.join(self.dest, "mem0-repo", ".remember")
+        self.assertTrue(os.path.isfile(os.path.join(mem2, "core-memories.md")))
+        self.assertFalse(os.path.exists(os.path.join(mem2, "tmp")))
+        self.assertFalse(os.path.exists(os.path.join(mem2, "logs")))
+
+    def test_verbose_log_names_both_repos(self):
+        code, _, err = self.build2("--verbose")
+        self.assertEqual(code, 0)
+        self.assertIn("tdqworkflow-repo", err)
+        self.assertIn("mem0-repo", err)
+
+    def test_missing_local_repos_file_falls_back_to_single_repo(self):
+        code, _, _ = self.build()  # không truyền --local-repos hợp lệ (mặc định tempdir rỗng)
+        self.assertEqual(code, 0)
+        self.assertTrue(os.path.isdir(os.path.join(self.dest, "tdqworkflow-repo", ".git")))
+        self.assertFalse(os.path.exists(os.path.join(self.dest, "mem0-repo")))
+
+    def test_manifest_lists_every_repo(self):
+        self.assertEqual(self.build2()[0], 0)
+        manifest = self.read_manifest()
+        self.assertIn("repos", manifest)
+        self.assertEqual(sorted(manifest["repos"]), ["mem0-repo", "tdqworkflow-repo"])
+        entry = manifest["repos"]["mem0-repo"]
+        self.assertEqual(entry["source"], self.repo2)
+        self.assertEqual(entry["commit"], _git(self.repo2, "rev-parse", "HEAD"))
+        # repo_commit cũ vẫn giữ SHA của tdqworkflow-repo — tương thích ngược.
+        self.assertEqual(manifest["repo_commit"], _git(self.repo, "rev-parse", "HEAD"))
+
+    def test_readme_lists_every_repo(self):
+        self.assertEqual(self.build2()[0], 0)
+        with open(os.path.join(self.dest, "README.md"), encoding="utf-8") as f:
+            text = f.read()
+        self.assertIn("tdqworkflow-repo", text)
+        self.assertIn("mem0-repo", text)
+
+    def test_check_reports_drift_per_repo(self):
+        self.assertEqual(self.build2()[0], 0)
+        with open(os.path.join(self.repo2, "README.md"), "a") as f:
+            f.write("doi mem0-repo\n")
+        _git(self.repo2, "add", "-A")
+        _git(self.repo2, "commit", "-q", "-m", "doi mem0-repo")
+        code, out, _ = run_cli("check", "--dest", self.dest, "--claude-home", self.home,
+                               "--repo", self.repo)
+        self.assertEqual(code, 1)
+        self.assertIn("mem0-repo", out)
+        self.assertNotIn("tdqworkflow-repo | commit", out)
+        self.assertIn("1 mục lệch", out)
+
+
+class SkillsGeneralizeTest(Fixture):
+    """P3: `CONFIG_DIRS` phải tự nhặt MỌI skill dưới `skills/`, không hard-code."""
+
+    def setUp(self):
+        super().setUp()
+        os.makedirs(os.path.join(self.home, "skills", "mem0-memory"))
+        with open(os.path.join(self.home, "skills", "mem0-memory", "SKILL.md"), "w") as f:
+            f.write("# mem0-memory\n")
+
+    def test_every_skill_subdir_is_copied(self):
+        got = claude_export.collect_config_files(self.home)
+        self.assertIn("config/skills-graphify/SKILL.md", got)
+        self.assertIn("config/skills-mem0-memory/SKILL.md", got)
+
+    def test_build_copies_both_skills(self):
+        self.assertEqual(self.build()[0], 0)
+        self.assertTrue(os.path.isfile(
+            os.path.join(self.dest, "config", "skills-mem0-memory", "SKILL.md")))
+
+
+class LaunchAgentPlistTest(MultiRepoTest):
+    """P3: copy plist LaunchAgent khớp tên repo local, chỉ để tham khảo."""
+
+    def setUp(self):
+        super().setUp()
+        self.la_dir = os.path.join(self.base, "fake-launchagents")
+        os.makedirs(self.la_dir)
+        self.plist_path = os.path.join(self.la_dir, "com.mem0.gateway.plist")
+        with open(self.plist_path, "wb") as f:
+            f.write(b"<plist>noi dung plist gia</plist>")
+
+    def test_matching_launch_agent_plist_is_copied(self):
+        code, _, _ = self.build2("--launch-agents-dir", self.la_dir)
+        self.assertEqual(code, 0)
+        out_path = os.path.join(self.dest, "config", "launch-agents", "com.mem0.gateway.plist")
+        self.assertTrue(os.path.isfile(out_path))
+        self.assertEqual(claude_export.sha256_of(out_path),
+                         claude_export.sha256_of(self.plist_path))
+
+    def test_no_matching_plist_is_silently_skipped(self):
+        empty_dir = os.path.join(self.base, "empty-launchagents")
+        os.makedirs(empty_dir)
+        code, _, _ = self.build2("--launch-agents-dir", empty_dir)
+        self.assertEqual(code, 0)
+        self.assertFalse(os.path.exists(os.path.join(self.dest, "config", "launch-agents")))
+
+
 class BuildConfigTest(Fixture):
     def test_config_and_mcp_written(self):
         self.assertEqual(self.build()[0], 0)
@@ -325,11 +449,12 @@ class BuildConfigTest(Fixture):
 
 
 class BuildManifestTest(Fixture):
-    def test_exactly_eight_keys(self):
+    def test_exactly_nine_keys(self):
+        # 8 khoá gốc + "repos" (thêm ở P4, T4.1) — repo_commit vẫn giữ để tương thích ngược.
         self.assertEqual(self.build()[0], 0)
         self.assertEqual(sorted(self.read_manifest()), [
             "cli_dependencies", "exported_at", "marketplaces", "mcp_servers",
-            "plugin_version", "plugins", "repo_commit", "source_files",
+            "plugin_version", "plugins", "repo_commit", "repos", "source_files",
         ])
 
     def test_version_and_commit_match_source(self):

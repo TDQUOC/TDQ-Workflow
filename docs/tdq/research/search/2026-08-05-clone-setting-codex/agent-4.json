@@ -1,0 +1,136 @@
+{
+  "agent": 4,
+  "routes": [
+    "permission profiles requirements.toml thay sandbox_mode Codex"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Từ Codex 0.138.0 trở đi, Codex khuyến nghị sử dụng Permission Profiles với allowed_permission_profiles và managed default_permissions trong requirements.toml; Codex 0.137.0 và các phiên bản trước đó bỏ qua (ignore) hai cài đặt này.",
+      "evidence_quote": "Permission-profile allowlists require Codex 0.138.0 or later. Codex 0.137.0 and earlier ignore allowed_permission_profiles and managed default_permissions.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Field sandbox_mode cũ vẫn hỗ trợ tương thích ngược nhưng không hợp nhất (compose) với permission profiles mới. Nếu sandbox_mode xuất hiện trong file config hoặc CLI flag, Codex sẽ áp dụng cài đặt sandbox cũ thay vì default_permissions (ngoại trừ khi có allowed_permission_profiles được quản lý).",
+      "evidence_quote": "Permission profiles do not compose with the older sandbox settings. Configure either default_permissions and [permissions], or sandbox_mode / sandbox_workspace_write, but not both. If sandbox_mode appears in any loaded config file, you pass --sandbox, or the selected config profile sets sandbox_mode, Codex uses those older sandbox settings instead of default_permissions.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "url_alive": true
+    },
+    {
+      "claim": "approval_policy được quản lý cùng các cài đặt an ninh khác (bao gồm permission profiles và sandbox mode) trong file requirements.toml của enterprise để giới hạn các quyền và mức phê duyệt người dùng có thể thiết lập.",
+      "evidence_quote": "Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, permission profiles, web search mode, managed hooks, which MCP servers users can enable, and which user-configured plugin marketplace sources they can add, install from, or refresh).",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Ví dụ khối TOML thật cho thấy cách khai báo default_permissions và bảng [allowed_permission_profiles] trong requirements.toml để cấp quyền cho phép các profile như :read-only và :workspace.",
+      "evidence_quote": "default_permissions = \":workspace\"\n\n[allowed_permission_profiles]\n\":read-only\" = true\n\":workspace\" = true",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Từ Codex 0.138.0 trở đi, Codex ưu tiên dùng permission profiles với allowed_permission_profiles và managed default_permissions, và chỉ dùng allowed_sandbox_modes cho các legacy deployment vẫn cấu hình sandbox_mode.",
+      "evidence_quote": "For Codex 0.138.0 or later, prefer permission profiles with allowed_permission_profiles and managed default_permissions. Use allowed_sandbox_modes only for legacy deployments that still configure sandbox_mode.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Để đảm bảo tương thích ngược, các local client hỗ trợ tự chuyển đổi (reinterpret) các trường legacy gồm approval_policy, approvals_reviewer, và sandbox_mode thành requirements.",
+      "evidence_quote": "For backward compatibility, supported local clients reinterpret the legacy approval_policy, approvals_reviewer, and sandbox_mode fields as requirements. This conversion adds compatibility choices where necessary; use requirements.toml for explicit allowlists.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Trường allowed_permission_profiles điều khiển các built-in và custom permission profiles mà người dùng có thể chọn (yêu cầu Codex 0.138.0 trở lên). Khi xuất hiện, bảng này đại diện cho toàn bộ danh sách được phép.",
+      "evidence_quote": "Use allowed_permission_profiles to control which built-in and custom permission profiles users can select. This is the permission-profile counterpart to allowed_sandbox_modes; use the allowlist that matches how your users select permissions. Permission-profile allowlists require Codex 0.138.0 or later. Codex 0.137.0 and earlier ignore allowed_permission_profiles and managed default_permissions.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Khối requirements trong requirements.toml giới hạn các cài đặt nhạy cảm về bảo mật bao gồm approval policy, sandbox mode, permission profiles, web search mode, managed hooks, MCP servers allowlist.",
+      "evidence_quote": "Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, permission profiles, web search mode, managed hooks, which MCP servers users can enable, and which user-configured plugin marketplace sources they can add, install from, or refresh).",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Quản trị viên có thể định nghĩa custom permission profile trực tiếp trong nguồn requirements và chỉ định default_permissions để đặt profile mặc định theo nguyên tắc least-privilege.",
+      "evidence_quote": "Admins can define a custom profile in the same requirements source. Use organization-specific profile names that won’t collide with names in users’ loaded config. Custom names can’t start with : or use the reserved filesystem name.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Cloud requirements có độ ưu tiên cao hơn system requirements (/etc/codex/requirements.toml) và có thể override bằng cách gán giá trị false cho một profile đã được phép bởi system file.",
+      "evidence_quote": "Permission allowlists combine by profile name. Because cloud requirements have higher precedence than system requirements, cloud requirements can use false to turn off a profile allowed by the system file.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "url_alive": true
+    },
+    {
+      "claim": "Permission profiles không dùng chung với sandbox settings cũ (sandbox_mode); nếu bất kỳ config nào chứa sandbox_mode, Codex sẽ ưu tiên dùng sandbox settings cũ thay vì default_permissions",
+      "evidence_quote": "Permission profiles do not compose with the older sandbox settings. Configure either default_permissions and [permissions], or sandbox_mode / sandbox_workspace_write, but not both. If sandbox_mode appears in any loaded config file, you pass --sandbox, or the selected config profile sets sandbox_mode, Codex uses those older sandbox settings instead of default_permissions.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "url_alive": true
+    },
+    {
+      "claim": "Quản trị viên Enterprise có thể giới hạn permission profiles mà người dùng được chọn thông qua requirements.toml quản lý bằng allowed_permission_profiles",
+      "evidence_quote": "Enterprise administrators can define profiles and restrict which profiles users may select through managed requirements.toml. Once allowed_permission_profiles is present, omitted profiles are denied, including omitted built-ins and profiles added in future Codex versions.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "url_alive": true
+    },
+    {
+      "claim": "Codex 0.138.0 trở lên bắt đầu hỗ trợ đầy đủ permission profiles và cho phép chuyển đổi từ allowed_sandbox_modes sang allowed_permission_profiles",
+      "evidence_quote": "For a mixed-version enterprise rollout, you can keep the managed allowed_sandbox_modes requirement as a temporary compatibility constraint until every client runs Codex 0.138.0 or later.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "url_alive": true
+    },
+    {
+      "claim": "Codex gồm 3 permission profiles tích hợp sẵn: :read-only, :workspace, và :danger-full-access",
+      "evidence_quote": "Codex includes three built-in permission profiles: :read-only keeps local command execution read-only. :workspace allows writes inside the active workspace roots and system temp directories. :danger-full-access removes local sandbox restrictions and should be used only when that broad access is intentional.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "url_alive": true
+    },
+    {
+      "claim": "Cấu hình TOML khai báo profile custom dưới khối [permissions.<name>] và chọn mặc định qua khóa top-level default_permissions",
+      "evidence_quote": "Create a named profile under [permissions.<name>], then set the top-level default_permissions key to that profile name or to one of the built-ins above.",
+      "route": "permission profiles requirements.toml thay sandbox_mode Codex",
+      "score": 10,
+      "source_url": "https://developers.openai.com/codex/permissions",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"requirements.toml\" \"Codex\" permission profiles sandbox_mode",
+    "https://developers.openai.com/codex/enterprise/managed-configuration",
+    "https://developers.openai.com/codex/permissions",
+    "site:learn.chatgpt.com \"permission profiles\" codex"
+  ]
+}

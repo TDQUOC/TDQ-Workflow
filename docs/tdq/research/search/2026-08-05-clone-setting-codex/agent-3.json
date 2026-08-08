@@ -1,0 +1,116 @@
+{
+  "agent": 3,
+  "routes": [
+    "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "OpenAI Codex CLI sử dụng chuẩn Agent Skill chính thức với cấu trúc thư mục chứa file SKILL.md bắt buộc (bao gồm YAML frontmatter name, description và phần hướng dẫn markdown), hoàn toàn tương tự Claude Code Skills.",
+      "evidence_quote": "In OpenAI Codex, a SKILL.md file is the required manifest file that defines an Agent Skill. Skills are modular, reusable packages of instructions and resources that teach Codex how to perform specific, repeatable workflows... Frontmatter (Required): The file must begin with YAML frontmatter containing a name and a description... Instructions (Required): The body of the file contains the detailed operational steps",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/specification",
+      "url_alive": true
+    },
+    {
+      "claim": "Codex CLI hỗ trợ tự động phát hiện (implicit discovery) skill dựa trên description trong YAML frontmatter khi tác vụ phù hợp, hoặc cho phép kích hoạt thủ công qua lệnh /skills hoặc cú pháp $tên-skill.",
+      "evidence_quote": "Discovery: When a task matches the description provided in the frontmatter, or when you explicitly invoke the skill (e.g., via $skill-name in the CLI), Codex activates it.",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 9,
+      "source_url": "https://agentskills.io/home",
+      "url_alive": true
+    },
+    {
+      "claim": "Tính năng Custom Prompts cũ (lưu tại ~/.codex/prompts/ và gọi bằng slash command) đã bị DEPRECATED trên Codex CLI để chuyển sang chuẩn Agent Skills (SKILL.md).",
+      "evidence_quote": "Custom Prompts (Deprecated): Custom prompts were a legacy feature used to turn Markdown files into reusable slash commands in the Codex CLI... Status: This feature is deprecated in favor of Skills... Migration: If you are currently using custom prompts, it is recommended to migrate these workflows into the Skills format",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 9,
+      "source_url": "https://agentskills.io/specification",
+      "url_alive": true
+    },
+    {
+      "claim": "Chuẩn SKILL.md là một open standard (Agent Skills) cho phép đóng gói hướng dẫn, scripts và tài nguyên tái sử dụng di động (portable) tương thích liên nền tảng giữa Claude Code, OpenAI Codex CLI, Cursor và Gemini CLI.",
+      "evidence_quote": "Standardization: The SKILL.md format is part of the open Agent Skills standard, meaning it is designed to be portable and consistent across different AI agent environments... Because SKILL.md is part of an open standard, a well-defined skill can often be used across different coding tools, including Claude Code, OpenAI Codex, Cursor, Gemini CLI",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/home",
+      "url_alive": true
+    },
+    {
+      "claim": "Cấu trúc thư mục Agent Skills quy định bắt buộc phải có file SKILL.md chứa metadata và hướng dẫn, cùng các thư mục tùy chọn như scripts/, references/, assets/.",
+      "evidence_quote": "A skill is a directory containing, at minimum, a `SKILL.md` file:\n\n```\nskill-name/\n├── SKILL.md          # Required: metadata + instructions\n├── scripts/          # Optional: executable code\n├── references/       # Optional: documentation\n├── assets/           # Optional: templates, resources\n└── ...               # Any additional files or directories\n```",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/specification",
+      "url_alive": true
+    },
+    {
+      "claim": "File SKILL.md gồm YAML frontmatter với hai trường bắt buộc là name (tối đa 64 ký tự, chỉ chứa chữ thường, số, dấu gạch ngang) và description (tối đa 1024 ký tự).",
+      "evidence_quote": "The `SKILL.md` file must contain YAML frontmatter followed by Markdown content.\n\n### Frontmatter\n\n| Field           | Required | Constraints                                                                                                       |\n| --------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |\n| `name`          | Yes      | Max 64 characters. Lowercase letters, numbers, and hyphens only. Must not start or end with a hyphen.             |\n| `description`   | Yes      | Max 1024 characters. Non-empty. Describes what the skill does and when to use it.                                 |",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/specification",
+      "url_alive": true
+    },
+    {
+      "claim": "Agent Skills áp dụng cơ chế nạp thông tin tiệm tiến (progressive disclosure) qua 3 giai đoạn: Metadata (~100 tokens), Instructions (< 5000 tokens), và Resources (nạp theo nhu cầu).",
+      "evidence_quote": "Agents load skills *progressively*, pulling in more detail only as a task calls for it. Skills should be structured to take advantage of this:\n\n1. **Metadata** (~100 tokens): The `name` and `description` fields are loaded at startup for all skills\n2. **Instructions** (< 5000 tokens recommended): The full `SKILL.md` body is loaded when the skill is activated\n3. **Resources** (as needed): Files (e.g. those in `scripts/`, `references/`, or `assets/`) are loaded only when required",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/specification",
+      "url_alive": true
+    },
+    {
+      "claim": "Trường compatibility tùy chọn trong frontmatter cho phép khai báo sản phẩm/môi trường tương thích, ví dụ: 'Designed for Claude Code (or similar products)'.",
+      "evidence_quote": "compatibility: Designed for Claude Code (or similar products)",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/specification",
+      "url_alive": true
+    },
+    {
+      "claim": "Agent Skills là một chuẩn mở (open standard) do Anthropic khởi xướng, quy định cấu trúc mỗi skill là một thư mục chứa file SKILL.md (bắt buộc gồm metadata name, description và hướng dẫn).",
+      "evidence_quote": "At its core, a skill is a folder containing a SKILL.md file. This file includes metadata (name and description, at minimum) and instructions that tell an agent how to perform a specific task.",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/home",
+      "url_alive": true
+    },
+    {
+      "claim": "Các agent hỗ trợ Agent Skills (bao gồm cả ChatGPT & Codex và Claude Code) nạp và thực thi skill theo cơ chế progressive disclosure 3 giai đoạn: Discovery, Activation, và Execution.",
+      "evidence_quote": "Agents load skills through progressive disclosure, in three stages: 1. Discovery: At startup, agents load only the name and description of each available skill, just enough to know when it might be relevant. 2. Activation: When a task matches a skill's description, the agent reads the full SKILL.md instructions into context. 3. Execution: The agent follows the instructions, optionally executing bundled code or loading referenced files as needed.",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/home",
+      "url_alive": true
+    },
+    {
+      "claim": "Codex (ChatGPT & Codex) chính thức nằm trong danh sách các client hỗ trợ Agent Skills (dùng chung định dạng chuẩn SKILL.md với Claude Code) với tài liệu hướng dẫn tại https://developers.openai.com/codex/skills/ và mã nguồn repository GitHub openai/codex.",
+      "evidence_quote": "name: \"ChatGPT & Codex\", description: \"ChatGPT brings together agents for different kinds of work, including Codex for software development and ChatGPT Work for broader work. Use ChatGPT across desktop, web, and mobile, with Codex also available in your editor and terminal.\", instructionsUrl: \"https://developers.openai.com/codex/skills/\", sourceCodeUrl: \"https://github.com/openai/codex\"",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/home",
+      "url_alive": true
+    },
+    {
+      "claim": "Cấu trúc chuẩn của một Agent Skill bao gồm file SKILL.md ở thư mục gốc (bắt buộc), kết hợp với các thư mục phụ tuỳ chọn như scripts/, references/, assets/.",
+      "evidence_quote": "my-skill/\n├── SKILL.md          # Required: metadata + instructions\n├── scripts/          # Optional: executable code\n├── references/       # Optional: documentation\n├── assets/           # Optional: templates, resources\n└── ...               # Any additional files or directories",
+      "route": "Codex Agent Skills official docs SKILL.md tương đương Claude Code skills",
+      "score": 10,
+      "source_url": "https://agentskills.io/home",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"SKILL.md\" \"Codex\" \"openai\" \"Claude Code\" skills",
+    "https://agentskills.io/home",
+    "https://agentskills.io/home.md",
+    "https://agentskills.io/specification",
+    "https://agentskills.io/specification.md",
+    "site:developers.openai.com \"skills\" OR \"SKILL.md\" OR \"custom prompts\" codex cli",
+    "site:developers.openai.com codex skills SKILL.md",
+    "site:github.com/openai \"SKILL.md\" codex skills"
+  ]
+}

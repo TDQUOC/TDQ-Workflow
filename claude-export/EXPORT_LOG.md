@@ -16,3 +16,7 @@ ghi file này — cách ghi ở mục "Ghi log" của `INSTRUCTIONS.md`.
 - 2026-08-05 10:26 — sinh lại sau khi vá `_cli_approve`: 1696 file / 17 MB · zip 8,2 MB · 49 plugin + 2 marketplace + 2 MCP server · quét secret sạch · `check` ra 0 mục lệch
 - 2026-08-05 10:27 — build lượt 2 sau khi commit mốc trên: 1709 file / 17 MB · zip 8,5 MB · commit `a5385093` · `check` ra 0 mục lệch · `unzip -t` No errors
 - Lưu ý đọc số: bundle mang theo `.git` nên mỗi commit mới thêm vài object, số file tăng dần qua các lượt build. Dòng mốc này được commit SAU lần build cuối, vậy `check` sẽ báo lệch đúng 1 commit cho tới lần `build` kế tiếp.
+- 2026-08-05 18:54 — EXPORT_DEST=/Users/truongdinhquoc/Documents/claude-code-export
+- 2026-08-05 18:54 — build full multi-repo (0.8.0): 2121 file · zip 10,9 MB · 2 repo (`tdqworkflow-repo`@453e3702, `mem0-repo`@bb3ad38a) · 21 file cấu hình · 49 plugin + 2 marketplace + 3 MCP server · 1 LaunchAgent plist (`com.mem0.gateway.plist`) · quét secret sạch · `check` ra 0 mục lệch · `unzip -t` No errors · QC agent xác nhận không rò rỉ TAVILY key
+- 2026-08-05 19:33 — EXPORT_DEST=/Users/truongdinhquoc/Documents/claude-code-export
+- 2026-08-05 19:33 — rebuild đồng bộ lại sau khi validate lúc 19:22 phát hiện 2 mục lệch (`config/installed_plugins.json`, `config/known_marketplaces.json` — do `~/.claude/plugins/*.json` bị auto-sync ghi lại lúc 18:58): 2121 file · zip 10,9 MB · 2 repo (không đổi commit so với lần trước) · quét secret sạch · `check` ra 0 mục lệch · `unzip -t` No errors
