@@ -51,14 +51,6 @@ class AgentFrontmatterTest(unittest.TestCase):
                     f"{name}: model {model!r} không hợp lệ")
                 self.assertIn(effort, EFFORTS, f"{name}: effort {effort!r} không hợp lệ")
 
-    def test_mechanical_runners_stay_cheap(self):
-        """Runner chỉ bọc script — để mức cao là đốt tiền vô ích."""
-        for name in ("codex-runner.md", "agy-runner.md", "search-runner.md"):
-            with self.subTest(agent=name):
-                head = frontmatter(os.path.join(AGENTS, name))
-                self.assertEqual(field(head, "effort"), "low")
-                self.assertEqual(field(head, "model"), "haiku")
-
     def test_quality_agents_are_not_throttled(self):
         """Agent làm việc chất lượng không được ép nghĩ nông (effort thấp)."""
         for name in ("tdq-implementer.md", "tdq-qc-tester.md", "tdq-reviewer.md"):

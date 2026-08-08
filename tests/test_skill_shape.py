@@ -111,7 +111,7 @@ class SkillShapeTest(unittest.TestCase):
 
     def test_no_stale_skill_refs(self):
         roots = [SKILLS, os.path.join(ROOT, "agents"), os.path.join(ROOT, "hooks"),
-                 os.path.join(ROOT, "portable")]
+                 ]
         hits = []
         for root in roots:
             for dirpath, _, files in os.walk(root):

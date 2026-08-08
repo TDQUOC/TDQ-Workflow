@@ -75,16 +75,3 @@ BỎ theo yêu cầu user: "<nguyên văn câu user>"
 - Fix xong chạy lại **đủ 3 hạng mục** Q1/Q2/Q3, không chỉ chạy lại hạng mục vừa FAIL.
 - **Trần 3 vòng.** Vượt trần → DỪNG, báo user, đề xuất chuyển lane full. Giữ
   `phase=implement`, KHÔNG chạy `set phase=idle`.
-- Quick external mà engine ngoài làm FAIL → hội thoại chính tự fix. Không giao lại engine đã fail.
-
-## Giao engine ngoài (quick external)
-
-- Dòng máy-đọc đặt ngay dưới `Năng lực:`, đúng khuôn một dòng:
-  `Thực thi external: engine=<codex|agy> · khó=<slug>`
-- Model default = slug ĐẦU TIÊN (dòng 1, bỏ nhãn `(chưa xác minh)`) trong output của
-  `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/external_models.py" list <engine>`.
-- Luật chọn engine: [tdq-plan](../../tdq-plan/SKILL.md) mục "Chốt engine + model".
-- Task dùng skill cần MCP tool (nhãn `(mcp)`) → **KHÔNG** giao external: engine ngoài
-  không gọi được MCP. Hard-block — không có đường override, khớp luật ở
-  `tdq-build/references/external-build.md`: gói `"mcp": true` luôn tự làm, không giao
-  engine. Khuyên user chọn main hoặc subagent cho task này.

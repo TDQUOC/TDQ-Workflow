@@ -48,8 +48,7 @@ Trạng thái plan: CHỜ DUYỆT
 Luật nhãn `(mcp)` — BẮT BUỘC ghi ngay khi lập plan: skill nào cần MCP tool lúc
 chạy (gọi server MCP, ví dụ tavily/notion) → dòng `Dùng:` phải kết thúc bằng nhãn
 ` (mcp)` NGOÀI backtick, cuối dòng, đúng cú pháp spec §1. `split-plan` đọc nhãn
-này bằng máy: task có `(mcp)` KHÔNG vào gói external — Claude tự làm. Thiếu
-nhãn = engine ngoài nhận task không chạy nổi.
+này để biết task nào buộc phải do Claude tự làm, không giao sub-agent thiếu MCP.
 
 ## Px — Log & test bắt buộc
 - [ ] **Tx.1** Log service bật mặc định (timestamp, mức log, tắt được qua config) — Test: <...>
@@ -63,7 +62,7 @@ Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh ki�
 
 - Phải nằm **một dòng riêng**, không ghép vào dòng header khác — công cụ đọc dòng này.
 - Đây chỉ là **đề xuất** của Claude — không hỏi user riêng một lượt cho mode.
-  Mode ghi vào state là mode user nói lúc duyệt: `duyệt plan mode <main|subagent|external>`.
+  Mode ghi vào state là mode user nói lúc duyệt: `duyệt plan mode <main|subagent>`.
   User duyệt mà không nói mode → HỎI, không tự lấy đề xuất làm chốt.
 
 ## Kiểm trước khi trình

@@ -37,11 +37,11 @@
 - Chỉ NGƯỜI DÙNG duyệt, bằng chat thường. Câu chữ mơ hồ → HỎI lại, cấm tự suy diễn duyệt.
 - Ghi duyệt/state CHỈ qua `scripts/tdq_state.py`; cấm sửa `docs/tdq/state.json` trực tiếp.
 - Gộp gate: duyệt spec → viết plan ngay trong turn đó; duyệt plan kèm mode
-  (main | subagent | external) → build ngay trong turn đó. Duyệt plan không nói mode → HỎI.
+  (main | subagent) → build ngay trong turn đó. Duyệt plan không nói mode → HỎI.
 - Spec/plan/report viết tiếng Việt; report ngắn gọn (khuyến nghị 10-20 dòng, không giới
   hạn cứng). Tick `[x]` ngay khi task pass test.
 - Cuối turn có đổi code → chạy `graphify extract . --code-only`.
-- Chi tiết lane, mode external, deep search, QC: trong các skill `tdq-*`.
+- Chi tiết lane, tầng `nhỏ`, QC: trong các skill `tdq-*`.
 - Sub-agent: description mở đầu `<model>-<effort>-<việc>`, vd `sonnet-low-research`.
 
 ## 8. Việc chuyên biệt → đọc file tương ứng

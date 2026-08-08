@@ -8,7 +8,6 @@ from helper import ROOT, tdq_state
 REQUIRED_KEYS = {"entry", "action", "cmd", "checklist", "done_when", "forbidden"}
 DOC_FILES = [
     os.path.join(ROOT, "skills", "tdq-conventions", "references", "phases.md"),
-    os.path.join(ROOT, "portable", "workflow", "phases.md"),
 ]
 
 
@@ -65,12 +64,12 @@ class PhaseTableTest(unittest.TestCase):
             self.assertIn("python3 scripts/tdq_state.py", body,
                           f"mục {section} mất lệnh tdq_state.py thật")
 
-    def test_quick_row_external_variant_and_terminal(self):
-        """A26: dòng duyệt quick khớp intake (biến thể external); A6: có bước đóng."""
+    def test_quick_row_no_qc_variant_and_terminal(self):
+        """A26: dòng duyệt quick khớp intake (biến thể bỏ QC); A6: có bước đóng."""
         row = tdq_state.PHASE_TABLE["quick"]
-        self.assertIn("--mode external", row["cmd"])
+        self.assertIn("--no-qc", row["cmd"])
         joined = " ".join(row["checklist"])
-        self.assertIn("duyệt quick external", joined)
+        self.assertIn("duyệt quick không QC", joined)
         self.assertIn("set phase=idle", joined)
 
     def test_render_plugin_root_variant(self):
@@ -82,18 +81,16 @@ class PhaseTableTest(unittest.TestCase):
     def test_docs_match_constant(self):
         """Mỗi phase phải xuất hiện trong doc kèm đúng lệnh chuyển tiếp.
 
-        A40: bản conventions (ngữ cảnh plugin) dùng lệnh dạng plugin-root;
-        bản portable (script nằm trong project) giữ path tương đối.
+        A40: bản conventions chạy trong ngữ cảnh plugin → lệnh dạng plugin-root.
         """
         for doc in DOC_FILES:
             self.assertTrue(os.path.isfile(doc), f"thiếu {doc}")
-            text = open(doc, encoding="utf-8").read()
-            plugin_doc = "portable" not in doc
+            with open(doc, encoding="utf-8") as fh:
+                text = fh.read()
             for name, row in tdq_state.PHASE_TABLE.items():
                 with self.subTest(doc=os.path.basename(doc), phase=name):
                     self.assertIn(name, text, f"{doc}: thiếu phase {name}")
-                    cmd = (tdq_state.plugin_root_cmd(row["cmd"]) if plugin_doc
-                           else row["cmd"])
+                    cmd = tdq_state.plugin_root_cmd(row["cmd"])
                     self.assertIn(cmd, text, f"{doc}: lệnh của {name} không khớp code")
 
 

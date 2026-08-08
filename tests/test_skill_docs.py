@@ -1,7 +1,7 @@
-"""Contract test cho skill docs — request skill-vao-goi-external (P4).
+"""Contract test cho skill docs.
 
-Đối tượng: khuôn AGENTS.md, khuôn gói external, nhánh external của tdq-build,
-luật nhãn (mcp) của tdq-plan, quick lane. Chỉ đọc file, không chạy engine.
+Đối tượng: luật nhãn (mcp) của tdq-plan, lane quick, các luật cắt token.
+Chỉ đọc file, không chạy engine.
 """
 import os
 import re
@@ -13,91 +13,6 @@ from helper import ROOT
 def _read(*parts):
     with open(os.path.join(ROOT, *parts), encoding="utf-8") as f:
         return f.read()
-
-
-class AgentsMdTemplateTest(unittest.TestCase):
-    """T4.1 — skills/tdq-build/references/agents-md.md: nội dung AGENTS.md
-    trong code fence, ≤60 dòng, mệnh lệnh tiếng Việt, đủ cụm bắt buộc."""
-
-    def setUp(self):
-        self.text = _read("skills", "tdq-build", "references", "agents-md.md")
-
-    def _fence_body(self):
-        match = re.search(r"```markdown\n(.*?)```", self.text, re.DOTALL)
-        self.assertIsNotNone(match, "thiếu khối ```markdown chứa AGENTS.md")
-        return match.group(1)
-
-    def test_fence_at_most_60_lines(self):
-        lines = self._fence_body().rstrip("\n").split("\n")
-        self.assertLessEqual(len(lines), 60,
-                             f"AGENTS.md trong fence {len(lines)} dòng (>60)")
-
-    def test_required_phrases_in_fence(self):
-        body = self._fence_body()
-        low = body.lower()
-        self.assertIn("`tests/`", body)          # unittest chạy từ tests/
-        self.assertIn("python3 -m unittest", body)
-        self.assertIn("red", low)                # red → green
-        self.assertIn("green", low)
-        self.assertIn("không commit", low)       # cấm engine commit
-        self.assertIn('"kind"', body)            # format report kind=plan
-        self.assertIn("test_result", body)
-
-    def test_doc_says_delete_before_merge(self):
-        low = self.text.lower()
-        self.assertIn("xóa", low)
-        self.assertIn("merge", low)
-
-
-class ExternalTaskTemplateSkillTest(unittest.TestCase):
-    """T4.2 — khuôn gói external-task.md: mục `## SKILL <tên> — <file>` đặt
-    CUỐI gói + sinh bằng `skill-dump`, cho CẢ khuôn task đơn lẫn khuôn plan."""
-
-    def setUp(self):
-        self.text = _read("skills", "tdq-build", "references",
-                          "external-task.md")
-
-    def _fences(self):
-        return re.findall(r"```markdown\n(.*?)```", self.text, re.DOTALL)
-
-    def test_both_templates_end_with_skill_section(self):
-        fences = [f for f in self._fences()
-                  if f.startswith("# TASK") or f.startswith("# GÓI PLAN")]
-        self.assertEqual(len(fences), 2, "phải có khuôn task đơn + khuôn plan")
-        for fence in fences:
-            with self.subTest(fence=fence.splitlines()[0]):
-                pos = fence.find("## SKILL")
-                self.assertGreater(pos, -1, "khuôn thiếu mục ## SKILL")
-                # luật parser: từ dòng ## SKILL đầu tiên trở đi không còn TASK
-                self.assertNotIn("## TASK", fence[pos:])
-
-    def test_mentions_skill_dump_command(self):
-        self.assertIn("skill-dump", self.text)
-
-
-class TdqBuildExternalBranchTest(unittest.TestCase):
-    """T4.3 — nhánh external của tdq-build SKILL.md: 6 cụm contract mới
-    + 2 agent runner có `--plan-file`."""
-
-    def setUp(self):
-        # T2.3 (toi-uu-p0-p1-workflow) tách "Nhánh external" ra khỏi SKILL.md —
-        # 6 cụm contract giờ sống ở references/external-build.md.
-        self.text = _read("skills", "tdq-build", "references", "external-build.md")
-
-    def test_six_contract_phrases(self):
-        low = self.text.lower()
-        self.assertIn("kể cả plan ≤6 task", low)          # LUÔN split-plan
-        self.assertIn("split-plan", low)
-        self.assertIn("agents-md.md", low)                # sinh AGENTS.md từ khuôn
-        self.assertIn("skill-dump", low)                  # chép skill vào gói
-        self.assertIn('"mcp": true', low)                 # gói mcp Claude tự làm
-        self.assertIn("--plan-file", self.text)           # lệnh mẫu run-plan
-        self.assertRegex(low, r"xóa `?agents\.md`? .*trước")  # xóa trước diff/merge
-
-    def test_runner_agents_have_plan_file_flag(self):
-        for name in ("codex-runner.md", "agy-runner.md"):
-            with self.subTest(agent=name):
-                self.assertIn("--plan-file", _read("agents", name))
 
 
 class TdqPlanMcpLabelTest(unittest.TestCase):
@@ -113,23 +28,6 @@ class TdqPlanMcpLabelTest(unittest.TestCase):
         text = _read("skills", "tdq-plan", "references", "plan-template.md")
         self.assertIn("` (mcp)", text)      # nhãn NGOÀI backtick, cuối dòng
         self.assertIn("Dùng:", text)
-
-
-class QuickLaneExternalSkillTest(unittest.TestCase):
-    """T4.5 — quick external: gói task đơn cũng chép skill (skill-dump);
-    task quick dùng skill (mcp) → không duyệt external."""
-
-    def test_tdq_build_quick_packet_gets_skill_dump(self):
-        # T2.3 tách nội dung này ra references/external-build.md.
-        text = _read("skills", "tdq-build", "references", "external-build.md")
-        self.assertRegex(
-            text, re.compile(r"quick.*?skill-dump|skill-dump.*?quick",
-                             re.IGNORECASE | re.DOTALL))
-
-    def test_tdq_intake_blocks_mcp_quick_external(self):
-        text = _read("skills", "tdq-intake", "SKILL.md")
-        self.assertIn("(mcp)", text)
-        self.assertRegex(text, r"(?i)không.*duyệt.*external|external.*không")
 
 
 class QuickLaneThinkingStepsTest(unittest.TestCase):
@@ -151,26 +49,10 @@ class QuickLaneThinkingStepsTest(unittest.TestCase):
     def test_reference_documents_the_template_and_limit(self):
         self.assertIn("40 dòng", self.ref)
         self.assertIn("Definition of Done", self.ref)
-        self.assertIn("(mcp)", self.ref)
 
     def test_lane_decision_points_at_reference(self):
         self.assertIn("quick-lane.md",
                       _read("skills", "tdq-intake", "references", "lane-decision.md"))
-
-
-class PortableExternalSyncTest(unittest.TestCase):
-    """T5.1 — portable 03-plan/04-build phải mang cùng luật mới (mcp, split-plan
-    luôn chạy, AGENTS.md, skill-dump, --plan-file) như bản skill."""
-
-    def test_04_build_has_new_external_rules(self):
-        text = re.sub(r"\s+", " ", _read("portable", "workflow", "04-build.md"))
-        for phrase in ("kể cả plan ≤6 task", "skill-dump", "AGENTS.md",
-                       "--plan-file", '"mcp": true'):
-            self.assertIn(phrase, text, phrase)
-
-    def test_03_plan_has_mcp_label_law(self):
-        text = _read("portable", "workflow", "03-plan.md")
-        self.assertIn("(mcp)", text)
 
 
 class TokenOptimRulesTest(unittest.TestCase):
@@ -193,8 +75,7 @@ class TokenOptimRulesTest(unittest.TestCase):
                       ("skills", "tdq-spec", "SKILL.md"),
                       ("skills", "tdq-plan", "SKILL.md"),
                       ("skills", "tdq-build", "references", "qc.md"),
-                      ("portable", "workflow", "02-spec.md"),
-                      ("portable", "workflow", "03-plan.md")):
+                      ):
             with self.subTest(file=parts[-1]):
                 self.assertIsNone(pattern.search(_read(*parts)),
                                   "còn dạy lint cả thư mục docs/tdq")
@@ -211,17 +92,12 @@ class TokenOptimRulesTest(unittest.TestCase):
         self.assertIn("test của module", text)
         self.assertRegex(text, r"(?i)full suite.{0,120}(qc|đúng 1 lần|một lần)")
 
-    def test_intake_giao_research_cho_search_scout(self):
+    def test_intake_giao_research_cho_subagent(self):
         """B1 — research chạy trong subagent, main chỉ nhận digest ≤1.500 ký tự."""
         # T3.1 tách Phần B ra references/analyze-full.md.
         text = _read("skills", "tdq-intake", "references", "analyze-full.md")
-        self.assertIn("search-scout", text)
+        self.assertIn("general-purpose", text)
         self.assertIn("1.500 ký tự", text)
-
-    def test_portable_mang_cung_luat(self):
-        self.assertIn("search-scout",
-                      _read("portable", "workflow", "references", "analyze-full.md"))
-        self.assertIn("test của module", _read("portable", "workflow", "04-build.md"))
 
 
 class TokenOptimVong2RulesTest(unittest.TestCase):
@@ -265,11 +141,6 @@ class TokenOptimVong2RulesTest(unittest.TestCase):
         text = _read("skills", "tdq-build", "SKILL.md")
         self.assertIn("tdq_finish.py", text)
 
-    def test_portable_mang_cung_luat_vong_2(self):
-        self.assertIn("tdq_finish.py", _read("portable", "workflow", "04-build.md"))
-        self.assertRegex(_read("portable", "workflow", "03-plan.md"),
-                         r"(?i)(>|trên |hơn )\s?6 task")
-
 
 class OptionMotDongTest(unittest.TestCase):
     """Request format-cau-hoi-interview — mọi câu hỏi có option phải xuống dòng
@@ -283,46 +154,29 @@ class OptionMotDongTest(unittest.TestCase):
     def setUp(self):
         self.ref = _read("skills", "tdq-intake", "references", "interview.md")
         self.skill = _read("skills", "tdq-intake", "SKILL.md")
-        self.portable = _read("portable", "workflow", "01-intake.md")
-        # T3.1 tách phần "Vòng interview" (kèm luật cấm gộp option) ra
-        # references/analyze-full.md ở cả hai bản skill lẫn portable.
-        self.portable_analyze = _read("portable", "workflow", "references", "analyze-full.md")
 
     def test_khuon_mau_co_option_moi_dong(self):
-        for name, text in (("interview.md", self.ref),
-                           ("01-intake.md", self.portable)):
-            with self.subTest(file=name):
-                self.assertGreaterEqual(
-                    len(self.OPTION_LINE.findall(text)), 2,
-                    f"{name} thiếu khuôn `- A (đề xuất): …` mỗi option một dòng")
+        self.assertGreaterEqual(
+            len(self.OPTION_LINE.findall(self.ref)), 2,
+            "interview.md thiếu khuôn `- A (đề xuất): …` mỗi option một dòng")
 
     def test_de_xuat_dat_o_option_dau(self):
-        for name, text in (("interview.md", self.ref),
-                           ("01-intake.md", self.portable)):
-            with self.subTest(file=name):
-                first = self.OPTION_LINE.search(text)
-                self.assertIsNotNone(first, f"{name} không có option nào")
-                self.assertIn("(đề xuất)", first.group(0),
-                              f"{name}: option đầu tiên phải là phương án đề xuất")
+        first = self.OPTION_LINE.search(self.ref)
+        self.assertIsNotNone(first, "interview.md không có option nào")
+        self.assertIn("(đề xuất)", first.group(0),
+                      "option đầu tiên phải là phương án đề xuất")
 
     def test_cam_gop_option_vao_doan_van(self):
-        for name, text in (("interview.md", self.ref),
-                           ("analyze-full.md", self.portable_analyze)):
-            with self.subTest(file=name):
-                flat = re.sub(r"\s+", " ", text)
-                self.assertRegex(flat, r"(?i)(cấm|không) gộp.{0,60}(một dòng|đoạn văn)")
+        flat = re.sub(r"\s+", " ", self.ref)
+        self.assertRegex(flat, r"(?i)(cấm|không) gộp.{0,60}(một dòng|đoạn văn)")
 
     def test_chot_lane_cung_dung_khuon(self):
-        for name, text in (("SKILL.md", self.skill),
-                           ("01-intake.md", self.portable)):
-            with self.subTest(file=name):
-                self.assertRegex(text, r"- A \(đề xuất\): \*{0,2}quick")
-                self.assertRegex(text, r"- B: \*{0,2}full")
+        self.assertRegex(self.skill, r"- A \(đề xuất\): \*{0,2}quick")
+        self.assertRegex(self.skill, r"- B: \*{0,2}full")
 
     def test_khong_con_uu_tien_askuserquestion(self):
         for name, text in (("interview.md", self.ref),
-                           ("SKILL.md", self.skill),
-                           ("01-intake.md", self.portable)):
+                           ("SKILL.md", self.skill)):
             with self.subTest(file=name):
                 self.assertNotIn("AskUserQuestion nếu có", text)
 

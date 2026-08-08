@@ -231,29 +231,21 @@ class TestState(unittest.TestCase):
         self.assertEqual(rc, 0, err)
         self.assertEqual(read_state(self.cwd)["implement_mode"], "subagent")
 
-    def test_approve_plan_mode_external(self):
+    def test_mode_external_bi_tu_choi(self):
+        """Nhánh external đã bỏ: mode này phải bị chặn, không âm thầm nhận."""
         run_state_cli(self.cwd, "init", "r1", "full")
         run_state_cli(self.cwd, "approve", "spec")
-        rc, _, err = run_state_cli(self.cwd, "approve", "plan", "--mode", "external",
-                                   "--by", "duyệt plan mode external")
-        self.assertEqual(rc, 0, err)
-        self.assertEqual(read_state(self.cwd)["implement_mode"], "external")
-        with open(os.path.join(self.cwd, "docs", "tdq", "STATE.md"),
-                  encoding="utf-8") as f:
-            self.assertIn("external", f.read())
+        rc, _, _ = run_state_cli(self.cwd, "approve", "plan", "--mode", "external",
+                                 "--by", "duyệt plan mode external")
+        self.assertNotEqual(rc, 0)
+        self.assertIsNone(read_state(self.cwd)["implement_mode"])
 
-    def test_approve_quick_mode_external(self):
-        run_state_cli(self.cwd, "init", "r1", "quick")
-        rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--mode", "external",
-                                   "--by", "duyệt quick external")
-        self.assertEqual(rc, 0, err)
-        self.assertEqual(read_state(self.cwd)["implement_mode"], "external")
-
-    def test_mode_mentions_include_external(self):
-        self.assertIn("external", tdq_state.USAGE)
-        self.assertIn("external", tdq_state.PHASE_TABLE["plan"]["cmd"])
-        self.assertTrue(any("external" in item for item in
-                            tdq_state.PHASE_TABLE["plan"]["checklist"]))
+    def test_mode_mentions_chi_con_main_subagent(self):
+        for text in (tdq_state.USAGE, tdq_state.PHASE_TABLE["plan"]["cmd"],
+                     " ".join(tdq_state.PHASE_TABLE["plan"]["checklist"])):
+            self.assertNotIn("external", text)
+        self.assertIn("main", tdq_state.PHASE_TABLE["plan"]["cmd"])
+        self.assertIn("subagent", tdq_state.PHASE_TABLE["plan"]["cmd"])
 
     def test_approve_quick_moves_phase_to_implement(self):
         """A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal."""

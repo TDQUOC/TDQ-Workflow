@@ -66,25 +66,18 @@ Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-
    in/out, task checkbox mỗi task một test, DoD. Khuôn: [quick-lane.md](references/quick-lane.md).
 3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
-   Giao engine ngoài (user yêu cầu hoặc bạn đề xuất) → thêm đúng 1 dòng máy-đọc
-   `Thực thi external: engine=<codex|agy> · khó=<slug>`; luật chọn engine/model và
-   luật cấm external cho task `(mcp)`: [quick-lane.md](references/quick-lane.md).
-4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external" · bỏ QC: "duyệt quick không QC") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
-5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--mode external] [--no-qc] --by "<nguyên văn>"` (`--mode external` khi user nói external; `--no-qc` CHỈ khi user nói rõ bỏ QC — user im lặng về QC thì QC vẫn BẬT).
-6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code —
-   quick external thì dòng `Thực thi external:` phải nằm trong working log ở bước này.
-7. Implement end-to-end trong 1 turn, rồi chạy **QC 3 hạng mục** theo
-   [quick-lane.md](references/quick-lane.md) mục "QC ở quick" (mặc định BẬT) và ghi bằng
-   chứng vào mục `## QC` của plan. `quick_qc_skipped = true` → mục `## QC` chỉ có 1 dòng
+4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
+5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — user im lặng về QC thì QC vẫn BẬT).
+6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
+7. Implement end-to-end trong 1 turn, rồi chạy **QC** theo
+   [quick-lane.md](references/quick-lane.md) mục "QC ở quick" (mặc định BẬT): mỗi dòng
+   DoD đúng một phép kiểm, ghi bằng chứng vào mục `## QC` của plan.
+   `quick_qc_skipped = true` → mục `## QC` chỉ có 1 dòng
    `BỎ theo yêu cầu user: "<nguyên văn>"`.
-   Quick external: KHÔNG tự code — làm đúng
-   [references/external-build.md](../tdq-build/references/external-build.md)
-   (worktree `tdq-ext-<slug>`, gói task, runner, verify, diff-check, merge), fallback
-   tự làm khi engine hỏng.
-8. **Vòng fix — BẮT BUỘC, kể cả khi user bỏ QC.** QC FAIL hoặc thấy bug → thêm task vào
-   plan dưới `## QC vòng N — fix`, fix red→green, rồi chạy lại ĐỦ 3 hạng mục.
+8. **Vòng fix khi QC FAIL hoặc thấy bug.** Thấy bug thì fix kể cả lúc user bỏ QC.
+   Thêm task vào plan dưới `## QC vòng N — fix`, fix red→green.
+   Chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm hỏng.
    Có trần 3 vòng — vượt trần thì DỪNG, báo user, đề xuất chuyển lane full, giữ nguyên phase.
-   Lý do trần: quá 3 vòng nghĩa là việc không còn "quick", cần phân tích lại ở lane full.
 9. Append kết quả vào working log; hỏi user có commit không.
 
 Xong khi: `quick_approved = true`, log đã ghi, mục `## QC` đã có, không còn test đỏ.

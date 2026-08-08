@@ -23,13 +23,13 @@ import tdq_state  # noqa: E402
 APPROVE_HINTS = {
     "spec": 'nhắn "duyệt spec"',
     # {mode} = mode ĐÃ CHỐT trong plan (dòng "Mode thực thi:"), fallback main —
-    # hardcode main từng khiến user gõ sai mode so với plan đã chốt external.
-    "plan": 'nhắn "duyệt plan mode {mode}" (đổi được: main|subagent|external)',
+    # hardcode main từng khiến user gõ sai mode so với plan đã chốt.
+    "plan": 'nhắn "duyệt plan mode {mode}" (đổi được: main|subagent)',
     # Biến thể bỏ QC phải hiện ở gợi ý, nếu không user không biết đường opt-out.
     "quick": 'nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC")',
 }
 
-_PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent|external)", re.IGNORECASE)
+_PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent)", re.IGNORECASE)
 
 
 def plan_mode(cwd, state):

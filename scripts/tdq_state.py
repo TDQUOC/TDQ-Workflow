@@ -26,13 +26,13 @@ STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
 TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
 
 APPROVE_TARGETS = ("spec", "plan", "quick")
-VALID_MODES = ("main", "subagent", "external")
+VALID_MODES = ("main", "subagent")
 BY_MAX = 200
 VALID_LANES = {"quick", "full", None}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}
 
 USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | init <slug> [quick|full] | "
-         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent|external] "
+         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent] "
          "[--no-qc (chỉ quick, phải kèm --by)] [--by \"<câu user>\"] | "
          "reset | phases-doc")
 
@@ -421,7 +421,7 @@ def effective_mode(state, warn=True):
 # ------------------------------------------------------------- bảng phase
 
 # Nguồn sự thật DUY NHẤT cho câu hỏi "đang ở đâu, làm gì tiếp".
-# doc (tdq-conventions, portable/AGENTS.md) trích lại từ đây; test khoá cứng.
+# doc (tdq-conventions) trích lại từ đây; test khoá cứng.
 PHASE_TABLE = {
     "no_state": {
         "entry": "Chưa có request TDQ nào đang mở",
@@ -469,9 +469,9 @@ PHASE_TABLE = {
     "plan": {
         "entry": "spec_approved = true",
         "action": "Viết plan kèm mode ĐỀ XUẤT, đăng ký plan_file, trình rồi DỪNG chờ duyệt",
-        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent|external> --by \"<nguyên văn>\"",
+        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<nguyên văn>\"",
         "checklist": [
-            "ĐỀ XUẤT mode thực thi ngay trong plan (main|subagent|external) + lý do — "
+            "ĐỀ XUẤT mode thực thi ngay trong plan (main|subagent) + lý do — "
             "không hỏi riêng một lượt; user chốt mode lúc duyệt",
             "Viết docs/tdq/plan/<slug>.md: mỗi task 1 việc + 1 test, có checkbox [ ]",
             "Chạy: python3 scripts/tdq_state.py set plan_file=docs/tdq/plan/<slug>.md",
@@ -533,9 +533,9 @@ PHASE_TABLE = {
     "quick": {
         "entry": "lane = quick",
         "action": "Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC 3 hạng mục (mặc định BẬT) → vòng fix nếu FAIL",
-        # A26: khớp intake — quick có biến thể external ("duyệt quick external")
-        # và biến thể bỏ QC ("duyệt quick không QC" → --no-qc, phải kèm --by).
-        "cmd": "python3 scripts/tdq_state.py approve quick [--mode external] [--no-qc] --by \"<nguyên văn câu user>\"",
+        # A26: khớp intake — quick có biến thể bỏ QC ("duyệt quick không QC"
+        # → --no-qc, phải kèm --by).
+        "cmd": "python3 scripts/tdq_state.py approve quick [--no-qc] --by \"<nguyên văn câu user>\"",
         "checklist": [
             "Phân tích: đọc code liên quan; có ẩn số bên ngoài (thư viện, API, phiên bản) "
             "→ web search qua tavily-primary trước khi viết gì",
@@ -544,10 +544,10 @@ PHASE_TABLE = {
             "Viết mini-spec/plan GỘP vào docs/tdq/plan/<slug>.md (≤40 dòng: scope in/out, "
             "task có test, DoD) rồi trình tóm tắt ≤10 dòng trong chat, "
             "kèm 1 dòng 'Năng lực: <skill sẽ DÙNG hoặc không có>'",
-            "In: ➤ Duyệt: nhắn \"duyệt quick\" (giao engine ngoài: \"duyệt quick external\" "
-            "· bỏ QC: \"duyệt quick không QC\") · Góp ý: nhắn trực tiếp — rồi DỪNG",
-            "User duyệt → chạy lệnh approve ở trên (--mode external khi user nói external; "
-            "--no-qc CHỈ khi user nói rõ bỏ QC, im lặng về QC = CÓ QC)",
+            "In: ➤ Duyệt: nhắn \"duyệt quick\" (bỏ QC: \"duyệt quick không QC\") "
+            "· Góp ý: nhắn trực tiếp — rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên (--no-qc CHỈ khi user nói rõ bỏ QC, "
+            "im lặng về QC = CÓ QC)",
             "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
             "Implement từng task red→green, tick [x] ngay khi task pass",
             "QC 3 hạng mục — test từng task pass · đối chiếu TỪNG dòng DoD · biên và đường "
@@ -884,7 +884,7 @@ def _parse_approve_args(rest):
             value = rest[i + 1]
             if flag == "--mode":
                 if value not in VALID_MODES:
-                    _fail("Mode không hợp lệ (main|subagent|external).")
+                    _fail("Mode không hợp lệ (main|subagent).")
                 mode = value
             else:
                 by = value[:BY_MAX]

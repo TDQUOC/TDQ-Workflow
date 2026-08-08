@@ -19,10 +19,7 @@ Vì vậy: `effort` là thuộc tính CỐ ĐỊNH của vai; `model` là nút x
 | `tdq-implementer` | inherit | high | viết code thật, red→green, sai là hỏng plan |
 | `tdq-qc-tester` | inherit | high | phải nghi ngờ và đào biên, không chỉ chạy lại lệnh |
 | `tdq-reviewer` | inherit | high | tìm lỗ hổng/mâu thuẫn trong spec-plan là việc suy luận thuần |
-| `search-scout` | sonnet | medium | chạy Tavily đi rộng, tổng hợp nông; không cần frontier |
-| `search-runner` | haiku | low | bọc `search_task.py`, không tự kết luận |
-| `codex-runner` | haiku | low | bọc `external_task.py`, chỉ gọi lệnh + poll + trả report |
-| `agy-runner` | haiku | low | như trên |
+| `general-purpose` (research) | sonnet | medium | chạy Tavily đi rộng, tổng hợp nông; không cần frontier |
 
 `inherit` = bám theo model user đang dùng ở phiên chính. Dùng `inherit` cho agent
 làm việc chất lượng, dùng model cụ thể cho agent cơ học để chi phí không phụ thuộc

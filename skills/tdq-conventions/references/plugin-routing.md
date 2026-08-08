@@ -1,25 +1,28 @@
-# Định tuyến việc → plugin (lazy-load)
+# Định tuyến việc → plugin
 
-Nguồn sự thật duy nhất về tier: `~/.claude/plugin-tiers.json`.
-`always_off` = cấm bật. `on_demand` = tắt mặc định cho nhẹ context; hook SessionStart/SessionEnd
-chạy `plugin_tiers.py reset` để tắt lại nhóm này.
+**Trạng thái từ 2026-08-06: TẤT CẢ plugin đã bật sẵn ở user scope.**
+`~/.claude/plugin-tiers.json` có `always_off` và `on_demand` đều RỖNG → hook
+SessionStart/SessionEnd chạy `plugin_tiers.py reset` là no-op, không tắt lại plugin nào.
+Bản tier cũ (chế độ lazy-load): `~/.claude/plugin-tiers.json.bak-2026-08-06`.
 
-## Giao thức bật — đúng 2 bước, không thêm bước nào
+## Giao thức dùng
 
-1. **ĐỀ XUẤT rồi HỎI user** (đưa vào vòng interview hoặc bảng option). Chưa hỏi thì CẤM bật.
-2. User đồng ý → chạy `python3 ~/.claude/scripts/plugin_tiers.py enable <tên>` rồi in đúng
-   1 dòng: `➤ Gõ /reload-plugins để nạp plugin vào phiên.`
+1. Plugin đã bật → **dùng thẳng, không cần xin phép**. Bảng dưới chỉ để chọn đúng plugin
+   cho đúng việc, không còn là cổng duyệt.
+2. Vẫn phải **HỎI user trước** khi: cài plugin/marketplace MỚI; chạy OAuth hoặc nhập
+   credential cho một service; gọi tool **ghi/xoá ra dịch vụ ngoài** (tạo page Notion, ghi
+   DB, deploy, upload asset…). Đọc thì tự do.
+3. Review code → dùng built-in `/code-review`, không dùng plugin review khác.
 
-Cấm bật bằng đường khác: `claude plugin enable`, sửa `settings.json` bằng tay.
-Review code → dùng built-in `/code-review`, không bật plugin review khác.
-User muốn một plugin luôn bật/luôn tắt lâu dài → sửa danh sách trong `~/.claude/plugin-tiers.json`
-(xoá khỏi `on_demand` thì hook không tắt nó nữa), chỉ khi user yêu cầu rõ.
+Muốn quay lại lazy-load cho nhẹ context: thêm tên plugin vào `on_demand` (tắt mặc định,
+bật lại bằng `python3 ~/.claude/scripts/plugin_tiers.py enable <tên>`) hoặc `always_off`
+(cấm bật) trong `~/.claude/plugin-tiers.json` — chỉ khi user yêu cầu rõ.
 
 ## Bảng định tuyến
 
 Chỉ dùng đúng tên ở cột phải.
 
-| Việc chạm tới | Bật plugin |
+| Việc chạm tới | Dùng plugin |
 |---|---|
 | Airflow / DAG / pipeline dữ liệu | data-engineering |
 | Hugging Face / train model / dataset ML | huggingface-skills |
@@ -37,5 +40,11 @@ Chỉ dùng đúng tên ở cột phải.
 | Unreal Engine | unreal-engine-skills-for-claude-code |
 | Notion | notion |
 | Redis | redis-development |
+| Crawl web quy mô lớn | firecrawl |
+| Debug trình duyệt qua CDP | chrome-devtools-mcp |
+| Review/phân tích repo bằng index ngoài | greptile |
+| Quét chất lượng/bảo mật tĩnh | sonarqube |
+| Quan sát log / trace | lumen |
+| LSP theo ngôn ngữ | `<lang>-lsp` (clangd, gopls, jdtls, kotlin, lua, php, ruby, rust-analyzer, swift, csharp) |
 
-Việc không khớp dòng nào → không bật gì, làm bằng công cụ sẵn có.
+Việc không khớp dòng nào → làm bằng công cụ sẵn có, đừng lôi plugin vào cho nặng context.

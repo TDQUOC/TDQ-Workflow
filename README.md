@@ -44,12 +44,13 @@ Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/use
 
 **Bật workflow cho MỌI task**: dán block instruction trong `docs/notes/user-level-install.md` (mục 3) vào `~/.claude/CLAUDE.md` (user-level) hoặc `CLAUDE.md` root project (per-project).
 
-**Ngoài Claude Code**: `portable/AGENTS.md` + `portable/workflow/` là bản dựng cùng nội dung cho agent khác (Codex, Antigravity…), không cần hook.
 
 ## Dùng hằng ngày
 
 1. Nêu yêu cầu → agent dùng `tdq-intake`: tóm tắt, đề xuất lane **quick** (việc nhỏ, rõ) hay **full** (feature/phức tạp) và hỏi bạn chọn.
-2. Lane full: interview đến khi hết mơ hồ → spec (VI) → bạn nhắn "duyệt spec" → plan (VI, task nào cũng có test) → agent hỏi bạn chọn mode thực thi → bạn nhắn "duyệt plan mode main" (hoặc `subagent`) → implement end-to-end 1 turn, tick `[x]` ngay khi từng task pass → QC loop → report.
+2. Lane full: interview đến khi hết mơ hồ → spec (VI) → bạn nhắn "duyệt spec" → plan (VI, task nào cũng có test).
+   Agent đề xuất mode thực thi, bạn nhắn "duyệt plan mode main" (hoặc `subagent`).
+   Rồi implement end-to-end 1 turn, tick `[x]` ngay khi từng task pass → QC loop → report.
 3. Lane quick: plan ≤ 10 dòng trong chat → bạn nhắn "duyệt quick" → agent ghi log rồi mới implement.
 4. Xem trạng thái bất kỳ lúc nào: skill `tdq-status`, hoặc `python3 scripts/tdq_state.py next`.
 
@@ -61,7 +62,7 @@ Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/use
 | `agents/` (3) | tdq-reviewer, tdq-implementer, tdq-qc-tester |
 | `hooks/` (5) | edit_gate, bash_gate (nhắc), session_start, prompt_context, stop_gate (chặn working log) |
 | `scripts/tdq_state.py` | CLI state: `next \| get \| init \| set \| approve \| reset \| phases-doc` |
-| `portable/` | bản AGENTS.md cho agent ngoài Claude Code |
+| `docs/claude-md-mau.md` | bản mẫu để chép sang `~/.claude/CLAUDE.md` |
 | `tests/` | `python3 -m unittest discover tests` |
 
 Bảng phase (nguồn duy nhất là hằng `PHASE_TABLE` trong `scripts/tdq_state.py`) được **sinh tự động** ra `skills/tdq-conventions/references/phases.md` bằng `python3 scripts/tdq_state.py phases-doc` — không sửa tay.

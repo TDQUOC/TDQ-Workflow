@@ -1,5 +1,5 @@
 """P5 (toi-uu-p0-p1-workflow) — ngưỡng digest "≤1.500 ký tự" phải đồng bộ giữa
-7 file `agents/*.md` và nơi tdq-intake định nghĩa nó cho `search-scout`
+mọi file `agents/*.md` và nơi tdq-intake định nghĩa nó cho sub-agent research
 (`skills/tdq-intake/references/analyze-full.md`, sau khi T3.1 tách Phần B ra khỏi
 SKILL.md — SKILL.md không còn chứa con số này).
 
@@ -27,10 +27,6 @@ def _find_threshold(path):
 
 
 class AgentDigestSyncTest(unittest.TestCase):
-    def test_seven_agent_files_present(self):
-        agent_files = sorted(glob.glob(os.path.join(AGENTS_DIR, "*.md")))
-        self.assertEqual(len(agent_files), 7, agent_files)
-
     def test_all_thresholds_match(self):
         agent_files = sorted(glob.glob(os.path.join(AGENTS_DIR, "*.md")))
         sources = agent_files + [ANALYZE_FULL]

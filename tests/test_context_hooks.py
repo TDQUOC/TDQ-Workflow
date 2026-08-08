@@ -165,10 +165,10 @@ class TestPromptContext(unittest.TestCase):
                     plan_file="docs/tdq/plan/x.md")
 
     def test_plan_hint_uses_mode_from_plan_file(self):
-        # 2026-08-02: plan chốt external → hint phải nêu external, không hardcode main
-        self._pending_plan("# plan\nMode thực thi: external — task tự chứa\n")
+        # 2026-08-02: plan chốt subagent → hint phải nêu subagent, không hardcode main
+        self._pending_plan("# plan\nMode thực thi: subagent — task tự chứa\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('duyệt plan mode external', out)
+        self.assertIn('duyệt plan mode subagent', out)
         self.assert_budget(out)
 
     def test_plan_hint_without_mode_line_falls_back(self):
@@ -177,20 +177,20 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn('duyệt plan mode main', out)
 
     def test_plan_approval_mode_mismatch_warns(self):
-        # user duyệt "mode main" trong khi plan chốt external → phải có cảnh báo lệch
-        self._pending_plan("# plan\nMode thực thi: external — lý do\n")
+        # user duyệt "mode main" trong khi plan chốt subagent → phải có cảnh báo lệch
+        self._pending_plan("# plan\nMode thực thi: subagent — lý do\n")
         rc, out, _ = self.ctx("duyệt plan mode main")
         self.assertIn("⚠️", out)
         self.assertIn("main", out)
-        self.assertIn("external", out)
+        self.assertIn("subagent", out)
         self.assertIn("HỎI", out)
         self.assertNotIn("chạy NGAY", out)
         self.assert_budget(out)
 
     def test_plan_approval_mode_match_no_warn(self):
-        self._pending_plan("# plan\nMode thực thi: external — lý do\n")
-        rc, out, _ = self.ctx("duyệt plan mode external")
-        self.assertIn("--mode external", out)
+        self._pending_plan("# plan\nMode thực thi: subagent — lý do\n")
+        rc, out, _ = self.ctx("duyệt plan mode subagent")
+        self.assertIn("--mode subagent", out)
         self.assertNotIn("⚠️", out)
 
     def test_plan_approval_captures_mode(self):
@@ -202,21 +202,13 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("approve plan", out)
         self.assertIn("--mode main", out)
 
-    def test_plan_approval_captures_mode_external(self):
-        write_state(self.cwd, active_request="r1", lane="full",
-                    spec_approved=True, phase="plan",
-                    spec_file="docs/tdq/spec/r1.md", plan_file="docs/tdq/plan/r1.md")
-        rc, out, _ = self.ctx("duyệt plan mode external")
-        self.assertEqual(rc, 0)
-        self.assertIn("--mode external", out)
-
     def test_plan_approval_without_mode_leaves_placeholder(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     spec_sha256="abc", spec_approved_at=now_iso(),
                     plan_file="docs/tdq/plan/x.md")
         rc, out, _ = self.ctx("duyệt plan")
-        self.assertIn("--mode <main|subagent|external>", out)
+        self.assertIn("--mode <main|subagent>", out)
 
     def test_quick_approved_terminal_intake_and_next(self):
         # Quick đã duyệt + phase idle = request ĐÃ ĐÓNG → hợp đồng 2026-08-02:

@@ -123,6 +123,24 @@ class DocLintTest(LintBase):
         self.assert_hits(self.write("a.md", f"# T\n\n{long_sentence}\n"), "R5")
         self.assert_clean(self.write("b.md", "# T\n\nCâu ngắn. Câu ngắn nữa.\n"))
 
+    def test_allow_r5_ngay_tren_doan(self):
+        """Cửa thoát chuẩn phải im được R5.
+
+        Bug cũ: rule_r5 gom dòng liền nhau thành một buffer nên nuốt luôn dòng
+        comment. `state["start"]` trỏ vào comment, `allowed()` soi lên dòng TRÊN
+        comment và không thấy gì — cửa thoát vô hiệu, câu còn dài thêm.
+        """
+        long_sentence = "một hai ba bốn năm " * 10 + "kết."
+        text = f"# T\n\n<!-- doc-lint: allow R5 -->\n{long_sentence}\n"
+        self.assert_clean(self.write("allow5.md", text))
+
+    def test_allow_r5_khong_lan_sang_doan_khac(self):
+        """Miễn trừ chỉ cho đúng đoạn ngay dưới, không miễn cả file."""
+        long_sentence = "một hai ba bốn năm " * 10 + "kết."
+        text = (f"# T\n\n<!-- doc-lint: allow R5 -->\n{long_sentence}\n\n"
+                f"{long_sentence}\n")
+        self.assert_hits(self.write("allow5b.md", text), "R5")
+
     # ------------------------------------------------------------------- R6
     def test_r6(self):
         self.assert_hits(self.write("big.md", "# T\n" + "dòng\n" * 600), "R6")
@@ -142,7 +160,7 @@ class DocLintTest(LintBase):
 
     # ------------------------------------------------------------- repo thật
     def test_repo_docs_clean(self):
-        code, out = self.lint(os.path.join(ROOT, "skills"), os.path.join(ROOT, "portable"))
+        code, out = self.lint(os.path.join(ROOT, "skills"))
         self.assertEqual(code, 0, f"doc trong repo còn vi phạm lint:\n{out}")
 
 
@@ -201,6 +219,39 @@ class R8Test(LintBase):
         """Spec viết trước 0.3.3: 1 dòng allow ở bất kỳ đâu miễn cả rule cho file đó."""
         text = "# SPEC cũ\n<!-- doc-lint: allow R8 -->\n\n## 1. X\n"
         self.assert_clean(self.write(os.path.join("spec", "f.md"), text))
+
+
+class TdqDocsScopeTest(LintBase):
+    """R1–R7 viết cho doc HƯỚNG DẪN. Output của workflow chỉ chịu R8."""
+
+    def test_output_workflow_khong_chiu_r5(self):
+        long_sentence = "một hai ba bốn năm " * 10 + "kết."
+        path = self.write(os.path.join("docs", "tdq", "brief", "x.md"),
+                          f"# Brief\n\n{long_sentence}\n")
+        self.assert_clean(path)
+
+    def test_output_workflow_khong_chiu_r2(self):
+        # lệnh trần giữa văn bản: R2 bắt ở skills/, nhưng brief là biên bản
+        path = self.write(os.path.join("docs", "tdq", "brief", "y.md"),
+                          "# Brief\n\nĐã chạy python3 scripts/tdq_state.py next.\n")
+        self.assert_clean(path)
+
+    def test_spec_van_chiu_r8(self):
+        path = self.write(os.path.join("docs", "tdq", "spec", "z.md"),
+                          "# SPEC\n\n## 1. X\n")
+        self.assert_hits(path, "R8")
+
+    def test_working_log_khong_chiu_r2(self):
+        # working log trích nguyên văn lệnh đã chạy — sửa để chiều R2 là làm sai biên bản
+        path = self.write(os.path.join("docs", "workinglog", "2026-08-08.md"),
+                          "# Log\n\nĐã chạy python3 -m unittest discover -q.\n")
+        self.assert_clean(path)
+
+    def test_ngoai_docs_tdq_van_chiu_r5(self):
+        long_sentence = "một hai ba bốn năm " * 10 + "kết."
+        path = self.write(os.path.join("skills", "x", "note.md"),
+                          f"# T\n\n{long_sentence}\n")
+        self.assert_hits(path, "R5")
 
 
 class PairTest(LintBase):

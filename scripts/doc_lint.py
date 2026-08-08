@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Lint doc hướng dẫn của TDQ workflow (spec §2.6).
 
-Mục đích: giữ skill/portable ở dạng mà một model nhỏ vẫn đọc và làm đúng —
+Mục đích: giữ skill ở dạng mà một model nhỏ vẫn đọc và làm đúng —
 bước đánh số liên tục, lệnh copy-paste được, có điều kiện ra, không có từ mơ hồ.
 
 Cách dùng:
-    python3 scripts/doc_lint.py skills portable
+    python3 scripts/doc_lint.py skills
     python3 scripts/doc_lint.py skills/tdq-spec/SKILL.md
 
 In `file:line: [RULE] mô tả`; exit 1 nếu có vi phạm, 0 nếu sạch, 2 nếu sai cú pháp.
@@ -131,7 +131,7 @@ def rule_r2(doc, out):
 
 
 def rule_r3(doc, out):
-    """SKILL.md và file phase portable phải nói rõ khi nào xong và đi đâu tiếp."""
+    """SKILL.md phải nói rõ khi nào xong và đi đâu tiếp."""
     if os.path.basename(doc.path) != "SKILL.md":
         return
     text = "\n".join(doc.lines)
@@ -175,6 +175,11 @@ def rule_r5(doc, out):
     for i, line in enumerate(doc.lines):
         text = line.strip()
         if doc.in_fence[i] or not text or text.startswith(("|", "#", "```")):
+            flush()
+            continue
+        # Dòng `allow` KHÔNG thuộc đoạn nào. Nuốt nó vào buffer thì state["start"]
+        # trỏ vào chính comment, allowed() soi lên dòng trên nó → cửa thoát vô hiệu.
+        if ALLOW.search(line):
             flush()
             continue
         # mỗi gạch đầu dòng / bước đánh số là một đơn vị đọc riêng
@@ -269,6 +274,10 @@ def rule_r8(doc, out):
 
 RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8]
 
+# Thư mục chứa biên bản / file máy sinh — chỉ chịu R8, xem lint_file().
+OUTPUT_DIRS = (os.path.join("docs", "tdq"), os.path.join("docs", "workinglog"),
+               "graphify-out")
+
 
 def _plan_contracts(lines):
     """{tên skill: (chỉ số dòng, tập trường có mặt)} từ các khối `- Dùng:` trong plan."""
@@ -328,10 +337,13 @@ def pair(spec_path, plan_path):
 def lint_file(path):
     doc = Doc(path)
     out = []
-    # R1–R7 viết cho DOC HƯỚNG DẪN (skills/, portable/). Spec của project là tài liệu
-    # nghiệp vụ — chỉ chịu R8 (kiểm kê năng lực), không bị ép văn phong hồi tố.
-    in_spec_dir = os.path.basename(os.path.dirname(os.path.abspath(path))) == "spec"
-    for rule in ([rule_r8] if in_spec_dir else RULES):
+    # R1–R7 viết cho DOC HƯỚNG DẪN (skills/). Các thư mục ở OUTPUT_DIRS chứa biên bản
+    # và file máy sinh — trích nguyên văn lời user, output test, report của graphify —
+    # không được sửa để chiều luật văn phong. Chúng chỉ chịu R8, và R8 tự giới hạn ở
+    # thư mục spec/.
+    abs_path = os.path.abspath(path)
+    is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
+    for rule in ([rule_r8] if is_output else RULES):
         rule(doc, out)
     return out
 

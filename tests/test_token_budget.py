@@ -90,7 +90,7 @@ class TokenBudgetTest(unittest.TestCase):
         self.assertLessEqual(total, 900, f"tổng description = {total} ký tự")
 
     def test_reference_files_bounded(self):
-        for root in (os.path.join(ROOT, "skills"), os.path.join(ROOT, "portable")):
+        for root in (os.path.join(ROOT, "skills"),):
             for dirpath, _, files in os.walk(root):
                 if os.path.basename(dirpath) != "references":
                     continue

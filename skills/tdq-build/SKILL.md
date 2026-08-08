@@ -32,9 +32,6 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
    - `main`: tự làm tuần tự trong hội thoại này, theo đúng thứ tự task trong plan.
    - `subagent`: gọi agent `tdq-implementer`, mỗi agent một git worktree (tên branch theo
      conventions §7). Merge worktree về và kiểm tra merge; dọn worktree thừa.
-   - `external`: giao CẢ PLAN (hoặc từng gói phase nếu plan lớn) cho engine ngoài
-     (codex | agy) trong MỘT worktree chung — làm theo
-     [references/external-build.md](references/external-build.md).
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
 
 2. Vòng lặp mỗi task:

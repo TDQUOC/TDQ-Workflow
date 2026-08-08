@@ -1,18 +1,19 @@
 """Chống bỏ sót khi rút gọn ~/.claude/CLAUDE.md (spec 2026-08-05 §2).
 
-4 điều kiện:
+3 điều kiện, đo trên BẢN MẪU trong repo `docs/claude-md-mau.md`:
   (a) mọi luật bị CHUYỂN phải tìm được ở đúng file đích;
-  (b) luật bất biến (git, trình bày, logging, 5 luật kích hoạt TDQ) vẫn còn trong bản lõi;
-  (c) bản lõi ≤ 3.500 byte;
-  (d) bản trong repo và bản đã cài ở ~/.claude giống hệt nhau.
+  (b) luật bất biến (git, trình bày, logging, 5 luật kích hoạt TDQ) vẫn còn trong bản mẫu;
+  (c) bản mẫu ≤ 3.500 byte.
+
+Không so với `~/.claude/CLAUDE.md`: suite phải chạy được ở máy chưa cài,
+và file ngoài repo không phải thứ test của repo được phép đòi hỏi.
 """
 
 import os
 import unittest
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CORE = os.path.join(REPO, "portable", "claude-md", "CLAUDE.md")
-INSTALLED = os.path.expanduser("~/.claude/CLAUDE.md")
+CORE = os.path.join(REPO, "docs", "claude-md-mau.md")
 MAX_BYTES = 3500
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
@@ -27,10 +28,8 @@ MOVED = [
      ["qc", "download"]),
     ("§10 bảng định tuyến plugin", "skills/tdq-conventions/references/plugin-routing.md",
      ["data-engineering", "desktop-commander", "notion", "mongodb"]),
-    ("§9 chi tiết mode external", "skills/tdq-plan/SKILL.md",
-     ["external_models.py"]),
-    ("§9 chi tiết deep search", "skills/tdq-conventions/references/deep-search.md",
-     ["search-scout"]),
+    ("§9 chi tiết mode thực thi", "skills/tdq-plan/SKILL.md",
+     ["main", "subagent"]),
 ]
 
 # Luật KHÔNG được rời bản lõi — mất một dòng là mất một hàng rào an toàn.
@@ -56,17 +55,12 @@ def _read(path):
 
 
 class CoreFileTest(unittest.TestCase):
-    def test_ban_loi_ton_tai_trong_repo(self):
+    def test_ban_mau_ton_tai_trong_repo(self):
         self.assertTrue(os.path.exists(CORE), f"thiếu nguồn sự thật {CORE}")
 
     def test_c_kich_thuoc_khong_qua_tran(self):
         size = os.path.getsize(CORE)
-        self.assertLessEqual(size, MAX_BYTES, f"bản lõi {size} byte > {MAX_BYTES}")
-
-    def test_d_ban_repo_trung_ban_da_cai(self):
-        self.assertTrue(os.path.exists(INSTALLED), f"chưa cài {INSTALLED}")
-        self.assertEqual(_read(CORE), _read(INSTALLED),
-                         f"lệch nhau: {CORE} vs {INSTALLED} — cài lại từ bản repo")
+        self.assertLessEqual(size, MAX_BYTES, f"bản mẫu {size} byte > {MAX_BYTES}")
 
 
 class MovedRulesTest(unittest.TestCase):
@@ -83,14 +77,14 @@ class MovedRulesTest(unittest.TestCase):
 
 
 class InvariantRulesTest(unittest.TestCase):
-    """(b) Luật bất biến phải còn nguyên trong bản lõi."""
+    """(b) Luật bất biến phải còn nguyên trong bản mẫu."""
 
     def test_luat_bat_bien_con_trong_ban_loi(self):
         text = _read(CORE).lower()
         for label, needles in INVARIANTS:
             with self.subTest(luat=label):
                 for needle in needles:
-                    self.assertIn(needle, text, f"{label}: bản lõi thiếu \"{needle}\"")
+                    self.assertIn(needle, text, f"{label}: bản mẫu thiếu \"{needle}\"")
 
 
 if __name__ == "__main__":

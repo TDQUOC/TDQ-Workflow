@@ -1,11 +1,10 @@
 """Lane quick: QC 3 hạng mục (mặc định BẬT) + vòng fix bắt buộc trần 3 vòng.
 
-Khoá cứng 5 nguồn sự thật phải phát biểu CÙNG một luật:
+Khoá cứng 4 nguồn sự thật phải phát biểu CÙNG một luật:
   N1 skills/tdq-intake/references/quick-lane.md
   N2 skills/tdq-intake/SKILL.md
   N3 scripts/tdq_state.py  (PHASE_TABLE["quick"], default_state, _parse_approve_args)
-  N4 portable/workflow/**  (mirror cho agent ngoài Claude Code)
-  N5 phases.md × 2 bản     (doc TỰ SINH từ PHASE_TABLE — không sửa tay)
+  N4 phases.md             (doc TỰ SINH từ PHASE_TABLE — không sửa tay)
 Spec: docs/tdq/spec/2026-08-07-siet-qc-lane-quick.md
 """
 import os
@@ -21,12 +20,10 @@ import prompt_context  # noqa: E402
 
 N1 = os.path.join(ROOT, "skills", "tdq-intake", "references", "quick-lane.md")
 N2 = os.path.join(ROOT, "skills", "tdq-intake", "SKILL.md")
-N4_QUICK = os.path.join(ROOT, "portable", "workflow", "references", "quick-lane.md")
-N5_PLUGIN = os.path.join(ROOT, "skills", "tdq-conventions", "references", "phases.md")
-N5_PORTABLE = os.path.join(ROOT, "portable", "workflow", "phases.md")
+N4_PHASES = os.path.join(ROOT, "skills", "tdq-conventions", "references", "phases.md")
 
-# 3 file văn bản người đọc (N1, N2, N4) phải cùng nêu luật vòng fix.
-LAW_DOCS = (N1, N2, N4_QUICK)
+# 2 file văn bản người đọc (N1, N2) phải cùng nêu luật vòng fix.
+LAW_DOCS = (N1, N2)
 
 FIX_CAP = "trần 3 vòng"
 FIX_HEADING = "QC vòng N — fix"
@@ -119,20 +116,11 @@ class QuickQcApproveCliTest(unittest.TestCase):
         self.assertIn("quick", first)
 
 
-class QuickQcPortableParityTest(unittest.TestCase):
-    """N4 + N5: bản cho agent ngoài Claude Code phải nói cùng luật."""
+class QuickQcPhasesDocTest(unittest.TestCase):
+    """N4: phases.md là doc tự sinh — khớp render_phases_md() từng ký tự."""
 
-    def test_portable_quick_lane_parity(self):
-        plugin, portable = read(N1), read(N4_QUICK)
-        for phrase in (FIX_CAP, FIX_HEADING, "## QC ở quick"):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, plugin)
-                self.assertIn(phrase, portable)
-
-    def test_portable_phases_doc_regenerated(self):
-        """N5 là doc tự sinh — nội dung phải khớp render_phases_md() từng ký tự."""
-        self.assertEqual(read(N5_PLUGIN), tdq_state.render_phases_md(plugin_root=True))
-        self.assertEqual(read(N5_PORTABLE), tdq_state.render_phases_md())
+    def test_phases_doc_regenerated(self):
+        self.assertEqual(read(N4_PHASES), tdq_state.render_phases_md(plugin_root=True))
 
 
 class QuickQcApprovalHintTest(unittest.TestCase):

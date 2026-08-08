@@ -12,12 +12,11 @@
 
 3. **Research nhiều hướng — giao subagent.** 2–4 truy vấn khác góc nhìn qua `tavily-primary`
    (luật failover ở [tavily.md](../../tdq-conventions/references/tavily.md)). Mặc định giao
-   agent `search-scout`: agent tự chạy truy vấn, tự ghi `docs/tdq/research/<slug>.md`
+   một sub-agent `general-purpose`: agent tự chạy truy vấn, tự ghi `docs/tdq/research/<slug>.md`
    (truy vấn → nguồn → điều rút ra), trả về hội thoại chính **digest ≤ 1.500 ký tự**.
    Kết quả tavily thô nằm lại context tốn ~14M token/2 session — đó là lý do bắt buộc.
    Ngoại lệ tự làm: chỉ 1 truy vấn, hoặc đã biết sẵn URL (dùng `WebFetch`).
-   Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài. Đủ tiêu chí deep
-   search (≥2 dấu hiệu) → theo [deep-search.md](../../tdq-conventions/references/deep-search.md).
+   Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài.
 
 4. **Vòng interview.** Liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
    lỗi, hiệu năng, tương thích). Cách hỏi: [interview.md](interview.md).
