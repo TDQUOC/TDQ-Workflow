@@ -14,7 +14,7 @@ Nguồn: hằng `PHASE_TABLE` trong `scripts/tdq_state.py`.
 | `qc` | Đã implement xong | Chạy Definition of Done của spec, ghi kết quả, fail thì fix tiếp | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report` | Mọi mục QC trong spec PASS, có bằng chứng | Bỏ qua test fail; báo PASS khi chưa chạy |
 | `report` | QC đã PASS | Viết report ngắn gọn (khuyến nghị 10-20 dòng, không giới hạn cứng) rồi hỏi user có commit không | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle` | Report đã ghi và user đã được hỏi về commit | Tự commit hoặc push khi user chưa yêu cầu |
 | `idle` | Đã xong hoặc chưa mở request | Chờ yêu cầu mới từ user | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <YYYY-MM-DD-slug> <quick\|full>` | Có request mới được mở | Đè request cũ còn dở mà chưa hỏi user |
-| `quick` | lane = quick | Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC 3 hạng mục (mặc định BẬT) → vòng fix nếu FAIL | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn câu user>"` | quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle | Implement trước khi ghi working log; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user |
+| `quick` | lane = quick | Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC bám DoD (mặc định BẬT) → vòng fix nếu FAIL | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn câu user>"` | quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle | Implement trước khi ghi working log; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user |
 
 Lệnh nguyên văn (copy được, không có ký tự thoát):
 
@@ -34,13 +34,13 @@ quick: python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-
 1. Tóm tắt yêu cầu của user thành 3–5 dòng
 2. Hỏi user chọn lane: quick (việc nhỏ, rõ) hay full (Analysis→Spec→Plan→Implement→QC→Report)
 3. Chạy lệnh init ở trên với slug theo công thức YYYY-MM-DD-<kebab ≤5 từ, không dấu>
-4. Ghi yêu cầu nguyên văn vào docs/tdq/requests/<slug>.md
+4. Ghi yêu cầu nguyên văn vào docs/tdq/brief/<slug>.md mục '## Nguyên văn'
 
 ## analyze
-1. Kiểm kê năng lực (B0): chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py"`, điền bảng phán quyết vào docs/tdq/knowledge/<slug>.md mục 'Năng lực dùng được'
+1. Kiểm kê năng lực (B0): chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py"`, điền bảng phán quyết vào docs/tdq/brief/<slug>.md mục 'Hiểu & kiến thức'
 2. Đọc code/doc liên quan, ghi vào docs/tdq/research/<slug>.md
-3. Hỏi user mọi điểm chưa rõ, ghi vào docs/tdq/questions/<slug>.md
-4. Chốt quyết định vào docs/tdq/knowledge/<slug>.md
+3. Hỏi user mọi điểm chưa rõ, ghi vào docs/tdq/brief/<slug>.md mục 'Hỏi đáp'
+4. Chốt quyết định vào docs/tdq/brief/<slug>.md mục 'Hiểu & kiến thức'
 5. Hết câu hỏi làm đổi kết quả → chạy lệnh trên
 
 ## spec
@@ -84,6 +84,6 @@ quick: python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-
 5. User duyệt → chạy lệnh approve ở trên (--no-qc CHỈ khi user nói rõ bỏ QC, im lặng về QC = CÓ QC)
 6. Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code
 7. Implement từng task red→green, tick [x] ngay khi task pass
-8. QC 3 hạng mục — test từng task pass · đối chiếu TỪNG dòng DoD · biên và đường lỗi cơ bản (input rỗng, sai kiểu, file thiếu) — ghi bằng chứng vào mục ## QC của plan; quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng 'BỎ theo yêu cầu user: "<nguyên văn>"'
-9. QC FAIL hoặc thấy bug → BẮT BUỘC fix (không opt-out được, kể cả khi bỏ QC): thêm task vào mục ## QC vòng N — fix của plan, fix xong chạy lại ĐỦ 3 hạng mục; trần 3 vòng, vượt trần thì DỪNG báo user và đề xuất chuyển lane full
+8. QC: mỗi dòng DoD một phép kiểm bằng lệnh, cộng hạng mục chạy test từng task. Bằng chứng ghi vào mục ## QC của plan. quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng 'BỎ theo yêu cầu user: "<nguyên văn>"'
+9. QC FAIL hoặc thấy bug → fix. Thêm task vào mục ## QC vòng N — fix của plan, fix red→green. Chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm hỏng. Trần 3 vòng, vượt trần thì DỪNG, báo user, đề xuất chuyển lane full
 10. Đóng việc: chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle` — terminal của lane quick

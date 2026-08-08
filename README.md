@@ -67,7 +67,7 @@ Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/use
 
 Bảng phase (nguồn duy nhất là hằng `PHASE_TABLE` trong `scripts/tdq_state.py`) được **sinh tự động** ra `skills/tdq-conventions/references/phases.md` bằng `python3 scripts/tdq_state.py phases-doc` — không sửa tay.
 
-Doc sinh ra trong project của bạn: `docs/tdq/{requests,questions,research,knowledge,spec,plan,qc,reports}/` + `docs/workinglog/`.
+Doc sinh ra trong project của bạn: `docs/tdq/{brief,research,spec,plan,qc,reports}/` + `docs/workinglog/`. `brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file.
 
 ## Quy ước cứng
 - Spec/plan/report: tiếng Việt. Không placeholder, không bịa — thiếu thông tin thì hỏi.

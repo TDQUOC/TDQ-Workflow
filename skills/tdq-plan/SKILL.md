@@ -10,7 +10,7 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
 
 ## Các bước
 
-1. **Chọn mode để ĐỀ XUẤT — không hỏi riêng một lượt.** Cân ba phương án, chốt cái hợp
+1. **Chọn mode để ĐỀ XUẤT — không hỏi riêng một lượt.** Cân hai phương án, chốt cái hợp
    nhất làm đề xuất, ghi thẳng vào plan ở bước 2 kèm lý do; user đổi được lúc duyệt:
    - `main` — làm tuần tự ngay trong hội thoại này (plan nhỏ, task phụ thuộc chặt, đụng chung file).
    - `subagent` — giao cho agent `tdq-implementer`, mỗi agent một git worktree (nhiều phase độc lập, chạy song song được).
@@ -20,7 +20,9 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
 2. **Viết** `docs/tdq/plan/<slug>.md` từ spec ĐÃ DUYỆT.
    Khuôn đầy đủ: [references/plan-template.md](references/plan-template.md).
    Bắt buộc có: header trạng thái + spec nguồn · **một dòng riêng** `Mode thực thi: <main|subagent> — <lý do>` ·
-   các phase với task checkbox · task riêng cho log service và unit test · Definition of Done trỏ về §6 của spec.
+   các phase với task checkbox · task riêng cho log service và unit test · Definition of Done
+   trỏ về §6 của spec, **mỗi dòng DoD phải kiểm được bằng một lệnh** (QC đếm hạng mục theo
+   đúng số dòng này).
    Mỗi task đúng một việc + một cách kiểm đo được:
    ```
    - [ ] **T1.1** <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>

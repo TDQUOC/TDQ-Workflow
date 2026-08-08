@@ -72,7 +72,7 @@ User duyệt spec là duyệt luôn lộ trình này.
 | D5 | Gộp output thành `brief/` | `docs/tdq/brief/<slug>.md`; sửa `PHASE_TABLE`, `tdq-intake/SKILL.md`, `analyze-full.md`, `tdq-conventions/SKILL.md` §5 | Chạy thử một request giả trong `TDQ_PROJECT_DIR` tạm: sinh đúng 1 file brief thay cho 3 file |
 | D6 | Rút gọn skill nặng | `skills/tdq-conventions/SKILL.md` và reference mới `references/context-budget.md` | `tdq-conventions/SKILL.md` không còn mục 10 dạng liệt kê dài. Tổng byte skill nạp mỗi vòng full đo lại và ghi vào report |
 | D7 | Sửa `doc_lint` | `scripts/doc_lint.py` hàm `lint_file` và `rule_r5` | File bất kỳ trong `docs/tdq/` chỉ chịu R8. Test red→green: đặt `<!-- doc-lint: allow R5 -->` ngay trên đoạn dài thì R5 im |
-| D8 | Dọn bộ test | `tests/` | `python3 -m unittest discover -q` xanh. Chạy được với `HOME=/nonexistent`. Số test và giây ghi vào report |
+| D8 | Dọn bộ test | `tests/` | `python3 -m unittest discover -s tests -t tests -q` xanh. Chạy được với `HOME=/nonexistent`. Số test và giây ghi vào report |
 
 ## 3. Cách tiếp cận & lý do
 
@@ -142,7 +142,7 @@ Chép từ `knowledge/2026-08-08-giam-over-engineer-workflow.md`. Phân vân →
   sửa giữ nguyên cách log hiện có: cảnh báo ra stderr, exit code có nghĩa,
   `tdq_finish.py` ghi working log có timestamp.
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
-- D7 và D2 có unit test riêng, chạy bằng một lệnh `python3 -m unittest discover -q`.
+- D7 và D2 có unit test riêng, chạy bằng một lệnh `python3 -m unittest discover -s tests -t tests -q`.
 - D1, D3, D4, D5, D6 là thay đổi tài liệu và xoá file. Theo nguyên tắc minimal của user,
   KHÔNG viết test mới cho chúng — kiểm bằng lệnh `grep`/`ls` ghi ở §6.
 
@@ -168,7 +168,7 @@ Chép từ `knowledge/2026-08-08-giam-over-engineer-workflow.md`. Phân vân →
 | Q5 | Gộp brief chạy được | Chạy một request giả với `TDQ_PROJECT_DIR` là thư mục tạm | Sinh `brief/<slug>.md`; không sinh `requests/`, `knowledge/`, `questions/` |
 | Q6 | `doc_lint` đúng phạm vi | `python3 scripts/doc_lint.py docs/tdq/brief/<slug>.md` với một đoạn 60 từ | exit 0 |
 | Q7 | Cửa thoát `allow R5` hoạt động | Test mới trong `tests/test_doc_lint.py`: đoạn dài có `<!-- doc-lint: allow R5 -->` ngay trên | Test đỏ trước khi sửa `rule_r5`, xanh sau |
-| Q8 | Suite xanh và hermetic | `python3 -m unittest discover -q` và `HOME=/nonexistent python3 -m unittest discover -q` | Cả hai exit 0 |
+| Q8 | Suite xanh và hermetic | `python3 -m unittest discover -s tests -t tests -q` và `HOME=/nonexistent python3 -m unittest discover -s tests -t tests -q` | Cả hai exit 0 |
 | Q9 | 6 rào an toàn còn nguyên | Chạy từng hook với state giả trong thư mục tạm | `[TDQ:NEXT]` vẫn in ở SessionStart và mỗi prompt; Stop hook vẫn chặn khi repo đổi mà working log chưa append; `edit_gate` vẫn chặn sửa tay `state.json`; `bash_gate` vẫn chặn; `approve spec` và `approve plan` vẫn cần `--by`; `init` vẫn xoá state cũ và in cảnh báo |
 | Q10 | Số đo trước/sau | Đo lại đúng cách đã đo ở knowledge: `wc -c` byte skill nạp, `wc -l`, đếm test, đo giây suite | Cả 4 số có mặt trong `reports/<slug>.md`, mỗi số kèm giá trị trước và sau. Không có ngưỡng chặn |
 

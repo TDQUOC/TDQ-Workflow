@@ -2,6 +2,41 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.10.0 — 2026-08-09
+
+Cắt over-engineer và over-test khỏi chính bộ workflow. Bản này **xoá tính năng**, đọc kỹ
+mục "Phá vỡ tương thích" trước khi nâng.
+
+- **Tầng `nhỏ`** đứng trước lane quick/full: đủ 4 điều kiện (không đổi hành vi sản phẩm
+  hoặc chỉ một chỗ hiển nhiên · không thêm/xoá file mã nguồn · không đụng hook, state,
+  gate duyệt · xong trong một turn) thì trả lời hoặc sửa luôn, KHÔNG mở request. Kèm luật
+  thoát bắt buộc: giữa chừng vỡ điều kiện nào thì DỪNG, nói rõ, rồi mở request bình thường.
+- **QC bám Definition of Done**: số hạng mục QC bằng số dòng DoD của chính plan đó, mỗi
+  dòng một phép kiểm chạy được bằng lệnh, cộng đúng 1 hạng mục chạy full-suite. Thay cho
+  checklist cố định 3 hạng mục (quick) và 7 hạng mục (full).
+- **Vòng fix gọn lại**: chỉ chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm
+  hỏng, không chạy lại toàn bộ. Bỏ luật "vòng fix bắt buộc kể cả khi user tắt QC" — tắt QC
+  thì không có FAIL để fix, luật cũ tự mâu thuẫn. Giữ trần 3 vòng.
+- **Gộp brief**: `docs/tdq/requests/` + `knowledge/` + `questions/` thành một file
+  `docs/tdq/brief/<slug>.md` ba mục (Nguyên văn · Hiểu & kiến thức · Hỏi đáp). Doc mỗi
+  request còn 5 file thay vì 7.
+- **`doc_lint` đúng phạm vi**: `docs/tdq`, `docs/workinglog`, `graphify-out` là biên bản và
+  file máy sinh, chỉ chịu R8; sửa cửa thoát `allow` của R5.
+- Skill gọn hơn: `tdq-conventions/SKILL.md` 7.345 → 5.912 byte (nạp ở MỌI phase), phần
+  carry-cost tách sang `references/context-budget.md`. Toàn bộ `skills/` 102.166 → 81.467 byte.
+- Bộ test: 600 → 410 test, bỏ nhóm chỉ assert câu chữ trong `.md` (chặn đúng việc rút gọn
+  skill mà không bắt được lỗi hành vi nào). Suite còn 0 test đỏ.
+
+### Phá vỡ tương thích
+
+- **Xoá mode `external`** và toàn bộ nhánh deep search: `external_task.py`,
+  `external_models.py`, `search_task.py`, 2 schema, 4 agent runner (`codex-runner`,
+  `agy-runner`, `search-runner`, `search-scout`), 3 reference. `VALID_MODES` còn
+  `main|subagent`; `approve plan --mode external` bị từ chối, rc=2.
+- **Xoá thư mục `portable/`** (18 file). Bản mẫu CLAUDE.md chuyển thành
+  `docs/claude-md-mau.md`; sửa `~/.claude/CLAUDE.md` của bạn cho khớp nếu đang nhắc mode
+  `external` hay deep search.
+
 ## 0.9.0 — 2026-08-07
 
 Siết QC và vòng fix cho lane quick. Trước bản này lane quick chỉ nói "chạy validate" và

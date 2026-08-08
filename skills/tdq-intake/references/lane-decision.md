@@ -1,6 +1,19 @@
-# Chọn lane: quick hay full
+# Chọn cỡ request: nhỏ, quick hay full
 
 Bạn **đề xuất**, user **quyết**. Luôn hỏi, kể cả khi thấy quá rõ.
+Ngoại lệ duy nhất là tầng `nhỏ`: đủ 4 điều kiện ở [SKILL.md](../SKILL.md) thì làm luôn,
+không mở request, không hỏi lane.
+
+## Dòng tự nhận định
+
+Mọi request mới in đúng một dòng này trước khi hỏi lane:
+
+```
+Cỡ: <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>
+```
+
+Cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ. Thứ luôn chạy thì không liệt kê, để dòng này ngắn.
+Không có thứ nào tuỳ chọn thì ghi `Cần: không`.
 
 ## Bảng quyết
 
@@ -31,6 +44,7 @@ luôn ở `A`:
 
 ```
 Tóm tắt: <2–3 dòng việc user muốn>
+Cỡ: quick · Cần: không
 1. Bạn muốn chạy lane nào?
 - A (đề xuất): quick — <lý do gắn với chính việc này>
 - B: full — <lý do gắn với chính việc này>

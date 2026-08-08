@@ -1,11 +1,13 @@
 # Phần B — Phân tích (phase `analyze`, chỉ lane full)
 
 Đóng vai chuyên gia đúng lĩnh vực của yêu cầu. Mục tiêu: rời phase này với **ZERO chỗ đoán**.
+Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.md`, đúng 3 mục:
+`## Nguyên văn` (yêu cầu user, đã ghi ở Phần A), `## Hiểu & kiến thức`, `## Hỏi đáp`.
 
 1. **Kiểm kê năng lực (B0).** Chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py"`,
    chép thêm skill built-in đang thấy trong context, điền bảng phán quyết theo khuôn
    [skill-inventory.md](skill-inventory.md) vào
-   `docs/tdq/knowledge/<slug>.md` mục `## Năng lực dùng được`. Phân vân → DÙNG.
+   brief mục `## Hiểu & kiến thức` → `### Năng lực dùng được`. Phân vân → DÙNG.
 
 2. **Đọc code.** Tìm hết chỗ yêu cầu này chạm tới: entry point, luồng dữ liệu, config,
    test. Ghi lại phiên bản/framework đang dùng.
@@ -20,13 +22,13 @@
 
 4. **Vòng interview.** Liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
    lỗi, hiệu năng, tương thích). Cách hỏi: [interview.md](interview.md).
-   Ghi hỏi–đáp vào `docs/tdq/questions/<slug>.md`. **Lặp** đến khi không còn câu hỏi
+   Ghi hỏi–đáp vào brief mục `## Hỏi đáp`. **Lặp** đến khi không còn câu hỏi
    nào làm đổi kết quả — nhiều vòng là bình thường. Không lấp chỗ trống bằng phỏng đoán.
 
-5. **Chốt kiến thức.** Viết `docs/tdq/knowledge/<slug>.md`: quyết định đã chốt, ràng buộc,
-   cách tiếp cận đã chọn + lý do, phương án đã loại + lý do, nguồn.
+5. **Chốt kiến thức.** Viết vào brief mục `## Hiểu & kiến thức`: quyết định đã chốt,
+   ràng buộc, cách tiếp cận đã chọn + lý do, phương án đã loại + lý do, nguồn.
 
-5b. **Quyết lộ trình.** Thêm mục `## Lộ trình` vào knowledge: bảng `Bước/phase | CÓ-BỎ |
+5b. **Quyết lộ trình.** Thêm `### Lộ trình` vào mục đó: bảng `Bước/phase | CÓ-BỎ |
    Vì sao` cho từng bước còn lại (research thêm, QC độc lập bằng agent, review sâu,
    chia subagent…). Khung bất biến không được bỏ: phân tích → spec/plan → implement →
    report. Chỉ cắt bước THỪA cho chính việc này, nêu lý do; phân vân → GIỮ. Lộ trình
@@ -38,7 +40,7 @@
    - Phạm vi QC/test/validate đã có chưa?
    Thiếu bất kỳ mục nào → quay lại bước 4.
 
-Xong khi: `knowledge/<slug>.md` (có mục Lộ trình) đã viết và cả 3 câu hỏi kiểm cổng đều
+Xong khi: `brief/<slug>.md` đủ 3 mục (có `### Lộ trình`) và cả 3 câu hỏi kiểm cổng đều
 trả lời được.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
 rồi sang [tdq-spec](../../tdq-spec/SKILL.md) — cùng turn nếu interview đã xong, còn phải

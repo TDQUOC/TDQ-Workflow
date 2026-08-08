@@ -6,7 +6,7 @@ Copy nguyên khối dưới đây vào `docs/tdq/spec/<slug>.md` rồi điền. 
 ```markdown
 # SPEC — <tên việc>
 
-Ngày: YYYY-MM-DD · Bản: 1.0 · Request: ../requests/<slug>.md · Lane: full
+Ngày: YYYY-MM-DD · Bản: 1.0 · Brief: ../brief/<slug>.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 
 ## 1. Mục tiêu & phạm vi
@@ -15,7 +15,7 @@ Trạng thái: CHỜ DUYỆT
 - NGOÀI phạm vi: <gạch đầu dòng — nêu rõ để khỏi trôi việc>
 
 ## 1b. Lộ trình
-Chép từ `knowledge/<slug>.md` mục "Lộ trình". User duyệt spec là duyệt luôn lộ trình này.
+Chép từ brief mục `### Lộ trình`. User duyệt spec là duyệt luôn lộ trình này.
 
 | Bước/phase | Chạy? | Vì sao |
 |---|---|---|
@@ -34,7 +34,7 @@ Chép từ `knowledge/<slug>.md` mục "Lộ trình". User duyệt spec là duy�
 - Đã loại: <phương án> — vì <lý do>
 
 ## 3b. Năng lực & công cụ
-Chép từ `knowledge/<slug>.md` mục "Năng lực dùng được". Phân vân → DÙNG.
+Chép từ brief mục `### Năng lực dùng được`. Phân vân → DÙNG.
 Không xoá mục này kể cả khi mọi dòng là KHÔNG. Mỗi dòng DÙNG một skill riêng.
 Phán quyết chỉ nhận: DÙNG / KHÔNG (+ 1 trong 4 lý do đóng) / NỀN (skill khung đang chạy).
 
@@ -67,7 +67,7 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 
 - Mọi đầu ra ở §2 đều có ít nhất một hạng mục QC ở §6.
 - §1b có mặt: mỗi bước/phase của workflow được ghi rõ CÓ chạy hay BỎ, kèm lý do.
-- §3b có mặt và mỗi skill trong bảng kiểm kê (knowledge) có đúng 1 dòng — máy kiểm bằng
+- §3b có mặt và mỗi skill trong bảng kiểm kê (brief) có đúng 1 dòng — máy kiểm bằng
   `doc_lint.py` rule R8.
 - Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính.
 - §7 rỗng.

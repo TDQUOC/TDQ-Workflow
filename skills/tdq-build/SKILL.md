@@ -13,13 +13,11 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
 - **Vào build NGAY trong turn user duyệt plan, rồi chạy end-to-end trong MỘT turn.** Không
   bắt user nhắn thêm câu nào, không dừng giữa chừng hỏi "có tiếp không". Chỉ dừng khi đổi
   phạm vi thật sự, thiếu/mơ hồ `implement_mode`, hoặc gặp chặn chỉ user gỡ được.
-- **Chặn kỹ thuật → tự chọn đề xuất, không hỏi.** Gặp chặn kỹ thuật giữa build (worktree
-  thiếu nền, dependency, conflict…) mà bạn đã có phương án đề xuất → TỰ CHỌN phương án đó.
-  Ghi 1 dòng quyết định + lý do vào working log rồi làm tiếp. Được phép TỰ COMMIT để gỡ
-  chặn (message mô tả thay đổi, KHÔNG push, liệt kê commit đó trong report).
-  Chỉ còn dừng hỏi khi: đổi phạm vi spec/plan, hành động phá hủy/khó đảo ngoài commit
-  (ví dụ: đổi schema DB, xoá data, đổi API contract công khai), hoặc thiếu input chỉ
-  user có.
+- **Chặn kỹ thuật → tự chọn đề xuất, không hỏi.** Có sẵn phương án thì TỰ CHỌN, ghi 1
+  dòng quyết định + lý do vào working log rồi làm tiếp. Được TỰ COMMIT để gỡ chặn
+  (message mô tả thay đổi, KHÔNG push, liệt kê commit đó trong report).
+  Chỉ dừng hỏi khi: đổi phạm vi spec/plan, việc phá hủy/khó đảo ngoài commit (đổi schema
+  DB, xoá data, đổi API contract công khai), hoặc thiếu input chỉ user có.
 - **Tick ngay.** Test của một task pass là sửa file plan đánh `- [x]` cho task đó TRƯỚC
   khi bắt task sau. Cấm gom tick cuối turn.
 - **Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass.
@@ -53,17 +51,19 @@ Bước kế tiếp: lệnh `tdq_finish.py … --phase qc` ở mục 3 (đã set
 
 ## Phần B — QC (phase `qc`)
 
-4. Chạy đủ Definition of Done của plan/spec: toàn bộ test suite, các validate, lint/build
-   nếu có định nghĩa. Chi tiết cách kiểm: [references/qc.md](references/qc.md).
-   Có thể gọi agent `tdq-qc-tester` cho một lượt kiểm độc lập.
+4. **Số hạng mục QC = số dòng Definition of Done**, cộng đúng một lần chạy full suite.
+   Mỗi dòng DoD một phép kiểm bằng lệnh; không thêm hạng mục ngoài DoD.
+   Chi tiết: [references/qc.md](references/qc.md). Việc lớn hoặc rủi ro cao → gọi thêm
+   agent `tdq-qc-tester` cho một lượt kiểm độc lập.
 
 5. Ghi `docs/tdq/qc/<slug>.md`: từng hạng mục DoD → PASS/FAIL kèm **bằng chứng**
    (lệnh + output thật). Không khẳng định thứ chưa chạy.
 
 6. FAIL → quay lại plan, **không cần duyệt lại**: thêm task fix vào plan dưới
    `## QC vòng N — fix` theo đúng khuôn `- [ ] **QCn.1** <việc> — Test: <check>`, làm
-   theo luật Phần A (red→green, tick ngay), rồi chạy lại QC. Lặp đến khi tất cả PASS.
-   Chỉ kéo user vào khi bản fix đòi đổi phạm vi.
+   theo luật Phần A (red→green, tick ngay). Rồi chạy lại hạng mục đã FAIL cộng hạng mục
+   mà bản fix có thể làm hỏng, cộng full suite. Trần 3 vòng; vượt trần thì DỪNG, báo user.
+   Chỉ kéo user vào giữa chừng khi bản fix đòi đổi phạm vi.
 
 Xong khi: mọi hạng mục QC PASS và có bằng chứng trong file qc.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`.

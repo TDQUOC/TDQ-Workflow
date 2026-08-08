@@ -9,12 +9,12 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Vi�
 
 ## Các bước
 
-1. **Viết** `docs/tdq/spec/<slug>.md` từ `docs/tdq/knowledge/<slug>.md`.
+1. **Viết** `docs/tdq/spec/<slug>.md` từ `docs/tdq/brief/<slug>.md`.
    Khuôn đầy đủ: [references/spec-template.md](references/spec-template.md).
-   Mục bắt buộc: mục tiêu & phạm vi (in/out) · **Lộ trình** (chép từ knowledge: phase
+   Mục bắt buộc: mục tiêu & phạm vi (in/out) · **Lộ trình** (chép từ brief: phase
    nào chạy, phase nào bỏ, skill nào dùng, vì sao — user duyệt spec là duyệt luôn
    lộ trình) · đầu ra đo đếm được · cách tiếp cận + lý do ·
-   năng lực & công cụ (§3b — chép bảng phán quyết từ knowledge, máy kiểm bằng doc_lint R8) ·
+   năng lực & công cụ (§3b — chép bảng phán quyết từ brief, máy kiểm bằng doc_lint R8) ·
    yêu cầu bắt buộc (log service bật mặc định, không placeholder, test cho từng phần) ·
    ràng buộc & rủi ro · phạm vi QC + Definition of Done · câu hỏi còn mở.
    Mục "câu hỏi còn mở" PHẢI rỗng — còn câu hỏi thì quay lại phase `analyze`.

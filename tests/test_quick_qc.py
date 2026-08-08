@@ -1,4 +1,4 @@
-"""Lane quick: QC 3 hạng mục (mặc định BẬT) + vòng fix bắt buộc trần 3 vòng.
+"""Lane quick: QC bám DoD (mặc định BẬT) + vòng fix trần 3 vòng.
 
 Khoá cứng 4 nguồn sự thật phải phát biểu CÙNG một luật:
   N1 skills/tdq-intake/references/quick-lane.md
@@ -40,13 +40,17 @@ class QuickQcDocTest(unittest.TestCase):
     def test_quick_lane_has_qc_section(self):
         self.assertIn("## QC ở quick", read(N1))
 
-    def test_quick_lane_lists_three_qc_items(self):
+    def test_quick_lane_ties_qc_items_to_dod(self):
+        # Luật mới: số hạng mục QC bằng số dòng DoD, không phải danh sách cố định.
         text = read(N1)
-        # 3 hạng mục chốt ở interview câu 1 (đáp A).
-        self.assertIn("test", text.lower())
-        for phrase in ("Definition of Done", "biên", "đường lỗi"):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, text)
+        self.assertIn("số hạng mục bằng số dòng DoD", text)
+        self.assertNotIn("3 hạng mục", text)
+
+    def test_law_docs_rerun_only_failed_items(self):
+        # Vòng fix không chạy lại toàn bộ nữa — chỉ hạng mục FAIL + hạng mục bị ảnh hưởng.
+        for path in LAW_DOCS:
+            with self.subTest(doc=os.path.relpath(path, ROOT)):
+                self.assertIn("hạng mục đã FAIL", read(path))
 
     def test_law_docs_state_fix_round_cap(self):
         for path in LAW_DOCS:

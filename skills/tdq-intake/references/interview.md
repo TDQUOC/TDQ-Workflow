@@ -15,7 +15,7 @@ không tự trả lời được thì hỏi:
 - Tương thích: phiên bản, hệ điều hành, phụ thuộc sẵn có.
 - Vận hành: chạy ở đâu, ai bảo trì, log/monitor thế nào.
 
-Không hỏi: thứ đọc code là biết, thứ đã có trong `requests/<slug>.md`, thứ chỉ là sở
+Không hỏi: thứ đọc code là biết, thứ đã có trong mục `## Nguyên văn` của brief, thứ chỉ là sở
 thích trình bày.
 
 ## Hỏi thế nào
@@ -53,7 +53,7 @@ Phương án đóng không bao giờ phủ hết ý user; câu này là chỗ đ
 
 ## Ghi lại
 
-Mọi hỏi–đáp vào `docs/tdq/questions/<slug>.md`: câu hỏi, các phương án, user chọn gì
+Mọi hỏi–đáp vào brief mục `## Hỏi đáp`: câu hỏi, các phương án, user chọn gì
 (nguyên văn), ngày giờ.
 
 ## Khi nào dừng

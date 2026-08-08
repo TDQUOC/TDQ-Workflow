@@ -62,7 +62,7 @@ def default_state():
         "quick_approved": False,
         "quick_approved_at": None,
         "quick_approved_by": None,
-        # Lane quick: QC 3 hạng mục mặc định BẬT; True = user opt-out có chủ đích qua
+        # Lane quick: QC bám DoD, mặc định BẬT; True = user opt-out có chủ đích qua
         # `approve quick --no-qc`. Người bỏ lấy từ quick_approved_by (cùng câu duyệt).
         "quick_qc_skipped": False,
         "implement_mode": None,
@@ -431,7 +431,7 @@ PHASE_TABLE = {
             "Tóm tắt yêu cầu của user thành 3–5 dòng",
             "Hỏi user chọn lane: quick (việc nhỏ, rõ) hay full (Analysis→Spec→Plan→Implement→QC→Report)",
             "Chạy lệnh init ở trên với slug theo công thức YYYY-MM-DD-<kebab ≤5 từ, không dấu>",
-            "Ghi yêu cầu nguyên văn vào docs/tdq/requests/<slug>.md",
+            "Ghi yêu cầu nguyên văn vào docs/tdq/brief/<slug>.md mục '## Nguyên văn'",
         ],
         "done_when": "state.json có active_request và lane",
         "forbidden": "Sửa code khi chưa mở request",
@@ -442,10 +442,10 @@ PHASE_TABLE = {
         "cmd": "python3 scripts/tdq_state.py set phase=spec",
         "checklist": [
             "Kiểm kê năng lực (B0): chạy `python3 scripts/skill_inventory.py`, điền bảng "
-            "phán quyết vào docs/tdq/knowledge/<slug>.md mục 'Năng lực dùng được'",
+            "phán quyết vào docs/tdq/brief/<slug>.md mục 'Hiểu & kiến thức'",
             "Đọc code/doc liên quan, ghi vào docs/tdq/research/<slug>.md",
-            "Hỏi user mọi điểm chưa rõ, ghi vào docs/tdq/questions/<slug>.md",
-            "Chốt quyết định vào docs/tdq/knowledge/<slug>.md",
+            "Hỏi user mọi điểm chưa rõ, ghi vào docs/tdq/brief/<slug>.md mục 'Hỏi đáp'",
+            "Chốt quyết định vào docs/tdq/brief/<slug>.md mục 'Hiểu & kiến thức'",
             "Hết câu hỏi làm đổi kết quả → chạy lệnh trên",
         ],
         "done_when": "Không còn câu hỏi nào làm thay đổi kết quả",
@@ -532,7 +532,7 @@ PHASE_TABLE = {
     },
     "quick": {
         "entry": "lane = quick",
-        "action": "Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC 3 hạng mục (mặc định BẬT) → vòng fix nếu FAIL",
+        "action": "Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC bám DoD (mặc định BẬT) → vòng fix nếu FAIL",
         # A26: khớp intake — quick có biến thể bỏ QC ("duyệt quick không QC"
         # → --no-qc, phải kèm --by).
         "cmd": "python3 scripts/tdq_state.py approve quick [--no-qc] --by \"<nguyên văn câu user>\"",
@@ -550,13 +550,14 @@ PHASE_TABLE = {
             "im lặng về QC = CÓ QC)",
             "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
             "Implement từng task red→green, tick [x] ngay khi task pass",
-            "QC 3 hạng mục — test từng task pass · đối chiếu TỪNG dòng DoD · biên và đường "
-            "lỗi cơ bản (input rỗng, sai kiểu, file thiếu) — ghi bằng chứng vào mục ## QC "
-            "của plan; quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng "
+            "QC: mỗi dòng DoD một phép kiểm bằng lệnh, cộng hạng mục chạy test từng task. "
+            "Bằng chứng ghi vào mục ## QC của plan. "
+            "quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng "
             "'BỎ theo yêu cầu user: \"<nguyên văn>\"'",
-            "QC FAIL hoặc thấy bug → BẮT BUỘC fix (không opt-out được, kể cả khi bỏ QC): "
-            "thêm task vào mục ## QC vòng N — fix của plan, fix xong chạy lại ĐỦ 3 hạng mục; "
-            "trần 3 vòng, vượt trần thì DỪNG báo user và đề xuất chuyển lane full",
+            "QC FAIL hoặc thấy bug → fix. "
+            "Thêm task vào mục ## QC vòng N — fix của plan, fix red→green. "
+            "Chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm hỏng. "
+            "Trần 3 vòng, vượt trần thì DỪNG, báo user, đề xuất chuyển lane full",
             "Đóng việc: chạy `python3 scripts/tdq_state.py set phase=idle` — terminal của lane quick",
         ],
         "done_when": "quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle",
@@ -974,7 +975,7 @@ def _cli_approve(cwd, rest):
         # Dòng có timestamp chỉ ra từ _info (stderr, tắt được bằng TDQ_LOG=0);
         # dòng ✅ stdout bên dưới không mang timestamp nên không dùng cho vết log này.
         _info(f'Ghi nhận user BỎ QC cho quick theo yêu cầu: "{by}". '
-              "Vòng fix vẫn BẮT BUỘC: test đỏ hoặc bug đã biết thì vẫn phải fix.")
+              "Bỏ QC không phải bỏ sửa lỗi: test đỏ hoặc bug đã biết vẫn phải fix.")
     if not by:
         _warn("Thiếu --by \"<nguyên văn câu user>\" — nên ghi lại để còn đối chiếu ai duyệt cái gì.")
     extra = f", mode {mode}" if mode else ""

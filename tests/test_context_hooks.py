@@ -100,17 +100,6 @@ class TestPromptContext(unittest.TestCase):
         self.assertLessEqual(len(out.splitlines()), 3)
         self.assertLessEqual(len(out), 240)
 
-    def test_pending_spec_not_an_approval_prompt(self):
-        write_state(self.cwd, active_request="r1", lane="full", phase="spec",
-                    spec_file="docs/tdq/spec/x.md")
-        rc, out, _ = self.ctx("tiếp tục")
-        self.assertEqual(rc, 0)
-        self.assertIn("[TDQ:NEXT]", out)
-        self.assertIn("[TDQ:APPROVE]", out)
-        self.assertIn("KHÔNG rõ", out)
-        self.assertIn("HỎI", out)
-        self.assert_budget(out)
-
     def test_repeated_identical_next_only_shrinks_on_second_turn(self):
         """P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước
         → turn sau in gọn hơn. Nhánh chờ duyệt mơ hồ KHÔNG được nén (xem
@@ -141,14 +130,6 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("[TDQ:APPROVE]", out2)
         self.assertIn("KHÔNG rõ", out2)
         self.assertIn("duyệt plan", out2)
-
-    def test_pending_spec_with_real_approval(self):
-        write_state(self.cwd, active_request="r1", lane="full", phase="spec",
-                    spec_file="docs/tdq/spec/x.md")
-        rc, out, _ = self.ctx("duyệt spec")
-        self.assertIn("approve spec", out)
-        self.assertIn("--by", out)
-        self.assert_budget(out)
 
     def test_quick_unapproved(self):
         write_state(self.cwd, active_request="r1", lane="quick")
@@ -192,15 +173,6 @@ class TestPromptContext(unittest.TestCase):
         rc, out, _ = self.ctx("duyệt plan mode subagent")
         self.assertIn("--mode subagent", out)
         self.assertNotIn("⚠️", out)
-
-    def test_plan_approval_captures_mode(self):
-        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
-                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
-                    spec_sha256="abc", spec_approved_at=now_iso(),
-                    plan_file="docs/tdq/plan/x.md")
-        rc, out, _ = self.ctx("duyệt plan mode main")
-        self.assertIn("approve plan", out)
-        self.assertIn("--mode main", out)
 
     def test_plan_approval_without_mode_leaves_placeholder(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",

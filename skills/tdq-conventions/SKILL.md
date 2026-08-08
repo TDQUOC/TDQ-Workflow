@@ -58,11 +58,13 @@ Ba luật không được phá:
 ```
 docs/tdq/
   state.json + STATE.md   # state ghi qua CLI; STATE.md là mirror tự sinh, chỉ đọc
-  requests/<slug>.md  questions/<slug>.md  research/<slug>.md  knowledge/<slug>.md
-  spec/<slug>.md      plan/<slug>.md       qc/<slug>.md        reports/<slug>.md
+  brief/<slug>.md     research/<slug>.md   spec/<slug>.md
+  plan/<slug>.md      qc/<slug>.md         reports/<slug>.md
 docs/workinglog/YYYY-MM-DD.md
 ```
 Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung một slug ở mọi thư mục.
+`brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file, đúng 3 mục: `## Nguyên văn`,
+`## Hiểu & kiến thức`, `## Hỏi đáp`.
 
 ## 6. Working log
 
@@ -79,36 +81,23 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 
 ## 8. Research
 
-- Search web: `tavily-primary` trước, luôn luôn; lỗi kết nối/xác thực/timeout/quota/tool
-  mới gọi `tavily-backup` đúng một lần. `WebSearch` chỉ sau khi cả hai hỏng VÀ user duyệt.
-- Mẫu dùng nâng cao: [references/tavily.md](references/tavily.md).
+- Search web: `tavily-primary` trước, luôn luôn. Failover và mẫu dùng nâng cao:
+  [references/tavily.md](references/tavily.md).
 - Mọi khẳng định phải có nguồn hoặc căn cứ nêu rõ. Không bịa.
 - Không đưa API key vào câu trả lời, log, lệnh shell hay prompt.
 
 ## 9. Sub-agent
 
-- Chọn `model` vừa đủ cho task (tham số `model` của Agent tool đè frontmatter); `effort`
-  cố định theo vai trong frontmatter.
 - `description` mỗi lần gọi Agent theo dạng `<model>-<effort>-<việc-kebab>` (vd
   `sonnet-low-research-doc`) — nhìn tên là biết model và effort đang chạy.
-- Không đổi `model` hay `effort` giữa chừng một phase build; muốn đổi thì đổi từ phase sau.
-- Bảng mặc định theo vai + luật override: [references/subagent-tuning.md](references/subagent-tuning.md).
+- Bảng model/effort mặc định theo vai + luật override:
+  [references/subagent-tuning.md](references/subagent-tuning.md).
 
 ## 10. Tiết kiệm context (bắt buộc)
 
-Mỗi tool call = 1 API call = model đọc lại TOÀN BỘ context: output `n` ký tự tốn
-`n/4 × số API call còn lại` — **carry-cost**. Đo: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/token_audit.py" --sessions 2 --top 8`.
-
-- **Gộp tool call.** Biết trước 2–5 tool call độc lập (Bash, Read, Grep) → phát hết
-  trong CÙNG MỘT LƯỢT; nhiều lệnh Bash độc lập thì gộp bằng `&&`. Tách khi cần khoanh vùng lỗi.
-- **Lint đúng file.** Chạy `doc_lint.py` trên ĐÚNG file vừa sửa, cấm truyền cả thư mục
-  (`docs/tdq`): lint thư mục in ~8.000 ký tự lỗi của file cũ, không liên quan.
-- **CLI im lặng.** `tdq_state.py init|set|reset` mặc định in 1 dòng; chỉ thêm `--json`
-  khi thật sự cần soi state. `next --brief` thay cho `next` trừ khi cần checklist đầy đủ.
-- **Đọc vừa đủ.** File trên 200 dòng: `grep -n` định vị rồi Read theo `offset`/`limit`.
-  Cấm `cat` (dùng Read), cấm `grep -A5 -B5` khi `-c`/`-l` đã đủ trả lời.
-- **Việc nặng giao subagent.** Research web và đọc ≥4 file giao agent riêng — agent có
-  context window riêng, chỉ trả digest về hội thoại chính.
+Mỗi tool call đọc lại toàn bộ context, nên output thừa tốn token ở MỌI lượt sau.
+Luật gộp tool call, đọc vừa đủ, giao việc nặng cho subagent:
+[references/context-budget.md](references/context-budget.md).
 
 ## 11. Chất lượng
 

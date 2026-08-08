@@ -11,7 +11,7 @@ Không xét = bỏ sót; xét rồi loại có lý do = hợp lệ.
    ```
 2. CHÉP THÊM các skill built-in đang thấy trong context vào bảng (chúng không có trên đĩa).
 3. Điền bảng theo khuôn dưới — mỗi skill đúng 1 dòng, mỗi dòng DÙNG một skill riêng.
-4. Lưu bảng vào `docs/tdq/knowledge/<slug>.md` dưới heading `## Năng lực dùng được`.
+4. Lưu bảng vào `docs/tdq/brief/<slug>.md` dưới heading `### Năng lực dùng được`.
 
 ## Khuôn bảng (copy nguyên khối rồi điền)
 

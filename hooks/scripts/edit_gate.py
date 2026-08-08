@@ -55,7 +55,7 @@ def main():
     if state is None or not state.get("active_request"):
         return
     if within(abs_target, os.path.realpath(os.path.join(cwd, "docs"))):
-        return  # docs/** không cần nhắc: spec/plan/questions/research/log
+        return  # docs/** không cần nhắc: brief/spec/plan/research/log
 
     lane = tdq_state.effective_lane(state, warn=False)
     pending = None

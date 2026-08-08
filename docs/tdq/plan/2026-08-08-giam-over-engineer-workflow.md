@@ -58,8 +58,8 @@ Làm trước tiên: mọi tài liệu sinh ra ở các phase sau đều đi qua
       `tdq-conventions/SKILL.md`, `approval.md`, `subagent-tuning.md`, `tdq-intake/SKILL.md`,
       `quick-lane.md`, `tdq-plan/SKILL.md`, `plan-template.md`) — Test: `grep -ril external skills` rỗng
 - [x] **T2.7** Xoá `tests/test_external_task.py`, `test_external_models.py`,
-      `test_search_task.py`, `test_e2e_agy.py`, `test_e2e_codex.py` — Test: `python3 -m unittest discover -q` xanh
-- [ ] **T2.8** Commit riêng cho P2 với message mô tả việc xoá, KHÔNG push — Test: `git log -1 --oneline` in đúng commit đó
+      `test_search_task.py`, `test_e2e_agy.py`, `test_e2e_codex.py` — Test: `python3 -m unittest discover -s tests -t tests -q` xanh
+- [x] **T2.8** Commit riêng cho P2 với message mô tả việc xoá, KHÔNG push — Test: `git log -1 --oneline` in đúng commit đó
 
 **Xong P2 khi**: `grep -ril external skills hooks agents scripts tests` không ra kết quả và suite xanh.
 
@@ -69,66 +69,66 @@ Làm trước tiên: mọi tài liệu sinh ra ở các phase sau đều đi qua
       gỡ phần nói về external/deep search — Test: `ls docs/claude-md-mau.md` tồn tại, `grep -i external` rỗng
 - [x] **T3.2** Xoá thư mục `portable/` và `tests/test_portable_sync.py` — Test: `ls portable` báo không tồn tại; suite xanh
 
-**Xong P3 khi**: `portable/` không còn và `python3 -m unittest discover -q` xanh.
+**Xong P3 khi**: `portable/` không còn và `python3 -m unittest discover -s tests -t tests -q` xanh.
 
 ## P4 — Gộp output thành `brief/` (D5)
 
-- [ ] **T4.1** Đổi `PHASE_TABLE` trong `scripts/tdq_state.py`: mọi câu nhắc
+- [x] **T4.1** Đổi `PHASE_TABLE` trong `scripts/tdq_state.py`: mọi câu nhắc
       `requests/`, `knowledge/`, `questions/` chuyển thành `brief/<slug>.md` — Test: `python3 -m unittest tests.test_phase_table` xanh
-- [ ] **T4.2** Đổi `skills/tdq-intake/SKILL.md`, `references/analyze-full.md`,
+- [x] **T4.2** Đổi `skills/tdq-intake/SKILL.md`, `references/analyze-full.md`,
       `skills/tdq-conventions/SKILL.md` §5 (cây tài liệu), `tdq-spec/references/spec-template.md`
       sang khuôn brief 3 mục: `## Nguyên văn`, `## Hiểu & kiến thức`, `## Hỏi đáp` — Test: `grep -rn "requests/" skills` chỉ còn trong ghi chú lịch sử hoặc rỗng
-- [ ] **T4.3** Chạy thử một request giả để xác nhận khuôn mới chạy được — Test: `TDQ_PROJECT_DIR=<thư mục tạm> python3 scripts/tdq_state.py init test-brief full && ... next` in ra đường dẫn `brief/`
+- [x] **T4.3** Chạy thử một request giả để xác nhận khuôn mới chạy được — Test: `TDQ_PROJECT_DIR=<thư mục tạm> python3 scripts/tdq_state.py init test-brief full && ... next` in ra đường dẫn `brief/`
 
 **Xong P4 khi**: T4.3 in đúng `brief/` và suite xanh.
 
 ## P5 — Tầng `nhỏ` và QC bám DoD (D1, D2)
 
-- [ ] **T5.1** Viết mục "Tầng nhỏ" vào `skills/tdq-intake/SKILL.md`: 4 điều kiện vào,
+- [x] **T5.1** Viết mục "Tầng nhỏ" vào `skills/tdq-intake/SKILL.md`: 4 điều kiện vào,
       việc được làm, luật thoát bắt buộc khi vi phạm giữa chừng — Test: `grep -c "Tầng nhỏ" skills/tdq-intake/SKILL.md` ≥ 1 và mục có đủ 4 điều kiện
-- [ ] **T5.2** Thêm luật in dòng `Cỡ: <nhỏ|quick|full> · Cần: <...>` vào
+- [x] **T5.2** Thêm luật in dòng `Cỡ: <nhỏ|quick|full> · Cần: <...>` vào
       `skills/tdq-intake/SKILL.md` và `references/lane-decision.md` — Test: `grep -n "Cỡ:" skills/tdq-intake/references/lane-decision.md` ra kết quả
-- [ ] **T5.3** Đổi định nghĩa QC trong `skills/tdq-build/references/qc.md`,
+- [x] **T5.3** Đổi định nghĩa QC trong `skills/tdq-build/references/qc.md`,
       `skills/tdq-intake/references/quick-lane.md`, `PHASE_TABLE`: số hạng mục QC bằng số
       dòng DoD; vòng fix chỉ chạy lại hạng mục FAIL cộng hạng mục có thể bị bản fix làm
       hỏng; bỏ luật vòng fix bắt buộc khi user tắt QC; giữ trần 3 vòng — Test: `grep -rn "3 hạng mục" skills` rỗng
-- [ ] **T5.4** Sửa `tests/test_quick_qc.py` theo luật QC mới, giữ nguyên phần kiểm
+- [x] **T5.4** Sửa `tests/test_quick_qc.py` theo luật QC mới, giữ nguyên phần kiểm
       `--no-qc` và `quick_qc_skipped` — Test: `python3 -m unittest tests.test_quick_qc` xanh
 
 **Xong P5 khi**: `grep -rn "3 hạng mục" skills` rỗng và suite xanh.
 
 ## P6 — Rút gọn skill nặng (D6)
 
-- [ ] **T6.1** Tách mục 10 của `skills/tdq-conventions/SKILL.md` sang
+- [x] **T6.1** Tách mục 10 của `skills/tdq-conventions/SKILL.md` sang
       `references/context-budget.md`, chỗ cũ để lại 2 dòng và một link — Test: `wc -c skills/tdq-conventions/SKILL.md` giảm so với 7.345, số đo ghi lại
-- [ ] **T6.2** Rút mục 7 (git), 8 (research), 9 (sub-agent), 11 (chất lượng) của
-      `tdq-conventions/SKILL.md` còn phần không suy ra được từ chỗ khác — Test: `python3 -m unittest discover -q` xanh
-- [ ] **T6.3** Rút `tdq-intake/SKILL.md`, `tdq-plan/SKILL.md`, `tdq-build/SKILL.md` sau
+- [x] **T6.2** Rút mục 7 (git), 8 (research), 9 (sub-agent), 11 (chất lượng) của
+      `tdq-conventions/SKILL.md` còn phần không suy ra được từ chỗ khác — Test: `python3 -m unittest discover -s tests -t tests -q` xanh
+- [x] **T6.3** Rút `tdq-intake/SKILL.md`, `tdq-plan/SKILL.md`, `tdq-build/SKILL.md` sau
       khi P2 đã gỡ external — Test: `wc -c skills/*/SKILL.md` ghi lại, và `python3 scripts/doc_lint.py skills` exit 0
 
 **Xong P6 khi**: `doc_lint` trên `skills/` exit 0 và tổng byte skill đã ghi lại để so ở P8.
 
 ## P7 — Dọn bộ test (D8)
 
-- [ ] **T7.1** Xoá test chỉ assert chuỗi trong .md: `tests/test_skill_docs.py`,
+- [x] **T7.1** Xoá test chỉ assert chuỗi trong .md: `tests/test_skill_docs.py`,
       `test_docs_consistency.py`, `test_agent_digest_sync.py`, và các test cùng loại trong
-      `test_compliance_protocol.py` — Test: `python3 -m unittest discover -q` xanh
-- [ ] **T7.2** Làm `tests/test_claude_md_core.py` hermetic: bỏ so sánh với
+      `test_compliance_protocol.py` — Test: `python3 -m unittest discover -s tests -t tests -q` xanh
+- [x] **T7.2** Làm `tests/test_claude_md_core.py` hermetic: bỏ so sánh với
       `~/.claude/CLAUDE.md`, chỉ kiểm `docs/claude-md-mau.md` trong repo — Test: `HOME=/nonexistent python3 -m unittest tests.test_claude_md_core` xanh
-- [ ] **T7.3** Giảm test hook: bỏ test assert nguyên văn thông điệp, giữ test hành vi
+- [x] **T7.3** Giảm test hook: bỏ test assert nguyên văn thông điệp, giữ test hành vi
       chặn/không chặn của `stop_gate`, `edit_gate`, `bash_gate` — Test: `python3 -m unittest tests.test_stop_gate tests.test_edit_gate tests.test_bash_gate` xanh
-- [ ] **T7.4** Chạy suite hai lần để xác nhận hermetic — Test: `python3 -m unittest discover -q` và `HOME=/nonexistent python3 -m unittest discover -q` cùng exit 0
+- [x] **T7.4** Chạy suite hai lần để xác nhận hermetic — Test: `python3 -m unittest discover -s tests -t tests -q` và `HOME=/nonexistent python3 -m unittest discover -s tests -t tests -q` cùng exit 0
 
 **Xong P7 khi**: cả hai lần chạy ở T7.4 exit 0.
 
 ## P8 — Đo, QC, ghi nhớ
 
-- [ ] **T8.1** Đo lại 4 số bằng đúng cách đã đo ở knowledge: byte skill nạp mỗi vòng
+- [x] **T8.1** Đo lại 4 số bằng đúng cách đã đo ở knowledge: byte skill nạp mỗi vòng
       full, số file output mỗi request, số test, giây chạy suite — Test: 4 cặp số trước/sau có mặt trong `docs/tdq/reports/<slug>.md`
-- [ ] **T8.2** Chạy đủ Q1–Q10 của spec §6, ghi bằng chứng vào `docs/tdq/qc/<slug>.md`;
+- [x] **T8.2** Chạy đủ Q1–Q10 của spec §6, ghi bằng chứng vào `docs/tdq/qc/<slug>.md`;
       Q1 phân loại lại 5 request cũ trong `docs/tdq/requests/` theo tầng mới — Test: `qc/<slug>.md` có đủ 10 dòng kết quả kèm lệnh và output
-- [ ] **T8.3** Gọi agent `tdq-qc-tester` chạy độc lập một lượt — Test: agent trả PASS, kết quả dán vào `qc/<slug>.md`
-- [ ] **T8.4** Ghi 1 fact vào mem0 về quyết định kiến trúc của request này — Test: `search_memories` với project `TDQWorkflow` trả về đúng fact vừa ghi
+- [x] **T8.3** Gọi agent `tdq-qc-tester` chạy độc lập một lượt — Test: agent trả PASS, kết quả dán vào `qc/<slug>.md`
+- [x] **T8.4** Ghi 1 fact vào mem0 về quyết định kiến trúc của request này — Test: `search_memories` với project `TDQWorkflow` trả về đúng fact vừa ghi
   - Dùng: `mem0-memory` (mcp)
   - Nạp: gọi skill `mem0-memory` TRƯỚC khi ghi. Agent ngoài không có skill system: đọc `~/.claude/skills/mem0-memory/SKILL.md` rồi làm theo.
   - Để: ghi đúng một fact ngắn về "TDQ bỏ external, thêm tầng nhỏ, QC bám DoD", không ghi nhật ký phiên.
@@ -140,10 +140,10 @@ Làm trước tiên: mọi tài liệu sinh ra ở các phase sau đều đi qua
 
 ## Px — Log & test bắt buộc
 
-- [ ] **Tx.1** Log service: KHÔNG áp dụng — request này không viết service mới, chỉ xoá
+- [x] **Tx.1** Log service: KHÔNG áp dụng — request này không viết service mới, chỉ xoá
       và rút gọn. Các script bị sửa giữ nguyên cách log hiện có (cảnh báo stderr, exit
       code, `tdq_finish.py` ghi working log có timestamp) — Test: `python3 scripts/tdq_finish.py --help` chạy được và working log của turn build có timestamp
-- [ ] **Tx.2** Unit test chạy bằng một lệnh — Test: `python3 -m unittest discover -q` exit 0
+- [x] **Tx.2** Unit test chạy bằng một lệnh — Test: `python3 -m unittest discover -s tests -t tests -q` exit 0
 
 ## Definition of Done
 
@@ -158,6 +158,27 @@ Trỏ về §6 của spec. Từng hạng mục kèm lệnh kiểm:
 | Q5 | Gộp brief chạy được | chạy request giả với `TDQ_PROJECT_DIR` tạm |
 | Q6 | `doc_lint` đúng phạm vi | `python3 scripts/doc_lint.py docs/tdq/brief/<slug>.md` |
 | Q7 | Cửa thoát `allow R5` | `python3 -m unittest tests.test_doc_lint` |
-| Q8 | Suite xanh và hermetic | `python3 -m unittest discover -q` và bản `HOME=/nonexistent` |
+| Q8 | Suite xanh và hermetic | `python3 -m unittest discover -s tests -t tests -q` và bản `HOME=/nonexistent` |
 | Q9 | 6 rào an toàn còn nguyên | chạy từng hook với state giả trong thư mục tạm |
 | Q10 | Số đo trước/sau | 4 cặp số trong `reports/<slug>.md`, không có ngưỡng chặn |
+
+## QC vòng 1 — fix
+
+Nguồn: agent `tdq-qc-tester` chạy độc lập (T8.3) trả FAIL, 5 khiếm khuyết đã đối chiếu
+lại và xác nhận đúng. Chi tiết ở `../qc/2026-08-08-giam-over-engineer-workflow.md`.
+
+- [x] **F1** Sửa lệnh DoD sai trong spec và plan: `python3 -m unittest discover -s tests -t tests -q`
+      (exit 5, NO TESTS RAN) thành `python3 -m unittest discover -s tests -t tests -q` —
+      Test: chạy đúng lệnh mới ở gốc repo trả exit 0; `grep -c "discover -q\`" ` trên 2
+      file trả 0
+- [x] **F2** Làm nốt D2: bỏ luật "vòng fix bắt buộc kể cả khi user tắt QC" ở
+      `quick-lane.md`, `tdq-intake/SKILL.md`, `PHASE_TABLE`; sinh lại `phases.md` —
+      Test: `grep -rn "kể cả khi user" skills/ scripts/` rỗng; `test_quick_qc.py` xanh
+- [x] **F3** Sửa mâu thuẫn trần vòng fix ở `quick-lane.md` dòng 15 (lane full ghi "trần
+      không giới hạn") cho khớp `qc.md` — Test: `grep -n "không giới hạn" skills/` rỗng
+- [x] **F4** `agents/tdq-reviewer.md`: `knowledge/requests` thành `brief` — Test:
+      `grep -n "knowledge\|requests" agents/tdq-reviewer.md` rỗng
+- [x] **F5** Chạy lại hạng mục FAIL và hạng mục bản fix có thể làm hỏng: Q2, Q5, Q7, Q8
+      cộng `doc_lint skills` — Test: cả 5 phép kiểm PASS
+
+**Xong vòng 1 khi**: F1-F5 tick và suite xanh. Trần 3 vòng.
