@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-09T00:20:01+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-09T01:13:43+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-08-giam-over-engineer-workflow |
+| Request | 2026-08-09-cat-token-thua-workflow |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-08-08-giam-over-engineer-workflow.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-08-giam-over-engineer-workflow.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-09-cat-token-thua-workflow.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-09-cat-token-thua-workflow.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

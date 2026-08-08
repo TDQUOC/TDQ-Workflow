@@ -539,8 +539,9 @@ PHASE_TABLE = {
         "checklist": [
             "Phân tích: đọc code liên quan; có ẩn số bên ngoài (thư viện, API, phiên bản) "
             "→ web search qua tavily-primary trước khi viết gì",
-            "Interview khi còn câu hỏi làm ĐỔI kết quả — theo luật interview.md, "
-            "kết thúc mỗi vòng bằng câu 'Bạn muốn bổ sung thêm gì không?'",
+            "Interview khi còn câu hỏi làm ĐỔI kết quả — theo luật interview.md; "
+            "chỉ khi vòng đó có ít nhất một câu hỏi thì mới đóng vòng bằng câu "
+            "'Bạn muốn bổ sung thêm gì không?', không có câu hỏi thì đi thẳng bước sau",
             "Viết mini-spec/plan GỘP vào docs/tdq/plan/<slug>.md (≤40 dòng: scope in/out, "
             "task có test, DoD) rồi trình tóm tắt ≤10 dòng trong chat, "
             "kèm 1 dòng 'Năng lực: <skill sẽ DÙNG hoặc không có>'",
@@ -614,16 +615,11 @@ def render_phases_md(plugin_root=False):
         lines.append(f"{name}: {conv(PHASE_TABLE[name]['cmd'])}")
     lines.append("```")
     lines.append("")
-    for name in PHASE_ORDER:
-        row = PHASE_TABLE[name]
-        lines.append(f"## {name}")
-        # lệnh trong checklist phải nằm trong inline-code thì mới copy đúng
-        # (và mới qua được rule R2 của scripts/doc_lint.py)
-        # item đã tự đặt inline-code thì giữ nguyên (tránh wrap đôi ``cmd`)
-        lines += [f"{i}. " + (conv(item) if "`" in item
-                              else re.sub(r"(python3 .+)$", r"`\1`", conv(item)))
-                  for i, item in enumerate(row["checklist"], 1)]
-        lines.append("")
+    # Checklist từng phase KHÔNG sinh ra đây (bỏ 2026-08-09): nó lặp lại nội dung
+    # SKILL.md của chính phase đó. Muốn checklist đầy đủ thì chạy `tdq_state.py next`.
+    lines.append("Checklist chi tiết của phase đang chạy: `"
+                 + conv("python3 scripts/tdq_state.py") + " next`.")
+    lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
 

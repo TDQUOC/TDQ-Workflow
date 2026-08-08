@@ -222,8 +222,9 @@ DECISIONS = ("DÙNG", "KHÔNG", "NỀN")
 # 4 lý do loại đóng (khớp TIỀN TỐ — sau lý do được ghi thêm chi tiết).
 CLOSED_REASONS = ("khác lĩnh vực", "spec §3 đã chọn cách khác tốt hơn",
                   "thiếu quyền/công cụ", "user đã cấm")
-# 5 trường bắt buộc của khối hợp đồng trong plan (trường thứ 6 là chính dòng `Dùng:`).
-CONTRACT_FIELDS = ("Nạp", "Để", "Ra", "Kiểm", "Không dùng cho")
+# 4 trường bắt buộc của khối hợp đồng trong plan (trường thứ 5 là chính dòng `Dùng:`).
+# `Nạp` đã bỏ từ 2026-08-09: câu đường dẫn SKILL.md cho sub-agent dời vào `Để`.
+CONTRACT_FIELDS = ("Để", "Ra", "Kiểm", "Không dùng cho")
 CONTRACT_SCAN = 8   # các trường phải nằm trong 8 dòng ngay dưới dòng `Dùng:`
 
 

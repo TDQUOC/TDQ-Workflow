@@ -35,16 +35,20 @@ Chép từ brief mục `### Lộ trình`. User duyệt spec là duyệt luôn l�
 
 ## 3b. Năng lực & công cụ
 Chép từ brief mục `### Năng lực dùng được`. Phân vân → DÙNG.
-Không xoá mục này kể cả khi mọi dòng là KHÔNG. Mỗi dòng DÙNG một skill riêng.
+Một dòng cho mỗi skill DÙNG hoặc NỀN, cộng đúng một dòng tổng cho phần còn lại.
+Không xoá mục này kể cả khi không có dòng DÙNG nào.
 Phán quyết chỉ nhận: DÙNG / KHÔNG (+ 1 trong 4 lý do đóng) / NỀN (skill khung đang chạy).
 
 | Skill | Nguồn | Phán quyết | Dùng ở đâu / Lý do loại |
 |---|---|---|---|
 | <tên> | <user\|project\|plugin:x\|built-in> | DÙNG | <đầu ra hoặc task nào> |
-| <tên> | built-in | KHÔNG | khác lĩnh vực |
+| Đã xét <N> skill khác | user/plugin/built-in | KHÔNG | khác lĩnh vực |
 
 ## 4. Yêu cầu bắt buộc
 - Log service bật mặc định: timestamp, đủ chi tiết debug, tắt/giảm được qua config.
+  Dòng này bắt buộc **chỉ khi việc này có runtime** — tức plan sẽ có ít nhất một task tạo
+  hoặc sửa file mã nguồn chạy được. Không có runtime (chỉ sửa tài liệu, khuôn mẫu, cấu
+  hình) → thay dòng này bằng `Log service: BỎ — <lý do một câu>`.
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
 - Mỗi thành phần có unit test riêng, chạy được bằng một lệnh.
 
@@ -67,8 +71,8 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 
 - Mọi đầu ra ở §2 đều có ít nhất một hạng mục QC ở §6.
 - §1b có mặt: mỗi bước/phase của workflow được ghi rõ CÓ chạy hay BỎ, kèm lý do.
-- §3b có mặt và mỗi skill trong bảng kiểm kê (brief) có đúng 1 dòng — máy kiểm bằng
-  `doc_lint.py` rule R8.
+- §3b có mặt: mỗi skill DÙNG và NỀN có một dòng riêng, phần còn lại gom vào dòng tổng
+  `Đã xét <N> skill khác` — máy kiểm bằng `doc_lint.py` rule R8.
 - Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính.
 - §7 rỗng.
 - Không câu nào dùng từ mơ hồ ("phù hợp", "tối ưu", "nếu cần") mà không kèm ngưỡng cụ thể.

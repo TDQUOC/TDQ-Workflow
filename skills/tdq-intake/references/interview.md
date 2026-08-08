@@ -41,7 +41,9 @@ Luật khuôn:
 - Nhiều câu hỏi trong một vòng → đánh số câu `1.`, `2.` và mỗi câu có bảng option riêng.
 - Câu hỏi chốt lane, chốt mode, hỏi commit cũng theo đúng khuôn này.
 
-**Câu cuối mỗi vòng là bắt buộc**, kể cả khi chỉ có 1 câu hỏi:
+**Câu chốt vòng là có điều kiện** — chỉ ghi khi vòng đó có ít nhất một câu hỏi (kể cả
+khi chỉ có đúng 1 câu). Vòng không có câu hỏi nào thì không dựng vòng interview rỗng chỉ
+để hỏi câu này: đi thẳng sang bước sau.
 
 ```
 <số>. Bạn muốn bổ sung thêm gì không?

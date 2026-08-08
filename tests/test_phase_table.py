@@ -55,14 +55,16 @@ class PhaseTableTest(unittest.TestCase):
         for line in doc.splitlines():
             if re.match(r"^\d+\. ", line):
                 self.assertNotIn("``", line, f"wrap đôi hỏng inline-code: {line}")
+        # Từ 2026-08-09 phases-doc không sinh mục chi tiết từng phase nữa; lệnh thật
+        # nằm ở khối "Lệnh nguyên văn" và ở cột lệnh của bảng.
+        self.assertNotIn("\n## analyze", doc, "phases-doc còn sinh mục chi tiết phase")
+        block = doc.split("Lệnh nguyên văn", 1)[1]
         for section in ("analyze", "spec", "plan"):
-            body = doc.split(f"## {section}\n", 1)[1].split("\n##", 1)[0]
-            self.assertIn("python3 scripts/", body,
-                          f"mục {section} mất lệnh python3 thật")
+            self.assertIn(f"{section}: python3 scripts/", block,
+                          f"khối lệnh nguyên văn mất lệnh của {section}")
         for section in ("spec", "plan"):
-            body = doc.split(f"## {section}\n", 1)[1].split("\n##", 1)[0]
-            self.assertIn("python3 scripts/tdq_state.py", body,
-                          f"mục {section} mất lệnh tdq_state.py thật")
+            self.assertIn(f"{section}: python3 scripts/tdq_state.py", block,
+                          f"khối lệnh nguyên văn mất lệnh tdq_state.py của {section}")
 
     def test_quick_row_no_qc_variant_and_terminal(self):
         """A26: dòng duyệt quick khớp intake (biến thể bỏ QC); A6: có bước đóng."""

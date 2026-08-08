@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786098766.6940799,
-    "ast_hash": "ffcf32a31f88d7d60802f6fde2c5d352",
-    "semantic_hash": "ffcf32a31f88d7d60802f6fde2c5d352"
+    "mtime": 1786209795.364198,
+    "ast_hash": "0893efd95187e9dd0c7d4627d4f4664c",
+    "semantic_hash": "0893efd95187e9dd0c7d4627d4f4664c"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -40,9 +40,9 @@
     "semantic_hash": "9e3ec4d7314ace1d7f2421bc13bcd2a4"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1786209125.830776,
-    "ast_hash": "f22cc07a632378f9697e25f1711f4907",
-    "semantic_hash": "f22cc07a632378f9697e25f1711f4907"
+    "mtime": 1786212340.2866836,
+    "ast_hash": "eb2d3ed85b2ea2558ece00bf353cee64",
+    "semantic_hash": "eb2d3ed85b2ea2558ece00bf353cee64"
   },
   "tests/fixtures/bash_cmd.json": {
     "mtime": 1785167490.77849,
@@ -110,8 +110,8 @@
     "semantic_hash": "f2d13259b2e48bd41ad8c6329dc3d5d9"
   },
   "README.md": {
-    "mtime": 1786203606.240319,
-    "ast_hash": "51f4d2a0acfbb0d0aa36b12790b8fb45",
+    "mtime": 1786204035.3517148,
+    "ast_hash": "d5d807c1fa840acc3baf252f6002cf7f",
     "semantic_hash": ""
   },
   "agents/tdq-implementer.md": {
@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "agents/tdq-reviewer.md": {
-    "mtime": 1785916898.7359843,
-    "ast_hash": "4603679345dc98f66e509760851ebe3b",
+    "mtime": 1786209125.8313143,
+    "ast_hash": "3e23cede1ca19c047f8caad800433355",
     "semantic_hash": ""
   },
   "docs/notes/user-level-install.md": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-conventions/SKILL.md": {
-    "mtime": 1786202604.9137359,
-    "ast_hash": "e4728f18d0fd0d9d2ae45b7514e8b3a5",
+    "mtime": 1786204357.5214562,
+    "ast_hash": "fee1a0db0eed07b704f2c5f4d71af453",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/tavily.md": {
@@ -150,13 +150,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786202633.698239,
-    "ast_hash": "3d6dbec470189efe9e6abd54d7d5093f",
+    "mtime": 1786204389.510524,
+    "ast_hash": "c4bd9a4e1c23d6823cc17e25d54cb302",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
-    "mtime": 1785853214.9007065,
-    "ast_hash": "d07b0758be693eb9b52cfd7adee76e7e",
+    "mtime": 1786204031.0460582,
+    "ast_hash": "242b9a1f9740df14ef9ae1d837210ca1",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "scripts/doc_lint.py": {
-    "mtime": 1786203727.024516,
-    "ast_hash": "3549fa74cde6c8548d68fcf6ae005c2d",
-    "semantic_hash": "3549fa74cde6c8548d68fcf6ae005c2d"
+    "mtime": 1786212070.1531224,
+    "ast_hash": "8827943de830b283e50a53b351dcbc1f",
+    "semantic_hash": "8827943de830b283e50a53b351dcbc1f"
   },
   "tests/test_compliance_protocol.py": {
     "mtime": 1785849684.8978915,
@@ -190,9 +190,9 @@
     "semantic_hash": "50c214d0891d3a29029ba1becaa13760"
   },
   "tests/test_doc_lint.py": {
-    "mtime": 1786203657.7474978,
-    "ast_hash": "f8e6a75d6afd4976dc5f03901b79d01a",
-    "semantic_hash": "f8e6a75d6afd4976dc5f03901b79d01a"
+    "mtime": 1786212162.0138142,
+    "ast_hash": "21890617320d567a2a4f766fa47bf710",
+    "semantic_hash": "21890617320d567a2a4f766fa47bf710"
   },
   "tests/test_docs_consistency.py": {
     "mtime": 1786204481.617992,
@@ -210,9 +210,9 @@
     "semantic_hash": "94d625e9fef78f49f346aa93d5cd191a"
   },
   "tests/test_phase_table.py": {
-    "mtime": 1786203221.994479,
-    "ast_hash": "4469c8d0c21becf6fda36b0ee96a6cdd",
-    "semantic_hash": "4469c8d0c21becf6fda36b0ee96a6cdd"
+    "mtime": 1786212378.2872515,
+    "ast_hash": "48dc12fd21bbf0960200f12e01e8c0fe",
+    "semantic_hash": "48dc12fd21bbf0960200f12e01e8c0fe"
   },
   "tests/test_skill_shape.py": {
     "mtime": 1786203207.6522505,
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786099494.9906738,
-    "ast_hash": "56a6e5d3daadf108b56cb98d5fc652ac",
+    "mtime": 1786209795.3649614,
+    "ast_hash": "1f5d1ce5603028c37f1e4d18bb9d97ea",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786202449.475402,
-    "ast_hash": "bdc1bb969802d70b5cd5174d9b8da941",
+    "mtime": 1786209601.7884521,
+    "ast_hash": "4ab34fed942b88664e04534d5a39971a",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -520,13 +520,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-build/SKILL.md": {
-    "mtime": 1786202604.9154768,
-    "ast_hash": "69c203cba217c5e95cf57441dd2affc9",
+    "mtime": 1786204379.6936781,
+    "ast_hash": "26a5b625b2df62032903309d3cd36782",
     "semantic_hash": ""
   },
   "skills/tdq-build/references/qc.md": {
-    "mtime": 1785914582.5308099,
-    "ast_hash": "01b29211e4d3ca95cd138086ecce0eb5",
+    "mtime": 1786204158.521225,
+    "ast_hash": "8136c4310a24d2f837acffd42bc01d7e",
     "semantic_hash": ""
   },
   "skills/tdq-build/references/report-template.md": {
@@ -540,8 +540,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/phases.md": {
-    "mtime": 1786202958.0302923,
-    "ast_hash": "433123609dc1d40388bc14797b3305c1",
+    "mtime": 1786209125.9014544,
+    "ast_hash": "292a990df175d48411ad2b365090ec97",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/reminder-codes.md": {
@@ -550,23 +550,23 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/SKILL.md": {
-    "mtime": 1786203407.7124329,
-    "ast_hash": "77f5bc6b04c3d589590b51d49e80009f",
+    "mtime": 1786209125.8298578,
+    "ast_hash": "4a06e8a7436a8dfe51814d81f961f360",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/interview.md": {
-    "mtime": 1785901187.5194216,
-    "ast_hash": "5d790d80838929e3733ad71c89fc4e67",
+    "mtime": 1786204021.1100554,
+    "ast_hash": "cdb8a1e0d42c5561265cf8299845c524",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/lane-decision.md": {
-    "mtime": 1785914730.4453738,
-    "ast_hash": "51c6f6fc68cb94460c790d9fdfabd041",
+    "mtime": 1786204135.4796062,
+    "ast_hash": "72b2f45b6e053f252d5d957d2593c683",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/skill-inventory.md": {
-    "mtime": 1785342316.524509,
-    "ast_hash": "1d5bea61afefd6c97f9a72a1e8d996bb",
+    "mtime": 1786204021.1090896,
+    "ast_hash": "37802e10663849a20e4ba1e960d75dad",
     "semantic_hash": ""
   },
   "skills/tdq-plan/references/plan-template.md": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-spec/references/spec-template.md": {
-    "mtime": 1785868871.1505716,
-    "ast_hash": "33043b22eb588db80fcd3f24157428e9",
+    "mtime": 1786204031.0459418,
+    "ast_hash": "1aa08c73f65f1caa7836f17a2696648e",
     "semantic_hash": ""
   },
   "docs/tdq/external/2026-07-30-external-agent-mode/E2E-AGY.json": {
@@ -1355,8 +1355,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/quick-lane.md": {
-    "mtime": 1786202685.700461,
-    "ast_hash": "514f02391184b087e6c792de091ea439",
+    "mtime": 1786209125.829319,
+    "ast_hash": "0cba04c20d0d67575daa485fa8f09c34",
     "semantic_hash": ""
   },
   "scripts/tdq_finish.py": {
@@ -1635,8 +1635,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/analyze-full.md": {
-    "mtime": 1786202604.9162726,
-    "ast_hash": "5663d490152833373f85b2e89588e85d",
+    "mtime": 1786203972.433815,
+    "ast_hash": "745be6c2a84282176bbdd8cf1ca64168",
     "semantic_hash": ""
   },
   "docs/tdq/plan/2026-08-05-bump-sync-user.md": {
@@ -1850,8 +1850,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/plan/2026-08-08-giam-over-engineer-workflow.md": {
-    "mtime": 1786203572.4646072,
-    "ast_hash": "03cd24d299431c31c5a79c2c008a1a6b",
+    "mtime": 1786209276.604665,
+    "ast_hash": "df699e644055042f30e924a3caed71cc",
     "semantic_hash": ""
   },
   "docs/tdq/questions/2026-08-08-giam-over-engineer-workflow.md": {
@@ -1865,13 +1865,33 @@
     "semantic_hash": ""
   },
   "docs/tdq/spec/2026-08-08-giam-over-engineer-workflow.md": {
-    "mtime": 1786202013.6282666,
-    "ast_hash": "b790a17493cd4c6e945612dfcce0b00a",
+    "mtime": 1786209125.8276868,
+    "ast_hash": "4d5def622fd1371c5f20283de382aa03",
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-08.md": {
-    "mtime": 1786203761.86983,
-    "ast_hash": "fb5e937e4659d7188ef2179fca864995",
+    "mtime": 1786209595.8646238,
+    "ast_hash": "93b5b0046daf0c81f95c6366e488f1b4",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-08-giam-over-engineer-workflow.md": {
+    "mtime": 1786209547.4105911,
+    "ast_hash": "027c7c3ca3ff6d3436839f392f4c7910",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-08-giam-over-engineer-workflow.md": {
+    "mtime": 1786209583.8243363,
+    "ast_hash": "5580c824faaed89eb5014be1cd6b7145",
+    "semantic_hash": ""
+  },
+  "docs/workinglog/2026-08-09.md": {
+    "mtime": 1786209636.151597,
+    "ast_hash": "d1cfb19dc90a126e5cba0ad5f059790d",
+    "semantic_hash": ""
+  },
+  "skills/tdq-conventions/references/context-budget.md": {
+    "mtime": 1786204346.6958842,
+    "ast_hash": "4fc1bf98b8de8c779a30206c0766cd8d",
     "semantic_hash": ""
   }
 }

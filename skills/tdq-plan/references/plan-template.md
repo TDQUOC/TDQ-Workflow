@@ -9,13 +9,6 @@ Ngày: YYYY-MM-DD · Spec: ../spec/<slug>.md (bản 1.0, ĐÃ DUYỆT) · Lane: 
 Mode thực thi: main — <lý do 1–2 câu> (ĐỀ XUẤT, user chốt lúc duyệt)
 Trạng thái plan: CHỜ DUYỆT
 
-## Năng lực → task
-(Mỗi dòng DÙNG ở spec §3b phải có mặt ở đây VÀ có khối hợp đồng 6 trường trong task.)
-
-| Skill | Task | Đầu ra bắt buộc |
-|---|---|---|
-| <tên> | T<x.y> | <artifact tồn tại được, kiểm bằng lệnh> |
-
 ## Quy tắc thi hành (áp cho mọi task)
 1. Thứ tự phase là thứ tự phụ thuộc — không đảo.
 2. Mỗi task: viết test trước (đỏ) → code → test xanh → tick `[x]` NGAY vào file này.
@@ -33,14 +26,13 @@ Trạng thái plan: CHỜ DUYỆT
 ## P2 — <tên phase>
 - [ ] **T2.1** <...> — Test: <...>
 
-## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤7 dòng)
+## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
   - Dùng: `<tên skill>`
 - [ ] **T<x.z>** <task mà skill cần MCP tool> — Test: <...>
   - Dùng: `<tên skill>` (mcp)
-  - Nạp: gọi skill `<tên>` TRƯỚC bước đỏ của task này. Agent ngoài không có skill
-    system: đọc `<đường dẫn>/SKILL.md` rồi làm theo.
-  - Để: <việc cụ thể skill lo trong task này>
+  - Để: <việc cụ thể skill lo trong task này>, nạp skill TRƯỚC bước đỏ. Agent ngoài
+    không có skill system: đọc `<đường dẫn>/SKILL.md` rồi làm theo.
   - Ra: <artifact phải tồn tại sau task, có đường dẫn>
   - Kiểm: <một lệnh chạy được, PASS đo được>
   - Không dùng cho: <việc kề bên mà skill này KHÔNG được lan sang>
@@ -51,6 +43,10 @@ chạy (gọi server MCP, ví dụ tavily/notion) → dòng `Dùng:` phải kế
 này để biết task nào buộc phải do Claude tự làm, không giao sub-agent thiếu MCP.
 
 ## Px — Log & test bắt buộc
+Phase này bắt buộc **chỉ khi việc này có runtime** — tức có ít nhất một task tạo hoặc sửa
+file mã nguồn chạy được. Không có runtime (chỉ sửa tài liệu, khuôn mẫu, cấu hình) → bỏ
+task log, giữ task test, và ghi đúng một dòng `Log: BỎ — <lý do một câu>`.
+
 - [ ] **Tx.1** Log service bật mặc định (timestamp, mức log, tắt được qua config) — Test: <...>
 - [ ] **Tx.2** Unit test cho từng thành phần, chạy bằng một lệnh — Test: <lệnh>
 

@@ -2,6 +2,36 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.0 — 2026-08-09
+
+Cắt token thừa: bỏ 6 chỗ workflow bắt chép lại thứ đã có, hoặc bắt làm step không sinh giá
+trị. Không đụng gate duyệt — quick vẫn 1 cổng, full vẫn 2 cổng (spec + plan).
+
+- **Bảng kiểm kê năng lực thôi chép cả 242 skill**: chỉ ghi một dòng cho mỗi skill `DÙNG`
+  hoặc `NỀN`, cộng đúng một dòng tổng `Đã xét <N> skill khác — khác lĩnh vực`. Vẫn phải RÀ
+  hết như cũ; chỉ cắt phần ghi ra. Bỏ mục "Bảng quá dài" vì luật mới đã bao.
+- **Bỏ mục `## Năng lực → task` trong plan**: đây là bản chép thứ ba của cùng một bảng
+  (brief → spec §3b → plan). Ánh xạ năng lực → task vẫn kiểm được bằng khối hợp đồng.
+- **Phase log & test thành có điều kiện**: chỉ bắt buộc khi việc có runtime (plan có ít
+  nhất một task tạo/sửa file mã nguồn chạy được). Không có runtime → ghi đúng một dòng
+  `Log: BỎ — <lý do>` ở spec §4 và plan.
+- **Hợp đồng skill còn 5 trường**: bỏ `Nạp`, câu chỉ đường `SKILL.md` cho agent ngoài dời
+  vào trường `Để`. `doc_lint.CONTRACT_FIELDS` cập nhật theo.
+- **`phases-doc` thôi sinh mục chi tiết từng phase** (nó lặp lại SKILL.md của chính phase
+  đó): `phases.md` 89 → 33 dòng. Checklist đầy đủ lấy bằng `tdq_state.py next`.
+- **Câu chốt vòng interview thành có điều kiện**: chỉ hỏi "Bạn muốn bổ sung thêm gì không?"
+  khi vòng đó thật sự có câu hỏi; không có thì đi thẳng bước sau.
+- **`docs/claude-md-mau.md` là nguồn sự thật duy nhất cho `~/.claude/CLAUDE.md`**: đã hợp
+  nhất phần chỉ có ở bản live (plugin đã bật sẵn, mem0), cắt chi tiết đã nằm ở file đích,
+  rồi đồng bộ. Hai file nay `diff` rỗng — 4.243 → 3.460 byte.
+
+### Phá vỡ tương thích
+
+- Plan cũ còn dòng `- Nạp:` trong khối hợp đồng vẫn lint qua (trường thừa không bị bắt),
+  nhưng khuôn mới không sinh ra nó nữa.
+- `phases-doc` không còn in mục `## <phase>`; script nào parse output đó phải chuyển sang
+  đọc bảng hoặc khối "Lệnh nguyên văn".
+
 ## 0.10.0 — 2026-08-09
 
 Cắt over-engineer và over-test khỏi chính bộ workflow. Bản này **xoá tính năng**, đọc kỹ

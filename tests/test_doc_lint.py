@@ -13,6 +13,9 @@ from helper import ROOT
 
 LINT = os.path.join(ROOT, "scripts", "doc_lint.py")
 
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import doc_lint  # noqa: E402  — đọc hằng CONTRACT_FIELDS trực tiếp
+
 
 class LintBase(unittest.TestCase):
     def setUp(self):
@@ -183,12 +186,22 @@ PLAN_CONTRACT_OK = """# PLAN — X
 
 - [ ] **T1.1** Vẽ biểu đồ — Test: chạy lệnh Kiểm
   - Dùng: `dataviz`
-  - Nạp: gọi skill `dataviz` TRƯỚC bước đỏ của task này.
-  - Để: chọn dạng biểu đồ.
+  - Để: chọn dạng biểu đồ, nạp skill TRƯỚC bước đỏ.
   - Ra: `src/chart.tsx`.
   - Kiểm: `test -f src/chart.tsx`
   - Không dùng cho: layout trang.
 """
+
+
+class ContractFieldsTest(unittest.TestCase):
+    """Hợp đồng skill còn 5 trường: `Dùng` + 4 trường bắt buộc (bỏ `Nạp` 2026-08-09)."""
+
+    def test_nap_khong_con_bat_buoc(self):
+        self.assertNotIn("Nạp", doc_lint.CONTRACT_FIELDS)
+
+    def test_dung_bon_truong_bat_buoc(self):
+        self.assertEqual(("Để", "Ra", "Kiểm", "Không dùng cho"),
+                         doc_lint.CONTRACT_FIELDS)
 
 
 class R8Test(LintBase):
