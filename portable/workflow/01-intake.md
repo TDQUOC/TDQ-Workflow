@@ -65,15 +65,22 @@ Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [quick-lane.md](re
    Giao engine ngoài (user yêu cầu hoặc bạn đề xuất) → thêm đúng 1 dòng máy-đọc
    `Thực thi external: engine=<codex|agy> · khó=<slug>`; luật chọn engine/model và
    luật cấm external cho task `(mcp)`: [quick-lane.md](references/quick-lane.md).
-4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
-5. User duyệt → chạy `python3 scripts/tdq_state.py approve quick [--mode external] --by "<nguyên văn>"` (chỉ thêm `--mode external` khi user nói external).
+4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (giao engine ngoài: "duyệt quick external" · bỏ QC: "duyệt quick không QC") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
+5. User duyệt → chạy `python3 scripts/tdq_state.py approve quick [--mode external] [--no-qc] --by "<nguyên văn>"` (`--mode external` khi user nói external; `--no-qc` CHỈ khi user nói rõ bỏ QC — user im lặng về QC thì QC vẫn BẬT).
 6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code —
    quick external thì dòng `Thực thi external:` phải nằm trong working log ở bước này.
-7. Implement end-to-end trong 1 turn, chạy validate, báo kết quả ngắn gọn.
+7. Implement end-to-end trong 1 turn, rồi chạy **QC 3 hạng mục** theo
+   [quick-lane.md](references/quick-lane.md) mục "QC ở quick" (mặc định BẬT) và ghi bằng
+   chứng vào mục `## QC` của plan. `quick_qc_skipped = true` → mục `## QC` chỉ có 1 dòng
+   `BỎ theo yêu cầu user: "<nguyên văn>"`.
    Quick external: KHÔNG tự code — làm đúng "Nhánh external" của
    [04-build.md](04-build.md) (worktree `tdq-ext-<slug>`, gói task, chạy nền
    external_task.py, verify, diff-check, merge), fallback tự làm khi engine hỏng.
-8. Append kết quả vào working log; hỏi user có commit không.
+8. **Vòng fix — BẮT BUỘC, kể cả khi user bỏ QC.** QC FAIL hoặc thấy bug → thêm task vào
+   plan dưới `## QC vòng N — fix`, fix red→green, rồi chạy lại ĐỦ 3 hạng mục.
+   Có trần 3 vòng — vượt trần thì DỪNG, báo user, đề xuất chuyển lane full, giữ nguyên phase.
+   Lý do trần: quá 3 vòng nghĩa là việc không còn "quick", cần phân tích lại ở lane full.
+9. Append kết quả vào working log; hỏi user có commit không.
 
-Xong khi: `quick_approved = true`, log đã ghi, việc đã validate xong.
+Xong khi: `quick_approved = true`, log đã ghi, mục `## QC` đã có, không còn test đỏ.
 Bước kế tiếp: hỏi user về commit; hết request thì `python3 scripts/tdq_state.py set phase=idle`.

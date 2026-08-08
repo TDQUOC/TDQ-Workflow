@@ -2,6 +2,27 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.9.0 — 2026-08-07
+
+Siết QC và vòng fix cho lane quick. Trước bản này lane quick chỉ nói "chạy validate" và
+không có luật nào cho tình huống gặp bug — `qc.md` cùng luật `## QC vòng N — fix` chỉ
+`tdq-build` (lane full) nạp.
+
+- QC quick = 3 hạng mục, **mặc định BẬT**: test từng task pass · đối chiếu TỪNG dòng
+  Definition of Done · biên và đường lỗi cơ bản. Bằng chứng append vào mục `## QC` của
+  chính file plan, không tạo file `qc/`. Nhẹ hơn full đúng 4 hạng mục (full-suite toàn
+  repo, log service, không-placeholder, hợp đồng skill).
+- Vòng fix **BẮT BUỘC**, không opt-out được kể cả khi user bỏ QC · task fix ghi dưới
+  `## QC vòng N — fix`, fix xong chạy lại đủ 3 hạng mục · **trần 3 vòng** — vượt trần thì
+  DỪNG, báo user, đề xuất chuyển lane full, giữ `phase=implement`.
+- Cờ mới `approve quick --no-qc` là đường opt-out DUY NHẤT, chỉ hợp lệ với `quick` và
+  bắt buộc kèm `--by "<nguyên văn câu user>"`; ghi field state `quick_qc_skipped` và log
+  1 dòng có timestamp qua `_info` (stderr, tắt được bằng `TDQ_LOG=0`).
+- Luật đồng bộ trên 5 nguồn sự thật: `tdq-intake/references/quick-lane.md`,
+  `tdq-intake/SKILL.md`, `scripts/tdq_state.py` (`PHASE_TABLE["quick"]`),
+  `portable/workflow/**`, và 2 bản `phases.md` sinh bằng `phases-doc`.
+- Thêm `tests/test_quick_qc.py` (15 test) khoá cứng parity 5 nguồn.
+
 ## 0.8.0 — 2026-08-05
 
 Audit toàn workflow (skills/scripts/hooks/rules) + 16 đề xuất P0/P1 áp dụng. Dedupe

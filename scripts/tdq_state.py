@@ -32,7 +32,8 @@ VALID_LANES = {"quick", "full", None}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}
 
 USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | init <slug> [quick|full] | "
-         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent|external] [--by \"<câu user>\"] | "
+         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent|external] "
+         "[--no-qc (chỉ quick, phải kèm --by)] [--by \"<câu user>\"] | "
          "reset | phases-doc")
 
 EXIT_SYNTAX = 2
@@ -61,6 +62,9 @@ def default_state():
         "quick_approved": False,
         "quick_approved_at": None,
         "quick_approved_by": None,
+        # Lane quick: QC 3 hạng mục mặc định BẬT; True = user opt-out có chủ đích qua
+        # `approve quick --no-qc`. Người bỏ lấy từ quick_approved_by (cùng câu duyệt).
+        "quick_qc_skipped": False,
         "implement_mode": None,
         "updated_at": None,
     }
@@ -528,9 +532,10 @@ PHASE_TABLE = {
     },
     "quick": {
         "entry": "lane = quick",
-        "action": "Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → rồi mới implement",
-        # A26: khớp intake — quick cũng có biến thể external ("duyệt quick external")
-        "cmd": "python3 scripts/tdq_state.py approve quick [--mode external] --by \"<nguyên văn câu user>\"",
+        "action": "Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC 3 hạng mục (mặc định BẬT) → vòng fix nếu FAIL",
+        # A26: khớp intake — quick có biến thể external ("duyệt quick external")
+        # và biến thể bỏ QC ("duyệt quick không QC" → --no-qc, phải kèm --by).
+        "cmd": "python3 scripts/tdq_state.py approve quick [--mode external] [--no-qc] --by \"<nguyên văn câu user>\"",
         "checklist": [
             "Phân tích: đọc code liên quan; có ẩn số bên ngoài (thư viện, API, phiên bản) "
             "→ web search qua tavily-primary trước khi viết gì",
@@ -539,15 +544,23 @@ PHASE_TABLE = {
             "Viết mini-spec/plan GỘP vào docs/tdq/plan/<slug>.md (≤40 dòng: scope in/out, "
             "task có test, DoD) rồi trình tóm tắt ≤10 dòng trong chat, "
             "kèm 1 dòng 'Năng lực: <skill sẽ DÙNG hoặc không có>'",
-            "In: ➤ Duyệt: nhắn \"duyệt quick\" (giao engine ngoài: \"duyệt quick external\") "
-            "· Góp ý: nhắn trực tiếp — rồi DỪNG",
-            "User duyệt → chạy lệnh approve ở trên (chỉ thêm --mode external khi user nói external)",
+            "In: ➤ Duyệt: nhắn \"duyệt quick\" (giao engine ngoài: \"duyệt quick external\" "
+            "· bỏ QC: \"duyệt quick không QC\") · Góp ý: nhắn trực tiếp — rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên (--mode external khi user nói external; "
+            "--no-qc CHỈ khi user nói rõ bỏ QC, im lặng về QC = CÓ QC)",
             "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
-            "Implement + validate, rồi cập nhật working log",
+            "Implement từng task red→green, tick [x] ngay khi task pass",
+            "QC 3 hạng mục — test từng task pass · đối chiếu TỪNG dòng DoD · biên và đường "
+            "lỗi cơ bản (input rỗng, sai kiểu, file thiếu) — ghi bằng chứng vào mục ## QC "
+            "của plan; quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng "
+            "'BỎ theo yêu cầu user: \"<nguyên văn>\"'",
+            "QC FAIL hoặc thấy bug → BẮT BUỘC fix (không opt-out được, kể cả khi bỏ QC): "
+            "thêm task vào mục ## QC vòng N — fix của plan, fix xong chạy lại ĐỦ 3 hạng mục; "
+            "trần 3 vòng, vượt trần thì DỪNG báo user và đề xuất chuyển lane full",
             "Đóng việc: chạy `python3 scripts/tdq_state.py set phase=idle` — terminal của lane quick",
         ],
-        "done_when": "quick_approved = true, log đã ghi, việc đã validate, phase đã về idle",
-        "forbidden": "Implement trước khi ghi working log",
+        "done_when": "quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle",
+        "forbidden": "Implement trước khi ghi working log; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user",
     },
 }
 
@@ -849,15 +862,22 @@ def _unfinished(state):
 
 
 def _parse_approve_args(rest):
-    """-> (target, mode, by). Chỉ lỗi khi cú pháp thật sự sai."""
+    """-> (target, mode, by, no_qc). Chỉ lỗi khi cú pháp thật sự sai."""
     if not rest:
         _fail("Thiếu đối tượng duyệt (spec|plan|quick).")
-    target, mode, by = rest[0], None, None
+    target, mode, by, no_qc = rest[0], None, None, False
     if target not in APPROVE_TARGETS:
         _fail(f"Đối tượng duyệt không hợp lệ: {target} (spec|plan|quick)")
     i = 1
     while i < len(rest):
         flag = rest[i]
+        if flag == "--no-qc":
+            # QC ở quick mặc định BẬT — chỉ lane quick mới có đường opt-out này.
+            if target != "quick":
+                _fail(f"Cờ --no-qc chỉ dùng cho `approve quick`, không dùng cho {target}.")
+            no_qc = True
+            i += 1
+            continue
         if flag in ("--mode", "--by"):
             if i + 1 >= len(rest):
                 _fail(f"Thiếu giá trị cho {flag}")
@@ -876,7 +896,10 @@ def _parse_approve_args(rest):
             i += 1
             continue
         _fail(f"Tham số không hợp lệ: {flag}")
-    return target, mode, by
+    if no_qc and not by:
+        # Bỏ QC phải để lại nguyên văn câu user, nếu không thì mất dấu vết ai bỏ và vì sao.
+        _fail('Bỏ QC phải kèm --by "<nguyên văn câu user>" để còn dấu vết.')
+    return target, mode, by, no_qc
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -899,7 +922,7 @@ def _file_changed_since_approval(cwd, state, target):
 def _cli_approve(cwd, rest):
     """Ghi nhận việc user đã duyệt. Không phải gate: cảnh báo khi lệch nhưng
     VẪN ghi và luôn exit 0 — bế tắc do gate là thứ 0.2.0 loại bỏ."""
-    target, mode, by = _parse_approve_args(rest)
+    target, mode, by, no_qc = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("Chưa có state — dựng state mặc định rồi ghi nhận duyệt. Nên chạy init trước.")
@@ -945,7 +968,13 @@ def _cli_approve(cwd, rest):
         # A6: quick không đi qua bảng phase — đẩy implement để `set phase=idle`
         # lúc đóng việc trở thành terminal phân biệt được với idle trước duyệt.
         state["phase"] = "implement"
+        state["quick_qc_skipped"] = no_qc
     save(cwd, state, expect_updated_at=stamp)
+    if no_qc:
+        # Dòng có timestamp chỉ ra từ _info (stderr, tắt được bằng TDQ_LOG=0);
+        # dòng ✅ stdout bên dưới không mang timestamp nên không dùng cho vết log này.
+        _info(f'Ghi nhận user BỎ QC cho quick theo yêu cầu: "{by}". '
+              "Vòng fix vẫn BẮT BUỘC: test đỏ hoặc bug đã biết thì vẫn phải fix.")
     if not by:
         _warn("Thiếu --by \"<nguyên văn câu user>\" — nên ghi lại để còn đối chiếu ai duyệt cái gì.")
     extra = f", mode {mode}" if mode else ""
