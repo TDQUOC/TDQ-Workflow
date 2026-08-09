@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786251123.9790127,
-    "ast_hash": "7cb5c26ba92d32144a8e1baf0964b478",
-    "semantic_hash": "7cb5c26ba92d32144a8e1baf0964b478"
+    "mtime": 1786255359.3718827,
+    "ast_hash": "0e4ded1518faf33dc79dd6e9cd4f7d34",
+    "semantic_hash": "0e4ded1518faf33dc79dd6e9cd4f7d34"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -150,13 +150,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786212114.1725175,
-    "ast_hash": "ddcdf5f59ddfa3feb5ced857c8e7add4",
+    "mtime": 1786254818.5852122,
+    "ast_hash": "225ffb45dc5b0770b6a19bd450e87877",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
-    "mtime": 1786204031.0460582,
-    "ast_hash": "242b9a1f9740df14ef9ae1d837210ca1",
+    "mtime": 1786254818.5853276,
+    "ast_hash": "de1f1c68251a92357f4526c8d1b2808d",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786251137.5338612,
-    "ast_hash": "4a7bbfac348c191d40ebb856cc25535e",
+    "mtime": 1786255359.37233,
+    "ast_hash": "b5bf0306605093f401323d8c78fb6381",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786249773.3885696,
-    "ast_hash": "8ec5f0e168f07b88dedf84b1ca4942a3",
+    "mtime": 1786254612.577519,
+    "ast_hash": "4eeb437f80c59d893a8ccf9fca206f3b",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -520,8 +520,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-build/SKILL.md": {
-    "mtime": 1786204379.6936781,
-    "ast_hash": "26a5b625b2df62032903309d3cd36782",
+    "mtime": 1786254818.5850523,
+    "ast_hash": "62f2c6b1900f613d2913a6a899e1ec2d",
     "semantic_hash": ""
   },
   "skills/tdq-build/references/qc.md": {
@@ -1885,8 +1885,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-09.md": {
-    "mtime": 1786251178.2305114,
-    "ast_hash": "eb207d4ef223f9c506b4b43a1c2a79ef",
+    "mtime": 1786255397.401489,
+    "ast_hash": "9c82e969a96c41c3df22cd7b566dc00d",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/context-budget.md": {
@@ -1927,6 +1927,16 @@
   "docs/tdq/plan/2026-08-09-sua-mo-ta-skill-inventory.md": {
     "mtime": 1786250775.8213127,
     "ast_hash": "c48806bf9f4cc2ae3c7699f8274ad6b4",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-09-trigger-tieng-viet.md": {
+    "mtime": 1786254469.304642,
+    "ast_hash": "5cc65a7560deb2c5fbc000b8d89aaf86",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-09-trigger-tieng-viet.md": {
+    "mtime": 1786254884.7322822,
+    "ast_hash": "d4936b57af841c2e585098c2489c9b66",
     "semantic_hash": ""
   }
 }
