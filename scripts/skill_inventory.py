@@ -19,13 +19,26 @@ còn lại); exit 2 chỉ khi sai cú pháp lệnh — cùng hợp đồng với
 import glob
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tdq_state  # noqa: E402 — dùng chung log service (_warn, TDQ_LOG, timestamp)
 
 DESC_MAX = 60
-FRONTMATTER_SCAN_LINES = 15
+TRIGGER_TAIL = 50   # số ký tự lấy kể từ chỗ cụm trigger, khi trigger nằm ngoài DESC_MAX
+# Cụm trigger bắt đầu ngay TRƯỚC ngưỡng vẫn bị ngưỡng cắt ngang (đo thật:
+# `huggingface-trackio` có `Use when` ở ký tự 58, ô cụt ở `Us`). Lùi điểm dò lại một
+# quãng để bắt cả ca vắt ngưỡng; phần chồng lấn tối đa bằng đúng quãng lùi này.
+TRIGGER_LOOKBACK = 15
+# Description skill viết theo khuôn "câu 1 = nó là gì, câu 2 = dùng khi nào". Đo trên 268
+# SKILL.md: 146/211 skill có cụm trigger nằm SAU ký tự thứ 60, nên cắt cụt làm mất đúng
+# phần cần cho phán quyết DÙNG/KHÔNG. `_condense` giữ đầu + ghép thêm khúc trigger.
+TRIGGER_RE = re.compile(r"use when|use this|whenever|when the user|trigger", re.I)
+FRONTMATTER_MAX_LINES = 80
+# YAML block scalar: `description: |` và biến thể. Trước 2026-08-09 parser đọc `|` như
+# nội dung → 18 skill (firecrawl, tavily, mongodb-search-and-ai) rỗng mô tả.
+BLOCK_MARKERS = ("|", "|-", "|+", ">", ">-", ">+")
 REMINDER = (
     "— Bảng trên chỉ gồm skill trên đĩa.",
     "— CHÉP THÊM các skill built-in đang thấy trong context "
@@ -54,20 +67,55 @@ def _clean(text):
 
 
 def _frontmatter(path):
-    """(name, description) từ frontmatter; lỗi đọc → (None, None) + cảnh báo."""
+    """(name, description) từ frontmatter; lỗi đọc → (None, None) + cảnh báo.
+
+    Description nhiều dòng (block scalar `|`, `>`, hoặc plain scalar thụt vào) được nối
+    thành một dòng: gom mọi dòng thụt vào cho tới khoá cấp 0 kế tiếp hoặc `---` đóng.
+    """
     name = desc = ""
     try:
         with open(path, encoding="utf-8") as f:
-            head = f.read(16384).splitlines()[:FRONTMATTER_SCAN_LINES]
+            head = f.read(16384).splitlines()[:FRONTMATTER_MAX_LINES]
     except OSError as exc:
         tdq_state._warn(f"skill_inventory: không đọc được {path} ({type(exc).__name__})")
         return None, None
-    for line in head:
+    if head and head[0].strip() == "---":
+        head = head[1:]
+    i = 0
+    while i < len(head):
+        line = head[i]
+        if line.strip() == "---":
+            break
         if line.startswith("name:"):
             name = _clean(line[5:].strip())
         elif line.startswith("description:"):
-            desc = _clean(line[12:].strip().strip('"'))
+            rest = line[12:].strip()
+            parts = [] if rest in BLOCK_MARKERS else [rest]
+            i += 1
+            while i < len(head) and head[i].strip() != "---" and \
+                    (not head[i].strip() or head[i][:1] in (" ", "\t")):
+                parts.append(head[i].strip())
+                i += 1
+            desc = _clean(" ".join(p for p in parts if p).strip().strip('"'))
+            continue
+        i += 1
     return name or _clean(os.path.basename(os.path.dirname(path))), desc
+
+
+def _condense(desc):
+    """Rút gọn description cho một ô bảng: giữ đầu, ghép thêm khúc trigger nếu nó ở xa.
+
+    `|` đổi thành `/` — bảng in ra tách cột bằng `|`, để nguyên là vỡ số cột.
+    """
+    text = " ".join((desc or "").split()).replace("|", "/")
+    if len(text) <= DESC_MAX:
+        return text
+    found = TRIGGER_RE.search(text, DESC_MAX - TRIGGER_LOOKBACK)
+    if not found:
+        return text[:DESC_MAX]
+    # Trigger vắt ngưỡng: cắt đầu ngay TRƯỚC nó, khỏi lặp cụm ở cả hai bên dấu nối.
+    head = text[:min(DESC_MAX, found.start())].rstrip()
+    return f"{head} … {text[found.start():found.start() + TRIGGER_TAIL]}"
 
 
 def _scan_skill_dir(root):
@@ -120,7 +168,7 @@ def _plugin_skill_dirs(home, project):
 
 
 def inventory(project):
-    """[(name, desc≤60, nguồn)] — trùng tên thì nguồn quét trước thắng."""
+    """[(name, desc đã rút gọn, nguồn)] — trùng tên thì nguồn quét trước thắng."""
     home = os.path.expanduser("~")
     rows, seen = [], set()
 
@@ -128,7 +176,7 @@ def inventory(project):
         if name in seen:
             return
         seen.add(name)
-        rows.append((name, (desc or "")[:DESC_MAX], source))
+        rows.append((name, _condense(desc), source))
 
     for name, desc in _scan_skill_dir(os.path.join(home, ".claude", "skills")):
         add(name, desc, "user")

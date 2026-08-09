@@ -2,6 +2,24 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.1 — 2026-08-09
+
+Sửa bảng kiểm kê năng lực (B0) mất tín hiệu định tuyến. Chỉ đụng
+`scripts/skill_inventory.py` và test của nó; không đổi khuôn bảng, gate duyệt hay lint.
+
+- **Đọc được `description` nhiều dòng**: parser cũ coi dấu YAML block scalar (`|`, `|-`,
+  `>`, `>-`) là nội dung nên 56/268 skill ra ô vô nghĩa (trọn cụm firecrawl, tavily,
+  adobe, base44/datarobot). Nay gom mọi dòng thụt vào tới khoá cấp 0 kế tiếp, trần 80 dòng
+  frontmatter. 56 → 0 ô vô nghĩa.
+- **Rút gọn có nhận biết cụm trigger**: cắt cụt 60 ký tự làm mất câu "dùng khi nào" ở
+  146/211 skill. Nay giữ đầu rồi ghép ` … ` + 50 ký tự kể từ cụm trigger
+  (`use when|use this|whenever|when the user|trigger`), dò lùi 15 ký tự để bắt cả ca cụm
+  nằm vắt ngưỡng. Giữ được trigger 24,6% → 100%.
+- **Ký tự `|` trong description đổi thành `/`**: 18 dòng vỡ số cột → 0.
+
+Chi phí: output kiểm kê 6.199 → 9.264 token mỗi lần chạy (+49,4%); quy về đơn giá là
+8,4 → 22,8 skill-có-trigger trên mỗi 1k token (+171%). Ô dài nhất 113 ký tự.
+
 ## 0.11.0 — 2026-08-09
 
 Cắt token thừa: bỏ 6 chỗ workflow bắt chép lại thứ đã có, hoặc bắt làm step không sinh giá

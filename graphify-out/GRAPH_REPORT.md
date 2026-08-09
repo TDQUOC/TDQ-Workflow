@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-09)
 
 ## Corpus Check
-- 384 files · ~326,397 words
+- 384 files · ~326,488 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3138 nodes · 3879 edges · 320 communities (266 shown, 54 thin omitted)
+- 3285 nodes · 4006 edges · 340 communities (284 shown, 56 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1135d987`
+- Built from commit: `1244a5c3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -330,9 +330,29 @@
 - Mã nhắc của hook
 - QC — Cắt token thừa trong TDQ workflow
 - edit_gate.py
+- PLAN — Full claude export (multi-repo local dependency)
+- PLAN — Skill clone-setting-to-codex
+- SPEC — Skill clone-setting-to-codex
+- SPEC — Full claude export (multi-repo local dependency)
+- Knowledge — 2026-08-05-clone-setting-codex
+- Research: clone-setting-to-codex — cấu trúc/khả năng cấu hình thật của Codex CLI (2026)
+- Knowledge — 2026-08-05-full-claude-export
+- Request: clone-setting-codex
+- Brief — clone-setting-codex (phase 2 đào sâu)
+- Brief — clone-setting-codex (phase 2 đào sâu)
+- Mini-plan — Rebuild bundle export để đồng bộ (quick)
+- Mini-plan — Validate lại bundle export (quick)
+- Hỏi–đáp: clone-setting-codex
+- QC — Full claude export (multi-repo local dependency)
+- Câu hỏi — 2026-08-05-full-claude-export
+- Request: full claude export
+- Request — 2026-08-05-rebuild-sync-export
+- Request — 2026-08-05-validate-export
+- reports/2026-08-05-full-claude-export.md
+- 2026-08-05-clone-setting-codex/report.md
 
 ## God Nodes (most connected - your core abstractions)
-1. `Working log 2026-08-05` - 38 edges
+1. `Working log 2026-08-05` - 53 edges
 2. `Working Log — 2026-08-04` - 30 edges
 3. `write_state()` - 30 edges
 4. `TestState` - 30 edges
@@ -358,7 +378,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (320 total, 54 thin omitted)
+## Communities (340 total, 56 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.05
@@ -393,8 +413,8 @@ Cohesion: 0.05
 Nodes (38): Definition of Done, Nguyên tắc thực thi, Phase 1 — CLI ghi nhận duyệt, Phase 2 — Hook chỉ còn nhắc, Phase 3 — Skills & tài liệu, Phase 4 — Nghiệm thu & đóng gói, PLAN — TDQ 0.2.0: hard gate → nhắc nhở, duyệt bằng chat tự nhiên, 1. Unit / e2e (+30 more)
 
 ### Community 8 - "Working log 2026-08-05"
-Cohesion: 0.05
-Nodes (38): 00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane), 00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai, 01:10 — Chốt interview vòng 2, viết knowledge + spec, 01:25 — User duyệt spec → viết plan (6 phase / 21 task), 02:04, 02:21, 02:27, 03:23 (+30 more)
+Cohesion: 0.04
+Nodes (53): 00:43 — Mở request tối ưu token vòng 2 (intake, chờ chốt lane), 00:52 — Phân tích vòng 2: đo lại chi phí, phát hiện token_audit đếm sai, 01:10 — Chốt interview vòng 2, viết knowledge + spec, 01:25 — User duyệt spec → viết plan (6 phase / 21 task), 02:04, 02:21, 02:27, 03:23 (+45 more)
 
 ### Community 9 - "SPEC — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn"
 Cohesion: 0.05
@@ -1357,8 +1377,8 @@ Cohesion: 0.50
 Nodes (3): Bảng định tuyến, Giao thức dùng, Định tuyến việc → plugin
 
 ### Community 272 - "Working log 2026-08-09"
-Cohesion: 0.25
-Nodes (7): 00:15 — đóng request giảm over-engineer workflow, 00:25 — đồng bộ CLAUDE.md, bump 0.10.0, commit, 00:52, 00:56, 00:58, 01:13, Working log 2026-08-09
+Cohesion: 0.22
+Nodes (8): 00:15 — đóng request giảm over-engineer workflow, 00:25 — đồng bộ CLAUDE.md, bump 0.10.0, commit, 00:52, 00:56, 00:58, 01:13, 01:28 — Bump 0.11.0 và commit, Working log 2026-08-09
 
 ### Community 306 - "Hiểu & kiến thức"
 Cohesion: 0.18
@@ -1404,25 +1424,97 @@ Nodes (4): Ghi nhận duyệt, KHÔNG phải câu duyệt (phản ví dụ), Là
 Cohesion: 0.50
 Nodes (4): Bảng 5 mã (danh sách đóng), Hook nhìn thấy thay đổi bằng cách nào, Mã nhắc của hook, Điểm chặn duy nhất
 
+### Community 320 - "PLAN — Full claude export (multi-repo local dependency)"
+Cohesion: 0.17
+Nodes (11): Definition of Done, Năng lực → task, P1 — Config danh sách repo local, P2 — Multi-repo clone trong `claude_export.py`, P3 — Tổng quát `skills/` + copy LaunchAgent plist, P4 — Manifest/README/check hỗ trợ N repo, P5 — Log & test bắt buộc, P6 — Build thật + QC trên máy nguồn (+3 more)
+
+### Community 321 - "PLAN — Skill clone-setting-to-codex"
+Cohesion: 0.18
+Nodes (10): Definition of Done, Năng lực → task, P1 — Scaffold skill, P2 — Script codex_clone.py: khung + convert 3 loại, P3 — Subcommand apply + build, P4 — Log & test bắt buộc, P5 — Chạy thật + review + QC, PLAN — Skill clone-setting-to-codex (+2 more)
+
+### Community 322 - "SPEC — Skill clone-setting-to-codex"
+Cohesion: 0.18
+Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
+
+### Community 323 - "SPEC — Full claude export (multi-repo local dependency)"
+Cohesion: 0.18
+Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
+
+### Community 324 - "Knowledge — 2026-08-05-clone-setting-codex"
+Cohesion: 0.20
+Nodes (9): Kiểm cổng, Knowledge — 2026-08-05-clone-setting-codex, Lộ trình, Nguồn, Năng lực dùng được, Phương án đã loại, Quyết định đã chốt, Research (2 phase, 4 agent, 12 finding sau dedup — nguồn chính thức OpenAI trừ khi (+1 more)
+
+### Community 325 - "Research: clone-setting-to-codex — cấu trúc/khả năng cấu hình thật của Codex CLI (2026)"
+Cohesion: 0.20
+Nodes (9): Câu 1 — config.toml schema chính thức, vị trí, project-level config, Câu 2 — file instruction tương đương CLAUDE.md, Câu 3 — khái niệm "skill" tương đương Claude Code Skills, Câu 4 — "plugin" (`codex plugin add/list/marketplace`), Câu 5 — hooks chính thức, GA hay experimental, Câu 6 — MCP server config format thật, so với Claude Code, Research: clone-setting-to-codex — cấu trúc/khả năng cấu hình thật của Codex CLI (2026), Truy vấn đã chạy (+1 more)
+
+### Community 326 - "Knowledge — 2026-08-05-full-claude-export"
+Cohesion: 0.22
+Nodes (8): Kiểm cổng, Knowledge — 2026-08-05-full-claude-export, Lộ trình, Nguồn, Năng lực dùng được, Phương án đã loại, Quyết định đã chốt, Đã đọc
+
+### Community 327 - "Request: clone-setting-codex"
+Cohesion: 0.33
+Nodes (5): Chỗ chưa rõ (cần interview/research), Cách hiểu đầu tiên, Nguyên văn yêu cầu, Phạm vi đoán (chưa chốt), Request: clone-setting-codex
+
+### Community 328 - "Brief — clone-setting-codex (phase 2 đào sâu)"
+Cohesion: 0.33
+Nodes (5): Brief — clone-setting-codex (phase 2 đào sâu), Bối cảnh, Hướng từ phase 1 (route đã chốt cho phase 2), Luật evidence-only, Yêu cầu output
+
+### Community 329 - "Brief — clone-setting-codex (phase 2 đào sâu)"
+Cohesion: 0.33
+Nodes (5): Brief — clone-setting-codex (phase 2 đào sâu), Bối cảnh, Hướng từ phase 1 (route đã chốt cho phase 2), Luật evidence-only, Yêu cầu output
+
+### Community 330 - "Mini-plan — Rebuild bundle export để đồng bộ (quick)"
+Cohesion: 0.40
+Nodes (4): DoD, Mini-plan — Rebuild bundle export để đồng bộ (quick), Phạm vi, Task
+
+### Community 331 - "Mini-plan — Validate lại bundle export (quick)"
+Cohesion: 0.40
+Nodes (4): DoD, Mini-plan — Validate lại bundle export (quick), Phạm vi, Task
+
+### Community 332 - "Hỏi–đáp: clone-setting-codex"
+Cohesion: 0.40
+Nodes (4): Chốt phạm vi, Hỏi–đáp: clone-setting-codex, Vòng 1 (20:00, 2026-08-05), Vòng 2 (20:00, 2026-08-05) — xung đột 2.B × 6.B
+
+### Community 333 - "QC — Full claude export (multi-repo local dependency)"
+Cohesion: 0.50
+Nodes (3): Cộng thêm (ngoài bảng Q1–Q6), Kết luận, QC — Full claude export (multi-repo local dependency)
+
+### Community 334 - "Câu hỏi — 2026-08-05-full-claude-export"
+Cohesion: 0.50
+Nodes (3): Câu hỏi — 2026-08-05-full-claude-export, Rà soát theo yêu cầu bổ sung (không cần hỏi thêm — đọc trực tiếp `~/.claude`), Vòng 1
+
+### Community 335 - "Request: full claude export"
+Cohesion: 0.50
+Nodes (3): Hiểu ban đầu, Nguyên văn, Request: full claude export
+
+### Community 336 - "Request — 2026-08-05-rebuild-sync-export"
+Cohesion: 0.50
+Nodes (3): Cách hiểu ban đầu, Nguyên văn user, Request — 2026-08-05-rebuild-sync-export
+
+### Community 337 - "Request — 2026-08-05-validate-export"
+Cohesion: 0.50
+Nodes (3): Cách hiểu ban đầu, Nguyên văn user, Request — 2026-08-05-validate-export
+
 ## Knowledge Gaps
-- **1491 isolated node(s):** `Phá vỡ tương thích`, `Phá vỡ tương thích`, `0.9.0 — 2026-08-07`, `0.8.0 — 2026-08-05`, `0.7.0 — 2026-08-05` (+1486 more)
+- **1600 isolated node(s):** `00:15 — đóng request giảm over-engineer workflow`, `00:25 — đồng bộ CLAUDE.md, bump 0.10.0, commit`, `00:52`, `00:56`, `00:58` (+1595 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **54 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **56 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `write_state()` connect `.stop` to `helper.py`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `Phá vỡ tương thích`, `Phá vỡ tương thích`, `0.9.0 — 2026-08-07` to the rest of the system?**
-  _1491 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `TurnLedgerTest` connect `TurnLedgerTest` to `helper.py`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Why does `CheckTest` connect `CheckTest` to `test_claude_export.py`, `.build`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **What connects `00:15 — đóng request giảm over-engineer workflow`, `00:25 — đồng bộ CLAUDE.md, bump 0.10.0, commit`, `00:52` to the rest of the system?**
+  _1600 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05468215994531784 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**
   _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
 - **Should `.write` be split into smaller, more focused modules?**
   _Cohesion score 0.07086197778952935 - nodes in this community are weakly interconnected._
-- **Should `doc_lint.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.0593990216631726 - nodes in this community are weakly interconnected._
-- **Should `git` be split into smaller, more focused modules?**
-  _Cohesion score 0.05365402405180388 - nodes in this community are weakly interconnected._

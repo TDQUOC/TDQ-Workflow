@@ -117,6 +117,69 @@ class ScanDirsTest(InventoryBase):
         self.assertIn("| project", out)
 
 
+class DescriptionTest(InventoryBase):
+    """Mô tả phải mang đủ tín hiệu định tuyến và không phá số cột của bảng."""
+
+    def row(self, out, name):
+        for line in out.splitlines():
+            if line.startswith(f"{name} |"):
+                return line
+        self.fail(f"không thấy dòng của skill {name} trong:\n{out}")
+
+    def test_block_scalar_description_read(self):
+        """`description: |` nhiều dòng → nối thành một dòng, không còn ô rỗng."""
+        self.write("home/.claude/skills/blocky/SKILL.md",
+                   "---\nname: blocky\ndescription: |\n  Dòng một của mô tả.\n"
+                   "  Dòng hai nói thêm.\nallowed-tools:\n  - Bash(ls)\n---\n\n# blocky\n")
+        _, out, _ = self.run_inv()
+        row = self.row(out, "blocky")
+        self.assertIn("Dòng một của mô tả.", row)
+        self.assertIn("Dòng hai nói thêm.", row)
+        self.assertNotIn("Bash(ls)", row)
+
+    def test_pipe_in_description_keeps_three_columns(self):
+        """Ký tự `|` trong mô tả đổi thành `/` — bảng vẫn đúng 3 cột."""
+        self.write("home/.claude/skills/piped/SKILL.md",
+                   skill_md("piped", "chạy a | b rồi c"))
+        _, out, _ = self.run_inv()
+        row = self.row(out, "piped")
+        self.assertEqual(len(row.split("|")), 3, row)
+        self.assertIn("chạy a / b rồi c", row)
+
+    def test_trigger_beyond_cutoff_kept(self):
+        """Cụm trigger nằm sau ký tự thứ 60 vẫn phải xuất hiện trong ô mô tả."""
+        desc = "A" * 200 + " Use when the caller needs the widget rebuilt."
+        self.write("home/.claude/skills/faraway/SKILL.md", skill_md("faraway", desc))
+        _, out, _ = self.run_inv()
+        row = self.row(out, "faraway")
+        self.assertIn("Use when", row)
+        self.assertIn(" … ", row)
+
+    def test_trigger_straddling_cutoff_kept(self):
+        """Trigger bắt đầu ngay TRƯỚC ngưỡng 60 (ca `huggingface-trackio`) vẫn phải đủ."""
+        desc = "C" * 58 + "Use when người gọi cần dựng lại widget cho màn hình chính."
+        self.write("home/.claude/skills/straddle/SKILL.md", skill_md("straddle", desc))
+        _, out, _ = self.run_inv()
+        row = self.row(out, "straddle")
+        self.assertIn("Use when người gọi cần", row)
+        self.assertEqual(row.lower().count("use when"), 1, f"lặp cụm trigger: {row}")
+
+    def test_short_description_untouched(self):
+        """Mô tả ngắn hơn ngưỡng → giữ nguyên, không chèn dấu nối."""
+        self.write("home/.claude/skills/tiny/SKILL.md", skill_md("tiny", "mô tả rất ngắn"))
+        _, out, _ = self.run_inv()
+        row = self.row(out, "tiny")
+        self.assertIn("| mô tả rất ngắn |", row)
+        self.assertNotIn(" … ", row)
+
+    def test_long_description_without_trigger_cut(self):
+        """Không có cụm trigger → vẫn cắt ở ngưỡng cũ, không phình bảng."""
+        self.write("home/.claude/skills/plain/SKILL.md", skill_md("plain", "B" * 300))
+        _, out, _ = self.run_inv()
+        row = self.row(out, "plain")
+        self.assertEqual(row.split("|")[1].strip(), "B" * 60)
+
+
 class PluginTest(InventoryBase):
     def enable_and_install(self, key, entry):
         self.settings("user", {key: True})
