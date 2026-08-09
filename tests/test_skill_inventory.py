@@ -164,6 +164,16 @@ class DescriptionTest(InventoryBase):
         self.assertIn("Use when người gọi cần", row)
         self.assertEqual(row.lower().count("use when"), 1, f"lặp cụm trigger: {row}")
 
+    def test_vietnamese_trigger_beyond_cutoff_kept(self):
+        """Mô tả tiếng Việt: cụm `Dùng khi` sau ký tự 60 cũng phải giữ như cụm tiếng Anh."""
+        desc = ("Đọc cấu hình rồi dựng lại toàn bộ bảng điều khiển cho người vận hành. "
+                "Dùng khi người gọi cần làm mới bảng sau khi đổi cấu hình.")
+        self.write("home/.claude/skills/vi-skill/SKILL.md", skill_md("vi-skill", desc))
+        _, out, _ = self.run_inv()
+        row = self.row(out, "vi-skill")
+        self.assertIn("Dùng khi người gọi cần", row)
+        self.assertIn(" … ", row)
+
     def test_short_description_untouched(self):
         """Mô tả ngắn hơn ngưỡng → giữ nguyên, không chèn dấu nối."""
         self.write("home/.claude/skills/tiny/SKILL.md", skill_md("tiny", "mô tả rất ngắn"))

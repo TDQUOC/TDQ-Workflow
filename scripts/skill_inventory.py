@@ -34,7 +34,12 @@ TRIGGER_LOOKBACK = 15
 # Description skill viết theo khuôn "câu 1 = nó là gì, câu 2 = dùng khi nào". Đo trên 268
 # SKILL.md: 146/211 skill có cụm trigger nằm SAU ký tự thứ 60, nên cắt cụt làm mất đúng
 # phần cần cho phán quyết DÙNG/KHÔNG. `_condense` giữ đầu + ghép thêm khúc trigger.
-TRIGGER_RE = re.compile(r"use when|use this|whenever|when the user|trigger", re.I)
+# Nhánh tiếng Việt cho skill viết mô tả bằng tiếng Việt (6 skill tdq-* là ví dụ tại chỗ):
+# cùng khuôn "câu 1 = nó là gì, câu 2 = dùng khi nào", chỉ khác ngôn ngữ. Đo trên 274 skill:
+# 0 khớp nhầm vào mô tả tiếng Anh — các cụm này đều có dấu, không đụng chữ ASCII.
+TRIGGER_RE = re.compile(
+    r"use when|use this|whenever|when the user|trigger"
+    r"|dùng khi|dùng cho|gọi khi|áp dụng khi|khi cần|khi user", re.I)
 FRONTMATTER_MAX_LINES = 80
 # YAML block scalar: `description: |` và biến thể. Trước 2026-08-09 parser đọc `|` như
 # nội dung → 18 skill (firecrawl, tavily, mongodb-search-and-ai) rỗng mô tả.

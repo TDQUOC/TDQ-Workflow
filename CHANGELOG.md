@@ -2,6 +2,23 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.2 — 2026-08-09
+
+Bảng kiểm kê năng lực (B0) giữ được tín hiệu định tuyến cho cả skill mô tả tiếng Việt.
+
+- **`TRIGGER_RE` thêm nhánh tiếng Việt**: `dùng khi|dùng cho|gọi khi|áp dụng khi|khi cần|
+  khi user`. Đo trên 274 skill: 0 khớp nhầm vào mô tả tiếng Anh — các cụm này đều có dấu.
+- **Mô tả `tdq-build`, `tdq-plan`, `tdq-spec` theo khuôn chung**: câu chốt `Lane full.`
+  đổi thành câu `Dùng khi …`, cùng khuôn "câu 1 = nó là gì, câu 2 = dùng khi nào" mà 211
+  skill tiếng Anh đang dùng. Cách này giữ regex sạch, không phải nhét từ riêng của TDQ
+  (`lane full`) vào một biểu thức dùng chung cho skill của mọi plugin.
+
+Kết quả: 5/6 skill tdq giữ được câu điều kiện, trước đó 0/6. `tdq-conventions` không nằm
+trong số này vì nó không có câu "dùng khi nào" — nó được các skill `tdq-*` khác nạp bằng
+liên kết trực tiếp, không đi qua bảng B0.
+
+Tổng description 6 skill: 899 → 892 ký tự, vẫn dưới trần 900 của `test_token_budget`.
+
 ## 0.11.1 — 2026-08-09
 
 Sửa bảng kiểm kê năng lực (B0) mất tín hiệu định tuyến. Chỉ đụng

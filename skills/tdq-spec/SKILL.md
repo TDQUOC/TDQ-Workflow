@@ -1,6 +1,6 @@
 ---
 name: tdq-spec
-description: Viết spec tiếng Việt cho request TDQ, đăng ký vào state, trình rồi DỪNG chờ user duyệt; duyệt xong viết plan ngay cùng turn. Lane full.
+description: Viết spec tiếng Việt cho request TDQ, đăng ký vào state, trình rồi DỪNG chờ user duyệt; duyệt xong viết plan cùng turn. Dùng khi lane full xong analyze.
 ---
 
 # TDQ Spec

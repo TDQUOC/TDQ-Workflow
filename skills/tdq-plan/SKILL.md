@@ -1,6 +1,6 @@
 ---
 name: tdq-plan
-description: Biến spec đã duyệt thành plan tiếng Việt checkbox, mỗi task một test, đề xuất mode; DỪNG chờ user duyệt kèm mode, duyệt xong build ngay cùng turn. Lane full.
+description: Biến spec đã duyệt thành plan checkbox, mỗi task một test; DỪNG chờ user duyệt kèm mode, duyệt xong build cùng turn. Dùng khi spec lane full đã duyệt.
 ---
 
 # TDQ Plan

@@ -1,9 +1,9 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-09T11:29:33+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-09T12:50:12+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-09-sua-mo-ta-skill-inventory |
+| Request | 2026-08-09-trigger-tieng-viet |
 | Lane | quick |
 | Phase | implement |
 | Spec | (chưa có) |
