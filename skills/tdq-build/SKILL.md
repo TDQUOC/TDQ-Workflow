@@ -18,8 +18,10 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
   (message mô tả thay đổi, KHÔNG push, liệt kê commit đó trong report).
   Chỉ dừng hỏi khi: đổi phạm vi spec/plan, việc phá hủy/khó đảo ngoài commit (đổi schema
   DB, xoá data, đổi API contract công khai), hoặc thiếu input chỉ user có.
-- **Tick ngay.** Test của một task pass là sửa file plan đánh `- [x]` cho task đó TRƯỚC
-  khi bắt task sau. Cấm gom tick cuối turn.
+- **Tick ngay.** Bắt đầu một task thì đánh `- [~]` cho task đó; test pass thì đổi thành
+  `- [x]` TRƯỚC khi bắt task sau. Cấm gom tick cuối turn. Ba trạng thái: `[ ]` chưa làm ·
+  `[~]` đang làm · `[x]` xong. Dấu `[~]` là thứ duy nhất cho biết đang đứng ở đâu khi
+  người ngoài (status line, user, agent khác) nhìn vào file plan giữa chừng.
 - **Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass.
 - **Không placeholder.** Thiếu thông tin ở giai đoạn này nghĩa là phân tích hụt — nêu ra, đừng stub.
 - **Chờ subagent thì chờ hết**, hoặc đặt trigger tự tiếp tục. Không kết thúc turn khi nó đang chạy.
@@ -33,14 +35,14 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
 
 2. Vòng lặp mỗi task:
-   1. Báo 1 dòng: đang bắt đầu task nào.
+   1. Báo 1 dòng: đang bắt đầu task nào, và đánh `- [~]` cho task đó trong plan.
    2. Task có khối `Dùng:` → NẠP skill đó ngay (theo trường `Nạp`), làm đúng trường `Để`,
       không lan sang việc ghi ở `Không dùng cho`. Không có khối → bỏ qua bước này.
    3. Đỏ: chạy check của task → xác nhận fail (hoặc viết test fail trước).
    4. Code: thay đổi nhỏ nhất mà đủ thoả task. Bám style code sẵn có.
    5. Xanh: chạy lại đến khi pass, chỉ chạy **test của module** đang sửa — full suite
       để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
-   6. Tick `- [x]` cho task đó trong plan NGAY.
+   6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY.
 
 3. Xong hết task: chạy full suite ĐÚNG MỘT LẦN, rồi đóng sổ turn bằng MỘT lệnh
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file .md vừa sửa> --log "<task xong, file đổi, kết quả test>" --phase qc`

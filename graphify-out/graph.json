@@ -4,6 +4,292 @@
   "graph": {},
   "nodes": [
     {
+      "label": "STATE.md",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_tdq_state",
+      "community": 284,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "state.md"
+    },
+    {
+      "label": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
+      "community": 284,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "tdq state (tu sinh \u2014 khong sua tay)"
+    },
+    {
+      "label": "\u0110ang \u1edf \u0111\u00e2u",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u",
+      "community": 284,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "\u0111ang o \u0111au"
+    },
+    {
+      "label": "Vi\u1ec7c ti\u1ebfp theo",
+      "file_type": "document",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo",
+      "community": 284,
+      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
+      "norm_label": "viec tiep theo"
+    },
+    {
+      "label": "2026-08-09.md",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "2026-08-09.md"
+    },
+    {
+      "label": "Working log 2026-08-09",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "working log 2026-08-09"
+    },
+    {
+      "label": "00:15 \u2014 \u0111\u00f3ng request gi\u1ea3m over-engineer workflow",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_00_15_\u0111\u00f3ng_request_gi\u1ea3m_over_engineer_workflow",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "00:15 \u2014 \u0111ong request giam over-engineer workflow"
+    },
+    {
+      "label": "00:25 \u2014 \u0111\u1ed3ng b\u1ed9 CLAUDE.md, bump 0.10.0, commit",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_00_25_\u0111\u1ed3ng_b\u1ed9_claude_md_bump_0_10_0_commit",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "00:25 \u2014 \u0111ong bo claude.md, bump 0.10.0, commit"
+    },
+    {
+      "label": "00:52",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_00_52",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "00:52"
+    },
+    {
+      "label": "00:56",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_00_56",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "00:56"
+    },
+    {
+      "label": "00:58",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_00_58",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "00:58"
+    },
+    {
+      "label": "01:13",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_01_13",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "01:13"
+    },
+    {
+      "label": "01:28 \u2014 Bump 0.11.0 v\u00e0 commit",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_01_28_bump_0_11_0_v\u00e0_commit",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "01:28 \u2014 bump 0.11.0 va commit"
+    },
+    {
+      "label": "11:23 \u2014 M\u1edf request s\u1eeda m\u00f4 t\u1ea3 skill trong ki\u1ec3m k\u00ea n\u0103ng l\u1ef1c",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_23_m\u1edf_request_s\u1eeda_m\u00f4_t\u1ea3_skill_trong_ki\u1ec3m_k\u00ea_n\u0103ng_l\u1ef1c",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:23 \u2014 mo request sua mo ta skill trong kiem ke nang luc"
+    },
+    {
+      "label": "11:26 \u2014 Mini-plan quick cho sua-mo-ta-skill-inventory",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L92",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_26_mini_plan_quick_cho_sua_mo_ta_skill_inventory",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:26 \u2014 mini-plan quick cho sua-mo-ta-skill-inventory"
+    },
+    {
+      "label": "11:35 \u2014 Build quick: v\u00e1 parser + r\u00fat g\u1ecdn c\u00f3 nh\u1eadn bi\u1ebft trigger",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_35_build_quick_v\u00e1_parser_r\u00fat_g\u1ecdn_c\u00f3_nh\u1eadn_bi\u1ebft_trigger",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:35 \u2014 build quick: va parser + rut gon co nhan biet trigger"
+    },
+    {
+      "label": "11:36 \u2014 Validate l\u1ea1i sau restart Claude Code",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L123",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_36_validate_l\u1ea1i_sau_restart_claude_code",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:36 \u2014 validate lai sau restart claude code"
+    },
+    {
+      "label": "11:38 \u2014 \u0110o A/B b\u1ea3n c\u0169 vs b\u1ea3n m\u1edbi c\u1ee7a skill_inventory",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L137",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_38_\u0111o_a_b_b\u1ea3n_c\u0169_vs_b\u1ea3n_m\u1edbi_c\u1ee7a_skill_inventory",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:38 \u2014 \u0111o a/b ban cu vs ban moi cua skill_inventory"
+    },
+    {
+      "label": "11:45 \u2014 Fix ca trigger v\u1eaft ng\u01b0\u1ee1ng, \u0111\u00f3ng n\u1ed1t 0,5% c\u00f2n l\u1ea1i",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L151",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_45_fix_ca_trigger_v\u1eaft_ng\u01b0\u1ee1ng_\u0111\u00f3ng_n\u1ed1t_0_5_c\u00f2n_l\u1ea1i",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:45 \u2014 fix ca trigger vat nguong, \u0111ong not 0,5% con lai"
+    },
+    {
+      "label": "11:53 \u2014 Bump 0.11.1 v\u00e0 commit",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_11_53_bump_0_11_1_v\u00e0_commit",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "11:53 \u2014 bump 0.11.1 va commit"
+    },
+    {
+      "label": "12:47 \u2014 M\u1edf request th\u00eam c\u1ee5m trigger ti\u1ebfng Vi\u1ec7t",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L179",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_12_47_m\u1edf_request_th\u00eam_c\u1ee5m_trigger_ti\u1ebfng_vi\u1ec7t",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "12:47 \u2014 mo request them cum trigger tieng viet"
+    },
+    {
+      "label": "12:50 \u2014 Mini-plan trigger ti\u1ebfng Vi\u1ec7t, ch\u1edd duy\u1ec7t",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L188",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_12_50_mini_plan_trigger_ti\u1ebfng_vi\u1ec7t_ch\u1edd_duy\u1ec7t",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "12:50 \u2014 mini-plan trigger tieng viet, cho duyet"
+    },
+    {
+      "label": "12:51 \u2014 Duy\u1ec7t quick, b\u1eaft \u0111\u1ea7u implement",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L200",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_12_51_duy\u1ec7t_quick_b\u1eaft_\u0111\u1ea7u_implement",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "12:51 \u2014 duyet quick, bat \u0111au implement"
+    },
+    {
+      "label": "12:58 \u2014 Build xong trigger ti\u1ebfng Vi\u1ec7t, QC PASS",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L207",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_12_58_build_xong_trigger_ti\u1ebfng_vi\u1ec7t_qc_pass",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "12:58 \u2014 build xong trigger tieng viet, qc pass"
+    },
+    {
+      "label": "13:04 \u2014 Bump 0.11.2 v\u00e0 commit",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L222",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_13_04_bump_0_11_2_v\u00e0_commit",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "13:04 \u2014 bump 0.11.2 va commit"
+    },
+    {
+      "label": "13:08 \u2014 C\u1eadp nh\u1eadt cache plugin sang 0.11.2 (th\u1ee7 c\u00f4ng)",
+      "file_type": "document",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L230",
+      "_origin": "ast",
+      "id": "docs_workinglog_2026_08_09_13_08_c\u1eadp_nh\u1eadt_cache_plugin_sang_0_11_2_th\u1ee7_c\u00f4ng",
+      "community": 28,
+      "community_name": "Working log 2026-08-09",
+      "norm_label": "13:08 \u2014 cap nhat cache plugin sang 0.11.2 (thu cong)"
+    },
+    {
       "label": "CHANGELOG.md",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
@@ -312,50 +598,6 @@
       "id": "changelog_0_1_0_2026_07_27"
     },
     {
-      "label": "STATE.md",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 284,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "state.md",
-      "id": "docs_tdq_state"
-    },
-    {
-      "label": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 284,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "tdq state (tu sinh \u2014 khong sua tay)",
-      "id": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay"
-    },
-    {
-      "label": "\u0110ang \u1edf \u0111\u00e2u",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 284,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "\u0111ang o \u0111au",
-      "id": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u"
-    },
-    {
-      "label": "Vi\u1ec7c ti\u1ebfp theo",
-      "file_type": "document",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L17",
-      "_origin": "ast",
-      "community": 284,
-      "community_name": "TDQ STATE (t\u1ef1 sinh \u2014 kh\u00f4ng s\u1eeda tay)",
-      "norm_label": "viec tiep theo",
-      "id": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo"
-    },
-    {
       "label": "brief/2026-08-09-trigger-tieng-viet.md",
       "file_type": "document",
       "source_file": "docs/tdq/brief/2026-08-09-trigger-tieng-viet.md",
@@ -552,237 +794,6 @@
       "community_name": "Mini-spec/plan \u2014 2026-08-09-trigger-tieng-viet (lane quick)",
       "norm_label": "phat hien: bang kiem ke \u0111oc ban cache, khong \u0111oc repo",
       "id": "docs_tdq_plan_2026_08_09_trigger_tieng_viet_ph\u00e1t_hi\u1ec7n_b\u1ea3ng_ki\u1ec3m_k\u00ea_\u0111\u1ecdc_b\u1ea3n_cache_kh\u00f4ng_\u0111\u1ecdc_repo"
-    },
-    {
-      "label": "2026-08-09.md",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "2026-08-09.md",
-      "id": "docs_workinglog_2026_08_09"
-    },
-    {
-      "label": "Working log 2026-08-09",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "working log 2026-08-09",
-      "id": "docs_workinglog_2026_08_09_working_log_2026_08_09"
-    },
-    {
-      "label": "00:15 \u2014 \u0111\u00f3ng request gi\u1ea3m over-engineer workflow",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "00:15 \u2014 \u0111ong request giam over-engineer workflow",
-      "id": "docs_workinglog_2026_08_09_00_15_\u0111\u00f3ng_request_gi\u1ea3m_over_engineer_workflow"
-    },
-    {
-      "label": "00:25 \u2014 \u0111\u1ed3ng b\u1ed9 CLAUDE.md, bump 0.10.0, commit",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L28",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "00:25 \u2014 \u0111ong bo claude.md, bump 0.10.0, commit",
-      "id": "docs_workinglog_2026_08_09_00_25_\u0111\u1ed3ng_b\u1ed9_claude_md_bump_0_10_0_commit"
-    },
-    {
-      "label": "00:52",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L47",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "00:52",
-      "id": "docs_workinglog_2026_08_09_00_52"
-    },
-    {
-      "label": "00:56",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L51",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "00:56",
-      "id": "docs_workinglog_2026_08_09_00_56"
-    },
-    {
-      "label": "00:58",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L55",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "00:58",
-      "id": "docs_workinglog_2026_08_09_00_58"
-    },
-    {
-      "label": "01:13",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L59",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "01:13",
-      "id": "docs_workinglog_2026_08_09_01_13"
-    },
-    {
-      "label": "01:28 \u2014 Bump 0.11.0 v\u00e0 commit",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L63",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "01:28 \u2014 bump 0.11.0 va commit",
-      "id": "docs_workinglog_2026_08_09_01_28_bump_0_11_0_v\u00e0_commit"
-    },
-    {
-      "label": "11:23 \u2014 M\u1edf request s\u1eeda m\u00f4 t\u1ea3 skill trong ki\u1ec3m k\u00ea n\u0103ng l\u1ef1c",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L73",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:23 \u2014 mo request sua mo ta skill trong kiem ke nang luc",
-      "id": "docs_workinglog_2026_08_09_11_23_m\u1edf_request_s\u1eeda_m\u00f4_t\u1ea3_skill_trong_ki\u1ec3m_k\u00ea_n\u0103ng_l\u1ef1c"
-    },
-    {
-      "label": "11:26 \u2014 Mini-plan quick cho sua-mo-ta-skill-inventory",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L92",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:26 \u2014 mini-plan quick cho sua-mo-ta-skill-inventory",
-      "id": "docs_workinglog_2026_08_09_11_26_mini_plan_quick_cho_sua_mo_ta_skill_inventory"
-    },
-    {
-      "label": "11:35 \u2014 Build quick: v\u00e1 parser + r\u00fat g\u1ecdn c\u00f3 nh\u1eadn bi\u1ebft trigger",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L104",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:35 \u2014 build quick: va parser + rut gon co nhan biet trigger",
-      "id": "docs_workinglog_2026_08_09_11_35_build_quick_v\u00e1_parser_r\u00fat_g\u1ecdn_c\u00f3_nh\u1eadn_bi\u1ebft_trigger"
-    },
-    {
-      "label": "11:36 \u2014 Validate l\u1ea1i sau restart Claude Code",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L123",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:36 \u2014 validate lai sau restart claude code",
-      "id": "docs_workinglog_2026_08_09_11_36_validate_l\u1ea1i_sau_restart_claude_code"
-    },
-    {
-      "label": "11:38 \u2014 \u0110o A/B b\u1ea3n c\u0169 vs b\u1ea3n m\u1edbi c\u1ee7a skill_inventory",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L137",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:38 \u2014 \u0111o a/b ban cu vs ban moi cua skill_inventory",
-      "id": "docs_workinglog_2026_08_09_11_38_\u0111o_a_b_b\u1ea3n_c\u0169_vs_b\u1ea3n_m\u1edbi_c\u1ee7a_skill_inventory"
-    },
-    {
-      "label": "11:45 \u2014 Fix ca trigger v\u1eaft ng\u01b0\u1ee1ng, \u0111\u00f3ng n\u1ed1t 0,5% c\u00f2n l\u1ea1i",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L151",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:45 \u2014 fix ca trigger vat nguong, \u0111ong not 0,5% con lai",
-      "id": "docs_workinglog_2026_08_09_11_45_fix_ca_trigger_v\u1eaft_ng\u01b0\u1ee1ng_\u0111\u00f3ng_n\u1ed1t_0_5_c\u00f2n_l\u1ea1i"
-    },
-    {
-      "label": "11:53 \u2014 Bump 0.11.1 v\u00e0 commit",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L168",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "11:53 \u2014 bump 0.11.1 va commit",
-      "id": "docs_workinglog_2026_08_09_11_53_bump_0_11_1_v\u00e0_commit"
-    },
-    {
-      "label": "12:47 \u2014 M\u1edf request th\u00eam c\u1ee5m trigger ti\u1ebfng Vi\u1ec7t",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L179",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "12:47 \u2014 mo request them cum trigger tieng viet",
-      "id": "docs_workinglog_2026_08_09_12_47_m\u1edf_request_th\u00eam_c\u1ee5m_trigger_ti\u1ebfng_vi\u1ec7t"
-    },
-    {
-      "label": "12:50 \u2014 Mini-plan trigger ti\u1ebfng Vi\u1ec7t, ch\u1edd duy\u1ec7t",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L188",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "12:50 \u2014 mini-plan trigger tieng viet, cho duyet",
-      "id": "docs_workinglog_2026_08_09_12_50_mini_plan_trigger_ti\u1ebfng_vi\u1ec7t_ch\u1edd_duy\u1ec7t"
-    },
-    {
-      "label": "12:51 \u2014 Duy\u1ec7t quick, b\u1eaft \u0111\u1ea7u implement",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L200",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "12:51 \u2014 duyet quick, bat \u0111au implement",
-      "id": "docs_workinglog_2026_08_09_12_51_duy\u1ec7t_quick_b\u1eaft_\u0111\u1ea7u_implement"
-    },
-    {
-      "label": "12:58 \u2014 Build xong trigger ti\u1ebfng Vi\u1ec7t, QC PASS",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L207",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "12:58 \u2014 build xong trigger tieng viet, qc pass",
-      "id": "docs_workinglog_2026_08_09_12_58_build_xong_trigger_ti\u1ebfng_vi\u1ec7t_qc_pass"
-    },
-    {
-      "label": "13:04 \u2014 Bump 0.11.2 v\u00e0 commit",
-      "file_type": "document",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L222",
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "Working log 2026-08-09",
-      "norm_label": "13:04 \u2014 bump 0.11.2 va commit",
-      "id": "docs_workinglog_2026_08_09_13_04_bump_0_11_2_v\u00e0_commit"
     },
     {
       "label": "skill_inventory.py",
@@ -32735,7 +32746,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "load_fixture()",
       "id": "tests_helper_load_fixture"
     },
@@ -32757,7 +32768,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "read_state()",
       "id": "tests_helper_read_state"
     },
@@ -32779,7 +32790,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "community": 49,
-      "community_name": "StateFileTest",
+      "community_name": "helper.py",
       "norm_label": "run_state_cli_in()",
       "id": "tests_helper_run_state_cli_in"
     },
@@ -32790,7 +32801,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "decision()",
       "id": "tests_helper_decision"
     },
@@ -32801,7 +32812,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "write_file()",
       "id": "tests_helper_write_file"
     },
@@ -32823,7 +32834,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "community": 49,
-      "community_name": "StateFileTest",
+      "community_name": "helper.py",
       "norm_label": "chay cli voi process cwd = cwd va khong set tdq_project_dir (giong user     go l",
       "id": "tests_helper_rationale_53"
     },
@@ -32834,7 +32845,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "parse pretooluse hook stdout -> (permissiondecision, additionalcontext).      0.",
       "id": "tests_helper_rationale_64"
     },
@@ -32845,7 +32856,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "test_e2e_chain.py",
       "id": "tests_test_e2e_chain"
     },
@@ -32856,7 +32867,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "today()",
       "id": "tests_test_e2e_chain_today"
     },
@@ -32867,7 +32878,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "chainbase",
       "id": "tests_test_e2e_chain_chainbase"
     },
@@ -32878,7 +32889,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".setup()",
       "id": "tests_test_e2e_chain_chainbase_setup"
     },
@@ -32889,7 +32900,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".new_turn()",
       "id": "tests_test_e2e_chain_chainbase_new_turn"
     },
@@ -32900,7 +32911,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".edit()",
       "id": "tests_test_e2e_chain_chainbase_edit"
     },
@@ -32911,7 +32922,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".approve()",
       "id": "tests_test_e2e_chain_chainbase_approve"
     },
@@ -32922,7 +32933,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".stop()",
       "id": "tests_test_e2e_chain_chainbase_stop"
     },
@@ -32933,7 +32944,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "testfulllanechain",
       "id": "tests_test_e2e_chain_testfulllanechain"
     },
@@ -32944,7 +32955,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".test_full_chain()",
       "id": "tests_test_e2e_chain_testfulllanechain_test_full_chain"
     },
@@ -32955,7 +32966,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "testquicklanechain",
       "id": "tests_test_e2e_chain_testquicklanechain"
     },
@@ -32966,7 +32977,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": ".test_quick_chain()",
       "id": "tests_test_e2e_chain_testquicklanechain_test_quick_chain"
     },
@@ -32977,7 +32988,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 32,
-      "community_name": "helper.py",
+      "community_name": "test_e2e_chain.py",
       "norm_label": "e1 \u2014 chuoi end-to-end ca hai lane theo mo hinh 0.3.0.  user duyet bang chat \u2192 cl",
       "id": "tests_test_e2e_chain_rationale_1"
     },
@@ -33296,7 +33307,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 1,
-      "community_name": "helper.py",
+      "community_name": ".stop",
       "norm_label": "test_stop_gate.py",
       "id": "tests_test_stop_gate"
     },
@@ -33340,7 +33351,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".today_log()",
       "id": "tests_test_stop_gate_stopgatebase_today_log"
     },
@@ -33560,7 +33571,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "teststopgatediskeffects",
       "id": "tests_test_stop_gate_teststopgatediskeffects"
     },
@@ -33571,7 +33582,7 @@
       "source_location": "L160",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".git()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_git"
     },
@@ -33582,7 +33593,7 @@
       "source_location": "L163",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".snapshot()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_snapshot"
     },
@@ -33593,7 +33604,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".write()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_write"
     },
@@ -33604,7 +33615,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_shell_append_log_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_append_log_not_blocked"
     },
@@ -33615,7 +33626,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_shell_created_log_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_created_log_not_blocked"
     },
@@ -33626,7 +33637,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_untouched_log_still_blocks()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_untouched_log_still_blocks"
     },
@@ -33637,7 +33648,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_non_git_repo_log_via_shell_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_non_git_repo_log_via_shell_not_blocked"
     },
@@ -33648,7 +33659,7 @@
       "source_location": "L217",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_shell_only_change_is_blocked()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_only_change_is_blocked"
     },
@@ -33659,7 +33670,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_shell_change_with_shell_log_is_silent()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_shell_change_with_shell_log_is_silent"
     },
@@ -33670,7 +33681,7 @@
       "source_location": "L237",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_state_bookkeeping_alone_does_not_block()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_state_bookkeeping_alone_does_not_block"
     },
@@ -33681,7 +33692,7 @@
       "source_location": "L246",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_clean_git_repo_no_block()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_clean_git_repo_no_block"
     },
@@ -33714,7 +33725,7 @@
       "source_location": "L270",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": ".test_last_turn_start_row_wins()",
       "id": "tests_test_stop_gate_teststopgatediskeffects_test_last_turn_start_row_wins"
     },
@@ -33725,7 +33736,7 @@
       "source_location": "L283",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": "teststopgatenofalseblock",
       "id": "tests_test_stop_gate_teststopgatenofalseblock"
     },
@@ -33736,7 +33747,7 @@
       "source_location": "L295",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".dirty_repo()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_dirty_repo"
     },
@@ -33747,7 +33758,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".test_readonly_turn_with_dirty_repo_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_readonly_turn_with_dirty_repo_not_blocked"
     },
@@ -33758,7 +33769,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".test_state_write_only_turn_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_state_write_only_turn_not_blocked"
     },
@@ -33769,7 +33780,7 @@
       "source_location": "L317",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".test_touch_untracked_not_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_touch_untracked_not_blocked"
     },
@@ -33780,7 +33791,7 @@
       "source_location": "L327",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".test_real_change_still_blocked()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_real_change_still_blocked"
     },
@@ -33791,7 +33802,7 @@
       "source_location": "L335",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".test_block_logs_to_stderr()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_block_logs_to_stderr"
     },
@@ -33802,7 +33813,7 @@
       "source_location": "L343",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": ".test_tdq_log_0_silences_stderr()",
       "id": "tests_test_stop_gate_teststopgatenofalseblock_test_tdq_log_0_silences_stderr"
     },
@@ -33813,7 +33824,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 1,
-      "community_name": "helper.py",
+      "community_name": ".stop",
       "norm_label": "stop_gate.py (0.3.0) \u2014 \u0111oi chieu loi nhac voi hieu ung that trong so turn.  \u0111iem",
       "id": "tests_test_stop_gate_rationale_1"
     },
@@ -33846,7 +33857,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "p3 (0.3.1) \u2014 hieu ung that tren \u0111ia, khong chi tin so turn.      so turn chi ghi",
       "id": "tests_test_stop_gate_rationale_153"
     },
@@ -33857,7 +33868,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "gia lap prompt_context: chup trang thai \u0111ia luc mo turn.",
       "id": "tests_test_stop_gate_rationale_164"
     },
@@ -33868,7 +33879,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "bug goc: log append bang shell \u2192 khong co `log_written` \u2192 chan oan.",
       "id": "tests_test_stop_gate_rationale_177"
     },
@@ -33879,7 +33890,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "log hom nay chua ton tai \u0111au turn, \u0111uoc tao bang shell trong turn.",
       "id": "tests_test_stop_gate_rationale_188"
     },
@@ -33890,7 +33901,7 @@
       "source_location": "L197",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "co anh chup nhung log khong \u0111oi \u2192 van phai chan.",
       "id": "tests_test_stop_gate_rationale_197"
     },
@@ -33901,7 +33912,7 @@
       "source_location": "L206",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "khong phai git repo \u2192 repo_sha none, nhung chieu log van va \u0111uoc.",
       "id": "tests_test_stop_gate_rationale_206"
     },
@@ -33912,7 +33923,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "sua repo hoan toan bang shell (khong `observe` nao) \u2192 phai chan.",
       "id": "tests_test_stop_gate_rationale_218"
     },
@@ -33923,7 +33934,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "chi ghi state/so turn thi khong phai \"\u0111oi repo\" \u2014 tranh chan oan moi.",
       "id": "tests_test_stop_gate_rationale_238"
     },
@@ -33934,7 +33945,7 @@
       "source_location": "L271",
       "_origin": "ast",
       "community": 1,
-      "community_name": "TestStopGateDiskEffects",
+      "community_name": ".stop",
       "norm_label": "0.3.2 \u2014 so turn con sot dong cu (turn_log_clear hut) thi phai lay anh         ch",
       "id": "tests_test_stop_gate_rationale_271"
     },
@@ -33945,7 +33956,7 @@
       "source_location": "L284",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": "0.3.2 \u2014 chan oan do chinh van tay repo.      0.3.1 so van tay toan repo nhung ch",
       "id": "tests_test_stop_gate_rationale_284"
     },
@@ -33956,7 +33967,7 @@
       "source_location": "L318",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": "ghi \u0111e y het byte / `touch` khong phai la thay \u0111oi repo.",
       "id": "tests_test_stop_gate_rationale_318"
     },
@@ -33967,7 +33978,7 @@
       "source_location": "L328",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": "khong hoi quy: sua file that bang shell van phai chan.",
       "id": "tests_test_stop_gate_rationale_328"
     },
@@ -33978,7 +33989,7 @@
       "source_location": "L336",
       "_origin": "ast",
       "community": 1,
-      "community_name": ".dirty_repo",
+      "community_name": ".stop",
       "norm_label": "\u00a76 \u2014 quyet \u0111inh chan phai co dau vet debug \u0111uoc.",
       "id": "tests_test_stop_gate_rationale_336"
     },
@@ -36781,6 +36792,270 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tdq_state",
+      "target": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
+      "target": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tdq/STATE.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
+      "target": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_00_15_\u0111\u00f3ng_request_gi\u1ea3m_over_engineer_workflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_00_25_\u0111\u1ed3ng_b\u1ed9_claude_md_bump_0_10_0_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_00_52",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_00_56",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_00_58",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_01_13",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_01_28_bump_0_11_0_v\u00e0_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_23_m\u1edf_request_s\u1eeda_m\u00f4_t\u1ea3_skill_trong_ki\u1ec3m_k\u00ea_n\u0103ng_l\u1ef1c",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L92",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_26_mini_plan_quick_cho_sua_mo_ta_skill_inventory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_35_build_quick_v\u00e1_parser_r\u00fat_g\u1ecdn_c\u00f3_nh\u1eadn_bi\u1ebft_trigger",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_36_validate_l\u1ea1i_sau_restart_claude_code",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_38_\u0111o_a_b_b\u1ea3n_c\u0169_vs_b\u1ea3n_m\u1edbi_c\u1ee7a_skill_inventory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_45_fix_ca_trigger_v\u1eaft_ng\u01b0\u1ee1ng_\u0111\u00f3ng_n\u1ed1t_0_5_c\u00f2n_l\u1ea1i",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L168",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_11_53_bump_0_11_1_v\u00e0_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L179",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_12_47_m\u1edf_request_th\u00eam_c\u1ee5m_trigger_ti\u1ebfng_vi\u1ec7t",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L188",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_12_50_mini_plan_trigger_ti\u1ebfng_vi\u1ec7t_ch\u1edd_duy\u1ec7t",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L200",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_12_51_duy\u1ec7t_quick_b\u1eaft_\u0111\u1ea7u_implement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L207",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_12_58_build_xong_trigger_ti\u1ebfng_vi\u1ec7t_qc_pass",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L222",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_13_04_bump_0_11_2_v\u00e0_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/workinglog/2026-08-09.md",
+      "source_location": "L230",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
+      "target": "docs_workinglog_2026_08_09_13_08_c\u1eadp_nh\u1eadt_cache_plugin_sang_0_11_2_th\u1ee7_c\u00f4ng",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -37177,39 +37452,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_tdq_state",
-      "target": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
-      "target": "docs_tdq_state_vi\u1ec7c_ti\u1ebfp_theo"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/tdq/STATE.md",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_tdq_state_tdq_state_t\u1ef1_sinh_kh\u00f4ng_s\u1eeda_tay",
-      "target": "docs_tdq_state_\u0111ang_\u1edf_\u0111\u00e2u"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "docs/tdq/brief/2026-08-09-trigger-tieng-viet.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -37382,226 +37624,6 @@
       "confidence_score": 1.0,
       "source": "docs_tdq_plan_2026_08_09_trigger_tieng_viet_qc",
       "target": "docs_tdq_plan_2026_08_09_trigger_tieng_viet_v\u00f2ng_fix_trong_l\u00fac_build_kh\u00f4ng_ph\u1ea3i_qc_fail_sau_khi_xong"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_working_log_2026_08_09"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_00_15_\u0111\u00f3ng_request_gi\u1ea3m_over_engineer_workflow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L28",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_00_25_\u0111\u1ed3ng_b\u1ed9_claude_md_bump_0_10_0_commit"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_00_52"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L51",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_00_56"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L55",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_00_58"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L59",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_01_13"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L63",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_01_28_bump_0_11_0_v\u00e0_commit"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L73",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_23_m\u1edf_request_s\u1eeda_m\u00f4_t\u1ea3_skill_trong_ki\u1ec3m_k\u00ea_n\u0103ng_l\u1ef1c"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L92",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_26_mini_plan_quick_cho_sua_mo_ta_skill_inventory"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L104",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_35_build_quick_v\u00e1_parser_r\u00fat_g\u1ecdn_c\u00f3_nh\u1eadn_bi\u1ebft_trigger"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L123",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_36_validate_l\u1ea1i_sau_restart_claude_code"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L137",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_38_\u0111o_a_b_b\u1ea3n_c\u0169_vs_b\u1ea3n_m\u1edbi_c\u1ee7a_skill_inventory"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L151",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_45_fix_ca_trigger_v\u1eaft_ng\u01b0\u1ee1ng_\u0111\u00f3ng_n\u1ed1t_0_5_c\u00f2n_l\u1ea1i"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L168",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_11_53_bump_0_11_1_v\u00e0_commit"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L179",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_12_47_m\u1edf_request_th\u00eam_c\u1ee5m_trigger_ti\u1ebfng_vi\u1ec7t"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L188",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_12_50_mini_plan_trigger_ti\u1ebfng_vi\u1ec7t_ch\u1edd_duy\u1ec7t"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L200",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_12_51_duy\u1ec7t_quick_b\u1eaft_\u0111\u1ea7u_implement"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L207",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_12_58_build_xong_trigger_ti\u1ebfng_vi\u1ec7t_qc_pass"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/workinglog/2026-08-09.md",
-      "source_location": "L222",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "docs_workinglog_2026_08_09_working_log_2026_08_09",
-      "target": "docs_workinglog_2026_08_09_13_04_bump_0_11_2_v\u00e0_commit"
     },
     {
       "relation": "contains",
@@ -82847,5 +82869,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c2131ad6b222131b169fbd740b6ddf9b2b6f2032"
+  "built_at_commit": "43fa753877ce326c49168a73c2f565552b67e535"
 }

@@ -484,16 +484,16 @@ PHASE_TABLE = {
     },
     "implement": {
         "entry": "plan_approved = true và implement_mode đã chốt",
-        "action": "Làm hết plan trong 1 turn, mỗi task red→green, tick [x] ngay khi pass",
+        "action": "Làm hết plan trong 1 turn, mỗi task đánh [~] khi bắt đầu, red→green, đổi [x] ngay khi pass",
         "cmd": "python3 scripts/tdq_state.py set phase=qc",
         "checklist": [
             "Làm task theo đúng thứ tự trong plan",
-            "Mỗi task: viết test (đỏ) → code → test xanh → tick [x] vào plan NGAY",
+            "Mỗi task: đánh [~] → viết test (đỏ) → code → test xanh → đổi [x] vào plan NGAY",
             "Không dừng giữa chừng để hỏi 'có tiếp không'",
             "Xong hết task → chạy lệnh trên",
         ],
         "done_when": "Mọi task trong plan đã tick [x]",
-        "forbidden": "Dừng giữa chừng; gom tick vào cuối turn",
+        "forbidden": "Dừng giữa chừng; gom tick vào cuối turn; để nhiều task cùng mang [~]",
     },
     "qc": {
         "entry": "Đã implement xong",

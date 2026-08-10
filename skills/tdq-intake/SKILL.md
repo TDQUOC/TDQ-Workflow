@@ -84,6 +84,8 @@ Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-
    [references/interview.md](references/interview.md).
 2. **Viết mini-spec/plan GỘP 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 dòng: phạm vi
    in/out, task checkbox mỗi task một test, DoD mỗi dòng kiểm được bằng lệnh.
+   Checkbox có 3 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement
+   (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
 3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
 4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
