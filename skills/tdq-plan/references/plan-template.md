@@ -19,13 +19,13 @@ Trạng thái plan: CHỜ DUYỆT
 6. Không commit/push cho đến khi user yêu cầu.
 
 ## P1 — <tên phase>
-- [ ] **T1.1** <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
-- [ ] **T1.2** <việc cụ thể> — Test: <...>
+- [ ] **T1.1** (n3) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
+- [ ] **T1.2** (n5) <việc cụ thể> — Test: <...>
 
 **Xong P1 khi**: <điều kiện đo được>
 
 ## P2 — <tên phase>
-- [ ] **T2.1** <...> — Test: <...>
+- [ ] **T2.1** (n8) <...> — Test: <...>
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
@@ -54,6 +54,28 @@ task log, giữ task test, và ghi đúng một dòng `Log: BỎ — <lý do m�
 ## Definition of Done
 Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh kiểm.
 ```
+
+## Điểm độ phức tạp `(nN)`
+
+Đặt **ngay sau mã task**, trước phần việc: `- [ ] **T2.1** (n5) việc — Test: ...`.
+Đây là độ phức tạp **tương đối** 1–10, không phải số phút. Status line đọc điểm này để
+ước tính ETA theo trọng số thay vì coi mọi task nặng như nhau.
+
+Thang neo mốc:
+
+| Điểm | Mốc tham chiếu |
+|---|---|
+| 1 | sửa một dòng văn bản, đổi một hằng số |
+| 3 | thêm một mục tài liệu, sửa một nhánh nhỏ có sẵn test |
+| 5 | một hàm mới kèm test (mốc giữa — phân vân thì chấm 5) |
+| 8 | đổi hành vi một module, kéo theo sửa nhiều test |
+| 10 | đổi công thức/hợp đồng dữ liệu lõi, lan sang nhiều hàm |
+
+Luật:
+- Chấm ngay lúc viết task, không chấm bù sau.
+- Phân vân giữa hai mốc → lấy mốc thấp hơn; hoàn toàn không biết → 5.
+- Điểm là **tuỳ chọn**: thiếu `(nN)` thì bộ đọc coi như 5, plan cũ vẫn chạy y nguyên.
+- Điểm KHÔNG đổi luật tick `[ ] [~] [x]` và không phải cam kết thời gian.
 
 ## Dòng `Mode thực thi`
 

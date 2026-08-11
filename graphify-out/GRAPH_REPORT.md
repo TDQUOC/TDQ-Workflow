@@ -1,7 +1,7 @@
-# Graph Report - TDQWorkflow  (2026-08-09)
+# Graph Report - TDQWorkflow  (2026-08-11)
 
 ## Corpus Check
-- 388 files · ~332,439 words
+- 388 files · ~332,623 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `43fa7538`
+- Built from commit: `023eeaf6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -1509,7 +1509,7 @@ Cohesion: 0.50
 Nodes (3): Checklist scope — trả lời được hết mới trình, Khuôn spec, Kiểm trước khi trình
 
 ## Knowledge Gaps
-- **1625 isolated node(s):** `Đang ở đâu`, `Việc tiếp theo`, `00:15 — đóng request giảm over-engineer workflow`, `00:25 — đồng bộ CLAUDE.md, bump 0.10.0, commit`, `00:52` (+1620 more)
+- **1625 isolated node(s):** `Luật cứng (áp cho cả ba phase)`, `Phần A — Implement (phase `implement`)`, `Phần B — QC (phase `qc`)`, `Phần C — Report (phase `report`)`, `Bảng phase TDQ (tự sinh — KHÔNG sửa tay)` (+1620 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **58 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -1517,12 +1517,10 @@ Nodes (3): Checklist scope — trả lời được hết mới trình, Khuôn s
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `TestState` connect `TestState` to `.test_reapprove_refreshes_sha256_after_file_changed`, `.test_reapprove_unchanged_file_stays_idempotent`, `.test_mode_external_bi_tu_choi`, `.test_approve_quick_moves_phase_to_implement`, `.test_row_age_ok_bad_ts_types`, `.test_init_set_reset_in_mot_dong_khong_json`, `.test_co_co_json_thi_in_lai_nguyen_state`, `TestProjectRootResolution`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Why does `write_state()` connect `.stop` to `helper.py`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `QuickQcApproveCliTest` connect `QuickQcApproveCliTest` to `test_quick_qc.py`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **What connects `Đang ở đâu`, `Việc tiếp theo`, `00:15 — đóng request giảm over-engineer workflow` to the rest of the system?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **What connects `Luật cứng (áp cho cả ba phase)`, `Phần A — Implement (phase `implement`)`, `Phần B — QC (phase `qc`)` to the rest of the system?**
   _1625 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05468215994531784 - nodes in this community are weakly interconnected._
@@ -1530,3 +1528,5 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
 - **Should `.write` be split into smaller, more focused modules?**
   _Cohesion score 0.07086197778952935 - nodes in this community are weakly interconnected._
+- **Should `.run_inv` be split into smaller, more focused modules?**
+  _Cohesion score 0.08350168350168351 - nodes in this community are weakly interconnected._
