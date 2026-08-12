@@ -2,6 +2,26 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.3 — 2026-08-12
+
+Hàng rào tick ở lane quick chặn thật thay vì chỉ nhắc.
+
+- **`TDQ:TICK` chuyển từ nhắc sang chặn** (`edit_gate.py`): sửa file ngoài `docs/` khi
+  phase là `implement`/`qc` mà plan không có task nào mang `[~]` → `permissionDecision:
+  "deny"`. Lý do: `stop_gate` chỉ so vân tay plan đầu/cuối turn. Lane quick vốn làm trọn
+  gói trong một turn, nên gom tick vào cuối vẫn lọt hàng rào cũ.
+- **Miễn trừ `tests/**`**: red→green đòi viết test đỏ trước khi có gì để tick.
+- **`block()` trong `_common.py`**: cổng deny duy nhất, KHÔNG dedupe theo mã — điều kiện
+  chặn tự tan khi tick, dedupe sẽ cho lần sửa thứ hai lọt qua trong khi plan vẫn đứng yên.
+- **Lane quick học đủ ba trạng thái checkbox**: `PHASE_TABLE["quick"]` và
+  `skills/tdq-intake/references/quick-lane.md` trước đây chỉ dạy `[x]`, nên hook đòi một
+  thứ tài liệu không hề yêu cầu. Nay có mục "Luật tick" và `forbidden` cấm gom tick.
+- **Bất biến T2.11 thu hẹp**: `transcript_path` vẫn cấm tuyệt đối trong `hooks/` và
+  `scripts/`; chuỗi `"deny"` chỉ được phép trong `_common.py`, để không hook nào tự dựng
+  JSON deny riêng.
+
+479 test xanh.
+
 ## 0.11.2 — 2026-08-09
 
 Bảng kiểm kê năng lực (B0) giữ được tín hiệu định tuyến cho cả skill mô tả tiếng Việt.
