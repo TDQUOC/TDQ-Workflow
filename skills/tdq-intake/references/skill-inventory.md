@@ -63,6 +63,6 @@ Chỉ có 3 giá trị. Chọn theo bảng, từ trên xuống, dừng ở dòng
 
 Kiểm bằng máy: `doc_lint.py` rule R8 soi spec; `doc_lint.py --pair <spec> <plan>` soi hợp đồng.
 
-## Lane quick
+## Chế độ nhanh (express)
 
 Không cần bảng. Mini-plan có đúng 1 dòng: `Năng lực: <các skill sẽ DÙNG, hoặc "không có">`.

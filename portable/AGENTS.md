@@ -12,7 +12,7 @@
 Intake ──► Analysis ──► Spec ──► Plan ──► Implement ──► QC ──► Report
  (lane?)   (interview)  [DUYỆT]  [DUYỆT]  (1 turn,      (loop   (~10-20 dòng)
                                            tick ngay)    plan)
-Lane quick: Analysis (+search/interview khi cần) ──► mini-plan gộp 1 file ──►
+Chế độ nhanh: Analysis (+search/interview khi cần) ──► mini-plan gộp 1 file ──►
             [DUYỆT] ──► ghi log ──► Implement ──► QC (mặc định BẬT)
 ```
 
@@ -23,7 +23,7 @@ Chi tiết từng phase (đọc file tương ứng với phase đang ở, đừn
 
 | Phase | File |
 |---|---|
-| `no_state`, `analyze`, lane quick | [workflow/01-intake.md](workflow/01-intake.md) |
+| `no_state`, `analyze`, chế độ nhanh | [workflow/01-intake.md](workflow/01-intake.md) |
 | `spec` | [workflow/02-spec.md](workflow/02-spec.md) |
 | `plan` | [workflow/03-plan.md](workflow/03-plan.md) |
 | `implement`, `qc`, `report` | [workflow/04-build.md](workflow/04-build.md) |

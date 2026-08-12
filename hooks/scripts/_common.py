@@ -26,7 +26,7 @@ APPROVE_HINTS = {
     # hardcode main từng khiến user gõ sai mode so với plan đã chốt.
     "plan": 'nhắn "duyệt plan mode {mode}" (đổi được: main|subagent)',
     # Biến thể bỏ QC phải hiện ở gợi ý, nếu không user không biết đường opt-out.
-    "quick": 'nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC")',
+    "quick": 'nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy)',
 }
 
 _PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent)", re.IGNORECASE)

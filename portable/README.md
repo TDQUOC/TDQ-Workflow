@@ -23,7 +23,7 @@ Kiểm: trong project đích chạy `python3 scripts/tdq_state.py next` → ph�
 `tests/test_portable_sync.py`, đã xoá cùng lần dọn mode `external` ở 0.10.0). Sau khi
 sửa bất kỳ file nào trong `skills/tdq-{conventions,intake,spec,plan,build}/`, kiểm lại
 xem `portable/` có cần sửa theo không — nhất là khi đổi `PHASE_TABLE`,
-`VALID_MODES`, luật QC quick, hay khuôn plan/spec.
+`VALID_MODES`, luật QC chế độ nhanh, hay khuôn plan/spec.
 
 Sinh lại `workflow/phases.md` sau mỗi lần đổi `PHASE_TABLE` trong `scripts/tdq_state.py`:
 

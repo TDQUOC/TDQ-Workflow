@@ -38,7 +38,7 @@ class QuickQcDocTest(unittest.TestCase):
     """N1: quick-lane.md phải định nghĩa QC, không chỉ nói 'chạy validate'."""
 
     def test_quick_lane_has_qc_section(self):
-        self.assertIn("## QC ở quick", read(N1))
+        self.assertIn("## QC ở chế độ nhanh", read(N1))
 
     def test_quick_lane_ties_qc_items_to_dod(self):
         # Luật mới: số hạng mục QC bằng số dòng DoD, không phải danh sách cố định.

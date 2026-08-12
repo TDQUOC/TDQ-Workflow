@@ -1,6 +1,6 @@
 ---
 name: tdq-build
-description: Thực thi plan TDQ đã duyệt end-to-end trong một turn, chạy QC bám DoD, viết report rồi hỏi user về commit. Dùng khi plan lane full vừa duyệt.
+description: Thực thi trọn plan TDQ đã duyệt trong một turn, chạy QC bám DoD, viết report rồi hỏi về commit. Dùng khi plan chế độ chuyên sâu vừa duyệt.
 ---
 
 # TDQ Build — Implement → QC → Report

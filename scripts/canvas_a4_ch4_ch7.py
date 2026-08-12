@@ -18,7 +18,7 @@ from canvas_draw import W, X
 
 STATES = [
     ("no_state", "vào khi: chưa mở request", "→ có active_request + lane"),
-    ("analyze", "vào khi: lane full, đã mở request", "→ hết câu hỏi đổi kết quả"),
+    ("analyze", "vào khi: chế độ chuyên sâu, đã mở request", "→ hết câu hỏi đổi kết quả"),
     ("spec", "vào khi: đã phân tích xong", "→ spec_approved = true"),
     ("plan", "vào khi: spec_approved = true", "→ plan_approved + có mode"),
     ("implement", "vào khi: đã chốt mode thực thi", "→ mọi task tick [x]"),
@@ -43,7 +43,7 @@ SCHEMA = [
     ("plan_sha256", "vân tay plan lúc duyệt"),
     ("plan_approved_at", "thời điểm duyệt plan"),
     ("plan_approved_by", "NGUYÊN VĂN câu user nhắn để duyệt plan"),
-    ("quick_approved", "duyệt cho lane quick"),
+    ("quick_approved", "duyệt cho chế độ nhanh"),
     ("quick_approved_at", "thời điểm duyệt quick"),
     ("quick_approved_by", "NGUYÊN VĂN câu duyệt quick"),
     ("quick_qc_skipped", "true chỉ khi user nói RÕ bỏ QC"),
@@ -71,7 +71,7 @@ def build_ch4():
                 "strokeColor": ARROW_DOWN, "strokeWidth": 2, "roughness": 0,
             })
 
-    b.note("Nhánh lane quick: no_state → quick (gộp spec+plan ≤40 dòng, duyệt 1 lần) "
+    b.note("Nhánh chế độ nhanh (express): no_state → quick (gộp spec+plan ≤40 dòng, duyệt 1 lần) "
            "→ implement → QC (bật mặc định) → idle. VALID_PHASES trong "
            "scripts/tdq_state.py dòng 32 gồm 7 phase; no_state là trạng thái suy ra "
            "khi state.json chưa có active_request.")

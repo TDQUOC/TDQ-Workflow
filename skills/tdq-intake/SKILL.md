@@ -43,7 +43,7 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    xuất lane kèm lý do cho CHÍNH việc này. Rồi câu hỏi "Bạn muốn chạy lane nào?" với
    option mỗi dòng theo khuôn [references/interview.md](references/interview.md), phương
    án đề xuất luôn đứng ở A:
-   `- A (đề xuất): quick — <lý do>` xuống dòng `- B: full — <lý do>`.
+   `- A (đề xuất): chế độ nhanh (express) — <lý do>` xuống dòng `- B: chế độ chuyên sâu (deep) — <lý do>`.
    Cách chọn: [references/lane-decision.md](references/lane-decision.md).
    **DỪNG chờ user trả lời.** Không tự chọn lane.
 
@@ -59,11 +59,11 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    - `quick` → làm Phần C, không qua Phần B.
 
 Xong khi: `state.json` có `active_request` và `lane` đúng thứ user chọn.
-Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
+Bước kế tiếp: Phần B (chế độ chuyên sâu (deep)) hoặc Phần C (chế độ nhanh (express)).
 
-## Phần B — Phân tích (phase `analyze`, chỉ lane full)
+## Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep))
 
-Chỉ nạp khi lane `full` — quick không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
+Chỉ nạp khi chế độ chuyên sâu (deep) — chế độ nhanh không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
 mục tiêu rời phase này với ZERO chỗ đoán. Làm đủ 6 bước (kiểm kê năng lực, đọc code,
 research, interview, chốt kiến thức, kiểm cổng) theo
 [references/analyze-full.md](references/analyze-full.md).
@@ -74,9 +74,9 @@ Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set p
 rồi sang [tdq-spec](../tdq-spec/SKILL.md) — cùng turn nếu interview đã xong, còn phải
 hỏi user thì trình câu hỏi và dừng.
 
-## Phần C — Lane quick
+## Phần C — Chế độ nhanh (express)
 
-Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-lane.md](references/quick-lane.md).
+Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-lane.md](references/quick-lane.md).
 
 1. **Phân tích.** Đọc đúng phần code liên quan. Có ẩn số bên ngoài (thư viện, API,
    phiên bản) → web search qua `tavily-primary` TRƯỚC khi viết gì; thuần nội bộ thì bỏ
@@ -88,7 +88,7 @@ Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-
    (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
 3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
-4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
+4. In đúng dòng: `➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy) · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
 5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — im lặng về QC thì QC vẫn BẬT).
 6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
 7. Implement end-to-end trong 1 turn. Mỗi task: đánh `[~]` TRƯỚC khi sửa code (hook

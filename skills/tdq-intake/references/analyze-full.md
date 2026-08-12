@@ -1,4 +1,4 @@
-# Phần B — Phân tích (phase `analyze`, chỉ lane full)
+# Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep))
 
 Đóng vai chuyên gia đúng lĩnh vực của yêu cầu. Mục tiêu: rời phase này với **ZERO chỗ đoán**.
 Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.md`, đúng 3 mục:

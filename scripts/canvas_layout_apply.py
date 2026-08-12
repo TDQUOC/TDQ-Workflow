@@ -17,7 +17,7 @@ from canvas_move_block import api, plan_move, write_moves
 MOVES = [
     # (chương, vùng nguồn x0,y0,x1,y1, y đích, tiêu đề mới, số phần tử mong đợi)
     (2, (1120, -110, 1880, 850), 1420, "2. Ưu điểm & lợi ích cho dev", 55),
-    (5, (-220, -215, 1080, 1650), 4580, "5. Flow làm việc — lane quick & full", 65),
+    (5, (-220, -215, 1080, 1650), 4580, "5. Flow làm việc — chế độ nhanh & chuyên sâu", 65),
     (7, (40, 1780, 2680, 3340), 7520, "7. Sequence diagram — trình tự 1 request", 60),
     (9, (1920, -110, 2680, 1370), 10260, "9. Manifest & Dependency", 19),
     (10, (1120, 900, 1880, 1650), 11900, "10. Nền tảng & cách Test/Dev", 15),

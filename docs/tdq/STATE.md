@@ -1,9 +1,9 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-12T18:06:57+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-12T18:53:44+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-12-commit-bump-thu-hang-rao |
+| Request | 2026-08-12-commit-doi-ten-lane |
 | Lane | quick |
 | Phase | implement |
 | Spec | (chưa có) |

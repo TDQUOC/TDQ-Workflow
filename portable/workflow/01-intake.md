@@ -1,4 +1,4 @@
-# Phase `no_state` / `analyze` / lane quick — Intake
+# Phase `no_state` / `analyze` / chế độ nhanh — Intake
 
 ## Tầng nhỏ — trả lời/sửa luôn, không mở request
 
@@ -34,7 +34,8 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    — cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ, thứ luôn chạy thì không liệt kê. Rồi 1 dòng đề
    xuất lane kèm lý do cho CHÍNH việc này. Rồi câu hỏi "Bạn muốn chạy lane nào?" theo
    đúng khuôn hỏi ở mục "Vòng interview — cách hỏi" bên dưới, phương án đề xuất luôn
-   đứng ở A: `- A (đề xuất): quick — <lý do>` xuống dòng `- B: full — <lý do>`.
+   đứng ở A: `- A (đề xuất): chế độ nhanh (express) — <lý do>` xuống dòng
+   `- B: chế độ chuyên sâu (deep) — <lý do>`.
    **DỪNG chờ user trả lời.** Không tự chọn lane.
 
 3. **Init state** ngay khi user chốt lane:
@@ -49,11 +50,11 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    - `quick` → làm Phần C, không qua Phần B.
 
 Xong khi: `state.json` có `active_request` và `lane` đúng thứ user chọn.
-Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
+Bước kế tiếp: Phần B (chế độ chuyên sâu (deep)) hoặc Phần C (chế độ nhanh (express)).
 
-## Phần B — Phân tích (phase `analyze`, chỉ lane full)
+## Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep))
 
-Chỉ nạp khi lane `full` — quick không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
+Chỉ nạp khi chế độ chuyên sâu (deep) — chế độ nhanh không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
 mục tiêu rời phase này với ZERO chỗ đoán. Làm đủ 6 bước:
 
 1. **Kiểm kê năng lực (B0).** Harness không có skill system riêng thì bỏ qua bước này;
@@ -133,6 +134,6 @@ Ghi mọi hỏi–đáp vào brief mục `## Hỏi đáp`: câu hỏi, các phư
 **không** làm đổi sản phẩm; còn một câu làm đổi → hỏi tiếp vòng nữa. Cấm chuyển sang
 viết spec khi còn chỗ phải đoán.
 
-## Phần C — Lane quick
+## Phần C — Chế độ nhanh (express)
 
-Quick = rút gọn, KHÔNG cắt bước tư duy: [references/quick-lane.md](references/quick-lane.md).
+Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy: [references/quick-lane.md](references/quick-lane.md).
