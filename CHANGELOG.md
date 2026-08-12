@@ -2,6 +2,24 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.4 — 2026-08-12
+
+Hai lane đổi TÊN GỌI cho người đọc: `chế độ nhanh (express)` và
+`chế độ chuyên sâu (deep)`. Định danh máy vẫn là `quick`/`full` — state không đổi lược
+đồ, không cần migrate, mọi khoá `quick_*` giữ nguyên.
+
+- `tdq_state.LANE_LABELS` + `lane_label()` là nguồn nhãn duy nhất. Lane lạ trả lại
+  nguyên chuỗi thay vì nổ, vì đây là lớp hiển thị.
+- `tdq_state.LANE_ALIASES` + `normalize_lane()` là cửa vào duy nhất cho lane do user gõ.
+  `init <slug> express` ghi `lane=quick`; `approve nhanh` ghi vào khoá `quick_*`.
+- Hook nhận câu duyệt bằng từ mới: `duyệt nhanh`, `duyệt express`. Câu cũ `duyệt quick`
+  chạy y như trước. `nhanh` chỉ tính khi đứng ngay sau từ đồng ý, nên "ok làm nhanh nhé"
+  KHÔNG bị hiểu là duyệt.
+- Văn bản skill, bản portable, README và mô tả plugin gọi lane bằng nhãn mới. Tài liệu
+  lịch sử trong `docs/tdq/` giữ nguyên.
+
+493 test xanh.
+
 ## 0.11.3 — 2026-08-12
 
 Hàng rào tick ở lane quick chặn thật thay vì chỉ nhắc.
