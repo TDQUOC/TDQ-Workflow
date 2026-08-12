@@ -37,6 +37,23 @@ Năng lực: <skill sẽ DÙNG, hoặc "không có">
 
 Quá 40 dòng nghĩa là việc này không còn "quick" — nói với user và đề xuất chuyển full.
 
+## Luật tick — `[ ]` · `[~]` · `[x]`
+
+Checkbox có ba trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement:
+
+1. Đánh `[~]` cho task sắp làm **TRƯỚC** khi sửa dòng mã đầu tiên.
+2. Viết test (đỏ) → code → test xanh.
+3. Đổi `[~]` → `[x]` **NGAY**, không đợi task sau.
+
+Chỉ một task mang `[~]` tại một thời điểm. **Cấm gom tick vào cuối turn** — lane quick
+làm trọn gói trong một turn, gom tick nghĩa là plan không phản ánh gì trong suốt lúc làm.
+
+Hàng rào: `hooks/scripts/edit_gate.py` **CHẶN** (deny) mọi lần sửa file ngoài `docs/` và
+`tests/` khi phase là `implement`/`qc` mà plan không có task nào mang `[~]`. Miễn trừ
+`tests/**` để còn viết được test đỏ trước. Bị chặn mà request thật ra đã đóng → chạy
+`python3 scripts/tdq_state.py set phase=idle`.
+
+
 ## QC ở quick
 
 Mặc định **BẬT**. Làm ngay sau khi implement xong, **số hạng mục bằng số dòng DoD**
@@ -68,7 +85,8 @@ BỎ theo yêu cầu user: "<nguyên văn câu user>"
 
 - Chạy khi QC FAIL, hoặc khi thấy bug/test đỏ.
 - Task fix ghi vào plan dưới heading `## QC vòng N — fix`, khuôn
-  `- [ ] **QCn.1** <việc> — Test: <check>`. Làm red→green, tick `[x]` ngay.
+  `- [ ] **QCn.1** <việc> — Test: <check>`. Làm red→green: `[~]` khi bắt đầu,
+  đổi `[x]` ngay khi xanh.
 - Fix xong chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm hỏng.
 - **Trần 3 vòng.** Vượt trần → DỪNG, báo user, đề xuất chuyển lane full. Giữ
   `phase=implement`, KHÔNG chạy `set phase=idle`.

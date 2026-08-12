@@ -600,7 +600,9 @@ PHASE_TABLE = {
             "User duyệt → chạy lệnh approve ở trên (--no-qc CHỈ khi user nói rõ bỏ QC, "
             "im lặng về QC = CÓ QC)",
             "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
-            "Implement từng task red→green, tick [x] ngay khi task pass",
+            "Implement từng task: đánh [~] cho task đang làm TRƯỚC khi sửa code "
+            "(hook edit_gate CHẶN nếu plan không có [~]), red→green, "
+            "đổi sang [x] NGAY khi test của task đó xanh — không gom tick cuối turn",
             "QC: mỗi dòng DoD một phép kiểm bằng lệnh, cộng hạng mục chạy test từng task. "
             "Bằng chứng ghi vào mục ## QC của plan. "
             "quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng "
@@ -612,7 +614,7 @@ PHASE_TABLE = {
             "Đóng việc: chạy `python3 scripts/tdq_state.py set phase=idle` — terminal của lane quick",
         ],
         "done_when": "quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle",
-        "forbidden": "Implement trước khi ghi working log; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user",
+        "forbidden": "Implement trước khi ghi working log; gom tick vào cuối turn hoặc để nhiều task cùng mang [~]; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user",
     },
 }
 

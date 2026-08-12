@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — quan sát + nhắc, KHÔNG chặn.
+"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — quan sát + nhắc; chặn đúng 1 ca.
+
+Chỉ `TDQ:TICK` chặn (deny): sửa mã nguồn khi đang implement/qc mà plan chưa có task
+nào mang dấu `[~]`. Mọi mã còn lại vẫn chỉ nhắc.
 
 Hai việc, theo đúng thứ tự:
 1. Ghi `observe` vào sổ turn: `edit:<path>` cho mọi lần sửa file, `log_written`
@@ -10,7 +13,8 @@ Hai việc, theo đúng thứ tự:
 """
 import os
 
-from _common import (echo_line, observe, payload_cwd, read_payload, remind, tdq_state)
+from _common import (block, echo_line, observe, payload_cwd, read_payload, remind,
+                     tdq_state)
 
 today_log_rel = tdq_state.today_log_rel      # một nguồn duy nhất, dùng chung với stop_gate
 
@@ -83,18 +87,21 @@ def main():
             echo_line("TDQ:LOG", f"đã append {log_rel}"),
         ])
 
-    # đang implement/qc mà plan chưa đánh dấu task nào đang làm → nhắc tick.
-    # Chỉ NHẮC: chặn ở đây sẽ khoá tay giữa chừng; hàng rào thật nằm ở stop_gate.
+    # đang implement/qc mà plan chưa đánh dấu task nào đang làm → CHẶN.
+    # stop_gate chỉ so vân tay plan đầu/cuối turn nên không bắt được bulk-tick trong
+    # một turn duy nhất (lane quick làm trọn gói trong 1 turn) — hàng rào thật phải
+    # nằm ở đây. Miễn trừ `tests/**`: red→green đòi viết test đỏ trước khi có gì để tick.
     # Đặt CUỐI vì `remind()` thoát ngay sau lần nhắc đầu: TDQ:LOG dẫn tới chặn cứng
-    # ở Stop nên phải được ưu tiên, TDQ:TICK chỉ lấy chỗ khi không còn nhắc nào khác.
-    if tdq_state.effective_phase(state, warn=False) in ("implement", "qc"):
+    # ở Stop nên phải được ưu tiên.
+    in_tests = within(rel_target, "tests") or rel_target.startswith("tests" + os.sep)
+    if not in_tests and tdq_state.effective_phase(state, warn=False) in ("implement", "qc"):
         tick = tdq_state.plan_tick_state(cwd)
         if tick["exists"] and tick["total"] > 0 \
                 and not tick["has_doing"] and not tick["all_done"]:
-            remind(cwd, payload, "TDQ:TICK", [
+            block(cwd, payload, "TDQ:TICK", [
                 "Plan chưa có task nào mang dấu [~] — đánh dấu task đang làm TRƯỚC khi sửa code.",
-                "Cách làm: mở plan, đổi task sắp làm thành [~]; test xanh thì đổi ngay sang [x].",
-                echo_line("TDQ:TICK", "đã đánh dấu task đang làm"),
+                "Mở plan, đổi task sắp làm thành [~]; xanh thì đổi [x] ngay.",
+                "Request đã xong → tdq_state.py set phase=idle.",
             ])
 
 

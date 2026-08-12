@@ -1,4 +1,4 @@
-"""edit_gate.py (0.3.0) — quan sát vào sổ turn + nhắc; không bao giờ chặn."""
+"""edit_gate.py (0.4.0) — quan sát vào sổ turn + nhắc; chỉ TDQ:TICK chặn."""
 import datetime
 import os
 import tempfile
@@ -125,7 +125,8 @@ class TestEditGate(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual(out, "")
 
-    def test_never_denies_in_any_scenario(self):
+    def test_never_denies_outside_tick(self):
+        """Ngoài TDQ:TICK, mọi ca khác chỉ nhắc — không ca nào deny."""
         scenarios = [
             dict(active_request="r1", lane="full", phase="spec"),
             dict(active_request="r1", lane="quick"),
@@ -143,8 +144,8 @@ if __name__ == "__main__":
     unittest.main()
 
 
-class TickRemindTest(unittest.TestCase):
-    """TDQ:TICK — nhắc tick task khi implement mà plan chưa có `[~]`. Chỉ nhắc."""
+class TickBlockTest(unittest.TestCase):
+    """TDQ:TICK — chặn sửa mã nguồn khi implement mà plan chưa có `[~]`. Miễn trừ tests/**."""
 
     PLAN_REL = os.path.join("docs", "tdq", "plan", "r1.md")
     CHUA_LAM = "- [ ] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
@@ -172,12 +173,25 @@ class TickRemindTest(unittest.TestCase):
         payload["tool_input"] = {"file_path": os.path.join(self.cwd, rel)}
         return run_hook("edit_gate.py", payload)
 
-    def test_implement_chua_tick_thi_nhac(self):
+    def test_implement_chua_tick_thi_chan(self):
         self.dung_state(plan=self.CHUA_LAM)
         rc, out, _ = self.sua()
         self.assertEqual(rc, 0)
-        self.assertNotIn("deny", out)
+        self.assertIn("deny", out)
         self.assertIn("TDQ:TICK", out)
+
+    def test_chan_lap_lai_khong_dedupe(self):
+        """Chặn phải lặp: dedupe sẽ cho lần sửa thứ hai lọt trong khi plan vẫn chưa tick."""
+        self.dung_state(plan=self.CHUA_LAM)
+        self.assertIn("deny", self.sua()[1])
+        self.assertIn("deny", self.sua("src/b.py")[1])
+
+    def test_sua_file_test_thi_khong_chan(self):
+        """red→green: viết test đỏ trước khi có gì để tick."""
+        self.dung_state(plan=self.CHUA_LAM)
+        out = self.sua(os.path.join("tests", "test_moi.py"))[1]
+        self.assertNotIn("TDQ:TICK", out)
+        self.assertNotIn("deny", out)
 
     def test_da_co_dau_nga_thi_im(self):
         self.dung_state(plan=self.DANG_LAM)
@@ -195,9 +209,11 @@ class TickRemindTest(unittest.TestCase):
         self.dung_state(phase="report", plan=self.CHUA_LAM)
         self.assertNotIn("TDQ:TICK", self.sua()[1])
 
-    def test_phase_qc_van_nhac(self):
+    def test_phase_qc_van_chan(self):
         self.dung_state(phase="qc", plan=self.CHUA_LAM)
-        self.assertIn("TDQ:TICK", self.sua()[1])
+        out = self.sua()[1]
+        self.assertIn("TDQ:TICK", out)
+        self.assertIn("deny", out)
 
     def test_sua_trong_docs_thi_im(self):
         self.dung_state(plan=self.CHUA_LAM)

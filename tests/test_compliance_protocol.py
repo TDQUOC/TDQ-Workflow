@@ -244,6 +244,14 @@ class ProtocolTest(unittest.TestCase):
 
     # T2.11 ----------------------------------------------------------
     def test_no_transcript_no_deny(self):
+        """Không đọc transcript ở đâu cả; `deny` chỉ được phép ở đúng một nơi.
+
+        Bản gốc cấm `"deny"` tuyệt đối. Nay lane quick cần chặn thật (TDQ:TICK —
+        stop_gate chỉ so vân tay plan đầu/cuối turn nên không bắt được bulk-tick
+        trong một turn duy nhất), nên bất biến thu hẹp lại: mọi quyết định deny
+        phải đi qua `_common.block()`, không hook nào tự dựng JSON deny riêng.
+        """
+        deny_allowed = os.path.join(ROOT, "hooks", "scripts", "_common.py")
         hits = []
         for folder in ("hooks", "scripts"):
             for root, _, files in os.walk(os.path.join(ROOT, folder)):
@@ -254,6 +262,8 @@ class ProtocolTest(unittest.TestCase):
                     with open(path, encoding="utf-8") as f:
                         text = f.read()
                     for pattern in (r"transcript_path", r'"deny"'):
+                        if pattern == r'"deny"' and path == deny_allowed:
+                            continue
                         if re.search(pattern, text):
                             hits.append(f"{path}: {pattern}")
         self.assertEqual(hits, [])
