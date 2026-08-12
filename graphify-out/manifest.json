@@ -20,9 +20,9 @@
     "semantic_hash": "89d9527d62ce09626f483c072d4cb05e"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1786203931.7014046,
-    "ast_hash": "be49e82d92e23834373f751441fe1468",
-    "semantic_hash": "be49e82d92e23834373f751441fe1468"
+    "mtime": 1786468350.2478642,
+    "ast_hash": "58fd8a5a9181d16ef713de2c605b0f4b",
+    "semantic_hash": "58fd8a5a9181d16ef713de2c605b0f4b"
   },
   "hooks/scripts/prompt_context.py": {
     "mtime": 1786202562.2776105,
@@ -35,14 +35,14 @@
     "semantic_hash": "1bfb1502199f21de4d70f26d38b357c0"
   },
   "hooks/scripts/stop_gate.py": {
-    "mtime": 1785338793.6004343,
-    "ast_hash": "9e3ec4d7314ace1d7f2421bc13bcd2a4",
-    "semantic_hash": "9e3ec4d7314ace1d7f2421bc13bcd2a4"
+    "mtime": 1786468358.0883586,
+    "ast_hash": "a64e47f921012d3a11c0189313a37657",
+    "semantic_hash": "a64e47f921012d3a11c0189313a37657"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1786389006.422818,
-    "ast_hash": "78fdf058149a79457ea1e5eb7c714693",
-    "semantic_hash": ""
+    "mtime": 1786467438.360727,
+    "ast_hash": "c25a4ce4fe364bb3de75cbc2e3c57d94",
+    "semantic_hash": "c25a4ce4fe364bb3de75cbc2e3c57d94"
   },
   "tests/fixtures/bash_cmd.json": {
     "mtime": 1785167490.77849,
@@ -95,9 +95,9 @@
     "semantic_hash": "94089a0b403678050322bf47f0441f93"
   },
   "tests/test_edit_gate.py": {
-    "mtime": 1786203035.322801,
-    "ast_hash": "36808ef45ed48a32fa0855f3dc91f2dc",
-    "semantic_hash": "36808ef45ed48a32fa0855f3dc91f2dc"
+    "mtime": 1786467747.7781122,
+    "ast_hash": "a6b1a6e9e59558a5480269e49a1d5739",
+    "semantic_hash": "a6b1a6e9e59558a5480269e49a1d5739"
   },
   "tests/test_state.py": {
     "mtime": 1786202981.110694,
@@ -105,9 +105,9 @@
     "semantic_hash": "b1471bf68d2dc47f261577b3b5a9716f"
   },
   "tests/test_stop_gate.py": {
-    "mtime": 1785338807.053962,
-    "ast_hash": "f2d13259b2e48bd41ad8c6329dc3d5d9",
-    "semantic_hash": "f2d13259b2e48bd41ad8c6329dc3d5d9"
+    "mtime": 1786468218.5311513,
+    "ast_hash": "00104db6c882bafa8f7f47d655fb9fa7",
+    "semantic_hash": "00104db6c882bafa8f7f47d655fb9fa7"
   },
   "README.md": {
     "mtime": 1786204035.3517148,
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "agents/tdq-implementer.md": {
-    "mtime": 1786388985.1248705,
-    "ast_hash": "696a94925b74bdcee6d0c3ce13cc836c",
+    "mtime": 1786391824.3808017,
+    "ast_hash": "a712580f31d564ea2fb89fe34891f7e0",
     "semantic_hash": ""
   },
   "agents/tdq-qc-tester.md": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786254818.5852122,
-    "ast_hash": "225ffb45dc5b0770b6a19bd450e87877",
+    "mtime": 1786391755.402121,
+    "ast_hash": "9ba1dc8c70c175abaf137fb02269c0b8",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
@@ -235,9 +235,9 @@
     "semantic_hash": "b6c84960717336649bba56d9d44bdf0f"
   },
   "tests/test_turn_snapshot.py": {
-    "mtime": 1785913182.0317738,
-    "ast_hash": "05dd4a3d3e7f7d058f34108d7dc0136e",
-    "semantic_hash": "05dd4a3d3e7f7d058f34108d7dc0136e"
+    "mtime": 1786467493.6344848,
+    "ast_hash": "3d08b7126f8293a0b5a53037bb534266",
+    "semantic_hash": "3d08b7126f8293a0b5a53037bb534266"
   },
   "scripts/skill_inventory.py": {
     "mtime": 1786254646.4640539,
@@ -520,8 +520,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-build/SKILL.md": {
-    "mtime": 1786388964.4627619,
-    "ast_hash": "6e17b93ce0045a9b9491e3cc1aa567a3",
+    "mtime": 1786391835.214953,
+    "ast_hash": "5307e78a5f4f6b6a888ca0d455ddd19e",
     "semantic_hash": ""
   },
   "skills/tdq-build/references/qc.md": {
@@ -570,8 +570,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/references/plan-template.md": {
-    "mtime": 1786388985.1259685,
-    "ast_hash": "fafbe1de521efd3bff18d62dd753d287",
+    "mtime": 1786391731.4213967,
+    "ast_hash": "3eafe781188f6311b1fb0b07f617008b",
     "semantic_hash": ""
   },
   "skills/tdq-spec/references/spec-template.md": {
@@ -1938,5 +1938,50 @@
     "mtime": 1786254884.7322822,
     "ast_hash": "d4936b57af841c2e585098c2489c9b66",
     "semantic_hash": ""
+  },
+  "scripts/canvas_draw.py": {
+    "mtime": 1786523826.2962532,
+    "ast_hash": "4de6fc304b9e995a4cef34bb80ad6c3c",
+    "semantic_hash": "4de6fc304b9e995a4cef34bb80ad6c3c"
+  },
+  "scripts/canvas_layout_apply.py": {
+    "mtime": 1786512767.8153942,
+    "ast_hash": "93311edefd0db9b84104fd3ab6672f22",
+    "semantic_hash": "93311edefd0db9b84104fd3ab6672f22"
+  },
+  "scripts/canvas_move_block.py": {
+    "mtime": 1786523844.725082,
+    "ast_hash": "7b354c7ea6a70fb25346df24b47085a3",
+    "semantic_hash": "7b354c7ea6a70fb25346df24b47085a3"
+  },
+  "scripts/check_canvas_layout.py": {
+    "mtime": 1786523796.0985875,
+    "ast_hash": "4bca8b0a755a0d203e2294ff14e5828e",
+    "semantic_hash": "4bca8b0a755a0d203e2294ff14e5828e"
+  },
+  "tests/test_check_canvas_layout.py": {
+    "mtime": 1786523747.1455083,
+    "ast_hash": "33cbc593108cb91224e14f3b770bb154",
+    "semantic_hash": "33cbc593108cb91224e14f3b770bb154"
+  },
+  "tests/test_plan_tick.py": {
+    "mtime": 1786467416.9036186,
+    "ast_hash": "07470abd1624eda4186c6de4df035dbf",
+    "semantic_hash": "07470abd1624eda4186c6de4df035dbf"
+  },
+  "scripts/canvas_a4_ch4_ch7.py": {
+    "mtime": 1786524039.889841,
+    "ast_hash": "48b9d47036c9f3643f8d30db6ba676df",
+    "semantic_hash": "48b9d47036c9f3643f8d30db6ba676df"
+  },
+  "scripts/canvas_a4_rebuild.py": {
+    "mtime": 1786524483.3750029,
+    "ast_hash": "f0ea05724480162ba8a36513b71fe8f3",
+    "semantic_hash": "f0ea05724480162ba8a36513b71fe8f3"
+  },
+  "tests/test_canvas_draw.py": {
+    "mtime": 1786524494.0477881,
+    "ast_hash": "63c3b223359fc8d03cb229ce199ae9c8",
+    "semantic_hash": "63c3b223359fc8d03cb229ce199ae9c8"
   }
 }

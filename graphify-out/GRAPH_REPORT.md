@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-11)
 
 ## Corpus Check
-- 388 files · ~332,623 words
+- 388 files · ~333,047 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3344 nodes · 4098 edges · 344 communities (286 shown, 58 thin omitted)
+- 3345 nodes · 4099 edges · 342 communities (285 shown, 57 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `023eeaf6`
+- Built from commit: `e565ed9b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -45,7 +45,7 @@
 - TestState
 - Working log 2026-08-09
 - StateFileTest
-- _common.py
+- prompt_context.py
 - skill_inventory.py
 - test_e2e_chain.py
 - Spec — tối ưu token/time workflow (vòng 2)
@@ -105,8 +105,8 @@
 - SPEC — Siết QC và vòng fix cho lane quick
 - SPEC — Giảm over-engineer & over-test cho TDQ workflow
 - SPEC — Cắt token thừa trong TDQ workflow
-- bash_gate.py
-- stop_gate.py
+- _common.py
+- payload_cwd
 - tdq-intake/SKILL.md
 - ScanSecretsTest
 - GateMergeTest
@@ -226,7 +226,6 @@
 - BRIEF — Vector database chạy local cho RAG (2026)
 - Brief — clone-setting-codex (phase 2 đào sâu)
 - Brief — clone-setting-codex (phase 2 đào sâu)
-- remind
 - BuildManifestTest
 - make_repo
 - LogTest
@@ -322,7 +321,6 @@
 - requests/2026-08-05-rebuild-sync-export.md
 - requests/2026-08-05-validate-export.md
 - Report — 2026-07-31-failpath-demo (fallback tavily)
-- edit_gate.py
 - skill-budget.md
 - token-budget.md
 - v0.1/README.md
@@ -374,19 +372,19 @@
   hooks/scripts/bash_gate.py → hooks/scripts/_common.py
 - `main()` --calls--> `read_payload()`  [EXTRACTED]
   hooks/scripts/bash_gate.py → hooks/scripts/_common.py
-- `main()` --calls--> `remind()`  [EXTRACTED]
-  hooks/scripts/bash_gate.py → hooks/scripts/_common.py
 - `main()` --calls--> `turn_rows()`  [EXTRACTED]
-  hooks/scripts/bash_gate.py → hooks/scripts/_common.py
+  hooks/scripts/stop_gate.py → hooks/scripts/_common.py
+- `main()` --calls--> `read_payload()`  [EXTRACTED]
+  hooks/scripts/prompt_context.py → hooks/scripts/_common.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (344 total, 58 thin omitted)
+## Communities (342 total, 57 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.05
-Nodes (75): _atomic_write(), cli(), _cli_approve(), default_state(), _echo_state(), effective_lane(), effective_mode(), effective_phase() (+67 more)
+Nodes (77): main(), within(), _atomic_write(), cli(), _cli_approve(), default_state(), _echo_state(), effective_lane() (+69 more)
 
 ### Community 1 - ".stop"
 Cohesion: 0.10
@@ -500,9 +498,9 @@ Nodes (21): 00:15 — đóng request giảm over-engineer workflow, 00:25 — đ
 Cohesion: 0.21
 Nodes (4): run_state_cli(), P1 — xử lý state file: S1–S8 của spec 0.3.0 (mỗi yêu cầu 1 test)., _read(), StateFileTest
 
-### Community 30 - "_common.py"
-Cohesion: 0.21
-Nodes (16): approve_hint(), payload_cwd(), plan_mode(), Helper dùng chung cho hook TDQ (chỉ stdlib).  Giao thức tuân thủ 0.3.0 (spec §2., Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi., Project root cho state — cwd của payload có thể là thư mục con/worktree., read_payload(), session_id() (+8 more)
+### Community 30 - "prompt_context.py"
+Cohesion: 0.29
+Nodes (10): approve_hint(), plan_mode(), Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi., _compact(), _emit(), looks_like_approval(), main(), Turn trước đã in y hệt nội dung này — thay bằng dòng ngắn cùng mã. (+2 more)
 
 ### Community 31 - "skill_inventory.py"
 Cohesion: 0.16
@@ -740,16 +738,16 @@ Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể
 Cohesion: 0.18
 Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
 
-### Community 90 - "bash_gate.py"
-Cohesion: 0.31
-Nodes (10): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., echo_line(), observe(), Như `remind()` nhưng KHÔNG dedupe theo mã — dùng khi một mã đã bị hook     khác (+2 more)
+### Community 90 - "_common.py"
+Cohesion: 0.20
+Nodes (19): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), echo_line(), observe() (+11 more)
 
-### Community 91 - "stop_gate.py"
-Cohesion: 0.29
-Nodes (10): turn_rows(), _log_changed(), main(), Ảnh chụp đầu turn — lấy dòng MỚI NHẤT.      Bình thường mỗi turn chỉ có một dòng, Log hôm nay có đổi so với đầu turn không (bất kể ghi bằng cách nào)., Tên file để nêu trong lời chặn — ưu tiên file mới xuất hiện trong turn.      Chu, _repo_changed(), _sha() (+2 more)
+### Community 91 - "payload_cwd"
+Cohesion: 0.23
+Nodes (13): payload_cwd(), Project root cho state — cwd của payload có thể là thư mục con/worktree., read_payload(), main(), _log_changed(), main(), Ảnh chụp đầu turn — lấy dòng MỚI NHẤT.      Bình thường mỗi turn chỉ có một dòng, Log hôm nay có đổi so với đầu turn không (bất kể ghi bằng cách nào). (+5 more)
 
 ### Community 92 - "tdq-intake/SKILL.md"
-Cohesion: 0.24
+Cohesion: 0.27
 Nodes (5): Phần B — Phân tích (phase `analyze`, chỉ lane full), Khuôn mini-spec/plan (≤ 40 dòng), Lane quick — chi tiết, QC ở quick, Vòng fix
 
 ### Community 93 - "ScanSecretsTest"
@@ -1093,7 +1091,7 @@ Cohesion: 0.29
 Nodes (6): Chọn model & effort cho sub-agent, Cảnh báo về `effort`, Hai nút chỉnh, hai phạm vi khác nhau, Luật override `model` khi gọi (tham số Agent tool), Mặc định theo vai (đã ghi vào frontmatter), Nguồn
 
 ### Community 180 - "Kiểm kê năng lực (bước B0)"
-Cohesion: 0.29
+Cohesion: 0.25
 Nodes (7): 4 lý do loại (đóng — cấm tự chế lý do khác), Các bước, Khuôn bảng (copy nguyên khối rồi điền), Kiểm kê năng lực (bước B0), Lane quick, Luật điền ô "Phán quyết", Số phận từng phán quyết ở các phase sau
 
 ### Community 181 - "KNOWLEDGE — instruction-hardening-7b (chốt trước khi viết spec)"
@@ -1215,10 +1213,6 @@ Nodes (5): Brief — clone-setting-codex (phase 2 đào sâu), Bối cảnh, Hư
 ### Community 210 - "Brief — clone-setting-codex (phase 2 đào sâu)"
 Cohesion: 0.33
 Nodes (5): Brief — clone-setting-codex (phase 2 đào sâu), Bối cảnh, Hướng từ phase 1 (route đã chốt cho phase 2), Luật evidence-only, Yêu cầu output
-
-### Community 211 - "remind"
-Cohesion: 0.33
-Nodes (6): already_reminded(), Nhắc Claude kèm MÃ mà KHÔNG chặn tool, rồi thoát.      Khuôn 3 dòng (spec §2.1):, Mã này đã nhắc trong turn hiện tại chưa (dedupe 1 lần/mã/turn).      `rows`: sổ, Ép về đúng trần: ≤3 dòng, ≤200 ký tự., remind(), trim()
 
 ### Community 213 - "make_repo"
 Cohesion: 0.33
@@ -1501,17 +1495,17 @@ Cohesion: 0.50
 Nodes (4): Bảng 5 mã (danh sách đóng), Hook nhìn thấy thay đổi bằng cách nào, Mã nhắc của hook, Điểm chặn duy nhất
 
 ### Community 288 - "Khuôn plan"
-Cohesion: 0.50
-Nodes (3): Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình
+Cohesion: 0.40
+Nodes (4): Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình, Điểm độ phức tạp `(nN)`
 
 ### Community 289 - "Khuôn spec"
 Cohesion: 0.50
 Nodes (3): Checklist scope — trả lời được hết mới trình, Khuôn spec, Kiểm trước khi trình
 
 ## Knowledge Gaps
-- **1625 isolated node(s):** `Luật cứng (áp cho cả ba phase)`, `Phần A — Implement (phase `implement`)`, `Phần B — QC (phase `qc`)`, `Phần C — Report (phase `report`)`, `Bảng phase TDQ (tự sinh — KHÔNG sửa tay)` (+1620 more)
+- **1626 isolated node(s):** `Luật cứng (áp cho cả ba phase)`, `Phần A — Implement (phase `implement`)`, `Phần B — QC (phase `qc`)`, `Phần C — Report (phase `report`)`, `Các bước` (+1621 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **58 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -1519,11 +1513,11 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `TestState` connect `TestState` to `.test_reapprove_refreshes_sha256_after_file_changed`, `.test_reapprove_unchanged_file_stays_idempotent`, `.test_mode_external_bi_tu_choi`, `.test_approve_quick_moves_phase_to_implement`, `.test_row_age_ok_bad_ts_types`, `.test_init_set_reset_in_mot_dong_khong_json`, `.test_co_co_json_thi_in_lai_nguyen_state`, `TestProjectRootResolution`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Why does `write_state()` connect `.stop` to `helper.py`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **What connects `Luật cứng (áp cho cả ba phase)`, `Phần A — Implement (phase `implement`)`, `Phần B — QC (phase `qc`)` to the rest of the system?**
-  _1625 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1626 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.05468215994531784 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05189873417721519 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**
   _Cohesion score 0.09722222222222222 - nodes in this community are weakly interconnected._
 - **Should `.write` be split into smaller, more focused modules?**

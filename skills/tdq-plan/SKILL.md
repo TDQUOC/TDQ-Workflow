@@ -23,15 +23,22 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    các phase với task checkbox · task riêng cho log service và unit test · Definition of Done
    trỏ về §6 của spec, **mỗi dòng DoD phải kiểm được bằng một lệnh** (QC đếm hạng mục theo
    đúng số dòng này).
-   Mỗi task đúng một việc + một cách kiểm đo được, kèm điểm độ phức tạp `(nN)`:
+   Mỗi task đúng một việc + một cách kiểm đo được, kèm điểm độ phức tạp `(nN)` và
+   ước tính phút `(eNm)`:
    ```
-   - [ ] **T1.1** (n3) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
+   - [ ] **T1.1** (n3 e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
    ```
    **Chấm điểm `(nN)` ngay lúc viết task**, không chấm bù sau: 1–10 là độ phức tạp
    **tương đối**, KHÔNG phải số phút. Neo theo mốc tham chiếu trong plan-template
    (1 = sửa một dòng · 5 = một hàm mới có test · 10 = đổi công thức lõi). Phân vân
    giữa hai mốc → lấy mốc thấp; hoàn toàn không biết → 5. Điểm là tuỳ chọn (thiếu thì
    bộ đọc coi như 5), nhưng plan mới thì chấm đủ mọi task.
+   **Chấm phút `eNm` cùng lúc, không chấm bù sau**: đơn vị là PHÚT (nguyên, 1–999),
+   viết trong cùng khối ngoặc sau điểm — `(n5 e12m)`. Ước tính thời gian LÀM, không
+   tính lúc chờ user duyệt hay interview. Đừng đệm thêm cho an toàn: status line có
+   hệ số hiệu chỉnh học từ lịch sử, đệm tay làm nó học sai. `eNm` tuỳ chọn (thiếu thì
+   quy đổi từ điểm), nhưng plan mới thì chấm đủ mọi task — ETA lấy con số này làm
+   tín hiệu chính.
    **Luật nhãn `(mcp)` — bắt buộc ngay bước này:** task có khối `Dùng:` mà skill đó
    cần MCP tool lúc chạy → dòng `Dùng:` phải kết thúc bằng nhãn ` (mcp)` NGOÀI
    backtick (khuôn trong plan-template). Nhãn này đánh dấu task buộc Claude tự làm,

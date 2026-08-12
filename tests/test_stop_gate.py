@@ -351,3 +351,108 @@ class TestStopGateNoFalseBlock(StopGateBase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestStopGateTick(StopGateBase):
+    """[TDQ:TICK] — điểm chặn thứ hai: code đổi mà checkbox plan đứng yên.
+
+    Rủi ro lớn nhất của hàng rào này là chặn oan (hook chạy user scope), nên số
+    ca miễn trừ nhiều hơn hẳn số ca chặn.
+    """
+
+    PLAN_REL = "docs/tdq/plan/r1.md"
+    CHUA_LAM = "- [ ] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    DANG_LAM = "- [~] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    XONG_HET = "- [x] **T1** a — Test: x\n- [x] **T2** b — Test: x\n"
+
+    git = TestStopGateDiskEffects.git
+    snapshot = TestStopGateDiskEffects.snapshot
+    write = TestStopGateDiskEffects.write
+
+    def dung(self, phase="implement", plan=CHUA_LAM, plan_file=PLAN_REL):
+        """Turn hợp lệ về mặt log: có log, có ảnh chụp, có sửa code."""
+        self.git("init", "-q")
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase,
+                    plan_file=plan_file)
+        if plan is not None:
+            self.write(self.PLAN_REL, plan)
+        self.write(self.today_log(), "# log\n")
+        self.snapshot()
+        self.write(self.today_log(), "## 10:00 — viec\n", mode="a")
+        self.observe("log_written", path=self.today_log())
+        self.observe("edit", path="src/a.py")
+        self.write("src/a.py", "print(1)\n")
+
+    def test_chan_khi_code_doi_ma_plan_dung_yen(self):
+        self.dung()
+        rc, out, err = self.stop()
+        self.assertEqual(rc, 0)
+        data = json.loads(out)
+        self.assertEqual(data["decision"], "block")
+        self.assertIn("[TDQ:TICK]", data["reason"])
+        self.assertLessEqual(len(data["reason"]), 300)
+        self.assertIn(self.PLAN_REL, err)          # T3.3: log truy vết
+
+    def test_im_khi_plan_da_doi_trong_turn(self):
+        self.dung()
+        self.write(self.PLAN_REL, self.DANG_LAM)   # tick trong turn
+        self.assertNotIn("TDQ:TICK", self.stop()[1])
+
+    def test_im_khi_khong_co_file_plan(self):
+        self.dung(plan=None)
+        self.assertNotIn("TDQ:TICK", self.stop()[1])
+
+    def test_im_khi_plan_da_xong_het(self):
+        self.dung(plan=self.XONG_HET)
+        self.assertNotIn("TDQ:TICK", self.stop()[1])
+
+    def test_im_khi_phase_ngoai_implement_qc(self):
+        self.dung(phase="report")
+        self.assertNotIn("TDQ:TICK", self.stop()[1])
+
+    def test_qc_van_chan(self):
+        self.dung(phase="qc")
+        self.assertIn("[TDQ:TICK]", self.stop()[1])
+
+    def test_im_khi_khong_co_anh_chup(self):
+        self.git("init", "-q")
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    plan_file=self.PLAN_REL)
+        self.write(self.PLAN_REL, self.CHUA_LAM)
+        self.write(self.today_log(), "# log\n")
+        self.observe("log_written", path=self.today_log())
+        self.observe("edit", path="src/a.py")
+        self.assertNotIn("TDQ:TICK", self.stop()[1])
+
+    def test_im_khi_stop_hook_active(self):
+        self.dung()
+        self.assertEqual(self.stop(stop_hook_active=True)[1], "")
+
+    def test_im_khi_turn_khong_dong_code(self):
+        self.git("init", "-q")
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    plan_file=self.PLAN_REL)
+        self.write(self.PLAN_REL, self.CHUA_LAM)
+        self.write(self.today_log(), "# log\n")
+        self.snapshot()
+        self.assertNotIn("TDQ:TICK", self.stop()[1])
+
+    def test_thieu_log_thi_uu_tien_bao_log_truoc(self):
+        self.git("init", "-q")
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    plan_file=self.PLAN_REL)
+        self.write(self.PLAN_REL, self.CHUA_LAM)
+        self.snapshot()
+        self.observe("edit", path="src/a.py")
+        data = json.loads(self.stop()[1])
+        self.assertIn("[TDQ:LOG]", data["reason"])
+        self.assertNotIn("[TDQ:TICK]", data["reason"])
+
+    def test_log_service_tat_duoc_bang_bien_moi_truong(self):
+        """Log bật mặc định (T3.3 đã khoá), TDQ_LOG=0 tắt log mà KHÔNG tắt chặn."""
+        self.dung()
+        payload = load_fixture("stop.json", cwd=self.cwd, session_id=SESSION)
+        rc, out, err = run_hook("stop_gate.py", payload, env={"TDQ_LOG": "0"})
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:TICK]", out)
+        self.assertNotIn("chặn TDQ:TICK", err)

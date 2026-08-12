@@ -144,6 +144,26 @@ def main():
         }, ensure_ascii=False))
         return
 
+    # Điểm chặn thứ hai: code đã đổi trong turn mà checkbox plan đứng y nguyên.
+    # Bulk-tick cuối turn làm tiến độ nhảy 0/N → N/N, và tệ hơn: ETA mất sạch mẫu
+    # nhịp/task vì mốc chỉ được ghi khi tiến độ ĐỔI. Chặn ở đây, không chặn ở
+    # PreToolUse — trong turn vẫn được sửa code tự do, chỉ không được kết thúc turn.
+    # Mọi nhánh im lặng đều là chống chặn oan: hook này chạy ở user scope.
+    if culprit and snap and isinstance(snap.get("plan_sha"), str) \
+            and tdq_state.effective_phase(state, warn=False) in ("implement", "qc"):
+        tick = tdq_state.plan_tick_state(cwd)
+        if tick["exists"] and tick["total"] > 0 and not tick["all_done"] \
+                and tick["sha"] == snap["plan_sha"]:
+            tdq_state._info(f"stop_gate: chặn TDQ:TICK · nguồn={source} · path={culprit} "
+                            f"· plan={tick['path']} · checkbox không đổi trong turn")
+            print(json.dumps({
+                "decision": "block",
+                "reason": ("[TDQ:TICK] Turn này sửa code nhưng checkbox trong plan không đổi. "
+                           "Mở plan, đánh [~] task đang làm và [x] task đã xong (từng task, "
+                           "không dồn cuối turn), rồi mới kết thúc turn."),
+            }, ensure_ascii=False))
+            return
+
     reminded = {r.get("code") for r in rows if r.get("kind") == "remind"}
     done = {r.get("event") for r in rows if r.get("kind") == "observe"}
     hints = []

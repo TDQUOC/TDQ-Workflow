@@ -19,29 +19,28 @@ Trạng thái plan: CHỜ DUYỆT
 6. Không commit/push cho đến khi user yêu cầu.
 
 ## P1 — <tên phase>
-- [ ] **T1.1** (n3 e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
-- [ ] **T1.2** (n5 e12m) <việc cụ thể> — Test: <...>
+- [ ] **T1.1** (n3) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
+- [ ] **T1.2** (n5) <việc cụ thể> — Test: <...>
 
 **Xong P1 khi**: <điều kiện đo được>
 
 ## P2 — <tên phase>
-- [ ] **T2.1** (n8 e20m) <...> — Test: <...>
+- [ ] **T2.1** (n8) <...> — Test: <...>
 
-## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
+## Khuôn khối hợp đồng skill/năng lực (đặt NGAY DƯỚI dòng task dùng năng lực đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
-  - Dùng: `<tên skill>`
-- [ ] **T<x.z>** <task mà skill cần MCP tool> — Test: <...>
-  - Dùng: `<tên skill>` (mcp)
-  - Để: <việc cụ thể skill lo trong task này>, nạp skill TRƯỚC bước đỏ. Agent ngoài
-    không có skill system: đọc `<đường dẫn>/SKILL.md` rồi làm theo.
+  - Dùng: `<tên skill/năng lực>`
+- [ ] **T<x.z>** <task mà năng lực cần công cụ ngoài (search/API) lúc chạy> — Test: <...>
+  - Dùng: `<tên skill/năng lực>` (mcp)
+  - Để: <việc cụ thể lo trong task này>, nạp/đọc năng lực đó TRƯỚC bước đỏ.
   - Ra: <artifact phải tồn tại sau task, có đường dẫn>
   - Kiểm: <một lệnh chạy được, PASS đo được>
-  - Không dùng cho: <việc kề bên mà skill này KHÔNG được lan sang>
+  - Không dùng cho: <việc kề bên mà năng lực này KHÔNG được lan sang>
 
-Luật nhãn `(mcp)` — BẮT BUỘC ghi ngay khi lập plan: skill nào cần MCP tool lúc
-chạy (gọi server MCP, ví dụ tavily/notion) → dòng `Dùng:` phải kết thúc bằng nhãn
-` (mcp)` NGOÀI backtick, cuối dòng, đúng cú pháp spec §1. `split-plan` đọc nhãn
-này để biết task nào buộc phải do Claude tự làm, không giao sub-agent thiếu MCP.
+Luật nhãn `(mcp)` — BẮT BUỘC ghi ngay khi lập plan: năng lực nào cần công cụ ngoài lúc
+chạy (gọi search/API, ví dụ tavily/notion) → dòng `Dùng:` phải kết thúc bằng nhãn
+` (mcp)` NGOÀI backtick, cuối dòng. Nhãn này đánh dấu task buộc bạn tự làm, không
+giao agent phụ thiếu công cụ đó.
 
 ## Px — Log & test bắt buộc
 Phase này bắt buộc **chỉ khi việc này có runtime** — tức có ít nhất một task tạo hoặc sửa
@@ -55,11 +54,10 @@ task log, giữ task test, và ghi đúng một dòng `Log: BỎ — <lý do m�
 Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh kiểm.
 ```
 
-## Điểm độ phức tạp `(nN)` và ước tính phút `(eNm)`
+## Điểm độ phức tạp `(nN)`
 
-Đặt **ngay sau mã task**, trước phần việc: `- [ ] **T2.1** (n5 e12m) việc — Test: ...`.
-Đây là độ phức tạp **tương đối** 1–10, không phải số phút. Status line đọc điểm này để
-ước tính ETA theo trọng số thay vì coi mọi task nặng như nhau.
+Đặt **ngay sau mã task**, trước phần việc: `- [ ] **T2.1** (n5) việc — Test: ...`.
+Đây là độ phức tạp **tương đối** 1–10, không phải số phút.
 
 Thang neo mốc:
 
@@ -77,24 +75,10 @@ Luật:
 - Điểm là **tuỳ chọn**: thiếu `(nN)` thì bộ đọc coi như 5, plan cũ vẫn chạy y nguyên.
 - Điểm KHÔNG đổi luật tick `[ ] [~] [x]` và không phải cam kết thời gian.
 
-### Ước tính phút `eNm`
-
-`eNm` = số **phút** Claude ước tính mình cần để làm xong task ấy, viết liền trong cùng
-khối ngoặc, sau điểm, cách nhau đúng một khoảng trắng: `(n5 e12m)`. Đơn vị luôn là phút,
-số nguyên 1–999, không viết `1h` hay `0.5m`.
-
-Luật:
-- Chấm **cùng lúc** với `(nN)`, ngay khi viết task; không chấm bù sau.
-- Ước tính thời gian LÀM, không tính thời gian chờ user duyệt hay interview.
-- Phân vân → chấm số mình thật sự tin, đừng đệm thêm cho an toàn: status line có sẵn
-  hệ số hiệu chỉnh học từ lịch sử để bù cái lệch hệ thống, đệm tay làm nó học sai.
-- `eNm` là **tuỳ chọn**: thiếu thì status line quy đổi từ điểm như plan cũ. Plan mới
-  thì chấm đủ mọi task, vì ETA lấy đúng con số này làm tín hiệu chính.
-
 ## Dòng `Mode thực thi`
 
-- Phải nằm **một dòng riêng**, không ghép vào dòng header khác — công cụ đọc dòng này.
-- Đây chỉ là **đề xuất** của Claude — không hỏi user riêng một lượt cho mode.
+- Phải nằm **một dòng riêng**, không ghép vào dòng header khác.
+- Đây chỉ là **đề xuất** — không hỏi user riêng một lượt cho mode.
   Mode ghi vào state là mode user nói lúc duyệt: `duyệt plan mode <main|subagent>`.
   User duyệt mà không nói mode → HỎI, không tự lấy đề xuất làm chốt.
 

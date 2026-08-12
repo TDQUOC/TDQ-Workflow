@@ -83,6 +83,20 @@ def main():
             echo_line("TDQ:LOG", f"đã append {log_rel}"),
         ])
 
+    # đang implement/qc mà plan chưa đánh dấu task nào đang làm → nhắc tick.
+    # Chỉ NHẮC: chặn ở đây sẽ khoá tay giữa chừng; hàng rào thật nằm ở stop_gate.
+    # Đặt CUỐI vì `remind()` thoát ngay sau lần nhắc đầu: TDQ:LOG dẫn tới chặn cứng
+    # ở Stop nên phải được ưu tiên, TDQ:TICK chỉ lấy chỗ khi không còn nhắc nào khác.
+    if tdq_state.effective_phase(state, warn=False) in ("implement", "qc"):
+        tick = tdq_state.plan_tick_state(cwd)
+        if tick["exists"] and tick["total"] > 0 \
+                and not tick["has_doing"] and not tick["all_done"]:
+            remind(cwd, payload, "TDQ:TICK", [
+                "Plan chưa có task nào mang dấu [~] — đánh dấu task đang làm TRƯỚC khi sửa code.",
+                "Cách làm: mở plan, đổi task sắp làm thành [~]; test xanh thì đổi ngay sang [x].",
+                echo_line("TDQ:TICK", "đã đánh dấu task đang làm"),
+            ])
+
 
 if __name__ == "__main__":
     main()

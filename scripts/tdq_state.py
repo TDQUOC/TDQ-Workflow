@@ -375,8 +375,57 @@ def repo_status_paths(cwd, limit=400, status=None):
     return paths
 
 
+# ------------------------------------------- trạng thái tick của plan (hàng rào)
+#
+# Status line và hàng rào ép tick đều cần biết plan "đang ở đâu". Băm cả FILE
+# (không đếm riêng số `[x]`) vì `[ ]` → `[~]` cũng là cập nhật hợp lệ mà số `[x]`
+# không đổi — đếm `[x]` sẽ bỏ lọt đúng cái mốc "bắt đầu task".
+
+_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x)\]\s*\*\*[A-Za-z]+[0-9.]*\*\*")
+
+
+def plan_tick_state(cwd):
+    """Trạng thái checkbox của plan hiện hành. Không bao giờ ném lỗi."""
+    trong = {"path": None, "exists": False, "sha": "",
+             "has_doing": False, "all_done": False, "total": 0}
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    rel = state.get("plan_file")
+    if not rel:
+        req = state.get("active_request")
+        if not req:
+            return trong
+        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+        sha = sha256_file(path)
+    except OSError:
+        return trong
+
+    tong = xong = dang = 0
+    for line in noi_dung.splitlines():
+        m = _TASK_LINE.match(line)
+        if not m:
+            continue
+        tong += 1
+        if m.group(1) == "x":
+            xong += 1
+        elif m.group(1) == "~":
+            dang += 1
+
+    trong.update(exists=True, sha=sha, total=tong,
+                 has_doing=dang > 0, all_done=tong > 0 and xong == tong)
+    return trong
+
+
 def turn_snapshot(cwd):
-    """Trạng thái đầu turn: log hôm nay + vân tay repo + danh sách path đang bẩn."""
+    """Trạng thái đầu turn: log hôm nay + vân tay repo + danh sách path đang bẩn
+    + vân tay plan (để biết checkbox có động trong turn hay không)."""
     log_rel = today_log_rel()
     try:
         log_sha = sha256_file(os.path.join(cwd, log_rel))
@@ -385,7 +434,8 @@ def turn_snapshot(cwd):
     status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
     return {"log_rel": log_rel, "log_sha": log_sha,
             "repo_sha": repo_status_digest(cwd, status=status),
-            "repo_paths": repo_status_paths(cwd, status=status)}
+            "repo_paths": repo_status_paths(cwd, status=status),
+            "plan_sha": plan_tick_state(cwd)["sha"]}
 
 
 # --------------------------------------------------------- enum an toàn (S4)

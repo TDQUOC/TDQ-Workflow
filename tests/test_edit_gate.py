@@ -141,3 +141,64 @@ class TestEditGate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TickRemindTest(unittest.TestCase):
+    """TDQ:TICK — nhắc tick task khi implement mà plan chưa có `[~]`. Chỉ nhắc."""
+
+    PLAN_REL = os.path.join("docs", "tdq", "plan", "r1.md")
+    CHUA_LAM = "- [ ] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    DANG_LAM = "- [~] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    XONG_HET = "- [x] **T1** a — Test: x\n- [x] **T2** b — Test: x\n"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+        write_file(self.cwd, today_log_rel(), "# log\n")
+
+    def dung_state(self, phase="implement", plan=None):
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase,
+                    spec_file="docs/tdq/spec/r1.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file=self.PLAN_REL, plan_approved=True,
+                    plan_sha256="def", plan_approved_at=now_iso(),
+                    implement_mode="main")
+        if plan is not None:
+            write_file(self.cwd, self.PLAN_REL, plan)
+
+    def sua(self, rel="src/a.py"):
+        payload = load_fixture("edit_src.json", cwd=self.cwd, session_id="s-tick")
+        payload["tool_input"] = {"file_path": os.path.join(self.cwd, rel)}
+        return run_hook("edit_gate.py", payload)
+
+    def test_implement_chua_tick_thi_nhac(self):
+        self.dung_state(plan=self.CHUA_LAM)
+        rc, out, _ = self.sua()
+        self.assertEqual(rc, 0)
+        self.assertNotIn("deny", out)
+        self.assertIn("TDQ:TICK", out)
+
+    def test_da_co_dau_nga_thi_im(self):
+        self.dung_state(plan=self.DANG_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_plan_xong_het_thi_im(self):
+        self.dung_state(plan=self.XONG_HET)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_khong_co_file_plan_thi_im(self):
+        self.dung_state(plan=None)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_phase_ngoai_implement_qc_thi_im(self):
+        self.dung_state(phase="report", plan=self.CHUA_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_phase_qc_van_nhac(self):
+        self.dung_state(phase="qc", plan=self.CHUA_LAM)
+        self.assertIn("TDQ:TICK", self.sua()[1])
+
+    def test_sua_trong_docs_thi_im(self):
+        self.dung_state(plan=self.CHUA_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua("docs/ghi-chu.md")[1])

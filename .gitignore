@@ -14,3 +14,4 @@ graphify-out/.graphify_python
 graphify-out/.graphify_analysis.json
 docs/tdq/state.json
 graphify-out/.rebuild.lock
+.venv/
