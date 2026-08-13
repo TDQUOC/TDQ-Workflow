@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-13)
 
 ## Corpus Check
-- 468 files · ~557,738 words
+- 479 files · ~565,184 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4121 nodes · 5104 edges · 418 communities (355 shown, 63 thin omitted)
+- 4207 nodes · 5180 edges · 428 communities (365 shown, 63 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5ac106d4`
+- Built from commit: `f7ac2dce`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -428,16 +428,26 @@
 - PLAN — Fix dòng giải thích pipeline gây rối khi đọc lại tóm tắt
 - Report — Fix dòng giải thích pipeline gây rối khi đọc lại tóm tắt
 - QC — Fix dòng giải thích pipeline gây rối khi đọc lại tóm tắt
+- SPEC — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+- SPEC — Điều tra & báo cáo: câu hỏi TDQ bị ẩn khi bật focus mode
+- Brief — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+- Brief — Câu hỏi bị ẩn khi bật focus mode
+- PLAN — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+- PLAN — Điều tra & báo cáo: câu hỏi TDQ bị ẩn khi bật focus mode
+- Report — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+- Report — Câu hỏi TDQ bị ẩn khi bật focus mode
+- QC — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+- QC — Câu hỏi TDQ bị ẩn khi bật focus mode
 
 ## God Nodes (most connected - your core abstractions)
 1. `Working log 2026-08-05` - 53 edges
-2. `run_state_cli()` - 43 edges
-3. `Working log — 2026-08-13` - 35 edges
+2. `Working log — 2026-08-13` - 46 edges
+3. `run_state_cli()` - 43 edges
 4. `TestState` - 30 edges
 5. `Working Log — 2026-08-04` - 30 edges
-6. `write_state()` - 29 edges
-7. `Working log 2026-08-03` - 29 edges
-8. `Changelog` - 28 edges
+6. `Changelog` - 29 edges
+7. `write_state()` - 29 edges
+8. `Working log 2026-08-03` - 29 edges
 9. `run_hook()` - 25 edges
 10. `TestBashGate` - 24 edges
 
@@ -456,7 +466,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (418 total, 63 thin omitted)
+## Communities (428 total, 63 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.05
@@ -516,7 +526,7 @@ Nodes (6): read_state(), Sửa spec trong lúc QC rồi xin duyệt lại phải
 
 ### Community 14 - "Changelog"
 Cohesion: 0.04
-Nodes (44): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.10 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12, 0.11.5 — 2026-08-13 (+36 more)
+Nodes (45): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12 (+37 more)
 
 ### Community 15 - "Working log — 2026-07-28"
 Cohesion: 0.06
@@ -539,8 +549,8 @@ Cohesion: 0.07
 Nodes (29): 12:30 — Mở request check-external-assign-flow, 12:35 — Analyze check-external-assign-flow (lane full), 12:38 — Chốt analyze check-external-assign-flow, 12:45 — Spec 1.1 check-external-assign-flow, 12:50 — Spec 1.2 check-external-assign-flow (góp ý user), 12:58 — Plan check-external-assign-flow, 13:38 — Mở request check-claude-md-sync, 13:40 — Hoàn tất build + QC + report request check-external-assign-flow (+21 more)
 
 ### Community 20 - "Working log — 2026-08-13"
-Cohesion: 0.06
-Nodes (35): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+27 more)
+Cohesion: 0.04
+Nodes (46): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+38 more)
 
 ### Community 21 - "Spec: TDQWorkflow Plugin cho Claude Code"
 Cohesion: 0.07
@@ -1858,8 +1868,48 @@ Nodes (4): Giới hạn còn lại, QC, Report — Fix dòng giải thích pipel
 Cohesion: 0.50
 Nodes (3): Kết luận, Kết quả, QC — Fix dòng giải thích pipeline gây rối khi đọc lại tóm tắt
 
+### Community 418 - "SPEC — Fix: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.18
+Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
+
+### Community 419 - "SPEC — Điều tra & báo cáo: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.18
+Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
+
+### Community 420 - "Brief — Fix: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.20
+Nodes (9): Brief — Fix: câu hỏi TDQ bị ẩn khi bật focus mode, Chốt kiến thức, Hiểu & kiến thức, Hỏi đáp, Kiểm kê năng lực, Lộ trình, Nguyên văn, Vòng interview (+1 more)
+
+### Community 421 - "Brief — Câu hỏi bị ẩn khi bật focus mode"
+Cohesion: 0.20
+Nodes (9): Brief — Câu hỏi bị ẩn khi bật focus mode, Chốt kiến thức, Hiểu & kiến thức, Hỏi đáp, Kiểm kê năng lực, Lộ trình, Nguyên văn, Research (tavily-primary qua agent claude-code-guide) (+1 more)
+
+### Community 422 - "PLAN — Fix: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.33
+Nodes (5): Definition of Done, P1 — Sửa quy tắc §1 bước 4, PLAN — Fix: câu hỏi TDQ bị ẩn khi bật focus mode, Px — Log & test bắt buộc, Quy tắc thi hành (áp cho mọi task)
+
+### Community 423 - "PLAN — Điều tra & báo cáo: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.33
+Nodes (5): Definition of Done, P1 — Viết báo cáo nguyên nhân, PLAN — Điều tra & báo cáo: câu hỏi TDQ bị ẩn khi bật focus mode, Px — Log & test bắt buộc, Quy tắc thi hành (áp cho mọi task)
+
+### Community 424 - "Report — Fix: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.33
+Nodes (5): 1. Đã làm, 2. Bằng chứng sống (Q3 spec), 3. Test, 4. Kết luận, Report — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+
+### Community 425 - "Report — Câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.33
+Nodes (5): 1. Hiện tượng quan sát, 2. Cơ chế gây ra, 3. Gợi ý hướng khắc phục (chưa triển khai), Kết luận, Report — Câu hỏi TDQ bị ẩn khi bật focus mode
+
+### Community 426 - "QC — Fix: câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.50
+Nodes (3): Kết luận, Kết quả, QC — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
+
+### Community 427 - "QC — Câu hỏi TDQ bị ẩn khi bật focus mode"
+Cohesion: 0.50
+Nodes (3): Kết luận, Kết quả, QC — Câu hỏi TDQ bị ẩn khi bật focus mode
+
 ## Knowledge Gaps
-- **2031 isolated node(s):** `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13`, `0.11.8 — 2026-08-13`, `0.11.7 — 2026-08-13`, `0.11.6 — 2026-08-13` (+2026 more)
+- **2093 isolated node(s):** `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13`, `0.11.8 — 2026-08-13`, `0.11.7 — 2026-08-13` (+2088 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **63 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -1867,16 +1917,16 @@ Nodes (3): Kết luận, Kết quả, QC — Fix dòng giải thích pipeline g�
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `main()` connect `edit_gate.py` to `tdq_state.py`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Why does `today_log_rel()` connect `tdq_state.py` to `edit_gate.py`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `write_state()` connect `write_state` to `TestProjectRootResolution`, `test_prompt_context.py`, `helper.py`, `run_hook`, `TokenBudgetTest`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **What connects `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13`, `0.11.8 — 2026-08-13` to the rest of the system?**
-  _2031 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **What connects `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13` to the rest of the system?**
+  _2093 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0502497796062298 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**
   _Cohesion score 0.0723790976955534 - nodes in this community are weakly interconnected._
 - **Should `test_token_audit.py` be split into smaller, more focused modules?**
   _Cohesion score 0.09915966386554621 - nodes in this community are weakly interconnected._
+- **Should `.write` be split into smaller, more focused modules?**
+  _Cohesion score 0.07086197778952935 - nodes in this community are weakly interconnected._

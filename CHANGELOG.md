@@ -8,15 +8,15 @@ Bắt buộc dùng `tdq_finish.py` (thay Edit tay) và chạy trước đoạn c
 việc câu hỏi/tóm tắt TDQ bị chế độ focus của Claude Code gập ẩn.
 
 - `skills/tdq-conventions/SKILL.md` §1 bước 4: thêm bắt buộc gọi `tdq_finish.py` (cấm
-  Edit/Read rồi tự append tay working log), và bắt buộc lệnh đó là hành động cuối cùng của
-  turn, chạy TRƯỚC đoạn chat kết thúc turn — không gọi thêm tool sau khi đã in đoạn đó.
+  Edit/Read rồi tự append tay working log). Lệnh đó phải là hành động cuối cùng của turn,
+  chạy TRƯỚC đoạn chat kết thúc turn — không gọi thêm tool sau khi đã in đoạn đó.
 
 ## 0.11.10 — 2026-08-13
 
 Gắn nhãn khuôn mẫu khi tóm tắt spec/plan trích lại, tránh nhầm là câu hỏi sống.
 
 - `skills/tdq-spec/SKILL.md` bước 4, `skills/tdq-plan/SKILL.md` bước 5: khi đầu ra chính
-  là một khuôn/mẫu văn bản và cần trích nguyên khối đó vào tóm tắt duyệt, gắn nhãn "(khuôn
+  là một khuôn/mẫu văn bản và cần trích nguyên khối đó vào tóm tắt duyệt. Gắn nhãn "(khuôn
   mẫu — áp dụng cho các lần hỏi sau, không phải câu hỏi của turn này)" trước đoạn trích.
 
 ## 0.11.9 — 2026-08-13
