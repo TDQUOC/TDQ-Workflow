@@ -24,6 +24,11 @@ Mọi output cho user viết **tiếng Việt**.
    lệnh", không phải "gọi lệnh khác để né"). Lệnh này phải là **hành động cuối** của turn,
    chạy TRƯỚC đoạn chat kết thúc turn (tóm tắt/câu hỏi/`➤ Duyệt:`/báo lỗi vượt trần); sau
    khi in đoạn chat đó **không gọi thêm tool nào nữa**, để nó luôn là "final response" thật.
+5. **Turn còn chạy tiếp sau khi đã in khối user-facing** (bị hook chặn, tự phát hiện sót
+   việc, lỗi tool) → message cuối phải in **LẠI NGUYÊN VĂN 100%** khối đó. Gồm tóm tắt,
+   câu hỏi, ĐỦ option, dòng `➤ Duyệt:`. Đặt NGAY SAU dòng `✓ [TDQ:<MÃ>]`. Lý do: focus mode
+   chỉ hiện message cuối. Tóm tắt lại hay trỏ ngược ("xem câu hỏi ở trên") đều làm user
+   mất sạch câu hỏi và option. Cấm rút gọn, cấm trỏ ngược.
 
 Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
 Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).
@@ -74,16 +79,9 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 - Turn nào đổi repo → `tdq_finish.py --log` append vào CUỐI `docs/workinglog/<hôm nay>.md`:
   giờ, file đổi, lý do, test đã chạy. Cách hook nhận biết: [reminder-codes.md](references/reminder-codes.md).
 - Turn chỉ đọc/phân tích → không ghi. Turn chỉ sửa working log → không ghi thêm entry.
-- **Ảnh user gửi kèm.** Turn có ảnh đính kèm VÀ turn đó phải ghi working log (đổi repo) →
-  TRƯỚC khi gọi `tdq_finish.py --log`, copy từng ảnh. Nguồn: đường dẫn cache
-  (`~/.claude/image-cache/<session-id>/<n>.<ext>`), đã hiện sẵn trong context turn đó.
-  Đích: `docs/workinglog/assets/<active_request hoặc "misc" nếu không có>/<n>.<ext>`.
-  `n` = đếm file đã có trong thư mục đích + 1, không dùng lại số thứ tự của cache gốc.
-  Rồi chèn `![<mô tả ngắn>](assets/<slug>/<n>.<ext>)` vào đúng vị trí liên quan trong
-  chuỗi truyền cho `--log` (cạnh câu mô tả ảnh đó, không nhất thiết ở đầu). Ảnh **track
-  trong git** như mọi file khác trong `docs/workinglog/` — không gitignore. Áp dụng cho
-  **mọi** ảnh user gửi kèm trong turn đổi repo, không cần tự đánh giá "có liên quan".
-  Copy lỗi (file cache không còn) → báo user, đừng âm thầm bỏ qua.
+- **Ảnh user gửi kèm.** Turn có ảnh đính kèm VÀ phải ghi working log → copy ảnh vào
+  `docs/workinglog/assets/` rồi chèn link vào chuỗi `--log`, TRƯỚC khi gọi `tdq_finish.py`.
+  Đường dẫn, cách đánh số, luật đầy đủ: [references/worklog-images.md](references/worklog-images.md).
 
 ## 7. Git
 

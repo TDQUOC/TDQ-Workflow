@@ -456,3 +456,55 @@ class TestStopGateTick(StopGateBase):
         self.assertEqual(rc, 0)
         self.assertIn("[TDQ:TICK]", out)
         self.assertNotIn("chặn TDQ:TICK", err)
+
+
+class TestStopGateReprint(StopGateBase):
+    """Lời chặn phải tự ra lệnh in LẠI NGUYÊN VĂN khối chat cuối.
+
+    Stop chạy SAU khi model đã in xong đoạn text cuối turn, nên mỗi lần chặn là
+    một lần model phải in thêm text mới — đoạn cũ tụt xuống và bị focus mode gập
+    vào "N messages hidden". Mệnh lệnh in lại nằm ngay trong `reason` vì đó là
+    thứ duy nhất tới đúng lúc bị chặn.
+    """
+
+    PLAN_REL = TestStopGateTick.PLAN_REL
+    CHUA_LAM = TestStopGateTick.CHUA_LAM
+
+    git = TestStopGateDiskEffects.git
+    snapshot = TestStopGateDiskEffects.snapshot
+    write = TestStopGateDiskEffects.write
+    dung = TestStopGateTick.dung
+
+    def reason(self, out):
+        return json.loads(out)["reason"]
+
+    def test_reprint_trong_loi_chan_log(self):
+        write_state(self.cwd, active_request="r1", lane="full")
+        self.observe("edit", path="src/fresh.py")
+        reason = self.reason(self.stop()[1])
+        self.assertIn("[TDQ:LOG]", reason)
+        self.assertIn("in LẠI NGUYÊN VĂN", reason)
+        self.assertLessEqual(len(reason), 300)
+
+    def test_reprint_log_bao_dung_lenh_tdq_finish(self):
+        """Không được bảo tự gõ mục "## HH:MM" — luật hiện hành cấm Edit tay log."""
+        write_state(self.cwd, active_request="r1", lane="full")
+        self.observe("edit", path="src/fresh.py")
+        reason = self.reason(self.stop()[1])
+        self.assertIn("tdq_finish.py", reason)
+        self.assertNotIn("HH:MM", reason)
+
+    def test_reprint_trong_loi_chan_tick(self):
+        self.dung()
+        reason = self.reason(self.stop()[1])
+        self.assertIn("[TDQ:TICK]", reason)
+        self.assertIn("in LẠI NGUYÊN VĂN", reason)
+        self.assertLessEqual(len(reason), 300)
+
+    def test_reprint_van_trong_tran_voi_duong_dan_dai(self):
+        """Path dài bị cắt ở MAX_PATH_CHARS nên reason không thể vượt trần."""
+        write_state(self.cwd, active_request="r1", lane="full")
+        self.observe("edit", path="src/" + "z" * 400 + ".py")
+        reason = self.reason(self.stop()[1])
+        self.assertIn("in LẠI NGUYÊN VĂN", reason)
+        self.assertLessEqual(len(reason), 300)

@@ -124,7 +124,9 @@ def main():
     logged = any(r.get("kind") == "observe" and r.get("event") == "log_written" for r in rows)
 
     # Bằng chứng thứ hai, độc lập với tên tool: hiệu ứng thật trên đĩa.
-    culprit = edited[0] if edited else ""
+    # Cắt path ở đây chứ không chỉ trong _shell_changed_path: path lấy từ sổ turn
+    # cũng đi thẳng vào `reason`, path dài làm lời chặn vượt trần 300 ký tự.
+    culprit = edited[0][:MAX_PATH_CHARS] if edited else ""
     source = "sổ turn" if culprit else "—"
     if snap:
         if not logged:
@@ -138,9 +140,11 @@ def main():
         tdq_state._info(f"stop_gate: chặn TDQ:LOG · nguồn={source} · path={culprit}")
         print(json.dumps({
             "decision": "block",
-            "reason": (f"[TDQ:LOG] Turn này đổi repo ({culprit}) nhưng {log_rel} chưa được append. "
-                       "Thêm mục \"## HH:MM — <việc>\" ở CUỐI file (ngữ cảnh, file đổi, lý do, "
-                       "test đã chạy), tick [x] task plan đã xong, rồi mới kết thúc turn."),
+            # Câu chữ phải vừa trần 300 ký tự kể cả khi path chạm MAX_PATH_CHARS.
+            "reason": (f"[TDQ:LOG] Đổi repo ({culprit}) mà {log_rel} chưa append. "
+                       "Chạy `tdq_finish.py --files <file> --log \"<tóm tắt>\"`, cấm Edit tay. "
+                       "Xong rồi in LẠI NGUYÊN VĂN khối chat cuối (câu hỏi + đủ option + "
+                       "dòng ➤ Duyệt), cấm tóm tắt."),
         }, ensure_ascii=False))
         return
 
@@ -159,8 +163,8 @@ def main():
             print(json.dumps({
                 "decision": "block",
                 "reason": ("[TDQ:TICK] Turn này sửa code nhưng checkbox trong plan không đổi. "
-                           "Mở plan, đánh [~] task đang làm và [x] task đã xong (từng task, "
-                           "không dồn cuối turn), rồi mới kết thúc turn."),
+                           "Mở plan, đánh [~] task đang làm và [x] task đã xong (từng task). "
+                           "Xong rồi in LẠI NGUYÊN VĂN khối chat cuối — cấm tóm tắt lại."),
             }, ensure_ascii=False))
             return
 

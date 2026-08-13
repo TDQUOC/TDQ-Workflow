@@ -2,7 +2,7 @@
   ".claude-plugin/plugin.json": {
     "mtime": 1786622117.1295292,
     "ast_hash": "fa1eb069661e270a595242f0de9e9135",
-    "semantic_hash": ""
+    "semantic_hash": "fa1eb069661e270a595242f0de9e9135"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -35,9 +35,9 @@
     "semantic_hash": "1bfb1502199f21de4d70f26d38b357c0"
   },
   "hooks/scripts/stop_gate.py": {
-    "mtime": 1786527540.3716545,
-    "ast_hash": "a64e47f921012d3a11c0189313a37657",
-    "semantic_hash": "a64e47f921012d3a11c0189313a37657"
+    "mtime": 1786623069.6517253,
+    "ast_hash": "f53b26b53d5ca82bd79e96df4757f38c",
+    "semantic_hash": "f53b26b53d5ca82bd79e96df4757f38c"
   },
   "scripts/tdq_state.py": {
     "mtime": 1786606531.2007122,
@@ -105,9 +105,9 @@
     "semantic_hash": "b1471bf68d2dc47f261577b3b5a9716f"
   },
   "tests/test_stop_gate.py": {
-    "mtime": 1786527540.3731062,
-    "ast_hash": "00104db6c882bafa8f7f47d655fb9fa7",
-    "semantic_hash": "00104db6c882bafa8f7f47d655fb9fa7"
+    "mtime": 1786623012.6437528,
+    "ast_hash": "5c185563286ee3fc9f4e35223a24e404",
+    "semantic_hash": "5c185563286ee3fc9f4e35223a24e404"
   },
   "README.md": {
     "mtime": 1786535011.960473,
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786622092.756999,
-    "ast_hash": "99d9ee947129594b41ef0cda5856ee3f",
+    "mtime": 1786622136.6771073,
+    "ast_hash": "9b2f3283c2ca85a3bf18bc1412a575d8",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2352,7 +2352,7 @@
   ".claude/settings.local.json": {
     "mtime": 1786618579.2958105,
     "ast_hash": "0e38603e85a2c3ff6e7c4513f9034c4f",
-    "semantic_hash": ""
+    "semantic_hash": "0e38603e85a2c3ff6e7c4513f9034c4f"
   },
   "docs/tdq/brief/2026-08-13-fix-cau-hoi-focus-mode.md": {
     "mtime": 1786620405.2976387,
