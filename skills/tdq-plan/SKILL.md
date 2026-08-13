@@ -61,7 +61,10 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
 5. **Trình bày & DỪNG.** Chat: tóm tắt plan ≤ 10 dòng (số phase/task, mode bạn ĐỀ XUẤT
    + lý do, DoD). Tự kiểm trước khi in dòng Duyệt: tin nhắn phải CHỨA tóm tắt thật —
    không được thay bằng câu thông báo suông kiểu "đã ghi log, đang chờ duyệt"; thiếu
-   thì viết bổ sung ngay. Rồi in đúng dòng:
+   thì viết bổ sung ngay. Đầu ra của plan là chính một khuôn/mẫu văn bản → cần trích
+   nguyên khối đó làm ví dụ thì gắn nhãn rõ ngay trước đoạn trích. Nhãn dạng "(khuôn mẫu
+   — áp dụng cho các lần hỏi sau, không phải câu hỏi của turn này)". Mục đích: đọc lại
+   transcript không nhầm là đang hỏi lại. Rồi in đúng dòng:
    ```
    ➤ Duyệt: nhắn "duyệt plan mode <mode đề xuất>" (đổi được: main|subagent — duyệt xong build ngay) · Góp ý: nhắn trực tiếp
    ```

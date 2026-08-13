@@ -2,6 +2,14 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.10 — 2026-08-13
+
+Gắn nhãn khuôn mẫu khi tóm tắt spec/plan trích lại, tránh nhầm là câu hỏi sống.
+
+- `skills/tdq-spec/SKILL.md` bước 4, `skills/tdq-plan/SKILL.md` bước 5: khi đầu ra chính
+  là một khuôn/mẫu văn bản và cần trích nguyên khối đó vào tóm tắt duyệt, gắn nhãn "(khuôn
+  mẫu — áp dụng cho các lần hỏi sau, không phải câu hỏi của turn này)" trước đoạn trích.
+
 ## 0.11.9 — 2026-08-13
 
 Gọn UX câu hỏi chọn lane, gọi "pipeline" khi hiện với user.
