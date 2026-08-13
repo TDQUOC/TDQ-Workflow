@@ -2,6 +2,14 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.7 — 2026-08-13
+
+Bắt buộc rõ hơn việc in tóm tắt spec/plan trước dòng duyệt.
+
+- `skills/tdq-spec/SKILL.md` bước 4, `skills/tdq-plan/SKILL.md` bước 5: thêm câu
+  tự-kiểm ngay trước dòng `➤ Duyệt:` — buộc xác nhận tin nhắn CHỨA tóm tắt thật, không
+  được thay bằng câu thông báo suông kiểu "đã ghi log, đang chờ duyệt".
+
 ## 0.11.6 — 2026-08-13
 
 Thân thiện hơn với người dùng mới ở câu hỏi khuôn A/B/C và dòng duyệt.

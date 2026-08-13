@@ -59,7 +59,9 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    **Không** set `implement_mode` ở đây — trường đó chỉ được ghi khi ghi nhận duyệt.
 
 5. **Trình bày & DỪNG.** Chat: tóm tắt plan ≤ 10 dòng (số phase/task, mode bạn ĐỀ XUẤT
-   + lý do, DoD), rồi in đúng dòng:
+   + lý do, DoD). Tự kiểm trước khi in dòng Duyệt: tin nhắn phải CHỨA tóm tắt thật —
+   không được thay bằng câu thông báo suông kiểu "đã ghi log, đang chờ duyệt"; thiếu
+   thì viết bổ sung ngay. Rồi in đúng dòng:
    ```
    ➤ Duyệt: nhắn "duyệt plan mode <mode đề xuất>" (đổi được: main|subagent — duyệt xong build ngay) · Góp ý: nhắn trực tiếp
    ```

@@ -1,7 +1,7 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786607421.3748116,
-    "ast_hash": "987e107a89fc2bd89465a9e737983121",
+    "mtime": 1786611164.6081984,
+    "ast_hash": "13d34074575ff30254ecb01a2ca23f7b",
     "semantic_hash": ""
   },
   "hooks/hooks.json": {
@@ -150,13 +150,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786606789.9669344,
-    "ast_hash": "914162aa986794eef342487bcc7556f9",
+    "mtime": 1786609333.5904388,
+    "ast_hash": "e43a01dd0a10d44e797eb0dae0689d40",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
-    "mtime": 1786534841.3111386,
-    "ast_hash": "b3553099d19572d15608fd0ace7225f0",
+    "mtime": 1786609102.5977876,
+    "ast_hash": "a0b7afcab34d4b031179571ed377b853",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786607428.4489734,
-    "ast_hash": "2024ac5122ab821176757def01417e79",
+    "mtime": 1786611170.9844468,
+    "ast_hash": "4dac2e0963be76cbd8cee246e556bd7c",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786606970.2642567,
-    "ast_hash": "9350381186a79447df89420067b05abc",
+    "mtime": 1786611183.8315232,
+    "ast_hash": "ae10cd99842d03c5181937a51a40e43d",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -550,13 +550,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/SKILL.md": {
-    "mtime": 1786534730.794329,
-    "ast_hash": "40fae43cdc06818ac7489e97849f4877",
+    "mtime": 1786609346.416901,
+    "ast_hash": "b26e470e830a9ebc86205f603b54c9fd",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/interview.md": {
-    "mtime": 1786212393.791192,
-    "ast_hash": "d8889432705a7620e63cb6ce6adc7fa3",
+    "mtime": 1786609049.2664962,
+    "ast_hash": "27ddf88f436b81d575e6aa597563a6f7",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/lane-decision.md": {
@@ -2230,8 +2230,33 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786606991.3597143,
-    "ast_hash": "498e0c513abe87b7fcbe768a7aa62d79",
+    "mtime": 1786611181.6335192,
+    "ast_hash": "1ff7afd90310caff2bd9593b1abe4102",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
+    "mtime": 1786608247.4549747,
+    "ast_hash": "f67bb124e7f1cd0a251672a5257dbcc6",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-vi-du-cau-hoi-lane.md": {
+    "mtime": 1786609401.7401395,
+    "ast_hash": "f5833c3bf1084978e9d00d503295d4b6",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-13-vi-du-cau-hoi-lane.md": {
+    "mtime": 1786609383.9062996,
+    "ast_hash": "448b228d7c6759b106b3c81c8180e189",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-13-vi-du-cau-hoi-lane.md": {
+    "mtime": 1786609398.3224308,
+    "ast_hash": "3dd8d2133a30b4bef8b50c4518bd88fb",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-13-vi-du-cau-hoi-lane.md": {
+    "mtime": 1786608318.7670887,
+    "ast_hash": "5449c5844fc7200bceb7c472d9b4f24e",
     "semantic_hash": ""
   }
 }
