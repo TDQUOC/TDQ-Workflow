@@ -15,7 +15,13 @@ import re
 import sys
 
 from _common import (approve_hint, payload_cwd, plan_mode, read_payload,
-                     session_id, tdq_state)
+                     session_id)
+# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
+# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
+from tdq_state import (effective_lane, effective_mode,  # noqa: E402
+                       effective_phase, load, phase_key, prompt_context_last,
+                       prompt_context_save, render_next, sha256_file,
+                       turn_log_append, turn_log_clear, turn_snapshot)
 
 MAX_LINES = 3
 MAX_CHARS = 240
@@ -62,27 +68,27 @@ def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
     sid = session_id(payload)
-    tdq_state.turn_log_clear(cwd, sid)
+    turn_log_clear(cwd, sid)
     # Ảnh chụp đĩa đầu turn — để stop_gate cuối turn biết cái gì ĐÃ THẬT SỰ đổi,
     # kể cả khi thay đổi đi qua shell (sổ turn chỉ thấy tool Edit/Write).
     # Ghi vào sổ, KHÔNG in ra context → không tốn token của model.
-    tdq_state.turn_log_append(cwd, "turn_start", session=sid, **tdq_state.turn_snapshot(cwd))
+    turn_log_append(cwd, "turn_start", session=sid, **turn_snapshot(cwd))
 
     # Không có request MỞ (mở = có active_request VÀ phase != idle) → nhắc intake.
     # Dòng INTAKE đứng TRƯỚC để không bao giờ bị _truncate cắt cụt (cắt từ đuôi).
     intake = ("[TDQ:INTAKE] Chưa có request mở — prompt KHÔNG thuộc vòng intake đang dở "
               "thì mở tdq-intake trước khi làm gì khác.")
-    state = tdq_state.load(cwd)
+    state = load(cwd)
     if state is None or not state.get("active_request"):
         _emit(cwd, sid, [intake])
         return
     # phase_key, không phải phase thô: lane quick đang chạy giữ phase=idle thô —
     # so thô sẽ bắn INTAKE nhầm và nuốt mất dòng APPROVE của quick.
-    if tdq_state.phase_key(state) == "idle":
-        _emit(cwd, sid, [intake, tdq_state.render_next(cwd, state, brief=True)])
+    if phase_key(state) == "idle":
+        _emit(cwd, sid, [intake, render_next(cwd, state, brief=True)])
         return
 
-    lane = tdq_state.effective_lane(state, warn=False)
+    lane = effective_lane(state, warn=False)
     pending = None
     if lane == "quick" and not state.get("quick_approved"):
         pending = "quick"
@@ -92,13 +98,13 @@ def main():
             and not state.get("plan_approved"):
         pending = "plan"
     elif lane == "full" and state.get("plan_approved") \
-            and tdq_state.effective_phase(state, warn=False) == "mode" \
-            and not tdq_state.effective_mode(state, warn=False):
+            and effective_phase(state, warn=False) == "mode" \
+            and not effective_mode(state, warn=False):
         # Cổng mode: plan đã duyệt nhưng user chưa chọn cách làm. Câu trả lời ở đây
         # thường chỉ là "main"/"subagent" trống trơn, nên nhận diện riêng.
         pending = "mode"
 
-    lines = [tdq_state.render_next(cwd, state, brief=True)]
+    lines = [render_next(cwd, state, brief=True)]
 
     if pending:
         # Dòng APPROVE đứng TRƯỚC NEXT: _truncate cắt từ đuôi — cắt path project
@@ -107,8 +113,8 @@ def main():
         prompt = payload.get("prompt") or ""
         planned = plan_mode(cwd, state) if pending in ("plan", "mode") else None
         matched = looks_like_approval(prompt, pending)
-        tdq_state.turn_log_append(cwd, "signal", session=sid, event="approve_pending",
-                                  target=pending, matched=matched, mode_conflict=False)
+        turn_log_append(cwd, "signal", session=sid, event="approve_pending",
+                        target=pending, matched=matched, mode_conflict=False)
         if matched:
             mode = ""
             if pending == "mode":
@@ -119,7 +125,7 @@ def main():
                 lines.append("[TDQ:APPROVE] User vừa chọn mode → chạy NGAY: "
                              f"python3 scripts/tdq_state.py approve plan --mode {said} "
                              f"--by \"{prompt[:60]}\"")
-                lines.append(tdq_state.render_next(cwd, state, brief=True))
+                lines.append(render_next(cwd, state, brief=True))
                 _emit(cwd, sid, lines, critical=True)
                 return
             if pending == "plan":
@@ -128,8 +134,8 @@ def main():
                 if said and planned and said != planned:
                     # Mode trong câu duyệt lệch mode ĐÃ CHỐT trong plan — không
                     # được ghi nhận theo suy diễn, bắt agent HỎI user xác nhận.
-                    tdq_state.turn_log_append(cwd, "signal", session=sid, event="approve_pending",
-                                              target=pending, matched=matched, mode_conflict=True)
+                    turn_log_append(cwd, "signal", session=sid, event="approve_pending",
+                                    target=pending, matched=matched, mode_conflict=True)
                     lines.append(f"[TDQ:APPROVE] ⚠️ Câu duyệt nói mode {said} nhưng plan chốt "
                                  f"{planned} — HỎI user xác nhận mode trước, chưa chạy approve.")
                     _emit(cwd, sid, lines, critical=True)
@@ -144,7 +150,7 @@ def main():
             waiting = "chờ user chọn mode" if pending == "mode" else f"chờ duyệt {pending}"
             lines.append(f"[TDQ:APPROVE] Đang {waiting}. Prompt này KHÔNG rõ là câu duyệt "
                          f"→ tuyệt đối không suy diễn: hoặc HỎI lại, hoặc in \"{approve_hint(pending, planned)}\".")
-        lines.append(tdq_state.render_next(cwd, state, brief=True))
+        lines.append(render_next(cwd, state, brief=True))
         # Không dedupe: mỗi turn phải thấy lại cảnh báo "đừng suy diễn duyệt" —
         # nén thành "(như turn trước)" ở đây sẽ nuốt mất chính cảnh báo an toàn đó.
         _emit(cwd, sid, lines, critical=True)
@@ -156,7 +162,7 @@ def main():
     if state.get("spec_approved") and rel and sha:
         path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
         try:
-            drifted = tdq_state.sha256_file(path) != sha
+            drifted = sha256_file(path) != sha
         except OSError:
             drifted = True
         if drifted:
@@ -190,10 +196,10 @@ def _emit(cwd, session, lines, critical=False):
         print(text)
         return
     digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
-    if tdq_state.prompt_context_last(cwd, session) == digest:
+    if prompt_context_last(cwd, session) == digest:
         text = _compact(text)
     else:
-        tdq_state.prompt_context_save(cwd, session, digest)
+        prompt_context_save(cwd, session, digest)
     print(text)
 
 

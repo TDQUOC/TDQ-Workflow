@@ -39,7 +39,7 @@ STATE_WRITES = [
     re.compile(r"\bopen\([^)]*" + STATE),
 ]
 STATE_CLI = re.compile(r"tdq_state\.py\s+(\w[\w-]*)")
-# nhanh|express là bí danh CLI của quick (xem tdq_state.LANE_ALIASES).
+# nhanh|express là bí danh CLI của quick (xem LANE_ALIASES trong tdq_state).
 APPROVE_CLI = re.compile(r"tdq_state\.py\s+approve\s+(spec|plan|quick|nhanh|express)\b")
 SETPHASE_CLI = re.compile(r"tdq_state\.py\s+set\b.*?\bphase=(\w+)")
 NEXT_PHASE_TARGET = {"plan": "spec", "implement": "plan"}

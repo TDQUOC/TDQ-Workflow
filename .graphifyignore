@@ -1,0 +1,22 @@
+# Phạm vi đồ thị graphify của repo này: CHỈ mã nguồn sản phẩm.
+#
+# Toàn bộ code chạy được nằm ở đúng hai thư mục: scripts/ và hooks/.
+# Mọi thư mục dưới đây bị loại khỏi đồ thị — kể cả khi chạy `graphify extract`
+# không có cờ --code-only.
+#
+# LƯU Ý cho người sửa repo: file code MỚI phải nằm trong scripts/ hoặc hooks/.
+# Đặt code vào một trong các thư mục dưới đây thì graphify sẽ không thấy nó.
+
+# Test: từng chiếm 71% số node, lấn át mã sản phẩm
+tests/
+
+# Tài liệu và bản đóng gói: không phải mã chạy
+docs/
+portable/
+skills/
+agents/
+ClaudeExport/
+claude-export/
+
+# Đầu ra của chính graphify
+graphify-out/

@@ -12,6 +12,15 @@ Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.
 2. **Đọc code.** Tìm hết chỗ yêu cầu này chạm tới: entry point, luồng dữ liệu, config,
    test. Ghi lại phiên bản/framework đang dùng.
 
+   **Luật ĐỌC đồ thị graphify** (gợi ý có điều kiện, KHÔNG bắt buộc mỗi lần analyze):
+   - MỞ đồ thị khi câu hỏi thuộc dạng **liên kết** hoặc **bản đồ tổng thể**.
+     Dạng đó là: "ai gọi X", "sửa X thì ảnh hưởng tới đâu", "hai chỗ này nối nhau đường
+     nào", "project có những cụm nào". Lệnh: `graphify query|path|explain|affected`.
+   - DÙNG grep/read khi câu hỏi là tìm một chuỗi, đọc một file, hay xem nội dung cụ thể —
+     nhanh hơn và không phụ thuộc đồ thị có mới hay không.
+   - Đồ thị chỉ chứa mã nguồn sản phẩm (`scripts/`, `hooks/`); `tests/` và tài liệu bị
+     `.graphifyignore` loại. Cần tra test hay doc thì grep, đừng chờ đồ thị.
+
 3. **Research nhiều hướng — giao subagent.** 2–4 truy vấn khác góc nhìn qua `tavily-primary`
    (luật failover ở [tavily.md](../../tdq-conventions/references/tavily.md)). Mặc định giao
    một sub-agent `general-purpose`: agent tự chạy truy vấn, tự ghi `docs/tdq/research/<slug>.md`
