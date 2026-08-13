@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-13)
 
 ## Corpus Check
-- 479 files · ~565,184 words
+- 479 files · ~565,270 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4207 nodes · 5180 edges · 428 communities (365 shown, 63 thin omitted)
+- 4208 nodes · 5181 edges · 428 communities (365 shown, 63 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f7ac2dce`
+- Built from commit: `60bae436`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -441,7 +441,7 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `Working log 2026-08-05` - 53 edges
-2. `Working log — 2026-08-13` - 46 edges
+2. `Working log — 2026-08-13` - 47 edges
 3. `run_state_cli()` - 43 edges
 4. `TestState` - 30 edges
 5. `Working Log — 2026-08-04` - 30 edges
@@ -550,7 +550,7 @@ Nodes (29): 12:30 — Mở request check-external-assign-flow, 12:35 — Analyze
 
 ### Community 20 - "Working log — 2026-08-13"
 Cohesion: 0.04
-Nodes (46): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+38 more)
+Nodes (47): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+39 more)
 
 ### Community 21 - "Spec: TDQWorkflow Plugin cho Claude Code"
 Cohesion: 0.07
@@ -1909,7 +1909,7 @@ Cohesion: 0.50
 Nodes (3): Kết luận, Kết quả, QC — Câu hỏi TDQ bị ẩn khi bật focus mode
 
 ## Knowledge Gaps
-- **2093 isolated node(s):** `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13`, `0.11.8 — 2026-08-13`, `0.11.7 — 2026-08-13` (+2088 more)
+- **2094 isolated node(s):** `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13`, `0.11.8 — 2026-08-13`, `0.11.7 — 2026-08-13` (+2089 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **63 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -1921,7 +1921,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `today_log_rel()` connect `tdq_state.py` to `edit_gate.py`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **What connects `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13` to the rest of the system?**
-  _2093 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2094 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0502497796062298 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**
