@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-13)
 
 ## Corpus Check
-- 479 files · ~565,332 words
+- 481 files · ~566,196 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4209 nodes · 5182 edges · 425 communities (363 shown, 62 thin omitted)
+- 4224 nodes · 5195 edges · 427 communities (364 shown, 63 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `15094d95`
+- Built from commit: `ce76e326`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -57,7 +57,7 @@
 - TestProjectRootResolution
 - test_canvas_draw.py
 - PlanTickStateTest
-- _run
+- test_prompt_context.py
 - Kiến thức chốt — audit tối ưu token/time workflow (vòng 3)
 - SPEC — Vá điểm mù của verify-by-effect (sổ turn chỉ thấy Edit/Write)
 - Working log — 2026-08-02
@@ -70,6 +70,7 @@
 - Working log 2026-07-29
 - payload_cwd
 - tdq-conventions/SKILL.md
+- ResilienceTest
 - Hiểu & kiến thức
 - PLAN — TDQ 0.3.0 (instruction-hardening-7b)
 - PLAN — Search agent "deep search" dùng agy CLI, tích hợp TDQ workflow
@@ -77,7 +78,7 @@
 - _common.py
 - Builder
 - MultiRepoTest
-- TokenBudgetTest
+- QUICK — Đổi nhãn dòng "Năng lực" thành "Ước tính sẽ dùng skill"
 - PLAN — Bump 0.7.0 + bộ export Claude Code chạy bằng một lệnh
 - PLAN — Tối ưu token/time workflow (vòng 2)
 - PLAN — Hoàn thiện product document trên Excalidraw
@@ -93,6 +94,7 @@
 - TDQ Conventions
 - CheckTest
 - test_claude_md_core.py
+- Brief — Đổi dòng "Năng lực" thành "ước tính sẽ dùng skill"
 - Quy tắc làm việc cho Claude
 - Hiểu & kiến thức
 - Hiểu & kiến thức
@@ -438,11 +440,11 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `Working log 2026-08-05` - 53 edges
-2. `Working log — 2026-08-13` - 48 edges
+2. `Working log — 2026-08-13` - 51 edges
 3. `run_state_cli()` - 43 edges
-4. `TestState` - 30 edges
-5. `Working Log — 2026-08-04` - 30 edges
-6. `Changelog` - 29 edges
+4. `Changelog` - 30 edges
+5. `TestState` - 30 edges
+6. `Working Log — 2026-08-04` - 30 edges
 7. `write_state()` - 29 edges
 8. `Working log 2026-08-03` - 29 edges
 9. `run_hook()` - 25 edges
@@ -463,7 +465,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (425 total, 62 thin omitted)
+## Communities (427 total, 63 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.05
@@ -523,7 +525,7 @@ Nodes (14): read_state(), run_state_cli(), NextTest, P1 — lệnh `next`, `next
 
 ### Community 14 - "Changelog"
 Cohesion: 0.04
-Nodes (45): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12 (+37 more)
+Nodes (46): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12 (+38 more)
 
 ### Community 15 - "Working log — 2026-07-28"
 Cohesion: 0.06
@@ -547,7 +549,7 @@ Nodes (29): 12:30 — Mở request check-external-assign-flow, 12:35 — Analyze
 
 ### Community 20 - "Working log — 2026-08-13"
 Cohesion: 0.04
-Nodes (48): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+40 more)
+Nodes (51): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+43 more)
 
 ### Community 21 - "Spec: TDQWorkflow Plugin cho Claude Code"
 Cohesion: 0.07
@@ -558,8 +560,8 @@ Cohesion: 0.15
 Nodes (12): DryRunTest, LogServiceTest, OutputSizeTest, _project(), Test cho scripts/tdq_finish.py — gộp 4 việc bookkeeping cuối turn thành 1 lệnh., T3.3 — log service bật mặc định, tắt bằng TDQ_LOG=0., T3.4 — mọi bước pass thì stdout ≤ 200 ký tự; chi tiết chỉ khi --verbose., Dựng project giả có state TDQ + 1 file .md sạch để lint. (+4 more)
 
 ### Community 23 - "helper.py"
-Cohesion: 0.09
-Nodes (20): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., run_hook(), write_file(), B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json, session_start.py + prompt_context.py (0.3.0) — bơm context theo state. (+12 more)
+Cohesion: 0.11
+Nodes (17): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., run_hook(), B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json, ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl (+9 more)
 
 ### Community 24 - ".build"
 Cohesion: 0.13
@@ -582,8 +584,8 @@ Cohesion: 0.16
 Nodes (20): _changed_files(), _log(), _log_enabled(), main(), _now(), parse_args(), _project_dir(), Một dòng ≤ 200 ký tự cho trường hợp mọi bước pass. (+12 more)
 
 ### Community 30 - "write_state"
-Cohesion: 0.21
-Nodes (5): write_state(), now_iso(), P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước         →, Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới., TestPromptContext
+Cohesion: 0.14
+Nodes (9): write_file(), write_state(), now_iso(), session_start.py + prompt_context.py (0.3.0) — bơm context theo state., P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước         →, Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới., Trần 600 ký tự không được cắt mất dòng luật hay dòng lệnh., TestPromptContext (+1 more)
 
 ### Community 31 - "Working log 2026-08-09"
 Cohesion: 0.09
@@ -629,9 +631,9 @@ Nodes (10): chapter(), Test cho scripts/canvas_draw.py — bộ dựng chương 
 Cohesion: 0.17
 Nodes (3): PlanTickStateTest, P1 — đọc trạng thái tick của plan (hàng rào ép tick task khi implement).  Hàng r, TurnSnapshotPlanShaTest
 
-### Community 42 - "_run"
-Cohesion: 0.22
-Nodes (5): T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu     lại, _run(), TestIntakeReminder, TestSignalWritten, write_file_plan_mode()
+### Community 42 - "test_prompt_context.py"
+Cohesion: 0.21
+Nodes (6): prompt_context.py — nhắc [TDQ:INTAKE] khi KHÔNG có request mở (spec 2026-08-02)., T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu     lại, _run(), TestIntakeReminder, TestSignalWritten, write_file_plan_mode()
 
 ### Community 43 - "Kiến thức chốt — audit tối ưu token/time workflow (vòng 3)"
 Cohesion: 0.12
@@ -709,9 +711,9 @@ Nodes (8): build_generic(), Builder, extract_cards(), Dựng element cho một c
 Cohesion: 0.24
 Nodes (5): _git(), LaunchAgentPlistTest, MultiRepoTest, P2: nhiều repo local dependency đọc từ `local-repos.json`., P3: copy plist LaunchAgent khớp tên repo local, chỉ để tham khảo.
 
-### Community 63 - "TokenBudgetTest"
-Cohesion: 0.24
-Nodes (4): budget(), Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
+### Community 63 - "QUICK — Đổi nhãn dòng "Năng lực" thành "Ước tính sẽ dùng skill""
+Cohesion: 0.33
+Nodes (5): Definition of Done, Phạm vi, QC, QUICK — Đổi nhãn dòng "Năng lực" thành "Ước tính sẽ dùng skill", Task
 
 ### Community 64 - "PLAN — Bump 0.7.0 + bộ export Claude Code chạy bằng một lệnh"
 Cohesion: 0.15
@@ -772,6 +774,10 @@ Nodes (3): CheckTest, Manifest hỏng là bundle không hợp lệ (2), không p
 ### Community 78 - "test_claude_md_core.py"
 Cohesion: 0.20
 Nodes (7): CoreFileTest, InvariantRulesTest, MovedRulesTest, Chống bỏ sót khi rút gọn ~/.claude/CLAUDE.md (spec 2026-08-05 §2).  3 điều kiện,, (a) Luật đã chuyển phải nằm ở file đích, nếu không là mất luật., (b) Luật bất biến phải còn nguyên trong bản mẫu., _read()
+
+### Community 79 - "Brief — Đổi dòng "Năng lực" thành "ước tính sẽ dùng skill""
+Cohesion: 0.40
+Nodes (4): Brief — Đổi dòng "Năng lực" thành "ước tính sẽ dùng skill", Hiểu & kiến thức, Hỏi đáp, Nguyên văn
 
 ### Community 80 - "Quy tắc làm việc cho Claude"
 Cohesion: 0.18
@@ -1898,24 +1904,24 @@ Cohesion: 0.50
 Nodes (3): Kết luận, Kết quả, QC — Câu hỏi TDQ bị ẩn khi bật focus mode
 
 ## Knowledge Gaps
-- **2095 isolated node(s):** `14:07 — Mở brief rà soát tick ở chế độ chuyên sâu`, `14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu`, `14:32 — Viết & trình plan vá tick chế độ chuyên sâu`, `14:41`, `14:43` (+2090 more)
+- **2106 isolated node(s):** `0.11.12 — 2026-08-13`, `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13`, `0.11.8 — 2026-08-13` (+2101 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **62 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **63 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `run_state_cli()` connect `run_state_cli` to `StateFileTest`, `helper.py`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **Why does `main()` connect `edit_gate.py` to `tdq_state.py`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `today_log_rel()` connect `tdq_state.py` to `edit_gate.py`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `14:07 — Mở brief rà soát tick ở chế độ chuyên sâu`, `14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu`, `14:32 — Viết & trình plan vá tick chế độ chuyên sâu` to the rest of the system?**
-  _2095 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **What connects `0.11.12 — 2026-08-13`, `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13` to the rest of the system?**
+  _2106 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0502497796062298 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**
   _Cohesion score 0.0723790976955534 - nodes in this community are weakly interconnected._
 - **Should `test_token_audit.py` be split into smaller, more focused modules?**
   _Cohesion score 0.09915966386554621 - nodes in this community are weakly interconnected._
-- **Should `.write` be split into smaller, more focused modules?**
-  _Cohesion score 0.07086197778952935 - nodes in this community are weakly interconnected._

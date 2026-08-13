@@ -1,7 +1,7 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786621070.9521396,
-    "ast_hash": "7613a3a7a2e91194a377a65f3e9fe89a",
+    "mtime": 1786622117.1295292,
+    "ast_hash": "fa1eb069661e270a595242f0de9e9135",
     "semantic_hash": ""
   },
   "hooks/hooks.json": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786621128.3892496,
-    "ast_hash": "3e5babca3d76c3c9b507c6e0766f860c",
+    "mtime": 1786622122.1170402,
+    "ast_hash": "aadc3776c3672353224da7c836b4326b",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786621042.2254994,
-    "ast_hash": "e52fc7de3ff4a6e4be8228d174f01800",
+    "mtime": 1786622092.8285587,
+    "ast_hash": "12724388cf428f65103809fc8f478337",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/SKILL.md": {
-    "mtime": 1786616994.7298844,
-    "ast_hash": "af03f9bc252c80d0b38f22c6ce0dc58e",
+    "mtime": 1786622050.443697,
+    "ast_hash": "9516ca88c61a038828d110f947d326aa",
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/interview.md": {
@@ -565,8 +565,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/skill-inventory.md": {
-    "mtime": 1786534730.7954988,
-    "ast_hash": "120c27d796e1458c0099f44e678d1a2f",
+    "mtime": 1786622056.336185,
+    "ast_hash": "20b1088c75de886f883db264b8f35bd0",
     "semantic_hash": ""
   },
   "skills/tdq-plan/references/plan-template.md": {
@@ -1355,8 +1355,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-intake/references/quick-lane.md": {
-    "mtime": 1786534788.1882393,
-    "ast_hash": "8aadc77f84df6115fe7d19184b520bb0",
+    "mtime": 1786622053.2774336,
+    "ast_hash": "ea53f5bf08b960f133896c1f1ab23e90",
     "semantic_hash": ""
   },
   "scripts/tdq_finish.py": {
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786621146.3015585,
-    "ast_hash": "1d8340522656323d58c8dd0019997dca",
+    "mtime": 1786622092.756999,
+    "ast_hash": "99d9ee947129594b41ef0cda5856ee3f",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2402,6 +2402,16 @@
   "docs/tdq/spec/2026-08-13-focus-mode-an-cau-hoi.md": {
     "mtime": 1786618875.8815868,
     "ast_hash": "7576283092b08096c02a85f3cb7f9745",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-doi-dong-nang-luc.md": {
+    "mtime": 1786621704.232457,
+    "ast_hash": "b141edb993936d67565f4a7d1e87102d",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-doi-dong-nang-luc.md": {
+    "mtime": 1786622082.6210966,
+    "ast_hash": "2e30a0ac8ad69119564eddb672c4b283",
     "semantic_hash": ""
   }
 }
