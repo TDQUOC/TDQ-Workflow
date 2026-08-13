@@ -22,7 +22,7 @@ vì sao bỏ.
 
 Ngày: YYYY-MM-DD · Brief: ../brief/<slug>.md · Lane: quick
 Trạng thái: CHỜ DUYỆT
-Năng lực: <skill sẽ DÙNG, hoặc "không có">
+Ước tính sẽ dùng skill: <skill sẽ DÙNG, hoặc "không có">
 
 ## Phạm vi
 - Trong: <gạch đầu dòng>

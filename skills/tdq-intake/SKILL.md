@@ -85,7 +85,8 @@ Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [refer
    Checkbox có 3 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement
    (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
 3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
-   và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
+   và đúng 1 dòng `Ước tính sẽ dùng skill: <các skill sẽ DÙNG, hoặc "không có">` (phân
+   vân → DÙNG).
 4. In đúng dòng: `➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
 5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — im lặng về QC thì QC vẫn BẬT).
 6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.

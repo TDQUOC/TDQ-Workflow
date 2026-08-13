@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.12 — 2026-08-13
+
+Đổi nhãn "Năng lực" thành "Ước tính sẽ dùng skill" trong tóm tắt chế độ nhanh, cho thân
+thiện người dùng.
+
+- `skills/tdq-intake/SKILL.md`, `references/quick-lane.md`, `references/skill-inventory.md`:
+  đổi nhãn dòng `Năng lực: <...>` → `Ước tính sẽ dùng skill: <...>` ở đúng 3 chỗ user-facing
+  của chế độ nhanh. Không đụng heading `### Năng lực dùng được` ở brief/spec chuyên sâu.
+
 ## 0.11.11 — 2026-08-13
 
 Bắt buộc dùng `tdq_finish.py` (thay Edit tay) và chạy trước đoạn chat cuối turn — sửa gốc

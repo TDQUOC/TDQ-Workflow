@@ -65,4 +65,5 @@ Kiểm bằng máy: `doc_lint.py` rule R8 soi spec; `doc_lint.py --pair <spec> <
 
 ## Chế độ nhanh (express)
 
-Không cần bảng. Mini-plan có đúng 1 dòng: `Năng lực: <các skill sẽ DÙNG, hoặc "không có">`.
+Không cần bảng. Mini-plan có đúng 1 dòng: `Ước tính sẽ dùng skill: <các skill sẽ DÙNG,
+hoặc "không có">`.
