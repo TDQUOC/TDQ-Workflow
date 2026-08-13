@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786627606.9779794,
-    "ast_hash": "2581a8223426f37174f2c3cbda2fee47",
+    "mtime": 1786629867.7923408,
+    "ast_hash": "4ae04256273a5c2411ee89e018b24061",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786627630.3065858,
-    "ast_hash": "8185602dfbd8b3b56c3b80b713817950",
+    "mtime": 1786629899.8418581,
+    "ast_hash": "4fb2ef35a6adab01d3706e519118f2e3",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2507,6 +2507,46 @@
   "docs/workinglog/assets/2026-08-13-trinh-bay-than-thien-duyet/2.png": {
     "mtime": 1786624180.8089695,
     "ast_hash": "0450c2ed14abdebd84ca82cdb41b4235",
+    "semantic_hash": ""
+  },
+  "scripts/context_surface.py": {
+    "mtime": 1786629057.690783,
+    "ast_hash": "bd58cf3f1035d57a6675fc51dc5d08cf",
+    "semantic_hash": ""
+  },
+  "tests/test_context_surface.py": {
+    "mtime": 1786629070.9745193,
+    "ast_hash": "ae494af028c78a87ad96f1862aa99b3c",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-ra-soat-toi-uu-llm.md": {
+    "mtime": 1786628468.4334576,
+    "ast_hash": "c56036c9b5fd8baaf28c6fdef9dbdd8a",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-ra-soat-toi-uu-llm.md": {
+    "mtime": 1786629873.0025651,
+    "ast_hash": "b331f694f006d46508c19bcaf9a04928",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-13-ra-soat-toi-uu-llm.md": {
+    "mtime": 1786629864.8497822,
+    "ast_hash": "8a41812881c883e5d75922c8ae6da42f",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-13-ra-soat-toi-uu-llm.md": {
+    "mtime": 1786629770.4299684,
+    "ast_hash": "65dae89f778c9e91c9ece8179dcb3147",
+    "semantic_hash": ""
+  },
+  "docs/tdq/research/2026-08-13-ra-soat-toi-uu-llm.md": {
+    "mtime": 1786628459.4261923,
+    "ast_hash": "ab2b09ea171753a9eb71e9d53ab02006",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-13-ra-soat-toi-uu-llm.md": {
+    "mtime": 1786628531.7845483,
+    "ast_hash": "487754fe29ea1bff8ffd1bc16972df47",
     "semantic_hash": ""
   }
 }
