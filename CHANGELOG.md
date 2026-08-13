@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.9 — 2026-08-13
+
+Gọn UX câu hỏi chọn lane, gọi "pipeline" khi hiện với user.
+
+- `skills/tdq-intake/SKILL.md` bước 2: bỏ yêu cầu in dòng `Cỡ:/Cần:` ra chat (giữ làm căn
+  cứ nội bộ), đổi câu hỏi user sang "Bạn muốn chạy pipeline nào?".
+- `skills/tdq-intake/references/lane-decision.md`: mục "Dòng tự nhận định" thành đánh giá
+  nội bộ; "Khuôn câu hỏi" viết lại — bỏ Cỡ/Cần, dùng "pipeline", thêm khối giải thích
+  ngắn nghĩa 2 pipeline. Không đổi `interview.md` hay thuật ngữ `lane` nội bộ.
+
 ## 0.11.8 — 2026-08-13
 
 Lưu & nhúng ảnh đính kèm vào working log.

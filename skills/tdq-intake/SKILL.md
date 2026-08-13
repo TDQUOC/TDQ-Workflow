@@ -36,15 +36,13 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    của bạn: mục tiêu, phạm vi đoán, chỗ chưa rõ), `## Hiểu & kiến thức`, `## Hỏi đáp`.
    Ở bước này chỉ viết mục đầu; hai mục sau để trống, Phần B điền.
 
-2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Rồi đúng 1
-   dòng tự nhận định cỡ, dạng
-   `Cỡ: <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>`
-   — cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ, thứ luôn chạy thì không liệt kê. Rồi 1 dòng đề
-   xuất lane kèm lý do cho CHÍNH việc này. Rồi câu hỏi "Bạn muốn chạy lane nào?" với
-   option mỗi dòng theo khuôn [references/interview.md](references/interview.md), phương
-   án đề xuất luôn đứng ở A:
-   `- A (đề xuất): chế độ nhanh (express) — <lý do>` xuống dòng `- B: chế độ chuyên sâu (deep) — <lý do>`.
-   Cách chọn: [references/lane-decision.md](references/lane-decision.md).
+2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Tự nhận định
+   cỡ/nhu cầu (`Cỡ:/Cần:`) là bước NỘI BỘ — dùng để chọn phương án đề xuất, KHÔNG in dòng
+   đó ra chat. Rồi câu hỏi "Bạn muốn chạy pipeline nào?" với option mỗi dòng theo khuôn
+   [references/interview.md](references/interview.md), phương án đề xuất luôn đứng ở A:
+   `- A (đề xuất): chế độ nhanh (express) — <lý do>` xuống dòng `- B: chế độ chuyên sâu (deep) — <lý do>`,
+   theo đúng khuôn đầy đủ (gồm khối giải thích nghĩa 2 pipeline) ở
+   [references/lane-decision.md](references/lane-decision.md).
    **DỪNG chờ user trả lời.** Không tự chọn lane.
 
 3. **Init state** ngay khi user chốt lane:

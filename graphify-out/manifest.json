@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786612634.7289276,
-    "ast_hash": "3052429aa202464d8e4cf3e6cb1338b9",
-    "semantic_hash": ""
+    "mtime": 1786617258.0523267,
+    "ast_hash": "b8c52a5e5c42e0172af1dbfa7b52d8af",
+    "semantic_hash": "b8c52a5e5c42e0172af1dbfa7b52d8af"
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-conventions/SKILL.md": {
-    "mtime": 1786204357.5214562,
-    "ast_hash": "fee1a0db0eed07b704f2c5f4d71af453",
+    "mtime": 1786614847.9820411,
+    "ast_hash": "d84a10a1984fc645494a3728741166e2",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/tavily.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786612641.6298466,
-    "ast_hash": "d960f96a6d05f0fd870f2e9cb1a22a45",
+    "mtime": 1786615364.0319812,
+    "ast_hash": "120b890357e79428a90b72b415bad460",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786612606.4601817,
-    "ast_hash": "e058d8eb4b3e639d219b5d0e8e4e5dab",
+    "mtime": 1786615368.379508,
+    "ast_hash": "a5f57a5804405e2f5fc6fad4bb251ec0",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786612652.5384915,
-    "ast_hash": "ac9406c88669a5c7eaffaff03624acab",
+    "mtime": 1786615368.4398506,
+    "ast_hash": "7fa70f71a6caa3678a7531d72b658b3b",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2267,6 +2267,36 @@
   "docs/tdq/plan/2026-08-13-bat-buoc-tom-tat-spec.md": {
     "mtime": 1786612601.66135,
     "ast_hash": "46f81f64bc2af554568e7042feb159b5",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-luu-anh-workinglog.md": {
+    "mtime": 1786613897.5514126,
+    "ast_hash": "6392000b831a8c3091a400f125e4d448",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-luu-anh-workinglog.md": {
+    "mtime": 1786614973.0579977,
+    "ast_hash": "f84214dcf5757a8f105a5bf4ab06b5e3",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-13-luu-anh-workinglog.md": {
+    "mtime": 1786614951.3136575,
+    "ast_hash": "d2634c5cad80d1b921b9494d4a7c089b",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-13-luu-anh-workinglog.md": {
+    "mtime": 1786614969.1062233,
+    "ast_hash": "65788d9daa029c2e1bb9468db3ab78d1",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-13-luu-anh-workinglog.md": {
+    "mtime": 1786614005.9339242,
+    "ast_hash": "7a56b7d49cab2b41a5e38063d7833fae",
+    "semantic_hash": ""
+  },
+  "docs/workinglog/assets/2026-08-13-luu-anh-workinglog/1.png": {
+    "mtime": 1786614870.041045,
+    "ast_hash": "93ca32a536da1698ea979f183679af29",
     "semantic_hash": ""
   }
 }

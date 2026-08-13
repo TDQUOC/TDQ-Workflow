@@ -6,14 +6,15 @@ không mở request, không hỏi lane.
 
 ## Dòng tự nhận định
 
-Mọi request mới in đúng một dòng này trước khi hỏi lane:
+Mọi request mới tự đánh giá NỘI BỘ theo dạng dưới đây trước khi hỏi lane — đây là căn cứ
+để chọn phương án đề xuất A/B, **không in ra chat**:
 
 ```
 Cỡ: <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>
 ```
 
-Cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ. Thứ luôn chạy thì không liệt kê, để dòng này ngắn.
-Không có thứ nào tuỳ chọn thì ghi `Cần: không`.
+Cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ. Thứ luôn chạy thì không liệt kê, để đánh giá gọn.
+Không có thứ nào tuỳ chọn thì coi như `Cần: không`.
 
 ## Bảng quyết
 
@@ -40,14 +41,20 @@ Có **bất kỳ** ô nào rơi vào cột chế độ chuyên sâu (deep) → �
 ## Khuôn câu hỏi (copy được)
 
 Đúng khuôn [interview.md](interview.md) — option mỗi dòng riêng, phương án đề xuất
-luôn ở `A`:
+luôn ở `A`. Không in dòng `Cỡ:/Cần:`; gọi "lane" là "pipeline" khi hỏi user; ngay dưới 2
+option luôn có khối giải thích ngắn nghĩa 2 pipeline (cố định, không đổi theo việc):
 
 ```
 Tóm tắt: <2–3 dòng việc user muốn>
-Cỡ: quick · Cần: không
-1. Bạn muốn chạy lane nào?
+1. Bạn muốn chạy pipeline nào?
 - A (đề xuất): chế độ nhanh (express) — <lý do gắn với chính việc này>
 - B: chế độ chuyên sâu (deep) — <lý do gắn với chính việc này>
+
+_chế độ nhanh (express): làm gọn, ít vòng hỏi, hợp việc nhỏ/đã rõ. chế độ chuyên sâu
+(deep): phân tích + hỏi kỹ trước khi làm, hợp việc phức tạp hoặc rủi ro cao._
+
+_Trả lời bằng chữ cái (vd: "A"), hoặc gõ thẳng câu tự nhiên khớp ý bạn chọn — cả hai
+đều được hiểu như nhau._
 ```
 
 Đang giữa chừng mà thấy chọn sai lane? Nói rõ vì sao, đề xuất đổi, **hỏi user** rồi mới

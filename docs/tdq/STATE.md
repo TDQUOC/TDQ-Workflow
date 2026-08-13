@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-13T17:02:48+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-13T17:31:24+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-13-luu-anh-workinglog |
+| Request | 2026-08-13-ux-cau-hoi-lane |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-08-13-luu-anh-workinglog.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-13-luu-anh-workinglog.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-13-ux-cau-hoi-lane.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-13-ux-cau-hoi-lane.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 
