@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-13)
 
 ## Corpus Check
-- 451 files · ~545,563 words
+- 453 files · ~546,672 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3986 nodes · 4986 edges · 398 communities (339 shown, 59 thin omitted)
+- 4000 nodes · 4998 edges · 403 communities (342 shown, 61 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3419654f`
+- Built from commit: `1f0d404e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -27,7 +27,7 @@
 - TestEditGate
 - 2. Thay đổi theo file
 - SPEC — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn
-- run_state_cli
+- TestState
 - Working log — 2026-07-28
 - Working Log — 2026-08-04
 - .run_cli
@@ -58,7 +58,7 @@
 - SPEC — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C
 - test_canvas_draw.py
 - PlanTickStateTest
-- _run
+- test_prompt_context.py
 - Kiến thức chốt — audit tối ưu token/time workflow (vòng 3)
 - SPEC — Vá điểm mù của verify-by-effect (sổ turn chỉ thấy Edit/Write)
 - Working log — 2026-08-02
@@ -408,6 +408,11 @@
 - PLAN — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C
 - QC — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C
 - reports/2026-08-13-vi-du-cau-hoi-lane.md
+- run_state_cli
+- run_hook
+- PLAN (quick) — Bắt buộc in tóm tắt spec/plan trước dòng Duyệt
+- BRIEF — Bắt buộc in tóm tắt spec trước dòng Duyệt
+- .test_row_age_ok_bad_ts_types
 
 ## God Nodes (most connected - your core abstractions)
 1. `Working log 2026-08-05` - 53 edges
@@ -416,8 +421,8 @@
 4. `Working Log — 2026-08-04` - 30 edges
 5. `write_state()` - 29 edges
 6. `Working log 2026-08-03` - 29 edges
-7. `run_hook()` - 25 edges
-8. `Changelog` - 24 edges
+7. `Changelog` - 25 edges
+8. `run_hook()` - 25 edges
 9. `TestBashGate` - 24 edges
 10. `Working log — 2026-07-31` - 24 edges
 
@@ -436,7 +441,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (398 total, 59 thin omitted)
+## Communities (403 total, 61 thin omitted)
 
 ### Community 0 - "tdq_state.py"
 Cohesion: 0.05
@@ -486,9 +491,9 @@ Nodes (38): Definition of Done, Nguyên tắc thực thi, Phase 1 — CLI ghi nh
 Cohesion: 0.05
 Nodes (33): Definition of Done, Nguyên tắc thực thi, Phase 1 — Core state (nền cho mọi thứ còn lại), Phase 2 — Lưới an toàn không trượt vì transcript trễ, Phase 3 — Nhắc & chỉ dẫn, Phase 4 — Đóng gói & nghiệm thu, PLAN — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn (0.1.7), Edge case đã kiểm (+25 more)
 
-### Community 12 - "run_state_cli"
-Cohesion: 0.07
-Nodes (14): read_state(), run_state_cli(), NextTest, P1 — lệnh `next`, `next --brief`, `get <key>` (spec §2.2)., QC1.1 — tiêu đề phải nói đúng phase mà thân bài đang dùng.          Lane quick g, A3 — tdq_state.py: default schema, CLI, protected keys, atomic write., Sửa spec trong lúc QC rồi xin duyệt lại phải ghi được — nếu không,         cảnh, File không đổi thì duyệt lại là lệnh thừa — không ghi đè dấu duyệt cũ. (+6 more)
+### Community 12 - "TestState"
+Cohesion: 0.11
+Nodes (6): read_state(), Sửa spec trong lúc QC rồi xin duyệt lại phải ghi được — nếu không,         cảnh, File không đổi thì duyệt lại là lệnh thừa — không ghi đè dấu duyệt cũ., Nhánh external đã bỏ: mode này phải bị chặn, không âm thầm nhận., A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal., TestState
 
 ### Community 13 - "Working log — 2026-07-28"
 Cohesion: 0.06
@@ -508,7 +513,7 @@ Nodes (14): QuickQcApprovalHintTest, QuickQcApproveCliTest, QuickQcDocTest, Quic
 
 ### Community 17 - "Changelog"
 Cohesion: 0.05
-Nodes (40): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12, 0.11.5 — 2026-08-13, 0.11.6 — 2026-08-13 (+32 more)
+Nodes (41): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12, 0.11.5 — 2026-08-13, 0.11.6 — 2026-08-13 (+33 more)
 
 ### Community 18 - "Working log 2026-08-03"
 Cohesion: 0.07
@@ -523,8 +528,8 @@ Cohesion: 0.15
 Nodes (12): DryRunTest, LogServiceTest, OutputSizeTest, _project(), Test cho scripts/tdq_finish.py — gộp 4 việc bookkeeping cuối turn thành 1 lệnh., T3.3 — log service bật mặc định, tắt bằng TDQ_LOG=0., T3.4 — mọi bước pass thì stdout ≤ 200 ký tự; chi tiết chỉ khi --verbose., Dựng project giả có state TDQ + 1 file .md sạch để lint. (+4 more)
 
 ### Community 21 - "write_state"
-Cohesion: 0.21
-Nodes (5): write_state(), now_iso(), P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước         →, Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới., TestPromptContext
+Cohesion: 0.19
+Nodes (6): write_state(), now_iso(), session_start.py + prompt_context.py (0.3.0) — bơm context theo state., P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước         →, Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới., TestPromptContext
 
 ### Community 22 - "test_check_canvas_layout.py"
 Cohesion: 0.23
@@ -567,8 +572,8 @@ Cohesion: 0.24
 Nodes (4): budget(), Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ., description của mọi skill luôn nằm trong context — tổng phải gọn., TokenBudgetTest
 
 ### Community 33 - "TestProjectRootResolution"
-Cohesion: 0.18
-Nodes (4): Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user     gõ l, run_state_cli_in(), State phải luôn về MỘT file ở project root — chạy CLI từ thư mục con     không đ, TestProjectRootResolution
+Cohesion: 0.16
+Nodes (5): Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user     gõ l, run_state_cli_in(), A3 — tdq_state.py: default schema, CLI, protected keys, atomic write., State phải luôn về MỘT file ở project root — chạy CLI từ thư mục con     không đ, TestProjectRootResolution
 
 ### Community 34 - "canvas_move_block.py"
 Cohesion: 0.18
@@ -606,9 +611,9 @@ Nodes (10): chapter(), Test cho scripts/canvas_draw.py — bộ dựng chương 
 Cohesion: 0.17
 Nodes (3): PlanTickStateTest, P1 — đọc trạng thái tick của plan (hàng rào ép tick task khi implement).  Hàng r, TurnSnapshotPlanShaTest
 
-### Community 43 - "_run"
-Cohesion: 0.22
-Nodes (5): T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu     lại, _run(), TestIntakeReminder, TestSignalWritten, write_file_plan_mode()
+### Community 43 - "test_prompt_context.py"
+Cohesion: 0.21
+Nodes (6): prompt_context.py — nhắc [TDQ:INTAKE] khi KHÔNG có request mở (spec 2026-08-02)., T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu     lại, _run(), TestIntakeReminder, TestSignalWritten, write_file_plan_mode()
 
 ### Community 44 - "Kiến thức chốt — audit tối ưu token/time workflow (vòng 3)"
 Cohesion: 0.12
@@ -719,8 +724,8 @@ Cohesion: 0.28
 Nodes (11): build_ch4(), build_ch7(), build_all(), build_moved(), build_toc(), chapter_elements(), load(), main() (+3 more)
 
 ### Community 71 - "helper.py"
-Cohesion: 0.09
-Nodes (20): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., run_hook(), write_file(), B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json, session_start.py + prompt_context.py (0.3.0) — bơm context theo state. (+12 more)
+Cohesion: 0.17
+Nodes (13): decision(), load_fixture(), Shared test utilities: run hook scripts as subprocesses with stdin JSON., Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., write_file(), B3 — bash_gate.py: NHẮC (allow + additionalContext) về quy ước git và state.json, ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl (+5 more)
 
 ### Community 72 - "PLAN — Hybrid deep search 0.6.0 (scout ∥ agy tổng quát → agy đào sâu)"
 Cohesion: 0.17
@@ -1767,29 +1772,41 @@ Cohesion: 0.22
 Nodes (8): Definition of Done, P1 — `plan_tick_state` báo thêm `doing_count`, P2 — Chặn "nhiều task cùng `[~]`" (Gap B), P3 — Chặn "sửa liên tiếp không tick" (Gap A, đếm streak), P4 — Luật giao subagent theo từng task (Gap C), P5 — Log & test bắt buộc, PLAN — Bịt 3 lỗ hổng tick checkbox ở chế độ chuyên sâu, Quy tắc thi hành (áp cho mọi task)
 
 ### Community 392 - "Working log — 2026-08-13"
-Cohesion: 0.13
-Nodes (14): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+6 more)
+Cohesion: 0.11
+Nodes (18): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+10 more)
 
 ### Community 395 - "PLAN — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C"
 Cohesion: 0.29
 Nodes (6): Definition of Done, P1 — Đổi khối hint dùng chung trong `interview.md`, P2 — Rà & kết luận 3 dòng `➤ Duyệt:` riêng lẻ, P3 — Log & test bắt buộc, PLAN — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C, Quy tắc thi hành (áp cho mọi task)
 
+### Community 398 - "run_state_cli"
+Cohesion: 0.15
+Nodes (6): run_state_cli(), NextTest, P1 — lệnh `next`, `next --brief`, `get <key>` (spec §2.2)., QC1.1 — tiêu đề phải nói đúng phase mà thân bài đang dùng.          Lane quick g, Tối ưu token: init/set/reset mặc định in 1 dòng, không dump nguyên state., Cần soi đầy đủ thì `--json` phải trả lại hành vi cũ.
+
+### Community 399 - "run_hook"
+Cohesion: 0.18
+Nodes (5): run_hook(), Trần 600 ký tự không được cắt mất dòng luật hay dòng lệnh., TestSessionStart, P2/T2.12 — hook không bao giờ làm hỏng tool call (spec §4.7).  Mọi hook × mọi tr, ResilienceTest
+
+### Community 400 - "PLAN (quick) — Bắt buộc in tóm tắt spec/plan trước dòng Duyệt"
+Cohesion: 0.33
+Nodes (5): DoD, Phạm vi, PLAN (quick) — Bắt buộc in tóm tắt spec/plan trước dòng Duyệt, QC, Task
+
 ## Knowledge Gaps
-- **1935 isolated node(s):** `0.11.6 — 2026-08-13`, `0.11.5 — 2026-08-13`, `0.11.4 — 2026-08-12`, `0.11.3 — 2026-08-12`, `0.11.2 — 2026-08-09` (+1930 more)
+- **1945 isolated node(s):** `0.11.7 — 2026-08-13`, `0.11.6 — 2026-08-13`, `0.11.5 — 2026-08-13`, `0.11.4 — 2026-08-12`, `0.11.3 — 2026-08-12` (+1940 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **59 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `run_state_cli()` connect `run_state_cli` to `TestProjectRootResolution`, `StateFileTest`, `TestState`, `helper.py`?**
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Why does `main()` connect `edit_gate.py` to `tdq_state.py`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `today_log_rel()` connect `tdq_state.py` to `edit_gate.py`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `run_state_cli()` connect `run_state_cli` to `StateFileTest`, `helper.py`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **What connects `0.11.6 — 2026-08-13`, `0.11.5 — 2026-08-13`, `0.11.4 — 2026-08-12` to the rest of the system?**
-  _1935 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `today_log_rel()` connect `tdq_state.py` to `edit_gate.py`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **What connects `0.11.7 — 2026-08-13`, `0.11.6 — 2026-08-13`, `0.11.5 — 2026-08-13` to the rest of the system?**
+  _1945 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0502497796062298 - nodes in this community are weakly interconnected._
 - **Should `.stop` be split into smaller, more focused modules?**

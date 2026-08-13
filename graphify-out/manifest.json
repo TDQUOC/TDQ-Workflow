@@ -1,7 +1,7 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786611164.6081984,
-    "ast_hash": "13d34074575ff30254ecb01a2ca23f7b",
+    "mtime": 1786612634.7289276,
+    "ast_hash": "3052429aa202464d8e4cf3e6cb1338b9",
     "semantic_hash": ""
   },
   "hooks/hooks.json": {
@@ -150,13 +150,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786609333.5904388,
-    "ast_hash": "e43a01dd0a10d44e797eb0dae0689d40",
+    "mtime": 1786612555.2373912,
+    "ast_hash": "587ef555035bf27f33e4841cadae7505",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
-    "mtime": 1786609102.5977876,
-    "ast_hash": "a0b7afcab34d4b031179571ed377b853",
+    "mtime": 1786612534.1408305,
+    "ast_hash": "33071a0686ed25041ebeb2fdb99f6217",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786611170.9844468,
-    "ast_hash": "4dac2e0963be76cbd8cee246e556bd7c",
+    "mtime": 1786612641.6298466,
+    "ast_hash": "d960f96a6d05f0fd870f2e9cb1a22a45",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786611183.8315232,
-    "ast_hash": "ae10cd99842d03c5181937a51a40e43d",
+    "mtime": 1786612606.4601817,
+    "ast_hash": "e058d8eb4b3e639d219b5d0e8e4e5dab",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786611181.6335192,
-    "ast_hash": "1ff7afd90310caff2bd9593b1abe4102",
+    "mtime": 1786612652.5384915,
+    "ast_hash": "ac9406c88669a5c7eaffaff03624acab",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2257,6 +2257,16 @@
   "docs/tdq/spec/2026-08-13-vi-du-cau-hoi-lane.md": {
     "mtime": 1786608318.7670887,
     "ast_hash": "5449c5844fc7200bceb7c472d9b4f24e",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-bat-buoc-tom-tat-spec.md": {
+    "mtime": 1786611405.7167435,
+    "ast_hash": "052e0fa4dd8f126c1636e464470c47ef",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-bat-buoc-tom-tat-spec.md": {
+    "mtime": 1786612601.66135,
+    "ast_hash": "46f81f64bc2af554568e7042feb159b5",
     "semantic_hash": ""
   }
 }

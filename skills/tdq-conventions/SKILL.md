@@ -71,6 +71,16 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 - Turn nào đổi repo → `tdq_finish.py --log` append vào CUỐI `docs/workinglog/<hôm nay>.md`:
   giờ, file đổi, lý do, test đã chạy. Cách hook nhận biết: [reminder-codes.md](references/reminder-codes.md).
 - Turn chỉ đọc/phân tích → không ghi. Turn chỉ sửa working log → không ghi thêm entry.
+- **Ảnh user gửi kèm.** Turn có ảnh đính kèm VÀ turn đó phải ghi working log (đổi repo) →
+  TRƯỚC khi gọi `tdq_finish.py --log`, copy từng ảnh. Nguồn: đường dẫn cache
+  (`~/.claude/image-cache/<session-id>/<n>.<ext>`), đã hiện sẵn trong context turn đó.
+  Đích: `docs/workinglog/assets/<active_request hoặc "misc" nếu không có>/<n>.<ext>`.
+  `n` = đếm file đã có trong thư mục đích + 1, không dùng lại số thứ tự của cache gốc.
+  Rồi chèn `![<mô tả ngắn>](assets/<slug>/<n>.<ext>)` vào đúng vị trí liên quan trong
+  chuỗi truyền cho `--log` (cạnh câu mô tả ảnh đó, không nhất thiết ở đầu). Ảnh **track
+  trong git** như mọi file khác trong `docs/workinglog/` — không gitignore. Áp dụng cho
+  **mọi** ảnh user gửi kèm trong turn đổi repo, không cần tự đánh giá "có liên quan".
+  Copy lỗi (file cache không còn) → báo user, đừng âm thầm bỏ qua.
 
 ## 7. Git
 

@@ -2,6 +2,14 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.8 — 2026-08-13
+
+Lưu & nhúng ảnh đính kèm vào working log.
+
+- `skills/tdq-conventions/SKILL.md` §6: thêm quy ước — turn có ảnh user gửi kèm + phải
+  ghi working log → copy ảnh từ cache session sang `docs/workinglog/assets/<slug>/<n>.<ext>`
+  (track git), chèn markdown `![...]` vào chuỗi `--log`. Không sửa `tdq_finish.py`.
+
 ## 0.11.7 — 2026-08-13
 
 Bắt buộc rõ hơn việc in tóm tắt spec/plan trước dòng duyệt.

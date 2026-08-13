@@ -1,15 +1,15 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-13T16:16:46+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-13T17:02:48+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-13-bat-buoc-tom-tat-spec |
-| Lane | quick |
+| Request | 2026-08-13-luu-anh-workinglog |
+| Lane | full |
 | Phase | idle |
-| Spec | (chưa có) |
-| Plan | (chưa có) |
-| Duyệt quick | ✔ đã duyệt |
-| Mode thực thi | (chưa chốt) |
+| Spec | docs/tdq/spec/2026-08-13-luu-anh-workinglog.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-13-luu-anh-workinglog.md — ✔ đã duyệt |
+| Duyệt quick | (không áp dụng) |
+| Mode thực thi | main |
 
 ## Đang ở đâu
 Đã xong hoặc chưa mở request. Cấm: Đè request cũ còn dở mà chưa hỏi user.
