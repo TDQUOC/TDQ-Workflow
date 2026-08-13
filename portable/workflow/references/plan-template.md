@@ -78,9 +78,9 @@ Luật:
 ## Dòng `Mode thực thi`
 
 - Phải nằm **một dòng riêng**, không ghép vào dòng header khác.
-- Đây chỉ là **đề xuất** — không hỏi user riêng một lượt cho mode.
-  Mode ghi vào state là mode user nói lúc duyệt: `duyệt plan mode <main|subagent>`.
-  User duyệt mà không nói mode → HỎI, không tự lấy đề xuất làm chốt.
+- Đây chỉ là **đề xuất**. User duyệt plan xong, phase `mode` mới hỏi chọn `main` hay
+  `subagent`; mode ghi vào state là mode user NÓI, không tự lấy đề xuất làm chốt.
+  Câu duyệt đã kèm sẵn mode thì bỏ qua cổng đó, vào thẳng implement.
 
 ## Kiểm trước khi trình
 

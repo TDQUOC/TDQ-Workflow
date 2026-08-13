@@ -90,8 +90,25 @@ Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set p
 9. Trình report trong chat (nguyên văn hoặc tóm tắt ngắn gọn + đường dẫn).
 
 10. **Hỏi user có commit không** — bắt buộc, không tự commit thành quả cuối (ngoại lệ duy
-    nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). User đồng ý
-    → message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI; branch theo quy ước.
+    nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). Gộp chung
+    với bước 9 thành MỘT khối theo
+    [user-facing-block.md](../tdq-conventions/references/user-facing-block.md):
+    ```
+    Tôi đã làm xong yêu cầu của bạn.
+
+    Đã làm: <gạch đầu dòng ngắn>.
+    Kết quả kiểm: <số hạng mục QC, kết quả test>.
+
+    Xem đầy đủ tại: docs/tdq/reports/<slug>.md
+
+    ---
+
+    **Bạn có muốn tôi commit phần thay đổi này không?**
+
+    ➤ Trả lời: nhắn "commit" (tôi commit, không push) hoặc "chưa" (giữ nguyên chỗ làm việc) · Góp ý: nhắn trực tiếp
+    ```
+    User đồng ý → message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI;
+    branch theo quy ước.
 
 Xong khi: report đã ghi và user đã được hỏi về commit.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`

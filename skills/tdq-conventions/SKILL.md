@@ -29,6 +29,10 @@ Mọi output cho user viết **tiếng Việt**.
    câu hỏi, ĐỦ option, dòng `➤ Duyệt:`. Đặt NGAY SAU dòng `✓ [TDQ:<MÃ>]`. Lý do: focus mode
    chỉ hiện message cuối. Tóm tắt lại hay trỏ ngược ("xem câu hỏi ở trên") đều làm user
    mất sạch câu hỏi và option. Cấm rút gọn, cấm trỏ ngược.
+6. **Mọi khối nói với user** (hỏi pipeline, interview, cổng spec/plan/mode/chế độ nhanh,
+   câu hỏi commit) viết theo khuôn
+   [references/user-facing-block.md](references/user-facing-block.md): câu dẫn xưng "bạn",
+   đường dẫn file đầy đủ, đường kẻ ngăn, khối trả lời in đậm nằm cuối, không emoji.
 
 Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
 Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).
@@ -99,16 +103,14 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 
 ## 9. Sub-agent
 
-- `description` mỗi lần gọi Agent theo dạng `<model>-<effort>-<việc-kebab>` (vd
+- `description` mỗi lần gọi Agent dạng `<model>-<effort>-<việc-kebab>` (vd
   `sonnet-low-research-doc`) — nhìn tên là biết model và effort đang chạy.
-- Bảng model/effort mặc định theo vai + luật override:
-  [references/subagent-tuning.md](references/subagent-tuning.md).
+- Bảng model/effort mặc định theo vai + luật override: [references/subagent-tuning.md](references/subagent-tuning.md).
 
 ## 10. Tiết kiệm context (bắt buộc)
 
-Mỗi tool call đọc lại toàn bộ context, nên output thừa tốn token ở MỌI lượt sau.
-Luật gộp tool call, đọc vừa đủ, giao việc nặng cho subagent:
-[references/context-budget.md](references/context-budget.md).
+Mỗi tool call đọc lại toàn bộ context, nên output thừa tốn token ở MỌI lượt sau. Luật gộp
+tool call, đọc vừa đủ, giao việc nặng cho subagent: [references/context-budget.md](references/context-budget.md).
 
 ## 11. Chất lượng
 

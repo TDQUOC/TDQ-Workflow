@@ -41,6 +41,10 @@ def looks_like_approval(prompt, target):
         return False
     if QUESTION.search(prompt):
         return False
+    if target == "mode":
+        # Câu trả lời ở cổng mode thường trống trơn: "main", "subagent", "chọn main".
+        # Không đòi từ đồng ý — user đã duyệt plan rồi, đây chỉ là chọn cách làm.
+        return bool(MODE.search(prompt))
     if target == "quick" and APPROVE_FAST.search(prompt):
         return True
     if not AGREE.search(prompt):
@@ -87,6 +91,12 @@ def main():
     elif lane == "full" and state.get("spec_approved") and state.get("plan_file") \
             and not state.get("plan_approved"):
         pending = "plan"
+    elif lane == "full" and state.get("plan_approved") \
+            and tdq_state.effective_phase(state, warn=False) == "mode" \
+            and not tdq_state.effective_mode(state, warn=False):
+        # Cổng mode: plan đã duyệt nhưng user chưa chọn cách làm. Câu trả lời ở đây
+        # thường chỉ là "main"/"subagent" trống trơn, nên nhận diện riêng.
+        pending = "mode"
 
     lines = [tdq_state.render_next(cwd, state, brief=True)]
 
@@ -95,12 +105,23 @@ def main():
         # còn hơn cắt cụt câu hint/câu lệnh approve (bug hint cụt 2026-08-02).
         lines = []
         prompt = payload.get("prompt") or ""
-        planned = plan_mode(cwd, state) if pending == "plan" else None
+        planned = plan_mode(cwd, state) if pending in ("plan", "mode") else None
         matched = looks_like_approval(prompt, pending)
         tdq_state.turn_log_append(cwd, "signal", session=sid, event="approve_pending",
                                   target=pending, matched=matched, mode_conflict=False)
         if matched:
             mode = ""
+            if pending == "mode":
+                # Cổng mode: câu trả lời CHÍNH LÀ mode. Chọn khác mode plan đề xuất
+                # không phải xung đột — đề xuất chỉ là đề xuất, user mới là người chốt.
+                found = MODE.search(prompt)
+                said = found.group(1).lower() if found else (planned or "main")
+                lines.append("[TDQ:APPROVE] User vừa chọn mode → chạy NGAY: "
+                             f"python3 scripts/tdq_state.py approve plan --mode {said} "
+                             f"--by \"{prompt[:60]}\"")
+                lines.append(tdq_state.render_next(cwd, state, brief=True))
+                _emit(cwd, sid, lines, critical=True)
+                return
             if pending == "plan":
                 found = MODE.search(prompt)
                 said = found.group(1).lower() if found else None
@@ -113,12 +134,15 @@ def main():
                                  f"{planned} — HỎI user xác nhận mode trước, chưa chạy approve.")
                     _emit(cwd, sid, lines, critical=True)
                     return
-                mode = f" --mode {said}" if said else " --mode <main|subagent>"
+                # Không nói mode thì KHÔNG chèn placeholder: thiếu mode giờ là hợp lệ,
+                # phase `mode` ngay sau sẽ hỏi. Placeholder khiến agent hỏi sớm một nhịp.
+                mode = f" --mode {said}" if said else ""
             lines.append(f"[TDQ:APPROVE] User vừa duyệt {pending} → chạy NGAY: "
                          f"python3 scripts/tdq_state.py approve {pending}{mode} "
                          f"--by \"{prompt[:60]}\"")
         else:
-            lines.append(f"[TDQ:APPROVE] Đang chờ duyệt {pending}. Prompt này KHÔNG rõ là câu duyệt "
+            waiting = "chờ user chọn mode" if pending == "mode" else f"chờ duyệt {pending}"
+            lines.append(f"[TDQ:APPROVE] Đang {waiting}. Prompt này KHÔNG rõ là câu duyệt "
                          f"→ tuyệt đối không suy diễn: hoặc HỎI lại, hoặc in \"{approve_hint(pending, planned)}\".")
         lines.append(tdq_state.render_next(cwd, state, brief=True))
         # Không dedupe: mỗi turn phải thấy lại cảnh báo "đừng suy diễn duyệt" —

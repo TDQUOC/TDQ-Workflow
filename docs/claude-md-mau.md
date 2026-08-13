@@ -32,8 +32,8 @@
   mở thì không tính. Thấy `[TDQ:INTAKE]` → mở intake trước mọi việc.
 - Chỉ NGƯỜI DÙNG duyệt, bằng chat thường. Câu chữ mơ hồ → HỎI lại, cấm tự suy diễn duyệt.
 - Ghi duyệt/state CHỈ qua `scripts/tdq_state.py`; cấm sửa `docs/tdq/state.json` trực tiếp.
-- Gộp gate: duyệt spec → viết plan ngay turn đó; duyệt plan kèm mode (main | subagent) →
-  build ngay turn đó. Duyệt plan không nói mode → HỎI.
+- Gộp gate: duyệt spec → viết plan ngay turn đó; duyệt plan → hỏi cách chạy
+  (main | subagent), chọn xong build luôn. Duyệt đã nói sẵn mode → build thẳng.
 - Spec/plan/report viết tiếng Việt; report ngắn gọn (10-20 dòng). Tick `[x]` khi task pass.
 - Cuối turn có đổi code → `graphify extract . --code-only`.
 - Sub-agent: description mở đầu `<model>-<effort>-<việc>`, vd `sonnet-low-research`.

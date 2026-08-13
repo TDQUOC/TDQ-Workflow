@@ -11,7 +11,7 @@ vì sao bỏ.
 | Web search | có (2–4 truy vấn) | có khi có ẩn số bên ngoài |
 | Interview | lặp đến hết mơ hồ | khi còn câu làm đổi kết quả |
 | Tài liệu | brief + spec + plan | **1 file** `docs/tdq/plan/<slug>.md` |
-| Gate duyệt | 2 (spec, plan) | **1** ("duyệt nhanh") |
+| Gate duyệt | 2 (spec, plan) + 1 câu chọn cách chạy | **1** ("duyệt nhanh") |
 | QC | file `qc/<slug>.md` | mỗi dòng DoD một phép kiểm, ghi vào mục ## QC của plan (mặc định BẬT) |
 | Vòng fix khi FAIL | trần 3 vòng, ghi file qc/ | trần 3 vòng, ghi trong plan |
 
@@ -37,6 +37,28 @@ Trạng thái: CHỜ DUYỆT
 ```
 
 Quá 40 dòng nghĩa là việc này không còn nhanh — nói với user và đề xuất chuyển chế độ chuyên sâu (deep).
+
+## Khối trình mini-plan cho user
+
+Theo [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — đủ
+5 thành phần, khối duyệt nằm cuối tin nhắn, không emoji:
+
+```
+Tôi đã lên kế hoạch gọn cho yêu cầu của bạn.
+
+Sẽ làm: <gạch đầu dòng ngắn>.
+Đụng tới: <file/khu vực>.
+Kiểm thế nào: <lệnh hoặc tiêu chí>.
+Ước tính sẽ dùng skill: <skill sẽ DÙNG, hoặc "không có">.
+
+Xem đầy đủ tại: docs/tdq/plan/<slug>.md
+
+---
+
+**Bạn duyệt để tôi làm luôn chứ?**
+
+➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong tôi làm ngay) · Góp ý: nhắn trực tiếp
+```
 
 ## Luật tick — `[ ]` · `[~]` · `[x]`
 

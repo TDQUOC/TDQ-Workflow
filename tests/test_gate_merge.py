@@ -1,10 +1,15 @@
-"""P3 — luật gộp gate: duyệt spec → plan NGAY, duyệt plan+mode → build NGAY.
+"""P3 — luật gộp gate: duyệt spec → plan NGAY, chốt cách chạy → build NGAY.
 
-Bốn bất biến dễ trôi ngược nhất khi ai đó sửa skill sau này:
-1. Không skill nào bắt user chờ sang "turn mới" giữa spec → plan → build.
+Chặng plan → `mode` là NGOẠI LỆ có chủ đích: user chỉ nhắn "duyệt plan", câu hỏi chọn
+cách chạy đứng riêng ngay sau đó trong cùng turn, rồi mới build. Cấm chờ turn vẫn áp cho
+hai chặng còn lại — spec → plan và chốt mode → build.
+
+Năm bất biến dễ trôi ngược nhất khi ai đó sửa skill sau này:
+1. Không skill nào bắt user chờ sang "turn mới" ở các chặng nối.
 2. `tdq-reviewer` chỉ còn là lựa chọn gọi tay, không phải bước bắt buộc.
 3. `PHASE_TABLE` (nguồn sự thật của hook) không còn cấm viết plan cùng turn với spec.
 4. Vòng interview luôn kết thúc bằng câu hỏi mở cho user bổ sung.
+5. Cổng chọn cách chạy có mặt trong `tdq-plan` và giải thích nghĩa cả hai mode.
 """
 import os
 import re
@@ -55,6 +60,19 @@ class GateMergeTest(unittest.TestCase):
         self.assertIn("CÙNG turn", " ".join(plan["checklist"]))
         self.assertFalse(plan["checklist"][0].startswith("Hỏi user mode"),
                          "phase plan vẫn hỏi mode riêng một lượt")
+
+    def test_plan_skill_has_the_mode_gate(self):
+        """Cổng chọn cách chạy phải nằm trong tdq-plan, kèm nghĩa của cả hai mode."""
+        text = read(SKILLS, "tdq-plan", "SKILL.md")
+        self.assertIn("approve plan --by", text, "tdq-plan: thiếu lệnh duyệt không mode")
+        self.assertIn("phase `mode`", text, "tdq-plan: không nói tới cổng mode")
+        self.assertRegex(text, r"main —.*tuần tự", "tdq-plan: thiếu nghĩa của main")
+        self.assertRegex(text, r"subagent —.*song song", "tdq-plan: thiếu nghĩa của subagent")
+
+    def test_mode_gate_does_not_cost_an_extra_turn_before_build(self):
+        """Chốt mode xong là build ngay — không được đẩy sang lượt nhắn khác."""
+        text = read(SKILLS, "tdq-plan", "SKILL.md")
+        self.assertIn("build LUÔN cùng", text, "tdq-plan: chốt mode xong không build ngay")
 
     def test_interview_always_ends_with_open_question(self):
         text = read(SKILLS, "tdq-intake", "references", "interview.md")

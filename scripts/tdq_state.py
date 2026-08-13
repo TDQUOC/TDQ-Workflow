@@ -45,7 +45,7 @@ LANE_ALIASES = {
     "chuyen-sau": "full", "chuyensau": "full", "chuyên sâu": "full",
     "chuyen sau": "full", "chuyên-sâu": "full",
 }
-VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}
+VALID_PHASES = {"idle", "analyze", "spec", "plan", "mode", "implement", "qc", "report"}
 
 USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | "
          "init <slug> [nhanh|express|quick — chế độ nhanh | chuyen-sau|deep|full — "
@@ -555,18 +555,32 @@ PHASE_TABLE = {
     "plan": {
         "entry": "spec_approved = true",
         "action": "Viết plan kèm mode ĐỀ XUẤT, đăng ký plan_file, trình rồi DỪNG chờ duyệt",
-        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<nguyên văn>\"",
+        "cmd": "python3 scripts/tdq_state.py approve plan --by \"<nguyên văn>\"",
         "checklist": [
             "ĐỀ XUẤT mode thực thi ngay trong plan (main|subagent) + lý do — "
-            "không hỏi riêng một lượt; user chốt mode lúc duyệt",
+            "không hỏi mode ở bước này; cổng mode là phase riêng ngay sau",
             "Viết docs/tdq/plan/<slug>.md: mỗi task 1 việc + 1 test, có checkbox [ ]",
             "Chạy: python3 scripts/tdq_state.py set plan_file=docs/tdq/plan/<slug>.md",
-            "Trình tóm tắt plan, in dòng mời duyệt kèm mode đề xuất, rồi DỪNG",
-            "User duyệt kèm mode → chạy lệnh approve ở trên NGAY, rồi build trong CÙNG turn",
+            "Trình tóm tắt plan, mời user nhắn \"duyệt plan\", rồi DỪNG",
+            "User duyệt → chạy lệnh approve ở trên NGAY, rồi hỏi mode trong CÙNG turn "
+            "(user đã nói mode sẵn thì thêm --mode và build luôn)",
         ],
-        "done_when": "plan_approved = true và implement_mode khác null",
-        "forbidden": "Sửa code khi plan chưa duyệt; tự chọn mode thay user; "
-                     "bắt user nhắn thêm một turn nữa mới build",
+        "done_when": "plan_approved = true",
+        "forbidden": "Sửa code khi plan chưa duyệt; bắt user nói mode mới chịu ghi nhận duyệt",
+    },
+    "mode": {
+        "entry": "plan_approved = true mà implement_mode chưa chốt",
+        "action": "Giải thích ngắn gọn 2 mode rồi hỏi user chọn, DỪNG chờ trả lời",
+        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<nguyên văn>\"",
+        "checklist": [
+            "Trình khối chọn mode theo khuôn user-facing-block, mỗi mode một dòng nghĩa: "
+            "main = tôi tự làm tuần tự ngay đây; subagent = giao nhiều agent chạy song song",
+            "Nêu mode plan đã ĐỀ XUẤT và vì sao, nhưng KHÔNG tự chốt thay user",
+            "DỪNG chờ user chọn",
+            "User chọn → chạy lệnh approve ở trên NGAY, rồi build trong CÙNG turn",
+        ],
+        "done_when": "implement_mode khác null",
+        "forbidden": "Sửa code khi chưa chốt mode; tự chọn mode thay user",
     },
     "implement": {
         "entry": "plan_approved = true và implement_mode đã chốt",
@@ -655,7 +669,7 @@ PHASE_TABLE = {
 }
 
 
-PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "implement", "qc", "report",
+PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc", "report",
                "idle", "quick"]
 
 
@@ -1022,6 +1036,10 @@ def _cli_approve(cwd, rest):
         print(f"ℹ️ {target} đã duyệt lúc {state.get(f'{target}_approved_at')} — không ghi lại, đi tiếp bước sau.")
         if mode and state.get("implement_mode") != mode:
             state["implement_mode"] = mode
+            # Đây chính là đường user trả lời ở cổng `mode`: plan đã duyệt từ trước,
+            # lần này chỉ chốt mode → mở đường sang implement luôn.
+            if target == "plan" and effective_phase(state, warn=False) == "mode":
+                state["phase"] = "implement"
             save(cwd, state, expect_updated_at=stamp)
             print(f"ℹ️ Đã cập nhật implement_mode = {mode}.")
         return
@@ -1058,6 +1076,11 @@ def _cli_approve(cwd, rest):
         # lúc đóng việc trở thành terminal phân biệt được với idle trước duyệt.
         state["phase"] = "implement"
         state["quick_qc_skipped"] = no_qc
+    if target == "plan":
+        # Cổng mode tách khỏi cổng plan: duyệt plan mà chưa chốt mode thì dừng ở
+        # phase `mode` (giải thích + hỏi). User nói mode ngay trong câu duyệt thì
+        # bỏ qua cổng đó, vào thẳng implement — không hỏi lại thứ user vừa nói.
+        state["phase"] = "implement" if state.get("implement_mode") else "mode"
     save(cwd, state, expect_updated_at=stamp)
     if no_qc:
         # Dòng có timestamp chỉ ra từ _info (stderr, tắt được bằng TDQ_LOG=0);

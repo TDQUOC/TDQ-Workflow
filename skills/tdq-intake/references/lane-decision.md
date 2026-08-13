@@ -34,27 +34,35 @@ Có **bất kỳ** ô nào rơi vào cột chế độ chuyên sâu (deep) → �
 - **chế độ nhanh (express)**: phân tích (+ search/interview khi cần) → mini-spec/plan gộp 1 file, tóm tắt
   ≤10 dòng trong chat → user duyệt (1 gate) → ghi working log → implement → validate →
   báo cáo ngắn. Chi tiết: [quick-lane.md](quick-lane.md).
-- **chế độ chuyên sâu (deep)**: phân tích + interview → spec (chờ duyệt, duyệt xong viết plan ngay cùng
-  turn) → plan (chờ duyệt kèm mode, duyệt xong build ngay cùng turn) → implement →
-  QC → report.
+- **chế độ chuyên sâu (deep)**: phân tích + interview → spec (chờ duyệt, duyệt xong viết
+  plan ngay cùng turn) → plan (chờ duyệt) → chọn cách chạy (main hay subagent) →
+  implement → QC → report.
 
 ## Khuôn câu hỏi (copy được)
 
-Đúng khuôn [interview.md](interview.md) — option mỗi dòng riêng, phương án đề xuất
+Theo [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) và
+khuôn option của [interview.md](interview.md) — option mỗi dòng riêng, phương án đề xuất
 luôn ở `A`. Không in dòng `Cỡ:/Cần:`; gọi "lane" là "pipeline" khi hỏi user; ngay dưới 2
 option luôn có khối giải thích ngắn nghĩa 2 pipeline (cố định, không đổi theo việc):
 
 ```
+Tôi đã ghi lại yêu cầu của bạn.
+
 Tóm tắt: <2–3 dòng việc user muốn>
-1. Bạn muốn chạy pipeline nào?
+
 - A (đề xuất): chế độ nhanh (express) — <lý do gắn với chính việc này>
 - B: chế độ chuyên sâu (deep) — <lý do gắn với chính việc này>
 
 _chế độ nhanh (express): làm gọn, ít vòng hỏi, hợp việc nhỏ/đã rõ. chế độ chuyên sâu
 (deep): phân tích + hỏi kỹ trước khi làm, hợp việc phức tạp hoặc rủi ro cao._
 
-_Trả lời bằng chữ cái (vd: "A"), hoặc gõ thẳng câu tự nhiên khớp ý bạn chọn — cả hai
-đều được hiểu như nhau._
+Xem đầy đủ tại: docs/tdq/brief/<slug>.md
+
+---
+
+**Bạn muốn chạy pipeline nào?**
+
+➤ Trả lời: nhắn "A" hoặc "B", hoặc gõ câu tự nhiên khớp ý bạn chọn · Góp ý: nhắn trực tiếp
 ```
 
 Đang giữa chừng mà thấy chọn sai lane? Nói rõ vì sao, đề xuất đổi, **hỏi user** rồi mới

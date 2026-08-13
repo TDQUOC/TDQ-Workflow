@@ -23,7 +23,10 @@ thích trình bày.
 Mỗi câu hỏi kèm **2–4 phương án cụ thể**. **Luôn hỏi bằng danh sách trong chat** — không
 dùng AskUserQuestion, để user đọc được toàn bộ phương án cùng lúc và trả lời mở.
 
-Khuôn bắt buộc, dán đúng dạng này:
+Cả vòng hỏi là một khối nói với user: bọc theo
+[user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — câu dẫn
+xưng "bạn" ở đầu, đường kẻ ngăn `---` rồi khối trả lời in đậm ở cuối tin nhắn.
+Phần option bên trong dán đúng dạng này:
 
 ```
 <số>. <Câu hỏi>
@@ -39,7 +42,7 @@ Luật khuôn:
 - Phương án bạn khuyên luôn là **A** và mang nhãn `(đề xuất)`; các option khác không có nhãn.
 - Sau nhãn là dấu `:` rồi nội dung. Hệ quả nối bằng ` — `, giữ trong cùng dòng đó.
 - Nhiều câu hỏi trong một vòng → đánh số câu `1.`, `2.` và mỗi câu có bảng option riêng.
-- Câu hỏi chốt lane, chốt mode, hỏi commit cũng theo đúng khuôn này.
+- Câu hỏi chốt pipeline, chọn cách chạy (main/subagent), hỏi commit cũng theo khuôn này.
 
 **Câu chốt vòng là có điều kiện** — chỉ ghi khi vòng đó có ít nhất một câu hỏi (kể cả
 khi chỉ có đúng 1 câu). Vòng không có câu hỏi nào thì không dựng vòng interview rỗng chỉ

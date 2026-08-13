@@ -43,21 +43,36 @@ plan NGAY trong cùng turn.
    ```
    **Không** set `implement_mode` ở đây — trường đó chỉ được ghi khi ghi nhận duyệt.
 
-5. **Trình bày & DỪNG.** Chat: tóm tắt plan ≤ 10 dòng (số phase/task, mode bạn ĐỀ XUẤT
-   + lý do, DoD), rồi in đúng dòng:
+5. **Trình bày & DỪNG.** Viết khối trình plan theo
+   [references/user-facing-block.md](references/user-facing-block.md) — câu dẫn xưng
+   "bạn", tóm tắt ≤ 10 dòng (số phase/task, mode bạn ĐỀ XUẤT + lý do, DoD), dòng
+   `Xem đầy đủ tại: docs/tdq/plan/<slug>.md`, đường kẻ ngăn, rồi khối duyệt ở cuối:
    ```
-   ➤ Duyệt: nhắn "duyệt plan mode <mode đề xuất>" (đổi được: main|subagent) · Góp ý: nhắn trực tiếp
+   **Bạn duyệt plan này chứ?**
+
+   ➤ Duyệt: nhắn "duyệt plan" (duyệt xong tôi hỏi bạn một câu về cách chạy) · Góp ý: nhắn trực tiếp
    ```
    Rồi **kết thúc turn**. Góp ý → sửa, trình lại, chờ tiếp.
 
-6. **User duyệt → ghi nhận NGAY:**
+6. **User duyệt → ghi nhận NGAY, rồi hỏi cách chạy trong CÙNG turn:**
    ```
-   python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by "<nguyên văn>"
+   python3 scripts/tdq_state.py approve plan --by "<nguyên văn>"
    ```
-   Mode chốt là mode user NÓI lúc duyệt (khác đề xuất cũng được). User duyệt mà không
-   nói mode → **HỎI**, đừng tự chọn, mỗi option một dòng theo khuôn
-   [references/interview.md](references/interview.md). Ghi nhận xong thì build LUÔN
-   trong cùng turn — không bắt user nhắn thêm câu nào.
+   Câu duyệt đã kèm sẵn chữ `main`/`subagent` → thêm `--mode <main|subagent>` vào chính
+   lệnh trên và build luôn, không hỏi lại thứ user vừa nói.
+   Chưa nói mode → state dừng ở phase `mode`, hỏi tiếp bằng khối riêng:
+   ```
+   - A (đề xuất): main — tôi làm tuần tự ngay trong cuộc trò chuyện này, bạn theo dõi được từng bước.
+   - B: subagent — tôi chia việc cho nhiều trợ lý chạy song song, nhanh hơn nhưng bạn chỉ thấy báo cáo từng chặng.
+
+   ---
+
+   **Bạn chọn cách nào?**
+
+   ➤ Trả lời: nhắn "main" hoặc "subagent" (chọn xong tôi bắt tay làm ngay) · Góp ý: nhắn trực tiếp
+   ```
+   User trả lời → chạy lại lệnh trên kèm `--mode <main|subagent>` rồi build LUÔN cùng
+   turn. Mode chốt là mode user NÓI (khác đề xuất cũng được); cấm tự chọn thay user.
 
 Xong khi: `plan_approved = true` và `implement_mode` khác rỗng.
 Bước kế tiếp: đổi header plan thành ĐÃ DUYỆT, chạy

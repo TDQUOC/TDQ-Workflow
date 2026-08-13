@@ -145,17 +145,40 @@ class TestPromptContext(unittest.TestCase):
                     spec_sha256="abc", spec_approved_at=now_iso(),
                     plan_file="docs/tdq/plan/x.md")
 
-    def test_plan_hint_uses_mode_from_plan_file(self):
-        # 2026-08-02: plan chốt subagent → hint phải nêu subagent, không hardcode main
+    def _pending_mode(self, plan_body):
+        # plan đã duyệt nhưng chưa chốt mode → pending = mode (cổng mode tách riêng)
+        write_file(self.cwd, "docs/tdq/plan/x.md", plan_body)
+        write_state(self.cwd, active_request="r1", lane="full", phase="mode",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file="docs/tdq/plan/x.md", plan_approved=True,
+                    plan_approved_at=now_iso())
+
+    def test_plan_hint_no_longer_asks_for_mode(self):
+        # Cổng plan chỉ còn xin "duyệt plan"; mode hỏi ở phase sau.
         self._pending_plan("# plan\nMode thực thi: subagent — task tự chứa\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('duyệt plan mode subagent', out)
+        self.assertIn('duyệt plan', out)
+        self.assertNotIn('duyệt plan mode', out)
         self.assert_budget(out)
 
-    def test_plan_hint_without_mode_line_falls_back(self):
-        self._pending_plan("# plan\nchưa ghi mode\n")
+    def test_mode_hint_uses_mode_from_plan_file(self):
+        # 2026-08-02: plan đề xuất subagent → gợi ý phải nêu subagent, không hardcode main
+        self._pending_mode("# plan\nMode thực thi: subagent — task tự chứa\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('duyệt plan mode main', out)
+        self.assertIn('plan đề xuất subagent', out)
+
+    def test_mode_hint_without_mode_line_falls_back(self):
+        self._pending_mode("# plan\nchưa ghi mode\n")
+        rc, out, _ = self.ctx("tiếp tục")
+        self.assertIn('plan đề xuất main', out)
+
+    def test_mode_answer_is_recognised(self):
+        # Trả lời cổng mode thường trống trơn: chỉ mỗi chữ "main".
+        self._pending_mode("# plan\nMode thực thi: subagent — lý do\n")
+        rc, out, _ = self.ctx("main")
+        self.assertIn("approve plan --mode main", out)
+        self.assertNotIn("⚠️", out)
 
     def test_plan_approval_mode_mismatch_warns(self):
         # user duyệt "mode main" trong khi plan chốt subagent → phải có cảnh báo lệch
@@ -174,13 +197,15 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("--mode subagent", out)
         self.assertNotIn("⚠️", out)
 
-    def test_plan_approval_without_mode_leaves_placeholder(self):
+    def test_plan_approval_without_mode_no_longer_needs_mode(self):
+        # Luồng 2 bước: "duyệt plan" trống mode là HỢP LỆ, ghi nhận rồi mới hỏi mode.
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     spec_sha256="abc", spec_approved_at=now_iso(),
                     plan_file="docs/tdq/plan/x.md")
         rc, out, _ = self.ctx("duyệt plan")
-        self.assertIn("--mode <main|subagent>", out)
+        self.assertIn("approve plan", out)
+        self.assertNotIn("--mode <main|subagent>", out)
 
     def test_quick_approved_terminal_intake_and_next(self):
         # Quick đã duyệt + phase idle = request ĐÃ ĐÓNG → hợp đồng 2026-08-02:

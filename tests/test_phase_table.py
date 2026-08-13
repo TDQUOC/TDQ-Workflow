@@ -18,7 +18,7 @@ class PhaseTableTest(unittest.TestCase):
                         f"thiếu phase: {tdq_state.VALID_PHASES - keys}")
         self.assertIn("no_state", keys)
         self.assertIn("quick", keys)
-        self.assertEqual(len(keys), 9, sorted(keys))
+        self.assertEqual(len(keys), 10, sorted(keys))
 
     def test_every_row_complete(self):
         for name, row in tdq_state.PHASE_TABLE.items():

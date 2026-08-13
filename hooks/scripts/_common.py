@@ -22,9 +22,15 @@ import tdq_state  # noqa: E402
 # 0.2.0 bỏ gate cứng; 0.3.0 bỏ luôn slash command duyệt — user duyệt bằng chat.
 APPROVE_HINTS = {
     "spec": 'nhắn "duyệt spec"',
-    # {mode} = mode ĐÃ CHỐT trong plan (dòng "Mode thực thi:"), fallback main —
-    # hardcode main từng khiến user gõ sai mode so với plan đã chốt.
-    "plan": 'nhắn "duyệt plan mode {mode}" (đổi được: main|subagent)',
+    # Cổng plan KHÔNG hỏi mode nữa — hỏi mode là phase `mode` ngay sau đó. Bắt user
+    # vừa duyệt vừa chọn mode trong một câu là thứ khiến khối duyệt khó đọc.
+    "plan": 'nhắn "duyệt plan"',
+    # {mode} = mode plan ĐỀ XUẤT (dòng "Mode thực thi:"), fallback main. Giải thích
+    # nghĩa ngay tại chỗ: user cuối không có nghĩa vụ biết "subagent" là gì.
+    # Phần "plan đề xuất {mode}" để TRƯỚC: lời nhắc bị cắt từ đuôi theo trần ký tự,
+    # cắt mất đề xuất thì user phải tự đoán nên chọn gì.
+    "mode": 'plan đề xuất {mode} — nhắn "main" (tôi làm tuần tự ngay đây) '
+            'hoặc "subagent" (nhiều agent chạy song song)',
     # Biến thể bỏ QC phải hiện ở gợi ý, nếu không user không biết đường opt-out.
     "quick": 'nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy)',
 }
@@ -164,6 +170,6 @@ def echo_line(code, what):
 
 def approve_hint(target, mode=None):
     hint = APPROVE_HINTS.get(target, "nhắn duyệt")
-    if target == "plan":
-        hint = hint.format(mode=mode or "main")
+    if target == "mode":
+        return f"➤ Chọn cách làm: {hint.format(mode=mode or 'main')} · Góp ý: nhắn trực tiếp"
     return f"➤ Duyệt: {hint} · Góp ý: nhắn trực tiếp"

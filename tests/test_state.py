@@ -244,8 +244,9 @@ class TestState(unittest.TestCase):
         for text in (tdq_state.USAGE, tdq_state.PHASE_TABLE["plan"]["cmd"],
                      " ".join(tdq_state.PHASE_TABLE["plan"]["checklist"])):
             self.assertNotIn("external", text)
-        self.assertIn("main", tdq_state.PHASE_TABLE["plan"]["cmd"])
-        self.assertIn("subagent", tdq_state.PHASE_TABLE["plan"]["cmd"])
+        # Từ khi có phase `mode`, cổng chọn mode nằm ở hàng `mode`, không ở `plan`.
+        self.assertIn("main", tdq_state.PHASE_TABLE["mode"]["cmd"])
+        self.assertIn("subagent", tdq_state.PHASE_TABLE["mode"]["cmd"])
 
     def test_approve_quick_moves_phase_to_implement(self):
         """A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal."""

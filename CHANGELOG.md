@@ -2,6 +2,25 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.12.0 — 2026-08-13
+
+Khuôn trình bày thân thiện dùng chung cho mọi chỗ nói với user, và tách bước chọn cách
+chạy thành phase `mode` riêng — user chỉ cần nhắn "duyệt plan".
+
+- `skills/tdq-conventions/references/user-facing-block.md` (mới) + bản portable: 5 thành
+  phần bắt buộc, cấm emoji, xưng "bạn", luôn có đường dẫn file đầy đủ. Áp cho đủ 7 chỗ
+  giao tiếp: hỏi pipeline, interview, duyệt spec, duyệt plan, chọn cách chạy, duyệt chế
+  độ nhanh, hỏi commit cuối request.
+- `scripts/tdq_state.py`: thêm phase `mode` vào `VALID_PHASES`, `PHASE_ORDER`,
+  `PHASE_TABLE`. `approve plan` không kèm `--mode` nay dừng ở phase `mode`; kèm `--mode`
+  thì vào thẳng `implement`.
+- `hooks/scripts/_common.py`, `prompt_context.py`: khoá `plan` trong `APPROVE_HINTS` bỏ
+  phần mode, thêm khoá `mode` giải thích nghĩa `main` và `subagent` ngay tại chỗ.
+- Đồng bộ tài liệu: `phases.md` (hai bản), `portable/workflow/03-plan.md`,
+  `plan-template.md` (hai bản), `docs/claude-md-mau.md` §6.
+- `tests/test_mode_phase.py` (mới) và cập nhật `test_gate_merge`, `test_phase_table`,
+  `test_state`, `test_context_hooks`.
+
 ## 0.11.13 — 2026-08-13
 
 Bắt chặn của `stop_gate.py` phải ra lệnh in LẠI NGUYÊN VĂN khối chat cuối — lớp vá thứ hai
