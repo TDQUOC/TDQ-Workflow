@@ -51,6 +51,19 @@ khi chỉ có đúng 1 câu). Vòng không có câu hỏi nào thì không dựn
 - B: Có — tôi nói thêm.
 ```
 
+**Dòng hướng dẫn trả lời** — ngay dưới bảng option cuối cùng của mỗi vòng, thêm đúng 1
+khối ngắn (nguyên tắc + 1 ví dụ trung tính) giúp người mới đỡ bỡ ngỡ, biết gõ gì thì
+được gì:
+
+```
+_Trả lời bằng chữ cái (vd: "A"), hoặc gõ thẳng câu tự nhiên khớp ý bạn chọn (vd: "chọn
+phương án A") — cả hai đều được hiểu như nhau._
+```
+
+Chỉ 1 khối, không lặp lại cho từng câu hỏi khi có nhiều câu trong cùng vòng — đặt ở
+cuối, sau option cuối cùng. Ví dụ trong khối này luôn trung tính (không gắn cứng vào
+1 câu hỏi cụ thể như lane/mode) vì file này dùng chung cho mọi loại câu hỏi khuôn A/B/C.
+
 Phương án đóng không bao giờ phủ hết ý user; câu này là chỗ để user thêm ý.
 
 ## Ghi lại

@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786535117.9427705,
-    "ast_hash": "9ecf8b065cf1a2635661e4a90f53804d",
-    "semantic_hash": "9ecf8b065cf1a2635661e4a90f53804d"
+    "mtime": 1786607421.3748116,
+    "ast_hash": "987e107a89fc2bd89465a9e737983121",
+    "semantic_hash": ""
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "agents/tdq-implementer.md": {
-    "mtime": 1786391824.3808017,
-    "ast_hash": "a712580f31d564ea2fb89fe34891f7e0",
+    "mtime": 1786606816.1731982,
+    "ast_hash": "3d975e1c9c321ea31ba87245fa34d1d6",
     "semantic_hash": ""
   },
   "agents/tdq-qc-tester.md": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786534841.3110209,
-    "ast_hash": "957bcfa9f2e18c41040f1ea2fe0b0b60",
+    "mtime": 1786606789.9669344,
+    "ast_hash": "914162aa986794eef342487bcc7556f9",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786535117.9425523,
-    "ast_hash": "a1b51e96607f541fe7c515409c39059a",
+    "mtime": 1786607428.4489734,
+    "ast_hash": "2024ac5122ab821176757def01417e79",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786535624.6407619,
-    "ast_hash": "9c898f9c91ba09c0abefc131d32f4f39",
+    "mtime": 1786606970.2642567,
+    "ast_hash": "9350381186a79447df89420067b05abc",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -520,8 +520,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-build/SKILL.md": {
-    "mtime": 1786534884.9737177,
-    "ast_hash": "534b02c8feaa1123f6c4037c79f3eae5",
+    "mtime": 1786606762.972061,
+    "ast_hash": "92a800af41866f07572e1c95a2bb34e7",
     "semantic_hash": ""
   },
   "skills/tdq-build/references/qc.md": {
@@ -2085,8 +2085,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-12.md": {
-    "mtime": 1786535624.6441686,
-    "ast_hash": "2dac4f688f0f1d781beb35a3ee0ede4a",
+    "mtime": 1786535705.2565258,
+    "ast_hash": "2d68c749eefd316b72020d31a01d2956",
     "semantic_hash": ""
   },
   "portable/AGENTS.md": {
@@ -2185,8 +2185,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/plan/2026-08-12-commit-doi-ten-lane.md": {
-    "mtime": 1786535686.0458908,
-    "ast_hash": "d3c648ecea49000540b26a827fb37227",
+    "mtime": 1786535705.2319922,
+    "ast_hash": "0ec9e7d791ebb1c8addce4eac67eb02c",
     "semantic_hash": ""
   },
   "docs/tdq/plan/2026-08-12-doi-ten-lane.md": {
@@ -2202,6 +2202,36 @@
   "docs/tdq/spec/2026-08-12-doi-ten-lane.md": {
     "mtime": 1786533816.0105157,
     "ast_hash": "3cb23f9492bbf8af61c1c1ee48f229cf",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-ra-soat-tick-che-do-sau.md": {
+    "mtime": 1786605570.7374644,
+    "ast_hash": "eb1cb60830cb72e9954bd3ca91e02a27",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-ra-soat-tick-che-do-sau.md": {
+    "mtime": 1786606987.269873,
+    "ast_hash": "5e7d3c2a085dcb114f5be2e84dfbdbf7",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-13-ra-soat-tick-che-do-sau.md": {
+    "mtime": 1786606967.763096,
+    "ast_hash": "648a475d14eb4df97830be60a6c8b8ac",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-13-ra-soat-tick-che-do-sau.md": {
+    "mtime": 1786606983.4515102,
+    "ast_hash": "fa22537b889f312df849c32690791a19",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-13-ra-soat-tick-che-do-sau.md": {
+    "mtime": 1786605729.4651926,
+    "ast_hash": "55ecb1320c9d368813b4759435cc3f36",
+    "semantic_hash": ""
+  },
+  "docs/workinglog/2026-08-13.md": {
+    "mtime": 1786606991.3597143,
+    "ast_hash": "498e0c513abe87b7fcbe768a7aa62d79",
     "semantic_hash": ""
   }
 }

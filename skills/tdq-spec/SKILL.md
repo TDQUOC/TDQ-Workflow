@@ -32,7 +32,7 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Vi�
 4. **Trình bày & DỪNG.** Trong chat: tóm tắt spec ≤ 50 dòng (mục tiêu, đầu ra, DoD,
    rủi ro chính). Ngay dưới tóm tắt in đúng dòng:
    ```
-   ➤ Duyệt: nhắn "duyệt spec" · Góp ý: nhắn trực tiếp
+   ➤ Duyệt: nhắn "duyệt spec" (duyệt xong viết plan ngay) · Góp ý: nhắn trực tiếp
    ```
    Rồi **kết thúc turn**. Không viết plan, không sửa code. User góp ý thay vì duyệt →
    sửa spec, tăng số bản, trình lại, chờ tiếp.

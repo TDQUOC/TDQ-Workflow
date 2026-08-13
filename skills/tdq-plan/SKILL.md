@@ -61,7 +61,7 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
 5. **Trình bày & DỪNG.** Chat: tóm tắt plan ≤ 10 dòng (số phase/task, mode bạn ĐỀ XUẤT
    + lý do, DoD), rồi in đúng dòng:
    ```
-   ➤ Duyệt: nhắn "duyệt plan mode <mode đề xuất>" (đổi được: main|subagent) · Góp ý: nhắn trực tiếp
+   ➤ Duyệt: nhắn "duyệt plan mode <mode đề xuất>" (đổi được: main|subagent — duyệt xong build ngay) · Góp ý: nhắn trực tiếp
    ```
    Rồi **kết thúc turn**. Góp ý → sửa, trình lại, chờ tiếp.
 

@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.6 — 2026-08-13
+
+Thân thiện hơn với người dùng mới ở câu hỏi khuôn A/B/C và dòng duyệt.
+
+- `skills/tdq-intake/references/interview.md`: khối hint cuối mỗi vòng hỏi đổi từ 1 câu
+  chung chung sang 2 phần — nguyên tắc (gõ chữ cái hoặc câu tự nhiên) + 1 ví dụ trung tính.
+- 3 dòng `➤ Duyệt:` (`tdq-spec`, `tdq-plan`, `tdq-intake` bước duyệt nhanh) thêm vế ngắn
+  nói rõ duyệt xong dẫn tới bước gì tiếp theo (viết plan / build / implement ngay).
+
 ## 0.11.5 — 2026-08-13
 
 Bịt 3 lỗ hổng tick checkbox ở chế độ chuyên sâu.
