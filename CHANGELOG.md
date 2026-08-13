@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.11 — 2026-08-13
+
+Bắt buộc dùng `tdq_finish.py` (thay Edit tay) và chạy trước đoạn chat cuối turn — sửa gốc
+việc câu hỏi/tóm tắt TDQ bị chế độ focus của Claude Code gập ẩn.
+
+- `skills/tdq-conventions/SKILL.md` §1 bước 4: thêm bắt buộc gọi `tdq_finish.py` (cấm
+  Edit/Read rồi tự append tay working log), và bắt buộc lệnh đó là hành động cuối cùng của
+  turn, chạy TRƯỚC đoạn chat kết thúc turn — không gọi thêm tool sau khi đã in đoạn đó.
+
 ## 0.11.10 — 2026-08-13
 
 Gắn nhãn khuôn mẫu khi tóm tắt spec/plan trích lại, tránh nhầm là câu hỏi sống.

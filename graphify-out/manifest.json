@@ -150,13 +150,13 @@
     "semantic_hash": ""
   },
   "skills/tdq-plan/SKILL.md": {
-    "mtime": 1786612555.2373912,
-    "ast_hash": "587ef555035bf27f33e4841cadae7505",
+    "mtime": 1786617991.4246948,
+    "ast_hash": "8608866e770c742d15f3cd092320dca5",
     "semantic_hash": ""
   },
   "skills/tdq-spec/SKILL.md": {
-    "mtime": 1786612534.1408305,
-    "ast_hash": "33071a0686ed25041ebeb2fdb99f6217",
+    "mtime": 1786617986.6613088,
+    "ast_hash": "f67e2075ccf631f053f707be1ae54d2c",
     "semantic_hash": ""
   },
   "skills/tdq-status/SKILL.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786617266.7352502,
-    "ast_hash": "16fea2716b5e2a59e1881401c3d09f19",
+    "mtime": 1786618094.2468984,
+    "ast_hash": "6a270724c0ff72345177dbba2e688541",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786617084.1541977,
-    "ast_hash": "0f86f67e9b75e29529e3f4d228cecfb1",
+    "mtime": 1786618025.8828607,
+    "ast_hash": "685d64ac1fd2d5654006a90d010ff830",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786617092.8080783,
-    "ast_hash": "1ab10486b5e1c127d3317f4bb9bde500",
+    "mtime": 1786618034.3849428,
+    "ast_hash": "b8200d5c90049f873b07b28189f52a43",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2322,6 +2322,31 @@
   "docs/tdq/spec/2026-08-13-ux-cau-hoi-lane.md": {
     "mtime": 1786616648.9444666,
     "ast_hash": "ba7962d8f4f197ebfebd365618913e8c",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-fix-dong-giai-thich-lane.md": {
+    "mtime": 1786617678.8246367,
+    "ast_hash": "73582c85433e1f0c1fb041df2827e543",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-fix-dong-giai-thich-lane.md": {
+    "mtime": 1786617998.4150524,
+    "ast_hash": "ccf5f981beb87bfda85174cff623f973",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-13-fix-dong-giai-thich-lane.md": {
+    "mtime": 1786618009.7904792,
+    "ast_hash": "120ac5f48714352b5acd9170f67a82bb",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-13-fix-dong-giai-thich-lane.md": {
+    "mtime": 1786618022.9502656,
+    "ast_hash": "f3f78b9204c88860177eea49dba6ea66",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-13-fix-dong-giai-thich-lane.md": {
+    "mtime": 1786617714.4928856,
+    "ast_hash": "da90091129e37937d693d03258132d28",
     "semantic_hash": ""
   }
 }

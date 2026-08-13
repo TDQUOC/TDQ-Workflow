@@ -17,10 +17,13 @@ Mọi output cho user viết **tiếng Việt**.
 3. Thấy dòng `[TDQ:<MÃ>]` do hook chèn vào ngữ cảnh → **làm việc trong đó TRƯỚC**
    mọi việc khác, xong in `✓ [TDQ:<MÃ>] <đã làm gì>`. Danh sách mã:
    [references/reminder-codes.md](references/reminder-codes.md).
-4. Cuối turn có đổi repo: chạy ĐÚNG MỘT lệnh
+4. Cuối turn có đổi repo: **bắt buộc** chạy ĐÚNG MỘT lệnh
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file vừa sửa> --log "<tóm tắt>" --phase <phase mới>`
-   — lint đúng file → append working log → set phase → graphify. **Cấm Read lại** file
-   working log rồi tự append: lệnh này đã append sẵn.
+   — lint đúng file → append working log → set phase → graphify. **Cấm Edit/Read rồi tự
+   append tay** vào working log, kể cả khi bị `stop_gate.py` chặn (block nghĩa là "chưa gọi
+   lệnh", không phải "gọi lệnh khác để né"). Lệnh này phải là **hành động cuối** của turn,
+   chạy TRƯỚC đoạn chat kết thúc turn (tóm tắt/câu hỏi/`➤ Duyệt:`/báo lỗi vượt trần); sau
+   khi in đoạn chat đó **không gọi thêm tool nào nữa**, để nó luôn là "final response" thật.
 
 Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
 Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).

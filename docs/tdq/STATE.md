@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-13T17:47:05+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-13T18:37:22+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-13-fix-dong-giai-thich-lane |
+| Request | 2026-08-13-fix-cau-hoi-focus-mode |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-08-13-fix-dong-giai-thich-lane.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-13-fix-dong-giai-thich-lane.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-13-fix-cau-hoi-focus-mode.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-13-fix-cau-hoi-focus-mode.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 
