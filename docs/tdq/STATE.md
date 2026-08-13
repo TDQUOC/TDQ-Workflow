@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-13T20:26:46+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-13T21:04:27+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-13-trinh-bay-than-thien-duyet |
+| Request | 2026-08-13-ra-soat-toi-uu-llm |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-13-trinh-bay-than-thien-duyet.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-13-trinh-bay-than-thien-duyet.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-13-ra-soat-toi-uu-llm.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-13-ra-soat-toi-uu-llm.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

@@ -1,35 +1,35 @@
 # Graph Report - TDQWorkflow  (2026-08-13)
 
 ## Corpus Check
-- 488 files · ~576,916 words
+- 497 files · ~621,813 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4300 nodes · 5434 edges · 447 communities (386 shown, 61 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 19 edges (avg confidence: 0.52)
+- 4401 nodes · 5502 edges · 455 communities (389 shown, 66 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 36 edges (avg confidence: 0.65)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e12087ea`
+- Built from commit: `ca62f1aa`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- .stop
+- .write
 - tdq_state.py
 - .write
 - .run_inv
 - Working log 2026-08-05
 - doc_lint.py
 - Working log — 2026-08-13
-- run_state_cli
+- TestState
 - write_file
 - claude_export.py
 - write_state
 - 2. Thay đổi theo file
 - Changelog
 - SPEC — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn
-- token_audit.py
+- test_token_audit.py
 - test_e2e_chain.py
 - TestPromptContext
 - Working log — 2026-07-28
@@ -50,11 +50,11 @@
 - tdq_finish.py
 - Working log 2026-08-09
 - Working log — 2026-08-12
-- test_lane_label.py
-- StateFileTest
+- token_audit.py
+- Hỏi đáp
 - canvas_move_block.py
 - skill_inventory.py
-- test_quick_qc.py
+- run_state_cli
 - Spec — tối ưu token/time workflow (vòng 2)
 - Working log — 2026-07-27
 - plugin_tiers.py
@@ -133,7 +133,7 @@
 - SPEC — Rút gọn UX câu hỏi chọn lane
 - SPEC — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C
 - TDQ Workflow — bản portable (agent nào cũng chạy được)
-- tdq-intake/SKILL.md
+- Vòng interview
 - ScanSecretsTest
 - GateMergeTest
 - Hiểu & kiến thức
@@ -165,7 +165,7 @@
 - SPEC — Bộ công cụ export cấu hình Claude Code sang máy khác
 - SPEC — TDQ workflow linh hoạt & bớt ma sát
 - SPEC — Đổi nhãn lane: `chế độ nhanh (express)` / `chế độ chuyên sâu (deep)`
-- .write
+- .dirty_repo
 - {{BUNDLE_NAME}} — Claude Code setup export
 - doc
 - Plan — TDQWorkflow Plugin v0.1
@@ -196,7 +196,7 @@
 - tdq-workflow — Plugin Claude Code
 - rewrap
 - tavily.md
-- QuickQcApproveCliTest
+- UntrackedFingerprintTest
 - Hướng dẫn tự cài tdq-workflow ở user-level VÀ project-level (thủ công)
 - 2026-08-09-sua-mo-ta-skill-inventory
 - KNOWLEDGE — Search agent dùng agy cho advanced search (2026-07-31)
@@ -329,11 +329,11 @@
 - 2.3 Thiết kế state file
 - portable/ — dùng TDQ workflow ngoài Claude Code
 - Phase `implement` → `qc` → `report`
-- Khuôn plan
-- QC — kiểm chất lượng
+- 03-plan.md
+- SPEC — Trình bày thân thiện ở mọi chỗ giao tiếp với user
 - Chế độ nhanh (express) — chi tiết
-- QC — kiểm chất lượng
-- TDQ Build — Implement → QC → Report
+- tdq-build/SKILL.md
+- QC — Trình bày thân thiện ở mọi chỗ giao tiếp với user
 - Kịch bản đo carry-cost before/after
 - references/phases.md
 - Chọn cỡ request: nhỏ, chế độ nhanh (express) hay chế độ chuyên sâu (deep)
@@ -380,12 +380,12 @@
 - Brief — Công nghệ speech-to-text word-level realtime (2026)
 - Brief — Công nghệ speech-to-text word-level realtime (2026)
 - TDQ STATE (tự sinh — không sửa tay)
-- Ghi nhận duyệt
+- PLAN — Trình bày thân thiện ở mọi chỗ giao tiếp với user
 - Ghi nhận duyệt
 - Định tuyến việc → plugin
 - Mã nhắc của hook
 - Khuôn spec
-- test_stop_gate.py
+- .stop
 - EXPORT_LOG — Lịch sử sinh bundle export
 - BRIEF — Bắt buộc in tóm tắt spec trước dòng Duyệt
 - QC — 2026-07-31-agy-search-agent
@@ -438,7 +438,7 @@
 - 2026-07-31-vectordb-local-rag/report.md
 - 2026-08-05-clone-setting-codex/report.md
 - requests/2026-08-03-skill-vao-goi-external.md
-- NextTest
+- test_mode_phase.py
 - ResilienceTest
 - Changelog lưu trữ — 0.1.0 → 0.3.3
 - Hiểu & kiến thức
@@ -455,21 +455,29 @@
 - 0.5.0 — 2026-07-31
 - reports/2026-08-13-trinh-lai-sau-hook-chan.md
 - .test_row_age_ok_bad_ts_types
-- TestSessionStart
-- LaneCliAliasTest
+- UserFacingBlockTest
+- REPORT — Trình bày thân thiện ở mọi chỗ giao tiếp với user
 - .test_no_transcript_no_deny
+- Khuôn khối nói với user
+- Khuôn khối nói với user
+- ModePhaseTableTest
+- .test_reapprove_refreshes_sha256_after_file_changed
+- .test_reapprove_unchanged_file_stays_idempotent
+- .test_mode_external_bi_tu_choi
+- .test_init_set_reset_in_mot_dong_khong_json
+- .test_co_co_json_thi_in_lai_nguyen_state
 
 ## God Nodes (most connected - your core abstractions)
-1. `write_state()` - 82 edges
-2. `Working log — 2026-08-13` - 59 edges
-3. `run_state_cli()` - 53 edges
-4. `Working log 2026-08-05` - 53 edges
-5. `run_hook()` - 47 edges
-6. `write_file()` - 37 edges
+1. `Working log — 2026-08-13` - 66 edges
+2. `write_state()` - 65 edges
+3. `Working log 2026-08-05` - 53 edges
+4. `run_hook()` - 42 edges
+5. `write_file()` - 33 edges
+6. `run_state_cli()` - 32 edges
 7. `TestState` - 30 edges
 8. `Working Log — 2026-08-04` - 30 edges
 9. `Working log 2026-08-03` - 29 edges
-10. `read_state()` - 25 edges
+10. `Changelog` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `main()` --calls--> `today_log_rel()`  [INFERRED]
@@ -486,11 +494,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (447 total, 61 thin omitted)
+## Communities (455 total, 66 thin omitted)
 
-### Community 0 - ".stop"
-Cohesion: 0.13
-Nodes (13): P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được., Sửa repo hoàn toàn bằng shell (không `observe` nào) → phải chặn., Chỉ ghi state/sổ turn thì không phải "đổi repo" — tránh chặn oan mới. (+5 more)
+### Community 0 - ".write"
+Cohesion: 0.18
+Nodes (10): P3 (0.3.1) — hiệu ứng THẬT trên đĩa, không chỉ tin sổ turn.      Sổ turn chỉ ghi, Giả lập prompt_context: chụp trạng thái đĩa lúc mở turn., Bug gốc: log append bằng shell → không có `log_written` → chặn oan., Log hôm nay chưa tồn tại đầu turn, được tạo bằng shell trong turn., Có ảnh chụp nhưng log KHÔNG đổi → vẫn phải chặn., Không phải git repo → repo_sha None, nhưng chiều log vẫn vá được., Sửa repo hoàn toàn bằng shell (không `observe` nào) → phải chặn., Chỉ ghi state/sổ turn thì không phải "đổi repo" — tránh chặn oan mới. (+2 more)
 
 ### Community 1 - "tdq_state.py"
 Cohesion: 0.05
@@ -514,15 +522,15 @@ Nodes (36): collect(), Doc, lint_file(), main(), pair(), _plan_contracts(), Bư�
 
 ### Community 6 - "Working log — 2026-08-13"
 Cohesion: 0.03
-Nodes (59): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+51 more)
+Nodes (66): 14:07 — Mở brief rà soát tick ở chế độ chuyên sâu, 14:20 — Interview xong, viết & trình spec vá tick chế độ chuyên sâu, 14:32 — Viết & trình plan vá tick chế độ chuyên sâu, 14:41, 14:43, 14:52 — Bump version & commit, 14:54, 15:00 — Mở request: ví dụ & hướng dẫn thân thiện cho câu hỏi khuôn A/B/C (+58 more)
 
-### Community 7 - "run_state_cli"
-Cohesion: 0.10
-Nodes (9): read_state(), run_state_cli(), Sửa spec trong lúc QC rồi xin duyệt lại phải ghi được — nếu không,         cảnh, File không đổi thì duyệt lại là lệnh thừa — không ghi đè dấu duyệt cũ., Nhánh external đã bỏ: mode này phải bị chặn, không âm thầm nhận., A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal., Tối ưu token: init/set/reset mặc định in 1 dòng, không dump nguyên state., Cần soi đầy đủ thì `--json` phải trả lại hành vi cũ. (+1 more)
+### Community 7 - "TestState"
+Cohesion: 0.11
+Nodes (3): read_state(), A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal., TestState
 
 ### Community 8 - "write_file"
-Cohesion: 0.11
-Nodes (12): write_file(), BookkeepingExclusionTest, P1 — ảnh chụp trạng thái đầu turn (spec 0.3.1 §4 S3).  Hai helper này là nền của, Sổ sách đã commit rồi sửa tiếp → phải lọt qua cả pathspec của `diff HEAD`., 0.3.2 — dấu của file untracked phải theo NỘI DUNG, không theo mtime., `touch`/ghi đè y hệt byte (formatter, build tool) không phải là thay đổi., Quá trần đọc thì vẫn phải có dấu (size), không được bỏ trắng., Cap phải đếm FILE untracked; cắt theo dòng status thì 1 dòng `M` là đủ nuốt hết. (+4 more)
+Cohesion: 0.19
+Nodes (6): write_file(), BookkeepingExclusionTest, P1 — ảnh chụp trạng thái đầu turn (spec 0.3.1 §4 S3).  Hai helper này là nền của, Sổ sách đã commit rồi sửa tiếp → phải lọt qua cả pathspec của `diff HEAD`., 0.3.2 — sổ sách của workflow tự đổi gần như mỗi turn (hook append sổ turn NGAY, git luôn in path bằng `/` — dùng os.path.join là tự tắt bộ lọc trên Windows.
 
 ### Community 9 - "claude_export.py"
 Cohesion: 0.09
@@ -537,24 +545,24 @@ Cohesion: 0.05
 Nodes (38): Definition of Done, Nguyên tắc thực thi, Phase 1 — CLI ghi nhận duyệt, Phase 2 — Hook chỉ còn nhắc, Phase 3 — Skills & tài liệu, Phase 4 — Nghiệm thu & đóng gói, PLAN — TDQ 0.2.0: hard gate → nhắc nhở, duyệt bằng chat tự nhiên, 1. Unit / e2e (+30 more)
 
 ### Community 12 - "Changelog"
-Cohesion: 0.11
-Nodes (19): 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12 (+11 more)
+Cohesion: 0.10
+Nodes (20): 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09, 0.11.3 — 2026-08-12, 0.11.4 — 2026-08-12 (+12 more)
 
 ### Community 13 - "SPEC — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn"
 Cohesion: 0.05
 Nodes (33): Definition of Done, Nguyên tắc thực thi, Phase 1 — Core state (nền cho mọi thứ còn lại), Phase 2 — Lưới an toàn không trượt vì transcript trễ, Phase 3 — Nhắc & chỉ dẫn, Phase 4 — Đóng gói & nghiệm thu, PLAN — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn (0.1.7), Edge case đã kiểm (+25 more)
 
-### Community 14 - "token_audit.py"
-Cohesion: 0.05
-Nodes (44): _all_items(), carry_cost(), classify(), _content_text(), cost_equivalent(), default_transcript_dir(), find_sessions(), _fmt() (+36 more)
+### Community 14 - "test_token_audit.py"
+Cohesion: 0.10
+Nodes (14): _assistant(), _assistant_line(), CarryCostTest, CliTest, CostEquivalentTest, IterEventsTest, MessageIdTest, Test cho scripts/token_audit.py — đo carry-cost của tool output trong transcript (+6 more)
 
 ### Community 15 - "test_e2e_chain.py"
-Cohesion: 0.29
-Nodes (5): ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl, TestFullLaneChain, TestQuickLaneChain, today()
+Cohesion: 0.19
+Nodes (8): read_state(), ChainBase, E1 — chuỗi end-to-end cả hai lane theo mô hình 0.3.0.  User duyệt bằng chat → Cl, TestFullLaneChain, TestQuickLaneChain, today(), LaneCliAliasTest, `init t express` phải ghi lane=quick — bí danh chỉ ở cửa vào, state không đổi.
 
 ### Community 16 - "TestPromptContext"
-Cohesion: 0.20
-Nodes (4): now_iso(), P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước         →, Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới., TestPromptContext
+Cohesion: 0.09
+Nodes (9): now_iso(), session_start.py + prompt_context.py (0.3.0) — bơm context theo state., P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước         →, Đổi phase giữa 2 turn → KHÔNG được gọn hoá, phải in đủ nội dung mới., Trần 600 ký tự không được cắt mất dòng luật hay dòng lệnh., A22 — cắt MAX_CHARS không được đứt giữa inline-code (nửa lệnh = lệnh sai)., TestPromptContext, TestSessionStart (+1 more)
 
 ### Community 17 - "Working log — 2026-07-28"
 Cohesion: 0.06
@@ -605,8 +613,8 @@ Cohesion: 0.25
 Nodes (6): decision(), Parse PreToolUse hook stdout -> (permissionDecision, additionalContext).      0., run_hook(), ProtocolTest, P2 — giao thức tuân thủ: nhắc có mã, quan sát hiệu ứng, đối chiếu ở Stop.  Nguyê, rows()
 
 ### Community 30 - "_common.py"
-Cohesion: 0.09
-Nodes (46): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), approve_hint(), block() (+38 more)
+Cohesion: 0.06
+Nodes (55): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), approve_hint(), block() (+47 more)
 
 ### Community 31 - "check_canvas_layout.py"
 Cohesion: 0.16
@@ -624,13 +632,13 @@ Nodes (21): 00:15 — đóng request giảm over-engineer workflow, 00:25 — đ
 Cohesion: 0.10
 Nodes (20): 12:08 — Mở intake request hoàn thiện product document trên Excalidraw, 12:11 — Phase analyze: kiểm kê năng lực, đọc code, research, mở vòng interview 1, 12:14 — Đóng interview, viết spec 13 chương, 12:18 — User duyệt spec, viết plan 6 phase / 22 task, 12:32 — P2 xong: 5 khối cũ đã về đúng chương 2/5/7/9/10, 12:41 — T3.1: vẽ Ch.1 Tổng quan sản phẩm, 12:52 — P4→P6 hoàn tất: 13 chương + mục lục, export ra docs/diagrams/, 12:58 — Mở request mới: đổi khổ tài liệu sang bề ngang A4 dọc (+12 more)
 
-### Community 35 - "test_lane_label.py"
-Cohesion: 0.10
-Nodes (9): ApprovalPhraseTest, ApproveHintTest, BashGateAliasTest, LaneLabelTest, NormalizeLaneTest, Nhãn lane cho người đọc + bí danh cho người gõ.  Định danh máy vẫn là `quick`/`f, Nhãn là lớp hiển thị, không phải lớp kiểm tra — lane lạ không được nổ., Câu duyệt bằng từ mới. Rủi ro nặng nhất của việc đổi nhãn là duyệt OAN:     `nha (+1 more)
+### Community 35 - "token_audit.py"
+Cohesion: 0.11
+Nodes (30): _all_items(), carry_cost(), classify(), _content_text(), cost_equivalent(), default_transcript_dir(), find_sessions(), _fmt() (+22 more)
 
-### Community 36 - "StateFileTest"
-Cohesion: 0.19
-Nodes (3): P1 — xử lý state file: S1–S8 của spec 0.3.0 (mỗi yêu cầu 1 test)., _read(), StateFileTest
+### Community 36 - "Hỏi đáp"
+Cohesion: 0.14
+Nodes (13): BRIEF — Trình bày thân thiện ở hai cổng duyệt spec/plan, Bản đồ code liên quan, Chốt thiết kế, Cách hiểu đầu tiên, Hiểu & kiến thức, Hỏi đáp, Lộ trình, Nguyên văn (+5 more)
 
 ### Community 37 - "canvas_move_block.py"
 Cohesion: 0.29
@@ -640,9 +648,9 @@ Nodes (12): main(), api(), main(), move_block(), pick_frame(), pick_title(), pla
 Cohesion: 0.16
 Nodes (17): _clean(), _condense(), _enabled_plugins(), _frontmatter(), inventory(), _load_json(), main(), _plugin_skill_dirs() (+9 more)
 
-### Community 39 - "test_quick_qc.py"
-Cohesion: 0.12
-Nodes (10): QuickQcApprovalHintTest, QuickQcDocTest, QuickQcPhasesDocTest, QuickQcPhaseTableTest, Lane quick: QC bám DoD (mặc định BẬT) + vòng fix trần 3 vòng.  Khoá cứng 4 nguồn, N4: phases.md là doc tự sinh — khớp render_phases_md() từng ký tự., Hook phải mách user đúng biến thể, và không lọc nó thành câu hỏi., N1: quick-lane.md phải định nghĩa QC, không chỉ nói 'chạy validate'. (+2 more)
+### Community 39 - "run_state_cli"
+Cohesion: 0.05
+Nodes (23): Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user     gõ l, run_state_cli(), run_state_cli_in(), NextTest, P1 — lệnh `next`, `next --brief`, `get <key>` (spec §2.2)., QC1.1 — tiêu đề phải nói đúng phase mà thân bài đang dùng.          Lane quick g, QuickQcApprovalHintTest, QuickQcApproveCliTest (+15 more)
 
 ### Community 40 - "Spec — tối ưu token/time workflow (vòng 2)"
 Cohesion: 0.12
@@ -659,10 +667,6 @@ Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), 
 ### Community 43 - "test_canvas_draw.py"
 Cohesion: 0.18
 Nodes (10): chapter(), Test cho scripts/canvas_draw.py — bộ dựng chương khổ A4 dọc., test_card_dung_co_chu_than_16(), test_khung_chuong_rong_dung_kho(), test_row_chia_deu_het_be_ngang(), test_stack_gap_mac_dinh_la_24(), test_stack_rong_tra_ve_danh_sach_rong(), test_stack_xep_doc_cach_deu_theo_chieu_cao_that() (+2 more)
-
-### Community 44 - "PlanTickStateTest"
-Cohesion: 0.17
-Nodes (3): PlanTickStateTest, P1 — đọc trạng thái tick của plan (hàng rào ép tick task khi implement).  Hàng r, TurnSnapshotPlanShaTest
 
 ### Community 45 - "test_prompt_context.py"
 Cohesion: 0.21
@@ -693,8 +697,8 @@ Cohesion: 0.12
 Nodes (7): ParseArgsTest, Test cho scripts/claude_export.py — bộ export cấu hình Claude Code sang máy khác, Mặc định tắt bước dò version CLI: 8 lệnh `--version` mỗi lần build là quá chậm., Template trong `claude-export/` là thứ script nạp thật, không phải văn bản trang, ReadMcpServersTest, run_cli(), TemplateTest
 
 ### Community 52 - "PhaseTableTest"
-Cohesion: 0.14
-Nodes (6): PhaseTableTest, A6: lane quick phải có terminal — quick_approved + phase=idle là đã xong., Bug A1: escape sai trong re.sub → literal `\\1` thay vì lệnh thật., A26: dòng duyệt quick khớp intake (biến thể bỏ QC); A6: có bước đóng., A40: bản chạy trong ngữ cảnh plugin phải in path plugin-root., Mỗi phase phải xuất hiện trong doc kèm đúng lệnh chuyển tiếp.          A40: bản
+Cohesion: 0.12
+Nodes (7): PhaseTableTest, P1/P3 — PHASE_TABLE là nguồn sự thật duy nhất; doc phải khớp hằng trong code., A6: lane quick phải có terminal — quick_approved + phase=idle là đã xong., Bug A1: escape sai trong re.sub → literal `\\1` thay vì lệnh thật., A26: dòng duyệt quick khớp intake (biến thể bỏ QC); A6: có bước đóng., A40: bản chạy trong ngữ cảnh plugin phải in path plugin-root., Mỗi phase phải xuất hiện trong doc kèm đúng lệnh chuyển tiếp.          A40: bản
 
 ### Community 53 - "PLAN — Kiểm kê & tận dụng skill phụ trợ (0.3.3)"
 Cohesion: 0.13
@@ -709,8 +713,8 @@ Cohesion: 0.13
 Nodes (14): ~00:05 — User duyệt spec 0.3.0 → viết plan, ~01:00–01:40 — Implement plan 0.3.0 end-to-end (P3 → P8), ~02:10 — Phân tích + viết spec fix điểm mù verify-by-effect, ~02:30 — User duyệt spec → viết plan, ~02:45–03:30 — Implement plan 0.3.1 end-to-end (mode main), ~04:00 — Audit toàn bộ tdq-workflow 0.3.1 (theo yêu cầu user), ~04:15 — User duyệt fix 0.3.2 → plan, ~04:20–05:00 — Implement 0.3.2 end-to-end (mode main) (+6 more)
 
 ### Community 56 - "tdq-conventions/SKILL.md"
-Cohesion: 0.17
-Nodes (7): Khuôn report, Kiểm trước khi trình, Tiết kiệm context, Các bước, TDQ Plan, Các bước, TDQ Spec
+Cohesion: 0.20
+Nodes (6): Tiết kiệm context, Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep)), Các bước, TDQ Plan, Các bước, TDQ Spec
 
 ### Community 57 - "Hiểu & kiến thức"
 Cohesion: 0.14
@@ -769,8 +773,8 @@ Cohesion: 0.28
 Nodes (9): build_moved(), chapter_elements(), extract_cards(), Phần tử của chương n theo tâm nằm trong khung — bắt cả id ngẫu nhiên., Gom (đầu đề, thân) của từng thẻ cũ + các ghi chú đứng rời., Tịnh tiến nguyên khối chương n vào khung mới bắt đầu tại `top`., bbox(), Chọn phần tử có TÂM nằm trong vùng nguồn (x0,y0,x1,y1). (+1 more)
 
 ### Community 71 - "TestProjectRootResolution"
-Cohesion: 0.16
-Nodes (5): Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user     gõ l, run_state_cli_in(), A3 — tdq_state.py: default schema, CLI, protected keys, atomic write., State phải luôn về MỘT file ở project root — chạy CLI từ thư mục con     không đ, TestProjectRootResolution
+Cohesion: 0.17
+Nodes (3): A3 — tdq_state.py: default schema, CLI, protected keys, atomic write., State phải luôn về MỘT file ở project root — chạy CLI từ thư mục con     không đ, TestProjectRootResolution
 
 ### Community 72 - "PLAN — Hybrid deep search 0.6.0 (scout ∥ agy tổng quát → agy đào sâu)"
 Cohesion: 0.17
@@ -785,8 +789,8 @@ Cohesion: 0.17
 Nodes (11): Q1: "use OpenAI Codex CLI as subagent inside Claude Code delegate tasks", Q2: "codex exec non-interactive headless", Q3: "Google Antigravity CLI headless", Q4: "codex mcp-server Claude Code", Q5: cách cài codex-plugin-cc, Q6: model slug Codex hiện hành, Q7: thiết kế prompt cho model cấp thấp/context ngắn, RESEARCH — external-agent-mode (+3 more)
 
 ### Community 75 - "AGENTS.md"
-Cohesion: 0.24
-Nodes (5): Các bước, Phase `spec`, Các bước, Phase `plan`, Bảng phase TDQ (tự sinh — KHÔNG sửa tay)
+Cohesion: 0.19
+Nodes (7): Các bước, Phase `spec`, Bảng phase TDQ (tự sinh — KHÔNG sửa tay), Ghi nhận duyệt, KHÔNG phải câu duyệt (phản ví dụ), Là câu duyệt khi có ĐỦ hai phần, Lệnh phải chạy NGAY khi nhận ra
 
 ### Community 76 - "Chapter"
 Cohesion: 0.18
@@ -956,17 +960,17 @@ Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể
 Cohesion: 0.18
 Nodes (11): 1. Giao thức một turn (bắt buộc, đúng thứ tự), 2. State, 3. Ghi nhận duyệt, 4. Cây tài liệu, 5. Working log, 6. Git, 7. Research, 8. Chất lượng (+3 more)
 
-### Community 118 - "tdq-intake/SKILL.md"
-Cohesion: 0.21
-Nodes (6): Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep)), Ghi lại, Hỏi cái gì, Hỏi thế nào, Khi nào dừng, Vòng interview
+### Community 118 - "Vòng interview"
+Cohesion: 0.40
+Nodes (5): Ghi lại, Hỏi cái gì, Hỏi thế nào, Khi nào dừng, Vòng interview
 
 ### Community 119 - "ScanSecretsTest"
 Cohesion: 0.18
 Nodes (3): P3: `CONFIG_DIRS` phải tự nhặt MỌI skill dưới `skills/`, không hard-code., ScanSecretsTest, SkillsGeneralizeTest
 
 ### Community 120 - "GateMergeTest"
-Cohesion: 0.27
-Nodes (4): GateMergeTest, P3 — luật gộp gate: duyệt spec → plan NGAY, duyệt plan+mode → build NGAY.  Bốn b, Bước quyết lộ trình phải có mặt ở intake (ghi) và spec (chép lại)., read()
+Cohesion: 0.20
+Nodes (6): GateMergeTest, P3 — luật gộp gate: duyệt spec → plan NGAY, chốt cách chạy → build NGAY.  Chặng, Cổng chọn cách chạy phải nằm trong tdq-plan, kèm nghĩa của cả hai mode., Chốt mode xong là build ngay — không được đẩy sang lượt nhắn khác., Bước quyết lộ trình phải có mặt ở intake (ghi) và spec (chép lại)., read()
 
 ### Community 121 - "Hiểu & kiến thức"
 Cohesion: 0.20
@@ -1084,8 +1088,8 @@ Nodes (9): 1. Mục tiêu & phạm vi, 2. Đầu ra cụ thể, 3. Cách tiếp 
 Cohesion: 0.20
 Nodes (9): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+1 more)
 
-### Community 150 - ".write"
-Cohesion: 0.29
+### Community 150 - ".dirty_repo"
+Cohesion: 0.26
 Nodes (5): 0.3.2 — chặn oan do chính vân tay repo.      0.3.1 so vân tay TOÀN repo nhưng ch, Ghi đè y hệt byte / `touch` không phải là thay đổi repo., Không hồi quy: sửa file thật bằng shell vẫn phải chặn., §6 — quyết định chặn phải có dấu vết debug được., TestStopGateNoFalseBlock
 
 ### Community 151 - "{{BUNDLE_NAME}} — Claude Code setup export"
@@ -1208,9 +1212,9 @@ Nodes (9): is_tree_line(), max_chars(), Số ký tự tối đa một dòng, the
 Cohesion: 0.22
 Nodes (7): Cost control, Search patterns, Tavily power usage, Tool selection, Sai lầm hay gặp, Thứ tự bắt buộc, Xử lý issue/lỗi do user báo
 
-### Community 181 - "QuickQcApproveCliTest"
-Cohesion: 0.22
-Nodes (4): QuickQcApproveCliTest, Quyết định 9: bỏ QC vẫn phải để lại nguyên văn câu user., Phải từ chối bằng thông báo NÊU TÊN cờ, không phải bằng USAGE chung., N3: cờ --no-qc là đường opt-out DUY NHẤT, và phải để lại dấu vết.
+### Community 181 - "UntrackedFingerprintTest"
+Cohesion: 0.17
+Nodes (6): 0.3.2 — dấu của file untracked phải theo NỘI DUNG, không theo mtime., `touch`/ghi đè y hệt byte (formatter, build tool) không phải là thay đổi., Quá trần đọc thì vẫn phải có dấu (size), không được bỏ trắng., Cap phải đếm FILE untracked; cắt theo dòng status thì 1 dòng `M` là đủ nuốt hết., porcelain in path theo repo root — stat theo cwd là trật khi chạy từ thư mục con, UntrackedFingerprintTest
 
 ### Community 182 - "Hướng dẫn tự cài tdq-workflow ở user-level VÀ project-level (thủ công)"
 Cohesion: 0.25
@@ -1293,7 +1297,7 @@ Cohesion: 0.25
 Nodes (7): Brief deep search — LLM local tham số thấp làm engine code-agent (2026-07-31), Câu hỏi, Dữ kiện đã có, Hướng từ phase 1, Luật, Ngữ cảnh, Tiêu chí rank
 
 ### Community 202 - "Kiểm kê năng lực (bước B0)"
-Cohesion: 0.29
+Cohesion: 0.25
 Nodes (7): 4 lý do loại (đóng — cấm tự chế lý do khác), Chế độ nhanh (express), Các bước, Khuôn bảng (copy nguyên khối rồi điền), Kiểm kê năng lực (bước B0), Luật điền ô "Phán quyết", Số phận từng phán quyết ở các phase sau
 
 ### Community 205 - "INSTRUCTIONS — Dựng bundle export cấu hình Claude Code"
@@ -1582,7 +1586,7 @@ Nodes (4): make_claude_home(), make_repo(), Repo giả có `.git` thật, 1 file
 
 ### Community 279 - "helper.py"
 Cohesion: 0.11
-Nodes (7): Shared test utilities: run hook scripts as subprocesses with stdin JSON., session_start.py + prompt_context.py (0.3.0) — bơm context theo state., A22 — cắt MAX_CHARS không được đứt giữa inline-code (nửa lệnh = lệnh sai)., TestTruncation, Kiểm tính toàn vẹn repo — manifest và changelog phải khớp bản đang phát hành.  P, RepoIntegrityTest, P1/P3 — PHASE_TABLE là nguồn sự thật duy nhất; doc phải khớp hằng trong code.
+Nodes (7): Shared test utilities: run hook scripts as subprocesses with stdin JSON., Kiểm tính toàn vẹn repo — manifest và changelog phải khớp bản đang phát hành.  P, RepoIntegrityTest, P2/T2.12 — hook không bao giờ làm hỏng tool call (spec §4.7).  Mọi hook × mọi tr, P1 — đọc trạng thái tick của plan (hàng rào ép tick task khi implement).  Hàng r, TurnSnapshotPlanShaTest, stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm
 
 ### Community 280 - ".dung"
 Cohesion: 0.26
@@ -1721,28 +1725,28 @@ Cohesion: 0.40
 Nodes (4): Copy sang project đích, Khác biệt so với plugin Claude Code, portable/ — dùng TDQ workflow ngoài Claude Code, Đồng bộ khi `skills/` đổi
 
 ### Community 314 - "Phase `implement` → `qc` → `report`"
-Cohesion: 0.40
-Nodes (5): Luật cứng (áp cho cả ba phase), Phase `implement` → `qc` → `report`, Phần A — Implement (phase `implement`), Phần B — QC (phase `qc`), Phần C — Report (phase `report`)
+Cohesion: 0.18
+Nodes (9): Luật cứng (áp cho cả ba phase), Phase `implement` → `qc` → `report`, Phần A — Implement (phase `implement`), Phần B — QC (phase `qc`), Phần C — Report (phase `report`), Chạy cái gì, Ghi kết quả, Khi FAIL (+1 more)
 
-### Community 315 - "Khuôn plan"
-Cohesion: 0.40
-Nodes (4): Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình, Điểm độ phức tạp `(nN)`
+### Community 315 - "03-plan.md"
+Cohesion: 0.22
+Nodes (6): Các bước, Phase `plan`, Dòng `Mode thực thi`, Khuôn plan, Kiểm trước khi trình, Điểm độ phức tạp `(nN)`
 
-### Community 316 - "QC — kiểm chất lượng"
-Cohesion: 0.40
-Nodes (4): Chạy cái gì, Ghi kết quả, Khi FAIL, QC — kiểm chất lượng
+### Community 316 - "SPEC — Trình bày thân thiện ở mọi chỗ giao tiếp với user"
+Cohesion: 0.18
+Nodes (10): 1. Mục tiêu & phạm vi, 1b. Lộ trình, 2. Đầu ra cụ thể, 3. Cách tiếp cận & lý do, 3b. Năng lực & công cụ, 4. Yêu cầu bắt buộc, 5. Ràng buộc & rủi ro, 6. QC & Definition of Done (+2 more)
 
 ### Community 317 - "Chế độ nhanh (express) — chi tiết"
-Cohesion: 0.40
+Cohesion: 0.50
 Nodes (4): Chế độ nhanh (express) — chi tiết, Khuôn mini-spec/plan (≤ 40 dòng), QC ở chế độ nhanh, Vòng fix
 
-### Community 318 - "QC — kiểm chất lượng"
-Cohesion: 0.40
-Nodes (4): Chạy cái gì, Ghi kết quả, Khi FAIL, QC — kiểm chất lượng
+### Community 318 - "tdq-build/SKILL.md"
+Cohesion: 0.14
+Nodes (11): Chạy cái gì, Ghi kết quả, Khi FAIL, QC — kiểm chất lượng, Khuôn report, Kiểm trước khi trình, Luật cứng (áp cho cả ba phase), Phần A — Implement (phase `implement`) (+3 more)
 
-### Community 319 - "TDQ Build — Implement → QC → Report"
-Cohesion: 0.40
-Nodes (5): Luật cứng (áp cho cả ba phase), Phần A — Implement (phase `implement`), Phần B — QC (phase `qc`), Phần C — Report (phase `report`), TDQ Build — Implement → QC → Report
+### Community 319 - "QC — Trình bày thân thiện ở mọi chỗ giao tiếp với user"
+Cohesion: 0.20
+Nodes (9): Q1 — Khuôn trình bày qua doc_lint — PASS, Q2 — SKILL.md conventions trỏ tới khuôn và không vượt trần — PASS, Q3 — Bảng phase sinh ra có hàng `mode` — PASS, Q4 — Duyệt plan không kèm mode dừng ở phase `mode` — PASS, Q5 — APPROVE_HINTS tách mode khỏi plan — PASS, Q6 — tdq-plan giải thích đủ hai mode — PASS, Q7 — Test bảng phase — PASS, Q8 — Toàn bộ suite — PASS (+1 more)
 
 ### Community 320 - "Kịch bản đo carry-cost before/after"
 Cohesion: 0.40
@@ -1757,8 +1761,8 @@ Cohesion: 0.40
 Nodes (5): Bảng quyết, Chọn cỡ request: nhỏ, chế độ nhanh (express) hay chế độ chuyên sâu (deep), Dòng tự nhận định, Khuôn câu hỏi (copy được), Luồng mỗi lane
 
 ### Community 323 - "Chế độ nhanh (express) — chi tiết"
-Cohesion: 0.40
-Nodes (5): Chế độ nhanh (express) — chi tiết, Khuôn mini-spec/plan (≤ 40 dòng), Luật tick — `[ ]` · `[~]` · `[x]`, QC ở chế độ nhanh (express), Vòng fix
+Cohesion: 0.33
+Nodes (6): Chế độ nhanh (express) — chi tiết, Khuôn mini-spec/plan (≤ 40 dòng), Khối trình mini-plan cho user, Luật tick — `[ ]` · `[~]` · `[x]`, QC ở chế độ nhanh (express), Vòng fix
 
 ### Community 324 - "TDQ Intake — mở request & phân tích"
 Cohesion: 0.40
@@ -1920,9 +1924,9 @@ Nodes (3): Brief — Công nghệ speech-to-text word-level realtime (2026), Câ
 Cohesion: 0.50
 Nodes (3): TDQ STATE (tự sinh — không sửa tay), Việc tiếp theo, Đang ở đâu
 
-### Community 366 - "Ghi nhận duyệt"
-Cohesion: 0.50
-Nodes (4): Ghi nhận duyệt, KHÔNG phải câu duyệt (phản ví dụ), Là câu duyệt khi có ĐỦ hai phần, Lệnh phải chạy NGAY khi nhận ra
+### Community 366 - "PLAN — Trình bày thân thiện ở mọi chỗ giao tiếp với user"
+Cohesion: 0.22
+Nodes (8): Definition of Done, P1 — Khuôn trình bày dùng chung, P2 — Phase `mode` trong máy, P3 — Áp khuôn vào các chỗ giao tiếp, P4 — Đồng bộ tài liệu kéo theo, P5 — Log & test bắt buộc, PLAN — Trình bày thân thiện ở mọi chỗ giao tiếp với user, Quy tắc thi hành (áp cho mọi task)
 
 ### Community 367 - "Ghi nhận duyệt"
 Cohesion: 0.50
@@ -1940,9 +1944,9 @@ Nodes (4): Bảng 5 mã (danh sách đóng), Hook nhìn thấy thay đổi bằn
 Cohesion: 0.50
 Nodes (3): Checklist scope — trả lời được hết mới trình, Khuôn spec, Kiểm trước khi trình
 
-### Community 371 - "test_stop_gate.py"
-Cohesion: 0.25
-Nodes (5): stop_gate.py (0.3.0) — đối chiếu lời nhắc với hiệu ứng thật trong sổ turn.  Điểm, Lời chặn phải tự ra lệnh in LẠI NGUYÊN VĂN khối chat cuối.      Stop chạy SAU kh, Không được bảo tự gõ mục "## HH:MM" — luật hiện hành cấm Edit tay log., Path dài bị cắt ở MAX_PATH_CHARS nên reason không thể vượt trần., TestStopGateReprint
+### Community 371 - ".stop"
+Cohesion: 0.18
+Nodes (7): Lời chặn phải tự ra lệnh in LẠI NGUYÊN VĂN khối chat cuối.      Stop chạy SAU kh, Không được bảo tự gõ mục "## HH:MM" — luật hiện hành cấm Edit tay log., Path dài bị cắt ở MAX_PATH_CHARS nên reason không thể vượt trần., Sửa mỗi working log thì không tự đòi log lần nữa (tránh vòng lặp)., StopGateBase, TestStopGate, TestStopGateReprint
 
 ### Community 385 - "Request — 2026-07-31-audit-full-workflow"
 Cohesion: 0.50
@@ -1972,9 +1976,9 @@ Nodes (3): Cách hiểu ban đầu, Nguyên văn user, Request — 2026-08-05-re
 Cohesion: 0.50
 Nodes (3): Cách hiểu ban đầu, Nguyên văn user, Request — 2026-08-05-validate-export
 
-### Community 427 - "NextTest"
-Cohesion: 0.17
-Nodes (3): NextTest, P1 — lệnh `next`, `next --brief`, `get <key>` (spec §2.2)., QC1.1 — tiêu đề phải nói đúng phase mà thân bài đang dùng.          Lane quick g
+### Community 427 - "test_mode_phase.py"
+Cohesion: 0.36
+Nodes (3): ApproveFlowTest, Phase `mode` — cổng chọn cách thực thi, tách khỏi cổng duyệt plan.  Bốn bất biến, run()
 
 ### Community 429 - "Changelog lưu trữ — 0.1.0 → 0.3.3"
 Cohesion: 0.17
@@ -2016,25 +2020,41 @@ Nodes (3): 0.6.0 — 2026-07-31, Thêm, Đổi
 Cohesion: 0.67
 Nodes (3): 0.6.1 — 2026-07-31, Fix, Đổi
 
+### Community 444 - "UserFacingBlockTest"
+Cohesion: 0.33
+Nodes (3): Khuôn khối nói với user (conventions §1 mục 6).  Ba bất biến dễ trôi: 1. File kh, read(), UserFacingBlockTest
+
+### Community 445 - "REPORT — Trình bày thân thiện ở mọi chỗ giao tiếp với user"
+Cohesion: 0.40
+Nodes (4): Kết quả kiểm, Lưu ý, REPORT — Trình bày thân thiện ở mọi chỗ giao tiếp với user, Đã làm
+
+### Community 447 - "Khuôn khối nói với user"
+Cohesion: 0.40
+Nodes (5): Bảy chỗ phải dùng khuôn này, Khuôn khối nói với user, Luật cứng, Năm thành phần (đủ cả năm, đúng thứ tự), Ví dụ
+
+### Community 448 - "Khuôn khối nói với user"
+Cohesion: 0.40
+Nodes (5): Bảy chỗ phải dùng khuôn này, Khuôn khối nói với user, Luật cứng, Năm thành phần (đủ cả năm, đúng thứ tự), Ví dụ
+
 ## Knowledge Gaps
-- **2147 isolated node(s):** `0.11.13 — 2026-08-13`, `0.11.12 — 2026-08-13`, `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13`, `0.11.9 — 2026-08-13` (+2142 more)
+- **2200 isolated node(s):** `0.12.0 — 2026-08-13`, `0.11.13 — 2026-08-13`, `0.11.12 — 2026-08-13`, `0.11.11 — 2026-08-13`, `0.11.10 — 2026-08-13` (+2195 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **66 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `write_state()` connect `write_state` to `.stop`, `TestProjectRootResolution`, `run_state_cli`, `TestStopGateHints`, `ResilienceTest`, `PlanTickStateTest`, `test_prompt_context.py`, `TestPromptContext`, `TickBlockTest`, `test_stop_gate.py`, `.write`, `helper.py`, `.dung`, `TestSessionStart`, `run_hook`, `load_fixture`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
-- **Why does `write_file()` connect `write_file` to `SnapshotTest`, `write_state`, `PlanTickStateTest`, `test_e2e_chain.py`, `TestPromptContext`, `git`, `TickBlockTest`, `helper.py`, `load_fixture`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `main()` connect `_common.py` to `tdq_state.py`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `0.11.13 — 2026-08-13`, `0.11.12 — 2026-08-13`, `0.11.11 — 2026-08-13` to the rest of the system?**
-  _2147 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `.stop` be split into smaller, more focused modules?**
-  _Cohesion score 0.13090418353576247 - nodes in this community are weakly interconnected._
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `today_log_rel()` connect `tdq_state.py` to `_common.py`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **What connects `0.12.0 — 2026-08-13`, `0.11.13 — 2026-08-13`, `0.11.12 — 2026-08-13` to the rest of the system?**
+  _2200 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tdq_state.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.0502497796062298 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.050543637966500146 - nodes in this community are weakly interconnected._
 - **Should `.write` be split into smaller, more focused modules?**
   _Cohesion score 0.07086197778952935 - nodes in this community are weakly interconnected._
+- **Should `.run_inv` be split into smaller, more focused modules?**
+  _Cohesion score 0.08350168350168351 - nodes in this community are weakly interconnected._
+- **Should `Working log 2026-08-05` be split into smaller, more focused modules?**
+  _Cohesion score 0.037037037037037035 - nodes in this community are weakly interconnected._
