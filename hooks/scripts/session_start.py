@@ -9,7 +9,10 @@ Trần ngân sách: ≤12 dòng / 600 ký tự (spec §2.7).
 """
 import shutil
 
-from _common import payload_cwd, read_payload, tdq_state
+from _common import payload_cwd, read_payload
+# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
+# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
+from tdq_state import default_state, load, render_next  # noqa: E402
 
 MAX_LINES = 12
 MAX_CHARS = 600
@@ -21,9 +24,9 @@ RULE = ("[TDQ] Luật: thấy dòng [TDQ:<MÃ>] → làm đúng việc trong đ�
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
-    state = tdq_state.load(cwd) or tdq_state.default_state()
+    state = load(cwd) or default_state()
 
-    lines = [RULE] + tdq_state.render_next(cwd, state, compact=True).splitlines()
+    lines = [RULE] + render_next(cwd, state, compact=True).splitlines()
     if shutil.which("graphify") is None:
         lines.append("[TDQ] graphify chưa cài (tùy chọn): uv tool install graphifyy")
 

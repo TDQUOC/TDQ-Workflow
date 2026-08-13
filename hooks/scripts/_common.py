@@ -17,7 +17,12 @@ _SCRIPTS_DIR = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts")
 )
 sys.path.insert(0, _SCRIPTS_DIR)
-import tdq_state  # noqa: E402
+# Lối import PHẢI là `from tdq_state import <tên>` rồi gọi thẳng `f()`, KHÔNG gọi qua
+# thuộc tính module: graphify (0.9.28 và 0.9.42) chỉ sinh cạnh `calls` cross-file cho
+# dạng from-import. Gọi qua thuộc tính module thì đồ thị mù toàn bộ chuỗi hook → state.
+import tdq_state  # noqa: E402 — giữ để module khác `from _common import tdq_state`
+from tdq_state import (resolve_project_dir, turn_log_append,  # noqa: E402
+                       turn_log_read)
 
 # 0.2.0 bỏ gate cứng; 0.3.0 bỏ luôn slash command duyệt — user duyệt bằng chat.
 APPROVE_HINTS = {
@@ -68,7 +73,7 @@ def read_payload():
 
 def payload_cwd(payload):
     """Project root cho state — cwd của payload có thể là thư mục con/worktree."""
-    return tdq_state.resolve_project_dir(payload.get("cwd") or os.getcwd())
+    return resolve_project_dir(payload.get("cwd") or os.getcwd())
 
 
 def session_id(payload):
@@ -79,12 +84,12 @@ def session_id(payload):
 
 def observe(cwd, payload, event, **fields):
     """Ghi một hành động thật đã quan sát được."""
-    tdq_state.turn_log_append(cwd, "observe", session=session_id(payload),
-                              event=event, **fields)
+    turn_log_append(cwd, "observe", session=session_id(payload),
+                    event=event, **fields)
 
 
 def turn_rows(cwd, payload):
-    return tdq_state.turn_log_read(cwd, session=session_id(payload))
+    return turn_log_read(cwd, session=session_id(payload))
 
 
 def already_reminded(cwd, payload, code, rows=None):
@@ -116,7 +121,7 @@ def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
     """
     if already_reminded(cwd, payload, code, rows=rows):
         sys.exit(0)
-    tdq_state.turn_log_append(cwd, "remind", session=session_id(payload), code=code)
+    turn_log_append(cwd, "remind", session=session_id(payload), code=code)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": event,
@@ -138,7 +143,7 @@ def block(cwd, payload, code, lines, event="PreToolUse"):
       trong khi việc kia vẫn chưa làm, tức là hàng rào chỉ có tác dụng một lần.
     Ghi sổ turn dưới kind `block` để không lẫn với dedupe của `remind`.
     """
-    tdq_state.turn_log_append(cwd, "block", session=session_id(payload), code=code)
+    turn_log_append(cwd, "block", session=session_id(payload), code=code)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": event,
@@ -152,7 +157,7 @@ def block(cwd, payload, code, lines, event="PreToolUse"):
 def remind_force(cwd, payload, code, lines, event="PreToolUse"):
     """Như `remind()` nhưng KHÔNG dedupe theo mã — dùng khi một mã đã bị hook
     khác (vd. edit_gate.py) chiếm trong turn này mà nhắc này vẫn phải ra."""
-    tdq_state.turn_log_append(cwd, "remind", session=session_id(payload), code=code)
+    turn_log_append(cwd, "remind", session=session_id(payload), code=code)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": event,

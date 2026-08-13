@@ -15,6 +15,12 @@ vì sao bỏ.
 | QC | file `qc/<slug>.md` | mỗi dòng DoD một phép kiểm, ghi vào mục ## QC của plan (mặc định BẬT) |
 | Vòng fix khi FAIL | trần 3 vòng, ghi file qc/ | trần 3 vòng, ghi trong plan |
 
+## Luật ĐỌC đồ thị ở bước 1 (phân tích)
+
+Hỏi về **liên kết** hay **bản đồ tổng thể** ("ai gọi X", "sửa X ảnh hưởng đâu") → mở đồ thị
+bằng `graphify query|path|explain|affected`. Tìm chuỗi hoặc đọc file cụ thể → grep/read.
+Đồ thị chỉ có `scripts/` và `hooks/`; test và tài liệu bị `.graphifyignore` loại.
+
 ## Khuôn mini-spec/plan (≤ 40 dòng)
 
 ```markdown

@@ -19,7 +19,13 @@ không mở bằng user prompt, project không phải git repo) → rơi về đ
 import json
 import os
 
-from _common import payload_cwd, read_payload, tdq_state, turn_rows
+from _common import payload_cwd, read_payload, turn_rows
+# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
+# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
+from tdq_state import (BOOKKEEPING_PATHS, _info, _warn,  # noqa: E402
+                       effective_phase, load, plan_tick_state,
+                       repo_status_digest, repo_status_paths, sha256_file,
+                       today_log_rel)
 
 MAX_LINES = 4
 MAX_CHARS = 300
@@ -29,7 +35,7 @@ MAX_PATH_CHARS = 60
 # pathspec của git, đây chỉ là chốt chặn khi bản git quá cũ không hiểu `:(top,exclude)`.
 # Dùng đúng danh sách của tdq_state để quyết định và đặt tên không bao giờ lệch nhau
 # (chính chỗ lệch đó là chặn oan 0.3.1), và khớp theo `/` vì git in path bằng `/`.
-BOOKKEEPING = tuple(p + "/" for p in tdq_state.BOOKKEEPING_PATHS)
+BOOKKEEPING = tuple(p + "/" for p in BOOKKEEPING_PATHS)
 
 # mã → (sự kiện chứng minh đã làm, câu nhắc lại nếu thiếu)
 EFFECTS = {
@@ -54,14 +60,14 @@ def _snapshot(rows):
 
 def _sha(path):
     try:
-        return tdq_state.sha256_file(path)
+        return sha256_file(path)
     except OSError:
         return None
 
 
 def _log_changed(cwd, snap):
     """Log hôm nay có đổi so với đầu turn không (bất kể ghi bằng cách nào)."""
-    log_rel = tdq_state.today_log_rel()
+    log_rel = today_log_rel()
     now = _sha(os.path.join(cwd, log_rel))
     if now is None:
         return False
@@ -77,11 +83,11 @@ def _repo_changed(cwd, snap):
     before = snap.get("repo_sha")
     if not isinstance(before, str):
         return False                     # không phải git repo / không lấy được
-    now = tdq_state.repo_status_digest(cwd)
+    now = repo_status_digest(cwd)
     if not isinstance(now, str):
         # Đầu turn lấy được vân tay mà cuối turn thì không → có gì đó hỏng thật.
-        tdq_state._warn("stop_gate: cuối turn không lấy được vân tay repo — "
-                        "bỏ qua bằng chứng đĩa, chỉ còn dựa vào sổ turn")
+        _warn("stop_gate: cuối turn không lấy được vân tay repo — "
+              "bỏ qua bằng chứng đĩa, chỉ còn dựa vào sổ turn")
         return False
     return now != before
 
@@ -94,7 +100,7 @@ def _shell_changed_path(cwd, snap):
     before = snap.get("repo_paths")
     before = set(before) if isinstance(before, list) else set()
     fresh, known = "", ""
-    for path in tdq_state.repo_status_paths(cwd):
+    for path in repo_status_paths(cwd):
         if not isinstance(path, str) or path.startswith(BOOKKEEPING):
             continue
         if path not in before:
@@ -109,12 +115,12 @@ def main():
     if payload.get("stop_hook_active"):
         return
     cwd = payload_cwd(payload)
-    state = tdq_state.load(cwd)
+    state = load(cwd)
     if state is None or not state.get("active_request"):
         return
 
     rows = turn_rows(cwd, payload)
-    log_rel = tdq_state.today_log_rel()
+    log_rel = today_log_rel()
     log_dir = os.path.join("docs", "workinglog")
     snap = _snapshot(rows)
 
@@ -137,7 +143,7 @@ def main():
 
     if culprit and not logged:
         # §6: quyết định chặn phải truy vết được — chặn oan thì biết ngay do nguồn nào.
-        tdq_state._info(f"stop_gate: chặn TDQ:LOG · nguồn={source} · path={culprit}")
+        _info(f"stop_gate: chặn TDQ:LOG · nguồn={source} · path={culprit}")
         print(json.dumps({
             "decision": "block",
             # Câu chữ phải vừa trần 300 ký tự kể cả khi path chạm MAX_PATH_CHARS.
@@ -154,12 +160,12 @@ def main():
     # PreToolUse — trong turn vẫn được sửa code tự do, chỉ không được kết thúc turn.
     # Mọi nhánh im lặng đều là chống chặn oan: hook này chạy ở user scope.
     if culprit and snap and isinstance(snap.get("plan_sha"), str) \
-            and tdq_state.effective_phase(state, warn=False) in ("implement", "qc"):
-        tick = tdq_state.plan_tick_state(cwd)
+            and effective_phase(state, warn=False) in ("implement", "qc"):
+        tick = plan_tick_state(cwd)
         if tick["exists"] and tick["total"] > 0 and not tick["all_done"] \
                 and tick["sha"] == snap["plan_sha"]:
-            tdq_state._info(f"stop_gate: chặn TDQ:TICK · nguồn={source} · path={culprit} "
-                            f"· plan={tick['path']} · checkbox không đổi trong turn")
+            _info(f"stop_gate: chặn TDQ:TICK · nguồn={source} · path={culprit} "
+                  f"· plan={tick['path']} · checkbox không đổi trong turn")
             print(json.dumps({
                 "decision": "block",
                 "reason": ("[TDQ:TICK] Turn này sửa code nhưng checkbox trong plan không đổi. "

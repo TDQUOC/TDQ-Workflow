@@ -115,6 +115,15 @@ class BookkeepingExclusionTest(unittest.TestCase):
         write_file(self.cwd, "docs/workinglog/2026-07-29.md", "# log\n- x\n")
         self.assertEqual(before, tdq_state.repo_status_digest(self.cwd))
 
+    def test_digest_ignores_graphify_out(self):
+        """`graphify-out/` do chính workflow ghi lại mỗi turn — không phải thay đổi thật."""
+        write_file(self.cwd, "graphify-out/graph.json", '{"nodes": []}\n')
+        self.commit_all()
+        before = tdq_state.repo_status_digest(self.cwd)
+        write_file(self.cwd, "graphify-out/graph.json", '{"nodes": [1]}\n')
+        write_file(self.cwd, "graphify-out/GRAPH_REPORT.md", "# report\n")
+        self.assertEqual(before, tdq_state.repo_status_digest(self.cwd))
+
     def test_digest_still_sees_real_file_next_to_bookkeeping(self):
         before = tdq_state.repo_status_digest(self.cwd)
         write_file(self.cwd, "docs/tdq/state.json", '{"a": 1}\n')

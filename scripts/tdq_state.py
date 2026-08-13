@@ -284,7 +284,9 @@ UNTRACKED_HASH_BUDGET = 4194304     # tổng số byte được đọc mỗi l�
 # tay thì turn read-only cũng bị coi là "đổi repo" (chặn oan 0.3.1).
 # Luôn viết bằng `/`: git in path bằng `/` trên mọi HĐH, dùng os.sep là tự tắt
 # bộ lọc khi chạy trên Windows.
-BOOKKEEPING_PATHS = ("docs/tdq", "docs/workinglog")
+# `graphify-out` cùng loại: `tdq_finish.py` build lại đồ thị mỗi turn nên thư mục này
+# gần như luôn đổi, và đó là hiệu ứng của chính workflow, không phải của việc user giao.
+BOOKKEEPING_PATHS = ("docs/tdq", "docs/workinglog", "graphify-out")
 _EXCLUDE = tuple(f":(top,exclude){p}" for p in BOOKKEEPING_PATHS)
 _ROOT_CACHE = {}
 

@@ -2,6 +2,26 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.13.0 — 2026-08-14
+
+Chốt vai trò graphify thành hai luật rõ: đồ thị CHỈ chứa mã nguồn sản phẩm, và chỉ tra
+đồ thị khi cần liên kết hoặc bản đồ tổng thể.
+
+- `.graphifyignore`: liệt kê đủ 8 thư mục (`tests/ docs/ portable/ skills/ agents/
+  ClaudeExport/ claude-export/ graphify-out/`), có hiệu lực cả khi chạy `graphify extract`
+  không cờ `--code-only`. Node trong đồ thị: 1.421 → 412.
+- 6 file `hooks/scripts/` đổi sang `from tdq_state import <tên>` rồi gọi thẳng. Lý do:
+  graphify (0.9.28 và 0.9.42) chỉ sinh cạnh `calls` cross-file cho dạng from-import; dạng
+  `import M` + `M.f()` không sinh cạnh nào. Cạnh `hooks/* → scripts/tdq_state.py`: 1 → 38,
+  `graphify affected "turn_snapshot()"` từ chỗ không ra gì nay ra `prompt_context.py`.
+- `skills/tdq-intake/references/analyze-full.md`, `quick-lane.md`: thêm luật ĐỌC — mở đồ
+  thị cho câu hỏi liên kết / bản đồ tổng thể, grep cho tìm chuỗi và đọc file cụ thể.
+- `scripts/tdq_state.py`: thêm `"graphify-out"` vào `BOOKKEEPING_PATHS`; thư mục do chính
+  workflow ghi lại mỗi turn không còn tính vào vân tay repo. Kèm test mới
+  `test_digest_ignores_graphify_out`.
+- `tests/test_bash_gate.py`: patch `turn_log_read` vào module `_common` (nơi giữ tên đã
+  bind) thay vì vào `tdq_state`.
+
 ## 0.12.0 — 2026-08-13
 
 Khuôn trình bày thân thiện dùng chung cho mọi chỗ nói với user, và tách bước chọn cách

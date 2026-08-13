@@ -155,6 +155,10 @@ class TestBashGateSingleTurnRead(unittest.TestCase):
             "bash_gate_mod", os.path.join(HOOKS, "bash_gate.py"))
         cls.mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.mod)
+        # bash_gate đọc sổ turn qua `_common.turn_rows`, mà `_common` đã bind
+        # `turn_log_read` ngay lúc import (from-import). Patch trên `tdq_state`
+        # không còn tác dụng — phải patch đúng module giữ tên đã bind.
+        cls.common = sys.modules["_common"]
 
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -173,7 +177,7 @@ class TestBashGateSingleTurnRead(unittest.TestCase):
         payload = {"cwd": self.cwd, "session_id": session,
                    "tool_input": {"command": cmd}}
 
-        real_read = tdq_state.turn_log_read
+        real_read = self.common.turn_log_read
         calls = []
 
         def counting_read(cwd, session=None):
@@ -182,7 +186,7 @@ class TestBashGateSingleTurnRead(unittest.TestCase):
 
         stdin = io.StringIO(json.dumps(payload))
         stdout = io.StringIO()
-        with mock.patch.object(tdq_state, "turn_log_read", side_effect=counting_read), \
+        with mock.patch.object(self.common, "turn_log_read", side_effect=counting_read), \
              mock.patch.object(sys, "stdin", stdin), \
              mock.patch.object(sys, "stdout", stdout):
             with self.assertRaises(SystemExit):

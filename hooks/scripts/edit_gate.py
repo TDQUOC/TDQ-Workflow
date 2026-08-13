@@ -14,9 +14,13 @@ Hai việc, theo đúng thứ tự:
 import os
 
 from _common import (block, echo_line, observe, payload_cwd, read_payload, remind,
-                     tdq_state, turn_rows)
-
-today_log_rel = tdq_state.today_log_rel      # một nguồn duy nhất, dùng chung với stop_gate
+                     turn_rows)
+# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
+# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
+# `today_log_rel` lấy thẳng từ tdq_state — một nguồn duy nhất, dùng chung với stop_gate.
+from tdq_state import (effective_lane, effective_phase, load,  # noqa: E402
+                       plan_tick_state, state_md_path, state_path,
+                       today_log_rel)
 
 # Ngưỡng streak (spec 2026-08-13-ra-soat-tick-che-do-sau §3): quá NGƯỠNG lần sửa mã
 # nguồn liên tiếp mà plan (checksum) chưa đổi kể từ đó → chặn lần kế tiếp. Khớp trần
@@ -51,8 +55,8 @@ def main():
         observe(cwd, payload, "log_written", path=rel_target)
 
     # (2) nhắc
-    state_file = os.path.realpath(tdq_state.state_path(cwd))
-    state_md = os.path.realpath(tdq_state.state_md_path(cwd))
+    state_file = os.path.realpath(state_path(cwd))
+    state_md = os.path.realpath(state_md_path(cwd))
     if abs_target in (state_file, state_md):
         remind(cwd, payload, "TDQ:STATE", [
             "Đừng sửa tay file trạng thái — ghi bằng CLI.",
@@ -60,13 +64,13 @@ def main():
             echo_line("TDQ:STATE", "đã ghi state bằng CLI"),
         ])
 
-    state = tdq_state.load(cwd)
+    state = load(cwd)
     if state is None or not state.get("active_request"):
         return
     if within(abs_target, os.path.realpath(os.path.join(cwd, "docs"))):
         return  # docs/** không cần nhắc: brief/spec/plan/research/log
 
-    lane = tdq_state.effective_lane(state, warn=False)
+    lane = effective_lane(state, warn=False)
     pending = None
     if lane == "full" and not state.get("spec_approved"):
         pending = "spec"
@@ -99,8 +103,8 @@ def main():
     # Đặt CUỐI vì `remind()` thoát ngay sau lần nhắc đầu: TDQ:LOG dẫn tới chặn cứng
     # ở Stop nên phải được ưu tiên.
     in_tests = within(rel_target, "tests") or rel_target.startswith("tests" + os.sep)
-    if not in_tests and tdq_state.effective_phase(state, warn=False) in ("implement", "qc"):
-        tick = tdq_state.plan_tick_state(cwd)
+    if not in_tests and effective_phase(state, warn=False) in ("implement", "qc"):
+        tick = plan_tick_state(cwd)
         if tick["exists"] and tick["total"] > 0 \
                 and not tick["has_doing"] and not tick["all_done"]:
             block(cwd, payload, "TDQ:TICK", [
