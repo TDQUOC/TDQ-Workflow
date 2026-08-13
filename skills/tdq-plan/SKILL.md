@@ -13,8 +13,10 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
 1. **Chọn mode để ĐỀ XUẤT — không hỏi riêng một lượt.** Cân hai phương án, chốt cái hợp
    nhất làm đề xuất, ghi thẳng vào plan ở bước 2 kèm lý do; user đổi được lúc duyệt:
    - `main` — làm tuần tự ngay trong hội thoại này (plan nhỏ, task phụ thuộc chặt, đụng chung file).
-   - `subagent` — giao cho agent `tdq-implementer`, mỗi agent một git worktree (nhiều phase độc lập, chạy song song được).
-   Plan trên 6 task mà các phase đụng file rời nhau → mặc định ĐỀ XUẤT `subagent`;
+   - `subagent` — giao cho agent `tdq-implementer`, mỗi agent một task, một git worktree
+     (nền tảng Agent không có báo cáo giữa chừng nên đơn vị giao việc phải nhỏ bằng đúng
+     nhịp tick; main agent tick `[x]` ngay khi nhận báo cáo, trước khi gọi agent kế tiếp).
+   Plan trên 6 task mà các task đụng file rời nhau → mặc định ĐỀ XUẤT `subagent`;
    đụng chung file hoặc phụ thuộc chặt → `main`. User vẫn là người chốt mode.
 
 2. **Viết** `docs/tdq/plan/<slug>.md` từ spec ĐÃ DUYỆT.

@@ -150,7 +150,9 @@ class TickBlockTest(unittest.TestCase):
     PLAN_REL = os.path.join("docs", "tdq", "plan", "r1.md")
     CHUA_LAM = "- [ ] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
     DANG_LAM = "- [~] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    HAI_DANG_LAM = "- [~] **T1** a — Test: x\n- [~] **T2** b — Test: x\n"
     XONG_HET = "- [x] **T1** a — Test: x\n- [x] **T2** b — Test: x\n"
+    DANG_LAM_KHAC = "- [x] **T1** a — Test: x\n- [~] **T2** b — Test: x\n"
 
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -218,3 +220,36 @@ class TickBlockTest(unittest.TestCase):
     def test_sua_trong_docs_thi_im(self):
         self.dung_state(plan=self.CHUA_LAM)
         self.assertNotIn("TDQ:TICK", self.sua("docs/ghi-chu.md")[1])
+
+    def test_hai_task_cung_doing_thi_chan(self):
+        self.dung_state(plan=self.HAI_DANG_LAM)
+        out = self.sua()[1]
+        self.assertIn("deny", out)
+        self.assertIn("TDQ:TICK", out)
+
+    def test_dung_mot_task_doing_thi_khong_chan_vi_ca_nay(self):
+        self.dung_state(plan=self.DANG_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_streak_3_lan_sua_lien_tiep_khong_tick_thi_chan_lan_4(self):
+        self.dung_state(plan=self.DANG_LAM)
+        for i in range(3):
+            out = self.sua(f"src/streak{i}.py")[1]
+            self.assertNotIn("deny", out)
+        out4 = self.sua("src/streak3.py")[1]
+        self.assertIn("deny", out4)
+        self.assertIn("TDQ:TICK", out4)
+
+    def test_streak_reset_khi_plan_doi_sau_tick(self):
+        self.dung_state(plan=self.DANG_LAM)
+        for i in range(3):
+            self.sua(f"src/reset{i}.py")
+        write_file(self.cwd, self.PLAN_REL, self.DANG_LAM_KHAC)
+        out = self.sua("src/reset3.py")[1]
+        self.assertNotIn("deny", out)
+
+    def test_streak_khong_tinh_sua_trong_tests(self):
+        self.dung_state(plan=self.DANG_LAM)
+        for i in range(5):
+            out = self.sua(os.path.join("tests", f"test_streak{i}.py"))[1]
+            self.assertNotIn("deny", out)

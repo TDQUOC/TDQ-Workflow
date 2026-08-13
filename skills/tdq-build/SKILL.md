@@ -34,11 +34,15 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
 
 1. Đọc `implement_mode` từ state và làm đúng theo:
    - `main`: tự làm tuần tự trong hội thoại này, theo đúng thứ tự task trong plan.
-   - `subagent`: gọi agent `tdq-implementer`, mỗi agent một git worktree (tên branch theo
-     conventions §7). Merge worktree về và kiểm tra merge; dọn worktree thừa.
+   - `subagent`: mỗi lần gọi agent `tdq-implementer` giao ĐÚNG 1 task (không giao cả
+     phase/nhóm task), mỗi agent một git worktree (tên branch theo conventions §7). Lý do:
+     nền tảng Agent không có báo cáo giữa chừng — subagent chỉ trả đúng một báo cáo cuối
+     cùng, nên đơn vị giao việc phải nhỏ bằng đúng nhịp tick cần thấy. Nhận báo cáo xong
+     → tick `[x]` ngay (bước 2.6) TRƯỚC khi gọi agent cho task kế tiếp. Merge worktree về
+     và kiểm tra merge; dọn worktree thừa.
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
 
-2. Vòng lặp mỗi task:
+2. Vòng lặp mỗi task (mode `subagent`: mỗi vòng ứng với đúng 1 lần gọi `tdq-implementer`):
    1. Báo 1 dòng: đang bắt đầu task nào, và đánh `- [~]` cho task đó trong plan.
    2. Task có khối `Dùng:` → NẠP skill đó ngay (theo trường `Nạp`), làm đúng trường `Để`,
       không lan sang việc ghi ở `Không dùng cho`. Không có khối → bỏ qua bước này.
@@ -46,7 +50,8 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
    4. Code: thay đổi nhỏ nhất mà đủ thoả task. Bám style code sẵn có.
    5. Xanh: chạy lại đến khi pass, chỉ chạy **test của module** đang sửa — full suite
       để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
-   6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY.
+   6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main
+      agent tick ngay khi nhận báo cáo của agent con, không đợi các task khác.
 
 3. Xong hết task: chạy full suite ĐÚNG MỘT LẦN, rồi đóng sổ turn bằng MỘT lệnh
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file .md vừa sửa> --log "<task xong, file đổi, kết quả test>" --phase qc`

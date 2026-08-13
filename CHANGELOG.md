@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.11.5 — 2026-08-13
+
+Bịt 3 lỗ hổng tick checkbox ở chế độ chuyên sâu.
+
+- `plan_tick_state` (`scripts/tdq_state.py`) trả thêm `doing_count`.
+- `edit_gate.py` chặn khi có ≥2 task cùng `[~]`, và chặn sau 3 lần sửa mã liên tiếp
+  mà chưa tick (đếm streak qua sổ turn, reset khi `plan_sha` đổi).
+- Luật giao subagent (`tdq-build`/`tdq-plan` SKILL.md, `agents/tdq-implementer.md`)
+  đổi xuống đúng 1 task/lần gọi để tick theo kịp tiến độ thật.
+
 ## 0.11.4 — 2026-08-12
 
 Hai lane đổi TÊN GỌI cho người đọc: `chế độ nhanh (express)` và

@@ -26,6 +26,11 @@ PLAN_XONG_HET = """## P1 — a
 - [x] **T1.2** (n3) viec hai — Test: x
 """
 
+PLAN_HAI_DANG_LAM = """## P1 — a
+- [~] **T1.1** (n3) viec mot — Test: x
+- [~] **T1.2** (n3) viec hai — Test: x
+"""
+
 
 class PlanTickStateTest(unittest.TestCase):
     def setUp(self):
@@ -46,6 +51,14 @@ class PlanTickStateTest(unittest.TestCase):
         self.assertTrue(info["has_doing"])
         self.assertFalse(info["all_done"])
         self.assertEqual(info["total"], 2)
+
+    def test_doing_count_dem_dung_so_task_dang_lam(self):
+        self._state(PLAN_CHUA_LAM)
+        self.assertEqual(tdq_state.plan_tick_state(self.cwd)["doing_count"], 0)
+        self._state(PLAN_DANG_LAM)
+        self.assertEqual(tdq_state.plan_tick_state(self.cwd)["doing_count"], 1)
+        self._state(PLAN_HAI_DANG_LAM)
+        self.assertEqual(tdq_state.plan_tick_state(self.cwd)["doing_count"], 2)
 
     def test_xong_het_thi_all_done(self):
         self._state(PLAN_XONG_HET)

@@ -406,7 +406,7 @@ _TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x)\]\s*\*\*[A-Za-z]+[0-9.]*\*\*")
 def plan_tick_state(cwd):
     """Trạng thái checkbox của plan hiện hành. Không bao giờ ném lỗi."""
     trong = {"path": None, "exists": False, "sha": "",
-             "has_doing": False, "all_done": False, "total": 0}
+             "has_doing": False, "all_done": False, "total": 0, "doing_count": 0}
     try:
         state = load(cwd, heal=False) or {}
     except Exception:
@@ -437,7 +437,7 @@ def plan_tick_state(cwd):
         elif m.group(1) == "~":
             dang += 1
 
-    trong.update(exists=True, sha=sha, total=tong,
+    trong.update(exists=True, sha=sha, total=tong, doing_count=dang,
                  has_doing=dang > 0, all_done=tong > 0 and xong == tong)
     return trong
 
