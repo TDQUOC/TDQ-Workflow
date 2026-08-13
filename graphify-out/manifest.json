@@ -1,8 +1,8 @@
 {
   ".claude-plugin/plugin.json": {
-    "mtime": 1786622117.1295292,
-    "ast_hash": "fa1eb069661e270a595242f0de9e9135",
-    "semantic_hash": "fa1eb069661e270a595242f0de9e9135"
+    "mtime": 1786623643.1966546,
+    "ast_hash": "40e059150844ec0458f77f1904875e72",
+    "semantic_hash": ""
   },
   "hooks/hooks.json": {
     "mtime": 1785239051.9266293,
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "skills/tdq-conventions/SKILL.md": {
-    "mtime": 1786620934.6524231,
-    "ast_hash": "66d02eabf69f593a36d93cabb656c626",
+    "mtime": 1786623221.5079327,
+    "ast_hash": "a8e1e76e6e0f8a24a595920c31015f26",
     "semantic_hash": ""
   },
   "skills/tdq-conventions/references/tavily.md": {
@@ -260,8 +260,8 @@
     "semantic_hash": "189207bd0b1324f06ff023eef4d1e100"
   },
   "CHANGELOG.md": {
-    "mtime": 1786622122.1170402,
-    "ast_hash": "aadc3776c3672353224da7c836b4326b",
+    "mtime": 1786623695.1799734,
+    "ast_hash": "4b417bc6588b92d1fe44d9219c320dcc",
     "semantic_hash": ""
   },
   "docs/archive/v0.1/README.md": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "docs/tdq/STATE.md": {
-    "mtime": 1786622092.8285587,
-    "ast_hash": "12724388cf428f65103809fc8f478337",
+    "mtime": 1786623745.6267061,
+    "ast_hash": "a18be463706685aa4c45ac4c175437be",
     "semantic_hash": ""
   },
   "docs/tdq/knowledge/2026-07-28-instruction-hardening-7b.md": {
@@ -2230,8 +2230,8 @@
     "semantic_hash": ""
   },
   "docs/workinglog/2026-08-13.md": {
-    "mtime": 1786622136.6771073,
-    "ast_hash": "9b2f3283c2ca85a3bf18bc1412a575d8",
+    "mtime": 1786623745.5916154,
+    "ast_hash": "2f05a5282bc80a05d6cf3c8dedf27eca",
     "semantic_hash": ""
   },
   "docs/tdq/brief/2026-08-13-vi-du-cau-hoi-lane.md": {
@@ -2412,6 +2412,46 @@
   "docs/tdq/plan/2026-08-13-doi-dong-nang-luc.md": {
     "mtime": 1786622082.6210966,
     "ast_hash": "2e30a0ac8ad69119564eddb672c4b283",
+    "semantic_hash": ""
+  },
+  "docs/archive/CHANGELOG-0.1-0.3.md": {
+    "mtime": 1786623695.1758177,
+    "ast_hash": "d35e0fd501d2b1fd4283ed233b2ed988",
+    "semantic_hash": ""
+  },
+  "docs/tdq/brief/2026-08-13-trinh-lai-sau-hook-chan.md": {
+    "mtime": 1786622722.7454967,
+    "ast_hash": "4b0c0a372aaa313daf8e5d2d70246c33",
+    "semantic_hash": ""
+  },
+  "docs/tdq/plan/2026-08-13-trinh-lai-sau-hook-chan.md": {
+    "mtime": 1786623559.4110737,
+    "ast_hash": "375b48da956d5db57dd04b8e5b6e090c",
+    "semantic_hash": ""
+  },
+  "docs/tdq/qc/2026-08-13-trinh-lai-sau-hook-chan.md": {
+    "mtime": 1786623464.0563664,
+    "ast_hash": "b04f89405fa23c81d73f06492c641b2c",
+    "semantic_hash": ""
+  },
+  "docs/tdq/reports/2026-08-13-trinh-lai-sau-hook-chan.md": {
+    "mtime": 1786623552.9889274,
+    "ast_hash": "370ccce3d0ea1bf39424359d0400f744",
+    "semantic_hash": ""
+  },
+  "docs/tdq/spec/2026-08-13-trinh-lai-sau-hook-chan.md": {
+    "mtime": 1786622789.7355783,
+    "ast_hash": "84ec2bc7d4f4ebf7d54fd340f2abf550",
+    "semantic_hash": ""
+  },
+  "skills/tdq-conventions/references/worklog-images.md": {
+    "mtime": 1786623158.55108,
+    "ast_hash": "ac02a0c18fe516b6ce9cf26764084fce",
+    "semantic_hash": ""
+  },
+  "docs/workinglog/assets/2026-08-13-trinh-lai-sau-hook-chan/1.png": {
+    "mtime": 1786622525.7553618,
+    "ast_hash": "8eefab3bb5ef1b41d22edfdd7ad4017a",
     "semantic_hash": ""
   }
 }
