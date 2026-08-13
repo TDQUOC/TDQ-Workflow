@@ -45,6 +45,14 @@ class NextTest(unittest.TestCase):
         self.assertIn("docs/tdq/plan/", out)
         self.assertIn("approve quick", out)
 
+    def test_next_analyze_asks_for_the_scope_round(self):
+        """Checklist phase analyze phải nhắc vòng scope, nếu không nó sẽ bị bỏ im lặng."""
+        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        run_state_cli(self.cwd, "set", "phase=analyze")
+        rc, out, _ = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0)
+        self.assertIn("scope", out.lower(), out)
+
     def test_next_brief_single_line(self):
         run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
         rc, out, _ = run_state_cli(self.cwd, "next", "--brief")

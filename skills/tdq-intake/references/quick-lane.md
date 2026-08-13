@@ -9,11 +9,16 @@ vì sao bỏ.
 |---|---|---|
 | Phân tích + đọc code | có | có |
 | Web search | có (2–4 truy vấn) | có khi có ẩn số bên ngoài |
+| Vòng scope | có điều kiện, theo dấu hiệu kích hoạt | y hệt — cùng một bộ dấu hiệu |
 | Interview | lặp đến hết mơ hồ | khi còn câu làm đổi kết quả |
 | Tài liệu | brief + spec + plan | **1 file** `docs/tdq/plan/<slug>.md` |
 | Gate duyệt | 2 (spec, plan) + 1 câu chọn cách chạy | **1** ("duyệt nhanh") |
 | QC | file `qc/<slug>.md` | mỗi dòng DoD một phép kiểm, ghi vào mục ## QC của plan (mặc định BẬT) |
 | Vòng fix khi FAIL | trần 3 vòng, ghi file qc/ | trần 3 vòng, ghi trong plan |
+
+Vòng scope ở chế độ nhanh dùng chung luật [scope-round.md](scope-round.md): thoả một dấu
+hiệu kích hoạt thì hỏi mặt + bối cảnh trước, không thoả thì ghi một dòng lý do BỎ vào
+mini-plan mục `## Phạm vi` rồi đi tiếp.
 
 ## Luật ĐỌC đồ thị ở bước 1 (phân tích)
 

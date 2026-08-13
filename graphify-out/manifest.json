@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1786642305.3959253,
-    "ast_hash": "55eda9bb2f40235e7606bc74adac5651",
-    "semantic_hash": "55eda9bb2f40235e7606bc74adac5651"
+    "mtime": 1786644396.2949986,
+    "ast_hash": "049cafc7a5b7a98544c95336b2df183a",
+    "semantic_hash": "049cafc7a5b7a98544c95336b2df183a"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -115,9 +115,9 @@
     "semantic_hash": "dc3ad578c8e3163c08e14e5f7a06eba8"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1786643454.0960202,
-    "ast_hash": "383ae9417c17e744b5f4f176ea42276f",
-    "semantic_hash": "383ae9417c17e744b5f4f176ea42276f"
+    "mtime": 1786646843.9382389,
+    "ast_hash": "63d9eb0ce64e6dcad21b6de7764e7903",
+    "semantic_hash": "63d9eb0ce64e6dcad21b6de7764e7903"
   },
   "scripts/token_audit.py": {
     "mtime": 1785868509.0994682,
@@ -125,8 +125,8 @@
     "semantic_hash": "df07270f1a098f7d6eeed3e3c1a6eb95"
   },
   "CHANGELOG.md": {
-    "mtime": 1786642305.396251,
-    "ast_hash": "8b117ca0f6efed7b969b2b0c0e4d0229",
+    "mtime": 1786644401.894316,
+    "ast_hash": "48844bdc3af37ff46d67c80f5945aa6b",
     "semantic_hash": ""
   },
   "README.md": {

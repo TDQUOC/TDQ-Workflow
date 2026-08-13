@@ -65,6 +65,9 @@ Chỉ nạp khi chế độ chuyên sâu (deep) — chế độ nhanh không c�
 mục tiêu rời phase này với ZERO chỗ đoán. Làm đủ 6 bước (kiểm kê năng lực, đọc code,
 research, interview, chốt kiến thức, kiểm cổng) theo
 [references/analyze-full.md](references/analyze-full.md).
+Interview đi từ tổng quát đến chi tiết: **vòng scope** trước (mặt nào + bối cảnh bằng số,
+theo [references/scope-round.md](references/scope-round.md)), rồi mới hỏi chi tiết trong
+đúng các mặt user chọn. Vòng scope có điều kiện; BỎ thì ghi một dòng lý do vào brief.
 
 Xong khi: `brief/<slug>.md` đủ 3 mục (có `### Lộ trình`) và cả 3 câu hỏi kiểm cổng đều
 trả lời được.
@@ -79,7 +82,8 @@ Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [refer
 1. **Phân tích.** Đọc đúng phần code liên quan. Có ẩn số bên ngoài (thư viện, API,
    phiên bản) → web search qua `tavily-primary` TRƯỚC khi viết gì; thuần nội bộ thì bỏ
    qua và nói rõ vì sao. Còn câu hỏi làm ĐỔI kết quả → interview theo
-   [references/interview.md](references/interview.md).
+   [references/interview.md](references/interview.md), và **vòng scope** đứng trước vòng
+   chi tiết y như lane deep ([references/scope-round.md](references/scope-round.md)).
 2. **Viết mini-spec/plan GỘP 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 dòng: phạm vi
    in/out, task checkbox mỗi task một test, DoD mỗi dòng kiểm được bằng lệnh.
    Checkbox có 3 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement

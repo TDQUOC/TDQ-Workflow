@@ -12,7 +12,8 @@ Trạng thái: CHỜ DUYỆT
 ## 1. Mục tiêu & phạm vi
 - Mục tiêu: <1–3 câu, đo được>
 - Trong phạm vi: <gạch đầu dòng>
-- NGOÀI phạm vi: <gạch đầu dòng — nêu rõ để khỏi trôi việc>
+- NGOÀI phạm vi: <gạch đầu dòng — nêu rõ để khỏi trôi việc. Có chạy vòng scope thì
+  BẮT BUỘC chép các mặt bị loại ở brief `### Phạm vi đã chốt` vào đây>
 
 ## 1b. Lộ trình
 Chép từ brief mục `### Lộ trình`. User duyệt spec là duyệt luôn lộ trình này.
@@ -82,6 +83,7 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 | Câu hỏi | Trả lời phải nằm ở |
 |---|---|
 | Việc này làm RA cái gì? | §1 mục tiêu + §2 bảng đầu ra |
+| Các mặt bị loại ở vòng scope đã ghi chưa? | §1 mục NGOÀI phạm vi |
 | Có gì MỚI so với hiện trạng? | §3 cách tiếp cận |
 | Output cụ thể là file/lệnh/màn hình nào? | §2 cột đường dẫn/vị trí |
 | Có cần model không (tên, nơi chạy, chi phí)? | §1 phạm vi + §5 ràng buộc |

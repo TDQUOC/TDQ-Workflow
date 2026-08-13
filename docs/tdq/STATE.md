@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-14T01:05:15+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-14T01:52:32+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-14-doi-ten-mode-implement |
+| Request | 2026-08-14-interview-hoi-scope |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-14-doi-ten-mode-implement.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-14-doi-ten-mode-implement.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-14-interview-hoi-scope.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-14-interview-hoi-scope.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

@@ -2,6 +2,30 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.15.0 — 2026-08-14
+
+Interview đi hai tầng: hỏi phạm vi tổng quát trước, rồi mới hỏi chi tiết trong đúng
+những mặt user chọn — để spec không bao thiếu cũng không bao dư.
+
+- `skills/tdq-intake/references/scope-round.md` (mới, 5 mục): khi nào chạy · câu 1 chọn
+  mặt · câu 2 bối cảnh bằng số · suy mức đầu tư · ghi lại. Vòng scope chạy **có điều
+  kiện** theo danh sách đóng 4 dấu hiệu kích hoạt; bỏ thì buộc ghi một dòng
+  `Vòng scope: BỎ — <lý do>` vào brief. Áp cho cả lane express lẫn deep.
+- Câu 1 chỉ trình 3–5 mặt hợp lĩnh vực của request, soát nội bộ theo khung 9 mặt
+  ISO/IEC 25010; luôn có option "chỉ cần chạy được".
+- Câu 2 hỏi bối cảnh bằng số (môi trường + bản target, CCU/RPS/số bản ghi, R&D hay
+  product, vòng đời & người bảo trì, ràng buộc nền tảng), trần 4 câu. **CẤM** hỏi mức độ
+  trừu tượng kiểu "gọn nhất hay đầy đủ chuyên nghiệp" — mức đầu tư do agent suy ra rồi
+  nói lại bằng dòng `Tôi hiểu là: <mức> vì <bối cảnh>`, không phải cổng duyệt mới.
+- Nối vào 4 chỗ gọi interview: `interview.md` (thêm mục "Hai tầng câu hỏi", tầng 2 chỉ
+  hỏi trong các mặt user đã chọn), `analyze-full.md` bước 4, `quick-lane.md`,
+  `tdq-intake/SKILL.md`.
+- Neo kết quả: `spec-template.md` §1 buộc chép các mặt bị loại vào `NGOÀI phạm vi` (thêm
+  một dòng Checklist scope); `tdq_state.py` `PHASE_GUIDE["analyze"]` thêm dòng nhắc vòng
+  scope, đặt trước dòng hỏi chi tiết.
+- Test: `tests/test_scope_round.py` (nội dung file luật + kiểm cả 4 chỗ gọi đã nối dây),
+  `tests/test_next.py::test_next_analyze_asks_for_the_scope_round`.
+
 ## 0.14.0 — 2026-08-14
 
 Cổng chọn cách chạy nói bằng tên nghề nghiệp, và phải giải thích vì sao đề xuất mode đó.

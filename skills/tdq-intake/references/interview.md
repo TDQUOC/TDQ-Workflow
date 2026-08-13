@@ -2,6 +2,16 @@
 
 Mục tiêu: không còn câu hỏi nào mà câu trả lời khác nhau sẽ dẫn tới sản phẩm khác nhau.
 
+## Hai tầng câu hỏi — tổng quát trước, chi tiết sau
+
+- **Tầng 1 — vòng scope**: request bao quanh những mặt nào, bối cảnh thật ra sao. Chạy
+  có điều kiện, luật đầy đủ ở [scope-round.md](scope-round.md). Bỏ thì phải ghi lý do.
+- **Tầng 2 — vòng chi tiết**: 7 hạng mục dưới đây, nhưng **chỉ hỏi trong các mặt user đã
+  chọn ở tầng 1**. Mặt user đã loại thì không hỏi, cũng không tự đưa vào spec.
+
+Chạy tầng 1 rồi mới sang tầng 2. Vòng scope bị BỎ theo đúng tiêu chí của nó thì tầng 2
+hỏi bình thường như trước.
+
 ## Hỏi cái gì
 
 Chỉ hỏi câu **làm đổi kết quả**. Với mỗi hạng mục dưới đây, tự trả lời được thì thôi,

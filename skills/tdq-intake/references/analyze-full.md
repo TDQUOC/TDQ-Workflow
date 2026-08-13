@@ -29,8 +29,12 @@ Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.
    Ngoại lệ tự làm: chỉ 1 truy vấn, hoặc đã biết sẵn URL (dùng `WebFetch`).
    Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài.
 
-4. **Vòng interview.** Liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
-   lỗi, hiệu năng, tương thích). Cách hỏi: [interview.md](interview.md).
+4. **Vòng interview — tổng quát trước, chi tiết sau.** Chạy **vòng scope** trước theo
+   [scope-round.md](scope-round.md): request bao quanh mặt nào, bối cảnh bằng số ra sao,
+   từ đó suy ra mức đầu tư. Vòng scope có điều kiện; bỏ thì ghi lý do vào brief. Rồi mới
+   tới vòng chi tiết: liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
+   lỗi, hiệu năng, tương thích) nhưng chỉ trong các mặt user đã chọn. Cách hỏi:
+   [interview.md](interview.md).
    Ghi hỏi–đáp vào brief mục `## Hỏi đáp`. **Lặp** đến khi không còn câu hỏi
    nào làm đổi kết quả — nhiều vòng là bình thường. Không lấp chỗ trống bằng phỏng đoán.
 

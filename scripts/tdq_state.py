@@ -565,7 +565,10 @@ PHASE_TABLE = {
             "Kiểm kê năng lực (B0): chạy `python3 scripts/skill_inventory.py`, điền bảng "
             "phán quyết vào docs/tdq/brief/<slug>.md mục 'Hiểu & kiến thức'",
             "Đọc code/doc liên quan, ghi vào docs/tdq/research/<slug>.md",
-            "Hỏi user mọi điểm chưa rõ, ghi vào docs/tdq/brief/<slug>.md mục 'Hỏi đáp'",
+            "Vòng scope trước (mặt nào + bối cảnh bằng số) theo "
+            "skills/tdq-intake/references/scope-round.md, hoặc ghi 'Vòng scope: BỎ — lý do'",
+            "Hỏi chi tiết trong đúng các mặt user chọn, ghi vào "
+            "docs/tdq/brief/<slug>.md mục 'Hỏi đáp'",
             "Chốt quyết định vào docs/tdq/brief/<slug>.md mục 'Hiểu & kiến thức'",
             "Hết câu hỏi làm đổi kết quả → chạy lệnh trên",
         ],
