@@ -2,6 +2,27 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.14.0 — 2026-08-14
+
+Cổng chọn cách chạy nói bằng tên nghề nghiệp, và phải giải thích vì sao đề xuất mode đó.
+
+- `scripts/tdq_state.py`: thêm `MODE_LABELS`/`MODE_ALIASES` + `mode_label()`/
+  `normalize_mode()` — mode tách hai lớp y như lane. Nhãn hiển thị: `main` → "làm trực
+  tiếp (inline implement)", `subagent` → "giao trợ lý (sub-agent implement)". Định danh
+  máy giữ nguyên `main|subagent` nên state cũ, plan cũ, `--mode` cũ không phải migrate.
+  `--mode` và dạng gõ tắt `approve plan <mode>` đều đi qua `normalize_mode`.
+- Checklist phase `mode` buộc trình đoạn **"Vì sao đề xuất"** dài 1–3 dòng. Đoạn đó phải
+  nêu đủ 4 căn cứ đọc từ chính plan: số task, chuỗi phụ thuộc, số file bị nhiều task cùng
+  đụng, có nhãn `(mcp)` không. Kết bằng một câu vì sao không chọn phương án còn lại.
+- `skills/tdq-plan/references/mode-gate.md` (mới): khuôn hỏi nguyên văn + luật viết đoạn
+  lý do. SKILL.md có trần 100 dòng nên chỉ giữ tóm tắt và link.
+- `plan-template.md`, `skills/tdq-build/SKILL.md`: ghi kèm nhãn hiển thị bên cạnh định
+  danh máy.
+- Hook: `_common.py` in nhãn thay vì định danh máy; `prompt_context.py` nhận `inline`,
+  `sub-agent`, biến thể có `implement`, và **chữ cái A/B** đúng như khuôn mời gõ
+  (`mode_from_answer`: A = mode plan đề xuất, B = mode còn lại); `edit_gate.py` gợi ý cả
+  hai tên.
+
 ## 0.13.0 — 2026-08-14
 
 Chốt vai trò graphify thành hai luật rõ: đồ thị CHỈ chứa mã nguồn sản phẩm, và chỉ tra

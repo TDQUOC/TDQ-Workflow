@@ -12,10 +12,12 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
 
 1. **Chọn mode để ĐỀ XUẤT.** Cân hai phương án, ghi cái hợp nhất vào plan ở bước 2 kèm
    lý do; user chốt ở cổng `mode` (bước 6):
-   - `main` — làm tuần tự ngay trong hội thoại này (plan nhỏ, task phụ thuộc chặt, đụng chung file).
-   - `subagent` — giao agent `tdq-implementer`, mỗi agent một task, một git worktree (nền
-     tảng Agent không báo cáo giữa chừng nên đơn vị giao việc phải nhỏ bằng đúng nhịp
-     tick; main agent tick `[x]` ngay khi nhận báo cáo, trước khi gọi agent kế tiếp).
+   - `main` — nhãn hiển thị "làm trực tiếp (inline implement)": làm tuần tự ngay trong
+     hội thoại này (plan nhỏ, task phụ thuộc chặt, đụng chung file).
+   - `subagent` — nhãn hiển thị "giao trợ lý (sub-agent implement)": nhiều trợ lý chạy
+     song song, mỗi agent `tdq-implementer` một task, một git worktree. Nền tảng Agent
+     không báo cáo giữa chừng nên đơn vị giao việc phải nhỏ bằng đúng nhịp tick; main
+     agent tick `[x]` ngay khi nhận báo cáo, trước khi gọi agent kế tiếp.
    Trên 6 task mà đụng file rời nhau → ĐỀ XUẤT `subagent`; đụng chung file hoặc phụ
    thuộc chặt → `main`.
 
@@ -74,22 +76,19 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    ```
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve plan --by "<nguyên văn>"
    ```
-   Câu duyệt đã kèm sẵn chữ `main`/`subagent` → thêm `--mode <main|subagent>` vào chính
-   lệnh trên, **bỏ qua** cổng dưới đây và build luôn. Cấm hỏi lại thứ user vừa nói.
-   Chưa nói mode → state dừng ở phase `mode`, in tiếp khối hỏi (vẫn theo
-   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md)) rồi DỪNG:
-   ```
-   Plan đã được duyệt. Còn một câu cuối: bạn muốn tôi chạy theo cách nào?
-
-   - A (đề xuất): main — tôi làm tuần tự ngay trong cuộc trò chuyện này, bạn theo dõi được từng bước.
-   - B: subagent — tôi chia việc cho nhiều trợ lý chạy song song, nhanh hơn nhưng bạn chỉ thấy báo cáo từng chặng.
-
-   ---
-
-   **Bạn chọn cách nào?**
-
-   ➤ Trả lời: nhắn "main" hoặc "subagent" (chọn xong tôi bắt tay làm ngay) · Góp ý: nhắn trực tiếp
-   ```
+   Câu duyệt đã kèm sẵn tên mode (`main`/`inline`, `subagent`/`sub-agent`) → thêm
+   `--mode <giá trị đó>` vào chính lệnh trên, **bỏ qua** cổng dưới đây và build luôn.
+   Cấm hỏi lại thứ user vừa nói.
+   Chưa nói mode → state dừng ở phase `mode`, in khối hỏi rồi DỪNG. Khuôn nguyên văn —
+   hai option "làm trực tiếp (inline implement)" và "giao trợ lý (sub-agent implement)",
+   mỗi option một dòng, đề xuất luôn ở A — nằm ở
+   [references/mode-gate.md](references/mode-gate.md).
+   Ngay dưới hai option phải có đoạn **"Vì sao đề xuất"** dài 1–3 dòng. Cấm nói chung
+   chung: đủ 4 căn cứ đọc từ chính plan (số task, chuỗi phụ thuộc, số file bị nhiều task
+   cùng đụng, có nhãn `(mcp)` không), kết bằng một câu vì sao không chọn phương án còn
+   lại. Luật đầy đủ kèm ví dụ ở cùng file mode-gate.md.
+   Hai tên gọi là **nhãn hiển thị**; state vẫn ghi `main`/`subagent`
+   (`MODE_LABELS`/`MODE_ALIASES` trong `scripts/tdq_state.py`).
    User trả lời → chạy lại lệnh trên kèm `--mode <main|subagent>` rồi build LUÔN cùng
    turn. Mode chốt là mode user NÓI (khác đề xuất cũng được); cấm tự chọn thay user.
 

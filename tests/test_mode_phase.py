@@ -50,8 +50,43 @@ class ModePhaseTableTest(unittest.TestCase):
 
     def test_mode_row_explains_both_modes(self):
         text = " ".join(tdq_state.PHASE_TABLE["mode"]["checklist"])
-        self.assertIn("main =", text)
-        self.assertIn("subagent =", text)
+        self.assertIn("inline implement", text)
+        self.assertIn("sub-agent implement", text)
+
+    def test_mode_row_demands_reason_analysis(self):
+        """Cổng mode phải bắt trình phân tích lý do, không chỉ nêu suông tên mode."""
+        text = " ".join(tdq_state.PHASE_TABLE["mode"]["checklist"])
+        self.assertIn("căn cứ", text)
+
+
+class ModeLabelTest(unittest.TestCase):
+    """Nhãn hiển thị tách khỏi định danh máy, y hệt cặp lane_label/LANE_LABELS."""
+
+    def test_label_for_each_mode(self):
+        self.assertEqual(tdq_state.mode_label("main"), "làm trực tiếp (inline implement)")
+        self.assertEqual(tdq_state.mode_label("subagent"),
+                         "giao trợ lý (sub-agent implement)")
+
+    def test_label_is_display_layer_not_validator(self):
+        # Mode lạ trả lại nguyên chuỗi, None trả rỗng — in ra xấu còn hơn nổ.
+        self.assertEqual(tdq_state.mode_label("xyz"), "xyz")
+        self.assertEqual(tdq_state.mode_label(None), "")
+
+    def test_normalize_accepts_old_and_new_names(self):
+        cases = {
+            "main": "main", "inline": "main", "inline implement": "main",
+            "inline-implement": "main", "  INLINE  ": "main",
+            "subagent": "subagent", "sub-agent": "subagent",
+            "sub agent": "subagent", "sub-agent implement": "subagent",
+        }
+        for raw, want in cases.items():
+            with self.subTest(raw=raw):
+                self.assertEqual(tdq_state.normalize_mode(raw), want)
+
+    def test_normalize_rejects_junk(self):
+        for raw in ("xyz", "", None, 5):
+            with self.subTest(raw=raw):
+                self.assertIsNone(tdq_state.normalize_mode(raw))
 
 
 class ApproveFlowTest(unittest.TestCase):
@@ -84,6 +119,28 @@ class ApproveFlowTest(unittest.TestCase):
         state = read_state(self.cwd)
         self.assertEqual(state["implement_mode"], "main")
         self.assertEqual(state["phase"], "implement")
+
+    def test_new_mode_name_maps_to_machine_value(self):
+        """User gõ nhãn mới ở cổng mode; state vẫn lưu định danh máy cũ."""
+        run(self.cwd, "approve", "plan", "--by", "duyệt plan")
+        rc, _ = run(self.cwd, "approve", "plan", "--mode", "inline", "--by", "inline")
+        self.assertEqual(rc, 0)
+        self.assertEqual(read_state(self.cwd)["implement_mode"], "main")
+
+    def test_new_mode_name_as_positional_shortcut(self):
+        rc, _ = run(self.cwd, "approve", "plan", "sub-agent", "--by", "sub-agent implement")
+        self.assertEqual(rc, 0)
+        self.assertEqual(read_state(self.cwd)["implement_mode"], "subagent")
+
+    def test_junk_mode_still_rejected(self):
+        # _fail in ra stderr, nên bắt riêng chứ không dùng helper run() (chỉ lấy stdout).
+        proc = subprocess.run([sys.executable, STATE_CLI, "approve", "plan",
+                               "--mode", "xyz", "--by", "xyz"],
+                              capture_output=True, text=True, timeout=30,
+                              env=dict(os.environ, TDQ_PROJECT_DIR=self.cwd))
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("Mode không hợp lệ", proc.stderr)
+        self.assertIsNone(read_state(self.cwd)["implement_mode"])
 
     def test_next_at_mode_phase_asks_for_mode(self):
         run(self.cwd, "approve", "plan", "--by", "duyệt plan")

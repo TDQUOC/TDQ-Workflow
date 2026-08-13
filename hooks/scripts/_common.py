@@ -21,8 +21,8 @@ sys.path.insert(0, _SCRIPTS_DIR)
 # thuộc tính module: graphify (0.9.28 và 0.9.42) chỉ sinh cạnh `calls` cross-file cho
 # dạng from-import. Gọi qua thuộc tính module thì đồ thị mù toàn bộ chuỗi hook → state.
 import tdq_state  # noqa: E402 — giữ để module khác `from _common import tdq_state`
-from tdq_state import (resolve_project_dir, turn_log_append,  # noqa: E402
-                       turn_log_read)
+from tdq_state import (mode_label, resolve_project_dir,  # noqa: E402
+                       turn_log_append, turn_log_read)
 
 # 0.2.0 bỏ gate cứng; 0.3.0 bỏ luôn slash command duyệt — user duyệt bằng chat.
 APPROVE_HINTS = {
@@ -34,8 +34,8 @@ APPROVE_HINTS = {
     # nghĩa ngay tại chỗ: user cuối không có nghĩa vụ biết "subagent" là gì.
     # Phần "plan đề xuất {mode}" để TRƯỚC: lời nhắc bị cắt từ đuôi theo trần ký tự,
     # cắt mất đề xuất thì user phải tự đoán nên chọn gì.
-    "mode": 'plan đề xuất {mode} — nhắn "main" (tôi làm tuần tự ngay đây) '
-            'hoặc "subagent" (nhiều agent chạy song song)',
+    "mode": 'plan đề xuất {mode} — nhắn "inline" (tôi làm tuần tự ngay đây) '
+            'hoặc "sub-agent" (nhiều trợ lý chạy song song); tên cũ main/subagent vẫn nhận',
     # Biến thể bỏ QC phải hiện ở gợi ý, nếu không user không biết đường opt-out.
     "quick": 'nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy)',
 }
@@ -176,5 +176,8 @@ def echo_line(code, what):
 def approve_hint(target, mode=None):
     hint = APPROVE_HINTS.get(target, "nhắn duyệt")
     if target == "mode":
-        return f"➤ Chọn cách làm: {hint.format(mode=mode or 'main')} · Góp ý: nhắn trực tiếp"
+        # In NHÃN người đọc, không in định danh máy: user không có nghĩa vụ biết
+        # "subagent" nghĩa là gì khi cổng mode đã gọi nó là "sub-agent implement".
+        return (f"➤ Chọn cách làm: {hint.format(mode=mode_label(mode or 'main'))}"
+                " · Góp ý: nhắn trực tiếp")
     return f"➤ Duyệt: {hint} · Góp ý: nhắn trực tiếp"

@@ -110,6 +110,59 @@ class TestSignalWritten(unittest.TestCase):
         self.assertTrue(row.get("mode_conflict"))
 
 
+class TestModeNaming(unittest.TestCase):
+    """Cổng mode nói bằng nhãn người đọc, nhưng vẫn nhận tên máy cũ."""
+
+    def setUp(self):
+        import importlib.util
+        import os
+        import sys
+        hooks = os.path.join(tdq_state.__file__, "..", "..", "hooks", "scripts")
+        hooks = os.path.normpath(hooks)
+        if hooks not in sys.path:
+            sys.path.insert(0, hooks)
+        self.common = importlib.import_module("_common")
+        spec = importlib.util.spec_from_file_location(
+            "pc_under_test", os.path.join(hooks, "prompt_context.py"))
+        self.pc = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.pc)
+
+    def test_hint_uses_reader_labels(self):
+        hint = self.common.approve_hint("mode", "main")
+        self.assertIn("inline", hint)
+        self.assertIn("sub-agent", hint)
+        # Nhãn của mode ĐỀ XUẤT phải là chữ người đọc, không phải định danh máy.
+        self.assertIn(tdq_state.mode_label("main"), hint)
+
+    def test_hint_stays_short_enough_to_survive_truncation(self):
+        self.assertLessEqual(len(self.common.approve_hint("mode", "subagent")), 240)
+
+    def test_answer_accepts_old_and_new_names(self):
+        for said in ("main", "subagent", "inline", "inline implement", "sub-agent",
+                     "chọn sub-agent implement"):
+            with self.subTest(said=said):
+                self.assertTrue(self.pc.looks_like_approval(said, "mode"), said)
+
+    def test_answer_accepts_option_letters(self):
+        """Khuôn cổng mode bảo user nhắn "A"/"B" — hook phải nhận đúng thứ nó mời gõ."""
+        for said in ("A", "b", " A ", "chọn A", "B nhé"):
+            with self.subTest(said=said):
+                self.assertTrue(self.pc.looks_like_approval(said, "mode"), said)
+
+    def test_letter_a_means_plan_mode_and_b_the_other(self):
+        self.assertEqual(self.pc.mode_from_answer("A", "subagent"), "subagent")
+        self.assertEqual(self.pc.mode_from_answer("B", "subagent"), "main")
+        self.assertEqual(self.pc.mode_from_answer("B", "main"), "subagent")
+        # Tên mode gõ thẳng vẫn thắng chữ cái.
+        self.assertEqual(self.pc.mode_from_answer("inline implement", "subagent"), "main")
+
+    def test_answer_rejects_noise(self):
+        for said in ("để tôi xem lại đã", "mainline branch nào?", "inlineable",
+                     "Ai làm cũng được", "bạn quyết đi"):
+            with self.subTest(said=said):
+                self.assertFalse(self.pc.looks_like_approval(said, "mode"), said)
+
+
 def write_file_plan_mode(cwd, rel, mode):
     import os
     path = os.path.join(cwd, rel)

@@ -45,6 +45,22 @@ LANE_ALIASES = {
     "chuyen-sau": "full", "chuyensau": "full", "chuyên sâu": "full",
     "chuyen sau": "full", "chuyên-sâu": "full",
 }
+# Mode cũng tách hai lớp y như lane: định danh máy vẫn là "main"/"subagent" nên state
+# cũ, plan cũ (dòng `Mode thực thi:`) và test khoá cứng đều không phải migrate.
+MODE_LABELS = {
+    "main": "làm trực tiếp (inline implement)",
+    "subagent": "giao trợ lý (sub-agent implement)",
+}
+
+# Bí danh NGƯỜI GÕ -> định danh máy. Tên cũ giữ nguyên hiệu lực; tên mới nhận cả dạng
+# có gạch nối, có space và có đuôi "implement" vì đó là chữ user đọc thấy ở cổng mode.
+MODE_ALIASES = {
+    "main": "main", "inline": "main",
+    "inline implement": "main", "inline-implement": "main",
+    "subagent": "subagent", "sub-agent": "subagent", "sub agent": "subagent",
+    "sub-agent implement": "subagent", "sub agent implement": "subagent",
+    "subagent implement": "subagent", "sub-agent-implement": "subagent",
+}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "mode", "implement", "qc", "report"}
 
 USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | "
@@ -477,6 +493,23 @@ def lane_label(lane):
     return LANE_LABELS.get(lane, lane)
 
 
+def normalize_mode(raw):
+    """Bí danh -> định danh máy ("main"/"subagent"). CỬA VÀO duy nhất cho mode do user
+    gõ. Không nhận ra -> None; người gọi quyết định báo lỗi hay bỏ qua."""
+    if not isinstance(raw, str):
+        return None
+    # Gộp mọi khoảng trắng liên tiếp về một space: user hay gõ "sub-agent  implement".
+    return MODE_ALIASES.get(" ".join(raw.strip().lower().split()))
+
+
+def mode_label(mode):
+    """Nhãn để IN RA cho người đọc, cùng luật với lane_label: mode lạ trả lại nguyên
+    chuỗi, None trả chuỗi rỗng — đây là lớp hiển thị, không phải lớp kiểm tra."""
+    if not mode:
+        return ""
+    return MODE_LABELS.get(mode, mode)
+
+
 def effective_lane(state, warn=True):
     lane = (state or {}).get("lane")
     if lane in VALID_LANES:
@@ -576,8 +609,11 @@ PHASE_TABLE = {
         "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<nguyên văn>\"",
         "checklist": [
             "Trình khối chọn mode theo khuôn user-facing-block, mỗi mode một dòng nghĩa: "
-            "main = tôi tự làm tuần tự ngay đây; subagent = giao nhiều agent chạy song song",
-            "Nêu mode plan đã ĐỀ XUẤT và vì sao, nhưng KHÔNG tự chốt thay user",
+            "làm trực tiếp (inline implement) = tôi tự làm tuần tự ngay đây; "
+            "giao trợ lý (sub-agent implement) = nhiều agent chạy song song",
+            "Trình 1–3 dòng phân tích lý do đề xuất, lấy căn cứ TỪ CHÍNH PLAN: số task, "
+            "task phụ thuộc nối tiếp, số file bị nhiều task cùng đụng, có nhãn (mcp) không; "
+            "cộng một câu vì sao không chọn phương án còn lại. KHÔNG tự chốt thay user",
             "DỪNG chờ user chọn",
             "User chọn → chạy lệnh approve ở trên NGAY, rồi build trong CÙNG turn",
         ],
@@ -988,16 +1024,19 @@ def _parse_approve_args(rest):
                 _fail(f"Thiếu giá trị cho {flag}")
             value = rest[i + 1]
             if flag == "--mode":
-                if value not in VALID_MODES:
-                    _fail("Mode không hợp lệ (main|subagent).")
-                mode = value
+                # Qua normalize_mode: user gõ nhãn thấy ở cổng mode ("inline",
+                # "sub-agent implement") cũng phải ghi ra đúng định danh máy.
+                mode = normalize_mode(value)
+                if mode is None:
+                    _fail("Mode không hợp lệ (main|inline | subagent|sub-agent).")
             else:
                 by = value[:BY_MAX]
             i += 2
             continue
-        # cho phép "approve plan main" (user gõ tắt) — mode đứng ngay sau target
-        if flag in VALID_MODES and mode is None:
-            mode = flag
+        # cho phép "approve plan main" (user gõ tắt) — mode đứng ngay sau target.
+        # Nhận cả bí danh, nhưng chỉ khi chưa có mode: tham số lạ vẫn phải nổ.
+        if mode is None and normalize_mode(flag):
+            mode = normalize_mode(flag)
             i += 1
             continue
         _fail(f"Tham số không hợp lệ: {flag}")

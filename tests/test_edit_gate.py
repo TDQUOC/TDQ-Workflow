@@ -59,7 +59,9 @@ class TestEditGate(unittest.TestCase):
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     spec_sha256="abc", spec_approved_at=now_iso())
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "main|subagent")
+        # Nêu cả định danh máy lẫn nhãn mới ở cổng mode.
+        self.assert_remind(out, "main|inline")
+        self.assertIn("sub-agent", out)
 
     def test_docs_edit_is_silent(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="spec")

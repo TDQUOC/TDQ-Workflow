@@ -33,8 +33,9 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
 ## Phần A — Implement (phase `implement`)
 
 1. Đọc `implement_mode` từ state và làm đúng theo:
-   - `main`: tự làm tuần tự trong hội thoại này, theo đúng thứ tự task trong plan.
-   - `subagent`: mỗi lần gọi agent `tdq-implementer` giao ĐÚNG 1 task (không giao cả
+   - `main` (nhãn user thấy: "làm trực tiếp (inline implement)"): tự làm tuần tự trong
+     hội thoại này, theo đúng thứ tự task trong plan.
+   - `subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)"): mỗi lần gọi agent `tdq-implementer` giao ĐÚNG 1 task (không giao cả
      phase/nhóm task), mỗi agent một git worktree (tên branch theo conventions §7). Lý do:
      nền tảng Agent không có báo cáo giữa chừng — subagent chỉ trả đúng một báo cáo cuối
      cùng, nên đơn vị giao việc phải nhỏ bằng đúng nhịp tick cần thấy. Nhận báo cáo xong

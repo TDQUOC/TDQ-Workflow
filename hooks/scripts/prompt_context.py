@@ -19,9 +19,9 @@ from _common import (approve_hint, payload_cwd, plan_mode, read_payload,
 # Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
 # (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
 from tdq_state import (effective_lane, effective_mode,  # noqa: E402
-                       effective_phase, load, phase_key, prompt_context_last,
-                       prompt_context_save, render_next, sha256_file,
-                       turn_log_append, turn_log_clear, turn_snapshot)
+                       effective_phase, load, normalize_mode, phase_key,
+                       prompt_context_last, prompt_context_save, render_next,
+                       sha256_file, turn_log_append, turn_log_clear, turn_snapshot)
 
 MAX_LINES = 3
 MAX_CHARS = 240
@@ -39,7 +39,15 @@ APPROVE_FAST = re.compile(
 PRONOUN = re.compile(r"(cái\s*này|cai\s*nay|cái\s*đó|cai\s*do|cái\s*trên|cai\s*tren)", re.IGNORECASE)
 # Câu hỏi thì không phải câu duyệt, dù có đủ hai thành phần.
 QUESTION = re.compile(r"(\?|\bchưa\b|\bchua\b|\bkhông\b\s*$|\bko\b\s*$)", re.IGNORECASE)
-MODE = re.compile(r"\b(main|subagent)\b", re.IGNORECASE)
+# Nhận cả định danh máy cũ (main|subagent) lẫn nhãn user đọc thấy ở cổng mode
+# (inline | sub-agent | sub agent), kèm đuôi "implement" tuỳ ý. Biên từ \b giữ nguyên
+# để "mainline", "inlineable" không bị tính là câu chọn mode.
+MODE = re.compile(r"\b(main|inline|subagent|sub[\s-]?agent)\b(\s+implement)?",
+                  re.IGNORECASE)
+# Khuôn cổng mode mời user nhắn "A"/"B", nên chữ cái cũng là câu trả lời hợp lệ. Chỉ
+# nhận khi nó ĐỨNG RIÊNG (có thể kèm "chọn"/"nhé"): "Ai làm cũng được" phải trượt.
+LETTER = re.compile(r"^\s*(?:chọn\s+|chon\s+)?([ab])\b\s*(?:nhé|nhe|đi|di|!|\.)?\s*$",
+                    re.IGNORECASE)
 
 
 def looks_like_approval(prompt, target):
@@ -48,9 +56,9 @@ def looks_like_approval(prompt, target):
     if QUESTION.search(prompt):
         return False
     if target == "mode":
-        # Câu trả lời ở cổng mode thường trống trơn: "main", "subagent", "chọn main".
+        # Câu trả lời ở cổng mode thường trống trơn: "main", "subagent", "chọn A".
         # Không đòi từ đồng ý — user đã duyệt plan rồi, đây chỉ là chọn cách làm.
-        return bool(MODE.search(prompt))
+        return bool(MODE.search(prompt) or LETTER.match(prompt))
     if target == "quick" and APPROVE_FAST.search(prompt):
         return True
     if not AGREE.search(prompt):
@@ -62,6 +70,26 @@ def looks_like_approval(prompt, target):
     # Không nêu đối tượng thì chỉ chấp nhận đại từ trỏ rõ ("duyệt cái này").
     # "ok", "ok tôi hiểu rồi" KHÔNG phải câu duyệt — mơ hồ thì để agent HỎI.
     return bool(PRONOUN.search(prompt))
+
+
+def mode_from_answer(prompt, planned):
+    """Câu trả lời ở cổng mode -> định danh máy, hoặc None nếu không đọc ra được.
+
+    Tên mode gõ thẳng thắng chữ cái. Chữ cái đọc theo đúng khuôn: A là mode plan ĐỀ
+    XUẤT (luôn nằm ở option A), B là mode còn lại.
+    """
+    found = MODE.search(prompt or "")
+    if found:
+        said = normalize_mode(found.group(0))
+        if said:
+            return said
+    letter = LETTER.match(prompt or "")
+    if not letter:
+        return None
+    suggested = planned or "main"
+    if letter.group(1).lower() == "a":
+        return suggested
+    return "subagent" if suggested == "main" else "main"
 
 
 def main():
@@ -120,8 +148,9 @@ def main():
             if pending == "mode":
                 # Cổng mode: câu trả lời CHÍNH LÀ mode. Chọn khác mode plan đề xuất
                 # không phải xung đột — đề xuất chỉ là đề xuất, user mới là người chốt.
-                found = MODE.search(prompt)
-                said = found.group(1).lower() if found else (planned or "main")
+                # Quy về định danh máy: user gõ "inline" thì lệnh chạy vẫn phải là
+                # --mode main, nếu không state lưu một chuỗi khác VALID_MODES.
+                said = mode_from_answer(prompt, planned) or planned or "main"
                 lines.append("[TDQ:APPROVE] User vừa chọn mode → chạy NGAY: "
                              f"python3 scripts/tdq_state.py approve plan --mode {said} "
                              f"--by \"{prompt[:60]}\"")
@@ -130,7 +159,7 @@ def main():
                 return
             if pending == "plan":
                 found = MODE.search(prompt)
-                said = found.group(1).lower() if found else None
+                said = normalize_mode(found.group(0)) if found else None
                 if said and planned and said != planned:
                     # Mode trong câu duyệt lệch mode ĐÃ CHỐT trong plan — không
                     # được ghi nhận theo suy diễn, bắt agent HỎI user xác nhận.

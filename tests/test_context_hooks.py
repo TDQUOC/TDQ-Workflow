@@ -164,14 +164,15 @@ class TestPromptContext(unittest.TestCase):
 
     def test_mode_hint_uses_mode_from_plan_file(self):
         # 2026-08-02: plan đề xuất subagent → gợi ý phải nêu subagent, không hardcode main
+        # 2026-08-14: mode ĐỀ XUẤT in ra bằng NHÃN người đọc, không phải định danh máy.
         self._pending_mode("# plan\nMode thực thi: subagent — task tự chứa\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('plan đề xuất subagent', out)
+        self.assertIn('plan đề xuất giao trợ lý (sub-agent implement)', out)
 
     def test_mode_hint_without_mode_line_falls_back(self):
         self._pending_mode("# plan\nchưa ghi mode\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('plan đề xuất main', out)
+        self.assertIn('plan đề xuất làm trực tiếp (inline implement)', out)
 
     def test_mode_answer_is_recognised(self):
         # Trả lời cổng mode thường trống trơn: chỉ mỗi chữ "main".
@@ -179,6 +180,19 @@ class TestPromptContext(unittest.TestCase):
         rc, out, _ = self.ctx("main")
         self.assertIn("approve plan --mode main", out)
         self.assertNotIn("⚠️", out)
+
+    def test_mode_answer_in_new_name_maps_to_machine_value(self):
+        # User gõ nhãn mới; lệnh gợi ý vẫn phải là định danh máy hợp lệ.
+        self._pending_mode("# plan\nMode thực thi: subagent — lý do\n")
+        rc, out, _ = self.ctx("inline")
+        self.assertIn("approve plan --mode main", out)
+
+    def test_plan_approval_with_new_name_is_not_a_conflict(self):
+        # "sub-agent" và "subagent" là CÙNG một mode — không được báo lệch.
+        self._pending_plan("# plan\nMode thực thi: subagent — lý do\n")
+        rc, out, _ = self.ctx("duyệt plan, chạy sub-agent")
+        self.assertNotIn("⚠️", out)
+        self.assertIn("--mode subagent", out)
 
     def test_plan_approval_mode_mismatch_warns(self):
         # user duyệt "mode main" trong khi plan chốt subagent → phải có cảnh báo lệch

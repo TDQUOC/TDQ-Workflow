@@ -66,8 +66,11 @@ class GateMergeTest(unittest.TestCase):
         text = read(SKILLS, "tdq-plan", "SKILL.md")
         self.assertIn("approve plan --by", text, "tdq-plan: thiếu lệnh duyệt không mode")
         self.assertIn("phase `mode`", text, "tdq-plan: không nói tới cổng mode")
-        self.assertRegex(text, r"main —.*tuần tự", "tdq-plan: thiếu nghĩa của main")
-        self.assertRegex(text, r"subagent —.*song song", "tdq-plan: thiếu nghĩa của subagent")
+        # Nghĩa phải gắn với NHÃN người đọc thấy ở cổng mode, không phải định danh máy.
+        self.assertRegex(text, r"inline implement[\s\S]{0,80}?tuần tự",
+                         "tdq-plan: thiếu nghĩa của inline implement")
+        self.assertRegex(text, r"sub-agent implement[\s\S]{0,80}?song song",
+                         "tdq-plan: thiếu nghĩa của sub-agent implement")
 
     def test_mode_gate_does_not_cost_an_extra_turn_before_build(self):
         """Chốt mode xong là build ngay — không được đẩy sang lượt nhắn khác."""

@@ -79,7 +79,8 @@ def main():
     elif lane == "quick" and not state.get("quick_approved"):
         pending = "quick"
     if pending:
-        mode = " --mode <main|subagent>" if pending == "plan" else ""
+        # Nêu cả tên máy lẫn nhãn user đọc thấy ở cổng mode — cả hai đều được nhận.
+        mode = " --mode <main|inline | subagent|sub-agent>" if pending == "plan" else ""
         # Lệnh đặt trước lời khuyên: trần 200 ký tự, phần cắt phải là phần ít cần nhất.
         remind(cwd, payload, "TDQ:APPROVE", [
             f"Đang sửa file ngoài docs/ mà {pending} chưa được ghi nhận duyệt.",

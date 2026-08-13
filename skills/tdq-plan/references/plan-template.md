@@ -94,9 +94,12 @@ Luật:
 ## Dòng `Mode thực thi`
 
 - Phải nằm **một dòng riêng**, không ghép vào dòng header khác — công cụ đọc dòng này.
-- Đây chỉ là **đề xuất** của Claude. User duyệt plan xong, phase `mode` mới hỏi chọn
-  `main` hay `subagent`; mode ghi vào state là mode user NÓI, không tự lấy đề xuất làm
-  chốt. Câu duyệt đã kèm sẵn mode thì bỏ qua cổng đó, vào thẳng implement.
+- Giá trị ghi ở đây là **định danh máy**: `main` hoặc `subagent`. Nhãn user đọc thấy ở
+  cổng `mode` là "làm trực tiếp (inline implement)" và "giao trợ lý (sub-agent
+  implement)" — xem [mode-gate.md](mode-gate.md).
+- Đây chỉ là **đề xuất** của Claude. User duyệt plan xong, phase `mode` mới hỏi chọn;
+  mode ghi vào state là mode user NÓI, không tự lấy đề xuất làm chốt. Câu duyệt đã kèm
+  sẵn mode thì bỏ qua cổng đó, vào thẳng implement.
 
 ## Kiểm trước khi trình
 

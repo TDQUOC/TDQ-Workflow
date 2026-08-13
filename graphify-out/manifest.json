@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1786642088.9839025,
+    "mtime": 1786642305.3959253,
     "ast_hash": "55eda9bb2f40235e7606bc74adac5651",
-    "semantic_hash": ""
+    "semantic_hash": "55eda9bb2f40235e7606bc74adac5651"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -25,32 +25,32 @@
     "semantic_hash": "a68fef52e088220c357531b3295ce88a"
   },
   "hooks/scripts/_common.py": {
-    "mtime": 1786641475.4938402,
-    "ast_hash": "d9596f0ee95e0747be26c47a5352c4d0",
-    "semantic_hash": "d9596f0ee95e0747be26c47a5352c4d0"
+    "mtime": 1786643517.7932408,
+    "ast_hash": "66d896d165641ac7b34de023cc1bf9f5",
+    "semantic_hash": "66d896d165641ac7b34de023cc1bf9f5"
   },
   "hooks/scripts/bash_gate.py": {
-    "mtime": 1786641755.3100333,
+    "mtime": 1786642305.3985403,
     "ast_hash": "43a3ca749da7501897d00c29a1e30e33",
     "semantic_hash": "43a3ca749da7501897d00c29a1e30e33"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1786641706.9450483,
-    "ast_hash": "86486b1e362bdc7de991ca360cf6905b",
-    "semantic_hash": "86486b1e362bdc7de991ca360cf6905b"
+    "mtime": 1786643587.3808286,
+    "ast_hash": "59eddc2dc1bc38a362f4198662e36996",
+    "semantic_hash": "59eddc2dc1bc38a362f4198662e36996"
   },
   "hooks/scripts/prompt_context.py": {
-    "mtime": 1786641647.2219644,
-    "ast_hash": "a3ece6a33f0341b0365958a6ddfd3877",
-    "semantic_hash": "a3ece6a33f0341b0365958a6ddfd3877"
+    "mtime": 1786644234.2477314,
+    "ast_hash": "dc59fbd0a01f8bf31416cdd70c5c1bd3",
+    "semantic_hash": "dc59fbd0a01f8bf31416cdd70c5c1bd3"
   },
   "hooks/scripts/session_start.py": {
-    "mtime": 1786641722.2681317,
+    "mtime": 1786642305.3990319,
     "ast_hash": "f3dd04671dd3fc59a91aedba5fb2d35e",
     "semantic_hash": "f3dd04671dd3fc59a91aedba5fb2d35e"
   },
   "hooks/scripts/stop_gate.py": {
-    "mtime": 1786641689.3124213,
+    "mtime": 1786642305.3992338,
     "ast_hash": "651d488a2b5d41f8d273be8c66329e96",
     "semantic_hash": "651d488a2b5d41f8d273be8c66329e96"
   },
@@ -115,9 +115,9 @@
     "semantic_hash": "dc3ad578c8e3163c08e14e5f7a06eba8"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1786641867.3110185,
-    "ast_hash": "0e8e690e832fb03f7a11a82dad813fd3",
-    "semantic_hash": "0e8e690e832fb03f7a11a82dad813fd3"
+    "mtime": 1786643454.0960202,
+    "ast_hash": "383ae9417c17e744b5f4f176ea42276f",
+    "semantic_hash": "383ae9417c17e744b5f4f176ea42276f"
   },
   "scripts/token_audit.py": {
     "mtime": 1785868509.0994682,
@@ -125,7 +125,7 @@
     "semantic_hash": "df07270f1a098f7d6eeed3e3c1a6eb95"
   },
   "CHANGELOG.md": {
-    "mtime": 1786642088.9843912,
+    "mtime": 1786642305.396251,
     "ast_hash": "8b117ca0f6efed7b969b2b0c0e4d0229",
     "semantic_hash": ""
   },
