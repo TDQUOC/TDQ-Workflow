@@ -10,8 +10,8 @@ Dùng một project thử tách biệt (không phải repo chính) để không 
 
 1. Mở request quick mẫu: nhắn `"sửa 1 dòng comment trong file test.py"` (task nhỏ,
    không cần research/interview thật để giữ kịch bản lặp lại được).
-2. Trả lời câu hỏi lane: chọn `quick`.
-3. Duyệt mini-plan: nhắn `"duyệt quick"`.
+2. Trả lời câu hỏi chế độ: chọn chế độ nhanh (express).
+3. Duyệt mini-plan: nhắn `"duyệt nhanh"`.
 4. Để Claude implement 1 task giả (sửa đúng 1 dòng comment), chạy validate.
 5. Trả lời "không, đủ rồi" cho câu hỏi bổ sung cuối interview (nếu có).
 6. Kết thúc session ngay sau khi báo cáo kết quả — không hỏi thêm gì khác.

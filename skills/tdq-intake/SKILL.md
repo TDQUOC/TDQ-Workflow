@@ -36,15 +36,13 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    của bạn: mục tiêu, phạm vi đoán, chỗ chưa rõ), `## Hiểu & kiến thức`, `## Hỏi đáp`.
    Ở bước này chỉ viết mục đầu; hai mục sau để trống, Phần B điền.
 
-2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Rồi đúng 1
-   dòng tự nhận định cỡ, dạng
-   `Cỡ: <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>`
-   — cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ, thứ luôn chạy thì không liệt kê. Rồi 1 dòng đề
-   xuất lane kèm lý do cho CHÍNH việc này. Rồi câu hỏi "Bạn muốn chạy lane nào?" với
-   option mỗi dòng theo khuôn [references/interview.md](references/interview.md), phương
-   án đề xuất luôn đứng ở A:
-   `- A (đề xuất): quick — <lý do>` xuống dòng `- B: full — <lý do>`.
-   Cách chọn: [references/lane-decision.md](references/lane-decision.md).
+2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Tự nhận định
+   cỡ/nhu cầu (`Cỡ:/Cần:`) là bước NỘI BỘ — dùng để chọn phương án đề xuất, KHÔNG in dòng
+   đó ra chat. Rồi câu hỏi "Bạn muốn chạy pipeline nào?" với option mỗi dòng theo khuôn
+   [references/interview.md](references/interview.md), phương án đề xuất luôn đứng ở A:
+   `- A (đề xuất): chế độ nhanh (express) — <lý do>` xuống dòng `- B: chế độ chuyên sâu (deep) — <lý do>`,
+   theo đúng khuôn đầy đủ (gồm khối giải thích nghĩa 2 pipeline) ở
+   [references/lane-decision.md](references/lane-decision.md).
    **DỪNG chờ user trả lời.** Không tự chọn lane.
 
 3. **Init state** ngay khi user chốt lane:
@@ -59,11 +57,11 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    - `quick` → làm Phần C, không qua Phần B.
 
 Xong khi: `state.json` có `active_request` và `lane` đúng thứ user chọn.
-Bước kế tiếp: Phần B (full) hoặc Phần C (quick).
+Bước kế tiếp: Phần B (chế độ chuyên sâu (deep)) hoặc Phần C (chế độ nhanh (express)).
 
-## Phần B — Phân tích (phase `analyze`, chỉ lane full)
+## Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep))
 
-Chỉ nạp khi lane `full` — quick không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
+Chỉ nạp khi chế độ chuyên sâu (deep) — chế độ nhanh không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
 mục tiêu rời phase này với ZERO chỗ đoán. Làm đủ 6 bước (kiểm kê năng lực, đọc code,
 research, interview, chốt kiến thức, kiểm cổng) theo
 [references/analyze-full.md](references/analyze-full.md).
@@ -74,9 +72,9 @@ Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set p
 rồi sang [tdq-spec](../tdq-spec/SKILL.md) — cùng turn nếu interview đã xong, còn phải
 hỏi user thì trình câu hỏi và dừng.
 
-## Phần C — Lane quick
+## Phần C — Chế độ nhanh (express)
 
-Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-lane.md](references/quick-lane.md).
+Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-lane.md](references/quick-lane.md).
 
 1. **Phân tích.** Đọc đúng phần code liên quan. Có ẩn số bên ngoài (thư viện, API,
    phiên bản) → web search qua `tavily-primary` TRƯỚC khi viết gì; thuần nội bộ thì bỏ
@@ -87,11 +85,14 @@ Quick = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-
    Checkbox có 3 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement
    (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
 3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
-   và đúng 1 dòng `Năng lực: <các skill sẽ DÙNG, hoặc "không có">` (phân vân → DÙNG).
-4. In đúng dòng: `➤ Duyệt: nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC") · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
+   và đúng 1 dòng `Ước tính sẽ dùng skill: <các skill sẽ DÙNG, hoặc "không có">` (phân
+   vân → DÙNG).
+4. In đúng dòng: `➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
 5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — im lặng về QC thì QC vẫn BẬT).
 6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
-7. Implement end-to-end trong 1 turn, rồi chạy **QC** (mặc định BẬT): mỗi dòng DoD một
+7. Implement end-to-end trong 1 turn. Mỗi task: đánh `[~]` TRƯỚC khi sửa code (hook
+   `edit_gate` CHẶN nếu plan không có `[~]`; `tests/**` được miễn trừ), red→green, đổi
+   `[x]` NGAY khi test xanh — cấm gom tick cuối turn. Rồi chạy **QC** (mặc định BẬT): mỗi dòng DoD một
    phép kiểm, ghi bằng chứng vào mục `## QC` của plan. `quick_qc_skipped = true` → mục
    `## QC` chỉ có 1 dòng `BỎ theo yêu cầu user: "<nguyên văn>"`.
 8. **Vòng fix khi QC FAIL hoặc thấy bug**: thêm task vào plan dưới

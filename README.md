@@ -10,7 +10,7 @@ Từ 0.3.0, bộ instruction được viết lại theo hướng **bước đán
 Intake ──► Analysis ──► Spec ──► Plan ──► Implement ──► QC ──► Report
  (lane?)   (interview)  [DUYỆT]  [DUYỆT]  (1 turn,      (loop   (≤50 dòng)
                                            tick ngay)    plan)
-Lane quick: Analysis ngắn ──► Plan ≤10 dòng trong chat ──► [DUYỆT] ──► ghi log ──► Implement
+Chế độ nhanh (express): Analysis ngắn ──► Plan ≤10 dòng trong chat ──► [DUYỆT] ──► ghi log ──► Implement
 ```
 
 ## Cách hook điều khiển agent
@@ -33,7 +33,7 @@ Từ 0.3.1, hook còn **nhìn thẳng vào đĩa**: đầu turn chụp `sha256` 
 
 ## Duyệt bằng chat thường
 
-Nhắn "duyệt spec", "ok plan mode main", "duyệt quick" — không cần cú pháp lệnh. Agent ghi nhận vào state kèm **nguyên văn** câu bạn nói (`spec_approved_by` / `plan_approved_by` / `quick_approved_by`) để còn đối chiếu. Câu mơ hồ ("ok", "spec ok chưa?") KHÔNG được tính là duyệt — agent phải hỏi lại. Duyệt xong lưu sha256 của spec; spec đổi sau khi duyệt sẽ bị cảnh báo.
+Nhắn "duyệt spec", "ok plan mode main", "duyệt nhanh" — không cần cú pháp lệnh. Agent ghi nhận vào state kèm **nguyên văn** câu bạn nói (`spec_approved_by` / `plan_approved_by` / `quick_approved_by`) để còn đối chiếu. Câu mơ hồ ("ok", "spec ok chưa?") KHÔNG được tính là duyệt — agent phải hỏi lại. Duyệt xong lưu sha256 của spec; spec đổi sau khi duyệt sẽ bị cảnh báo.
 
 ## Cài đặt (chỉ trong repo/project)
 
@@ -47,11 +47,11 @@ Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/use
 
 ## Dùng hằng ngày
 
-1. Nêu yêu cầu → agent dùng `tdq-intake`: tóm tắt, đề xuất lane **quick** (việc nhỏ, rõ) hay **full** (feature/phức tạp) và hỏi bạn chọn.
-2. Lane full: interview đến khi hết mơ hồ → spec (VI) → bạn nhắn "duyệt spec" → plan (VI, task nào cũng có test).
+1. Nêu yêu cầu → agent dùng `tdq-intake`: tóm tắt, đề xuất **chế độ nhanh (express)** (việc nhỏ, rõ) hay **chế độ chuyên sâu (deep)** (feature/phức tạp) và hỏi bạn chọn.
+2. Chế độ chuyên sâu (deep): interview đến khi hết mơ hồ → spec (VI) → bạn nhắn "duyệt spec" → plan (VI, task nào cũng có test).
    Agent đề xuất mode thực thi, bạn nhắn "duyệt plan mode main" (hoặc `subagent`).
    Rồi implement end-to-end 1 turn, tick `[x]` ngay khi từng task pass → QC loop → report.
-3. Lane quick: plan ≤ 10 dòng trong chat → bạn nhắn "duyệt quick" → agent ghi log rồi mới implement.
+3. Chế độ nhanh (express): plan ≤ 10 dòng trong chat → bạn nhắn "duyệt nhanh" → agent ghi log rồi mới implement.
 4. Xem trạng thái bất kỳ lúc nào: skill `tdq-status`, hoặc `python3 scripts/tdq_state.py next`.
 
 ## Cấu trúc

@@ -1,4 +1,4 @@
-"""edit_gate.py (0.3.0) — quan sát vào sổ turn + nhắc; không bao giờ chặn."""
+"""edit_gate.py (0.4.0) — quan sát vào sổ turn + nhắc; chỉ TDQ:TICK chặn."""
 import datetime
 import os
 import tempfile
@@ -125,7 +125,8 @@ class TestEditGate(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual(out, "")
 
-    def test_never_denies_in_any_scenario(self):
+    def test_never_denies_outside_tick(self):
+        """Ngoài TDQ:TICK, mọi ca khác chỉ nhắc — không ca nào deny."""
         scenarios = [
             dict(active_request="r1", lane="full", phase="spec"),
             dict(active_request="r1", lane="quick"),
@@ -141,3 +142,114 @@ class TestEditGate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TickBlockTest(unittest.TestCase):
+    """TDQ:TICK — chặn sửa mã nguồn khi implement mà plan chưa có `[~]`. Miễn trừ tests/**."""
+
+    PLAN_REL = os.path.join("docs", "tdq", "plan", "r1.md")
+    CHUA_LAM = "- [ ] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    DANG_LAM = "- [~] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    HAI_DANG_LAM = "- [~] **T1** a — Test: x\n- [~] **T2** b — Test: x\n"
+    XONG_HET = "- [x] **T1** a — Test: x\n- [x] **T2** b — Test: x\n"
+    DANG_LAM_KHAC = "- [x] **T1** a — Test: x\n- [~] **T2** b — Test: x\n"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+        write_file(self.cwd, today_log_rel(), "# log\n")
+
+    def dung_state(self, phase="implement", plan=None):
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase,
+                    spec_file="docs/tdq/spec/r1.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file=self.PLAN_REL, plan_approved=True,
+                    plan_sha256="def", plan_approved_at=now_iso(),
+                    implement_mode="main")
+        if plan is not None:
+            write_file(self.cwd, self.PLAN_REL, plan)
+
+    def sua(self, rel="src/a.py"):
+        payload = load_fixture("edit_src.json", cwd=self.cwd, session_id="s-tick")
+        payload["tool_input"] = {"file_path": os.path.join(self.cwd, rel)}
+        return run_hook("edit_gate.py", payload)
+
+    def test_implement_chua_tick_thi_chan(self):
+        self.dung_state(plan=self.CHUA_LAM)
+        rc, out, _ = self.sua()
+        self.assertEqual(rc, 0)
+        self.assertIn("deny", out)
+        self.assertIn("TDQ:TICK", out)
+
+    def test_chan_lap_lai_khong_dedupe(self):
+        """Chặn phải lặp: dedupe sẽ cho lần sửa thứ hai lọt trong khi plan vẫn chưa tick."""
+        self.dung_state(plan=self.CHUA_LAM)
+        self.assertIn("deny", self.sua()[1])
+        self.assertIn("deny", self.sua("src/b.py")[1])
+
+    def test_sua_file_test_thi_khong_chan(self):
+        """red→green: viết test đỏ trước khi có gì để tick."""
+        self.dung_state(plan=self.CHUA_LAM)
+        out = self.sua(os.path.join("tests", "test_moi.py"))[1]
+        self.assertNotIn("TDQ:TICK", out)
+        self.assertNotIn("deny", out)
+
+    def test_da_co_dau_nga_thi_im(self):
+        self.dung_state(plan=self.DANG_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_plan_xong_het_thi_im(self):
+        self.dung_state(plan=self.XONG_HET)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_khong_co_file_plan_thi_im(self):
+        self.dung_state(plan=None)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_phase_ngoai_implement_qc_thi_im(self):
+        self.dung_state(phase="report", plan=self.CHUA_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_phase_qc_van_chan(self):
+        self.dung_state(phase="qc", plan=self.CHUA_LAM)
+        out = self.sua()[1]
+        self.assertIn("TDQ:TICK", out)
+        self.assertIn("deny", out)
+
+    def test_sua_trong_docs_thi_im(self):
+        self.dung_state(plan=self.CHUA_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua("docs/ghi-chu.md")[1])
+
+    def test_hai_task_cung_doing_thi_chan(self):
+        self.dung_state(plan=self.HAI_DANG_LAM)
+        out = self.sua()[1]
+        self.assertIn("deny", out)
+        self.assertIn("TDQ:TICK", out)
+
+    def test_dung_mot_task_doing_thi_khong_chan_vi_ca_nay(self):
+        self.dung_state(plan=self.DANG_LAM)
+        self.assertNotIn("TDQ:TICK", self.sua()[1])
+
+    def test_streak_3_lan_sua_lien_tiep_khong_tick_thi_chan_lan_4(self):
+        self.dung_state(plan=self.DANG_LAM)
+        for i in range(3):
+            out = self.sua(f"src/streak{i}.py")[1]
+            self.assertNotIn("deny", out)
+        out4 = self.sua("src/streak3.py")[1]
+        self.assertIn("deny", out4)
+        self.assertIn("TDQ:TICK", out4)
+
+    def test_streak_reset_khi_plan_doi_sau_tick(self):
+        self.dung_state(plan=self.DANG_LAM)
+        for i in range(3):
+            self.sua(f"src/reset{i}.py")
+        write_file(self.cwd, self.PLAN_REL, self.DANG_LAM_KHAC)
+        out = self.sua("src/reset3.py")[1]
+        self.assertNotIn("deny", out)
+
+    def test_streak_khong_tinh_sua_trong_tests(self):
+        self.dung_state(plan=self.DANG_LAM)
+        for i in range(5):
+            out = self.sua(os.path.join("tests", f"test_streak{i}.py"))[1]
+            self.assertNotIn("deny", out)

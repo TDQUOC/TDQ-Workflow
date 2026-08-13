@@ -17,10 +17,18 @@ Mọi output cho user viết **tiếng Việt**.
 3. Thấy dòng `[TDQ:<MÃ>]` do hook chèn vào ngữ cảnh → **làm việc trong đó TRƯỚC**
    mọi việc khác, xong in `✓ [TDQ:<MÃ>] <đã làm gì>`. Danh sách mã:
    [references/reminder-codes.md](references/reminder-codes.md).
-4. Cuối turn có đổi repo: chạy ĐÚNG MỘT lệnh
+4. Cuối turn có đổi repo: **bắt buộc** chạy ĐÚNG MỘT lệnh
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file vừa sửa> --log "<tóm tắt>" --phase <phase mới>`
-   — lint đúng file → append working log → set phase → graphify. **Cấm Read lại** file
-   working log rồi tự append: lệnh này đã append sẵn.
+   — lint đúng file → append working log → set phase → graphify. **Cấm Edit/Read rồi tự
+   append tay** vào working log, kể cả khi bị `stop_gate.py` chặn (block nghĩa là "chưa gọi
+   lệnh", không phải "gọi lệnh khác để né"). Lệnh này phải là **hành động cuối** của turn,
+   chạy TRƯỚC đoạn chat kết thúc turn (tóm tắt/câu hỏi/`➤ Duyệt:`/báo lỗi vượt trần); sau
+   khi in đoạn chat đó **không gọi thêm tool nào nữa**, để nó luôn là "final response" thật.
+5. **Turn còn chạy tiếp sau khi đã in khối user-facing** (bị hook chặn, tự phát hiện sót
+   việc, lỗi tool) → message cuối phải in **LẠI NGUYÊN VĂN 100%** khối đó. Gồm tóm tắt,
+   câu hỏi, ĐỦ option, dòng `➤ Duyệt:`. Đặt NGAY SAU dòng `✓ [TDQ:<MÃ>]`. Lý do: focus mode
+   chỉ hiện message cuối. Tóm tắt lại hay trỏ ngược ("xem câu hỏi ở trên") đều làm user
+   mất sạch câu hỏi và option. Cấm rút gọn, cấm trỏ ngược.
 
 Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
 Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).
@@ -71,6 +79,9 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
 - Turn nào đổi repo → `tdq_finish.py --log` append vào CUỐI `docs/workinglog/<hôm nay>.md`:
   giờ, file đổi, lý do, test đã chạy. Cách hook nhận biết: [reminder-codes.md](references/reminder-codes.md).
 - Turn chỉ đọc/phân tích → không ghi. Turn chỉ sửa working log → không ghi thêm entry.
+- **Ảnh user gửi kèm.** Turn có ảnh đính kèm VÀ phải ghi working log → copy ảnh vào
+  `docs/workinglog/assets/` rồi chèn link vào chuỗi `--log`, TRƯỚC khi gọi `tdq_finish.py`.
+  Đường dẫn, cách đánh số, luật đầy đủ: [references/worklog-images.md](references/worklog-images.md).
 
 ## 7. Git
 

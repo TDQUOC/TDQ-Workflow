@@ -29,10 +29,29 @@ APPROVE_TARGETS = ("spec", "plan", "quick")
 VALID_MODES = ("main", "subagent")
 BY_MAX = 200
 VALID_LANES = {"quick", "full", None}
+
+# Nhãn NGƯỜI ĐỌC. Định danh máy đọc vẫn là "quick"/"full" — tách hai lớp để đổi chữ
+# cho dễ hiểu mà không phải migrate state đang tồn tại hay sửa test khoá cứng.
+LANE_LABELS = {
+    "quick": "chế độ nhanh (express)",
+    "full": "chế độ chuyên sâu (deep)",
+}
+
+# Bí danh NGƯỜI GÕ -> định danh máy. Từ cũ (quick/full) giữ nguyên hiệu lực nên
+# người dùng cũ không gãy tay. Khoá viết thường, đã bỏ dấu-space ở normalize_lane.
+LANE_ALIASES = {
+    "quick": "quick", "nhanh": "quick", "express": "quick",
+    "full": "full", "deep": "full",
+    "chuyen-sau": "full", "chuyensau": "full", "chuyên sâu": "full",
+    "chuyen sau": "full", "chuyên-sâu": "full",
+}
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "implement", "qc", "report"}
 
-USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | init <slug> [quick|full] | "
-         "set k=v ... | approve <spec|plan|quick> [--mode main|subagent] "
+USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | "
+         "init <slug> [nhanh|express|quick — chế độ nhanh | chuyen-sau|deep|full — "
+         "chế độ chuyên sâu] | "
+         "set k=v ... | approve <spec|plan|quick (bí danh: nhanh|express)> "
+         "[--mode main|subagent] "
          "[--no-qc (chỉ quick, phải kèm --by)] [--by \"<câu user>\"] | "
          "reset | phases-doc")
 
@@ -375,8 +394,57 @@ def repo_status_paths(cwd, limit=400, status=None):
     return paths
 
 
+# ------------------------------------------- trạng thái tick của plan (hàng rào)
+#
+# Status line và hàng rào ép tick đều cần biết plan "đang ở đâu". Băm cả FILE
+# (không đếm riêng số `[x]`) vì `[ ]` → `[~]` cũng là cập nhật hợp lệ mà số `[x]`
+# không đổi — đếm `[x]` sẽ bỏ lọt đúng cái mốc "bắt đầu task".
+
+_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x)\]\s*\*\*[A-Za-z]+[0-9.]*\*\*")
+
+
+def plan_tick_state(cwd):
+    """Trạng thái checkbox của plan hiện hành. Không bao giờ ném lỗi."""
+    trong = {"path": None, "exists": False, "sha": "",
+             "has_doing": False, "all_done": False, "total": 0, "doing_count": 0}
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    rel = state.get("plan_file")
+    if not rel:
+        req = state.get("active_request")
+        if not req:
+            return trong
+        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+        sha = sha256_file(path)
+    except OSError:
+        return trong
+
+    tong = xong = dang = 0
+    for line in noi_dung.splitlines():
+        m = _TASK_LINE.match(line)
+        if not m:
+            continue
+        tong += 1
+        if m.group(1) == "x":
+            xong += 1
+        elif m.group(1) == "~":
+            dang += 1
+
+    trong.update(exists=True, sha=sha, total=tong, doing_count=dang,
+                 has_doing=dang > 0, all_done=tong > 0 and xong == tong)
+    return trong
+
+
 def turn_snapshot(cwd):
-    """Trạng thái đầu turn: log hôm nay + vân tay repo + danh sách path đang bẩn."""
+    """Trạng thái đầu turn: log hôm nay + vân tay repo + danh sách path đang bẩn
+    + vân tay plan (để biết checkbox có động trong turn hay không)."""
     log_rel = today_log_rel()
     try:
         log_sha = sha256_file(os.path.join(cwd, log_rel))
@@ -385,10 +453,27 @@ def turn_snapshot(cwd):
     status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
     return {"log_rel": log_rel, "log_sha": log_sha,
             "repo_sha": repo_status_digest(cwd, status=status),
-            "repo_paths": repo_status_paths(cwd, status=status)}
+            "repo_paths": repo_status_paths(cwd, status=status),
+            "plan_sha": plan_tick_state(cwd)["sha"]}
 
 
 # --------------------------------------------------------- enum an toàn (S4)
+
+def normalize_lane(raw):
+    """Bí danh -> định danh máy ("quick"/"full"). Không nhận ra -> None (người gọi
+    quyết định báo lỗi hay bỏ qua). Đây là CỬA VÀO duy nhất cho lane do user gõ."""
+    if not isinstance(raw, str):
+        return None
+    return LANE_ALIASES.get(raw.strip().lower())
+
+
+def lane_label(lane):
+    """Nhãn để IN RA cho người đọc. Là lớp hiển thị nên KHÔNG kiểm tra hợp lệ:
+    lane lạ trả lại nguyên chuỗi, None trả chuỗi rỗng — in ra xấu còn hơn nổ."""
+    if not lane:
+        return ""
+    return LANE_LABELS.get(lane, lane)
+
 
 def effective_lane(state, warn=True):
     lane = (state or {}).get("lane")
@@ -426,10 +511,11 @@ PHASE_TABLE = {
     "no_state": {
         "entry": "Chưa có request TDQ nào đang mở",
         "action": "Hỏi user chọn lane rồi mở request mới",
-        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <quick|full>",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <nhanh|chuyen-sau>",
         "checklist": [
             "Tóm tắt yêu cầu của user thành 3–5 dòng",
-            "Hỏi user chọn lane: quick (việc nhỏ, rõ) hay full (Analysis→Spec→Plan→Implement→QC→Report)",
+            "Hỏi user chọn chế độ: chế độ nhanh (express — việc nhỏ, rõ) hay "
+            "chế độ chuyên sâu (deep — Analysis→Spec→Plan→Implement→QC→Report)",
             "Chạy lệnh init ở trên với slug theo công thức YYYY-MM-DD-<kebab ≤5 từ, không dấu>",
             "Ghi yêu cầu nguyên văn vào docs/tdq/brief/<slug>.md mục '## Nguyên văn'",
         ],
@@ -437,7 +523,7 @@ PHASE_TABLE = {
         "forbidden": "Sửa code khi chưa mở request",
     },
     "analyze": {
-        "entry": "Đã có request, lane full",
+        "entry": "Đã có request, chế độ chuyên sâu (deep)",
         "action": "Đọc code, research, interview user đến khi hết chỗ mơ hồ",
         "cmd": "python3 scripts/tdq_state.py set phase=spec",
         "checklist": [
@@ -523,7 +609,7 @@ PHASE_TABLE = {
     "idle": {
         "entry": "Đã xong hoặc chưa mở request",
         "action": "Chờ yêu cầu mới từ user",
-        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <quick|full>",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <nhanh|chuyen-sau>",
         "checklist": [
             "Có yêu cầu mới → tóm tắt, hỏi lane, chạy lệnh init ở trên",
         ],
@@ -550,7 +636,9 @@ PHASE_TABLE = {
             "User duyệt → chạy lệnh approve ở trên (--no-qc CHỈ khi user nói rõ bỏ QC, "
             "im lặng về QC = CÓ QC)",
             "Append summary plan vào docs/workinglog/<hôm nay>.md TRƯỚC khi sửa code",
-            "Implement từng task red→green, tick [x] ngay khi task pass",
+            "Implement từng task: đánh [~] cho task đang làm TRƯỚC khi sửa code "
+            "(hook edit_gate CHẶN nếu plan không có [~]), red→green, "
+            "đổi sang [x] NGAY khi test của task đó xanh — không gom tick cuối turn",
             "QC: mỗi dòng DoD một phép kiểm bằng lệnh, cộng hạng mục chạy test từng task. "
             "Bằng chứng ghi vào mục ## QC của plan. "
             "quick_qc_skipped = true thì mục ## QC chỉ có 1 dòng "
@@ -558,11 +646,11 @@ PHASE_TABLE = {
             "QC FAIL hoặc thấy bug → fix. "
             "Thêm task vào mục ## QC vòng N — fix của plan, fix red→green. "
             "Chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm hỏng. "
-            "Trần 3 vòng, vượt trần thì DỪNG, báo user, đề xuất chuyển lane full",
-            "Đóng việc: chạy `python3 scripts/tdq_state.py set phase=idle` — terminal của lane quick",
+            "Trần 3 vòng, vượt trần thì DỪNG, báo user, đề xuất chuyển chế độ chuyên sâu (deep)",
+            "Đóng việc: chạy `python3 scripts/tdq_state.py set phase=idle` — terminal của chế độ nhanh (express)",
         ],
         "done_when": "quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle",
-        "forbidden": "Implement trước khi ghi working log; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user",
+        "forbidden": "Implement trước khi ghi working log; gom tick vào cuối turn hoặc để nhiều task cùng mang [~]; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user",
     },
 }
 
@@ -863,8 +951,12 @@ def _parse_approve_args(rest):
     if not rest:
         _fail("Thiếu đối tượng duyệt (spec|plan|quick).")
     target, mode, by, no_qc = rest[0], None, None, False
+    # Bí danh của lane quick: user gõ "approve nhanh" cũng ghi vào khoá quick_*.
+    if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
+        target = "quick"
     if target not in APPROVE_TARGETS:
-        _fail(f"Đối tượng duyệt không hợp lệ: {target} (spec|plan|quick)")
+        _fail(f"Đối tượng duyệt không hợp lệ: {target} "
+              "(spec|plan|quick, bí danh của quick: nhanh|express)")
     i = 1
     while i < len(rest):
         flag = rest[i]
@@ -1058,9 +1150,11 @@ def cli(argv):
             _warn(f"Ghi đè request '{old_slug}' (lane {old.get('lane')}, "
                   f"phase {old.get('phase')}) — mọi trạng thái duyệt của request đó bị xoá.")
         if len(argv) > 2:
-            if argv[2] not in ("quick", "full"):
-                _fail("Lane không hợp lệ (quick|full).")
-            state["lane"] = argv[2]
+            lane = normalize_lane(argv[2])
+            if lane is None:
+                _fail("Lane không hợp lệ. Nhận: nhanh|express|quick "
+                      "(chế độ nhanh) · chuyen-sau|deep|full (chế độ chuyên sâu).")
+            state["lane"] = lane
         save(cwd, state)
         _echo_state("init", state, want_json)
         return

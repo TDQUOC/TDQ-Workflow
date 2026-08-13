@@ -19,13 +19,13 @@ Trạng thái plan: CHỜ DUYỆT
 6. Không commit/push cho đến khi user yêu cầu.
 
 ## P1 — <tên phase>
-- [ ] **T1.1** (n3) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
-- [ ] **T1.2** (n5) <việc cụ thể> — Test: <...>
+- [ ] **T1.1** (n3 e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
+- [ ] **T1.2** (n5 e12m) <việc cụ thể> — Test: <...>
 
 **Xong P1 khi**: <điều kiện đo được>
 
 ## P2 — <tên phase>
-- [ ] **T2.1** (n8) <...> — Test: <...>
+- [ ] **T2.1** (n8 e20m) <...> — Test: <...>
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
@@ -55,9 +55,9 @@ task log, giữ task test, và ghi đúng một dòng `Log: BỎ — <lý do m�
 Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh kiểm.
 ```
 
-## Điểm độ phức tạp `(nN)`
+## Điểm độ phức tạp `(nN)` và ước tính phút `(eNm)`
 
-Đặt **ngay sau mã task**, trước phần việc: `- [ ] **T2.1** (n5) việc — Test: ...`.
+Đặt **ngay sau mã task**, trước phần việc: `- [ ] **T2.1** (n5 e12m) việc — Test: ...`.
 Đây là độ phức tạp **tương đối** 1–10, không phải số phút. Status line đọc điểm này để
 ước tính ETA theo trọng số thay vì coi mọi task nặng như nhau.
 
@@ -76,6 +76,20 @@ Luật:
 - Phân vân giữa hai mốc → lấy mốc thấp hơn; hoàn toàn không biết → 5.
 - Điểm là **tuỳ chọn**: thiếu `(nN)` thì bộ đọc coi như 5, plan cũ vẫn chạy y nguyên.
 - Điểm KHÔNG đổi luật tick `[ ] [~] [x]` và không phải cam kết thời gian.
+
+### Ước tính phút `eNm`
+
+`eNm` = số **phút** Claude ước tính mình cần để làm xong task ấy, viết liền trong cùng
+khối ngoặc, sau điểm, cách nhau đúng một khoảng trắng: `(n5 e12m)`. Đơn vị luôn là phút,
+số nguyên 1–999, không viết `1h` hay `0.5m`.
+
+Luật:
+- Chấm **cùng lúc** với `(nN)`, ngay khi viết task; không chấm bù sau.
+- Ước tính thời gian LÀM, không tính thời gian chờ user duyệt hay interview.
+- Phân vân → chấm số mình thật sự tin, đừng đệm thêm cho an toàn: status line có sẵn
+  hệ số hiệu chỉnh học từ lịch sử để bù cái lệch hệ thống, đệm tay làm nó học sai.
+- `eNm` là **tuỳ chọn**: thiếu thì status line quy đổi từ điểm như plan cũ. Plan mới
+  thì chấm đủ mọi task, vì ETA lấy đúng con số này làm tín hiệu chính.
 
 ## Dòng `Mode thực thi`
 

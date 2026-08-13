@@ -1,15 +1,20 @@
-# Hướng dẫn tự cài tdq-workflow ở user-level (thủ công)
+# Hướng dẫn tự cài tdq-workflow ở user-level VÀ project-level (thủ công)
 
-Plugin này mặc định chỉ chạy trong repo (`claude --plugin-dir …`) và **không bao giờ tự cài user-level**. Nếu bạn muốn mọi project đều có, tự làm các bước sau.
+Plugin này mặc định chỉ chạy trong repo (`claude --plugin-dir …`) và **không bao giờ tự cài user-level**. Nếu bạn muốn mọi project đều có (user-level) hoặc chỉ đúng một project (project-level), tự làm các bước sau.
 
 ## 1. Cài qua local marketplace
 
 ```bash
 # thêm repo này làm marketplace (chạy 1 lần)
 claude plugin marketplace add /Users/truongdinhquoc/Documents/TDQWorkflow
-# cài plugin ở scope user
+# cài plugin ở scope user (mọi project đều có)
 claude plugin install tdq-workflow --scope user
 ```
+Chỉ muốn bật ở đúng 1 project (project-level, không lan sang project khác): bỏ cờ
+`--scope user` — `claude plugin install tdq-workflow` cài theo scope mặc định của
+project hiện tại. Marketplace vẫn add đúng 1 lần như trên; add lại ở mỗi project đích
+nếu marketplace source (repo này) chưa được biết tới ở đó.
+
 Kiểm tra: mở session mới bất kỳ → skill `tdq-status` phải trả "Chưa có request TDQ nào đang chạy…".
 
 Lưu ý: repo chưa có file `.claude-plugin/marketplace.json` thì lệnh add sẽ báo thiếu — tạo tối thiểu:
@@ -68,9 +73,11 @@ Lưu ý tương thích:
 - Nếu `~/.claude/CLAUDE.md` của bạn đã có các mục trùng (Tavily/research, phong cách ngắn gọn, git naming, working log) thì giữ 1 bản, tránh dán lặp; riêng đường log phải là `docs/workinglog/` (xem mục 2).
 - Giới hạn summary trong chat: spec ≤ 50 dòng, plan ≤ 10 dòng.
 
-## 4. Dùng ngoài Claude Code
+## 4. Dùng ngoài Claude Code (Codex, Antigravity, …)
 
-Harness khác (Codex, Antigravity…) không có hook: copy `portable/AGENTS.md`, `portable/workflow/` và `scripts/tdq_state.py` sang project đích — xem `portable/README.md`.
+Harness khác không có hook/skill system: copy `portable/AGENTS.md`, `portable/workflow/`
+(gồm 4 file phase + `phases.md` tự sinh + 4 file `references/`) và `scripts/tdq_state.py`
+sang project đích. Lệnh copy mẫu và bước kiểm sau khi copy: `portable/README.md`.
 
 ## 5. Gỡ
 

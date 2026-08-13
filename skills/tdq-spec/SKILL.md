@@ -1,6 +1,6 @@
 ---
 name: tdq-spec
-description: Viết spec tiếng Việt cho request TDQ, đăng ký vào state, trình rồi DỪNG chờ user duyệt; duyệt xong viết plan cùng turn. Dùng khi lane full xong analyze.
+description: Viết spec tiếng Việt cho request TDQ, đăng ký vào state, trình rồi DỪNG chờ duyệt; duyệt xong viết plan cùng turn. Dùng khi chế độ chuyên sâu xong analyze.
 ---
 
 # TDQ Spec
@@ -30,9 +30,15 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Vi�
    ```
 
 4. **Trình bày & DỪNG.** Trong chat: tóm tắt spec ≤ 50 dòng (mục tiêu, đầu ra, DoD,
-   rủi ro chính). Ngay dưới tóm tắt in đúng dòng:
+   rủi ro chính). Tự kiểm trước khi in dòng Duyệt: tin nhắn phải CHỨA tóm tắt thật —
+   không được thay bằng câu thông báo suông kiểu "đã ghi log, đang chờ duyệt"; thiếu
+   thì viết bổ sung ngay. Đầu ra của spec là chính một khuôn/mẫu văn bản (vd khuôn câu
+   hỏi A/B) → cần trích nguyên khối đó làm ví dụ thì gắn nhãn rõ ngay trước đoạn trích.
+   Nhãn dạng "(khuôn mẫu — áp dụng cho các lần hỏi sau, không phải câu hỏi của turn
+   này)". Mục đích: đọc lại transcript không nhầm là đang hỏi lại. Ngay dưới tóm tắt in
+   đúng dòng:
    ```
-   ➤ Duyệt: nhắn "duyệt spec" · Góp ý: nhắn trực tiếp
+   ➤ Duyệt: nhắn "duyệt spec" (duyệt xong viết plan ngay) · Góp ý: nhắn trực tiếp
    ```
    Rồi **kết thúc turn**. Không viết plan, không sửa code. User góp ý thay vì duyệt →
    sửa spec, tăng số bản, trình lại, chờ tiếp.

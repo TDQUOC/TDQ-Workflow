@@ -26,7 +26,7 @@ APPROVE_HINTS = {
     # hardcode main từng khiến user gõ sai mode so với plan đã chốt.
     "plan": 'nhắn "duyệt plan mode {mode}" (đổi được: main|subagent)',
     # Biến thể bỏ QC phải hiện ở gợi ý, nếu không user không biết đường opt-out.
-    "quick": 'nhắn "duyệt quick" (bỏ QC: "duyệt quick không QC")',
+    "quick": 'nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy)',
 }
 
 _PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent)", re.IGNORECASE)
@@ -117,6 +117,27 @@ def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
             "permissionDecision": "allow",
             "permissionDecisionReason": "TDQ: nhắc nhở, không chặn.",
             "additionalContext": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
+        }
+    }, ensure_ascii=False))
+    sys.exit(0)
+
+
+def block(cwd, payload, code, lines, event="PreToolUse"):
+    """CHẶN tool kèm MÃ, rồi thoát.
+
+    Khác `remind()` ở hai điểm, cả hai đều có chủ đích:
+    - `permissionDecision: "deny"` — tool không chạy.
+    - KHÔNG dedupe theo mã. Điều kiện chặn tự tan khi Claude làm đúng việc được
+      yêu cầu (vd. đánh `[~]` vào plan); dedupe sẽ cho lần sửa thứ hai lọt qua
+      trong khi việc kia vẫn chưa làm, tức là hàng rào chỉ có tác dụng một lần.
+    Ghi sổ turn dưới kind `block` để không lẫn với dedupe của `remind`.
+    """
+    tdq_state.turn_log_append(cwd, "block", session=session_id(payload), code=code)
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": event,
+            "permissionDecision": "deny",
+            "permissionDecisionReason": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
         }
     }, ensure_ascii=False))
     sys.exit(0)

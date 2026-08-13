@@ -24,6 +24,12 @@ MAX_CHARS = 240
 AGREE = re.compile(r"\b(duyệt|duyet|ok|oke|okay|đồng\s*ý|dong\s*y|chốt|chot|approve|"
                    r"làm\s*đi|lam\s*di|tiến\s*hành|tien\s*hanh)\b", re.IGNORECASE)
 OBJECT = re.compile(r"\b(spec|plan|quick|mini-?plan)\b", re.IGNORECASE)
+# Bí danh tiếng Việt/Anh của lane quick. `nhanh` là tính từ rất thường gặp ("làm
+# nhanh giúp tôi") nên CHỈ tính là câu duyệt khi đứng NGAY SAU từ đồng ý — không
+# dùng chung đường với OBJECT ở trên, vì OBJECT chỉ cần có mặt đâu đó trong câu.
+APPROVE_FAST = re.compile(
+    r"\b(duyệt|duyet|chốt|chot|approve)\s+(chế\s*độ\s*nhanh|che\s*do\s*nhanh|nhanh|express)\b",
+    re.IGNORECASE)
 PRONOUN = re.compile(r"(cái\s*này|cai\s*nay|cái\s*đó|cai\s*do|cái\s*trên|cai\s*tren)", re.IGNORECASE)
 # Câu hỏi thì không phải câu duyệt, dù có đủ hai thành phần.
 QUESTION = re.compile(r"(\?|\bchưa\b|\bchua\b|\bkhông\b\s*$|\bko\b\s*$)", re.IGNORECASE)
@@ -35,6 +41,8 @@ def looks_like_approval(prompt, target):
         return False
     if QUESTION.search(prompt):
         return False
+    if target == "quick" and APPROVE_FAST.search(prompt):
+        return True
     if not AGREE.search(prompt):
         return False
     match = OBJECT.search(prompt)
