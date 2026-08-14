@@ -11,7 +11,7 @@ Plan đã được duyệt. Còn một câu cuối: bạn muốn tôi chạy the
 - A (đề xuất): làm trực tiếp (inline implement) — tôi làm tuần tự ngay trong cuộc trò chuyện này, bạn theo dõi được từng bước.
 - B: giao trợ lý (sub-agent implement) — tôi chia việc cho nhiều trợ lý chạy song song, mỗi trợ lý một worktree, bạn chỉ thấy báo cáo từng chặng.
 
-Vì sao đề xuất A cho plan này: <1–3 dòng, theo luật dưới>
+**Vì sao đề xuất A cho plan này:** <1–3 dòng, theo luật dưới>
 
 ---
 

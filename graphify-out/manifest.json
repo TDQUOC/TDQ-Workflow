@@ -25,7 +25,7 @@
     "semantic_hash": "a68fef52e088220c357531b3295ce88a"
   },
   "hooks/scripts/_common.py": {
-    "mtime": 1786643517.7932408,
+    "mtime": 1786698737.5140688,
     "ast_hash": "66d896d165641ac7b34de023cc1bf9f5",
     "semantic_hash": "66d896d165641ac7b34de023cc1bf9f5"
   },
@@ -133,5 +133,10 @@
     "mtime": 1786623936.8762033,
     "ast_hash": "cfdfbdc62aeb4a45c4375309241f13f6",
     "semantic_hash": ""
+  },
+  "scripts/scan_block_symbols.py": {
+    "mtime": 1786698418.6984968,
+    "ast_hash": "523108b0a3b3ae4543f850dd62c51bfb",
+    "semantic_hash": "523108b0a3b3ae4543f850dd62c51bfb"
   }
 }

@@ -21,10 +21,10 @@ trước khi viết report; cấm làm theo trí nhớ.
     ```
     Tôi đã làm xong yêu cầu của bạn.
 
-    Đã làm: <gạch đầu dòng ngắn>.
-    Kết quả kiểm: <số hạng mục QC, kết quả test>.
+    **Đã làm:** <gạch đầu dòng ngắn>.
+    **Kết quả kiểm:** <số hạng mục QC, kết quả test>.
 
-    Xem đầy đủ tại: docs/tdq/reports/<slug>.md
+    Xem đầy đủ tại: `docs/tdq/reports/<slug>.md`
 
     ---
 
@@ -51,12 +51,12 @@ số liệu lấy nguyên từ output thật.
 ```markdown
 # REPORT — <tên việc> (`<slug>` · lane <lane> · mode <mode> · <n> task tick đủ)
 
-Đã làm: <P1 …> · <P2 …> · <P3 …>
-Kết quả: <chỉ số> <trước> → <sau> · <chỉ số> <trước> → <sau>
-Kiểm: <lệnh test + kết quả> · <lint> · QC <PASS x/y mục DoD, defect đã sửa>
-Đầu ra: <đường dẫn file chính> · Backup: <đường dẫn, nếu có sửa ngoài repo>
-Giới hạn: <cái gì chưa làm, vì sao, ảnh hưởng gì>
-Git: <chưa commit / commit nào đã tạo>
+**Đã làm:** <P1 …> · <P2 …> · <P3 …>
+**Kết quả:** <chỉ số> <trước> → <sau> · <chỉ số> <trước> → <sau>
+**Kiểm:** <lệnh test + kết quả> · <lint> · QC <PASS x/y mục DoD, defect đã sửa>
+**Đầu ra:** <đường dẫn file chính> · Backup: <đường dẫn, nếu có sửa ngoài repo>
+**Giới hạn:** <cái gì chưa làm, vì sao, ảnh hưởng gì>
+**Git:** <chưa commit / commit nào đã tạo>
 ```
 
 ## Kiểm trước khi trình

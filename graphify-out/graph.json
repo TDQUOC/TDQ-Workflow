@@ -9,10 +9,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "changelog",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "changelog.md"
+      "norm_label": "changelog.md",
+      "id": "changelog"
     },
     {
       "label": "Changelog",
@@ -20,10 +20,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "changelog_changelog",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "changelog"
+      "norm_label": "changelog",
+      "id": "changelog_changelog"
     },
     {
       "label": "0.16.0 \u2014 2026-08-14",
@@ -31,10 +31,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "changelog_0_16_0_2026_08_14",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.16.0 \u2014 2026-08-14"
+      "norm_label": "0.16.0 \u2014 2026-08-14",
+      "id": "changelog_0_16_0_2026_08_14"
     },
     {
       "label": "0.15.1 \u2014 2026-08-14",
@@ -42,10 +42,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L32",
       "_origin": "ast",
-      "id": "changelog_0_15_1_2026_08_14",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.15.1 \u2014 2026-08-14"
+      "norm_label": "0.15.1 \u2014 2026-08-14",
+      "id": "changelog_0_15_1_2026_08_14"
     },
     {
       "label": "0.15.0 \u2014 2026-08-14",
@@ -53,10 +53,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L50",
       "_origin": "ast",
-      "id": "changelog_0_15_0_2026_08_14",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.15.0 \u2014 2026-08-14"
+      "norm_label": "0.15.0 \u2014 2026-08-14",
+      "id": "changelog_0_15_0_2026_08_14"
     },
     {
       "label": "0.14.0 \u2014 2026-08-14",
@@ -64,10 +64,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L74",
       "_origin": "ast",
-      "id": "changelog_0_14_0_2026_08_14",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.14.0 \u2014 2026-08-14"
+      "norm_label": "0.14.0 \u2014 2026-08-14",
+      "id": "changelog_0_14_0_2026_08_14"
     },
     {
       "label": "0.13.0 \u2014 2026-08-14",
@@ -75,10 +75,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L95",
       "_origin": "ast",
-      "id": "changelog_0_13_0_2026_08_14",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.13.0 \u2014 2026-08-14"
+      "norm_label": "0.13.0 \u2014 2026-08-14",
+      "id": "changelog_0_13_0_2026_08_14"
     },
     {
       "label": "0.12.0 \u2014 2026-08-13",
@@ -86,10 +86,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L115",
       "_origin": "ast",
-      "id": "changelog_0_12_0_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.12.0 \u2014 2026-08-13"
+      "norm_label": "0.12.0 \u2014 2026-08-13",
+      "id": "changelog_0_12_0_2026_08_13"
     },
     {
       "label": "0.11.13 \u2014 2026-08-13",
@@ -97,10 +97,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L134",
       "_origin": "ast",
-      "id": "changelog_0_11_13_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.13 \u2014 2026-08-13"
+      "norm_label": "0.11.13 \u2014 2026-08-13",
+      "id": "changelog_0_11_13_2026_08_13"
     },
     {
       "label": "0.11.12 \u2014 2026-08-13",
@@ -108,10 +108,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L150",
       "_origin": "ast",
-      "id": "changelog_0_11_12_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.12 \u2014 2026-08-13"
+      "norm_label": "0.11.12 \u2014 2026-08-13",
+      "id": "changelog_0_11_12_2026_08_13"
     },
     {
       "label": "0.11.11 \u2014 2026-08-13",
@@ -119,10 +119,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L159",
       "_origin": "ast",
-      "id": "changelog_0_11_11_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.11 \u2014 2026-08-13"
+      "norm_label": "0.11.11 \u2014 2026-08-13",
+      "id": "changelog_0_11_11_2026_08_13"
     },
     {
       "label": "0.11.10 \u2014 2026-08-13",
@@ -130,10 +130,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L168",
       "_origin": "ast",
-      "id": "changelog_0_11_10_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.10 \u2014 2026-08-13"
+      "norm_label": "0.11.10 \u2014 2026-08-13",
+      "id": "changelog_0_11_10_2026_08_13"
     },
     {
       "label": "0.11.9 \u2014 2026-08-13",
@@ -141,10 +141,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L176",
       "_origin": "ast",
-      "id": "changelog_0_11_9_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.9 \u2014 2026-08-13"
+      "norm_label": "0.11.9 \u2014 2026-08-13",
+      "id": "changelog_0_11_9_2026_08_13"
     },
     {
       "label": "0.11.8 \u2014 2026-08-13",
@@ -152,10 +152,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L186",
       "_origin": "ast",
-      "id": "changelog_0_11_8_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.8 \u2014 2026-08-13"
+      "norm_label": "0.11.8 \u2014 2026-08-13",
+      "id": "changelog_0_11_8_2026_08_13"
     },
     {
       "label": "0.11.7 \u2014 2026-08-13",
@@ -163,10 +163,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L194",
       "_origin": "ast",
-      "id": "changelog_0_11_7_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.7 \u2014 2026-08-13"
+      "norm_label": "0.11.7 \u2014 2026-08-13",
+      "id": "changelog_0_11_7_2026_08_13"
     },
     {
       "label": "0.11.6 \u2014 2026-08-13",
@@ -174,10 +174,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L202",
       "_origin": "ast",
-      "id": "changelog_0_11_6_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.6 \u2014 2026-08-13"
+      "norm_label": "0.11.6 \u2014 2026-08-13",
+      "id": "changelog_0_11_6_2026_08_13"
     },
     {
       "label": "0.11.5 \u2014 2026-08-13",
@@ -185,10 +185,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L211",
       "_origin": "ast",
-      "id": "changelog_0_11_5_2026_08_13",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.5 \u2014 2026-08-13"
+      "norm_label": "0.11.5 \u2014 2026-08-13",
+      "id": "changelog_0_11_5_2026_08_13"
     },
     {
       "label": "0.11.4 \u2014 2026-08-12",
@@ -196,10 +196,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L221",
       "_origin": "ast",
-      "id": "changelog_0_11_4_2026_08_12",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.4 \u2014 2026-08-12"
+      "norm_label": "0.11.4 \u2014 2026-08-12",
+      "id": "changelog_0_11_4_2026_08_12"
     },
     {
       "label": "0.11.3 \u2014 2026-08-12",
@@ -207,10 +207,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L239",
       "_origin": "ast",
-      "id": "changelog_0_11_3_2026_08_12",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.3 \u2014 2026-08-12"
+      "norm_label": "0.11.3 \u2014 2026-08-12",
+      "id": "changelog_0_11_3_2026_08_12"
     },
     {
       "label": "0.11.2 \u2014 2026-08-09",
@@ -218,10 +218,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L259",
       "_origin": "ast",
-      "id": "changelog_0_11_2_2026_08_09",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.2 \u2014 2026-08-09"
+      "norm_label": "0.11.2 \u2014 2026-08-09",
+      "id": "changelog_0_11_2_2026_08_09"
     },
     {
       "label": "0.11.1 \u2014 2026-08-09",
@@ -229,10 +229,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L276",
       "_origin": "ast",
-      "id": "changelog_0_11_1_2026_08_09",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.1 \u2014 2026-08-09"
+      "norm_label": "0.11.1 \u2014 2026-08-09",
+      "id": "changelog_0_11_1_2026_08_09"
     },
     {
       "label": "0.11.0 \u2014 2026-08-09",
@@ -240,10 +240,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L294",
       "_origin": "ast",
-      "id": "changelog_0_11_0_2026_08_09",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.11.0 \u2014 2026-08-09"
+      "norm_label": "0.11.0 \u2014 2026-08-09",
+      "id": "changelog_0_11_0_2026_08_09"
     },
     {
       "label": "Ph\u00e1 v\u1ee1 t\u01b0\u01a1ng th\u00edch",
@@ -251,10 +251,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L317",
       "_origin": "ast",
-      "id": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "pha vo tuong thich"
+      "norm_label": "pha vo tuong thich",
+      "id": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch"
     },
     {
       "label": "0.10.0 \u2014 2026-08-09",
@@ -262,21 +262,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L324",
       "_origin": "ast",
-      "id": "changelog_0_10_0_2026_08_09",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.10.0 \u2014 2026-08-09"
-    },
-    {
-      "label": "Ph\u00e1 v\u1ee1 t\u01b0\u01a1ng th\u00edch",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L349",
-      "_origin": "ast",
-      "id": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch_349",
-      "community": 3,
-      "community_name": "Changelog",
-      "norm_label": "pha vo tuong thich"
+      "norm_label": "0.10.0 \u2014 2026-08-09",
+      "id": "changelog_0_10_0_2026_08_09"
     },
     {
       "label": "0.9.0 \u2014 2026-08-07",
@@ -284,10 +273,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L359",
       "_origin": "ast",
-      "id": "changelog_0_9_0_2026_08_07",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.9.0 \u2014 2026-08-07"
+      "norm_label": "0.9.0 \u2014 2026-08-07",
+      "id": "changelog_0_9_0_2026_08_07"
     },
     {
       "label": "0.8.0 \u2014 2026-08-05",
@@ -295,10 +284,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L380",
       "_origin": "ast",
-      "id": "changelog_0_8_0_2026_08_05",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.8.0 \u2014 2026-08-05"
+      "norm_label": "0.8.0 \u2014 2026-08-05",
+      "id": "changelog_0_8_0_2026_08_05"
     },
     {
       "label": "0.7.0 \u2014 2026-08-05",
@@ -306,10 +295,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L392",
       "_origin": "ast",
-      "id": "changelog_0_7_0_2026_08_05",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.7.0 \u2014 2026-08-05"
+      "norm_label": "0.7.0 \u2014 2026-08-05",
+      "id": "changelog_0_7_0_2026_08_05"
     },
     {
       "label": "0.6.2 \u2014 2026-08-02",
@@ -317,10 +306,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L412",
       "_origin": "ast",
-      "id": "changelog_0_6_2_2026_08_02",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.6.2 \u2014 2026-08-02"
+      "norm_label": "0.6.2 \u2014 2026-08-02",
+      "id": "changelog_0_6_2_2026_08_02"
     },
     {
       "label": "0.6.1 \u2014 2026-07-31",
@@ -328,10 +317,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L418",
       "_origin": "ast",
-      "id": "changelog_0_6_1_2026_07_31",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.6.1 \u2014 2026-07-31"
+      "norm_label": "0.6.1 \u2014 2026-07-31",
+      "id": "changelog_0_6_1_2026_07_31"
     },
     {
       "label": "Fix",
@@ -339,10 +328,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L423",
       "_origin": "ast",
-      "id": "changelog_fix",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "fix"
+      "norm_label": "fix",
+      "id": "changelog_fix"
     },
     {
       "label": "\u0110\u1ed5i",
@@ -350,10 +339,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L438",
       "_origin": "ast",
-      "id": "changelog_\u0111\u1ed5i",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "\u0111oi"
+      "norm_label": "\u0111oi",
+      "id": "changelog_\u0111\u1ed5i"
     },
     {
       "label": "0.6.0 \u2014 2026-07-31",
@@ -361,10 +350,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L446",
       "_origin": "ast",
-      "id": "changelog_0_6_0_2026_07_31",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.6.0 \u2014 2026-07-31"
+      "norm_label": "0.6.0 \u2014 2026-07-31",
+      "id": "changelog_0_6_0_2026_07_31"
     },
     {
       "label": "Th\u00eam",
@@ -372,21 +361,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L452",
       "_origin": "ast",
-      "id": "changelog_th\u00eam",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "them"
-    },
-    {
-      "label": "\u0110\u1ed5i",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L459",
-      "_origin": "ast",
-      "id": "changelog_\u0111\u1ed5i_459",
-      "community": 3,
-      "community_name": "Changelog",
-      "norm_label": "\u0111oi"
+      "norm_label": "them",
+      "id": "changelog_th\u00eam"
     },
     {
       "label": "0.5.0 \u2014 2026-07-31",
@@ -394,21 +372,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L467",
       "_origin": "ast",
-      "id": "changelog_0_5_0_2026_07_31",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.5.0 \u2014 2026-07-31"
-    },
-    {
-      "label": "Th\u00eam",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L473",
-      "_origin": "ast",
-      "id": "changelog_th\u00eam_473",
-      "community": 3,
-      "community_name": "Changelog",
-      "norm_label": "them"
+      "norm_label": "0.5.0 \u2014 2026-07-31",
+      "id": "changelog_0_5_0_2026_07_31"
     },
     {
       "label": "0.3.3 tr\u1edf v\u1ec1 tr\u01b0\u1edbc",
@@ -416,10 +383,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L487",
       "_origin": "ast",
-      "id": "changelog_0_3_3_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc",
       "community": 3,
       "community_name": "Changelog",
-      "norm_label": "0.3.3 tro ve truoc"
+      "norm_label": "0.3.3 tro ve truoc",
+      "id": "changelog_0_3_3_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc"
     },
     {
       "label": "skill_inventory.py",
@@ -427,10 +394,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "scripts_skill_inventory",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "skill_inventory.py"
+      "norm_label": "skill_inventory.py",
+      "id": "scripts_skill_inventory"
     },
     {
       "label": "_load_json()",
@@ -438,10 +405,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L66",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_load_json",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_load_json()"
+      "norm_label": "_load_json()",
+      "id": "scripts_skill_inventory_load_json"
     },
     {
       "label": "_clean()",
@@ -449,10 +416,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L80",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_clean",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_clean()"
+      "norm_label": "_clean()",
+      "id": "scripts_skill_inventory_clean"
     },
     {
       "label": "_frontmatter()",
@@ -460,10 +427,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L85",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_frontmatter",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_frontmatter()"
+      "norm_label": "_frontmatter()",
+      "id": "scripts_skill_inventory_frontmatter"
     },
     {
       "label": "_condense()",
@@ -471,10 +438,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L121",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_condense",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_condense()"
+      "norm_label": "_condense()",
+      "id": "scripts_skill_inventory_condense"
     },
     {
       "label": "_scan_skill_dir()",
@@ -482,10 +449,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L137",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_scan_skill_dir",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_scan_skill_dir()"
+      "norm_label": "_scan_skill_dir()",
+      "id": "scripts_skill_inventory_scan_skill_dir"
     },
     {
       "label": "_enabled_plugins()",
@@ -493,10 +460,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L147",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_enabled_plugins",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_enabled_plugins()"
+      "norm_label": "_enabled_plugins()",
+      "id": "scripts_skill_inventory_enabled_plugins"
     },
     {
       "label": "_plugin_skill_dirs()",
@@ -504,10 +471,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L162",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_plugin_skill_dirs",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_plugin_skill_dirs()"
+      "norm_label": "_plugin_skill_dirs()",
+      "id": "scripts_skill_inventory_plugin_skill_dirs"
     },
     {
       "label": "inventory()",
@@ -515,10 +482,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L186",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_inventory",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "inventory()"
+      "norm_label": "inventory()",
+      "id": "scripts_skill_inventory_inventory"
     },
     {
       "label": "_filter()",
@@ -526,10 +493,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L207",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_filter",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "_filter()"
+      "norm_label": "_filter()",
+      "id": "scripts_skill_inventory_filter"
     },
     {
       "label": "main()",
@@ -537,10 +504,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L220",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_main",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "main()"
+      "norm_label": "main()",
+      "id": "scripts_skill_inventory_main"
     },
     {
       "label": "dict t\u1eeb file JSON, ho\u1eb7c None. H\u1ecfng/thi\u1ebfu (khi missing_ok=False) \u2192 c\u1ea3nh b\u00e1o.",
@@ -548,10 +515,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L67",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_67",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "dict tu file json, hoac none. hong/thieu (khi missing_ok=false) \u2192 canh bao."
+      "norm_label": "dict tu file json, hoac none. hong/thieu (khi missing_ok=false) \u2192 canh bao.",
+      "id": "scripts_skill_inventory_rationale_67"
     },
     {
       "label": "B\u1ecf k\u00fd t\u1ef1 \u0111i\u1ec1u khi\u1ec3n \u2014 SKILL.md x\u1ea5u kh\u00f4ng \u0111\u01b0\u1ee3c \u0111i\u1ec1u khi\u1ec3n terminal c\u1ee7a user (Q9).",
@@ -559,10 +526,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L81",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_81",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "bo ky tu \u0111ieu khien \u2014 skill.md xau khong \u0111uoc \u0111ieu khien terminal cua user (q9)."
+      "norm_label": "bo ky tu \u0111ieu khien \u2014 skill.md xau khong \u0111uoc \u0111ieu khien terminal cua user (q9).",
+      "id": "scripts_skill_inventory_rationale_81"
     },
     {
       "label": "(name, description) t\u1eeb frontmatter; l\u1ed7i \u0111\u1ecdc \u2192 (None, None) + c\u1ea3nh b\u00e1o.      Desc",
@@ -570,10 +537,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L86",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_86",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "(name, description) tu frontmatter; loi \u0111oc \u2192 (none, none) + canh bao.      desc"
+      "norm_label": "(name, description) tu frontmatter; loi \u0111oc \u2192 (none, none) + canh bao.      desc",
+      "id": "scripts_skill_inventory_rationale_86"
     },
     {
       "label": "R\u00fat g\u1ecdn description cho m\u1ed9t \u00f4 b\u1ea3ng: gi\u1eef \u0111\u1ea7u, gh\u00e9p th\u00eam kh\u00fac trigger n\u1ebfu n\u00f3 \u1edf xa.",
@@ -581,10 +548,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L122",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_122",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "rut gon description cho mot o bang: giu \u0111au, ghep them khuc trigger neu no o xa."
+      "norm_label": "rut gon description cho mot o bang: giu \u0111au, ghep them khuc trigger neu no o xa.",
+      "id": "scripts_skill_inventory_rationale_122"
     },
     {
       "label": "[(name, desc)] t\u1eeb m\u1ed9t th\u01b0 m\u1ee5c ch\u1ee9a <skill>/SKILL.md.",
@@ -592,10 +559,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L138",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_138",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "[(name, desc)] tu mot thu muc chua <skill>/skill.md."
+      "norm_label": "[(name, desc)] tu mot thu muc chua <skill>/skill.md.",
+      "id": "scripts_skill_inventory_rationale_138"
     },
     {
       "label": "enabledPlugins g\u1ed9p 3 t\u1ea7ng \u2014 t\u1ea7ng sau \u0111\u00e8 t\u1ea7ng tr\u01b0\u1edbc (gi\u1ed1ng Claude Code).",
@@ -603,10 +570,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L148",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_148",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "enabledplugins gop 3 tang \u2014 tang sau \u0111e tang truoc (giong claude code)."
+      "norm_label": "enabledplugins gop 3 tang \u2014 tang sau \u0111e tang truoc (giong claude code).",
+      "id": "scripts_skill_inventory_rationale_148"
     },
     {
       "label": "[(t\u00ean plugin, th\u01b0 m\u1ee5c skills)] c\u1ee7a c\u00e1c plugin \u0111ang b\u1eadt cho project n\u00e0y.",
@@ -614,10 +581,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L163",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_163",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "[(ten plugin, thu muc skills)] cua cac plugin \u0111ang bat cho project nay."
+      "norm_label": "[(ten plugin, thu muc skills)] cua cac plugin \u0111ang bat cho project nay.",
+      "id": "scripts_skill_inventory_rationale_163"
     },
     {
       "label": "[(name, desc \u0111\u00e3 r\u00fat g\u1ecdn, ngu\u1ed3n)] \u2014 tr\u00f9ng t\u00ean th\u00ec ngu\u1ed3n qu\u00e9t tr\u01b0\u1edbc th\u1eafng.",
@@ -625,10 +592,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L187",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_187",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "[(name, desc \u0111a rut gon, nguon)] \u2014 trung ten thi nguon quet truoc thang."
+      "norm_label": "[(name, desc \u0111a rut gon, nguon)] \u2014 trung ten thi nguon quet truoc thang.",
+      "id": "scripts_skill_inventory_rationale_187"
     },
     {
       "label": "(d\u00f2ng gi\u1eef l\u1ea1i, s\u1ed1 d\u00f2ng b\u1ecb \u1ea9n) \u2014 kh\u1edbp t\u1eeb kho\u00e1 HO\u1eb6C thu\u1ed9c ngu\u1ed3n c\u1ea5m \u1ea9n.",
@@ -636,10 +603,10 @@
       "source_file": "scripts/skill_inventory.py",
       "source_location": "L208",
       "_origin": "ast",
-      "id": "scripts_skill_inventory_rationale_208",
       "community": 10,
       "community_name": "skill_inventory.py",
-      "norm_label": "(dong giu lai, so dong bi an) \u2014 khop tu khoa hoac thuoc nguon cam an."
+      "norm_label": "(dong giu lai, so dong bi an) \u2014 khop tu khoa hoac thuoc nguon cam an.",
+      "id": "scripts_skill_inventory_rationale_208"
     },
     {
       "label": "tdq_state.py",
@@ -691,7 +658,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L116",
       "_origin": "ast",
-      "community": 6,
+      "community": 19,
       "community_name": "tdq_state.py",
       "norm_label": "turn_log_path()",
       "id": "scripts_tdq_state_turn_log_path"
@@ -735,7 +702,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L146",
       "_origin": "ast",
-      "community": 6,
+      "community": 18,
       "community_name": "tdq_state.py",
       "norm_label": "_fail()",
       "id": "scripts_tdq_state_fail"
@@ -790,7 +757,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L244",
       "_origin": "ast",
-      "community": 6,
+      "community": 11,
       "community_name": "tdq_state.py",
       "norm_label": "_atomic_write()",
       "id": "scripts_tdq_state_atomic_write"
@@ -812,7 +779,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L279",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "sha256_file()",
       "id": "scripts_tdq_state_sha256_file"
@@ -834,7 +801,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L314",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "_git()",
       "id": "scripts_tdq_state_git"
@@ -845,7 +812,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L329",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "repo_root()",
       "id": "scripts_tdq_state_repo_root"
@@ -856,7 +823,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L337",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "_untracked_mark()",
       "id": "scripts_tdq_state_untracked_mark"
@@ -867,7 +834,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L354",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "repo_status_digest()",
       "id": "scripts_tdq_state_repo_status_digest"
@@ -878,7 +845,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L393",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "repo_status_paths()",
       "id": "scripts_tdq_state_repo_status_paths"
@@ -889,7 +856,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L424",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "plan_tick_state()",
       "id": "scripts_tdq_state_plan_tick_state"
@@ -900,7 +867,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L463",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "turn_snapshot()",
       "id": "scripts_tdq_state_turn_snapshot"
@@ -911,7 +878,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L480",
       "_origin": "ast",
-      "community": 6,
+      "community": 18,
       "community_name": "tdq_state.py",
       "norm_label": "normalize_lane()",
       "id": "scripts_tdq_state_normalize_lane"
@@ -922,7 +889,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L488",
       "_origin": "ast",
-      "community": 6,
+      "community": 20,
       "community_name": "tdq_state.py",
       "norm_label": "lane_label()",
       "id": "scripts_tdq_state_lane_label"
@@ -933,7 +900,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L496",
       "_origin": "ast",
-      "community": 2,
+      "community": 14,
       "community_name": "_common.py",
       "norm_label": "normalize_mode()",
       "id": "scripts_tdq_state_normalize_mode"
@@ -944,7 +911,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L505",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "mode_label()",
       "id": "scripts_tdq_state_mode_label"
@@ -955,7 +922,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L513",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "effective_lane()",
       "id": "scripts_tdq_state_effective_lane"
@@ -966,7 +933,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L522",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "effective_phase()",
       "id": "scripts_tdq_state_effective_phase"
@@ -977,7 +944,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L532",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "effective_mode()",
       "id": "scripts_tdq_state_effective_mode"
@@ -988,7 +955,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L720",
       "_origin": "ast",
-      "community": 6,
+      "community": 21,
       "community_name": "tdq_state.py",
       "norm_label": "plugin_root_cmd()",
       "id": "scripts_tdq_state_plugin_root_cmd"
@@ -1010,7 +977,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L769",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "phase_key()",
       "id": "scripts_tdq_state_phase_key"
@@ -1032,7 +999,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L791",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "next_headline()",
       "id": "scripts_tdq_state_next_headline"
@@ -1043,7 +1010,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L801",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "render_next()",
       "id": "scripts_tdq_state_render_next"
@@ -1054,7 +1021,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L826",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "render_state_md()",
       "id": "scripts_tdq_state_render_state_md"
@@ -1076,7 +1043,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L887",
       "_origin": "ast",
-      "community": 6,
+      "community": 19,
       "community_name": "tdq_state.py",
       "norm_label": "_row_age_ok()",
       "id": "scripts_tdq_state_row_age_ok"
@@ -1087,7 +1054,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L897",
       "_origin": "ast",
-      "community": 6,
+      "community": 19,
       "community_name": "tdq_state.py",
       "norm_label": "turn_log_read()",
       "id": "scripts_tdq_state_turn_log_read"
@@ -1098,7 +1065,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L922",
       "_origin": "ast",
-      "community": 6,
+      "community": 19,
       "community_name": "tdq_state.py",
       "norm_label": "turn_log_clear()",
       "id": "scripts_tdq_state_turn_log_clear"
@@ -1109,7 +1076,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L954",
       "_origin": "ast",
-      "community": 6,
+      "community": 11,
       "community_name": "tdq_state.py",
       "norm_label": "prompt_context_path()",
       "id": "scripts_tdq_state_prompt_context_path"
@@ -1120,7 +1087,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L958",
       "_origin": "ast",
-      "community": 6,
+      "community": 11,
       "community_name": "tdq_state.py",
       "norm_label": "prompt_context_last()",
       "id": "scripts_tdq_state_prompt_context_last"
@@ -1131,7 +1098,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L970",
       "_origin": "ast",
-      "community": 6,
+      "community": 11,
       "community_name": "tdq_state.py",
       "norm_label": "prompt_context_save()",
       "id": "scripts_tdq_state_prompt_context_save"
@@ -1164,7 +1131,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1004",
       "_origin": "ast",
-      "community": 6,
+      "community": 18,
       "community_name": "tdq_state.py",
       "norm_label": "_parse_approve_args()",
       "id": "scripts_tdq_state_parse_approve_args"
@@ -1175,7 +1142,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1052",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "_file_changed_since_approval()",
       "id": "scripts_tdq_state_file_changed_since_approval"
@@ -1241,7 +1208,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L147",
       "_origin": "ast",
-      "community": 6,
+      "community": 18,
       "community_name": "tdq_state.py",
       "norm_label": "chi dung cho sai cu phap lenh \u2014 exit 2 (spec \u00a72.9.4).",
       "id": "scripts_tdq_state_rationale_147"
@@ -1296,7 +1263,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L315",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "stdout (bytes) cua lenh git, hoac none khi khong chay \u0111uoc.",
       "id": "scripts_tdq_state_rationale_315"
@@ -1307,7 +1274,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L330",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "goc repo (porcelain in path theo goc, khong theo cwd). none neu khong phai repo.",
       "id": "scripts_tdq_state_rationale_330"
@@ -1318,7 +1285,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L338",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "dau nhan dang file untracked \u2192 (dau, so byte \u0111a \u0111oc).      uu tien noi dung: mti",
       "id": "scripts_tdq_state_rationale_338"
@@ -1329,7 +1296,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L355",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "van tay trang thai lam viec cua repo, hoac none khi khong lay \u0111uoc.      gom ca",
       "id": "scripts_tdq_state_rationale_355"
@@ -1340,7 +1307,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L394",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "path \u0111ang khac so voi head (bo co trang thai, rename lay ve \u0111ich).      cung vun",
       "id": "scripts_tdq_state_rationale_394"
@@ -1351,7 +1318,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L425",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "trang thai checkbox cua plan hien hanh. khong bao gio nem loi.",
       "id": "scripts_tdq_state_rationale_425"
@@ -1362,7 +1329,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L464",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "trang thai \u0111au turn: log hom nay + van tay repo + danh sach path \u0111ang ban     +",
       "id": "scripts_tdq_state_rationale_464"
@@ -1373,7 +1340,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L481",
       "_origin": "ast",
-      "community": 6,
+      "community": 18,
       "community_name": "tdq_state.py",
       "norm_label": "bi danh -> \u0111inh danh may (\"quick\"/\"full\"). khong nhan ra -> none (nguoi goi",
       "id": "scripts_tdq_state_rationale_481"
@@ -1384,7 +1351,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L489",
       "_origin": "ast",
-      "community": 6,
+      "community": 20,
       "community_name": "tdq_state.py",
       "norm_label": "nhan \u0111e in ra cho nguoi \u0111oc. la lop hien thi nen khong kiem tra hop le:     lane",
       "id": "scripts_tdq_state_rationale_489"
@@ -1395,7 +1362,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L497",
       "_origin": "ast",
-      "community": 2,
+      "community": 14,
       "community_name": "_common.py",
       "norm_label": "bi danh -> \u0111inh danh may (\"main\"/\"subagent\"). cua vao duy nhat cho mode do user",
       "id": "scripts_tdq_state_rationale_497"
@@ -1406,7 +1373,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L506",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "nhan \u0111e in ra cho nguoi \u0111oc, cung luat voi lane_label: mode la tra lai nguyen",
       "id": "scripts_tdq_state_rationale_506"
@@ -1417,7 +1384,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L721",
       "_origin": "ast",
-      "community": 6,
+      "community": 21,
       "community_name": "tdq_state.py",
       "norm_label": "a40: dang lenh cho doc chay trong ngu canh plugin (conventions \u00a71).",
       "id": "scripts_tdq_state_rationale_721"
@@ -1439,7 +1406,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L770",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "khoa tra phase_table cho state hien tai.",
       "id": "scripts_tdq_state_rationale_770"
@@ -1450,7 +1417,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L792",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "dong 1 cua `next` \u2014 cung la toan bo output cua `next --brief`.",
       "id": "scripts_tdq_state_rationale_792"
@@ -1461,7 +1428,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L802",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "khoi 5 phan (spec \u00a72.2), \u226420 dong.      brief=true   \u2192 \u0111ung 1 dong tieu \u0111e (dung",
       "id": "scripts_tdq_state_rationale_802"
@@ -1472,7 +1439,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L827",
       "_origin": "ast",
-      "community": 6,
+      "community": 14,
       "community_name": "tdq_state.py",
       "norm_label": "mirror markdown \u226430 dong cho agent/user \u0111oc thang (spec \u00a72.3.1).",
       "id": "scripts_tdq_state_rationale_827"
@@ -1494,7 +1461,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L898",
       "_origin": "ast",
-      "community": 6,
+      "community": 19,
       "community_name": "tdq_state.py",
       "norm_label": "cac su kien cua session hien tai, bo qua dong cu hon 6 gio (rr12).",
       "id": "scripts_tdq_state_rationale_898"
@@ -1505,7 +1472,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L923",
       "_origin": "ast",
-      "community": 6,
+      "community": 19,
       "community_name": "tdq_state.py",
       "norm_label": "xoa dong cua session nay (\u0111au turn). dong session khac giu nguyen.",
       "id": "scripts_tdq_state_rationale_923"
@@ -1516,7 +1483,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L959",
       "_origin": "ast",
-      "community": 6,
+      "community": 11,
       "community_name": "tdq_state.py",
       "norm_label": "digest noi dung [tdq:...] \u0111a in o turn truoc cho session nay, none neu chua co.",
       "id": "scripts_tdq_state_rationale_959"
@@ -1527,7 +1494,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L971",
       "_origin": "ast",
-      "community": 6,
+      "community": 11,
       "community_name": "tdq_state.py",
       "norm_label": "ghi digest noi dung vua in \u2014 turn_log_clear khong \u0111ung toi file nay     (dedupe",
       "id": "scripts_tdq_state_rationale_971"
@@ -1549,7 +1516,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1005",
       "_origin": "ast",
-      "community": 6,
+      "community": 18,
       "community_name": "tdq_state.py",
       "norm_label": "-> (target, mode, by, no_qc). chi loi khi cu phap that su sai.",
       "id": "scripts_tdq_state_rationale_1005"
@@ -1560,7 +1527,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1053",
       "_origin": "ast",
-      "community": 6,
+      "community": 13,
       "community_name": "tdq_state.py",
       "norm_label": "true khi file spec/plan \u0111a \u0111oi noi dung so voi luc duyet. dung \u0111e phan biet",
       "id": "scripts_tdq_state_rationale_1053"
@@ -1615,7 +1582,7 @@
       "source_file": "hooks/scripts/_common.py",
       "source_location": "L46",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "plan_mode()",
       "id": "hooks_scripts_common_plan_mode"
@@ -1747,7 +1714,7 @@
       "source_file": "hooks/scripts/_common.py",
       "source_location": "L176",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "approve_hint()",
       "id": "hooks_scripts_common_approve_hint"
@@ -1769,7 +1736,7 @@
       "source_file": "hooks/scripts/_common.py",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "mode \u0111a chot trong plan_file (dong 'mode thuc thi:'), none neu chua ghi.",
       "id": "hooks_scripts_common_rationale_47"
@@ -1890,7 +1857,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "prompt_context.py",
       "id": "hooks_scripts_prompt_context"
@@ -1901,7 +1868,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "looks_like_approval()",
       "id": "hooks_scripts_prompt_context_looks_like_approval"
@@ -1912,7 +1879,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 2,
+      "community": 14,
       "community_name": "_common.py",
       "norm_label": "mode_from_answer()",
       "id": "hooks_scripts_prompt_context_mode_from_answer"
@@ -1923,7 +1890,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 2,
+      "community": 14,
       "community_name": "_common.py",
       "norm_label": "main()",
       "id": "hooks_scripts_prompt_context_main"
@@ -1934,7 +1901,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L202",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "_truncate()",
       "id": "hooks_scripts_prompt_context_truncate"
@@ -1945,7 +1912,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L213",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "_compact()",
       "id": "hooks_scripts_prompt_context_compact"
@@ -1956,7 +1923,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L220",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "_emit()",
       "id": "hooks_scripts_prompt_context_emit"
@@ -1967,7 +1934,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 2,
+      "community": 14,
       "community_name": "_common.py",
       "norm_label": "cau tra loi o cong mode -> \u0111inh danh may, hoac none neu khong \u0111oc ra \u0111uoc.",
       "id": "hooks_scripts_prompt_context_rationale_76"
@@ -1978,7 +1945,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L214",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "turn truoc \u0111a in y het noi dung nay \u2014 thay bang dong ngan cung ma.",
       "id": "hooks_scripts_prompt_context_rationale_214"
@@ -1989,7 +1956,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L221",
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "_common.py",
       "norm_label": "critical=true: canh bao/hanh \u0111ong rieng cho turn nay (duyet mo ho, mode     lech",
       "id": "hooks_scripts_prompt_context_rationale_221"
@@ -5139,6 +5106,86 @@
       "community_name": "tdq-workflow \u2014 Plugin Claude Code",
       "norm_label": "quy uoc cung",
       "id": "readme_quy_\u01b0\u1edbc_c\u1ee9ng"
+    },
+    {
+      "label": "scan_block_symbols.py",
+      "file_type": "code",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols",
+      "community": 17,
+      "norm_label": "scan_block_symbols.py"
+    },
+    {
+      "label": "la_ky_hieu()",
+      "file_type": "code",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_la_ky_hieu",
+      "community": 17,
+      "norm_label": "la_ky_hieu()"
+    },
+    {
+      "label": "khoi_mau()",
+      "file_type": "code",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_khoi_mau",
+      "community": 17,
+      "norm_label": "khoi_mau()"
+    },
+    {
+      "label": "quet()",
+      "file_type": "code",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_quet",
+      "community": 17,
+      "norm_label": "quet()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_main",
+      "community": 17,
+      "norm_label": "main()"
+    },
+    {
+      "label": "True khi ch l\u00e0 d\u1ea5u c\u00e2u/k\u00fd hi\u1ec7u ngo\u00e0i ASCII \u2014 th\u1ee9 whitelist ph\u1ea3i qu\u1ea3n.",
+      "file_type": "rationale",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_rationale_48",
+      "community": 17,
+      "norm_label": "true khi ch la dau cau/ky hieu ngoai ascii \u2014 thu whitelist phai quan."
+    },
+    {
+      "label": "N\u1ed9i dung c\u00e1c kh\u1ed1i ``` trong file \u2014 \u0111\u00e2y m\u1edbi l\u00e0 ph\u1ea7n TH\u1eacT S\u1ef0 in ra cho user.",
+      "file_type": "rationale",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_rationale_55",
+      "community": 17,
+      "norm_label": "noi dung cac khoi ``` trong file \u2014 \u0111ay moi la phan that su in ra cho user."
+    },
+    {
+      "label": "{k\u00fd t\u1ef1: (t\u1ed5ng s\u1ed1 l\u1ea7n, {file: s\u1ed1 l\u1ea7n})} cho m\u1ecdi k\u00fd hi\u1ec7u ngo\u00e0i ASCII.",
+      "file_type": "rationale",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "scripts_scan_block_symbols_rationale_70",
+      "community": 17,
+      "norm_label": "{ky tu: (tong so lan, {file: so lan})} cho moi ky hieu ngoai ascii."
     }
   ],
   "links": [
@@ -5149,9 +5196,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog",
-      "target": "changelog_changelog",
-      "confidence_score": 1.0
+      "target": "changelog_changelog"
     },
     {
       "relation": "contains",
@@ -5160,9 +5207,9 @@
       "source_location": "L324",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_10_0_2026_08_09",
-      "confidence_score": 1.0
+      "target": "changelog_0_10_0_2026_08_09"
     },
     {
       "relation": "contains",
@@ -5171,9 +5218,9 @@
       "source_location": "L294",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_0_2026_08_09",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_0_2026_08_09"
     },
     {
       "relation": "contains",
@@ -5182,9 +5229,9 @@
       "source_location": "L168",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_10_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_10_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5193,9 +5240,9 @@
       "source_location": "L159",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_11_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_11_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5204,9 +5251,9 @@
       "source_location": "L150",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_12_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_12_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5215,9 +5262,9 @@
       "source_location": "L134",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_13_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_13_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5226,9 +5273,9 @@
       "source_location": "L276",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_1_2026_08_09",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_1_2026_08_09"
     },
     {
       "relation": "contains",
@@ -5237,9 +5284,9 @@
       "source_location": "L259",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_2_2026_08_09",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_2_2026_08_09"
     },
     {
       "relation": "contains",
@@ -5248,9 +5295,9 @@
       "source_location": "L239",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_3_2026_08_12",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_3_2026_08_12"
     },
     {
       "relation": "contains",
@@ -5259,9 +5306,9 @@
       "source_location": "L221",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_4_2026_08_12",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_4_2026_08_12"
     },
     {
       "relation": "contains",
@@ -5270,9 +5317,9 @@
       "source_location": "L211",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_5_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_5_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5281,9 +5328,9 @@
       "source_location": "L202",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_6_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_6_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5292,9 +5339,9 @@
       "source_location": "L194",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_7_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_7_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5303,9 +5350,9 @@
       "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_8_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_8_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5314,9 +5361,9 @@
       "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_9_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_11_9_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5325,9 +5372,9 @@
       "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_12_0_2026_08_13",
-      "confidence_score": 1.0
+      "target": "changelog_0_12_0_2026_08_13"
     },
     {
       "relation": "contains",
@@ -5336,9 +5383,9 @@
       "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_13_0_2026_08_14",
-      "confidence_score": 1.0
+      "target": "changelog_0_13_0_2026_08_14"
     },
     {
       "relation": "contains",
@@ -5347,9 +5394,9 @@
       "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_14_0_2026_08_14",
-      "confidence_score": 1.0
+      "target": "changelog_0_14_0_2026_08_14"
     },
     {
       "relation": "contains",
@@ -5358,9 +5405,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_15_0_2026_08_14",
-      "confidence_score": 1.0
+      "target": "changelog_0_15_0_2026_08_14"
     },
     {
       "relation": "contains",
@@ -5369,9 +5416,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_15_1_2026_08_14",
-      "confidence_score": 1.0
+      "target": "changelog_0_15_1_2026_08_14"
     },
     {
       "relation": "contains",
@@ -5380,9 +5427,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_16_0_2026_08_14",
-      "confidence_score": 1.0
+      "target": "changelog_0_16_0_2026_08_14"
     },
     {
       "relation": "contains",
@@ -5391,9 +5438,9 @@
       "source_location": "L487",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_3_3_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc",
-      "confidence_score": 1.0
+      "target": "changelog_0_3_3_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc"
     },
     {
       "relation": "contains",
@@ -5402,9 +5449,9 @@
       "source_location": "L467",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_5_0_2026_07_31",
-      "confidence_score": 1.0
+      "target": "changelog_0_5_0_2026_07_31"
     },
     {
       "relation": "contains",
@@ -5413,9 +5460,9 @@
       "source_location": "L446",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_6_0_2026_07_31",
-      "confidence_score": 1.0
+      "target": "changelog_0_6_0_2026_07_31"
     },
     {
       "relation": "contains",
@@ -5424,9 +5471,9 @@
       "source_location": "L418",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_6_1_2026_07_31",
-      "confidence_score": 1.0
+      "target": "changelog_0_6_1_2026_07_31"
     },
     {
       "relation": "contains",
@@ -5435,9 +5482,9 @@
       "source_location": "L412",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_6_2_2026_08_02",
-      "confidence_score": 1.0
+      "target": "changelog_0_6_2_2026_08_02"
     },
     {
       "relation": "contains",
@@ -5446,9 +5493,9 @@
       "source_location": "L392",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_7_0_2026_08_05",
-      "confidence_score": 1.0
+      "target": "changelog_0_7_0_2026_08_05"
     },
     {
       "relation": "contains",
@@ -5457,9 +5504,9 @@
       "source_location": "L380",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_8_0_2026_08_05",
-      "confidence_score": 1.0
+      "target": "changelog_0_8_0_2026_08_05"
     },
     {
       "relation": "contains",
@@ -5468,9 +5515,9 @@
       "source_location": "L359",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_9_0_2026_08_07",
-      "confidence_score": 1.0
+      "target": "changelog_0_9_0_2026_08_07"
     },
     {
       "relation": "contains",
@@ -5479,9 +5526,9 @@
       "source_location": "L317",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_0_11_0_2026_08_09",
-      "target": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch",
-      "confidence_score": 1.0
+      "target": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch"
     },
     {
       "relation": "contains",
@@ -5490,9 +5537,9 @@
       "source_location": "L349",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_0_10_0_2026_08_09",
-      "target": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch_349",
-      "confidence_score": 1.0
+      "target": "changelog_ph\u00e1_v\u1ee1_t\u01b0\u01a1ng_th\u00edch"
     },
     {
       "relation": "contains",
@@ -5501,9 +5548,9 @@
       "source_location": "L423",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_0_6_1_2026_07_31",
-      "target": "changelog_fix",
-      "confidence_score": 1.0
+      "target": "changelog_fix"
     },
     {
       "relation": "contains",
@@ -5512,20 +5559,9 @@
       "source_location": "L438",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_0_6_1_2026_07_31",
-      "target": "changelog_\u0111\u1ed5i",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L452",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "changelog_0_6_0_2026_07_31",
-      "target": "changelog_th\u00eam",
-      "confidence_score": 1.0
+      "target": "changelog_\u0111\u1ed5i"
     },
     {
       "relation": "contains",
@@ -5534,9 +5570,20 @@
       "source_location": "L459",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_0_6_0_2026_07_31",
-      "target": "changelog_\u0111\u1ed5i_459",
-      "confidence_score": 1.0
+      "target": "changelog_\u0111\u1ed5i"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L452",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_0_6_0_2026_07_31",
+      "target": "changelog_th\u00eam"
     },
     {
       "relation": "contains",
@@ -5545,9 +5592,9 @@
       "source_location": "L473",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "changelog_0_5_0_2026_07_31",
-      "target": "changelog_th\u00eam_473",
-      "confidence_score": 1.0
+      "target": "changelog_th\u00eam"
     },
     {
       "relation": "contains",
@@ -5556,9 +5603,9 @@
       "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_clean",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_clean"
     },
     {
       "relation": "contains",
@@ -5567,9 +5614,9 @@
       "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_condense",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_condense"
     },
     {
       "relation": "contains",
@@ -5578,9 +5625,9 @@
       "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_enabled_plugins",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_enabled_plugins"
     },
     {
       "relation": "contains",
@@ -5589,9 +5636,9 @@
       "source_location": "L207",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_filter",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_filter"
     },
     {
       "relation": "contains",
@@ -5600,9 +5647,9 @@
       "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_frontmatter",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_frontmatter"
     },
     {
       "relation": "contains",
@@ -5611,9 +5658,9 @@
       "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_inventory",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_inventory"
     },
     {
       "relation": "contains",
@@ -5622,9 +5669,9 @@
       "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_load_json",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_load_json"
     },
     {
       "relation": "contains",
@@ -5633,9 +5680,9 @@
       "source_location": "L220",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_main",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_main"
     },
     {
       "relation": "contains",
@@ -5644,9 +5691,9 @@
       "source_location": "L162",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_plugin_skill_dirs",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_plugin_skill_dirs"
     },
     {
       "relation": "contains",
@@ -5655,9 +5702,9 @@
       "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_skill_inventory_scan_skill_dir",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_scan_skill_dir"
     },
     {
       "relation": "imports",
@@ -5667,9 +5714,9 @@
       "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory",
-      "target": "scripts_tdq_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state"
     },
     {
       "relation": "calls",
@@ -5679,9 +5726,9 @@
       "source_location": "L156",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_enabled_plugins",
-      "target": "scripts_skill_inventory_load_json",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_load_json"
     },
     {
       "relation": "calls",
@@ -5691,9 +5738,9 @@
       "source_location": "L167",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_plugin_skill_dirs",
-      "target": "scripts_skill_inventory_load_json",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_load_json"
     },
     {
       "relation": "rationale_for",
@@ -5702,9 +5749,9 @@
       "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_67",
-      "target": "scripts_skill_inventory_load_json",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_load_json"
     },
     {
       "relation": "calls",
@@ -5714,9 +5761,9 @@
       "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_frontmatter",
-      "target": "scripts_skill_inventory_clean",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_clean"
     },
     {
       "relation": "rationale_for",
@@ -5725,9 +5772,9 @@
       "source_location": "L81",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_81",
-      "target": "scripts_skill_inventory_clean",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_clean"
     },
     {
       "relation": "rationale_for",
@@ -5736,9 +5783,9 @@
       "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_86",
-      "target": "scripts_skill_inventory_frontmatter",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_frontmatter"
     },
     {
       "relation": "calls",
@@ -5748,9 +5795,9 @@
       "source_location": "L141",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_scan_skill_dir",
-      "target": "scripts_skill_inventory_frontmatter",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_frontmatter"
     },
     {
       "relation": "rationale_for",
@@ -5759,9 +5806,9 @@
       "source_location": "L122",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_122",
-      "target": "scripts_skill_inventory_condense",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_condense"
     },
     {
       "relation": "calls",
@@ -5771,9 +5818,9 @@
       "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_inventory",
-      "target": "scripts_skill_inventory_scan_skill_dir",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_scan_skill_dir"
     },
     {
       "relation": "rationale_for",
@@ -5782,9 +5829,9 @@
       "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_138",
-      "target": "scripts_skill_inventory_scan_skill_dir",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_scan_skill_dir"
     },
     {
       "relation": "calls",
@@ -5794,9 +5841,9 @@
       "source_location": "L164",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_plugin_skill_dirs",
-      "target": "scripts_skill_inventory_enabled_plugins",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_enabled_plugins"
     },
     {
       "relation": "rationale_for",
@@ -5805,9 +5852,9 @@
       "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_148",
-      "target": "scripts_skill_inventory_enabled_plugins",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_enabled_plugins"
     },
     {
       "relation": "calls",
@@ -5817,9 +5864,9 @@
       "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_inventory",
-      "target": "scripts_skill_inventory_plugin_skill_dirs",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_plugin_skill_dirs"
     },
     {
       "relation": "rationale_for",
@@ -5828,9 +5875,9 @@
       "source_location": "L163",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_163",
-      "target": "scripts_skill_inventory_plugin_skill_dirs",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_plugin_skill_dirs"
     },
     {
       "relation": "calls",
@@ -5840,9 +5887,9 @@
       "source_location": "L239",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_main",
-      "target": "scripts_skill_inventory_inventory",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_inventory"
     },
     {
       "relation": "rationale_for",
@@ -5851,9 +5898,9 @@
       "source_location": "L187",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_187",
-      "target": "scripts_skill_inventory_inventory",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_inventory"
     },
     {
       "relation": "calls",
@@ -5863,9 +5910,9 @@
       "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_main",
-      "target": "scripts_skill_inventory_filter",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_filter"
     },
     {
       "relation": "rationale_for",
@@ -5874,9 +5921,9 @@
       "source_location": "L208",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_skill_inventory_rationale_208",
-      "target": "scripts_skill_inventory_filter",
-      "confidence_score": 1.0
+      "target": "scripts_skill_inventory_filter"
     },
     {
       "relation": "imports_from",
@@ -15633,8 +15680,121 @@
       "confidence_score": 1.0,
       "source": "readme_tdq_workflow_plugin_claude_code",
       "target": "readme_quy_\u01b0\u1edbc_c\u1ee9ng"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols",
+      "target": "scripts_scan_block_symbols_khoi_mau",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols",
+      "target": "scripts_scan_block_symbols_la_ky_hieu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols",
+      "target": "scripts_scan_block_symbols_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols",
+      "target": "scripts_scan_block_symbols_quet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols_quet",
+      "target": "scripts_scan_block_symbols_la_ky_hieu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols_rationale_48",
+      "target": "scripts_scan_block_symbols_la_ky_hieu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols_quet",
+      "target": "scripts_scan_block_symbols_khoi_mau",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols_rationale_55",
+      "target": "scripts_scan_block_symbols_khoi_mau",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols_main",
+      "target": "scripts_scan_block_symbols_quet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/scan_block_symbols.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_scan_block_symbols_rationale_70",
+      "target": "scripts_scan_block_symbols_quet",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6df657ed69b0f387003342fcabe2cbf2199b38df"
+  "built_at_commit": "4b3eba40d4d96201201448f46e9fab1a9d642309"
 }

@@ -1,24 +1,24 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-14T15:02:31+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-14T16:38:21+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
 | Request | 2026-08-14-trang-tri-khoi-chat |
 | Lane | full |
-| Phase | spec |
+| Phase | report |
 | Spec | docs/tdq/spec/2026-08-14-trang-tri-khoi-chat.md — ✔ đã duyệt |
-| Plan | (chưa có) |
+| Plan | docs/tdq/plan/2026-08-14-trang-tri-khoi-chat.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
-| Mode thực thi | (chưa chốt) |
+| Mode thực thi | main |
 
 ## Đang ở đâu
-Đã phân tích xong. Cấm: Tự suy diễn là user đã duyệt; bắt user nhắn thêm một turn nữa mới viết plan.
+QC đã PASS. Cấm: Tự commit hoặc push khi user chưa yêu cầu.
 
 ## Việc tiếp theo
-Viết spec (kèm mục Lộ trình), đăng ký spec_file, trình tóm tắt rồi DỪNG chờ user duyệt.
+Viết report ngắn gọn (khuyến nghị 10-20 dòng, không giới hạn cứng) rồi hỏi user có commit không.
 ```
-python3 scripts/tdq_state.py approve spec --by "<nguyên văn câu user>"
+python3 scripts/tdq_state.py set phase=idle
 ```
-Xong khi: spec_approved = true
+Xong khi: Report đã ghi và user đã được hỏi về commit
 
 > Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.

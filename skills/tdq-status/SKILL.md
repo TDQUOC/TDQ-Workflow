@@ -23,7 +23,7 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
 2. Báo các mục sau (một dòng mỗi mục):
    - Request + lane + phase hiện tại.
    - `implement_mode`: mode user đã chốt (chưa có thì ghi "chưa chốt").
-   - Spec: ✔ đã duyệt (kèm `spec_approved_at` và `spec_approved_by`) / ⏳ chờ duyệt / — chưa có.
+   - Spec: **đã duyệt** (kèm `spec_approved_at` và `spec_approved_by`) / **chờ duyệt** / — chưa có.
      Tương tự cho plan (`plan_approved_by`) hoặc quick (`quick_approved_by`) tuỳ lane.
    - Spec đã duyệt → so sha256 hiện tại của `spec_file` với `spec_sha256`; lệch thì cảnh
      báo "spec đã đổi sau khi duyệt, cần duyệt lại".
@@ -31,6 +31,9 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
 
 3. Kết bằng bước kế tiếp, lấy nguyên văn dòng "Việc tiếp theo" và "Lệnh" từ output `next`.
    Đang chờ duyệt thì in kèm: `➤ Duyệt: nhắn "duyệt <spec|plan|quick>" · Góp ý: nhắn trực tiếp`.
+   Cả phần trả lời user theo khuôn chung ở
+   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — nhãn
+   trường in đậm, dòng `➤` nằm cuối.
 
 Xong khi: user đọc xong biết đang ở đâu và việc kế tiếp là gì.
 Bước kế tiếp: skill tương ứng với phase đang ở — xem

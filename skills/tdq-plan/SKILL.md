@@ -56,11 +56,11 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    ```
    Tôi đã viết xong plan để thực hiện yêu cầu của bạn.
 
-   Cách làm: <1–2 câu>.
-   Khối lượng: <số phase>, <số task>, ước tính <tổng phút>.
-   Kiểm thế nào: <số dòng DoD>, mỗi dòng một lệnh kiểm.
+   **Cách làm:** <1–2 câu>.
+   **Khối lượng:** <số phase>, <số task>, ước tính <tổng phút>.
+   **Kiểm thế nào:** <số dòng DoD>, mỗi dòng một lệnh kiểm.
 
-   Xem đầy đủ tại: docs/tdq/plan/<slug>.md
+   Xem đầy đủ tại: `docs/tdq/plan/<slug>.md`
 
    ---
 

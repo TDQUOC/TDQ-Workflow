@@ -10,7 +10,7 @@ Mọi request mới tự đánh giá NỘI BỘ theo dạng dưới đây trư�
 để chọn phương án đề xuất A/B, **không in ra chat**:
 
 ```
-Cỡ: <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>
+**Cỡ:** <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>
 ```
 
 Cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ. Thứ luôn chạy thì không liệt kê, để đánh giá gọn.
@@ -48,7 +48,7 @@ option luôn có khối giải thích ngắn nghĩa 2 pipeline (cố định, kh
 ```
 Tôi đã ghi lại yêu cầu của bạn.
 
-Tóm tắt: <2–3 dòng việc user muốn>
+**Tóm tắt:** <2–3 dòng việc user muốn>
 
 - A (đề xuất): chế độ nhanh (express) — <lý do gắn với chính việc này>
 - B: chế độ chuyên sâu (deep) — <lý do gắn với chính việc này>
@@ -56,7 +56,7 @@ Tóm tắt: <2–3 dòng việc user muốn>
 _chế độ nhanh (express): làm gọn, ít vòng hỏi, hợp việc nhỏ/đã rõ. chế độ chuyên sâu
 (deep): phân tích + hỏi kỹ trước khi làm, hợp việc phức tạp hoặc rủi ro cao._
 
-Xem đầy đủ tại: docs/tdq/brief/<slug>.md
+Xem đầy đủ tại: `docs/tdq/brief/<slug>.md`
 
 ---
 

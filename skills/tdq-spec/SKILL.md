@@ -36,12 +36,12 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Vi�
    ```
    Tôi đã viết xong spec cho yêu cầu của bạn.
 
-   Mục tiêu: <1–2 câu>.
-   Đầu ra chính: <gạch đầu dòng ngắn>.
-   Định nghĩa hoàn thành: <gạch đầu dòng ngắn>.
-   Rủi ro đáng chú ý: <gạch đầu dòng ngắn>.
+   **Mục tiêu:** <1–2 câu>.
+   **Đầu ra chính:** <gạch đầu dòng ngắn>.
+   **Định nghĩa hoàn thành:** <gạch đầu dòng ngắn>.
+   **Rủi ro đáng chú ý:** <gạch đầu dòng ngắn>.
 
-   Xem đầy đủ tại: docs/tdq/spec/<slug>.md
+   Xem đầy đủ tại: `docs/tdq/spec/<slug>.md`
 
    ---
 

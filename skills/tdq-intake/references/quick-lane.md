@@ -68,9 +68,9 @@ bằng `graphify query|path|explain|affected`. Tìm chuỗi hoặc đọc file c
 ```markdown
 # QUICK — <tên việc>
 
-Ngày: YYYY-MM-DD · Brief: ../brief/<slug>.md · Lane: quick
-Trạng thái: CHỜ DUYỆT
-Ước tính sẽ dùng skill: <skill sẽ DÙNG, hoặc "không có">
+**Ngày:** YYYY-MM-DD · Brief: ../brief/<slug>.md · Lane: quick
+**Trạng thái:** CHỜ DUYỆT
+**Ước tính sẽ dùng skill:** <skill sẽ DÙNG, hoặc "không có">
 
 ## Phạm vi
 - Trong: <gạch đầu dòng>
@@ -94,12 +94,12 @@ Theo [user-facing-block.md](../../tdq-conventions/references/user-facing-block.m
 ```
 Tôi đã lên kế hoạch gọn cho yêu cầu của bạn.
 
-Sẽ làm: <gạch đầu dòng ngắn>.
-Đụng tới: <file/khu vực>.
-Kiểm thế nào: <lệnh hoặc tiêu chí>.
-Ước tính sẽ dùng skill: <skill sẽ DÙNG, hoặc "không có">.
+**Sẽ làm:** <gạch đầu dòng ngắn>.
+**Đụng tới:** <file/khu vực>.
+**Kiểm thế nào:** <lệnh hoặc tiêu chí>.
+**Ước tính sẽ dùng skill:** <skill sẽ DÙNG, hoặc "không có">.
 
-Xem đầy đủ tại: docs/tdq/plan/<slug>.md
+Xem đầy đủ tại: `docs/tdq/plan/<slug>.md`
 
 ---
 
@@ -151,7 +151,7 @@ User im lặng về QC = CÓ QC. Khi đó mục `## QC` vẫn phải có, đúng
 
 ```markdown
 ## QC
-BỎ theo yêu cầu user: "<nguyên văn câu user>"
+**BỎ theo yêu cầu user:** "<nguyên văn câu user>"
 ```
 
 ## Vòng fix

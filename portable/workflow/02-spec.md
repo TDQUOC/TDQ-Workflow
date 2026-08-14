@@ -9,8 +9,8 @@ Spec viết **tiếng Việt**. Yêu cầu spec dựa trên brief đã đủ 3 m
 
    ```markdown
    # SPEC — <tên việc>
-   Ngày: YYYY-MM-DD · Bản: 1.0 · Brief: ../brief/<slug>.md · Lane: full
-   Trạng thái: CHỜ DUYỆT
+   **Ngày:** YYYY-MM-DD · Bản: 1.0 · Brief: ../brief/<slug>.md · Lane: full
+   **Trạng thái:** CHỜ DUYỆT
 
    ## 1. Mục tiêu & phạm vi
    - Mục tiêu: <1–3 câu, đo được>
@@ -44,7 +44,7 @@ Spec viết **tiếng Việt**. Yêu cầu spec dựa trên brief đã đủ 3 m
    ## 6. QC & Definition of Done
    | # | Hạng mục kiểm | Lệnh/cách kiểm | Điều kiện PASS |
    |---|---|---|---|
-   DoD: <liệt kê điều kiện đủ để tuyên bố xong>
+   **DoD:** <liệt kê điều kiện đủ để tuyên bố xong>
 
    ## 7. Câu hỏi còn mở
    (Phải RỖNG. Còn câu hỏi → quay lại phase analyze.)
@@ -63,7 +63,9 @@ Spec viết **tiếng Việt**. Yêu cầu spec dựa trên brief đã đủ 3 m
    ```
 
 4. **Trình bày & DỪNG.** Trong chat: tóm tắt spec ≤ 50 dòng (mục tiêu, đầu ra, DoD,
-   rủi ro chính). Ngay dưới tóm tắt in đúng dòng:
+   rủi ro chính). Bọc tóm tắt theo
+   [references/user-facing-block.md](references/user-facing-block.md) — nhãn trường in
+   đậm, đường dẫn bọc nháy ngược, dòng `➤` nằm cuối. Ngay dưới tóm tắt in đúng dòng:
    ```
    ➤ Duyệt: nhắn "duyệt spec" · Góp ý: nhắn trực tiếp
    ```
