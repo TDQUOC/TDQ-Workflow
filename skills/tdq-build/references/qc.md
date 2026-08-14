@@ -2,6 +2,31 @@
 
 QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
 
+## Ba bước thi hành
+
+Đây là toàn bộ Phần B của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải
+nạp nhánh này mỗi lần gọi. Vào phase `qc` là **bắt buộc** đọc hết ba bước dưới đây trước
+khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.
+
+4. **Số hạng mục QC = số dòng Definition of Done**, cộng đúng một lần chạy full suite.
+   Mỗi dòng DoD một phép kiểm bằng lệnh; không thêm hạng mục ngoài DoD.
+   Chi tiết: mục `## Chạy cái gì` cùng file này. Việc lớn hoặc rủi ro cao → gọi thêm
+   agent `tdq-qc-tester` cho một lượt kiểm độc lập.
+
+5. Ghi `docs/tdq/qc/<slug>.md`: từng hạng mục DoD → PASS/FAIL kèm **bằng chứng**
+   (lệnh + output thật). Không khẳng định thứ chưa chạy. (Khuôn file ở mục `## Ghi kết quả`
+   cùng file này.)
+
+6. FAIL → quay lại plan, **không cần duyệt lại**: thêm task fix vào plan dưới
+   `## QC vòng N — fix` theo đúng khuôn `- [ ] **QCn.1** <việc> — Test: <check>`, làm
+   theo luật Phần A (red→green, tick ngay). Rồi chạy lại hạng mục đã FAIL cộng hạng mục
+   mà bản fix có thể làm hỏng, cộng full suite. Trần 3 vòng; vượt trần thì DỪNG, báo user.
+   Chỉ kéo user vào giữa chừng khi bản fix đòi đổi phạm vi. (Bản đầy đủ ở mục `## Khi FAIL`
+   cùng file này.)
+
+Xong khi: mọi hạng mục QC PASS và có bằng chứng trong file qc.
+Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`.
+
 ## Chạy cái gì
 
 **Số hạng mục QC = số dòng Definition of Done của plan.** Mỗi dòng DoD đúng một phép

@@ -2,6 +2,33 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.16.0 — 2026-08-14
+
+Cắt chi phí context của chính workflow mà không bỏ một luật nào: đếm mệnh lệnh theo 10
+cụm file cho **7 cụm tăng · 3 cụm giữ nguyên · 0 cụm giảm**. Nguyên tắc áp dụng xuyên
+suốt: dời văn bản xuống tầng `đọc khi cần` và để lại dòng trỏ có chữ BẮT BUỘC, tuyệt đối
+không xoá luật.
+
+- `scripts/skill_inventory.py`: thêm `--loc <từ khoá>` và `--tat-ca`. Bản lọc CẤM ẩn skill
+  nguồn `project` và `plugin:tdq-workflow` (hai nguồn quyết định phán quyết DÙNG ở bước
+  B0), và luôn in dòng cuối báo đã ẩn bao nhiêu kèm lệnh xem đủ. Chạy không cờ giữ nguyên
+  từng byte. Bước B0 dùng `--loc`: **39.722 → 1.845 byte** mỗi lần chạy (≈ −9.300 token).
+- `skills/tdq-intake/SKILL.md`: nhánh chế độ nhanh dời sang
+  `references/quick-lane.md`, đánh số lại thành 12 bước. Thân 1.844 → 1.288 token.
+- `skills/tdq-build/SKILL.md`: Phần B (QC) và Phần C (Report) dời xuống `references/qc.md`
+  và `references/report-template.md`. Thân 1.936 → 1.536 token.
+- `skills/tdq-conventions/`: phần nền/giải thích của 3 file gom vào mục `## Phụ lục`,
+  **giữ nguyên 100% câu chữ** (diff theo từ: 0 từ bị mất).
+- `skills/tdq-intake/references/scope-round.md`: khử 2 từ mơ hồ thành điều kiện đo được.
+- 8 chỗ cố ý chép lại luật giữa các file nay có nhãn "nhắc lại có chủ ý" — chống việc
+  lần sau bị nhầm là trùng lặp rồi xoá đi.
+- `agents/tdq-implementer.md`, `tdq-qc-tester.md`, `tdq-reviewer.md`: thêm khối
+  "Return format — copy this shape exactly".
+- Tổng tầng `nạp khi gọi skill` **8.473 → 7.579 token** (−10,6%). Test 563 → 569 passed,
+  0 failed. QC 15 hạng mục, Q1–Q14 PASS; một lượt QC độc lập bằng agent `tdq-qc-tester`
+  chạy lại từ đầu cho cùng phán quyết. Model hạng thấp chạy thử: không bỏ bước nào.
+- Chưa đụng `hooks/` và `portable/` — bản portable chưa nhận các thay đổi này.
+
 ## 0.15.1 — 2026-08-14
 
 Bản tài liệu: đề xuất cơ chế chống quick-fix phá kiến trúc. Chưa đụng file thực thi nào

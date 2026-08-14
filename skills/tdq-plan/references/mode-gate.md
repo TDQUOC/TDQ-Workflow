@@ -41,6 +41,8 @@ Ví dụ đủ căn cứ:
 
 ## Tên gọi
 
+(nhắc lại có chủ ý — bản gốc ở bước 6 của `skills/tdq-plan/SKILL.md`.)
+
 Hai tên trên là **nhãn hiển thị**. Giá trị ghi vào state vẫn là `main`/`subagent`
 (`MODE_LABELS`/`MODE_ALIASES` trong `scripts/tdq_state.py`). User gõ "inline",
 "sub-agent implement" hay tên máy cũ đều được nhận về đúng định danh máy.

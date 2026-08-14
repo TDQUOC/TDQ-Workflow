@@ -18,3 +18,15 @@ Rules:
 - **Ngưỡng digest ≤ 1.500 ký tự** cho final message: cấm dán nguyên văn output của tool (log test đầy đủ, diff, nội dung file). Chỉ 1 dòng kết quả + dòng lỗi quyết định nếu fail; phần dài hơn nằm sẵn trong file bạn vừa sửa — nêu đường dẫn để orchestrator tự đọc.
 
 Return (as your final message): status (done/blocked) for your one task ID, files changed, test command + actual result, notes. Plus the branch name and whether the worktree is merge-ready.
+
+Return format — copy this shape exactly, one line per field, no extra prose:
+
+```
+TASK: <task ID>
+STATUS: done | blocked
+FILES: <path>, <path>
+TEST: <command> -> <pass/fail + số liệu thật>
+BRANCH: <tên branch> | MERGE-READY: yes | no
+TICK-READY: yes | no
+NOTES: <≤ 2 dòng; blocked thì nêu đúng thứ đang thiếu>
+```

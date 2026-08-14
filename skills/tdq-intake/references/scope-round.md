@@ -32,7 +32,7 @@ hứng bỏ cho nhanh.
 
 **Khung soát nội bộ (không in ra chat).** Đi hết 9 mặt chất lượng của ISO/IEC 25010:2023
 để không sót: chức năng · hiệu năng · tương thích · trải nghiệm người dùng · độ tin cậy ·
-bảo mật · bảo trì · linh hoạt (mở rộng, đa nền tảng) · an toàn. Khung này chỉ để bạn
+bảo mật · bảo trì · Flexibility — mở rộng, đa nền tảng · an toàn. Khung này chỉ để bạn
 không bỏ quên mặt nào; user không cần đọc nó.
 
 **Phần in ra chat.** Chọn **3–5 mặt** thật sự hợp lĩnh vực của request rồi hỏi theo đúng
@@ -85,7 +85,7 @@ Mức đầu tư do **bạn suy ra** từ câu trả lời bối cảnh, không 
 
 | Bối cảnh | Mức đầu tư | Hệ quả lên spec/plan |
 |---|---|---|
-| Prototype/R&D, quy mô nhỏ, một người giữ | lõi | làm đúng luồng chính, không tối ưu sớm, DoD gọn |
+| Prototype/R&D, quy mô nhỏ, một người giữ | lõi | chỉ luồng chính, 0 hạng mục hiệu năng, DoD ≤ 5 dòng |
 | Beta nội bộ, quy mô vừa, cả nhóm giữ | vừa | thêm test biên và đường lỗi vào DoD |
 | Product thật, quy mô lớn | đầy đủ | hiệu năng và độ tin cậy thành hạng mục QC riêng, có ngưỡng số |
 | Chạm tiền, dữ liệu người dùng, API công khai | đầy đủ | bảo mật vào DoD kể cả khi user không chọn mặt đó |

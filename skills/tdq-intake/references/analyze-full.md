@@ -4,7 +4,10 @@
 Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.md`, đúng 3 mục:
 `## Nguyên văn` (yêu cầu user, đã ghi ở Phần A), `## Hiểu & kiến thức`, `## Hỏi đáp`.
 
-1. **Kiểm kê năng lực (B0).** Chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py"`,
+1. **Kiểm kê năng lực (B0).** Chạy
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py" --loc "<từ khoá của yêu cầu>"`,
+   bản lọc luôn giữ đủ skill nguồn `project` và `plugin:tdq-workflow`; nghi còn sót thì
+   chạy lại với `--tat-ca` để xem đủ bảng,
    chép thêm skill built-in đang thấy trong context, điền bảng phán quyết theo khuôn
    [skill-inventory.md](skill-inventory.md) vào
    brief mục `## Hiểu & kiến thức` → `### Năng lực dùng được`. Phân vân → DÙNG.

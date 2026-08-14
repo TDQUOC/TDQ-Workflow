@@ -53,6 +53,7 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
       để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
    6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main
       agent tick ngay khi nhận báo cáo của agent con, không đợi các task khác.
+      (nhắc lại có chủ ý — bản gốc ở mục `## Luật cứng` cùng file này.)
 
 3. Xong hết task: chạy full suite ĐÚNG MỘT LẦN, rồi đóng sổ turn bằng MỘT lệnh
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file .md vừa sửa> --log "<task xong, file đổi, kết quả test>" --phase qc`
@@ -63,53 +64,20 @@ Bước kế tiếp: lệnh `tdq_finish.py … --phase qc` ở mục 3 (đã set
 
 ## Phần B — QC (phase `qc`)
 
-4. **Số hạng mục QC = số dòng Definition of Done**, cộng đúng một lần chạy full suite.
-   Mỗi dòng DoD một phép kiểm bằng lệnh; không thêm hạng mục ngoài DoD.
-   Chi tiết: [references/qc.md](references/qc.md). Việc lớn hoặc rủi ro cao → gọi thêm
-   agent `tdq-qc-tester` cho một lượt kiểm độc lập.
-
-5. Ghi `docs/tdq/qc/<slug>.md`: từng hạng mục DoD → PASS/FAIL kèm **bằng chứng**
-   (lệnh + output thật). Không khẳng định thứ chưa chạy.
-
-6. FAIL → quay lại plan, **không cần duyệt lại**: thêm task fix vào plan dưới
-   `## QC vòng N — fix` theo đúng khuôn `- [ ] **QCn.1** <việc> — Test: <check>`, làm
-   theo luật Phần A (red→green, tick ngay). Rồi chạy lại hạng mục đã FAIL cộng hạng mục
-   mà bản fix có thể làm hỏng, cộng full suite. Trần 3 vòng; vượt trần thì DỪNG, báo user.
-   Chỉ kéo user vào giữa chừng khi bản fix đòi đổi phạm vi.
+Ba bước thi hành — từ đếm hạng mục theo DoD tới vòng fix khi FAIL — nằm ở
+[references/qc.md](references/qc.md) mục `## Ba bước thi hành`. **BẮT BUỘC mở file đó và
+đọc hết ba bước trước khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.** Cùng file đó có
+luôn khuôn file qc và luật trần 3 vòng fix.
 
 Xong khi: mọi hạng mục QC PASS và có bằng chứng trong file qc.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`.
 
 ## Phần C — Report (phase `report`)
 
-7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng, khuyến
-   nghị ~10-20 dòng. Khuôn: [references/report-template.md](references/report-template.md).
-
-8. Đóng sổ: tick nốt checkbox còn sót, đổi header plan thành HOÀN THÀNH, rồi chạy
-   `tdq_finish.py --files <file vừa sửa> --log "<tóm tắt report>"` (working log + graphify).
-
-9. Trình report trong chat (nguyên văn hoặc tóm tắt ngắn gọn + đường dẫn).
-
-10. **Hỏi user có commit không** — bắt buộc, không tự commit thành quả cuối (ngoại lệ duy
-    nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). Gộp chung
-    với bước 9 thành MỘT khối theo
-    [user-facing-block.md](../tdq-conventions/references/user-facing-block.md):
-    ```
-    Tôi đã làm xong yêu cầu của bạn.
-
-    Đã làm: <gạch đầu dòng ngắn>.
-    Kết quả kiểm: <số hạng mục QC, kết quả test>.
-
-    Xem đầy đủ tại: docs/tdq/reports/<slug>.md
-
-    ---
-
-    **Bạn có muốn tôi commit phần thay đổi này không?**
-
-    ➤ Trả lời: nhắn "commit" (tôi commit, không push) hoặc "chưa" (giữ nguyên chỗ làm việc) · Góp ý: nhắn trực tiếp
-    ```
-    User đồng ý → message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI;
-    branch theo quy ước.
+Bốn bước thi hành — từ viết report tới hỏi user có commit không — nằm ở
+[references/report-template.md](references/report-template.md) mục `## Bốn bước thi hành`.
+**BẮT BUỘC mở file đó và đọc hết bốn bước trước khi viết report; cấm làm theo trí nhớ.**
+Cùng file đó có luôn khuôn report và khối hỏi commit nguyên văn.
 
 Xong khi: report đã ghi và user đã được hỏi về commit.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`

@@ -77,33 +77,10 @@ hỏi user thì trình câu hỏi và dừng.
 
 ## Phần C — Chế độ nhanh (express)
 
-Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chi tiết: [references/quick-lane.md](references/quick-lane.md).
-
-1. **Phân tích.** Đọc đúng phần code liên quan. Có ẩn số bên ngoài (thư viện, API,
-   phiên bản) → web search qua `tavily-primary` TRƯỚC khi viết gì; thuần nội bộ thì bỏ
-   qua và nói rõ vì sao. Còn câu hỏi làm ĐỔI kết quả → interview theo
-   [references/interview.md](references/interview.md), và **vòng scope** đứng trước vòng
-   chi tiết y như lane deep ([references/scope-round.md](references/scope-round.md)).
-2. **Viết mini-spec/plan GỘP 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 dòng: phạm vi
-   in/out, task checkbox mỗi task một test, DoD mỗi dòng kiểm được bằng lệnh.
-   Checkbox có 3 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement
-   (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
-3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
-   và đúng 1 dòng `Ước tính sẽ dùng skill: <các skill sẽ DÙNG, hoặc "không có">` (phân
-   vân → DÙNG).
-4. In đúng dòng: `➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
-5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — im lặng về QC thì QC vẫn BẬT).
-6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
-7. Implement end-to-end trong 1 turn. Mỗi task: đánh `[~]` TRƯỚC khi sửa code (hook
-   `edit_gate` CHẶN nếu plan không có `[~]`; `tests/**` được miễn trừ), red→green, đổi
-   `[x]` NGAY khi test xanh — cấm gom tick cuối turn. Rồi chạy **QC** (mặc định BẬT): mỗi dòng DoD một
-   phép kiểm, ghi bằng chứng vào mục `## QC` của plan. `quick_qc_skipped = true` → mục
-   `## QC` chỉ có 1 dòng `BỎ theo yêu cầu user: "<nguyên văn>"`.
-8. **Vòng fix khi QC FAIL hoặc thấy bug**: thêm task vào plan dưới
-   `## QC vòng N — fix`, fix red→green, chạy lại hạng mục đã FAIL cộng hạng mục mà bản
-   fix có thể làm hỏng. Có trần 3 vòng — vượt trần thì DỪNG, báo user, đề xuất chuyển lane
-   full, giữ nguyên phase.
-9. Append kết quả vào working log; hỏi user có commit không.
+Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chín bước thi hành — từ phân tích tới hỏi
+commit — nằm ở [references/quick-lane.md](references/quick-lane.md) mục
+`## Chín bước thi hành`. **BẮT BUỘC mở file đó và đọc hết chín bước trước khi làm bước 1;
+cấm làm theo trí nhớ.** Cùng file đó có luôn khuôn mini-plan, luật tick, luật QC và vòng fix.
 
 Xong khi: `quick_approved = true`, log đã ghi, mục `## QC` đã có, không còn test đỏ.
 Bước kế tiếp: hỏi user về commit; hết request thì `... set phase=idle`.

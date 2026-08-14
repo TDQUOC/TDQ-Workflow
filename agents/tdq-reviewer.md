@@ -18,3 +18,13 @@ Review for:
 **Ngưỡng digest ≤ 1.500 ký tự** cho final message: cấm dán nguyên văn output của tool hay trích đoạn dài của file được review — mỗi finding tối đa 2 dòng, trỏ `file:dòng` thay vì chép nội dung. Số finding không bị giới hạn: quá ngưỡng thì rút gọn câu chữ, không bỏ finding.
 
 Do NOT edit any file. Return a numbered findings list, most severe first: each item = file/section, problem, concrete suggested fix (1–2 lines). If the document is sound, say so explicitly with what you checked. Findings in Vietnamese.
+
+Return format — copy this shape exactly:
+
+```
+1. [<gaps|contradictions|testability|over-engineering|ordering>] <file>:<dòng>
+   Vấn đề: <1 dòng>
+   Sửa: <1 dòng, cụ thể, sửa được ngay>
+
+KẾT LUẬN: <số finding> finding · đã soát: <danh sách mục đã kiểm>
+```

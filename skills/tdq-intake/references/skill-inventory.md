@@ -1,5 +1,8 @@
 # Kiểm kê năng lực (bước B0)
 
+(nhắc lại có chủ ý — bản gốc ở bước B0 của
+[analyze-full.md](analyze-full.md).)
+
 Mục tiêu: mọi skill/công cụ đang có đều được XÉT một lần. **Xét ≠ ghi ra.**
 Rà thì rà hết; viết vào brief thì chỉ viết dòng có ảnh hưởng tới việc.
 
@@ -7,8 +10,11 @@ Rà thì rà hết; viết vào brief thì chỉ viết dòng có ảnh hưởng
 
 1. Chạy lệnh (in bảng skill trên đĩa) và ĐỌC hết output:
    ```
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py"
+   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py" --loc "<từ khoá của yêu cầu>"
    ```
+   Cờ `--loc` cắt bảng còn phần liên quan, KHÔNG bao giờ ẩn skill nguồn `project` hay
+   `plugin:tdq-workflow`, và dòng cuối luôn báo đã ẩn bao nhiêu. Thấy nghi thiếu thì
+   BẮT BUỘC chạy lại `--tat-ca` rồi mới phán quyết.
 2. Rà thêm các skill built-in đang thấy trong context. Không chép chúng vào brief.
 3. Điền bảng theo khuôn dưới: **một dòng cho mỗi skill `DÙNG` hoặc `NỀN`**, cộng đúng
    một dòng tổng cho toàn bộ phần còn lại.

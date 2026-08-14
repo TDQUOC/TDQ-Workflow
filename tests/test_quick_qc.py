@@ -22,8 +22,10 @@ N1 = os.path.join(ROOT, "skills", "tdq-intake", "references", "quick-lane.md")
 N2 = os.path.join(ROOT, "skills", "tdq-intake", "SKILL.md")
 N4_PHASES = os.path.join(ROOT, "skills", "tdq-conventions", "references", "phases.md")
 
-# 2 file văn bản người đọc (N1, N2) phải cùng nêu luật vòng fix.
-LAW_DOCS = (N1, N2)
+# Luật vòng fix phát biểu ĐỦ ở N1; từ Đ3 (0.16.0) N2 chỉ còn dòng trỏ sang N1 để thân
+# skill khỏi nạp nhánh quick mỗi lần gọi. Bất biến "luật không được biến mất" vẫn kiểm:
+# N1 phải nêu đủ, N2 phải trỏ đúng chỗ (test_skill_body_points_to_quick_lane).
+LAW_DOCS = (N1,)
 
 FIX_CAP = "trần 3 vòng"
 FIX_HEADING = "QC vòng N — fix"
@@ -45,6 +47,12 @@ class QuickQcDocTest(unittest.TestCase):
         text = read(N1)
         self.assertIn("số hạng mục bằng số dòng DoD", text)
         self.assertNotIn("3 hạng mục", text)
+
+    def test_skill_body_points_to_quick_lane(self):
+        # N2 không còn chép luật, nhưng BẮT BUỘC trỏ sang mục chín bước ở N1.
+        text = read(N2)
+        self.assertIn("references/quick-lane.md", text)
+        self.assertIn("Chín bước thi hành", text)
 
     def test_law_docs_rerun_only_failed_items(self):
         # Vòng fix không chạy lại toàn bộ nữa — chỉ hạng mục FAIL + hạng mục bị ảnh hưởng.

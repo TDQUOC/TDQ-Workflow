@@ -269,5 +269,79 @@ class SanitizeTest(InventoryBase):
         self.assertNotIn("\x07", out)
 
 
+class FilterFlagTest(InventoryBase):
+    """Đ1 (0.16.0) — cờ `--loc` cắt output kiểm kê mà không giấu nguồn quan trọng.
+
+    Luật: bảng đầy đủ ≈ 39.7KB mỗi lần chạy B0. `--loc <từ khoá>` giữ dòng khớp từ khoá
+    CỘNG mọi dòng nguồn `project` và `plugin:tdq-workflow` (hai nguồn không được phép ẩn),
+    và BẮT BUỘC in một dòng cuối nói đã ẩn bao nhiêu skill + đúng lệnh xem đủ.
+    """
+
+    def scene(self):
+        """6 skill: 1 khớp từ khoá, 3 không khớp, 1 nguồn project, 1 plugin tdq-workflow.
+
+        Ba dòng không khớp (chứ không phải một) để phép so "ít dòng hơn" còn đúng sau khi
+        bản lọc cộng thêm dòng nhắc cuối — đúng tỉ lệ thật: ẩn nhiều, nhắc một dòng.
+        """
+        self.write("home/.claude/skills/alpha-workflow/SKILL.md",
+                   skill_md("alpha-workflow", "chạy workflow nội bộ"))
+        for i in ("", "-2", "-3"):
+            self.write(f"home/.claude/skills/zeta-khac{i}/SKILL.md",
+                       skill_md(f"zeta-khac{i}", "việc hoàn toàn khác"))
+        self.write("proj/.claude/skills/gamma-du-an/SKILL.md",
+                   skill_md("gamma-du-an", "việc hoàn toàn khác"))
+        root = self.plugin_cache("tdq-workflow", "0.16.0", ["tdq-build"])
+        self.settings("user", {"tdq-workflow@mk": True})
+        self.installed({"tdq-workflow@mk": [{"installPath": root, "scope": "user"}]})
+
+    def test_loc_prints_fewer_lines_than_default(self):
+        self.scene()
+        _, full, _ = self.run_inv()
+        rc, small, _ = self.run_inv("--loc", "workflow")
+        self.assertEqual(rc, 0, small)
+        self.assertLess(len(small.splitlines()), len(full.splitlines()), small)
+
+    def test_loc_keeps_project_and_tdq_workflow_sources(self):
+        self.scene()
+        _, out, _ = self.run_inv("--loc", "workflow")
+        self.assertIn("alpha-workflow", out)      # khớp từ khoá
+        self.assertIn("gamma-du-an", out)         # nguồn project — cấm ẩn
+        self.assertIn("tdq-build", out)           # plugin:tdq-workflow — cấm ẩn
+        self.assertNotIn("zeta-khac", out)        # không khớp, nguồn user → ẩn
+
+    def test_loc_last_line_reports_hidden_count_and_full_command(self):
+        self.scene()
+        _, out, _ = self.run_inv("--loc", "workflow")
+        last = out.strip().splitlines()[-1]
+        self.assertIn("3", last, last)            # đúng 3 skill bị ẩn
+        self.assertIn("--tat-ca", last, last)
+
+
+class FullOutputUnchangedTest(InventoryBase):
+    """Đ1 — hành vi mặc định phải y hệt bản trước khi thêm cờ; `--tat-ca` = mặc định."""
+
+    def scene(self):
+        self.write("home/.claude/skills/alpha-workflow/SKILL.md",
+                   skill_md("alpha-workflow", "chạy workflow nội bộ"))
+        self.write("home/.claude/skills/zeta-khac/SKILL.md",
+                   skill_md("zeta-khac", "việc hoàn toàn khác"))
+        self.write("proj/.claude/skills/gamma-du-an/SKILL.md", skill_md("gamma-du-an"))
+
+    def test_tat_ca_equals_default_byte_for_byte(self):
+        self.scene()
+        rc_a, default, _ = self.run_inv()
+        rc_b, tat_ca, _ = self.run_inv("--tat-ca")
+        self.assertEqual(rc_a, 0)
+        self.assertEqual(rc_b, 0, tat_ca)
+        self.assertEqual(default, tat_ca)
+
+    def test_default_has_no_hidden_notice(self):
+        self.scene()
+        _, out, _ = self.run_inv()
+        self.assertIn("zeta-khac", out)
+        self.assertNotIn("--tat-ca", out)
+        self.assertEqual(out.strip().splitlines()[-1], REMINDER_2)
+
+
 if __name__ == "__main__":
     unittest.main()

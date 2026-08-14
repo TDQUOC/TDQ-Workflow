@@ -12,7 +12,12 @@ Quét đúng 3 nguồn — KHÔNG quét cache (cache giữ mọi version cũ, ra
 Skill BUILT-IN của Claude Code không nằm trên đĩa (đo thật: đĩa 7 / context 18),
 nên cuối bảng luôn in 2 dòng nhắc model tự chép phần đó từ context.
 
-Cách dùng:  python3 scripts/skill_inventory.py [--project <dir>]
+Cách dùng:  python3 scripts/skill_inventory.py [--project <dir>] [--loc <từ khoá>] [--tat-ca]
+Không cờ = bảng đầy đủ (hành vi gốc, ~39,7KB trên máy thật ≈ 9.774 token mỗi lần
+chạy B0). `--loc <từ khoá>` chỉ giữ dòng khớp từ khoá, CỘNG mọi dòng nguồn
+`project` và `plugin:tdq-workflow` — hai nguồn quyết định phán quyết DÙNG nên
+cấm ẩn — rồi in một dòng cuối báo đã ẩn bao nhiêu và lệnh xem đủ. `--tat-ca`
+in đủ như mặc định (để dòng nhắc kia trỏ tới một lệnh có thật).
 Exit 0 cho mọi trục trặc dữ liệu (thiếu file, JSON hỏng → cảnh báo rồi in phần
 còn lại); exit 2 chỉ khi sai cú pháp lệnh — cùng hợp đồng với tdq_state.py.
 """
@@ -49,7 +54,13 @@ REMINDER = (
     "— CHÉP THÊM các skill built-in đang thấy trong context "
     "vào bảng kiểm kê rồi phán quyết từng dòng.",
 )
-USAGE = "Cách dùng: skill_inventory.py [--project <dir>]"
+USAGE = ("Cách dùng: skill_inventory.py [--project <dir>] "
+         "[--loc <từ khoá>] [--tat-ca]")
+# Nguồn KHÔNG bao giờ bị `--loc` ẩn: skill của chính project và của plugin
+# tdq-workflow là hai nguồn quyết định phán quyết DÙNG ở bước B0.
+KEEP_SOURCES = ("project",)
+KEEP_SOURCE_PREFIX = "plugin:tdq-workflow"
+FULL_CMD = "python3 scripts/skill_inventory.py --tat-ca"
 
 
 def _load_json(path, missing_ok=False):
@@ -193,20 +204,45 @@ def inventory(project):
     return rows
 
 
+def _filter(rows, keyword):
+    """(dòng giữ lại, số dòng bị ẩn) — khớp từ khoá HOẶC thuộc nguồn cấm ẩn."""
+    needle = keyword.casefold()
+    kept, hidden = [], 0
+    for name, desc, source in rows:
+        protected = source in KEEP_SOURCES or source.startswith(KEEP_SOURCE_PREFIX)
+        if protected or needle in f"{name} {desc}".casefold():
+            kept.append((name, desc, source))
+        else:
+            hidden += 1
+    return kept, hidden
+
+
 def main(argv):
     # A23: neo theo project thật (TDQ_PROJECT_DIR > git root > cwd) — chạy từ
     # thư mục con không được mất nguồn skill `project`.
     project = tdq_state.resolve_project_dir()
+    keyword = ""
+    show_all = False
     args = list(argv)
     while args:
         arg = args.pop(0)
         if arg == "--project" and args:
             project = args.pop(0)
+        elif arg == "--loc" and args:
+            keyword = args.pop(0)
+        elif arg == "--tat-ca":
+            show_all = True
         else:
             print(f"đối số không hiểu: {arg}", file=sys.stderr)
             print(USAGE, file=sys.stderr)
             return 2
     rows = inventory(project)
+    # `--tat-ca` thắng `--loc`: người gõ cả hai đang muốn xem đủ.
+    hidden = 0
+    if keyword and not show_all:
+        rows, hidden = _filter(rows, keyword)
+        tdq_state._info(
+            f"skill_inventory: lọc theo {keyword!r} — giữ {len(rows)}, ẩn {hidden}")
     if rows:
         for name, desc, source in rows:
             print(f"{name} | {desc} | {source}")
@@ -214,6 +250,10 @@ def main(argv):
         print("(không có skill nào trên đĩa)")
     for line in REMINDER:
         print(line)
+    if keyword and not show_all:
+        # Dòng cuối BẮT BUỘC: bảng đã bị cắt thì người đọc phải thấy ngay đã mất bao
+        # nhiêu và lệnh nào xem đủ — cắt token nhưng không giấu chuyện đã cắt.
+        print(f'— Đã ẩn {hidden} skill không khớp "{keyword}"; xem đủ: {FULL_CMD}')
     return 0
 
 

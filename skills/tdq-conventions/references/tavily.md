@@ -1,7 +1,5 @@
 # Tavily power usage
 
-Layering: Tavily is the search tier for this workflow. Heavy research runs in a separate sub-agent so raw results stay out of the main conversation.
-
 Primary/backup discipline: `tavily-primary` first for every call; on connection/auth/timeout/quota/tool error call the same tool on `tavily-backup` exactly once. Empty results are NOT errors — refine the query on primary instead of failing over. Never call primary and backup in parallel for the same query.
 
 Last resort: use the built-in `WebSearch` only after BOTH primary and backup have failed — state the error in one line, ask the user for permission and WAIT for approval. `WebFetch` needs no failover: use it directly on a known URL.
@@ -25,3 +23,7 @@ Last resort: use the built-in `WebSearch` only after BOTH primary and backup hav
 - Search before crawl; crawl only when ≥3 pages of one site are needed.
 - Cap: ~6 primary calls per analysis round; if still unclear, ask the user instead of burning more calls.
 - Never echo API keys or auth headers into notes, logs, or prompts.
+
+## Phụ lục
+
+Layering: Tavily is the search tier for this workflow. Heavy research runs in a separate sub-agent so raw results stay out of the main conversation.

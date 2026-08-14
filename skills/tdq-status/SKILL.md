@@ -5,7 +5,8 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
 
 # TDQ Status
 
-Đọc state, báo bằng **tiếng Việt**, ≤ 10 dòng. Chỉ đọc, không ghi gì vào state.
+Đọc state, báo bằng **tiếng Việt** (nhắc lại có chủ ý — bản gốc ở
+`skills/tdq-conventions/SKILL.md`), ≤ 10 dòng. Chỉ đọc, không ghi gì vào state.
 
 ## Các bước
 

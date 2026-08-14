@@ -26,7 +26,9 @@ Hook `Stop` chặn kết thúc turn khi: turn này **đã sửa file ngoài** `d
 mà **chưa** append working log hôm nay. Cách gỡ: append entry rồi kết thúc lại.
 Mọi mã khác chỉ nhắc, không chặn.
 
-## Hook nhìn thấy thay đổi bằng cách nào
+## Phụ lục
+
+### Hook nhìn thấy thay đổi bằng cách nào
 
 Hai nguồn bằng chứng độc lập, chỉ cần một nguồn xác nhận là đủ:
 

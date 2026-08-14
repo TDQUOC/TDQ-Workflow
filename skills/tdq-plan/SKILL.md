@@ -5,7 +5,8 @@ description: Biến spec thành plan checkbox, mỗi task một test: DỪNG ch�
 
 # TDQ Plan
 
-Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Plan viết **tiếng Việt**.
+Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Plan viết **tiếng Việt**
+(nhắc lại có chủ ý — bản gốc ở `skills/tdq-conventions/SKILL.md`).
 Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY trong cùng turn.
 
 ## Các bước

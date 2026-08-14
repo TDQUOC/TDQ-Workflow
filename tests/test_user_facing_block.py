@@ -20,7 +20,9 @@ POINTERS = (
     ("tdq-conventions", "SKILL.md"),
     ("tdq-spec", "SKILL.md"),
     ("tdq-plan", "SKILL.md"),
-    ("tdq-build", "SKILL.md"),
+    # Khối hỏi commit của tdq-build nằm ở references/report-template.md từ Đ3
+    # (thân SKILL.md chỉ còn dòng trỏ) — kiểm đúng chỗ đang giữ khuôn.
+    ("tdq-build", "references", "report-template.md"),
     ("tdq-intake", "references", "lane-decision.md"),
     ("tdq-intake", "references", "interview.md"),
     ("tdq-intake", "references", "quick-lane.md"),

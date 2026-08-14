@@ -5,7 +5,8 @@ description: Viết spec tiếng Việt cho request TDQ, đăng ký vào state, 
 
 # TDQ Spec
 
-Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Việt**.
+Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Việt**
+(nhắc lại có chủ ý — bản gốc ở `skills/tdq-conventions/SKILL.md`).
 
 ## Các bước
 

@@ -16,3 +16,16 @@ Do:
 5. **Ngưỡng digest ≤ 1.500 ký tự** cho final message: cấm dán nguyên văn output của lệnh test — mỗi chứng cứ chỉ trích ≤ 2 dòng quyết định (dòng `OK`/`FAILED`/dòng lỗi). Chứng cứ dài viết vào `docs/tdq/qc/<slug>.md` rồi trả đường dẫn; chất lượng kiểm tra không được cắt, chỉ phần dán lại là cắt.
 
 Return: verdict table — DoD item / check → PASS or FAIL → evidence (command + output excerpt); then a list of defects found (severity, repro steps, suspected location) in Vietnamese. If everything passes, state PASS explicitly with the full list of what was executed.
+
+Return format — copy this shape exactly:
+
+```
+| # | Hạng mục DoD | Lệnh đã chạy | Trích output | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | <nguyên văn dòng DoD> | <lệnh> | <≤ 2 dòng> | PASS |
+
+DEFECTS:
+1. <mức độ> — <triệu chứng> — repro: <lệnh> — nghi ở: <file:dòng>
+
+VERDICT: PASS toàn bộ | FAIL: <danh sách mã hạng mục>
+```

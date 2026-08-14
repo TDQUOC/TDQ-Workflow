@@ -1,5 +1,48 @@
 # Khuôn report
 
+## Bốn bước thi hành
+
+Đây là toàn bộ Phần C của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải
+nạp nhánh này mỗi lần gọi. Vào phase `report` là **bắt buộc** đọc hết bốn bước dưới đây
+trước khi viết report; cấm làm theo trí nhớ.
+
+7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng, khuyến
+   nghị ~10-20 dòng. Khuôn: mục `## Khuôn` cùng file này.
+
+8. Đóng sổ: tick nốt checkbox còn sót, đổi header plan thành HOÀN THÀNH, rồi chạy
+   `tdq_finish.py --files <file vừa sửa> --log "<tóm tắt report>"` (working log + graphify).
+
+9. Trình report trong chat (nguyên văn hoặc tóm tắt ngắn gọn + đường dẫn).
+
+10. **Hỏi user có commit không** — bắt buộc, không tự commit thành quả cuối (ngoại lệ duy
+    nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). Gộp chung
+    với bước 9 thành MỘT khối theo
+    [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md):
+    ```
+    Tôi đã làm xong yêu cầu của bạn.
+
+    Đã làm: <gạch đầu dòng ngắn>.
+    Kết quả kiểm: <số hạng mục QC, kết quả test>.
+
+    Xem đầy đủ tại: docs/tdq/reports/<slug>.md
+
+    ---
+
+    **Bạn có muốn tôi commit phần thay đổi này không?**
+
+    ➤ Trả lời: nhắn "commit" (tôi commit, không push) hoặc "chưa" (giữ nguyên chỗ làm việc) · Góp ý: nhắn trực tiếp
+    ```
+    User đồng ý → message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI;
+    branch theo quy ước.
+
+Xong khi: report đã ghi và user đã được hỏi về commit.
+Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`
+(hoặc `reset` nếu user muốn xoá hẳn để sang request mới).
+
+## Khuôn
+
+(nhắc lại có chủ ý — bản gốc ở bước 7 mục `## Bốn bước thi hành` cùng file này.)
+
 `docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng. Khuyến nghị
 **càng ngắn càng tốt, tầm 10-20 dòng là ổn**; dài hơn thì nói rõ vì sao (nhiều đề xuất,
 nhiều task…) thay vì cắt bớt sự thật. Dồn mỗi mục thành MỘT dòng, ngăn ý bằng dấu `·`,
