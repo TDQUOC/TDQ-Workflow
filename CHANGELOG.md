@@ -2,6 +2,24 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.15.1 — 2026-08-14
+
+Bản tài liệu: đề xuất cơ chế chống quick-fix phá kiến trúc. Chưa đụng file thực thi nào
+trong `skills/`, `scripts/`, `hooks/` — việc áp cơ chế vào workflow là request riêng.
+
+- `docs/tdq/knowledge/2026-08-14-chong-no-ky-thuat.md` (mới): 4 khoảng trống đo được của
+  workflow hiện tại, kèm bằng chứng `file:line`. Cộng 6 cơ chế M1–M6; mỗi cơ chế có
+  nguyên văn dòng luật copy dán được, chỗ chèn `file:mục`, mức chi phí A/B, một lệnh kiểm.
+- M1 hồ sơ kiến trúc mỗi project · M2 ô "Ràng buộc kiến trúc phải giữ" trong spec §5 ·
+  M3 luật "tìm rồi mới tạo" thay dòng implement cũ · M4 khai `Chạm:` bằng
+  `graphify affected` trong plan · M5 ba hạng mục QC cố định chống hồi quy (nới luật "số
+  hạng mục QC = số dòng DoD") · M6 cổng trùng lặp `jscpd` (mức B, tuỳ chọn).
+- Ba gói cộng dồn theo chi phí, khuyến nghị **Gói vừa** (M1–M5, toàn mức A, không script,
+  không cổng duyệt mới). Kèm bản rút gọn cho pipeline express và phần tách rõ chỗ nào
+  độc lập ngôn ngữ khi áp cho project khác (Unity, game).
+- Số liệu lấy từ chạy thật: `grep` trên 1.844 dòng skill, `graphify god-nodes`,
+  `graphify affected "payload_cwd"`, `jscpd` 5.0.15 (72 cặp trùng, 1.82% token, exit 0).
+
 ## 0.15.0 — 2026-08-14
 
 Interview đi hai tầng: hỏi phạm vi tổng quát trước, rồi mới hỏi chi tiết trong đúng
