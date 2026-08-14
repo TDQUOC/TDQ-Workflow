@@ -310,3 +310,44 @@ class PairTest(LintBase):
         plan = PLAN_CONTRACT_OK.replace("  - Dùng: `dataviz`\n", "  - Dùng: `dataviz` (mcp)\n")
         code, out = self.pair(SPEC_3B_OK, plan)
         self.assertEqual(code, 0, out)
+
+
+RULE_3_MUC_OK = """# Luật mẫu
+
+## Khi nào áp dụng
+
+- Thấy file đuôi `.py` trong danh sách file đổi.
+
+## Làm gì
+
+1. Chạy `ruff check <file>`.
+2. Sửa từng dòng ruff báo, chạy lại đến khi sạch.
+
+## Tự kiểm
+
+- `ruff check <file>` exit 0.
+"""
+RULE_THIEU_MUC = RULE_3_MUC_OK.replace("## Tự kiểm", "## Ghi chú")
+
+
+class R9Test(LintBase):
+    """R9 chỉ soi soul.md + references/rules/ — khuôn 3 mục cho model yếu nhất."""
+
+    def test_r9_soul_thieu_muc(self):
+        self.assert_hits(self.write("soul.md", RULE_THIEU_MUC), "R9")
+
+    def test_r9_rules_dir_thieu_muc(self):
+        path = os.path.join("references", "rules", "python.md")
+        self.assert_hits(self.write(path, RULE_THIEU_MUC), "R9")
+
+    def test_r9_du_muc_sach(self):
+        self.assert_clean(self.write("soul.md", RULE_3_MUC_OK))
+        self.assert_clean(
+            self.write(os.path.join("references", "rules", "go.md"), RULE_3_MUC_OK))
+
+    def test_r9_ngoai_pham_vi_khong_soi(self):
+        self.assert_clean(self.write("huong-dan.md", RULE_THIEU_MUC))
+
+    def test_r9_heading_trong_fence_khong_tinh(self):
+        gia = "# Luật\n\n```\n## Khi nào áp dụng\n## Làm gì\n## Tự kiểm\n```\n"
+        self.assert_hits(self.write("soul.md", gia), "R9")

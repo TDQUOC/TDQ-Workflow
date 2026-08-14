@@ -6,6 +6,7 @@ Copy nguyên khối vào `docs/tdq/plan/<slug>.md` rồi điền.
 # PLAN — <tên việc>
 
 Ngày: YYYY-MM-DD · Spec: ../spec/<slug>.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: main — <lý do 1–2 câu> (ĐỀ XUẤT, user chốt lúc duyệt)
 Trạng thái plan: CHỜ DUYỆT
 
@@ -26,6 +27,14 @@ Trạng thái plan: CHỜ DUYỆT
 
 ## P2 — <tên phase>
 - [ ] **T2.1** (n8 e20m) <...> — Test: <...>
+
+## Dòng `Chạm:` (đặt NGAY DƯỚI dòng task sửa file mã nguồn ĐÃ CÓ)
+- [ ] **T<x.y>** <việc sửa hàm/file sẵn có> — Test: <...>
+  - Chạm: <hàm/file bị sửa> → <node bị ảnh hưởng> (nguồn: `graphify affected "<X>" --depth 2`)
+
+Không node nào phụ thuộc → ghi `Chạm: <X> → không node nào phụ thuộc`. Task tạo file
+mới hay chỉ sửa tài liệu thì bỏ dòng này. Node nằm trong mục `## Hub` của
+`docs/kien-truc.md` → task phải thêm một dòng DoD kiểm hồi quy riêng cho node ấy.
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>

@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-14)
 
 ## Corpus Check
-- 27 files · ~33,787 words
+- 28 files · ~34,704 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 467 nodes · 910 edges · 14 communities
+- 476 nodes · 921 edges · 15 communities
 - Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.7)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6df657ed`
+- Built from commit: `49d28e88`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -29,9 +29,10 @@
 - plugin_tiers.py
 - Chapter
 - tdq-workflow — Plugin Claude Code
+- quet
 
 ## God Nodes (most connected - your core abstractions)
-1. `Changelog` - 30 edges
+1. `Changelog` - 31 edges
 2. `main()` - 20 edges
 3. `cli()` - 17 edges
 4. `log()` - 17 edges
@@ -57,7 +58,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (14 total, 0 thin omitted)
+## Communities (15 total, 0 thin omitted)
 
 ### Community 0 - "canvas_a4_rebuild.py"
 Cohesion: 0.08
@@ -73,7 +74,7 @@ Nodes (55): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng 
 
 ### Community 3 - "Changelog"
 Cohesion: 0.05
-Nodes (37): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09 (+29 more)
+Nodes (38): 0.10.0 — 2026-08-09, 0.11.0 — 2026-08-09, 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.1 — 2026-08-09, 0.11.2 — 2026-08-09 (+30 more)
 
 ### Community 4 - "doc_lint.py"
 Cohesion: 0.09
@@ -115,8 +116,12 @@ Nodes (4): Chapter, Trả danh sách (x, w) cho `count` thẻ dàn đều hết 
 Cohesion: 0.22
 Nodes (8): Cài đặt (chỉ trong repo/project), Cách hook điều khiển agent, Cấu trúc, Duyệt bằng chat thường, Dùng hằng ngày, Pipeline, Quy ước cứng, tdq-workflow — Plugin Claude Code
 
+### Community 17 - "quet"
+Cohesion: 0.36
+Nodes (7): khoi_mau(), la_ky_hieu(), main(), quet(), True khi ch là dấu câu/ký hiệu ngoài ASCII — thứ whitelist phải quản., Nội dung các khối ``` trong file — đây mới là phần THẬT SỰ in ra cho user., {ký tự: (tổng số lần, {file: số lần})} cho mọi ký hiệu ngoài ASCII.
+
 ## Knowledge Gaps
-- **38 isolated node(s):** `0.16.0 — 2026-08-14`, `0.15.1 — 2026-08-14`, `0.15.0 — 2026-08-14`, `0.14.0 — 2026-08-14`, `0.13.0 — 2026-08-14` (+33 more)
+- **39 isolated node(s):** `0.17.0 — 2026-08-14`, `0.16.0 — 2026-08-14`, `0.15.1 — 2026-08-14`, `0.15.0 — 2026-08-14`, `0.14.0 — 2026-08-14` (+34 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 
 ## Suggested Questions
@@ -125,11 +130,11 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `main()` connect `_common.py` to `tdq_state.py`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Why does `turn_log_append()` connect `_common.py` to `tdq_state.py`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **Are the 11 inferred relationships involving `main()` (e.g. with `effective_lane()` and `effective_mode()`) actually correct?**
   _`main()` has 11 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `0.16.0 — 2026-08-14`, `0.15.1 — 2026-08-14`, `0.15.0 — 2026-08-14` to the rest of the system?**
-  _38 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.17.0 — 2026-08-14`, `0.16.0 — 2026-08-14`, `0.15.1 — 2026-08-14` to the rest of the system?**
+  _39 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.08176100628930817 - nodes in this community are weakly interconnected._
 - **Should `claude_export.py` be split into smaller, more focused modules?**

@@ -8,8 +8,9 @@ QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
 nạp nhánh này mỗi lần gọi. Vào phase `qc` là **bắt buộc** đọc hết ba bước dưới đây trước
 khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.
 
-4. **Số hạng mục QC = số dòng Definition of Done**, cộng đúng một lần chạy full suite.
-   Mỗi dòng DoD một phép kiểm bằng lệnh; không thêm hạng mục ngoài DoD.
+4. **Số hạng mục QC = số dòng Definition of Done**, cộng ba hạng mục cố định QC-F1→F3
+   và scan clean code khi spec ghi BẬT. Mỗi dòng DoD một phép kiểm bằng lệnh; ngoài các
+   hạng mục cố định, không thêm gì ngoài DoD.
    Chi tiết: mục `## Chạy cái gì` cùng file này. Việc lớn hoặc rủi ro cao → gọi thêm
    agent `tdq-qc-tester` cho một lượt kiểm độc lập.
 
@@ -29,15 +30,23 @@ Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set p
 
 ## Chạy cái gì
 
-**Số hạng mục QC = số dòng Definition of Done của plan.** Mỗi dòng DoD đúng một phép
-kiểm chạy được bằng lệnh, dán output thật. Không thêm hạng mục ngoài DoD, không bớt
-dòng DoD nào. DoD có dòng không kiểm được bằng lệnh → đó là lỗi của plan, sửa dòng đó
-cho đo được rồi mới QC.
+**Số hạng mục QC = số dòng Definition of Done của plan, cộng ba hạng mục cố định.**
+Mỗi dòng DoD đúng một phép kiểm chạy được bằng lệnh, dán output thật. Không bớt dòng
+DoD nào. DoD có dòng không kiểm được bằng lệnh → đó là lỗi của plan, sửa dòng đó cho
+đo được rồi mới QC. Ba hạng mục cố định luôn chạy, không phụ thuộc DoD:
 
-Cộng thêm đúng một hạng mục cố định: **toàn bộ test suite** bằng đúng lệnh ghi trong
-plan, dán số pass/fail thật. Suite dài → chạy chế độ tóm tắt để khỏi dán log dài:
-`<lệnh test> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`. Chỉ dán nguyên văn
-khi có FAIL cần bằng chứng.
+- QC-F1 — toàn bộ test suite bằng đúng lệnh ghi trong plan, dán số pass/fail thật.
+  Suite dài → `<lệnh test> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`, chỉ
+  dán nguyên văn khi có FAIL cần bằng chứng.
+- QC-F2 — hồi quy vùng chạm: với mỗi dòng `Chạm:` trong plan, chạy test của module
+  chứa node bị ảnh hưởng. Node không có test → ghi `KHÔNG CÓ TEST: <node>` vào file
+  QC; đó là nợ kỹ thuật phải nêu trong report, không được tính là PASS.
+- QC-F3 — ràng buộc kiến trúc: mỗi dòng trong khối "Ràng buộc kiến trúc phải giữ" ở
+  spec §5 là một phép kiểm rằng bản thay đổi không phá dòng đó.
+- Spec §4 ghi `Clean code: BẬT` → thêm đúng một hạng mục chạy
+  `python3 scripts/code_rule_scan.py` trên file đã đổi, fix tới khi hết LỖI; TẮT thì bỏ.
+
+Ngoài các hạng mục trên, không thêm hạng mục nào ngoài DoD.
 
 Các thứ dưới đây **chỉ kiểm khi DoD chạm tới**, đừng chạy cho đủ bộ:
 
@@ -58,6 +67,7 @@ Các thứ dưới đây **chỉ kiểm khi DoD chạm tới**, đừng chạy c
 ```markdown
 # QC — <tên việc>
 Ngày: YYYY-MM-DD · Plan: ../plan/<slug>.md · Vòng: 1
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
 | # | Hạng mục | Lệnh đã chạy | Kết quả | PASS/FAIL |
 |---|---|---|---|---|

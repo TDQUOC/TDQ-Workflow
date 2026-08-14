@@ -34,7 +34,10 @@ request đang chạy (duyệt, góp ý, trả lời interview), không mở requ
    `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Brief là file DUY NHẤT của phase intake +
    analyze, đúng 3 mục: `## Nguyên văn` (nguyên văn yêu cầu user + cách hiểu đầu tiên
    của bạn: mục tiêu, phạm vi đoán, chỗ chưa rõ), `## Hiểu & kiến thức`, `## Hỏi đáp`.
-   Ở bước này chỉ viết mục đầu; hai mục sau để trống, Phần B điền.
+   Ở bước này chỉ viết mục đầu; hai mục sau để trống, Phần B điền. Dòng 2 của brief —
+   ngay dưới tiêu đề — copy nguyên văn dòng sau (spec/plan/qc/report cũng mang dòng này):
+
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
 2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Tự nhận định
    cỡ/nhu cầu (`Cỡ:/Cần:`) là bước NỘI BỘ — dùng để chọn phương án đề xuất, KHÔNG in dòng

@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1786692753.75085,
-    "ast_hash": "65b9a266f01d555e28ab1b37980d0232",
-    "semantic_hash": "65b9a266f01d555e28ab1b37980d0232"
+    "mtime": 1786700393.0508077,
+    "ast_hash": "c11a50163e689ecfbb28441749492d01",
+    "semantic_hash": "c11a50163e689ecfbb28441749492d01"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -95,9 +95,9 @@
     "semantic_hash": "bd58cf3f1035d57a6675fc51dc5d08cf"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1786212070.1531224,
-    "ast_hash": "8827943de830b283e50a53b351dcbc1f",
-    "semantic_hash": "8827943de830b283e50a53b351dcbc1f"
+    "mtime": 1786722105.215385,
+    "ast_hash": "e48bfaa8d305f4b5e639116160282e23",
+    "semantic_hash": "e48bfaa8d305f4b5e639116160282e23"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1785397811.0780556,
@@ -125,8 +125,8 @@
     "semantic_hash": "df07270f1a098f7d6eeed3e3c1a6eb95"
   },
   "CHANGELOG.md": {
-    "mtime": 1786692776.078652,
-    "ast_hash": "646923664675403c9eabb02c8dcb31e5",
+    "mtime": 1786700393.0511658,
+    "ast_hash": "348e302ec0ebd6cbbc0ffc4cb5e3a765",
     "semantic_hash": ""
   },
   "README.md": {
@@ -138,5 +138,10 @@
     "mtime": 1786698418.6984968,
     "ast_hash": "523108b0a3b3ae4543f850dd62c51bfb",
     "semantic_hash": "523108b0a3b3ae4543f850dd62c51bfb"
+  },
+  "scripts/code_rule_scan.py": {
+    "mtime": 1786724571.3892434,
+    "ast_hash": "946877e57f0ce361e5b28e8410cd94eb",
+    "semantic_hash": "946877e57f0ce361e5b28e8410cd94eb"
   }
 }

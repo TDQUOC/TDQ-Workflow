@@ -102,6 +102,9 @@ mục. `brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file, 
 
 ## 8. Chất lượng
 
+- Soul — luật gốc đứng trên mọi luật: chất lượng > runtime > context cost. Hạ chất
+  lượng để đổi lấy tốc độ hay token là sai. Hai luật đá nhau → luật phục vụ tầng cao
+  hơn thắng. Bản gốc: `skills/tdq-conventions/references/soul.md` (repo TDQWorkflow).
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật. Thiếu
   thông tin → hỏi user, đừng đoán.
 - Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt
@@ -110,8 +113,8 @@ mục. `brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file, 
 
 ## Không có ở bản portable này
 
-So với plugin Claude Code, bản này **không có**: hook nhắc `[TDQ:*]`, `tdq_finish.py`
-gộp 4 việc trong 1 lệnh (bạn tự làm từng bước: lint nếu có, append log, set phase),
-sub-agent chuyên biệt (`tdq-implementer`/`tdq-qc-tester`/`tdq-reviewer` — mode `subagent`
-vẫn dùng được nếu harness hỗ trợ gọi agent phụ, tự áp luật tương đương). Mọi phần khác
-của workflow (lane, gate duyệt, QC, DoD) giữ nguyên hành vi.
+So với plugin Claude Code, bản này **không có**: hook nhắc `[TDQ:*]`, và `tdq_finish.py`
+gộp 4 việc trong 1 lệnh — bạn tự làm từng bước: lint, append log, set phase. Cũng không
+có sub-agent chuyên biệt (`tdq-implementer`/`tdq-qc-tester`/`tdq-reviewer`). Mode
+`subagent` vẫn dùng được khi harness hỗ trợ gọi agent phụ, tự áp luật tương đương.
+Mọi phần khác của workflow (lane, gate duyệt, QC, DoD) giữ nguyên hành vi.

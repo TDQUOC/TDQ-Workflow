@@ -273,7 +273,39 @@ def rule_r8(doc, out):
             _report(out, doc, i, "R8", "lý do loại không thuộc 4 lý do đóng")
 
 
-RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8]
+# ------------------------------------- R9: file luật phải đủ khuôn 3 mục (soul §3)
+
+# Ba mục bắt buộc của một file luật — heading cấp 2, so không phân biệt hoa thường.
+RULE_SECTIONS = ("khi nào áp dụng", "làm gì", "tự kiểm")
+# Phạm vi R9 đóng đinh vào soul.md + thư viện rule; áp rộng hơn sẽ đỏ oan file cũ
+# viết theo khuôn khác (spec 2026-08-14-set-soul-workflow §3).
+RULES_DIR_MARK = f"{os.sep}references{os.sep}rules{os.sep}"
+
+
+def _r9_in_scope(path):
+    abs_path = os.path.abspath(path)
+    return os.path.basename(abs_path) == "soul.md" or RULES_DIR_MARK in abs_path
+
+
+def rule_r9(doc, out):
+    """soul.md + references/rules/*: đủ `## Khi nào áp dụng / Làm gì / Tự kiểm`."""
+    if not _r9_in_scope(doc.path):
+        return
+    have = set()
+    for i, line in enumerate(doc.lines):
+        if doc.in_fence[i]:
+            continue
+        m = HEADING.match(line)
+        if m and len(m.group(1)) == 2:
+            have.add(m.group(2).strip().lower())
+    for need in RULE_SECTIONS:
+        if need not in have:
+            out.append(f"{doc.path}:1: [R9] file luật thiếu mục `## {need}` "
+                       "— khuôn 3 mục là bắt buộc (soul nguyên tắc 3)")
+
+
+RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8,
+         rule_r9]
 
 # Thư mục chứa biên bản / file máy sinh — chỉ chịu R8, xem lint_file().
 OUTPUT_DIRS = (os.path.join("docs", "tdq"), os.path.join("docs", "workinglog"),

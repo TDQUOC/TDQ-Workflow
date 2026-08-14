@@ -48,7 +48,10 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
    2. Task có khối `Dùng:` → NẠP skill đó ngay (theo trường `Nạp`), làm đúng trường `Để`,
       không lan sang việc ghi ở `Không dùng cho`. Không có khối → bỏ qua bước này.
    3. Đỏ: chạy check của task → xác nhận fail (hoặc viết test fail trước).
-   4. Code: thay đổi nhỏ nhất mà đủ thoả task. Bám style code sẵn có.
+   4. Code: thay đổi nhỏ nhất đủ thoả task, bám style sẵn có. **Tìm rồi mới tạo:**
+      sắp tạo file/class/hàm/hằng MỚI → một lượt `graphify query "<tên>"` hoặc grep tên
+      + 2 đồng nghĩa; thấy thứ gần giống vẫn tạo → ghi vào task trong plan
+      `Tạo mới thay vì dùng <đường dẫn> vì <lý do>`. Không tìm mà tạo = lỗi dù test xanh.
    5. Xanh: chạy lại đến khi pass, chỉ chạy **test của module** đang sửa — full suite
       để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
    6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main

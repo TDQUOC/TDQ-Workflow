@@ -7,6 +7,7 @@ Copy nguyên khối dưới đây vào `docs/tdq/spec/<slug>.md` rồi điền. 
 # SPEC — <tên việc>
 
 Ngày: YYYY-MM-DD · Bản: 1.0 · Brief: ../brief/<slug>.md · Lane: full
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT
 
 ## 1. Mục tiêu & phạm vi
@@ -52,8 +53,19 @@ Phán quyết chỉ nhận: DÙNG / KHÔNG (+ 1 trong 4 lý do đóng) / NỀN (
   hình) → thay dòng này bằng `Log service: BỎ — <lý do một câu>`.
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
 - Mỗi thành phần có unit test riêng, chạy được bằng một lệnh.
+- Clean code: BẬT|TẮT — đáp án của khuôn hỏi ở mục `## Khuôn hỏi clean code` cuối file
+  này. TẮT vẫn tổ chức code theo rule ngôn ngữ trong `skills/tdq-build/references/rules/`,
+  chỉ bỏ bước scan và fix cuối request.
 
 ## 5. Ràng buộc & rủi ro
+Ràng buộc kiến trúc phải giữ (chép từ `docs/kien-truc.md` — chỉ những dòng việc này
+chạm tới, không chép cả file):
+- <nguyên văn dòng luật gọi / đã chốt> — việc này chạm ở <file/hàm>
+
+Không chạm dòng nào → ghi `Ràng buộc kiến trúc phải giữ: không chạm dòng nào — <lý do
+một câu>`. Chưa có `docs/kien-truc.md` → quay lại analyze sinh theo luật hồ sơ kiến
+trúc, không bỏ trống khối này.
+
 | Rủi ro | Ảnh hưởng | Cách giảm |
 |---|---|---|
 
@@ -91,3 +103,14 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 | QC/test/validate làm thế nào? | §6 bảng QC + DoD |
 
 Còn một ô chưa trả lời được → chưa đủ điều kiện trình spec, quay lại phase analyze.
+
+## Khuôn hỏi clean code
+
+Việc có chạm mã nguồn thì hỏi câu này trong turn trình spec, ngay trên khối duyệt.
+Không chạm mã nguồn → khỏi hỏi, tự ghi `Clean code: TẮT — không có code` vào §4.
+
+**Bật clean code cho request này chứ?**
+- A (đề xuất): BẬT — cuối request chạy `scripts/code_rule_scan.py`, có LỖI thì fix tới khi sạch
+- B: TẮT — bỏ bước scan và fix; code viết ra VẪN tổ chức code theo rule ngôn ngữ
+
+User trả lời xong thì ghi đáp án vào dòng `Clean code:` ở §4.

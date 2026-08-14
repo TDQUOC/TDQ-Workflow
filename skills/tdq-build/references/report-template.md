@@ -51,6 +51,8 @@ số liệu lấy nguyên từ output thật.
 ```markdown
 # REPORT — <tên việc> (`<slug>` · lane <lane> · mode <mode> · <n> task tick đủ)
 
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
+
 **Đã làm:** <P1 …> · <P2 …> · <P3 …>
 **Kết quả:** <chỉ số> <trước> → <sau> · <chỉ số> <trước> → <sau>
 **Kiểm:** <lệnh test + kết quả> · <lint> · QC <PASS x/y mục DoD, defect đã sửa>

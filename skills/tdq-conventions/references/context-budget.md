@@ -17,3 +17,6 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/token_audit.py" --sessions 2 --top 8
   Cấm `cat` (dùng Read), cấm `grep -A5 -B5` khi `-c`/`-l` đã đủ trả lời.
 - **Việc nặng giao subagent.** Research web và đọc ≥4 file giao agent riêng — agent có
   context window riêng, chỉ trả digest về hội thoại chính.
+- **Soul phân xử.** Mọi luật trên đây chỉ cắt chi phí khi đầu ra không đổi. Việc đòi đọc
+  TRỌN nhiều file hay chạy đủ phép kiểm thì cứ làm đủ: chất lượng đứng trên context cost
+  theo [soul.md](soul.md).

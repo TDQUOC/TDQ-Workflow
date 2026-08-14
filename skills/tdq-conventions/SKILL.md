@@ -114,7 +114,7 @@ tool call, đọc vừa đủ, giao việc nặng cho subagent: [references/cont
 
 ## 11. Chất lượng
 
-- Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
-  Thiếu thông tin → hỏi user, đừng đoán.
+- Soul — luật gốc trên mọi luật: chất lượng > runtime > context cost; viết/sửa luật, luật đá nhau, định cắt bước → mở [references/soul.md](references/soul.md).
+- Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật. Thiếu thông tin → hỏi user, đừng đoán.
 - Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt được qua config).
 - Mỗi task trong plan có test riêng; task pass là tick `[x]` NGAY, không gom cuối turn.

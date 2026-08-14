@@ -15,6 +15,15 @@ Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.
 2. **Đọc code.** Tìm hết chỗ yêu cầu này chạm tới: entry point, luồng dữ liệu, config,
    test. Ghi lại phiên bản/framework đang dùng.
 
+   **Hồ sơ kiến trúc — sinh một lần cho mỗi project.** Mở `docs/kien-truc.md`. Đã có →
+   đọc hết trước khi viết dòng phân tích nào. Chưa có → sinh bản nháp ngay trong phase
+   này rồi trình user chốt; chưa chốt thì mọi dòng trong đó là gợi ý, không phải luật.
+   Nháp đúng 4 mục. `## Tầng`: mỗi dòng một tầng kèm trách nhiệm. `## Luật gọi`: các
+   dòng "tầng X không được gọi tầng Y" kèm lý do. `## Hub`: 5 node nhiều liên kết nhất
+   kèm số bậc, lấy từ `graphify god-nodes`; sửa node trong đó là rủi ro cao, phải khai
+   ở dòng `Chạm:` của plan. `## Đã chốt`: quyết định đã đóng kèm ngày; muốn đổi phải
+   mở request riêng. Nguồn sinh: cây thư mục + `graphify god-nodes` + config build.
+
    **Luật ĐỌC đồ thị graphify** (gợi ý có điều kiện, KHÔNG bắt buộc mỗi lần analyze):
    - MỞ đồ thị khi câu hỏi thuộc dạng **liên kết** hoặc **bản đồ tổng thể**.
      Dạng đó là: "ai gọi X", "sửa X thì ảnh hưởng tới đâu", "hai chỗ này nối nhau đường
