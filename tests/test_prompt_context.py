@@ -48,7 +48,7 @@ class TestIntakeReminder(unittest.TestCase):
         self.assertNotIn("[TDQ:NEXT]", out)
 
     def test_c_idle_with_active_request_prints_next_and_intake(self):
-        write_state(self.cwd, active_request="2026-08-02-demo", lane="full", phase="idle")
+        write_state(self.cwd, active_request="2026-08-02-0900-demo", lane="full", phase="idle")
         rc, out = _run(self.cwd)
         self.assertEqual(rc, 0)
         self.assertIn("[TDQ:NEXT]", out)
@@ -59,7 +59,7 @@ class TestIntakeReminder(unittest.TestCase):
         self.assertLessEqual(len(out), MAX_CHARS, out)
 
     def test_d_open_request_has_no_intake(self):
-        write_state(self.cwd, active_request="2026-08-02-demo", lane="full",
+        write_state(self.cwd, active_request="2026-08-02-0900-demo", lane="full",
                     phase="spec", spec_file="docs/tdq/spec/x.md")
         rc, out = _run(self.cwd)
         self.assertEqual(rc, 0)
@@ -68,7 +68,7 @@ class TestIntakeReminder(unittest.TestCase):
 
 
 class TestSignalWritten(unittest.TestCase):
-    """T1.1-T1.4 (2026-08-04-approval-gate-bug): looks_like_approval() phải lưu
+    """T1.1-T1.4 (2026-08-04-0900-approval-gate-bug): looks_like_approval() phải lưu
     lại kết quả vào sổ turn (kind="signal") để bash_gate.py đối chiếu sau."""
 
     def setUp(self):
@@ -81,7 +81,7 @@ class TestSignalWritten(unittest.TestCase):
         return [r for r in rows if r.get("kind") == "signal"]
 
     def test_signal_written_matched_and_unmatched(self):
-        write_state(self.cwd, active_request="2026-08-04-x", lane="full",
+        write_state(self.cwd, active_request="2026-08-04-0900-x", lane="full",
                     phase="spec", spec_file="docs/tdq/spec/x.md")
         _run(self.cwd, "duyệt spec")
         rows = self._signal_rows("s1")
@@ -97,7 +97,7 @@ class TestSignalWritten(unittest.TestCase):
         self.assertFalse(rows2[0].get("matched"))
 
     def test_signal_mode_conflict(self):
-        write_state(self.cwd, active_request="2026-08-04-x", lane="full",
+        write_state(self.cwd, active_request="2026-08-04-0900-x", lane="full",
                     phase="plan", spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     plan_file="docs/tdq/plan/x.md")
         write_file_plan_mode(self.cwd, "docs/tdq/plan/x.md", "subagent")

@@ -3,7 +3,7 @@
 Định danh máy vẫn là `quick`/`full` (không migrate state). Chỉ hai thứ đổi:
   - NHÃN người ĐỌC: lane_label() -> "chế độ nhanh (express)" / "chế độ chuyên sâu (deep)"
   - BÍ DANH người GÕ: normalize_lane() nhận nhanh|express|quick, chuyên sâu|deep|full
-Spec: docs/tdq/spec/2026-08-12-doi-ten-lane.md
+Spec: docs/tdq/spec/2026-08-12-0900-doi-ten-lane.md
 """
 import sys
 import tempfile
@@ -54,20 +54,20 @@ class LaneCliAliasTest(unittest.TestCase):
         """`init t express` phải ghi lane=quick — bí danh chỉ ở cửa vào, state không đổi."""
         for alias, want in (("express", "quick"), ("chuyen-sau", "full"), ("nhanh", "quick")):
             with self.subTest(alias=alias), tempfile.TemporaryDirectory() as tmp:
-                code, _, err = run_state_cli(tmp, "init", "2026-08-12-t", alias)
+                code, _, err = run_state_cli(tmp, "init", "2026-08-12-0900-t", alias)
                 self.assertEqual(code, 0, err)
                 self.assertEqual(read_state(tmp)["lane"], want)
 
     def test_init_lane_rac_van_bao_loi(self):
         with tempfile.TemporaryDirectory() as tmp:
-            code, _, err = run_state_cli(tmp, "init", "2026-08-12-t", "xyz")
+            code, _, err = run_state_cli(tmp, "init", "2026-08-12-0900-t", "xyz")
             self.assertNotEqual(code, 0)
             self.assertIn("nhanh", err.lower())
 
     def test_approve_bi_danh_ghi_khoa_quick(self):
         for alias in ("nhanh", "express", "quick"):
             with self.subTest(alias=alias), tempfile.TemporaryDirectory() as tmp:
-                run_state_cli(tmp, "init", "2026-08-12-t", "nhanh")
+                run_state_cli(tmp, "init", "2026-08-12-0900-t", "nhanh")
                 code, _, err = run_state_cli(tmp, "approve", alias, "--by", "duyệt " + alias)
                 self.assertEqual(code, 0, err)
                 self.assertTrue(read_state(tmp)["quick_approved"])

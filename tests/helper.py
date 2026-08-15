@@ -49,6 +49,26 @@ def run_state_cli(cwd, *args):
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
 
+def run_timing_cli(cwd, *args, env=None):
+    """Chạy scripts/tdq_timing.py với project = cwd."""
+    full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
+    proc = subprocess.run(
+        [sys.executable, os.path.join(ROOT, "scripts", "tdq_timing.py"), *args],
+        capture_output=True, text=True, env=full_env, timeout=30,
+    )
+    return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
+def run_finish_cli(cwd, *args, env=None):
+    """Chạy scripts/tdq_finish.py với project = cwd."""
+    full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
+    proc = subprocess.run(
+        [sys.executable, os.path.join(ROOT, "scripts", "tdq_finish.py"), *args],
+        capture_output=True, text=True, env=full_env, timeout=60,
+    )
+    return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
 def run_state_cli_in(cwd, *args):
     """Chạy CLI với process cwd = cwd và KHÔNG set TDQ_PROJECT_DIR (giống user
     gõ lệnh từ một thư mục con của project)."""

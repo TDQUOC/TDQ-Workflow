@@ -9,7 +9,7 @@ import unittest
 
 from helper import tdq_state, write_state, write_file
 
-PLAN_REL = os.path.join("docs", "tdq", "plan", "2026-08-12-abc.md")
+PLAN_REL = os.path.join("docs", "tdq", "plan", "2026-08-12-0900-abc.md")
 
 PLAN_CHUA_LAM = """## P1 — a
 - [ ] **T1.1** (n3) viec mot — Test: x
@@ -39,7 +39,7 @@ class PlanTickStateTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
 
     def _state(self, plan=PLAN_CHUA_LAM, plan_file=PLAN_REL):
-        write_state(self.cwd, active_request="2026-08-12-abc", lane="full",
+        write_state(self.cwd, active_request="2026-08-12-0900-abc", lane="full",
                     phase="implement", plan_file=plan_file)
         if plan is not None:
             write_file(self.cwd, PLAN_REL, plan)
@@ -81,7 +81,7 @@ class PlanTickStateTest(unittest.TestCase):
         self.assertEqual(info["sha"], "")
 
     def test_thieu_plan_file_thi_suy_tu_active_request(self):
-        write_state(self.cwd, active_request="2026-08-12-abc", lane="full",
+        write_state(self.cwd, active_request="2026-08-12-0900-abc", lane="full",
                     phase="implement")
         write_file(self.cwd, PLAN_REL, PLAN_DANG_LAM)
         info = tdq_state.plan_tick_state(self.cwd)
@@ -111,7 +111,7 @@ class TurnSnapshotPlanShaTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
 
     def test_snapshot_co_plan_sha_va_giu_khoa_cu(self):
-        write_state(self.cwd, active_request="2026-08-12-abc", lane="full",
+        write_state(self.cwd, active_request="2026-08-12-0900-abc", lane="full",
                     phase="implement", plan_file=PLAN_REL)
         write_file(self.cwd, PLAN_REL, PLAN_CHUA_LAM)
         snap = tdq_state.turn_snapshot(self.cwd)
@@ -122,7 +122,7 @@ class TurnSnapshotPlanShaTest(unittest.TestCase):
         self.assertNotEqual(truoc, tdq_state.turn_snapshot(self.cwd)["plan_sha"])
 
     def test_khong_co_plan_thi_plan_sha_rong(self):
-        write_state(self.cwd, active_request="2026-08-12-abc", lane="full",
+        write_state(self.cwd, active_request="2026-08-12-0900-abc", lane="full",
                     phase="implement")
         self.assertEqual(tdq_state.turn_snapshot(self.cwd)["plan_sha"], "")
 

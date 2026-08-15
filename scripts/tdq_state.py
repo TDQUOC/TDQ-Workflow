@@ -74,9 +74,42 @@ USAGE = ("Cách dùng: tdq_state.py next [--brief] | get [key] | "
 EXIT_SYNTAX = 2
 
 
+# ------------------------------------------------------------------ slug
+#
+# Hai định dạng cùng sống: slug CŨ chỉ có ngày (269 file tài liệu đã đặt tên theo
+# nó, user chốt giữ nguyên), slug MỚI có thêm giờ phút. Đọc thì nhận cả hai, ghi
+# mới thì bắt buộc có giờ phút — chỗ chặn nằm ở nhánh `init` của `cli()`.
+SLUG_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-(.+)$")
+SLUG_FORMULA = "YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>"
+
+
+def parse_slug(slug):
+    """Tách slug thành (ngày, giờ-phút hoặc None, phần chữ). Không khớp → None.
+
+    Bốn chữ số ở đầu phần chữ chỉ được coi là giờ phút khi nó là giờ CÓ THẬT
+    (00:00–23:59); `2026-08-15-9999-viec` vẫn là slug cũ với phần chữ `9999-viec`.
+    """
+    if not isinstance(slug, str):
+        return None
+    match = SLUG_RE.match(slug.strip())
+    if not match:
+        return None
+    year, month, day, rest = match.groups()
+    try:
+        datetime(int(year), int(month), int(day))
+    except ValueError:
+        return None
+    ngay = f"{year}-{month}-{day}"
+    head, _, tail = rest.partition("-")
+    if len(head) == 4 and head.isdigit() and tail:
+        if int(head[:2]) <= 23 and int(head[2:]) <= 59:
+            return (ngay, head, tail)
+    return (ngay, None, rest)
+
+
 def default_state():
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "active_request": None,
         # slug của request bị thay thế ở lần init gần nhất (chỉ để truy vết/log)
         "previous_request": None,
@@ -101,6 +134,11 @@ def default_state():
         # `approve quick --no-qc`. Người bỏ lấy từ quick_approved_by (cùng câu duyệt).
         "quick_qc_skipped": False,
         "implement_mode": None,
+        # mốc mở request (schema 4) — gốc của mọi phép đếm thời gian treo tường
+        "started_at": None,
+        # lịch sử phase: [{"phase": "spec", "at": "<iso>"}, ...], mỗi lần ĐỔI phase
+        # một mốc. Quay lại phase cũ vẫn đẻ mốc mới — đó là cơ sở đếm số lần vào.
+        "phase_history": [],
         "updated_at": None,
     }
 
@@ -238,7 +276,55 @@ def load(cwd, heal=True):
     for key, value in default_state().items():
         state.setdefault(key, value)
     state["schema_version"] = default_state()["schema_version"]
+    # State bản cũ có thể mang phase_history sai kiểu (hoặc mốc rác). Chữa tại đây
+    # để không script nào dưới xuôi phải tự phòng thủ.
+    state["phase_history"] = [m for m in state["phase_history"]
+                              if isinstance(m, dict) and m.get("phase") and m.get("at")] \
+        if isinstance(state.get("phase_history"), list) else []
     return state
+
+
+def _dong_so_request_cu(cwd):
+    """Đóng sổ thời gian của request đang mở vào docs/tdq/timing.jsonl.
+
+    Import MUỘN có chủ ý: `tdq_timing` import ngược lại module này, để ở đầu file
+    thì thành vòng tròn. Hàm chỉ chạy trong `cli()` nên lúc đó module đã nạp xong.
+    Đóng sổ hỏng không được phép chặn `init` — cùng lắm mất một dòng thống kê.
+    """
+    cu = os.environ.get("TDQ_LOG")
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import tdq_timing
+        state = load(cwd, heal=False)
+        if not state or not state.get("active_request"):
+            return False
+        # Tắt log của tầng timing ở đúng lời gọi này: `init` sạch stderr là hợp
+        # đồng có test canh (init đè request đã xong phải im lặng). Muốn xem chi
+        # tiết thì gọi thẳng `tdq_timing.py close`.
+        os.environ["TDQ_LOG"] = "0"
+        so_lieu = tdq_timing.tong_hop(state, datetime.now().astimezone(),
+                                      tdq_timing.default_transcript_dir(cwd))
+        return bool(so_lieu) and tdq_timing.dong_so(cwd, so_lieu)
+    except Exception as exc:                     # noqa: BLE001 — không chặn init
+        _warn(f"không đóng sổ được thời gian request cũ: {exc.__class__.__name__}")
+        return False
+    finally:
+        if cu is None:
+            os.environ.pop("TDQ_LOG", None)
+        else:
+            os.environ["TDQ_LOG"] = cu
+
+
+def ghi_moc_phase(state, phase, at=None):
+    """Append một mốc vào `phase_history` khi phase THỰC SỰ đổi. Trả True nếu có ghi.
+
+    Set lại đúng phase đang đứng thì bỏ qua: mốc 0 giây chỉ làm bẩn bảng thời gian.
+    """
+    lich_su = state.setdefault("phase_history", [])
+    if lich_su and lich_su[-1].get("phase") == phase:
+        return False
+    lich_su.append({"phase": phase, "at": at or now_iso()})
+    return True
 
 
 def _atomic_write(path, text):
@@ -546,12 +632,12 @@ PHASE_TABLE = {
     "no_state": {
         "entry": "Chưa có request TDQ nào đang mở",
         "action": "Hỏi user chọn lane rồi mở request mới",
-        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <nhanh|chuyen-sau>",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau>",
         "checklist": [
             "Tóm tắt yêu cầu của user thành 3–5 dòng",
             "Hỏi user chọn chế độ: chế độ nhanh (express — việc nhỏ, rõ) hay "
             "chế độ chuyên sâu (deep — Analysis→Spec→Plan→Implement→QC→Report)",
-            "Chạy lệnh init ở trên với slug theo công thức YYYY-MM-DD-<kebab ≤5 từ, không dấu>",
+            "Chạy lệnh init ở trên với slug theo công thức YYYY-MM-DD-HHMM-HHMM-<kebab ≤5 từ, không dấu>",
             "Ghi yêu cầu nguyên văn vào docs/tdq/brief/<slug>.md mục '## Nguyên văn'",
         ],
         "done_when": "state.json có active_request và lane",
@@ -664,7 +750,7 @@ PHASE_TABLE = {
     "idle": {
         "entry": "Đã xong hoặc chưa mở request",
         "action": "Chờ yêu cầu mới từ user",
-        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-slug> <nhanh|chuyen-sau>",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau>",
         "checklist": [
             "Có yêu cầu mới → tóm tắt, hỏi lane, chạy lệnh init ở trên",
         ],
@@ -1204,15 +1290,29 @@ def cli(argv):
     if cmd == "init":
         argv, want_json = _pop_json_flag(argv)
         if len(argv) < 2:
-            _fail("Thiếu slug. Công thức: YYYY-MM-DD-<kebab ≤5 từ, không dấu>")
+            _fail(f"Thiếu slug. Công thức: {SLUG_FORMULA}")
+        # Ghi mới thì bắt buộc có giờ phút. Cảnh báo suông không đổi được hành vi:
+        # chuẩn mới sẽ trôi ngay lần đầu ai đó bỏ qua. Đọc vẫn nhận slug cũ.
+        phan_tich = parse_slug(argv[1])
+        if phan_tich is None:
+            _fail(f"Slug sai định dạng: {argv[1]}. Công thức: {SLUG_FORMULA}")
+        if phan_tich[1] is None:
+            _fail(f"Slug thiếu giờ phút: {argv[1]}. Công thức: {SLUG_FORMULA} "
+                  f"(ví dụ {phan_tich[0]}-{datetime.now().strftime('%H%M')}-{phan_tich[2]})")
         # init = MỞ REQUEST MỚI: reset toàn bộ state (request, lane, phase,
         # spec/plan file, mọi field duyệt, implement_mode). Nếu request đang mở
         # còn dở dang thì cảnh báo ra stderr — vẫn thực hiện, nhưng có dấu vết.
         old = load(cwd) or {}
         old_slug = old.get("active_request")
+        if old_slug:
+            # init xoá sạch state. Không đóng sổ trước thì toàn bộ mốc thời gian của
+            # request cũ bay mất — đây là cửa duy nhất bắt được request bị bỏ dở.
+            _dong_so_request_cu(cwd)
         state = default_state()
         state["active_request"] = argv[1]
         state["previous_request"] = old_slug
+        state["started_at"] = now_iso()
+        ghi_moc_phase(state, state["phase"], state["started_at"])
         if old_slug and old_slug != argv[1] and _unfinished(old):
             _warn(f"Ghi đè request '{old_slug}' (lane {old.get('lane')}, "
                   f"phase {old.get('phase')}) — mọi trạng thái duyệt của request đó bị xoá.")
@@ -1247,6 +1347,8 @@ def cli(argv):
             if key == "phase" and value not in VALID_PHASES:
                 _fail("Phase không hợp lệ (idle|analyze|spec|plan|implement|qc|report).")
             state[key] = value
+            if key == "phase":
+                ghi_moc_phase(state, value)
         save(cwd, state, expect_updated_at=stamp)
         _echo_state("set", state, want_json)
         return

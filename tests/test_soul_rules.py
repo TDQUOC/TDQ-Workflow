@@ -1,4 +1,4 @@
-"""Soul của workflow + thư viện rule kỹ thuật (request 2026-08-14-set-soul-workflow).
+"""Soul của workflow + thư viện rule kỹ thuật (request 2026-08-14-0900-set-soul-workflow).
 
 Bất biến giữ ở đây:
 1. `soul.md` tồn tại, nêu đúng thứ tự ưu tiên chất lượng → runtime → context cost,

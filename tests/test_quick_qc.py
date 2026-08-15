@@ -5,7 +5,7 @@ Khoá cứng 4 nguồn sự thật phải phát biểu CÙNG một luật:
   N2 skills/tdq-intake/SKILL.md
   N3 scripts/tdq_state.py  (PHASE_TABLE["quick"], default_state, _parse_approve_args)
   N4 phases.md             (doc TỰ SINH từ PHASE_TABLE — không sửa tay)
-Spec: docs/tdq/spec/2026-08-07-siet-qc-lane-quick.md
+Spec: docs/tdq/spec/2026-08-07-0900-siet-qc-lane-quick.md
 """
 import os
 import sys
@@ -95,7 +95,7 @@ class QuickQcApproveCliTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.cwd = self.tmp.name
         self.addCleanup(self.tmp.cleanup)
-        run_state_cli(self.cwd, "init", "2026-08-07-demo", "quick")
+        run_state_cli(self.cwd, "init", "2026-08-07-0900-demo", "quick")
 
     def test_approve_quick_no_qc_records_skip(self):
         said = "duyệt quick không QC"

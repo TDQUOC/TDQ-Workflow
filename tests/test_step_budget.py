@@ -1,6 +1,6 @@
 """Khoá luật một lượt (tầng runtime) và bộ đo chi phí bước.
 
-Request 2026-08-15-toi-uu-thoi-gian-phase. Hai nhóm test:
+Request 2026-08-15-0900-toi-uu-thoi-gian-phase. Hai nhóm test:
   - nhóm LUẬT: luật gộp phải nằm ở thân skill, luật đọc lại phải MỀM, luật cũ còn nguyên.
   - nhóm ĐO: `step_audit.py` ra đúng số liệu tính tay trên transcript mẫu.
 """

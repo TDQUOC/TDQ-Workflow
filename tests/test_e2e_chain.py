@@ -48,7 +48,7 @@ class ChainBase(unittest.TestCase):
 class TestFullLaneChain(ChainBase):
     def test_full_chain(self):
         # 1. intake: init state, lane full
-        rc, _, err = run_state_cli(self.cwd, "init", f"{today()}-demo", "full")
+        rc, _, err = run_state_cli(self.cwd, "init", f"{today()}-0900-demo", "full")
         self.assertEqual(rc, 0, err)
 
         # 2. trước khi duyệt: sửa src vẫn CHẠY được, chỉ kèm lời nhắc
@@ -114,7 +114,7 @@ class TestFullLaneChain(ChainBase):
 
 class TestQuickLaneChain(ChainBase):
     def test_quick_chain(self):
-        rc, _, err = run_state_cli(self.cwd, "init", f"{today()}-hotfix", "quick")
+        rc, _, err = run_state_cli(self.cwd, "init", f"{today()}-0900-hotfix", "quick")
         self.assertEqual(rc, 0, err)
 
         self.new_turn()

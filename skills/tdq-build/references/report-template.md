@@ -7,7 +7,8 @@ nạp nhánh này mỗi lần gọi. Vào phase `report` là **bắt buộc** đ
 trước khi viết report; cấm làm theo trí nhớ.
 
 7. Viết `docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng, khuyến
-   nghị ~10-20 dòng. Khuôn: mục `## Khuôn` cùng file này.
+   nghị ~10-20 dòng. Khuôn: mục `## Khuôn` cùng file này. Bảng thời gian là **bắt buộc**:
+   chạy `tdq_timing.py show` rồi dán nguyên bảng vào report, không tự ước lượng số.
 
 8. Đóng sổ: tick nốt checkbox còn sót, đổi header plan thành HOÀN THÀNH, rồi chạy
    `tdq_finish.py --files <file vừa sửa> --log "<tóm tắt report>"` (working log + graphify).
@@ -59,7 +60,15 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 **Đầu ra:** <đường dẫn file chính> · Backup: <đường dẫn, nếu có sửa ngoài repo>
 **Giới hạn:** <cái gì chưa làm, vì sao, ảnh hưởng gì>
 **Git:** <chưa commit / commit nào đã tạo>
+
+## Thời gian
+
+<dán nguyên output của `tdq_timing.py show`: bảng Phase · Treo tường · Model chạy · Số lần vào>
 ```
+
+Hai cột thời gian cố ý khác nhau: **treo tường** tính cả lúc chờ user duyệt, **model chạy**
+chỉ tính lúc máy làm. Lệch lớn ở một phase nghĩa là phase đó tốn thời gian CHỜ, không phải
+tốn sức làm — đọc số xong mới biết nên tối ưu chỗ nào.
 
 ## Kiểm trước khi trình
 

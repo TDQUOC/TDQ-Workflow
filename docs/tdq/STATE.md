@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-15T11:50:44+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-15T12:53:39+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-15-toi-uu-thoi-gian-phase |
+| Request | 2026-08-15-gio-phut-dem-thoi-gian |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-15-toi-uu-thoi-gian-phase.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-15-toi-uu-thoi-gian-phase.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-15-gio-phut-dem-thoi-gian.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-15-gio-phut-dem-thoi-gian.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

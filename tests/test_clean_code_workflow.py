@@ -3,7 +3,7 @@
 - clean_code_gate: cổng bật/tắt clean code ở tdq-spec (câu hỏi + dòng `Clean code:` §4).
 - qc_dong_bo: khối QC-F1→F3 cố định phải KHỚP nguyên văn giữa qc.md bản skill và portable.
 - co_che_m: 5 cơ chế chống nợ kỹ thuật M1–M5 nằm đúng file neo theo
-  docs/tdq/knowledge/2026-08-14-chong-no-ky-thuat.md.
+  docs/tdq/knowledge/2026-08-14-0900-chong-no-ky-thuat.md.
 """
 import re
 import unittest

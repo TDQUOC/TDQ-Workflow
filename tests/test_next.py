@@ -24,7 +24,7 @@ class NextTest(unittest.TestCase):
         self.assertIn("YYYY-MM-DD", out)          # công thức slug
 
     def test_next_all_phases(self):
-        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "full")
         for phase in sorted(tdq_state.VALID_PHASES):
             with self.subTest(phase=phase):
                 run_state_cli(self.cwd, "set", f"phase={phase}")
@@ -37,7 +37,7 @@ class NextTest(unittest.TestCase):
                 self.assertIn("- [ ] ", out)
 
     def test_next_quick_lane(self):
-        run_state_cli(self.cwd, "init", "2026-07-29-demo", "quick")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "quick")
         rc, out, _ = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
         # lane quick mới: mini-spec/plan GỘP một file, có bước phân tích + interview
@@ -47,14 +47,14 @@ class NextTest(unittest.TestCase):
 
     def test_next_analyze_asks_for_the_scope_round(self):
         """Checklist phase analyze phải nhắc vòng scope, nếu không nó sẽ bị bỏ im lặng."""
-        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "full")
         run_state_cli(self.cwd, "set", "phase=analyze")
         rc, out, _ = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
         self.assertIn("scope", out.lower(), out)
 
     def test_next_brief_single_line(self):
-        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "full")
         rc, out, _ = run_state_cli(self.cwd, "next", "--brief")
         self.assertEqual(rc, 0)
         self.assertEqual(len(out.splitlines()), 1, out)
@@ -62,7 +62,7 @@ class NextTest(unittest.TestCase):
         self.assertIn("Project: ", out)
 
     def test_get_key(self):
-        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "full")
         rc, out, _ = run_state_cli(self.cwd, "get", "lane")
         self.assertEqual((rc, out), (0, "full"))
         rc, out, _ = run_state_cli(self.cwd, "get", "spec_approved")
@@ -80,7 +80,7 @@ class NextTest(unittest.TestCase):
         Lane quick giữ `phase` thô là `idle`, nhưng checklist lấy từ row `quick`;
         in `phase idle` khiến model tin là không còn việc gì.
         """
-        run_state_cli(self.cwd, "init", "2026-07-29-quick", "quick")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-quick", "quick")
         rc, out, _ = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
         head = out.splitlines()[0]
@@ -90,11 +90,11 @@ class NextTest(unittest.TestCase):
         self.assertEqual((rc, brief), (0, head))
 
     def test_get_full_json_unchanged(self):
-        run_state_cli(self.cwd, "init", "2026-07-29-demo", "full")
+        run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "full")
         rc, out, _ = run_state_cli(self.cwd, "get")
         self.assertEqual(rc, 0)
         import json
-        self.assertEqual(json.loads(out)["active_request"], "2026-07-29-demo")
+        self.assertEqual(json.loads(out)["active_request"], "2026-07-29-0900-demo")
 
 
 if __name__ == "__main__":

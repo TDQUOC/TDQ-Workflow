@@ -76,8 +76,9 @@ docs/tdq/
   plan/<slug>.md      qc/<slug>.md         reports/<slug>.md
 docs/workinglog/YYYY-MM-DD.md
 ```
-Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung một slug ở mọi thư
-mục. `brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file, đúng 3 mục:
+Slug: `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>` (giờ địa phương lúc mở request). Slug cũ
+chỉ có ngày vẫn đọc được; mở request mới thì bắt buộc có giờ phút. Một request dùng chung
+một slug ở mọi thư mục. `brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file, đúng 3 mục:
 `## Nguyên văn`, `## Hiểu & kiến thức`, `## Hỏi đáp`.
 
 ## 5. Working log

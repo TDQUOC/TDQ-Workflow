@@ -30,10 +30,10 @@ class TestState(unittest.TestCase):
         self.assertEqual(state["phase"], "idle")
 
     def test_cli_init_and_get(self):
-        rc, out, _ = run_state_cli(self.cwd, "init", "2026-07-27-demo", "full")
+        rc, out, _ = run_state_cli(self.cwd, "init", "2026-07-27-0900-demo", "full")
         self.assertEqual(rc, 0)
         state = read_state(self.cwd)
-        self.assertEqual(state["active_request"], "2026-07-27-demo")
+        self.assertEqual(state["active_request"], "2026-07-27-0900-demo")
         self.assertEqual(state["lane"], "full")
         # 0.3.0: `get <key>` in giá trị trần (dễ dùng trong shell), không phải JSON.
         rc, out, _ = run_state_cli(self.cwd, "get", "lane")
@@ -42,7 +42,7 @@ class TestState(unittest.TestCase):
 
     def test_init_set_reset_in_mot_dong_khong_json(self):
         """Tối ưu token: init/set/reset mặc định in 1 dòng, không dump nguyên state."""
-        for args in (("init", "2026-08-04-demo", "quick"),
+        for args in (("init", "2026-08-04-0900-demo", "quick"),
                      ("set", "phase=implement"),
                      ("reset",)):
             rc, out, _ = run_state_cli(self.cwd, *args)
@@ -53,22 +53,22 @@ class TestState(unittest.TestCase):
 
     def test_co_co_json_thi_in_lai_nguyen_state(self):
         """Cần soi đầy đủ thì `--json` phải trả lại hành vi cũ."""
-        rc, out, _ = run_state_cli(self.cwd, "init", "2026-08-04-demo", "quick", "--json")
+        rc, out, _ = run_state_cli(self.cwd, "init", "2026-08-04-0900-demo", "quick", "--json")
         self.assertEqual(rc, 0)
-        self.assertEqual(json.loads(out)["active_request"], "2026-08-04-demo")
+        self.assertEqual(json.loads(out)["active_request"], "2026-08-04-0900-demo")
         rc, out, _ = run_state_cli(self.cwd, "set", "phase=spec", "--json")
         self.assertEqual(rc, 0)
         self.assertEqual(json.loads(out)["phase"], "spec")
 
     def test_dong_tom_tat_co_du_request_lane_phase(self):
-        run_state_cli(self.cwd, "init", "2026-08-04-demo", "quick")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-demo", "quick")
         rc, out, _ = run_state_cli(self.cwd, "set", "phase=implement")
         self.assertEqual(rc, 0)
-        for chunk in ("2026-08-04-demo", "quick", "implement"):
+        for chunk in ("2026-08-04-0900-demo", "quick", "implement"):
             self.assertIn(chunk, out)
 
     def test_cli_set_roundtrip(self):
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         rc, _, _ = run_state_cli(self.cwd, "set", "phase=spec", "spec_file=docs/tdq/spec/x.md")
         self.assertEqual(rc, 0)
         state = read_state(self.cwd)
@@ -77,7 +77,7 @@ class TestState(unittest.TestCase):
 
     def test_cli_can_set_approval_keys(self):
         # 0.2.0: không còn field bảo vệ — không còn hook độc quyền ghi state.
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         for pair in ("spec_approved=true", "plan_approved=true", "quick_approved=true",
                      "spec_sha256=abc", "plan_approved_at=now", "implement_mode=main"):
             rc, _, err = run_state_cli(self.cwd, "set", pair)
@@ -90,7 +90,7 @@ class TestState(unittest.TestCase):
 
     def test_cli_rejects_invalid_lane_phase_key(self):
         # 0.3.0 exit code: 2 = sai cú pháp lệnh; mọi vấn đề của state chỉ cảnh báo (0).
-        run_state_cli(self.cwd, "init", "r1")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1")
         self.assertEqual(run_state_cli(self.cwd, "set", "lane=turbo")[0], 2)
         self.assertEqual(run_state_cli(self.cwd, "set", "phase=deploy")[0], 2)
         self.assertEqual(run_state_cli(self.cwd, "set", "nonexistent=1")[0], 2)
@@ -108,16 +108,16 @@ class TestState(unittest.TestCase):
         self.assertIsNone(state["previous_request"])
 
     def test_init_over_unfinished_request_warns(self):
-        run_state_cli(self.cwd, "init", "req-cu", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-req-cu", "full")
         run_state_cli(self.cwd, "set", "phase=implement", "spec_file=docs/tdq/spec/x.md")
-        rc, _, err = run_state_cli(self.cwd, "init", "req-moi", "quick")
+        rc, _, err = run_state_cli(self.cwd, "init", "2026-08-04-0910-req-moi", "quick")
         self.assertEqual(rc, 0)
         self.assertIn("Ghi đè", err)
-        self.assertIn("req-cu", err)
+        self.assertIn("2026-08-04-0900-req-cu", err)
         state = read_state(self.cwd)
-        self.assertEqual(state["active_request"], "req-moi")
+        self.assertEqual(state["active_request"], "2026-08-04-0910-req-moi")
         self.assertEqual(state["lane"], "quick")
-        self.assertEqual(state["previous_request"], "req-cu")
+        self.assertEqual(state["previous_request"], "2026-08-04-0900-req-cu")
         self.assertEqual(state["phase"], "idle")
         self.assertIsNone(state["spec_file"])
         self.assertIsNone(state["plan_file"])
@@ -126,21 +126,21 @@ class TestState(unittest.TestCase):
             self.assertFalse(state[key], key)
 
     def test_init_clean_state_is_silent(self):
-        rc, _, err = run_state_cli(self.cwd, "init", "req-dau", "quick")
+        rc, _, err = run_state_cli(self.cwd, "init", "2026-08-04-0920-req-dau", "quick")
         self.assertEqual(rc, 0)
         self.assertEqual(err, "")
         self.assertIsNone(read_state(self.cwd)["previous_request"])
 
     def test_init_over_finished_request_is_silent(self):
-        run_state_cli(self.cwd, "init", "req-cu", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-req-cu", "full")
         run_state_cli(self.cwd, "set", "phase=report")
-        rc, _, err = run_state_cli(self.cwd, "init", "req-moi", "quick")
+        rc, _, err = run_state_cli(self.cwd, "init", "2026-08-04-0910-req-moi", "quick")
         self.assertEqual(rc, 0)
         self.assertEqual(err, "")
-        self.assertEqual(read_state(self.cwd)["previous_request"], "req-cu")
+        self.assertEqual(read_state(self.cwd)["previous_request"], "2026-08-04-0900-req-cu")
 
     def test_previous_request_is_settable(self):
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         rc, _, _ = run_state_cli(self.cwd, "set", "previous_request=r0")
         self.assertEqual(rc, 0)
         self.assertEqual(read_state(self.cwd)["previous_request"], "r0")
@@ -152,14 +152,14 @@ class TestState(unittest.TestCase):
             json.dump({"schema_version": 2, "active_request": "cu", "lane": "full",
                        "phase": "plan", "spec_approved": True}, f)
         state = tdq_state.load(self.cwd)
-        self.assertEqual(state["schema_version"], 3)
+        self.assertEqual(state["schema_version"], 4)
         self.assertTrue(state["spec_approved"])
         for key in ("spec_approved_by", "plan_approved_by", "quick_approved_by"):
             self.assertIn(key, state)
             self.assertIsNone(state[key])
 
     def test_approve_writes_all_fields(self):
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         spec = os.path.join(self.cwd, "docs", "tdq", "spec", "x.md")
         os.makedirs(os.path.dirname(spec), exist_ok=True)
         with open(spec, "w", encoding="utf-8") as f:
@@ -186,7 +186,7 @@ class TestState(unittest.TestCase):
     def test_reapprove_refreshes_sha256_after_file_changed(self):
         """Sửa spec trong lúc QC rồi xin duyệt lại phải ghi được — nếu không,
         cảnh báo "spec đã đổi sau khi duyệt" treo vĩnh viễn."""
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         spec = os.path.join(self.cwd, "docs", "tdq", "spec", "x.md")
         os.makedirs(os.path.dirname(spec), exist_ok=True)
         with open(spec, "w", encoding="utf-8") as f:
@@ -209,7 +209,7 @@ class TestState(unittest.TestCase):
 
     def test_reapprove_unchanged_file_stays_idempotent(self):
         """File không đổi thì duyệt lại là lệnh thừa — không ghi đè dấu duyệt cũ."""
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         spec = os.path.join(self.cwd, "docs", "tdq", "spec", "x.md")
         os.makedirs(os.path.dirname(spec), exist_ok=True)
         with open(spec, "w", encoding="utf-8") as f:
@@ -225,7 +225,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(state["spec_approved_by"], "duyệt spec")
 
     def test_approve_accepts_bare_mode(self):
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         run_state_cli(self.cwd, "approve", "spec")
         rc, _, err = run_state_cli(self.cwd, "approve", "plan", "subagent")
         self.assertEqual(rc, 0, err)
@@ -233,7 +233,7 @@ class TestState(unittest.TestCase):
 
     def test_mode_external_bi_tu_choi(self):
         """Nhánh external đã bỏ: mode này phải bị chặn, không âm thầm nhận."""
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         run_state_cli(self.cwd, "approve", "spec")
         rc, _, _ = run_state_cli(self.cwd, "approve", "plan", "--mode", "external",
                                  "--by", "duyệt plan mode external")
@@ -250,7 +250,7 @@ class TestState(unittest.TestCase):
 
     def test_approve_quick_moves_phase_to_implement(self):
         """A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal."""
-        run_state_cli(self.cwd, "init", "r1", "quick")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "quick")
         run_state_cli(self.cwd, "approve", "quick", "--by", "duyệt quick")
         self.assertEqual(read_state(self.cwd)["phase"], "implement")
 
@@ -261,7 +261,7 @@ class TestState(unittest.TestCase):
         self.assertFalse(tdq_state._row_age_ok({}))
 
     def test_approve_is_idempotent(self):
-        run_state_cli(self.cwd, "init", "r1", "quick")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "quick")
         rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--by", "duyệt quick")
         self.assertEqual(rc, 0, err)
         first_at = read_state(self.cwd)["quick_approved_at"]
@@ -271,7 +271,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(read_state(self.cwd)["quick_approved_at"], first_at)
 
     def test_approve_warns_but_records(self):
-        run_state_cli(self.cwd, "init", "r1", "quick")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "quick")
         # sai lane + duyệt plan trước spec + chưa đăng ký plan_file → cảnh báo, vẫn ghi
         rc, _, err = run_state_cli(self.cwd, "approve", "plan", "--mode", "main", "--by", "ok plan")
         self.assertEqual(rc, 0)
@@ -282,7 +282,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(state["implement_mode"], "main")
 
     def test_approve_rejects_bad_syntax(self):
-        run_state_cli(self.cwd, "init", "r1", "full")
+        run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "full")
         self.assertEqual(run_state_cli(self.cwd, "approve")[0], 2)
         self.assertEqual(run_state_cli(self.cwd, "approve", "design")[0], 2)
         self.assertEqual(run_state_cli(self.cwd, "approve", "spec", "--mode", "turbo")[0], 2)
@@ -344,10 +344,10 @@ class TestProjectRootResolution(unittest.TestCase):
 
     def test_cli_from_subdir_writes_root_state(self):
         os.makedirs(os.path.join(self.root, ".git"))
-        rc, out, err = run_state_cli_in(self.sub, "init", "r1", "quick")
+        rc, out, err = run_state_cli_in(self.sub, "init", "2026-08-04-0900-r1", "quick")
         self.assertEqual(rc, 0, err)
         self.assertEqual(self.shadow_states(), [os.path.join("docs", "tdq")])
-        self.assertEqual(read_state(self.root)["active_request"], "r1")
+        self.assertEqual(read_state(self.root)["active_request"], "2026-08-04-0900-r1")
         self.assertIn("Project root", err)
 
         rc, _, err = run_state_cli_in(self.sub, "set", "phase=implement")

@@ -32,7 +32,7 @@ class ProtocolTest(unittest.TestCase):
         return load_fixture(fixture, cwd=self.cwd, session_id=SESSION, **over)
 
     def full_state(self, **over):
-        base = dict(active_request="2026-07-29-demo", lane="full", phase="implement")
+        base = dict(active_request="2026-07-29-0900-demo", lane="full", phase="implement")
         base.update(over)
         return write_state(self.cwd, **base)
 

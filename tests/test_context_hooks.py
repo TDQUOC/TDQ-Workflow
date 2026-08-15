@@ -21,12 +21,12 @@ class TestSessionStart(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
 
     def test_active_request_prints_next_and_rule(self):
-        write_state(self.cwd, active_request="2026-07-27-demo", lane="full", phase="spec",
+        write_state(self.cwd, active_request="2026-07-27-0900-demo", lane="full", phase="spec",
                     spec_file="docs/tdq/spec/x.md")
         rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})
         self.assertEqual(rc, 0)
         self.assertIn("[TDQ:NEXT]", out)
-        self.assertIn("2026-07-27-demo", out)
+        self.assertIn("2026-07-27-0900-demo", out)
         self.assertIn("Việc tiếp theo", out)
         self.assertIn("[TDQ] Luật", out)          # instruction: nghe theo mã của hook
         self.assertLessEqual(len(out.splitlines()), 12)   # trần spec §2.7
@@ -36,7 +36,7 @@ class TestSessionStart(unittest.TestCase):
         """Trần 600 ký tự không được cắt mất dòng luật hay dòng lệnh."""
         for phase in ("analyze", "spec", "plan", "implement", "qc", "report"):
             with self.subTest(phase=phase):
-                write_state(self.cwd, active_request="2026-07-27-mot-request-ten-kha-dai",
+                write_state(self.cwd, active_request="2026-07-27-0900-mot-request-ten-kha-dai",
                             lane="full", phase=phase, spec_approved=True, plan_approved=True,
                             spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md")
                 rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})

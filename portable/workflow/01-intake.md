@@ -23,7 +23,7 @@ không QC. Có đổi repo thì vẫn append working log như mọi turn khác.
 request đang chạy (duyệt, góp ý, trả lời interview), không mở request lồng.
 
 1. **Ghi lại yêu cầu.** Tạo `docs/tdq/brief/<slug>.md` với slug
-   `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Brief là file DUY NHẤT của phase intake +
+   `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>`. Brief là file DUY NHẤT của phase intake +
    analyze, đúng 3 mục: `## Nguyên văn` (nguyên văn yêu cầu user + cách hiểu đầu tiên
    của bạn: mục tiêu, phạm vi đoán, chỗ chưa rõ), `## Hiểu & kiến thức`, `## Hỏi đáp`.
    Ở bước này chỉ viết mục đầu; hai mục sau để trống, Phần B điền.

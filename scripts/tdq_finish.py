@@ -138,6 +138,26 @@ def step_phase(project, phase):
     return Step("phase", "ok", phase)
 
 
+def step_dong_so(project, phase):
+    """Về `idle` = hết request → chốt sổ thời gian vào docs/tdq/timing.jsonl.
+
+    Chạy TRƯỚC bước đổi phase: đóng sổ xong mới hạ cờ, để cửa sổ phase cuối cùng
+    khép đúng lúc thay vì lẫn sang khoảng `idle` sau đó.
+    """
+    if phase != "idle":
+        return Step("thời gian", "skip", "chỉ đóng sổ khi về idle")
+    env = dict(os.environ, TDQ_PROJECT_DIR=project)
+    cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_timing.py"), "close"]
+    try:
+        p = subprocess.run(cmd, cwd=project, capture_output=True, text=True,
+                           timeout=STEP_TIMEOUT, env=env)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        return Step("thời gian", "fail", str(exc)[:120])
+    if p.returncode != 0:
+        return Step("thời gian", "fail", (p.stdout + p.stderr).strip()[:120])
+    return Step("thời gian", "ok", "đã ghi timing.jsonl")
+
+
 def step_graphify(project, files, skip):
     if skip:
         return Step("graphify", "skip", "--skip-graphify")
@@ -190,6 +210,7 @@ def main(argv):
     steps = []
     for run_step in (lambda: step_lint(project, files),
                      lambda: step_worklog(project, args.summary),
+                     lambda: step_dong_so(project, args.phase),
                      lambda: step_phase(project, args.phase),
                      lambda: step_graphify(project, files, args.skip_graphify)):
         step = run_step()

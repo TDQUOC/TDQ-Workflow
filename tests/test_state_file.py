@@ -21,7 +21,7 @@ class StateFileTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
 
     def _init(self, lane="full"):
-        rc, _, err = run_state_cli(self.cwd, "init", "2026-07-29-demo", lane)
+        rc, _, err = run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", lane)
         self.assertEqual(rc, 0, err)
 
     # S1 -------------------------------------------------------------
@@ -62,7 +62,7 @@ class StateFileTest(unittest.TestCase):
         with open(tdq_state.state_path(self.cwd), "w", encoding="utf-8") as f:
             json.dump({"schema_version": 2, "active_request": "r1", "cua_toi": 42}, f)
         state = tdq_state.load(self.cwd)
-        self.assertEqual(state["schema_version"], 3)
+        self.assertEqual(state["schema_version"], 4)
         self.assertEqual(state["active_request"], "r1")
         self.assertFalse(state["spec_approved"])          # khoá thiếu được bù
         self.assertEqual(state["cua_toi"], 42)            # khoá lạ được giữ

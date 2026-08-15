@@ -94,7 +94,7 @@ class ApproveFlowTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.cwd = self.tmp.name
         self.addCleanup(self.tmp.cleanup)
-        run(self.cwd, "init", "2026-08-13-thu-mode", "full")
+        run(self.cwd, "init", "2026-08-13-0900-thu-mode", "full")
         run(self.cwd, "approve", "spec", "--by", "duyệt spec")
 
     def test_approve_plan_without_mode_stops_at_mode_phase(self):

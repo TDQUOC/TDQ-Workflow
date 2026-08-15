@@ -15,6 +15,9 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" next --brief
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" get
    ```
+   Đang có request → chạy thêm `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_timing.py" status`
+   (gộp vào cùng lần gọi Bash) để lấy dòng đồng hồ: phase hiện tại đã chạy bao lâu và cả
+   request tốn bao lâu. Lệnh này chỉ đọc, không ghi state.
    Luôn dùng `next --brief` (121 ký tự) — chỉ bỏ `--brief` (1.350 ký tự) khi thật sự
    cần checklist đầy đủ của phase, vì output đó bị mang vác lại ở mọi API call sau.
    Chưa có `active_request` → báo "Chưa có request TDQ nào đang chạy." kèm bước mở
@@ -28,6 +31,8 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
    - Spec đã duyệt → so sha256 hiện tại của `spec_file` với `spec_sha256`; lệch thì cảnh
      báo "spec đã đổi sau khi duyệt, cần duyệt lại".
    - Phase `implement`/`qc` → đếm `- [x]` trên tổng số task trong plan file → tiến độ.
+   - Đồng hồ: in nguyên dòng `⏱ …` mà `tdq_timing.py status` trả về (phase hiện tại đã
+     tốn bao lâu treo tường / model, và cả request tốn bao lâu).
 
 3. Kết bằng bước kế tiếp, lấy nguyên văn dòng "Việc tiếp theo" và "Lệnh" từ output `next`.
    Đang chờ duyệt thì in kèm: `➤ Duyệt: nhắn "duyệt <spec|plan|quick>" · Góp ý: nhắn trực tiếp`.

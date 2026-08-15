@@ -27,7 +27,7 @@ class TokenBudgetTest(unittest.TestCase):
     def each_phase(self):
         """Sinh state cho mọi phase — trần phải đúng ở phase dài nhất, không chỉ phase dễ."""
         for phase in PHASES:
-            write_state(self.cwd, active_request="2026-07-28-mot-request-ten-kha-dai",
+            write_state(self.cwd, active_request="2026-07-28-0900-mot-request-ten-kha-dai",
                         lane="full", phase=phase, spec_approved=True, plan_approved=True,
                         implement_mode="subagent",
                         spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md")
