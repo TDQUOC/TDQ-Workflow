@@ -107,10 +107,19 @@ Slug: `YYYY-MM-DD-<kebab ≤5 từ, không dấu>`. Một request dùng chung m�
   `sonnet-low-research-doc`) — nhìn tên là biết model và effort đang chạy.
 - Bảng model/effort mặc định theo vai + luật override: [references/subagent-tuning.md](references/subagent-tuning.md).
 
-## 10. Tiết kiệm context (bắt buộc)
+## 10. Luật một lượt (tầng 2 — runtime) & chi phí context
 
-Mỗi tool call đọc lại toàn bộ context, nên output thừa tốn token ở MỌI lượt sau. Luật gộp
-tool call, đọc vừa đủ, giao việc nặng cho subagent: [references/context-budget.md](references/context-budget.md).
+Một tool call = một vòng round-trip ≈ 3,3 s. Tổng thời gian tỉ lệ với SỐ BƯỚC; context
+chỉ ảnh hưởng nhẹ. Nên luật này thuộc tầng **runtime**, không phải context cost.
+
+- **Khi nào áp dụng:** sắp phát từ 2 tool call trở lên mà không call nào cần kết quả của
+  call kia.
+- **Làm gì:** phát hết trong CÙNG MỘT LƯỢT; lệnh Bash độc lập nối bằng `&&`; thông tin
+  còn đủ trong context thì đừng đọc lại file.
+- **Tự kiểm:** "Call sau có cần kết quả call trước không?" — Không → gộp. Có → tách.
+
+Bảng cấm gộp, luật đọc lại (mềm), đọc vừa đủ, giao việc nặng cho subagent:
+[references/context-budget.md](references/context-budget.md).
 
 ## 11. Chất lượng
 

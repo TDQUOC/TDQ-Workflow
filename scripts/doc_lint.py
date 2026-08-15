@@ -24,7 +24,10 @@ SKILL_LINE_LIMITS = {
     "tdq-plan": 100,
     "tdq-build": 150,
     "tdq-status": 60,
-    "tdq-conventions": 120,
+    # 2026-08-15: 120 → 130. Luật một lượt (§10) là luật tầng runtime, phải nằm ở thân
+    # skill mới được nạp mỗi turn. Soul xếp runtime trên context cost, nên nới trần 10
+    # dòng để giữ luật đọc được, thay vì nén luật cho vừa trần.
+    "tdq-conventions": 130,
 }
 MAX_LINES_ANY = 500
 MAX_SENTENCE_WORDS = 40

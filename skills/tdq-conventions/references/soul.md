@@ -65,6 +65,25 @@ Ví dụ ĐÚNG: bỏ một vòng research trùng lặp vì kết quả đã có
 token mà không mất thông tin (tầng 3 phục vụ tầng 1).
 Ví dụ SAI: bỏ bước viết test trước để build nhanh hơn — lấy runtime đè chất lượng.
 
+## Xếp luật vào tầng nào
+
+Xếp sai tầng là cách một luật đúng bị bỏ qua một cách hợp lệ: luật cắt thời gian mà
+dán nhãn "tiết kiệm token" sẽ rơi xuống tầng 3 — tầng thấp nhất, được phép bỏ qua khi
+bận. Nên trước khi viết hay sửa bất kỳ luật nào, hỏi: **luật này đổi con số nào?**
+
+| Luật đổi con số nào | Tầng | Ví dụ |
+|---|---|---|
+| Đổi đúng-sai của đầu ra | 1 — chất lượng | test trước khi sửa, cấm mock giả làm dữ liệu thật |
+| Đổi SỐ BƯỚC (số tool call, số vòng chờ) | 2 — runtime | gộp tool call độc lập, cấm vòng `sleep` thăm dò |
+| Đổi SỐ TOKEN nạp vào model | 3 — context cost | lint đúng file thay vì cả thư mục, CLI in gọn |
+
+Một luật đổi nhiều con số thì xếp vào tầng **cao nhất** nó chạm tới. Luật gộp tool call
+vừa cắt bước vừa cắt token → tầng 2, không phải tầng 3.
+
+Hệ quả về chỗ đặt: luật tầng 1 và tầng 2 phải nằm trong thân skill được nạp mỗi turn;
+chỉ luật tầng 3 và phần bảng biểu chi tiết mới đẩy sang file reference. Trần số dòng
+của skill là ràng buộc tầng 3 — gặp trần thì nới trần, cấm nén luật tầng 2 cho vừa.
+
 ## Tự kiểm
 
 - Câu hỏi có/không: "Thay đổi tôi sắp làm có hạ chất lượng để đổi lấy tốc độ hoặc

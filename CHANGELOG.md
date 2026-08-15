@@ -2,6 +2,30 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.19.0 — 2026-08-15
+
+Cắt thời gian xử lý một request mà không đụng vào luật hay chất lượng đầu ra. Nguyên nhân
+đo được: tổng thời gian tỉ lệ thẳng với SỐ BƯỚC (mỗi tool call ≈ một round-trip 3–4 s),
+context chỉ ảnh hưởng nhẹ; luật gộp tool call đã có nhưng nằm trong file reference ít nạp
+và bị đóng khung là "tiết kiệm context" — tầng thấp nhất của soul, nên bỏ qua vẫn hợp lệ.
+
+- `skills/tdq-conventions/SKILL.md` §10 đổi thành "Luật một lượt (tầng 2 — runtime)":
+  luật gộp chuyển hẳn vào thân skill (nạp mỗi turn) theo khuôn ba mục. Trần dòng của
+  skill này nới 120 → 130 — trần dòng là ràng buộc tầng 3, không được nén luật tầng 2.
+- `references/context-budget.md` tách hai phần rõ ràng: chi phí bước (tầng 2) và chi phí
+  context (tầng 3). Thêm bảng **Cấm gộp** 4 ca (bước đỏ→xanh của TDD, đang khoanh vùng
+  lỗi, lệnh phá hủy, lệnh sau cần kết quả lệnh trước). Sáu luật cũ giữ nguyên văn.
+- Luật đọc lại file là luật **MỀM**: còn nhớ đủ thì đừng đọc lại. Nhưng có 5 ca BẮT BUỘC
+  đọc lại: context bị nén, lần trước đọc một phần, file có thể đã đổi, sắp sửa chính file
+  đó, nhớ không chắc. Nghi ngờ thì đọc lại — không đổi chất lượng lấy tốc độ.
+- `references/soul.md` thêm mục "Xếp luật vào tầng nào": luật đổi số bước → tầng runtime,
+  đổi số token → tầng context cost, đổi đúng-sai đầu ra → tầng chất lượng. Ba tầng gốc
+  giữ nguyên văn. Bản `portable/AGENTS.md` có luật một lượt tương đương.
+- `scripts/step_audit.py` (mới): đo 5 chỉ số chi phí bước, gom theo `requestId` — đếm theo
+  bản ghi jsonl thổi phồng số bước và luôn ra 1,00 tool call mỗi lượt. `token_audit.py`
+  sửa lỗi suy đường dẫn: tên project có gạch dưới cũng đổi thành `-`.
+- Test: 596 → 608 (`tests/test_step_budget.py` mới, 12 test).
+
 ## 0.18.0 — 2026-08-14
 
 Set "soul" cho bộ workflow: chất lượng code agent > runtime > context cost. Ba tầng ưu

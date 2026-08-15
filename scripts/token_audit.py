@@ -81,8 +81,11 @@ def iter_events(path):
 
 def default_transcript_dir(project_dir=None):
     """Thư mục transcript của Claude Code cho một project (~/.claude/projects/<slug>)."""
-    project = os.path.abspath(project_dir or os.getcwd())
-    slug = project.replace(os.sep, "-")
+    project = os.path.abspath(os.path.expanduser(project_dir or os.getcwd()))
+    # Claude Code đổi CẢ dấu phân cách thư mục LẪN gạch dưới thành `-` khi dựng tên
+    # thư mục transcript. Thiếu vế `_` thì project có gạch dưới (Heineken_AppKetNoi)
+    # luôn ra đường dẫn không tồn tại — đo nhầm thành "không có session nào".
+    slug = project.replace(os.sep, "-").replace("_", "-")
     return os.path.join(os.path.expanduser("~"), ".claude", "projects", slug)
 
 

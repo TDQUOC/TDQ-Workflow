@@ -105,6 +105,13 @@ mục. `brief/` gộp yêu cầu + kiến thức + hỏi đáp vào một file, 
 - Soul — luật gốc đứng trên mọi luật: chất lượng > runtime > context cost. Hạ chất
   lượng để đổi lấy tốc độ hay token là sai. Hai luật đá nhau → luật phục vụ tầng cao
   hơn thắng. Bản gốc: `skills/tdq-conventions/references/soul.md` (repo TDQWorkflow).
+- Luật một lượt — tầng runtime, KHÔNG phải luật tiết kiệm token. Sắp phát từ 2 tool call
+  trở lên mà không call nào cần kết quả của call kia → phát hết trong CÙNG MỘT LƯỢT.
+  Lệnh shell độc lập nối bằng `&&`. Cấm gộp ở 4 ca: bước đỏ → bước xanh của TDD; đang
+  khoanh vùng lỗi; lệnh phá hủy hoặc khó đảo; lệnh sau cần kết quả lệnh trước.
+  Thông tin còn đủ trong context thì đừng đọc lại file. Nhưng đây là luật MỀM. BẮT BUỘC
+  đọc lại khi: context đã bị nén; lần trước chỉ đọc một phần; file có thể đã đổi; sắp sửa
+  chính file đó; nhớ không chắc. Nghi ngờ thì đọc lại — chất lượng đứng trên runtime.
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật. Thiếu
   thông tin → hỏi user, đừng đoán.
 - Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt
