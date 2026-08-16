@@ -87,7 +87,9 @@ class TokenBudgetTest(unittest.TestCase):
                         total += len(line.split(":", 1)[1].strip())
                         break
         self.assertGreater(total, 0, "không đọc được description nào")
-        self.assertLessEqual(total, 900, f"tổng description = {total} ký tự")
+        # 2026-08-16: 900 → 1080. Skill thứ 7 (tdq-check-status) cần đủ tín hiệu trigger
+        # cho ba tình huống mất ngữ cảnh, không nén xuống được mà vẫn gọi đúng lúc.
+        self.assertLessEqual(total, 1080, f"tổng description = {total} ký tự")
 
     def test_reference_files_bounded(self):
         for root in (os.path.join(ROOT, "skills"),):

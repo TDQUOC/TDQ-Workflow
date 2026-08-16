@@ -2,6 +2,28 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.21.0 — 2026-08-16
+
+Skill thứ bảy: `tdq-check-status` — dò lại một request đang dở rồi tiếp tục mà không mất
+dữ liệu cũ. Trước bản này, mất ngữ cảnh là mất luôn chỗ dừng: `tdq-status` chỉ đọc lại
+`state.json`, mà `state.json` chính là thứ có thể sai. Ba tình huống đã gặp: session chết
+phải mở session mới, đổi sang máy khác, và giao một phase cho agent ngoài rồi quay lại.
+
+- Nguyên tắc mới: **đĩa là bằng chứng, `state.json` là lời khai**. Bộ dò đọc
+  `docs/tdq/**`, git (`log -20`, `status --short`) và working log hôm nay, rồi đối chiếu
+  với state. Lệch nhau thì tin đĩa.
+- `scripts/tdq_checkstatus.py report [--json]`: chỉ ĐỌC, không bao giờ ghi `state.json`.
+  Nó chấm 11 ca lệch D1–D11 theo một bảng cứng, không để model tự nghĩ chẩn đoán.
+- Ba mức kết luận: `TIẾP TỤC ĐƯỢC` · `VÁ RỒI TIẾP TỤC` · `CẦN USER QUYẾT`.
+- **Luật không mất dữ liệu.** Lệnh vá chỉ thuộc hai họ `tdq_state.py set …` và
+  `tdq_state.py approve …`. Một hàm chặn nội bộ ném lỗi nếu mẫu lệnh chạm tới lệnh khởi
+  tạo lại, lệnh đặt về mặc định, `rm`, `mv` hay chuyển hướng ghi đè.
+- Một cổng gật duy nhất: trình báo cáo → user gật một lần → chạy hết lệnh vá → đi tiếp.
+- `skills/tdq-check-status/` có 7 bước, khuôn báo cáo 6 mục và bảng D1–D11; bản
+  `portable/workflow/05-check-status.md` khớp từng bước cho agent ngoài Claude Code.
+- `tdq-status` giữ nguyên vai trò báo nhanh, chỉ thêm một dòng trỏ sang skill mới.
+- Trần tổng `description` của skill nới 900 → 1080 ký tự cho skill thứ bảy.
+
 ## 0.20.0 — 2026-08-15
 
 Tên file document mang thêm giờ phút, và workflow tự đếm thời gian: mỗi request tốn bao

@@ -28,6 +28,9 @@ SKILL_LINE_LIMITS = {
     # skill mới được nạp mỗi turn. Soul xếp runtime trên context cost, nên nới trần 10
     # dòng để giữ luật đọc được, thay vì nén luật cho vừa trần.
     "tdq-conventions": 130,
+    # skill khôi phục: 7 bước + khối luật cứng "không mất dữ liệu" phải nằm ở thân skill,
+    # vì model yếu bỏ qua reference sẽ chạy đúng cái lệnh làm mất cả request.
+    "tdq-check-status": 80,
 }
 MAX_LINES_ANY = 500
 MAX_SENTENCE_WORDS = 40

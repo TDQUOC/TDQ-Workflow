@@ -27,6 +27,7 @@ Chi tiết từng phase (đọc file tương ứng với phase đang ở, đừn
 | `spec` | [workflow/02-spec.md](workflow/02-spec.md) |
 | `plan` | [workflow/03-plan.md](workflow/03-plan.md) |
 | `implement`, `qc`, `report` | [workflow/04-build.md](workflow/04-build.md) |
+| mọi phase, khi mất ngữ cảnh (session mới, đổi máy, agent khác làm hộ) | [workflow/05-check-status.md](workflow/05-check-status.md) |
 
 Bảng phase đầy đủ (vào khi / việc duy nhất / lệnh chuyển tiếp / xong khi / cấm):
 [workflow/phases.md](workflow/phases.md) — file **tự sinh** từ hằng `PHASE_TABLE` trong

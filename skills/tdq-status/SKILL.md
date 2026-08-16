@@ -40,6 +40,9 @@ description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode th�
    [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — nhãn
    trường in đậm, dòng `➤` nằm cuối.
 
+Mất ngữ cảnh (session mới, đổi máy, agent khác vừa làm hộ một phase) hoặc state lệch đĩa
+→ dừng ở đây, chuyển sang [tdq-check-status](../tdq-check-status/SKILL.md) để khôi phục.
+
 Xong khi: user đọc xong biết đang ở đâu và việc kế tiếp là gì.
 Bước kế tiếp: skill tương ứng với phase đang ở — xem
 [phases.md](../tdq-conventions/references/phases.md).

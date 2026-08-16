@@ -97,6 +97,18 @@ class SkillShapeTest(unittest.TestCase):
         self.assertIn("implement_mode", text)
         self.assertIn("_approved_by", text)
 
+    def test_check_status_shape(self):
+        text = self.assert_shape("tdq-check-status")
+        self.assert_steps("tdq-check-status", text)
+        for ref in ("references/report-template.md", "references/bang-lech.md"):
+            self.assertIn(ref, text)
+            self.assertTrue(os.path.isfile(
+                os.path.join(SKILLS, "tdq-check-status", ref)), ref)
+        # luật không mất dữ liệu phải nằm ở THÂN skill, không đẩy xuống reference
+        self.assertIn("Cấm tuyệt đối", text)
+        for ho in ("tdq_state.py set", "tdq_state.py approve"):
+            self.assertIn(ho, text)
+
     def test_conventions_shape(self):
         text = self.assert_shape("tdq-conventions")
         for ref in ("references/phases.md", "references/approval.md",
