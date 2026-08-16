@@ -9,10 +9,10 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "changelog",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "changelog.md",
-      "id": "changelog"
+      "norm_label": "changelog.md"
     },
     {
       "label": "Changelog",
@@ -20,252 +20,670 @@
       "source_file": "CHANGELOG.md",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "changelog_changelog",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "changelog",
-      "id": "changelog_changelog"
+      "norm_label": "changelog"
+    },
+    {
+      "label": "0.22.0 \u2014 2026-08-16",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "changelog_0_22_0_2026_08_16",
+      "community": 8,
+      "community_name": "Changelog",
+      "norm_label": "0.22.0 \u2014 2026-08-16"
     },
     {
       "label": "0.21.0 \u2014 2026-08-16",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L5",
+      "source_location": "L27",
       "_origin": "ast",
+      "id": "changelog_0_21_0_2026_08_16",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.21.0 \u2014 2026-08-16",
-      "id": "changelog_0_21_0_2026_08_16"
+      "norm_label": "0.21.0 \u2014 2026-08-16"
     },
     {
       "label": "0.20.0 \u2014 2026-08-15",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L27",
+      "source_location": "L49",
       "_origin": "ast",
+      "id": "changelog_0_20_0_2026_08_15",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.20.0 \u2014 2026-08-15",
-      "id": "changelog_0_20_0_2026_08_15"
+      "norm_label": "0.20.0 \u2014 2026-08-15"
     },
     {
       "label": "0.19.0 \u2014 2026-08-15",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L53",
+      "source_location": "L75",
       "_origin": "ast",
+      "id": "changelog_0_19_0_2026_08_15",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.19.0 \u2014 2026-08-15",
-      "id": "changelog_0_19_0_2026_08_15"
+      "norm_label": "0.19.0 \u2014 2026-08-15"
     },
     {
       "label": "0.18.0 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L77",
+      "source_location": "L99",
       "_origin": "ast",
+      "id": "changelog_0_18_0_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.18.0 \u2014 2026-08-14",
-      "id": "changelog_0_18_0_2026_08_14"
+      "norm_label": "0.18.0 \u2014 2026-08-14"
     },
     {
       "label": "0.17.0 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L103",
+      "source_location": "L125",
       "_origin": "ast",
+      "id": "changelog_0_17_0_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.17.0 \u2014 2026-08-14",
-      "id": "changelog_0_17_0_2026_08_14"
+      "norm_label": "0.17.0 \u2014 2026-08-14"
     },
     {
       "label": "0.16.0 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L129",
+      "source_location": "L151",
       "_origin": "ast",
+      "id": "changelog_0_16_0_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.16.0 \u2014 2026-08-14",
-      "id": "changelog_0_16_0_2026_08_14"
+      "norm_label": "0.16.0 \u2014 2026-08-14"
     },
     {
       "label": "0.15.1 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L156",
+      "source_location": "L178",
       "_origin": "ast",
+      "id": "changelog_0_15_1_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.15.1 \u2014 2026-08-14",
-      "id": "changelog_0_15_1_2026_08_14"
+      "norm_label": "0.15.1 \u2014 2026-08-14"
     },
     {
       "label": "0.15.0 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L174",
+      "source_location": "L196",
       "_origin": "ast",
+      "id": "changelog_0_15_0_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.15.0 \u2014 2026-08-14",
-      "id": "changelog_0_15_0_2026_08_14"
+      "norm_label": "0.15.0 \u2014 2026-08-14"
     },
     {
       "label": "0.14.0 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L198",
+      "source_location": "L220",
       "_origin": "ast",
+      "id": "changelog_0_14_0_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.14.0 \u2014 2026-08-14",
-      "id": "changelog_0_14_0_2026_08_14"
+      "norm_label": "0.14.0 \u2014 2026-08-14"
     },
     {
       "label": "0.13.0 \u2014 2026-08-14",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L219",
+      "source_location": "L241",
       "_origin": "ast",
+      "id": "changelog_0_13_0_2026_08_14",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.13.0 \u2014 2026-08-14",
-      "id": "changelog_0_13_0_2026_08_14"
+      "norm_label": "0.13.0 \u2014 2026-08-14"
     },
     {
       "label": "0.12.0 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L239",
+      "source_location": "L261",
       "_origin": "ast",
+      "id": "changelog_0_12_0_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.12.0 \u2014 2026-08-13",
-      "id": "changelog_0_12_0_2026_08_13"
+      "norm_label": "0.12.0 \u2014 2026-08-13"
     },
     {
       "label": "0.11.13 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L258",
+      "source_location": "L280",
       "_origin": "ast",
+      "id": "changelog_0_11_13_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.13 \u2014 2026-08-13",
-      "id": "changelog_0_11_13_2026_08_13"
+      "norm_label": "0.11.13 \u2014 2026-08-13"
     },
     {
       "label": "0.11.12 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L274",
+      "source_location": "L296",
       "_origin": "ast",
+      "id": "changelog_0_11_12_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.12 \u2014 2026-08-13",
-      "id": "changelog_0_11_12_2026_08_13"
+      "norm_label": "0.11.12 \u2014 2026-08-13"
     },
     {
       "label": "0.11.11 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L283",
+      "source_location": "L305",
       "_origin": "ast",
+      "id": "changelog_0_11_11_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.11 \u2014 2026-08-13",
-      "id": "changelog_0_11_11_2026_08_13"
+      "norm_label": "0.11.11 \u2014 2026-08-13"
     },
     {
       "label": "0.11.10 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L292",
+      "source_location": "L314",
       "_origin": "ast",
+      "id": "changelog_0_11_10_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.10 \u2014 2026-08-13",
-      "id": "changelog_0_11_10_2026_08_13"
+      "norm_label": "0.11.10 \u2014 2026-08-13"
     },
     {
       "label": "0.11.9 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L300",
+      "source_location": "L322",
       "_origin": "ast",
+      "id": "changelog_0_11_9_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.9 \u2014 2026-08-13",
-      "id": "changelog_0_11_9_2026_08_13"
+      "norm_label": "0.11.9 \u2014 2026-08-13"
     },
     {
       "label": "0.11.8 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L310",
+      "source_location": "L332",
       "_origin": "ast",
+      "id": "changelog_0_11_8_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.8 \u2014 2026-08-13",
-      "id": "changelog_0_11_8_2026_08_13"
+      "norm_label": "0.11.8 \u2014 2026-08-13"
     },
     {
       "label": "0.11.7 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L318",
+      "source_location": "L340",
       "_origin": "ast",
+      "id": "changelog_0_11_7_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.7 \u2014 2026-08-13",
-      "id": "changelog_0_11_7_2026_08_13"
+      "norm_label": "0.11.7 \u2014 2026-08-13"
     },
     {
       "label": "0.11.6 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L326",
+      "source_location": "L348",
       "_origin": "ast",
+      "id": "changelog_0_11_6_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.6 \u2014 2026-08-13",
-      "id": "changelog_0_11_6_2026_08_13"
+      "norm_label": "0.11.6 \u2014 2026-08-13"
     },
     {
       "label": "0.11.5 \u2014 2026-08-13",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L335",
+      "source_location": "L357",
       "_origin": "ast",
+      "id": "changelog_0_11_5_2026_08_13",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.5 \u2014 2026-08-13",
-      "id": "changelog_0_11_5_2026_08_13"
+      "norm_label": "0.11.5 \u2014 2026-08-13"
     },
     {
       "label": "0.11.4 tr\u1edf v\u1ec1 0.7.0",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L345",
+      "source_location": "L367",
       "_origin": "ast",
+      "id": "changelog_0_11_4_tr\u1edf_v\u1ec1_0_7_0",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.11.4 tro ve 0.7.0",
-      "id": "changelog_0_11_4_tr\u1edf_v\u1ec1_0_7_0"
+      "norm_label": "0.11.4 tro ve 0.7.0"
     },
     {
       "label": "0.6.2 tr\u1edf v\u1ec1 tr\u01b0\u1edbc",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L349",
+      "source_location": "L371",
       "_origin": "ast",
+      "id": "changelog_0_6_2_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc",
       "community": 8,
       "community_name": "Changelog",
-      "norm_label": "0.6.2 tro ve truoc",
-      "id": "changelog_0_6_2_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc"
+      "norm_label": "0.6.2 tro ve truoc"
+    },
+    {
+      "label": "doc_lint.py",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_doc_lint",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "doc_lint.py"
+    },
+    {
+      "label": "Doc",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_doc",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "doc"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_doc_init",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".allowed()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_doc_allowed",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": ".allowed()"
+    },
+    {
+      "label": ".sections()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_doc_sections",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": ".sections()"
+    },
+    {
+      "label": "_report()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_report",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "_report()"
+    },
+    {
+      "label": "rule_r1()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L107",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r1",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r1()"
+    },
+    {
+      "label": "rule_r2()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L127",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r2",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r2()"
+    },
+    {
+      "label": "rule_r3()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r3",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r3()"
+    },
+    {
+      "label": "rule_r4()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L151",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r4",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r4()"
+    },
+    {
+      "label": "rule_r5()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L170",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r5",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r5()"
+    },
+    {
+      "label": "rule_r6()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L202",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r6",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r6()"
+    },
+    {
+      "label": "rule_r7()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L215",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r7",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r7()"
+    },
+    {
+      "label": "_spec3b_rows()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L239",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_spec3b_rows",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "_spec3b_rows()"
+    },
+    {
+      "label": "rule_r8()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L260",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r8",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r8()"
+    },
+    {
+      "label": "_r9_in_scope()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L296",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_r9_in_scope",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "_r9_in_scope()"
+    },
+    {
+      "label": "rule_r9()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L301",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rule_r9",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "rule_r9()"
+    },
+    {
+      "label": "_plan_contracts()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L326",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_plan_contracts",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "_plan_contracts()"
+    },
+    {
+      "label": "pair()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L350",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_pair",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "pair()"
+    },
+    {
+      "label": "lint_file()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L381",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_lint_file",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "lint_file()"
+    },
+    {
+      "label": "collect()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L395",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_collect",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "collect()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L407",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_main",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "main()"
+    },
+    {
+      "label": "M\u1ed9t file markdown \u0111\u00e3 t\u00e1ch s\u1eb5n: d\u00f2ng, v\u00f9ng fence, heading.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_58",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "mot file markdown \u0111a tach san: dong, vung fence, heading."
+    },
+    {
+      "label": "D\u00f2ng ngay tr\u00ean c\u00f3 `<!-- doc-lint: allow Rn -->` cho \u0111\u00fang rule n\u00e0y?",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_78",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "dong ngay tren co `<!-- doc-lint: allow rn -->` cho \u0111ung rule nay?"
+    },
+    {
+      "label": "Sinh (ti\u00eau \u0111\u1ec1 th\u01b0\u1eddng-ho\u00e1, ch\u1ec9 s\u1ed1 d\u00f2ng \u0111\u1ea7u, ch\u1ec9 s\u1ed1 d\u00f2ng cu\u1ed1i) cho m\u1ed7i heading.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L85",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_85",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "sinh (tieu \u0111e thuong-hoa, chi so dong \u0111au, chi so dong cuoi) cho moi heading."
+    },
+    {
+      "label": "B\u01b0\u1edbc trong m\u1ee5c 'C\u00e1c b\u01b0\u1edbc' ph\u1ea3i \u0111\u00e1nh s\u1ed1 1, 2, 3\u2026 kh\u00f4ng nh\u1ea3y, kh\u00f4ng l\u1eb7p.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_108",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "buoc trong muc 'cac buoc' phai \u0111anh so 1, 2, 3... khong nhay, khong lap."
+    },
+    {
+      "label": "L\u1ec7nh ph\u1ea3i copy-paste \u0111\u01b0\u1ee3c: trong kh\u1ed1i ```, trong inline-code, ho\u1eb7c \u00f4 b\u1ea3ng.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L128",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_128",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "lenh phai copy-paste \u0111uoc: trong khoi ```, trong inline-code, hoac o bang."
+    },
+    {
+      "label": "SKILL.md ph\u1ea3i n\u00f3i r\u00f5 khi n\u00e0o xong v\u00e0 \u0111i \u0111\u00e2u ti\u1ebfp.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L142",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_142",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "skill.md phai noi ro khi nao xong va \u0111i \u0111au tiep."
+    },
+    {
+      "label": "T\u1eeb m\u01a1 h\u1ed3 trong m\u1ee5c b\u01b0\u1edbc/lu\u1eadt \u2014 tr\u1eeb khi 3 d\u00f2ng sau \u0111\u00e3 l\u00e0m r\u00f5 b\u1eb1ng b\u1ea3ng ho\u1eb7c `\u2192`.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L152",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_152",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "tu mo ho trong muc buoc/luat \u2014 tru khi 3 dong sau \u0111a lam ro bang bang hoac `\u2192`."
+    },
+    {
+      "label": "C\u00e2u qu\u00e1 d\u00e0i th\u00ec model nh\u1ecf \u0111\u1ecdc sai tr\u1ecdng t\u00e2m.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L171",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_171",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "cau qua dai thi model nho \u0111oc sai trong tam."
+    },
+    {
+      "label": "\u0110\u1ed9 d\u00e0i: SKILL.md theo ng\u01b0\u1ee1ng ri\u00eang; m\u1ecdi file \u2264 500 d\u00f2ng.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L203",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_203",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "\u0111o dai: skill.md theo nguong rieng; moi file \u2264 500 dong."
+    },
+    {
+      "label": "Skill sinh ra file cho user ph\u1ea3i k\u00e8m m\u1eabu output, kh\u00f4ng \u0111\u1ec3 t\u1ef1 b\u1ecba c\u1ea5u tr\u00fac.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L216",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_216",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "skill sinh ra file cho user phai kem mau output, khong \u0111e tu bia cau truc."
+    },
+    {
+      "label": "[(ch\u1ec9 s\u1ed1 d\u00f2ng, cells)] c\u1ee7a b\u1ea3ng \u00a73b; None n\u1ebfu spec kh\u00f4ng c\u00f3 m\u1ee5c 3b.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L240",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_240",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "[(chi so dong, cells)] cua bang \u00a73b; none neu spec khong co muc 3b."
+    },
+    {
+      "label": "File trong th\u01b0 m\u1ee5c `spec/` ph\u1ea3i c\u00f3 b\u1ea3ng \u00a73b h\u1ee3p l\u1ec7 (ki\u1ec3m k\u00ea n\u0103ng l\u1ef1c).",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L261",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_261",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "file trong thu muc `spec/` phai co bang \u00a73b hop le (kiem ke nang luc)."
+    },
+    {
+      "label": "soul.md + references/rules/*: \u0111\u1ee7 `## Khi n\u00e0o \u00e1p d\u1ee5ng / L\u00e0m g\u00ec / T\u1ef1 ki\u1ec3m`.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L302",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_302",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "soul.md + references/rules/*: \u0111u `## khi nao ap dung / lam gi / tu kiem`."
+    },
+    {
+      "label": "{t\u00ean skill: (ch\u1ec9 s\u1ed1 d\u00f2ng, t\u1eadp tr\u01b0\u1eddng c\u00f3 m\u1eb7t)} t\u1eeb c\u00e1c kh\u1ed1i `- D\u00f9ng:` trong plan.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L327",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_327",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "{ten skill: (chi so dong, tap truong co mat)} tu cac khoi `- dung:` trong plan."
+    },
+    {
+      "label": "M\u1ed7i d\u00f2ng D\u00d9NG \u1edf spec \u00a73b ph\u1ea3i c\u00f3 kh\u1ed1i h\u1ee3p \u0111\u1ed3ng \u0111\u1ee7 6 tr\u01b0\u1eddng trong plan.",
+      "file_type": "rationale",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L351",
+      "_origin": "ast",
+      "id": "scripts_doc_lint_rationale_351",
+      "community": 5,
+      "community_name": "doc_lint.py",
+      "norm_label": "moi dong dung o spec \u00a73b phai co khoi hop \u0111ong \u0111u 6 truong trong plan."
     },
     {
       "label": "tdq_checkstatus.py",
@@ -1649,7 +2067,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "plan_mode()",
       "id": "hooks_scripts_common_plan_mode"
     },
@@ -1781,7 +2199,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "approve_hint()",
       "id": "hooks_scripts_common_approve_hint"
     },
@@ -1803,7 +2221,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "mode \u0111a chot trong plan_file (dong 'mode thuc thi:'), none neu chua ghi.",
       "id": "hooks_scripts_common_rationale_47"
     },
@@ -1924,7 +2342,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "prompt_context.py",
       "id": "hooks_scripts_prompt_context"
     },
@@ -1935,7 +2353,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "looks_like_approval()",
       "id": "hooks_scripts_prompt_context_looks_like_approval"
     },
@@ -1945,8 +2363,8 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 16,
-      "community_name": "_parse_approve_args",
+      "community": 17,
+      "community_name": "main",
       "norm_label": "mode_from_answer()",
       "id": "hooks_scripts_prompt_context_mode_from_answer"
     },
@@ -1956,7 +2374,7 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 16,
+      "community": 17,
       "community_name": "main",
       "norm_label": "main()",
       "id": "hooks_scripts_prompt_context_main"
@@ -1968,7 +2386,7 @@
       "source_location": "L202",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "_truncate()",
       "id": "hooks_scripts_prompt_context_truncate"
     },
@@ -1979,7 +2397,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "_compact()",
       "id": "hooks_scripts_prompt_context_compact"
     },
@@ -1990,7 +2408,7 @@
       "source_location": "L220",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "_emit()",
       "id": "hooks_scripts_prompt_context_emit"
     },
@@ -2000,8 +2418,8 @@
       "source_file": "hooks/scripts/prompt_context.py",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 16,
-      "community_name": "_parse_approve_args",
+      "community": 17,
+      "community_name": "main",
       "norm_label": "cau tra loi o cong mode -> \u0111inh danh may, hoac none neu khong \u0111oc ra \u0111uoc.",
       "id": "hooks_scripts_prompt_context_rationale_76"
     },
@@ -2012,7 +2430,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "turn truoc \u0111a in y het noi dung nay \u2014 thay bang dong ngan cung ma.",
       "id": "hooks_scripts_prompt_context_rationale_214"
     },
@@ -2023,7 +2441,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "community": 17,
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "norm_label": "critical=true: canh bao/hanh \u0111ong rieng cho turn nay (duyet mo ho, mode     lech",
       "id": "hooks_scripts_prompt_context_rationale_221"
     },
@@ -4497,9 +4915,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L86",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "parse_slug()",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_parse_slug"
     },
     {
@@ -4508,9 +4926,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L110",
       "_origin": "ast",
-      "community": 10,
+      "community": 22,
       "norm_label": "default_state()",
-      "community_name": "cli",
+      "community_name": "_cli_approve",
       "id": "scripts_tdq_state_default_state"
     },
     {
@@ -4552,9 +4970,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 10,
+      "community": 23,
       "norm_label": "log_enabled()",
-      "community_name": "cli",
+      "community_name": "_warn",
       "id": "scripts_tdq_state_log_enabled"
     },
     {
@@ -4563,9 +4981,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L169",
       "_origin": "ast",
-      "community": 10,
+      "community": 23,
       "norm_label": "_warn()",
-      "community_name": "cli",
+      "community_name": "_warn",
       "id": "scripts_tdq_state_warn"
     },
     {
@@ -4629,9 +5047,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L246",
       "_origin": "ast",
-      "community": 10,
+      "community": 22,
       "norm_label": "load()",
-      "community_name": "cli",
+      "community_name": "_cli_approve",
       "id": "scripts_tdq_state_load"
     },
     {
@@ -4640,9 +5058,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L287",
       "_origin": "ast",
-      "community": 10,
+      "community": 23,
       "norm_label": "_dong_so_request_cu()",
-      "community_name": "cli",
+      "community_name": "_warn",
       "id": "scripts_tdq_state_dong_so_request_cu"
     },
     {
@@ -4684,7 +5102,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L365",
       "_origin": "ast",
-      "community": 14,
+      "community": 22,
       "norm_label": "sha256_file()",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_sha256_file"
@@ -4695,7 +5113,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L396",
       "_origin": "ast",
-      "community": 14,
+      "community": 4,
       "norm_label": "today_log_rel()",
       "community_name": "_common.py",
       "id": "scripts_tdq_state_today_log_rel"
@@ -4708,7 +5126,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "_git()",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_git"
     },
     {
@@ -4719,7 +5137,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "repo_root()",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_repo_root"
     },
     {
@@ -4730,7 +5148,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "_untracked_mark()",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_untracked_mark"
     },
     {
@@ -4741,7 +5159,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "repo_status_digest()",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_repo_status_digest"
     },
     {
@@ -4752,7 +5170,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "repo_status_paths()",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_repo_status_paths"
     },
     {
@@ -4761,7 +5179,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L510",
       "_origin": "ast",
-      "community": 14,
+      "community": 22,
       "norm_label": "plan_tick_state()",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_plan_tick_state"
@@ -4774,7 +5192,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "turn_snapshot()",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_turn_snapshot"
     },
     {
@@ -4805,9 +5223,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L582",
       "_origin": "ast",
-      "community": 16,
+      "community": 17,
       "norm_label": "normalize_mode()",
-      "community_name": "_parse_approve_args",
+      "community_name": "main",
       "id": "scripts_tdq_state_normalize_mode"
     },
     {
@@ -4818,7 +5236,7 @@
       "_origin": "ast",
       "community": 17,
       "norm_label": "mode_label()",
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "id": "scripts_tdq_state_mode_label"
     },
     {
@@ -4829,7 +5247,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "effective_lane()",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_effective_lane"
     },
     {
@@ -4840,7 +5258,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "effective_phase()",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_effective_phase"
     },
     {
@@ -4849,9 +5267,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L618",
       "_origin": "ast",
-      "community": 16,
+      "community": 23,
       "norm_label": "effective_mode()",
-      "community_name": "main",
+      "community_name": "_warn",
       "id": "scripts_tdq_state_effective_mode"
     },
     {
@@ -4871,9 +5289,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L811",
       "_origin": "ast",
-      "community": 22,
+      "community": 10,
       "norm_label": "render_phases_md()",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_render_phases_md"
     },
     {
@@ -4884,7 +5302,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "phase_key()",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_phase_key"
     },
     {
@@ -4906,7 +5324,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "next_headline()",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_next_headline"
     },
     {
@@ -4917,7 +5335,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "render_next()",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_render_next"
     },
     {
@@ -4928,7 +5346,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "render_state_md()",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_render_state_md"
     },
     {
@@ -4939,7 +5357,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "turn_log_append()",
-      "community_name": "tdq_state.py",
+      "community_name": "_common.py",
       "id": "scripts_tdq_state_turn_log_append"
     },
     {
@@ -4992,7 +5410,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1044",
       "_origin": "ast",
-      "community": 17,
+      "community": 7,
       "norm_label": "prompt_context_last()",
       "community_name": "tdq_state.py",
       "id": "scripts_tdq_state_prompt_context_last"
@@ -5014,7 +5432,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1069",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "_parse_value()",
       "community_name": "cli",
       "id": "scripts_tdq_state_parse_value"
@@ -5025,9 +5443,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1083",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "_unfinished()",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_unfinished"
     },
     {
@@ -5047,7 +5465,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1138",
       "_origin": "ast",
-      "community": 14,
+      "community": 22,
       "norm_label": "_file_changed_since_approval()",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_file_changed_since_approval"
@@ -5058,7 +5476,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1155",
       "_origin": "ast",
-      "community": 10,
+      "community": 22,
       "norm_label": "_cli_approve()",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_cli_approve"
@@ -5069,9 +5487,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1230",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "_pop_json_flag()",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_pop_json_flag"
     },
     {
@@ -5080,9 +5498,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1237",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "_echo_state()",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_echo_state"
     },
     {
@@ -5102,9 +5520,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L87",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "tach slug thanh (ngay, gio-phut hoac none, phan chu). khong khop \u2192 none.      bo",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_rationale_87"
     },
     {
@@ -5113,9 +5531,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L170",
       "_origin": "ast",
-      "community": 10,
+      "community": 23,
       "norm_label": "canh bao ra stderr kem timestamp (spec \u00a74.1). tat bang tdq_log=0.      khong bao",
-      "community_name": "cli",
+      "community_name": "_warn",
       "id": "scripts_tdq_state_rationale_170"
     },
     {
@@ -5157,9 +5575,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L247",
       "_origin": "ast",
-      "community": 10,
+      "community": 22,
       "norm_label": "\u0111oc state. tra none khi chua co file.      file hong (s2): \u0111oi ten thanh state.j",
-      "community_name": "cli",
+      "community_name": "_cli_approve",
       "id": "scripts_tdq_state_rationale_247"
     },
     {
@@ -5168,9 +5586,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L288",
       "_origin": "ast",
-      "community": 10,
+      "community": 23,
       "norm_label": "\u0111ong so thoi gian cua request \u0111ang mo vao docs/tdq/timing.jsonl.      import muo",
-      "community_name": "cli",
+      "community_name": "_warn",
       "id": "scripts_tdq_state_rationale_288"
     },
     {
@@ -5203,7 +5621,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "stdout (bytes) cua lenh git, hoac none khi khong chay \u0111uoc.",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_rationale_401"
     },
     {
@@ -5214,7 +5632,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "goc repo (porcelain in path theo goc, khong theo cwd). none neu khong phai repo.",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_rationale_416"
     },
     {
@@ -5225,7 +5643,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "dau nhan dang file untracked \u2192 (dau, so byte \u0111a \u0111oc).      uu tien noi dung: mti",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_rationale_424"
     },
     {
@@ -5236,7 +5654,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "van tay trang thai lam viec cua repo, hoac none khi khong lay \u0111uoc.      gom ca",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_rationale_441"
     },
     {
@@ -5247,7 +5665,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "path \u0111ang khac so voi head (bo co trang thai, rename lay ve \u0111ich).      cung vun",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_rationale_480"
     },
     {
@@ -5256,7 +5674,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L511",
       "_origin": "ast",
-      "community": 14,
+      "community": 22,
       "norm_label": "trang thai checkbox cua plan hien hanh. khong bao gio nem loi.",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_rationale_511"
@@ -5269,7 +5687,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "trang thai \u0111au turn: log hom nay + van tay repo + danh sach path \u0111ang ban     +",
-      "community_name": "_cli_approve",
+      "community_name": "turn_snapshot",
       "id": "scripts_tdq_state_rationale_550"
     },
     {
@@ -5300,9 +5718,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L583",
       "_origin": "ast",
-      "community": 16,
+      "community": 17,
       "norm_label": "bi danh -> \u0111inh danh may (\"main\"/\"subagent\"). cua vao duy nhat cho mode do user",
-      "community_name": "_parse_approve_args",
+      "community_name": "main",
       "id": "scripts_tdq_state_rationale_583"
     },
     {
@@ -5313,7 +5731,7 @@
       "_origin": "ast",
       "community": 17,
       "norm_label": "nhan \u0111e in ra cho nguoi \u0111oc, cung luat voi lane_label: mode la tra lai nguyen",
-      "community_name": "prompt_context.py",
+      "community_name": "main",
       "id": "scripts_tdq_state_rationale_592"
     },
     {
@@ -5333,9 +5751,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L812",
       "_origin": "ast",
-      "community": 22,
+      "community": 10,
       "norm_label": "sinh doc bang phase tu phase_table \u2014 doc khong \u0111uoc viet tay.      chay lai bang",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_rationale_812"
     },
     {
@@ -5346,7 +5764,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "khoa tra phase_table cho state hien tai.",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_rationale_856"
     },
     {
@@ -5357,7 +5775,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "dong 1 cua `next` \u2014 cung la toan bo output cua `next --brief`.",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_rationale_878"
     },
     {
@@ -5368,7 +5786,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "khoi 5 phan (spec \u00a72.2), \u226420 dong.      brief=true   \u2192 \u0111ung 1 dong tieu \u0111e (dung",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_rationale_888"
     },
     {
@@ -5379,7 +5797,7 @@
       "_origin": "ast",
       "community": 16,
       "norm_label": "mirror markdown \u226430 dong cho agent/user \u0111oc thang (spec \u00a72.3.1).",
-      "community_name": "main",
+      "community_name": "effective_lane",
       "id": "scripts_tdq_state_rationale_913"
     },
     {
@@ -5390,7 +5808,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "ghi mot su kien vao so turn. loi i/o \u2192 nuot im lang (hook khong \u0111uoc hong).",
-      "community_name": "tdq_state.py",
+      "community_name": "_common.py",
       "id": "scripts_tdq_state_rationale_957"
     },
     {
@@ -5421,7 +5839,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1045",
       "_origin": "ast",
-      "community": 17,
+      "community": 7,
       "norm_label": "digest noi dung [tdq:...] \u0111a in o turn truoc cho session nay, none neu chua co.",
       "community_name": "tdq_state.py",
       "id": "scripts_tdq_state_rationale_1045"
@@ -5443,9 +5861,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1084",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "request con do dang: chua toi phase ket thuc, hoac \u0111a co gate \u0111uoc duyet.",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_rationale_1084"
     },
     {
@@ -5465,7 +5883,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1139",
       "_origin": "ast",
-      "community": 14,
+      "community": 22,
       "norm_label": "true khi file spec/plan \u0111a \u0111oi noi dung so voi luc duyet. dung \u0111e phan biet",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_rationale_1139"
@@ -5476,7 +5894,7 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1156",
       "_origin": "ast",
-      "community": 10,
+      "community": 22,
       "norm_label": "ghi nhan viec user \u0111a duyet. khong phai gate: canh bao khi lech nhung     van gh",
       "community_name": "_cli_approve",
       "id": "scripts_tdq_state_rationale_1156"
@@ -5487,9 +5905,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1231",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "tach co `--json` khoi argv. mac \u0111inh cli in 1 dong tom tat cho nhe context;",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_rationale_1231"
     },
     {
@@ -5498,9 +5916,9 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1238",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "in ket qua cua lenh ghi state: 1 dong tom tat, hoac nguyen json khi --json.",
-      "community_name": "tdq_state.py",
+      "community_name": "cli",
       "id": "scripts_tdq_state_rationale_1238"
     },
     {
@@ -5755,376 +6173,6 @@
       "norm_label": "append \u0111ung mot dong json vao timing.jsonl. tra false neu \u0111a \u0111ong truoc \u0111o.",
       "community_name": "tdq_timing.py",
       "id": "scripts_tdq_timing_rationale_230"
-    },
-    {
-      "label": "doc_lint.py",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "doc_lint.py",
-      "id": "scripts_doc_lint"
-    },
-    {
-      "label": "Doc",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L57",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "doc",
-      "id": "scripts_doc_lint_doc"
-    },
-    {
-      "label": ".__init__()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L60",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": ".__init__()",
-      "id": "scripts_doc_lint_doc_init"
-    },
-    {
-      "label": ".allowed()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L77",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": ".allowed()",
-      "id": "scripts_doc_lint_doc_allowed"
-    },
-    {
-      "label": ".sections()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L84",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": ".sections()",
-      "id": "scripts_doc_lint_doc_sections"
-    },
-    {
-      "label": "_report()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L102",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "_report()",
-      "id": "scripts_doc_lint_report"
-    },
-    {
-      "label": "rule_r1()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L107",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r1()",
-      "id": "scripts_doc_lint_rule_r1"
-    },
-    {
-      "label": "rule_r2()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L127",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r2()",
-      "id": "scripts_doc_lint_rule_r2"
-    },
-    {
-      "label": "rule_r3()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L141",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r3()",
-      "id": "scripts_doc_lint_rule_r3"
-    },
-    {
-      "label": "rule_r4()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L151",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r4()",
-      "id": "scripts_doc_lint_rule_r4"
-    },
-    {
-      "label": "rule_r5()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L170",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r5()",
-      "id": "scripts_doc_lint_rule_r5"
-    },
-    {
-      "label": "rule_r6()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L202",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r6()",
-      "id": "scripts_doc_lint_rule_r6"
-    },
-    {
-      "label": "rule_r7()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L215",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r7()",
-      "id": "scripts_doc_lint_rule_r7"
-    },
-    {
-      "label": "_spec3b_rows()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L239",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "_spec3b_rows()",
-      "id": "scripts_doc_lint_spec3b_rows"
-    },
-    {
-      "label": "rule_r8()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L260",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r8()",
-      "id": "scripts_doc_lint_rule_r8"
-    },
-    {
-      "label": "_r9_in_scope()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L296",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "_r9_in_scope()",
-      "id": "scripts_doc_lint_r9_in_scope"
-    },
-    {
-      "label": "rule_r9()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L301",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "rule_r9()",
-      "id": "scripts_doc_lint_rule_r9"
-    },
-    {
-      "label": "_plan_contracts()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L326",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "_plan_contracts()",
-      "id": "scripts_doc_lint_plan_contracts"
-    },
-    {
-      "label": "pair()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L350",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "pair()",
-      "id": "scripts_doc_lint_pair"
-    },
-    {
-      "label": "lint_file()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L381",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "lint_file()",
-      "id": "scripts_doc_lint_lint_file"
-    },
-    {
-      "label": "collect()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L395",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "collect()",
-      "id": "scripts_doc_lint_collect"
-    },
-    {
-      "label": "main()",
-      "file_type": "code",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L407",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "main()",
-      "id": "scripts_doc_lint_main"
-    },
-    {
-      "label": "M\u1ed9t file markdown \u0111\u00e3 t\u00e1ch s\u1eb5n: d\u00f2ng, v\u00f9ng fence, heading.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L58",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "mot file markdown \u0111a tach san: dong, vung fence, heading.",
-      "id": "scripts_doc_lint_rationale_58"
-    },
-    {
-      "label": "D\u00f2ng ngay tr\u00ean c\u00f3 `<!-- doc-lint: allow Rn -->` cho \u0111\u00fang rule n\u00e0y?",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L78",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "dong ngay tren co `<!-- doc-lint: allow rn -->` cho \u0111ung rule nay?",
-      "id": "scripts_doc_lint_rationale_78"
-    },
-    {
-      "label": "Sinh (ti\u00eau \u0111\u1ec1 th\u01b0\u1eddng-ho\u00e1, ch\u1ec9 s\u1ed1 d\u00f2ng \u0111\u1ea7u, ch\u1ec9 s\u1ed1 d\u00f2ng cu\u1ed1i) cho m\u1ed7i heading.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L85",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "sinh (tieu \u0111e thuong-hoa, chi so dong \u0111au, chi so dong cuoi) cho moi heading.",
-      "id": "scripts_doc_lint_rationale_85"
-    },
-    {
-      "label": "B\u01b0\u1edbc trong m\u1ee5c 'C\u00e1c b\u01b0\u1edbc' ph\u1ea3i \u0111\u00e1nh s\u1ed1 1, 2, 3\u2026 kh\u00f4ng nh\u1ea3y, kh\u00f4ng l\u1eb7p.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L108",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "buoc trong muc 'cac buoc' phai \u0111anh so 1, 2, 3... khong nhay, khong lap.",
-      "id": "scripts_doc_lint_rationale_108"
-    },
-    {
-      "label": "L\u1ec7nh ph\u1ea3i copy-paste \u0111\u01b0\u1ee3c: trong kh\u1ed1i ```, trong inline-code, ho\u1eb7c \u00f4 b\u1ea3ng.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L128",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "lenh phai copy-paste \u0111uoc: trong khoi ```, trong inline-code, hoac o bang.",
-      "id": "scripts_doc_lint_rationale_128"
-    },
-    {
-      "label": "SKILL.md ph\u1ea3i n\u00f3i r\u00f5 khi n\u00e0o xong v\u00e0 \u0111i \u0111\u00e2u ti\u1ebfp.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L142",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "skill.md phai noi ro khi nao xong va \u0111i \u0111au tiep.",
-      "id": "scripts_doc_lint_rationale_142"
-    },
-    {
-      "label": "T\u1eeb m\u01a1 h\u1ed3 trong m\u1ee5c b\u01b0\u1edbc/lu\u1eadt \u2014 tr\u1eeb khi 3 d\u00f2ng sau \u0111\u00e3 l\u00e0m r\u00f5 b\u1eb1ng b\u1ea3ng ho\u1eb7c `\u2192`.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L152",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "tu mo ho trong muc buoc/luat \u2014 tru khi 3 dong sau \u0111a lam ro bang bang hoac `\u2192`.",
-      "id": "scripts_doc_lint_rationale_152"
-    },
-    {
-      "label": "C\u00e2u qu\u00e1 d\u00e0i th\u00ec model nh\u1ecf \u0111\u1ecdc sai tr\u1ecdng t\u00e2m.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L171",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "cau qua dai thi model nho \u0111oc sai trong tam.",
-      "id": "scripts_doc_lint_rationale_171"
-    },
-    {
-      "label": "\u0110\u1ed9 d\u00e0i: SKILL.md theo ng\u01b0\u1ee1ng ri\u00eang; m\u1ecdi file \u2264 500 d\u00f2ng.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L203",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "\u0111o dai: skill.md theo nguong rieng; moi file \u2264 500 dong.",
-      "id": "scripts_doc_lint_rationale_203"
-    },
-    {
-      "label": "Skill sinh ra file cho user ph\u1ea3i k\u00e8m m\u1eabu output, kh\u00f4ng \u0111\u1ec3 t\u1ef1 b\u1ecba c\u1ea5u tr\u00fac.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L216",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "skill sinh ra file cho user phai kem mau output, khong \u0111e tu bia cau truc.",
-      "id": "scripts_doc_lint_rationale_216"
-    },
-    {
-      "label": "[(ch\u1ec9 s\u1ed1 d\u00f2ng, cells)] c\u1ee7a b\u1ea3ng \u00a73b; None n\u1ebfu spec kh\u00f4ng c\u00f3 m\u1ee5c 3b.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L240",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "[(chi so dong, cells)] cua bang \u00a73b; none neu spec khong co muc 3b.",
-      "id": "scripts_doc_lint_rationale_240"
-    },
-    {
-      "label": "File trong th\u01b0 m\u1ee5c `spec/` ph\u1ea3i c\u00f3 b\u1ea3ng \u00a73b h\u1ee3p l\u1ec7 (ki\u1ec3m k\u00ea n\u0103ng l\u1ef1c).",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L261",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "file trong thu muc `spec/` phai co bang \u00a73b hop le (kiem ke nang luc).",
-      "id": "scripts_doc_lint_rationale_261"
-    },
-    {
-      "label": "soul.md + references/rules/*: \u0111\u1ee7 `## Khi n\u00e0o \u00e1p d\u1ee5ng / L\u00e0m g\u00ec / T\u1ef1 ki\u1ec3m`.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L302",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "soul.md + references/rules/*: \u0111u `## khi nao ap dung / lam gi / tu kiem`.",
-      "id": "scripts_doc_lint_rationale_302"
-    },
-    {
-      "label": "{t\u00ean skill: (ch\u1ec9 s\u1ed1 d\u00f2ng, t\u1eadp tr\u01b0\u1eddng c\u00f3 m\u1eb7t)} t\u1eeb c\u00e1c kh\u1ed1i `- D\u00f9ng:` trong plan.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L327",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "{ten skill: (chi so dong, tap truong co mat)} tu cac khoi `- dung:` trong plan.",
-      "id": "scripts_doc_lint_rationale_327"
-    },
-    {
-      "label": "M\u1ed7i d\u00f2ng D\u00d9NG \u1edf spec \u00a73b ph\u1ea3i c\u00f3 kh\u1ed1i h\u1ee3p \u0111\u1ed3ng \u0111\u1ee7 6 tr\u01b0\u1eddng trong plan.",
-      "file_type": "rationale",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L351",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "moi dong dung o spec \u00a73b phai co khoi hop \u0111ong \u0111u 6 truong trong plan.",
-      "id": "scripts_doc_lint_rationale_351"
     }
   ],
   "links": [
@@ -6135,218 +6183,229 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog",
-      "target": "changelog_changelog"
+      "target": "changelog_changelog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L292",
+      "source_location": "L314",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_10_2026_08_13"
+      "target": "changelog_0_11_10_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L283",
+      "source_location": "L305",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_11_2026_08_13"
+      "target": "changelog_0_11_11_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L274",
+      "source_location": "L296",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_12_2026_08_13"
+      "target": "changelog_0_11_12_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L258",
+      "source_location": "L280",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_13_2026_08_13"
+      "target": "changelog_0_11_13_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L345",
+      "source_location": "L367",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_4_tr\u1edf_v\u1ec1_0_7_0"
+      "target": "changelog_0_11_4_tr\u1edf_v\u1ec1_0_7_0",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L335",
+      "source_location": "L357",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_5_2026_08_13"
+      "target": "changelog_0_11_5_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L326",
+      "source_location": "L348",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_6_2026_08_13"
+      "target": "changelog_0_11_6_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L318",
+      "source_location": "L340",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_7_2026_08_13"
+      "target": "changelog_0_11_7_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L310",
+      "source_location": "L332",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_8_2026_08_13"
+      "target": "changelog_0_11_8_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L300",
+      "source_location": "L322",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_11_9_2026_08_13"
+      "target": "changelog_0_11_9_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L239",
+      "source_location": "L261",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_12_0_2026_08_13"
+      "target": "changelog_0_12_0_2026_08_13",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L219",
+      "source_location": "L241",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_13_0_2026_08_14"
+      "target": "changelog_0_13_0_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L198",
+      "source_location": "L220",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_14_0_2026_08_14"
+      "target": "changelog_0_14_0_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L174",
+      "source_location": "L196",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_15_0_2026_08_14"
+      "target": "changelog_0_15_0_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L156",
+      "source_location": "L178",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_15_1_2026_08_14"
+      "target": "changelog_0_15_1_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L129",
+      "source_location": "L151",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_16_0_2026_08_14"
+      "target": "changelog_0_16_0_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L103",
+      "source_location": "L125",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_17_0_2026_08_14"
+      "target": "changelog_0_17_0_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L77",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_18_0_2026_08_14"
+      "target": "changelog_0_18_0_2026_08_14",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L53",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_19_0_2026_08_15"
+      "target": "changelog_0_19_0_2026_08_15",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "changelog_changelog",
+      "target": "changelog_0_20_0_2026_08_15",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6355,9 +6414,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_20_0_2026_08_15"
+      "target": "changelog_0_21_0_2026_08_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6366,20 +6425,641 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_21_0_2026_08_16"
+      "target": "changelog_0_22_0_2026_08_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L349",
+      "source_location": "L371",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "changelog_changelog",
-      "target": "changelog_0_6_2_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc"
+      "target": "changelog_0_6_2_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L395",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_collect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_doc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L381",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_lint_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L407",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L350",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_pair",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L326",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_plan_contracts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L296",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_r9_in_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r2",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r3",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r4",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r5",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r6",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r7",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r8",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L319",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_rule_r9",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L239",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint",
+      "target": "scripts_doc_lint_spec3b_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_doc",
+      "target": "scripts_doc_lint_doc_allowed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_doc",
+      "target": "scripts_doc_lint_doc_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_doc",
+      "target": "scripts_doc_lint_doc_sections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L382",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_lint_file",
+      "target": "scripts_doc_lint_doc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L353",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_pair",
+      "target": "scripts_doc_lint_doc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_58",
+      "target": "scripts_doc_lint_doc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_78",
+      "target": "scripts_doc_lint_doc_allowed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_report",
+      "target": "scripts_doc_lint_doc_allowed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_85",
+      "target": "scripts_doc_lint_doc_sections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r1",
+      "target": "scripts_doc_lint_doc_sections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r4",
+      "target": "scripts_doc_lint_doc_sections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L242",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_spec3b_rows",
+      "target": "scripts_doc_lint_doc_sections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r1",
+      "target": "scripts_doc_lint_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r2",
+      "target": "scripts_doc_lint_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L167",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r4",
+      "target": "scripts_doc_lint_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L278",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r8",
+      "target": "scripts_doc_lint_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_108",
+      "target": "scripts_doc_lint_rule_r1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L128",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_128",
+      "target": "scripts_doc_lint_rule_r2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_142",
+      "target": "scripts_doc_lint_rule_r3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L152",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_152",
+      "target": "scripts_doc_lint_rule_r4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_171",
+      "target": "scripts_doc_lint_rule_r5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L203",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_203",
+      "target": "scripts_doc_lint_rule_r6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L216",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_216",
+      "target": "scripts_doc_lint_rule_r7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L359",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_pair",
+      "target": "scripts_doc_lint_spec3b_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L240",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_240",
+      "target": "scripts_doc_lint_spec3b_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L268",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r8",
+      "target": "scripts_doc_lint_spec3b_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L390",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_lint_file",
+      "target": "scripts_doc_lint_rule_r8",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L261",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_261",
+      "target": "scripts_doc_lint_rule_r8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L303",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rule_r9",
+      "target": "scripts_doc_lint_r9_in_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L302",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_302",
+      "target": "scripts_doc_lint_rule_r9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L363",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_pair",
+      "target": "scripts_doc_lint_plan_contracts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L327",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_327",
+      "target": "scripts_doc_lint_plan_contracts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L412",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_main",
+      "target": "scripts_doc_lint_pair",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L351",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_rationale_351",
+      "target": "scripts_doc_lint_pair",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L425",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_main",
+      "target": "scripts_doc_lint_lint_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/doc_lint.py",
+      "source_location": "L424",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_doc_lint_main",
+      "target": "scripts_doc_lint_collect",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -17974,629 +18654,8 @@
       "confidence_score": 1.0,
       "source": "scripts_tdq_timing_rationale_230",
       "target": "scripts_tdq_timing_dong_so"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L395",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_collect"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L57",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_doc"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L381",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_lint_file"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L407",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_main"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L350",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_pair"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L326",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_plan_contracts"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L296",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_r9_in_scope"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L102",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_report"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r1"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r2"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r3"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r4"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r5"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r6"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r7"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r8"
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L319",
-      "weight": 1.0,
-      "_origin": "ast",
-      "context": "collection",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_rule_r9"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L239",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint",
-      "target": "scripts_doc_lint_spec3b_rows"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L77",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_doc",
-      "target": "scripts_doc_lint_doc_allowed"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L60",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_doc",
-      "target": "scripts_doc_lint_doc_init"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L84",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_doc",
-      "target": "scripts_doc_lint_doc_sections"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L382",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_lint_file",
-      "target": "scripts_doc_lint_doc"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L353",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_pair",
-      "target": "scripts_doc_lint_doc"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L58",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_58",
-      "target": "scripts_doc_lint_doc"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L78",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_78",
-      "target": "scripts_doc_lint_doc_allowed"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L103",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_report",
-      "target": "scripts_doc_lint_doc_allowed"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L85",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_85",
-      "target": "scripts_doc_lint_doc_sections"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L109",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r1",
-      "target": "scripts_doc_lint_doc_sections"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L154",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r4",
-      "target": "scripts_doc_lint_doc_sections"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L242",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_spec3b_rows",
-      "target": "scripts_doc_lint_doc_sections"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L121",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r1",
-      "target": "scripts_doc_lint_report"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L137",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r2",
-      "target": "scripts_doc_lint_report"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L167",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r4",
-      "target": "scripts_doc_lint_report"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L278",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r8",
-      "target": "scripts_doc_lint_report"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L108",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_108",
-      "target": "scripts_doc_lint_rule_r1"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L128",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_128",
-      "target": "scripts_doc_lint_rule_r2"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L142",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_142",
-      "target": "scripts_doc_lint_rule_r3"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L152",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_152",
-      "target": "scripts_doc_lint_rule_r4"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L171",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_171",
-      "target": "scripts_doc_lint_rule_r5"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L203",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_203",
-      "target": "scripts_doc_lint_rule_r6"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L216",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_216",
-      "target": "scripts_doc_lint_rule_r7"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L359",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_pair",
-      "target": "scripts_doc_lint_spec3b_rows"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L240",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_240",
-      "target": "scripts_doc_lint_spec3b_rows"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L268",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r8",
-      "target": "scripts_doc_lint_spec3b_rows"
-    },
-    {
-      "relation": "indirect_call",
-      "context": "collection",
-      "confidence": "INFERRED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L390",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 0.5,
-      "source": "scripts_doc_lint_lint_file",
-      "target": "scripts_doc_lint_rule_r8"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L261",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_261",
-      "target": "scripts_doc_lint_rule_r8"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L303",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rule_r9",
-      "target": "scripts_doc_lint_r9_in_scope"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L302",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_302",
-      "target": "scripts_doc_lint_rule_r9"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L363",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_pair",
-      "target": "scripts_doc_lint_plan_contracts"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L327",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_327",
-      "target": "scripts_doc_lint_plan_contracts"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L412",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_main",
-      "target": "scripts_doc_lint_pair"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L351",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_rationale_351",
-      "target": "scripts_doc_lint_pair"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L425",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_main",
-      "target": "scripts_doc_lint_lint_file"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/doc_lint.py",
-      "source_location": "L424",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_doc_lint_main",
-      "target": "scripts_doc_lint_collect"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1d18bc6f8b082d318a41c7feff8d9c58ea8c2e41"
+  "built_at_commit": "e88a9c37602cf62bd9a1683667a7fb24518489f6"
 }
