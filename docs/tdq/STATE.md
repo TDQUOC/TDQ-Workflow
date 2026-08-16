@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-16T12:16:56+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-16T13:36:51+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-16-1110-skill-check-status |
+| Request | 2026-08-16-1300-bo-cong-clean-code |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-16-1110-skill-check-status.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-16-1110-skill-check-status.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-16-1300-bo-cong-clean-code.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-16-1300-bo-cong-clean-code.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

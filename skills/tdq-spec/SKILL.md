@@ -20,9 +20,6 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Vi�
    ràng buộc & rủi ro · phạm vi QC + Definition of Done · câu hỏi còn mở.
    Mục "câu hỏi còn mở" PHẢI rỗng — còn câu hỏi thì quay lại phase `analyze`.
 
-1b. **Cổng clean code** — việc chạm mã nguồn thì hỏi user bằng khuôn A/B ở cuối
-   [spec-template](references/spec-template.md); đáp án ghi vào dòng `Clean code:` §4.
-
 2. **Tự review.** Đọc lại tìm chỗ hổng/mâu thuẫn, sửa. Chạy máy kiểm
    (R8 kiểm §3b): `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
    đến khi exit 0.

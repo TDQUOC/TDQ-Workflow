@@ -2,6 +2,28 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.22.0 — 2026-08-16
+
+Clean code thôi làm cổng hỏi, thành luật thường trực. Trước bản này mỗi request chạm mã
+nguồn phải trả lời "Bật clean code cho request này chứ?", rồi cuối request chạy
+`scripts/code_rule_scan.py`. Cổng đó tốn một lượt hỏi mà không trả lại bảo đảm nào:
+script phụ thuộc linter cài sẵn trên máy, request trước vừa báo `CHƯA KIỂM ĐƯỢC — thiếu
+ruff` cho cả 5 file Python.
+
+- Luật mới `skills/tdq-conventions/references/clean-code.md`: 5 nguyên tắc SOLID, mỗi
+  nguyên tắc hai bản đọc (khi có class / khi chỉ có hàm và module) vì repo này có 4 class
+  trên 280 hàm. LSP mang nhãn giới hạn: bản đọc cho hàm là suy diễn, không phải trích
+  Liskov. Mỗi nguyên tắc kèm một ví dụ ĐÚNG và một ví dụ SAI trỏ vào file thật.
+- `tdq-conventions/SKILL.md` §11 nạp luật này mỗi turn; trần dòng của skill nới 130 → 133.
+- Gỡ cổng hỏi: `tdq-spec/SKILL.md` bỏ bước 1b, `spec-template.md` bỏ dòng
+  `Clean code: BẬT|TẮT` và mục `## Khuôn hỏi clean code`.
+- QC: hạng mục cố định thứ tư QC-F4 — trả lời checklist 5 câu có/không, câu nào "không"
+  thì sửa code rồi ghi chỗ đã sửa. Đổi khớp ở cả `skills/` và `portable/`.
+- Xoá `scripts/code_rule_scan.py`, `tests/test_code_rule_scan.py`,
+  `tests/test_clean_code_workflow.py` (graphify xác nhận script là lá, không ai gọi).
+- Bù kiểm bằng lệnh: `doc_lint` R9 phủ thêm `clean-code.md`, và
+  `tests/test_clean_code_rule.py` (20 test) khoá hình dạng file luật.
+
 ## 0.21.0 — 2026-08-16
 
 Skill thứ bảy: `tdq-check-status` — dò lại một request đang dở rồi tiếp tục mà không mất

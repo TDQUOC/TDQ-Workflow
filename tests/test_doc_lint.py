@@ -348,6 +348,20 @@ class R9Test(LintBase):
     def test_r9_ngoai_pham_vi_khong_soi(self):
         self.assert_clean(self.write("huong-dan.md", RULE_THIEU_MUC))
 
+    def test_r9_clean_code_thieu_muc(self):
+        """Luật clean code mất phần kiểm bằng lệnh (script scan đã xoá) — R9 gánh hình dạng."""
+        path = os.path.join("references", "clean-code.md")
+        self.assert_hits(self.write(path, RULE_THIEU_MUC), "R9")
+
+    def test_r9_clean_code_du_muc_sach(self):
+        self.assert_clean(
+            self.write(os.path.join("references", "clean-code.md"), RULE_3_MUC_OK))
+
+    def test_r9_chi_dung_ten_file_clean_code(self):
+        """Đóng đinh ĐÚNG tên file, không mở cả thư mục `references/`."""
+        self.assert_clean(
+            self.write(os.path.join("references", "interview.md"), RULE_THIEU_MUC))
+
     def test_r9_heading_trong_fence_khong_tinh(self):
         gia = "# Luật\n\n```\n## Khi nào áp dụng\n## Làm gì\n## Tự kiểm\n```\n"
         self.assert_hits(self.write("soul.md", gia), "R9")

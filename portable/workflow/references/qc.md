@@ -4,10 +4,10 @@ QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
 
 ## Chạy cái gì
 
-**Số hạng mục QC = số dòng Definition of Done của plan, cộng ba hạng mục cố định.**
+**Số hạng mục QC = số dòng Definition of Done của plan, cộng bốn hạng mục cố định.**
 Mỗi dòng DoD đúng một phép kiểm chạy được bằng lệnh, dán output thật. Không bớt dòng
 DoD nào. DoD có dòng không kiểm được bằng lệnh → đó là lỗi của plan, sửa dòng đó cho
-đo được rồi mới QC. Ba hạng mục cố định luôn chạy, không phụ thuộc DoD:
+đo được rồi mới QC. Bốn hạng mục cố định luôn chạy, không phụ thuộc DoD:
 
 - QC-F1 — toàn bộ test suite bằng đúng lệnh ghi trong plan, dán số pass/fail thật.
   Suite dài → `<lệnh test> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`, chỉ
@@ -17,8 +17,10 @@ DoD nào. DoD có dòng không kiểm được bằng lệnh → đó là lỗi 
   QC; đó là nợ kỹ thuật phải nêu trong report, không được tính là PASS.
 - QC-F3 — ràng buộc kiến trúc: mỗi dòng trong khối "Ràng buộc kiến trúc phải giữ" ở
   spec §5 là một phép kiểm rằng bản thay đổi không phá dòng đó.
-- Spec §4 ghi `Clean code: BẬT` → thêm đúng một hạng mục chạy
-  `python3 scripts/code_rule_scan.py` trên file đã đổi, fix tới khi hết LỖI; TẮT thì bỏ.
+- QC-F4 — clean code: turn này có sửa file mã nguồn thì trả lời 5 câu ở mục
+  `## Tự kiểm` của `skills/tdq-conventions/references/clean-code.md`, ghi từng đáp án
+  có/không vào file qc. Câu nào "không" → sửa code rồi ghi chỗ đã sửa, không sửa
+  đáp án. Không chạm mã nguồn → ghi `KHÔNG ÁP DỤNG — không sửa file code`.
 
 Ngoài các hạng mục trên, không thêm hạng mục nào ngoài DoD.
 

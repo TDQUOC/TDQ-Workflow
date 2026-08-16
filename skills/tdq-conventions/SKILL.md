@@ -125,6 +125,9 @@ Bảng cấm gộp, luật đọc lại (mềm), đọc vừa đủ, giao việc
 ## 11. Chất lượng
 
 - Soul — luật gốc trên mọi luật: chất lượng > runtime > context cost; viết/sửa luật, luật đá nhau, định cắt bước → mở [references/soul.md](references/soul.md).
+- Clean code là hành vi thường trực, không phải cổng hỏi. Mọi lần viết/sửa code, tổ chức
+  project, script, hàm, class cho sạch nhất có thể theo 5 nguyên tắc SOLID. Bảng hai bản
+  đọc, ví dụ ĐÚNG/SAI và checklist 5 câu: [references/clean-code.md](references/clean-code.md).
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật. Thiếu thông tin → hỏi user, đừng đoán.
 - Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt được qua config).
 - Mỗi task trong plan có test riêng; task pass là tick `[x]` NGAY, không gom cuối turn.

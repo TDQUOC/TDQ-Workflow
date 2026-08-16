@@ -11,8 +11,8 @@ URL gốc của từng ngôn ngữ nằm ngay trong mục "Nguồn" của từng
 ## Khi nào áp dụng
 
 - Khi viết hoặc sửa bất kỳ file mã nguồn nào: tra bảng theo đuôi file trước khi gõ code.
-- Khi chạy bước scan cuối request (`scripts/code_rule_scan.py` đọc đúng bảng này để
-  chọn linter cho từng file).
+- Khi muốn biết ngôn ngữ đang sửa có linter chuẩn nào: cột lệnh kiểm trong bảng là
+  danh sách gợi ý, chạy tay khi cần, không có bước scan tự động nào nữa.
 
 ## Luật Intentionality
 

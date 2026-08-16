@@ -27,7 +27,9 @@ SKILL_LINE_LIMITS = {
     # 2026-08-15: 120 → 130. Luật một lượt (§10) là luật tầng runtime, phải nằm ở thân
     # skill mới được nạp mỗi turn. Soul xếp runtime trên context cost, nên nới trần 10
     # dòng để giữ luật đọc được, thay vì nén luật cho vừa trần.
-    "tdq-conventions": 130,
+    # 2026-08-16: 130 → 133. Clean code bỏ cổng hỏi và script scan, nên luật SOLID chỉ còn
+    # sống nếu §11 nạp nó mỗi turn — 3 dòng nạp ở thân skill, chi tiết ở references.
+    "tdq-conventions": 133,
     # skill khôi phục: 7 bước + khối luật cứng "không mất dữ liệu" phải nằm ở thân skill,
     # vì model yếu bỏ qua reference sẽ chạy đúng cái lệnh làm mất cả request.
     "tdq-check-status": 80,
@@ -286,11 +288,14 @@ RULE_SECTIONS = ("khi nào áp dụng", "làm gì", "tự kiểm")
 # Phạm vi R9 đóng đinh vào soul.md + thư viện rule; áp rộng hơn sẽ đỏ oan file cũ
 # viết theo khuôn khác (spec 2026-08-14-set-soul-workflow §3).
 RULES_DIR_MARK = f"{os.sep}references{os.sep}rules{os.sep}"
+# Thêm ĐÚNG tên file, không mở cả `references/`: clean-code.md mất phần Tự kiểm dạng lệnh
+# khi script scan cũ bị xoá, nên R9 gánh phần kiểm hình dạng bằng lệnh cho nó.
+RULE_FILE_NAMES = ("soul.md", "clean-code.md")
 
 
 def _r9_in_scope(path):
     abs_path = os.path.abspath(path)
-    return os.path.basename(abs_path) == "soul.md" or RULES_DIR_MARK in abs_path
+    return os.path.basename(abs_path) in RULE_FILE_NAMES or RULES_DIR_MARK in abs_path
 
 
 def rule_r9(doc, out):

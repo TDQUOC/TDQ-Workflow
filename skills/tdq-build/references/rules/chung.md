@@ -18,8 +18,8 @@ Nạp file này TRƯỚC, rồi mới nạp file rule ngôn ngữ theo bảng tr
 ## Khi nào áp dụng
 
 - Mọi lần viết hoặc sửa code, bất kể ngôn ngữ — kể cả script nhỏ và test.
-- Bước scan + fix cuối request chỉ chạy khi spec ghi `Clean code: BẬT`; còn tổ chức
-  code theo rule thì áp dụng luôn, không phụ thuộc BẬT/TẮT.
+- Luật này áp thường trực, không có cổng bật/tắt. Nguyên tắc SOLID và checklist 5 câu
+  ở `skills/tdq-conventions/references/clean-code.md` áp cùng lúc với file này.
 
 ## Luật Intentionality
 
