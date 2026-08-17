@@ -12,7 +12,9 @@ tests/
 
 # Tài liệu và bản đóng gói: không phải mã chạy
 docs/
-portable/
+portable_claude/
+portable_codex/
+portable_src/
 skills/
 agents/
 ClaudeExport/

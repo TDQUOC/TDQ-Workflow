@@ -1,24 +1,24 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-17T09:23:38+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-17T14:13:03+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-17-0919-eta-task-agent |
-| Lane | quick |
-| Phase | idle |
-| Spec | (chưa có) |
-| Plan | (chưa có) |
-| Duyệt quick | ✔ đã duyệt |
-| Mode thực thi | (chưa chốt) |
+| Request | 2026-08-17-1139-codex-native-layers |
+| Lane | full |
+| Phase | report |
+| Spec | docs/tdq/spec/2026-08-17-1139-codex-native-layers.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-17-1139-codex-native-layers.md — ✔ đã duyệt |
+| Duyệt quick | (không áp dụng) |
+| Mode thực thi | main |
 
 ## Đang ở đâu
-Đã xong hoặc chưa mở request. Cấm: Đè request cũ còn dở mà chưa hỏi user.
+QC đã PASS. Cấm: Tự commit hoặc push khi user chưa yêu cầu.
 
 ## Việc tiếp theo
-Chờ yêu cầu mới từ user.
+Viết report ngắn gọn (khuyến nghị 10-20 dòng, không giới hạn cứng) rồi hỏi user có commit không.
 ```
-python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau>
+python3 scripts/tdq_state.py set phase=idle
 ```
-Xong khi: Có request mới được mở
+Xong khi: Report đã ghi và user đã được hỏi về commit
 
 > Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.

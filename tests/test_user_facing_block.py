@@ -18,7 +18,9 @@ import scan_block_symbols as scan  # noqa: E402  (dùng chung máy quét của T
 from scan_block_symbols import WHITELIST  # noqa: E402  (whitelist chốt ở T0.2)
 
 SKILLS = os.path.join(ROOT, "skills")
-PORTABLE = os.path.join(ROOT, "portable", "workflow")
+PORTABLE = os.path.join(ROOT, "portable_codex", "workflow")
+# Bản portable nay do `scripts/build_portable.py` SINH, không chép tay nữa. Vẫn kiểm
+# nó: sinh sai đường dẫn hay sót file thì khuôn vẫn biến mất ở máy đích y như trôi tay.
 BLOCK = os.path.join(SKILLS, "tdq-conventions", "references", "user-facing-block.md")
 # Dải emoji hay gặp; `➤` (U+27A4) nằm ngoài các dải này nên vẫn hợp lệ.
 # Thêm U+231B, U+23F3, U+2714 sau T0.2: `⏳` và `✔` từng lọt qua vì không nằm trong dải
@@ -84,8 +86,8 @@ SO_KHOI = {
     "tdq-intake/references/interview.md": 0,
     "tdq-build/references/report-template.md": 1,
     "tdq-status/SKILL.md": 0,
-    "portable/02-spec.md": 1,
-    "portable/03-plan.md": 2,
+    "portable/03-spec.md": 1,
+    "portable/04-plan.md": 1,  # bản sinh chép từ tdq-plan/SKILL.md (khối mode-gate ở file riêng)
     "portable/references/user-facing-block.md": 1,
 }
 
@@ -95,7 +97,8 @@ FILE_PHAM_VI = tuple(
     (os.path.join(SKILLS, *p), "skills/" + "/".join(p)) for p in MAU
 ) + tuple(
     (os.path.join(PORTABLE, *p), "portable/workflow/" + "/".join(p))
-    for p in (("02-spec.md",), ("03-plan.md",), ("references", "user-facing-block.md"))
+    for p in (("03-spec.md",), ("04-plan.md",),
+              ("references", "tdq-conventions", "user-facing-block.md"))
 )
 
 
@@ -267,12 +270,12 @@ class UserFacingBlockTest(unittest.TestCase):
                          _common.approve_hint("spec"), "chuỗi cổng duyệt spec đổi byte")
 
     def test_portable_matches_source(self):
-        """Bản portable là bản chép tay — dễ trôi khỏi khuôn gốc nhất.
+        """Bản portable do máy sinh — kiểm để chắc bộ sinh mang đủ khuôn sang.
 
         Nó phải mang đủ bảy luật và đúng whitelist của khuôn gốc; hai file spec/plan
         của nó chép khối mẫu nên chịu chung luật 1, 3, 7.
         """
-        khuon = read(PORTABLE, "references", "user-facing-block.md")
+        khuon = read(PORTABLE, "references", "tdq-conventions", "user-facing-block.md")
         luat = RULE.findall(sections(khuon).get("Bảy luật trang trí", ""))
         self.assertEqual([str(i) for i in range(1, 8)], luat,
                          f"bản portable thiếu bảy luật trang trí, đang là {luat}")
@@ -281,7 +284,7 @@ class UserFacingBlockTest(unittest.TestCase):
                 self.assertIn(ch, sections(khuon).get("Ký hiệu được phép", ""),
                               f"bản portable thiếu ký tự whitelist {ch!r}")
 
-        for ten in ("02-spec.md", "03-plan.md"):
+        for ten in ("03-spec.md", "04-plan.md"):
             self.kiem_khoi_mau(os.path.join(PORTABLE, ten), f"portable/{ten}")
 
     def test_symbol_whitelist(self):
@@ -300,9 +303,9 @@ class UserFacingBlockTest(unittest.TestCase):
                 self.assertIn("user-facing-block", read(SKILLS, *parts),
                               "file này nói với user nhưng không trỏ về khuôn chung")
         # Bản portable có khuôn riêng đặt cạnh nó, hai file kia phải trỏ về đúng bản đó.
-        for ten in ("02-spec.md", "03-plan.md"):
+        for ten in ("03-spec.md", "04-plan.md"):
             with self.subTest(file=f"portable/{ten}"):
-                self.assertIn("references/user-facing-block.md", read(PORTABLE, ten),
+                self.assertIn("user-facing-block", read(PORTABLE, ten),
                               "file portable này nói với user nhưng không trỏ về khuôn")
 
 

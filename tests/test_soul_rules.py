@@ -14,7 +14,7 @@ from helper import ROOT
 
 SOUL = os.path.join(ROOT, "skills", "tdq-conventions", "references", "soul.md")
 CONV_SKILL = os.path.join(ROOT, "skills", "tdq-conventions", "SKILL.md")
-AGENTS = os.path.join(ROOT, "portable", "AGENTS.md")
+AGENTS = os.path.join(ROOT, "portable_codex", "AGENTS.md")
 PRIORITY = "chất lượng > runtime > context cost"
 DOC_KINDS = ("brief", "spec", "plan", "qc", "report")
 

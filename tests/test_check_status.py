@@ -531,24 +531,10 @@ class SkillVaPortable(unittest.TestCase):
         noi_dung = doc(os.path.join(ROOT, "skills", "tdq-status", "SKILL.md"))
         self.assertIn("tdq-check-status", noi_dung)
 
-    def test_portable_khop_buoc_voi_skill(self):
-        ban_skill = doc(os.path.join(SKILL_DIR, "SKILL.md"))
-        ban_portable = doc(os.path.join(ROOT, "portable", "workflow",
-                                        "05-check-status.md"))
-        agents = doc(os.path.join(ROOT, "portable", "AGENTS.md"))
-        self.assertIn("05-check-status.md", agents)
-        for ma in ("D1", "D5", "D11"):
-            self.assertIn(ma, ban_portable, f"bản portable thiếu {ma}")
-        so_buoc = lambda text: len([d for d in text.splitlines()          # noqa: E731
-                                    if d[:2] in {f"{i}." for i in range(1, 10)}])
-        self.assertEqual(so_buoc(ban_skill), so_buoc(ban_portable),
-                         "bản portable phải cùng số bước với bản skills")
-
     def test_khong_dung_lenh_lam_mat_du_lieu(self):
         """Luật cứng của spec §4: skill không được nhắc `init`/`reset`/`rm`."""
         for path in (os.path.join(SKILL_DIR, "SKILL.md"),
-                     os.path.join(SKILL_DIR, "references", "bang-lech.md"),
-                     os.path.join(ROOT, "portable", "workflow", "05-check-status.md")):
+                     os.path.join(SKILL_DIR, "references", "bang-lech.md")):
             with self.subTest(path=os.path.basename(path)):
                 noi_dung = doc(path)
                 for cam in ("tdq_state.py init", "tdq_state.py reset", "rm -rf"):

@@ -10,7 +10,7 @@ Nguồn sinh: cây thư mục repo · `graphify god-nodes` · `.graphifyignore`.
 | Tầng | Thư mục | Trách nhiệm |
 |---|---|---|
 | Luật | `skills/` | văn bản chỉ dẫn model; không chạy được, không có trạng thái |
-| Luật bản ngoài | `portable/` | bản chép cho agent ngoài Claude Code, phải khớp bước với `skills/` |
+| Luật bản ngoài | `portable_claude/`, `portable_codex/` | SINH bằng `scripts/build_portable.py` từ `skills/`+`hooks/`+`agents/`+`scripts/`, không sửa tay; bản codex dùng lớp native của Codex CLI (`.agents/skills/`, `.codex/`) |
 | CLI | `scripts/` | mọi hành vi chạy được: state, kết turn, lint, quét rule, đo token |
 | Hook | `hooks/scripts/` | 5 hook cắm vào Claude Code, nhắc mã `[TDQ:*]` và chặn khi thiếu bằng chứng |
 | Test | `tests/` | khoá hành vi của tầng CLI, tầng hook và tính nhất quán của tầng luật |

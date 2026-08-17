@@ -75,9 +75,22 @@ Lưu ý tương thích:
 
 ## 4. Dùng ngoài Claude Code (Codex, Antigravity, …)
 
-Harness khác không có hook/skill system: copy `portable/AGENTS.md`, `portable/workflow/`
-(gồm 4 file phase + `phases.md` tự sinh + 4 file `references/`) và `scripts/tdq_state.py`
-sang project đích. Lệnh copy mẫu và bước kiểm sau khi copy: `portable/README.md`.
+Hai bản portable đều **tự sinh**, đừng sửa tay — sinh lại bằng
+`python3 scripts/build_portable.py`:
+
+- `portable_claude/` — cho Claude Code ở project khác: chép trọn vào gốc project (giữ nguyên
+  `.claude/` và `.mcp.json`). Skill, agent, 5 hook và `scripts/` đi kèm sẵn.
+- `portable_codex/` — cho harness không có skill/hook system (Codex CLI, Antigravity…):
+  `AGENTS.md` + `workflow/NN-*.md` + `scripts/`.
+
+Chép xong, việc ĐẦU TIÊN ở project đích là kiểm tương thích:
+
+```bash
+python3 scripts/tdq_checkportable.py check   # thiếu gì thì chạy tiếp: … setup
+```
+
+Ba việc máy không làm thay được: cấp quyền tin cậy thư mục, duyệt từng MCP server, khởi động
+lại phiên để skill/agent mới được nạp. Chi tiết ở README của từng bản.
 
 ## 5. Gỡ
 

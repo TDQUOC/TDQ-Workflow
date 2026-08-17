@@ -99,11 +99,6 @@ class LuatMotLuot(unittest.TestCase):
             self.assertIn(tang, soul)
         self.assertIn("## Xếp luật vào tầng nào", soul)
 
-    def test_ban_portable_co_luat(self):
-        portable = read(os.path.join(ROOT, "portable", "AGENTS.md"))
-        self.assertIn("Luật một lượt", portable)
-        self.assertIn("Nghi ngờ thì đọc lại", portable)
-
 
 class StepAudit(unittest.TestCase):
     """Số liệu kỳ vọng tính tay trên `scripts/samples/transcript-step-audit.jsonl`.

@@ -2,6 +2,49 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.24.0 — 2026-08-17
+
+`portable_codex/` thôi làm markdown đọc tay, chuyển sang dùng đúng ba lớp native của Codex
+CLI. Giả định trong 0.23.0 — "Codex không có hệ thống skill/hook" — đã sai với bản hiện tại:
+thăm dò bằng `codex exec` thật (`codex-cli 0.147.0-alpha.6.5`) cho thấy Codex tự quét
+`.agents/skills/`, đọc `.codex/config.toml` cho MCP và `.codex/hooks.json` cho hook.
+
+- `build_portable.py` sinh thêm cho bản codex: `.agents/skills/` (8 skill), `.codex/config.toml`
+  (`[mcp_servers.*]`, khai bằng `env_vars` vì Codex KHÔNG nở `${VAR}` trong TOML), và
+  `.codex/hooks.json` (4 event / 5 hook, lệnh dùng đường dẫn tương đối vì hook chạy với
+  cwd = gốc project). `hooks/` và `scripts/` nằm cạnh nhau ở gốc bundle theo ràng buộc của
+  `_common.py`. `workflow/NN-*.md` giữ nguyên làm bản dự phòng cho harness khác.
+- Sinh thêm `hooks/scripts/codex_edit_gate.py`: Codex sửa file bằng tool `apply_patch` với
+  `tool_input.command` là thân patch và KHÔNG có `file_path`, nên adapter rút đường dẫn từ
+  patch rồi gọi lại `edit_gate.py`. Hook gốc trong repo không bị sửa.
+- `tdq_checkportable.py` thêm `setup --trust`: ghi `[projects."<path>"] trust_level = "trusted"`
+  vào `~/.codex/config.toml` (hoặc `$CODEX_HOME`), luôn sao lưu `<file>.tdq-bak-<timestamp>`,
+  không ghi chồng block đã có. `check` báo thêm dòng trạng thái trusted.
+- Codex có HAI cổng tin cậy độc lập: trust project (mở được bằng `--trust`) và trust hash của
+  hook, chỉ duyệt được trong giao diện. README/AGENTS.md/SKILL.md đổi từ "ba việc máy không
+  tự làm được" thành bốn.
+- README của cả hai bundle có mục `## Cài ở máy mới` liệt kê từng bước theo thứ tự; bản codex
+  thêm mục ba cách trust và giải thích vì sao bước kiểm đầu tiên phải chạy thẳng file thay vì
+  gọi skill. Test khoá mọi đường dẫn lệnh nêu trong README phải có thật trong chính bundle.
+
+## 0.23.0 — 2026-08-17
+
+Bản portable thôi viết tay, chuyển sang tự sinh — và tách làm hai bản cho hai loại harness.
+`portable/` cũ là bản chép tay, README của chính nó ghi "sửa `skills/` xong nhớ đồng bộ
+tay", còn test khoá đồng bộ đã bị xoá từ 0.10.0: nó đã trôi khỏi bản gốc mà không ai biết.
+
+- Thêm `scripts/build_portable.py`: sinh `portable_claude/` (Claude Code: `.claude/skills`,
+  `.claude/agents`, 5 hook trong `.claude/settings.json`, `.mcp.json`) và `portable_codex/`
+  (markdown thuần: `AGENTS.md` + `workflow/NN-*.md`) từ MỘT nguồn.
+- Bản claude đặt `hooks/` và `scripts/` cạnh nhau dưới `.claude/tdq/` vì `_common.py` suy
+  thư mục scripts bằng `../../scripts`; mọi `${CLAUDE_PLUGIN_ROOT}` được đổi kèm đúng tiền
+  tố đó, và số lần thay được đối chiếu để bắt file bị bỏ sót.
+- Thêm `scripts/tdq_checkportable.py` + skill `tdq-checkportable` (nguồn ở `portable_src/`,
+  không tính vào ngân sách context của bộ chính): đối chiếu sha256 theo `manifest.json`,
+  kiểm Python/lệnh ngoài/MCP, `setup` tự vá và luôn sao lưu `<file>.tdq-bak-<timestamp>`.
+- `.mcp.json` sinh ra chỉ ghi TÊN biến môi trường, không bao giờ ghi giá trị khoá.
+- Xoá `portable/` viết tay; `.graphifyignore` loại ba thư mục portable mới.
+
 ## 0.22.0 — 2026-08-16
 
 Clean code thôi làm cổng hỏi, thành luật thường trực. Trước bản này mỗi request chạm mã

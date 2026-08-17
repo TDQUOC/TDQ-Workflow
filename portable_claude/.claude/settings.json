@@ -1,0 +1,61 @@
+{
+  "env": {
+    "TDQ_SEARCH_LOG": "1",
+    "TDQ_SEARCH_MAX_AGENTS": "3",
+    "TDQ_SEARCH_MAX_ROUTES": "5",
+    "TDQ_SEARCH_TIMEOUT": "540",
+    "TDQ_SEARCH_URLS_PER_ROUTE": "3"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/edit_gate.py\"",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit"
+      },
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/bash_gate.py\"",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/session_start.py\"",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/stop_gate.py\"",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/prompt_context.py\"",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

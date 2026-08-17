@@ -1,0 +1,12 @@
+# TDQ Workflow — cấu hình Codex CLI, SINH TỰ ĐỘNG bởi scripts/build_portable.py.
+# Cần Codex CLI >= 0.147.0. Chỉ nạp được khi project đã trusted.
+
+[mcp_servers.tavily-backup]
+command = "npx"
+args = ["-y", "tavily-mcp@latest"]
+env_vars = ["TAVILY_API_KEY"]
+
+[mcp_servers.tavily-primary]
+command = "npx"
+args = ["-y", "tavily-mcp@latest"]
+env_vars = ["TAVILY_API_KEY"]

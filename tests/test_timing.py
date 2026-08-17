@@ -331,15 +331,11 @@ class LuatVaKhuon(unittest.TestCase):
         """Mọi chỗ in công thức slug phải có HHMM — sót một chỗ là chuẩn mới trôi."""
         import subprocess
         out = subprocess.run(
-            ["grep", "-rnI", "YYYY-MM-DD-", "skills", "scripts", "portable",
+            ["grep", "-rnI", "YYYY-MM-DD-", "skills", "scripts", "portable_src",
              os.path.join("docs", "tdq", "STATE.md")],
             cwd=helper.ROOT, capture_output=True, text=True).stdout
         thieu = [d for d in out.splitlines() if "HHMM" not in d]
         self.assertEqual(thieu, [], f"Còn {len(thieu)} chỗ in công thức slug cũ")
-
-    def test_portable_dong_bo_voi_skill(self):
-        self.assertIn("YYYY-MM-DD-HHMM-", self.doc("portable", "AGENTS.md"))
-        self.assertIn("YYYY-MM-DD-HHMM-", self.doc("portable", "workflow", "01-intake.md"))
 
 
 class LogService(TempRepo):

@@ -22,7 +22,8 @@ SKILLS = Path(ROOT) / "skills"
 LUAT = SKILLS / "tdq-conventions" / "references" / "clean-code.md"
 CONVENTIONS = SKILLS / "tdq-conventions" / "SKILL.md"
 QC_BUILD = SKILLS / "tdq-build" / "references" / "qc.md"
-QC_PORTABLE = Path(ROOT) / "portable" / "workflow" / "references" / "qc.md"
+QC_PORTABLE = (Path(ROOT) / "portable_codex" / "workflow" / "references"
+               / "tdq-build" / "qc.md")
 RESEARCH = Path(ROOT) / "docs" / "tdq" / "research" / "2026-08-16-bo-cong-clean-code.md"
 
 MA_SOLID = ("SRP", "OCP", "LSP", "ISP", "DIP")
