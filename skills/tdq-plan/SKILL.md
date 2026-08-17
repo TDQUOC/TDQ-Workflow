@@ -27,13 +27,14 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    Bắt buộc có: header trạng thái + spec nguồn · **một dòng riêng** `Mode thực thi: <main|subagent> — <lý do>` ·
    các phase với task checkbox · task riêng cho log service và unit test · Definition of Done
    trỏ về §6 của spec, **mỗi dòng DoD kiểm được bằng một lệnh** (QC đếm hạng mục theo đúng
-   số dòng này). Mỗi task đúng một việc + một cách kiểm đo được, kèm điểm `(nN)` và phút `(eNm)`:
+   số dòng này). Mỗi task đúng một việc + một cách kiểm đo được, kèm ước tính phút `(eNm)`:
    ```
-   - [ ] **T1.1** (n3 e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
+   - [ ] **T1.1** (e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
    ```
-   **Chấm cả `(nN)` và `eNm` ngay lúc viết task**, không chấm bù sau, và chấm đủ mọi task.
-   `nN` là độ phức tạp tương đối 1–10, `eNm` là số phút LÀM (không tính lúc chờ duyệt).
-   Thang mốc và luật chấm đầy đủ: mục cuối của plan-template. Đừng đệm giờ cho an toàn.
+   **Chấm `eNm` ngay lúc viết task**, không chấm bù sau, và chấm đủ mọi task. `eNm` là số
+   phút Claude ước tính để TỰ THỰC THI xong task (thời gian agent, không tính lúc chờ
+   duyệt). ETA cả plan = tổng `eNm` các task chưa xong. Luật chấm đầy đủ: mục cuối của
+   plan-template. Đừng đệm giờ cho an toàn.
    **Luật nhãn `(mcp)` — bắt buộc ngay bước này:** task có khối `Dùng:` mà skill đó cần
    MCP tool lúc chạy → dòng `Dùng:` phải kết thúc bằng nhãn ` (mcp)` NGOÀI backtick.
    Nhãn này đánh dấu task buộc Claude tự làm, không giao sub-agent thiếu MCP.

@@ -22,10 +22,11 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
   `- [x]` TRƯỚC khi bắt task sau. Cấm gom tick cuối turn. Ba trạng thái: `[ ]` chưa làm ·
   `[~]` đang làm · `[x]` xong. Dấu `[~]` là thứ duy nhất cho biết đang đứng ở đâu khi
   người ngoài (status line, user, agent khác) nhìn vào file plan giữa chừng.
-- **Điểm `(nN)` chỉ là metadata.** Task có thể mang điểm độ phức tạp ngay sau mã task
-  (`- [ ] **T1.1** (n5) việc — Test: ...`). Status line dùng nó để đánh trọng số ETA.
-  Giữ nguyên khi tick, không chấm lại giữa chừng, và nó KHÔNG đổi luật tick ở trên —
-  task `(n9)` tick y hệt task `(n1)`. Task không có điểm cũng hợp lệ.
+- **Ước tính `(eNm)` chỉ là metadata.** Task có thể mang số phút Claude tự ước tính để
+  thực thi ngay sau mã task (`- [ ] **T1.1** (e12m) việc — Test: ...`). ETA cả plan = tổng
+  `eNm` các task chưa xong. Giữ nguyên khi tick, không chấm lại giữa chừng, và nó KHÔNG
+  đổi luật tick ở trên — task `(e60m)` tick y hệt task `(e5m)`. Task không có ước tính
+  cũng hợp lệ.
 - **Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass.
 - **Không placeholder.** Thiếu thông tin ở giai đoạn này nghĩa là phân tích hụt — nêu ra, đừng stub.
 - **Chờ subagent thì chờ hết**, hoặc đặt trigger tự tiếp tục. Không kết thúc turn khi nó đang chạy.
