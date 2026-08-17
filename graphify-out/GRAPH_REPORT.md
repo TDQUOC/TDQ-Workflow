@@ -5,12 +5,12 @@
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 736 nodes · 1433 edges · 26 communities (25 shown, 1 thin omitted)
+- 736 nodes · 1433 edges · 28 communities (26 shown, 2 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 72 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2b45dc1c`
+- Built from commit: `8e70f704`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,6 +41,8 @@
 - quet
 - main
 - _parse_approve_args
+- main
+- Exception
 
 ## God Nodes (most connected - your core abstractions)
 1. `Changelog` - 26 edges
@@ -49,9 +51,9 @@
 4. `log()` - 17 edges
 5. `cmd_build()` - 17 edges
 6. `_cli_approve()` - 14 edges
-7. `_warn()` - 13 edges
-8. `load()` - 13 edges
-9. `LoiThieuSo` - 13 edges
+7. `LoiThieuSo` - 13 edges
+8. `_warn()` - 13 edges
+9. `load()` - 13 edges
 10. `gom_bang_chung()` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -69,19 +71,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (26 total, 1 thin omitted)
+## Communities (28 total, 2 thin omitted)
 
 ### Community 0 - "canvas_a4_rebuild.py"
 Cohesion: 0.06
 Nodes (47): build_ch4(), build_ch7(), build_all(), build_generic(), build_moved(), build_toc(), Builder, chapter_elements() (+39 more)
 
 ### Community 1 - "_common.py"
-Cohesion: 0.07
-Nodes (52): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), approve_hint(), block() (+44 more)
+Cohesion: 0.11
+Nodes (34): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), block(), echo_line() (+26 more)
 
 ### Community 2 - "tdq_team.py"
 Cohesion: 0.09
-Nodes (50): Exception, _bao_dam_tich_hop(), _boi_canh(), build_parser(), canh_bao_lach_luat(), chia_dot(), _co_nhanh(), _do_xung_dot() (+42 more)
+Nodes (49): _bao_dam_tich_hop(), _boi_canh(), build_parser(), canh_bao_lach_luat(), chia_dot(), _co_nhanh(), _do_xung_dot(), doc_plan() (+41 more)
 
 ### Community 3 - "token_audit.py"
 Cohesion: 0.07
@@ -97,19 +99,19 @@ Nodes (44): cli_versions(), clone_repo(), cmd_build(), cmd_check(), collect_conf
 
 ### Community 6 - "tdq_bench.py"
 Cohesion: 0.09
-Nodes (43): _agent_stub(), build_parser(), dem_cap_chong(), _do_mot_luot(), _do_tick(), _doc_mau_that(), _dung_repo_tam(), _git() (+35 more)
+Nodes (43): Exception, _agent_stub(), build_parser(), dem_cap_chong(), _do_mot_luot(), _do_tick(), _doc_mau_that(), _dung_repo_tam() (+35 more)
 
 ### Community 7 - "build_portable.py"
 Cohesion: 0.10
-Nodes (38): _bo_qua_file(), _bo_qua_thu_muc(), copy_loc(), dem_bien_trong_cay(), doc_frontmatter(), _doc_text(), doi_bien_plugin_root(), _ghi_json() (+30 more)
+Nodes (36): _bo_qua_file(), _bo_qua_thu_muc(), copy_loc(), dem_bien_trong_cay(), doc_frontmatter(), _doc_text(), doi_bien_plugin_root(), _ghi_json() (+28 more)
 
 ### Community 8 - "doc_lint.py"
 Cohesion: 0.08
 Nodes (33): collect(), Doc, lint_file(), main(), pair(), _plan_contracts(), _r9_in_scope(), Bước trong mục 'Các bước' phải đánh số 1, 2, 3… không nhảy, không lặp. (+25 more)
 
 ### Community 9 - "tdq_checkportable.py"
-Cohesion: 0.12
-Nodes (31): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _doc(), doc_manifest(), duong_config_codex(), ghi_de_co_backup() (+23 more)
+Cohesion: 0.11
+Nodes (33): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _doc(), doc_manifest(), duong_config_codex(), ghi_de_co_backup() (+25 more)
 
 ### Community 10 - "Changelog"
 Cohesion: 0.07
@@ -136,12 +138,12 @@ Cohesion: 0.15
 Nodes (19): _clean(), _condense(), _enabled_plugins(), _filter(), _frontmatter(), inventory(), _load_json(), main() (+11 more)
 
 ### Community 16 - "tdq_state.py"
-Cohesion: 0.09
-Nodes (27): _atomic_write(), _echo_state(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), _pop_json_flag(), prompt_context_last() (+19 more)
+Cohesion: 0.11
+Nodes (23): _atomic_write(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), _pop_json_flag(), prompt_context_last(), prompt_context_path() (+15 more)
 
 ### Community 17 - "cli"
-Cohesion: 0.24
-Nodes (17): cli(), _cli_approve(), default_state(), _dong_so_request_cu(), ghi_moc_phase(), _info(), load(), log_enabled() (+9 more)
+Cohesion: 0.15
+Nodes (23): cli(), _cli_approve(), default_state(), _dong_so_request_cu(), _echo_state(), ghi_moc_phase(), _info(), load() (+15 more)
 
 ### Community 18 - "plugin_tiers.py"
 Cohesion: 0.34
@@ -171,15 +173,19 @@ Nodes (8): main(), within(), find_shadow_states(), Project root cho state: TDQ_P
 Cohesion: 0.33
 Nodes (6): _fail(), normalize_lane(), _parse_approve_args(), -> (target, mode, by, no_qc). Chỉ lỗi khi cú pháp thật sự sai., Chỉ dùng cho SAI CÚ PHÁP LỆNH — exit 2 (spec §2.9.4)., Bí danh -> định danh máy ("quick"/"full"). Không nhận ra -> None (người gọi
 
+### Community 26 - "main"
+Cohesion: 0.18
+Nodes (16): approve_hint(), plan_mode(), Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi., _compact(), _emit(), looks_like_approval(), main(), mode_from_answer() (+8 more)
+
 ## Knowledge Gaps
 - **32 isolated node(s):** `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16`, `0.21.0 — 2026-08-16`, `0.20.0 — 2026-08-15` (+27 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `turn_log_append()` connect `_common.py` to `tdq_state.py`, `cli`?**
+- **Why does `turn_log_append()` connect `tdq_state.py` to `_common.py`, `main`, `cli`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 11 inferred relationships involving `main()` (e.g. with `effective_lane()` and `effective_mode()`) actually correct?**
   _`main()` has 11 INFERRED edges - model-reasoned connections that need verification._
@@ -188,8 +194,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06293706293706294 - nodes in this community are weakly interconnected._
 - **Should `_common.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.07456140350877193 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11379800853485064 - nodes in this community are weakly interconnected._
 - **Should `tdq_team.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.08944793850454227 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09216255442670537 - nodes in this community are weakly interconnected._
 - **Should `token_audit.py` be split into smaller, more focused modules?**
   _Cohesion score 0.07183673469387755 - nodes in this community are weakly interconnected._
