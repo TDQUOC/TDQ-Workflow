@@ -1,4 +1,4 @@
-# Bảng 11 ca lệch D1–D11
+# Bảng 12 ca lệch D1–D12
 
 Bản người đọc của hằng `CA_LECH` trong `scripts/tdq_checkstatus.py`. Một test khoá hai
 nơi cho khớp mã và mức, nên sửa một bên là bên kia đỏ ngay.
@@ -24,6 +24,7 @@ Mọi lệnh đều mở đầu bằng `python3 scripts/tdq_state.py`; ở đây
 | D9 | `schema_version` cũ hơn bản hiện tại | canh-bao | State do bản plugin cũ ghi — nâng schema trước khi đọc tiếp. | `set schema_version=4` |
 | D10 | thiếu `started_at` hoặc `phase_history` rỗng | canh-bao | Mất mốc thời gian — bảng thời gian của report sẽ sai nếu không vá. | `set started_at=ISO_MỐC_MỞ_REQUEST` |
 | D11 | có `state.json` lạc chỗ ngoài project root | chan | Hai state cùng sống: hook ghi một nơi, model đọc một nơi khác. | — (không lệnh nào chữa được) |
+| D12 | có task mang dấu `[>]`: đã giao agent con mà chưa hợp nhánh về | ok | Việc còn nằm ở nhánh riêng — dò xung đột rồi hợp về nhánh tích hợp. | `tdq_team.py kiem TASK` rồi `tdq_team.py hop TASK` |
 
 ## Giới hạn đã biết
 
@@ -36,5 +37,8 @@ Mọi lệnh đều mở đầu bằng `python3 scripts/tdq_state.py`; ở đây
 - Giá trị `schema_version` trong lệnh vá D9 lấy từ hằng `SCHEMA_HIEN_TAI` của
   `scripts/tdq_checkstatus.py`, tức bản schema hiện tại của plugin. Bảng này in ra con
   số của lúc sinh file; chạy `report` để lấy con số thật.
+- D12 chỉ có ở mode `subagent`. Dấu `[>]` là "đã giao cho agent con", KHÔNG phải lỗi —
+  nó chỉ trả lời câu "việc đang nằm ở đâu". Nhiều `[>]` cùng lúc là chuyện bình thường
+  của mode đội; ngược lại nhiều `[~]` vẫn là ca D4 vì chỉ leader mới mang dấu `[~]`.
 - D10 chỉ đề xuất lệnh vá khi thiếu `started_at`. Riêng `phase_history` rỗng thì không
   lệnh nào dựng lại được lịch sử, nên ca đó hạ xuống mức `ok`.

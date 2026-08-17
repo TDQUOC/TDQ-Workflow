@@ -28,13 +28,37 @@ Trạng thái plan: CHỜ DUYỆT
 ## P2 — <tên phase>
 - [ ] **T2.1** (e20m) <...> — Test: <...>
 
-## Dòng `Chạm:` (đặt NGAY DƯỚI dòng task sửa file mã nguồn ĐÃ CÓ)
+## Dòng `Chạm:` (đặt NGAY DƯỚI mọi task TẠO hoặc SỬA file mã nguồn)
 - [ ] **T<x.y>** <việc sửa hàm/file sẵn có> — Test: <...>
-  - Chạm: <hàm/file bị sửa> → <node bị ảnh hưởng> (nguồn: `graphify affected "<X>" --depth 2`)
+  - Chạm: `<đường/dẫn/file.py>`, `<tests/test_file.py>` → <node bị ảnh hưởng> (nguồn: `graphify affected "<X>" --depth 2`)
+- [ ] **T<x.z>** <việc tạo file mới> — Test: <...>
+  - Chạm: `<đường/dẫn/file-moi.py>` → file mới, chưa node nào phụ thuộc
 
-Không node nào phụ thuộc → ghi `Chạm: <X> → không node nào phụ thuộc`. Task tạo file
-mới hay chỉ sửa tài liệu thì bỏ dòng này. Node nằm trong mục `## Hub` của
-`docs/kien-truc.md` → task phải thêm một dòng DoD kiểm hồi quy riêng cho node ấy.
+Dòng này có HAI người đọc. Người thứ nhất là bạn: nó trả lời "sửa chỗ này thì vỡ chỗ
+nào". Người thứ hai là máy: `scripts/tdq_team.py phan-cong` đọc các đường dẫn trong
+backtick để dựng vùng file của task, rồi xếp task đụng chung file vào hai đợt khác nhau.
+
+Vì vậy **mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, kể cả task tạo
+file mới. Đường dẫn phải nằm trong backtick và phải là đường dẫn thật tính từ gốc repo.
+Task thiếu dòng này sẽ bị `phan-cong` xếp vào `tu_lam` với lý do `vung-khoa` — tức là
+leader phải tự làm, mất chỗ chạy song song. Task chỉ sửa tài liệu thì bỏ dòng này.
+Node nằm trong mục `## Hub` của `docs/kien-truc.md` → task phải thêm một dòng DoD kiểm
+hồi quy riêng cho node ấy.
+
+## Cụm song song
+
+Mode `subagent` chia task thành từng đợt. Hai task cùng đợt chạy đồng thời ở hai worktree
+khác nhau, nên chúng KHÔNG được đụng chung một file — git không hề cảnh báo, tới lúc
+merge mới vỡ. Máy tự chia đợt từ dòng `Chạm:`, nhưng bạn viết plan mới là người biết ý
+đồ, nên hãy giúp máy chia đúng:
+
+- Gom task cùng chạm một file vào cùng một phase, đặt kề nhau, để thứ tự đọc ra được.
+- Task phụ thuộc task khác thì nhắc mã task đó trong phần mô tả (vd "sau `T1.1`").
+  `phan-cong` đọc mã này để giữ đúng thứ tự.
+- Chia nhỏ theo FILE, đừng chia theo bước thời gian. "Viết `a.py`" + "viết test cho
+  `a.py`" là một task; "viết `a.py`" + "viết `b.py`" là hai task chạy song song được.
+- Ước lượng nhanh: đếm số task có `Chạm:` không giao nhau. Con số đó là trần tốc độ của
+  mode đội. Dưới 3 thì đề xuất mode `main` cho lành.
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>

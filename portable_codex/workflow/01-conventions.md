@@ -17,13 +17,16 @@ Mọi output cho user viết **tiếng Việt**.
 3. Thấy dòng `[TDQ:<MÃ>]` do hook chèn vào ngữ cảnh → **làm việc trong đó TRƯỚC**
    mọi việc khác, xong in `✓ [TDQ:<MÃ>] <đã làm gì>`. Danh sách mã:
    [references/reminder-codes.md](references/reminder-codes.md).
-4. Cuối turn có đổi repo: **bắt buộc** chạy ĐÚNG MỘT lệnh
+4. Cuối turn có đổi repo: **bắt buộc** chạy lệnh đóng sổ
    `python3 "./scripts/tdq_finish.py" --files <file vừa sửa> --log "<tóm tắt>" --phase <phase mới>`
    — lint đúng file → append working log → set phase → graphify. **Cấm Edit/Read rồi tự
    append tay** vào working log, kể cả khi bị `stop_gate.py` chặn (block nghĩa là "chưa gọi
    lệnh", không phải "gọi lệnh khác để né"). Lệnh này phải là **hành động cuối** của turn,
    chạy TRƯỚC đoạn chat kết thúc turn (tóm tắt/câu hỏi/`➤ Duyệt:`/báo lỗi vượt trần); sau
    khi in đoạn chat đó **không gọi thêm tool nào nữa**, để nó luôn là "final response" thật.
+   Turn dài (mode đội, nhiều đợt merge) được gọi `tdq_finish.py` NHIỀU LẦN — mỗi lần đóng
+   sổ một mốc thật, vd hợp xong một đợt. Luật chỉ đòi lần gọi CUỐI CÙNG là hành động cuối
+   của turn. Cấm gọi rỗng: mỗi lần gọi phải kèm `--files` và `--log` của việc vừa xong.
 5. **Turn còn chạy tiếp sau khi đã in khối user-facing** (bị hook chặn, tự phát hiện sót
    việc, lỗi tool) → message cuối phải in **LẠI NGUYÊN VĂN 100%** khối đó. Gồm tóm tắt,
    câu hỏi, ĐỦ option, dòng `➤ Duyệt:`. Đặt NGAY SAU dòng `✓ [TDQ:<MÃ>]`. Lý do: focus mode
@@ -33,6 +36,13 @@ Mọi output cho user viết **tiếng Việt**.
    câu hỏi commit) viết theo khuôn
    [references/user-facing-block.md](references/user-facing-block.md): câu dẫn xưng "bạn",
    đường dẫn file đầy đủ, đường kẻ ngăn, khối trả lời in đậm nằm cuối, không emoji.
+
+7. **Plan chưa hết task thì không kết thúc turn** — còn task `[ ]` mà dừng là bỏ dở, dù
+   báo cáo tiến độ có đẹp. Đúng **ba ngoại lệ** được phép dừng:
+   1. Việc cần user quyết: đổi phạm vi spec/plan, việc phá hủy khó đảo, thiếu input chỉ user có.
+   2. Chặn kỹ thuật không tự chọn được phương án (mất quyền, mất mạng, tool hỏng).
+   3. Vượt trần 3 vòng fix của QC — luật ở `tdq-build/references/qc.md`.
+   Hết ngân sách bước KHÔNG phải ngoại lệ: báo rồi làm tiếp. "Để turn sau cho gọn" cũng vậy.
 
 Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
 Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).

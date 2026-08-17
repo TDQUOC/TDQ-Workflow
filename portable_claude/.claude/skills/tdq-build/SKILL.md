@@ -36,16 +36,25 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
 1. Đọc `implement_mode` từ state và làm đúng theo:
    - `main` (nhãn user thấy: "làm trực tiếp (inline implement)"): tự làm tuần tự trong
      hội thoại này, theo đúng thứ tự task trong plan.
-   - `subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)"): mỗi lần gọi agent `tdq-implementer` giao ĐÚNG 1 task (không giao cả
-     phase/nhóm task), mỗi agent một git worktree (tên branch theo conventions §7). Lý do:
-     nền tảng Agent không có báo cáo giữa chừng — subagent chỉ trả đúng một báo cáo cuối
-     cùng, nên đơn vị giao việc phải nhỏ bằng đúng nhịp tick cần thấy. Nhận báo cáo xong
-     → tick `[x]` ngay (bước 2.6) TRƯỚC khi gọi agent cho task kế tiếp. Merge worktree về
-     và kiểm tra merge; dọn worktree thừa.
+   - `subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)"): bạn là LEADER của
+     một đội. **Bước 0 — trước khi gõ dòng code đầu tiên: phân công CẢ plan**
+     (`python3 scripts/tdq_team.py phan-cong` rồi `kiem-ke`). Sau đó lặp từng đợt.
+     `cum` lấy đợt kế tiếp; `mo <task>` mở nhánh + worktree cho từng task.
+     Gọi `tdq-implementer` cho MỌI task của đợt trong MỘT response — nhiều lệnh Task
+     trong một response nghĩa là chúng chạy đồng thời. Đánh `[>]` cho các task vừa giao.
+     Nhận báo cáo thì `kiem` rồi `hop`, tick `[x]` NGAY, `don`, rồi quay lại `cum`.
+     Mặc định là GIAO. Chỉ được giữ task lại cho mình khi khớp đúng 1 trong 4 nhóm lý do
+     đóng, và `kiem-ke` exit khác 0 nếu bạn bịa lý do thứ năm. Trong lúc đợt đang chạy,
+     leader làm các task `tu_lam` của cùng đợt.
+     Luật đầy đủ (bảng tra quyết định, khuôn prompt 7 trường, ví dụ ĐÚNG/SAI, tự kiểm):
+     [references/team-mode.md](references/team-mode.md) — **BẮT BUỘC mở đọc trước khi
+     phân công; cấm làm theo trí nhớ.**
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
 
 2. Vòng lặp mỗi task (mode `subagent`: mỗi vòng ứng với đúng 1 lần gọi `tdq-implementer`):
    1. Báo 1 dòng: đang bắt đầu task nào, và đánh `- [~]` cho task đó trong plan.
+      Mode `subagent`: task giao cho agent con mang dấu `- [>]` (được nhiều task cùng lúc);
+      `- [~]` chỉ dành cho task LEADER tự làm và vẫn chỉ được đúng một.
    2. Task có khối `Dùng:` → NẠP skill đó ngay (theo trường `Nạp`), làm đúng trường `Để`,
       không lan sang việc ghi ở `Không dùng cho`. Không có khối → bỏ qua bước này.
    3. Đỏ: chạy check của task → xác nhận fail (hoặc viết test fail trước).
@@ -56,7 +65,7 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
    5. Xanh: chạy lại đến khi pass, chỉ chạy **test của module** đang sửa — full suite
       để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
    6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main
-      agent tick ngay khi nhận báo cáo của agent con, không đợi các task khác.
+      agent tick ngay khi nhận báo cáo của agent con VÀ `hop` xong, không đợi các task khác.
       (nhắc lại có chủ ý — bản gốc ở mục `## Luật cứng` cùng file này.)
 
 3. Xong hết task: chạy full suite ĐÚNG MỘT LẦN, rồi đóng sổ turn bằng MỘT lệnh

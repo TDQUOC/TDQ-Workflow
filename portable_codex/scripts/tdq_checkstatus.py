@@ -50,7 +50,7 @@ MAU_LENH_VA = re.compile(
 )
 KY_TU_SHELL_CAM = ";|&<>$`\\\n\r\t*?(){}[]!"
 
-_TASK = re.compile(r"^\s*-\s*\[( |~|x)\]\s*\*\*([A-Za-z][\w.]*)\*\*")
+_TASK = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z][\w.]*)\*\*")
 
 # ---------------------------------------------------------------- 11 ca lệch
 #
@@ -125,6 +125,14 @@ CA_LECH = {
         "chan_doan": "Hai state cùng sống: hook ghi một nơi, model đọc một nơi khác.",
         "lenh_va": None,
     },
+    # Mode đội: `[>]` = đã giao cho agent con. Đứng yên ở `[>]` không phải lỗi —
+    # nhưng nó là câu trả lời cho "đang dừng ở đâu", nên phải nói ra.
+    "D12": {
+        "dau_hieu": "có task mang dấu `[>]`: đã giao agent con mà chưa hợp nhánh về",
+        "muc": "ok",
+        "chan_doan": "Việc còn nằm ở nhánh riêng — dò xung đột rồi hợp về nhánh tích hợp.",
+        "lenh_va": None,
+    },
 }
 
 
@@ -187,7 +195,7 @@ def _dem_tick(cwd, rel):
     không trả MÃ task — mà mã task chính là thứ trả lời "đang dừng ở đâu".
     """
     goc = tdq_state.plan_tick_state(cwd)
-    tick = {"tong": goc["total"], "xong": 0, "dang_lam": [],
+    tick = {"tong": goc["total"], "xong": 0, "dang_lam": [], "da_giao": [],
             "sha": goc["sha"], "co": goc["exists"]}
     if not rel:
         return tick
@@ -199,6 +207,7 @@ def _dem_tick(cwd, rel):
         return tick
     tong = xong = 0
     dang = []
+    giao = []
     for dong in dong_file:
         m = _TASK.match(dong)
         if not m:
@@ -208,7 +217,9 @@ def _dem_tick(cwd, rel):
             xong += 1
         elif m.group(1) == "~":
             dang.append(m.group(2))
-    tick.update(tong=tong, xong=xong, dang_lam=dang, co=True)
+        elif m.group(1) == ">":
+            giao.append(m.group(2))
+    tick.update(tong=tong, xong=xong, dang_lam=dang, da_giao=giao, co=True)
     return tick
 
 
@@ -496,6 +507,10 @@ def cham_ca_lech(cwd, state, bang_chung):
     if bang_chung["state_lac_cho"]:
         ra.append(_ca("D11", "state lạc chỗ: " + ", ".join(bang_chung["state_lac_cho"])))
 
+    da_giao = bang_chung["tick"]["da_giao"]
+    if da_giao:
+        ra.append(_ca("D12", "đã giao agent con, chưa hợp nhánh: " + ", ".join(da_giao)))
+
     _log(f"chấm xong: {len(ra)} ca lệch")
     return ra
 
@@ -533,6 +548,11 @@ def viec_ke_tiep(state, bang_chung, muc_ket_luan, ca_lech=()):
     dang_lam = bang_chung["tick"]["dang_lam"]
     if phase == "implement" and dang_lam:
         return f"Làm tiếp đúng task {dang_lam[0]} trong plan (task duy nhất mang `[~]`)."
+    da_giao = bang_chung["tick"]["da_giao"]
+    if phase == "implement" and da_giao:
+        return (f"Task đã giao mà chưa hợp về: {', '.join(da_giao)}. Dò xung đột rồi hợp — "
+                f"python3 scripts/tdq_team.py kiem {da_giao[0]} "
+                f"&& python3 scripts/tdq_team.py hop {da_giao[0]}.")
     return f"Chạy tiếp phase `{phase}` theo skill tương ứng."
 
 
@@ -567,7 +587,8 @@ def bao_cao_markdown(state, bang_chung, ca_lech, muc_ket_luan):
         out.append(f"| {loai} | {'có, ' + str(dau['dong']) + ' dòng' if dau['co'] else 'không có'}"
                    f" ({dau['rel'] or '—'}) |")
     out.append(f"| plan tick | {tick['xong']}/{tick['tong']} xong · đang làm: "
-               f"{', '.join(tick['dang_lam']) or '—'} |")
+               f"{', '.join(tick['dang_lam']) or '—'} · đã giao: "
+               f"{', '.join(tick.get('da_giao') or []) or '—'} |")
     out.append(f"| git | {git['nhanh']} · {len(git['commit'])} commit gần đây · "
                f"{len(git['ban'])} file bẩn{'' if git['co'] else ' — ' + git['ly_do']} |")
     log = bang_chung["working_log"]

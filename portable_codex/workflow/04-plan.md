@@ -16,9 +16,8 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    - `main` — nhãn hiển thị "làm trực tiếp (inline implement)": làm tuần tự ngay trong
      hội thoại này (plan nhỏ, task phụ thuộc chặt, đụng chung file).
    - `subagent` — nhãn hiển thị "giao trợ lý (sub-agent implement)": nhiều trợ lý chạy
-     song song, mỗi agent `tdq-implementer` một task, một git worktree. Nền tảng Agent
-     không báo cáo giữa chừng nên đơn vị giao việc phải nhỏ bằng đúng nhịp tick; main
-     agent tick `[x]` ngay khi nhận báo cáo, trước khi gọi agent kế tiếp.
+     song song, bạn làm leader chia cả plan thành từng đợt, mỗi agent một worktree, phần
+     không tách được thì tự làm. Luật: `tdq-build/references/team-mode.md`.
    Trên 6 task mà đụng file rời nhau → ĐỀ XUẤT `subagent`; đụng chung file hoặc phụ
    thuộc chặt → `main`.
 
@@ -31,13 +30,14 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    ```
    - [ ] **T1.1** (e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
    ```
-   **Chấm `eNm` ngay lúc viết task**, không chấm bù sau, và chấm đủ mọi task. `eNm` là số
-   phút Claude ước tính để TỰ THỰC THI xong task (thời gian agent, không tính lúc chờ
-   duyệt). ETA cả plan = tổng `eNm` các task chưa xong. Luật chấm đầy đủ: mục cuối của
-   plan-template. Đừng đệm giờ cho an toàn.
-   **Luật nhãn `(mcp)` — bắt buộc ngay bước này:** task có khối `Dùng:` mà skill đó cần
-   MCP tool lúc chạy → dòng `Dùng:` phải kết thúc bằng nhãn ` (mcp)` NGOÀI backtick.
-   Nhãn này đánh dấu task buộc Claude tự làm, không giao sub-agent thiếu MCP.
+   **Mọi task tạo/sửa file mã nguồn phải có dòng `Chạm:` ngay dưới nó**, liệt kê đường
+   dẫn file trong backtick: vừa là bản đồ ảnh hưởng, vừa là thứ `tdq_team.py phan-cong`
+   đọc để chia đợt song song. Khuôn: 2 mục `Chạm:`/`Cụm song song` của plan-template.
+   **Chấm `eNm` ngay lúc viết task**, đủ mọi task, không chấm bù sau và đừng đệm giờ cho
+   an toàn. `eNm` là số phút agent TỰ THỰC THI task (không tính lúc chờ duyệt); ETA cả
+   plan = tổng `eNm` các task chưa xong. Luật chấm đầy đủ: mục cuối plan-template.
+   **Luật nhãn `(mcp)`:** task có khối `Dùng:` mà skill đó cần MCP tool lúc chạy → dòng
+   `Dùng:` kết thúc bằng ` (mcp)` NGOÀI backtick: task đó buộc Claude tự làm.
 
 3. **Tối ưu.** Cắt phần thừa, kiểm thứ tự phụ thuộc. Đối chiếu 2 luật ánh xạ: mỗi đầu ra
    spec §2 → ≥ 1 task; mỗi dòng `DÙNG` ở spec §3b → ≥ 1 khối hợp đồng đủ 5 trường

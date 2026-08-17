@@ -29,7 +29,10 @@ SKILL_LINE_LIMITS = {
     # dòng để giữ luật đọc được, thay vì nén luật cho vừa trần.
     # 2026-08-16: 130 → 133. Clean code bỏ cổng hỏi và script scan, nên luật SOLID chỉ còn
     # sống nếu §11 nạp nó mỗi turn — 3 dòng nạp ở thân skill, chi tiết ở references.
-    "tdq-conventions": 133,
+    # 2026-08-17: 133 → 143. Mode đội thêm 2 luật tầng runtime vào §1 (đóng sổ nhiều lần
+    # trong một turn dài; plan chưa hết task thì không kết thúc turn + 3 ngoại lệ). Cả hai
+    # phải đọc được mỗi turn, nén xuống references là mất tác dụng.
+    "tdq-conventions": 143,
     # skill khôi phục: 7 bước + khối luật cứng "không mất dữ liệu" phải nằm ở thân skill,
     # vì model yếu bỏ qua reference sẽ chạy đúng cái lệnh làm mất cả request.
     "tdq-check-status": 80,

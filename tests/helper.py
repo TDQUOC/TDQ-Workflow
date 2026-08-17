@@ -69,6 +69,16 @@ def run_checkstatus_cli(cwd, *args, env=None):
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
 
+def run_team_cli(cwd, *args, env=None):
+    """Chạy scripts/tdq_team.py với project = cwd."""
+    full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
+    proc = subprocess.run(
+        [sys.executable, os.path.join(ROOT, "scripts", "tdq_team.py"), *args],
+        capture_output=True, text=True, env=full_env, timeout=60,
+    )
+    return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
 def run_finish_cli(cwd, *args, env=None):
     """Chạy scripts/tdq_finish.py với project = cwd."""
     full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))

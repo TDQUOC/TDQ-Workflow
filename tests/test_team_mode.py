@@ -1,0 +1,883 @@
+"""Mode đội: leader phân công cả plan, agent con chạy song song, merge có kiểm.
+
+Luật khoá ở đây: `[>]` (đã giao cho agent con) là trạng thái THỨ TƯ của checkbox,
+khác hẳn `[~]` (leader đang tự làm). Hàng rào ép tick vẫn chỉ cho MỘT `[~]`, nhưng
+phải cho NHIỀU `[>]` — nếu không thì không thể có đội.
+"""
+import datetime
+import json
+import os
+import re
+import subprocess
+import tempfile
+import unittest
+
+from helper import (tdq_state, write_state, write_file, run_state_cli,
+                    run_team_cli, run_hook, load_fixture, run_checkstatus_cli)
+import tdq_team                                  # sau helper: helper bơm scripts/ vào sys.path
+
+PLAN_REL = os.path.join("docs", "tdq", "plan", "2026-08-17-1828-x.md")
+
+PLAN_MOT_DOI_BON_GIAO = """## P1 — a
+- [~] **T1.1** (n3 e5m) leader tu lam — Test: x
+- [>] **T1.2** (n3 e5m) giao agent — Test: x
+- [>] **T1.3** (n3 e5m) giao agent — Test: x
+- [>] **T1.4** (n3 e5m) giao agent — Test: x
+- [>] **T1.5** (n3 e5m) giao agent — Test: x
+"""
+
+PLAN_TRON_10 = """## P1 — a
+- [x] **T1.1** (n3 e5m) xong — Test: x
+- [x] **T1.2** (n3 e5m) xong — Test: x
+- [x] **T1.3** (n3 e5m) xong — Test: x
+- [>] **T1.4** (n3 e5m) giao — Test: x
+- [>] **T1.5** (n3 e5m) giao — Test: x
+- [>] **T1.6** (n3 e5m) giao — Test: x
+- [>] **T1.7** (n3 e5m) giao — Test: x
+- [~] **T1.8** (n3 e5m) dang lam — Test: x
+- [ ] **T1.9** (n3 e5m) chua lam — Test: x
+- [ ] **T1.10** (n3 e5m) chua lam — Test: x
+"""
+
+PLAN_KHONG_GIAO = """## P1 — a
+- [~] **T1.1** (n3 e5m) dang lam — Test: x
+- [ ] **T1.2** (n3 e5m) chua lam — Test: x
+"""
+
+
+class TickStateTest(unittest.TestCase):
+    """T1.1 + T1.3 — `plan_tick_state` hiểu dấu `[>]`."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def _state(self, plan):
+        write_state(self.cwd, active_request="2026-08-17-1828-x", lane="full",
+                    phase="implement", implement_mode="subagent", plan_file=PLAN_REL)
+        write_file(self.cwd, PLAN_REL, plan)
+        return tdq_state.plan_tick_state(self.cwd)
+
+    def test_tick_state_dem_rieng_dang_lam_va_da_giao(self):
+        info = self._state(PLAN_MOT_DOI_BON_GIAO)
+        self.assertEqual(info["doing_count"], 1)
+        self.assertEqual(info["dispatched_count"], 4)
+        self.assertEqual(info["total"], 5)
+
+    def test_tick_state_liet_ke_ma_task_da_giao(self):
+        info = self._state(PLAN_MOT_DOI_BON_GIAO)
+        self.assertEqual(info["dispatched_ids"], ["T1.2", "T1.3", "T1.4", "T1.5"])
+
+    def test_tick_state_khong_giao_thi_rong(self):
+        info = self._state(PLAN_KHONG_GIAO)
+        self.assertEqual(info["dispatched_count"], 0)
+        self.assertEqual(info["dispatched_ids"], [])
+        self.assertEqual(info["doing_count"], 1)
+
+    def test_tick_state_da_giao_van_tinh_la_dang_chay(self):
+        """`[>]` phải làm `has_doing` bật — nếu không, hàng rào sẽ đòi thêm `[~]`."""
+        plan = PLAN_MOT_DOI_BON_GIAO.replace("- [~] **T1.1**", "- [ ] **T1.1**")
+        info = self._state(plan)
+        self.assertEqual(info["doing_count"], 0)
+        self.assertEqual(info["dispatched_count"], 4)
+        self.assertTrue(info["has_doing"])
+
+    def test_tick_state_giu_nguyen_cach_dem_cu(self):
+        """T1.3 — thêm `[>]` không được làm sai `total` hay tiến độ `[x]`."""
+        info = self._state(PLAN_TRON_10)
+        self.assertEqual(info["total"], 10)
+        self.assertEqual(info["doing_count"], 1)
+        self.assertEqual(info["dispatched_count"], 4)
+        self.assertFalse(info["all_done"])
+
+    def test_tick_state_all_done_khong_bi_pha_boi_dau_moi(self):
+        plan = "## P1 — a\n- [x] **T1.1** (n3 e5m) xong — Test: x\n"
+        info = self._state(plan)
+        self.assertTrue(info["all_done"])
+        self.assertEqual(info["dispatched_count"], 0)
+
+
+class PhaseRowTest(unittest.TestCase):
+    """T1.2 — phase implement có bản riêng cho mode đội."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def _state(self, mode):
+        return write_state(self.cwd, active_request="2026-08-17-1828-x", lane="full",
+                           phase="implement", implement_mode=mode,
+                           plan_approved=True, plan_file=PLAN_REL)
+
+    def test_mode_main_giu_nguyen_dong_cu(self):
+        state = self._state("main")
+        row = tdq_state.phase_row(state)
+        self.assertIs(row, tdq_state.PHASE_TABLE["implement"])
+
+    def test_mode_subagent_doi_sang_dong_doi(self):
+        state = self._state("subagent")
+        row = tdq_state.phase_row(state)
+        self.assertIs(row, tdq_state.IMPLEMENT_SUBAGENT_ROW)
+        noi_dung = row["action"] + " ".join(row["checklist"])
+        self.assertIn("[>]", noi_dung)
+        self.assertIn("tdq_team.py", noi_dung)
+        self.assertIn("phan-cong", noi_dung)
+
+    def test_next_in_dong_doi_khi_mode_subagent(self):
+        self._state("subagent")
+        write_file(self.cwd, PLAN_REL, PLAN_KHONG_GIAO)
+        rc, out, _err = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("tdq_team.py", out)
+        self.assertIn("phase implement", out)
+
+    def test_next_mode_main_khong_nhac_tdq_team(self):
+        self._state("main")
+        write_file(self.cwd, PLAN_REL, PLAN_KHONG_GIAO)
+        rc, out, _err = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0, out)
+        self.assertNotIn("tdq_team.py", out)
+
+    def test_bien_the_doi_khong_phai_mot_phase(self):
+        """Biến thể đội KHÔNG được thành phase thứ 11: không vào PHASE_TABLE,
+        không vào PHASE_ORDER, không vào VALID_PHASES, không mọc dòng trong doc."""
+        self.assertNotIn("implement_subagent", tdq_state.PHASE_TABLE)
+        self.assertNotIn("implement_subagent", tdq_state.PHASE_ORDER)
+        self.assertNotIn("implement_subagent", tdq_state.VALID_PHASES)
+        self.assertNotIn("implement_subagent", tdq_state.render_phases_md())
+
+
+LENH_CON = ["phan-cong", "kiem-ke", "cum", "mo", "kiem", "hop", "don"]
+
+
+class CliTest(unittest.TestCase):
+    """T2.1 — khung CLI + log service của scripts/tdq_team.py."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def test_help_exit_0_va_liet_ke_du_7_lenh_con(self):
+        rc, out, _err = run_team_cli(self.cwd, "--help")
+        self.assertEqual(rc, 0, out)
+        for lenh in LENH_CON:
+            self.assertIn(lenh, out)
+
+    def test_khong_co_lenh_con_thi_exit_2(self):
+        rc, _out, err = run_team_cli(self.cwd)
+        self.assertEqual(rc, 2, err)
+
+    def test_lenh_con_la_thi_exit_2(self):
+        rc, _out, err = run_team_cli(self.cwd, "khong-co-lenh-nay")
+        self.assertEqual(rc, 2, err)
+
+    def test_log_bat_mac_dinh_co_timestamp_iso(self):
+        rc, _out, err = run_team_cli(self.cwd, "--help")
+        self.assertEqual(rc, 0)
+        # --help không chạy việc gì; log service chỉ cần chứng minh ở lệnh thật.
+        rc, _out, err = run_team_cli(self.cwd, "kiem-ke")
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
+
+    def test_tat_log_bang_bien_moi_truong(self):
+        rc, _out, err = run_team_cli(self.cwd, "kiem-ke", env={"TDQ_LOG": "0"})
+        self.assertNotIn("[20", err)
+
+
+PLAN_TRON = """# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) sua alpha — Test: `true`
+  - Chạm: `scripts/alpha.py`
+- [ ] **T1.2** (n3 e5m) sua beta — Test: `true`
+  - Chạm: `scripts/beta.py`
+- [ ] **T1.3** (n3 e5m) sua gamma — Test: `true`
+  - Chạm: `scripts/gamma.py`
+- [ ] **T1.4** (n3 e5m) chay sau khi T1.1 xong — Test: `true`
+  - Chạm: `scripts/delta.py`
+- [ ] **T1.5** (n3 e5m) tra cuu tai lieu ngoai — Test: `true`
+  - Chạm: `scripts/epsilon.py`
+  - Dùng: `context7` (mcp)
+"""
+
+PLAN_CHUNG_FILE = """# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) sua alpha lan mot — Test: `true`
+  - Chạm: `scripts/alpha.py`
+- [ ] **T1.2** (n3 e5m) sua alpha lan hai — Test: `true`
+  - Chạm: `scripts/alpha.py`
+"""
+
+PLAN_8_TASK = """# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) viec a — Test: `true`
+  - Chạm: `scripts/a.py`
+- [ ] **T1.2** (n3 e5m) viec b — Test: `true`
+  - Chạm: `scripts/b.py`
+- [ ] **T1.3** (n3 e5m) viec c — Test: `true`
+  - Chạm: `scripts/c.py`
+
+## P2 — tang tren
+- [ ] **T2.1** (n3 e5m) viec d — Test: `true`
+  - Chạm: `scripts/d.py`
+- [ ] **T2.2** (n3 e5m) viec e — Test: `true`
+  - Chạm: `scripts/e.py`
+- [ ] **T2.3** (n3 e5m) viec f — Test: `true`
+  - Chạm: `scripts/f.py`
+- [ ] **T2.4** (n3 e5m) viec g — Test: `true`
+  - Chạm: `scripts/g.py`
+- [ ] **T2.5** (n3 e5m) viec h — Test: `true`
+  - Chạm: `scripts/h.py`
+"""
+
+SLUG = "2026-08-17-1828-x"
+BAN_DO_REL = os.path.join("docs", "tdq", "team", SLUG + ".json")
+
+
+def git(cwd, *args, check=True):
+    proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True, text=True)
+    if check and proc.returncode != 0:
+        raise AssertionError(f"git {' '.join(args)} → {proc.returncode}\n{proc.stderr}")
+    return proc.stdout.strip()
+
+
+class TeamBase(unittest.TestCase):
+    """Project TDQ giả lập + repo git tạm. Không bao giờ đụng repo thật."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def _project(self, plan=PLAN_TRON):
+        write_state(self.cwd, active_request=SLUG, lane="full", phase="implement",
+                    implement_mode="subagent", plan_approved=True, plan_file=PLAN_REL)
+        write_file(self.cwd, PLAN_REL, plan)
+
+    def _git_repo(self):
+        """Repo git thật trong thư mục tạm, đã có 1 commit gốc."""
+        git(self.cwd, "init", "-q", "-b", "chinh")
+        git(self.cwd, "config", "user.email", "test@example.com")
+        git(self.cwd, "config", "user.name", "test")
+        write_file(self.cwd, "goc.txt", "goc\n")
+        git(self.cwd, "add", "-A")
+        git(self.cwd, "commit", "-q", "-m", "goc")
+
+    def _ban_do(self):
+        with open(os.path.join(self.cwd, BAN_DO_REL), encoding="utf-8") as f:
+            return json.load(f)
+
+    def chay(self, *args, env=None):
+        return run_team_cli(self.cwd, *args, env=env)
+
+
+class PhanCongTest(TeamBase):
+    """T2.2 + T2.3 — đọc cả plan, dựng bản đồ phân công."""
+
+    def test_ban_do_du_moi_task_va_du_4_truong(self):
+        self._project(PLAN_8_TASK)
+        rc, out, _err = self.chay("phan-cong")
+        self.assertEqual(rc, 0, out)
+        ban_do = self._ban_do()
+        self.assertEqual(len(ban_do["tasks"]), 8)
+        for ma, rec in ban_do["tasks"].items():
+            with self.subTest(task=ma):
+                for truong in ("quyet_dinh", "ly_do", "vung_file", "dot"):
+                    self.assertIn(truong, rec)
+
+    def test_phase_sau_nam_o_dot_sau(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        tasks = self._ban_do()["tasks"]
+        dot_p1 = max(tasks[m]["dot"] for m in ("T1.1", "T1.2", "T1.3"))
+        dot_p2 = min(tasks[m]["dot"] for m in ("T2.1", "T2.2"))
+        self.assertLess(dot_p1, dot_p2)
+
+    def test_hai_task_chung_file_khong_cung_dot(self):
+        self._project(PLAN_CHUNG_FILE)
+        self.chay("phan-cong")
+        tasks = self._ban_do()["tasks"]
+        self.assertNotEqual(tasks["T1.1"]["dot"], tasks["T1.2"]["dot"])
+
+    def test_mac_dinh_la_giao(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        tasks = self._ban_do()["tasks"]
+        self.assertTrue(all(r["quyet_dinh"] == "giao" for r in tasks.values()),
+                        [(m, r["quyet_dinh"]) for m, r in tasks.items()])
+
+    def test_task_roi_cung_dot_task_phu_thuoc_va_mcp_thi_tu_lam(self):
+        """T2.3 — 3 task rời cùng một đợt; task phụ thuộc và task (mcp) bị giữ lại."""
+        self._project(PLAN_TRON)
+        rc, out, _err = self.chay("phan-cong")
+        self.assertEqual(rc, 0, out)
+        tasks = self._ban_do()["tasks"]
+        roi = [tasks[m] for m in ("T1.1", "T1.2", "T1.3")]
+        self.assertEqual({r["quyet_dinh"] for r in roi}, {"giao"})
+        self.assertEqual(len({r["dot"] for r in roi}), 1)
+        self.assertEqual(tasks["T1.4"]["quyet_dinh"], "tu_lam")
+        self.assertEqual(tasks["T1.4"]["ly_do"], "phu-thuoc")
+        self.assertEqual(tasks["T1.5"]["quyet_dinh"], "tu_lam")
+        self.assertEqual(tasks["T1.5"]["ly_do"], "mcp")
+
+    def test_khong_khai_vung_file_thi_bi_giu_lai(self):
+        self._project("""# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) viec khong khai file — Test: `true`
+""")
+        self.chay("phan-cong")
+        rec = self._ban_do()["tasks"]["T1.1"]
+        self.assertEqual(rec["quyet_dinh"], "tu_lam")
+        self.assertEqual(rec["ly_do"], "vung-khoa")
+
+    def test_sua_file_luat_thi_bi_giu_lai(self):
+        self._project("""# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) sua luat build — Test: `true`
+  - Chạm: `skills/tdq-build/SKILL.md`
+""")
+        self.chay("phan-cong")
+        rec = self._ban_do()["tasks"]["T1.1"]
+        self.assertEqual(rec["quyet_dinh"], "tu_lam")
+        self.assertEqual(rec["ly_do"], "file-luat")
+
+    def test_ghi_plan_sha_de_khoa_ban_do(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        self.assertTrue(self._ban_do()["plan_sha"])
+
+
+class KiemKeTest(TeamBase):
+    """T2.4 + T2.5 — kiểm kê bản đồ, khoá theo sha."""
+
+    def test_ban_do_sach_thi_exit_0(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        rc, out, _err = self.chay("kiem-ke")
+        self.assertEqual(rc, 0, out)
+
+    def test_chua_phan_cong_thi_exit_khac_0(self):
+        self._project(PLAN_8_TASK)
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("phan-cong", err)
+
+    def test_tu_lam_thieu_ly_do_thi_exit_khac_0_va_neu_ma_task(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        path = os.path.join(self.cwd, BAN_DO_REL)
+        ban_do = self._ban_do()
+        ban_do["tasks"]["T2.3"] = dict(ban_do["tasks"]["T2.3"],
+                                       quyet_dinh="tu_lam", ly_do="")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(ban_do, f)
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("T2.3", err)
+        self.assertIn("Giữ:", err)
+
+    def test_ly_do_ngoai_4_nhom_thi_exit_khac_0(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        path = os.path.join(self.cwd, BAN_DO_REL)
+        ban_do = self._ban_do()
+        ban_do["tasks"]["T2.3"] = dict(ban_do["tasks"]["T2.3"],
+                                       quyet_dinh="tu_lam", ly_do="tien-hon")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(ban_do, f)
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("T2.3", err)
+
+    def test_plan_doi_thi_ban_do_het_hieu_luc(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        write_file(self.cwd, PLAN_REL, PLAN_8_TASK + "\n<!-- them mot dong -->\n")
+        rc, _out, err = self.chay("cum")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("phan-cong", err)
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertNotEqual(rc, 0)
+
+
+class VaQcTest(TeamBase):
+    """Vá sau QC độc lập 2026-08-17 — bốn đường lách/kẹt mà bộ test đầu không bắt."""
+
+    def _hong_ban_do(self):
+        with open(os.path.join(self.cwd, BAN_DO_REL), "w", encoding="utf-8") as f:
+            f.write("{ khong phai json")
+
+    def test_giao_ma_vung_file_rong_thi_kiem_ke_do(self):
+        """Cửa lách rẻ nhất: khai `giao` nhưng xoá vùng file → hook hết chỗ so."""
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        ban_do = self._ban_do()
+        ma = next(m for m, r in ban_do["tasks"].items() if r["quyet_dinh"] == "giao")
+        ban_do["tasks"][ma]["vung_file"] = []
+        with open(os.path.join(self.cwd, BAN_DO_REL), "w", encoding="utf-8") as f:
+            json.dump(ban_do, f)
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertNotEqual(rc, 0)
+        self.assertIn(ma, err)
+        self.assertIn("vùng file RỖNG", err)
+
+    def test_ban_do_hong_thi_cli_bao_lenh_sua_chu_khong_van_traceback(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        self._hong_ban_do()
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertNotEqual(rc, 0)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("phan-cong", err)
+
+    def test_ban_do_hong_thi_hook_chan_chu_khong_mo_toang(self):
+        """Fail-open ở đây là mở đúng cửa mà bản đồ sinh ra để canh."""
+        self._project(PLAN_TRON)
+        self.chay("phan-cong")
+        self._hong_ban_do()
+        canh_bao = tdq_team.canh_bao_lach_luat(self.cwd, "scripts/alpha.py")
+        self.assertIsNotNone(canh_bao)
+        self.assertEqual(canh_bao["kieu"], "ban-do-hong")
+
+    def test_kiem_neu_dung_ten_file_xung_dot(self):
+        self._project(PLAN_TRON)
+        self._git_repo()
+        self.chay("phan-cong")
+        self.chay("mo", "T1.1")
+        # hai nhánh cùng sửa một file → xung đột thật, phải gọi đúng tên file
+        cay = os.path.join(self.cwd, ".tdq-worktrees", SLUG, "t1.1")
+        write_file(cay, "scripts/alpha.py", "AAA\n")
+        git(cay, "add", "-A")
+        git(cay, "commit", "-q", "-m", "a")
+        cay_tich_hop = os.path.join(self.cwd, ".tdq-worktrees", SLUG, "tich-hop")
+        write_file(cay_tich_hop, "scripts/alpha.py", "BBB\n")
+        git(cay_tich_hop, "add", "-A")
+        git(cay_tich_hop, "commit", "-q", "-m", "b")
+        rc, out, err = self.chay("kiem", "T1.1")
+        self.assertNotEqual(rc, 0, out)
+        self.assertIn("scripts/alpha.py", out + err)
+
+    def test_cum_noi_ro_vi_sao_task_chua_duoc_phat(self):
+        self._project(PLAN_CHUNG_FILE)
+        self.chay("phan-cong")
+        _rc, out, _err = self.chay("cum")
+        self.assertIn("HOÃN", out)
+
+
+class CumTest(TeamBase):
+    """T2.6 — đợt kế tiếp, trừ vùng đang khoá."""
+
+    def test_cum_in_dung_task_dot_dau(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        rc, out, _err = self.chay("cum")
+        self.assertEqual(rc, 0, out)
+        for ma in ("T1.1", "T1.2", "T1.3"):
+            self.assertIn(ma, out)
+        # T2.1 được nêu ở dòng HOÃN, nhưng KHÔNG được nằm trong danh sách phát
+        self.assertNotIn("  T2.1  ", out)
+
+    def test_task_cham_vung_dang_khoa_thi_bi_giu(self):
+        plan = PLAN_8_TASK.replace("- [ ] **T1.1**", "- [>] **T1.1**")
+        plan = plan.replace("  - Chạm: `scripts/b.py`", "  - Chạm: `scripts/a.py`")
+        self._project(plan)
+        self.chay("phan-cong")
+        rc, out, _err = self.chay("cum")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("scripts/a.py", out)
+        self.assertNotIn("\n  T1.2 ", "\n" + out)
+
+    def test_hết_task_giao_thi_bao_het(self):
+        self._project(PLAN_8_TASK.replace("- [ ] **", "- [x] **"))
+        self.chay("phan-cong")
+        rc, out, _err = self.chay("cum")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("HẾT", out.upper())
+
+
+class GitTest(TeamBase):
+    """T2.7 → T2.10 — nhánh, worktree, dò xung đột, hợp, dọn."""
+
+    def setUp(self):
+        super().setUp()
+        self._git_repo()
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+
+    def _nhanh(self):
+        return git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
+
+    def test_mo_tao_dung_mot_worktree_va_nhanh_dung_khuon(self):
+        rc, out, _err = self.chay("mo", "T1.1")
+        self.assertEqual(rc, 0, out)
+        wt = git(self.cwd, "worktree", "list")
+        self.assertEqual(len([d for d in wt.splitlines() if "t1.1" in d.lower()]), 1, wt)
+        nhanh = [b for b in self._nhanh() if "t1.1" in b.lower()]
+        self.assertEqual(len(nhanh), 1, self._nhanh())
+        for cam in ("claude", "antigravity", "gemini", "codex"):
+            self.assertFalse(nhanh[0].startswith(cam), nhanh[0])
+
+    def test_mo_khong_doi_nhanh_dang_dung_cua_user(self):
+        truoc = git(self.cwd, "rev-parse", "--abbrev-ref", "HEAD")
+        self.chay("mo", "T1.1")
+        self.assertEqual(git(self.cwd, "rev-parse", "--abbrev-ref", "HEAD"), truoc)
+
+    def test_kiem_bao_xung_dot_va_khong_dung_repo(self):
+        self.chay("mo", "T1.1")
+        self.chay("mo", "T1.2")
+        for ma in ("T1.1", "T1.2"):
+            wt = self._duong_worktree(ma)
+            write_file(wt, "chung.txt", f"noi dung cua {ma}\n")
+            git(wt, "add", "-A")
+            git(wt, "commit", "-q", "-m", f"{ma} sua chung.txt")
+        self.chay("hop", "T1.1")
+        truoc = git(self.cwd, "status", "--porcelain")
+        rc, out, _err = self.chay("kiem", "T1.2")
+        self.assertNotEqual(rc, 0, out)
+        self.assertIn("XUNG ĐỘT", out.upper() if "XUNG" in out else out)
+        self.assertEqual(git(self.cwd, "status", "--porcelain"), truoc)
+
+    def test_kiem_khong_chet_khi_git_in_byte_khong_phai_utf8(self):
+        # Lỗi thật, lộ ra ở lượt chạy benchmark 2026-08-17: `git merge-tree` in cả nội
+        # dung object, gặp byte nhị phân là cả lệnh `kiem` văng UnicodeDecodeError.
+        self.chay("mo", "T1.1")
+        self.chay("mo", "T1.2")
+        # Không có byte NUL: git coi là file VĂN BẢN nên in thẳng nội dung ra stdout,
+        # mà nội dung đó lại không giải mã được bằng UTF-8. Đúng ca đã làm chết `kiem`.
+        for ma, byte in (("T1.1", b"latin \xcb\xfe nhanh mot\n"),
+                         ("T1.2", b"latin \xcb\xff nhanh hai\n")):
+            wt = self._duong_worktree(ma)
+            with open(os.path.join(wt, "van_ban_latin.txt"), "wb") as f:
+                f.write(byte)
+            git(wt, "add", "-A")
+            git(wt, "commit", "-q", "-m", f"{ma} them file nhi phan")
+        self.chay("hop", "T1.1")
+        rc, out, err = self.chay("kiem", "T1.2")
+        self.assertNotIn("Traceback", out + err)
+        self.assertNotIn("UnicodeDecodeError", out + err)
+        self.assertIn(rc, (0, 1), out + err)
+
+    def test_kiem_khong_xung_dot_thi_exit_0(self):
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, "rieng.txt", "chi mot minh\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "T1.1")
+        rc, out, _err = self.chay("kiem", "T1.1")
+        self.assertEqual(rc, 0, out)
+
+    def test_hop_ba_nhanh_roi_nhau_du_ba_commit(self):
+        for ma in ("T1.1", "T1.2", "T1.3"):
+            self.chay("mo", ma)
+            wt = self._duong_worktree(ma)
+            write_file(wt, f"{ma}.txt", "x\n")
+            git(wt, "add", "-A")
+            git(wt, "commit", "-q", "-m", f"{ma} xong")
+        for ma in ("T1.1", "T1.2", "T1.3"):
+            rc, out, _err = self.chay("hop", ma)
+            self.assertEqual(rc, 0, out)
+        log = git(self._duong_tich_hop(), "log", "--oneline")
+        for ma in ("T1.1", "T1.2", "T1.3"):
+            self.assertIn(f"{ma} xong", log)
+
+    def test_hop_khong_dong_nhanh_goc_cua_user(self):
+        truoc = git(self.cwd, "rev-parse", "chinh")
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, "T1.1.txt", "x\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "T1.1 xong")
+        self.chay("hop", "T1.1")
+        self.assertEqual(git(self.cwd, "rev-parse", "chinh"), truoc)
+
+    def test_hop_chan_khi_xung_dot(self):
+        for ma in ("T1.1", "T1.2"):
+            self.chay("mo", ma)
+            wt = self._duong_worktree(ma)
+            write_file(wt, "chung.txt", f"{ma}\n")
+            git(wt, "add", "-A")
+            git(wt, "commit", "-q", "-m", f"{ma}")
+        self.chay("hop", "T1.1")
+        rc, _out, err = self.chay("hop", "T1.2")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("kiem", err)
+
+    def test_don_sach_worktree_va_khong_con_rac(self):
+        self.chay("mo", "T1.1")
+        self.chay("mo", "T1.2")
+        rc, out, _err = self.chay("don")
+        self.assertEqual(rc, 0, out)
+        wt = git(self.cwd, "worktree", "list")
+        self.assertEqual(len(wt.splitlines()), 1, wt)
+        thu_muc = os.path.join(self.cwd, ".git", "worktrees")
+        con_lai = os.listdir(thu_muc) if os.path.isdir(thu_muc) else []
+        self.assertEqual(con_lai, [], con_lai)
+
+    def _duong_worktree(self, ma):
+        wt = git(self.cwd, "worktree", "list", "--porcelain")
+        for dong in wt.splitlines():
+            if dong.startswith("worktree ") and dong.lower().rstrip().endswith(ma.lower()):
+                return dong.split(" ", 1)[1]
+        raise AssertionError(f"khong thay worktree cua {ma}:\n{wt}")
+
+    def _duong_tich_hop(self):
+        wt = git(self.cwd, "worktree", "list", "--porcelain")
+        for dong in wt.splitlines():
+            if dong.startswith("worktree ") and "tich-hop" in dong:
+                return dong.split(" ", 1)[1]
+        raise AssertionError(f"khong thay worktree tich hop:\n{wt}")
+
+
+class HookTest(TeamBase):
+    """T3.1 → T3.3 — edit_gate nới cho `[>]` nhưng chặn đúng ca lách luật."""
+
+    def setUp(self):
+        super().setUp()
+        write_file(self.cwd, os.path.join("docs", "workinglog",
+                                          datetime.date.today().strftime("%Y-%m-%d") + ".md"),
+                   "# log\n")
+
+    def _payload(self, rel):
+        return load_fixture("edit_src.json", cwd=self.cwd, session_id="s-team",
+                            tool_input={"file_path": os.path.join(self.cwd, rel)})
+
+    def _sua(self, rel):
+        return run_hook("edit_gate.py", self._payload(rel))
+
+    def _plan(self, plan, mode="subagent"):
+        write_state(self.cwd, active_request=SLUG, lane="full", phase="implement",
+                    implement_mode=mode, spec_approved=True, plan_approved=True,
+                    plan_file=PLAN_REL)
+        write_file(self.cwd, PLAN_REL, plan)
+
+    # --- T3.1 ---------------------------------------------------------------
+    def test_nhieu_dau_giao_khong_bi_chan(self):
+        self._plan(PLAN_8_TASK.replace("- [ ] **T1.", "- [>] **T1."), mode="main")
+        _rc, out, _err = self._sua("scripts/a.py")
+        self.assertNotIn('"deny"', out)
+
+    def test_hai_dau_dang_lam_van_bi_chan(self):
+        self._plan(PLAN_8_TASK.replace("- [ ] **T1.1**", "- [~] **T1.1**")
+                              .replace("- [ ] **T1.2**", "- [~] **T1.2**"), mode="main")
+        _rc, out, _err = self._sua("scripts/a.py")
+        self.assertIn('"deny"', out)
+        self.assertIn("TDQ:TICK", out)
+
+    def test_khong_dau_nao_van_bi_chan(self):
+        self._plan(PLAN_8_TASK, mode="main")
+        _rc, out, _err = self._sua("scripts/a.py")
+        self.assertIn('"deny"', out)
+        self.assertIn("TDQ:TICK", out)
+
+    # --- T3.2 ---------------------------------------------------------------
+    def test_main_sua_file_cua_task_giao_thi_bi_chan(self):
+        self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [~] **T1.1**"))
+        self.chay("phan-cong")
+        _rc, out, _err = self._sua("scripts/alpha.py")
+        self.assertIn('"deny"', out)
+        self.assertIn("TDQ:TEAM", out)
+
+    def test_main_sua_file_cua_task_tu_lam_thi_khong_chan(self):
+        self._plan(PLAN_TRON.replace("- [ ] **T1.4**", "- [~] **T1.4**"))
+        self.chay("phan-cong")
+        _rc, out, _err = self._sua("scripts/delta.py")
+        self.assertNotIn('"deny"', out)
+
+    def test_mode_main_thi_khong_chan_du_ban_do_ghi_giao(self):
+        self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [~] **T1.1**"), mode="main")
+        self.chay("phan-cong")
+        _rc, out, _err = self._sua("scripts/alpha.py")
+        self.assertNotIn('"deny"', out)
+
+    def test_chua_phan_cong_ma_sua_code_o_main_thi_bi_chan(self):
+        self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [~] **T1.1**"))
+        _rc, out, _err = self._sua("scripts/alpha.py")
+        self.assertIn('"deny"', out)
+        self.assertIn("phan-cong", out)
+
+    def test_file_ngoai_moi_vung_thi_khong_chan(self):
+        self._plan(PLAN_TRON.replace("- [ ] **T1.4**", "- [~] **T1.4**"))
+        self.chay("phan-cong")
+        _rc, out, _err = self._sua("scripts/khong-ai-nhan.py")
+        self.assertNotIn('"deny"', out)
+
+    # --- T3.3 ---------------------------------------------------------------
+    def test_da_giao_ma_khong_co_nhanh_thi_bi_chan(self):
+        self._git_repo()
+        self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [>] **T1.1**"))
+        self.chay("phan-cong")
+        _rc, out, _err = self._sua("scripts/alpha.py")
+        self.assertIn('"deny"', out)
+        self.assertIn("mo T1.1", out)
+
+    def test_da_giao_va_co_nhanh_that_thi_khong_chan(self):
+        self._git_repo()
+        self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [>] **T1.1**"))
+        self.chay("phan-cong")
+        self.chay("mo", "T1.1")
+        _rc, out, _err = self._sua("scripts/alpha.py")
+        self.assertNotIn('"deny"', out)
+
+
+class CheckStatusTest(TeamBase):
+    """T3.4 — chẩn đoán hiểu mode đội: nhiều `[>]` không phải lỗi, còn ca D12 mới."""
+
+    def _state_day_du(self, plan):
+        write_state(self.cwd, active_request=SLUG, lane="full", phase="implement",
+                    implement_mode="subagent", spec_approved=True, plan_approved=True,
+                    plan_file=PLAN_REL,
+                    spec_file=os.path.join("docs", "tdq", "spec", SLUG + ".md"))
+        write_file(self.cwd, PLAN_REL, plan)
+        write_file(self.cwd, os.path.join("docs", "tdq", "spec", SLUG + ".md"), "# spec\n")
+
+    def _ma_ca(self):
+        rc, out, err = run_checkstatus_cli(self.cwd, "report", "--json")
+        self.assertEqual(rc, 0, err)
+        return json.loads(out)
+
+    def test_nhieu_dau_giao_khong_dinh_D4(self):
+        self._state_day_du(PLAN_8_TASK.replace("- [ ] **T1.", "- [>] **T1."))
+        ma = {c["ma"] for c in self._ma_ca()["ca_lech"]}
+        self.assertNotIn("D4", ma)
+
+    def test_hai_dau_dang_lam_van_dinh_D4(self):
+        self._state_day_du(PLAN_8_TASK.replace("- [ ] **T1.1**", "- [~] **T1.1**")
+                                      .replace("- [ ] **T1.2**", "- [~] **T1.2**"))
+        ma = {c["ma"] for c in self._ma_ca()["ca_lech"]}
+        self.assertIn("D4", ma)
+
+    def test_da_giao_ma_chua_merge_thi_dinh_D12(self):
+        self._state_day_du(PLAN_8_TASK.replace("- [ ] **T1.1**", "- [>] **T1.1**")
+                                      .replace("- [ ] **T1.2**", "- [>] **T1.2**"))
+        ca = [c for c in self._ma_ca()["ca_lech"] if c["ma"] == "D12"]
+        self.assertTrue(ca, "thiếu ca D12")
+        self.assertIn("T1.1", ca[0]["chi_tiet"])
+        self.assertIn("T1.2", ca[0]["chi_tiet"])
+
+    def test_khong_co_dau_giao_thi_khong_dinh_D12(self):
+        self._state_day_du(PLAN_8_TASK.replace("- [ ] **T1.1**", "- [~] **T1.1**"))
+        ma = {c["ma"] for c in self._ma_ca()["ca_lech"]}
+        self.assertNotIn("D12", ma)
+
+    def test_D12_neu_hanh_dong_tiep_theo(self):
+        self._state_day_du(PLAN_8_TASK.replace("- [ ] **T1.1**", "- [>] **T1.1**"))
+        du_lieu = self._ma_ca()
+        self.assertIn("tdq_team.py", du_lieu["viec_ke_tiep"])
+
+    def test_bang_lech_va_hang_so_van_khop(self):
+        import tdq_checkstatus
+        bang = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                 "skills", "tdq-check-status", "references",
+                                 "bang-lech.md"), encoding="utf-8").read()
+        self.assertIn("D12", tdq_checkstatus.CA_LECH)
+        self.assertIn("| D12 ", bang)
+
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEAM_MODE_MD = os.path.join(REPO, "skills", "tdq-build", "references", "team-mode.md")
+BUILD_SKILL = os.path.join(REPO, "skills", "tdq-build", "SKILL.md")
+PLAN_SKILL = os.path.join(REPO, "skills", "tdq-plan", "SKILL.md")
+PLAN_TEMPLATE = os.path.join(REPO, "skills", "tdq-plan", "references", "plan-template.md")
+MODE_GATE = os.path.join(REPO, "skills", "tdq-plan", "references", "mode-gate.md")
+CONVENTIONS = os.path.join(REPO, "skills", "tdq-conventions", "SKILL.md")
+IMPLEMENTER = os.path.join(REPO, "agents", "tdq-implementer.md")
+
+# 7 trường của khuôn prompt giao việc cho agent con. Thiếu một trường là agent con
+# phải đoán — đúng thứ soul cấm ở nguyên tắc "viết cho model yếu nhất".
+TRUONG_PROMPT = ["TASK:", "CỤM:", "BASE:", "WORKTREE:", "VÙNG FILE:", "TEST:", "TRẢ VỀ:"]
+
+
+def _doc(path):
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+
+class KhuonTest(unittest.TestCase):
+    """T4.1 → T4.6 — file luật phải đủ chi tiết cho MỌI model đọc là làm được."""
+
+    def test_khuon_team_mode_du_ba_muc(self):
+        noi_dung = _doc(TEAM_MODE_MD).lower()
+        for muc in ("## khi nào áp dụng", "## làm gì", "## tự kiểm"):
+            self.assertIn(muc, noi_dung, f"team-mode.md thiếu mục {muc}")
+
+    def test_khuon_bang_tra_du_4_nhom_giu_va_dong_giao(self):
+        noi_dung = _doc(TEAM_MODE_MD)
+        import tdq_team
+        for ma in tdq_team.LY_DO_GIU:
+            self.assertIn(f"`{ma}`", noi_dung, f"bảng tra thiếu nhóm {ma}")
+        self.assertIn("GIAO", noi_dung)
+        dong_nhom = [d for d in noi_dung.splitlines() if d.strip().startswith("| `")]
+        self.assertEqual(len(dong_nhom), 4, "bảng tra phải có đúng 4 nhóm giữ")
+        dong_giao = [d for d in noi_dung.splitlines()
+                     if d.strip().startswith("|") and "GIAO" in d]
+        self.assertTrue(dong_giao, "bảng tra thiếu dòng mặc định GIAO")
+
+    def test_khuon_bang_tra_co_cot_dau_hieu_va_cot_lenh_kiem(self):
+        noi_dung = _doc(TEAM_MODE_MD)
+        tieu_de = [d for d in noi_dung.splitlines() if d.strip().startswith("| Nhóm")]
+        self.assertTrue(tieu_de, "bảng tra thiếu dòng tiêu đề")
+        self.assertIn("Dấu hiệu", tieu_de[0])
+        self.assertIn("Kiểm bằng", tieu_de[0])
+
+    def test_khuon_co_it_nhat_4_cap_dung_sai(self):
+        noi_dung = _doc(TEAM_MODE_MD)
+        self.assertGreaterEqual(noi_dung.count("ĐÚNG:"), 4)
+        self.assertGreaterEqual(noi_dung.count("SAI:"), 4)
+
+    def test_khuon_prompt_giao_viec_du_7_truong(self):
+        noi_dung = _doc(TEAM_MODE_MD)
+        for truong in TRUONG_PROMPT:
+            self.assertIn(truong, noi_dung, f"khuôn prompt thiếu trường {truong}")
+
+    def test_khuon_implementer_du_7_truong(self):
+        noi_dung = _doc(IMPLEMENTER)
+        for truong in TRUONG_PROMPT:
+            self.assertIn(truong, noi_dung, f"agent thiếu trường {truong}")
+
+    def test_moi_lenh_neu_trong_file_luat_deu_co_that(self):
+        """Luật viết lệnh không tồn tại là bẫy chết người với model yếu."""
+        import tdq_team
+        mau = re.compile(r"tdq_team\.py ([a-z-]+)")
+        for path in (TEAM_MODE_MD, BUILD_SKILL, CONVENTIONS, IMPLEMENTER, MODE_GATE):
+            for lenh in set(mau.findall(_doc(path))):
+                with self.subTest(file=os.path.basename(path), lenh=lenh):
+                    self.assertIn(lenh, tdq_team.LENH)
+
+
+class LuatTest(unittest.TestCase):
+    """T4.2 → T4.5 — các file luật khác đã khớp mô hình đội."""
+
+    def test_build_skill_bo_luat_giao_dung_1_task(self):
+        noi_dung = _doc(BUILD_SKILL)
+        self.assertNotIn("giao ĐÚNG 1 task", noi_dung)
+        self.assertIn("team-mode.md", noi_dung)
+        self.assertIn("phan-cong", noi_dung)
+
+    def test_plan_skill_bat_khai_vung_file(self):
+        self.assertIn("Chạm:", _doc(PLAN_SKILL))
+        self.assertIn("Chạm:", _doc(PLAN_TEMPLATE))
+        self.assertIn("## Cụm song song", _doc(PLAN_TEMPLATE))
+
+    def test_mode_gate_ta_dung_mo_hinh_lai(self):
+        noi_dung = _doc(MODE_GATE)
+        self.assertIn("tự làm", noi_dung)
+        self.assertNotIn("mỗi agent một task, một git worktree", noi_dung)
+
+    def test_conventions_co_luat_chong_ngung_va_dung_3_ngoai_le(self):
+        noi_dung = _doc(CONVENTIONS)
+        self.assertIn("plan chưa hết task thì không kết thúc turn", noi_dung.lower())
+        moc = noi_dung.lower().find("ba ngoại lệ")
+        self.assertGreater(moc, -1, "thiếu khối 3 ngoại lệ")
+        khoi = noi_dung[moc:moc + 1200]
+        self.assertEqual(len(re.findall(r"^\s*\d\.", khoi, re.M)), 3,
+                         "phải đúng 3 ngoại lệ, không hơn không kém")
+
+
+if __name__ == "__main__":
+    unittest.main()

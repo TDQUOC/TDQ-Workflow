@@ -97,6 +97,42 @@ def main():
             echo_line("TDQ:LOG", f"đã append {log_rel}"),
         ])
 
+    # (2b) mode đội: user chọn "giao trợ lý" mà leader lại tự gõ code của task đã
+    # hứa giao → CHẶN. Không có hàng rào này thì lời hứa chia việc chỉ là lời nói:
+    # model vẫn tự làm hết ở main và không ai chứng minh được.
+    from tdq_team import canh_bao_lach_luat  # noqa: E402 — chỉ nạp khi thật cần
+    canh_bao = canh_bao_lach_luat(cwd, rel_target)
+    if canh_bao:
+        if canh_bao["kieu"] == "ban-do-hong":
+            block(cwd, payload, "TDQ:TEAM", [
+                "Bản đồ phân công đọc không nổi — không ai chứng minh được task này giao "
+                "hay leader tự làm.",
+                "Chạy: python3 scripts/tdq_team.py phan-cong (sinh lại), rồi kiem-ke.",
+                "Cấm sửa code khi bản đồ hỏng: đó đúng là cửa lách luật bản đồ sinh ra để canh.",
+            ])
+        elif canh_bao["kieu"] == "chua-phan-cong":
+            block(cwd, payload, "TDQ:TEAM", [
+                "Mode đội mà chưa có bản đồ phân công — không được sửa code ở main trước.",
+                "Chạy: python3 scripts/tdq_team.py phan-cong (rồi kiem-ke, rồi cum).",
+                "Task nào leader phải tự làm thì bản đồ ghi tu_lam kèm 1 trong 4 nhóm lý do.",
+            ])
+        elif canh_bao["kieu"] == "da-giao-thieu-nhanh":
+            block(cwd, payload, "TDQ:TEAM", [
+                f"{canh_bao['ma']} đang mang dấu [>] nhưng không có nhánh "
+                f"{canh_bao['nhanh']} — agent con chết giữa chừng hoặc chưa từng chạy.",
+                f"Chạy: python3 scripts/tdq_team.py mo {canh_bao['ma']}",
+                "Hoặc trả task về [ ] rồi phân công lại.",
+            ])
+        else:
+            block(cwd, payload, "TDQ:TEAM", [
+                f"File này thuộc vùng của {canh_bao['ma']} — bản đồ ghi GIAO cho agent con, "
+                f"leader không tự sửa.",
+                f"Chạy: python3 scripts/tdq_team.py mo {canh_bao['ma']} rồi giao cho "
+                f"agent tdq-implementer.",
+                "Thật sự phải tự làm → sửa bản đồ thành tu_lam kèm 1 trong 4 nhóm lý do, "
+                "rồi chạy kiem-ke.",
+            ])
+
     # đang implement/qc mà plan chưa đánh dấu task nào đang làm → CHẶN.
     # stop_gate chỉ so vân tay plan đầu/cuối turn nên không bắt được bulk-tick trong
     # một turn duy nhất (lane quick làm trọn gói trong 1 turn) — hàng rào thật phải
@@ -104,7 +140,14 @@ def main():
     # Đặt CUỐI vì `remind()` thoát ngay sau lần nhắc đầu: TDQ:LOG dẫn tới chặn cứng
     # ở Stop nên phải được ưu tiên.
     in_tests = within(rel_target, "tests") or rel_target.startswith("tests" + os.sep)
-    if not in_tests and effective_phase(state, warn=False) in ("implement", "qc"):
+    # Mode đội: mỗi agent con làm trong worktree riêng dưới `.tdq-worktrees/`, nhưng
+    # sổ turn lại chung một session — N agent chạy song song ăn hết hạn mức streak
+    # của nhau và cả đội đứng hình sau đúng 3 lần sửa. Kỷ luật tick là kỷ luật của
+    # LEADER ở worktree chính; vòng đỏ→xanh trong worktree của agent con không phải
+    # chỗ áp nó. Miễn trừ theo đường dẫn, không theo danh tính agent.
+    in_worktree_doi = (os.sep + ".tdq-worktrees" + os.sep) in (abs_target + os.sep)
+    if not in_tests and not in_worktree_doi \
+            and effective_phase(state, warn=False) in ("implement", "qc"):
         tick = plan_tick_state(cwd)
         if tick["exists"] and tick["total"] > 0 \
                 and not tick["has_doing"] and not tick["all_done"]:

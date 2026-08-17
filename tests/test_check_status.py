@@ -1,4 +1,4 @@
-"""Skill + CLI `tdq-check-status`: dò request đang dở, chấm 11 ca lệch D1–D11.
+"""Skill + CLI `tdq-check-status`: dò request đang dở, chấm 12 ca lệch D1–D12.
 
 Luật khoá ở đây: đĩa là bằng chứng, `state.json` là lời khai. Lệch thì tin đĩa và
 ĐỀ XUẤT lệnh vá — không tự ghi, và không bao giờ sinh lệnh làm mất dữ liệu.
@@ -191,8 +191,8 @@ class BangCaLech(TempRepo):
         import tdq_checkstatus
         bang = tdq_checkstatus.CA_LECH
         self.assertEqual(sorted(bang, key=lambda m: int(m[1:])),
-                         [f"D{i}" for i in range(1, 12)],
-                         "phải đủ đúng 11 mã D1–D11")
+                         [f"D{i}" for i in range(1, 13)],
+                         "phải đủ đúng 12 mã D1–D12")
         for ma, luat in bang.items():
             with self.subTest(ma=ma):
                 for truong in ("dau_hieu", "muc", "chan_doan"):

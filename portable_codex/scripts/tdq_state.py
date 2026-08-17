@@ -504,13 +504,18 @@ def repo_status_paths(cwd, limit=400, status=None):
 # (không đếm riêng số `[x]`) vì `[ ]` → `[~]` cũng là cập nhật hợp lệ mà số `[x]`
 # không đổi — đếm `[x]` sẽ bỏ lọt đúng cái mốc "bắt đầu task".
 
-_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x)\]\s*\*\*[A-Za-z]+[0-9.]*\*\*")
+#
+# Dấu `>` = task đã GIAO cho agent con và agent đó đang chạy (mode đội). Khác
+# `~` ở chỗ: `~` là leader tự làm — chỉ được có MỘT; `>` chạy song song nên
+# được có NHIỀU. Xem skills/tdq-build/references/team-mode.md.
+_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z]+[0-9.]*)\*\*")
 
 
 def plan_tick_state(cwd):
     """Trạng thái checkbox của plan hiện hành. Không bao giờ ném lỗi."""
     trong = {"path": None, "exists": False, "sha": "",
-             "has_doing": False, "all_done": False, "total": 0, "doing_count": 0}
+             "has_doing": False, "all_done": False, "total": 0, "doing_count": 0,
+             "dispatched_count": 0, "dispatched_ids": []}
     try:
         state = load(cwd, heal=False) or {}
     except Exception:
@@ -531,6 +536,7 @@ def plan_tick_state(cwd):
         return trong
 
     tong = xong = dang = 0
+    da_giao = []
     for line in noi_dung.splitlines():
         m = _TASK_LINE.match(line)
         if not m:
@@ -540,9 +546,15 @@ def plan_tick_state(cwd):
             xong += 1
         elif m.group(1) == "~":
             dang += 1
+        elif m.group(1) == ">":
+            da_giao.append(m.group(2))
 
+    # `has_doing` = "có việc đang chạy" theo nghĩa rộng: leader tự làm HOẶC agent
+    # con đang làm. Hàng rào dựa vào cờ này để biết turn có đang dở việc không.
     trong.update(exists=True, sha=sha, total=tong, doing_count=dang,
-                 has_doing=dang > 0, all_done=tong > 0 and xong == tong)
+                 dispatched_count=len(da_giao), dispatched_ids=da_giao,
+                 has_doing=dang > 0 or bool(da_giao),
+                 all_done=tong > 0 and xong == tong)
     return trong
 
 
@@ -796,6 +808,31 @@ PHASE_TABLE = {
 }
 
 
+# Biến thể của phase `implement` khi user chốt mode `subagent`. CỐ Ý để ngoài
+# PHASE_TABLE: nó không phải một phase (state vẫn ghi `implement`, `set phase=`
+# không nhận giá trị này) và không được mọc thêm một dòng trong bảng phase sinh
+# ra doc. Tra bằng phase_row(), không bằng phase_key().
+IMPLEMENT_SUBAGENT_ROW = {
+
+    "entry": "plan_approved = true và implement_mode = subagent",
+    "action": "Phân công CẢ plan trước (bước 0), rồi phát từng đợt cho agent con, "
+              "merge xong mới phát đợt kế — leader chỉ tự làm phần không tách được",
+    "cmd": "python3 scripts/tdq_state.py set phase=qc",
+    "checklist": [
+        "Bước 0: python3 scripts/tdq_team.py phan-cong — đọc toàn bộ plan, ghi bản đồ "
+        "docs/tdq/team/<slug>.json (mỗi task: giao / tu_lam + lý do + vùng file + đợt)",
+        "python3 scripts/tdq_team.py kiem-ke — bản đồ sai luật thì exit khác 0, sửa rồi chạy lại",
+        "python3 scripts/tdq_team.py cum — lấy đợt kế tiếp, mở nhánh bằng `mo <task-id>`, "
+        "đánh [>] cho MỌI task vừa giao (nhiều [>] là hợp lệ, [~] vẫn chỉ được một)",
+        "Agent con báo xong → `kiem <nhanh>` dò xung đột → `hop <nhanh>` → đổi [>] thành [x] NGAY",
+        "Hết đợt → `don` dọn worktree, rồi `cum` lấy đợt kế; lặp đến khi hết task",
+    ],
+    "done_when": "Mọi task trong plan đã tick [x] và không còn worktree thừa",
+    "forbidden": "Tự làm ở main task đã ghi `giao` trong bản đồ; merge khi `kiem` chưa pass; "
+                 "để nhiều task cùng mang [~]",
+}
+
+
 PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc", "report",
                "idle", "quick"]
 
@@ -866,6 +903,19 @@ def phase_key(state):
     return effective_phase(state, warn=False)
 
 
+def phase_row(state):
+    """Dòng PHASE_TABLE để HIỂN THỊ cho state hiện tại.
+
+    Khác `phase_key`: hàm này biết mode. Phase `implement` có hai bản việc khác
+    hẳn nhau — leader tự làm (`main`) và leader điều phối đội (`subagent`) — mà
+    state chỉ ghi một chữ `implement`, nên chỗ rẽ nằm ở đây.
+    """
+    key = phase_key(state)
+    if key == "implement" and effective_mode(state or {}, warn=False) == "subagent":
+        return IMPLEMENT_SUBAGENT_ROW
+    return PHASE_TABLE[key]
+
+
 # ------------------------------------------------------------------ next
 
 def _mark(approved, registered):
@@ -898,7 +948,7 @@ def render_next(cwd, state, brief=False, compact=False):
     head = next_headline(cwd, state)
     if brief:
         return head
-    row = PHASE_TABLE[phase_key(state)]
+    row = phase_row(state)
     lines = [head, f"Việc tiếp theo: {row['action']}", "Lệnh:", f"  {row['cmd']}"]
     if compact:
         lines.append("Checklist đầy đủ: python3 scripts/tdq_state.py next")
@@ -913,7 +963,7 @@ def render_state_md(cwd, state):
     """Mirror markdown ≤30 dòng cho agent/user đọc thẳng (spec §2.3.1)."""
     state = state or default_state()
     lane = effective_lane(state, warn=False)
-    row = PHASE_TABLE[phase_key(state)]
+    row = phase_row(state)
     spec = state.get("spec_file") or "(chưa có)"
     if state.get("spec_file"):
         spec += " — " + ("✔ đã duyệt" if state.get("spec_approved") else "⏳ chờ duyệt")
