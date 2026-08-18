@@ -1,0 +1,1706 @@
+[
+  {
+    "ten": "build-live-game",
+    "mo_ta": "Build and operate a live game using Unity Services. Use when the user needs to implement, connect, or debug backend-driven features — battle passes, achievements, player progression, cloud saves, leaderboards, matchmaking, virtual economies, server-authoritative logic, anti-cheat, player accounts and authentication, remote configuration, feature flags, A/B testing, analytics, or cloud resource deployment. Triggers on live-ops, live service, backend, server authority, cloud code, cloud save, remote config, player data, retention, monetization loop, season pass, ranking, multiplayer sessions, lobbies, or any Unity Services integration.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/build-live-game/SKILL.md"
+  },
+  {
+    "ten": "excalidraw-skill",
+    "mo_ta": "Excalidraw canvas toolkit for drawing, refining, and verifying diagrams on a live canvas. Use when an agent must lay out a diagram, screenshot and fix its own layout, convert Mermaid, or export/import scenes and images.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/excalidraw-skill/SKILL.md"
+  },
+  {
+    "ten": "figma-implement",
+    "mo_ta": "\"Use whenever the user asks to implement, build, code, or reproduce a Figma design/frame as HTML/CSS (or any other target), or pastes a Figma file/frame URL and wants it turned into working front-end code. Wraps the framelink-figma MCP server (get_figma_data, download_figma_images) end-to-end: fetch design data, download assets, build markup/styles at exact coordinates, and run a mandatory 4-round verify/recheck loop (property diff, text-fit/collision gate, image compare, pixel diff) before declaring the build correct.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/figma-implement/SKILL.md"
+  },
+  {
+    "ten": "graphify",
+    "mo_ta": "\"Use for any question about a codebase, its architecture, file relationships, or project content — especially when graphify-out/ exists, where the question should be treated as a graphify query first. Turns any input (code, docs, papers, images, videos) into a persistent knowledge graph with god nodes, community detection, and query/path/explain tools.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/graphify/SKILL.md"
+  },
+  {
+    "ten": "implement-in-app-purchases",
+    "mo_ta": "Implement, configure, and debug Unity In-App Purchases (IAP) — store connection, product catalog, consumable/non-consumable/subscription purchases, two-step pending-confirm flow, receipt validation, entitlement checking, restore transactions, Apple extensions (promotional purchases, Ask-to-Buy, code redemption), and Google Play extensions (subscription upgrade/downgrade), D2C Capabilities(direct to customer), 3rd party payment provider (Stripe/Coda) via Unity IAP/Unity Cloud. Use when the user needs to add, modify, debug, or migrate from native Android/iOS billing, 3rd party packages(RevenueCat/Adapty/Essential Kit/Unipay supported) to IAP. Triggers on microtransactions (MTX), monetization, real-money purchases, store purchases, buying items, support D2C, purchase via Stripe/Coda, migrate from native billing(Google's BillingClient or Apple's StoreKit/SKPaymentQueue/SKProduct)/RevenueCat/Adapty/EssentialKit/Unipay.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/implement-in-app-purchases/SKILL.md"
+  },
+  {
+    "ten": "mem0-memory",
+    "mo_ta": "Recall and preserve durable cross-session context through the local Mem0 MCP server. Use for meaningful coding or research tasks that benefit from prior preferences, environment facts, architecture decisions, project constraints, or reusable troubleshooting outcomes; also use when the user explicitly asks to remember, forget, update, or inspect a memory. Do not use for transient task details, raw logs, source dumps, secrets, or unconfirmed guesses.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/mem0-memory/SKILL.md"
+  },
+  {
+    "ten": "ui-imgui",
+    "mo_ta": "Unity IMGUI (Immediate Mode GUI) expert for legacy editor tools using OnGUI/immediate mode. Generates and modifies IMGUI EditorWindows, custom Inspectors, PropertyDrawers, and scripts with IMGUI code (OnGUI, OnInspectorGUI). Use when maintaining existing IMGUI editor code or when user explicitly requests IMGUI/OnGUI.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/ui-imgui/SKILL.md"
+  },
+  {
+    "ten": "ui-ugui",
+    "mo_ta": "Unity uGUI (Canvas-based) UI expert. Understands, edits, and generates Canvas hierarchies, RectTransforms, Layout Groups, and prefab UI. Use for requests involving Canvas, uGUI, RectTransform, or .prefab UI files.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/ui-ugui/SKILL.md"
+  },
+  {
+    "ten": "ui-uitk",
+    "mo_ta": "Unity UI Toolkit expert for Unity 6.0+. Understands, edits, and generates UXML and USS files with flex-based layouts. Use for requests involving .uxml, .uss, UI Toolkit, UIElements, UIDocument, UI runtime binding, Custom UI Elements, Manipulators or PanelSettings.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/ui-uitk/SKILL.md"
+  },
+  {
+    "ten": "ui",
+    "mo_ta": "Unity UI expert for menus, HUDs, screens, panels, buttons, labels, and all visual interface elements. Handles questions about UI in scenes or prefabs (how many elements, what exists, structure analysis), styling changes (colors, borders, backgrounds, fonts, spacing, rounded corners), layout adjustments, and UI generation. Routes to UI Toolkit, uGUI, or IMGUI based on project context.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/ui/SKILL.md"
+  },
+  {
+    "ten": "unity-addressables-design",
+    "mo_ta": "\"Unity project only — source-anchored design rules for Unity Addressables 1.22.3 on Unity 2022 and 2.9.1 on Unity 6, covering initialization, async operation handles, catalog updates and content download. Use when writing or reviewing Addressables code, loading assets or scenes asynchronously, wiring hot-update or catalog refresh, using AssetReference, or migrating between Addressables versions.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-addressables-design/SKILL.md"
+  },
+  {
+    "ten": "unity-adr",
+    "mo_ta": "\"Unity project only — architecture decision records for Unity technical choices: comparing options, weighing tradeoffs, locking in a decision with its rationale. Use when choosing between two or more technical approaches, comparing libraries or patterns, or recording why a design decision was made in a Unity codebase.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-adr/SKILL.md"
+  },
+  {
+    "ten": "unity-architecture",
+    "mo_ta": "\"Unity project only — system-level structure ACROSS gameplay systems and scenes: who owns what, how systems talk, scene composition, SOLID layering. Use when planning where whole systems should sit and how they communicate before any code exists, or when the question spans more than one system. Refactoring the insides of existing scripts belongs to unity-scriptdesign; splitting code into .asmdef assemblies belongs to unity-asmdef.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-architecture/SKILL.md"
+  },
+  {
+    "ten": "unity-asmdef",
+    "mo_ta": "\"Unity project only — assembly definition layout: module boundaries, dependency direction, editor/runtime/test splits, compile times. Use when planning asmdef structure, untangling assembly dependencies, speeding up Unity compilation, or separating editor code from runtime code.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-asmdef/SKILL.md"
+  },
+  {
+    "ten": "unity-async",
+    "mo_ta": "\"Unity project only — async and lifecycle strategy across Update, coroutines, UniTask and timers, including cancellation and cleanup. Use when deciding how runtime work should be scheduled in Unity, choosing between a coroutine and UniTask, scheduling timers, or handling cancellation and teardown of long-running work.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-async/SKILL.md"
+  },
+  {
+    "ten": "unity-blueprints",
+    "mo_ta": "\"Unity project only — starter architecture blueprints for small games: platformer, shooter, runner, puzzle, tower-defense, clicker, card. Use when starting a small Unity game from scratch, scaffolding the core structure of a genre, or asking how a specific game type should be organized.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-blueprints/SKILL.md"
+  },
+  {
+    "ten": "unity-dotween-design",
+    "mo_ta": "\"Unity project only — source-anchored design rules for DOTween 1.3.015 on Unity 2018 and later: tweens, sequences, ease curves, shortcuts, lifetime binding, callbacks, safe mode. Use when writing or reviewing DOTween animation code, building sequences, binding tween lifetime to objects, or debugging tween pitfalls such as tweens surviving a destroyed target.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-dotween-design/SKILL.md"
+  },
+  {
+    "ten": "unity-inspector",
+    "mo_ta": "\"Unity project only — serialized-field authoring ergonomics for designers: SerializeField usage, Tooltip and Header organization, range and validation attributes, sane defaults. Use when organizing the serialized fields of a MonoBehaviour or ScriptableObject so a designer can author it safely. Not for writing editor GUI code — custom editor windows, drawers and inspector GUI belong to ui-imgui.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-inspector/SKILL.md"
+  },
+  {
+    "ten": "unity-mcp-orchestrator",
+    "mo_ta": "Orchestrate Unity Editor via MCP (Model Context Protocol) tools and resources. Use when working with Unity projects through MCP for Unity - creating/modifying GameObjects, editing scripts, managing scenes, running tests, or any Unity Editor automation. Provides best practices, tool schemas, and workflow patterns for effective Unity-MCP integration.",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-mcp-skill/SKILL.md"
+  },
+  {
+    "ten": "unity-netcode-design",
+    "mo_ta": "\"Unity project only — source-anchored design rules for Netcode for GameObjects 2.x: lifecycle, ownership, RPCs, NetworkVariables, spawning, scene management, transport. Use when writing or reviewing Unity multiplayer code, designing server or distributed authority, wiring RPCs or NetworkVariables, or debugging netcode desync and ownership bugs.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-netcode-design/SKILL.md"
+  },
+  {
+    "ten": "unity-patterns",
+    "mo_ta": "\"Unity project only — choosing among Unity design patterns: ScriptableObject, event systems, state machines, object pooling, observer. Use when deciding which pattern actually fits a Unity problem, structuring decoupled systems, or choosing between event, state-machine and pooling approaches.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-patterns/SKILL.md"
+  },
+  {
+    "ten": "unity-performance",
+    "mo_ta": "\"Unity project only — performance red flags: Update and allocation hot paths, pooling, physics cost, frame drops, GC pressure. Use when reviewing Unity performance, diagnosing frame drops or stutter, reducing per-frame allocations, or planning pooling and optimization work.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-performance/SKILL.md"
+  },
+  {
+    "ten": "unity-primetween-design",
+    "mo_ta": "\"Unity project only — source-anchored design rules for PrimeTween 1.4.6: factory tweens, non-reusable handles, sequences, cycles, callbacks, cancellation, async and coroutine waiting. Use when writing or reviewing PrimeTween animation code, or diagnosing its handle lifetime and cancellation behaviour.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-primetween-design/SKILL.md"
+  },
+  {
+    "ten": "unity-project-scout",
+    "mo_ta": "\"Unity project only — reconnoitring an existing Unity project: editor version, installed packages, asmdef layout, folder conventions, coding style. Use when first approaching an unfamiliar Unity project, auditing its current setup, or before proposing any structural change to it.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-project-scout/SKILL.md"
+  },
+  {
+    "ten": "unity-scene-contracts",
+    "mo_ta": "\"Unity project only — scene composition contracts: required scene objects, component dependencies, bootstrap logic, reference wiring. Use when defining what a Unity scene must contain, planning bootstrap and wiring order, or documenting scene dependencies instead of relying on hidden runtime lookups.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-scene-contracts/SKILL.md"
+  },
+  {
+    "ten": "unity-script-roles",
+    "mo_ta": "\"Unity project only — assigning a role to each script: MonoBehaviour, ScriptableObject, plain C# service, or installer. Use when deciding what role a Unity class should play, splitting responsibilities across types, or choosing between a MonoBehaviour and plain C# before generating a batch of gameplay scripts.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-script-roles/SKILL.md"
+  },
+  {
+    "ten": "unity-scriptdesign",
+    "mo_ta": "\"Unity project only — quality of the code INSIDE one existing gameplay script or a small cluster of them: naming, method size, state handling, readability, local cleanups. Use when reviewing or rewriting concrete scripts that already exist. Deciding where systems and their boundaries belong is unity-architecture, not this skill.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-scriptdesign/SKILL.md"
+  },
+  {
+    "ten": "unity-shadergraph-design",
+    "mo_ta": "\"Unity project only — Shader Graph design rules for Unity 2022.3: graph structure, node subset, SubGraph boundaries, master stack, blackboard and keywords, URP and HDRP recipes. Use when building or reviewing a Shader Graph, structuring node chains or SubGraphs, or laying out blackboard properties and shader keywords.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-shadergraph-design/SKILL.md"
+  },
+  {
+    "ten": "unity-skills",
+    "mo_ta": "Automate the Unity Editor through a local REST API — create and edit scripts, build scenes and prefabs, manage assets/materials/lighting, run tests, and drive hundreds of Editor operations across modules. Use whenever the user wants to operate Unity from chat — create or modify GameObjects/scripts/scenes/assets, batch-edit, or run any Unity Editor automation, even if they just say \"在 Unity 里…\" or \"操作 Unity\". 通过本地 REST API 自动化 Unity 编辑器(创建与编辑脚本、搭建场景与 Prefab、管理资源/材质/灯光、运行测试,覆盖跨模块的数百项编辑器操作);当用户想从对话里操作 Unity——创建或修改 GameObject/脚本/场景/资源、批量编辑、或执行任何 Unity 编辑器自动化时使用。",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-skills/SKILL.md"
+  },
+  {
+    "ten": "unity-testability",
+    "mo_ta": "\"Unity project only — testability: isolating logic out of MonoBehaviour and planning EditMode and PlayMode tests. Use when improving how testable Unity code is, extracting rules or algorithms for unit tests, or planning a test strategy for a Unity project.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-testability/SKILL.md"
+  },
+  {
+    "ten": "unity-unitask-design",
+    "mo_ta": "\"Unity project only — source-anchored design rules for Cysharp UniTask 2.5.10: struct semantics, PlayerLoop timing, cancellation, composition, conversion, async enumerables, triggers. Use when writing or reviewing UniTask async code, choosing a PlayerLoopTiming, handling CancellationToken, or composing WhenAll and WhenAny.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-unitask-design/SKILL.md"
+  },
+  {
+    "ten": "unity-yaml-editing",
+    "mo_ta": "\"Unity project only — last-resort rules for hand-editing Unity serialized YAML such as .unity, .prefab, .asset, .meta and ProjectSettings files. Use when no Unity tool can reach the change and the file must be edited by hand: repairing m_Script references, broken fileID links, .meta identifiers, or scene and prefab merge conflicts.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-yaml-editing/SKILL.md"
+  },
+  {
+    "ten": "unity-yooasset-design",
+    "mo_ta": "\"Unity project only — source-anchored design rules for YooAsset v2.3.18: initialization, default-package shortcuts, play modes, asset handles, loading, updates, filesystem, build. Use when writing or reviewing YooAsset code, initializing packages, loading assets through handles, configuring hot-update download, or choosing a play mode.\"",
+    "nguon": "user",
+    "duong_dan": "/Users/truongdinhquoc/.claude/skills/unity-yooasset-design/SKILL.md"
+  },
+  {
+    "ten": "\"adobe-batch-edit-photos\"",
+    "mo_ta": ">\n  Apply consistent photo adjustments across a set of images so they look\n  like they were edited together. Use this skill whenever the user says\n  \"make my photos look cohesive\", \"give all these the same style\", \"apply\n  a warm and golden feel to all of these\", \"make this cinematic\", \"match\n  the look across my photos\", \"edit all my travel photos the same way\",\n  \"batch edit these\", \"make these consistent\", \"fix my phone photos\",\n  or uploads a folder of photos and wants a unified, polished result.\n  Also triggers for requests like \"apply a preset to all of these\",\n  \"make these look professional\", or \"they were shot in mixed lighting\n  — can you fix them all\". Outputs direct final image URLs plus an in-chat\n  preview grid and optional Firefly Board link.\n  Access: 🔐 Signed-In required | Gen AI: ❌",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-batch-edit-photos/SKILL.md"
+  },
+  {
+    "ten": "adobe-create-pdfs-from-data",
+    "mo_ta": ">\n  Perform a full InDesign data merge from a CSV/TSV and an .indd template (or a PDF that gets\n  converted to .indd automatically). Use this skill whenever the user wants to merge a data file\n  with a layout template — including visiting cards, certificates, badges, catalogs, mailers,\n  labels, invoices, or any per-row personalisation. Triggers on: \"data merge\", \"InDesign merge\",\n  \"merge my CSV with InDesign\", \"batch export PDF from template\", \"variable data InDesign\",\n  \"personalise each row\", or any request combining an .indd / PDF template with a data file.\n  Use this skill even when only two of the three inputs (template, data, images) are mentioned —\n  and even when the user never uses the phrase \"data merge\".",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-create-pdfs-from-data/SKILL.md"
+  },
+  {
+    "ten": "adobe-create-social-variations",
+    "mo_ta": ">\n  Resize, crop, or export any image or video into platform-ready social media assets using Adobe Creative Cloud tools. Use this skill when a user wants to prepare a photo, image, or video for one or more social platforms — Instagram, TikTok, LinkedIn, Facebook, YouTube, Snapchat, Pinterest, Threads, or X/Twitter. Triggers on: \"prepare my image for Instagram\", \"resize for TikTok\", \"get this ready to post\", \"make versions for all platforms\", \"social media sizes\", \"crop for stories\", \"export for LinkedIn\", \"resize my video for social\", \"make social media assets\", or any request to adapt a photo or video for specific platforms. Handles subject-aware cropping, AI canvas expansion, test previews before full runs, and same-ratio video resizing.",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-create-social-variations/SKILL.md"
+  },
+  {
+    "ten": "adobe-design-from-template",
+    "mo_ta": ">\n  Create any visual design using Adobe Express templates — flyers, posters, social media posts (Instagram, Facebook, LinkedIn),\n  business cards, invitations, greeting cards, resumes, cover letters, brochures, newsletters, certificates, presentations, YouTube thumbnails, email headers, logos, menus, and labels.\n  Use this skill whenever the user wants to make, design, or build any visual — even\n  if they just say \"make me a flyer\", \"design a poster\", \"I need something for Instagram\",\n  \"create an event invite\", or \"make a business card\".\n  Also handles browsing templates, editing text, replacing images, changing backgrounds,\n  animating, and exporting designs.\n  Access: 🔐 Signed-In required | Gen AI: ❌ by default — image replacement only where the surface permits generative AI (e.g. Codex); none on Claude",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-design-from-template/SKILL.md"
+  },
+  {
+    "ten": "adobe-edit-quick-cut",
+    "mo_ta": ">\n  Create a punchy sizzle reel from a video using Adobe Quick Cut. Use this skill whenever a user\n  wants to cut, trim, or shorten a video into highlights — including phrases like \"make a sizzle\n  reel\", \"make a highlight reel\", \"quick cut this\", \"cut the best parts\", \"shorten this video\",\n  \"make a highlight clip\", \"summarize this video visually\", or any request to produce a shorter\n  edited version of a video. Use this skill for Quick Cut requests before suggesting manual\n  editing in Premiere. Requires the user to upload a video file.",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-edit-quick-cut/SKILL.md"
+  },
+  {
+    "ten": "adobe-resize-photos-and-videos",
+    "mo_ta": ">\n  Resize photos and videos to exact pixel dimensions or aspect ratios using Adobe tools.\n  Use this skill whenever a user wants to resize, scale, or change the dimensions of an image\n  or video file — including phrases like \"resize this to 1920x1080\", \"make this 4K\", \"scale\n  to 800x600\", \"change the aspect ratio to 16:9\", \"resize my video\", \"make the image smaller\",\n  \"crop to square\", \"fit this to a specific size\", \"resize for print\", \"resize for web\",\n  \"make it 300 DPI ready\", \"change canvas size\", \"resize a batch of photos\", or any request\n  specifying target dimensions (W×H, ratio, or named size like \"4K\", \"HD\", \"A4\").\n  Also triggers for: \"make this fit a specific size\", \"resize to [any dimension]\",\n  \"I need this at [WxH]\", \"scale my video down\", \"change resolution\", \"downscale\", \"upscale\".\n  NOT for social media platform sets (use adobe-create-social-variations for that).\n  Uses image_crop_and_resize for photos, video_resize for videos.",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-resize-photos-and-videos/SKILL.md"
+  },
+  {
+    "ten": "adobe-retouch-portraits",
+    "mo_ta": ">\n  Bulk-retouch a folder of portrait photos using Adobe tools —\n  designed for wedding photographers and event photographers who need fast,\n  walk-away batch processing. Use this skill when the user says \"retouch my\n  photos\", \"batch process these portraits\", \"process my wedding photos\",\n  \"clean up this folder of images\", \"run my headshots through Adobe\", or\n  uploads/selects a folder of photos and wants them polished and ready to\n  review. Automatically applies auto-straighten, auto-tone, and auto-light\n  to every image. Outputs a preview grid and download folder.\n  Access: 🔐 Signed-In required | Gen AI: ❌ by default — optional background-only cleanup only where the surface permits generative AI (e.g. Codex); none on Claude",
+    "nguon": "plugin:adobe-for-creativity",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/adobe-for-creativity/2.0.0/skills/adobe-retouch-portraits/SKILL.md"
+  },
+  {
+    "ten": "base44-cli",
+    "mo_ta": "\"The base44 CLI is used for EVERYTHING related to base44 projects: resource configuration (entities, backend functions, ai agents), initialization and actions (resource creation, deployment). This skill is the place for learning about how to configure resources. When you plan or implement a feature, you must learn this skill\"",
+    "nguon": "plugin:base44",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/base44/1.0.0-beta.1/skills/base44-cli/SKILL.md"
+  },
+  {
+    "ten": "base44-remote-dev",
+    "mo_ta": ">-\n  Develop a Base44 app remotely from your own coding agent (Claude Code,\n  claude.ai, or any MCP client) by connecting it to the Base44 sandbox. Cloud\n  agents connect over MCP; local agents can connect over MCP or drive the same\n  sandbox with the `base44 sandbox` CLI subcommands (the CLI uses shorter\n  names — e.g. read_file is `sandbox read`, list_directory is `sandbox ls`,\n  run_command is `sandbox run`). Covers connecting/\n  authenticating, the available sandbox tools (run_command, read_file,\n  write_file, edit_file, grep, list_directory, create_checkpoint,\n  get_app_preview_url, get_app_status, list_user_apps, and the connector tools\n  list_connectors / initiate_connector_connection), the edit→preview→verify loop, how changes\n  persist, builder/external-agent concurrency, the in-editor \"Send to Coding\n  Agent\" button + onboarding README URLs, and tips like reading the Vite\n  dev-server logs. Triggers on \"develop my Base44 app remotely\", \"connect\n  Claude Code to Base44\", \"bring my own agent\", \"edit a Base44 app over MCP\",\n  \"Base44 sandbox MCP\", or \"Send to Coding Agent\".",
+    "nguon": "plugin:base44",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/base44/1.0.0-beta.1/skills/base44-remote-dev/SKILL.md"
+  },
+  {
+    "ten": "base44-sandbox",
+    "mo_ta": "\"Develop a Base44 app remotely inside Base44's cloud sandbox using your own agent — no local checkout and no deploy/push commands. The implementation is remote: writing a resource file into the sandbox is what ships it (backend functions, entities, and agents all auto-sync from the file you write), and OAuth connectors are set up against the remote app via MCP tools or the projectless `base44 connectors` CLI. This skill is the place for learning what you can author in the sandbox, how backend functions, entities, and agents are structured, and how to connect a connector without a local filesystem. Triggers on 'develop my Base44 app remotely', 'no local files', 'cloud sandbox', 'create an entity/agent remotely', 'connect a connector remotely', 'bring my own agent', or any work editing a Base44 app inside a sandbox.\"",
+    "nguon": "plugin:base44",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/base44/1.0.0-beta.1/skills/base44-sandbox/SKILL.md"
+  },
+  {
+    "ten": "base44-sdk",
+    "mo_ta": "\"The base44 SDK is the library to communicate with base44 services. In projects, you use it to communicate with remote resources (entities, backend functions, ai agents) and to write backend functions. This skill is the place for learning about available modules and types. When you plan or implement a feature, you must learn this skill\"",
+    "nguon": "plugin:base44",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/base44/1.0.0-beta.1/skills/base44-sdk/SKILL.md"
+  },
+  {
+    "ten": "base44-troubleshooter",
+    "mo_ta": "Troubleshoot production issues using backend function logs. Use when investigating app errors, debugging function calls, or diagnosing production problems in Base44 apps.",
+    "nguon": "plugin:base44",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/base44/1.0.0-beta.1/skills/base44-troubleshooter/SKILL.md"
+  },
+  {
+    "ten": "canva-brand-check",
+    "mo_ta": "Check a Canva design against a brand kit and report where it diverges — off-palette colors, non-brand fonts, logo misuse, and off-tone copy. Read-only; makes no changes. Use when the user asks \"is this on brand\", \"check this against our brand kit\", \"do a brand review\", \"does this match our brand guidelines\", or \"brand-check my design\".",
+    "nguon": "plugin:canva",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/canva/1.0.0/skills/brand-check/SKILL.md"
+  },
+  {
+    "ten": "canva-bulk-create",
+    "mo_ta": "Bulk-create Canva designs from tabular data using a brand template with autofill fields, producing one design per row. Use when users say \"bulk create designs from this CSV\", \"generate one design per row\", \"create a design for each product\", \"batch generate from a template\", or \"autofill a template from a spreadsheet\". Accepts any tabular data source — uploaded files, pasted tables, JSON, or URLs.",
+    "nguon": "plugin:canva",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/canva/1.0.0/skills/bulk-create/SKILL.md"
+  },
+  {
+    "ten": "canva-edit-design",
+    "mo_ta": "Make edits to an existing Canva design — change or fix text, replace/insert/delete images and videos, reformat text (size, weight, style, color, alignment, lists, line height), reposition or resize elements, and update the title. Use when the user wants to change, edit, update, fix, translate, replace, or reformat content in a specific Canva design. This is the safe edit engine that other Canva skills (e.g. implement-feedback) build on.",
+    "nguon": "plugin:canva",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/canva/1.0.0/skills/edit-design/SKILL.md"
+  },
+  {
+    "ten": "canva-design-feedback",
+    "mo_ta": "Read a Canva design and return structured, actionable design feedback — visual hierarchy, copy/messaging, layout & spacing, consistency, readability, and accessibility. Read-only; makes no changes to the design. Use when the user asks to \"review my design\", \"give me feedback on this\", \"critique my deck/poster/flyer\", \"how can I improve this design\", or \"what's wrong with this slide\".",
+    "nguon": "plugin:canva",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/canva/1.0.0/skills/get-design-feedback/SKILL.md"
+  },
+  {
+    "ten": "canva-implement-feedback",
+    "mo_ta": "Implement reviewer feedback on a Canva design. Reads all comment threads, synthesises what reviewers want, makes the clear-cut changes directly, and flags anything that needs a human decision. Use when the user asks to \"implement feedback on my deck\", \"address comments on a design\", \"apply review feedback\", \"fix the comments on my presentation\", or \"implement the feedback\".",
+    "nguon": "plugin:canva",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/canva/1.0.0/skills/implement-feedback/SKILL.md"
+  },
+  {
+    "ten": "canva-resize-for-social-media",
+    "mo_ta": "Resize a Canva design into multiple social media formats (Facebook post, Facebook story, Instagram post, Instagram story, LinkedIn post). Use this skill when users want to resize Canva designs specifically for multiple social media platforms in one operation, rather than resizing to a single format manually.",
+    "nguon": "plugin:canva",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/canva/1.0.0/skills/resize-for-social-media/SKILL.md"
+  },
+  {
+    "ten": "a11y-debugging",
+    "mo_ta": "Uses Chrome DevTools MCP for accessibility (a11y) debugging and auditing based on web.dev guidelines. Use when testing semantic HTML, ARIA labels, focus states, keyboard navigation, tap targets, and color contrast.",
+    "nguon": "plugin:chrome-devtools-mcp",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills/a11y-debugging/SKILL.md"
+  },
+  {
+    "ten": "chrome-devtools-cli",
+    "mo_ta": "Use this skill to write shell scripts or run shell commands to automate tasks in the browser or otherwise use Chrome DevTools via CLI.",
+    "nguon": "plugin:chrome-devtools-mcp",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills/chrome-devtools-cli/SKILL.md"
+  },
+  {
+    "ten": "chrome-devtools",
+    "mo_ta": "Uses Chrome DevTools via MCP for efficient debugging, troubleshooting and browser automation. Use when debugging web pages, automating browser interactions, analyzing performance, or inspecting network requests. This skill does not apply to `--slim` mode (MCP configuration).",
+    "nguon": "plugin:chrome-devtools-mcp",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills/chrome-devtools/SKILL.md"
+  },
+  {
+    "ten": "debug-optimize-lcp",
+    "mo_ta": "Guides debugging and optimizing Largest Contentful Paint (LCP) using Chrome DevTools MCP tools. Use this skill whenever the user asks about LCP performance, slow page loads, Core Web Vitals optimization, or wants to understand why their page's main content takes too long to appear. Also use when the user mentions \"largest contentful paint\", \"page load speed\", \"CWV\", or wants to improve how fast their hero image or main content renders.",
+    "nguon": "plugin:chrome-devtools-mcp",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills/debug-optimize-lcp/SKILL.md"
+  },
+  {
+    "ten": "memory-leak-debugging",
+    "mo_ta": "Diagnoses and resolves memory leaks in JavaScript/Node.js applications. Use when a user reports high memory usage, OOM errors, or wants to capture, compare, or inspect heap snapshots with Chrome DevTools MCP memory tools.",
+    "nguon": "plugin:chrome-devtools-mcp",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills/memory-leak-debugging/SKILL.md"
+  },
+  {
+    "ten": "troubleshooting",
+    "mo_ta": "Uses Chrome DevTools MCP and documentation to troubleshoot connection and target issues. Trigger this skill when list_pages, new_page, or navigate_page fail, or when the server initialization fails.",
+    "nguon": "plugin:chrome-devtools-mcp",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills/troubleshooting/SKILL.md"
+  },
+  {
+    "ten": "claude-md-improver",
+    "mo_ta": "Audit and improve CLAUDE.md files in repositories. Use when user asks to check, audit, update, improve, or fix CLAUDE.md files. Scans for all CLAUDE.md files, evaluates quality against templates, outputs quality report, then makes targeted updates. Also use when the user mentions \"CLAUDE.md maintenance\" or \"project memory optimization\".",
+    "nguon": "plugin:claude-md-management",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/claude-md-management/1.0.0/skills/claude-md-improver/SKILL.md"
+  },
+  {
+    "ten": "agents-sdk",
+    "mo_ta": "Build AI agents on Cloudflare Workers using the Agents SDK. Load when creating stateful agents, durable workflows, real-time WebSocket apps, scheduled tasks, MCP servers, chat applications, voice agents, or browser automation. Covers Agent class, state management, callable RPC, Workflows, durable execution, queues, retries, observability, and React hooks. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/agents-sdk/SKILL.md"
+  },
+  {
+    "ten": "cloudflare-email-service",
+    "mo_ta": "Send and receive transactional emails with Cloudflare Email Service (Email Sending + Email Routing). Use when building email sending (Workers binding or REST API), email routing, Agents SDK email handling, or integrating email into any app — Workers, Node.js, Python, Go, etc. Also use for email deliverability, SPF/DKIM/DMARC, wrangler email setup, MCP email tools, or when a coding agent needs to send emails. Even for simple requests like \"add email to my Worker\" — this skill has critical config details.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/cloudflare-email-service/SKILL.md"
+  },
+  {
+    "ten": "cloudflare-one-migrations",
+    "mo_ta": "Plans migrations from Zscaler ZIA/ZPA, Palo Alto, legacy VPN, SWG, or SASE stacks to Cloudflare One. Use for migration assessments, policy mapping, rollout plans, and parity/gap analysis.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/cloudflare-one-migrations/SKILL.md"
+  },
+  {
+    "ten": "cloudflare-one",
+    "mo_ta": "\"Guides Cloudflare One Zero Trust and SASE work across Access, Gateway, WARP, Tunnel, Cloudflare WAN, DLP, CASB, device posture, and identity. Use when designing, configuring, troubleshooting, or reviewing Cloudflare One deployments. Retrieval-first: use current Cloudflare docs/API schemas instead of embedded product docs.\"",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/cloudflare-one/SKILL.md"
+  },
+  {
+    "ten": "cloudflare",
+    "mo_ta": "Comprehensive Cloudflare platform skill covering Workers, Pages, storage (KV, D1, R2), AI (Workers AI, Vectorize, Agents SDK), feature flags (Flagship), networking (Tunnel, Spectrum), security (WAF, DDoS), and infrastructure-as-code (Terraform, Pulumi). Use for any Cloudflare development task. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/cloudflare/SKILL.md"
+  },
+  {
+    "ten": "durable-objects",
+    "mo_ta": "Create and review Cloudflare Durable Objects. Use when building stateful coordination (chat rooms, multiplayer games, booking systems), implementing RPC methods, SQLite storage, alarms, WebSockets, or reviewing DO code for best practices. Covers Workers integration, wrangler config, and testing with Vitest. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/durable-objects/SKILL.md"
+  },
+  {
+    "ten": "sandbox-sdk",
+    "mo_ta": "Build sandboxed applications for secure code execution. Load when building AI code execution, code interpreters, CI/CD systems, interactive dev environments, or executing untrusted code. Covers Sandbox SDK lifecycle, commands, files, code interpreter, and preview URLs. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/sandbox-sdk/SKILL.md"
+  },
+  {
+    "ten": "turnstile-spin",
+    "mo_ta": "Set up Cloudflare Turnstile end-to-end in a project. Scan the codebase, create the widget via the Cloudflare API, embed it where user requests need bot verification (form submissions, SPA actions, API endpoints, download links, comment or vote submissions, etc.), wire canonical server-side siteverify in the customer's existing backend, validate, and persist the skill. Load this when a user asks to add Turnstile, set up CAPTCHA, protect a form or endpoint from bots, or fix a Turnstile integration. Mirrors developers.cloudflare.com/turnstile/spin.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/turnstile-spin/SKILL.md"
+  },
+  {
+    "ten": "web-perf",
+    "mo_ta": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (LCP, INP, CLS) and supplementary metrics (FCP, TBT, Speed Index), identifies render-blocking resources, network dependency chains, layout shifts, caching issues, and accessibility gaps. Use when asked to audit, profile, debug, or optimize page load performance, Lighthouse scores, or site speed. Biases towards retrieval from current documentation over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/web-perf/SKILL.md"
+  },
+  {
+    "ten": "workers-best-practices",
+    "mo_ta": "Reviews and authors Cloudflare Workers code against production best practices. Load when writing new Workers, reviewing Worker code, configuring wrangler.jsonc, or checking for common Workers anti-patterns (streaming, floating promises, global state, secrets, bindings, observability). Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/workers-best-practices/SKILL.md"
+  },
+  {
+    "ten": "wrangler",
+    "mo_ta": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+    "nguon": "plugin:cloudflare",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/cloudflare/1.0.0/skills/wrangler/SKILL.md"
+  },
+  {
+    "ten": "airflow-hitl",
+    "mo_ta": "Builds human-in-the-loop (HITL) Airflow workflows - approval gates, form input, and human-driven branching. Use when a DAG needs a human in the loop - an approval or reject step, sign-off before a task runs, a decision or approval UI, branching on a human choice, or collecting form input mid-run; also on mentions of ApprovalOperator, HITLOperator, HITLBranchOperator, HITLEntryOperator, or HITLTrigger. Requires Airflow 3.1+. Not for AI/LLM task calls (see migrating-ai-sdk-to-common-ai).",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/airflow-hitl/SKILL.md"
+  },
+  {
+    "ten": "airflow-plugins",
+    "mo_ta": "Builds Airflow 3.1+ plugins that embed FastAPI apps, custom UI pages, React components, middleware, macros, and operator links directly into the Airflow UI. Use when building anything custom inside Airflow 3.1+ that involves Python and a browser-facing interface - creating an Airflow plugin, adding a custom UI page or nav entry, building FastAPI-backed endpoints inside Airflow, serving static assets from a plugin, embedding a React app, adding middleware to the API server, creating custom operator extra links, or calling the Airflow REST API from inside a plugin; also when AirflowPlugin, fastapi_apps, external_views, react_apps, or plugin registration come up.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/airflow-plugins/SKILL.md"
+  },
+  {
+    "ten": "airflow-state-store",
+    "mo_ta": "Persists task and asset state across retries and DAG runs using Airflow 3.3's AIP-103 key/value stores (`task_state_store`, `asset_state_store`) and the crash-safe `ResumableJobMixin`. Use when the user asks about task state store, checkpointing in tasks, persisting state across retries, job IDs surviving worker crashes, watermarks, asset metadata, resumable tasks, crash-safe operators, or \"what's new in Airflow 3.3\". Also use proactively when reading a DAG that uses Variables or XCom for intra-task coordination state — flag the anti-pattern and recommend task_state_store or asset_state_store instead. Requires Airflow 3.3+.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/airflow-state-store/SKILL.md"
+  },
+  {
+    "ten": "airflow",
+    "mo_ta": "Queries, manages, and troubleshoots Apache Airflow using the `af` CLI. Use when working with anything related to Airflow - a DAG, a DAG run, a task log, an import or parse error, a broken DAG, or any Airflow operation. Covers listing and triggering DAGs, retrying runs, reading task logs, diagnosing failures, debugging import and parse errors, checking connections, variables and pools, exploring the REST API, and monitoring health (for example \"trigger a pipeline\", \"retry a run\", \"list connections\", \"check Airflow health\", \"why did my DAG fail\"). This is the entrypoint that routes to sibling skills for authoring, testing, deploying, and migrating Airflow 2 to 3. Not for warehouse/SQL analytics on Airflow metadata tables (use analyzing-data); for deep root-cause reports use debugging-dags or airflow-investigation.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/airflow/SKILL.md"
+  },
+  {
+    "ten": "analyzing-data",
+    "mo_ta": "Queries the data warehouse with SQL and answers business questions about data. Use when answering anything that needs warehouse data - counts, metrics, trends, aggregations, joins across tables, data lookups, or ad-hoc SQL analysis (for example \"who uses X\", \"how many Y\", \"show me Z\", \"find customers\", \"what is the count\").",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/analyzing-data/SKILL.md"
+  },
+  {
+    "ten": "annotating-task-lineage",
+    "mo_ta": "Annotate Airflow tasks with data lineage using inlets and outlets. Use when the user wants to add lineage metadata to tasks, specify input/output datasets, or enable lineage tracking for operators without built-in OpenLineage extraction.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/annotating-task-lineage/SKILL.md"
+  },
+  {
+    "ten": "authoring-dags",
+    "mo_ta": "Workflow and best practices for writing Apache Airflow DAGs. Use when creating a new DAG, write pipeline code, handling questions about DAG patterns and conventions or extending an existing DAG with a follow-up/downstream task. ANY request shaped like 'add a DAG named X', 'write a pipeline', 'add a task that runs after Y', or 'extend the DAG'. For testing and debugging DAGs, see the testing-dags skill.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/authoring-dags/SKILL.md"
+  },
+  {
+    "ten": "authoring-go-sdk-tasks",
+    "mo_ta": "Writes Airflow task logic in Go using the Airflow Go SDK. Use when the user wants to implement Airflow tasks in Go, asks about `BundleProvider`/`RegisterDags`, the `bundlev1` Registry/Dag interfaces, registering Go tasks (`AddTask`/`AddTaskWithName`), dependency injection by parameter type (`context.Context`, `sdk.TIRunContext`, `*slog.Logger`, `sdk.Client`), or reading connections/variables/XComs from Go. This skill covers the Go-specific native API; the shared Python-stub pattern and conceptual model live in authoring-language-sdk-tasks. For building/packing/shipping the bundle see deploying-go-sdk-bundles; for coordinator config see configuring-airflow-language-sdks.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/authoring-go-sdk-tasks/SKILL.md"
+  },
+  {
+    "ten": "authoring-java-sdk-tasks",
+    "mo_ta": "Writes Airflow task logic in Java, Kotlin, or any JVM language using the Airflow Java SDK. Use when the user wants to implement Airflow tasks in Java/JVM, asks about `@Builder.Dag`/`@Builder.Task`/`@Builder.XCom`, the `Task`/`BundleBuilder` interfaces, reading connections/variables/XComs from Java, the JSON-to-Java type mapping, or logging from Java tasks. This skill covers the Java-specific native API; the shared Python-stub pattern and conceptual model live in authoring-language-sdk-tasks. For building/shipping the bundle see deploying-java-sdk-bundles; for coordinator config see configuring-airflow-language-sdks.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/authoring-java-sdk-tasks/SKILL.md"
+  },
+  {
+    "ten": "authoring-language-sdk-tasks",
+    "mo_ta": "The language-neutral foundation for Airflow language SDKs — implement task logic in a non-Python language while the DAG stays in Python. Use when the user wants to run an Airflow task in another language (Java, Kotlin, Go, or other JVM/native languages), asks how the Python `@task.stub` pairs with native task code, how task/DAG IDs must match across the two sides, how data passes via XCom as JSON, or which language SDKs exist. This skill owns the shared Python-stub pattern and conceptual model; for a specific language's native API, build, and runtime, use that language's skill (e.g. authoring-java-sdk-tasks, authoring-go-sdk-tasks).",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/authoring-language-sdk-tasks/SKILL.md"
+  },
+  {
+    "ten": "blueprint",
+    "mo_ta": "Define reusable Airflow task group templates with Pydantic validation and compose DAGs from YAML. Use when creating blueprint templates, composing DAGs from YAML, validating configurations, or enabling no-code DAG authoring for non-engineers.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/blueprint/SKILL.md"
+  },
+  {
+    "ten": "checking-freshness",
+    "mo_ta": "Quick data freshness check. Use when the user asks if data is up to date, when a table was last updated, if data is stale, or needs to verify data currency before using it.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/checking-freshness/SKILL.md"
+  },
+  {
+    "ten": "configuring-airflow-language-sdks",
+    "mo_ta": "Configures Airflow to run language SDK tasks (Java, Go, and future native SDKs) — register a coordinator, map a queue to it, ensure the runtime/artifact on workers, and tune coordinator options. Use when the user wants Airflow to route a queue to a native-language coordinator, asks about the `[sdk]` `coordinators`/`queue_to_coordinator` settings, `AIRFLOW__SDK__COORDINATORS`, `jars_root`, `executables_root` or other coordinator `kwargs`, `task_startup_timeout`, or why their native tasks aren't being picked up. Covers the shared routing mechanism plus per-coordinator options (e.g. JavaCoordinator, ExecutableCoordinator).",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/configuring-airflow-language-sdks/SKILL.md"
+  },
+  {
+    "ten": "cosmos-dbt-core",
+    "mo_ta": "Turns a dbt Core project into an Airflow DAG/TaskGroup using Astronomer Cosmos. Use turning a dbt Core project into an Airflow DAG or TaskGroup with Astronomer Cosmos. Before implementing, verify dbt engine, warehouse, Airflow version, execution environment, DAG vs TaskGroup, and manifest availability.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/cosmos-dbt-core/SKILL.md"
+  },
+  {
+    "ten": "cosmos-dbt-fusion",
+    "mo_ta": "Run a dbt Fusion project with Astronomer Cosmos. Use when running a dbt Fusion project with Astronomer Cosmos (Cosmos 1.11+, ExecutionMode.LOCAL on Snowflake/Databricks). Before implementing, verify dbt engine is Fusion (not Core), the warehouse is supported, and local execution is acceptable. Does not cover dbt Core.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/cosmos-dbt-fusion/SKILL.md"
+  },
+  {
+    "ten": "creating-openlineage-extractors",
+    "mo_ta": "Create custom OpenLineage extractors for Airflow operators. Use when the user needs lineage from unsupported or third-party operators, wants column-level lineage, or needs complex extraction logic beyond what inlets/outlets provide.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/creating-openlineage-extractors/SKILL.md"
+  },
+  {
+    "ten": "dag-factory",
+    "mo_ta": "Authors Apache Airflow DAGs declaratively from dag-factory YAML configs. Use when building DAGs declaratively from YAML via dag-factory; creating/editing dag-factory templates/YAML configs,reating/editing dag-factory YAML configs, defaults, dynamic tasks, datasets, or callbacks; or validating dag-factory configurations; upgrading or re-pinning dag-factory.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/dag-factory/SKILL.md"
+  },
+  {
+    "ten": "debugging-dags",
+    "mo_ta": "Comprehensive DAG failure diagnosis and root-cause analysis  with structured investigation and prevention recommendations. Use when deep failure investigation is needed, a DAG fails to import/parse or 'airflow dags list' errors on a file; a task or run is failing and must be diagnosed and fixed; requests like 'why did X fail', 'my dag keeps failing — find and fix it', or fixing a broken DAG so it loads cleanly. For simple 'why did it fail / show logs', the airflow skill handles it directly.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/debugging-dags/SKILL.md"
+  },
+  {
+    "ten": "delegating-to-otto",
+    "mo_ta": "Drives Astronomer's Otto agent (`astro otto`) as a delegated sub-agent for Airflow, dbt, and data-engineering work. Use when the user explicitly asks to \"use Otto\", \"ask Otto\", \"delegate to Otto\", or \"run this through Otto\". Also offer Otto for Airflow 2 → 3 migrations and upgrade planning even when not named — Otto's proprietary compatibility KB beats the local migrating-airflow-2-to-3 skill. Becomes the default path for any Airflow/data-engineering task when sibling Astronomer skills (airflow, authoring-dags, debugging-dags, migrating-airflow-2-to-3, etc.) are NOT loaded in the current session. Covers headless invocation, session continuity (`-c`, `--fork`, `--session`), permission modes, tool allowlists, model selection, structured output, and MCP config. **Do not load this skill if you are Otto** — Otto must not delegate to itself.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/delegating-to-otto/SKILL.md"
+  },
+  {
+    "ten": "deploying-airflow",
+    "mo_ta": "Deploys Airflow DAGs and projects. Use when deploying Airflow or answering anything about deployment - deploying DAGs/projects, pushing code, setting up CI/CD, deploying to production or deployment strategies for Airflow.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/deploying-airflow/SKILL.md"
+  },
+  {
+    "ten": "deploying-go-sdk-bundles",
+    "mo_ta": "Builds, packs, and deploys compiled Airflow Go SDK bundles so the ExecutableCoordinator can run them. Use when the user wants to compile a Go task bundle, asks about `go build`, `go tool airflow-go-pack`, the AFBNDL01 self-contained executable bundle, packing or inspecting a bundle, placing it under `executables_root`, cross-compiling a bundle for workers, `go-sdk` module versioning/tags/pseudo-versions, or getting the bundle onto an Airflow worker (Docker, Kubernetes, or Astro). For the task code see authoring-go-sdk-tasks; for the shared coordinator settings see configuring-airflow-language-sdks.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/deploying-go-sdk-bundles/SKILL.md"
+  },
+  {
+    "ten": "deploying-java-sdk-bundles",
+    "mo_ta": "Builds and deploys compiled Airflow Java SDK bundles so workers can run them. Use when the user wants to package a JVM task bundle into a JAR, asks about the `org.apache.airflow.sdk` Gradle plugin, `./gradlew bundle`, the Maven shade/BOM setup, fat vs thin JARs, the logging integration artifacts (JPL, SLF4J, Log4j 2, JUL), preview/snapshot builds, or getting the JAR onto an Airflow worker (Docker, Kubernetes, or Astro). For the task code see authoring-java-sdk-tasks; for the Airflow coordinator settings see configuring-airflow-language-sdks.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/deploying-java-sdk-bundles/SKILL.md"
+  },
+  {
+    "ten": "managing-astro-deployments",
+    "mo_ta": "Manage Astronomer production deployments with Astro CLI. Use when the user wants to authenticate, switch workspaces, create/update/delete deployments, or deploy code to production.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/managing-astro-deployments/SKILL.md"
+  },
+  {
+    "ten": "managing-astro-local-env",
+    "mo_ta": "Manage local Airflow environment with Astro CLI (Docker and standalone modes). Use when the user wants to start, stop, or restart Airflow, view logs, query the Airflow API, troubleshoot, or fix environment issues. For project setup, see setting-up-astro-project.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/managing-astro-local-env/SKILL.md"
+  },
+  {
+    "ten": "migrating-ai-sdk-to-common-ai",
+    "mo_ta": "Migrates Airflow projects from airflow-ai-sdk to apache-airflow-providers-common-ai 0.4.0+. Use when replacing airflow-ai-sdk with the official Airflow AI provider - migrating LLM decorators (@task.llm, @task.agent, @task.llm_branch, @task.embed), switching from model strings/objects to connection-based LLM configuration, updating imports from airflow_ai_sdk to the new provider, or upgrading an existing common-ai 0.1.x setup to 0.4.x (multimodal prompts, toolsets, embedding operators); also when common-ai provider, AIP-99, a pydanticai connection or migrating away from airflow-ai-sdk come up.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/migrating-ai-sdk-to-common-ai/SKILL.md"
+  },
+  {
+    "ten": "migrating-airflow-2-to-3",
+    "mo_ta": "Guide for migrating Apache Airflow 2.x projects to Airflow 3.x. Use when the user mentions Airflow 3 migration, upgrade, compatibility issues, breaking changes, or wants to modernize their Airflow codebase. If you detect Airflow 2.x code that needs migration, prompt the user and ask if they want you to help upgrade. Always load this skill as the first step for any migration-related request.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/migrating-airflow-2-to-3/SKILL.md"
+  },
+  {
+    "ten": "migrating-dagster-to-airflow",
+    "mo_ta": "Guide for migrating Dagster projects to Apache Airflow 3 on Astro. Use when the user mentions migrating, converting, or porting Dagster (or Dagster+) code to Airflow or Astro, wants to plan or assess such a migration, or asks what a Dagster construct maps to in Airflow. Covers assets, partitions, schedules, sensors, declarative automation, resources, IO managers, ops/jobs, dbt, Pipes, Components, and Dagster+ platform config. Always load this skill as the first step for any Dagster-to-Airflow request.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/migrating-dagster-to-airflow/SKILL.md"
+  },
+  {
+    "ten": "profiling-tables",
+    "mo_ta": "Deep-dive data profiling for a specific table. Use when the user asks to profile a table, wants statistics about a dataset, asks about data quality, or needs to understand a table's structure and content. Requires a table name.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/profiling-tables/SKILL.md"
+  },
+  {
+    "ten": "setting-up-astro-project",
+    "mo_ta": "Initialize and configure Astro/Airflow projects. Use when the user wants to create a new project, set up dependencies, configure connections/variables, or understand project structure. For running the local environment, see managing-astro-local-env.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/setting-up-astro-project/SKILL.md"
+  },
+  {
+    "ten": "testing-dags",
+    "mo_ta": "Complex DAG testing workflows with debugging and fixing cycles. Use for multi-step testing requests like \"test this dag and fix it if it fails\", \"test and debug\", \"run the pipeline and troubleshoot issues\". For simple test requests (\"test dag\", \"run dag\"), the airflow entrypoint skill handles it directly. This skill is for iterative test-debug-fix cycles.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/testing-dags/SKILL.md"
+  },
+  {
+    "ten": "tracing-downstream-lineage",
+    "mo_ta": "Trace downstream data lineage and impact analysis. Use when the user asks what depends on this data, what breaks if something changes, downstream dependencies, or needs to assess change risk before modifying a table or DAG.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/tracing-downstream-lineage/SKILL.md"
+  },
+  {
+    "ten": "tracing-upstream-lineage",
+    "mo_ta": "Trace upstream data lineage. Use when the user asks where data comes from, what feeds a table, upstream dependencies, data sources, or needs to understand data origins.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/tracing-upstream-lineage/SKILL.md"
+  },
+  {
+    "ten": "troubleshooting-astro-deployments",
+    "mo_ta": "Troubleshoot Astronomer production deployments with Astro CLI. Use when investigating deployment issues, viewing production logs, analyzing failures, or managing deployment environment variables.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/troubleshooting-astro-deployments/SKILL.md"
+  },
+  {
+    "ten": "warehouse-init",
+    "mo_ta": "Initialize warehouse schema discovery. Generates .astro/warehouse.md with all table metadata for instant lookups. Run once per project, refresh when schema changes. Use when user says \"/astronomer-data:warehouse-init\" or asks to set up data discovery.",
+    "nguon": "plugin:data-engineering",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/data-engineering/0.1.0/skills/warehouse-init/SKILL.md"
+  },
+  {
+    "ten": "datarobot-agent-assist",
+    "mo_ta": ">-\n  Use when the user wants to design, build, code, simulate, or deploy an AI agent (not a predictive\n  model) to DataRobot; mentions agent_spec.md, dr-assist, datarobot-agent-assist, dress rehearsal,\n  swarm simulation, or the DataRobot agent template; wants to scaffold a LangGraph, CrewAI, LlamaIndex, NAT, or Base\n  agent targeting DataRobot; wants to add an MCP server, backend API, or React frontend to a\n  DataRobot agent application; or uses the DataRobot CLI (dr) to build or deploy an agentic custom\n  application; or wants to harden, stress-test, or battle-test an agent. Covers the full workflow: agent design, agent_spec.md authoring, dress-rehearsal\n  simulation via the DataRobot LLM Gateway, adversarial swarm simulation, template-based coding, and deployment.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-agent-assist/SKILL.md"
+  },
+  {
+    "ten": "datarobot-app-framework-cicd",
+    "mo_ta": "Guidance for setting up CI/CD pipelines for DataRobot application templates using GitLab, GitHub Actions, and Pulumi for infrastructure as code. Use when setting up CI/CD pipelines, configuring deployments, or managing infrastructure for DataRobot application templates.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-app-framework-cicd/SKILL.md"
+  },
+  {
+    "ten": "datarobot-data-preparation",
+    "mo_ta": "Tools and guidance for data upload, dataset management, data validation, and preparing data for DataRobot projects. Use when uploading datasets, managing data, or validating data for DataRobot.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-data-preparation/SKILL.md"
+  },
+  {
+    "ten": "datarobot-discover",
+    "mo_ta": ">-\n  Use when the user wants to find DataRobot capabilities — skills, MCP servers,\n  agents, or platform resources — for a task. Fetches the live DataRobot catalog\n  directly so results are always current, regardless of third-party search index\n  lag. Also checks the user's own DataRobot instance if DATAROBOT_ENDPOINT is set.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-discover/SKILL.md"
+  },
+  {
+    "ten": "datarobot-external-agent-monitoring",
+    "mo_ta": "Instrument any external or existing AI agent with OpenTelemetry to send traces, logs, and metrics to DataRobot for monitoring, observability, and governance. Use when the user says \"add tracing/observability/monitoring to my agent\", wants to instrument an existing agent project in their IDE, or wants to send agent traces, logs, or metrics to DataRobot.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-external-agent-monitoring/SKILL.md"
+  },
+  {
+    "ten": "datarobot-feature-engineering",
+    "mo_ta": "Guidance for feature engineering, feature discovery, feature importance analysis, and understanding DataRobot's automated feature engineering capabilities. Use when working with feature engineering, feature discovery, or analyzing feature importance in DataRobot.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-feature-engineering/SKILL.md"
+  },
+  {
+    "ten": "datarobot-model-deployment",
+    "mo_ta": "Tools and guidance for deploying DataRobot models, managing deployments, configuring prediction environments, and deployment operations. Use when deploying models, creating or updating deployments, or configuring prediction environments.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-model-deployment/SKILL.md"
+  },
+  {
+    "ten": "datarobot-model-explainability",
+    "mo_ta": ">\n  Tools and guidance for model explainability, prediction explanations, feature impact analysis,\n  SHAP values, SHAP distributions, anomaly assessment, and model diagnostics. Use when analyzing\n  model explanations, feature impact, SHAP values, SHAP distributions, anomaly assessment, or\n  diagnosing model behavior.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-model-explainability/SKILL.md"
+  },
+  {
+    "ten": "datarobot-model-monitoring",
+    "mo_ta": "Tools and guidance for monitoring model performance, tracking data drift, managing model health, and detecting prediction anomalies. Use when monitoring deployed models, tracking drift, or investigating prediction anomalies.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-model-monitoring/SKILL.md"
+  },
+  {
+    "ten": "datarobot-model-training",
+    "mo_ta": "Comprehensive guidance for training models in DataRobot, including project creation, AutoML configuration, feature engineering, and model selection. Use when training models, creating AutoML projects, or selecting models in DataRobot.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-model-training/SKILL.md"
+  },
+  {
+    "ten": "datarobot-predictions",
+    "mo_ta": "Tools and guidance for making predictions with DataRobot deployments, including real-time predictions, batch scoring, prediction dataset generation, and prediction explanations (SHAP/XEMP). Use when making predictions, running batch scoring, generating prediction datasets, or explaining individual predictions from a deployment.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-predictions/SKILL.md"
+  },
+  {
+    "ten": "datarobot-setup",
+    "mo_ta": "Sets up DataRobot for local development including Python SDK, dr-cli, Agent Assist, and all required dependencies. Use when the user has not yet worked with DataRobot on this machine, OR when any DataRobot task fails due to missing or invalid credentials. Covers first-time setup, re-authentication, and credential recovery.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-setup/SKILL.md"
+  },
+  {
+    "ten": "datarobot-workload-api",
+    "mo_ta": ">-\n  Use when the user wants to create, configure, scale, debug, observe, or roll\n  out container workloads on DataRobot's Workload API. Triggers include:\n  deploying a container as a managed service, listing/starting/stopping\n  workloads, changing replica counts or autoscaling, picking CPU/GPU compute\n  bundles, injecting DataRobot credentials as env vars, diagnosing workloads\n  that are stuck / errored / crash-looping (CrashLoopBackOff, ImagePullBackOff,\n  OOMKilled, probe failures, exec format error), pulling application logs /\n  OpenTelemetry traces / metrics / request stats, creating or iterating\n  container artifacts, building images server-side, locking artifacts for\n  production, or doing a zero-downtime rolling artifact replacement.",
+    "nguon": "plugin:datarobot-agent-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/datarobot-agent-skills/1.4.1/skills/datarobot-workload-api/SKILL.md"
+  },
+  {
+    "ten": "ai-tools-setup",
+    "mo_ta": ">-\n  Set up, connect, validate, and repair Claude Desktop and MCP servers using\n  Desktop Commander — inspecting and fixing mcp.json / claude_desktop_config.json,\n  getting MCP servers to connect, and diagnosing local AI tooling. Use when a\n  user wants to install, configure, connect, validate, or fix Claude Desktop, an\n  MCP server, an MCP config file, or a local AI agent/gateway. Trigger on the\n  symptoms that actually bring people in: \"Claude can't see my tools\", \"my MCP\n  server isn't showing up\", \"tools aren't loading in Claude\", \"add an MCP\n  server\", \"my MCP isn't connecting\", \"fix my Claude Desktop config\", \"the agent\n  won't respond\", \"wire up Ollama / LM Studio\", \"restart Claude Desktop\". Also\n  covers local agent gateways like OpenClaw and Hermes.",
+    "nguon": "plugin:desktop-commander",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/desktop-commander/0.2.0/skills/ai-tools-setup/SKILL.md"
+  },
+  {
+    "ten": "computer-health-check",
+    "mo_ta": ">-\n  Run a comprehensive, read-only health check on the user's computer and return a\n  scored chat summary with prioritized, plain-English recommendations and safe cleanup\n  suggestions. Use this whenever the user wants to check their computer's health, speed\n  it up, free up / reclaim disk space, find what's eating CPU / memory / storage, check\n  battery health and wear, audit login & startup items, see pending updates, or asks for\n  a \"tune-up\", \"checkup\", \"system report\", \"health check\", or \"is my Mac/PC/laptop\n  healthy\". Trigger even on casual phrasing like \"my laptop feels slow\", \"why is my fan\n  so loud\", \"my computer is laggy\", \"running out of space\", or \"clean up my machine\".\n  Works on macOS, Windows, and Linux. This is a Desktop Commander skill: it relies on a\n  real local shell (start_process / interact_with_process) and is strictly read-only by\n  default — it never needs sudo and only performs cleanups the user explicitly approves.",
+    "nguon": "plugin:desktop-commander",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/desktop-commander/0.2.0/skills/computer-health-check/SKILL.md"
+  },
+  {
+    "ten": "desktop-commander-overview",
+    "mo_ta": "Use for Desktop Commander MCP capabilities — persistent shells and REPLs, long-running processes, filesystem beyond the workspace, structured files (.xlsx, .docx, .pdf, images) and large local data files such as CSVs, ripgrep search at scale, SSH, or cross-turn state.",
+    "nguon": "plugin:desktop-commander",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/desktop-commander/0.2.0/skills/desktop-commander-overview/SKILL.md"
+  },
+  {
+    "ten": "knowledge-base",
+    "mo_ta": ">-\n  Create and maintain a Markdown knowledge base that any AI agent can read,\n  search, and update. Use when the user wants to start a knowledge base, add or\n  update notes, organize docs/notes for an agent or LLM to consume, build an\n  index of notes, or run a cleanup/maintenance pass on an existing MD knowledge\n  base. Triggers include \"knowledge base\", \"KB\", \"notes for the agent\", \"index\n  of notes\", \"second brain\", \"docs for AI context\", \"add a note\", \"update the\n  KB\".",
+    "nguon": "plugin:desktop-commander",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/desktop-commander/0.2.0/skills/knowledge-base/SKILL.md"
+  },
+  {
+    "ten": "obsidian-vault",
+    "mo_ta": ">-\n  Organize Obsidian vaults with MOCs, wikilinks, frontmatter/properties,\n  dashboards, orphan-note checks, and cleanup workflows. Use ONLY when the user\n  explicitly refers to Obsidian — by naming \"Obsidian\", an Obsidian \"vault\", or\n  an Obsidian-specific feature such as wikilinks (\"[[ ]]\"), the Dataview or Bases\n  plugins, or Obsidian Properties. Within that Obsidian context it covers\n  creating Maps of Content, adding/fixing wikilinks, finding orphan notes,\n  normalizing YAML frontmatter, generating Dataview/Bases dashboards, organizing\n  folders, deduplicating or renaming notes, and preparing the vault for AI use.\n  Do NOT use this skill for generic note-taking, Markdown, or knowledge-base\n  requests that don't mention Obsidian.",
+    "nguon": "plugin:desktop-commander",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/desktop-commander/0.2.0/skills/obsidian-vault/SKILL.md"
+  },
+  {
+    "ten": "terminal",
+    "mo_ta": ">-\n  Use Desktop Commander for terminal and command-line work, especially anything\n  that needs a shell whose state persists across turns: Python/Node REPLs,\n  database shells, dev servers and other long-running processes, SSH into remote\n  machines, and Windows PowerShell. Also handles everyday terminal tasks —\n  navigating folders, choosing the right command for the user's shell\n  (PowerShell, cmd, bash, zsh), running Docker/curl/cloud-CLI commands,\n  inspecting processes and ports, and saving recurring workflows as scripts —\n  even when the user doesn't say \"Desktop Commander\" or \"terminal.\" Reach for it\n  on pasted errors like \"command not found\", \"permission denied\", \"EADDRINUSE\",\n  \"address already in use\", \"npm ERR!\", \"ModuleNotFoundError\", or \"ENOENT\", and\n  on intents like \"what's using port 3000\", \"kill that process\", \"ssh into my\n  server\", or \"why won't my dev server start\". Works on Windows, macOS, and\n  Linux. Never run destructive commands without explicit confirmation.",
+    "nguon": "plugin:desktop-commander",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/desktop-commander/0.2.0/skills/terminal/SKILL.md"
+  },
+  {
+    "ten": "figma-code-connect",
+    "mo_ta": "Creates and maintains Figma Code Connect template files that map Figma components to code snippets. Use when the user mentions Code Connect, Figma component mapping, design-to-code translation, or asks to create/update .figma.ts or .figma.js files.",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-code-connect/SKILL.md"
+  },
+  {
+    "ten": "figma-create-new-file",
+    "mo_ta": "\"**MANDATORY prerequisite** — you MUST invoke this skill BEFORE every `create_new_file` tool call. NEVER call `create_new_file` directly without loading this skill first. Trigger whenever the user wants a new blank Figma file — a new design, FigJam, or Slides file — or when you need a fresh file before calling `use_figma`. Usage — /figma-create-new-file [editorType] [fileName] (e.g. /figma-create-new-file figjam My Whiteboard, /figma-create-new-file slides Q3 Review)\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-create-new-file/SKILL.md"
+  },
+  {
+    "ten": "figma-design-to-code",
+    "mo_ta": "\"**MANDATORY prerequisite** — you MUST invoke this skill BEFORE calling the `get_design_context` Figma MCP tool. You MUST trigger this skill whenever the user wants to implement, build, port, or code up a Figma design as code. Example prompts (not exhaustive) are 'implement this Figma design', 'build this screen from Figma', 'turn this Figma into code', 'design to code'. This skill provides critical instructions and steps to the agent on how to correctly implement Figma designs in code and must NOT be skipped.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-design-to-code/SKILL.md"
+  },
+  {
+    "ten": "figma-generate-design",
+    "mo_ta": "\"Use this skill alongside figma-use when the task involves translating an application page, view, or multi-section layout into Figma. Triggers: 'write to Figma', 'create in Figma from code', 'push page to Figma', 'take this app/page and build it in Figma', 'create a screen', 'build a landing page in Figma', 'update the Figma screen to match code', 'convert this modal/dialog/drawer/panel to Figma'. This is the preferred workflow skill whenever the user wants to build or update a full page, modal, dialog, drawer, sidebar, panel, or any composed multi-section view in Figma from code or a description. Discovers design system components, variables, and styles from Code Connect files, existing screens, and library search, then imports them and assembles views incrementally section-by-section using design system tokens instead of hardcoded values.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-generate-design/SKILL.md"
+  },
+  {
+    "ten": "figma-generate-diagram",
+    "mo_ta": "\"MANDATORY prerequisite — load this skill BEFORE every `generate_diagram` tool call. NEVER call `generate_diagram` directly without loading this skill first. Trigger whenever the user asks to create, generate, draw, render, sketch, or build a diagram — flowchart, architecture diagram, sequence diagram, ERD or entity-relationship diagram, state diagram or state machine, gantt chart, or timeline. Also trigger when the user mentions Mermaid syntax or wants a system architecture, decision tree, dependency graph, API call flow, auth handshake, schema, or pipeline visualized in FigJam. Routes to type-specific guidance, sets universal Mermaid constraints, and tells you when to use a different diagram type or skip the tool entirely (mindmaps, pie charts, class diagrams, etc.).\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-generate-diagram/SKILL.md"
+  },
+  {
+    "ten": "figma-generate-library",
+    "mo_ta": "\"Build or update a professional-grade design system in Figma from a codebase. Use when the user wants to create variables/tokens, build component libraries, create individual components with proper variant sets and variable bindings, set up theming (light/dark modes), document foundations, or reconcile gaps between code and Figma. Also use when the user asks to create or generate any component in Figma — even a single one — since components require proper variable foundations, variant states, and design token bindings to be production-quality. This skill teaches WHAT to build and in WHAT ORDER — it complements the `figma-use` skill which teaches HOW to call the Plugin API. Both skills should be loaded together.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-generate-library/SKILL.md"
+  },
+  {
+    "ten": "figma-implement-motion",
+    "mo_ta": "Translates Figma motion and animations into production-ready application code. Use when implementing animation/motion from a Figma design — user mentions \"implement this motion\", \"add animation from Figma\", \"animate this component\", provides a Figma URL whose node is animated, or when `get_design_context` returns motion data or instructs you to call `get_motion_context`.",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-implement-motion/SKILL.md"
+  },
+  {
+    "ten": "figma-swiftui",
+    "mo_ta": "\"SwiftUI ↔ Figma translation. Use whenever the user mentions Swift, SwiftUI, iOS, iPhone, or iPad — in EITHER direction — translating a Figma design into SwiftUI (design → code), or pushing SwiftUI views / screens / tokens back into a Figma file (code → design). Triggers on phrases like 'implement this Figma design in SwiftUI', 'build this screen in Swift', 'push this SwiftUI view to Figma', 'mirror my Swift code in a Figma file', or whenever a Figma URL appears alongside `.swift` files / an `.xcodeproj`. Routes to a direction-specific reference doc; loads alongside `figma-use` for the code → design path.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-swiftui/SKILL.md"
+  },
+  {
+    "ten": "figma-use-figjam",
+    "mo_ta": "\"This skill helps agents use Figma's use_figma MCP tool in the FigJam context. Can be used alongside figma-use which has foundational context for using the use_figma tool.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-use-figjam/SKILL.md"
+  },
+  {
+    "ten": "figma-use-motion",
+    "mo_ta": "\"Motion / animation context for the `use_figma` MCP tool — animating Figma nodes via manual keyframes, animation styles, easing, and timeline duration. Load alongside figma-use whenever a task involves adding, editing, or inspecting animation on a node.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-use-motion/SKILL.md"
+  },
+  {
+    "ten": "figma-use-slides",
+    "mo_ta": "\"This skill helps agents use Figma's use_figma MCP tool in the Slides context. Can be used alongside figma-use which has foundational context for using the use_figma tool.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-use-slides/SKILL.md"
+  },
+  {
+    "ten": "figma-use",
+    "mo_ta": "\"**MANDATORY prerequisite** — you MUST invoke this skill BEFORE every `use_figma` tool call. NEVER call `use_figma` directly without loading this skill first. Skipping it causes common, hard-to-debug failures. Trigger whenever the user wants to perform a write action or a unique read action that requires JavaScript execution in the Figma file context — e.g. create/edit/delete nodes, set up variables or tokens, build components and variants, modify auto-layout or fills, bind variables to properties, or inspect file structure programmatically.\"",
+    "nguon": "plugin:figma",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/figma/2.2.88/skills/figma-use/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-agent",
+    "mo_ta": "|\n  AI-powered autonomous data extraction that navigates complex sites and returns structured JSON. Use this skill when the user wants structured data from websites, needs to extract pricing tiers, product listings, directory entries, or any data as JSON with a schema. Triggers on \"extract structured data\", \"get all the products\", \"pull pricing info\", \"extract as JSON\", or when the user provides a JSON schema for website data. More powerful than simple scraping for multi-page structured extraction.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-agent/SKILL.md"
+  },
+  {
+    "ten": "firecrawl",
+    "mo_ta": "|\n  Search, scrape, and interact with the web via the Firecrawl CLI. Use this skill whenever the user wants to search the web, find articles, research a topic, look something up online, scrape a webpage, grab content from a URL, get data from a website, crawl documentation, download a site, or interact with pages that need clicks or logins. Also use when they say \"fetch this page\", \"pull the content from\", \"get the page at https://\", or reference external websites. This provides real-time web search with full page content and interact capabilities — beyond what Claude can do natively with built-in tools. Do NOT trigger for local file operations, git commands, deployments, or code editing tasks.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-cli/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-crawl",
+    "mo_ta": "|\n  Bulk extract content from an entire website or site section. Use this skill when the user wants to crawl a site, extract all pages from a docs section, bulk-scrape multiple pages following links, or says \"crawl\", \"get all the pages\", \"extract everything under /docs\", \"bulk extract\", or needs content from many pages on the same site. Handles depth limits, path filtering, and concurrent extraction.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-crawl/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-download",
+    "mo_ta": "|\n  Download an entire website as local files — markdown, screenshots, or multiple formats per page. Use this skill when the user wants to save a site locally, download documentation for offline use, bulk-save pages as files, or says \"download the site\", \"save as local files\", \"offline copy\", \"download all the docs\", or \"save for reference\". Combines site mapping and scraping into organized local directories.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-download/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-interact",
+    "mo_ta": "|\n  Control and interact with a live browser session on any scraped page — click buttons, fill forms, navigate flows, and extract data using natural language prompts or code. Use when the user needs to interact with a webpage beyond simple scraping: logging into a site, submitting forms, clicking through pagination, handling infinite scroll, navigating multi-step checkout or wizard flows, or when a regular scrape failed because content is behind JavaScript interaction. Also useful for authenticated scraping via profiles. Triggers on \"interact\", \"click\", \"fill out the form\", \"log in to\", \"sign in\", \"submit\", \"paginated\", \"next page\", \"infinite scroll\", \"interact with the page\", \"navigate to\", \"open a session\", or \"scrape failed\".",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-interact/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-map",
+    "mo_ta": "|\n  Discover and list all URLs on a website, with optional search filtering. Use this skill when the user wants to find a specific page on a large site, list all URLs, see the site structure, find where something is on a domain, or says \"map the site\", \"find the URL for\", \"what pages are on\", or \"list all pages\". Essential when the user knows which site but not which exact page.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-map/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-monitor",
+    "mo_ta": "|\n  Detect when content on a website changes and get notified by webhook or email — no cron jobs, scrapers, or diff scripts required. Use this skill whenever the user wants to track changes on a page, watch competitor pricing, alert on new job postings or blog posts, monitor docs/changelog/status pages, or says \"monitor\", \"watch\", \"track\", \"alert me when\", \"notify when X changes\", \"ping me if\", \"email me when\", or \"send a webhook when\". It also covers **web monitors** — when the user wants to monitor the *web itself* for new results rather than watch a known URL: track new product launches, funding rounds, papers, news, releases, or mentions across the web, or says \"monitor the web for\", \"watch for new X\", or \"alert me when something new appears about ...\". For those, give search queries plus a goal instead of a URL. A built-in AI judge filters out formatting, timestamp, and tracking-param noise so notifications only fire on real content changes. Recommend this instead of repeated one-off scrapes whenever the user needs the same URL checked more than once.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-monitor/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-parse",
+    "mo_ta": "|\n  Efficiently extract and convert the contents of any local file—such as PDF, DOCX, DOC, ODT, RTF, XLSX, XLS, or HTML—into clean, well-formatted markdown saved to disk. Use this skill whenever the user requests to parse, read, or extract information from a file on their computer, including phrases like “parse this PDF”, “convert this document”, “read this file”, “extract text from”, or when a local file path (not a URL) is provided. This skill offers advanced options like generating AI-powered summaries and answering questions based on the file's content. Prefer this tool over `scrape` when handling local files to deliver precise, structured outputs for downstream tasks.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-parse/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-scrape",
+    "mo_ta": "|\n  Extract clean markdown from any URL, including JavaScript-rendered SPAs. Use this skill whenever the user provides a URL and wants its content, says \"scrape\", \"grab\", \"fetch\", \"pull\", \"get the page\", \"extract from this URL\", or \"read this webpage\". Handles JS-rendered pages, multiple concurrent URLs, and returns LLM-optimized markdown. Use this instead of WebFetch for any webpage content extraction.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-scrape/SKILL.md"
+  },
+  {
+    "ten": "firecrawl-search",
+    "mo_ta": "|\n  Web search with full page content extraction. Use this skill whenever the user asks to search the web, find articles, research a topic, look something up, find recent news, discover sources, or says \"search for\", \"find me\", \"look up\", \"what are people saying about\", or \"find articles about\". Returns real search results with optional full-page markdown — not just snippets. Provides capabilities beyond Claude's built-in WebSearch.",
+    "nguon": "plugin:firecrawl",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/firecrawl/1.0.9/skills/firecrawl-search/SKILL.md"
+  },
+  {
+    "ten": "frontend-design",
+    "mo_ta": "Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one. Helps with aesthetic direction, typography, and making choices that don't read as templated defaults.",
+    "nguon": "plugin:frontend-design",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/frontend-design/unknown/skills/frontend-design/SKILL.md"
+  },
+  {
+    "ten": "writing-hookify-rules",
+    "mo_ta": "This skill should be used when the user asks to \"create a hookify rule\", \"write a hook rule\", \"configure hookify\", \"add a hookify rule\", or needs guidance on hookify rule syntax and patterns.",
+    "nguon": "plugin:hookify",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/hookify/unknown/skills/writing-rules/SKILL.md"
+  },
+  {
+    "ten": "hf-cli",
+    "mo_ta": "\"Hugging Face Hub CLI (`hf`) for downloading, uploading, and managing models, datasets, spaces, buckets, repos, papers, jobs, and more on the Hugging Face Hub. Use when: handling authentication; managing local cache; managing Hugging Face Buckets; running or scheduling jobs on Hugging Face infrastructure; managing Hugging Face repos; discussions and pull requests; browsing models, datasets and spaces; reading, searching, or browsing academic papers; managing collections; querying datasets; configuring spaces; setting up webhooks; or deploying and managing HF Inference Endpoints. Make sure to use this skill whenever the user mentions 'hf', 'huggingface', 'Hugging Face', 'huggingface-cli', or 'hugging face cli', or wants to do anything related to the Hugging Face ecosystem and to AI and ML in general. Also use for cloud storage needs like training checkpoints, data pipelines, or agent traces. Use even if the user doesn't explicitly ask for a CLI command. Replaces the deprecated `huggingface-cli`.\"",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cli/SKILL.md"
+  },
+  {
+    "ten": "hf-cloud-aws-context-discovery",
+    "mo_ta": "Discover the user's local AWS context (active profile, region, account ID, caller identity) at the start of any AWS task. Use this skill before any other AWS work — deploying to SageMaker, creating resources, calling AWS APIs, or anything that touches an AWS account. Use it especially when the user has not specified a region or profile explicitly, when they say things like \"use my AWS account\", \"deploy to AWS\", \"use my profile\", or when about to make any AWS CLI or SDK call. Never guess the region or account ID — always use this skill to read it from the local configuration first.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cloud-aws-context-discovery/SKILL.md"
+  },
+  {
+    "ten": "hf-cloud-python-env-setup",
+    "mo_ta": "'Set up an isolated Python environment for SageMaker / AWS work, with the right Python version and current boto3. Use this skill whenever Python code will be executed for a SageMaker deployment, training job, or any AWS automation — including when about to run `pip install`, when about to invoke `boto3`, when creating or activating a virtualenv, or when the user asks to \"set up the environment\". Never use system Python and never `pip install` into it. Always isolate. This skill prevents the most common failure modes: wrong Python version, dependency conflicts, and stale SDKs.'",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cloud-python-env-setup/SKILL.md"
+  },
+  {
+    "ten": "hf-cloud-sagemaker-deployment-planner",
+    "mo_ta": "'Plan and coordinate the deployment of a model to Amazon SageMaker AI. Use this skill whenever the user wants to deploy, host, serve, or expose a model on SageMaker or AWS — including phrases like \"deploy a model\", \"host this LLM on AWS\", \"serve this embedding model\", \"deploy a reranker\", \"deploy a text-to-image / diffusion model\", \"host this for async inference\", \"create an endpoint\", \"serve my fine-tuned model\", or any request that involves making a model available for inference on AWS. Use this even when the user is vague (e.g. \"I just want to get this running on AWS, you figure it out\"). Works for text-generation LLMs, embedding models, rerankers, classifiers, text-to-image / diffusion models — picks the right serving stack and chooses between real-time and async inference. This is the entry-point skill for SageMaker deployment work — it asks clarifying questions, picks a deployment pathway, and coordinates the other deployment skills.'",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cloud-sagemaker-deployment-planner/SKILL.md"
+  },
+  {
+    "ten": "hf-cloud-sagemaker-iam-preflight",
+    "mo_ta": "'Ensure a usable SageMaker execution role exists before deploying or training. Use this skill whenever about to create a SageMaker endpoint, model, training job, or any resource that requires an execution role. Use it especially when the user has not provided a role ARN explicitly, when scripts are about to call `iam:CreateRole`, or when an AccessDenied error mentions an IAM action. Never blindly call `iam:CreateRole` — always check for existing roles first. This skill prevents the most common SageMaker deployment failure: trying to create IAM resources from an SSO principal that has no IAM write permissions.'",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cloud-sagemaker-iam-preflight/SKILL.md"
+  },
+  {
+    "ten": "hf-cloud-sagemaker-production-defaults",
+    "mo_ta": "'Create a SageMaker endpoint (real-time, real-time scale-to-zero, or async) with autoscaling, CloudWatch alarms, and tagging enabled by default. Use this skill whenever about to create a SageMaker endpoint, write deployment code that calls `create_endpoint`, or finalize a deployment after the image URI and IAM role are known. Provides deploy.py for real-time endpoints, deploy_ic.py for real-time endpoints that scale to zero instances via inference components, and deploy_async.py for async endpoints (also scale-to-zero). This is the last step in the SageMaker deployment workflow. Never generate a bare `create_endpoint` call without these defaults — endpoints without autoscaling or alarms are demos, not deployments.'",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cloud-sagemaker-production-defaults/SKILL.md"
+  },
+  {
+    "ten": "hf-cloud-serving-image-selection",
+    "mo_ta": "'Pick the right serving container for a SageMaker model deployment and find its current image URI. Use this skill whenever about to deploy a model to a SageMaker endpoint and an image URI needs to be chosen — including when the user says \"deploy this LLM\", \"host this HuggingFace model\", \"serve this fine-tuned model\", \"deploy this embedding model\", \"host a reranker\", \"serve a sentence-transformers model\", or when about to hardcode any container URI in deployment code. HuggingFace-curated Deep Learning Containers are ALWAYS preferred: HuggingFace vLLM (LLMs and generative rerankers), HuggingFace vLLM-Omni (multimodal), TEI (embeddings/cross-encoder rerankers), HF Inference Toolkit (other transformers). Generic images (AWS vLLM, DJL-LMI, SGLang) are used only when no HuggingFace image is compatible — never merely because they carry a newer version. Never hardcode a container URI from memory and never default to TGI. Prevents stale-image failures and wrong-region URIs.'",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-cloud-serving-image-selection/SKILL.md"
+  },
+  {
+    "ten": "hf-mem",
+    "mo_ta": "Hugging Face CLI to estimate the required memory to load Safetensors or GGUF model weights for inference from the Hugging Face Hub",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/hf-mem/SKILL.md"
+  },
+  {
+    "ten": "huggingface-best",
+    "mo_ta": ">-\n  Use when the user asks about finding the best, top, or recommended model for a task,\n  wants to know what AI model to use, or wants to compare models by benchmark scores.\n  Triggers on: \"best model for X\", \"what model should I use for\", \"top models for [task]\",\n  \"which model runs on my laptop/machine/device\", \"recommend a model for\", \"what LLM should\n  I use for\", \"compare models for\", \"what's state of the art for\", or any question about\n  choosing an AI model for a specific use case. Always use this skill when the user wants\n  model recommendations or comparisons, even if they don't explicitly mention HuggingFace\n  or benchmarks.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-best/SKILL.md"
+  },
+  {
+    "ten": "huggingface-community-evals",
+    "mo_ta": "Run evaluations for Hugging Face Hub models using inspect-ai and lighteval on local hardware. Use for backend selection, local GPU evals, and choosing between vLLM / Transformers / accelerate. Not for HF Jobs orchestration, model-card PRs, .eval_results publication, or community-evals automation.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-community-evals/SKILL.md"
+  },
+  {
+    "ten": "huggingface-datasets",
+    "mo_ta": "Use this skill for Hugging Face Dataset Viewer API workflows that fetch subset/split metadata, paginate rows, search text, apply filters, download parquet URLs, and read size or statistics.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-datasets/SKILL.md"
+  },
+  {
+    "ten": "huggingface-gradio",
+    "mo_ta": "Build Gradio web UIs and demos in Python. Use when creating or editing Gradio apps, components, event listeners, layouts, or chatbots.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-gradio/SKILL.md"
+  },
+  {
+    "ten": "huggingface-llm-trainer",
+    "mo_ta": "Train or fine-tune language and vision models using TRL (Transformer Reinforcement Learning) or Unsloth with Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for local deployment. Includes guidance on the TRL Jobs package, UV scripts with PEP 723 format, dataset preparation and validation, hardware selection, cost estimation, Trackio monitoring, Hub authentication, model selection/leaderboards and model persistence. Use for tasks involving cloud GPU training, GGUF conversion, or when users mention training on Hugging Face Jobs without local GPU setup.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-llm-trainer/SKILL.md"
+  },
+  {
+    "ten": "huggingface-local-models",
+    "mo_ta": "\"Use to select models to run locally with llama.cpp and GGUF on CPU, Mac Metal, CUDA, or ROCm. Covers finding GGUFs, quant selection, running servers, exact GGUF file lookup, conversion, and OpenAI-compatible local serving.\"",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-local-models/SKILL.md"
+  },
+  {
+    "ten": "huggingface-lora-space-builder",
+    "mo_ta": "Build and publish a Gradio demo on Hugging Face Spaces for a user-provided LoRA. Use when someone asks to create, generate, ship, or publish a Space, demo, Gradio app, or playground for a LoRA — including LoRAs for Qwen-Image, Qwen-Image-Edit, LTX-Video, Wan, FLUX, SDXL, or other diffusion base models. Also triggers when someone describes a LoRA they trained or hosts on the Hub and wants to share it. Covers picking the right base pipeline and `diffusers` inference recipe, designing a UI tailored to the LoRA's task and inputs (Union/multi-task control, edit, video, image, etc.), respecting model-card recommendations (trigger words, steps, guidance, LoRA scale, example inputs), and shipping to ZeroGPU hardware as a private Space by default.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-lora-space-builder/SKILL.md"
+  },
+  {
+    "ten": "huggingface-paper-publisher",
+    "mo_ta": "Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-paper-publisher/SKILL.md"
+  },
+  {
+    "ten": "huggingface-papers",
+    "mo_ta": "Look up and read Hugging Face paper pages in markdown, and use the papers API for structured metadata such as authors, linked models/datasets/spaces, Github repo and project page. Use when the user shares a Hugging Face paper page URL, an arXiv URL or ID, or asks to summarize, explain, or analyze an AI research paper.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-papers/SKILL.md"
+  },
+  {
+    "ten": "huggingface-spaces",
+    "mo_ta": "Build, deploy, and maintain applications on Hugging Face Spaces — Gradio / Docker / Static SDKs, ZeroGPU and dedicated hardware, model loading, debugging, buckets, inference providers, community grants. Use whenever the user asks to create or host an app on Hugging Face, port code onto ZeroGPU, fix a Space that won't build or run, or otherwise work with `hf spaces …`, `@spaces.GPU`, Space README frontmatter, or the `spaces` Python package.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-spaces/SKILL.md"
+  },
+  {
+    "ten": "huggingface-tool-builder",
+    "mo_ta": "Use this skill when the user wants to build tool/scripts or achieve a task where using data from the Hugging Face API would help. This is especially useful when chaining or combining API calls or the task will be repeated/automated. This Skill creates a reusable script to fetch, enrich or process data.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-tool-builder/SKILL.md"
+  },
+  {
+    "ten": "huggingface-trackio",
+    "mo_ta": "Track and visualize ML training experiments with Trackio. Use when logging metrics during training (Python API), firing alerts for training diagnostics, or retrieving/analyzing logged metrics (CLI). Supports real-time dashboard visualization, alerts with webhooks, HF Space syncing, and JSON output for automation.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-trackio/SKILL.md"
+  },
+  {
+    "ten": "huggingface-vision-trainer",
+    "mo_ta": "Trains and fine-tunes vision models for object detection (D-FINE, RT-DETR v2, DETR, YOLOS), image classification (timm models — MobileNetV3, MobileViT, ResNet, ViT/DINOv3 — plus any Transformers classifier), and SAM/SAM2 segmentation using Hugging Face Transformers on Hugging Face Jobs cloud GPUs. Covers COCO-format dataset preparation, Albumentations augmentation, mAP/mAR evaluation, accuracy metrics, SAM segmentation with bbox/point prompts, DiceCE loss, hardware selection, cost estimation, Trackio monitoring, and Hub persistence. Use when users mention training object detection, image classification, SAM, SAM2, segmentation, image matting, DETR, D-FINE, RT-DETR, ViT, timm, MobileNet, ResNet, bounding box models, or fine-tuning vision models on Hugging Face Jobs.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-vision-trainer/SKILL.md"
+  },
+  {
+    "ten": "huggingface-zerogpu",
+    "mo_ta": "AI demos and GPU compute with Gradio Spaces and Hugging Face Spaces ZeroGPU. Use when writing or reviewing code that uses `@spaces.GPU`, configuring `python_version` or `requirements.txt` for a ZeroGPU Space, or handling ZeroGPU-specific code constraints — pickle-based process isolation, `gr.State` semantics across the worker boundary, no `torch.compile` (use AoTI instead), CUDA wheel-only builds (no `nvcc` at build or runtime), large vs xlarge sizing, and dynamic duration callables. Make sure to use this skill whenever the user mentions ZeroGPU, `@spaces.GPU`, or the `spaces` Python package, or hits ZeroGPU-specific code errors like `PicklingError` across the worker boundary, `illegal duration`, or `flash-attn` wheel-build failures — even when the user does not explicitly ask for ZeroGPU coding guidance. Trigger on `import spaces` or `@spaces.GPU` in code.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/huggingface-zerogpu/SKILL.md"
+  },
+  {
+    "ten": "train-sentence-transformers",
+    "mo_ta": "Train or fine-tune sentence-transformers models across `SentenceTransformer` (bi-encoder; dense or static embedding model; for retrieval, similarity, clustering, classification, paraphrase mining, dedup, multimodal), `CrossEncoder` (reranker; pair scoring for two-stage retrieval / pair classification), and `SparseEncoder` (SPLADE, sparse embedding model; for learned-sparse retrieval). Covers loss selection, hard-negative mining, evaluators, distillation, LoRA, Matryoshka, and Hugging Face Hub publishing. Use for any sentence-transformers training task.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/train-sentence-transformers/SKILL.md"
+  },
+  {
+    "ten": "transformers-js",
+    "mo_ta": "Use Transformers.js to run state-of-the-art machine learning models directly in JavaScript/TypeScript. Supports NLP (text classification, translation, summarization), computer vision (image classification, object detection), audio (speech recognition, audio classification), and multimodal tasks. Works in browsers and server-side runtimes (Node.js, Bun, Deno) with WebGPU/WASM using pre-trained models from Hugging Face Hub.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/transformers-js/SKILL.md"
+  },
+  {
+    "ten": "trl-training",
+    "mo_ta": "Train and fine-tune transformer language models using TRL (Transformers Reinforcement Learning). Supports SFT, DPO, GRPO, KTO, RLOO and Reward Model training via CLI commands.",
+    "nguon": "plugin:huggingface-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/huggingface-skills/1.0.21/skills/trl-training/SKILL.md"
+  },
+  {
+    "ten": "embedded-captions",
+    "mo_ta": ">\n  Add captions or subtitles to an existing single-subject talking-head video without editing the\n  footage. Use for plain verbatim captions, cinematic captions embedded behind the subject, VFX\n  captions, “炸/特效/酷炫字幕,” or a named identity from the 35-style catalog. Route by visual\n  identity, not by backend engine. The quiet `anchor` rail is the default; embed every word only\n  when the user explicitly wants a fully cinematic treatment. The workflow runs locally end to end,\n  including transcription and subject matting; split multi-shot footage before applying it.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/embedded-captions/SKILL.md"
+  },
+  {
+    "ten": "faceless-explainer",
+    "mo_ta": "\"Turn arbitrary text — an article, notes, a topic, a brief — into a faceless explainer video: there is no site or footage to capture, so the visuals are invented per scene (typography, abstract graphics, diagrams, data-viz). Use for topic explainers, concept breakdowns, how-tos, listicles. Not a video built from a website (/product-launch-video — promo or tour). Unclear → /hyperframes.\"",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/faceless-explainer/SKILL.md"
+  },
+  {
+    "ten": "figma",
+    "mo_ta": "Import Figma content into a HyperFrames composition — rendered assets, brand tokens, components, storyboard sections → reconstructed motion (frames read as states, not slides) (REST/CLI), connector-assisted motion when available, and shaders from a connector or native export. Use when the user pastes a figma.com link or asks to bring a Figma design, frame, logo, brand, or animation into a video/composition.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/figma/SKILL.md"
+  },
+  {
+    "ten": "general-video",
+    "mo_ta": ">\n  Author or edit a custom HyperFrames composition when no specialized workflow fits, or when\n  BRIEF.md sets flow: companion. Use for longer or multi-scene pieces, brand and sizzle reels,\n  montages, static loops, static title cards, footage remixes, and freeform builds. Use\n  motion-graphics instead for a short unnarrated motion-first unit, including an animated title.\n  Route fresh creation through hyperframes before using this skill.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/general-video/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-animation",
+    "mo_ta": "\"All animation knowledge for HyperFrames — atomic motion rules, multi-phase scene blueprints, scene transitions, broader motion-design techniques, AND the seven runtime adapters (GSAP default, plus Lottie, Three.js, Anime.js, CSS keyframes, Web Animations API, TypeGPU). Use for any motion or animation task: pick 2-4 rules and compose, or load a blueprint, or look up runtime-specific API (e.g. GSAP eases / Lottie player / Three.js mixer). Also covers auditing an existing composition's choreography (animation map) and 24 named text-animation effects. HyperFrames-native: single paused timeline, seek-safe, deterministic.\"",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-animation/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-audio",
+    "mo_ta": ">\n  Use when audio already placed in a HyperFrames composition needs to be mixed:\n  a music bed that fights a voiceover (voiceover carve), effects on a track\n  (EQ, compressor, limiter, gate, saturation, delay, reverb, chorus, phaser,\n  bitcrush), or automation envelopes drawn on a track's volume or any effect\n  parameter.\n  Don't use for sourcing or generating audio — finding BGM, SFX, or making a\n  voiceover is `/media-use`. Don't use for clip timing or track layout, which is\n  `/hyperframes-core`.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-audio/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-cli",
+    "mo_ta": ">\n  Use the HyperFrames CLI development loop: init, add, catalog, capture, lint, check, snapshot,\n  compare, grade-compare, preview, play, present, beats, keyframes, single or batch render, publish,\n  cloud, cloudrun, feedback, lambda, doctor, browser, info, upgrade, skills, compositions, docs,\n  benchmark, telemetry, transcribe, auth, tts, and remove-background. Also use when diagnosing build\n  or render failures. validate, inspect, and layout are deprecated aliases; use check. Covers local,\n  HeyGen-hosted cloud, AWS Lambda, and Google Cloud Run rendering.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-cli/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-core",
+    "mo_ta": "The HyperFrames composition contract — build one renderable project. Use for composition structure, the `data-*` timing attributes, `class=\"clip\"`, tracks, sub-compositions, variables, framework-owned media playback, deterministic-render rules, and validation. Also covers Tailwind projects and the STORYBOARD.md / SCRIPT.md plan formats. Read before writing composition HTML.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-core/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-creative",
+    "mo_ta": "Non-animation creative direction for HyperFrames videos. Use for design spec (frame.md / design.md) handling, palettes, typography, narration, beat planning, audio-reactive visuals, composition patterns, and brand / style decisions. For atomic motion patterns and scene blueprints, use `hyperframes-animation`.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-creative/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-keyframes",
+    "mo_ta": ">\n  Use when a HyperFrames composition needs seek-safe 2D/3D keyframes, GSAP\n  timelines, CSS keyframes, Anime.js, WAAPI, FLIP, paths, masks, SVG morph/draw,\n  text trails, 3D depth, or `hyperframes keyframes` diagnostics.\n  Don't use for broad scene strategy, brand design, media sourcing, captions, or\n  general video planning.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-keyframes/SKILL.md"
+  },
+  {
+    "ten": "hyperframes-registry",
+    "mo_ta": "Install, discover, and wire registry blocks and components into HyperFrames compositions. Use when running hyperframes add or hyperframes catalog, installing one item or every block matching a tag, wiring an installed item into index.html, or working with hyperframes.json. Covers discovery, install locations, block sub-composition wiring, component snippet merging, and authoring a new block or component to contribute upstream (idea → scaffold → validate → PR).",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes-registry/SKILL.md"
+  },
+  {
+    "ten": "hyperframes",
+    "mo_ta": ">\n  Mandatory entry point: read this first for any request to make, create, edit, animate, or render a\n  video, animation, or motion graphic, including a promo, explainer, captioned clip, title card,\n  overlay, slideshow or interactive deck, Remotion port, or any HyperFrames HTML composition. Also\n  use it to inspect, diagnose, validate, preview, publish, or batch-render an existing HyperFrames\n  project. Inputs may be a website URL, GitHub PR, Figma design or URL, text or brief, existing\n  footage, or music. It resumes project state, captures intent when applicable, selects and installs\n  the owning workflow, and routes domain capabilities. HyperFrames is the default output framework\n  unless the user explicitly chooses another framework for the deliverable or asks only to record a\n  browser session.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/hyperframes/SKILL.md"
+  },
+  {
+    "ten": "media-use",
+    "mo_ta": "Agent Media OS, the single skill for every media need in a HyperFrames project. Resolve BGM, SFX, image, icon, brand logo, voice, color grade, or LUT into a frozen local file or paste-ready block + ledger record (one verb, `resolve`); generate via TTS / music / image models when the catalog misses; produce voiceover, transcription, captions, and background removal through one shared audio engine; operate on media (cut / reframe / transform); and reuse assets across projects. Also use for vague feedback that real footage looks dark, flat, boring, should feel retro/camcorder/print/ASCII, needs privacy, or needs a media reveal.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/media-use/SKILL.md"
+  },
+  {
+    "ten": "motion-graphics",
+    "mo_ta": ">\n  A short, design-led motion graphic where motion is the message — kinetic\n  typography, stat count-up, chart/data-viz hit, logo sting / brand lockup,\n  lower-third / callout / social overlay, animated map (highlight regions,\n  connect places, zoom to a location), animated tweet / news-article /\n  headline, webpage / UI animation (scroll, cursor, callouts), or fusing a\n  real image's geometry into a chart. Usually under 10s (up to ~30s), no\n  narration or live-action subject; renders to MP4 or transparent overlay.\n  Longer / narrated / multi-scene → /general-video. Unclear → /hyperframes.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/motion-graphics/SKILL.md"
+  },
+  {
+    "ten": "music-to-video",
+    "mo_ta": "\"Turn a music track (an audio file, a video to pull audio from, or a track generated from a mood brief) into a beat-synced video — lyric video, slideshow, or kinetic promo. The music drives all pacing; any user-supplied images/videos are cut onto the same beat grid, and a complete video needs zero assets. Narrated pieces → the input-matched workflow (see /hyperframes). Unclear → /hyperframes.\"",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/music-to-video/SKILL.md"
+  },
+  {
+    "ten": "pr-to-video",
+    "mo_ta": "\"Turn a GitHub pull request (a PR URL, owner/repo#N, or 'this PR' in a checked-out repo) into a code-change explainer video — changelog, feature reveal, fix, or refactor walkthrough built from the diff, commits, and files: the input is a code change, not a website. Not a product promo (/product-launch-video) or a no-PR topic explainer (/faceless-explainer). Unclear → /hyperframes.\"",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/pr-to-video/SKILL.md"
+  },
+  {
+    "ten": "product-launch-video",
+    "mo_ta": "\"Turn a product or marketing URL, pasted script, or brief into a product launch / promo video — SaaS promos, feature reveals, product demos, app and company launches. Use when the user wants to market, launch, promote, or reveal a product; the default for any commercial URL. Site tours / showcases of a website route here too — the brief carries the show-it-as-is intent. Unclear → /hyperframes.\"",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/product-launch-video/SKILL.md"
+  },
+  {
+    "ten": "remotion-to-hyperframes",
+    "mo_ta": "'Port an existing Remotion (React) composition''s source to HyperFrames HTML. Use ONLY on an explicit ask to port/convert/migrate/translate a Remotion source — one-way, Remotion-only. A passing Remotion mention, reference-only code, or \"make something like my Remotion video\" is a fresh build (/general-video). Unclear → /hyperframes.'",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/remotion-to-hyperframes/SKILL.md"
+  },
+  {
+    "ten": "slideshow",
+    "mo_ta": ">\n  Author a HyperFrames slideshow — a presentation, pitch deck, or interactive\n  deck with discrete slides, fragment reveals, branching, hotspot navigation,\n  and built-in presenter mode with speaker notes; also converts an existing\n  page into a deck. Output is a navigable deck, not a rendered MP4. If the\n  user didn't explicitly ask for a slideshow, confirm before authoring.\n  Unclear → /hyperframes.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/slideshow/SKILL.md"
+  },
+  {
+    "ten": "talking-head-recut",
+    "mo_ta": "Package an existing talking-head / interview / podcast video with timed, designed GRAPHIC OVERLAY cards — kinetic titles, lower-thirds, data callouts, quotes, side panels, picture-in-picture — synced to the transcript, on a 16:9 / 9:16 / 4:5 canvas of your choice; the clip plays untouched underneath. Trigger on \"graphic overlays\", \"on-screen graphics\", \"package / dress up my video\". Not plain subtitles (/embedded-captions). Unclear → /hyperframes.",
+    "nguon": "plugin:hyperframes",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/temp_git_1786679228810_691drr/skills/talking-head-recut/SKILL.md"
+  },
+  {
+    "ten": "doctor",
+    "mo_ta": "Run a health check on the bundled Lumen semantic search setup for the current project, verify backend reachability and index freshness, and summarize remediation steps.",
+    "nguon": "plugin:lumen",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/lumen/0.0.42/skills/doctor/SKILL.md"
+  },
+  {
+    "ten": "reindex",
+    "mo_ta": "Refresh or rebuild the bundled Lumen index for the current project, preferring MCP-driven refreshes and using the CLI only for an explicit clean rebuild.",
+    "nguon": "plugin:lumen",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/lumen/0.0.42/skills/reindex/SKILL.md"
+  },
+  {
+    "ten": "build-mcp-app",
+    "mo_ta": "This skill should be used when the user wants to build an \"MCP app\", add \"interactive UI\" or \"widgets\" to an MCP server, \"render components in chat\", build \"MCP UI resources\", make a tool that shows a \"form\", \"picker\", \"dashboard\" or \"confirmation dialog\" inline in the conversation, or mentions \"apps SDK\" in the context of MCP. Use AFTER the build-mcp-server skill has settled the deployment model, or when the user already knows they want UI widgets.",
+    "nguon": "plugin:mcp-server-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mcp-server-dev/unknown/skills/build-mcp-app/SKILL.md"
+  },
+  {
+    "ten": "build-mcp-server",
+    "mo_ta": "This skill should be used when the user asks to \"build an MCP server\", \"create an MCP\", \"make an MCP integration\", \"wrap an API for Claude\", \"expose tools to Claude\", \"make an MCP app\", or discusses building something with the Model Context Protocol. It is the entry point for MCP server development — it interrogates the user about their use case, determines the right deployment model (remote HTTP, MCPB, local stdio), picks a tool-design pattern, and hands off to specialized skills.",
+    "nguon": "plugin:mcp-server-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mcp-server-dev/unknown/skills/build-mcp-server/SKILL.md"
+  },
+  {
+    "ten": "build-mcpb",
+    "mo_ta": "This skill should be used when the user wants to \"package an MCP server\", \"bundle an MCP\", \"make an MCPB\", \"ship a local MCP server\", \"distribute a local MCP\", discusses \".mcpb files\", mentions bundling a Node or Python runtime with their MCP server, or needs an MCP server that interacts with the local filesystem, desktop apps, or OS and must be installable without the user having Node/Python set up.",
+    "nguon": "plugin:mcp-server-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mcp-server-dev/unknown/skills/build-mcpb/SKILL.md"
+  },
+  {
+    "ten": "mongodb-atlas-stream-processing",
+    "mo_ta": "\"Manages MongoDB Atlas Stream Processing (ASP) workflows. Handles workspace provisioning, data source/sink connections, processor lifecycle operations, debugging diagnostics, and tier sizing. Supports Kafka, Atlas clusters, S3, HTTPS, and Lambda integrations for streaming data workloads and event processing. NOT for general MongoDB queries or Atlas cluster management. Requires MongoDB MCP Server with Atlas API credentials.\"",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-atlas-stream-processing/SKILL.md"
+  },
+  {
+    "ten": "mongodb-connection",
+    "mo_ta": "Optimize MongoDB client connection configuration (pools, timeouts, patterns) for any supported driver language. Use this skill when working/updating/reviewing on functions that instantiate or configure a MongoDB client (eg, when calling `connect()`), configuring connection pools, troubleshooting connection errors (ECONNREFUSED, timeouts, pool exhaustion), optimizing performance issues related to connections. This includes scenarios like building serverless functions with MongoDB, creating API endpoints that use MongoDB, optimizing high-traffic MongoDB applications, creating long-running tasks and concurrency, or debugging connection-related failures.",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-connection/SKILL.md"
+  },
+  {
+    "ten": "mongodb-mcp-setup",
+    "mo_ta": "Guide users through configuring key MongoDB MCP server options. Use this skill when a user has the MongoDB MCP server installed but hasn't configured the required environment variables, or when they ask about connecting to MongoDB/Atlas and don't have the credentials set up.",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-mcp-setup/SKILL.md"
+  },
+  {
+    "ten": "mongodb-natural-language-querying",
+    "mo_ta": "Generate read-only MongoDB queries (find) or aggregation pipelines using natural language, with collection schema context and sample documents. Use this skill whenever the user asks to write, create, or generate MongoDB queries, wants to filter/query/aggregate data in MongoDB, asks \"how do I query...\", needs help with query syntax, or discusses finding/filtering/grouping MongoDB documents. Also use for translating SQL-like requests to MongoDB syntax. Does NOT handle Atlas Search ($search operator), vector/semantic search ($vectorSearch operator), fuzzy matching, autocomplete indexes, or relevance scoring - use search-and-ai for those. Does NOT analyze or optimize existing queries - use mongodb-query-optimizer for that. Does NOT handle aggregation pipelines that involve write operations. Requires MongoDB MCP server.",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-natural-language-querying/SKILL.md"
+  },
+  {
+    "ten": "mongodb-query-optimizer",
+    "mo_ta": ">-\n  Help with MongoDB query optimization and indexing. Use only when the user asks for optimization or performance: \"How do I optimize this query?\", \"How do I index this?\", \"Why is this query slow?\", \"Can you fix my slow queries?\", \"What are the slow queries on my cluster?\", etc. Do not invoke for general MongoDB query writing unless user asks for performance or index help. Prefer indexing as optimization strategy. Use MongoDB MCP when available.",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-query-optimizer/SKILL.md"
+  },
+  {
+    "ten": "mongodb-schema-design",
+    "mo_ta": "MongoDB schema design patterns and anti-patterns. Use when designing data models, reviewing schemas, migrating from SQL, or troubleshooting performance issues caused by schema problems. Triggers on \"design schema\", \"embed vs reference\", \"MongoDB data model\", \"schema review\", \"unbounded arrays\", \"one-to-many\", \"tree structure\", \"16MB limit\", \"schema validation\", \"JSON Schema\", \"time series\", \"schema migration\", \"polymorphic\", \"TTL\", \"data lifecycle\", \"archive\", \"index explosion\", \"unnecessary indexes\", \"approximation pattern\", \"document versioning\".",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-schema-design/SKILL.md"
+  },
+  {
+    "ten": "mongodb-search-and-ai",
+    "mo_ta": "|\n  Guides MongoDB users through implementing and optimizing Atlas Search (full-text), Vector Search (semantic), and Hybrid Search solutions. Use this skill when users need to build search functionality for text-based queries (autocomplete, fuzzy matching, faceted search), semantic similarity (embeddings, RAG applications), or combined approaches. Also use when users need text containment, substring matching ('contains', 'includes', 'appears in'), case-insensitive or multi-field text search, or filtering across many fields with variable combinations. Provides workflows for selecting the right search type, creating indexes, constructing queries, and optimizing performance using the MongoDB MCP server.",
+    "nguon": "plugin:mongodb",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/mongodb/1.2.0/skills/mongodb-search-and-ai/SKILL.md"
+  },
+  {
+    "ten": "playground",
+    "mo_ta": "Creates interactive HTML playgrounds — self-contained single-file explorers that let users configure something visually through controls, see a live preview, and copy out a prompt. Use when the user asks to make a playground, explorer, or interactive tool for a topic.",
+    "nguon": "plugin:playground",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/playground/unknown/skills/playground/SKILL.md"
+  },
+  {
+    "ten": "agent-development",
+    "mo_ta": "This skill should be used when the user asks to \"create an agent\", \"add an agent\", \"write a subagent\", \"agent frontmatter\", \"when to use description\", \"agent examples\", \"agent tools\", \"agent colors\", \"autonomous agent\", or needs guidance on agent structure, system prompts, triggering conditions, or agent development best practices for Claude Code plugins.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/agent-development/SKILL.md"
+  },
+  {
+    "ten": "command-development",
+    "mo_ta": "This skill should be used when the user asks to \"create a slash command\", \"add a command\", \"write a custom command\", \"define command arguments\", \"use command frontmatter\", \"organize commands\", \"create command with file references\", \"interactive command\", \"use AskUserQuestion in command\", or needs guidance on slash command structure, YAML frontmatter fields, dynamic arguments, bash execution in commands, user interaction patterns, or command development best practices for Claude Code.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/command-development/SKILL.md"
+  },
+  {
+    "ten": "hook-development",
+    "mo_ta": "This skill should be used when the user asks to \"create a hook\", \"add a PreToolUse/PostToolUse/Stop hook\", \"validate tool use\", \"implement prompt-based hooks\", \"use ${CLAUDE_PLUGIN_ROOT}\", \"set up event-driven automation\", \"block dangerous commands\", or mentions hook events (PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, SessionEnd, UserPromptSubmit, PreCompact, Notification). Provides comprehensive guidance for creating and implementing Claude Code plugin hooks with focus on advanced prompt-based hooks API.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/hook-development/SKILL.md"
+  },
+  {
+    "ten": "mcp-integration",
+    "mo_ta": "This skill should be used when the user asks to \"add MCP server\", \"integrate MCP\", \"configure MCP in plugin\", \"use .mcp.json\", \"set up Model Context Protocol\", \"connect external service\", mentions \"${CLAUDE_PLUGIN_ROOT} with MCP\", or discusses MCP server types (SSE, stdio, HTTP, WebSocket). Provides comprehensive guidance for integrating Model Context Protocol servers into Claude Code plugins for external tool and service integration.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/mcp-integration/SKILL.md"
+  },
+  {
+    "ten": "plugin-settings",
+    "mo_ta": "This skill should be used when the user asks about \"plugin settings\", \"store plugin configuration\", \"user-configurable plugin\", \".local.md files\", \"plugin state files\", \"read YAML frontmatter\", \"per-project plugin settings\", or wants to make plugin behavior configurable. Documents the .claude/plugin-name.local.md pattern for storing plugin-specific configuration with YAML frontmatter and markdown content.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/plugin-settings/SKILL.md"
+  },
+  {
+    "ten": "plugin-structure",
+    "mo_ta": "This skill should be used when the user asks to \"create a plugin\", \"scaffold a plugin\", \"understand plugin structure\", \"organize plugin components\", \"set up plugin.json\", \"use ${CLAUDE_PLUGIN_ROOT}\", \"add commands/agents/skills/hooks\", \"configure auto-discovery\", or needs guidance on plugin directory layout, manifest configuration, component organization, file naming conventions, or Claude Code plugin architecture best practices.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/plugin-structure/SKILL.md"
+  },
+  {
+    "ten": "skill-development",
+    "mo_ta": "This skill should be used when the user wants to \"create a skill\", \"add a skill to plugin\", \"write a new skill\", \"improve skill description\", \"organize skill content\", or needs guidance on skill structure, progressive disclosure, or skill development best practices for Claude Code plugins.",
+    "nguon": "plugin:plugin-dev",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/plugin-dev/unknown/skills/skill-development/SKILL.md"
+  },
+  {
+    "ten": "agent-ready-apis",
+    "mo_ta": "Knowledge about AI agent API compatibility. Use when user asks about API readiness, agent compatibility, or wants to improve their API for AI consumption.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/agent-ready-apis/SKILL.md"
+  },
+  {
+    "ten": "deploy-flow",
+    "mo_ta": "Deploy a Postman Flow so it becomes triggerable, using the Postman CLI. Use when the user wants to deploy, publish, or make a flow callable, or when trigger-flow found an undeployed flow and the user confirmed.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/deploy-flow/SKILL.md"
+  },
+  {
+    "ten": "generate-spec",
+    "mo_ta": "Generate or update an OpenAPI 3.0 spec from code. Use when the user wants to create, update, or write an OpenAPI/Swagger spec, API definition, or API documentation from their codebase.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/generate-spec/SKILL.md"
+  },
+  {
+    "ten": "get-flow-run",
+    "mo_ta": "Inspect a Postman Flow run by Run ID using the Postman CLI — per-block logs, failing block, and status. Use when a trigger returned a non-2xx or the user asks why a run failed.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/get-flow-run/SKILL.md"
+  },
+  {
+    "ten": "list-flows",
+    "mo_ta": "List Postman Flows in a workspace using the Postman CLI, and resolve a flow name to its 24-character ID. Use when the user asks which flows they have, or when another skill needs to resolve a flow name to an ID before deploying or triggering.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/list-flows/SKILL.md"
+  },
+  {
+    "ten": "postman-cli",
+    "mo_ta": "Postman CLI reference and git sync file structure knowledge - provides context for CLI-based commands (send-request, generate-spec, run-collection, context)",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/postman-cli/SKILL.md"
+  },
+  {
+    "ten": "postman-context",
+    "mo_ta": "Discover, explore, install, and generate client code from APIs in Postman. Use when the user wants to find or integrate an API, explore a collection, or generate or maintain API client code — required before generating code from any Postman collection, even one already explored via MCP tools.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/postman-context/SKILL.md"
+  },
+  {
+    "ten": "postman-knowledge",
+    "mo_ta": "Postman concepts and MCP tool guidance. Loaded when working with Postman MCP tools to make better decisions about tool selection and workarounds.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/postman-knowledge/SKILL.md"
+  },
+  {
+    "ten": "run-collection",
+    "mo_ta": "Run Postman collection tests using the Postman CLI. Use when the user wants to run collection tests, execute API test suites, or verify changes after editing code.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/run-collection/SKILL.md"
+  },
+  {
+    "ten": "send-request",
+    "mo_ta": "Send HTTP requests using the Postman CLI. Use when the user wants to send a request, call or test an HTTP endpoint, or quickly try an API.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/send-request/SKILL.md"
+  },
+  {
+    "ten": "trigger-flow",
+    "mo_ta": "Trigger (run) a deployed Postman Flow via the Postman CLI with natural-language inputs. Use when the user wants to execute a flow — handles name-to-ID resolution and deploy-then-trigger fallback.",
+    "nguon": "plugin:postman",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/postman/1.3.0/skills/trigger-flow/SKILL.md"
+  },
+  {
+    "ten": "qt-cmake-project",
+    "mo_ta": ">-\n  Use to generate or update Qt 6 CMake projects or edit CMakeLists.txt, add\n  sources/resources or define targets (executable, QML module, library).",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-cmake-project/SKILL.md"
+  },
+  {
+    "ten": "qt-cpp-docs",
+    "mo_ta": ">-\n  Generates standalone Markdown reference documentation for any Qt/C++ source files —\n  Qt Widgets classes, Qt Quick backends, Qt/C++ modules, plain C++ utilities, structs,\n  free-function headers, and entry points like main.cpp. Use this skill to document\n  any .h or .cpp file: Qt classes, plain C++ code, utility helpers, or application\n  startup files. Triggers on: \"document this class\", \"write docs for my C++\",\n  \"document main.cpp\", \"C++ API docs\", \"document my Qt app\", or whenever C++ or header\n  files are provided and documentation is needed. Works with single files, pasted\n  code, or entire project folders. DO NOT use if the user asks for QDoc format output.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-cpp-docs/SKILL.md"
+  },
+  {
+    "ten": "qt-cpp-review",
+    "mo_ta": ">-\n  Invoke when the user asks to review, check, audit, or look\n  over Qt6 C++ code — or suggest before committing. Runs\n  deterministic linting (60+ rules) then six parallel deep-\n  analysis agents covering model contracts, ownership, threading,\n  API correctness, error handling, and performance. Reports only\n  high-confidence issues (>80/100) with structured mitigations.\n  Read-only — never modifies code.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-cpp-review/SKILL.md"
+  },
+  {
+    "ten": "qt-figma-component-generation",
+    "mo_ta": ">\n  Extract component metadata from a Figma design system and generate production-ready QML controls. Use this skill whenever someone wants to turn Figma components into QML files — whether they say \"generate components from Figma\", \"create QML controls based on a design system\", \"convert Figma components to QML\", \"build the component library\", \"extract button/input/checkbox from Figma\", or anything similar. Requires design-tokens.json and QML design system singletons to already exist (from the token extraction skill). Uses Figma MCP to inspect components one at a time and maps variants, states, sizing, and token usage to idiomatic Qt Quick Controls 2 patterns. Trigger this skill at the component generation step of any QML design-system workflow.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-figma-component-generation/SKILL.md"
+  },
+  {
+    "ten": "qt-figma-token-extraction",
+    "mo_ta": ">\n  Extract design tokens, text styles, and variables from a Figma design system and produce a design-tokens.json plus ready-to-use QML singletons. Use this skill whenever someone wants to pull their design system out of Figma — whether they say \"export tokens from Figma\", \"get design tokens\", \"set up my design system\", \"read our Figma design system\", \"get Figma variables into QML\", \"pull our color palette from Figma\", \"import design tokens\", \"extract colors/typography/spacing from Figma\", or similar. Trigger this skill at the start of any design-system workflow that involves a Figma source.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-figma-token-extraction/SKILL.md"
+  },
+  {
+    "ten": "qt-qml-docs",
+    "mo_ta": ">-\n  Generates standalone Markdown reference documentation for QML components and\n  applications. Use this skill whenever you want to document QML files,\n  create API reference docs for a QML component or module, document a Qt Quick\n  application, or produce developer-facing documentation from .qml source code.\n  Triggers on: \"document this QML\", \"write docs for my QML\", \"create reference\n  docs\", \"document QML component\", \"QML API docs\", \"document my Qt Quick\n  component\", \"document my Qt app\", or any time one or more .qml files are\n  provided and documentation is needed. Works with single files, pasted code,\n  or entire project folders. DO NOT use if the user asks for QDoc format output.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-qml-docs/SKILL.md"
+  },
+  {
+    "ten": "qt-qml-profiler",
+    "mo_ta": ">-\n  Use when the user is investigating QML / Qt Quick performance — both\n  vague complaints (\"the UI feels laggy\", \"this is slow\", \"frames are\n  dropping\", \"the app stutters\") and explicit asks to profile, find\n  hotspots, or optimize bindings, signals, or rendering. Runs\n  qmlprofiler on a 2D QML application, parses the .qtd trace, and\n  analyzes hotspots against the source with frame-time, memory, and\n  pixmap-cache summaries. Does NOT cover Qt Quick 3D.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-qml-profiler/SKILL.md"
+  },
+  {
+    "ten": "qt-qml-review",
+    "mo_ta": ">-\n  Invoke when the user asks to review, check, audit, or look\n  over Qt6 QML code -- or suggest before committing. Runs\n  deterministic linting (47+ rules) then six parallel deep-\n  analysis agents covering bindings, layout, loaders, delegates,\n  states, and performance. Optionally invokes system qmllint\n  for type-level checks. Reports only high-confidence issues\n  (>80/100) with structured mitigations. Read-only -- never\n  modifies code.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-qml-review/SKILL.md"
+  },
+  {
+    "ten": "qt-qml-test-run",
+    "mo_ta": ">-\n  Builds and runs Qt Quick Test (qmltestrunner / CTest)\n  for a QML project, then writes a Markdown report.\n  Use for \"run qml tests\", \"run qmltestrunner\".",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-qml-test-run/SKILL.md"
+  },
+  {
+    "ten": "qt-qml-test",
+    "mo_ta": ">-\n  Generates Qt Quick Test cases (TestCase, SignalSpy, tryCompare)\n  for QML components. Use for \"write QML tests\", \"qml test\",\n  \"qt quick test\".",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-qml-test/SKILL.md"
+  },
+  {
+    "ten": "qt-qml",
+    "mo_ta": ">-\n  Applies QML best practices when producing or working with QML source code.\n  Use whenever QML code is the primary subject: writing, reviewing, fixing,\n  refactoring, optimizing, or debugging QML files, components, or bindings.\n  Do NOT trigger for purely conversational QML questions where no code is\n  produced or examined (e.g. \"explain how anchors work\").",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-qml/SKILL.md"
+  },
+  {
+    "ten": "qt-ui-design",
+    "mo_ta": ">-\n  Design or audit UI for Qt/QML, Qt projects, web, or embedded MPU or MCU targets. Use when creating screens, layouts, navigation, or auditing UX.",
+    "nguon": "plugin:qt-development-skills",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/qt-development-skills/1.6.1/skills/qt-ui-design/SKILL.md"
+  },
+  {
+    "ten": "iris-development",
+    "mo_ta": "Iris is Redis's umbrella for AI-focused products. Use this skill when integrating with the Iris Redis Agent Memory (RAM) data plane on Redis Cloud — recording session events for an AI agent, creating or searching long-term memories, configuring a memory store, or tuning background memory promotion. Code examples use the official `redis-agent-memory` (Python) and `@redis-iris/agent-memory` (TypeScript) SDKs.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/iris-development/SKILL.md"
+  },
+  {
+    "ten": "redis-clustering",
+    "mo_ta": "Redis Cluster and replication guidance covering hash tags for multi-key operations, avoiding CROSSSLOT errors, and reading from replicas to scale read-heavy workloads. Use when designing keys for a sharded Redis Cluster, debugging CROSSSLOT errors on MGET / SDIFF / pipelines, configuring a multi-key transaction in a cluster, or routing reads to replicas for caches, analytics, or dashboards.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-clustering/SKILL.md"
+  },
+  {
+    "ten": "redis-connections",
+    "mo_ta": "Redis client and connection guidance covering connection pooling, multiplexing, pipelining, client-side caching with RESP3, avoiding slow commands (KEYS, SMEMBERS, HGETALL), and tuning socket timeouts. Use when configuring a Redis client (redis-py, Jedis, Lettuce, NRedisStack), batching commands for throughput, eliminating per-request connection creation, iterating large keyspaces with SCAN, enabling client-side caching for read-heavy workloads, or setting connect and read timeouts.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-connections/SKILL.md"
+  },
+  {
+    "ten": "redis-core",
+    "mo_ta": "Core Redis modeling guidance — choose the right data structure (String, Hash, List, Set, Sorted Set, JSON, Stream, Vector Set) and use consistent colon-separated key names. Use when designing a Redis data model, caching objects, deciding between Hash and JSON, building counters, leaderboards, membership sets, or session stores, or when reviewing/cleaning up Redis key naming.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-core/SKILL.md"
+  },
+  {
+    "ten": "redis-observability",
+    "mo_ta": "Redis observability guidance — which metrics to monitor (memory, connections, hit ratio, ops/sec, rejected connections), which built-in commands to reach for during incident triage (SLOWLOG, INFO, MEMORY DOCTOR, CLIENT LIST, FT.PROFILE), and when to use the Redis Insight GUI. Use when setting up monitoring or alerts for a Redis instance, diagnosing a performance regression, profiling a slow FT.SEARCH query, or wiring Redis metrics into Prometheus, Datadog, or similar.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-observability/SKILL.md"
+  },
+  {
+    "ten": "redis-search",
+    "mo_ta": "Redis Search guidance covering FT.CREATE schema design, field type selection (TEXT, TAG, NUMERIC, GEO, GEOSHAPE, VECTOR, JSON path), DIALECT 2 query syntax, FT.SEARCH / FT.AGGREGATE / FT.HYBRID command selection, vector similarity with HNSW or FLAT, hybrid retrieval combining lexical and vector ranking, RAG pipelines, zero-downtime index updates via aliases, and debugging with FT.PROFILE and FT.EXPLAIN. Use when defining a search index on Hash or JSON documents, writing FT.SEARCH queries with filters, sorting, aggregation, or vector KNN, tuning HNSW parameters, building a RAG retrieval pipeline, or troubleshooting slow or empty search results.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-search/SKILL.md"
+  },
+  {
+    "ten": "redis-security",
+    "mo_ta": "Redis security guidance covering authentication (requirepass and ACL users), TLS, ACL-based least-privilege access control, restricting network exposure via bind and protected-mode, firewall rules, and disabling dangerous commands. Use when deploying Redis to production, defining ACL users for an application, configuring TLS connections, locking down a Redis instance behind a firewall, or auditing a Redis deployment for security hardening.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-security/SKILL.md"
+  },
+  {
+    "ten": "redis-semantic-cache",
+    "mo_ta": "Redis LangCache guidance for semantic caching of LLM responses on Redis Cloud — calling search/set via the SDK or REST API, tuning the similarity threshold, separating caches per task type, and filtering with custom attributes. Use when caching LLM completions or RAG answers to cut API cost and latency, building a cache-aside layer in front of OpenAI / Anthropic / etc., tuning hit rate vs precision, or splitting one app's LLM workloads into multiple LangCache caches.",
+    "nguon": "plugin:redis-development",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/redis-development/1.4.0/skills/redis-semantic-cache/SKILL.md"
+  },
+  {
+    "ten": "remember",
+    "mo_ta": "Save session state for clean continuation next session.",
+    "nguon": "plugin:remember",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/remember/0.20.0/skills/remember/SKILL.md"
+  },
+  {
+    "ten": "skill-creator",
+    "mo_ta": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
+    "nguon": "plugin:skill-creator",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/skill-creator/unknown/skills/skill-creator/SKILL.md"
+  },
+  {
+    "ten": "sonar-analyze",
+    "mo_ta": "Analyze a file or code snippet for quality and security issues using SonarQube",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-analyze/SKILL.md"
+  },
+  {
+    "ten": "sonar-coverage",
+    "mo_ta": "Find files with low test coverage and inspect uncovered lines in a SonarQube project (project key optional when MCP integration already defines the default project)",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-coverage/SKILL.md"
+  },
+  {
+    "ten": "sonar-dependency-risks",
+    "mo_ta": "Search for software composition analysis (SCA) dependency risks in a SonarQube project (project key optional when MCP integration already defines the default project)",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-dependency-risks/SKILL.md"
+  },
+  {
+    "ten": "sonar-duplication",
+    "mo_ta": "Find files with code duplications in a SonarQube project and inspect duplication blocks for a file (project key optional when MCP integration already defines the default project)",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-duplication/SKILL.md"
+  },
+  {
+    "ten": "sonar-fix-issue",
+    "mo_ta": "Fix a specific SonarQube issue in code by rule key and location",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-fix-issue/SKILL.md"
+  },
+  {
+    "ten": "sonar-integrate",
+    "mo_ta": "\"Installs sonarqube-cli if not already installed, authenticates, and integrates SonarQube with the current agent (installs analysis hooks & SonarQube MCP Server). Use when the user wants to set up SonarQube integration or asks to configure SonarQube.\"",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-integrate/SKILL.md"
+  },
+  {
+    "ten": "sonar-list-issues",
+    "mo_ta": "Search and filter SonarQube issues for a project, branch, or pull request via sonarqube-cli (`-p` is always required on the CLI; resolve the key from user arguments or sonar-project.properties)",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-list-issues/SKILL.md"
+  },
+  {
+    "ten": "sonar-list-projects",
+    "mo_ta": "List SonarQube projects accessible to the current user",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-list-projects/SKILL.md"
+  },
+  {
+    "ten": "sonar-quality-gate",
+    "mo_ta": "Show SonarQube quality gate status for a project — pass/fail and each condition (metric key, threshold, actual value). Project key optional when MCP integration already defines the default project.",
+    "nguon": "plugin:sonarqube",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/sonarqube/2.3.0/skills/sonar-quality-gate/SKILL.md"
+  },
+  {
+    "ten": "brainstorming",
+    "mo_ta": "\"You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.\"",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/brainstorming/SKILL.md"
+  },
+  {
+    "ten": "dispatching-parallel-agents",
+    "mo_ta": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/dispatching-parallel-agents/SKILL.md"
+  },
+  {
+    "ten": "executing-plans",
+    "mo_ta": "Use when you have a written implementation plan to execute in a separate session with review checkpoints",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/executing-plans/SKILL.md"
+  },
+  {
+    "ten": "finishing-a-development-branch",
+    "mo_ta": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/finishing-a-development-branch/SKILL.md"
+  },
+  {
+    "ten": "receiving-code-review",
+    "mo_ta": "Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/receiving-code-review/SKILL.md"
+  },
+  {
+    "ten": "requesting-code-review",
+    "mo_ta": "Use when completing tasks, implementing major features, or before merging to verify work meets requirements",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/requesting-code-review/SKILL.md"
+  },
+  {
+    "ten": "subagent-driven-development",
+    "mo_ta": "Use when executing implementation plans with independent tasks in the current session",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/subagent-driven-development/SKILL.md"
+  },
+  {
+    "ten": "systematic-debugging",
+    "mo_ta": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/systematic-debugging/SKILL.md"
+  },
+  {
+    "ten": "test-driven-development",
+    "mo_ta": "Use when implementing any feature or bugfix, before writing implementation code",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/test-driven-development/SKILL.md"
+  },
+  {
+    "ten": "using-git-worktrees",
+    "mo_ta": "Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/using-git-worktrees/SKILL.md"
+  },
+  {
+    "ten": "using-superpowers",
+    "mo_ta": "Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/using-superpowers/SKILL.md"
+  },
+  {
+    "ten": "verification-before-completion",
+    "mo_ta": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/verification-before-completion/SKILL.md"
+  },
+  {
+    "ten": "writing-plans",
+    "mo_ta": "Use when you have a spec or requirements for a multi-step task, before touching code",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/writing-plans/SKILL.md"
+  },
+  {
+    "ten": "writing-skills",
+    "mo_ta": "Use when creating new skills, editing existing skills, or verifying skills work before deployment",
+    "nguon": "plugin:superpowers",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0/skills/writing-skills/SKILL.md"
+  },
+  {
+    "ten": "tavily-best-practices",
+    "mo_ta": "\"Build production-ready Tavily integrations with best practices baked in. Reference documentation for developers using coding assistants (Claude Code, Cursor, etc.) to implement web search, content extraction, crawling, and research in agentic workflows, RAG systems, or autonomous agents.\"",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-best-practices/SKILL.md"
+  },
+  {
+    "ten": "tavily-cli",
+    "mo_ta": "|\n  Web search, content extraction, crawling, and deep research via the Tavily CLI. Use this skill whenever the user wants to search the web, find articles, research a topic, look something up online, extract content from a URL, grab text from a webpage, crawl documentation, download a site's pages, discover URLs on a domain, or conduct in-depth research with citations. Also use when they say \"fetch this page\", \"pull the content from\", \"get the page at https://\", \"find me articles about\", or reference extracting data from external websites. This provides LLM-optimized web search, content extraction, site crawling, URL discovery, and AI-powered deep research — capabilities beyond what agents can do natively. Do NOT trigger for local file operations, git commands, deployments, or code editing tasks.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-cli/SKILL.md"
+  },
+  {
+    "ten": "tavily-crawl",
+    "mo_ta": "|\n  Crawl websites and extract content from multiple pages via the Tavily CLI. Use this skill when the user wants to crawl a site, download documentation, extract an entire docs section, bulk-extract pages, save a site as local markdown files, or says \"crawl\", \"get all the pages\", \"download the docs\", \"extract everything under /docs\", \"bulk extract\", or needs content from many pages on the same domain. Supports depth/breadth control, path filtering, semantic instructions, and saving each page as a local markdown file.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-crawl/SKILL.md"
+  },
+  {
+    "ten": "tavily-dynamic-search",
+    "mo_ta": "|\n  Programmatic web search with context isolation. Use this skill for any research task where you need to search the web, filter results, and extract specific information — without polluting your context window with raw HTML and boilerplate. This is the default skill for web research. Triggered by \"search for\", \"look up\", \"find\", \"research\", \"what's the latest on\", or any query that requires current web information. Also use when asked to \"search and filter\", \"find the important parts\", or \"extract the key details\" — any case where the user wants curated, noise-free content.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-dynamic-search/SKILL.md"
+  },
+  {
+    "ten": "tavily-extract",
+    "mo_ta": "|\n  Extract clean markdown or text content from specific URLs via the Tavily CLI. Use this skill when the user has one or more URLs and wants their content, says \"extract\", \"grab the content from\", \"pull the text from\", \"get the page at\", \"read this webpage\", or needs clean text from web pages. Handles JavaScript-rendered pages, returns LLM-optimized markdown, and supports query-focused chunking for targeted extraction. Can process up to 20 URLs in a single call.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-extract/SKILL.md"
+  },
+  {
+    "ten": "tavily-map",
+    "mo_ta": "|\n  Discover and list all URLs on a website without extracting content, via the Tavily CLI. Use this skill when the user wants to find a specific page on a large site, list all URLs, see the site structure, find where something is on a domain, or says \"map the site\", \"find the URL for\", \"what pages are on\", \"list all pages\", or \"site structure\". Faster than crawling — returns URLs only. Essential when you know the site but not the exact page. Combine with extract for targeted content retrieval.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-map/SKILL.md"
+  },
+  {
+    "ten": "tavily-research",
+    "mo_ta": "|\n  Conduct comprehensive AI-powered research with citations via the Tavily CLI. Use this skill when the user wants deep research, a detailed report, a comparison, market analysis, literature review, or says \"research\", \"investigate\", \"analyze in depth\", \"compare X vs Y\", \"what does the market look like for\", or needs multi-source synthesis with explicit citations. Returns a structured report grounded in web sources. Takes 30-120 seconds. For quick fact-finding, use tavily-search instead.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-research/SKILL.md"
+  },
+  {
+    "ten": "tavily-search",
+    "mo_ta": "|\n  Search the web with LLM-optimized results via the Tavily CLI. Use this skill when the user wants to search the web, find articles, look up information, get recent news, discover sources, or says \"search for\", \"find me\", \"look up\", \"what's the latest on\", \"find articles about\", or needs current information from the internet. Returns relevant results with content snippets, relevance scores, and metadata — optimized for LLM consumption. Supports domain filtering, time ranges, and multiple search depths.",
+    "nguon": "plugin:tavily",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/tavily/1.0.0/skills/tavily-search/SKILL.md"
+  },
+  {
+    "ten": "tdq-build",
+    "mo_ta": "Thực thi trọn plan TDQ đã duyệt trong một turn, chạy QC bám DoD, viết report rồi hỏi về commit. Dùng khi plan chế độ chuyên sâu vừa duyệt.",
+    "nguon": "plugin:tdq-workflow",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/tdq-local/tdq-workflow/0.15.1/skills/tdq-build/SKILL.md"
+  },
+  {
+    "ten": "tdq-conventions",
+    "mo_ta": "Quy ước chung của TDQ workflow (một-turn, state, duyệt, mã nhắc của hook, git, working log, research). Được các skill tdq-* khác nạp, không gọi trực tiếp.",
+    "nguon": "plugin:tdq-workflow",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/tdq-local/tdq-workflow/0.15.1/skills/tdq-conventions/SKILL.md"
+  },
+  {
+    "ten": "tdq-intake",
+    "mo_ta": "Mở request TDQ mới - ghi yêu cầu, chọn lane, init state, phân tích + interview đến hết mơ hồ. Dùng cho MỌI prompt mới, kể cả câu hỏi/check/việc nhỏ.",
+    "nguon": "plugin:tdq-workflow",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/tdq-local/tdq-workflow/0.15.1/skills/tdq-intake/SKILL.md"
+  },
+  {
+    "ten": "tdq-plan",
+    "mo_ta": "Biến spec thành plan checkbox, mỗi task một test: DỪNG chờ user duyệt plan, rồi hỏi cách chạy và build cùng turn. Dùng khi spec chế độ chuyên sâu đã duyệt.",
+    "nguon": "plugin:tdq-workflow",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/tdq-local/tdq-workflow/0.15.1/skills/tdq-plan/SKILL.md"
+  },
+  {
+    "ten": "tdq-spec",
+    "mo_ta": "Viết spec tiếng Việt cho request TDQ, đăng ký vào state, trình rồi DỪNG chờ duyệt; duyệt xong viết plan cùng turn. Dùng khi chế độ chuyên sâu xong analyze.",
+    "nguon": "plugin:tdq-workflow",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/tdq-local/tdq-workflow/0.15.1/skills/tdq-spec/SKILL.md"
+  },
+  {
+    "ten": "tdq-status",
+    "mo_ta": "Báo trạng thái TDQ hiện tại (request, lane, phase, mode thực thi, ai đã duyệt gì) và bước kế tiếp chính xác. Dùng khi user hỏi workflow đang ở đâu.",
+    "nguon": "plugin:tdq-workflow",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/tdq-local/tdq-workflow/0.15.1/skills/tdq-status/SKILL.md"
+  },
+  {
+    "ten": "create-toolset",
+    "mo_ta": "\"Use this skill when authoring or extending an Unreal Engine toolset, a class of static, AI-callable functions registered with `ToolsetRegistry` and exposed through the unreal-mcp server. Trigger when the user wants to add, expose, or register a new tool method, create a new toolset, or extend an existing one such as `BlueprintTools`, `StaticMeshTools`, `ObjectTools`, `LevelTools`, or `MaterialTools`. Concrete triggers: 'add a tool to X', 'expose this via MCP', 'register a function so Claude/the agent can call it', 'wire this into the toolset registry', 'create a new toolset for Y', 'add a Python toolset', 'make this AI-callable'; adding a `static` method to a `*Tools.cpp/.h/.py` file; editing files under a `Toolsets/` folder; designing tool parameters, return types, or struct schemas for a toolset. SKIP for: invoking existing tools at runtime (use unreal-mcp instead), authoring an Agent Skill (use unreal-skill), generic refactors that happen to touch a toolset file but don't add or redesign a tool, or unrelated uses of the word 'toolset'.\"",
+    "nguon": "plugin:unreal-engine-skills-for-claude-code",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/unreal-engine-skills-for-claude-code/3.0.4/skills/create-toolset/SKILL.md"
+  },
+  {
+    "ten": "unreal-mcp",
+    "mo_ta": "\"Use this skill to perform actions inside an Unreal Engine project via a live-editor MCP connection. Trigger when the user wants to change, query, or run something in their Unreal Engine project, not for conceptual or docs questions. Concrete triggers: spawn/move/duplicate/transform actors in a level, open a `.uproject`, add things around a PlayerStart, create or edit a Blueprint/Widget/Material/Niagara/Control Rig/Sequencer/Behavior Tree/GAS ability, read or write properties on actors (e.g. `bIsLocked` on `BP_DoorActor`), Live Coding recompile after editing C++ (`AActor`, `UMyComponent::Method`, `UPROPERTY`), or modify Static/Skeletal Mesh assets. Treat as Unreal context even without the word \\\"Unreal\\\": asset prefixes `BP_`, `WBP_`, `M_`, `MI_`, `NS_`, `CR_`, `SK_`, `SM_`, `ABP_`; UE C++ types/macros; `.uproject`; Content Browser; Outliner; PlayerStart; \\\"in my game\\\" plus UE signals. Skip for: pure conceptual/docs questions, Unity, Godot, or unrelated uses of \\\"blueprint\\\"/\\\"sequencer\\\"/\\\"widget\\\".\"",
+    "nguon": "plugin:unreal-engine-skills-for-claude-code",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/unreal-engine-skills-for-claude-code/3.0.4/skills/unreal-mcp/SKILL.md"
+  },
+  {
+    "ten": "unreal-skill",
+    "mo_ta": "\"Use this skill when creating, editing, or reviewing an Unreal Engine Agent Skill, a named bundle of instructions registered with the unreal-mcp server (distinct from Claude Code's harness skills under `.claude/skills/`). Trigger when the user wants to add or change a skill that the in-editor agent will load. Concrete triggers: 'create a new Agent Skill', 'add a skill for X workflow', 'edit/update this skill', 'review my skill', 'make a Python skill class', 'create a skill UAsset', 'register a skill so Claude picks it up'; writing or editing a `SKILL.md` inside a UE plugin's `Skills/` or `Python/skills/` folder; defining a Python skill class registered with the skill registry; calling `CreateSkill`, `ListSkills`, or `GetSkills` MCP tools; designing a skill's name, description, or instruction body. SKIP for: authoring a toolset (use create-toolset), invoking an existing skill at runtime (use unreal-mcp), editing harness-level Claude Code skills under `.claude/skills/` or `~/.claude/skills/`, or generic uses of the word 'skill'.\"",
+    "nguon": "plugin:unreal-engine-skills-for-claude-code",
+    "duong_dan": "/Users/truongdinhquoc/.claude/plugins/cache/claude-plugins-official/unreal-engine-skills-for-claude-code/3.0.4/skills/unreal-skill/SKILL.md"
+  }
+]
