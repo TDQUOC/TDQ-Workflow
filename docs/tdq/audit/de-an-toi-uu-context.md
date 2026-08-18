@@ -192,3 +192,121 @@ Trước khi bắt đầu bất cứ hướng nào: ba bản `skills/`, `portabl
 chi phí sửa là ×1 chứ không ×3. Nhưng chúng đang đồng bộ bằng quy trình, chưa có test
 nào khoá. Việc đầu tiên của request tối ưu đầu tiên nên là dựng test khoá điều đó —
 trước khi có thay đổi hàng loạt nào chạy qua.
+
+## Vòng 2026-08-19 — chốt lại hướng A sau khi đối chiếu soul
+
+Yêu cầu gốc turn này: đo lại xem dịch skill sang tiếng Anh có tối ưu hơn không, có cách
+optimize nào khác cho bộ workflow không. Vòng đo trước (08-17, mục 1-6 ở trên) đã trả
+lời phần số — vòng này bổ sung ba lượt research web + một thực nghiệm dịch độc lập, rồi
+đối chiếu lại với thứ tự ưu tiên của chính dự án (soul.md: chất lượng > runtime >
+context cost) để chốt câu hỏi còn treo của hướng A: có nên làm không, không chỉ là tiết
+kiệm bao nhiêu.
+
+**Số đo mới** — dịch `skills/tdq-build/SKILL.md` (99 dòng) sang tiếng Anh, đo bằng
+`anthropic_tokenizer` thật (không ước lượng char/4):
+
+| Bản | Ký tự | Token | Ký tự/token |
+|---|---|---|---|
+| Tiếng Việt (gốc) | 6.396 | 3.579 | 1,79 |
+| Tiếng Anh (dịch) | 7.701 | 2.034 | 3,79 |
+
+Hệ số EN/VI = 0,568 → tiết kiệm 43,2%, khớp khoảng 37,6-43,2% đã đo ở vòng trước
+(chênh do chọn file mẫu khác nhau, cùng bậc độ lớn).
+
+**Phát hiện mới, quan trọng hơn con số:** một nghiên cứu 35 ngôn ngữ (2025) đo việc
+model tuân thủ chỉ dẫn khi NGÔN NGỮ CHỈ DẪN và NGÔN NGỮ NỘI DUNG lệch nhau — độ chính
+xác giảm tới 50% so với khi hai ngôn ngữ khớp nhau. Bộ workflow này: user gõ tiếng
+Việt, code/output phần lớn tiếng Việt (working log, spec, plan, report) — dịch riêng
+SKILL.md sang tiếng Anh tạo đúng kiểu lệch mà nghiên cứu đó đo. Prompt caching (2026)
+giảm 90% chi phí đọc cache và không xoá "context rot" (model suy giảm hành vi trước khi
+chạm trần cửa sổ ngữ cảnh) — nhưng context rot là trục chất lượng thấp hơn rủi ro lệch
+ngôn ngữ, không phải lý do để bỏ qua rủi ro đó.
+
+**Đối chiếu soul (chất lượng > runtime > context cost):** lợi ích của hướng A (~40%
+token) nằm ở trục thấp nhất (context cost, vốn đã giảm nhẹ bớt tác động vì caching).
+Rủi ro mới tìm thấy (lệch ngôn ngữ chỉ dẫn/nội dung, giảm chính xác tới 50%) nằm ở trục
+cao nhất (chất lượng). Làm hướng A tức là đánh đổi ngược thứ tự ưu tiên chính dự án đã
+tự đặt ra.
+
+**Kết luận:** hướng A (dịch skill sang tiếng Anh) — **khuyến nghị KHÔNG làm** ở trạng
+thái bằng chứng hiện tại. Đây là khuyến nghị dựa trên bằng chứng, không phải cấm tuyệt
+đối: nếu sau này có lưới khoá hành vi đủ tốt (như `luat-hien-co.md` đã dựng ở vòng
+trước) VÀ đo thực tế cho thấy lệch ngôn ngữ không ảnh hưởng đáng kể ở bộ luật cụ thể
+này, có thể xét lại. Bốn hướng D, C, B, E ở mục 6 phía trên **không đổi** — thứ tự nên
+làm vẫn D → C → B, hướng A hoãn, hướng E chưa đủ điều kiện.
+
+## Vòng 2026-08-19 (2) — pattern hybrid: có, nhưng khác hẳn "dịch nguyên khối"
+
+Câu hỏi user đặt ra tiếp sau vòng trước: (1) có cách nào dịch skill sang tiếng Anh mà VẪN
+giữ giao tiếp user + output/rule/behavior đúng như bản Việt không; (2) các bộ skill tiếng
+Anh khác user đang dùng thật (vd. `superpowers`) đang đảm bảo chất lượng bằng cơ chế gì.
+
+**Trả lời (1) — có pattern, nhưng KHÔNG phải "dịch hết".** 5 truy vấn research mới (chi
+tiết: `docs/tdq/research/2026-08-19-0029-skill-vi-anh-hybrid.md`) tìm được nguồn giải
+đúng mâu thuẫn giữa "35 ngôn ngữ" (dẫn ở vòng trước) và một nghiên cứu RAG doanh nghiệp
+(EMNLP) đo ngược chiều — hai bên đá nhau vì khác LOẠI TÁC VỤ: "35 ngôn ngữ" đo trích xuất
+từ tài liệu (chỉ dẫn phải khớp ngôn ngữ tài liệu), còn EMNLP đo lý luận/sinh văn bản có
+luật phức tạp (chỉ dẫn tiếng Anh làm mỏ neo ổn định). TDQ SKILL.md — luật gate điều kiện,
+tick discipline — gần nhóm thứ hai hơn.
+
+Từ đó, một nguồn khác (promptquorum.com) cho cây quyết định tách theo LOẠI NỘI DUNG:
+luật lý luận/định dạng phức tạp → viết tiếng Anh được (không phải rủi ro, có thể còn giúp
+tuân thủ tốt hơn); còn khuôn user-facing (report, câu hỏi option, ví dụ few-shot) và khai
+báo ngôn ngữ đầu ra → PHẢI giữ tiếng Việt, tách riêng, không bị pha vào phần luật. Cảnh
+báo trực tiếp: "dịch nguyên prompt" (đúng cách hướng A gốc định làm) cho kết quả tệ hơn
+viết lại từ đầu; không khai báo tường minh ngôn ngữ đầu ra thì model đoán sai đôi lúc.
+
+**Trả lời (2) — vì sao `superpowers` "có vẻ ổn".** Không phải vì đã giải bài toán khớp
+ngôn ngữ — mà vì (a) tác vụ của nó là quy trình/tool-call (TDD, debug), ít nhạy ngôn ngữ
+đầu ra hơn TDQ (không có yêu cầu cứng "output phải 100% tiếng Việt"), và (b) không có gate
+nào đo lệch ngôn ngữ trong các bộ đó — lệch có xảy ra cũng không ai thấy. TDQ có
+`doc_lint.py`/`stop_gate.py` làm lộ vấn đề ngay nếu có, các bộ kia thì không — không thể
+dùng "chạy tốt" của chúng làm bằng chứng an toàn cho TDQ.
+
+**Kết luận:** pattern hybrid (tách luật-lý-luận vs khuôn-user-facing) là một hướng patch
+khả thi, khác hẳn và có cơ sở tốt hơn hướng A gốc (dịch nguyên khối) — nhưng **CHƯA làm ở
+đây**, và trước khi làm cần thêm 2 điều kiện: (a) lưới khoá hành vi rà đúng ranh giới
+"luật lý luận" vs "khuôn user-facing" cho từng skill (không chỉ khoá nội dung như
+`luat-hien-co.md` hiện có), (b) một gate mới đo được "output có đúng tiếng Việt không" —
+hiện TDQ chưa có gate này, và bằng chứng cho thấy khai báo tường minh ngôn ngữ đầu ra là
+điều kiện CẦN chứ không ĐỦ. Thứ tự nên làm ở mục 6 phía trên **không đổi**: D → C → B, A
+(kể cả bản hybrid) vẫn hoãn tới khi đủ 2 điều kiện trên.
+
+## Đính chính 2026-08-19 — con số 87,7% của hướng D là SAI
+
+Request `2026-08-19-0046-huong-d-skill-overrides` bắt tay vào áp hướng D và phát hiện
+tiền đề của nó không đúng. Giữ nguyên mục 4 và mục 0 phía trên để thấy sai ở đâu; đọc
+mục này trước khi tin bất kỳ con số nào của hướng D.
+
+**Sai ở đâu.** Mục 0 và mục 4 giả định `skillOverrides` áp cho mọi skill nên đề xuất
+261 khoá và kết luận 29.788 → 3.661 token (87,7%). Tài liệu chính thức
+(`code.claude.com/docs/en/skills`, mục "Override skill visibility from settings") nói
+ngược lại, nguyên văn: *"Plugin skills are not affected by `skillOverrides`. Manage those
+through `/plugin` instead."* Trang `settings` và một nguồn thứ ba độc lập xác nhận lại.
+
+**Số đúng.** Đo lại bằng `scripts/skill_tokens.py --mo-ta` (cùng cách đo, kho skill
+không đổi, vẫn 29.788 token):
+
+| Nhóm | Token mô tả | `skillOverrides` áp được? |
+|---|---|---|
+| 33 skill nguồn `user` | 2.981 (10,0%) | CÓ |
+| 251 skill nguồn `plugin` | 26.807 (90,0%) | **KHÔNG** |
+
+Đưa cả 33 skill `user` về `name-only` tiết kiệm **2.632 token (8,8%)**, không phải 87,7%.
+File `skill-overrides-de-xuat.json` đã được sinh lại còn đúng 33 khoá có tác dụng thật.
+
+**Hai đòn bẩy mới, đề án cũ chưa biết** (`code.claude.com/docs/en/settings`) — áp cho MỌI
+skill kể cả plugin, tức chạm được đúng 90% token mà `skillOverrides` không với tới:
+
+- `skillListingMaxDescChars` (mặc định 1536): trần ký tự mô tả từng skill trong listing.
+  Đo thật: 800 → −2,2% · 500 → −13,5% · **300 → −32,9% (9.814 token)** · 200 → −48,2%.
+- `skillListingBudgetFraction`: ngân sách tổng cho phần listing.
+
+Đã áp ngày 2026-08-19: D1 (33 khoá `name-only`) + D2 (`skillListingMaxDescChars: 300`).
+Mức tiết kiệm hợp lại ~12.446 token (41,8%) — nhưng đây là số ĐO TRƯỚC, cấu hình chỉ đọc
+lúc mở phiên nên phải xác nhận ở phiên mới. Chi tiết bằng chứng:
+[../research/2026-08-19-0046-huong-d-skill-overrides.md](../research/2026-08-19-0046-huong-d-skill-overrides.md).
+
+**Bài học cho các hướng còn lại (C, B, A, E):** con số 87,7% đứng suốt hai ngày vì không
+ai kiểm tiền đề "cơ chế này có áp cho đối tượng mình định áp không". Trước khi tin mức
+tiết kiệm của hướng C/B/A/E, kiểm tiền đề bằng tài liệu chính thức rồi mới đo.
