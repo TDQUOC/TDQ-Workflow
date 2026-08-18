@@ -370,6 +370,28 @@ def sha256_file(path):
     return h.hexdigest()
 
 
+def sha256_noi_dung(path):
+    """Băm PHẦN NỘI DUNG của spec/plan: từ heading `##` đầu tiên trở đi.
+
+    Vì sao không băm cả file: vùng đầu file là sổ sách của chính workflow (Ngày, Bản,
+    Trạng thái, đường dẫn brief). Băm cả file thì mỗi lần ghi sổ lại thành "tài liệu đã
+    đổi sau khi duyệt" và cổng duyệt kêu vì lý do vô hại — đo được 2/7 ca ở
+    `docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`. Cổng kêu sai nhiều lần
+    thì lúc nó kêu đúng cũng không còn ai nghe.
+
+    Không có heading `##` nào → không suy được ranh giới, băm cả file cho an toàn.
+    """
+    with open(path, encoding="utf-8") as f:
+        lines = f.read().splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        if line.startswith("## "):
+            than = "".join(lines[i:])
+            break
+    else:
+        than = "".join(lines)
+    return hashlib.sha256(than.encode("utf-8")).hexdigest()
+
+
 # ------------------------------------------- ảnh chụp hiệu ứng đầu turn (0.3.1)
 #
 # Sổ turn chỉ thấy được hành động đi qua tool Edit/Write; mọi thay đổi qua shell
@@ -1197,7 +1219,7 @@ def _file_changed_since_approval(cwd, state, target):
         return False
     path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
     try:
-        return sha256_file(path) != old
+        return sha256_noi_dung(path) != old
     except OSError:
         return False
 
@@ -1242,7 +1264,7 @@ def _cli_approve(cwd, rest):
         else:
             path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
             try:
-                state[f"{target}_sha256"] = sha256_file(path)
+                state[f"{target}_sha256"] = sha256_noi_dung(path)
             except OSError:
                 _warn(f"Không đọc được {rel} — bỏ qua sha256.")
 

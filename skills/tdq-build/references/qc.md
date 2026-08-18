@@ -59,8 +59,12 @@ Các thứ dưới đây **chỉ kiểm khi DoD chạm tới**, đừng chạy c
   ở trường `Ra` phải tồn tại. Không có artifact → sửa spec §3b dòng đó thành `KHÔNG` +
   lý do đóng, rồi chạy lại
   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" --pair <spec> <plan>` đến khi exit 0.
-  Sửa spec ở đây làm sha256 lệch → hook sẽ đòi duyệt lại: trình user đúng 1 dòng diff
-  và xin duyệt lại spec (`approve spec`) ngay trong lượt QC.
+  Sửa §3b là sửa NỘI DUNG spec nên sha vẫn lệch và hook vẫn đòi duyệt lại — đúng như
+  thiết kế: đổi phán quyết một năng lực là đổi ý định, phải hỏi user. Trình đúng 1 dòng
+  diff rồi xin duyệt lại (`approve spec`) ngay trong lượt QC. Ngược lại, sửa dòng sổ
+  sách đầu file (Ngày, Bản, Trạng thái) KHÔNG còn làm lệch sha kể từ 2026-08-19. Và §6
+  không còn chứa lệnh kiểm để mà sai tên. Hai nguồn "duyệt lại vì lý do vô hại" đã được
+  cắt ở gốc.
 
 ## Ghi kết quả
 

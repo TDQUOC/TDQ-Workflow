@@ -172,7 +172,7 @@ class TestState(unittest.TestCase):
         self.assertTrue(state["spec_approved"])
         self.assertIsNotNone(state["spec_approved_at"])
         self.assertEqual(state["spec_approved_by"], "duyệt spec")
-        self.assertEqual(state["spec_sha256"], tdq_state.sha256_file(spec))
+        self.assertEqual(state["spec_sha256"], tdq_state.sha256_noi_dung(spec))
 
         rc, _, err = run_state_cli(self.cwd, "set", "plan_file=docs/tdq/plan/x.md")
         rc, out, err = run_state_cli(self.cwd, "approve", "plan", "--mode", "main",
@@ -201,7 +201,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(rc, 0, err)
         self.assertIn("duyệt lại", out)
         state = read_state(self.cwd)
-        self.assertEqual(state["spec_sha256"], tdq_state.sha256_file(spec))
+        self.assertEqual(state["spec_sha256"], tdq_state.sha256_noi_dung(spec))
         self.assertEqual(state["spec_approved_by"], "approve spec")
         # dấu thời gian chỉ tới giây nên duyệt lại trong cùng giây vẫn bằng nhau —
         # chỉ đòi không lùi về quá khứ.
@@ -299,6 +299,56 @@ class TestState(unittest.TestCase):
         self.assertIsNotNone(data["updated_at"])
         leftovers = [n for n in os.listdir(os.path.join(self.cwd, "docs", "tdq")) if n.startswith(".state-")]
         self.assertEqual(leftovers, [])
+
+
+class BamNoiDungTest(unittest.TestCase):
+    """Đ1 — dấu niêm phong phải niêm phong Ý ĐỊNH, không niêm phong sổ sách.
+
+    Đo được ở request 2026-08-18-2050: 2/7 ca "spec đổi sau khi duyệt" chỉ là đổi dòng
+    `Trạng thái`/`Bản` ở đầu file, nội dung không đổi một chữ.
+    """
+
+    HEADER = ("# SPEC — demo\n\n"
+              "Ngày: 2026-08-19 · Bản: 1.0 · Lane: full\n"
+              "Trạng thái: CHỜ DUYỆT\n\n")
+    THAN = "## 1. Mục tiêu\n- làm X\n\n## 6. QC\n- kiểm Y\n"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.path = os.path.join(self._tmp.name, "spec.md")
+
+    def ghi(self, text):
+        with open(self.path, "w", encoding="utf-8") as f:
+            f.write(text)
+        return tdq_state.sha256_noi_dung(self.path)
+
+    def test_doi_dong_trang_thai_thi_sha_khong_doi(self):
+        truoc = self.ghi(self.HEADER + self.THAN)
+        sau = self.ghi(self.HEADER.replace("CHỜ DUYỆT", "ĐÃ DUYỆT 22:00") + self.THAN)
+        self.assertEqual(truoc, sau)
+
+    def test_doi_so_ban_thi_sha_khong_doi(self):
+        truoc = self.ghi(self.HEADER + self.THAN)
+        sau = self.ghi(self.HEADER.replace("Bản: 1.0", "Bản: 1.1") + self.THAN)
+        self.assertEqual(truoc, sau)
+
+    def test_doi_noi_dung_muc_danh_so_thi_sha_doi(self):
+        """Cổng an toàn phải còn nguyên tác dụng — đây mới là thứ đáng chặn."""
+        truoc = self.ghi(self.HEADER + self.THAN)
+        sau = self.ghi(self.HEADER + self.THAN.replace("làm X", "làm X và Z"))
+        self.assertNotEqual(truoc, sau)
+
+    def test_them_muc_moi_thi_sha_doi(self):
+        truoc = self.ghi(self.HEADER + self.THAN)
+        sau = self.ghi(self.HEADER + self.THAN + "\n## 7. Thêm sau\n- mở rộng\n")
+        self.assertNotEqual(truoc, sau)
+
+    def test_file_khong_co_heading_thi_bam_ca_file(self):
+        """Không có `##` nào → không suy được ranh giới, bám an toàn: băm tất."""
+        truoc = self.ghi("chỉ một dòng\n")
+        sau = self.ghi("chỉ một dòng khác\n")
+        self.assertNotEqual(truoc, sau)
 
 
 class TestProjectRootResolution(unittest.TestCase):

@@ -184,7 +184,9 @@ def _dau_file(cwd, rel):
         return {"co": False, "rel": rel, "sha": None, "dong": 0}
     with open(path, encoding="utf-8", errors="replace") as f:
         dong = sum(1 for _ in f)
-    return {"co": True, "rel": rel, "sha": tdq_state.sha256_file(path), "dong": dong}
+    # Băm NỘI DUNG, đúng hàm mà `tdq_state` dùng lúc ghi duyệt. Băm kiểu khác ở đây
+    # thì ca D3 kêu oan mọi request, vì hai bên so hai con số không cùng luật.
+    return {"co": True, "rel": rel, "sha": tdq_state.sha256_noi_dung(path), "dong": dong}
 
 
 def _dem_tick(cwd, rel):

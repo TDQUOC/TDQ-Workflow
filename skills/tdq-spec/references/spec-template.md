@@ -82,9 +82,9 @@ trúc, không bỏ trống khối này.
 |---|---|---|
 
 ## 6. QC & Definition of Done
-| # | Hạng mục kiểm | Lệnh/cách kiểm | Điều kiện PASS |
-|---|---|---|---|
-| Q1 | | | |
+| # | Hạng mục kiểm | Điều kiện PASS |
+|---|---|---|
+| Q1 | | |
 
 DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 
@@ -92,9 +92,27 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 (Phải RỖNG. Còn câu hỏi → quay lại phase analyze.)
 ```
 
+## §6 giữ điều kiện, KHÔNG giữ lệnh kiểm
+
+Spec bị niêm phong bằng sha256 lúc user duyệt, còn **lệnh kiểm cụ thể chỉ đúng SAU khi
+code tồn tại** — tên file test, cờ chọn test, tên hàm. Viết chúng vào spec thì đến phase
+QC phát hiện sai tên là phải xin user duyệt lại, dù ý định không đổi một chữ. Đo được
+2/7 ca ở `docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`.
+
+Vì vậy: **spec ghi ĐIỀU KIỆN PASS, plan ghi LỆNH KIỂM.** Plan không bị niêm phong nên
+sửa tên file test ở đó là việc thường ngày, không đụng cổng duyệt.
+
+| Viết ở spec (ĐÚNG) | Viết ở spec (SAI — chuyển sang plan) |
+|---|---|
+| sửa dòng sổ sách không làm đổi sha, sửa mục đánh số thì đổi | `pytest tests/test_state.py -q -k sha` xanh |
+| spec mới ghi lệnh kiểm thì linter chặn, spec cũ vẫn qua | `pytest tests/test_doc_lint.py -q -k r11` xanh |
+
+Rule **R11** của `doc_lint.py` canh đúng luật này, chỉ áp cho spec từ 2026-08-19 trở đi.
+
 ## Kiểm trước khi trình
 
 - Mọi đầu ra ở §2 đều có ít nhất một hạng mục QC ở §6.
+- §6 không chứa đường dẫn `tests/...` hay cờ `-k` — lệnh kiểm nằm ở plan.
 - §1b có mặt: mỗi bước/phase của workflow được ghi rõ CÓ chạy hay BỎ, kèm lý do.
 - §2b có mặt khi lane full: mỗi module một dòng, không module nào khai trùng đường dẫn.
 - §3b có mặt: mỗi skill DÙNG và NỀN có một dòng riêng, phần còn lại gom vào dòng tổng

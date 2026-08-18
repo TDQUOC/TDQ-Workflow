@@ -5,6 +5,7 @@
 (c) phase idle còn active_request → NEXT + INTAKE, INTAKE nguyên vẹn, tổng ≤ MAX_CHARS;
 (d) phase spec (request mở) → KHÔNG có INTAKE.
 """
+import os
 import tempfile
 import unittest
 
@@ -173,3 +174,37 @@ def write_file_plan_mode(cwd, rel, mode):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ShaDriftTest(unittest.TestCase):
+    """Đ1 — cảnh báo `[TDQ:APPROVE]` chỉ kêu khi NỘI DUNG spec đổi, không kêu vì sổ sách."""
+
+    HEADER = ("# SPEC — demo\n\nNgày: 2026-08-19 · Bản: 1.0 · Lane: full\n"
+              "Trạng thái: CHỜ DUYỆT\n\n")
+    THAN = "## 1. Mục tiêu\n- làm X\n"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+        self.rel = "docs/tdq/spec/x.md"
+        self.path = os.path.join(self.cwd, self.rel)
+        os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        self.ghi(self.HEADER + self.THAN)
+        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
+                    spec_file=self.rel, spec_approved=True,
+                    spec_sha256=tdq_state.sha256_noi_dung(self.path))
+
+    def ghi(self, text):
+        with open(self.path, "w", encoding="utf-8") as f:
+            f.write(text)
+
+    def test_sha_doi_dong_so_sach_thi_khong_canh_bao(self):
+        self.ghi(self.HEADER.replace("CHỜ DUYỆT", "ĐÃ DUYỆT 22:00") + self.THAN)
+        _rc, out = _run(self.cwd)
+        self.assertNotIn("[TDQ:APPROVE]", out)
+
+    def test_sha_doi_noi_dung_thi_van_canh_bao(self):
+        self.ghi(self.HEADER + self.THAN.replace("làm X", "làm X và Z"))
+        _rc, out = _run(self.cwd)
+        self.assertIn("[TDQ:APPROVE]", out)

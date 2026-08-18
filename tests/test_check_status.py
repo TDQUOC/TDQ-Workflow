@@ -79,10 +79,10 @@ class TempRepo(unittest.TestCase):
             started_at=moc, phase_history=[{"phase": "spec", "at": moc}],
             spec_file=duong["spec"], spec_approved=True, spec_approved_at=moc,
             spec_approved_by="duyệt spec",
-            spec_sha256=tdq_state.sha256_file(os.path.join(self.cwd, duong["spec"])),
+            spec_sha256=tdq_state.sha256_noi_dung(os.path.join(self.cwd, duong["spec"])),
             plan_file=duong["plan"], plan_approved=True, plan_approved_at=moc,
             plan_approved_by="duyệt plan",
-            plan_sha256=tdq_state.sha256_file(os.path.join(self.cwd, duong["plan"])),
+            plan_sha256=tdq_state.sha256_noi_dung(os.path.join(self.cwd, duong["plan"])),
             implement_mode="main",
         )
         truong.update(thua)
@@ -95,7 +95,7 @@ class TempRepo(unittest.TestCase):
         self.tai_san("2026-08-16-0900-viec", plan=noi_dung)
         rel = os.path.join("docs", "tdq", "plan", "2026-08-16-0900-viec.md")
         state = tdq_state.load(self.cwd)
-        state["plan_sha256"] = tdq_state.sha256_file(os.path.join(self.cwd, rel))
+        state["plan_sha256"] = tdq_state.sha256_noi_dung(os.path.join(self.cwd, rel))
         helper.write_state(self.cwd, **state)
 
 
@@ -223,10 +223,10 @@ class CaLechPhase(TempRepo):
             self.cwd, active_request="2026-08-16-0900-viec", lane="full",
             phase="implement", plan_file=duong["plan"], plan_approved=True,
             plan_approved_at="2026-08-16T09:00:00+07:00", plan_approved_by="duyệt plan",
-            plan_sha256=tdq_state.sha256_file(os.path.join(self.cwd, duong["plan"])),
+            plan_sha256=tdq_state.sha256_noi_dung(os.path.join(self.cwd, duong["plan"])),
             spec_file=duong["spec"], spec_approved=True,
             spec_approved_at="2026-08-16T09:00:00+07:00", spec_approved_by="duyệt spec",
-            spec_sha256=tdq_state.sha256_file(os.path.join(self.cwd, duong["spec"])),
+            spec_sha256=tdq_state.sha256_noi_dung(os.path.join(self.cwd, duong["spec"])),
             started_at="2026-08-16T09:00:00+07:00")
         self.assertIn("D2", self.ma_ca_lech())
 
@@ -253,6 +253,23 @@ class CaLechTaiSan(TempRepo):
         self.assertTrue(ca, "phải bắt được sha lệch")
         self.assertEqual(ca[0]["muc"], "chan")
         self.assertEqual(du_lieu["ket_luan"], "CẦN USER QUYẾT")
+
+    SPEC_CO_SO_SACH = ("# SPEC — việc\n\nNgày: 2026-08-16 · Bản: 1.0 · Lane: full\n"
+                       "Trạng thái: CHỜ DUYỆT\n\n## 1. Mục tiêu\n- làm X\n")
+
+    def test_ca_lech_d3_doi_dong_so_sach_thi_khong_bao(self):
+        """Đ1 — sửa dòng `Trạng thái`/`Bản` là ghi sổ, không phải đổi ý định."""
+        duong = self.state_day_du()
+        that = os.path.join(self.cwd, duong["spec"])
+        viet(that, self.SPEC_CO_SO_SACH)
+        # `write_state` dựng lại state từ mặc định, nên phải bơm CẢ state cũ vào —
+        # bơm mỗi một trường là mất `spec_approved` và ca D3 không còn được kiểm.
+        cu_state = dict(helper.read_state(self.cwd))
+        cu_state["spec_sha256"] = tdq_state.sha256_noi_dung(that)
+        helper.write_state(self.cwd, **cu_state)
+        viet(that, self.SPEC_CO_SO_SACH.replace("CHỜ DUYỆT", "ĐÃ DUYỆT 09:00"))
+        ma = [c["ma"] for c in self.json_ra()["ca_lech"]]
+        self.assertNotIn("D3", ma)
 
     def test_ca_lech_d4_mot_task_dang_lam(self):
         self.doi_plan(PLAN_MAU.replace("- [ ] **T1.2**", "- [~] **T1.2**"))

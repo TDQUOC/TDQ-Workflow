@@ -373,8 +373,45 @@ def rule_r10(doc, out):
                "`## 2b. Ranh giới module` — plan không có đường cắt để chia task")
 
 
+# --------------------- R11: spec không giữ lệnh kiểm, chỉ giữ điều kiện PASS
+
+# Mốc ra luật. Spec có slug sớm hơn mốc này KHÔNG chịu R11: 42 spec cũ viết theo luật
+# cũ, sửa chúng hay rải dòng miễn trừ vào chúng đều là đụng file ngoài phạm vi request.
+R11_MOC = "2026-08-19"
+# Dấu hiệu "đây là lệnh kiểm cụ thể" chứ không phải điều kiện PASS: đường dẫn file test,
+# và cờ chọn test của pytest. Hai thứ này chỉ đúng SAU khi code tồn tại — viết vào spec
+# (thứ bị niêm phong sha lúc duyệt) thì QC phát hiện sai tên là phải xin duyệt lại.
+# Đo được: 2/7 ca ở docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md.
+R11_DAU_HIEU = (
+    (re.compile(r"tests?/[\w./-]*test_[\w.-]+\.py"), "đường dẫn file test"),
+    (re.compile(r"(?<![\w-])-k\s+\S"), "cờ chọn test `-k`"),
+)
+
+
+def _slug_truoc_moc(path):
+    """True khi tên file spec bắt đầu bằng ngày sớm hơn mốc ra luật."""
+    ten = os.path.basename(path)
+    return ten[:10] < R11_MOC if re.match(r"\d{4}-\d{2}-\d{2}", ten[:10]) else False
+
+
+def rule_r11(doc, out):
+    """Spec chỉ ghi ĐIỀU KIỆN PASS; lệnh kiểm cụ thể là việc của plan."""
+    if os.path.basename(os.path.dirname(os.path.abspath(doc.path))) != "spec":
+        return
+    if _slug_truoc_moc(doc.path):
+        return
+    for i, line in enumerate(doc.lines):
+        if ALLOW.search(doc.lines[i - 1]) if i else False:
+            continue
+        for mau, ten in R11_DAU_HIEU:
+            if mau.search(line):
+                _report(out, doc, i, "R11",
+                        f"spec ghi {ten} — chuyển sang plan, spec chỉ giữ điều kiện PASS")
+                break
+
+
 RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8,
-         rule_r9, rule_r10]
+         rule_r9, rule_r10, rule_r11]
 
 # Thư mục chứa biên bản / file máy sinh — chỉ chịu R8, xem lint_file().
 OUTPUT_DIRS = (os.path.join("docs", "tdq"), os.path.join("docs", "workinglog"),
@@ -452,7 +489,7 @@ def lint_file(path):
     # thư mục spec/.
     abs_path = os.path.abspath(path)
     is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
-    for rule in ([rule_r8, rule_r10] if is_output else RULES):
+    for rule in ([rule_r8, rule_r10, rule_r11] if is_output else RULES):
         rule(doc, out)
     return out
 

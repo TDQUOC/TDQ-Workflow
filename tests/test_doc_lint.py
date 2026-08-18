@@ -470,3 +470,68 @@ class LogServiceTest(LintBase):
         """stdout là kênh của vi phạm lint; log lẫn vào đó là hỏng hợp đồng máy đọc."""
         sach = self.write("sach.md", "# Tiêu đề\n\nMột dòng.\n")
         self.assertEqual(self.chay(sach).stdout, "")
+
+
+R11_SPEC_MOI_BAN = """# SPEC — việc
+
+Ngày: 2026-08-19 · Bản: 1.0 · Lane: full
+Trạng thái: CHỜ DUYỆT
+
+## 2b. Ranh giới module
+- `scripts/` và `hooks/` tách rời
+
+## 3b. Năng lực & công cụ
+| Năng lực | Nguồn | DÙNG | Vì sao |
+|---|---|---|---|
+| graphify | plugin | KHÔNG | khác lĩnh vực |
+
+## 6. QC & Definition of Done
+
+| # | Hạng mục kiểm | Lệnh/cách kiểm | Điều kiện PASS |
+|---|---|---|---|
+| Q1 | Băm bỏ vùng sổ sách | `python3 -m pytest tests/test_state.py -q -k sha` | xanh |
+"""
+
+R11_SPEC_MOI_SACH = """# SPEC — việc
+
+Ngày: 2026-08-19 · Bản: 1.0 · Lane: full
+Trạng thái: CHỜ DUYỆT
+
+## 2b. Ranh giới module
+- `scripts/` và `hooks/` tách rời
+
+## 3b. Năng lực & công cụ
+| Năng lực | Nguồn | DÙNG | Vì sao |
+|---|---|---|---|
+| graphify | plugin | KHÔNG | khác lĩnh vực |
+
+## 6. QC & Definition of Done
+
+| # | Hạng mục kiểm | Điều kiện PASS |
+|---|---|---|
+| Q1 | Băm bỏ vùng sổ sách | sửa dòng Trạng thái không đổi sha, sửa mục 1 thì đổi |
+"""
+
+
+class R11Test(LintBase):
+    """Đ2 — spec giữ ĐIỀU KIỆN PASS, lệnh kiểm để plan giữ (plan không bị niêm phong sha)."""
+
+    def spec(self, ten, text):
+        return self.write(os.path.join("docs", "tdq", "spec", ten), text)
+
+    def test_r11_spec_moi_ghi_duong_dan_test_thi_bi_bat(self):
+        self.assert_hits(self.spec("2026-08-19-0900-viec.md", R11_SPEC_MOI_BAN), "R11")
+
+    def test_r11_spec_moi_ghi_co_k_thi_bi_bat(self):
+        ban = R11_SPEC_MOI_BAN.replace("tests/test_state.py -q -k sha", "pytest -q -k sha")
+        self.assert_hits(self.spec("2026-08-19-0901-viec.md", ban), "R11")
+
+    def test_r11_spec_moi_chi_ghi_dieu_kien_pass_thi_sach(self):
+        self.assert_clean(self.spec("2026-08-19-0902-viec.md", R11_SPEC_MOI_SACH))
+
+    def test_r11_spec_cu_khong_bi_bat(self):
+        """42 spec cũ giữ nguyên: luật mới chỉ soi spec từ mốc ra luật trở đi."""
+        self.assert_clean(self.spec("2026-08-18-1744-viec.md", R11_SPEC_MOI_BAN))
+
+    def test_r11_khong_soi_file_ngoai_thu_muc_spec(self):
+        self.assert_clean(self.write("plan.md", R11_SPEC_MOI_BAN))

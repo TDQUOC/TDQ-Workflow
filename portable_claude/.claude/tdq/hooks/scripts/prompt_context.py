@@ -21,7 +21,8 @@ from _common import (approve_hint, payload_cwd, plan_mode, read_payload,
 from tdq_state import (effective_lane, effective_mode,  # noqa: E402
                        effective_phase, load, normalize_mode, phase_key,
                        prompt_context_last, prompt_context_save, render_next,
-                       sha256_file, turn_log_append, turn_log_clear, turn_snapshot)
+                       sha256_noi_dung, turn_log_append, turn_log_clear,
+                       turn_snapshot)
 
 MAX_LINES = 3
 MAX_CHARS = 240
@@ -191,7 +192,9 @@ def main():
     if state.get("spec_approved") and rel and sha:
         path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
         try:
-            drifted = sha256_file(path) != sha
+            # Cùng hàm băm với lúc ghi duyệt (`tdq_state._cli_approve`) — chép luật
+            # băm ra đây là mở đường cho hai bên lệch nhau rồi cãi nhau.
+            drifted = sha256_noi_dung(path) != sha
         except OSError:
             drifted = True
         if drifted:
