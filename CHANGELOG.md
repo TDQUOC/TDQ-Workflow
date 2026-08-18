@@ -2,6 +2,44 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.26.0 — 2026-08-18
+
+Cổng duyệt thôi kêu oan. Đo trên 58 request có spec: 7 ca phải xin duyệt lại, trong đó
+5 ca là hệ quả của chính thiết kế chứ không phải người dùng làm sai
+(`docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`). Cổng kêu vì lý do vô hại
+nhiều lần thì lúc nó kêu đúng cũng không còn ai nghe.
+
+- `tdq_state.sha256_noi_dung()`: `spec_sha256`/`plan_sha256` băm PHẦN NỘI DUNG, tính từ
+  heading `##` đầu tiên. Vùng đầu file (Ngày, Bản, Trạng thái, đường dẫn brief) là sổ sách
+  của chính workflow — ghi sổ không còn bị coi là "tài liệu đổi sau khi duyệt". Không có
+  heading `##` thì băm cả file. Ba nơi so băm (`tdq_state`, hook `prompt_context`,
+  `tdq_checkstatus` ca lệch D3) dùng chung đúng một hàm.
+- `doc_lint` rule **R11**: spec có slug từ 2026-08-19 trở đi không được ghi đường dẫn
+  `tests/test_*` hay cờ `-k` trong §6 — spec giữ ĐIỀU KIỆN PASS, lệnh kiểm là việc của
+  plan. 58 spec sẵn có không bị đụng tới.
+- Khuôn spec §6 đổi cột "Cách kiểm" thành "Điều kiện PASS", có bảng ĐÚNG/SAI;
+  `qc.md` bỏ đoạn dặn chịu đựng sha lệch.
+- `tdq_state.cong_dang_cho()`: cổng duyệt còn thiếu tính theo ĐÚNG lane, `stop_gate` và
+  `edit_gate` dùng chung. Trước đó `stop_gate` duyệt danh sách cứng
+  `("spec", "plan", "quick")` nên lane quick — vốn không có cổng `spec` — luôn bị nhắc
+  "spec vẫn chưa được ghi nhận duyệt", kể cả với request đã duyệt và đã đóng sổ.
+  `edit_gate` khi lane rỗng/lạ nay nhắc cổng đầu tiên thay vì im lặng.
+
+## 0.25.0 — 2026-08-18
+
+Mode đội: leader chia việc, agent con chạy song song — và tính modular chuyển thành thuộc
+tính của TÀI LIỆU, không còn phụ thuộc mode thực thi.
+
+- `scripts/tdq_team.py`: bản đồ phân công (`phan-cong`, `kiem-ke`, `cum`, `mo`, `kiem`,
+  `hop`, `don`), trần 4 nhánh một đợt. Hook `[TDQ:TEAM]` chặn leader tự gõ code của task
+  đã hứa giao; file ngoài project được miễn vì bản đồ không nói gì về vùng đó.
+- `scripts/tdq_bench.py`: đo và mô phỏng main so với đội, `mo-phong --plan <file>` đọc plan
+  thật để cổng đề xuất mode không phải chép lại luật chia đợt.
+- Khuôn spec thêm mục ranh giới module; plan luôn khai `Chạm:` và dựng `## Cụm song song`.
+  Lane quick được sinh agent con khi mini-plan có từ 3 task tách rời trở lên.
+- `scripts/skill_router.py`, `scripts/skill_tokens.py`: đo và định tuyến chi phí context
+  của bộ skill.
+
 ## 0.24.0 — 2026-08-17
 
 `portable_codex/` thôi làm markdown đọc tay, chuyển sang dùng đúng ba lớp native của Codex

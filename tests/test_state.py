@@ -417,3 +417,43 @@ class TestProjectRootResolution(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CongDangChoTest(unittest.TestCase):
+    """`cong_dang_cho` — cổng duyệt còn thiếu, tính theo ĐÚNG lane đang chạy.
+
+    Trước bản này mỗi hook tự chọn cổng theo cách riêng; lane quick không có cổng
+    `spec` nên `spec_approved` vĩnh viễn False và stop_gate nhắc oan mọi request.
+    """
+
+    def test_quick_chua_duyet_thi_ra_quick(self):
+        self.assertEqual(tdq_state.cong_dang_cho({"lane": "quick"}), "quick")
+
+    def test_quick_da_duyet_thi_khong_con_cong_nao(self):
+        state = {"lane": "quick", "quick_approved": True}
+        self.assertIsNone(tdq_state.cong_dang_cho(state))
+
+    def test_full_neu_cong_gan_nhat_truoc(self):
+        self.assertEqual(tdq_state.cong_dang_cho({"lane": "full"}), "spec")
+        self.assertEqual(
+            tdq_state.cong_dang_cho({"lane": "full", "spec_approved": True}), "plan")
+
+    def test_full_duyet_du_thi_none(self):
+        state = {"lane": "full", "spec_approved": True, "plan_approved": True}
+        self.assertIsNone(tdq_state.cong_dang_cho(state))
+
+    def test_full_khong_quan_tam_quick_approved(self):
+        # Lane full mà `quick_approved` bị bật (state cũ, đổi lane giữa chừng) không
+        # được che mất cổng spec/plan còn thiếu.
+        state = {"lane": "full", "quick_approved": True}
+        self.assertEqual(tdq_state.cong_dang_cho(state), "spec")
+
+    def test_lane_rong_hay_la_thi_giu_thu_tu_cu(self):
+        # State hỏng thì im lặng là bỏ lọt — rơi về đúng danh sách cũ.
+        self.assertEqual(tdq_state.cong_dang_cho({}), "spec")
+        self.assertEqual(tdq_state.cong_dang_cho({"lane": "linh tinh"}), "spec")
+        self.assertEqual(
+            tdq_state.cong_dang_cho({"lane": None, "spec_approved": True}), "plan")
+
+    def test_state_none(self):
+        self.assertEqual(tdq_state.cong_dang_cho(None), "spec")

@@ -86,6 +86,13 @@ class TestEditGate(unittest.TestCase):
         rc, out, _ = self.edit("edit_src.json")
         self.assert_remind(out, "[TDQ:APPROVE]", "quick chưa được ghi nhận duyệt", "approve quick")
 
+    def test_lane_hong_van_nhac_thay_vi_im_lang(self):
+        # State không có lane (hỏng, hoặc request cũ) — trước đây edit_gate im lặng
+        # hoàn toàn. Im lặng lúc state hỏng là bỏ lọt: vẫn hỏi cổng đầu tiên.
+        write_state(self.cwd, active_request="r1", lane=None)
+        rc, out, _ = self.edit("edit_src.json")
+        self.assert_remind(out, "[TDQ:APPROVE]", "spec chưa được ghi nhận duyệt")
+
     def test_remind_log_when_today_file_missing(self):
         write_state(self.cwd, active_request="r1", lane="quick",
                     quick_approved=True, quick_approved_at=now_iso())

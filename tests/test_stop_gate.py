@@ -118,6 +118,28 @@ class TestStopGateHints(StopGateBase):
         self.assertIn("[TDQ:APPROVE]", ctx)
         self.assertIn("HỎI", ctx)
 
+    def test_lane_quick_da_duyet_thi_im_lang(self):
+        # Ca kêu oan: lane quick không có cổng `spec`, nên `spec_approved` mãi False.
+        # Bản cũ vẫn in "[TDQ:APPROVE] spec …" cho request đã duyệt và đã đóng sổ.
+        write_state(self.cwd, active_request="r1", lane="quick", quick_approved=True)
+        self.remind("TDQ:APPROVE")
+        rc, out, _ = self.stop()
+        self.assertEqual(out, "")
+
+    def test_lane_quick_chua_duyet_thi_nhac_dung_ten_cong(self):
+        write_state(self.cwd, active_request="r1", lane="quick")
+        self.remind("TDQ:APPROVE")
+        ctx = self.context(self.stop()[1])
+        self.assertIn("[TDQ:APPROVE]", ctx)
+        self.assertIn("quick", ctx)
+        self.assertNotIn("spec", ctx)
+
+    def test_lane_full_giu_nguyen_thu_tu_spec_roi_plan(self):
+        write_state(self.cwd, active_request="r1", lane="full", spec_approved=True)
+        self.remind("TDQ:APPROVE")
+        ctx = self.context(self.stop()[1])
+        self.assertIn("plan", ctx)
+
     def test_approve_reminded_but_now_approved_is_silent(self):
         write_state(self.cwd, active_request="r1", lane="full", spec_approved=True,
                     plan_approved=True, quick_approved=True)

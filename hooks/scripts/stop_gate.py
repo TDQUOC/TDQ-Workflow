@@ -23,7 +23,7 @@ from _common import payload_cwd, read_payload, turn_rows
 # Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
 # (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
 from tdq_state import (BOOKKEEPING_PATHS, _info, _warn,  # noqa: E402
-                       effective_phase, load, plan_tick_state,
+                       cong_dang_cho, effective_phase, load, plan_tick_state,
                        repo_status_digest, repo_status_paths, sha256_file,
                        today_log_rel)
 
@@ -181,7 +181,10 @@ def main():
         if code in reminded and event not in done:
             hints.append(f"[{code}] {message}")
     if "TDQ:APPROVE" in reminded:
-        target = next((t for t in ("spec", "plan", "quick") if not state.get(f"{t}_approved")), None)
+        # Cùng hàm mà `edit_gate` dùng: cổng phải tính theo LANE. Duyệt danh sách cứng
+        # ở đây làm lane quick lúc nào cũng bị nhắc "spec chưa duyệt" — cổng quick không
+        # hề tồn tại ở lane đó.
+        target = cong_dang_cho(state)
         if target:
             hints.append(f"[TDQ:APPROVE] {target} vẫn chưa được ghi nhận duyệt — "
                          "user đã duyệt thì chạy `tdq_state.py approve`, chưa rõ thì HỎI.")

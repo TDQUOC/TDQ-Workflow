@@ -639,6 +639,31 @@ def effective_lane(state, warn=True):
     return None
 
 
+# Cổng duyệt của từng lane, theo thứ tự phải qua. Lane rỗng/lạ dùng `None`: state hỏng
+# thì im lặng là bỏ lọt, nên vẫn hỏi đủ cả ba cổng như bản cũ.
+CONG_THEO_LANE = {
+    "quick": ("quick",),
+    "full": ("spec", "plan"),
+    None: ("spec", "plan", "quick"),
+}
+
+
+def cong_dang_cho(state):
+    """Cổng duyệt còn thiếu của lane đang chạy, hoặc None khi đã duyệt đủ.
+
+    Vì sao là một hàm dùng chung: `edit_gate` và `stop_gate` đều cần câu trả lời này.
+    Lúc mỗi bên tự viết, `stop_gate` duyệt danh sách cứng ("spec", "plan", "quick") mà
+    không xét lane — lane quick không hề có cổng `spec` nên `spec_approved` vĩnh viễn
+    False và hook nhắc "spec chưa được duyệt" ngay cả với request đã đóng sổ. Cổng kêu
+    oan nhiều lần thì lúc nó kêu đúng cũng không còn ai nghe.
+    """
+    lane = effective_lane(state, warn=False)
+    for cong in CONG_THEO_LANE.get(lane, CONG_THEO_LANE[None]):
+        if not (state or {}).get(f"{cong}_approved"):
+            return cong
+    return None
+
+
 def effective_phase(state, warn=True):
     phase = (state or {}).get("phase")
     if phase in VALID_PHASES:

@@ -56,10 +56,10 @@
     ".claude/tdq/hooks/hooks.json": "cb7c6624ee55cbaafb8ec48b98e882566c77f5f6b559a9c8aabde4fd2e67eea7",
     ".claude/tdq/hooks/scripts/_common.py": "c87e379e88c67ab1f19c290c7fbb83e62980b11198a150a40c1bb35169575d4d",
     ".claude/tdq/hooks/scripts/bash_gate.py": "c68c581de2bcebd1578909f359de3f8dac7f894fd7af1153d401c364e14ddb13",
-    ".claude/tdq/hooks/scripts/edit_gate.py": "9a72a168a5705cb7bcf33212dd83a162335f9adba11e84a48614793f75a8017a",
+    ".claude/tdq/hooks/scripts/edit_gate.py": "788b9ba283fc1a570d592c34687a5f228480f96373e9394b9c01e8e02046a318",
     ".claude/tdq/hooks/scripts/prompt_context.py": "3e8e3bf3ebb1ce6a9205094cc946707b0282c285884bc870c068bf001cd9eafe",
     ".claude/tdq/hooks/scripts/session_start.py": "9efabb2d2a542ed7dedce524c8eedcf8b4acb8a7570c7fe80a4c4acc202145b6",
-    ".claude/tdq/hooks/scripts/stop_gate.py": "7319ea512563e27316d661d4460d54f51edb7f51da1e98ee8a6620c3b28d9335",
+    ".claude/tdq/hooks/scripts/stop_gate.py": "115357d897f005130c26149562b4bc06906c7893baa11b79c654198740129549",
     ".claude/tdq/scripts/canvas_a4_ch4_ch7.py": "f94519068375ba1ab2317c53dde534512b78daa3b14ea8237bd87d46290c55c7",
     ".claude/tdq/scripts/canvas_a4_rebuild.py": "2b7139956fb31a972665880d3b61b34d75af8fd6a0a4bac3c50353a744c3ce57",
     ".claude/tdq/scripts/canvas_draw.py": "2b3b2433649da0245a192165606002b12f544edc746a690e7e5f5d3922f6340a",
@@ -80,7 +80,7 @@
     ".claude/tdq/scripts/tdq_checkportable.py": "25f1785795e14bad8f403cc9a1bc45de4e1dafaef6d39ca878f638ebb7357535",
     ".claude/tdq/scripts/tdq_checkstatus.py": "b0b937dbfba821c3a29190c46cf075c5f3d63150142caa2c3844da3c1279364d",
     ".claude/tdq/scripts/tdq_finish.py": "dcbef559cebdd314b1637a4df836d11cc9e3777813ce0a2b7a956b5ac55a9c96",
-    ".claude/tdq/scripts/tdq_state.py": "4c6b6205eefa7a4db058d720d26055ebdbb8d659029c7e1937371632aab9076b",
+    ".claude/tdq/scripts/tdq_state.py": "b34edca085906edfe8ff85e11ef038ac7f3e5692530a3f313bc4d63272e26988",
     ".claude/tdq/scripts/tdq_team.py": "8e2a59038af9a43f4ec914b60ad82c7e3e6fae9deb7772256b73c7f83205c5dc",
     ".claude/tdq/scripts/tdq_timing.py": "dc370fda884c93ab77b14586bf75169e76f2a40ee517233678b277efdce2c71c",
     ".claude/tdq/scripts/token_audit.py": "78833ff79476158bb3f9cfaafa279148196ed59f48149da6688698b1da767b00",
@@ -92,5 +92,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.24.0"
+  "version": "0.26.0"
 }

@@ -1,9 +1,9 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-18T22:59:51+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-18T23:18:21+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-18-2205-spec-khong-ghi-lenh-kiem |
+| Request | 2026-08-18-2305-stop-gate-keu-oan-lane |
 | Lane | quick |
 | Phase | idle |
 | Spec | (chưa có) |

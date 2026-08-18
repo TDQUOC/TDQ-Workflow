@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-18)
 
 ## Corpus Check
-- 37 files · ~59,506 words
+- 37 files · ~59,926 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 813 nodes · 1564 edges · 30 communities (28 shown, 2 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 67 edges (avg confidence: 0.65)
+- 819 nodes · 1563 edges · 31 communities (28 shown, 3 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.64)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e53686ce`
+- Built from commit: `8b10a056`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -36,44 +36,45 @@
 - context_surface.py
 - skill_inventory.py
 - turn_snapshot
-- main
+- prompt_context.py
 - plugin_tiers.py
-- render_next
 - main
+- sha256_noi_dung
 - tdq-workflow — Plugin Claude Code
 - quet
 - _parse_approve_args
 - Exception
 - Exception
+- render_phases_md
 
 ## God Nodes (most connected - your core abstractions)
 1. `Changelog` - 26 edges
 2. `cli()` - 21 edges
-3. `main()` - 20 edges
-4. `log()` - 17 edges
-5. `cmd_build()` - 17 edges
-6. `_log()` - 14 edges
-7. `_cli_approve()` - 14 edges
-8. `LoiThieuSo` - 13 edges
-9. `_warn()` - 13 edges
-10. `_boi_canh()` - 12 edges
+3. `log()` - 17 edges
+4. `cmd_build()` - 17 edges
+5. `main()` - 15 edges
+6. `_cli_approve()` - 14 edges
+7. `_log()` - 14 edges
+8. `_warn()` - 13 edges
+9. `LoiThieuSo` - 13 edges
+10. `gom_bang_chung()` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `main()` --calls--> `canh_bao_lach_luat()`  [INFERRED]
-  hooks/scripts/edit_gate.py → scripts/tdq_team.py
-- `main()` --calls--> `default_state()`  [INFERRED]
-  hooks/scripts/session_start.py → scripts/tdq_state.py
-- `main()` --calls--> `_info()`  [INFERRED]
-  hooks/scripts/stop_gate.py → scripts/tdq_state.py
-- `payload_cwd()` --calls--> `resolve_project_dir()`  [INFERRED]
-  hooks/scripts/_common.py → scripts/tdq_state.py
 - `main()` --calls--> `load()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `normalize_mode()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `sha256_noi_dung()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `turn_log_append()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `turn_log_clear()`  [INFERRED]
   hooks/scripts/prompt_context.py → scripts/tdq_state.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (30 total, 2 thin omitted)
+## Communities (31 total, 3 thin omitted)
 
 ### Community 0 - "canvas_a4_rebuild.py"
 Cohesion: 0.06
@@ -101,11 +102,11 @@ Nodes (42): _agent_stub(), build_parser(), dem_cap_chong(), _do_mot_luot(), _do_
 
 ### Community 6 - "doc_lint.py"
 Cohesion: 0.07
-Nodes (39): collect(), Doc, _lane_cua_spec(), lint_file(), _log(), main(), pair(), _plan_contracts() (+31 more)
+Nodes (43): collect(), Doc, _lane_cua_spec(), lint_file(), _log(), main(), pair(), _plan_contracts() (+35 more)
 
 ### Community 7 - "_common.py"
-Cohesion: 0.15
-Nodes (23): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), block(), echo_line() (+15 more)
+Cohesion: 0.08
+Nodes (43): _check_signal_mismatch(), _clean(), _latest_signal(), main(), Dòng kind="signal" GẦN NHẤT khớp target (duyệt ngược sổ turn)., already_reminded(), approve_hint(), block() (+35 more)
 
 ### Community 8 - "build_portable.py"
 Cohesion: 0.10
@@ -128,8 +129,8 @@ Cohesion: 0.15
 Nodes (22): _changed_files(), _log(), _log_enabled(), main(), _now(), parse_args(), _project_dir(), Về `idle` = hết request → chốt sổ thời gian vào docs/tdq/timing.jsonl.      Chạy (+14 more)
 
 ### Community 13 - "tdq_state.py"
-Cohesion: 0.08
-Nodes (29): _atomic_write(), _echo_state(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), _pop_json_flag(), prompt_context_last() (+21 more)
+Cohesion: 0.10
+Nodes (23): _atomic_write(), _echo_state(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), _pop_json_flag(), prompt_context_path() (+15 more)
 
 ### Community 14 - "check_canvas_layout.py"
 Cohesion: 0.16
@@ -156,24 +157,24 @@ Cohesion: 0.15
 Nodes (19): _clean(), _condense(), _enabled_plugins(), _filter(), _frontmatter(), inventory(), _load_json(), main() (+11 more)
 
 ### Community 20 - "turn_snapshot"
-Cohesion: 0.15
-Nodes (17): _file_changed_since_approval(), _git(), plan_tick_state(), True khi file spec/plan đã đổi nội dung so với lúc duyệt. Dùng để phân biệt, stdout (bytes) của lệnh git, hoặc None khi không chạy được., Gốc repo (porcelain in path theo gốc, không theo cwd). None nếu không phải repo., Dấu nhận dạng file untracked → (dấu, số byte đã đọc).      Ưu tiên NỘI DUNG: mti, Vân tay trạng thái làm việc của repo, hoặc None khi không lấy được.      Gồm cả (+9 more)
+Cohesion: 0.17
+Nodes (16): _git(), plan_tick_state(), stdout (bytes) của lệnh git, hoặc None khi không chạy được., Gốc repo (porcelain in path theo gốc, không theo cwd). None nếu không phải repo., Dấu nhận dạng file untracked → (dấu, số byte đã đọc).      Ưu tiên NỘI DUNG: mti, Vân tay trạng thái làm việc của repo, hoặc None khi không lấy được.      Gồm cả, Path đang khác so với HEAD (bỏ cờ trạng thái, rename lấy vế đích).      Cùng vùn, Trạng thái checkbox của plan hiện hành. Không bao giờ ném lỗi. (+8 more)
 
-### Community 21 - "main"
-Cohesion: 0.18
-Nodes (16): approve_hint(), plan_mode(), Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi., _compact(), _emit(), looks_like_approval(), main(), mode_from_answer() (+8 more)
+### Community 21 - "prompt_context.py"
+Cohesion: 0.28
+Nodes (8): _compact(), _emit(), looks_like_approval(), Turn trước đã in y hệt nội dung này — thay bằng dòng ngắn cùng mã., critical=True: cảnh báo/hành động riêng cho turn này (duyệt mơ hồ, mode     lệch, _truncate(), prompt_context_last(), Digest nội dung [TDQ:...] đã in ở turn trước cho session này, None nếu chưa có.
 
 ### Community 22 - "plugin_tiers.py"
 Cohesion: 0.34
 Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
 
-### Community 23 - "render_next"
-Cohesion: 0.24
-Nodes (13): effective_lane(), effective_mode(), effective_phase(), next_headline(), phase_key(), phase_row(), Khoá tra PHASE_TABLE cho state hiện tại., Dòng PHASE_TABLE để HIỂN THỊ cho state hiện tại.      Khác `phase_key`: hàm này (+5 more)
+### Community 23 - "main"
+Cohesion: 0.26
+Nodes (14): main(), effective_lane(), effective_mode(), effective_phase(), next_headline(), phase_key(), phase_row(), Khoá tra PHASE_TABLE cho state hiện tại. (+6 more)
 
-### Community 24 - "main"
-Cohesion: 0.22
-Nodes (14): payload_cwd(), Project root cho state — cwd của payload có thể là thư mục con/worktree., read_payload(), main(), _log_changed(), main(), Ảnh chụp đầu turn — lấy dòng MỚI NHẤT.      Bình thường mỗi turn chỉ có một dòng, Log hôm nay có đổi so với đầu turn không (bất kể ghi bằng cách nào). (+6 more)
+### Community 24 - "sha256_noi_dung"
+Cohesion: 0.50
+Nodes (4): _file_changed_since_approval(), True khi file spec/plan đã đổi nội dung so với lúc duyệt. Dùng để phân biệt, Băm PHẦN NỘI DUNG của spec/plan: từ heading `##` đầu tiên trở đi.      Vì sao kh, sha256_noi_dung()
 
 ### Community 25 - "tdq-workflow — Plugin Claude Code"
 Cohesion: 0.22
@@ -184,18 +185,18 @@ Cohesion: 0.36
 Nodes (7): khoi_mau(), la_ky_hieu(), main(), quet(), True khi ch là dấu câu/ký hiệu ngoài ASCII — thứ whitelist phải quản., Nội dung các khối ``` trong file — đây mới là phần THẬT SỰ in ra cho user., {ký tự: (tổng số lần, {file: số lần})} cho mọi ký hiệu ngoài ASCII.
 
 ### Community 27 - "_parse_approve_args"
-Cohesion: 0.33
-Nodes (6): _fail(), normalize_lane(), _parse_approve_args(), -> (target, mode, by, no_qc). Chỉ lỗi khi cú pháp thật sự sai., Chỉ dùng cho SAI CÚ PHÁP LỆNH — exit 2 (spec §2.9.4)., Bí danh -> định danh máy ("quick"/"full"). Không nhận ra -> None (người gọi
+Cohesion: 0.20
+Nodes (10): mode_from_answer(), Câu trả lời ở cổng mode -> định danh máy, hoặc None nếu không đọc ra được., _fail(), normalize_lane(), normalize_mode(), _parse_approve_args(), -> (target, mode, by, no_qc). Chỉ lỗi khi cú pháp thật sự sai., Chỉ dùng cho SAI CÚ PHÁP LỆNH — exit 2 (spec §2.9.4). (+2 more)
 
 ## Knowledge Gaps
 - **32 isolated node(s):** `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16`, `0.21.0 — 2026-08-16`, `0.20.0 — 2026-08-15` (+27 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `turn_log_append()` connect `tdq_state.py` to `cli`, `main`, `_common.py`?**
+- **Why does `turn_log_append()` connect `_common.py` to `cli`, `tdq_state.py`, `main`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 11 inferred relationships involving `main()` (e.g. with `effective_lane()` and `effective_mode()`) actually correct?**
   _`main()` has 11 INFERRED edges - model-reasoned connections that need verification._

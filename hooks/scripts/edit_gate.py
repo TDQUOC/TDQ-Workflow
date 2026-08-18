@@ -18,7 +18,7 @@ from _common import (block, echo_line, observe, payload_cwd, read_payload, remin
 # Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
 # (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
 # `today_log_rel` lấy thẳng từ tdq_state — một nguồn duy nhất, dùng chung với stop_gate.
-from tdq_state import (effective_lane, effective_phase, load,  # noqa: E402
+from tdq_state import (cong_dang_cho, effective_phase, load,  # noqa: E402
                        plan_tick_state, state_md_path, state_path,
                        today_log_rel)
 
@@ -70,14 +70,10 @@ def main():
     if within(abs_target, os.path.realpath(os.path.join(cwd, "docs"))):
         return  # docs/** không cần nhắc: brief/spec/plan/research/log
 
-    lane = effective_lane(state, warn=False)
-    pending = None
-    if lane == "full" and not state.get("spec_approved"):
-        pending = "spec"
-    elif lane == "full" and not state.get("plan_approved"):
-        pending = "plan"
-    elif lane == "quick" and not state.get("quick_approved"):
-        pending = "quick"
+    # Luật chọn cổng nằm ở `tdq_state.cong_dang_cho` — dùng chung với `stop_gate`.
+    # Chép luật ra hai hook là mở đường cho hai bên lệch nhau: đúng chỗ lệch đó khiến
+    # stop_gate nhắc oan lane quick suốt một thời gian.
+    pending = cong_dang_cho(state)
     if pending:
         # Nêu cả tên máy lẫn nhãn user đọc thấy ở cổng mode — cả hai đều được nhận.
         mode = " --mode <main|inline | subagent|sub-agent>" if pending == "plan" else ""
