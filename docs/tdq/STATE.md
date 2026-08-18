@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-17T23:07:47+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-18T20:48:20+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-17-2121-toi-uu-context-workflow |
+| Request | 2026-08-18-1744-uu-tien-subagent-song-song |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-17-2121-toi-uu-context-workflow.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-17-2121-toi-uu-context-workflow.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-18-1744-uu-tien-subagent-song-song.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-18-1744-uu-tien-subagent-song-song.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

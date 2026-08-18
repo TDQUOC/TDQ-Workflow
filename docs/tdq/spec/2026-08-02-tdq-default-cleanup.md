@@ -1,5 +1,7 @@
 # SPEC — TDQ workflow là default tuyệt đối + bỏ mục superpower (mục 5 cũ)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-02 · Bản: 1.1 · Request: ../requests/2026-08-02-tdq-default-cleanup.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

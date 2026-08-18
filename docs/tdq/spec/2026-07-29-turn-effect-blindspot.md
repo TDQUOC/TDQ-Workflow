@@ -1,4 +1,6 @@
 # SPEC — Vá điểm mù của verify-by-effect (sổ turn chỉ thấy Edit/Write)
+
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
 <!-- doc-lint: allow R8 -->  <!-- spec viết trước 0.3.3, chưa có mục 3b -->
 
 Ngày: 2026-07-29 · Request: `docs/tdq/requests/2026-07-29-turn-effect-blindspot.md` · Trạng thái: **CHỜ DUYỆT**

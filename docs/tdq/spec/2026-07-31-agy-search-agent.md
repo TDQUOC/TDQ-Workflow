@@ -1,5 +1,7 @@
 # SPEC — Search agent "deep search" dùng agy CLI, tích hợp TDQ workflow
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-07-31 · Bản: 1.1 (sau review tdq-reviewer: áp dụng đủ 9/9 finding) · Request: ../requests/2026-07-31-agy-search-agent.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

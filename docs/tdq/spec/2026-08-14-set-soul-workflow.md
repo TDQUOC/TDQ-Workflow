@@ -1,5 +1,7 @@
 # SPEC — Soul cho workflow và thư viện rule kỹ thuật đa ngôn ngữ
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-14 · Bản: 1.2 · Brief: ../brief/2026-08-14-set-soul-workflow.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: ĐÃ DUYỆT 2026-08-14T22:19 (dòng Soul thêm sau duyệt theo chính đầu ra 15 của spec)

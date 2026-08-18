@@ -1,5 +1,7 @@
 # SPEC — Bump 0.7.0 + bộ export Claude Code đầy đủ, chạy được bằng một lệnh
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-05 · Bản: 1.0 · Request: ../requests/2026-08-05-bump-version-va-export.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

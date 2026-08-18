@@ -45,7 +45,28 @@ leader phải tự làm, mất chỗ chạy song song. Task chỉ sửa tài li�
 Node nằm trong mục `## Hub` của `docs/kien-truc.md` → task phải thêm một dòng DoD kiểm
 hồi quy riêng cho node ấy.
 
+## Dòng `Cần:` (khai phụ thuộc giữa các task)
+
+Đặt ngay dưới task, sau dòng `Chạm:` nếu có. Một dòng, mã task ngoài backtick, phân cách
+bằng dấu phẩy:
+
+- [ ] **T3.2** việc đọc đầu ra của task khác — Test: <...>
+  - Cần: T3.1, T1.3
+
+Task nào ĐỌC đầu ra của task khác thì BẮT BUỘC khai. Ví dụ: task gọi hàm mà task khác vừa
+viết, task sinh lại bản portable sau khi task khác sửa skill.
+
+Máy đọc dòng này để xếp đợt: task chỉ được phát khi mọi mã trong `Cần:` đã xong. Plan
+KHÔNG khai `Cần:` ở bất kỳ task nào thì máy lùi về luật cũ — thứ tự phase là thứ tự phụ
+thuộc. Luật lùi này giữ cho plan viết trước đây chạy y như cũ.
+
+Cấm khai vòng: A cần B mà B cần A thì máy báo lỗi và dừng, không tự gỡ.
+
 ## Cụm song song
+
+Mục này BẮT BUỘC có trong mọi plan, mọi lane, mọi mode — kể cả khi kết luận là chỉ một
+cụm. Lý do: tính modular là thuộc tính của TÀI LIỆU, không phải của mode thi hành. Viết
+"một cụm vì <lý do>" vẫn hợp lệ; bỏ trắng mục thì `doc_lint --pair` báo lỗi.
 
 Mode `subagent` chia task thành từng đợt. Hai task cùng đợt chạy đồng thời ở hai worktree
 khác nhau, nên chúng KHÔNG được đụng chung một file — git không hề cảnh báo, tới lúc
@@ -58,7 +79,8 @@ merge mới vỡ. Máy tự chia đợt từ dòng `Chạm:`, nhưng bạn viế
 - Chia nhỏ theo FILE, đừng chia theo bước thời gian. "Viết `a.py`" + "viết test cho
   `a.py`" là một task; "viết `a.py`" + "viết `b.py`" là hai task chạy song song được.
 - Ước lượng nhanh: đếm số task có `Chạm:` không giao nhau. Con số đó là trần tốc độ của
-  mode đội. Dưới 3 thì đề xuất mode `main` cho lành.
+  mode đội. Đừng đoán bên nào thắng — chạy lệnh `mo-phong` ở bước 1 của
+  [tdq-plan/SKILL.md](../SKILL.md) và lấy dòng `Thắng:` làm đề xuất.
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>

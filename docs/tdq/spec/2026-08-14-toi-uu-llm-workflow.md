@@ -1,5 +1,7 @@
 # SPEC — Chấm toàn bộ workflow theo hướng LLM đọc & chi phí context
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-14 · Bản: 1.0 · Brief: ../brief/2026-08-14-toi-uu-llm-workflow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

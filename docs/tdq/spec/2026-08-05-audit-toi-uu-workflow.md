@@ -1,5 +1,7 @@
 # SPEC — Audit toàn bộ workflow TDQ, đề xuất tối ưu token/thời gian (vòng 3)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-05 · Bản: 1.1 · Request: ../requests/2026-08-05-audit-toi-uu-workflow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

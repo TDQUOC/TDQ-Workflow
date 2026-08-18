@@ -1,5 +1,7 @@
 # SPEC — Siết QC và vòng fix cho lane quick
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-07 · Bản: 1.1 · Request: ../requests/2026-08-07-siet-qc-lane-quick.md · Lane: full
 Trạng thái: ĐÃ DUYỆT 2026-08-07T17:21 (bản 1.0 duyệt 16:56; bản 1.1 sửa theo 17 finding của `tdq-reviewer`, user duyệt lại)
 Knowledge: ../knowledge/2026-08-07-siet-qc-lane-quick.md · Hỏi–đáp: ../questions/2026-08-07-siet-qc-lane-quick.md

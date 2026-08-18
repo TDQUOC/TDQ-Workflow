@@ -35,13 +35,21 @@ _PHASE = re.compile(r"^##\s*(P\d+)\b")
 # Đường dẫn khai trong backtick: phải có `/` và có đuôi — `true` hay `T1.1` không tính.
 _PATH = re.compile(r"`([A-Za-z0-9_./-]+\.[A-Za-z0-9]+)`")
 _TASK_REF = re.compile(r"\b(T\d+\.\d+)\b")
+# Nhãn khai phụ thuộc trong plan: `- Cần: T1.1, T2.3`.
+NHAN_CAN = "Cần:"
+# Nhãn ước lượng thời gian trong plan: `(n3 e20m)` → 20 phút.
+_UOC_LUONG = re.compile(r"\be(\d+)m\b")
 
-# 4 nhóm ĐÓNG được phép giữ task lại cho leader. Ngoài 4 nhóm này là lách luật.
+# Tập ĐÓNG các lý do được phép giữ task lại cho leader. Ngoài tập này là lách luật.
 LY_DO_GIU = {
     "phu-thuoc": "task phụ thuộc một task khác chưa xong",
     "vung-khoa": "không khai được vùng file riêng nên không thể tách",
     "mcp": "task cần MCP tool mà agent con không có",
     "file-luat": "sửa chính file luật/hook mà leader đang chạy theo",
+    # Hợp đồng dùng chung (kiểu dữ liệu, hằng số, khuôn thông báo, sổ đăng ký) phải
+    # dựng xong TRƯỚC rồi mới chia nhánh: mỗi agent con tự đoán một kiểu thì merge
+    # xong mới lộ ra là ba bản không khớp nhau.
+    "hop-dong": "task định nghĩa hợp đồng dùng chung mà nhiều task sau đọc",
 }
 # Tiền tố file luật/hook: agent con sửa những chỗ này thì leader đang đứng trên
 # tấm ván nó cưa — phải để leader tự làm.
@@ -49,6 +57,11 @@ TIEN_TO_FILE_LUAT = ("skills/", "hooks/", "agents/", ".claude/", ".codex/",
                      "CLAUDE.md", "AGENTS.md")
 # Tên nhánh/worktree cấm mở đầu (CLAUDE.md §2).
 TEN_CAM = ("claude", "antigravity", "gemini", "codex")
+
+# Trần số nhánh chạy cùng lúc. 4 vì số điểm lỗi phối hợp tăng theo n(n-1)/2:
+# 4 agent là 6 điểm, 10 agent đã là 45 điểm (research vòng 1, mục 4). Đây là trần
+# TRÊN — ít task sẵn sàng hơn thì phát ít hơn, cấm chờ cho đủ 4.
+TRAN_SONG_SONG = 4
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
@@ -145,6 +158,69 @@ def doc_plan(duong_dan):
     return tasks
 
 
+def doc_phu_thuoc(tasks):
+    """Bản đồ mã task → tập mã task phải xong TRƯỚC, đọc từ dòng `- Cần: T1.1, T2.3`.
+
+    Task không khai dòng này trả tập rỗng — nghĩa là "không tự nhận phụ thuộc ai".
+    Mã tự trỏ chính nó và mã không có trong plan đều bỏ qua: plan viết ẩu thì lịch
+    trình vẫn chạy được, sai sót để linter bắt chứ không làm sập lệnh chia đợt.
+    """
+    co_that = {t.ma for t in tasks}
+    ket_qua = {}
+    for t in tasks:
+        can = set()
+        for dong in t.text:
+            if not dong.strip().startswith(NHAN_CAN):
+                continue
+            phan = dong.split(":", 1)[1] if ":" in dong else ""
+            for ref in _TASK_REF.findall(phan):
+                if ref != t.ma and ref in co_that:
+                    can.add(ref)
+        ket_qua[t.ma] = can
+    return ket_qua
+
+
+def _phut_uoc_luong(task):
+    """Số phút ước lượng đọc từ nhãn `(n3 e20m)`. Không khai thì tính 1 phút.
+
+    Mặc định 1 chứ không phải 0: task không khai vẫn tốn thời gian, cho 0 sẽ
+    làm cả nhánh chứa nó biến mất khỏi phép so đường găng.
+    """
+    for dong in task.text:
+        m = _UOC_LUONG.search(dong)
+        if m:
+            return int(m.group(1))
+    return 1
+
+
+def b_level(tasks, phu_thuoc):
+    """Mã task → tổng phút của đường DÀI NHẤT từ task đó tới hết đồ thị.
+
+    Đây là `b-level` của lịch trình danh sách: task có b-level lớn nằm trên đường
+    găng, phát trước thì cả đội về sớm; phát sau thì mọi nhánh khác phải chờ nó.
+    """
+    sau = {t.ma: [] for t in tasks}                 # mã task → các task chờ nó
+    for t in tasks:
+        for c in phu_thuoc.get(t.ma, ()):
+            if c in sau:
+                sau[c].append(t.ma)
+    phut = {t.ma: _phut_uoc_luong(t) for t in tasks}
+    nho = {}
+
+    def tinh(ma, dang_di):
+        if ma in nho:
+            return nho[ma]
+        if ma in dang_di:                           # vòng lặp: cắt, không treo máy
+            return 0
+        dang_di.add(ma)
+        ket_qua = phut[ma] + max((tinh(k, dang_di) for k in sau[ma]), default=0)
+        dang_di.discard(ma)
+        nho[ma] = ket_qua
+        return ket_qua
+
+    return {t.ma: tinh(t.ma, set()) for t in tasks}
+
+
 def _la_file_luat(duong):
     return duong.startswith(TIEN_TO_FILE_LUAT)
 
@@ -157,6 +233,10 @@ def quyet_dinh_task(task, tasks):
         return "tu_lam", "vung-khoa"
     if any(_la_file_luat(d) for d in task.vung_file):
         return "tu_lam", "file-luat"
+    if any(doc_phu_thuoc(tasks).values()):
+        # Plan đã khai `Cần:` → phụ thuộc là ràng buộc LỊCH TRÌNH (`chia_dot` lo),
+        # không phải cớ giữ task. Giữ lại ở đây thì thêm dòng `Cần:` sẽ giết song song.
+        return "giao", ""
     chua_xong = {t.ma for t in tasks if not t.xong}
     for dong in task.text:
         for ref in _TASK_REF.findall(dong):
@@ -166,12 +246,57 @@ def quyet_dinh_task(task, tasks):
 
 
 def chia_dot(tasks, quyet_dinh):
-    """Gán số đợt cho từng task.
+    """Gán số đợt cho từng task. Đợt 1 chạy trước, đợt 2 chạy sau, cùng đợt = song song.
 
-    Hai luật, đúng thứ tự: (1) phase sau chạy sau phase trước — thứ tự phase LÀ
-    thứ tự phụ thuộc; (2) trong cùng một phase, hai task chạm chung file không
-    bao giờ nằm chung đợt. Xếp tham lam vào đợt sớm nhất còn trống chỗ.
+    Có ít nhất một task khai `Cần:` → xếp theo ĐỒ THỊ PHỤ THUỘC: task nằm sau mọi
+    task nó khai, ngoài ra được đẩy lên sớm nhất có thể kể cả vượt ranh giới phase.
+    Không task nào khai → lùi về luật cũ theo tên phase, để plan viết trước luật này
+    cho ra đúng số đợt như bản cũ.
+
+    Luật chung cho cả hai đường: hai task chạm chung file không bao giờ cùng đợt.
     """
+    phu_thuoc = doc_phu_thuoc(tasks)
+    if not any(phu_thuoc.values()):
+        _log("chia-dot → không task nào khai `Cần:`, lùi về luật cũ theo tên phase")
+        return _chia_dot_theo_phase(tasks)
+    khai = sum(1 for v in phu_thuoc.values() if v)
+    _log(f"chia-dot → {khai}/{len(tasks)} task khai `Cần:`, xếp theo đồ thị phụ thuộc")
+    return _chia_dot_theo_phu_thuoc(tasks, phu_thuoc)
+
+
+def _dot_som_nhat(files, dot_toi_thieu, chiem_theo_dot):
+    """Đợt sớm nhất từ `dot_toi_thieu` trở đi mà không đụng file của task khác."""
+    dot = dot_toi_thieu
+    while files & chiem_theo_dot.get(dot, set()):
+        dot += 1
+    chiem_theo_dot.setdefault(dot, set()).update(files)
+    return dot
+
+
+def _chia_dot_theo_phu_thuoc(tasks, phu_thuoc):
+    """Xếp theo thứ tự tô-pô: mỗi task đứng sau đợt lớn nhất của các task nó cần."""
+    con_lai = {t.ma: t for t in tasks}
+    dot_theo_task = {}
+    chiem_theo_dot = {}
+    while con_lai:
+        san_sang = [t for t in con_lai.values()
+                    if all(c in dot_theo_task for c in phu_thuoc[t.ma])]
+        cat_vong = not san_sang
+        if cat_vong:
+            # Vòng lặp trong khai báo `Cần:` — plan sai. Cắt vòng và xếp tiếp thay vì
+            # văng: lệnh chia đợt không phải chỗ báo lỗi cú pháp plan, linter mới là.
+            _log(f"chia-dot → cắt vòng `Cần:` ở {', '.join(sorted(con_lai))}")
+            san_sang = list(con_lai.values())
+        for t in san_sang:
+            # `.get(...,  0)` vì ở nhánh cắt vòng, task nó cần có thể chưa được xếp.
+            nen = max((dot_theo_task.get(c, 0) for c in phu_thuoc[t.ma]), default=0) + 1
+            dot_theo_task[t.ma] = _dot_som_nhat(set(t.vung_file), nen, chiem_theo_dot)
+            del con_lai[t.ma]
+    return dot_theo_task
+
+
+def _chia_dot_theo_phase(tasks):
+    """Luật cũ: thứ tự phase LÀ thứ tự phụ thuộc, chia file trong từng phase."""
     dot_theo_task = {}
     nen = 0
     for phase in sorted({t.phase for t in tasks}, key=_khoa_phase):
@@ -304,8 +429,8 @@ def lenh_kiem_ke(project, _args):
         if not ly_do:
             van_de.append(f"Giữ: {ma} — tự làm mà KHÔNG có lý do")
         elif ly_do not in LY_DO_GIU:
-            van_de.append(f"Giữ: {ma} — lý do \"{ly_do}\" không thuộc 4 nhóm "
-                          f"({', '.join(sorted(LY_DO_GIU))})")
+            van_de.append(f"Giữ: {ma} — lý do \"{ly_do}\" không thuộc "
+                          f"{len(LY_DO_GIU)} nhóm ({', '.join(sorted(LY_DO_GIU))})")
     tong = len(ban_do["tasks"])
     giao = sum(1 for r in ban_do["tasks"].values() if r.get("quyet_dinh") == "giao")
     _log(f"kiem-ke → {giao}/{tong} giao · {len(van_de)} vấn đề")
@@ -313,20 +438,51 @@ def lenh_kiem_ke(project, _args):
         for dong in van_de:
             _loi(dong)
         _loi("Sửa: python3 scripts/tdq_team.py phan-cong (hoặc sửa tay bản đồ cho "
-             "đúng 4 nhóm lý do)")
+             f"đúng {len(LY_DO_GIU)} nhóm lý do)")
         return 1
     print(f"Bản đồ sạch: {giao}/{tong} task giao cho agent con.")
     return 0
 
 
+def _tien_quyet(tasks, phu_thuoc, dot_theo_task):
+    """Mã task → tập mã task phải XONG trước khi phát nó.
+
+    Plan có khai `Cần:` thì lấy đúng lời khai. Plan cũ không khai gì thì suy ra từ
+    số đợt — giữ nguyên hành vi "đợt trước xong mới tới đợt sau" của bản trước.
+    """
+    if any(phu_thuoc.values()):
+        return {ma: set(phu_thuoc[ma]) for ma in tasks}
+    return {ma: {khac for khac in tasks
+                 if dot_theo_task.get(khac, 0) < dot_theo_task.get(ma, 0)}
+            for ma in tasks}
+
+
+def _ly_do_hoan(ma, tien_quyet, tasks, khoa, vung_file):
+    """Lý do CỤ THỂ khiến task chưa phát được, hoặc None nếu phát được."""
+    thieu = sorted(c for c in tien_quyet[ma]
+                   if c in tasks and not tasks[c].xong)
+    if thieu:
+        return "chờ task chưa xong: " + ", ".join(thieu)
+    dung = [d for d in vung_file if d in khoa]
+    if dung:
+        return "đụng vùng đang khoá: " + ", ".join(sorted(dung))
+    return None
+
+
 def lenh_cum(project, _args):
     _slug, plan, ban_do = _boi_canh(project)
-    tasks = {t.ma: t for t in doc_plan(plan)}
+    danh_sach = doc_plan(plan)
+    tasks = {t.ma: t for t in danh_sach}
+    phu_thuoc = doc_phu_thuoc(danh_sach)
+    diem_gang = b_level(danh_sach, phu_thuoc)
+    dot_theo_task = {ma: rec.get("dot", 0) for ma, rec in ban_do["tasks"].items()}
+    tien_quyet = _tien_quyet(tasks, phu_thuoc, dot_theo_task)
+
     khoa = {}                               # file → task đang giữ
-    for ma, t in tasks.items():
-        if t.da_giao:
-            for duong in t.vung_file:
-                khoa[duong] = ma
+    dang_bay = [ma for ma, t in tasks.items() if t.da_giao]
+    for ma in dang_bay:
+        for duong in tasks[ma].vung_file:
+            khoa[duong] = ma
     con_lai = [ma for ma, rec in ban_do["tasks"].items()
                if rec["quyet_dinh"] == "giao"
                and ma in tasks and not tasks[ma].xong and not tasks[ma].da_giao]
@@ -334,28 +490,42 @@ def lenh_cum(project, _args):
         _log("cum → HẾT task giao được")
         print("HẾT: không còn task nào để giao cho agent con.")
         return 0
-    dot_min = min(ban_do["tasks"][ma]["dot"] for ma in con_lai)
     if khoa:
         print("Vùng đang khoá: " + ", ".join(
             f"{duong} ({ma})" for duong, ma in sorted(khoa.items())))
-    phat, giu = [], []
+
+    # Đường găng trước: task kéo dài tổng thời gian nhất được chỗ trước tiên.
+    con_lai.sort(key=lambda ma: (-diem_gang.get(ma, 0), ma))
+    phat, hoan, cho_slot = [], [], []
+    da_dat = dict(khoa)                     # kèm cả file vừa nhận trong lượt này
     for ma in con_lai:
-        if ban_do["tasks"][ma]["dot"] != dot_min:
+        vung = ban_do["tasks"][ma]["vung_file"]
+        ly_do = _ly_do_hoan(ma, tien_quyet, tasks, da_dat, vung)
+        if ly_do:
+            hoan.append((ma, ly_do))
             continue
-        dung = [d for d in ban_do["tasks"][ma]["vung_file"] if d in khoa]
-        (giu if dung else phat).append((ma, dung))
-    print(f"Đợt {dot_min}: {len(phat)} task")
-    for ma, _ in phat:
+        # Trần đếm cả task `[>]` đang bay: phát liên tục mà chỉ đếm trong lượt thì
+        # mỗi lượt lại mở thêm 4 nhánh nữa, trần thành vô nghĩa.
+        if len(dang_bay) + len(phat) >= TRAN_SONG_SONG:
+            _log(f"cum → {ma} sẵn sàng nhưng chạm trần {TRAN_SONG_SONG} nhánh "
+                 f"({len(dang_bay)} đang bay), chờ slot")
+            cho_slot.append(ma)
+            continue
+        phat.append(ma)
+        for duong in vung:
+            da_dat[duong] = ma
+
+    print(f"Sẵn sàng: {len(phat)} task")
+    for ma in phat:
         print(f"  {ma}  {' '.join(ban_do['tasks'][ma]['vung_file'])}")
-    for ma, dung in giu:
-        print(f"  GIỮ {ma} — đụng vùng đang khoá: {', '.join(dung)}")
-    sau = sorted(ma for ma in con_lai if ban_do["tasks"][ma]["dot"] != dot_min)
-    if sau:
-        # Q4 đòi "in rõ lý do": task không được phát vì còn đứng ở đợt sau, chứ không
-        # phải vì bị bỏ quên. Nói ra để leader không tưởng là bản đồ sót task.
-        print(f"  HOÃN {len(sau)} task của đợt sau (đợi đợt {dot_min} hợp xong): "
-              + ", ".join(sau))
-    _log(f"cum → đợt {dot_min} · phát {len(phat)} · giữ {len(giu)}")
+    # Nói rõ vì sao từng task chưa phát: leader phải phân biệt "bản đồ sót task"
+    # với "task còn vướng đúng luật".
+    for ma, ly_do in hoan:
+        print(f"  HOÃN {ma} — {ly_do}")
+    if cho_slot:
+        print(f"  CHỜ SLOT {len(cho_slot)} task (trần {TRAN_SONG_SONG} nhánh cùng lúc, "
+              f"đang bay {len(dang_bay)}): " + ", ".join(sorted(cho_slot)))
+    _log(f"cum → phát {len(phat)} · hoãn {len(hoan)} · chờ slot {len(cho_slot)}")
     return 0
 
 
@@ -615,7 +785,7 @@ def canh_bao_lach_luat(cwd, rel_target):
 # ------------------------------------------------------------------ CLI
 LENH = {
     "phan-cong": (lenh_phan_cong, "đọc toàn bộ plan, ghi bản đồ phân công"),
-    "kiem-ke": (lenh_kiem_ke, "soi bản đồ: giữ task lại phải đúng 1 trong 4 nhóm lý do"),
+    "kiem-ke": (lenh_kiem_ke, "soi bản đồ: giữ task lại phải đúng 1 nhóm lý do đóng"),
     "cum": (lenh_cum, "in đợt kế tiếp, trừ vùng file đang khoá"),
     "mo": (lenh_mo, "tạo nhánh + worktree cho một task"),
     "kiem": (lenh_kiem, "dò xung đột với nhánh tích hợp, không đụng repo"),

@@ -1,5 +1,7 @@
 # Spec — tối ưu token/time workflow (vòng 2)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Slug: `2026-08-05-toi-uu-token-vong-2` · lane full · bản 1
 Nguồn: `docs/tdq/knowledge/2026-08-05-toi-uu-token-vong-2.md`
 

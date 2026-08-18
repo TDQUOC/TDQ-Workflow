@@ -1,5 +1,7 @@
 # SPEC — Kiểm kê & tận dụng skill phụ trợ (tdq-workflow 0.3.3)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-07-29 · Bản: **1.1** · Request: ../requests/2026-07-29-skill-inventory.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

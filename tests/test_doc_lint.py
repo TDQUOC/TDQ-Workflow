@@ -190,7 +190,14 @@ PLAN_CONTRACT_OK = """# PLAN — X
   - Ra: `src/chart.tsx`.
   - Kiểm: `test -f src/chart.tsx`
   - Không dùng cho: layout trang.
+
+## Cụm song song
+
+Một cụm vì chỉ có một task.
 """
+
+# Bản KHÔNG có mục cụm song song — dùng cho ca đỏ của luật mới (2026-08-18).
+PLAN_THIEU_CUM = PLAN_CONTRACT_OK.split("## Cụm song song")[0]
 
 
 class ContractFieldsTest(unittest.TestCase):
@@ -297,7 +304,7 @@ class PairTest(LintBase):
         """NỀN và KHÔNG không đòi hợp đồng — chỉ DÙNG mới đòi."""
         spec = SPEC_3B_OK.replace("| built-in | DÙNG | vẽ biểu đồ đầu ra #2 |",
                                   "| built-in | KHÔNG | khác lĩnh vực |")
-        code, out = self.pair(spec, "# PLAN — X\n\n- [ ] **T1.1** Trơn\n")
+        code, out = self.pair(spec, "# PLAN — X\n\n- [ ] **T1.1** Trơn\n\n## Cụm song song\n\nMột cụm.\n")
         self.assertEqual(code, 0, out)
 
     def test_pair_bad_argc(self):
@@ -328,6 +335,76 @@ RULE_3_MUC_OK = """# Luật mẫu
 - `ruff check <file>` exit 0.
 """
 RULE_THIEU_MUC = RULE_3_MUC_OK.replace("## Tự kiểm", "## Ghi chú")
+
+
+SPEC_LANE_FULL_CO_2B = SPEC_3B_OK.replace(
+    "# SPEC — X\n",
+    "# SPEC — X\n\nNgày: 2026-08-18 · Bản: 1.0 · Lane: full\n\n## 2b. Ranh giới module\n\n"
+    "| Module | Vùng file | Phụ thuộc module | Đầu ra §2 nào |\n|---|---|---|---|\n"
+    "| lõi | `a.py` | không | 1 |\n")
+
+SPEC_LANE_FULL_THIEU_2B = SPEC_3B_OK.replace(
+    "# SPEC — X\n", "# SPEC — X\n\nNgày: 2026-08-18 · Bản: 1.0 · Lane: full\n")
+
+SPEC_LANE_QUICK_THIEU_2B = SPEC_3B_OK.replace(
+    "# SPEC — X\n", "# SPEC — X\n\nNgày: 2026-08-18 · Bản: 1.0 · Lane: quick\n")
+
+
+class R10Test(LintBase):
+    """R10 — spec lane full phải có mục ranh giới module, để plan có sẵn đường cắt."""
+
+    def test_r10_lane_full_thieu_2b(self):
+        path = os.path.join("spec", "full-thieu.md")
+        self.assert_hits(self.write(path, SPEC_LANE_FULL_THIEU_2B), "R10")
+
+    def test_r10_lane_full_co_2b_sach(self):
+        path = os.path.join("spec", "full-du.md")
+        self.assert_clean(self.write(path, SPEC_LANE_FULL_CO_2B))
+
+    def test_r10_lane_quick_khong_soi(self):
+        """Lane quick cố ý bỏ mục này — báo ở đây là báo nhầm."""
+        path = os.path.join("spec", "quick.md")
+        self.assert_clean(self.write(path, SPEC_LANE_QUICK_THIEU_2B))
+
+    def test_r10_allow_muc_file_cho_spec_cu(self):
+        """Spec viết trước khi có R10 dán 1 dòng allow là qua — y hệt cơ chế của R8.
+
+        Dòng allow dùng mã hai chữ số, nên regex ALLOW phải nhận `R\\d+` chứ không
+        phải `R\\d`; đây là chỗ dễ vỡ nhất của luật này.
+        """
+        text = SPEC_LANE_FULL_THIEU_2B.replace(
+            "# SPEC — X\n", "# SPEC — X\n\n<!-- doc-lint: allow R10 -->\n")
+        self.assert_clean(self.write(os.path.join("spec", "cu.md"), text))
+
+    def test_r10_allow_kem_ly_do_van_duoc(self):
+        """Dòng allow được ghi kèm lý do; không cho thì người ta dán allow trần, mất vết."""
+        text = SPEC_LANE_FULL_THIEU_2B.replace(
+            "# SPEC — X\n",
+            "# SPEC — X\n\n<!-- doc-lint: allow R10 — spec viết trước luật này -->\n")
+        self.assert_clean(self.write(os.path.join("spec", "cu-ly-do.md"), text))
+
+    def test_r10_ngoai_thu_muc_spec_khong_soi(self):
+        self.assert_clean(self.write("ngoai.md", SPEC_LANE_FULL_THIEU_2B))
+
+
+class PairCumSongSongTest(LintBase):
+    """Plan phải luôn có mục `## Cụm song song` — modular là thuộc tính của tài liệu."""
+
+    def _pair(self, plan_text):
+        spec = self.write(os.path.join("spec", "s.md"), SPEC_3B_OK)
+        plan = self.write("p.md", plan_text)
+        proc = subprocess.run([sys.executable, LINT, "--pair", spec, plan],
+                              capture_output=True, text=True)
+        return proc.returncode, proc.stdout
+
+    def test_pair_plan_thieu_cum_song_song(self):
+        code, out = self._pair(PLAN_THIEU_CUM)
+        self.assertEqual(code, 1, out)
+        self.assertIn("Cụm song song", out)
+
+    def test_pair_plan_du_cum_song_song(self):
+        code, out = self._pair(PLAN_CONTRACT_OK)
+        self.assertEqual(code, 0, out)
 
 
 class R9Test(LintBase):
@@ -365,3 +442,31 @@ class R9Test(LintBase):
     def test_r9_heading_trong_fence_khong_tinh(self):
         gia = "# Luật\n\n```\n## Khi nào áp dụng\n## Làm gì\n## Tự kiểm\n```\n"
         self.assert_hits(self.write("soul.md", gia), "R9")
+
+
+class LogServiceTest(LintBase):
+    """Spec §4: mọi script của TDQ có log service bật mặc định, tắt được bằng TDQ_LOG=0."""
+
+    def chay(self, path, env_them=None):
+        env = dict(os.environ)
+        env.update(env_them or {})
+        return subprocess.run([sys.executable, LINT, path], capture_output=True,
+                              text=True, env=env)
+
+    def test_log_bat_mac_dinh_ra_stderr(self):
+        sach = self.write("sach.md", "# Tiêu đề\n\nMột dòng.\n")
+        r = self.chay(sach)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("doc_lint", r.stderr)
+        self.assertIn("sach.md", r.stderr)
+        # timestamp ISO trong ngoặc vuông ở đầu dòng log
+        self.assertRegex(r.stderr, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
+
+    def test_log_tat_duoc_bang_bien_moi_truong(self):
+        sach = self.write("sach.md", "# Tiêu đề\n\nMột dòng.\n")
+        self.assertEqual(self.chay(sach, {"TDQ_LOG": "0"}).stderr, "")
+
+    def test_log_khong_lam_ban_stdout(self):
+        """stdout là kênh của vi phạm lint; log lẫn vào đó là hỏng hợp đồng máy đọc."""
+        sach = self.write("sach.md", "# Tiêu đề\n\nMột dòng.\n")
+        self.assertEqual(self.chay(sach).stdout, "")

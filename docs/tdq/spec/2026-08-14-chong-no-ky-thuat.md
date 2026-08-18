@@ -1,5 +1,7 @@
 # SPEC — Đề xuất cơ chế chống quick-fix phá kiến trúc
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-14 · Bản: 1.0 · Brief: ../brief/2026-08-14-chong-no-ky-thuat.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

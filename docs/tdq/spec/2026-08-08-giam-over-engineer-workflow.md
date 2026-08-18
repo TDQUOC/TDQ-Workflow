@@ -1,5 +1,7 @@
 # SPEC — Giảm over-engineer & over-test cho TDQ workflow
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-08 · Bản: 1.0 · Request: ../requests/2026-08-08-giam-over-engineer-workflow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

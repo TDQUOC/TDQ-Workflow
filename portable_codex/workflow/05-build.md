@@ -34,8 +34,9 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
 ## Phần A — Implement (phase `implement`)
 
 1. Đọc `implement_mode` từ state và làm đúng theo:
-   - `main` (nhãn user thấy: "làm trực tiếp (inline implement)"): tự làm tuần tự trong
-     hội thoại này, theo đúng thứ tự task trong plan.
+   - `main` (nhãn user thấy: "làm trực tiếp (inline implement)"): tự làm HẾT trong hội
+     thoại này, nhưng theo đúng thứ tự cụm của plan và vẫn ghi lý do giữ cho từng task.
+     Doctrine leader áp cho mọi mode: [references/team-mode.md](references/team-mode.md).
    - `subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)"): bạn là LEADER của
      một đội. **Bước 0 — trước khi gõ dòng code đầu tiên: phân công CẢ plan**
      (`python3 scripts/tdq_team.py phan-cong` rồi `kiem-ke`). Sau đó lặp từng đợt.
@@ -43,10 +44,11 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
      Gọi `tdq-implementer` cho MỌI task của đợt trong MỘT response — nhiều lệnh Task
      trong một response nghĩa là chúng chạy đồng thời. Đánh `[>]` cho các task vừa giao.
      Nhận báo cáo thì `kiem` rồi `hop`, tick `[x]` NGAY, `don`, rồi quay lại `cum`.
-     Mặc định là GIAO. Chỉ được giữ task lại cho mình khi khớp đúng 1 trong 4 nhóm lý do
-     đóng, và `kiem-ke` exit khác 0 nếu bạn bịa lý do thứ năm. Trong lúc đợt đang chạy,
+     Mặc định là GIAO. Chỉ được giữ task lại khi khớp đúng một nhóm trong tập lý do
+     đóng (bảng tra ở `team-mode.md`); bịa nhóm ngoài tập đó thì `kiem-ke` exit khác 0.
+     Trong lúc đợt đang chạy,
      leader làm các task `tu_lam` của cùng đợt.
-     Luật đầy đủ (bảng tra quyết định, khuôn prompt 7 trường, ví dụ ĐÚNG/SAI, tự kiểm):
+     Luật đầy đủ (bảng tra quyết định, khuôn prompt giao việc, ví dụ ĐÚNG/SAI, tự kiểm):
      [references/team-mode.md](references/team-mode.md) — **BẮT BUỘC mở đọc trước khi
      phân công; cấm làm theo trí nhớ.**
    Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.

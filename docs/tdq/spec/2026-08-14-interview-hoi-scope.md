@@ -1,5 +1,7 @@
 # SPEC — Vòng scope: interview đi từ tổng quát đến chi tiết
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-14 · Bản: 1.0 · Brief: ../brief/2026-08-14-interview-hoi-scope.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

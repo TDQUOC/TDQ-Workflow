@@ -1,4 +1,6 @@
 # SPEC — TDQ 0.2.0: hard gate → nhắc nhở, duyệt bằng chat tự nhiên
+
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
 <!-- doc-lint: allow R8 -->  <!-- spec viết trước 0.3.3, chưa có mục 3b -->
 
 Ngày: 2026-07-28 · Slug: `2026-07-28-soft-gates-remind` · Lane: full · Trạng thái: **CHỜ DUYỆT**

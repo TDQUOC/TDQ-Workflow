@@ -1,5 +1,7 @@
 # SPEC — Fix: câu hỏi TDQ bị ẩn khi bật focus mode
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-13 · Bản: 1.0 · Brief: ../brief/2026-08-13-fix-cau-hoi-focus-mode.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

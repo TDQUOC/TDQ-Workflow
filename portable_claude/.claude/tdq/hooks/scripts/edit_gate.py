@@ -97,11 +97,23 @@ def main():
             echo_line("TDQ:LOG", f"đã append {log_rel}"),
         ])
 
+    # File nằm NGOÀI project của state (agent con dựng repo tạm để thử, sandbox, tool
+    # ngoài) → plan trong state không nói gì về file đó, chặn theo dấu tick là chặn
+    # nhầm. Đo được ở smoke test mode đội: agent con phải lách qua shell mới ghi được.
+    # Chỉ bỏ CHẶN (cả TDQ:TEAM lẫn TDQ:TICK) — phần quan sát và phần nhắc vẫn chạy.
+    trong_project = within(abs_target, os.path.realpath(cwd))
+    if not trong_project:
+        # Ghi vào sổ turn thay vì in ra: đây là dữ kiện để debug về sau, không phải
+        # lời nhắc cho model.
+        observe(cwd, payload, "bo_qua_chan_ngoai_project", path=abs_target)
+
     # (2b) mode đội: user chọn "giao trợ lý" mà leader lại tự gõ code của task đã
     # hứa giao → CHẶN. Không có hàng rào này thì lời hứa chia việc chỉ là lời nói:
     # model vẫn tự làm hết ở main và không ai chứng minh được.
     from tdq_team import canh_bao_lach_luat  # noqa: E402 — chỉ nạp khi thật cần
-    canh_bao = canh_bao_lach_luat(cwd, rel_target)
+    # Cùng lý do với `trong_project` ở trên: bản đồ phân công chỉ nói về vùng file
+    # TRONG project, nên file ngoài project không thuộc thẩm quyền của nó.
+    canh_bao = canh_bao_lach_luat(cwd, rel_target) if trong_project else None
     if canh_bao:
         if canh_bao["kieu"] == "ban-do-hong":
             block(cwd, payload, "TDQ:TEAM", [
@@ -114,7 +126,7 @@ def main():
             block(cwd, payload, "TDQ:TEAM", [
                 "Mode đội mà chưa có bản đồ phân công — không được sửa code ở main trước.",
                 "Chạy: python3 scripts/tdq_team.py phan-cong (rồi kiem-ke, rồi cum).",
-                "Task nào leader phải tự làm thì bản đồ ghi tu_lam kèm 1 trong 4 nhóm lý do.",
+                "Task nào leader phải tự làm thì bản đồ ghi tu_lam kèm một lý do đóng.",
             ])
         elif canh_bao["kieu"] == "da-giao-thieu-nhanh":
             block(cwd, payload, "TDQ:TEAM", [
@@ -129,7 +141,7 @@ def main():
                 f"leader không tự sửa.",
                 f"Chạy: python3 scripts/tdq_team.py mo {canh_bao['ma']} rồi giao cho "
                 f"agent tdq-implementer.",
-                "Thật sự phải tự làm → sửa bản đồ thành tu_lam kèm 1 trong 4 nhóm lý do, "
+                "Thật sự phải tự làm → sửa bản đồ thành tu_lam kèm một lý do đóng, "
                 "rồi chạy kiem-ke.",
             ])
 
@@ -146,7 +158,7 @@ def main():
     # LEADER ở worktree chính; vòng đỏ→xanh trong worktree của agent con không phải
     # chỗ áp nó. Miễn trừ theo đường dẫn, không theo danh tính agent.
     in_worktree_doi = (os.sep + ".tdq-worktrees" + os.sep) in (abs_target + os.sep)
-    if not in_tests and not in_worktree_doi \
+    if not in_tests and not in_worktree_doi and trong_project \
             and effective_phase(state, warn=False) in ("implement", "qc"):
         tick = plan_tick_state(cwd)
         if tick["exists"] and tick["total"] > 0 \

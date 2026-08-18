@@ -1,5 +1,7 @@
 # SPEC — Mode implement "external": giao task cho Codex/Antigravity qua worktree
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-07-30 · Bản: 1.1 (sau review 14 góp ý) · Request: ../requests/2026-07-30-external-agent-mode.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 Nguồn quyết định: ../knowledge/2026-07-30-external-agent-mode.md (8 quyết định, 2 vòng interview)

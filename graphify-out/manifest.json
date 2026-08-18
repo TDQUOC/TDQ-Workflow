@@ -95,9 +95,9 @@
     "semantic_hash": "bd58cf3f1035d57a6675fc51dc5d08cf"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1786970229.4716392,
-    "ast_hash": "616f2041f5a319a4eacd113a6089404d",
-    "semantic_hash": "616f2041f5a319a4eacd113a6089404d"
+    "mtime": 1787057405.6569073,
+    "ast_hash": "ae346e9b5091c642f9e077b15e05a602",
+    "semantic_hash": "ae346e9b5091c642f9e077b15e05a602"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1785397811.0780556,
@@ -173,5 +173,15 @@
     "mtime": 1786975452.6600678,
     "ast_hash": "7fc3b872d49cb9e0c277b866f4da3035",
     "semantic_hash": "7fc3b872d49cb9e0c277b866f4da3035"
+  },
+  "scripts/skill_router.py": {
+    "mtime": 1786982646.6390848,
+    "ast_hash": "8a7c05a6a8b11d7d3238034fcf36cad4",
+    "semantic_hash": "8a7c05a6a8b11d7d3238034fcf36cad4"
+  },
+  "scripts/skill_tokens.py": {
+    "mtime": 1786982646.6385858,
+    "ast_hash": "a00db3af34e79c0381b37bc68829afeb",
+    "semantic_hash": "a00db3af34e79c0381b37bc68829afeb"
   }
 }

@@ -7,8 +7,15 @@ phải có cớ nằm trong bảng tra bên dưới, và cái cớ đó bị má
 
 ## Khi nào áp dụng
 
-Khi `implement_mode = subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)")
-và phase = `implement`. Mode `main` thì bỏ qua toàn bộ file này.
+Ở phase `implement`, **mọi mode**. Doctrine leader là cách TỔ CHỨC việc, không phải
+một chế độ chạy: plan luôn được chia cụm, mỗi task luôn có một quyết định giao-hay-giữ
+kèm lý do kiểm được.
+
+Mode user chọn chỉ đổi ai gõ phím:
+- `subagent` — task `giao` do agent con làm, mỗi task một worktree, cùng cụm chạy song song.
+- `main` — leader tự làm HẾT, nhưng theo đúng thứ tự cụm của plan và vẫn ghi lý do giữ
+  cho từng task. Làm nhảy cóc thứ tự cụm ở mode `main` là hỏng đúng thứ đã đo được:
+  thứ tự cụm là thứ tự phụ thuộc, không phải gợi ý.
 
 Mode đội KHÔNG có nghĩa mọi task đều phải giao. Nó có nghĩa: **task nào tách được thì
 phải tách**, phần còn lại leader tự làm — như một trưởng nhóm thật, không phải một
@@ -27,7 +34,8 @@ python3 scripts/tdq_team.py kiem-ke
 từ dòng `Chạm:`, rồi ghi `docs/tdq/team/<slug>.json`. Mỗi task có đúng 4 trường:
 `quyet_dinh` (giao | tu_lam) · `ly_do` · `vung_file` · `dot`.
 
-`kiem-ke` exit khác 0 nếu có task `tu_lam` mà lý do rỗng hoặc nằm ngoài 4 nhóm đóng.
+`kiem-ke` exit khác 0 nếu có task `tu_lam` mà lý do rỗng hoặc nằm ngoài tập lý do đóng
+(bảng tra ngay dưới đây là tập đó, đúng bằng hằng `LY_DO_GIU` mà lệnh đọc).
 Đây là hàng rào chống lách luật. Bạn không thể lặng lẽ tự làm hết ở main rồi khai là
 đã chia việc: bản đồ nằm trên đĩa. Hook `[TDQ:TEAM]` chặn tay bạn ngay khi bạn sửa một
 file thuộc vùng của task đã ghi `giao` mà chưa mở nhánh.
@@ -40,9 +48,10 @@ file thuộc vùng của task đã ghi `giao` mà chưa mở nhánh.
 | `vung-khoa` | task không có dòng `Chạm:` nào → không khai được vùng file riêng | `grep -A2 'T1.1' <plan>` không thấy `Chạm:` |
 | `mcp` | dòng `Dùng:` của task kết thúc bằng nhãn `(mcp)` | `grep '(mcp)' <plan>` |
 | `file-luat` | vùng file chạm `skills/`, `hooks/`, `agents/`, `.claude/`, `.codex/`, `CLAUDE.md`, `AGENTS.md` | xem `vung_file` trong bản đồ |
-| **mặc định: GIAO** | **không khớp 4 dòng trên** | `python3 scripts/tdq_team.py kiem-ke` exit 0 |
+| `hop-dong` | task dựng hợp đồng dùng chung (kiểu dữ liệu, hằng số, khuôn thông báo, sổ đăng ký) mà nhiều task sau đọc | nhiều task khác khai `Cần:` trỏ về nó |
+| **mặc định: GIAO** | **không khớp 5 dòng trên** | `python3 scripts/tdq_team.py kiem-ke` exit 0 |
 
-Bốn nhóm này là tập ĐÓNG. Nghĩ ra lý do thứ năm ("việc này nhanh hơn nếu tự làm",
+Năm nhóm này là tập ĐÓNG. Nghĩ ra lý do thứ sáu ("việc này nhanh hơn nếu tự làm",
 "task này nhỏ quá", "giải thích cho agent con còn lâu hơn làm") = lách luật, và
 `kiem-ke` sẽ đỏ.
 
@@ -65,7 +74,7 @@ này nhanh hơn `main`, không phải vì agent con chạy nhanh hơn bạn.
 Dấu tick: `[ ]` chưa làm · `[~]` LEADER đang tự làm (nhiều nhất MỘT) · `[>]` đã giao
 agent con (được nhiều) · `[x]` xong và đã hợp về.
 
-### Khuôn prompt giao việc — đủ 7 trường, không thiếu trường nào
+### Khuôn prompt giao việc — đủ 9 trường, không thiếu trường nào
 
 ```
 TASK: T1.1 — <chép nguyên văn dòng task trong plan, kể cả phần Test:>
@@ -74,6 +83,10 @@ BASE: tdq/<slug>/tich-hop
 WORKTREE: /đường/dẫn/tuyệt/đối/.tdq-worktrees/<slug>/t1.1
 VÙNG FILE: scripts/alpha.py, tests/test_alpha.py — CẤM sửa file ngoài danh sách này
 TEST: <lệnh kiểm của task> — phải đỏ trước, xanh sau
+RANH GIỚI: luôn được làm — sửa file trong VÙNG FILE, thêm test của chính task này.
+  phải hỏi trước — đổi API/khuôn dữ liệu dùng chung, thêm phụ thuộc mới, sửa file ngoài vùng.
+  cấm — sửa plan/spec/state, commit lên nhánh khác, chạy full suite, đụng worktree của task khác.
+TỰ KIỂM: <đúng MỘT lệnh agent con chạy được trước khi báo xong, thường là lệnh ở TEST>
 TRẢ VỀ: đúng khuôn TASK/STATUS/FILES/TEST/BRANCH/TICK-READY/NOTES ở agents/tdq-implementer.md
 ```
 
@@ -97,6 +110,11 @@ này — thiếu trường nào là nó phải đoán, và đoán sai thì bạn
 5. Vùng file
    - ĐÚNG: hai task cùng đụng `scripts/a.py` → `phan-cong` tự xếp chúng vào hai đợt khác nhau.
    - SAI: giao cả hai trong một đợt vì "chắc không sao" — git không cảnh báo, đến merge mới vỡ.
+6. Hợp đồng dùng chung
+   - ĐÚNG: task dựng hằng `TRAN_SONG_SONG` và khuôn thông báo được giữ lại, làm xong
+     TRƯỚC, rồi mới phát cụm đọc hai thứ đó.
+   - SAI: giao song song cả ba task cùng cần hằng đó — mỗi agent con tự đặt một tên,
+     merge xong mới lộ ra là ba bản không khớp.
 
 ## Tự kiểm
 

@@ -1,5 +1,7 @@
 # SPEC — Rút gọn UX câu hỏi chọn lane
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-13 · Bản: 1.0 · Brief: ../brief/2026-08-13-ux-cau-hoi-lane.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

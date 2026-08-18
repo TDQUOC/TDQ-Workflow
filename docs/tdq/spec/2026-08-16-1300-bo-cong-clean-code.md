@@ -1,5 +1,7 @@
 # SPEC — Bỏ cổng clean code, thay bằng luật SOLID
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-16 · Bản: 1.0 · Brief: ../brief/2026-08-16-1300-bo-cong-clean-code.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

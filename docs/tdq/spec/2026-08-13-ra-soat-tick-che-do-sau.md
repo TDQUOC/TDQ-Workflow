@@ -1,5 +1,7 @@
 # SPEC — Bịt 3 lỗ hổng tick checkbox ở chế độ chuyên sâu
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-13 · Bản: 1.0 · Brief: ../brief/2026-08-13-ra-soat-tick-che-do-sau.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

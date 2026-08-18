@@ -1,5 +1,7 @@
 # SPEC — Tối ưu bộ plugin user-level: tier hoá, lazy-load, viết lại §10 (v1.0)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-07-30 · Request: `../requests/2026-07-30-plugin-lazy-load.md` ·
 Knowledge: `../knowledge/2026-07-30-plugin-lazy-load.md`
 

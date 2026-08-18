@@ -1,5 +1,7 @@
 # SPEC — Dựng lại `portable/` cho Codex + cập nhật tài liệu project-level
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-11 · Bản: 1.0 · Brief: ../brief/2026-08-11-cai-tdq-project-level.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

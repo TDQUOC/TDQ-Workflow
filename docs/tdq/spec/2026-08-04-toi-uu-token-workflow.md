@@ -1,5 +1,7 @@
 # SPEC — Đề xuất tối ưu time/token cho TDQ workflow
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-04 · Bản: 1.0 · Request: ../requests/2026-08-04-toi-uu-token-workflow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

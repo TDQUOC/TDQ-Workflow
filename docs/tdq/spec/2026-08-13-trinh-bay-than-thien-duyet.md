@@ -1,5 +1,7 @@
 # SPEC — Trình bày thân thiện ở mọi chỗ giao tiếp với user
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-13 · Bản: 1.0 · Brief: ../brief/2026-08-13-trinh-bay-than-thien-duyet.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

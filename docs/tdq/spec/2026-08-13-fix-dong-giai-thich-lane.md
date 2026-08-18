@@ -1,5 +1,7 @@
 # SPEC — Fix dòng giải thích pipeline gây rối khi đọc lại tóm tắt
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-13 · Bản: 1.0 · Brief: ../brief/2026-08-13-fix-dong-giai-thich-lane.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

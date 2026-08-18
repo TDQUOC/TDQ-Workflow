@@ -1,5 +1,7 @@
 # SPEC — Hybrid deep search: Claude scout ∥ agy tổng quát → agy đào sâu
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-07-31 · Bản: 1.1 (sau review) · Request: ../requests/2026-07-31-hybrid-deep-search.md · Lane: full
 Trạng thái: ĐÃ DUYỆT (user "duyệt spec", 2026-07-31 16:21 +07)
 

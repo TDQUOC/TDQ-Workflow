@@ -1,5 +1,7 @@
 # SPEC — Audit tổng thể TDQ workflow 0.6.0 (conflict, edge case, robustness model thấp)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-07-31 · Bản: 1.1 · Request: ../requests/2026-07-31-audit-full-workflow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

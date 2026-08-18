@@ -209,6 +209,52 @@ class TickBlockTest(unittest.TestCase):
         self.dung_state(plan=None)
         self.assertNotIn("TDQ:TICK", self.sua()[1])
 
+    def test_ngoai_project_thi_khong_chan(self):
+        """Agent con làm trong repo tạm ngoài project: kỷ luật tick không áp ở đó.
+
+        Đây là lỗi đo được ở smoke test mode đội — hook chặn agent con sửa file trong
+        repo tạm, agent phải lách qua shell. Chặn nhầm còn tệ hơn không chặn.
+        """
+        self.dung_state(plan=self.CHUA_LAM)
+        with tempfile.TemporaryDirectory() as ngoai:
+            payload = load_fixture("edit_src.json", cwd=self.cwd, session_id="s-ngoai")
+            payload["tool_input"] = {"file_path": os.path.join(ngoai, "src", "a.py")}
+            _rc, out, _err = run_hook("edit_gate.py", payload)
+        self.assertNotIn("deny", out)
+        self.assertNotIn("TDQ:TICK", out)
+
+    def test_ngoai_project_nhanh_team_cung_khong_chan(self):
+        """Cùng lý do với TDQ:TICK: bản đồ phân công không nói gì về file ngoài project."""
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    spec_file="docs/tdq/spec/r1.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file=self.PLAN_REL, plan_approved=True,
+                    plan_sha256="def", plan_approved_at=now_iso(),
+                    implement_mode="subagent")
+        write_file(self.cwd, self.PLAN_REL, self.DANG_LAM)
+        with tempfile.TemporaryDirectory() as ngoai:
+            payload = load_fixture("edit_src.json", cwd=self.cwd, session_id="s-team")
+            payload["tool_input"] = {"file_path": os.path.join(ngoai, "src", "a.py")}
+            _rc, out, _err = run_hook("edit_gate.py", payload)
+        self.assertNotIn("deny", out)
+        self.assertNotIn("TDQ:TEAM", out)
+
+    def test_ngoai_project_nhanh_team_trong_project_van_chan(self):
+        """Đối chứng: mode đội, chưa phân công, file TRONG project thì vẫn chặn."""
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    spec_file="docs/tdq/spec/r1.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file=self.PLAN_REL, plan_approved=True,
+                    plan_sha256="def", plan_approved_at=now_iso(),
+                    implement_mode="subagent")
+        write_file(self.cwd, self.PLAN_REL, self.DANG_LAM)
+        self.assertIn("TDQ:TEAM", self.sua()[1])
+
+    def test_ngoai_project_doi_chung_trong_project_van_chan(self):
+        """Ca đối chứng: cùng payload nhưng file nằm trong project thì vẫn chặn."""
+        self.dung_state(plan=self.CHUA_LAM)
+        self.assertIn("deny", self.sua()[1])
+
     def test_phase_ngoai_implement_qc_thi_im(self):
         self.dung_state(phase="report", plan=self.CHUA_LAM)
         self.assertNotIn("TDQ:TICK", self.sua()[1])

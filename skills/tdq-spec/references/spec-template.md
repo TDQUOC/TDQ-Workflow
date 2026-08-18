@@ -30,6 +30,18 @@ Chép từ brief mục `### Lộ trình`. User duyệt spec là duyệt luôn l�
 |---|---|---|---|
 | 1 | | | |
 
+## 2b. Ranh giới module
+
+Chia việc thành các module tách rời được, để phase `plan` có sẵn đường cắt. Một module =
+một vùng file không giao với module khác. Bắt buộc với lane full; lane quick BỎ mục này.
+
+| Module | Vùng file | Phụ thuộc module | Đầu ra §2 nào |
+|---|---|---|---|
+| <tên ngắn> | `<đường/dẫn>`, `<đường/dẫn>` | <tên module khác, hoặc "không"> | <số thứ tự ở §2> |
+
+Hai module không được khai chung một đường dẫn. Trùng nghĩa là chưa tách xong — gộp lại
+thành một module, hoặc tách file ra trước.
+
 ## 3. Cách tiếp cận & lý do
 - Chọn: <cách làm>
 - Vì: <lý do, kèm nguồn research nếu có>
@@ -84,6 +96,7 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 
 - Mọi đầu ra ở §2 đều có ít nhất một hạng mục QC ở §6.
 - §1b có mặt: mỗi bước/phase của workflow được ghi rõ CÓ chạy hay BỎ, kèm lý do.
+- §2b có mặt khi lane full: mỗi module một dòng, không module nào khai trùng đường dẫn.
 - §3b có mặt: mỗi skill DÙNG và NỀN có một dòng riêng, phần còn lại gom vào dòng tổng
   `Đã xét <N> skill khác` — máy kiểm bằng `doc_lint.py` rule R8.
 - Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính.

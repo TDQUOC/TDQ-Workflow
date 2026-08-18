@@ -33,7 +33,8 @@ trước khi làm bước 1; cấm làm theo trí nhớ.
    chi tiết y như lane deep ([scope-round.md](scope-round.md)).
 2. **Viết mini-spec/plan GỘP 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 dòng: phạm vi
    in/out, task checkbox mỗi task một test, DoD mỗi dòng kiểm được bằng lệnh.
-   Checkbox có 3 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement
+   **Mọi task sửa file mã nguồn phải có dòng `Chạm:`** liệt kê đường dẫn trong backtick —
+   ngắn không có nghĩa là không cần bản đồ vùng file. Checkbox có 4 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[>]` đã giao agent con · `[x]` xong. Lúc implement
    (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
 3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
    và đúng 1 dòng `Ước tính sẽ dùng skill: <các skill sẽ DÙNG, hoặc "không có">` (phân
@@ -41,7 +42,16 @@ trước khi làm bước 1; cấm làm theo trí nhớ.
 4. In đúng dòng: `➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
 5. User duyệt → chạy `python3 "./scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — im lặng về QC thì QC vẫn BẬT).
 6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
-7. Implement end-to-end trong 1 turn. Mỗi task: đánh `[~]` TRƯỚC khi sửa code (hook
+7. Implement end-to-end trong 1 turn. **Trước khi gõ dòng code đầu tiên, đếm số task
+   có `Chạm:` rời nhau** (không task nào trùng đường dẫn với task khác):
+   - từ **3 trở lên** → giao cho agent con `tdq-implementer`, mỗi task một agent, phát
+     cùng một response để chúng chạy song song; trần **4 nhánh** một lượt — cùng trần
+     mà lệnh `python3 scripts/tdq_team.py cum` áp ở chế độ chuyên sâu (task thứ 5 in
+     `CHỜ SLOT`). Chỉ dựng worktree cho agent THẬT SỰ ghi file; agent chỉ đọc thì
+     không. Đánh `[>]` khi giao, nhận báo cáo là đổi `[x]` ngay.
+   - **dưới 3** → chạy inline như cũ; dựng agent cho 1–2 task rời nhau thì phí brief
+     nhiều hơn phần tiết kiệm.
+   Mỗi task: đánh `[~]` TRƯỚC khi sửa code (hook
    `edit_gate` CHẶN nếu plan không có `[~]`; `tests/**` được miễn trừ), red→green, đổi
    `[x]` NGAY khi test xanh — cấm gom tick cuối turn. Rồi chạy **QC** (mặc định BẬT): mỗi dòng DoD một
    phép kiểm, ghi bằng chứng vào mục `## QC` của plan. `quick_qc_skipped = true` → mục
@@ -112,13 +122,15 @@ Xem đầy đủ tại: `docs/tdq/plan/<slug>.md`
 
 (nhắc lại có chủ ý — bản gốc ở mục `## Luật cứng` của `skills/tdq-build/SKILL.md`.)
 
-Checkbox có ba trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. Lúc implement:
+Checkbox có bốn trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[>]` đã giao agent con ·
+`[x]` xong. Lúc implement:
 
-1. Đánh `[~]` cho task sắp làm **TRƯỚC** khi sửa dòng mã đầu tiên.
+1. Đánh `[~]` cho task sắp làm **TRƯỚC** khi sửa dòng mã đầu tiên. Giao cho agent con
+   thì đánh `[>]` thay vì `[~]` — nhìn plan là biết ai đang cầm task.
 2. Viết test (đỏ) → code → test xanh.
-3. Đổi `[~]` → `[x]` **NGAY**, không đợi task sau.
+3. Đổi `[~]`/`[>]` → `[x]` **NGAY**, không đợi task sau.
 
-Chỉ một task mang `[~]` tại một thời điểm. **Cấm gom tick vào cuối turn** — chế độ nhanh (express)
+Chỉ một task mang `[~]` tại một thời điểm; `[>]` thì được nhiều, tối đa bằng trần 4 nhánh. **Cấm gom tick vào cuối turn** — chế độ nhanh (express)
 làm trọn gói trong một turn, gom tick nghĩa là plan không phản ánh gì trong suốt lúc làm.
 
 Hàng rào: `hooks/scripts/edit_gate.py` **CHẶN** (deny) mọi lần sửa file ngoài `docs/` và

@@ -142,14 +142,23 @@ def dem_cap_chong(tasks):
 
 
 # --------------------------------------------------------------- hằng số
-def _thong_ke(mau, nguon):
-    return {
+def _thong_ke(mau, nguon, cach_do="may", mau_may=None):
+    """cach_do: "may" = chính script bấm giờ · "nhap-tay" = số người nhập qua --mau-that.
+
+    Giữ luôn `mau_may` khi số nhập tay ĐÈ lên số máy đo: mất mẫu máy thì người đọc
+    không còn cách nào biết con số nhập tay có hợp lý không.
+    """
+    rec = {
         "giay": round(statistics.fmean(mau), 6),
         "so_mau": len(mau),
         "do_tan": round(statistics.pstdev(mau), 6) if len(mau) > 1 else 0.0,
         "nguon": nguon,
+        "cach_do": cach_do,
         "mau": [round(x, 6) for x in mau],
     }
+    if mau_may:
+        rec["mau_may"] = [round(x, 6) for x in mau_may]
+    return rec
 
 
 def nap_hang_so(duong):
@@ -180,10 +189,25 @@ def nap_hang_so(duong):
         rec = bang[ten]
         if not isinstance(rec, dict) or "giay" not in rec:
             raise LoiThieuSo(f"Hằng số {ten} trong {duong} không có trường \"giay\".")
-        if not rec.get("so_mau"):
-            raise LoiThieuSo(f"Hằng số {ten} trong {duong} ghi so_mau = 0 — "
-                             f"số này không đo từ đâu cả.")
-        ra[ten] = float(rec["giay"])
+        try:
+            giay = float(rec["giay"])
+        except (TypeError, ValueError):
+            raise LoiThieuSo(
+                f"Hằng số {ten} trong {duong} có giay = {rec['giay']!r}, không phải số. "
+                f"Đo lại: python3 scripts/tdq_bench.py thuc-do --ra {duong}")
+        if not giay > 0 or giay != giay or giay == float("inf"):
+            raise LoiThieuSo(
+                f"Hằng số {ten} trong {duong} là {giay} — thời gian phải là số dương "
+                f"hữu hạn. Đo lại: python3 scripts/tdq_bench.py thuc-do --ra {duong}")
+        # Cửa này phải khoá ở CHỖ ĐỌC, không chỉ ở chỗ ghi: file có thể bị sửa tay sau
+        # khi ghi, và mô phỏng đọc lại là tin ngay.
+        so_mau = rec.get("so_mau")
+        if not isinstance(so_mau, int) or so_mau < SO_MAU_TOI_THIEU:
+            raise LoiThieuSo(
+                f"Hằng số {ten} trong {duong} chỉ có so_mau = {so_mau!r}, cần ít nhất "
+                f"{SO_MAU_TOI_THIEU}. Đo lại: python3 scripts/tdq_bench.py thuc-do "
+                f"--ra {duong}")
+        ra[ten] = giay
     return ra
 
 
@@ -195,8 +219,14 @@ class KetQua:
         self.__dict__.update(kw)
 
 
-def mo_phong_tasks(tasks, hs):
-    """Áp công thức spec §3 cho danh sách Task đã đọc từ plan."""
+def mo_phong_tasks(tasks, hs, he_so_agent=1.0):
+    """Áp công thức spec §3 cho danh sách Task đã đọc từ plan.
+
+    `he_so_agent` là số lần agent con CHẬM hơn leader trên cùng một task. Mặc định 1.0
+    là giả định của spec (hai bên nhanh bằng nhau). Đòn bẩy này mạnh ngang `t_phat`:
+    agent chậm hơn 25% đã đẩy ngưỡng hoà từ 10% lên 30%. Không có tham số này thì người
+    đọc bảng không cách nào tự trừ hao, nên nó phải là tham số hạng nhất.
+    """
     if not tasks:
         raise LoiThieuSo("Plan không có task nào đọc được.")
     quyet = {t.ma: tdq_team.quyet_dinh_task(t, tasks) for t in tasks}
@@ -207,12 +237,16 @@ def mo_phong_tasks(tasks, hs):
     for t in giao:
         dot.setdefault(dot_theo_task[t.ma], []).append(t)
 
+    if not he_so_agent > 0:
+        raise LoiThieuSo("--he-so-agent phải là số dương (1.0 = agent nhanh ngang leader).")
     n = len(tasks)
     t_main = n * hs["t_task"] + n * hs["t_tick"]
 
     # Mỗi đợt trả một khoản phí cố định, đổi lại chỉ chờ task chậm nhất trong đợt.
-    tong_max = sum(hs["t_task"] for _ in dot)          # task đồng nhất → max = t_task
+    t_task_agent = hs["t_task"] * he_so_agent
+    tong_max = sum(t_task_agent for _ in dot)          # task đồng nhất → max = t_task
     phi_dot = len(dot) * (hs["t_phat"] + hs["t_kiem"] + hs["t_hop"])
+    # Task leader giữ lại thì leader tự làm, nên vẫn tính theo tốc độ leader.
     chen = max(0.0, len(tu_lam) * hs["t_task"] - tong_max)
     t_doi = phi_dot + tong_max + hs["t_don"] + chen
     # Biến thể kiểm thiên vị: công thức spec KHÔNG tính t_tick cho mode đội, trong khi
@@ -221,13 +255,13 @@ def mo_phong_tasks(tasks, hs):
     return KetQua(
         so_task=n, so_giao=len(giao), so_tu_lam=len(tu_lam), so_dot=len(dot),
         t_main=t_main, t_doi=t_doi, t_doi_kem_tick=t_doi_kem_tick,
-        chen=chen, phi_dot=phi_dot, tong_max=tong_max,
+        chen=chen, phi_dot=phi_dot, tong_max=tong_max, he_so_agent=he_so_agent,
         thang="đội" if t_doi < t_main else ("main" if t_doi > t_main else "hoà"),
     )
 
 
-def mo_phong_van_ban(van_ban, hs):
-    return mo_phong_tasks(_tasks_tu_van_ban(van_ban), hs)
+def mo_phong_van_ban(van_ban, hs, he_so_agent=1.0):
+    return mo_phong_tasks(_tasks_tu_van_ban(van_ban), hs, he_so_agent)
 
 
 def _phut(giay):
@@ -402,8 +436,14 @@ def lenh_dung_plan(args):
         raise LoiThieuSo(f"Sinh sai: tính {so_cap} cặp chồng nhưng đọc lại được {that}.")
     _log(f"dung-plan → {args.task} task · {so_cap} cặp chồng file")
     if args.ra:
-        with open(args.ra, "w", encoding="utf-8") as f:
-            f.write(van_ban)
+        try:
+            with open(args.ra, "w", encoding="utf-8") as f:
+                f.write(van_ban)
+        except OSError as loi:
+            raise LoiThieuSo(
+                f"Không ghi được {args.ra}: {loi}. Tạo thư mục trước "
+                f"(mkdir -p {os.path.dirname(args.ra) or '.'}), hoặc bỏ --ra: "
+                f"python3 scripts/tdq_bench.py dung-plan --task {args.task}")
         print(f"Plan mẫu: {args.ra}")
         print(f"{len(tasks)} task · {so_cap} cặp task chồng file")
     else:
@@ -412,16 +452,25 @@ def lenh_dung_plan(args):
 
 
 def lenh_thuc_do(args):
+    # --lap 0 + --mau-that = bịa trọn 6 hằng số mà file vẫn ghi nguon=that. Chặn ở đây,
+    # và ghi cach_do cho từng hằng số để người đọc phân biệt số máy đo với số nhập tay.
+    if args.lap < 1:
+        raise LoiThieuSo(
+            f"--lap = {args.lap} — phải ít nhất 1 lượt đo máy. "
+            f"Chạy: python3 scripts/tdq_bench.py thuc-do --lap 3 --ra {args.ra}")
     mau = {ten: [] for ten in HANG_SO}
     nguon = {ten: "stub" for ten in HANG_SO}
+    cach_do = {ten: "may" for ten in HANG_SO}
     for lan in range(args.lap):
         _log(f"thuc-do → lượt {lan + 1}/{args.lap} trong repo git tạm")
         for ten, gia_tri in _do_mot_luot(args.task).items():
             mau[ten].extend(gia_tri)
     that = _doc_mau_that(args.mau_that)
+    mau_may = {ten: list(gia_tri) for ten, gia_tri in mau.items()}
     for ten, gia_tri in that.items():
         mau[ten] = gia_tri            # số thật thay hẳn số stub, không trộn
         nguon[ten] = "that"
+        cach_do[ten] = "nhap-tay"
     thieu = [ten for ten in HANG_SO if len(mau[ten]) < SO_MAU_TOI_THIEU]
     if thieu and not args.cho_it_mau:
         raise LoiThieuSo(
@@ -431,32 +480,47 @@ def lenh_thuc_do(args):
         "slug": args.slug,
         "ngay": args.ngay or date.today().isoformat(),
         "may": {"python": platform.python_version(), "he_dieu_hanh": platform.platform()},
-        "ghi_chu": "nguon=stub là sàn dưới cơ học; nguon=that là số bấm giờ lượt agent thật",
-        "hang_so": {ten: _thong_ke(mau[ten], nguon[ten]) for ten in HANG_SO},
+        "ghi_chu": "nguon=stub là sàn dưới cơ học; nguon=that là số bấm giờ lượt agent "
+                   "thật. cach_do=nhap-tay nghĩa là số do người nhập, mẫu máy giữ ở mau_may",
+        "hang_so": {
+            ten: _thong_ke(mau[ten], nguon[ten], cach_do[ten],
+                           mau_may[ten] if cach_do[ten] == "nhap-tay" else None)
+            for ten in HANG_SO
+        },
     }
-    os.makedirs(os.path.dirname(os.path.abspath(args.ra)), exist_ok=True)
-    with open(args.ra, "w", encoding="utf-8") as f:
-        json.dump(du_lieu, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    try:
+        os.makedirs(os.path.dirname(os.path.abspath(args.ra)), exist_ok=True)
+        with open(args.ra, "w", encoding="utf-8") as f:
+            json.dump(du_lieu, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+    except OSError as loi:
+        raise LoiThieuSo(f"Không ghi được {args.ra}: {loi}. "
+                         f"Tạo thư mục cha trước rồi chạy lại.")
     print(f"Thực đo: {args.ra}")
     for ten in HANG_SO:
         rec = du_lieu["hang_so"][ten]
         print(f"  {ten:8s} {rec['giay']:9.3f}s  ±{rec['do_tan']:.3f}  "
-              f"n={rec['so_mau']}  nguồn={rec['nguon']}")
+              f"n={rec['so_mau']}  nguồn={rec['nguon']}  cách đo={rec['cach_do']}")
     return 0
 
 
 def lenh_mo_phong(args):
     hs = nap_hang_so(args.thuc_do)
     if args.plan:
-        with open(args.plan, encoding="utf-8") as f:
-            van_ban = f.read()
+        try:
+            with open(args.plan, encoding="utf-8") as f:
+                van_ban = f.read()
+        except OSError as loi:
+            raise LoiThieuSo(
+                f"Không đọc được plan {args.plan}: {loi}. Kiểm lại đường dẫn, hoặc bỏ "
+                f"--plan để dùng plan mẫu: python3 scripts/tdq_bench.py mo-phong "
+                f"--thuc-do {args.thuc_do} --task 12")
     else:
         van_ban, _ = sinh_plan(args.task, args.chong, args.phu_thuoc)
-    kq = mo_phong_van_ban(van_ban, hs)
+    kq = mo_phong_van_ban(van_ban, hs, args.he_so_agent)
     _log(f"mo-phong → {kq.so_task} task · {kq.so_dot} đợt · thắng: {kq.thang}")
     print(f"Plan: {kq.so_task} task · giao {kq.so_giao} · leader giữ {kq.so_tu_lam} "
-          f"· {kq.so_dot} đợt")
+          f"· {kq.so_dot} đợt · hệ số agent {kq.he_so_agent}")
     print("| Chỉ số | main | đội |")
     print("|---|---|---|")
     print(f"| Thời gian mô hình (phút) | {_phut(kq.t_main)} | {_phut(kq.t_doi)} |")
@@ -469,8 +533,15 @@ def lenh_mo_phong(args):
 
 
 def lenh_quet(args):
+    # --buoc 0 làm range() văng, --buoc âm cho bảng RỖNG rồi vẫn in dòng kết luận — bảng
+    # rỗng mà có kết luận còn nguy hơn cả lỗi, nên chặn ngay ở đầu vào.
+    if not 1 <= args.buoc <= 100:
+        raise LoiThieuSo(
+            f"--buoc = {args.buoc} — phải nằm trong 1–100. "
+            f"Chạy: python3 scripts/tdq_bench.py quet --buoc 10 --thuc-do {args.thuc_do}")
     hs = nap_hang_so(args.thuc_do)
-    print(f"Quét {args.task} task · tỉ lệ tách được 0→100% · bước {args.buoc}%")
+    print(f"Quét {args.task} task · tỉ lệ tách được 0→100% · bước {args.buoc}% "
+          f"· hệ số agent {args.he_so_agent}")
     print("| Tách được | Đợt | T_main (phút) | T_đội (phút) | Thắng |")
     print("|---|---|---|---|---|")
     truoc = None
@@ -478,7 +549,7 @@ def lenh_quet(args):
     for phan_tram in range(0, 101, args.buoc):
         chong = round(1 - phan_tram / 100, 4)
         van_ban, _ = sinh_plan(args.task, chong)
-        kq = mo_phong_van_ban(van_ban, hs)
+        kq = mo_phong_van_ban(van_ban, hs, args.he_so_agent)
         print(f"| {phan_tram}% | {kq.so_dot} | {_phut(kq.t_main)} | "
               f"{_phut(kq.t_doi)} | {kq.thang} |")
         if truoc is not None and kq.thang != truoc:
@@ -535,11 +606,15 @@ def build_parser():
     mp.add_argument("--task", type=int, default=12)
     mp.add_argument("--chong", type=float, default=0.0)
     mp.add_argument("--phu-thuoc", type=int, default=0, dest="phu_thuoc")
+    mp.add_argument("--he-so-agent", type=float, default=1.0, dest="he_so_agent",
+                    help="agent con chậm hơn leader bao nhiêu lần (1.0 = nhanh ngang)")
 
     qt = sub.add_parser("quet", help=LENH["quet"][1])
     qt.add_argument("--thuc-do", dest="thuc_do", help="file JSON hằng số")
     qt.add_argument("--task", type=int, default=12)
     qt.add_argument("--buoc", type=int, default=10, help="bước quét theo phần trăm")
+    qt.add_argument("--he-so-agent", type=float, default=1.0, dest="he_so_agent",
+                    help="agent con chậm hơn leader bao nhiêu lần (1.0 = nhanh ngang)")
     return p
 
 

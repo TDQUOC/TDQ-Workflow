@@ -1,16 +1,16 @@
-# Graph Report - TDQWorkflow  (2026-08-17)
+# Graph Report - TDQWorkflow  (2026-08-18)
 
 ## Corpus Check
-- 35 files · ~54,910 words
+- 37 files · ~57,900 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 736 nodes · 1433 edges · 28 communities (26 shown, 2 thin omitted)
+- 791 nodes · 1533 edges · 30 communities (28 shown, 2 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 72 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8e70f704`
+- Built from commit: `31bab093`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -43,6 +43,8 @@
 - _parse_approve_args
 - main
 - Exception
+- skill_tokens.py
+- skill_router.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `Changelog` - 26 edges
@@ -71,7 +73,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (28 total, 2 thin omitted)
+## Communities (30 total, 2 thin omitted)
 
 ### Community 0 - "canvas_a4_rebuild.py"
 Cohesion: 0.06
@@ -99,7 +101,7 @@ Nodes (44): cli_versions(), clone_repo(), cmd_build(), cmd_check(), collect_conf
 
 ### Community 6 - "tdq_bench.py"
 Cohesion: 0.09
-Nodes (43): Exception, _agent_stub(), build_parser(), dem_cap_chong(), _do_mot_luot(), _do_tick(), _doc_mau_that(), _dung_repo_tam() (+35 more)
+Nodes (42): _agent_stub(), build_parser(), dem_cap_chong(), _do_mot_luot(), _do_tick(), _doc_mau_that(), _dung_repo_tam(), _git() (+34 more)
 
 ### Community 7 - "build_portable.py"
 Cohesion: 0.10
@@ -176,6 +178,14 @@ Nodes (6): _fail(), normalize_lane(), _parse_approve_args(), -> (target, mode, b
 ### Community 26 - "main"
 Cohesion: 0.18
 Nodes (16): approve_hint(), plan_mode(), Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi., _compact(), _emit(), looks_like_approval(), main(), mode_from_answer() (+8 more)
+
+### Community 28 - "skill_tokens.py"
+Cohesion: 0.10
+Nodes (34): Exception, ban_do_skill_md(), _chu(), do_mo_ta(), do_theo_phase(), _in_bang(), khoa_tra(), lenh_mo_ta() (+26 more)
+
+### Community 29 - "skill_router.py"
+Cohesion: 0.17
+Nodes (16): bo_dau(), doc_kho(), dung_kho(), ghi_kho(), KhoBM25, lenh_dung_kho(), lenh_tra(), _log() (+8 more)
 
 ## Knowledge Gaps
 - **32 isolated node(s):** `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16`, `0.21.0 — 2026-08-16`, `0.20.0 — 2026-08-15` (+27 more)

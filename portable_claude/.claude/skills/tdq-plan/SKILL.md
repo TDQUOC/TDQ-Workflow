@@ -18,8 +18,15 @@ Yêu cầu `spec_approved = true`. User duyệt spec xong là viết plan NGAY t
    - `subagent` — nhãn hiển thị "giao trợ lý (sub-agent implement)": nhiều trợ lý chạy
      song song, bạn làm leader chia cả plan thành từng đợt, mỗi agent một worktree, phần
      không tách được thì tự làm. Luật: `tdq-build/references/team-mode.md`.
-   Trên 6 task mà đụng file rời nhau → ĐỀ XUẤT `subagent`; đụng chung file hoặc phụ
-   thuộc chặt → `main`.
+   Đề xuất **không đoán bằng mắt**: viết plan xong (bước 2) thì ĐO trên chính plan đó:
+   ```
+   python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_bench.py" mo-phong --plan docs/tdq/plan/<slug>.md \
+     --thuc-do docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json --he-so-agent 1.5
+   ```
+   Dòng `Thắng:` của lệnh LÀ đề xuất; chép số chênh phút vào lý do. `--he-so-agent 1.5`
+   là giả định bảo thủ — agent con chậm gấp rưỡi leader; đội thắng ở hệ số này thì thắng
+   thật, không phải thắng nhờ giả định đẹp. Lệnh lỗi (plan chưa có `Chạm:`) → sửa plan
+   rồi đo lại, cấm đoán thay.
 
 2. **Viết** `docs/tdq/plan/<slug>.md` từ spec ĐÃ DUYỆT — khuôn đầy đủ ở
    [references/plan-template.md](references/plan-template.md).

@@ -1,5 +1,7 @@
 # SPEC — 2026-08-04-approval-gate-bug
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 - Ngày: 2026-08-04
 - Bản: 2 (sửa theo 3 góp ý `tdq-reviewer` — xem cuối file)
 - Request: `docs/tdq/requests/2026-08-04-approval-gate-bug.md`

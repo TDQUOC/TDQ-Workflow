@@ -1,5 +1,7 @@
 # SPEC — Slug có giờ phút + đếm thời gian mỗi request và mỗi phase
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-15 · Bản: 1.0 · Brief: ../brief/2026-08-15-gio-phut-dem-thoi-gian.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

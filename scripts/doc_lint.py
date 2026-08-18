@@ -10,18 +10,34 @@ Cách dùng:
 
 In `file:line: [RULE] mô tả`; exit 1 nếu có vi phạm, 0 nếu sạch, 2 nếu sai cú pháp.
 Tắt một rule cho một dòng: đặt `<!-- doc-lint: allow R4 -->` ở dòng NGAY TRÊN nó.
+Env: TDQ_LOG=0 tắt log service (mặc định bật, 1 dòng ISO-timestamp ra stderr).
 """
 import os
 import re
 import sys
+from datetime import datetime
 
 EXIT_SYNTAX = 2
+
+
+def _log(message):
+    """Log service: 1 dòng ISO-timestamp ra stderr. Tắt bằng TDQ_LOG=0.
+
+    Ra stderr chứ không stdout: stdout là kênh máy đọc của lint (`file:line: [RULE]`),
+    lẫn log vào đó là làm hỏng hợp đồng với script gọi nó.
+    """
+    if os.environ.get("TDQ_LOG", "1") != "0":
+        print(f"[{datetime.now().isoformat(timespec='seconds')}] doc_lint: {message}",
+              file=sys.stderr)
 
 # Trần số dòng của SKILL.md theo tên skill (spec §2.4). Test dùng chung hằng này.
 SKILL_LINE_LIMITS = {
     "tdq-intake": 120,
     "tdq-spec": 100,
-    "tdq-plan": 100,
+    # 2026-08-18: 100 → 110. Cổng đề xuất mode đổi từ đếm task bằng mắt sang chạy
+    # `tdq_bench.py mo-phong` — khối lệnh + lý do hệ số 1.5 phải nằm ở thân skill
+    # mới được đọc mỗi lần viết plan.
+    "tdq-plan": 110,
     "tdq-build": 150,
     "tdq-status": 60,
     # 2026-08-15: 120 → 130. Luật một lượt (§10) là luật tầng runtime, phải nằm ở thân
@@ -45,7 +61,9 @@ NEEDS_TEMPLATE = ("tdq-spec", "tdq-plan", "tdq-build")
 HEADING = re.compile(r"^(#+)\s+(.*)$")
 STEP = re.compile(r"^(\d+)\.\s+\S")
 FENCE = re.compile(r"^\s*```")
-ALLOW = re.compile(r"<!--\s*doc-lint:\s*allow\s+(R\d)\s*-->")
+# 2026-08-18: `(R\d)` → `(R\d+)` vì mã luật đã lên hai chữ số (R10), và cho phép
+# ghi lý do sau mã — dán allow trần thì mất vết vì sao được miễn.
+ALLOW = re.compile(r"<!--\s*doc-lint:\s*allow\s+(R\d+)[^>]*-->")
 INLINE_CODE = re.compile(r"`[^`]*`")
 TEMPLATE_LINK = re.compile(r"references/[^)\s]*template[^)\s]*\.md")
 # `·` và `;` là dấu tách hạng mục trong doc này — mỗi hạng mục đọc độc lập được
@@ -318,8 +336,45 @@ def rule_r9(doc, out):
                        "— khuôn 3 mục là bắt buộc (soul nguyên tắc 3)")
 
 
+# ------------------------- R10: spec lane full phải khai ranh giới module
+
+# Nhận lane từ dòng header `... · Lane: full`. Chỉ lane full chịu luật này — lane quick
+# cố ý bỏ mục ranh giới module, soi nó ở đó là báo nhầm.
+LANE_RE = re.compile(r"Lane:\s*(full|quick)", re.IGNORECASE)
+R10_HEADING = "2b. ranh giới module"
+
+
+def _lane_cua_spec(doc):
+    """Trả 'full' | 'quick' | None. None nghĩa là spec không khai lane."""
+    for line in doc.lines[:15]:
+        m = LANE_RE.search(line)
+        if m:
+            return m.group(1).lower()
+    return None
+
+
+def rule_r10(doc, out):
+    """Spec lane full phải có `## 2b. Ranh giới module` — plan cắt task theo mục này."""
+    if os.path.basename(os.path.dirname(os.path.abspath(doc.path))) != "spec":
+        return
+    if _lane_cua_spec(doc) != "full":
+        return
+    for line in doc.lines:
+        found = ALLOW.search(line)
+        if found and found.group(1) == "R10":
+            return          # miễn trừ mức FILE — dành cho spec viết trước luật này
+    for i, line in enumerate(doc.lines):
+        if doc.in_fence[i]:
+            continue
+        m = HEADING.match(line)
+        if m and m.group(2).strip().lower().startswith(R10_HEADING):
+            return
+    out.append(f"{doc.path}:1: [R10] spec lane full thiếu mục "
+               "`## 2b. Ranh giới module` — plan không có đường cắt để chia task")
+
+
 RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8,
-         rule_r9]
+         rule_r9, rule_r10]
 
 # Thư mục chứa biên bản / file máy sinh — chỉ chịu R8, xem lint_file().
 OUTPUT_DIRS = (os.path.join("docs", "tdq"), os.path.join("docs", "workinglog"),
@@ -352,6 +407,7 @@ def _plan_contracts(lines):
 
 def pair(spec_path, plan_path):
     """Mỗi dòng DÙNG ở spec §3b phải có khối hợp đồng đủ 6 trường trong plan."""
+    _log(f"đối chiếu cặp {os.path.basename(spec_path)} ↔ {os.path.basename(plan_path)}")
     try:
         spec = Doc(spec_path)
         with open(plan_path, encoding="utf-8") as f:
@@ -365,6 +421,12 @@ def pair(spec_path, plan_path):
         return 1
     blocks = _plan_contracts(plan_lines)
     problems = []
+    # Mục cụm song song là BẮT BUỘC ở mọi plan, mọi mode: tính modular là thuộc tính của
+    # tài liệu, không phải của mode thi hành. Thiếu mục này thì `tdq_team.py` không có gì
+    # để đọc, và plan mất luôn đường cắt song song.
+    if not any(l.strip().lower().startswith("## cụm song song") for l in plan_lines):
+        problems.append(f"{plan_path}:1: [R8] plan thiếu mục `## Cụm song song` "
+                        "— bắt buộc ở mọi plan, viết \"một cụm vì <lý do>\" vẫn hợp lệ")
     for i, cells in rows:
         if cells[2].replace("*", "").strip() != "DÙNG":
             continue
@@ -390,7 +452,7 @@ def lint_file(path):
     # thư mục spec/.
     abs_path = os.path.abspath(path)
     is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
-    for rule in ([rule_r8] if is_output else RULES):
+    for rule in ([rule_r8, rule_r10] if is_output else RULES):
         rule(doc, out)
     return out
 
@@ -423,11 +485,17 @@ def main(argv):
         for p in missing:
             print(f"⚠️ không tìm thấy: {p}", file=sys.stderr)
         return EXIT_SYNTAX
+    paths = collect(argv)
+    _log(f"lint {len(paths)} file: {', '.join(os.path.basename(p) for p in paths)}")
     problems = []
-    for path in collect(argv):
-        problems += lint_file(path)
+    for path in paths:
+        loi = lint_file(path)
+        if loi:
+            _log(f"{os.path.basename(path)} → {len(loi)} vi phạm")
+        problems += loi
     for line in problems:
         print(line)
+    _log(f"xong — tổng {len(problems)} vi phạm, exit {1 if problems else 0}")
     return 1 if problems else 0
 
 

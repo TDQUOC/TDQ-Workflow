@@ -1,5 +1,7 @@
 # SPEC — Đo và đề án tối ưu context cho bộ workflow TDQ
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-17 · Bản: 1.2 · Brief: ../brief/2026-08-17-2121-toi-uu-context-workflow.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

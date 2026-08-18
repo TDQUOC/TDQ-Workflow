@@ -1,5 +1,7 @@
 # SPEC — Đổi nhãn lane: `chế độ nhanh (express)` / `chế độ chuyên sâu (deep)`
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-12 · Bản: 1.0 · Brief: ../brief/2026-08-12-doi-ten-lane.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

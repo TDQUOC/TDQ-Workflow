@@ -1,5 +1,7 @@
 # SPEC — Mode subagent chạy như một đội: main làm leader, nhiều agent song song, merge có kiểm
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-17 · Bản: 1.3 · Brief: ../brief/2026-08-17-1828-subagent-team-implement.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

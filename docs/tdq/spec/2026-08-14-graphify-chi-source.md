@@ -1,5 +1,7 @@
 # SPEC — Tổ chức graphify: chỉ scan source, đọc có chủ đích
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-14 · Bản: 1.0 · Brief: ../brief/2026-08-14-graphify-chi-source.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

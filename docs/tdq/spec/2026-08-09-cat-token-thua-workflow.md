@@ -1,5 +1,7 @@
 # SPEC — Cắt token thừa trong TDQ workflow
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-09 · Bản: 1.0 · Brief: ../brief/2026-08-09-cat-token-thua-workflow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

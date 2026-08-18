@@ -1,4 +1,6 @@
 # SPEC — TDQ 0.3.0: tuân thủ kiểm được, state đọc được, workflow đủ rõ cho mọi model
+
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
 <!-- doc-lint: allow R8 -->  <!-- spec viết trước 0.3.3, chưa có mục 3b -->
 
 Phiên bản: 1.2 · Ngày: 2026-07-28 · Lane: full · Trạng thái: **CHỜ DUYỆT**

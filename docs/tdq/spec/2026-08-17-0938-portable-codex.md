@@ -1,5 +1,7 @@
 # SPEC — Bộ portable tự sinh cho hai harness, có skill tự kiểm & tự setup
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-17 · Bản: 1.0 · Brief: ../brief/2026-08-17-0938-portable-codex.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

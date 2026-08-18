@@ -24,8 +24,12 @@ Plan đã được duyệt. Còn một câu cuối: bạn muốn tôi chạy the
 
 ## Luật viết đoạn "Vì sao đề xuất"
 
-Dài 1–3 dòng, đặt ngay dưới hai option. Cấm nói chung chung. Mọi câu phải dựa trên
-**căn cứ đọc được từ chính plan này**. Lấy đủ 4 căn cứ:
+Dài 1–3 dòng, đặt ngay dưới hai option. Cấm nói chung chung.
+
+**Đề xuất chọn mode nào là do LỆNH quyết, không do đọc mắt.** Chạy trên chính plan vừa viết:
+`tdq_bench.py mo-phong --plan <plan> --thuc-do <file hằng số> --he-so-agent 1.5`, rồi lấy
+dòng `Thắng:` làm đề xuất và số chênh phút làm bằng chứng. Bốn căn cứ dưới đây chỉ dùng để
+VIẾT lý do cho người đọc hiểu, không dùng để tự chốt ngược lại kết quả lệnh:
 
 1. Số task.
 2. Có task nào phụ thuộc nối tiếp task trước không.
@@ -36,15 +40,16 @@ Kết bằng đúng một câu nói vì sao KHÔNG chọn phương án còn lạ
 
 Ví dụ đủ căn cứ:
 
-> 12 task nhưng dính chuỗi, 4 task cùng sửa `tdq_state.py`, T4.3 mang nhãn `(mcp)`;
-> không chọn B vì lợi ích song song gần bằng 0 mà thêm rủi ro merge worktree.
+> `mo-phong` cho main 40,7 phút so với đội 32,6 phút (hệ số agent 1,5) nên đề xuất B;
+> 12 task, 4 task cùng sửa `tdq_state.py`, T4.3 mang nhãn `(mcp)` nên leader vẫn giữ 3 task.
 
 ## B KHÔNG có nghĩa là giao hết
 
 Mode B là mô hình lai, không phải "mọi task đều đẩy cho agent con". Leader vẫn tự làm
-những task khớp đúng một trong bốn nhóm lý do đóng: `phu-thuoc`, `vung-khoa`, `mcp`,
-`file-luat`. Phần còn lại bắt buộc phải giao — và `scripts/tdq_team.py kiem-ke` exit
-khác 0 nếu leader bịa ra lý do thứ năm để ôm việc.
+những task khớp đúng một nhóm trong tập lý do đóng: `phu-thuoc`, `vung-khoa`, `mcp`,
+`file-luat`, `hop-dong`. Phần còn lại bắt buộc phải giao — và `scripts/tdq_team.py kiem-ke`
+exit khác 0 nếu leader bịa ra một nhóm ngoài tập đó để ôm việc. Tập này là hằng
+`LY_DO_GIU` trong `scripts/tdq_team.py`; bảng tra đầy đủ ở `tdq-build/references/team-mode.md`.
 
 Vì vậy đoạn "Vì sao đề xuất" đừng bao giờ mô tả B là "giao toàn bộ cho trợ lý". Cách
 đo đúng của B là: **bao nhiêu task tách được trên tổng số task**. Con số đó, chứ không

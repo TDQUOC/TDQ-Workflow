@@ -234,6 +234,51 @@ PLAN_8_TASK = """# PLAN — mau
   - Chạm: `scripts/h.py`
 """
 
+PLAN_CAN = """# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) dung nen — Test: `true`
+  - Chạm: `scripts/a.py`
+- [ ] **T1.2** (n3 e5m) doc ket qua cua T1.1 — Test: `true`
+  - Chạm: `scripts/b.py`
+  - Cần: T1.1
+- [ ] **T1.3** (n3 e5m) can hai task truoc — Test: `true`
+  - Chạm: `scripts/c.py`
+  - Cần: T1.1, T1.2
+- [ ] **T1.4** (n3 e5m) khong can gi — Test: `true`
+  - Chạm: `scripts/d.py`
+"""
+
+PLAN_CAN_CHEO = """# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) viec a — Test: `true`
+  - Chạm: `scripts/a.py`
+- [ ] **T1.2** (n3 e5m) viec b — Test: `true`
+  - Chạm: `scripts/b.py`
+  - Cần: T1.1
+
+## P2 — tang tren
+- [ ] **T2.1** (n3 e5m) khong dinh gi toi P1 — Test: `true`
+  - Chạm: `scripts/c.py`
+- [ ] **T2.2** (n3 e5m) cham chung file voi T2.1 — Test: `true`
+  - Chạm: `scripts/c.py`
+"""
+
+PLAN_N_ROI = "# PLAN — mau\n\n## P1 — nen\n" + "".join(
+    f"- [ ] **T1.{i}** (n3 e5m) viec {i} — Test: `true`\n  - Chạm: `scripts/f{i}.py`\n" for i in range(1, 10))
+
+PLAN_CAN_VONG = """# PLAN — mau
+
+## P1 — nen
+- [ ] **T1.1** (n3 e5m) a — Test: `true`
+  - Chạm: `scripts/a.py`
+  - Cần: T1.2
+- [ ] **T1.2** (n3 e5m) b — Test: `true`
+  - Chạm: `scripts/b.py`
+  - Cần: T1.1
+"""
+
 SLUG = "2026-08-17-1828-x"
 BAN_DO_REL = os.path.join("docs", "tdq", "team", SLUG + ".json")
 
@@ -273,6 +318,156 @@ class TeamBase(unittest.TestCase):
 
     def chay(self, *args, env=None):
         return run_team_cli(self.cwd, *args, env=env)
+
+
+class PhuThuocTest(unittest.TestCase):
+    """T3.1 — dòng `- Cần:` là lời khai phụ thuộc, đọc được bằng máy."""
+
+    def _tasks(self, plan):
+        with tempfile.TemporaryDirectory() as d:
+            duong = os.path.join(d, "plan.md")
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write(plan)
+            return tdq_team.doc_plan(duong)
+
+    def test_phu_thuoc_doc_dung_mot_ma(self):
+        pt = tdq_team.doc_phu_thuoc(self._tasks(PLAN_CAN))
+        self.assertEqual(pt["T1.2"], {"T1.1"})
+
+    def test_phu_thuoc_doc_dung_nhieu_ma(self):
+        pt = tdq_team.doc_phu_thuoc(self._tasks(PLAN_CAN))
+        self.assertEqual(pt["T1.3"], {"T1.1", "T1.2"})
+
+    def test_phu_thuoc_khong_khai_thi_rong(self):
+        pt = tdq_team.doc_phu_thuoc(self._tasks(PLAN_CAN))
+        self.assertEqual(pt["T1.1"], set())
+        self.assertEqual(pt["T1.4"], set())
+
+    def test_phu_thuoc_du_moi_task(self):
+        pt = tdq_team.doc_phu_thuoc(self._tasks(PLAN_CAN))
+        self.assertEqual(set(pt), {"T1.1", "T1.2", "T1.3", "T1.4"})
+
+    def test_phu_thuoc_bo_qua_ma_chinh_no(self):
+        """Task tự nhắc mã của chính nó không thành vòng lặp."""
+        plan = PLAN_CAN.replace("  - Cần: T1.1\n", "  - Cần: T1.1, T1.2\n")
+        pt = tdq_team.doc_phu_thuoc(self._tasks(plan))
+        self.assertEqual(pt["T1.2"], {"T1.1"})
+
+    def test_phu_thuoc_bo_qua_ma_khong_co_that(self):
+        """Khai mã không có trong plan thì bỏ qua — plan sai không làm sập lệnh."""
+        plan = PLAN_CAN.replace("  - Cần: T1.1\n", "  - Cần: T1.1, T9.9\n")
+        pt = tdq_team.doc_phu_thuoc(self._tasks(plan))
+        self.assertEqual(pt["T1.2"], {"T1.1"})
+
+
+class ChiaDotTest(unittest.TestCase):
+    """T3.2 — đợt xếp theo `Cần:` đã khai, không theo tên phase."""
+
+    def _tasks(self, plan):
+        with tempfile.TemporaryDirectory() as d:
+            duong = os.path.join(d, "plan.md")
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write(plan)
+            return tdq_team.doc_plan(duong)
+
+    def _quyet(self, plan):
+        tasks = self._tasks(plan)
+        return {t.ma: tdq_team.quyet_dinh_task(t, tasks) for t in tasks}
+
+    def _dot(self, plan):
+        tasks = self._tasks(plan)
+        return tdq_team.chia_dot(tasks, self._quyet(plan))
+
+    def test_chia_dot_vong_lap_khong_lam_sap(self):
+        """`Cần:` khai vòng là plan sai, nhưng lệnh phải cắt vòng chứ không văng."""
+        dot = self._dot(PLAN_CAN_VONG)
+        self.assertEqual(set(dot), {"T1.1", "T1.2"})
+        for ma, d in dot.items():
+            with self.subTest(task=ma):
+                self.assertGreaterEqual(d, 1)
+
+    def test_chia_dot_vong_lap_van_tach_file(self):
+        """Cắt vòng không được kéo theo việc quên luật chung file."""
+        plan = PLAN_CAN_VONG.replace("`scripts/b.py`", "`scripts/a.py`")
+        dot = self._dot(plan)
+        self.assertNotEqual(dot["T1.1"], dot["T1.2"])
+
+    def test_chia_dot_theo_chuoi_can(self):
+        dot = self._dot(PLAN_CAN)
+        self.assertLess(dot["T1.1"], dot["T1.2"])
+        self.assertLess(dot["T1.2"], dot["T1.3"])
+
+    def test_chia_dot_khong_khai_thi_dot_dau(self):
+        """Task không khai `Cần:` và không đụng file ai thì được chạy ngay đợt 1."""
+        dot = self._dot(PLAN_CAN)
+        self.assertEqual(dot["T1.1"], 1)
+        self.assertEqual(dot["T1.4"], 1)
+
+    def test_chia_dot_bo_qua_ranh_gioi_phase(self):
+        """Đây là chỗ ăn thời gian: P2 không khai `Cần:` thì chạy song song với P1."""
+        dot = self._dot(PLAN_CAN_CHEO)
+        self.assertEqual(dot["T2.1"], 1)
+        self.assertEqual(dot["T1.1"], 1)
+
+    def test_chia_dot_chung_file_van_tach_dot(self):
+        dot = self._dot(PLAN_CAN_CHEO)
+        self.assertNotEqual(dot["T2.1"], dot["T2.2"])
+
+    def test_chia_dot_khai_can_khong_bi_giu_lai(self):
+        """Khai `Cần:` là ràng buộc LỊCH TRÌNH, không phải cớ để leader giữ task.
+
+        Trước luật này, một task nhắc mã task khác chưa xong là tự động `tu_lam` —
+        thêm dòng `Cần:` sẽ giết sạch song song, ngược hẳn ý đồ.
+        """
+        quyet = self._quyet(PLAN_CAN)
+        for ma in ("T1.2", "T1.3"):
+            with self.subTest(task=ma):
+                self.assertEqual(quyet[ma][0], "giao", quyet[ma])
+
+    def test_chia_dot_plan_cu_van_giu_ly_do_phu_thuoc(self):
+        """Plan không khai `Cần:` thì luật cũ đọc theo văn xuôi vẫn còn hiệu lực."""
+        quyet = self._quyet(PLAN_TRON)
+        self.assertEqual(quyet["T1.4"], ("tu_lam", "phu-thuoc"))
+
+    def test_chia_dot_plan_cu_giu_nguyen_luat_phase(self):
+        """Plan không khai `Cần:` ở đâu cả → lùi về luật cũ, số đợt y như trước."""
+        dot = self._dot(PLAN_8_TASK)
+        self.assertLess(max(dot[m] for m in ("T1.1", "T1.2", "T1.3")),
+                        min(dot[m] for m in ("T2.1", "T2.2")))
+        self.assertEqual(max(dot.values()), 2)
+
+
+class DuongGangTest(unittest.TestCase):
+    """T3.3 — b-level: task nào nằm trên đường găng thì phát trước."""
+
+    def _b(self, plan):
+        with tempfile.TemporaryDirectory() as d:
+            duong = os.path.join(d, "plan.md")
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write(plan)
+            tasks = tdq_team.doc_plan(duong)
+        return tdq_team.b_level(tasks, tdq_team.doc_phu_thuoc(tasks))
+
+    def test_duong_gang_cong_don_theo_chuoi(self):
+        b = self._b(PLAN_CAN)
+        self.assertEqual(b["T1.3"], 5)
+        self.assertEqual(b["T1.2"], 10)
+        self.assertEqual(b["T1.1"], 15)
+
+    def test_duong_gang_nhanh_le_ngan_hon(self):
+        b = self._b(PLAN_CAN)
+        self.assertEqual(b["T1.4"], 5)
+        self.assertGreater(b["T1.1"], b["T1.4"])
+
+    def test_duong_gang_khong_khai_phut_thi_tinh_mot(self):
+        plan = PLAN_CAN.replace(" e5m", "")
+        b = self._b(plan)
+        self.assertEqual(b["T1.3"], 1)
+        self.assertEqual(b["T1.1"], 3)
+
+    def test_duong_gang_du_moi_task(self):
+        b = self._b(PLAN_CAN_CHEO)
+        self.assertEqual(set(b), {"T1.1", "T1.2", "T2.1", "T2.2"})
 
 
 class PhanCongTest(TeamBase):
@@ -499,6 +694,135 @@ class CumTest(TeamBase):
         rc, out, _err = self.chay("cum")
         self.assertEqual(rc, 0, out)
         self.assertIn("HẾT", out.upper())
+
+
+class CumLienTucTest(TeamBase):
+    """T3.4 — phát liên tục: sẵn sàng là phát, không chờ cả đợt trước hợp xong."""
+
+    def test_lien_tuc_phat_task_khong_dinh_nhau(self):
+        self._project(PLAN_CAN_CHEO)
+        self.chay("phan-cong")
+        rc, out, _err = self.chay("cum")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("\n  T1.1 ", "\n" + out)
+        self.assertIn("\n  T2.1 ", "\n" + out)
+
+    def test_lien_tuc_hoan_task_con_cho_task_khac(self):
+        self._project(PLAN_CAN_CHEO)
+        self.chay("phan-cong")
+        _rc, out, _err = self.chay("cum")
+        self.assertIn("HOÃN T1.2", out)
+        self.assertIn("T1.1", out.split("HOÃN T1.2")[1].split("\n")[0])
+
+    def test_lien_tuc_khong_phat_hai_task_chung_file(self):
+        self._project(PLAN_CAN_CHEO)
+        self.chay("phan-cong")
+        _rc, out, _err = self.chay("cum")
+        phat = [d.strip().split()[0] for d in out.splitlines()
+                if d.startswith("  ") and not d.strip().startswith("HOÃN")]
+        self.assertIn("T2.1", phat)
+        self.assertNotIn("T2.2", phat)
+
+    def test_lien_tuc_dot_sau_phat_ngay_khi_vung_file_ranh(self):
+        """Điểm ăn thời gian: T1.2 ở đợt 2 được phát ngay khi T1.1 xong."""
+        plan = PLAN_CAN_CHEO.replace("- [ ] **T1.1**", "- [x] **T1.1**")
+        self._project(plan)
+        self.chay("phan-cong")
+        _rc, out, _err = self.chay("cum")
+        phat = [d.strip().split()[0] for d in out.splitlines()
+                if d.startswith("  ") and not d.strip().startswith("HOÃN")]
+        self.assertIn("T1.2", phat)
+        self.assertIn("T2.1", phat)
+
+    def test_lien_tuc_sap_theo_duong_gang(self):
+        """Task trên đường găng đứng trước trong danh sách phát."""
+        self._project(PLAN_CAN_CHEO)
+        self.chay("phan-cong")
+        _rc, out, _err = self.chay("cum")
+        phat = [d.strip().split()[0] for d in out.splitlines()
+                if d.startswith("  ") and not d.strip().startswith("HOÃN")]
+        self.assertEqual(phat[0], "T1.1")
+
+
+class TranSongSongTest(TeamBase):
+    """T3.5 — trần 4 nhánh một lượt, và đúng là trần TRÊN chứ không phải hạn ngạch."""
+
+    def _phat(self, plan):
+        self._project(plan)
+        self.chay("phan-cong")
+        _rc, out, _err = self.chay("cum")
+        return [d.strip().split()[0] for d in out.splitlines()
+                if d.startswith("  ") and not d.strip().startswith(("HOÃN", "CHỜ"))], out
+
+    def test_tran_chin_task_roi_nhau_chi_phat_bon(self):
+        phat, out = self._phat(PLAN_N_ROI)
+        self.assertEqual(len(phat), tdq_team.TRAN_SONG_SONG, out)
+
+    def test_tran_phan_du_in_cho_slot(self):
+        _phat, out = self._phat(PLAN_N_ROI)
+        self.assertIn("CHỜ SLOT 5 task", out)
+
+    def test_tran_it_task_thi_phat_it(self):
+        plan = "\n".join(PLAN_N_ROI.splitlines()[:7]) + "\n"
+        phat, out = self._phat(plan)
+        self.assertEqual(len(phat), 2, out)
+        self.assertNotIn("CHỜ SLOT", out)
+
+    def test_tran_dem_ca_task_dang_bay(self):
+        """Trần là trần của SỐ NHÁNH ĐANG CHẠY, không phải của một lượt phát.
+
+        Phát liên tục mà chỉ đếm trong lượt thì 3 task `[>]` cộng 4 task mới = 7 nhánh
+        cùng lúc — vượt đúng cái trần vừa đặt.
+        """
+        plan = PLAN_N_ROI
+        for i in (1, 2, 3):
+            plan = plan.replace(f"- [ ] **T1.{i}**", f"- [>] **T1.{i}**")
+        phat, out = self._phat(plan)
+        self.assertEqual(len(phat), 1, out)
+
+    def test_tran_day_slot_thi_khong_phat_them(self):
+        plan = PLAN_N_ROI
+        for i in (1, 2, 3, 4):
+            plan = plan.replace(f"- [ ] **T1.{i}**", f"- [>] **T1.{i}**")
+        phat, out = self._phat(plan)
+        self.assertEqual(phat, [], out)
+        self.assertIn("CHỜ SLOT", out)
+
+    def test_tran_la_hang_so_co_chu_thich_nguon(self):
+        self.assertEqual(tdq_team.TRAN_SONG_SONG, 4)
+
+
+class LyDoGiuTest(TeamBase):
+    """T3.6 — nhóm lý do thứ năm: task dựng hợp đồng dùng chung."""
+
+    def test_ly_do_co_nhom_hop_dong(self):
+        self.assertIn("hop-dong", tdq_team.LY_DO_GIU)
+        self.assertEqual(len(tdq_team.LY_DO_GIU), 5)
+
+    def test_ly_do_hop_dong_qua_duoc_kiem_ke(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        duong = os.path.join(self.cwd, BAN_DO_REL)
+        with open(duong, encoding="utf-8") as f:
+            ban_do = json.load(f)
+        ban_do["tasks"]["T1.1"].update(quyet_dinh="tu_lam", ly_do="hop-dong")
+        with open(duong, "w", encoding="utf-8") as f:
+            json.dump(ban_do, f, ensure_ascii=False)
+        rc, out, err = self.chay("kiem-ke")
+        self.assertEqual(rc, 0, out + err)
+
+    def test_ly_do_ngoai_bang_van_bi_chan(self):
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+        duong = os.path.join(self.cwd, BAN_DO_REL)
+        with open(duong, encoding="utf-8") as f:
+            ban_do = json.load(f)
+        ban_do["tasks"]["T1.1"].update(quyet_dinh="tu_lam", ly_do="ngai-giao")
+        with open(duong, "w", encoding="utf-8") as f:
+            json.dump(ban_do, f, ensure_ascii=False)
+        rc, _out, err = self.chay("kiem-ke")
+        self.assertEqual(rc, 1)
+        self.assertIn("5 nhóm", err)
 
 
 class GitTest(TeamBase):
@@ -806,14 +1130,14 @@ class KhuonTest(unittest.TestCase):
         for muc in ("## khi nào áp dụng", "## làm gì", "## tự kiểm"):
             self.assertIn(muc, noi_dung, f"team-mode.md thiếu mục {muc}")
 
-    def test_khuon_bang_tra_du_4_nhom_giu_va_dong_giao(self):
+    def test_khuon_bang_tra_du_nhom_giu_va_dong_giao(self):
         noi_dung = _doc(TEAM_MODE_MD)
-        import tdq_team
         for ma in tdq_team.LY_DO_GIU:
             self.assertIn(f"`{ma}`", noi_dung, f"bảng tra thiếu nhóm {ma}")
         self.assertIn("GIAO", noi_dung)
         dong_nhom = [d for d in noi_dung.splitlines() if d.strip().startswith("| `")]
-        self.assertEqual(len(dong_nhom), 4, "bảng tra phải có đúng 4 nhóm giữ")
+        self.assertEqual(len(dong_nhom), len(tdq_team.LY_DO_GIU),
+                         "bảng tra phải liệt kê đủ mọi nhóm giữ")
         dong_giao = [d for d in noi_dung.splitlines()
                      if d.strip().startswith("|") and "GIAO" in d]
         self.assertTrue(dong_giao, "bảng tra thiếu dòng mặc định GIAO")

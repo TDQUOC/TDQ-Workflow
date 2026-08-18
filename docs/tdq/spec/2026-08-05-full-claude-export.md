@@ -1,5 +1,7 @@
 # SPEC — Full claude export (multi-repo local dependency)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-05 · Bản: 1.0 · Request: ../requests/2026-08-05-full-claude-export.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

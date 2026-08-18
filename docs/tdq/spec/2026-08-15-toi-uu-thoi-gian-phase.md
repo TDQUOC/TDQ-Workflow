@@ -1,5 +1,7 @@
 # SPEC — Tối ưu thời gian xử lý các phase của workflow
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-15 · Bản: 1.1 · Brief: ../brief/2026-08-15-toi-uu-thoi-gian-phase.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

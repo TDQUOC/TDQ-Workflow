@@ -1,4 +1,6 @@
 # SPEC — Yêu cầu mới ⇒ state được đồng bộ lại theo lane user chọn
+
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
 <!-- doc-lint: allow R8 -->  <!-- spec viết trước 0.3.3, chưa có mục 3b -->
 
 Ngày: 2026-07-28 · Slug: `2026-07-28-state-reset-on-new-request` · Lane: full · Trạng thái: **CHỜ DUYỆT**

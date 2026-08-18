@@ -1,5 +1,7 @@
 # SPEC — Đưa skill vào gói external (hybrid 3 nhánh)
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-03 · Bản: 1.1 (sau review, 11 finding đã áp) · Request: ../requests/2026-08-03-skill-vao-goi-external.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

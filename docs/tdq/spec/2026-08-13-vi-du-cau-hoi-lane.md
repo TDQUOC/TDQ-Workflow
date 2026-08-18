@@ -1,5 +1,7 @@
 # SPEC — Ví dụ & hướng dẫn thân thiện cho câu hỏi kiểu A/B/C
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-13 · Bản: 1.0 · Brief: ../brief/2026-08-13-vi-du-cau-hoi-lane.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 

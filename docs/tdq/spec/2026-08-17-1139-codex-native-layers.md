@@ -1,5 +1,7 @@
 # SPEC — Bản portable_codex dùng đúng cơ chế native của Codex CLI
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-17 · Bản: 1.0 · Brief: ../brief/2026-08-17-1139-codex-native-layers.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT

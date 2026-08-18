@@ -1,5 +1,7 @@
 # SPEC — Đổi thiết kế mode external: giao cả plan 1 lần + fix loop
 
+<!-- doc-lint: allow R10 — spec viết trước khi có luật ranh giới module -->
+
 Ngày: 2026-08-03 · Bản: 1.2 · Request: ../requests/2026-08-03-check-external-assign-flow.md · Lane: full
 Trạng thái: CHỜ DUYỆT
 
