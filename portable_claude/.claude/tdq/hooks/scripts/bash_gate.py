@@ -9,6 +9,7 @@
                commit message mang dấu vết AI ("generated with…", Co-Authored-By).
    TDQ:STATE — ghi thẳng docs/tdq/state.json | STATE.md qua shell (redirect, tee,
                sed -i, mv/cp, truncate, python inline).
+   TDQ:OUTPUT— lệnh đổ nguyên file/lịch sử vào context mà không giới hạn dòng.
 """
 import os
 import re
@@ -38,6 +39,20 @@ STATE_WRITES = [
     re.compile(r"\bpython3?\b[^;|&]*" + STATE),
     re.compile(r"\bopen\([^)]*" + STATE),
 ]
+# Lệnh có xu hướng đổ trọn nội dung vào context. Mỗi output bị model đọc lại ở MỌI
+# API call còn lại của phiên, nên một lần đổ thừa nhân lên hàng trăm lần chính nó.
+DUMP = re.compile(
+    r"(?:^|[|;&]|\bthen\b|\bdo\b)\s*(cat|git\s+log|git\s+diff|git\s+show|ls\s+-R)\b")
+# Dấu hiệu lệnh ĐÃ tự giới hạn — có một dấu là đủ im.
+GIOI_HAN = re.compile(
+    r"\|\s*(?:head|tail|wc|jq|sed\s+-n)\b"      # nối sang lệnh cắt
+    r"|\b(?:head|tail)\b"
+    r"|(?:^|\s)-[a-zA-Z]*[nc]\s*\d"              # -n 20 · -c 500 · -n20
+    r"|--stat\b|--name-only\b|--oneline\b|--shortstat\b|--numstat\b"
+    r"|\|\s*grep\b[^|]*\s-[a-zA-Z]*[clq]\b")
+# `cat > f <<EOF` là GHI file, không phải đọc — nhắc ở đây chỉ tạo nhiễu.
+CAT_GHI = re.compile(r"\bcat\b[^|;&]*(?:<<|>)")
+
 STATE_CLI = re.compile(r"tdq_state\.py\s+(\w[\w-]*)")
 # nhanh|express là bí danh CLI của quick (xem LANE_ALIASES trong tdq_state).
 APPROVE_CLI = re.compile(r"tdq_state\.py\s+approve\s+(spec|plan|quick|nhanh|express)\b")
@@ -118,6 +133,16 @@ def main():
                     "Cách làm: bỏ 'generated with …', 'được tạo cùng/với AI' và Co-Authored-By AI.",
                     echo_line("TDQ:GIT", "đã sửa commit message"),
                 ], rows=rows)
+
+    if DUMP.search(cmd) and not GIOI_HAN.search(cmd) and not CAT_GHI.search(cmd):
+        remind(cwd, payload, "TDQ:OUTPUT", [
+            "Lệnh này đổ trọn nội dung vào context — mỗi output còn bị đọc lại ở mọi "
+            "API call sau nó.",
+            "Cách làm: giới hạn ngay trong lệnh (`head`/`tail`/`sed -n`/`-n`/`--stat`/"
+            "`--oneline`), hoặc dùng Read với `offset`/`limit`. Cần trọn file thì cứ "
+            "chạy — chất lượng đứng trên context cost.",
+            echo_line("TDQ:OUTPUT", "đã giới hạn output hoặc xác nhận cần trọn"),
+        ], rows=rows)
 
     if re.search(STATE, cmd):
         for pattern in STATE_WRITES:

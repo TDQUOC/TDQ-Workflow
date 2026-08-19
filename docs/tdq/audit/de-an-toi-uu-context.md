@@ -352,3 +352,42 @@ Xếp nó ở vị trí thứ 2 trong bảng ưu tiên mục 6 với lý do "ti�
 **Bài học lặp lại lần thứ hai** (lần đầu ở hướng D): cả hai lần, con số của đề án sai vì
 không ai kiểm cách đo và tiền đề. Trước khi tin mức tiết kiệm của hướng B, A, E — kiểm
 thước đo trước, kiểm tiền đề bằng tài liệu chính thức sau, rồi mới đo.
+
+## Đính chính hướng B 2026-08-19 — thước đo đã có sẵn, và nó đang đếm sai ảnh
+
+Ba đính chính, cùng một nguyên nhân đã lặp lần thứ ba: không ai kiểm thước đo trước khi
+tin con số.
+
+**1. Tiền đề "cần một thước đo chưa tồn tại" (mục 2) SAI.** `scripts/token_audit.py` đã
+có từ trước request này, đo đúng carry-cost theo transcript thật. Việc phải làm không
+phải viết thước đo mới mà là sửa hai chỗ nó đếm sai.
+
+**2. Thước đo cũ ước lượng ký tự/4 — hụt 47% tổng.** Luật gốc của bộ này là văn bản
+tiếng Việt có dấu, thứ mà ký tự/4 hụt nặng. Đếm bằng `anthropic-tokenizer` thật thì tổng
+carry-cost cao hơn 47,3% so với số cũ trên cùng 5 phiên.
+
+**3. Ảnh bị tính theo độ dài chuỗi base64 — sai gấp ~186 lần.** Một ảnh chụp canvas
+960×1605 px tốn `⌈960/28⌉ × ⌈1605/28⌉ = 2.030` token thị giác, nhưng chuỗi base64 của nó
+dài tương đương 378.014 token. Đây là chỗ sai nguy hiểm nhất: nó chỉ đúng một kết luận
+— "cắt năng lực chụp màn hình đi" — và đó là cắt nhầm.
+
+| Nhóm (5 phiên, cùng bộ transcript) | Cách đếm cũ | Cách đếm mới | Nhận xét |
+|---|---|---|---|
+| TỔNG carry-cost | 2.609.256.040 | 3.844.300.565 | +47,3%: ký tự/4 hụt trên tiếng Việt |
+| `Read file` | 918.557.908 (35,2%) | 1.756.427.790 (45,7%) | nhóm tốn nhất, cả hai cách đếm |
+| Cụm tool MCP | 479.537.211 (18,4%) | 71.779.419 (**1,9%**) | 18,4% cũ gần hết là ảnh bị đếm sai |
+
+**Hệ quả cho chính hướng B.** Con số "MCP tốn 18,1%" từng là lý do chọn
+`MAX_MCP_OUTPUT_TOKENS` làm đòn bẩy cấu hình. Đo lại đúng: 1,9%. Khoá đó vẫn được đặt
+(25.000), nhưng phải gọi đúng tên — nó chặn ca hiếm khổng lồ trong tương lai, **không**
+cắt chi phí đang có.
+
+**`BASH_MAX_OUTPUT_LENGTH` bị loại, không phải bỏ quên.** Đo 3.067 lệnh Bash: đầu ra lớn
+nhất 25.654 ký tự, **không lệnh nào chạm trần mặc định 30.000**. Hạ trần đó không cắt
+được gì đang có, mà lại thêm rủi ro cắt cụt đúng lần chạy test dài — chất lượng đứng trên
+context cost.
+
+**Chỗ chưa kiểm chứng được trong request này.** Luật mới và hook nhắc chỉ tác động lên
+PHIÊN MỚI. Mọi phép đo ở trên là trên transcript đã có, nên chúng chứng minh thước đo
+đúng, không chứng minh hành vi đã đổi. Muốn biết luật có ăn hay không: chạy
+`token_audit.py --sessions 5` sau vài phiên mới rồi so `Read`/lần và tỉ lệ đọc lại.

@@ -30,9 +30,9 @@
     "semantic_hash": "66d896d165641ac7b34de023cc1bf9f5"
   },
   "hooks/scripts/bash_gate.py": {
-    "mtime": 1786642305.3985403,
-    "ast_hash": "43a3ca749da7501897d00c29a1e30e33",
-    "semantic_hash": "43a3ca749da7501897d00c29a1e30e33"
+    "mtime": 1787125894.7037199,
+    "ast_hash": "5a6c8bd1193f1fd23ac43d2df58b96f9",
+    "semantic_hash": "5a6c8bd1193f1fd23ac43d2df58b96f9"
   },
   "hooks/scripts/edit_gate.py": {
     "mtime": 1787069769.026999,
@@ -120,9 +120,9 @@
     "semantic_hash": "cf449bd140e30f3fea3dfa853053be92"
   },
   "scripts/token_audit.py": {
-    "mtime": 1786768022.6032073,
-    "ast_hash": "e0620c760025862e687a9f31d4345aab",
-    "semantic_hash": "e0620c760025862e687a9f31d4345aab"
+    "mtime": 1787125894.706701,
+    "ast_hash": "6d8d410c844bb4b36942a9e6b498d744",
+    "semantic_hash": "6d8d410c844bb4b36942a9e6b498d744"
   },
   "CHANGELOG.md": {
     "mtime": 1787070479.7170205,
@@ -180,8 +180,8 @@
     "semantic_hash": "8a7c05a6a8b11d7d3238034fcf36cad4"
   },
   "scripts/skill_tokens.py": {
-    "mtime": 1787110304.0928507,
-    "ast_hash": "b6ae5662914d71a6a2eec4f50b923471",
-    "semantic_hash": "b6ae5662914d71a6a2eec4f50b923471"
+    "mtime": 1787125894.7065432,
+    "ast_hash": "a2b2ba89ce6d4095128c191fc32ec918",
+    "semantic_hash": "a2b2ba89ce6d4095128c191fc32ec918"
   }
 }

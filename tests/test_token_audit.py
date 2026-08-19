@@ -33,6 +33,19 @@ def _write(path, records):
             fh.write(json.dumps(r) + "\n")
 
 
+def _co_thu_vien():
+    """Có tokenizer thật ở python đang chạy test hay ở venv của repo không."""
+    venv = os.path.join(REPO, ".venv-tokens", "bin", "python")
+    if not os.path.exists(venv):
+        return False
+    proc = subprocess.run([venv, "-c", "import anthropic_tokenizer"],
+                          capture_output=True, timeout=60)
+    return proc.returncode == 0
+
+
+CO_THU_VIEN = _co_thu_vien()
+
+
 class IterEventsTest(unittest.TestCase):
     def test_bo_qua_dong_hong_khong_crash(self):
         with tempfile.TemporaryDirectory() as d:
@@ -50,9 +63,10 @@ class IterEventsTest(unittest.TestCase):
 
 
 class CarryCostTest(unittest.TestCase):
-    def test_cong_thuc_chars_chia_4_nhan_so_call_con_lai(self):
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
+    def test_cong_thuc_token_that_nhan_so_call_con_lai(self):
         # 3 API call; tool_result của call 1 nằm trước call 2 và 3.
-        text = "x" * 400          # 400 ký tự → 100 token
+        text = "x" * 400
         records = [
             _assistant("t1", "Read", {"file_path": "/a.md"}),   # api call 1
             _result("t1", text),
@@ -65,11 +79,13 @@ class CarryCostTest(unittest.TestCase):
             _write(p, records)
             rows = token_audit.carry_cost([p])
         by = {r.group: r for r in rows}
-        # result 1 còn 2 call phía sau (call 2, 3) → 100*2 = 200
-        # result 2 còn 1 call phía sau (call 3)    → 100*1 = 100
-        self.assertEqual(by["Read file"].tokens, 300)
+        # result 1 còn 2 call phía sau (call 2, 3) → n*2
+        # result 2 còn 1 call phía sau (call 3)    → n*1
+        n = token_audit.dem_token(text)
+        self.assertEqual(by["Read file"].tokens, n * 3)
         self.assertEqual(by["Read file"].count, 2)
 
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
     def test_gom_nhom_theo_loai_lenh_bash(self):
         records = [
             _assistant("t1", "Bash", {"command": "python3 scripts/tdq_state.py next"}),
@@ -205,6 +221,7 @@ class CliTest(unittest.TestCase):
             r = self._run(["--transcript-dir", d])
         self.assertEqual(r.returncode, 0, r.stderr)
 
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
     def test_in_bang_carry_cost(self):
         with tempfile.TemporaryDirectory() as d:
             _write(os.path.join(d, "s.jsonl"), [
@@ -226,6 +243,225 @@ class CliTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             r = self._run(["--transcript-dir", d], env={"TDQ_AUDIT_LOG": "0"})
         self.assertEqual(r.stderr.strip(), "")
+
+
+class DemBangTokenizerThatTest(unittest.TestCase):
+    """Luật xương sống của hướng B: đếm bằng tokenizer thật, cấm ước lượng ký tự/4.
+
+    Bản trước dùng `CHARS_PER_TOKEN = 4`. Ước lượng đó lệch mạnh đúng ở nhóm tốn
+    nhất — chuỗi lặp và base64 nén rất tốt, văn bản tiếng Việt có dấu thì ngược lại.
+    """
+
+    def test_co_ham_dem_token_dung_chung_mot_bo_dem_voi_skill_tokens(self):
+        self.assertTrue(hasattr(token_audit, "dem_token"))
+
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
+    def test_carry_cost_lay_so_tu_tokenizer_chu_khong_phai_do_dai_chia_4(self):
+        text = "x" * 400
+        records = [
+            _assistant("t1", "Read", {"file_path": "/a.md"}),
+            _result("t1", text),
+            _assistant("t2", "Read", {"file_path": "/b.md"}),
+            _result("t2", text),
+            _assistant("t3", "Read", {"file_path": "/c.md"}),
+        ]
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "s.jsonl")
+            _write(p, records)
+            rows = token_audit.carry_cost([p])
+        that = token_audit.dem_token(text)
+        self.assertNotEqual(that, len(text) // 4,
+                            "chọn chuỗi khác: ca này phải phân biệt được hai cách đếm")
+        by = {r.group: r for r in rows}
+        self.assertEqual(by["Read file"].tokens, that * 2 + that * 1)
+
+    def test_thieu_thu_vien_thi_thoat_khac_0_kem_huong_dan_cai(self):
+        """Chặn đường nhảy sang venv để dựng lại đúng cảnh máy chưa cài gì."""
+        e = dict(os.environ)
+        e.update({"TDQ_TOKENS_DA_NHAY": "1", "TDQ_TOKENS_VENV": "khong-co"})
+        with tempfile.TemporaryDirectory() as d:
+            _write(os.path.join(d, "s.jsonl"), [
+                _assistant("t1", "Read", {"file_path": "/a.md"}),
+                _result("t1", "q" * 400),
+                _assistant("t2", "Read", {"file_path": "/b.md"}),
+            ])
+            r = subprocess.run(
+                [sys.executable, os.path.join(REPO, "scripts", "token_audit.py"),
+                 "--transcript-dir", d],
+                capture_output=True, text=True, env=e)
+        if r.returncode == 0:
+            self.skipTest("python chạy test đã có sẵn anthropic-tokenizer")
+        self.assertEqual(r.returncode, token_audit.EXIT_THIEU_THU_VIEN)
+        self.assertNotIn("carry-cost", r.stdout)
+        self.assertIn("anthropic-tokenizer", r.stderr)
+
+
+class PhanRaHanhViTest(unittest.TestCase):
+    """Bảng phân rã hành vi — trả lời "cắt cái gì", điều mà tổng carry-cost không nói.
+
+    Một nhóm tốn nhiều có thể vì gọi rất nhiều lần mỗi lần nhỏ (sửa hành vi), hoặc vì
+    vài lần khổng lồ (sửa trần output). Trung vị/p90/p99/max phân biệt đúng hai ca đó.
+    """
+
+    def _session(self, d, records):
+        p = os.path.join(d, "s.jsonl")
+        _write(p, records)
+        return p
+
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
+    def test_moi_nhom_co_du_n_trung_vi_p90_p99_max(self):
+        with tempfile.TemporaryDirectory() as d:
+            recs = []
+            for i in range(5):
+                recs.append(_assistant(f"t{i}", "Read", {"file_path": f"/f{i}.md"}))
+                recs.append(_result(f"t{i}", f"dòng {i} " * (i + 1) * 10))
+            rows = token_audit.phan_ra([self._session(d, recs)])
+        by = {r.group: r for r in rows}
+        self.assertIn("Read file", by)
+        for truong in ("count", "trung_vi", "p90", "p99", "lon_nhat"):
+            with self.subTest(truong=truong):
+                self.assertTrue(hasattr(by["Read file"], truong))
+        self.assertEqual(by["Read file"].count, 5)
+
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
+    def test_so_thong_ke_lay_tu_chinh_bo_dem_that(self):
+        """Chốt vị trí phân vị theo hạng gần nhất, và chốt rằng số vào bảng là token
+        THẬT của từng output — không phải carry-cost, không phải ký tự."""
+        doan = [f"đoạn {i} " * (i + 1) * 8 for i in range(5)]
+        with tempfile.TemporaryDirectory() as d:
+            recs = []
+            for i, t in enumerate(doan):
+                recs.append(_assistant(f"t{i}", "Read", {"file_path": f"/f{i}.md"}))
+                recs.append(_result(f"t{i}", t))
+            rows = token_audit.phan_ra([self._session(d, recs)])
+        mong = sorted(token_audit.dem_token(t) for t in doan)
+        r = {x.group: x for x in rows}["Read file"]
+        self.assertEqual(r.trung_vi, mong[2])
+        self.assertEqual(r.lon_nhat, mong[-1])
+        self.assertEqual(r.p90, mong[4])          # hạng gần nhất: ceil(0,9×5) = 5
+        self.assertEqual(r.p99, mong[4])
+
+    def test_ti_le_read_co_pham_vi_offset_limit(self):
+        with tempfile.TemporaryDirectory() as d:
+            recs = [
+                _assistant("a", "Read", {"file_path": "/a.md"}),
+                _result("a", "x"),
+                _assistant("b", "Read", {"file_path": "/b.md", "offset": 10, "limit": 20}),
+                _result("b", "x"),
+                _assistant("c", "Read", {"file_path": "/c.md", "limit": 5}),
+                _result("c", "x"),
+                _assistant("d", "Bash", {"command": "ls"}),
+                _result("d", "x"),
+            ]
+            hv = token_audit.hanh_vi_read([self._session(d, recs)])
+        self.assertEqual(hv.tong, 3)
+        self.assertEqual(hv.co_pham_vi, 2)
+
+    def test_ti_le_read_doc_lai_cung_file_trong_mot_session(self):
+        """Đọc lại là hành vi ĐÚNG theo luật TDQ ở nhiều ca — bảng chỉ ĐO, không phán."""
+        with tempfile.TemporaryDirectory() as d:
+            recs = [
+                _assistant("a", "Read", {"file_path": "/a.md"}),
+                _result("a", "x"),
+                _assistant("b", "Read", {"file_path": "/a.md"}),
+                _result("b", "x"),
+                _assistant("c", "Read", {"file_path": "/a.md"}),
+                _result("c", "x"),
+                _assistant("e", "Read", {"file_path": "/b.md"}),
+                _result("e", "x"),
+            ]
+            hv = token_audit.hanh_vi_read([self._session(d, recs)])
+        self.assertEqual(hv.tong, 4)
+        self.assertEqual(hv.doc_lai, 2)           # 4 lần đọc trên 2 file khác nhau
+
+    def test_doc_lai_khong_cong_don_giua_hai_session(self):
+        with tempfile.TemporaryDirectory() as d:
+            paths = []
+            for ten in ("s1", "s2"):
+                p = os.path.join(d, f"{ten}.jsonl")
+                _write(p, [_assistant("a", "Read", {"file_path": "/a.md"}),
+                           _result("a", "x")])
+                paths.append(p)
+            hv = token_audit.hanh_vi_read(paths)
+        self.assertEqual(hv.tong, 2)
+        self.assertEqual(hv.doc_lai, 0)
+
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
+    def test_cli_in_bang_phan_ra_va_ti_le_read(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._session(d, [
+                _assistant("a", "Read", {"file_path": "/a.md"}),
+                _result("a", "q" * 400),
+                _assistant("b", "Read", {"file_path": "/a.md", "limit": 5}),
+                _result("b", "q" * 40),
+                _assistant("c", "Bash", {"command": "ls"}),
+            ])
+            r = subprocess.run(
+                [sys.executable, os.path.join(REPO, "scripts", "token_audit.py"),
+                 "--transcript-dir", d],
+                capture_output=True, text=True, env=dict(os.environ, TDQ_AUDIT_LOG="0"))
+        self.assertEqual(r.returncode, 0, r.stderr)
+        for cot in ("trung vị", "p90", "p99", "lớn nhất"):
+            with self.subTest(cot=cot):
+                self.assertIn(cot, r.stdout)
+        self.assertIn("đọc lại", r.stdout)
+
+
+def _anh_png(w, h):
+    """PNG hợp lệ tối thiểu: chỉ cần chữ ký + IHDR là đọc được kích thước."""
+    import base64
+    import struct
+    import zlib
+    ihdr = struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0)
+    khoi = (b"\x89PNG\r\n\x1a\n" + struct.pack(">I", len(ihdr)) + b"IHDR" + ihdr
+            + struct.pack(">I", zlib.crc32(b"IHDR" + ihdr)))
+    return base64.b64encode(khoi + b"\x00" * 4000).decode()
+
+
+def _result_anh(tool_id, w, h):
+    return {"type": "user", "message": {"role": "user", "content": [
+        {"type": "tool_result", "tool_use_id": tool_id, "content": [
+            {"type": "image", "source": {"type": "base64", "media_type": "image/png",
+                                         "data": _anh_png(w, h)}}]}]}}
+
+
+class DemAnhTest(unittest.TestCase):
+    """Ảnh KHÔNG tốn theo độ dài base64 — nó tốn theo số patch 28×28.
+
+    Vì sao khoá: bảng đo bản đầu cho `get_canvas_screenshot` trung vị 378.014
+    token/lần vì đếm chuỗi base64. Ảnh thật 960×1605 chỉ tốn 2.030 token. Sai gấp
+    ~186 lần, và cái sai đó chỉ ra đúng một kết luận: "cắt năng lực chụp canvas đi" —
+    cắt nhầm. Thước đo sai một chiều thì mọi quyết định dựng trên nó sai theo.
+
+    Nguồn công thức: tài liệu Vision của Claude — mỗi patch 28×28 px là một token
+    thị giác, ảnh tốn `⌈w/28⌉ × ⌈h/28⌉` token.
+    """
+
+    def test_dem_theo_patch_28_chu_khong_theo_do_dai_base64(self):
+        self.assertEqual(token_audit.dem_anh("image/png", _anh_png(960, 1605)),
+                         (960 + 27) // 28 * ((1605 + 27) // 28))
+
+    def test_anh_nho_ton_it_token(self):
+        self.assertEqual(token_audit.dem_anh("image/png", _anh_png(56, 28)), 2)
+
+    def test_khong_doc_duoc_kich_thuoc_thi_dung_tran_co_nguon(self):
+        self.assertEqual(token_audit.dem_anh("image/gif", "khong-phai-anh"),
+                         token_audit.TOKEN_ANH_KHONG_RO)
+
+    @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
+    def test_carry_cost_cua_khoi_anh_khong_phinh_theo_base64(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "s.jsonl")
+            _write(p, [
+                _assistant("t1", "mcp__excalidraw__get_canvas_screenshot", {}),
+                _result_anh("t1", 960, 1605),
+                _assistant("t2", "Read", {"file_path": "/b.md"}),
+            ])
+            rows = token_audit.phan_ra([p])
+        r = {x.group: x for x in rows}["mcp__excalidraw__get_canvas_screenshot"]
+        self.assertLess(r.lon_nhat, 3000,
+                        "khối ảnh vẫn đang được đếm bằng độ dài base64")
+        self.assertGreaterEqual(r.lon_nhat, 2030)
 
 
 if __name__ == "__main__":

@@ -73,8 +73,15 @@ class TestBashGate(unittest.TestCase):
         self.assert_remind('python3 -c "open(\'docs/tdq/state.json\',\'w\').write(\'{}\')"')
 
     def test_silent_state_json_reads(self):
-        self.assert_silent("cat docs/tdq/state.json")
-        self.assert_silent("jq .phase docs/tdq/state.json")
+        """ĐỌC state.json không được kích nhắc TDQ:STATE (nhắc đó dành cho lệnh GHI).
+
+        Kiểm theo mã nhắc chứ không theo "hook im hoàn toàn": từ 2026-08-19 `cat`
+        không giới hạn còn kích TDQ:OUTPUT, và đó là nhắc khác, đúng việc của nó.
+        """
+        for cmd in ("cat docs/tdq/state.json", "jq .phase docs/tdq/state.json"):
+            rc, out, _ = self.bash(cmd)
+            self.assertEqual(rc, 0, cmd)
+            self.assertNotIn("TDQ:STATE", out, cmd)
 
     def test_silent_plain_commands(self):
         self.assert_silent("ls -la")
@@ -192,6 +199,71 @@ class TestBashGateSingleTurnRead(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 self.mod.main()
         self.assertEqual(len(calls), 1)
+
+
+class TestNhacTranOutput(unittest.TestCase):
+    """TDQ:OUTPUT — nhắc khi lệnh Bash đổ nguyên file/lịch sử vào context.
+
+    Vì sao đáng nhắc: mỗi output tool bị model đọc lại ở MỌI API call còn lại của
+    phiên (carry-cost). Một lần `cat` file 2.000 token ở giữa phiên 300 call tốn gấp
+    hàng trăm lần chính nó. Nhắc chứ không chặn — có ca đổ nguyên file là đúng.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def bash(self, command):
+        payload = load_fixture("bash_cmd.json", cwd=self.cwd, session_id=command[:40])
+        payload["tool_input"] = {"command": command}
+        return run_hook("bash_gate.py", payload)
+
+    def assert_nhac(self, command):
+        rc, out, _ = self.bash(command)
+        self.assertEqual(rc, 0, command)
+        dec, context = decision(out)
+        self.assertEqual(dec, "allow", command)
+        self.assertNotIn('"deny"', out, command)
+        self.assertIn("TDQ:OUTPUT", context, command)
+
+    def assert_im(self, command):
+        rc, out, _ = self.bash(command)
+        self.assertEqual(rc, 0, command)
+        self.assertNotIn("TDQ:OUTPUT", out, command)
+
+    def test_nhac_khi_do_nguyen_file_hoac_lich_su(self):
+        self.assert_nhac("cat scripts/token_audit.py")
+        self.assert_nhac("git log")
+        self.assert_nhac("git diff")
+        self.assert_nhac("ls -R skills")
+
+    def test_im_khi_da_co_gioi_han(self):
+        self.assert_im("cat scripts/token_audit.py | head -50")
+        self.assert_im("git log --oneline -n 20")
+        self.assert_im("git diff --stat")
+        self.assert_im("git diff --name-only")
+        self.assert_im("sed -n '1,40p' scripts/token_audit.py")
+        self.assert_im("head -30 README.md")
+        self.assert_im("grep -c TODO scripts/token_audit.py")
+
+    def test_im_khi_cat_la_de_GHI_file_chu_khong_phai_doc(self):
+        """`cat > f <<EOF` là ghi file — nhắc ở đây chỉ tạo nhiễu."""
+        self.assert_im("cat > /tmp/x.md <<'EOF'\nnội dung\nEOF")
+        self.assert_im("cat <<'EOF' > /tmp/x.md\nnội dung\nEOF")
+
+    def test_im_voi_lenh_thuong(self):
+        self.assert_im("python3 -m pytest tests/test_bash_gate.py -q")
+        self.assert_im("ls skills")
+        self.assert_im("git status")
+
+    def test_khong_bao_gio_chan(self):
+        for cmd in ("cat a.md", "git log", "ls -R ."):
+            rc, out, _ = self.bash(cmd)
+            self.assertEqual(rc, 0, cmd)
+            self.assertNotIn('"deny"', out, cmd)
 
 
 if __name__ == "__main__":

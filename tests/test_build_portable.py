@@ -466,6 +466,42 @@ class TestHuongDanCaiDat(unittest.TestCase):
             self.assertIn(manh, readme, f"README codex thiếu hướng dẫn: {manh}")
 
 
+class TestLuatMoiCoMatOCaBaBan(unittest.TestCase):
+    """Ba bản phải nói CÙNG một luật.
+
+    Bản portable là thứ chạy ở máy khác. Luật mới chỉ nằm ở `skills/` mà không sang
+    được hai bản kia thì ở đó agent chạy theo luật cũ, và không ai thấy vì test cũ
+    vẫn xanh — nên khoá bằng dấu vết nội dung, không chỉ bằng "file có tồn tại".
+    """
+
+    DAU_VET = (
+        ("context-budget.md", ("MAX_MCP_OUTPUT_TOKENS", "vì QUÊN",
+                               "nghi ngờ thì đọc lại")),
+        ("bash_gate.py", ("TDQ:OUTPUT",)),
+        ("token_audit.py", ("def dem_anh", "def phan_ra", "def hanh_vi_read")),
+    )
+
+    def _moi_ban_sao(self, ban, ten_file):
+        """Mỗi bản xếp cây thư mục một kiểu (`.claude/`, `.agents/`, `workflow/`), nên
+        tìm theo TÊN FILE và bắt MỌI bản sao phải mang dấu vết — bỏ sót một bản sao là
+        đúng cái lỗi test này canh."""
+        thay = [os.path.join(g, f)
+                for g, _, fs in os.walk(os.path.join(ROOT, ban))
+                for f in fs if f == ten_file]
+        self.assertTrue(thay, f"{ban}: không tìm thấy {ten_file}")
+        return thay
+
+    def test_hai_ban_portable_mang_du_dau_vet_luat_moi(self):
+        for ban in ("portable_claude", "portable_codex"):
+            for ten_file, dau_vet in self.DAU_VET:
+                for that in self._moi_ban_sao(ban, ten_file):
+                    with open(that, encoding="utf-8") as fh:
+                        noi_dung = fh.read()
+                    for chuoi in dau_vet:
+                        with self.subTest(ban=os.path.relpath(that, ROOT), dau_vet=chuoi):
+                            self.assertIn(chuoi, noi_dung)
+
+
 if __name__ == "__main__":
     unittest.main()
 

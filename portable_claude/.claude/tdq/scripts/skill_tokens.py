@@ -26,8 +26,10 @@ Exit: 0 chạy xong · 2 sai cú pháp · 3 thiếu thư viện đếm token.
 """
 import argparse
 import glob
+import json
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -95,6 +97,31 @@ def nap_bo_dem():
         return count_tokens
     except ImportError as exc:
         raise ThieuThuVienDem(CAI_DAT) from exc
+
+
+LENH_DEM_LO = (
+    "import json, sys\n"
+    "from anthropic_tokenizer import count_tokens\n"
+    "json.dump([count_tokens(t) for t in json.load(sys.stdin)], sys.stdout)"
+)
+
+
+def dem_qua_venv(doan):
+    """Đếm token cho MỘT LÔ đoạn văn bằng python của venv, một tiến trình cho cả lô.
+
+    Dành cho script chạy dưới python không có thư viện mà cũng không được `execv`
+    (vd `token_audit.py` khi test gọi thẳng hàm trong tiến trình). Đếm theo lô vì
+    chi phí nằm ở lần dựng tiến trình, không nằm ở số đoạn.
+    """
+    if not doan:
+        return []
+    if not os.path.exists(VENV_PYTHON):
+        raise ThieuThuVienDem(CAI_DAT)
+    proc = subprocess.run([VENV_PYTHON, "-c", LENH_DEM_LO],
+                          input=json.dumps(doan), capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise ThieuThuVienDem(CAI_DAT)
+    return json.loads(proc.stdout)
 
 
 def nhay_sang_venv():

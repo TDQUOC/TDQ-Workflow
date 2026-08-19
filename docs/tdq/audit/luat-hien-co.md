@@ -174,7 +174,7 @@ Ba giới hạn phải nói thẳng, vì chúng quyết định file này dùng 
 | L139 | `skills/tdq-conventions/SKILL.md:112` | Mọi khẳng định phải có nguồn hoặc căn cứ nêu rõ. Không bịa. |
 | L140 | `skills/tdq-conventions/SKILL.md:120` | Bảng model/effort mặc định theo vai + luật override: [references/subagent-tuning.md](references/subagent-tuning.md). |
 | L141 | `skills/tdq-conventions/SKILL.md:125` | chỉ ảnh hưởng nhẹ. Nên luật này thuộc tầng **runtime**, không phải context cost. |
-| L142 | `skills/tdq-conventions/SKILL.md:133` | Bảng cấm gộp, luật đọc lại (mềm), đọc vừa đủ, giao việc nặng cho subagent: |
+| L142 | `skills/tdq-conventions/SKILL.md:133` | Bảng cấm gộp, luật đọc lại (mềm) + phân biệt vì LUẬT / vì QUÊN, trần output MCP, đọc vừa đủ, giao việc nặng cho subagent: |
 | L143 | `skills/tdq-conventions/SKILL.md:140` | Clean code là hành vi thường trực, không phải cổng hỏi. Mọi lần viết/sửa code, tổ chức |
 | L144 | `skills/tdq-conventions/SKILL.md:144` | Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt được qua config). |
 | L145 | `skills/tdq-conventions/SKILL.md:145` | Mỗi task trong plan có test riêng; task pass là tick `[x]` NGAY, không gom cuối turn. |

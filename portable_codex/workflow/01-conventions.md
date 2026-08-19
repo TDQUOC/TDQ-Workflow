@@ -130,9 +130,9 @@ chỉ ảnh hưởng nhẹ. Nên luật này thuộc tầng **runtime**, không 
   còn đủ trong context thì đừng đọc lại file.
 - **Tự kiểm:** "Call sau có cần kết quả call trước không?" — Không → gộp. Có → tách.
 
-Bảng cấm gộp, luật đọc lại (mềm), đọc vừa đủ, giao việc nặng cho subagent:
-[references/context-budget.md](references/context-budget.md); kịch bản đo carry-cost
-trước/sau một đợt chuẩn hoá: [references/measure-scenario.md](references/measure-scenario.md).
+Bảng cấm gộp, luật đọc lại (mềm) + phân biệt vì LUẬT / vì QUÊN, trần output MCP, đọc vừa đủ,
+giao việc nặng cho subagent: [references/context-budget.md](references/context-budget.md);
+kịch bản đo carry-cost trước/sau: [references/measure-scenario.md](references/measure-scenario.md).
 
 ## 11. Chất lượng
 
