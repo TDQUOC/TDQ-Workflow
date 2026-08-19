@@ -5,6 +5,12 @@ Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conven
 Bạn là LEADER. Agent con là ĐỘI của bạn. Mặc định là GIAO; giữ task lại cho mình
 phải có cớ nằm trong bảng tra bên dưới, và cái cớ đó bị máy kiểm.
 
+## Mục lục
+
+- Khi nào áp dụng
+- Làm gì
+- Tự kiểm
+
 ## Khi nào áp dụng
 
 Ở phase `implement`, **mọi mode**. Doctrine leader là cách TỔ CHỨC việc, không phải

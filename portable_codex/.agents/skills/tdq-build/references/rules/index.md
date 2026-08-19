@@ -26,24 +26,24 @@ chỉ ghi thêm ngưỡng riêng khi ngôn ngữ đó khác mức chung (vd C++ 
 
 ## Làm gì
 
-Tra đuôi file → nạp `chung.md` + đúng một file rule ngôn ngữ → chạy lệnh linter nếu máy có:
+Tra đuôi file → nạp [chung.md](chung.md) + đúng một file rule ngôn ngữ → chạy lệnh linter nếu máy có:
 
 | Ngôn ngữ | Đuôi file | File rule | Lệnh linter |
 |---|---|---|---|
-| Python | `.py` | python.md | `ruff check <đường dẫn>` |
-| C# | `.cs` | csharp.md | `dotnet build` |
-| TypeScript/JS | `.ts .tsx .js .jsx .mjs .cjs` | typescript-js.md | `eslint <đường dẫn>` |
-| Go | `.go` | go.md | `golangci-lint run <đường dẫn>` |
-| Rust | `.rs` | rust.md | `cargo clippy` |
-| C++ | `.cpp .cc .cxx .hpp .h` | cpp.md | `clang-tidy <đường dẫn>` |
-| HTML | `.html .htm` | html.md | `htmlhint <đường dẫn>` |
+| Python | `.py` | [python.md](python.md) | `ruff check <đường dẫn>` |
+| C# | `.cs` | [csharp.md](csharp.md) | `dotnet build` |
+| TypeScript/JS | `.ts .tsx .js .jsx .mjs .cjs` | [typescript-js.md](typescript-js.md) | `eslint <đường dẫn>` |
+| Go | `.go` | [go.md](go.md) | `golangci-lint run <đường dẫn>` |
+| Rust | `.rs` | [rust.md](rust.md) | `cargo clippy` |
+| C++ | `.cpp .cc .cxx .hpp .h` | [cpp.md](cpp.md) | `clang-tidy <đường dẫn>` |
+| HTML | `.html .htm` | [html.md](html.md) | `htmlhint <đường dẫn>` |
 
 Luật ba tầng nạp (giữ context rẻ mà không hạ chất lượng):
 
 1. **Tầng luôn nạp**: chỉ bảng này + `chung.md`.
 2. **Tầng theo việc**: nạp đúng file ngôn ngữ khớp đuôi file đang sửa; cấm nạp cả 7
    file khi chỉ sửa một ngôn ngữ.
-3. **Tầng ngoài bảng**: đuôi file không có trong bảng → làm theo `them-ngon-ngu.md`,
+3. **Tầng ngoài bảng**: đuôi file không có trong bảng → làm theo [them-ngon-ngu.md](them-ngon-ngu.md),
    cấm tự bịa rule hay mượn rule ngôn ngữ khác.
 
 Linter không có trên máy → ghi "chưa kiểm được", cấm ghi PASS, cấm tự cài đặt.

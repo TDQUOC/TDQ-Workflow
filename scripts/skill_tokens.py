@@ -134,8 +134,14 @@ def _than_skill(ten_skill):
 
 
 def _references(ten_skill):
-    """Mọi file reference của một skill — tầng `đọc khi cần`, gộp vào khối luật kèm."""
-    return sorted(glob.glob(os.path.join(ROOT, "skills", ten_skill, "references", "*.md")))
+    """Mọi file reference của một skill — tầng `đọc khi cần`, gộp vào khối luật kèm.
+
+    Quét ĐỆ QUY. Bản trước dùng `references/*.md` nên bỏ qua trọn thư mục con
+    `references/rules/` (10 file, 14.554 token) và báo trần thấp hơn thực tế gần 20%.
+    Một thước đo sai thấp thì mọi kết luận tối ưu dựng trên nó cũng sai theo.
+    """
+    goc = os.path.join(ROOT, "skills", ten_skill, "references")
+    return sorted(glob.glob(os.path.join(goc, "**", "*.md"), recursive=True))
 
 
 def do_theo_phase(dem):

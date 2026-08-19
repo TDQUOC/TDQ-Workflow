@@ -468,3 +468,42 @@ class TestHuongDanCaiDat(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReferenceCoDuOCaHaiBan(unittest.TestCase):
+    """Mọi file reference của `skills/` phải có mặt ở CẢ HAI bản portable.
+
+    Vì sao khoá riêng chỗ này: hai bản được sinh bằng máy nên người ta tin là đủ, nhưng
+    `copy_loc` đi theo thư mục — thêm một thư mục con mới trong `references/` mà quên
+    đường copy thì bản portable im lặng thiếu luật, không có lỗi nào nổ. Máy đích lúc đó
+    chạy một bộ luật khuyết mà không ai biết.
+    """
+
+    @staticmethod
+    def _reference_nguon():
+        ra = []
+        goc_skills = os.path.join(ROOT, "skills")
+        for ten in sorted(os.listdir(goc_skills)):
+            thu_muc = os.path.join(goc_skills, ten, "references")
+            for goc, _, files in os.walk(thu_muc):
+                for f in sorted(files):
+                    if f.endswith(".md"):
+                        duong = os.path.relpath(os.path.join(goc, f), thu_muc)
+                        ra.append((ten, duong))
+        return ra
+
+    def test_du_reference_o_ban_claude_va_codex(self):
+        thieu = []
+        for ten_skill, duong in self._reference_nguon():
+            claude = os.path.join(ROOT, "portable_claude", ".claude", "skills",
+                                  ten_skill, "references", duong)
+            codex = os.path.join(ROOT, "portable_codex", ".agents", "skills",
+                                 ten_skill, "references", duong)
+            if not os.path.isfile(claude):
+                thieu.append(f"portable_claude thiếu {ten_skill}/{duong}")
+            if not os.path.isfile(codex):
+                thieu.append(f"portable_codex thiếu {ten_skill}/{duong}")
+        self.assertEqual(
+            [], thieu,
+            "Bản portable thiếu file reference so với `skills/` — chạy lại "
+            f"`python3 scripts/build_portable.py`: {thieu}")

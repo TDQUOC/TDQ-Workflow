@@ -2,6 +2,15 @@
 
 QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
 
+## Mục lục
+
+- Ba bước thi hành
+- Chạy cái gì
+- Ghi kết quả
+- Bằng chứng
+- Kết luận
+- Khi FAIL
+
 ## Ba bước thi hành
 
 Đây là toàn bộ Phần B của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải

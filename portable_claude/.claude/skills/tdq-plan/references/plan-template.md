@@ -10,6 +10,21 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 Mode thực thi: main — <lý do 1–2 câu> (ĐỀ XUẤT, user chốt lúc duyệt)
 Trạng thái plan: CHỜ DUYỆT
 
+## Mục lục
+
+- Quy tắc thi hành (áp cho mọi task)
+- P1 — <tên phase>
+- P2 — <tên phase>
+- Dòng `Chạm:` (đặt NGAY DƯỚI mọi task TẠO hoặc SỬA file mã nguồn)
+- Dòng `Cần:` (khai phụ thuộc giữa các task)
+- Cụm song song
+- Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
+- Px — Log & test bắt buộc
+- Definition of Done
+- Ước tính phút `(eNm)`
+- Dòng `Mode thực thi`
+- Kiểm trước khi trình
+
 ## Quy tắc thi hành (áp cho mọi task)
 1. Thứ tự phase là thứ tự phụ thuộc — không đảo.
 2. Mỗi task: đánh `[~]` khi bắt đầu → viết test trước (đỏ) → code → test xanh → đổi sang

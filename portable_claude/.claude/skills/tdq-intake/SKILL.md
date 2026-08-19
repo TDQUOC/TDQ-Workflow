@@ -30,6 +30,10 @@ không QC. Có đổi repo thì vẫn chạy `tdq_finish.py --log` như mọi tu
 = có `active_request` VÀ `phase != idle`. Khi phase ≠ idle, message của user thuộc
 request đang chạy (duyệt, góp ý, trả lời interview), không mở request lồng.
 
+Yêu cầu là BÁO LỖI chứ không phải làm tính năng ("chạy sai", "bị treo", "kết quả không
+như mong đợi") → theo [references/issue-triage.md](references/issue-triage.md) trước, rồi
+quay lại bước 1 dưới đây.
+
 1. **Ghi lại yêu cầu.** Tạo `docs/tdq/brief/<slug>.md` với slug
    `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>`. Brief là file DUY NHẤT của phase intake +
    analyze, đúng 3 mục: `## Nguyên văn` (nguyên văn yêu cầu user + cách hiểu đầu tiên
@@ -67,7 +71,8 @@ Bước kế tiếp: Phần B (chế độ chuyên sâu (deep)) hoặc Phần C 
 Chỉ nạp khi chế độ chuyên sâu (deep) — chế độ nhanh không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
 mục tiêu rời phase này với ZERO chỗ đoán. Làm đủ 6 bước (kiểm kê năng lực, đọc code,
 research, interview, chốt kiến thức, kiểm cổng) theo
-[references/analyze-full.md](references/analyze-full.md).
+[references/analyze-full.md](references/analyze-full.md). Khuôn bảng phán quyết của bước
+kiểm kê năng lực (B0): [references/skill-inventory.md](references/skill-inventory.md).
 Interview đi từ tổng quát đến chi tiết: **vòng scope** trước (mặt nào + bối cảnh bằng số,
 theo [references/scope-round.md](references/scope-round.md)), rồi mới hỏi chi tiết trong
 đúng các mặt user chọn. Vòng scope có điều kiện; BỎ thì ghi một dòng lý do vào brief.

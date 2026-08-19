@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-19T01:14:51+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-19T10:33:39+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-19-0046-huong-d-skill-overrides |
+| Request | 2026-08-19-0121-huong-c-nap-reference |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-08-19-0046-huong-d-skill-overrides.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-19-0046-huong-d-skill-overrides.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-19-0121-huong-c-nap-reference.md — ✔ đã duyệt |
+| Plan | (chưa có) |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 

@@ -180,3 +180,30 @@ class DoMoTaTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DemDuThuMucConTest(unittest.TestCase):
+    """`_references` phải đếm cả file trong thư mục con của `references/`.
+
+    Vì sao khoá: `tdq-build/references/rules/` có 10 file (14.554 token) nằm trong thư mục
+    con. Bản `glob` không đệ quy bỏ qua toàn bộ nhóm đó, nên mọi con số "trần trên" của bộ
+    skill đều thấp hơn thực tế — và một thước đo sai thấp thì mọi kết luận tối ưu dựng
+    trên nó đều sai theo, không ai thấy.
+    """
+
+    def test_dem_ca_file_trong_thu_muc_con(self):
+        ra = skill_tokens._references("tdq-build")
+        con = [p for p in ra if os.sep + "rules" + os.sep in p]
+        self.assertTrue(
+            con,
+            "`_references('tdq-build')` không thấy file nào trong `references/rules/` — "
+            "thư mục con đang bị bỏ qua, mọi số đo sẽ thấp hơn thực tế")
+
+    def test_dem_du_moi_file_md_duoi_references(self):
+        for ten in ("tdq-build", "tdq-conventions", "tdq-intake"):
+            thu_muc = os.path.join(ROOT, "skills", ten, "references")
+            that = sorted(os.path.join(g, f)
+                          for g, _, fs in os.walk(thu_muc) for f in fs if f.endswith(".md"))
+            self.assertEqual(
+                that, skill_tokens._references(ten),
+                f"Danh sách reference của `{ten}` lệch với file thật trên đĩa")

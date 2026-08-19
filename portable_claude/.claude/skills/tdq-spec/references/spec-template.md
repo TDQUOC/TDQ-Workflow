@@ -10,6 +10,22 @@ Ngày: YYYY-MM-DD · Bản: 1.0 · Brief: ../brief/<slug>.md · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Trạng thái: CHỜ DUYỆT
 
+## Mục lục
+
+- 1. Mục tiêu & phạm vi
+- 1b. Lộ trình
+- 2. Đầu ra cụ thể
+- 2b. Ranh giới module
+- 3. Cách tiếp cận & lý do
+- 3b. Năng lực & công cụ
+- 4. Yêu cầu bắt buộc
+- 5. Ràng buộc & rủi ro
+- 6. QC & Definition of Done
+- 7. Câu hỏi còn mở
+- §6 giữ điều kiện, KHÔNG giữ lệnh kiểm
+- Kiểm trước khi trình
+- Checklist scope — trả lời được hết mới trình
+
 ## 1. Mục tiêu & phạm vi
 - Mục tiêu: <1–3 câu, đo được>
 - Trong phạm vi: <gạch đầu dòng>

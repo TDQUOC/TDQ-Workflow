@@ -109,7 +109,8 @@ chung mọi thư mục. Slug cũ chỉ có ngày vẫn ĐỌC được; ghi mớ
 
 - Search web: `tavily-primary` trước, luôn luôn. Failover và mẫu dùng nâng cao:
   [references/tavily.md](references/tavily.md).
-- Mọi khẳng định phải có nguồn hoặc căn cứ nêu rõ. Không bịa.
+- Mọi khẳng định phải có nguồn hoặc căn cứ nêu rõ. Không bịa. Định tuyến việc → plugin,
+  giao thức dùng plugin đã bật sẵn: [references/plugin-routing.md](references/plugin-routing.md).
 - Không đưa API key vào câu trả lời, log, lệnh shell hay prompt.
 
 ## 9. Sub-agent
@@ -130,7 +131,8 @@ chỉ ảnh hưởng nhẹ. Nên luật này thuộc tầng **runtime**, không 
 - **Tự kiểm:** "Call sau có cần kết quả call trước không?" — Không → gộp. Có → tách.
 
 Bảng cấm gộp, luật đọc lại (mềm), đọc vừa đủ, giao việc nặng cho subagent:
-[references/context-budget.md](references/context-budget.md).
+[references/context-budget.md](references/context-budget.md); kịch bản đo carry-cost
+trước/sau một đợt chuẩn hoá: [references/measure-scenario.md](references/measure-scenario.md).
 
 ## 11. Chất lượng
 

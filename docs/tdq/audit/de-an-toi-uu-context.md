@@ -310,3 +310,45 @@ lúc mở phiên nên phải xác nhận ở phiên mới. Chi tiết bằng ch�
 **Bài học cho các hướng còn lại (C, B, A, E):** con số 87,7% đứng suốt hai ngày vì không
 ai kiểm tiền đề "cơ chế này có áp cho đối tượng mình định áp không". Trước khi tin mức
 tiết kiệm của hướng C/B/A/E, kiểm tiền đề bằng tài liệu chính thức rồi mới đo.
+
+## Đính chính hướng C 2026-08-19 — số đo thiếu, và tiền đề "tách sâu thêm" sai
+
+Request `2026-08-19-0121-huong-c-nap-reference` bắt tay vào hướng C và phát hiện hai lỗi
+trong mục 3 phía trên. Giữ nguyên mục 3 để thấy sai ở đâu.
+
+**Lỗi 1 — thước đo sót một thư mục.** `scripts/skill_tokens.py` dùng
+`glob("references/*.md")` không đệ quy nên bỏ qua trọn `tdq-build/references/rules/`
+(10 file, 14.554 token). Con số 55.719 của mục 3 và trần 70.924 vì thế đều thấp hơn thực
+tế. Đo lại bằng bản đã sửa: **37 file reference = 77.611 token**, trần đủ file **93.739**
+(số đo trước khi request này sửa nội dung).
+
+**Lỗi 2 — tiền đề "vài file đủ lớn để tự chúng nên tách tiếp" đi ngược hướng dẫn chính
+thức.** `platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices` khuyên
+giữ reference đúng MỘT tầng từ `SKILL.md`; nguồn thứ hai nói thẳng *"Claude may partially
+read files when they're referenced from other referenced files"* và *"Do not create
+reference files that point to other reference files."* Tách sâu thêm đẩy luật xuống tầng
+model có thể đọc nửa vời — hỏng ở trục `chất lượng`, trục cao nhất của soul.
+
+**Việc thật của hướng C hoá ra ngược lại: LÀM NÔNG, không làm sâu.** Đo bằng đồ thị link:
+14/37 file reference không được `SKILL.md` nào trỏ thẳng, 36 link reference→reference,
+chuỗi sâu nhất tầng 4 (`SKILL.md` → `clean-code.md` → `rules/chung.md` → `rules/index.md`
+→ `rules/<ngôn ngữ>.md`). Đã đưa cả 14 file về tầng 1, chừa đúng một ngoại lệ có khoá
+test: nhóm điều phối theo ngôn ngữ `rules/`, nơi cửa vào `rules/index.md` ở tầng 1 và
+phải trỏ đủ mọi file anh em.
+
+**Và hướng C KHÔNG tiết kiệm token — nó tốn thêm.** Số trước/sau cùng một cách đếm:
+
+| Khối | Trước | Sau | Chênh |
+|---|---|---|---|
+| Thân 5 skill | 16.128 | 16.538 | +410 |
+| 37 file reference | 77.611 | 78.718 | +1.107 |
+| Một request lane full thật tiêu | 50.796 | 52.086 | **+1.290 (+2,5%)** |
+
+Đổi lại: 14 file luật rời khỏi vùng đọc-nửa-vời, 8 file dài có mục lục để đọc chọn lọc,
+và thước đo hết sai. Theo soul (`chất lượng > runtime > context cost`) đây là đổi đúng
+chiều — nhưng phải gọi đúng tên: **hướng C là việc chất lượng, không phải việc tiết kiệm.**
+Xếp nó ở vị trí thứ 2 trong bảng ưu tiên mục 6 với lý do "tiết kiệm token" là xếp sai lý do.
+
+**Bài học lặp lại lần thứ hai** (lần đầu ở hướng D): cả hai lần, con số của đề án sai vì
+không ai kiểm cách đo và tiền đề. Trước khi tin mức tiết kiệm của hướng B, A, E — kiểm
+thước đo trước, kiểm tiền đề bằng tài liệu chính thức sau, rồi mới đo.

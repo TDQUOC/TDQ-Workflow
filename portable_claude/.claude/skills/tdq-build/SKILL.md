@@ -28,6 +28,9 @@ Skill này lo ba phase: `implement` → `qc` → `report`.
   đổi luật tick ở trên — task `(e60m)` tick y hệt task `(e5m)`. Task không có ước tính
   cũng hợp lệ.
 - **Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass.
+- **Rule ngôn ngữ.** Sắp viết/sửa file mã nguồn → mở
+  [references/rules/index.md](references/rules/index.md), tra đuôi file, nạp `chung.md`
+  + đúng MỘT file ngôn ngữ. Cấm nạp cả bộ khi chỉ sửa một ngôn ngữ.
 - **Không placeholder.** Thiếu thông tin ở giai đoạn này nghĩa là phân tích hụt — nêu ra, đừng stub.
 - **Chờ subagent thì chờ hết**, hoặc đặt trigger tự tiếp tục. Không kết thúc turn khi nó đang chạy.
 

@@ -4,6 +4,15 @@
 không phải người trong nghề: họ cần biết đang xem cái gì, xem chi tiết ở đâu, và phải
 trả lời thế nào.
 
+## Mục lục
+
+- Bảy chỗ phải dùng khuôn này
+- Năm thành phần (đủ cả năm, đúng thứ tự)
+- Bảy luật trang trí
+- Luật cứng
+- Ký hiệu được phép
+- Ví dụ
+
 ## Bảy chỗ phải dùng khuôn này
 
 Câu hỏi chọn pipeline · từng vòng interview · cổng duyệt spec · cổng duyệt plan ·

@@ -48,7 +48,10 @@ SKILL_LINE_LIMITS = {
     # 2026-08-17: 133 → 143. Mode đội thêm 2 luật tầng runtime vào §1 (đóng sổ nhiều lần
     # trong một turn dài; plan chưa hết task thì không kết thúc turn + 3 ngoại lệ). Cả hai
     # phải đọc được mỗi turn, nén xuống references là mất tác dụng.
-    "tdq-conventions": 143,
+    # 2026-08-19: 143 → 145. Hướng C đưa `plugin-routing.md` và `measure-scenario.md` lên
+    # tầng 1: hai file này trước đó không SKILL.md nào trỏ tới, tức chỉ tới được qua một
+    # reference khác — chỗ model có thể đọc nửa vời. Giá là 2 dòng đường trỏ ở thân skill.
+    "tdq-conventions": 145,
     # skill khôi phục: 7 bước + khối luật cứng "không mất dữ liệu" phải nằm ở thân skill,
     # vì model yếu bỏ qua reference sẽ chạy đúng cái lệnh làm mất cả request.
     "tdq-check-status": 80,

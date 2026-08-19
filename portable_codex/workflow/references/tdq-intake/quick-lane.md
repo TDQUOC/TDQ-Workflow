@@ -20,6 +20,21 @@ Vòng scope ở chế độ nhanh dùng chung luật [scope-round.md](scope-roun
 hiệu kích hoạt thì hỏi mặt + bối cảnh trước, không thoả thì ghi một dòng lý do BỎ vào
 mini-plan mục `## Phạm vi` rồi đi tiếp.
 
+## Mục lục
+
+- Chín bước thi hành
+- Luật ĐỌC đồ thị ở bước 1 (phân tích)
+- Khuôn mini-spec/plan (≤ 40 dòng)
+- Phạm vi
+- Task
+- Definition of Done
+- Khối trình mini-plan cho user
+- Luật tick — `[ ]` · `[~]` · `[x]`
+- QC ở chế độ nhanh (express)
+- QC
+- QC
+- Vòng fix
+
 ## Chín bước thi hành
 
 Đây là toàn bộ Phần C của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải

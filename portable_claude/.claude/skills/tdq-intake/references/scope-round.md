@@ -5,6 +5,14 @@ request bao quanh những mặt nào và bối cảnh thật ra sao, để vòng
 đúng phần user cần. Spec nhờ đó không thiếu mặt quan trọng, cũng không phình ra mặt user
 không cần.
 
+## Mục lục
+
+- 1. Khi nào chạy
+- 2. Câu 1 — request này bao quanh những mặt nào
+- 3. Câu 2 — bối cảnh bằng số
+- 4. Suy ra mức đầu tư
+- 5. Ghi lại
+
 ## 1. Khi nào chạy
 
 Vòng scope **có điều kiện**, áp cho cả chế độ nhanh (express) lẫn chế độ chuyên sâu (deep).

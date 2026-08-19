@@ -6,6 +6,13 @@ Clean code ở bộ workflow này KHÔNG phải một cổng hỏi và KHÔNG ph
 cuối request. Nó là hành vi thường trực: mỗi lần viết hay sửa code, tổ chức project,
 script, hàm và class cho sạch nhất có thể, bám 5 nguyên tắc SOLID.
 
+## Mục lục
+
+- Nguồn
+- Khi nào áp dụng
+- Làm gì
+- Tự kiểm
+
 ## Nguồn
 
 - Wikipedia SOLID — https://en.wikipedia.org/wiki/SOLID — Robert C. Martin nêu các nguyên

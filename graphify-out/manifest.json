@@ -7,7 +7,7 @@
   ".claude-plugin/plugin.json": {
     "mtime": 1787070479.7174156,
     "ast_hash": "63fedc91eb714d9e5bcc7903c929c877",
-    "semantic_hash": ""
+    "semantic_hash": "63fedc91eb714d9e5bcc7903c929c877"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -95,9 +95,9 @@
     "semantic_hash": "bd58cf3f1035d57a6675fc51dc5d08cf"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1787068383.3903258,
-    "ast_hash": "5a734c8c844bdc2f8f1762a236d083b3",
-    "semantic_hash": "5a734c8c844bdc2f8f1762a236d083b3"
+    "mtime": 1787110304.0927064,
+    "ast_hash": "aa849a34eea561d5ec83ac3bb029713c",
+    "semantic_hash": "aa849a34eea561d5ec83ac3bb029713c"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1785397811.0780556,
@@ -180,8 +180,8 @@
     "semantic_hash": "8a7c05a6a8b11d7d3238034fcf36cad4"
   },
   "scripts/skill_tokens.py": {
-    "mtime": 1786982646.6385858,
-    "ast_hash": "a00db3af34e79c0381b37bc68829afeb",
-    "semantic_hash": "a00db3af34e79c0381b37bc68829afeb"
+    "mtime": 1787110304.0928507,
+    "ast_hash": "b6ae5662914d71a6a2eec4f50b923471",
+    "semantic_hash": "b6ae5662914d71a6a2eec4f50b923471"
   }
 }
