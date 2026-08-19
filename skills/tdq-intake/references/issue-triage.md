@@ -1,24 +1,25 @@
 # Xử lý issue/lỗi do user báo
 
-Áp dụng khi yêu cầu mới là **báo lỗi** chứ không phải làm tính năng: "chạy sai", "bị treo",
-"kết quả không như mong đợi". Mục tiêu của triage: có đủ căn cứ để viết spec fix, không đoán.
+Applies when the new request is a **bug report** rather than a feature: "chạy sai",
+"bị treo", "kết quả không như mong đợi". The goal of triage is enough evidence to write a
+fix spec — never a guess.
 
 ## Thứ tự bắt buộc
 
-1. **Đọc log trước tiên.** Chưa xem log thì chưa được đề xuất nguyên nhân. Nơi tìm log:
-   log service của chính sản phẩm, `docs/workinglog/<ngày>.md`, output test gần nhất,
-   transcript phiên trước trong `~/.claude/projects/<project>/`.
-2. **Tái hiện.** Chạy đúng lệnh user chạy. Không tái hiện được → hỏi user lệnh, input,
-   phiên bản, môi trường trước khi đi tiếp.
-3. **Capture khi lỗi ở tầng giao diện.** Cần computer use để quay/chụp lại luồng thì lưu
-   capture vào folder temp **trong repo**, kèm 1 dòng ghi chú thời điểm và bước tái hiện.
-   Xoá capture sau khi đóng issue.
-4. **Đóng khung vấn đề.** Viết ra: triệu chứng · nơi phát sinh (file:dòng) · điều kiện
-   kích hoạt · phạm vi ảnh hưởng. Thiếu ô nào thì quay lại bước 1.
-5. **Research cách fix.** Search theo lỗi nguyên văn và theo tên thư viện + phiên bản.
-   Luật gọi search: [tavily.md](../../tdq-conventions/references/tavily.md).
-6. **Chốt căn cứ rồi mới lập spec.** Spec fix phải nêu được nguyên nhân gốc, cách sửa,
-   và test tái hiện lỗi (đỏ trước khi sửa).
+1. **Read the log first.** No proposed cause before you have looked at a log. Where logs
+   live: the product's own log service, `docs/workinglog/<ngày>.md`, the latest test
+   output, the previous session transcript in `~/.claude/projects/<project>/`.
+2. **Reproduce.** Run the exact command the user ran. Cannot reproduce → ask the user for
+   the command, input, version and environment before going any further.
+3. **Capture when the bug is at the UI layer.** If computer use is needed to record the
+   flow, save the capture into a temp folder **inside the repo**, with one note line giving
+   the time and the reproduction steps. Delete the capture once the issue is closed.
+4. **Frame the problem.** Write down: symptom · where it surfaces (file:dòng) · trigger
+   condition · blast radius. Any box missing → back to step 1.
+5. **Research the fix.** Search by the verbatim error and by library name + version. Rule
+   for calling search: [tavily.md](../../tdq-conventions/references/tavily.md).
+6. **Settle the evidence before writing the spec.** A fix spec must state the root cause,
+   the fix, and a test that reproduces the bug (red before the fix).
 
 ## Sai lầm hay gặp
 

@@ -5,60 +5,67 @@ description: Khôi phục request TDQ đang dở: đọc thẳng đĩa, báo cá
 
 # TDQ Check Status — dò request đang dở rồi tiếp tục
 
-Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Skill này KHÔNG thuộc phase nào: gọi
-được ở bất kỳ phase nào, kể cả khi `state.json` sai hoặc thiếu.
+Nạp [tdq-conventions](../tdq-conventions/SKILL.md). This skill belongs to NO phase: it can be
+called from any phase, including when `state.json` is wrong or missing.
 
-Khác [tdq-status](../tdq-status/SKILL.md): `tdq-status` báo nhanh state đang khai gì.
-Skill này đối chiếu state với ĐĨA rồi khôi phục — nặng hơn, chỉ dùng khi mất ngữ cảnh.
+Difference from [tdq-status](../tdq-status/SKILL.md): `tdq-status` quickly reports what the
+state DECLARES. This skill compares the state against the DISK and then recovers — heavier,
+so use it only when context was lost.
 
 ## Luật cứng — không mất dữ liệu
 
-- **Đĩa là bằng chứng, `state.json` là lời khai.** Lệch nhau thì tin đĩa.
-- **Cấm tuyệt đối** `tdq_state.py` với lệnh con `init` hay `reset`, cấm xoá hay ghi đè
-  brief/spec/plan/qc/report đã có. Hai lệnh đó xoá sạch request đang mở.
-- Chỉ được chạy lệnh vá thuộc đúng hai họ: `tdq_state.py set …` và `tdq_state.py approve …`.
-- **Một cổng gật duy nhất.** Trình báo cáo → chờ user gật → chạy hết lệnh vá → đi tiếp.
-  Không hỏi lần hai, cũng không tự chạy khi user chưa gật.
+- **Đĩa là bằng chứng, `state.json` là lời khai.** They disagree → trust the disk.
+- **Cấm tuyệt đối** `tdq_state.py` với lệnh con `init` hay `reset`, and equally banned is
+  deleting or overwriting an existing brief/spec/plan/qc/report. Those two subcommands wipe
+  the open request.
+- Only patch commands from exactly two families may run: `tdq_state.py set …` and
+  `tdq_state.py approve …`.
+- **Một cổng gật duy nhất.** Present the report → wait for the user's nod → run every patch
+  command → move on. Never ask a second time, never run before the nod.
 - Kết luận `CẦN USER QUYẾT` thì DỪNG, trình câu hỏi, cấm tự đoán ý user.
-- **`state.json` hỏng KHÁC không có state.** Hỏng mà đĩa còn spec/plan là ca D1 mức `chan`:
-  trình cho user, xin dựng lại state. Coi nó như "chưa có request" là mất cả request.
+- **`state.json` hỏng KHÁC không có state.** Corrupt while the disk still holds a spec/plan
+  is case D1 at level `chan`: show it to the user and ask to rebuild the state. Treating it
+  as "no request yet" loses the whole request.
 
 ## Các bước
 
-1. Chạy bộ dò (chỉ đọc, không ghi gì):
+1. Run the detector (read-only, writes nothing):
    ```
    python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_checkstatus.py" report
    ```
-   Cần dữ liệu máy đọc thì thêm `--json`. Script tự dò project root; ép bằng `--project`.
+   Need machine-readable data → add `--json`. The script finds the project root itself;
+   force it with `--project`.
 
-2. Đọc output. Nó đã đúng khuôn 6 mục của
-   [references/report-template.md](references/report-template.md) — in lại nguyên văn cho
-   user, không tóm tắt lại theo ý mình, không thêm phán đoán ngoài bảng.
+2. Read the output. It already follows the 6-section khuôn of
+   [references/report-template.md](references/report-template.md) — reprint it verbatim for
+   the user, do not re-summarise it in your own words, add no judgement beyond the table.
 
-3. Tra từng mã ca lệch trong [references/bang-lech.md](references/bang-lech.md) để hiểu
-   ý nghĩa và giới hạn của nó. Bảng đó là nguồn duy nhất; cấm tự nghĩ thêm chẩn đoán.
+3. Look every drift code up in [references/bang-lech.md](references/bang-lech.md) to learn
+   its meaning and its limits. That table is the only source; inventing extra diagnoses is
+   banned.
 
-4. Rẽ theo đúng dòng `## Kết luận`:
-   - `TIẾP TỤC ĐƯỢC` → báo một dòng rồi làm tiếp việc ở mục `## Việc kế tiếp`.
-   - `VÁ RỒI TIẾP TỤC` → in khối `## Lệnh vá đề xuất` và hỏi user đúng một câu:
+4. Branch on the exact `## Kết luận` line:
+   - `TIẾP TỤC ĐƯỢC` → report one line, then carry on with the work under `## Việc kế tiếp`.
+   - `VÁ RỒI TIẾP TỤC` → print the `## Lệnh vá đề xuất` block and ask the user exactly one
+     question:
      "Chạy các lệnh vá này rồi tiếp tục?" **DỪNG chờ user.**
-   - `CẦN USER QUYẾT` → in các ca mức `chan`, nêu lựa chọn theo khuôn option của
-     conventions, **DỪNG chờ user**. Cấm chạy lệnh vá nào.
+   - `CẦN USER QUYẾT` → print the `chan`-level cases, lay out the choices per the option
+     khuôn of conventions, **DỪNG chờ user**. Run no patch command at all.
 
-5. User gật ở bước 4 → chạy nguyên văn từng lệnh trong khối lệnh vá, theo đúng thứ tự.
-   Lệnh nào không thuộc hai họ `set`/`approve` thì KHÔNG chạy và báo lại — đó là lỗi của
-   bộ dò, không phải việc để tự sửa tay.
+5. The user nods at step 4 → run each command of the patch block verbatim, in order.
+   A command outside the two families `set`/`approve` must NOT be run; report it instead —
+   that is a bug in the detector, not something to fix by hand.
 
-6. Chạy lại bước 1 một lần để xác nhận kết luận đã lên `TIẾP TỤC ĐƯỢC`.
+6. Re-run step 1 once to confirm the verdict has risen to `TIẾP TỤC ĐƯỢC`.
 
-7. Bàn giao đúng phase đang đứng, theo
+7. Hand over at the phase you actually stand in, per
    [phases.md](../tdq-conventions/references/phases.md):
-   - `analyze` / `spec` → [tdq-spec](../tdq-spec/SKILL.md); phase có cổng duyệt thì
-     trình lại đúng cổng đó rồi DỪNG chờ user duyệt.
-   - `plan` → [tdq-plan](../tdq-plan/SKILL.md), cũng dừng ở cổng duyệt plan.
-   - `implement` / `qc` / `report` → [tdq-build](../tdq-build/SKILL.md), chạy tiếp ngay.
-     Ở `implement`, vào đúng task mà báo cáo chỉ ra là đang `[~]`.
+   - `analyze` / `spec` → [tdq-spec](../tdq-spec/SKILL.md); a phase with an approval gate
+     means re-presenting that exact gate, then STOPPING for the user's approval.
+   - `plan` → [tdq-plan](../tdq-plan/SKILL.md), stopping at the plan approval gate too.
+   - `implement` / `qc` / `report` → [tdq-build](../tdq-build/SKILL.md), carry on right away.
+     At `implement`, resume the exact task the report shows as `[~]`.
 
-Xong khi: user đã đọc báo cáo, mọi lệnh vá cần chạy đã chạy, và skill của phase đúng
-đã được nạp để làm tiếp.
-Bước kế tiếp: skill ở bước 7 tương ứng với phase hiện tại.
+Xong khi: the user has read the report, every needed patch command has run, and the skill of
+the correct phase is loaded to continue.
+Bước kế tiếp: the skill at step 7 matching the current phase.

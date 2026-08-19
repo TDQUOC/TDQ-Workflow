@@ -1,9 +1,9 @@
 # Vòng scope — tầng tổng quát của interview
 
-Vòng này chạy TRƯỚC vòng câu hỏi chi tiết ở [interview.md](interview.md). Mục đích: biết
-request bao quanh những mặt nào và bối cảnh thật ra sao, để vòng chi tiết chỉ hỏi trong
-đúng phần user cần. Spec nhờ đó không thiếu mặt quan trọng, cũng không phình ra mặt user
-không cần.
+This round runs BEFORE the detail questions in [interview.md](interview.md). Purpose: know
+which areas the request spans and what the real context is, so the detail round only asks
+inside the part the user needs. That way the spec misses no important area and does not
+swell into areas the user never wanted.
 
 ## Mục lục
 
@@ -15,38 +15,38 @@ không cần.
 
 ## 1. Khi nào chạy
 
-Vòng scope **có điều kiện**, áp cho cả chế độ nhanh (express) lẫn chế độ chuyên sâu (deep).
-Chạy khi yêu cầu của user thoả **ít nhất một** dấu hiệu dưới đây:
+The scope round is **conditional**, and applies to both chế độ nhanh (express) and chế độ
+chuyên sâu (deep). Run it when the user's request meets **at least one** sign below:
 
-1. Yêu cầu gọi tên cả một hệ thống hay tính năng ("làm hệ thống login", "thêm tính năng
-   X cho game"), không trỏ vào một hành vi hay một file cụ thể.
-2. Soát khung 9 mặt ở mục 2 thấy từ **2 mặt trở lên** có thể áp dụng mà yêu cầu không nói
-   gì về chúng.
-3. Yêu cầu có từ mở về quy mô hay chất lượng mà không kèm số: "nhanh", "an toàn",
-   "nhiều người dùng", "chuyên nghiệp".
-4. Việc chạm tới dữ liệu người dùng, tiền, hoặc API công khai.
+1. The request names a whole system or feature ("làm hệ thống login", "thêm tính năng X
+   cho game") instead of pointing at one behaviour or one file.
+2. Sweeping the 9-area frame in section 2 shows **2 or more areas** that could apply while
+   the request says nothing about them.
+3. The request uses open words about scale or quality with no number attached: "nhanh",
+   "an toàn", "nhiều người dùng", "chuyên nghiệp".
+4. The work touches user data, money, or a public API.
 
-Không dấu hiệu nào → BỎ vòng scope, đi thẳng vòng chi tiết. Khi BỎ, brief phải có đúng
-một dòng, không được im lặng:
+No sign at all → SKIP the scope round and go straight to the detail round. When skipping,
+the brief must carry exactly one line; silence is not allowed:
 
 ```
 Vòng scope: BỎ — <lý do một câu, nói rõ vì sao mọi mặt còn lại suy ra được từ code>
 ```
-
-Dòng lý do bắt buộc này là hàng rào: "có điều kiện" nghĩa là có tiêu chí, không phải tuỳ
-hứng bỏ cho nhanh.
+That mandatory reason line is the fence: "conditional" means there are criteria, not that
+you may drop the round whenever it feels faster.
 
 ## 2. Câu 1 — request này bao quanh những mặt nào
 
-**Khung soát nội bộ (không in ra chat).** Đi hết 9 mặt chất lượng của ISO/IEC 25010:2023
-để không sót: chức năng · hiệu năng · tương thích · trải nghiệm người dùng · độ tin cậy ·
-bảo mật · bảo trì · Flexibility — mở rộng, đa nền tảng · an toàn. Khung này chỉ để bạn
-không bỏ quên mặt nào; user không cần đọc nó.
+**Internal sweep frame (never printed to chat).** Walk all 9 quality areas of ISO/IEC
+25010:2023 so nothing is missed: functionality · performance · compatibility · user
+experience · reliability · security · maintainability · Flexibility — extensibility and
+multi-platform · safety. This frame only stops you forgetting an area; the user does not
+need to read it.
 
-**Phần in ra chat.** Chọn **3–5 mặt** thật sự hợp lĩnh vực của request rồi hỏi theo đúng
-khuôn option của [interview.md](interview.md) — mỗi mặt một dòng, nhãn chữ HOA, hệ quả
-nối bằng ` — `. Hệ quả viết theo dạng "chọn mặt này thì spec sẽ có <mục gì>", để user
-thấy được cái giá của từng lựa chọn:
+**The part printed to chat.** Pick **3–5 areas** that genuinely fit the request's field,
+then ask using the option khuôn of [interview.md](interview.md) — one area per line,
+UPPERCASE label, consequence joined with ` — `. Write the consequence as "picking this area
+means the spec will carry <what>", so the user sees the price of each choice:
 
 ```
 <số>. Request này bạn muốn bao quanh những mặt nào? (chọn nhiều được)
@@ -55,22 +55,23 @@ thấy được cái giá của từng lựa chọn:
 - C: <mặt> — spec sẽ có <mục/đầu ra cụ thể>
 - D: chỉ cần chạy được — bỏ hết các mặt trên, spec chỉ lo đúng luồng chính
 ```
-
 Luật của câu này:
 
-- Cho chọn nhiều: user trả lời được kiểu "A, C" hoặc "A C D"; nói rõ điều đó trong khối.
-- Option cuối luôn là "chỉ cần chạy được" — user cần lối thoát khỏi mọi mặt phụ.
-- Không quá 5 mặt. Thấy 6 mặt trở lên đều hợp thì gộp mặt gần nhau, đừng kéo dài danh sách.
-- Mặt nào yêu cầu đã nói rõ rồi thì KHÔNG đưa vào option, ghi thẳng là đã chốt.
+- Allow multiple picks: the user can answer "A, C" or "A C D"; say so inside the block.
+- The last option is always "chỉ cần chạy được" — the user needs a way out of every
+  secondary area.
+- No more than 5 areas. If 6 or more all fit, merge the neighbouring ones instead of
+  stretching the list.
+- An area the request already settled is NOT offered as an option; write it down as settled.
 
 ## 3. Câu 2 — bối cảnh bằng số
 
-**CẤM hỏi mức độ trừu tượng.** Không hỏi "bạn muốn gọn nhất, vừa đủ, hay đầy đủ chuyên
-nghiệp". Câu đó bắt user tự quy đổi thứ họ chưa biết, và câu trả lời không neo vào gì
-kiểm được. Thay bằng câu bối cảnh cụ thể — user trả lời dễ, và con số đó dùng lại được ở
-spec §5 ràng buộc.
+**CẤM hỏi mức độ trừu tượng.** Never ask "bạn muốn gọn nhất, vừa đủ, hay đầy đủ chuyên
+nghiệp". That question makes the user convert something they do not know yet, and the
+answer anchors to nothing checkable. Replace it with concrete context questions — easy to
+answer, and the numbers get reused in spec §5 constraints.
 
-Bộ mẫu 5 nhóm, chọn ra **tối đa 4 câu** hợp lĩnh vực:
+Sample set of 5 groups; pick **at most 4 questions** that fit the field:
 
 | Nhóm | Hỏi cái gì | Ví dụ option |
 |---|---|---|
@@ -79,17 +80,19 @@ Bộ mẫu 5 nhóm, chọn ra **tối đa 4 câu** hợp lĩnh vực:
 | Giai đoạn | R&D thử nghiệm hay product chạy thật | prototype · beta nội bộ · product có người dùng thật |
 | Vòng đời & bảo trì | sống bao lâu, ai sửa sau này | dùng một lần · một người giữ · cả nhóm giữ |
 | Ràng buộc nền tảng | thiết bị, OS, engine, thư viện bắt buộc | không ràng buộc · một nền tảng · nhiều nền tảng |
-
 Luật của câu này:
 
-- Mỗi câu vẫn theo khuôn option A/B/C, các mức là **con số hoặc mốc cụ thể**.
-- Mỗi câu thêm một option cuối "tôi tự gõ số" cho user điền thẳng.
-- Gộp câu 1 và các câu bối cảnh vào **một khối chat duy nhất**, đánh số liên tục.
-- Nhóm nào yêu cầu đã trả lời sẵn thì bỏ, đừng hỏi lại thứ user vừa nói.
+- Each question still follows the A/B/C option khuôn, and the levels are **numbers or
+  concrete milestones**.
+- Each question adds a final option "tôi tự gõ số" so the user can fill it in directly.
+- Merge question 1 and the context questions into **a single chat block**, numbered
+  continuously.
+- Drop any group the request already answered; never re-ask what the user just said.
 
 ## 4. Suy ra mức đầu tư
 
-Mức đầu tư do **bạn suy ra** từ câu trả lời bối cảnh, không hỏi thẳng user. Bảng ánh xạ:
+The investment level is **inferred by you** from the context answers, never asked of the
+user directly. Mapping table:
 
 | Bối cảnh | Mức đầu tư | Hệ quả lên spec/plan |
 |---|---|---|
@@ -97,19 +100,17 @@ Mức đầu tư do **bạn suy ra** từ câu trả lời bối cảnh, không 
 | Beta nội bộ, quy mô vừa, cả nhóm giữ | vừa | thêm test biên và đường lỗi vào DoD |
 | Product thật, quy mô lớn | đầy đủ | hiệu năng và độ tin cậy thành hạng mục QC riêng, có ngưỡng số |
 | Chạm tiền, dữ liệu người dùng, API công khai | đầy đủ | bảo mật vào DoD kể cả khi user không chọn mặt đó |
-
 Suy xong phải in đúng một dòng, đặt kèm khối câu hỏi của vòng chi tiết:
 
 ```
 Tôi hiểu là: <mức đầu tư> vì <bối cảnh user vừa nói>
 ```
-
-Dòng này để user cãi được ngay nếu bạn suy sai. Nó **không** phải một cổng duyệt mới —
-không chờ user xác nhận riêng, không thêm phase.
+This line lets the user push back immediately if you inferred wrong. It is **not** a new
+approval gate — no separate confirmation, no extra phase.
 
 ## 5. Ghi lại
 
-Brief mục `## Hiểu & kiến thức` thêm `### Phạm vi đã chốt`, đúng 4 dòng:
+The brief section `## Hiểu & kiến thức` gains `### Phạm vi đã chốt`, exactly 4 lines:
 
 ```
 - Mặt CHỌN: <danh sách>
@@ -117,7 +118,6 @@ Brief mục `## Hiểu & kiến thức` thêm `### Phạm vi đã chốt`, đún
 - Bối cảnh: <các con số user đưa>
 - Mức đầu tư suy ra: <lõi|vừa|đầy đủ> — vì <bối cảnh>
 ```
-
-Sang phase spec, dòng "Mặt LOẠI" chép nguyên vào §1 mục `NGOÀI phạm vi`. Đó là chỗ đối
-chiếu khi spec bắt đầu phình: mặt nào không có trong "Mặt CHỌN" mà tự mọc ra trong spec
-là dấu hiệu đang làm dư.
+In the spec phase, the "Mặt LOẠI" line is copied verbatim into §1 under `NGOÀI phạm vi`.
+That is the reference point when the spec starts to swell: an area absent from "Mặt CHỌN"
+that grows into the spec anyway is the sign you are building more than was asked.

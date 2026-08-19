@@ -1,6 +1,6 @@
 # Khuôn plan
 
-Copy nguyên khối vào `docs/tdq/plan/<slug>.md` rồi điền.
+Copy the whole block into `docs/tdq/plan/<slug>.md` and fill it in.
 
 ```markdown
 # PLAN — <tên việc>
@@ -127,31 +127,33 @@ Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh ki�
 
 ## Ước tính phút `(eNm)`
 
-Đặt **ngay sau mã task**, trước phần việc: `- [ ] **T2.1** (e12m) việc — Test: ...`.
-`eNm` = số **phút** Claude ước tính mình cần để tự THỰC THI xong task ấy (thời gian agent
-chạy, không phải thời gian người chờ). Đơn vị luôn là phút, số nguyên 1–999, không viết
-`1h` hay `0.5m`. ETA của cả plan = tổng `eNm` các task chưa xong.
+Goes **right after the task code**, before the work itself: `- [ ] **T2.1** (e12m) việc — Test: ...`.
+`eNm` = the number of **minutes** Claude estimates it needs to EXECUTE that task itself (agent
+runtime, not human waiting time). The unit is always minutes, an integer 1–999, never `1h` or
+`0.5m`. The ETA of the whole plan = the sum of `eNm` over unfinished tasks.
 
-Luật:
-- Chấm ngay lúc viết task, không chấm bù sau.
-- Ước tính thời gian LÀM, không tính thời gian chờ user duyệt hay interview.
-- Phân vân → chấm số mình thật sự tin, đừng đệm thêm cho an toàn.
-- `eNm` là **tuỳ chọn**: thiếu thì bỏ qua task đó khi cộng ETA, không chặn plan chạy.
-- `eNm` KHÔNG đổi luật tick `[ ] [~] [x]` và không phải cam kết thời gian với user.
+Rules:
+- Score it as you write the task, never score it later.
+- Estimate the time spent WORKING, not the time waiting for approval or interview answers.
+- Unsure → score the number you actually believe, do not pad for safety.
+- `eNm` is **optional**: missing on a task means that task is skipped in the ETA sum, and the
+  plan still runs.
+- `eNm` changes nothing about the tick rule `[ ] [~] [x]` and is not a promise of time to user.
 
 ## Dòng `Mode thực thi`
 
-- Phải nằm **một dòng riêng**, không ghép vào dòng header khác — công cụ đọc dòng này.
-- Giá trị ghi ở đây là **định danh máy**: `main` hoặc `subagent`. Nhãn user đọc thấy ở
-  cổng `mode` là "làm trực tiếp (inline implement)" và "giao trợ lý (sub-agent
-  implement)" — xem [mode-gate.md](mode-gate.md).
-- Đây chỉ là **đề xuất** của Claude. User duyệt plan xong, phase `mode` mới hỏi chọn;
-  mode ghi vào state là mode user NÓI, không tự lấy đề xuất làm chốt. Câu duyệt đã kèm
-  sẵn mode thì bỏ qua cổng đó, vào thẳng implement.
+- It MUST sit on **một dòng riêng**, never merged into another header line — tooling reads it.
+- The value here is the **machine identifier**: `main` or `subagent`. The label the user reads at
+  gate `mode` is "làm trực tiếp (inline implement)" and "giao trợ lý (sub-agent implement)" —
+  see [mode-gate.md](mode-gate.md).
+- This is only Claude's **proposal**. After the user approves the plan, phase `mode` asks; the
+  mode written into state is the one the user SAID, never the proposal taken as settled. An
+  approval sentence that already names a mode skips that gate and goes straight to implement.
 
 ## Kiểm trước khi trình
 
-- Mỗi đầu ra trong spec §2 ánh xạ tới ≥ 1 task.
-- Mỗi task có đúng một việc và một cách kiểm đo được — không có task kiểu "hoàn thiện X".
-- Task đầu của mỗi phase dựng được đường đi red → green sớm.
-- Không task nào phụ thuộc task nằm sau nó.
+- Every output in spec §2 maps to ≥ 1 task.
+- Every task holds exactly one piece of work and one measurable check — no task shaped like
+  "hoàn thiện X".
+- The first task of each phase opens a red → green path early.
+- No task depends on a task placed after it.

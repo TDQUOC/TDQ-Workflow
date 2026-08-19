@@ -1,9 +1,9 @@
-# Chi phí bước & chi phí context
+# Step cost & context cost
 
-Hai loại chi phí khác nhau, nằm ở hai tầng khác nhau của [soul.md](soul.md). Xếp sai tầng
-là lý do luật bị bỏ qua hợp lệ, nên phần nào ra phần nấy.
+Two different costs, sitting on two different tiers of [soul.md](soul.md). Filing a rule in the
+wrong tier is how a rule gets legitimately ignored, so each part stays in its own part.
 
-Đo bằng hai lệnh:
+Measure with two commands:
 
 ```
 python3 "./scripts/step_audit.py" --sessions 2
@@ -12,105 +12,112 @@ python3 "./scripts/token_audit.py" --sessions 2 --top 8
 
 ## Mục lục
 
-- [Chi phí bước (tầng 2 — runtime)](#Chi phí bước (tầng 2 — runtime))
-- [Chi phí context (tầng 3)](#Chi phí context (tầng 3))
+- [Step cost (tier 2 — runtime)](#Step cost (tier 2 — runtime))
+- [Context cost (tier 3)](#Context cost (tier 3))
 
-## Chi phí bước (tầng 2 — runtime)
+## Step cost (tier 2 — runtime)
 
-Một tool call = một vòng round-trip. Đo trên phiên thật: trung vị **3,3 s** mỗi bước,
-p90 12,3 s. Tổng thời gian tỉ lệ THẲNG với số bước, nên đây là tầng runtime, không phải
+One tool call = one round-trip. Measured on real sessions: median **3.3 s** per step, p90
+12.3 s. Total time scales DIRECTLY with the number of steps, so this is the runtime tier, not
 context cost.
 
-- **Gộp tool call.** Biết trước 2–5 tool call độc lập (Bash, Read, Grep) → phát hết
-  trong CÙNG MỘT LƯỢT; nhiều lệnh Bash độc lập thì gộp bằng `&&`. Tách khi cần khoanh vùng lỗi.
-- **Gộp lệnh Bash.** Nhiều lệnh shell độc lập trong cùng một việc → một lệnh nối bằng
-  `&&`, hoặc `;` khi muốn chạy hết dù có lệnh lỗi. Cấm tách thành nhiều lượt chỉ để
-  nhìn kết quả từng lệnh cho dễ.
-- **Đọc lại có điều kiện (luật MỀM).** Thông tin còn đủ và còn nguyên trong context thì
-  đừng đọc lại file. Nhưng BẮT BUỘC đọc lại khi gặp một trong năm ca dưới đây. Luật này
-  không bao giờ được viết thành lệnh chặn.
-- **Chờ việc dài.** Lệnh chạy lâu (build, test suite lớn, server) → chạy nền rồi chờ theo
-  điều kiện. Cấm vòng `sleep` thăm dò: mỗi vòng là một bước tròn mà không thêm thông tin.
+- **Batch tool calls.** Knowing 2–5 independent tool calls up front (Bash, Read, Grep) → issue
+  them ALL IN ONE TURN; several independent Bash commands get joined with `&&`. Split them when
+  you need to isolate a failure.
+- **Batch Bash commands.** Several independent shell commands in one piece of work → one
+  command joined by `&&`, or `;` when you want them all to run even if one fails. Never split
+  into several turns just to see each command's output separately.
+- **Conditional re-reading (SOFT rule).** When the information is still complete and intact in
+  context, do not re-read the file. But you MUST re-read on any of the five cases below. This
+  rule must never be turned into a blocking check.
+- **Waiting on long work.** A long-running command (build, big test suite, server) → run it in
+  the background and wait on a condition. No `sleep` polling loop: each round is a whole step
+  that adds no information.
 
-### Năm ca BẮT BUỘC đọc lại
+### Five cases where re-reading is MANDATORY
 
-1. Context đã bị nén — thứ còn lại là bản tóm tắt, không phải nội dung file.
-2. Lần trước chỉ đọc một phần (`offset`/`limit`), không đọc trọn file.
-3. File có thể đã đổi từ lần đọc: mình vừa sửa, lệnh vừa sinh lại, sub-agent hoặc user chạm vào.
-4. Sắp sửa chính file đó — trước khi Edit phải có nội dung mới nhất.
-5. Nhớ không chắc, hoặc cần chi tiết mà lần đọc trước không để ý.
+1. Context has been compacted — what remains is a summary, not the file's content.
+2. Last time you read only part of it (`offset`/`limit`), not the whole file.
+3. The file may have changed since: you just edited it, a command regenerated it, a sub-agent
+   or the user touched it.
+4. You are about to edit that very file — before an Edit you must hold the latest content.
+5. You are not sure you remember, or you need a detail you skipped last time.
 
-**Nghi ngờ thì đọc lại: chất lượng đứng trên runtime.** Đọc thừa một lần tốn 3,3 giây;
-suy luận trên nội dung cũ tốn cả một vòng fix sai. Luật này không bắc qua sub-agent —
-agent có context riêng, nó phải tự đọc.
+**When in doubt, re-read: quality stands above runtime.** One redundant read costs 3.3 seconds;
+reasoning over stale content costs a whole wrong fix cycle. This rule does not carry across to a
+sub-agent — an agent has its own context and must read for itself.
 
-### Đọc lại vì LUẬT hay vì QUÊN
+### Re-reading by RULE or by FORGETTING
 
-Đo trên 5 phiên thật (`token_audit.py --sessions 5`): `Read` gọi 451 lần, **64,1% là
-đọc lại file đã đọc trong cùng phiên**, trung vị 1.786 token mỗi lần. Con số đó KHÔNG
-phải bằng chứng lãng phí: năm ca trên bắt buộc đọc lại, và phần lớn lần đọc lại rơi
-đúng vào đó. Nó chỉ có nghĩa là chỗ này đáng phân biệt cho rõ.
+Measured over 5 real sessions (`token_audit.py --sessions 5`): `Read` was called 451 times,
+**64.1% of them re-reads of a file already read in the same session**, median 1,786 tokens each.
+That number is NOT evidence of waste: the five cases above make re-reading mandatory, and most
+re-reads land squarely in them. It only means the distinction is worth drawing clearly.
 
-Một lần đọc lại thuộc diện "vì QUÊN" khi **cả năm** điều dưới đây đúng — tức không
-rơi vào ca nào trong năm ca bắt buộc:
+A re-read counts as "by FORGETTING" when **all five** statements below hold — i.e. it falls into
+none of the five mandatory cases:
 
-- Context chưa bị nén kể từ lần đọc trước.
-- Lần trước đã đọc TRỌN file, không `offset`/`limit`.
-- Từ lần đọc đó tới giờ không ai chạm file: mình chưa sửa, không lệnh nào sinh lại nó,
-  không sub-agent hay user nào đụng vào.
-- Không sắp Edit chính file đó.
-- Vẫn nhớ rõ đoạn cần, không cần chi tiết nào mà lần trước bỏ qua.
+- Context has not been compacted since the previous read.
+- Last time you read the WHOLE file, no `offset`/`limit`.
+- Nobody has touched the file since: you have not edited it, no command regenerated it, no
+  sub-agent or user went near it.
+- You are not about to Edit that file.
+- You still remember the passage clearly and need no detail you skipped last time.
 
-Ba dấu hiệu nhận ra nhanh nhất, cả ba đều là đọc lại vì quen tay:
+The three fastest signs, all three being re-reads out of habit:
 
-- Đọc lại nguyên file chỉ để xác nhận MỘT dòng → `grep -n` trả lời đúng câu hỏi đó.
-- Đọc lại ngay sau khi `Edit` báo thành công → `Edit` đã lỗi nếu không khớp, đọc lại
-  không thêm thông tin nào.
-- Đọc lại file mình vừa `Write` nguyên văn trong cùng phiên.
+- Re-reading a whole file just to confirm ONE line → `grep -n` answers exactly that question.
+- Re-reading right after `Edit` reported success → `Edit` would have failed on a mismatch, so
+  the re-read adds nothing.
+- Re-reading a file you just `Write`-verbatim in the same session.
 
-Sai số hai phía không cân nhau: bỏ một lần đọc CẦN thì suy luận trên nội dung cũ,
-mất cả một vòng fix; đọc thừa một lần chỉ tốn 3,3 giây và một lần carry. Nên khi năm
-điều kiện trên không chắc chắn đúng hết — **nghi ngờ thì đọc lại**.
+The two error directions are not symmetric: skipping a NEEDED read means reasoning over stale
+content and losing a whole fix cycle; one redundant read costs 3.3 seconds and one carry. So
+whenever the five conditions are not certainly all true — **when in doubt, re-read**.
 
-### Cấm gộp
+### Never batch these
 
-Bốn ca dưới đây tách ra là ĐÚNG, gộp lại là SAI, kể cả khi gộp được về mặt kỹ thuật.
+Splitting the four cases below is RIGHT and batching them is WRONG, even where batching is
+technically possible.
 
-| Ca | Vì sao cấm gộp |
+| Case | Why batching it is banned here |
 |---|---|
-| Bước đỏ → bước xanh của TDD | gộp thì không còn bằng chứng test đỏ thật, red-green thành hình thức |
-| Đang khoanh vùng lỗi | gộp 5 lệnh rồi lỗi ở đâu không biết, phải chạy lại từng lệnh, tốn nhiều bước hơn |
-| Lệnh phá hủy hoặc khó đảo | xoá, ghi đè, `git reset` — phải xem kết quả lệnh trước rồi mới chạy lệnh sau |
-| Lệnh sau cần kết quả lệnh trước | gộp thì lệnh sau chạy trên giả định, ra kết quả sai mà không ai biết |
+| The red step → green step of TDD | batched, there is no evidence the test really went red; red-green becomes theatre |
+| Isolating a failure | batch 5 commands and you cannot tell which failed, so you rerun them one by one — more steps, not fewer |
+| Destructive or hard-to-undo commands | delete, overwrite, `git reset` — you must see the previous command's result before running the next |
+| A command that needs the previous command's result | batched, the later command runs on an assumption and returns a wrong result nobody notices |
 
-Ví dụ ĐÚNG: một lượt phát `Read a.py`, `Read b.py`, `grep -n "foo" c.py` — ba việc không
-liên quan nhau, đọc xong mới suy luận.
-Ví dụ SAI: một lượt chạy `pytest` (kỳ vọng đỏ) rồi `Edit` file rồi `pytest` lại — bước
-đỏ mất bằng chứng, và lần chạy đầu vô nghĩa vì file chưa sửa.
+Ví dụ ĐÚNG: one turn issuing `Read a.py`, `Read b.py`, `grep -n "foo" c.py` — three unrelated
+pieces of work; you reason only after all three land.
+Ví dụ SAI: one turn running `pytest` (expecting red), then `Edit`, then `pytest` again — the red
+step loses its evidence, and the first run is meaningless because the file was not yet changed.
 
-## Chi phí context (tầng 3)
+## Context cost (tier 3)
 
-Mỗi tool call = 1 API call = model đọc lại TOÀN BỘ context: một output tốn
-`số token của nó × số API call còn lại sau nó` — **carry-cost**. Đo bằng
-`token_audit.py` (đếm bằng tokenizer thật; ước lượng ký tự/4 lệch mạnh đúng ở nhóm
-tốn nhất). Ảnh không tính theo độ dài base64 mà theo patch 28×28 px.
+Every tool call = 1 API call = the model re-reads the ENTIRE context: one output costs
+`its token count × the number of API calls after it` — **carry-cost**. Measure with
+`token_audit.py` (counting with a real tokenizer; the chars/4 estimate is badly off exactly in
+the priciest group). Images are counted by 28×28 px patches, not by base64 length.
 
-- **Lint đúng file.** Chạy `doc_lint.py` trên ĐÚNG file vừa sửa, cấm truyền cả thư mục
-  (`docs/tdq`): lint thư mục in ~8.000 ký tự lỗi của file cũ, không liên quan.
-- **CLI im lặng.** `tdq_state.py init|set|reset` mặc định in 1 dòng; chỉ thêm `--json`
-  khi thật sự cần soi state. `next --brief` thay cho `next` trừ khi cần checklist đầy đủ.
-- **Đọc vừa đủ.** File trên 200 dòng: `grep -n` định vị rồi Read theo `offset`/`limit`.
-  Cấm `cat` (dùng Read), cấm `grep -A5 -B5` khi `-c`/`-l` đã đủ trả lời.
-- **Việc nặng giao subagent.** Research web và đọc ≥4 file giao agent riêng — agent có
-  context window riêng, chỉ trả digest về hội thoại chính.
-- **Trần output cho tool ngoài (MCP).** Tool MCP là mã của bên thứ ba: TDQ không sửa
-  được nội dung nó trả về, chỉ chặn được ở trần. Đặt `MAX_MCP_OUTPUT_TOKENS` trong
-  `~/.claude/settings.json` (mặc định của Claude Code là 50.000, cảnh báo từ 10.000).
-  Đo trên 5 phiên thật: mọi nhóm MCP hiện có đều dưới 8.800 token mỗi lần, cả cụm MCP
-  chỉ chiếm **1,9%** tổng carry-cost. Trần này KHÔNG cắt chi phí đang có. Nó chặn ca
-  hiếm khổng lồ trong tương lai — một lần gọi cũng đủ đội cả phiên.
-  Vượt trần thì output bị cắt kèm dấu: thấy dấu cắt → gọi lại với tham số hẹp hơn
-  (lọc, phân trang, chọn trường), cấm coi phần đọc được là đủ rồi kết luận.
-- **Soul phân xử.** Mọi luật trên đây chỉ cắt chi phí khi đầu ra không đổi. Việc đòi đọc
-  TRỌN nhiều file hay chạy đủ phép kiểm thì cứ làm đủ: chất lượng đứng trên context cost
-  theo [soul.md](soul.md).
+- **Lint the exact file.** Run `doc_lint.py` on EXACTLY the file you just changed, never pass a
+  whole directory (`docs/tdq`): linting a directory prints ~8,000 characters of unrelated errors
+  from old files.
+- **Quiet CLI.** `tdq_state.py init|set|reset` prints one line by default; add `--json` only
+  when you genuinely need to inspect the state. Use `next --brief` instead of `next` unless you
+  need the full checklist.
+- **Read just enough.** Files over 200 lines: locate with `grep -n`, then Read with
+  `offset`/`limit`. No `cat` (use Read), no `grep -A5 -B5` when `-c`/`-l` already answers.
+- **Give heavy work to a subagent.** Web research and reading ≥4 files go to a separate agent —
+  an agent has its own context window and returns only a digest to the main conversation.
+- **Output cap for external tools (MCP).** An MCP tool is third-party code: TDQ cannot change
+  what it returns, only cap it. Set `MAX_MCP_OUTPUT_TOKENS` in `~/.claude/settings.json`
+  (Claude Code's default is 50,000, with a warning from 10,000). Measured over 5 real sessions:
+  every existing MCP group stays under 8,800 tokens per call and the whole MCP cluster is only
+  **1.9%** of total carry-cost. This cap does NOT cut current cost. It stops the rare giant case
+  in the future — one call is enough to inflate a whole session.
+  Over the cap the output is truncated with a marker: on seeing the marker → call again with
+  narrower parameters (filter, paginate, select fields); never treat the readable part as enough
+  and conclude from it.
+- **Soul decides.** Every rule above only cuts cost when the output does not change. Work that
+  demands reading WHOLE files or running every check gets done in full: quality stands above
+  context cost, per [soul.md](soul.md).

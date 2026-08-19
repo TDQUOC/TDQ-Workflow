@@ -17,7 +17,11 @@ import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BANG = os.path.join(ROOT, "docs", "tdq", "audit", "luat-hien-co.md")
-DONG_RE = re.compile(r"^\| (L\d+) \| `([^`:]+):(\d+)` \| (.*?) \|$")
+RANH_GIOI = os.path.join(ROOT, "docs", "tdq", "audit", "ranh-gioi-luat.md")
+DONG_RE = re.compile(r"^\| (L\d+) \| `([^`:]+):(\d+)` \|")
+# Tách ô theo dấu `|` KHÔNG bị escape — nội dung luật có thể chứa `\|` của markdown.
+O_RE = re.compile(r"(?<!\\)\|")
+RANH_GIOI_RE = re.compile(r"^\| (L\d+) \| ([\w-]+) \|")
 
 # Đối chiếu trên bao nhiêu ký tự đầu của luật. Đủ dài để không trùng nhau lung tung,
 # đủ ngắn để sửa dấu câu cuối câu không làm đỏ oan.
@@ -25,16 +29,35 @@ DAI_NEO = 40
 
 
 def doc_bang(path=BANG):
-    """Bảng luật → [(mã, file, dòng, chữ neo)]. Chữ neo đã gỡ escape của markdown."""
+    """Bảng luật → [(mã, file, dòng, chữ neo cũ, neo bản mới)].
+
+    Chữ neo đã gỡ escape của markdown. Ô `neo bản mới` rỗng là trạng thái bình thường
+    của một luật chưa viết lại.
+    """
     ban = []
     with open(path, encoding="utf-8") as f:
         for dong in f:
             m = DONG_RE.match(dong.rstrip("\n"))
             if not m:
                 continue
-            chu = m.group(4).replace("\\|", "|").rstrip("…")
-            ban.append((m.group(1), m.group(2), int(m.group(3)), chu))
+            o = [c.strip() for c in O_RE.split(dong.rstrip("\n").strip())[1:-1]]
+            go = lambda c: c.replace("\\|", "|").rstrip("…")
+            ban.append((m.group(1), m.group(2), int(m.group(3)),
+                        go(o[2]), go(o[3]) if len(o) > 3 else ""))
     return ban
+
+
+def doc_nhan(path=RANH_GIOI):
+    """Bảng ranh giới → {mã: nhãn}. Thiếu file thì trả dict rỗng, phần kiểm tự bỏ qua."""
+    nhan = {}
+    if not os.path.exists(path):
+        return nhan
+    with open(path, encoding="utf-8") as f:
+        for dong in f:
+            m = RANH_GIOI_RE.match(dong.rstrip("\n"))
+            if m and m.group(2) in ("ly-luan", "user-facing"):
+                nhan[m.group(1)] = m.group(2)
+    return nhan
 
 
 def chuan(chu):
@@ -57,12 +80,17 @@ class BangLuatTest(unittest.TestCase):
         self.assertTrue(os.path.exists(BANG), f"thiếu {BANG}")
         self.assertGreater(len(doc_bang()), 100)
 
+    def test_bang_co_cot_neo_ban_moi(self):
+        with open(BANG, encoding="utf-8") as f:
+            self.assertIn("neo bản mới", f.read(),
+                          "bảng thiếu cột neo bản mới — lưới không sống qua bản dịch")
+
     def test_ma_khong_trung_nhau(self):
         ma = [b[0] for b in doc_bang()]
         self.assertEqual(len(ma), len(set(ma)), "mã L### bị trùng — tra ra nhầm luật")
 
     def test_moi_file_nguon_deu_ton_tai(self):
-        for ma, p, _dong, _chu in doc_bang():
+        for ma, p, _dong, _chu, _moi in doc_bang():
             with self.subTest(ma=ma):
                 self.assertTrue(os.path.exists(os.path.join(ROOT, p)), p)
 
@@ -74,16 +102,19 @@ class KhoaLuatTest(unittest.TestCase):
     def setUpClass(cls):
         cls.bang = doc_bang()
         cls.noi_dung = {}
-        for _ma, p, _d, _c in cls.bang:
+        for _ma, p, _d, _c, _m in cls.bang:
             if p not in cls.noi_dung:
                 with open(os.path.join(ROOT, p), encoding="utf-8") as f:
                     cls.noi_dung[p] = f.read()
 
     def test_moi_luat_con_nguyen_trong_skill(self):
+        """Chưa viết lại thì dò chữ cũ; đã viết lại thì dò chữ mới. Mất cái đang hiệu
+        lực mới là mất luật."""
         mat = []
-        for ma, p, dong, chu in self.bang:
-            if not luat_con_khong(neo(chu), self.noi_dung[p]):
-                mat.append(f"{ma} ({p}:{dong}): {chu[:60]}")
+        for ma, p, dong, chu, moi in self.bang:
+            dang_hieu_luc = moi or chu
+            if not luat_con_khong(neo(dang_hieu_luc), self.noi_dung[p]):
+                mat.append(f"{ma} ({p}:{dong}): {dang_hieu_luc[:60]}")
         self.assertEqual(mat, [], f"{len(mat)} luật biến mất khỏi skill:\n" +
                          "\n".join(mat))
 
@@ -91,15 +122,46 @@ class KhoaLuatTest(unittest.TestCase):
         """Mềm hơn test trên: số dòng lệch thì CẢNH BÁO qua tên test, không phải mất
         luật. Vẫn kiểm, vì lệch nhiều nghĩa là bảng cũ so với skill."""
         lech = 0
-        for _ma, p, dong, chu in self.bang:
+        for _ma, p, dong, chu, moi in self.bang:
             dòng_thật = self.noi_dung[p].splitlines()
+            # Neo đang hiệu lực mới là thứ số dòng phải trỏ tới: luật đã viết lại thì
+            # câu tiếng Việt cũ không còn nằm ở dòng nào cả.
             if dong - 1 >= len(dòng_thật) or not luat_con_khong(
-                    neo(chu), dòng_thật[dong - 1]):
+                    neo(moi or chu), dòng_thật[dong - 1]):
                 lech += 1
         ti_le = lech / len(self.bang) * 100
         self.assertLess(ti_le, 5.0,
                         f"{lech}/{len(self.bang)} dòng lệch ({ti_le:.1f}%) — "
                         "dựng lại luat-hien-co.md")
+
+
+class SongNguTest(unittest.TestCase):
+    """Luật của cột neo mới — thứ giữ cho lưới không bị tháo trong lúc dịch."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bang = doc_bang()
+        cls.nhan = doc_nhan()
+
+    def test_bang_ranh_gioi_ton_tai(self):
+        """Bảng ranh giới mất là hai test dưới mất luôn ý nghĩa — bắt ngay ở đây, thay
+        vì để chúng tự bỏ qua trong im lặng."""
+        self.assertTrue(self.nhan, f"thiếu hoặc rỗng: {RANH_GIOI}")
+
+    def test_moi_ma_deu_co_loi_khai_ranh_gioi(self):
+        thieu = [b[0] for b in self.bang if b[0] not in self.nhan]
+        self.assertEqual(thieu, [], f"{len(thieu)} mã chưa phân loại: {thieu[:5]}")
+
+    def test_ma_user_facing_khong_duoc_doi_neo(self):
+        pham = [ma for ma, _p, _d, _c, moi in self.bang
+                if moi and self.nhan.get(ma) == "user-facing"]
+        self.assertEqual(pham, [], f"mã user-facing bị đổi neo: {pham}")
+
+    def test_neo_moi_phai_du_dai(self):
+        """Neo mới ngắn hơn ngưỡng thì khớp bừa với câu khác — lưới xanh giả."""
+        ngan = [ma for ma, _p, _d, _c, moi in self.bang
+                if moi and len(chuan(moi)) < DAI_NEO]
+        self.assertEqual(ngan, [], f"neo mới quá ngắn: {ngan}")
 
 
 class LuoiBatDuocMatLuatTest(unittest.TestCase):
@@ -111,7 +173,8 @@ class LuoiBatDuocMatLuatTest(unittest.TestCase):
 
     def test_xoa_mot_luat_khoi_ban_sao_thi_bat_duoc_dung_ma_do(self):
         bang = doc_bang()
-        ma, p, _dong, chu = bang[len(bang) // 2]
+        ma, p, _dong, chu, moi = bang[len(bang) // 2]
+        chu = moi or chu
         goc = os.path.join(ROOT, p)
         with tempfile.TemporaryDirectory() as tam:
             sao = os.path.join(tam, os.path.basename(p))

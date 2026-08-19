@@ -26,6 +26,9 @@ QC_PORTABLE = (Path(ROOT) / "portable_codex" / "workflow" / "references"
                / "tdq-build" / "qc.md")
 RESEARCH = Path(ROOT) / "docs" / "tdq" / "research" / "2026-08-16-bo-cong-clean-code.md"
 
+# Thân luật clean-code.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật và số
+# hạng mục không đổi, chỉ đổi ngôn ngữ của từ khoá được soi (hàm→function,
+# kế thừa→inheritance, suy diễn→inference). Nhãn ví dụ ĐÚNG/SAI giữ nguyên.
 MA_SOLID = ("SRP", "OCP", "LSP", "ISP", "DIP")
 MUC_BAT_BUOC = ("## Khi nào áp dụng", "## Làm gì", "## Tự kiểm")
 
@@ -82,7 +85,7 @@ class BangSolid(unittest.TestCase):
     def test_bang_solid_co_tieu_de_hai_cot(self):
         noi_dung = doc(LUAT).lower()
         self.assertIn("class", noi_dung, "bảng thiếu tiêu đề cột cho ca có class")
-        self.assertIn("hàm", noi_dung, "bảng thiếu tiêu đề cột cho ca chỉ có hàm/module")
+        self.assertIn("function", noi_dung, "bảng thiếu tiêu đề cột cho ca chỉ có hàm/module")
 
     def test_nguon_truy_duoc_ve_research(self):
         """Cấm bịa nguồn: mọi URL trong luật phải có mặt trong file research."""
@@ -126,7 +129,7 @@ class LspGioiHan(unittest.TestCase):
     def test_lsp_gioi_han_neu_dieu_kien_ke_thua(self):
         o = dong_bang(doc(LUAT), "LSP")
         self.assertTrue(o, "bảng thiếu dòng LSP")
-        self.assertIn("kế thừa", " ".join(o).lower(),
+        self.assertIn("inheritance", " ".join(o).lower(),
                       "LSP phải nói rõ chỉ áp nguyên văn khi có kế thừa")
 
     def test_lsp_gioi_han_danh_dau_suy_dien(self):
@@ -134,7 +137,7 @@ class LspGioiHan(unittest.TestCase):
         khoi = noi_dung.split("### LSP")
         self.assertGreater(len(khoi), 1, "thiếu khối `### LSP`")
         than = khoi[1].split("### ")[0].lower()
-        self.assertIn("suy diễn", than,
+        self.assertIn("inference", than,
                       "bản đọc cho hàm của LSP phải đánh dấu là suy diễn, không phải trích Liskov")
 
 
@@ -161,7 +164,7 @@ class TuKiem(unittest.TestCase):
         LSP và OCP là hai luật đổi nghĩa nhiều nhất giữa ca có class và ca chỉ có hàm.
         Câu hỏi chỉ nhắc vế hàm sẽ dẫn model sửa cây class đi sai luật gốc.
         """
-        can = {"LSP": "kế thừa", "OCP": "class"}
+        can = {"LSP": "inheritance", "OCP": "class"}
         cau = {c.split(":", 1)[0].lstrip("- ").strip(): c for c in self._cau_hoi()}
         for ma, tu in can.items():
             with self.subTest(ma=ma):

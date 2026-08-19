@@ -1,51 +1,55 @@
-# Rule Python
+# Python rules
 
-Soul: chất lượng > runtime > context cost. Nạp sau `chung.md`, áp cho mọi file `.py`.
+Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to every `.py` file.
 
 ## Nguồn
 
-- PEP 8 – Style Guide for Python Code — https://peps.python.org/pep-0008 (bản cập nhật
-  2025-04-04) — chuẩn đặt tên, layout, import, so sánh.
-- ruff — linter mặc định của TDQ cho Python (chạy các nhóm check kiểu F/E/B); URL chính
-  thức chưa có trong research nên chỉ ghi tên lệnh, không bịa link.
+- PEP 8 – Style Guide for Python Code — https://peps.python.org/pep-0008 (updated
+  2025-04-04) — naming, layout, imports, comparisons.
+- ruff — TDQ's default Python linter (runs the F/E/B style check groups); its official URL is
+  not in the research file, so only the command name is given, no invented link.
 
 ## Khi nào áp dụng
 
-- Viết hoặc sửa bất kỳ file `.py` nào, gồm cả script tiện ích và file test.
-- Trước khi nộp code: chạy mục "Tự kiểm"; máy thiếu `ruff` thì ghi "chưa kiểm được".
+- Writing or changing any `.py` file, utility scripts and test files included.
+- Before submitting code: run the "Tự kiểm" section; if the machine lacks `ruff`, write
+  "chưa kiểm được".
 
 ## Luật Intentionality
 
-Ba dạng lỗi Intentionality hay gặp nhất ở Python (soát trước mọi thứ khác):
+The three most common Intentionality defects in Python (review these before anything else):
 
-1. **Tên sai chuẩn hoặc mơ hồ**: hàm/biến phải `snake_case`, class `PascalCase`, hằng
-   `UPPER_CASE` (PEP 8); tên kiểu `process`, `data2`, `tmp` là tên chưa nói được việc.
-2. **Nuốt lỗi**: `except:` trần hay `except Exception: pass` giấu bug — bắt đúng loại
-   exception, log rồi xử lý hoặc ném tiếp.
-3. **Code chết**: import không dùng, biến gán rồi bỏ — ruff báo nhóm F (F401, F841) → xoá.
+1. **Off-standard or vague names**: functions/variables must be `snake_case`, classes
+   `PascalCase`, constants `UPPER_CASE` (PEP 8); names like `process`, `data2`, `tmp` do not
+   say what the thing does.
+2. **Swallowing errors**: a bare `except:` or `except Exception: pass` hides bugs — catch the
+   right exception type, log it, then handle or rethrow.
+3. **Dead code**: unused imports, variables assigned then dropped — ruff reports group F
+   (F401, F841) → delete them.
 
 ## Ngưỡng đo được
 
-- Cyclomatic ≤ 10, cognitive ≤ 15 mỗi hàm — theo `chung.md`, không có ngoại lệ Python.
-- Độ dài dòng: PEP 8 đặt 79 ký tự; dự án được ghi đè bằng config của ruff
-  (`line-length`) và phải ghi số đã chọn vào spec của request.
+- Cyclomatic ≤ 10, cognitive ≤ 15 per function — per `chung.md`, no Python exception.
+- Line length: PEP 8 sets 79 characters; a project overrides it through ruff's config
+  (`line-length`) and must record the chosen number in the request's spec.
 
 ## Làm gì
 
-1. Đặt tên theo PEP 8: module ngắn viết thường, hàm/biến `snake_case`, class
-   `PascalCase`, hằng `UPPER_CASE`.
-2. Import đứng đầu file, chia 3 nhóm theo thứ tự: chuẩn (stdlib) → bên thứ ba → nội bộ.
-3. So sánh với `None` bằng `is None` / `is not None`; không viết `== True` với bool.
-4. Không dùng mutable làm default argument (`def f(x, xs=[])` → dùng `xs=None` rồi gán).
-5. Hàm public có docstring 1 dòng nêu việc; hàm dùng nội bộ thì tên phải tự giải thích.
-6. Chạy `ruff check <đường dẫn>` và sửa hết lỗi báo ra.
+1. Name per PEP 8: short lowercase modules, `snake_case` functions/variables, `PascalCase`
+   classes, `UPPER_CASE` constants.
+2. Imports at the top of the file, in three ordered groups: stdlib → third-party → local.
+3. Compare with `None` using `is None` / `is not None`; never write `== True` on a bool.
+4. Never use a mutable as a default argument (`def f(x, xs=[])` → take `xs=None` and assign).
+5. Public functions carry a one-line docstring stating the job; internal helpers must be
+   self-explanatory by name.
+6. Run `ruff check <đường dẫn>` and fix everything it reports.
 
 ## Tự kiểm
 
-- [ ] `ruff check` sạch, hoặc đã ghi "chưa kiểm được" khi máy thiếu ruff
-- [ ] Không `except:` trần, không mutable default, không import/biến thừa
-- [ ] Tên đúng case theo PEP 8 và đọc lên ra đúng việc
-- [ ] Trả lời được 3 câu hỏi Intentionality trong `chung.md`
+- [ ] `ruff check` clean, or "chưa kiểm được" recorded because the machine lacks ruff
+- [ ] No bare `except:`, no mutable default, no unused import/variable
+- [ ] Names use the PEP 8 case and read as the work they do
+- [ ] The 3 Intentionality questions in `chung.md` are answerable
 
 ## Ví dụ ĐÚNG/SAI
 

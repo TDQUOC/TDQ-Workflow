@@ -1,15 +1,15 @@
-# Ghi nhận duyệt
+# Recording approval
 
-User duyệt bằng chat thường. Việc của agent là **nhận đúng** và **ghi lại**, không
-phải phán đoán rộng tay.
+The user approves in ordinary chat. The agent's job is to **recognise it correctly**
+and **record it** — never to judge generously on the user's behalf.
 
-## Là câu duyệt khi có ĐỦ hai phần
+## It is an approval only when BOTH parts are present
 
-1. Từ đồng ý: `duyệt` · `ok` · `oke` · `đồng ý` · `chốt` · `approve` · `làm đi` · `tiến hành`
-2. Đối tượng đang chờ duyệt: `spec` · `plan` · `quick` / `mini-plan`,
-   hoặc đại từ trỏ rõ ràng: `cái này`, `cái đó`, `cái trên`.
+1. A word of consent: `duyệt` · `ok` · `oke` · `đồng ý` · `chốt` · `approve` · `làm đi` · `tiến hành`
+2. The object currently awaiting approval: `spec` · `plan` · `quick` / `mini-plan`, or a
+   pronoun pointing at it unmistakably: `cái này`, `cái đó`, `cái trên`.
 
-Ví dụ ĐÚNG:
+Valid examples:
 
 | Câu user | Ghi nhận |
 |---|---|
@@ -18,28 +18,29 @@ Ví dụ ĐÚNG:
 | `chốt cái này` (đang chờ quick) | `approve quick` |
 | `đồng ý, tiến hành plan mode subagent` | `approve plan --mode subagent` |
 
-## KHÔNG phải câu duyệt (phản ví dụ)
+## NOT an approval (counter-examples)
 
-| Câu user | Vì sao | Phải làm |
+| Câu user | Why not | What to do |
 |---|---|---|
-| `ok` | thiếu đối tượng, có thể chỉ là "tôi nghe rồi" | HỎI lại |
-| `ok tôi hiểu rồi` | phản hồi hiểu, không phải chấp thuận | HỎI lại |
-| `spec ok chưa?` | câu hỏi (có `?`) | Trả lời, chờ tiếp |
-| `plan này duyệt chưa` | hỏi tình trạng, có `chưa` | Trả lời, chờ tiếp |
-| `duyệt spec` khi đang chờ **plan** | sai đối tượng | Chỉ ghi spec, KHÔNG suy ra plan |
+| `ok` | no object; may only mean "I heard you" | ASK again |
+| `ok tôi hiểu rồi` | acknowledges understanding, not consent | ASK again |
+| `spec ok chưa?` | a question (has `?`) | Answer, keep waiting |
+| `plan này duyệt chưa` | asks about status, has `chưa` | Answer, keep waiting |
+| `duyệt spec` while **plan** is pending | wrong object | Record spec only, NEVER infer plan |
 
-Mơ hồ → **HỎI**. Không bao giờ tự duyệt thay user.
+Ambiguous → **ASK**. Never approve on the user's behalf.
 
-## Lệnh phải chạy NGAY khi nhận ra
+## Command to run the moment you recognise it
 
 ```
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent] --by "<nguyên văn câu user>"
 ```
 
-- `--by` bắt buộc trên thực tế: đó là dấu vết duy nhất nối state với hội thoại.
-- Duyệt lại lần nữa không phải lỗi (idempotent, exit 0).
-- `approve plan` mà user chưa nói mode → **HỎI mode trước**, đừng đoán. Hỏi theo khuôn
-  option mỗi dòng của [interview.md](../../tdq-intake/references/interview.md):
+- `--by` is mandatory in practice: it is the only trace tying state back to the conversation.
+- Approving twice is not an error (idempotent, exit 0).
+- `approve plan` while the user has not named a mode → **ASK for the mode first**, never guess.
+  Ask with the one-option-per-line shape of
+  [interview.md](../../tdq-intake/references/interview.md):
   `- A (đề xuất): main — …` / `- B: subagent — …`.
-- Mỗi lần duyệt cũng ghi 1 dòng vào `docs/workinglog/<hôm nay>.md`
-  (duyệt gì, lúc nào, nguyên văn câu user).
+- Every approval also adds one line to `docs/workinglog/<hôm nay>.md` (what was approved, when,
+  and the user's exact words).

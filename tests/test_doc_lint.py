@@ -535,3 +535,83 @@ class R11Test(LintBase):
 
     def test_r11_khong_soi_file_ngoai_thu_muc_spec(self):
         self.assert_clean(self.write("plan.md", R11_SPEC_MOI_BAN))
+
+
+# ---------------------------------------------------------------- R12: ngôn ngữ đầu ra
+
+R12_LAN_TIENG_ANH = """# Report — việc gì đó
+
+Dòng mở đầu bằng tiếng Việt cho có bối cảnh rõ ràng ở đây.
+
+This request rewrites the whole rule set into English prose so that the model can
+follow the reasoning rules without switching languages in the middle of a turn.
+The measurement below shows the token count before and after the rewrite happened.
+
+Kết thúc bằng một dòng tiếng Việt nữa cho đủ bối cảnh.
+"""
+
+R12_SACH = """# Report — việc gì đó
+
+Toàn bộ báo cáo này viết bằng tiếng Việt, có xen tên định danh tiếng Anh như
+`MAX_MCP_OUTPUT_TOKENS` và `plan_tick_state` nhưng câu văn thì vẫn tiếng Việt.
+
+| Khoá | Giá trị |
+|---|---|
+| status | idle |
+| implement mode | main |
+
+```
+FAILED tests/test_doc_lint.py::R12Test::test_bat_doan_tieng_anh
+1 failed, 2 passed in 0.30s
+```
+
+Dòng cuối vẫn tiếng Việt để đóng báo cáo.
+"""
+
+R12_CO_MIEN_TRU = """# Report — việc gì đó
+
+Đoạn dưới đây là nguyên văn nguồn tiếng Anh, giữ nguyên không dịch.
+
+<!-- doc-lint: allow R12 -->
+The instruction language and the content language must match, otherwise accuracy
+drops by up to fifty percent according to the study across thirty five languages.
+This paragraph is quoted verbatim and must survive the language gate untouched.
+
+Hết phần trích dẫn, quay lại tiếng Việt.
+"""
+
+
+class R12Test(LintBase):
+    """Đ1 — file sinh ra (docs/tdq, docs/workinglog) phải viết bằng tiếng Việt.
+
+    Gate này là điều kiện tiền đề của hướng A: viết luật bằng tiếng Anh chỉ an toàn khi
+    có thứ đo được rằng đầu ra cho user KHÔNG trôi theo sang tiếng Anh.
+    """
+
+    def out(self, ten, text):
+        return self.write(os.path.join("docs", "tdq", "reports", ten), text)
+
+    def test_r12_bat_doan_van_tieng_anh_trong_file_sinh_ra(self):
+        self.assert_hits(self.out("2026-08-19-1616-x.md", R12_LAN_TIENG_ANH), "R12")
+
+    def test_r12_khong_bat_ten_dinh_danh_bang_va_khoi_ma(self):
+        self.assert_clean(self.out("2026-08-19-1617-x.md", R12_SACH))
+
+    def test_r12_ton_trong_dong_mien_tru(self):
+        self.assert_clean(self.out("2026-08-19-1618-x.md", R12_CO_MIEN_TRU))
+
+    def test_r12_khong_soi_file_ngoai_thu_muc_output(self):
+        """`skills/` viết tiếng Anh là chuyện của hướng A, R12 không được đụng vào.
+
+        Fixture này cố tình vi phạm vài rule khác của skill, nên chỉ soi vắng mặt R12
+        chứ không đòi lint sạch — đòi sạch là trộn hai phép kiểm vào một.
+        """
+        _, out = self.lint(self.write("SKILL.md", R12_LAN_TIENG_ANH, skill="tdq-x"))
+        self.assertNotIn("[R12]", out, out)
+
+    def test_r12_bao_dung_so_dong_dau_doan(self):
+        code, out = self.lint(self.out("2026-08-19-1619-x.md", R12_LAN_TIENG_ANH))
+        self.assertEqual(code, 1, out)
+        dong = [d for d in out.splitlines() if "[R12]" in d]
+        self.assertEqual(len(dong), 1, f"một đoạn chỉ báo một lần:\n{out}")
+        self.assertIn(":5:", dong[0], dong[0])

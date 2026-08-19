@@ -24,6 +24,6 @@ Last resort: use the built-in `WebSearch` only after BOTH primary and backup hav
 - Cap: ~6 primary calls per analysis round; if still unclear, ask the user instead of burning more calls.
 - Never echo API keys or auth headers into notes, logs, or prompts.
 
-## Phụ lục
+## Appendix
 
 Layering: Tavily is the search tier for this workflow. Heavy research runs in a separate sub-agent so raw results stay out of the main conversation.

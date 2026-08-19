@@ -1,9 +1,9 @@
 # Chế độ nhanh (express) — chi tiết
 
-Chế độ nhanh khác chế độ chuyên sâu ở chỗ **gộp tài liệu và gộp gate**, không phải ở
-chỗ bỏ suy nghĩ. Phân tích, web search khi có ẩn số ngoài, và interview khi còn câu hỏi
-làm đổi kết quả đều GIỮ. Chỉ bỏ khi việc thuần nội bộ hoặc đã rõ hết — và phải nói rõ
-vì sao bỏ.
+Chế độ nhanh differs from chế độ chuyên sâu by **merging the documents and merging the
+gates**, not by dropping thought. Analysis, a web search whenever there is an external
+unknown, and an interview whenever a question can still change the outcome are all KEPT.
+Drop them only when the work is purely internal or already fully clear — and say why.
 
 | Bước | Full | Quick |
 |---|---|---|
@@ -15,10 +15,9 @@ vì sao bỏ.
 | Gate duyệt | 2 (spec, plan) + 1 câu chọn cách chạy | **1** ("duyệt nhanh") |
 | QC | file `qc/<slug>.md` | mỗi dòng DoD một phép kiểm, ghi vào mục ## QC của plan (mặc định BẬT) |
 | Vòng fix khi FAIL | trần 3 vòng, ghi file qc/ | trần 3 vòng, ghi trong plan |
-
-Vòng scope ở chế độ nhanh dùng chung luật [scope-round.md](scope-round.md): thoả một dấu
-hiệu kích hoạt thì hỏi mặt + bối cảnh trước, không thoả thì ghi một dòng lý do BỎ vào
-mini-plan mục `## Phạm vi` rồi đi tiếp.
+Vòng scope in chế độ nhanh shares the rule in [scope-round.md](scope-round.md): one trigger
+sign met → ask about areas + context first; none met → write one SKIP reason line into the
+mini-plan under `## Phạm vi` and move on.
 
 ## Mục lục
 
@@ -34,59 +33,62 @@ mini-plan mục `## Phạm vi` rồi đi tiếp.
 - QC
 - QC
 - Vòng fix
-
 ## Chín bước thi hành
 
-Đây là toàn bộ Phần C của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải
-nạp nhánh này mỗi lần gọi. Vào chế độ nhanh là **bắt buộc** đọc hết chín bước dưới đây
-trước khi làm bước 1; cấm làm theo trí nhớ.
+This is the whole of Part C of [SKILL.md](../SKILL.md) — moved here so the skill body does
+not load this branch on every call. Entering chế độ nhanh you **MUST** read all nine steps
+below before doing step 1; working from memory is banned.
 
-1. **Phân tích.** Đọc đúng phần code liên quan. Có ẩn số bên ngoài (thư viện, API,
-   phiên bản) → web search qua `tavily-primary` TRƯỚC khi viết gì; thuần nội bộ thì bỏ
-   qua và nói rõ vì sao. Còn câu hỏi làm ĐỔI kết quả → interview theo
-   [interview.md](interview.md), và **vòng scope** đứng trước vòng
-   chi tiết y như lane deep ([scope-round.md](scope-round.md)).
-2. **Viết mini-spec/plan GỘP 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 dòng: phạm vi
-   in/out, task checkbox mỗi task một test, DoD mỗi dòng kiểm được bằng lệnh.
-   **Mọi task sửa file mã nguồn phải có dòng `Chạm:`** liệt kê đường dẫn trong backtick —
-   ngắn không có nghĩa là không cần bản đồ vùng file. Checkbox có 4 trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[>]` đã giao agent con · `[x]` xong. Lúc implement
-   (bước 7) đánh `[~]` khi bắt đầu task và đổi sang `[x]` ngay khi test xanh.
-3. **Trình tóm tắt ≤ 10 dòng** trong chat: sẽ làm gì, đụng file nào, validate thế nào,
-   và đúng 1 dòng `Ước tính sẽ dùng skill: <các skill sẽ DÙNG, hoặc "không có">` (phân
-   vân → DÙNG).
+1. **Analyse.** Read exactly the code involved. External unknown (library, API, version) →
+   web search through `tavily-primary` BEFORE writing anything; purely internal → skip it
+   and say why. A question that can still CHANGE the outcome → interview per
+   [interview.md](interview.md), with the **scope round** ahead of the detail round exactly
+   as in lane deep ([scope-round.md](scope-round.md)).
+2. **Write the mini spec/plan MERGED into 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 lines:
+   scope in/out, one checkbox task per test, DoD with every line checkable by a command.
+   **Every task that edits source must carry a `Chạm:` line** listing the paths in
+   backticks — short does not mean the file map is optional. The checkbox has 4 states:
+   `[ ]` chưa làm · `[~]` đang làm · `[>]` đã giao agent con · `[x]` xong. At implement time
+   (step 7) mark `[~]` when the task starts and switch to `[x]` the moment the test is green.
+3. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, how
+   it is validated, plus exactly 1 line `Ước tính sẽ dùng skill: <các skill sẽ DÙNG, hoặc
+   "không có">` (in doubt → USE).
 4. In đúng dòng: `➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp` rồi **DỪNG**.
-5. User duyệt → chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` CHỈ khi user nói rõ bỏ QC — im lặng về QC thì QC vẫn BẬT).
-6. Append summary mini-plan vào `docs/workinglog/<hôm nay>.md` **TRƯỚC** khi sửa code.
-7. Implement end-to-end trong 1 turn. **Trước khi gõ dòng code đầu tiên, đếm số task
-   có `Chạm:` rời nhau** (không task nào trùng đường dẫn với task khác):
-   - từ **3 trở lên** → giao cho agent con `tdq-implementer`, mỗi task một agent, phát
-     cùng một response để chúng chạy song song; trần **4 nhánh** một lượt — cùng trần
-     mà lệnh `python3 scripts/tdq_team.py cum` áp ở chế độ chuyên sâu (task thứ 5 in
-     `CHỜ SLOT`). Chỉ dựng worktree cho agent THẬT SỰ ghi file; agent chỉ đọc thì
-     không. Đánh `[>]` khi giao, nhận báo cáo là đổi `[x]` ngay.
-   - **dưới 3** → chạy inline như cũ; dựng agent cho 1–2 task rời nhau thì phí brief
-     nhiều hơn phần tiết kiệm.
-   Mỗi task: đánh `[~]` TRƯỚC khi sửa code (hook
-   `edit_gate` CHẶN nếu plan không có `[~]`; `tests/**` được miễn trừ), red→green, đổi
-   `[x]` NGAY khi test xanh — cấm gom tick cuối turn. Rồi chạy **QC** (mặc định BẬT): mỗi dòng DoD một
-   phép kiểm, ghi bằng chứng vào mục `## QC` của plan. `quick_qc_skipped = true` → mục
-   `## QC` chỉ có 1 dòng `BỎ theo yêu cầu user: "<nguyên văn>"`.
-   (Bản đầy đủ của luật tick ở mục `## Luật tick` và của QC ở mục `## QC ở chế độ nhanh
-   (express)` cùng file này.)
-8. **Vòng fix khi QC FAIL hoặc thấy bug**: thêm task vào plan dưới
-   `## QC vòng N — fix`, fix red→green, chạy lại hạng mục đã FAIL cộng hạng mục mà bản
-   fix có thể làm hỏng. Có trần 3 vòng — vượt trần thì DỪNG, báo user, đề xuất chuyển lane
-   full, giữ nguyên phase. (Bản đầy đủ ở mục `## Vòng fix` cùng file này.)
-9. Append kết quả vào working log; hỏi user có commit không.
+5. User approves → run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<nguyên văn>"` (`--no-qc` ONLY when the user says so explicitly — silence about QC means QC stays ON).
+6. Append the mini-plan summary to `docs/workinglog/<hôm nay>.md` **BEFORE** touching code.
+7. Implement end-to-end in 1 turn. **Before typing the first line of code, count the tasks
+   whose `Chạm:` sets are disjoint** (no task sharing a path with another):
+   - **3 or more** → hand them to sub-agent `tdq-implementer`, one agent per task, issued in
+     the same response so they run in parallel; the cap is **4 branches** at a time — the
+     same cap `python3 scripts/tdq_team.py cum` applies in chế độ chuyên sâu (task 5 prints
+     `CHỜ SLOT`). Build a worktree only for an agent that ACTUALLY writes files; a read-only
+     agent gets none. Mark `[>]` when handing over, and switch to `[x]` as the report lands.
+   - **fewer than 3** → run inline as before; standing up an agent for 1–2 disjoint tasks
+     costs more briefing than it saves.
+   Each task: mark `[~]` BEFORE editing code (hook `edit_gate` BLOCKS when the plan has no
+   `[~]`; `tests/**` is exempt), red→green, switch to
+   `[x]` the moment the test is green — batching ticks at the end of the turn is banned.
+   Then run **QC** (ON by default): one check per DoD line, evidence written into the plan's
+   `## QC` section. `quick_qc_skipped = true` → section `## QC` holds a single line
+   `BỎ theo yêu cầu user: "<nguyên văn>"`.
+   (The full tick rule is in `## Luật tick` and the full QC rule in `## QC ở chế độ nhanh
+   (express)`, both in this file.)
+8. **Fix round when QC FAILs or a bug shows up**: add tasks to the plan under
+   `## QC vòng N — fix`, fix red→green, then re-run the failed items plus the items the fix
+   could have broken. There is a 3-round cap — over the cap, STOP, tell the user, propose
+   moving to lane full, and leave the phase as it is. (Full version in `## Vòng fix` in this
+   file.)
+9. Append the result to the working log; ask the user about the commit.
 
-Xong khi: `quick_approved = true`, log đã ghi, mục `## QC` đã có, không còn test đỏ.
+Xong khi: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
 Bước kế tiếp: hỏi user về commit; hết request thì `... set phase=idle`.
 
 ## Luật ĐỌC đồ thị ở bước 1 (phân tích)
 
-Hỏi về **liên kết** hay **bản đồ tổng thể** ("ai gọi X", "sửa X ảnh hưởng đâu") → mở đồ thị
-bằng `graphify query|path|explain|affected`. Tìm chuỗi hoặc đọc file cụ thể → grep/read.
-Đồ thị chỉ có `scripts/` và `hooks/`; test và tài liệu bị `.graphifyignore` loại.
+A question about **links** or the **overall map** ("who calls X", "what does changing X
+affect") → open the graph with `graphify query|path|explain|affected`. Finding a string or
+reading a specific file → grep/read. The graph holds only `scripts/` and `hooks/`; tests and
+docs are excluded by `.graphifyignore`.
 
 ## Khuôn mini-spec/plan (≤ 40 dòng)
 
@@ -108,13 +110,13 @@ bằng `graphify query|path|explain|affected`. Tìm chuỗi hoặc đọc file c
 ## Definition of Done
 - <điều kiện đo được, có lệnh kiểm>
 ```
-
-Quá 40 dòng nghĩa là việc này không còn nhanh — nói với user và đề xuất chuyển chế độ chuyên sâu (deep).
+Going past 40 lines means this work is no longer quick — say so to the user and propose
+moving to chế độ chuyên sâu (deep).
 
 ## Khối trình mini-plan cho user
 
-Theo [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — đủ
-5 thành phần, khối duyệt nằm cuối tin nhắn, không emoji:
+Per [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — all 5
+components, the approval block at the end of the message, no emoji:
 
 ```
 Tôi đã lên kế hoạch gọn cho yêu cầu của bạn.
@@ -132,39 +134,38 @@ Xem đầy đủ tại: `docs/tdq/plan/<slug>.md`
 
 ➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong tôi làm ngay) · Góp ý: nhắn trực tiếp
 ```
-
 ## Luật tick — `[ ]` · `[~]` · `[x]`
 
 (nhắc lại có chủ ý — bản gốc ở mục `## Luật cứng` của `skills/tdq-build/SKILL.md`.)
 
-Checkbox có bốn trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[>]` đã giao agent con ·
-`[x]` xong. Lúc implement:
+The checkbox has four states: `[ ]` chưa làm · `[~]` đang làm · `[>]` đã giao agent con ·
+`[x]` xong. At implement time:
 
-1. Đánh `[~]` cho task sắp làm **TRƯỚC** khi sửa dòng mã đầu tiên. Giao cho agent con
-   thì đánh `[>]` thay vì `[~]` — nhìn plan là biết ai đang cầm task.
-2. Viết test (đỏ) → code → test xanh.
-3. Đổi `[~]`/`[>]` → `[x]` **NGAY**, không đợi task sau.
+1. Mark `[~]` on the task you are about to do **BEFORE** editing the first line of code.
+   Handed to a sub-agent → mark `[>]` instead of `[~]`, so the plan shows who holds it.
+2. Write the test (red) → code → test green.
+3. Switch `[~]`/`[>]` → `[x]` **IMMEDIATELY**, never after the next task.
 
-Chỉ một task mang `[~]` tại một thời điểm; `[>]` thì được nhiều, tối đa bằng trần 4 nhánh. **Cấm gom tick vào cuối turn** — chế độ nhanh (express)
-làm trọn gói trong một turn, gom tick nghĩa là plan không phản ánh gì trong suốt lúc làm.
+Only one task carries `[~]` at a time; `[>]` may be several, at most the 4-branch cap.
+**Batching ticks at the end of the turn is banned** — chế độ nhanh (express) does the whole
+job in one turn, so batched ticks mean the plan reflected nothing while the work happened.
 
-Hàng rào: `hooks/scripts/edit_gate.py` **CHẶN** (deny) mọi lần sửa file ngoài `docs/` và
-`tests/` khi phase là `implement`/`qc` mà plan không có task nào mang `[~]`. Miễn trừ
-`tests/**` để còn viết được test đỏ trước. Bị chặn mà request thật ra đã đóng → chạy
-`python3 scripts/tdq_state.py set phase=idle`.
-
+Fence: `hooks/scripts/edit_gate.py` **BLOCKS** (deny) every edit outside `docs/` and
+`tests/` while the phase is `implement`/`qc` and no task in the plan carries `[~]`.
+`tests/**` is exempt so a red test can still be written first. Blocked while the request is
+in fact closed → run `python3 scripts/tdq_state.py set phase=idle`.
 
 ## QC ở chế độ nhanh (express)
 
-Mặc định **BẬT**. Làm ngay sau khi implement xong, **số hạng mục bằng số dòng DoD**
-của mini-plan: mỗi dòng DoD đúng một phép kiểm chạy bằng lệnh, dán output thật.
-Cộng thêm một hạng mục cố định: chạy đúng lệnh `Test:` của từng task trong plan.
+ON by default. Run it right after implement finishes, **số hạng mục bằng số dòng DoD** of
+the mini-plan: one command-run check per DoD line, with the real output pasted in.
+Plus one fixed item: run the exact `Test:` command of every task in the plan.
 
-Không thêm hạng mục ngoài DoD. Biên, đường lỗi, log, placeholder chỉ kiểm khi có dòng
-DoD nói tới. Chế độ nhanh khác chế độ chuyên sâu ở chỗ không chạy full-suite toàn repo,
-chỉ chạy test của từng task.
+Add no item beyond the DoD. Edges, error paths, logging and placeholders are checked only
+when a DoD line calls for them. Chế độ nhanh differs from chế độ chuyên sâu here: no
+full-suite run over the repo, only each task's own test.
 
-Bằng chứng append vào CHÍNH file plan, không tạo file `qc/`:
+Evidence is appended to the plan file ITSELF, with no `qc/` file created:
 
 ```markdown
 ## QC
@@ -173,8 +174,9 @@ Bằng chứng append vào CHÍNH file plan, không tạo file `qc/`:
 - Q3 DoD "<nguyên văn dòng DoD 2>": PASS — `<lệnh>` → `<output thật>`
 ```
 
-Opt-out CHỈ khi user nói rõ, ví dụ `"duyệt nhanh không QC"` → chạy approve kèm `--no-qc`.
-User im lặng về QC = CÓ QC. Khi đó mục `## QC` vẫn phải có, đúng 1 dòng:
+Opt-out ONLY when the user says so, e.g. `"duyệt nhanh không QC"` → run approve with
+`--no-qc`. Silence about QC means QC HAPPENS. Section `## QC` must still exist, with exactly
+1 line:
 
 ```markdown
 ## QC
@@ -183,10 +185,11 @@ User im lặng về QC = CÓ QC. Khi đó mục `## QC` vẫn phải có, đúng
 
 ## Vòng fix
 
-- Chạy khi QC FAIL, hoặc khi thấy bug/test đỏ.
-- Task fix ghi vào plan dưới heading `## QC vòng N — fix`, khuôn
-  `- [ ] **QCn.1** <việc> — Test: <check>`. Làm red→green: `[~]` khi bắt đầu,
-  đổi `[x]` ngay khi xanh.
-- Fix xong chạy lại hạng mục đã FAIL cộng hạng mục mà bản fix có thể làm hỏng.
-- **Trần 3 vòng.** Vượt trần → DỪNG, báo user, đề xuất chuyển chế độ chuyên sâu (deep). Giữ
-  `phase=implement`, KHÔNG chạy `set phase=idle`.
+- Runs when QC FAILs, or when a bug / red test shows up.
+- Fix tasks go into the plan under the heading `## QC vòng N — fix`, in the shape
+  `- [ ] **QCn.1** <việc> — Test: <check>`. Do it red→green: `[~]` at the start, switch to
+  `[x]` as soon as it is green.
+- After the fix, re-run the failed items (hạng mục đã FAIL) plus the items the fix could
+  have broken.
+- **Trần 3 vòng.** Over the cap → STOP, tell the user, propose moving to chế độ chuyên sâu
+  (deep). Keep `phase=implement`, do NOT run `set phase=idle`.

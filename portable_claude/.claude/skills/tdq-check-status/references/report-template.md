@@ -1,21 +1,21 @@
 # Khuôn báo cáo check-status — 6 mục cố định
 
-`scripts/tdq_checkstatus.py report` in ra đúng khuôn này. File đây là bản người đọc:
-dùng để kiểm output có đủ mục không, và để agent ngoài (không chạy được script Python)
-tự điền tay theo đúng thứ tự.
+`scripts/tdq_checkstatus.py report` prints exactly this khuôn. This file is the human-readable
+version: use it to check the output carries every section, and to let an outside agent (one
+that cannot run a Python script) fill it in by hand in the right order.
 
-Sáu mục, đúng thứ tự này, không thêm không bớt:
+Six sections, in this exact order, nothing added, nothing dropped:
 
-1. `## Request` — slug, lane, phase, mode, mốc mở và mốc ghi cuối.
-2. `## Bằng chứng trên đĩa` — bảng: từng tài sản, tick plan, git, working log.
-3. `## Ca lệch phát hiện` — bảng mã D1–D11, mức, chi tiết, chẩn đoán.
-4. `## Kết luận` — đúng một trong ba chữ, in đậm.
-5. `## Lệnh vá đề xuất` — khối bash, chỉ hai họ `set` và `approve`.
-6. `## Việc kế tiếp` — đúng một câu.
+1. `## Request` — slug, lane, phase, mode, the opening timestamp and the last-write timestamp.
+2. `## Bằng chứng trên đĩa` — a table: each asset, the plan ticks, git, the working log.
+3. `## Ca lệch phát hiện` — a table of codes D1–D11, level, detail, diagnosis.
+4. `## Kết luận` — exactly one of three words, in bold.
+5. `## Lệnh vá đề xuất` — a bash block, only the two families `set` and `approve`.
+6. `## Việc kế tiếp` — exactly one sentence.
 
 ## Ví dụ điền sẵn (ca thật: đổi máy giữa phase implement)
 
-Từ đây tới hết mục là output THẬT của bộ dò, chép nguyên văn.
+From here to the end of the section is the detector's REAL output, copied verbatim.
 
 # Check status — request đang dở
 
@@ -66,6 +66,6 @@ Làm tiếp đúng task T4.1 trong plan (task duy nhất mang `[~]`).
 
 | Kết luận | Khi nào | Làm gì |
 |---|---|---|
-| `TIẾP TỤC ĐƯỢC` | không ca nào quá mức `ok` | báo một dòng rồi làm tiếp |
-| `VÁ RỒI TIẾP TỤC` | có `canh-bao`, mọi ca đó đều có lệnh vá | hỏi một câu, gật thì vá rồi đi tiếp |
-| `CẦN USER QUYẾT` | có ca `chan`, hoặc có `canh-bao` không lệnh vá nào chữa được | dừng, trình lựa chọn cho user |
+| `TIẾP TỤC ĐƯỢC` | no case above level `ok` | report one line, then carry on |
+| `VÁ RỒI TIẾP TỤC` | some `canh-bao`, every one of them has a patch command | ask one question, on a nod patch then continue |
+| `CẦN USER QUYẾT` | a `chan` case, or a `canh-bao` no command can fix | stop, lay the choices out for the user |

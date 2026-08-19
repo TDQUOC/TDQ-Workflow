@@ -58,7 +58,10 @@ class LyDoBangTest(unittest.TestCase):
         self.assertEqual(len(dong), len(tdq_team.LY_DO_GIU))
 
     def test_ly_do_bang_hop_dong_co_vi_du_dung_va_sai(self):
-        khoi = _team_mode().split("Hợp đồng dùng chung")
+        # team-mode.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật không đổi,
+        # chỉ đổi ngôn ngữ của nhãn nhóm ví dụ (Hợp đồng dùng chung → Shared contracts).
+        # Nhãn ĐÚNG/SAI giữ nguyên tiếng Việt vì là giao ước chung của mọi file rule.
+        khoi = _team_mode().split("Shared contracts")
         self.assertGreater(len(khoi), 1, "thiếu ví dụ cho nhóm hop-dong")
         than = khoi[1].split("\n\n")[0] + khoi[1].split("\n\n")[1]
         self.assertIn("ĐÚNG", than)

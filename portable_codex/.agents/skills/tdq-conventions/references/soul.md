@@ -1,44 +1,45 @@
-# Soul — luật gốc của TDQ Workflow
+# Soul — the root law of TDQ Workflow
 
-Soul là luật đứng trên mọi luật khác của bộ workflow. Luật nào mâu thuẫn với soul —
-dù cũ hay mới — thì sửa luật đó, không sửa soul. Muốn đổi soul phải có user duyệt.
+Soul stands above every other law in the workflow. A law that contradicts soul — old or new —
+is the law that gets fixed; soul does not. Changing soul requires the user's approval.
 
 ## Bốn nguyên tắc
 
-### 1. Mục đích của harness
+### 1. What the harness is for
 
-Harness tồn tại để giúp dev dùng AI làm ra kết quả tốt hơn và hoàn thiện hơn.
-Chất lượng hơn số lượng: một sản phẩm chạy đúng, đọc được, giữ được lâu, đáng giá hơn
-nhiều sản phẩm dở dang.
+The harness exists to help a dev use AI to produce better, more finished results. Quality over
+quantity: one product that runs correctly, reads well and survives is worth more than many
+half-done ones.
 
-### 2. Thứ tự ưu tiên: chất lượng > runtime > context cost
+### 2. Priority order: chất lượng > runtime > context cost
 
-- **Tầng 1 — chất lượng**: code agent làm ra phải đạt MVP thật — chạy đúng, có test,
-  không nợ kỹ thuật thấy trước mà không khai.
-- **Tầng 2 — runtime**: thời gian chạy của workflow và của sản phẩm. Chỉ tối ưu khi
-  không hạ tầng 1.
-- **Tầng 3 — context cost**: token nạp vào model. Chỉ cắt khi không hạ hai tầng trên.
+- **Tầng 1 — chất lượng**: the code the agent produces must be a real MVP — it runs, it has
+  tests, and no foreseeable technical debt is left undeclared.
+- **Tầng 2 — runtime**: how long the workflow and the product take to run. Optimise only when
+  it does not lower tier 1.
+- **Tầng 3 — context cost**: tokens fed to the model. Cut only when it lowers neither tier
+  above.
 
-**Luật phân xử** khi hai luật đá nhau:
-1. Luật phục vụ tầng cao hơn thắng.
-2. Hai luật cùng tầng → chọn luật có phép kiểm chạy được bằng lệnh.
-3. Vẫn hoà → hỏi user, ghi phán quyết vào tài liệu request đang mở.
+**Tie-break law** when two laws collide:
+1. The law serving the higher tier wins.
+2. Same tier → pick the law whose check can be run as a command.
+3. Still tied → ask the user, and record the ruling in the open request's documents.
 
-### 3. Viết cho model yếu nhất
+### 3. Write for the weakest model
 
-Mọi rule và behavior phải đủ chi tiết để model thấp như Haiku đọc là làm đúng,
-không riêng model cao như Opus. Một rule đạt chuẩn khi có đủ ba mục:
-`## Khi nào áp dụng` (dấu hiệu nhận ra được bằng mắt hoặc bằng lệnh),
-`## Làm gì` (các bước đánh số, mỗi bước một hành động, câu mệnh lệnh),
-`## Tự kiểm` (một lệnh hoặc một câu hỏi có/không). Chỗ dễ hiểu nhầm phải kèm
-ví dụ ĐÚNG/SAI.
+Every rule and behaviour must be detailed enough that a low model like Haiku reads it and does
+the right thing — not only a high model like Opus. A rule meets the bar when it has all three
+sections: `## Khi nào áp dụng` (signs recognisable by eye or by command),
+`## Làm gì` (numbered steps, one action per step, imperative sentences),
+`## Tự kiểm` (one command, or one yes/no question). Anywhere easy to misread must carry a
+ĐÚNG/SAI example.
 
-### 4. Phạm vi áp dụng
+### 4. Scope
 
-Soul áp cho mọi skill, mọi script, mọi khuôn, và mọi tài liệu của từng request:
-brief, spec, plan, qc, report — kể cả tài liệu của chính request tạo ra soul này.
-Áp hồi tố cho luật đã có và áp cho mọi bổ sung về sau. Mỗi tài liệu request mở đầu
-bằng dòng:
+Soul applies to every skill, every script, every template, and to every document of a request:
+brief, spec, plan, qc, report — including the documents of the request that created soul itself.
+It applies retroactively to existing laws and to every later addition. Each request document
+opens with the line:
 
 ```
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
@@ -46,48 +47,52 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 ## Khi nào áp dụng
 
-Dấu hiệu — gặp một trong các tình huống sau là soul có mặt:
+Signs — hitting any one of these means soul is present:
 
-- Sắp viết mới hoặc sửa một luật, một skill, một khuôn tài liệu, một script của workflow.
-- Hai luật chỉ về hai hướng khác nhau trong cùng một việc.
-- Sắp cắt bớt một bước (test, QC, log, research) để chạy nhanh hơn hoặc tiết kiệm token.
-- Sắp mở một tài liệu request mới (brief, spec, plan, qc, report).
+- About to write or change a law, a skill, a document template, or a workflow script.
+- Two laws point in different directions on the same piece of work.
+- About to cut a step (test, QC, log, research) to run faster or to save tokens.
+- About to open a new request document (brief, spec, plan, qc, report).
 
 ## Làm gì
 
-1. Xếp việc đang làm vào đúng tầng: chất lượng, runtime, hay context cost.
-2. Đối chiếu: thay đổi này có hạ tầng nào cao hơn không? Có → dừng, làm theo tầng cao.
-3. Viết rule mới theo khuôn ba mục ở nguyên tắc 3; chỗ dễ hiểu nhầm thêm ví dụ ĐÚNG/SAI.
-4. Mở tài liệu request mới → đặt dòng `Soul:` ở đầu file, ngay dưới tiêu đề.
-5. Hai luật đá nhau → chạy luật phân xử ở nguyên tắc 2, ghi phán quyết lại.
+1. Place the work in its tier: chất lượng, runtime, or context cost.
+2. Check: does this change lower a higher tier? Yes → stop, follow the higher tier.
+3. Write the new rule in the three-section shape from principle 3; add a ĐÚNG/SAI example
+   wherever it is easy to misread.
+4. Opening a new request document → put the `Soul:` line at the top of the file, right under
+   the title.
+5. Two laws collide → run the tie-break law in principle 2 and record the ruling.
 
-Ví dụ ĐÚNG: bỏ một vòng research trùng lặp vì kết quả đã có trong brief — tiết kiệm
-token mà không mất thông tin (tầng 3 phục vụ tầng 1).
-Ví dụ SAI: bỏ bước viết test trước để build nhanh hơn — lấy runtime đè chất lượng.
+Ví dụ ĐÚNG: dropping a duplicate research round because the result is already in the brief —
+saves tokens without losing information (tier 3 serving tier 1).
+Ví dụ SAI: dropping the write-the-test-first step to build faster — runtime overriding
+quality.
 
 ## Xếp luật vào tầng nào
 
-Xếp sai tầng là cách một luật đúng bị bỏ qua một cách hợp lệ: luật cắt thời gian mà
-dán nhãn "tiết kiệm token" sẽ rơi xuống tầng 3 — tầng thấp nhất, được phép bỏ qua khi
-bận. Nên trước khi viết hay sửa bất kỳ luật nào, hỏi: **luật này đổi con số nào?**
+Filing a law in the wrong tier is how a correct law gets legitimately ignored: a law that cuts
+time but is labelled "saves tokens" drops to tier 3 — the lowest tier, the one you may skip when
+busy. So before writing or changing any law, ask: **which number does this law change?**
 
-| Luật đổi con số nào | Tầng | Ví dụ |
+| Which number the law changes | Tier | Example |
 |---|---|---|
-| Đổi đúng-sai của đầu ra | 1 — chất lượng | test trước khi sửa, cấm mock giả làm dữ liệu thật |
-| Đổi SỐ BƯỚC (số tool call, số vòng chờ) | 2 — runtime | gộp tool call độc lập, cấm vòng `sleep` thăm dò |
-| Đổi SỐ TOKEN nạp vào model | 3 — context cost | lint đúng file thay vì cả thư mục, CLI in gọn |
+| The correctness of the output | 1 — chất lượng | test before fixing, no fake mock passed off as real data |
+| The NUMBER OF STEPS (tool calls, waiting rounds) | 2 — runtime | batch independent tool calls, no `sleep` polling loop |
+| The NUMBER OF TOKENS loaded into the model | 3 — context cost | lint the exact file instead of the whole tree, terse CLI output |
 
-Một luật đổi nhiều con số thì xếp vào tầng **cao nhất** nó chạm tới. Luật gộp tool call
-vừa cắt bước vừa cắt token → tầng 2, không phải tầng 3.
+A law that changes several numbers is filed in the **highest** tier it touches. The batch-the-
+tool-calls law cuts both steps and tokens → tier 2, not tier 3.
 
-Hệ quả về chỗ đặt: luật tầng 1 và tầng 2 phải nằm trong thân skill được nạp mỗi turn;
-chỉ luật tầng 3 và phần bảng biểu chi tiết mới đẩy sang file reference. Trần số dòng
-của skill là ràng buộc tầng 3 — gặp trần thì nới trần, cấm nén luật tầng 2 cho vừa.
+Consequence for placement: tier 1 and tier 2 laws must live in the body of a skill loaded every
+turn; only tier 3 laws and detailed tables get pushed into a reference file. A skill's line cap
+is a tier 3 constraint — hitting the cap means raising the cap, never compressing a tier 2 law
+to fit.
 
 ## Tự kiểm
 
-- Câu hỏi có/không: "Thay đổi tôi sắp làm có hạ chất lượng để đổi lấy tốc độ hoặc
-  token không?" — Có → không làm.
-- Câu hỏi có/không: "Rule tôi vừa viết, đưa cho Haiku không kèm giải thích miệng,
-  nó làm đúng được không?" — Không → viết lại theo khuôn ba mục.
-- Lệnh: `python3 -m pytest tests/test_soul_rules.py -q` phải xanh.
+- Yes/no question: "Does the change I am about to make lower quality in exchange for speed or
+  tokens?" — Yes → do not make it.
+- Yes/no question: "The rule I just wrote — hand it to Haiku with no spoken explanation, would
+  it do the right thing?" — No → rewrite it in the three-section shape.
+- Command: `python3 -m pytest tests/test_soul_rules.py -q` must be green.

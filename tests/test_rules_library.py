@@ -76,7 +76,9 @@ class ChungMd(unittest.TestCase):
         self.assertIn("59,6", text, "chung.md thiếu số 59,6% (ưu tiên Intentionality)")
         for nguong in ("≤ 10", "≤ 15", "≤ 25"):
             self.assertIn(nguong, text, f"chung.md thiếu ngưỡng '{nguong}'")
-        self.assertIn("ghi đè", text, "chung.md thiếu cách ghi đè ngưỡng")
+        # Rule viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật không đổi, chỉ đổi
+        # ngôn ngữ của từ khoá được soi (ghi đè → override).
+        self.assertIn("override", text, "chung.md thiếu cách ghi đè ngưỡng")
         self.assertIn("OWASP", text, "chung.md thiếu checklist OWASP")
 
 

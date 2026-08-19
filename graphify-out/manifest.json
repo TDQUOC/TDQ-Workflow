@@ -95,9 +95,9 @@
     "semantic_hash": "bd58cf3f1035d57a6675fc51dc5d08cf"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1787110304.0927064,
-    "ast_hash": "aa849a34eea561d5ec83ac3bb029713c",
-    "semantic_hash": "aa849a34eea561d5ec83ac3bb029713c"
+    "mtime": 1787132304.5776024,
+    "ast_hash": "2b146ede6693d3b6971b78b520af69d5",
+    "semantic_hash": "2b146ede6693d3b6971b78b520af69d5"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1785397811.0780556,
@@ -183,5 +183,10 @@
     "mtime": 1787125894.7065432,
     "ast_hash": "a2b2ba89ce6d4095128c191fc32ec918",
     "semantic_hash": "a2b2ba89ce6d4095128c191fc32ec918"
+  },
+  "scripts/luat_phan_loai.py": {
+    "mtime": 1787133113.9961507,
+    "ast_hash": "faa100603976406ea871e1287cc2b248",
+    "semantic_hash": "faa100603976406ea871e1287cc2b248"
   }
 }

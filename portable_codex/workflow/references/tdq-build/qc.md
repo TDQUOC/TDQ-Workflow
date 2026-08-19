@@ -1,6 +1,6 @@
-# QC — kiểm chất lượng
+# QC — quality control
 
-QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
+QC means running things for real and pasting the evidence. There is no "probably fine".
 
 ## Mục lục
 
@@ -13,67 +13,70 @@ QC là chạy thật và dán bằng chứng. Không có "chắc là ổn".
 
 ## Ba bước thi hành
 
-Đây là toàn bộ Phần B của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải
-nạp nhánh này mỗi lần gọi. Vào phase `qc` là **bắt buộc** đọc hết ba bước dưới đây trước
-khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.
+This is the whole of Part B of [SKILL.md](../SKILL.md) — moved here so the skill body does not
+carry this branch on every call. On entering phase `qc` you **must** read all three steps below
+before running the first item; working from memory is banned.
 
-4. **Số hạng mục QC = số dòng Definition of Done**, cộng bốn hạng mục cố định
-   QC-F1→F4. Mỗi dòng DoD một phép kiểm bằng lệnh; ngoài các
-   hạng mục cố định, không thêm gì ngoài DoD.
-   Chi tiết: mục `## Chạy cái gì` cùng file này. Việc lớn hoặc rủi ro cao → gọi thêm
-   agent `tdq-qc-tester` cho một lượt kiểm độc lập.
+4. **The number of QC items = the number of Definition of Done lines**, plus the four fixed
+   items QC-F1→F4. One command-run check per DoD line; beyond the fixed items, add nothing
+   that is not in the DoD.
+   Details: section `## Chạy cái gì` in this file. Large or high-risk work → also call the
+   `tdq-qc-tester` agent for an independent pass.
 
-5. Ghi `docs/tdq/qc/<slug>.md`: từng hạng mục DoD → PASS/FAIL kèm **bằng chứng**
-   (lệnh + output thật). Không khẳng định thứ chưa chạy. (Khuôn file ở mục `## Ghi kết quả`
-   cùng file này.)
+5. Write `docs/tdq/qc/<slug>.md`: each DoD item → PASS/FAIL with **evidence** (the command plus
+   its real output). Assert nothing you have not run. (File template in section
+   `## Ghi kết quả` of this file.)
 
-6. FAIL → quay lại plan, **không cần duyệt lại**: thêm task fix vào plan dưới
-   `## QC vòng N — fix` theo đúng khuôn `- [ ] **QCn.1** <việc> — Test: <check>`, làm
-   theo luật Phần A (red→green, tick ngay). Rồi chạy lại hạng mục đã FAIL cộng hạng mục
-   mà bản fix có thể làm hỏng, cộng full suite. Trần 3 vòng; vượt trần thì DỪNG, báo user.
-   Chỉ kéo user vào giữa chừng khi bản fix đòi đổi phạm vi. (Bản đầy đủ ở mục `## Khi FAIL`
-   cùng file này.)
+6. FAIL → go back to the plan, **no re-approval needed**: add fix tasks to the plan under
+   `## QC vòng N — fix` in exactly the shape `- [ ] **QCn.1** <việc> — Test: <check>`, and work
+   them under Part A's rules (red→green, tick immediately). Then rerun the failed item plus any
+   item the fix could have broken, plus the full suite. Cap of 3 rounds; over the cap, STOP and
+   tell the user. Pull the user in mid-way only when the fix demands a scope change. (Full
+   version in section `## Khi FAIL` of this file.)
 
 Xong khi: mọi hạng mục QC PASS và có bằng chứng trong file qc.
 Bước kế tiếp: `python3 "./scripts/tdq_state.py" set phase=report`.
 
 ## Chạy cái gì
 
-**Số hạng mục QC = số dòng Definition of Done của plan, cộng bốn hạng mục cố định.**
-Mỗi dòng DoD đúng một phép kiểm chạy được bằng lệnh, dán output thật. Không bớt dòng
-DoD nào. DoD có dòng không kiểm được bằng lệnh → đó là lỗi của plan, sửa dòng đó cho
-đo được rồi mới QC. Bốn hạng mục cố định luôn chạy, không phụ thuộc DoD:
+**The number of QC items = the number of Definition of Done lines in the plan, plus four fixed
+items.** Each DoD line gets exactly one check runnable as a command, with the real output
+pasted. Drop no DoD line. A DoD line that cannot be checked by command is a defect in the plan:
+fix that line to be measurable before doing QC. The four fixed items always run, independent of
+the DoD:
 
-- QC-F1 — toàn bộ test suite bằng đúng lệnh ghi trong plan, dán số pass/fail thật.
-  Suite dài → `<lệnh test> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`, chỉ
-  dán nguyên văn khi có FAIL cần bằng chứng.
-- QC-F2 — hồi quy vùng chạm: với mỗi dòng `Chạm:` trong plan, chạy test của module
-  chứa node bị ảnh hưởng. Node không có test → ghi `KHÔNG CÓ TEST: <node>` vào file
-  QC; đó là nợ kỹ thuật phải nêu trong report, không được tính là PASS.
-- QC-F3 — ràng buộc kiến trúc: mỗi dòng trong khối "Ràng buộc kiến trúc phải giữ" ở
-  spec §5 là một phép kiểm rằng bản thay đổi không phá dòng đó.
-- QC-F4 — clean code: turn này có sửa file mã nguồn thì trả lời 5 câu ở mục
-  `## Tự kiểm` của `skills/tdq-conventions/references/clean-code.md`, ghi từng đáp án
-  có/không vào file qc. Câu nào "không" → sửa code rồi ghi chỗ đã sửa, không sửa
-  đáp án. Không chạm mã nguồn → ghi `KHÔNG ÁP DỤNG — không sửa file code`.
+- QC-F1 — the whole test suite via exactly the command written in the plan, pasting the real
+  pass/fail numbers. Long suite → `<lệnh test> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`,
+  pasting verbatim only where a FAIL needs evidence.
+- QC-F2 — touched-area regression: for every `Chạm:` line in the plan, run the tests of the
+  module holding the affected node. A node with no test → write `KHÔNG CÓ TEST: <node>` into the
+  QC file; that is technical debt to raise in the report and must not count as PASS.
+- QC-F3 — architectural constraints: every line of the "Ràng buộc kiến trúc phải giữ" block in
+  spec §5 is one check that the change did not break that line.
+- QC-F4 — clean code: if this turn changed a source file, answer the 5 questions in the
+  `## Tự kiểm` section of `skills/tdq-conventions/references/clean-code.md` and record each
+  yes/no answer in the qc file. Any "no" → fix the code and record what was fixed, never fix the
+  answer. No source file touched → write `KHÔNG ÁP DỤNG — không sửa file code`.
 
-Ngoài các hạng mục trên, không thêm hạng mục nào ngoài DoD.
+Beyond the items above, add no item that is not in the DoD.
 
-Các thứ dưới đây **chỉ kiểm khi DoD chạm tới**, đừng chạy cho đủ bộ:
+The things below are **checked only when the DoD reaches them**; do not run them for
+completeness:
 
-- Biên & đường lỗi: input rỗng, sai kiểu, file thiếu, quyền bị chặn, mạng hỏng.
-- Log service: bật mặc định, có timestamp, tắt/giảm mức được qua config.
-- Không placeholder: `TODO`, `FIXME`, dữ liệu mock còn sót được trình bày như thật.
-- Hợp đồng skill: với TỪNG khối `Dùng:` trong plan, chạy lệnh ở trường `Kiểm`; artifact
-  ở trường `Ra` phải tồn tại. Không có artifact → sửa spec §3b dòng đó thành `KHÔNG` +
-  lý do đóng, rồi chạy lại
-  `python3 "./scripts/doc_lint.py" --pair <spec> <plan>` đến khi exit 0.
-  Sửa §3b là sửa NỘI DUNG spec nên sha vẫn lệch và hook vẫn đòi duyệt lại — đúng như
-  thiết kế: đổi phán quyết một năng lực là đổi ý định, phải hỏi user. Trình đúng 1 dòng
-  diff rồi xin duyệt lại (`approve spec`) ngay trong lượt QC. Ngược lại, sửa dòng sổ
-  sách đầu file (Ngày, Bản, Trạng thái) KHÔNG còn làm lệch sha kể từ 2026-08-19. Và §6
-  không còn chứa lệnh kiểm để mà sai tên. Hai nguồn "duyệt lại vì lý do vô hại" đã được
-  cắt ở gốc.
+- Edges & error paths: empty input, wrong type, missing file, permission denied, network down.
+- Log service: on by default, timestamped, switchable off/down through config.
+- No placeholders: `TODO`, `FIXME`, leftover mock data presented as real.
+- Skill contract: for EVERY `Dùng:` block in the plan, run the command in its `Kiểm` field; the
+  artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus
+  a closing reason, then rerun
+  `python3 "./scripts/doc_lint.py" --pair <spec> <plan>` until it exits 0.
+  Editing §3b edits the spec's CONTENT, so the sha still shifts and the hook still demands
+  re-approval — by design: changing a capability verdict changes intent, so the user must be
+  asked. Present exactly the one-line diff and ask for re-approval (`approve spec`) inside the
+  QC turn itself. Conversely, editing the bookkeeping lines at the top of the file (Ngày, Bản,
+  Trạng thái) has NOT shifted the sha since 2026-08-19. And §6 no longer holds check commands
+  whose names could go stale. Both sources of "re-approval for a harmless reason" are cut at the
+  root.
 
 ## Ghi kết quả
 
@@ -100,11 +103,11 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 ## Khi FAIL
 
-1. Thêm task fix vào **plan đã duyệt**, mục `## QC vòng N — fix`:
-   `- [ ] **QCn.1** <việc> — Test: <check>`. Không cần user duyệt lại.
-2. Làm theo luật implement: red → green, tick `[x]` ngay.
-3. Chạy lại hạng mục đã FAIL, cộng hạng mục mà bản fix có thể làm hỏng, cộng test suite.
-   Không chạy lại hạng mục không liên quan.
-4. Lặp đến khi mọi hạng mục PASS. **Trần 3 vòng** — vượt trần thì DỪNG và báo user.
+1. Add fix tasks to the **approved plan**, under `## QC vòng N — fix`:
+   `- [ ] **QCn.1** <việc> — Test: <check>`. No user re-approval needed.
+2. Work them under the implement rules: red → green, tick `[x]` immediately.
+3. Rerun the failed item, plus any item the fix could have broken, plus the test suite. Do not
+   rerun unrelated items.
+4. Repeat until every item PASSes. **Cap of 3 rounds** — over the cap, STOP and tell the user.
 
-Chỉ hỏi user khi bản fix đòi đổi phạm vi so với spec đã duyệt.
+Ask the user only when the fix demands a scope change against the approved spec.

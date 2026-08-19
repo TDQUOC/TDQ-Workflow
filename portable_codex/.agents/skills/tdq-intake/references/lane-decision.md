@@ -1,20 +1,20 @@
 # Chọn cỡ request: nhỏ, chế độ nhanh (express) hay chế độ chuyên sâu (deep)
 
-Bạn **đề xuất**, user **quyết**. Luôn hỏi, kể cả khi thấy quá rõ.
-Ngoại lệ duy nhất là tầng `nhỏ`: đủ 4 điều kiện ở [SKILL.md](../SKILL.md) thì làm luôn,
-không mở request, không hỏi lane.
+You **propose**, the user **decides**. Always ask, even when the answer looks obvious.
+The only exception is tier `nhỏ`: all 4 conditions in [SKILL.md](../SKILL.md) hold → do it
+right away, no request opened, no lane question.
 
 ## Dòng tự nhận định
 
-Mọi request mới tự đánh giá NỘI BỘ theo dạng dưới đây trước khi hỏi lane — đây là căn cứ
-để chọn phương án đề xuất A/B, **không in ra chat**:
+Every new request rates itself INTERNALLY in the shape below before the lane question —
+this is what picks recommendation A/B, and it is **never printed to chat**:
 
 ```
 **Cỡ:** <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>
 ```
 
-Cột `Cần` chỉ liệt kê thứ CÓ THỂ bỏ. Thứ luôn chạy thì không liệt kê, để đánh giá gọn.
-Không có thứ nào tuỳ chọn thì coi như `Cần: không`.
+Column `Cần` lists only what CAN be dropped. Whatever always runs is left out, so the
+rating stays short. Nothing optional at all → treat it as `Cần: không`.
 
 ## Bảng quyết
 
@@ -31,19 +31,20 @@ Có **bất kỳ** ô nào rơi vào cột chế độ chuyên sâu (deep) → �
 
 ## Luồng mỗi lane
 
-- **chế độ nhanh (express)**: phân tích (+ search/interview khi cần) → mini-spec/plan gộp 1 file, tóm tắt
-  ≤10 dòng trong chat → user duyệt (1 gate) → ghi working log → implement → validate →
-  báo cáo ngắn. Chi tiết: [quick-lane.md](quick-lane.md).
-- **chế độ chuyên sâu (deep)**: phân tích + interview → spec (chờ duyệt, duyệt xong viết
-  plan ngay cùng turn) → plan (chờ duyệt) → chọn cách chạy (main hay subagent) →
-  implement → QC → report.
+- **chế độ nhanh (express)**: analysis (+ search/interview when needed) → mini spec/plan
+  merged into 1 file, a ≤10-line summary in chat → user approves (1 gate) → working log →
+  implement → validate → short report. Details: [quick-lane.md](quick-lane.md).
+- **chế độ chuyên sâu (deep)**: analysis + interview → spec (wait for approval, then write
+  the plan in that same turn) → plan (wait for approval). Then: pick the execution mode
+  (main or subagent) → implement → QC → report.
 
 ## Khuôn câu hỏi (copy được)
 
-Theo [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) và
-khuôn option của [interview.md](interview.md) — option mỗi dòng riêng, phương án đề xuất
-luôn ở `A`. Không in dòng `Cỡ:/Cần:`; gọi "lane" là "pipeline" khi hỏi user; ngay dưới 2
-option luôn có khối giải thích ngắn nghĩa 2 pipeline (cố định, không đổi theo việc):
+Follows [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) and
+the option khuôn of [interview.md](interview.md) — one option per line, the recommendation
+always at `A`. Never print the `Cỡ:/Cần:` line; call the "lane" a "pipeline" when asking
+the user; right under the 2 options there is always the short block explaining what the 2
+pipelines mean (fixed wording, it does not change per task):
 
 ```
 Tôi đã ghi lại yêu cầu của bạn.
@@ -65,5 +66,5 @@ Xem đầy đủ tại: `docs/tdq/brief/<slug>.md`
 ➤ Trả lời: nhắn "A" hoặc "B", hoặc gõ câu tự nhiên khớp ý bạn chọn · Góp ý: nhắn trực tiếp
 ```
 
-Đang giữa chừng mà thấy chọn sai lane? Nói rõ vì sao, đề xuất đổi, **hỏi user** rồi mới
-chạy lại `init` với lane mới.
+Halfway through and the lane looks wrong? Say why, propose the change, **ask the user**,
+and only then re-run `init` with the new lane.

@@ -1,59 +1,63 @@
-# Rule chung mọi ngôn ngữ
+# Shared rules for every language
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
-Nạp file này TRƯỚC, rồi mới nạp file rule ngôn ngữ theo bảng trong `index.md`.
+Load this file FIRST, then the language rule file from the table in `index.md`.
 
 ## Nguồn
 
 - SonarSource Clean Code — https://community.sonarsource.com/t/introducing-clean-code-in-our-products/98431 —
-  4 thuộc tính đo được: Consistent, Intentional, Adaptable, Responsible.
-- arXiv 2411.10656 — https://arxiv.org/html/2411.10656v2 — đo 1.848 issue code do LLM
-  sinh: 59,6% thuộc nhóm Intentionality.
-- Ngưỡng complexity — https://dev.to/optiklab/writing-self-documented-code-with-low-cognitive-complexity-3k2l
-  và https://www.augmentcode.com/learn/how-to-reduce-cyclomatic-complexity — default
-  SonarQube 10/15(25); ESLint để 20, Microsoft CA1502 để 25 nên phải chốt một mức.
-- Bảo mật — https://www.kiuwan.com/blog/secure-coding-guidelines — OWASP Secure Coding
-  Practices là checklist trung lập ngôn ngữ; CERT chỉ có cho C/C++/Java/Perl.
+  4 measurable attributes: Consistent, Intentional, Adaptable, Responsible.
+- arXiv 2411.10656 — https://arxiv.org/html/2411.10656v2 — measured 1,848 code issues in
+  LLM-generated code: 59,6% fall in the Intentionality group.
+- Complexity thresholds — https://dev.to/optiklab/writing-self-documented-code-with-low-cognitive-complexity-3k2l
+  and https://www.augmentcode.com/learn/how-to-reduce-cyclomatic-complexity — SonarQube
+  defaults to 10/15(25); ESLint uses 20 and Microsoft CA1502 uses 25, so one level must be
+  fixed here.
+- Security — https://www.kiuwan.com/blog/secure-coding-guidelines — OWASP Secure Coding
+  Practices is the language-neutral checklist; CERT exists only for C/C++/Java/Perl.
 
 ## Khi nào áp dụng
 
-- Mọi lần viết hoặc sửa code, bất kể ngôn ngữ — kể cả script nhỏ và test.
-- Luật này áp thường trực, không có cổng bật/tắt. Nguyên tắc SOLID và checklist 5 câu
-  ở `skills/tdq-conventions/references/clean-code.md` áp cùng lúc với file này.
+- Every time you write or change code, in any language — small scripts and tests included.
+- This rule is always on; there is no toggle. The SOLID principles and the 5-question
+  checklist in `skills/tdq-conventions/references/clean-code.md` apply at the same time.
 
 ## Luật Intentionality
 
-Code LLM sinh ra hỏng nhiều nhất ở nhóm Intentional (59,6%), nên soát nhóm này TRƯỚC
-ba nhóm còn lại. Ba câu hỏi bắt buộc trước khi nộp code:
+LLM-generated code breaks most often in the Intentional group (59,6%), so review that group
+BEFORE the other three. Three mandatory questions before submitting code:
 
-1. **Tên nói đúng việc chưa?** Tên hàm/biến đọc lên phải ra đúng việc nó làm.
-2. **Logic đầy đủ chưa?** Không TODO bỏ lửng, không nhánh điều kiện trống, không
-   nuốt lỗi im lặng.
-3. **Có code chết không?** Biến không dùng, import thừa, hàm không ai gọi → xoá.
+1. **Does the name say what it does?** A function/variable name must read as the work it does.
+2. **Is the logic complete?** No dangling TODO, no empty conditional branch, no silently
+   swallowed error.
+3. **Is there dead code?** Unused variables, extra imports, functions nobody calls → delete.
 
 ## Ngưỡng đo được
 
-- Cyclomatic complexity ≤ 10 mỗi hàm (mọi ngôn ngữ).
-- Cognitive complexity ≤ 15 mỗi hàm; riêng họ C (C, C++, Objective-C) ≤ 25.
-- Hàm vượt ngưỡng → tách hàm nhỏ, KHÔNG nới ngưỡng tại chỗ.
-- Cách ghi đè ngưỡng: chỉ được ghi đè bằng một dòng trong spec của request (kèm số mới
-  và lý do), vì default mỗi tool mỗi khác; cấm ghi đè bằng thoả thuận miệng trong chat.
+- Cyclomatic complexity ≤ 10 per function (every language).
+- Cognitive complexity ≤ 15 per function; the C family (C, C++, Objective-C) ≤ 25.
+- A function over the threshold → split it, NEVER widen the threshold in place.
+- How to override a threshold: only by one line in the request's spec (with the new number and
+  the reason), because every tool's default differs; overriding by a spoken agreement in chat
+  is banned.
 
 ## Làm gì
 
-1. Mở `index.md`, tra đuôi file đang sửa → nạp đúng file rule ngôn ngữ.
-2. Viết code theo mục "Làm gì" của file ngôn ngữ đó; tên đặt theo chuẩn ngôn ngữ.
-3. Soát checklist OWASP rút gọn: validate input tại biên, không hardcode secret/API key,
-   lỗi phải được xử lý hoặc log rồi ném tiếp — cấm `catch` rỗng.
-4. Chạy lệnh linter trong bảng `index.md`; máy thiếu linter thì ghi "chưa kiểm được",
-   cấm ghi PASS.
+1. Open `index.md`, look up the extension of the file you are editing → load that language's
+   rule file.
+2. Write the code per that language file's "Làm gì" section; name things per the language's
+   standard.
+3. Walk the short OWASP checklist: validate input at the boundary, hardcode no secret/API key,
+   errors must be handled or logged and rethrown — an empty `catch` is banned.
+4. Run the linter command from the `index.md` table; if the machine lacks the
+   linter, write "chưa kiểm được" and never write PASS.
 
 ## Tự kiểm
 
-- [ ] Không hàm nào vượt cyclomatic ≤ 10, cognitive ≤ 15 (họ C ≤ 25)
-- [ ] Trả lời được cả 3 câu hỏi Intentionality ở trên cho file vừa sửa
-- [ ] Không secret, không code chết, không TODO bỏ lửng
-- [ ] Linter đã chạy (hoặc đã ghi rõ "chưa kiểm được" khi máy thiếu linter)
+- [ ] No function exceeds cyclomatic ≤ 10, cognitive ≤ 15 (C family ≤ 25)
+- [ ] All 3 Intentionality questions above are answerable for the file just changed
+- [ ] No secrets, no dead code, no dangling TODO
+- [ ] The linter ran (or "chưa kiểm được" was recorded because the machine lacks it)
 
 ## Ví dụ ĐÚNG/SAI
 

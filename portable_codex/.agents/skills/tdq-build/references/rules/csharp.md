@@ -1,56 +1,55 @@
-# Rule C#
+# C# rules
 
-Soul: chất lượng > runtime > context cost. Nạp sau `chung.md`, áp cho mọi file `.cs`.
+Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to every `.cs` file.
 
 ## Nguồn
 
 - C# Coding Conventions (Code With Engineering Playbook, Microsoft) —
   https://microsoft.github.io/code-with-engineering-playbook/code-reviews/recipes/csharp —
-  convention đặt tên và tổ chức code C#.
-- Roslyn analyzers qua `.editorconfig` — https://johnnyreilly.com/eslint-your-csharp-in-vs-code-with-roslyn-analyzers —
-  8 category chuẩn: Design, Documentation, Globalization, Reliability, Security, Style,
-  Usage, SingleFile; bật mức báo qua `dotnet_analyzer_diagnostic.category-*.severity`.
+  naming and code organisation conventions for C#.
+- Roslyn analyzers via `.editorconfig` — https://johnnyreilly.com/eslint-your-csharp-in-vs-code-with-roslyn-analyzers —
+  8 standard categories: Design, Documentation, Globalization, Reliability, Security, Style,
+  Usage, SingleFile; severity is set through `dotnet_analyzer_diagnostic.category-*.severity`.
 
 ## Khi nào áp dụng
 
-- Viết hoặc sửa bất kỳ file `.cs` nào trong solution.
-- Trước khi nộp: build lại để Roslyn analyzers chạy; máy thiếu `dotnet` thì ghi
+- Writing or changing any `.cs` file in the solution.
+- Before submitting: rebuild so the Roslyn analyzers run; if the machine lacks `dotnet`, write
   "chưa kiểm được".
 
 ## Luật Intentionality
 
-1. **Tên sai chuẩn**: type, method, property viết `PascalCase`; biến cục bộ và tham số
-   viết `camelCase`; tên phải nêu đúng việc, không viết tắt khó hiểu.
-2. **Nuốt lỗi**: khối `catch { }` trống hay catch rồi chỉ `return` giấu bug — bắt đúng
-   exception, log rồi xử lý hoặc `throw;` giữ stack trace.
-3. **Code chết**: `using` thừa, biến không dùng, method private không ai gọi — nhóm
-   Style/Usage của Roslyn báo → xoá.
+1. **Off-standard names**: types, methods and properties use `PascalCase`; locals and
+   parameters use `camelCase`; a name must state the work, with no cryptic abbreviations.
+2. **Swallowing errors**: an empty `catch { }`, or a catch that merely `return`s, hides bugs —
+   catch the specific exception, log it, then handle it or `throw;` to keep the stack trace.
+3. **Dead code**: extra `using`s, unused variables, private methods nobody calls — Roslyn's
+   Style/Usage groups report them → delete.
 
 ## Ngưỡng đo được
 
-- Cyclomatic ≤ 10, cognitive ≤ 15 mỗi method — theo `chung.md`; C# KHÔNG thuộc nhóm
-  họ C được nới 25 (nhóm đó chỉ gồm C, C++, Objective-C).
-- Mức analyzer: hai category Security và Reliability không được hạ dưới `warning`;
-  muốn đổi phải ghi vào spec của request, sửa trong `.editorconfig`.
+- Cyclomatic ≤ 10, cognitive ≤ 15 per method — per `chung.md`; C# is NOT part of the C family
+  allowed 25 (that group is only C, C++, Objective-C).
+- Analyzer severity: the Security and Reliability categories must never drop below `warning`;
+  changing that has to be recorded in the request's spec and edited in `.editorconfig`.
 
 ## Làm gì
 
-1. Đặt tên theo convention: `PascalCase` cho public member/type, `camelCase` cho biến
-   cục bộ và tham số.
-2. Bật Roslyn analyzers trong `.editorconfig` của repo; chỉnh mức báo theo category
-   bằng `dotnet_analyzer_diagnostic.category-<Category>.severity`.
-3. Xử lý exception có chủ đích: bắt loại cụ thể, `throw;` thay vì `throw ex;` khi ném
-   tiếp để giữ stack trace.
-4. Chạy `dotnet build` và sửa hết warning của hai nhóm Security, Reliability trước
-   khi nộp.
+1. Name per the conventions: `PascalCase` for public members/types, `camelCase` for locals and
+   parameters.
+2. Enable the Roslyn analyzers in the repo's `.editorconfig`; set per-category severity with
+   `dotnet_analyzer_diagnostic.category-<Category>.severity`.
+3. Handle exceptions deliberately: catch the specific type, and use `throw;` rather than
+   `throw ex;` when rethrowing, so the stack trace survives.
+4. Run `dotnet build` and clear every Security and Reliability warning before submitting.
 
 ## Tự kiểm
 
-- [ ] `dotnet build` sạch warning nhóm Security và Reliability, hoặc đã ghi
-  "chưa kiểm được" khi máy thiếu dotnet
-- [ ] Không `catch` trống, không `throw ex;` làm mất stack trace
-- [ ] Không `using`/biến/method thừa
-- [ ] Tên đúng PascalCase/camelCase và trả lời được 3 câu hỏi Intentionality ở `chung.md`
+- [ ] `dotnet build` free of Security and Reliability warnings, or "chưa kiểm được" recorded
+  because the machine lacks dotnet
+- [ ] No empty `catch`, no `throw ex;` destroying the stack trace
+- [ ] No unused `using`/variable/method
+- [ ] Names follow PascalCase/camelCase and the 3 Intentionality questions in `chung.md` are answerable
 
 ## Ví dụ ĐÚNG/SAI
 

@@ -1,112 +1,115 @@
-# Clean code — 5 nguyên tắc SOLID
+# Clean code — the 5 SOLID principles
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
-Clean code ở bộ workflow này KHÔNG phải một cổng hỏi và KHÔNG phải một lượt chạy linter
-cuối request. Nó là hành vi thường trực: mỗi lần viết hay sửa code, tổ chức project,
-script, hàm và class cho sạch nhất có thể, bám 5 nguyên tắc SOLID.
+In this workflow clean code is NOT a gate you ask about and NOT one linter run at the end of a
+request. It is standing behaviour: every time you write or change code, organise the project,
+the script, the function and the class as cleanly as possible, following the 5 SOLID principles.
 
 ## Mục lục
 
-- Nguồn
+- Sources
 - Khi nào áp dụng
 - Làm gì
 - Tự kiểm
 
-## Nguồn
+## Sources
 
-- Wikipedia SOLID — https://en.wikipedia.org/wiki/SOLID — Robert C. Martin nêu các nguyên
-  tắc trong bài *Design Principles and Design Patterns* (2000); từ viết tắt do Michael
-  Feathers đặt khoảng 2004.
-- Slide CSCE 315, Texas A&M —
+- Wikipedia SOLID — https://en.wikipedia.org/wiki/SOLID — Robert C. Martin stated the
+  principles in *Design Principles and Design Patterns* (2000); the acronym was coined by
+  Michael Feathers around 2004.
+- CSCE 315 slides, Texas A&M —
   https://people.engr.tamu.edu/choe/choe/courses/12summer/315/lectures/slide23.pdf —
-  SOLID là "a set of principles for object-oriented design (with focus on designing the
+  SOLID is "a set of principles for object-oriented design (with focus on designing the
   classes)".
-- Real Python — https://realpython.com/solid-principles-python — phạm vi áp dụng mà tác
-  giả nêu là "when you're writing object-oriented code".
+- Real Python — https://realpython.com/solid-principles-python — the scope the author states
+  is "when you're writing object-oriented code".
 - DEV, *Do the SOLID principles apply to Functional Programming?* —
   https://dev.to/patferraggi/do-the-solid-principles-apply-to-functional-programming-56lm
-  — bản đọc theo hàm và module cho SRP, OCP, ISP, DIP.
+  — the function-and-module reading of SRP, OCP, ISP, DIP.
 - DEV, *A Pythonic Guide to SOLID* —
-  https://dev.to/ezzy1337/a-pythonic-guide-to-solid-design-principles-4c8i — phát biểu gốc
-  của Barbara Liskov nói về object và subtype.
+  https://dev.to/ezzy1337/a-pythonic-guide-to-solid-design-principles-4c8i — Barbara Liskov's
+  original statement is about objects and subtypes.
 
 ## Khi nào áp dụng
 
-Dấu hiệu — gặp một trong các tình huống sau là luật này có mặt:
+Signs — hitting any one of these means this rule is present:
 
-- Sắp tạo một file mã nguồn mới, một class mới, hay một hàm mới.
-- Sắp sửa một hàm đã có mà thân hàm dài quá một màn hình, hoặc có quá ba nhánh `if`.
-- Sắp thêm một nhánh `if`/`elif` để xử một trường hợp mới của thứ đã có.
-- Sắp copy một đoạn code sang chỗ thứ hai.
-- Đang ở phase `implement` hoặc đang fix một hạng mục QC.
+- About to create a new source file, a new class, or a new function.
+- About to change an existing function whose body runs past one screen, or that has more than
+  three `if` branches.
+- About to add an `if`/`elif` branch to handle a new case of something that already exists.
+- About to copy a block of code into a second place.
+- In phase `implement`, or fixing a QC item.
 
-Luật này áp cho MỌI ngôn ngữ. Ngưỡng số và rule riêng theo ngôn ngữ nằm ở
-`skills/tdq-build/references/rules/` — nạp `chung.md` trước, rồi đúng một file ngôn ngữ.
+This rule applies to EVERY language. Numeric thresholds and per-language rules live in
+`skills/tdq-build/references/rules/` — load `chung.md` first, then exactly one language file.
 
 ## Làm gì
 
-Repo này có 4 khai báo `class` trên 280 khai báo `def`, tức gần như thuần hàm. Nên mỗi
-nguyên tắc có hai bản đọc. Tra đúng cột theo thứ bạn đang viết.
+This repo has 4 `class` declarations against 280 `def` declarations, i.e. it is nearly purely
+functional. So each principle has two readings. Read the column matching what you are writing.
 
-| Mã | Khi có class | Khi chỉ có hàm/module |
+| Mã | With classes | Functions/modules only |
 |---|---|---|
-| SRP | Một class có đúng một lý do để đổi. Nhiều trách nhiệm thì tách class. | Một hàm làm đúng một việc; một module gom các hàm cùng một mục đích. Hàm vừa lấy dữ liệu vừa phán xét thì tách đôi. |
-| OCP | Thêm hành vi mới bằng class con hoặc bản cài mới, không sửa class cũ. | Thêm trường hợp mới bằng một dòng DỮ LIỆU trong bảng hay hằng, không thêm nhánh vào thân hàm. |
-| LSP | Thay đối tượng con vào chỗ đối tượng cha mà không vỡ hợp đồng. Chỉ áp nguyên văn khi có kế thừa, hoặc nhiều bản cài cùng một giao diện. | Không có kế thừa thì đọc mở rộng: mọi nhánh `return` của một hàm trả cùng kiểu và cùng hợp đồng lỗi. Đây là SUY DIỄN của repo này. |
-| ISP | Không ép ai phụ thuộc phương thức họ không gọi. Giao diện to thì cắt nhỏ. | Tham số của hàm chỉ nhận đúng thứ nó dùng. Cần một đường dẫn thì nhận đường dẫn, đừng nhận cả object state. |
-| DIP | Tầng cao và tầng thấp cùng phụ thuộc một trừu tượng, không phụ thuộc nhau. | Gọi qua một điểm vào chung (CLI, hàm chung), không tự cài lại chi tiết ở từng chỗ gọi. |
+| SRP | One class has exactly one reason to change. Several responsibilities → split the class. | One function does exactly one thing; one module gathers functions serving one purpose. A function that both fetches data and judges it gets split in two. |
+| OCP | Add new behaviour with a subclass or a new implementation, never by editing the old class. | Add a new case as one line of DATA in a table or constant, never as a new branch in a function body. |
+| LSP | A subtype substitutes for its parent without breaking the contract. Applies literally only where there is inheritance, or several implementations of one interface. | With no inheritance, read it broadly: every `return` branch of a function returns the same type and the same error contract. This is an INFERENCE made by this repo. |
+| ISP | Force nobody to depend on methods they never call. A fat interface gets cut up. | A function's parameters take exactly what it uses. Need a path → take a path, not the whole state object. |
+| DIP | High and low layers both depend on one abstraction, never on each other. | Call through one shared entry point (a CLI, a shared function); do not re-implement the details at each call site. |
 
 ### SRP
 
-ĐÚNG — `scripts/tdq_checkstatus.py`: `gom_bang_chung()` chỉ ĐỌC đĩa, `cham_ca_lech()` chỉ
-PHÁN XÉT trên dữ liệu đã đọc. Đổi cách đọc không phải sửa cách chấm.
+ĐÚNG — `scripts/tdq_checkstatus.py`: `gom_bang_chung()` only READS the disk, `cham_ca_lech()`
+only JUDGES data already read. Changing how it reads is not changing how it scores.
 
-SAI — một hàm `kiem_tra()` vừa mở file, vừa so sha, vừa sinh câu chẩn đoán, vừa in bảng.
-Đổi khuôn bảng in cũng phải sửa hàm đọc file.
+SAI — one `kiem_tra()` that opens the file, compares the sha, writes the diagnosis and prints
+the table. Changing the printed table shape forces editing the file-reading function.
 
 ### OCP
 
-ĐÚNG — `scripts/doc_lint.py` hằng `SKILL_LINE_LIMITS`: thêm một skill mới chỉ cần thêm một
-dòng dữ liệu, hàm `rule_r6()` không đổi một chữ.
+ĐÚNG — `scripts/doc_lint.py`, the `SKILL_LINE_LIMITS` constant: adding a new skill needs one
+new data line and `rule_r6()` does not change by a single character.
 
-SAI — viết `rule_r6()` thành chuỗi `if skill == "tdq-intake": ... elif skill == "tdq-spec":`
-Mỗi skill mới lại phải mở thân hàm ra sửa.
+SAI — writing `rule_r6()` as a chain of `if skill == "tdq-intake": ... elif skill == "tdq-spec":`
+Every new skill forces the function body open again.
 
 ### LSP
 
-ĐÚNG — `scripts/tdq_checkstatus.py`: `doc_state_tho()` trả tuple 2 phần tử ở MỌI nhánh,
-kể cả nhánh file không có và nhánh JSON hỏng. Người gọi viết đúng một cách bóc.
+ĐÚNG — `scripts/tdq_checkstatus.py`: `doc_state_tho()` returns a 2-element tuple on EVERY
+branch, including the missing-file branch and the broken-JSON branch. Callers write exactly one
+unpacking.
 
-SAI — nhánh này `return None`, nhánh kia `return {...}`, nhánh nữa `raise`. Người gọi
-phải đoán, và đoán sai thì nổ ở chỗ khác.
+SAI — one branch does `return None`, another `return {...}`, a third `raise`. The caller has to
+guess, and a wrong guess blows up somewhere else.
 
-Nhắc lại giới hạn: LSP phát biểu gốc nói về object và subtype. Bản đọc cho hàm ở trên là
-SUY DIỄN của repo này, không phải trích Liskov — đừng dẫn nó như nguyên văn.
+Restating the limit: LSP as originally stated is about objects and subtypes. The function
+reading above is an INFERENCE by this repo, not a quotation of Liskov — do not cite it as her
+words.
 
 ### ISP
 
-ĐÚNG — `scripts/tdq_checkstatus.py`: `_dem_tick(cwd, rel)` nhận đúng đường dẫn file plan.
-Nó không cần biết state có gì, nên không nhận cả state.
+ĐÚNG — `scripts/tdq_checkstatus.py`: `_dem_tick(cwd, rel)` takes exactly the plan file's path.
+It has no need to know what is in the state, so it does not take the state.
 
-SAI — `_dem_tick(cwd, state)` rồi bên trong tự moi `state["plan_file"]`. Muốn đếm tick của
-một file plan bất kỳ thì phải dựng một state giả, kể cả trong test.
+SAI — `_dem_tick(cwd, state)` digging out `state["plan_file"]` inside. Counting the ticks of any
+other plan file then means building a fake state, even in a test.
 
 ### DIP
 
-ĐÚNG — `scripts/tdq_state.py` là điểm vào duy nhất ghi `docs/tdq/state.json`. Hook, skill
-và mọi script khác đều đi qua CLI đó, không nơi nào tự mở file ra ghi.
+ĐÚNG — `scripts/tdq_state.py` is the single entry point that writes `docs/tdq/state.json`. Hooks,
+skills and every other script go through that CLI; nowhere opens the file itself.
 
-SAI — một hook tự `json.dump` thẳng vào `docs/tdq/state.json`. Đổi định dạng state là phải
-đi sửa từng nơi, và sót một nơi thì hai bản ghi lệch nhau âm thầm.
+SAI — a hook that `json.dump`s straight into `docs/tdq/state.json`. Changing the state format
+then means editing every site, and missing one leaves two writers silently out of step.
 
 ## Tự kiểm
 
-Trả lời 5 câu này trước khi đóng một task chạm mã nguồn. Câu nào trả lời "không" thì sửa
-code, đừng sửa câu trả lời. Ở phase QC, đáp án ghi vào file qc kèm chỗ đã sửa.
+Answer these 5 questions before closing a task that touched source code. Any "no" → fix the
+code, not the answer. In phase QC, the answers go into the qc file together with what was fixed.
 
-- SRP: mỗi hàm và mỗi class tôi vừa viết có đúng một lý do để đổi không?
-- OCP: thêm một trường hợp mới nữa, tôi thêm được bằng một dòng dữ liệu hoặc một class con, mà không mở thân hàm và không sửa class cũ, đúng không?
-- LSP: có kế thừa thì đối tượng con thay được vào chỗ cha mà không vỡ hợp đồng, không có kế thừa thì mọi nhánh `return` trả cùng kiểu và cùng hợp đồng lỗi, đúng không?
-- ISP: mỗi tham số tôi truyền vào có được dùng thật bên trong không?
-- DIP: chỗ này có đi qua điểm vào chung sẵn có, thay vì tự cài lại chi tiết không?
+- SRP: does every function and class I just wrote have exactly one reason to change?
+- OCP: could I add one more case with a single data line or a subclass, without opening a function body and without editing the old class?
+- LSP: with inheritance, does the subtype substitute for its parent without breaking the contract, and without inheritance, does every `return` branch return the same type and the same error contract?
+- ISP: is every parameter I pass in actually used inside?
+- DIP: does this go through the existing shared entry point instead of re-implementing the details?

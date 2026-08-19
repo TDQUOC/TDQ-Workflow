@@ -1,56 +1,58 @@
-# Rule TypeScript / JavaScript
+# TypeScript / JavaScript rules
 
-Soul: chất lượng > runtime > context cost. Nạp sau `chung.md`, áp cho
+Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to
 `.ts .tsx .js .jsx .mjs .cjs`.
 
 ## Nguồn
 
 - typescript-eslint Shared Configs — https://typescript-eslint.io/users/configs (2026) —
-  ba tầng config: `recommended` (bắt lỗi đúng đắn, dùng ngay) → `strict` → `stylistic`.
-- Danh mục rule typescript-eslint — https://typescript-eslint.io/rules — rule gắn dấu ✅
-  thuộc bộ recommended: `no-explicit-any`, `no-floating-promises`, `await-thenable`,
+  three config tiers: `recommended` (correctness bugs, use immediately) → `strict` → `stylistic`.
+- typescript-eslint rule catalogue — https://typescript-eslint.io/rules — rules marked ✅
+  belong to the recommended set: `no-explicit-any`, `no-floating-promises`, `await-thenable`,
   `ban-ts-comment`, `no-misused-promises`…
-- Rule core JavaScript — https://eslint.org/docs/latest/rules (ESLint docs latest) —
+- Core JavaScript rules — https://eslint.org/docs/latest/rules (ESLint docs latest) —
   `no-unused-vars`, `no-shadow`, `no-redeclare`, `no-self-compare`…
 
 ## Khi nào áp dụng
 
-- Viết hoặc sửa file TS/JS bất kỳ, gồm cả file config `.mjs/.cjs` và test.
-- Trước khi nộp: chạy mục "Tự kiểm"; máy thiếu `eslint` thì ghi "chưa kiểm được".
+- Writing or changing any TS/JS file, `.mjs/.cjs` config files and tests included.
+- Before submitting: run the "Tự kiểm" section; if the machine lacks `eslint`, write
+  "chưa kiểm được".
 
 ## Luật Intentionality
 
-1. **`any` là mất chủ đích kiểu**: `no-explicit-any` thuộc bộ recommended — thay bằng
-   kiểu cụ thể, hoặc `unknown` rồi thu hẹp dần bằng kiểm tra kiểu.
-2. **Promise bỏ lơ lửng là nuốt lỗi**: mọi Promise phải được `await`, `return`, hoặc
-   đánh dấu bỏ có chủ đích (`no-floating-promises`, `no-misused-promises`,
-   `await-thenable` đều ✅ recommended).
-3. **Code chết và giấu lỗi kiểu**: biến không dùng (`no-unused-vars`) → xoá; directive
-   `@ts-ignore`/`@ts-expect-error` trần bị `ban-ts-comment` chặn — phải kèm mô tả lý do.
+1. **`any` loses type intent**: `no-explicit-any` is in the recommended set — replace it with
+   a concrete type, or with `unknown` narrowed step by step through type checks.
+2. **A floating Promise swallows errors**: every Promise must be `await`ed, `return`ed, or
+   deliberately marked as dropped (`no-floating-promises`, `no-misused-promises` and
+   `await-thenable` are all ✅ recommended).
+3. **Dead code and hidden type errors**: unused variables (`no-unused-vars`) → delete; a bare
+   `@ts-ignore`/`@ts-expect-error` is blocked by `ban-ts-comment` — it must carry a reason.
 
 ## Ngưỡng đo được
 
-- Cyclomatic ≤ 10, cognitive ≤ 15 mỗi hàm — theo `chung.md`. Rule `complexity` của
-  ESLint mặc định 20 nên phải chỉnh về 10 trong config, không dùng default.
-- Tầng config tối thiểu: `recommended` (core ESLint + typescript-eslint); dự án muốn
-  lên `strict`/`stylistic` thì ghi vào spec của request.
+- Cyclomatic ≤ 10, cognitive ≤ 15 per function — per `chung.md`. ESLint's `complexity` rule
+  defaults to 20, so set it back to 10 in the config; never keep the default.
+- Minimum config tier: `recommended` (core ESLint + typescript-eslint); a project moving up to
+  `strict`/`stylistic` records that in the request's spec.
 
 ## Làm gì
 
-1. Extend đúng tầng config: `eslint` recommended cho JS, cộng `tseslint` recommended
-   cho TS; đừng tự chọn rule lẻ khi chưa dùng hết bộ recommended.
-2. Khai kiểu rõ ở biên (tham số, giá trị trả về của hàm export); cấm `any` trần.
-3. Hàm async gọi ở đâu thì nơi đó quyết định rõ: `await`, `return`, hay bỏ có chủ đích —
-  cấm gọi rồi lờ kết quả.
-4. Directive `@ts-` nào cũng phải có mô tả lý do ngay sau directive.
-5. Chạy `eslint <đường dẫn>` và sửa hết lỗi bộ recommended.
+1. Extend the right config tier: `eslint` recommended for JS plus `tseslint` recommended for
+   TS; do not cherry-pick single rules before using the whole recommended set.
+2. Declare types at the boundary (parameters and return values of exported functions); a bare
+   `any` is banned.
+3. Wherever an async function is called, that site decides explicitly: `await`, `return`, or a
+   deliberate drop — calling and ignoring the result is banned.
+4. Every `@ts-` directive must carry a reason right after the directive.
+5. Run `eslint <đường dẫn>` and fix every recommended-set error.
 
 ## Tự kiểm
 
-- [ ] `eslint` sạch lỗi, hoặc đã ghi "chưa kiểm được" khi máy thiếu eslint
-- [ ] Không `any` trần, không Promise lơ lửng, không `@ts-` thiếu mô tả
-- [ ] Không biến/import thừa; hàm export có kiểu ở biên
-- [ ] Trả lời được 3 câu hỏi Intentionality trong `chung.md`
+- [ ] `eslint` clean, or "chưa kiểm được" recorded because the machine lacks eslint
+- [ ] No bare `any`, no floating Promise, no `@ts-` without a description
+- [ ] No unused variables/imports; exported functions typed at the boundary
+- [ ] The 3 Intentionality questions in `chung.md` are answerable
 
 ## Ví dụ ĐÚNG/SAI
 

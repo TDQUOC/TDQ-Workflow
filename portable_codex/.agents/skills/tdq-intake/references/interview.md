@@ -1,42 +1,44 @@
 # Vòng interview
 
-Mục tiêu: không còn câu hỏi nào mà câu trả lời khác nhau sẽ dẫn tới sản phẩm khác nhau.
+Goal: no question is left whose different answers would lead to a different product.
 
 ## Hai tầng câu hỏi — tổng quát trước, chi tiết sau
 
-- **Tầng 1 — vòng scope**: request bao quanh những mặt nào, bối cảnh thật ra sao. Chạy
-  có điều kiện, luật đầy đủ ở [scope-round.md](scope-round.md). Bỏ thì phải ghi lý do.
-- **Tầng 2 — vòng chi tiết**: 7 hạng mục dưới đây, nhưng **chỉ hỏi trong các mặt user đã
-  chọn ở tầng 1**. Mặt user đã loại thì không hỏi, cũng không tự đưa vào spec.
+- **Tầng 1 — vòng scope**: which areas the request spans, what the real context is. Runs
+  conditionally; the full rule is in [scope-round.md](scope-round.md). Skip it and the
+  reason must be written down.
+- **Tầng 2 — vòng chi tiết**: the 7 items below, but **ask only inside the areas the user
+  chose at tầng 1**. An area the user ruled out is not asked about, and not slipped into
+  the spec either.
 
-Chạy tầng 1 rồi mới sang tầng 2. Vòng scope bị BỎ theo đúng tiêu chí của nó thì tầng 2
-hỏi bình thường như trước.
+Run tầng 1 before tầng 2. If the scope round was SKIPPED by its own criteria, tầng 2 asks
+exactly as it did before.
 
 ## Hỏi cái gì
 
-Chỉ hỏi câu **làm đổi kết quả**. Với mỗi hạng mục dưới đây, tự trả lời được thì thôi,
-không tự trả lời được thì hỏi:
+Ask only what **changes the outcome**. For each item below: if you can answer it yourself,
+skip it; if you cannot, ask.
 
-- Phạm vi: cái gì nằm trong, cái gì dứt khoát nằm ngoài.
-- Đầu ra: file/màn hình/API cụ thể nào; đo "xong" bằng gì.
-- Dữ liệu: nguồn, khối lượng, định dạng, dữ liệu nhạy cảm.
-- Lỗi & biên: hỏng thì hành xử ra sao, ai thấy lỗi.
-- Hiệu năng & quy mô: ngưỡng chấp nhận được.
-- Tương thích: phiên bản, hệ điều hành, phụ thuộc sẵn có.
-- Vận hành: chạy ở đâu, ai bảo trì, log/monitor thế nào.
+- Scope: what is in, what is definitively out.
+- Output: which file/screen/API exactly; how "done" is measured.
+- Data: source, volume, format, sensitive data.
+- Errors & edges: how it behaves when it breaks, who sees the error.
+- Performance & scale: the acceptable threshold.
+- Compatibility: versions, OS, existing dependencies.
+- Operations: where it runs, who maintains it, logging/monitoring.
 
-Không hỏi: thứ đọc code là biết, thứ đã có trong mục `## Nguyên văn` của brief, thứ chỉ là sở
-thích trình bày.
+Do not ask: what reading the code answers, what section `## Nguyên văn` of the brief
+already holds, what is only a presentation preference.
 
 ## Hỏi thế nào
 
-Mỗi câu hỏi kèm **2–4 phương án cụ thể**. **Luôn hỏi bằng danh sách trong chat** — không
-dùng AskUserQuestion, để user đọc được toàn bộ phương án cùng lúc và trả lời mở.
+Every question carries **2–4 concrete options**. **Always ask with a list in chat** — no
+AskUserQuestion, so the user reads every option at once and can answer freely.
 
-Cả vòng hỏi là một khối nói với user: bọc theo
-[user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — câu dẫn
-xưng "bạn" ở đầu, đường kẻ ngăn `---` rồi khối trả lời in đậm ở cuối tin nhắn.
-Phần option bên trong dán đúng dạng này:
+The whole round is one block spoken to the user: wrap it per
+[user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — an opening
+line addressing "bạn", a `---` divider, then the bold answer block at the end of the
+message. The options inside are pasted in exactly this shape:
 
 ```
 <số>. <Câu hỏi>
@@ -47,16 +49,20 @@ Phần option bên trong dán đúng dạng này:
 
 Luật khuôn:
 
-- Mỗi option đúng **1 dòng riêng**, mở đầu bằng `- ` rồi nhãn chữ HOA `A`/`B`/`C`/`D`.
-- **Cấm gộp** nhiều option vào một dòng hay nhét vào đoạn văn dạng `(a) … · (b) …`.
-- Phương án bạn khuyên luôn là **A** và mang nhãn `(đề xuất)`; các option khác không có nhãn.
-- Sau nhãn là dấu `:` rồi nội dung. Hệ quả nối bằng ` — `, giữ trong cùng dòng đó.
-- Nhiều câu hỏi trong một vòng → đánh số câu `1.`, `2.` và mỗi câu có bảng option riêng.
-- Câu hỏi chốt pipeline, chọn cách chạy (main/subagent), hỏi commit cũng theo khuôn này.
+- Each option is exactly **1 line of its own**, starting with `- ` then the UPPERCASE label
+  `A`/`B`/`C`/`D`.
+- **Cấm gộp** several options onto one line or into a paragraph like `(a) … · (b) …`.
+- The option you recommend is always **A** and carries the label `(đề xuất)`; the others
+  carry no label.
+- After the label comes `:` then the content. The consequence is joined with ` — `, on that
+  same line.
+- Several questions in one round → number them `1.`, `2.` and give each its own option list.
+- The pipeline question, the execution-mode question (main/subagent) and the commit
+  question all follow this khuôn too.
 
-**Câu chốt vòng là có điều kiện** — chỉ ghi khi vòng đó có ít nhất một câu hỏi (kể cả
-khi chỉ có đúng 1 câu). Vòng không có câu hỏi nào thì không dựng vòng interview rỗng chỉ
-để hỏi câu này: đi thẳng sang bước sau.
+**The closing question of a round is conditional** — write it only when that round has at
+least one question (even if there is exactly 1). A round with no question at all does not
+get an empty interview round built just to ask it: go straight to the next step.
 
 ```
 <số>. Bạn muốn bổ sung thêm gì không?
@@ -64,27 +70,29 @@ khi chỉ có đúng 1 câu). Vòng không có câu hỏi nào thì không dựn
 - B: Có — tôi nói thêm.
 ```
 
-**Dòng hướng dẫn trả lời** — ngay dưới bảng option cuối cùng của mỗi vòng, thêm đúng 1
-khối ngắn (nguyên tắc + 1 ví dụ trung tính) giúp người mới đỡ bỡ ngỡ, biết gõ gì thì
-được gì:
+**The answer-guidance line** — right under the last option list of each round, add exactly
+1 short block (the principle + 1 neutral example) so a newcomer knows what to type and what
+it gets them:
 
 ```
 _Trả lời bằng chữ cái (vd: "A"), hoặc gõ thẳng câu tự nhiên khớp ý bạn chọn (vd: "chọn
 phương án A") — cả hai đều được hiểu như nhau._
 ```
 
-Chỉ 1 khối, không lặp lại cho từng câu hỏi khi có nhiều câu trong cùng vòng — đặt ở
-cuối, sau option cuối cùng. Ví dụ trong khối này luôn trung tính (không gắn cứng vào
-1 câu hỏi cụ thể như lane/mode) vì file này dùng chung cho mọi loại câu hỏi khuôn A/B/C.
+Only 1 such block, never repeated per question when a round holds several — put it at the
+end, after the last option. The example inside stays neutral (never welded to one specific
+question such as lane/mode) because this file serves every A/B/C-style question.
 
-Phương án đóng không bao giờ phủ hết ý user; câu này là chỗ để user thêm ý.
+A closed option set never covers everything the user has in mind; that question is where
+they add the rest.
 
 ## Ghi lại
 
-Mọi hỏi–đáp vào brief mục `## Hỏi đáp`: câu hỏi, các phương án, user chọn gì
-(nguyên văn), ngày giờ.
+Every question–answer goes into the brief under `## Hỏi đáp`: the question, the options,
+what the user chose (verbatim), and the timestamp.
 
 ## Khi nào dừng
 
-Dừng khi đọc lại danh sách câu hỏi mà mọi câu còn lại đều **không** làm đổi sản phẩm.
-Còn một câu làm đổi → hỏi tiếp vòng nữa. Cấm chuyển sang viết spec khi còn chỗ phải đoán.
+Stop when you re-read the question list and every remaining question **cannot** change the
+product. One question left that can → run another round. Moving on to the spec while
+anything still has to be guessed is banned.

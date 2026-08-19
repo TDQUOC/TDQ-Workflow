@@ -29,14 +29,15 @@ SECTION_10_BEFORE = 242
 SECTION_10_BUDGET = 900
 
 # Sáu gạch đầu dòng luật đã có trong context-budget.md trước request này. Plan cấm
-# xoá hoặc rút gọn bất kỳ dòng nào — chỉ được đổi chỗ và đổi nhãn tầng.
+# xoá hoặc rút gọn bất kỳ dòng nào — chỉ được đổi chỗ và đổi nhãn tầng. Từ 2026-08-19
+# (hướng A hybrid) file viết tiếng Anh: vẫn đủ sáu dòng, chỉ đổi ngôn ngữ của nhãn.
 OLD_BULLETS = [
-    "- **Gộp tool call.**",
-    "- **Lint đúng file.**",
-    "- **CLI im lặng.**",
-    "- **Đọc vừa đủ.**",
-    "- **Việc nặng giao subagent.**",
-    "- **Soul phân xử.**",
+    "- **Batch tool calls.**",
+    "- **Lint the exact file.**",
+    "- **Quiet CLI.**",
+    "- **Read just enough.**",
+    "- **Give heavy work to a subagent.**",
+    "- **Soul decides.**",
 ]
 
 
@@ -55,11 +56,13 @@ class LuatMotLuot(unittest.TestCase):
     """Luật gộp phải ở THÂN skill (nạp mỗi turn), không nằm trong file reference."""
 
     def test_luat_o_than_skill(self):
+        # Thân skill viết tiếng Anh từ 2026-08-19 (hướng A hybrid); luật vẫn phải nằm
+        # đúng §10 với đủ ba mục, chỉ đổi ngôn ngữ của nhãn.
         body = read(SKILL)
-        self.assertIn("## 10. Luật một lượt", body)
+        self.assertIn("## 10. One-batch rule", body)
         block = section(body, "## 10.", "## 11.")
         self.assertIn("runtime", block)
-        for muc in ("Khi nào áp dụng", "Làm gì", "Tự kiểm"):
+        for muc in ("When it applies", "What to do", "Self-check"):
             self.assertIn(muc, block, f"thiếu mục {muc} trong §10")
 
     def test_tran_ky_tu(self):
@@ -70,20 +73,22 @@ class LuatMotLuot(unittest.TestCase):
 
     def test_cam_gop_du_bon_ca(self):
         budget = read(BUDGET)
-        self.assertIn("### Cấm gộp", budget)
-        table = section(budget, "### Cấm gộp", "## Chi phí context")
+        self.assertIn("### Never batch these", budget)
+        table = section(budget, "### Never batch these", "## Context cost")
         rows = [r for r in table.splitlines()
-                if r.startswith("|") and "---" not in r and "Vì sao" not in r]
+                if r.startswith("|") and "---" not in r and "Why batching" not in r]
         self.assertEqual(len(rows), 4, "bảng cấm gộp phải có đúng 4 ca")
-        for dau_hieu in ("đỏ", "khoanh vùng", "phá hủy", "kết quả lệnh trước"):
+        for dau_hieu in ("red", "Isolating", "Destructive", "previous command's result"):
             self.assertIn(dau_hieu, table)
 
     def test_doc_lai_mem(self):
         """Luật đọc lại là luật MỀM: user chốt không đổi chất lượng lấy tốc độ."""
         budget = read(BUDGET)
         self.assertNotIn("cấm đọc lại", budget.lower())
-        self.assertIn("Nghi ngờ thì đọc lại", budget)
-        cases = section(budget, "### Năm ca BẮT BUỘC đọc lại", "### Cấm gộp")
+        self.assertNotIn("never re-read", budget.lower())
+        self.assertIn("when in doubt, re-read", budget.lower())
+        cases = section(budget, "### Five cases where re-reading is MANDATORY",
+                        "### Re-reading by RULE")
         numbered = [l for l in cases.splitlines() if re.match(r"^\d+\.", l)]
         self.assertEqual(len(numbered), 5, "phải liệt kê đủ 5 ca bắt buộc đọc lại")
 

@@ -1,7 +1,7 @@
 # Khuôn spec
 
-Copy nguyên khối dưới đây vào `docs/tdq/spec/<slug>.md` rồi điền. Xoá mục nào không
-áp dụng, nhưng phải nói rõ **vì sao** không áp dụng.
+Copy the whole block below into `docs/tdq/spec/<slug>.md` and fill it in. Drop a section
+that does not apply, but say **vì sao** it does not apply.
 
 ```markdown
 # SPEC — <tên việc>
@@ -110,43 +110,46 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 
 ## §6 giữ điều kiện, KHÔNG giữ lệnh kiểm
 
-Spec bị niêm phong bằng sha256 lúc user duyệt, còn **lệnh kiểm cụ thể chỉ đúng SAU khi
-code tồn tại** — tên file test, cờ chọn test, tên hàm. Viết chúng vào spec thì đến phase
-QC phát hiện sai tên là phải xin user duyệt lại, dù ý định không đổi một chữ. Đo được
-2/7 ca ở `docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`.
+The spec is sealed with a sha256 when the user approves it, while **a concrete check
+command is only correct AFTER the code exists** — test file name, selection flag, function
+name. Write those into the spec and a wrong name found at QC time forces a re-approval,
+even though the intent did not change by a single word. Measured in 2 of 7 cases in
+`docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`.
 
-Vì vậy: **spec ghi ĐIỀU KIỆN PASS, plan ghi LỆNH KIỂM.** Plan không bị niêm phong nên
-sửa tên file test ở đó là việc thường ngày, không đụng cổng duyệt.
+So: **the spec carries the PASS CONDITION, the plan carries the CHECK COMMAND.** The plan
+is not sealed, so renaming a test file there is everyday work and touches no approval gate.
 
 | Viết ở spec (ĐÚNG) | Viết ở spec (SAI — chuyển sang plan) |
 |---|---|
 | sửa dòng sổ sách không làm đổi sha, sửa mục đánh số thì đổi | `pytest tests/test_state.py -q -k sha` xanh |
 | spec mới ghi lệnh kiểm thì linter chặn, spec cũ vẫn qua | `pytest tests/test_doc_lint.py -q -k r11` xanh |
 
-Rule **R11** của `doc_lint.py` canh đúng luật này, chỉ áp cho spec từ 2026-08-19 trở đi.
+Rule **R11** of `doc_lint.py` guards exactly this, and applies only to specs from
+2026-08-19 onward.
 
 ## Kiểm trước khi trình
 
-- Mọi đầu ra ở §2 đều có ít nhất một hạng mục QC ở §6.
-- §6 không chứa đường dẫn `tests/...` hay cờ `-k` — lệnh kiểm nằm ở plan.
-- §1b có mặt: mỗi bước/phase của workflow được ghi rõ CÓ chạy hay BỎ, kèm lý do.
-- §2b có mặt khi lane full: mỗi module một dòng, không module nào khai trùng đường dẫn.
-- §3b có mặt: mỗi skill DÙNG và NỀN có một dòng riêng, phần còn lại gom vào dòng tổng
-  `Đã xét <N> skill khác` — máy kiểm bằng `doc_lint.py` rule R8.
-- Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính.
-- §7 rỗng.
-- Không câu nào dùng từ mơ hồ ("phù hợp", "tối ưu", "nếu cần") mà không kèm ngưỡng cụ thể.
+- Every output in §2 has at least one QC item in §6.
+- §6 holds no `tests/...` path and no `-k` flag — the check command lives in the plan.
+- §1b is present: every workflow step/phase says CÓ or BỎ, with the reason.
+- §2b is present in lane full: one row per module, no two modules declaring one path.
+- §3b is present: one row per skill marked DÙNG or NỀN, everything else merged into the
+  summary row `Đã xét <N> skill khác` — machine-checked by `doc_lint.py` rule R8.
+- A PASS condition in §6 is measurable by a command, not by feel.
+- §7 is empty.
+- No sentence uses a vague word ("phù hợp", "tối ưu", "nếu cần") without a concrete
+  threshold beside it.
 
 ## Checklist scope — trả lời được hết mới trình
 
 | Câu hỏi | Trả lời phải nằm ở |
 |---|---|
-| Việc này làm RA cái gì? | §1 mục tiêu + §2 bảng đầu ra |
-| Các mặt bị loại ở vòng scope đã ghi chưa? | §1 mục NGOÀI phạm vi |
-| Có gì MỚI so với hiện trạng? | §3 cách tiếp cận |
-| Output cụ thể là file/lệnh/màn hình nào? | §2 cột đường dẫn/vị trí |
-| Có cần model không (tên, nơi chạy, chi phí)? | §1 phạm vi + §5 ràng buộc |
-| Có cần download/cài đặt gì không? | §5 ràng buộc — ghi rõ tên gói và bản |
-| QC/test/validate làm thế nào? | §6 bảng QC + DoD |
+| What does this work PRODUCE? | §1 mục tiêu + §2 bảng đầu ra |
+| Are the areas dropped at the scope round written down? | §1 mục NGOÀI phạm vi |
+| What is NEW compared with what exists today? | §3 cách tiếp cận |
+| Which file/command/screen exactly is the output? | §2 cột đường dẫn/vị trí |
+| Is a model needed (name, where it runs, cost)? | §1 phạm vi + §5 ràng buộc |
+| Is any download/install needed? | §5 ràng buộc — ghi rõ tên gói và bản |
+| How is QC/test/validate done? | §6 bảng QC + DoD |
 
-Còn một ô chưa trả lời được → chưa đủ điều kiện trình spec, quay lại phase analyze.
+One box still unanswered → the spec is not ready to present, go back to phase analyze.

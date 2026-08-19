@@ -474,9 +474,12 @@ class TestLuatMoiCoMatOCaBaBan(unittest.TestCase):
     vẫn xanh — nên khoá bằng dấu vết nội dung, không chỉ bằng "file có tồn tại".
     """
 
+    # context-budget.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật không đổi,
+    # chỉ đổi ngôn ngữ. Hai dấu vết cũ "vì QUÊN" / "nghi ngờ thì đọc lại" đổi thành đúng
+    # hai câu tương ứng ở bản mới, vẫn khoá đúng hai ý đó chứ không nới lỏng phép kiểm.
     DAU_VET = (
-        ("context-budget.md", ("MAX_MCP_OUTPUT_TOKENS", "vì QUÊN",
-                               "nghi ngờ thì đọc lại")),
+        ("context-budget.md", ("MAX_MCP_OUTPUT_TOKENS", "by FORGETTING",
+                               "When in doubt, re-read")),
         ("bash_gate.py", ("TDQ:OUTPUT",)),
         ("token_audit.py", ("def dem_anh", "def phan_ra", "def hanh_vi_read")),
     )

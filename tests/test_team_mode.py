@@ -1195,8 +1195,9 @@ class LuatTest(unittest.TestCase):
 
     def test_conventions_co_luat_chong_ngung_va_dung_3_ngoai_le(self):
         noi_dung = _doc(CONVENTIONS)
-        self.assertIn("plan chưa hết task thì không kết thúc turn", noi_dung.lower())
-        moc = noi_dung.lower().find("ba ngoại lệ")
+        # Thân skill viết tiếng Anh từ 2026-08-19; luật và số ngoại lệ không đổi.
+        self.assertIn("never end a turn while the plan still has tasks", noi_dung.lower())
+        moc = noi_dung.lower().find("three exceptions")
         self.assertGreater(moc, -1, "thiếu khối 3 ngoại lệ")
         khoi = noi_dung[moc:moc + 1200]
         self.assertEqual(len(re.findall(r"^\s*\d\.", khoi, re.M)), 3,

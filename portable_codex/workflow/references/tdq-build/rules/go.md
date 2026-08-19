@@ -1,53 +1,56 @@
-# Rule Go
+# Go rules
 
-Soul: chất lượng > runtime > context cost. Nạp sau `chung.md`, áp cho mọi file `.go`.
+Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to every `.go` file.
 
 ## Nguồn
 
-- Effective Go — https://go.dev/doc/effective_go — đặt tên MixedCaps, gofmt, doc comment.
-- Google Go Style Guide — https://google.github.io/styleguide/go — chuẩn style bổ sung.
+- Effective Go — https://go.dev/doc/effective_go — MixedCaps naming, gofmt, doc comments.
+- Google Go Style Guide — https://google.github.io/styleguide/go — additional style standards.
 - GDS Way Go — https://gds-way.digital.cabinet-office.gov.uk/manuals/programming-languages/go.html —
-  khuyên `golangci-lint` làm meta-linter (gồm `staticcheck`, `errcheck`, `gosec`,
-  `revive`; `golint` đã deprecated), `go vet` chạy trong CI.
-- Uber Go Style Guide — https://github.com/uber-go/guide/blob/master/style.md — bộ linter
-  tối thiểu: errcheck, goimports, revive, govet, staticcheck.
+  recommends `golangci-lint` as the meta-linter (bundling `staticcheck`, `errcheck`, `gosec`,
+  `revive`; `golint` is deprecated) with `go vet` running in CI.
+- Uber Go Style Guide — https://github.com/uber-go/guide/blob/master/style.md — the minimum
+  linter set: errcheck, goimports, revive, govet, staticcheck.
 
 ## Khi nào áp dụng
 
-- Viết hoặc sửa bất kỳ file `.go` nào, gồm cả `_test.go`.
-- Trước khi nộp: chạy mục "Tự kiểm"; máy thiếu `golangci-lint` thì thử `go vet ./...`,
-  thiếu cả hai thì ghi "chưa kiểm được".
+- Writing or changing any `.go` file, `_test.go` included.
+- Before submitting: run the "Tự kiểm" section; if `golangci-lint` is missing try
+  `go vet ./...`, and if both are missing write "chưa kiểm được".
 
 ## Luật Intentionality
 
-1. **Tên sai chuẩn**: Go dùng `MixedCaps`/`mixedCaps`, không dùng gạch dưới; định danh
-   exported viết hoa chữ đầu và phải có doc comment bắt đầu bằng chính tên đó.
-2. **Nuốt lỗi**: bỏ qua `err` là lỗi nặng nhất trong Go — `errcheck` bắt mọi lời gọi
-   trả error mà không kiểm; muốn bỏ thật thì viết `_ = f()` kèm comment lý do.
-3. **Code chết**: compiler Go đã chặn import và biến cục bộ không dùng; phần còn lại
-   (hàm không ai gọi, nhánh không thể tới) do `staticcheck` báo → xoá.
+1. **Off-standard names**: Go uses `MixedCaps`/`mixedCaps`, never underscores; an exported
+   identifier is capitalised and must carry a doc comment starting with that very name.
+2. **Swallowing errors**: ignoring `err` is the gravest Go defect — `errcheck` catches every
+   call returning an error that goes unchecked; a genuine drop is written `_ = f()` with a
+   comment giving the reason.
+3. **Dead code**: the Go compiler already blocks unused imports and locals; the rest
+   (uncalled functions, unreachable branches) is reported by `staticcheck` → delete.
 
 ## Ngưỡng đo được
 
-- Cyclomatic ≤ 10, cognitive ≤ 15 mỗi hàm — theo `chung.md`; `gocyclo` không có default
-  chung nên lấy thẳng mức 10 của TDQ, không tự chọn mức khác.
-- Bộ linter tối thiểu phải bật: errcheck, govet, staticcheck (theo Uber Go Style Guide).
+- Cyclomatic ≤ 10, cognitive ≤ 15 per function — per `chung.md`; `gocyclo` has no shared
+  default, so take TDQ's level of 10 directly and do not pick another.
+- The minimum linter set that must be enabled: errcheck, govet, staticcheck (per the Uber Go
+  Style Guide).
 
 ## Làm gì
 
-1. Format bằng `gofmt`/`goimports` trước khi nộp — code chưa format coi như chưa xong.
-2. Kiểm `err` NGAY sau lời gọi trả về nó; trả lỗi lên trên thì kèm ngữ cảnh cho biết
-   thao tác nào hỏng.
-3. Định danh exported nào cũng có doc comment bắt đầu bằng tên (`// TinhTong tính…`).
-4. Giữ interface nhỏ, nhận interface trả struct khi hợp với code sẵn có của repo.
-5. Chạy `golangci-lint run <đường dẫn>` (fallback: `go vet ./...`) và sửa hết lỗi.
+1. Format with `gofmt`/`goimports` before submitting — unformatted code counts as unfinished.
+2. Check `err` IMMEDIATELY after the call returning it; when passing an error up, wrap it with
+   context saying which operation failed.
+3. Every exported identifier carries a doc comment starting with its name (`// TinhTong tính…`).
+4. Keep interfaces small, accepting interfaces and returning structs where that matches the
+   repo's existing code.
+5. Run `golangci-lint run <đường dẫn>` (fallback: `go vet ./...`) and fix everything reported.
 
 ## Tự kiểm
 
-- [ ] `golangci-lint run` hoặc `go vet` sạch, hoặc đã ghi "chưa kiểm được"
-- [ ] Không lời gọi nào bỏ `err` mà thiếu comment lý do
-- [ ] Code đã qua `gofmt`; exported có doc comment đúng khuôn
-- [ ] Trả lời được 3 câu hỏi Intentionality trong `chung.md`
+- [ ] `golangci-lint run` or `go vet` clean, or "chưa kiểm được" recorded
+- [ ] No call drops `err` without a reason comment
+- [ ] The code went through `gofmt`; exported identifiers carry correctly shaped doc comments
+- [ ] The 3 Intentionality questions in `chung.md` are answerable
 
 ## Ví dụ ĐÚNG/SAI
 

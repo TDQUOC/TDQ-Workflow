@@ -1,7 +1,8 @@
 # Cổng chọn mode — khuôn hỏi & luật viết đoạn lý do
 
-Dùng ở bước 6 của [tdq-plan](../SKILL.md), khi plan đã duyệt mà user chưa nói mode.
-Khối này theo [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md).
+Used at step 6 of [tdq-plan](../SKILL.md), when the plan is approved but the user has not named
+a mode. The block follows
+[user-facing-block.md](../../tdq-conventions/references/user-facing-block.md).
 
 ## Khuôn hỏi
 
@@ -20,46 +21,48 @@ Plan đã được duyệt. Còn một câu cuối: bạn muốn tôi chạy the
 ➤ Trả lời: nhắn "A" / "inline" hoặc "B" / "sub-agent" (chọn xong tôi bắt tay làm ngay) · Góp ý: nhắn trực tiếp
 ```
 
-Đề xuất nằm ở A dù đề xuất là mode nào — đổi nội dung dòng A, không đổi vị trí.
+The proposal sits at A whichever mode it is — change the text of line A, never its position.
 
 ## Luật viết đoạn "Vì sao đề xuất"
 
-Dài 1–3 dòng, đặt ngay dưới hai option. Cấm nói chung chung.
+1–3 lines long, sitting right under the two options. Vague wording is banned.
 
-**Đề xuất chọn mode nào là do LỆNH quyết, không do đọc mắt.** Chạy trên chính plan vừa viết:
-`tdq_bench.py mo-phong --plan <plan> --thuc-do <file hằng số> --he-so-agent 1.5`, rồi lấy
-dòng `Thắng:` làm đề xuất và số chênh phút làm bằng chứng. Bốn căn cứ dưới đây chỉ dùng để
-VIẾT lý do cho người đọc hiểu, không dùng để tự chốt ngược lại kết quả lệnh:
+**Which mode gets proposed is decided by a COMMAND, not by eye.** Run it on the plan you have
+just written: `tdq_bench.py mo-phong --plan <plan> --thuc-do <file hằng số> --he-so-agent 1.5`,
+then take the `Thắng:` line as the proposal and the minute gap as the evidence. The four grounds
+below only serve to WRITE the reason so a reader follows it; they never overturn what the command
+returned:
 
-1. Số task.
-2. Có task nào phụ thuộc nối tiếp task trước không.
-3. Số file bị nhiều task cùng đụng.
-4. Có task nào mang nhãn `(mcp)` không — nhãn đó buộc Claude tự làm.
+1. Task count.
+2. Whether any task depends on the one before it.
+3. How many files several tasks touch at once.
+4. Whether any task carries the `(mcp)` label — that label forces Claude to do it itself.
 
-Kết bằng đúng một câu nói vì sao KHÔNG chọn phương án còn lại.
+Close with exactly one sentence saying why NOT the other option.
 
-Ví dụ đủ căn cứ:
+An example carrying every ground:
 
 > `mo-phong` cho main 40,7 phút so với đội 32,6 phút (hệ số agent 1,5) nên đề xuất B;
 > 12 task, 4 task cùng sửa `tdq_state.py`, T4.3 mang nhãn `(mcp)` nên leader vẫn giữ 3 task.
 
 ## B KHÔNG có nghĩa là giao hết
 
-Mode B là mô hình lai, không phải "mọi task đều đẩy cho agent con". Leader vẫn tự làm
-những task khớp đúng một nhóm trong tập lý do đóng: `phu-thuoc`, `vung-khoa`, `mcp`,
-`file-luat`, `hop-dong`. Phần còn lại bắt buộc phải giao — và `scripts/tdq_team.py kiem-ke`
-exit khác 0 nếu leader bịa ra một nhóm ngoài tập đó để ôm việc. Tập này là hằng
-`LY_DO_GIU` trong `scripts/tdq_team.py`; bảng tra đầy đủ ở `tdq-build/references/team-mode.md`.
+Mode B is a hybrid, not "every task pushed to a sub-agent". The leader still keeps for itself
+(tự làm) the tasks matching exactly one group of the closed keep-set: `phu-thuoc`, `vung-khoa`, `mcp`,
+`file-luat`, `hop-dong`. Everything else MUST be handed out — and `scripts/tdq_team.py kiem-ke`
+exits non-zero when the leader invents a group outside that set to keep work. The set is the
+constant `LY_DO_GIU` in `scripts/tdq_team.py`; the full lookup table lives in
+`tdq-build/references/team-mode.md`.
 
-Vì vậy đoạn "Vì sao đề xuất" đừng bao giờ mô tả B là "giao toàn bộ cho trợ lý". Cách
-đo đúng của B là: **bao nhiêu task tách được trên tổng số task**. Con số đó, chứ không
-phải tổng số task, mới quyết định B có nhanh hơn A hay không. Luật đầy đủ của mode đội:
+So the "Vì sao đề xuất" paragraph must never describe B as "handing everything to assistants".
+The right way to size B is: **how many tasks are separable out of the total**. That number, not
+the total task count, decides whether B beats A. Full rule of the team mode:
 [team-mode.md](../../tdq-build/references/team-mode.md).
 
 ## Tên gọi
 
 (nhắc lại có chủ ý — bản gốc ở bước 6 của `skills/tdq-plan/SKILL.md`.)
 
-Hai tên trên là **nhãn hiển thị**. Giá trị ghi vào state vẫn là `main`/`subagent`
-(`MODE_LABELS`/`MODE_ALIASES` trong `scripts/tdq_state.py`). User gõ "inline",
-"sub-agent implement" hay tên máy cũ đều được nhận về đúng định danh máy.
+The two names above are **display labels**. What state records is still `main`/`subagent`
+(`MODE_LABELS`/`MODE_ALIASES` in `scripts/tdq_state.py`). The user typing "inline",
+"sub-agent implement" or an old machine name all resolve to the right machine identifier.

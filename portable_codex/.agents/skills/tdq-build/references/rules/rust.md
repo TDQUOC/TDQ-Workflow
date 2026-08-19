@@ -1,52 +1,55 @@
-# Rule Rust
+# Rust rules
 
-Soul: chất lượng > runtime > context cost. Nạp sau `chung.md`, áp cho mọi file `.rs`.
+Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to every `.rs` file.
 
 ## Nguồn
 
-- Thảo luận rust-lang.org — https://users.rust-lang.org/t/is-there-something-like-rust-core-guidelines-like-c-core-guidelines/113850 —
-  **Rust KHÔNG có "Core Guidelines"** tương đương C++: triết lý Rust là để compiler +
-  `cargo clippy` (hàng trăm lint) + `rustfmt` thực thi convention thay cho văn bản mô tả;
-  "Rust API Guidelines" là tài liệu gần nhất (URL chính thức chưa có trong research nên
-  chỉ ghi tên, không bịa link).
+- rust-lang.org discussion — https://users.rust-lang.org/t/is-there-something-like-rust-core-guidelines-like-c-core-guidelines/113850 —
+  **Rust has NO "Core Guidelines"** equivalent to C++: the Rust philosophy is to let the
+  compiler + `cargo clippy` (hundreds of lints) + `rustfmt` enforce conventions instead of a
+  prose document; the "Rust API Guidelines" is the closest thing (its official URL is not in
+  the research file, so only the name is given, no invented link).
 
 ## Khi nào áp dụng
 
-- Viết hoặc sửa bất kỳ file `.rs` nào trong crate, gồm cả test và example.
-- Trước khi nộp: chạy mục "Tự kiểm"; máy thiếu `cargo` thì ghi "chưa kiểm được".
+- Writing or changing any `.rs` file in the crate, tests and examples included.
+- Before submitting: run the "Tự kiểm" section; if the machine lacks `cargo`, write
+  "chưa kiểm được".
 
 ## Luật Intentionality
 
-1. **Tên sai chuẩn**: hàm/biến `snake_case`, type/trait `PascalCase`, hằng
-   `SCREAMING_SNAKE_CASE` — compiler tự warn khi lệch; tên phải nêu đúng việc.
-2. **Panic thay cho xử lý lỗi là nuốt lỗi kiểu Rust**: `.unwrap()`/`.expect()` rải trong
-   code sản phẩm biến lỗi xử lý được thành crash — dùng `Result` + toán tử `?`; unwrap
-   chỉ chấp nhận trong test hoặc khi bất biến đã được chứng minh ngay cạnh đó.
-3. **Code chết**: compiler warn `dead_code`/`unused`; đừng dập warning bằng
-   `#[allow(...)]` khi chưa ghi lý do một dòng ngay trên attribute.
+1. **Off-standard names**: functions/variables `snake_case`, types/traits `PascalCase`,
+   constants `SCREAMING_SNAKE_CASE` — the compiler warns on drift by itself; a name must state
+   the work it does.
+2. **Panicking instead of handling errors is Rust's way of swallowing them**: `.unwrap()`/
+   `.expect()` scattered through production code turns a handleable error into a crash — use
+   `Result` plus the `?` operator; unwrap is acceptable only in tests, or where the invariant
+   is proven right beside it.
+3. **Dead code**: the compiler warns `dead_code`/`unused`; never silence a warning with
+   `#[allow(...)]` without a one-line reason directly above the attribute.
 
 ## Ngưỡng đo được
 
-- Cyclomatic ≤ 10, cognitive ≤ 15 mỗi hàm — theo `chung.md`; Rust KHÔNG thuộc nhóm họ C
-  được nới 25.
-- Mức warning: code nộp phải sạch warning của compiler và của `cargo clippy` ở mức
-  mặc định; muốn allow lint nào phải ghi lý do vào spec của request.
+- Cyclomatic ≤ 10, cognitive ≤ 15 per function — per `chung.md`; Rust is NOT in the C family
+  allowed 25.
+- Warning level: submitted code must be free of compiler warnings and of default-level
+  `cargo clippy` warnings; allowing any lint requires a reason in the request's spec.
 
 ## Làm gì
 
-1. Format bằng `rustfmt` (qua `cargo fmt`) trước khi nộp.
-2. Hàm nào có thể hỏng thì trả `Result<T, E>`; lan truyền lỗi bằng `?`, thêm ngữ cảnh
-   ở biên nơi gọi; cấm `unwrap` ngoài test.
-3. Item public (`pub`) có doc comment `///` một dòng nêu việc.
-4. Ưu tiên borrow (`&str`, `&[T]`) ở tham số thay vì sở hữu khi hàm chỉ đọc dữ liệu.
-5. Chạy `cargo clippy` và sửa hết warning; compiler warning cũng phải về 0.
+1. Format with `rustfmt` (through `cargo fmt`) before submitting.
+2. A function that can fail returns `Result<T, E>`; propagate with `?` and add context at the
+   calling boundary; `unwrap` outside tests is banned.
+3. Public items (`pub`) carry a one-line `///` doc comment stating the job.
+4. Prefer borrows (`&str`, `&[T]`) in parameters over ownership when the function only reads.
+5. Run `cargo clippy` and fix every warning; compiler warnings must also reach 0.
 
 ## Tự kiểm
 
-- [ ] `cargo clippy` sạch warning, hoặc đã ghi "chưa kiểm được" khi máy thiếu cargo
-- [ ] Không `unwrap`/`expect` ngoài test khi thiếu ghi chú bất biến
-- [ ] Không `#[allow(...)]` thiếu lý do; không code chết
-- [ ] Trả lời được 3 câu hỏi Intentionality trong `chung.md`
+- [ ] `cargo clippy` warning-free, or "chưa kiểm được" recorded because the machine lacks cargo
+- [ ] No `unwrap`/`expect` outside tests without an invariant note
+- [ ] No `#[allow(...)]` without a reason; no dead code
+- [ ] The 3 Intentionality questions in `chung.md` are answerable
 
 ## Ví dụ ĐÚNG/SAI
 

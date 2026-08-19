@@ -483,6 +483,54 @@ def pair(spec_path, plan_path):
     return 1 if problems else 0
 
 
+
+# --------------------- R12: file sinh ra cho user phải viết bằng tiếng Việt
+
+# Gate ngôn ngữ đầu ra. Đây là điều kiện tiền đề của hướng A (viết luật bằng tiếng Anh):
+# chỉ an toàn khi có thứ ĐO ĐƯỢC rằng đầu ra cho user không trôi theo sang tiếng Anh.
+# Soi FILE sinh ra chứ không soi chữ model in ra chat — hook cố ý không đọc transcript
+# (hooks/scripts/stop_gate.py:5), bản 0.1.8 từng đọc và chặn nhầm turn hợp lệ.
+R12_DAU_TV = re.compile(
+    "[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]",
+    re.IGNORECASE)
+# Gỡ trước khi đếm: định danh trong backtick, URL, đích của link markdown. Chúng gần như
+# luôn là tiếng Anh và có mặt hợp lệ trong mọi báo cáo tiếng Việt.
+R12_INLINE = re.compile(r"`[^`]*`|https?://\S+|\[[^\]]*\]\([^)]*\)")
+R12_TU = re.compile(r"[A-Za-zÀ-ỹ][A-Za-zÀ-ỹ'’-]*")
+# Dưới ngưỡng từ là nhãn, ô bảng, tên hằng — không đủ chữ để kết luận về ngôn ngữ.
+R12_TOI_THIEU_TU = 6
+# Một câu lạc lõng chưa phải bằng chứng; ba dòng văn xuôi liền nhau thì là một đoạn.
+R12_TOI_THIEU_DONG = 3
+
+
+def _r12_van_xuoi(line):
+    """None = không đủ tư cách văn xuôi (cắt mạch). True/False = có/không dấu tiếng Việt."""
+    text = R12_INLINE.sub(" ", line)
+    if text.strip().startswith(("|", ">", "#", "-", "*", "<!--")):
+        return None
+    if len(R12_TU.findall(text)) < R12_TOI_THIEU_TU:
+        return None
+    return bool(R12_DAU_TV.search(text))
+
+
+def rule_r12(doc, out):
+    """Đoạn văn xuôi dài mà không có một dấu tiếng Việt nào → báo một lần ở dòng đầu."""
+    dau = None
+    dai = 0
+    for i, line in enumerate(doc.lines + [""]):
+        co_dau = None if i >= len(doc.lines) or doc.in_fence[i] else _r12_van_xuoi(line)
+        if co_dau is False:
+            if dau is None:
+                dau = i
+            dai += 1
+            continue
+        if dau is not None and dai >= R12_TOI_THIEU_DONG and not doc.allowed(dau, "R12"):
+            out.append(f"{doc.path}:{dau + 1}: [R12] đoạn văn không có dấu tiếng Việt "
+                       f"({dai} dòng) — file sinh ra cho user phải viết tiếng Việt")
+        dau = None
+        dai = 0
+
+
 def lint_file(path):
     doc = Doc(path)
     out = []
@@ -492,7 +540,7 @@ def lint_file(path):
     # thư mục spec/.
     abs_path = os.path.abspath(path)
     is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
-    for rule in ([rule_r8, rule_r10, rule_r11] if is_output else RULES):
+    for rule in ([rule_r8, rule_r10, rule_r11, rule_r12] if is_output else RULES):
         rule(doc, out)
     return out
 

@@ -1,53 +1,56 @@
-# Định tuyến việc → plugin
+# Routing work → plugin
 
-**Trạng thái từ 2026-08-06: TẤT CẢ plugin đã bật sẵn ở user scope.**
+**Status since 2026-08-06: EVERY plugin is already enabled at user scope.**
 
-## Giao thức dùng
+## Protocol
 
-1. Plugin đã bật → **dùng thẳng, không cần xin phép**. Bảng dưới chỉ để chọn đúng plugin
-   cho đúng việc, không còn là cổng duyệt.
-2. Vẫn phải **HỎI user trước** khi: cài plugin/marketplace MỚI; chạy OAuth hoặc nhập
-   credential cho một service; gọi tool **ghi/xoá ra dịch vụ ngoài** (tạo page Notion, ghi
-   DB, deploy, upload asset…). Đọc thì tự do.
-3. Review code → dùng built-in `/code-review`, không dùng plugin review khác.
+1. An enabled plugin → **use it directly, no permission needed**. The table below only picks
+   the right plugin for the right job; it is no longer an approval gate.
+2. You must still **ASK the user first** before: installing a NEW plugin/marketplace; running
+   OAuth or entering a credential for a service; calling a tool that **writes or deletes on an
+   external service** (create a Notion page, write to a DB, deploy, upload an asset…). Reading
+   is free.
+3. Code review → use the built-in `/code-review`, not another review plugin.
 
-## Bảng định tuyến
+## Routing table
 
-Chỉ dùng đúng tên ở cột phải.
+Use only the exact names in the right column.
 
-| Việc chạm tới | Dùng plugin |
+| Work touches | Plugin |
 |---|---|
-| Airflow / DAG / pipeline dữ liệu | data-engineering |
-| Hugging Face / train model / dataset ML | huggingface-skills |
-| Làm video / motion graphics | hyperframes |
+| Airflow / DAG / data pipeline | data-engineering |
+| Hugging Face / model training / ML dataset | huggingface-skills |
+| Video / motion graphics | hyperframes |
 | DataRobot | datarobot-agent-skills |
 | Figma / design-to-code | figma |
 | Qt / QML | qt-development-skills |
 | Cloudflare Workers / Pages / Zero Trust | cloudflare |
 | Canva | canva |
-| Adobe / Photoshop / sửa ảnh hàng loạt | adobe-for-creativity |
+| Adobe / Photoshop / bulk image editing | adobe-for-creativity |
 | MongoDB | mongodb |
-| Postman / test API collection | postman |
-| Thao tác máy ngoài repo (app, file hệ thống) | desktop-commander |
+| Postman / API collection testing | postman |
+| Machine operations outside the repo (apps, system files) | desktop-commander |
 | Base44 | base44 |
 | Unreal Engine | unreal-engine-skills-for-claude-code |
 | Notion | notion |
 | Redis | redis-development |
-| Crawl web quy mô lớn | firecrawl |
-| Debug trình duyệt qua CDP | chrome-devtools-mcp |
-| Review/phân tích repo bằng index ngoài | greptile |
-| Quét chất lượng/bảo mật tĩnh | sonarqube |
-| Quan sát log / trace | lumen |
-| LSP theo ngôn ngữ | `<lang>-lsp` (clangd, gopls, jdtls, kotlin, lua, php, ruby, rust-analyzer, swift, csharp) |
+| Large-scale web crawling | firecrawl |
+| Browser debugging over CDP | chrome-devtools-mcp |
+| Repo review/analysis via an external index | greptile |
+| Static quality/security scanning | sonarqube |
+| Log / trace observability | lumen |
+| Per-language LSP | `<lang>-lsp` (clangd, gopls, jdtls, kotlin, lua, php, ruby, rust-analyzer, swift, csharp) |
 
-Việc không khớp dòng nào → làm bằng công cụ sẵn có, đừng lôi plugin vào cho nặng context.
+Work matching no row → do it with the tools already at hand; do not drag a plugin in and pay
+the context weight for nothing.
 
-## Phụ lục
+## Appendix
 
-`~/.claude/plugin-tiers.json` có `always_off` và `on_demand` đều RỖNG → hook
-SessionStart/SessionEnd chạy `plugin_tiers.py reset` là no-op, không tắt lại plugin nào.
-Bản tier cũ (chế độ lazy-load): `~/.claude/plugin-tiers.json.bak-2026-08-06`.
+`~/.claude/plugin-tiers.json` has both `always_off` and `on_demand` EMPTY → the
+SessionStart/SessionEnd hook running `plugin_tiers.py reset` is a no-op and turns no plugin
+back off. The old tier file (lazy-load mode): `~/.claude/plugin-tiers.json.bak-2026-08-06`.
 
-Muốn quay lại lazy-load cho nhẹ context: thêm tên plugin vào `on_demand` (tắt mặc định,
-bật lại bằng `python3 ~/.claude/scripts/plugin_tiers.py enable <tên>`) hoặc `always_off`
-(cấm bật) trong `~/.claude/plugin-tiers.json` — chỉ khi user yêu cầu rõ.
+To go back to lazy-load for a lighter context: add the plugin name to `on_demand` (off by
+default, re-enable with `python3 ~/.claude/scripts/plugin_tiers.py enable <tên>`) or to
+`always_off` (never enabled) in `~/.claude/plugin-tiers.json` — only when the user asks for it
+explicitly.

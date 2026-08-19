@@ -5,97 +5,109 @@ description: Thực thi trọn plan TDQ đã duyệt trong một turn, chạy QC
 
 # TDQ Build — Implement → QC → Report
 
-Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Yêu cầu `plan_approved = true`.
-Skill này lo ba phase: `implement` → `qc` → `report`.
+Load [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved = true`.
+This skill owns three phases: `implement` → `qc` → `report`.
 
-## Luật cứng (áp cho cả ba phase)
+## Hard rules (all three phases)
 
-- **Vào build NGAY trong turn user duyệt plan, rồi chạy end-to-end trong MỘT turn.** Không
-  bắt user nhắn thêm câu nào, không dừng giữa chừng hỏi "có tiếp không". Chỉ dừng khi đổi
-  phạm vi thật sự, thiếu/mơ hồ `implement_mode`, hoặc gặp chặn chỉ user gỡ được.
-- **Chặn kỹ thuật → tự chọn đề xuất, không hỏi.** Có sẵn phương án thì TỰ CHỌN, ghi 1
-  dòng quyết định + lý do vào working log rồi làm tiếp. Được TỰ COMMIT để gỡ chặn
-  (message mô tả thay đổi, KHÔNG push, liệt kê commit đó trong report).
-  Chỉ dừng hỏi khi: đổi phạm vi spec/plan, việc phá hủy/khó đảo ngoài commit (đổi schema
-  DB, xoá data, đổi API contract công khai), hoặc thiếu input chỉ user có.
-- **Tick ngay.** Bắt đầu một task thì đánh `- [~]` cho task đó; test pass thì đổi thành
-  `- [x]` TRƯỚC khi bắt task sau. Cấm gom tick cuối turn. Ba trạng thái: `[ ]` chưa làm ·
-  `[~]` đang làm · `[x]` xong. Dấu `[~]` là thứ duy nhất cho biết đang đứng ở đâu khi
-  người ngoài (status line, user, agent khác) nhìn vào file plan giữa chừng.
-- **Ước tính `(eNm)` chỉ là metadata.** Task có thể mang số phút Claude tự ước tính để
-  thực thi ngay sau mã task (`- [ ] **T1.1** (e12m) việc — Test: ...`). ETA cả plan = tổng
-  `eNm` các task chưa xong. Giữ nguyên khi tick, không chấm lại giữa chừng, và nó KHÔNG
-  đổi luật tick ở trên — task `(e60m)` tick y hệt task `(e5m)`. Task không có ước tính
-  cũng hợp lệ.
-- **Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass.
-- **Rule ngôn ngữ.** Sắp viết/sửa file mã nguồn → mở
-  [references/rules/index.md](references/rules/index.md), tra đuôi file, nạp `chung.md`
-  + đúng MỘT file ngôn ngữ. Cấm nạp cả bộ khi chỉ sửa một ngôn ngữ.
-- **Không placeholder.** Thiếu thông tin ở giai đoạn này nghĩa là phân tích hụt — nêu ra, đừng stub.
-- **Chờ subagent thì chờ hết**, hoặc đặt trigger tự tiếp tục. Không kết thúc turn khi nó đang chạy.
+- **Enter build IN THE SAME TURN the user approves the plan, then run end-to-end in ONE
+  turn.** Do not make the user send another message, do not stop halfway to ask "shall I
+  continue". Stop only on a genuine scope change, a missing/ambiguous `implement_mode`, or a
+  blocker only the user can clear.
+- **Technical blocker → take the proposed option, do not ask.** When an option exists, TAKE
+  IT, write one decision line plus the reason into the working log, and carry on. You may
+  COMMIT ON YOUR OWN to clear a blocker (message describing the change, NO push, and list that
+  commit in the report). Stop and ask only for: a spec/plan scope change, destructive or
+  hard-to-undo work beyond a commit (DB schema change, deleting data, changing a public API
+  contract), or missing input only the user holds.
+- **Tick immediately.** Starting a task marks it `- [~]`; a passing test turns it into
+  `- [x]` BEFORE the next task starts. Never batch ticks at the end of a turn. Three states:
+  `[ ]` not started · `[~]` in progress · `[x]` done. The `[~]` mark is the only thing that
+  tells an outsider (status line, user, another agent) where you stand when they look at the
+  plan file mid-run.
+- **The `(eNm)` estimate is metadata only.** A task may carry the minutes Claude estimated for
+  itself right after the task code (`- [ ] **T1.1** (e12m) việc — Test: ...`). The plan's ETA =
+  the sum of `eNm` over unfinished tasks. Keep it as-is when ticking, do not re-score midway,
+  and it does NOT change the tick rule above — an `(e60m)` task ticks exactly like an `(e5m)`
+  one. A task with no estimate is valid too.
+- **Red → green.** Every task: run/write the check first (it must fail), then code, then rerun
+  until it passes.
+- **Language rules.** About to write/change a source file → open
+  [references/rules/index.md](references/rules/index.md), look up the file extension, load
+  `chung.md` plus exactly ONE language file. Never load the whole set for one language.
+- **No placeholders.** Missing information at this stage means the analysis fell short — say
+  so, do not stub.
+- **If a subagent is running, wait it out**, or set a trigger to resume automatically. Never
+  end the turn while one is still running.
 
-## Phần A — Implement (phase `implement`)
+## Part A — Implement (phase `implement`)
 
-1. Đọc `implement_mode` từ state và làm đúng theo:
-   - `main` (nhãn user thấy: "làm trực tiếp (inline implement)"): tự làm HẾT trong hội
-     thoại này, nhưng theo đúng thứ tự cụm của plan và vẫn ghi lý do giữ cho từng task.
-     Doctrine leader áp cho mọi mode: [references/team-mode.md](references/team-mode.md).
-   - `subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)"): bạn là LEADER của
-     một đội. **Bước 0 — trước khi gõ dòng code đầu tiên: phân công CẢ plan**
-     (`python3 scripts/tdq_team.py phan-cong` rồi `kiem-ke`). Sau đó lặp từng đợt.
-     `cum` lấy đợt kế tiếp; `mo <task>` mở nhánh + worktree cho từng task.
-     Gọi `tdq-implementer` cho MỌI task của đợt trong MỘT response — nhiều lệnh Task
-     trong một response nghĩa là chúng chạy đồng thời. Đánh `[>]` cho các task vừa giao.
-     Nhận báo cáo thì `kiem` rồi `hop`, tick `[x]` NGAY, `don`, rồi quay lại `cum`.
-     Mặc định là GIAO. Chỉ được giữ task lại khi khớp đúng một nhóm trong tập lý do
-     đóng (bảng tra ở `team-mode.md`); bịa nhóm ngoài tập đó thì `kiem-ke` exit khác 0.
-     Trong lúc đợt đang chạy,
-     leader làm các task `tu_lam` của cùng đợt.
-     Luật đầy đủ (bảng tra quyết định, khuôn prompt giao việc, ví dụ ĐÚNG/SAI, tự kiểm):
+1. Read `implement_mode` from state and follow it exactly:
+   - `main` (nhãn user thấy: "làm trực tiếp (inline implement)"): do EVERYTHING in this
+     conversation yourself, but in the plan's cluster order, and still record the reason for
+     each task you keep. The leader doctrine applies in every mode:
+     [references/team-mode.md](references/team-mode.md).
+   - `subagent` (nhãn user thấy: "giao trợ lý (sub-agent implement)"): you are the LEADER of a
+     team. **Step 0 — before typing the first line of code: assign the WHOLE plan**
+     (`python3 scripts/tdq_team.py phan-cong`, then `kiem-ke`). Then loop wave by wave.
+     `cum` takes the next wave; `mo <task>` opens a branch + worktree per task.
+     Call `tdq-implementer` for EVERY task of the wave IN ONE response — several Task calls in
+     one response means they run concurrently. Mark the tasks you just handed out `[>]`.
+     On receiving a report, run `kiem` then `hop`, tick `[x]` IMMEDIATELY, `don`, then back to
+     `cum`. The default is DELEGATE. You may keep a task only when it matches exactly one group
+     in the closed reason set (lookup table in `team-mode.md`); inventing a group outside that
+     set makes `kiem-ke` exit non-zero. While a wave is running, the leader works the `tu_lam`
+     tasks of that same wave.
+     Full rules (decision table, delegation prompt template, ĐÚNG/SAI examples, self-check):
      [references/team-mode.md](references/team-mode.md) — **BẮT BUỘC mở đọc trước khi
      phân công; cấm làm theo trí nhớ.**
-   Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**.
+   The mode is what the USER said at approval. Missing mode, or you think another mode fits
+   better → **DỪNG và HỎI**.
 
-2. Vòng lặp mỗi task (mode `subagent`: mỗi vòng ứng với đúng 1 lần gọi `tdq-implementer`):
-   1. Báo 1 dòng: đang bắt đầu task nào, và đánh `- [~]` cho task đó trong plan.
-      Mode `subagent`: task giao cho agent con mang dấu `- [>]` (được nhiều task cùng lúc);
-      `- [~]` chỉ dành cho task LEADER tự làm và vẫn chỉ được đúng một.
-   2. Task có khối `Dùng:` → NẠP skill đó ngay (theo trường `Nạp`), làm đúng trường `Để`,
-      không lan sang việc ghi ở `Không dùng cho`. Không có khối → bỏ qua bước này.
-   3. Đỏ: chạy check của task → xác nhận fail (hoặc viết test fail trước).
-   4. Code: thay đổi nhỏ nhất đủ thoả task, bám style sẵn có. **Tìm rồi mới tạo:**
-      sắp tạo file/class/hàm/hằng MỚI → một lượt `graphify query "<tên>"` hoặc grep tên
-      + 2 đồng nghĩa; thấy thứ gần giống vẫn tạo → ghi vào task trong plan
-      `Tạo mới thay vì dùng <đường dẫn> vì <lý do>`. Không tìm mà tạo = lỗi dù test xanh.
-   5. Xanh: chạy lại đến khi pass, chỉ chạy **test của module** đang sửa — full suite
-      để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy.
-   6. Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main
-      agent tick ngay khi nhận báo cáo của agent con VÀ `hop` xong, không đợi các task khác.
-      (nhắc lại có chủ ý — bản gốc ở mục `## Luật cứng` cùng file này.)
+2. Loop per task (mode `subagent`: one round = exactly one `tdq-implementer` call):
+   1. Report one line: which task is starting, and mark it `- [~]` in the plan.
+      Mode `subagent`: a task handed to a sub-agent carries `- [>]` (several at once are
+      allowed); `- [~]` is only for a task the LEADER does personally, and still only one.
+   2. Task has a `Dùng:` block → LOAD that skill now (per the `Nạp` field), do exactly what
+      `Để` says, and do not spill into what `Không dùng cho` lists. No block → skip this step.
+   3. Red: run the task's check → confirm it fails (or write the failing test first).
+   4. Code: the smallest change that satisfies the task, following the existing style.
+      **Search before creating:** about to create a NEW file/class/function/constant → one
+      round of `graphify query "<tên>"` or grep the name plus 2 synonyms; creating anyway after
+      finding something close → record it in the plan task as
+      `Tạo mới thay vì dùng <đường dẫn> vì <lý do>`. Creating without searching is a defect even
+      when the tests are green.
+   5. Green: rerun until it passes, running only **the module's tests** — the full suite is
+      saved for exactly one run at QC. Paste the real output; never declare done unrun.
+   6. Turn `- [~]` into `- [x]` for that task in the plan IMMEDIATELY — in mode `subagent` the
+      main agent ticks as soon as the sub-agent's report arrives AND `hop` has completed,
+      without waiting for the other tasks.
+      (deliberate repetition — the original is in `## Hard rules` in this same file.)
 
-3. Xong hết task: chạy full suite ĐÚNG MỘT LẦN, rồi đóng sổ turn bằng MỘT lệnh
+3. All tasks done: run the full suite EXACTLY ONCE, then close the turn's books with ONE
+   command
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file .md vừa sửa> --log "<task xong, file đổi, kết quả test>" --phase qc`
-   — lint đúng file, append working log, set phase, graphify: 4 việc trong 1 call.
+   — lint the right file, append the working log, set the phase, graphify: 4 jobs in 1 call.
 
 Xong khi: mọi task trong plan đã tick `[x]` và test suite xanh.
 Bước kế tiếp: lệnh `tdq_finish.py … --phase qc` ở mục 3 (đã set phase luôn).
 
-## Phần B — QC (phase `qc`)
+## Part B — QC (phase `qc`)
 
-Ba bước thi hành — từ đếm hạng mục theo DoD tới vòng fix khi FAIL — nằm ở
-[references/qc.md](references/qc.md) mục `## Ba bước thi hành`. **BẮT BUỘC mở file đó và
-đọc hết ba bước trước khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.** Cùng file đó có
-luôn khuôn file qc và luật trần 3 vòng fix.
+The three execution steps — from counting DoD items to the fix loop on a FAIL — live in
+[references/qc.md](references/qc.md) under `## Ba bước thi hành`. **BẮT BUỘC mở file đó và
+đọc hết ba bước trước khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.** That same file also
+carries the qc file template and the 3-fix-round cap.
 
 Xong khi: mọi hạng mục QC PASS và có bằng chứng trong file qc.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`.
 
-## Phần C — Report (phase `report`)
+## Part C — Report (phase `report`)
 
-Bốn bước thi hành — từ viết report tới hỏi user có commit không — nằm ở
-[references/report-template.md](references/report-template.md) mục `## Bốn bước thi hành`.
+The four execution steps — from writing the report to asking the user about a commit — live in
+[references/report-template.md](references/report-template.md) under `## Bốn bước thi hành`.
 **BẮT BUỘC mở file đó và đọc hết bốn bước trước khi viết report; cấm làm theo trí nhớ.**
-Cùng file đó có luôn khuôn report và khối hỏi commit nguyên văn.
+That same file also carries the report template and the verbatim commit question block.
 
 Xong khi: report đã ghi và user đã được hỏi về commit.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`

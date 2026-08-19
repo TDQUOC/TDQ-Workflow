@@ -1,15 +1,19 @@
 # Bảng 12 ca lệch D1–D12
 
-Bản người đọc của hằng `CA_LECH` trong `scripts/tdq_checkstatus.py`. Một test khoá hai
-nơi cho khớp mã và mức, nên sửa một bên là bên kia đỏ ngay.
+Human-readable mirror of constant `CA_LECH` in `scripts/tdq_checkstatus.py`. A test locks the
+two places to the same codes and the same levels, so editing one side turns the other red.
 
-Luật gốc về state, cổng duyệt và ai được ghi gì nằm ở
-[tdq-conventions](../../tdq-conventions/SKILL.md) — bảng này chỉ TRỎ về đó, không chép lại.
-Agent ngoài Claude Code đọc `portable/AGENTS.md` mục State và mục Ghi nhận duyệt.
+The root rules on state, approval gates and who may write what live in
+[tdq-conventions](../../tdq-conventions/SKILL.md) — this table only POINTS there, it copies
+nothing. An agent outside Claude Code reads `portable/AGENTS.md`, sections State and
+Ghi nhận duyệt.
 
-Ba mức: `ok` chỉ để biết · `canh-bao` nên vá trước khi đi tiếp · `chan` phải để user quyết.
-Cột lệnh vá là MẪU. Chỗ viết hoa gạch dưới phải thay bằng giá trị thật trước khi chạy.
-Mọi lệnh đều mở đầu bằng `python3 scripts/tdq_state.py`; ở đây rút gọn cho gọn bảng.
+Three levels: `ok` for information only · `canh-bao` should be patched before moving on ·
+`chan` must be decided by the user.
+The patch-command column is a TEMPLATE. Every UPPERCASE_UNDERSCORED slot must be replaced
+with the real value before running.
+Every command starts with `python3 scripts/tdq_state.py`; it is shortened here to keep the
+table narrow.
 
 | Mã | Dấu hiệu | Mức | Chẩn đoán | Lệnh vá mẫu |
 |---|---|---|---|---|
@@ -28,17 +32,20 @@ Mọi lệnh đều mở đầu bằng `python3 scripts/tdq_state.py`; ở đây
 
 ## Giới hạn đã biết
 
-- D3 với plan chỉ ở mức `ok`: mỗi lần tick một task là plan đổi sha, nên lệch sha ở plan
-  là chuyện hằng ngày. Đổi phạm vi plan phải nhìn bằng mắt, bảng này không bắt được.
-- D7 đọc tối đa 20 commit gần nhất, để `report` giữ dưới 2,0 giây.
-- Request mồ côi (có file trong `docs/tdq/**` nhưng state không mở) nằm NGOÀI phạm vi:
-  bộ dò chỉ lo request đang mở trong state.
-- Không đọc transcript của session cũ: transcript không đi theo repo khi đổi máy.
-- Giá trị `schema_version` trong lệnh vá D9 lấy từ hằng `SCHEMA_HIEN_TAI` của
-  `scripts/tdq_checkstatus.py`, tức bản schema hiện tại của plugin. Bảng này in ra con
-  số của lúc sinh file; chạy `report` để lấy con số thật.
-- D12 chỉ có ở mode `subagent`. Dấu `[>]` là "đã giao cho agent con", KHÔNG phải lỗi —
-  nó chỉ trả lời câu "việc đang nằm ở đâu". Nhiều `[>]` cùng lúc là chuyện bình thường
-  của mode đội; ngược lại nhiều `[~]` vẫn là ca D4 vì chỉ leader mới mang dấu `[~]`.
-- D10 chỉ đề xuất lệnh vá khi thiếu `started_at`. Riêng `phase_history` rỗng thì không
-  lệnh nào dựng lại được lịch sử, nên ca đó hạ xuống mức `ok`.
+- D3 on the plan is only level `ok`: every task tick changes the plan's sha, so a sha drift on
+  the plan is an everyday event. A change in the plan's SCOPE has to be seen by eye — this
+  table cannot catch it.
+- D7 reads at most the 20 most recent commits, to keep `report` under 2,0 seconds.
+- Orphan requests (files under `docs/tdq/**` with no open request in the state) are OUT OF
+  SCOPE: the detector only handles the request the state has open.
+- It does not read an old session's transcript: a transcript does not travel with the repo
+  when the machine changes.
+- The `schema_version` value in patch D9 comes from constant `SCHEMA_HIEN_TAI` of
+  `scripts/tdq_checkstatus.py`, i.e. the plugin's current schema. This table prints the number
+  as of the day the file was generated; run `report` to get the real one.
+- D12 only exists in mode `subagent`. The mark `[>]` means "handed to a sub-agent", it is NOT
+  an error — it only answers "where does the work sit right now". Several `[>]` at once is
+  normal in team mode; several `[~]`, by contrast, is still case D4, because only the leader
+  ever carries `[~]`.
+- D10 proposes a patch command only when `started_at` is missing. An empty `phase_history`
+  cannot be rebuilt by any command, so that case is lowered to level `ok`.

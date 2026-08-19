@@ -5,90 +5,96 @@ description: Mở request TDQ mới - ghi yêu cầu, chọn lane, init state, p
 
 # TDQ Intake — mở request & phân tích
 
-Nạp [tdq-conventions](../tdq-conventions/SKILL.md) trước. Mọi output cho user: **tiếng Việt**.
-Skill này lo hai phase: `no_state` → `analyze`.
+Load [tdq-conventions](../tdq-conventions/SKILL.md) first. Mọi output cho user: **tiếng Việt**.
+This skill owns two phases: `no_state` → `analyze`.
 
-## Tầng nhỏ — trả lời/sửa luôn, không mở request
+## Tầng nhỏ — answer or fix on the spot, no request opened
 
-Vào tầng `nhỏ` khi **cả 4** điều kiện đúng:
+Enter tier `nhỏ` only when **all 4** conditions hold:
 
-1. Không đổi hành vi sản phẩm, hoặc chỉ đổi đúng một chỗ hiển nhiên (typo, hằng số,
-   chuỗi hiển thị, số phiên bản).
-2. Không thêm và không xoá file mã nguồn.
-3. Không đụng hook, state, gate duyệt.
-4. Xong trong một turn, không có chỗ nào cần user chốt.
+1. Product behaviour does not change, or exactly one obvious spot changes (typo,
+   constant, display string, version number).
+2. No source file is added and none is deleted.
+3. Nothing touches hooks, state, or an approval gate.
+4. It finishes inside one turn, with nothing the user has to decide.
 
-Ở tầng này: trả lời hoặc sửa luôn. Không mở request, không `init` state, không plan,
-không QC. Có đổi repo thì vẫn chạy `tdq_finish.py --log` như mọi turn khác.
+At this tier: answer or fix straight away. No request, no `init` state, no plan, no QC.
+If the repo changed, still run `tdq_finish.py --log` like every other turn.
 
-**Luật thoát (bắt buộc).** Giữa chừng vi phạm bất kỳ điều kiện nào → DỪNG tay, nói rõ
-điều kiện nào vỡ, rồi mở request bình thường từ Phần A. Cấm làm tiếp ở tầng `nhỏ`.
+**Escape rule (mandatory).** Break any condition midway → STOP, name the condition that
+broke, then open a normal request from Part A. Never keep going at tier `nhỏ`.
 
 ## Phần A — Mở request (phase `no_state`)
 
-Định nghĩa "yêu cầu mới": MỌI prompt của user khi KHÔNG có request mở — request mở
-= có `active_request` VÀ `phase != idle`. Khi phase ≠ idle, message của user thuộc
-request đang chạy (duyệt, góp ý, trả lời interview), không mở request lồng.
+Definition of a "new request": ANY user prompt while NO request is open — open means
+`active_request` exists AND `phase != idle`. When phase ≠ idle the user's message belongs
+to the running request (approval, feedback, interview answer); never nest a new request.
 
-Yêu cầu là BÁO LỖI chứ không phải làm tính năng ("chạy sai", "bị treo", "kết quả không
-như mong đợi") → theo [references/issue-triage.md](references/issue-triage.md) trước, rồi
-quay lại bước 1 dưới đây.
+The request is a BUG REPORT rather than a feature ("chạy sai", "bị treo", "kết quả không
+như mong đợi") → follow [references/issue-triage.md](references/issue-triage.md) first,
+then come back to step 1 below.
 
-1. **Ghi lại yêu cầu.** Tạo `docs/tdq/brief/<slug>.md` với slug
-   `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>`. Brief là file DUY NHẤT của phase intake +
-   analyze, đúng 3 mục: `## Nguyên văn` (nguyên văn yêu cầu user + cách hiểu đầu tiên
-   của bạn: mục tiêu, phạm vi đoán, chỗ chưa rõ), `## Hiểu & kiến thức`, `## Hỏi đáp`.
-   Ở bước này chỉ viết mục đầu; hai mục sau để trống, Phần B điền. Dòng 2 của brief —
-   ngay dưới tiêu đề — copy nguyên văn dòng sau (spec/plan/qc/report cũng mang dòng này):
+1. **Record the request.** Create `docs/tdq/brief/<slug>.md` with slug
+   `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>`. The brief is the ONLY file of the intake +
+   analyze phases, with exactly 3 sections: `## Nguyên văn` (the user's words verbatim
+   plus your first reading: goal, guessed scope, unclear spots), `## Hiểu & kiến thức`,
+   `## Hỏi đáp`. Write only the first section here; Part B fills the other two. Line 2 of
+   the brief — right under the title — copies this line verbatim (spec/plan/qc/report
+   carry it too):
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
-2. **Đề xuất lane rồi HỎI.** Trong chat: 2–3 dòng tóm tắt việc user muốn. Tự nhận định
-   cỡ/nhu cầu (`Cỡ:/Cần:`) là bước NỘI BỘ — dùng để chọn phương án đề xuất, KHÔNG in dòng
-   đó ra chat. Rồi câu hỏi "Bạn muốn chạy pipeline nào?" với option mỗi dòng theo khuôn
-   [references/interview.md](references/interview.md), phương án đề xuất luôn đứng ở A:
-   `- A (đề xuất): chế độ nhanh (express) — <lý do>` xuống dòng `- B: chế độ chuyên sâu (deep) — <lý do>`,
-   theo đúng khuôn đầy đủ (gồm khối giải thích nghĩa 2 pipeline) ở
+2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
+   Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you
+   recommend, and that line is NEVER printed to chat. Then ask "Bạn muốn chạy pipeline
+   nào?" with one option per line per [references/interview.md](references/interview.md),
+   the recommendation always at A:
+   `- A (đề xuất): chế độ nhanh (express) — <lý do>` on the next line `- B: chế độ chuyên sâu (deep) — <lý do>`,
+   following the full khuôn (including the block explaining what the 2 pipelines mean) in
    [references/lane-decision.md](references/lane-decision.md).
-   **DỪNG chờ user trả lời.** Không tự chọn lane.
+   **STOP and wait for the user's answer.** Never pick the lane yourself.
 
-3. **Init state** ngay khi user chốt lane:
+3. **Init state** as soon as the user settles the lane:
    ```
    python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" init <slug> <quick|full>
    ```
-   Lệnh này **xoá sạch** state cũ. Nếu đang có request khác còn dở → nói rõ slug và
-   phase sẽ mất, **hỏi user trước** rồi mới chạy.
+   This command **wipes** the old state. If another request is still unfinished → name the
+   slug and phase about to be lost, **ask the user first**, then run it.
 
-4. **Rẽ nhánh:**
-   - `full` → `... set phase=analyze`, làm tiếp Phần B ngay trong turn này.
-   - `quick` → làm Phần C, không qua Phần B.
+4. **Branch:**
+   - `full` → `... set phase=analyze`, continue with Part B inside this same turn.
+   - `quick` → do Part C, skipping Part B.
 
-Xong khi: `state.json` có `active_request` và `lane` đúng thứ user chọn.
+Xong khi: `state.json` has `active_request` and the `lane` the user chose.
 Bước kế tiếp: Phần B (chế độ chuyên sâu (deep)) hoặc Phần C (chế độ nhanh (express)).
 
 ## Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep))
 
-Chỉ nạp khi chế độ chuyên sâu (deep) — chế độ nhanh không cần mục này. Đóng vai chuyên gia đúng lĩnh vực,
-mục tiêu rời phase này với ZERO chỗ đoán. Làm đủ 6 bước (kiểm kê năng lực, đọc code,
-research, interview, chốt kiến thức, kiểm cổng) theo
-[references/analyze-full.md](references/analyze-full.md). Khuôn bảng phán quyết của bước
-kiểm kê năng lực (B0): [references/skill-inventory.md](references/skill-inventory.md).
-Interview đi từ tổng quát đến chi tiết: **vòng scope** trước (mặt nào + bối cảnh bằng số,
-theo [references/scope-round.md](references/scope-round.md)), rồi mới hỏi chi tiết trong
-đúng các mặt user chọn. Vòng scope có điều kiện; BỎ thì ghi một dòng lý do vào brief.
+Load this only for chế độ chuyên sâu (deep) — chế độ nhanh does not need it. Play the
+expert of that exact field; the goal is to leave this phase with ZERO guesswork. Do all 6
+steps (capability inventory, read the code, research, interview, settle the knowledge,
+gate check) per [references/analyze-full.md](references/analyze-full.md). The verdict
+table khuôn for the capability-inventory step (B0):
+[references/skill-inventory.md](references/skill-inventory.md).
+The interview runs general → specific: the **scope round** first (which areas + context in
+numbers, per [references/scope-round.md](references/scope-round.md)), and only then the
+detail questions inside the areas the user picked. The scope round is conditional; skip it
+and one line of reasoning goes into the brief.
 
-Xong khi: `brief/<slug>.md` đủ 3 mục (có `### Lộ trình`) và cả 3 câu hỏi kiểm cổng đều
-trả lời được.
+Xong khi: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`) and all 3 gate
+questions can be answered.
 Bước kế tiếp: `python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" set phase=spec`
-rồi sang [tdq-spec](../tdq-spec/SKILL.md) — cùng turn nếu interview đã xong, còn phải
-hỏi user thì trình câu hỏi và dừng.
+then on to [tdq-spec](../tdq-spec/SKILL.md) — same turn if the interview is finished; if
+questions remain, present them and stop.
 
 ## Phần C — Chế độ nhanh (express)
 
-Chế độ nhanh = rút gọn, KHÔNG cắt bước tư duy. Chín bước thi hành — từ phân tích tới hỏi
-commit — nằm ở [references/quick-lane.md](references/quick-lane.md) mục
-`## Chín bước thi hành`. **BẮT BUỘC mở file đó và đọc hết chín bước trước khi làm bước 1;
-cấm làm theo trí nhớ.** Cùng file đó có luôn khuôn mini-plan, luật tick, luật QC và vòng fix.
+Chế độ nhanh is a shortened path, NOT a path with thinking steps cut out. The nine
+execution steps — from analysis to asking about the commit — live in
+[references/quick-lane.md](references/quick-lane.md) under `## Chín bước thi hành`.
+**You MUST open that file and read all nine steps before doing step 1; working from memory
+is banned.** That same file also holds the mini-plan khuôn, the tick rule, the QC rule and
+the fix round.
 
-Xong khi: `quick_approved = true`, log đã ghi, mục `## QC` đã có, không còn test đỏ.
+Xong khi: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
 Bước kế tiếp: hỏi user về commit; hết request thì `... set phase=idle`.

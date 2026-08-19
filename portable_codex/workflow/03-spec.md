@@ -5,35 +5,38 @@ description: Viết spec tiếng Việt cho request TDQ, đăng ký vào state, 
 
 # TDQ Spec
 
-Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Việt**
-(nhắc lại có chủ ý — bản gốc ở `skills/tdq-conventions/SKILL.md`).
+Load [tdq-conventions](../tdq-conventions/SKILL.md). The spec text itself is written in
+**tiếng Việt** (nhắc lại có chủ ý — bản gốc ở `skills/tdq-conventions/SKILL.md`).
 
 ## Các bước
 
-1. **Viết** `docs/tdq/spec/<slug>.md` từ `docs/tdq/brief/<slug>.md`.
-   Khuôn đầy đủ: [references/spec-template.md](references/spec-template.md).
-   Mục bắt buộc: mục tiêu & phạm vi (in/out) · **Lộ trình** (chép từ brief: phase
-   nào chạy, phase nào bỏ, skill nào dùng, vì sao — user duyệt spec là duyệt luôn
-   lộ trình) · **Ranh giới module** (§2b — bảng module, vùng file, phụ thuộc; bắt buộc
-   lane full, lane quick bỏ) · đầu ra đo đếm được · cách tiếp cận + lý do ·
-   năng lực & công cụ (§3b — chép bảng phán quyết từ brief, máy kiểm bằng doc_lint R8) ·
-   yêu cầu bắt buộc (log service bật mặc định, không placeholder, test cho từng phần) ·
-   ràng buộc & rủi ro · phạm vi QC + Definition of Done · câu hỏi còn mở.
+1. **Write** `docs/tdq/spec/<slug>.md` out of `docs/tdq/brief/<slug>.md`.
+   Full khuôn: [references/spec-template.md](references/spec-template.md).
+   Sections that MUST be there: goal & scope (in/out) · **Lộ trình** (copied from the
+   brief: which phase runs, which is dropped, which skill is used, why — approving the
+   spec approves the route with it) · **Ranh giới module** (§2b — module table, file
+   areas, dependencies; required in lane full, dropped in lane quick) · a measurable
+   output · the approach + its reason · năng lực & công cụ (§3b — copy the verdict table
+   from the brief, machine-checked by doc_lint R8) ·
+   standing requirements (log service ON by default, no placeholder, a test per part) ·
+   constraints & risks · QC scope + Definition of Done · open questions.
    Mục "câu hỏi còn mở" PHẢI rỗng — còn câu hỏi thì quay lại phase `analyze`.
 
-2. **Tự review.** Đọc lại tìm chỗ hổng/mâu thuẫn, sửa. Chạy máy kiểm
-   (R8 kiểm §3b): `python3 "./scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
-   đến khi exit 0.
-   Cần review sâu hơn thì user yêu cầu — khi đó mới gọi agent `tdq-reviewer` (tùy chọn).
+2. **Self-review.** Re-read it for holes and contradictions, and fix them. Run the machine
+   check (R8 inspects §3b):
+   `python3 "./scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
+   until it exits 0.
+   A deeper review happens only when the user asks for it — that is the one case where
+   agent `tdq-reviewer` gets called (tùy chọn).
 
-3. **Đăng ký file vào state:**
+3. **Register the file into state:**
    ```
    python3 "./scripts/tdq_state.py" set spec_file=docs/tdq/spec/<slug>.md
    ```
 
-4. **Trình bày & DỪNG.** Viết khối trình spec theo
-   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — đủ 5
-   thành phần, đúng thứ tự, khối duyệt nằm cuối tin nhắn:
+4. **Present it, then STOP.** Write the spec block per
+   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — all 5
+   components, in that order, the approval block at the end of the message:
    ```
    Tôi đã viết xong spec cho yêu cầu của bạn.
 
@@ -50,23 +53,23 @@ Nạp [tdq-conventions](../tdq-conventions/SKILL.md). Spec viết **tiếng Vi�
 
    ➤ Duyệt: nhắn "duyệt spec" (duyệt xong tôi viết plan ngay) · Góp ý: nhắn trực tiếp
    ```
-   Phần nội dung ≤ 50 dòng và phải là tóm tắt THẬT — cấm thay bằng câu thông báo suông
-   kiểu "đã ghi log, đang chờ duyệt"; thiếu thì viết bổ sung ngay. Đầu ra của spec là
-   chính một khuôn/mẫu văn bản (vd khuôn câu hỏi A/B) → cần trích nguyên khối đó làm ví
-   dụ thì gắn nhãn rõ ngay trước đoạn trích. Nhãn dạng "(khuôn mẫu — áp dụng cho các lần
-   hỏi sau, không phải câu hỏi của turn này)". Mục đích: đọc lại transcript không nhầm là
-   đang hỏi lại.
-   Rồi **kết thúc turn**. Không viết plan, không sửa code. User góp ý thay vì duyệt →
-   sửa spec, tăng số bản, trình lại, chờ tiếp.
+   The body is ≤ 50 lines and must be a REAL summary — swapping it for a bare status line
+   like "đã ghi log, đang chờ duyệt" is banned; thin summary → write the missing part now.
+   When the output of the spec IS a khuôn/template (e.g. an A/B question khuôn) and you
+   have to quote that block as an example, label the quote right before it.
+   Nhãn dạng "(khuôn mẫu — áp dụng cho các lần hỏi sau, không phải câu hỏi của turn này)".
+   Mục đích: đọc lại transcript không nhầm là đang hỏi lại.
+   Then **end the turn**. Do not write the plan, do not touch code. The user comments
+   instead of approving → fix the spec, bump the version number, present again, wait again.
 
-5. **User duyệt → ghi nhận NGAY:**
+5. **The user approves → record it IMMEDIATELY:**
    ```
    python3 "./scripts/tdq_state.py" approve spec --by "<nguyên văn câu user>"
    ```
-   Mơ hồ thì HỎI — luật đầy đủ ở
+   Ambiguous wording → ASK. Full rule in
    [approval.md](../tdq-conventions/references/approval.md).
 
-Xong khi: `spec_approved = true` và `spec_file` trỏ đúng file đã trình.
+Xong khi: `spec_approved = true` and `spec_file` points at the file you presented.
 Bước kế tiếp: `python3 "./scripts/tdq_state.py" set phase=plan`
-rồi sang [tdq-plan](../tdq-plan/SKILL.md) **NGAY trong cùng turn** — không bắt user
-nhắn thêm câu nào.
+then on to [tdq-plan](../tdq-plan/SKILL.md) **NGAY trong cùng turn** — the user is not
+made to send one more message.

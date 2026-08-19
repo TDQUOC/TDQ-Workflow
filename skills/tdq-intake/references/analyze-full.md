@@ -1,72 +1,80 @@
 # Phần B — Phân tích (phase `analyze`, chỉ chế độ chuyên sâu (deep))
 
-Đóng vai chuyên gia đúng lĩnh vực của yêu cầu. Mục tiêu: rời phase này với **ZERO chỗ đoán**.
-Mọi thứ ghi ra ở phase này nằm trong MỘT file `docs/tdq/brief/<slug>.md`, đúng 3 mục:
-`## Nguyên văn` (yêu cầu user, đã ghi ở Phần A), `## Hiểu & kiến thức`, `## Hỏi đáp`.
+Play the expert of the exact field the request belongs to. Goal: leave this phase with
+**ZERO guesswork**. Everything written in this phase lives in ONE file
+`docs/tdq/brief/<slug>.md`, with exactly 3 sections: `## Nguyên văn` (the user's request,
+already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`.
 
-1. **Kiểm kê năng lực (B0).** Chạy
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py" --loc "<từ khoá của yêu cầu>"`,
-   bản lọc luôn giữ đủ skill nguồn `project` và `plugin:tdq-workflow`; nghi còn sót thì
-   chạy lại với `--tat-ca` để xem đủ bảng,
-   chép thêm skill built-in đang thấy trong context, điền bảng phán quyết theo khuôn
-   [skill-inventory.md](skill-inventory.md) vào
-   brief mục `## Hiểu & kiến thức` → `### Năng lực dùng được`. Phân vân → DÙNG.
+1. **Capability inventory (B0).** Run
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/skill_inventory.py" --loc "<từ khoá của yêu cầu>"`;
+   the filtered view always keeps every skill from source `project` and
+   `plugin:tdq-workflow`. Suspect something is missing → re-run with `--tat-ca` for the
+   full table. Add the built-in skills you can see in context, then fill the verdict table
+   per the khuôn in [skill-inventory.md](skill-inventory.md) into the brief under
+   `## Hiểu & kiến thức` → `### Năng lực dùng được`. In doubt → USE it.
 
-2. **Đọc code.** Tìm hết chỗ yêu cầu này chạm tới: entry point, luồng dữ liệu, config,
-   test. Ghi lại phiên bản/framework đang dùng.
+2. **Read the code.** Find everything this request touches: entry point, data flow,
+   config, tests. Write down the versions and frameworks in use.
 
-   **Hồ sơ kiến trúc — sinh một lần cho mỗi project.** Mở `docs/kien-truc.md`. Đã có →
-   đọc hết trước khi viết dòng phân tích nào. Chưa có → sinh bản nháp ngay trong phase
-   này rồi trình user chốt; chưa chốt thì mọi dòng trong đó là gợi ý, không phải luật.
-   Nháp đúng 4 mục. `## Tầng`: mỗi dòng một tầng kèm trách nhiệm. `## Luật gọi`: các
-   dòng "tầng X không được gọi tầng Y" kèm lý do. `## Hub`: 5 node nhiều liên kết nhất
-   kèm số bậc, lấy từ `graphify god-nodes`; sửa node trong đó là rủi ro cao, phải khai
-   ở dòng `Chạm:` của plan. `## Đã chốt`: quyết định đã đóng kèm ngày; muốn đổi phải
-   mở request riêng. Nguồn sinh: cây thư mục + `graphify god-nodes` + config build.
+   **Architecture profile — generated once per project.** Open `docs/kien-truc.md`.
+   Already there → read it fully before writing a single line of analysis. Not there →
+   generate a draft in this phase, then have the user settle it; until settled every line
+   in it is a suggestion, not a rule. The draft has exactly 4 sections. `## Tầng`: one
+   line per layer with its responsibility. `## Luật gọi`: the "layer X must not call layer
+   Y" lines with reasons. `## Hub`: the 5 most connected nodes with their degree, taken
+   from `graphify god-nodes`; editing one of them is high risk and must be declared on the
+   plan's `Chạm:` line. `## Đã chốt`: closed decisions with their date; changing one needs
+   its own request. Sources: the directory tree + `graphify god-nodes` + build config.
 
-   **Luật ĐỌC đồ thị graphify** (gợi ý có điều kiện, KHÔNG bắt buộc mỗi lần analyze):
-   - MỞ đồ thị khi câu hỏi thuộc dạng **liên kết** hoặc **bản đồ tổng thể**.
-     Dạng đó là: "ai gọi X", "sửa X thì ảnh hưởng tới đâu", "hai chỗ này nối nhau đường
-     nào", "project có những cụm nào". Lệnh: `graphify query|path|explain|affected`.
-   - DÙNG grep/read khi câu hỏi là tìm một chuỗi, đọc một file, hay xem nội dung cụ thể —
-     nhanh hơn và không phụ thuộc đồ thị có mới hay không.
-   - Đồ thị chỉ chứa mã nguồn sản phẩm (`scripts/`, `hooks/`); `tests/` và tài liệu bị
-     `.graphifyignore` loại. Cần tra test hay doc thì grep, đừng chờ đồ thị.
+   **When to READ the graphify graph** (conditional advice, NOT mandatory every analyze):
+   - OPEN the graph when the question is about **links** or about the **overall map**.
+     That means: "who calls X", "what breaks if I change X", "how are these two connected",
+     "which clusters does the project have". Commands: `graphify query|path|explain|affected`.
+   - USE grep/read when the question is finding a string, reading a file, or looking at
+     specific content — faster, and it does not depend on how fresh the graph is.
+   - The graph holds product source only (`scripts/`, `hooks/`); `tests/` and docs are
+     excluded by `.graphifyignore`. Need a test or a doc → grep, don't wait for the graph.
 
-3. **Research nhiều hướng — giao subagent.** 2–4 truy vấn khác góc nhìn qua `tavily-primary`
-   (luật failover ở [tavily.md](../../tdq-conventions/references/tavily.md)). Mặc định giao
-   một sub-agent `general-purpose`: agent tự chạy truy vấn, tự ghi `docs/tdq/research/<slug>.md`
-   (truy vấn → nguồn → điều rút ra), trả về hội thoại chính **digest ≤ 1.500 ký tự**.
-   Kết quả tavily thô nằm lại context tốn ~14M token/2 session — đó là lý do bắt buộc.
-   Ngoại lệ tự làm: chỉ 1 truy vấn, hoặc đã biết sẵn URL (dùng `WebFetch`).
-   Bỏ qua chỉ khi việc thuần nội bộ, không có ẩn số bên ngoài.
+3. **Research from several angles — hand it to a subagent.** 2–4 queries from different
+   angles through `tavily-primary` (failover rule in
+   [tavily.md](../../tdq-conventions/references/tavily.md)). By default hand it to one
+   `general-purpose` sub-agent: the agent runs the queries itself, writes
+   `docs/tdq/research/<slug>.md` itself (query → source → what follows), and returns a
+   **digest ≤ 1.500 ký tự** to the main conversation.
+   Raw tavily results left sitting in context cost ~14M tokens per 2 sessions — that is
+   why this is mandatory.
+   Exception, do it yourself: a single query, or a URL you already know (use `WebFetch`).
+   Skip the step only when the work is purely internal, with no external unknown.
 
-4. **Vòng interview — tổng quát trước, chi tiết sau.** Chạy **vòng scope** trước theo
-   [scope-round.md](scope-round.md): request bao quanh mặt nào, bối cảnh bằng số ra sao,
-   từ đó suy ra mức đầu tư. Vòng scope có điều kiện; bỏ thì ghi lý do vào brief. Rồi mới
-   tới vòng chi tiết: liệt kê MỌI câu hỏi làm thay đổi kết quả (phạm vi, UX, dữ liệu,
-   lỗi, hiệu năng, tương thích) nhưng chỉ trong các mặt user đã chọn. Cách hỏi:
+4. **Interview rounds — general first, detail after.** Run the **scope round** first per
+   [scope-round.md](scope-round.md): which areas the request spans, what the context looks
+   like in numbers, and from that infer the investment level. The scope round is
+   conditional; skip it and the reason goes into the brief. Only then the detail round:
+   list EVERY question that changes the outcome (scope, UX, data, errors, performance,
+   compatibility) but only inside the areas the user chose. How to ask:
    [interview.md](interview.md).
-   Ghi hỏi–đáp vào brief mục `## Hỏi đáp`. **Lặp** đến khi không còn câu hỏi
-   nào làm đổi kết quả — nhiều vòng là bình thường. Không lấp chỗ trống bằng phỏng đoán.
+   Write question–answer pairs into the brief under `## Hỏi đáp`. **Repeat** until no
+   question left can change the outcome — several rounds is normal. Never fill a gap with
+   a guess.
 
-5. **Chốt kiến thức.** Viết vào brief mục `## Hiểu & kiến thức`: quyết định đã chốt,
-   ràng buộc, cách tiếp cận đã chọn + lý do, phương án đã loại + lý do, nguồn.
+5. **Settle the knowledge.** Write into the brief under `## Hiểu & kiến thức`: settled
+   decisions, constraints, the chosen approach + why, the rejected options + why, sources.
 
-5b. **Quyết lộ trình.** Thêm `### Lộ trình` vào mục đó: bảng `Bước/phase | CÓ-BỎ |
-   Vì sao` cho từng bước còn lại (research thêm, QC độc lập bằng agent, review sâu,
-   chia subagent…). Khung bất biến không được bỏ: phân tích → spec/plan → implement →
-   report. Chỉ cắt bước THỪA cho chính việc này, nêu lý do; phân vân → GIỮ. Lộ trình
-   này chép nguyên sang spec §1b và user duyệt spec là duyệt luôn nó.
+5b. **Decide the route.** Add `### Lộ trình` to that section: a table `Bước/phase | CÓ-BỎ |
+   Vì sao` for each remaining step (extra research, independent QC by an agent, deep
+   review, splitting across subagents…). The invariant frame that can never be dropped:
+   analysis → spec/plan → implement → report. Cut only the steps that are REDUNDANT for
+   this particular task, and say why; in doubt → KEEP. This route is copied verbatim into
+   spec §1b, and approving the spec approves it too.
 
-6. **Kiểm cổng** trước khi đi tiếp:
-   - Phạm vi cuối đã rõ chưa: làm ra gì, có gì mới, output cụ thể là gì?
-   - Có cần model / download / cài đặt gì không?
-   - Phạm vi QC/test/validate đã có chưa?
-   Thiếu bất kỳ mục nào → quay lại bước 4.
+6. **Gate check** before moving on:
+   - Is the final scope clear: what gets built, what is new, what exactly is the output?
+   - Is any model / download / installation needed?
+   - Is the QC/test/validate scope defined?
+   Any item missing → back to step 4.
 
-Xong khi: `brief/<slug>.md` đủ 3 mục (có `### Lộ trình`) và cả 3 câu hỏi kiểm cổng đều
-trả lời được.
+Xong khi: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`) and all 3 gate
+questions can be answered.
 Bước kế tiếp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
-rồi sang [tdq-spec](../../tdq-spec/SKILL.md) — cùng turn nếu interview đã xong, còn phải
-hỏi user thì trình câu hỏi và dừng.
+then on to [tdq-spec](../../tdq-spec/SKILL.md) — same turn if the interview is finished;
+if questions remain, present them and stop.
