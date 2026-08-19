@@ -30,11 +30,13 @@ GIT_TIMEOUT = 120
 
 # --- luật đọc plan -----------------------------------------------------------
 # Dòng task: `- [ ] **T1.1** (n3 e5m) việc — Test: ...`
-_TASK = re.compile(r"^(\s*)-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z]+[0-9.]*)\*\*\s*(.*)$")
+_TASK = re.compile(r"^(\s*)-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z][A-Za-z0-9.]*)\*\*\s*(.*)$")
 _PHASE = re.compile(r"^##\s*(P\d+)\b")
 # Đường dẫn khai trong backtick: phải có `/` và có đuôi — `true` hay `T1.1` không tính.
 _PATH = re.compile(r"`([A-Za-z0-9_./-]+\.[A-Za-z0-9]+)`")
-_TASK_REF = re.compile(r"\b(T\d+\.\d+)\b")
+# Cùng luật mã task với `_TASK` ở trên: `T2A.1`, `T2.4b` đều là lời khai hợp lệ
+# trong dòng `- Cần:`, bỏ sót thì đồ thị phụ thuộc thưa giả.
+_TASK_REF = re.compile(r"\b(T\d+[A-Za-z]*\.\d+[a-z]?)\b")
 # Nhãn khai phụ thuộc trong plan: `- Cần: T1.1, T2.3`.
 NHAN_CAN = "Cần:"
 # Nhãn ước lượng thời gian trong plan: `(n3 e20m)` → 20 phút.

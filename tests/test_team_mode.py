@@ -1261,5 +1261,53 @@ class DongNoiTiepTest(unittest.TestCase):
         self.assertEqual(t.vung_file, ["scripts/a.py"])
 
 
+PLAN_MA_CO_CHU = """## P2 — a
+### Nhánh A
+- [~] **T2A.1** (e5m) Việc nhánh A — Test: x
+  - Chạm: `scripts/a.py`
+- [ ] **T2A.2** (e5m) Việc kế — Test: x
+  - Cần: T2A.1
+- [ ] **T2.4b** (e5m) Biến thể b — Test: x
+  - Cần: T2A.2
+"""
+
+
+class MaTaskCoChuTest(unittest.TestCase):
+    """Mã task có chữ nằm SAU số (`T2A.1`, `T2.4b`) phải đọc được.
+
+    Trước bản sửa 2026-08-19: lớp ký tự `[A-Za-z]+[0-9.]*` chỉ ăn chữ đứng trước số,
+    nên sáu task trong plan lịch sử vô hình với cả bộ đọc plan lẫn cổng tick.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def _tasks(self, plan):
+        duong = os.path.join(self.cwd, "plan.md")
+        with open(duong, "w", encoding="utf-8") as f:
+            f.write(plan)
+        return tdq_team.doc_plan(duong)
+
+    def test_doc_plan_thay_du_ba_ma_la(self):
+        self.assertEqual([t.ma for t in self._tasks(PLAN_MA_CO_CHU)],
+                         ["T2A.1", "T2A.2", "T2.4b"])
+
+    def test_phu_thuoc_nhan_ma_la(self):
+        pt = tdq_team.doc_phu_thuoc(self._tasks(PLAN_MA_CO_CHU))
+        self.assertEqual(pt["T2A.2"], {"T2A.1"})
+        self.assertEqual(pt["T2.4b"], {"T2A.2"})
+
+    def test_tick_state_dem_du_va_thay_dang_lam(self):
+        write_state(self.cwd, active_request="2026-08-17-1828-x", lane="full",
+                    phase="implement", implement_mode="main", plan_file=PLAN_REL)
+        write_file(self.cwd, PLAN_REL, PLAN_MA_CO_CHU)
+        info = tdq_state.plan_tick_state(self.cwd)
+        self.assertEqual(info["total"], 3)
+        self.assertTrue(info["has_doing"])
+        self.assertFalse(info["all_done"])
+
+
 if __name__ == "__main__":
     unittest.main()

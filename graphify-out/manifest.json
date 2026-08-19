@@ -115,9 +115,9 @@
     "semantic_hash": "44ae248a9d440b9541dd0ebed96a6210"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1787069733.9559808,
-    "ast_hash": "cf449bd140e30f3fea3dfa853053be92",
-    "semantic_hash": "cf449bd140e30f3fea3dfa853053be92"
+    "mtime": 1787129586.256085,
+    "ast_hash": "e552689727165fb4e6af28a5d09c7f13",
+    "semantic_hash": "e552689727165fb4e6af28a5d09c7f13"
   },
   "scripts/token_audit.py": {
     "mtime": 1787125894.706701,
@@ -165,9 +165,9 @@
     "semantic_hash": "64ea72e6d9f0c257df44c8442402cdab"
   },
   "scripts/tdq_team.py": {
-    "mtime": 1787128774.742564,
-    "ast_hash": "6462ff10f3b71e66b1808a60080df7b3",
-    "semantic_hash": "6462ff10f3b71e66b1808a60080df7b3"
+    "mtime": 1787129586.2568228,
+    "ast_hash": "7f355a2deae23e2bb558543828304318",
+    "semantic_hash": "7f355a2deae23e2bb558543828304318"
   },
   "scripts/tdq_bench.py": {
     "mtime": 1786975452.6600678,

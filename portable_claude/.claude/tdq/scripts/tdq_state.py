@@ -530,7 +530,10 @@ def repo_status_paths(cwd, limit=400, status=None):
 # Dấu `>` = task đã GIAO cho agent con và agent đó đang chạy (mode đội). Khác
 # `~` ở chỗ: `~` là leader tự làm — chỉ được có MỘT; `>` chạy song song nên
 # được có NHIỀU. Xem skills/tdq-build/references/team-mode.md.
-_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z]+[0-9.]*)\*\*")
+# Mã task: chữ mở đầu, sau đó chữ/số/chấm trộn tự do — plan thật có `T2A.1`
+# (nhánh song song trong một phase) và `T2.4b` (biến thể). Lớp ký tự hẹp hơn làm
+# các task đó vô hình với cả bộ đếm tick lẫn cổng chống ngừng.
+_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z][A-Za-z0-9.]*)\*\*")
 
 
 def plan_tick_state(cwd):

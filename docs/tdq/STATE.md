@@ -1,9 +1,9 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-19T15:38:43+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-19T15:52:36+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-19-1503-sua-doc-plan-xuong-dong |
+| Request | 2026-08-19-1544-doc-ma-task-co-chu |
 | Lane | quick |
 | Phase | implement |
 | Spec | (chưa có) |
