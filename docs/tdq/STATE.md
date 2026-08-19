@@ -1,24 +1,24 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-19T14:55:46+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-19T15:38:43+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-19-1046-huong-b-cat-output-tool |
-| Lane | full |
-| Phase | report |
-| Spec | docs/tdq/spec/2026-08-19-1046-huong-b-cat-output-tool.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-19-1046-huong-b-cat-output-tool.md — ✔ đã duyệt |
-| Duyệt quick | (không áp dụng) |
-| Mode thực thi | main |
+| Request | 2026-08-19-1503-sua-doc-plan-xuong-dong |
+| Lane | quick |
+| Phase | implement |
+| Spec | (chưa có) |
+| Plan | (chưa có) |
+| Duyệt quick | ✔ đã duyệt |
+| Mode thực thi | (chưa chốt) |
 
 ## Đang ở đâu
-QC đã PASS. Cấm: Tự commit hoặc push khi user chưa yêu cầu.
+lane = quick. Cấm: Implement trước khi ghi working log; gom tick vào cuối turn hoặc để nhiều task cùng mang [~]; đóng việc khi còn test đỏ hoặc còn bug đã biết; chạy set phase=idle khi đã vượt trần 3 vòng fix mà chưa báo user.
 
 ## Việc tiếp theo
-Viết report ngắn gọn (khuyến nghị 10-20 dòng, không giới hạn cứng) rồi hỏi user có commit không.
+Phân tích → mini-spec/plan gộp 1 file → chờ duyệt → ghi working log TRƯỚC → implement → QC bám DoD (mặc định BẬT) → vòng fix nếu FAIL.
 ```
-python3 scripts/tdq_state.py set phase=idle
+python3 scripts/tdq_state.py approve quick [--no-qc] --by "<nguyên văn câu user>"
 ```
-Xong khi: Report đã ghi và user đã được hỏi về commit
+Xong khi: quick_approved = true, log đã ghi, mục ## QC trong plan đã có (bằng chứng hoặc dòng BỎ theo yêu cầu user), không còn test đỏ, phase đã về idle
 
 > Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.

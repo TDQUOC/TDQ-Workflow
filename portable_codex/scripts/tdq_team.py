@@ -146,6 +146,13 @@ def doc_plan(duong_dan):
             hien_tai.text.append(line.strip()[2:])
         elif not line.strip():
             continue
+        elif line.startswith((" ", "\t")):
+            # Dòng nối tiếp của mô tả: thụt lề nhưng không mở bullet mới. Nối vào
+            # phần tử cuối chứ không tạo phần tử riêng — nhờ vậy chính dòng khai bị
+            # ngắt (`- Chạm: …` xuống dòng) vẫn còn tiền tố để nhận ra.
+            duoi = line.strip()
+            truoc = hien_tai.text[-1].rstrip()
+            hien_tai.text[-1] = (truoc + " " + duoi) if truoc else duoi
         else:
             hien_tai = None
     for t in tasks:

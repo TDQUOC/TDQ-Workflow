@@ -1203,5 +1203,63 @@ class LuatTest(unittest.TestCase):
                          "phải đúng 3 ngoại lệ, không hơn không kém")
 
 
+PLAN_XUONG_DONG = """## P1 — a
+- [ ] **T1.1** (e10m) Việc dài nên mô tả phải ngắt sang dòng thứ hai cho dễ đọc,
+  phần đuôi nằm ở đây — Test: `pytest -q` xanh
+  - Chạm: `scripts/a.py`
+  - Cần: T1.0
+- [ ] **T1.2** (e5m) Việc một dòng — Test: x
+  - Chạm: `scripts/b.py`
+"""
+
+PLAN_DUONG_DAN_DONG_NOI = """## P1 — a
+- [ ] **T1.1** (e10m) Sửa bộ đọc, mô tả dài nên ngắt dòng và đường dẫn rơi xuống
+  dòng sau: `scripts/tdq_team.py` — Test: x
+"""
+
+PLAN_HEADING_DONG_TASK = """## P1 — a
+- [ ] **T1.1** (e5m) Việc — Test: x
+  - Chạm: `scripts/a.py`
+
+## Definition of Done
+- Chạm: `scripts/khong-phai-cua-task.py`
+"""
+
+
+class DongNoiTiepTest(unittest.TestCase):
+    """Mô tả task ngắt xuống dòng KHÔNG được làm rơi các dòng con phía dưới.
+
+    Trước bản sửa 2026-08-19: dòng nối tiếp thụt lề mà không phải bullet rơi vào
+    nhánh đóng task, nên mọi `- Chạm:`/`- Cần:` sau nó bị nuốt im lặng.
+    """
+
+    def _tasks(self, plan):
+        with tempfile.TemporaryDirectory() as d:
+            duong = os.path.join(d, "plan.md")
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write(plan)
+            return tdq_team.doc_plan(duong)
+
+    def test_mo_ta_hai_dong_van_giu_cham_va_can(self):
+        t = self._tasks(PLAN_XUONG_DONG)[0]
+        self.assertEqual(t.ma, "T1.1")
+        self.assertIn("Chạm: `scripts/a.py`", t.text)
+        self.assertIn("Cần: T1.0", t.text)
+        self.assertEqual(t.vung_file, ["scripts/a.py"])
+
+    def test_duoi_mo_ta_noi_vao_dung_phan_tu_truoc(self):
+        t = self._tasks(PLAN_XUONG_DONG)[0]
+        self.assertTrue(t.text[0].endswith("`pytest -q` xanh"), t.text[0])
+        self.assertIn("phần đuôi nằm ở đây", t.text[0])
+
+    def test_duong_dan_o_dong_noi_tiep_vao_vung_file(self):
+        t = self._tasks(PLAN_DUONG_DAN_DONG_NOI)[0]
+        self.assertEqual(t.vung_file, ["scripts/tdq_team.py"])
+
+    def test_heading_khong_thut_le_van_dong_task(self):
+        t = self._tasks(PLAN_HEADING_DONG_TASK)[0]
+        self.assertEqual(t.vung_file, ["scripts/a.py"])
+
+
 if __name__ == "__main__":
     unittest.main()

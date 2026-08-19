@@ -82,7 +82,7 @@
     "scripts/tdq_checkstatus.py": "b0b937dbfba821c3a29190c46cf075c5f3d63150142caa2c3844da3c1279364d",
     "scripts/tdq_finish.py": "dcbef559cebdd314b1637a4df836d11cc9e3777813ce0a2b7a956b5ac55a9c96",
     "scripts/tdq_state.py": "5cbb7ed71f9d83ac3a94e10ab7c2bbbe90686582b539f09207c2c482f4eb0309",
-    "scripts/tdq_team.py": "8e2a59038af9a43f4ec914b60ad82c7e3e6fae9deb7772256b73c7f83205c5dc",
+    "scripts/tdq_team.py": "1cf5c426c00634c518234906f04a704ab58524fa6de27a7c40a6c10471ca6ead",
     "scripts/tdq_timing.py": "dc370fda884c93ab77b14586bf75169e76f2a40ee517233678b277efdce2c71c",
     "scripts/token_audit.py": "0cf4f8711037f84ea43124dd438e92a341fc2515a61933656516d7e8f23840ae",
     "workflow/01-conventions.md": "4ae47bab9a446d26fc2002934b38e0f94d460a17311b426840108fbbca80acd6",
