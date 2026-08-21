@@ -1,13 +1,13 @@
 # TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-19T18:35:40+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Cập nhật: 2026-08-21T23:38:59+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Trường | Giá trị |
 |---|---|
-| Request | 2026-08-19-1616-huong-a-dich-hybrid |
+| Request | 2026-08-21-2311-workflow-da-ngon-ngu |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-19-1616-huong-a-dich-hybrid.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-19-1616-huong-a-dich-hybrid.md — ✔ đã duyệt |
+| Spec | docs/tdq/spec/2026-08-21-2311-workflow-da-ngon-ngu.md — ✔ đã duyệt |
+| Plan | docs/tdq/plan/2026-08-21-2311-workflow-da-ngon-ngu.md — ✔ đã duyệt |
 | Duyệt quick | (không áp dụng) |
 | Mode thực thi | main |
 
