@@ -2,6 +2,29 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.29.0 — 2026-08-22
+
+Đóng sổ mà còn ô tick trống thì hook nhắc. Trước bản này `plan_tick_state()` chỉ đếm ô có mã
+task in đậm, nên mọi dòng Definition of Done đều vô hình: plan tick đủ task là `all_done` bật
+True dù cả 19 dòng DoD còn trống. Chốt chặn `[TDQ:TICK]` lại chỉ bắn ở phase `implement` và
+`qc` — đúng lúc đóng sổ ở `report` thì không còn ai canh, bảo hiểm duy nhất là một câu văn
+xuôi trong khuôn report dựa vào trí nhớ của model.
+
+- **Nhắc `[TDQ:DOD]` ở phase `report` và `idle`**: bắn khi QC đã PASS sạch mà ô tick còn
+  trống, nêu cả số task lẫn số dòng DoD còn lại. Nó **chỉ nhắc, không chặn** — turn vẫn kết
+  thúc bình thường. Nhắc xếp đầu danh sách hint để không bị cắt mất khi đã có bốn nhắc khác.
+- **Ba bộ đọc riêng trong `scripts/tdq_state.py`**: `dod_tick_state()`, `qc_result_state()`,
+  `task_open_count()`. Cố ý KHÔNG nới `_TASK_LINE`: bốn nơi phụ thuộc hợp đồng trả về của
+  `plan_tick_state()`, nới ra là lệch `all_done` và lệch cả ETA của status line.
+- **Bốn cửa im lặng** giữ cho hook chạy ở user scope không cằn nhằn nhầm: sai phase · mục DoD
+  không dùng ô tick (plan viết trước đây đếm 0, không bao giờ bị nhắc) · đã tick đủ · file qc
+  chưa có, còn FAIL, hoặc còn hạng mục chưa kết luận.
+- **Hai khuôn skill cập nhật theo**: plan bắt DoD viết dạng ô tick, report bước 8 nói rõ phải
+  tick CẢ HAI loại ô — ô task từng phase và ô Definition of Done.
+- **Bộ dò trùng lặp tài liệu `scripts/doc_dup.py`**: cắt shingle, gộp khối, đếm token bằng bộ
+  đếm thật trong `.venv-tokens`; thiếu thư viện thì thoát mã 3 chứ không lùi về ước lượng
+  ký-tự-chia-bốn. Kèm hồ sơ rà soát bốn mặt và bảng top 10 đề xuất tối ưu.
+
 ## 0.28.0 — 2026-08-22
 
 Worktree do workflow đẻ ra không còn nằm lại ăn disk. Trước bản này, mode đội tạo worktree
