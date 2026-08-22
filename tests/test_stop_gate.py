@@ -371,6 +371,132 @@ class TestStopGateNoFalseBlock(StopGateBase):
         self.assertEqual(err, "")
 
 
+PLAN_REL_DOD = os.path.join("docs", "tdq", "plan", "r1.md")
+QC_REL_DOD = os.path.join("docs", "tdq", "qc", "r1.md")
+
+PLAN_CON_O_TRONG = """## P1 — a
+- [x] **T1.1** viec mot — Test: x
+- [ ] **T1.2** viec hai — Test: x
+
+## Definition of Done
+- [x] Q1 dieu kien mot — lenh
+- [ ] Q2 dieu kien hai — lenh
+- [ ] Q3 dieu kien ba — lenh
+"""
+
+PLAN_TICK_DU = """## P1 — a
+- [x] **T1.1** viec mot — Test: x
+
+## Definition of Done
+- [x] Q1 dieu kien mot — lenh
+"""
+
+PLAN_KHUON_CU = """## P1 — a
+- [x] **T1.1** viec mot — Test: x
+
+## Definition of Done
+- Q1 dieu kien mot — lenh
+- Q2 dieu kien hai — lenh
+"""
+
+QC_TOAN_PASS_DOD = """| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | mot | lenh | ok | PASS |
+| Q2 | hai | lenh | ok | PASS |
+"""
+
+QC_CO_FAIL_DOD = """| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | mot | lenh | sai | FAIL |
+"""
+
+
+class TestDodNhac(StopGateBase):
+    """[TDQ:DOD] — nhac (KHONG chan) khi dong so ma con o tick chua danh."""
+
+    def _dung(self, plan=PLAN_CON_O_TRONG, qc=QC_TOAN_PASS_DOD, phase="report"):
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase,
+                    plan_file=PLAN_REL_DOD)
+        for rel, noi_dung in ((PLAN_REL_DOD, plan), (QC_REL_DOD, qc)):
+            if noi_dung is None:
+                continue
+            duong = os.path.join(self.cwd, rel)
+            os.makedirs(os.path.dirname(duong), exist_ok=True)
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write(noi_dung)
+
+    def test_dod_khong_bi_cat_khi_du_bon_nhac_khac(self):
+        # `hints` bi cat con MAX_LINES dong: du bon nhac khac thi nhac dong so phai
+        # dung dau, khong duoc la cai bi rot.
+        self._dung()
+        for code in ("TDQ:NEXT", "TDQ:STATE", "TDQ:APPROVE", "TDQ:GIT"):
+            self.remind(code)
+        _, out, _ = self.stop()
+        text = json.loads(out)["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("[TDQ:DOD]", text)
+        self.assertTrue(text.splitlines()[0].startswith("[TDQ:DOD]"))
+
+    def test_dod_nhac_khi_dong_so_con_o_trong(self):
+        self._dung()
+        rc, out, _ = self.stop()
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:DOD]", out)
+
+    def test_dod_nhac_neu_ca_so_task_lan_so_o_dod(self):
+        self._dung()
+        _, out, _ = self.stop()
+        text = json.loads(out)["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("1 task(s)", text)
+        self.assertIn("2 DoD line(s)", text)
+
+    def test_dod_khong_chan_turn(self):
+        self._dung()
+        _, out, _ = self.stop()
+        self.assertNotIn('"decision"', out)
+        self.assertNotIn("block", out)
+
+    def test_dod_im_o_phase_implement(self):
+        self._dung(phase="implement")
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_nhac_o_phase_idle(self):
+        self._dung(phase="idle")
+        _, out, _ = self.stop()
+        self.assertIn("[TDQ:DOD]", out)
+
+    def test_dod_im_khi_khuon_cu_khong_co_o_tick(self):
+        self._dung(plan=PLAN_KHUON_CU)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_im_khi_tick_du(self):
+        self._dung(plan=PLAN_TICK_DU)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_im_khi_qc_con_fail(self):
+        self._dung(qc=QC_CO_FAIL_DOD)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_im_khi_chua_co_file_qc(self):
+        self._dung(qc=None)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_im_khi_stop_hook_active(self):
+        self._dung()
+        _, out, _ = self.stop(stop_hook_active=True)
+        self.assertEqual(out, "")
+
+    def test_dod_ghi_log_neu_ly_do(self):
+        self._dung()
+        _, _, err = self.stop()
+        self.assertIn("stop_gate:", err)
+        self.assertIn("TDQ:DOD", err)
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -530,3 +656,4 @@ class TestStopGateReprint(StopGateBase):
         reason = self.reason(self.stop()[1])
         self.assertIn("reprint the last chat block VERBATIM", reason)
         self.assertLessEqual(len(reason), 300)
+

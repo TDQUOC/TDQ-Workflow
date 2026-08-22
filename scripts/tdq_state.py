@@ -585,6 +585,17 @@ def repo_status_paths(cwd, limit=400, status=None):
 _TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z][A-Za-z0-9.]*)\*\*")
 
 
+def _plan_path(cwd, state):
+    """Absolute path of the plan of the active request, or None when there is none."""
+    rel = state.get("plan_file")
+    if not rel:
+        req = state.get("active_request")
+        if not req:
+            return None
+        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
+    return rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+
+
 def plan_tick_state(cwd):
     """Checkbox state of the current plan. Never raises."""
     trong = {"path": None, "exists": False, "sha": "",
@@ -594,13 +605,9 @@ def plan_tick_state(cwd):
         state = load(cwd, heal=False) or {}
     except Exception:
         return trong
-    rel = state.get("plan_file")
-    if not rel:
-        req = state.get("active_request")
-        if not req:
-            return trong
-        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
-    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    path = _plan_path(cwd, state)
+    if path is None:
+        return trong
     trong["path"] = path
     try:
         with open(path, encoding="utf-8") as f:
@@ -631,6 +638,138 @@ def plan_tick_state(cwd):
                  has_doing=dang > 0 or bool(da_giao),
                  all_done=tong > 0 and xong == tong)
     return trong
+
+
+# The Definition of Done checkbox is a SECOND counter, deliberately not `_TASK_LINE`.
+# A DoD line carries no bold task code (`- [ ] Q1 the condition — the command`), and
+# widening `_TASK_LINE` to reach it would let DoD lines into the task counter that feeds
+# stop_gate, edit_gate and the status line — `all_done` and the ETA would both go wrong.
+# So: same file, different section, different counter.
+_DOD_HEADING = "## definition of done"
+_DOD_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s+")
+_FENCE = re.compile(r"^\s*(```|~~~)")
+
+
+def _dod_section(noi_dung):
+    """Every line under a DoD heading, up to the next `## ` heading.
+
+    Three details the naive version got wrong. A plan may carry the heading MORE THAN ONCE
+    (a round-2 section, a split plan), so all of them are collected, not just the first.
+    The heading is matched case-insensitively and may carry a suffix (`## Definition of Done
+    (19)`). And a heading inside a fenced block is a TEMPLATE, not a real section — skill
+    templates show the DoD shape that way — so fenced lines are skipped entirely.
+    """
+    phan = []
+    trong_muc = False
+    trong_rao = False
+    for line in noi_dung.splitlines():
+        if _FENCE.match(line):
+            trong_rao = not trong_rao
+            continue
+        if trong_rao:
+            continue
+        if line.startswith("## "):
+            trong_muc = line.strip().lower().startswith(_DOD_HEADING)
+            continue
+        if trong_muc:
+            phan.append(line)
+    return phan
+
+
+def dod_tick_state(cwd):
+    """Checkbox state of the plan's Definition of Done section. Never raises."""
+    trong = {"path": None, "exists": False, "total": 0, "done": 0, "all_done": False}
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    path = _plan_path(cwd, state)
+    if path is None:
+        return trong
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+    except (OSError, UnicodeDecodeError):
+        return trong
+
+    tong = xong = 0
+    for line in _dod_section(noi_dung):
+        m = _DOD_LINE.match(line)
+        if not m:
+            continue
+        tong += 1
+        if m.group(1) == "x":
+            xong += 1
+    trong.update(exists=True, total=tong, done=xong,
+                 all_done=tong > 0 and xong == tong)
+    return trong
+
+
+# The qc file is the machine-readable proof that QC already ran and passed. Its verdict
+# column is the LAST cell of a table row, so the reader takes the last cell rather than
+# searching the whole line: a row whose "Ket qua" cell merely mentions the word PASS must
+# not be counted twice.
+_QC_ROW = re.compile(r"^\s*\|.*\|\s*(PASS|FAIL|SKIP|TODO|PENDING|N/A)\s*\|\s*$")
+
+
+def qc_result_state(cwd):
+    """PASS/FAIL tally of the qc file of the active request. Never raises."""
+    trong = {"path": None, "exists": False, "passed": 0, "failed": 0, "pending": 0,
+             "all_pass": False}
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    req = state.get("active_request")
+    if not req:
+        return trong
+    path = os.path.join(cwd, "docs", "tdq", "qc", f"{req}.md")
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+    except (OSError, UnicodeDecodeError):
+        return trong
+
+    dat = hong = cho = 0
+    for line in noi_dung.splitlines():
+        m = _QC_ROW.match(line)
+        if not m:
+            continue
+        if m.group(1) == "PASS":
+            dat += 1
+        elif m.group(1) == "FAIL":
+            hong += 1
+        else:
+            # SKIP / TODO / PENDING / N/A: the item has no verdict yet. Not a failure, but
+            # not proof either — the reminder must not fire off a half-finished QC.
+            cho += 1
+    trong.update(exists=True, passed=dat, failed=hong, pending=cho,
+                 all_pass=dat > 0 and hong == 0 and cho == 0)
+    return trong
+
+
+def task_open_count(cwd):
+    """How many task boxes of the current plan are not `[x]` yet. Never raises.
+
+    A separate reader rather than a new key on `plan_tick_state`: four call sites depend on
+    that function's exact return shape, and one of them asserts the key set.
+    """
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return 0
+    path = _plan_path(cwd, state)
+    if path is None:
+        return 0
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+    except (OSError, UnicodeDecodeError):
+        return 0
+    return sum(1 for line in noi_dung.splitlines()
+               if (m := _TASK_LINE.match(line)) and m.group(1) != "x")
 
 
 def turn_snapshot(cwd):

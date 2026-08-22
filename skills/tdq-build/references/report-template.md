@@ -12,8 +12,13 @@ below before writing the report; working from memory is banned.
    **mandatory**: run `tdq_timing.py show` and paste the whole table into the report; never
    estimate the numbers yourself.
 
-8. Close the books: tick any leftover checkbox, change the plan header to HOÀN THÀNH, then run <!-- i18n-allow: canonical status value -->
+8. Close the books: tick the leftover boxes of BOTH kinds — the task boxes in each phase AND
+   the Definition of Done boxes — change the plan header to HOÀN THÀNH, then run <!-- i18n-allow: canonical status value -->
    `tdq_finish.py --files <edited files> --log "<report summary>"` (working log + graphify).
+   The two kinds are counted separately, and the DoD one is the one that gets forgotten: QC
+   signs off every item while the boxes stay `[ ]`. Hook `Stop` reminds with `[TDQ:DOD]`
+   when the books close on an open box, but the reminder is a net, not a substitute — tick
+   as each item passes.
 
 9. Present the report in chat (verbatim, or a short summary plus the path).
 
