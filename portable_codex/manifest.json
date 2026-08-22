@@ -17,7 +17,7 @@
     ".agents/skills/tdq-build/references/rules/rust.md": "49cdf1b4ec82ed413462d4abea57acfcc6d3e6a58f2757372e4b8a4ab524e18b",
     ".agents/skills/tdq-build/references/rules/them-ngon-ngu.md": "848291cd0a52a4f8af87583307953c5b29835e60573b50d5ebfedd5381bcf265",
     ".agents/skills/tdq-build/references/rules/typescript-js.md": "c9d665ff8c3ad99dad6d26acecdf1dd031d7cdb98c5a8f2ce12e6158b8e1295c",
-    ".agents/skills/tdq-build/references/team-mode.md": "601f33f9bb0cb9d7e41f84a152065ba905bcd77cda8be79be57741f7f46183f9",
+    ".agents/skills/tdq-build/references/team-mode.md": "857ef5e962e838bee14b9eecd0390d67960f702c7fdb8cb64c1a7afc71675afd",
     ".agents/skills/tdq-check-status/SKILL.md": "c158c98a63f5a031077d4cd56639e35c0ed3331027ea1ae7d81bbb436ebc960d",
     ".agents/skills/tdq-check-status/references/bang-lech.md": "3b2b466b8a332ae200a879d9a2cf22956add54e0c8290bb3f5271f700c8d5467",
     ".agents/skills/tdq-check-status/references/report-template.md": "fe8e66d3dad74735212977176fe9a26f1372aeacba1db1bbcb5c8d4281ff3bb1",
@@ -58,7 +58,7 @@
     "hooks/scripts/bash_gate.py": "d9ebeebfe5681c9bfce3121f6dc678d9c712f58ae36bbded5fb976503135e069",
     "hooks/scripts/codex_edit_gate.py": "69c5d5b6be7ae93f4a2963d243508572ece6c92284e1ddd4feebc12649eedc9d",
     "hooks/scripts/edit_gate.py": "2cf1bc250d698ac0de66b319bb79d25cc5ee3b76910c077d17e6ace2cebdb78b",
-    "hooks/scripts/prompt_context.py": "24960bf632b8022644de579368b1960b78c329c4090e8c7a72256715e6dfab6f",
+    "hooks/scripts/prompt_context.py": "617e90ca71f993155af7bf978a5f6988bc99d91876fce6570e8a800ce76738dd",
     "hooks/scripts/session_start.py": "9d799a56888c736af41ff04ec2debcabe201324c8d654c66563ebf08e565dfb3",
     "hooks/scripts/stop_gate.py": "bc00ff150ace19e3bb1fca654774a391891adbb88c9517bd181cb8529ab8c0d9",
     "scripts/canvas_a4_ch4_ch7.py": "d1106fc85f4ca9db045de9d77891550162da6f4e24c06ec2c7264dbf07de55ec",
@@ -83,9 +83,10 @@
     "scripts/tdq_checkportable.py": "39226f99cd48de1d0ce6d3ae4c484eaad74f66bb160af456ec506a0352c4eca1",
     "scripts/tdq_checkstatus.py": "f152eee3a271579a8dabeaab8c40fe534eb72bb1c9a69a01149c17d8514f4747",
     "scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
-    "scripts/tdq_state.py": "7094b374cc30fc9146e354c862177512056b58b3af9b5b7b90b088f5786566f5",
-    "scripts/tdq_team.py": "f3b6bc2cc8fc36b5ab63663867eba6db8fb7f8efd21845449caed00f75c68cb0",
+    "scripts/tdq_state.py": "0a3a35dec87adadbd204947dc42102dc77c5cc6d4810113e6c009dcd203c7505",
+    "scripts/tdq_team.py": "bc77da32139f78616109b28075f2f92188c0a9493a9f22e2fc177c9667ba1747",
     "scripts/tdq_timing.py": "40edc14a717af78301c9e922132797fb1593b676e76adc3b39643df2f9955513",
+    "scripts/tdq_worktree_registry.py": "17c6bd8d77688fbfeb458744d1a84ca32b8722e051fa3cc87eb1c9138af00f89",
     "scripts/token_audit.py": "374f0edac43d75d91da16f8ef9bb2a492d713e007d04756c12bb4c63e3124684",
     "workflow/01-conventions.md": "3c80b05da2eaecf06506e88a1bf7ce49b72774b5bf31dd8da5ba084b93d88c8c",
     "workflow/02-intake.md": "8ba3b1bffd31c964c53a9c895394a3e8f99c32d11a6b2d979e0fb08287063963",
@@ -108,7 +109,7 @@
     "workflow/references/tdq-build/rules/rust.md": "49cdf1b4ec82ed413462d4abea57acfcc6d3e6a58f2757372e4b8a4ab524e18b",
     "workflow/references/tdq-build/rules/them-ngon-ngu.md": "848291cd0a52a4f8af87583307953c5b29835e60573b50d5ebfedd5381bcf265",
     "workflow/references/tdq-build/rules/typescript-js.md": "c9d665ff8c3ad99dad6d26acecdf1dd031d7cdb98c5a8f2ce12e6158b8e1295c",
-    "workflow/references/tdq-build/team-mode.md": "601f33f9bb0cb9d7e41f84a152065ba905bcd77cda8be79be57741f7f46183f9",
+    "workflow/references/tdq-build/team-mode.md": "857ef5e962e838bee14b9eecd0390d67960f702c7fdb8cb64c1a7afc71675afd",
     "workflow/references/tdq-check-status/bang-lech.md": "3b2b466b8a332ae200a879d9a2cf22956add54e0c8290bb3f5271f700c8d5467",
     "workflow/references/tdq-check-status/report-template.md": "fe8e66d3dad74735212977176fe9a26f1372aeacba1db1bbcb5c8d4281ff3bb1",
     "workflow/references/tdq-conventions/approval.md": "1eabd752cc1d9941d6e53080d955a1267f34c9116f730e7f6a1d6eb565fc40b8",
@@ -139,5 +140,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.27.0"
+  "version": "0.28.0"
 }

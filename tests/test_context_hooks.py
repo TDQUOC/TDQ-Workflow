@@ -1,5 +1,6 @@
 """session_start.py + prompt_context.py (0.3.0) — bơm context theo state."""
 import datetime
+import json
 import tempfile
 import unittest
 
@@ -279,3 +280,62 @@ class TestPromptContext(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestNhacWorktree(unittest.TestCase):
+    """T4.1 — nhắc mỗi turn khi sổ worktree còn dòng mở, im lặng khi sổ sạch.
+
+    Nhắc nằm NGOÀI ngân sách 3 dòng/240 ký tự là có chủ ý: nó chỉ xuất hiện trong lúc
+    đang phí disk và biến mất ngay khi dọn xong, nên không phải context thường trực.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    plan_file="docs/tdq/plan/x.md", plan_approved=True)
+
+    def _so(self, noi_dung):
+        duong = os.path.join(self.cwd, "docs", "tdq", "worktrees.json")
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+        with open(duong, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+
+    def ctx(self):
+        payload = load_fixture("prompt.json", cwd=self.cwd, session_id="s-wt")
+        payload["prompt"] = "tiếp tục"
+        return run_hook("prompt_context.py", payload)
+
+    def _dong(self, ma):
+        return {"slug": "r1", "ma_task": ma, "nhanh": f"tdq/r1/{ma.lower()}",
+                "duong_dan": os.path.join(self.cwd, ".tdq-worktrees", "r1", ma.lower()),
+                "tao_luc": "2026-08-22T10:00:00", "trang_thai": "mo", "dong_luc": None}
+
+    def test_worktree_con_mo_thi_nhac_dung_mot_dong(self):
+        self._so(json.dumps({"schema": 1, "dong": [self._dong("T1.1"),
+                                                   self._dong("T1.2")]}))
+        rc, out, _err = self.ctx()
+        self.assertEqual(rc, 0)
+        nhac = [d for d in out.splitlines() if d.startswith("[TDQ:WORKTREE]")]
+        self.assertEqual(len(nhac), 1, out)
+        self.assertIn("2 worktree", nhac[0])
+        self.assertIn("soat", nhac[0])
+
+    def test_worktree_so_sach_thi_im_lang(self):
+        self._so(json.dumps({"schema": 1, "dong": []}))
+        rc, out, _err = self.ctx()
+        self.assertEqual(rc, 0)
+        self.assertNotIn("[TDQ:WORKTREE]", out)
+
+    def test_worktree_khong_co_so_thi_im_lang(self):
+        rc, out, _err = self.ctx()
+        self.assertEqual(rc, 0)
+        self.assertNotIn("[TDQ:WORKTREE]", out)
+
+    def test_worktree_so_hong_khong_nhac_oan(self):
+        self._so("{ hong")
+        rc, out, _err = self.ctx()
+        self.assertEqual(rc, 0)
+        self.assertNotIn("[TDQ:WORKTREE]", out)

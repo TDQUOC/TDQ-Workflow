@@ -6,6 +6,7 @@ Three jobs:
 2. Emit TDQ:APPROVE when something waits for approval AND the prompt matches an approval
    sign (spec §2.9.2). Ambiguous → do not emit, and tell the agent to ASK rather than guess.
 3. Emit TDQ:NEXT — exactly 1 line of `next --brief`.
+4. Emit TDQ:WORKTREE while the worktree ledger still holds an open row.
 
 Budget ceiling: ≤3 lines / 240 chars (spec §2.7). Silent when idle.
 """
@@ -117,6 +118,24 @@ def mode_from_answer(prompt, planned):
     return "subagent" if suggested == "main" else "main"
 
 
+def _nhac_worktree(cwd):
+    """One line, only while the ledger holds an open row — silent the rest of the time.
+
+    Outside the 3-line/240-char budget on purpose: it is not part of the standing context,
+    it appears only while disk is being wasted, and it disappears the moment `soat --don`
+    runs. A ledger that is missing or corrupt says nothing, so it prints nothing: a nudge
+    that cries wolf gets ignored, and this one has to still be believed weeks from now.
+    """
+    try:
+        import tdq_worktree_registry as so_wt
+        mo = so_wt.dong_mo(cwd)
+    except Exception:
+        return
+    if mo:
+        print(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
+              "python3 scripts/tdq_team.py soat")
+
+
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
@@ -126,6 +145,7 @@ def main():
     # even when the change went through the shell (the turn ledger only sees Edit/Write).
     # Written to the ledger, NOT printed into context → costs the model no tokens.
     turn_log_append(cwd, "turn_start", session=sid, **turn_snapshot(cwd))
+    _nhac_worktree(cwd)
 
     # No OPEN request (open = active_request exists AND phase != idle) → point at intake.
     # The INTAKE line comes FIRST so _truncate (which cuts from the tail) never clips it.

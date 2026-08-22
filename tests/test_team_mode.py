@@ -316,6 +316,21 @@ class TeamBase(unittest.TestCase):
         with open(os.path.join(self.cwd, BAN_DO_REL), encoding="utf-8") as f:
             return json.load(f)
 
+    def _duong_worktree(self, ma):
+        wt = git(self.cwd, "worktree", "list", "--porcelain")
+        for dong in wt.splitlines():
+            if dong.startswith("worktree ") and dong.lower().rstrip().endswith(ma.lower()):
+                return dong.split(" ", 1)[1]
+        raise AssertionError(f"khong thay worktree cua {ma}:\n{wt}")
+
+    def _duong_tich_hop(self):
+        wt = git(self.cwd, "worktree", "list", "--porcelain")
+        for dong in wt.splitlines():
+            if dong.startswith("worktree ") and "tich-hop" in dong:
+                return dong.split(" ", 1)[1]
+        raise AssertionError(f"khong thay worktree tich hop:\n{wt}")
+
+
     def chay(self, *args, env=None):
         return run_team_cli(self.cwd, *args, env=env)
 
@@ -943,21 +958,6 @@ class GitTest(TeamBase):
         con_lai = os.listdir(thu_muc) if os.path.isdir(thu_muc) else []
         self.assertEqual(con_lai, [], con_lai)
 
-    def _duong_worktree(self, ma):
-        wt = git(self.cwd, "worktree", "list", "--porcelain")
-        for dong in wt.splitlines():
-            if dong.startswith("worktree ") and dong.lower().rstrip().endswith(ma.lower()):
-                return dong.split(" ", 1)[1]
-        raise AssertionError(f"khong thay worktree cua {ma}:\n{wt}")
-
-    def _duong_tich_hop(self):
-        wt = git(self.cwd, "worktree", "list", "--porcelain")
-        for dong in wt.splitlines():
-            if dong.startswith("worktree ") and "tich-hop" in dong:
-                return dong.split(" ", 1)[1]
-        raise AssertionError(f"khong thay worktree tich hop:\n{wt}")
-
-
 class HookTest(TeamBase):
     """T3.1 → T3.3 — edit_gate nới cho `[>]` nhưng chặn đúng ca lách luật."""
 
@@ -1314,6 +1314,408 @@ class MaTaskCoChuTest(unittest.TestCase):
         self.assertEqual(info["total"], 3)
         self.assertTrue(info["has_doing"])
         self.assertFalse(info["all_done"])
+
+
+
+class SoWorktreeTest(TeamBase):
+    """T2.1 → T2.5 — sổ worktree, dọn sau `hop`, và lệnh `soat`.
+
+    Vì sao khoá bằng test chứ không bằng lời dặn trong skill: `don` đã có sẵn từ lâu và
+    vẫn được nhắc ở checklist, nhưng không có gì BẮT ai chạy nó — nên worktree cũ nằm lại
+    ăn disk. Luật mới chỉ đáng tin khi hỏng là đỏ.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self._git_repo()
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+
+    def _so(self):
+        import tdq_worktree_registry as so
+        return so.doc(self.cwd)["dong"]
+
+    def _dong_mo(self):
+        return [d for d in self._so() if d["trang_thai"] == "mo"]
+
+    def _lam_xong(self, ma, ten_file=None):
+        """Mở worktree cho task, commit một file riêng — nhánh sạch, merge được."""
+        self.chay("mo", ma)
+        wt = self._duong_worktree(ma)
+        write_file(wt, ten_file or f"{ma}.txt", "x\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", f"{ma} xong")
+        return wt
+
+    # ---------------------------------------------------------------- T2.1
+    def test_mo_ghi_so_mot_dong_dung_duong_dan(self):
+        self.chay("mo", "T1.1")
+        dong = self._dong_mo()
+        self.assertEqual(len(dong), 1, dong)
+        self.assertEqual(dong[0]["ma_task"], "T1.1")
+        self.assertTrue(os.path.isdir(dong[0]["duong_dan"]), dong[0]["duong_dan"])
+
+    def test_mo_khong_ghi_so_khi_git_that_bai(self):
+        """Sổ ghi TRƯỚC khi git thành công thì sổ nói dối ngay từ dòng đầu tiên."""
+        self.chay("mo", "T1.1")
+        rc, _out, _err = self.chay("mo", "T1.1")
+        self.assertNotEqual(rc, 0)
+        self.assertEqual(len(self._dong_mo()), 1)
+
+    # ---------------------------------------------------------------- T2.2
+    def test_hop_don_khi_sach_go_worktree_va_nhanh(self):
+        wt = self._lam_xong("T1.1")
+        rc, out, _err = self.chay("hop", "T1.1")
+        self.assertEqual(rc, 0, out)
+        self.assertFalse(os.path.isdir(wt), "worktree sạch mà không được dọn")
+        nhanh = git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
+        self.assertNotIn(f"tdq/{SLUG}/t1.1", nhanh, nhanh)
+        self.assertEqual(self._dong_mo(), [])
+
+    def test_hop_giu_nhanh_tich_hop(self):
+        self._lam_xong("T1.1")
+        self.chay("hop", "T1.1")
+        nhanh = git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
+        self.assertIn(f"tdq/{SLUG}/tich-hop", nhanh, nhanh)
+
+    def test_hop_khong_mat_commit_cua_task(self):
+        self._lam_xong("T1.1")
+        self.chay("hop", "T1.1")
+        log = git(self._duong_tich_hop(), "log", "--oneline")
+        self.assertIn("T1.1 xong", log)
+
+    # ---------------------------------------------------------------- T2.3
+    def test_hop_giu_khi_ban(self):
+        wt = self._lam_xong("T1.1")
+        write_file(wt, "chua_commit.txt", "dang lam do\n")
+        rc, out, err = self.chay("hop", "T1.1")
+        self.assertEqual(rc, 0, out + err)
+        self.assertTrue(os.path.isdir(wt), "worktree còn việc chưa commit mà bị xoá")
+        self.assertEqual(len(self._dong_mo()), 1)
+        self.assertIn("NOT CLEANED UP YET", out + err)
+        self.assertIn("chua_commit.txt", out + err)
+
+    def test_hop_giu_khi_chua_merge(self):
+        """Xung đột thì `hop` chặn từ đầu — không merge, không xoá, có gợi ý."""
+        for ma in ("T1.1", "T1.2"):
+            self.chay("mo", ma)
+            wt = self._duong_worktree(ma)
+            write_file(wt, "chung.txt", f"{ma}\n")
+            git(wt, "add", "-A")
+            git(wt, "commit", "-q", "-m", ma)
+        self.chay("hop", "T1.1")
+        wt2 = self._duong_worktree("T1.2")
+        rc, out, err = self.chay("hop", "T1.2")
+        self.assertNotEqual(rc, 0)
+        self.assertTrue(os.path.isdir(wt2))
+        self.assertIn("NOT CLEANED UP YET", out + err)
+        self.assertIn("kiem T1.2", out + err)
+
+    def test_khoi_goi_y_in_o_cuoi(self):
+        """Khối gợi ý phải là thứ CUỐI CÙNG in ra — nó là thứ user cần đọc và hành động."""
+        wt = self._lam_xong("T1.1")
+        write_file(wt, "chua_commit.txt", "x\n")
+        _rc, out, _err = self.chay("hop", "T1.1")
+        dong = [d for d in out.strip().splitlines() if d.strip()]
+        vi_tri = [i for i, d in enumerate(dong) if "NOT CLEANED UP YET" in d]
+        self.assertTrue(vi_tri, out)
+        self.assertGreater(len(dong) - vi_tri[0], 1, "khối gợi ý không có phương án nào")
+
+    # ---------------------------------------------------------------- T2.4
+    def test_soat_liet_ke_du_nam_cot(self):
+        self._lam_xong("T1.1")
+        rc, out, _err = self.chay("soat")
+        self.assertEqual(rc, 0, out)
+        for cot in ("age", "size", "clean", "merged"):
+            self.assertIn(cot, out.lower(), out)
+        self.assertIn("t1.1", out.lower())
+
+    def test_soat_khong_dung_worktree_ngoai_tam(self):
+        ngoai = os.path.join(self.cwd, "ngoai-tam")
+        git(self.cwd, "worktree", "add", "-q", "-b", "nhanh-ngoai", ngoai)
+        rc, out, _err = self.chay("soat", "--don")
+        self.assertEqual(rc, 0, out)
+        self.assertTrue(os.path.isdir(ngoai), "worktree ngoài .tdq-worktrees bị xoá")
+        self.assertIn("out of scope", out.lower())
+
+    def test_soat_tu_dong_dong_dong_tro_vao_thu_muc_bien_mat(self):
+        self.chay("mo", "T1.1")
+        duong = self._dong_mo()[0]["duong_dan"]
+        git(self.cwd, "worktree", "remove", "--force", duong)
+        rc, out, _err = self.chay("soat")
+        self.assertEqual(rc, 0, out)
+        self.assertEqual(self._dong_mo(), [], "dòng sổ mồ côi không được tự đóng")
+
+    def test_soat_canh_bao_khi_qua_tuoi(self):
+        import tdq_worktree_registry as so
+        self.chay("mo", "T1.1")
+        du_lieu = so.doc(self.cwd)
+        du_lieu["dong"][0]["tao_luc"] = "2020-01-01T00:00:00"
+        with open(so.duong_so(self.cwd), "w", encoding="utf-8") as f:
+            json.dump(du_lieu, f)
+        _rc, out, _err = self.chay("soat")
+        self.assertIn("WARNING", out.upper())
+        self.assertIn(str(so.TRAN_TUOI_NGAY), out)
+
+    def test_soat_sinh_ban_md(self):
+        self.chay("mo", "T1.1")
+        self.chay("soat")
+        duong = os.path.join(self.cwd, "docs", "tdq", "worktrees.md")
+        self.assertTrue(os.path.exists(duong))
+        self.assertIn("T1.1", open(duong, encoding="utf-8").read())
+
+    # ---------------------------------------------------------------- T2.5
+    def test_soat_don_dep_cai_sach_giu_cai_ban(self):
+        wt1 = self._lam_xong("T1.1")
+        wt2 = self._lam_xong("T1.2")
+        # T1.1 đã merge và sạch → dọn được. T1.2 bẩn → phải giữ lại kèm gợi ý.
+        self.chay("hop", "T1.1")
+        write_file(wt2, "chua_commit.txt", "x\n")
+        rc, out, err = self.chay("soat", "--don")
+        # Spec §2 đầu ra 4: còn worktree bẩn thì lệnh phải thoát khác 0.
+        self.assertNotEqual(rc, 0, out + err)
+        self.assertFalse(os.path.isdir(wt1))
+        self.assertTrue(os.path.isdir(wt2))
+        self.assertIn("NOT CLEANED UP YET", out + err)
+
+    def test_soat_don_khong_xoa_khi_chua_merge(self):
+        wt = self._lam_xong("T1.1")
+        rc, out, _err = self.chay("soat", "--don")
+        self.assertEqual(rc, 0, out)
+        self.assertTrue(os.path.isdir(wt), "nhánh chưa merge mà worktree đã bị xoá")
+        self.assertIn("hop T1.1", out)
+
+    def test_soat_khong_con_gi_thi_khong_in_khoi_goi_y(self):
+        rc, out, _err = self.chay("soat")
+        self.assertEqual(rc, 0, out)
+        self.assertNotIn("NOT CLEANED UP YET", out)
+
+
+class LogWorktreeTest(TeamBase):
+    """T6.1 — mở/đóng/xoá worktree đều để lại một dòng log có timestamp, tắt được."""
+
+    def setUp(self):
+        super().setUp()
+        self._git_repo()
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+
+    def test_log_ghi_moc_mo_va_don(self):
+        _rc, _out, err = self.chay("mo", "T1.1")
+        self.assertIn("open 2026-08-17-1828-x/T1.1", err)
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, "T1.1.txt", "x\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "xong")
+        _rc, _out, err = self.chay("hop", "T1.1")
+        self.assertIn("cleaned T1.1", err)
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
+
+    def test_log_tat_duoc_qua_config(self):
+        _rc, _out, err = self.chay("mo", "T1.1", env={"TDQ_LOG": "0"})
+        self.assertNotIn("open ", err)
+        self.assertEqual(err.strip(), "")
+
+
+class VaLuoiWorktreeTest(TeamBase):
+    """Vòng fix QC 1 — những ca QC độc lập bắt được, khoá lại bằng test.
+
+    Mỗi test dưới đây ứng với một khiếm khuyết THẬT đã tái hiện được, không phải ca
+    giả định: sổ hỏng, dòng sổ thiếu trường, worktree tích hợp bị bỏ quên, file bị
+    .gitignore bị xoá âm thầm, và `don` cũ xoá cả worktree còn việc.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self._git_repo()
+        self._project(PLAN_8_TASK)
+        self.chay("phan-cong")
+
+    def _so_json(self):
+        return os.path.join(self.cwd, "docs", "tdq", "worktrees.json")
+
+    def _so_hong(self):
+        os.makedirs(os.path.dirname(self._so_json()), exist_ok=True)
+        with open(self._so_json(), "w", encoding="utf-8") as f:
+            f.write("{ hong")
+
+    def test_so_hong_thi_mo_bao_loi_chu_khong_de_lai_worktree_mo_coi(self):
+        """Ghi sổ hỏng thì worktree sinh ra sẽ vô hình với `soat` và với cổng qc."""
+        self._so_hong()
+        rc, out, err = self.chay("mo", "T1.1")
+        self.assertEqual(rc, 1, out + err)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("ledger", (out + err).lower())
+        wt = git(self.cwd, "worktree", "list", "--porcelain")
+        self.assertNotIn("t1.1", wt.lower(), "worktree mồ côi vẫn được tạo")
+
+    def test_so_hong_thi_soat_khong_vang_traceback(self):
+        self._so_hong()
+        rc, _out, err = self.chay("soat")
+        self.assertNotIn("Traceback", err)
+        self.assertIn(rc, (0, 1))
+
+    def test_dong_so_thieu_duong_dan_khong_lam_soat_no(self):
+        """Dòng hỏng mà không đóng được thì cổng qc kẹt vĩnh viễn."""
+        self.chay("mo", "T1.1")
+        with open(self._so_json(), encoding="utf-8") as f:
+            du_lieu = json.load(f)
+        du_lieu["dong"][0].pop("duong_dan")
+        with open(self._so_json(), "w", encoding="utf-8") as f:
+            json.dump(du_lieu, f)
+        rc, out, err = self.chay("soat")
+        self.assertNotIn("Traceback", err)
+        self.assertEqual(rc, 0, out + err)
+        with open(self._so_json(), encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["dong"][0]["trang_thai"], "dong")
+
+    def test_soat_don_go_ca_worktree_tich_hop_nhung_giu_nhanh(self):
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, "a.txt", "x\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "xong")
+        tich_hop = self._duong_tich_hop()
+        self.chay("hop", "T1.1")
+        rc, out, _err = self.chay("soat", "--don")
+        self.assertEqual(rc, 0, out)
+        self.assertFalse(os.path.isdir(tich_hop), out)
+        nhanh = git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
+        self.assertIn(f"tdq/{SLUG}/tich-hop", nhanh, nhanh)
+
+    def test_file_bi_gitignore_khong_bi_xoa_am_tham(self):
+        """`git worktree remove` xoá cả file bị ignore — `.env` mất là mất hẳn."""
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, ".gitignore", ".env\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "ignore")
+        write_file(wt, ".env", "SECRET=1\n")
+        rc, out, err = self.chay("hop", "T1.1")
+        self.assertEqual(rc, 0, out + err)
+        self.assertTrue(os.path.exists(os.path.join(wt, ".env")), out + err)
+        self.assertIn("NOT CLEANED UP YET", out + err)
+        self.assertIn(".env", out + err)
+
+    def test_rac_sinh_lai_duoc_van_cho_don(self):
+        """Chặn vì `__pycache__` thì không bao giờ dọn được gì — cấm chặn kiểu đó."""
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, ".gitignore", "__pycache__/\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "ignore")
+        os.makedirs(os.path.join(wt, "__pycache__"), exist_ok=True)
+        write_file(wt, os.path.join("__pycache__", "x.pyc"), "x")
+        rc, out, err = self.chay("hop", "T1.1")
+        self.assertEqual(rc, 0, out + err)
+        self.assertFalse(os.path.isdir(wt), out + err)
+
+    def test_don_khong_xoa_worktree_con_viec_chua_commit(self):
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, "dang_lam.txt", "x\n")
+        rc, out, err = self.chay("don")
+        self.assertEqual(rc, 0, out + err)
+        self.assertTrue(os.path.isdir(wt), "don cũ vẫn xoá worktree còn việc")
+        self.assertIn("NOT CLEANED UP YET", out + err)
+
+    def test_worktree_bi_khoa_khong_lam_chet_ca_luot_soat(self):
+        """Một worktree khoá mà làm văng cả lượt quét thì mọi worktree bẩn khác mất khối gợi ý."""
+        self.chay("mo", "T1.1")
+        self.chay("mo", "T1.2")
+        ban = self._duong_worktree("T1.2")
+        write_file(ban, "dang_lam.txt", "x\n")
+        khoa = self._duong_tich_hop()
+        git(self.cwd, "worktree", "lock", khoa)
+        try:
+            rc, out, err = self.chay("soat", "--don")
+        finally:
+            git(self.cwd, "worktree", "unlock", khoa)
+        self.assertNotIn("Traceback", err)
+        self.assertNotEqual(rc, 0, out)
+        self.assertIn("NOT CLEANED UP YET", out, out)
+        self.assertIn("T1.2", out, out)
+        self.assertTrue(os.path.isdir(khoa), "worktree bị khoá vẫn bị xoá")
+
+    def test_worktree_bi_khoa_khong_lam_chet_don(self):
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        git(self.cwd, "worktree", "lock", wt)
+        try:
+            rc, out, err = self.chay("don")
+        finally:
+            git(self.cwd, "worktree", "unlock", wt)
+        self.assertNotIn("Traceback", err)
+        self.assertEqual(rc, 0, out + err)
+        self.assertTrue(os.path.isdir(wt))
+        self.assertIn("NOT CLEANED UP YET", out, out)
+
+    def test_rac_ignored_la_ly_do_rieng_va_phuong_an_go_duoc_that(self):
+        """Gọi `build/` là 'uncommitted changes' thì user chạy 2 lệnh vô hiệu rồi kẹt mãi."""
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, ".gitignore", "build/\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "ignore")
+        os.makedirs(os.path.join(wt, "build"), exist_ok=True)
+        write_file(wt, os.path.join("build", "out.o"), "x")
+        rc, out, _err = self.chay("soat", "--don")
+        self.assertNotEqual(rc, 0, out)
+        self.assertIn("ignored files here do not regenerate", out, out)
+        self.assertIn("clean -fdx", out, out)
+        # Phương án gợi ý phải thật sự gỡ được, chạy đúng như in ra.
+        git(wt, "clean", "-fdx")
+        rc2, out2, _err2 = self.chay("soat", "--don")
+        # Hết lý do `bo-qua`; còn lại đúng một lý do tiến được là chưa merge.
+        self.assertEqual(rc2, 0, out2)
+        self.assertNotIn("ignored files here do not regenerate", out2, out2)
+
+    def test_worktree_khong_co_dong_so_van_bi_kiem_du_dieu_kien(self):
+        """Thư mục lạ trong tầm cũng phải qua đủ ba điều kiện, không chỉ mỗi 'sạch'."""
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, ".gitignore", ".env\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "ignore")
+        write_file(wt, ".env", "SECRET=1\n")
+        so = self._so_json()
+        with open(so, encoding="utf-8") as f:
+            du_lieu = json.load(f)
+        du_lieu["dong"] = []
+        with open(so, "w", encoding="utf-8") as f:
+            json.dump(du_lieu, f)
+        rc, out, _err = self.chay("soat", "--don")
+        self.assertIn("In scope, no ledger row:", out, out)
+        self.assertNotEqual(rc, 0, out)
+        self.assertTrue(os.path.exists(os.path.join(wt, ".env")), out)
+
+    def test_git_tu_choi_khong_phai_khoa_thi_khong_dan_nhan_khoa(self):
+        """Dán nhãn 'khoa' cho lỗi quyền là gửi user đi chạy `worktree unlock` vô ích."""
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        cha = os.path.dirname(wt)
+        cu = os.stat(cha).st_mode
+        os.chmod(cha, 0o500)
+        try:
+            rc, out, err = self.chay("soat", "--don")
+        finally:
+            os.chmod(cha, cu)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("NOT CLEANED UP YET", out, out)
+        self.assertIn("git refused to remove", out, out)
+        self.assertNotIn("git has this worktree locked", out, out)
+        self.assertNotIn("worktree unlock", out, out)
+        self.assertEqual(rc, 0, out)
+
+    def test_worktree_khoa_that_van_giu_nhan_khoa(self):
+        self.chay("mo", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        git(self.cwd, "worktree", "lock", wt)
+        try:
+            _rc, out, _err = self.chay("soat", "--don")
+        finally:
+            git(self.cwd, "worktree", "unlock", wt)
+        self.assertIn("git has this worktree locked", out, out)
 
 
 if __name__ == "__main__":

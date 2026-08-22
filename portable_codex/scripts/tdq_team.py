@@ -6,6 +6,7 @@ Seven sub-commands, used in exactly this order:
     kiem-ke    — audit the map: a task the leader kept against the rules exits non-zero
     cum        — print the next wave (assignable tasks touching no locked area)
     mo <task>  — create a branch + its own git worktree for one task
+    soat       — sweep every worktree of every request; --don removes the safe ones
     kiem <task>— probe for conflicts with the integration branch, WITHOUT touching the repo
     hop <task> — merge the task's branch into the integration branch (blocked until `kiem` passes)
     don        — remove every worktree of the request, prune .git/worktrees clean
@@ -68,6 +69,7 @@ TRAN_SONG_SONG = 4
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
 import tdq_state  # noqa: E402
+import tdq_worktree_registry as so_wt  # noqa: E402
 
 
 # --------------------------------------------------------------- log service
@@ -603,6 +605,165 @@ def _bao_dam_tich_hop(project, slug):
     return nhanh, duong
 
 
+# ------------------------------------------------- the worktree ledger, seen from git
+def _liet_ke_worktree(project):
+    """`git worktree list --porcelain` → [{duong_dan, nhanh, khoa}].
+
+    Read the lock flag here rather than guessing later: a locked worktree that git
+    refuses to remove must come back to the user as a reason, not as a raw git error.
+    """
+    ra = _git(project, "worktree", "list", "--porcelain").stdout
+    muc, hien = [], None
+    for dong in ra.splitlines():
+        if dong.startswith("worktree "):
+            hien = {"duong_dan": dong.split(" ", 1)[1], "nhanh": "", "khoa": False}
+            muc.append(hien)
+        elif hien is None:
+            continue
+        elif dong.startswith("branch "):
+            hien["nhanh"] = dong.split(" ", 1)[1].replace("refs/heads/", "")
+        elif dong == "locked" or dong.startswith("locked "):
+            hien["khoa"] = True
+    return muc
+
+
+def _khoa_khong(project, duong):
+    that = os.path.realpath(duong)
+    return any(w["khoa"] for w in _liet_ke_worktree(project)
+               if os.path.realpath(w["duong_dan"]) == that)
+
+
+def _file_ban(duong):
+    """Up to 5 paths the cleanup would destroy — enough for the user to recognise them."""
+    proc = _git(duong, "status", "--porcelain", check=False)
+    return [d[3:].strip() for d in proc.stdout.splitlines()[:5]]
+
+
+# Ignored files git deletes without a word. These regenerate by themselves, so they are
+# not worth blocking a cleanup over; anything else ignored is data we cannot judge, and
+# unknown data is never deleted on the user's behalf.
+RAC_SINH_LAI = ("__pycache__", ".pytest_cache", ".DS_Store", ".venv", "node_modules",
+                ".mypy_cache", ".ruff_cache")
+
+
+def _file_bo_qua_dang_ke(duong):
+    """Ignored files that do NOT regenerate — `.env`, local keys, scratch data.
+
+    `git worktree remove` deletes them silently, with or without --force, so they have to
+    be caught here or they are gone for good.
+    """
+    proc = _git(duong, "status", "--porcelain", "--ignored=matching", check=False)
+    ra = []
+    for dong in proc.stdout.splitlines():
+        if not dong.startswith("!! "):
+            continue
+        ten = dong[3:].strip()
+        if not any(phan in ten for phan in RAC_SINH_LAI):
+            ra.append(ten)
+    return ra[:5]
+
+
+def _sach(duong):
+    proc = _git(duong, "status", "--porcelain", check=False)
+    return (proc.returncode == 0 and not proc.stdout.strip()
+            and not _file_bo_qua_dang_ke(duong))
+
+
+def _da_merge(project, nhanh, tich_hop):
+    """Every commit of the branch already lives in the integration branch."""
+    if not _co_nhanh(project, tich_hop):
+        return False
+    return _git(project, "merge-base", "--is-ancestor", nhanh, tich_hop,
+                check=False).returncode == 0
+
+
+def _ly_do_chan_thu_muc(project, ma_task, nhanh, duong):
+    """Reasons that make deleting the DIRECTORY unsafe. The merge state is not one of them.
+
+    Split out of `_ly_do_chan` because two callers only ever remove the directory and keep
+    the branch: the legacy `don`, and the rows `soat` finds with no ledger entry.
+    """
+    chung = {"ma_task": ma_task, "duong_dan": duong, "nhanh": nhanh}
+    if _khoa_khong(project, duong):
+        return dict(chung, ly_do="khoa")
+    proc = _git(duong, "status", "--porcelain", check=False)
+    if proc.returncode != 0 or proc.stdout.strip():
+        return dict(chung, ly_do="ban", chi_tiet=", ".join(_file_ban(duong)))
+    # Kept apart from `ban`: the way out is a different command, and calling an ignored
+    # `build/` directory "uncommitted changes" sends the user after options that no-op.
+    bo_qua = _file_bo_qua_dang_ke(duong)
+    if bo_qua:
+        return dict(chung, ly_do="bo-qua", chi_tiet=", ".join(bo_qua))
+    return None
+
+
+def _ly_do_chan(project, ma_task, nhanh, duong, tich_hop):
+    """The three conditions for deleting. Returns None when all three hold.
+
+    Deleting a worktree destroys work that exists nowhere else, so this stays a
+    whitelist: anything not proven safe is a reason to keep and to ask.
+    """
+    chan = _ly_do_chan_thu_muc(project, ma_task, nhanh, duong)
+    if chan is not None:
+        return chan
+    if _co_nhanh(project, nhanh) and not _da_merge(project, nhanh, tich_hop):
+        return {"ma_task": ma_task, "duong_dan": duong, "nhanh": nhanh,
+                "ly_do": "chua-merge"}
+    return None
+
+
+def _ly_do_tu_choi(project, ma_task, nhanh, duong, loi):
+    """Turn git's refusal into a blocking reason — `khoa` ONLY when it really is locked.
+
+    A permission error labelled "locked" sends the user to `worktree unlock`, which cannot
+    fix it. The wrong label is worse than a generic one: it costs a command that no-ops.
+    """
+    return {"ma_task": ma_task, "duong_dan": duong, "nhanh": nhanh,
+            "ly_do": "khoa" if _khoa_khong(project, duong) else "git-tu-choi",
+            "chi_tiet": loi}
+
+
+def _go_thu_muc(project, duong):
+    """Remove one worktree directory. Returns None on success, else git's own reason.
+
+    `check=False`: git refusing (a lock set behind our back, a mount held open) must not
+    abort the sweep halfway — the whole point of the sweep is the block printed at the end.
+    """
+    proc = _git(project, "worktree", "remove", duong, check=False)
+    if proc.returncode == 0:
+        return None
+    return (proc.stderr or proc.stdout).strip().splitlines()[-1:] or ["git refused"]
+
+
+def _thu_don(project, slug, ma_task, nhanh, duong, tich_hop):
+    """Try to clean one worktree. Returns None on success, else the suggestion item."""
+    chan = _ly_do_chan(project, ma_task, nhanh, duong, tich_hop)
+    if chan is not None:
+        _log(f"keep {ma_task} — {chan['ly_do']}")
+        return chan
+    # No --force: `_ly_do_chan` above already proved the worktree is clean, so git's own
+    # refusal stays in place as the last safety net instead of being switched off.
+    loi = _go_thu_muc(project, duong)
+    if loi is not None:
+        _log(f"keep {ma_task} — git refused: {loi[0]}")
+        return _ly_do_tu_choi(project, ma_task, nhanh, duong, loi[0])
+    _git(project, "worktree", "prune")
+    # `-D` and not `-d`: `-d` measures against HEAD, which is the user's own branch, not
+    # the integration branch. `_da_merge` above already proved the commits are safe.
+    if _co_nhanh(project, nhanh) and nhanh != tich_hop:
+        _git(project, "branch", "-D", nhanh, check=False)
+    so_wt.dong_dong(project, slug, ma_task, "merged")
+    _log(f"cleaned {ma_task} → worktree {duong} + branch {nhanh} removed")
+    return None
+
+
+def _in_goi_y(muc):
+    """The suggestion block is the LAST thing printed — it is what the user must act on."""
+    khoi = so_wt.khoi_goi_y(muc)
+    if khoi:
+        print(khoi)
+
+
 def lenh_mo(project, args):
     slug, plan, ban_do = _boi_canh(project)
     ma = args.task
@@ -619,10 +780,17 @@ def lenh_mo(project, args):
     duong = _duong_worktree(project, slug, ma.lower())
     if os.path.isdir(duong):
         raise LoiLuat(f"{ma} already has a worktree: {duong}")
+    # BEFORE git touches anything: a worktree opened against a ledger that cannot be
+    # written is invisible to `soat` and to the qc gate — exactly the orphan this
+    # request exists to abolish.
+    so_wt.kiem_ghi_duoc(project)
     if not _co_nhanh(project, nhanh):
         _git(project, "branch", nhanh, tich_hop)
     os.makedirs(os.path.dirname(duong), exist_ok=True)
     _git(project, "worktree", "add", duong, nhanh)
+    # Only AFTER git succeeded: a row written any earlier is a row that lies.
+    so_wt.mo_dong(project, slug, ma, nhanh, duong)
+    so_wt.ghi_md(project)
     _log(f"mo {ma} → branch {nhanh} · worktree {duong}")
     print(f"{ma}: branch {nhanh}")
     print(f"  worktree: {duong}")
@@ -700,6 +868,8 @@ def lenh_hop(project, args):
              f"{', '.join(file_dung) or '(file unknown)'}.")
         _loi(f"Run `python3 scripts/tdq_team.py kiem {args.task}` for the detail, "
              f"merge only once it is resolved.")
+        _in_goi_y([{"ma_task": args.task, "nhanh": nhanh, "ly_do": "xung-dot",
+                    "duong_dan": _duong_worktree(project, slug, args.task.lower())}])
         return 1
     # rerere: a conflict repeating across waves is remembered with its resolution (research §2).
     _git(project, "config", "rerere.enabled", "true")
@@ -708,7 +878,155 @@ def lenh_hop(project, args):
     _log(f"hop {nhanh} → into {tich_hop}")
     print(f"Merged {nhanh} into {tich_hop}.")
     print(f"Integration branch at: {duong_tich_hop}")
+    duong = _duong_worktree(project, slug, args.task.lower())
+    if not os.path.isdir(duong):
+        so_wt.dong_dong(project, slug, args.task, "bien-mat")
+        so_wt.ghi_md(project)
+        return 0
+    chan = _thu_don(project, slug, args.task, nhanh, duong, tich_hop)
+    so_wt.ghi_md(project)
+    if chan is None:
+        print(f"Cleaned up: worktree removed, branch {nhanh} deleted.")
+        return 0
+    _in_goi_y([chan])
     return 0
+
+
+def _kich_thuoc(duong):
+    """Bytes on disk. Symlinks are skipped — a link is not the space it points at."""
+    tong = 0
+    for goc, _thu_muc, ten_file in os.walk(duong):
+        for ten in ten_file:
+            p = os.path.join(goc, ten)
+            if not os.path.islink(p):
+                try:
+                    tong += os.path.getsize(p)
+                except OSError:
+                    pass
+    return tong
+
+
+def _doc_mb(byte):
+    return byte / (1024 * 1024)
+
+
+def _tuoi_ngay(tao_luc):
+    try:
+        return (datetime.now() - datetime.fromisoformat(tao_luc)).days
+    except (TypeError, ValueError):
+        return 0
+
+
+def lenh_soat(project, args):
+    """Sweep every worktree the ledger knows about, across ALL requests.
+
+    Why across all requests and not just the open one: `don` only ever saw the current
+    slug, so a worktree of a finished request could never be reached again — that is the
+    exact way disk usage grows without anyone noticing.
+    """
+    if not _la_repo(project):
+        raise LoiLuat("This directory is not a git repo.")
+    goc = os.path.realpath(_thu_muc_goc_worktree(project))
+    dong = so_wt.dong_mo(project)
+
+    # A row whose directory is gone was cleaned by hand; close it instead of nagging.
+    con_lai, da_dong = [], 0
+    for ban_ghi in dong:
+        duong = ban_ghi.get("duong_dan")
+        if duong and os.path.isdir(duong):
+            con_lai.append(ban_ghi)
+            continue
+        # A row with no path can never be acted on, and it would keep the qc gate shut
+        # forever. Close it — losing a broken row beats deadlocking the workflow.
+        ly_do = "bien-mat" if duong else "thieu-duong-dan"
+        so_wt.dong_dong(project, ban_ghi.get("slug"), ban_ghi.get("ma_task"), ly_do)
+        da_dong += 1
+        print(f"closed row {ban_ghi.get('ma_task')}: {ly_do}")
+    if da_dong:
+        # Without prune git keeps the dead entry in .git/worktrees and refuses to open
+        # the same task again.
+        _git(project, "worktree", "prune")
+
+    canh_bao, goi_y, tong_byte = [], [], 0
+    print("| Task | Request | Path | Age (days) | Size (MB) | Clean? | Merged? |")
+    print("|---|---|---|---|---|---|---|")
+    for ban_ghi in con_lai:
+        duong, nhanh, slug = ban_ghi["duong_dan"], ban_ghi["nhanh"], ban_ghi["slug"]
+        tich_hop = _nhanh_tich_hop(slug)
+        byte = _kich_thuoc(duong)
+        tong_byte += byte
+        tuoi = _tuoi_ngay(ban_ghi.get("tao_luc"))
+        sach = _sach(duong)
+        merged = _da_merge(project, nhanh, tich_hop)
+        print(f"| {ban_ghi['ma_task']} | {slug} | {duong} | {tuoi} | "
+              f"{_doc_mb(byte):.1f} | {'yes' if sach else 'no'} | "
+              f"{'yes' if merged else 'no'} |")
+        if tuoi > so_wt.TRAN_TUOI_NGAY:
+            canh_bao.append(f"WARNING: {ban_ghi['ma_task']} is {tuoi} days old "
+                            f"(threshold {so_wt.TRAN_TUOI_NGAY} days) — clean it up.")
+        if args.don:
+            chan = _thu_don(project, slug, ban_ghi["ma_task"], nhanh, duong, tich_hop)
+            if chan is None:
+                print(f"  cleaned: {ban_ghi['ma_task']}")
+                tong_byte -= byte
+                continue
+            goi_y.append(chan)
+        else:
+            chan = _ly_do_chan(project, ban_ghi["ma_task"], nhanh, duong, tich_hop)
+            if chan is not None:
+                goi_y.append(chan)
+    if not con_lai:
+        print("(the ledger holds no open worktree)")
+
+    biet = {os.path.realpath(d["duong_dan"]) for d in con_lai if d.get("duong_dan")}
+    ngoai, la = [], []
+    for w in _liet_ke_worktree(project)[1:]:
+        that = os.path.realpath(w["duong_dan"])
+        if not that.startswith(goc):
+            ngoai.append(w["duong_dan"])
+        elif that not in biet:
+            la.append(w)
+    if la:
+        # The integration worktree lands here, and so does anything left behind by an
+        # older version of this tool. In scope, so it is cleaned — but only its
+        # DIRECTORY: the integration branch is what holds the merged work (decision D5).
+        print("")
+        print("In scope, no ledger row:")
+        for w in la:
+            duong = w["duong_dan"]
+            print(f"  {duong}")
+            if not args.don:
+                continue
+            chan = _ly_do_chan_thu_muc(project, os.path.basename(duong),
+                                       w.get("nhanh", ""), duong)
+            if chan is None:
+                loi = _go_thu_muc(project, duong)
+                if loi is None:
+                    print(f"  cleaned: {duong}")
+                    continue
+                chan = _ly_do_tu_choi(project, os.path.basename(duong),
+                                      w.get("nhanh", ""), duong, loi[0])
+            goi_y.append(chan)
+        _git(project, "worktree", "prune")
+    if ngoai:
+        print("")
+        print("Out of scope (listed only, never removed — they live outside "
+              f"{goc}):")
+        for duong in ngoai:
+            print(f"  {duong}")
+
+    if _doc_mb(tong_byte) > so_wt.TRAN_TONG_MB:
+        canh_bao.append(f"WARNING: worktrees take {_doc_mb(tong_byte):.0f} MB "
+                        f"(threshold {so_wt.TRAN_TONG_MB} MB) — clean them up.")
+    so_wt.ghi_md(project)
+    _log(f"soat → {len(con_lai)} open · {_doc_mb(tong_byte):.1f} MB · "
+         f"{len(goi_y)} kept back")
+    for dong_canh in canh_bao:
+        print(dong_canh)
+    _in_goi_y(goi_y)
+    # Spec §2 output 4: a dirty worktree exits non-zero. Not merged yet is a normal state
+    # of a running wave, so it is reported without failing the command.
+    return 1 if any(m["ly_do"] in ("ban", "bo-qua") for m in goi_y) else 0
 
 
 def lenh_don(project, _args):
@@ -722,15 +1040,27 @@ def lenh_don(project, _args):
     # realpath on both sides: on macOS `/var` is a symlink of `/private/var`, so comparing
     # by abspath misses and `don` silently removes nothing.
     goc_that = os.path.realpath(goc)
+    giu = []
     for duong in duong_list:
         if os.path.realpath(duong).startswith(goc_that):
+            # An end-of-wave cleanup must never be the thing that eats work nobody
+            # committed yet: keep it, name it, let the user decide.
+            chan = _ly_do_chan_thu_muc(project, os.path.basename(duong), "", duong)
+            if chan is not None:
+                giu.append(chan)
+                continue
             # `git worktree remove`, NOT `rm -rf`: deleting by hand leaves junk in
             # .git/worktrees and git still thinks the worktree is alive (research §2).
-            _git(project, "worktree", "remove", "--force", duong)
+            loi = _go_thu_muc(project, duong)
+            if loi is not None:
+                giu.append(_ly_do_tu_choi(project, os.path.basename(duong), "",
+                                          duong, loi[0]))
+                continue
             da_go += 1
     _git(project, "worktree", "prune")
-    _log(f"don → removed {da_go} worktree(s)")
+    _log(f"don → removed {da_go} worktree(s), kept {len(giu)}")
     print(f"Removed {da_go} worktree(s) of {slug}, pruned.")
+    _in_goi_y(giu)
     return 0
 
 
@@ -799,6 +1129,7 @@ LENH = {
     "mo": (lenh_mo, "create a branch + worktree for one task"),
     "kiem": (lenh_kiem, "probe for conflicts with the integration branch, repo untouched"),
     "hop": (lenh_hop, "merge the task's branch into the integration branch"),
+    "soat": (lenh_soat, "sweep every worktree of every request: age, size, clean, merged"),
     "don": (lenh_don, "remove the request's worktrees and prune"),
 }
 
@@ -812,6 +1143,9 @@ def build_parser():
         con = sub.add_parser(ten, help=mo_ta)
         if ten in ("mo", "kiem", "hop"):
             con.add_argument("task", help="task code (T1.1) or the full branch name")
+        if ten == "soat":
+            con.add_argument("--don", action="store_true",
+                             help="also remove every worktree that passes all 3 conditions")
     return p
 
 
@@ -829,6 +1163,10 @@ def main(argv=None):
         return LENH[args.lenh][0](project, args)
     except LoiLuat as exc:
         _loi(str(exc))
+        return 1
+    except so_wt.LoiSo as exc:
+        _loi(f"The worktree ledger is unusable: {exc}")
+        _loi("Fix docs/tdq/worktrees.json (or delete it) before opening any worktree.")
         return 1
     except subprocess.TimeoutExpired:
         _loi("git took too long — aborted, nothing else touched.")

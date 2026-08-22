@@ -457,3 +457,59 @@ class CongDangChoTest(unittest.TestCase):
 
     def test_state_none(self):
         self.assertEqual(tdq_state.cong_dang_cho(None), "spec")
+
+
+class ChanWorktreeTest(unittest.TestCase):
+    """T3.1 — cổng `qc` đóng khi sổ worktree còn dòng mở.
+
+    Vì sao chặn ở đây mà không chỉ nhắc: QC là lúc cuối cùng còn ai nhìn vào request
+    này. Qua được QC thì worktree thừa nằm lại vĩnh viễn, và đúng cái đó là thứ request
+    này sinh ra để chặn.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+        write_state(self.cwd, active_request="2026-08-22-1033-x", lane="full",
+                    phase="implement")
+
+    def _so(self, noi_dung):
+        duong = os.path.join(self.cwd, "docs", "tdq", "worktrees.json")
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+        with open(duong, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+
+    def _mot_dong_mo(self):
+        return json.dumps({"schema": 1, "dong": [{
+            "slug": "2026-08-22-1033-x", "ma_task": "T1.1",
+            "nhanh": "tdq/2026-08-22-1033-x/t1.1",
+            "duong_dan": os.path.join(self.cwd, ".tdq-worktrees", "x", "t1.1"),
+            "tao_luc": "2026-08-22T10:00:00", "trang_thai": "mo", "dong_luc": None}]})
+
+    def test_chan_worktree_con_mo_thi_khong_vao_qc(self):
+        self._so(self._mot_dong_mo())
+        rc, _out, err = run_state_cli(self.cwd, "set", "phase=qc")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("T1.1", err)
+        self.assertEqual(read_state(self.cwd)["phase"], "implement")
+
+    def test_chan_worktree_khong_can_cho_phase_khac(self):
+        self._so(self._mot_dong_mo())
+        rc, _out, _err = run_state_cli(self.cwd, "set", "phase=report")
+        self.assertEqual(rc, 0)
+
+    def test_chan_worktree_so_rong_thi_qua(self):
+        self._so(json.dumps({"schema": 1, "dong": []}))
+        rc, _out, err = run_state_cli(self.cwd, "set", "phase=qc")
+        self.assertEqual(rc, 0, err)
+
+    def test_chan_worktree_khong_co_so_thi_qua(self):
+        rc, _out, err = run_state_cli(self.cwd, "set", "phase=qc")
+        self.assertEqual(rc, 0, err)
+
+    def test_chan_worktree_so_hong_khong_chan_oan(self):
+        """File hỏng là mất dữ liệu, không phải bằng chứng còn worktree — cấm chặn oan."""
+        self._so("{ hong")
+        rc, _out, err = run_state_cli(self.cwd, "set", "phase=qc")
+        self.assertEqual(rc, 0, err)

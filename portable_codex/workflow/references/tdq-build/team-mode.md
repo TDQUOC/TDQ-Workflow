@@ -9,6 +9,7 @@ yourself needs a reason from the lookup table below, and that reason is machine-
 
 - When it applies
 - What to do
+- The worktree ledger
 - Self-check
 
 ## When it applies
@@ -70,9 +71,9 @@ python3 scripts/tdq_team.py mo T1.1        # branch + its own worktree for the t
 # → call the tdq-implementer agent with the prompt template below, EVERY task of the wave in ONE response
 # → mark every task you just handed out [>] in the plan (several [>] is valid)
 python3 scripts/tdq_team.py kiem T1.1      # probe for conflicts, does NOT touch the repo
-python3 scripts/tdq_team.py hop T1.1       # merge into the integration branch
+python3 scripts/tdq_team.py hop T1.1       # merge, then clean up the worktree right away
 # → turn [>] into [x] IMMEDIATELY once the merge lands
-python3 scripts/tdq_team.py don            # end of wave: clean the worktrees, then back to `cum`
+python3 scripts/tdq_team.py soat --don     # end of wave: sweep EVERY request, then back to `cum`
 ```
 
 While a wave runs, the leader works the `tu_lam` tasks of that same wave — that is why this
@@ -124,6 +125,41 @@ a missing field means it has to guess, and a wrong guess is paid for at merge ti
    - WRONG: delegate all three tasks needing that constant in parallel — each sub-agent invents its
      own name, and only the merge reveals three mismatched versions.
 
+## The worktree ledger
+
+Every worktree `mo` opens is written into `docs/tdq/worktrees.json` (machine) and rendered
+into `docs/tdq/worktrees.md` (human). The ledger outlives the request: a row stays open until
+the worktree is really gone, so a worktree of a request finished weeks ago is still findable.
+Write it ONLY through `scripts/tdq_team.py` — the same rule as `state.json`.
+
+```
+python3 scripts/tdq_team.py soat        # report: task · request · path · age · size · clean · merged
+python3 scripts/tdq_team.py soat --don  # the same sweep, and remove everything that is safe
+```
+
+**Removing needs all THREE conditions**, checked per worktree, never by feel: the working
+tree is clean · the branch is already in the integration branch · git does not hold it
+locked. Any one missing and NOTHING is deleted — the row stays open and the reason is
+printed. The task branch is deleted after the merge; the integration branch is kept.
+
+"Clean" counts ignored files too, unless they regenerate by themselves (`__pycache__`,
+`node_modules`, …): `git worktree remove` deletes a `.env` or a local key without a word,
+and those exist nowhere else. Such a worktree is kept with its own reason and its own way
+out, never lumped in with uncommitted changes.
+
+`soat` only ever deletes inside `.tdq-worktrees/`. A worktree living elsewhere is listed
+under "out of scope" and is never touched: it may well be the user's own working copy.
+
+**Rule — the suggestion block goes at the END of the turn.** A worktree that cannot be
+cleaned up prints a `NOT CLEANED UP YET` block with one option per line. Put that block at the
+end of your reply to the user, as the last thing they read, TRANSLATED into their `doc_lang`
+— the commands stay verbatim, character for character, because the user pastes them. Reason:
+the user is the only one who can decide whether uncommitted work is thrown away or kept, and
+a block buried in the middle of a long turn is a block nobody acts on.
+
+Gate `qc` refuses to open while the ledger still holds an open row, and every turn the hook
+prints one `[TDQ:WORKTREE]` line for as long as that is true.
+
 ## Self-check
 
 Before ending phase implement, all of these must hold:
@@ -131,7 +167,8 @@ Before ending phase implement, all of these must hold:
 ```
 python3 scripts/tdq_team.py kiem-ke          # exit 0
 python3 scripts/tdq_team.py cum              # prints "HẾT: không còn task nào để giao" <!-- i18n-allow: quoted machine output -->
-python3 scripts/tdq_team.py don              # every worktree cleaned up
+python3 scripts/tdq_team.py soat --don       # every worktree cleaned up, across all requests
+python3 scripts/tdq_team.py soat             # the ledger holds no open row left
 git worktree list                            # only the root worktree left
 grep -c '^- \[x\]' docs/tdq/plan/<slug>.md   # equals the total task count
 ```

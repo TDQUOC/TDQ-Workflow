@@ -1382,6 +1382,26 @@ def _cli_approve(cwd, rest):
         print(f"✅ Recorded the user's approval of {target} at {state[f'{target}_approved_at']}{extra}.")
 
 
+def _chan_worktree_con_mo(cwd):
+    """Gate `qc`: an open row in the worktree ledger stops the phase from moving.
+
+    QC is the last moment anyone still looks at this request. Let it through and the
+    leftover worktree stays on disk forever — the exact drift this ledger exists to stop.
+    A missing or corrupt ledger is NOT evidence of a leftover worktree, so it never
+    blocks: a false block here would teach people to route around the gate.
+    """
+    try:
+        import tdq_worktree_registry as so_wt
+        mo = so_wt.dong_mo(cwd)
+    except Exception:
+        return
+    if not mo:
+        return
+    ten = ", ".join(f"{d.get('ma_task')} ({d.get('duong_dan')})" for d in mo)
+    _fail(f"{len(mo)} worktree(s) still open: {ten}. "
+          "Clean them up first: python3 scripts/tdq_team.py soat --don")
+
+
 def _pop_json_flag(argv):
     """Strip the `--json` flag out of argv. By default the CLI prints a 1-line summary to
     keep context cheap; with `--json` it prints the whole state as before (for inspection/debug)."""
@@ -1535,6 +1555,8 @@ def cli(argv):
                 value = ma
             if key == "phase" and value not in VALID_PHASES:
                 _fail("Invalid phase (idle|analyze|spec|plan|implement|qc|report).")
+            if key == "phase" and value == "qc":
+                _chan_worktree_con_mo(cwd)
             state[key] = value
             if key == "phase":
                 ghi_moc_phase(state, value)

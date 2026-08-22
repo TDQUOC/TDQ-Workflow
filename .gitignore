@@ -13,6 +13,8 @@ graphify-out/.graphify_root
 graphify-out/.graphify_python
 graphify-out/.graphify_analysis.json
 docs/tdq/state.json
+docs/tdq/worktrees.json
+docs/tdq/worktrees.md
 graphify-out/.rebuild.lock
 .venv/
 .venv-tokens/
