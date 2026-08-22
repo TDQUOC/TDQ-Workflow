@@ -116,7 +116,7 @@ class TestStopGateHints(StopGateBase):
         rc, out, _ = self.stop()
         ctx = self.context(out)
         self.assertIn("[TDQ:APPROVE]", ctx)
-        self.assertIn("HỎI", ctx)
+        self.assertIn("ASK", ctx)
 
     def test_lane_quick_da_duyet_thi_im_lang(self):
         # Ca kêu oan: lane quick không có cổng `spec`, nên `spec_approved` mãi False.
@@ -505,7 +505,7 @@ class TestStopGateReprint(StopGateBase):
         self.observe("edit", path="src/fresh.py")
         reason = self.reason(self.stop()[1])
         self.assertIn("[TDQ:LOG]", reason)
-        self.assertIn("in LẠI NGUYÊN VĂN", reason)
+        self.assertIn("reprint the last chat block VERBATIM", reason)
         self.assertLessEqual(len(reason), 300)
 
     def test_reprint_log_bao_dung_lenh_tdq_finish(self):
@@ -520,7 +520,7 @@ class TestStopGateReprint(StopGateBase):
         self.dung()
         reason = self.reason(self.stop()[1])
         self.assertIn("[TDQ:TICK]", reason)
-        self.assertIn("in LẠI NGUYÊN VĂN", reason)
+        self.assertIn("reprint the last chat block VERBATIM", reason)
         self.assertLessEqual(len(reason), 300)
 
     def test_reprint_van_trong_tran_voi_duong_dan_dai(self):
@@ -528,5 +528,5 @@ class TestStopGateReprint(StopGateBase):
         write_state(self.cwd, active_request="r1", lane="full")
         self.observe("edit", path="src/" + "z" * 400 + ".py")
         reason = self.reason(self.stop()[1])
-        self.assertIn("in LẠI NGUYÊN VĂN", reason)
+        self.assertIn("reprint the last chat block VERBATIM", reason)
         self.assertLessEqual(len(reason), 300)

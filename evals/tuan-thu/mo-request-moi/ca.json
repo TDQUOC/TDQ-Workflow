@@ -1,0 +1,16 @@
+{
+  "ma": "mo-request-moi",
+  "mo_ta": "Prompt mới khi không có request nào mở.",
+  "prompt": "Thêm cho tôi lệnh xoá cache vào mô-đun tiện ích.",
+  "phase_dau": "idle",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [],
+  "kiem": [
+    "L218",
+    "L220",
+    "L136",
+    "L121",
+    "L209",
+    "L210"
+  ]
+}

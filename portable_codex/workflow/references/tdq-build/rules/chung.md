@@ -1,9 +1,9 @@
 # Shared rules for every language
 
-Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
+Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line --> · luật gốc: skills/tdq-conventions/references/soul.md
 Load this file FIRST, then the language rule file from the table in `index.md`.
 
-## Nguồn
+## Sources
 
 - SonarSource Clean Code — https://community.sonarsource.com/t/introducing-clean-code-in-our-products/98431 —
   4 measurable attributes: Consistent, Intentional, Adaptable, Responsible.
@@ -16,13 +16,13 @@ Load this file FIRST, then the language rule file from the table in `index.md`.
 - Security — https://www.kiuwan.com/blog/secure-coding-guidelines — OWASP Secure Coding
   Practices is the language-neutral checklist; CERT exists only for C/C++/Java/Perl.
 
-## Khi nào áp dụng
+## When it applies
 
 - Every time you write or change code, in any language — small scripts and tests included.
 - This rule is always on; there is no toggle. The SOLID principles and the 5-question
   checklist in `skills/tdq-conventions/references/clean-code.md` apply at the same time.
 
-## Luật Intentionality
+## The Intentionality rule
 
 LLM-generated code breaks most often in the Intentional group (59,6%), so review that group
 BEFORE the other three. Three mandatory questions before submitting code:
@@ -32,7 +32,7 @@ BEFORE the other three. Three mandatory questions before submitting code:
    swallowed error.
 3. **Is there dead code?** Unused variables, extra imports, functions nobody calls → delete.
 
-## Ngưỡng đo được
+## Measurable thresholds
 
 - Cyclomatic complexity ≤ 10 per function (every language).
 - Cognitive complexity ≤ 15 per function; the C family (C, C++, Objective-C) ≤ 25.
@@ -41,38 +41,38 @@ BEFORE the other three. Three mandatory questions before submitting code:
   the reason), because every tool's default differs; overriding by a spoken agreement in chat
   is banned.
 
-## Làm gì
+## What to do
 
 1. Open `index.md`, look up the extension of the file you are editing → load that language's
    rule file.
-2. Write the code per that language file's "Làm gì" section; name things per the language's
+2. Write the code per that language file's "What to do" section; name things per the language's
    standard.
 3. Walk the short OWASP checklist: validate input at the boundary, hardcode no secret/API key,
    errors must be handled or logged and rethrown — an empty `catch` is banned.
 4. Run the linter command from the `index.md` table; if the machine lacks the
-   linter, write "chưa kiểm được" and never write PASS.
+   linter, write "not checked yet" and never write PASS.
 
-## Tự kiểm
+## Self-check
 
 - [ ] No function exceeds cyclomatic ≤ 10, cognitive ≤ 15 (C family ≤ 25)
 - [ ] All 3 Intentionality questions above are answerable for the file just changed
 - [ ] No secrets, no dead code, no dangling TODO
-- [ ] The linter ran (or "chưa kiểm được" was recorded because the machine lacks it)
+- [ ] The linter ran (or "not checked yet" was recorded because the machine lacks it)
 
-## Ví dụ ĐÚNG/SAI
+## RIGHT/WRONG examples
 
 ```python
-# SAI — tên mơ hồ, nuốt lỗi, nhánh trống (cả 3 lỗi Intentionality):
+# WRONG — vague name, swallowed error, empty branch (all 3 Intentionality faults):
 def process(d):
     try:
         r = do(d)
     except Exception:
         pass  # TODO
-# ĐÚNG — tên nêu việc, lỗi được log và ném tiếp:
-def tach_dong_loi(log_text):
+# RIGHT — the name states the work, the error is logged and rethrown:
+def extract_error_lines(log_text):
     try:
         return [d for d in log_text.splitlines() if "ERROR" in d]
-    except UnicodeDecodeError as loi:
-        logging.error("log_text hỏng encoding: %s", loi)
+    except UnicodeDecodeError as err:
+        logging.error("log_text has a broken encoding: %s", err)
         raise
 ```

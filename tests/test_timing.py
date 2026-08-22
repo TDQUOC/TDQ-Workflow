@@ -161,11 +161,11 @@ class BangThoiGian(TempRepo):
                                           moc("plan", 9, 40)])
         rc, out, _err = self.chay("show", "--now", "2026-08-15T10:00:00+07:00")
         self.assertEqual(rc, 0)
-        for cot in ("Phase", "Treo tường", "Model", "Số lần"):
+        for cot in ("Phase", "Wall clock", "Model", "Times entered"):
             self.assertIn(cot, out)
         self.assertIn("spec", out)
-        self.assertIn("30 phút", out)          # spec 09:10 → 09:40
-        self.assertIn("1 giờ", out)            # tổng 09:00 → 10:00
+        self.assertIn("30 min", out)           # spec 09:10 → 09:40
+        self.assertIn("1h", out)               # tổng 09:00 → 10:00
 
     def test_quay_lui_cong_don_va_dem_so_lan(self):
         helper.write_state(self.cwd, active_request="2026-08-15-0900-viec", lane="full",
@@ -176,7 +176,7 @@ class BangThoiGian(TempRepo):
         self.assertEqual(rc, 0)
         dong = [d for d in out.splitlines() if d.strip().startswith("| spec")]
         self.assertEqual(len(dong), 1, f"spec phải gộp thành MỘT dòng, có: {dong}")
-        self.assertIn("24 phút", dong[0])      # 20 phút + 4 phút
+        self.assertIn("24 min", dong[0])       # 20 phút + 4 phút
         self.assertIn("2", dong[0])            # vào 2 lần
 
     def test_thoi_gian_model_lay_tu_transcript(self):
@@ -303,7 +303,7 @@ class NoiVaoWorkflow(TempRepo):
                                              "--skip-graphify", "--log", "thử đóng sổ")
         self.assertEqual(rc, 0, err)
         self.assertEqual([b["slug"] for b in self.doc_timing()], ["2026-08-15-0900-viec"])
-        self.assertIn("thời gian", (out + err).lower())
+        self.assertIn("timing", (out + err).lower())
 
     def test_finish_phase_khac_idle_khong_dong_so(self):
         run_state_cli(self.cwd, "init", "2026-08-15-0900-viec", "full")
@@ -321,7 +321,7 @@ class LuatVaKhuon(unittest.TestCase):
     def test_khuon_report_co_bang_thoi_gian(self):
         noi_dung = self.doc("skills", "tdq-build", "references", "report-template.md")
         self.assertIn("tdq_timing.py show", noi_dung)
-        self.assertIn("Treo tường", noi_dung)
+        self.assertIn("Wall clock", noi_dung)
 
     def test_status_co_dong_dong_ho(self):
         noi_dung = self.doc("skills", "tdq-status", "SKILL.md")

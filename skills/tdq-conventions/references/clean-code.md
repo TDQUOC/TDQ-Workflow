@@ -1,17 +1,17 @@
 # Clean code — the 5 SOLID principles
 
-Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md  <!-- i18n-allow: soul line, doc_lang wording -->
 
 In this workflow clean code is NOT a gate you ask about and NOT one linter run at the end of a
 request. It is standing behaviour: every time you write or change code, organise the project,
 the script, the function and the class as cleanly as possible, following the 5 SOLID principles.
 
-## Mục lục
+## Table of contents
 
 - Sources
-- Khi nào áp dụng
-- Làm gì
-- Tự kiểm
+- When it applies
+- What to do
+- Self-check
 
 ## Sources
 
@@ -31,7 +31,7 @@ the script, the function and the class as cleanly as possible, following the 5 S
   https://dev.to/ezzy1337/a-pythonic-guide-to-solid-design-principles-4c8i — Barbara Liskov's
   original statement is about objects and subtypes.
 
-## Khi nào áp dụng
+## When it applies
 
 Signs — hitting any one of these means this rule is present:
 
@@ -45,12 +45,12 @@ Signs — hitting any one of these means this rule is present:
 This rule applies to EVERY language. Numeric thresholds and per-language rules live in
 `skills/tdq-build/references/rules/` — load `chung.md` first, then exactly one language file.
 
-## Làm gì
+## What to do
 
 This repo has 4 `class` declarations against 280 `def` declarations, i.e. it is nearly purely
 functional. So each principle has two readings. Read the column matching what you are writing.
 
-| Mã | With classes | Functions/modules only |
+| Principle | With classes | Functions/modules only |
 |---|---|---|
 | SRP | One class has exactly one reason to change. Several responsibilities → split the class. | One function does exactly one thing; one module gathers functions serving one purpose. A function that both fetches data and judges it gets split in two. |
 | OCP | Add new behaviour with a subclass or a new implementation, never by editing the old class. | Add a new case as one line of DATA in a table or constant, never as a new branch in a function body. |
@@ -60,27 +60,27 @@ functional. So each principle has two readings. Read the column matching what yo
 
 ### SRP
 
-ĐÚNG — `scripts/tdq_checkstatus.py`: `gom_bang_chung()` only READS the disk, `cham_ca_lech()`
+RIGHT — `scripts/tdq_checkstatus.py`: `gom_bang_chung()` only READS the disk, `cham_ca_lech()`
 only JUDGES data already read. Changing how it reads is not changing how it scores.
 
-SAI — one `kiem_tra()` that opens the file, compares the sha, writes the diagnosis and prints
+WRONG — one `kiem_tra()` that opens the file, compares the sha, writes the diagnosis and prints
 the table. Changing the printed table shape forces editing the file-reading function.
 
 ### OCP
 
-ĐÚNG — `scripts/doc_lint.py`, the `SKILL_LINE_LIMITS` constant: adding a new skill needs one
+RIGHT — `scripts/doc_lint.py`, the `SKILL_LINE_LIMITS` constant: adding a new skill needs one
 new data line and `rule_r6()` does not change by a single character.
 
-SAI — writing `rule_r6()` as a chain of `if skill == "tdq-intake": ... elif skill == "tdq-spec":`
+WRONG — writing `rule_r6()` as a chain of `if skill == "tdq-intake": ... elif skill == "tdq-spec":`
 Every new skill forces the function body open again.
 
 ### LSP
 
-ĐÚNG — `scripts/tdq_checkstatus.py`: `doc_state_tho()` returns a 2-element tuple on EVERY
+RIGHT — `scripts/tdq_checkstatus.py`: `doc_state_tho()` returns a 2-element tuple on EVERY
 branch, including the missing-file branch and the broken-JSON branch. Callers write exactly one
 unpacking.
 
-SAI — one branch does `return None`, another `return {...}`, a third `raise`. The caller has to
+WRONG — one branch does `return None`, another `return {...}`, a third `raise`. The caller has to
 guess, and a wrong guess blows up somewhere else.
 
 Restating the limit: LSP as originally stated is about objects and subtypes. The function
@@ -89,21 +89,21 @@ words.
 
 ### ISP
 
-ĐÚNG — `scripts/tdq_checkstatus.py`: `_dem_tick(cwd, rel)` takes exactly the plan file's path.
+RIGHT — `scripts/tdq_checkstatus.py`: `_dem_tick(cwd, rel)` takes exactly the plan file's path.
 It has no need to know what is in the state, so it does not take the state.
 
-SAI — `_dem_tick(cwd, state)` digging out `state["plan_file"]` inside. Counting the ticks of any
+WRONG — `_dem_tick(cwd, state)` digging out `state["plan_file"]` inside. Counting the ticks of any
 other plan file then means building a fake state, even in a test.
 
 ### DIP
 
-ĐÚNG — `scripts/tdq_state.py` is the single entry point that writes `docs/tdq/state.json`. Hooks,
+RIGHT — `scripts/tdq_state.py` is the single entry point that writes `docs/tdq/state.json`. Hooks,
 skills and every other script go through that CLI; nowhere opens the file itself.
 
-SAI — a hook that `json.dump`s straight into `docs/tdq/state.json`. Changing the state format
+WRONG — a hook that `json.dump`s straight into `docs/tdq/state.json`. Changing the state format
 then means editing every site, and missing one leaves two writers silently out of step.
 
-## Tự kiểm
+## Self-check
 
 Answer these 5 questions before closing a task that touched source code. Any "no" → fix the
 code, not the answer. In phase QC, the answers go into the qc file together with what was fixed.

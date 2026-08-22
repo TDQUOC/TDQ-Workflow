@@ -1,17 +1,17 @@
 # Team mode — the leader assigns the whole plan, sub-agents run in parallel
 
-Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md
+Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
 
 You are the LEADER. Sub-agents are your TEAM. The default is DELEGATE; keeping a task for
 yourself needs a reason from the lookup table below, and that reason is machine-checked.
 
-## Mục lục
+## Table of contents
 
-- Khi nào áp dụng
-- Làm gì
-- Tự kiểm
+- When it applies
+- What to do
+- Self-check
 
-## Khi nào áp dụng
+## When it applies
 
 In phase `implement`, **every mode**. The leader doctrine is a way of ORGANISING the work, not
 a run mode: the plan is always split into waves, and every task always carries a
@@ -27,7 +27,7 @@ Team mode does NOT mean every task must be delegated. It means: **whatever can b
 be split**, and the leader does the rest — like a real team lead, neither someone who hoards
 all the work nor someone who scatters it blindly.
 
-## Làm gì
+## What to do
 
 ### Step 0 — assign the WHOLE plan before typing the first line of code
 
@@ -37,7 +37,7 @@ python3 scripts/tdq_team.py kiem-ke
 ```
 
 `phan-cong` reads the ENTIRE plan (not one task at a time), builds each task's file region from
-its `Chạm:` line, then writes `docs/tdq/team/<slug>.json`. Each task has exactly 4 fields:
+its `Chạm:` line, then writes `docs/tdq/team/<slug>.json`. Each task has exactly 4 fields: <!-- i18n-allow: canonical field names of the plan -->
 `quyet_dinh` (giao | tu_lam) · `ly_do` · `vung_file` · `dot`.
 
 `kiem-ke` exits non-zero when a `tu_lam` task has an empty reason or one outside the closed
@@ -49,14 +49,14 @@ in the region of a task recorded as `giao` without having opened its branch.
 
 ### Decision table — default GIAO, keeping a task must match exactly one row
 
-| Nhóm | Dấu hiệu nhận ra | Kiểm bằng |
+| Group | How to recognise it | Checked by |
 |---|---|---|
 | `phu-thuoc` | the task description names another task code (`T1.1`) that is not yet `[x]` | read the task line; the named task is still `[ ]`/`[~]`/`[>]` |
-| `vung-khoa` | the task has no `Chạm:` line → no file region can be declared for it | `grep -A2 'T1.1' <plan>` shows no `Chạm:` |
-| `mcp` | the task's `Dùng:` line ends with the `(mcp)` label | `grep '(mcp)' <plan>` |
+| `vung-khoa` | the task has no `Chạm:` line → no file region can be declared for it | `grep -A2 'T1.1' <plan>` shows no `Chạm:` <!-- i18n-allow: canonical field names of the plan --> |
+| `mcp` | the task's `Dùng:` line ends with the `(mcp)` label | `grep '(mcp)' <plan>` <!-- i18n-allow: canonical field names of the plan --> |
 | `file-luat` | the file region touches `skills/`, `hooks/`, `agents/`, `.claude/`, `.codex/`, `CLAUDE.md`, `AGENTS.md` | look at `vung_file` in the map |
-| `hop-dong` | the task builds a shared contract (data type, constant, message template, registry) that later tasks read | several other tasks declare `Cần:` pointing at it |
-| **mặc định: GIAO** | **matches none of the 5 rows above** | `python3 scripts/tdq_team.py kiem-ke` exit 0 |
+| `hop-dong` | the task builds a shared contract (data type, constant, message template, registry) that later tasks read | several other tasks declare `Cần:` pointing at it <!-- i18n-allow: canonical field names of the plan --> |
+| **mặc định: GIAO** | **matches none of the 5 rows above** | `python3 scripts/tdq_team.py kiem-ke` exit 0 <!-- i18n-allow: canonical field names of the plan --> |
 
 These five groups are a CLOSED set. Inventing a sixth reason ("this is faster if I do it",
 "this task is too small", "explaining it to a sub-agent takes longer than doing it") is working
@@ -81,8 +81,9 @@ mode beats `main`, not because sub-agents type faster than you.
 Tick marks: `[ ]` not started · `[~]` the LEADER is doing it (at most ONE) · `[>]` handed to a
 sub-agent (several allowed) · `[x]` done and merged back.
 
-### Khuôn prompt giao việc — đủ 9 trường, không thiếu trường nào
+### The delegation prompt template — all 9 fields, none left out
 
+<!-- i18n-allow: field names of the prompt template, pinned by the tests -->
 ```
 TASK: T1.1 — <chép nguyên văn dòng task trong plan, kể cả phần Test:>
 CỤM: đợt 2/5 · chạy song song với T1.2, T1.4
@@ -100,39 +101,39 @@ TRẢ VỀ: đúng khuôn TASK/STATUS/FILES/TEST/BRANCH/TICK-READY/NOTES ở age
 Include the spec and plan paths in the prompt body. A sub-agent CANNOT read this conversation —
 a missing field means it has to guess, and a wrong guess is paid for at merge time.
 
-### Ví dụ ĐÚNG/SAI
+### RIGHT/WRONG examples
 
 1. Splitting the work
-   - ĐÚNG: `phan-cong` done, 9/12 tasks `giao`, 3 tasks `tu_lam` with reason codes; `kiem-ke` exit 0.
-   - SAI: read the plan, think "faster if I just do it", work on main, never generate the map.
+   - RIGHT: `phan-cong` done, 9/12 tasks `giao`, 3 tasks `tu_lam` with reason codes; `kiem-ke` exit 0.
+   - WRONG: read the plan, think "faster if I just do it", work on main, never generate the map.
 2. Delegation rhythm
-   - ĐÚNG: one response calling the agent 4 times for 4 tasks of the same wave — they run concurrently.
-   - SAI: call 1 agent, wait for it, then call the next — that is mode `main` wearing a team costume.
+   - RIGHT: one response calling the agent 4 times for 4 tasks of the same wave — they run concurrently.
+   - WRONG: call 1 agent, wait for it, then call the next — that is mode `main` wearing a team costume.
 3. Merging
-   - ĐÚNG: `kiem T1.2` clean → `hop T1.2` → tick `[x]` right away.
-   - SAI: merge straight through with no `kiem`, hit a conflict midway, patch it up in the main repo.
+   - RIGHT: `kiem T1.2` clean → `hop T1.2` → tick `[x]` right away.
+   - WRONG: merge straight through with no `kiem`, hit a conflict midway, patch it up in the main repo.
 4. Tick marks
-   - ĐÚNG: 4 tasks `[>]` at once plus 1 `[~]` task of the leader.
-   - SAI: 4 tasks `[~]` at once — the hook blocks it, and nobody can tell where the leader really is.
+   - RIGHT: 4 tasks `[>]` at once plus 1 `[~]` task of the leader.
+   - WRONG: 4 tasks `[~]` at once — the hook blocks it, and nobody can tell where the leader really is.
 5. File regions
-   - ĐÚNG: two tasks both touch `scripts/a.py` → `phan-cong` puts them in two different waves.
-   - SAI: delegate both in one wave because "it'll probably be fine" — git says nothing until the merge breaks.
+   - RIGHT: two tasks both touch `scripts/a.py` → `phan-cong` puts them in two different waves.
+   - WRONG: delegate both in one wave because "it'll probably be fine" — git says nothing until the merge breaks.
 6. Shared contracts
-   - ĐÚNG: the task creating the `TRAN_SONG_SONG` constant and the message template is kept and
+   - RIGHT: the task creating the `TRAN_SONG_SONG` constant and the message template is kept and
      finished FIRST, only then is the wave that reads both dispatched.
-   - SAI: delegate all three tasks needing that constant in parallel — each sub-agent invents its
+   - WRONG: delegate all three tasks needing that constant in parallel — each sub-agent invents its
      own name, and only the merge reveals three mismatched versions.
 
-## Tự kiểm
+## Self-check
 
 Before ending phase implement, all of these must hold:
 
 ```
 python3 scripts/tdq_team.py kiem-ke          # exit 0
-python3 scripts/tdq_team.py cum              # in "HẾT: không còn task nào để giao"
-python3 scripts/tdq_team.py don              # dọn sạch worktree
-git worktree list                            # chỉ còn worktree gốc
-grep -c '^- \[x\]' docs/tdq/plan/<slug>.md   # bằng tổng số task
+python3 scripts/tdq_team.py cum              # prints "HẾT: không còn task nào để giao" <!-- i18n-allow: quoted machine output -->
+python3 scripts/tdq_team.py don              # every worktree cleaned up
+git worktree list                            # only the root worktree left
+grep -c '^- \[x\]' docs/tdq/plan/<slug>.md   # equals the total task count
 ```
 
 And one question to ask yourself, answerable with a number: **how many delegated / how many in

@@ -13,19 +13,19 @@ Do:
 2. Probe beyond the happy path: invalid input, empty/missing files, error paths, boundary values relevant to the spec.
 3. Check spec's mandatory requirements: logging service on by default with timestamps and debug-grade detail; unit tests exist and pass; no placeholders/TODO stubs left in shipped code.
 4. Never fix anything, never edit files. Evidence over claims — a result you did not run yourself does not count.
-5. **Ngưỡng digest ≤ 1.500 ký tự** cho final message: cấm dán nguyên văn output của lệnh test — mỗi chứng cứ chỉ trích ≤ 2 dòng quyết định (dòng `OK`/`FAILED`/dòng lỗi). Chứng cứ dài viết vào `docs/tdq/qc/<slug>.md` rồi trả đường dẫn; chất lượng kiểm tra không được cắt, chỉ phần dán lại là cắt.
+5. **Digest threshold ≤ 1,500 characters** for the final message: pasting the raw output of a test command is banned — quote at most 2 deciding lines per piece of evidence (the `OK`/`FAILED`/error line). Long evidence goes into `docs/tdq/qc/<slug>.md` and you return the path; the depth of the checking is never cut, only the pasting is.
 
-Return: verdict table — DoD item / check → PASS or FAIL → evidence (command + output excerpt); then a list of defects found (severity, repro steps, suspected location) in Vietnamese. If everything passes, state PASS explicitly with the full list of what was executed.
+Return: verdict table — DoD item / check → PASS or FAIL → evidence (command + output excerpt); then a list of defects found (severity, repro steps, suspected location) in the user's document language. If everything passes, state PASS explicitly with the full list of what was executed.
 
 Return format — copy this shape exactly:
 
 ```
-| # | Hạng mục DoD | Lệnh đã chạy | Trích output | PASS/FAIL |
+| # | DoD item | Command run | Output excerpt | PASS/FAIL |
 |---|---|---|---|---|
-| Q1 | <nguyên văn dòng DoD> | <lệnh> | <≤ 2 dòng> | PASS |
+| Q1 | <the DoD line verbatim> | <command> | <≤ 2 lines> | PASS |
 
 DEFECTS:
-1. <mức độ> — <triệu chứng> — repro: <lệnh> — nghi ở: <file:dòng>
+1. <severity> — <symptom> — repro: <command> — suspected at: <file:line>
 
-VERDICT: PASS toàn bộ | FAIL: <danh sách mã hạng mục>
+VERDICT: PASS everything | FAIL: <list of item codes>
 ```

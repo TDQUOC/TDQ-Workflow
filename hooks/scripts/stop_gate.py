@@ -1,27 +1,28 @@
 #!/usr/bin/env python3
-"""Stop — đối chiếu lời nhắc với HIỆU ỨNG thật, cuối turn.
+"""Stop — match reminders against the REAL effects, at end of turn.
 
-Nguồn dữ liệu duy nhất là sổ turn docs/tdq/.tdq-turn.jsonl (do 2 hook PreToolUse
-ghi). Hook này KHÔNG đọc transcript và KHÔNG tin dòng echo model tự in — 0.1.8
-từng đọc transcript và chặn nhầm turn hợp lệ vì transcript trễ, còn model yếu
-thì có thể in echo giả.
+The single data source is the turn ledger docs/tdq/.tdq-turn.jsonl (written by the 2
+PreToolUse hooks). This hook does NOT read the transcript and does NOT trust an echo
+line the model printed — 0.1.8 read the transcript and blocked valid turns because the
+transcript lagged, and a weak model can print a fake echo anyway.
 
-Điểm CHẶN duy nhất: repo đổi mà working log hôm nay chưa được cập nhật.
-Mọi mã còn lại chỉ nhắc lại qua additionalContext.
-Trần: ≤4 dòng / 300 ký tự (spec §2.7). `stop_hook_active` → im lặng tuyệt đối.
+The single BLOCK point: the repo changed while today's working log was never updated.
+Every other code is only repeated through additionalContext.
+Ceiling: ≤4 lines / 300 chars (spec §2.7). `stop_hook_active` → absolute silence.
 
-0.3.1 — sổ turn chỉ thấy hành động đi qua tool Edit/Write, nên thay đổi qua shell
-vô hình với nó: vừa chặn oan (log append bằng `cat >>`) vừa bỏ lọt (sửa repo bằng
-`sed -i`). Vì vậy hook đối chiếu thêm với ĐĨA: ảnh chụp `turn_start` do
-prompt_context ghi đầu turn so với trạng thái hiện tại. Không có ảnh chụp (turn
-không mở bằng user prompt, project không phải git repo) → rơi về đúng hành vi cũ.
+0.3.1 — the turn ledger only sees actions going through the Edit/Write tools, so changes
+made through the shell are invisible to it: it both blocked wrongly (a log appended with
+`cat >>`) and let things through (a repo edited with `sed -i`). So the hook also checks
+the DISK: the `turn_start` snapshot written by prompt_context at the start of the turn,
+against the current state. No snapshot (the turn did not open with a user prompt, the
+project is not a git repo) → it falls back to exactly the old behaviour.
 """
 import json
 import os
 
 from _common import payload_cwd, read_payload, turn_rows
-# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
-# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
+# Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
+# from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (BOOKKEEPING_PATHS, _info, _warn,  # noqa: E402
                        cong_dang_cho, effective_phase, load, plan_tick_state,
                        repo_status_digest, repo_status_paths, sha256_file,
@@ -31,25 +32,27 @@ MAX_LINES = 4
 MAX_CHARS = 300
 MAX_PATH_CHARS = 60
 
-# Lưới an toàn thứ hai cho vùng sổ sách: `repo_status_paths` đã loại trừ sẵn bằng
-# pathspec của git, đây chỉ là chốt chặn khi bản git quá cũ không hiểu `:(top,exclude)`.
-# Dùng đúng danh sách của tdq_state để quyết định và đặt tên không bao giờ lệch nhau
-# (chính chỗ lệch đó là chặn oan 0.3.1), và khớp theo `/` vì git in path bằng `/`.
+# Second safety net for the bookkeeping area: `repo_status_paths` already excludes it with a
+# git pathspec, this is only the backstop for a git old enough not to understand
+# `:(top,exclude)`. It uses tdq_state's own list so the decision and the naming can never
+# drift apart (that drift is exactly the wrong block of 0.3.1), and matches on `/` because
+# git prints paths with `/`.
 BOOKKEEPING = tuple(p + "/" for p in BOOKKEEPING_PATHS)
 
-# mã → (sự kiện chứng minh đã làm, câu nhắc lại nếu thiếu)
+# code → (the event proving it was done, the line to repeat if missing)
 EFFECTS = {
-    "TDQ:NEXT": ("next_run", "chưa chạy `tdq_state.py next` — chạy để biết bước kế tiếp."),
-    "TDQ:STATE": ("state_cli", "chưa ghi state bằng CLI — dùng `tdq_state.py set|approve`."),
+    "TDQ:NEXT": ("next_run", "`tdq_state.py next` not run yet — run it to see the next step."),
+    "TDQ:STATE": ("state_cli", "state not written through the CLI — use `tdq_state.py set|approve`."),
 }
 
 
 def _snapshot(rows):
-    """Ảnh chụp đầu turn — lấy dòng MỚI NHẤT.
+    """The start-of-turn snapshot — take the NEWEST row.
 
-    Bình thường mỗi turn chỉ có một dòng (turn_log_clear xoá sổ đầu turn). Nếu
-    việc xoá hụt thì dòng còn sót là của turn trước: lấy nó làm mốc là so với
-    trạng thái có thể cũ tới 6 giờ → gán oan thay đổi của turn cũ cho turn này.
+    Normally there is one row per turn (turn_log_clear wipes the ledger at turn start). If
+    that wipe was missed, the leftover row belongs to the previous turn: taking it as the
+    baseline means comparing against a state up to 6 hours old → the previous turn's changes
+    get blamed on this one.
     """
     found = None
     for row in rows:
@@ -66,36 +69,36 @@ def _sha(path):
 
 
 def _log_changed(cwd, snap):
-    """Log hôm nay có đổi so với đầu turn không (bất kể ghi bằng cách nào)."""
+    """Did today's log change since the start of the turn (however it was written)?"""
     log_rel = today_log_rel()
     now = _sha(os.path.join(cwd, log_rel))
     if now is None:
         return False
     before = snap.get("log_sha")
     if snap.get("log_rel") != log_rel:
-        return True                      # turn vắt qua nửa đêm: file ngày mới đã có
+        return True                      # turn straddling midnight: the new day's file exists
     if before is None:
-        return True                      # đầu turn chưa có file, giờ đã có
+        return True                      # no file at turn start, there is one now
     return isinstance(before, str) and now != before
 
 
 def _repo_changed(cwd, snap):
     before = snap.get("repo_sha")
     if not isinstance(before, str):
-        return False                     # không phải git repo / không lấy được
+        return False                     # not a git repo / could not be read
     now = repo_status_digest(cwd)
     if not isinstance(now, str):
-        # Đầu turn lấy được vân tay mà cuối turn thì không → có gì đó hỏng thật.
-        _warn("stop_gate: cuối turn không lấy được vân tay repo — "
-              "bỏ qua bằng chứng đĩa, chỉ còn dựa vào sổ turn")
+        # The fingerprint was readable at turn start but not at turn end → something is truly broken.
+        _warn("stop_gate: could not read the repo fingerprint at turn end — "
+              "dropping the disk evidence, falling back to the turn ledger alone")
         return False
     return now != before
 
 
 def _shell_changed_path(cwd, snap):
-    """Tên file để nêu trong lời chặn — ưu tiên file mới xuất hiện trong turn.
+    """The file name to quote in the block message — a file new in this turn wins.
 
-    Chuỗi rỗng = thay đổi chỉ nằm ở sổ sách workflow → không tính là đổi repo.
+    Empty string = the changes are workflow bookkeeping only → not counted as a repo change.
     """
     before = snap.get("repo_paths")
     before = set(before) if isinstance(before, list) else set()
@@ -129,48 +132,49 @@ def main():
               and not str(r.get("path", "")).startswith(log_dir)]
     logged = any(r.get("kind") == "observe" and r.get("event") == "log_written" for r in rows)
 
-    # Bằng chứng thứ hai, độc lập với tên tool: hiệu ứng thật trên đĩa.
-    # Cắt path ở đây chứ không chỉ trong _shell_changed_path: path lấy từ sổ turn
-    # cũng đi thẳng vào `reason`, path dài làm lời chặn vượt trần 300 ký tự.
+    # Second piece of evidence, independent of the tool name: the real effect on disk.
+    # Truncate the path here, not only in _shell_changed_path: a path read off the turn ledger
+    # also goes straight into `reason`, and a long path pushes the block past 300 chars.
     culprit = edited[0][:MAX_PATH_CHARS] if edited else ""
-    source = "sổ turn" if culprit else "—"
+    source = "turn ledger" if culprit else "—"
     if snap:
         if not logged:
             logged = _log_changed(cwd, snap)
         if not culprit and _repo_changed(cwd, snap):
             culprit = _shell_changed_path(cwd, snap)
-            source = "vân tay repo"
+            source = "repo fingerprint"
 
     if culprit and not logged:
-        # §6: quyết định chặn phải truy vết được — chặn oan thì biết ngay do nguồn nào.
-        _info(f"stop_gate: chặn TDQ:LOG · nguồn={source} · path={culprit}")
+        # §6: a block decision has to be traceable — a wrong block must name its source at once.
+        _info(f"stop_gate: block TDQ:LOG · source={source} · path={culprit}")
         print(json.dumps({
             "decision": "block",
-            # Câu chữ phải vừa trần 300 ký tự kể cả khi path chạm MAX_PATH_CHARS.
-            "reason": (f"[TDQ:LOG] Đổi repo ({culprit}) mà {log_rel} chưa append. "
-                       "Chạy `tdq_finish.py --files <file> --log \"<tóm tắt>\"`, cấm Edit tay. "
-                       "Xong rồi in LẠI NGUYÊN VĂN khối chat cuối (câu hỏi + đủ option + "
-                       "dòng ➤ Duyệt), cấm tóm tắt."),
+            # The wording must fit 300 chars even when the path hits MAX_PATH_CHARS.
+            "reason": (f"[TDQ:LOG] Repo changed ({culprit}), {log_rel} not appended. "
+                       "Run `tdq_finish.py --files <file> --log \"<summary>\"`, no hand Edit. "
+                       "Then reprint the last chat block VERBATIM (question + options + "
+                       "the ➤ line), no summarising."),
         }, ensure_ascii=False))
         return
 
-    # Điểm chặn thứ hai: code đã đổi trong turn mà checkbox plan đứng y nguyên.
-    # Bulk-tick cuối turn làm tiến độ nhảy 0/N → N/N, và tệ hơn: ETA mất sạch mẫu
-    # nhịp/task vì mốc chỉ được ghi khi tiến độ ĐỔI. Chặn ở đây, không chặn ở
-    # PreToolUse — trong turn vẫn được sửa code tự do, chỉ không được kết thúc turn.
-    # Mọi nhánh im lặng đều là chống chặn oan: hook này chạy ở user scope.
+    # Second block point: code changed during the turn while the plan checkboxes stood still.
+    # A bulk tick at end of turn makes progress jump 0/N → N/N, and worse: the ETA loses its
+    # whole per-task rhythm sample, because a mark is only recorded when progress CHANGES.
+    # Blocked here, not at PreToolUse — editing code freely inside the turn is fine, only
+    # ending the turn is not. Every silent branch here exists to avoid a wrong block: this
+    # hook runs at user scope.
     if culprit and snap and isinstance(snap.get("plan_sha"), str) \
             and effective_phase(state, warn=False) in ("implement", "qc"):
         tick = plan_tick_state(cwd)
         if tick["exists"] and tick["total"] > 0 and not tick["all_done"] \
                 and tick["sha"] == snap["plan_sha"]:
-            _info(f"stop_gate: chặn TDQ:TICK · nguồn={source} · path={culprit} "
-                  f"· plan={tick['path']} · checkbox không đổi trong turn")
+            _info(f"stop_gate: block TDQ:TICK · source={source} · path={culprit} "
+                  f"· plan={tick['path']} · checkboxes unchanged during the turn")
             print(json.dumps({
                 "decision": "block",
-                "reason": ("[TDQ:TICK] Turn này sửa code nhưng checkbox trong plan không đổi. "
-                           "Mở plan, đánh [~] task đang làm và [x] task đã xong (từng task). "
-                           "Xong rồi in LẠI NGUYÊN VĂN khối chat cuối — cấm tóm tắt lại."),
+                "reason": ("[TDQ:TICK] This turn edited code but the plan checkboxes did not change. "
+                           "Open the plan, mark [~] the task in progress and [x] the ones done (task by task). "
+                           "Then reprint the last chat block VERBATIM — no summarising."),
             }, ensure_ascii=False))
             return
 
@@ -181,15 +185,15 @@ def main():
         if code in reminded and event not in done:
             hints.append(f"[{code}] {message}")
     if "TDQ:APPROVE" in reminded:
-        # Cùng hàm mà `edit_gate` dùng: cổng phải tính theo LANE. Duyệt danh sách cứng
-        # ở đây làm lane quick lúc nào cũng bị nhắc "spec chưa duyệt" — cổng quick không
-        # hề tồn tại ở lane đó.
+        # The same function `edit_gate` uses: the gate must be computed per LANE. A hard-coded
+        # list here made lane quick permanently nagged with "spec not approved" — that gate
+        # does not even exist in that lane.
         target = cong_dang_cho(state)
         if target:
-            hints.append(f"[TDQ:APPROVE] {target} vẫn chưa được ghi nhận duyệt — "
-                         "user đã duyệt thì chạy `tdq_state.py approve`, chưa rõ thì HỎI.")
+            hints.append(f"[TDQ:APPROVE] {target} still has no recorded approval — "
+                         "if the user approved, run `tdq_state.py approve`; if unclear, ASK.")
     if "TDQ:GIT" in reminded:
-        hints.append("[TDQ:GIT] Kiểm lại tên branch/commit message theo quy ước trước khi đi tiếp.")
+        hints.append("[TDQ:GIT] Re-check the branch name / commit message against the convention before moving on.")
 
     if not hints:
         return

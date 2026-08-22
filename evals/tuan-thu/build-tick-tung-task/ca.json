@@ -1,0 +1,49 @@
+{
+  "ma": "build-tick-tung-task",
+  "mo_ta": "Đang giữa build — tick từng task một, không gom cuối turn.",
+  "prompt": "làm tiếp đi",
+  "phase_dau": "implement",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "spec",
+      "--by",
+      "duyệt spec"
+    ],
+    [
+      "set",
+      "plan_file=docs/tdq/plan/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "plan",
+      "--mode",
+      "main",
+      "--by",
+      "duyệt plan, làm trực tiếp"
+    ],
+    [
+      "set",
+      "phase=implement"
+    ]
+  ],
+  "kiem": [
+    "L003",
+    "L013",
+    "L145",
+    "L012",
+    "L121",
+    "L209",
+    "L210"
+  ]
+}

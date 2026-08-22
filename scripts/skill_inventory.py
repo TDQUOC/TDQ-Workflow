@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-"""Kiểm kê skill có trên ĐĨA cho bước B0 của tdq-intake (0.3.3).
+"""Inventory the skills present ON DISK for step B0 of tdq-intake (0.3.3).
 
-Quét đúng 3 nguồn — KHÔNG quét cache (cache giữ mọi version cũ, ra hàng trăm file rác):
-1. `~/.claude/skills/<x>/SKILL.md`         → nguồn `user`
-2. `<project>/.claude/skills/<x>/SKILL.md` → nguồn `project`
-3. Plugin đang BẬT: `enabledPlugins` gộp từ 3 tầng settings (user → project →
-   settings.local.json, tầng sau đè tầng trước), tra `installed_plugins.json`,
-   chỉ đọc thư mục `installPath` của bản đang cài. Entry `scope: "project"` của
-   project KHÁC bị bỏ.
+Scans exactly 3 sources — NOT the cache (the cache keeps every old version, hundreds of junk files):
+1. `~/.claude/skills/<x>/SKILL.md`         → source `user`
+2. `<project>/.claude/skills/<x>/SKILL.md` → source `project`
+3. ENABLED plugins: `enabledPlugins` merged over the 3 settings layers (user → project →
+      settings.local.json, later layers win), looked up in `installed_plugins.json`,
+      reading only the `installPath` directory of the installed version. An entry with
+      `scope: "project"` belonging to ANOTHER project is dropped.
 
-Skill BUILT-IN của Claude Code không nằm trên đĩa (đo thật: đĩa 7 / context 18),
-nên cuối bảng luôn in 2 dòng nhắc model tự chép phần đó từ context.
+The BUILT-IN skills of Claude Code are not on disk (measured: 7 on disk / 18 in context),
+so the table always ends with 2 lines reminding the model to copy that part from context.
 
-Cách dùng:  python3 scripts/skill_inventory.py [--project <dir>] [--loc <từ khoá>] [--tat-ca]
-Không cờ = bảng đầy đủ (hành vi gốc, ~39,7KB trên máy thật ≈ 9.774 token mỗi lần
-chạy B0). `--loc <từ khoá>` chỉ giữ dòng khớp từ khoá, CỘNG mọi dòng nguồn
-`project` và `plugin:tdq-workflow` — hai nguồn quyết định phán quyết DÙNG nên
-cấm ẩn — rồi in một dòng cuối báo đã ẩn bao nhiêu và lệnh xem đủ. `--tat-ca`
-in đủ như mặc định (để dòng nhắc kia trỏ tới một lệnh có thật).
-Exit 0 cho mọi trục trặc dữ liệu (thiếu file, JSON hỏng → cảnh báo rồi in phần
-còn lại); exit 2 chỉ khi sai cú pháp lệnh — cùng hợp đồng với tdq_state.py.
+Usage:  python3 scripts/skill_inventory.py [--project <dir>] [--loc <keyword>] [--tat-ca]
+No flag = the full table (original behaviour, ~39.7KB on a real machine ≈ 9,774 tokens per
+B0 run). `--loc <keyword>` keeps only the lines matching the keyword, PLUS every line of
+source `project` and `plugin:tdq-workflow` — the two sources that settle the USE verdict,
+so hiding them is banned — then prints a last line saying how many were hidden and the
+command to see them all. `--tat-ca` prints everything, like the default (so that reminder
+line points at a command that really exists). Exit 0 for every data hiccup (missing file,
+broken JSON → warn and print the rest); exit 2 only on bad command syntax.
 """
 import glob
 import json
@@ -28,72 +28,72 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import tdq_state  # noqa: E402 — dùng chung log service (_warn, TDQ_LOG, timestamp)
+import tdq_state  # noqa: E402 — shares the log service (_warn, TDQ_LOG, timestamp)
 
 DESC_MAX = 60
-TRIGGER_TAIL = 50   # số ký tự lấy kể từ chỗ cụm trigger, khi trigger nằm ngoài DESC_MAX
-# Cụm trigger bắt đầu ngay TRƯỚC ngưỡng vẫn bị ngưỡng cắt ngang (đo thật:
-# `huggingface-trackio` có `Use when` ở ký tự 58, ô cụt ở `Us`). Lùi điểm dò lại một
-# quãng để bắt cả ca vắt ngưỡng; phần chồng lấn tối đa bằng đúng quãng lùi này.
+TRIGGER_TAIL = 50   # characters taken from the trigger phrase on, when it sits past DESC_MAX
+# A trigger phrase starting just BEFORE the threshold still gets cut in half (measured:
+# `huggingface-trackio` has `Use when` at character 58, the cell ends at `Us`). Back the
+# probe point up a stretch to catch that case; the overlap is at most that same stretch.
 TRIGGER_LOOKBACK = 15
-# Description skill viết theo khuôn "câu 1 = nó là gì, câu 2 = dùng khi nào". Đo trên 268
-# SKILL.md: 146/211 skill có cụm trigger nằm SAU ký tự thứ 60, nên cắt cụt làm mất đúng
-# phần cần cho phán quyết DÙNG/KHÔNG. `_condense` giữ đầu + ghép thêm khúc trigger.
-# Nhánh tiếng Việt cho skill viết mô tả bằng tiếng Việt (6 skill tdq-* là ví dụ tại chỗ):
-# cùng khuôn "câu 1 = nó là gì, câu 2 = dùng khi nào", chỉ khác ngôn ngữ. Đo trên 274 skill:
-# 0 khớp nhầm vào mô tả tiếng Anh — các cụm này đều có dấu, không đụng chữ ASCII.
+# Skill descriptions follow the shape "sentence 1 = what it is, sentence 2 = when to use it".
+# Measured over 268 SKILL.md files: 146/211 skills have the trigger phrase AFTER character 60,
+# so truncating loses exactly the part the USE/NO verdict needs. `_condense` keeps the head
+# and appends the trigger stretch.
+# The Vietnamese branch serves skills whose description is Vietnamese (the 6 tdq-* skills are
+# the local example): same shape, other language. Measured over 274 skills: 0 false matches.
 TRIGGER_RE = re.compile(
     r"use when|use this|whenever|when the user|trigger"
-    r"|dùng khi|dùng cho|gọi khi|áp dụng khi|khi cần|khi user", re.I)
+    r"|dùng khi|dùng cho|gọi khi|áp dụng khi|khi cần|khi user", re.I)  # i18n-allow
 FRONTMATTER_MAX_LINES = 80
-# YAML block scalar: `description: |` và biến thể. Trước 2026-08-09 parser đọc `|` như
-# nội dung → 18 skill (firecrawl, tavily, mongodb-search-and-ai) rỗng mô tả.
+# YAML block scalar: `description: |` and variants. Before 2026-08-09 the parser read `|` as
+# content → 18 skills (firecrawl, tavily, mongodb-search-and-ai) came out with no description.
 BLOCK_MARKERS = ("|", "|-", "|+", ">", ">-", ">+")
 REMINDER = (
-    "— Bảng trên chỉ gồm skill trên đĩa.",
-    "— CHÉP THÊM các skill built-in đang thấy trong context "
-    "vào bảng kiểm kê rồi phán quyết từng dòng.",
+    "— The table above only holds the skills on disk.",
+    "— ALSO COPY the built-in skills visible in context "
+    "into the inventory table, then give a verdict per line.",
 )
-USAGE = ("Cách dùng: skill_inventory.py [--project <dir>] "
-         "[--loc <từ khoá>] [--tat-ca]")
-# Nguồn KHÔNG bao giờ bị `--loc` ẩn: skill của chính project và của plugin
-# tdq-workflow là hai nguồn quyết định phán quyết DÙNG ở bước B0.
+USAGE = ("Usage: skill_inventory.py [--project <dir>] "
+         "[--loc <keyword>] [--tat-ca]")
+# Sources `--loc` may NEVER hide: the skills of the project itself and of plugin
+# tdq-workflow are the two sources that settle the USE verdict at step B0.
 KEEP_SOURCES = ("project",)
 KEEP_SOURCE_PREFIX = "plugin:tdq-workflow"
 FULL_CMD = "python3 scripts/skill_inventory.py --tat-ca"
 
 
 def _load_json(path, missing_ok=False):
-    """dict từ file JSON, hoặc None. Hỏng/thiếu (khi missing_ok=False) → cảnh báo."""
+    """dict from a JSON file, or None. Broken/missing (when missing_ok=False) → warning."""
     try:
         with open(path, encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         if not missing_ok:
-            tdq_state._warn(f"skill_inventory: thiếu {path}")
+            tdq_state._warn(f"skill_inventory: missing {path}")
         return None
     except (OSError, ValueError) as exc:
-        tdq_state._warn(f"skill_inventory: không đọc được {path} ({type(exc).__name__})")
+        tdq_state._warn(f"skill_inventory: cannot read {path} ({type(exc).__name__})")
         return None
 
 
 def _clean(text):
-    """Bỏ ký tự điều khiển — SKILL.md xấu không được điều khiển terminal của user (Q9)."""
+    """Drop control characters — an ugly SKILL.md must not drive the user's terminal (Q9)."""
     return "".join(ch for ch in text if ch >= " " or ch == "\t")
 
 
 def _frontmatter(path):
-    """(name, description) từ frontmatter; lỗi đọc → (None, None) + cảnh báo.
+    """(name, description) from the frontmatter; a read error → (None, None) + a warning.
 
-    Description nhiều dòng (block scalar `|`, `>`, hoặc plain scalar thụt vào) được nối
-    thành một dòng: gom mọi dòng thụt vào cho tới khoá cấp 0 kế tiếp hoặc `---` đóng.
+    A multi-line description (block scalar `|`, `>`, or an indented plain scalar) is joined
+    into one line: every indented line up to the next level-0 key or the closing `---`.
     """
     name = desc = ""
     try:
         with open(path, encoding="utf-8") as f:
             head = f.read(16384).splitlines()[:FRONTMATTER_MAX_LINES]
     except OSError as exc:
-        tdq_state._warn(f"skill_inventory: không đọc được {path} ({type(exc).__name__})")
+        tdq_state._warn(f"skill_inventory: cannot read {path} ({type(exc).__name__})")
         return None, None
     if head and head[0].strip() == "---":
         head = head[1:]
@@ -119,9 +119,9 @@ def _frontmatter(path):
 
 
 def _condense(desc):
-    """Rút gọn description cho một ô bảng: giữ đầu, ghép thêm khúc trigger nếu nó ở xa.
+    """Shorten a description for one table cell: keep the head, append the trigger stretch.
 
-    `|` đổi thành `/` — bảng in ra tách cột bằng `|`, để nguyên là vỡ số cột.
+    `|` becomes `/` — the printed table splits columns on `|`, leaving it breaks the columns.
     """
     text = " ".join((desc or "").split()).replace("|", "/")
     if len(text) <= DESC_MAX:
@@ -129,13 +129,13 @@ def _condense(desc):
     found = TRIGGER_RE.search(text, DESC_MAX - TRIGGER_LOOKBACK)
     if not found:
         return text[:DESC_MAX]
-    # Trigger vắt ngưỡng: cắt đầu ngay TRƯỚC nó, khỏi lặp cụm ở cả hai bên dấu nối.
+    # Trigger across the threshold: cut the head right BEFORE it, no repeat on both sides.
     head = text[:min(DESC_MAX, found.start())].rstrip()
     return f"{head} … {text[found.start():found.start() + TRIGGER_TAIL]}"
 
 
 def _scan_skill_dir(root):
-    """[(name, desc)] từ một thư mục chứa <skill>/SKILL.md."""
+    """[(name, desc)] from one directory holding <skill>/SKILL.md."""
     rows = []
     for path in sorted(glob.glob(os.path.join(root, "*", "SKILL.md"))):
         name, desc = _frontmatter(path)
@@ -145,7 +145,7 @@ def _scan_skill_dir(root):
 
 
 def _enabled_plugins(home, project):
-    """enabledPlugins gộp 3 tầng — tầng sau đè tầng trước (giống Claude Code)."""
+    """enabledPlugins merged over 3 layers — later layers win (like Claude Code)."""
     merged = {}
     layers = (
         (os.path.join(home, ".claude", "settings.json"), False),
@@ -160,7 +160,7 @@ def _enabled_plugins(home, project):
 
 
 def _plugin_skill_dirs(home, project):
-    """[(tên plugin, thư mục skills)] của các plugin đang bật cho project này."""
+    """[(plugin name, skills directory)] of the plugins enabled for this project."""
     enabled = _enabled_plugins(home, project)
     if not any(enabled.values()):
         return []
@@ -172,7 +172,7 @@ def _plugin_skill_dirs(home, project):
         for entry in entries.get(key, []) or []:
             if not isinstance(entry, dict):
                 continue
-            # Plugin cài riêng cho một project khác: không thuộc bảng của project này.
+            # A plugin installed for another project only: not part of this project's table.
             if entry.get("scope") == "project" and \
                     os.path.realpath(str(entry.get("projectPath", ""))) != project_real:
                 continue
@@ -184,7 +184,7 @@ def _plugin_skill_dirs(home, project):
 
 
 def inventory(project):
-    """[(name, desc đã rút gọn, nguồn)] — trùng tên thì nguồn quét trước thắng."""
+    """[(name, shortened desc, source)] — on a name clash the source scanned first wins."""
     home = os.path.expanduser("~")
     rows, seen = [], set()
 
@@ -205,7 +205,7 @@ def inventory(project):
 
 
 def _filter(rows, keyword):
-    """(dòng giữ lại, số dòng bị ẩn) — khớp từ khoá HOẶC thuộc nguồn cấm ẩn."""
+    """(rows kept, rows hidden) — matching the keyword OR belonging to a never-hidden source."""
     needle = keyword.casefold()
     kept, hidden = [], 0
     for name, desc, source in rows:
@@ -218,8 +218,8 @@ def _filter(rows, keyword):
 
 
 def main(argv):
-    # A23: neo theo project thật (TDQ_PROJECT_DIR > git root > cwd) — chạy từ
-    # thư mục con không được mất nguồn skill `project`.
+    # A23: anchor on the real project (TDQ_PROJECT_DIR > git root > cwd) — running from a
+    # sub-directory must not lose the `project` skill source.
     project = tdq_state.resolve_project_dir()
     keyword = ""
     show_all = False
@@ -233,27 +233,27 @@ def main(argv):
         elif arg == "--tat-ca":
             show_all = True
         else:
-            print(f"đối số không hiểu: {arg}", file=sys.stderr)
+            print(f"unknown argument: {arg}", file=sys.stderr)
             print(USAGE, file=sys.stderr)
             return 2
     rows = inventory(project)
-    # `--tat-ca` thắng `--loc`: người gõ cả hai đang muốn xem đủ.
+    # `--tat-ca` beats `--loc`: typing both means wanting to see everything.
     hidden = 0
     if keyword and not show_all:
         rows, hidden = _filter(rows, keyword)
         tdq_state._info(
-            f"skill_inventory: lọc theo {keyword!r} — giữ {len(rows)}, ẩn {hidden}")
+            f"skill_inventory: filtered on {keyword!r} — kept {len(rows)}, hid {hidden}")
     if rows:
         for name, desc, source in rows:
             print(f"{name} | {desc} | {source}")
     else:
-        print("(không có skill nào trên đĩa)")
+        print("(no skill on disk)")
     for line in REMINDER:
         print(line)
     if keyword and not show_all:
-        # Dòng cuối BẮT BUỘC: bảng đã bị cắt thì người đọc phải thấy ngay đã mất bao
-        # nhiêu và lệnh nào xem đủ — cắt token nhưng không giấu chuyện đã cắt.
-        print(f'— Đã ẩn {hidden} skill không khớp "{keyword}"; xem đủ: {FULL_CMD}')
+        # The last line is MANDATORY: once the table is cut, the reader must see right away how
+        # much went missing and which command shows it all — cut tokens, never hide the cut.
+        print(f'— Hid {hidden} skill(s) not matching "{keyword}"; see them all: {FULL_CMD}')
     return 0
 
 

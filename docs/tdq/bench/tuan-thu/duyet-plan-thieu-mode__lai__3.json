@@ -1,0 +1,20 @@
+{
+  "ca": "duyet-plan-thieu-mode",
+  "nhanh": "lai",
+  "lan": 3,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-plan-thieu-mode__lai__3/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L010": "dat",
+    "L149": "dat",
+    "L012": "khong-ap-dung",
+    "L209": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 0.6954215,
+  "so_luot": 18,
+  "nhiem": [
+    "repo gốc đang phát triển"
+  ]
+}

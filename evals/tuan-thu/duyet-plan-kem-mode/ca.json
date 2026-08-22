@@ -1,0 +1,41 @@
+{
+  "ma": "duyet-plan-kem-mode",
+  "mo_ta": "Duyệt plan có kèm mode — phải vào build ngay trong turn này.",
+  "prompt": "duyệt plan, làm trực tiếp đi",
+  "phase_dau": "plan",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "spec",
+      "--by",
+      "duyệt spec"
+    ],
+    [
+      "set",
+      "plan_file=docs/tdq/plan/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "set",
+      "phase=plan"
+    ]
+  ],
+  "kiem": [
+    "L001",
+    "L003",
+    "L005",
+    "L012",
+    "L149",
+    "L121",
+    "L210"
+  ]
+}

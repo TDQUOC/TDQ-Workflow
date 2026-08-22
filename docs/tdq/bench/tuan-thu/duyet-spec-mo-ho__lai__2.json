@@ -1,0 +1,18 @@
+{
+  "ca": "duyet-spec-mo-ho",
+  "nhanh": "lai",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-spec-mo-ho__lai__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L136": "dat",
+    "L149": "khong-ap-dung",
+    "L218": "khong-ap-dung",
+    "L121": "khong-ap-dung",
+    "L210": "dat"
+  },
+  "chi_phi": 0.152672,
+  "so_luot": 3,
+  "nhiem": []
+}

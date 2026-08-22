@@ -164,6 +164,62 @@ class TestModeNaming(unittest.TestCase):
                 self.assertFalse(self.pc.looks_like_approval(said, "mode"), said)
 
 
+class TestMultilingualGates(unittest.TestCase):
+    """Cả 4 cổng nhận 3 dạng trả lời: câu tiếng Việt · câu tiếng Anh · chữ cái đứng riêng."""
+
+    setUp = TestModeNaming.setUp
+
+    def test_letter_a_approves_at_every_gate(self):
+        for gate in ("spec", "plan", "quick"):
+            for said in ("A", "a", " A ", "chọn A", "choose a", "A."):
+                with self.subTest(gate=gate, said=said):
+                    self.assertTrue(self.pc.looks_like_approval(said, gate), (gate, said))
+
+    def test_other_letters_are_not_an_approval(self):
+        """Ở 3 cổng duyệt, đề xuất luôn nằm ở A — b/c/d trả lời câu khác, cấm suy diễn."""
+        for gate in ("spec", "plan", "quick"):
+            for said in ("B", "c", "chọn D"):
+                with self.subTest(gate=gate, said=said):
+                    self.assertFalse(self.pc.looks_like_approval(said, gate), (gate, said))
+
+    def test_letter_lookalike_still_rejected(self):
+        for said in ("Ai làm cũng được", "a hay b thì hơn", "bạn quyết đi"):
+            with self.subTest(said=said):
+                self.assertFalse(self.pc.looks_like_approval(said, "spec"), said)
+
+    def test_english_approval_sentences(self):
+        cases = [("approve the spec", "spec"), ("ok, approved plan", "plan"),
+                 ("yes, approve this", "spec"), ("lgtm, approve the plan", "plan"),
+                 ("go ahead with the plan", "plan"), ("approve quick", "quick"),
+                 ("approve express", "quick")]
+        for said, gate in cases:
+            with self.subTest(said=said, gate=gate):
+                self.assertTrue(self.pc.looks_like_approval(said, gate), (said, gate))
+
+    def test_reject_english_question_and_negation(self):
+        """Từ đồng ý + đối tượng vẫn TRƯỢT khi câu có dấu hỏi hoặc phủ định."""
+        cases = [("ok but not yet", "plan"), ("approve? not sure", "plan"),
+                 ("approve the plan?", "plan"), ("do not approve the spec", "spec"),
+                 ("no", "spec"), ("maybe approve the plan later", "plan"),
+                 ("wait, approve the spec after the fix", "spec"),
+                 ("A?", "spec"), ("not A", "spec")]
+        for said, gate in cases:
+            with self.subTest(said=said, gate=gate):
+                self.assertFalse(self.pc.looks_like_approval(said, gate), (said, gate))
+
+    def test_reject_english_negation_at_mode_gate(self):
+        for said in ("not main", "subagent? not sure", "no"):
+            with self.subTest(said=said):
+                self.assertFalse(self.pc.looks_like_approval(said, "mode"), said)
+
+    def test_english_noise_still_rejected(self):
+        for said, gate in [("what does the spec say", "spec"),
+                           ("the plan looks big", "plan"),
+                           ("ok I understand", "spec")]:
+            with self.subTest(said=said, gate=gate):
+                self.assertFalse(self.pc.looks_like_approval(said, gate), (said, gate))
+
+
 def write_file_plan_mode(cwd, rel, mode):
     import os
     path = os.path.join(cwd, rel)

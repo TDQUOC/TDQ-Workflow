@@ -1,10 +1,10 @@
 # Hook reminder codes
 
 TDQ hooks **do not block** (except exactly one case at the end). They inject lines shaped
-`[TDQ:<MÃ>] <việc phải làm>` into the context.
+`[TDQ:<CODE>] <the job to do>` into the context.
 
-**Rule:** on seeing `[TDQ:<MÃ>]` → do what it says **BEFORE** anything else in the turn, then
-print `✓ [TDQ:<MÃ>] <đã làm gì>`.
+**Rule:** on seeing `[TDQ:<CODE>]` → do what it says **BEFORE** anything else in the turn, then
+print `✓ [TDQ:<CODE>] <what was done>`.
 
 The `✓` line is for the user to read. The hook does **not** read it — the hook checks by real
 effect (which file changed, which command ran), so printing `✓` without doing the work still
@@ -12,11 +12,11 @@ gets you reminded again at the end of the turn.
 
 ## The five codes (closed list)
 
-| Mã | Meaning | What to do | Effect the hook checks |
+| Code | Meaning | What to do | Effect the hook checks |
 |---|---|---|---|
 | `TDQ:NEXT` | Start of turn / start of session | Run `tdq_state.py next`, follow its output | a `tdq_state.py next` command actually ran |
 | `TDQ:APPROVE` | Approval pending, or the user just approved | Record the approval, or ASK if ambiguous — see [approval.md](approval.md) | a `*_approved` field flipped to true |
-| `TDQ:LOG` | The repo changed but today's working log has no entry | Append an entry to the end of `docs/workinglog/<hôm nay>.md` | that exact log file was modified |
+| `TDQ:LOG` | The repo changed but today's working log has no entry | Append an entry to the end of `docs/workinglog/<today>.md` | that exact log file was modified |
 | `TDQ:STATE` | About to hand-edit state | Use `tdq_state.py set\|approve\|init\|reset` | a `tdq_state.py` command actually ran |
 | `TDQ:GIT` | Branch/worktree name or commit message breaks convention | Rename / fix the message before running | — (repeated at Stop) |
 

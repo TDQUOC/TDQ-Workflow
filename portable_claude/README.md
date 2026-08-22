@@ -1,43 +1,47 @@
-# TDQ Workflow — bản portable cho Claude Code
+# TDQ Workflow — portable bundle for Claude Code
 
-## Cài ở máy mới — làm theo đúng thứ tự này
+## Install on a new machine — follow this exact order
 
-1. **Chép** trọn nội dung thư mục này vào gốc project của bạn, giữ nguyên `.claude/` và
-   `.mcp.json`.
-2. **Kiểm** trước khi mở Claude Code:
+1. **Copy** the whole content of this folder into the root of your project, keeping
+   `.claude/` and `.mcp.json` as they are.
+2. **Check** before opening Claude Code:
    ```
    python3 .claude/tdq/scripts/tdq_checkportable.py check
    ```
-   Đọc theo tiền tố: `SẠCH` xong · `THIẾU` chưa có · `LỆCH` khác manifest · `LƯU Ý` việc
-   chỉ bạn làm được.
-3. **Vá** nếu có `THIẾU`/`LỆCH`: `python3 .claude/tdq/scripts/tdq_checkportable.py setup` (xem mục
-   cảnh báo bên dưới — nó chỉ dựng lại được hai file).
-4. **Đặt biến môi trường** cho MCP nếu `check` báo thiếu. Script cố ý KHÔNG làm hộ và
-   không bao giờ in giá trị khoá — chỉ báo tên biến.
-5. **Mở Claude Code** trong project đó. Lần mở đầu nó hỏi có tin thư mục này không →
-   **bấm đồng ý**. Không đồng ý thì hook và cấu hình project không có hiệu lực.
-6. **Khởi động lại phiên** để skill và agent trong thư mục mới được quét.
-7. **Duyệt MCP server** — mỗi server trong `.mcp.json` cần bạn duyệt một lần.
+   Read by prefix: `CLEAN` done · `MISSING` not there · `DRIFT` differs from the manifest ·
+   `NOTE` something only you can do.
+3. **Patch** if there is any `MISSING`/`DRIFT`: `python3 .claude/tdq/scripts/tdq_checkportable.py setup`
+   (see the warning section below — it can only rebuild two files).
+4. **Set the environment variables** for MCP if `check` reports them missing. The script
+   deliberately does NOT do it for you and never prints a key value — it only names the
+   variable.
+5. **Open Claude Code** in that project. The first time it asks whether you trust this
+   folder → **click yes**. Without that, the hooks and the project config have no effect.
+6. **Restart the session** so the skills and agents in the new folder get scanned.
+7. **Approve the MCP servers** — every server in `.mcp.json` needs one approval from you.
 
-Xong bảy bước thì nhắn `chạy skill tdq-checkportable` để máy tự kiểm lại lần cuối.
+Once the seven steps are done, say `run the tdq-checkportable skill` so the machine runs a
+final check for you.
 
-## Ba việc máy KHÔNG tự làm được
+## Three things the machine CANNOT do for you
 
-1. **Tin cậy thư mục** — bước 5 ở trên. Chỉ bạn bấm được, không có cờ dòng lệnh nào trong
-   bộ này thay thế.
-2. **Duyệt MCP server** — bước 7.
-3. **Khởi động lại** — bước 6. Bỏ qua thì skill mới nằm im, không báo lỗi gì.
+1. **Trust the folder** — step 5 above. Only you can click it; no command-line flag in this
+   bundle replaces it.
+2. **Approve the MCP servers** — step 7.
+3. **Restart** — step 6. Skip it and the new skills just sit there, with no error at all.
 
-## Cảnh báo về tự vá
+## Warning about self-patching
 
-`setup` dựng lại được đúng hai file cấu hình mà bundle có đủ dữ liệu để tái tạo:
-`.claude/settings.json` (từ `hooks.json` đi kèm) và `.mcp.json`. Ghi đè thì luôn sao lưu
-thành `<file>.tdq-bak-<timestamp>`, và khối `env` bạn tự thêm được giữ lại.
+`setup` rebuilds exactly the two config files the bundle holds enough data to recreate:
+`.claude/settings.json` (from the bundled `hooks.json`) and `.mcp.json`. Overwriting always
+leaves a backup at `<file>.tdq-bak-<timestamp>`, and the `env` block you added yourself is
+kept.
 
-File khác thiếu hoặc lệch thì `setup` **không** bịa nội dung — nó báo `CÒN …` và exit khác 0;
-nguồn đúng duy nhất là bản gốc, chép lại từ đó. Chỉ muốn kiểm, không sửa: dùng `check`.
+Any other file that is missing or has drifted is **not** invented by `setup` — it reports
+`LEFT …` and exits non-zero; the only correct source is the original bundle, copy it from
+there. Want a check without any change: use `check`.
 
-## Khoá bí mật
+## Secret keys
 
-`.mcp.json` chỉ ghi TÊN biến môi trường, không bao giờ chứa giá trị khoá. Tự đặt biến ở máy
-mình trước khi dùng MCP.
+`.mcp.json` only records the NAMES of environment variables, never a key value. Set the
+variables yourself on your own machine before using MCP.

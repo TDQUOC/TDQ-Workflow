@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
-"""SessionStart — nạp ngữ cảnh đầu session.
+"""SessionStart — load the context at the start of a session.
 
-Dòng luật tuân thủ đứng TRƯỚC, rồi tới nguyên khối `tdq_state.py next` (nguồn
-sự thật duy nhất về "đang ở đâu, làm gì tiếp") và tình trạng graphify. Thứ tự
-này quan trọng: trần 600 ký tự cắt phần đuôi, luật không được nằm ở đuôi.
-Chưa có request cũng vẫn in — phase `no_state` chỉ đường mở request mới.
-Trần ngân sách: ≤12 dòng / 600 ký tự (spec §2.7).
+The compliance rule line comes FIRST, then the whole `tdq_state.py next` block (the single
+source of truth on "where we are, what comes next") and the graphify status. That order
+matters: the 600-character cap cuts from the tail, and the rule must not sit in the tail.
+It prints even with no request open — phase `no_state` shows the way to open one.
+Budget cap: <= 12 lines / 600 characters (spec §2.7).
 """
 import shutil
 
 from _common import payload_cwd, read_payload
-# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
-# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
+# Placed AFTER `from _common`: `_common` itself injects `scripts/` into sys.path. The
+# from-import shape (not a module attribute call) is what lets graphify emit a cross-file
+# `calls` edge.
 from tdq_state import default_state, load, render_next  # noqa: E402
 
 MAX_LINES = 12
 MAX_CHARS = 600
 
-RULE = ("[TDQ] Luật: thấy dòng [TDQ:<MÃ>] → làm đúng việc trong đó TRƯỚC, "
-        "xong in ✓ [TDQ:<MÃ>]. Ghi state chỉ bằng scripts/tdq_state.py.")
+RULE = ("[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, "
+        "then print ✓ [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.")
 
 
 def main():
@@ -28,7 +29,7 @@ def main():
 
     lines = [RULE] + render_next(cwd, state, compact=True).splitlines()
     if shutil.which("graphify") is None:
-        lines.append("[TDQ] graphify chưa cài (tùy chọn): uv tool install graphifyy")
+        lines.append("[TDQ] graphify is not installed (optional): uv tool install graphifyy")
 
     text = "\n".join(lines[:MAX_LINES])
     if len(text) > MAX_CHARS:

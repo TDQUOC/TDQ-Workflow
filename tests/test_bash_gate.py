@@ -43,7 +43,7 @@ class TestBashGate(unittest.TestCase):
         self.assertEqual(out, "", command)
 
     def test_remind_banned_branch_names(self):
-        self.assert_remind("git checkout -b claude/fix-login", "quy ước")
+        self.assert_remind("git checkout -b claude/fix-login", "convention")
         self.assert_remind("git switch -c gemini-x")
         self.assert_remind("git branch codex_feature")
         self.assert_remind("git worktree add ../antigravity-wt")

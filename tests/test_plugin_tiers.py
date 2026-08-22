@@ -212,7 +212,7 @@ class IdempotentTest(TierBase):
             self.assertEqual(f.read(), first)
         log = os.path.join(self.claude, "logs", "plugin-tiers.log")
         with open(log, encoding="utf-8") as f:
-            self.assertIn("0 thay đổi", f.read())
+            self.assertIn("0 changes", f.read())
 
 
 if __name__ == "__main__":

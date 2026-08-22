@@ -1,0 +1,7 @@
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0029", "name": "Write", "input": {"file_path": "/tmp/sb/src/tien_ich.py", "content": "..."}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0029", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0030", "name": "Write", "input": {"file_path": "/tmp/sb/tests/test_tien_ich.py", "content": "..."}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0030", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0031", "name": "Bash", "input": {"command": "python3 -m pytest tests/test_tien_ich.py -q"}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0031", "content": "3 passed", "is_error": false}]}}
+{"type": "result", "subtype": "success", "result": "Test xanh ngay lần chạy đầu.", "total_cost_usd": 0.42, "num_turns": 6, "is_error": false}

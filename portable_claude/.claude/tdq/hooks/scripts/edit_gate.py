@@ -1,30 +1,31 @@
 #!/usr/bin/env python3
-"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — quan sát + nhắc; chặn đúng 1 ca.
+"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — observe + remind; blocks exactly 1 case.
 
-Chỉ `TDQ:TICK` chặn (deny): sửa mã nguồn khi đang implement/qc mà plan chưa có task
-nào mang dấu `[~]`. Mọi mã còn lại vẫn chỉ nhắc.
+Only `TDQ:TICK` denies: editing source code during implement/qc while the plan carries no
+task marked `[~]`. Every other code only reminds.
 
-Hai việc, theo đúng thứ tự:
-1. Ghi `observe` vào sổ turn: `edit:<path>` cho mọi lần sửa file, `log_written`
-   khi file đó chính là working log hôm nay. Đây là bằng chứng mà `stop_gate`
-   dùng cuối turn — không phụ thuộc transcript, không phụ thuộc model tự khai.
-2. Phát mã nhắc khi cần: TDQ:STATE (định sửa tay state), TDQ:APPROVE (sửa code
-   khi gate của lane chưa duyệt), TDQ:LOG (repo đã đổi mà log hôm nay chưa có).
+Two jobs, in this order:
+1. Write `observe` rows into the turn ledger: `edit:<path>` for every file edit,
+   `log_written` when that file is today's working log. This is the evidence `stop_gate`
+   uses at end of turn — no transcript, no self-reporting by the model.
+2. Emit a reminder code when needed: TDQ:STATE (about to hand-edit state), TDQ:APPROVE
+   (editing code while the lane gate is unapproved), TDQ:LOG (repo changed but today's
+   log is missing).
 """
 import os
 
 from _common import (block, echo_line, observe, payload_cwd, read_payload, remind,
                      turn_rows)
-# Đặt SAU `from _common`: chính `_common` bơm `scripts/` vào sys.path. Dùng from-import
-# (không gọi qua thuộc tính module) để graphify sinh được cạnh `calls` cross-file.
-# `today_log_rel` lấy thẳng từ tdq_state — một nguồn duy nhất, dùng chung với stop_gate.
+# Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
+# from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
+# `today_log_rel` comes straight from tdq_state — one single source, shared with stop_gate.
 from tdq_state import (cong_dang_cho, effective_phase, load,  # noqa: E402
                        plan_tick_state, state_md_path, state_path,
                        today_log_rel)
 
-# Ngưỡng streak (spec 2026-08-13-ra-soat-tick-che-do-sau §3): quá NGƯỠNG lần sửa mã
-# nguồn liên tiếp mà plan (checksum) chưa đổi kể từ đó → chặn lần kế tiếp. Khớp trần
-# "vòng fix" (3 vòng) đã dùng sẵn trong hệ thống.
+# Streak threshold (spec 2026-08-13-ra-soat-tick-che-do-sau §3): more than THRESHOLD source
+# edits in a row without the plan (checksum) changing since → block the next one. Matches the
+# "fix round" ceiling (3 rounds) already used across the system.
 STREAK_NGUONG = 3
 
 
@@ -49,110 +50,112 @@ def main():
     log_dir = os.path.realpath(os.path.join(cwd, "docs", "workinglog"))
     is_log = within(abs_target, log_dir)
 
-    # (1) quan sát — luôn ghi, kể cả khi chưa có request nào đang mở
+    # (1) observe — always written, even when no request is open
     observe(cwd, payload, "edit", path=rel_target)
     if is_log:
         observe(cwd, payload, "log_written", path=rel_target)
 
-    # (2) nhắc
+    # (2) remind
     state_file = os.path.realpath(state_path(cwd))
     state_md = os.path.realpath(state_md_path(cwd))
     if abs_target in (state_file, state_md):
         remind(cwd, payload, "TDQ:STATE", [
-            "Đừng sửa tay file trạng thái — ghi bằng CLI.",
-            "Cách làm: python3 scripts/tdq_state.py set <key>=<value> (hoặc approve/init/reset).",
-            echo_line("TDQ:STATE", "đã ghi state bằng CLI"),
+            "Do not hand-edit the state file — write it through the CLI.",
+            "How: python3 scripts/tdq_state.py set <key>=<value> (or approve/init/reset).",
+            echo_line("TDQ:STATE", "wrote state through the CLI"),
         ])
 
     state = load(cwd)
     if state is None or not state.get("active_request"):
         return
     if within(abs_target, os.path.realpath(os.path.join(cwd, "docs"))):
-        return  # docs/** không cần nhắc: brief/spec/plan/research/log
+        return  # docs/** needs no reminder: brief/spec/plan/research/log
 
-    # Luật chọn cổng nằm ở `tdq_state.cong_dang_cho` — dùng chung với `stop_gate`.
-    # Chép luật ra hai hook là mở đường cho hai bên lệch nhau: đúng chỗ lệch đó khiến
-    # stop_gate nhắc oan lane quick suốt một thời gian.
+    # The gate-picking rule lives in `tdq_state.cong_dang_cho` — shared with `stop_gate`.
+    # Copying the rule into both hooks is an open invitation for the two to drift: that exact
+    # drift is what made stop_gate nag lane quick wrongly for quite a while.
     pending = cong_dang_cho(state)
     if pending:
-        # Nêu cả tên máy lẫn nhãn user đọc thấy ở cổng mode — cả hai đều được nhận.
+        # Name both the machine value and the label the user sees at the mode gate — both accepted.
         mode = " --mode <main|inline | subagent|sub-agent>" if pending == "plan" else ""
-        # Lệnh đặt trước lời khuyên: trần 200 ký tự, phần cắt phải là phần ít cần nhất.
+        # Command before advice: the 200-char ceiling must cut the least needed part.
         remind(cwd, payload, "TDQ:APPROVE", [
-            f"Đang sửa file ngoài docs/ mà {pending} chưa được ghi nhận duyệt.",
-            f"User đã duyệt → python3 scripts/tdq_state.py approve {pending}{mode} "
-            f"--by \"<lời user>\".",
-            f"Chưa duyệt → trình {pending} rồi xin duyệt.",
+            f"Editing a file outside docs/ while {pending} has no recorded approval.",
+            f"User approved → python3 scripts/tdq_state.py approve {pending}{mode} "
+            f"--by \"<the user's words>\".",
+            f"Not approved yet → present the {pending} and ask for approval.",
         ])
 
-    # repo đã đổi → nhắc working log ngay, đừng dồn tới Stop mới báo
+    # repo changed → remind about the working log now, do not save it up for Stop
     if not os.path.isfile(os.path.join(cwd, log_rel)):
         remind(cwd, payload, "TDQ:LOG", [
-            f"Turn này đổi repo — append entry vào {log_rel} trước khi kết thúc turn.",
-            "Cách làm: mở file, thêm mục \"## HH:MM — <việc>\" ở CUỐI file.",
-            echo_line("TDQ:LOG", f"đã append {log_rel}"),
+            f"This turn changed the repo — append an entry to {log_rel} before the turn ends.",
+            "How: open the file, add a \"## HH:MM — <what>\" item at the END of the file.",
+            echo_line("TDQ:LOG", f"appended {log_rel}"),
         ])
 
-    # File nằm NGOÀI project của state (agent con dựng repo tạm để thử, sandbox, tool
-    # ngoài) → plan trong state không nói gì về file đó, chặn theo dấu tick là chặn
-    # nhầm. Đo được ở smoke test mode đội: agent con phải lách qua shell mới ghi được.
-    # Chỉ bỏ CHẶN (cả TDQ:TEAM lẫn TDQ:TICK) — phần quan sát và phần nhắc vẫn chạy.
+    # File OUTSIDE the state's project (a sub-agent building a scratch repo, a sandbox, an
+    # outside tool) → the plan in state says nothing about that file, so blocking on the tick
+    # mark blocks the wrong thing. Measured in the team-mode smoke test: the sub-agent had to
+    # sneak through the shell to write at all.
+    # This only drops the BLOCK (both TDQ:TEAM and TDQ:TICK) — observing and reminding still run.
     trong_project = within(abs_target, os.path.realpath(cwd))
     if not trong_project:
-        # Ghi vào sổ turn thay vì in ra: đây là dữ kiện để debug về sau, không phải
-        # lời nhắc cho model.
+        # Written to the turn ledger instead of printed: this is a fact for later debugging,
+        # not a reminder for the model.
         observe(cwd, payload, "bo_qua_chan_ngoai_project", path=abs_target)
 
-    # (2b) mode đội: user chọn "giao trợ lý" mà leader lại tự gõ code của task đã
-    # hứa giao → CHẶN. Không có hàng rào này thì lời hứa chia việc chỉ là lời nói:
-    # model vẫn tự làm hết ở main và không ai chứng minh được.
-    from tdq_team import canh_bao_lach_luat  # noqa: E402 — chỉ nạp khi thật cần
-    # Cùng lý do với `trong_project` ở trên: bản đồ phân công chỉ nói về vùng file
-    # TRONG project, nên file ngoài project không thuộc thẩm quyền của nó.
+    # (2b) team mode: the user picked "hand it to assistants" and the leader types the code of
+    # a task it promised to delegate → BLOCK. Without this fence the promise to split the work
+    # is only words: the model still does everything on main and nobody can prove otherwise.
+    from tdq_team import canh_bao_lach_luat  # noqa: E402 — imported only when truly needed
+    # Same reason as `trong_project` above: the assignment map only speaks about file areas
+    # INSIDE the project, so a file outside it is not under its authority.
     canh_bao = canh_bao_lach_luat(cwd, rel_target) if trong_project else None
     if canh_bao:
-        if canh_bao["kieu"] == "ban-do-hong":
+        if canh_bao["kieu"] == "ban-do-hong":  # i18n-allow
             block(cwd, payload, "TDQ:TEAM", [
-                "Bản đồ phân công đọc không nổi — không ai chứng minh được task này giao "
-                "hay leader tự làm.",
-                "Chạy: python3 scripts/tdq_team.py phan-cong (sinh lại), rồi kiem-ke.",
-                "Cấm sửa code khi bản đồ hỏng: đó đúng là cửa lách luật bản đồ sinh ra để canh.",
+                "The assignment map is unreadable — nobody can prove this task was delegated "
+                "or done by the leader.",
+                "Run: python3 scripts/tdq_team.py phan-cong (regenerate), then kiem-ke.",
+                "Editing code with a broken map is banned: that is exactly the loophole the map guards.",
             ])
-        elif canh_bao["kieu"] == "chua-phan-cong":
+        elif canh_bao["kieu"] == "chua-phan-cong":  # i18n-allow
             block(cwd, payload, "TDQ:TEAM", [
-                "Mode đội mà chưa có bản đồ phân công — không được sửa code ở main trước.",
-                "Chạy: python3 scripts/tdq_team.py phan-cong (rồi kiem-ke, rồi cum).",
-                "Task nào leader phải tự làm thì bản đồ ghi tu_lam kèm một lý do đóng.",
+                "Team mode with no assignment map — you may not edit code on main first.",
+                "Run: python3 scripts/tdq_team.py phan-cong (then kiem-ke, then cum).",
+                "A task the leader must do itself is recorded as tu_lam with one closed reason.",
             ])
-        elif canh_bao["kieu"] == "da-giao-thieu-nhanh":
+        elif canh_bao["kieu"] == "da-giao-thieu-nhanh":  # i18n-allow
             block(cwd, payload, "TDQ:TEAM", [
-                f"{canh_bao['ma']} đang mang dấu [>] nhưng không có nhánh "
-                f"{canh_bao['nhanh']} — agent con chết giữa chừng hoặc chưa từng chạy.",
-                f"Chạy: python3 scripts/tdq_team.py mo {canh_bao['ma']}",
-                "Hoặc trả task về [ ] rồi phân công lại.",
+                f"{canh_bao['ma']} carries the [>] mark but branch "
+                f"{canh_bao['nhanh']} is missing — the sub-agent died midway or never ran.",
+                f"Run: python3 scripts/tdq_team.py mo {canh_bao['ma']}",
+                "Or put the task back to [ ] and assign it again.",
             ])
         else:
             block(cwd, payload, "TDQ:TEAM", [
-                f"File này thuộc vùng của {canh_bao['ma']} — bản đồ ghi GIAO cho agent con, "
-                f"leader không tự sửa.",
-                f"Chạy: python3 scripts/tdq_team.py mo {canh_bao['ma']} rồi giao cho "
+                f"This file belongs to the area of {canh_bao['ma']} — the map says GIAO to a "
+                f"sub-agent, the leader does not edit it.",
+                f"Run: python3 scripts/tdq_team.py mo {canh_bao['ma']} then hand it to "
                 f"agent tdq-implementer.",
-                "Thật sự phải tự làm → sửa bản đồ thành tu_lam kèm một lý do đóng, "
-                "rồi chạy kiem-ke.",
+                "Really have to do it yourself → change the map to tu_lam with one closed "
+                "reason, then run kiem-ke.",
             ])
 
-    # đang implement/qc mà plan chưa đánh dấu task nào đang làm → CHẶN.
-    # stop_gate chỉ so vân tay plan đầu/cuối turn nên không bắt được bulk-tick trong
-    # một turn duy nhất (lane quick làm trọn gói trong 1 turn) — hàng rào thật phải
-    # nằm ở đây. Miễn trừ `tests/**`: red→green đòi viết test đỏ trước khi có gì để tick.
-    # Đặt CUỐI vì `remind()` thoát ngay sau lần nhắc đầu: TDQ:LOG dẫn tới chặn cứng
-    # ở Stop nên phải được ưu tiên.
+    # in implement/qc while the plan marks no task as in progress → BLOCK.
+    # stop_gate only compares the plan fingerprint at start/end of turn, so it cannot catch a
+    # bulk-tick inside a single turn (lane quick does the whole thing in 1 turn) — the real
+    # fence has to be here. `tests/**` is exempt: red→green means writing a red test before
+    # there is anything to tick.
+    # Placed LAST because `remind()` exits right after the first reminder: TDQ:LOG leads to a
+    # hard block at Stop, so it must come first.
     in_tests = within(rel_target, "tests") or rel_target.startswith("tests" + os.sep)
-    # Mode đội: mỗi agent con làm trong worktree riêng dưới `.tdq-worktrees/`, nhưng
-    # sổ turn lại chung một session — N agent chạy song song ăn hết hạn mức streak
-    # của nhau và cả đội đứng hình sau đúng 3 lần sửa. Kỷ luật tick là kỷ luật của
-    # LEADER ở worktree chính; vòng đỏ→xanh trong worktree của agent con không phải
-    # chỗ áp nó. Miễn trừ theo đường dẫn, không theo danh tính agent.
+    # Team mode: each sub-agent works in its own worktree under `.tdq-worktrees/`, but the turn
+    # ledger is shared by the session — N agents running in parallel eat each other's streak
+    # budget and the whole team freezes after exactly 3 edits. Tick discipline is the LEADER's
+    # discipline in the main worktree; the red→green loop inside a sub-agent's worktree is not
+    # the place to enforce it. Exempted by path, not by agent identity.
     in_worktree_doi = (os.sep + ".tdq-worktrees" + os.sep) in (abs_target + os.sep)
     if not in_tests and not in_worktree_doi and trong_project \
             and effective_phase(state, warn=False) in ("implement", "qc"):
@@ -160,22 +163,22 @@ def main():
         if tick["exists"] and tick["total"] > 0 \
                 and not tick["has_doing"] and not tick["all_done"]:
             block(cwd, payload, "TDQ:TICK", [
-                "Plan chưa có task nào mang dấu [~] — đánh dấu task đang làm TRƯỚC khi sửa code.",
-                "Mở plan, đổi task sắp làm thành [~]; xanh thì đổi [x] ngay.",
-                "Request đã xong → tdq_state.py set phase=idle.",
+                "The plan carries no task marked [~] — mark the task in progress BEFORE editing code.",
+                "Open the plan, switch the next task to [~]; flip it to [x] the moment it is green.",
+                "Request already finished → tdq_state.py set phase=idle.",
             ])
-        # nhiều task cùng [~] cũng là checkbox không phản ánh đúng đang làm gì —
-        # đóng task cũ ([x]) rồi mới mở task mới.
+        # several tasks marked [~] at once is equally a checkbox that no longer reflects what is
+        # being done — close the old task ([x]) before opening a new one.
         if tick["exists"] and tick["doing_count"] > 1:
             block(cwd, payload, "TDQ:TICK", [
-                "Plan đang có nhiều task cùng mang [~] — đóng task cũ ([x]) trước khi mở task mới.",
-                "Mở plan, tick [x] task đã xong, chỉ giữ đúng 1 task [~] tại một thời điểm.",
-                "Request đã xong → tdq_state.py set phase=idle.",
+                "The plan has several tasks marked [~] — close the old one ([x]) before opening a new one.",
+                "Open the plan, tick [x] the finished task, keep exactly 1 task [~] at a time.",
+                "Request already finished → tdq_state.py set phase=idle.",
             ])
-        # đúng 1 task [~] đứng yên xuyên suốt cũng né được cả hai chặn trên: agent tick
-        # T1 một lần, giữ nguyên khi sửa ngầm nhiều file, rồi mới tick loạt cuối turn.
-        # Đếm số lần sửa mã nguồn liên tiếp kể từ lần plan đổi (checksum) gần nhất —
-        # quá NGƯỠNG thì chặn, buộc đóng task trước khi sửa tiếp.
+        # exactly 1 task [~] left standing forever dodges both blocks above: the agent ticks T1
+        # once, keeps it while quietly editing many files, then bulk-ticks at end of turn.
+        # Count the source edits in a row since the plan last changed (checksum) — past the
+        # THRESHOLD it blocks, forcing the task closed before editing further.
         if tick["exists"] and tick["doing_count"] == 1:
             rows = turn_rows(cwd, payload)
             streak = sum(
@@ -185,9 +188,9 @@ def main():
             )
             if streak >= STREAK_NGUONG:
                 block(cwd, payload, "TDQ:TICK", [
-                    f"Đã sửa {streak} lần liên tiếp mà plan chưa tick — đóng task trước khi sửa tiếp.",
-                    "Test xanh thì đổi [x] ngay; task khác thì tick task mới trước khi code.",
-                    "Request đã xong → tdq_state.py set phase=idle.",
+                    f"{streak} edits in a row with no tick in the plan — close the task before editing on.",
+                    "Test green → flip to [x] now; a different task → tick it before coding.",
+                    "Request already finished → tdq_state.py set phase=idle.",
                 ])
             observe(cwd, payload, "code_edit", path=rel_target, plan_sha=tick["sha"])
 

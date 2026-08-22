@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-"""step_audit.py — đo chi phí BƯỚC của một session Claude Code.
+"""step_audit.py — measure the STEP cost of one Claude Code session.
 
-Khác `token_audit.py`: file kia đo token (tầng 3 — context cost), file này đo số
-bước (tầng 2 — runtime). Một tool call = một vòng round-trip; tổng thời gian của
-request tỉ lệ THẲNG với số bước, nên số bước mới là biến chính của tốc độ.
+Unlike `token_audit.py`: that file measures tokens (layer 3 — context cost), this one measures
+the number of steps (layer 2 — runtime). One tool call = one round-trip; the total time of a
+request is DIRECTLY proportional to the step count, so the step count is the main speed variable.
 
-Năm chỉ số in ra:
-    1. Số bước           — số `requestId` khác nhau của model (mỗi cái là một API call).
-       KHÔNG đếm theo bản ghi jsonl: Claude Code tách một câu trả lời thành nhiều bản
-       ghi và chép `usage` vào từng bản, đếm theo bản ghi sẽ thổi phồng số bước.
-    2. Tool call mỗi lượt — tổng tool call / số lượt CÓ tool call. Bằng 1,00 nghĩa
-       là luật gộp một lượt chưa được thi hành lần nào.
-    3. Read lặp          — số lần Read lại file đã đọc trong cùng session.
-    4. Độ trễ trung vị   — giây giữa bản ghi trước và lượt model kế tiếp.
-    5. Độ trễ p90        — nearest-rank: phần tử thứ ceil(0.9 × n) sau khi sắp xếp.
+The five metrics printed:
+      1. Step count         — the number of distinct model `requestId`s (each one an API call).
+            NOT counted per jsonl record: Claude Code splits one answer across several records
+            and copies `usage` into each, so counting records inflates the step count.
+      2. Tool calls per turn — total tool calls / turns THAT HAVE tool calls. A value of 1.00
+            means the batch-into-one-turn rule has never once been applied.
+      3. Repeat Read        — how many times a file already read is read again in one session.
+      4. Median latency     — seconds between the previous record and the next model turn.
+      5. p90 latency        — nearest-rank: element ceil(0.9 × n) after sorting.
 
-Dùng:
-    python3 scripts/step_audit.py                       # project hiện tại, 3 session mới nhất
+Usage:
+        python3 scripts/step_audit.py                       # current project, 3 latest sessions
     python3 scripts/step_audit.py --sessions 5
     python3 scripts/step_audit.py --project ~/Documents/Heineken_AppKetNoi
     python3 scripts/step_audit.py --transcript-dir <dir>
 
-Env: TDQ_LOG=0 tắt log tiến trình (log ra stderr, bảng ra stdout).
-Exit: 0 kể cả khi không tìm thấy session (chỉ cảnh báo). 2 = sai cú pháp.
+Env: TDQ_LOG=0 turns the progress log off (log to stderr, table to stdout).
+Exit: 0 even when no session is found (a warning only). 2 = bad syntax.
 """
 
 import argparse
@@ -35,8 +35,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from token_audit import default_transcript_dir, find_sessions, iter_events  # noqa: E402
 
-# Khoảng cách lớn hơn ngưỡng này là user đi làm việc khác rồi quay lại, không phải
-# độ trễ của model — bỏ ra khỏi thống kê để trung vị không bị kéo lệch.
+# A gap larger than this threshold means the user went away and came back, not model
+# latency — dropped from the statistics so the median is not skewed.
 MAX_GAP_SECONDS = 300
 
 
@@ -51,12 +51,12 @@ def _now():
 
 
 def _log(message):
-    """Log tiến trình ra stderr, có timestamp ISO. Tắt bằng TDQ_LOG=0."""
+    """Log progress to stderr with an ISO timestamp. Turn it off with TDQ_LOG=0."""
     if _log_enabled():
         print(f"[{_now()}] {message}", file=sys.stderr)
 
 
-# ----------------------------------------------------------------- đọc & đo
+# --------------------------------------------------------------- read & measure
 
 def _parse_time(value):
     if not isinstance(value, str):
@@ -81,13 +81,13 @@ def _has_usage(event):
 
 
 def _request_id(event, index):
-    """Một lượt model = một `requestId`.
+    """One model turn = one `requestId`.
 
-    Claude Code TÁCH mỗi khối nội dung của cùng một câu trả lời thành nhiều bản ghi
-    jsonl riêng (text một dòng, mỗi tool_use một dòng), và chép lại `usage` vào từng
-    dòng. Đếm theo bản ghi thì một lượt phát 3 tool call trông y hệt 3 lượt phát 1 —
-    chỉ số "tool call mỗi lượt" luôn ra 1,00 dù model có gộp hay không. Gom theo
-    `requestId` mới ra con số thật.
+    Claude Code SPLITS every content block of one answer into its own jsonl record (text on one
+    line, each tool_use on a line) and copies `usage` into every line. Counting records makes one
+    turn firing 3 tool calls look exactly like 3 turns firing 1 — the "tool calls per turn" metric
+    always comes out at 1.00 whether the model batched or not. Grouping by `requestId` is what
+    gives the real number.
     """
     message = event.get("message")
     rid = event.get("requestId") or (message or {}).get("id")
@@ -95,7 +95,7 @@ def _request_id(event, index):
 
 
 def scan(path):
-    """Đọc transcript theo DÒNG (không nạp cả file) và gom số liệu thô."""
+    """Read the transcript LINE by LINE (never loading the whole file) and collect the raw data."""
     stats = {"steps": 0, "tool_calls": 0, "turns_with_tools": 0,
              "repeat_reads": 0, "latencies": []}
     seen_reads = set()
@@ -107,7 +107,7 @@ def scan(path):
         is_step = event.get("type") == "assistant" and _has_usage(event)
         if is_step:
             rid = _request_id(event, index)
-            if rid != current_request:            # bản ghi đầu của một lượt mới
+            if rid != current_request:            # first record of a new turn
                 current_request = rid
                 stats["steps"] += 1
                 if prev_time and now:
@@ -142,7 +142,7 @@ def merge(all_stats):
 
 
 def percentile(values, share):
-    """Nearest-rank: phần tử thứ ceil(share × n) của dãy đã sắp xếp (1-indexed)."""
+    """Nearest-rank: element ceil(share × n) of the sorted series (1-indexed)."""
     if not values:
         return 0.0
     ordered = sorted(values)
@@ -161,17 +161,17 @@ def median(values):
 
 
 def report(total):
-    """Năm chỉ số, dạng bảng markdown để dán thẳng vào file QC."""
+    """The five metrics, as a markdown table to paste straight into the QC file."""
     per_turn = (total["tool_calls"] / total["turns_with_tools"]
                 if total["turns_with_tools"] else 0.0)
     lines = [
-        "| Chỉ số | Giá trị |",
+        "| Metric | Value |",
         "|---|---|",
-        f"| Số bước model | {total['steps']} |",
-        f"| Tool call trên mỗi lượt | {per_turn:.2f} ({total['turns_with_tools']} lượt) |",
-        f"| Read lặp lại cùng file | {total['repeat_reads']} |",
-        f"| Độ trễ trung vị | {median(total['latencies']):.1f} s |",
-        f"| Độ trễ p90 | {percentile(total['latencies'], 0.9):.1f} s |",
+        f"| Model steps | {total['steps']} |",
+        f"| Tool calls per turn | {per_turn:.2f} ({total['turns_with_tools']} turn(s)) |",
+        f"| Repeat Read of one file | {total['repeat_reads']} |",
+        f"| Median latency | {median(total['latencies']):.1f} s |",
+        f"| p90 latency | {percentile(total['latencies'], 0.9):.1f} s |",
     ]
     return "\n".join(lines)
 
@@ -179,28 +179,28 @@ def report(total):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="step_audit.py",
-        description="Đo chi phí bước (tầng runtime) của session Claude Code.")
+        description="Measure the step cost (runtime layer) of a Claude Code session.")
     parser.add_argument("--transcript-dir",
-                        help="thư mục chứa file .jsonl; mặc định suy từ project")
+                        help="folder holding the .jsonl files; defaults to one derived from the project")
     parser.add_argument("--project",
-                        help="thư mục project cần đo; mặc định là thư mục hiện tại")
+                        help="project folder to measure; defaults to the current folder")
     parser.add_argument("--sessions", type=int, default=3,
-                        help="số session mới nhất cần đo (mặc định 3)")
+                        help="how many latest sessions to measure (default 3)")
     args = parser.parse_args(argv)
 
     transcript_dir = args.transcript_dir or default_transcript_dir(args.project)
     paths = find_sessions(transcript_dir, args.sessions)
     if not paths:
-        _log(f"không thấy session nào trong {transcript_dir}")
-        print("Không có transcript để đo.")
+        _log(f"no session found in {transcript_dir}")
+        print("No transcript to measure.")
         return 0
 
     all_stats = []
     for path in paths:
-        _log(f"đọc {os.path.basename(path)}")
+        _log(f"reading {os.path.basename(path)}")
         all_stats.append(scan(path))
     total = merge(all_stats)
-    _log(f"xong {len(paths)} session · {total['steps']} bước")
+    _log(f"done {len(paths)} session(s) · {total['steps']} step(s)")
     print(report(total))
     return 0
 

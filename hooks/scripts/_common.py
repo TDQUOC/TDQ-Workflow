@@ -1,12 +1,12 @@
-"""Helper dùng chung cho hook TDQ (chỉ stdlib).
+"""Shared helpers for the TDQ hooks (stdlib only).
 
-Giao thức tuân thủ 0.3.0 (spec §2.1): hook phát lời nhắc mang MÃ, và ghi vào sổ
-turn cả hai loại sự kiện:
-  - remind : hook đã nhắc mã nào
-  - observe: hành động THẬT đã xảy ra (sửa file nào, chạy lệnh state nào)
-Cuối turn `stop_gate` đối chiếu hai bên. Bằng chứng tuân thủ là HIỆU ỨNG quan
-sát được, không phải lời tự khai của model — vì vậy hook không đọc transcript
-và không tin dòng echo `✓ [TDQ:...]` do model tự in.
+Compliance protocol 0.3.0 (spec §2.1): a hook emits a reminder carrying a CODE, and writes
+both kinds of event into the turn ledger:
+  - remind : which code the hook reminded about
+  - observe: what REALLY happened (which file was edited, which state command ran)
+At the end of the turn `stop_gate` pairs the two sides up. The evidence of compliance is the
+observable EFFECT, never the model's own claim — which is why no hook reads the transcript
+and none of them trusts a `✓ [TDQ:...]` line the model printed itself.
 """
 import json
 import os
@@ -17,34 +17,40 @@ _SCRIPTS_DIR = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts")
 )
 sys.path.insert(0, _SCRIPTS_DIR)
-# Lối import PHẢI là `from tdq_state import <tên>` rồi gọi thẳng `f()`, KHÔNG gọi qua
-# thuộc tính module: graphify (0.9.28 và 0.9.42) chỉ sinh cạnh `calls` cross-file cho
-# dạng from-import. Gọi qua thuộc tính module thì đồ thị mù toàn bộ chuỗi hook → state.
-import tdq_state  # noqa: E402 — giữ để module khác `from _common import tdq_state`
+# The import MUST be `from tdq_state import <name>` and then call `f()` directly, NEVER
+# through the module attribute: graphify (0.9.28 and 0.9.42) only emits a cross-file `calls`
+# edge for the from-import shape. Call through the attribute and the graph goes blind to the
+# whole hook → state chain.
+import tdq_state  # noqa: E402 — kept so other modules can `from _common import tdq_state`
 from tdq_state import (mode_label, resolve_project_dir,  # noqa: E402
                        turn_log_append, turn_log_read)
 
-# 0.2.0 bỏ gate cứng; 0.3.0 bỏ luôn slash command duyệt — user duyệt bằng chat.
+# 0.2.0 dropped the hard gate; 0.3.0 dropped the approval slash command too — the user
+# approves in plain chat.
+# Every invite offers TWO ways to answer: type a sentence, or type a single letter. The letter
+# is the way in for a user who does not write English either (`prompt_context.LETTER` accepts a
+# bare `a`–`d`), and the recommendation always sits at A, so "A" always means approved.
 APPROVE_HINTS = {
-    "spec": 'nhắn "duyệt spec"',
-    # Cổng plan KHÔNG hỏi mode nữa — hỏi mode là phase `mode` ngay sau đó. Bắt user
-    # vừa duyệt vừa chọn mode trong một câu là thứ khiến khối duyệt khó đọc.
-    "plan": 'nhắn "duyệt plan"',
-    # {mode} = mode plan ĐỀ XUẤT (dòng "Mode thực thi:"), fallback main. Giải thích
-    # nghĩa ngay tại chỗ: user cuối không có nghĩa vụ biết "subagent" là gì.
-    # Phần "plan đề xuất {mode}" để TRƯỚC: lời nhắc bị cắt từ đuôi theo trần ký tự,
-    # cắt mất đề xuất thì user phải tự đoán nên chọn gì.
-    "mode": 'plan đề xuất {mode} — nhắn "inline" (tôi làm tuần tự ngay đây) '
-            'hoặc "sub-agent" (nhiều trợ lý chạy song song); tên cũ main/subagent vẫn nhận',
-    # Biến thể bỏ QC phải hiện ở gợi ý, nếu không user không biết đường opt-out.
-    "quick": 'nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy)',
+    "spec": 'say "approve spec" or type "A"',
+    # The plan gate no longer asks about the mode — that is phase `mode`, right after it.
+    # Making the user approve and pick a mode in one sentence is what made the block unreadable.
+    "plan": 'say "approve plan" or type "A"',
+    # {mode} = the mode the plan PROPOSES (its "Mode thực thi:" line), falling back to main.  # i18n-allow
+    # Explained on the spot: an end user has no duty to know what "subagent" means.
+    # The "the plan proposes {mode}" part comes FIRST: the reminder is cut from the tail at the
+    # character cap, and cutting the proposal away leaves the user guessing what to pick.
+    "mode": 'the plan proposes {mode} — say "inline" (I do it step by step right here) '
+            'or "sub-agent" (several assistants in parallel), or type "A"/"B"; '
+            'the old names main/subagent still work',
+    # The skip-QC variant has to show up in the hint, or the user never learns the opt-out.
+    "quick": 'say "approve quick" or type "A" (skip QC: "approve quick no QC")',
 }
 
-_PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent)", re.IGNORECASE)
+_PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent)", re.IGNORECASE)  # i18n-allow
 
 
 def plan_mode(cwd, state):
-    """Mode đã chốt trong plan_file (dòng 'Mode thực thi:'), None nếu chưa ghi."""
+    """The mode settled in plan_file (its 'Mode thực thi:' line), None when not written yet."""  # i18n-allow
     rel = (state or {}).get("plan_file")
     if not rel:
         return None
@@ -56,10 +62,10 @@ def plan_mode(cwd, state):
         return None
     return match.group(1).lower() if match else None
 
-# Danh sách MÃ ĐÓNG (spec §2.1). Thêm mã mới phải sửa spec trước.
+# The CLOSED list of codes (spec §2.1). Adding a new code means editing the spec first.
 CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT")
 
-# Trần ngân sách token (spec §2.7) — tính trên nội dung lời nhắc.
+# The token budget cap (spec §2.7) — measured on the reminder content.
 MAX_REMIND_CHARS = 200
 MAX_REMIND_LINES = 3
 
@@ -72,7 +78,7 @@ def read_payload():
 
 
 def payload_cwd(payload):
-    """Project root cho state — cwd của payload có thể là thư mục con/worktree."""
+    """The project root for state — the payload cwd may be a subdirectory or a worktree."""
     return resolve_project_dir(payload.get("cwd") or os.getcwd())
 
 
@@ -80,10 +86,10 @@ def session_id(payload):
     return str(payload.get("session_id") or "")
 
 
-# ------------------------------------------------------------------ sổ turn
+# ------------------------------------------------------------------ turn ledger
 
 def observe(cwd, payload, event, **fields):
-    """Ghi một hành động thật đã quan sát được."""
+    """Record one real, observed action."""
     turn_log_append(cwd, "observe", session=session_id(payload),
                     event=event, **fields)
 
@@ -93,10 +99,10 @@ def turn_rows(cwd, payload):
 
 
 def already_reminded(cwd, payload, code, rows=None):
-    """Mã này đã nhắc trong turn hiện tại chưa (dedupe 1 lần/mã/turn).
+    """Has this code already been reminded in the current turn (dedupe: once per code/turn)?
 
-    `rows`: sổ turn đã đọc sẵn (P0-3 — tránh đọc lại `.tdq-turn.jsonl` khi nơi
-    gọi đã có rows từ một lượt đọc khác trong cùng invoke). None → tự đọc.
+    `rows`: an already-read turn ledger (P0-3 — avoids re-reading `.tdq-turn.jsonl` when the
+    caller got rows from another read inside the same invoke). None → read it here.
     """
     if rows is None:
         rows = turn_rows(cwd, payload)
@@ -104,7 +110,7 @@ def already_reminded(cwd, payload, code, rows=None):
 
 
 def trim(lines):
-    """Ép về đúng trần: ≤3 dòng, ≤200 ký tự."""
+    """Force it under the cap: <= 3 lines, <= 200 characters."""
     lines = [l for l in lines if l][:MAX_REMIND_LINES]
     text = "\n".join(lines)
     if len(text) > MAX_REMIND_CHARS:
@@ -113,11 +119,11 @@ def trim(lines):
 
 
 def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
-    """Nhắc Claude kèm MÃ mà KHÔNG chặn tool, rồi thoát.
+    """Remind Claude with a CODE WITHOUT blocking the tool, then exit.
 
-    Khuôn 3 dòng (spec §2.1): việc phải làm · cách làm · dòng echo cần in.
-    Mã đã nhắc trong turn này thì im lặng (dedupe) để khỏi đốt token.
-    `rows`: sổ turn đã đọc sẵn — xem `already_reminded` (P0-3).
+    The 3-line shape (spec §2.1): the job to do · how to do it · the echo line to print.
+    A code already reminded this turn stays silent (dedupe) so no tokens are burnt.
+    `rows`: an already-read turn ledger — see `already_reminded` (P0-3).
     """
     if already_reminded(cwd, payload, code, rows=rows):
         sys.exit(0)
@@ -126,7 +132,7 @@ def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
         "hookSpecificOutput": {
             "hookEventName": event,
             "permissionDecision": "allow",
-            "permissionDecisionReason": "TDQ: nhắc nhở, không chặn.",
+            "permissionDecisionReason": "TDQ: a reminder, not a block.",
             "additionalContext": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
         }
     }, ensure_ascii=False))
@@ -134,14 +140,14 @@ def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
 
 
 def block(cwd, payload, code, lines, event="PreToolUse"):
-    """CHẶN tool kèm MÃ, rồi thoát.
+    """BLOCK the tool with a CODE, then exit.
 
-    Khác `remind()` ở hai điểm, cả hai đều có chủ đích:
-    - `permissionDecision: "deny"` — tool không chạy.
-    - KHÔNG dedupe theo mã. Điều kiện chặn tự tan khi Claude làm đúng việc được
-      yêu cầu (vd. đánh `[~]` vào plan); dedupe sẽ cho lần sửa thứ hai lọt qua
-      trong khi việc kia vẫn chưa làm, tức là hàng rào chỉ có tác dụng một lần.
-    Ghi sổ turn dưới kind `block` để không lẫn với dedupe của `remind`.
+    Two deliberate differences from `remind()`:
+    - `permissionDecision: "deny"` — the tool does not run.
+    - NO dedupe by code. The blocking condition dissolves by itself once Claude does what was
+      asked (e.g. ticks `[~]` into the plan); dedupe would let the second edit slip through
+      while that job is still undone, i.e. the fence would only ever work once.
+    Written to the turn ledger under kind `block` so it never mixes with `remind`'s dedupe.
     """
     turn_log_append(cwd, "block", session=session_id(payload), code=code)
     print(json.dumps({
@@ -155,14 +161,14 @@ def block(cwd, payload, code, lines, event="PreToolUse"):
 
 
 def remind_force(cwd, payload, code, lines, event="PreToolUse"):
-    """Như `remind()` nhưng KHÔNG dedupe theo mã — dùng khi một mã đã bị hook
-    khác (vd. edit_gate.py) chiếm trong turn này mà nhắc này vẫn phải ra."""
+    """Like `remind()` but WITHOUT dedupe by code — for when another hook (e.g. edit_gate.py)
+    already claimed that code this turn and this reminder still has to get out."""
     turn_log_append(cwd, "remind", session=session_id(payload), code=code)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": event,
             "permissionDecision": "allow",
-            "permissionDecisionReason": "TDQ: nhắc nhở, không chặn.",
+            "permissionDecisionReason": "TDQ: a reminder, not a block.",
             "additionalContext": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
         }
     }, ensure_ascii=False))
@@ -170,14 +176,14 @@ def remind_force(cwd, payload, code, lines, event="PreToolUse"):
 
 
 def echo_line(code, what):
-    return f"Xong thì in: ✓ [{code}] {what}"
+    return f"When done, print: ✓ [{code}] {what}"
 
 
 def approve_hint(target, mode=None):
-    hint = APPROVE_HINTS.get(target, "nhắn duyệt")
+    hint = APPROVE_HINTS.get(target, "say approve")
     if target == "mode":
-        # In NHÃN người đọc, không in định danh máy: user không có nghĩa vụ biết
-        # "subagent" nghĩa là gì khi cổng mode đã gọi nó là "sub-agent implement".
-        return (f"➤ Chọn cách làm: {hint.format(mode=mode_label(mode or 'main'))}"
-                " · Góp ý: nhắn trực tiếp")
-    return f"➤ Duyệt: {hint} · Góp ý: nhắn trực tiếp"
+        # Print the READER label, not the machine identifier: a user has no duty to know what
+        # "subagent" means when the mode gate already calls it "sub-agent implement".
+        return (f"➤ Pick how to run it: {hint.format(mode=mode_label(mode or 'main'))}"
+                " · Feedback: just say it")
+    return f"➤ Approve: {hint} · Feedback: just say it"

@@ -8,12 +8,12 @@ round (e.g. the P1-P4 skill split of `2026-08-05-toi-uu-p0-p1-workflow`). Measur
 
 Use a separate throwaway project, not the main repo, so the logs stay unmixed:
 
-1. Open a sample quick request: send `"sửa 1 dòng comment trong file test.py"` (a tiny task,
+1. Open a sample quick request: send `"fix one comment line in test.py"` (a tiny task,
    no real research or interview, so the scenario stays repeatable).
-2. Answer the lane question: pick chế độ nhanh (express).
-3. Approve the mini-plan: send `"duyệt nhanh"`.
+2. Answer the lane question: pick the express lane.
+3. Approve the mini-plan: send `"approve quick"`.
 4. Let Claude implement one fake task (change exactly one comment line), then validate.
-5. Answer "không, đủ rồi" to the closing interview question, if it appears.
+5. Answer "no, that is all" to the closing interview question, if it appears.
 6. End the session right after the result report — ask nothing else.
 
 Note the session id (or its start and end time) of each run so the right transcript can be

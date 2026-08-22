@@ -27,8 +27,8 @@ class TestSessionStart(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertIn("[TDQ:NEXT]", out)
         self.assertIn("2026-07-27-0900-demo", out)
-        self.assertIn("Việc tiếp theo", out)
-        self.assertIn("[TDQ] Luật", out)          # instruction: nghe theo mã của hook
+        self.assertIn("Next:", out)
+        self.assertIn("[TDQ] Rule", out)          # instruction: nghe theo mã của hook
         self.assertLessEqual(len(out.splitlines()), 12)   # trần spec §2.7
         self.assertLessEqual(len(out), 600)
 
@@ -41,9 +41,9 @@ class TestSessionStart(unittest.TestCase):
                             spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md")
                 rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})
                 self.assertNotIn("…", out, phase)
-                self.assertIn("[TDQ] Luật", out)
-                self.assertIn("Lệnh:", out)
-                self.assertIn("Xong khi:", out)
+                self.assertIn("[TDQ] Rule", out)
+                self.assertIn("Command:", out)
+                self.assertIn("Done when:", out)
                 self.assertLessEqual(len(out), 600, phase)
                 self.assertLessEqual(len(out.splitlines()), 12, phase)
 
@@ -128,8 +128,8 @@ class TestPromptContext(unittest.TestCase):
         rc2, out2, _ = self.ctx("tiếp tục", session="dedupe-2")
         self.assertEqual(rc2, 0)
         self.assertIn("[TDQ:APPROVE]", out2)
-        self.assertIn("KHÔNG rõ", out2)
-        self.assertIn("duyệt plan", out2)
+        self.assertIn("NOT clearly an", out2)
+        self.assertIn("approve plan", out2)
 
     def test_quick_unapproved(self):
         write_state(self.cwd, active_request="r1", lane="quick")
@@ -158,7 +158,7 @@ class TestPromptContext(unittest.TestCase):
         # Cổng plan chỉ còn xin "duyệt plan"; mode hỏi ở phase sau.
         self._pending_plan("# plan\nMode thực thi: subagent — task tự chứa\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('duyệt plan', out)
+        self.assertIn("approve plan", out)
         self.assertNotIn('duyệt plan mode', out)
         self.assert_budget(out)
 
@@ -167,12 +167,12 @@ class TestPromptContext(unittest.TestCase):
         # 2026-08-14: mode ĐỀ XUẤT in ra bằng NHÃN người đọc, không phải định danh máy.
         self._pending_mode("# plan\nMode thực thi: subagent — task tự chứa\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('plan đề xuất giao trợ lý (sub-agent implement)', out)
+        self.assertIn('the plan proposes sub-agent implement', out)
 
     def test_mode_hint_without_mode_line_falls_back(self):
         self._pending_mode("# plan\nchưa ghi mode\n")
         rc, out, _ = self.ctx("tiếp tục")
-        self.assertIn('plan đề xuất làm trực tiếp (inline implement)', out)
+        self.assertIn('the plan proposes inline implement', out)
 
     def test_mode_answer_is_recognised(self):
         # Trả lời cổng mode thường trống trơn: chỉ mỗi chữ "main".
@@ -201,7 +201,7 @@ class TestPromptContext(unittest.TestCase):
         self.assertIn("⚠️", out)
         self.assertIn("main", out)
         self.assertIn("subagent", out)
-        self.assertIn("HỎI", out)
+        self.assertIn("ASK", out)
         self.assertNotIn("chạy NGAY", out)
         self.assert_budget(out)
 
@@ -265,7 +265,7 @@ class TestPromptContext(unittest.TestCase):
                     plan_file="docs/tdq/plan/x.md", plan_approved=True,
                     plan_sha256="p", plan_approved_at=now_iso())
         rc, out, _ = self.ctx()
-        self.assertIn("sha256 lệch", out)
+        self.assertIn("sha256 mismatch", out)
 
     def test_clears_previous_turn_rows(self):
         write_state(self.cwd, active_request="r1", lane="quick",

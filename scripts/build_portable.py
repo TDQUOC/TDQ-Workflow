@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
-"""build_portable.py — sinh hai bản portable của bộ TDQ Workflow từ MỘT nguồn.
+"""build_portable.py — generate the two portable bundles of TDQ Workflow from ONE source.
 
-Vì sao có file này: bản `portable/` trước đây viết tay, README của nó ghi thẳng "Không tự
-sinh — sửa `skills/` xong nhớ đồng bộ tay", và test khoá đồng bộ đã bị xoá từ 0.10.0. Bản
-viết tay luôn mục theo thời gian. Sinh bằng máy là cách duy nhất giữ bản portable đúng.
+Why this file exists: the old `portable/` bundle was written by hand, its own README said
+"Not generated — after editing `skills/` remember to sync by hand", and the test that locked
+the sync was deleted back in 0.10.0. A hand-written bundle always rots over time. Generating
+it by machine is the only way to keep the portable bundle correct.
 
-Hai đích, cùng một nguồn (`skills/`, `hooks/`, `agents/`, `scripts/`):
+Two targets, one source (`skills/`, `hooks/`, `agents/`, `scripts/`):
 
-    portable_claude/  — cho Claude Code: `.claude/skills`, `.claude/agents`,
-                        `.claude/settings.json` (hook), `.mcp.json`, `scripts/`.
-                        Mọi `${CLAUDE_PLUGIN_ROOT}` được đổi thành `${CLAUDE_PROJECT_DIR}`
-                        vì biến kia CHỈ tồn tại khi chạy như plugin đã đăng ký.
-    portable_codex/   — cho Codex CLI >= 0.147.0, dùng đúng ba lớp native của nó:
+    portable_claude/  — for Claude Code: `.claude/skills`, `.claude/agents`,
+                        `.claude/settings.json` (hooks), `.mcp.json`, `scripts/`.
+                        Every `${CLAUDE_PLUGIN_ROOT}` becomes `${CLAUDE_PROJECT_DIR}`
+                        because that variable ONLY exists when running as a registered plugin.
+    portable_codex/   — for Codex CLI >= 0.147.0, using its three native layers exactly:
                         `.agents/skills/`, `.codex/config.toml` (MCP), `.codex/hooks.json`
-                        + `hooks/`. Kèm `AGENTS.md` + `workflow/NN-*.md` làm bản dự phòng
-                        cho harness KHÁC (Antigravity…) chỉ đọc được markdown.
+                        + `hooks/`. Plus `AGENTS.md` + `workflow/NN-*.md` as the fallback
+                        for OTHER harnesses (Antigravity…) that can only read markdown.
 
-Cả hai mang theo `manifest.json` (file+sha256, version, python tối thiểu, lệnh ngoài, MCP)
-để `tdq_checkportable.py` ở máy đích tự kiểm và tự vá.
+Both carry a `manifest.json` (file+sha256, version, minimum python, external commands, MCP)
+so `tdq_checkportable.py` on the target machine can check and patch itself.
 
-Dùng:
-    python3 scripts/build_portable.py                    # sinh cả hai vào repo root
-    python3 scripts/build_portable.py --dest /tmp/x      # sinh vào thư mục khác
-    python3 scripts/build_portable.py --only claude      # chỉ một bản
+Usage:
+    python3 scripts/build_portable.py                    # generate both into the repo root
+    python3 scripts/build_portable.py --dest /tmp/x      # generate into another folder
+    python3 scripts/build_portable.py --only claude      # only one bundle
 
-Env: TDQ_LOG=0 tắt log tiến trình (log ra stderr).
-Exit: 0 xong · 1 lỗi sinh · 2 sai cú pháp.
+Env: TDQ_LOG=0 turns the progress log off (the log goes to stderr).
+Exit: 0 done · 1 generation error · 2 bad syntax.
 """
 
 import argparse
@@ -39,19 +40,19 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from claude_export import plugin_version, sha256_of  # noqa: E402
-# Logic sinh hai file cấu hình sống ở `tdq_checkportable.py` chứ không ở đây: chỉ file đó đi
-# theo bundle, nên máy đích mới dựng lại được chúng. Import ngược để giữ đúng một bản logic.
+# The logic that builds the two config files lives in `tdq_checkportable.py`, not here: only
+# that file ships with the bundle. Importing it back keeps exactly one copy of the logic.
 from tdq_checkportable import sinh_mcp, sinh_settings  # noqa: E402
 
 EXIT_LOI = 1
 EXIT_SYNTAX = 2
 
-# Thư mục nguồn được mang sang bản portable. `tests/` cố tình KHÔNG có: bản portable là để
-# chạy workflow ở project người khác, không phải để chạy test của repo này.
+# Source folders carried into the portable bundle. `tests/` is deliberately absent: the bundle
+# exists to run the workflow in someone else's project, not to run this repo's own tests.
 SOURCE_DIRS = ("skills", "hooks", "agents", "scripts")
 
-# Rác không bao giờ được lọt vào bản sinh. `docs/tdq` đứng đầu danh sách vì nó chứa state,
-# brief, spec, plan của CHÍNH repo nguồn — lộ sang máy người khác là rò dữ liệu nội bộ.
+# Junk must never leak into the generated bundle. `docs/tdq` heads the list because it holds the
+# state, brief, spec and plan of THIS source repo — shipping that elsewhere leaks internal data.
 EXCLUDE_DIRS = frozenset({
     ".git", "docs", "graphify-out", "__pycache__", ".pytest_cache", ".venv",
     "tests", "node_modules", ".remember", "ClaudeExport", "claude-export",
@@ -59,9 +60,13 @@ EXCLUDE_DIRS = frozenset({
 })
 EXCLUDE_FILES = frozenset({
     ".DS_Store", "state.json", ".tdq-turn.jsonl",
-    # Chính bộ sinh không đi theo bản sinh: nó chỉ có nghĩa trong repo nguồn, và nội dung nó
-    # nhắc tên biến plugin nguyên văn nên copy kèm rewrite sẽ hỏng đúng hằng số của nó.
+    # The generator itself does not ship with what it generates: it only means something in the
+    # source repo, and it quotes the plugin variable verbatim, so a rewrite would break its constant.
     "build_portable.py",
+    # Same for the compliance measurement suite: it only runs in the source repo, and it SETS the
+    # `CLAUDE_PLUGIN_ROOT` variable for the child processes of a measured session — a rewrite would
+    # change the very constant it needs kept intact.
+    "tdq_eval.py",
 })
 
 MANIFEST_NAME = "manifest.json"
@@ -80,39 +85,39 @@ def _log_enabled():
 
 
 def log(message):
-    """Log tiến trình ra stderr kèm timestamp. Tắt bằng TDQ_LOG=0."""
+    """Log progress to stderr with a timestamp. Turn it off with TDQ_LOG=0."""
     if _log_enabled():
         stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
         print(f"[{stamp}] {message}", file=sys.stderr)
 
 
-# ------------------------------------------------------------------ đổi biến
+# ------------------------------------------------------------ variable rewrite
 
 def doi_bien_plugin_root(text, thay_bang=None):
-    """`${CLAUDE_PLUGIN_ROOT}` và `$CLAUDE_PLUGIN_ROOT` → `${CLAUDE_PROJECT_DIR}`.
+    """`${CLAUDE_PLUGIN_ROOT}` and `$CLAUDE_PLUGIN_ROOT` → `${CLAUDE_PROJECT_DIR}`.
 
-    `thay_bang` cho phép gắn thêm hậu tố đường dẫn. Bản claude cần điều đó: gốc bộ workflow
-    nằm ở `.claude/tdq/` chứ không phải gốc project, nên thay trần bằng `${CLAUDE_PROJECT_DIR}`
-    sẽ tạo ra đường dẫn trỏ hụt một tầng — lệnh gọi script im lặng không tìm thấy file.
+    `thay_bang` allows a path suffix to be appended. The claude bundle needs that: the workflow root
+    sits at `.claude/tdq/`, not at the project root, so a bare `${CLAUDE_PROJECT_DIR}` would build
+    a path one level short — and the script call then silently finds no file.
 
-    Trả `(văn bản mới, số lần thay)`. Số lần thay là thứ đáng giá hơn cả kết quả: grep bản
-    sinh thấy 0 chuỗi chỉ chứng minh "không còn trong file ĐÃ COPY", còn đối chiếu số lần
-    thay với số chỗ đếm ở nguồn mới bắt được trường hợp một file đáng lẽ phải copy mà bị bỏ
-    sót. Hook gãy vì biến rỗng là lỗi im lặng — không có cách nào phát hiện ở máy người khác.
+    Returns `(new text, number of replacements)`. The count is worth more than the result: grepping
+    the generated bundle for 0 matches only proves "gone from the files ALREADY COPIED", while
+    comparing the count with the number counted in the source catches a file that should have been
+    copied and was not — a hook broken by an empty variable fails silently on the other machine.
     """
     dang_ngoac = "${" + BIEN_CU + "}"
     dang_tran = "$" + BIEN_CU
     moi = thay_bang or ("${" + BIEN_MOI + "}")
     so_lan = text.count(dang_ngoac)
     text = text.replace(dang_ngoac, moi)
-    # Sau khi thay dạng ngoặc, phần còn lại mang dấu `$` trần mới là dạng trần thật.
+    # Once the braced form is replaced, whatever still carries a bare `$` is the real bare form.
     so_lan += text.count(dang_tran)
     text = text.replace(dang_tran, moi)
     return text, so_lan
 
 
 def dem_bien_trong_cay(goc):
-    """Đếm tổng số chỗ dùng biến plugin trong một cây thư mục — mốc đối chiếu cho QC."""
+    """Count every use of the plugin variable in a folder tree — the reference number for QC."""
     tong = 0
     for thu_muc, _, files in os.walk(goc):
         for ten in files:
@@ -133,7 +138,7 @@ def _bo_qua_file(ten):
 
 
 def _doc_text(path):
-    """Đọc file dạng text; trả None nếu là nhị phân (không đụng vào để khỏi hỏng)."""
+    """Read a file as text; return None if it is binary (left untouched so it cannot be broken)."""
     try:
         with open(path, encoding="utf-8") as f:
             return f.read()
@@ -142,10 +147,10 @@ def _doc_text(path):
 
 
 def copy_loc(nguon, dich, doi_bien=False, thay_bang=None):
-    """Copy cây thư mục theo bộ lọc, giữ quyền thực thi. Trả số lần đổi biến đã làm.
+    """Copy a folder tree through the filter, keeping the executable bit. Returns the rewrite count.
 
-    `doi_bien=True` chỉ dùng cho bản claude: file text được rewrite khi ghi, file nhị phân
-    copy nguyên. Giữ quyền thực thi là bắt buộc — mất bit `x` thì hook không chạy được.
+    `doi_bien=True` is only for the claude bundle: text files are rewritten as they are written and
+    binary files copied as-is. Keeping the `x` bit is mandatory — without it the hook cannot run.
     """
     so_lan_doi = 0
     for thu_muc, thu_muc_con, files in os.walk(nguon):
@@ -170,68 +175,72 @@ def copy_loc(nguon, dich, doi_bien=False, thay_bang=None):
     return so_lan_doi
 
 
-# ------------------------------------------------------------- bản claude
+# --------------------------------------------------------- claude bundle
 
-# Gốc bộ workflow trong project đích. KHÔNG đổ thẳng vào `.claude/`: `hooks/scripts/_common.py`
-# tìm thư mục `scripts/` bằng `../../scripts` tính từ chính nó, nên `hooks/` và `scripts/` bắt
-# buộc nằm cạnh nhau dưới một gốc chung; còn `skills/` và `agents/` thì ngược lại, Claude Code
-# chỉ quét đúng `.claude/skills` và `.claude/agents`. Một thư mục riêng thoả được cả hai.
+# The workflow root inside the target project. NOT dumped straight into `.claude/`:
+# `hooks/scripts/_common.py` finds `scripts/` via `../../scripts` relative to itself, so `hooks/`
+# and `scripts/` must sit side by side under one root; `skills/` and `agents/` are the opposite —
+# Claude Code scans only `.claude/skills` and `.claude/agents`. A folder of its own satisfies both.
 GOC_TDQ = ".claude/tdq"
 
-# Skill chỉ có nghĩa ở MÁY ĐÍCH (`tdq-checkportable`) sống ở đây chứ không ở `skills/`: đặt
-# trong `skills/` là bắt bộ chính gánh thêm một description trong ngân sách context của mọi
-# phiên, cho một skill mà repo này không bao giờ chạy.
+# The skill that only means something on the TARGET machine (`tdq-checkportable`) lives here and
+# not in `skills/`: putting it there would make the main bundle pay for one more description in
+# every session's context budget, for a skill this repo never runs.
 PORTABLE_SRC = "portable_src"
 TEN_BAN_CLAUDE = "portable_claude"
 
-README_CLAUDE = """# TDQ Workflow — bản portable cho Claude Code
+README_CLAUDE = """# TDQ Workflow — portable bundle for Claude Code
 
-## Cài ở máy mới — làm theo đúng thứ tự này
+## Install on a new machine — follow this exact order
 
-1. **Chép** trọn nội dung thư mục này vào gốc project của bạn, giữ nguyên `.claude/` và
-   `.mcp.json`.
-2. **Kiểm** trước khi mở Claude Code:
+1. **Copy** the whole content of this folder into the root of your project, keeping
+   `.claude/` and `.mcp.json` as they are.
+2. **Check** before opening Claude Code:
    ```
    python3 .claude/tdq/scripts/tdq_checkportable.py check
    ```
-   Đọc theo tiền tố: `SẠCH` xong · `THIẾU` chưa có · `LỆCH` khác manifest · `LƯU Ý` việc
-   chỉ bạn làm được.
-3. **Vá** nếu có `THIẾU`/`LỆCH`: `python3 .claude/tdq/scripts/tdq_checkportable.py setup` (xem mục
-   cảnh báo bên dưới — nó chỉ dựng lại được hai file).
-4. **Đặt biến môi trường** cho MCP nếu `check` báo thiếu. Script cố ý KHÔNG làm hộ và
-   không bao giờ in giá trị khoá — chỉ báo tên biến.
-5. **Mở Claude Code** trong project đó. Lần mở đầu nó hỏi có tin thư mục này không →
-   **bấm đồng ý**. Không đồng ý thì hook và cấu hình project không có hiệu lực.
-6. **Khởi động lại phiên** để skill và agent trong thư mục mới được quét.
-7. **Duyệt MCP server** — mỗi server trong `.mcp.json` cần bạn duyệt một lần.
+   Read by prefix: `CLEAN` done · `MISSING` not there · `DRIFT` differs from the manifest ·
+   `NOTE` something only you can do.
+3. **Patch** if there is any `MISSING`/`DRIFT`: `python3 .claude/tdq/scripts/tdq_checkportable.py setup`
+   (see the warning section below — it can only rebuild two files).
+4. **Set the environment variables** for MCP if `check` reports them missing. The script
+   deliberately does NOT do it for you and never prints a key value — it only names the
+   variable.
+5. **Open Claude Code** in that project. The first time it asks whether you trust this
+   folder → **click yes**. Without that, the hooks and the project config have no effect.
+6. **Restart the session** so the skills and agents in the new folder get scanned.
+7. **Approve the MCP servers** — every server in `.mcp.json` needs one approval from you.
 
-Xong bảy bước thì nhắn `chạy skill tdq-checkportable` để máy tự kiểm lại lần cuối.
+Once the seven steps are done, say `run the tdq-checkportable skill` so the machine runs a
+final check for you.
 
-## Ba việc máy KHÔNG tự làm được
+## Three things the machine CANNOT do for you
 
-1. **Tin cậy thư mục** — bước 5 ở trên. Chỉ bạn bấm được, không có cờ dòng lệnh nào trong
-   bộ này thay thế.
-2. **Duyệt MCP server** — bước 7.
-3. **Khởi động lại** — bước 6. Bỏ qua thì skill mới nằm im, không báo lỗi gì.
+1. **Trust the folder** — step 5 above. Only you can click it; no command-line flag in this
+   bundle replaces it.
+2. **Approve the MCP servers** — step 7.
+3. **Restart** — step 6. Skip it and the new skills just sit there, with no error at all.
 
-## Cảnh báo về tự vá
+## Warning about self-patching
 
-`setup` dựng lại được đúng hai file cấu hình mà bundle có đủ dữ liệu để tái tạo:
-`.claude/settings.json` (từ `hooks.json` đi kèm) và `.mcp.json`. Ghi đè thì luôn sao lưu
-thành `<file>.tdq-bak-<timestamp>`, và khối `env` bạn tự thêm được giữ lại.
+`setup` rebuilds exactly the two config files the bundle holds enough data to recreate:
+`.claude/settings.json` (from the bundled `hooks.json`) and `.mcp.json`. Overwriting always
+leaves a backup at `<file>.tdq-bak-<timestamp>`, and the `env` block you added yourself is
+kept.
 
-File khác thiếu hoặc lệch thì `setup` **không** bịa nội dung — nó báo `CÒN …` và exit khác 0;
-nguồn đúng duy nhất là bản gốc, chép lại từ đó. Chỉ muốn kiểm, không sửa: dùng `check`.
+Any other file that is missing or has drifted is **not** invented by `setup` — it reports
+`LEFT …` and exits non-zero; the only correct source is the original bundle, copy it from
+there. Want a check without any change: use `check`.
 
-## Khoá bí mật
+## Secret keys
 
-`.mcp.json` chỉ ghi TÊN biến môi trường, không bao giờ chứa giá trị khoá. Tự đặt biến ở máy
-mình trước khi dùng MCP.
+`.mcp.json` only records the NAMES of environment variables, never a key value. Set the
+variables yourself on your own machine before using MCP.
 """
 
 
 def _sinh_settings(repo, dich_settings):
-    """`hooks/hooks.json` + khối `env` của repo → `.claude/settings.json` của project đích."""
+    """`hooks/hooks.json` + the repo `env` block → `.claude/settings.json` of the target project."""
     cai_dat = sinh_settings(repo, os.path.join(repo, "hooks", "hooks.json"))
     duong_env = os.path.join(repo, ".claude", "settings.json")
     if os.path.isfile(duong_env):
@@ -245,10 +254,10 @@ def _sinh_settings(repo, dich_settings):
 
 
 def _ghi_json(duong, du_lieu):
-    """Ghi JSON đúng byte-for-byte như `tdq_checkportable._ghi_json_co_backup` ghi.
+    """Write JSON byte-for-byte the way `tdq_checkportable._ghi_json_co_backup` writes it.
 
-    Lệch một ký tự xuống dòng ở đây là lệch sha256: `setup` sinh lại file rồi `check` ngay
-    sau đó báo LỆCH, dù nội dung giống hệt về nghĩa.
+    One newline off here is a different sha256: `setup` regenerates the file and the very next
+    `check` reports DRIFT, even though the content means exactly the same thing.
     """
     with open(duong, "w", encoding="utf-8") as f:
         f.write(json.dumps(du_lieu, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
@@ -259,7 +268,7 @@ def _sinh_mcp(duong):
 
 
 def sinh_ban_claude(repo, dest, version=""):
-    """Dựng `<dest>/portable_claude/` — bản chép thẳng vào project dùng Claude Code."""
+    """Build `<dest>/portable_claude/` — the bundle copied straight into a Claude Code project."""
     goc = os.path.join(dest, TEN_BAN_CLAUDE)
     if os.path.isdir(goc):
         shutil.rmtree(goc)
@@ -286,179 +295,191 @@ def sinh_ban_claude(repo, dest, version=""):
 
     con_lai = dem_bien_trong_cay(goc)
     if con_lai:
-        raise RuntimeError(f"bản claude còn {con_lai} chỗ dùng {BIEN_CU}")
-    log(f"{TEN_BAN_CLAUDE}: đổi {tong_doi} chỗ dùng biến plugin, còn sót 0")
+        raise RuntimeError(f"the claude bundle still has {con_lai} use(s) of {BIEN_CU}")
+    log(f"{TEN_BAN_CLAUDE}: rewrote {tong_doi} plugin-variable use(s), 0 left")
 
     ghi_manifest(goc, version)
     return goc
 
 
-# -------------------------------------------------------------- bản codex
+# ---------------------------------------------------------- codex bundle
 
 TEN_BAN_CODEX = "portable_codex"
 
-# Thứ tự đọc, không phải thứ tự bảng chữ cái: harness không có skill system thì không có gì
-# tự chọn file đúng lúc, nên số thứ tự trong tên file CHÍNH LÀ cơ chế định tuyến.
+# Reading order, not alphabetical order: a harness with no skill system has nothing to pick the
+# right file at the right moment, so the number in the file name IS the routing mechanism.
 THU_TU_SKILL = (
     "tdq-conventions",
     "tdq-intake",
     "tdq-spec",
     "tdq-plan",
     "tdq-build",
-    "tdq-checkportable",  # nguồn ở PORTABLE_SRC, không phải `skills/`
+    "tdq-checkportable",  # source in PORTABLE_SRC, not in `skills/`
     "tdq-status",
     "tdq-check-status",
 )
 
-AGENTS_MD = """# TDQ Workflow — hướng dẫn cho agent
+DONG_SOUL_AGENTS = ("Soul: chất lượng > runtime > context cost · luật gốc: "  # i18n-allow
+                    "`workflow/references/tdq-conventions/soul.md`")
 
-Soul: chất lượng > runtime > context cost · luật gốc: `workflow/references/tdq-conventions/soul.md`
+AGENTS_MD = """# TDQ Workflow — guide for agents
 
-Bộ này chạy theo pipeline có cổng duyệt: intake → spec → plan → implement → QC → report.
-Chỉ NGƯỜI DÙNG được duyệt, và mọi thay đổi state chỉ đi qua `scripts/tdq_state.py`.
+{soul}
 
-## Bước 0 — kiểm tương thích TRƯỚC mọi việc khác
+This bundle runs a pipeline with approval gates: intake → spec → plan → implement → QC →
+report. Only the USER may approve, and every state change goes through `scripts/tdq_state.py`.
+
+## Step 0 — check compatibility BEFORE anything else
 
 ```
 python3 scripts/tdq_checkportable.py check
 ```
 
-Báo thiếu thì chạy `python3 scripts/tdq_checkportable.py setup`: nó dựng lại hai file cấu
-hình tái tạo được (`.claude/settings.json`, `.mcp.json`), luôn sao lưu `<file>.tdq-bak-<timestamp>`
-trước khi ghi đè, và báo `CÒN …` cho phần chỉ chép lại từ bản gốc mới đúng.
+If it reports something missing, run `python3 scripts/tdq_checkportable.py setup`: it rebuilds
+the two config files that can be recreated (`.claude/settings.json`, `.mcp.json`), always
+leaves a backup at `<file>.tdq-bak-<timestamp>` before overwriting, and reports `LEFT …` for
+whatever is only correct when copied from the original bundle.
 
-Dòng `LƯU Ý project chưa trusted` là dòng quan trọng nhất của lệnh này: chưa trusted thì
-Codex bỏ qua cả `.codex/config.toml` lẫn `.codex/hooks.json`, bundle chạy như thể không có.
+The line `NOTE project is not trusted` is the most important line this command prints: while
+untrusted, Codex ignores both `.codex/config.toml` and `.codex/hooks.json`, and the bundle
+runs as if it were not there.
 
-## Chạy trên Codex CLI (>= {codex_min}) — dùng lớp native, không cần đọc `workflow/`
+## Running on Codex CLI (>= {codex_min}) — use the native layer, no need to read `workflow/`
 
-- `.agents/skills/` — Codex tự nạp skill theo `description`, không phải tự chọn file.
-- `.codex/config.toml` — MCP server; chỉ TÊN biến môi trường, tự đặt biến ở máy mình.
-- `.codex/hooks.json` + `hooks/` — cổng duyệt do máy canh (`SessionStart`,
-  `UserPromptSubmit`, `PreToolUse` cho `Bash` và `apply_patch`, `Stop`).
+- `.agents/skills/` — Codex loads skills by `description` on its own, you do not pick files.
+- `.codex/config.toml` — MCP servers; environment variable NAMES only, set them yourself.
+- `.codex/hooks.json` + `hooks/` — machine-guarded approval gates (`SessionStart`,
+  `UserPromptSubmit`, `PreToolUse` for `Bash` and `apply_patch`, `Stop`).
 
-## Harness khác — đọc `workflow/` theo đúng số thứ tự
+## Another harness — read `workflow/` in the exact numbered order
 
-Không có skill system thì số thứ tự trong tên file CHÍNH LÀ cơ chế định tuyến:
+With no skill system, the number in the file name IS the routing mechanism:
 
 {danh_sach}
 
-Bảng phase đầy đủ: `workflow/phases.md` (tự sinh từ hằng `PHASE_TABLE`, không sửa tay).
+Full phase table: `workflow/phases.md` (generated from the `PHASE_TABLE` constant, never
+edited by hand).
 
-## Bốn việc máy KHÔNG tự làm được
+## Four things the machine CANNOT do for you
 
-1. Cấp quyền cho thư mục project ở lần chạy đầu (`setup --trust` làm thay được bước này).
-2. Duyệt hook trong giao diện Codex — hook có cổng tin cậy riêng, `--trust` KHÔNG mở được.
-3. Duyệt từng MCP server khai trong `.codex/config.toml`.
-4. Khởi động lại phiên sau khi thêm thư mục instruction mới.
+1. Grant access to the project folder on the first run (`setup --trust` can do this for you).
+2. Approve the hooks in the Codex UI — hooks have their own trust gate, `--trust` does NOT
+   open it.
+3. Approve every MCP server declared in `.codex/config.toml`.
+4. Restart the session after a new instruction folder is added.
 """
 
 
-README_CODEX = """# TDQ Workflow — bản portable cho Codex CLI
+README_CODEX = """# TDQ Workflow — portable bundle for Codex CLI
 
-Bản này dùng ĐÚNG cơ chế native của Codex, không phải markdown đọc tay:
+This bundle uses the REAL native mechanisms of Codex, not markdown read by hand:
 
-| Lớp | File trong bundle | Codex làm gì với nó |
+| Layer | File in the bundle | What Codex does with it |
 |---|---|---|
-| Skill | `.agents/skills/<tên>/SKILL.md` | tự quét, nạp dần theo `description` |
-| MCP | `.codex/config.toml` | `[mcp_servers.<tên>]`, chỉ TÊN biến môi trường |
-| Hook | `.codex/hooks.json` + `hooks/` | canh `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
-| Dự phòng | `workflow/NN-*.md` | cho harness KHÁC (Antigravity…) đọc tuần tự |
+| Skill | `.agents/skills/<name>/SKILL.md` | scanned automatically, loaded on demand by `description` |
+| MCP | `.codex/config.toml` | `[mcp_servers.<name>]`, environment variable NAMES only |
+| Hook | `.codex/hooks.json` + `hooks/` | guards `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
+| Fallback | `workflow/NN-*.md` | for OTHER harnesses (Antigravity…) to read in order |
 
-Cần Codex CLI >= {codex_min}. Bản cũ hơn vẫn dùng được `workflow/*.md`, nhưng không có
-lớp native nào.
+Needs Codex CLI >= {codex_min}. An older build can still use `workflow/*.md`, but gets none
+of the native layers.
 
-## Cài ở máy mới — làm theo đúng thứ tự này
+## Install on a new machine — follow this exact order
 
-Thứ tự quan trọng: **trust TRƯỚC, chạy SAU**. Project chưa được tin cậy thì Codex bỏ qua
-TOÀN BỘ tầng `.codex/` — MCP không nạp, `hooks.json` không đọc, bundle trông như rỗng mà
-không báo lỗi gì.
+The order matters: **trust FIRST, run AFTER**. While the project is untrusted, Codex skips
+the WHOLE `.codex/` layer — MCP is not loaded, `hooks.json` is not read, and the bundle
+looks empty without a single error.
 
-1. **Chép** trọn nội dung thư mục này vào gốc project.
-2. **Trust thư mục project** — xem ba cách ngay mục dưới.
-3. **Kiểm**:
+1. **Copy** the whole content of this folder into the project root.
+2. **Trust the project folder** — see the three ways just below.
+3. **Check**:
    ```
    python3 scripts/tdq_checkportable.py check
    ```
-   Kết quả có một dòng nói project đã trusted hay chưa. Đọc theo tiền tố: `SẠCH` xong ·
-   `THIẾU` chưa có · `LỆCH` khác manifest · `LƯU Ý` việc chỉ bạn làm được.
-4. **Vá** nếu có `THIẾU`/`LỆCH`: `python3 scripts/tdq_checkportable.py setup` — nó dựng lại
-   hai file cấu hình tái tạo được, luôn sao lưu `<file>.tdq-bak-<timestamp>` trước khi ghi
-   đè, và báo `CÒN …` cho phần chỉ chép lại từ bản gốc mới đúng.
-5. **Đặt biến môi trường** cho MCP nếu `check` báo thiếu. Script cố ý KHÔNG làm hộ việc này
-   và không bao giờ in giá trị khoá — chỉ báo tên biến.
-6. **Mở Codex CLI** trong project, rồi **khởi động lại phiên** một lần để skill trong
-   `.agents/skills/` được quét.
-7. **Duyệt hook** trong giao diện Codex — cổng RIÊNG, xem mục "Bốn việc" bên dưới.
-8. **Duyệt MCP server** — mỗi server một lần.
+   The output holds one line saying whether the project is trusted yet. Read by prefix:
+   `CLEAN` done · `MISSING` not there · `DRIFT` differs from the manifest · `NOTE` something
+   only you can do.
+4. **Patch** if there is any `MISSING`/`DRIFT`: `python3 scripts/tdq_checkportable.py setup` —
+   it rebuilds the two config files that can be recreated, always leaves a backup at
+   `<file>.tdq-bak-<timestamp>` before overwriting, and reports `LEFT …` for whatever is only
+   correct when copied from the original bundle.
+5. **Set the environment variables** for MCP if `check` reports them missing. The script
+   deliberately does NOT do this for you and never prints a key value — it only names the
+   variable.
+6. **Open Codex CLI** in the project, then **restart the session** once so the skills in
+   `.agents/skills/` get scanned.
+7. **Approve the hooks** in the Codex UI — a SEPARATE gate, see "Four things" below.
+8. **Approve the MCP servers** — one approval per server.
 
-## Trust — ba cách, chọn một
+## Trust — three ways, pick one
 
-**Cách 1 — để script làm, không cần mở Codex:**
+**Way 1 — let the script do it, no need to open Codex:**
 
 ```
-cd <gốc project đã chép bundle vào>
+cd <project root the bundle was copied into>
 python3 scripts/tdq_checkportable.py setup --trust
 ```
 
-**Cách 2 — bấm trong Codex:** mở Codex CLI ngay tại thư mục project; lần đầu vào thư mục lạ
-nó hỏi có cho phép làm việc ở đây không → chọn phương án tin cậy thư mục.
+**Way 2 — click inside Codex:** open Codex CLI right in the project folder; the first time it
+enters an unknown folder it asks whether it may work here → pick the option that trusts the
+folder.
 
-**Cách 3 — sửa tay** `~/.codex/config.toml` (hoặc `$CODEX_HOME/config.toml`), thêm:
+**Way 3 — edit by hand** `~/.codex/config.toml` (or `$CODEX_HOME/config.toml`), adding:
 
 ```toml
-[projects."/đường/dẫn/tuyệt/đối/tới/project"]
+[projects."/absolute/path/to/the/project"]
 trust_level = "trusted"
 ```
 
-Đường dẫn phải TUYỆT ĐỐI và đã resolve symlink, khớp đúng thư mục Codex chạy trong đó —
-lệch một ký tự là không ăn.
+The path must be ABSOLUTE with symlinks resolved, matching exactly the folder Codex runs in —
+one character off and it does not take.
 
-Cách 1 chính là đường DUY NHẤT của bộ này ghi ra ngoài bundle: nó luôn để lại
-`<file>.tdq-bak-<timestamp>`, giữ nguyên phần còn lại của file, và không ghi chồng block đã
-có. Không có cờ `--trust` thì `setup` không đụng tới file đó.
+Way 1 is the ONLY path in this bundle that writes outside the bundle: it always leaves a
+`<file>.tdq-bak-<timestamp>`, keeps the rest of the file untouched, and never writes over an
+existing block. Without the `--trust` flag, `setup` does not touch that file at all.
 
-Kiểm đã ăn chưa: chạy lại `check` và đọc dòng trạng thái trusted.
+To check that it took: run `check` again and read the trusted status line.
 
-## Bốn việc máy KHÔNG tự làm được
+## Four things the machine CANNOT do for you
 
-1. **Tin cậy thư mục** — `setup --trust` làm thay được (Cách 1 ở trên), hoặc bấm đồng ý
-   trong Codex.
-2. **Duyệt hook** — hook có cổng tin cậy RIÊNG: Codex hiện "Review hooks" trong giao diện và
-   bạn phải duyệt một lần. `--trust` không mở được cổng này, và sửa `hooks.json` thì phải
-   duyệt lại. Chưa duyệt thì hook im lặng không chạy.
-3. **Duyệt MCP server** — mỗi server trong `.codex/config.toml` cần bạn duyệt một lần.
-4. **Khởi động lại** — instruction mới chỉ được nạp sau khi khởi động lại phiên.
+1. **Trust the folder** — `setup --trust` can do it for you (Way 1 above), or click yes in
+   Codex.
+2. **Approve the hooks** — hooks have their OWN trust gate: Codex shows "Review hooks" in the
+   UI and you have to approve once. `--trust` does not open this gate, and editing
+   `hooks.json` means approving again. Until approved, the hooks stay silent and never run.
+3. **Approve the MCP servers** — every server in `.codex/config.toml` needs one approval from
+   you.
+4. **Restart** — new instructions are only loaded after the session restarts.
 
-## Vì sao bước 3 chạy thẳng file, không nhắn "chạy skill tdq-checkportable"
+## Why step 3 runs the file directly instead of saying "run the tdq-checkportable skill"
 
-Skill nằm trong chính bundle này, mà Codex chỉ quét `.agents/skills/` sau khi project được
-tin cậy và phiên đã khởi động lại. Gọi skill ở bước đầu là vòng luẩn quẩn; chạy thẳng
-`python3 scripts/tdq_checkportable.py` bằng terminal thì không vướng. Từ lần sau, khi mọi
-thứ đã nạp, gọi skill bình thường.
+The skill lives inside this very bundle, and Codex only scans `.agents/skills/` after the
+project is trusted and the session has restarted. Calling the skill at the first step is a
+circular dependency; running `python3 scripts/tdq_checkportable.py` straight from the
+terminal is not. From the next time on, once everything is loaded, call the skill normally.
 
-## Khoá bí mật
+## Secret keys
 
-Không file nào ở đây chứa giá trị khoá, chỉ TÊN biến môi trường (`env_vars` trong
-`config.toml`). Tự đặt biến ở máy mình trước khi dùng MCP.
+No file in here holds a key value, only environment variable NAMES (`env_vars` in
+`config.toml`). Set the variables yourself on your own machine before using MCP.
 """
 
 
-# ------------------------------------------- lớp native của Codex CLI (>= 0.147.0)
+# ------------------------------------------- native layer of Codex CLI (>= 0.147.0)
 
-# Ba thư mục Codex tự quét. Tên và vị trí do Codex quy định, không tự đặt được:
-#   `.agents/skills/<tên>/SKILL.md`   — skill, nạp dần theo description trong frontmatter
-#   `.codex/config.toml`              — MCP server (chỉ nạp khi project đã trusted)
-#   `.codex/hooks.json`               — hook (còn phải được duyệt riêng trong TUI)
+# The three folders Codex scans by itself. Names and places are dictated by Codex:
+#   `.agents/skills/<name>/SKILL.md`  — skills, loaded on demand by the frontmatter description
+#   `.codex/config.toml`              — MCP servers (loaded only once the project is trusted)
+#   `.codex/hooks.json`               — hooks (still needing their own approval in the TUI)
 GOC_SKILL_CODEX = ".agents/skills"
 GOC_CAU_HINH_CODEX = ".codex"
 CODEX_MIN = "0.147.0"
 
-# Ánh xạ hook TDQ → event + matcher của Codex. Matcher là regex khớp `tool_name`, và tên tool
-# THẬT của Codex đo được bằng hook thăm dò (xem `docs/tdq/qc/2026-08-17-1139-*.md`): tool chạy
-# lệnh tên `Bash` (trùng Claude Code), còn tool sửa file tên `apply_patch` — KHÔNG phải
-# `Edit|Write|MultiEdit|NotebookEdit`. Giữ nguyên matcher của Claude Code thì hook không bao
-# giờ nổ, mà cũng không báo lỗi: cổng duyệt tắt im lặng.
+# Mapping of TDQ hooks → Codex event + matcher. The matcher is a regex on `tool_name`, and the
+# REAL Codex tool names were measured with a probe hook (see `docs/tdq/qc/2026-08-17-1139-*.md`):
+# the command tool is named `Bash` (same as Claude Code), while the file-editing tool is named
+# `apply_patch` — NOT `Edit|Write|MultiEdit|NotebookEdit`. Keep Claude Code's matcher and the hook
+# never fires, without an error either: the approval gate is off in silence.
 HOOK_CODEX = (
     ("SessionStart", None, "session_start.py"),
     ("UserPromptSubmit", None, "prompt_context.py"),
@@ -467,21 +488,22 @@ HOOK_CODEX = (
     ("Stop", None, "stop_gate.py"),
 )
 
-# Adapter sinh vào bundle, KHÔNG sửa `hooks/scripts/edit_gate.py` của repo. Lý do tách ra:
-# `edit_gate.py` là mã dùng chung cho cả hai harness, còn khác biệt ở đây thuần tuý là hình
-# dạng `tool_input` của riêng Codex. Nhét vào file chung là bắt Claude Code gánh một nhánh
-# không bao giờ chạy, và mỗi lần sửa gate lại phải nhớ hai hình dạng payload.
+# The adapter is generated into the bundle; the repo's `hooks/scripts/edit_gate.py` is NOT edited.
+# Why keep it apart: `edit_gate.py` is shared code for both harnesses, while the difference here
+# is purely the shape of Codex's own `tool_input`. Folding it in would make Claude Code carry a
+# branch that never runs, and every gate edit would have to remember two payload shapes.
 ADAPTER_CODEX = '''#!/usr/bin/env python3
-"""codex_edit_gate.py — cầu nối giữa `apply_patch` của Codex và `edit_gate.py` dùng chung.
+"""codex_edit_gate.py — the bridge between Codex `apply_patch` and the shared `edit_gate.py`.
 
-SINH TỰ ĐỘNG bởi `scripts/build_portable.py`. Sửa tay ở đây sẽ mất khi build lại.
+AUTO-GENERATED by `scripts/build_portable.py`. Hand edits here are lost on the next build.
 
-Vì sao cần: Claude Code gửi `tool_input.file_path`, còn Codex gửi `tool_input.command` chứa
-nguyên thân patch (`*** Update File: <đường dẫn>`). `edit_gate.py` đọc `file_path`, nên chạy
-thẳng dưới Codex sẽ ra đường dẫn rỗng — gate vẫn exit 0 mà không canh gì cả, lỗi im lặng.
-File này rút đường dẫn ra khỏi thân patch, gắn vào `file_path`, rồi giao lại cho gate thật.
+Why it is needed: Claude Code sends `tool_input.file_path`, while Codex sends
+`tool_input.command` holding the whole patch body (`*** Update File: <path>`). `edit_gate.py`
+reads `file_path`, so running it straight under Codex yields an empty path — the gate exits 0
+while guarding nothing at all, a silent failure.
 
-Env: TDQ_LOG=0 tắt log (log ra stderr). Exit code và stdout đi thẳng từ `edit_gate.py`.
+Env: TDQ_LOG=0 turns the log off (it goes to stderr). Exit code and stdout come straight
+from `edit_gate.py`.
 """
 import datetime
 import json
@@ -500,7 +522,7 @@ def log(message):
 
 
 def tach_duong_dan_patch(than):
-    """Đường dẫn ĐẦU TIÊN trong thân patch, hoặc chuỗi rỗng. Không ném với input lạ."""
+    """The FIRST path in the patch body, or an empty string. Never raises on odd input."""
     khop = MAU_PATCH.search(than or "")
     return khop.group(1).strip() if khop else ""
 
@@ -510,8 +532,8 @@ def main():
     try:
         payload = json.loads(raw) if raw.strip() else {}
     except ValueError:
-        # Payload hỏng thì không chặn phiên: gate là cơ chế nhắc, không phải cơ chế bảo mật.
-        log("codex_edit_gate: payload không phải JSON, bỏ qua")
+        # A broken payload must not block the session: the gate is a reminder, not a security mechanism.
+        log("codex_edit_gate: payload is not JSON, skipping")
         print("{}")
         return 0
     tool_input = payload.get("tool_input") or {}
@@ -522,7 +544,7 @@ def main():
             payload["tool_input"] = tool_input
             log(f"codex_edit_gate: apply_patch -> {duong}")
         else:
-            log("codex_edit_gate: không tách được đường dẫn khỏi thân patch")
+            log("codex_edit_gate: could not extract a path from the patch body")
     that = os.path.join(os.path.dirname(os.path.abspath(__file__)), "edit_gate.py")
     proc = subprocess.run([sys.executable, that], input=json.dumps(payload),
                           capture_output=True, text=True)
@@ -537,10 +559,10 @@ if __name__ == "__main__":
 
 
 def doc_frontmatter(text):
-    """Frontmatter YAML một tầng của SKILL.md → dict. Trả dict rỗng nếu không có khối `---`.
+    """One-level YAML frontmatter of SKILL.md → dict. Empty dict if there is no `---` block.
 
-    Không dùng thư viện YAML: bundle chạy ở máy lạ với Python trần, thêm phụ thuộc là thêm
-    một lý do nữa để bản portable chết ngay bước đầu.
+    No YAML library: the bundle runs on a strange machine with a bare Python, and one more
+    dependency is one more reason for the portable bundle to die at the first step.
     """
     if not text or not text.startswith("---"):
         return {}
@@ -556,27 +578,27 @@ def doc_frontmatter(text):
 
 
 def tach_duong_dan_patch(than):
-    """Đường dẫn đầu tiên trong thân patch của `apply_patch`, hoặc chuỗi rỗng.
+    """The first path in the body of an `apply_patch`, or an empty string.
 
-    Bản chạy thật nằm trong `ADAPTER_CODEX` (chạy ở máy đích). Bản này để test khoá được hành
-    vi mà không phải bung bundle ra trước.
+    The version that actually runs lives in `ADAPTER_CODEX` (running on the target machine). This
+    one lets the test lock the behaviour without unpacking the bundle first.
     """
     khop = re.search(r"^\*\*\* (?:Update|Add|Delete) File: (.+)$", than or "", re.MULTILINE)
     return khop.group(1).strip() if khop else ""
 
 
 def _sinh_config_toml(duong):
-    """`.codex/config.toml` — khai MCP server theo khuôn `[mcp_servers.<tên>]` của Codex.
+    """`.codex/config.toml` — declare MCP servers in the Codex `[mcp_servers.<name>]` shape.
 
-    Chỉ ghi TÊN biến môi trường qua `env_vars`, không bao giờ giá trị: Codex KHÔNG khai triển
-    `${VAR}` trong TOML, nên viết `env = {X = "${X}"}` sẽ truyền sang MCP đúng chuỗi ký tự đó
-    chứ không phải khoá. `env_vars` là cách Codex chuyển tiếp biến từ môi trường cha — đúng
-    thứ cần, và cũng là cách duy nhất không đưa bí mật vào file.
+    Only environment variable NAMES go in, through `env_vars`, never values: Codex does NOT expand
+    `${VAR}` in TOML, so writing `env = {X = "${X}"}` would pass MCP that literal string rather than
+    the key. `env_vars` is how Codex forwards a variable from the parent environment — exactly what
+    is needed, and the only way that keeps secrets out of the file.
     """
     khai_bao = sinh_mcp()["mcpServers"]
     dong = [
-        "# TDQ Workflow — cấu hình Codex CLI, SINH TỰ ĐỘNG bởi scripts/build_portable.py.",
-        f"# Cần Codex CLI >= {CODEX_MIN}. Chỉ nạp được khi project đã trusted.",
+        "# TDQ Workflow — Codex CLI config, AUTO-GENERATED by scripts/build_portable.py.",
+        f"# Needs Codex CLI >= {CODEX_MIN}. Only loaded once the project is trusted.",
         "",
     ]
     for ten in sorted(khai_bao):
@@ -593,11 +615,11 @@ def _sinh_config_toml(duong):
 
 
 def _sinh_hooks_codex(duong):
-    """`.codex/hooks.json` — cùng khuôn wire với `hooks/hooks.json`, khác matcher và đường dẫn.
+    """`.codex/hooks.json` — the same wire shape as `hooks/hooks.json`, other matchers and paths.
 
-    Đường dẫn để TƯƠNG ĐỐI có chủ ý: đo thật cho thấy Codex chạy tiến trình hook với cwd =
-    gốc project, nên `hooks/scripts/x.py` đủ đúng ở mọi máy. Nhờ vậy file này là file tĩnh
-    nằm trong `manifest.json`, không phải thứ phải sinh lại lúc `setup` ở máy đích.
+    The paths are RELATIVE on purpose: real measurement shows Codex runs the hook process with cwd =
+    the project root, so `hooks/scripts/x.py` is correct on every machine. That makes this a static
+    file inside `manifest.json`, not something `setup` has to regenerate on the target machine.
     """
     su_kien = {}
     for ten_event, matcher, ten_file in HOOK_CODEX:
@@ -609,23 +631,23 @@ def _sinh_hooks_codex(duong):
             nhom["matcher"] = matcher
         su_kien.setdefault(ten_event, []).append(nhom)
     _ghi_json(duong, {
-        "description": "TDQ workflow cho Codex CLI — sinh tự động, không sửa tay",
+        "description": "TDQ workflow for Codex CLI — auto-generated, never edited by hand",
         "hooks": su_kien,
     })
 
 
 def sinh_ban_codex(repo, dest, version=""):
-    """Dựng `<dest>/portable_codex/` — bản dùng ĐÚNG cơ chế native của Codex CLI.
+    """Build `<dest>/portable_codex/` — the bundle using the REAL native mechanisms of Codex CLI.
 
-    Bốn nhóm hiện vật:
-      `.agents/skills/`    skill Codex tự nạp theo description;
-      `.codex/config.toml` MCP server (chỉ TÊN biến môi trường);
-      `.codex/hooks.json` + `hooks/`  cổng duyệt do máy canh, dùng lại mã của repo;
-      `workflow/NN-*.md`   bản markdown đọc tuần tự, giữ cho harness KHÁC Codex (Antigravity…)
-                           vẫn dùng được bundle này.
+    Four groups of artifacts:
+      `.agents/skills/`    skills Codex loads by description;
+      `.codex/config.toml` MCP servers (environment variable NAMES only);
+      `.codex/hooks.json` + `hooks/`  machine-guarded approval gates, reusing the repo's code;
+      `workflow/NN-*.md`   the markdown read in order, keeping this bundle usable by harnesses
+                           OTHER than Codex (Antigravity…).
 
-    Ba lớp đầu cần Codex CLI >= 0.147.0 và cần project được trusted; riêng hook còn cần người
-    dùng duyệt một lần trong TUI. Không có gì trong đây tự làm thay được mấy việc đó.
+    The first three layers need Codex CLI >= 0.147.0 and a trusted project; the hooks additionally
+    need the user to approve once in the TUI. Nothing in here can do those steps for you.
     """
     import tdq_state
 
@@ -636,8 +658,8 @@ def sinh_ban_codex(repo, dest, version=""):
     os.makedirs(thu_muc_wf, exist_ok=True)
     os.makedirs(os.path.join(goc, GOC_CAU_HINH_CODEX), exist_ok=True)
 
-    # Harness ngoài Claude Code không đặt biến `CLAUDE_*` nào cả, nên đường dẫn ở bản này
-    # phải tương đối so với gốc bundle — người dùng `cd` vào đó rồi chạy là xong.
+    # A harness other than Claude Code sets no `CLAUDE_*` variable at all, so the paths in this
+    # bundle must be relative to the bundle root — the user `cd`s in and runs, that is all.
     moi = "."
     copy_loc(os.path.join(repo, "scripts"), os.path.join(goc, "scripts"), True, moi)
 
@@ -656,14 +678,14 @@ def sinh_ban_codex(repo, dest, version=""):
         thu_muc_ref = os.path.join(thu_muc_skill, "references")
         if os.path.isdir(thu_muc_ref):
             copy_loc(thu_muc_ref, os.path.join(thu_muc_wf, "references", ten_skill), True, moi)
-        # Lớp native: chép NGUYÊN cây skill sang `.agents/skills/<tên>/` — giữ nguyên tên thư
-        # mục là điều kiện để các liên kết `../<skill khác>/SKILL.md` trong SKILL.md còn trỏ
-        # đúng, thứ mà bản `workflow/NN-*.md` phải đánh số lại nên mất.
+        # Native layer: copy the skill tree AS IS into `.agents/skills/<name>/` — keeping the folder
+        # name is what keeps the `../<other skill>/SKILL.md` links inside SKILL.md pointing at the right
+        # place, which the `workflow/NN-*.md` bundle loses because it has to renumber them.
         copy_loc(thu_muc_skill, os.path.join(goc, GOC_SKILL_CODEX, ten_skill), True, moi)
         dong_danh_sach.append(f"- `workflow/{ten_file}`")
 
-    # `hooks/` phải nằm ở GỐC bundle, cạnh `scripts/`: `hooks/scripts/_common.py` suy ra thư
-    # mục script bằng `../../scripts` tính từ chính nó. Nhét vào `.codex/` là gãy đúng chỗ đó.
+    # `hooks/` must sit at the bundle ROOT next to `scripts/`: `hooks/scripts/_common.py` derives the
+    # script folder as `../../scripts` relative to itself. Put it under `.codex/` and that breaks.
     copy_loc(os.path.join(repo, "hooks"), os.path.join(goc, "hooks"), True, moi)
     duong_adapter = os.path.join(goc, "hooks", "scripts", "codex_edit_gate.py")
     with open(duong_adapter, "w", encoding="utf-8") as f:
@@ -676,16 +698,17 @@ def sinh_ban_codex(repo, dest, version=""):
         f.write(tdq_state.render_phases_md() + "\n")
 
     with open(os.path.join(goc, "AGENTS.md"), "w", encoding="utf-8") as f:
-        f.write(AGENTS_MD.format(danh_sach="\n".join(dong_danh_sach), codex_min=CODEX_MIN))
+        f.write(AGENTS_MD.format(danh_sach="\n".join(dong_danh_sach), codex_min=CODEX_MIN,
+                         soul=DONG_SOUL_AGENTS))
 
     with open(os.path.join(goc, "README.md"), "w", encoding="utf-8") as f:
         f.write(README_CODEX.format(codex_min=CODEX_MIN))
 
     con_lai = dem_bien_trong_cay(goc)
     if con_lai:
-        raise RuntimeError(f"bản codex còn {con_lai} chỗ dùng {BIEN_CU}")
+        raise RuntimeError(f"the codex bundle still has {con_lai} use(s) of {BIEN_CU}")
     log(f"{TEN_BAN_CODEX}: {len(dong_danh_sach)} skill (native + workflow), "
-        f"{len(HOOK_CODEX)} hook, {len(MCP_SERVERS)} MCP server, còn sót 0 biến plugin")
+        f"{len(HOOK_CODEX)} hook(s), {len(MCP_SERVERS)} MCP server(s), 0 plugin variable left")
 
     ghi_manifest(goc, version)
     return goc
@@ -694,10 +717,10 @@ def sinh_ban_codex(repo, dest, version=""):
 # ------------------------------------------------------------------ manifest
 
 def sinh_manifest(goc, version=""):
-    """Quét cây thư mục → dict manifest đủ 5 khối.
+    """Scan the folder tree → a manifest dict with all 5 blocks.
 
-    `manifest.json` tự loại chính nó khỏi danh sách: nó được ghi SAU khi quét, nên nếu tự
-    liệt kê thì sha256 ghi vào không bao giờ khớp nội dung cuối cùng của chính file đó.
+    `manifest.json` leaves itself out of the list: it is written AFTER the scan, so listing itself
+    would record a sha256 that never matches its own final content.
     """
     files = {}
     for thu_muc, thu_muc_con, ten_files in os.walk(goc):
@@ -723,7 +746,7 @@ def ghi_manifest(goc, version=""):
     man = sinh_manifest(goc, version)
     with open(os.path.join(goc, MANIFEST_NAME), "w", encoding="utf-8") as f:
         json.dump(man, f, ensure_ascii=False, indent=2, sort_keys=True)
-    log(f"manifest: {len(man['files'])} file trong {os.path.basename(goc)}")
+    log(f"manifest: {len(man['files'])} file(s) in {os.path.basename(goc)}")
     return man
 
 
@@ -732,17 +755,17 @@ def ghi_manifest(goc, version=""):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="build_portable.py",
-        description="Sinh hai bản portable (claude, codex) của bộ TDQ Workflow từ một nguồn.")
-    parser.add_argument("--dest", help="thư mục đích, mặc định là gốc repo")
+        description="Generate the two portable bundles (claude, codex) of TDQ Workflow from one source.")
+    parser.add_argument("--dest", help="destination folder, defaults to the repo root")
     parser.add_argument("--only", choices=("claude", "codex"),
-                        help="chỉ sinh một bản thay vì cả hai")
-    parser.add_argument("--repo", help="gốc repo nguồn, mặc định suy từ vị trí script")
+                        help="generate only one bundle instead of both")
+    parser.add_argument("--repo", help="source repo root, defaults to the script location")
     args = parser.parse_args(argv)
 
     repo = args.repo or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     dest = args.dest or repo
     version = plugin_version(repo)
-    log(f"bắt đầu · repo={repo} · dest={dest} · version={version or '—'}")
+    log(f"start · repo={repo} · dest={dest} · version={version or '—'}")
 
     os.makedirs(dest, exist_ok=True)
     try:
@@ -751,9 +774,9 @@ def main(argv=None):
         if args.only != "claude":
             sinh_ban_codex(repo, dest, version)
     except (OSError, RuntimeError) as loi:
-        log(f"LỖI {loi}")
+        log(f"ERROR {loi}")
         return EXIT_LOI
-    log("xong")
+    log("done")
     return 0
 
 

@@ -48,3 +48,8 @@ khai ở dòng `Chạm:` của plan:
   `docs/archive/CHANGELOG-*.md`.
 - 2026-08-14: `skills/tdq-conventions/references/soul.md` là luật gốc đứng trên mọi luật;
   đổi soul phải có user duyệt.
+- 2026-08-22: ngôn ngữ chia 3 tầng — luật trong `skills/`, `agents/`, chú thích/docstring
+  của `hooks/` + `scripts/` và chuỗi máy in ra đều viết TIẾNG ANH cố định (không bảng
+  tra i18n); tài liệu sinh cho user và lời thoại viết theo `doc_lang` khai một lần lúc
+  `init`, mặc định `vi`, cố định suốt request. `scripts/i18n_check.py` gác tầng 1-2,
+  cụm `i18n-allow` là cửa miễn cho chuỗi user thấy giữ nguyên từng chữ.

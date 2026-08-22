@@ -47,7 +47,7 @@ class StateFileTest(unittest.TestCase):
         self.assertIn("[TDQ:NEXT]", out)
         kept = glob.glob(os.path.join(self.cwd, "docs", "tdq", "state.json.corrupt-*"))
         self.assertEqual(len(kept), 1, kept)
-        self.assertIn("hỏng", err)
+        self.assertIn("is corrupt", err)
 
     def test_corrupt_non_dict_recovers(self):
         self._init()
@@ -106,7 +106,7 @@ class StateFileTest(unittest.TestCase):
         with open(os.path.join(orphan, "STATE.md"), "w", encoding="utf-8") as f:
             f.write("# x\n")
         found = tdq_state.find_shadow_states(self.cwd)
-        self.assertTrue(any("mirror mồ côi" in f for f in found), found)
+        self.assertTrue(any("orphan mirror" in f for f in found), found)
 
     # S7 -------------------------------------------------------------
     def test_concurrent_write_warns_but_writes(self):
@@ -150,7 +150,7 @@ class StateFileTest(unittest.TestCase):
             with self.subTest(cmd=cmd):
                 rc, _, err = run_state_cli(self.cwd, *cmd)
                 self.assertEqual(rc, 2, f"{cmd}: rc={rc}")
-                self.assertIn("Cách dùng", err)
+                self.assertIn("Usage:", err)
 
     def _write_raw(self, text):
         os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
@@ -163,11 +163,11 @@ class StateFileTest(unittest.TestCase):
         md = _read(tdq_state.state_md_path(self.cwd))
         lines = [l for l in md.splitlines() if l.strip()]
         self.assertLessEqual(len(md.splitlines()), 30, md)
-        self.assertTrue(md.startswith("# TDQ STATE (tự sinh — không sửa tay)"))
-        for heading in ("## Đang ở đâu", "## Việc tiếp theo"):
+        self.assertTrue(md.startswith("# TDQ STATE (generated — do not hand-edit)"))
+        for heading in ("## Where we are", "## What comes next"):
             self.assertIn(heading, md)
         for label in ("| Request |", "| Lane |", "| Phase |", "| Spec |", "| Plan |",
-                      "| Mode thực thi |"):
+                      "| Run mode |"):
             self.assertIn(label, md)
         self.assertTrue(any("tdq_state.py" in l for l in lines))
 
@@ -175,10 +175,10 @@ class StateFileTest(unittest.TestCase):
         self._init()
         run_state_cli(self.cwd, "set", "spec_file=docs/tdq/spec/x.md", "phase=spec")
         md = _read(tdq_state.state_md_path(self.cwd))
-        self.assertIn("docs/tdq/spec/x.md — ⏳ chờ duyệt", md)
+        self.assertIn("docs/tdq/spec/x.md — ⏳ awaiting approval", md)
         run_state_cli(self.cwd, "approve", "spec", "--by", "duyệt spec")
         md = _read(tdq_state.state_md_path(self.cwd))
-        self.assertIn("✔ đã duyệt", md)
+        self.assertIn("✔ approved", md)
         self.assertIn("| Phase | spec |", md)
 
     # log service ----------------------------------------------------
@@ -187,7 +187,7 @@ class StateFileTest(unittest.TestCase):
         self._write_raw(json.dumps({"phase": "xyz", "active_request": "r"}))
         rc, _, err = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
-        self.assertIn("phase không hợp lệ", err)
+        self.assertIn("invalid phase in state", err)
         self.assertRegex(err, r"^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")   # có timestamp
         env = dict(os.environ, TDQ_PROJECT_DIR=self.cwd, TDQ_LOG="0")
         import subprocess

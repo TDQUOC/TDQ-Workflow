@@ -10,7 +10,7 @@ python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/step_audit.py" --sessions 2
 python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/token_audit.py" --sessions 2 --top 8
 ```
 
-## Mục lục
+## Table of contents
 
 - [Step cost (tier 2 — runtime)](#Step cost (tier 2 — runtime))
 - [Context cost (tier 3)](#Context cost (tier 3))
@@ -87,9 +87,9 @@ technically possible.
 | Destructive or hard-to-undo commands | delete, overwrite, `git reset` — you must see the previous command's result before running the next |
 | A command that needs the previous command's result | batched, the later command runs on an assumption and returns a wrong result nobody notices |
 
-Ví dụ ĐÚNG: one turn issuing `Read a.py`, `Read b.py`, `grep -n "foo" c.py` — three unrelated
+RIGHT example: one turn issuing `Read a.py`, `Read b.py`, `grep -n "foo" c.py` — three unrelated
 pieces of work; you reason only after all three land.
-Ví dụ SAI: one turn running `pytest` (expecting red), then `Edit`, then `pytest` again — the red
+WRONG example: one turn running `pytest` (expecting red), then `Edit`, then `pytest` again — the red
 step loses its evidence, and the first run is meaningless because the file was not yet changed.
 
 ## Context cost (tier 3)

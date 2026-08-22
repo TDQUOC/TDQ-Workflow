@@ -155,9 +155,9 @@
     "semantic_hash": "1a9e5bc5eab8416ca7f8d49cfad3a401"
   },
   "scripts/build_portable.py": {
-    "mtime": 1786951755.6639915,
-    "ast_hash": "94d072106dc5c8180bd256051cde1663",
-    "semantic_hash": "94d072106dc5c8180bd256051cde1663"
+    "mtime": 1787166329.041591,
+    "ast_hash": "ead468c5ae02d96bd2e0f9695a4eb4ae",
+    "semantic_hash": "ead468c5ae02d96bd2e0f9695a4eb4ae"
   },
   "scripts/tdq_checkportable.py": {
     "mtime": 1786949950.7552216,
@@ -188,5 +188,70 @@
     "mtime": 1787133113.9961507,
     "ast_hash": "faa100603976406ea871e1287cc2b248",
     "semantic_hash": "faa100603976406ea871e1287cc2b248"
+  },
+  "evals/tuan-thu/_chung/seed/src/tien_ich.py": {
+    "mtime": 1787158467.4912684,
+    "ast_hash": "7017aa93d8cde45858f64bf5f116ffcc",
+    "semantic_hash": "7017aa93d8cde45858f64bf5f116ffcc"
+  },
+  "evals/tuan-thu/bao-loi/ca.json": {
+    "mtime": 1787165243.642388,
+    "ast_hash": "4752ed531138407307925f7c1265ced4",
+    "semantic_hash": "4752ed531138407307925f7c1265ced4"
+  },
+  "evals/tuan-thu/bao-loi/seed/src/tien_ich.py": {
+    "mtime": 1787160813.9945023,
+    "ast_hash": "62f1b93be100d4a8f3c4987c7242143a",
+    "semantic_hash": "62f1b93be100d4a8f3c4987c7242143a"
+  },
+  "evals/tuan-thu/build-tick-tung-task/ca.json": {
+    "mtime": 1787165243.642856,
+    "ast_hash": "0b171671d0293575bbb1d4bac40dc7d8",
+    "semantic_hash": "0b171671d0293575bbb1d4bac40dc7d8"
+  },
+  "evals/tuan-thu/commit-khong-push/ca.json": {
+    "mtime": 1787165243.6432831,
+    "ast_hash": "2e07da73e0e36ffcef1212377a79be2b",
+    "semantic_hash": "2e07da73e0e36ffcef1212377a79be2b"
+  },
+  "evals/tuan-thu/duyet-plan-kem-mode/ca.json": {
+    "mtime": 1787165243.6439905,
+    "ast_hash": "c2668f13c1eb8f94c8299379763078a5",
+    "semantic_hash": "c2668f13c1eb8f94c8299379763078a5"
+  },
+  "evals/tuan-thu/duyet-plan-thieu-mode/ca.json": {
+    "mtime": 1787165243.6444397,
+    "ast_hash": "24cabb6ce8deb8698bee8a2e7223becd",
+    "semantic_hash": "24cabb6ce8deb8698bee8a2e7223becd"
+  },
+  "evals/tuan-thu/duyet-spec-mo-ho/ca.json": {
+    "mtime": 1787165243.6451943,
+    "ast_hash": "15126b1f76311e8f32e9e7bd1b75001d",
+    "semantic_hash": "15126b1f76311e8f32e9e7bd1b75001d"
+  },
+  "evals/tuan-thu/duyet-spec/ca.json": {
+    "mtime": 1787165243.6448145,
+    "ast_hash": "5b29ff5da5bfd35d9af9b510d5c57d8f",
+    "semantic_hash": "5b29ff5da5bfd35d9af9b510d5c57d8f"
+  },
+  "evals/tuan-thu/lane-mo-ho/ca.json": {
+    "mtime": 1787165243.6455271,
+    "ast_hash": "0d46f074126c049caf56f3d5d24ade62",
+    "semantic_hash": "0d46f074126c049caf56f3d5d24ade62"
+  },
+  "evals/tuan-thu/mo-request-moi/ca.json": {
+    "mtime": 1787165243.6457257,
+    "ast_hash": "342a150b30bec4c2e054f5e57ccdfc79",
+    "semantic_hash": "342a150b30bec4c2e054f5e57ccdfc79"
+  },
+  "evals/tuan-thu/red-green/ca.json": {
+    "mtime": 1787165243.6459017,
+    "ast_hash": "05c0d4b4a8cf47dd3e608dd5d998cddf",
+    "semantic_hash": "05c0d4b4a8cf47dd3e608dd5d998cddf"
+  },
+  "scripts/tdq_eval.py": {
+    "mtime": 1787165702.9675312,
+    "ast_hash": "81db0530f2bb4ac97c468e59e503c020",
+    "semantic_hash": "81db0530f2bb4ac97c468e59e503c020"
   }
 }

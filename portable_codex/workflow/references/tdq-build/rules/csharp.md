@@ -1,8 +1,8 @@
 # C# rules
 
-Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to every `.cs` file.
+Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line -->. Load after `chung.md`; applies to every `.cs` file.
 
-## Nguồn
+## Sources
 
 - C# Coding Conventions (Code With Engineering Playbook, Microsoft) —
   https://microsoft.github.io/code-with-engineering-playbook/code-reviews/recipes/csharp —
@@ -11,13 +11,13 @@ Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies t
   8 standard categories: Design, Documentation, Globalization, Reliability, Security, Style,
   Usage, SingleFile; severity is set through `dotnet_analyzer_diagnostic.category-*.severity`.
 
-## Khi nào áp dụng
+## When it applies
 
 - Writing or changing any `.cs` file in the solution.
 - Before submitting: rebuild so the Roslyn analyzers run; if the machine lacks `dotnet`, write
-  "chưa kiểm được".
+  "not checked yet".
 
-## Luật Intentionality
+## The Intentionality rule
 
 1. **Off-standard names**: types, methods and properties use `PascalCase`; locals and
    parameters use `camelCase`; a name must state the work, with no cryptic abbreviations.
@@ -26,14 +26,14 @@ Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies t
 3. **Dead code**: extra `using`s, unused variables, private methods nobody calls — Roslyn's
    Style/Usage groups report them → delete.
 
-## Ngưỡng đo được
+## Measurable thresholds
 
 - Cyclomatic ≤ 10, cognitive ≤ 15 per method — per `chung.md`; C# is NOT part of the C family
   allowed 25 (that group is only C, C++, Objective-C).
 - Analyzer severity: the Security and Reliability categories must never drop below `warning`;
   changing that has to be recorded in the request's spec and edited in `.editorconfig`.
 
-## Làm gì
+## What to do
 
 1. Name per the conventions: `PascalCase` for public members/types, `camelCase` for locals and
    parameters.
@@ -43,26 +43,26 @@ Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies t
    `throw ex;` when rethrowing, so the stack trace survives.
 4. Run `dotnet build` and clear every Security and Reliability warning before submitting.
 
-## Tự kiểm
+## Self-check
 
-- [ ] `dotnet build` free of Security and Reliability warnings, or "chưa kiểm được" recorded
+- [ ] `dotnet build` free of Security and Reliability warnings, or "not checked yet" recorded
   because the machine lacks dotnet
 - [ ] No empty `catch`, no `throw ex;` destroying the stack trace
 - [ ] No unused `using`/variable/method
 - [ ] Names follow PascalCase/camelCase and the 3 Intentionality questions in `chung.md` are answerable
 
-## Ví dụ ĐÚNG/SAI
+## RIGHT/WRONG examples
 
 ```csharp
-// SAI — tên mơ hồ, catch trống:
+// WRONG — vague name, empty catch:
 public int Proc(int[] a) {
     try { return a[0] / a.Length; } catch { }
     return 0;
 }
-// ĐÚNG — tên nêu việc, lỗi có chủ đích:
-public int TinhTrungBinh(int[] cacSo) {
-    if (cacSo.Length == 0)
-        throw new ArgumentException("cacSo rỗng", nameof(cacSo));
-    return cacSo.Sum() / cacSo.Length;
+// RIGHT — the name states the work, the error is deliberate:
+public int ComputeAverage(int[] numbers) {
+    if (numbers.Length == 0)
+        throw new ArgumentException("numbers is empty", nameof(numbers));
+    return numbers.Sum() / numbers.Length;
 }
 ```

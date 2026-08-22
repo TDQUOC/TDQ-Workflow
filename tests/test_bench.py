@@ -39,7 +39,7 @@ class KhungTest(unittest.TestCase):
     def test_thieu_lenh_con_thi_exit_2_chu_khong_lam_gi(self):
         rc, _out, err = chay()
         self.assertEqual(rc, 2)
-        self.assertIn("Thiếu lệnh con", err)
+        self.assertIn("Missing sub-command", err)
 
     def test_log_service_bat_mac_dinh_va_tat_bang_bien_moi_truong(self):
         proc = subprocess.run(
@@ -154,7 +154,7 @@ class HangSoTest(unittest.TestCase):
     def test_thieu_file_thuc_do_thi_loi_va_khong_in_bang(self):
         rc, out, err = chay("mo-phong", "--task", "4")
         self.assertEqual(rc, 1)
-        self.assertNotIn("| Chỉ số |", out)
+        self.assertNotIn("| Metric |", out)
         self.assertIn("--thuc-do", err)
 
     def test_file_thuc_do_khong_ton_tai_thi_neu_ten_file_phai_co(self):
@@ -170,7 +170,7 @@ class HangSoTest(unittest.TestCase):
             duong = _file_thuc_do(tmp, bo=("t_hop",))
             rc, out, err = chay("mo-phong", "--thuc-do", duong, "--task", "4")
             self.assertEqual(rc, 1)
-            self.assertNotIn("| Chỉ số |", out)
+            self.assertNotIn("| Metric |", out)
             self.assertIn("t_hop", err)
 
     def test_hang_so_ghi_0_mau_bi_tu_choi(self):
@@ -190,7 +190,7 @@ class HangSoTest(unittest.TestCase):
             rc, _out, err = chay("mo-phong", "--thuc-do", duong)
             self.assertEqual(rc, 1)
             self.assertNotIn("Traceback", err)
-            self.assertIn("Đo lại", err)
+            self.assertIn("Measure again", err)
 
 
 class CongThucTest(unittest.TestCase):
@@ -228,8 +228,8 @@ class CongThucTest(unittest.TestCase):
             rc, out, _err = chay("mo-phong", "--thuc-do", duong, "--task", "4",
                                  "--chong", "0.5")
             self.assertEqual(rc, 0)
-            self.assertIn("| Chỉ số | main | đội |", out)
-            self.assertIn("Thắng: đội", out)
+            self.assertIn("| Metric | main | team |", out)
+            self.assertIn("Winner: đội", out)
             self.assertIn("4 task", out)
 
 
@@ -243,8 +243,8 @@ class QuetTest(unittest.TestCase):
             rc, out, _err = chay("quet", "--thuc-do", duong, "--task", "12",
                                  "--buoc", "10")
             self.assertEqual(rc, 0)
-            self.assertIn("| Tách được | Đợt |", out)
-            self.assertIn("NGƯỠNG:", out)
+            self.assertIn("| Splittable | Waves |", out)
+            self.assertIn("THRESHOLD:", out)
             dong = [d for d in out.splitlines() if d.startswith("| ") and "%" in d]
             self.assertEqual(len(dong), 11)      # 0,10,…,100
             thang = [d.rsplit("|", 2)[1].strip() for d in dong]
@@ -254,7 +254,7 @@ class QuetTest(unittest.TestCase):
     def test_quet_khong_dung_hang_so_bia_khi_thieu_file(self):
         rc, out, err = chay("quet", "--task", "6")
         self.assertEqual(rc, 1)
-        self.assertNotIn("| Tách được |", out)
+        self.assertNotIn("| Splittable |", out)
         self.assertIn("--thuc-do", err)
 
 
@@ -348,7 +348,7 @@ class ThucDoTest(unittest.TestCase):
             rc, _out, err = chay("thuc-do", "--ra", ra, "--task", "1", "--lap", "1")
             self.assertEqual(rc, 1)
             self.assertFalse(os.path.exists(ra))
-            self.assertIn("mẫu", err)
+            self.assertIn("samples", err)
 
     def test_repo_that_khong_moc_nhanh_hay_worktree_nao(self):
         import tempfile
@@ -403,7 +403,7 @@ class VongFix1Test(unittest.TestCase):
             duong = _file_thuc_do(tmp, so_mau=1)
             rc, out, err = chay("mo-phong", "--thuc-do", duong, "--task", "4")
             self.assertEqual(rc, 1)
-            self.assertNotIn("| Chỉ số |", out)
+            self.assertNotIn("| Metric |", out)
             self.assertIn("so_mau", err)
             self.assertNotIn("Traceback", err)
 
@@ -415,7 +415,7 @@ class VongFix1Test(unittest.TestCase):
                 duong = _file_thuc_do(tmp, hang_so=hs)
                 rc, out, err = chay("mo-phong", "--thuc-do", duong, "--task", "4")
                 self.assertEqual(rc, 1)
-                self.assertNotIn("| Chỉ số |", out)
+                self.assertNotIn("| Metric |", out)
                 self.assertIn("t_task", err)
                 self.assertNotIn("Traceback", err)
 
@@ -448,7 +448,7 @@ class VongFix1Test(unittest.TestCase):
                     self.assertEqual(rc, 1)
                     self.assertNotIn("Traceback", err)
                     self.assertIn("tdq_bench.py", err)   # lỗi phải kèm câu lệnh sửa
-                    self.assertNotIn("| Tách được |", out)
+                    self.assertNotIn("| Splittable |", out)
 
     def test_he_so_agent_lam_doi_thua_khi_agent_con_cham_hon(self):
         """Trục độ nhạy agent QC chỉ ra: agent con chậm gấp đôi thì lợi thế bốc hơi."""
@@ -458,17 +458,17 @@ class VongFix1Test(unittest.TestCase):
             rc, nhanh, _err = chay("mo-phong", "--thuc-do", duong, "--task", "12",
                                    "--chong", "0.5", "--he-so-agent", "1")
             self.assertEqual(rc, 0)
-            self.assertIn("hệ số agent 1.0", nhanh)
+            self.assertIn("agent factor 1.0", nhanh)
             rc, cham, _err = chay("mo-phong", "--thuc-do", duong, "--task", "12",
                                   "--chong", "0.5", "--he-so-agent", "3")
             self.assertEqual(rc, 0)
-            self.assertIn("hệ số agent 3.0", cham)
-            self.assertIn("Thắng: đội", nhanh)
-            self.assertIn("Thắng: main", cham)
+            self.assertIn("agent factor 3.0", cham)
+            self.assertIn("Winner: đội", nhanh)
+            self.assertIn("Winner: main", cham)
             rc, quet, _err = chay("quet", "--thuc-do", duong, "--task", "12",
                                   "--buoc", "50", "--he-so-agent", "2")
             self.assertEqual(rc, 0)
-            self.assertIn("hệ số agent 2.0", quet)
+            self.assertIn("agent factor 2.0", quet)
 
 
 if __name__ == "__main__":

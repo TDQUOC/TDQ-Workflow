@@ -1,87 +1,92 @@
-# TDQ Workflow — bản portable cho Codex CLI
+# TDQ Workflow — portable bundle for Codex CLI
 
-Bản này dùng ĐÚNG cơ chế native của Codex, không phải markdown đọc tay:
+This bundle uses the REAL native mechanisms of Codex, not markdown read by hand:
 
-| Lớp | File trong bundle | Codex làm gì với nó |
+| Layer | File in the bundle | What Codex does with it |
 |---|---|---|
-| Skill | `.agents/skills/<tên>/SKILL.md` | tự quét, nạp dần theo `description` |
-| MCP | `.codex/config.toml` | `[mcp_servers.<tên>]`, chỉ TÊN biến môi trường |
-| Hook | `.codex/hooks.json` + `hooks/` | canh `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
-| Dự phòng | `workflow/NN-*.md` | cho harness KHÁC (Antigravity…) đọc tuần tự |
+| Skill | `.agents/skills/<name>/SKILL.md` | scanned automatically, loaded on demand by `description` |
+| MCP | `.codex/config.toml` | `[mcp_servers.<name>]`, environment variable NAMES only |
+| Hook | `.codex/hooks.json` + `hooks/` | guards `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
+| Fallback | `workflow/NN-*.md` | for OTHER harnesses (Antigravity…) to read in order |
 
-Cần Codex CLI >= 0.147.0. Bản cũ hơn vẫn dùng được `workflow/*.md`, nhưng không có
-lớp native nào.
+Needs Codex CLI >= 0.147.0. An older build can still use `workflow/*.md`, but gets none
+of the native layers.
 
-## Cài ở máy mới — làm theo đúng thứ tự này
+## Install on a new machine — follow this exact order
 
-Thứ tự quan trọng: **trust TRƯỚC, chạy SAU**. Project chưa được tin cậy thì Codex bỏ qua
-TOÀN BỘ tầng `.codex/` — MCP không nạp, `hooks.json` không đọc, bundle trông như rỗng mà
-không báo lỗi gì.
+The order matters: **trust FIRST, run AFTER**. While the project is untrusted, Codex skips
+the WHOLE `.codex/` layer — MCP is not loaded, `hooks.json` is not read, and the bundle
+looks empty without a single error.
 
-1. **Chép** trọn nội dung thư mục này vào gốc project.
-2. **Trust thư mục project** — xem ba cách ngay mục dưới.
-3. **Kiểm**:
+1. **Copy** the whole content of this folder into the project root.
+2. **Trust the project folder** — see the three ways just below.
+3. **Check**:
    ```
    python3 scripts/tdq_checkportable.py check
    ```
-   Kết quả có một dòng nói project đã trusted hay chưa. Đọc theo tiền tố: `SẠCH` xong ·
-   `THIẾU` chưa có · `LỆCH` khác manifest · `LƯU Ý` việc chỉ bạn làm được.
-4. **Vá** nếu có `THIẾU`/`LỆCH`: `python3 scripts/tdq_checkportable.py setup` — nó dựng lại
-   hai file cấu hình tái tạo được, luôn sao lưu `<file>.tdq-bak-<timestamp>` trước khi ghi
-   đè, và báo `CÒN …` cho phần chỉ chép lại từ bản gốc mới đúng.
-5. **Đặt biến môi trường** cho MCP nếu `check` báo thiếu. Script cố ý KHÔNG làm hộ việc này
-   và không bao giờ in giá trị khoá — chỉ báo tên biến.
-6. **Mở Codex CLI** trong project, rồi **khởi động lại phiên** một lần để skill trong
-   `.agents/skills/` được quét.
-7. **Duyệt hook** trong giao diện Codex — cổng RIÊNG, xem mục "Bốn việc" bên dưới.
-8. **Duyệt MCP server** — mỗi server một lần.
+   The output holds one line saying whether the project is trusted yet. Read by prefix:
+   `CLEAN` done · `MISSING` not there · `DRIFT` differs from the manifest · `NOTE` something
+   only you can do.
+4. **Patch** if there is any `MISSING`/`DRIFT`: `python3 scripts/tdq_checkportable.py setup` —
+   it rebuilds the two config files that can be recreated, always leaves a backup at
+   `<file>.tdq-bak-<timestamp>` before overwriting, and reports `LEFT …` for whatever is only
+   correct when copied from the original bundle.
+5. **Set the environment variables** for MCP if `check` reports them missing. The script
+   deliberately does NOT do this for you and never prints a key value — it only names the
+   variable.
+6. **Open Codex CLI** in the project, then **restart the session** once so the skills in
+   `.agents/skills/` get scanned.
+7. **Approve the hooks** in the Codex UI — a SEPARATE gate, see "Four things" below.
+8. **Approve the MCP servers** — one approval per server.
 
-## Trust — ba cách, chọn một
+## Trust — three ways, pick one
 
-**Cách 1 — để script làm, không cần mở Codex:**
+**Way 1 — let the script do it, no need to open Codex:**
 
 ```
-cd <gốc project đã chép bundle vào>
+cd <project root the bundle was copied into>
 python3 scripts/tdq_checkportable.py setup --trust
 ```
 
-**Cách 2 — bấm trong Codex:** mở Codex CLI ngay tại thư mục project; lần đầu vào thư mục lạ
-nó hỏi có cho phép làm việc ở đây không → chọn phương án tin cậy thư mục.
+**Way 2 — click inside Codex:** open Codex CLI right in the project folder; the first time it
+enters an unknown folder it asks whether it may work here → pick the option that trusts the
+folder.
 
-**Cách 3 — sửa tay** `~/.codex/config.toml` (hoặc `$CODEX_HOME/config.toml`), thêm:
+**Way 3 — edit by hand** `~/.codex/config.toml` (or `$CODEX_HOME/config.toml`), adding:
 
 ```toml
-[projects."/đường/dẫn/tuyệt/đối/tới/project"]
+[projects."/absolute/path/to/the/project"]
 trust_level = "trusted"
 ```
 
-Đường dẫn phải TUYỆT ĐỐI và đã resolve symlink, khớp đúng thư mục Codex chạy trong đó —
-lệch một ký tự là không ăn.
+The path must be ABSOLUTE with symlinks resolved, matching exactly the folder Codex runs in —
+one character off and it does not take.
 
-Cách 1 chính là đường DUY NHẤT của bộ này ghi ra ngoài bundle: nó luôn để lại
-`<file>.tdq-bak-<timestamp>`, giữ nguyên phần còn lại của file, và không ghi chồng block đã
-có. Không có cờ `--trust` thì `setup` không đụng tới file đó.
+Way 1 is the ONLY path in this bundle that writes outside the bundle: it always leaves a
+`<file>.tdq-bak-<timestamp>`, keeps the rest of the file untouched, and never writes over an
+existing block. Without the `--trust` flag, `setup` does not touch that file at all.
 
-Kiểm đã ăn chưa: chạy lại `check` và đọc dòng trạng thái trusted.
+To check that it took: run `check` again and read the trusted status line.
 
-## Bốn việc máy KHÔNG tự làm được
+## Four things the machine CANNOT do for you
 
-1. **Tin cậy thư mục** — `setup --trust` làm thay được (Cách 1 ở trên), hoặc bấm đồng ý
-   trong Codex.
-2. **Duyệt hook** — hook có cổng tin cậy RIÊNG: Codex hiện "Review hooks" trong giao diện và
-   bạn phải duyệt một lần. `--trust` không mở được cổng này, và sửa `hooks.json` thì phải
-   duyệt lại. Chưa duyệt thì hook im lặng không chạy.
-3. **Duyệt MCP server** — mỗi server trong `.codex/config.toml` cần bạn duyệt một lần.
-4. **Khởi động lại** — instruction mới chỉ được nạp sau khi khởi động lại phiên.
+1. **Trust the folder** — `setup --trust` can do it for you (Way 1 above), or click yes in
+   Codex.
+2. **Approve the hooks** — hooks have their OWN trust gate: Codex shows "Review hooks" in the
+   UI and you have to approve once. `--trust` does not open this gate, and editing
+   `hooks.json` means approving again. Until approved, the hooks stay silent and never run.
+3. **Approve the MCP servers** — every server in `.codex/config.toml` needs one approval from
+   you.
+4. **Restart** — new instructions are only loaded after the session restarts.
 
-## Vì sao bước 3 chạy thẳng file, không nhắn "chạy skill tdq-checkportable"
+## Why step 3 runs the file directly instead of saying "run the tdq-checkportable skill"
 
-Skill nằm trong chính bundle này, mà Codex chỉ quét `.agents/skills/` sau khi project được
-tin cậy và phiên đã khởi động lại. Gọi skill ở bước đầu là vòng luẩn quẩn; chạy thẳng
-`python3 scripts/tdq_checkportable.py` bằng terminal thì không vướng. Từ lần sau, khi mọi
-thứ đã nạp, gọi skill bình thường.
+The skill lives inside this very bundle, and Codex only scans `.agents/skills/` after the
+project is trusted and the session has restarted. Calling the skill at the first step is a
+circular dependency; running `python3 scripts/tdq_checkportable.py` straight from the
+terminal is not. From the next time on, once everything is loaded, call the skill normally.
 
-## Khoá bí mật
+## Secret keys
 
-Không file nào ở đây chứa giá trị khoá, chỉ TÊN biến môi trường (`env_vars` trong
-`config.toml`). Tự đặt biến ở máy mình trước khi dùng MCP.
+No file in here holds a key value, only environment variable NAMES (`env_vars` in
+`config.toml`). Set the variables yourself on your own machine before using MCP.

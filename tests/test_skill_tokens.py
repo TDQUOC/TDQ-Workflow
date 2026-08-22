@@ -126,7 +126,7 @@ class DoTheoPhaseTest(unittest.TestCase):
     def test_khai_ro_la_tran_tren_chu_khong_phai_so_that(self):
         """Số gộp mọi reference cao hơn số một request thật đọc — cấm giấu chỗ này."""
         _rc, out, _err = chay("--theo-phase")
-        self.assertIn("TRẦN TRÊN", out)
+        self.assertIn("UPPER BOUND", out)
 
     def test_moi_khoi_deu_co_skill_ton_tai_that(self):
         for _ten_khoi, skills in skill_tokens.KHOI_PHASE:
@@ -143,13 +143,13 @@ class DoMoTaTest(unittest.TestCase):
         import skill_inventory
         mong_doi = len(skill_inventory.inventory(ROOT))
         _rc, out, _err = chay("--mo-ta")
-        self.assertIn(f"Tổng: {mong_doi} skill đang bật", out)
+        self.assertIn(f"Total: {mong_doi} enabled skill(s)", out)
 
     @unittest.skipUnless(CO_THU_VIEN, "venv .venv-tokens chưa cài anthropic-tokenizer")
     def test_bang_co_ca_cot_token_va_cot_muc(self):
         _rc, out, _err = chay("--mo-ta")
-        self.assertIn("token mô tả", out)
-        self.assertIn("| mục |", out)
+        self.assertIn("desc tokens", out)
+        self.assertIn("| group |", out)
 
     @unittest.skipUnless(CO_THU_VIEN, "venv .venv-tokens chưa cài anthropic-tokenizer")
     def test_token_chi_giu_ten_luon_nho_hon_token_mo_ta(self):

@@ -1,98 +1,105 @@
-# Khuôn khối nói với user
+# Shape of a block spoken to the user
 
-Áp cho **mọi** chỗ TDQ hỏi hoặc trình kết quả cho user. Người đọc là người dùng cuối,
-không phải người trong nghề: họ cần biết đang xem cái gì, xem chi tiết ở đâu, và phải
-trả lời thế nào.
+Applies to **every** place where TDQ asks a question or presents a result to the user. The reader
+is an end user, not a colleague from the trade: they need to know what they are looking at, where
+the details are, and how to answer.
 
-## Mục lục
+Language: every word of the block is written in the language of state field `doc_lang` (default
+`vi`). The rules below shape it; they never dictate the wording. Every Vietnamese string quoted
+here is a SAMPLE of the shape in the default language, not a string to copy when `doc_lang`
+is something else.
 
-- Bảy chỗ phải dùng khuôn này
-- Năm thành phần (đủ cả năm, đúng thứ tự)
-- Bảy luật trang trí
-- Luật cứng
-- Ký hiệu được phép
-- Ví dụ
+## Table of contents
 
-## Bảy chỗ phải dùng khuôn này
+- The seven places this shape is mandatory
+- The five components (all five, in order)
+- The seven decoration rules
+- Hard rules
+- The symbols allowed
+- Examples
 
-Câu hỏi chọn pipeline · từng vòng interview · cổng duyệt spec · cổng duyệt plan ·
-cổng chọn mode · cổng duyệt chế độ nhanh · câu hỏi commit cuối request.
+## The seven places this shape is mandatory
 
-## Năm thành phần (đủ cả năm, đúng thứ tự)
+The pipeline question · every interview round · the spec approval gate · the plan approval gate ·
+the mode gate · the express-lane approval gate · the commit question closing a request.
 
-| # | Thành phần | Cấu trúc trình bày dùng |
+## The five components (all five, in order)
+
+| # | Component | Presentation used |
 |---|---|---|
-| 1 | Câu dẫn | văn xuôi trần, không in đậm, không gạch đầu dòng |
-| 2 | Nội dung | nhãn trường in đậm `**Nhãn:**` + gạch đầu dòng `- ` khi có từ 2 mục |
-| 3 | Đường dẫn file | `Xem đầy đủ tại: ` để trần, đường dẫn bọc trong dấu nháy ngược |
-| 4 | Đường kẻ ngăn | đúng một dòng `---`, trên và dưới mỗi bên một dòng trống |
-| 5 | Khối trả lời | tiêu đề in đậm, một dòng trống, rồi dòng `➤` là dòng cuối cùng |
+| 1 | Opening line | plain prose, no bold, no bullet |
+| 2 | Body | bold field label `**Label:**` + a `- ` bullet per item once there are 2 or more |
+| 3 | File path | the lead-in `Xem đầy đủ tại: ` stays bare, the path goes in backticks | <!-- i18n-allow: sample string of the default language -->
+| 4 | Separator rule | exactly one `---` line, one blank line above and below |
+| 5 | Answer block | bold heading, one blank line, then the `➤` line as the very last line |
 
-1. **Câu dẫn** — 1–2 câu nói rõ vừa làm xong gì và user đang được mời làm gì.
-   Xưng hô "bạn", giọng trung tính. Không thuật ngữ nội bộ nếu không giải thích ngay.
-2. **Nội dung** — tóm tắt thật, đủ để quyết mà không cần mở file. Câu ngắn, gạch đầu dòng.
-3. **Đường dẫn file đầy đủ** — một dòng riêng, dạng `Xem đầy đủ tại: <đường dẫn>`.
-   Bỏ dòng này khi khối không gắn với file nào.
-4. **Đường kẻ ngăn** — một dòng `---` tách khối trả lời khỏi phần trên.
-5. **Khối trả lời** — tiêu đề in đậm rồi tới dòng `➤`. Đây luôn là phần CUỐI tin nhắn,
-   không có chữ nào ở dưới nó.
+1. **Opening line** — 1–2 sentences saying what was just finished and what the user is invited to
+   do. Address the user directly, neutral tone. No internal jargon unless explained on the spot.
+2. **Body** — a real summary, enough to decide without opening the file. Short sentences, bullets.
+3. **Full file path** — a line of its own, shaped `Xem đầy đủ tại: <path>`. Drop this line when <!-- i18n-allow: sample string of the default language -->
+   the block is not tied to a file.
+4. **Separator rule** — one `---` line separating the answer block from everything above.
+5. **Answer block** — a bold heading, then the `➤` line. This is always the LAST part of the
+   message, with nothing written below it.
 
-## Bảy luật trang trí
+## The seven decoration rules
 
-Chỉ dùng markdown mà cả ba mặt (terminal, app, extension) đều dựng được. Trang trí là
-**thêm ký tự đánh dấu**, không phải viết lại chữ: bảy luật dưới đây không cho phép đổi,
-xoá hay thêm từ nào của nội dung.
+Use only markdown that renders on all three surfaces (terminal, app, extension). Decoration means
+**adding markup characters**, never rewriting words: the seven rules below allow no word of the
+content to be changed, removed or added.
 
-1. Nhãn trường in đậm, **dấu hai chấm nằm bên trong cặp sao**: `**Mục tiêu:** nội dung`.
-   Đặt dấu hai chấm ra ngoài sẽ làm hỏng mọi phép tìm chuỗi `Mục tiêu:` đang chạy.
-2. Một trường có từ 2 mục → mỗi mục một dòng, mở đầu bằng `- `. Dưới 2 mục thì để nguyên
-   trên dòng nhãn, không tách gạch đầu dòng cho một mục lẻ.
-3. Đường dẫn bọc trong dấu nháy ngược, phần dẫn `Xem đầy đủ tại: ` để trần — nhờ vậy
-   dòng này vẫn khớp mọi phép tìm cũ.
-4. Tên file, tên lệnh và con số trong phần nội dung bọc trong dấu nháy ngược.
-5. Giữ đường kẻ `---`, trên và dưới đúng một dòng trống. Không thay bằng ký tự kẻ khác.
-6. Danh sách lựa chọn giữ nguyên khuôn `- A (đề xuất): nội dung`, mỗi lựa chọn một dòng;
-   chỉ được in đậm bên trong phần nội dung, không đụng vào phần `- A (đề xuất): `.
-7. Dòng `➤` giữ nguyên từng byte và luôn là dòng cuối cùng của khối.
+1. Bold field labels, **with the colon INSIDE the pair of stars**: `**Mục tiêu:** nội dung`. <!-- i18n-allow: sample string of the default language -->
+   Putting the colon outside breaks every running string search for `Mục tiêu:`. <!-- i18n-allow: sample string of the default language -->
+2. A field with 2 or more items → one item per line, opening with `- `. Below 2 items it stays on
+   the label line; never break a single item out into a bullet.
+3. Paths go in backticks, the lead-in `Xem đầy đủ tại: ` stays bare — that way the line still <!-- i18n-allow: sample string of the default language -->
+   matches every old search.
+4. File names, command names and numbers inside the body go in backticks.
+5. Keep the `---` rule with exactly one blank line above and below. Never swap it for another
+   drawing character.
+6. An option list keeps the shape `- A (đề xuất): nội dung`, one option per line; bold is allowed <!-- i18n-allow: sample string of the default language -->
+   only inside the content part, never on the `- A (đề xuất): ` part itself. <!-- i18n-allow: sample string of the default language -->
+7. The `➤` line keeps every byte as it is and is always the last line of the block.
 
-## Luật cứng
+## Hard rules
 
-- **Không emoji** ở bất kỳ thành phần nào. Dấu `➤` giữ nguyên, nó không phải emoji.
-- Có nhiều lựa chọn → mỗi lựa chọn **đúng một dòng**, khuôn `- A (đề xuất): nội dung`.
-  Cấm gộp lựa chọn vào đoạn văn.
-- Thuật ngữ chỉ người trong nghề hiểu (`mode`, `subagent`, `lane`, `phase`) → giải thích
-  ngay tại chỗ bằng một mệnh đề ngắn, đừng bắt user tự tra.
-- Khối trả lời nằm cuối cùng. In thêm bất cứ gì sau nó là phá khuôn.
-- Turn còn chạy tiếp sau khi đã in khối này → in **lại nguyên văn 100%** ở message cuối
-  (luật §1 mục 5 của [SKILL.md](../SKILL.md)).
+- **No emoji** in any component. The `➤` character stays; it is not an emoji.
+- Several options → **exactly one line per option**, shaped `- A (đề xuất): nội dung`. <!-- i18n-allow: sample string of the default language -->
+  Merging options into a paragraph is banned.
+- Terms only a professional understands (`mode`, `subagent`, `lane`, `phase`) → explain them on
+  the spot in a short clause; never make the user go and look them up.
+- The answer block comes last. Printing anything after it breaks the shape.
+- The turn keeps running after this block was printed → reprint it **word for word, 100%** in the
+  last message (rule §1 item 5 of [SKILL.md](../SKILL.md)).
 
-## Ký hiệu được phép
+## The symbols allowed
 
-Trong khối in ra cho user chỉ được dùng đúng sáu ký hiệu ngoài ASCII:
+A block printed for the user may use exactly six non-ASCII symbols:
 
-| Ký tự | Codepoint | Dùng để |
+| Character | Codepoint | Used for |
 |---|---|---|
-| `➤` | U+27A4 | mở dòng hướng dẫn trả lời, luôn ở dòng cuối |
-| `·` | U+00B7 | ngăn hai vế ngang hàng trên cùng một dòng |
-| `—` | U+2014 | ngăn phần giải thích khỏi phần được giải thích |
-| `→` | U+2192 | chỉ hướng chuyển tiếp giữa hai trạng thái |
-| `–` | U+2013 | nối hai đầu của một khoảng |
-| `…` | U+2026 | cắt ngắn phần lặp lại trong ví dụ |
+| `➤` | U+27A4 | opens the answer-guidance line, always the last line |
+| `·` | U+00B7 | separates two equal halves on one line |
+| `—` | U+2014 | separates an explanation from the thing explained |
+| `→` | U+2192 | points from one state to the next |
+| `–` | U+2013 | joins the two ends of a range |
+| `…` | U+2026 | cuts short a repeated part in an example |
 
-Ký tự nào không nằm trong bảng thì không được thêm vào, kể cả khi nhìn có vẻ vô hại.
-`▸` bị loại đúng vì lý do đó. Nó chưa từng xuất hiện trong bất kỳ chuỗi nào của kho mã,
-nên không có bằng chứng nó dựng đúng trên cả ba mặt. Bảng ký tự kẻ khung
-(`─` `│` `├` `└` `┌` `┬` `┐`) cũng bị cấm: chúng đòi canh cột, mà bề rộng terminal thì
-thay đổi. Máy kiểm hộ bằng `python3 scripts/scan_block_symbols.py --chi-khoi`.
+A character outside the table must not be added, however harmless it looks. `▸` is excluded for
+exactly that reason. It has never appeared in any string of this codebase, so there is no evidence
+it renders correctly on all three surfaces. Box-drawing characters
+(`─` `│` `├` `└` `┌` `┬` `┐`) are banned too: they demand column alignment, and terminal width
+varies. The machine checks this with `python3 scripts/scan_block_symbols.py --chi-khoi`.
 
-## Ví dụ
+## Examples
 
-Cùng một nội dung, khác nhau ở chỗ trang trí. Bản `Sau` không đổi một từ nào so với bản
-`Trước` — chỉ thêm dấu in đậm, dấu nháy ngược và ngắt dòng.
+The same content, differing only in decoration. The `Sau` version changes not one word of the
+`Truoc` version — it only adds bold markers, backticks and line breaks. Both samples are written
+in the default language (`doc_lang = vi`).
 
-### Trước
+### Before (`Trước`) <!-- i18n-allow -->
 
-<!-- Khối "Trước" cố tình sai khuôn: nó là ví dụ đối chiếu, không phải mẫu để chép. -->
+<!-- i18n-allow — the "Trước" block is deliberately off-shape: it is the counter-example, not a template to copy. -->
 
 ```
 Tôi đã viết xong spec cho yêu cầu của bạn.
@@ -110,7 +117,9 @@ Xem đầy đủ tại: docs/tdq/spec/<slug>.md
 ➤ Duyệt: nhắn "duyệt spec" (duyệt xong tôi viết plan ngay) · Góp ý: nhắn trực tiếp
 ```
 
-### Sau
+### After (`Sau`) <!-- i18n-allow -->
+
+<!-- i18n-allow: khuôn mẫu viết bằng ngôn ngữ mặc định, chép nguyên văn khi doc_lang = vi -->
 
 ```
 Tôi đã viết xong spec cho yêu cầu của bạn.

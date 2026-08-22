@@ -56,16 +56,16 @@ class ModePhaseTableTest(unittest.TestCase):
     def test_mode_row_demands_reason_analysis(self):
         """Cổng mode phải bắt trình phân tích lý do, không chỉ nêu suông tên mode."""
         text = " ".join(tdq_state.PHASE_TABLE["mode"]["checklist"])
-        self.assertIn("căn cứ", text)
+        self.assertIn("grounded IN THE PLAN", text)
 
 
 class ModeLabelTest(unittest.TestCase):
     """Nhãn hiển thị tách khỏi định danh máy, y hệt cặp lane_label/LANE_LABELS."""
 
     def test_label_for_each_mode(self):
-        self.assertEqual(tdq_state.mode_label("main"), "làm trực tiếp (inline implement)")
+        self.assertEqual(tdq_state.mode_label("main"), "inline implement")
         self.assertEqual(tdq_state.mode_label("subagent"),
-                         "giao trợ lý (sub-agent implement)")
+                         "sub-agent implement")
 
     def test_label_is_display_layer_not_validator(self):
         # Mode lạ trả lại nguyên chuỗi, None trả rỗng — in ra xấu còn hơn nổ.
@@ -139,7 +139,7 @@ class ApproveFlowTest(unittest.TestCase):
                               capture_output=True, text=True, timeout=30,
                               env=dict(os.environ, TDQ_PROJECT_DIR=self.cwd))
         self.assertNotEqual(proc.returncode, 0)
-        self.assertIn("Mode không hợp lệ", proc.stderr)
+        self.assertIn("Invalid mode", proc.stderr)
         self.assertIsNone(read_state(self.cwd)["implement_mode"])
 
     def test_next_at_mode_phase_asks_for_mode(self):

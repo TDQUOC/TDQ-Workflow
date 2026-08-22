@@ -51,6 +51,6 @@ SessionStart/SessionEnd hook running `plugin_tiers.py reset` is a no-op and turn
 back off. The old tier file (lazy-load mode): `~/.claude/plugin-tiers.json.bak-2026-08-06`.
 
 To go back to lazy-load for a lighter context: add the plugin name to `on_demand` (off by
-default, re-enable with `python3 ~/.claude/scripts/plugin_tiers.py enable <tên>`) or to
+default, re-enable with `python3 ~/.claude/scripts/plugin_tiers.py enable <name>`) or to
 `always_off` (never enabled) in `~/.claude/plugin-tiers.json` — only when the user asks for it
 explicitly.

@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Gộp bookkeeping cuối turn của TDQ workflow thành MỘT lệnh (chỉ dùng stdlib).
+"""Fold the end-of-turn bookkeeping of the TDQ workflow into ONE command (stdlib only).
 
-Bốn bước, luôn chạy đúng thứ tự này:
-  1. lint     — `doc_lint.py` trên các file .md vừa sửa
-  2. worklog  — append tóm tắt vào docs/workinglog/<hôm nay>.md
+Four steps, always run in this order:
+  1. lint     — `doc_lint.py` over the .md files just edited
+  2. worklog  — append the summary to docs/workinglog/<today>.md
   3. phase    — `tdq_state.py set phase=<phase>`
-  4. graphify — `graphify extract . --code-only` khi có file code đổi
+  4. graphify — `graphify extract . --code-only` when a code file changed
 
-Nguyên tắc:
-- Một bước fail KHÔNG chặn các bước sau; exit code là tổng hợp (0 = không bước nào fail).
-- stdout ≤ 200 ký tự khi mọi bước pass; chi tiết chỉ in khi có `--verbose` hoặc có bước fail.
-- Log service bật mặc định ra stderr (timestamp ISO + tên bước + kết quả), tắt bằng TDQ_LOG=0.
+Principles:
+- A failing step does NOT block the steps after it; the exit code is the aggregate (0 = nothing failed).
+- stdout stays <= 200 characters while every step passes; details print only with `--verbose` or on a failure.
+- The log service is on by default to stderr (ISO timestamp + step name + result), off with TDQ_LOG=0.
 
-Env: TDQ_PROJECT_DIR neo project; TDQ_LOG=0 tắt log.
+Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
 import argparse
 import os
@@ -38,13 +38,13 @@ def _log_enabled():
 
 
 def _log(message):
-    """Log service: 1 dòng ISO-timestamp ra stderr. Tắt bằng TDQ_LOG=0."""
+    """Log service: one ISO-timestamped line to stderr. Silenced by TDQ_LOG=0."""
     if _log_enabled():
         print(f"[{_now()}] {message}", file=sys.stderr)
 
 
 def _project_dir():
-    """Neo theo project: TDQ_PROJECT_DIR > git root > cwd."""
+    """Anchor on the project: TDQ_PROJECT_DIR > git root > cwd."""
     env = os.environ.get("TDQ_PROJECT_DIR")
     if env:
         return env
@@ -59,25 +59,25 @@ def _project_dir():
 
 
 def _run(cmd, cwd, timeout=STEP_TIMEOUT):
-    """Chạy lệnh con, trả (rc, output). Lỗi hạ tầng cũng thành kết quả, không ném ra ngoài."""
+    """Run a child command, return (rc, output). Infrastructure errors become results too, never raised."""
     try:
         p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
-        return 1, f"quá {timeout}s"
+        return 1, f"over {timeout}s"
     except OSError as exc:
         return 1, str(exc)
 
 
 def _changed_files(project):
-    """File đang đổi theo git (đường dẫn tuyệt đối). Không phải git repo → rỗng."""
+    """The files git reports as changed (absolute paths). Not a git repo → empty."""
     rc, out = _run(["git", "status", "--porcelain"], project, timeout=30)
     if rc != 0:
         return []
     files = []
     for line in out.splitlines():
         name = line[3:].strip() if len(line) > 3 else ""
-        if " -> " in name:                      # file đổi tên
+        if " -> " in name:                      # renamed file
             name = name.split(" -> ", 1)[1]
         name = name.strip('"')
         if name:
@@ -86,7 +86,7 @@ def _changed_files(project):
 
 
 class Step:
-    """Một bước bookkeeping: tên, trạng thái (ok|skip|fail), chi tiết ngắn."""
+    """One bookkeeping step: name, status (ok|skip|fail), short detail."""
 
     def __init__(self, name, status, detail=""):
         self.name, self.status, self.detail = name, status, detail
@@ -98,17 +98,17 @@ class Step:
 def step_lint(project, files):
     docs = [f for f in files if f.endswith(".md") and os.path.exists(f)]
     if not docs:
-        return Step("lint", "skip", "không có file .md")
+        return Step("lint", "skip", "no .md file")
     rc, out = _run([sys.executable, os.path.join(SCRIPTS_DIR, "doc_lint.py")] + docs, project)
     if rc == 0:
         return Step("lint", "ok", f"{len(docs)} file")
-    first = out.splitlines()[0] if out else "lỗi không rõ"
+    first = out.splitlines()[0] if out else "unknown error"
     return Step("lint", "fail", first[:120])
 
 
 def step_worklog(project, summary):
     if not summary:
-        return Step("worklog", "skip", "không có --log")
+        return Step("worklog", "skip", "no --log")
     now = datetime.now()
     path = os.path.join(project, "docs", "workinglog", f"{now:%Y-%m-%d}.md")
     try:
@@ -125,7 +125,7 @@ def step_worklog(project, summary):
 
 def step_phase(project, phase):
     if not phase:
-        return Step("phase", "skip", "không có --phase")
+        return Step("phase", "skip", "no --phase")
     env = dict(os.environ, TDQ_PROJECT_DIR=project)
     cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_state.py"), "set", f"phase={phase}"]
     try:
@@ -139,41 +139,41 @@ def step_phase(project, phase):
 
 
 def step_dong_so(project, phase):
-    """Về `idle` = hết request → chốt sổ thời gian vào docs/tdq/timing.jsonl.
+    """Back to `idle` = the request is over → close the timing books into docs/tdq/timing.jsonl.
 
-    Chạy TRƯỚC bước đổi phase: đóng sổ xong mới hạ cờ, để cửa sổ phase cuối cùng
-    khép đúng lúc thay vì lẫn sang khoảng `idle` sau đó.
+    Runs BEFORE the phase step: close the books first, then lower the flag, so the last
+    phase window shuts at the right moment instead of bleeding into the `idle` stretch after it.
     """
     if phase != "idle":
-        return Step("thời gian", "skip", "chỉ đóng sổ khi về idle")
+        return Step("timing", "skip", "books close only on idle")
     env = dict(os.environ, TDQ_PROJECT_DIR=project)
     cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_timing.py"), "close"]
     try:
         p = subprocess.run(cmd, cwd=project, capture_output=True, text=True,
                            timeout=STEP_TIMEOUT, env=env)
     except (subprocess.TimeoutExpired, OSError) as exc:
-        return Step("thời gian", "fail", str(exc)[:120])
+        return Step("timing", "fail", str(exc)[:120])
     if p.returncode != 0:
-        return Step("thời gian", "fail", (p.stdout + p.stderr).strip()[:120])
-    return Step("thời gian", "ok", "đã ghi timing.jsonl")
+        return Step("timing", "fail", (p.stdout + p.stderr).strip()[:120])
+    return Step("timing", "ok", "timing.jsonl written")
 
 
 def step_graphify(project, files, skip):
     if skip:
         return Step("graphify", "skip", "--skip-graphify")
     if not any(os.path.splitext(f)[1] in CODE_EXT for f in files):
-        return Step("graphify", "skip", "không có file code đổi")
+        return Step("graphify", "skip", "no code file changed")
     if not shutil.which("graphify"):
-        return Step("graphify", "skip", "chưa cài graphify")
+        return Step("graphify", "skip", "graphify not installed")
     rc, out = _run(["graphify", "extract", ".", "--code-only"], project, GRAPHIFY_TIMEOUT)
     if rc != 0:
-        first = out.splitlines()[-1] if out else "lỗi không rõ"
+        first = out.splitlines()[-1] if out else "unknown error"
         return Step("graphify", "fail", first[:120])
     return Step("graphify", "ok")
 
 
 def summarize(steps):
-    """Một dòng ≤ 200 ký tự cho trường hợp mọi bước pass."""
+    """One line of at most 200 characters for the everything-passed case."""
     mark = "✗" if any(s.status == "fail" for s in steps) else "✓"
     body = " · ".join(f"{s.name}={s.status}" for s in steps)
     line = f"{mark} tdq_finish: {body}"
@@ -182,14 +182,14 @@ def summarize(steps):
 
 def parse_args(argv):
     ap = argparse.ArgumentParser(
-        description="Bookkeeping cuối turn: lint → working log → phase → graphify.")
-    ap.add_argument("--phase", help="phase mới, ghi qua tdq_state.py")
-    ap.add_argument("--log", dest="summary", help="tóm tắt append vào working log hôm nay")
+        description="End-of-turn bookkeeping: lint → working log → phase → graphify.")
+    ap.add_argument("--phase", help="the new phase, written through tdq_state.py")
+    ap.add_argument("--log", dest="summary", help="summary appended to today's working log")
     ap.add_argument("--files", nargs="*", default=None,
-                    help="file vừa sửa; bỏ trống thì lấy từ `git status --porcelain`")
+                    help="the files just edited; left out, they come from `git status --porcelain`")
     ap.add_argument("--skip-graphify", action="store_true")
-    ap.add_argument("--dry-run", action="store_true", help="in 1 dòng dự định, không ghi gì")
-    ap.add_argument("--verbose", action="store_true", help="in chi tiết từng bước")
+    ap.add_argument("--dry-run", action="store_true", help="print the 1-line intention, write nothing")
+    ap.add_argument("--verbose", action="store_true", help="print the detail of every step")
     return ap.parse_args(argv)
 
 
@@ -201,12 +201,12 @@ def main(argv):
 
     if args.dry_run:
         docs = sum(1 for f in files if f.endswith(".md"))
-        print(f"dry-run: lint {docs} file .md · worklog "
-              f"{'có' if args.summary else 'bỏ'} · phase {args.phase or 'giữ nguyên'} · "
-              f"graphify {'bỏ' if args.skip_graphify else 'nếu có code đổi'}")
+        print(f"dry-run: lint {docs} .md file(s) · worklog "
+              f"{'yes' if args.summary else 'no'} · phase {args.phase or 'unchanged'} · "
+              f"graphify {'no' if args.skip_graphify else 'if code changed'}")
         return 0
 
-    _log(f"bắt đầu · project={project} · {len(files)} file đổi")
+    _log(f"start · project={project} · {len(files)} file(s) changed")
     steps = []
     for run_step in (lambda: step_lint(project, files),
                      lambda: step_worklog(project, args.summary),
@@ -222,7 +222,7 @@ def main(argv):
     if args.verbose or failed:
         for s in (steps if args.verbose else failed):
             print(f"  - {s.line()}")
-    _log(f"xong · {len(failed)} bước fail")
+    _log(f"done · {len(failed)} step(s) failed")
     return 1 if failed else 0
 
 

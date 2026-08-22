@@ -28,9 +28,27 @@ RESEARCH = Path(ROOT) / "docs" / "tdq" / "research" / "2026-08-16-bo-cong-clean-
 
 # Thân luật clean-code.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật và số
 # hạng mục không đổi, chỉ đổi ngôn ngữ của từ khoá được soi (hàm→function,
-# kế thừa→inheritance, suy diễn→inference). Nhãn ví dụ ĐÚNG/SAI giữ nguyên.
+# kế thừa→inheritance, suy diễn→inference). Từ 2026-08-22 nhãn ví dụ và tên mục cũng
+# sang tiếng Anh; lưới dưới đây nhận CẢ HAI cách viết để bản dịch và bản cũ cùng xanh.
 MA_SOLID = ("SRP", "OCP", "LSP", "ISP", "DIP")
-MUC_BAT_BUOC = ("## Khi nào áp dụng", "## Làm gì", "## Tự kiểm")
+MUC_BAT_BUOC = (("## When it applies", "## Khi nào áp dụng"),
+                ("## What to do", "## Làm gì"),
+                ("## Self-check", "## Tự kiểm"))
+NHAN_DUNG = ("RIGHT", "ĐÚNG")
+NHAN_SAI = ("WRONG", "SAI")
+
+
+def co_mot_trong(cach_viet, noi_dung):
+    """True khi nội dung mang ÍT NHẤT một trong các cách viết của cùng một mục/nhãn."""
+    return any(c in noi_dung for c in cach_viet)
+
+
+def cat_sau(noi_dung, cach_viet):
+    """Phần văn bản sau tiêu đề mục, dù mục viết bằng cách nào."""
+    for c in cach_viet:
+        if c in noi_dung:
+            return noi_dung.split(c)[-1]
+    return ""
 
 # Đường dẫn repo nhắc trong ví dụ: `scripts/x.py` hoặc `scripts/x.py::ham`.
 DUONG_DAN = re.compile(r"`((?:scripts|hooks|skills|tests)/[\w./-]+?\.(?:py|md))(?:::[\w.]+)?`")
@@ -56,7 +74,8 @@ class KhuonFileLuat(unittest.TestCase):
         self.assertTrue(LUAT.is_file(), f"chưa có file luật {LUAT}")
         noi_dung = doc(LUAT)
         for muc in MUC_BAT_BUOC:
-            self.assertIn(muc, noi_dung, f"file luật thiếu mục `{muc}`")
+            self.assertTrue(co_mot_trong(muc, noi_dung),
+                            f"file luật thiếu mục `{muc[0]}`")
 
     def test_khuon_co_dong_soul(self):
         self.assertIn("Soul: chất lượng > runtime > context cost", doc(LUAT),
@@ -104,8 +123,8 @@ class ViDu(unittest.TestCase):
 
     def test_vi_du_co_ca_dung_va_sai(self):
         noi_dung = doc(LUAT)
-        self.assertIn("ĐÚNG", noi_dung, "luật thiếu ví dụ ĐÚNG")
-        self.assertIn("SAI", noi_dung, "luật thiếu ví dụ SAI")
+        self.assertTrue(co_mot_trong(NHAN_DUNG, noi_dung), "luật thiếu ví dụ ĐÚNG")
+        self.assertTrue(co_mot_trong(NHAN_SAI, noi_dung), "luật thiếu ví dụ SAI")
 
     def test_vi_du_duong_dan_co_that(self):
         thieu = [d for d in set(DUONG_DAN.findall(doc(LUAT)))
@@ -119,8 +138,9 @@ class ViDu(unittest.TestCase):
             with self.subTest(ma=ma):
                 khoi = noi_dung.split(f"### {ma}")
                 self.assertGreater(len(khoi), 1, f"thiếu khối ví dụ `### {ma}`")
-                self.assertIn("ĐÚNG", khoi[1].split("### ")[0], f"{ma}: thiếu ví dụ ĐÚNG")
-                self.assertIn("SAI", khoi[1].split("### ")[0], f"{ma}: thiếu ví dụ SAI")
+                than = khoi[1].split("### ")[0]
+                self.assertTrue(co_mot_trong(NHAN_DUNG, than), f"{ma}: thiếu ví dụ ĐÚNG")
+                self.assertTrue(co_mot_trong(NHAN_SAI, than), f"{ma}: thiếu ví dụ SAI")
 
 
 class LspGioiHan(unittest.TestCase):
@@ -145,7 +165,7 @@ class TuKiem(unittest.TestCase):
     """T1.5 — checklist thay cho lệnh scan đã xoá."""
 
     def _cau_hoi(self):
-        than = doc(LUAT).split("## Tự kiểm")[-1]
+        than = cat_sau(doc(LUAT), MUC_BAT_BUOC[2])
         return [d.strip() for d in than.splitlines()
                 if d.strip().startswith("-") and d.strip().endswith("?")]
 
@@ -173,7 +193,7 @@ class TuKiem(unittest.TestCase):
                               f"câu {ma} chưa phủ ca có class — thiếu chữ `{tu}`")
 
     def test_khi_nao_co_dau_hieu_nhan_ra(self):
-        than = doc(LUAT).split("## Khi nào áp dụng")[-1].split("## ")[0]
+        than = cat_sau(doc(LUAT), MUC_BAT_BUOC[0]).split("## ")[0]
         dong = [d for d in than.splitlines() if d.strip().startswith("-")]
         self.assertGreaterEqual(len(dong), 2,
                                 "mục `Khi nào áp dụng` phải có ít nhất 2 dấu hiệu")

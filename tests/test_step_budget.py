@@ -99,10 +99,13 @@ class LuatMotLuot(unittest.TestCase):
 
     def test_ba_tang_soul_khong_doi(self):
         soul = read(SOUL)
-        for tang in ("**Tầng 1 — chất lượng**", "**Tầng 2 — runtime**",
-                     "**Tầng 3 — context cost**"):
-            self.assertIn(tang, soul)
-        self.assertIn("## Xếp luật vào tầng nào", soul)
+        # Từ 2026-08-22 soul.md viết tiếng Anh; nhận cả hai cách viết để bản cũ vẫn xanh.
+        for tang in (("**Tier 1 — quality**", "**Tầng 1 — chất lượng**"),
+                     ("**Tier 2 — runtime**", "**Tầng 2 — runtime**"),
+                     ("**Tier 3 — context cost**", "**Tầng 3 — context cost**")):
+            self.assertTrue(any(t in soul for t in tang), f"mất tầng: {tang[0]}")
+        self.assertTrue("## Which tier a law belongs to" in soul
+                        or "## Xếp luật vào tầng nào" in soul)
 
 
 class StepAudit(unittest.TestCase):
@@ -128,8 +131,8 @@ class StepAudit(unittest.TestCase):
 
     def test_bang_ket_qua(self):
         out = step_audit.report(self.stats)
-        self.assertIn("| Tool call trên mỗi lượt | 1.25 (4 lượt) |", out)
-        self.assertIn("| Read lặp lại cùng file | 1 |", out)
+        self.assertIn("| Tool calls per turn | 1.25 (4 turn(s)) |", out)
+        self.assertIn("| Repeat Read of one file | 1 |", out)
 
     def test_help_du_ba_co(self):
         proc = subprocess.run([sys.executable, os.path.join(SCRIPTS, "step_audit.py"),

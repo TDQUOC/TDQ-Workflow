@@ -3,7 +3,15 @@
 Soul stands above every other law in the workflow. A law that contradicts soul — old or new —
 is the law that gets fixed; soul does not. Changing soul requires the user's approval.
 
-## Bốn nguyên tắc
+## Table of contents
+
+- The four principles
+- When it applies
+- What to do
+- Which tier a law belongs to
+- Self-check
+
+## The four principles
 
 ### 1. What the harness is for
 
@@ -11,13 +19,16 @@ The harness exists to help a dev use AI to produce better, more finished results
 quantity: one product that runs correctly, reads well and survives is worth more than many
 half-done ones.
 
-### 2. Priority order: chất lượng > runtime > context cost
+### 2. Priority order: chất lượng > runtime > context cost <!-- i18n-allow: canonical wording -->
 
-- **Tầng 1 — chất lượng**: the code the agent produces must be a real MVP — it runs, it has
+Read in English: quality first, then runtime, then context cost. The Vietnamese wording above is
+the canonical string — it is the one copied into the `Soul:` line of every request document.
+
+- **Tier 1 — quality**: the code the agent produces must be a real MVP — it runs, it has
   tests, and no foreseeable technical debt is left undeclared.
-- **Tầng 2 — runtime**: how long the workflow and the product take to run. Optimise only when
+- **Tier 2 — runtime**: how long the workflow and the product take to run. Optimise only when
   it does not lower tier 1.
-- **Tầng 3 — context cost**: tokens fed to the model. Cut only when it lowers neither tier
+- **Tier 3 — context cost**: tokens fed to the model. Cut only when it lowers neither tier
   above.
 
 **Tie-break law** when two laws collide:
@@ -29,10 +40,10 @@ half-done ones.
 
 Every rule and behaviour must be detailed enough that a low model like Haiku reads it and does
 the right thing — not only a high model like Opus. A rule meets the bar when it has all three
-sections: `## Khi nào áp dụng` (signs recognisable by eye or by command),
-`## Làm gì` (numbered steps, one action per step, imperative sentences),
-`## Tự kiểm` (one command, or one yes/no question). Anywhere easy to misread must carry a
-ĐÚNG/SAI example.
+sections: `## When it applies` (signs recognisable by eye or by command),
+`## What to do` (numbered steps, one action per step, imperative sentences),
+`## Self-check` (one command, or one yes/no question). Anywhere easy to misread must carry a
+RIGHT/WRONG example.
 
 ### 4. Scope
 
@@ -41,11 +52,12 @@ brief, spec, plan, qc, report — including the documents of the request that cr
 It applies retroactively to existing laws and to every later addition. Each request document
 opens with the line:
 
+<!-- i18n-allow: khuôn dòng Soul chép nguyên văn vào tài liệu -->
 ```
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 ```
 
-## Khi nào áp dụng
+## When it applies
 
 Signs — hitting any one of these means soul is present:
 
@@ -54,22 +66,22 @@ Signs — hitting any one of these means soul is present:
 - About to cut a step (test, QC, log, research) to run faster or to save tokens.
 - About to open a new request document (brief, spec, plan, qc, report).
 
-## Làm gì
+## What to do
 
-1. Place the work in its tier: chất lượng, runtime, or context cost.
+1. Place the work in its tier: quality, runtime, or context cost.
 2. Check: does this change lower a higher tier? Yes → stop, follow the higher tier.
-3. Write the new rule in the three-section shape from principle 3; add a ĐÚNG/SAI example
+3. Write the new rule in the three-section shape from principle 3; add a RIGHT/WRONG example
    wherever it is easy to misread.
 4. Opening a new request document → put the `Soul:` line at the top of the file, right under
    the title.
 5. Two laws collide → run the tie-break law in principle 2 and record the ruling.
 
-Ví dụ ĐÚNG: dropping a duplicate research round because the result is already in the brief —
+RIGHT example: dropping a duplicate research round because the result is already in the brief —
 saves tokens without losing information (tier 3 serving tier 1).
-Ví dụ SAI: dropping the write-the-test-first step to build faster — runtime overriding
+WRONG example: dropping the write-the-test-first step to build faster — runtime overriding
 quality.
 
-## Xếp luật vào tầng nào
+## Which tier a law belongs to
 
 Filing a law in the wrong tier is how a correct law gets legitimately ignored: a law that cuts
 time but is labelled "saves tokens" drops to tier 3 — the lowest tier, the one you may skip when
@@ -77,7 +89,7 @@ busy. So before writing or changing any law, ask: **which number does this law c
 
 | Which number the law changes | Tier | Example |
 |---|---|---|
-| The correctness of the output | 1 — chất lượng | test before fixing, no fake mock passed off as real data |
+| The correctness of the output | 1 — quality | test before fixing, no fake mock passed off as real data |
 | The NUMBER OF STEPS (tool calls, waiting rounds) | 2 — runtime | batch independent tool calls, no `sleep` polling loop |
 | The NUMBER OF TOKENS loaded into the model | 3 — context cost | lint the exact file instead of the whole tree, terse CLI output |
 
@@ -89,7 +101,7 @@ turn; only tier 3 laws and detailed tables get pushed into a reference file. A s
 is a tier 3 constraint — hitting the cap means raising the cap, never compressing a tier 2 law
 to fit.
 
-## Tự kiểm
+## Self-check
 
 - Yes/no question: "Does the change I am about to make lower quality in exchange for speed or
   tokens?" — Yes → do not make it.

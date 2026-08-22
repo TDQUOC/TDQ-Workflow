@@ -1,0 +1,48 @@
+{
+  "ma": "duyet-bang-chu-cai",
+  "mo_ta": "Ở cổng mode, user trả lời đúng một chữ cái \"A\" — phải hiểu là chọn làm trực tiếp, ghi mode rồi vào build ngay cùng turn.",
+  "prompt": "A",
+  "ngon_ngu_trung_tinh": true,
+  "phase_dau": "mode",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "spec",
+      "--by",
+      "duyệt spec"
+    ],
+    [
+      "set",
+      "plan_file=docs/tdq/plan/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "plan",
+      "--by",
+      "duyệt plan"
+    ],
+    [
+      "set",
+      "phase=mode"
+    ]
+  ],
+  "kiem": [
+    "L001",
+    "L003",
+    "L005",
+    "L012",
+    "L149",
+    "L121",
+    "L210"
+  ]
+}

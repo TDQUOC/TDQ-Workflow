@@ -101,8 +101,8 @@ class CarryCostTest(unittest.TestCase):
             _write(p, records)
             groups = {r.group for r in token_audit.carry_cost([p])}
         self.assertIn("tdq_state.py (dump JSON)", groups)
-        self.assertIn("chạy test suite", groups)
-        self.assertIn("Bash khác", groups)
+        self.assertIn("test suite run", groups)
+        self.assertIn("other Bash", groups)
 
     def test_khong_co_session_tra_bang_rong(self):
         self.assertEqual(token_audit.carry_cost([]), [])
@@ -401,10 +401,10 @@ class PhanRaHanhViTest(unittest.TestCase):
                  "--transcript-dir", d],
                 capture_output=True, text=True, env=dict(os.environ, TDQ_AUDIT_LOG="0"))
         self.assertEqual(r.returncode, 0, r.stderr)
-        for cot in ("trung vị", "p90", "p99", "lớn nhất"):
+        for cot in ("median", "p90", "p99", "largest"):
             with self.subTest(cot=cot):
                 self.assertIn(cot, r.stdout)
-        self.assertIn("đọc lại", r.stdout)
+        self.assertIn("re-read", r.stdout)
 
 
 def _anh_png(w, h):

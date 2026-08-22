@@ -21,14 +21,15 @@ EXPECTED_FILES = [
 ]
 
 # Khuôn 7 mục — heading cấp 2, so không phân biệt hoa thường, bỏ qua khối fence.
+# Từ 2026-08-22 rule viết tiếng Anh; mỗi mục nhận cả hai cách viết để bản cũ vẫn xanh.
 KHUON_7_MUC = [
-    "## nguồn",
-    "## khi nào áp dụng",
-    "## luật intentionality",
-    "## ngưỡng đo được",
-    "## làm gì",
-    "## tự kiểm",
-    "## ví dụ đúng/sai",
+    ("## sources", "## nguồn"),
+    ("## when it applies", "## khi nào áp dụng"),
+    ("## the intentionality rule", "## luật intentionality"),
+    ("## measurable thresholds", "## ngưỡng đo được"),
+    ("## what to do", "## làm gì"),
+    ("## self-check", "## tự kiểm"),
+    ("## right/wrong examples", "## ví dụ đúng/sai"),
 ]
 
 
@@ -62,8 +63,8 @@ class KhuonNgonNgu(unittest.TestCase):
                 headings = _headings(text)
                 for muc in KHUON_7_MUC:
                     self.assertTrue(
-                        any(h == muc for h in headings),
-                        f"{name} thiếu mục '{muc}'")
+                        any(h in muc for h in headings),
+                        f"{name} thiếu mục '{muc[0]}'")
 
 
 class ChungMd(unittest.TestCase):
@@ -113,8 +114,10 @@ class ThemNgonNgu(unittest.TestCase):
             "cognitive complexity threshold",
         ):
             self.assertIn(truy_van, text, f"thiếu truy vấn cố định '{truy_van}'")
-        self.assertIn("trình nháp", text, "thiếu bước trình nháp trong chat")
-        vi_tri_duyet = text.find("chờ user duyệt")
+        self.assertTrue("present the draft" in text or "trình nháp" in text,
+                        "thiếu bước trình nháp trong chat")
+        vi_tri_duyet = max(text.find("wait for the user to approve"),
+                           text.find("chờ user duyệt"))
         vi_tri_ghi = text.find("~/.claude/skills/tdq-rules")
         self.assertNotEqual(vi_tri_duyet, -1, "thiếu bước 'chờ user duyệt'")
         self.assertNotEqual(vi_tri_ghi, -1, "thiếu đích ghi ~/.claude/skills/tdq-rules")

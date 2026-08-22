@@ -1,8 +1,8 @@
 # Rust rules
 
-Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies to every `.rs` file.
+Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line -->. Load after `chung.md`; applies to every `.rs` file.
 
-## Nguồn
+## Sources
 
 - rust-lang.org discussion — https://users.rust-lang.org/t/is-there-something-like-rust-core-guidelines-like-c-core-guidelines/113850 —
   **Rust has NO "Core Guidelines"** equivalent to C++: the Rust philosophy is to let the
@@ -10,13 +10,13 @@ Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies t
   prose document; the "Rust API Guidelines" is the closest thing (its official URL is not in
   the research file, so only the name is given, no invented link).
 
-## Khi nào áp dụng
+## When it applies
 
 - Writing or changing any `.rs` file in the crate, tests and examples included.
-- Before submitting: run the "Tự kiểm" section; if the machine lacks `cargo`, write
-  "chưa kiểm được".
+- Before submitting: run the "Self-check" section; if the machine lacks `cargo`, write
+  "not checked yet".
 
-## Luật Intentionality
+## The Intentionality rule
 
 1. **Off-standard names**: functions/variables `snake_case`, types/traits `PascalCase`,
    constants `SCREAMING_SNAKE_CASE` — the compiler warns on drift by itself; a name must state
@@ -28,14 +28,14 @@ Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies t
 3. **Dead code**: the compiler warns `dead_code`/`unused`; never silence a warning with
    `#[allow(...)]` without a one-line reason directly above the attribute.
 
-## Ngưỡng đo được
+## Measurable thresholds
 
 - Cyclomatic ≤ 10, cognitive ≤ 15 per function — per `chung.md`; Rust is NOT in the C family
   allowed 25.
 - Warning level: submitted code must be free of compiler warnings and of default-level
   `cargo clippy` warnings; allowing any lint requires a reason in the request's spec.
 
-## Làm gì
+## What to do
 
 1. Format with `rustfmt` (through `cargo fmt`) before submitting.
 2. A function that can fail returns `Result<T, E>`; propagate with `?` and add context at the
@@ -44,23 +44,23 @@ Soul: chất lượng > runtime > context cost. Load after `chung.md`; applies t
 4. Prefer borrows (`&str`, `&[T]`) in parameters over ownership when the function only reads.
 5. Run `cargo clippy` and fix every warning; compiler warnings must also reach 0.
 
-## Tự kiểm
+## Self-check
 
-- [ ] `cargo clippy` warning-free, or "chưa kiểm được" recorded because the machine lacks cargo
+- [ ] `cargo clippy` warning-free, or "not checked yet" recorded because the machine lacks cargo
 - [ ] No `unwrap`/`expect` outside tests without an invariant note
 - [ ] No `#[allow(...)]` without a reason; no dead code
 - [ ] The 3 Intentionality questions in `chung.md` are answerable
 
-## Ví dụ ĐÚNG/SAI
+## RIGHT/WRONG examples
 
 ```rust
-// SAI — unwrap trong code sản phẩm, tên không nói việc:
+// WRONG — unwrap in production code, a name that states nothing:
 fn get(p: &str) -> String {
     std::fs::read_to_string(p).unwrap()
 }
-// ĐÚNG — Result + ?, tên nêu việc:
-fn doc_config(duong_dan: &str) -> Result<String, std::io::Error> {
-    let noi_dung = std::fs::read_to_string(duong_dan)?;
-    Ok(noi_dung)
+// RIGHT — Result + ?, the name states the work:
+fn read_config(path: &str) -> Result<String, std::io::Error> {
+    let content = std::fs::read_to_string(path)?;
+    Ok(content)
 }
 ```

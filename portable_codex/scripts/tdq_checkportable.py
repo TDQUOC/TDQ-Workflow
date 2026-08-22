@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
-"""tdq_checkportable.py — kiểm bản portable ở MÁY ĐÍCH và tự vá phần thiếu.
+"""tdq_checkportable.py — check a portable bundle ON THE TARGET MACHINE and patch what is missing.
 
-Đây là script duy nhất của bộ portable chạy trước tất cả những thứ khác. Lý do nó tồn tại:
-bản portable được chép tay qua máy lạ, nên ba thứ hay hỏng mà không ai biết — file rơi rớt
-hoặc bị sửa dọc đường, Python quá cũ, lệnh ngoài chưa cài. Cả ba đều biểu hiện muộn dưới
-dạng lỗi khó hiểu ở giữa một request đang chạy dở.
+This is the one script of the portable set that runs before everything else. Why it exists:
+a portable bundle is hand-copied onto a strange machine, so three things break unnoticed —
+files dropped or edited on the way, Python too old, an outside command not installed. All
+three surface late, as a puzzling error in the middle of a half-finished request.
 
-Hai lệnh:
-    check   chỉ đối chiếu `manifest.json`, không sửa gì. Exit 0 khi sạch, 1 khi lệch.
-    setup   vá phần vá được: tạo thư mục thiếu, và dựng lại hai file cấu hình mà bundle có
-            đủ dữ liệu để tái tạo (`.claude/settings.json` từ `hooks.json` đi kèm, `.mcp.json`).
-            MỌI lần ghi đè đều để lại `<file>.tdq-bak-<timestamp>`. File khác thiếu/lệch thì
-            in `CÒN …` và exit khác 0 — nội dung đúng chỉ có ở bản gốc, không được bịa.
+Two commands:
+    check   only compares against `manifest.json`, changes nothing. Exit 0 clean, 1 on drift.
+    setup   patches what can be patched: creates missing directories, and rebuilds the two
+            config files the bundle carries enough data to recreate (`.claude/settings.json`
+            from the bundled `hooks.json`, and `.mcp.json`). EVERY overwrite leaves a
+            `<file>.tdq-bak-<timestamp>`. Any other missing/drifting file prints `LEFT …`
+            and exits non-zero — the right content exists only in the original, never invent it.
     setup --trust
-            thêm một việc DUY NHẤT nằm ngoài bundle: khai bundle là project trusted trong
-            `config.toml` của Codex CLI (`~/.codex`, hoặc `$CODEX_HOME`). Không có cờ này thì
-            không đường nào trong file chạm tới thư mục đó. Chưa trusted thì Codex bỏ qua cả
-            tầng `.codex/` của bundle — MCP không nạp, hook không đọc.
+            does one SINGLE thing outside the bundle: declaring the bundle a trusted project
+            in the `config.toml` of Codex CLI (`~/.codex`, or `$CODEX_HOME`). Without the flag
+            no path in this file touches that directory. Untrusted, Codex ignores the whole
+            `.codex/` layer of the bundle — MCP is not loaded, hooks are not read.
 
-Luật khoá bí mật: script này in TÊN biến môi trường, không bao giờ in giá trị. Nó chạy ở
-máy người khác và output của nó thường được dán vào chat hoặc log.
+Secret-key rule: this script prints environment variable NAMES, never their values. It runs on
+somebody else's machine and its output is usually pasted into a chat or a log.
 
-Env: TDQ_LOG=0 tắt log tiến trình (log ra stderr).
-Exit: 0 sạch · 1 có lệch/thiếu · 2 sai cú pháp.
+Env: TDQ_LOG=0 mutes the progress log (the log goes to stderr).
+Exit: 0 clean · 1 drift/missing · 2 bad syntax.
 """
 
 import argparse
@@ -36,14 +37,14 @@ import sys
 MANIFEST_NAME = "manifest.json"
 EXIT_LECH = 1
 
-# Hai file cấu hình DUY NHẤT mà máy đích tự dựng lại được từ thứ có sẵn trong bundle:
-# `settings.json` sinh từ `hooks/hooks.json` đi kèm, `.mcp.json` sinh từ hằng dưới đây.
-# Mọi file khác chỉ có một nguồn đúng là bản gốc — `setup` không được bịa nội dung cho chúng.
+# The ONLY two config files a target machine can rebuild from what the bundle carries:
+# `settings.json` generated from the bundled `hooks/hooks.json`, `.mcp.json` from the constant below.
+# Every other file has exactly one right source, the original — `setup` must not invent content.
 GOC_TDQ = ".claude/tdq"
 BIEN_MOI = "CLAUDE_PROJECT_DIR"
 MCP_SERVERS = ("tavily-primary", "tavily-backup")
 
-# Tên biến bị coi là chứa bí mật. Dùng để quyết định IN GÌ, không dùng để đọc giá trị.
+# Variable names treated as holding a secret. Used to decide WHAT TO PRINT, never to read a value.
 DAU_HIEU_BI_MAT = ("KEY", "TOKEN", "SECRET", "PASSWORD")
 
 
@@ -52,7 +53,7 @@ def _log_enabled():
 
 
 def log(message):
-    """Log tiến trình ra stderr kèm timestamp. Tắt bằng TDQ_LOG=0."""
+    """Progress log on stderr with a timestamp. Muted with TDQ_LOG=0."""
     if _log_enabled():
         stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
         print(f"[{stamp}] {message}", file=sys.stderr)
@@ -67,15 +68,15 @@ def sha256_of(path):
 
 
 def to_ten_khoa(moi_truong):
-    """Biến dict env thành các dòng an toàn để in: chỉ TÊN khoá + có/không, không có giá trị."""
+    """Turn an env dict into lines safe to print: only the KEY name + set/unset, no values."""
     return [
-        f"{ten}: {'đã đặt' if moi_truong.get(ten) else 'CHƯA đặt'}"
+        f"{ten}: {'set' if moi_truong.get(ten) else 'NOT set'}"
         for ten in sorted(moi_truong)
     ]
 
 
 def bien_moi_truong_mcp(manifest, moi_truong=None):
-    """Trạng thái các biến khoá mà MCP trong manifest cần — TÊN biến, không giá trị."""
+    """State of the key variables the manifest MCP needs — variable NAMES, no values."""
     if not manifest.get("mcp_servers"):
         return []
     moi_truong = os.environ if moi_truong is None else moi_truong
@@ -89,11 +90,11 @@ def bien_moi_truong_mcp(manifest, moi_truong=None):
 # ------------------------------------------------------------------- check
 
 def tim_goc_bundle(bat_dau=None):
-    """Đi ngược lên từ vị trí script tới thư mục đầu tiên có `manifest.json`.
+    """Walk up from the script location to the first directory holding a `manifest.json`.
 
-    Không dùng `dirname(dirname(__file__))` cố định: script này nằm ở `.claude/tdq/scripts/`
-    trong bản claude nhưng ở `scripts/` trong bản codex, nên độ sâu tới gốc bundle khác nhau
-    giữa hai bản. Đếm cứng số tầng là cách chắc chắn sai một trong hai.
+    Not a fixed `dirname(dirname(__file__))`: this script sits in `.claude/tdq/scripts/` in the
+    claude bundle but in `scripts/` in the codex one, so the depth to the bundle root differs
+    between them. Hard-coding the number of levels is guaranteed wrong for one of the two.
     """
     duong = os.path.abspath(bat_dau or os.path.dirname(os.path.abspath(__file__)))
     while True:
@@ -105,14 +106,14 @@ def tim_goc_bundle(bat_dau=None):
         duong = cha
 
 
-# ---------------------------------------------------- sinh lại file cấu hình
+# ---------------------------------------------------- regenerate config files
 
 def sinh_settings(goc_bundle, duong_hooks_json):
-    """`hooks.json` (đi theo bundle) → nội dung `.claude/settings.json` của project đích.
+    """`hooks.json` (shipped with the bundle) → the `.claude/settings.json` of the target project.
 
-    Đặt ở ĐÂY chứ không ở `build_portable.py` vì `build_portable.py` cố tình không đi theo
-    bundle: máy đích cần dựng lại được file này thì logic phải nằm trong file có mặt ở đó.
-    `build_portable.py` import ngược lại, nên vẫn chỉ có một bản logic.
+    Placed HERE and not in `build_portable.py` because `build_portable.py` deliberately does not
+    travel with the bundle: for the target machine to rebuild this file, the logic has to live in
+    a file present there. `build_portable.py` imports it back, so there is still one copy of it.
     """
     with open(duong_hooks_json, encoding="utf-8") as f:
         goc = json.load(f)
@@ -123,7 +124,7 @@ def sinh_settings(goc_bundle, duong_hooks_json):
 
 
 def sinh_mcp():
-    """Nội dung `.mcp.json`: chỉ server + TÊN biến môi trường, không bao giờ giá trị khoá."""
+    """The content of `.mcp.json`: servers + env variable NAMES only, never a key value."""
     ten_bien = "TAVILY_" + "API" + "_KEY"
     return {
         "mcpServers": {
@@ -140,16 +141,16 @@ def sinh_mcp():
 def doc_manifest(goc):
     duong = os.path.join(goc, MANIFEST_NAME)
     if not os.path.isfile(duong):
-        raise FileNotFoundError(f"không thấy {MANIFEST_NAME} trong {goc}")
+        raise FileNotFoundError(f"no {MANIFEST_NAME} found in {goc}")
     with open(duong, encoding="utf-8") as f:
         return json.load(f)
 
 
 def kiem_file(goc, manifest):
-    """So từng file với sha256 trong manifest → dict `thieu` / `lech`.
+    """Compare each file with its sha256 in the manifest → dict `thieu` / `lech`.
 
-    Không dừng ở lỗi đầu tiên: người ở máy đích cần thấy TOÀN BỘ danh sách trong một lần
-    chạy, vì mỗi lần chạy lại có thể tốn công chép file qua mạng.
+    It does not stop at the first error: whoever sits at the target machine needs the WHOLE list
+    in one run, because each rerun may cost another round of copying files over a network.
     """
     thieu, lech = [], []
     for tuong_doi, cho_doi in sorted(manifest.get("files", {}).items()):
@@ -162,11 +163,11 @@ def kiem_file(goc, manifest):
 
 
 def kiem_moi_truong(manifest, tim_lenh=None):
-    """Kiểm Python tối thiểu, lệnh ngoài, MCP server → dict `thieu` / `luu_y`.
+    """Check the minimum Python, outside commands, MCP servers → dict `thieu` / `luu_y`.
 
-    `tim_lenh` tiêm được để test không phụ thuộc máy đang chạy. Mọi thứ vắng mặt đều trả
-    về dưới dạng dữ liệu, không ném exception: script này chạy ở máy lạ, và một traceback
-    ở đây nghĩa là người dùng mất luôn đường tự vá.
+    `tim_lenh` is injectable so tests do not depend on the running machine. Everything absent is
+    returned as data, never raised: this script runs on a strange machine, and a traceback here
+    means the user loses the way to patch things.
     """
     tim_lenh = tim_lenh or shutil.which
     thieu, luu_y = [], []
@@ -175,15 +176,15 @@ def kiem_moi_truong(manifest, tim_lenh=None):
     can = tuple(int(p) for p in toi_thieu.split("."))
     if sys.version_info[:len(can)] < can:
         dang_co = ".".join(str(p) for p in sys.version_info[:3])
-        thieu.append(f"Python >= {toi_thieu} (đang có {dang_co})")
+        thieu.append(f"Python >= {toi_thieu} (found {dang_co})")
 
     for lenh in manifest.get("external_commands", []):
         if tim_lenh(lenh) is None:
-            thieu.append(f"lệnh ngoài `{lenh}` chưa có trong PATH")
+            thieu.append(f"outside command `{lenh}` is not on PATH")
 
     for may_chu in manifest.get("mcp_servers", []):
-        # MCP chỉ người dùng duyệt được trong giao diện harness — máy không tự bật thay được.
-        luu_y.append(f"MCP `{may_chu}` cần bạn duyệt thủ công một lần")
+        # Only a person can approve an MCP server in the harness UI — no machine can do it for them.
+        luu_y.append(f"MCP `{may_chu}` needs you to approve it manually once")
 
     return {"thieu": thieu, "luu_y": luu_y}
 
@@ -191,17 +192,17 @@ def kiem_moi_truong(manifest, tim_lenh=None):
 # ------------------------------------------------------------------- setup
 
 def ghi_de_co_backup(duong, noi_dung_moi):
-    """Ghi đè file nhưng luôn để lại `<file>.tdq-bak-<timestamp>`. Trả đường dẫn bản sao lưu.
+    """Overwrite a file but always leave a `<file>.tdq-bak-<timestamp>`. Returns the backup path.
 
-    Không có tuỳ chọn tắt backup: file bị ghi đè có thể mang thứ người dùng tự thêm (khối
-    `env` chẳng hạn), nên khả năng hoàn tác là thứ duy nhất giữ cho việc tự vá còn an toàn.
+    There is no option to skip the backup: an overwritten file may carry something the user added
+    (an `env` block, say), so being able to undo is the only thing keeping self-patching safe.
     """
     sao_luu = None
     if os.path.isfile(duong):
         dau = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         sao_luu = f"{duong}.tdq-bak-{dau}"
         shutil.copy2(duong, sao_luu)
-        log(f"sao lưu {os.path.basename(duong)} → {os.path.basename(sao_luu)}")
+        log(f"backed up {os.path.basename(duong)} → {os.path.basename(sao_luu)}")
     with open(duong, "w", encoding="utf-8") as f:
         f.write(noi_dung_moi)
     return sao_luu
@@ -224,11 +225,11 @@ def _doc(duong):
 
 
 def chay_setup(goc, manifest):
-    """Tự vá phần vá được, trả `(việc đã làm, việc KHÔNG tự vá được)`.
+    """Patch what can be patched, returning `(what was done, what could NOT be patched)`.
 
-    Ranh giới cố ý hẹp: chỉ hai file cấu hình dựng lại được từ dữ liệu có sẵn trong bundle.
-    Mọi file khác lệch nội dung thì nguồn đúng duy nhất nằm ở bản gốc — bịa nội dung cho
-    chúng còn nguy hiểm hơn để nguyên, vì `check` sau đó sẽ báo sạch trên một bundle sai.
+    The boundary is deliberately narrow: only the two config files rebuildable from bundle data.
+    For any other drifting file the only right source is the original — inventing content for it
+    is worse than leaving it, because `check` would then call a broken bundle clean.
     """
     da_lam, chiu = [], []
 
@@ -236,21 +237,21 @@ def chay_setup(goc, manifest):
         thu_muc = os.path.dirname(os.path.join(goc, tuong_doi.replace("/", os.sep)))
         if thu_muc and not os.path.isdir(thu_muc):
             os.makedirs(thu_muc, exist_ok=True)
-            da_lam.append(f"tạo thư mục {os.path.relpath(thu_muc, goc)}")
+            da_lam.append(f"created directory {os.path.relpath(thu_muc, goc)}")
 
-    # Chỉ vá thứ manifest thật sự đòi: bản codex không có `.mcp.json`, thêm vào đó là làm
-    # bẩn bundle — lần `check` sau sẽ thấy một file lạ không ai giải thích được.
+    # Patch only what the manifest really asks for: the codex bundle has no `.mcp.json`, and
+    # adding one dirties the bundle — the next `check` finds a stray file nobody can explain.
     trong_manifest = set(manifest.get("files", {}))
     if ".mcp.json" in trong_manifest:
         if _ghi_json_co_backup(os.path.join(goc, ".mcp.json"), sinh_mcp()):
-            da_lam.append("sinh lại .mcp.json")
+            da_lam.append("regenerated .mcp.json")
 
     duong_hooks = os.path.join(goc, GOC_TDQ.replace("/", os.sep), "hooks", "hooks.json")
     duong_settings = os.path.join(goc, ".claude", "settings.json")
     if ".claude/settings.json" in trong_manifest and os.path.isfile(duong_hooks):
         cai_dat = sinh_settings(goc, duong_hooks)
         cu = _doc(duong_settings)
-        if cu:  # giữ lại khối `env` người dùng đã có — chỉ dựng lại phần hook
+        if cu:  # keep the user's existing `env` block — only the hook part is rebuilt
             try:
                 cai_dat.setdefault("env", json.loads(cu).get("env", {}))
             except ValueError:
@@ -258,39 +259,39 @@ def chay_setup(goc, manifest):
         mat_trang = cu is None
         if _ghi_json_co_backup(duong_settings, cai_dat):
             da_lam.append(
-                "sinh lại .claude/settings.json (phần hook; khối `env` không tái tạo được"
-                " — chép lại từ bản gốc nếu bạn từng thêm biến ở đó)"
-                if mat_trang else "sinh lại .claude/settings.json")
+                "regenerated .claude/settings.json (the hook part; the `env` block cannot be"
+                " recreated — copy it back from the original if you ever added variables there)"
+                if mat_trang else "regenerated .claude/settings.json")
 
     con = kiem_file(goc, manifest)
-    chiu = [f"{t} (chép lại từ bản gốc)" for t in con["thieu"] + con["lech"]]
+    chiu = [f"{t} (copy it back from the original)" for t in con["thieu"] + con["lech"]]
     return da_lam, chiu
 
 
-# -------------------------------------------------- tin cậy project cho Codex CLI
+# -------------------------------------------------- project trust for Codex CLI
 
-# Thư mục cấu hình của Codex. `CODEX_HOME` là biến chính Codex đọc, nên tôn trọng nó cũng là
-# cách để test chạy được mà không bao giờ chạm `~/.codex` thật.
+# The config directory of Codex. `CODEX_HOME` is the variable Codex itself reads, so honouring
+# it is also what lets the tests run without ever touching the real `~/.codex`.
 THU_MUC_CODEX_MAC_DINH = "~/.codex"
 
 
 def duong_config_codex(moi_truong=None):
-    """Đường dẫn `config.toml` của Codex CLI ở máy này (chưa chắc tồn tại)."""
+    """The path of the Codex CLI `config.toml` on this machine (it may not exist)."""
     moi_truong = os.environ if moi_truong is None else moi_truong
     goc = moi_truong.get("CODEX_HOME") or os.path.expanduser(THU_MUC_CODEX_MAC_DINH)
     return os.path.join(goc, "config.toml")
 
 
 def _khoa_project(goc_bundle):
-    """Khoá TOML của một project — Codex khớp theo đường dẫn tuyệt đối đã giải symlink."""
+    """The TOML key of a project — Codex matches on the absolute, symlink-resolved path."""
     return f'[projects."{os.path.realpath(goc_bundle)}"]'
 
 
 def da_trusted(goc_bundle, moi_truong=None):
-    """Project đã được khai `trust_level = "trusted"` chưa. Thiếu file/thiếu quyền → False.
+    """Whether the project is declared `trust_level = "trusted"`. Missing file/permission → False.
 
-    Không ném với bất kỳ input nào: hàm này chạy trong đường `check`, và `check` mà crash ở
-    máy lạ nghĩa là người dùng mất luôn đường chẩn đoán.
+    It raises on no input: this function runs on the `check` path, and a `check` that crashes on a
+    strange machine means the user loses the way to diagnose anything.
     """
     noi_dung = _doc(duong_config_codex(moi_truong))
     if not noi_dung:
@@ -299,39 +300,39 @@ def da_trusted(goc_bundle, moi_truong=None):
     vi_tri = noi_dung.find(khoa)
     if vi_tri < 0:
         return False
-    # Chỉ đọc tới đầu block kế tiếp: `trust_level` của một project KHÁC không tính.
+    # Read only up to the next block: the `trust_level` of ANOTHER project does not count.
     con_lai = noi_dung[vi_tri + len(khoa):]
     ket = con_lai.find("\n[")
     return 'trust_level = "trusted"' in (con_lai if ket < 0 else con_lai[:ket])
 
 
 def bat_trusted(goc_bundle, moi_truong=None):
-    """Ghi block `[projects."<bundle>"] trust_level = "trusted"` vào config của Codex.
+    """Write the block `[projects."<bundle>"] trust_level = "trusted"` into the Codex config.
 
-    Đây là đường DUY NHẤT trong toàn bộ file này ghi ra ngoài cây bundle, nên nó bị bó bằng
-    ba luật cứng: chỉ chạy khi có cờ `--trust`, luôn để lại `<file>.tdq-bak-<timestamp>`
-    trước khi sửa file có sẵn, và không bao giờ ghi chồng block của project đã khai.
+    This is the ONLY path in this whole file writing outside the bundle tree, so three hard rules
+    bind it: it runs only with the `--trust` flag, it always leaves a `<file>.tdq-bak-<timestamp>`
+    before editing an existing file, and it never writes over the block of a declared project.
 
-    Vì sao vẫn cần: project chưa trusted thì Codex bỏ qua TOÀN BỘ tầng `.codex/` của nó —
-    MCP không nạp, hook không đọc. Bundle sẽ trông như không có gì, đúng câu hỏi đã sinh ra
-    request này.
+    Why it is needed anyway: until the project is trusted Codex ignores its ENTIRE `.codex/` layer
+    — MCP is not loaded, hooks are not read. The bundle looks like it holds nothing, which is the
+    very question that started this request.
 
-    Trả `(đã ghi?, đường dẫn config, lý do bỏ qua)`.
+    Returns `(written?, config path, reason it was skipped)`.
     """
     duong = duong_config_codex(moi_truong)
     if da_trusted(goc_bundle, moi_truong):
-        return False, duong, "project đã được khai trusted từ trước"
+        return False, duong, "the project was already declared trusted"
     cu = _doc(duong)
     khoi = f'\n{_khoa_project(goc_bundle)}\ntrust_level = "trusted"\n'
     if cu is None:
         os.makedirs(os.path.dirname(duong), exist_ok=True)
         with open(duong, "w", encoding="utf-8") as f:
-            f.write("# TDQ Workflow thêm block dưới đây bằng `setup --trust`.\n" + khoi)
-        log(f"tạo mới {duong} và khai project trusted")
+            f.write("# TDQ Workflow added the block below via `setup --trust`.\n" + khoi)
+        log(f"created {duong} and declared the project trusted")
         return True, duong, ""
     moi = cu if cu.endswith("\n") else cu + "\n"
     ghi_de_co_backup(duong, moi + khoi)
-    log(f"ghi {duong}: thêm block projects cho {os.path.realpath(goc_bundle)}")
+    log(f"writing {duong}: adding a projects block for {os.path.realpath(goc_bundle)}")
     return True, duong, ""
 
 
@@ -341,51 +342,51 @@ def _in_ket_qua(goc, manifest):
     file_ = kiem_file(goc, manifest)
     moi_truong = kiem_moi_truong(manifest)
     for tuong_doi in file_["thieu"]:
-        print(f"THIẾU  {tuong_doi}")
+        print(f"MISSING  {tuong_doi}")
     for tuong_doi in file_["lech"]:
-        print(f"LỆCH   {tuong_doi}")
+        print(f"DRIFT    {tuong_doi}")
     for dong in moi_truong["thieu"]:
-        print(f"THIẾU  {dong}")
+        print(f"MISSING  {dong}")
     for dong in moi_truong["luu_y"]:
-        print(f"LƯU Ý  {dong}")
+        print(f"NOTE     {dong}")
     for dong in bien_moi_truong_mcp(manifest):
-        print(f"LƯU Ý  biến {dong}")
-    # Chỉ bản codex mới có tầng `.codex/`, và chỉ tầng đó mới phụ thuộc trạng thái trusted.
+        print(f"NOTE     variable {dong}")
+    # Only the codex bundle has a `.codex/` layer, and only that layer depends on the trust state.
     if ".codex/config.toml" in manifest.get("files", {}):
         if da_trusted(goc):
-            print(f"LƯU Ý  project đã trusted trong {duong_config_codex()}")
+            print(f"NOTE     the project is trusted in {duong_config_codex()}")
         else:
-            print("LƯU Ý  project chưa trusted — Codex bỏ qua TOÀN BỘ .codex/ (MCP + hook)"
-                  " cho tới khi bạn chạy `setup --trust` hoặc bấm đồng ý trong Codex")
-    # Manifest không liệt kê file nào thì nó không chứng minh được gì. Báo "sạch 0 file" ở
-    # đây là biến một manifest hỏng thành giấy chứng nhận an toàn.
+            print("NOTE     the project is not trusted — Codex ignores the WHOLE .codex/ (MCP + hooks)"
+                  " until you run `setup --trust` or click approve inside Codex")
+    # A manifest listing no file proves nothing. Reporting "clean, 0 files" here turns a broken
+    # manifest into a certificate of safety.
     if not manifest.get("files"):
-        print("LỖI   manifest không liệt kê file nào — bản portable hỏng, chép lại từ gốc")
+        print("ERROR    the manifest lists no file — the portable bundle is broken, copy it again")
         return False
     sach = not (file_["thieu"] or file_["lech"] or moi_truong["thieu"])
     if sach:
-        print(f"SẠCH   {len(manifest.get('files', {}))} file khớp manifest")
+        print(f"CLEAN    {len(manifest.get('files', {}))} file(s) match the manifest")
     return sach
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="tdq_checkportable.py",
-        description="Kiểm bản portable theo manifest và tự vá phần thiếu.")
+        description="Check a portable bundle against its manifest and patch what is missing.")
     parser.add_argument("lenh", choices=("check", "setup"))
-    parser.add_argument("--root", help="gốc bản portable, mặc định suy từ vị trí script")
+    parser.add_argument("--root", help="bundle root, by default derived from the script location")
     parser.add_argument(
         "--trust", action="store_true",
-        help="chỉ dùng với `setup`: khai bundle này là project trusted trong config.toml của "
-             "Codex CLI (mặc định ~/.codex, hoặc $CODEX_HOME). Đây là đường DUY NHẤT ghi ra "
-             "ngoài bundle; luôn để lại bản sao lưu .tdq-bak-<timestamp>.")
+        help="only with `setup`: declare this bundle a trusted project in the config.toml of "
+             "Codex CLI (default ~/.codex, or $CODEX_HOME). This is the ONLY path writing outside "
+             "the bundle; it always leaves a .tdq-bak-<timestamp> backup.")
     args = parser.parse_args(argv)
 
     goc = args.root or tim_goc_bundle()
     try:
         manifest = doc_manifest(goc)
     except (FileNotFoundError, ValueError) as loi:
-        print(f"LỖI    {loi}")
+        print(f"ERROR    {loi}")
         return EXIT_LECH
 
     log(f"{args.lenh} · root={goc}")
@@ -393,28 +394,28 @@ def main(argv=None):
         try:
             da_lam, chiu = chay_setup(goc, manifest)
         except OSError as loi:
-            # Bundle giải nén sai quyền hoặc nằm trên mount chỉ đọc là ca thường gặp ở máy
-            # lạ. Traceback ở đây chỉ làm người dùng tưởng script hỏng.
-            print(f"LỖI   không ghi được vào bundle: {loi}")
-            print("      sửa quyền thư mục (chmod -R u+w) rồi chạy lại `setup`")
+            # A bundle unpacked with wrong permissions, or sitting on a read-only mount, is a common
+            # case on a strange machine. A traceback here only makes the user think the script broke.
+            print(f"ERROR    cannot write into the bundle: {loi}")
+            print("         fix the directory permissions (chmod -R u+w), then run `setup` again")
             return EXIT_LECH
         if args.trust:
             try:
                 da_ghi, duong, ly_do = bat_trusted(goc)
             except OSError as loi:
-                print(f"LỖI   không ghi được cấu hình Codex: {loi}")
+                print(f"ERROR    cannot write the Codex config: {loi}")
                 return EXIT_LECH
             da_lam.append(f"khai project trusted trong {duong}" if da_ghi
-                          else f"bỏ qua --trust: {ly_do}")
+                          else f"skipped --trust: {ly_do}")
         for viec in da_lam:
-            print(f"ĐÃ LÀM {viec}")
+            print(f"DONE     {viec}")
         if not da_lam:
-            print("ĐÃ LÀM (không có gì cần vá)")
+            print("DONE     (nothing needed patching)")
         for viec in chiu:
-            print(f"CÒN    {viec}")
+            print(f"LEFT     {viec}")
         sach = _in_ket_qua(goc, manifest)
-        # Vá xong mà bundle vẫn hỏng thì exit 0 là báo láo — người dùng sẽ đi tiếp và
-        # gặp lỗi thật ở giữa một request đang chạy dở.
+        # Patched and still broken means exit 0 would be a lie — the user walks on and hits the
+        # real error in the middle of a half-finished request.
         return 0 if sach else EXIT_LECH
 
     return 0 if _in_ket_qua(goc, manifest) else EXIT_LECH

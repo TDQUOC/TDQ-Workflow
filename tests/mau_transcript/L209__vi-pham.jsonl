@@ -1,0 +1,1 @@
+{"type": "result", "subtype": "success", "result": "Bạn muốn chạy pipeline nào: - A: chế độ nhanh - B: chế độ chuyên sâu?\n\n➤ Duyệt: nhắn A hoặc B", "total_cost_usd": 0.4, "num_turns": 6, "is_error": false}

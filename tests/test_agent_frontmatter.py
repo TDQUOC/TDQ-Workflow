@@ -83,11 +83,16 @@ class AgentDigestLimitTest(unittest.TestCase):
     def test_moi_agent_neu_nguong_digest(self):
         for name in self.agent_files():
             with self.subTest(agent=name):
-                self.assertIn("1.500 ký tự", self._body(name),
-                              f"{name}: thiếu ngưỡng digest ≤ 1.500 ký tự")
+                # Từ 2026-08-22 thân agent viết tiếng Anh; nhận cả hai cách viết ngưỡng.
+                self.assertTrue(
+                    any(m in self._body(name)
+                        for m in ("1,500 characters", "1.500 ký tự")),
+                    f"{name}: thiếu ngưỡng digest ≤ 1.500 ký tự")
 
     def test_moi_agent_cam_dan_output_tool_tho(self):
-        pattern = re.compile(r"(?i)(cấm|không) dán[^\n]{0,60}(thô|nguyên văn output|toàn bộ output)")
+        pattern = re.compile(
+            r"(?i)((cấm|không) dán[^\n]{0,60}(thô|nguyên văn output|toàn bộ output)"
+            r"|pasting[^\n]{0,120}?is banned)")
         for name in self.agent_files():
             with self.subTest(agent=name):
                 self.assertRegex(self._body(name), pattern,

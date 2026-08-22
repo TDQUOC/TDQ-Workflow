@@ -7,32 +7,52 @@ user-invocable: false
 # TDQ Conventions
 
 Rules shared by every phase. Other skills link here instead of copying them.
-Mọi output cho user viết **tiếng Việt**.
+
+## 0. Language — three reader layers
+
+One workflow, three kinds of reader, so three language rules. They never mix.
+
+| Layer | What it covers | Language |
+|---|---|---|
+| Rules | `skills/**`, `agents/*.md`, comments and docstrings in `hooks/` and `scripts/` | **English**, always |
+| Machine strings | anything a hook or a script PRINTS: log lines, errors, tables, argparse help | **English**, always |
+| Documents & dialogue | brief/spec/plan/qc/report and every sentence spoken to the user | the language of field `doc_lang` |
+
+- `doc_lang` is declared ONCE when the request opens — `tdq_state.py init <slug> <lane> --lang <code>` —
+  and stays constant for the whole request. Read it with `tdq_state.py get doc_lang`.
+- The code is a short BCP 47 machine code (`vi`, `en`, `ja`, `pt-br`), never a free-form name.
+  Field missing or unreadable → fall back to the default `vi`.
+- Never guess the language from the rule files: they are English by design, and their language says
+  nothing about the reader. The user's own words and `doc_lang` are the only sources.
+- A template quoted inside a rule file is a SHAPE, not wording to copy byte for byte: translate its text
+  into `doc_lang` while keeping the structure (line order, labels `A`/`B`, the `➤` line, separators).
 
 ## 1. One-turn protocol (mandatory, in this order)
 
 1. Turn start: the hook already printed `[TDQ:NEXT]` → use that text, **do not re-run**
    `tdq_state.py next`; run `next` only when the context has no such line.
 2. Do only the work of the current phase — never start work belonging to a later phase.
-3. A `[TDQ:<MÃ>]` line injected by a hook → **do what it says FIRST**, before anything else,
-   then print `✓ [TDQ:<MÃ>] <đã làm gì>`. Codes: [references/reminder-codes.md](references/reminder-codes.md).
+3. A `[TDQ:<CODE>]` line injected by a hook → **do what it says FIRST**, before anything else,
+   then print `✓ [TDQ:<CODE>] <what was done>`. Codes: [references/reminder-codes.md](references/reminder-codes.md).
 4. A turn that changed the repo MUST end with the closing command
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <file vừa sửa> --log "<tóm tắt>" --phase <phase mới>`
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <files just edited> --log "<summary>" --phase <new phase>`
    — lint those files → append the working log → set phase → graphify. **Never Edit/Read the working log and append by
    hand**, not even when `stop_gate.py` blocks you: a block means "the command has not run", not "run something else to
-   dodge it". This command is the **last action** of the turn; it runs BEFORE the closing chat block (summary, question,
-   `➤ Duyệt:`, over-budget report), and after that block **no further tool call** may happen, so it stays a real final
-   response. A long turn (team mode, several merge rounds) may call `tdq_finish.py` MANY times — one call per real
+   dodge it". This command is the **last action** of the turn. It runs BEFORE the closing chat block (summary,
+   question, the `➤` approval line, over-budget report). After that block **no further tool call** may happen, so the
+   block stays a real final response. A long turn (team mode, several merge rounds) may call `tdq_finish.py` MANY times — one call per real
    milestone, e.g. one merged batch; only the LAST call must be the final action. Never call it empty: every call
    carries `--files` and `--log` of the work just finished.
-5. **Turn còn chạy tiếp sau khi đã in khối user-facing** (bị hook chặn, tự phát hiện sót
-   việc, lỗi tool) → message cuối phải in **LẠI NGUYÊN VĂN 100%** khối đó. Gồm tóm tắt,
-   câu hỏi, ĐỦ option, dòng `➤ Duyệt:`. Đặt NGAY SAU dòng `✓ [TDQ:<MÃ>]`. Lý do: focus mode
-   chỉ hiện message cuối. Tóm tắt lại hay trỏ ngược ("xem câu hỏi ở trên") đều làm user
-   mất sạch câu hỏi và option. Cấm rút gọn, cấm trỏ ngược.
-6. **Every block addressed to the user** (pipeline question, interview, the spec / plan / mode / express gates, the
-   commit question) follows [references/user-facing-block.md](references/user-facing-block.md): câu dẫn xưng "bạn",
-   full file paths, a separator rule, the bold answer block last, no emoji.
+5. **The turn keeps running after the user-facing block was printed** — a hook blocked you, you noticed
+   missed work, a tool failed. The LAST message must then reprint that block **WORD FOR WORD, 100%**:
+   the summary, the question, EVERY option, the approval line. Put it RIGHT AFTER the
+   `✓ [TDQ:<CODE>]` line. Reason: focus mode shows only the last message. Summarising it again or
+   pointing backwards ("see the question above") loses the user the question and the options
+   entirely. Shortening is banned; pointing backwards is banned.
+6. **Every block addressed to the user** — pipeline question, interview, the spec / plan / mode / express
+   gates, the commit question — follows [references/user-facing-block.md](references/user-facing-block.md).
+   Its shape: an opening line addressing the user directly, full file paths, a separator rule, the bold
+   answer block last, no emoji.
 
 7. **Never end a turn while the plan still has tasks** — stopping with a `[ ]` task left is abandoning the job,
    however good the progress report looks. Exactly **three exceptions** may stop a turn:
@@ -43,8 +63,8 @@ Mọi output cho user viết **tiếng Việt**.
    Running out of step budget is NOT an exception: report it and carry on. Neither is "let's leave the rest for the
    next turn to keep this one tidy".
 
-Xong khi: phase mới đã ghi vào state và working log đã có entry của turn này.
-Bước kế tiếp: theo cột "lệnh chuyển tiếp" trong [references/phases.md](references/phases.md).
+Done when: the new phase is recorded in state and the working log holds this turn's entry.
+Next step: follow the "transition command" column of [references/phases.md](references/phases.md).
 
 ## 2. Phase table
 
@@ -79,19 +99,20 @@ Three rules that must never break, whatever else changes:
 
 ```
 docs/tdq/
-  state.json + STATE.md   # state ghi qua CLI; STATE.md là mirror tự sinh, chỉ đọc
+  state.json + STATE.md   # state written through the CLI; STATE.md is a generated mirror, read-only
   brief/<slug>.md     research/<slug>.md   spec/<slug>.md
   plan/<slug>.md      qc/<slug>.md         reports/<slug>.md
 docs/workinglog/YYYY-MM-DD.md
 ```
-Slug: `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>` (local time, so sorting names sorts by time),
-the same in every folder. Old date-only slugs still READ fine; writing a new one without hour
-and minute makes `init` refuse. `brief/` merges request, knowledge and Q&A into one file with
-exactly three sections: `## Nguyên văn`, `## Hiểu & kiến thức`, `## Hỏi đáp`.
+Slug: `YYYY-MM-DD-HHMM-<kebab, ≤5 words, unaccented ASCII>` (local time, so sorting names sorts by
+time), the same in every folder. Old date-only slugs still READ fine; writing a new one without hour
+and minute makes `init` refuse. `brief/` merges request, knowledge and Q&A into one file with exactly
+three sections — verbatim request · understanding & knowledge · Q&A. The heading wording is the one
+`doc_lint.py` checks for that language; keep the three sections, in that order, whatever the language.
 
 ## 6. Working log
 
-- Any turn that changed the repo → `tdq_finish.py --log` appends to the END of `docs/workinglog/<hôm nay>.md`: time,
+- Any turn that changed the repo → `tdq_finish.py --log` appends to the END of `docs/workinglog/<today>.md`: time,
   files changed, why, tests run. How the hook detects it: [reminder-codes.md](references/reminder-codes.md).
 - A read-only or analysis turn writes nothing. A turn that only edits the working log adds no further entry.
 - **Images the user attached.** A turn with attached images that must also write a working log → copy them into
@@ -101,7 +122,7 @@ exactly three sections: `## Nguyên văn`, `## Hiểu & kiến thức`, `## Hỏ
 ## 7. Git
 
 - Branch, commit and worktree names **never** start with `claude`, `antigravity`, `gemini`, `codex`.
-- Commit messages **never** contain "generated with <AI>", "được tạo cùng/với/bởi <AI>", or an AI Co-Authored-By trailer.
+- Commit messages **never** contain "generated with <AI>", any translation of that phrase, or an AI Co-Authored-By trailer.
 - **Never** commit or push before the user asks.
 
 ## 8. Research
@@ -114,7 +135,7 @@ exactly three sections: `## Nguyên văn`, `## Hiểu & kiến thức`, `## Hỏ
 
 ## 9. Sub-agents
 
-- The `description` of every Agent call reads `<model>-<effort>-<việc-kebab>` (e.g.
+- The `description` of every Agent call reads `<model>-<effort>-<task-kebab>` (e.g.
   `sonnet-low-research-doc`) — the name alone tells which model and effort are running.
 - Default model/effort per role plus the override rule: [references/subagent-tuning.md](references/subagent-tuning.md).
 
@@ -134,7 +155,7 @@ before/after carry-cost measurement scenario: [references/measure-scenario.md](r
 
 ## 11. Quality
 
-- Soul — the rule above every rule: chất lượng > runtime > context cost. Writing or changing a rule, rules that contradict each other, or a plan to cut steps → open [references/soul.md](references/soul.md).
+- Soul — the rule above every rule: quality > runtime > context cost. Writing or changing a rule, rules that contradict each other, or a plan to cut steps → open [references/soul.md](references/soul.md).
 - Clean code is standing behaviour, not a gate you ask about. Every time you write or change code, shape the project,
   scripts, functions and classes as cleanly as the five SOLID principles allow. Two-reader table, RIGHT/WRONG examples,
   five-question checklist: [references/clean-code.md](references/clean-code.md).

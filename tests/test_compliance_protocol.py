@@ -147,7 +147,7 @@ class ProtocolTest(unittest.TestCase):
             with self.subTest(prompt=prompt):
                 self.full_state(phase="spec", spec_file="docs/tdq/spec/x.md")
                 rc, out, _ = run_hook("prompt_context.py", self.payload("prompt.json", prompt=prompt))
-                self.assertIn("[TDQ:APPROVE] User vừa duyệt spec", out, prompt)
+                self.assertIn("[TDQ:APPROVE] The user just approved spec", out, prompt)
                 self.assertIn("approve spec", out)
 
         counter = ["ok tôi hiểu rồi", "spec này ổn không?", "duyệt chưa?", "ok"]
@@ -155,8 +155,8 @@ class ProtocolTest(unittest.TestCase):
             with self.subTest(prompt=prompt):
                 self.full_state(phase="spec", spec_file="docs/tdq/spec/x.md")
                 rc, out, _ = run_hook("prompt_context.py", self.payload("prompt.json", prompt=prompt))
-                self.assertNotIn("User vừa duyệt", out, f"{prompt!r} không được coi là duyệt")
-                self.assertIn("KHÔNG rõ là câu duyệt", out)
+                self.assertNotIn("The user just approved", out, f"{prompt!r} không được coi là duyệt")
+                self.assertIn("NOT clearly an approval", out)
 
     def test_approve_plan_captures_mode(self):
         self.full_state(phase="plan", spec_file="docs/tdq/spec/x.md", spec_approved=True,
@@ -175,15 +175,15 @@ class ProtocolTest(unittest.TestCase):
         self.assertIn(brief.split(" · Project:")[0], out)
 
         rc, out, _ = run_hook("session_start.py", self.payload("prompt.json"))
-        self.assertIn("Việc tiếp theo:", out)
-        self.assertIn("Checklist", out)
+        self.assertIn("Next:", out)
+        self.assertIn("checklist", out)
         self.assertLessEqual(len(out.splitlines()), 12, out)
 
     def test_session_start_budget(self):
         self.full_state()
         rc, out, _ = run_hook("session_start.py", self.payload("prompt.json"))
         self.assertLessEqual(len(out), 600, len(out))
-        self.assertIn("[TDQ] Luật:", out)
+        self.assertIn("[TDQ] Rule:", out)
 
     def test_prompt_budget(self):
         self.full_state(phase="spec", spec_file="docs/tdq/spec/x.md")

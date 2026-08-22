@@ -58,7 +58,7 @@ class PhaseTableTest(unittest.TestCase):
         # Từ 2026-08-09 phases-doc không sinh mục chi tiết từng phase nữa; lệnh thật
         # nằm ở khối "Lệnh nguyên văn" và ở cột lệnh của bảng.
         self.assertNotIn("\n## analyze", doc, "phases-doc còn sinh mục chi tiết phase")
-        block = doc.split("Lệnh nguyên văn", 1)[1]
+        block = doc.split("The commands verbatim", 1)[1]
         for section in ("analyze", "spec", "plan"):
             self.assertIn(f"{section}: python3 scripts/", block,
                           f"khối lệnh nguyên văn mất lệnh của {section}")
@@ -71,7 +71,7 @@ class PhaseTableTest(unittest.TestCase):
         row = tdq_state.PHASE_TABLE["quick"]
         self.assertIn("--no-qc", row["cmd"])
         joined = " ".join(row["checklist"])
-        self.assertIn("duyệt quick không QC", joined)
+        self.assertIn("--no-qc ONLY when the user says so", joined)
         self.assertIn("set phase=idle", joined)
 
     def test_render_plugin_root_variant(self):

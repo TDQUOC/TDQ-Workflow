@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""Dò lại request TDQ đang dở và báo cáo để tiếp tục mà không mất dữ liệu.
+"""Rediscover an unfinished TDQ request and report how to continue without losing data.
 
-Nguyên tắc: **đĩa là bằng chứng, `state.json` là lời khai**. Tài sản trong
-`docs/tdq/**`, git và working log đi theo repo khi đổi máy; `state.json` có thể cũ,
-sai schema, hoặc do một agent khác bỏ quên. Lệch nhau thì tin đĩa.
+Principle: **the disk is the evidence, `state.json` is only testimony**. The assets under
+`docs/tdq/**`, git and the working log travel with the repo across machines; `state.json`
+may be stale, on an old schema, or left behind by another agent. When they disagree, trust the disk.
 
-Script này CHỈ ĐỌC. Nó không bao giờ ghi `state.json` — chỉ IN ra lệnh vá đề xuất
-để người dùng gật một lần rồi skill mới chạy. Mọi lệnh vá bắt buộc thuộc đúng hai
-họ `tdq_state.py set …` và `tdq_state.py approve …`.
+This script is READ-ONLY. It never writes `state.json` — it only PRINTS the patch commands
+it proposes, for the user to approve once before a skill runs them. Every patch command
+must belong to exactly the two families `tdq_state.py set …` and `tdq_state.py approve …`.
 
-Dùng:
+Usage:
   python3 scripts/tdq_checkstatus.py report
   python3 scripts/tdq_checkstatus.py report --json
   python3 scripts/tdq_checkstatus.py report --project /duong/dan --now 2026-08-16T10:00:00+07:00
 
-Env: TDQ_PROJECT_DIR ghi đè project root · TDQ_LOG=0 tắt log tiến trình ra stderr.
-Exit: 0 mọi trạng thái (kể cả khi phát hiện lệch); 2 khi SAI CÚ PHÁP LỆNH.
+Env: TDQ_PROJECT_DIR overrides the project root · TDQ_LOG=0 mutes progress logs on stderr.
+Exit: 0 on every state (even when a mismatch is found); 2 on WRONG COMMAND SYNTAX.
 """
 import argparse
 import datetime
@@ -28,21 +28,21 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tdq_state  # noqa: E402
 
 SCHEMA_HIEN_TAI = tdq_state.default_state()["schema_version"]
-GIT_LOG_LIMIT = 20                      # trần để `report` giữ dưới 2,0 giây
+GIT_LOG_LIMIT = 20                      # cap that keeps `report` under 2.0 seconds
 LOAI_TAI_SAN = ("brief", "spec", "plan", "qc", "reports")
-MUC_HOP_LE = ("ok", "canh-bao", "chan")   # thứ tự = mức nghiêm trọng tăng dần
+MUC_HOP_LE = ("ok", "canh-bao", "chan")   # order = rising severity
 
-# Ba mức kết luận — chữ này đi thẳng vào báo cáo, skill đọc đúng chữ để rẽ nhánh.
-TIEP_TUC = "TIẾP TỤC ĐƯỢC"
-VA_ROI_TIEP = "VÁ RỒI TIẾP TỤC"
-CAN_USER = "CẦN USER QUYẾT"
+# The three verdicts — this exact wording goes into the report and the skill branches on it.
+TIEP_TUC = "TIẾP TỤC ĐƯỢC"  # i18n-allow
+VA_ROI_TIEP = "VÁ RỒI TIẾP TỤC"  # i18n-allow
+CAN_USER = "CẦN USER QUYẾT"  # i18n-allow
 
-# Chỉ hai họ lệnh này được phép sinh ra. Mọi thứ khác là đường làm mất dữ liệu.
+# Only these two command families may be produced. Anything else is a way to lose data.
 #
-# DANH SÁCH TRẮNG khớp NGUYÊN chuỗi, không phải danh sách đen. Danh sách đen từng để lọt
-# `>docs/x.md` (không space), `;mv …`, `&& git checkout --`, `| truncate …` — mỗi thứ đều
-# xoá được dữ liệu. Ở đây: đúng một lệnh, đúng một cặp khoá=giá trị hoặc một target duyệt,
-# và không ký tự shell nào. Giá trị chứa chữ "reset"/"init" là DỮ LIỆU, vẫn cho qua.
+# A WHITELIST matching the WHOLE string, not a blacklist. A blacklist used to let through
+# `>docs/x.md` (no space), `;mv …`, `&& git checkout --`, `| truncate …` — every one of them
+# can erase data. Here: exactly one command, exactly one key=value or one approval target,
+# and no shell character. A value holding the word "reset"/"init" is DATA and still passes.
 MAU_LENH_VA = re.compile(
     r"^python3 scripts/tdq_state\.py "
     r"(set [a-z_]+=\S+"
@@ -52,85 +52,85 @@ KY_TU_SHELL_CAM = ";|&<>$`\\\n\r\t*?(){}[]!"
 
 _TASK = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z][\w.]*)\*\*")
 
-# ---------------------------------------------------------------- 11 ca lệch
+# ------------------------------------------------------- the 11 mismatch cases
 #
-# Bảng cứng, không để model tự nghĩ ra chẩn đoán: model yếu gặp state lạ sẽ bịa
-# lệnh sai và làm mất spec/plan. Bản người đọc nằm ở
-# skills/tdq-check-status/references/bang-lech.md và bị test khoá cho khớp bảng này.
+# A hard table, never a diagnosis the model invents: a weak model meeting a strange state
+# would make up a wrong command and lose the spec/plan. The human-readable copy lives in
+# skills/tdq-check-status/references/bang-lech.md, and a test locks the two together.
 CA_LECH = {
     "D1": {
-        "dau_hieu": "không đọc được request nào (không có, phase = idle, hoặc state hỏng)",
+        "dau_hieu": "không đọc được request nào (không có, phase = idle, hoặc state hỏng)",  # i18n-allow
         "muc": "ok",
-        "chan_doan": "Đĩa trống thì mở request mới bằng tdq-intake; đĩa còn spec/plan thì "
-                     "CẤM chạy `init`, khôi phục state trước.",
+        "chan_doan": "Đĩa trống thì mở request mới bằng tdq-intake; đĩa còn spec/plan thì "  # i18n-allow
+                     "CẤM chạy `init`, khôi phục state trước.",  # i18n-allow
         "lenh_va": None,
     },
     "D2": {
-        "dau_hieu": "phase trong state lệch bằng chứng đĩa",
+        "dau_hieu": "phase trong state lệch bằng chứng đĩa",  # i18n-allow
         "muc": "canh-bao",
-        "chan_doan": "Phase khai trong state không khớp thứ đã có trên đĩa.",
-        "lenh_va": "set phase=PHASE_ĐÚNG",
+        "chan_doan": "Phase khai trong state không khớp thứ đã có trên đĩa.",  # i18n-allow
+        "lenh_va": "set phase=PHASE_ĐÚNG",  # i18n-allow
     },
     "D3": {
-        "dau_hieu": "sha256 của spec lệch với lúc duyệt (plan lệch chỉ là `ok`)",
+        "dau_hieu": "sha256 của spec lệch với lúc duyệt (plan lệch chỉ là `ok`)",  # i18n-allow
         "muc": "chan",
-        "chan_doan": "File đã sửa sau khi duyệt — cần user duyệt lại, cấm tự approve.",
+        "chan_doan": "File đã sửa sau khi duyệt — cần user duyệt lại, cấm tự approve.",  # i18n-allow
         "lenh_va": None,
     },
     "D4": {
-        "dau_hieu": "nhiều hơn một task mang dấu `[~]`",
+        "dau_hieu": "nhiều hơn một task mang dấu `[~]`",  # i18n-allow
         "muc": "canh-bao",
-        "chan_doan": "Không xác định được chỗ dừng: chỉ một task được phép `[~]`.",
+        "chan_doan": "Không xác định được chỗ dừng: chỉ một task được phép `[~]`.",  # i18n-allow
         "lenh_va": None,
     },
     "D5": {
-        "dau_hieu": "file đăng ký trong state nhưng mất trên đĩa",
+        "dau_hieu": "file đăng ký trong state nhưng mất trên đĩa",  # i18n-allow
         "muc": "chan",
-        "chan_doan": "Mất tài sản của request — khôi phục file trước, đừng đi tiếp.",
+        "chan_doan": "Mất tài sản của request — khôi phục file trước, đừng đi tiếp.",  # i18n-allow
         "lenh_va": None,
     },
     "D6": {
-        "dau_hieu": "cờ duyệt bật nhưng thiếu `*_approved_by` hoặc `*_approved_at`",
+        "dau_hieu": "cờ duyệt bật nhưng thiếu `*_approved_by` hoặc `*_approved_at`",  # i18n-allow
         "muc": "canh-bao",
-        "chan_doan": "Không truy được ai duyệt — xin user nhắc lại câu duyệt rồi ghi lại.",
-        "lenh_va": "approve TARGET --by \"CÂU_DUYỆT_NGUYÊN_VĂN_CỦA_USER\"",
+        "chan_doan": "Không truy được ai duyệt — xin user nhắc lại câu duyệt rồi ghi lại.",  # i18n-allow
+        "lenh_va": "approve TARGET --by \"CÂU_DUYỆT_NGUYÊN_VĂN_CỦA_USER\"",  # i18n-allow
     },
     "D7": {
-        "dau_hieu": "có commit git mới hơn `updated_at` của state",
+        "dau_hieu": "có commit git mới hơn `updated_at` của state",  # i18n-allow
         "muc": "canh-bao",
-        "chan_doan": "Ai đó (agent khác/máy khác) đã làm việc mà state chưa ghi nhận.",
+        "chan_doan": "Ai đó (agent khác/máy khác) đã làm việc mà state chưa ghi nhận.",  # i18n-allow
         "lenh_va": None,
     },
     "D8": {
-        "dau_hieu": "working log hôm nay không nhắc slug đang mở",
+        "dau_hieu": "working log hôm nay không nhắc slug đang mở",  # i18n-allow
         "muc": "ok",
-        "chan_doan": "Chưa có dòng log nào cho request này hôm nay — bình thường nếu vừa mở.",
+        "chan_doan": "Chưa có dòng log nào cho request này hôm nay — bình thường nếu vừa mở.",  # i18n-allow
         "lenh_va": None,
     },
     "D9": {
-        "dau_hieu": "`schema_version` cũ hơn bản hiện tại",
+        "dau_hieu": "`schema_version` cũ hơn bản hiện tại",  # i18n-allow
         "muc": "canh-bao",
-        "chan_doan": "State do bản plugin cũ ghi — nâng schema trước khi đọc tiếp.",
+        "chan_doan": "State do bản plugin cũ ghi — nâng schema trước khi đọc tiếp.",  # i18n-allow
         "lenh_va": f"set schema_version={SCHEMA_HIEN_TAI}",
     },
     "D10": {
-        "dau_hieu": "thiếu `started_at` hoặc `phase_history` rỗng",
+        "dau_hieu": "thiếu `started_at` hoặc `phase_history` rỗng",  # i18n-allow
         "muc": "canh-bao",
-        "chan_doan": "Mất mốc thời gian — bảng thời gian của report sẽ sai nếu không vá.",
-        "lenh_va": "set started_at=ISO_MỐC_MỞ_REQUEST",
+        "chan_doan": "Mất mốc thời gian — bảng thời gian của report sẽ sai nếu không vá.",  # i18n-allow
+        "lenh_va": "set started_at=ISO_MỐC_MỞ_REQUEST",  # i18n-allow
     },
     "D11": {
-        "dau_hieu": "có `state.json` lạc chỗ ngoài project root",
+        "dau_hieu": "có `state.json` lạc chỗ ngoài project root",  # i18n-allow
         "muc": "chan",
-        "chan_doan": "Hai state cùng sống: hook ghi một nơi, model đọc một nơi khác.",
+        "chan_doan": "Hai state cùng sống: hook ghi một nơi, model đọc một nơi khác.",  # i18n-allow
         "lenh_va": None,
     },
-    # Mode đội: `[>]` = đã giao cho agent con. Đứng yên ở `[>]` không phải lỗi —
-    # nhưng nó là câu trả lời cho "đang dừng ở đâu", nên phải nói ra.
+    # Team mode: `[>]` = handed to a sub-agent. Sitting at `[>]` is not an error —
+    # but it answers "where did this stop", so it has to be said out loud.
     "D12": {
-        "dau_hieu": "có task mang dấu `[>]`: đã giao agent con mà chưa hợp nhánh về",
+        "dau_hieu": "có task mang dấu `[>]`: đã giao agent con mà chưa hợp nhánh về",  # i18n-allow
         "muc": "ok",
-        "chan_doan": "Việc còn nằm ở nhánh riêng — dò xung đột rồi hợp về nhánh tích hợp.",
+        "chan_doan": "Việc còn nằm ở nhánh riêng — dò xung đột rồi hợp về nhánh tích hợp.",  # i18n-allow
         "lenh_va": None,
     },
 }
@@ -143,25 +143,25 @@ def _log_enabled():
 
 
 def _log(message):
-    """Log tiến trình ra stderr kèm timestamp. Tắt bằng TDQ_LOG=0."""
+    """Progress log on stderr with a timestamp. Muted with TDQ_LOG=0."""
     if _log_enabled():
         stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
         print(f"[{stamp}] {message}", file=sys.stderr)
 
 
-# ------------------------------------------------------------ chặn lệnh vá
+# ------------------------------------------------------ patch-command guard
 
 def kiem_lenh_va(lenh):
-    """Chặn nội bộ: raise ValueError nếu lệnh không thuộc hai họ set/approve.
+    """Internal guard: raise ValueError when the command is outside the set/approve families.
 
-    Đây là hàng rào cuối cùng của luật không mất dữ liệu. Mọi lệnh IN RA cho user
-    đều đi qua đây, nên một mẫu lệnh viết ẩu sẽ nổ ở test chứ không tới tay user.
+    This is the last fence of the no-data-loss rule. Every command PRINTED to the user passes
+    through here, so a sloppily written template blows up in the tests, never on the user.
     """
     xau = next((c for c in KY_TU_SHELL_CAM if c in lenh), None)
     if xau:
-        raise ValueError(f"lệnh vá chứa ký tự shell {xau!r}: {lenh!r}")
+        raise ValueError(f"the patch command holds the shell character {xau!r}: {lenh!r}")
     if not MAU_LENH_VA.match(lenh):
-        raise ValueError(f"lệnh vá không khớp danh sách trắng set/approve: {lenh!r}")
+        raise ValueError(f"the patch command matches no set/approve whitelist entry: {lenh!r}")
     return lenh
 
 
@@ -169,14 +169,14 @@ def _lenh(phan_con_lai):
     return kiem_lenh_va(f"python3 scripts/tdq_state.py {phan_con_lai}")
 
 
-# --------------------------------------------------------- gom bằng chứng
+# --------------------------------------------------- gather the evidence
 
 def _duong_tai_san(slug, loai):
     return os.path.join("docs", "tdq", loai, f"{slug}.md")
 
 
 def _dau_file(cwd, rel):
-    """Một tài sản trên đĩa: có/không, sha256, số dòng."""
+    """One asset on disk: present or not, sha256, line count."""
     if not rel:
         return {"co": False, "rel": None, "sha": None, "dong": 0}
     path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
@@ -184,17 +184,17 @@ def _dau_file(cwd, rel):
         return {"co": False, "rel": rel, "sha": None, "dong": 0}
     with open(path, encoding="utf-8", errors="replace") as f:
         dong = sum(1 for _ in f)
-    # Băm NỘI DUNG, đúng hàm mà `tdq_state` dùng lúc ghi duyệt. Băm kiểu khác ở đây
-    # thì ca D3 kêu oan mọi request, vì hai bên so hai con số không cùng luật.
+    # Hash the CONTENT with the very function `tdq_state` uses when recording an approval.
+    # A different hash makes case D3 cry wolf on every request, comparing two unlike numbers.
     return {"co": True, "rel": rel, "sha": tdq_state.sha256_noi_dung(path), "dong": dong}
 
 
 def _dem_tick(cwd, rel):
-    """Đếm checkbox plan VÀ lấy mã của các task `[~]`.
+    """Count the plan checkboxes AND collect the codes of the `[~]` tasks.
 
-    Tái dùng `tdq_state.plan_tick_state()` cho path/sha/tổng (đã có sẵn, tra bằng
-    `graphify query "plan_tick_state"`). Phải quét thêm một lượt vì hàm đó cố tình
-    không trả MÃ task — mà mã task chính là thứ trả lời "đang dừng ở đâu".
+    Reuses `tdq_state.plan_tick_state()` for path/sha/total (already there, found with
+    `graphify query "plan_tick_state"`). One extra scan is needed because that function
+    deliberately returns no task CODE — and the code is what answers "where did this stop".
     """
     goc = tdq_state.plan_tick_state(cwd)
     tick = {"tong": goc["total"], "xong": 0, "dang_lam": [], "da_giao": [],
@@ -226,10 +226,10 @@ def _dem_tick(cwd, rel):
 
 
 def _gom_git(cwd):
-    """Nhánh, commit gần đây và file bẩn. Repo không phải git thì trả lý do, không ném."""
+    """Branch, recent commits and dirty files. Not a git repo → return the reason, never raise."""
     out = tdq_state._git(cwd, "rev-parse", "--abbrev-ref", "HEAD")
     if out is None:
-        return {"co": False, "ly_do": "không phải git repo, hoặc chưa có commit nào",
+        return {"co": False, "ly_do": "không phải git repo, hoặc chưa có commit nào",  # i18n-allow
                 "nhanh": "—", "commit": [], "ban": []}
     nhanh = out.decode("utf-8", "replace").strip()
     log = tdq_state._git(cwd, "log", f"-{GIT_LOG_LIMIT}", "--format=%H%x09%cI%x09%s")
@@ -244,11 +244,11 @@ def _gom_git(cwd):
 
 
 def _gom_working_log(cwd, moc, slug):
-    """Working log của ngày `moc`: mốc entry cuối, và slug được nhắc ở đâu.
+    """The working log of day `moc`: the last entry mark, and where the slug is mentioned.
 
-    Hai cờ tách bạch có chủ ý: `nhac_slug` quét cả file (dùng chấm D8, tránh báo oan khi
-    slug nằm ở entry giữa ngày), `nhac_slug_entry_cuoi` chỉ soi entry cuối để trả lời
-    "việc gần nhất trong ngày có phải request này không".
+    Two flags on purpose: `nhac_slug` scans the whole file (used by case D8, so it does not cry
+    wolf when the slug sits in a mid-day entry), while `nhac_slug_entry_cuoi` looks only at the
+    last entry, answering "was the most recent work of the day this request".
     """
     rel = os.path.join("docs", "workinglog", moc.strftime("%Y-%m-%d") + ".md")
     path = os.path.join(cwd, rel)
@@ -268,11 +268,11 @@ def _gom_working_log(cwd, moc, slug):
 
 
 def doc_state_tho(cwd):
-    """Đọc thẳng file state, KHÔNG qua `tdq_state.load()`. Trả (tình trạng, dict thô).
+    """Read the state file directly, NOT through `tdq_state.load()`. Returns (status, raw dict).
 
-    Ba tình trạng: `ok` · `khong-co` (chưa từng có request) · `hong` (file còn đó nhưng
-    không parse được). Phân biệt hai cái sau là bắt buộc: coi state hỏng là "chưa có
-    request" thì bước kế tiếp sẽ là mở request mới, và request đang dở mất sạch.
+    Three statuses: `ok` · `khong-co` (no request ever) · `hong` (the file is there but does not
+    parse). Telling the last two apart is mandatory: treating a broken state as "no request"
+    makes the next step open a new request, and the unfinished one is lost for good.
     """
     path = tdq_state.state_path(cwd)
     if not os.path.isfile(path):
@@ -286,11 +286,11 @@ def doc_state_tho(cwd):
 
 
 def _schema_tren_dia(tho):
-    """`schema_version` ĐÚNG NHƯ trong file, ép về int.
+    """`schema_version` EXACTLY as the file holds it, coerced to int.
 
-    `tdq_state.load()` vá trường này về bản hiện tại trước khi trả ra, nên đọc qua nó
-    thì D9 không bao giờ bắt được state do bản plugin cũ ghi. Giá trị lạ (chuỗi, thiếu
-    hẳn) coi như 0 — báo D9 còn hơn nổ `TypeError` và mất cả báo cáo.
+    `tdq_state.load()` patches this field up to the current version before returning, so reading
+    through it means D9 never catches a state written by an old plugin build. A strange value
+    (a string, or missing) counts as 0 — reporting D9 beats a `TypeError` losing the report.
     """
     if not tho:
         return None
@@ -301,9 +301,9 @@ def _schema_tren_dia(tho):
 
 
 def slug_ung_vien(cwd):
-    """Slug đoán từ ĐĨA khi state không dùng được: file plan mới nhất, rồi spec, rồi brief.
+    """Slug guessed off the DISK when state is unusable: newest plan file, then spec, then brief.
 
-    Chỉ là gợi ý để user nhận ra request nào đang dở — không bao giờ được ghi vào state.
+    Only a hint so the user recognises which request is unfinished — never written into state.
     """
     for loai in ("plan", "spec", "brief"):
         thu_muc = os.path.join(cwd, "docs", "tdq", loai)
@@ -318,13 +318,13 @@ def slug_ung_vien(cwd):
 
 
 def gom_bang_chung(cwd, state, moc):
-    """Mọi thứ đọc được từ ĐĨA, chưa phán xét gì. Đây là đầu vào của bước chấm lệch."""
+    """Everything readable off the DISK, with no judgement yet. Input of the scoring step."""
     tinh_trang_state, tho = doc_state_tho(cwd)
     slug = (state or {}).get("active_request")
-    # State hỏng thì không có slug để bám; đoán từ đĩa để user còn nhận ra request nào dở.
+    # A broken state leaves no slug to hold on to; guess off the disk so the user still knows.
     ung_vien = slug_ung_vien(cwd) if not slug else None
     slug_dung = slug or ung_vien
-    _log(f"gom bằng chứng cho slug={slug_dung or '—'} tại {cwd} "
+    _log(f"gathering evidence for slug={slug_dung or '—'} at {cwd} "
          f"(state: {tinh_trang_state})")
     tai_san = {}
     for loai in LOAI_TAI_SAN:
@@ -344,54 +344,54 @@ def gom_bang_chung(cwd, state, moc):
         "state_lac_cho": tdq_state.find_shadow_states(cwd),
         "schema_tren_dia": _schema_tren_dia(tho),
     }
-    _log(f"bằng chứng: tick {tick['xong']}/{tick['tong']} · "
-         f"git {'có' if bang_chung['git']['co'] else 'không'} · "
-         f"state lạc chỗ {len(bang_chung['state_lac_cho'])}")
+    _log(f"evidence: ticks {tick['xong']}/{tick['tong']} · "
+         f"git {'yes' if bang_chung['git']['co'] else 'no'} · "
+         f"stray state files {len(bang_chung['state_lac_cho'])}")
     return bang_chung
 
 
-# ---------------------------------------------------------- chấm 11 ca lệch
+# ---------------------------------------------------- score the 11 cases
 
 def _ca(ma, chi_tiet, muc=None, lenh_va=None):
     luat = CA_LECH[ma]
     if muc and muc not in MUC_HOP_LE:
-        raise ValueError(f"{ma}: mức {muc!r} ngoài {MUC_HOP_LE}")
+        raise ValueError(f"{ma}: level {muc!r} outside {MUC_HOP_LE}")
     return {"ma": ma, "muc": muc or luat["muc"], "dau_hieu": luat["dau_hieu"],
             "chan_doan": luat["chan_doan"], "chi_tiet": chi_tiet,
             "lenh_va": _lenh(lenh_va) if lenh_va else None}
 
 
 def _cham_d2(state, bang_chung):
-    """Phase khai trong state so với thứ thật sự có trên đĩa."""
+    """The phase state claims, against what the disk actually holds."""
     phase = state.get("phase")
     tai_san, tick = bang_chung["tai_san"], bang_chung["tick"]
     if phase == "spec" and not tai_san["spec"]["co"]:
-        return _ca("D2", "phase=spec nhưng chưa có file spec trên đĩa — viết tiếp spec",
+        return _ca("D2", "phase=spec nhưng chưa có file spec trên đĩa — viết tiếp spec",  # i18n-allow
                    muc="ok")
     if phase == "plan" and not tai_san["plan"]["co"]:
-        return _ca("D2", "phase=plan nhưng chưa có file plan trên đĩa — viết tiếp plan",
+        return _ca("D2", "phase=plan nhưng chưa có file plan trên đĩa — viết tiếp plan",  # i18n-allow
                    muc="ok")
     if phase == "implement" and tick["co"] and tick["tong"] and tick["xong"] == 0 \
             and not tick["dang_lam"]:
-        return _ca("D2", "phase=implement nhưng plan chưa có task nào được tick — "
-                         "bắt đầu từ task đầu tiên", muc="ok")
+        return _ca("D2", "phase=implement nhưng plan chưa có task nào được tick — "  # i18n-allow
+                         "bắt đầu từ task đầu tiên", muc="ok")  # i18n-allow
     if phase == "implement" and tick["tong"] and tick["xong"] == tick["tong"]:
-        return _ca("D2", f"mọi task ({tick['tong']}/{tick['tong']}) đã `[x]` mà phase vẫn "
-                         "là implement", lenh_va="set phase=qc")
+        return _ca("D2", f"mọi task ({tick['tong']}/{tick['tong']}) đã `[x]` mà phase vẫn "  # i18n-allow
+                         "là implement", lenh_va="set phase=qc")  # i18n-allow
     if phase == "qc" and not tai_san["qc"]["co"]:
-        return _ca("D2", "phase=qc nhưng chưa có file qc trên đĩa — chạy QC rồi ghi file",
+        return _ca("D2", "phase=qc nhưng chưa có file qc trên đĩa — chạy QC rồi ghi file",  # i18n-allow
                    muc="ok")
     if phase == "report" and not tai_san["reports"]["co"]:
-        return _ca("D2", "phase=report nhưng chưa có file report trên đĩa", muc="ok")
+        return _ca("D2", "phase=report nhưng chưa có file report trên đĩa", muc="ok")  # i18n-allow
     return None
 
 
 def _cham_d3(state, bang_chung):
-    """sha256 lúc duyệt so với sha256 hiện tại — bắt file bị sửa sau cổng duyệt.
+    """sha256 at approval vs sha256 now — catches a file edited after the approval gate.
 
-    Spec lệch = `chan`: nội dung đã duyệt không còn, phải xin user duyệt lại.
-    Plan lệch chỉ là `ok`: mỗi lần tick một task là plan đổi sha, nên đây là chuyện
-    xảy ra hằng ngày. Nâng nó lên `chan` sẽ chặn oan mọi request đang implement.
+    A spec mismatch is `chan`: the approved content is gone and the user must approve again.
+    A plan mismatch is only `ok`: ticking one task changes the plan sha, so it happens every
+    day. Raising it to `chan` would falsely block every request in implement.
     """
     ra = []
     for loai in ("spec", "plan"):
@@ -401,10 +401,10 @@ def _cham_d3(state, bang_chung):
         that = bang_chung["tai_san"][loai]["sha"]
         if not (da_ghi and that) or da_ghi == that:
             continue
-        chi_tiet = f"{loai}: sha lúc duyệt {da_ghi[:8]} ≠ trên đĩa {that[:8]}"
+        chi_tiet = f"{loai}: sha lúc duyệt {da_ghi[:8]} ≠ trên đĩa {that[:8]}"  # i18n-allow
         if loai == "plan":
-            ra.append(_ca("D3", chi_tiet + " (bình thường nếu chỉ là tick checkbox; "
-                                           "soi mắt nếu có task mới hay đổi phạm vi)",
+            ra.append(_ca("D3", chi_tiet + " (bình thường nếu chỉ là tick checkbox; "  # i18n-allow
+                                           "soi mắt nếu có task mới hay đổi phạm vi)",  # i18n-allow
                           muc="ok"))
         else:
             ra.append(_ca("D3", chi_tiet))
@@ -416,7 +416,7 @@ def _cham_d5(state, bang_chung):
     for loai in ("spec", "plan"):
         dau = bang_chung["tai_san"][loai]
         if state.get(f"{loai}_file") and not dau["co"]:
-            ra.append(_ca("D5", f"state khai {loai}_file = {dau['rel']} nhưng file không còn"))
+            ra.append(_ca("D5", f"state khai {loai}_file = {dau['rel']} nhưng file không còn"))  # i18n-allow
     return ra
 
 
@@ -428,14 +428,14 @@ def _cham_d6(state):
         thieu = [k for k in ("_approved_by", "_approved_at") if not state.get(loai + k)]
         if thieu:
             muc_tieu = loai if loai != "quick" else "quick"
-            ra.append(_ca("D6", f"{loai}_approved = true nhưng thiếu {', '.join(thieu)}",
+            ra.append(_ca("D6", f"{loai}_approved = true nhưng thiếu {', '.join(thieu)}",  # i18n-allow
                           lenh_va=f"approve {muc_tieu} --by "
-                                  "\"CÂU_DUYỆT_NGUYÊN_VĂN_CỦA_USER\""))
+                                  "\"CÂU_DUYỆT_NGUYÊN_VĂN_CỦA_USER\""))  # i18n-allow
     return ra
 
 
 def _cham_d7(state, bang_chung):
-    """Commit mới hơn `updated_at` = dấu vết của agent khác hoặc máy khác."""
+    """A commit newer than `updated_at` = the trace of another agent or another machine."""
     git = bang_chung["git"]
     if not git["co"] or not state.get("updated_at"):
         return None
@@ -453,21 +453,21 @@ def _cham_d7(state, bang_chung):
             moi.append(f"{c['sha']} {c['tieu_de']}")
     if not moi:
         return None
-    return _ca("D7", f"{len(moi)} commit sau mốc {state['updated_at']}: " + " · ".join(moi))
+    return _ca("D7", f"{len(moi)} commit sau mốc {state['updated_at']}: " + " · ".join(moi))  # i18n-allow
 
 
 def cham_ca_lech(cwd, state, bang_chung):
-    """Chấm đủ 11 ca theo bảng cứng. Trả list ca ĐANG dính, giữ thứ tự D1→D11."""
-    # "Đọc không được" KHÁC "không có". Gộp hai ca lại là cách nhanh nhất làm mất
-    # cả request: model yếu thấy "chưa có request" sẽ chạy `init` đè lên spec/plan.
+    """Score all 11 cases off the hard table. Returns the cases hit, in D1→D11 order."""
+    # "Cannot be read" is NOT "does not exist". Merging the two is the fastest way to lose a
+    # request: a weak model seeing "no request" runs `init` straight over the spec/plan.
     if bang_chung["tinh_trang_state"] == "hong":
         ung_vien = bang_chung["slug_ung_vien"]
-        return [_ca("D1", "`state.json` có trên đĩa nhưng đọc không được (JSON hỏng) — "
-                          f"tài sản còn trên đĩa của slug `{ung_vien or '—'}`. "
-                          "CẤM chạy `init`: sẽ xoá sạch state và mất dấu request này.",
+        return [_ca("D1", "`state.json` có trên đĩa nhưng đọc không được (JSON hỏng) — "  # i18n-allow
+                          f"tài sản còn trên đĩa của slug `{ung_vien or '—'}`. "  # i18n-allow
+                          "CẤM chạy `init`: sẽ xoá sạch state và mất dấu request này.",  # i18n-allow
                     muc="chan")]
     if not state or not state.get("active_request") or state.get("phase") == "idle":
-        return [_ca("D1", "state không có request nào đang mở")]
+        return [_ca("D1", "state không có request nào đang mở")]  # i18n-allow
 
     ra = []
     d2 = _cham_d2(state, bang_chung)
@@ -477,7 +477,7 @@ def cham_ca_lech(cwd, state, bang_chung):
 
     dang_lam = bang_chung["tick"]["dang_lam"]
     if len(dang_lam) > 1:
-        ra.append(_ca("D4", "nhiều task cùng mang `[~]`: " + ", ".join(dang_lam)))
+        ra.append(_ca("D4", "nhiều task cùng mang `[~]`: " + ", ".join(dang_lam)))  # i18n-allow
 
     ra += _cham_d5(state, bang_chung)
     ra += _cham_d6(state)
@@ -488,37 +488,37 @@ def cham_ca_lech(cwd, state, bang_chung):
 
     log = bang_chung["working_log"]
     if not log["nhac_slug"]:
-        ly_do = "chưa có file log hôm nay" if not log["co"] else "log hôm nay không nhắc slug"
+        ly_do = "chưa có file log hôm nay" if not log["co"] else "log hôm nay không nhắc slug"  # i18n-allow
         ra.append(_ca("D8", f"{ly_do} ({log['rel']})"))
 
     tren_dia = bang_chung["schema_tren_dia"]
     if tren_dia is not None and tren_dia < SCHEMA_HIEN_TAI:
-        ra.append(_ca("D9", f"schema_version trên đĩa = {tren_dia} "
-                            f"< bản hiện tại {SCHEMA_HIEN_TAI}",
+        ra.append(_ca("D9", f"schema_version trên đĩa = {tren_dia} "  # i18n-allow
+                            f"< bản hiện tại {SCHEMA_HIEN_TAI}",  # i18n-allow
                       lenh_va=f"set schema_version={SCHEMA_HIEN_TAI}"))
 
     thieu_moc = [k for k in ("started_at", "phase_history") if not state.get(k)]
     if thieu_moc:
-        # Chỉ `started_at` mới vá được bằng `set`. `phase_history` rỗng thì không lệnh nào
-        # dựng lại lịch sử — báo mức `ok` chứ đừng hứa một lệnh vá không chữa được gì.
+        # Only `started_at` is patchable with `set`. An empty `phase_history` cannot be rebuilt by
+        # any command — report level `ok` instead of promising a patch that cures nothing.
         va_duoc = not state.get("started_at")
-        ra.append(_ca("D10", "thiếu " + ", ".join(thieu_moc),
+        ra.append(_ca("D10", "thiếu " + ", ".join(thieu_moc),  # i18n-allow
                       muc=None if va_duoc else "ok",
-                      lenh_va="set started_at=ISO_MỐC_MỞ_REQUEST" if va_duoc else None))
+                      lenh_va="set started_at=ISO_MỐC_MỞ_REQUEST" if va_duoc else None))  # i18n-allow
 
     if bang_chung["state_lac_cho"]:
-        ra.append(_ca("D11", "state lạc chỗ: " + ", ".join(bang_chung["state_lac_cho"])))
+        ra.append(_ca("D11", "state lạc chỗ: " + ", ".join(bang_chung["state_lac_cho"])))  # i18n-allow
 
     da_giao = bang_chung["tick"]["da_giao"]
     if da_giao:
-        ra.append(_ca("D12", "đã giao agent con, chưa hợp nhánh: " + ", ".join(da_giao)))
+        ra.append(_ca("D12", "đã giao agent con, chưa hợp nhánh: " + ", ".join(da_giao)))  # i18n-allow
 
-    _log(f"chấm xong: {len(ra)} ca lệch")
+    _log(f"scored: {len(ra)} mismatch case(s)")
     return ra
 
 
 def ket_luan(ca_lech):
-    """Ba mức kết luận — skill đọc đúng chữ này để rẽ nhánh, đừng đổi chữ."""
+    """The three verdicts — the skill branches on this exact wording, so never reword it."""
     if any(c["muc"] == "chan" for c in ca_lech):
         return CAN_USER
     canh_bao = [c for c in ca_lech if c["muc"] == "canh-bao"]
@@ -530,102 +530,102 @@ def ket_luan(ca_lech):
 
 
 def viec_ke_tiep(state, bang_chung, muc_ket_luan, ca_lech=()):
-    """Một câu duy nhất trả lời 'gật xong thì làm gì'."""
+    """A single sentence answering 'once approved, what do I do'."""
     if bang_chung.get("tinh_trang_state") == "hong":
         ung_vien = bang_chung.get("slug_ung_vien")
-        return ("Trình user: `state.json` hỏng, đĩa còn tài sản của "
-                f"`{ung_vien or 'một request chưa rõ'}`. Xin user dựng lại state; "
-                "CẤM chạy lệnh khởi tạo.")
+        return ("Trình user: `state.json` hỏng, đĩa còn tài sản của "  # i18n-allow
+                f"`{ung_vien or 'một request chưa rõ'}`. Xin user dựng lại state; "  # i18n-allow
+                "CẤM chạy lệnh khởi tạo.")  # i18n-allow
     if not state or not state.get("active_request"):
-        return "Mở request mới bằng skill tdq-intake."
+        return "Mở request mới bằng skill tdq-intake."  # i18n-allow
     if muc_ket_luan == CAN_USER:
-        # Gọi đích danh ca đang chặn: câu chung chung "các ca mức chan" sai hẳn khi
-        # thứ đẩy sang CẦN USER QUYẾT lại là một cảnh báo không có lệnh vá.
+        # Name the blocking case: the generic "the cases at level chan" is plain wrong when the
+        # thing pushing it to the user-decision verdict is a warning carrying no patch command.
         chan = [c["ma"] for c in ca_lech if c["muc"] == "chan"]
         con_lai = [c["ma"] for c in ca_lech if c["muc"] == "canh-bao" and not c["lenh_va"]]
         ma = chan or con_lai
-        return (f"Trình ca {', '.join(ma)} cho user quyết, KHÔNG tự đi tiếp."
-                if ma else "Trình bảng ca lệch cho user quyết, KHÔNG tự đi tiếp.")
+        return (f"Trình ca {', '.join(ma)} cho user quyết, KHÔNG tự đi tiếp."  # i18n-allow
+                if ma else "Trình bảng ca lệch cho user quyết, KHÔNG tự đi tiếp.")  # i18n-allow
     phase = state.get("phase")
     dang_lam = bang_chung["tick"]["dang_lam"]
     if phase == "implement" and dang_lam:
-        return f"Làm tiếp đúng task {dang_lam[0]} trong plan (task duy nhất mang `[~]`)."
+        return f"Làm tiếp đúng task {dang_lam[0]} trong plan (task duy nhất mang `[~]`)."  # i18n-allow
     da_giao = bang_chung["tick"]["da_giao"]
     if phase == "implement" and da_giao:
-        return (f"Task đã giao mà chưa hợp về: {', '.join(da_giao)}. Dò xung đột rồi hợp — "
+        return (f"Task đã giao mà chưa hợp về: {', '.join(da_giao)}. Dò xung đột rồi hợp — "  # i18n-allow
                 f"python3 scripts/tdq_team.py kiem {da_giao[0]} "
                 f"&& python3 scripts/tdq_team.py hop {da_giao[0]}.")
-    return f"Chạy tiếp phase `{phase}` theo skill tương ứng."
+    return f"Chạy tiếp phase `{phase}` theo skill tương ứng."  # i18n-allow
 
 
-# ------------------------------------------------------------- báo cáo ra
+# ------------------------------------------------------------- report output
 
 def bao_cao_markdown(state, bang_chung, ca_lech, muc_ket_luan):
-    """Đúng 6 mục, đúng thứ tự. Khuôn người đọc ở references/report-template.md."""
+    """Exactly 6 sections, in that order. Human-readable template: references/report-template.md."""
     state = state or {}
     slug = state.get("active_request")
     tick = bang_chung["tick"]
     git = bang_chung["git"]
-    out = ["# Check status — request đang dở", ""]
+    out = ["# Check status — request đang dở", ""]  # i18n-allow
 
     out += ["## Request", ""]
     if bang_chung.get("tinh_trang_state") == "hong":
-        out += ["- `state.json` HỎNG, không đọc được (ca D1 mức `chan`).",
-                f"- Slug đoán từ đĩa: `{bang_chung.get('slug_ung_vien') or '—'}`",
-                "- Mọi trường dưới đây lấy từ ĐĨA, không lấy từ state.", ""]
+        out += ["- `state.json` HỎNG, không đọc được (ca D1 mức `chan`).",  # i18n-allow
+                f"- Slug đoán từ đĩa: `{bang_chung.get('slug_ung_vien') or '—'}`",  # i18n-allow
+                "- Mọi trường dưới đây lấy từ ĐĨA, không lấy từ state.", ""]  # i18n-allow
     elif not slug:
-        out += ["Chưa có request TDQ nào đang chạy (ca D1).", ""]
+        out += ["Chưa có request TDQ nào đang chạy (ca D1).", ""]  # i18n-allow
     else:
         out += [f"- Slug: `{slug}`",
                 f"- Lane: {state.get('lane') or '—'} · Phase: `{state.get('phase')}`",
-                f"- Mode thực thi: {state.get('implement_mode') or '—'}",
-                f"- Mở lúc: {state.get('started_at') or '—'} · "
-                f"Ghi lần cuối: {state.get('updated_at') or '—'}", ""]
+                f"- Mode thực thi: {state.get('implement_mode') or '—'}",  # i18n-allow
+                f"- Mở lúc: {state.get('started_at') or '—'} · "  # i18n-allow
+                f"Ghi lần cuối: {state.get('updated_at') or '—'}", ""]  # i18n-allow
 
-    out += ["## Bằng chứng trên đĩa", "",
-            "| Nguồn | Thấy gì |", "|---|---|"]
+    out += ["## Bằng chứng trên đĩa", "",  # i18n-allow
+            "| Nguồn | Thấy gì |", "|---|---|"]  # i18n-allow
     for loai in LOAI_TAI_SAN:
         dau = bang_chung["tai_san"][loai]
-        out.append(f"| {loai} | {'có, ' + str(dau['dong']) + ' dòng' if dau['co'] else 'không có'}"
+        out.append(f"| {loai} | {'có, ' + str(dau['dong']) + ' dòng' if dau['co'] else 'không có'}"  # i18n-allow
                    f" ({dau['rel'] or '—'}) |")
-    out.append(f"| plan tick | {tick['xong']}/{tick['tong']} xong · đang làm: "
-               f"{', '.join(tick['dang_lam']) or '—'} · đã giao: "
+    out.append(f"| plan tick | {tick['xong']}/{tick['tong']} xong · đang làm: "  # i18n-allow
+               f"{', '.join(tick['dang_lam']) or '—'} · đã giao: "  # i18n-allow
                f"{', '.join(tick.get('da_giao') or []) or '—'} |")
-    out.append(f"| git | {git['nhanh']} · {len(git['commit'])} commit gần đây · "
-               f"{len(git['ban'])} file bẩn{'' if git['co'] else ' — ' + git['ly_do']} |")
+    out.append(f"| git | {git['nhanh']} · {len(git['commit'])} commit gần đây · "  # i18n-allow
+               f"{len(git['ban'])} file bẩn{'' if git['co'] else ' — ' + git['ly_do']} |")  # i18n-allow
     log = bang_chung["working_log"]
-    out.append(f"| working log | {log['rel']} · entry cuối: {log['entry_cuoi'] or '—'} · "
-               f"{'nhắc slug' if log['nhac_slug'] else 'không nhắc slug'} |")
+    out.append(f"| working log | {log['rel']} · entry cuối: {log['entry_cuoi'] or '—'} · "  # i18n-allow
+               f"{'nhắc slug' if log['nhac_slug'] else 'không nhắc slug'} |")  # i18n-allow
     out.append("")
 
-    out += ["## Ca lệch phát hiện", ""]
+    out += ["## Ca lệch phát hiện", ""]  # i18n-allow
     if not ca_lech:
-        out += ["Không ca nào — state khớp đĩa.", ""]
+        out += ["Không ca nào — state khớp đĩa.", ""]  # i18n-allow
     else:
-        out += ["| Mã | Mức | Chi tiết | Chẩn đoán |", "|---|---|---|---|"]
+        out += ["| Mã | Mức | Chi tiết | Chẩn đoán |", "|---|---|---|---|"]  # i18n-allow
         out += [f"| {c['ma']} | {c['muc']} | {c['chi_tiet']} | {c['chan_doan']} |"
                 for c in ca_lech]
         out.append("")
 
-    out += ["## Kết luận", "", f"**{muc_ket_luan}**", ""]
+    out += ["## Kết luận", "", f"**{muc_ket_luan}**", ""]  # i18n-allow
 
     lenh = [c["lenh_va"] for c in ca_lech if c["lenh_va"]]
-    out += ["## Lệnh vá đề xuất", ""]
+    out += ["## Lệnh vá đề xuất", ""]  # i18n-allow
     if not lenh:
-        out += ["Không có lệnh vá nào cần chạy.", ""]
+        out += ["Không có lệnh vá nào cần chạy.", ""]  # i18n-allow
     else:
-        out += ["Chạy sau khi user gật ĐÚNG MỘT lần. Chỉ hai họ `set` và `approve`; "
-                "không có lệnh nào xoá hay ghi đè dữ liệu cũ.", "", "```bash"]
+        out += ["Chạy sau khi user gật ĐÚNG MỘT lần. Chỉ hai họ `set` và `approve`; "  # i18n-allow
+                "không có lệnh nào xoá hay ghi đè dữ liệu cũ.", "", "```bash"]  # i18n-allow
         out += lenh
         out += ["```", ""]
 
-    out += ["## Việc kế tiếp", "",
+    out += ["## Việc kế tiếp", "",  # i18n-allow
             viec_ke_tiep(state, bang_chung, muc_ket_luan, ca_lech), ""]
     return "\n".join(out)
 
 
 def thu_thap(cwd, moc):
-    """Một lượt đọc đĩa → (state, bằng chứng, ca lệch, kết luận)."""
+    """One pass over the disk → (state, evidence, mismatch cases, verdict)."""
     state = tdq_state.load(cwd, heal=False)
     bang_chung = gom_bang_chung(cwd, state, moc)
     ca_lech = cham_ca_lech(cwd, state, bang_chung)
@@ -654,18 +654,18 @@ def _moc(raw):
     try:
         return datetime.datetime.fromisoformat(raw)
     except ValueError:
-        raise argparse.ArgumentTypeError(f"--now phải là ISO 8601, nhận {raw!r}")
+        raise argparse.ArgumentTypeError(f"--now must be ISO 8601, got {raw!r}")
 
 
 def cli(argv):
     parser = argparse.ArgumentParser(
         prog="tdq_checkstatus.py", description=__doc__.splitlines()[0])
     con = parser.add_subparsers(dest="lenh", required=True)
-    rep = con.add_parser("report", help="dò request đang dở và in báo cáo")
+    rep = con.add_parser("report", help="probe the unfinished request and print the report")
     rep.add_argument("--json", action="store_true", dest="ra_json",
-                     help="in dữ liệu máy đọc thay vì markdown")
-    rep.add_argument("--project", default=None, help="project root (mặc định: tự dò)")
-    rep.add_argument("--now", default=None, type=_moc, help="mốc 'hôm nay' dạng ISO 8601")
+                     help="print machine-readable data instead of markdown")
+    rep.add_argument("--project", default=None, help="project root (default: auto-detect)")
+    rep.add_argument("--now", default=None, type=_moc, help="the 'today' mark, ISO 8601")
     args = parser.parse_args(argv)
 
     cwd = args.project or tdq_state.resolve_project_dir()
@@ -677,10 +677,10 @@ def cli(argv):
         print(json.dumps(_json_ra(state, bang_chung, ca_lech, muc), ensure_ascii=False))
     else:
         print(bao_cao_markdown(state, bang_chung, ca_lech, muc))
-    _log(f"kết luận: {muc}")
+    _log(f"verdict: {muc}")
     return 0
 
 
 if __name__ == "__main__":
-    # argparse tự thoát 2 khi sai cú pháp — đó là hợp đồng ghi ở docstring đầu file.
+    # argparse exits 2 on bad syntax by itself — the contract stated in the module docstring.
     sys.exit(cli(sys.argv[1:]))

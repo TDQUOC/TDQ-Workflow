@@ -360,7 +360,7 @@ class MultiRepoTest(Fixture):
         self.assertEqual(code, 1)
         self.assertIn("mem0-repo", out)
         self.assertNotIn("tdqworkflow-repo | commit", out)
-        self.assertIn("1 mục lệch", out)
+        self.assertIn("1 drift item(s)", out)
 
 
 class SkillsGeneralizeTest(Fixture):
@@ -533,7 +533,7 @@ class CheckTest(Fixture):
         self.assertEqual(self.build()[0], 0)
         code, out, _ = self.check()
         self.assertEqual(code, 0)
-        self.assertIn("0 mục lệch", out)
+        self.assertIn("0 drift item(s)", out)
 
     def test_config_drift_named_and_exit_1(self):
         self.assertEqual(self.build()[0], 0)
@@ -542,7 +542,7 @@ class CheckTest(Fixture):
         code, out, _ = self.check()
         self.assertEqual(code, 1)
         self.assertIn("config/CLAUDE.md", out)
-        self.assertIn("1 mục lệch", out)
+        self.assertIn("1 drift item(s)", out)
 
     def test_missing_source_file_counts_as_drift(self):
         self.assertEqual(self.build()[0], 0)
@@ -585,7 +585,7 @@ class CheckTest(Fixture):
         code, _, err = self.check()
         self.assertEqual(code, 2)
         self.assertNotIn("Traceback", err)
-        self.assertIn("đọc không được", err)
+        self.assertIn("cannot be read", err)
 
     def test_unknown_old_commit_says_so_instead_of_question_mark(self):
         """SHA cũ không có trong repo thì nói thẳng, không in `(+?)`."""
@@ -599,7 +599,7 @@ class CheckTest(Fixture):
         code, out, _ = self.check()
         self.assertEqual(code, 1)
         self.assertNotIn("+?", out)
-        self.assertIn("không so được", out)
+        self.assertIn("not measurable", out)
 
 
 # ---------------------------------------------------------------- P5: tài liệu bundle

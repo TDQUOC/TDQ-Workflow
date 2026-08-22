@@ -1,24 +1,25 @@
-# TDQ STATE (tự sinh — không sửa tay)
-Cập nhật: 2026-08-21T23:38:59+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+# TDQ STATE (generated — do not hand-edit)
+Updated: 2026-08-22T03:07:39+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
-| Trường | Giá trị |
+| Field | Value |
 |---|---|
-| Request | 2026-08-21-2311-workflow-da-ngon-ngu |
+| Request | 2026-08-21-2351-quoc-te-hoa-workflow |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-21-2311-workflow-da-ngon-ngu.md — ✔ đã duyệt |
-| Plan | docs/tdq/plan/2026-08-21-2311-workflow-da-ngon-ngu.md — ✔ đã duyệt |
-| Duyệt quick | (không áp dụng) |
-| Mode thực thi | main |
+| Spec | docs/tdq/spec/2026-08-21-2351-quoc-te-hoa-workflow.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-08-21-2351-quoc-te-hoa-workflow.md — ✔ approved |
+| Quick approval | (not applicable) |
+| Doc language | vi |
+| Run mode | main |
 
-## Đang ở đâu
-QC đã PASS. Cấm: Tự commit hoặc push khi user chưa yêu cầu.
+## Where we are
+QC has PASSed. Forbidden: Committing or pushing before the user asks for it.
 
-## Việc tiếp theo
-Viết report ngắn gọn (khuyến nghị 10-20 dòng, không giới hạn cứng) rồi hỏi user có commit không.
+## What comes next
+Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing.
 ```
 python3 scripts/tdq_state.py set phase=idle
 ```
-Xong khi: Report đã ghi và user đã được hỏi về commit
+Done when: The report is written and the user has been asked about committing
 
-> Ghi state chỉ bằng `python3 scripts/tdq_state.py …`. Không chắc đang ở đâu → chạy `tdq_state.py next`.
+> Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.

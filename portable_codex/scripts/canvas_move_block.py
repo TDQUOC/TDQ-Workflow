@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Di chuyển một khối sẵn có trên canvas Excalidraw thành một chương của document.
+"""Move an existing block on the Excalidraw canvas into a chapter of the document.
 
-Vì sao cần script này thay vì gọi `update_element`: trên server canvas đang dùng
-(127.0.0.1:17739), `update_element` trả về "success" kèm version tăng nhưng thuộc
-tính `x/y/width/height/text` KHÔNG đổi — đã tái hiện 2 lần. Cách chạy được là xoá
-rồi tạo lại. Script làm đúng việc đó, đồng thời:
+Why this script instead of calling `update_element`: on the canvas server in use
+(127.0.0.1:17739), `update_element` returns "success" with a bumped version while the
+`x/y/width/height/text` attributes do NOT change — reproduced twice. What works is delete
+then recreate. This script does exactly that, and at the same time:
 
-- gán lại id theo tiền tố `ch<N>-` để script kiểm biết phần tử thuộc chương nào,
-- ánh xạ lại mọi tham chiếu id (`containerId`, `boundElements`, `startBinding`,
-  `endBinding`, `frameId`) sang id mới,
-- dịch toạ độ và căn giữa khối trong khung chương rộng 2640px,
-- đổi khung ngoài thành `ch<N>-frame` và tiêu đề thành `ch<N>-title`.
+- reassigns ids under the `ch<N>-` prefix so the checking script knows which chapter an element belongs to,
+- remaps every id reference (`containerId`, `boundElements`, `startBinding`,
+    `endBinding`, `frameId`) onto the new ids,
+- translates the coordinates and centres the block inside the 2640px chapter frame,
+- renames the outer frame to `ch<N>-frame` and the title to `ch<N>-title`.
 
-Chỉ dùng stdlib.
+Stdlib only.
 """
 
 import argparse
@@ -23,7 +23,7 @@ import urllib.request
 
 BASE = "http://127.0.0.1:17739"
 CHAPTER_X = 40
-CHAPTER_W = 1240   # khổ A4 dọc @150dpi
+CHAPTER_W = 1240   # A4 portrait @150dpi
 PAD = 20
 
 
@@ -51,7 +51,7 @@ def bbox(el):
 
 
 def select(elements, region):
-    """Chọn phần tử có TÂM nằm trong vùng nguồn (x0,y0,x1,y1)."""
+    """Pick the elements whose CENTRE lies inside the source region (x0,y0,x1,y1)."""
     x0, y0, x1, y1 = region
     picked = []
     for el in elements:
@@ -63,7 +63,7 @@ def select(elements, region):
 
 
 def pick_frame(picked):
-    """Khung ngoài = hình chữ nhật có diện tích lớn nhất."""
+    """The outer frame = the rectangle with the largest area."""
     rects = [e for e in picked if e.get("type") == "rectangle"]
     if not rects:
         return None
@@ -71,7 +71,7 @@ def pick_frame(picked):
 
 
 def pick_title(picked, frame_id):
-    """Tiêu đề = text tự do có fontSize lớn nhất, không phải bound label."""
+    """The title = the free text with the largest fontSize, not a bound label."""
     texts = [
         e
         for e in picked
@@ -83,19 +83,19 @@ def pick_title(picked, frame_id):
 
 
 def plan_move(elements, chapter, region, target_y, new_title):
-    """Tính trước phép dời cho MỘT khối trên ẢNH CHỤP scene truyền vào.
+    """Precompute the move of ONE block against the scene SNAPSHOT passed in.
 
-    Trả `(picked, new_elements)`. Tách khỏi phần ghi để nhiều khối cùng tính
-    trên một ảnh chụp duy nhất — nếu tính-rồi-ghi lần lượt, khối đã dời sang
-    vị trí mới có thể rơi vào vùng nguồn của khối kế tiếp và bị cuốn theo.
+    Returns `(picked, new_elements)`. Kept apart from the writing step so several blocks can be
+    computed against one single snapshot — computing-then-writing one at a time lets a block
+    already moved to its new position fall into the source region of the next one and be dragged along.
     """
     picked = select(elements, region)
     if not picked:
-        raise SystemExit(f"Không tìm thấy phần tử nào trong vùng {region}")
+        raise SystemExit(f"No element found inside the region {region}")
 
     frame = pick_frame(picked)
     if frame is None:
-        raise SystemExit("Không tìm thấy khung ngoài (rectangle) trong khối")
+        raise SystemExit("No outer frame (rectangle) found in the block")
     title = pick_title(picked, frame["id"])
 
     boxes = [bbox(e) for e in picked]
@@ -106,7 +106,7 @@ def plan_move(elements, chapter, region, target_y, new_title):
     content_w = max_x - min_x
     content_h = max_y - min_y
 
-    # Căn giữa nội dung theo bề ngang khung chương; khung ngoài thì trải hết 2640px.
+    # Centre the content across the chapter width; the outer frame spans the whole 2640px.
     dx = CHAPTER_X + (CHAPTER_W - content_w) / 2 - min_x
     dy = target_y + PAD - min_y
     frame_h = content_h + 2 * PAD
@@ -125,7 +125,7 @@ def plan_move(elements, chapter, region, target_y, new_title):
 
     new_elements = []
     for el in picked:
-        e = json.loads(json.dumps(el))  # bản sao sâu
+        e = json.loads(json.dumps(el))  # deep copy
         e["id"] = id_map[el["id"]]
         e["x"] = float(el.get("x", 0)) + dx
         e["y"] = float(el.get("y", 0)) + dy
@@ -136,7 +136,7 @@ def plan_move(elements, chapter, region, target_y, new_title):
             e["height"] = frame_h
         if title is not None and el["id"] == title["id"] and new_title:
             e["text"] = new_title
-            # nới bề rộng cho tiêu đề dài hơn: hệ số 0.75 cho chữ có dấu
+            # widen for a longer title: factor 0.75 for accented text
             need = len(new_title) * float(e.get("fontSize", 20) or 20) * 0.75
             e["width"] = max(float(e.get("width", 0) or 0), need)
         if e.get("containerId"):
@@ -156,25 +156,25 @@ def plan_move(elements, chapter, region, target_y, new_title):
             e.pop(key, None)
         new_elements.append(e)
 
-    print(f"Chương {chapter}: {len(picked)} phần tử")
-    print(f"  nội dung gốc x[{min_x:.0f},{max_x:.0f}] y[{min_y:.0f},{max_y:.0f}]")
-    print(f"  dịch dx={dx:.0f} dy={dy:.0f} · khung mới y={target_y} cao {frame_h:.0f}")
+    print(f"Chapter {chapter}: {len(picked)} element(s)")
+    print(f"  source content x[{min_x:.0f},{max_x:.0f}] y[{min_y:.0f},{max_y:.0f}]")
+    print(f"  shift dx={dx:.0f} dy={dy:.0f} · new frame y={target_y} height {frame_h:.0f}")
     print(f"  khung: {frame['id']} → ch{chapter}-frame")
     if title is not None:
-        print(f"  tiêu đề: {title['id']} → ch{chapter}-title = {new_title!r}")
+        print(f"  title: {title['id']} → ch{chapter}-title = {new_title!r}")
     return picked, new_elements
 
 
 def write_moves(batches):
-    """Ghi nhiều phép dời: xoá hết bản cũ TRƯỚC, rồi tạo lại toàn bộ."""
+    """Write several moves: delete every old copy FIRST, then recreate them all."""
     old_ids = [el["id"] for picked, _ in batches for el in picked]
     new_elements = [e for _, news in batches for e in news]
     for el_id in old_ids:
         api(f"/api/elements/{el_id}", method="DELETE")
     res = api("/api/elements/batch", method="POST", payload={"elements": new_elements})
-    print(f"Đã xoá {len(old_ids)}, tạo lại {res.get('count', 0)} phần tử")
+    print(f"Deleted {len(old_ids)}, recreated {res.get('count', 0)} element(s)")
     if res.get("count") != len(old_ids):
-        print(f"✗ LỆCH SỐ: xoá {len(old_ids)}, tạo {res.get('count')}")
+        print(f"✗ COUNT MISMATCH: deleted {len(old_ids)}, created {res.get('count')}")
         return 1
     return 0
 
@@ -183,7 +183,7 @@ def move_block(chapter, region, target_y, new_title, dry_run=False):
     elements = api("/api/elements")["elements"]
     batch = plan_move(elements, chapter, region, target_y, new_title)
     if dry_run:
-        print("  (dry-run, không ghi)")
+        print("  (dry-run, nothing written)")
         return 0
     return write_moves([batch])
 
@@ -191,17 +191,17 @@ def move_block(chapter, region, target_y, new_title, dry_run=False):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--chapter", type=int, required=True)
-    p.add_argument("--region", required=True, help="x0,y0,x1,y1 của vùng nguồn")
+    p.add_argument("--region", required=True, help="x0,y0,x1,y1 of the source region")
     p.add_argument("--target-y", type=float, required=True)
-    p.add_argument("--title", required=True, help="tiêu đề mới, phải bắt đầu bằng '<N>. '")
+    p.add_argument("--title", required=True, help="new title, must start with '<N>. '")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args(argv)
 
     if not args.title.startswith(f"{args.chapter}. "):
-        p.error(f"tiêu đề phải bắt đầu bằng '{args.chapter}. '")
+        p.error(f"the title must start with '{args.chapter}. '")
     region = tuple(float(v) for v in args.region.split(","))
     if len(region) != 4:
-        p.error("--region cần đúng 4 số")
+        p.error("--region needs exactly 4 numbers")
     return move_block(args.chapter, region, args.target_y, args.title, args.dry_run)
 
 

@@ -45,14 +45,14 @@ class TestEditGate(unittest.TestCase):
         write_state(self.cwd, active_request="r1", lane="full", phase="spec")
         rc, out, _ = self.edit("edit_src.json")
         self.assertEqual(rc, 0)
-        self.assert_remind(out, "[TDQ:APPROVE]", "spec chưa được ghi nhận duyệt", "approve spec")
+        self.assert_remind(out, "[TDQ:APPROVE]", "spec has no recorded approval", "approve spec")
 
     def test_remind_src_when_plan_pending(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     spec_sha256="abc", spec_approved_at=now_iso())
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "[TDQ:APPROVE]", "plan chưa được ghi nhận duyệt", "approve plan")
+        self.assert_remind(out, "[TDQ:APPROVE]", "plan has no recorded approval", "approve plan")
 
     def test_plan_pending_mode_placeholder_lists_modes(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
@@ -84,14 +84,14 @@ class TestEditGate(unittest.TestCase):
     def test_quick_remind_unapproved(self):
         write_state(self.cwd, active_request="r1", lane="quick")
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "[TDQ:APPROVE]", "quick chưa được ghi nhận duyệt", "approve quick")
+        self.assert_remind(out, "[TDQ:APPROVE]", "quick has no recorded approval", "approve quick")
 
     def test_lane_hong_van_nhac_thay_vi_im_lang(self):
         # State không có lane (hỏng, hoặc request cũ) — trước đây edit_gate im lặng
         # hoàn toàn. Im lặng lúc state hỏng là bỏ lọt: vẫn hỏi cổng đầu tiên.
         write_state(self.cwd, active_request="r1", lane=None)
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "[TDQ:APPROVE]", "spec chưa được ghi nhận duyệt")
+        self.assert_remind(out, "[TDQ:APPROVE]", "spec has no recorded approval")
 
     def test_remind_log_when_today_file_missing(self):
         write_state(self.cwd, active_request="r1", lane="quick",

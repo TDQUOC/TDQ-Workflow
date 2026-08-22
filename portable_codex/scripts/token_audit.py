@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-"""token_audit.py — đo chi phí token thật của một session Claude Code.
+"""token_audit.py — measure the real token cost of one Claude Code session.
 
-Mô hình chi phí: mỗi tool call = 1 API call = model đọc lại TOÀN BỘ context.
-Vì vậy một output tool dài `n` ký tự không tốn `n/4` token, mà tốn
-`n/4 × số API call còn lại sau nó`. Đại lượng đó gọi là **carry-cost**.
+Cost model: every tool call = 1 API call = the model re-reads the WHOLE context.
+So a tool output `n` characters long does not cost `n/4` tokens, it costs
+`n/4 × the number of API calls left after it`. That quantity is the **carry-cost**.
 
-Script đọc transcript jsonl của Claude Code (không sửa gì), gom carry-cost theo
-nhóm tool và in bảng để biết chỗ nào đang đốt token.
+The script reads the jsonl transcript of Claude Code (changing nothing), sums carry-cost
+per tool group and prints a table showing where the tokens burn.
 
-Dùng:
-    python3 scripts/token_audit.py                     # project hiện tại, 3 session mới nhất
+Usage:
+        python3 scripts/token_audit.py                     # current project, 3 newest sessions
     python3 scripts/token_audit.py --sessions 5
     python3 scripts/token_audit.py --transcript-dir <dir>
-    python3 scripts/token_audit.py --top 20            # thêm bảng top tool output đắt nhất
+        python3 scripts/token_audit.py --top 20            # plus a table of the priciest tool outputs
 
-Đếm token bằng tokenizer thật (`anthropic-tokenizer` trong venv `.venv-tokens/`,
-dùng chung bộ đếm với `skill_tokens.py`). Thiếu thư viện thì script LỖI, tuyệt đối
-không rơi về ước lượng ký tự/4: bảng này dùng để quyết định cắt cái gì, mà ước lượng
-ký tự/4 lệch mạnh đúng ở nhóm tốn nhất — chuỗi lặp và base64 nén rất tốt, tiếng Việt
-có dấu thì ngược lại.
+Tokens are counted with a real tokenizer (`anthropic-tokenizer` in the `.venv-tokens/` venv,
+the same counter `skill_tokens.py` uses). Missing library → the script ERRORS, it NEVER
+falls back to characters/4: this table decides what gets cut, and the characters/4 estimate
+is most wrong exactly in the priciest group — repeated strings and base64 compress very well,
+accented text does the opposite.
 
-Env: TDQ_AUDIT_LOG=0 tắt log tiến trình (log ra stderr, bảng ra stdout).
-Exit: 0 kể cả khi không tìm thấy session (chỉ cảnh báo). 2 = sai cú pháp.
-     3 = thiếu thư viện đếm token.
+Env: TDQ_AUDIT_LOG=0 turns the progress log off (log to stderr, table to stdout).
+Exit: 0 even when no session is found (a warning only). 2 = bad syntax.
+          3 = the token-counting library is missing.
 """
 
 import argparse
@@ -39,16 +39,16 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
-import skill_tokens  # noqa: E402 — dùng chung MỘT bộ đếm token với bảng skill
+import skill_tokens  # noqa: E402 — share ONE token counter with the skill table
 
 EXIT_THIEU_THU_VIEN = skill_tokens.EXIT_THIEU_THU_VIEN
 
-# Hệ số quy hoá đơn về "input-token tương đương" — lấy từ bảng nhân của trang giá
-# chính thức (platform.claude.com/docs/en/about-claude/pricing, đọc 2026-08-05):
-# cache hit 0.1x · cache write TTL 5 phút 1.25x · cache write TTL 1 giờ 2x · output 5x.
+# Normalisation factors to "equivalent input tokens" — taken from the multiplier table of the
+# official pricing page (platform.claude.com/docs/en/about-claude/pricing, read 2026-08-05):
+# cache hit 0.1x · cache write TTL 5 min 1.25x · cache write TTL 1 hour 2x · output 5x.
 COST_WEIGHTS = {"cache_read": 0.1, "input": 1.0, "output": 5.0}
 CACHE_WRITE_WEIGHT = {"5m": 1.25, "1h": 2.0}
-DEFAULT_CACHE_TTL = "1h"        # phiên Claude Code hiện chạy TTL 1 giờ
+DEFAULT_CACHE_TTL = "1h"        # Claude Code sessions currently run on a 1-hour TTL
 
 Row = collections.namedtuple("Row", "group count tokens")
 Item = collections.namedtuple("Item", "tokens chars group label size")
@@ -56,11 +56,11 @@ Phan = collections.namedtuple("Phan", "group count trung_vi p90 p99 lon_nhat ton
 HanhViRead = collections.namedtuple("HanhViRead", "tong co_pham_vi doc_lai")
 
 
-# ----------------------------------------------------------------- đếm token
+# ----------------------------------------------------------------- token counting
 
-# Cache theo nội dung: transcript lặp lại rất nhiều đoạn giống hệt (cùng file đọc lại,
-# cùng lệnh chạy lại). Khoá bằng digest chứ không bằng chính chuỗi để dict không giữ
-# thêm một bản sao của toàn bộ transcript trong bộ nhớ.
+# Cache by content: a transcript repeats a great many identical chunks (the same file read
+# again, the same command re-run). Keyed by digest rather than by the string itself so the
+# dict does not hold a second copy of the whole transcript in memory.
 _CACHE = {}
 _BO_DEM = None
 _DA_THU_TRONG_TIEN_TRINH = False
@@ -71,8 +71,8 @@ def _khoa(text):
 
 
 def dem_nhieu(doan):
-    """Đếm token cho một lô đoạn, trả list cùng thứ tự. Ném `ThieuThuVienDem` nếu
-    không đếm thật được — cấm đoán."""
+    """Count tokens for a batch of chunks, returning a list in the same order. Raises
+    `ThieuThuVienDem` when a real count is impossible — guessing is banned."""
     global _BO_DEM, _DA_THU_TRONG_TIEN_TRINH
     khoa = [_khoa(t) if t else None for t in doan]
     can = {}
@@ -89,14 +89,14 @@ def dem_nhieu(doan):
         if _BO_DEM is not None:
             so = [_BO_DEM(t) for t in can.values()]
         else:
-            _log(f"đếm {len(can)} đoạn qua python của .venv-tokens")
+            _log(f"counted {len(can)} chunk(s) through the python of .venv-tokens")
             so = skill_tokens.dem_qua_venv(list(can.values()))
         _CACHE.update(zip(can, so))
     return [_CACHE[k] if k is not None else 0 for k in khoa]
 
 
 def dem_token(text):
-    """Số token thật của một đoạn."""
+    """The real token count of one chunk."""
     return dem_nhieu([text])[0]
 
 
@@ -111,19 +111,19 @@ def _now():
 
 
 def _log(message):
-    """Log tiến trình ra stderr, có timestamp ISO. Tắt bằng TDQ_AUDIT_LOG=0."""
+    """Log progress to stderr with an ISO timestamp. Turn it off with TDQ_AUDIT_LOG=0."""
     if _log_enabled():
         print(f"[{_now()}] {message}", file=sys.stderr)
 
 
-# ----------------------------------------------------------------- đọc transcript
+# ----------------------------------------------------------------- reading the transcript
 
 def iter_events(path):
-    """Sinh từng bản ghi jsonl. Dòng hỏng/rỗng bị bỏ qua, không làm hỏng cả lượt đọc."""
+    """Yield the jsonl records one by one. A broken/empty line is skipped without spoiling the read."""
     try:
         fh = open(path, encoding="utf-8")
     except OSError as exc:
-        _log(f"bỏ qua {os.path.basename(str(path))}: {exc}")
+        _log(f"skipping {os.path.basename(str(path))}: {exc}")
         return
     bad = 0
     with fh:
@@ -136,52 +136,52 @@ def iter_events(path):
             except (ValueError, TypeError):
                 bad += 1
     if bad:
-        _log(f"{os.path.basename(str(path))}: bỏ qua {bad} dòng không đọc được")
+        _log(f"{os.path.basename(str(path))}: skipped {bad} unreadable line(s)")
 
 
 def default_transcript_dir(project_dir=None):
-    """Thư mục transcript của Claude Code cho một project (~/.claude/projects/<slug>)."""
+    """The Claude Code transcript folder for a project (~/.claude/projects/<slug>)."""
     project = os.path.abspath(os.path.expanduser(project_dir or os.getcwd()))
-    # Claude Code đổi CẢ dấu phân cách thư mục LẪN gạch dưới thành `-` khi dựng tên
-    # thư mục transcript. Thiếu vế `_` thì project có gạch dưới (Heineken_AppKetNoi)
-    # luôn ra đường dẫn không tồn tại — đo nhầm thành "không có session nào".
+    # Claude Code turns BOTH the folder separator AND the underscore into `-` when it builds
+    # the transcript folder name. Without the `_` half, a project with an underscore
+    # (Heineken_AppKetNoi) always yields a path that does not exist — read as "no session at all".
     slug = project.replace(os.sep, "-").replace("_", "-")
     return os.path.join(os.path.expanduser("~"), ".claude", "projects", slug)
 
 
 def find_sessions(transcript_dir, limit=3):
-    """Trả danh sách file jsonl mới nhất (theo mtime), nhiều nhất `limit` file."""
+    """The list of newest jsonl files (by mtime), at most `limit` of them."""
     files = glob.glob(os.path.join(transcript_dir, "*.jsonl"))
     files.sort(key=os.path.getmtime)
     return files[-limit:] if limit and limit > 0 else files
 
 
-# ----------------------------------------------------------------- phân nhóm
+# ----------------------------------------------------------------- grouping
 
 def classify(tool_name, tool_input):
-    """Gom tool call về nhóm dễ đọc — nhóm là đơn vị để quyết định cắt cái gì."""
+    """Group tool calls into readable buckets — the bucket is the unit for deciding what to cut."""
     if tool_name == "Bash":
         cmd = (tool_input or {}).get("command", "") or ""
         if "tdq_state.py" in cmd:
             return "tdq_state.py (dump JSON)"
         if "unittest" in cmd or "pytest" in cmd:
-            return "chạy test suite"
+            return "test suite run"
         if "doc_lint" in cmd:
             return "doc_lint"
         if "graphify" in cmd:
             return "graphify"
-        return "Bash khác"
+        return "other Bash"
     if tool_name == "Read":
         return "Read file"
     if tool_name in ("Edit", "MultiEdit"):
-        return "Edit (echo lại diff)"
+        return "Edit (echoes the diff back)"
     if tool_name and "tavily" in tool_name:
         return "tavily search"
     return tool_name or "?"
 
 
 def _label(tool_name, tool_input):
-    """Nhãn ngắn để nhận ra một tool call cụ thể trong bảng top."""
+    """A short label identifying one specific tool call in the top table."""
     inp = tool_input or {}
     for key in ("file_path", "command", "query", "description", "pattern"):
         if inp.get(key):
@@ -189,10 +189,10 @@ def _label(tool_name, tool_input):
     return tool_name or "?"
 
 
-# Ảnh tính theo patch chứ không theo độ dài chuỗi base64: mỗi patch 28×28 px là một
-# token thị giác, ảnh tốn ⌈w/28⌉ × ⌈h/28⌉ token (tài liệu Vision của Claude,
-# platform.claude.com/docs/build-with-claude/vision, đọc 2026-08-19). Không đọc được
-# kích thước thì lấy 1.600 — mức tài liệu ghi cho ảnh cỡ tối đa không phải thu nhỏ.
+# Images are counted by patch rather than by base64 string length: each 28×28 px patch is one
+# vision token, so an image costs ⌈w/28⌉ × ⌈h/28⌉ tokens (Claude's Vision docs,
+# platform.claude.com/docs/build-with-claude/vision, read 2026-08-19). When the size cannot be
+# read, 1,600 is used — the level the docs give for a max-size image that is not downscaled.
 PATCH_PX = 28
 TOKEN_ANH_KHONG_RO = 1600
 
@@ -224,7 +224,7 @@ def _kich_thuoc_jpeg(raw):
 
 
 def dem_anh(media_type, data_base64):
-    """Token của một khối ảnh. Đọc kích thước thật từ header, không giải nén cả ảnh."""
+    """The tokens of one image block. Reads the real size from the header, never decoding the image."""
     try:
         raw = base64.b64decode(data_base64[:512], validate=False)
     except Exception:
@@ -239,15 +239,15 @@ def dem_anh(media_type, data_base64):
 
 
 def _content_text(block):
-    """Phần CHỮ của tool_result, đã bỏ payload ảnh ra ngoài (xem `_tach_anh`)."""
+    """The TEXT part of a tool_result, with the image payload lifted out (see `_tach_anh`)."""
     return _tach_anh(block)[0]
 
 
 def _tach_anh(block):
-    """Tách tool_result thành (phần chữ, tổng token ảnh).
+    """Split a tool_result into (text part, total image tokens).
 
-    Payload base64 của ảnh bị thay bằng nhãn ngắn trước khi đếm: giữ nó lại thì một
-    ảnh chụp màn hình đội lên hàng trăm nghìn token trong khi model chỉ tốn vài nghìn.
+    The base64 payload of an image is replaced by a short label before counting: keeping it makes
+    one screenshot swell to hundreds of thousands of tokens while the model spends a few thousand.
     """
     content = block.get("content")
     if isinstance(content, str):
@@ -266,21 +266,21 @@ def _tach_anh(block):
     return json.dumps(sach, ensure_ascii=False), anh
 
 
-# ----------------------------------------------------------------- tính toán
+# ----------------------------------------------------------------- computation
 
 def _message_key(ev, index):
-    """Khoá gom các dòng jsonl về đúng một message.
+    """The key that groups jsonl lines back into one message.
 
-    Claude Code ghi MỘT message (thinking + text + tool_use) thành NHIỀU dòng jsonl
-    chung `message.id`, mỗi dòng chép lại nguyên khối `usage`. Cộng theo dòng là đếm
-    trùng. Dòng không có `id` (transcript cũ) coi như một message riêng.
+    Claude Code writes ONE message (thinking + text + tool_use) as SEVERAL jsonl lines sharing
+    a `message.id`, each line repeating the whole `usage` block. Summing per line double-counts.
+    A line with no `id` (old transcript) counts as a message of its own.
     """
     mid = (ev.get("message") or {}).get("id")
     return mid if mid else f"__line_{index}"
 
 
 def _scan(path):
-    """Trả (danh sách Item của file này, thống kê usage)."""
+    """Returns (the list of Items of this file, the usage totals)."""
     events = list(iter_events(path))
     names = {}
     for ev in events:
@@ -290,8 +290,8 @@ def _scan(path):
                 if isinstance(block, dict) and block.get("type") == "tool_use":
                     names[block.get("id")] = (block.get("name"), block.get("input") or {})
 
-    usage_by_msg = {}       # khoá message -> usage (lấy lần gặp đầu tiên)
-    call_idx = []           # chỉ số dòng ĐẦU TIÊN của mỗi API call, tăng dần
+    usage_by_msg = {}       # message key -> usage (the first occurrence wins)
+    call_idx = []           # index of the FIRST line of each API call, ascending
     for i, ev in enumerate(events):
         usage = (ev.get("message") or {}).get("usage")
         if not usage:
@@ -304,7 +304,7 @@ def _scan(path):
 
     totals = collections.Counter()
     totals["api_calls"] = len(usage_by_msg)
-    totals["tool_calls"] = len(names)        # dedup sẵn theo `tool_use.id`
+    totals["tool_calls"] = len(names)        # already deduped by `tool_use.id`
     for field in ("output", "input", "cache_read", "cache_write"):
         totals[field] += 0
     for usage in usage_by_msg.values():
@@ -325,7 +325,7 @@ def _scan(path):
             text, anh = _tach_anh(block)
             remaining = len(call_idx) - bisect.bisect_left(call_idx, i)
             tho.append((text, anh, remaining, classify(name, inp), _label(name, inp)))
-    # Đếm cả file trong MỘT lô: chi phí nằm ở lần dựng tiến trình python của venv.
+    # Count the whole file in ONE batch: the cost lies in starting the venv python.
     so = dem_nhieu([t[0] for t in tho])
     items = [Item((n + anh) * con_lai, len(text), group, label, n + anh)
              for (text, anh, con_lai, group, label), n in zip(tho, so)]
@@ -342,7 +342,7 @@ def _all_items(paths):
 
 
 def carry_cost(paths):
-    """Bảng carry-cost gom theo nhóm, sắp giảm dần. `paths` rỗng → bảng rỗng."""
+    """The carry-cost table grouped by bucket, descending. `paths` empty → empty table."""
     agg_tokens = collections.Counter()
     agg_count = collections.Counter()
     for item in _all_items(paths):
@@ -354,15 +354,15 @@ def carry_cost(paths):
 
 
 def top_items(paths, limit=15):
-    """Những tool output đắt nhất tính theo carry-cost."""
+    """The priciest tool outputs by carry-cost."""
     return sorted(_all_items(paths), key=lambda it: it.tokens, reverse=True)[:limit]
 
 
 def _phan_vi(day_sap_xep, q):
-    """Phân vị theo hạng gần nhất (nearest-rank): vị trí `ceil(q×n)`, đếm từ 1.
+    """Nearest-rank percentile: position `ceil(q×n)`, counting from 1.
 
-    Chọn kiểu này chứ không nội suy vì mọi giá trị in ra phải là một output CÓ THẬT
-    trong transcript — số nội suy không ứng với lần gọi nào thì không truy ngược được.
+    This kind, not interpolation, because every printed value must be a REAL output present in
+    the transcript — an interpolated number matches no call and cannot be traced back.
     """
     if not day_sap_xep:
         return 0
@@ -372,12 +372,12 @@ def _phan_vi(day_sap_xep, q):
 
 
 def phan_ra(paths):
-    """Phân rã kích thước output theo nhóm tool: n, trung vị, p90, p99, lớn nhất.
+    """Output size broken down per tool group: n, median, p90, p99, largest.
 
-    Khác `carry_cost`: ở đây là token THẬT của từng output, chưa nhân số call còn
-    lại. Tổng carry-cost cao có hai nguyên nhân rất khác nhau — gọi nhiều lần mỗi
-    lần nhỏ (phải sửa hành vi) hay vài lần khổng lồ (phải đặt trần output) — và chỉ
-    bảng này phân biệt được.
+    Different from `carry_cost`: here are the REAL tokens of each output, not yet multiplied by
+    the calls remaining. A high total carry-cost has two very different causes — many small calls
+    (behaviour must change) or a few huge ones (an output ceiling must be set) — and only this
+    table tells them apart.
     """
     theo_nhom = collections.defaultdict(list)
     for item in _all_items(paths):
@@ -391,11 +391,11 @@ def phan_ra(paths):
 
 
 def hanh_vi_read(paths):
-    """Đo hành vi `Read`: bao nhiêu lần, bao nhiêu lần có `offset`/`limit`, bao nhiêu
-    lần đọc lại file đã đọc trong CÙNG session.
+    """Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how many
+    re-read a file already read in the SAME session.
 
-    Bảng này chỉ ĐO, không phán: luật TDQ bắt đọc lại ở nhiều ca (`cấm làm theo trí
-    nhớ`), nên số đọc lại cao KHÔNG đồng nghĩa với lãng phí.
+    This table only MEASURES, it does not judge: TDQ rules demand a re-read in several cases
+    (`đọc lại, cấm làm theo trí nhớ`), so a high re-read count does NOT mean waste.  # i18n-allow
     """
     tong = co_pham_vi = doc_lai = 0
     for path in paths:
@@ -421,7 +421,7 @@ def hanh_vi_read(paths):
 
 
 def usage_totals(paths):
-    """Cộng dồn usage thật do API trả về: số API call, output, cache read/write."""
+    """Sum the real usage the API returned: API calls, output, cache read/write."""
     totals = collections.Counter()
     for path in paths:
         _, got = _scan(path)
@@ -430,10 +430,10 @@ def usage_totals(paths):
 
 
 def cost_equivalent(totals, cache_ttl=DEFAULT_CACHE_TTL):
-    """Quy hóa đơn về input-token tương đương.
+    """Normalise the bill into equivalent input tokens.
 
     `cache_read×0,1 + cache_write×W + input×1 + output×5`, W theo TTL cache
-    (1 giờ = 2,0 · 5 phút = 1,25). Trả (tổng, {phần: số token tương đương}).
+    (1 hour = 2.0 · 5 minutes = 1.25). Returns (total, {part: equivalent tokens}).
     """
     weight = dict(COST_WEIGHTS)
     weight["cache_write"] = CACHE_WRITE_WEIGHT.get(cache_ttl, CACHE_WRITE_WEIGHT["1h"])
@@ -449,34 +449,34 @@ def _fmt(n):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description="Đo carry-cost token của transcript Claude Code.")
-    parser.add_argument("--project", help="thư mục project (mặc định: thư mục hiện tại)")
-    parser.add_argument("--transcript-dir", help="chỉ định thẳng thư mục chứa *.jsonl")
+        description="Measure the token carry-cost of a Claude Code transcript.")
+    parser.add_argument("--project", help="project folder (default: the current folder)")
+    parser.add_argument("--transcript-dir", help="point straight at the folder holding *.jsonl")
     parser.add_argument("--sessions", type=int, default=3,
-                        help="số session mới nhất cần đo (mặc định 3, 0 = tất cả)")
+                        help="how many newest sessions to measure (default 3, 0 = all)")
     parser.add_argument("--top", type=int, default=0,
-                        help="in thêm N tool output đắt nhất (mặc định 0 = không in)")
+                        help="also print the N priciest tool outputs (default 0 = do not print)")
     parser.add_argument("--cache-ttl", choices=sorted(CACHE_WRITE_WEIGHT),
                         default=DEFAULT_CACHE_TTL,
-                        help="TTL cache để quy đổi chi phí (mặc định 1h = hệ số 2,0)")
+                        help="cache TTL used to convert the cost (default 1h = factor 2.0)")
     args = parser.parse_args(argv)
 
     tdir = args.transcript_dir or default_transcript_dir(args.project)
-    _log(f"đọc transcript từ {tdir}")
+    _log(f"reading transcripts from {tdir}")
     paths = find_sessions(tdir, args.sessions)
     if not paths:
-        _log(f"không tìm thấy session nào trong {tdir} — không có gì để đo")
-        print("Không có session nào để đo.")
+        _log(f"no session found in {tdir} — nothing to measure")
+        print("No session to measure.")
         return 0
-    _log(f"đo {len(paths)} session")
+    _log(f"measuring {len(paths)} session(s)")
 
     try:
         totals = usage_totals(paths)
         rows = carry_cost(paths)
     except skill_tokens.ThieuThuVienDem as exc:
-        print("token_audit.py: thiếu thư viện đếm token `anthropic-tokenizer`.\n"
-              "Script này CẤM ước lượng ký tự/4, nên dừng ở đây.\n"
-              f"Cài bằng: {exc}", file=sys.stderr)
+        print("token_audit.py: the token-counting library `anthropic-tokenizer` is missing.\n"
+              "This script is FORBIDDEN to estimate characters/4, so it stops here.\n"
+              f"Install with: {exc}", file=sys.stderr)
         return EXIT_THIEU_THU_VIEN
     total_carry = sum(r.tokens for r in rows)
 
@@ -491,19 +491,19 @@ def main(argv=None):
     equiv, parts = cost_equivalent(totals, args.cache_ttl)
     share = " · ".join(f"{k} {parts[k] / equiv * 100:.0f}%"
                        for k in ("cache_read", "cache_write", "input", "output")) if equiv else "—"
-    print(f"Chi phí quy đổi (TTL {args.cache_ttl}): {_fmt(round(equiv))} input-token "
-          f"tương đương — {share}")
+    print(f"Converted cost (TTL {args.cache_ttl}): {_fmt(round(equiv))} equivalent "
+          f"input tokens — {share}")
     print()
-    print(f"{'nhóm':<28}{'lần':>7}{'carry-cost (token)':>22}")
+    print(f"{'group':<28}{'calls':>7}{'carry-cost (tokens)':>22}")
     print("-" * 57)
     for row in rows:
         print(f"{row.group:<28}{row.count:>7}{_fmt(row.tokens):>22}")
     print("-" * 57)
-    print(f"{'TỔNG':<28}{sum(r.count for r in rows):>7}{_fmt(total_carry):>22}")
+    print(f"{'TOTAL':<28}{sum(r.count for r in rows):>7}{_fmt(total_carry):>22}")
 
     print()
-    print("# Phân rã kích thước output (token thật của từng lần gọi)")
-    print(f"{'nhóm':<28}{'lần':>7}{'trung vị':>10}{'p90':>10}{'p99':>10}{'lớn nhất':>11}")
+    print("# Output size breakdown (real tokens of each call)")
+    print(f"{'group':<28}{'calls':>7}{'median':>10}{'p90':>10}{'p99':>10}{'largest':>11}")
     print("-" * 76)
     for pr in phan_ra(paths):
         print(f"{pr.group:<28}{pr.count:>7}{_fmt(pr.trung_vi):>10}{_fmt(pr.p90):>10}"
@@ -511,19 +511,19 @@ def main(argv=None):
     hv = hanh_vi_read(paths)
     if hv.tong:
         print()
-        print(f"Read: {_fmt(hv.tong)} lần · có offset/limit {hv.co_pham_vi} "
-              f"({hv.co_pham_vi / hv.tong * 100:.1f}%) · đọc lại file đã đọc "
+        print(f"Read: {_fmt(hv.tong)} call(s) · with offset/limit {hv.co_pham_vi} "
+              f"({hv.co_pham_vi / hv.tong * 100:.1f}%) · re-read an already-read file "
               f"{hv.doc_lai} ({hv.doc_lai / hv.tong * 100:.1f}%)")
-        print("  (đọc lại là hành vi ĐÚNG ở 5 ca luật bắt buộc — bảng chỉ đo, không phán)")
+        print("  (re-reading is the RIGHT behaviour in the 5 cases the rules demand — this only measures)")
 
     if args.top:
         print()
-        print(f"# Top {args.top} tool output đắt nhất")
+        print(f"# Top {args.top} priciest tool outputs")
         for item in top_items(paths, args.top):
-            print(f"  {_fmt(item.tokens):>12} tok | {_fmt(item.chars):>8} ký tự | "
+            print(f"  {_fmt(item.tokens):>12} tok | {_fmt(item.chars):>8} chars | "
                   f"{item.group:<26} {item.label[:70]}")
 
-    _log(f"xong — tổng carry-cost {_fmt(total_carry)} token")
+    _log(f"done — total carry-cost {_fmt(total_carry)} tokens")
     return 0
 
 

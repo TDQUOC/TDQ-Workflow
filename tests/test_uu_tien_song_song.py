@@ -60,12 +60,12 @@ class LyDoBangTest(unittest.TestCase):
     def test_ly_do_bang_hop_dong_co_vi_du_dung_va_sai(self):
         # team-mode.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật không đổi,
         # chỉ đổi ngôn ngữ của nhãn nhóm ví dụ (Hợp đồng dùng chung → Shared contracts).
-        # Nhãn ĐÚNG/SAI giữ nguyên tiếng Việt vì là giao ước chung của mọi file rule.
+        # Từ 2026-08-22 nhãn ĐÚNG/SAI cũng dịch sang RIGHT/WRONG; nhận cả hai.
         khoi = _team_mode().split("Shared contracts")
         self.assertGreater(len(khoi), 1, "thiếu ví dụ cho nhóm hop-dong")
         than = khoi[1].split("\n\n")[0] + khoi[1].split("\n\n")[1]
-        self.assertIn("ĐÚNG", than)
-        self.assertIn("SAI", than)
+        self.assertTrue("ĐÚNG" in than or "RIGHT" in than)
+        self.assertTrue("SAI" in than or "WRONG" in than)
 
 
 class RanhGioiTest(unittest.TestCase):

@@ -5,8 +5,8 @@ import unittest
 
 from helper import run_state_cli, tdq_state
 
-PARTS = ("[TDQ:NEXT]", "Việc tiếp theo:", "Lệnh:", "Checklist (copy vào câu trả lời, tick dần):",
-         "Xong khi:")
+PARTS = ("[TDQ:NEXT]", "Next:", "Command:", "Checklist (copy into your answer, tick as you go):",
+         "Done when:")
 
 
 class NextTest(unittest.TestCase):
@@ -41,7 +41,7 @@ class NextTest(unittest.TestCase):
         rc, out, _ = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
         # lane quick mới: mini-spec/plan GỘP một file, có bước phân tích + interview
-        self.assertIn("mini-spec/plan", out)
+        self.assertIn("mini spec/plan", out)
         self.assertIn("docs/tdq/plan/", out)
         self.assertIn("approve quick", out)
 
@@ -72,7 +72,7 @@ class NextTest(unittest.TestCase):
         rc, out, err = run_state_cli(self.cwd, "get", "khong_ton_tai")
         self.assertEqual(rc, 0)
         self.assertEqual(out, "")
-        self.assertIn("Key không có trong state", err)
+        self.assertIn("Key not in state", err)
 
     def test_headline_shows_quick_for_quick_lane(self):
         """QC1.1 — tiêu đề phải nói đúng phase mà thân bài đang dùng.

@@ -1,5 +1,5 @@
 {
-  "description": "TDQ workflow: nhắc nhở khi edit/bash + Stop remind working log + state context injection",
+  "description": "TDQ workflow: reminders on edit/bash + Stop reminder for the working log + state context injection",
   "hooks": {
     "SessionStart": [
       {

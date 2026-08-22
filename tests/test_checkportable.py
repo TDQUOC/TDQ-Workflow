@@ -111,7 +111,7 @@ class TestVongFix1(CoBanSinh):
         proc = subprocess.run([sys.executable, duong, "check"],
                               capture_output=True, text=True, cwd=self.goc, timeout=120)
         self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
-        self.assertIn("SẠCH", proc.stdout)
+        self.assertIn("CLEAN", proc.stdout)
 
     def test_setup_va_that_va_bao_dung(self):
         """`setup` không được báo thành công khi bundle vẫn hỏng."""
@@ -282,17 +282,17 @@ class TestTrustCodex(unittest.TestCase):
     def test_check_bao_trang_thai_trusted(self):
         _, truoc, _ = chay("check", "--root", self.bundle,
                            env={"CODEX_HOME": self.codex_home})
-        self.assertIn("chưa trusted", truoc.lower())
+        self.assertIn("is not trusted", truoc.lower())
         chay("setup", "--trust", "--root", self.bundle, env={"CODEX_HOME": self.codex_home})
         _, sau, _ = chay("check", "--root", self.bundle, env={"CODEX_HOME": self.codex_home})
         self.assertIn("trusted", sau.lower())
-        self.assertNotIn("chưa trusted", sau.lower())
+        self.assertNotIn("is not trusted", sau.lower())
 
     def test_check_khong_crash_khi_thieu_thu_muc_cau_hinh(self):
         trong = os.path.join(self._tmp.name, "khong-ton-tai")
         ma, out, _ = chay("check", "--root", self.bundle, env={"CODEX_HOME": trong})
         self.assertEqual(ma, 0, out)
-        self.assertIn("chưa trusted", out.lower())
+        self.assertIn("is not trusted", out.lower())
 
     def test_log_tat_duoc_va_neu_ten_file_da_ghi(self):
         _, _, bat = chay("setup", "--trust", "--root", self.bundle,

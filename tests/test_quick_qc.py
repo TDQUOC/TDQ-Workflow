@@ -27,8 +27,9 @@ N4_PHASES = os.path.join(ROOT, "skills", "tdq-conventions", "references", "phase
 # N1 phải nêu đủ, N2 phải trỏ đúng chỗ (test_skill_body_points_to_quick_lane).
 LAW_DOCS = (N1,)
 
-FIX_CAP = "trần 3 vòng"
-FIX_HEADING = "QC vòng N — fix"
+# Từ 2026-08-22 luật viết tiếng Anh; nhận cả hai cách viết các mốc dưới đây.
+FIX_CAP = ("3-round cap", "trần 3 vòng")
+FIX_HEADING = ("QC vòng N — fix",)
 
 
 def read(path):
@@ -40,35 +41,44 @@ class QuickQcDocTest(unittest.TestCase):
     """N1: quick-lane.md phải định nghĩa QC, không chỉ nói 'chạy validate'."""
 
     def test_quick_lane_has_qc_section(self):
-        self.assertIn("## QC ở chế độ nhanh", read(N1))
+        text = read(N1)
+        self.assertTrue(any(m in text for m in
+                            ("## QC in the express pipeline", "## QC ở chế độ nhanh")))
 
     def test_quick_lane_ties_qc_items_to_dod(self):
         # Luật mới: số hạng mục QC bằng số dòng DoD, không phải danh sách cố định.
         text = read(N1)
-        self.assertIn("số hạng mục bằng số dòng DoD", text)
+        self.assertTrue(any(m in text for m in
+                            ("as many items as the mini-plan\nhas DoD lines",
+                             "số hạng mục bằng số dòng DoD")))
         self.assertNotIn("3 hạng mục", text)
 
     def test_skill_body_points_to_quick_lane(self):
         # N2 không còn chép luật, nhưng BẮT BUỘC trỏ sang mục chín bước ở N1.
         text = read(N2)
         self.assertIn("references/quick-lane.md", text)
-        self.assertIn("Chín bước thi hành", text)
+        self.assertTrue(any(m in text for m in
+                            ("The nine execution steps", "Chín bước thi hành")))
 
     def test_law_docs_rerun_only_failed_items(self):
         # Vòng fix không chạy lại toàn bộ nữa — chỉ hạng mục FAIL + hạng mục bị ảnh hưởng.
         for path in LAW_DOCS:
             with self.subTest(doc=os.path.relpath(path, ROOT)):
-                self.assertIn("hạng mục đã FAIL", read(path))
+                van = read(path)
+                self.assertTrue(any(m in van for m in
+                                    ("re-run the items that FAILed", "hạng mục đã FAIL")))
 
     def test_law_docs_state_fix_round_cap(self):
         for path in LAW_DOCS:
             with self.subTest(doc=os.path.relpath(path, ROOT)):
-                self.assertIn(FIX_CAP, read(path))
+                van = read(path)
+                self.assertTrue(any(m in van for m in FIX_CAP))
 
     def test_law_docs_state_fix_round_heading(self):
         for path in LAW_DOCS:
             with self.subTest(doc=os.path.relpath(path, ROOT)):
-                self.assertIn(FIX_HEADING, read(path))
+                van = read(path)
+                self.assertTrue(any(m in van for m in FIX_HEADING))
 
 
 class QuickQcPhaseTableTest(unittest.TestCase):
@@ -139,7 +149,7 @@ class QuickQcApprovalHintTest(unittest.TestCase):
     """Hook phải mách user đúng biến thể, và không lọc nó thành câu hỏi."""
 
     def test_hook_hint_offers_no_qc_variant(self):
-        self.assertIn("không QC", _common.APPROVE_HINTS["quick"])
+        self.assertIn("no QC", _common.APPROVE_HINTS["quick"])
 
     def test_hook_reads_no_qc_sentence_as_approval(self):
         self.assertTrue(

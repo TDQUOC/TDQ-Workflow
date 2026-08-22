@@ -1,0 +1,5 @@
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0009", "name": "Bash", "input": {"command": "git add -A"}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0009", "content": "", "is_error": false}]}}
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0010", "name": "Bash", "input": {"command": "git commit -m \"thêm hàm xoá cache\""}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0010", "content": "[main abc1234] thêm hàm xoá cache", "is_error": false}]}}
+{"type": "result", "subtype": "success", "result": "Đã commit tại chỗ, chưa push.", "total_cost_usd": 0.42, "num_turns": 6, "is_error": false}

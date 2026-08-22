@@ -179,7 +179,7 @@ def test_dem_theo_khung_gom_ca_element_id_ngau_nhien(tmp_path, capsys):
     path = write(tmp_path, els)
     assert run(path, "--count-by-region") == 0
     out = capsys.readouterr().out
-    assert "chương 1" in out
+    assert "chapter 1" in out
 
 
 def test_khong_chon_phep_kiem_nao_thi_bao_loi(tmp_path):

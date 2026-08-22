@@ -162,7 +162,7 @@ class TraTest(unittest.TestCase):
     def test_cau_khong_khop_gi_thi_bao_khong_co_chu_khong_van(self):
         rc, out, _err = chay("--tra", "zzzqqqxxx")
         self.assertEqual(rc, 0)
-        self.assertIn("Không skill nào khớp", out)
+        self.assertIn("No skill matches", out)
 
     def test_hai_co_cung_luc_bi_tu_choi(self):
         rc, _out, err = chay("--dung-kho", "--tra", "x")

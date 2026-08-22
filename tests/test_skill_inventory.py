@@ -15,9 +15,9 @@ from helper import ROOT
 
 SCRIPT = os.path.join(ROOT, "scripts", "skill_inventory.py")
 
-REMINDER_1 = "— Bảng trên chỉ gồm skill trên đĩa."
-REMINDER_2 = ("— CHÉP THÊM các skill built-in đang thấy trong context "
-              "vào bảng kiểm kê rồi phán quyết từng dòng.")
+REMINDER_1 = "— The table above only holds the skills on disk."
+REMINDER_2 = ("— ALSO COPY the built-in skills visible in context "
+              "into the inventory table, then give a verdict per line.")
 
 
 def skill_md(name, desc="mô tả ngắn"):

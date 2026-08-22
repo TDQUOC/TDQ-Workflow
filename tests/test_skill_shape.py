@@ -60,8 +60,11 @@ class SkillShapeTest(unittest.TestCase):
         self.assertEqual(numbers[0], 1, f"{name}: bước đầu phải là 1")
         for prev, cur in zip(numbers, numbers[1:]):
             self.assertIn(cur, (prev + 1, 1), f"{name}: số bước nhảy {prev} → {cur}")
-        self.assertIn("Xong khi:", text, f"{name}: thiếu mốc hoàn thành")
-        self.assertIn("Bước kế tiếp:", text, f"{name}: thiếu con trỏ bước sau")
+        # Từ 2026-08-22 thân skill viết tiếng Anh; nhận cả hai cách viết hai mốc này.
+        self.assertTrue(any(m in text for m in ("Done when:", "Xong khi:")),
+                        f"{name}: thiếu mốc hoàn thành")
+        self.assertTrue(any(m in text for m in ("Next step:", "Bước kế tiếp:")),
+                        f"{name}: thiếu con trỏ bước sau")
 
     def test_intake_shape(self):
         text = self.assert_shape("tdq-intake")
@@ -105,7 +108,8 @@ class SkillShapeTest(unittest.TestCase):
             self.assertTrue(os.path.isfile(
                 os.path.join(SKILLS, "tdq-check-status", ref)), ref)
         # luật không mất dữ liệu phải nằm ở THÂN skill, không đẩy xuống reference
-        self.assertIn("Cấm tuyệt đối", text)
+        self.assertTrue(any(m in text for m in ("Absolutely banned:", "Cấm tuyệt đối")),
+                        "thiếu luật cấm init/reset ở thân skill")
         for ho in ("tdq_state.py set", "tdq_state.py approve"):
             self.assertIn(ho, text)
 

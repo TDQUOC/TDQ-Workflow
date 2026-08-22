@@ -89,7 +89,12 @@ class TokenBudgetTest(unittest.TestCase):
         self.assertGreater(total, 0, "không đọc được description nào")
         # 2026-08-16: 900 → 1080. Skill thứ 7 (tdq-check-status) cần đủ tín hiệu trigger
         # cho ba tình huống mất ngữ cảnh, không nén xuống được mà vẫn gọi đúng lúc.
-        self.assertLessEqual(total, 1080, f"tổng description = {total} ký tự")
+        # 2026-08-22: 1080 → 1450. Description chuyển sang tiếng Anh nên DÀI HƠN tính bằng
+        # ký tự mà NGẮN ĐI một nửa tính bằng token — thứ thật sự nằm trong system prompt.
+        # Đo bằng `anthropic-tokenizer` (venv `.venv-tokens/`) trên đúng 7 skill: 628 token
+        # bản tiếng Việt (1063 ký tự) → 304 token bản tiếng Anh (1334 ký tự). Trần đếm ký
+        # tự vì thế nới theo tỉ lệ giãn của chữ, ngân sách token thực tế vẫn giảm.
+        self.assertLessEqual(total, 1450, f"tổng description = {total} ký tự")
 
     def test_reference_files_bounded(self):
         for root in (os.path.join(ROOT, "skills"),):
@@ -102,7 +107,10 @@ class TokenBudgetTest(unittest.TestCase):
                     path = os.path.join(dirpath, name)
                     with open(path, encoding="utf-8") as f:
                         count = len(f.read().splitlines())
-                    self.assertLessEqual(count, 200, f"{path}: {count} dòng")
+                    # 2026-08-22: 200 → 215. Reference chuyển sang tiếng Anh xuống dòng
+                    # nhiều hơn ở cùng một nội dung (quick-lane.md: 192 → 203 dòng, không
+                    # thêm mục nào). Nới đúng phần giãn, không nới thành cửa cho nội dung mới.
+                    self.assertLessEqual(count, 215, f"{path}: {count} dòng")
 
 
 if __name__ == "__main__":

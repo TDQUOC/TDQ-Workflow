@@ -16,6 +16,13 @@ SOUL = os.path.join(ROOT, "skills", "tdq-conventions", "references", "soul.md")
 CONV_SKILL = os.path.join(ROOT, "skills", "tdq-conventions", "SKILL.md")
 AGENTS = os.path.join(ROOT, "portable_codex", "AGENTS.md")
 PRIORITY = "chất lượng > runtime > context cost"
+# Từ 2026-08-22 luật viết tiếng Anh, tài liệu viết theo `doc_lang`: cả hai cách viết
+# đều là cùng một thứ tự ưu tiên, nên lưới nhận cả hai.
+PRIORITY_EN = "quality > runtime > context cost"
+
+
+def _co_uu_tien(text):
+    return PRIORITY in text or PRIORITY_EN in text
 DOC_KINDS = ("brief", "spec", "plan", "qc", "report")
 
 
@@ -73,7 +80,7 @@ class SoulTrongKhuon(unittest.TestCase):
                 lines = _read(os.path.join(ROOT, *parts)).splitlines()
                 soul = [l for l in lines if l.startswith("Soul:")]
                 self.assertTrue(soul, "khuôn thiếu dòng bắt đầu bằng `Soul:`")
-                self.assertIn(PRIORITY, soul[0],
+                self.assertTrue(_co_uu_tien(soul[0]),
                               "dòng Soul: phải chép nguyên văn thứ tự ưu tiên")
                 self.assertIn("references/soul.md", soul[0],
                               "dòng Soul: phải trỏ về file luật gốc")
@@ -107,7 +114,7 @@ class SoulRequestDangMo(unittest.TestCase):
                 soul = [l for l in head if l.startswith("Soul:")]
                 self.assertTrue(
                     soul, f"{kind}/{slug}.md thiếu dòng `Soul:` trong 6 dòng đầu")
-                self.assertIn(PRIORITY, soul[0])
+                self.assertTrue(_co_uu_tien(soul[0]))
         self.assertTrue(found_any, "request mở mà không có tài liệu nào để soi")
 
 
@@ -116,7 +123,7 @@ class SoulPointers(unittest.TestCase):
         for path, anchor in ((CONV_SKILL, "references/soul.md"), (AGENTS, "soul")):
             with self.subTest(path=os.path.relpath(path, ROOT)):
                 text = _read(path)
-                self.assertIn(PRIORITY, text,
+                self.assertTrue(_co_uu_tien(text),
                               "tầng luôn nạp phải in nguyên văn thứ tự ưu tiên")
                 self.assertIn(anchor, text, "thiếu dòng trỏ về soul")
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Quản tier plugin user-level của Claude Code.
+"""Manage the user-level plugin tiers of Claude Code.
 
-Lệnh:
-  status          — in `tên | tier | true/false` cho mọi plugin trong plugin-tiers.json
-  reset           — ép false mọi plugin thuộc always_off + on_demand (hook SessionEnd/SessionStart)
-  enable <tên>    — bật một plugin thuộc on_demand
+Commands:
+    status          — print `name | tier | true/false` for every plugin in plugin-tiers.json
+    reset           — force false on every always_off + on_demand plugin (SessionEnd/Start hook)
+    enable <name>   — turn on one on_demand plugin
 
-Mọi lỗi dữ liệu (JSON hỏng, thiếu file) → 1 dòng ⚠️ stderr + exit 0, không ghi file.
-Exit 2 chỉ khi sai cú pháp lệnh. Log: ~/.claude/logs/plugin-tiers.log (PLUGIN_TIERS_LOG=0 tắt).
+Any data error (broken JSON, missing file) → one ⚠️ line on stderr + exit 0, no file written.
+Exit 2 only on bad command syntax. Log: ~/.claude/logs/plugin-tiers.log (PLUGIN_TIERS_LOG=0 mutes).
 """
 import json
 import os
@@ -16,7 +16,7 @@ import tempfile
 from datetime import datetime
 
 MARKETPLACE = "@claude-plugins-official"
-USAGE = "usage: plugin_tiers.py status | reset | enable <tên-plugin>"
+USAGE = "usage: plugin_tiers.py status | reset | enable <plugin-name>"
 
 
 def _claude_dir():
@@ -46,7 +46,7 @@ def _log(msg):
                   encoding="utf-8") as f:
             f.write(f"[{_now()}] {msg}\n")
     except OSError as exc:
-        print(f"[{_now()}] ⚠️ không ghi được log: {exc}", file=sys.stderr)
+        print(f"[{_now()}] ⚠️ cannot write the log: {exc}", file=sys.stderr)
 
 
 def _load_json(path):
@@ -61,11 +61,11 @@ def _tiers():
     path = os.path.join(_claude_dir(), "plugin-tiers.json")
     data, err = _load_json(path)
     if err is not None or not isinstance(data, dict):
-        _warn(f"không đọc được {path}: {err or 'không phải object JSON'}")
+        _warn(f"cannot read {path}: {err or 'not a JSON object'}")
         return None
     off, ond = data.get("always_off"), data.get("on_demand")
     if not isinstance(off, list) or not isinstance(ond, list):
-        _warn(f"{path} thiếu always_off/on_demand dạng list")
+        _warn(f"{path} has no always_off/on_demand list")
         return None
     return [str(x) for x in off], [str(x) for x in ond]
 
@@ -74,13 +74,13 @@ def _settings():
     path = os.path.join(_claude_dir(), "settings.json")
     data, err = _load_json(path)
     if err is not None or not isinstance(data, dict):
-        _warn(f"không đọc được {path}: {err or 'không phải object JSON'}")
+        _warn(f"cannot read {path}: {err or 'not a JSON object'}")
         return None, path
     return data, path
 
 
 def _key_for(enabled, name):
-    """Khóa enabledPlugins của plugin `name` (khớp sẵn có, mặc định marketplace chính)."""
+    """The enabledPlugins key of plugin `name` (existing match, main marketplace by default)."""
     for key in enabled:
         if key == name or key.startswith(name + "@"):
             return key
@@ -88,7 +88,7 @@ def _key_for(enabled, name):
 
 
 def _write_settings(data, path):
-    """Ghi settings atomic (tmp + rename), backup .bak = bản trước khi ghi."""
+    """Write settings atomically (tmp + rename); the .bak backup is the state before writing."""
     try:
         with open(path, encoding="utf-8") as f:
             original = f.read()
@@ -102,7 +102,7 @@ def _write_settings(data, path):
         os.replace(tmp, path)
         return True
     except OSError as exc:
-        _warn(f"không ghi được {path}: {exc}")
+        _warn(f"cannot write {path}: {exc}")
         return False
 
 
@@ -115,20 +115,20 @@ def cmd_reset():
         return 0
     enabled = settings.setdefault("enabledPlugins", {})
     if not isinstance(enabled, dict):
-        _warn(f"{path}: enabledPlugins không phải object — bỏ qua")
+        _warn(f"{path}: enabledPlugins is not an object — skipped")
         return 0
     changes = []
     for name in tiers[0] + tiers[1]:
         key = _key_for(enabled, name)
-        old = enabled.get(key, "chưa có key")
+        old = enabled.get(key, "no key yet")
         if old is not False:
             enabled[key] = False
             changes.append(f"{key}: {old}→False")
     if not changes:
-        _log("reset: 0 thay đổi")
+        _log("reset: 0 changes")
         return 0
     if _write_settings(settings, path):
-        _log(f"reset: {len(changes)} thay đổi — " + ", ".join(changes))
+        _log(f"reset: {len(changes)} change(s) — " + ", ".join(changes))
     return 0
 
 
@@ -138,22 +138,22 @@ def cmd_enable(name):
         return 0
     always_off, on_demand = tiers
     if name in always_off:
-        _warn(f"'{name}' thuộc always_off — không bật qua lệnh này")
+        _warn(f"'{name}' is always_off — this command cannot turn it on")
         return 0
     if name not in on_demand:
-        _warn(f"'{name}' không thuộc on_demand trong plugin-tiers.json")
+        _warn(f"'{name}' is not in on_demand of plugin-tiers.json")
         return 0
     settings, path = _settings()
     if settings is None:
         return 0
     enabled = settings.setdefault("enabledPlugins", {})
     if not isinstance(enabled, dict):
-        _warn(f"{path}: enabledPlugins không phải object — bỏ qua")
+        _warn(f"{path}: enabledPlugins is not an object — skipped")
         return 0
     key = _key_for(enabled, name)
-    old = enabled.get(key, "chưa có key")
+    old = enabled.get(key, "no key yet")
     if old is True:
-        _log(f"enable {key}: đã bật sẵn, 0 thay đổi")
+        _log(f"enable {key}: already on, 0 changes")
         return 0
     enabled[key] = True
     if _write_settings(settings, path):
@@ -171,7 +171,7 @@ def cmd_status():
         enabled = {}
     for tier_name, names in (("always_off", tiers[0]), ("on_demand", tiers[1])):
         for name in names:
-            value = enabled.get(_key_for(enabled, name), "chưa có key")
+            value = enabled.get(_key_for(enabled, name), "no key yet")
             print(f"{name} | {tier_name} | {value}")
     return 0
 

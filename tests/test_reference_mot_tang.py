@@ -111,6 +111,29 @@ def _thuoc_dieu_phoi(path):
     return cua_vao is not None and os.path.basename(path) != cua_vao
 
 
+# Từ 2026-08-22 reference viết tiếng Anh; nhận cả hai tên mục lục.
+TEN_MUC_LUC = ("## Table of contents", "## Mục lục")
+
+
+def _la_muc_luc(dong):
+    return any(dong.startswith(t) for t in TEN_MUC_LUC)
+
+
+def _ngoai_fence(noi_dung):
+    """Chỉ giữ các dòng NGOÀI khối ``` — chữ trong fence là KHUÔN MẪU người ta chép đi,
+    không phải mục của chính file reference. Tính chúng vào mục lục sẽ ép mục lục tiếng
+    Anh phải liệt kê tiêu đề của khuôn tiếng Việt, và ép khuôn phải kê tiêu đề văn xuôi
+    của file — cả hai đều làm hỏng đúng thứ mục lục sinh ra để giúp."""
+    ra, trong = [], False
+    for dong in noi_dung.splitlines():
+        if dong.lstrip().startswith("```"):
+            trong = not trong
+            continue
+        if not trong:
+            ra.append(dong)
+    return "\n".join(ra)
+
+
 class MotTang(unittest.TestCase):
     """Mọi reference phải được một `SKILL.md` trỏ thẳng — không có luật nào ở tầng 2."""
 
@@ -173,8 +196,8 @@ class MucLuc(unittest.TestCase):
     def _tieu_de(noi_dung):
         """Danh sách tiêu đề `##` (bỏ `###` trở xuống và bỏ chính mục lục)."""
         ra = []
-        for dong in noi_dung.splitlines():
-            if dong.startswith("## ") and not dong.startswith("## Mục lục"):
+        for dong in _ngoai_fence(noi_dung).splitlines():
+            if dong.startswith("## ") and not _la_muc_luc(dong):
                 ra.append(dong[3:].strip())
         return ra
 
@@ -185,10 +208,12 @@ class MucLuc(unittest.TestCase):
                 noi_dung = f.read()
             if len(noi_dung.splitlines()) <= TRAN_DONG:
                 continue
-            if "## Mục lục" not in noi_dung:
+            ngoai = _ngoai_fence(noi_dung)
+            ten_muc_luc = next((t for t in TEN_MUC_LUC if t in ngoai), "")
+            if not ten_muc_luc:
                 thieu.append(_ten_ngan(path))
                 continue
-            khoi = noi_dung.split("## Mục lục", 1)[1].split("\n## ", 1)[0]
+            khoi = ngoai.split(ten_muc_luc, 1)[1].split("\n## ", 1)[0]
             for tieu_de in self._tieu_de(noi_dung):
                 if tieu_de not in khoi:
                     lech.append(f"{_ten_ngan(path)}: thiếu mục `{tieu_de}`")

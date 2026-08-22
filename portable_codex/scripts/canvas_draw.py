@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Bộ dựng hình dùng chung cho các chương mới của product document.
+"""Shared drawing toolkit for the new chapters of the product document.
 
-Gói lại đúng những quy ước đã chốt trong plan để không phải lặp ở mỗi chương:
+It packages exactly the conventions settled in the plan so no chapter has to repeat them:
 
-- khung chương rộng 1240px (khổ A4 dọc @150dpi) tại `x = 40`, id `ch<N>-frame`, tiêu đề `ch<N>-title`
-  bắt đầu bằng `"<N>. "` (script `check_canvas_layout.py` dựa vào đúng quy ước này),
-- thẻ nội dung = rectangle nền pastel + text tiêu đề + text thân, KHÔNG dùng bound
-  label trên hộp lớn (label sẽ bị canh giữa và đè lên nội dung),
-- bề rộng chữ tiếng Việt: `số ký tự dòng dài nhất × fontSize × 0.75`; hàm `fit`
-  cảnh báo khi một dòng vượt 70% bề rộng ô.
+- a chapter frame 1240px wide (A4 portrait @150dpi) at `x = 40`, id `ch<N>-frame`, title `ch<N>-title`
+    starting with `"<N>. "` (the script `check_canvas_layout.py` relies on exactly this convention),
+- a content card = pastel rectangle + title text + body text, NEVER a bound label on the big
+    box (a label gets centred and covers the content),
+- text width for accented scripts: `characters of the longest line × fontSize × 0.75`; the `fit`
+    helper warns when a line exceeds 70% of the cell width.
 
-Chỉ stdlib. Ghi bằng `POST /api/elements/batch` (cấm `update_element` — luật 7).
+Stdlib only. Writes through `POST /api/elements/batch` (`update_element` is banned — rule 7).
 """
 
 import sys
@@ -18,36 +18,36 @@ import sys
 from canvas_move_block import api
 
 X = 40
-W = 1240          # khổ A4 dọc @150dpi — chốt ở spec 2026-08-12-layout-a4-doc
-K_VI = 0.75          # hệ số bề rộng cho chữ có dấu
-SAFE = 0.70          # chữ chỉ được chiếm tối đa 70% bề rộng ô
+W = 1240          # A4 portrait @150dpi — settled in spec 2026-08-12-layout-a4-doc
+K_VI = 0.75          # width factor for accented text
+SAFE = 0.70          # text may take at most 70% of the cell width
 
 PALETTE = [
-    ("#e7f5ff", "#1971c2"),   # xanh dương
-    ("#ebfbee", "#2f9e44"),   # xanh lá
-    ("#fff9db", "#e8590c"),   # vàng cam
-    ("#f3f0ff", "#6741d9"),   # tím
-    ("#ffe3e3", "#c92a2a"),   # đỏ
-    ("#e6fcf5", "#0ca678"),   # ngọc
+    ("#e7f5ff", "#1971c2"),   # blue
+    ("#ebfbee", "#2f9e44"),   # green
+    ("#fff9db", "#e8590c"),   # amber
+    ("#f3f0ff", "#6741d9"),   # purple
+    ("#ffe3e3", "#c92a2a"),   # red
+    ("#e6fcf5", "#0ca678"),   # teal
 ]
 
 
 def fit(text, box_w, font_size, where):
-    """Cảnh báo nếu có dòng vượt quá 70% bề rộng ô. Trả về chính `text`."""
+    """Warn if any line exceeds 70% of the cell width. Returns `text` itself."""
     limit = box_w * SAFE
     for line in text.split("\n"):
         need = len(line) * font_size * K_VI
         if need > limit:
             print(
-                f"  ⚠ {where}: dòng {len(line)} ký tự cần ~{need:.0f}px, "
-                f"quá 70% của {box_w}px — rút ngắn hoặc xuống dòng",
+                f"  ⚠ {where}: a line of {len(line)} characters needs ~{need:.0f}px, "
+                f"over 70% of {box_w}px — shorten it or wrap it",
                 file=sys.stderr,
             )
     return text
 
 
 class Chapter:
-    """Gom element của một chương rồi ghi một lượt."""
+    """Collect the elements of one chapter and write them in a single pass."""
 
     def __init__(self, number, title, y, height, title_color="#1971c2"):
         self.n = number
@@ -106,12 +106,12 @@ class Chapter:
         return self
 
     def row(self, count, top, height, gap=24, margin=40):
-        """Trả danh sách (x, w) cho `count` thẻ dàn đều hết bề ngang chương."""
+        """Return the list of (x, w) for `count` cards spread across the chapter width."""
         w = (W - 2 * margin - gap * (count - 1)) / count
         return [(X + margin + i * (w + gap), w) for i in range(count)]
 
     def stack(self, top, heights, gap=24):
-        """Bố cục MỘT cột: trả danh sách y cho các khối cao `heights` xếp dọc."""
+        """ONE-column layout: return the y list for blocks of height `heights` stacked vertically."""
         ys, y = [], top
         for h in heights:
             ys.append(y)
@@ -121,5 +121,5 @@ class Chapter:
     def commit(self):
         res = api("/api/elements/batch", method="POST", payload={"elements": self.els})
         n = res.get("count", 0)
-        print(f"Chương {self.n}: tạo {n}/{len(self.els)} phần tử tại y={self.y}")
+        print(f"Chapter {self.n}: created {n}/{len(self.els)} element(s) at y={self.y}")
         return 0 if n == len(self.els) else 1

@@ -1,51 +1,53 @@
-# Chọn cỡ request: nhỏ, chế độ nhanh (express) hay chế độ chuyên sâu (deep)
+# Picking the size of a request: tier `nhỏ`, express or deep <!-- i18n-allow: canonical name in the default language -->
 
 You **propose**, the user **decides**. Always ask, even when the answer looks obvious.
-The only exception is tier `nhỏ`: all 4 conditions in [SKILL.md](../SKILL.md) hold → do it
+The only exception is tier `nhỏ`: all 4 conditions in [SKILL.md](../SKILL.md) hold → do it <!-- i18n-allow: canonical name in the default language -->
 right away, no request opened, no lane question.
 
-## Dòng tự nhận định
+## The self-rating line
 
 Every new request rates itself INTERNALLY in the shape below before the lane question —
 this is what picks recommendation A/B, and it is **never printed to chat**:
 
+<!-- i18n-allow: rating line written in the default language -->
 ```
 **Cỡ:** <nhỏ|quick|full> · Cần: <research | interview | subagent | QC độc lập | skill ngoài | không>
 ```
 
-Column `Cần` lists only what CAN be dropped. Whatever always runs is left out, so the
-rating stays short. Nothing optional at all → treat it as `Cần: không`.
+Column `Cần` lists only what CAN be dropped. Whatever always runs is left out, so the <!-- i18n-allow: canonical name in the default language -->
+rating stays short. Nothing optional at all → treat it as "nothing needed".
 
-## Bảng quyết
+## The decision table
 
-| Dấu hiệu | chế độ nhanh (express) | chế độ chuyên sâu (deep) |
+| Sign | Express | Deep |
 |---|---|---|
-| Thời lượng ước tính | < ~1 giờ | > ~1 giờ |
-| Số file đụng tới | 1–3 | nhiều, hoặc chưa biết |
-| Yêu cầu đã rõ chưa | rõ, không phải hỏi gì | còn chỗ mơ hồ / cần research |
-| Rủi ro nếu sai | thấp, dễ hoàn tác | cao: dữ liệu, bảo mật, API công khai, tiền |
-| Có thiết kế mới không | không, chỉ sửa/thêm nhỏ | có kiến trúc/luồng mới |
-| Cần model/hạ tầng mới | không | có |
+| Estimated duration | < ~1 hour | > ~1 hour |
+| Files touched | 1–3 | many, or unknown |
+| Is the request clear | clear, nothing to ask | vague spots / research needed |
+| Risk if it goes wrong | low, easy to undo | high: data, security, public API, money |
+| Any new design | no, a small edit or addition | yes, new architecture or flow |
+| New model or infrastructure needed | no | yes |
 
-Có **bất kỳ** ô nào rơi vào cột chế độ chuyên sâu (deep) → đề xuất **chế độ chuyên sâu (deep)**.
+**Any** cell landing in the deep column → propose the **deep pipeline**.
 
-## Luồng mỗi lane
+## The flow of each lane
 
-- **chế độ nhanh (express)**: analysis (+ search/interview when needed) → mini spec/plan
+- **Express**: analysis (+ search/interview when needed) → mini spec/plan
   merged into 1 file, a ≤10-line summary in chat → user approves (1 gate) → working log →
   implement → validate → short report. Details: [quick-lane.md](quick-lane.md).
-- **chế độ chuyên sâu (deep)**: analysis + interview → spec (wait for approval, then write
+- **Deep**: analysis + interview → spec (wait for approval, then write
   the plan in that same turn) → plan (wait for approval). Then: pick the execution mode
   (main or subagent) → implement → QC → report.
 
-## Khuôn câu hỏi (copy được)
+## The question template (copy it)
 
 Follows [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) and
-the option khuôn of [interview.md](interview.md) — one option per line, the recommendation
-always at `A`. Never print the `Cỡ:/Cần:` line; call the "lane" a "pipeline" when asking
+the option template of [interview.md](interview.md) — one option per line, the recommendation
+always at `A`. Never print the `Cỡ:/Cần:` line; call the "lane" a "pipeline" when asking <!-- i18n-allow: canonical name in the default language -->
 the user; right under the 2 options there is always the short block explaining what the 2
 pipelines mean (fixed wording, it does not change per task):
 
+<!-- i18n-allow: question block written in the default language -->
 ```
 Tôi đã ghi lại yêu cầu của bạn.
 

@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-"""claude_export.py — sinh và kiểm bundle export cấu hình Claude Code sang máy khác.
+"""claude_export.py — build and check the bundle that exports a Claude Code setup to another machine.
 
-Thay bộ 7 bước tay của `claude-export/INSTRUCTIONS.md` (bản trước 0.7.0) bằng 2 lệnh:
+Replaces the 7 manual steps of `claude-export/INSTRUCTIONS.md` (before 0.7.0) with 2 commands:
 
   claude_export.py build --dest <dir> [--zip]
-      Sinh bundle: clone repo (giữ `.git`, chỉ file tracked), copy cấu hình `~/.claude`
-      đã lọc secret, xuất `config/mcp-servers.json` để máy đích khôi phục MCP server,
-      ghi `manifest.json` (phiên bản plugin, commit SHA, sha256 từng file nguồn).
+            Build the bundle: clone the repo (keeping `.git`, tracked files only), copy the `~/.claude`
+            config with secrets filtered out, emit `config/mcp-servers.json` so the target machine can
+            restore its MCP servers, write `manifest.json` (plugin version, commit SHA, sha256 per source file).
 
   claude_export.py check --dest <dir>
-      Đo độ lệch giữa máy nguồn HIỆN TẠI và bundle đã sinh: file cấu hình đổi nội dung,
-      repo đã sang commit khác, phiên bản plugin đã bump. exit 0 = sạch, 1 = có lệch.
+            Measure the drift between the source machine RIGHT NOW and the built bundle: a config file
+            whose content changed, a repo moved to another commit, a plugin version bumped. exit 0 = clean, 1 = drift.
 
-Vì sao clone thay vì `rsync --exclude`: rsync không đọc `.gitignore` nên bản cũ mang
-theo 15 MB `graphify-out/`, `docs/tdq/state.json` của request đang dở, `.tdq-turn.jsonl`
-và cả `.DS_Store`. `git clone` chỉ lấy file tracked nên 4 lỗi đó biến mất cùng lúc.
+Why clone instead of `rsync --exclude`: rsync does not read `.gitignore`, so the old version dragged
+along 15 MB of `graphify-out/`, the `docs/tdq/state.json` of a half-finished request, `.tdq-turn.jsonl`
+and even `.DS_Store`. `git clone` takes only tracked files, so all 4 faults disappear at once.
 
-Bảo mật: script chỉ ĐỌC `~/.claude.json` (chứa `oauthAccount`/`machineID`) và không bao
-giờ copy đè file đó — máy đích khôi phục MCP bằng `claude mcp add-json --scope user`.
-Giá trị key thật trong `settings.json` bị thay bằng placeholder trước khi ghi ra bundle,
-sau đó bundle được quét lại; còn sót thì XOÁ bundle và exit 3.
+Security: the script only READS `~/.claude.json` (which holds `oauthAccount`/`machineID`) and never
+copies over that file — the target machine restores MCP with `claude mcp add-json --scope user`.
+Real key values in `settings.json` are replaced by a placeholder before being written into the bundle,
+and the bundle is then rescanned; anything left over DELETES the bundle and exits 3.
 
-Exit code: 0 ok · 1 có drift (`check`) · 2 đích/bundle không hợp lệ · 3 lộ secret.
-Env: TDQ_EXPORT_CLI_VERSIONS=0 tắt bước dò version CLI (dùng cho test, nhanh hơn).
+Exit code: 0 ok · 1 drift found (`check`) · 2 invalid destination/bundle · 3 secret leaked.
+Env: TDQ_EXPORT_CLI_VERSIONS=0 turns the CLI-version probe off (used by tests, faster).
 """
 import argparse
 import datetime
@@ -40,7 +40,7 @@ REPO_ROOT = os.path.dirname(SCRIPT_DIR)
 TEMPLATE_DIR = os.path.join(REPO_ROOT, "claude-export")
 REPO_DIR_NAME = "tdqworkflow-repo"
 
-# File đơn của `~/.claude` mang theo → vị trí trong bundle.
+# Single files of `~/.claude` to carry along → their place in the bundle.
 CONFIG_FILES = (
     ("settings.json", "config/settings.json"),
     ("CLAUDE.md", "config/CLAUDE.md"),
@@ -49,16 +49,16 @@ CONFIG_FILES = (
     ("plugins/installed_plugins.json", "config/installed_plugins.json"),
     ("plugins/known_marketplaces.json", "config/known_marketplaces.json"),
 )
-# Thư mục CỐ ĐỊNH của `~/.claude` mang theo → vị trí trong bundle. Riêng `skills/`
-# không hard-code từng tên ở đây — `_skill_dirs()` tự quét để không bỏ sót skill mới.
+# FIXED folders of `~/.claude` to carry along → their place in the bundle. `skills/` alone is
+# not hard-coded name by name here — `_skill_dirs()` scans so a new skill is never missed.
 CONFIG_DIRS = (
     (".remember", "config/remember"),
     ("scripts", "config/scripts"),
 )
-# Rác runtime: không bao giờ đưa vào bundle, dù nằm ở đâu.
+# Runtime junk: never put into the bundle, wherever it sits.
 SKIP_DIRS = {"__pycache__", "tmp", "logs", "cache", ".git"}
 SKIP_NAMES = {".DS_Store"}
-# Tên biến môi trường coi là bí mật → giá trị thật bị thay placeholder.
+# Environment variable names treated as secret → the real value is replaced by a placeholder.
 SECRET_NAME = re.compile(r"(KEY|TOKEN|SECRET|PASSWORD)", re.IGNORECASE)
 MIN_SECRET_LEN = 8
 MAX_TEXT_BYTES = 8 * 1024 * 1024
@@ -78,13 +78,13 @@ def set_log_level(quiet=False, verbose=False):
 
 
 def log(message, level="info"):
-    """In 1 dòng có timestamp ISO ra stderr. Bật mặc định, tắt bằng `--quiet`."""
+    """Print 1 line with an ISO timestamp to stderr. On by default, off with `--quiet`."""
     if _LOG["level"] < (2 if level == "debug" else 1):
         return
     print(f"[{_now()}] {level:5s} {message}", file=sys.stderr)
 
 
-# ------------------------------------------------------------------ hàm nền
+# ------------------------------------------------------------------ helpers
 
 def sha256_of(path):
     digest = hashlib.sha256()
@@ -95,7 +95,7 @@ def sha256_of(path):
 
 
 def read_mcp_servers(path):
-    """Đọc khoá `mcpServers` của một file kiểu `~/.claude.json`. Chỉ đọc, không ghi."""
+    """Read the `mcpServers` key of a `~/.claude.json`-style file. Read only, never written."""
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
@@ -106,9 +106,9 @@ def read_mcp_servers(path):
 
 
 def harvest_secrets(settings_path):
-    """{tên biến: giá trị thật} lấy từ khối `env` của settings.json.
+    """{variable name: real value} taken from the `env` block of settings.json.
 
-    Bỏ qua giá trị dạng `${VAR}` — đó là tham chiếu biến môi trường, không phải key.
+    Skips a `${VAR}`-shaped value — that is an environment reference, not a key.
     """
     try:
         with open(settings_path, encoding="utf-8") as f:
@@ -137,7 +137,7 @@ def _text_files(root):
 
 
 def scan_secrets(root, values):
-    """Đường dẫn mọi file văn bản dưới `root` còn chứa một trong `values`."""
+    """The path of every text file under `root` that still holds one of `values`."""
     wanted = [v for v in values if isinstance(v, str) and len(v) >= MIN_SECRET_LEN]
     if not wanted:
         return []
@@ -146,14 +146,14 @@ def scan_secrets(root, values):
 
 
 def redact_bundle(root, secrets):
-    """Thay mọi giá trị key thật trong bundle bằng placeholder. Trả file đã sửa."""
+    """Replace every real key value in the bundle with a placeholder. Returns the edited files."""
     if not secrets:
         return []
     changed = []
     for path, text in _text_files(root):
         new = text
         for name, value in secrets.items():
-            new = new.replace(value, f"<{name} — điền lại>")
+            new = new.replace(value, f"<{name} — fill this in>")
         if new != text:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(new)
@@ -162,10 +162,10 @@ def redact_bundle(root, secrets):
 
 
 def _skill_dirs(claude_home):
-    """(rel_src, rel_dest) cho MỌI skill user-level dưới `~/.claude/skills/`.
+    """(rel_src, rel_dest) for EVERY user-level skill under `~/.claude/skills/`.
 
-    Tổng quát thay vì hard-code từng tên: skill mới cài (như `mem0-memory`) tự
-    được mang theo, không cần sửa code mỗi lần thêm skill.
+    General instead of hard-coded name by name: a newly installed skill (such as `mem0-memory`)
+    is carried along on its own, with no code change each time a skill is added.
     """
     root = os.path.join(claude_home, "skills")
     if not os.path.isdir(root):
@@ -178,7 +178,7 @@ def _skill_dirs(claude_home):
 
 
 def collect_config_files(claude_home):
-    """{đường dẫn trong bundle: đường dẫn nguồn} cho mọi file cấu hình mang theo."""
+    """{path in the bundle: source path} for every config file carried along."""
     found = {}
     for rel_src, rel_dest in CONFIG_FILES:
         src = os.path.join(claude_home, rel_src)
@@ -199,7 +199,7 @@ def collect_config_files(claude_home):
     return found
 
 
-# ------------------------------------------------------------------ lệnh build
+# ------------------------------------------------------------------ the build command
 
 def _git_out(repo, *args):
     proc = subprocess.run(["git", "-C", repo, *args],
@@ -216,40 +216,40 @@ def plugin_version(repo):
 
 
 def dest_is_writable(dest):
-    """(được ghi đè?, lý do). Chỉ ghi đè thư mục trống hoặc bundle do chính script sinh."""
+    """(may we overwrite?, reason). Only an empty folder or a bundle this script built."""
     if not os.path.exists(dest):
-        return True, "đích chưa tồn tại"
+        return True, "the destination does not exist yet"
     if not os.path.isdir(dest):
-        return False, "đích đã tồn tại nhưng không phải thư mục"
+        return False, "the destination exists but is not a folder"
     entries = sorted(os.listdir(dest))
     if not entries:
-        return True, "đích rỗng"
+        return True, "the destination is empty"
     manifest = os.path.join(dest, "manifest.json")
     if os.path.isfile(manifest):
         try:
             with open(manifest, encoding="utf-8") as f:
                 if "exported_at" in json.load(f):
-                    return True, "đích là bundle do script này sinh"
+                    return True, "the destination is a bundle built by this script"
         except (OSError, ValueError):
             pass
-    return False, "đích có dữ liệu lạ: " + ", ".join(entries[:3])
+    return False, "the destination holds foreign data: " + ", ".join(entries[:3])
 
 
 def resolve_repos(args):
-    """{tên trong bundle: path tuyệt đối trên máy nguồn} cho MỌI repo cần clone.
+    """{name in the bundle: absolute path on the source machine} for EVERY repo to clone.
 
-    Ưu tiên `local-repos.json` (đa repo); file không có/không tồn tại → rơi về
-    hành vi cũ: đúng 1 repo lấy từ `--repo`, tên `tdqworkflow-repo`.
+    `local-repos.json` wins (many repos); the file being absent/missing → fall back to the old
+    behaviour: exactly 1 repo taken from `--repo`, named `tdqworkflow-repo`.
     """
     path = args.local_repos
     if path and os.path.isfile(path):
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         repos = {name: os.path.abspath(os.path.expanduser(p)) for name, p in data.items()}
-        log(f"đọc {len(repos)} repo từ {path}: {', '.join(sorted(repos))}")
+        log(f"read {len(repos)} repo(s) from {path}: {', '.join(sorted(repos))}")
         return repos
     repo = os.path.abspath(os.path.expanduser(args.repo))
-    log(f"không có local-repos.json ({path}) — dùng 1 repo qua --repo: {repo}", level="debug")
+    log(f"no local-repos.json ({path}) — using 1 repo via --repo: {repo}", level="debug")
     return {REPO_DIR_NAME: repo}
 
 
@@ -257,15 +257,15 @@ def clone_repo(name, repo, dest):
     target = os.path.join(dest, name)
     dirty = _git_out(repo, "status", "--porcelain")
     if dirty:
-        log(f"repo {name} nguồn còn {len(dirty.splitlines())} file chưa commit — "
-            "clone chỉ lấy phần đã commit", level="info")
+        log(f"the source of repo {name} still has {len(dirty.splitlines())} uncommitted file(s) — "
+            "the clone takes only what is committed", level="info")
     subprocess.run(["git", "clone", "--quiet", repo, target], check=True, timeout=600)
     log(f"clone {name} → {target}")
     return target
 
 
 def copy_repo_memory(name, repo, dest):
-    """`.remember/` của repo là untracked nên clone không mang theo — copy riêng."""
+    """The `.remember/` of a repo is untracked, so a clone leaves it behind — copied separately."""
     src = os.path.join(repo, ".remember")
     if not os.path.isdir(src):
         return 0
@@ -281,7 +281,7 @@ def copy_repo_memory(name, repo, dest):
             os.makedirs(os.path.dirname(out), exist_ok=True)
             shutil.copy2(os.path.join(dirpath, name_), out)
             count += 1
-    log(f"copy {count} file .remember của {name} (bỏ tmp/ và logs/)")
+    log(f"copied {count} .remember file(s) of {name} (dropping tmp/ and logs/)")
     return count
 
 
@@ -291,12 +291,12 @@ def copy_config(claude_home, dest):
         out = os.path.join(dest, rel_dest)
         os.makedirs(os.path.dirname(out), exist_ok=True)
         shutil.copy2(src, out)
-    log(f"copy {len(files)} file cấu hình từ {claude_home}")
+    log(f"copied {len(files)} config file(s) from {claude_home}")
     return files
 
 
 def rewrite_marketplace_path(dest):
-    """Trỏ marketplace `tdq-local` vào repo NẰM TRONG bundle, nếu không plugin không load."""
+    """Point the `tdq-local` marketplace at the repo INSIDE the bundle, else the plugins never load."""
     new_path = os.path.join(dest, REPO_DIR_NAME)
     source = {"source": "directory", "path": new_path}
     settings_path = os.path.join(dest, "config", "settings.json")
@@ -320,11 +320,11 @@ def rewrite_marketplace_path(dest):
 
 
 def copy_launch_agents(repos, launch_agents_dir, dest):
-    """Copy plist LaunchAgent khớp tên repo local — CHỈ để tham khảo, không tự restore.
+    """Copy the LaunchAgent plist matching a local repo name — FOR REFERENCE only, never restored.
 
-    Quy ước tên: `com.<tên repo bỏ hậu tố "-repo">.gateway.plist`. `tdqworkflow-repo`
-    không có LaunchAgent riêng nên bị bỏ qua. Không thấy file khớp → im lặng bỏ qua,
-    không lỗi (LaunchAgent của repo đó có thể không tồn tại trên máy này).
+    Naming rule: `com.<repo name minus the "-repo" suffix>.gateway.plist`. `tdqworkflow-repo`
+    has no LaunchAgent of its own, so it is skipped. No matching file → skipped silently,
+    not an error (that repo's LaunchAgent may simply not exist on this machine).
     """
     copied = []
     out_dir = os.path.join(dest, "config", "launch-agents")
@@ -339,7 +339,7 @@ def copy_launch_agents(repos, launch_agents_dir, dest):
         os.makedirs(out_dir, exist_ok=True)
         shutil.copy2(src, os.path.join(out_dir, fname))
         copied.append(fname)
-    log(f"copy {len(copied)} LaunchAgent plist tham khảo: {', '.join(copied) or 'không có'}")
+    log(f"copied {len(copied)} LaunchAgent plist(s) for reference: {', '.join(copied) or 'none'}")
     return copied
 
 
@@ -349,7 +349,7 @@ def write_mcp_servers(claude_json, dest):
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
         json.dump(servers, f, ensure_ascii=False, indent=2)
-    log(f"xuất {len(servers)} MCP server → config/mcp-servers.json")
+    log(f"exported {len(servers)} MCP server(s) → config/mcp-servers.json")
     return servers
 
 
@@ -367,7 +367,7 @@ def cli_versions():
             continue
         if proc.returncode == 0:
             found[tool] = proc.stdout.strip().splitlines()[0] if proc.stdout.strip() else ""
-    log(f"dò được version của {len(found)} CLI")
+    log(f"probed the version of {len(found)} CLI(s)")
     return found
 
 
@@ -380,11 +380,11 @@ def _load_json(path, default):
 
 
 def write_manifest(dest, repos, claude_home, files, servers):
-    """Khung khoá lấy từ MANIFEST.template.json để template và code không lệch nhau.
+    """The key frame taken from MANIFEST.template.json so template and code never drift apart.
 
-    `repos`: {tên: path nguồn} — 1 hoặc nhiều. `repo_commit`/`plugin_version` giữ
-    nguyên nghĩa cũ (SHA + version của `tdqworkflow-repo`) để không vỡ tương thích
-    ngược; khoá `repos` mới liệt kê ĐẦY ĐỦ mọi repo kèm commit riêng.
+    `repos`: {name: source path} — 1 or many. `repo_commit`/`plugin_version` keep their old
+    meaning (the SHA + version of `tdqworkflow-repo`) so backward compatibility holds; the new
+    `repos` key lists EVERY repo in full with its own commit.
     """
     manifest = _load_json(os.path.join(TEMPLATE_DIR, "MANIFEST.template.json"), {})
     plugins = _load_json(os.path.join(claude_home, "plugins", "installed_plugins.json"),
@@ -411,7 +411,7 @@ def write_manifest(dest, repos, claude_home, files, servers):
     with open(os.path.join(dest, "manifest.json"), "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
     log(f"ghi manifest.json ({len(manifest['repos'])} repo, "
-        f"{len(manifest['source_files'])} file nguồn có sha256)")
+        f"{len(manifest['source_files'])} source file(s) with sha256)")
     return manifest
 
 
@@ -419,11 +419,11 @@ def write_readme(dest, manifest):
     template = os.path.join(TEMPLATE_DIR, "README.template.md")
     with open(template, encoding="utf-8") as f:
         text = f.read()
-    lines = ["| Repo local dependency | Path nguồn | Commit |", "|---|---|---|"]
+    lines = ["| Repo local dependency | Path nguồn | Commit |", "|---|---|---|"]  # i18n-allow
     for name, entry in sorted(manifest.get("repos", {}).items()):
         lines.append(f"| `{name}` | `{entry.get('source', '?')}` | "
                      f"`{(entry.get('commit') or '?')[:8]}` |")
-    lines += ["", "| Marketplace | Nguồn |", "|---|---|"]
+    lines += ["", "| Marketplace | Nguồn |", "|---|---|"]  # i18n-allow
     for name, entry in sorted(manifest["marketplaces"].items()):
         source = entry.get("source", {}) if isinstance(entry, dict) else {}
         lines.append(f"| `{name}` | `{source.get('path') or source.get('source', '?')}` |")
@@ -448,7 +448,7 @@ def write_readme(dest, manifest):
 
 
 def make_zip(dest):
-    """Nén ra file tạm rồi mới đè — hỏng giữa chừng thì bản zip cũ vẫn còn."""
+    """Compress to a temp file before overwriting — a crash midway leaves the old zip intact."""
     final = dest + ".zip"
     tmp = final + ".tmp"
     base = os.path.basename(dest.rstrip(os.sep))
@@ -464,7 +464,7 @@ def make_zip(dest):
         if os.path.exists(tmp):
             os.remove(tmp)
         raise
-    log(f"nén xong {final} ({os.path.getsize(final) / 1048576:.1f} MB)")
+    log(f"compressed {final} ({os.path.getsize(final) / 1048576:.1f} MB)")
     return final
 
 
@@ -476,13 +476,13 @@ def cmd_build(args):
     log(f"build → {dest}")
     ok, why = dest_is_writable(dest)
     if not ok:
-        log(f"từ chối ghi đè: {why}", level="info")
+        log(f"refusing to overwrite: {why}", level="info")
         return 2
-    log(f"đích hợp lệ ({why})", level="debug")
+    log(f"destination is valid ({why})", level="debug")
 
     secrets = harvest_secrets(os.path.join(home, "settings.json"))
-    log(f"tìm thấy {len(secrets)} biến bí mật cần thay placeholder: "
-        f"{', '.join(sorted(secrets)) or 'không có'}")
+    log(f"found {len(secrets)} secret variable(s) needing a placeholder: "
+        f"{', '.join(sorted(secrets)) or 'none'}")
 
     repos = resolve_repos(args)
 
@@ -500,14 +500,14 @@ def cmd_build(args):
     write_readme(dest, manifest)
 
     changed = redact_bundle(dest, secrets)
-    log(f"thay placeholder ở {len(changed)} file")
+    log(f"replaced the placeholder in {len(changed)} file(s)")
     hits = scan_secrets(dest, list(secrets.values()) + list(args.extra_secret or []))
     if hits:
         shutil.rmtree(dest, ignore_errors=True)
-        log(f"PHÁT HIỆN secret còn sót ở {len(hits)} file → đã xoá bundle "
-            f"{dest}. File đầu tiên: {os.path.relpath(hits[0], dest)}")
+        log(f"SECRET STILL PRESENT in {len(hits)} file(s) → the bundle {dest} was deleted. "
+            f"First file: {os.path.relpath(hits[0], dest)}")
         return 3
-    log("quét secret: sạch")
+    log("secret scan: clean")
 
     if args.zip:
         make_zip(dest)
@@ -517,45 +517,45 @@ def cmd_build(args):
     return 0
 
 
-# ------------------------------------------------------------------ lệnh check
+# ------------------------------------------------------------------ the check command
 
 def cmd_check(args):
     dest = os.path.abspath(os.path.expanduser(args.dest))
     manifest_path = os.path.join(dest, "manifest.json")
     if not os.path.isfile(manifest_path):
-        log(f"không tìm thấy manifest.json trong {dest} — đây không phải bundle")
+        log(f"no manifest.json found in {dest} — this is not a bundle")
         return 2
     try:
         with open(manifest_path, encoding="utf-8") as f:
             manifest = json.load(f)
     except (json.JSONDecodeError, UnicodeDecodeError) as err:
-        log(f"manifest.json đọc không được ({err}) — bundle hỏng, sinh lại bằng build")
+        log(f"manifest.json cannot be read ({err}) — broken bundle, rebuild it with build")
         return 2
-    log(f"check bundle sinh lúc {manifest.get('exported_at', '?')}")
+    log(f"checking the bundle built at {manifest.get('exported_at', '?')}")
 
     drift = []
     for rel, entry in sorted(manifest.get("source_files", {}).items()):
         src = entry.get("source", "")
         if not os.path.isfile(src):
-            drift.append((rel, "thiếu ở nguồn"))
+            drift.append((rel, "missing at the source"))
         elif sha256_of(src) != entry.get("sha256"):
-            drift.append((rel, "nội dung đã đổi"))
+            drift.append((rel, "content changed"))
 
-    # `repos`: bundle mới (N repo). Manifest cũ (trước bản hỗ trợ N repo) không có
-    # khoá này — rơi về đúng 1 repo qua `--repo`, dùng `repo_commit` cũ để tương thích.
+    # `repos`: a new bundle (N repos). An old manifest (before N-repo support) has no such key
+    # — fall back to exactly 1 repo via `--repo`, using the old `repo_commit` for compatibility.
     repos = dict(manifest.get("repos") or {})
     if REPO_DIR_NAME not in repos:
         repos[REPO_DIR_NAME] = {"source": os.path.abspath(os.path.expanduser(args.repo)),
                                 "commit": manifest.get("repo_commit", "")}
     for name, entry in sorted(repos.items()):
         src = entry.get("source", "")
-        # `tdqworkflow-repo` so với khoá `repo_commit` cũ (tương thích ngược với bundle
-        # trước bản multi-repo); repo khác so với commit ghi riêng trong `repos`.
+        # `tdqworkflow-repo` against the old `repo_commit` key (backward compatible with a bundle
+        # from before multi-repo); any other repo against the commit recorded in `repos`.
         old = manifest.get("repo_commit", "") if name == REPO_DIR_NAME else entry.get("commit", "")
         head = _git_out(src, "rev-parse", "HEAD") if src else ""
         if head and old and head != old:
             behind = _git_out(src, "rev-list", "--count", f"{old}..{head}")
-            gap = f"(+{behind})" if behind else "(không so được khoảng cách — SHA cũ không có trong repo)"
+            gap = f"(+{behind})" if behind else "(distance not measurable — the old SHA is not in the repo)"
             drift.append((name, f"commit {old[:8]} → {head[:8]} {gap}"))
     main_source = repos.get(REPO_DIR_NAME, {}).get("source", "") \
         or os.path.abspath(os.path.expanduser(args.repo))
@@ -565,11 +565,11 @@ def cmd_check(args):
                       f"version {manifest.get('plugin_version')} → {now_version}"))
 
     if drift:
-        print("| Mục | Lệch thế nào |")
+        print("| Item | Drift |")
         print("|---|---|")
         for rel, why in drift:
             print(f"| {rel} | {why} |")
-    print(f"{len(drift)} mục lệch")
+    print(f"{len(drift)} drift item(s)")
     return 1 if drift else 0
 
 
@@ -577,29 +577,29 @@ def cmd_check(args):
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(
-        prog="claude_export.py", description="Sinh và kiểm bundle export Claude Code")
+        prog="claude_export.py", description="Build and check a Claude Code export bundle")
     subs = parser.add_subparsers(dest="cmd", required=True)
-    for name, helptext in (("build", "sinh bundle"), ("check", "đo drift bundle ↔ nguồn")):
+    for name, helptext in (("build", "build the bundle"), ("check", "measure bundle ↔ source drift")):
         sub = subs.add_parser(name, help=helptext)
-        sub.add_argument("--dest", required=True, help="thư mục bundle")
-        sub.add_argument("--repo", default=REPO_ROOT, help="repo TDQWorkflow nguồn")
+        sub.add_argument("--dest", required=True, help="the bundle folder")
+        sub.add_argument("--repo", default=REPO_ROOT, help="the source TDQWorkflow repo")
         sub.add_argument("--claude-home", default=os.path.expanduser("~/.claude"),
-                         help="thư mục cấu hình Claude Code của máy nguồn")
+                         help="the Claude Code config folder of the source machine")
         sub.add_argument("--claude-json", default=None,
-                         help="file chứa mcpServers (mặc định <cha của claude-home>/.claude.json)")
-        sub.add_argument("--quiet", action="store_true", help="tắt log")
-        sub.add_argument("--verbose", action="store_true", help="log thêm mức debug")
+                         help="the file holding mcpServers (default <parent of claude-home>/.claude.json)")
+        sub.add_argument("--quiet", action="store_true", help="turn the log off")
+        sub.add_argument("--verbose", action="store_true", help="also log at debug level")
         if name == "build":
-            sub.add_argument("--zip", action="store_true", help="nén bundle thành .zip")
+            sub.add_argument("--zip", action="store_true", help="compress the bundle into a .zip")
             sub.add_argument("--extra-secret", action="append", default=[],
-                             help="chuỗi bí mật cần quét thêm; dính là huỷ bundle")
+                             help="extra secret string to scan for; a hit destroys the bundle")
             sub.add_argument("--local-repos",
                              default=os.path.join(TEMPLATE_DIR, "local-repos.json"),
-                             help="JSON {tên: path} liệt kê MỌI repo local dependency; "
-                                  "không có/không tồn tại → rơi về 1 repo qua --repo")
+                             help="JSON {name: path} listing EVERY local repo dependency; "
+                                  "absent/missing → falls back to 1 repo via --repo")
             sub.add_argument("--launch-agents-dir",
                              default=os.path.expanduser("~/Library/LaunchAgents"),
-                             help="thư mục chứa .plist LaunchAgent để copy tham khảo")
+                             help="folder holding the LaunchAgent .plist files copied for reference")
     return parser.parse_args(argv)
 
 
@@ -609,7 +609,7 @@ def main(argv):
     try:
         return cmd_build(args) if args.cmd == "build" else cmd_check(args)
     except subprocess.CalledProcessError as exc:
-        log(f"lệnh ngoài thất bại: {exc}")
+        log(f"an external command failed: {exc}")
         return 2
 
 

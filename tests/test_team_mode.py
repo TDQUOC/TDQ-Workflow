@@ -575,7 +575,7 @@ class KiemKeTest(TeamBase):
         rc, _out, err = self.chay("kiem-ke")
         self.assertNotEqual(rc, 0)
         self.assertIn("T2.3", err)
-        self.assertIn("Giữ:", err)
+        self.assertIn("Kept:", err)
 
     def test_ly_do_ngoai_4_nhom_thi_exit_khac_0(self):
         self._project(PLAN_8_TASK)
@@ -620,7 +620,7 @@ class VaQcTest(TeamBase):
         rc, _out, err = self.chay("kiem-ke")
         self.assertNotEqual(rc, 0)
         self.assertIn(ma, err)
-        self.assertIn("vùng file RỖNG", err)
+        self.assertIn("file area is EMPTY", err)
 
     def test_ban_do_hong_thi_cli_bao_lenh_sua_chu_khong_van_traceback(self):
         self._project(PLAN_8_TASK)
@@ -662,7 +662,7 @@ class VaQcTest(TeamBase):
         self._project(PLAN_CHUNG_FILE)
         self.chay("phan-cong")
         _rc, out, _err = self.chay("cum")
-        self.assertIn("HOÃN", out)
+        self.assertIn("HELD", out)
 
 
 class CumTest(TeamBase):
@@ -693,7 +693,7 @@ class CumTest(TeamBase):
         self.chay("phan-cong")
         rc, out, _err = self.chay("cum")
         self.assertEqual(rc, 0, out)
-        self.assertIn("HẾT", out.upper())
+        self.assertIn("DONE", out.upper())
 
 
 class CumLienTucTest(TeamBase):
@@ -711,15 +711,15 @@ class CumLienTucTest(TeamBase):
         self._project(PLAN_CAN_CHEO)
         self.chay("phan-cong")
         _rc, out, _err = self.chay("cum")
-        self.assertIn("HOÃN T1.2", out)
-        self.assertIn("T1.1", out.split("HOÃN T1.2")[1].split("\n")[0])
+        self.assertIn("HELD T1.2", out)
+        self.assertIn("T1.1", out.split("HELD T1.2")[1].split("\n")[0])
 
     def test_lien_tuc_khong_phat_hai_task_chung_file(self):
         self._project(PLAN_CAN_CHEO)
         self.chay("phan-cong")
         _rc, out, _err = self.chay("cum")
         phat = [d.strip().split()[0] for d in out.splitlines()
-                if d.startswith("  ") and not d.strip().startswith("HOÃN")]
+                if d.startswith("  ") and not d.strip().startswith("HELD")]
         self.assertIn("T2.1", phat)
         self.assertNotIn("T2.2", phat)
 
@@ -730,7 +730,7 @@ class CumLienTucTest(TeamBase):
         self.chay("phan-cong")
         _rc, out, _err = self.chay("cum")
         phat = [d.strip().split()[0] for d in out.splitlines()
-                if d.startswith("  ") and not d.strip().startswith("HOÃN")]
+                if d.startswith("  ") and not d.strip().startswith("HELD")]
         self.assertIn("T1.2", phat)
         self.assertIn("T2.1", phat)
 
@@ -740,7 +740,7 @@ class CumLienTucTest(TeamBase):
         self.chay("phan-cong")
         _rc, out, _err = self.chay("cum")
         phat = [d.strip().split()[0] for d in out.splitlines()
-                if d.startswith("  ") and not d.strip().startswith("HOÃN")]
+                if d.startswith("  ") and not d.strip().startswith("HELD")]
         self.assertEqual(phat[0], "T1.1")
 
 
@@ -752,7 +752,7 @@ class TranSongSongTest(TeamBase):
         self.chay("phan-cong")
         _rc, out, _err = self.chay("cum")
         return [d.strip().split()[0] for d in out.splitlines()
-                if d.startswith("  ") and not d.strip().startswith(("HOÃN", "CHỜ"))], out
+                if d.startswith("  ") and not d.strip().startswith(("HELD", "WAITING"))], out
 
     def test_tran_chin_task_roi_nhau_chi_phat_bon(self):
         phat, out = self._phat(PLAN_N_ROI)
@@ -760,7 +760,7 @@ class TranSongSongTest(TeamBase):
 
     def test_tran_phan_du_in_cho_slot(self):
         _phat, out = self._phat(PLAN_N_ROI)
-        self.assertIn("CHỜ SLOT 5 task", out)
+        self.assertIn("WAITING FOR A SLOT: 5 task", out)
 
     def test_tran_it_task_thi_phat_it(self):
         plan = "\n".join(PLAN_N_ROI.splitlines()[:7]) + "\n"
@@ -786,7 +786,7 @@ class TranSongSongTest(TeamBase):
             plan = plan.replace(f"- [ ] **T1.{i}**", f"- [>] **T1.{i}**")
         phat, out = self._phat(plan)
         self.assertEqual(phat, [], out)
-        self.assertIn("CHỜ SLOT", out)
+        self.assertIn("WAITING FOR A SLOT", out)
 
     def test_tran_la_hang_so_co_chu_thich_nguon(self):
         self.assertEqual(tdq_team.TRAN_SONG_SONG, 4)
@@ -822,7 +822,7 @@ class LyDoGiuTest(TeamBase):
             json.dump(ban_do, f, ensure_ascii=False)
         rc, _out, err = self.chay("kiem-ke")
         self.assertEqual(rc, 1)
-        self.assertIn("5 nhóm", err)
+        self.assertIn("5 groups", err)
 
 
 class GitTest(TeamBase):
@@ -864,7 +864,7 @@ class GitTest(TeamBase):
         truoc = git(self.cwd, "status", "--porcelain")
         rc, out, _err = self.chay("kiem", "T1.2")
         self.assertNotEqual(rc, 0, out)
-        self.assertIn("XUNG ĐỘT", out.upper() if "XUNG" in out else out)
+        self.assertIn("CONFLICT", out.upper())
         self.assertEqual(git(self.cwd, "status", "--porcelain"), truoc)
 
     def test_kiem_khong_chet_khi_git_in_byte_khong_phai_utf8(self):
@@ -1126,9 +1126,13 @@ class KhuonTest(unittest.TestCase):
     """T4.1 → T4.6 — file luật phải đủ chi tiết cho MỌI model đọc là làm được."""
 
     def test_khuon_team_mode_du_ba_muc(self):
+        # Từ 2026-08-22 file luật viết tiếng Anh; nhận cả hai cách viết tên mục.
         noi_dung = _doc(TEAM_MODE_MD).lower()
-        for muc in ("## khi nào áp dụng", "## làm gì", "## tự kiểm"):
-            self.assertIn(muc, noi_dung, f"team-mode.md thiếu mục {muc}")
+        for muc in (("## when it applies", "## khi nào áp dụng"),
+                    ("## what to do", "## làm gì"),
+                    ("## self-check", "## tự kiểm")):
+            self.assertTrue(any(m in noi_dung for m in muc),
+                            f"team-mode.md thiếu mục {muc[0]}")
 
     def test_khuon_bang_tra_du_nhom_giu_va_dong_giao(self):
         noi_dung = _doc(TEAM_MODE_MD)
@@ -1144,15 +1148,17 @@ class KhuonTest(unittest.TestCase):
 
     def test_khuon_bang_tra_co_cot_dau_hieu_va_cot_lenh_kiem(self):
         noi_dung = _doc(TEAM_MODE_MD)
-        tieu_de = [d for d in noi_dung.splitlines() if d.strip().startswith("| Nhóm")]
+        tieu_de = [d for d in noi_dung.splitlines()
+                   if d.strip().startswith("| Nhóm") or d.strip().startswith("| Group")]
         self.assertTrue(tieu_de, "bảng tra thiếu dòng tiêu đề")
-        self.assertIn("Dấu hiệu", tieu_de[0])
-        self.assertIn("Kiểm bằng", tieu_de[0])
+        for cot in (("How to recognise it", "Dấu hiệu"), ("Checked by", "Kiểm bằng")):
+            self.assertTrue(any(c in tieu_de[0] for c in cot),
+                            f"bảng tra thiếu cột {cot[0]}")
 
     def test_khuon_co_it_nhat_4_cap_dung_sai(self):
         noi_dung = _doc(TEAM_MODE_MD)
-        self.assertGreaterEqual(noi_dung.count("ĐÚNG:"), 4)
-        self.assertGreaterEqual(noi_dung.count("SAI:"), 4)
+        self.assertGreaterEqual(noi_dung.count("ĐÚNG:") + noi_dung.count("RIGHT:"), 4)
+        self.assertGreaterEqual(noi_dung.count("SAI:") + noi_dung.count("WRONG:"), 4)
 
     def test_khuon_prompt_giao_viec_du_7_truong(self):
         noi_dung = _doc(TEAM_MODE_MD)

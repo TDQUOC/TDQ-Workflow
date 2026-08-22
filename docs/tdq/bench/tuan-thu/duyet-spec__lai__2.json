@@ -1,0 +1,20 @@
+{
+  "ca": "duyet-spec",
+  "nhanh": "lai",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-spec__lai__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L149": "vi-pham",
+    "L275": "dat",
+    "L012": "dat",
+    "L121": "dat",
+    "L210": "vi-pham"
+  },
+  "chi_phi": 1.188475,
+  "so_luot": 26,
+  "nhiem": [
+    "repo gốc đang phát triển"
+  ]
+}

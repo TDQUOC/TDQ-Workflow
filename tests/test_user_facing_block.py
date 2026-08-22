@@ -56,7 +56,8 @@ LABEL = re.compile(r"^(?P<mo>\*\*)?(?P<ten>[^:*`|.?!_()\"]{1,30}):(?P<dong>\*\*)
 NHAN_SAI = re.compile(r"^\*\*[^*]{1,40}\*\*:")
 DAN = "Xem đầy đủ tại: "
 # Khối ví dụ đối chiếu (bản "Trước") cố tình sai khuôn — đánh dấu bằng chú thích ngay trên.
-BO_QUA = "không phải mẫu để chép"
+# Từ 2026-08-22 chú thích viết tiếng Anh; nhận cả hai để bản cũ và bản dịch cùng xanh.
+BO_QUA = ("không phải mẫu để chép", "not a template to copy")
 # Thứ khối mẫu không được chứa: gạch ngang giữa chữ, HTML, mã màu ANSI, ký tự kẻ khung.
 CAM = ("~~", "<span", "\x1b[", "─", "│", "┌", "┬", "┐", "├", "└")
 # 8 file skill chép khối mẫu, cộng file khuôn gốc.
@@ -82,7 +83,10 @@ SO_KHOI = {
     "tdq-plan/SKILL.md": 1,
     "tdq-plan/references/mode-gate.md": 1,
     "tdq-intake/references/lane-decision.md": 1,
-    "tdq-intake/references/quick-lane.md": 1,
+    # 2026-08-22: 1 → 2. Bước 4 của chín bước trước đây nhét dòng `➤` vào giữa câu văn
+    # bằng nháy ngược; bản dịch tách nó ra khối ``` riêng để cụm `i18n-allow` miễn đúng
+    # dòng mẫu đó. Khối mới là khối thật, chịu luật 1/3/7 như mọi khối khác.
+    "tdq-intake/references/quick-lane.md": 2,
     "tdq-intake/references/interview.md": 0,
     "tdq-build/references/report-template.md": 1,
     "tdq-status/SKILL.md": 0,
@@ -132,7 +136,8 @@ def khoi_mau(text):
     ra, dang, trong, le, truoc = [], [], False, 0, ""
     for line in text.split("\n"):
         if line.lstrip().startswith("```"):
-            if trong and any(d.startswith("➤") for d in dang) and BO_QUA not in truoc:
+            if (trong and any(d.startswith("➤") for d in dang)
+                    and not any(b in truoc for b in BO_QUA)):
                 ra.append(dang)
             dang, trong, le = [], not trong, len(line) - len(line.lstrip())
             continue
@@ -149,20 +154,25 @@ class UserFacingBlockTest(unittest.TestCase):
 
     def test_lists_five_components(self):
         text = read(BLOCK)
-        for token in ("Câu dẫn", "Nội dung", "Đường dẫn file", "Đường kẻ ngăn", "Khối trả lời"):
-            with self.subTest(component=token):
-                self.assertIn(token, text, f"khuôn thiếu thành phần: {token}")
+        for token in (("Opening line", "Câu dẫn"), ("Body", "Nội dung"),
+                      ("File path", "Đường dẫn file"), ("Separator rule", "Đường kẻ ngăn"),
+                      ("Answer block", "Khối trả lời")):
+            with self.subTest(component=token[0]):
+                self.assertTrue(any(t in text for t in token),
+                                f"khuôn thiếu thành phần: {token[0]}")
 
     def test_lists_seven_touchpoints(self):
         text = read(BLOCK)
-        for token in ("pipeline", "interview", "spec", "plan", "mode",
-                      "chế độ nhanh", "commit"):
-            with self.subTest(touchpoint=token):
-                self.assertIn(token, text, f"khuôn thiếu chỗ giao tiếp: {token}")
+        for token in (("pipeline",), ("interview",), ("spec",), ("plan",), ("mode",),
+                      ("express", "chế độ nhanh"), ("commit",)):
+            with self.subTest(touchpoint=token[0]):
+                self.assertTrue(any(t in text for t in token),
+                                f"khuôn thiếu chỗ giao tiếp: {token[0]}")
 
     def test_bans_emoji_and_has_no_emoji_itself(self):
         text = read(BLOCK)
-        self.assertIn("Không emoji", text, "khuôn không nêu luật cấm emoji")
+        self.assertTrue("No emoji" in text or "Không emoji" in text,
+                        "khuôn không nêu luật cấm emoji")
         # Quét cả 12 file phạm vi, không riêng file khuôn: `⏳` từng lọt vào
         # tdq-status/SKILL.md đúng vì phép quét cũ chỉ nhìn mỗi file khuôn.
         for path, ten in FILE_PHAM_VI:
@@ -180,20 +190,23 @@ class UserFacingBlockTest(unittest.TestCase):
         text = read(BLOCK)
         muc = sections(text)
 
-        bang = [d for d in muc.get("Năm thành phần", "").split("\n")
+        bang = [d for d in (muc.get("The five components")
+                            or muc.get("Năm thành phần", "")).split("\n")
                 if d.lstrip().startswith("|")]
         self.assertGreaterEqual(
             len(bang), 6,
             f"mục Năm thành phần thiếu bảng cấu trúc trình bày (có {len(bang)} dòng bảng)")
 
-        luat = RULE.findall(muc.get("Bảy luật trang trí", ""))
+        luat = RULE.findall(muc.get("The seven decoration rules")
+                            or muc.get("Bảy luật trang trí", ""))
         self.assertEqual(
             [str(i) for i in range(1, 8)], luat,
             f"mục Bảy luật trang trí phải có đúng 7 luật đánh số 1-7, đang là {luat}")
 
-        for tieu_de in ("### Trước", "### Sau"):
-            with self.subTest(vidu=tieu_de):
-                self.assertIn(tieu_de, text, f"khuôn thiếu ví dụ đối chiếu {tieu_de}")
+        for tieu_de in (("### Before", "### Trước"), ("### After", "### Sau")):
+            with self.subTest(vidu=tieu_de[0]):
+                self.assertTrue(any(t in text for t in tieu_de),
+                                f"khuôn thiếu ví dụ đối chiếu {tieu_de[0]}")
 
     def test_sample_blocks_follow_rules(self):
         """Mọi khối mẫu chép trong skill phải theo đúng luật 1, 3, 7 của khuôn.
@@ -259,14 +272,14 @@ class UserFacingBlockTest(unittest.TestCase):
             with self.subTest(target=target, mode=mode):
                 self.assertTrue(dong.startswith("➤ "), f"luật 7: phải mở bằng `➤ ` — {dong!r}")
                 self.assertEqual(1, dong.count("\n") + 1, "dòng gợi ý phải nằm trên một dòng")
-                self.assertIn(" · Góp ý: nhắn trực tiếp", dong)
+                self.assertIn(" · Feedback: just say it", dong)
                 la = [c for c in dong if ord(c) > 127 and unicodedata.category(c)[0] in "PS"
                       and c not in WHITELIST]
                 self.assertEqual([], la, f"ký tự ngoài whitelist trong chuỗi mã sinh: {la}")
 
-        self.assertIn("plan đề xuất {mode}", _common.APPROVE_HINTS["mode"],
-                      "chuỗi `plan đề xuất {mode}` là thứ tests/test_context_hooks.py bắt")
-        self.assertEqual('➤ Duyệt: nhắn "duyệt spec" · Góp ý: nhắn trực tiếp',
+        self.assertIn("the plan proposes {mode}", _common.APPROVE_HINTS["mode"],
+                      "chuỗi `the plan proposes {mode}` là thứ tests/test_context_hooks.py bắt")
+        self.assertEqual('➤ Approve: say "approve spec" or type "A" · Feedback: just say it',
                          _common.approve_hint("spec"), "chuỗi cổng duyệt spec đổi byte")
 
     def test_portable_matches_source(self):
@@ -276,12 +289,17 @@ class UserFacingBlockTest(unittest.TestCase):
         của nó chép khối mẫu nên chịu chung luật 1, 3, 7.
         """
         khuon = read(PORTABLE, "references", "tdq-conventions", "user-facing-block.md")
-        luat = RULE.findall(sections(khuon).get("Bảy luật trang trí", ""))
+        # Từ 2026-08-22 khuôn gốc viết tiếng Anh; bản portable sinh từ nó nên đọc tên
+        # mục tiếng Anh trước, tên cũ giữ lại để bản portable cũ vẫn kiểm được.
+        luat = RULE.findall(sections(khuon).get("The seven decoration rules")
+                            or sections(khuon).get("Bảy luật trang trí", ""))
         self.assertEqual([str(i) for i in range(1, 8)], luat,
                          f"bản portable thiếu bảy luật trang trí, đang là {luat}")
         for ch in WHITELIST:
             with self.subTest(ky_tu=ch):
-                self.assertIn(ch, sections(khuon).get("Ký hiệu được phép", ""),
+                muc_ky_hieu = (sections(khuon).get("The symbols allowed")
+                               or sections(khuon).get("Ký hiệu được phép", ""))
+                self.assertIn(ch, muc_ky_hieu,
                               f"bản portable thiếu ký tự whitelist {ch!r}")
 
         for ten in ("03-spec.md", "04-plan.md"):

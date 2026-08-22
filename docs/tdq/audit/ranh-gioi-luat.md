@@ -29,8 +29,8 @@ Ba luật đi kèm, vì chúng quyết định vì sao con số ly-luan lớn đ
 
 | Nhãn | Số mã | Tỉ lệ |
 |---|---|---|
-| ly-luan | 291 | 88,4% |
-| user-facing | 38 | 11,6% |
+| ly-luan | 303 | 92,1% |
+| user-facing | 26 | 7,9% |
 | **Tổng** | **329** | **100%** |
 
 Máy gợi ý 80 mã user-facing; người soát hạ 43 mã và nâng 1 mã. Chỗ máy sai nhiều nhất là
@@ -46,6 +46,13 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 - **14 mã có số dòng đã lệch** so với file nguồn hiện tại, do các file đổi sau ngày kiểm
   kê (13 mã ở `context-budget.md`, 1 ở `team-mode.md`). Chữ neo thì vẫn còn nguyên trong
   file — bộ kiểm dò theo chữ nên vẫn xanh. Cột `file:dòng` chỉ còn giá trị tham khảo.
+- **Sửa 2026-08-22 (request quoc-te-hoa-workflow):** L125, L126, L127 hạ từ `user-facing`
+  xuống `ly-luan`. Ba câu này dạy cách xử lý khi turn chạy tiếp sau khối duyệt; chuỗi
+  duy nhất user đọc trong đó (`➤ Duyệt:`, `✓ [TDQ:<MÃ>]`) nằm trong backtick, mà luật
+  đầu của mục 2 nói rõ backtick KHÔNG làm câu thành user-facing. Số đo ở mục 3 đã cập nhật.
+- **Sửa 2026-08-22 (tiếp):** L205–L213 (`user-facing-block.md`) cũng hạ xuống `ly-luan`.
+  Đây đúng chỗ mục 3 đã cảnh báo — máy gán cả file khuôn thành user-facing, trong khi 9 câu
+  này là luật dạy HÌNH DẠNG khối; hai khối ví dụ tiếng Việt trong file vẫn giữ nguyên văn.
 - **L096 lệch khoảng trắng**: bảng nén nhiều dấu cách thành một. Bộ kiểm chuẩn hoá khoảng
   trắng trước khi so nên không vỡ.
 
@@ -83,12 +90,12 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L028 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L029 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L030 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
-| L031 | user-facing | khai báo ngôn ngữ đầu ra của report |
+| L031 | ly-luan | câu luật khai ngôn ngữ đầu ra; doc_lang thay hằng số, chữ user đọc không đổi |
 | L032 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L033 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L034 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L035 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
-| L036 | user-facing | khai báo ngôn ngữ đầu ra của report |
+| L036 | ly-luan | câu luật khai ngôn ngữ đầu ra; doc_lang thay hằng số, chữ user đọc không đổi |
 | L037 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L038 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L039 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -160,9 +167,9 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L105 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L106 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L107 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L108 | user-facing | mang nguyên chữ `CẦN USER QUYẾT` in cho user |
+| L108 | ly-luan | phán quyết `CẦN USER QUYẾT` giữ nguyên từng chữ; chỉ câu luật quanh nó dịch |
 | L109 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L110 | user-facing | mang nguyên câu hỏi in cho user |
+| L110 | ly-luan | câu hỏi in ra theo doc_lang; câu luật chỉ tả nội dung câu hỏi |
 | L111 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L112 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L113 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -177,9 +184,9 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L122 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L123 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L124 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L125 | user-facing | đòi in lại nguyên văn khối user thấy |
-| L126 | user-facing | nêu đúng thành phần của khối `➤ Duyệt:` |
-| L127 | user-facing | cấm rút gọn option in cho user |
+| L125 | ly-luan | dạy cách xử lý khi turn chạy tiếp, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L126 | ly-luan | kể thành phần khối; chuỗi `➤ Duyệt:` nằm trong backtick → theo mục 2 không tính (sửa 2026-08-22) |
+| L127 | ly-luan | luật cấm rút gọn, không phải câu chữ in cho user (sửa 2026-08-22) |
 | L128 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L129 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L130 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -257,15 +264,15 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L202 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L203 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L204 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L205 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L206 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L207 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L208 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L209 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L210 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L211 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L212 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
-| L213 | user-facing | cả file `user-facing-block.md` là khuôn cho user |
+| L205 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L206 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L207 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L208 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L209 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L210 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L211 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L212 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
+| L213 | ly-luan | luật dạy hình dạng khối, không mang chuỗi user đọc (sửa 2026-08-22) |
 | L214 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L215 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L216 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -292,14 +299,14 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L237 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L238 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L239 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L240 | user-facing | dòng bảng so sánh 2 lane in cho user |
+| L240 | ly-luan | bảng quyết định nội bộ, không in ra chat |
 | L241 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L242 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L243 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L244 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L245 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L246 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L247 | user-facing | mang nguyên dòng `➤ Duyệt:` của chế độ nhanh |
+| L247 | ly-luan | dòng `➤ Duyệt:` giữ nguyên từng chữ; chỉ câu luật quanh nó dịch |
 | L248 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L249 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L250 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -314,16 +321,16 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L259 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L260 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L261 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
-| L262 | user-facing | ô option của vòng scope in cho user |
-| L263 | user-facing | bắt in đúng một dòng cho user |
+| L262 | ly-luan | bảng mẫu nhóm câu hỏi, option thật do model sinh theo doc_lang |
+| L263 | ly-luan | câu luật bắt in một dòng; dòng in vẫn nguyên trong khối mẫu |
 | L264 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L265 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L266 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L267 | user-facing | dòng bảng §3b chép vào spec |
 | L268 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L269 | user-facing | dòng ví dụ của bảng §3b |
-| L270 | user-facing | ô lý do đóng, chép nguyên vào spec |
-| L271 | user-facing | ô lý do đóng, chép nguyên vào spec |
+| L270 | ly-luan | giá trị chốt `KHÔNG` giữ nguyên; chỉ ô giải thích dịch |
+| L271 | ly-luan | giá trị chốt `user đã cấm` giữ nguyên; chỉ ô giải thích dịch |
 | L272 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L273 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L274 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -333,11 +340,11 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L278 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L279 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L280 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L281 | user-facing | mang nguyên câu chú thích in cho user |
+| L281 | ly-luan | nhãn chú thích do model sinh theo doc_lang; câu luật chỉ pin nội dung nhãn |
 | L282 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L283 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L284 | user-facing | đòi khuôn hỏi mode nguyên văn |
-| L285 | user-facing | mang nguyên tên đoạn `Vì sao đề xuất` |
+| L284 | ly-luan | khuôn hỏi + hai nhãn mode giữ nguyên từng chữ; chỉ câu luật quanh nó dịch |
+| L285 | ly-luan | tên đoạn `Vì sao đề xuất` giữ nguyên; chỉ câu luật quanh nó dịch |
 | L286 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L287 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L288 | ly-luan | không thấy dấu hiệu user-facing trong câu |
@@ -363,13 +370,13 @@ phần lớn là luật dạy cách viết tài liệu, chỉ vài dòng là khu
 | L308 | user-facing | khuôn task log service, chép vào plan |
 | L309 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L310 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
-| L311 | user-facing | khai báo ngôn ngữ đầu ra của spec |
+| L311 | ly-luan | câu khai ngôn ngữ đầu ra; doc_lang thay hằng số, chữ user đọc không đổi |
 | L312 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L313 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L314 | user-facing | mang nguyên tên mục `câu hỏi còn mở` của spec |
+| L314 | ly-luan | tên mục vẫn do khuôn spec sinh theo doc_lang; câu luật chỉ đòi nó rỗng |
 | L315 | ly-luan | luật dạy cách viết, không phải chữ user đọc |
 | L316 | ly-luan | không thấy dấu hiệu user-facing trong câu |
-| L317 | user-facing | nối tiếp câu chú thích in cho user |
+| L317 | ly-luan | nhãn chú thích do model sinh theo doc_lang; câu luật chỉ pin nội dung nhãn |
 | L318 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L319 | ly-luan | không thấy dấu hiệu user-facing trong câu |
 | L320 | ly-luan | luật dạy cách viết, không phải chữ user đọc |

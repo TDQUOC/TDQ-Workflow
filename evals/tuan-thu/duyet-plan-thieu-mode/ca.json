@@ -1,0 +1,39 @@
+{
+  "ma": "duyet-plan-thieu-mode",
+  "mo_ta": "Duyệt plan không kèm mode — phải dừng hỏi cách chạy, chưa được sửa mã.",
+  "prompt": "duyệt plan",
+  "phase_dau": "plan",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "spec",
+      "--by",
+      "duyệt spec"
+    ],
+    [
+      "set",
+      "plan_file=docs/tdq/plan/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "set",
+      "phase=plan"
+    ]
+  ],
+  "kiem": [
+    "L010",
+    "L149",
+    "L012",
+    "L209",
+    "L210"
+  ]
+}

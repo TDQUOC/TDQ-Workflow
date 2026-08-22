@@ -56,7 +56,7 @@ def test_card_dung_co_chu_than_16():
 
 def test_fit_canh_bao_khi_dong_qua_70_phan_tram(capsys):
     cd.fit("x" * 200, 400, 16, "thử")
-    assert "quá 70%" in capsys.readouterr().err
+    assert "over 70%" in capsys.readouterr().err
 
 
 def test_fit_khong_canh_bao_khi_dong_ngan(capsys):

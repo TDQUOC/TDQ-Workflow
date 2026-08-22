@@ -16,8 +16,8 @@ import _common  # noqa: E402
 import bash_gate  # noqa: E402
 import prompt_context  # noqa: E402
 
-LABEL_QUICK = "chế độ nhanh (express)"
-LABEL_FULL = "chế độ chuyên sâu (deep)"
+LABEL_QUICK = "express mode"
+LABEL_FULL = "deep mode"
 
 
 class LaneLabelTest(unittest.TestCase):
@@ -114,7 +114,7 @@ class BashGateAliasTest(unittest.TestCase):
 class ApproveHintTest(unittest.TestCase):
     def test_hint_quick_neu_tu_moi_va_khong_qua_dai(self):
         hint = _common.APPROVE_HINTS["quick"]
-        self.assertIn("duyệt nhanh", hint)
+        self.assertIn("approve quick", hint)
         trimmed = _common.trim([hint])
         self.assertLessEqual(len(trimmed), _common.MAX_REMIND_CHARS)
         self.assertLessEqual(len(trimmed.splitlines()), _common.MAX_REMIND_LINES)

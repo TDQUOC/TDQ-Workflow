@@ -232,7 +232,7 @@ class TestCheckportableTrongBanSinh(TempDest):
             duong = os.path.join(goc, "README.md")
             self.assertTrue(os.path.isfile(duong), f"{os.path.basename(goc)} thiếu README.md")
             noi_dung = build_portable._doc_text(duong)
-            for tu_khoa in ("tin cậy", "MCP", "khởi động lại"):
+            for tu_khoa in ("trust", "MCP", "restart"):
                 self.assertIn(tu_khoa.lower(), noi_dung.lower(),
                               f"{os.path.basename(goc)}/README thiếu giới hạn: {tu_khoa}")
             self.assertIn("tdq-bak-", noi_dung, "README phải nêu cơ chế sao lưu khi tự vá")
@@ -244,7 +244,7 @@ class TestCheckportableTrongBanSinh(TempDest):
         không có một đường nào chạm tới pip hay `~`. Lời hứa sai còn tệ hơn thiếu tính
         năng: người dùng tin là đã được vá rồi bỏ qua phần phải tự làm.
         """
-        cam = ("tự cài gói", "mức người dùng")
+        cam = ("tự cài gói", "mức người dùng", "installs packages", "user-level config")
         for goc, ten in ((self.claude, "README.md"), (self.codex, "AGENTS.md"),
                          (self.codex, "README.md")):
             noi_dung = build_portable._doc_text(os.path.join(goc, ten)) or ""
@@ -283,6 +283,23 @@ class TestCopyLoc(TempDest):
                     "__pycache__/a.pyc"):
             self.assertFalse(os.path.exists(os.path.join(dich, rac)),
                              f"bản sinh không được mang theo {rac}")
+
+    def test_bo_do_khong_di_theo_ban_sinh(self):
+        """`tdq_eval.py` là bộ đo của repo nguồn, không phải phần workflow đem đi.
+
+        Nó cố ý ĐẶT biến `CLAUDE_PLUGIN_ROOT` cho tiến trình con của phiên đo, nên copy kèm
+        rewrite sẽ đổi đúng cái hằng số nó cần giữ — y hệt lý do `build_portable.py` bị loại.
+        """
+        nguon = os.path.join(self.dest, "n3", "scripts")
+        os.makedirs(nguon, exist_ok=True)
+        for ten in ("tdq_eval.py", "tdq_state.py"):
+            with open(os.path.join(nguon, ten), "w", encoding="utf-8") as f:
+                f.write("x = 1\n")
+        dich = os.path.join(self.dest, "d3")
+        build_portable.copy_loc(os.path.join(self.dest, "n3"), dich)
+        self.assertTrue(os.path.exists(os.path.join(dich, "scripts", "tdq_state.py")))
+        self.assertFalse(os.path.exists(os.path.join(dich, "scripts", "tdq_eval.py")),
+                         "bộ đo không được lọt vào bản portable")
 
     def test_giu_quyen_thuc_thi(self):
         nguon = os.path.join(self.dest, "n2")

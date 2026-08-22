@@ -112,7 +112,7 @@ class TestState(unittest.TestCase):
         run_state_cli(self.cwd, "set", "phase=implement", "spec_file=docs/tdq/spec/x.md")
         rc, _, err = run_state_cli(self.cwd, "init", "2026-08-04-0910-req-moi", "quick")
         self.assertEqual(rc, 0)
-        self.assertIn("Ghi đè", err)
+        self.assertIn("Overwriting", err)
         self.assertIn("2026-08-04-0900-req-cu", err)
         state = read_state(self.cwd)
         self.assertEqual(state["active_request"], "2026-08-04-0910-req-moi")
@@ -167,7 +167,7 @@ class TestState(unittest.TestCase):
         run_state_cli(self.cwd, "set", "spec_file=docs/tdq/spec/x.md")
         rc, out, err = run_state_cli(self.cwd, "approve", "spec", "--by", "duyệt spec")
         self.assertEqual(rc, 0, err)
-        self.assertIn("Đã ghi nhận", out)
+        self.assertIn("Recorded", out)
         state = read_state(self.cwd)
         self.assertTrue(state["spec_approved"])
         self.assertIsNotNone(state["spec_approved_at"])
@@ -199,7 +199,7 @@ class TestState(unittest.TestCase):
             f.write("\n## 7. Câu hỏi còn mở\n\n- thêm sau QC\n")
         rc, out, err = run_state_cli(self.cwd, "approve", "spec", "--by", "approve spec")
         self.assertEqual(rc, 0, err)
-        self.assertIn("duyệt lại", out)
+        self.assertIn("re-approval", out)
         state = read_state(self.cwd)
         self.assertEqual(state["spec_sha256"], tdq_state.sha256_noi_dung(spec))
         self.assertEqual(state["spec_approved_by"], "approve spec")
@@ -219,7 +219,7 @@ class TestState(unittest.TestCase):
         first = read_state(self.cwd)["spec_approved_at"]
         rc, out, err = run_state_cli(self.cwd, "approve", "spec", "--by", "approve spec")
         self.assertEqual(rc, 0, err)
-        self.assertIn("đã duyệt lúc", out)
+        self.assertIn("was already approved at", out)
         state = read_state(self.cwd)
         self.assertEqual(state["spec_approved_at"], first)
         self.assertEqual(state["spec_approved_by"], "duyệt spec")
@@ -267,7 +267,7 @@ class TestState(unittest.TestCase):
         first_at = read_state(self.cwd)["quick_approved_at"]
         rc, out, err = run_state_cli(self.cwd, "approve", "quick")
         self.assertEqual(rc, 0, err)  # duyệt lần hai KHÔNG phải lỗi
-        self.assertIn("đã duyệt lúc", out)
+        self.assertIn("was already approved at", out)
         self.assertEqual(read_state(self.cwd)["quick_approved_at"], first_at)
 
     def test_approve_warns_but_records(self):
@@ -276,7 +276,7 @@ class TestState(unittest.TestCase):
         rc, _, err = run_state_cli(self.cwd, "approve", "plan", "--mode", "main", "--by", "ok plan")
         self.assertEqual(rc, 0)
         self.assertIn("lane quick", err)
-        self.assertIn("spec chưa", err)
+        self.assertIn("no spec approval is recorded", err)
         state = read_state(self.cwd)
         self.assertTrue(state["plan_approved"])
         self.assertEqual(state["implement_mode"], "main")

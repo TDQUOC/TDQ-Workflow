@@ -49,15 +49,17 @@ class GateMergeTest(unittest.TestCase):
                 self.assertLessEqual(len(lines), 1,
                                      f"{name}: nhắc tdq-reviewer nhiều hơn 1 dòng")
                 if lines:
-                    self.assertRegex(lines[0], r"user yêu cầu|tùy chọn|khi cần",
+                    self.assertRegex(lines[0],
+                                     r"user asks|optional|when needed|"
+                                     r"user yêu cầu|tùy chọn|khi cần",
                                      f"{name}: tdq-reviewer vẫn ở dạng bước bắt buộc")
 
     def test_phase_table_allows_same_turn_chain(self):
         spec = tdq_state.PHASE_TABLE["spec"]
         plan = tdq_state.PHASE_TABLE["plan"]
         self.assertNotIn("cùng turn với spec", spec["forbidden"])
-        self.assertIn("CÙNG turn", " ".join(spec["checklist"]))
-        self.assertIn("CÙNG turn", " ".join(plan["checklist"]))
+        self.assertIn("SAME turn", " ".join(spec["checklist"]))
+        self.assertIn("SAME turn", " ".join(plan["checklist"]))
         self.assertFalse(plan["checklist"][0].startswith("Hỏi user mode"),
                          "phase plan vẫn hỏi mode riêng một lượt")
 
@@ -67,15 +69,16 @@ class GateMergeTest(unittest.TestCase):
         self.assertIn("approve plan --by", text, "tdq-plan: thiếu lệnh duyệt không mode")
         self.assertIn("phase `mode`", text, "tdq-plan: không nói tới cổng mode")
         # Nghĩa phải gắn với NHÃN người đọc thấy ở cổng mode, không phải định danh máy.
-        self.assertRegex(text, r"inline implement[\s\S]{0,80}?tuần tự",
+        self.assertRegex(text, r"inline implement[\s\S]{0,80}?(sequential|tuần tự)",
                          "tdq-plan: thiếu nghĩa của inline implement")
-        self.assertRegex(text, r"sub-agent implement[\s\S]{0,80}?song song",
+        self.assertRegex(text, r"sub-agent implement[\s\S]{0,80}?(in parallel|song song)",
                          "tdq-plan: thiếu nghĩa của sub-agent implement")
 
     def test_mode_gate_does_not_cost_an_extra_turn_before_build(self):
         """Chốt mode xong là build ngay — không được đẩy sang lượt nhắn khác."""
         text = read(SKILLS, "tdq-plan", "SKILL.md")
-        self.assertIn("build LUÔN cùng", text, "tdq-plan: chốt mode xong không build ngay")
+        self.assertTrue(any(m in text for m in ("build RIGHT AWAY", "build LUÔN cùng")),
+                        "tdq-plan: chốt mode xong không build ngay")
 
     def test_interview_always_ends_with_open_question(self):
         text = read(SKILLS, "tdq-intake", "references", "interview.md")

@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-"""skill_tokens.py — đo token THẬT của bộ skill, không ước lượng ký tự chia bốn.
+"""skill_tokens.py — measure the REAL token count of the skill set, not characters over four.
 
-Vì sao cần script riêng dù đã có `context_surface.py`: file kia dùng hệ số
-`BYTES_PER_TOKEN = 4` cho mọi file. Hệ số đó đúng với tiếng Anh, hụt nặng với
-tiếng Việt có dấu (đo thật: 1,89 ký tự/token so với 4,68 của tiếng Anh). Mà chỗ
-cần đo chính xác nhất lại là văn bản tiếng Việt. Script này đếm bằng tokenizer
-thật nên hai bảng có thể lệch nhau — con số ở ĐÂY mới là con số dùng để quyết định.
+Why a separate script when `context_surface.py` exists: that one uses the factor
+`BYTES_PER_TOKEN = 4` for every file. The factor holds for English and falls far short for
+accented Vietnamese (measured: 1.89 characters/token against 4.68 for English). And the text
+that most needs an exact number is precisely the Vietnamese one. This script counts with a
+real tokenizer, so the two tables may disagree — the number HERE is the one decisions use.
 
-Hai lệnh:
-    python3 scripts/skill_tokens.py --theo-phase   # token thân skill nạp theo phase
-    python3 scripts/skill_tokens.py --mo-ta        # token MÔ TẢ của skill đang bật
+Two commands:
+        python3 scripts/skill_tokens.py --theo-phase   # body tokens of the skills loaded per phase
+        python3 scripts/skill_tokens.py --mo-ta        # DESCRIPTION tokens of the enabled skills
 
-Hai lệnh đo hai KHỐI KHÁC NHAU, không cộng dồn lẫn lộn:
-  * `--theo-phase` đo **thân** skill — chỉ vào context khi gọi đúng skill đó.
-  * `--mo-ta` đo **mô tả** skill — nằm trong system prompt của MỌI lượt gọi API.
+The two commands measure TWO DIFFERENT BLOCKS; never add them together:
+    * `--theo-phase` measures the skill **body** — it enters context only when that skill runs.
+    * `--mo-ta` measures the skill **description** — it sits in the system prompt of EVERY call.
 
-Thư viện đếm token: `anthropic-tokenizer`, cài trong venv riêng `.venv-tokens/`.
-Thiếu thư viện thì script LỖI, tuyệt đối không rơi về ước lượng ký tự/4 — spec §4
-cấm đoán số token. Chạy bằng `python3` hệ thống vẫn được: script tự nhảy sang
-python của venv nếu tìm thấy.
+Token-counting library: `anthropic-tokenizer`, installed in its own venv `.venv-tokens/`.
+Without the library the script ERRORS; falling back to characters/4 is absolutely banned —
+spec §4 forbids guessing token counts. Running under the system `python3` still works: the
+script re-executes itself with the venv python when it finds one.
 
-Log service: timestamp ISO ra stderr, bật mặc định, tắt bằng `TDQ_LOG=0`.
-Bảng luôn ra stdout để pipe được.
-Exit: 0 chạy xong · 2 sai cú pháp · 3 thiếu thư viện đếm token.
+Log service: ISO timestamps on stderr, on by default, muted with `TDQ_LOG=0`.
+The table always goes to stdout so it can be piped.
+Exit: 0 finished · 2 bad syntax · 3 token-counting library missing.
 """
 import argparse
 import glob
@@ -34,31 +34,31 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
-import tdq_state  # noqa: E402 — dùng chung log service (log_enabled, timestamp)
-import context_surface  # noqa: E402 — dùng chung _read / _split_frontmatter
-import skill_inventory  # noqa: E402 — dùng chung danh sách skill ĐANG BẬT
+import tdq_state  # noqa: E402 — shares the log service (log_enabled, timestamp)
+import context_surface  # noqa: E402 — shares _read / _split_frontmatter
+import skill_inventory  # noqa: E402 — shares the list of ENABLED skills
 
-# Cho phép trỏ sang python khác qua biến môi trường: test cần dựng cảnh "không có venv"
-# mà không được đụng vào venv thật của repo.
+# Another python can be pointed at through an environment variable: the tests need to stage
+# a "no venv" world without touching the real venv of the repo.
 VENV_PYTHON = os.environ.get(
     "TDQ_TOKENS_VENV", os.path.join(ROOT, ".venv-tokens", "bin", "python"))
 CAI_DAT = (f"python3 -m venv {os.path.relpath(os.path.join(ROOT, '.venv-tokens'), ROOT)} "
            "&& .venv-tokens/bin/pip install anthropic-tokenizer==0.1.0")
 EXIT_THIEU_THU_VIEN = 3
 
-# Sáu khối phase. Mỗi khối = những file THÂN skill vào context khi phase đó chạy.
-# Thứ tự trong tuple là thứ tự in bảng; giữ nguyên để so sánh giữa các lần đo.
+# Six phase blocks. Each block = the skill BODY files entering context when that phase runs.
+# The order inside the tuple is the print order; keep it so measurements stay comparable.
 KHOI_PHASE = (
-    ("luôn nạp", ("tdq-conventions",)),
+    ("always loaded", ("tdq-conventions",)),
     ("intake", ("tdq-intake",)),
     ("spec", ("tdq-spec",)),
     ("plan", ("tdq-plan",)),
     ("build", ("tdq-build",)),
 )
-KHOI_LUAT_KEM = "luật kèm (mọi reference)"
+KHOI_LUAT_KEM = "attached rules (every reference)"
 
-# Phân mục cho `--mo-ta`. Khớp theo tên nguồn (`plugin:<x>` hoặc `user`/`project`).
-# Một nguồn chỉ thuộc ĐÚNG một mục — mục đầu tiên khớp thắng, nên thứ tự có nghĩa.
+# Grouping for `--mo-ta`. Matched on the source name (`plugin:<x>` or `user`/`project`).
+# A source belongs to EXACTLY one group — the first match wins, so the order matters.
 MUC = (
     ("workflow", ("tdq-workflow", "superpowers", "claude-md-management",
                   "remember", "hookify")),
@@ -68,29 +68,29 @@ MUC = (
     ("game engine", ("unity", "unreal", "qt-development-skills")),
     ("web", ("playwright", "chrome-devtools-mcp", "firecrawl", "tavily",
              "cloudflare", "base44", "postman", "hyperframes")),
-    ("dữ liệu", ("data-engineering", "mongodb", "redis-development",
+    ("data", ("data-engineering", "mongodb", "redis-development",
                  "datarobot-agent-skills", "huggingface-skills")),
 )
-MUC_KHAC = "khác"
+MUC_KHAC = "other"
 
 
 def _log(msg):
-    """Dòng log ra stderr kèm timestamp. Tắt bằng TDQ_LOG=0 — cùng hợp đồng tdq_state."""
+    """One log line on stderr with a timestamp. Muted with TDQ_LOG=0 — the tdq_state contract."""
     if tdq_state.log_enabled():
         print(f"[{tdq_state.now_iso()}] {msg}", file=sys.stderr)
 
 
 class ThieuThuVienDem(Exception):
-    """Không có tokenizer thật. Ném ra thay vì đoán — spec §4 cấm ước lượng ký tự/4."""
+    """No real tokenizer. Raised instead of guessing — spec §4 bans the characters/4 estimate."""
 
 
 def nap_bo_dem():
-    """Trả hàm đếm token thật, hoặc ném `ThieuThuVienDem`.
+    """Return a real token-counting function, or raise `ThieuThuVienDem`.
 
-    Hàm này thuần: KHÔNG thoát tiến trình, KHÔNG `execv`. Gọi từ test hay từ script
-    khác đều an toàn. Việc nhảy sang python của venv là chuyện của lớp CLI
-    (`nhay_sang_venv`), vì nó thay luôn tiến trình đang chạy — làm trong hàm thư
-    viện thì nó nuốt mất cả test runner (đo thật: pytest bị thay tiến trình, thoát 2).
+    This function is pure: it does NOT exit the process and does NOT `execv`. Safe to call from
+    a test or another script. Jumping to the venv python belongs to the CLI layer
+    (`nhay_sang_venv`), because it replaces the running process — doing that inside a library
+    function swallows the test runner too (measured: pytest got replaced and exited 2).
     """
     try:
         from anthropic_tokenizer import count_tokens
@@ -107,11 +107,11 @@ LENH_DEM_LO = (
 
 
 def dem_qua_venv(doan):
-    """Đếm token cho MỘT LÔ đoạn văn bằng python của venv, một tiến trình cho cả lô.
+    """Count tokens for a WHOLE BATCH of texts with the venv python, one process for the batch.
 
-    Dành cho script chạy dưới python không có thư viện mà cũng không được `execv`
-    (vd `token_audit.py` khi test gọi thẳng hàm trong tiến trình). Đếm theo lô vì
-    chi phí nằm ở lần dựng tiến trình, không nằm ở số đoạn.
+    For a script running under a python without the library that also must not `execv`
+    (e.g. `token_audit.py` when a test calls the function in-process). Batched because the
+    cost sits in starting the process, not in the number of texts.
     """
     if not doan:
         return []
@@ -125,34 +125,34 @@ def dem_qua_venv(doan):
 
 
 def nhay_sang_venv():
-    """Chạy lại chính script bằng python của venv. Nhảy đúng một lần rồi thôi."""
+    """Re-run this very script with the venv python. Jumps exactly once, then stops."""
     if os.environ.get("TDQ_TOKENS_DA_NHAY") == "1" or not os.path.exists(VENV_PYTHON):
         return False
-    _log(f"thiếu thư viện ở python hiện tại — nhảy sang {os.path.relpath(VENV_PYTHON, ROOT)}")
+    _log(f"library missing in the current python — jumping to {os.path.relpath(VENV_PYTHON, ROOT)}")
     os.environ["TDQ_TOKENS_DA_NHAY"] = "1"
     os.execv(VENV_PYTHON, [VENV_PYTHON, os.path.abspath(__file__)] + sys.argv[1:])
 
 
 def nap_bo_dem_cho_cli():
-    """Bộ đếm cho lớp CLI: thử python hiện tại → thử venv → thoát mã 3 kèm cách cài."""
+    """The counter for the CLI layer: try this python → try the venv → exit 3 with how to install."""
     try:
         return nap_bo_dem()
     except ThieuThuVienDem:
         pass
     nhay_sang_venv()
-    print("skill_tokens.py: thiếu thư viện đếm token `anthropic-tokenizer`.\n"
-          "Script này CẤM ước lượng ký tự/4 (spec §4), nên dừng ở đây.\n"
-          f"Cài bằng: {CAI_DAT}", file=sys.stderr)
+    print("skill_tokens.py: the token-counting library `anthropic-tokenizer` is missing.\n"
+          "This script is FORBIDDEN to estimate characters/4 (spec §4), so it stops here.\n"
+          f"Install with: {CAI_DAT}", file=sys.stderr)
     sys.exit(EXIT_THIEU_THU_VIEN)
 
 
 def _chu(raw):
-    """Bytes → chuỗi. `context_surface` đọc bytes để đo kích thước; tokenizer cần chữ."""
+    """bytes → str. `context_surface` reads bytes to measure size; the tokenizer needs text."""
     return raw.decode("utf-8", errors="replace")
 
 
 def _than_skill(ten_skill):
-    """Token thân của một SKILL.md (đã bỏ frontmatter) + đường dẫn, hoặc None."""
+    """Body tokens of one SKILL.md (frontmatter dropped) + its path, or None."""
     path = os.path.join(ROOT, "skills", ten_skill, "SKILL.md")
     if not os.path.exists(path):
         return None
@@ -161,25 +161,25 @@ def _than_skill(ten_skill):
 
 
 def _references(ten_skill):
-    """Mọi file reference của một skill — tầng `đọc khi cần`, gộp vào khối luật kèm.
+    """Every reference file of a skill — the `read on demand` layer, merged into attached rules.
 
-    Quét ĐỆ QUY. Bản trước dùng `references/*.md` nên bỏ qua trọn thư mục con
-    `references/rules/` (10 file, 14.554 token) và báo trần thấp hơn thực tế gần 20%.
-    Một thước đo sai thấp thì mọi kết luận tối ưu dựng trên nó cũng sai theo.
+    Scanned RECURSIVELY. The previous version used `references/*.md`, so it skipped the whole
+    sub-directory `references/rules/` (10 files, 14,554 tokens) and reported a ceiling nearly
+    20% under reality. A measure that reads low makes every optimisation built on it wrong too.
     """
     goc = os.path.join(ROOT, "skills", ten_skill, "references")
     return sorted(glob.glob(os.path.join(goc, "**", "*.md"), recursive=True))
 
 
 def do_theo_phase(dem):
-    """Bảng token theo 6 khối phase. Trả về list dòng [tên khối, số file, token]."""
+    """Token table over the 6 phase blocks. Returns rows of [block name, file count, tokens]."""
     rows = []
     for ten_khoi, skills in KHOI_PHASE:
         tong, so_file = 0, 0
         for skill in skills:
             body = _than_skill(skill)
             if body is None:
-                _log(f"cảnh báo: không thấy skills/{skill}/SKILL.md — bỏ qua")
+                _log(f"warning: no skills/{skill}/SKILL.md found — skipped")
                 continue
             tong += dem(body)
             so_file += 1
@@ -192,12 +192,12 @@ def do_theo_phase(dem):
                 tong_ref += dem(_chu(context_surface._read(ref)))
                 so_ref += 1
     rows.append([KHOI_LUAT_KEM, so_ref, tong_ref])
-    _log(f"đo xong {len(rows)} khối phase")
+    _log(f"measured {len(rows)} phase block(s)")
     return rows
 
 
 def phan_muc(nguon):
-    """Tên mục của một nguồn skill. Không khớp mục nào → `khác`."""
+    """The group name of a skill source. No group matches → `other`."""
     goc = nguon.split(":", 1)[-1]
     for ten_muc, khoa in MUC:
         if any(k in goc for k in khoa):
@@ -205,9 +205,9 @@ def phan_muc(nguon):
     return MUC_KHAC
 
 
-# `[\w-]+:` chứ không phải `\w+:` — khoá frontmatter có gạch ngang (`argument-hint`,
-# `allowed-tools`). Dùng `\w+:` thì mô tả nuốt luôn mấy dòng đó, thổi phồng số token
-# và làm nhiễu cả router (đo thật: `sonar-analyze` nuốt cả danh sách allowed-tools).
+# `[\w-]+:` and not `\w+:` — frontmatter keys carry hyphens (`argument-hint`,
+# `allowed-tools`). With `\w+:` the description swallows those lines, inflating the token
+# count and adding noise to the router (measured: `sonar-analyze` swallowed its allowed-tools).
 DESC_RE = re.compile(r"^description:\s*(.*(?:\n(?![\w-]+:|---).*)*)", re.M)
 
 
@@ -215,17 +215,17 @@ TEN_KHAI_RE = re.compile(r"^name:\s*(.+?)\s*$", re.M)
 
 
 def ban_do_skill_md():
-    """Quét MỘT LẦN mọi SKILL.md trên đĩa → {khoá tra: [đường dẫn]}.
+    """Scan every SKILL.md on disk ONCE → {lookup key: [path]}.
 
-    Quét lại cho từng skill thì 284 lượt glob đệ quy trên `~/.claude` mất hơn hai
-    phút (đo thật, phải giết tiến trình). Quét một lần rồi tra bảng: dưới một giây.
+    Re-scanning per skill means 284 recursive globs over `~/.claude`, taking over two minutes
+    (measured, the process had to be killed). Scan once and look up: under a second.
 
-    Mỗi file vào bảng dưới HAI khoá: tên thư mục, và tên KHAI trong frontmatter.
-    Hai tên này lệch nhau thường xuyên hơn tưởng — `canva-brand-check` nằm ở thư mục
-    `brand-check/`, `unity-mcp-orchestrator` nằm ở `unity-mcp-skill/`. Chỉ tra theo
-    tên thư mục thì 10/284 skill không dò ra file, và cái giá không phải là thiếu một
-    dòng log: mọi tầng "giấu mô tả rồi đọc thẳng SKILL.md khi cần" đều mù với đúng 10
-    skill đó.
+    Every file enters the map under TWO keys: the directory name, and the name DECLARED in the
+    frontmatter. The two disagree more often than expected — `canva-brand-check` lives in the
+    directory `brand-check/`, `unity-mcp-orchestrator` in `unity-mcp-skill/`. Looking up by
+    directory name alone loses the file for 10/284 skills, and the price is not one missing log
+    line: every "hide the description, read SKILL.md on demand" layer is blind to exactly those
+    10 skills.
     """
     home = os.path.expanduser("~")
     ban_do = {}
@@ -239,24 +239,24 @@ def ban_do_skill_md():
                 khoa.add(m.group(1).strip().strip('"').strip("'"))
             for k in khoa:
                 ban_do.setdefault(k, []).append(path)
-    _log(f"bản đồ SKILL.md: {len(ban_do)} khoá tra")
+    _log(f"SKILL.md map: {len(ban_do)} lookup key(s)")
     return ban_do
 
 
 def khoa_tra(ten_skill):
-    """Tên skill → khoá tra bảng. Gỡ tiền tố plugin và dấu nháy dính từ frontmatter.
+    """Skill name → map lookup key. Strips the plugin prefix and quotes stuck on by frontmatter.
 
-    Dấu nháy là lỗi dữ liệu có thật: một skill khai `name: "adobe-batch-edit-photos"`
-    kèm nháy kép, và tên mang nháy thì không khớp khoá nào.
+    The quotes are a real data defect: one skill declares `name: "adobe-batch-edit-photos"`
+    with double quotes, and a name carrying quotes matches no key.
     """
     return ten_skill.split(":")[-1].strip().strip('"').strip("'")
 
 
 def _mo_ta_day_du(ten_skill, mac_dinh, ban_do):
-    """Mô tả ĐẦY ĐỦ đọc thẳng từ SKILL.md. Không tìm được file → dùng bản rút gọn.
+    """The FULL description read straight from SKILL.md. No file found → the shortened one.
 
-    `skill_inventory` rút gọn mô tả cho vừa bảng kiểm kê; đo token thì phải lấy bản
-    đầy đủ, vì bản đầy đủ mới là thứ thật sự nằm trong system prompt.
+    `skill_inventory` shortens descriptions to fit the inventory table; measuring tokens needs
+    the full text, because the full text is what really sits in the system prompt.
     """
     for path in ban_do.get(khoa_tra(ten_skill), []):
         m = DESC_RE.search(_chu(context_surface._read(path))[:4000])
@@ -266,9 +266,9 @@ def _mo_ta_day_du(ten_skill, mac_dinh, ban_do):
 
 
 def do_mo_ta(dem, project=ROOT):
-    """Bảng token mô tả của skill ĐANG BẬT, kèm nguồn và mục.
+    """Description-token table of the ENABLED skills, with source and group.
 
-    Trả về (rows, tong_skill). Mỗi dòng: [nguồn, mục, số skill, token mô tả, token tên].
+    Returns (rows, tong_skill). Each row: [source, group, skill count, desc tokens, name tokens].
     """
     hang = skill_inventory.inventory(project)
     ban_do = ban_do_skill_md()
@@ -278,18 +278,18 @@ def do_mo_ta(dem, project=ROOT):
         khoa = (nguon, phan_muc(nguon))
         o = gop.setdefault(khoa, [0, 0, 0])
         o[0] += 1
-        # +6: chi phí khung mỗi mục trong danh sách skill (xuống dòng, dấu phân cách).
+        # +6: the framing cost of each entry in the skill list (newline, separator).
         o[1] += dem(day_du) + dem(ten) + 6
         o[2] += dem(ten) + 6
     rows = [[nguon, muc, n, tok, ten_tok]
             for (nguon, muc), (n, tok, ten_tok) in
             sorted(gop.items(), key=lambda kv: -kv[1][1])]
-    _log(f"đo xong mô tả của {len(hang)} skill đang bật, {len(rows)} nhóm nguồn")
+    _log(f"measured the descriptions of {len(hang)} enabled skill(s), {len(rows)} source group(s)")
     return rows, len(hang)
 
 
 def _in_bang(headers, rows):
-    """In bảng markdown ra stdout — pipe được, dán thẳng vào báo cáo được."""
+    """Print a markdown table on stdout — pipeable, and pasteable into a report."""
     print("| " + " | ".join(headers) + " |")
     print("|" + "|".join("---" for _ in headers) + "|")
     for row in rows:
@@ -299,31 +299,31 @@ def _in_bang(headers, rows):
 
 def lenh_theo_phase(dem):
     rows = do_theo_phase(dem)
-    _in_bang(("khối phase", "số file", "token"), rows)
+    _in_bang(("phase block", "files", "tokens"), rows)
     tong = sum(r[2] for r in rows)
-    print(f"\nTRẦN TRÊN cho một request lane full: "
+    print(f"\nUPPER BOUND for one lane-full request: "
           f"{tong:,}".replace(",", ".") + " token")
-    print("Đây là TRẦN, không phải số thật của một request: khối `luật kèm` gộp MỌI file\n"
-          "reference, còn một request chỉ mở những reference mà thân skill trỏ tới.\n"
-          "Con số dùng để so trước/sau phải là cùng một cách đo này, không trộn hai cách.")
+    print("This is a CEILING, not the real number of a request: the `attached rules` block merges\n"
+          "EVERY reference file, while a request opens only the references its skill bodies point at.\n"
+          "A before/after comparison must use this same way of measuring, never mix the two.")
     return 0
 
 
 def lenh_mo_ta(dem, project):
     rows, tong_skill = do_mo_ta(dem, project)
-    _in_bang(("nguồn", "mục", "số skill", "token mô tả", "token nếu chỉ giữ tên"), rows)
+    _in_bang(("source", "group", "skills", "desc tokens", "tokens if names only"), rows)
     tong_tok = sum(r[3] for r in rows)
     tong_ten = sum(r[4] for r in rows)
-    print(f"\nTổng: {tong_skill} skill đang bật · "
-          f"{tong_tok:,}".replace(",", ".") + " token mô tả · "
-          f"{tong_ten:,}".replace(",", ".") + " token nếu chỉ giữ tên")
+    print(f"\nTotal: {tong_skill} enabled skill(s) · "
+          f"{tong_tok:,}".replace(",", ".") + " description token(s) · "
+          f"{tong_ten:,}".replace(",", ".") + " token(s) if only names are kept")
     theo_muc = {}
     for nguon, muc, n, tok, ten_tok in rows:
         o = theo_muc.setdefault(muc, [0, 0])
         o[0] += n
         o[1] += tok
     print()
-    _in_bang(("mục", "số skill", "token mô tả"),
+    _in_bang(("group", "skills", "desc tokens"),
              [[muc, n, tok] for muc, (n, tok) in
               sorted(theo_muc.items(), key=lambda kv: -kv[1][1])])
     return 0
@@ -332,17 +332,17 @@ def lenh_mo_ta(dem, project):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="skill_tokens.py",
-        description="Đo token thật của bộ skill (thân theo phase, và mô tả theo mục).")
+        description="Measure the real token count of the skill set (bodies per phase, descriptions per group).")
     parser.add_argument("--theo-phase", action="store_true", dest="theo_phase",
-                        help="bảng token thân skill theo 6 khối phase")
+                        help="table of skill-body tokens over the 6 phase blocks")
     parser.add_argument("--mo-ta", action="store_true", dest="mo_ta",
-                        help="bảng token mô tả của skill đang bật, theo nguồn và mục")
+                        help="table of description tokens of the enabled skills, by source and group")
     parser.add_argument("--project", default=ROOT,
-                        help="thư mục project để kiểm kê skill (mặc định: gốc repo)")
+                        help="project directory to inventory skills in (default: the repo root)")
     args = parser.parse_args(argv)
 
     if args.theo_phase == args.mo_ta:
-        parser.error("chọn đúng một trong hai: --theo-phase hoặc --mo-ta")
+        parser.error("pick exactly one: --theo-phase or --mo-ta")
 
     lenh = "--theo-phase" if args.theo_phase else "--mo-ta"
     _log(f"skill_tokens · {lenh}")

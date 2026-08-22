@@ -1,7 +1,14 @@
-# Khuôn plan
+# The plan shape
 
 Copy the whole block into `docs/tdq/plan/<slug>.md` and fill it in.
 
+## Table of contents
+
+- The minute estimate `(eNm)`
+- The `Mode thực thi` line <!-- i18n-allow: canonical line name of the plan -->
+- Check before presenting
+
+<!-- i18n-allow: plan template written in the default document language -->
 ```markdown
 # PLAN — <tên việc>
 
@@ -95,7 +102,7 @@ merge mới vỡ. Máy tự chia đợt từ dòng `Chạm:`, nhưng bạn viế
   `a.py`" là một task; "viết `a.py`" + "viết `b.py`" là hai task chạy song song được.
 - Ước lượng nhanh: đếm số task có `Chạm:` không giao nhau. Con số đó là trần tốc độ của
   mode đội. Đừng đoán bên nào thắng — chạy lệnh `mo-phong` ở bước 1 của
-  [tdq-plan/SKILL.md](../SKILL.md) và lấy dòng `Thắng:` làm đề xuất.
+  [tdq-plan/SKILL.md](../SKILL.md) và lấy dòng `Winner:` làm đề xuất.
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
@@ -125,9 +132,9 @@ task log, giữ task test, và ghi đúng một dòng `Log: BỎ — <lý do m�
 Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh kiểm.
 ```
 
-## Ước tính phút `(eNm)`
+## The minute estimate `(eNm)`
 
-Goes **right after the task code**, before the work itself: `- [ ] **T2.1** (e12m) việc — Test: ...`.
+Goes **right after the task code**, before the work itself: `- [ ] **T2.1** (e12m) <work> — Test: ...`.
 `eNm` = the number of **minutes** Claude estimates it needs to EXECUTE that task itself (agent
 runtime, not human waiting time). The unit is always minutes, an integer 1–999, never `1h` or
 `0.5m`. The ETA of the whole plan = the sum of `eNm` over unfinished tasks.
@@ -140,20 +147,20 @@ Rules:
   plan still runs.
 - `eNm` changes nothing about the tick rule `[ ] [~] [x]` and is not a promise of time to user.
 
-## Dòng `Mode thực thi`
+## The `Mode thực thi` line <!-- i18n-allow: canonical line name of the plan -->
 
-- It MUST sit on **một dòng riêng**, never merged into another header line — tooling reads it.
+- It MUST sit on **a line of its own**, never merged into another header line — tooling reads it.
 - The value here is the **machine identifier**: `main` or `subagent`. The label the user reads at
-  gate `mode` is "làm trực tiếp (inline implement)" and "giao trợ lý (sub-agent implement)" —
+  gate `mode` is "làm trực tiếp (inline implement)" and "giao trợ lý (sub-agent implement)" — <!-- i18n-allow: user-facing mode labels -->
   see [mode-gate.md](mode-gate.md).
 - This is only Claude's **proposal**. After the user approves the plan, phase `mode` asks; the
   mode written into state is the one the user SAID, never the proposal taken as settled. An
   approval sentence that already names a mode skips that gate and goes straight to implement.
 
-## Kiểm trước khi trình
+## Check before presenting
 
 - Every output in spec §2 maps to ≥ 1 task.
 - Every task holds exactly one piece of work and one measurable check — no task shaped like
-  "hoàn thiện X".
+  "finish X".
 - The first task of each phase opens a red → green path early.
 - No task depends on a task placed after it.

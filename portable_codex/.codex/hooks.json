@@ -1,5 +1,5 @@
 {
-  "description": "TDQ workflow cho Codex CLI — sinh tự động, không sửa tay",
+  "description": "TDQ workflow for Codex CLI — auto-generated, never edited by hand",
   "hooks": {
     "PreToolUse": [
       {

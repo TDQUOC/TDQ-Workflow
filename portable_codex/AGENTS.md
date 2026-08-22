@@ -1,33 +1,35 @@
-# TDQ Workflow — hướng dẫn cho agent
+# TDQ Workflow — guide for agents
 
 Soul: chất lượng > runtime > context cost · luật gốc: `workflow/references/tdq-conventions/soul.md`
 
-Bộ này chạy theo pipeline có cổng duyệt: intake → spec → plan → implement → QC → report.
-Chỉ NGƯỜI DÙNG được duyệt, và mọi thay đổi state chỉ đi qua `scripts/tdq_state.py`.
+This bundle runs a pipeline with approval gates: intake → spec → plan → implement → QC →
+report. Only the USER may approve, and every state change goes through `scripts/tdq_state.py`.
 
-## Bước 0 — kiểm tương thích TRƯỚC mọi việc khác
+## Step 0 — check compatibility BEFORE anything else
 
 ```
 python3 scripts/tdq_checkportable.py check
 ```
 
-Báo thiếu thì chạy `python3 scripts/tdq_checkportable.py setup`: nó dựng lại hai file cấu
-hình tái tạo được (`.claude/settings.json`, `.mcp.json`), luôn sao lưu `<file>.tdq-bak-<timestamp>`
-trước khi ghi đè, và báo `CÒN …` cho phần chỉ chép lại từ bản gốc mới đúng.
+If it reports something missing, run `python3 scripts/tdq_checkportable.py setup`: it rebuilds
+the two config files that can be recreated (`.claude/settings.json`, `.mcp.json`), always
+leaves a backup at `<file>.tdq-bak-<timestamp>` before overwriting, and reports `LEFT …` for
+whatever is only correct when copied from the original bundle.
 
-Dòng `LƯU Ý project chưa trusted` là dòng quan trọng nhất của lệnh này: chưa trusted thì
-Codex bỏ qua cả `.codex/config.toml` lẫn `.codex/hooks.json`, bundle chạy như thể không có.
+The line `NOTE project is not trusted` is the most important line this command prints: while
+untrusted, Codex ignores both `.codex/config.toml` and `.codex/hooks.json`, and the bundle
+runs as if it were not there.
 
-## Chạy trên Codex CLI (>= 0.147.0) — dùng lớp native, không cần đọc `workflow/`
+## Running on Codex CLI (>= 0.147.0) — use the native layer, no need to read `workflow/`
 
-- `.agents/skills/` — Codex tự nạp skill theo `description`, không phải tự chọn file.
-- `.codex/config.toml` — MCP server; chỉ TÊN biến môi trường, tự đặt biến ở máy mình.
-- `.codex/hooks.json` + `hooks/` — cổng duyệt do máy canh (`SessionStart`,
-  `UserPromptSubmit`, `PreToolUse` cho `Bash` và `apply_patch`, `Stop`).
+- `.agents/skills/` — Codex loads skills by `description` on its own, you do not pick files.
+- `.codex/config.toml` — MCP servers; environment variable NAMES only, set them yourself.
+- `.codex/hooks.json` + `hooks/` — machine-guarded approval gates (`SessionStart`,
+  `UserPromptSubmit`, `PreToolUse` for `Bash` and `apply_patch`, `Stop`).
 
-## Harness khác — đọc `workflow/` theo đúng số thứ tự
+## Another harness — read `workflow/` in the exact numbered order
 
-Không có skill system thì số thứ tự trong tên file CHÍNH LÀ cơ chế định tuyến:
+With no skill system, the number in the file name IS the routing mechanism:
 
 - `workflow/01-conventions.md`
 - `workflow/02-intake.md`
@@ -38,11 +40,13 @@ Không có skill system thì số thứ tự trong tên file CHÍNH LÀ cơ ch�
 - `workflow/07-status.md`
 - `workflow/08-check-status.md`
 
-Bảng phase đầy đủ: `workflow/phases.md` (tự sinh từ hằng `PHASE_TABLE`, không sửa tay).
+Full phase table: `workflow/phases.md` (generated from the `PHASE_TABLE` constant, never
+edited by hand).
 
-## Bốn việc máy KHÔNG tự làm được
+## Four things the machine CANNOT do for you
 
-1. Cấp quyền cho thư mục project ở lần chạy đầu (`setup --trust` làm thay được bước này).
-2. Duyệt hook trong giao diện Codex — hook có cổng tin cậy riêng, `--trust` KHÔNG mở được.
-3. Duyệt từng MCP server khai trong `.codex/config.toml`.
-4. Khởi động lại phiên sau khi thêm thư mục instruction mới.
+1. Grant access to the project folder on the first run (`setup --trust` can do this for you).
+2. Approve the hooks in the Codex UI — hooks have their own trust gate, `--trust` does NOT
+   open it.
+3. Approve every MCP server declared in `.codex/config.toml`.
+4. Restart the session after a new instruction folder is added.

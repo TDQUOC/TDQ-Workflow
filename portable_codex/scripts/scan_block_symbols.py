@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Quét ký hiệu ngoài ASCII trong các file giữ khuôn khối nói với user.
+"""Scan the non-ASCII symbols in the files that hold the blocks spoken to the user.
 
-Lý do tồn tại: trước khi siết `tests/test_user_facing_block.py` thành whitelist ký hiệu,
-phải biết 12 file trong phạm vi kiểm đang thật sự dùng những ký tự nào. Siết mù sẽ làm
-test đỏ oan vì một ký tự hợp lệ có sẵn (spec §5, rủi ro 2).
+Why it exists: before tightening `tests/test_user_facing_block.py` into a symbol whitelist, we
+must know which characters the 12 files in scope actually use. Tightening blind would turn the
+test red over a legitimate character that was already there (spec §5, risk 2).
 
-Chỉ đếm ký tự thuộc Unicode category P* (dấu câu) và S* (ký hiệu) và nằm ngoài ASCII.
-Chữ tiếng Việt thuộc category L* nên không bị đụng — đó là điều làm whitelist khả thi.
+Only characters in Unicode category P* (punctuation) and S* (symbols) outside ASCII are counted.
+Accented letters are category L* so they are never touched — that is what makes a whitelist viable.
 
-Dùng:
-    python3 scripts/scan_block_symbols.py              # bảng markdown, exit 0
-    python3 scripts/scan_block_symbols.py --lieu-ke    # thêm cột số lần theo từng file
-    python3 scripts/scan_block_symbols.py --chi-khoi   # chỉ phần in ra cho user
+Usage:
+        python3 scripts/scan_block_symbols.py              # markdown table, exit 0
+        python3 scripts/scan_block_symbols.py --lieu-ke    # add a per-file count column
+        python3 scripts/scan_block_symbols.py --chi-khoi   # only what is printed to the user
 """
 import argparse
 import os
@@ -21,13 +21,13 @@ from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Whitelist chốt ở T0.2 (xem `docs/tdq/qc/2026-08-14-trang-tri-khoi-chat.md`): sáu ký tự,
-# tất cả đều có bằng chứng đang chạy thật trong khối mẫu in ra cho user. Ba ký tự đầu do
-# user chọn ở vòng interview 2; ba ký tự sau được nhận vào theo đúng luật 2A (có bằng
-# chứng chạy thật). Ký tự `▸` bị loại vì grep toàn repo ra 0 kết quả.
+# Whitelist settled at T0.2 (see `docs/tdq/qc/2026-08-14-trang-tri-khoi-chat.md`): six characters,
+# each with evidence of really running in a sample block printed to the user. The first three were
+# picked by the user at interview round 2; the last three were admitted under rule 2A (evidence of
+# really running). The character `▸` was rejected because grepping the whole repo returns 0 hits.
 WHITELIST = ("➤", "·", "—", "→", "–", "…")
 
-# 12 file giữ khuôn hoặc chép khối mẫu — phạm vi mà whitelist sẽ áp.
+# The 12 files holding a template or copying a sample block — the scope the whitelist will cover.
 SCOPE = (
     "skills/tdq-conventions/references/user-facing-block.md",
     "skills/tdq-spec/SKILL.md",
@@ -45,16 +45,16 @@ SCOPE = (
 
 
 def la_ky_hieu(ch):
-    """True khi ch là dấu câu/ký hiệu ngoài ASCII — thứ whitelist phải quản."""
+    """True when ch is non-ASCII punctuation/symbol — what the whitelist has to govern."""
     if ord(ch) < 128:
         return False
     return unicodedata.category(ch)[0] in ("P", "S")
 
 
 def khoi_mau(text):
-    """Nội dung các khối ``` trong file — đây mới là phần THẬT SỰ in ra cho user.
+    """The content of the ``` blocks in a file — this is what is REALLY printed to the user.
 
-    Văn xuôi hướng dẫn quanh khối không bao giờ tới mắt user, nên whitelist không quản.
+    Prose guidance around a block never reaches the user's eyes, so the whitelist ignores it.
     """
     ra, trong_khoi = [], False
     for line in text.split("\n"):
@@ -67,13 +67,13 @@ def khoi_mau(text):
 
 
 def quet(paths, chi_khoi=False):
-    """{ký tự: (tổng số lần, {file: số lần})} cho mọi ký hiệu ngoài ASCII."""
+    """{character: (total count, {file: count})} for every non-ASCII symbol."""
     tong = Counter()
     theo_file = defaultdict(Counter)
     for rel in paths:
         path = os.path.join(ROOT, rel)
         if not os.path.isfile(path):
-            print(f"CẢNH BÁO: thiếu file {rel}", file=sys.stderr)
+            print(f"WARNING: missing file {rel}", file=sys.stderr)
             continue
         with open(path, encoding="utf-8") as f:
             text = f.read()
@@ -89,18 +89,18 @@ def quet(paths, chi_khoi=False):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--lieu-ke", action="store_true",
-                    help="in thêm cột liệt kê file dùng ký tự đó")
+                    help="add a column listing the files using that character")
     ap.add_argument("--chi-khoi", action="store_true",
-                    help="chỉ quét nội dung các khối ``` (phần thật sự in ra cho user)")
+                    help="scan only the content of ``` blocks (what is really printed to the user)")
     args = ap.parse_args(argv)
 
     tong, theo_file = quet(SCOPE, chi_khoi=args.chi_khoi)
-    print(f"| Ký tự | Codepoint | Tên Unicode | Số lần | Trong whitelist? |"
+    print(f"| Char | Codepoint | Unicode name | Count | In whitelist? |"
           + (" File |" if args.lieu_ke else ""))
     print("|---|---|---|---|---|" + ("---|" if args.lieu_ke else ""))
     for ch, n in sorted(tong.items(), key=lambda kv: (-kv[1], ord(kv[0]))):
         ten = unicodedata.name(ch, "?")
-        trong = "CÓ" if ch in WHITELIST else "**KHÔNG**"
+        trong = "YES" if ch in WHITELIST else "**NO**"
         dong = f"| `{ch}` | U+{ord(ch):04X} | {ten} | {n} | {trong} |"
         if args.lieu_ke:
             dong += " " + ", ".join(sorted(theo_file[ch])) + " |"
@@ -108,8 +108,8 @@ def main(argv=None):
 
     la = [ch for ch in tong if ch not in WHITELIST]
     print()
-    print(f"Tổng: {len(tong)} ký hiệu khác nhau trên {len(SCOPE)} file · "
-          f"{len(la)} ký tự NGOÀI whitelist cần quyết định.")
+    print(f"Total: {len(tong)} distinct symbol(s) across {len(SCOPE)} file(s) · "
+          f"{len(la)} character(s) OUTSIDE the whitelist need a decision.")
     return 0
 
 

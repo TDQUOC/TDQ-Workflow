@@ -1,0 +1,3 @@
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0070", "name": "Bash", "input": {"command": "python3 \"$CLAUDE_PLUGIN_ROOT/scripts/tdq_state.py\" approve spec --by \"duyệt spec\""}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0070", "content": "spec_approved = true", "is_error": false}]}}
+{"type": "result", "subtype": "success", "result": "Đã ghi duyệt spec. Bạn nhắn cho tôi khi nào muốn tôi viết plan nhé.", "total_cost_usd": 0.5, "num_turns": 8, "is_error": false}

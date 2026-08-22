@@ -41,7 +41,8 @@ class ScopeRoundTest(unittest.TestCase):
 
     def test_bans_the_abstract_level_question(self):
         """Hỏi 'gọn hay đầy đủ' bắt user tự quy đổi thứ họ chưa biết — user đã loại."""
-        self.assertRegex(self.text, r"(?i)cấm[\s\S]{0,200}?gọn nhất",
+        self.assertRegex(self.text,
+                         r"(?i)(BANNED[\s\S]{0,200}?minimal|cấm[\s\S]{0,200}?gọn nhất)",
                          "scope-round.md: thiếu luật cấm hỏi mức độ trừu tượng")
 
     def test_context_questions_ask_for_numbers(self):
@@ -84,7 +85,7 @@ class ScopeRoundIsWiredTest(unittest.TestCase):
 
     def test_interview_keeps_the_detail_tier_inside_chosen_areas(self):
         text = read(os.path.join(ROOT, "skills", "tdq-intake", "references", "interview.md"))
-        self.assertRegex(text, r"(?i)tầng 1[\s\S]{0,400}?tầng 2",
+        self.assertRegex(text, r"(?i)(tier 1[\s\S]{0,400}?tier 2|tầng 1[\s\S]{0,400}?tầng 2)",
                          "interview.md: mất thứ tự hai tầng tổng quát → chi tiết")
 
 

@@ -2,6 +2,40 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.27.0 — 2026-08-22
+
+Bộ workflow nói được với người dùng ở mọi ngôn ngữ. Luật viết bằng tiếng Anh — thứ model
+đọc chính xác nhất và tốn ít token nhất — còn tài liệu sinh ra cùng mọi câu nói với user
+đi theo ngôn ngữ của chính user. Trước bản này, muốn dùng workflow là phải đọc được tiếng
+Việt.
+
+- **Ngôn ngữ chia 3 tầng**, ghi ở mục `## 0. Language` của `tdq-conventions/SKILL.md`:
+  luật (`skills/`, `agents/`, chú thích + docstring của `hooks/` và `scripts/`) và chuỗi
+  máy in ra viết TIẾNG ANH cố định, không bảng tra i18n; tài liệu và lời thoại viết theo
+  trường `doc_lang`.
+- `doc_lang` khai đúng một lần lúc mở request — `tdq_state.py init <slug> <lane> --lang <mã>`
+  — và cố định suốt request. Thiếu cờ hoặc state cũ không có trường thì lùi về `vi`, state
+  đời trước đọc lên không lỗi.
+- Đã dịch: 44 file `skills/**/*.md`, 3 file `agents/*.md`, toàn bộ `hooks/` và `scripts/`.
+  Đếm bằng `i18n_check.py`: `skills/`+`agents/` 1127 → 0 dòng tiếng Việt, `hooks/`+`scripts/`
+  3099 → 0. Description của 7 skill dài thêm về ký tự (1063 → 1334) nhưng **giảm nửa về
+  token** (628 → 304, đo bằng `anthropic-tokenizer`) — đây là phần luôn nằm trong system prompt.
+- `scripts/i18n_check.py` (mới): quét một vùng đường dẫn, tách 3 loại dòng
+  (`--kind comment|string|body`), exit 1 khi còn sót. Cụm `i18n-allow` trên dòng là cửa
+  miễn cho chuỗi user thấy phải giữ nguyên từng chữ; một dòng chú thích HTML ngay trên
+  khối ``` miễn cho cả khối khuôn mẫu.
+- Cổng duyệt nhận **tiếng Anh** ("approve spec", "approve plan") và **một chữ cái** `a`–`d`
+  ở cổng mode, đúng như bộ ca âm cũ vẫn phải trượt. Hai ca eval mới
+  (`duyet-spec-tieng-anh`, `duyet-bang-chu-cai`) khoá hai đường này; bộ `evals/tuan-thu`
+  đi từ 10 lên 12 ca.
+- Gộp 6 commit chưa phát hành trước đó. Về context: bộ skill chuyển thể lai · thước đo
+  đếm token thật cộng luật cắt output · phẳng hoá reference về tầng 1. Về lỗi đọc plan:
+  `doc_plan` không còn nuốt dòng `Chạm:`/`Cần:` khi mô tả task xuống dòng · mã task có
+  chữ sau số (`T2A.1`, `T2.4b`) không còn vô hình.
+
+Còn nợ: chưa chấm lại bộ `evals/tuan-thu` trên cây đã dịch — xem mục "Giới hạn" của
+`docs/tdq/reports/2026-08-21-2351-quoc-te-hoa-workflow.md`.
+
 ## 0.26.0 — 2026-08-18
 
 Cổng duyệt thôi kêu oan. Đo trên 58 request có spec: 7 ca phải xin duyệt lại, trong đó

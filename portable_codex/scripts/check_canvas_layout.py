@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-"""Kiểm hình học một scene Excalidraw dùng làm product document nhiều chương.
+"""Check the geometry of an Excalidraw scene used as a multi-chapter product document.
 
-Quy ước bố cục mà script này kiểm (chốt trong
+The layout rules this script checks (settled in
 `docs/tdq/spec/2026-08-12-hoan-thien-doc-excalidraw.md`):
 
-- Mỗi chương N có đúng một khung `ch<N>-frame` (rectangle) và một tiêu đề
-  `ch<N>-title` (text) bắt đầu bằng chuỗi `"<N>. "`.
-- Chương 0 là mục lục; mỗi dòng mục lục là text `toc-<N>` trỏ tới chương N.
-- Mọi phần tử khác phải nằm TRỌN trong khung của đúng một chương.
+- Every chapter N has exactly one frame `ch<N>-frame` (rectangle) and one title
+    `ch<N>-title` (text) starting with the string `"<N>. "`.
+- Chapter 0 is the table of contents; each TOC line is a text `toc-<N>` pointing at chapter N.
+- Every other element must sit WHOLLY inside the frame of exactly one chapter.
 
-Không phụ thuộc package ngoài — chỉ stdlib, đúng nguyên tắc "0 package ngoài"
-của repo.
+No external package — stdlib only, per the repo's "0 external package" principle.
 """
 
 import argparse
@@ -24,13 +23,13 @@ FRAME_RE = re.compile(r"^ch(\d+)-frame$")
 TITLE_RE = re.compile(r"^ch(\d+)-title$")
 TOC_RE = re.compile(r"^toc-(\d+)$")
 
-# Phần tử nằm lệch dưới ngưỡng này coi như khớp — bù sai số làm tròn của
-# frontend khi ước lượng bề rộng chữ.
+# An element out of place by less than this threshold counts as matching — it absorbs the
+# rounding error of the frontend when it estimates text width.
 TOL = 1.0
 
 
 def load_elements(source):
-    """Đọc danh sách element từ file JSON hoặc từ server đang chạy."""
+    """Read the element list from a JSON file or from a running server."""
     if source.startswith("http://") or source.startswith("https://"):
         with urllib.request.urlopen(source, timeout=10) as resp:
             data = json.loads(resp.read().decode("utf-8"))
@@ -73,7 +72,7 @@ def contains(outer, inner):
 
 
 def collect_frames(elements):
-    """{số chương: element khung}."""
+    """{chapter number: frame element}."""
     frames = {}
     for el in elements:
         m = FRAME_RE.match(el["id"])
@@ -96,20 +95,20 @@ def check_chapters(elements, expected):
     titles = collect_titles(elements)
     problems = []
     nums = sorted(n for n in frames if n >= 1)
-    print(f"Tìm thấy {len(nums)} chương (chưa tính mục lục ch0).")
+    print(f"Found {len(nums)} chapter(s) (the ch0 table of contents not counted).")
     for n in nums:
-        print(f"  {n:>2}. {titles.get(n, '<THIẾU TIÊU ĐỀ>')}")
+        print(f"  {n:>2}. {titles.get(n, '<TITLE MISSING>')}")
     if nums != list(range(1, expected + 1)):
         problems.append(
-            f"số chương không liên tục 1..{expected}: thấy {nums}"
+            f"chapter numbers are not continuous 1..{expected}: found {nums}"
         )
     for n in nums:
         title = titles.get(n)
         if title is None:
-            problems.append(f"chương {n} thiếu element ch{n}-title")
+            problems.append(f"chapter {n} is missing element ch{n}-title")
         elif not title.startswith(f"{n}. "):
             problems.append(
-                f"tiêu đề chương {n} không bắt đầu bằng '{n}. ': {title!r}"
+                f"the title of chapter {n} does not start with '{n}. ': {title!r}"
             )
     return problems
 
@@ -123,8 +122,8 @@ def check_overlap(elements):
             na, ea = items[i]
             nb, eb = items[j]
             if boxes_overlap(bbox(ea), bbox(eb)):
-                problems.append(f"khung chương {na} và {nb} chồng lấn")
-    print(f"Đã so {len(items) * (len(items) - 1) // 2} cặp khung.")
+                problems.append(f"the frames of chapter {na} and {nb} overlap")
+    print(f"Compared {len(items) * (len(items) - 1) // 2} frame pair(s).")
     return problems
 
 
@@ -144,20 +143,20 @@ def check_contain(elements):
                 owner = n
                 break
         if owner is None:
-            problems.append(f"{el['id']}: tâm không nằm trong khung chương nào")
+            problems.append(f"{el['id']}: its centre is inside no chapter frame")
             continue
         checked += 1
         if not contains(bbox(frames[owner]), box):
             problems.append(
-                f"{el['id']}: tràn ra ngoài khung chương {owner} "
+                f"{el['id']}: spills outside the frame of chapter {owner} "
                 f"(element {box}, khung {bbox(frames[owner])})"
             )
         m = TITLE_RE.match(el["id"]) or re.match(r"^ch(\d+)-", el["id"])
         if m and int(m.group(1)) != owner:
             problems.append(
-                f"{el['id']}: id thuộc chương {m.group(1)} nhưng nằm trong khung chương {owner}"
+                f"{el['id']}: the id belongs to chapter {m.group(1)} but it sits in the frame of chapter {owner}"
             )
-    print(f"Đã kiểm {checked} phần tử nằm trong khung.")
+    print(f"Checked {checked} element(s) for containment.")
     return problems
 
 
@@ -169,8 +168,8 @@ def check_order(elements):
         ya = bbox(frames[a])[1]
         yb = bbox(frames[b])[1]
         if not ya < yb:
-            problems.append(f"chương {a} (y={ya}) không nằm trên chương {b} (y={yb})")
-    print(f"Đã so thứ tự dọc của {len(nums)} khung.")
+            problems.append(f"chapter {a} (y={ya}) does not sit above chapter {b} (y={yb})")
+    print(f"Compared the vertical order of {len(nums)} frame(s).")
     return problems
 
 
@@ -184,38 +183,38 @@ def check_toc(elements):
     problems = []
     for n, title in sorted(titles.items()):
         if n not in toc:
-            problems.append(f"mục lục thiếu dòng cho chương {n}")
+            problems.append(f"the table of contents has no line for chapter {n}")
         elif title.strip() not in toc[n].strip():
             problems.append(
-                f"dòng mục lục {n} ({toc[n]!r}) không khớp tiêu đề thật ({title!r})"
+                f"TOC line {n} ({toc[n]!r}) does not match the real title ({title!r})"
             )
     extra = set(toc) - set(titles)
     for n in sorted(extra):
-        problems.append(f"mục lục có dòng {n} nhưng không có chương {n}")
-    print(f"Đã đối chiếu {len(titles)} tiêu đề với {len(toc)} dòng mục lục.")
+        problems.append(f"the table of contents has line {n} but there is no chapter {n}")
+    print(f"Matched {len(titles)} title(s) against {len(toc)} TOC line(s).")
     return problems
 
 
 def check_width(elements, expected_width):
-    """Mọi khung chương phải rộng đúng khổ đã chốt (A4 dọc @150dpi = 1240px)."""
+    """Every chapter frame must be exactly the settled page width (A4 portrait @150dpi = 1240px)."""
     frames = collect_frames(elements)
     problems = []
     for n, frame in sorted(frames.items()):
         w = float(frame.get("width", 0) or 0)
         if abs(w - expected_width) > TOL:
             problems.append(
-                f"khung chương {n} rộng {w:g}px, khổ chốt là {expected_width:g}px"
+                f"the frame of chapter {n} is {w:g}px wide, the settled page is {expected_width:g}px"
             )
-    print(f"Đã đo bề ngang {len(frames)} khung, khổ chốt {expected_width:g}px.")
+    print(f"Measured the width of {len(frames)} frame(s), settled page {expected_width:g}px.")
     return problems
 
 
-# Excalidraw mặc định cỡ chữ 20 (M) khi element không ghi `fontSize`.
+# Excalidraw defaults to font size 20 (M) when an element records no `fontSize`.
 DEFAULT_FONT_SIZE = 20
 
 
 def check_fontsize(elements, minimum):
-    """Không phần tử chữ nào nhỏ hơn ngưỡng đọc được."""
+    """No text element may be smaller than the readable threshold."""
     problems = []
     checked = 0
     for el in elements:
@@ -224,8 +223,8 @@ def check_fontsize(elements, minimum):
         checked += 1
         size = float(el.get("fontSize", DEFAULT_FONT_SIZE) or DEFAULT_FONT_SIZE)
         if size < minimum - TOL:
-            problems.append(f"{el['id']}: cỡ chữ {size:g} < ngưỡng {minimum:g}")
-    print(f"Đã đo cỡ chữ {checked} phần tử text, ngưỡng {minimum:g}.")
+            problems.append(f"{el['id']}: font size {size:g} < threshold {minimum:g}")
+    print(f"Measured the font size of {checked} text element(s), threshold {minimum:g}.")
     return problems
 
 
@@ -237,8 +236,8 @@ def report_prefix(elements):
 
 
 def report_region(elements):
-    """Đếm phần tử theo khung chương — bền hơn đếm theo prefix id vì bound
-    label do frontend sinh mang id ngẫu nhiên."""
+    """Count elements per chapter frame — sturdier than counting by id prefix because a bound
+    label generated by the frontend carries a random id."""
     frames = collect_frames(elements)
     counter = collections.Counter()
     for el in elements:
@@ -253,9 +252,9 @@ def report_region(elements):
                 placed = True
                 break
         if not placed:
-            counter["ngoài mọi khung"] += 1
+            counter["outside every frame"] += 1
     for key in sorted(counter, key=lambda k: (isinstance(k, str), k)):
-        label = f"chương {key}" if isinstance(key, int) else key
+        label = f"chapter {key}" if isinstance(key, int) else key
         print(f"{label:24} {counter[key]}")
     return []
 
@@ -272,8 +271,8 @@ CHECKS = {
     "count_by_region": report_region,
 }
 
-# Phép kiểm cần một tham số lấy từ chính cờ dòng lệnh cùng tên; các phép kiểm
-# còn lại chỉ nhận danh sách element.
+# One check needs a parameter taken from the command-line flag of the same name; the other
+# checks only take the element list.
 ARG_FROM_FLAG = {"width", "fontsize"}
 
 
@@ -281,35 +280,35 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
         "scene",
-        help="đường dẫn file scene .excalidraw, hoặc URL /api/elements của canvas đang chạy",
+        help="path to the .excalidraw scene file, or the /api/elements URL of a running canvas",
     )
-    parser.add_argument("--chapters", action="store_true", help="đủ N chương, số liên tục")
+    parser.add_argument("--chapters", action="store_true", help="N chapters present, numbers continuous")
     parser.add_argument(
         "--width",
         type=float,
-        help="mọi khung chương rộng đúng số px này (khổ A4 dọc @150dpi = 1240)",
+        help="every chapter frame is exactly this many px wide (A4 portrait @150dpi = 1240)",
     )
-    parser.add_argument("--overlap", action="store_true", help="không khung nào chồng lấn")
-    parser.add_argument("--contain", action="store_true", help="mọi phần tử nằm trọn trong khung")
-    parser.add_argument("--order", action="store_true", help="thứ tự dọc khớp số chương")
-    parser.add_argument("--toc", action="store_true", help="mục lục khớp tiêu đề thật")
+    parser.add_argument("--overlap", action="store_true", help="no two frames overlap")
+    parser.add_argument("--contain", action="store_true", help="every element sits wholly inside a frame")
+    parser.add_argument("--order", action="store_true", help="the vertical order matches the chapter numbers")
+    parser.add_argument("--toc", action="store_true", help="the table of contents matches the real titles")
     parser.add_argument(
         "--fontsize",
         type=float,
-        help="không phần tử text nào có cỡ chữ nhỏ hơn số này",
+        help="no text element has a font size smaller than this",
     )
-    parser.add_argument("--count-by-prefix", action="store_true", help="đếm phần tử theo prefix id")
-    parser.add_argument("--count-by-region", action="store_true", help="đếm phần tử theo khung chương")
-    parser.add_argument("--expect", type=int, default=13, help="số chương mong đợi (mặc định 13)")
+    parser.add_argument("--count-by-prefix", action="store_true", help="count elements by id prefix")
+    parser.add_argument("--count-by-region", action="store_true", help="count elements by chapter frame")
+    parser.add_argument("--expect", type=int, default=13, help="how many chapters are expected (default 13)")
     args = parser.parse_args(argv)
 
     selected = [name for name in CHECKS if getattr(args, name) is not None
                 and getattr(args, name) is not False]
     if not selected:
-        parser.error("phải chọn ít nhất một phép kiểm")
+        parser.error("pick at least one check")
 
     elements = load_elements(args.scene)
-    print(f"Đọc {len(elements)} phần tử từ {args.scene}\n")
+    print(f"Read {len(elements)} element(s) from {args.scene}\n")
 
     all_problems = []
     for name in selected:
@@ -329,9 +328,9 @@ def main(argv=None):
         all_problems.extend(problems)
 
     if all_problems:
-        print(f"FAIL — {len(all_problems)} vấn đề.")
+        print(f"FAIL — {len(all_problems)} problem(s).")
         return 1
-    print("PASS — mọi phép kiểm đã chọn đều đạt.")
+    print("PASS — every selected check holds.")
     return 0
 
 

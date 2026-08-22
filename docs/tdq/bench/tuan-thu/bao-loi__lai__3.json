@@ -1,0 +1,19 @@
+{
+  "ca": "bao-loi",
+  "nhanh": "lai",
+  "lan": 3,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/bao-loi__lai__3/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L218": "dat",
+    "L220": "dat",
+    "L136": "dat",
+    "L121": "dat",
+    "L209": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 0.48719799999999996,
+  "so_luot": 14,
+  "nhiem": []
+}

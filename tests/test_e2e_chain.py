@@ -66,7 +66,7 @@ class TestFullLaneChain(ChainBase):
         self.assertIn("approve spec", out)
         rc, out, err = self.approve("spec", "--by", "duyệt spec")
         self.assertEqual(rc, 0, err)
-        self.assertIn("Đã ghi nhận", out)
+        self.assertIn("Recorded", out)
 
         # 5. vẫn nhắc tiếp: plan chưa duyệt (nhưng không chặn)
         self.new_turn()
@@ -106,7 +106,7 @@ class TestFullLaneChain(ChainBase):
         # 9. duyệt lại lần nữa không phải lỗi
         rc, out, err = self.approve("plan")
         self.assertEqual(rc, 0, err)
-        self.assertIn("đã duyệt lúc", out)
+        self.assertIn("was already approved at", out)
 
         state = read_state(self.cwd)
         self.assertTrue(state["spec_approved"] and state["plan_approved"])

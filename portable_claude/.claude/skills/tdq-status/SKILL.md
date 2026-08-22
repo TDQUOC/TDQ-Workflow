@@ -1,14 +1,14 @@
 ---
 name: tdq-status
-description: Báo trạng thái TDQ hiện tại (request, lane, phase, mode thực thi, ai đã duyệt gì) và bước kế tiếp chính xác. Dùng khi user hỏi workflow đang ở đâu.
+description: Report the current TDQ state (request, lane, phase, execution mode, who approved what) and the exact next step. Use when the user asks where the workflow stands.
 ---
 
 # TDQ Status
 
-Read the state and report in **tiếng Việt** (nhắc lại có chủ ý — bản gốc ở
-`skills/tdq-conventions/SKILL.md`), ≤ 10 lines. Read-only: write nothing into state.
+Read the state and report in the user's document language `doc_lang` (deliberate repetition —
+the original is `skills/tdq-conventions/SKILL.md`), ≤ 10 lines. Read-only: write nothing into state.
 
-## Các bước
+## Steps
 
 1. Run both commands (merged into ONE Bash call with `&&`):
    ```
@@ -22,25 +22,25 @@ Read the state and report in **tiếng Việt** (nhắc lại có chủ ý — b
    Always use `next --brief` (121 characters) — drop `--brief` (1.350 characters) only when
    you truly need the full checklist of the phase, because that output is carried again on
    every later API call.
-   No `active_request` yet → report "Chưa có request TDQ nào đang chạy." plus the step for
-   opening a new request, then stop.
+   No `active_request` yet → report that no TDQ request is running, plus the step for opening
+   a new request, then stop.
 
 2. Report these items, one line each:
    - Request + lane + current phase.
-   - `implement_mode`: the mode the user settled on (nothing yet → write "chưa chốt").
-   - Spec: **đã duyệt** (with `spec_approved_at` and `spec_approved_by`) / **chờ duyệt** /
-     — chưa có. Same for the plan (`plan_approved_by`) or quick (`quick_approved_by`),
-     depending on the lane.
+   - `implement_mode`: the mode the user settled on (nothing yet → say it is not settled).
+   - Spec: **approved** (with `spec_approved_at` and `spec_approved_by`) / **waiting for
+     approval** / not written yet. Same for the plan (`plan_approved_by`) or quick
+     (`quick_approved_by`), depending on the lane.
    - Spec approved → compare the current sha256 of `spec_file` against `spec_sha256`; a
-     mismatch warns "spec đã đổi sau khi duyệt, cần duyệt lại".
+     mismatch warns that the spec changed after approval and must be approved again.
    - Phase `implement`/`qc` → count `- [x]` over the total tasks in the plan file → progress.
    - The clock: print the `⏱ …` line returned by `tdq_timing.py status` verbatim (how long
      the current phase cost in wall/model time, and how long the request cost).
 
-3. Close with the next step, taking the "Việc tiếp theo" and "Lệnh" lines verbatim from the
-   `next` output. Waiting on an approval → also print:
-   `➤ Duyệt: nhắn "duyệt <spec|plan|quick>" · Góp ý: nhắn trực tiếp`.
-   The whole answer to the user follows the shared khuôn in
+3. Close with the next step, taking the "next job" and "command" lines verbatim from the
+   `next` output. Waiting on an approval → also print: <!-- i18n-allow: the approval line is printed verbatim -->
+   `➤ Duyệt: nhắn "duyệt <spec|plan|quick>" · Góp ý: nhắn trực tiếp`. <!-- i18n-allow: user-facing line printed verbatim -->
+   The whole answer to the user follows the shared template in
    [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — bold field
    labels, the `➤` line last.
 
@@ -48,6 +48,6 @@ Lost context (new session, another machine, another agent just did a phase for y
 state that drifted from disk → stop here and switch to
 [tdq-check-status](../tdq-check-status/SKILL.md) to recover.
 
-Xong khi: the user finishes reading and knows where things stand and what comes next.
-Bước kế tiếp: the skill matching the current phase — see
+Done when: the user finishes reading and knows where things stand and what comes next.
+Next step: the skill matching the current phase — see
 [phases.md](../tdq-conventions/references/phases.md).

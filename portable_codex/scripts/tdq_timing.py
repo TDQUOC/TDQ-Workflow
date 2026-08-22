@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-"""tdq_timing.py — đếm thời gian một request TDQ và từng phase của nó.
+"""tdq_timing.py — time a TDQ request and each of its phases.
 
-Hai con số, hai nguồn khác nhau, cố ý để cạnh nhau:
+Two numbers from two different sources, deliberately side by side:
 
-    Treo tường  — mốc trong `state.json` (`started_at` + `phase_history`). Bao gồm
-                  cả thời gian chờ user duyệt, nên đây là "request tốn của tôi bao lâu".
-    Model chạy  — cộng khoảng cách giữa các bước model trong transcript, chỉ tính
-                  khoảng ≤ MAX_GAP_SECONDS (tái dùng ngưỡng của `step_audit.py`).
-                  Đây là "máy làm bao lâu". Một phase chờ duyệt 2 giờ mà model chỉ
-                  chạy 3 phút thì hai cột lệch nhau đúng chỗ đáng nhìn.
+        Wall clock  — the marks in `state.json` (`started_at` + `phase_history`). It includes
+                                    the time waiting for user approval, so this is "how long the request cost me".
+        Model time  — the sum of the gaps between model steps in the transcript, counting only
+                                    gaps ≤ MAX_GAP_SECONDS (reusing the threshold of `step_audit.py`).
+                                    This is "how long the machine worked". A phase that waited 2 hours for
+                                    approval while the model ran 3 minutes splits the two columns where it matters.
 
-Script này KHÔNG ghi `state.json` (luật kiến trúc: chỉ `tdq_state.py` được ghi).
-Nó chỉ đọc state và ghi `docs/tdq/timing.jsonl` — dữ liệu lịch sử, không phải state.
+This script does NOT write `state.json` (architecture rule: only `tdq_state.py` may write).
+It only reads state and writes `docs/tdq/timing.jsonl` — historical data, not state.
 
-Dùng:
-    python3 scripts/tdq_timing.py show              # bảng markdown của request đang mở
-    python3 scripts/tdq_timing.py show --json       # cùng số liệu, dạng JSON
-    python3 scripts/tdq_timing.py close             # đóng sổ: append 1 dòng timing.jsonl
+Usage:
+        python3 scripts/tdq_timing.py show              # markdown table of the open request
+        python3 scripts/tdq_timing.py show --json       # the same data as JSON
+        python3 scripts/tdq_timing.py close             # close the books: append 1 line to timing.jsonl
 
-Env: TDQ_PROJECT_DIR chọn project · TDQ_LOG=0 tắt log tiến trình (log ra stderr).
-Exit: 0 kể cả khi chưa có request hay không tìm thấy transcript. 2 = sai cú pháp.
+Env: TDQ_PROJECT_DIR picks the project · TDQ_LOG=0 turns the progress log off (log to stderr).
+Exit: 0 even with no open request or no transcript found. 2 = bad syntax.
 """
 
 import argparse
@@ -45,35 +45,35 @@ def _log_enabled():
 
 
 def _log(message):
-    """Log tiến trình ra stderr kèm timestamp. Tắt bằng TDQ_LOG=0."""
+    """Log progress to stderr with a timestamp. Turn it off with TDQ_LOG=0."""
     if _log_enabled():
         stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
         print(f"[{stamp}] {message}", file=sys.stderr)
 
 
-# ------------------------------------------------------------------- định dạng
+# ------------------------------------------------------------------- formatting
 
 def dinh_dang(giay):
-    """Giây → chuỗi người đọc được. `None` → '—' (không đo được, khác với 0)."""
+    """Seconds → a human string. `None` → '—' (not measurable, different from 0)."""
     if giay is None:
         return "—"
     giay = int(round(giay))
     if giay < 60:
-        return f"{giay} giây"
+        return f"{giay}s"
     phut, du = divmod(giay, 60)
     if phut < 60:
-        return f"{phut} phút" if du < 30 else f"{phut + 1} phút"
+        return f"{phut} min" if du < 30 else f"{phut + 1} min"
     gio, phut = divmod(phut, 60)
-    return f"{gio} giờ" if phut == 0 else f"{gio} giờ {phut:02d} phút"
+    return f"{gio}h" if phut == 0 else f"{gio}h {phut:02d}min"
 
 
-# ------------------------------------------------------------------ cửa sổ phase
+# ------------------------------------------------------------------ phase windows
 
 def cua_so_phase(state, ket_thuc):
-    """`phase_history` → danh sách cửa sổ [(phase, bắt đầu, kết thúc)] theo thứ tự.
+    """`phase_history` → the list of windows [(phase, start, end)] in order.
 
-    Mốc cuối cùng kéo dài tới `ket_thuc` (thời điểm đang xét). Mốc hỏng bị bỏ qua
-    ở tầng `tdq_state.load`, nên ở đây chỉ cần lo mốc không parse được thời gian.
+    The last mark runs until `ket_thuc` (the moment being considered). Broken marks are dropped
+    in `tdq_state.load`, so all that matters here is a mark whose time cannot be parsed.
     """
     moc = []
     for item in state.get("phase_history") or []:
@@ -89,17 +89,17 @@ def cua_so_phase(state, ket_thuc):
 
 
 def moc_model(transcript_dir, tu, den):
-    """Danh sách thời điểm các BƯỚC model nằm trong [tu, den], đã sắp xếp.
+    """The sorted list of model STEP timestamps falling inside [tu, den].
 
-    Trả `None` khi không có transcript nào đọc được — khác hẳn với 'có transcript
-    nhưng model chạy 0 giây', nên cột model in '—' thay vì '0 giây'.
+    Returns `None` when no transcript could be read — quite different from 'there is a transcript
+    but the model ran 0 seconds', so the model column prints '—' instead of '0s'.
     """
     if not transcript_dir or not os.path.isdir(transcript_dir):
-        _log(f"không thấy thư mục transcript: {transcript_dir} — bỏ cột thời gian model")
+        _log(f"no transcript folder: {transcript_dir} — dropping the model time column")
         return None
     files = find_sessions(transcript_dir, limit=0)
     if not files:
-        _log(f"thư mục transcript rỗng: {transcript_dir} — bỏ cột thời gian model")
+        _log(f"empty transcript folder: {transcript_dir} — dropping the model time column")
         return None
     thoi_diem = []
     for path in files:
@@ -109,15 +109,15 @@ def moc_model(transcript_dir, tu, den):
             at = _parse_time(event.get("timestamp"))
             if at and (tu is None or at >= tu) and (den is None or at <= den):
                 thoi_diem.append(at)
-    _log(f"đọc {len(files)} transcript, lấy {len(thoi_diem)} bước model trong khoảng request")
+    _log(f"read {len(files)} transcript(s), took {len(thoi_diem)} model step(s) inside the request window")
     return sorted(thoi_diem)
 
 
 def _giay_model(thoi_diem, bat_dau, het):
-    """Cộng khoảng cách giữa các bước model liền nhau trong một cửa sổ.
+    """Sum the gaps between consecutive model steps inside one window.
 
-    Khoảng dài hơn `MAX_GAP_SECONDS` là user đi làm việc khác rồi quay lại, không
-    phải model chạy — bỏ ra, đúng như `step_audit.py` làm với độ trễ.
+    A gap longer than `MAX_GAP_SECONDS` means the user went away and came back, not the model
+    working — dropped, exactly as `step_audit.py` does with latency.
     """
     trong = [t for t in thoi_diem if bat_dau <= t <= het]
     tong = 0.0
@@ -129,7 +129,7 @@ def _giay_model(thoi_diem, bat_dau, het):
 
 
 def tong_hop(state, ket_thuc, transcript_dir):
-    """Số liệu đầy đủ của request đang mở. Trả None khi chưa có request nào."""
+    """The full data of the open request. Returns None when there is no request yet."""
     slug = state.get("active_request")
     if not slug:
         return None
@@ -155,9 +155,9 @@ def tong_hop(state, ket_thuc, transcript_dir):
         for muc in phases:
             muc["model_giay"] = None
 
-    # Hai tổng đo trên CÙNG một cửa sổ (started_at → lúc chốt), không phải tổng các cửa
-    # sổ phase: state cũ được vá `started_at` về sau có thể có bước model nằm ngoài mọi
-    # cửa sổ phase, cộng dồn theo phase sẽ bỏ sót chúng và hai tổng lệch nhau.
+    # Both totals are measured over the SAME window (started_at → the closing moment), not as the
+    # sum of the phase windows: an old state whose `started_at` was patched later can have model
+    # steps outside every phase window, and summing per phase would miss them and split the totals.
     tong_treo = int(round((ket_thuc - bat_dau).total_seconds())) if bat_dau else 0
     tong_model = (None if thoi_diem is None or bat_dau is None
                   else int(round(_giay_model(thoi_diem, bat_dau, ket_thuc))))
@@ -173,40 +173,40 @@ def tong_hop(state, ket_thuc, transcript_dir):
 
 
 def bang_markdown(so_lieu):
-    """Bảng markdown 4 cột — khuôn dùng chung cho report và `tdq-status`."""
+    """The 4-column markdown table — the shared template for the report and `tdq-status`."""
     dong = [f"Request `{so_lieu['slug']}` · lane {so_lieu['lane'] or '—'} · "
-            f"mở lúc {so_lieu['started_at'] or '—'}",
+            f"opened at {so_lieu['started_at'] or '—'}",
             "",
-            "| Phase | Treo tường | Model chạy | Số lần vào |",
+            "| Phase | Wall clock | Model time | Times entered |",
             "|---|---|---|---|"]
     for muc in so_lieu["phases"]:
         dong.append(f"| {muc['phase']} | {dinh_dang(muc['treo_tuong_giay'])} | "
                     f"{dinh_dang(muc['model_giay'])} | {muc['so_lan']} |")
-    dong.append(f"| **Tổng** | **{dinh_dang(so_lieu['treo_tuong_giay'])}** | "
+    dong.append(f"| **Total** | **{dinh_dang(so_lieu['treo_tuong_giay'])}** | "
                 f"**{dinh_dang(so_lieu['model_giay'])}** | |")
     if so_lieu["model_giay"] is None:
         dong.append("")
-        dong.append("Cột model là `—`: không đọc được transcript của session này.")
+        dong.append("Model column is `—`: the transcript of this session could not be read.")
     return "\n".join(dong)
 
 
 def dong_ho_ngan(so_lieu):
-    """Một dòng cho `tdq-status`: phase đang chạy đã tốn bao lâu, request tổng bao lâu."""
+    """One line for `tdq-status`: how long the running phase has cost, and the whole request."""
     dang = so_lieu["phases"][-1] if so_lieu["phases"] else None
     if dang is None:
         return f"⏱ {so_lieu['slug']}: {dinh_dang(so_lieu['treo_tuong_giay'])}"
     return (f"⏱ {dang['phase']} {dinh_dang(dang['treo_tuong_giay'])}"
             f" (model {dinh_dang(dang['model_giay'])})"
-            f" · cả request {dinh_dang(so_lieu['treo_tuong_giay'])}")
+            f" · whole request {dinh_dang(so_lieu['treo_tuong_giay'])}")
 
 
-# --------------------------------------------------------------------- đóng sổ
+# --------------------------------------------------------------------- close the books
 
 def da_dong_so(cwd, slug, started_at):
-    """Request này đã có dòng trong timing.jsonl chưa — chặn đếm hai lần.
+    """Does this request already have a line in timing.jsonl — guards against double counting.
 
-    `init` và `tdq_finish --phase idle` đều gọi đóng sổ; không chặn thì một request
-    xuất hiện hai lần và mọi thống kê sau đó sai.
+    `init` and `tdq_finish --phase idle` both call the close step; without the guard one request
+    appears twice and every statistic after it is wrong.
     """
     path = os.path.join(cwd, TIMING_REL)
     try:
@@ -227,15 +227,15 @@ def da_dong_so(cwd, slug, started_at):
 
 
 def dong_so(cwd, so_lieu):
-    """Append đúng một dòng JSON vào timing.jsonl. Trả False nếu đã đóng trước đó."""
+    """Append exactly one JSON line to timing.jsonl. Returns False if it was closed before."""
     if da_dong_so(cwd, so_lieu["slug"], so_lieu["started_at"]):
-        _log(f"request {so_lieu['slug']} đã có trong {TIMING_REL} — không ghi lại")
+        _log(f"request {so_lieu['slug']} already in {TIMING_REL} — not written again")
         return False
     path = os.path.join(cwd, TIMING_REL)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(so_lieu, ensure_ascii=False) + "\n")
-    _log(f"đã đóng sổ {so_lieu['slug']} vào {TIMING_REL}")
+    _log(f"closed the books on {so_lieu['slug']} into {TIMING_REL}")
     return True
 
 
@@ -244,27 +244,27 @@ def dong_so(cwd, so_lieu):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="tdq_timing.py",
-        description="Đếm thời gian request TDQ: treo tường và model chạy, theo từng phase.")
+        description="Time a TDQ request: wall clock and model time, per phase.")
     parser.add_argument("cmd", choices=("show", "close", "status"),
-                        help="show = in bảng · close = đóng sổ vào timing.jsonl · "
-                             "status = một dòng đồng hồ")
+                        help="show = print the table · close = close the books into timing.jsonl · "
+                             "status = a one-line clock")
     parser.add_argument("--json", action="store_true", dest="want_json",
-                        help="in số liệu thô dạng JSON")
-    parser.add_argument("--now", help="mốc 'bây giờ' dạng ISO (để test tái lập được)")
-    parser.add_argument("--transcript-dir", help="thư mục transcript, mặc định theo project")
-    parser.add_argument("--project", help="thư mục project, mặc định theo TDQ_PROJECT_DIR/git root")
+                        help="print the raw data as JSON")
+    parser.add_argument("--now", help="the 'now' mark in ISO form (so tests are reproducible)")
+    parser.add_argument("--transcript-dir", help="transcript folder, defaults to the project one")
+    parser.add_argument("--project", help="project folder, defaults to TDQ_PROJECT_DIR/git root")
     args = parser.parse_args(argv)
 
     cwd = args.project or tdq_state.resolve_project_dir()
     ket_thuc = _parse_time(args.now) if args.now else datetime.datetime.now().astimezone()
     if args.now and ket_thuc is None:
-        print(f"--now không phải thời điểm ISO: {args.now}", file=sys.stderr)
+        print(f"--now is not an ISO timestamp: {args.now}", file=sys.stderr)
         return EXIT_SYNTAX
 
     state = tdq_state.load(cwd)
     if not state or not state.get("active_request"):
-        # Không có request đang mở KHÔNG phải lỗi: hook và report gọi lệnh này vô điều kiện.
-        print("Chưa có request nào đang mở — không có thời gian để đếm.")
+        # Having no open request is NOT an error: hooks and the report call this unconditionally.
+        print("No open request yet — nothing to time.")
         return 0
 
     transcript_dir = args.transcript_dir or default_transcript_dir(cwd)

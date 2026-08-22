@@ -13,7 +13,7 @@ from helper import ROOT
 
 SCRIPT = os.path.join(ROOT, "scripts", "context_surface.py")
 
-TIERS = ("luôn nạp", "nạp khi gọi skill", "đọc khi cần")
+TIERS = ("always loaded", "loaded on skill call", "read on demand")
 
 
 def run(*args, env=None):
@@ -63,7 +63,7 @@ class SurfaceTable(unittest.TestCase):
         dòng riêng, nếu gộp thì bảng nói dối về tần suất."""
         names = [r[0] for r in self.rows]
         self.assertIn("skills/tdq-plan/SKILL.md (description)", names)
-        self.assertIn("skills/tdq-plan/SKILL.md (thân)", names)
+        self.assertIn("skills/tdq-plan/SKILL.md (body)", names)
 
     def test_co_hook_va_agent(self):
         names = " ".join(r[0] for r in self.rows)
@@ -80,7 +80,7 @@ class SurfaceTable(unittest.TestCase):
         self.assertEqual(total, real)
 
     def test_co_dong_tong(self):
-        self.assertIn("TỔNG", self.out)
+        self.assertIn("TOTAL", self.out)
 
 
 class HooksTiming(unittest.TestCase):
@@ -104,7 +104,7 @@ class HooksTiming(unittest.TestCase):
                     self.assertGreater(float(cell[:-2].replace(",", ".")), 0)
 
     def test_ghi_dieu_kien_do(self):
-        self.assertIn("3 lần", self.out)
+        self.assertIn("3 time(s)", self.out)
 
 
 class LogService(unittest.TestCase):

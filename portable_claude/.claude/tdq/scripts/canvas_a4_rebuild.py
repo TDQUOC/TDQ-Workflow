@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""Dựng lại toàn bộ product document theo khổ A4 dọc 1240px.
+"""Rebuild the whole product document at A4 portrait width, 1240px.
 
-Cách làm (chốt ở `docs/tdq/spec/2026-08-12-layout-a4-doc.md`):
+How (settled in `docs/tdq/spec/2026-08-12-layout-a4-doc.md`):
 
-- Đọc scene CŨ, giữ NGUYÊN câu chữ — chỉ xuống dòng lại cho vừa bề ngang mới.
-- Bảy chương xếp nhiều cột (1, 3, 6, 8, 11, 12, 13) được dồn về MỘT cột bằng
-  bộ dựng chung: mỗi thẻ cũ (rectangle + text đầu + text thân) thành một thẻ
-  mới rộng 1160px.
-- Hai chương rộng do bản chất (4, 7) dựng tay theo chiều dọc trong
+- Read the OLD scene, keeping the wording EXACTLY — only rewrapping it to the new width.
+- The seven multi-column chapters (1, 3, 6, 8, 11, 12, 13) are folded into ONE column by
+    the shared builder: each old card (rectangle + head text + body text) becomes one new
+    card 1160px wide.
+- The two chapters wide by nature (4, 7) are laid out by hand, vertically, in
   `canvas_a4_ch4_ch7.py`.
-- Bốn khối cũ đã hẹp sẵn (2, 5, 9, 10) chỉ được DỜI: tịnh tiến nguyên khối vào
-  khung mới, không đụng nội dung.
-- Chương 0 là mục lục, sinh lại từ tiêu đề thật của 13 chương.
+- The four blocks already narrow (2, 5, 9, 10) are only MOVED: translated whole into the
+    new frame, their content untouched.
+- Chapter 0 is the table of contents, regenerated from the real titles of the 13 chapters.
 
-Dựng ra FILE trước để `check_canvas_layout.py` soi được, rồi mới ghi lên canvas
-bằng một lượt xoá-rồi-tạo (`--apply`). Chỉ stdlib.
+Builds to a FILE first so `check_canvas_layout.py` can inspect it, and only then writes to
+the canvas in one delete-then-create pass (`--apply`). Stdlib only.
 """
 
 import argparse
@@ -25,13 +25,13 @@ import sys
 from canvas_draw import K_VI, PALETTE, SAFE, W, X, fit
 from canvas_move_block import api, bbox
 
-# ── khổ giấy ──────────────────────────────────────────────────────────────
-MARGIN = 40                      # lề trong khung
+# ── page size ─────────────────────────────────────────────────────────────
+MARGIN = 40                      # inner margin of the frame
 CARD_W = W - 2 * MARGIN          # 1160
-PAD = 20                         # lề trong thẻ
-GAP = 24                         # khoảng cách dọc giữa hai thẻ
-CHAPTER_GAP = 120                # khoảng cách giữa hai khung chương
-TITLE_BAND = 90                  # chỗ dành cho tiêu đề chương
+PAD = 20                         # inner padding of a card
+GAP = 24                         # vertical gap between two cards
+CHAPTER_GAP = 120                # gap between two chapter frames
+TITLE_BAND = 90                  # the band reserved for the chapter title
 BOTTOM = 40
 
 BODY_SIZE = 16
@@ -40,12 +40,12 @@ LINE_H = 1.35
 
 
 def max_chars(box_w, font_size):
-    """Số ký tự tối đa một dòng, theo luật chữ ≤ 70% bề rộng ô (tiếng Việt)."""
+    """Max characters per line, per the rule text ≤ 70% of the cell width (Vietnamese)."""
     return int(box_w * SAFE / (font_size * K_VI))
 
 
-# Dòng cây thư mục: canh cột bằng khoảng trắng nên KHÔNG được nối và KHÔNG
-# được ngắt theo từ — chỉ được bóp bớt khoảng đệm giữa hai cột.
+# A directory-tree line aligns its columns with spaces, so it must NOT be joined and must NOT
+# be wrapped by word — only the padding between two columns may be squeezed.
 TREE_GLYPHS = ("├", "└", "│", "─")
 
 
@@ -54,7 +54,7 @@ def is_tree_line(line):
 
 
 def squeeze_tree_line(line, limit):
-    """Bóp khoảng đệm giữa hai cột cho dòng cây vừa bề ngang mới."""
+    """Squeeze the padding between two columns so a tree line fits the new width."""
     while len(line) > limit:
         runs = list(re.finditer(r" {3,}", line))
         if not runs:
@@ -66,11 +66,11 @@ def squeeze_tree_line(line, limit):
 
 
 def unwrap(text, orig_w, font_size):
-    """Nối lại những dòng vốn bị ngắt chỉ vì tràn ô CŨ.
+    """Re-join the lines that were only broken because they overflowed the OLD cell.
 
-    Dòng dài gần hết bề ngang ô cũ là dòng bị ngắt do hết chỗ, không phải ngắt
-    có chủ ý — nối nó với dòng sau để bản mới ngắt lại cho gọn. Dòng ngắn, dòng
-    trống, bullet và dòng lệnh giữ nguyên chỗ ngắt.
+    A line nearly filling the old cell width was broken for lack of room, not on purpose —
+    join it with the next line so the new version rewraps it neatly. A short line, an empty
+    line, a bullet and a command line keep their break.
     """
     limit = max_chars(orig_w, font_size)
     out = []
@@ -92,10 +92,10 @@ def unwrap(text, orig_w, font_size):
 
 
 def rewrap(text, box_w, font_size):
-    """Xuống dòng lại cho vừa bề ngang mới, GIỮ NGUYÊN từng chữ.
+    """Rewrap to the new width, keeping EVERY word as it was.
 
-    Mỗi dòng cũ được ngắt tiếp nếu quá dài; dòng nối tiếp thụt vào cho thẳng
-    hàng với nội dung dòng gốc (bullet `·`, gạch đầu dòng, đánh số).
+    Each old line is broken further when too long; the continuation line is indented to line
+    up with the content of the original line (bullet `·`, dash, numbering).
     """
     limit = max_chars(box_w, font_size)
     out = []
@@ -135,12 +135,12 @@ def text_el(eid, x, y, text, size, color, width):
 
 
 class Builder:
-    """Dựng element cho một chương ở khổ hẹp, tự tính chiều cao."""
+    """Build the elements of one chapter at the narrow width, computing its height."""
 
     def __init__(self, number, title):
         self.n = number
         self.title = title
-        self.body = []          # element bên trong, y tính từ 0 của vùng nội dung
+        self.body = []          # inner elements, y measured from 0 of the content area
         self.cursor = 0
         self._i = 0
 
@@ -187,7 +187,7 @@ class Builder:
         return TITLE_BAND + max(0, self.cursor - GAP) + BOTTOM
 
     def emit(self, top):
-        """Trả element thật với y tuyệt đối, khung bắt đầu tại `top`."""
+        """Return the real elements with absolute y, the frame starting at `top`."""
         h = self.height()
         els = [
             {"id": f"ch{self.n}-frame", "type": "rectangle", "x": X, "y": top,
@@ -204,7 +204,7 @@ class Builder:
         return els, h
 
 
-# ── đọc scene cũ ──────────────────────────────────────────────────────────
+# ── reading the old scene ─────────────────────────────────────────────────
 
 def load(path):
     data = json.load(open(path, encoding="utf-8"))
@@ -212,7 +212,7 @@ def load(path):
 
 
 def chapter_elements(elements, n):
-    """Phần tử của chương n theo tâm nằm trong khung — bắt cả id ngẫu nhiên."""
+    """The elements of chapter n by centre inside the frame — catches random ids too."""
     frame = next(e for e in elements if e["id"] == f"ch{n}-frame")
     fx0, fy0, fx1, fy1 = bbox(frame)
     out = []
@@ -227,7 +227,7 @@ def chapter_elements(elements, n):
 
 
 def extract_cards(elements, n):
-    """Gom (đầu đề, thân) của từng thẻ cũ + các ghi chú đứng rời."""
+    """Collect the (head, body) of each old card + the notes standing on their own."""
     frame, els = chapter_elements(elements, n)
     title = next(e["text"] for e in els if e["id"] == f"ch{n}-title")
     rects = [e for e in els if e.get("type") == "rectangle"]
@@ -263,10 +263,10 @@ def build_generic(elements, n):
     return b
 
 
-# ── dời nguyên khối cho 4 chương đã hẹp sẵn ───────────────────────────────
+# ── moving the 4 already-narrow chapters whole ────────────────────────────
 
 def build_moved(elements, n, top):
-    """Tịnh tiến nguyên khối chương n vào khung mới bắt đầu tại `top`."""
+    """Translate the whole block of chapter n into the new frame starting at `top`."""
     _, els = chapter_elements(elements, n)
     xs = [bbox(e)[0] for e in els]
     ys = [bbox(e)[1] for e in els]
@@ -275,7 +275,7 @@ def build_moved(elements, n, top):
     min_x, min_y, max_x, max_y = min(xs), min(ys), max(x1s), max(y1s)
     cw, chh = max_x - min_x, max_y - min_y
     if cw > W - 2 * MARGIN:
-        raise SystemExit(f"chương {n}: khối rộng {cw:.0f}px, không vừa khổ {W}px")
+        raise SystemExit(f"chapter {n}: the block is {cw:.0f}px wide, it does not fit the {W}px page")
     dx = X + (W - cw) / 2 - min_x
     dy = top + MARGIN - min_y
     out = [{
@@ -294,10 +294,10 @@ def build_moved(elements, n, top):
     return out, chh + 2 * MARGIN
 
 
-# ── mục lục ───────────────────────────────────────────────────────────────
+# ── table of contents ─────────────────────────────────────────────────────
 
 def build_toc(titles, top):
-    lines = ["0. Mục lục"] + [f"{n}. {t}" for n, t in sorted(titles.items())]
+    lines = ["0. Mục lục"] + [f"{n}. {t}" for n, t in sorted(titles.items())]  # i18n-allow
     els = []
     y = top + TITLE_BAND
     for i, line in enumerate(lines):
@@ -308,12 +308,12 @@ def build_toc(titles, top):
              "width": W, "height": h, "strokeColor": "#1e1e1e",
              "backgroundColor": "transparent", "fillStyle": "solid",
              "strokeWidth": 2, "roughness": 0}
-    title = text_el("ch0-title", X + MARGIN, top + 26, "0. Mục lục", 30,
+    title = text_el("ch0-title", X + MARGIN, top + 26, "0. Mục lục", 30,  # i18n-allow
                     "#1971c2", CARD_W)
     return [frame, title] + els, h
 
 
-# ── ráp cả tài liệu ───────────────────────────────────────────────────────
+# ── assembling the whole document ─────────────────────────────────────────
 
 GENERIC = (1, 3, 6, 8, 11, 12, 13)
 MOVED = (2, 5, 9, 10)
@@ -351,7 +351,7 @@ def main(argv=None):
     ap.add_argument("--old", default="docs/diagrams/_backup-a4-2026-08-12.excalidraw")
     ap.add_argument("--out", default="docs/diagrams/_a4-draft.excalidraw")
     ap.add_argument("--apply", action="store_true",
-                    help="xoá sạch canvas rồi ghi bản mới (mặc định chỉ dựng ra file)")
+                    help="wipe the canvas and write the new version (default: only build the file)")
     args = ap.parse_args(argv)
 
     from canvas_a4_ch4_ch7 import build_ch4, build_ch7
@@ -362,19 +362,19 @@ def main(argv=None):
                "elements": els, "appState": {"viewBackgroundColor": "#ffffff"},
                "files": {}},
               open(args.out, "w", encoding="utf-8"), ensure_ascii=False)
-    print(f"Dựng {len(els)} phần tử, tổng cao {total_h:.0f}px → {args.out}")
+    print(f"Built {len(els)} element(s), total height {total_h:.0f}px → {args.out}")
 
     if not args.apply:
-        print("Chưa ghi lên canvas. Kiểm file trước, rồi chạy lại với --apply.")
+        print("Nothing written to the canvas yet. Check the file first, then re-run with --apply.")
         return 0
 
     old_ids = [e["id"] for e in api("/api/elements")["elements"]]
     for eid in old_ids:
         api(f"/api/elements/{eid}", method="DELETE")
-    print(f"Đã xoá {len(old_ids)} phần tử cũ.")
+    print(f"Deleted {len(old_ids)} old element(s).")
     res = api("/api/elements/batch", method="POST", payload={"elements": els})
     n = res.get("count", 0)
-    print(f"Đã tạo {n}/{len(els)} phần tử.")
+    print(f"Created {n}/{len(els)} element(s).")
     return 0 if n == len(els) else 1
 
 

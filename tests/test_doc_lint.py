@@ -57,20 +57,20 @@ class MissingPathTest(LintBase):
         # A19: trước đây collect() bỏ lặng path ma không đuôi .md → exit 0
         code, _, err = self._lint_err("/duong/dan/khong/ton/tai")
         self.assertNotEqual(code, 0)
-        self.assertIn("không tìm thấy", err)
+        self.assertIn("not found", err)
 
     def test_missing_md_file_friendly_message(self):
         # A20: path ma đuôi .md phải ra message, không traceback thô
         code, _, err = self._lint_err("/duong/dan/khong/ton/tai.md")
         self.assertNotEqual(code, 0)
         self.assertNotIn("Traceback", err)
-        self.assertIn("không tìm thấy", err)
+        self.assertIn("not found", err)
 
     def test_mixed_missing_and_real_still_reports_missing(self):
         real = self.write("ok.md", "# Doc\n\nNội dung ngắn.\n")
         code, _, err = self._lint_err(real, "/duong/dan/ma.md")
         self.assertNotEqual(code, 0)
-        self.assertIn("không tìm thấy", err)
+        self.assertIn("not found", err)
 
 
 class DocLintTest(LintBase):
@@ -143,6 +143,14 @@ class DocLintTest(LintBase):
         text = (f"# T\n\n<!-- doc-lint: allow R5 -->\n{long_sentence}\n\n"
                 f"{long_sentence}\n")
         self.assert_hits(self.write("allow5b.md", text), "R5")
+
+    def test_r5_khong_dem_chu_trong_chu_thich_html(self):
+        """Nhãn `i18n-allow` cuối dòng là ghi chú cho người sửa file, không phải câu
+        văn. Đếm nó vào R5 thì mỗi nhãn đội thêm ~8 từ và câu sạch bị báo oan."""
+        dau = "một hai ba bốn năm " * 6
+        nhan = "<!-- i18n-allow: tên chuẩn viết bằng ngôn ngữ mặc định -->"
+        # Nhãn nằm cuối dòng ĐẦU, câu còn chạy tiếp sang dòng sau — đúng cảnh thật.
+        self.assert_clean(self.write("cmt5.md", f"# T\n\n{dau}{nhan}\nsáu bảy tám.\n"))
 
     # ------------------------------------------------------------------- R6
     def test_r6(self):
