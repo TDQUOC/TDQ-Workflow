@@ -1,0 +1,78 @@
+{
+  "slug": "2026-08-22-2319-danh-so-cau-hoi",
+  "plan_file": "docs/tdq/plan/2026-08-22-2319-danh-so-cau-hoi.md",
+  "plan_sha": "55c2afd309130955dfd99d81793c3dcfd35b4e41b3ae1c6fd8574e7297b58d79",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/SKILL.md",
+        "skills/tdq-conventions/references/user-facing-block.md"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T1.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/SKILL.md",
+        "skills/tdq-intake/references/interview.md"
+      ],
+      "dot": 2
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T2.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T2.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-plan/SKILL.md",
+        "skills/tdq-plan/references/mode-gate.md"
+      ],
+      "dot": 2
+    },
+    "T2.5": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 3
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-08-22-2319-danh-so-cau-hoi.md"
+      ],
+      "dot": 4
+    }
+  }
+}

@@ -2,6 +2,36 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.30.0 — 2026-08-23
+
+Câu hỏi trắc nghiệm luôn có số ở đầu. Trước bản này luật đánh số ĐÃ tồn tại: `scope-round.md`
+viết rõ "gộp câu 1 và các câu bối cảnh vào một khối, đánh số liên tục". Nhưng nó chỉ nằm ở
+hai file con đi hỏi, chưa bao giờ được nâng lên file khuôn gốc. Hệ quả: khối chỉ có một câu
+(`lane-decision.md`, `mode-gate.md`) không có số nào. Hai danh sách trong cùng một message vì
+thế cùng mở đầu bằng `A`, user trả lời một chữ cái thì không biết thuộc câu nào. Đây là lỗi
+VI PHẠM luật sẵn có, không phải lỗi thiếu luật — nên bản này vá đúng hai chỗ hổng đó.
+
+- **Luật trang trí thứ 8** trong `skills/tdq-conventions/references/user-facing-block.md`: mọi
+  câu có danh sách option đều mở đầu bằng `<số>. `, số chạy liên tục trong cả khối, **áp cả
+  khi khối chỉ có đúng MỘT câu**. Không có ngoại lệ cho ca một câu: chữ cái không có số đứng
+  trước là mơ hồ ngay khi câu thứ hai xuất hiện. Cấm luôn việc gộp hai câu vào một số.
+- **Bước tự-soát bắt buộc trước khi gửi** trong mục "Hard rules" của cùng file: khối có ít
+  nhất một danh sách option thì phải đọc lại bản nháp và trả lời ba câu. Mọi câu đã có số
+  chưa · số có liên tục, không trùng không nhảy chưa · mỗi option có riêng một dòng chưa. Đây
+  là mảnh còn thiếu thật sự: luật đã viết ra mà vẫn trôi vì không ai đọc lại bản nháp.
+- **Năm file mẫu khớp theo**: `interview.md` bỏ điều kiện "several questions in one round" và
+  đổi dòng hướng dẫn trả lời sang ví dụ `"1a 2b"` · `scope-round.md` nói rõ câu 1 là `1.`,
+  câu bối cảnh đầu tiên là `2.` · `lane-decision.md` và `mode-gate.md` thêm dòng số trước khối
+  option, dòng ➤ đổi thành `nhắn "1a" / "1b"` · `approval.md` khớp lại cách hỏi mode.
+- **Luật được khoá bằng test, không bằng trí nhớ**: `test_hard_rules_giu_buoc_tu_soat` bắt mục
+  "Hard rules" phải giữ bước tự-soát và đúng ba câu soát đánh số; `test_user_facing_block.py`
+  nâng từ bảy lên tám luật. Trước đó xoá sạch bước tự-soát khỏi file luật mà cả suite vẫn xanh.
+- **`~/.claude/CLAUDE.md` mục 1** đồng bộ cùng nội dung — luật gốc nằm ngoài repo nên phải sửa
+  tay, có ghi trong report.
+- **Neo `docs/tdq/audit/luat-hien-co.md` refresh 33 dòng**: chèn luật 8 đẩy mọi neo phía dưới
+  xuống, tỉ lệ lệch lên 10% so với ngưỡng 5%. Chữ neo còn nguyên cả 33 — máy đối chiếu bằng
+  chữ, số dòng chỉ để người mở đúng chỗ — nên refresh bằng chính hàm dò neo của test.
+
 ## 0.29.0 — 2026-08-22
 
 Đóng sổ mà còn ô tick trống thì hook nhắc. Trước bản này `plan_tick_state()` chỉ đếm ô có mã

@@ -46,7 +46,9 @@ python3 "./scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent
 - `approve plan` while the user has not named a mode → **ASK for the mode first**, never guess.
   Ask with the one-option-per-line shape of
   [interview.md](../../tdq-intake/references/interview.md):
+  a numbered question line (`1. …`) followed by
   `- A (recommended): main — …` / `- B: subagent — …`, with the labels written in the user's
-  language (Vietnamese: `- A (đề xuất): …`). <!-- i18n-allow -->
+  language (Vietnamese: `- A (đề xuất): …`). <!-- i18n-allow --> The number is mandatory even
+  for this single question — rule 8 of [user-facing-block.md](user-facing-block.md).
 - Every approval also adds one line to `docs/workinglog/<today>.md` (what was approved, when,
   and the user's exact words).

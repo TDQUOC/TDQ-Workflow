@@ -53,6 +53,7 @@ Tôi đã ghi lại yêu cầu của bạn.
 
 **Tóm tắt:** <2–3 dòng việc user muốn>
 
+1. Bạn muốn chạy pipeline nào?
 - A (đề xuất): chế độ nhanh (express) — <lý do gắn với chính việc này>
 - B: chế độ chuyên sâu (deep) — <lý do gắn với chính việc này>
 
@@ -65,7 +66,7 @@ Xem đầy đủ tại: `docs/tdq/brief/<slug>.md`
 
 **Bạn muốn chạy pipeline nào?**
 
-➤ Trả lời: nhắn "A" hoặc "B", hoặc gõ câu tự nhiên khớp ý bạn chọn · Góp ý: nhắn trực tiếp
+➤ Trả lời: nhắn "1a" hoặc "1b", hoặc gõ câu tự nhiên khớp ý bạn chọn · Góp ý: nhắn trực tiếp
 ```
 
 Halfway through and the lane looks wrong? Say why, propose the change, **ask the user**,

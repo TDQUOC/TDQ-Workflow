@@ -49,9 +49,10 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you <!-- i18n-allow: canonical name in the default language -->
    recommend, and that line is NEVER printed to chat. Then ask which pipeline the user
    wants, with one option per line per [references/interview.md](references/interview.md),
-   the recommendation always at A:
-   `- A (đề xuất): chế độ nhanh (express) — <lý do>` on the next line `- B: chế độ chuyên sâu (deep) — <lý do>`, <!-- i18n-allow: option sample in the default language -->
-   following the full template (including the block explaining what the 2 pipelines mean) in
+   the recommendation always at A. The question line is NUMBERED `1.` per rule 8 of
+   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md).
+   Shape: `1. Bạn muốn chạy pipeline nào?` then `- A (đề xuất): chế độ nhanh (express) — <lý do>` on the next line `- B: chế độ chuyên sâu (deep) — <lý do>`. <!-- i18n-allow: option sample in the default language -->
+   Follow the full template (including the block explaining what the 2 pipelines mean) in
    [references/lane-decision.md](references/lane-decision.md).
    **STOP and wait for the user's answer.** Never pick the lane yourself.
 

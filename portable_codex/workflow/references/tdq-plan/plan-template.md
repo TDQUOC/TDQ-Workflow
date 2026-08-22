@@ -129,8 +129,17 @@ task log, giữ task test, và ghi đúng một dòng `Log: BỎ — <lý do m�
 - [ ] **Tx.2** Unit test cho từng thành phần, chạy bằng một lệnh — Test: <lệnh>
 
 ## Definition of Done
-Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh kiểm.
+Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh kiểm, MỖI DÒNG MỘT Ô TICK:
+
+- [ ] Q1 <điều kiện đủ> — <lệnh kiểm>
+- [ ] Q2 <điều kiện đủ> — <lệnh kiểm>
 ```
+
+These boxes are **the close-out evidence**, not decoration: mark `[x]` when that item PASSes
+and its evidence already sits in the qc file. The machine counts them — `dod_tick_state()`
+reads this section on its own, and hook `Stop` fires `[TDQ:DOD]` when the books close on an
+open box while QC has passed everything. A DoD written without boxes still runs, it just
+loses that net.
 
 ## The minute estimate `(eNm)`
 

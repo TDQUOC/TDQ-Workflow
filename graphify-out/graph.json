@@ -4,6 +4,182 @@
   "graph": {},
   "nodes": [
     {
+      "label": "CHANGELOG.md",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "changelog.md",
+      "id": "changelog"
+    },
+    {
+      "label": "Changelog",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "changelog",
+      "id": "changelog_changelog"
+    },
+    {
+      "label": "0.29.0 \u2014 2026-08-22",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.29.0 \u2014 2026-08-22",
+      "id": "changelog_0_29_0_2026_08_22"
+    },
+    {
+      "label": "0.28.0 \u2014 2026-08-22",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.28.0 \u2014 2026-08-22",
+      "id": "changelog_0_28_0_2026_08_22"
+    },
+    {
+      "label": "0.27.0 \u2014 2026-08-22",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.27.0 \u2014 2026-08-22",
+      "id": "changelog_0_27_0_2026_08_22"
+    },
+    {
+      "label": "0.26.0 \u2014 2026-08-18",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L95",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.26.0 \u2014 2026-08-18",
+      "id": "changelog_0_26_0_2026_08_18"
+    },
+    {
+      "label": "0.25.0 \u2014 2026-08-18",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L118",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.25.0 \u2014 2026-08-18",
+      "id": "changelog_0_25_0_2026_08_18"
+    },
+    {
+      "label": "0.24.0 \u2014 2026-08-17",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L133",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.24.0 \u2014 2026-08-17",
+      "id": "changelog_0_24_0_2026_08_17"
+    },
+    {
+      "label": "0.23.0 \u2014 2026-08-17",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L158",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.23.0 \u2014 2026-08-17",
+      "id": "changelog_0_23_0_2026_08_17"
+    },
+    {
+      "label": "0.22.0 \u2014 2026-08-16",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L176",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.22.0 \u2014 2026-08-16",
+      "id": "changelog_0_22_0_2026_08_16"
+    },
+    {
+      "label": "0.21.0 \u2014 2026-08-16",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L198",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.21.0 \u2014 2026-08-16",
+      "id": "changelog_0_21_0_2026_08_16"
+    },
+    {
+      "label": "0.20.0 \u2014 2026-08-15",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L220",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.20.0 \u2014 2026-08-15",
+      "id": "changelog_0_20_0_2026_08_15"
+    },
+    {
+      "label": "0.19.0 \u2014 2026-08-15",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L246",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.19.0 \u2014 2026-08-15",
+      "id": "changelog_0_19_0_2026_08_15"
+    },
+    {
+      "label": "0.18.0 \u2014 2026-08-14",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L270",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.18.0 \u2014 2026-08-14",
+      "id": "changelog_0_18_0_2026_08_14"
+    },
+    {
+      "label": "0.17.0 \u2014 2026-08-14",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L296",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.17.0 \u2014 2026-08-14",
+      "id": "changelog_0_17_0_2026_08_14"
+    },
+    {
+      "label": "0.16.0 \u2014 2026-08-14",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L322",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
+      "norm_label": "0.16.0 \u2014 2026-08-14",
+      "id": "changelog_0_16_0_2026_08_14"
+    },
+    {
       "label": "CHANGELOG-archive.md",
       "file_type": "document",
       "source_file": "CHANGELOG-archive.md",
@@ -200,171 +376,6 @@
       "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
       "norm_label": "0.6.2 tro ve truoc",
       "id": "changelog_archive_0_6_2_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc"
-    },
-    {
-      "label": "CHANGELOG.md",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "changelog.md",
-      "id": "changelog"
-    },
-    {
-      "label": "Changelog",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "changelog",
-      "id": "changelog_changelog"
-    },
-    {
-      "label": "0.28.0 \u2014 2026-08-22",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L5",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.28.0 \u2014 2026-08-22",
-      "id": "changelog_0_28_0_2026_08_22"
-    },
-    {
-      "label": "0.27.0 \u2014 2026-08-22",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L38",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.27.0 \u2014 2026-08-22",
-      "id": "changelog_0_27_0_2026_08_22"
-    },
-    {
-      "label": "0.26.0 \u2014 2026-08-18",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L72",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.26.0 \u2014 2026-08-18",
-      "id": "changelog_0_26_0_2026_08_18"
-    },
-    {
-      "label": "0.25.0 \u2014 2026-08-18",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L95",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.25.0 \u2014 2026-08-18",
-      "id": "changelog_0_25_0_2026_08_18"
-    },
-    {
-      "label": "0.24.0 \u2014 2026-08-17",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L110",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.24.0 \u2014 2026-08-17",
-      "id": "changelog_0_24_0_2026_08_17"
-    },
-    {
-      "label": "0.23.0 \u2014 2026-08-17",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L135",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.23.0 \u2014 2026-08-17",
-      "id": "changelog_0_23_0_2026_08_17"
-    },
-    {
-      "label": "0.22.0 \u2014 2026-08-16",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L153",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.22.0 \u2014 2026-08-16",
-      "id": "changelog_0_22_0_2026_08_16"
-    },
-    {
-      "label": "0.21.0 \u2014 2026-08-16",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L175",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.21.0 \u2014 2026-08-16",
-      "id": "changelog_0_21_0_2026_08_16"
-    },
-    {
-      "label": "0.20.0 \u2014 2026-08-15",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L197",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.20.0 \u2014 2026-08-15",
-      "id": "changelog_0_20_0_2026_08_15"
-    },
-    {
-      "label": "0.19.0 \u2014 2026-08-15",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L223",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.19.0 \u2014 2026-08-15",
-      "id": "changelog_0_19_0_2026_08_15"
-    },
-    {
-      "label": "0.18.0 \u2014 2026-08-14",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L247",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.18.0 \u2014 2026-08-14",
-      "id": "changelog_0_18_0_2026_08_14"
-    },
-    {
-      "label": "0.17.0 \u2014 2026-08-14",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L273",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.17.0 \u2014 2026-08-14",
-      "id": "changelog_0_17_0_2026_08_14"
-    },
-    {
-      "label": "0.16.0 \u2014 2026-08-14",
-      "file_type": "document",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L299",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Changelog \u2014 b\u1ea3n l\u01b0u tr\u1eef",
-      "norm_label": "0.16.0 \u2014 2026-08-14",
-      "id": "changelog_0_16_0_2026_08_14"
     },
     {
       "label": "prompt_context.py",
@@ -10670,6 +10681,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "doc_dup.py",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup"
     },
     {
@@ -10680,6 +10692,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "log()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_log"
     },
     {
@@ -10690,6 +10703,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "dem_token_loat()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_dem_token_loat"
     },
     {
@@ -10700,6 +10714,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "thu_thap_file()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_thu_thap_file"
     },
     {
@@ -10710,6 +10725,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "doc_dong()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_doc_dong"
     },
     {
@@ -10720,6 +10736,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "_bam_shingle()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_bam_shingle"
     },
     {
@@ -10730,6 +10747,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "_cap_tho()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_cap_tho"
     },
     {
@@ -10740,6 +10758,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "_gop_lien_ke()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_gop_lien_ke"
     },
     {
@@ -10750,6 +10769,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "quet()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_quet"
     },
     {
@@ -10760,6 +10780,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "_tuong_doi()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_tuong_doi"
     },
     {
@@ -10770,6 +10791,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "in_bang()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_in_bang"
     },
     {
@@ -10780,6 +10802,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "cli()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_cli"
     },
     {
@@ -10790,6 +10813,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "main()",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_main"
     },
     {
@@ -10800,6 +10824,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "progress line to stderr. silent when the log service is off.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_55"
     },
     {
@@ -10810,6 +10835,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "count tokens for a batch of texts. own function so a test can replace it.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_61"
     },
     {
@@ -10820,6 +10846,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "every `*.md` under the given areas, sorted, each path appearing once.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_70"
     },
     {
@@ -10830,6 +10857,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "file \u2192 [(line number, normalised text, raw text)], blank lines dropped.      the",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_83"
     },
     {
@@ -10840,6 +10868,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "[(index of the first line, the tuple of texts)] for every window of `min_dong` l",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_98"
     },
     {
@@ -10850,6 +10879,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "raw hits: every pair of positions sharing one shingle, before merging.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_104"
     },
     {
@@ -10860,6 +10890,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "merge hits that continue each other: five repeated lines = one 5-line block.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_122"
     },
     {
@@ -10870,6 +10901,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "scan the areas and return the duplicate blocks, heaviest first.      each block:",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_138"
     },
     {
@@ -10880,6 +10912,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "path relative to the repo root when it sits inside it \u2014 shorter to read in the t",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_172"
     },
     {
@@ -10890,6 +10923,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "print the result as a markdown table on stdout.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_180"
     },
     {
@@ -10900,6 +10934,7 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "command line layer: parse, validate, run, print. returns the exit code.",
+      "community_name": "doc_dup.py",
       "id": "scripts_doc_dup_rationale_198"
     },
     {
@@ -10908,9 +10943,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate",
       "community": 29,
-      "norm_label": "stop_gate.py"
+      "norm_label": "stop_gate.py",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate"
     },
     {
       "label": "_snapshot()",
@@ -10918,9 +10954,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L50",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_snapshot",
       "community": 29,
-      "norm_label": "_snapshot()"
+      "norm_label": "_snapshot()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_snapshot"
     },
     {
       "label": "_sha()",
@@ -10928,9 +10965,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L65",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_sha",
       "community": 29,
-      "norm_label": "_sha()"
+      "norm_label": "_sha()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_sha"
     },
     {
       "label": "_log_changed()",
@@ -10938,9 +10976,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L72",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_log_changed",
       "community": 29,
-      "norm_label": "_log_changed()"
+      "norm_label": "_log_changed()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_log_changed"
     },
     {
       "label": "_repo_changed()",
@@ -10948,9 +10987,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L86",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_repo_changed",
       "community": 29,
-      "norm_label": "_repo_changed()"
+      "norm_label": "_repo_changed()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_repo_changed"
     },
     {
       "label": "_shell_changed_path()",
@@ -10958,9 +10998,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L99",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_shell_changed_path",
       "community": 29,
-      "norm_label": "_shell_changed_path()"
+      "norm_label": "_shell_changed_path()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_shell_changed_path"
     },
     {
       "label": "_dod_hint()",
@@ -10968,9 +11009,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L117",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_dod_hint",
       "community": 29,
-      "norm_label": "_dod_hint()"
+      "norm_label": "_dod_hint()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_dod_hint"
     },
     {
       "label": "main()",
@@ -10978,9 +11020,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L150",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_main",
       "community": 29,
-      "norm_label": "main()"
+      "norm_label": "main()",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_main"
     },
     {
       "label": "The start-of-turn snapshot \u2014 take the NEWEST row.      Normally there is one row",
@@ -10988,9 +11031,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L51",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_rationale_51",
       "community": 29,
-      "norm_label": "the start-of-turn snapshot \u2014 take the newest row.      normally there is one row"
+      "norm_label": "the start-of-turn snapshot \u2014 take the newest row.      normally there is one row",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_rationale_51"
     },
     {
       "label": "Did today's log change since the start of the turn (however it was written)?",
@@ -10998,9 +11042,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L73",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_rationale_73",
       "community": 29,
-      "norm_label": "did today's log change since the start of the turn (however it was written)?"
+      "norm_label": "did today's log change since the start of the turn (however it was written)?",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_rationale_73"
     },
     {
       "label": "The file name to quote in the block message \u2014 a file new in this turn wins.",
@@ -11008,9 +11053,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L100",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_rationale_100",
       "community": 29,
-      "norm_label": "the file name to quote in the block message \u2014 a file new in this turn wins."
+      "norm_label": "the file name to quote in the block message \u2014 a file new in this turn wins.",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_rationale_100"
     },
     {
       "label": "[TDQ:DOD] \u2014 a REMINDER, never a block: the books are being closed while checkbox",
@@ -11018,9 +11064,10 @@
       "source_file": "hooks/scripts/stop_gate.py",
       "source_location": "L118",
       "_origin": "ast",
-      "id": "hooks_scripts_stop_gate_rationale_118",
       "community": 29,
-      "norm_label": "[tdq:dod] \u2014 a reminder, never a block: the books are being closed while checkbox"
+      "norm_label": "[tdq:dod] \u2014 a reminder, never a block: the books are being closed while checkbox",
+      "community_name": "main",
+      "id": "hooks_scripts_stop_gate_rationale_118"
     },
     {
       "label": "tdq_state.py",
@@ -11028,9 +11075,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "scripts_tdq_state",
       "community": 11,
-      "norm_label": "tdq_state.py"
+      "norm_label": "tdq_state.py",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state"
     },
     {
       "label": "parse_slug()",
@@ -11038,9 +11086,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L91",
       "_origin": "ast",
-      "id": "scripts_tdq_state_parse_slug",
       "community": 11,
-      "norm_label": "parse_slug()"
+      "norm_label": "parse_slug()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_parse_slug"
     },
     {
       "label": "normalize_doc_lang()",
@@ -11048,9 +11097,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L124",
       "_origin": "ast",
-      "id": "scripts_tdq_state_normalize_doc_lang",
       "community": 39,
-      "norm_label": "normalize_doc_lang()"
+      "norm_label": "normalize_doc_lang()",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_normalize_doc_lang"
     },
     {
       "label": "default_state()",
@@ -11058,9 +11108,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L137",
       "_origin": "ast",
-      "id": "scripts_tdq_state_default_state",
       "community": 18,
-      "norm_label": "default_state()"
+      "norm_label": "default_state()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_default_state"
     },
     {
       "label": "state_path()",
@@ -11068,9 +11119,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L178",
       "_origin": "ast",
-      "id": "scripts_tdq_state_state_path",
       "community": 18,
-      "norm_label": "state_path()"
+      "norm_label": "state_path()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_state_path"
     },
     {
       "label": "state_md_path()",
@@ -11078,9 +11130,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L182",
       "_origin": "ast",
-      "id": "scripts_tdq_state_state_md_path",
       "community": 18,
-      "norm_label": "state_md_path()"
+      "norm_label": "state_md_path()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_state_md_path"
     },
     {
       "label": "turn_log_path()",
@@ -11088,9 +11141,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L186",
       "_origin": "ast",
-      "id": "scripts_tdq_state_turn_log_path",
       "community": 11,
-      "norm_label": "turn_log_path()"
+      "norm_label": "turn_log_path()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_turn_log_path"
     },
     {
       "label": "log_enabled()",
@@ -11098,9 +11152,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L197",
       "_origin": "ast",
-      "id": "scripts_tdq_state_log_enabled",
       "community": 18,
-      "norm_label": "log_enabled()"
+      "norm_label": "log_enabled()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_log_enabled"
     },
     {
       "label": "_warn()",
@@ -11108,9 +11163,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L201",
       "_origin": "ast",
-      "id": "scripts_tdq_state_warn",
       "community": 18,
-      "norm_label": "_warn()"
+      "norm_label": "_warn()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_warn"
     },
     {
       "label": "_info()",
@@ -11118,9 +11174,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L210",
       "_origin": "ast",
-      "id": "scripts_tdq_state_info",
       "community": 18,
-      "norm_label": "_info()"
+      "norm_label": "_info()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_info"
     },
     {
       "label": "_fail()",
@@ -11128,9 +11185,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L215",
       "_origin": "ast",
-      "id": "scripts_tdq_state_fail",
       "community": 39,
-      "norm_label": "_fail()"
+      "norm_label": "_fail()",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_fail"
     },
     {
       "label": "resolve_project_dir()",
@@ -11138,9 +11196,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L224",
       "_origin": "ast",
-      "id": "scripts_tdq_state_resolve_project_dir",
       "community": 18,
-      "norm_label": "resolve_project_dir()"
+      "norm_label": "resolve_project_dir()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_resolve_project_dir"
     },
     {
       "label": "find_shadow_states()",
@@ -11148,9 +11207,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L251",
       "_origin": "ast",
-      "id": "scripts_tdq_state_find_shadow_states",
       "community": 18,
-      "norm_label": "find_shadow_states()"
+      "norm_label": "find_shadow_states()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_find_shadow_states"
     },
     {
       "label": "now_iso()",
@@ -11158,9 +11218,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L273",
       "_origin": "ast",
-      "id": "scripts_tdq_state_now_iso",
       "community": 18,
-      "norm_label": "now_iso()"
+      "norm_label": "now_iso()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_now_iso"
     },
     {
       "label": "load()",
@@ -11168,9 +11229,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L279",
       "_origin": "ast",
-      "id": "scripts_tdq_state_load",
       "community": 18,
-      "norm_label": "load()"
+      "norm_label": "load()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_load"
     },
     {
       "label": "_dong_so_request_cu()",
@@ -11178,9 +11240,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L320",
       "_origin": "ast",
-      "id": "scripts_tdq_state_dong_so_request_cu",
       "community": 18,
-      "norm_label": "_dong_so_request_cu()"
+      "norm_label": "_dong_so_request_cu()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_dong_so_request_cu"
     },
     {
       "label": "ghi_moc_phase()",
@@ -11188,9 +11251,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L352",
       "_origin": "ast",
-      "id": "scripts_tdq_state_ghi_moc_phase",
       "community": 18,
-      "norm_label": "ghi_moc_phase()"
+      "norm_label": "ghi_moc_phase()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_ghi_moc_phase"
     },
     {
       "label": "_atomic_write()",
@@ -11198,9 +11262,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L365",
       "_origin": "ast",
-      "id": "scripts_tdq_state_atomic_write",
       "community": 11,
-      "norm_label": "_atomic_write()"
+      "norm_label": "_atomic_write()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_atomic_write"
     },
     {
       "label": "save()",
@@ -11208,9 +11273,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L380",
       "_origin": "ast",
-      "id": "scripts_tdq_state_save",
       "community": 18,
-      "norm_label": "save()"
+      "norm_label": "save()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_save"
     },
     {
       "label": "sha256_file()",
@@ -11218,9 +11284,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L401",
       "_origin": "ast",
-      "id": "scripts_tdq_state_sha256_file",
       "community": 30,
-      "norm_label": "sha256_file()"
+      "norm_label": "sha256_file()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_sha256_file"
     },
     {
       "label": "sha256_noi_dung()",
@@ -11228,9 +11295,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L409",
       "_origin": "ast",
-      "id": "scripts_tdq_state_sha256_noi_dung",
       "community": 51,
-      "norm_label": "sha256_noi_dung()"
+      "norm_label": "sha256_noi_dung()",
+      "community_name": "sha256_noi_dung",
+      "id": "scripts_tdq_state_sha256_noi_dung"
     },
     {
       "label": "today_log_rel()",
@@ -11238,9 +11306,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L458",
       "_origin": "ast",
-      "id": "scripts_tdq_state_today_log_rel",
       "community": 29,
-      "norm_label": "today_log_rel()"
+      "norm_label": "today_log_rel()",
+      "community_name": "main",
+      "id": "scripts_tdq_state_today_log_rel"
     },
     {
       "label": "_git()",
@@ -11248,9 +11317,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L462",
       "_origin": "ast",
-      "id": "scripts_tdq_state_git",
       "community": 30,
-      "norm_label": "_git()"
+      "norm_label": "_git()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_git"
     },
     {
       "label": "repo_root()",
@@ -11258,9 +11328,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L477",
       "_origin": "ast",
-      "id": "scripts_tdq_state_repo_root",
       "community": 30,
-      "norm_label": "repo_root()"
+      "norm_label": "repo_root()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_repo_root"
     },
     {
       "label": "_untracked_mark()",
@@ -11268,9 +11339,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L485",
       "_origin": "ast",
-      "id": "scripts_tdq_state_untracked_mark",
       "community": 30,
-      "norm_label": "_untracked_mark()"
+      "norm_label": "_untracked_mark()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_untracked_mark"
     },
     {
       "label": "repo_status_digest()",
@@ -11278,9 +11350,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L503",
       "_origin": "ast",
-      "id": "scripts_tdq_state_repo_status_digest",
       "community": 30,
-      "norm_label": "repo_status_digest()"
+      "norm_label": "repo_status_digest()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_repo_status_digest"
     },
     {
       "label": "repo_status_paths()",
@@ -11288,9 +11361,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L545",
       "_origin": "ast",
-      "id": "scripts_tdq_state_repo_status_paths",
       "community": 30,
-      "norm_label": "repo_status_paths()"
+      "norm_label": "repo_status_paths()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_repo_status_paths"
     },
     {
       "label": "_plan_path()",
@@ -11298,9 +11372,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L588",
       "_origin": "ast",
-      "id": "scripts_tdq_state_plan_path",
       "community": 44,
-      "norm_label": "_plan_path()"
+      "norm_label": "_plan_path()",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_plan_path"
     },
     {
       "label": "plan_tick_state()",
@@ -11308,9 +11383,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L599",
       "_origin": "ast",
-      "id": "scripts_tdq_state_plan_tick_state",
       "community": 30,
-      "norm_label": "plan_tick_state()"
+      "norm_label": "plan_tick_state()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_plan_tick_state"
     },
     {
       "label": "_dod_section()",
@@ -11318,9 +11394,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L653",
       "_origin": "ast",
-      "id": "scripts_tdq_state_dod_section",
       "community": 44,
-      "norm_label": "_dod_section()"
+      "norm_label": "_dod_section()",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_dod_section"
     },
     {
       "label": "dod_tick_state()",
@@ -11328,9 +11405,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L679",
       "_origin": "ast",
-      "id": "scripts_tdq_state_dod_tick_state",
       "community": 44,
-      "norm_label": "dod_tick_state()"
+      "norm_label": "dod_tick_state()",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_dod_tick_state"
     },
     {
       "label": "qc_result_state()",
@@ -11338,9 +11416,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L716",
       "_origin": "ast",
-      "id": "scripts_tdq_state_qc_result_state",
       "community": 29,
-      "norm_label": "qc_result_state()"
+      "norm_label": "qc_result_state()",
+      "community_name": "main",
+      "id": "scripts_tdq_state_qc_result_state"
     },
     {
       "label": "task_open_count()",
@@ -11348,9 +11427,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L753",
       "_origin": "ast",
-      "id": "scripts_tdq_state_task_open_count",
       "community": 44,
-      "norm_label": "task_open_count()"
+      "norm_label": "task_open_count()",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_task_open_count"
     },
     {
       "label": "turn_snapshot()",
@@ -11358,9 +11438,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L775",
       "_origin": "ast",
-      "id": "scripts_tdq_state_turn_snapshot",
       "community": 30,
-      "norm_label": "turn_snapshot()"
+      "norm_label": "turn_snapshot()",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_turn_snapshot"
     },
     {
       "label": "normalize_lane()",
@@ -11368,9 +11449,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L790",
       "_origin": "ast",
-      "id": "scripts_tdq_state_normalize_lane",
       "community": 39,
-      "norm_label": "normalize_lane()"
+      "norm_label": "normalize_lane()",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_normalize_lane"
     },
     {
       "label": "lane_label()",
@@ -11378,9 +11460,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L799",
       "_origin": "ast",
-      "id": "scripts_tdq_state_lane_label",
       "community": 11,
-      "norm_label": "lane_label()"
+      "norm_label": "lane_label()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_lane_label"
     },
     {
       "label": "normalize_mode()",
@@ -11388,9 +11471,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L808",
       "_origin": "ast",
-      "id": "scripts_tdq_state_normalize_mode",
       "community": 32,
-      "norm_label": "normalize_mode()"
+      "norm_label": "normalize_mode()",
+      "community_name": "main",
+      "id": "scripts_tdq_state_normalize_mode"
     },
     {
       "label": "mode_label()",
@@ -11398,9 +11482,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L817",
       "_origin": "ast",
-      "id": "scripts_tdq_state_mode_label",
       "community": 6,
-      "norm_label": "mode_label()"
+      "norm_label": "mode_label()",
+      "community_name": "_common.py",
+      "id": "scripts_tdq_state_mode_label"
     },
     {
       "label": "effective_lane()",
@@ -11408,9 +11493,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L825",
       "_origin": "ast",
-      "id": "scripts_tdq_state_effective_lane",
       "community": 34,
-      "norm_label": "effective_lane()"
+      "norm_label": "effective_lane()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_effective_lane"
     },
     {
       "label": "cong_dang_cho()",
@@ -11418,9 +11504,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L844",
       "_origin": "ast",
-      "id": "scripts_tdq_state_cong_dang_cho",
       "community": 34,
-      "norm_label": "cong_dang_cho()"
+      "norm_label": "cong_dang_cho()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_cong_dang_cho"
     },
     {
       "label": "effective_phase()",
@@ -11428,9 +11515,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L861",
       "_origin": "ast",
-      "id": "scripts_tdq_state_effective_phase",
       "community": 29,
-      "norm_label": "effective_phase()"
+      "norm_label": "effective_phase()",
+      "community_name": "main",
+      "id": "scripts_tdq_state_effective_phase"
     },
     {
       "label": "effective_mode()",
@@ -11438,9 +11526,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L871",
       "_origin": "ast",
-      "id": "scripts_tdq_state_effective_mode",
       "community": 34,
-      "norm_label": "effective_mode()"
+      "norm_label": "effective_mode()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_effective_mode"
     },
     {
       "label": "plugin_root_cmd()",
@@ -11448,9 +11537,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1085",
       "_origin": "ast",
-      "id": "scripts_tdq_state_plugin_root_cmd",
       "community": 11,
-      "norm_label": "plugin_root_cmd()"
+      "norm_label": "plugin_root_cmd()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_plugin_root_cmd"
     },
     {
       "label": "render_phases_md()",
@@ -11458,9 +11548,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1090",
       "_origin": "ast",
-      "id": "scripts_tdq_state_render_phases_md",
       "community": 11,
-      "norm_label": "render_phases_md()"
+      "norm_label": "render_phases_md()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_render_phases_md"
     },
     {
       "label": "phase_key()",
@@ -11468,9 +11559,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1135",
       "_origin": "ast",
-      "id": "scripts_tdq_state_phase_key",
       "community": 34,
-      "norm_label": "phase_key()"
+      "norm_label": "phase_key()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_phase_key"
     },
     {
       "label": "phase_row()",
@@ -11478,9 +11570,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1150",
       "_origin": "ast",
-      "id": "scripts_tdq_state_phase_row",
       "community": 34,
-      "norm_label": "phase_row()"
+      "norm_label": "phase_row()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_phase_row"
     },
     {
       "label": "_mark()",
@@ -11488,9 +11581,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1166",
       "_origin": "ast",
-      "id": "scripts_tdq_state_mark",
       "community": 11,
-      "norm_label": "_mark()"
+      "norm_label": "_mark()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_mark"
     },
     {
       "label": "next_headline()",
@@ -11498,9 +11592,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1172",
       "_origin": "ast",
-      "id": "scripts_tdq_state_next_headline",
       "community": 34,
-      "norm_label": "next_headline()"
+      "norm_label": "next_headline()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_next_headline"
     },
     {
       "label": "render_next()",
@@ -11508,9 +11603,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1182",
       "_origin": "ast",
-      "id": "scripts_tdq_state_render_next",
       "community": 34,
-      "norm_label": "render_next()"
+      "norm_label": "render_next()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_render_next"
     },
     {
       "label": "render_state_md()",
@@ -11518,9 +11614,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1207",
       "_origin": "ast",
-      "id": "scripts_tdq_state_render_state_md",
       "community": 34,
-      "norm_label": "render_state_md()"
+      "norm_label": "render_state_md()",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_render_state_md"
     },
     {
       "label": "turn_log_append()",
@@ -11528,9 +11625,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1252",
       "_origin": "ast",
-      "id": "scripts_tdq_state_turn_log_append",
       "community": 6,
-      "norm_label": "turn_log_append()"
+      "norm_label": "turn_log_append()",
+      "community_name": "_common.py",
+      "id": "scripts_tdq_state_turn_log_append"
     },
     {
       "label": "_row_age_ok()",
@@ -11538,9 +11636,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1269",
       "_origin": "ast",
-      "id": "scripts_tdq_state_row_age_ok",
       "community": 11,
-      "norm_label": "_row_age_ok()"
+      "norm_label": "_row_age_ok()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_row_age_ok"
     },
     {
       "label": "turn_log_read()",
@@ -11548,9 +11647,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1279",
       "_origin": "ast",
-      "id": "scripts_tdq_state_turn_log_read",
       "community": 11,
-      "norm_label": "turn_log_read()"
+      "norm_label": "turn_log_read()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_turn_log_read"
     },
     {
       "label": "turn_log_clear()",
@@ -11558,9 +11658,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1304",
       "_origin": "ast",
-      "id": "scripts_tdq_state_turn_log_clear",
       "community": 11,
-      "norm_label": "turn_log_clear()"
+      "norm_label": "turn_log_clear()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_turn_log_clear"
     },
     {
       "label": "prompt_context_path()",
@@ -11568,9 +11669,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1336",
       "_origin": "ast",
-      "id": "scripts_tdq_state_prompt_context_path",
       "community": 11,
-      "norm_label": "prompt_context_path()"
+      "norm_label": "prompt_context_path()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_prompt_context_path"
     },
     {
       "label": "prompt_context_last()",
@@ -11578,9 +11680,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1338",
       "_origin": "ast",
-      "id": "scripts_tdq_state_prompt_context_last",
       "community": 11,
-      "norm_label": "prompt_context_last()"
+      "norm_label": "prompt_context_last()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_prompt_context_last"
     },
     {
       "label": "prompt_context_save()",
@@ -11588,9 +11691,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1350",
       "_origin": "ast",
-      "id": "scripts_tdq_state_prompt_context_save",
       "community": 11,
-      "norm_label": "prompt_context_save()"
+      "norm_label": "prompt_context_save()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_prompt_context_save"
     },
     {
       "label": "_parse_value()",
@@ -11598,9 +11702,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1363",
       "_origin": "ast",
-      "id": "scripts_tdq_state_parse_value",
       "community": 11,
-      "norm_label": "_parse_value()"
+      "norm_label": "_parse_value()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_parse_value"
     },
     {
       "label": "_unfinished()",
@@ -11608,9 +11713,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1377",
       "_origin": "ast",
-      "id": "scripts_tdq_state_unfinished",
       "community": 11,
-      "norm_label": "_unfinished()"
+      "norm_label": "_unfinished()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_unfinished"
     },
     {
       "label": "_parse_approve_args()",
@@ -11618,9 +11724,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1384",
       "_origin": "ast",
-      "id": "scripts_tdq_state_parse_approve_args",
       "community": 39,
-      "norm_label": "_parse_approve_args()"
+      "norm_label": "_parse_approve_args()",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_parse_approve_args"
     },
     {
       "label": "_file_changed_since_approval()",
@@ -11628,9 +11735,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1432",
       "_origin": "ast",
-      "id": "scripts_tdq_state_file_changed_since_approval",
       "community": 51,
-      "norm_label": "_file_changed_since_approval()"
+      "norm_label": "_file_changed_since_approval()",
+      "community_name": "sha256_noi_dung",
+      "id": "scripts_tdq_state_file_changed_since_approval"
     },
     {
       "label": "_cli_approve()",
@@ -11638,9 +11746,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1449",
       "_origin": "ast",
-      "id": "scripts_tdq_state_cli_approve",
       "community": 18,
-      "norm_label": "_cli_approve()"
+      "norm_label": "_cli_approve()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_cli_approve"
     },
     {
       "label": "_chan_worktree_con_mo()",
@@ -11648,9 +11757,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1524",
       "_origin": "ast",
-      "id": "scripts_tdq_state_chan_worktree_con_mo",
       "community": 39,
-      "norm_label": "_chan_worktree_con_mo()"
+      "norm_label": "_chan_worktree_con_mo()",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_chan_worktree_con_mo"
     },
     {
       "label": "_pop_json_flag()",
@@ -11658,9 +11768,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1544",
       "_origin": "ast",
-      "id": "scripts_tdq_state_pop_json_flag",
       "community": 11,
-      "norm_label": "_pop_json_flag()"
+      "norm_label": "_pop_json_flag()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_pop_json_flag"
     },
     {
       "label": "_pop_lang_flag()",
@@ -11668,9 +11779,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1551",
       "_origin": "ast",
-      "id": "scripts_tdq_state_pop_lang_flag",
       "community": 39,
-      "norm_label": "_pop_lang_flag()"
+      "norm_label": "_pop_lang_flag()",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_pop_lang_flag"
     },
     {
       "label": "_echo_state()",
@@ -11678,9 +11790,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1577",
       "_origin": "ast",
-      "id": "scripts_tdq_state_echo_state",
       "community": 11,
-      "norm_label": "_echo_state()"
+      "norm_label": "_echo_state()",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_echo_state"
     },
     {
       "label": "cli()",
@@ -11688,9 +11801,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1586",
       "_origin": "ast",
-      "id": "scripts_tdq_state_cli",
       "community": 18,
-      "norm_label": "cli()"
+      "norm_label": "cli()",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_cli"
     },
     {
       "label": "Split a slug into (date, HHMM or None, text part). No match \u2192 None.      Four di",
@@ -11698,9 +11812,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L92",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_92",
       "community": 11,
-      "norm_label": "split a slug into (date, hhmm or none, text part). no match \u2192 none.      four di"
+      "norm_label": "split a slug into (date, hhmm or none, text part). no match \u2192 none.      four di",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_92"
     },
     {
       "label": "Return the normalised language code, or None when it is not a valid code.      A",
@@ -11708,9 +11823,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L125",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_125",
       "community": 39,
-      "norm_label": "return the normalised language code, or none when it is not a valid code.      a"
+      "norm_label": "return the normalised language code, or none when it is not a valid code.      a",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_rationale_125"
     },
     {
       "label": "Warning on stderr with a timestamp (spec \u00a74.1). Off with TDQ_LOG=0.      Never l",
@@ -11718,9 +11834,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L202",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_202",
       "community": 18,
-      "norm_label": "warning on stderr with a timestamp (spec \u00a74.1). off with tdq_log=0.      never l"
+      "norm_label": "warning on stderr with a timestamp (spec \u00a74.1). off with tdq_log=0.      never l",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_202"
     },
     {
       "label": "Only for a BAD COMMAND SYNTAX \u2014 exit 2 (spec \u00a72.9.4).",
@@ -11728,9 +11845,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L216",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_216",
       "community": 39,
-      "norm_label": "only for a bad command syntax \u2014 exit 2 (spec \u00a72.9.4)."
+      "norm_label": "only for a bad command syntax \u2014 exit 2 (spec \u00a72.9.4).",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_rationale_216"
     },
     {
       "label": "State project root: TDQ_PROJECT_DIR > git root > a dir holding state > cwd.",
@@ -11738,9 +11856,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L225",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_225",
       "community": 18,
-      "norm_label": "state project root: tdq_project_dir > git root > a dir holding state > cwd."
+      "norm_label": "state project root: tdq_project_dir > git root > a dir holding state > cwd.",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_225"
     },
     {
       "label": "Misplaced state/mirror: state.json outside root, or an orphan STATE.md (S6).",
@@ -11748,9 +11867,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L252",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_252",
       "community": 18,
-      "norm_label": "misplaced state/mirror: state.json outside root, or an orphan state.md (s6)."
+      "norm_label": "misplaced state/mirror: state.json outside root, or an orphan state.md (s6).",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_252"
     },
     {
       "label": "Read the state. Returns None when the file does not exist yet.      Corrupt file",
@@ -11758,9 +11878,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L280",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_280",
       "community": 18,
-      "norm_label": "read the state. returns none when the file does not exist yet.      corrupt file"
+      "norm_label": "read the state. returns none when the file does not exist yet.      corrupt file",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_280"
     },
     {
       "label": "Close the timing books of the open request into docs/tdq/timing.jsonl.      The",
@@ -11768,9 +11889,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L321",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_321",
       "community": 18,
-      "norm_label": "close the timing books of the open request into docs/tdq/timing.jsonl.      the"
+      "norm_label": "close the timing books of the open request into docs/tdq/timing.jsonl.      the",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_321"
     },
     {
       "label": "Append a mark to `phase_history` when the phase REALLY changes. True if written.",
@@ -11778,9 +11900,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L353",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_353",
       "community": 18,
-      "norm_label": "append a mark to `phase_history` when the phase really changes. true if written."
+      "norm_label": "append a mark to `phase_history` when the phase really changes. true if written.",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_353"
     },
     {
       "label": "Atomically write state.json + regenerate STATE.md (S1, the mirror).      expect_",
@@ -11788,9 +11911,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L381",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_381",
       "community": 18,
-      "norm_label": "atomically write state.json + regenerate state.md (s1, the mirror).      expect_"
+      "norm_label": "atomically write state.json + regenerate state.md (s1, the mirror).      expect_",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_381"
     },
     {
       "label": "Hash the CONTENT part of a spec/plan: from the first `##` heading onward.      W",
@@ -11798,9 +11922,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L410",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_410",
       "community": 51,
-      "norm_label": "hash the content part of a spec/plan: from the first `##` heading onward.      w"
+      "norm_label": "hash the content part of a spec/plan: from the first `##` heading onward.      w",
+      "community_name": "sha256_noi_dung",
+      "id": "scripts_tdq_state_rationale_410"
     },
     {
       "label": "stdout (bytes) of a git command, or None when it cannot run.",
@@ -11808,9 +11933,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L463",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_463",
       "community": 30,
-      "norm_label": "stdout (bytes) of a git command, or none when it cannot run."
+      "norm_label": "stdout (bytes) of a git command, or none when it cannot run.",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_463"
     },
     {
       "label": "Repo root (porcelain prints paths from the root, not from cwd). None if not a re",
@@ -11818,9 +11944,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L478",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_478",
       "community": 30,
-      "norm_label": "repo root (porcelain prints paths from the root, not from cwd). none if not a re"
+      "norm_label": "repo root (porcelain prints paths from the root, not from cwd). none if not a re",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_478"
     },
     {
       "label": "Fingerprint of an untracked file \u2192 (mark, bytes read).      CONTENT first: a cha",
@@ -11828,9 +11955,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L486",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_486",
       "community": 30,
-      "norm_label": "fingerprint of an untracked file \u2192 (mark, bytes read).      content first: a cha"
+      "norm_label": "fingerprint of an untracked file \u2192 (mark, bytes read).      content first: a cha",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_486"
     },
     {
       "label": "Fingerprint of the repo working state, or None when it cannot be taken.      Cov",
@@ -11838,9 +11966,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L504",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_504",
       "community": 30,
-      "norm_label": "fingerprint of the repo working state, or none when it cannot be taken.      cov"
+      "norm_label": "fingerprint of the repo working state, or none when it cannot be taken.      cov",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_504"
     },
     {
       "label": "Paths differing from HEAD (status flags dropped, renames keep the target).",
@@ -11848,9 +11977,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L546",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_546",
       "community": 30,
-      "norm_label": "paths differing from head (status flags dropped, renames keep the target)."
+      "norm_label": "paths differing from head (status flags dropped, renames keep the target).",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_546"
     },
     {
       "label": "Absolute path of the plan of the active request, or None when there is none.",
@@ -11858,9 +11988,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L589",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_589",
       "community": 44,
-      "norm_label": "absolute path of the plan of the active request, or none when there is none."
+      "norm_label": "absolute path of the plan of the active request, or none when there is none.",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_rationale_589"
     },
     {
       "label": "Checkbox state of the current plan. Never raises.",
@@ -11868,9 +11999,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L600",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_600",
       "community": 30,
-      "norm_label": "checkbox state of the current plan. never raises."
+      "norm_label": "checkbox state of the current plan. never raises.",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_600"
     },
     {
       "label": "Every line under a DoD heading, up to the next `## ` heading.      Three details",
@@ -11878,9 +12010,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L654",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_654",
       "community": 44,
-      "norm_label": "every line under a dod heading, up to the next `## ` heading.      three details"
+      "norm_label": "every line under a dod heading, up to the next `## ` heading.      three details",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_rationale_654"
     },
     {
       "label": "Checkbox state of the plan's Definition of Done section. Never raises.",
@@ -11888,9 +12021,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L680",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_680",
       "community": 44,
-      "norm_label": "checkbox state of the plan's definition of done section. never raises."
+      "norm_label": "checkbox state of the plan's definition of done section. never raises.",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_rationale_680"
     },
     {
       "label": "PASS/FAIL tally of the qc file of the active request. Never raises.",
@@ -11898,9 +12032,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L717",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_717",
       "community": 29,
-      "norm_label": "pass/fail tally of the qc file of the active request. never raises."
+      "norm_label": "pass/fail tally of the qc file of the active request. never raises.",
+      "community_name": "main",
+      "id": "scripts_tdq_state_rationale_717"
     },
     {
       "label": "How many task boxes of the current plan are not `[x]` yet. Never raises.      A",
@@ -11908,9 +12043,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L754",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_754",
       "community": 44,
-      "norm_label": "how many task boxes of the current plan are not `[x]` yet. never raises.      a"
+      "norm_label": "how many task boxes of the current plan are not `[x]` yet. never raises.      a",
+      "community_name": "dod_tick_state",
+      "id": "scripts_tdq_state_rationale_754"
     },
     {
       "label": "Turn-start state: today's log + the repo fingerprint + the list of dirty     pat",
@@ -11918,9 +12054,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L776",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_776",
       "community": 30,
-      "norm_label": "turn-start state: today's log + the repo fingerprint + the list of dirty     pat"
+      "norm_label": "turn-start state: today's log + the repo fingerprint + the list of dirty     pat",
+      "community_name": "turn_snapshot",
+      "id": "scripts_tdq_state_rationale_776"
     },
     {
       "label": "Alias -> machine identifier (\"quick\"/\"full\"). Unrecognised -> None (the     call",
@@ -11928,9 +12065,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L791",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_791",
       "community": 39,
-      "norm_label": "alias -> machine identifier (\"quick\"/\"full\"). unrecognised -> none (the     call"
+      "norm_label": "alias -> machine identifier (\"quick\"/\"full\"). unrecognised -> none (the     call",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_rationale_791"
     },
     {
       "label": "The label PRINTED to a reader. Being a display layer it does NOT validate:     a",
@@ -11938,9 +12076,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L800",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_800",
       "community": 11,
-      "norm_label": "the label printed to a reader. being a display layer it does not validate:     a"
+      "norm_label": "the label printed to a reader. being a display layer it does not validate:     a",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_800"
     },
     {
       "label": "Alias -> machine identifier (\"main\"/\"subagent\"). The ONLY entry point for a",
@@ -11948,9 +12087,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L809",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_809",
       "community": 32,
-      "norm_label": "alias -> machine identifier (\"main\"/\"subagent\"). the only entry point for a"
+      "norm_label": "alias -> machine identifier (\"main\"/\"subagent\"). the only entry point for a",
+      "community_name": "main",
+      "id": "scripts_tdq_state_rationale_809"
     },
     {
       "label": "The label PRINTED to a reader, same rule as lane_label: an unknown mode comes",
@@ -11958,9 +12098,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L818",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_818",
       "community": 6,
-      "norm_label": "the label printed to a reader, same rule as lane_label: an unknown mode comes"
+      "norm_label": "the label printed to a reader, same rule as lane_label: an unknown mode comes",
+      "community_name": "_common.py",
+      "id": "scripts_tdq_state_rationale_818"
     },
     {
       "label": "The approval gate still missing for the running lane, or None when all passed.",
@@ -11968,9 +12109,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L845",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_845",
       "community": 34,
-      "norm_label": "the approval gate still missing for the running lane, or none when all passed."
+      "norm_label": "the approval gate still missing for the running lane, or none when all passed.",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_rationale_845"
     },
     {
       "label": "A40: the command form for docs running in the plugin context (conventions \u00a71).",
@@ -11978,9 +12120,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1086",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1086",
       "community": 11,
-      "norm_label": "a40: the command form for docs running in the plugin context (conventions \u00a71)."
+      "norm_label": "a40: the command form for docs running in the plugin context (conventions \u00a71).",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1086"
     },
     {
       "label": "Generate the phase-table doc out of PHASE_TABLE \u2014 that doc is NEVER hand-written",
@@ -11988,9 +12131,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1091",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1091",
       "community": 11,
-      "norm_label": "generate the phase-table doc out of phase_table \u2014 that doc is never hand-written"
+      "norm_label": "generate the phase-table doc out of phase_table \u2014 that doc is never hand-written",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1091"
     },
     {
       "label": "The PHASE_TABLE lookup key for the current state.",
@@ -11998,9 +12142,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1136",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1136",
       "community": 34,
-      "norm_label": "the phase_table lookup key for the current state."
+      "norm_label": "the phase_table lookup key for the current state.",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_rationale_1136"
     },
     {
       "label": "The PHASE_TABLE row to DISPLAY for the current state.      Unlike `phase_key`, t",
@@ -12008,9 +12153,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1151",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1151",
       "community": 34,
-      "norm_label": "the phase_table row to display for the current state.      unlike `phase_key`, t"
+      "norm_label": "the phase_table row to display for the current state.      unlike `phase_key`, t",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_rationale_1151"
     },
     {
       "label": "Line 1 of `next` \u2014 also the entire output of `next --brief`.",
@@ -12018,9 +12164,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1173",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1173",
       "community": 34,
-      "norm_label": "line 1 of `next` \u2014 also the entire output of `next --brief`."
+      "norm_label": "line 1 of `next` \u2014 also the entire output of `next --brief`.",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_rationale_1173"
     },
     {
       "label": "The 5-part block (spec \u00a72.2), at most 20 lines.      brief=True   \u2192 exactly the",
@@ -12028,9 +12175,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1183",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1183",
       "community": 34,
-      "norm_label": "the 5-part block (spec \u00a72.2), at most 20 lines.      brief=true   \u2192 exactly the"
+      "norm_label": "the 5-part block (spec \u00a72.2), at most 20 lines.      brief=true   \u2192 exactly the",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_rationale_1183"
     },
     {
       "label": "A markdown mirror of at most 30 lines for an agent/user to read (spec \u00a72.3.1).",
@@ -12038,9 +12186,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1208",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1208",
       "community": 34,
-      "norm_label": "a markdown mirror of at most 30 lines for an agent/user to read (spec \u00a72.3.1)."
+      "norm_label": "a markdown mirror of at most 30 lines for an agent/user to read (spec \u00a72.3.1).",
+      "community_name": "effective_lane",
+      "id": "scripts_tdq_state_rationale_1208"
     },
     {
       "label": "Append one event to the turn log. I/O error \u2192 swallowed (a hook must not break).",
@@ -12048,9 +12197,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1253",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1253",
       "community": 6,
-      "norm_label": "append one event to the turn log. i/o error \u2192 swallowed (a hook must not break)."
+      "norm_label": "append one event to the turn log. i/o error \u2192 swallowed (a hook must not break).",
+      "community_name": "_common.py",
+      "id": "scripts_tdq_state_rationale_1253"
     },
     {
       "label": "Events of the current session, skipping rows older than 6 hours (RR12).",
@@ -12058,9 +12208,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1280",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1280",
       "community": 11,
-      "norm_label": "events of the current session, skipping rows older than 6 hours (rr12)."
+      "norm_label": "events of the current session, skipping rows older than 6 hours (rr12).",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1280"
     },
     {
       "label": "Drop this session's rows (at turn start). Other sessions' rows are kept.",
@@ -12068,9 +12219,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1305",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1305",
       "community": 11,
-      "norm_label": "drop this session's rows (at turn start). other sessions' rows are kept."
+      "norm_label": "drop this session's rows (at turn start). other sessions' rows are kept.",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1305"
     },
     {
       "label": "Digest of the [TDQ:...] block printed last turn for this session, None if there",
@@ -12078,9 +12230,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1339",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1339",
       "community": 11,
-      "norm_label": "digest of the [tdq:...] block printed last turn for this session, none if there"
+      "norm_label": "digest of the [tdq:...] block printed last turn for this session, none if there",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1339"
     },
     {
       "label": "Store the digest just printed \u2014 turn_log_clear never touches this file     (dedu",
@@ -12088,9 +12241,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1351",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1351",
       "community": 11,
-      "norm_label": "store the digest just printed \u2014 turn_log_clear never touches this file     (dedu"
+      "norm_label": "store the digest just printed \u2014 turn_log_clear never touches this file     (dedu",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1351"
     },
     {
       "label": "An unfinished request: not yet at a terminal phase, or some gate already approve",
@@ -12098,9 +12252,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1378",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1378",
       "community": 11,
-      "norm_label": "an unfinished request: not yet at a terminal phase, or some gate already approve"
+      "norm_label": "an unfinished request: not yet at a terminal phase, or some gate already approve",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1378"
     },
     {
       "label": "-> (target, mode, by, no_qc). Fails only on genuinely wrong syntax.",
@@ -12108,9 +12263,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1385",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1385",
       "community": 39,
-      "norm_label": "-> (target, mode, by, no_qc). fails only on genuinely wrong syntax."
+      "norm_label": "-> (target, mode, by, no_qc). fails only on genuinely wrong syntax.",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_rationale_1385"
     },
     {
       "label": "True when the spec/plan file changed since it was approved. It tells     'a redu",
@@ -12118,9 +12274,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1433",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1433",
       "community": 51,
-      "norm_label": "true when the spec/plan file changed since it was approved. it tells     'a redu"
+      "norm_label": "true when the spec/plan file changed since it was approved. it tells     'a redu",
+      "community_name": "sha256_noi_dung",
+      "id": "scripts_tdq_state_rationale_1433"
     },
     {
       "label": "Record that the user approved. Not a gate: it warns on a mismatch but     STILL",
@@ -12128,9 +12285,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1450",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1450",
       "community": 18,
-      "norm_label": "record that the user approved. not a gate: it warns on a mismatch but     still"
+      "norm_label": "record that the user approved. not a gate: it warns on a mismatch but     still",
+      "community_name": "cli",
+      "id": "scripts_tdq_state_rationale_1450"
     },
     {
       "label": "Gate `qc`: an open row in the worktree ledger stops the phase from moving.",
@@ -12138,9 +12296,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1525",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1525",
       "community": 39,
-      "norm_label": "gate `qc`: an open row in the worktree ledger stops the phase from moving."
+      "norm_label": "gate `qc`: an open row in the worktree ledger stops the phase from moving.",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_rationale_1525"
     },
     {
       "label": "Strip the `--json` flag out of argv. By default the CLI prints a 1-line summary",
@@ -12148,9 +12307,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1545",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1545",
       "community": 11,
-      "norm_label": "strip the `--json` flag out of argv. by default the cli prints a 1-line summary"
+      "norm_label": "strip the `--json` flag out of argv. by default the cli prints a 1-line summary",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1545"
     },
     {
       "label": "Strip the `--lang <code>` pair out of the argv of `init`.      Its position is f",
@@ -12158,9 +12318,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1552",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1552",
       "community": 39,
-      "norm_label": "strip the `--lang <code>` pair out of the argv of `init`.      its position is f"
+      "norm_label": "strip the `--lang <code>` pair out of the argv of `init`.      its position is f",
+      "community_name": "_fail",
+      "id": "scripts_tdq_state_rationale_1552"
     },
     {
       "label": "Print the result of a state-writing command: a 1-line summary, or the whole JSON",
@@ -12168,9 +12329,10 @@
       "source_file": "scripts/tdq_state.py",
       "source_location": "L1578",
       "_origin": "ast",
-      "id": "scripts_tdq_state_rationale_1578",
       "community": 11,
-      "norm_label": "print the result of a state-writing command: a 1-line summary, or the whole json"
+      "norm_label": "print the result of a state-writing command: a 1-line summary, or the whole json",
+      "community_name": "tdq_state.py",
+      "id": "scripts_tdq_state_rationale_1578"
     }
   ],
   "links": [
@@ -12178,12 +12340,177 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L326",
+      "source_location": "L349",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
       "source": "changelog",
       "target": "changelog_archive"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog",
+      "target": "changelog_changelog"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L322",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_16_0_2026_08_14"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L296",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_17_0_2026_08_14"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L270",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_18_0_2026_08_14"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L246",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_19_0_2026_08_15"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L220",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_20_0_2026_08_15"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L198",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_21_0_2026_08_16"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L176",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_22_0_2026_08_16"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_23_0_2026_08_17"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_24_0_2026_08_17"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_25_0_2026_08_18"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_26_0_2026_08_18"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_27_0_2026_08_22"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_28_0_2026_08_22"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "changelog_changelog",
+      "target": "changelog_0_29_0_2026_08_22"
     },
     {
       "relation": "contains",
@@ -12371,160 +12698,6 @@
       "confidence_score": 1.0,
       "source": "changelog_archive_changelog_b\u1ea3n_l\u01b0u_tr\u1eef",
       "target": "changelog_archive_0_6_2_tr\u1edf_v\u1ec1_tr\u01b0\u1edbc"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog",
-      "target": "changelog_changelog"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L299",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_16_0_2026_08_14"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L273",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_17_0_2026_08_14"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L247",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_18_0_2026_08_14"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L223",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_19_0_2026_08_15"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L197",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_20_0_2026_08_15"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L175",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_21_0_2026_08_16"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L153",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_22_0_2026_08_16"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L135",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_23_0_2026_08_17"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L110",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_24_0_2026_08_17"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L95",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_25_0_2026_08_18"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L72",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_26_0_2026_08_18"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L38",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_27_0_2026_08_22"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "changelog_changelog",
-      "target": "changelog_0_28_0_2026_08_22"
     },
     {
       "relation": "imports_from",
@@ -16735,9 +16908,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_common",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_common"
     },
     {
       "relation": "rationale_for",
@@ -33516,9 +33689,9 @@
       "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_dod_hint",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_dod_hint"
     },
     {
       "relation": "contains",
@@ -33527,9 +33700,9 @@
       "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_log_changed",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_log_changed"
     },
     {
       "relation": "contains",
@@ -33538,9 +33711,9 @@
       "source_location": "L150",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_main",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_main"
     },
     {
       "relation": "contains",
@@ -33549,9 +33722,9 @@
       "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_repo_changed",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_repo_changed"
     },
     {
       "relation": "contains",
@@ -33560,9 +33733,9 @@
       "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_sha",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_sha"
     },
     {
       "relation": "contains",
@@ -33571,9 +33744,9 @@
       "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_shell_changed_path",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_shell_changed_path"
     },
     {
       "relation": "contains",
@@ -33582,9 +33755,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "hooks_scripts_stop_gate_snapshot",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_snapshot"
     },
     {
       "relation": "imports_from",
@@ -33594,9 +33767,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate",
-      "target": "scripts_tdq_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state"
     },
     {
       "relation": "calls",
@@ -33606,9 +33779,9 @@
       "source_location": "L162",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_main",
-      "target": "hooks_scripts_stop_gate_snapshot",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_snapshot"
     },
     {
       "relation": "rationale_for",
@@ -33617,9 +33790,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_rationale_51",
-      "target": "hooks_scripts_stop_gate_snapshot",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_snapshot"
     },
     {
       "relation": "calls",
@@ -33629,9 +33802,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_log_changed",
-      "target": "hooks_scripts_stop_gate_sha",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_sha"
     },
     {
       "relation": "calls",
@@ -33665,9 +33838,9 @@
       "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_main",
-      "target": "hooks_scripts_stop_gate_log_changed",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_log_changed"
     },
     {
       "relation": "rationale_for",
@@ -33676,9 +33849,9 @@
       "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_rationale_73",
-      "target": "hooks_scripts_stop_gate_log_changed",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_log_changed"
     },
     {
       "relation": "calls",
@@ -33688,9 +33861,9 @@
       "source_location": "L177",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_main",
-      "target": "hooks_scripts_stop_gate_repo_changed",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_repo_changed"
     },
     {
       "relation": "calls",
@@ -33724,9 +33897,9 @@
       "source_location": "L178",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_main",
-      "target": "hooks_scripts_stop_gate_shell_changed_path",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_shell_changed_path"
     },
     {
       "relation": "rationale_for",
@@ -33735,9 +33908,9 @@
       "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_rationale_100",
-      "target": "hooks_scripts_stop_gate_shell_changed_path",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_shell_changed_path"
     },
     {
       "relation": "calls",
@@ -33819,9 +33992,9 @@
       "source_location": "L234",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_main",
-      "target": "hooks_scripts_stop_gate_dod_hint",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_dod_hint"
     },
     {
       "relation": "rationale_for",
@@ -33830,9 +34003,9 @@
       "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "hooks_scripts_stop_gate_rationale_118",
-      "target": "hooks_scripts_stop_gate_dod_hint",
-      "confidence_score": 1.0
+      "target": "hooks_scripts_stop_gate_dod_hint"
     },
     {
       "relation": "calls",
@@ -33913,9 +34086,9 @@
       "source_location": "L365",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_atomic_write",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_atomic_write"
     },
     {
       "relation": "contains",
@@ -33924,9 +34097,9 @@
       "source_location": "L1524",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_chan_worktree_con_mo",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_chan_worktree_con_mo"
     },
     {
       "relation": "contains",
@@ -33935,9 +34108,9 @@
       "source_location": "L1586",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_cli",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_cli"
     },
     {
       "relation": "contains",
@@ -33946,9 +34119,9 @@
       "source_location": "L1449",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_cli_approve",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_cli_approve"
     },
     {
       "relation": "contains",
@@ -33957,9 +34130,9 @@
       "source_location": "L844",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_cong_dang_cho",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_cong_dang_cho"
     },
     {
       "relation": "contains",
@@ -33968,9 +34141,9 @@
       "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_default_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_default_state"
     },
     {
       "relation": "contains",
@@ -33979,9 +34152,9 @@
       "source_location": "L653",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_dod_section",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dod_section"
     },
     {
       "relation": "contains",
@@ -33990,9 +34163,9 @@
       "source_location": "L679",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_dod_tick_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dod_tick_state"
     },
     {
       "relation": "contains",
@@ -34001,9 +34174,9 @@
       "source_location": "L320",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_dong_so_request_cu",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dong_so_request_cu"
     },
     {
       "relation": "contains",
@@ -34012,9 +34185,9 @@
       "source_location": "L1577",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_echo_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_echo_state"
     },
     {
       "relation": "contains",
@@ -34023,9 +34196,9 @@
       "source_location": "L825",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "contains",
@@ -34034,9 +34207,9 @@
       "source_location": "L871",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_effective_mode",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_mode"
     },
     {
       "relation": "contains",
@@ -34045,9 +34218,9 @@
       "source_location": "L861",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_effective_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_phase"
     },
     {
       "relation": "contains",
@@ -34056,9 +34229,9 @@
       "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_fail",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_fail"
     },
     {
       "relation": "contains",
@@ -34067,9 +34240,9 @@
       "source_location": "L1432",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_file_changed_since_approval",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_file_changed_since_approval"
     },
     {
       "relation": "contains",
@@ -34078,9 +34251,9 @@
       "source_location": "L251",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_find_shadow_states",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_find_shadow_states"
     },
     {
       "relation": "contains",
@@ -34089,9 +34262,9 @@
       "source_location": "L352",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_ghi_moc_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_ghi_moc_phase"
     },
     {
       "relation": "contains",
@@ -34100,9 +34273,9 @@
       "source_location": "L462",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_git",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_git"
     },
     {
       "relation": "contains",
@@ -34111,9 +34284,9 @@
       "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_info",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_info"
     },
     {
       "relation": "contains",
@@ -34122,9 +34295,9 @@
       "source_location": "L799",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_lane_label",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_lane_label"
     },
     {
       "relation": "contains",
@@ -34133,9 +34306,9 @@
       "source_location": "L279",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "contains",
@@ -34144,9 +34317,9 @@
       "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_log_enabled",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_log_enabled"
     },
     {
       "relation": "contains",
@@ -34155,9 +34328,9 @@
       "source_location": "L1166",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_mark",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_mark"
     },
     {
       "relation": "contains",
@@ -34166,9 +34339,9 @@
       "source_location": "L817",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_mode_label",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_mode_label"
     },
     {
       "relation": "contains",
@@ -34177,9 +34350,9 @@
       "source_location": "L1172",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_next_headline",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_next_headline"
     },
     {
       "relation": "contains",
@@ -34188,9 +34361,9 @@
       "source_location": "L124",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_normalize_doc_lang",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_doc_lang"
     },
     {
       "relation": "contains",
@@ -34199,9 +34372,9 @@
       "source_location": "L790",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_normalize_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_lane"
     },
     {
       "relation": "contains",
@@ -34210,9 +34383,9 @@
       "source_location": "L808",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_normalize_mode",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_mode"
     },
     {
       "relation": "contains",
@@ -34221,9 +34394,9 @@
       "source_location": "L273",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "contains",
@@ -34232,9 +34405,9 @@
       "source_location": "L1384",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_parse_approve_args",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_approve_args"
     },
     {
       "relation": "contains",
@@ -34243,9 +34416,9 @@
       "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_parse_slug",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_slug"
     },
     {
       "relation": "contains",
@@ -34254,9 +34427,9 @@
       "source_location": "L1363",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_parse_value",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_value"
     },
     {
       "relation": "contains",
@@ -34265,9 +34438,9 @@
       "source_location": "L1135",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_phase_key",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_key"
     },
     {
       "relation": "contains",
@@ -34276,9 +34449,9 @@
       "source_location": "L1150",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_phase_row",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_row"
     },
     {
       "relation": "contains",
@@ -34287,9 +34460,9 @@
       "source_location": "L588",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_plan_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_path"
     },
     {
       "relation": "contains",
@@ -34298,9 +34471,9 @@
       "source_location": "L599",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_plan_tick_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_tick_state"
     },
     {
       "relation": "contains",
@@ -34309,9 +34482,9 @@
       "source_location": "L1085",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_plugin_root_cmd",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plugin_root_cmd"
     },
     {
       "relation": "contains",
@@ -34320,9 +34493,9 @@
       "source_location": "L1544",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_pop_json_flag",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_pop_json_flag"
     },
     {
       "relation": "contains",
@@ -34331,9 +34504,9 @@
       "source_location": "L1551",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_pop_lang_flag",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_pop_lang_flag"
     },
     {
       "relation": "contains",
@@ -34342,9 +34515,9 @@
       "source_location": "L1338",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_prompt_context_last",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_last"
     },
     {
       "relation": "contains",
@@ -34353,9 +34526,9 @@
       "source_location": "L1336",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_prompt_context_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_path"
     },
     {
       "relation": "contains",
@@ -34364,9 +34537,9 @@
       "source_location": "L1350",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_prompt_context_save",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_save"
     },
     {
       "relation": "contains",
@@ -34375,9 +34548,9 @@
       "source_location": "L716",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_qc_result_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_qc_result_state"
     },
     {
       "relation": "contains",
@@ -34386,9 +34559,9 @@
       "source_location": "L1182",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_render_next",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_next"
     },
     {
       "relation": "contains",
@@ -34397,9 +34570,9 @@
       "source_location": "L1090",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_render_phases_md",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_phases_md"
     },
     {
       "relation": "contains",
@@ -34408,9 +34581,9 @@
       "source_location": "L1207",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_render_state_md",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_state_md"
     },
     {
       "relation": "contains",
@@ -34419,9 +34592,9 @@
       "source_location": "L477",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_repo_root",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_root"
     },
     {
       "relation": "contains",
@@ -34430,9 +34603,9 @@
       "source_location": "L503",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_repo_status_digest",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_status_digest"
     },
     {
       "relation": "contains",
@@ -34441,9 +34614,9 @@
       "source_location": "L545",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_repo_status_paths",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_status_paths"
     },
     {
       "relation": "contains",
@@ -34452,9 +34625,9 @@
       "source_location": "L224",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_resolve_project_dir",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_resolve_project_dir"
     },
     {
       "relation": "contains",
@@ -34463,9 +34636,9 @@
       "source_location": "L1269",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_row_age_ok",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_row_age_ok"
     },
     {
       "relation": "contains",
@@ -34474,9 +34647,9 @@
       "source_location": "L380",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_save",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_save"
     },
     {
       "relation": "contains",
@@ -34485,9 +34658,9 @@
       "source_location": "L401",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_sha256_file",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_file"
     },
     {
       "relation": "contains",
@@ -34496,9 +34669,9 @@
       "source_location": "L409",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_sha256_noi_dung",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_noi_dung"
     },
     {
       "relation": "contains",
@@ -34507,9 +34680,9 @@
       "source_location": "L182",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_state_md_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_md_path"
     },
     {
       "relation": "contains",
@@ -34518,9 +34691,9 @@
       "source_location": "L178",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_state_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_path"
     },
     {
       "relation": "contains",
@@ -34529,9 +34702,9 @@
       "source_location": "L753",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_task_open_count",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_task_open_count"
     },
     {
       "relation": "contains",
@@ -34540,9 +34713,9 @@
       "source_location": "L458",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_today_log_rel",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_today_log_rel"
     },
     {
       "relation": "contains",
@@ -34551,9 +34724,9 @@
       "source_location": "L1252",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_turn_log_append",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_append"
     },
     {
       "relation": "contains",
@@ -34562,9 +34735,9 @@
       "source_location": "L1304",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_turn_log_clear",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_clear"
     },
     {
       "relation": "contains",
@@ -34573,9 +34746,9 @@
       "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_turn_log_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_path"
     },
     {
       "relation": "contains",
@@ -34584,9 +34757,9 @@
       "source_location": "L1279",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_turn_log_read",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_read"
     },
     {
       "relation": "contains",
@@ -34595,9 +34768,9 @@
       "source_location": "L775",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_turn_snapshot",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_snapshot"
     },
     {
       "relation": "contains",
@@ -34606,9 +34779,9 @@
       "source_location": "L1377",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_unfinished",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_unfinished"
     },
     {
       "relation": "contains",
@@ -34617,9 +34790,9 @@
       "source_location": "L485",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_untracked_mark",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_untracked_mark"
     },
     {
       "relation": "contains",
@@ -34628,9 +34801,9 @@
       "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34640,9 +34813,9 @@
       "source_location": "L1638",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_parse_slug",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_slug"
     },
     {
       "relation": "rationale_for",
@@ -34651,9 +34824,9 @@
       "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_92",
-      "target": "scripts_tdq_state_parse_slug",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_slug"
     },
     {
       "relation": "calls",
@@ -34663,9 +34836,9 @@
       "source_location": "L1691",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_normalize_doc_lang",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_doc_lang"
     },
     {
       "relation": "calls",
@@ -34675,9 +34848,9 @@
       "source_location": "L1565",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_pop_lang_flag",
-      "target": "scripts_tdq_state_normalize_doc_lang",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_doc_lang"
     },
     {
       "relation": "rationale_for",
@@ -34686,9 +34859,9 @@
       "source_location": "L125",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_125",
-      "target": "scripts_tdq_state_normalize_doc_lang",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_doc_lang"
     },
     {
       "relation": "calls",
@@ -34698,9 +34871,9 @@
       "source_location": "L1616",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_default_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_default_state"
     },
     {
       "relation": "calls",
@@ -34710,9 +34883,9 @@
       "source_location": "L1456",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_default_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_default_state"
     },
     {
       "relation": "calls",
@@ -34722,9 +34895,9 @@
       "source_location": "L307",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_load",
-      "target": "scripts_tdq_state_default_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_default_state"
     },
     {
       "relation": "calls",
@@ -34734,9 +34907,9 @@
       "source_location": "L1209",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_state_md",
-      "target": "scripts_tdq_state_default_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_default_state"
     },
     {
       "relation": "calls",
@@ -34746,9 +34919,9 @@
       "source_location": "L255",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_find_shadow_states",
-      "target": "scripts_tdq_state_state_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_path"
     },
     {
       "relation": "calls",
@@ -34758,9 +34931,9 @@
       "source_location": "L286",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_load",
-      "target": "scripts_tdq_state_state_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_path"
     },
     {
       "relation": "calls",
@@ -34770,9 +34943,9 @@
       "source_location": "L238",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_resolve_project_dir",
-      "target": "scripts_tdq_state_state_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_path"
     },
     {
       "relation": "calls",
@@ -34782,9 +34955,9 @@
       "source_location": "L393",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_state_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_path"
     },
     {
       "relation": "calls",
@@ -34794,9 +34967,9 @@
       "source_location": "L256",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_find_shadow_states",
-      "target": "scripts_tdq_state_state_md_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_md_path"
     },
     {
       "relation": "calls",
@@ -34806,9 +34979,9 @@
       "source_location": "L395",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_state_md_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_state_md_path"
     },
     {
       "relation": "calls",
@@ -34818,9 +34991,9 @@
       "source_location": "L1256",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_append",
-      "target": "scripts_tdq_state_turn_log_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_path"
     },
     {
       "relation": "calls",
@@ -34830,9 +35003,9 @@
       "source_location": "L1306",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_clear",
-      "target": "scripts_tdq_state_turn_log_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_path"
     },
     {
       "relation": "calls",
@@ -34842,9 +35015,9 @@
       "source_location": "L1283",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_read",
-      "target": "scripts_tdq_state_turn_log_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_path"
     },
     {
       "relation": "calls",
@@ -34854,9 +35027,9 @@
       "source_location": "L211",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_info",
-      "target": "scripts_tdq_state_log_enabled",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_log_enabled"
     },
     {
       "relation": "calls",
@@ -34866,9 +35039,9 @@
       "source_location": "L206",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_warn",
-      "target": "scripts_tdq_state_log_enabled",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_log_enabled"
     },
     {
       "relation": "calls",
@@ -34878,9 +35051,9 @@
       "source_location": "L1593",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34890,9 +35063,9 @@
       "source_location": "L1455",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34902,9 +35075,9 @@
       "source_location": "L343",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_dong_so_request_cu",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34914,9 +35087,9 @@
       "source_location": "L830",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_effective_lane",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34926,9 +35099,9 @@
       "source_location": "L876",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_effective_mode",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34938,9 +35111,9 @@
       "source_location": "L866",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_effective_phase",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34950,9 +35123,9 @@
       "source_location": "L468",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_git",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34962,9 +35135,9 @@
       "source_location": "L302",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_load",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "rationale_for",
@@ -34973,9 +35146,9 @@
       "source_location": "L202",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_202",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34985,9 +35158,9 @@
       "source_location": "L390",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_warn",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_warn"
     },
     {
       "relation": "calls",
@@ -34997,9 +35170,9 @@
       "source_location": "L207",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_warn",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35009,9 +35182,9 @@
       "source_location": "L1591",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_info",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_info"
     },
     {
       "relation": "calls",
@@ -35021,9 +35194,9 @@
       "source_location": "L1512",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_info",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_info"
     },
     {
       "relation": "calls",
@@ -35033,9 +35206,9 @@
       "source_location": "L212",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_info",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35045,9 +35218,9 @@
       "source_location": "L1540",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_chan_worktree_con_mo",
-      "target": "scripts_tdq_state_fail",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_fail"
     },
     {
       "relation": "calls",
@@ -35057,9 +35230,9 @@
       "source_location": "L1596",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_fail",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_fail"
     },
     {
       "relation": "calls",
@@ -35069,9 +35242,9 @@
       "source_location": "L1387",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_parse_approve_args",
-      "target": "scripts_tdq_state_fail",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_fail"
     },
     {
       "relation": "calls",
@@ -35081,9 +35254,9 @@
       "source_location": "L1564",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_pop_lang_flag",
-      "target": "scripts_tdq_state_fail",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_fail"
     },
     {
       "relation": "rationale_for",
@@ -35092,9 +35265,9 @@
       "source_location": "L216",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_216",
-      "target": "scripts_tdq_state_fail",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_fail"
     },
     {
       "relation": "calls",
@@ -35104,9 +35277,9 @@
       "source_location": "L1589",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_resolve_project_dir",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_resolve_project_dir"
     },
     {
       "relation": "rationale_for",
@@ -35115,9 +35288,9 @@
       "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_225",
-      "target": "scripts_tdq_state_resolve_project_dir",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_resolve_project_dir"
     },
     {
       "relation": "calls",
@@ -35127,9 +35300,9 @@
       "source_location": "L1592",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_find_shadow_states",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_find_shadow_states"
     },
     {
       "relation": "rationale_for",
@@ -35138,9 +35311,9 @@
       "source_location": "L252",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_252",
-      "target": "scripts_tdq_state_find_shadow_states",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_find_shadow_states"
     },
     {
       "relation": "calls",
@@ -35150,9 +35323,9 @@
       "source_location": "L1656",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35162,9 +35335,9 @@
       "source_location": "L1494",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35174,9 +35347,9 @@
       "source_location": "L361",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_ghi_moc_phase",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35186,9 +35359,9 @@
       "source_location": "L1221",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_state_md",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35198,9 +35371,9 @@
       "source_location": "L392",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35210,9 +35383,9 @@
       "source_location": "L1254",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_append",
-      "target": "scripts_tdq_state_now_iso",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_now_iso"
     },
     {
       "relation": "calls",
@@ -35222,9 +35395,9 @@
       "source_location": "L1604",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35234,9 +35407,9 @@
       "source_location": "L1453",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35246,9 +35419,9 @@
       "source_location": "L683",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_dod_tick_state",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35258,9 +35431,9 @@
       "source_location": "L332",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_dong_so_request_cu",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35270,9 +35443,9 @@
       "source_location": "L605",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_plan_tick_state",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35282,9 +35455,9 @@
       "source_location": "L1342",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_prompt_context_last",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35294,9 +35467,9 @@
       "source_location": "L721",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_qc_result_state",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "rationale_for",
@@ -35305,9 +35478,9 @@
       "source_location": "L280",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_280",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35317,9 +35490,9 @@
       "source_location": "L388",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35329,9 +35502,9 @@
       "source_location": "L760",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_task_open_count",
-      "target": "scripts_tdq_state_load",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_load"
     },
     {
       "relation": "calls",
@@ -35341,9 +35514,9 @@
       "source_location": "L1652",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_dong_so_request_cu",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dong_so_request_cu"
     },
     {
       "relation": "rationale_for",
@@ -35352,9 +35525,9 @@
       "source_location": "L321",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_321",
-      "target": "scripts_tdq_state_dong_so_request_cu",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dong_so_request_cu"
     },
     {
       "relation": "calls",
@@ -35364,9 +35537,9 @@
       "source_location": "L1657",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_ghi_moc_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_ghi_moc_phase"
     },
     {
       "relation": "rationale_for",
@@ -35375,9 +35548,9 @@
       "source_location": "L353",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_353",
-      "target": "scripts_tdq_state_ghi_moc_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_ghi_moc_phase"
     },
     {
       "relation": "calls",
@@ -35387,9 +35560,9 @@
       "source_location": "L1356",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_prompt_context_save",
-      "target": "scripts_tdq_state_atomic_write",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_atomic_write"
     },
     {
       "relation": "calls",
@@ -35399,9 +35572,9 @@
       "source_location": "L393",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_atomic_write",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_atomic_write"
     },
     {
       "relation": "calls",
@@ -35411,9 +35584,9 @@
       "source_location": "L1326",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_clear",
-      "target": "scripts_tdq_state_atomic_write",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_atomic_write"
     },
     {
       "relation": "calls",
@@ -35423,9 +35596,9 @@
       "source_location": "L1668",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_save",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_save"
     },
     {
       "relation": "calls",
@@ -35435,9 +35608,9 @@
       "source_location": "L1467",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_save",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_save"
     },
     {
       "relation": "rationale_for",
@@ -35446,9 +35619,9 @@
       "source_location": "L381",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_381",
-      "target": "scripts_tdq_state_save",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_save"
     },
     {
       "relation": "calls",
@@ -35458,9 +35631,9 @@
       "source_location": "L395",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_save",
-      "target": "scripts_tdq_state_render_state_md",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_state_md"
     },
     {
       "relation": "calls",
@@ -35470,9 +35643,9 @@
       "source_location": "L615",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_plan_tick_state",
-      "target": "scripts_tdq_state_sha256_file",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_file"
     },
     {
       "relation": "calls",
@@ -35482,9 +35655,9 @@
       "source_location": "L780",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_snapshot",
-      "target": "scripts_tdq_state_sha256_file",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_file"
     },
     {
       "relation": "calls",
@@ -35494,9 +35667,9 @@
       "source_location": "L497",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_untracked_mark",
-      "target": "scripts_tdq_state_sha256_file",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_file"
     },
     {
       "relation": "calls",
@@ -35506,9 +35679,9 @@
       "source_location": "L1489",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_sha256_noi_dung",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_noi_dung"
     },
     {
       "relation": "calls",
@@ -35518,9 +35691,9 @@
       "source_location": "L1444",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_file_changed_since_approval",
-      "target": "scripts_tdq_state_sha256_noi_dung",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_noi_dung"
     },
     {
       "relation": "rationale_for",
@@ -35529,9 +35702,9 @@
       "source_location": "L410",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_410",
-      "target": "scripts_tdq_state_sha256_noi_dung",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_sha256_noi_dung"
     },
     {
       "relation": "calls",
@@ -35541,9 +35714,9 @@
       "source_location": "L778",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_snapshot",
-      "target": "scripts_tdq_state_today_log_rel",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_today_log_rel"
     },
     {
       "relation": "rationale_for",
@@ -35552,9 +35725,9 @@
       "source_location": "L463",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_463",
-      "target": "scripts_tdq_state_git",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_git"
     },
     {
       "relation": "calls",
@@ -35564,9 +35737,9 @@
       "source_location": "L480",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_repo_root",
-      "target": "scripts_tdq_state_git",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_git"
     },
     {
       "relation": "calls",
@@ -35576,9 +35749,9 @@
       "source_location": "L520",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_repo_status_digest",
-      "target": "scripts_tdq_state_git",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_git"
     },
     {
       "relation": "calls",
@@ -35588,9 +35761,9 @@
       "source_location": "L555",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_repo_status_paths",
-      "target": "scripts_tdq_state_git",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_git"
     },
     {
       "relation": "calls",
@@ -35600,9 +35773,9 @@
       "source_location": "L783",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_snapshot",
-      "target": "scripts_tdq_state_git",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_git"
     },
     {
       "relation": "rationale_for",
@@ -35611,9 +35784,9 @@
       "source_location": "L478",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_478",
-      "target": "scripts_tdq_state_repo_root",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_root"
     },
     {
       "relation": "calls",
@@ -35623,9 +35796,9 @@
       "source_location": "L529",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_repo_status_digest",
-      "target": "scripts_tdq_state_repo_root",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_root"
     },
     {
       "relation": "rationale_for",
@@ -35634,9 +35807,9 @@
       "source_location": "L486",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_486",
-      "target": "scripts_tdq_state_untracked_mark",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_untracked_mark"
     },
     {
       "relation": "calls",
@@ -35646,9 +35819,9 @@
       "source_location": "L538",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_repo_status_digest",
-      "target": "scripts_tdq_state_untracked_mark",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_untracked_mark"
     },
     {
       "relation": "rationale_for",
@@ -35657,9 +35830,9 @@
       "source_location": "L504",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_504",
-      "target": "scripts_tdq_state_repo_status_digest",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_status_digest"
     },
     {
       "relation": "calls",
@@ -35669,9 +35842,9 @@
       "source_location": "L785",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_snapshot",
-      "target": "scripts_tdq_state_repo_status_digest",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_status_digest"
     },
     {
       "relation": "rationale_for",
@@ -35680,9 +35853,9 @@
       "source_location": "L546",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_546",
-      "target": "scripts_tdq_state_repo_status_paths",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_status_paths"
     },
     {
       "relation": "calls",
@@ -35692,9 +35865,9 @@
       "source_location": "L786",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_snapshot",
-      "target": "scripts_tdq_state_repo_status_paths",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_repo_status_paths"
     },
     {
       "relation": "calls",
@@ -35704,9 +35877,9 @@
       "source_location": "L686",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_dod_tick_state",
-      "target": "scripts_tdq_state_plan_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_path"
     },
     {
       "relation": "calls",
@@ -35716,9 +35889,9 @@
       "source_location": "L608",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_plan_tick_state",
-      "target": "scripts_tdq_state_plan_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_path"
     },
     {
       "relation": "rationale_for",
@@ -35727,9 +35900,9 @@
       "source_location": "L589",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_589",
-      "target": "scripts_tdq_state_plan_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_path"
     },
     {
       "relation": "calls",
@@ -35739,9 +35912,9 @@
       "source_location": "L763",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_task_open_count",
-      "target": "scripts_tdq_state_plan_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_path"
     },
     {
       "relation": "rationale_for",
@@ -35750,9 +35923,9 @@
       "source_location": "L600",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_600",
-      "target": "scripts_tdq_state_plan_tick_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_tick_state"
     },
     {
       "relation": "calls",
@@ -35762,9 +35935,9 @@
       "source_location": "L787",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_snapshot",
-      "target": "scripts_tdq_state_plan_tick_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plan_tick_state"
     },
     {
       "relation": "calls",
@@ -35774,9 +35947,9 @@
       "source_location": "L697",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_dod_tick_state",
-      "target": "scripts_tdq_state_dod_section",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dod_section"
     },
     {
       "relation": "rationale_for",
@@ -35785,9 +35958,9 @@
       "source_location": "L654",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_654",
-      "target": "scripts_tdq_state_dod_section",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dod_section"
     },
     {
       "relation": "rationale_for",
@@ -35796,9 +35969,9 @@
       "source_location": "L680",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_680",
-      "target": "scripts_tdq_state_dod_tick_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_dod_tick_state"
     },
     {
       "relation": "rationale_for",
@@ -35807,9 +35980,9 @@
       "source_location": "L717",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_717",
-      "target": "scripts_tdq_state_qc_result_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_qc_result_state"
     },
     {
       "relation": "rationale_for",
@@ -35818,9 +35991,9 @@
       "source_location": "L754",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_754",
-      "target": "scripts_tdq_state_task_open_count",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_task_open_count"
     },
     {
       "relation": "rationale_for",
@@ -35829,9 +36002,9 @@
       "source_location": "L776",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_776",
-      "target": "scripts_tdq_state_turn_snapshot",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_snapshot"
     },
     {
       "relation": "calls",
@@ -35841,9 +36014,9 @@
       "source_location": "L1662",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_normalize_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_lane"
     },
     {
       "relation": "calls",
@@ -35853,9 +36026,9 @@
       "source_location": "L1390",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_parse_approve_args",
-      "target": "scripts_tdq_state_normalize_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_lane"
     },
     {
       "relation": "rationale_for",
@@ -35864,9 +36037,9 @@
       "source_location": "L791",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_791",
-      "target": "scripts_tdq_state_normalize_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_lane"
     },
     {
       "relation": "rationale_for",
@@ -35875,9 +36048,9 @@
       "source_location": "L800",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_800",
-      "target": "scripts_tdq_state_lane_label",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_lane_label"
     },
     {
       "relation": "calls",
@@ -35887,9 +36060,9 @@
       "source_location": "L1412",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_parse_approve_args",
-      "target": "scripts_tdq_state_normalize_mode",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_mode"
     },
     {
       "relation": "rationale_for",
@@ -35898,9 +36071,9 @@
       "source_location": "L809",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_809",
-      "target": "scripts_tdq_state_normalize_mode",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_normalize_mode"
     },
     {
       "relation": "rationale_for",
@@ -35909,9 +36082,9 @@
       "source_location": "L818",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_818",
-      "target": "scripts_tdq_state_mode_label",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_mode_label"
     },
     {
       "relation": "calls",
@@ -35921,9 +36094,9 @@
       "source_location": "L1472",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "calls",
@@ -35933,9 +36106,9 @@
       "source_location": "L854",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cong_dang_cho",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "calls",
@@ -35945,9 +36118,9 @@
       "source_location": "L1178",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_next_headline",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "calls",
@@ -35957,9 +36130,9 @@
       "source_location": "L1139",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_phase_key",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "calls",
@@ -35969,9 +36142,9 @@
       "source_location": "L1191",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_next",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "calls",
@@ -35981,9 +36154,9 @@
       "source_location": "L1210",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_state_md",
-      "target": "scripts_tdq_state_effective_lane",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_lane"
     },
     {
       "relation": "rationale_for",
@@ -35992,9 +36165,9 @@
       "source_location": "L845",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_845",
-      "target": "scripts_tdq_state_cong_dang_cho",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_cong_dang_cho"
     },
     {
       "relation": "calls",
@@ -36004,9 +36177,9 @@
       "source_location": "L1465",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_effective_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_phase"
     },
     {
       "relation": "calls",
@@ -36016,9 +36189,9 @@
       "source_location": "L1144",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_phase_key",
-      "target": "scripts_tdq_state_effective_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_phase"
     },
     {
       "relation": "calls",
@@ -36028,9 +36201,9 @@
       "source_location": "L1192",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_next",
-      "target": "scripts_tdq_state_effective_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_phase"
     },
     {
       "relation": "calls",
@@ -36040,9 +36213,9 @@
       "source_location": "L1227",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_state_md",
-      "target": "scripts_tdq_state_effective_phase",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_phase"
     },
     {
       "relation": "calls",
@@ -36052,9 +36225,9 @@
       "source_location": "L1159",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_phase_row",
-      "target": "scripts_tdq_state_effective_mode",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_mode"
     },
     {
       "relation": "calls",
@@ -36064,9 +36237,9 @@
       "source_location": "L1232",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_state_md",
-      "target": "scripts_tdq_state_effective_mode",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_effective_mode"
     },
     {
       "relation": "rationale_for",
@@ -36075,9 +36248,9 @@
       "source_location": "L1086",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1086",
-      "target": "scripts_tdq_state_plugin_root_cmd",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_plugin_root_cmd"
     },
     {
       "relation": "calls",
@@ -36087,9 +36260,9 @@
       "source_location": "L1612",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_render_phases_md",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_phases_md"
     },
     {
       "relation": "rationale_for",
@@ -36098,9 +36271,9 @@
       "source_location": "L1091",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1091",
-      "target": "scripts_tdq_state_render_phases_md",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_phases_md"
     },
     {
       "relation": "calls",
@@ -36110,9 +36283,9 @@
       "source_location": "L1179",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_next_headline",
-      "target": "scripts_tdq_state_phase_key",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_key"
     },
     {
       "relation": "calls",
@@ -36122,9 +36295,9 @@
       "source_location": "L1158",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_phase_row",
-      "target": "scripts_tdq_state_phase_key",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_key"
     },
     {
       "relation": "rationale_for",
@@ -36133,9 +36306,9 @@
       "source_location": "L1136",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1136",
-      "target": "scripts_tdq_state_phase_key",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_key"
     },
     {
       "relation": "rationale_for",
@@ -36144,9 +36317,9 @@
       "source_location": "L1151",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1151",
-      "target": "scripts_tdq_state_phase_row",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_row"
     },
     {
       "relation": "calls",
@@ -36156,9 +36329,9 @@
       "source_location": "L1196",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_next",
-      "target": "scripts_tdq_state_phase_row",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_row"
     },
     {
       "relation": "calls",
@@ -36168,9 +36341,9 @@
       "source_location": "L1211",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_state_md",
-      "target": "scripts_tdq_state_phase_row",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_phase_row"
     },
     {
       "relation": "rationale_for",
@@ -36179,9 +36352,9 @@
       "source_location": "L1173",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1173",
-      "target": "scripts_tdq_state_next_headline",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_next_headline"
     },
     {
       "relation": "calls",
@@ -36191,9 +36364,9 @@
       "source_location": "L1193",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_render_next",
-      "target": "scripts_tdq_state_next_headline",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_next_headline"
     },
     {
       "relation": "calls",
@@ -36203,9 +36376,9 @@
       "source_location": "L1604",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_render_next",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_next"
     },
     {
       "relation": "rationale_for",
@@ -36214,9 +36387,9 @@
       "source_location": "L1183",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1183",
-      "target": "scripts_tdq_state_render_next",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_next"
     },
     {
       "relation": "rationale_for",
@@ -36225,9 +36398,9 @@
       "source_location": "L1208",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1208",
-      "target": "scripts_tdq_state_render_state_md",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_render_state_md"
     },
     {
       "relation": "rationale_for",
@@ -36236,9 +36409,9 @@
       "source_location": "L1253",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1253",
-      "target": "scripts_tdq_state_turn_log_append",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_append"
     },
     {
       "relation": "calls",
@@ -36248,9 +36421,9 @@
       "source_location": "L1320",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_clear",
-      "target": "scripts_tdq_state_row_age_ok",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_row_age_ok"
     },
     {
       "relation": "calls",
@@ -36260,9 +36433,9 @@
       "source_location": "L1296",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_turn_log_read",
-      "target": "scripts_tdq_state_row_age_ok",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_row_age_ok"
     },
     {
       "relation": "rationale_for",
@@ -36271,9 +36444,9 @@
       "source_location": "L1280",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1280",
-      "target": "scripts_tdq_state_turn_log_read",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_read"
     },
     {
       "relation": "rationale_for",
@@ -36282,9 +36455,9 @@
       "source_location": "L1305",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1305",
-      "target": "scripts_tdq_state_turn_log_clear",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_turn_log_clear"
     },
     {
       "relation": "calls",
@@ -36294,9 +36467,9 @@
       "source_location": "L1341",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_prompt_context_last",
-      "target": "scripts_tdq_state_prompt_context_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_path"
     },
     {
       "relation": "calls",
@@ -36306,9 +36479,9 @@
       "source_location": "L1353",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_prompt_context_save",
-      "target": "scripts_tdq_state_prompt_context_path",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_path"
     },
     {
       "relation": "rationale_for",
@@ -36317,9 +36490,9 @@
       "source_location": "L1339",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1339",
-      "target": "scripts_tdq_state_prompt_context_last",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_last"
     },
     {
       "relation": "rationale_for",
@@ -36328,9 +36501,9 @@
       "source_location": "L1351",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1351",
-      "target": "scripts_tdq_state_prompt_context_save",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_prompt_context_save"
     },
     {
       "relation": "calls",
@@ -36340,9 +36513,9 @@
       "source_location": "L1687",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_parse_value",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_value"
     },
     {
       "relation": "calls",
@@ -36352,9 +36525,9 @@
       "source_location": "L1658",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_unfinished",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_unfinished"
     },
     {
       "relation": "rationale_for",
@@ -36363,9 +36536,9 @@
       "source_location": "L1378",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1378",
-      "target": "scripts_tdq_state_unfinished",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_unfinished"
     },
     {
       "relation": "calls",
@@ -36375,9 +36548,9 @@
       "source_location": "L1452",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_parse_approve_args",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_approve_args"
     },
     {
       "relation": "rationale_for",
@@ -36386,9 +36559,9 @@
       "source_location": "L1385",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1385",
-      "target": "scripts_tdq_state_parse_approve_args",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_parse_approve_args"
     },
     {
       "relation": "calls",
@@ -36398,9 +36571,9 @@
       "source_location": "L1459",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli_approve",
-      "target": "scripts_tdq_state_file_changed_since_approval",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_file_changed_since_approval"
     },
     {
       "relation": "rationale_for",
@@ -36409,9 +36582,9 @@
       "source_location": "L1433",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1433",
-      "target": "scripts_tdq_state_file_changed_since_approval",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_file_changed_since_approval"
     },
     {
       "relation": "calls",
@@ -36421,9 +36594,9 @@
       "source_location": "L1707",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_cli_approve",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_cli_approve"
     },
     {
       "relation": "rationale_for",
@@ -36432,9 +36605,9 @@
       "source_location": "L1450",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1450",
-      "target": "scripts_tdq_state_cli_approve",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_cli_approve"
     },
     {
       "relation": "calls",
@@ -36444,9 +36617,9 @@
       "source_location": "L1698",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_chan_worktree_con_mo",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_chan_worktree_con_mo"
     },
     {
       "relation": "rationale_for",
@@ -36455,9 +36628,9 @@
       "source_location": "L1525",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1525",
-      "target": "scripts_tdq_state_chan_worktree_con_mo",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_chan_worktree_con_mo"
     },
     {
       "relation": "calls",
@@ -36467,9 +36640,9 @@
       "source_location": "L1631",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_pop_json_flag",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_pop_json_flag"
     },
     {
       "relation": "rationale_for",
@@ -36478,9 +36651,9 @@
       "source_location": "L1545",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1545",
-      "target": "scripts_tdq_state_pop_json_flag",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_pop_json_flag"
     },
     {
       "relation": "calls",
@@ -36490,9 +36663,9 @@
       "source_location": "L1632",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_pop_lang_flag",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_pop_lang_flag"
     },
     {
       "relation": "rationale_for",
@@ -36501,9 +36674,9 @@
       "source_location": "L1552",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1552",
-      "target": "scripts_tdq_state_pop_lang_flag",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_pop_lang_flag"
     },
     {
       "relation": "calls",
@@ -36513,9 +36686,9 @@
       "source_location": "L1669",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_cli",
-      "target": "scripts_tdq_state_echo_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_echo_state"
     },
     {
       "relation": "rationale_for",
@@ -36524,11 +36697,11 @@
       "source_location": "L1578",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "scripts_tdq_state_rationale_1578",
-      "target": "scripts_tdq_state_echo_state",
-      "confidence_score": 1.0
+      "target": "scripts_tdq_state_echo_state"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "478b034e58b2db701188875bbddbf1fa99ae52ed"
+  "built_at_commit": "7e3bbd0b8b40faf8a96d17f1f6d2502da796cc5d"
 }

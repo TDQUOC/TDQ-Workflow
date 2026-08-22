@@ -24,7 +24,8 @@ from _common import payload_cwd, read_payload, turn_rows
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (BOOKKEEPING_PATHS, _info, _warn,  # noqa: E402
-                       cong_dang_cho, effective_phase, load, plan_tick_state,
+                       cong_dang_cho, dod_tick_state, effective_phase, load,
+                       plan_tick_state, qc_result_state, task_open_count,
                        repo_status_digest, repo_status_paths, sha256_file,
                        today_log_rel)
 
@@ -113,6 +114,39 @@ def _shell_changed_path(cwd, snap):
     return (fresh or known)[:MAX_PATH_CHARS]
 
 
+def _dod_hint(cwd, state):
+    """[TDQ:DOD] — a REMINDER, never a block: the books are being closed while checkboxes
+    are still open.
+
+    QC signing off on every item while the Definition of Done boxes stay `[ ]` is pure
+    bookkeeping slippage, so a reminder is the right strength — the work IS done, only the
+    record is not. Four conditions must all hold, and each one exists to keep a hook that
+    runs at user scope from nagging a project it knows nothing about:
+
+    1. phase `report` or `idle` — that is close-out; earlier, open boxes are normal.
+    2. the DoD section actually uses checkboxes — a plan written the older way (plain
+       bullets) counts 0 and must never be nagged.
+    3. a box is still open.
+    4. the qc file exists, holds at least one PASS and no FAIL — proof QC really ran and
+       really passed, which is what makes an open box a slip rather than honest state.
+    """
+    if effective_phase(state, warn=False) not in ("report", "idle"):
+        return []
+    dod = dod_tick_state(cwd)
+    if not dod["exists"] or dod["total"] == 0 or dod["all_done"]:
+        return []
+    qc = qc_result_state(cwd)
+    if not qc["exists"] or not qc["all_pass"]:
+        return []
+    task_con = task_open_count(cwd)
+    dod_con = dod["total"] - dod["done"]
+    _info(f"stop_gate: hint TDQ:DOD · dod={dod['done']}/{dod['total']} "
+          f"· task open={task_con} · qc={qc['passed']} PASS/{qc['failed']} FAIL "
+          f"· plan={dod['path']}")
+    return [f"[TDQ:DOD] Closing the books with boxes still open: {task_con} task(s), "
+            f"{dod_con} DoD line(s). QC passed — tick them in the plan."]
+
+
 def main():
     payload = read_payload()
     if payload.get("stop_hook_active"):
@@ -194,6 +228,10 @@ def main():
                          "if the user approved, run `tdq_state.py approve`; if unclear, ASK.")
     if "TDQ:GIT" in reminded:
         hints.append("[TDQ:GIT] Re-check the branch name / commit message against the convention before moving on.")
+    # Front of the queue, not the back: `hints` is cut to MAX_LINES, and with four other
+    # reminders already standing the close-out warning would be the one silently dropped —
+    # exactly the turn it is needed, since closing the books IS the last turn.
+    hints[:0] = _dod_hint(cwd, state)
 
     if not hints:
         return

@@ -13,7 +13,7 @@ is something else.
 
 - The seven places this shape is mandatory
 - The five components (all five, in order)
-- The seven decoration rules
+- The eight decoration rules
 - Hard rules
 - The symbols allowed
 - Examples
@@ -42,10 +42,10 @@ the mode gate · the express-lane approval gate · the commit question closing a
 5. **Answer block** — a bold heading, then the `➤` line. This is always the LAST part of the
    message, with nothing written below it.
 
-## The seven decoration rules
+## The eight decoration rules
 
 Use only markdown that renders on all three surfaces (terminal, app, extension). Decoration means
-**adding markup characters**, never rewriting words: the seven rules below allow no word of the
+**adding markup characters**, never rewriting words: the eight rules below allow no word of the
 content to be changed, removed or added.
 
 1. Bold field labels, **with the colon INSIDE the pair of stars**: `**Mục tiêu:** nội dung`. <!-- i18n-allow: sample string of the default language -->
@@ -60,6 +60,27 @@ content to be changed, removed or added.
 6. An option list keeps the shape `- A (đề xuất): nội dung`, one option per line; bold is allowed <!-- i18n-allow: sample string of the default language -->
    only inside the content part, never on the `- A (đề xuất): ` part itself. <!-- i18n-allow: sample string of the default language -->
 7. The `➤` line keeps every byte as it is and is always the last line of the block.
+8. **Every question carrying an option list is numbered.** The question line opens with
+   `<số>. ` — `1.`, `2.`, `3.` — counting continuously across the whole block, and the numbering
+   applies even when the block holds exactly ONE question. No exception for the single-question
+   case: the user answers by pairing the number with the letter (`1a`, `2b`), and a letter with
+   no number in front of it is ambiguous the moment a second question appears. Sample shape,
+   written in the default language:
+
+   <!-- i18n-allow: sample of the shape in the default language -->
+   ```
+   1. <Câu hỏi thứ nhất>
+   - A (đề xuất): <phương án> — <hệ quả>
+   - B: <phương án> — <hệ quả>
+
+   2. <Câu hỏi thứ hai>
+   - A (đề xuất): <phương án> — <hệ quả>
+   - B: <phương án> — <hệ quả>
+   ```
+
+   The number never restarts inside one block: two question lists in one message are `1.` and
+   `2.`, never `1.` twice. Merging two questions into one numbered item is banned too — one
+   number per question the user has to answer separately.
 
 ## Hard rules
 
@@ -71,6 +92,14 @@ content to be changed, removed or added.
 - The answer block comes last. Printing anything after it breaks the shape.
 - The turn keeps running after this block was printed → reprint it **word for word, 100%** in the
   last message (rule §1 item 5 of [SKILL.md](../SKILL.md)).
+- **Self-check before sending — mandatory, never skipped.** The block holds at least one option
+  list → read your own draft back and answer these three before the message goes out:
+  1. Does every question line open with its number (`1.`, `2.`, …)? A single question counts too.
+  2. Do the numbers run continuously across the whole block, with no repeat and no gap?
+  3. Does every option sit on its own line, opening with `- ` and an UPPERCASE letter?
+  Any answer is "no" → fix the draft, do not send it. This check exists because the numbering
+  rule got broken in practice while the rule itself was already written down: it lived only in
+  the skill files that ask questions, and nobody re-read the draft before sending.
 
 ## The symbols allowed
 

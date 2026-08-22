@@ -89,7 +89,11 @@ Rules for this question:
 - Each question adds a final option "I will type the number myself" so the user can fill it
   in directly.
 - Merge question 1 and the context questions into **a single chat block**, numbered
-  continuously.
+  continuously — question 1 is `1.`, the first context question is `2.`, and so on with no
+  repeat and no restart. This is rule 8 of
+  [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md); breaking it
+  is what makes two lists both open at `A` and leaves the user unable to say which question
+  their letter belongs to.
 - Drop any group the request already answered; never re-ask what the user just said.
 
 ## 4. Inferring the investment level

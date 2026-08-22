@@ -10,6 +10,7 @@ a mode. The block follows
 ```
 Plan đã được duyệt. Còn một câu cuối: bạn muốn tôi chạy theo cách nào?
 
+1. Bạn chọn cách chạy nào?
 - A (đề xuất): làm trực tiếp (inline implement) — tôi làm tuần tự ngay trong cuộc trò chuyện này, bạn theo dõi được từng bước.
 - B: giao trợ lý (sub-agent implement) — tôi làm leader: chia cả plan thành từng đợt, mỗi đợt phát cho nhiều trợ lý chạy song song ở worktree riêng, phần không tách được thì tôi tự làm, xong đợt nào tôi kiểm và gộp đợt đó.
 
@@ -19,7 +20,7 @@ Plan đã được duyệt. Còn một câu cuối: bạn muốn tôi chạy the
 
 **Bạn chọn cách nào?**
 
-➤ Trả lời: nhắn "A" / "inline" hoặc "B" / "sub-agent" (chọn xong tôi bắt tay làm ngay) · Góp ý: nhắn trực tiếp
+➤ Trả lời: nhắn "1a" / "inline" hoặc "1b" / "sub-agent" (chọn xong tôi bắt tay làm ngay) · Góp ý: nhắn trực tiếp
 ```
 
 The proposal sits at A whichever mode it is — change the text of line A, never its position.

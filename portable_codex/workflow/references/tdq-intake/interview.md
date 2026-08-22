@@ -65,7 +65,11 @@ Rules of this shape:
   carry no label. <!-- i18n-allow: the label is written in the default language -->
 - After the label comes `:` then the content. The consequence is joined with ` — `, on that
   same line.
-- Several questions in one round → number them `1.`, `2.` and give each its own option list.
+- **Every question is numbered** `1.`, `2.`, … with its own option list — the numbering applies
+  even when the round holds exactly ONE question, and the numbers run continuously across the
+  whole block with no repeat and no gap. Rule 8 of
+  [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) owns this; the
+  self-check in its "Hard rules" runs before the block is sent.
 - The pipeline question, the execution-mode question (main/subagent) and the commit
   question all follow this shape too.
 
@@ -86,8 +90,9 @@ it gets them:
 
 <!-- i18n-allow: guidance line written in the default language -->
 ```
-_Trả lời bằng chữ cái (vd: "A"), hoặc gõ thẳng câu tự nhiên khớp ý bạn chọn (vd: "chọn
-phương án A") — cả hai đều được hiểu như nhau._
+_Trả lời bằng số câu kèm chữ cái (vd: "1a 2b" cho nhiều câu, "1a" cho một câu), hoặc gõ
+thẳng câu tự nhiên khớp ý bạn chọn (vd: "câu 1 chọn phương án A") — cả hai đều được hiểu
+như nhau._
 ```
 
 Only 1 such block, never repeated per question when a round holds several — put it at the

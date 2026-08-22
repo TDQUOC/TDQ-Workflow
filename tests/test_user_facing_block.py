@@ -44,7 +44,7 @@ POINTERS = (
 
 
 # Dòng luật trang trí: số thứ tự ở đầu dòng, dạng `1. ...`.
-RULE = re.compile(r"^([1-7])\. ", re.M)
+RULE = re.compile(r"^([1-8])\. ", re.M)
 # Nhãn trường: `Mục tiêu: ...`. Luật 1 đòi cặp sao ôm cả dấu hai chấm.
 # Loại luôn dấu kết câu khỏi phần tên: `Còn một câu cuối:` giữa một câu văn không phải nhãn.
 # Tên nhãn chỉ gồm chữ và khoảng trắng: loại dấu kết câu, dấu nhấn `_`, ngoặc và nháy —
@@ -197,16 +197,35 @@ class UserFacingBlockTest(unittest.TestCase):
             len(bang), 6,
             f"mục Năm thành phần thiếu bảng cấu trúc trình bày (có {len(bang)} dòng bảng)")
 
-        luat = RULE.findall(muc.get("The seven decoration rules")
+        luat = RULE.findall(muc.get("The eight decoration rules")
+                            or muc.get("The seven decoration rules")
                             or muc.get("Bảy luật trang trí", ""))
         self.assertEqual(
-            [str(i) for i in range(1, 8)], luat,
-            f"mục Bảy luật trang trí phải có đúng 7 luật đánh số 1-7, đang là {luat}")
+            [str(i) for i in range(1, 9)], luat,
+            f"mục luật trang trí phải có đúng 8 luật đánh số 1-8, đang là {luat}")
 
         for tieu_de in (("### Before", "### Trước"), ("### After", "### Sau")):
             with self.subTest(vidu=tieu_de[0]):
                 self.assertTrue(any(t in text for t in tieu_de),
                                 f"khuôn thiếu ví dụ đối chiếu {tieu_de[0]}")
+
+    def test_hard_rules_giu_buoc_tu_soat(self):
+        """Mục "Hard rules" phải giữ bước tự-soát trước khi gửi khối câu hỏi.
+
+        Luật 8 (đánh số câu hỏi) từng bị vi phạm trong lúc bản thân luật đã có
+        sẵn trong file con — cái thiếu là bước ĐỌC LẠI bản nháp trước khi gửi.
+        Xoá bước đó đi thì luật lại trôi y như cũ, nên khoá nó bằng test.
+        """
+        muc = sections(read(BLOCK))
+        cung = muc.get("Hard rules") or muc.get("Luật cứng", "")
+        self.assertIn(
+            "self-check before sending", cung.lower(),
+            'mục "Hard rules" mất bước tự-soát trước khi gửi')
+        # 3 câu soát nằm THỤT vào trong bullet, nên không dùng `RULE` (neo đầu dòng).
+        hoi = re.findall(r"^\s+([1-9])\. ", cung, re.M)
+        self.assertEqual(
+            ["1", "2", "3"], hoi,
+            f"bước tự-soát phải có đúng 3 câu hỏi đánh số 1-3, đang là {hoi}")
 
     def test_sample_blocks_follow_rules(self):
         """Mọi khối mẫu chép trong skill phải theo đúng luật 1, 3, 7 của khuôn.
@@ -291,10 +310,11 @@ class UserFacingBlockTest(unittest.TestCase):
         khuon = read(PORTABLE, "references", "tdq-conventions", "user-facing-block.md")
         # Từ 2026-08-22 khuôn gốc viết tiếng Anh; bản portable sinh từ nó nên đọc tên
         # mục tiếng Anh trước, tên cũ giữ lại để bản portable cũ vẫn kiểm được.
-        luat = RULE.findall(sections(khuon).get("The seven decoration rules")
+        luat = RULE.findall(sections(khuon).get("The eight decoration rules")
+                            or sections(khuon).get("The seven decoration rules")
                             or sections(khuon).get("Bảy luật trang trí", ""))
-        self.assertEqual([str(i) for i in range(1, 8)], luat,
-                         f"bản portable thiếu bảy luật trang trí, đang là {luat}")
+        self.assertEqual([str(i) for i in range(1, 9)], luat,
+                         f"bản portable thiếu tám luật trang trí, đang là {luat}")
         for ch in WHITELIST:
             with self.subTest(ky_tu=ch):
                 muc_ky_hieu = (sections(khuon).get("The symbols allowed")
