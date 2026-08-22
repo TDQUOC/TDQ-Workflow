@@ -1,110 +1,118 @@
 # Graph Report - TDQWorkflow  (2026-08-22)
 
 ## Corpus Check
-- 56 files · ~72,444 words
+- 58 files · ~76,392 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1018 nodes · 1926 edges · 45 communities (41 shown, 4 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 96 edges (avg confidence: 0.62)
+- 1084 nodes · 2058 edges · 53 communities (47 shown, 6 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 98 edges (avg confidence: 0.62)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c2f490e2`
+- Built from commit: `f31541da`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- tdq_team.py
-- token_audit.py
+- build_portable.py
 - canvas_a4_rebuild.py
 - doc_lint.py
+- cli
 - tdq_checkstatus.py
 - claude_export.py
 - tdq_bench.py
 - skill_tokens.py
-- build_portable.py
-- step_audit.py
 - _common.py
-- Changelog
-- main
-- tdq_state.py
-- cli
+- tdq_worktree_registry.py
+- Changelog — bản lưu trữ
+- lenh_soat
+- turn_snapshot
+- token_audit.py
+- tdq_timing.py
 - tdq_finish.py
 - check_canvas_layout.py
 - _bash
-- LoiThieuSo
-- tdq_timing.py
 - skill_router.py
-- lenh_bao_cao
+- step_audit.py
+- tdq_eval.py
 - context_surface.py
 - skill_inventory.py
+- main
+- LoiThieuSo
 - log
-- effective_lane
+- tdq_team.py
 - plugin_tiers.py
+- _log
 - main
 - luat_phan_loai.py
-- tdq_eval.py
+- _boi_canh
+- chia_dot
+- i18n_check.py
+- lenh_bao_cao
+- tdq_state.py
+- _fail
+- chay_va_cham
 - tdq-workflow — Plugin Claude Code
 - _chuyen_tick
 - quet
-- _parse_approve_args
+- Lưới hồi quy: đo độ tuân thủ luật TDQ
+- Task
 - bao-loi/seed/src/tien_ich.py
 - _chung/seed/src/tien_ich.py
 - chay_bo
-- chay_va_cham
 - _duong_dan_ghi_bash
-- main
-- Exception
-- i18n_check.py
-- Lưới hồi quy: đo độ tuân thủ luật TDQ
+- sha256_noi_dung
 - iter_events
 - seed/README.md
+- effective_lane
+- _echo_state
+- Exception
 
 ## God Nodes (most connected - your core abstractions)
-1. `Changelog` - 29 edges
-2. `cli()` - 23 edges
-3. `main()` - 19 edges
-4. `log()` - 17 edges
-5. `cmd_build()` - 17 edges
-6. `main()` - 16 edges
-7. `_cli_approve()` - 14 edges
-8. `_log()` - 14 edges
-9. `payload_cwd()` - 13 edges
-10. `main()` - 13 edges
+1. `cli()` - 24 edges
+2. `lenh_soat()` - 20 edges
+3. `Changelog — bản lưu trữ` - 17 edges
+4. `_git()` - 17 edges
+5. `log()` - 17 edges
+6. `cmd_build()` - 17 edges
+7. `main()` - 16 edges
+8. `_log()` - 16 edges
+9. `main()` - 16 edges
+10. `Changelog` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `payload_cwd()` --calls--> `resolve_project_dir()`  [INFERRED]
-  hooks/scripts/_common.py → scripts/tdq_state.py
-- `turn_rows()` --calls--> `turn_log_read()`  [INFERRED]
-  hooks/scripts/_common.py → scripts/tdq_state.py
-- `main()` --calls--> `cong_dang_cho()`  [INFERRED]
-  hooks/scripts/edit_gate.py → scripts/tdq_state.py
+- `main()` --calls--> `effective_lane()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `effective_mode()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
 - `main()` --calls--> `effective_phase()`  [INFERRED]
-  hooks/scripts/edit_gate.py → scripts/tdq_state.py
-- `main()` --calls--> `plan_tick_state()`  [INFERRED]
-  hooks/scripts/edit_gate.py → scripts/tdq_state.py
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `load()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
+- `main()` --calls--> `phase_key()`  [INFERRED]
+  hooks/scripts/prompt_context.py → scripts/tdq_state.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (45 total, 4 thin omitted)
+## Communities (53 total, 6 thin omitted)
 
-### Community 0 - "tdq_team.py"
-Cohesion: 0.06
-Nodes (66): b_level(), _bao_dam_tich_hop(), _boi_canh(), build_parser(), canh_bao_lach_luat(), chia_dot(), _chia_dot_theo_phase(), _chia_dot_theo_phu_thuoc() (+58 more)
+### Community 0 - "build_portable.py"
+Cohesion: 0.05
+Nodes (69): _bo_qua_file(), _bo_qua_thu_muc(), copy_loc(), dem_bien_trong_cay(), doc_frontmatter(), _doc_text(), doi_bien_plugin_root(), _ghi_json() (+61 more)
 
-### Community 1 - "token_audit.py"
-Cohesion: 0.12
-Nodes (25): classify(), _content_text(), dem_anh(), dem_nhieu(), dem_token(), _khoa(), _kich_thuoc_jpeg(), _kich_thuoc_png() (+17 more)
-
-### Community 2 - "canvas_a4_rebuild.py"
+### Community 1 - "canvas_a4_rebuild.py"
 Cohesion: 0.06
 Nodes (47): build_ch4(), build_ch7(), build_all(), build_generic(), build_moved(), build_toc(), Builder, chapter_elements() (+39 more)
 
-### Community 3 - "doc_lint.py"
+### Community 2 - "doc_lint.py"
 Cohesion: 0.06
 Nodes (49): collect(), Doc, _doc_lang(), _lane_cua_spec(), lint_file(), _log(), main(), pair() (+41 more)
+
+### Community 3 - "cli"
+Cohesion: 0.16
+Nodes (24): cli(), _cli_approve(), default_state(), _dong_so_request_cu(), find_shadow_states(), ghi_moc_phase(), _info(), load() (+16 more)
 
 ### Community 4 - "tdq_checkstatus.py"
 Cohesion: 0.08
@@ -122,33 +130,33 @@ Nodes (43): _agent_stub(), build_parser(), dem_cap_chong(), _do_mot_luot(), _do_
 Cohesion: 0.09
 Nodes (36): ban_do_skill_md(), _chu(), dem_qua_venv(), do_mo_ta(), do_theo_phase(), _in_bang(), khoa_tra(), lenh_mo_ta() (+28 more)
 
-### Community 8 - "build_portable.py"
-Cohesion: 0.05
-Nodes (69): _bo_qua_file(), _bo_qua_thu_muc(), copy_loc(), dem_bien_trong_cay(), doc_frontmatter(), _doc_text(), doi_bien_plugin_root(), _ghi_json() (+61 more)
-
-### Community 9 - "step_audit.py"
-Cohesion: 0.15
-Nodes (20): _blocks(), _log(), _log_enabled(), main(), median(), merge(), _now(), percentile() (+12 more)
-
-### Community 10 - "_common.py"
-Cohesion: 0.16
-Nodes (29): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), block(), echo_line() (+21 more)
-
-### Community 11 - "Changelog"
-Cohesion: 0.07
-Nodes (29): 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.4 trở về 0.7.0, 0.11.5 — 2026-08-13, 0.11.6 — 2026-08-13, 0.11.7 — 2026-08-13 (+21 more)
-
-### Community 12 - "main"
-Cohesion: 0.12
-Nodes (25): _log_changed(), main(), The start-of-turn snapshot — take the NEWEST row.      Normally there is one row, Did today's log change since the start of the turn (however it was written)?, The file name to quote in the block message — a file new in this turn wins., _repo_changed(), _sha(), _shell_changed_path() (+17 more)
-
-### Community 13 - "tdq_state.py"
+### Community 8 - "_common.py"
 Cohesion: 0.09
-Nodes (27): _atomic_write(), _echo_state(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), _pop_json_flag(), prompt_context_last() (+19 more)
+Nodes (46): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), approve_hint(), block() (+38 more)
 
-### Community 14 - "cli"
+### Community 9 - "tdq_worktree_registry.py"
+Cohesion: 0.12
+Nodes (30): doc(), _doc_de_ghi(), dong_dong(), dong_mo(), duong_md(), duong_so(), _ghi(), ghi_md() (+22 more)
+
+### Community 10 - "Changelog — bản lưu trữ"
+Cohesion: 0.06
+Nodes (31): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+23 more)
+
+### Community 11 - "lenh_soat"
+Cohesion: 0.11
+Nodes (30): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _git(), _go_thu_muc(), _in_goi_y(), _khoa_khong() (+22 more)
+
+### Community 12 - "turn_snapshot"
+Cohesion: 0.18
+Nodes (15): _git(), plan_tick_state(), stdout (bytes) of a git command, or None when it cannot run., Repo root (porcelain prints paths from the root, not from cwd). None if not a re, Fingerprint of an untracked file → (mark, bytes read).      CONTENT first: a cha, Fingerprint of the repo working state, or None when it cannot be taken.      Cov, Paths differing from HEAD (status flags dropped, renames keep the target)., Checkbox state of the current plan. Never raises. (+7 more)
+
+### Community 13 - "token_audit.py"
+Cohesion: 0.12
+Nodes (25): classify(), _content_text(), dem_anh(), dem_nhieu(), dem_token(), _khoa(), _kich_thuoc_jpeg(), _kich_thuoc_png() (+17 more)
+
+### Community 14 - "tdq_timing.py"
 Cohesion: 0.14
-Nodes (27): cli(), _cli_approve(), default_state(), _dong_so_request_cu(), _file_changed_since_approval(), find_shadow_states(), ghi_moc_phase(), _info() (+19 more)
+Nodes (24): _has_usage(), _parse_time(), bang_markdown(), cua_so_phase(), da_dong_so(), dinh_dang(), dong_ho_ngan(), dong_so() (+16 more)
 
 ### Community 15 - "tdq_finish.py"
 Cohesion: 0.15
@@ -162,117 +170,141 @@ Nodes (21): bbox(), boxes_overlap(), center(), check_chapters(), check_contain()
 Cohesion: 0.10
 Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), kiem_L149(), kiem_L218() (+15 more)
 
-### Community 18 - "LoiThieuSo"
-Cohesion: 0.16
-Nodes (19): cham_lai_tat_ca(), cham_mot_ma(), cham_phien(), doc_bo_ca(), doc_transcript(), lay_token(), lenh_cham(), lenh_chay() (+11 more)
-
-### Community 19 - "tdq_timing.py"
-Cohesion: 0.14
-Nodes (24): _has_usage(), _parse_time(), bang_markdown(), cua_so_phase(), da_dong_so(), dinh_dang(), dong_ho_ngan(), dong_so() (+16 more)
-
-### Community 20 - "skill_router.py"
+### Community 18 - "skill_router.py"
 Cohesion: 0.17
 Nodes (16): bo_dau(), doc_kho(), dung_kho(), ghi_kho(), KhoBM25, lenh_dung_kho(), lenh_tra(), _log() (+8 more)
 
-### Community 21 - "lenh_bao_cao"
-Cohesion: 0.17
-Nodes (12): bao_cao_so(), doc_ban_ghi(), don_vi_kiem(), _in_bang(), kiem_dinh_dau(), lenh_bao_cao(), Build the whole audit file out of the table. No hand-typed number gets in., Read every scored session record. No record at all → return an empty list. (+4 more)
-
-### Community 22 - "context_surface.py"
-Cohesion: 0.18
-Nodes (19): _log(), _log_enabled(), main(), measure_hooks(), _num(), _payload(), print_table(), Scan the whole documentation surface, returning the list of table rows. (+11 more)
-
-### Community 23 - "skill_inventory.py"
+### Community 19 - "step_audit.py"
 Cohesion: 0.15
-Nodes (19): _clean(), _condense(), _enabled_plugins(), _filter(), _frontmatter(), inventory(), _load_json(), main() (+11 more)
+Nodes (20): _blocks(), _log(), _log_enabled(), main(), median(), merge(), _now(), percentile() (+12 more)
 
-### Community 24 - "log"
-Cohesion: 0.13
-Nodes (19): chay_phien(), dong_log(), dung_lenh(), dung_moi_truong(), dung_sandbox(), _git(), kiem_dich(), lenh_dung_nhanh() (+11 more)
-
-### Community 25 - "effective_lane"
-Cohesion: 0.20
-Nodes (15): cong_dang_cho(), effective_lane(), effective_mode(), effective_phase(), next_headline(), phase_key(), phase_row(), The PHASE_TABLE row to DISPLAY for the current state.      Unlike `phase_key`, t (+7 more)
-
-### Community 26 - "plugin_tiers.py"
-Cohesion: 0.34
-Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
-
-### Community 27 - "main"
-Cohesion: 0.18
-Nodes (16): approve_hint(), plan_mode(), The mode settled in plan_file (its 'Mode thực thi:' line), None when not written, _compact(), _emit(), looks_like_approval(), main(), mode_from_answer() (+8 more)
-
-### Community 28 - "luat_phan_loai.py"
-Cohesion: 0.19
-Nodes (13): bang_nhap(), doc_bang(), doc_ranh_gioi(), goi_y_nhan(), liet_ke_ma(), _log(), main(), The suggested label for one anchor, with its reason.      The order runs from th (+5 more)
-
-### Community 29 - "tdq_eval.py"
+### Community 20 - "tdq_eval.py"
 Cohesion: 0.13
 Nodes (19): build_parser(), _chay_test(), _ghi_ma_nguon(), kiem_L001(), kiem_L005(), kiem_L010(), kiem_L012(), kiem_L209() (+11 more)
 
-### Community 30 - "tdq-workflow — Plugin Claude Code"
+### Community 21 - "context_surface.py"
+Cohesion: 0.18
+Nodes (19): _log(), _log_enabled(), main(), measure_hooks(), _num(), _payload(), print_table(), Scan the whole documentation surface, returning the list of table rows. (+11 more)
+
+### Community 22 - "skill_inventory.py"
+Cohesion: 0.15
+Nodes (19): _clean(), _condense(), _enabled_plugins(), _filter(), _frontmatter(), inventory(), _load_json(), main() (+11 more)
+
+### Community 23 - "main"
 Cohesion: 0.22
-Nodes (8): Cài đặt (chỉ trong repo/project), Cách hook điều khiển agent, Cấu trúc, Duyệt bằng chat thường, Dùng hằng ngày, Pipeline, Quy ước cứng, tdq-workflow — Plugin Claude Code
+Nodes (13): _compact(), _emit(), looks_like_approval(), main(), mode_from_answer(), _nhac_worktree(), An answer at the mode gate -> the machine identifier, or None if unreadable., One line, only while the ledger holds an open row — silent the rest of the time. (+5 more)
 
-### Community 31 - "_chuyen_tick"
+### Community 24 - "LoiThieuSo"
+Cohesion: 0.16
+Nodes (19): cham_lai_tat_ca(), cham_mot_ma(), cham_phien(), doc_bo_ca(), doc_transcript(), lay_token(), lenh_cham(), lenh_chay() (+11 more)
+
+### Community 25 - "log"
+Cohesion: 0.13
+Nodes (19): chay_phien(), dong_log(), dung_lenh(), dung_moi_truong(), dung_sandbox(), _git(), kiem_dich(), lenh_dung_nhanh() (+11 more)
+
+### Community 26 - "tdq_team.py"
+Cohesion: 0.15
+Nodes (17): b_level(), build_parser(), _do_xung_dot(), _file_xung_dot(), _kich_thuoc(), lenh_kiem_ke(), _log_enabled(), _loi() (+9 more)
+
+### Community 27 - "plugin_tiers.py"
+Cohesion: 0.34
+Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
+
+### Community 28 - "_log"
 Cohesion: 0.22
-Nodes (9): _chuyen_tick(), kiem_L003(), kiem_L013(), kiem_L145(), The sequence (call index, task code, new mark) pulled from every write to the pl, Tick `[~]` first, `[x]` after, and never bulk-tick several tasks at once., Flip `[~]` to `[x]` AT ONCE: at no moment do two tasks carry `[~]`., Every task has its own test: between its `[~]` and `[x]` there must be a test ru (+1 more)
+Nodes (17): _bao_dam_tich_hop(), _co_nhanh(), _duong_worktree(), _la_repo(), lenh_hop(), lenh_kiem(), lenh_mo(), _log() (+9 more)
 
-### Community 32 - "quet"
-Cohesion: 0.36
-Nodes (7): khoi_mau(), la_ky_hieu(), main(), quet(), True when ch is non-ASCII punctuation/symbol — what the whitelist has to govern., The content of the ``` blocks in a file — this is what is REALLY printed to the, {character: (total count, {file: count})} for every non-ASCII symbol.
+### Community 29 - "main"
+Cohesion: 0.15
+Nodes (15): _all_items(), carry_cost(), cost_equivalent(), _fmt(), main(), phan_ra(), _phan_vi(), The carry-cost table grouped by bucket, descending. `paths` empty → empty table. (+7 more)
 
-### Community 33 - "_parse_approve_args"
+### Community 30 - "luat_phan_loai.py"
+Cohesion: 0.19
+Nodes (13): bang_nhap(), doc_bang(), doc_ranh_gioi(), goi_y_nhan(), liet_ke_ma(), _log(), main(), The suggested label for one anchor, with its reason.      The order runs from th (+5 more)
+
+### Community 31 - "_boi_canh"
 Cohesion: 0.20
-Nodes (10): _fail(), normalize_doc_lang(), normalize_lane(), _parse_approve_args(), _pop_lang_flag(), -> (target, mode, by, no_qc). Fails only on genuinely wrong syntax., Return the normalised language code, or None when it is not a valid code.      A, Strip the `--lang <code>` pair out of the argv of `init`.      Its position is f (+2 more)
+Nodes (14): _boi_canh(), canh_bao_lach_luat(), doc_plan(), duong_ban_do(), lenh_cum(), lenh_phan_cong(), _ly_do_hoan(), The user picked team mode but the leader types code of a task it promised away → (+6 more)
 
-### Community 36 - "chay_bo"
-Cohesion: 0.50
-Nodes (4): chay_bo(), Work still to run, interleaved between branches on every run.      Interleaved s, Run the whole round. Returns (total cost, whether it stopped early on the cap)., viec_con_lai()
+### Community 32 - "chia_dot"
+Cohesion: 0.14
+Nodes (14): chia_dot(), _chia_dot_theo_phase(), _chia_dot_theo_phu_thuoc(), doc_phu_thuoc(), _dot_som_nhat(), _khoa_phase(), _la_file_luat(), quyet_dinh_task() (+6 more)
+
+### Community 33 - "i18n_check.py"
+Cohesion: 0.24
+Nodes (11): allowed_fence_lines(), collect(), _log(), main(), python_line_kinds(), Return one finding dict per Vietnamese line of a single file., Log service: one ISO-timestamp line on stderr. Off with TDQ_LOG=0.      On stder, Expand files and directories into a sorted list of files to scan. (+3 more)
+
+### Community 34 - "lenh_bao_cao"
+Cohesion: 0.17
+Nodes (12): bao_cao_so(), doc_ban_ghi(), don_vi_kiem(), _in_bang(), kiem_dinh_dau(), lenh_bao_cao(), Build the whole audit file out of the table. No hand-typed number gets in., Read every scored session record. No record at all → return an empty list. (+4 more)
+
+### Community 35 - "tdq_state.py"
+Cohesion: 0.10
+Nodes (24): _atomic_write(), lane_label(), parse_slug(), plugin_root_cmd(), _pop_json_flag(), prompt_context_last(), prompt_context_path(), prompt_context_save() (+16 more)
+
+### Community 36 - "_fail"
+Cohesion: 0.17
+Nodes (12): _chan_worktree_con_mo(), _fail(), normalize_doc_lang(), normalize_lane(), _parse_approve_args(), _pop_lang_flag(), -> (target, mode, by, no_qc). Fails only on genuinely wrong syntax., Return the normalised language code, or None when it is not a valid code.      A (+4 more)
 
 ### Community 37 - "chay_va_cham"
 Cohesion: 0.18
 Nodes (11): chay_va_cham(), dau_nhiem(), dau_nhiem_phien(), _ghi_ban_ghi(), _noi_dung(), phan_tich(), The content of a tool_result may be a string or a list of text blocks., Normalise a stream-json transcript into what the scorer reads.      Returns: the (+3 more)
 
-### Community 38 - "_duong_dan_ghi_bash"
-Cohesion: 0.50
-Nodes (4): _duong_dan_ghi_bash(), _duong_dan_sed(), The file `sed -i` overwrites. Split with shlex because a sed expression often us, The paths one Bash command WRITES to. Reading a file does not count, only writin
+### Community 38 - "tdq-workflow — Plugin Claude Code"
+Cohesion: 0.22
+Nodes (8): Cài đặt (chỉ trong repo/project), Cách hook điều khiển agent, Cấu trúc, Duyệt bằng chat thường, Dùng hằng ngày, Pipeline, Quy ước cứng, tdq-workflow — Plugin Claude Code
 
-### Community 39 - "main"
-Cohesion: 0.15
-Nodes (15): _all_items(), carry_cost(), cost_equivalent(), _fmt(), main(), phan_ra(), _phan_vi(), The carry-cost table grouped by bucket, descending. `paths` empty → empty table. (+7 more)
+### Community 39 - "_chuyen_tick"
+Cohesion: 0.22
+Nodes (9): _chuyen_tick(), kiem_L003(), kiem_L013(), kiem_L145(), The sequence (call index, task code, new mark) pulled from every write to the pl, Tick `[~]` first, `[x]` after, and never bulk-tick several tasks at once., Flip `[~]` to `[x]` AT ONCE: at no moment do two tasks carry `[~]`., Every task has its own test: between its `[~]` and `[x]` there must be a test ru (+1 more)
 
-### Community 41 - "i18n_check.py"
-Cohesion: 0.24
-Nodes (11): allowed_fence_lines(), collect(), _log(), main(), python_line_kinds(), Return one finding dict per Vietnamese line of a single file., Log service: one ISO-timestamp line on stderr. Off with TDQ_LOG=0.      On stder, Expand files and directories into a sorted list of files to scan. (+3 more)
+### Community 40 - "quet"
+Cohesion: 0.36
+Nodes (7): khoi_mau(), la_ky_hieu(), main(), quet(), True when ch is non-ASCII punctuation/symbol — what the whitelist has to govern., The content of the ``` blocks in a file — this is what is REALLY printed to the, {character: (total count, {file: count})} for every non-ASCII symbol.
 
-### Community 42 - "Lưới hồi quy: đo độ tuân thủ luật TDQ"
+### Community 41 - "Lưới hồi quy: đo độ tuân thủ luật TDQ"
 Cohesion: 0.40
 Nodes (4): Bộ ca, Chạy lại — một lệnh, Lưới hồi quy: đo độ tuân thủ luật TDQ, Đọc kết quả
 
-### Community 43 - "iter_events"
+### Community 45 - "chay_bo"
+Cohesion: 0.50
+Nodes (4): chay_bo(), Work still to run, interleaved between branches on every run.      Interleaved s, Run the whole round. Returns (total cost, whether it stopped early on the cap)., viec_con_lai()
+
+### Community 46 - "_duong_dan_ghi_bash"
+Cohesion: 0.50
+Nodes (4): _duong_dan_ghi_bash(), _duong_dan_sed(), The file `sed -i` overwrites. Split with shlex because a sed expression often us, The paths one Bash command WRITES to. Reading a file does not count, only writin
+
+### Community 47 - "sha256_noi_dung"
+Cohesion: 0.50
+Nodes (4): _file_changed_since_approval(), True when the spec/plan file changed since it was approved. It tells     'a redu, Hash the CONTENT part of a spec/plan: from the first `##` heading onward.      W, sha256_noi_dung()
+
+### Community 48 - "iter_events"
 Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
+### Community 50 - "effective_lane"
+Cohesion: 0.24
+Nodes (13): effective_lane(), effective_mode(), effective_phase(), next_headline(), phase_key(), phase_row(), The PHASE_TABLE row to DISPLAY for the current state.      Unlike `phase_key`, t, Line 1 of `next` — also the entire output of `next --brief`. (+5 more)
+
 ## Knowledge Gaps
-- **39 isolated node(s):** `0.27.0 — 2026-08-22`, `0.26.0 — 2026-08-18`, `0.25.0 — 2026-08-18`, `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17` (+34 more)
+- **40 isolated node(s):** `0.15.1 — 2026-08-14`, `0.15.0 — 2026-08-14`, `0.14.0 — 2026-08-14`, `0.13.0 — 2026-08-14`, `0.12.0 — 2026-08-13` (+35 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `turn_log_append()` connect `_common.py` to `main`, `tdq_state.py`, `cli`?**
+- **Why does `turn_log_append()` connect `_common.py` to `cli`, `tdq_state.py`, `main`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `phase_key()` connect `effective_lane` to `main`, `tdq_state.py`?**
+- **Why does `LoiLuat` connect `lenh_soat` to `tdq_team.py`, `_log`, `_boi_canh`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Are the 10 inferred relationships involving `main()` (e.g. with `effective_lane()` and `effective_mode()`) actually correct?**
-  _`main()` has 10 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `0.27.0 — 2026-08-22`, `0.26.0 — 2026-08-18`, `0.25.0 — 2026-08-18` to the rest of the system?**
-  _39 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `tdq_team.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.06459627329192547 - nodes in this community are weakly interconnected._
-- **Should `token_audit.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.12 - nodes in this community are weakly interconnected._
+- **What connects `0.15.1 — 2026-08-14`, `0.15.0 — 2026-08-14`, `0.14.0 — 2026-08-14` to the rest of the system?**
+  _40 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `build_portable.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.05472837022132797 - nodes in this community are weakly interconnected._
 - **Should `canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06293706293706294 - nodes in this community are weakly interconnected._
+- **Should `doc_lint.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.05878084179970972 - nodes in this community are weakly interconnected._
+- **Should `tdq_checkstatus.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.07632850241545894 - nodes in this community are weakly interconnected._
