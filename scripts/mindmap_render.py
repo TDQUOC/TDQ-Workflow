@@ -39,9 +39,12 @@ from tdq_mindmap import (
     LOCATION_RE,
     UNKNOWN_LOCATION,
     MIND_MAP_DIR_REL,
+    FILE_SUFFIX,
     TITLE_LINE_RE,
     STEP_HINT_RE,
     STEP_ERROR_MARK,
+    build_link_graph,
+    mind_map_dir,
     comment_mask,
     check_diagram,
     read_diagram,
@@ -78,6 +81,16 @@ TEXT_ERROR_BRANCH = "nhánh lỗi"  # i18n-allow
 TEXT_DEPENDS_HEADING = "Phụ thuộc"  # i18n-allow
 TEXT_FIGCAPTION = "Các lời gọi mà `{name}` phát ra, sắp theo thứ tự dòng trong file."  # i18n-allow
 TEXT_COLLAPSE_SUMMARY = "{n} lời gọi — bấm để xem"  # i18n-allow
+
+# Strings for the aggregate page (--tong).
+TEXT_TONG_TITLE = "Sơ đồ tổng"  # i18n-allow
+TEXT_TONG_HEADING_CAY = "Cây nhánh"  # i18n-allow
+TEXT_TONG_CHUA_GAN_NHANH = "Chưa gắn nhánh"  # i18n-allow
+TEXT_TONG_HEADING_LUOI = "Lưới phụ thuộc"  # i18n-allow
+TEXT_TONG_CHUA_CO_SO_DO = "chưa có sơ đồ"  # i18n-allow
+TEXT_TONG_KHONG_CO_CANH = "Không có cạnh phụ thuộc nào."  # i18n-allow
+TEXT_TONG_CLAIM = ("Lưới phụ thuộc giữa các feature — mỗi mũi tên trỏ từ feature "  # i18n-allow
+                    "phụ thuộc sang feature nó cần")  # i18n-allow
 
 
 class DiagramInvalid(ValueError):
@@ -508,6 +521,23 @@ figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
 details summary { cursor: pointer; color: var(--accent); }
 """
 
+# Extra rules for the aggregate page only (render_total_page) — appended to STYLE
+# rather than duplicating its tokens, so both pages share one palette/theme block.
+STYLE_TONG = """
+section { margin-bottom: 28px; }
+.cay-nhanh, .cay-nhanh ul { list-style: none; margin: 0; padding-left: 16px; }
+.cay-nhanh { padding-left: 0; }
+.cay-nhanh > li { margin-bottom: 6px; }
+.cay-nhanh a { color: var(--accent); text-decoration: none; }
+.cay-nhanh a:hover, .cay-nhanh a:focus-visible { text-decoration: underline; }
+.grid-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px;
+  padding: 12px; margin: 8px 0; }
+.grid-fig { margin: 0; }
+.grid-fig svg { display: block; height: auto; }
+.danh-sach-canh { list-style: none; padding-left: 0; margin: 8px 0 0; font-size: 13px; }
+.danh-sach-canh li { padding: 2px 0; }
+"""
+
 SCRIPT = """
 document.addEventListener('DOMContentLoaded', function () {
   var btn = document.getElementById('btn-lop');
@@ -571,6 +601,231 @@ def render_feature_page(lines, diagram_path, graph=None, depth=DEPTH_DEFAULT, pr
     )
 
 
+# --------------------------------------------------------------- total page (--tong)
+def collect_total_data(root=None):
+    """Every on-disk feature under mind_map_dir(root), parsed for the aggregate page.
+
+    I/O only — reads each diagram file and runs it through parse_diagram (the
+    same parser render_feature_page uses), so this never re-derives the file
+    shape on its own. A file that check_diagram would reject (e.g. missing the
+    branch line, like an old pre-shape sample) still gets an entry — its
+    branch_top stays None and render_total_page sorts it into the
+    "unclassified" bucket instead of dropping it.
+
+    Returns {slug: {"title", "branch_top", "branch_sub", "depends", "exists": True}}.
+    """
+    directory = mind_map_dir(root)
+    features = {}
+    if not os.path.isdir(directory):
+        return features
+    for name in sorted(os.listdir(directory)):
+        if not name.endswith(FILE_SUFFIX):
+            continue
+        slug = name[:-len(FILE_SUFFIX)]
+        lines = read_diagram(os.path.join(directory, name))
+        if lines is None:
+            continue
+        title, branch_top, branch_sub, depends, _steps = parse_diagram(lines)
+        features[slug] = {
+            "title": title or slug, "branch_top": branch_top, "branch_sub": branch_sub,
+            "depends": depends, "exists": True,
+        }
+    return features
+
+
+def _feature_levels(features):
+    """Longest-path depth of each slug: 0 with no depends, else 1 + its deepest dep.
+
+    A slug caught in a cycle (should already be rejected by `lien-he`, but this
+    function must never hang on one) simply settles at level 0 for the edge that
+    closes the loop, via the `visiting` guard below.
+    """
+    levels = {}
+
+    def level_of(slug, visiting):
+        if slug in levels:
+            return levels[slug]
+        info = features.get(slug)
+        if info is None or slug in visiting:
+            return 0
+        deps = [dep for dep, _reason in info["depends"]]
+        if not deps:
+            levels[slug] = 0
+            return 0
+        lv = 1 + max(level_of(dep, visiting | {slug}) for dep in deps)
+        levels[slug] = lv
+        return lv
+
+    for slug in features:
+        level_of(slug, frozenset())
+    return levels
+
+
+def _layout_grid(features):
+    """`(positions, columns)` — positions keyed by slug, columns keyed by level."""
+    levels = _feature_levels(features)
+    columns = {}
+    for slug in sorted(features):
+        columns.setdefault(levels[slug], []).append(slug)
+    positions = {}
+    for level, slugs in columns.items():
+        for row, slug in enumerate(slugs):
+            positions[slug] = {"x": level * (BOX_W + COL_GAP), "y": row * ROW_H, "level": level}
+    return positions, columns
+
+
+def _render_dependency_svg(features, positions, columns):
+    """Boxes for every feature (dashed + dim when it has no file yet) and one
+    labelled-with-a-marker arrow per depends edge, pointing at the dependency.
+    """
+    if not positions:
+        return ""
+    max_level = max(columns)
+    max_rows = max(len(slugs) for slugs in columns.values())
+    width = (max_level + 1) * (BOX_W + COL_GAP) - COL_GAP + 10
+    height = max(max_rows * ROW_H, ROW_H)
+    marker_id = "seotenmuiten-tong"
+    parts = [
+        '<figure class="grid-fig">',
+        '<svg viewBox="0 0 {w} {h}" role="img" aria-label="{claim}">'.format(
+            w=width, h=height, claim=html.escape(TEXT_TONG_CLAIM)),
+        '<defs><marker id="{mid}" markerWidth="8" markerHeight="8" refX="7" refY="4" '
+        'orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="currentColor"/></marker></defs>'
+        .format(mid=marker_id),
+    ]
+    for slug in sorted(features):
+        for dep, _reason in features[slug]["depends"]:
+            a, b = positions.get(slug), positions.get(dep)
+            if a is None or b is None:
+                continue
+            x1, y1 = a["x"], a["y"] + BOX_H / 2
+            x2, y2 = b["x"] + BOX_W, b["y"] + BOX_H / 2
+            parts.append(
+                '<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="currentColor" '
+                'stroke-width="1.5" marker-end="url(#{mid})"/>'.format(
+                    x1=x1, y1=y1, x2=x2, y2=y2, mid=marker_id))
+    for slug, pos in positions.items():
+        info = features[slug]
+        missing = not info["exists"]
+        label = slug if not missing else "{} ({})".format(slug, TEXT_TONG_CHUA_CO_SO_DO)
+        dash = ' stroke-dasharray="4 3"' if missing else ""
+        dim = ' class="dim"' if missing else ""
+        parts.append(
+            '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="4" fill="none" '
+            'stroke="currentColor"{dash}/>'.format(x=pos["x"], y=pos["y"], w=BOX_W, h=BOX_H, dash=dash))
+        parts.append(
+            '<text x="{tx}" y="{ty}" font-size="12" fill="currentColor"{dim}>{label}</text>'
+            .format(tx=pos["x"] + 8, ty=pos["y"] + BOX_H / 2 + 4, dim=dim, label=html.escape(label[:34])))
+    parts.append("</svg>")
+    parts.append("<figcaption>{}</figcaption>".format(html.escape(TEXT_TONG_CLAIM + ".")))
+    parts.append("</figure>")
+    return "".join(parts)
+
+
+def _render_edge_list(features):
+    """The same edges as the SVG, spelled out as text — every reason legible
+    without hovering, and readable by a screen reader or a text search alike.
+    """
+    rows = []
+    for slug in sorted(features):
+        info = features[slug]
+        if not info["exists"]:
+            continue
+        for dep, reason in info["depends"]:
+            dep_info = features.get(dep, {"exists": False})
+            dep_label = dep if dep_info.get("exists") else "{} ({})".format(
+                dep, TEXT_TONG_CHUA_CO_SO_DO)
+            rows.append(
+                '<li><code>{a}</code> &rarr; <code>{b}</code> — {reason}</li>'.format(
+                    a=html.escape(slug), b=html.escape(dep_label), reason=html.escape(reason)))
+    if not rows:
+        return '<p class="muted">{}</p>'.format(html.escape(TEXT_TONG_KHONG_CO_CANH))
+    return '<ul class="danh-sach-canh">{}</ul>'.format("".join(rows))
+
+
+def _render_branch_tree(features):
+    """Top branch -> sub branch -> feature, general down to the business page —
+    nested <ul>s with a link to that feature's own rendered page.
+
+    A feature with no usable branch (an old file predating the shape, or one
+    that fails check_diagram) still needs to be visible, so it lands in one
+    "unclassified" bucket instead of disappearing from the total map.
+    """
+    tree = {}
+    unclassified = []
+    for slug in sorted(features):
+        info = features[slug]
+        if not info["exists"]:
+            continue
+        if not info.get("branch_top"):
+            unclassified.append((slug, info))
+            continue
+        tree.setdefault(info["branch_top"], {}).setdefault(
+            info.get("branch_sub") or "", []).append((slug, info))
+
+    def _feature_li(slug, info):
+        return '<li><a href="{slug}.html">{title}</a></li>'.format(
+            slug=slug, title=html.escape(info["title"]))
+
+    parts = ['<ul class="cay-nhanh">']
+    for top in sorted(tree):
+        parts.append('<li><strong>{}</strong><ul>'.format(html.escape(top)))
+        for sub in sorted(tree[top]):
+            parts.append('<li>{}<ul>'.format(html.escape(sub)))
+            parts.extend(_feature_li(slug, info) for slug, info in tree[top][sub])
+            parts.append('</ul></li>')
+        parts.append('</ul></li>')
+    if unclassified:
+        parts.append('<li><em>{}</em><ul>'.format(html.escape(TEXT_TONG_CHUA_GAN_NHANH)))
+        parts.extend(_feature_li(slug, info) for slug, info in unclassified)
+        parts.append('</ul></li>')
+    parts.append('</ul>')
+    return "".join(parts)
+
+
+def render_total_page(features):
+    """Build the self-contained aggregate HTML page: branch tree + dependency grid.
+
+    Pure: `features` is already-parsed data (see collect_total_data), no file I/O
+    here. A depends target with no entry in `features` is filled in as a missing
+    stub via `build_link_graph` — the same pure grid function `lien-he` uses —
+    so this never re-derives which slugs are dangling on its own.
+    """
+    feature_deps = {slug: [dep for dep, _reason in info["depends"]]
+                     for slug, info in features.items()}
+    missing = build_link_graph(feature_deps)["missing"]
+    full = dict(features)
+    for slug in missing:
+        full.setdefault(slug, {"title": None, "branch_top": None, "branch_sub": None,
+                                "depends": [], "exists": False})
+
+    positions, columns = _layout_grid(full)
+    branch_tree = _render_branch_tree(full)
+    grid_svg = _render_dependency_svg(full, positions, columns)
+    edge_list = _render_edge_list(full)
+    style = STYLE + STYLE_TONG
+
+    return (
+        '<!doctype html>\n<html lang="vi">\n<head>\n<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        '<title>{title}</title>\n<style>{style}</style>\n</head>\n<body>\n'
+        '<main>\n<header>\n<h1>{title}</h1>\n</header>\n'
+        '<section id="cay-nhanh"><h2>{h_cay}</h2>{tree}</section>\n'
+        '<section id="luoi-phu-thuoc"><h2>{h_luoi}</h2>'
+        '<div class="grid-wrap">{svg}</div>{edges}</section>\n'
+        '</main>\n</body>\n</html>\n'
+    ).format(
+        title=html.escape(TEXT_TONG_TITLE), style=style,
+        h_cay=html.escape(TEXT_TONG_HEADING_CAY), tree=branch_tree,
+        h_luoi=html.escape(TEXT_TONG_HEADING_LUOI), svg=grid_svg, edges=edge_list,
+    )
+
+
+def default_total_output_path(root=None):
+    """`<root>/docs/tdq/mind-map/index.html` — the aggregate page's fixed name."""
+    return os.path.join(root or project_dir(), MIND_MAP_DIR_REL, "index.html")
+
+
 # ------------------------------------------------------------------------- CLI
 def default_output_path(diagram_path, root=None):
     """`<root>/docs/tdq/mind-map/<slug>.html` from `<anything>/<slug>.md`."""
@@ -582,7 +837,11 @@ def build_parser():
     parser = argparse.ArgumentParser(
         prog="mindmap_render.py",
         description="Render one feature's mind-map (.md) into a two-layer HTML page.")
-    parser.add_argument("file", help="path of the diagram file to render")
+    parser.add_argument("file", nargs="?", default=None,
+                        help="path of the diagram file to render (omit when using --tong)")
+    parser.add_argument("--tong", action="store_true",
+                        help="render the aggregate map of every feature under "
+                             "docs/tdq/mind-map/ instead of a single feature")
     parser.add_argument("--graph", default=None,
                         help="path of graph.json (default: <project>/" + GRAPH_PATH_REL + ")")
     parser.add_argument("--sau", type=int, default=DEPTH_DEFAULT, dest="depth",
@@ -591,15 +850,43 @@ def build_parser():
     return parser
 
 
+def _write_html(html_text, out_path):
+    """Shared write step for both render modes; the exit code the caller returns."""
+    try:
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(html_text)
+        return EXIT_OK
+    except OSError as exc:
+        _log("render: cannot write {} ({})".format(out_path, exc))
+        print("render: cannot write {} ({})".format(out_path, exc), file=sys.stderr)
+        return EXIT_SYNTAX
+
+
 def main(argv):
     args = build_parser().parse_args(argv)
+    root = project_dir()
+
+    if args.tong:
+        features = collect_total_data(root)
+        html_text = render_total_page(features)
+        out_path = args.out or default_total_output_path(root)
+        code = _write_html(html_text, out_path)
+        if code == EXIT_OK:
+            _log("render: wrote {} — {} feature(s)".format(out_path, len(features)))
+            print("render: wrote {} — {} feature(s)".format(out_path, len(features)))
+        return code
+
+    if not args.file:
+        print("render: either FILE or --tong is required", file=sys.stderr)
+        return EXIT_SYNTAX
+
     lines = read_diagram(args.file)
     if lines is None:
         _log("render: cannot read {}".format(args.file))
         print("render: cannot read {}".format(args.file), file=sys.stderr)
         return EXIT_SYNTAX
 
-    root = project_dir()
     graph_path = args.graph or os.path.join(root, GRAPH_PATH_REL)
     graph = load_graph(graph_path)
 
