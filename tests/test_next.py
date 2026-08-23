@@ -25,9 +25,18 @@ class NextTest(unittest.TestCase):
 
     def test_next_all_phases(self):
         run_state_cli(self.cwd, "init", "2026-07-29-0900-demo", "full")
+        # Phase `plan` nằm sau cổng sơ đồ: `set phase=plan` bị từ chối khi danh sách
+        # sơ đồ rỗng hoặc còn phần tử chưa duyệt. Đăng ký + duyệt một sơ đồ ngay từ
+        # đầu để vòng lặp đi được hết mọi phase, đúng luồng spec → diagram → plan.
+        so_do = "docs/tdq/mind-map/demo.md"
+        run_state_cli(self.cwd, "diagram", "add", so_do)
+        rc, _, err = run_state_cli(self.cwd, "approve", "diagram", so_do,
+                                   "--by", "duyệt sơ đồ demo")
+        self.assertEqual(rc, 0, err)
         for phase in sorted(tdq_state.VALID_PHASES):
             with self.subTest(phase=phase):
-                run_state_cli(self.cwd, "set", f"phase={phase}")
+                rc, _, err = run_state_cli(self.cwd, "set", f"phase={phase}")
+                self.assertEqual(rc, 0, err)
                 rc, out, err = run_state_cli(self.cwd, "next")
                 self.assertEqual(rc, 0, err)
                 for part in PARTS:

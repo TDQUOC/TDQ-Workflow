@@ -74,10 +74,24 @@ class TestFullLaneChain(ChainBase):
         self.assertEqual(dec, "allow")
         self.assertIn("approve plan", context)
 
-        # 6. plan viết + đăng ký; user nhắn "ok plan, mode main"
+        # 6. phase diagram: vẽ sơ đồ, đăng ký, user duyệt từng cái. Đây là cổng cứng —
+        # chưa có sơ đồ nào được duyệt thì `set phase=plan` bị từ chối.
+        write_file(self.cwd, "docs/tdq/mind-map/demo.md", "# sơ đồ demo\n")
+        run_state_cli(self.cwd, "set", "phase=diagram")
+        rc, _, err = run_state_cli(self.cwd, "diagram", "add", "docs/tdq/mind-map/demo.md")
+        self.assertEqual(rc, 0, err)
+        rc, out, err = self.approve("diagram", "docs/tdq/mind-map/demo.md",
+                                    "--by", "duyệt sơ đồ")
+        self.assertEqual(rc, 0, err)
+        self.assertIn("Recorded", out)
+        self.assertEqual(read_state(self.cwd)["diagrams"][0]["approved"], True)
+
+        # 7. plan viết + đăng ký; user nhắn "ok plan, mode main"
         write_file(self.cwd, "docs/tdq/plan/demo.md",
                    "# plan demo\nMode thực thi: main — plan 1 task.\n- [ ] T1\n")
-        run_state_cli(self.cwd, "set", "phase=plan", "plan_file=docs/tdq/plan/demo.md")
+        rc, _, err = run_state_cli(self.cwd, "set", "phase=plan",
+                                   "plan_file=docs/tdq/plan/demo.md")
+        self.assertEqual(rc, 0, err)
         out = self.new_turn("ok plan, mode main")
         self.assertIn("--mode main", out)
         rc, out, err = self.approve("plan", "--mode", "main", "--by", "ok plan, mode main")
@@ -87,7 +101,7 @@ class TestFullLaneChain(ChainBase):
         self.assertEqual(state["plan_approved_by"], "ok plan, mode main")
         self.assertIsNotNone(state["plan_sha256"])
 
-        # 7. implement: repo đổi mà chưa log → nhắc TDQ:LOG, và Stop chặn
+        # 8. implement: repo đổi mà chưa log → nhắc TDQ:LOG, và Stop chặn
         run_state_cli(self.cwd, "set", "phase=implement")
         self.new_turn()
         dec, context = self.edit()
@@ -96,14 +110,14 @@ class TestFullLaneChain(ChainBase):
         rc, out, _ = self.stop()
         self.assertEqual(json.loads(out)["decision"], "block")
 
-        # 8. append working log (qua công cụ Edit) → Stop im lặng
+        # 9. append working log (qua công cụ Edit) → Stop im lặng
         log_rel = f"docs/workinglog/{today()}.md"
         write_file(self.cwd, log_rel, "# log\n- entry moi\n")
         self.edit(log_rel)
         rc, out, _ = self.stop()
         self.assertEqual(out, "")
 
-        # 9. duyệt lại lần nữa không phải lỗi
+        # 10. duyệt lại lần nữa không phải lỗi
         rc, out, err = self.approve("plan")
         self.assertEqual(rc, 0, err)
         self.assertIn("was already approved at", out)
