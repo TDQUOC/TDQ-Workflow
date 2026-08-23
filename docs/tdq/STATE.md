@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-08-23T12:15:32+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-08-23T14:13:15+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-08-23-1125-diagram-giai-thuat-mind-map |
+| Request | 2026-08-23-1341-build-mind-map-v2 |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-23-1125-diagram-giai-thuat-mind-map.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-08-23-1125-diagram-giai-thuat-mind-map.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-08-23-1341-build-mind-map-v2.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-08-23-1341-build-mind-map-v2.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |
