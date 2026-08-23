@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --bg: #fbfbf9; --fg: #1c1c1a; --muted: #6b6b64; --border: #d8d8d2;
+  --card: #eceae4; --err: #a32020; --accent: #1d5f8a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16171a; --fg: #e8e8e4; --muted: #9a9a92; --border: #33343a;
+    --card: #23252b; --err: #e08a8a; --accent: #7ab6dd;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16171a; --fg: #e8e8e4; --muted: #9a9a92; --border: #33343a;
+  --card: #23252b; --err: #e08a8a; --accent: #7ab6dd;
+}
+body {
+  margin: 0; padding: 24px 18px 60px; background: var(--bg); color: var(--fg);
+  font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 900px; margin: 0 auto; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2, h3 { font-size: 15px; margin: 20px 0 8px; }
+.nhanh { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+button { font: inherit; padding: 6px 12px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--card); color: var(--fg); cursor: pointer; }
+[hidden] { display: none !important; }
+ol.steps, ul.calls-list, ul.depends { list-style: none; margin: 0; padding-left: 0; }
+li.step { border-left: 2px solid var(--border); padding: 6px 0 6px 12px; margin-bottom: 2px; }
+li.step.is-error { border-left-color: var(--err); }
+.err { color: var(--err); font-size: 12px; }
+.muted, .canh-bao { color: var(--muted); }
+.canh-bao { border: 1px solid var(--border); background: var(--card); border-radius: 6px;
+  padding: 8px 12px; font-size: 13px; margin: 0 0 16px; }
+code { background: var(--card); border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+code.dim, .dim { opacity: .55; }
+.calls-list li { padding: 2px 0; font-size: 13px; }
+.loc { color: var(--accent); font-weight: 600; margin-right: 4px; }
+figure.call-fig { margin: 10px 0 4px; }
+figure.call-fig svg { max-width: 100%; height: auto; display: block; }
+figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.step-detail { border-top: 1px solid var(--border); padding: 10px 0; }
+details summary { cursor: pointer; color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Đăng nhập</h1>
+<p class="nhanh">Xác thực &gt; Đăng nhập</p>
+<button id="btn-lop" type="button">Xem lớp chi tiết</button>
+</header>
+<section id="lop-nghiep-vu"><ol class="steps"><li class="step"><strong>B1</strong> · Nhập email và mật khẩu <code>src/pages/login.tsx::LoginForm.onSubmit</code></li><li class="step"><strong>B2</strong> · Kiểm tra tại chỗ trước khi gửi <code>src/lib/validators.ts::validateCredentials</code></li><li class="step is-error"><strong>B2!</strong> · email sai khuôn hoặc mật khẩu ngắn thì báo lỗi tại ô nhập và dừng <span class="err">[nhánh lỗi]</span> <code>src/lib/form-ui.ts::showFieldError</code></li><li class="step"><strong>B3</strong> · Gửi yêu cầu qua kênh mã hoá <code>src/api/auth.ts::authApi.login</code></li><li class="step"><strong>B4</strong> · Tra người dùng và đối chiếu băm mật khẩu <code>server/controllers/auth.py::AuthController.login</code></li><li class="step is-error"><strong>B4!</strong> · không có người dùng hoặc băm sai thì trả một lỗi chung <span class="err">[nhánh lỗi]</span> <code>server/controllers/auth.py::deny_login</code></li><li class="step"><strong>B5</strong> · Phát token phiên và token làm mới <code>server/services/token.py::TokenService.issue_pair</code></li><li class="step"><strong>B6</strong> · Lưu token và vào màn hình chính <span class="muted">(chưa rõ vị trí code)</span></li></ol></section>
+<section id="lop-chi-tiet" hidden><p class="canh-bao">Thứ tự dưới đây là thứ tự VIẾT (theo dòng đặt lời gọi trong file), KHÔNG phải thứ tự CHẠY thực tế lúc thực thi.</p><div class="step-detail"><h3>B1 · <code>src/pages/login.tsx::LoginForm.onSubmit</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B2 · <code>src/lib/validators.ts::validateCredentials</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B2! · <code>src/lib/form-ui.ts::showFieldError</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B3 · <code>src/api/auth.ts::authApi.login</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B4 · <code>server/controllers/auth.py::AuthController.login</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B4! · <code>server/controllers/auth.py::deny_login</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B5 · <code>server/services/token.py::TokenService.issue_pair</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div></section>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('btn-lop');
+  var nghiepVu = document.getElementById('lop-nghiep-vu');
+  var chiTiet = document.getElementById('lop-chi-tiet');
+  if (!btn) { return; }
+  btn.addEventListener('click', function () {
+    var showDetail = chiTiet.hasAttribute('hidden');
+    if (showDetail) {
+      chiTiet.removeAttribute('hidden');
+      nghiepVu.setAttribute('hidden', '');
+    } else {
+      chiTiet.setAttribute('hidden', '');
+      nghiepVu.removeAttribute('hidden');
+    }
+    btn.textContent = showDetail ? 'Xem lớp nghiệp vụ' : 'Xem lớp chi tiết';
+  });
+});
+</script>
+</body>
+</html>
