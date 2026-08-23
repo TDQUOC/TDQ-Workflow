@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1787420283.726148,
-    "ast_hash": "eede71c25a10c2e5c53c92a6aa4b1dee",
-    "semantic_hash": "eede71c25a10c2e5c53c92a6aa4b1dee"
+    "mtime": 1787456627.8428392,
+    "ast_hash": "8cc22777be30b90fd0e5e2ad73e64b11",
+    "semantic_hash": ""
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -125,8 +125,8 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1787420451.1385338,
-    "ast_hash": "678d2167ddce0a7e85877be00386bfd4",
+    "mtime": 1787456940.2284238,
+    "ast_hash": "2040ada0904e550c55411776fa3bd91c",
     "semantic_hash": ""
   },
   "README.md": {

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<!-- BẢN VIẾT TAY: trang này được viết tay từ vi-du-login.json để minh hoạ hình dạng đầu ra,
+     chưa phải sản phẩm của lệnh sinh tự động. Dòng khai này cũng hiện ngay đầu trang. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mind-map mẫu — luồng Đăng nhập</title>
+<style>
+  :root {
+    --nen: #fbfbf9; --chu: #1c1c1a; --mo: #6b6b64; --vien: #d8d8d2;
+    --the: #eceae4; --nhan-client: #1d5f8a; --nhan-server: #8a4a1d; --loi: #a32020;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --nen: #16171a; --chu: #e8e8e4; --mo: #9a9a92; --vien: #33343a;
+      --the: #23252b; --nhan-client: #7ab6dd; --nhan-server: #dda87a; --loi: #e08a8a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px 18px 60px; background: var(--nen); color: var(--chu);
+    font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  .khai {
+    border: 1px solid var(--vien); background: var(--the); border-radius: 6px;
+    padding: 10px 12px; font-size: 13px; color: var(--mo); margin: 0 0 22px;
+  }
+  h2 { font-size: 15px; margin: 26px 0 10px; padding-bottom: 5px; border-bottom: 1px solid var(--vien); }
+  ul.cay { list-style: none; margin: 0; padding-left: 18px; border-left: 1px solid var(--vien); }
+  ul.cay > li { margin: 3px 0; position: relative; padding-left: 12px; }
+  ul.cay > li::before {
+    content: ""; position: absolute; left: -18px; top: 12px; width: 16px;
+    height: 1px; background: var(--vien);
+  }
+  .nut { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .mo-dong {
+    cursor: pointer; border: 1px solid var(--vien); background: var(--the); color: var(--chu);
+    border-radius: 4px; font: inherit; font-size: 12px; line-height: 1; padding: 3px 6px;
+  }
+  .mo-dong[aria-expanded="false"]::before { content: "+"; }
+  .mo-dong[aria-expanded="true"]::before { content: "\2212"; }
+  .ma { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--mo); }
+  .phia { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  .phia.client { color: var(--nhan-client); }
+  .phia.server { color: var(--nhan-server); }
+  .chi-tiet { margin: 4px 0 10px 12px; font-size: 13px; color: var(--mo); }
+  .chi-tiet[hidden] { display: none; }
+  .chi-tiet code { font-size: 12px; }
+  .chi-tiet .loi { color: var(--loi); }
+  .lop4 { font-size: 14px; }
+  .lop4 .day { color: var(--mo); }
+  footer { margin-top: 34px; font-size: 12px; color: var(--mo); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Mind-map mẫu — luồng Đăng nhập</h1>
+  <p class="khai">
+    Trang này là <strong>bản viết tay</strong>, dựng thủ công từ
+    <code>vi-du-login.json</code> để minh hoạ hình dạng đầu ra. Nó chưa phải sản phẩm của
+    lệnh sinh tự động, và luồng bên dưới là ví dụ hư cấu, không phải code của repo này.
+    Toàn bộ CSS và JS nằm trong file, không gọi tài nguyên ngoài.
+  </p>
+
+  <h2>Lớp 1 — giải thuật, và Lớp 2 + 3 — function flow</h2>
+  <ul class="cay" id="cay"></ul>
+
+  <h2>Lớp 4 — vị trí trong cây tổng</h2>
+  <ul class="cay lop4">
+    <li>Xác thực
+      <ul class="cay">
+        <li><strong>Đăng nhập</strong> <span class="day">← luồng đang xem</span></li>
+        <li>Đăng ký</li>
+        <li>Quên mật khẩu</li>
+      </ul>
+    </li>
+    <li>Hồ sơ người dùng</li>
+    <li>Thanh toán</li>
+  </ul>
+
+  <footer>Bấm dấu + ở mỗi bước để mở lớp function flow và các nhánh lỗi của bước đó.</footer>
+</main>
+
+<script>
+// Dữ liệu chép nguyên từ vi-du-login.json, nhúng thẳng để trang chạy được khi mở bằng
+// giao thức file:// — nạp JSON qua fetch sẽ bị trình duyệt chặn ở chế độ đó.
+var DU_LIEU = {
+  tinh_nang: "Đăng nhập",
+  buoc: [
+    { ma: "B1", ten: "Nhập email và mật khẩu", phia: "client", loi: [],
+      code: [{ file: "src/pages/login.tsx", ham: "LoginForm.onSubmit", module: "pages" }] },
+    { ma: "B2", ten: "Kiểm tra tại chỗ trước khi gửi", phia: "client",
+      loi: [{ khi: "email sai khuôn", xu_ly: "hiện lỗi dưới ô nhập, dừng luồng" },
+            { khi: "mật khẩu ngắn hơn 6 ký tự", xu_ly: "hiện lỗi dưới ô nhập, dừng luồng" }],
+      code: [{ file: "src/lib/validators.ts", ham: "validateCredentials", module: "helper" },
+             { file: "src/lib/form-ui.ts", ham: "showFieldError", module: "helper" }] },
+    { ma: "B3", ten: "Gửi yêu cầu đăng nhập qua kênh mã hoá", phia: "client", loi: [],
+      code: [{ file: "src/api/auth.ts", ham: "authApi.login", module: "api" }] },
+    { ma: "B4", ten: "Tra người dùng theo email và đối chiếu mật khẩu băm", phia: "server",
+      loi: [{ khi: "không có người dùng, hoặc băm không khớp",
+              xu_ly: "trả một lỗi chung, không nói sai ở đâu" }],
+      code: [{ file: "server/controllers/auth.py", ham: "AuthController.login", module: "controller" },
+             { file: "server/repo/user.py", ham: "UserRepo.find_by_email", module: "repo" },
+             { file: "server/controllers/auth.py", ham: "deny_login", module: "controller" }] },
+    { ma: "B5", ten: "Phát token phiên và token làm mới", phia: "server", loi: [],
+      code: [{ file: "server/services/token.py", ham: "TokenService.issue_pair", module: "service" }] },
+    { ma: "B6", ten: "Lưu token và chuyển sang màn hình chính", phia: "client", loi: [],
+      code: [{ file: "src/store/session.ts", ham: "session.persist", module: "store" }] }
+  ]
+};
+
+function tao(the, lop, chu) {
+  var e = document.createElement(the);
+  if (lop) e.className = lop;
+  if (chu) e.textContent = chu;
+  return e;
+}
+
+function veChiTiet(buoc) {
+  var hop = tao("div", "chi-tiet");
+  hop.hidden = true;
+  buoc.code.forEach(function (c) {
+    var d = tao("div");
+    var ma = tao("code", null, c.ham);
+    d.appendChild(ma);
+    d.appendChild(document.createTextNode("  ·  " + c.file + "  ·  module " + c.module));
+    hop.appendChild(d);
+  });
+  buoc.loi.forEach(function (l) {
+    hop.appendChild(tao("div", "loi", "lỗi khi " + l.khi + " → " + l.xu_ly));
+  });
+  return hop;
+}
+
+function ve() {
+  var goc = document.getElementById("cay");
+  DU_LIEU.buoc.forEach(function (buoc) {
+    var li = tao("li");
+    var dong = tao("div", "nut");
+
+    var nut = tao("button", "mo-dong");
+    nut.type = "button";
+    nut.setAttribute("aria-expanded", "false");
+    nut.setAttribute("aria-label", "Mở chi tiết bước " + buoc.ma);
+
+    dong.appendChild(nut);
+    dong.appendChild(tao("span", "ma", buoc.ma));
+    dong.appendChild(tao("span", null, buoc.ten));
+    dong.appendChild(tao("span", "phia " + buoc.phia, buoc.phia));
+    if (buoc.loi.length) {
+      dong.appendChild(tao("span", "ma", "· " + buoc.loi.length + " nhánh lỗi"));
+    }
+
+    var chiTiet = veChiTiet(buoc);
+    nut.addEventListener("click", function () {
+      var dangMo = nut.getAttribute("aria-expanded") === "true";
+      nut.setAttribute("aria-expanded", dangMo ? "false" : "true");
+      chiTiet.hidden = dangMo;
+    });
+
+    li.appendChild(dong);
+    li.appendChild(chiTiet);
+    goc.appendChild(li);
+  });
+}
+
+ve();
+</script>
+</body>
+</html>
