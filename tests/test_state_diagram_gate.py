@@ -164,5 +164,57 @@ class DanhSachSoDoTest(unittest.TestCase):
         self.assertIn(SO_DO_B, out)
 
 
+class ChanPhasePlanTest(unittest.TestCase):
+    """T2.5 — `set phase=plan` bị chặn cứng khi danh sách sơ đồ rỗng hoặc còn phần tử
+    chưa duyệt, theo khuôn `_chan_worktree_con_mo`. Nhóm test `chan`."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_chan_danh_sach_rong_khong_cho_sang_plan(self):
+        mo_request(self.cwd)
+        ma, _, err = run_state_cli(self.cwd, "set", "phase=plan")
+        self.assertEqual(ma, tdq_state.EXIT_SYNTAX, err)
+        self.assertNotEqual(doc_state(self.cwd)["phase"], "plan")
+
+    def test_chan_con_chua_duyet_khong_cho_sang_plan(self):
+        mo_request(self.cwd)
+        run_state_cli(self.cwd, "diagram", "add", SO_DO_A)
+        run_state_cli(self.cwd, "diagram", "add", SO_DO_B)
+        run_state_cli(self.cwd, "approve", "diagram", SO_DO_A, "--by", "ok sơ đồ đăng nhập")
+        ma, _, err = run_state_cli(self.cwd, "set", "phase=plan")
+        self.assertEqual(ma, tdq_state.EXIT_SYNTAX, err)
+        self.assertIn(SO_DO_B, err, "thông báo phải gọi đích danh sơ đồ chưa duyệt")
+        self.assertNotIn(SO_DO_A, err, "sơ đồ đã duyệt không nên bị liệt là còn thiếu")
+        self.assertNotEqual(doc_state(self.cwd)["phase"], "plan")
+
+    def test_chan_da_duyet_het_thi_cho_sang_plan(self):
+        mo_request(self.cwd)
+        run_state_cli(self.cwd, "diagram", "add", SO_DO_A)
+        run_state_cli(self.cwd, "diagram", "add", SO_DO_B)
+        run_state_cli(self.cwd, "approve", "diagram", SO_DO_A, "--by", "ok A")
+        run_state_cli(self.cwd, "approve", "diagram", SO_DO_B, "--by", "ok B")
+        ma, _, err = run_state_cli(self.cwd, "set", "phase=plan")
+        self.assertEqual(ma, 0, err)
+        self.assertEqual(doc_state(self.cwd)["phase"], "plan")
+
+    def test_chan_state_cu_thieu_khoa_van_sang_plan_duoc(self):
+        """Tương thích ngược: state cũ không có khoá `diagrams` thì KHÔNG bị chặn."""
+        cu = {"schema_version": 4, "active_request": "2026-08-01-1000-cu",
+              "lane": "full", "phase": "spec", "spec_approved": True}
+        with open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump(cu, f)
+        self.assertIsNone(tdq_state.diagram_entries(tdq_state.load(self.cwd)))
+        ma, _, err = run_state_cli(self.cwd, "set", "phase=plan")
+        self.assertEqual(ma, 0, err)
+        self.assertEqual(doc_state(self.cwd)["phase"], "plan")
+
+
 if __name__ == "__main__":
     unittest.main()

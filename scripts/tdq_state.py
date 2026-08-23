@@ -1743,6 +1743,29 @@ def _chan_worktree_con_mo(cwd):
           "Clean them up first: python3 scripts/tdq_team.py soat --don")
 
 
+def _chan_so_do_chua_duyet(state):
+    """Gate `plan`: the diagram list must be non-empty and fully approved.
+
+    Phase `diagram` exists so the algorithm gets drawn and checked BEFORE anyone
+    writes an implementation plan around it. A state written before the
+    `diagrams` key exists (`diagram_entries` returns None) predates this gate
+    entirely and must never be blocked by it — that would break every old
+    request still moving through the phase table.
+    """
+    danh_sach = diagram_entries(state)
+    if danh_sach is None:
+        return
+    if not danh_sach:
+        _fail("No diagram registered for this request yet. Register at least "
+              "one with `diagram add <path>` before moving to phase=plan.")
+    con_thieu = diagram_pending(state)
+    if con_thieu:
+        ten = ", ".join(con_thieu)
+        _fail(f"{len(con_thieu)} diagram(s) still awaiting approval: {ten}. "
+              "Approve each one with `approve diagram <path> --by \"...\"` "
+              "before moving to phase=plan. Nothing gets deleted or redrawn.")
+
+
 def _pop_json_flag(argv):
     """Strip the `--json` flag out of argv. By default the CLI prints a 1-line summary to
     keep context cheap; with `--json` it prints the whole state as before (for inspection/debug)."""
@@ -1906,6 +1929,8 @@ def cli(argv):
                 _fail("Invalid phase (idle|analyze|spec|diagram|plan|implement|qc|report).")
             if key == "phase" and value == "qc":
                 _chan_worktree_con_mo(cwd)
+            if key == "phase" and value == "plan":
+                _chan_so_do_chua_duyet(state)
             state[key] = value
             if key == "phase":
                 ghi_moc_phase(state, value)
