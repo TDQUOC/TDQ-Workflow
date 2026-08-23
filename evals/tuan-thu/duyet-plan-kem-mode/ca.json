@@ -26,6 +26,22 @@
     ],
     [
       "set",
+      "phase=diagram"
+    ],
+    [
+      "diagram",
+      "add",
+      "docs/tdq/mind-map/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "diagram",
+      "docs/tdq/mind-map/2026-08-19-0900-them-lenh-xoa-cache.md",
+      "--by",
+      "duyệt sơ đồ"
+    ],
+    [
+      "set",
       "phase=plan"
     ]
   ],
