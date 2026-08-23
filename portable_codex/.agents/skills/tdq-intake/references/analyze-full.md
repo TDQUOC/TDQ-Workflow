@@ -16,6 +16,14 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
 2. **Read the code.** Find everything this request touches: entry point, data flow,
    config, tests. Write down the versions and frameworks in use.
 
+   **LSP first.** <!-- i18n-allow: canonical rule sentence in the default language -->
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
+   LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+   In practice: `mcp__lsp__find_symbol` to locate it, `mcp__lsp__find_references` for who calls
+   it, `mcp__lsp__go_to_definition` for where it comes from. A grep for a symbol with no LSP
+   attempt first is a QC defect.
+
    **Architecture profile — generated once per project.** Open `docs/kien-truc.md`.
    Already there → read it fully before writing a single line of analysis. Not there →
    generate a draft in this phase, then have the user settle it; until settled every line

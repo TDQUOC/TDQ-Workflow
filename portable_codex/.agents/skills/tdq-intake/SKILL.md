@@ -45,6 +45,16 @@ first, then come back to step 1 below.
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
 
+1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py kiem` — six rungs, agent-lsp
+   through conflicting plugin hooks. A rung is missing → print the exact command it gave you,
+   **ASK the user for permission, and only run it once they say yes.** Never install unasked, and
+   never edit another plugin's file. Rungs 5–6 only warn, so a gap there never holds the request
+   up. Details: [tdq-lsp-setup](../tdq-lsp-setup/SKILL.md). The search order that follows from it
+   is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
+   LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+
 2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
    Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you <!-- i18n-allow: canonical name in the default language -->
    recommend, and that line is NEVER printed to chat. Then ask which pipeline the user

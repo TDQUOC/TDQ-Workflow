@@ -2,7 +2,30 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
-## 0.30.0 — 2026-08-23
+## 0.31.0 — 2026-08-23
+
+Bộ workflow có lớp tìm kiếm bằng LSP. Trước bản này mọi phase đi tìm ký hiệu đều rơi về grep:
+đúng chữ nhưng không biết chữ đó là định nghĩa hay chỉ là một lần gọi, càng không lần được ai
+đang dùng nó. Máy đã có `agent-lsp` nhưng không có gì trong repo nói cho Claude biết nó tồn
+tại, phải cài gì để nó chạy được với ngôn ngữ của project, hay khi nào thì dùng nó thay grep.
+Bản này viết đủ ba mảnh đó: cách dựng, cách kiểm, và luật thứ tự ưu tiên.
+
+- **Skill mới `skills/tdq-lsp-setup/`** — thang 6 bậc cài đặt (binary → language server → cấu
+  hình MCP → đăng ký → Ollama → hook ngoài). Kèm bảng 30 ngôn ngữ `agent-lsp` hỗ trợ, mỗi dòng
+  một lệnh cài language server. Cuối skill là mục runbook chép nguyên 5 bước đã chạy thật trên
+  máy này: đổi máy hay thêm ngôn ngữ thì đọc lại mà làm, không phải dò lại từ đầu.
+- **`scripts/tdq_lsp.py`** — 3 lệnh `kiem` / `danh-thuc` / `nha`. Bậc 1–4 thiếu là chặn, bậc 5–6
+  chỉ cảnh báo. Script **không bao giờ tự cài**: nó in lệnh cài ra và để user quyết, vì cài đặt
+  ngoài repo là việc của người dùng chứ không phải của agent.
+- **Luật "LSP trước · lumen khi LSP rỗng · grep cuối"** móc vào 5 chỗ: intake, analyze-full,
+  spec, plan, build. Câu luật viết một chỗ, 4 chỗ kia trích nguyên văn, và
+  `tests/test_tdq_lsp_skill.py` so từng chữ — sửa một chỗ mà quên chỗ còn lại là đỏ ngay.
+- **Bản portable sinh lại cả hai** — `portable_claude` chép nguyên cây nên tự có skill mới;
+  `portable_codex` phải đăng ký vào `THU_TU_SKILL` của `scripts/build_portable.py` vì số đầu tên
+  file workflow chính là cơ chế định tuyến cho harness không có hệ thống skill. Thêm một skill
+  là số dịch hết, nên hai test khoá cứng `03-spec`/`06-checkportable` đổi sang dò theo đuôi tên.
+
+
 
 Câu hỏi trắc nghiệm luôn có số ở đầu. Trước bản này luật đánh số ĐÃ tồn tại: `scope-round.md`
 viết rõ "gộp câu 1 và các câu bối cảnh vào một khối, đánh số liên tục". Nhưng nó chỉ nằm ở

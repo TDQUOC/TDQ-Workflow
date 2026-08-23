@@ -1,16 +1,16 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-08-23T00:19:22+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-08-23T10:36:45+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-08-22-2319-danh-so-cau-hoi |
+| Request | 2026-08-23-0052-skill-tdq-lsp-setup |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-22-2319-danh-so-cau-hoi.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-08-22-2319-danh-so-cau-hoi.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-08-23-0052-skill-tdq-lsp-setup.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-08-23-0052-skill-tdq-lsp-setup.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
-| Run mode | subagent |
+| Run mode | main |
 
 ## Where we are
 QC has PASSed. Forbidden: Committing or pushing before the user asks for it.

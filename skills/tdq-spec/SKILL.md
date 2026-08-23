@@ -23,6 +23,14 @@ user's document language `doc_lang` (deliberate repetition — the original is
    constraints & risks · QC scope + Definition of Done · open questions.
    The "open questions" section MUST be empty — a question left → back to phase `analyze`.
 
+   **§2b is built from LSP semantics, not from directory names.** A module boundary comes from
+   who really imports and calls whom — `mcp__lsp__find_references` on the module's entry symbols,
+   `mcp__lsp__go_to_definition` on what it pulls in. Guessing the boundary from folder names is a
+   defect. <!-- i18n-allow: canonical rule sentence in the default language -->
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
+   LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+
 2. **Self-review.** Re-read it for holes and contradictions, and fix them. Run the machine
    check (R8 inspects §3b):
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" docs/tdq/spec/<slug>.md`

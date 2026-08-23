@@ -7,8 +7,8 @@ description: Turn an approved spec into a checkbox plan, one test per task: STOP
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). The plan text is written in the user's
 document language `doc_lang` (deliberate repetition — the original is
-`skills/tdq-conventions/SKILL.md`). Requires `spec_approved = true`. The user approves the
-spec → write the plan RIGHT AWAY, same turn.
+`skills/tdq-conventions/SKILL.md`). Requires `spec_approved = true`; the user approves the spec →
+write the plan RIGHT AWAY, same turn.
 
 ## Steps
 
@@ -16,25 +16,25 @@ spec → write the plan RIGHT AWAY, same turn.
    step 2 with its reason; the user settles it at gate `mode` (step 6):
    - `main` — display label "làm trực tiếp (inline implement)": work through it sequentially <!-- i18n-allow: user-facing mode label -->
      right inside this conversation (small plan, tightly dependent tasks, shared files).
-   - `subagent` — display label "giao trợ lý (sub-agent implement)": several assistants run <!-- i18n-allow: user-facing mode label -->
-     in parallel, you lead and cut the plan into waves, one worktree per agent, doing the part that
-     cannot be split yourself. Rule: `tdq-build/references/team-mode.md`.
+   - `subagent` — display label "giao trợ lý (sub-agent implement)": assistants run in parallel, <!-- i18n-allow: user-facing mode label -->
+     you lead and cut the plan into waves, one worktree per agent, doing the unsplittable part
+     yourself. Rule: `tdq-build/references/team-mode.md`.
    The proposal is **never eyeballed**: once the plan is written (step 2), MEASURE on that very plan:
    ```
    python3 "./scripts/tdq_bench.py" mo-phong --plan docs/tdq/plan/<slug>.md \
      --thuc-do docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json --he-so-agent 1.5
    ```
    The `Winner:` line of that command IS the proposal; copy the minute gap into the reason.
-   `--he-so-agent 1.5` is the conservative assumption — a sub-agent is 1.5× slower than the leader;
-   a team that wins at this factor wins for real, not thanks to a pretty assumption.
+   `--he-so-agent 1.5` is the conservative assumption (a sub-agent 1.5× slower than the leader), so
+   a team winning at that factor wins for real.
    Command errors (the plan has no `Chạm:` line) → fix the plan and measure again, guessing is banned. <!-- i18n-allow: canonical name kept verbatim -->
 
 2. **Write** `docs/tdq/plan/<slug>.md` out of the APPROVED spec — the full template lives in
    [references/plan-template.md](references/plan-template.md).
    Must be there: the status header + source spec · **a line of its own**
-   `Mode thực thi: <main|subagent> — <reason>` · the phases with checkbox tasks · a task of its own <!-- i18n-allow: canonical name kept verbatim -->
-   for the log service and for unit tests · a Definition of Done pointing back at §6 of the spec,
-   **every DoD line checkable by one command** (QC counts its items off that exact number of lines).
+   `Mode thực thi: <main|subagent> — <reason>` · the phases with checkbox tasks · a task of its own for <!-- i18n-allow: canonical name kept verbatim -->
+   the log service and for unit tests · a Definition of Done pointing back at §6 of the spec, **every
+   DoD line checkable by one command** (QC counts its items off that exact number of lines).
    One task = one piece of work + one measurable check, carrying the minute estimate `(eNm)`:
    ```
    - [ ] **T1.1** (e6m) <the concrete work> — Test: <command or pass criterion>
@@ -42,19 +42,21 @@ spec → write the plan RIGHT AWAY, same turn.
    **Every task that creates or edits a source file needs a `Chạm:` line right under it**, listing <!-- i18n-allow: canonical name kept verbatim -->
    the paths in backticks: it is both the blast-radius map and what `tdq_team.py phan-cong` reads
    to cut parallel waves. Template: the 2 sections `Chạm:`/`Cụm song song` of plan-template. <!-- i18n-allow: canonical name kept verbatim -->
-   **Score `eNm` as you write the task**, on every task, never scored later and never padded for
-   safety. `eNm` is the number of minutes the agent SPENDS EXECUTING the task (waiting for approval
-   does not count); the ETA of the whole plan = the sum of `eNm` over unfinished tasks. Full
-   scoring rule: the last section of plan-template.
+   **Build `Chạm:` from "who calls this", never by eye:** `mcp__lsp__find_references` on every <!-- i18n-allow: canonical name kept verbatim -->
+   symbol the task changes, so a caller outside the obvious folder still lands on the line. <!-- i18n-allow: canonical rule sentence in the default language -->
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
+   LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+   **Score `eNm` as you write the task**, on every task, never later and never padded for safety.
+   `eNm` = minutes the agent SPENDS EXECUTING it (approval waits do not count); the plan's ETA =
+   the sum of `eNm` over unfinished tasks. Full scoring rule: the last section of plan-template.
    **The `(mcp)` label rule:** a task with a `Dùng:` block whose skill needs an MCP tool at runtime → <!-- i18n-allow: canonical name kept verbatim -->
    that `Dùng:` line ends with ` (mcp)` OUTSIDE the backticks: that task must be done by Claude. <!-- i18n-allow: canonical name kept verbatim -->
 
-3. **Optimise.** Cut what is redundant, check the dependency order. Cross-check the 2 mapping
-   rules: every output in spec §2 → ≥ 1 task; every `DÙNG` row in spec §3b → ≥ 1 contract block <!-- i18n-allow: canonical name kept verbatim -->
-   with all 5 fields (`Dùng/Để/Ra/Kiểm/Không dùng cho`) per the template. <!-- i18n-allow: canonical name kept verbatim --> Self-check by machine:
-   `python3 "./scripts/doc_lint.py" --pair <spec> <plan>` must exit 0.
-   A deeper review happens only when the user asks — that is when agent `tdq-reviewer` (optional)
-   gets called.
+3. **Optimise.** Cut redundancy, check the dependency order, cross-check the 2 mapping rules: every
+   output in spec §2 → ≥ 1 task; every `DÙNG` row in spec §3b → ≥ 1 contract block with all 5 fields <!-- i18n-allow: canonical name kept verbatim -->
+   (`Dùng/Để/Ra/Kiểm/Không dùng cho`). Machine check: `python3 "./scripts/doc_lint.py" --pair <spec> <plan>` must exit 0. <!-- i18n-allow: canonical name kept verbatim -->
+   A deeper review happens only when the user asks — `tdq-reviewer` gets called then.
 
 4. **Register the file into state:**
    ```
@@ -81,29 +83,27 @@ spec → write the plan RIGHT AWAY, same turn.
 
    ➤ Duyệt: nhắn "duyệt plan" (duyệt xong tôi hỏi bạn một câu về cách chạy) · Góp ý: nhắn trực tiếp
    ```
-   The body is ≤ 10 lines and a REAL summary; a bare status line ("written to the log, waiting
-   for approval") is banned. Quoting a whole template as an example → label it right before the
-   excerpt, in the user's document language: "(template — for later questions, not this turn's
-   question)". Then **end the turn**. Comments → fix, present again, wait.
+   The body is ≤ 10 lines and a REAL summary; a bare status line ("written to the log, waiting for
+   approval") is banned. Quoting a template as an example → label it right before the excerpt, in the
+   user's language: "(template — not this turn's question)". Then **end the turn**; comments → fix,
+   present again, wait.
 
 6. **The user approves → record it IMMEDIATELY, then ask about the run mode in the SAME turn:**
    ```
    python3 "./scripts/tdq_state.py" approve plan --by "<the user's exact words>"
    ```
-   Does the approval sentence already name a mode (`main`/`inline`, `subagent`/`sub-agent`)?
-   Then add `--mode <that value>` to that command. **Skip** the gate below and build right away.
-   Re-asking what the user just said is banned.
+   Does the approval sentence already name a mode (`main`/`inline`, `subagent`/`sub-agent`)? Then add
+   `--mode <that value>`, **skip** the gate below and build right away — re-asking is banned.
    No mode named → state stops at phase `mode`; print the question block then STOP. That block
    lives verbatim in [references/mode-gate.md](references/mode-gate.md): two options "làm trực <!-- i18n-allow: user-facing mode labels -->
    tiếp (inline implement)" / "giao trợ lý (sub-agent implement)", one per line, proposal at A. <!-- i18n-allow: user-facing mode labels -->
    Right under the two options there MUST be a **"Vì sao đề xuất"** paragraph, 1–3 lines long. <!-- i18n-allow: canonical name of the block -->
-   Speaking in generalities is banned. Give all 4 grounds read off the plan itself: task count,
-   dependency chain, how many files several tasks touch at once, whether an `(mcp)` label is
-   present. Close with one sentence on why not the other option. Examples: same file mode-gate.md.
+   Generalities are banned. Give all 4 grounds read off the plan: task count, dependency chain, how
+   many files several tasks touch at once, whether an `(mcp)` label is present. Close with one
+   sentence on why not the other option. Examples: same file mode-gate.md.
    The two names are **display labels**; state still records `main`/`subagent` (`MODE_LABELS`/`MODE_ALIASES` in `scripts/tdq_state.py`).
-   The user answers → re-run the command above with `--mode <main|subagent>` and build RIGHT AWAY
-   in the same turn. The settled mode is the one the USER said, even when it differs from your
-   proposal. Choosing for the user is banned.
+   The user answers → re-run the command above with `--mode <main|subagent>` and build RIGHT AWAY in
+   the same turn. The settled mode is the USER's, even when it differs from your proposal.
 
 Done when: `plan_approved = true` and `implement_mode` is not empty.
 Next step: flip the plan header to `ĐÃ DUYỆT`, run <!-- i18n-allow: canonical name kept verbatim -->

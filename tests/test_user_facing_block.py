@@ -73,6 +73,19 @@ MAU = (
     ("tdq-status", "SKILL.md"),
 )
 
+def ten_theo_duoi(duoi):
+    """Tên file bản codex mang số thứ tự đọc do build sinh ra: thêm một skill là số dịch
+    hết. Dò theo đuôi tên để test khoá vào ĐÚNG file, không khoá vào con số."""
+    for ten in sorted(os.listdir(PORTABLE)):
+        if re.match(r"\d\d-", ten) and ten.endswith(duoi):
+            return ten
+    raise AssertionError(f"bản portable thiếu file …{duoi}")
+
+
+PORTABLE_SPEC = ten_theo_duoi("-spec.md")
+PORTABLE_PLAN = ten_theo_duoi("-plan.md")
+
+
 # Số khối mẫu ĐANG có trong từng file, chốt bằng số đếm thật lúc viết test.
 # Có mặt để phép kiểm khối không im lặng chạy rỗng: xoá mất một khối thì con số lệch
 # và test đỏ. Hai file mang số 0 là có thật — `interview.md` và `tdq-status/SKILL.md`
@@ -90,8 +103,8 @@ SO_KHOI = {
     "tdq-intake/references/interview.md": 0,
     "tdq-build/references/report-template.md": 1,
     "tdq-status/SKILL.md": 0,
-    "portable/03-spec.md": 1,
-    "portable/04-plan.md": 1,  # bản sinh chép từ tdq-plan/SKILL.md (khối mode-gate ở file riêng)
+    "portable/" + PORTABLE_SPEC: 1,
+    "portable/" + PORTABLE_PLAN: 1,  # bản sinh chép từ tdq-plan/SKILL.md (khối mode-gate ở file riêng)
     "portable/references/user-facing-block.md": 1,
 }
 
@@ -101,7 +114,7 @@ FILE_PHAM_VI = tuple(
     (os.path.join(SKILLS, *p), "skills/" + "/".join(p)) for p in MAU
 ) + tuple(
     (os.path.join(PORTABLE, *p), "portable/workflow/" + "/".join(p))
-    for p in (("03-spec.md",), ("04-plan.md",),
+    for p in ((PORTABLE_SPEC,), (PORTABLE_PLAN,),
               ("references", "tdq-conventions", "user-facing-block.md"))
 )
 
@@ -322,7 +335,7 @@ class UserFacingBlockTest(unittest.TestCase):
                 self.assertIn(ch, muc_ky_hieu,
                               f"bản portable thiếu ký tự whitelist {ch!r}")
 
-        for ten in ("03-spec.md", "04-plan.md"):
+        for ten in (PORTABLE_SPEC, PORTABLE_PLAN):
             self.kiem_khoi_mau(os.path.join(PORTABLE, ten), f"portable/{ten}")
 
     def test_symbol_whitelist(self):
@@ -341,7 +354,7 @@ class UserFacingBlockTest(unittest.TestCase):
                 self.assertIn("user-facing-block", read(SKILLS, *parts),
                               "file này nói với user nhưng không trỏ về khuôn chung")
         # Bản portable có khuôn riêng đặt cạnh nó, hai file kia phải trỏ về đúng bản đó.
-        for ten in ("03-spec.md", "04-plan.md"):
+        for ten in (PORTABLE_SPEC, PORTABLE_PLAN):
             with self.subTest(file=f"portable/{ten}"):
                 self.assertIn("user-facing-block", read(PORTABLE, ten),
                               "file portable này nói với user nhưng không trỏ về khuôn")

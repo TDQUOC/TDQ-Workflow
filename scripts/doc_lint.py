@@ -41,6 +41,9 @@ SKILL_LINE_LIMITS = {
     "tdq-plan": 110,
     "tdq-build": 150,
     "tdq-status": 60,
+    # 2026-08-23: new skill. The setup ladder plus the runbook for re-configuring a machine
+    # are read whole when the ladder reports a missing rung, so they stay in the body.
+    "tdq-lsp-setup": 120,
     # 2026-08-15: 120 → 130. The one-sweep rule (§10) is a runtime-tier rule, so it has to
     # sit in the skill body to be loaded every turn. Soul ranks runtime above context cost,
     # hence 10 more lines to keep the rule readable instead of squeezing it to fit.

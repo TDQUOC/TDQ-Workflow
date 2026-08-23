@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1787408017.086312,
-    "ast_hash": "248b0f53a4db58334ddf23c6d91da29a",
-    "semantic_hash": "248b0f53a4db58334ddf23c6d91da29a"
+    "mtime": 1787420283.726148,
+    "ast_hash": "eede71c25a10c2e5c53c92a6aa4b1dee",
+    "semantic_hash": "eede71c25a10c2e5c53c92a6aa4b1dee"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -95,9 +95,9 @@
     "semantic_hash": "73a3591cb08ee795743310d3c278cc11"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1787342584.7782557,
-    "ast_hash": "22cf9f682a7b18d91955330ffeda30e8",
-    "semantic_hash": "22cf9f682a7b18d91955330ffeda30e8"
+    "mtime": 1787455438.4195645,
+    "ast_hash": "2b152f0f319072f019b86ab7e21e3002",
+    "semantic_hash": "2b152f0f319072f019b86ab7e21e3002"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1787336656.1261957,
@@ -125,8 +125,8 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1787408017.0867355,
-    "ast_hash": "7e10bdd0448ef53327595414aab75eac",
+    "mtime": 1787420451.1385338,
+    "ast_hash": "678d2167ddce0a7e85877be00386bfd4",
     "semantic_hash": ""
   },
   "README.md": {
@@ -155,9 +155,9 @@
     "semantic_hash": "e92e0edfeee0f49a77d299e5cae7fb93"
   },
   "scripts/build_portable.py": {
-    "mtime": 1787337452.4859762,
-    "ast_hash": "f25a76ea7c697c57054aed1618dbdaa8",
-    "semantic_hash": "f25a76ea7c697c57054aed1618dbdaa8"
+    "mtime": 1787454867.868549,
+    "ast_hash": "085e844ad5e0dc6ab4bbf7f76e496336",
+    "semantic_hash": "085e844ad5e0dc6ab4bbf7f76e496336"
   },
   "scripts/tdq_checkportable.py": {
     "mtime": 1787337027.354197,
@@ -293,5 +293,10 @@
     "mtime": 1787377885.0474625,
     "ast_hash": "e06f59590fe87935ac8c2d18fc340733",
     "semantic_hash": "e06f59590fe87935ac8c2d18fc340733"
+  },
+  "scripts/tdq_lsp.py": {
+    "mtime": 1787425328.7330768,
+    "ast_hash": "6a19278c2068f9f30be71923844966c0",
+    "semantic_hash": "6a19278c2068f9f30be71923844966c0"
   }
 }

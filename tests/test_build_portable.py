@@ -218,7 +218,9 @@ class TestCheckportableTrongBanSinh(TempDest):
 
     def test_codex_co_file_checkportable(self):
         ten = os.listdir(os.path.join(self.codex, "workflow"))
-        self.assertTrue(any(t.startswith("06-") and "checkportable" in t for t in ten), ten)
+        # Số đầu tên file là thứ tự đọc do build sinh ra: thêm một skill là số dịch hết.
+        # Khoá vào chữ `checkportable` kèm tiền tố số, không khoá vào con số cụ thể.
+        self.assertTrue(any(re.match(r"\d\d-", t) and "checkportable" in t for t in ten), ten)
 
     def test_ca_hai_ban_deu_goi_check_dau_tien(self):
         for duong in (os.path.join(self.claude, "README.md"),

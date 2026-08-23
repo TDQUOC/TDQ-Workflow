@@ -310,6 +310,7 @@ TEN_BAN_CODEX = "portable_codex"
 # right file at the right moment, so the number in the file name IS the routing mechanism.
 THU_TU_SKILL = (
     "tdq-conventions",
+    "tdq-lsp-setup",  # read before intake: it settles the search layer every later phase uses
     "tdq-intake",
     "tdq-spec",
     "tdq-plan",

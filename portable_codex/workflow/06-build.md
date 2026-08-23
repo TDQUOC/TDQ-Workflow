@@ -35,6 +35,12 @@ This skill owns three phases: `implement` → `qc` → `report`.
 - **Language rules.** About to write/change a source file → open
   [references/rules/index.md](references/rules/index.md), look up the file extension, load
   `chung.md` plus exactly ONE language file. Never load the whole set for one language.
+- **LSP before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
+  Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
+  LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+  `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+  It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
+  blocked edit. The `mcp__lsp__*` tools are missing → say so in one line, then fall through.
 - **No placeholders.** Missing information at this stage means the analysis fell short — say
   so, do not stub.
 - **If a subagent is running, wait it out**, or set a trigger to resume automatically. Never
@@ -72,8 +78,10 @@ This skill owns three phases: `implement` → `qc` → `report`.
       `Để` says, and do not spill into what `Không dùng cho` lists. No block → skip this step. <!-- i18n-allow: canonical contract field names -->
    3. Red: run the task's check → confirm it fails (or write the failing test first).
    4. Code: the smallest change that satisfies the task, following the existing style.
-      **Search before creating:** about to create a NEW file/class/function/constant → one
-      round of `graphify query "<name>"` or grep the name plus 2 synonyms; creating anyway after
+      **Search before creating:** about to create a NEW file/class/function/constant → first
+      `mcp__lsp__find_symbol` on the name plus 2 synonyms. The compiler's index answers
+      "does this exist already" exactly. LSP comes back empty → then one round of
+      `graphify query "<name>"` or grep the name plus 2 synonyms; creating anyway after
       finding something close → record it in the plan task as
       `Tạo mới thay vì dùng <đường dẫn> vì <lý do>`. Creating without searching is a defect even <!-- i18n-allow: canonical note written into the plan -->
       when the tests are green.
