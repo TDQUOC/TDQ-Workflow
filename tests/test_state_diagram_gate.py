@@ -203,6 +203,41 @@ class ChanPhasePlanTest(unittest.TestCase):
         self.assertEqual(ma, 0, err)
         self.assertEqual(doc_state(self.cwd)["phase"], "plan")
 
+    def test_chan_khong_mat_du_lieu_so_do(self):
+        """QC1.2 — DoD Q15: bị chặn xong thì file sơ đồ và trạng thái duyệt còn NGUYÊN.
+
+        Cổng chặn chỉ được từ chối chuyển phase; nó không xoá file người dùng đã vẽ,
+        không gỡ phần tử khỏi danh sách, không huỷ câu duyệt đã ghi.
+        """
+        mo_request(self.cwd)
+        duong_dan = {}
+        for ten in (SO_DO_A, SO_DO_B):
+            that = os.path.join(self.cwd, ten)
+            os.makedirs(os.path.dirname(that), exist_ok=True)
+            with open(that, "w", encoding="utf-8") as f:
+                f.write("# {}\n@nhánh: Tài khoản > {}\n\nB1 · Bước đầu (app/x.py::f)\n".format(
+                    ten, ten))
+            with open(that, encoding="utf-8") as f:
+                duong_dan[that] = f.read()
+            run_state_cli(self.cwd, "diagram", "add", ten)
+        run_state_cli(self.cwd, "approve", "diagram", SO_DO_A, "--by", "ok sơ đồ A")
+
+        ma, _, err = run_state_cli(self.cwd, "set", "phase=plan")
+        self.assertEqual(ma, tdq_state.EXIT_SYNTAX, err)
+
+        # 1. File trên đĩa còn nguyên xi.
+        for that, truoc in duong_dan.items():
+            self.assertTrue(os.path.exists(that), f"cổng chặn đã xoá mất {that}")
+            with open(that, encoding="utf-8") as f:
+                self.assertEqual(f.read(), truoc, f"cổng chặn đã sửa nội dung {that}")
+
+        # 2. Danh sách sơ đồ và câu duyệt đã ghi còn nguyên.
+        muc = {m["file"]: m for m in danh_sach(self.cwd)}
+        self.assertEqual(set(muc), {SO_DO_A, SO_DO_B})
+        self.assertTrue(muc[SO_DO_A]["approved"])
+        self.assertEqual(muc[SO_DO_A]["approved_by"], "ok sơ đồ A")
+        self.assertFalse(muc[SO_DO_B]["approved"])
+
     def test_chan_state_cu_thieu_khoa_van_sang_plan_duoc(self):
         """Tương thích ngược: state cũ không có khoá `diagrams` thì KHÔNG bị chặn."""
         cu = {"schema_version": 4, "active_request": "2026-08-01-1000-cu",

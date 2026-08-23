@@ -2,6 +2,33 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.32.0 — 2026-08-23
+
+Sơ đồ giải thuật thành cổng bắt buộc trước khi viết plan. Trước bản này workflow đi thẳng từ
+spec sang plan: người duyệt phải đọc bảng task để đoán ra luồng chạy. "Sơ đồ" nếu có thì cũng
+chỉ là chữ trong file, không ai kiểm được nó còn khớp code hay không. Bản này bổ sung đủ ba
+mảnh: một script chạy được, một phase có cổng chặn thật, và một trang HTML hai lớp — người
+duyệt xem lớp nghiệp vụ, người sửa code xem lớp chi tiết.
+
+- **`scripts/tdq_mindmap.py` — 5 lệnh** `sinh` / `kiem` / `lien-he` / `doi-chieu` / `xem`.
+  `kiem` bắt sai khuôn (thiếu `@nhánh`, `@phụ-thuộc` sai định dạng, bước không đánh số);
+  `lien-he` bắt vòng lặp phụ thuộc và phụ thuộc trỏ hụt; `doi-chieu` so sơ đồ với `graph.json`
+  (lọc node theo `file_type == "code"`, cảnh báo khi `built_at_commit` lệch `HEAD` chứ không tự
+  chạy lại graphify). Bốn mã thoát dùng chung: `0` sạch, `1` vi phạm, `2` sai cú pháp, `3` cần
+  cập nhật.
+- **Phase `diagram` chen giữa `spec` và `plan`** — chuỗi phase 10 → 11 bậc. Cổng nằm trong
+  `scripts/tdq_state.py`, không phải hook — theo luật hook chỉ nhắc chứ không `deny`. `set
+  phase=plan` bị từ chối khi danh sách sơ đồ rỗng hoặc còn cái chưa duyệt. Chặn xong thì gọi
+  đích danh từng file thiếu, không xoá gì. State cũ chưa có khoá này vẫn đi qua bình thường.
+- **Trang HTML hai lớp** — `scripts/mindmap_render.py` dựng lớp nghiệp vụ (thứ người duyệt đọc)
+  và lớp chi tiết mỗi function một step, sinh từ `graph.json` với docstring làm lời giải thích;
+  `--tong` cho trang tổng gom theo `@nhánh` kèm lưới phụ thuộc. Trang tự chứa, không cần mạng.
+- **Skill `tdq-diagram`** mới, ba skill cũ (`tdq-spec`, `tdq-plan`, `tdq-intake`) dẫn vào phase
+  mới. `doc_lint.py` và `mindmap_render.py` cùng import `check_diagram`/`build_link_graph` từ
+  `tdq_mindmap.py` nên ba công cụ không thể bất đồng về "sơ đồ hợp lệ là gì".
+- **Test** 1444 → 1498 xanh (54 test mới). Tập đỏ đối chiếu mốc `7e3bbd0` ra rỗng phía mới:
+  0 hồi quy, 6 đỏ cũ nay xanh.
+
 ## 0.31.0 — 2026-08-23
 
 Bộ workflow có lớp tìm kiếm bằng LSP. Trước bản này mọi phase đi tìm ký hiệu đều rơi về grep:

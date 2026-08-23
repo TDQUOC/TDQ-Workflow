@@ -1,0 +1,217 @@
+{
+  "slug": "2026-08-23-1623-mindmap-html-hai-lop",
+  "plan_file": "docs/tdq/plan/2026-08-23-1623-mindmap-html-hai-lop.md",
+  "plan_sha": "ddefc8c5fec2b7c5b205498458569caad89f8980be6a52dd9947cd03513c5eed",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "graphify-out/graph.json",
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 3
+    },
+    "T1.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 5
+    },
+    "T1.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 6
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/mindmap_render.py",
+        "tests/test_mindmap_render.py",
+        "docs/tdq/mind-map/dang-nhap.html"
+      ],
+      "dot": 3
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/mindmap_render.py",
+        "tests/test_mindmap_render.py",
+        "docs/tdq/mind-map/index.html"
+      ],
+      "dot": 6
+    },
+    "T2.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 7
+    },
+    "T2.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_state_diagram_gate.py"
+      ],
+      "dot": 1
+    },
+    "T2.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_state_diagram_gate.py"
+      ],
+      "dot": 2
+    },
+    "T2.6": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/doc_lint.py",
+        "tests/test_doc_lint_mindmap.py"
+      ],
+      "dot": 3
+    },
+    "T2.7": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "tests/test_phase_table.py",
+        "skills/tdq-conventions/references/phases.md"
+      ],
+      "dot": 2
+    },
+    "T2.8": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/mind-map/index.html",
+        "scripts/tdq_mindmap.py",
+        "tests/test_mindmap_nhan_doc.py"
+      ],
+      "dot": 8
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/mind-map/dang-nhap.md",
+        "docs/tdq/mind-map/mua-hang.md"
+      ],
+      "dot": 6
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-diagram/SKILL.md",
+        "scripts/tdq_mindmap.py"
+      ],
+      "dot": 4
+    },
+    "T3.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/SKILL.md",
+        "skills/tdq-intake/references/quick-lane.md",
+        "skills/tdq-plan/SKILL.md"
+      ],
+      "dot": 5
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_mindmap.py",
+        "scripts/mindmap_render.py"
+      ],
+      "dot": 9
+    },
+    "T4.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 10
+    },
+    "T4.4a": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-plan/SKILL.md",
+        "skills/tdq-intake/references/quick-lane.md"
+      ],
+      "dot": 1
+    },
+    "T4.4b": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/doc_lint.py",
+        "docs/tdq/audit/luat-hien-co.md"
+      ],
+      "dot": 1
+    },
+    "T4.4c": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_next.py",
+        "tests/test_timing.py",
+        "tests/test_tdq_eval.py",
+        "tests/test_e2e_chain.py"
+      ],
+      "dot": 1
+    },
+    "T4.4d": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "evals/tuan-thu/duyet-plan-kem-mode/ca.json",
+        "evals/tuan-thu/duyet-plan-thieu-mode/ca.json"
+      ],
+      "dot": 1
+    },
+    "T4.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "skills/mem0-memory/SKILL.md"
+      ],
+      "dot": 11
+    }
+  }
+}

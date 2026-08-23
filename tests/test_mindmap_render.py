@@ -356,6 +356,52 @@ class TestTongCanhPhuThuocThat(unittest.TestCase):
         self.assertIn('class="grid-wrap"', html)
 
 
+class TestTongGomTheoNhanh(unittest.TestCase):
+    """QC1.1 — DoD Q7: trang tổng phải GOM feature theo `@nhánh`, không chỉ liệt kê tên.
+
+    Khẳng định cả ba mức: tên nhánh cha, tên nhánh con, và ô chứa của nhóm chưa
+    gắn nhánh — feature thiếu `@nhánh` không được biến mất khỏi bản đồ tổng.
+    """
+
+    def test_tong_gom_theo_nhanh_cha_con_va_nhom_chua_gan(self):
+        features = {
+            "dang-nhap": {
+                "title": "Đăng nhập", "branch_top": "Tài khoản", "branch_sub": "Xác thực",
+                "depends": [], "exists": True,
+            },
+            "doi-mat-khau": {
+                "title": "Đổi mật khẩu", "branch_top": "Tài khoản", "branch_sub": "Xác thực",
+                "depends": [], "exists": True,
+            },
+            "mua-hang": {
+                "title": "Mua hàng", "branch_top": "Thương mại", "branch_sub": "Mua hàng",
+                "depends": [], "exists": True,
+            },
+            "cu-khong-nhanh": {
+                "title": "Feature cũ", "branch_top": None, "branch_sub": None,
+                "depends": [], "exists": True,
+            },
+        }
+        page = mindmap_render.render_total_page(features)
+        self.assertIn('class="cay-nhanh"', page)
+        # Nhánh cha in đậm, mỗi tên đúng MỘT lần dù có hai feature cùng nhánh.
+        self.assertIn("<strong>Tài khoản</strong>", page)
+        self.assertIn("<strong>Thương mại</strong>", page)
+        self.assertEqual(page.count("<strong>Tài khoản</strong>"), 1,
+                         "hai feature cùng nhánh cha phải gom vào một ô, không lặp tên nhánh")
+        # Nhánh con là một tầng riêng, và hai feature cùng nhánh con nằm chung ô đó.
+        cha = page.split("<strong>Tài khoản</strong>", 1)[1]
+        cha = cha.split("<strong>Thương mại</strong>", 1)[0]
+        self.assertIn("Xác thực", cha)
+        self.assertIn("Đăng nhập", cha)
+        self.assertIn("Đổi mật khẩu", cha)
+        self.assertNotIn("Mua hàng", cha, "feature nhánh khác không được lọt vào nhánh Tài khoản")
+        # Feature không khai `@nhánh` vẫn hiện, trong nhóm chưa gắn nhánh.
+        self.assertIn(mindmap_render.TEXT_TONG_CHUA_GAN_NHANH, page)
+        chua_gan = page.split(mindmap_render.TEXT_TONG_CHUA_GAN_NHANH, 1)[1]
+        self.assertIn("Feature cũ", chua_gan)
+
+
 class TestTongTroHut(unittest.TestCase):
     def test_tong_feature_tro_toi_chua_co_file(self):
         features = {

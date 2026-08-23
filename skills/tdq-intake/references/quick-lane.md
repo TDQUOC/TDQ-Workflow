@@ -40,6 +40,15 @@ steps below before doing step 1; working from memory is banned.
    and say why. A question that can still CHANGE the outcome → interview per
    [interview.md](interview.md), with the **scope round** ahead of the detail round exactly
    as in the deep pipeline ([scope-round.md](scope-round.md)).
+1b. **Draw the diagram — mandatory here too.** Express is a shorter path, not a path with the
+   outline removed. For each feature flow the request touches, run
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_mindmap.py" sinh <feature-slug>`. Fill it in, then
+   present it for approval one at a time per [tdq-diagram](../../tdq-diagram/SKILL.md).
+   Exactly two things are lighter than in the deep pipeline. First, the **business layer alone**
+   is enough: `kiem` and `lien-he` must exit 0, `doi-chieu` is SKIPPED. Second, the diagram may
+   ride in the same message as the mini-plan of step 3, still approved as its own item.
+   Tier `nhỏ` is the one exemption in the whole workflow — it changes no product <!-- i18n-allow: canonical name in the default language -->
+   behaviour, so there is no flow to draw.
 2. **Write the mini spec/plan MERGED into 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 lines:
    scope in/out, one checkbox task per test, DoD with every line checkable by a command.
    **Every task that edits source must carry a `Chạm:` line** listing the paths in <!-- i18n-allow: canonical name in the default language -->

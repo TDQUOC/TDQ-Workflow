@@ -24,7 +24,7 @@ STATE_REL = os.path.join("docs", "tdq", "state.json")
 STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
 TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
 
-APPROVE_TARGETS = ("spec", "plan", "quick")
+APPROVE_TARGETS = ("spec", "plan", "quick", "diagram")
 VALID_MODES = ("main", "subagent")
 BY_MAX = 200
 VALID_LANES = {"quick", "full", None}
@@ -65,7 +65,13 @@ MODE_ALIASES = {
     "sub-agent implement": "subagent", "sub agent implement": "subagent",
     "subagent implement": "subagent", "sub-agent-implement": "subagent",
 }
-VALID_PHASES = {"idle", "analyze", "spec", "plan", "mode", "implement", "qc", "report"}
+VALID_PHASES = {"idle", "analyze", "spec", "diagram", "plan", "mode", "implement", "qc", "report"}
+
+# State key holding the diagram list of the running request. One element per
+# diagram file, each carrying its own approval — see `default_state`.
+# None (not a list) means "an old state opened before this key existed": that
+# state is NOT gated, an EMPTY list is.
+DIAGRAM_KEY = "diagrams"
 
 USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "init <slug> [nhanh|express|quick — express mode | chuyen-sau|deep|full — "  # i18n-allow
@@ -73,6 +79,8 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent] "
          "[--no-qc (quick only, requires --by)] [--by \"<user sentence>\"] | "
+         "approve diagram <path> [--by \"<user sentence>\"] | "
+         "diagram add <path> | diagram list | "
          "reset | phases-doc")
 
 EXIT_SYNTAX = 2
@@ -162,6 +170,14 @@ def default_state():
         # opted out deliberately via `approve quick --no-qc`. Who opted out comes
         # from quick_approved_by (the same approval sentence).
         "quick_qc_skipped": False,
+        # Diagram list of the request (phase `diagram`): one element per diagram
+        # file, shaped {"file", "approved", "approved_at", "approved_by"} — the
+        # same four fields as the spec/plan gate, one copy per diagram, because
+        # approving one diagram must never approve another.
+        # None on purpose, NOT []: a state written before this key existed is
+        # filled with None here and must stay usable, while [] means "this
+        # request has a diagram list and it is still empty".
+        DIAGRAM_KEY: None,
         "implement_mode": None,
         # language code of this request's documents (see DEFAULT_DOC_LANG)
         "doc_lang": DEFAULT_DOC_LANG,
@@ -314,7 +330,55 @@ def load(cwd, heal=True):
     state["phase_history"] = [m for m in state["phase_history"]
                               if isinstance(m, dict) and m.get("phase") and m.get("at")] \
         if isinstance(state.get("phase_history"), list) else []
+    state[DIAGRAM_KEY] = _heal_diagrams(state.get(DIAGRAM_KEY))
     return state
+
+
+def _heal_diagrams(raw):
+    """Normalise the diagram list read from disk. Junk → None, never an exception.
+
+    Anything that is not a list stays None ("this state predates the key"), and
+    inside a list only elements carrying a file path survive. Healed here so no
+    caller — hook, gate or report — has to defend itself against a hand-edited
+    state.json.
+    """
+    if not isinstance(raw, list):
+        return None
+    sach = []
+    for item in raw:
+        if not isinstance(item, dict) or not item.get("file"):
+            continue
+        sach.append({
+            "file": _diagram_id(item["file"]),
+            "approved": bool(item.get("approved")),
+            "approved_at": item.get("approved_at"),
+            "approved_by": item.get("approved_by"),
+        })
+    return sach
+
+
+def _diagram_id(path):
+    """The identity of a diagram inside the list: its path, normalised.
+
+    `docs/tdq/mind-map/x.md` and `./docs/tdq/mind-map/x.md` are the SAME diagram —
+    without this, registering the second spelling would silently create a twin
+    that nobody ever approves and the gate would never open.
+    """
+    return os.path.normpath(str(path).strip()).replace(os.sep, "/")
+
+
+def diagram_entries(state):
+    """The diagram list of the request, or None for a state written before the key.
+
+    None and [] are DIFFERENT answers and callers must keep them apart: None =
+    nothing to say (old request), [] = this request has no diagram yet.
+    """
+    return _heal_diagrams((state or {}).get(DIAGRAM_KEY))
+
+
+def diagram_pending(state):
+    """Paths of the diagrams still awaiting approval ([] when there is none)."""
+    return [d["file"] for d in (diagram_entries(state) or []) if not d["approved"]]
 
 
 def _dong_so_request_cu(cwd):
@@ -929,8 +993,24 @@ PHASE_TABLE = {
         "done_when": "spec_approved = true",
         "forbidden": "Inferring that the user approved; making the user send one more turn before the plan is written",
     },
-    "plan": {
+    "diagram": {
         "entry": "spec_approved = true",
+        "action": "Draw one diagram per feature the spec touches, register each one, present them and STOP for approval — one approval per diagram",
+        "cmd": "python3 scripts/tdq_state.py approve diagram <path> --by \"<the user's sentence verbatim>\"",
+        "checklist": [
+            "List the features this request touches — one diagram per FEATURE, not one per request",
+            "Per feature: python3 scripts/tdq_mindmap.py sinh <feature> (exit 3 = the feature "
+            "already has a diagram → present it as an UPDATE, not as a new one)",
+            "Register every diagram: python3 scripts/tdq_state.py diagram add docs/tdq/mind-map/<feature>.md",
+            "Present the diagrams to the user ONE BY ONE and STOP — approving one says nothing about the others",
+            "The user approves one → run the approve command above for THAT path right away",
+            "Every diagram approved → python3 scripts/tdq_state.py set phase=plan",
+        ],
+        "done_when": "The diagram list is not empty and every diagram in it is approved",
+        "forbidden": "Writing the plan while a diagram is still awaiting approval; treating one approval as approving the whole list; deleting or redrawing a diagram the gate blocked on",
+    },
+    "plan": {
+        "entry": "spec_approved = true and every diagram in the list is approved",
         "action": "Write the plan with a PROPOSED mode, register plan_file, present it and STOP for approval",
         "cmd": "python3 scripts/tdq_state.py approve plan --by \"<verbatim>\"",
         "checklist": [
@@ -1075,8 +1155,8 @@ IMPLEMENT_SUBAGENT_ROW = {
 }
 
 
-PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc", "report",
-               "idle", "quick"]
+PHASE_ORDER = ["no_state", "analyze", "spec", "diagram", "plan", "mode", "implement", "qc",
+               "report", "idle", "quick"]
 
 
 _SCRIPT_PATH = re.compile(r"python3 scripts/(\S+\.py)")
@@ -1216,6 +1296,16 @@ def render_state_md(cwd, state):
     if state.get("plan_file"):
         plan += " — " + ("✔ approved" if state.get("plan_approved") else "⏳ awaiting approval")
     quick = "✔ approved" if state.get("quick_approved") else "⏳ awaiting approval"
+    so_do = diagram_entries(state)
+    if so_do is None:
+        diagram = "(not applicable)"
+    elif not so_do:
+        diagram = "(none registered)"
+    else:
+        cho = diagram_pending(state)
+        diagram = (f"{len(so_do)} registered — "
+                   + (f"⏳ {len(cho)} awaiting approval: {', '.join(cho)}"
+                      if cho else "✔ all approved"))
     lines = [
         "# TDQ STATE (generated — do not hand-edit)",
         f"Updated: {state.get('updated_at') or now_iso()} · Project: {os.path.abspath(cwd)} · schema 3",
@@ -1227,6 +1317,7 @@ def render_state_md(cwd, state):
         f"| Phase | {effective_phase(state, warn=False)} |",
         f"| Spec | {spec} |",
         f"| Plan | {plan} |",
+        f"| Diagrams | {diagram} |",
         f"| Quick approval | {quick if lane == 'quick' else '(not applicable)'} |",
         f"| Doc language | {state.get('doc_lang') or DEFAULT_DOC_LANG} |",
         f"| Run mode | {effective_mode(state, warn=False) or '(not settled)'} |",
@@ -1382,17 +1473,29 @@ def _unfinished(state):
 
 
 def _parse_approve_args(rest):
-    """-> (target, mode, by, no_qc). Fails only on genuinely wrong syntax."""
+    """-> (target, mode, by, no_qc, diagram). Fails only on genuinely wrong syntax.
+
+    `diagram` is the path given by `approve diagram <path>`, None for every other
+    target: a diagram is approved ONE path at a time, never as a whole gate.
+    """
     if not rest:
-        _fail("Missing approval target (spec|plan|quick).")
-    target, mode, by, no_qc = rest[0], None, None, False
+        _fail("Missing approval target (spec|plan|quick|diagram).")
+    target, mode, by, no_qc, diagram = rest[0], None, None, False, None
     # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
     if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
         target = "quick"
     if target not in APPROVE_TARGETS:
         _fail(f"Invalid approval target: {target} "
-              "(spec|plan|quick, aliases of quick: nhanh|express)")  # i18n-allow
+              "(spec|plan|quick|diagram, aliases of quick: nhanh|express)")  # i18n-allow
     i = 1
+    if target == "diagram":
+        # The path is mandatory and positional: approving "the diagrams" as a batch is
+        # exactly what this gate exists to prevent.
+        if len(rest) < 2 or rest[1].startswith("--"):
+            _fail("Missing the diagram path: approve diagram <path> "
+                  "[--by \"<the user's sentence>\"]")
+        diagram = rest[1]
+        i = 2
     while i < len(rest):
         flag = rest[i]
         if flag == "--no-qc":
@@ -1406,6 +1509,8 @@ def _parse_approve_args(rest):
             if i + 1 >= len(rest):
                 _fail(f"Missing value for {flag}")
             value = rest[i + 1]
+            if flag == "--mode" and target == "diagram":
+                _fail("Flag --mode does not belong to `approve diagram`.")
             if flag == "--mode":
                 # Through normalize_mode: the labels shown at gate mode ("inline",
                 # "sub-agent implement") must land as the machine identifier.
@@ -1426,7 +1531,7 @@ def _parse_approve_args(rest):
     if no_qc and not by:
         # Skipping QC must leave the user's own words, otherwise who skipped it and why is lost.
         _fail('Skipping QC requires --by "<the user\'s exact words>" so a trace remains.')
-    return target, mode, by, no_qc
+    return target, mode, by, no_qc, diagram
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -1449,12 +1554,17 @@ def _file_changed_since_approval(cwd, state, target):
 def _cli_approve(cwd, rest):
     """Record that the user approved. Not a gate: it warns on a mismatch but
     STILL writes and always exits 0 — deadlock-by-gate is what 0.2.0 removed."""
-    target, mode, by, no_qc = _parse_approve_args(rest)
+    target, mode, by, no_qc, diagram = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("No state yet — building the default state then recording the approval. Run init first.")
         state = default_state()
     stamp = state.get("updated_at")
+
+    if target == "diagram":
+        # Its own path from here on: a diagram approval touches ONE element of the
+        # list and no gate key at all, so none of the spec/plan logic below applies.
+        return _cli_approve_diagram(cwd, state, stamp, diagram, by)
 
     if state.get(f"{target}_approved") and not _file_changed_since_approval(cwd, state, target):
         print(f"ℹ️ {target} was already approved at {state.get(f'{target}_approved_at')} — not recorded again, move on.")
@@ -1521,6 +1631,98 @@ def _cli_approve(cwd, rest):
         print(f"✅ Recorded the user's approval of {target} at {state[f'{target}_approved_at']}{extra}.")
 
 
+def _diagram_register(state, path):
+    """Put `path` into the diagram list and return its element. Never duplicates.
+
+    Registering a path already in the list returns the element AS IT IS — an
+    already approved diagram keeps its approval, so re-running the register
+    command cannot silently reopen a gate the user already closed.
+    """
+    danh_sach = diagram_entries(state)
+    if danh_sach is None:
+        danh_sach = []
+    ma = _diagram_id(path)
+    for item in danh_sach:
+        if item["file"] == ma:
+            state[DIAGRAM_KEY] = danh_sach
+            return item, False
+    item = {"file": ma, "approved": False, "approved_at": None, "approved_by": None}
+    danh_sach.append(item)
+    state[DIAGRAM_KEY] = danh_sach
+    return item, True
+
+
+def _cli_approve_diagram(cwd, state, stamp, path, by):
+    """Record the user's approval of ONE diagram, by path.
+
+    Deliberately narrow: it writes to a single element of the list. The other
+    diagrams are not read, not touched and not re-timestamped — that is the whole
+    point of the per-diagram gate.
+    A path nobody registered is registered here and approved, with a warning: a
+    dead end (\"approve it — no, register it first\") would only teach people to
+    route around the gate.
+    """
+    item, moi = _diagram_register(state, path)
+    if moi:
+        _warn(f"{item['file']} was not in the diagram list — registered, then approved.")
+    if item["approved"]:
+        print(f"ℹ️ diagram {item['file']} was already approved at {item['approved_at']} "
+              "— not recorded again, move on.")
+        return
+    item["approved"] = True
+    item["approved_at"] = now_iso()
+    item["approved_by"] = (by or "")[:BY_MAX] or None
+    save(cwd, state, expect_updated_at=stamp)
+    if not by:
+        _warn("Missing --by \"<the user's exact words>\" — record it so who approved "
+              "which diagram stays checkable.")
+    con_lai = diagram_pending(state)
+    print(f"✅ Recorded the user's approval of diagram {item['file']} at {item['approved_at']}.")
+    if con_lai:
+        print(f"⏳ {len(con_lai)} diagram(s) still awaiting approval: {', '.join(con_lai)}")
+
+
+def _cli_diagram(cwd, rest):
+    """`diagram add <path>` registers a diagram · `diagram list` shows the list."""
+    if not rest:
+        _fail("Missing diagram sub-command (add <path> | list).")
+    sub = rest[0]
+    if sub == "list":
+        if len(rest) > 1:
+            _fail(f"Invalid argument: {rest[1]}")
+        danh_sach = diagram_entries(load(cwd))
+        if danh_sach is None:
+            print("(this request predates the diagram list — nothing recorded)")
+            return
+        if not danh_sach:
+            print("(the diagram list is empty)")
+            return
+        for item in danh_sach:
+            dau = "✔ approved" if item["approved"] else "⏳ awaiting approval"
+            print(f"{dau} · {item['file']}"
+                  + (f" · {item['approved_at']}" if item["approved"] else ""))
+        return
+    if sub != "add":
+        _fail(f"Invalid diagram sub-command: {sub} (add <path> | list)")
+    if len(rest) != 2:
+        _fail("Usage: diagram add <path>")
+    state = load(cwd)
+    if state is None:
+        _warn("No state yet — building the default state then registering. Run init first.")
+        state = default_state()
+    stamp = state.get("updated_at")
+    if not state.get("active_request"):
+        _warn("No TDQ request is open — registering anyway, but you should run init first.")
+    item, moi = _diagram_register(state, rest[1])
+    if not moi:
+        print(f"ℹ️ diagram {item['file']} is already in the list "
+              f"({'approved' if item['approved'] else 'awaiting approval'}) — nothing changed.")
+        return
+    save(cwd, state, expect_updated_at=stamp)
+    print(f"✅ Registered diagram {item['file']} "
+          f"({len(diagram_pending(state))} awaiting approval).")
+
+
 def _chan_worktree_con_mo(cwd):
     """Gate `qc`: an open row in the worktree ledger stops the phase from moving.
 
@@ -1539,6 +1741,29 @@ def _chan_worktree_con_mo(cwd):
     ten = ", ".join(f"{d.get('ma_task')} ({d.get('duong_dan')})" for d in mo)
     _fail(f"{len(mo)} worktree(s) still open: {ten}. "
           "Clean them up first: python3 scripts/tdq_team.py soat --don")
+
+
+def _chan_so_do_chua_duyet(state):
+    """Gate `plan`: the diagram list must be non-empty and fully approved.
+
+    Phase `diagram` exists so the algorithm gets drawn and checked BEFORE anyone
+    writes an implementation plan around it. A state written before the
+    `diagrams` key exists (`diagram_entries` returns None) predates this gate
+    entirely and must never be blocked by it — that would break every old
+    request still moving through the phase table.
+    """
+    danh_sach = diagram_entries(state)
+    if danh_sach is None:
+        return
+    if not danh_sach:
+        _fail("No diagram registered for this request yet. Register at least "
+              "one with `diagram add <path>` before moving to phase=plan.")
+    con_thieu = diagram_pending(state)
+    if con_thieu:
+        ten = ", ".join(con_thieu)
+        _fail(f"{len(con_thieu)} diagram(s) still awaiting approval: {ten}. "
+              "Approve each one with `approve diagram <path> --by \"...\"` "
+              "before moving to phase=plan. Nothing gets deleted or redrawn.")
 
 
 def _pop_json_flag(argv):
@@ -1652,6 +1877,9 @@ def cli(argv):
             _dong_so_request_cu(cwd)
         state = default_state()
         state["active_request"] = argv[1]
+        # An EMPTY list, not None: from here on this request owes the diagram gate an
+        # answer. Requests opened before the gate existed keep None and stay ungated.
+        state[DIAGRAM_KEY] = []
         state["previous_request"] = old_slug
         state["started_at"] = now_iso()
         ghi_moc_phase(state, state["phase"], state["started_at"])
@@ -1692,10 +1920,17 @@ def cli(argv):
                 if ma is None:
                     _fail("Invalid doc_lang: expected a language code such as vi|en|ja|pt-br.")
                 value = ma
+            if key == DIAGRAM_KEY:
+                # `set` only knows scalars — a list written through it would land as a
+                # string and wipe every recorded approval.
+                _fail(f"Key {DIAGRAM_KEY} is not settable here: use "
+                      "`diagram add <path>` and `approve diagram <path> --by \"...\"`.")
             if key == "phase" and value not in VALID_PHASES:
-                _fail("Invalid phase (idle|analyze|spec|plan|implement|qc|report).")
+                _fail("Invalid phase (idle|analyze|spec|diagram|plan|implement|qc|report).")
             if key == "phase" and value == "qc":
                 _chan_worktree_con_mo(cwd)
+            if key == "phase" and value == "plan":
+                _chan_so_do_chua_duyet(state)
             state[key] = value
             if key == "phase":
                 ghi_moc_phase(state, value)
@@ -1705,6 +1940,9 @@ def cli(argv):
 
     if cmd == "approve":
         return _cli_approve(cwd, argv[1:])
+
+    if cmd == "diagram":
+        return _cli_diagram(cwd, argv[1:])
 
     if cmd == "reset":
         argv, want_json = _pop_json_flag(argv)

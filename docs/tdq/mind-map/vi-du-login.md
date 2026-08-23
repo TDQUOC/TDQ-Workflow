@@ -1,4 +1,6 @@
 # Đăng nhập
+@nhánh: Tài khoản > Đăng nhập
+
 B1 · Nhập email và mật khẩu (src/pages/login.tsx::LoginForm.onSubmit)
 B2 · Kiểm tra tại chỗ trước khi gửi (src/lib/validators.ts::validateCredentials)
 B2! · email sai khuôn hoặc mật khẩu ngắn thì báo lỗi tại ô nhập và dừng (src/lib/form-ui.ts::showFieldError)

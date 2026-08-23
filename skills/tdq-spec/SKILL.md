@@ -80,6 +80,8 @@ user's document language `doc_lang` (deliberate repetition — the original is
    [approval.md](../tdq-conventions/references/approval.md).
 
 Done when: `spec_approved = true` and `spec_file` points at the file you presented.
-Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=plan`
-then on to [tdq-plan](../tdq-plan/SKILL.md) **in that very same turn** — the user is not
-made to send one more message.
+Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=diagram`
+then on to [tdq-diagram](../tdq-diagram/SKILL.md) **in that very same turn** — the user is not
+made to send one more message. The approved spec does not go straight to the plan: every
+feature flow it is built from is drawn and approved first, one diagram at a time. `set
+phase=plan` is refused while any of them is unapproved.

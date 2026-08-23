@@ -71,6 +71,10 @@ SKILL_LINE_LIMITS = {
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.
     "tdq-check-status": 80,
+    # 2026-08-23: new skill. The diagram is the outline every feature is approved against, so
+    # the two-layer rule, the three machine checks (`kiem`/`lien-he`/`doi-chieu`) and the
+    # one-at-a-time approval block are all read whole on every diagram turn.
+    "tdq-diagram": 155,
 }
 MAX_LINES_ANY = 500
 MAX_SENTENCE_WORDS = 40
