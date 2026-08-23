@@ -848,20 +848,53 @@ class TestXemKhongGhiDuocFileRa(XemBase):
         self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX, f"stdout={out}\nstderr={err}")
 
 
-class TestXemTongChuaDuocNoi(XemBase):
-    """T2.2 (running in parallel, in mindmap_render.py) will build the real aggregate
-    page — T2.3 only leaves room at the CLI layer: the `--tong` flag must PARSE (no
-    FILE required), but this task must not build the aggregate page itself."""
+class TestXemTong(XemBase):
+    """T2.8: `xem --tong` calls straight into mindmap_render's own aggregate
+    builder (T2.2) instead of stopping at the argparse flag (T2.3)."""
+
+    def ghi_mind_map(self, ten, noi_dung):
+        directory = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL)
+        os.makedirs(directory, exist_ok=True)
+        with open(os.path.join(directory, ten), "w", encoding="utf-8") as f:
+            f.write(noi_dung)
 
     def test_xem_tong_khong_bi_argparse_tu_choi(self):
         code, out, err = self.xem("--tong")
         self.assertNotIn("the following arguments are required", err, err)
         self.assertNotIn("usage:", err, err)
 
-    def test_xem_tong_chua_ghi_trang_tong_nao(self):
+    def test_xem_tong_tra_0_va_ghi_index_html(self):
+        self.ghi_mind_map("dang-nhap.md", SO_DO_DUNG)
+        code, out, err = self.xem("--tong")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "index.html")
+        self.assertTrue(os.path.exists(out_path), out)
+
+    def test_xem_tong_index_html_gom_dung_feature(self):
+        self.ghi_mind_map("dang-nhap.md", SO_DO_DUNG)
         self.xem("--tong")
         out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "index.html")
-        self.assertFalse(os.path.exists(out_path), "T2.3 must not render the aggregate page")
+        with open(out_path, encoding="utf-8") as f:
+            noi_dung = f.read()
+        self.assertIn("Login", noi_dung)
+
+    def test_xem_tong_khong_co_feature_van_tra_0(self):
+        code, out, err = self.xem("--tong")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "index.html")
+        self.assertTrue(os.path.exists(out_path), out)
+
+
+@unittest.skipIf(hasattr(os, "geteuid") and os.geteuid() == 0,
+                  "root ignores directory permissions, cannot simulate this case")
+class TestXemTongKhongGhiDuocFileRa(XemBase):
+    def test_xem_tong_thu_muc_dich_chi_doc_tra_2(self):
+        mindmap_dir = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL)
+        os.makedirs(mindmap_dir, exist_ok=True)
+        os.chmod(mindmap_dir, 0o500)
+        self.addCleanup(os.chmod, mindmap_dir, 0o700)
+        code, out, err = self.xem("--tong")
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX, f"stdout={out}\nstderr={err}")
 
 
 class TestXemLogService(XemBase):
