@@ -334,5 +334,103 @@ class TestMotFeatureSinhFileThat(unittest.TestCase):
             self.assertNotIn("https://", html)
 
 
+class TestTongCanhPhuThuocThat(unittest.TestCase):
+    def test_tong_gom_hai_feature_va_ve_canh_that(self):
+        features = {
+            "dang-nhap": {
+                "title": "Đăng nhập", "branch_top": "Tài khoản", "branch_sub": "Đăng nhập",
+                "depends": [], "exists": True,
+            },
+            "mua-hang": {
+                "title": "Mua hàng", "branch_top": "Thương mại", "branch_sub": "Mua hàng",
+                "depends": [("dang-nhap", "cần token phiên do đăng nhập phát ra")],
+                "exists": True,
+            },
+        }
+        html = mindmap_render.render_total_page(features)
+        self.assertIn("Đăng nhập", html)
+        self.assertIn("Mua hàng", html)
+        self.assertIn("cần token phiên do đăng nhập phát ra", html)
+        self.assertIn("marker-end", html)
+        self.assertIn('class="grid-wrap"', html)
+
+
+class TestTongTroHut(unittest.TestCase):
+    def test_tong_feature_tro_toi_chua_co_file(self):
+        features = {
+            "mua-hang": {
+                "title": "Mua hàng", "branch_top": "Thương mại", "branch_sub": "Mua hàng",
+                "depends": [("khong-ton-tai", "phụ thuộc một feature chưa vẽ")],
+                "exists": True,
+            },
+        }
+        html = mindmap_render.render_total_page(features)
+        self.assertIn("khong-ton-tai", html)
+        self.assertIn("chưa có sơ đồ", html)
+        self.assertIn("phụ thuộc một feature chưa vẽ", html)
+        # Vẫn phải vẽ được cạnh thật cùng lúc — trỏ hụt không được làm rớt cạnh khác.
+        self.assertIn("marker-end", html)
+
+
+class TestTongTuChuaVaTheme(unittest.TestCase):
+    def test_tong_tu_chua_va_theme_du_ba_trang_thai(self):
+        features = {
+            "dang-nhap": {
+                "title": "Đăng nhập", "branch_top": "Tài khoản", "branch_sub": "Đăng nhập",
+                "depends": [], "exists": True,
+            },
+        }
+        html = mindmap_render.render_total_page(features)
+        self.assertNotIn("http://", html)
+        self.assertNotIn("https://", html)
+        self.assertIsNone(re.search(r'src="(?!data:)[^"]+"', html))
+        self.assertRegex(html, r":root\s*{")
+        self.assertIn('@media (prefers-color-scheme: dark)', html)
+        self.assertIn(':root:not([data-theme="light"])', html)
+        self.assertIn(':root[data-theme="dark"]', html)
+        self.assertRegex(html, r"body\s*{[^}]*background:\s*var\(--")
+        self.assertIn("overflow-x: auto", html)
+
+
+class TestTongDocTuThuMuc(unittest.TestCase):
+    def test_tong_thu_thap_du_lieu_tu_thu_muc_that(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            mind_map_dir = os.path.join(tmp, "docs", "tdq", "mind-map")
+            os.makedirs(mind_map_dir)
+            with open(os.path.join(mind_map_dir, "dang-nhap.md"), "w", encoding="utf-8") as f:
+                f.write("\n".join(DIAGRAM_HOP_LE) + "\n")
+            with open(os.path.join(mind_map_dir, "mua-hang.md"), "w", encoding="utf-8") as f:
+                f.write("\n".join([
+                    "# Mua hàng",
+                    "@nhánh: Thương mại > Mua hàng",
+                    "@phụ-thuộc: dang-nhap · cần token phiên do đăng nhập phát ra",
+                    "",
+                    "B1 · Đặt hàng (app/order.py::place)",
+                ]) + "\n")
+            features = mindmap_render.collect_total_data(root=tmp)
+            self.assertEqual(set(features), {"dang-nhap", "mua-hang"})
+            self.assertEqual(features["mua-hang"]["depends"],
+                              [("dang-nhap", "cần token phiên do đăng nhập phát ra")])
+            self.assertTrue(features["dang-nhap"]["exists"])
+
+
+class TestTongSinhFileThat(unittest.TestCase):
+    """Ra: mindmap_render.py sinh được docs/tdq/mind-map/index.html thật từ chính thư mục đó."""
+
+    def test_tong_sinh_duoc_index_html_tu_thu_muc_that(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dich = os.path.join(tmp, "index.html")
+            code = mindmap_render.main(["--tong", "-o", dich])
+            self.assertEqual(code, tdq_mindmap.EXIT_OK)
+            self.assertTrue(os.path.exists(dich))
+            with open(dich, encoding="utf-8") as f:
+                html = f.read()
+            self.assertIn("Đăng nhập", html)
+            self.assertIn("Mua hàng", html)
+            self.assertIn("cần token phiên do đăng nhập phát ra", html)
+            self.assertNotIn("http://", html)
+            self.assertNotIn("https://", html)
+
+
 if __name__ == "__main__":
     unittest.main()
