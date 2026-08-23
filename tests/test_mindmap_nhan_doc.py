@@ -1,10 +1,15 @@
-"""Module `nhan-doc` — scripts/tdq_mindmap.py: khung CLI + lệnh `sinh`.
+"""Module `nhan-doc` — scripts/tdq_mindmap.py: khung CLI, lệnh `sinh`, lệnh `kiem`.
 
 Sơ đồ là DÀN Ý bắt buộc của mỗi feature, nên chính cái sinh ra nó phải được kiểm:
 tạo mới thì đúng khuôn hằng, feature đã có thì TUYỆT ĐỐI không ghi đè (mất bản
 sống của feature là mất nguồn sự thật), slug sai khuôn thì chặn ngay ở cổng vào.
+
+Lệnh `kiem` là cái gác khuôn: mỗi loại sai một mã luật riêng, in ra theo khuôn
+`<file>:<dòng>: [<mã>] <thông điệp>` giống `doc_lint.py`, và phần kiểm tách thành
+một hàm thuần để T2.6 (luật lint) gọi lại thay vì chạy lại CLI.
 """
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -157,6 +162,225 @@ class TestSinhHangKhuonDungChung(unittest.TestCase):
         ma = (tdq_mindmap.EXIT_OK, tdq_mindmap.EXIT_VIOLATION,
               tdq_mindmap.EXIT_SYNTAX, tdq_mindmap.EXIT_UPDATE)
         self.assertEqual(ma, (0, 1, 2, 3))
+
+
+SACH = ("# Đăng nhập\n"
+        "@nhánh: Tài khoản > Đăng nhập\n"
+        "@phụ-thuộc: mua-hang · giỏ hàng cần phiên do đăng nhập phát ra\n"
+        "\n"
+        "B1 · Nhập email và mật khẩu (src/login.tsx::LoginForm.onSubmit)\n"
+        "B2 · Tra người dùng (server/auth.py::AuthController.login)\n"
+        "B2! · Sai mật khẩu thì trả lỗi chung (server/auth.py::deny)\n"
+        "B3 · Vào màn hình chính (?)\n")
+
+
+class KiemBase(unittest.TestCase):
+    """Mỗi ca ghi một file tạm rồi chạy `kiem` trên chính đường dẫn đó."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cwd = self.tmp.name
+
+    def ghi(self, noi_dung, ten="so-do.md"):
+        path = os.path.join(self.cwd, ten)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+        return path
+
+    def kiem(self, noi_dung, **kw):
+        return run_mindmap(self.cwd, "kiem", self.ghi(noi_dung), **kw)
+
+    def ma_luat(self, noi_dung):
+        """Tập mã luật mà hàm thuần bắt được — không qua CLI, không qua stdout."""
+        return {v.rule for v in tdq_mindmap.check_diagram(noi_dung.splitlines(), "x.md")}
+
+
+class TestKiemFileSach(KiemBase):
+    def test_kiem_file_dung_khuon_tra_0_va_khong_in_vi_pham(self):
+        code, out, err = self.kiem(SACH)
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        self.assertEqual(out.strip(), "", out)
+
+    def test_kiem_file_vua_sinh_ra_thi_sach(self):
+        run_mindmap(self.cwd, "sinh", "dang-nhap")
+        moi = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "dang-nhap.md")
+        code, out, _ = run_mindmap(self.cwd, "kiem", moi)
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, out)
+
+
+class TestKiemDongTieuDe(KiemBase):
+    def test_kiem_thieu_dong_tieu_de_bao_ma_luat_rieng(self):
+        thieu = SACH.replace("# Đăng nhập\n", "")
+        code, out, _ = self.kiem(thieu)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn(tdq_mindmap.RULE_TITLE_MISSING, out)
+
+    def test_kiem_tieu_de_khong_o_dong_dau_van_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_TITLE_MISSING,
+                      self.ma_luat("@nhánh: A > B\n# Đăng nhập\nB1 · x (?)\n"))
+
+
+class TestKiemDongNhanh(KiemBase):
+    def test_kiem_thieu_dong_nhanh_bao_ma_luat_rieng(self):
+        thieu = SACH.replace("@nhánh: Tài khoản > Đăng nhập\n", "")
+        code, out, _ = self.kiem(thieu)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn(tdq_mindmap.RULE_BRANCH_MISSING, out)
+
+    def test_kiem_hai_dong_nhanh_cung_la_vi_pham(self):
+        hai = SACH.replace("@nhánh: Tài khoản > Đăng nhập\n",
+                           "@nhánh: Tài khoản > Đăng nhập\n@nhánh: Tài khoản > Đăng ký\n")
+        code, out, _ = self.kiem(hai)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn(tdq_mindmap.RULE_BRANCH_DUPLICATE, out)
+
+    def test_kiem_dong_nhanh_sai_cu_phap_bao_ma_khac_voi_thieu(self):
+        sai = SACH.replace("@nhánh: Tài khoản > Đăng nhập\n", "@nhánh: Tài khoản\n")
+        ma = self.ma_luat(sai)
+        self.assertIn(tdq_mindmap.RULE_BRANCH_SYNTAX, ma)
+        self.assertIn(tdq_mindmap.RULE_BRANCH_MISSING, ma)
+
+
+class TestKiemDongPhuThuoc(KiemBase):
+    DONG_CU = "@phụ-thuộc: mua-hang · giỏ hàng cần phiên do đăng nhập phát ra\n"
+
+    def _thay(self, dong_moi):
+        return SACH.replace(self.DONG_CU, dong_moi)
+
+    def test_kiem_phu_thuoc_thieu_ten_feature_bi_bat(self):
+        code, out, _ = self.kiem(self._thay("@phụ-thuộc: · cần token phiên\n"))
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn(tdq_mindmap.RULE_DEPENDS_SYNTAX, out)
+
+    def test_kiem_phu_thuoc_thieu_dau_cham_giua_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_DEPENDS_SYNTAX,
+                      self.ma_luat(self._thay("@phụ-thuộc: mua-hang cần token phiên\n")))
+
+    def test_kiem_phu_thuoc_thieu_ly_do_sau_dau_cham_giua_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_DEPENDS_SYNTAX,
+                      self.ma_luat(self._thay("@phụ-thuộc: mua-hang ·\n")))
+
+    def test_kiem_phu_thuoc_dung_khuon_khong_bi_bat(self):
+        self.assertNotIn(tdq_mindmap.RULE_DEPENDS_SYNTAX, self.ma_luat(SACH))
+
+    def test_kiem_nhieu_dong_phu_thuoc_deu_hop_le(self):
+        nhieu = self._thay(self.DONG_CU + "@phụ-thuộc: gio-hang · cần danh sách món\n")
+        self.assertNotIn(tdq_mindmap.RULE_DEPENDS_SYNTAX, self.ma_luat(nhieu))
+
+
+class TestKiemDongBuoc(KiemBase):
+    def test_kiem_buoc_thieu_dau_cham_giua_bi_bat(self):
+        sai = SACH.replace("B1 · Nhập email và mật khẩu (src/login.tsx::LoginForm.onSubmit)\n",
+                           "B1 Nhập email và mật khẩu (src/login.tsx::LoginForm.onSubmit)\n")
+        code, out, _ = self.kiem(sai)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn(tdq_mindmap.RULE_STEP_SYNTAX, out)
+
+    def test_kiem_buoc_thieu_vi_tri_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_STEP_SYNTAX,
+                      self.ma_luat("# T\n@nhánh: A > B\nB1 · Nhập email\n"))
+
+    def test_kiem_buoc_vi_tri_sai_khuon_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_STEP_SYNTAX,
+                      self.ma_luat("# T\n@nhánh: A > B\nB1 · Nhập email (src/login.tsx)\n"))
+
+    def test_kiem_buoc_vi_tri_chua_biet_thi_khong_bi_bat(self):
+        self.assertNotIn(tdq_mindmap.RULE_STEP_SYNTAX,
+                         self.ma_luat("# T\n@nhánh: A > B\nB1 · Nhập email (?)\n"))
+
+    def test_kiem_nhanh_loi_dung_khuon_thi_khong_bi_bat(self):
+        self.assertNotIn(tdq_mindmap.RULE_STEP_SYNTAX, self.ma_luat(SACH))
+
+
+class TestKiemSoBuoc(KiemBase):
+    def test_kiem_so_buoc_nhay_coc_bi_bat(self):
+        code, out, _ = self.kiem("# T\n@nhánh: A > B\nB1 · x (?)\nB3 · y (?)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn(tdq_mindmap.RULE_STEP_ORDER, out)
+
+    def test_kiem_so_buoc_lap_lai_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_STEP_ORDER,
+                      self.ma_luat("# T\n@nhánh: A > B\nB1 · x (?)\nB1 · y (?)\n"))
+
+    def test_kiem_nhanh_loi_khong_co_buoc_goc_bi_bat(self):
+        self.assertIn(tdq_mindmap.RULE_STEP_ORDER,
+                      self.ma_luat("# T\n@nhánh: A > B\nB1 · x (?)\nB7! · y (?)\n"))
+
+    def test_kiem_so_buoc_lien_tuc_thi_sach(self):
+        self.assertNotIn(tdq_mindmap.RULE_STEP_ORDER, self.ma_luat(SACH))
+
+
+class TestKiemKhuonInVaMaThoat(KiemBase):
+    def test_kiem_in_dung_khuon_file_dong_ma_luat(self):
+        thieu = SACH.replace("@nhánh: Tài khoản > Đăng nhập\n", "@nhánh: Tài khoản\n")
+        path = self.ghi(thieu)
+        code, out, _ = run_mindmap(self.cwd, "kiem", path)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertRegex(
+            out,
+            rf"(?m)^{re.escape(path)}:2: \[{tdq_mindmap.RULE_BRANCH_SYNTAX}\] \S",
+            out)
+
+    def test_kiem_in_moi_dong_vi_pham_mot_dong_rieng(self):
+        xau = ("# T\n@nhánh: A\n@phụ-thuộc: mua-hang\nB1 · x (?)\nB3 · y (?)\n")
+        _, out, _ = self.kiem(xau)
+        dong = [d for d in out.splitlines() if d.strip()]
+        self.assertGreaterEqual(len(dong), 4, out)
+        for d in dong:
+            self.assertRegex(d, r"^.+:\d+: \[[A-Z]+\d+\] ")
+
+    def test_kiem_file_khong_doc_duoc_tra_2(self):
+        code, _, _ = run_mindmap(self.cwd, "kiem", os.path.join(self.cwd, "khong-co.md"))
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX)
+
+    def test_kiem_thu_muc_cung_tra_2(self):
+        code, _, _ = run_mindmap(self.cwd, "kiem", self.cwd)
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX)
+
+
+class TestKiemHamThuanChoT26(KiemBase):
+    """T2.6 import thẳng hàm này; nó phải thuần: không in, không đọc file, không thoát."""
+
+    def test_kiem_ham_thuan_tra_danh_sach_vi_pham_co_du_truong(self):
+        vi_pham = tdq_mindmap.check_diagram("B1 · x (?)\n".splitlines(), "a/b.md")
+        self.assertTrue(vi_pham)
+        dau = vi_pham[0]
+        self.assertEqual(dau.path, "a/b.md")
+        self.assertIsInstance(dau.line, int)
+        self.assertGreaterEqual(dau.line, 1)
+        self.assertIn(dau.rule, tdq_mindmap.ALL_RULES)
+        self.assertTrue(dau.message.strip())
+
+    def test_kiem_ham_thuan_file_sach_tra_danh_sach_rong(self):
+        self.assertEqual(tdq_mindmap.check_diagram(SACH.splitlines(), "a.md"), [])
+
+    def test_kiem_ham_thuan_khong_in_gi_ra_stdout(self):
+        from io import StringIO
+        from contextlib import redirect_stdout, redirect_stderr
+        ra, loi = StringIO(), StringIO()
+        with redirect_stdout(ra), redirect_stderr(loi):
+            tdq_mindmap.check_diagram("hỏng\n".splitlines(), "a.md")
+        self.assertEqual((ra.getvalue(), loi.getvalue()), ("", ""))
+
+    def test_kiem_vi_pham_in_ra_dung_khuon_doc_lint(self):
+        vi_pham = tdq_mindmap.Violation("a/b.md", 7, tdq_mindmap.RULE_TITLE_MISSING, "thiếu")
+        self.assertEqual(str(vi_pham), f"a/b.md:7: [{tdq_mindmap.RULE_TITLE_MISSING}] thiếu")
+
+    def test_kiem_moi_ma_luat_deu_rieng_va_cung_tien_to(self):
+        self.assertEqual(len(set(tdq_mindmap.ALL_RULES)), len(tdq_mindmap.ALL_RULES))
+        for ma in tdq_mindmap.ALL_RULES:
+            self.assertTrue(ma.startswith(tdq_mindmap.RULE_PREFIX), ma)
+
+
+class TestKiemLogService(KiemBase):
+    def test_kiem_mac_dinh_co_log_kem_timestamp(self):
+        _, _, err = self.kiem(SACH)
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_mindmap: ")
+
+    def test_kiem_tat_log_qua_config(self):
+        _, _, err = self.kiem(SACH, env={"TDQ_LOG": "0"})
+        self.assertEqual(err.strip(), "", err)
 
 
 if __name__ == "__main__":

@@ -11,13 +11,15 @@ growing a regex of their own — one shape written once, so the tools cannot dri
 
 Usage:
     python3 scripts/tdq_mindmap.py sinh <feature-slug>
+    python3 scripts/tdq_mindmap.py kiem <file>
 
-Exit codes: 0 done · 1 violation found · 2 bad argument or unwritable path ·
+Exit codes: 0 done · 1 violation found · 2 bad argument or unreadable/unwritable path ·
 3 the feature already has a diagram (update mode — the file is left untouched).
 Env: TDQ_PROJECT_DIR anchors the project (default: the git root, else the cwd) ·
 TDQ_LOG=0 turns the log service off (on by default, one ISO-timestamped line to stderr).
 """
 import argparse
+import collections
 import os
 import re
 import sys
@@ -87,6 +89,45 @@ NEW_FILE_TEMPLATE = (
 UPDATE_PREFACE = (
     "Feature `{feature}` đã có sơ đồ rồi. "  # i18n-allow — sentence shown to the user
     "Sau cập nhật của request này nó sẽ thành như sau:")  # i18n-allow
+
+
+# A line that opens with `B<digits>` is MEANT to be a step even when the rest of it is
+# wrong. Without this hint a broken step would read as prose and slip through unnoticed,
+# which is the one failure mode a shape checker must not have.
+STEP_HINT_RE = re.compile(r"^B\d+")
+
+# An HTML comment block is guidance for the human filling the file in, not content: the
+# blank template ships one, so its example lines must never count as real declarations.
+COMMENT_OPEN = "<!--"
+COMMENT_CLOSE = "-->"
+
+# ------------------------------------------------------------------- rule codes
+# One code per KIND of breakage, all sharing a prefix. They are constants because
+# doc_lint.py imports them for the mind-map lint rule instead of re-running this CLI,
+# so a code is a name two modules agree on, never a literal typed twice.
+RULE_PREFIX = "SD"
+RULE_TITLE_MISSING = "SD1"       # no `# <feature name>` as the first content line
+RULE_BRANCH_MISSING = "SD2"      # no usable branch line at all
+RULE_BRANCH_DUPLICATE = "SD3"    # more than one branch line
+RULE_BRANCH_SYNTAX = "SD4"       # a branch line that does not match the shape
+RULE_DEPENDS_SYNTAX = "SD5"      # a depends line that does not match the shape
+RULE_STEP_SYNTAX = "SD6"         # a step line (or its location) that misses the shape
+RULE_STEP_ORDER = "SD7"          # step numbers that jump, repeat, or dangle
+ALL_RULES = (RULE_TITLE_MISSING, RULE_BRANCH_MISSING, RULE_BRANCH_DUPLICATE,
+             RULE_BRANCH_SYNTAX, RULE_DEPENDS_SYNTAX, RULE_STEP_SYNTAX, RULE_STEP_ORDER)
+
+# Same report shape as doc_lint.py, so one pair of eyes reads both tools' output.
+VIOLATION_FORMAT = "{path}:{line}: [{rule}] {message}"
+
+
+class Violation(collections.namedtuple("Violation", "path line rule message")):
+    """One broken rule, at one 1-based line. `str()` renders the report line."""
+
+    __slots__ = ()
+
+    def __str__(self):
+        return VIOLATION_FORMAT.format(
+            path=self.path, line=self.line, rule=self.rule, message=self.message)
 
 
 # ------------------------------------------------------------------ log service
@@ -193,6 +234,160 @@ def cmd_sinh(args):
     return EXIT_OK
 
 
+# ------------------------------------------------------------- command: kiem
+def comment_mask(lines):
+    """True for every line that sits inside (or opens) an HTML comment block."""
+    mask = []
+    inside = False
+    for line in lines:
+        opens = COMMENT_OPEN in line
+        closes = COMMENT_CLOSE in line
+        mask.append(inside or opens)
+        if closes:
+            inside = False
+        elif opens:
+            inside = True
+    return mask
+
+
+def _check_title(lines, mask, path):
+    """The first content line must be the title; anything else loses the feature name."""
+    for i, line in enumerate(lines):
+        if mask[i] or not line.strip():
+            continue
+        if TITLE_LINE_RE.match(line):
+            return []
+        return [Violation(path, i + 1, RULE_TITLE_MISSING,
+                          f'the first content line must be the title '
+                          f'"{TITLE_PREFIX}<feature name>"')]
+    return [Violation(path, 1, RULE_TITLE_MISSING,
+                      f'missing the title line "{TITLE_PREFIX}<feature name>"')]
+
+
+def _check_branch(lines, mask, path):
+    """Exactly one branch line: none leaves the feature unplaced, two place it twice."""
+    out = []
+    good = []
+    for i, line in enumerate(lines):
+        if mask[i] or not line.startswith(BRANCH_KEY + ":"):
+            continue
+        if BRANCH_LINE_RE.match(line):
+            good.append(i)
+        else:
+            out.append(Violation(
+                path, i + 1, RULE_BRANCH_SYNTAX,
+                f'malformed branch line — expected '
+                f'"{BRANCH_KEY}: <top branch> {BRANCH_SEP} <sub branch>"'))
+    if not good:
+        # Reported at line 1: the file as a whole lacks the line, and a malformed
+        # attempt already has its own violation at the line where it sits.
+        out.append(Violation(
+            path, 1, RULE_BRANCH_MISSING,
+            f'missing the mandatory line "{BRANCH_KEY}: <top branch> '
+            f'{BRANCH_SEP} <sub branch>"'))
+    for extra in good[1:]:
+        out.append(Violation(path, extra + 1, RULE_BRANCH_DUPLICATE,
+                             f'a second "{BRANCH_KEY}:" line — exactly one is allowed'))
+    return out
+
+
+def _check_depends(lines, mask, path):
+    """Every depends line needs both halves: which feature, and why."""
+    out = []
+    for i, line in enumerate(lines):
+        if mask[i] or not line.startswith(DEPENDS_KEY + ":"):
+            continue
+        if not DEPENDS_LINE_RE.match(line):
+            out.append(Violation(
+                path, i + 1, RULE_DEPENDS_SYNTAX,
+                f'malformed depends line — expected "{DEPENDS_KEY}: <feature-slug> '
+                f'{FIELD_SEP} <one-sentence reason>"'))
+    return out
+
+
+def _check_steps(lines, mask, path):
+    """Steps must keep their shape, carry a location, and be numbered 1, 2, 3…"""
+    out = []
+    steps = []
+    for i, line in enumerate(lines):
+        if mask[i] or not STEP_HINT_RE.match(line):
+            continue
+        found = STEP_LINE_RE.match(line)
+        if not found:
+            out.append(Violation(
+                path, i + 1, RULE_STEP_SYNTAX,
+                f'malformed step line — expected "B<n> {FIELD_SEP} <description> '
+                f'(<file>::<function>)"'))
+            continue
+        location = found.group("location")
+        if location != UNKNOWN_LOCATION and (
+                location is None or not LOCATION_RE.match(location)):
+            out.append(Violation(
+                path, i + 1, RULE_STEP_SYNTAX,
+                f'step B{found.group("num")} has no usable location — expected '
+                f'"(<file>::<function>)", or "({UNKNOWN_LOCATION})" while the code '
+                f'is unknown'))
+        steps.append((i, int(found.group("num")),
+                      found.group("error") == STEP_ERROR_MARK))
+
+    expected = 1
+    main_numbers = {num for _, num, is_error in steps if not is_error}
+    for i, num, is_error in steps:
+        if is_error:
+            if num not in main_numbers:
+                out.append(Violation(
+                    path, i + 1, RULE_STEP_ORDER,
+                    f'error branch B{num}{STEP_ERROR_MARK} has no step B{num} to branch from'))
+            continue
+        if num != expected:
+            out.append(Violation(
+                path, i + 1, RULE_STEP_ORDER,
+                f'step B{num} breaks the numbering — expected B{expected}'))
+        expected = num + 1
+    return out
+
+
+def check_diagram(lines, path):
+    """Every shape violation of one diagram, in line order. Pure: no I/O, no exit.
+
+    Kept apart from printing and from the exit code on purpose: doc_lint.py imports
+    THIS function for its mind-map rule, so the two tools cannot disagree about what
+    a valid diagram is — there is only one answer, and it lives here.
+    """
+    lines = list(lines)
+    mask = comment_mask(lines)
+    out = (_check_title(lines, mask, path)
+           + _check_branch(lines, mask, path)
+           + _check_depends(lines, mask, path)
+           + _check_steps(lines, mask, path))
+    return sorted(out, key=lambda v: (v.line, v.rule))
+
+
+def read_diagram(path):
+    """The lines of a diagram file, or None when it cannot be read."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return f.read().splitlines()
+    except (OSError, UnicodeDecodeError):
+        return None
+
+
+def cmd_kiem(args):
+    """Check one diagram file against the shape and report every violation."""
+    path = args.file
+    lines = read_diagram(path)
+    if lines is None:
+        _log(f"kiem: cannot read {path}")
+        print(f"kiem: cannot read {path}", file=sys.stderr)
+        return EXIT_SYNTAX
+
+    violations = check_diagram(lines, path)
+    for violation in violations:
+        print(violation)
+    _log(f"kiem: {path} — {len(lines)} line(s), {len(violations)} violation(s)")
+    return EXIT_VIOLATION if violations else EXIT_OK
+
+
 # ------------------------------------------------------------------------- CLI
 def build_parser():
     """The CLI surface. Later commands (kiem, doi-chieu, lien-he, xem) plug in here."""
@@ -205,6 +400,11 @@ def build_parser():
         "sinh", help="create the diagram of a feature, or open the existing one")
     sinh.add_argument("feature", help="feature slug, kebab-case ASCII (e.g. dang-nhap)")
     sinh.set_defaults(handler=cmd_sinh)
+
+    kiem = subs.add_parser(
+        "kiem", help="check one diagram file against the shape, report every violation")
+    kiem.add_argument("file", help="path of the diagram file to check")
+    kiem.set_defaults(handler=cmd_kiem)
 
     return parser
 
