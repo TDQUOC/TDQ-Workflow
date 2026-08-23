@@ -8,6 +8,7 @@ Lệnh `kiem` là cái gác khuôn: mỗi loại sai một mã luật riêng, in
 `<file>:<dòng>: [<mã>] <thông điệp>` giống `doc_lint.py`, và phần kiểm tách thành
 một hàm thuần để T2.6 (luật lint) gọi lại thay vì chạy lại CLI.
 """
+import json
 import os
 import re
 import subprocess
@@ -507,6 +508,212 @@ class TestLienHeLogService(LienHeBase):
     def test_lien_he_tat_log_qua_config(self):
         self.ghi_feature("dang-nhap")
         _, _, err = self.lien_he(env={"TDQ_LOG": "0"})
+        self.assertEqual(err.strip(), "", err)
+
+
+# T1.3 — command `doi-chieu`: cross-check every step's `<file>::<function>` location
+# in one diagram against the code nodes graphify wrote into `graphify-out/graph.json`.
+# The filter is `file_type == "code"` ONLY — never `source_file`+`source_location`,
+# which also sit on document nodes and would leak them into the check. Fixtures below
+# use plain ASCII step text on purpose, same reason as the lien-he block above.
+GRAPH_THAT = {
+    "built_at_commit": "deadbeef",
+    "nodes": [
+        {"file_type": "code", "source_file": "src/login.tsx", "label": "LoginForm.onSubmit()"},
+        {"file_type": "code", "source_file": "server/auth.py", "label": "AuthController.login()"},
+        {"file_type": "code", "source_file": "server/auth.py", "label": "deny()"},
+        {"file_type": "document", "source_file": "src/login.tsx",
+         "source_location": "L1", "label": "login.tsx"},
+    ],
+    "links": [],
+}
+
+
+def write_graph(cwd, graph):
+    """Write one fake `graphify-out/graph.json` under `cwd` — no git repo needed
+    unless a case cares about the `built_at_commit` warning."""
+    directory = os.path.join(cwd, "graphify-out")
+    os.makedirs(directory, exist_ok=True)
+    with open(os.path.join(directory, "graph.json"), "w", encoding="utf-8") as f:
+        json.dump(graph, f)
+
+
+class DoiChieuBase(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cwd = self.tmp.name
+
+    def ghi(self, noi_dung, ten="so-do.md"):
+        path = os.path.join(self.cwd, ten)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+        return path
+
+    def doi_chieu(self, noi_dung, graph=GRAPH_THAT, **kw):
+        if graph is not None:
+            write_graph(self.cwd, graph)
+        return run_mindmap(self.cwd, "doi-chieu", self.ghi(noi_dung), **kw)
+
+
+class TestDoiChieuLocNodeCode(unittest.TestCase):
+    """Q2 (`-k doi_chieu_loc`): the filter is `file_type == "code"` only, and it
+    must produce exactly as many rows as the graph carries `file_type == "code"`
+    nodes — counted straight from the graph file, not re-derived some other way."""
+
+    def test_doi_chieu_loc_dung_bang_so_node_code_trong_do_thi_that(self):
+        graph_file = os.path.join(ROOT, "graphify-out", "graph.json")
+        with open(graph_file, encoding="utf-8") as f:
+            real_graph = json.load(f)
+        code_node_count = sum(
+            1 for n in real_graph["nodes"] if n.get("file_type") == "code")
+        self.assertGreater(code_node_count, 0, "sample graph is empty, nothing to measure")
+        filtered = tdq_mindmap.filter_code_nodes(real_graph)
+        self.assertEqual(len(filtered), code_node_count)
+        self.assertTrue(all(n.get("file_type") == "code" for n in filtered))
+
+    def test_doi_chieu_loc_khong_lan_node_tai_lieu(self):
+        graph = {"nodes": [
+            {"file_type": "code", "source_file": "a.py", "source_location": "L1",
+             "label": "a.py"},
+            {"file_type": "document", "source_file": "a.md", "source_location": "L1",
+             "label": "a.md"},
+            {"file_type": "rationale", "source_file": "a.py", "source_location": "L2",
+             "label": "why"},
+        ]}
+        filtered = tdq_mindmap.filter_code_nodes(graph)
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0]["file_type"], "code")
+
+
+class TestDoiChieuKhopHet(DoiChieuBase):
+    def test_doi_chieu_moi_cap_khop_tra_0(self):
+        code, out, err = self.doi_chieu(
+            "B1 · enter email and password (src/login.tsx::LoginForm.onSubmit)\n"
+            "B2 · look up the user (server/auth.py::AuthController.login)\n"
+            "B2! · wrong password returns a generic error (server/auth.py::deny)\n"
+            "B3 · land on the home screen (?)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        self.assertEqual(out.strip(), "", out)
+
+    def test_doi_chieu_chi_toan_buoc_chua_biet_cung_tra_0(self):
+        code, out, _ = self.doi_chieu("B1 · first step (?)\nB2 · second step (?)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, out)
+
+
+class TestDoiChieuCapLech(DoiChieuBase):
+    def test_doi_chieu_co_cap_lech_tra_1(self):
+        code, out, err = self.doi_chieu(
+            "B1 · enter email (src/login.tsx::LoginForm.onSubmit)\n"
+            "B2 · function that does not exist (server/auth.py::khong_ton_tai)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, f"stdout={out}\nstderr={err}")
+
+    def test_doi_chieu_in_dich_danh_cap_lech(self):
+        _, out, _ = self.doi_chieu(
+            "B1 · function that does not exist (server/auth.py::khong_ton_tai)\n")
+        self.assertIn("server/auth.py", out, out)
+        self.assertIn("khong_ton_tai", out, out)
+
+    def test_doi_chieu_file_dung_ham_sai_van_la_lech(self):
+        code, out, _ = self.doi_chieu(
+            "B1 · wrong function name (server/auth.py::AuthController.dang_xuat)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+
+    def test_doi_chieu_buoc_chua_biet_khong_tinh_la_lech(self):
+        code, out, _ = self.doi_chieu(
+            "B1 · enter email (src/login.tsx::LoginForm.onSubmit)\n"
+            "B2 · step whose code is not known yet (?)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, out)
+
+
+class TestDoiChieuKhongDocDuocDoThi(DoiChieuBase):
+    def test_doi_chieu_thieu_graphify_out_tra_3(self):
+        code, out, err = self.doi_chieu("B1 · x (?)\n", graph=None)
+        self.assertEqual(code, tdq_mindmap.EXIT_UPDATE, f"stdout={out}\nstderr={err}")
+
+    def test_doi_chieu_json_hong_tra_3(self):
+        directory = os.path.join(self.cwd, "graphify-out")
+        os.makedirs(directory, exist_ok=True)
+        with open(os.path.join(directory, "graph.json"), "w", encoding="utf-8") as f:
+            f.write("{ not valid json")
+        code, out, _ = run_mindmap(self.cwd, "doi-chieu", self.ghi("B1 · x (?)\n"))
+        self.assertEqual(code, tdq_mindmap.EXIT_UPDATE, out)
+
+
+class TestDoiChieuFileSoDoKhongDocDuoc(DoiChieuBase):
+    def test_doi_chieu_file_khong_ton_tai_tra_2(self):
+        write_graph(self.cwd, GRAPH_THAT)
+        code, _, _ = run_mindmap(self.cwd, "doi-chieu",
+                                 os.path.join(self.cwd, "khong-co.md"))
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX)
+
+
+class TestDoiChieuCanhBaoCommit(DoiChieuBase):
+    """A `built_at_commit` different from HEAD only prints a warning — it never
+    changes the exit code, and it never re-runs graphify on its own."""
+
+    def _init_git(self):
+        subprocess.run(["git", "init", "-q"], cwd=self.cwd, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"],
+                       cwd=self.cwd, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=self.cwd, check=True)
+        with open(os.path.join(self.cwd, "README.md"), "w", encoding="utf-8") as f:
+            f.write("x\n")
+        subprocess.run(["git", "add", "."], cwd=self.cwd, check=True)
+        subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=self.cwd, check=True)
+
+    def test_doi_chieu_commit_khac_head_van_tra_0_neu_khop(self):
+        self._init_git()
+        code, out, err = self.doi_chieu(
+            "B1 · enter email and password (src/login.tsx::LoginForm.onSubmit)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+
+    def test_doi_chieu_commit_khac_head_co_canh_bao(self):
+        self._init_git()
+        _, _, err = self.doi_chieu(
+            "B1 · enter email and password (src/login.tsx::LoginForm.onSubmit)\n")
+        self.assertIn("deadbeef", err, err)
+
+    def test_doi_chieu_khong_phai_git_repo_khong_canh_bao(self):
+        code, out, err = self.doi_chieu(
+            "B1 · enter email and password (src/login.tsx::LoginForm.onSubmit)\n")
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        self.assertNotIn("deadbeef", err, err)
+
+
+class TestDoiChieuHamThuan(unittest.TestCase):
+    """`cross_check_diagram` must stay pure: no print, no read, no sys.exit — so
+    another module (the renderer) can import it straight."""
+
+    def test_doi_chieu_ham_thuan_tra_danh_sach_cap_lech(self):
+        lech = tdq_mindmap.cross_check_diagram(
+            "B1 · x (a.py::khong_co)\n".splitlines(),
+            {"nodes": [{"file_type": "code", "source_file": "a.py", "label": "co()"}]})
+        self.assertEqual(lech, [(1, "a.py", "khong_co")])
+
+    def test_doi_chieu_ham_thuan_khop_tra_danh_sach_rong(self):
+        lech = tdq_mindmap.cross_check_diagram(
+            "B1 · x (a.py::co)\n".splitlines(),
+            {"nodes": [{"file_type": "code", "source_file": "a.py", "label": "co()"}]})
+        self.assertEqual(lech, [])
+
+    def test_doi_chieu_ham_thuan_khong_in_gi_khong_thoat(self):
+        from io import StringIO
+        from contextlib import redirect_stdout, redirect_stderr
+        ra, loi = StringIO(), StringIO()
+        with redirect_stdout(ra), redirect_stderr(loi):
+            tdq_mindmap.cross_check_diagram(
+                "B1 · x (a.py::khong_co)\n".splitlines(), {"nodes": []})
+        self.assertEqual((ra.getvalue(), loi.getvalue()), ("", ""))
+
+
+class TestDoiChieuLogService(DoiChieuBase):
+    def test_doi_chieu_mac_dinh_co_log_kem_timestamp(self):
+        _, _, err = self.doi_chieu("B1 · x (?)\n")
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_mindmap: ")
+
+    def test_doi_chieu_tat_log_qua_config(self):
+        _, _, err = self.doi_chieu("B1 · x (?)\n", env={"TDQ_LOG": "0"})
         self.assertEqual(err.strip(), "", err)
 
 

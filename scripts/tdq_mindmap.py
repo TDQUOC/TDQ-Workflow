@@ -12,16 +12,20 @@ growing a regex of their own — one shape written once, so the tools cannot dri
 Usage:
     python3 scripts/tdq_mindmap.py sinh <feature-slug>
     python3 scripts/tdq_mindmap.py kiem <file>
+    python3 scripts/tdq_mindmap.py doi-chieu <file>
 
 Exit codes: 0 done · 1 violation found · 2 bad argument or unreadable/unwritable path ·
-3 the feature already has a diagram (update mode — the file is left untouched).
+3 the feature already has a diagram (update mode — the file is left untouched). Each
+command overloads these four numbers with its own meaning — see its own docstring.
 Env: TDQ_PROJECT_DIR anchors the project (default: the git root, else the cwd) ·
 TDQ_LOG=0 turns the log service off (on by default, one ISO-timestamped line to stderr).
 """
 import argparse
 import collections
+import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime
 
@@ -521,9 +525,143 @@ def cmd_lien_he(args):
     return EXIT_OK
 
 
+# --------------------------------------------------------------- command: doi-chieu
+# Where graphify last wrote the code graph, relative to the project root.
+GRAPH_PATH_REL = os.path.join("graphify-out", "graph.json")
+GIT_HEAD_TIMEOUT = 5
+
+
+def graph_path(root=None):
+    """Absolute path of the code graph graphify writes."""
+    return os.path.join(root or project_dir(), GRAPH_PATH_REL)
+
+
+def load_graph(path):
+    """The parsed graph, or None when the file cannot be read or is not valid JSON."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, UnicodeDecodeError, ValueError):
+        return None
+
+
+def filter_code_nodes(graph):
+    """Every node with `file_type == "code"` — nothing else tells a code node from
+    a document or rationale node.
+
+    Deliberately NOT filtered on `source_file`+`source_location`: document nodes
+    carry both fields too, and that filter leaks them into the cross-check
+    (measured once on this repo's own graph: code 711 · rationale 409 · document 51).
+    """
+    return [node for node in graph.get("nodes", []) if node.get("file_type") == "code"]
+
+
+def node_function_name(node):
+    """The bare function name a code node's label stands for.
+
+    A function-level node's label ends in `()` (e.g. `"log()"`); a file-level node's
+    label is just the file name and never matches a real `<file>::<function>` step,
+    so it passes through unchanged and simply never joins a pair anything can hit.
+    """
+    label = node.get("label", "")
+    return label[:-2] if label.endswith("()") else label
+
+
+def code_node_pairs(nodes):
+    """Pure: the `{(source_file, function)}` pairs a list of code nodes stands for."""
+    return {(node.get("source_file", ""), node_function_name(node)) for node in nodes}
+
+
+def diagram_step_locations(lines):
+    """`(line_no, file, func)` for every step whose location parses to a real
+    `<file>::<function>` — a step written as `(?)` (UNKNOWN_LOCATION) has nothing
+    to check yet, and a malformed location is already `kiem`'s job to report.
+    """
+    mask = comment_mask(lines)
+    out = []
+    for i, line in enumerate(lines):
+        if mask[i] or not STEP_HINT_RE.match(line):
+            continue
+        found = STEP_LINE_RE.match(line)
+        if not found:
+            continue
+        location = found.group("location")
+        if location is None or location == UNKNOWN_LOCATION:
+            continue
+        parsed = LOCATION_RE.match(location)
+        if not parsed:
+            continue
+        out.append((i + 1, parsed.group("file"), parsed.group("func")))
+    return out
+
+
+def cross_check_diagram(lines, graph):
+    """Pure: every step location in `lines` with no matching code node in `graph`.
+
+    Returns a list of `(line_no, file, func)` mismatches, in file order. No I/O, no
+    sys.exit — printing and the exit code are `cmd_doi_chieu`'s job, kept apart the
+    same way `check_diagram` is, so a later caller can import this straight.
+    """
+    pairs = code_node_pairs(filter_code_nodes(graph))
+    return [(line, file, func)
+            for line, file, func in diagram_step_locations(lines)
+            if (file, func) not in pairs]
+
+
+def _git_head(cwd):
+    """The repo's current commit hash, or None outside a git repo / on any error."""
+    try:
+        proc = subprocess.run(
+            ["git", "-C", cwd, "rev-parse", "HEAD"],
+            capture_output=True, text=True, timeout=GIT_HEAD_TIMEOUT)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return proc.stdout.strip() if proc.returncode == 0 else None
+
+
+def cmd_doi_chieu(args):
+    """Cross-check every step's `file::function` location in one diagram against
+    the code nodes graphify last extracted into `graphify-out/graph.json`.
+
+    A stale graph (`built_at_commit` != HEAD) only gets a warning: re-running
+    graphify is a manual, deliberate step here, never automatic (spec §5) — so a
+    stale graph never changes this command's exit code either.
+    """
+    path = args.file
+    lines = read_diagram(path)
+    if lines is None:
+        _log(f"doi-chieu: cannot read {path}")
+        print(f"doi-chieu: cannot read {path}", file=sys.stderr)
+        return EXIT_SYNTAX
+
+    root = project_dir()
+    gpath = graph_path(root)
+    graph = load_graph(gpath)
+    if graph is None:
+        rel = os.path.relpath(gpath, root)
+        _log(f"doi-chieu: cannot read {rel}")
+        print(f"doi-chieu: cannot read {rel} — run graphify first", file=sys.stderr)
+        return EXIT_UPDATE  # 3: "the graph cannot be read" for this command
+
+    built_at = graph.get("built_at_commit")
+    head = _git_head(root)
+    if built_at and head and built_at != head:
+        _log(f"doi-chieu: graph built at {built_at}, HEAD is {head} — possibly stale")
+        print(f"doi-chieu: warning: the graph was built at commit {built_at}, but "
+              f"HEAD is {head} — it may be stale (re-run graphify manually if that "
+              f"matters here)", file=sys.stderr)
+
+    mismatches = cross_check_diagram(lines, graph)
+    for line, file, func in sorted(mismatches):
+        print(f"doi-chieu: {path}:{line}: no code node for {file}::{func}")
+
+    _log(f"doi-chieu: {path} — {len(mismatches)} mismatch(es)")
+    return EXIT_VIOLATION if mismatches else EXIT_OK
+
+
 # ------------------------------------------------------------------------- CLI
 def build_parser():
-    """The CLI surface. Later commands (doi-chieu, xem) plug in here."""
+    """The CLI surface. The later command (xem) plugs in here."""
     parser = argparse.ArgumentParser(
         prog="tdq_mindmap.py",
         description="Mind-map files of the TDQ workflow: one living diagram per feature.")
@@ -543,6 +681,12 @@ def build_parser():
         "lien-he",
         help=f"cross-check every {DEPENDS_KEY} line under docs/tdq/mind-map/")  # i18n-allow
     lien_he.set_defaults(handler=cmd_lien_he)
+
+    doi_chieu = subs.add_parser(
+        "doi-chieu",
+        help="cross-check one diagram's step locations against graphify-out/graph.json")
+    doi_chieu.add_argument("file", help="path of the diagram file to cross-check")
+    doi_chieu.set_defaults(handler=cmd_doi_chieu)
 
     return parser
 
