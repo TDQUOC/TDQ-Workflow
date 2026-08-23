@@ -717,5 +717,114 @@ class TestDoiChieuLogService(DoiChieuBase):
         self.assertEqual(err.strip(), "", err)
 
 
+# T2.3 — command `xem`: wires tdq_mindmap's CLI to mindmap_render.render_feature_page.
+# The rendering logic itself lives entirely in mindmap_render.py — these tests only
+# check the wiring: exit codes and that the right file lands on disk.
+SO_DO_DUNG = ("# Đăng nhập\n"
+              "@nhánh: Tài khoản > Đăng nhập\n"
+              "B1 · Nhập email và mật khẩu (?)\n")
+
+SO_DO_SAI = "B1 · thiếu tiêu đề và nhánh (?)\n"
+
+
+class XemBase(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cwd = self.tmp.name
+
+    def ghi(self, noi_dung, ten="dang-nhap.md"):
+        path = os.path.join(self.cwd, ten)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+        return path
+
+    def xem(self, *args, **kw):
+        return run_mindmap(self.cwd, "xem", *args, **kw)
+
+
+class TestXemGhiXong(XemBase):
+    def test_xem_so_do_dung_tra_0_va_ghi_file(self):
+        path = self.ghi(SO_DO_DUNG)
+        code, out, err = self.xem(path)
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "dang-nhap.html")
+        self.assertTrue(os.path.exists(out_path), out)
+
+    def test_xem_file_ghi_ra_la_html_hop_le_toi_thieu(self):
+        path = self.ghi(SO_DO_DUNG)
+        self.xem(path)
+        out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "dang-nhap.html")
+        with open(out_path, encoding="utf-8") as f:
+            noi_dung = f.read()
+        self.assertIn("<!doctype html>", noi_dung)
+        self.assertIn("Đăng nhập", noi_dung)
+
+
+class TestXemSoDoSaiKhuon(XemBase):
+    def test_xem_so_do_sai_khuon_tra_1(self):
+        path = self.ghi(SO_DO_SAI)
+        code, out, err = self.xem(path)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, f"stdout={out}\nstderr={err}")
+
+    def test_xem_so_do_sai_khuon_in_vi_pham(self):
+        path = self.ghi(SO_DO_SAI)
+        _, out, _ = self.xem(path)
+        self.assertIn(tdq_mindmap.RULE_TITLE_MISSING, out)
+
+    def test_xem_so_do_sai_khuon_khong_ghi_file(self):
+        path = self.ghi(SO_DO_SAI)
+        self.xem(path)
+        out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "dang-nhap.html")
+        self.assertFalse(os.path.exists(out_path), "sai khuôn mà vẫn ghi file")
+
+
+class TestXemKhongDocDuocFileVao(XemBase):
+    def test_xem_file_vao_khong_ton_tai_tra_2(self):
+        code, _, _ = self.xem(os.path.join(self.cwd, "khong-co.md"))
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX)
+
+
+@unittest.skipIf(hasattr(os, "geteuid") and os.geteuid() == 0,
+                  "root bỏ qua quyền thư mục, không thể mô phỏng ca này")
+class TestXemKhongGhiDuocFileRa(XemBase):
+    def test_xem_thu_muc_dich_chi_doc_tra_2(self):
+        path = self.ghi(SO_DO_DUNG)
+        mindmap_dir = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL)
+        os.makedirs(mindmap_dir, exist_ok=True)
+        os.chmod(mindmap_dir, 0o500)
+        self.addCleanup(os.chmod, mindmap_dir, 0o700)
+        code, out, err = self.xem(path)
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX, f"stdout={out}\nstderr={err}")
+
+
+class TestXemTongChuaDuocNoi(XemBase):
+    """T2.2 (chạy song song, ở mindmap_render.py) sẽ dựng thật trang tổng — T2.3 chỉ
+    chừa chỗ ở lớp CLI: cờ `--tong` phải PARSE được (không đòi FILE), nhưng không tự
+    dựng trang tổng ở đây."""
+
+    def test_xem_tong_khong_bi_argparse_tu_choi(self):
+        code, out, err = self.xem("--tong")
+        self.assertNotIn("the following arguments are required", err, err)
+        self.assertNotIn("usage:", err, err)
+
+    def test_xem_tong_chua_ghi_trang_tong_nao(self):
+        self.xem("--tong")
+        out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "index.html")
+        self.assertFalse(os.path.exists(out_path), "T2.3 không được tự dựng trang tổng")
+
+
+class TestXemLogService(XemBase):
+    def test_xem_mac_dinh_co_log_kem_timestamp(self):
+        path = self.ghi(SO_DO_DUNG)
+        _, _, err = self.xem(path)
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_mindmap: ")
+
+    def test_xem_tat_log_qua_config(self):
+        path = self.ghi(SO_DO_DUNG)
+        _, _, err = self.xem(path, env={"TDQ_LOG": "0"})
+        self.assertEqual(err.strip(), "", err)
+
+
 if __name__ == "__main__":
     unittest.main()
