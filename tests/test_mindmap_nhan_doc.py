@@ -374,6 +374,54 @@ class TestKiemHamThuanChoT26(KiemBase):
             self.assertTrue(ma.startswith(tdq_mindmap.RULE_PREFIX), ma)
 
 
+# T1.5 — `kiem` takes several paths in one call (`nargs="+"`, same shape as
+# doc_lint.py's argv handling), exit code is the worst across all of them:
+# 2 (unreadable) beats 1 (violation) beats 0 (clean).
+def _broken_branch_line(noi_dung):
+    """`noi_dung` with its (single) branch line replaced by an ASCII-only broken
+    one — built from BRANCH_KEY only, so this stays ASCII, unlike typing the
+    Vietnamese branch line out again."""
+    dong = noi_dung.splitlines(keepends=True)
+    for i, d in enumerate(dong):
+        if tdq_mindmap.BRANCH_LINE_RE.match(d):
+            dong[i] = f"{tdq_mindmap.BRANCH_KEY}: broken\n"
+            break
+    return "".join(dong)
+
+
+class TestKiemNhieuDuongDan(KiemBase):
+    def test_kiem_hai_file_sach_tra_0(self):
+        a = self.ghi(SACH, ten="a.md")
+        b = self.ghi(SACH, ten="b.md")
+        code, out, err = run_mindmap(self.cwd, "kiem", a, b)
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+
+    def test_kiem_mot_sach_mot_loi_tra_1(self):
+        sach = self.ghi(SACH, ten="sach.md")
+        loi = self.ghi(_broken_branch_line(SACH), ten="loi.md")
+        code, out, err = run_mindmap(self.cwd, "kiem", sach, loi)
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, f"stdout={out}\nstderr={err}")
+        self.assertIn(tdq_mindmap.RULE_BRANCH_SYNTAX, out)
+
+    def test_kiem_co_file_khong_doc_duoc_tra_2_du_con_lai_sach(self):
+        sach = self.ghi(SACH, ten="sach.md")
+        khong_co = os.path.join(self.cwd, "khong-ton-tai.md")
+        code, out, err = run_mindmap(self.cwd, "kiem", sach, khong_co)
+        self.assertEqual(code, tdq_mindmap.EXIT_SYNTAX, f"stdout={out}\nstderr={err}")
+
+    def test_kiem_mot_file_van_giu_hanh_vi_cu(self):
+        path = self.ghi(SACH)
+        code, out, err = run_mindmap(self.cwd, "kiem", path)
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+        self.assertEqual(out.strip(), "", out)
+
+    def test_kiem_ca_hai_file_mau_that_tra_0(self):
+        dang_nhap = os.path.join(ROOT, "docs", "tdq", "mind-map", "dang-nhap.md")
+        mua_hang = os.path.join(ROOT, "docs", "tdq", "mind-map", "mua-hang.md")
+        code, out, err = run_mindmap(ROOT, "kiem", dang_nhap, mua_hang)
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+
+
 class TestKiemLogService(KiemBase):
     def test_kiem_mac_dinh_co_log_kem_timestamp(self):
         _, _, err = self.kiem(SACH)
@@ -720,11 +768,13 @@ class TestDoiChieuLogService(DoiChieuBase):
 # T2.3 — command `xem`: wires tdq_mindmap's CLI to mindmap_render.render_feature_page.
 # The rendering logic itself lives entirely in mindmap_render.py — these tests only
 # check the wiring: exit codes and that the right file lands on disk.
-SO_DO_DUNG = ("# Đăng nhập\n"
-              "@nhánh: Tài khoản > Đăng nhập\n"
-              "B1 · Nhập email và mật khẩu (?)\n")
+# ASCII on purpose (same reason as the doi-chieu/lien-he fixtures above): built from
+# the shared constants instead of typing the Vietnamese keywords out.
+SO_DO_DUNG = (f"{tdq_mindmap.TITLE_PREFIX}Login\n"
+              f"{tdq_mindmap.BRANCH_KEY}: Account {tdq_mindmap.BRANCH_SEP} Login\n"
+              "B1 · enter email and password (?)\n")
 
-SO_DO_SAI = "B1 · thiếu tiêu đề và nhánh (?)\n"
+SO_DO_SAI = "B1 · missing title and branch line (?)\n"
 
 
 class XemBase(unittest.TestCase):
@@ -758,7 +808,7 @@ class TestXemGhiXong(XemBase):
         with open(out_path, encoding="utf-8") as f:
             noi_dung = f.read()
         self.assertIn("<!doctype html>", noi_dung)
-        self.assertIn("Đăng nhập", noi_dung)
+        self.assertIn("Login", noi_dung)
 
 
 class TestXemSoDoSaiKhuon(XemBase):
@@ -776,7 +826,7 @@ class TestXemSoDoSaiKhuon(XemBase):
         path = self.ghi(SO_DO_SAI)
         self.xem(path)
         out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "dang-nhap.html")
-        self.assertFalse(os.path.exists(out_path), "sai khuôn mà vẫn ghi file")
+        self.assertFalse(os.path.exists(out_path), "wrote a file despite the shape violation")
 
 
 class TestXemKhongDocDuocFileVao(XemBase):
@@ -786,7 +836,7 @@ class TestXemKhongDocDuocFileVao(XemBase):
 
 
 @unittest.skipIf(hasattr(os, "geteuid") and os.geteuid() == 0,
-                  "root bỏ qua quyền thư mục, không thể mô phỏng ca này")
+                  "root ignores directory permissions, cannot simulate this case")
 class TestXemKhongGhiDuocFileRa(XemBase):
     def test_xem_thu_muc_dich_chi_doc_tra_2(self):
         path = self.ghi(SO_DO_DUNG)
@@ -799,9 +849,9 @@ class TestXemKhongGhiDuocFileRa(XemBase):
 
 
 class TestXemTongChuaDuocNoi(XemBase):
-    """T2.2 (chạy song song, ở mindmap_render.py) sẽ dựng thật trang tổng — T2.3 chỉ
-    chừa chỗ ở lớp CLI: cờ `--tong` phải PARSE được (không đòi FILE), nhưng không tự
-    dựng trang tổng ở đây."""
+    """T2.2 (running in parallel, in mindmap_render.py) will build the real aggregate
+    page — T2.3 only leaves room at the CLI layer: the `--tong` flag must PARSE (no
+    FILE required), but this task must not build the aggregate page itself."""
 
     def test_xem_tong_khong_bi_argparse_tu_choi(self):
         code, out, err = self.xem("--tong")
@@ -811,7 +861,7 @@ class TestXemTongChuaDuocNoi(XemBase):
     def test_xem_tong_chua_ghi_trang_tong_nao(self):
         self.xem("--tong")
         out_path = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL, "index.html")
-        self.assertFalse(os.path.exists(out_path), "T2.3 không được tự dựng trang tổng")
+        self.assertFalse(os.path.exists(out_path), "T2.3 must not render the aggregate page")
 
 
 class TestXemLogService(XemBase):

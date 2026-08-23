@@ -377,19 +377,29 @@ def read_diagram(path):
 
 
 def cmd_kiem(args):
-    """Check one diagram file against the shape and report every violation."""
-    path = args.file
-    lines = read_diagram(path)
-    if lines is None:
-        _log(f"kiem: cannot read {path}")
-        print(f"kiem: cannot read {path}", file=sys.stderr)
-        return EXIT_SYNTAX
+    """Check one or more diagram files against the shape, report every violation.
 
-    violations = check_diagram(lines, path)
-    for violation in violations:
-        print(violation)
-    _log(f"kiem: {path} — {len(lines)} line(s), {len(violations)} violation(s)")
-    return EXIT_VIOLATION if violations else EXIT_OK
+    Takes several paths in one call (like doc_lint.py), one file behaves exactly
+    as before. The exit code is the WORST across every path given — 2 (unreadable)
+    beats 1 (violation) beats 0 (clean) — since EXIT_SYNTAX > EXIT_VIOLATION >
+    EXIT_OK, one path's own worst code IS that comparison already.
+    """
+    worst = EXIT_OK
+    for path in args.file:
+        lines = read_diagram(path)
+        if lines is None:
+            _log(f"kiem: cannot read {path}")
+            print(f"kiem: cannot read {path}", file=sys.stderr)
+            worst = max(worst, EXIT_SYNTAX)
+            continue
+
+        violations = check_diagram(lines, path)
+        for violation in violations:
+            print(violation)
+        _log(f"kiem: {path} — {len(lines)} line(s), {len(violations)} violation(s)")
+        if violations:
+            worst = max(worst, EXIT_VIOLATION)
+    return worst
 
 
 # ---------------------------------------------------------- command: lien-he
@@ -730,8 +740,9 @@ def build_parser():
     sinh.set_defaults(handler=cmd_sinh)
 
     kiem = subs.add_parser(
-        "kiem", help="check one diagram file against the shape, report every violation")
-    kiem.add_argument("file", help="path of the diagram file to check")
+        "kiem", help="check one or more diagram files against the shape, "
+                     "report every violation")
+    kiem.add_argument("file", nargs="+", help="path(s) of the diagram file(s) to check")
     kiem.set_defaults(handler=cmd_kiem)
 
     lien_he = subs.add_parser(
