@@ -388,9 +388,142 @@ def cmd_kiem(args):
     return EXIT_VIOLATION if violations else EXIT_OK
 
 
+# ---------------------------------------------------------- command: lien-he
+def extract_depends(lines):
+    """The feature slugs one diagram's depends lines point to, in file order.
+
+    Pure: comment lines are masked out the same way `check_diagram` does, and a
+    malformed depends line (already reported by `kiem`) is simply skipped here —
+    this command only cares about the links that parse.
+    """
+    mask = comment_mask(lines)
+    deps = []
+    for i, line in enumerate(lines):
+        if mask[i] or not line.startswith(DEPENDS_KEY + ":"):
+            continue
+        found = DEPENDS_LINE_RE.match(line)
+        if found:
+            deps.append(found.group("feature"))
+    return deps
+
+
+def read_all_features(root=None):
+    """Read every `*.md` diagram under the mind-map dir of a project.
+
+    I/O only: parsing is delegated to `extract_depends` so the graph logic below
+    stays pure. Returns `(feature_deps, unreadable)` — `feature_deps` maps every
+    feature slug found to the list of slugs its depends lines point to;
+    `unreadable` lists the project-relative paths that could not be read.
+    """
+    directory = mind_map_dir(root)
+    feature_deps = {}
+    unreadable = []
+    if not os.path.isdir(directory):
+        return feature_deps, unreadable
+    for name in sorted(os.listdir(directory)):
+        if not name.endswith(FILE_SUFFIX):
+            continue
+        feature = name[:-len(FILE_SUFFIX)]
+        lines = read_diagram(os.path.join(directory, name))
+        if lines is None:
+            unreadable.append(os.path.join(MIND_MAP_DIR_REL, name))
+            continue
+        feature_deps[feature] = extract_depends(lines)
+    return feature_deps, unreadable
+
+
+def build_link_graph(feature_deps):
+    """Pure: the missing targets and one cycle (if any) across a set of features.
+
+    `feature_deps` maps every known feature slug to the list of slugs its depends
+    lines point to. No I/O, no sys.exit — same spirit as `check_diagram`, so a
+    later caller (the total-map render) can import this straight instead of
+    shelling out to the CLI.
+
+    Returns `{"missing": <sorted distinct slugs referenced but with no file>,
+    "cycle": <the chain of slugs forming one detected cycle, first slug repeated
+    at the end> or None}`.
+    """
+    features = set(feature_deps)
+    missing = set()
+    for deps in feature_deps.values():
+        for dep in deps:
+            if dep not in features:
+                missing.add(dep)
+
+    cycle = None
+    visited = set()
+
+    def dfs(node, path, on_path):
+        nonlocal cycle
+        if cycle is not None:
+            return
+        if node in on_path:
+            # A node already on the current stack IS also in `visited` (added
+            # below on first entry), so this must be checked before that set.
+            start = path.index(node)
+            cycle = path[start:] + [node]
+            return
+        if node in visited:
+            return
+        visited.add(node)
+        on_path.add(node)
+        path.append(node)
+        for dep in feature_deps.get(node, []):
+            if dep in features:
+                dfs(dep, path, on_path)
+                if cycle is not None:
+                    return
+        path.pop()
+        on_path.discard(node)
+
+    for feature in sorted(features):
+        if cycle is not None:
+            break
+        dfs(feature, [], set())
+
+    return {"missing": sorted(missing), "cycle": cycle}
+
+
+def cmd_lien_he(args):
+    """Cross-check every depends line under docs/tdq/mind-map/ against the files
+    that actually exist there.
+
+    Checked in this order because a dangling link cannot be part of a cycle: a
+    missing target is reported first (exit 1), a cycle among the features that do
+    exist is reported next (exit 3), a clean graph is exit 0.
+    """
+    feature_deps, unreadable = read_all_features()
+    if unreadable:
+        for rel in unreadable:
+            _log(f"lien-he: cannot read {rel}")
+            print(f"lien-he: cannot read {rel}", file=sys.stderr)
+        return EXIT_SYNTAX
+
+    graph = build_link_graph(feature_deps)
+    missing = graph["missing"]
+    if missing:
+        for slug in missing:
+            print(f"lien-he: missing feature file for {slug!r} "
+                  f"(expected {feature_rel_path(slug)})")
+        _log(f"lien-he: {len(feature_deps)} feature(s), {len(missing)} missing target(s)")
+        return EXIT_VIOLATION
+
+    cycle = graph["cycle"]
+    if cycle:
+        print(f"lien-he: dependency cycle: {' -> '.join(cycle)}")
+        _log(f"lien-he: {len(feature_deps)} feature(s), cycle: {' -> '.join(cycle)}")
+        return EXIT_UPDATE
+
+    print(f"lien-he: {len(feature_deps)} feature(s) checked — "
+          f"no missing dependency, no cycle")
+    _log(f"lien-he: {len(feature_deps)} feature(s), no violation")
+    return EXIT_OK
+
+
 # ------------------------------------------------------------------------- CLI
 def build_parser():
-    """The CLI surface. Later commands (kiem, doi-chieu, lien-he, xem) plug in here."""
+    """The CLI surface. Later commands (doi-chieu, xem) plug in here."""
     parser = argparse.ArgumentParser(
         prog="tdq_mindmap.py",
         description="Mind-map files of the TDQ workflow: one living diagram per feature.")
@@ -405,6 +538,11 @@ def build_parser():
         "kiem", help="check one diagram file against the shape, report every violation")
     kiem.add_argument("file", help="path of the diagram file to check")
     kiem.set_defaults(handler=cmd_kiem)
+
+    lien_he = subs.add_parser(
+        "lien-he",
+        help=f"cross-check every {DEPENDS_KEY} line under docs/tdq/mind-map/")  # i18n-allow
+    lien_he.set_defaults(handler=cmd_lien_he)
 
     return parser
 
