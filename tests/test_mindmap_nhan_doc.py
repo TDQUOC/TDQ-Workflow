@@ -383,5 +383,132 @@ class TestKiemLogService(KiemBase):
         self.assertEqual(err.strip(), "", err)
 
 
+# T1.4 — command `lien-he`: cross-check every depends line under one project's
+# `docs/tdq/mind-map/` directory against the set of files that actually exist there.
+# Fixtures below build feature lines from the shared constants (BRANCH_KEY,
+# DEPENDS_KEY, FIELD_SEP, TITLE_PREFIX) instead of typing the Vietnamese keywords
+# out — same source of truth as the CLI, and it keeps this new block plain ASCII.
+class LienHeBase(unittest.TestCase):
+    """Each case writes zero or more feature files, then runs `lien-he` on them."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cwd = self.tmp.name
+        self.mindmap_dir = os.path.join(self.cwd, tdq_mindmap.MIND_MAP_DIR_REL)
+        os.makedirs(self.mindmap_dir, exist_ok=True)
+
+    def ghi_feature(self, feature, phu_thuoc=()):
+        """Write one minimal, shape-valid diagram file for `feature`.
+
+        `phu_thuoc`: an iterable of feature slugs this one depends on — each becomes
+        its own depends line, built from the shared constants.
+        """
+        dong = [
+            f"{tdq_mindmap.TITLE_PREFIX}{feature}",
+            f"{tdq_mindmap.BRANCH_KEY}: top > sub",
+        ]
+        for dep in phu_thuoc:
+            dong.append(f"{tdq_mindmap.DEPENDS_KEY}: {dep} {tdq_mindmap.FIELD_SEP} "
+                        f"needs something from {dep}")
+        dong.append("B1 · first step (?)")
+        path = os.path.join(self.mindmap_dir, feature + tdq_mindmap.FILE_SUFFIX)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("\n".join(dong) + "\n")
+        return path
+
+    def lien_he(self, **kw):
+        return run_mindmap(self.cwd, "lien-he", **kw)
+
+
+class TestLienHeHopLe(LienHeBase):
+    def test_lien_he_thu_muc_rong_tra_0(self):
+        code, out, err = self.lien_he()
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+
+    def test_lien_he_moi_lien_ket_deu_co_file_tra_0(self):
+        self.ghi_feature("dang-nhap")
+        self.ghi_feature("mua-hang", phu_thuoc=["dang-nhap"])
+        code, out, err = self.lien_he()
+        self.assertEqual(code, tdq_mindmap.EXIT_OK, f"stdout={out}\nstderr={err}")
+
+
+class TestLienHeTroHut(LienHeBase):
+    def test_lien_he_tro_toi_feature_khong_co_file_tra_1(self):
+        self.ghi_feature("mua-hang", phu_thuoc=["khong-ton-tai"])
+        code, out, err = self.lien_he()
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, f"stdout={out}\nstderr={err}")
+
+    def test_lien_he_in_dich_danh_ten_feature_thieu(self):
+        self.ghi_feature("mua-hang", phu_thuoc=["khong-ton-tai"])
+        _, out, _ = self.lien_he()
+        self.assertIn("khong-ton-tai", out, out)
+
+    def test_lien_he_nhieu_feature_thieu_deu_duoc_diem_danh(self):
+        self.ghi_feature("mua-hang", phu_thuoc=["mot-thieu", "hai-thieu"])
+        code, out, _ = self.lien_he()
+        self.assertEqual(code, tdq_mindmap.EXIT_VIOLATION, out)
+        self.assertIn("mot-thieu", out, out)
+        self.assertIn("hai-thieu", out, out)
+
+
+class TestLienHeVongLap(LienHeBase):
+    def test_lien_he_vong_lap_ba_feature_tra_3(self):
+        self.ghi_feature("a", phu_thuoc=["b"])
+        self.ghi_feature("b", phu_thuoc=["c"])
+        self.ghi_feature("c", phu_thuoc=["a"])
+        code, out, err = self.lien_he()
+        self.assertEqual(code, tdq_mindmap.EXIT_UPDATE, f"stdout={out}\nstderr={err}")
+
+    def test_lien_he_in_dung_chuoi_vong_lap(self):
+        self.ghi_feature("a", phu_thuoc=["b"])
+        self.ghi_feature("b", phu_thuoc=["c"])
+        self.ghi_feature("c", phu_thuoc=["a"])
+        _, out, _ = self.lien_he()
+        self.assertRegex(out, r"a\s*->\s*b\s*->\s*c\s*->\s*a", out)
+
+
+class TestLienHeHamThuan(unittest.TestCase):
+    """`build_link_graph` must stay pure: no print, no sys.exit, data in/data out —
+    so a later task (the total-map render) can import it straight."""
+
+    def test_lien_he_ham_thuan_do_thi_sach_tra_rong(self):
+        do_thi = tdq_mindmap.build_link_graph({"dang-nhap": [], "mua-hang": ["dang-nhap"]})
+        self.assertEqual(do_thi["missing"], [])
+        self.assertIsNone(do_thi["cycle"])
+
+    def test_lien_he_ham_thuan_bat_duoc_ten_thieu(self):
+        do_thi = tdq_mindmap.build_link_graph({"mua-hang": ["khong-ton-tai"]})
+        self.assertEqual(do_thi["missing"], ["khong-ton-tai"])
+        self.assertIsNone(do_thi["cycle"])
+
+    def test_lien_he_ham_thuan_bat_duoc_vong_lap(self):
+        do_thi = tdq_mindmap.build_link_graph({"a": ["b"], "b": ["c"], "c": ["a"]})
+        self.assertEqual(do_thi["missing"], [])
+        self.assertIsNotNone(do_thi["cycle"])
+        self.assertEqual(do_thi["cycle"][0], do_thi["cycle"][-1])
+        self.assertEqual(set(do_thi["cycle"]), {"a", "b", "c"})
+
+    def test_lien_he_ham_thuan_khong_in_gi_khong_thoat(self):
+        from io import StringIO
+        from contextlib import redirect_stdout, redirect_stderr
+        ra, loi = StringIO(), StringIO()
+        with redirect_stdout(ra), redirect_stderr(loi):
+            tdq_mindmap.build_link_graph({"a": ["z"], "b": ["b"]})
+        self.assertEqual((ra.getvalue(), loi.getvalue()), ("", ""))
+
+
+class TestLienHeLogService(LienHeBase):
+    def test_lien_he_mac_dinh_co_log_kem_timestamp(self):
+        self.ghi_feature("dang-nhap")
+        _, _, err = self.lien_he()
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_mindmap: ")
+
+    def test_lien_he_tat_log_qua_config(self):
+        self.ghi_feature("dang-nhap")
+        _, _, err = self.lien_he(env={"TDQ_LOG": "0"})
+        self.assertEqual(err.strip(), "", err)
+
+
 if __name__ == "__main__":
     unittest.main()
