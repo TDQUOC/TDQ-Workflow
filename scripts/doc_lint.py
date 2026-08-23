@@ -18,6 +18,10 @@ import re
 import sys
 from datetime import datetime
 
+# T2.6: the shape check for a diagram file lives in tdq_mindmap.py and stays there —
+# imported here so the two tools can never disagree about what a valid diagram is.
+from tdq_mindmap import MIND_MAP_DIR_REL as MIND_MAP_DIR, check_diagram
+
 EXIT_SYNTAX = 2
 
 
@@ -599,8 +603,18 @@ def lint_file(path):
 # and R8 limits itself to the spec/ directory.
     abs_path = os.path.abspath(path)
     is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
-    for rule in ([rule_r8, rule_r10, rule_r11, rule_r12] if is_output else RULES):
-        rule(doc, out)
+    if is_output:
+        for rule in (rule_r8, rule_r10, rule_r11, rule_r12):
+            rule(doc, out)
+        # A diagram file (docs/tdq/mind-map/<feature>.md) carries its OWN shape
+        # contract — SD1..SD7 from tdq_mindmap.check_diagram — not the R1-R12 prose
+        # rules above. Scoped to this one subdirectory so no other output file
+        # (spec, plan, report, working log, graphify-out) is ever touched by it.
+        if f"{os.sep}{MIND_MAP_DIR}{os.sep}" in abs_path:
+            out += [str(v) for v in check_diagram(doc.lines, path)]
+    else:
+        for rule in RULES:
+            rule(doc, out)
     return out
 
 
