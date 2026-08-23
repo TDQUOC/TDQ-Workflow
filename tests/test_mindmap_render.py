@@ -9,6 +9,7 @@ tham chiếu mạng nào lọt vào — vì đây là file tĩnh nằm luôn tro
 import ast
 import os
 import re
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -430,6 +431,49 @@ class TestTongSinhFileThat(unittest.TestCase):
             self.assertIn("cần token phiên do đăng nhập phát ra", html)
             self.assertNotIn("http://", html)
             self.assertNotIn("https://", html)
+
+
+RENDER = os.path.join(ROOT, "scripts", "mindmap_render.py")
+
+
+def run_render(cwd, *args, env=None):
+    """Chạy CLI với project = cwd; trả (mã thoát, stdout, stderr)."""
+    full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
+    proc = subprocess.run(
+        [sys.executable, RENDER, *args],
+        capture_output=True, text=True, env=full_env, timeout=30,
+    )
+    return proc.returncode, proc.stdout, proc.stderr
+
+
+class TestRenderLogService(unittest.TestCase):
+    """T4.1: cả hai chế độ CLI của mindmap_render.py (một feature và --tong) đều
+    phải in log timestamp qua đúng log service của tdq_mindmap.py (import lại,
+    không định nghĩa bản thứ hai) và tắt được qua cùng biến TDQ_LOG."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cwd = self.tmp.name
+        self.path = os.path.join(self.cwd, "dang-nhap.md")
+        with open(self.path, "w", encoding="utf-8") as f:
+            f.write("\n".join(DIAGRAM_HOP_LE) + "\n")
+
+    def test_render_mot_feature_co_log_kem_timestamp(self):
+        _, out, err = run_render(self.cwd, self.path)
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_mindmap: ", out)
+
+    def test_render_mot_feature_tat_log_qua_config(self):
+        _, _, err = run_render(self.cwd, self.path, env={"TDQ_LOG": "0"})
+        self.assertEqual(err.strip(), "", err)
+
+    def test_render_tong_co_log_kem_timestamp(self):
+        _, out, err = run_render(self.cwd, "--tong")
+        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_mindmap: ", out)
+
+    def test_render_tong_tat_log_qua_config(self):
+        _, _, err = run_render(self.cwd, "--tong", env={"TDQ_LOG": "0"})
+        self.assertEqual(err.strip(), "", err)
 
 
 if __name__ == "__main__":

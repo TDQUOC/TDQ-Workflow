@@ -679,15 +679,35 @@ def cmd_xem(args):
     fails check_diagram (violations printed, nothing written) · 2 the input file
     cannot be read, or the output path cannot be written.
 
-    `--tong` is a placeholder only: its renderer is built in mindmap_render.py by
-    a task running in parallel with this one, in a separate file this command
-    does not touch. Wiring it up for real is left to that integration — this
-    command only makes sure the flag parses instead of blocking on `file`.
+    `--tong` renders the aggregate index page instead of one file, reusing the
+    same exit codes: 0 written · 1 reserved for a shape violation, for parity
+    with the single-file case — collect_total_data deliberately tolerates any
+    file check_diagram would reject (see its own docstring), so this path never
+    triggers EXIT_VIOLATION today · 2 the output path cannot be written.
     """
+    from mindmap_render import (
+        DiagramInvalid, render_feature_page, default_output_path,
+        collect_total_data, render_total_page, default_total_output_path,
+    )
+
+    root = project_dir()
+
     if args.tong:
-        _log("xem: --tong is not wired up yet (its renderer lands in mindmap_render.py)")
-        print("xem: --tong is not available yet", file=sys.stderr)
-        return EXIT_SYNTAX
+        features = collect_total_data(root)
+        html_text = render_total_page(features)
+        out_path = default_total_output_path(root)
+        try:
+            os.makedirs(os.path.dirname(out_path), exist_ok=True)
+            with open(out_path, "w", encoding="utf-8") as f:
+                f.write(html_text)
+        except OSError as exc:
+            _log(f"xem: cannot write {out_path} ({exc})")
+            print(f"xem: cannot write {out_path} ({exc})", file=sys.stderr)
+            return EXIT_SYNTAX
+        _log(f"xem: wrote {out_path} — {len(features)} feature(s)")
+        print(f"xem: wrote {out_path}")
+        return EXIT_OK
+
     if not args.file:
         print("xem: FILE is required unless --tong is given", file=sys.stderr)
         return EXIT_SYNTAX
@@ -699,9 +719,6 @@ def cmd_xem(args):
         print(f"xem: cannot read {path}", file=sys.stderr)
         return EXIT_SYNTAX
 
-    from mindmap_render import DiagramInvalid, render_feature_page, default_output_path
-
-    root = project_dir()
     graph = load_graph(graph_path(root))
     try:
         html_text = render_feature_page(lines, path, graph=graph, project_root=root)
@@ -761,7 +778,7 @@ def build_parser():
     xem.add_argument("file", nargs="?", default=None,
                       help="path of the diagram file to render (omit with --tong)")
     xem.add_argument("--tong", action="store_true",
-                      help="render the aggregate index page (not wired up yet)")
+                      help="render the aggregate index page instead of one file")
     xem.set_defaults(handler=cmd_xem)
 
     return parser
