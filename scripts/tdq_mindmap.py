@@ -377,19 +377,29 @@ def read_diagram(path):
 
 
 def cmd_kiem(args):
-    """Check one diagram file against the shape and report every violation."""
-    path = args.file
-    lines = read_diagram(path)
-    if lines is None:
-        _log(f"kiem: cannot read {path}")
-        print(f"kiem: cannot read {path}", file=sys.stderr)
-        return EXIT_SYNTAX
+    """Check one or more diagram files against the shape, report every violation.
 
-    violations = check_diagram(lines, path)
-    for violation in violations:
-        print(violation)
-    _log(f"kiem: {path} — {len(lines)} line(s), {len(violations)} violation(s)")
-    return EXIT_VIOLATION if violations else EXIT_OK
+    Takes several paths in one call (like doc_lint.py), one file behaves exactly
+    as before. The exit code is the WORST across every path given — 2 (unreadable)
+    beats 1 (violation) beats 0 (clean) — since EXIT_SYNTAX > EXIT_VIOLATION >
+    EXIT_OK, one path's own worst code IS that comparison already.
+    """
+    worst = EXIT_OK
+    for path in args.file:
+        lines = read_diagram(path)
+        if lines is None:
+            _log(f"kiem: cannot read {path}")
+            print(f"kiem: cannot read {path}", file=sys.stderr)
+            worst = max(worst, EXIT_SYNTAX)
+            continue
+
+        violations = check_diagram(lines, path)
+        for violation in violations:
+            print(violation)
+        _log(f"kiem: {path} — {len(lines)} line(s), {len(violations)} violation(s)")
+        if violations:
+            worst = max(worst, EXIT_VIOLATION)
+    return worst
 
 
 # ---------------------------------------------------------- command: lien-he
@@ -659,6 +669,63 @@ def cmd_doi_chieu(args):
     return EXIT_VIOLATION if mismatches else EXIT_OK
 
 
+# --------------------------------------------------------------------- command: xem
+def cmd_xem(args):
+    """Render one diagram file into its two-layer HTML page via mindmap_render.
+
+    Every rendering decision (business layer, detail layer, theme, SVG) lives in
+    mindmap_render.py — this command only reads the diagram, hands it to
+    render_feature_page, and writes what comes back. 0 written · 1 the diagram
+    fails check_diagram (violations printed, nothing written) · 2 the input file
+    cannot be read, or the output path cannot be written.
+
+    `--tong` is a placeholder only: its renderer is built in mindmap_render.py by
+    a task running in parallel with this one, in a separate file this command
+    does not touch. Wiring it up for real is left to that integration — this
+    command only makes sure the flag parses instead of blocking on `file`.
+    """
+    if args.tong:
+        _log("xem: --tong is not wired up yet (its renderer lands in mindmap_render.py)")
+        print("xem: --tong is not available yet", file=sys.stderr)
+        return EXIT_SYNTAX
+    if not args.file:
+        print("xem: FILE is required unless --tong is given", file=sys.stderr)
+        return EXIT_SYNTAX
+
+    path = args.file
+    lines = read_diagram(path)
+    if lines is None:
+        _log(f"xem: cannot read {path}")
+        print(f"xem: cannot read {path}", file=sys.stderr)
+        return EXIT_SYNTAX
+
+    from mindmap_render import DiagramInvalid, render_feature_page, default_output_path
+
+    root = project_dir()
+    graph = load_graph(graph_path(root))
+    try:
+        html_text = render_feature_page(lines, path, graph=graph, project_root=root)
+    except DiagramInvalid as exc:
+        for violation in exc.violations:
+            print(violation)
+        _log(f"xem: {path} — {len(exc.violations)} violation(s), refusing to render")
+        return EXIT_VIOLATION
+
+    out_path = default_output_path(path, root)
+    try:
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(html_text)
+    except OSError as exc:
+        _log(f"xem: cannot write {out_path} ({exc})")
+        print(f"xem: cannot write {out_path} ({exc})", file=sys.stderr)
+        return EXIT_SYNTAX
+
+    _log(f"xem: wrote {out_path} from {path}")
+    print(f"xem: wrote {out_path}")
+    return EXIT_OK
+
+
 # ------------------------------------------------------------------------- CLI
 def build_parser():
     """The CLI surface. The later command (xem) plugs in here."""
@@ -673,8 +740,9 @@ def build_parser():
     sinh.set_defaults(handler=cmd_sinh)
 
     kiem = subs.add_parser(
-        "kiem", help="check one diagram file against the shape, report every violation")
-    kiem.add_argument("file", help="path of the diagram file to check")
+        "kiem", help="check one or more diagram files against the shape, "
+                     "report every violation")
+    kiem.add_argument("file", nargs="+", help="path(s) of the diagram file(s) to check")
     kiem.set_defaults(handler=cmd_kiem)
 
     lien_he = subs.add_parser(
@@ -687,6 +755,14 @@ def build_parser():
         help="cross-check one diagram's step locations against graphify-out/graph.json")
     doi_chieu.add_argument("file", help="path of the diagram file to cross-check")
     doi_chieu.set_defaults(handler=cmd_doi_chieu)
+
+    xem = subs.add_parser(
+        "xem", help="render one diagram file into a two-layer HTML page")
+    xem.add_argument("file", nargs="?", default=None,
+                      help="path of the diagram file to render (omit with --tong)")
+    xem.add_argument("--tong", action="store_true",
+                      help="render the aggregate index page (not wired up yet)")
+    xem.set_defaults(handler=cmd_xem)
 
     return parser
 
