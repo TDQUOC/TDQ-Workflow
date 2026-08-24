@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-23)
 
 ## Corpus Check
-- 60 files · ~82,006 words
+- 62 files · ~91,499 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1171 nodes · 2203 edges · 56 communities (51 shown, 5 thin omitted)
+- 1172 nodes · 2204 edges · 56 communities (51 shown, 5 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 108 edges (avg confidence: 0.63)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9bbdfa3d`
+- Built from commit: `af44a357`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -75,11 +75,11 @@
 ## God Nodes (most connected - your core abstractions)
 1. `cli()` - 24 edges
 2. `lenh_soat()` - 20 edges
-3. `Changelog — bản lưu trữ` - 17 edges
-4. `_git()` - 17 edges
-5. `log()` - 17 edges
-6. `cmd_build()` - 17 edges
-7. `Changelog` - 16 edges
+3. `Changelog` - 17 edges
+4. `Changelog — bản lưu trữ` - 17 edges
+5. `_git()` - 17 edges
+6. `log()` - 17 edges
+7. `cmd_build()` - 17 edges
 8. `main()` - 16 edges
 9. `_log()` - 16 edges
 10. `main()` - 16 edges
@@ -143,7 +143,7 @@ Nodes (35): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _d
 
 ### Community 10 - "Changelog — bản lưu trữ"
 Cohesion: 0.06
-Nodes (33): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+25 more)
+Nodes (34): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+26 more)
 
 ### Community 11 - "build_portable.py"
 Cohesion: 0.11
@@ -306,7 +306,7 @@ Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **42 isolated node(s):** `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22`, `0.28.0 — 2026-08-22`, `0.27.0 — 2026-08-22`, `0.26.0 — 2026-08-18` (+37 more)
+- **43 isolated node(s):** `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22`, `0.28.0 — 2026-08-22`, `0.27.0 — 2026-08-22` (+38 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -315,15 +315,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Task` connect `Task` to `tdq_team.py`, `_boi_canh`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `prompt_context_last()` connect `tdq_state.py` to `main`, `cli`?**
+- **Why does `normalize_mode()` connect `main` to `_fail`, `tdq_state.py`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `mode_label()` connect `_common.py` to `tdq_state.py`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **What connects `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22`, `0.28.0 — 2026-08-22` to the rest of the system?**
-  _42 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22` to the rest of the system?**
+  _43 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06293706293706294 - nodes in this community are weakly interconnected._
 - **Should `doc_lint.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05878084179970972 - nodes in this community are weakly interconnected._
 - **Should `tdq_lsp.py` be split into smaller, more focused modules?**
   _Cohesion score 0.08078231292517007 - nodes in this community are weakly interconnected._
+- **Should `tdq_checkstatus.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.07632850241545894 - nodes in this community are weakly interconnected._

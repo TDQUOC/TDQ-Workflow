@@ -14,6 +14,12 @@ This skill owns three phases: `implement` → `qc` → `report`.
   turn.** Do not make the user send another message, do not stop halfway to ask "shall I
   continue". Stop only on a genuine scope change, a missing/ambiguous `implement_mode`, or a
   blocker only the user can clear.
+- **The end of the turn is gated, not merely asked for.** While the phase is `implement` and
+  the plan still has an open task, the Stop hook refuses to close the turn with
+  `[TDQ:UNFINISHED]` and pushes you to keep going. Genuinely stuck on an error you cannot fix
+  yourself → run `python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" tam-hoan --ly-do "<why>"`,
+  TELL THE USER that reason in chat, and only then end the turn; `tiep-tuc` clears it when the
+  run resumes. Stopping without declaring a reason is the one thing the gate exists to refuse.
 - **Technical blocker → take the proposed option, do not ask.** When an option exists, TAKE
   IT, write one decision line plus the reason into the working log, and carry on. You may
   COMMIT ON YOUR OWN to clear a blocker (message describing the change, NO push, and list that

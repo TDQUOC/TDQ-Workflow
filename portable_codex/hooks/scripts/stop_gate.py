@@ -32,6 +32,10 @@ from tdq_state import (BOOKKEEPING_PATHS, _info, _warn,  # noqa: E402
 MAX_LINES = 4
 MAX_CHARS = 300
 MAX_PATH_CHARS = 60
+# How many blocks in a row with no checkbox movement before the gate steps down to a hint.
+# Without this ceiling a session that genuinely cannot progress has no way out but being killed.
+MAX_STREAK = 3
+STREAK_REL = os.path.join("docs", "tdq", "stop_streak.json")
 
 # Second safety net for the bookkeeping area: `repo_status_paths` already excludes it with a
 # git pathspec, this is only the backstop for a git old enough not to understand
@@ -147,13 +151,97 @@ def _dod_hint(cwd, state):
             f"{dod_con} DoD line(s). QC passed — tick them in the plan."]
 
 
+def unfinished_reason(state, tick, open_count=None):
+    """Reason to refuse the end of a turn while the plan still has open tasks, or None.
+
+    Pure on purpose: every branch of the decision is testable without a payload,
+    a temp repo or a real Stop event. Silence wins every tie — this hook runs at
+    user scope, so a wrong block would freeze every turn of every request.
+    """
+    if not isinstance(state, dict) or effective_phase(state, warn=False) != "implement":
+        return None
+    if not tick.get("exists") or tick.get("total", 0) <= 0 or tick.get("all_done"):
+        return None
+    if tick.get("dispatched_count", 0) > 0:
+        # A [>] task means a sub-agent is still running: the turn is not idling.
+        return None
+    if state.get("implement_pause"):
+        # The stop was declared with a reason — the legal way out, handled by the caller.
+        return None
+    con_ho = tick.get("total", 0) if open_count is None else open_count
+    return (f"[TDQ:UNFINISHED] The plan still has {con_ho} open task(s) and the phase is still "
+            "implement. Keep going to the end of the plan in this turn: mark [~], do the task, "
+            "mark [x]. Genuinely blocked → run `tdq_state.py tam-hoan --ly-do \"<why>\"` and "
+            "tell the user why.")
+
+
+def _streak_bump(cwd, sha):
+    """Blocks in a row against the SAME plan content; resets as soon as a checkbox moves."""
+    path = os.path.join(cwd, STREAK_REL)
+    dem = 0
+    try:
+        with open(path, encoding="utf-8") as f:
+            luu = json.load(f)
+        if luu.get("sha") == sha:
+            dem = int(luu.get("count", 0))
+    except (OSError, ValueError, TypeError):
+        dem = 0
+    dem += 1
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump({"sha": sha, "count": dem}, f)
+    except OSError as loi:
+        # Losing the counter must never lose the block: warn and keep going.
+        _warn(f"stop_gate: cannot write the streak counter ({loi})")
+    return dem
+
+
+def _chan_chua_xong(cwd, state):
+    """Print the [TDQ:UNFINISHED] block when the plan is unfinished; True when it did.
+
+    `stop_hook_active: false` is what re-arms the gate: the model must be pushed again on
+    the next stop, not let through because it was already blocked once.
+    """
+    tick = plan_tick_state(cwd)
+    reason = unfinished_reason(state, tick, open_count=task_open_count(cwd))
+    pause = state.get("implement_pause")
+    if reason is None:
+        if pause and effective_phase(state, warn=False) == "implement":
+            _info(f"stop_gate: implement paused on purpose · reason={str(pause.get('ly_do'))[:120]}")
+        return False
+    dem = _streak_bump(cwd, tick.get("sha", ""))
+    if dem > MAX_STREAK:
+        # Nothing has moved for MAX_STREAK stops in a row: blocking again would only trap the
+        # session. Step down to a hint and let the turn end.
+        _info(f"stop_gate: TDQ:UNFINISHED stepped down after {dem - 1} block(s) with no progress")
+        print(json.dumps({"hookSpecificOutput": {
+            "hookEventName": "Stop",
+            "additionalContext": ("[TDQ:STUCK] The plan has not moved across several stops. "
+                                  "Either finish the remaining tasks, or run "
+                                  "`tdq_state.py tam-hoan --ly-do \"<why>\"` and tell the user."),
+        }}, ensure_ascii=False))
+        return True
+    _info(f"stop_gate: block TDQ:UNFINISHED · phase=implement · open={task_open_count(cwd)} "
+          f"· plan={tick.get('path')} · streak={dem}")
+    print(json.dumps({"decision": "block", "reason": reason, "stop_hook_active": False},
+                     ensure_ascii=False))
+    return True
+
+
 def main():
     payload = read_payload()
-    if payload.get("stop_hook_active"):
-        return
+    # Claude Code sets this flag after a block, as loop protection. The two older gates
+    # honour it; the [TDQ:UNFINISHED] gate must not, or a single stop would end the run
+    # with the plan half done — which is the whole defect it exists to close.
+    lap_lai = bool(payload.get("stop_hook_active"))
     cwd = payload_cwd(payload)
     state = load(cwd)
     if state is None or not state.get("active_request"):
+        return
+    if lap_lai and _chan_chua_xong(cwd, state):
+        return
+    if lap_lai:
         return
 
     rows = turn_rows(cwd, payload)
@@ -211,6 +299,12 @@ def main():
                            "Then reprint the last chat block VERBATIM — no summarising."),
             }, ensure_ascii=False))
             return
+
+    # Third block point: the turn is ending while the plan still has open tasks. Unlike the
+    # two gates above it does NOT require the turn to have edited a file — a final "I'll stop
+    # here" turn typically edits nothing, which is exactly how it slipped through until now.
+    if _chan_chua_xong(cwd, state):
+        return
 
     reminded = {r.get("code") for r in rows if r.get("kind") == "remind"}
     done = {r.get("event") for r in rows if r.get("kind") == "observe"}

@@ -1,17 +1,17 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-08-23T20:42:06+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-08-24T15:48:08+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-08-23-1623-mindmap-html-hai-lop |
+| Request | 2026-08-24-1427-implement-chay-het-plan |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-23-1623-mindmap-html-hai-lop.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-08-23-1623-mindmap-html-hai-lop.md — ✔ approved |
-| Diagrams | (not applicable) |
+| Spec | docs/tdq/spec/2026-08-24-1427-implement-chay-het-plan.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-08-24-1427-implement-chay-het-plan.md — ✔ approved |
+| Diagrams | 1 registered — ✔ all approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
-| Run mode | subagent |
+| Run mode | main |
 
 ## Where we are
 QC has PASSed. Forbidden: Committing or pushing before the user asks for it.

@@ -1,0 +1,21 @@
+# Cổng chặn kết lượt
+@nhánh: Cổng TDQ > Cổng chặn kết lượt
+
+B1 · Claude Code định kết lượt, gọi Stop hook (hooks/scripts/stop_gate.py::main)
+B2 · Đọc payload và thư mục làm việc (hooks/scripts/_common.py::read_payload)
+B2! · cờ chống lặp bật mà cổng chưa cần chặn lại thì đi qua, không xét gì thêm (hooks/scripts/stop_gate.py::main)
+B3 · Nạp state của request đang mở (scripts/tdq_state.py::load)
+B3! · không có state hoặc không có active_request thì im lặng đi qua (scripts/tdq_state.py::load)
+B4 · Cổng cũ: lượt có sửa file mà chưa ghi working log thì chặn [TDQ:LOG] (hooks/scripts/stop_gate.py::main)
+B5 · Cổng cũ: lượt có sửa file mà plan còn task hở thì chặn [TDQ:TICK] (hooks/scripts/stop_gate.py::main)
+B6 · Cổng mới: lấy phase hiệu lực, chỉ xét tiếp khi phase là implement (scripts/tdq_state.py::effective_phase)
+B7 · Đếm trạng thái checkbox của plan trên đĩa (scripts/tdq_state.py::plan_tick_state)
+B7! · plan không tồn tại hoặc không có task nào thì đi qua, thiếu bằng chứng không chặn (scripts/tdq_state.py::plan_tick_state)
+B8 · Mọi task đã [x] thì đi qua, plan đã chạy hết (scripts/tdq_state.py::plan_tick_state)
+B9 · Còn task [>] nghĩa là sub-agent đang chạy thì đi qua (scripts/tdq_state.py::plan_tick_state)
+B10 · Có khoá tạm hoãn trong state thì đi qua và in lý do người dừng đã khai (hooks/scripts/stop_gate.py::_chan_chua_xong)
+B11 · Đếm số lần chặn liên tiếp mà checkbox không nhúc nhích (hooks/scripts/stop_gate.py::_streak_bump)
+B11! · đủ ba lần không tiến triển thì hạ xuống nhắc, thôi chặn, tránh kẹt phiên (hooks/scripts/stop_gate.py::_chan_chua_xong)
+B12 · Trả decision block kèm mã [TDQ:UNFINISHED], số task còn hở và stop_hook_active false (hooks/scripts/stop_gate.py::unfinished_reason)
+B13 · In một dòng log nêu phase, số task hở và đường dẫn plan (scripts/tdq_state.py::_info)
+B14 · Người dừng hợp lệ khai lý do rồi mới được thoát cổng (scripts/tdq_state.py::_cli_implement_pause)

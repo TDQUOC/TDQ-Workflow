@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1787456627.8428392,
-    "ast_hash": "8cc22777be30b90fd0e5e2ad73e64b11",
-    "semantic_hash": ""
+    "mtime": 1787494089.000145,
+    "ast_hash": "35b074b5c73b63f39aa3a37ba9578b28",
+    "semantic_hash": "35b074b5c73b63f39aa3a37ba9578b28"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -15,9 +15,9 @@
     "semantic_hash": "192392fd3d39b115c65a8735cd2f04fa"
   },
   ".claude/settings.local.json": {
-    "mtime": 1786618579.2958105,
-    "ast_hash": "0e38603e85a2c3ff6e7c4513f9034c4f",
-    "semantic_hash": "0e38603e85a2c3ff6e7c4513f9034c4f"
+    "mtime": 1787494266.5363164,
+    "ast_hash": "72c8633683ec5c4c7af5343814382b93",
+    "semantic_hash": "72c8633683ec5c4c7af5343814382b93"
   },
   "hooks/hooks.json": {
     "mtime": 1787335339.5955558,
@@ -50,9 +50,9 @@
     "semantic_hash": "bd4b079a525916510de2628af1725a15"
   },
   "hooks/scripts/stop_gate.py": {
-    "mtime": 1787402697.9720447,
-    "ast_hash": "29e81f17a3106c84ec68733282e68035",
-    "semantic_hash": "29e81f17a3106c84ec68733282e68035"
+    "mtime": 1787560317.5818038,
+    "ast_hash": "259d466189e935f4eb3ea2edb3de85fa",
+    "semantic_hash": "259d466189e935f4eb3ea2edb3de85fa"
   },
   "scripts/canvas_a4_ch4_ch7.py": {
     "mtime": 1787338144.5517437,
@@ -95,9 +95,9 @@
     "semantic_hash": "73a3591cb08ee795743310d3c278cc11"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1787455438.4195645,
-    "ast_hash": "2b152f0f319072f019b86ab7e21e3002",
-    "semantic_hash": "2b152f0f319072f019b86ab7e21e3002"
+    "mtime": 1787489656.7774282,
+    "ast_hash": "31ee95d60a6bd8b8b6f0af78a4c0f790",
+    "semantic_hash": "31ee95d60a6bd8b8b6f0af78a4c0f790"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1787336656.1261957,
@@ -115,9 +115,9 @@
     "semantic_hash": "fdf3d7fdd2aec19f008a1633ac8481dd"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1787402642.6695032,
-    "ast_hash": "f8e33a06bc1a200daf5d7fbd870c54e4",
-    "semantic_hash": "f8e33a06bc1a200daf5d7fbd870c54e4"
+    "mtime": 1787560108.3073506,
+    "ast_hash": "3e309aba39497fe835b916bb6ed0910b",
+    "semantic_hash": "3e309aba39497fe835b916bb6ed0910b"
   },
   "scripts/token_audit.py": {
     "mtime": 1787337965.565459,
@@ -125,8 +125,8 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1787456940.2284238,
-    "ast_hash": "2040ada0904e550c55411776fa3bd91c",
+    "mtime": 1787494288.6957345,
+    "ast_hash": "ac6b60f0997552bc5871b473c7cbae6c",
     "semantic_hash": ""
   },
   "README.md": {
@@ -215,14 +215,14 @@
     "semantic_hash": "2e07da73e0e36ffcef1212377a79be2b"
   },
   "evals/tuan-thu/duyet-plan-kem-mode/ca.json": {
-    "mtime": 1787165243.6439905,
-    "ast_hash": "c2668f13c1eb8f94c8299379763078a5",
-    "semantic_hash": "c2668f13c1eb8f94c8299379763078a5"
+    "mtime": 1787490280.8386734,
+    "ast_hash": "2eb0be78a701444a5966f6056df53889",
+    "semantic_hash": "2eb0be78a701444a5966f6056df53889"
   },
   "evals/tuan-thu/duyet-plan-thieu-mode/ca.json": {
-    "mtime": 1787165243.6444397,
-    "ast_hash": "24cabb6ce8deb8698bee8a2e7223becd",
-    "semantic_hash": "24cabb6ce8deb8698bee8a2e7223becd"
+    "mtime": 1787490280.8391254,
+    "ast_hash": "bf90db1460179eabab9ab26b1043f925",
+    "semantic_hash": "bf90db1460179eabab9ab26b1043f925"
   },
   "evals/tuan-thu/duyet-spec-mo-ho/ca.json": {
     "mtime": 1787165243.6451943,
@@ -298,5 +298,15 @@
     "mtime": 1787425328.7330768,
     "ast_hash": "6a19278c2068f9f30be71923844966c0",
     "semantic_hash": "6a19278c2068f9f30be71923844966c0"
+  },
+  "scripts/mindmap_render.py": {
+    "mtime": 1787488001.4737937,
+    "ast_hash": "76b8f1fdecc5a7f7d0ca17255ef81349",
+    "semantic_hash": "76b8f1fdecc5a7f7d0ca17255ef81349"
+  },
+  "scripts/tdq_mindmap.py": {
+    "mtime": 1787488204.9997375,
+    "ast_hash": "1c70d19f1e9fc53d8e86b661a448b1bc",
+    "semantic_hash": "1c70d19f1e9fc53d8e86b661a448b1bc"
   }
 }

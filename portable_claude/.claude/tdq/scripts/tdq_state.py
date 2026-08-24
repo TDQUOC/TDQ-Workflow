@@ -81,6 +81,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "[--no-qc (quick only, requires --by)] [--by \"<user sentence>\"] | "
          "approve diagram <path> [--by \"<user sentence>\"] | "
          "diagram add <path> | diagram list | "
+         "tam-hoan --ly-do \"<why>\" | tiep-tuc | "
          "reset | phases-doc")
 
 EXIT_SYNTAX = 2
@@ -179,6 +180,14 @@ def default_state():
         # request has a diagram list and it is still empty".
         DIAGRAM_KEY: None,
         "implement_mode": None,
+        # Phase `implement` may only end early through a DECLARED pause: the
+        # Stop gate refuses to close a turn while the plan still has open tasks,
+        # and this key is the single legal way out. Shape when set:
+        # {"ly_do": "<why the run stopped>", "at": "<iso>", "by": "<who>"}.
+        # None means "no pause declared", so the gate stays armed. A hook cannot
+        # tell whether an error is self-fixable, so whoever stops must say why,
+        # and that sentence is what gets shown to the user.
+        "implement_pause": None,
         # language code of this request's documents (see DEFAULT_DOC_LANG)
         "doc_lang": DEFAULT_DOC_LANG,
         # request opening mark (schema 4) — the origin of every wall-clock count
@@ -1054,7 +1063,7 @@ PHASE_TABLE = {
             "All tasks done → run the command above",
         ],
         "done_when": "Every task in the plan is ticked [x]",
-        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]",
+        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py tam-hoan --ly-do \"<why>\"`, whose reason is shown to the user",
     },
     "qc": {
         "entry": "Implementation is finished",
@@ -1808,6 +1817,43 @@ def _echo_state(cmd, state, want_json):
           f"lane={state.get('lane')} phase={state.get('phase')}")
 
 
+def _cli_implement_pause(cwd, cmd, rest):
+    """`tam-hoan --ly-do "<why>"` declares the pause, `tiep-tuc` clears it.
+
+    A declared pause is the only legal way to end a turn while the plan still
+    has open tasks, so the reason is mandatory: an undeclared stop is exactly
+    the silent exit the Stop gate exists to refuse.
+    """
+    rest, want_json = _pop_json_flag(list(rest))
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+
+    if cmd == "tiep-tuc":
+        if rest:
+            _fail("tiep-tuc takes no argument.")
+        state["implement_pause"] = None
+        save(cwd, state, expect_updated_at=stamp)
+        _info("implement pause cleared — the Stop gate is armed again")
+        _echo_state("tiep-tuc", state, want_json)
+        return
+
+    reason = ""
+    if len(rest) >= 2 and rest[0] == "--ly-do":
+        reason = " ".join(rest[1:]).strip()
+    if not reason:
+        _fail('tam-hoan needs a reason: tam-hoan --ly-do "<why the run stopped>".')
+    state["implement_pause"] = {
+        "ly_do": reason[:400],
+        "at": now_iso(),
+        "by": "claude",
+    }
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"implement pause declared: {reason[:120]}")
+    _echo_state("tam-hoan", state, want_json)
+
+
 def cli(argv):
     started_in = os.getcwd()
     env = os.environ.get("TDQ_PROJECT_DIR")
@@ -1937,6 +1983,9 @@ def cli(argv):
         save(cwd, state, expect_updated_at=stamp)
         _echo_state("set", state, want_json)
         return
+
+    if cmd in ("tam-hoan", "tiep-tuc"):
+        return _cli_implement_pause(cwd, cmd, argv[1:])
 
     if cmd == "approve":
         return _cli_approve(cwd, argv[1:])

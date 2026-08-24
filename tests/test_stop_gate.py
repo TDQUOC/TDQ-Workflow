@@ -12,6 +12,11 @@ import unittest
 
 from helper import run_hook, load_fixture, write_state, tdq_state
 
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                "hooks", "scripts"))
+import stop_gate  # noqa: E402
+
 SESSION = "s1"
 
 
@@ -573,8 +578,10 @@ class TestStopGateTick(StopGateBase):
         self.assertNotIn("TDQ:TICK", self.stop()[1])
 
     def test_im_khi_stop_hook_active(self):
+        """Cờ chống lặp tắt cổng TICK. Cổng UNFINISHED cố ý KHÔNG theo cờ đó."""
         self.dung()
-        self.assertEqual(self.stop(stop_hook_active=True)[1], "")
+        out = self.stop(stop_hook_active=True)[1]
+        self.assertNotIn("TDQ:TICK", out)
 
     def test_im_khi_turn_khong_dong_code(self):
         self.git("init", "-q")
@@ -657,3 +664,179 @@ class TestStopGateReprint(StopGateBase):
         self.assertIn("reprint the last chat block VERBATIM", reason)
         self.assertLessEqual(len(reason), 300)
 
+
+
+class TestUnfinishedDecision(unittest.TestCase):
+    """B6-B12 of the diagram: the pure branch that decides the [TDQ:UNFINISHED] block."""
+
+    @staticmethod
+    def _tick(**overrides):
+        tick = {"path": "docs/tdq/plan/p.md", "exists": True, "sha": "abc",
+                "has_doing": False, "all_done": False, "total": 5, "doing_count": 1,
+                "dispatched_count": 0, "dispatched_ids": []}
+        tick.update(overrides)
+        return tick
+
+    @staticmethod
+    def _state(**overrides):
+        state = {"phase": "implement", "lane": "full", "implement_pause": None}
+        state.update(overrides)
+        return state
+
+    def test_unfinished_chan_ca_chinh(self):
+        reason = stop_gate.unfinished_reason(self._state(), self._tick())
+        self.assertIsNotNone(reason)
+        self.assertIn("[TDQ:UNFINISHED]", reason)
+
+    def test_unfinished_ngoai_phase(self):
+        for phase in ("idle", "spec", "diagram", "plan", "qc", "report"):
+            self.assertIsNone(stop_gate.unfinished_reason(self._state(phase=phase), self._tick()))
+
+    def test_unfinished_plan_xong(self):
+        self.assertIsNone(stop_gate.unfinished_reason(self._state(), self._tick(all_done=True)))
+
+    def test_unfinished_subagent(self):
+        tick = self._tick(dispatched_count=1, dispatched_ids=["T2.1"])
+        self.assertIsNone(stop_gate.unfinished_reason(self._state(), tick))
+
+    def test_unfinished_tam_hoan(self):
+        state = self._state(implement_pause={"ly_do": "thiếu khoá API", "at": "now", "by": "claude"})
+        self.assertIsNone(stop_gate.unfinished_reason(state, self._tick()))
+
+    def test_unfinished_thieu_bang_chung(self):
+        self.assertIsNone(stop_gate.unfinished_reason(self._state(), self._tick(exists=False)))
+        self.assertIsNone(stop_gate.unfinished_reason(self._state(), self._tick(total=0)))
+        self.assertIsNone(stop_gate.unfinished_reason({}, self._tick()))
+
+    def test_unfinished_noi_dung(self):
+        reason = stop_gate.unfinished_reason(self._state(), self._tick(total=5), open_count=4)
+        self.assertIn("4", reason)
+        self.assertLessEqual(len(reason), 300)
+
+
+class TestStopGateUnfinished(StopGateBase):
+    """[TDQ:UNFINISHED] — the third block point: the turn ends while the plan is not finished."""
+
+    PLAN_REL = "docs/tdq/plan/r1.md"
+    CHUA_LAM = "- [ ] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+    XONG_HET = "- [x] **T1** a — Test: x\n- [x] **T2** b — Test: x\n"
+    DA_GIAO = "- [>] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n"
+
+    def write(self, rel, text):
+        path = os.path.join(self.cwd, rel)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+
+    def dung(self, phase="implement", plan=CHUA_LAM, **state_kw):
+        """A turn that edits NOTHING — exactly the case the two older gates let through."""
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase,
+                    plan_file=self.PLAN_REL, **state_kw)
+        if plan is not None:
+            self.write(self.PLAN_REL, plan)
+
+    def test_unfinished_chan_luot_khong_sua_file(self):
+        self.dung()
+        rc, out, _ = self.stop()
+        self.assertEqual(rc, 0)
+        data = json.loads(out)
+        self.assertEqual(data["decision"], "block")
+        self.assertIn("[TDQ:UNFINISHED]", data["reason"])
+        self.assertLessEqual(len(data["reason"]), 300)
+
+    def test_unfinished_chan_lap_khi_co_cua_bat(self):
+        self.dung()
+        rc, out, _ = self.stop(stop_hook_active=True)
+        data = json.loads(out)
+        self.assertEqual(data["decision"], "block")
+        self.assertIs(data["stop_hook_active"], False)
+
+    def test_unfinished_mien_khi_plan_xong(self):
+        self.dung(plan=self.XONG_HET)
+        rc, out, _ = self.stop()
+        self.assertEqual(out, "")
+
+    def test_unfinished_mien_khi_co_task_da_giao(self):
+        self.dung(plan=self.DA_GIAO)
+        rc, out, _ = self.stop()
+        self.assertEqual(out, "")
+
+    def test_unfinished_mien_khi_da_tam_hoan(self):
+        self.dung(implement_pause={"ly_do": "chờ khoá API của user", "at": "n", "by": "claude"})
+        rc, out, err = self.stop()
+        self.assertNotIn('"decision"', out)
+        self.assertIn("chờ khoá API của user", out + err)
+
+    def test_unfinished_mien_ngoai_phase_implement(self):
+        for phase in ("spec", "plan", "qc", "report", "idle"):
+            with self.subTest(phase=phase):
+                self.dung(phase=phase)
+                rc, out, _ = self.stop()
+                self.assertNotIn("[TDQ:UNFINISHED]", out)
+
+    def test_unfinished_mien_khi_khong_co_plan(self):
+        self.dung(plan=None)
+        rc, out, _ = self.stop()
+        self.assertNotIn("[TDQ:UNFINISHED]", out)
+
+
+class TestUnfinishedTran(TestStopGateUnfinished):
+    """The safety ceiling: three blocks with no checkbox movement and the gate steps down."""
+
+    def test_unfinished_tran_ba_lan(self):
+        self.dung()
+        for lan in range(3):
+            with self.subTest(lan=lan):
+                self.assertIn("[TDQ:UNFINISHED]", self.stop()[1])
+        self.assertNotIn("[TDQ:UNFINISHED]", self.stop()[1])
+
+    def test_unfinished_tran_reset_khi_co_tien_trien(self):
+        self.dung()
+        for _ in range(2):
+            self.stop()
+        self.write(self.PLAN_REL, "- [x] **T1** a — Test: x\n- [ ] **T2** b — Test: x\n")
+        self.assertIn("[TDQ:UNFINISHED]", self.stop()[1])
+        self.assertIn("[TDQ:UNFINISHED]", self.stop()[1])
+        self.assertIn("[TDQ:UNFINISHED]", self.stop()[1])
+        self.assertNotIn("[TDQ:UNFINISHED]", self.stop()[1])
+
+
+class TestUnfinishedImLang(TestStopGateUnfinished):
+    """Every silent path: missing evidence must never turn into a block."""
+
+    def test_unfinished_khong_co_state(self):
+        self.write(self.PLAN_REL, self.CHUA_LAM)
+        self.assertEqual(self.stop()[1], "")
+
+    def test_unfinished_khong_co_active_request(self):
+        write_state(self.cwd, active_request=None, lane="full", phase="implement",
+                    plan_file=self.PLAN_REL)
+        self.write(self.PLAN_REL, self.CHUA_LAM)
+        self.assertEqual(self.stop()[1], "")
+
+    def test_unfinished_plan_khong_doc_duoc(self):
+        self.dung(plan=None)
+        self.assertNotIn("[TDQ:UNFINISHED]", self.stop()[1])
+
+    def test_unfinished_plan_khong_co_task_nao(self):
+        self.dung(plan="# PLAN — chỉ có chữ, không có ô tick\n")
+        self.assertNotIn("[TDQ:UNFINISHED]", self.stop()[1])
+
+
+class TestUnfinishedLog(TestStopGateUnfinished):
+    """Every block decision must say out loud what it was decided on."""
+
+    def test_unfinished_log(self):
+        self.dung()
+        _, _, err = self.stop()
+        self.assertIn("TDQ:UNFINISHED", err)
+        self.assertIn("phase=implement", err)
+        self.assertIn("open=2", err)
+        self.assertIn(self.PLAN_REL, err)
+
+    def test_unfinished_log_tat_duoc(self):
+        self.dung()
+        payload = load_fixture("stop.json", cwd=self.cwd, session_id=SESSION)
+        _, out, err = run_hook("stop_gate.py", payload, env={"TDQ_LOG": "0"})
+        self.assertIn("[TDQ:UNFINISHED]", out)
+        self.assertNotIn("stop_gate:", err)
