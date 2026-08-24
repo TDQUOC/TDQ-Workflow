@@ -2,6 +2,25 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.33.0 — 2026-08-24
+
+Phase `implement` được gác ở chỗ kết lượt. Trước bản này luật "làm hết plan trong một lượt" chỉ
+là câu chữ trong skill. Hai cổng `Stop` sẵn có đều bám vào file vừa sửa trong lượt, nên một
+lượt không sửa gì mà plan còn task hở vẫn kết được. Bản này biến câu luật đó thành cổng chạy
+thật.
+
+- **Cổng `[TDQ:UNFINISHED]` trong `hooks/scripts/stop_gate.py`** — còn ở phase `implement` mà
+  plan trên đĩa còn task hở thì `Stop` trả `decision: block`. Payload trả kèm
+  `stop_hook_active: false` nên cổng nạp đạn lại, chặn được cả lượt lặp. Ba ca vẫn im lặng đi
+  qua: đang chờ người dùng, còn task `[>]` giao cho sub-agent, hoặc đã khai tạm hoãn.
+- **Khoá `implement_pause` và hai lệnh `tam-hoan --ly-do "<vì sao>"` / `tiep-tuc`** trong
+  `scripts/tdq_state.py` — đường dừng hợp lệ duy nhất. Hook không tự biết lỗi có tự sửa được
+  hay không, nên người dừng phải khai lý do, và lý do đó được in ra cho người dùng.
+- **Bộ đếm chặn liên tiếp** khoá theo sha của plan: ba lần không tiến triển thì cổng hạ xuống
+  nhắc `[TDQ:STUCK]` để phiên không kẹt vĩnh viễn; đếm về 0 ngay khi một checkbox nhúc nhích.
+- **Luật viết vào `skills/tdq-build/SKILL.md` và bảng phase** (sinh từ hằng `PHASE_TABLE`), hai
+  bản portable cuốn theo.
+
 ## 0.32.0 — 2026-08-23
 
 Sơ đồ giải thuật thành cổng bắt buộc trước khi viết plan. Trước bản này workflow đi thẳng từ

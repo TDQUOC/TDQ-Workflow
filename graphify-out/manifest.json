@@ -50,7 +50,7 @@
     "semantic_hash": "bd4b079a525916510de2628af1725a15"
   },
   "hooks/scripts/stop_gate.py": {
-    "mtime": 1787560317.5818038,
+    "mtime": 1787560987.984381,
     "ast_hash": "259d466189e935f4eb3ea2edb3de85fa",
     "semantic_hash": "259d466189e935f4eb3ea2edb3de85fa"
   },
@@ -115,9 +115,9 @@
     "semantic_hash": "fdf3d7fdd2aec19f008a1633ac8481dd"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1787560108.3073506,
-    "ast_hash": "3e309aba39497fe835b916bb6ed0910b",
-    "semantic_hash": "3e309aba39497fe835b916bb6ed0910b"
+    "mtime": 1787560987.984652,
+    "ast_hash": "af0dc75856e798f81bcdd62ca2fe35e9",
+    "semantic_hash": ""
   },
   "scripts/token_audit.py": {
     "mtime": 1787337965.565459,
