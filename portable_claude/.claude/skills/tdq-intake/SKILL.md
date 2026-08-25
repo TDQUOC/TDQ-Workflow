@@ -51,8 +51,8 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    never edit another plugin's file. Rungs 5–6 only warn, so a gap there never holds the request
    up. Details: [tdq-lsp-setup](../tdq-lsp-setup/SKILL.md). The search order that follows from it
    is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
-   LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC gọi song song cả
+   `mcp__lsp__*` và lumen, gộp kết quả hai lớp trước khi đọc; grep là lớp cuối. Luật gốc:
    `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
 
 2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.

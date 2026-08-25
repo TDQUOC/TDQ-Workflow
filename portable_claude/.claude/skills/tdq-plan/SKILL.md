@@ -45,8 +45,8 @@ written against; a task tracing back to no diagram step is out of scope. Spec ap
    waves. Template: the 2 sections `Chạm:`/`Cụm song song` of plan-template. <!-- i18n-allow: canonical name kept verbatim -->
    **Build `Chạm:` from "who calls this", never by eye:** `mcp__lsp__find_references` on every <!-- i18n-allow: canonical name kept verbatim -->
    symbol the task changes, so a caller outside the obvious folder still lands on the line. <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC thử `mcp__lsp__*` trước;
-   LSP trả rỗng mới tới lumen; grep là lớp cuối. Luật gốc:
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC gọi song song cả
+   `mcp__lsp__*` và lumen, gộp kết quả hai lớp trước khi đọc; grep là lớp cuối. Luật gốc:
    `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
    **Score `eNm` as you write the task**, never later and never padded: minutes the agent SPENDS
    EXECUTING it (approval waits do not count). Plan ETA = the sum over unfinished tasks; the full

@@ -1,17 +1,17 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-08-24T15:49:35+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-08-26T01:27:53+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-08-24-1427-implement-chay-het-plan |
-| Lane | full |
+| Request | 2026-08-26-0102-doi-rule-uu-tien-lsp-lumen |
+| Lane | quick |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-08-24-1427-implement-chay-het-plan.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-08-24-1427-implement-chay-het-plan.md — ✔ approved |
-| Diagrams | 1 registered — ✔ all approved |
-| Quick approval | (not applicable) |
+| Spec | (none) |
+| Plan | (none) |
+| Diagrams | (none registered) |
+| Quick approval | ✔ approved |
 | Doc language | vi |
-| Run mode | main |
+| Run mode | (not settled) |
 
 ## Where we are
 Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.

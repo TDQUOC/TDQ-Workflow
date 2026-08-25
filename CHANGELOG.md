@@ -2,6 +2,21 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.34.0 — 2026-08-26
+
+Luật tìm kiếm code đổi từ tuần tự sang song song. Trước bản này agent-lsp chạy trước, lumen chỉ
+được gọi khi LSP trả rỗng — đúng cho câu hỏi có tên symbol nhưng bỏ lỡ câu hỏi khái niệm không
+tên trong cùng một lượt tìm. Bản này gọi cả hai cùng lúc, gộp kết quả trước khi đọc.
+
+- **`skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`** — câu luật gốc đổi thành "gọi song
+  song `mcp__lsp__*` và lumen cho mọi câu hỏi tìm ký hiệu code, gộp kết quả; grep vẫn lớp cuối".
+  Điều kiện đánh thức Ollama đổi theo: không còn chờ LSP rỗng, chạy ngay mỗi câu hỏi tìm code —
+  vẫn đánh thức-rồi-tắt, không thường trực. Ghi rõ lumen tự incremental-reindex theo Merkle root
+  hash khi index cũ nên không cần thêm bước/script reindex riêng.
+- Đồng bộ nguyên văn câu luật vào 5 chỗ móc (`tdq-intake` x2, `tdq-spec`, `tdq-plan`,
+  `tdq-build`), hai bản portable cuốn theo qua `build_portable.py`.
+- **Test** `tests/test_tdq_lsp_skill.py` xanh (4 test, 10 subtest) sau khi đổi.
+
 ## 0.33.0 — 2026-08-24
 
 Phase `implement` được gác ở chỗ kết lượt. Trước bản này luật "làm hết plan trong một lượt" chỉ

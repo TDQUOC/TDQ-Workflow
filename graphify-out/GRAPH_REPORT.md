@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-08-24)
 
 ## Corpus Check
-- 62 files · ~92,414 words
+- 62 files · ~92,641 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1334 nodes · 2537 edges · 64 communities (59 shown, 5 thin omitted)
+- 1335 nodes · 2538 edges · 64 communities (59 shown, 5 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 120 edges (avg confidence: 0.63)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2773af7b`
+- Built from commit: `8f5f0f28`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,7 +23,7 @@
 - tdq_bench.py
 - skill_inventory.py
 - skill_tokens.py
-- Changelog — bản lưu trữ
+- Changelog
 - _common.py
 - tdq_checkportable.py
 - build_portable.py
@@ -84,8 +84,8 @@
 1. `cli()` - 27 edges
 2. `lenh_soat()` - 20 edges
 3. `load()` - 19 edges
-4. `_warn()` - 17 edges
-5. `Changelog` - 17 edges
+4. `Changelog` - 18 edges
+5. `_warn()` - 17 edges
 6. `Changelog — bản lưu trữ` - 17 edges
 7. `_git()` - 17 edges
 8. `log()` - 17 edges
@@ -141,9 +141,9 @@ Nodes (35): _clean(), _condense(), _enabled_plugins(), _filter(), _frontmatter()
 Cohesion: 0.09
 Nodes (36): ban_do_skill_md(), _chu(), dem_qua_venv(), do_mo_ta(), do_theo_phase(), _in_bang(), khoa_tra(), lenh_mo_ta() (+28 more)
 
-### Community 8 - "Changelog — bản lưu trữ"
-Cohesion: 0.06
-Nodes (34): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+26 more)
+### Community 8 - "Changelog"
+Cohesion: 0.05
+Nodes (35): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+27 more)
 
 ### Community 9 - "_common.py"
 Cohesion: 0.13
@@ -346,24 +346,24 @@ Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **43 isolated node(s):** `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22`, `0.28.0 — 2026-08-22`, `0.27.0 — 2026-08-22` (+38 more)
+- **44 isolated node(s):** `0.33.0 — 2026-08-24`, `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22`, `0.28.0 — 2026-08-22` (+39 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `turn_log_append()` connect `tdq_state.py` to `_common.py`, `cli`, `main`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Why does `Task` connect `Task` to `tdq_team.py`, `_boi_canh`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `observe()` connect `_common.py` to `tdq_state.py`?**
+- **Why does `normalize_mode()` connect `main` to `tdq_state.py`, `_fail`?**
   _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `load()` (e.g. with `main()` and `main()`) actually correct?**
   _`load()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `_warn()` (e.g. with `_repo_changed()` and `_streak_bump()`) actually correct?**
   _`_warn()` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22` to the rest of the system?**
-  _43 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.33.0 — 2026-08-24`, `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23` to the rest of the system?**
+  _44 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06293706293706294 - nodes in this community are weakly interconnected._
+- **Should `doc_lint.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.05878084179970972 - nodes in this community are weakly interconnected._
