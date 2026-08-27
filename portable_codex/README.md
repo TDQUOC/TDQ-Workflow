@@ -7,7 +7,7 @@ This bundle uses the REAL native mechanisms of Codex, not markdown read by hand:
 | Skill | `.agents/skills/<name>/SKILL.md` | scanned automatically, loaded on demand by `description` |
 | MCP | `.codex/config.toml` | `[mcp_servers.<name>]`, environment variable NAMES only |
 | Hook | `.codex/hooks.json` + `hooks/` | guards `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
-| Fallback | `workflow/NN-*.md` | for OTHER harnesses (Antigravity…) to read in order |
+| Fallback | `workflow/NN-*.md` | for any OTHER markdown-only harness to read in order |
 
 Needs Codex CLI >= 0.147.0. An older build can still use `workflow/*.md`, but gets none
 of the native layers.

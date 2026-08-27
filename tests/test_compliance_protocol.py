@@ -251,7 +251,15 @@ class ProtocolTest(unittest.TestCase):
         trong một turn duy nhất), nên bất biến thu hẹp lại: mọi quyết định deny
         phải đi qua `_common.block()`, không hook nào tự dựng JSON deny riêng.
         """
-        deny_allowed = os.path.join(ROOT, "hooks", "scripts", "_common.py")
+        # `_common.block()` is the ONE place a Claude Code hook may build a deny. The agy
+        # target is a different harness: its `PreToolUse` deny is a real hard block and is the
+        # whole point of the antigravity bundle (spec §1), and `build_portable.py` writes agy's
+        # `permissions.deny` list. Neither goes anywhere near Claude Code's hook path.
+        deny_allowed = {
+            os.path.join(ROOT, "hooks", "scripts", "_common.py"),
+            os.path.join(ROOT, "hooks", "scripts", "agy_pretooluse_gate.py"),
+            os.path.join(ROOT, "scripts", "build_portable.py"),
+        }
         hits = []
         for folder in ("hooks", "scripts"):
             for root, _, files in os.walk(os.path.join(ROOT, folder)):
@@ -262,7 +270,7 @@ class ProtocolTest(unittest.TestCase):
                     with open(path, encoding="utf-8") as f:
                         text = f.read()
                     for pattern in (r"transcript_path", r'"deny"'):
-                        if pattern == r'"deny"' and path == deny_allowed:
+                        if pattern == r'"deny"' and path in deny_allowed:
                             continue
                         if re.search(pattern, text):
                             hits.append(f"{path}: {pattern}")

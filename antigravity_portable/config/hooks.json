@@ -1,0 +1,25 @@
+{
+  "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited by hand. Copy this file to EVERY candidate hook-config path — see README.md.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"~/.gemini/antigravity-cli/tdq/hooks/scripts/agy_pretooluse_gate.py\"",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"~/.gemini/antigravity-cli/tdq/hooks/scripts/agy_stop_gate.py\"",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

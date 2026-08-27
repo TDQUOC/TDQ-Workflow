@@ -43,6 +43,7 @@ linter command if the machine has it:
 | Rust | `.rs` | [rust.md](rust.md) | `cargo clippy` |
 | C++ | `.cpp .cc .cxx .hpp .h` | [cpp.md](cpp.md) | `clang-tidy <path>` |
 | HTML | `.html .htm` | [html.md](html.md) | `htmlhint <path>` |
+| Bash | `.sh` | user scope: `~/.claude/skills/tdq-rules-bash/bash.md` | `shellcheck <path>` |
 
 The three loading tiers (keeping context cheap without lowering quality):
 
@@ -57,7 +58,7 @@ yourself.
 
 ## Self-check
 
-- [ ] The table covers all 7 languages, each row with 4 columns: language, extension, rule file, linter command
+- [ ] The table covers all 8 languages, each row with 4 columns: language, extension, rule file, linter command
 - [ ] Every file in `rules/` (except this index) is named in this file
 - [ ] No command in the linter column is an install command (pip install, npm i, brew install)
 

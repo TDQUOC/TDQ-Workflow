@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""build_portable.py — generate the two portable bundles of TDQ Workflow from ONE source.
+"""build_portable.py — generate the three portable bundles of TDQ Workflow from ONE source.
 
 Why this file exists: the old `portable/` bundle was written by hand, its own README said
 "Not generated — after editing `skills/` remember to sync by hand", and the test that locked
 the sync was deleted back in 0.10.0. A hand-written bundle always rots over time. Generating
 it by machine is the only way to keep the portable bundle correct.
 
-Two targets, one source (`skills/`, `hooks/`, `agents/`, `scripts/`):
+Three targets, one source (`skills/`, `hooks/`, `agents/`, `scripts/`):
 
     portable_claude/  — for Claude Code: `.claude/skills`, `.claude/agents`,
                         `.claude/settings.json` (hooks), `.mcp.json`, `scripts/`.
@@ -15,13 +15,16 @@ Two targets, one source (`skills/`, `hooks/`, `agents/`, `scripts/`):
     portable_codex/   — for Codex CLI >= 0.147.0, using its three native layers exactly:
                         `.agents/skills/`, `.codex/config.toml` (MCP), `.codex/hooks.json`
                         + `hooks/`. Plus `AGENTS.md` + `workflow/NN-*.md` as the fallback
-                        for OTHER harnesses (Antigravity…) that can only read markdown.
+                        for any OTHER harness that can only read markdown.
+    antigravity_portable/ — for Antigravity CLI (agy), installed user-level under `$HOME`:
+                        skills + `config/hooks.json` (a REAL `PreToolUse` deny and a `Stop`
+                        `continue`), `config/settings.json` (permissions), `config/mcp_config.json`.
 
-Both carry a `manifest.json` (file+sha256, version, minimum python, external commands, MCP)
+All three carry a `manifest.json` (file+sha256, version, minimum python, external commands, MCP)
 so `tdq_checkportable.py` on the target machine can check and patch itself.
 
 Usage:
-    python3 scripts/build_portable.py                    # generate both into the repo root
+    python3 scripts/build_portable.py                    # generate all three into the repo root
     python3 scripts/build_portable.py --dest /tmp/x      # generate into another folder
     python3 scripts/build_portable.py --only claude      # only one bundle
 
@@ -68,6 +71,14 @@ EXCLUDE_FILES = frozenset({
     # change the very constant it needs kept intact.
     "tdq_eval.py",
 })
+
+# agy-specific hooks matter ONLY to the antigravity bundle. They are deliberately NOT in
+# `EXCLUDE_FILES`: that set also drives `sinh_manifest`, so listing them there would ship them
+# inside the agy bundle unlisted by its own manifest. Instead the claude/codex builds hand this
+# set to `copy_loc(..., bo_qua_them=...)` for their wholesale `hooks/` copy — Claude Code's
+# PreToolUse only ever reminds and Codex has no `Stop`-continue mechanism, so neither target can
+# do anything with a hard-deny hook written against agy's own schema.
+FILE_HOOK_AGY = frozenset({"agy_pretooluse_gate.py", "agy_stop_gate.py"})
 
 MANIFEST_NAME = "manifest.json"
 PYTHON_MIN = "3.8"
@@ -146,11 +157,13 @@ def _doc_text(path):
         return None
 
 
-def copy_loc(nguon, dich, doi_bien=False, thay_bang=None):
+def copy_loc(nguon, dich, doi_bien=False, thay_bang=None, bo_qua_them=()):
     """Copy a folder tree through the filter, keeping the executable bit. Returns the rewrite count.
 
     `doi_bien=True` is only for the claude bundle: text files are rewritten as they are written and
     binary files copied as-is. Keeping the `x` bit is mandatory — without it the hook cannot run.
+    `bo_qua_them` drops extra file names for THIS call only, without touching `EXCLUDE_FILES`
+    (which `sinh_manifest` shares) — see `FILE_HOOK_AGY`.
     """
     so_lan_doi = 0
     for thu_muc, thu_muc_con, files in os.walk(nguon):
@@ -159,7 +172,7 @@ def copy_loc(nguon, dich, doi_bien=False, thay_bang=None):
         dich_hien_tai = dich if tuong_doi == "." else os.path.join(dich, tuong_doi)
         os.makedirs(dich_hien_tai, exist_ok=True)
         for ten in files:
-            if _bo_qua_file(ten):
+            if _bo_qua_file(ten) or ten in bo_qua_them:
                 continue
             src = os.path.join(thu_muc, ten)
             dst = os.path.join(dich_hien_tai, ten)
@@ -286,7 +299,7 @@ def sinh_ban_claude(repo, dest, version=""):
     tong_doi += copy_loc(os.path.join(repo, "scripts"),
                          os.path.join(tdq, "scripts"), True, moi)
     tong_doi += copy_loc(os.path.join(repo, "hooks"),
-                         os.path.join(tdq, "hooks"), True, moi)
+                         os.path.join(tdq, "hooks"), True, moi, FILE_HOOK_AGY)
     tong_doi += _sinh_settings(repo, os.path.join(thu_muc_claude, "settings.json"))
     _sinh_mcp(os.path.join(goc, ".mcp.json"))
 
@@ -380,7 +393,7 @@ This bundle uses the REAL native mechanisms of Codex, not markdown read by hand:
 | Skill | `.agents/skills/<name>/SKILL.md` | scanned automatically, loaded on demand by `description` |
 | MCP | `.codex/config.toml` | `[mcp_servers.<name>]`, environment variable NAMES only |
 | Hook | `.codex/hooks.json` + `hooks/` | guards `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
-| Fallback | `workflow/NN-*.md` | for OTHER harnesses (Antigravity…) to read in order |
+| Fallback | `workflow/NN-*.md` | for any OTHER markdown-only harness to read in order |
 
 Needs Codex CLI >= {codex_min}. An older build can still use `workflow/*.md`, but gets none
 of the native layers.
@@ -644,8 +657,8 @@ def sinh_ban_codex(repo, dest, version=""):
       `.agents/skills/`    skills Codex loads by description;
       `.codex/config.toml` MCP servers (environment variable NAMES only);
       `.codex/hooks.json` + `hooks/`  machine-guarded approval gates, reusing the repo's code;
-      `workflow/NN-*.md`   the markdown read in order, keeping this bundle usable by harnesses
-                           OTHER than Codex (Antigravity…).
+      `workflow/NN-*.md`   the markdown read in order, keeping this bundle usable by any
+                           markdown-only harness OTHER than Codex.
 
     The first three layers need Codex CLI >= 0.147.0 and a trusted project; the hooks additionally
     need the user to approve once in the TUI. Nothing in here can do those steps for you.
@@ -687,7 +700,7 @@ def sinh_ban_codex(repo, dest, version=""):
 
     # `hooks/` must sit at the bundle ROOT next to `scripts/`: `hooks/scripts/_common.py` derives the
     # script folder as `../../scripts` relative to itself. Put it under `.codex/` and that breaks.
-    copy_loc(os.path.join(repo, "hooks"), os.path.join(goc, "hooks"), True, moi)
+    copy_loc(os.path.join(repo, "hooks"), os.path.join(goc, "hooks"), True, moi, FILE_HOOK_AGY)
     duong_adapter = os.path.join(goc, "hooks", "scripts", "codex_edit_gate.py")
     with open(duong_adapter, "w", encoding="utf-8") as f:
         f.write(ADAPTER_CODEX)
@@ -710,6 +723,244 @@ def sinh_ban_codex(repo, dest, version=""):
         raise RuntimeError(f"the codex bundle still has {con_lai} use(s) of {BIEN_CU}")
     log(f"{TEN_BAN_CODEX}: {len(dong_danh_sach)} skill (native + workflow), "
         f"{len(HOOK_CODEX)} hook(s), {len(MCP_SERVERS)} MCP server(s), 0 plugin variable left")
+
+    ghi_manifest(goc, version)
+    return goc
+
+
+# ---------------------------------------------------- antigravity (agy) bundle
+
+TEN_BAN_AGY = "antigravity_portable"
+
+# agy's own global config paths are NOT settled across sources as of 2026-08 (see
+# docs/tdq/research/2026-08-27-1112-antigravity-portable-skill.md) — several candidates exist
+# for skill/hook/permissions/MCP config, and none is confirmed as THE one agy reads on every
+# install. Rather than guess wrong, this bundle picks ONE fixed canonical path for its own
+# CORE (scripts/, hooks/scripts/) under $HOME, and every generated config's `command`/path
+# field points at that fixed core — the README then tells the user to copy the config FILES
+# themselves into every candidate path below, and self-check with agy's own `/skills`, `/mcp`,
+# `/permissions` commands to see which one actually took.
+GOC_AGY = "~/.gemini/antigravity-cli/tdq"
+
+AGY_SKILL_PATHS = (
+    "~/.gemini/antigravity-cli/skills",
+    "~/.gemini/antigravity/skills",
+    "~/.gemini/skills",
+)
+AGY_HOOKS_CONFIG_PATHS = (
+    "~/.gemini/config/hooks.json",
+    "~/.gemini/antigravity-cli/hooks.json",
+)
+AGY_SETTINGS_PATHS = (
+    "~/.gemini/antigravity-cli/settings.json",
+)
+AGY_MCP_PATHS = (
+    "~/.gemini/config/mcp_config.json",
+    "~/.gemini/antigravity-cli/mcp_config.json",
+)
+
+HOOK_AGY = (
+    ("PreToolUse", "agy_pretooluse_gate.py"),
+    ("Stop", "agy_stop_gate.py"),
+)
+
+# The 4 name prefixes the branch/worktree naming rule bans — ported from `bash_gate.py`'s BAN /
+# `agy_pretooluse_gate.py`'s BAN, kept here as the single source the settings.json generator reads.
+AGY_BAN_PREFIXES = ("claude", "antigravity", "gemini", "codex")
+
+README_AGY = """# TDQ Workflow — portable bundle for Antigravity CLI (agy)
+
+agy's exact global config path is NOT settled across sources as of 2026-08 — this bundle does
+not guess one. It installs its own core (skills, hook scripts) at ONE fixed path under your
+home folder, and ships 3 config files whose content you copy into EVERY known candidate
+location. Self-check with agy's own commands tells you which one actually took.
+
+## Install on a new machine — follow this exact order
+
+1. **Copy the core.** Copy `skills/`, `hooks/`, `scripts/` from this bundle so the whole tree
+   sits at exactly:
+   ```
+   {goc_agy}/
+   ```
+   (create the folders if they do not exist yet). Every generated config file's command/path
+   below points at this exact location — moving the core elsewhere breaks all 3 config files.
+
+2. **Copy the skill files** into EVERY candidate skill root agy might scan on your version:
+{skill_paths}
+   (copy the whole content of `skills/` into each — harmless if a path does not exist on your
+   install, just skip it).
+
+3. **Copy `config/hooks.json`** into EVERY candidate hook-config location:
+{hooks_paths}
+
+4. **Copy `config/settings.json`** (the Fine-Grained Permissions Engine, a SECOND and coarser
+   defensive layer — the hooks above are the real hard `deny`) into:
+{settings_paths}
+
+5. **Copy `config/mcp_config.json`** into BOTH known locations:
+{mcp_paths}
+
+6. **Set the environment variables** the MCP servers need. This bundle never writes a key
+   value, only the variable NAMES — set `TAVILY_API_KEY` (and the backup server's variable)
+   yourself before using MCP.
+
+7. **Restart agy**, then self-check with agy's own commands:
+   - `/skills` — do the `{danh_sach_ten}` skills show up? Not there at one path → try another
+     candidate from step 2 that you have not copied to yet.
+   - `/mcp` — do `tavily-primary`/`tavily-backup` show up as configured servers?
+   - `/permissions` — does the permissions list include the `deny` entries from
+     `config/settings.json`?
+
+8. **Smoke-test the hard deny manually.** Ask agy to run a command matching one of the 2
+   banned cases (e.g. `git checkout -b antigravity-test`, or writing straight to
+   `docs/tdq/state.json` through the shell) and confirm it is actually refused. If it is NOT
+   refused, the hook did not load — check step 3/2 again, or try another candidate path.
+
+## What this bundle cannot do for you
+
+1. **Know which candidate path your agy version reads** — no source available as of 2026-08
+   confirms one canonical global path per config type; step 7's self-check is the only way to
+   find out on YOUR machine.
+2. **Restart** — step 7. Skip it and the copied files just sit there, unloaded.
+3. **Set the MCP environment variables** — step 6.
+
+## Secret keys
+
+`config/mcp_config.json` only records the NAMES of environment variables, never a key value.
+
+## Known limitation
+
+This bundle has not been exercised against a real agy install — see the risk table in the
+originating spec. The layered design (hard-deny hook + coarser permissions-engine `deny`) is
+meant to degrade safely if one layer does not load on your version: report back which
+candidate paths actually worked so this bundle can drop the ones that never do.
+"""
+
+
+def _sua_duong_dan_tuong_doi_agy(goc):
+    """Second-pass rewrite, agy bundle only, `.md` text under `skills/` — a bare `scripts/`/
+    `hooks/` mention NOT already prefixed by `GOC_AGY` becomes absolute too.
+
+    `doi_bien_plugin_root` only rewrites `${CLAUDE_PLUGIN_ROOT}`. Several skill files were
+    written assuming a project-relative cwd (true for Codex, whose bundle sets `moi="."`) —
+    false here, since agy installs its core at one fixed absolute path outside any project.
+    Scoped to `.md` only: touching `.py` source would corrupt real import paths.
+    """
+    tien_to = GOC_AGY + "/"
+    mau = re.compile(r"(?<!" + re.escape(tien_to) + r")\b(scripts/|hooks/)")
+    so_lan = 0
+    for thu_muc, thu_muc_con, files in os.walk(goc):
+        thu_muc_con[:] = [d for d in thu_muc_con if not _bo_qua_thu_muc(d)]
+        for ten in files:
+            if not ten.endswith(".md"):
+                continue
+            duong = os.path.join(thu_muc, ten)
+            noi_dung = _doc_text(duong)
+            if noi_dung is None:
+                continue
+            moi, n = mau.subn(tien_to + r"\1", noi_dung)
+            if n:
+                so_lan += n
+                with open(duong, "w", encoding="utf-8") as f:
+                    f.write(moi)
+    return so_lan
+
+
+def _sinh_hooks_agy(duong):
+    """`config/hooks.json` — commands point at the ONE fixed canonical core path (`GOC_AGY`).
+
+    agy's exact hooks.json schema is not confirmed by public docs as of 2026-08; this reuses
+    the same wire shape as `hooks/hooks.json` / `_sinh_hooks_codex` — the best-precedented guess.
+    """
+    su_kien = {}
+    for ten_event, ten_file in HOOK_AGY:
+        su_kien.setdefault(ten_event, []).append({"hooks": [{
+            "type": "command",
+            "command": f'python3 "{GOC_AGY}/hooks/scripts/{ten_file}"',
+        }]})
+    _ghi_json(duong, {
+        "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited "
+                        "by hand. Copy this file to EVERY candidate hook-config path — see "
+                        "README.md.",
+        "hooks": su_kien,
+    })
+
+
+def _sinh_settings_agy(duong):
+    """`config/settings.json` — permissions engine layer 2, coarser than the hook on purpose:
+    the hook is the real hard deny; this is a second net in case the hook does not load."""
+    tu_choi = ["write_file(*state.json)", "write_file(*STATE.md)"]
+    for ten in AGY_BAN_PREFIXES:
+        tu_choi += [
+            f"command(git checkout -b {ten}*)",
+            f"command(git branch {ten}*)",
+            f"command(git switch -c {ten}*)",
+            f"command(git worktree add*{ten}*)",
+        ]
+    _ghi_json(duong, {"permissions": {"deny": tu_choi, "ask": ["*"]}})
+
+
+def _sinh_mcp_agy(duong):
+    _ghi_json(duong, sinh_mcp())
+
+
+def sinh_ban_antigravity(repo, dest, version=""):
+    """Build `<dest>/antigravity_portable/` — bundle for Antigravity CLI (agy), user-level/global.
+
+    Unlike the claude/codex bundles (project-level, copied into one project's own tree), this
+    one is meant to be copied into agy's GLOBAL config paths under `$HOME` — see `README_AGY`.
+    The bundle's own core (`skills/`, `scripts/`, `hooks/scripts/`) sits at one FIXED canonical
+    path (`GOC_AGY`) that every generated config file's `command`/path field points at.
+    """
+    goc = os.path.join(dest, TEN_BAN_AGY)
+    if os.path.isdir(goc):
+        shutil.rmtree(goc)
+    os.makedirs(os.path.join(goc, "config"), exist_ok=True)
+
+    # No `CLAUDE_*` variable exists outside Claude Code, and the install path is fixed and
+    # absolute rather than relative to a project cwd — every `${CLAUDE_PLUGIN_ROOT}` becomes
+    # that fixed absolute path directly.
+    moi = GOC_AGY
+    copy_loc(os.path.join(repo, "scripts"), os.path.join(goc, "scripts"), True, moi)
+
+    dong_danh_sach = []
+    for ten_skill in THU_TU_SKILL:
+        thu_muc_skill = os.path.join(repo, "skills", ten_skill)
+        if not os.path.isdir(thu_muc_skill):
+            thu_muc_skill = os.path.join(repo, PORTABLE_SRC, "skills", ten_skill)
+        nguon = os.path.join(thu_muc_skill, "SKILL.md")
+        if not os.path.isfile(nguon):
+            continue
+        copy_loc(thu_muc_skill, os.path.join(goc, "skills", ten_skill), True, moi)
+        dong_danh_sach.append(ten_skill)
+    _sua_duong_dan_tuong_doi_agy(os.path.join(goc, "skills"))
+
+    os.makedirs(os.path.join(goc, "hooks", "scripts"), exist_ok=True)
+    for ten_file in ("agy_pretooluse_gate.py", "agy_stop_gate.py"):
+        src = os.path.join(repo, "hooks", "scripts", ten_file)
+        dst = os.path.join(goc, "hooks", "scripts", ten_file)
+        shutil.copy2(src, dst)
+        os.chmod(dst, 0o755)
+
+    _sinh_hooks_agy(os.path.join(goc, "config", "hooks.json"))
+    _sinh_settings_agy(os.path.join(goc, "config", "settings.json"))
+    _sinh_mcp_agy(os.path.join(goc, "config", "mcp_config.json"))
+
+    with open(os.path.join(goc, "README.md"), "w", encoding="utf-8") as f:
+        f.write(README_AGY.format(
+            goc_agy=GOC_AGY,
+            skill_paths="\n".join(f"   - `{p}/`" for p in AGY_SKILL_PATHS),
+            hooks_paths="\n".join(f"   - `{p}`" for p in AGY_HOOKS_CONFIG_PATHS),
+            settings_paths="\n".join(f"   - `{p}`" for p in AGY_SETTINGS_PATHS),
+            mcp_paths="\n".join(f"   - `{p}`" for p in AGY_MCP_PATHS),
+            danh_sach_ten=", ".join(dong_danh_sach),
+        ))
+
+    con_lai = dem_bien_trong_cay(goc)
+    if con_lai:
+        raise RuntimeError(f"the antigravity bundle still has {con_lai} use(s) of {BIEN_CU}")
+    log(f"{TEN_BAN_AGY}: {len(dong_danh_sach)} skill(s), {len(HOOK_AGY)} hook(s), "
+        f"{len(MCP_SERVERS)} MCP server(s), 0 plugin variable left")
 
     ghi_manifest(goc, version)
     return goc
@@ -758,8 +1009,8 @@ def main(argv=None):
         prog="build_portable.py",
         description="Generate the two portable bundles (claude, codex) of TDQ Workflow from one source.")
     parser.add_argument("--dest", help="destination folder, defaults to the repo root")
-    parser.add_argument("--only", choices=("claude", "codex"),
-                        help="generate only one bundle instead of both")
+    parser.add_argument("--only", choices=("claude", "codex", "antigravity"),
+                        help="generate only one bundle instead of all three")
     parser.add_argument("--repo", help="source repo root, defaults to the script location")
     args = parser.parse_args(argv)
 
@@ -770,10 +1021,12 @@ def main(argv=None):
 
     os.makedirs(dest, exist_ok=True)
     try:
-        if args.only != "codex":
+        if args.only in (None, "claude"):
             sinh_ban_claude(repo, dest, version)
-        if args.only != "claude":
+        if args.only in (None, "codex"):
             sinh_ban_codex(repo, dest, version)
+        if args.only in (None, "antigravity"):
+            sinh_ban_antigravity(repo, dest, version)
     except (OSError, RuntimeError) as loi:
         log(f"ERROR {loi}")
         return EXIT_LOI

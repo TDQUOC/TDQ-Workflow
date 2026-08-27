@@ -1,16 +1,16 @@
-# Graph Report - TDQWorkflow  (2026-08-24)
+# Graph Report - TDQWorkflow  (2026-08-26)
 
 ## Corpus Check
-- 62 files · ~92,641 words
+- 62 files · ~92,813 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1335 nodes · 2538 edges · 64 communities (59 shown, 5 thin omitted)
+- 1336 nodes · 2539 edges · 64 communities (59 shown, 5 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 120 edges (avg confidence: 0.63)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8f5f0f28`
+- Built from commit: `770162f3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -49,7 +49,7 @@
 - log
 - tdq_team.py
 - plugin_tiers.py
-- render_state_md
+- diagram_entries
 - _log
 - plan_tick_state
 - main
@@ -75,7 +75,7 @@
 - _chung/seed/src/tien_ich.py
 - chay_bo
 - _duong_dan_ghi_bash
-- sha256_noi_dung
+- render_state_md
 - iter_events
 - seed/README.md
 - Exception
@@ -83,8 +83,8 @@
 ## God Nodes (most connected - your core abstractions)
 1. `cli()` - 27 edges
 2. `lenh_soat()` - 20 edges
-3. `load()` - 19 edges
-4. `Changelog` - 18 edges
+3. `Changelog` - 19 edges
+4. `load()` - 19 edges
 5. `_warn()` - 17 edges
 6. `Changelog — bản lưu trữ` - 17 edges
 7. `_git()` - 17 edges
@@ -143,11 +143,11 @@ Nodes (36): ban_do_skill_md(), _chu(), dem_qua_venv(), do_mo_ta(), do_theo_phase
 
 ### Community 8 - "Changelog"
 Cohesion: 0.05
-Nodes (35): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+27 more)
+Nodes (36): 0.16.0 — 2026-08-14, 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17 (+28 more)
 
 ### Community 9 - "_common.py"
-Cohesion: 0.13
-Nodes (32): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), approve_hint(), block() (+24 more)
+Cohesion: 0.12
+Nodes (34): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), approve_hint(), block() (+26 more)
 
 ### Community 10 - "tdq_checkportable.py"
 Cohesion: 0.10
@@ -162,8 +162,8 @@ Cohesion: 0.10
 Nodes (30): build_call_tree(), CallNode, count_calls(), docstring_first_line(), GraphIndex, _layout(), _leaf_count(), _module_ast() (+22 more)
 
 ### Community 13 - "cli"
-Cohesion: 0.12
-Nodes (33): cli(), _cli_approve(), _cli_approve_diagram(), _cli_diagram(), _cli_implement_pause(), default_state(), _dong_so_request_cu(), _echo_state() (+25 more)
+Cohesion: 0.16
+Nodes (27): cli(), _cli_approve(), _cli_approve_diagram(), _cli_diagram(), _cli_implement_pause(), default_state(), _dong_so_request_cu(), _echo_state() (+19 more)
 
 ### Community 14 - "tdq_worktree_registry.py"
 Cohesion: 0.12
@@ -178,8 +178,8 @@ Cohesion: 0.11
 Nodes (30): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _git(), _go_thu_muc(), _in_goi_y(), _khoa_khong() (+22 more)
 
 ### Community 17 - "tdq_state.py"
-Cohesion: 0.10
-Nodes (25): _atomic_write(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), prompt_context_last(), prompt_context_path(), prompt_context_save() (+17 more)
+Cohesion: 0.09
+Nodes (29): _atomic_write(), find_shadow_states(), lane_label(), parse_slug(), _parse_value(), plugin_root_cmd(), prompt_context_last(), prompt_context_path() (+21 more)
 
 ### Community 18 - "token_audit.py"
 Cohesion: 0.12
@@ -202,8 +202,8 @@ Cohesion: 0.12
 Nodes (23): _bam_shingle(), _cap_tho(), cli(), dem_token_loat(), doc_dong(), _gop_lien_ke(), in_bang(), log() (+15 more)
 
 ### Community 23 - "main"
-Cohesion: 0.13
-Nodes (22): _compact(), _emit(), looks_like_approval(), main(), mode_from_answer(), _nhac_worktree(), An answer at the mode gate -> the machine identifier, or None if unreadable., One line, only while the ledger holds an open row — silent the rest of the time. (+14 more)
+Cohesion: 0.16
+Nodes (17): _compact(), _emit(), looks_like_approval(), main(), mode_from_answer(), _nhac_worktree(), An answer at the mode gate -> the machine identifier, or None if unreadable., One line, only while the ledger holds an open row — silent the rest of the time. (+9 more)
 
 ### Community 24 - "check_canvas_layout.py"
 Cohesion: 0.16
@@ -245,9 +245,9 @@ Nodes (17): b_level(), build_parser(), _do_xung_dot(), _file_xung_dot(), _kich_t
 Cohesion: 0.34
 Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
 
-### Community 34 - "render_state_md"
-Cohesion: 0.15
-Nodes (17): _chan_so_do_chua_duyet(), diagram_entries(), _diagram_id(), diagram_pending(), _diagram_register(), effective_mode(), _heal_diagrams(), phase_row() (+9 more)
+### Community 34 - "diagram_entries"
+Cohesion: 0.20
+Nodes (12): _chan_so_do_chua_duyet(), diagram_entries(), _diagram_id(), diagram_pending(), _diagram_register(), _heal_diagrams(), Put `path` into the diagram list and return its element. Never duplicates., Gate `plan`: the diagram list must be non-empty and fully approved.      Phase ` (+4 more)
 
 ### Community 35 - "_log"
 Cohesion: 0.22
@@ -337,16 +337,16 @@ Nodes (4): chay_bo(), Work still to run, interleaved between branches on every r
 Cohesion: 0.50
 Nodes (4): _duong_dan_ghi_bash(), _duong_dan_sed(), The file `sed -i` overwrites. Split with shlex because a sed expression often us, The paths one Bash command WRITES to. Reading a file does not count, only writin
 
-### Community 60 - "sha256_noi_dung"
-Cohesion: 0.50
-Nodes (4): _file_changed_since_approval(), True when the spec/plan file changed since it was approved. It tells     'a redu, Hash the CONTENT part of a spec/plan: from the first `##` heading onward.      W, sha256_noi_dung()
+### Community 60 - "render_state_md"
+Cohesion: 0.20
+Nodes (14): cong_dang_cho(), effective_lane(), effective_mode(), next_headline(), phase_key(), phase_row(), The PHASE_TABLE lookup key for the current state., The PHASE_TABLE row to DISPLAY for the current state.      Unlike `phase_key`, t (+6 more)
 
 ### Community 61 - "iter_events"
 Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **44 isolated node(s):** `0.33.0 — 2026-08-24`, `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22`, `0.28.0 — 2026-08-22` (+39 more)
+- **45 isolated node(s):** `0.34.0 — 2026-08-26`, `0.33.0 — 2026-08-24`, `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23`, `0.29.0 — 2026-08-22` (+40 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -355,14 +355,14 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Task` connect `Task` to `tdq_team.py`, `_boi_canh`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `normalize_mode()` connect `main` to `tdq_state.py`, `_fail`?**
+- **Why does `plan_tick_state()` connect `plan_tick_state` to `_common.py`, `cli`, `tdq_state.py`, `dod_tick_state`, `main`?**
   _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `load()` (e.g. with `main()` and `main()`) actually correct?**
   _`load()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `_warn()` (e.g. with `_repo_changed()` and `_streak_bump()`) actually correct?**
   _`_warn()` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `0.33.0 — 2026-08-24`, `0.32.0 — 2026-08-23`, `0.31.0 — 2026-08-23` to the rest of the system?**
-  _44 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.34.0 — 2026-08-26`, `0.33.0 — 2026-08-24`, `0.32.0 — 2026-08-23` to the rest of the system?**
+  _45 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06293706293706294 - nodes in this community are weakly interconnected._
 - **Should `doc_lint.py` be split into smaller, more focused modules?**

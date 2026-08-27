@@ -428,6 +428,123 @@ class TestCodexNativeLayers(TempDest):
             self.assertIn(duong, files, f"manifest thiếu {duong}")
 
 
+class TestBanAntigravity(TempDest):
+    """Bản antigravity: user-level/global cho agy, đối xứng `TestCodexNativeLayers`.
+
+    Khác codex (project-level, cwd = gốc project): agy cài ở path CỐ ĐỊNH dưới $HOME, nên
+    mọi `command`/tham chiếu path trong bundle phải là absolute path cố định (`GOC_AGY`),
+    không phải relative "." như codex.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.goc = build_portable.sinh_ban_antigravity(ROOT, self.dest)
+
+    def test_du_skill_theo_dung_thu_tu_va_frontmatter_hop_le(self):
+        for ten in build_portable.THU_TU_SKILL:
+            duong = os.path.join(self.goc, "skills", ten, "SKILL.md")
+            self.assertTrue(os.path.isfile(duong), f"thiếu {ten}/SKILL.md")
+            truong = build_portable.doc_frontmatter(build_portable._doc_text(duong))
+            for khoa in ("name", "description"):
+                self.assertTrue(truong.get(khoa), f"{ten}/SKILL.md thiếu frontmatter {khoa}")
+
+    def test_skill_giu_duoc_references_di_kem(self):
+        duong = os.path.join(self.goc, "skills", "tdq-conventions", "references")
+        self.assertTrue(os.path.isdir(duong))
+        self.assertTrue(os.listdir(duong))
+
+    def test_khong_con_bien_plugin_hay_duong_dan_tuong_doi_tran(self):
+        tien_to = build_portable.GOC_AGY + "/"
+        for thu_muc, thu_muc_con, files in os.walk(os.path.join(self.goc, "skills")):
+            thu_muc_con[:] = [d for d in thu_muc_con if d != "__pycache__"]
+            for ten in files:
+                if not ten.endswith(".md"):
+                    continue
+                duong = os.path.join(thu_muc, ten)
+                noi = build_portable._doc_text(duong) or ""
+                self.assertNotIn("CLAUDE_PLUGIN_ROOT", noi, f"còn biến plugin ở {duong}")
+                for tu in ("scripts/", "hooks/"):
+                    for m in re.finditer(re.escape(tu), noi):
+                        truoc = noi[max(0, m.start() - len(tien_to)):m.start()]
+                        self.assertEqual(truoc, tien_to,
+                                         f"{duong}: '{tu}' trần chưa được thay absolute path")
+
+    def test_hai_hook_agy_nam_dung_cho_va_thuc_thi_duoc(self):
+        for ten in ("agy_pretooluse_gate.py", "agy_stop_gate.py"):
+            duong = os.path.join(self.goc, "hooks", "scripts", ten)
+            self.assertTrue(os.path.isfile(duong), duong)
+            self.assertTrue(os.access(duong, os.X_OK), f"{ten} phải có quyền thực thi")
+
+    def test_hooks_json_dung_2_event_va_command_tro_path_co_dinh(self):
+        duong = os.path.join(self.goc, "config", "hooks.json")
+        with open(duong, encoding="utf-8") as f:
+            du_lieu = json.load(f)
+        su_kien = du_lieu["hooks"]
+        self.assertEqual(sorted(su_kien), ["PreToolUse", "Stop"])
+        for nhom_list in su_kien.values():
+            for nhom in nhom_list:
+                for hook in nhom["hooks"]:
+                    lenh = hook["command"]
+                    self.assertNotIn("${", lenh, "command không được còn biến chưa thay")
+                    self.assertIn(build_portable.GOC_AGY, lenh,
+                                 "command phải trỏ absolute path cố định dưới GOC_AGY")
+
+    def test_settings_json_deny_dung_2_case_cam(self):
+        duong = os.path.join(self.goc, "config", "settings.json")
+        with open(duong, encoding="utf-8") as f:
+            du_lieu = json.load(f)
+        tu_choi = " ".join(du_lieu["permissions"]["deny"])
+        self.assertIn("state.json", tu_choi)
+        for ten in ("claude", "antigravity", "gemini", "codex"):
+            self.assertIn(ten, tu_choi, f"thiếu case cấm cho tiền tố {ten}")
+
+    def test_mcp_config_du_2_server_va_khong_lo_khoa(self):
+        duong = os.path.join(self.goc, "config", "mcp_config.json")
+        with open(duong, encoding="utf-8") as f:
+            du_lieu = json.load(f)
+        self.assertEqual(sorted(du_lieu["mcpServers"]), sorted(build_portable.MCP_SERVERS))
+        noi_dung = build_portable._doc_text(duong)
+        for ten_bien, gia_tri in os.environ.items():
+            if any(d in ten_bien for d in ("KEY", "TOKEN", "SECRET")) and len(gia_tri) > 8:
+                self.assertNotIn(gia_tri, noi_dung, f"mcp_config.json lộ giá trị của {ten_bien}")
+
+    def test_readme_du_3_cum_bat_buoc(self):
+        noi_dung = build_portable._doc_text(os.path.join(self.goc, "README.md"))
+        for cum in ("/skills", "/mcp", "/permissions"):
+            self.assertIn(cum, noi_dung, f"README thiếu cụm bắt buộc {cum}")
+
+    def test_manifest_liet_ke_du_file_moi(self):
+        with open(os.path.join(self.goc, "manifest.json"), encoding="utf-8") as f:
+            files = json.load(f)["files"]
+        for duong in ("config/hooks.json", "config/settings.json", "config/mcp_config.json",
+                      "skills/tdq-intake/SKILL.md", "hooks/scripts/agy_pretooluse_gate.py",
+                      "hooks/scripts/agy_stop_gate.py", "scripts/tdq_state.py"):
+            self.assertIn(duong, files, f"manifest thiếu {duong}")
+
+    def test_checkportable_xac_nhan_ban_sach(self):
+        proc = subprocess.run(
+            [sys.executable, os.path.join(self.goc, "scripts", "tdq_checkportable.py"),
+             "check", "--root", self.goc],
+            capture_output=True, text=True, timeout=60)
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+
+
+class TestBanAntigravityKhongDungHaiBanKia(TempDest):
+    """`--only antigravity` không được đụng `portable_claude/`/`portable_codex/`."""
+
+    def test_khong_dung_hai_ban_kia(self):
+        build_portable.sinh_ban_claude(ROOT, self.dest)
+        build_portable.sinh_ban_codex(ROOT, self.dest)
+        truoc = build_portable.sinh_manifest(os.path.join(self.dest, "portable_claude"))["files"]
+        truoc_codex = build_portable.sinh_manifest(os.path.join(self.dest, "portable_codex"))["files"]
+        ma, _, err = chay("--dest", self.dest, "--only", "antigravity")
+        self.assertEqual(ma, 0, err)
+        sau = build_portable.sinh_manifest(os.path.join(self.dest, "portable_claude"))["files"]
+        sau_codex = build_portable.sinh_manifest(os.path.join(self.dest, "portable_codex"))["files"]
+        self.assertEqual(truoc, sau, "--only antigravity không được đụng portable_claude/")
+        self.assertEqual(truoc_codex, sau_codex, "--only antigravity không được đụng portable_codex/")
+
+
 class TestTachPatch(unittest.TestCase):
     """Rút đường dẫn ra khỏi thân patch của `apply_patch` — hàm thuần, kiểm riêng."""
 
