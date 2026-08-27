@@ -300,9 +300,9 @@
     "semantic_hash": "6a19278c2068f9f30be71923844966c0"
   },
   "scripts/mindmap_render.py": {
-    "mtime": 1787488001.4737937,
-    "ast_hash": "76b8f1fdecc5a7f7d0ca17255ef81349",
-    "semantic_hash": "76b8f1fdecc5a7f7d0ca17255ef81349"
+    "mtime": 1787840452.9878175,
+    "ast_hash": "eee6a0eb8bea241055af590937d0e15a",
+    "semantic_hash": "eee6a0eb8bea241055af590937d0e15a"
   },
   "scripts/tdq_mindmap.py": {
     "mtime": 1787488204.9997375,
@@ -310,17 +310,17 @@
     "semantic_hash": "1c70d19f1e9fc53d8e86b661a448b1bc"
   },
   "antigravity_portable/config/hooks.json": {
-    "mtime": 1787814175.4908135,
+    "mtime": 1787840776.4072208,
     "ast_hash": "f045f865ce424eab65009b5725e0abd2",
     "semantic_hash": "f045f865ce424eab65009b5725e0abd2"
   },
   "antigravity_portable/config/mcp_config.json": {
-    "mtime": 1787814175.4909654,
+    "mtime": 1787840776.4073744,
     "ast_hash": "387c7efef2730ce9b285e53df6ab3e21",
     "semantic_hash": "387c7efef2730ce9b285e53df6ab3e21"
   },
   "antigravity_portable/config/settings.json": {
-    "mtime": 1787814175.490892,
+    "mtime": 1787840776.4073005,
     "ast_hash": "a58223d381c016c397dccc47a928f3b5",
     "semantic_hash": "a58223d381c016c397dccc47a928f3b5"
   },
@@ -335,9 +335,9 @@
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
   },
   "antigravity_portable/manifest.json": {
-    "mtime": 1787814175.4954402,
-    "ast_hash": "14626182f050a83c7f65465aa421b37d",
-    "semantic_hash": "14626182f050a83c7f65465aa421b37d"
+    "mtime": 1787840776.4122016,
+    "ast_hash": "e9ef58f54f291b1f304cb19b8529d65a",
+    "semantic_hash": "e9ef58f54f291b1f304cb19b8529d65a"
   },
   "antigravity_portable/scripts/canvas_a4_ch4_ch7.py": {
     "mtime": 1787338144.5517437,
@@ -400,9 +400,9 @@
     "semantic_hash": "1439ab88ecb84311d5c4a5569a591a20"
   },
   "antigravity_portable/scripts/mindmap_render.py": {
-    "mtime": 1787488001.4737937,
-    "ast_hash": "76b8f1fdecc5a7f7d0ca17255ef81349",
-    "semantic_hash": "76b8f1fdecc5a7f7d0ca17255ef81349"
+    "mtime": 1787840452.9878175,
+    "ast_hash": "eee6a0eb8bea241055af590937d0e15a",
+    "semantic_hash": "eee6a0eb8bea241055af590937d0e15a"
   },
   "antigravity_portable/scripts/plugin_tiers.py": {
     "mtime": 1787336656.1261957,
@@ -498,5 +498,10 @@
     "mtime": 1787813766.8517017,
     "ast_hash": "6c3370662cd51d049aac9be423018fa4",
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
+  },
+  "antigravity_portable/README.md": {
+    "mtime": 1787814175.4910557,
+    "ast_hash": "f4f4428dee9bf8e837d449ecb58d8e16",
+    "semantic_hash": ""
   }
 }

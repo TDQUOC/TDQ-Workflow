@@ -2,172 +2,86 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<!-- BẢN VIẾT TAY: trang này được viết tay từ vi-du-login.json để minh hoạ hình dạng đầu ra,
-     chưa phải sản phẩm của lệnh sinh tự động. Dòng khai này cũng hiện ngay đầu trang. -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mind-map mẫu — luồng Đăng nhập</title>
+<title>Đăng nhập</title>
 <style>
-  :root {
-    --nen: #fbfbf9; --chu: #1c1c1a; --mo: #6b6b64; --vien: #d8d8d2;
-    --the: #eceae4; --nhan-client: #1d5f8a; --nhan-server: #8a4a1d; --loi: #a32020;
+* { box-sizing: border-box; }
+:root {
+  --bg: #fbfbf9; --fg: #1c1c1a; --muted: #6b6b64; --border: #d8d8d2;
+  --card: #eceae4; --err: #a32020; --accent: #1d5f8a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16171a; --fg: #e8e8e4; --muted: #9a9a92; --border: #33343a;
+    --card: #23252b; --err: #e08a8a; --accent: #7ab6dd;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --nen: #16171a; --chu: #e8e8e4; --mo: #9a9a92; --vien: #33343a;
-      --the: #23252b; --nhan-client: #7ab6dd; --nhan-server: #dda87a; --loi: #e08a8a;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; padding: 24px 18px 60px; background: var(--nen); color: var(--chu);
-    font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-  main { max-width: 860px; margin: 0 auto; }
-  h1 { font-size: 20px; margin: 0 0 6px; }
-  .khai {
-    border: 1px solid var(--vien); background: var(--the); border-radius: 6px;
-    padding: 10px 12px; font-size: 13px; color: var(--mo); margin: 0 0 22px;
-  }
-  h2 { font-size: 15px; margin: 26px 0 10px; padding-bottom: 5px; border-bottom: 1px solid var(--vien); }
-  ul.cay { list-style: none; margin: 0; padding-left: 18px; border-left: 1px solid var(--vien); }
-  ul.cay > li { margin: 3px 0; position: relative; padding-left: 12px; }
-  ul.cay > li::before {
-    content: ""; position: absolute; left: -18px; top: 12px; width: 16px;
-    height: 1px; background: var(--vien);
-  }
-  .nut { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-  .mo-dong {
-    cursor: pointer; border: 1px solid var(--vien); background: var(--the); color: var(--chu);
-    border-radius: 4px; font: inherit; font-size: 12px; line-height: 1; padding: 3px 6px;
-  }
-  .mo-dong[aria-expanded="false"]::before { content: "+"; }
-  .mo-dong[aria-expanded="true"]::before { content: "\2212"; }
-  .ma { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--mo); }
-  .phia { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
-  .phia.client { color: var(--nhan-client); }
-  .phia.server { color: var(--nhan-server); }
-  .chi-tiet { margin: 4px 0 10px 12px; font-size: 13px; color: var(--mo); }
-  .chi-tiet[hidden] { display: none; }
-  .chi-tiet code { font-size: 12px; }
-  .chi-tiet .loi { color: var(--loi); }
-  .lop4 { font-size: 14px; }
-  .lop4 .day { color: var(--mo); }
-  footer { margin-top: 34px; font-size: 12px; color: var(--mo); }
+}
+:root[data-theme="dark"] {
+  --bg: #16171a; --fg: #e8e8e4; --muted: #9a9a92; --border: #33343a;
+  --card: #23252b; --err: #e08a8a; --accent: #7ab6dd;
+}
+body {
+  margin: 0; padding: 24px 18px 60px; background: var(--bg); color: var(--fg);
+  font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 900px; margin: 0 auto; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2, h3 { font-size: 15px; margin: 20px 0 8px; }
+.nhanh { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+button { font: inherit; padding: 6px 12px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--card); color: var(--fg); cursor: pointer; }
+[hidden] { display: none !important; }
+ol.steps, ul.calls-list, ul.depends { list-style: none; margin: 0; padding-left: 0; }
+li.step { border-left: 2px solid var(--border); padding: 6px 0 6px 12px; margin-bottom: 2px; }
+li.step.is-error { border-left-color: var(--err); }
+.err { color: var(--err); font-size: 12px; }
+.muted, .canh-bao { color: var(--muted); }
+.canh-bao { border: 1px solid var(--border); background: var(--card); border-radius: 6px;
+  padding: 8px 12px; font-size: 13px; margin: 0 0 16px; }
+code { background: var(--card); border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+code.dim, .dim { opacity: .55; }
+.calls-list li { padding: 2px 0; font-size: 13px; }
+.loc { color: var(--accent); font-weight: 600; margin-right: 4px; }
+.flow-wrap { overflow-x: auto; max-width: 100%; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); padding: 14px 12px; margin: 0 0 18px; }
+figure.flow-fig { margin: 0; }
+figure.flow-fig svg { display: block; height: auto; max-width: 100%; }
+figure.flow-fig .node-loi { color: var(--err); }
+figure.call-fig { margin: 10px 0 4px; }
+figure.call-fig svg { max-width: 100%; height: auto; display: block; }
+figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.step-detail { border-top: 1px solid var(--border); padding: 10px 0; }
+details summary { cursor: pointer; color: var(--accent); }
 </style>
 </head>
 <body>
 <main>
-  <h1>Mind-map mẫu — luồng Đăng nhập</h1>
-  <p class="khai">
-    Trang này là <strong>bản viết tay</strong>, dựng thủ công từ
-    <code>vi-du-login.json</code> để minh hoạ hình dạng đầu ra. Nó chưa phải sản phẩm của
-    lệnh sinh tự động, và luồng bên dưới là ví dụ hư cấu, không phải code của repo này.
-    Toàn bộ CSS và JS nằm trong file, không gọi tài nguyên ngoài.
-  </p>
-
-  <h2>Lớp 1 — giải thuật, và Lớp 2 + 3 — function flow</h2>
-  <ul class="cay" id="cay"></ul>
-
-  <h2>Lớp 4 — vị trí trong cây tổng</h2>
-  <ul class="cay lop4">
-    <li>Xác thực
-      <ul class="cay">
-        <li><strong>Đăng nhập</strong> <span class="day">← luồng đang xem</span></li>
-        <li>Đăng ký</li>
-        <li>Quên mật khẩu</li>
-      </ul>
-    </li>
-    <li>Hồ sơ người dùng</li>
-    <li>Thanh toán</li>
-  </ul>
-
-  <footer>Bấm dấu + ở mỗi bước để mở lớp function flow và các nhánh lỗi của bước đó.</footer>
+<header>
+<h1>Đăng nhập</h1>
+<p class="nhanh">Tài khoản &gt; Đăng nhập</p>
+<button id="btn-lop" type="button">Xem lớp chi tiết</button>
+</header>
+<section id="lop-nghiep-vu"><div class="flow-wrap"><figure class="flow-fig"><svg viewBox="0 0 640 610" role="img" aria-label="Luồng nghiệp vụ: 6 bước chính, 2 nhánh lỗi — mũi tên đi từ trên xuống, nhánh lỗi rẽ sang phải"><defs><marker id="mui-ten-luong" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="currentColor"/></marker></defs><line x1="160" y1="52" x2="160" y2="96" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><line x1="310" y1="146.5" x2="380" y2="146.5" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="357" y="143.5" font-size="11" text-anchor="middle" fill="currentColor">lỗi</text><line x1="160" y1="197" x2="160" y2="241" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="172" y="216" font-size="11" text-anchor="middle" fill="currentColor">ok</text><line x1="160" y1="283" x2="160" y2="327" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><line x1="310" y1="377.5" x2="380" y2="378" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="357" y="374.8" font-size="11" text-anchor="middle" fill="currentColor">lỗi</text><line x1="160" y1="428" x2="160" y2="472" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="172" y="447" font-size="11" text-anchor="middle" fill="currentColor">ok</text><line x1="160" y1="514" x2="160" y2="558" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><rect x="10" y="10" width="300" height="42" rx="21.0" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="35.3">Nhập email và mật khẩu</tspan></text><polygon points="160,96 310,146.5 160,197 10,146.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="142.3">Kiểm tra tại chỗ trước</tspan><tspan x="160" y="159.3">khi gửi</tspan></text><rect x="380" y="110" width="250" height="73" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2" class="node-loi"/><text text-anchor="middle" font-size="13" fill="currentColor" class="node-loi"><tspan x="505" y="133.8">email sai khuôn hoặc mật khẩu</tspan><tspan x="505" y="150.8">ngắn thì báo lỗi tại ô nhập và</tspan><tspan x="505" y="167.8">dừng</tspan></text><rect x="10" y="241" width="300" height="42" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="266.3">Gửi yêu cầu qua kênh mã hoá</tspan></text><polygon points="160,327 310,377.5 160,428 10,377.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="373.3">Tra người dùng và đối</tspan><tspan x="160" y="390.3">chiếu băm mật khẩu</tspan></text><rect x="380" y="350" width="250" height="56" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2" class="node-loi"/><text text-anchor="middle" font-size="13" fill="currentColor" class="node-loi"><tspan x="505" y="373.8">không có người dùng hoặc băm</tspan><tspan x="505" y="390.8">sai thì trả một lỗi chung</tspan></text><rect x="10" y="472" width="300" height="42" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="497.3">Phát token phiên và token làm mới</tspan></text><rect x="10" y="558" width="300" height="42" rx="21.0" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="583.3">Lưu token và vào màn hình chính</tspan></text></svg><figcaption>Luồng nghiệp vụ: 6 bước chính, 2 nhánh lỗi — mũi tên đi từ trên xuống, nhánh lỗi rẽ sang phải.</figcaption></figure></div><ol class="steps"><li class="step"><strong>B1</strong> · Nhập email và mật khẩu <code>src/pages/login.tsx::LoginForm.onSubmit</code></li><li class="step"><strong>B2</strong> · Kiểm tra tại chỗ trước khi gửi <code>src/lib/validators.ts::validateCredentials</code></li><li class="step is-error"><strong>B2!</strong> · email sai khuôn hoặc mật khẩu ngắn thì báo lỗi tại ô nhập và dừng <span class="err">[nhánh lỗi]</span> <code>src/lib/form-ui.ts::showFieldError</code></li><li class="step"><strong>B3</strong> · Gửi yêu cầu qua kênh mã hoá <code>src/api/auth.ts::authApi.login</code></li><li class="step"><strong>B4</strong> · Tra người dùng và đối chiếu băm mật khẩu <code>server/controllers/auth.py::AuthController.login</code></li><li class="step is-error"><strong>B4!</strong> · không có người dùng hoặc băm sai thì trả một lỗi chung <span class="err">[nhánh lỗi]</span> <code>server/controllers/auth.py::deny_login</code></li><li class="step"><strong>B5</strong> · Phát token phiên và token làm mới <code>server/services/token.py::TokenService.issue_pair</code></li><li class="step"><strong>B6</strong> · Lưu token và vào màn hình chính <span class="muted">(chưa rõ vị trí code)</span></li></ol></section>
+<section id="lop-chi-tiet" hidden><p class="canh-bao">Thứ tự dưới đây là thứ tự VIẾT (theo dòng đặt lời gọi trong file), KHÔNG phải thứ tự CHẠY thực tế lúc thực thi.</p><div class="step-detail"><h3>B1 · <code>src/pages/login.tsx::LoginForm.onSubmit</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B2 · <code>src/lib/validators.ts::validateCredentials</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B2! · <code>src/lib/form-ui.ts::showFieldError</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B3 · <code>src/api/auth.ts::authApi.login</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B4 · <code>server/controllers/auth.py::AuthController.login</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B4! · <code>server/controllers/auth.py::deny_login</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B5 · <code>server/services/token.py::TokenService.issue_pair</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div></section>
 </main>
-
 <script>
-// Dữ liệu chép nguyên từ vi-du-login.json, nhúng thẳng để trang chạy được khi mở bằng
-// giao thức file:// — nạp JSON qua fetch sẽ bị trình duyệt chặn ở chế độ đó.
-var DU_LIEU = {
-  tinh_nang: "Đăng nhập",
-  buoc: [
-    { ma: "B1", ten: "Nhập email và mật khẩu", phia: "client", loi: [],
-      code: [{ file: "src/pages/login.tsx", ham: "LoginForm.onSubmit", module: "pages" }] },
-    { ma: "B2", ten: "Kiểm tra tại chỗ trước khi gửi", phia: "client",
-      loi: [{ khi: "email sai khuôn", xu_ly: "hiện lỗi dưới ô nhập, dừng luồng" },
-            { khi: "mật khẩu ngắn hơn 6 ký tự", xu_ly: "hiện lỗi dưới ô nhập, dừng luồng" }],
-      code: [{ file: "src/lib/validators.ts", ham: "validateCredentials", module: "helper" },
-             { file: "src/lib/form-ui.ts", ham: "showFieldError", module: "helper" }] },
-    { ma: "B3", ten: "Gửi yêu cầu đăng nhập qua kênh mã hoá", phia: "client", loi: [],
-      code: [{ file: "src/api/auth.ts", ham: "authApi.login", module: "api" }] },
-    { ma: "B4", ten: "Tra người dùng theo email và đối chiếu mật khẩu băm", phia: "server",
-      loi: [{ khi: "không có người dùng, hoặc băm không khớp",
-              xu_ly: "trả một lỗi chung, không nói sai ở đâu" }],
-      code: [{ file: "server/controllers/auth.py", ham: "AuthController.login", module: "controller" },
-             { file: "server/repo/user.py", ham: "UserRepo.find_by_email", module: "repo" },
-             { file: "server/controllers/auth.py", ham: "deny_login", module: "controller" }] },
-    { ma: "B5", ten: "Phát token phiên và token làm mới", phia: "server", loi: [],
-      code: [{ file: "server/services/token.py", ham: "TokenService.issue_pair", module: "service" }] },
-    { ma: "B6", ten: "Lưu token và chuyển sang màn hình chính", phia: "client", loi: [],
-      code: [{ file: "src/store/session.ts", ham: "session.persist", module: "store" }] }
-  ]
-};
-
-function tao(the, lop, chu) {
-  var e = document.createElement(the);
-  if (lop) e.className = lop;
-  if (chu) e.textContent = chu;
-  return e;
-}
-
-function veChiTiet(buoc) {
-  var hop = tao("div", "chi-tiet");
-  hop.hidden = true;
-  buoc.code.forEach(function (c) {
-    var d = tao("div");
-    var ma = tao("code", null, c.ham);
-    d.appendChild(ma);
-    d.appendChild(document.createTextNode("  ·  " + c.file + "  ·  module " + c.module));
-    hop.appendChild(d);
-  });
-  buoc.loi.forEach(function (l) {
-    hop.appendChild(tao("div", "loi", "lỗi khi " + l.khi + " → " + l.xu_ly));
-  });
-  return hop;
-}
-
-function ve() {
-  var goc = document.getElementById("cay");
-  DU_LIEU.buoc.forEach(function (buoc) {
-    var li = tao("li");
-    var dong = tao("div", "nut");
-
-    var nut = tao("button", "mo-dong");
-    nut.type = "button";
-    nut.setAttribute("aria-expanded", "false");
-    nut.setAttribute("aria-label", "Mở chi tiết bước " + buoc.ma);
-
-    dong.appendChild(nut);
-    dong.appendChild(tao("span", "ma", buoc.ma));
-    dong.appendChild(tao("span", null, buoc.ten));
-    dong.appendChild(tao("span", "phia " + buoc.phia, buoc.phia));
-    if (buoc.loi.length) {
-      dong.appendChild(tao("span", "ma", "· " + buoc.loi.length + " nhánh lỗi"));
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('btn-lop');
+  var nghiepVu = document.getElementById('lop-nghiep-vu');
+  var chiTiet = document.getElementById('lop-chi-tiet');
+  if (!btn) { return; }
+  btn.addEventListener('click', function () {
+    var showDetail = chiTiet.hasAttribute('hidden');
+    if (showDetail) {
+      chiTiet.removeAttribute('hidden');
+      nghiepVu.setAttribute('hidden', '');
+    } else {
+      chiTiet.setAttribute('hidden', '');
+      nghiepVu.removeAttribute('hidden');
     }
-
-    var chiTiet = veChiTiet(buoc);
-    nut.addEventListener("click", function () {
-      var dangMo = nut.getAttribute("aria-expanded") === "true";
-      nut.setAttribute("aria-expanded", dangMo ? "false" : "true");
-      chiTiet.hidden = dangMo;
-    });
-
-    li.appendChild(dong);
-    li.appendChild(chiTiet);
-    goc.appendChild(li);
+    btn.textContent = showDetail ? 'Xem lớp nghiệp vụ' : 'Xem lớp chi tiết';
   });
-}
-
-ve();
+});
 </script>
 </body>
 </html>

@@ -76,7 +76,7 @@
     "scripts/doc_lint.py": "0c1073dab4b876a020e53f73d1e8e3847b7543350420d91fc0bffb44b9beea2b",
     "scripts/i18n_check.py": "9781b6e0562838b96d85de672bff6a5f8afcd4fa96c85d30dd08ccd7e303c2b8",
     "scripts/luat_phan_loai.py": "f82344d350f87a9d72cd2c9b595921c8327e73d5a19507fb8898e5c675dc0fc8",
-    "scripts/mindmap_render.py": "09958244128bd2f088323974ebd67ffee7df450a5dbf7f632bc01570710b0d93",
+    "scripts/mindmap_render.py": "0461962da2ccd91ea387e1f983e2c6e41393cd78a5e8ed171c466dc131eff75d",
     "scripts/plugin_tiers.py": "be3acfd13cdaca6edc5af39ad216e71c263bfd7f17aaf64689522afa39807162",
     "scripts/samples/transcript-step-audit.jsonl": "9f3435d72d62601ff272ea391a67dbf1eb0198c023489c4c937c18ae54950e87",
     "scripts/scan_block_symbols.py": "029b8afea75d8c8dcd7bae209c2a0cc7817203a3e0f9abcd5fc821fced132580",
@@ -150,5 +150,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.34.0"
+  "version": "0.35.0"
 }

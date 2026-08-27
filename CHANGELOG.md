@@ -2,6 +2,27 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.35.0 — 2026-08-27
+
+Trang mind-map HTML chuyển từ danh sách chữ sang sơ đồ nhìn được. Trước bản này trang feature chỉ
+có một `<ol>` các bước và trang tổng chỉ có danh sách link lồng nhau — đọc được nhưng không nắm
+được luồng trong một cái liếc. Bản này vẽ sơ đồ SVG tĩnh, không phụ thuộc file ngoài nên xem được
+cả trong trình duyệt lẫn VS Code preview.
+
+- **`scripts/mindmap_render.py`** — thêm `build_flow_model` (gom `B<n>` với `B<n>!` cùng số thành
+  một cặp quyết định), `wrap_label` + `layout_flow` (hộp tự cao theo số dòng chữ, không cắt cụt,
+  không chồng lấn), bộ helper hình dạng dùng chung `_svg_hop`/`_svg_hinh_thoi`/`_svg_vien_thuoc`/
+  `_svg_nhan_nhieu_dong`/`_svg_mui_ten` và `render_flow_svg`. Sơ đồ đứng TRƯỚC danh sách bước
+  trong khối cuộn ngang `overflow-x: auto`; danh sách bước cũ giữ nguyên từng chữ bên dưới.
+- **Trang tổng** — `build_branch_model` + `layout_branch_tree` + `render_branch_svg` dựng cây
+  nhánh tổng → nhánh con → feature thành SVG, mỗi ô feature bọc trong `<a href>` tới trang riêng,
+  feature chưa có sơ đồ vẽ nét đứt và mờ, không gắn link. Danh sách link cũ không xoá, lùi xuống
+  dưới sơ đồ. `_render_dependency_svg` chuyển sang helper chung và **bỏ cắt cụt `label[:34]`**.
+- Log service in số node và số cạnh mỗi lần dựng, tắt bằng `TDQ_LOG=0`.
+- **Test** `tests/test_mindmap_render.py` 88 pass — khoá điều kiện không mất một chữ nào của mọi
+  bước trong cả 7 file sơ đồ thật, không hộp nào chồng lấn, không mã màu cứng, không thẻ trỏ ra
+  ngoài (`<script src`, `<link href`, `http(s)://`).
+
 ## 0.34.0 — 2026-08-26
 
 Luật tìm kiếm code đổi từ tuần tự sang song song. Trước bản này agent-lsp chạy trước, lumen chỉ

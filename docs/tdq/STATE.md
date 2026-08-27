@@ -1,14 +1,14 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-08-27T14:04:27+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-08-27T21:28:59+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-08-27-1112-antigravity-portable-skill |
+| Request | 2026-08-27-1628-mindmap-html-dang-so-do |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-27-1112-antigravity-portable-skill.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-08-27-1112-antigravity-portable-skill.md — ✔ approved |
-| Diagrams | 1 registered — ✔ all approved |
+| Spec | docs/tdq/spec/2026-08-27-1628-mindmap-html-dang-so-do.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-08-27-1628-mindmap-html-dang-so-do.md — ✔ approved |
+| Diagrams | 2 registered — ✔ all approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |
