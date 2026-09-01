@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1787682451.357837,
-    "ast_hash": "1bff3f1a2121a71c2a532ca94dffe083",
-    "semantic_hash": "1bff3f1a2121a71c2a532ca94dffe083"
+    "mtime": 1788264330.2954445,
+    "ast_hash": "174be2057014273b615086eb0061e9e8",
+    "semantic_hash": "174be2057014273b615086eb0061e9e8"
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -95,9 +95,9 @@
     "semantic_hash": "73a3591cb08ee795743310d3c278cc11"
   },
   "scripts/doc_lint.py": {
-    "mtime": 1787489656.7774282,
-    "ast_hash": "31ee95d60a6bd8b8b6f0af78a4c0f790",
-    "semantic_hash": "31ee95d60a6bd8b8b6f0af78a4c0f790"
+    "mtime": 1788263986.5857635,
+    "ast_hash": "04abeb4a5b6ec997b34a878991f1667c",
+    "semantic_hash": "04abeb4a5b6ec997b34a878991f1667c"
   },
   "scripts/plugin_tiers.py": {
     "mtime": 1787336656.1261957,
@@ -115,9 +115,9 @@
     "semantic_hash": "fdf3d7fdd2aec19f008a1633ac8481dd"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1787560987.984652,
-    "ast_hash": "af0dc75856e798f81bcdd62ca2fe35e9",
-    "semantic_hash": "af0dc75856e798f81bcdd62ca2fe35e9"
+    "mtime": 1788265263.4393666,
+    "ast_hash": "a65b065a6a6b0bd3bee014907a57abda",
+    "semantic_hash": "a65b065a6a6b0bd3bee014907a57abda"
   },
   "scripts/token_audit.py": {
     "mtime": 1787337965.565459,
@@ -125,8 +125,8 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1787682451.3580513,
-    "ast_hash": "b4c83f757a3f4d55efd445115e5cc6ff",
+    "mtime": 1788264343.1103323,
+    "ast_hash": "8d9226c33aec8651df81cb9249c48dbf",
     "semantic_hash": ""
   },
   "README.md": {
@@ -215,14 +215,14 @@
     "semantic_hash": "2e07da73e0e36ffcef1212377a79be2b"
   },
   "evals/tuan-thu/duyet-plan-kem-mode/ca.json": {
-    "mtime": 1787490280.8386734,
-    "ast_hash": "2eb0be78a701444a5966f6056df53889",
-    "semantic_hash": "2eb0be78a701444a5966f6056df53889"
+    "mtime": 1788264107.432554,
+    "ast_hash": "c2668f13c1eb8f94c8299379763078a5",
+    "semantic_hash": "c2668f13c1eb8f94c8299379763078a5"
   },
   "evals/tuan-thu/duyet-plan-thieu-mode/ca.json": {
-    "mtime": 1787490280.8391254,
-    "ast_hash": "bf90db1460179eabab9ab26b1043f925",
-    "semantic_hash": "bf90db1460179eabab9ab26b1043f925"
+    "mtime": 1788264107.4329183,
+    "ast_hash": "24cabb6ce8deb8698bee8a2e7223becd",
+    "semantic_hash": "24cabb6ce8deb8698bee8a2e7223becd"
   },
   "evals/tuan-thu/duyet-spec-mo-ho/ca.json": {
     "mtime": 1787165243.6451943,
@@ -285,8 +285,8 @@
     "semantic_hash": "70cd086b11d3a1e0929b416a05317446"
   },
   "CHANGELOG-archive.md": {
-    "mtime": 1787375203.6524851,
-    "ast_hash": "92226167e46864bc5f067a83adb801ae",
+    "mtime": 1788264343.1107066,
+    "ast_hash": "3cd2e9d314acf2cfc9cffbfbe1fae412",
     "semantic_hash": ""
   },
   "scripts/doc_dup.py": {
@@ -299,28 +299,18 @@
     "ast_hash": "6a19278c2068f9f30be71923844966c0",
     "semantic_hash": "6a19278c2068f9f30be71923844966c0"
   },
-  "scripts/mindmap_render.py": {
-    "mtime": 1787840452.9878175,
-    "ast_hash": "eee6a0eb8bea241055af590937d0e15a",
-    "semantic_hash": "eee6a0eb8bea241055af590937d0e15a"
-  },
-  "scripts/tdq_mindmap.py": {
-    "mtime": 1787488204.9997375,
-    "ast_hash": "1c70d19f1e9fc53d8e86b661a448b1bc",
-    "semantic_hash": "1c70d19f1e9fc53d8e86b661a448b1bc"
-  },
   "antigravity_portable/config/hooks.json": {
-    "mtime": 1787840776.4072208,
+    "mtime": 1788265384.8317595,
     "ast_hash": "f045f865ce424eab65009b5725e0abd2",
     "semantic_hash": "f045f865ce424eab65009b5725e0abd2"
   },
   "antigravity_portable/config/mcp_config.json": {
-    "mtime": 1787840776.4073744,
+    "mtime": 1788265384.8320227,
     "ast_hash": "387c7efef2730ce9b285e53df6ab3e21",
     "semantic_hash": "387c7efef2730ce9b285e53df6ab3e21"
   },
   "antigravity_portable/config/settings.json": {
-    "mtime": 1787840776.4073005,
+    "mtime": 1788265384.8318923,
     "ast_hash": "a58223d381c016c397dccc47a928f3b5",
     "semantic_hash": "a58223d381c016c397dccc47a928f3b5"
   },
@@ -335,9 +325,9 @@
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
   },
   "antigravity_portable/manifest.json": {
-    "mtime": 1787840776.4122016,
-    "ast_hash": "e9ef58f54f291b1f304cb19b8529d65a",
-    "semantic_hash": "e9ef58f54f291b1f304cb19b8529d65a"
+    "mtime": 1788265384.8404837,
+    "ast_hash": "94c040628e32f8efa50136941321bb94",
+    "semantic_hash": "94c040628e32f8efa50136941321bb94"
   },
   "antigravity_portable/scripts/canvas_a4_ch4_ch7.py": {
     "mtime": 1787338144.5517437,
@@ -385,9 +375,9 @@
     "semantic_hash": "e06f59590fe87935ac8c2d18fc340733"
   },
   "antigravity_portable/scripts/doc_lint.py": {
-    "mtime": 1787489656.7774282,
-    "ast_hash": "31ee95d60a6bd8b8b6f0af78a4c0f790",
-    "semantic_hash": "31ee95d60a6bd8b8b6f0af78a4c0f790"
+    "mtime": 1788263986.5857635,
+    "ast_hash": "04abeb4a5b6ec997b34a878991f1667c",
+    "semantic_hash": "04abeb4a5b6ec997b34a878991f1667c"
   },
   "antigravity_portable/scripts/i18n_check.py": {
     "mtime": 1787339036.9725137,
@@ -398,11 +388,6 @@
     "mtime": 1787336680.1961,
     "ast_hash": "1439ab88ecb84311d5c4a5569a591a20",
     "semantic_hash": "1439ab88ecb84311d5c4a5569a591a20"
-  },
-  "antigravity_portable/scripts/mindmap_render.py": {
-    "mtime": 1787840452.9878175,
-    "ast_hash": "eee6a0eb8bea241055af590937d0e15a",
-    "semantic_hash": "eee6a0eb8bea241055af590937d0e15a"
   },
   "antigravity_portable/scripts/plugin_tiers.py": {
     "mtime": 1787336656.1261957,
@@ -459,15 +444,10 @@
     "ast_hash": "6a19278c2068f9f30be71923844966c0",
     "semantic_hash": "6a19278c2068f9f30be71923844966c0"
   },
-  "antigravity_portable/scripts/tdq_mindmap.py": {
-    "mtime": 1787488204.9997375,
-    "ast_hash": "1c70d19f1e9fc53d8e86b661a448b1bc",
-    "semantic_hash": "1c70d19f1e9fc53d8e86b661a448b1bc"
-  },
   "antigravity_portable/scripts/tdq_state.py": {
-    "mtime": 1787560987.984652,
-    "ast_hash": "f79c7fd2227cc4cd0dcd758b8f0a3d7f",
-    "semantic_hash": "f79c7fd2227cc4cd0dcd758b8f0a3d7f"
+    "mtime": 1788265263.4393666,
+    "ast_hash": "50b16b32724b2ed81124058cc14857fc",
+    "semantic_hash": "50b16b32724b2ed81124058cc14857fc"
   },
   "antigravity_portable/scripts/tdq_team.py": {
     "mtime": 1787374842.6665785,
@@ -500,7 +480,7 @@
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
   },
   "antigravity_portable/README.md": {
-    "mtime": 1787814175.4910557,
+    "mtime": 1788264532.4425638,
     "ast_hash": "f4f4428dee9bf8e837d449ecb58d8e16",
     "semantic_hash": ""
   }

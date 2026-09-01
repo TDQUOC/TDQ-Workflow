@@ -274,33 +274,11 @@ class LenhChamTest(unittest.TestCase):
             self.assertTrue(b["transcript"].endswith("L005__dat.jsonl"))
 
 
-def ca_qua_cong_so_do(ma):
-    """Ca đo `ma`, với các bước mở cổng sơ đồ chèn ngay trước `set phase=plan`.
-
-    Phase `diagram` chen giữa `spec` và `plan`, kèm cổng cứng: `set phase=plan` bị
-    từ chối khi danh sách sơ đồ rỗng hoặc còn phần tử chưa duyệt. Chuỗi `state_lenh`
-    trong `evals/**/ca.json` viết từ trước khi có phase đó, nên ở đây bổ sung đúng
-    hai bước thật của luồng mới — không nới cổng, chỉ đi qua cổng.
-    """
-    ca = dict(tdq_eval.tim_ca(ma))
-    so_do = f"docs/tdq/mind-map/{ca['slug']}.md"
-    mo_cong = [["set", "phase=diagram"],
-               ["diagram", "add", so_do],
-               ["approve", "diagram", so_do, "--by", "duyệt sơ đồ"]]
-    lenh = []
-    for buoc in ca.get("state_lenh", []):
-        if buoc[:2] == ["set", "phase=plan"]:
-            lenh.extend(mo_cong)
-        lenh.append(buoc)
-    ca["state_lenh"] = lenh
-    return ca
-
-
 class DungSandboxTest(unittest.TestCase):
     """T3.1 — sandbox của một phiên đo: seed, git riêng, state dựng sẵn."""
 
     def test_sandbox_co_seed_chung_seed_rieng_va_git(self):
-        ca = ca_qua_cong_so_do("duyet-plan-kem-mode")
+        ca = dict(tdq_eval.tim_ca("duyet-plan-kem-mode"))
         with tempfile.TemporaryDirectory() as tmp:
             hop = tdq_eval.dung_sandbox(ca, os.path.join(tmp, "phien"), ROOT)
             self.assertTrue(os.path.exists(os.path.join(hop, "src", "tien_ich.py")))
@@ -309,7 +287,7 @@ class DungSandboxTest(unittest.TestCase):
             self.assertTrue(os.path.isdir(os.path.join(hop, ".git")))
 
     def test_sandbox_chay_xong_state_lenh_dung_phase_dau(self):
-        ca = ca_qua_cong_so_do("duyet-plan-kem-mode")
+        ca = dict(tdq_eval.tim_ca("duyet-plan-kem-mode"))
         with tempfile.TemporaryDirectory() as tmp:
             hop = tdq_eval.dung_sandbox(ca, os.path.join(tmp, "phien"), ROOT)
             with open(os.path.join(hop, "docs", "tdq", "state.json"), encoding="utf-8") as f:
@@ -317,9 +295,6 @@ class DungSandboxTest(unittest.TestCase):
             self.assertEqual(state["active_request"], ca["slug"])
             self.assertEqual(state["phase"], ca["phase_dau"])
             self.assertTrue(state.get("spec_approved"))
-            # Vào được phase plan nghĩa là cổng sơ đồ đã đóng đúng cách.
-            self.assertTrue(state["diagrams"])
-            self.assertTrue(all(d["approved"] for d in state["diagrams"]))
 
     def test_sandbox_trong_repo_bi_chan(self):
         ca = tdq_eval.tim_ca("duyet-plan-kem-mode")

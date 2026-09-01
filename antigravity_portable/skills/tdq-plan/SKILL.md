@@ -7,10 +7,9 @@ description: Turn an approved spec into a checkbox plan, one test per task: STOP
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). The plan text is written in the user's
 document language `doc_lang` (deliberate repetition — the original is
-`skills/tdq-conventions/SKILL.md`). Requires `spec_approved = true` **and every diagram of the
-request approved** — `set phase=plan` is refused while one is pending and names it by path; go
-back to [tdq-diagram](../tdq-diagram/SKILL.md). The diagrams are the outline the tasks are
-written against; a task tracing back to no diagram step is out of scope. Spec approved → plan NOW.
+`skills/tdq-conventions/SKILL.md`). Requires `spec_approved = true` — the approved spec is the
+outline the tasks are written against, and a task tracing back to nothing in it is out of
+scope. Spec approved → plan NOW.
 
 ## Steps
 

@@ -1,14 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-08-27T21:28:59+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-09-01T19:30:02+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-08-27-1628-mindmap-html-dang-so-do |
+| Request | 2026-08-31-1703-bo-pha-so-do-mind-map |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-08-27-1628-mindmap-html-dang-so-do.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-08-27-1628-mindmap-html-dang-so-do.md — ✔ approved |
-| Diagrams | 2 registered — ✔ all approved |
+| Spec | docs/tdq/spec/2026-08-31-1703-bo-pha-so-do-mind-map.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-08-31-1703-bo-pha-so-do-mind-map.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |

@@ -74,17 +74,10 @@ class TestFullLaneChain(ChainBase):
         self.assertEqual(dec, "allow")
         self.assertIn("approve plan", context)
 
-        # 6. phase diagram: vẽ sơ đồ, đăng ký, user duyệt từng cái. Đây là cổng cứng —
-        # chưa có sơ đồ nào được duyệt thì `set phase=plan` bị từ chối.
-        write_file(self.cwd, "docs/tdq/mind-map/demo.md", "# sơ đồ demo\n")
-        run_state_cli(self.cwd, "set", "phase=diagram")
-        rc, _, err = run_state_cli(self.cwd, "diagram", "add", "docs/tdq/mind-map/demo.md")
+        # 6. pha `diagram` đã bị gỡ: spec duyệt xong là đi thẳng sang plan,
+        # không cổng nào chen giữa.
+        rc, _, err = run_state_cli(self.cwd, "set", "phase=plan")
         self.assertEqual(rc, 0, err)
-        rc, out, err = self.approve("diagram", "docs/tdq/mind-map/demo.md",
-                                    "--by", "duyệt sơ đồ")
-        self.assertEqual(rc, 0, err)
-        self.assertIn("Recorded", out)
-        self.assertEqual(read_state(self.cwd)["diagrams"][0]["approved"], True)
 
         # 7. plan viết + đăng ký; user nhắn "ok plan, mode main"
         write_file(self.cwd, "docs/tdq/plan/demo.md",

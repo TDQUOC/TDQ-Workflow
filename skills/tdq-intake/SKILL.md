@@ -95,11 +95,9 @@ and one line of reasoning goes into the brief.
 
 Done when: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`) and all 3 gate <!-- i18n-allow: canonical name in the default language -->
 questions can be answered.
-The `### Lộ trình` you write here MUST list phase `diagram` after `spec` and before `plan` <!-- i18n-allow: canonical name in the default language -->
-— it is mandatory in lane `full`, never dropped. Approving the spec approves the route with
-it, so a route that omits the diagram phase is a defect in the brief, not a shortcut. Say in
-that section which feature flows the request is built from: one flow, one diagram
-([tdq-diagram](../tdq-diagram/SKILL.md)).
+The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving <!-- i18n-allow: canonical name in the default language -->
+the spec approves the route. Say in that section which feature flows the request is built
+from — one line per flow.
 
 Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
 then on to [tdq-spec](../tdq-spec/SKILL.md) — same turn if the interview is finished; if

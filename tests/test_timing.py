@@ -16,15 +16,10 @@ from helper import read_state, run_state_cli
 import tdq_state
 
 
-def duyet_mot_so_do(cwd, path="docs/tdq/mind-map/viec-moi.md"):
-    """Đăng ký rồi duyệt một sơ đồ — mở cổng cho `set phase=plan`.
-
-    Từ khi phase `diagram` chen vào giữa `spec` và `plan`, `set phase=plan` bị từ
-    chối nếu danh sách sơ đồ rỗng hoặc còn phần tử chưa duyệt. Không đụng
-    phase_history: `diagram add` và `approve diagram` không đổi phase.
-    """
-    run_state_cli(cwd, "diagram", "add", path)
-    return run_state_cli(cwd, "approve", "diagram", path, "--by", "duyệt sơ đồ")
+def duyet_spec(cwd):
+    """Cổng vào pha `plan` đòi spec đã duyệt — mở sẵn để test đo được mốc thời gian."""
+    run_state_cli(cwd, "set", "spec_file=docs/tdq/spec/x.md")
+    run_state_cli(cwd, "approve", "spec", "--by", "duyệt spec")
 
 
 class TempRepo(unittest.TestCase):
@@ -108,16 +103,12 @@ class MocThoiGianTrongState(TempRepo):
 
     def test_phase_history_ghi_moi_lan_doi_phase(self):
         run_state_cli(self.cwd, "init", "2026-08-15-1300-viec-moi", "full")
-        # Luồng thật đi spec → diagram → plan: `set phase=plan` bị cổng sơ đồ chặn
-        # nếu chưa có sơ đồ nào được duyệt, nên bước `diagram` là bước có thật
-        # trong chuỗi chứ không phải bước thêm cho qua chuyện.
-        for phase in ("analyze", "spec", "diagram"):
+        duyet_spec(self.cwd)
+        for phase in ("analyze", "spec", "plan"):
             run_state_cli(self.cwd, "set", f"phase={phase}")
-        duyet_mot_so_do(self.cwd)
-        run_state_cli(self.cwd, "set", "phase=plan")
         moc = read_state(self.cwd)["phase_history"]
         self.assertEqual([m["phase"] for m in moc],
-                         ["idle", "analyze", "spec", "diagram", "plan"])
+                         ["idle", "analyze", "spec", "plan"])
         for m in moc:
             self.assertTrue(m["at"], "mỗi mốc phải có thời điểm")
         self.assertEqual(sorted(m["at"] for m in moc), [m["at"] for m in moc])
@@ -134,14 +125,11 @@ class MocThoiGianTrongState(TempRepo):
     def test_phase_history_quay_lui_ghi_them_moc(self):
         """Quay lại phase cũ PHẢI đẻ mốc mới — đó là cơ sở đếm 'số lần vào'."""
         run_state_cli(self.cwd, "init", "2026-08-15-1300-viec-moi", "full")
-        # `diagram` chen giữa spec và plan; duyệt sơ đồ mở cổng cho `phase=plan`.
-        for phase in ("spec", "diagram"):
-            run_state_cli(self.cwd, "set", f"phase={phase}")
-        duyet_mot_so_do(self.cwd)
-        for phase in ("plan", "spec"):
+        duyet_spec(self.cwd)
+        for phase in ("spec", "plan", "spec"):
             run_state_cli(self.cwd, "set", f"phase={phase}")
         self.assertEqual([m["phase"] for m in read_state(self.cwd)["phase_history"]],
-                         ["idle", "spec", "diagram", "plan", "spec"])
+                         ["idle", "spec", "plan", "spec"])
 
 
 def moc(phase, hh, mm, ss=0):

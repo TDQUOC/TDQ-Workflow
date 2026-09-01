@@ -667,7 +667,7 @@ class TestStopGateReprint(StopGateBase):
 
 
 class TestUnfinishedDecision(unittest.TestCase):
-    """B6-B12 of the diagram: the pure branch that decides the [TDQ:UNFINISHED] block."""
+    """B6-B12 of the flow chart: the pure branch that decides the [TDQ:UNFINISHED] block."""
 
     @staticmethod
     def _tick(**overrides):
@@ -689,7 +689,7 @@ class TestUnfinishedDecision(unittest.TestCase):
         self.assertIn("[TDQ:UNFINISHED]", reason)
 
     def test_unfinished_ngoai_phase(self):
-        for phase in ("idle", "spec", "diagram", "plan", "qc", "report"):
+        for phase in ("idle", "spec", "plan", "qc", "report"):
             self.assertIsNone(stop_gate.unfinished_reason(self._state(phase=phase), self._tick()))
 
     def test_unfinished_plan_xong(self):

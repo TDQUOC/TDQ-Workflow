@@ -18,7 +18,9 @@ class PhaseTableTest(unittest.TestCase):
                         f"thiếu phase: {tdq_state.VALID_PHASES - keys}")
         self.assertIn("no_state", keys)
         self.assertIn("quick", keys)
-        self.assertEqual(len(keys), 11, sorted(keys))
+        # 8 pha hợp lệ + `no_state` + `quick`. Pha `diagram` bị gỡ ngày 2026-09-01
+        # nên con số này giảm từ 11 xuống 10.
+        self.assertEqual(len(keys), 10, sorted(keys))
 
     def test_every_row_complete(self):
         for name, row in tdq_state.PHASE_TABLE.items():

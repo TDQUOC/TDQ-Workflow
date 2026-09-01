@@ -2,6 +2,30 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.36.0 — 2026-09-01
+
+Gỡ hẳn pha `diagram` (sơ đồ mind map) và cổng duyệt sơ đồ khỏi quy trình. Từ bản này spec duyệt
+xong là đi thẳng sang plan, không còn bước vẽ và duyệt sơ đồ chen giữa ở cả lane `full` lẫn lane
+nhanh. 16 file sơ đồ đã vẽ trong `docs/tdq/mind-map/` giữ nguyên làm tư liệu; chỉ phần sinh ra
+chúng bị xoá.
+
+- **`scripts/tdq_state.py`** — bỏ `diagram` khỏi `VALID_PHASES`, `PHASE_ORDER` và `APPROVE_TARGETS`;
+  xoá khoá state `diagrams` cùng `_heal_diagrams`, `_diagram_id`, `diagram_entries`,
+  `diagram_pending`, `_diagram_register`, `_cli_approve_diagram`, `_cli_diagram` và dòng
+  `| Diagrams |` của bảng trạng thái. Cổng vào pha `plan` nay chỉ đòi `spec_approved = true` —
+  chặn thật bằng `_chan_spec_chua_duyet`, vì nhánh cũ chỉ soi danh sách sơ đồ, gỡ đi mà không
+  thay thế thì plan viết được trước khi user duyệt spec.
+- **Tương thích ngược** — state cũ mang `phase=diagram` tự nâng về `spec` kèm cảnh báo; khoá
+  `diagrams` cũ bị bỏ qua im lặng và biến mất khi ghi lại. Ba lệnh cũ (`approve diagram`,
+  `diagram add`, `diagram list`) thoát khác 0 và nói rõ pha đã bị gỡ, không báo lỗi cú pháp chung.
+- **Xoá** `scripts/tdq_mindmap.py`, `scripts/mindmap_render.py`, `skills/tdq-diagram/`; `doc_lint.py`
+  không còn import `tdq_mindmap` và không còn ngân sách token cho skill đã xoá.
+- **Tài liệu luật** — `phases.md`, `tdq-spec`, `tdq-plan`, `tdq-intake` và `quick-lane.md` sạch dấu
+  vết pha sơ đồ; bước 1b vẽ sơ đồ của lane nhanh đã bỏ.
+- **Test** — xoá 4 file test của mind-map, sửa 5 file còn nhắc pha `diagram`, thêm
+  `tests/test_state_phase.py` và `tests/test_state_diagram_removed.py` khoá chuỗi pha mới, lối báo
+  lỗi tương thích ngược và bảng trạng thái.
+
 ## 0.35.0 — 2026-08-27
 
 Trang mind-map HTML chuyển từ danh sách chữ sang sơ đồ nhìn được. Trước bản này trang feature chỉ
@@ -453,32 +477,3 @@ của nội dung đang chạy.
   hiệu, phép kiểm khối mẫu theo luật 1/3/7, phép kiểm chuỗi do mã sinh, phép kiểm bản
   portable khớp khuôn gốc, và bảng `SO_KHOI` chặn trường hợp phép kiểm chạy rỗng mà vẫn
   xanh. Toàn bộ suite: 569 → 574 test.
-
-## 0.16.0 — 2026-08-14
-
-Cắt chi phí context của chính workflow mà không bỏ một luật nào: đếm mệnh lệnh theo 10
-cụm file cho **7 cụm tăng · 3 cụm giữ nguyên · 0 cụm giảm**. Nguyên tắc áp dụng xuyên
-suốt: dời văn bản xuống tầng `đọc khi cần` và để lại dòng trỏ có chữ BẮT BUỘC, tuyệt đối
-không xoá luật.
-
-- `scripts/skill_inventory.py`: thêm `--loc <từ khoá>` và `--tat-ca`. Bản lọc CẤM ẩn skill
-  nguồn `project` và `plugin:tdq-workflow` (hai nguồn quyết định phán quyết DÙNG ở bước
-  B0), và luôn in dòng cuối báo đã ẩn bao nhiêu kèm lệnh xem đủ. Chạy không cờ giữ nguyên
-  từng byte. Bước B0 dùng `--loc`: **39.722 → 1.845 byte** mỗi lần chạy (≈ −9.300 token).
-- `skills/tdq-intake/SKILL.md`: nhánh chế độ nhanh dời sang
-  `references/quick-lane.md`, đánh số lại thành 12 bước. Thân 1.844 → 1.288 token.
-- `skills/tdq-build/SKILL.md`: Phần B (QC) và Phần C (Report) dời xuống `references/qc.md`
-  và `references/report-template.md`. Thân 1.936 → 1.536 token.
-- `skills/tdq-conventions/`: phần nền/giải thích của 3 file gom vào mục `## Phụ lục`,
-  **giữ nguyên 100% câu chữ** (diff theo từ: 0 từ bị mất).
-- `skills/tdq-intake/references/scope-round.md`: khử 2 từ mơ hồ thành điều kiện đo được.
-- 8 chỗ cố ý chép lại luật giữa các file nay có nhãn "nhắc lại có chủ ý" — chống việc
-  lần sau bị nhầm là trùng lặp rồi xoá đi.
-- `agents/tdq-implementer.md`, `tdq-qc-tester.md`, `tdq-reviewer.md`: thêm khối
-  "Return format — copy this shape exactly".
-- Tổng tầng `nạp khi gọi skill` **8.473 → 7.579 token** (−10,6%). Test 563 → 569 passed,
-  0 failed. QC 15 hạng mục, Q1–Q14 PASS; một lượt QC độc lập bằng agent `tdq-qc-tester`
-  chạy lại từ đầu cho cùng phán quyết. Model hạng thấp chạy thử: không bỏ bước nào.
-- Chưa đụng `hooks/` và `portable/` — bản portable chưa nhận các thay đổi này.
-
-Bản 0.15.0 trở về trước: xem [CHANGELOG-archive.md](CHANGELOG-archive.md).
