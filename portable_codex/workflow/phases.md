@@ -15,6 +15,7 @@ Whatever phase you stand in, do only that phase's job, then run exactly its comm
 | `qc` | Implementation is finished | Run the spec's Definition of Done, record the results, fix what fails | `python3 scripts/tdq_state.py set phase=report` | Every QC item of the spec PASSes, with evidence | Ignoring a failing test; reporting PASS without running it |
 | `report` | QC has PASSed | Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing | `python3 scripts/tdq_state.py set phase=idle` | The report is written and the user has been asked about committing | Committing or pushing before the user asks for it |
 | `idle` | Finished, or no request opened yet | Wait for a new request from the user | `python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh\|chuyen-sau> [--lang <code>]` | A new request is open | Overwriting an unfinished request without asking the user |
+| `quick_analyze` | lane = quick and phase = analyze, before the express approval | Analyse and write what you learned into docs/tdq/brief/<slug>.md, then go straight on to the mini spec/plan — this phase has NO approval gate | `python3 scripts/tdq_state.py set phase=implement` | The brief holds what the analysis settled, and every skipped step has its one-line reason ready for the mini-plan | Skipping B1; grepping for a symbol with no LSP+lumen attempt first; dropping B0 or B2 without writing the reason; waiting for an approval that this phase does not have |
 | `quick` | lane = quick | Analyse → a mini spec/plan merged into one file → wait for approval → write the working log FIRST → implement → QC against the DoD (ON by default) → a fix round if it FAILs | `python3 scripts/tdq_state.py approve quick [--no-qc] --by "<the user's sentence verbatim>"` | quick_approved = true, the log is written, the plan's QC section exists (evidence or the skipped-at-user's-request line), no red test is left, phase is back to idle | Implementing before the working log is written; batching the ticks at the end of the turn or leaving several tasks marked [~]; closing the job with a red test or a known bug; running set phase=idle after the 3-round fix cap without telling the user |
 
 The commands verbatim (copy-paste, no escaping):
@@ -29,6 +30,7 @@ implement: python3 scripts/tdq_state.py set phase=qc
 qc: python3 scripts/tdq_state.py set phase=report
 report: python3 scripts/tdq_state.py set phase=idle
 idle: python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
+quick_analyze: python3 scripts/tdq_state.py set phase=implement
 quick: python3 scripts/tdq_state.py approve quick [--no-qc] --by "<the user's sentence verbatim>"
 ```
 

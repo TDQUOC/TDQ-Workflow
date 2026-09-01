@@ -54,11 +54,13 @@ class QuickQcDocTest(unittest.TestCase):
         self.assertNotIn("3 hạng mục", text)
 
     def test_skill_body_points_to_quick_lane(self):
-        # N2 không còn chép luật, nhưng BẮT BUỘC trỏ sang mục chín bước ở N1.
+        # N2 không còn chép luật, nhưng BẮT BUỘC trỏ sang mục các bước thi hành ở N1.
+        # 2026-09-01: chín bước → mười, do lane nhanh có thêm bước ghi kết quả phân tích
+        # vào brief (pha `quick_analyze`, không kèm cổng duyệt).
         text = read(N2)
         self.assertIn("references/quick-lane.md", text)
         self.assertTrue(any(m in text for m in
-                            ("The nine execution steps", "Chín bước thi hành")))
+                            ("The ten execution steps", "Mười bước thi hành")))
 
     def test_law_docs_rerun_only_failed_items(self):
         # Vòng fix không chạy lại toàn bộ nữa — chỉ hạng mục FAIL + hạng mục bị ảnh hưởng.

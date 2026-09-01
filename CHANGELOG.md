@@ -2,6 +2,24 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.37.0 — 2026-09-01
+
+Lane nhanh có bước phân tích HIỆN TÊN, và độ sâu của bước đó có ngưỡng rõ ràng. Trước bản này
+`phase_key` nuốt mọi pha của lane nhanh về hàng `quick`, nên phân tích không nhìn thấy được ở
+đâu cả. Quan trọng: đây là phương án KHÔNG thêm cổng duyệt — lane nhanh vẫn đúng một cổng.
+
+- **`scripts/tdq_state.py`** — thêm hàng `quick_analyze` vào `PHASE_TABLE` và `PHASE_ORDER`;
+  `phase_key` trả hàng đó khi `lane=quick`, `phase=analyze` và chưa duyệt. `CONG_THEO_LANE`
+  và `APPROVE_TARGETS` giữ NGUYÊN — có test khoá riêng canh điều này. Thêm khoá `brief_file`
+  để đăng ký đường dẫn brief, ngang hàng `spec_file`/`plan_file`.
+- **`skills/tdq-intake`** — `quick-lane.md` từ 9 lên 10 bước, chèn bước ghi kết quả phân tích
+  vào brief; thêm mục ngưỡng B0/B1/B2: B1 đọc code LUÔN LUÔN (LSP + lumen song song), B0 chỉ
+  khi vùng chưa có tiền lệ, B2 chỉ khi có ẩn số ngoài. Bỏ B0 hay B2 phải ghi một dòng lý do
+  vào `## Phạm vi` của mini-plan — bỏ im lặng là lỗi QC.
+- Ngưỡng lấy từ số đo thật trên 43 request đã đóng sổ: pha `analyze` trung vị 372 s model,
+  một request lane nhanh trọn gói 533 s — bắt cả ba bước không điều kiện làm lane nhanh chậm
+  thêm ~70 %. Chi tiết: `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`.
+
 ## 0.36.0 — 2026-09-01
 
 Gỡ hẳn pha `diagram` (sơ đồ mind map) và cổng duyệt sơ đồ khỏi quy trình. Từ bản này spec duyệt

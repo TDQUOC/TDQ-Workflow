@@ -155,6 +155,9 @@ def default_state():
         "previous_request": None,
         "lane": None,
         "phase": "idle",
+        # Sản phẩm của bước phân tích. Cả hai lane đều đẻ ra brief ngay ở intake, nhưng
+        # trước 2026-09-01 không đâu ghi lại đường dẫn — khác hẳn spec_file/plan_file.
+        "brief_file": None,
         "spec_file": None,
         "spec_approved": False,
         "spec_sha256": None,
@@ -1052,6 +1055,32 @@ PHASE_TABLE = {
         "done_when": "A new request is open",
         "forbidden": "Overwriting an unfinished request without asking the user",
     },
+    "quick_analyze": {
+        "entry": "lane = quick and phase = analyze, before the express approval",
+        "action": "Analyse and write what you learned into docs/tdq/brief/<slug>.md, then go "
+                  "straight on to the mini spec/plan — this phase has NO approval gate",
+        "cmd": "python3 scripts/tdq_state.py set phase=implement",
+        "checklist": [
+            "B1 read the code — ALWAYS, never skipped. The target is a code symbol → call "
+            "mcp__lsp__* and lumen IN PARALLEL and merge both layers before reading; grep is "
+            "the last layer",
+            "B0 capability inventory — ONLY when the request touches ground with no precedent "
+            "(no earlier report under docs/tdq/report/ touched the same directory). Touching "
+            "scripts/tdq_state.py or hooks/ again → skip it, the answer is already known",
+            "B2 research through tavily-primary — ONLY when an unknown outside the repo exists "
+            "(a library, an API, a version, third-party behaviour). Hand it to a sub-agent, "
+            "which returns a digest of at most 1,500 characters",
+            "SKIPPING B0 or B2 costs one line: write the reason under the mini-plan's Scope "
+            "section. A step dropped in silence is a QC defect",
+            "Write what you settled into the brief's 'Hiểu & kiến thức' section, then move on "
+            "to the mini spec/plan — do NOT stop to wait for the user here",
+        ],
+        "done_when": "The brief holds what the analysis settled, and every skipped step has its "
+                     "one-line reason ready for the mini-plan",
+        "forbidden": "Skipping B1; grepping for a symbol with no LSP+lumen attempt first; "
+                     "dropping B0 or B2 without writing the reason; waiting for an approval "
+                     "that this phase does not have",
+    },
     "quick": {
         "entry": "lane = quick",
         "action": "Analyse → a mini spec/plan merged into one file → wait for approval → write the working log FIRST → implement → QC against the DoD (ON by default) → a fix round if it FAILs",
@@ -1117,7 +1146,7 @@ IMPLEMENT_SUBAGENT_ROW = {
 
 
 PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc",
-               "report", "idle", "quick"]
+               "report", "idle", "quick_analyze", "quick"]
 
 
 _SCRIPT_PATH = re.compile(r"python3 scripts/(\S+\.py)")
@@ -1184,6 +1213,12 @@ def phase_key(state):
         # deliberate close).
         if state.get("quick_approved") and effective_phase(state, warn=False) == "idle":
             return "idle"
+        # Phương án 2a (2026-09-01): bước phân tích của lane nhanh có hàng riêng để
+        # NHÌN THẤY được, nhưng không kèm cổng duyệt — `CONG_THEO_LANE["quick"]` vẫn
+        # đúng một cổng. Đã duyệt rồi thì phân tích xong từ lâu, không quay lại hàng này.
+        if (not state.get("quick_approved")
+                and effective_phase(state, warn=False) == "analyze"):
+            return "quick_analyze"
         return "quick"
     return effective_phase(state, warn=False)
 

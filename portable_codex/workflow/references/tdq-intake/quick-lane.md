@@ -1,14 +1,12 @@
 # Express pipeline — detail
 
 Express differs from the deep pipeline by **merging the documents and merging the
-gates**, not by dropping thought. Analysis, a web search whenever there is an external
-unknown, and an interview whenever a question can still change the outcome are all KEPT.
-Drop them only when the work is purely internal or already fully clear — and say why.
+gates**, not by dropping thought. Analysis, research and the interview are all KEPT; drop one
+only on the thresholds in `## How deep the analysis goes` below — and say why.
 
 | Step | Deep | Express |
 |---|---|---|
-| Analysis + reading the code | yes | yes |
-| Web search | yes (2–4 queries) | yes when an external unknown exists |
+| Analysis + reading the code | yes | yes — B1 always; B0/B2 on the thresholds below |
 | Scope round | conditional, on the trigger signs | identical — the same set of signs |
 | Interview | loops until nothing is vague | when a question can still change the outcome |
 | Documents | brief + spec + plan | **1 file** `docs/tdq/plan/<slug>.md` |
@@ -21,51 +19,72 @@ mini-plan under `## Phạm vi` and move on. <!-- i18n-allow: canonical name in t
 
 ## Table of contents
 
-- The nine execution steps
-- Reading the graph at step 1 (analysis)
+- How deep the analysis goes — B0, B1, B2
+- The ten execution steps
 - Mini spec/plan template (≤ 40 lines)
 - The block that presents the mini-plan to the user
 - The tick rule — `[ ]` · `[~]` · `[x]`
 - QC in the express pipeline
 - The fix round
 
-## The nine execution steps
+## How deep the analysis goes — B0, B1, B2
+
+Step 1 below is a real analysis phase (`phase = analyze`, table row `quick_analyze`), with
+NO approval gate of its own — express keeps exactly one gate. How deep it goes is fixed:
+
+| Step | Express rule |
+|---|---|
+| B1 read the code | **ALWAYS.** The target is a code symbol → call `mcp__lsp__*` and lumen in parallel, merge both layers, grep last. A question about **links** or the overall map ("who calls X", "what breaks if X changes") → `graphify query\|path\|explain\|affected`; the graph holds only `scripts/` and `hooks/` |
+| B0 capability inventory | ONLY when the request touches ground with no precedent — no earlier report under `docs/tdq/report/` touched the same directory |
+| B2 research | ONLY when an unknown outside the repo exists (a library, an API, a version, third-party behaviour) — hand it to a sub-agent, digest ≤ 1,500 characters |
+
+**Skipping B0 or B2 costs one line**: the reason goes under the mini-plan's `## Phạm vi` <!-- i18n-allow: canonical section name in the default language -->
+section, shape `Bỏ B0: <lý do>`. A step dropped in silence is a QC defect; B1 is never skipped. <!-- i18n-allow: sample line in the default language -->
+
+Why not "always all three": over 43 closed requests, phase `analyze` costs a median 372 s
+and a whole express request 533 s — running all three unconditionally makes express ~70 %
+slower. Numbers: `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`.
+
+## The ten execution steps
 
 This is the whole of Part C of [SKILL.md](../SKILL.md) — moved here so the skill body does
-not load this branch on every call. Entering the express pipeline you **MUST** read all nine
+not load this branch on every call. Entering the express pipeline you **MUST** read all ten
 steps below before doing step 1; working from memory is banned.
 
-1. **Analyse.** Read exactly the code involved. External unknown (library, API, version) →
-   web search through `tavily-primary` BEFORE writing anything; purely internal → skip it
-   and say why. A question that can still CHANGE the outcome → interview per
+1. **Analyse** — run `... set phase=analyze` first, so the phase is visible in the table.
+   Do B1 always, B0 and B2 on the thresholds in `## How deep the analysis goes` above. A
+   question that can still CHANGE the outcome → interview per
    [interview.md](interview.md), with the **scope round** ahead of the detail round exactly
    as in the deep pipeline ([scope-round.md](scope-round.md)).
-2. **Write the mini spec/plan MERGED into 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 lines:
+2. **Write what the analysis settled into `docs/tdq/brief/<slug>.md`** — the file Part A
+   already created — under `## Hiểu & kiến thức`, then register it with <!-- i18n-allow: canonical section name in the default language -->
+   `... set brief_file=docs/tdq/brief/<slug>.md`. Do NOT stop for approval here: this phase
+   has no gate. Then `... set phase=implement` and go straight on to step 3.
+3. **Write the mini spec/plan MERGED into 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 lines:
    scope in/out, one checkbox task per test, DoD with every line checkable by a command.
    **Every task that edits source must carry a `Chạm:` line** listing the paths in <!-- i18n-allow: canonical name in the default language -->
    backticks — short does not mean the file map is optional. The checkbox has 4 states:
    `[ ]` not started · `[~]` in progress · `[>]` handed to a sub-agent · `[x]` done. At
-   implement time (step 7) mark `[~]` when the task starts and switch to `[x]` the moment
+   implement time (step 8) mark `[~]` when the task starts and switch to `[x]` the moment
    the test is green.
-3. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, and
+4. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, and
    how it is validated. Add exactly 1 line `Ước tính sẽ dùng skill: <the skills that will be <!-- i18n-allow: canonical name in the default language -->
    USED, or "không có">` (in doubt → USE). <!-- i18n-allow: label written in the default language -->
-4. Print exactly this line, then **STOP**:
+5. Print exactly this line, then **STOP**:
 <!-- i18n-allow: sample of the approval line, written in doc_lang -->
 ```
 ➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp
 ```
-5. The user approves → run `python3 "./scripts/tdq_state.py" approve quick [--no-qc] --by "<the user's sentence verbatim>"` (`--no-qc` ONLY when the user says so explicitly — silence about QC means QC stays ON).
-6. Append the mini-plan summary to `docs/workinglog/<today>.md` **BEFORE** touching code.
-7. Implement end-to-end in 1 turn. **Before typing the first line of code, count the tasks
+6. The user approves → run `python3 "./scripts/tdq_state.py" approve quick [--no-qc] --by "<the user's sentence verbatim>"` (`--no-qc` ONLY when the user says so explicitly — silence about QC means QC stays ON).
+7. Append the mini-plan summary to `docs/workinglog/<today>.md` **BEFORE** touching code.
+8. Implement end-to-end in 1 turn. **Before typing the first line of code, count the tasks
    whose `Chạm:` sets are disjoint** (no task sharing a path with another): <!-- i18n-allow: canonical name in the default language -->
    - **3 or more** → hand them to sub-agent `tdq-implementer`, one agent per task, issued in
-     the same response so they run in parallel; the cap is **4 branches** at a time — the
-     same cap `python3 scripts/tdq_team.py cum` applies in the deep pipeline (task 5 prints
-     `CHỜ SLOT`). Build a worktree only for an agent that ACTUALLY writes files; a read-only <!-- i18n-allow: canonical name in the default language -->
-     agent gets none. Mark `[>]` when handing over, and switch to `[x]` as the report lands.
-   - **fewer than 3** → run inline as before; standing up an agent for 1–2 disjoint tasks
-     costs more briefing than it saves.
+     the same response so they run in parallel; the cap is **4 branches**, the same cap
+     `python3 scripts/tdq_team.py cum` applies in deep mode (task 5 prints `CHỜ SLOT`). Build <!-- i18n-allow: canonical name in the default language -->
+     a worktree only for an agent that ACTUALLY writes files. Mark `[>]` when handing over,
+     switch to `[x]` as the report lands.
+   - **fewer than 3** → run inline; an agent for 1–2 tasks costs more briefing than it saves.
    Each task: mark `[~]` BEFORE editing code (hook `edit_gate` BLOCKS when the plan has no
    `[~]`; `tests/**` is exempt), red→green, switch to
    `[x]` the moment the test is green — batching ticks at the end of the turn is banned.
@@ -74,22 +93,15 @@ steps below before doing step 1; working from memory is banned.
    it was skipped at the user's request, quoting the user verbatim.
    (The full tick rule is in `## The tick rule` and the full QC rule in `## QC in the express
    pipeline`, both in this file.)
-8. **Fix round when QC FAILs or a bug shows up**: add tasks to the plan under
+9. **Fix round when QC FAILs or a bug shows up**: add tasks to the plan under
    `## QC vòng N — fix`, fix red→green, then re-run the failed items plus the items the fix <!-- i18n-allow: canonical name in the default language -->
    could have broken. There is a 3-round cap — over the cap, STOP, tell the user, propose
    moving to the deep pipeline, and leave the phase as it is. (Full version in
    `## The fix round` in this file.)
-9. Append the result to the working log; ask the user about the commit.
+10. Append the result to the working log; ask the user about the commit.
 
 Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
 Next step: ask the user about the commit; the request is over → `... set phase=idle`.
-
-## Reading the graph at step 1 (analysis)
-
-A question about **links** or the **overall map** ("who calls X", "what does changing X
-affect") → open the graph with `graphify query|path|explain|affected`. Finding a string or
-reading a specific file → grep/read. The graph holds only `scripts/` and `hooks/`; tests and
-docs are excluded by `.graphifyignore`.
 
 ## Mini spec/plan template (≤ 40 lines)
 

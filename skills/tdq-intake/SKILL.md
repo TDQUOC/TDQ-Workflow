@@ -105,12 +105,16 @@ questions remain, present them and stop.
 
 ## Part C — Express pipeline
 
-Express is a shortened path, NOT a path with thinking steps cut out. The nine
+Express is a shortened path, NOT a path with thinking steps cut out. The ten
 execution steps — from analysis to asking about the commit — live in
-[references/quick-lane.md](references/quick-lane.md) under `## The nine execution steps`.
-**You MUST open that file and read all nine steps before doing step 1; working from memory
-is banned.** That same file also holds the mini-plan template, the tick rule, the QC rule and
-the fix round.
+[references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`.
+**You MUST open that file and read all ten steps before doing step 1; working from memory
+is banned.** That same file also holds how deep the analysis goes (B1 always, B0 and B2 on
+thresholds), the mini-plan template, the tick rule, the QC rule and the fix round.
+
+Step 1 sets `phase=analyze`, which shows the express analysis as its own row
+(`quick_analyze`) in the phase table. That phase has **NO approval gate** — express keeps
+exactly one gate, the express approval at step 6.
 
 Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
 Next step: ask the user about the commit; the request is over → `... set phase=idle`.

@@ -31,7 +31,7 @@
     ".claude/skills/tdq-conventions/references/clean-code.md": "26950743b6cc9f5ca5d4f40a28b0b05de9f9d4d95c8c3689ba373834886a3d43",
     ".claude/skills/tdq-conventions/references/context-budget.md": "286a4a5cf91af5ab958c616812d1a8e682f502f3de1fbc7e45bad0f3db3c74e6",
     ".claude/skills/tdq-conventions/references/measure-scenario.md": "57d2e0f9e9a0702478d236ed977ee01be8fac617bb5edc8a86b4218ce52f8270",
-    ".claude/skills/tdq-conventions/references/phases.md": "0e040d704e49438c10bcc794196f4c95dceebe68e1d4c05c7350ebd5a262cd2e",
+    ".claude/skills/tdq-conventions/references/phases.md": "9db90ab0031f8c27b9ce5da536115cada83f864e47759dd781c65d361c99c77e",
     ".claude/skills/tdq-conventions/references/plugin-routing.md": "5008686332172cd5eaf8c42105fd15c324ebcc7a8ecb267c6ef2a23868a77633",
     ".claude/skills/tdq-conventions/references/reminder-codes.md": "646938051846515b82b43a648c9218a3265d9c905c0bf6925ce715324a28da50",
     ".claude/skills/tdq-conventions/references/soul.md": "ec9292fe436a4a41ad7b325ff1ff69253ea8cbaabce6c91e512e62765076d7ef",
@@ -39,12 +39,12 @@
     ".claude/skills/tdq-conventions/references/tavily.md": "1f2e19794b95b79a241b59fd151c88051b189270059b3e14c981ac8bb330173d",
     ".claude/skills/tdq-conventions/references/user-facing-block.md": "1ebafd92164b67e996a103e527df61e02970f42de5bbb9a4a28c0a8121cffcb2",
     ".claude/skills/tdq-conventions/references/worklog-images.md": "a4cada8935d0db3dedd422f86df7c5824866e573ed386b56abb81b01abe3f7bd",
-    ".claude/skills/tdq-intake/SKILL.md": "f11a34bafbc4a5f94cf181bbae6168a0ef787052077237258896ee20c22b25d6",
+    ".claude/skills/tdq-intake/SKILL.md": "528a4d8395d368db63716ef1296fc3c7c7d7eef9f6d8ab0fdab10df15ac59aa9",
     ".claude/skills/tdq-intake/references/analyze-full.md": "d765a31714178f711d1db283ec864b52dd326e32aa7b3630a6df1806d190ec55",
     ".claude/skills/tdq-intake/references/interview.md": "646691080957f8fe7c123d39fac0753d9f30ba2b52fb199b0d4deb58ae6d2165",
     ".claude/skills/tdq-intake/references/issue-triage.md": "edec01e8bd7cc3f708a03a39fd96ec7bd85772237cd58dd4a1b437364a4b84e8",
     ".claude/skills/tdq-intake/references/lane-decision.md": "6d40ede55fd23c128e77a9115ae5710a4c60431de567f718fd9ce87ac298ccd6",
-    ".claude/skills/tdq-intake/references/quick-lane.md": "6c270a44506f5b6e590f9179a0d65ff56d484cab63662f30d3ee773edf1f663b",
+    ".claude/skills/tdq-intake/references/quick-lane.md": "a2453707fcf483807e4db89b23060f617cc61cb3aa789b0e355f5c7f937989b0",
     ".claude/skills/tdq-intake/references/scope-round.md": "34370b510f3b13dc886a0a5c5a9b58d510d50e3ca41c570518ddb9066ec1a164",
     ".claude/skills/tdq-intake/references/skill-inventory.md": "37135f892b0de2b7f89965f107924693f5400c5ecce464902d6e6f755aeb24ab",
     ".claude/skills/tdq-lsp-setup/SKILL.md": "134e7594ed60b9cb2a614d5adae85ad5bad5b8ad1e785f496ce91d0a9270600b",
@@ -87,7 +87,7 @@
     ".claude/tdq/scripts/tdq_checkstatus.py": "f152eee3a271579a8dabeaab8c40fe534eb72bb1c9a69a01149c17d8514f4747",
     ".claude/tdq/scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     ".claude/tdq/scripts/tdq_lsp.py": "d529b405bfe54adc859a05bfb05512093c1c6792c15362613620d3c42302f0b4",
-    ".claude/tdq/scripts/tdq_state.py": "d9ce2a52a6f4dddd77ed00a41d58df85ba871b60ff2049a664bf2547a47a1cbd",
+    ".claude/tdq/scripts/tdq_state.py": "1739ef10932aadd55042cb42dbb09c8bab890adcae308c1554a8c6f5862a537b",
     ".claude/tdq/scripts/tdq_team.py": "bc77da32139f78616109b28075f2f92188c0a9493a9f22e2fc177c9667ba1747",
     ".claude/tdq/scripts/tdq_timing.py": "40edc14a717af78301c9e922132797fb1593b676e76adc3b39643df2f9955513",
     ".claude/tdq/scripts/tdq_worktree_registry.py": "17c6bd8d77688fbfeb458744d1a84ca32b8722e051fa3cc87eb1c9138af00f89",
@@ -100,5 +100,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.36.0"
+  "version": "0.37.0"
 }

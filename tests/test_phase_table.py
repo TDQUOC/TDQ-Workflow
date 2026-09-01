@@ -18,9 +18,10 @@ class PhaseTableTest(unittest.TestCase):
                         f"thiếu phase: {tdq_state.VALID_PHASES - keys}")
         self.assertIn("no_state", keys)
         self.assertIn("quick", keys)
-        # 8 pha hợp lệ + `no_state` + `quick`. Pha `diagram` bị gỡ ngày 2026-09-01
-        # nên con số này giảm từ 11 xuống 10.
-        self.assertEqual(len(keys), 10, sorted(keys))
+        self.assertIn("quick_analyze", keys)
+        # 8 pha hợp lệ + `no_state` + `quick` + `quick_analyze`. Pha `diagram` bị gỡ
+        # ngày 2026-09-01 (11 → 10); `quick_analyze` thêm 2026-09-01 (10 → 11).
+        self.assertEqual(len(keys), 11, sorted(keys))
 
     def test_every_row_complete(self):
         for name, row in tdq_state.PHASE_TABLE.items():
@@ -49,6 +50,28 @@ class PhaseTableTest(unittest.TestCase):
                                               "quick_approved": True}), "quick")
         self.assertEqual(tdq_state.phase_key({**base, "phase": "idle",
                                               "quick_approved": True}), "idle")
+
+    def test_phase_key_quick_analyze(self):
+        """Phương án 2a: lane nhanh có pha `analyze` HIỆN TÊN, nhưng không thêm cổng.
+
+        Trước 2026-09-01 `phase_key` nuốt mọi pha của lane quick về hàng `quick`, nên
+        bước phân tích không nhìn thấy được ở đâu cả. Hàng riêng chỉ hiện khi đúng
+        `phase=analyze`; mọi pha khác vẫn về `quick` như cũ.
+        """
+        base = {"active_request": "r", "lane": "quick"}
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "analyze"}), "quick_analyze")
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "implement"}), "quick")
+        # Đã duyệt rồi thì phân tích xong từ lâu — không quay lại hàng phân tích nữa.
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "analyze",
+                                              "quick_approved": True}), "quick")
+
+    def test_lane_quick_van_chi_mot_cong(self):
+        """Canh 2a không trượt thành 2c: thêm pha phân tích KHÔNG được thêm cổng duyệt."""
+        self.assertEqual(tdq_state.CONG_THEO_LANE["quick"], ("quick",))
+        self.assertNotIn("analyze", tdq_state.APPROVE_TARGETS)
+        state = {"active_request": "r", "lane": "quick", "phase": "analyze"}
+        self.assertEqual(tdq_state.cong_dang_cho(state), "quick")
+        self.assertIsNone(tdq_state.cong_dang_cho({**state, "quick_approved": True}))
 
     def test_render_no_regex_escape_artifact(self):
         """Bug A1: escape sai trong re.sub → literal `\\1` thay vì lệnh thật."""

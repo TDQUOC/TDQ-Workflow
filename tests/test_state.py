@@ -17,6 +17,19 @@ class TestState(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
+    def test_brief_file_dang_ky_duoc(self):
+        """Brief là sản phẩm của bước phân tích — phải đăng ký được như spec/plan.
+
+        Trước 2026-09-01 chỉ `spec_file` và `plan_file` có chỗ trong schema, nên brief
+        của lane nhanh không đâu ghi lại đường dẫn.
+        """
+        self.assertIn("brief_file", tdq_state.default_state())
+        self.assertIsNone(tdq_state.default_state()["brief_file"])
+        run_state_cli(self.cwd, "init", "2026-09-01-2142-x", "quick")
+        ma, _, err = run_state_cli(self.cwd, "set", "brief_file=docs/tdq/brief/x.md")
+        self.assertEqual(ma, 0, err)
+        self.assertEqual(read_state(self.cwd)["brief_file"], "docs/tdq/brief/x.md")
+
     def test_load_missing_returns_none(self):
         self.assertIsNone(tdq_state.load(self.cwd))
 

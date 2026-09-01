@@ -56,7 +56,7 @@ class PhaMoiTest(unittest.TestCase):
         self.assertEqual(
             tdq_state.PHASE_ORDER,
             ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc",
-             "report", "idle", "quick"])
+             "report", "idle", "quick_analyze", "quick"])
 
     def test_cong_plan_chi_doi_spec_duyet(self):
         mo_request(self.cwd)
