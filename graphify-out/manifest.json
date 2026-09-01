@@ -125,8 +125,8 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1788265380.4647803,
-    "ast_hash": "78f28891a6b1b015911575587fe6143f",
+    "mtime": 1788277267.5597708,
+    "ast_hash": "7c003e00888d4d77f3b53b545e0220b5",
     "semantic_hash": ""
   },
   "README.md": {
@@ -480,7 +480,7 @@
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
   },
   "antigravity_portable/README.md": {
-    "mtime": 1788265384.8321428,
+    "mtime": 1788278020.1582456,
     "ast_hash": "f4f4428dee9bf8e837d449ecb58d8e16",
     "semantic_hash": ""
   }
