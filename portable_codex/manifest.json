@@ -22,8 +22,8 @@
     ".agents/skills/tdq-check-status/references/bang-lech.md": "3b2b466b8a332ae200a879d9a2cf22956add54e0c8290bb3f5271f700c8d5467",
     ".agents/skills/tdq-check-status/references/report-template.md": "fe8e66d3dad74735212977176fe9a26f1372aeacba1db1bbcb5c8d4281ff3bb1",
     ".agents/skills/tdq-checkportable/SKILL.md": "8912e5ef963198cc2fc7efe25f16fad9e8c331b8ffda9e60038c560032637afe",
-    ".agents/skills/tdq-conventions/SKILL.md": "3c80b05da2eaecf06506e88a1bf7ce49b72774b5bf31dd8da5ba084b93d88c8c",
-    ".agents/skills/tdq-conventions/references/approval.md": "649b5d3577d96443490d38c4049f290f6068b4b5e9012c1d1b050e4c788796ea",
+    ".agents/skills/tdq-conventions/SKILL.md": "9c0c2c5665cca32868e702c9e4c6cdc3c1b3543de4f536a359732653cd382504",
+    ".agents/skills/tdq-conventions/references/approval.md": "af255c34951b5ebbc113048f75cb0e3dfb9b21c1aa359a17b1e4d4ecc091c7b4",
     ".agents/skills/tdq-conventions/references/clean-code.md": "26950743b6cc9f5ca5d4f40a28b0b05de9f9d4d95c8c3689ba373834886a3d43",
     ".agents/skills/tdq-conventions/references/context-budget.md": "fcffd36d84f1d8221ec04457b717651ddf5cdfd90604546b76d40c0c9a35d795",
     ".agents/skills/tdq-conventions/references/measure-scenario.md": "57d2e0f9e9a0702478d236ed977ee01be8fac617bb5edc8a86b4218ce52f8270",
@@ -73,7 +73,7 @@
     "scripts/claude_export.py": "3a48d6bfe48344a300ae07a967173860360f20854ac5acbd6c321ac6301ce1ba",
     "scripts/context_surface.py": "2e178cb614456874b951b2e3381d3eb5316beb27f4caf38fb443cb2fe563c1dd",
     "scripts/doc_dup.py": "28d45ff4e3a32bff7695167ba43b3a271f72d3578fa17a1269efa2647fd0b7bd",
-    "scripts/doc_lint.py": "6d49031d85adbcdb45c7dc24fbe4d3efc44bbbd685acd858e1aeb07b649b29f3",
+    "scripts/doc_lint.py": "d33dbae0186d08975acac56c582e42a7ae45555a30434736049757b6436451f7",
     "scripts/i18n_check.py": "9781b6e0562838b96d85de672bff6a5f8afcd4fa96c85d30dd08ccd7e303c2b8",
     "scripts/luat_phan_loai.py": "f82344d350f87a9d72cd2c9b595921c8327e73d5a19507fb8898e5c675dc0fc8",
     "scripts/plugin_tiers.py": "be3acfd13cdaca6edc5af39ad216e71c263bfd7f17aaf64689522afa39807162",
@@ -93,7 +93,7 @@
     "scripts/tdq_timing.py": "40edc14a717af78301c9e922132797fb1593b676e76adc3b39643df2f9955513",
     "scripts/tdq_worktree_registry.py": "17c6bd8d77688fbfeb458744d1a84ca32b8722e051fa3cc87eb1c9138af00f89",
     "scripts/token_audit.py": "374f0edac43d75d91da16f8ef9bb2a492d713e007d04756c12bb4c63e3124684",
-    "workflow/01-conventions.md": "3c80b05da2eaecf06506e88a1bf7ce49b72774b5bf31dd8da5ba084b93d88c8c",
+    "workflow/01-conventions.md": "9c0c2c5665cca32868e702c9e4c6cdc3c1b3543de4f536a359732653cd382504",
     "workflow/02-lsp-setup.md": "134e7594ed60b9cb2a614d5adae85ad5bad5b8ad1e785f496ce91d0a9270600b",
     "workflow/03-intake.md": "7b2e4c2825e0eb01148cf597adf3c36bc17d82d586cf8d7db4d4931a63b0bba7",
     "workflow/04-spec.md": "71cfe3707ca3a082471ba1f0ad545a21b27b3e89e050aa17098342c6db0a673c",
@@ -118,7 +118,7 @@
     "workflow/references/tdq-build/team-mode.md": "857ef5e962e838bee14b9eecd0390d67960f702c7fdb8cb64c1a7afc71675afd",
     "workflow/references/tdq-check-status/bang-lech.md": "3b2b466b8a332ae200a879d9a2cf22956add54e0c8290bb3f5271f700c8d5467",
     "workflow/references/tdq-check-status/report-template.md": "fe8e66d3dad74735212977176fe9a26f1372aeacba1db1bbcb5c8d4281ff3bb1",
-    "workflow/references/tdq-conventions/approval.md": "649b5d3577d96443490d38c4049f290f6068b4b5e9012c1d1b050e4c788796ea",
+    "workflow/references/tdq-conventions/approval.md": "af255c34951b5ebbc113048f75cb0e3dfb9b21c1aa359a17b1e4d4ecc091c7b4",
     "workflow/references/tdq-conventions/clean-code.md": "26950743b6cc9f5ca5d4f40a28b0b05de9f9d4d95c8c3689ba373834886a3d43",
     "workflow/references/tdq-conventions/context-budget.md": "fcffd36d84f1d8221ec04457b717651ddf5cdfd90604546b76d40c0c9a35d795",
     "workflow/references/tdq-conventions/measure-scenario.md": "57d2e0f9e9a0702478d236ed977ee01be8fac617bb5edc8a86b4218ce52f8270",
@@ -148,5 +148,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.37.0"
+  "version": "0.38.0"
 }

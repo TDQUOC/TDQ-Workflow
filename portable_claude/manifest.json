@@ -26,8 +26,8 @@
     ".claude/skills/tdq-check-status/references/bang-lech.md": "3b2b466b8a332ae200a879d9a2cf22956add54e0c8290bb3f5271f700c8d5467",
     ".claude/skills/tdq-check-status/references/report-template.md": "fe8e66d3dad74735212977176fe9a26f1372aeacba1db1bbcb5c8d4281ff3bb1",
     ".claude/skills/tdq-checkportable/SKILL.md": "b29458e04a26667637ea7afc3ddde9a36c058afc1e37252fb36bafbd9d12890b",
-    ".claude/skills/tdq-conventions/SKILL.md": "cf237ffa0f4ab7b516f47609cd958f69307565d41168ddcc7524a1e083ee2322",
-    ".claude/skills/tdq-conventions/references/approval.md": "90cf19797e1ccf34cd328e97306a3a9018d4beafe6a5256c9ee7b48554d50e95",
+    ".claude/skills/tdq-conventions/SKILL.md": "1649010a7941a8f687f13e81ec468dd91611ca81962796da301a60cfdfa8a22c",
+    ".claude/skills/tdq-conventions/references/approval.md": "ecb5e9228658db11eae1badd997c5ffc2548bd266bc830862bd80b0ac1687e78",
     ".claude/skills/tdq-conventions/references/clean-code.md": "26950743b6cc9f5ca5d4f40a28b0b05de9f9d4d95c8c3689ba373834886a3d43",
     ".claude/skills/tdq-conventions/references/context-budget.md": "286a4a5cf91af5ab958c616812d1a8e682f502f3de1fbc7e45bad0f3db3c74e6",
     ".claude/skills/tdq-conventions/references/measure-scenario.md": "57d2e0f9e9a0702478d236ed977ee01be8fac617bb5edc8a86b4218ce52f8270",
@@ -72,7 +72,7 @@
     ".claude/tdq/scripts/claude_export.py": "3a48d6bfe48344a300ae07a967173860360f20854ac5acbd6c321ac6301ce1ba",
     ".claude/tdq/scripts/context_surface.py": "2e178cb614456874b951b2e3381d3eb5316beb27f4caf38fb443cb2fe563c1dd",
     ".claude/tdq/scripts/doc_dup.py": "28d45ff4e3a32bff7695167ba43b3a271f72d3578fa17a1269efa2647fd0b7bd",
-    ".claude/tdq/scripts/doc_lint.py": "6d49031d85adbcdb45c7dc24fbe4d3efc44bbbd685acd858e1aeb07b649b29f3",
+    ".claude/tdq/scripts/doc_lint.py": "d33dbae0186d08975acac56c582e42a7ae45555a30434736049757b6436451f7",
     ".claude/tdq/scripts/i18n_check.py": "9781b6e0562838b96d85de672bff6a5f8afcd4fa96c85d30dd08ccd7e303c2b8",
     ".claude/tdq/scripts/luat_phan_loai.py": "f82344d350f87a9d72cd2c9b595921c8327e73d5a19507fb8898e5c675dc0fc8",
     ".claude/tdq/scripts/plugin_tiers.py": "be3acfd13cdaca6edc5af39ad216e71c263bfd7f17aaf64689522afa39807162",
@@ -100,5 +100,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.37.0"
+  "version": "0.38.0"
 }

@@ -19,7 +19,7 @@
     "scripts/claude_export.py": "3a48d6bfe48344a300ae07a967173860360f20854ac5acbd6c321ac6301ce1ba",
     "scripts/context_surface.py": "2e178cb614456874b951b2e3381d3eb5316beb27f4caf38fb443cb2fe563c1dd",
     "scripts/doc_dup.py": "28d45ff4e3a32bff7695167ba43b3a271f72d3578fa17a1269efa2647fd0b7bd",
-    "scripts/doc_lint.py": "6d49031d85adbcdb45c7dc24fbe4d3efc44bbbd685acd858e1aeb07b649b29f3",
+    "scripts/doc_lint.py": "d33dbae0186d08975acac56c582e42a7ae45555a30434736049757b6436451f7",
     "scripts/i18n_check.py": "9781b6e0562838b96d85de672bff6a5f8afcd4fa96c85d30dd08ccd7e303c2b8",
     "scripts/luat_phan_loai.py": "f82344d350f87a9d72cd2c9b595921c8327e73d5a19507fb8898e5c675dc0fc8",
     "scripts/plugin_tiers.py": "be3acfd13cdaca6edc5af39ad216e71c263bfd7f17aaf64689522afa39807162",
@@ -57,8 +57,8 @@
     "skills/tdq-check-status/references/bang-lech.md": "3da1570f211eea5b5bd98cd84f63ae8ac85185dc1c0e26a032e8d7d1887daffb",
     "skills/tdq-check-status/references/report-template.md": "70685cd51c71b2ca69fe240cfe269df2ac15ad9a421a71e53868dd783c1f45e5",
     "skills/tdq-checkportable/SKILL.md": "3c8035eccb5c760bb522c7c062c15ce2e5a63c2bf21ee4ff1deef6a886e1f85d",
-    "skills/tdq-conventions/SKILL.md": "7d6788a68bdbcf14d1403a17badb74d145fe66b5f8f242e678b4bd6fa1d61cd7",
-    "skills/tdq-conventions/references/approval.md": "b5d559da4f5e44278fa890b96a8db311dd167ac4b0eaf338211de512b2aab3ff",
+    "skills/tdq-conventions/SKILL.md": "26fb0097a6dc882134f75c7fe296e4f1fb8cc4d005f92778daf30c2ffc4b29de",
+    "skills/tdq-conventions/references/approval.md": "a2c78a07a962fedbeea4a019c3350df62b69fb2b3add6748ba22f452c69be781",
     "skills/tdq-conventions/references/clean-code.md": "c71bae92dc379c765a57073939f1e3be5cd102144fb3a1a9403d5fee4e342736",
     "skills/tdq-conventions/references/context-budget.md": "e997e675cbbe180d456dee5dc02d733fd246721221fb8eaa5fdba77aa9db4c83",
     "skills/tdq-conventions/references/measure-scenario.md": "5fbed53de007baf7a8082dcfa2180fb63307b332cf4ab8218229bd22467fcf9f",
@@ -93,5 +93,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.37.0"
+  "version": "0.38.0"
 }

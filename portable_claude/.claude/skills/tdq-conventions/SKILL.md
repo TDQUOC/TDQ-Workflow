@@ -123,7 +123,9 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 
 - Branch, commit and worktree names **never** start with `claude`, `antigravity`, `gemini`, `codex`.
 - Commit messages **never** contain "generated with <AI>", any translation of that phrase, or an AI Co-Authored-By trailer.
-- **Never** commit or push before the user asks.
+- **Never** commit or push before the user asks. Sole exception: a TDQ build hits a technical
+  block only a commit clears → commit it with a proper message, do **NOT** push, list it in the report.
+- No git in the project yet → you may init git or a worktree; check the worktree merges back.
 
 ## 8. Research
 
@@ -132,6 +134,8 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 - Every claim needs a source or a stated basis. Never invent one. Routing work to plugins and the protocol for
   already-enabled ones: [references/plugin-routing.md](references/plugin-routing.md).
 - Never put an API key in an answer, a log, a shell command or a prompt.
+- Work that matters (architecture, the user's preferences, a recurring bug) → search mem0 with
+  `project` = the repo name BEFORE concluding; store one short fact once settled. Skill `mem0-memory`.
 
 ## 9. Sub-agents
 

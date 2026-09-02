@@ -1,16 +1,16 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-01T23:42:26+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-09-02T20:53:11+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-01-2301-quet-instruction-vao-plugin |
-| Lane | full |
+| Request | 2026-09-01-2355-thi-hanh-cat-instruction |
+| Lane | quick |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-09-01-2301-quet-instruction-vao-plugin.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-01-2301-quet-instruction-vao-plugin.md — ✔ approved |
-| Quick approval | (not applicable) |
+| Spec | (none) |
+| Plan | (none) |
+| Quick approval | ✔ approved |
 | Doc language | vi |
-| Run mode | main |
+| Run mode | (not settled) |
 
 ## Where we are
 Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.

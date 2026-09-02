@@ -62,7 +62,11 @@ SKILL_LINE_LIMITS = {
     # and dialogue following `doc_lang`) is tier 1: a model that never reads it writes the
     # user's documents in the language of the rule files. Its table plus the fallback rule cost
     # 20 lines in the body.
-    "tdq-conventions": 165,
+    # 2026-09-02: 165 → 168. Four rules moved OUT of `~/.claude/CLAUDE.md` and into this body
+    # (§7 the git-init allowance and the sole commit exception; §8 the mem0 search-then-store
+    # rule). They cost 4 lines here but leave a file loaded on EVERY turn of EVERY project —
+    # a net cut. Plan: docs/tdq/plan/2026-09-01-2355-thi-hanh-cat-instruction.md
+    "tdq-conventions": 168,
     # The recovery skill: its 7 steps plus the hard "lose no data" rule block must sit in the
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.
