@@ -142,7 +142,7 @@ def unfinished_reason(state, tick):
     con_ho = tick.get("total", 0)
     return (f"[TDQ:UNFINISHED] The plan still has {con_ho} open task(s) and the phase is still "
             "implement. Keep going to the end of the plan in this turn: mark [~], do the task, "
-            "mark [x]. Genuinely blocked → run `tdq_state.py tam-hoan --ly-do \"<why>\"` and "
+            "mark [x]. Genuinely blocked → run `tdq_state.py pause --ly-do \"<why>\"` and "
             "tell the user why.")
 
 

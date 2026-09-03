@@ -44,7 +44,7 @@ first, then come back to step 1 below.
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
 
-1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py kiem` — seven rungs, agent-lsp
+1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py check` — seven rungs, agent-lsp
    through import-root config. A rung is missing → print the exact command it gave you, **ASK the
    user for permission, and only run it once they say yes.** Never install unasked, never edit
    another plugin's file. Rungs 5–6 only warn. Details:

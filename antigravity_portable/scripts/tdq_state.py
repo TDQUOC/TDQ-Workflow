@@ -20,6 +20,9 @@ import sys
 import tempfile
 from datetime import datetime, timezone
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import tdq_ten_lenh  # noqa: E402
+
 STATE_REL = os.path.join("docs", "tdq", "state.json")
 STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
 TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
@@ -85,7 +88,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent] "
          "[--no-qc (quick only, requires --by)] [--by \"<user sentence>\"] | "
-         "tam-hoan --ly-do \"<why>\" | tiep-tuc | "
+         "pause --ly-do \"<why>\" | resume | "
          "reset | phases-doc")
 
 EXIT_SYNTAX = 2
@@ -1018,7 +1021,7 @@ PHASE_TABLE = {
             "All tasks done → run the command above",
         ],
         "done_when": "Every task in the plan is ticked [x]",
-        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py tam-hoan --ly-do \"<why>\"`, whose reason is shown to the user",
+        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --ly-do \"<why>\"`, whose reason is shown to the user",
     },
     "qc": {
         "entry": "Implementation is finished",
@@ -1131,16 +1134,16 @@ IMPLEMENT_SUBAGENT_ROW = {
               "merging one wave before releasing the next — the leader only does what cannot be split",
     "cmd": "python3 scripts/tdq_state.py set phase=qc",
     "checklist": [
-        "Step 0: python3 scripts/tdq_team.py phan-cong — read the whole plan, write the map "
+        "Step 0: python3 scripts/tdq_team.py assign — read the whole plan, write the map "
         "docs/tdq/team/<slug>.json (per task: dispatched / kept + reason + file zone + wave)",
-        "python3 scripts/tdq_team.py kiem-ke — a map breaking the rules exits non-zero, fix it and re-run",
-        "python3 scripts/tdq_team.py cum — take the next wave, open a branch with `mo <task-id>`, "
+        "python3 scripts/tdq_team.py audit — a map breaking the rules exits non-zero, fix it and re-run",
+        "python3 scripts/tdq_team.py wave — take the next wave, open a branch with `open <task-id>`, "
         "mark [>] on EVERY task just dispatched (many [>] is valid, [~] still only one)",
-        "A sub-agent reports done → `kiem <branch>` to scan for conflicts → `hop <branch>` → flip [>] to [x] RIGHT AWAY",
-        "Wave finished → `don` to clean the worktrees, then `cum` for the next wave; repeat until no task is left",
+        "A sub-agent reports done → `check <branch>` to scan for conflicts → `merge <branch>` → flip [>] to [x] RIGHT AWAY",
+        "Wave finished → `clean` to clean the worktrees, then `wave` for the next wave; repeat until no task is left",
     ],
     "done_when": "Every task in the plan is ticked [x] and no leftover worktree remains",
-    "forbidden": "Doing a task the map marked as dispatched yourself on main; merging before `kiem` passes; "
+    "forbidden": "Doing a task the map marked as dispatched yourself on main; merging before `check` passes; "
                  "leaving several tasks marked [~]",
 }
 
@@ -1630,7 +1633,7 @@ def _chan_worktree_con_mo(cwd):
         return
     ten = ", ".join(f"{d.get('ma_task')} ({d.get('duong_dan')})" for d in mo)
     _fail(f"{len(mo)} worktree(s) still open: {ten}. "
-          "Clean them up first: python3 scripts/tdq_team.py soat --don")
+          "Clean them up first: python3 scripts/tdq_team.py sweep --clean")
 
 
 def _pop_json_flag(argv):
@@ -1676,7 +1679,7 @@ def _echo_state(cmd, state, want_json):
 
 
 def _cli_implement_pause(cwd, cmd, rest):
-    """`tam-hoan --ly-do "<why>"` declares the pause, `tiep-tuc` clears it.
+    """`pause --ly-do "<why>"` declares the pause, `resume` clears it.
 
     A declared pause is the only legal way to end a turn while the plan still
     has open tasks, so the reason is mandatory: an undeclared stop is exactly
@@ -1688,20 +1691,20 @@ def _cli_implement_pause(cwd, cmd, rest):
         _fail("No state yet — run init first.")
     stamp = state.get("updated_at")
 
-    if cmd == "tiep-tuc":
+    if cmd == "resume":
         if rest:
-            _fail("tiep-tuc takes no argument.")
+            _fail("resume takes no argument.")
         state["implement_pause"] = None
         save(cwd, state, expect_updated_at=stamp)
         _info("implement pause cleared — the Stop gate is armed again")
-        _echo_state("tiep-tuc", state, want_json)
+        _echo_state("resume", state, want_json)
         return
 
     reason = ""
     if len(rest) >= 2 and rest[0] == "--ly-do":
         reason = " ".join(rest[1:]).strip()
     if not reason:
-        _fail('tam-hoan needs a reason: tam-hoan --ly-do "<why the run stopped>".')
+        _fail('pause needs a reason: pause --ly-do "<why the run stopped>".')
     state["implement_pause"] = {
         "ly_do": reason[:400],
         "at": now_iso(),
@@ -1709,7 +1712,7 @@ def _cli_implement_pause(cwd, cmd, rest):
     }
     save(cwd, state, expect_updated_at=stamp)
     _info(f"implement pause declared: {reason[:120]}")
-    _echo_state("tam-hoan", state, want_json)
+    _echo_state("pause", state, want_json)
 
 
 def cli(argv):
@@ -1723,6 +1726,10 @@ def cli(argv):
               "delete the stray file so no wrong approval state gets read.")
     if not argv:
         _fail("Missing command.")
+    # Hidden alias (`tam-hoan` → `pause`); the table lives in tdq_ten_lenh.py.
+    _bi_danh = tdq_ten_lenh.giai_ten(argv[0], tdq_ten_lenh.BANG_DOI_TEN["tdq_state.py"])
+    if _bi_danh is not None:
+        argv = [_bi_danh] + list(argv[1:])
     cmd = argv[0]
 
     if cmd == "next":
@@ -1839,7 +1846,7 @@ def cli(argv):
         _echo_state("set", state, want_json)
         return
 
-    if cmd in ("tam-hoan", "tiep-tuc"):
+    if cmd in ("pause", "resume"):
         return _cli_implement_pause(cwd, cmd, argv[1:])
 
     if cmd == "approve":

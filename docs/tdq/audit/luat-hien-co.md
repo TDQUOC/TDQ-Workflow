@@ -55,8 +55,8 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L003 | `skills/tdq-build/SKILL.md:24` | `- [x]` TRƯỚC khi bắt task sau. Cấm gom tick cuối turn. Ba trạng thái: `[ ]` chưa làm · | `- [x]` BEFORE the next task starts. Never batch ticks at the end of a turn. Three states: |
 | L004 | `skills/tdq-build/SKILL.md:30` | `eNm` các task chưa xong. Giữ nguyên khi tick, không chấm lại giữa chừng, và nó KHÔNG | the sum of `eNm` over unfinished tasks. Keep it as-is when ticking, do not re-score midway, |
 | L005 | `skills/tdq-build/SKILL.md:33` | Red → green.** Mỗi task: chạy/viết check trước (phải fail), rồi code, rồi chạy lại đến pass. | - **Red → green.** Every task: run/write the check first (it must fail), then code, then rerun |
-| L006 | `skills/tdq-build/SKILL.md:62` | Nhận báo cáo thì `kiem` rồi `hop`, tick `[x]` NGAY, `don`, rồi quay lại `cum`. | On receiving a report, run `kiem` then `hop`, tick `[x]` IMMEDIATELY, `don`, then back to |
-| L007 | `skills/tdq-build/SKILL.md:63` | Mặc định là GIAO. Chỉ được giữ task lại cho mình khi khớp đúng 1 trong 4 nhóm lý do | `cum`. The default is DELEGATE. You may keep a task only when it matches exactly one group |
+| L006 | `skills/tdq-build/SKILL.md:62` | Nhận báo cáo thì `kiem` rồi `hop`, tick `[x]` NGAY, `don`, rồi quay lại `cum`. | On receiving a report, run `check` then `merge`, tick `[x]` IMMEDIATELY, `clean`, then back to |
+| L007 | `skills/tdq-build/SKILL.md:63` | Mặc định là GIAO. Chỉ được giữ task lại cho mình khi khớp đúng 1 trong 4 nhóm lý do | `wave`. The default is DELEGATE. You may keep a task only when it matches exactly one group |
 | L008 | `skills/tdq-build/SKILL.md:67` | [references/team-mode.md](references/team-mode.md) — **BẮT BUỘC mở đọc trước khi | Full rules (decision table, delegation prompt template, ĐÚNG/SAI examples, self-check): |
 | L009 | `skills/tdq-build/SKILL.md:69` | phân công; cấm làm theo trí nhớ.** | assigning; working from memory is banned.** |
 | L010 | `skills/tdq-build/SKILL.md:70` | Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**. | The mode is what the USER said at approval. Missing mode, or you think another mode fits |
@@ -143,9 +143,9 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L091 | `skills/tdq-build/references/team-mode.md:27` | Mode đội KHÔNG có nghĩa mọi task đều phải giao. Nó có nghĩa: **task nào tách được thì | Team mode does NOT mean every task must be delegated. It means: **whatever can be split must |
 | L092 | `skills/tdq-build/references/team-mode.md:28` | phải tách**, phần còn lại leader tự làm — như một trưởng nhóm thật, không phải một | be split**, and the leader does the rest — like a real team lead, neither someone who hoards |
 | L093 | `skills/tdq-build/references/team-mode.md:29` | người ôm hết việc cũng không phải một người chia bừa. | all the work nor someone who scatters it blindly. |
-| L094 | `skills/tdq-build/references/team-mode.md:40` | `phan-cong` đọc TOÀN BỘ plan (không phải từng task một), dựng vùng file của mỗi task | `phan-cong` reads the ENTIRE plan (not one task at a time), builds each task's file region from |
+| L094 | `skills/tdq-build/references/team-mode.md:40` | `phan-cong` đọc TOÀN BỘ plan (không phải từng task một), dựng vùng file của mỗi task | `assign` reads the ENTIRE plan (not one task at a time), builds each task's file region from |
 | L095 | `skills/tdq-build/references/team-mode.md:60` | \| **mặc định: GIAO** \| **không khớp 5 dòng trên** \| `python3 scripts/tdq_team.py kiem-ke` exit 0 \| | \| **mặc định: GIAO** \| **matches none of the 5 rows above** \| `python3 scripts/tdq_team.py kiem-ke` exit 0 \| |
-| L096 | `skills/tdq-build/references/team-mode.md:73` | python3 scripts/tdq_team.py kiem T1.1 # dò xung đột, KHÔNG đụng repo | python3 scripts/tdq_team.py kiem T1.1      # probe for conflicts, does NOT touch the repo |
+| L096 | `skills/tdq-build/references/team-mode.md:73` | python3 scripts/tdq_team.py kiem T1.1 # dò xung đột, KHÔNG đụng repo | python3 scripts/tdq_team.py check T1.1      # probe for conflicts AND rerun the task's own `Test:` |
 | L097 | `skills/tdq-build/references/team-mode.md:80` | này nhanh hơn `main`, không phải vì agent con chạy nhanh hơn bạn. | mode beats `main`, not because sub-agents type faster than you. |
 | L098 | `skills/tdq-build/references/team-mode.md:93` | VÙNG FILE: scripts/alpha.py, tests/test_alpha.py — CẤM sửa file ngoài danh sách này |  |
 | L099 | `skills/tdq-build/references/team-mode.md:94` | TEST: <lệnh kiểm của task> — phải đỏ trước, xanh sau |  |

@@ -30,7 +30,7 @@ The proposal sits at A whichever mode it is — change the text of line A, never
 1–3 lines long, sitting right under the two options. Vague wording is banned.
 
 **Which mode gets proposed is decided by a COMMAND, not by eye.** Run it on the plan you have
-just written: `tdq_bench.py mo-phong --plan <plan> --thuc-do <constants file> --he-so-agent 1.5`,
+just written: `tdq_bench.py simulate --plan <plan> --thuc-do <constants file> --he-so-agent 1.5`,
 then take the `Winner:` line as the proposal and the minute gap as the evidence. The four grounds
 below only serve to WRITE the reason so a reader follows it; they never overturn what the command
 returned:
@@ -44,14 +44,14 @@ Close with exactly one sentence saying why NOT the other option.
 
 An example carrying every ground:
 
-> `mo-phong` cho main 40,7 phút so với đội 32,6 phút (hệ số agent 1,5) nên đề xuất B; <!-- i18n-allow: example written in the default document language -->
+> `simulate` cho main 40,7 phút so với đội 32,6 phút (hệ số agent 1,5) nên đề xuất B; <!-- i18n-allow: example written in the default document language -->
 > 12 task, 4 task cùng sửa `tdq_state.py`, T4.3 mang nhãn `(mcp)` nên leader vẫn giữ 3 task. <!-- i18n-allow: example written in the default document language -->
 
 ## B does NOT mean handing everything out
 
 Mode B is a hybrid, not "every task pushed to a sub-agent". The leader still keeps for itself
 (`tu_lam`) the tasks matching exactly one group of the closed keep-set: `phu-thuoc`, `vung-khoa`, `mcp`,
-`file-luat`, `hop-dong`. Everything else MUST be handed out — and `scripts/tdq_team.py kiem-ke`
+`file-luat`, `hop-dong`. Everything else MUST be handed out — and `scripts/tdq_team.py audit`
 exits non-zero when the leader invents a group outside that set to keep work. The set is the
 constant `LY_DO_GIU` in `scripts/tdq_team.py`; the full lookup table lives in
 `tdq-build/references/team-mode.md`.

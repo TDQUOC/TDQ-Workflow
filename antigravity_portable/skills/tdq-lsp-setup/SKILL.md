@@ -20,9 +20,9 @@ between finding a name and finding the thing. The search-order rule lives in
 `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
 command runs. This holds even when a rung is trivially fixable and even when the build is blocked.
 Starting or stopping a process already installed on the machine is not installing — that is why
-`danh-thuc` and `nha` are allowed to run unattended.
+`wake` and `release` are allowed to run unattended.
 
-## The ladder — `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py kiem`
+## The ladder — `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py check`
 
 Seven rungs, printed one line each, a missing rung printing the command that fixes it.
 
@@ -67,8 +67,8 @@ lumen is upstream <https://github.com/ory/lumen>, a plugin this repo does not sh
 tool at all. Install per host (Claude Code, Codex, OpenCode, Cursor, or the bare MCP server for
 anything else), and what to do when there is no plugin system: [references/lumen.md](references/lumen.md).
 
-`danh-thuc` wakes the daemon; `nha` releases the model right after the search — never leave one
-resident, that is the machine cost the user objected to. `nha` kills the daemon only when this
+`wake` wakes the daemon; `release` releases the model right after the search — never leave one
+resident, that is the machine cost the user objected to. `release` kills the daemon only when this
 script started it, tracked by a marker file; on macOS the desktop app restarts it anyway, so only
 the model release matters. Full lifecycle: [uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
 
@@ -113,7 +113,7 @@ raises a prompt, and a search layer that asks permission per call stops being us
 plugin's `hooks.json` up next to itself with the version in the name, drop only `PreToolUse`, keep
 `SessionStart`. Hooks load at session start, so the nudging line keeps appearing until restart.
 
-Done when: `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py kiem` prints seven rungs with no actionable gap and exits 0,
+Done when: `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py check` prints seven rungs with no actionable gap and exits 0,
 and the effect check of `tdq-intake` step 1b passes — existence alone proves nothing.
 Next step: the phase does not change — go back to the phase that called this skill, load that
 skill again, and route the search by question kind, per

@@ -8,18 +8,18 @@ gửi cho agent thật trong một hộp cát riêng, rồi chấm bằng phép 
 ## Chạy lại — một lệnh
 
 ```
-python3 scripts/tdq_eval.py chay --nhanh ca-hai --lan 3 --wt /private/tmp/tdq-eval-nhanh --tran-usd 70 --tiep-tuc
+python3 scripts/tdq_eval.py run --nhanh ca-hai --lan 3 --wt /private/tmp/tdq-eval-nhanh --tran-usd 70 --tiep-tuc
 ```
 
-Trước đó dựng hai worktree một lần: `python3 scripts/tdq_eval.py dung-nhanh --dich /private/tmp/tdq-eval-nhanh`.
+Trước đó dựng hai worktree một lần: `python3 scripts/tdq_eval.py setup --dich /private/tmp/tdq-eval-nhanh`.
 Thêm `--ca <mã ca>` để chạy đúng một ca. `--tiep-tuc` bỏ qua bản ghi đã `xong` và chạy lại
 bản ghi `loi`, nên dừng giữa chừng rồi gọi lại là an toàn.
 
 Sửa giám khảo giữa chừng thì KHÔNG cần chạy lại phiên thật — transcript đã lưu:
 
 ```
-python3 scripts/tdq_eval.py cham --tat-ca
-python3 scripts/tdq_eval.py bao-cao --ghi docs/tdq/audit/do-tuan-thu.md
+python3 scripts/tdq_eval.py score --tat-ca
+python3 scripts/tdq_eval.py report --ghi docs/tdq/audit/do-tuan-thu.md
 ```
 
 ## Bộ ca
@@ -44,4 +44,4 @@ Ca nào có `seed/` riêng thì file trong đó ghi đè lên `_chung/seed/` khi
 ## Đọc kết quả
 
 Bản ghi JSON: `docs/tdq/bench/tuan-thu/<ca>__<nhánh>__<lần>.json`. Bảng số và giá trị p:
-`python3 scripts/tdq_eval.py bao-cao`. Đếm nhanh: `--dem` · độ phủ: `--phu` · tiền: `--chi-phi`.
+`python3 scripts/tdq_eval.py report`. Đếm nhanh: `--dem` · độ phủ: `--phu` · tiền: `--chi-phi`.

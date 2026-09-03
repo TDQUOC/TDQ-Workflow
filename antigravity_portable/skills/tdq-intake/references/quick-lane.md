@@ -81,7 +81,7 @@ steps below before doing step 1; working from memory is banned.
    whose `Chạm:` sets are disjoint** (no task sharing a path with another): <!-- i18n-allow: canonical name in the default language -->
    - **3 or more** → hand them to sub-agent `tdq-implementer`, one agent per task, issued in
      the same response so they run in parallel; the cap is **4 branches**, the same cap
-     `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py cum` applies in deep mode (task 5 prints `CHỜ SLOT`). Build <!-- i18n-allow: canonical name in the default language -->
+     `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py wave` applies in deep mode (task 5 prints `CHỜ SLOT`). Build <!-- i18n-allow: canonical name in the default language -->
      a worktree only for an agent that ACTUALLY writes files. Mark `[>]` when handing over,
      switch to `[x]` as the report lands.
    - **fewer than 3** → run inline; an agent for 1–2 tasks costs more briefing than it saves.

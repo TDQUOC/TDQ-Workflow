@@ -54,19 +54,19 @@ machine real memory the whole session for a layer used a fraction of the time. S
 1. A query of the **vague-concept** kind comes in, or one you cannot place in any row of the §2
    table. Those two cases are the trigger — a relationship question or an exact known token
    never wakes lumen.
-2. `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py danh-thuc` — wake the daemon, waiting up to the timeout.
+2. `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py wake` — wake the daemon, waiting up to the timeout.
 3. Run the lumen query, and the LSP query too when the kind was unclear, then merge before
    reading. lumen's `semantic_search` auto-reindexes the project incrementally (Merkle root-hash
    diff, only changed files re-embedded) whenever its index is stale — no separate reindex step
    or script is needed to keep data fresh.
-4. `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py nha` — release the model IMMEDIATELY, in the same turn.
+4. `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py release` — release the model IMMEDIATELY, in the same turn.
 
 Rules around those four steps:
 
 - Wake on demand only, on the two triggers in step 1. Never at session start, never "in case we
   need it later", and never for a question the §2 table already routes to another layer.
 - The timeout not being met is not a failure of the turn: say so in one line and fall to grep.
-- `nha` stops the daemon only when this script started it. A daemon the user started is left
+- `release` stops the daemon only when this script started it. A daemon the user started is left
   running — the workflow only ever turns off what it turned on.
 - lumen unhealthy (no Ollama, no model, index broken) → skip layer 2 entirely. agent-lsp then
   grep. Do not stop to repair lumen mid-task; rung 5 has already reported it.

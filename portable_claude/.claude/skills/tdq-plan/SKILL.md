@@ -22,7 +22,7 @@ scope. Spec approved → plan NOW.
      yourself. Rule: `tdq-build/references/team-mode.md`.
    The proposal is **never eyeballed**: once the plan is written (step 2), MEASURE on that very plan:
    ```
-   python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_bench.py" mo-phong --plan docs/tdq/plan/<slug>.md \
+   python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_bench.py" simulate --plan docs/tdq/plan/<slug>.md \
      --thuc-do docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json --he-so-agent 1.5
    ```
    The `Winner:` line of that command IS the proposal; copy the minute gap into the reason.
@@ -40,7 +40,7 @@ scope. Spec approved → plan NOW.
    - [ ] **T1.1** (e6m) <the concrete work> — Test: <command or pass criterion>
    ```
    **Every task that creates or edits a source file needs a `Chạm:` line right under it**, listing <!-- i18n-allow: canonical name kept verbatim -->
-   the paths in backticks: it is the blast-radius map and what `tdq_team.py phan-cong` reads to cut
+   the paths in backticks: it is the blast-radius map and what `tdq_team.py assign` reads to cut
    waves. Template: the 2 sections `Chạm:`/`Cụm song song` of plan-template. <!-- i18n-allow: canonical name kept verbatim -->
    **Build `Chạm:` from "who calls this", never by eye:** `mcp__lsp__find_references` on every <!-- i18n-allow: canonical name kept verbatim -->
    symbol the task changes, so a caller outside the obvious folder still lands on the line. <!-- i18n-allow: canonical rule sentence in the default language -->

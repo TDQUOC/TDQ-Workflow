@@ -33,15 +33,15 @@ all the work nor someone who scatters it blindly.
 ### Step 0 — assign the WHOLE plan before typing the first line of code
 
 ```
-python3 scripts/tdq_team.py phan-cong
-python3 scripts/tdq_team.py kiem-ke
+python3 scripts/tdq_team.py assign
+python3 scripts/tdq_team.py audit
 ```
 
-`phan-cong` reads the ENTIRE plan (not one task at a time), builds each task's file region from
+`assign` reads the ENTIRE plan (not one task at a time), builds each task's file region from
 its `Chạm:` line, then writes `docs/tdq/team/<slug>.json`. Each task has exactly 4 fields: <!-- i18n-allow: canonical field names of the plan -->
 `quyet_dinh` (giao | tu_lam) · `ly_do` · `vung_file` · `dot`.
 
-`kiem-ke` exits non-zero when a `tu_lam` task has an empty reason or one outside the closed
+`audit` exits non-zero when a `tu_lam` task has an empty reason or one outside the closed
 reason set (the lookup table just below is that set, exactly the `LY_DO_GIU` constant the
 command reads).
 This is the anti-loophole fence. You cannot quietly do everything on main and claim the work
@@ -57,24 +57,44 @@ in the region of a task recorded as `giao` without having opened its branch.
 | `mcp` | the task's `Dùng:` line ends with the `(mcp)` label | `grep '(mcp)' <plan>` <!-- i18n-allow: canonical field names of the plan --> |
 | `file-luat` | the file region touches `skills/`, `hooks/`, `agents/`, `.claude/`, `.codex/`, `CLAUDE.md`, `AGENTS.md` | look at `vung_file` in the map |
 | `hop-dong` | the task builds a shared contract (data type, constant, message template, registry) that later tasks read | several other tasks declare `Cần:` pointing at it <!-- i18n-allow: canonical field names of the plan --> |
-| **mặc định: GIAO** | **matches none of the 5 rows above** | `python3 scripts/tdq_team.py kiem-ke` exit 0 <!-- i18n-allow: canonical field names of the plan --> |
+| **mặc định: GIAO** | **matches none of the 5 rows above** | `python3 scripts/tdq_team.py audit` exit 0 <!-- i18n-allow: canonical field names of the plan --> |
 
 These five groups are a CLOSED set. Inventing a sixth reason ("this is faster if I do it",
 "this task is too small", "explaining it to a sub-agent takes longer than doing it") is working
-around the rule, and `kiem-ke` will go red.
+around the rule, and `audit` will go red.
 
 ### The wave loop
 
 ```
-python3 scripts/tdq_team.py cum            # next wave: delegatable tasks with no locked region
-python3 scripts/tdq_team.py mo T1.1        # branch + its own worktree for the task
+python3 scripts/tdq_team.py wave            # next wave: delegatable tasks with no locked region
+python3 scripts/tdq_team.py open T1.1        # branch + its own worktree for the task
 # → call the tdq-implementer agent with the prompt template below, EVERY task of the wave in ONE response
 # → mark every task you just handed out [>] in the plan (several [>] is valid)
-python3 scripts/tdq_team.py kiem T1.1      # probe for conflicts, does NOT touch the repo
-python3 scripts/tdq_team.py hop T1.1       # merge, then clean up the worktree right away
+python3 scripts/tdq_team.py check T1.1      # probe for conflicts AND rerun the task's own `Test:`
+python3 scripts/tdq_team.py merge T1.1       # rebase → probe → rerun the test → merge → clean up
 # → turn [>] into [x] IMMEDIATELY once the merge lands
-python3 scripts/tdq_team.py soat --don     # end of wave: sweep EVERY request, then back to `cum`
+python3 scripts/tdq_team.py resolve T1.1     # only when something is stuck: prints both sides
+python3 scripts/tdq_team.py sweep --clean   # end of wave: sweep EVERY request, then back to `wave`
 ```
+
+### What the machine checks for you, so you do not have to
+
+- **The sub-agent's word is not evidence.** `check` runs the command in that task's `Test:`
+  line inside the task's own worktree. Red exits non-zero and says `CODE error`; a `Test:`
+  line naming no runnable command says `PLAN error` — fix the plan, that is a defect too.
+- **`merge` refuses a branch whose test is red.** The integration branch takes no commit
+  until the task proves itself. `TICK-READY` from a sub-agent is a claim, not a result.
+- **`merge` rebases first.** The branch is rebased onto the current integration tip before
+  the conflict probe, so every merge accounts for everything that landed before it. A rebase
+  that conflicts is aborted at once — the worktree is never left mid-rebase.
+- **`resolve <task>` is the way out of a conflict.** It prints every stuck file with BOTH
+  sides and changes nothing. Settle it in the worktree, then `check` again.
+- **Writing outside the declared area is blocked.** A sub-agent editing, from inside its
+  worktree, a file its task did not declare in `Chạm:` is refused by the hook. The way out is
+  to tell the leader to widen `Chạm:` and cut the waves again — never to write it anyway.
+- **`assign` names hot files.** A path declared by 2+ tasks is printed as `HOT FILE` with the
+  task codes. Pull that shared change into ONE task in an earlier wave; worktrees do nothing
+  for a file every branch has to edit.
 
 While a wave runs, the leader works the `tu_lam` tasks of that same wave — that is why this
 mode beats `main`, not because sub-agents type faster than you.
@@ -105,19 +125,19 @@ a missing field means it has to guess, and a wrong guess is paid for at merge ti
 ### RIGHT/WRONG examples
 
 1. Splitting the work
-   - RIGHT: `phan-cong` done, 9/12 tasks `giao`, 3 tasks `tu_lam` with reason codes; `kiem-ke` exit 0.
+   - RIGHT: `assign` done, 9/12 tasks `giao`, 3 tasks `tu_lam` with reason codes; `audit` exit 0.
    - WRONG: read the plan, think "faster if I just do it", work on main, never generate the map.
 2. Delegation rhythm
    - RIGHT: one response calling the agent 4 times for 4 tasks of the same wave — they run concurrently.
    - WRONG: call 1 agent, wait for it, then call the next — that is mode `main` wearing a team costume.
 3. Merging
    - RIGHT: `kiem T1.2` clean → `hop T1.2` → tick `[x]` right away.
-   - WRONG: merge straight through with no `kiem`, hit a conflict midway, patch it up in the main repo.
+   - WRONG: merge straight through with no `check`, hit a conflict midway, patch it up in the main repo.
 4. Tick marks
    - RIGHT: 4 tasks `[>]` at once plus 1 `[~]` task of the leader.
    - WRONG: 4 tasks `[~]` at once — the hook blocks it, and nobody can tell where the leader really is.
 5. File regions
-   - RIGHT: two tasks both touch `scripts/a.py` → `phan-cong` puts them in two different waves.
+   - RIGHT: two tasks both touch `scripts/a.py` → `assign` puts them in two different waves.
    - WRONG: delegate both in one wave because "it'll probably be fine" — git says nothing until the merge breaks.
 6. Shared contracts
    - RIGHT: the task creating the `TRAN_SONG_SONG` constant and the message template is kept and
@@ -127,14 +147,14 @@ a missing field means it has to guess, and a wrong guess is paid for at merge ti
 
 ## The worktree ledger
 
-Every worktree `mo` opens is written into `docs/tdq/worktrees.json` (machine) and rendered
+Every worktree `open` opens is written into `docs/tdq/worktrees.json` (machine) and rendered
 into `docs/tdq/worktrees.md` (human). The ledger outlives the request: a row stays open until
 the worktree is really gone, so a worktree of a request finished weeks ago is still findable.
 Write it ONLY through `scripts/tdq_team.py` — the same rule as `state.json`.
 
 ```
-python3 scripts/tdq_team.py soat        # report: task · request · path · age · size · clean · merged
-python3 scripts/tdq_team.py soat --don  # the same sweep, and remove everything that is safe
+python3 scripts/tdq_team.py sweep        # report: task · request · path · age · size · clean · merged
+python3 scripts/tdq_team.py sweep --clean  # the same sweep, and remove everything that is safe
 ```
 
 **Removing needs all THREE conditions**, checked per worktree, never by feel: the working
@@ -147,7 +167,7 @@ printed. The task branch is deleted after the merge; the integration branch is k
 and those exist nowhere else. Such a worktree is kept with its own reason and its own way
 out, never lumped in with uncommitted changes.
 
-`soat` only ever deletes inside `.tdq-worktrees/`. A worktree living elsewhere is listed
+`sweep` only ever deletes inside `.tdq-worktrees/`. A worktree living elsewhere is listed
 under "out of scope" and is never touched: it may well be the user's own working copy.
 
 **Rule — the suggestion block goes at the END of the turn.** A worktree that cannot be
@@ -165,10 +185,10 @@ prints one `[TDQ:WORKTREE]` line for as long as that is true.
 Before ending phase implement, all of these must hold:
 
 ```
-python3 scripts/tdq_team.py kiem-ke          # exit 0
-python3 scripts/tdq_team.py cum              # prints "HẾT: không còn task nào để giao" <!-- i18n-allow: quoted machine output -->
-python3 scripts/tdq_team.py soat --don       # every worktree cleaned up, across all requests
-python3 scripts/tdq_team.py soat             # the ledger holds no open row left
+python3 scripts/tdq_team.py audit          # exit 0
+python3 scripts/tdq_team.py wave              # prints "HẾT: không còn task nào để giao" <!-- i18n-allow: quoted machine output -->
+python3 scripts/tdq_team.py sweep --clean       # every worktree cleaned up, across all requests
+python3 scripts/tdq_team.py sweep             # the ledger holds no open row left
 git worktree list                            # only the root worktree left
 grep -c '^- \[x\]' docs/tdq/plan/<slug>.md   # equals the total task count
 ```

@@ -28,7 +28,7 @@ table narrow.
 | D9 | `schema_version` cũ hơn bản hiện tại | canh-bao | State do bản plugin cũ ghi — nâng schema trước khi đọc tiếp. | `set schema_version=4` <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
 | D10 | thiếu `started_at` hoặc `phase_history` rỗng | canh-bao | Mất mốc thời gian — bảng thời gian của report sẽ sai nếu không vá. | `set started_at=ISO_MỐC_MỞ_REQUEST` <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
 | D11 | có `state.json` lạc chỗ ngoài project root | chan | Hai state cùng sống: hook ghi một nơi, model đọc một nơi khác. | — (không lệnh nào chữa được) <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
-| D12 | có task mang dấu `[>]`: đã giao agent con mà chưa hợp nhánh về | ok | Việc còn nằm ở nhánh riêng — dò xung đột rồi hợp về nhánh tích hợp. | `tdq_team.py kiem TASK` rồi `tdq_team.py hop TASK` <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
+| D12 | có task mang dấu `[>]`: đã giao agent con mà chưa hợp nhánh về | ok | Việc còn nằm ở nhánh riêng — dò xung đột rồi hợp về nhánh tích hợp. | `tdq_team.py check TASK` rồi `tdq_team.py merge TASK` <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
 
 ## Known limits
 

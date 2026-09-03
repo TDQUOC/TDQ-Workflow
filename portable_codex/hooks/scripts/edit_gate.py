@@ -117,31 +117,44 @@ def main():
             block(cwd, payload, "TDQ:TEAM", [
                 "The assignment map is unreadable — nobody can prove this task was delegated "
                 "or done by the leader.",
-                "Run: python3 scripts/tdq_team.py phan-cong (regenerate), then kiem-ke.",
+                "Run: python3 scripts/tdq_team.py assign (regenerate), then audit.",
                 "Editing code with a broken map is banned: that is exactly the loophole the map guards.",
             ])
         elif canh_bao["kieu"] == "chua-phan-cong":  # i18n-allow
             block(cwd, payload, "TDQ:TEAM", [
                 "Team mode with no assignment map — you may not edit code on main first.",
-                "Run: python3 scripts/tdq_team.py phan-cong (then kiem-ke, then cum).",
+                "Run: python3 scripts/tdq_team.py assign (then audit, then wave).",
                 "A task the leader must do itself is recorded as tu_lam with one closed reason.",
             ])
         elif canh_bao["kieu"] == "da-giao-thieu-nhanh":  # i18n-allow
             block(cwd, payload, "TDQ:TEAM", [
                 f"{canh_bao['ma']} carries the [>] mark but branch "
                 f"{canh_bao['nhanh']} is missing — the sub-agent died midway or never ran.",
-                f"Run: python3 scripts/tdq_team.py mo {canh_bao['ma']}",
+                f"Run: python3 scripts/tdq_team.py open {canh_bao['ma']}",
                 "Or put the task back to [ ] and assign it again.",
             ])
         else:
             block(cwd, payload, "TDQ:TEAM", [
                 f"This file belongs to the area of {canh_bao['ma']} — the map says GIAO to a "
                 f"sub-agent, the leader does not edit it.",
-                f"Run: python3 scripts/tdq_team.py mo {canh_bao['ma']} then hand it to "
+                f"Run: python3 scripts/tdq_team.py open {canh_bao['ma']} then hand it to "
                 f"agent tdq-implementer.",
                 "Really have to do it yourself → change the map to tu_lam with one closed "
-                "reason, then run kiem-ke.",
+                "reason, then run audit.",
             ])
+
+    # (2c) H1: `Chạm:` used to be a declaration nobody checked. A sub-agent writing from its
+    # own worktree to a file outside its declared area is exactly how two agents of one wave
+    # end up on the same file and only find out at merge time.
+    from tdq_team import ngoai_vung_khai  # noqa: E402 — imported only when truly needed
+    ngoai_vung = ngoai_vung_khai(cwd, abs_target)
+    if ngoai_vung:
+        block(cwd, payload, "TDQ:TEAM", [
+            f"{ngoai_vung['duong']} is outside the file area {ngoai_vung['ma']} declared.",
+            f"Task {ngoai_vung['ma']} may write in: {', '.join(ngoai_vung['vung_file'])}.",
+            "Really need this file → report it to the leader so the task's `Chạm:` is widened "
+            "and the waves are cut again; do not write it from here.",
+        ])
 
     # in implement/qc while the plan marks no task as in progress → BLOCK.
     # stop_gate only compares the plan fingerprint at start/end of turn, so it cannot catch a

@@ -17,8 +17,8 @@ This skill owns three phases: `implement` → `qc` → `report`.
 - **The end of the turn is gated, not merely asked for.** While the phase is `implement` and
   the plan still has an open task, the Stop hook refuses to close the turn with
   `[TDQ:UNFINISHED]` and pushes you to keep going. Genuinely stuck on an error you cannot fix
-  yourself → run `python3 "./scripts/tdq_state.py" tam-hoan --ly-do "<why>"`,
-  TELL THE USER that reason in chat, and only then end the turn; `tiep-tuc` clears it when the
+  yourself → run `python3 "./scripts/tdq_state.py" pause --ly-do "<why>"`,
+  TELL THE USER that reason in chat, and only then end the turn; `resume` clears it when the
   run resumes. Stopping without declaring a reason is the one thing the gate exists to refuse.
 - **Technical blocker → take the proposed option, do not ask.** When an option exists, TAKE
   IT, write one decision line plus the reason into the working log, and carry on. You may
@@ -62,14 +62,14 @@ This skill owns three phases: `implement` → `qc` → `report`.
      [references/team-mode.md](references/team-mode.md).
    - `subagent` (label the user sees: "giao trợ lý (sub-agent implement)"): you are the LEADER of a <!-- i18n-allow: user-facing mode label -->
      team. **Step 0 — before typing the first line of code: assign the WHOLE plan**
-     (`python3 scripts/tdq_team.py phan-cong`, then `kiem-ke`). Then loop wave by wave.
-     `cum` takes the next wave; `mo <task>` opens a branch + worktree per task.
+     (`python3 scripts/tdq_team.py assign`, then `audit`). Then loop wave by wave.
+     `wave` takes the next wave; `open <task>` opens a branch + worktree per task.
      Call `tdq-implementer` for EVERY task of the wave IN ONE response — several Task calls in
      one response means they run concurrently. Mark the tasks you just handed out `[>]`.
-     On receiving a report, run `kiem` then `hop`, tick `[x]` IMMEDIATELY, `don`, then back to
-     `cum`. The default is DELEGATE. You may keep a task only when it matches exactly one group
+     On receiving a report, run `check` then `merge`, tick `[x]` IMMEDIATELY, `clean`, then back to
+     `wave`. The default is DELEGATE. You may keep a task only when it matches exactly one group
      in the closed reason set (lookup table in `team-mode.md`); inventing a group outside that
-     set makes `kiem-ke` exit non-zero. While a wave is running, the leader works the `tu_lam`
+     set makes `audit` exit non-zero. While a wave is running, the leader works the `tu_lam`
      tasks of that same wave.
      Full rules (decision table, delegation prompt template, RIGHT/WRONG examples, self-check):
      [references/team-mode.md](references/team-mode.md) — **you MUST open and read it before
@@ -95,7 +95,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
    5. Green: rerun until it passes, running only **the module's tests** — the full suite is
       saved for exactly one run at QC. Paste the real output; never declare done unrun.
    6. Turn `- [~]` into `- [x]` for that task in the plan IMMEDIATELY — in mode `subagent` the
-      main agent ticks as soon as the sub-agent's report arrives AND `hop` has completed,
+      main agent ticks as soon as the sub-agent's report arrives AND `merge` has completed,
       without waiting for the other tasks.
       (deliberate repetition — the original is in `## Hard rules` in this same file.)
 

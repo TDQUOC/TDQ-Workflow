@@ -5,7 +5,7 @@ actionable gap. It takes one LSP call and one grep.
 
 ## Why the ladder is not enough
 
-All seven rungs of `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py kiem` check that something EXISTS: a binary, a
+All seven rungs of `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py check` check that something EXISTS: a binary, a
 registered server, a permission entry, a config file. None of them asks the server a question and
 looks at the answer. A language server whose import root is wrong starts fine, reports healthy,
 and then answers every cross-file question from the scope of the single open file.

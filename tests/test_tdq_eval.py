@@ -37,12 +37,12 @@ class KhungTest(unittest.TestCase):
     def test_help_exit_0_va_liet_ke_du_4_lenh_con(self):
         rc, out, _err = chay("--help")
         self.assertEqual(rc, 0)
-        for ten in ("dung-nhanh", "chay", "cham", "bao-cao"):
+        for ten in ("setup", "run", "score", "report"):
             self.assertIn(ten, out)
 
     def test_bon_lenh_con_deu_co_that_trong_bang_lenh(self):
         self.assertEqual(sorted(tdq_eval.LENH),
-                         ["bao-cao", "cham", "chay", "dung-nhanh"])
+                         ["report", "run", "score", "setup"])
 
     def test_thieu_lenh_con_thi_exit_2_chu_khong_lam_gi(self):
         rc, _out, err = chay()
@@ -874,14 +874,14 @@ class LuoiHoiQuyTest(unittest.TestCase):
     def _lenh_mot_dong(self, van):
         for dong in van.split("\n"):
             dong = dong.strip()
-            if dong.startswith("python3 scripts/tdq_eval.py chay"):
+            if dong.startswith("python3 scripts/tdq_eval.py run"):
                 return dong
         self.fail("README phải có đúng dòng lệnh chạy lại")
 
     def test_lenh_chay_lai_trong_readme_parse_duoc(self):
         lenh = self._lenh_mot_dong(self._readme())
         args = tdq_eval.build_parser().parse_args(shlex.split(lenh)[2:])
-        self.assertEqual(args.lenh, "chay")
+        self.assertEqual(args.lenh, "run")
         self.assertIn(args.nhanh, sorted(tdq_eval.NHANH) + ["ca-hai"])
         self.assertTrue(args.ca or args.lan, "lệnh chạy lại phải nêu ca hoặc số lần")
 
@@ -898,7 +898,7 @@ class LuoiHoiQuyTest(unittest.TestCase):
         self.assertIn("duyet-spec", ma)
 
     def test_readme_neu_lenh_cham_lai(self):
-        self.assertIn("cham --tat-ca", self._readme())
+        self.assertIn("score --tat-ca", self._readme())
 
 
 class ApDungTheoPhaseTest(unittest.TestCase):
@@ -954,7 +954,7 @@ class CoBaoCaoGhepTest(unittest.TestCase):
                 json.dump({"ca": "x", "nhanh": nhanh, "lan": 1, "trang_thai": "xong",
                            "ket_qua": {"L001": "dat"}, "chi_phi": 0.5, "so_luot": 3,
                            "transcript": "/khong/co"}, f)
-        args = tdq_eval.build_parser().parse_args(["bao-cao", "--thu-muc", thu_muc, *co])
+        args = tdq_eval.build_parser().parse_args(["report", "--thu-muc", thu_muc, *co])
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             tdq_eval.lenh_bao_cao(args)

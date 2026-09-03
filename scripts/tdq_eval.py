@@ -36,7 +36,11 @@ ROOT = os.path.dirname(SCRIPTS_DIR)
 CA_DIR = os.path.join(ROOT, "evals", "tuan-thu")
 KET_QUA_DIR = os.path.join(ROOT, "docs", "tdq", "bench", "tuan-thu")
 
-LENH = ("dung-nhanh", "chay", "cham", "bao-cao")
+sys.path.insert(0, SCRIPTS_DIR)
+import tdq_ten_lenh  # noqa: E402
+
+BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_eval.py"]
+LENH = ("setup", "run", "score", "report")
 # The two branches compared. `viet` is the Vietnamese skill set, `lai` the hybrid one.
 NHANH = {"viet": "ea0cdbd", "lai": "f620094"}
 GIT_TIMEOUT = 300
@@ -1053,7 +1057,7 @@ def viet_audit(bc, ngay):
     d.append(f"Hai nhánh đem so: `viet` = commit `{NHANH['viet']}` (bộ skill tiếng Việt) · "  # i18n-allow
              f"`lai` = commit `{NHANH['lai']}` (luật lý luận tiếng Anh, khuôn user-facing "  # i18n-allow
              "tiếng Việt).")  # i18n-allow
-    d.append("File này do `python3 scripts/tdq_eval.py bao-cao --ghi` sinh ra từ bản ghi "  # i18n-allow
+    d.append("File này do `python3 scripts/tdq_eval.py report --ghi` sinh ra từ bản ghi "  # i18n-allow
              "JSON trong `docs/tdq/bench/tuan-thu/`; sửa tay là mất tính đối chiếu.")  # i18n-allow
     d.append("")
     d.append("## Vòng chạy")  # i18n-allow
@@ -1195,8 +1199,8 @@ def lenh_bao_cao(args):
     return 0
 
 
-XU_LY = {"dung-nhanh": lenh_dung_nhanh, "chay": lenh_chay,
-         "cham": lenh_cham, "bao-cao": lenh_bao_cao}
+XU_LY = {"setup": lenh_dung_nhanh, "run": lenh_chay,
+         "score": lenh_cham, "report": lenh_bao_cao}
 
 
 def build_parser():
@@ -1205,15 +1209,15 @@ def build_parser():
         description="Measure how well two skill branches comply with the TDQ rules.")
     sub = parser.add_subparsers(dest="lenh")
 
-    p_dung = sub.add_parser("dung-nhanh", help="build the two worktrees in a temp dir")
+    p_dung = sub.add_parser("setup", help="build the two worktrees in a temp dir")
     p_dung.add_argument("--dich", help="temp dir holding the two worktrees")
 
-    p_chay = sub.add_parser("chay", help="run measured sessions for the declared cases")
+    p_chay = sub.add_parser("run", help="run measured sessions for the declared cases")
     p_chay.add_argument("--ca", help="case code; empty means run them all")
     p_chay.add_argument("--lan", type=int, help="how many runs per case per branch")
     p_chay.add_argument("--nhanh", required=True, choices=sorted(NHANH) + ["ca-hai"],
                         help="branch to measure; `ca-hai` interleaves both")
-    p_chay.add_argument("--wt", help="worktree dir of the branch (from `dung-nhanh`)")
+    p_chay.add_argument("--wt", help="worktree dir of the branch (from `setup`)")
     p_chay.add_argument("--dich", help="temp dir holding the measured sessions")
     p_chay.add_argument("--ra", help="dir to write records into (default docs/tdq/bench/tuan-thu)")
     p_chay.add_argument("--tran-usd", type=float, default=150.0,
@@ -1221,7 +1225,7 @@ def build_parser():
     p_chay.add_argument("--tiep-tuc", action="store_true",
                         help="skip work that already has a `xong` record")
 
-    p_cham = sub.add_parser("cham", help="score one session transcript")
+    p_cham = sub.add_parser("score", help="score one session transcript")
     p_cham.add_argument("--transcript", help="path to the stream-json transcript")
     p_cham.add_argument("--ca", help="case code of the session")
     p_cham.add_argument("--nhanh", choices=sorted(NHANH), help="branch to measure")
@@ -1230,7 +1234,7 @@ def build_parser():
                         help="rescore EVERY record in --ra from its stored transcript")
     p_cham.add_argument("--ra", help="dir to write records into (default docs/tdq/bench/tuan-thu)")
 
-    p_bao = sub.add_parser("bao-cao", help="print the round's table of numbers")
+    p_bao = sub.add_parser("report", help="print the round's table of numbers")
     p_bao.add_argument("--dem", action="store_true", help="only count records and errors")
     p_bao.add_argument("--phu", action="store_true", help="only print coverage: codes per case")
     p_bao.add_argument("--chi-phi", action="store_true", help="only print the round cost")
@@ -1240,6 +1244,12 @@ def build_parser():
 
 
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    # Hidden alias (`bao-cao` → `report`), resolved before argparse sees it.
+    if argv and not argv[0].startswith("-"):
+        chinh_thuc = tdq_ten_lenh.giai_ten(argv[0], BANG_TEN)
+        if chinh_thuc is not None:
+            argv[0] = chinh_thuc
     parser = build_parser()
     args = parser.parse_args(argv)
     if not args.lenh:

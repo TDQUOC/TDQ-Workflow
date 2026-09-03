@@ -39,6 +39,7 @@ SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
 import tdq_state  # noqa: E402
 import tdq_team  # noqa: E402
+import tdq_ten_lenh  # noqa: E402
 
 GIT_TIMEOUT = 120
 # The six constants of the formula. One missing means no computation — there is no default.
@@ -107,7 +108,7 @@ def sinh_plan(so_task, chong=0.0, phu_thuoc=0, ngay=None, phase=1):
         viec = f"Việc mẫu số {i}"  # i18n-allow
         if i > so_task - phu_thuoc and i > 1:
             viec += f", nối tiếp T{phase}.{i - 1}"  # i18n-allow
-        dong.append(f"- [ ] **{ma}** (n3 e10m) {viec} — Test: hàm mẫu trả đúng giá trị")  # i18n-allow
+        dong.append(f"- [ ] **{ma}** (n3 e10m) {viec} — Test: `true`")  # i18n-allow
         dong.append(f"  - Chạm: `{duong}`")  # i18n-allow
     dong += [
         "",
@@ -166,11 +167,11 @@ def nap_hang_so(duong):
     if not duong:
         raise LoiThieuSo(
             "No measurement file given. Add --thuc-do <file.json>, or measure first: "
-            "python3 scripts/tdq_bench.py thuc-do --ra docs/tdq/bench/<slug>-thuc-do.json")
+            "python3 scripts/tdq_bench.py calibrate --ra docs/tdq/bench/<slug>-thuc-do.json")
     if not os.path.isfile(duong):
         raise LoiThieuSo(
             f"Measurement file missing: {duong}. No real numbers means NO simulation — "
-            f"run: python3 scripts/tdq_bench.py thuc-do --ra {duong}")
+            f"run: python3 scripts/tdq_bench.py calibrate --ra {duong}")
     try:
         with open(duong, encoding="utf-8") as f:
             du_lieu = json.load(f)
@@ -183,7 +184,7 @@ def nap_hang_so(duong):
     if thieu:
         raise LoiThieuSo(
             f"Measurement file {duong} is missing constant(s): {', '.join(thieu)}. "
-            f"Measure again: python3 scripts/tdq_bench.py thuc-do --ra {duong}")
+            f"Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
     ra = {}
     for ten in HANG_SO:
         rec = bang[ten]
@@ -194,18 +195,18 @@ def nap_hang_so(duong):
         except (TypeError, ValueError):
             raise LoiThieuSo(
                 f"Constant {ten} in {duong} has giay = {rec['giay']!r}, which is not a number. "
-                f"Measure again: python3 scripts/tdq_bench.py thuc-do --ra {duong}")
+                f"Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
         if not giay > 0 or giay != giay or giay == float("inf"):
             raise LoiThieuSo(
                 f"Constant {ten} in {duong} is {giay} — a duration must be a positive finite "
-                f"number. Measure again: python3 scripts/tdq_bench.py thuc-do --ra {duong}")
+                f"number. Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
         # This gate must lock at the READING end, not only at the writing end: the file can be
         # hand-edited after it was written, and the simulation would believe it on sight.
         so_mau = rec.get("so_mau")
         if not isinstance(so_mau, int) or so_mau < SO_MAU_TOI_THIEU:
             raise LoiThieuSo(
                 f"Constant {ten} in {duong} only carries so_mau = {so_mau!r}, at least "
-                f"{SO_MAU_TOI_THIEU} are needed. Measure again: python3 scripts/tdq_bench.py thuc-do "
+                f"{SO_MAU_TOI_THIEU} are needed. Measure again: python3 scripts/tdq_bench.py calibrate "
                 f"--ra {duong}")
         ra[ten] = giay
     return ra
@@ -443,7 +444,7 @@ def lenh_dung_plan(args):
             raise LoiThieuSo(
                 f"Cannot write {args.ra}: {loi}. Create the directory first "
                 f"(mkdir -p {os.path.dirname(args.ra) or '.'}), or drop --ra: "
-                f"python3 scripts/tdq_bench.py dung-plan --task {args.task}")
+                f"python3 scripts/tdq_bench.py gen-plan --task {args.task}")
         print(f"Sample plan: {args.ra}")
         print(f"{len(tasks)} task(s) · {so_cap} overlapping file pair(s)")
     else:
@@ -457,7 +458,7 @@ def lenh_thuc_do(args):
     if args.lap < 1:
         raise LoiThieuSo(
             f"--lap = {args.lap} — at least 1 machine round is required. "
-            f"Run: python3 scripts/tdq_bench.py thuc-do --lap 3 --ra {args.ra}")
+            f"Run: python3 scripts/tdq_bench.py calibrate --lap 3 --ra {args.ra}")
     mau = {ten: [] for ten in HANG_SO}
     nguon = {ten: "stub" for ten in HANG_SO}
     cach_do = {ten: "may" for ten in HANG_SO}
@@ -513,12 +514,12 @@ def lenh_mo_phong(args):
         except OSError as loi:
             raise LoiThieuSo(
                 f"Cannot read the plan {args.plan}: {loi}. Check the path, or drop "
-                f"--plan to use a sample plan: python3 scripts/tdq_bench.py mo-phong "
+                f"--plan to use a sample plan: python3 scripts/tdq_bench.py simulate "
                 f"--thuc-do {args.thuc_do} --task 12")
     else:
         van_ban, _ = sinh_plan(args.task, args.chong, args.phu_thuoc)
     kq = mo_phong_van_ban(van_ban, hs, args.he_so_agent)
-    _log(f"mo-phong → {kq.so_task} task(s) · {kq.so_dot} wave(s) · winner: {kq.thang}")
+    _log(f"simulate → {kq.so_task} task(s) · {kq.so_dot} wave(s) · winner: {kq.thang}")
     print(f"Plan: {kq.so_task} task(s) · assigned {kq.so_giao} · leader keeps {kq.so_tu_lam} "
           f"· {kq.so_dot} wave(s) · agent factor {kq.he_so_agent}")
     print("| Metric | main | team |")
@@ -538,7 +539,7 @@ def lenh_quet(args):
     if not 1 <= args.buoc <= 100:
         raise LoiThieuSo(
             f"--buoc = {args.buoc} — must lie in 1–100. "
-            f"Run: python3 scripts/tdq_bench.py quet --buoc 10 --thuc-do {args.thuc_do}")
+            f"Run: python3 scripts/tdq_bench.py scan --buoc 10 --thuc-do {args.thuc_do}")
     hs = nap_hang_so(args.thuc_do)
     print(f"Sweep {args.task} task(s) · splittable ratio 0→100% · step {args.buoc}% "
           f"· agent factor {args.he_so_agent}")
@@ -562,15 +563,16 @@ def lenh_quet(args):
     for phan_tram, cu, moi in nguong:
         print(f"THRESHOLD: at a splittable ratio of {phan_tram}% the winner flips "
               f"{cu} → {moi}.")
-    _log(f"quet → {len(nguong)} flip point(s)")
+    _log(f"scan → {len(nguong)} flip point(s)")
     return 0
 
 
+BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_bench.py"]
 LENH = {
-    "dung-plan": (lenh_dung_plan, "generate a sample N-task plan with adjustable file overlap"),
-    "thuc-do": (lenh_thuc_do, "run a real team round in a temp repo, write constants to JSON"),
-    "mo-phong": (lenh_mo_phong, "compute T_main and T_team for one plan"),
-    "quet": (lenh_quet, "sweep the splittable ratio, find the flip point"),
+    "gen-plan": (lenh_dung_plan, "generate a sample N-task plan with adjustable file overlap"),
+    "calibrate": (lenh_thuc_do, "run a real team round in a temp repo, write constants to JSON"),
+    "simulate": (lenh_mo_phong, "compute T_main and T_team for one plan"),
+    "scan": (lenh_quet, "sweep the splittable ratio, find the flip point"),
 }
 
 
@@ -580,7 +582,7 @@ def build_parser():
         description="Weigh mode main against team mode in measured numbers.")
     sub = p.add_subparsers(dest="lenh")
 
-    dp = sub.add_parser("dung-plan", help=LENH["dung-plan"][1])
+    dp = sub.add_parser("gen-plan", help=LENH["gen-plan"][1])
     dp.add_argument("--task", type=int, default=12, help="task count of the sample plan")
     dp.add_argument("--chong", type=float, default=0.0,
                     help="share of tasks crowded into one file (0→1)")
@@ -589,7 +591,7 @@ def build_parser():
     dp.add_argument("--ngay", help="date written into the plan (default: today)")
     dp.add_argument("--ra", help="write to a file; without it, print to stdout")
 
-    td = sub.add_parser("thuc-do", help=LENH["thuc-do"][1])
+    td = sub.add_parser("calibrate", help=LENH["calibrate"][1])
     td.add_argument("--ra", required=True, help="JSON file of constants")
     td.add_argument("--task", type=int, default=3, help="tasks per measuring round")
     td.add_argument("--lap", type=int, default=3, help="how many rounds")
@@ -600,7 +602,7 @@ def build_parser():
     td.add_argument("--cho-it-mau", action="store_true", dest="cho_it_mau",
                     help="allow writing with fewer than 3 samples (debugging only)")
 
-    mp = sub.add_parser("mo-phong", help=LENH["mo-phong"][1])
+    mp = sub.add_parser("simulate", help=LENH["simulate"][1])
     mp.add_argument("--plan", help="plan file; without it, a sample plan is generated")
     mp.add_argument("--thuc-do", dest="thuc_do", help="JSON file of constants")
     mp.add_argument("--task", type=int, default=12)
@@ -609,7 +611,7 @@ def build_parser():
     mp.add_argument("--he-so-agent", type=float, default=1.0, dest="he_so_agent",
                     help="how many times slower a sub-agent is than the leader (1.0 = equal)")
 
-    qt = sub.add_parser("quet", help=LENH["quet"][1])
+    qt = sub.add_parser("scan", help=LENH["scan"][1])
     qt.add_argument("--thuc-do", dest="thuc_do", help="JSON file of constants")
     qt.add_argument("--task", type=int, default=12)
     qt.add_argument("--buoc", type=int, default=10, help="sweep step in percent")
@@ -620,6 +622,11 @@ def build_parser():
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    # Hidden alias (`mo-phong` → `simulate`), resolved before argparse sees it.
+    if argv and not argv[0].startswith("-"):
+        chinh_thuc = tdq_ten_lenh.giai_ten(argv[0], BANG_TEN)
+        if chinh_thuc is not None:
+            argv[0] = chinh_thuc
     parser = build_parser()
     args = parser.parse_args(argv)
     if not args.lenh:

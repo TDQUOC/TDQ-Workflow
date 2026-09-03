@@ -123,7 +123,7 @@ class PhaseRowTest(unittest.TestCase):
         noi_dung = row["action"] + " ".join(row["checklist"])
         self.assertIn("[>]", noi_dung)
         self.assertIn("tdq_team.py", noi_dung)
-        self.assertIn("phan-cong", noi_dung)
+        self.assertIn("assign", noi_dung)
 
     def test_next_in_dong_doi_khi_mode_subagent(self):
         self._state("subagent")
@@ -149,7 +149,7 @@ class PhaseRowTest(unittest.TestCase):
         self.assertNotIn("implement_subagent", tdq_state.render_phases_md())
 
 
-LENH_CON = ["phan-cong", "kiem-ke", "cum", "mo", "kiem", "hop", "don"]
+LENH_CON = ["assign", "audit", "wave", "open", "check", "merge", "clean"]
 
 
 class CliTest(unittest.TestCase):
@@ -178,11 +178,11 @@ class CliTest(unittest.TestCase):
         rc, _out, err = run_team_cli(self.cwd, "--help")
         self.assertEqual(rc, 0)
         # --help không chạy việc gì; log service chỉ cần chứng minh ở lệnh thật.
-        rc, _out, err = run_team_cli(self.cwd, "kiem-ke")
+        rc, _out, err = run_team_cli(self.cwd, "audit")
         self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
 
     def test_tat_log_bang_bien_moi_truong(self):
-        rc, _out, err = run_team_cli(self.cwd, "kiem-ke", env={"TDQ_LOG": "0"})
+        rc, _out, err = run_team_cli(self.cwd, "audit", env={"TDQ_LOG": "0"})
         self.assertNotIn("[20", err)
 
 
@@ -490,7 +490,7 @@ class PhanCongTest(TeamBase):
 
     def test_ban_do_du_moi_task_va_du_4_truong(self):
         self._project(PLAN_8_TASK)
-        rc, out, _err = self.chay("phan-cong")
+        rc, out, _err = self.chay("assign")
         self.assertEqual(rc, 0, out)
         ban_do = self._ban_do()
         self.assertEqual(len(ban_do["tasks"]), 8)
@@ -501,7 +501,7 @@ class PhanCongTest(TeamBase):
 
     def test_phase_sau_nam_o_dot_sau(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         tasks = self._ban_do()["tasks"]
         dot_p1 = max(tasks[m]["dot"] for m in ("T1.1", "T1.2", "T1.3"))
         dot_p2 = min(tasks[m]["dot"] for m in ("T2.1", "T2.2"))
@@ -509,13 +509,13 @@ class PhanCongTest(TeamBase):
 
     def test_hai_task_chung_file_khong_cung_dot(self):
         self._project(PLAN_CHUNG_FILE)
-        self.chay("phan-cong")
+        self.chay("assign")
         tasks = self._ban_do()["tasks"]
         self.assertNotEqual(tasks["T1.1"]["dot"], tasks["T1.2"]["dot"])
 
     def test_mac_dinh_la_giao(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         tasks = self._ban_do()["tasks"]
         self.assertTrue(all(r["quyet_dinh"] == "giao" for r in tasks.values()),
                         [(m, r["quyet_dinh"]) for m, r in tasks.items()])
@@ -523,7 +523,7 @@ class PhanCongTest(TeamBase):
     def test_task_roi_cung_dot_task_phu_thuoc_va_mcp_thi_tu_lam(self):
         """T2.3 — 3 task rời cùng một đợt; task phụ thuộc và task (mcp) bị giữ lại."""
         self._project(PLAN_TRON)
-        rc, out, _err = self.chay("phan-cong")
+        rc, out, _err = self.chay("assign")
         self.assertEqual(rc, 0, out)
         tasks = self._ban_do()["tasks"]
         roi = [tasks[m] for m in ("T1.1", "T1.2", "T1.3")]
@@ -540,7 +540,7 @@ class PhanCongTest(TeamBase):
 ## P1 — nen
 - [ ] **T1.1** (n3 e5m) viec khong khai file — Test: `true`
 """)
-        self.chay("phan-cong")
+        self.chay("assign")
         rec = self._ban_do()["tasks"]["T1.1"]
         self.assertEqual(rec["quyet_dinh"], "tu_lam")
         self.assertEqual(rec["ly_do"], "vung-khoa")
@@ -552,14 +552,14 @@ class PhanCongTest(TeamBase):
 - [ ] **T1.1** (n3 e5m) sua luat build — Test: `true`
   - Chạm: `skills/tdq-build/SKILL.md`
 """)
-        self.chay("phan-cong")
+        self.chay("assign")
         rec = self._ban_do()["tasks"]["T1.1"]
         self.assertEqual(rec["quyet_dinh"], "tu_lam")
         self.assertEqual(rec["ly_do"], "file-luat")
 
     def test_ghi_plan_sha_de_khoa_ban_do(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         self.assertTrue(self._ban_do()["plan_sha"])
 
 
@@ -568,51 +568,51 @@ class KiemKeTest(TeamBase):
 
     def test_ban_do_sach_thi_exit_0(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
-        rc, out, _err = self.chay("kiem-ke")
+        self.chay("assign")
+        rc, out, _err = self.chay("audit")
         self.assertEqual(rc, 0, out)
 
     def test_chua_phan_cong_thi_exit_khac_0(self):
         self._project(PLAN_8_TASK)
-        rc, _out, err = self.chay("kiem-ke")
+        rc, _out, err = self.chay("audit")
         self.assertNotEqual(rc, 0)
-        self.assertIn("phan-cong", err)
+        self.assertIn("assign", err)
 
     def test_tu_lam_thieu_ly_do_thi_exit_khac_0_va_neu_ma_task(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         path = os.path.join(self.cwd, BAN_DO_REL)
         ban_do = self._ban_do()
         ban_do["tasks"]["T2.3"] = dict(ban_do["tasks"]["T2.3"],
                                        quyet_dinh="tu_lam", ly_do="")
         with open(path, "w", encoding="utf-8") as f:
             json.dump(ban_do, f)
-        rc, _out, err = self.chay("kiem-ke")
+        rc, _out, err = self.chay("audit")
         self.assertNotEqual(rc, 0)
         self.assertIn("T2.3", err)
         self.assertIn("Kept:", err)
 
     def test_ly_do_ngoai_4_nhom_thi_exit_khac_0(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         path = os.path.join(self.cwd, BAN_DO_REL)
         ban_do = self._ban_do()
         ban_do["tasks"]["T2.3"] = dict(ban_do["tasks"]["T2.3"],
                                        quyet_dinh="tu_lam", ly_do="tien-hon")
         with open(path, "w", encoding="utf-8") as f:
             json.dump(ban_do, f)
-        rc, _out, err = self.chay("kiem-ke")
+        rc, _out, err = self.chay("audit")
         self.assertNotEqual(rc, 0)
         self.assertIn("T2.3", err)
 
     def test_plan_doi_thi_ban_do_het_hieu_luc(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         write_file(self.cwd, PLAN_REL, PLAN_8_TASK + "\n<!-- them mot dong -->\n")
-        rc, _out, err = self.chay("cum")
+        rc, _out, err = self.chay("wave")
         self.assertNotEqual(rc, 0)
-        self.assertIn("phan-cong", err)
-        rc, _out, err = self.chay("kiem-ke")
+        self.assertIn("assign", err)
+        rc, _out, err = self.chay("audit")
         self.assertNotEqual(rc, 0)
 
 
@@ -626,30 +626,30 @@ class VaQcTest(TeamBase):
     def test_giao_ma_vung_file_rong_thi_kiem_ke_do(self):
         """Cửa lách rẻ nhất: khai `giao` nhưng xoá vùng file → hook hết chỗ so."""
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         ban_do = self._ban_do()
         ma = next(m for m, r in ban_do["tasks"].items() if r["quyet_dinh"] == "giao")
         ban_do["tasks"][ma]["vung_file"] = []
         with open(os.path.join(self.cwd, BAN_DO_REL), "w", encoding="utf-8") as f:
             json.dump(ban_do, f)
-        rc, _out, err = self.chay("kiem-ke")
+        rc, _out, err = self.chay("audit")
         self.assertNotEqual(rc, 0)
         self.assertIn(ma, err)
         self.assertIn("file area is EMPTY", err)
 
     def test_ban_do_hong_thi_cli_bao_lenh_sua_chu_khong_van_traceback(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         self._hong_ban_do()
-        rc, _out, err = self.chay("kiem-ke")
+        rc, _out, err = self.chay("audit")
         self.assertNotEqual(rc, 0)
         self.assertNotIn("Traceback", err)
-        self.assertIn("phan-cong", err)
+        self.assertIn("assign", err)
 
     def test_ban_do_hong_thi_hook_chan_chu_khong_mo_toang(self):
         """Fail-open ở đây là mở đúng cửa mà bản đồ sinh ra để canh."""
         self._project(PLAN_TRON)
-        self.chay("phan-cong")
+        self.chay("assign")
         self._hong_ban_do()
         canh_bao = tdq_team.canh_bao_lach_luat(self.cwd, "scripts/alpha.py")
         self.assertIsNotNone(canh_bao)
@@ -658,8 +658,8 @@ class VaQcTest(TeamBase):
     def test_kiem_neu_dung_ten_file_xung_dot(self):
         self._project(PLAN_TRON)
         self._git_repo()
-        self.chay("phan-cong")
-        self.chay("mo", "T1.1")
+        self.chay("assign")
+        self.chay("open", "T1.1")
         # hai nhánh cùng sửa một file → xung đột thật, phải gọi đúng tên file
         cay = os.path.join(self.cwd, ".tdq-worktrees", SLUG, "t1.1")
         write_file(cay, "scripts/alpha.py", "AAA\n")
@@ -669,14 +669,14 @@ class VaQcTest(TeamBase):
         write_file(cay_tich_hop, "scripts/alpha.py", "BBB\n")
         git(cay_tich_hop, "add", "-A")
         git(cay_tich_hop, "commit", "-q", "-m", "b")
-        rc, out, err = self.chay("kiem", "T1.1")
+        rc, out, err = self.chay("check", "T1.1")
         self.assertNotEqual(rc, 0, out)
         self.assertIn("scripts/alpha.py", out + err)
 
     def test_cum_noi_ro_vi_sao_task_chua_duoc_phat(self):
         self._project(PLAN_CHUNG_FILE)
-        self.chay("phan-cong")
-        _rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        _rc, out, _err = self.chay("wave")
         self.assertIn("HELD", out)
 
 
@@ -685,8 +685,8 @@ class CumTest(TeamBase):
 
     def test_cum_in_dung_task_dot_dau(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
-        rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        rc, out, _err = self.chay("wave")
         self.assertEqual(rc, 0, out)
         for ma in ("T1.1", "T1.2", "T1.3"):
             self.assertIn(ma, out)
@@ -697,16 +697,16 @@ class CumTest(TeamBase):
         plan = PLAN_8_TASK.replace("- [ ] **T1.1**", "- [>] **T1.1**")
         plan = plan.replace("  - Chạm: `scripts/b.py`", "  - Chạm: `scripts/a.py`")
         self._project(plan)
-        self.chay("phan-cong")
-        rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        rc, out, _err = self.chay("wave")
         self.assertEqual(rc, 0, out)
         self.assertIn("scripts/a.py", out)
         self.assertNotIn("\n  T1.2 ", "\n" + out)
 
     def test_hết_task_giao_thi_bao_het(self):
         self._project(PLAN_8_TASK.replace("- [ ] **", "- [x] **"))
-        self.chay("phan-cong")
-        rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        rc, out, _err = self.chay("wave")
         self.assertEqual(rc, 0, out)
         self.assertIn("DONE", out.upper())
 
@@ -716,23 +716,23 @@ class CumLienTucTest(TeamBase):
 
     def test_lien_tuc_phat_task_khong_dinh_nhau(self):
         self._project(PLAN_CAN_CHEO)
-        self.chay("phan-cong")
-        rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        rc, out, _err = self.chay("wave")
         self.assertEqual(rc, 0, out)
         self.assertIn("\n  T1.1 ", "\n" + out)
         self.assertIn("\n  T2.1 ", "\n" + out)
 
     def test_lien_tuc_hoan_task_con_cho_task_khac(self):
         self._project(PLAN_CAN_CHEO)
-        self.chay("phan-cong")
-        _rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        _rc, out, _err = self.chay("wave")
         self.assertIn("HELD T1.2", out)
         self.assertIn("T1.1", out.split("HELD T1.2")[1].split("\n")[0])
 
     def test_lien_tuc_khong_phat_hai_task_chung_file(self):
         self._project(PLAN_CAN_CHEO)
-        self.chay("phan-cong")
-        _rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        _rc, out, _err = self.chay("wave")
         phat = [d.strip().split()[0] for d in out.splitlines()
                 if d.startswith("  ") and not d.strip().startswith("HELD")]
         self.assertIn("T2.1", phat)
@@ -742,8 +742,8 @@ class CumLienTucTest(TeamBase):
         """Điểm ăn thời gian: T1.2 ở đợt 2 được phát ngay khi T1.1 xong."""
         plan = PLAN_CAN_CHEO.replace("- [ ] **T1.1**", "- [x] **T1.1**")
         self._project(plan)
-        self.chay("phan-cong")
-        _rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        _rc, out, _err = self.chay("wave")
         phat = [d.strip().split()[0] for d in out.splitlines()
                 if d.startswith("  ") and not d.strip().startswith("HELD")]
         self.assertIn("T1.2", phat)
@@ -752,8 +752,8 @@ class CumLienTucTest(TeamBase):
     def test_lien_tuc_sap_theo_duong_gang(self):
         """Task trên đường găng đứng trước trong danh sách phát."""
         self._project(PLAN_CAN_CHEO)
-        self.chay("phan-cong")
-        _rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        _rc, out, _err = self.chay("wave")
         phat = [d.strip().split()[0] for d in out.splitlines()
                 if d.startswith("  ") and not d.strip().startswith("HELD")]
         self.assertEqual(phat[0], "T1.1")
@@ -764,8 +764,8 @@ class TranSongSongTest(TeamBase):
 
     def _phat(self, plan):
         self._project(plan)
-        self.chay("phan-cong")
-        _rc, out, _err = self.chay("cum")
+        self.chay("assign")
+        _rc, out, _err = self.chay("wave")
         return [d.strip().split()[0] for d in out.splitlines()
                 if d.startswith("  ") and not d.strip().startswith(("HELD", "WAITING"))], out
 
@@ -816,26 +816,26 @@ class LyDoGiuTest(TeamBase):
 
     def test_ly_do_hop_dong_qua_duoc_kiem_ke(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         duong = os.path.join(self.cwd, BAN_DO_REL)
         with open(duong, encoding="utf-8") as f:
             ban_do = json.load(f)
         ban_do["tasks"]["T1.1"].update(quyet_dinh="tu_lam", ly_do="hop-dong")
         with open(duong, "w", encoding="utf-8") as f:
             json.dump(ban_do, f, ensure_ascii=False)
-        rc, out, err = self.chay("kiem-ke")
+        rc, out, err = self.chay("audit")
         self.assertEqual(rc, 0, out + err)
 
     def test_ly_do_ngoai_bang_van_bi_chan(self):
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
         duong = os.path.join(self.cwd, BAN_DO_REL)
         with open(duong, encoding="utf-8") as f:
             ban_do = json.load(f)
         ban_do["tasks"]["T1.1"].update(quyet_dinh="tu_lam", ly_do="ngai-giao")
         with open(duong, "w", encoding="utf-8") as f:
             json.dump(ban_do, f, ensure_ascii=False)
-        rc, _out, err = self.chay("kiem-ke")
+        rc, _out, err = self.chay("audit")
         self.assertEqual(rc, 1)
         self.assertIn("5 groups", err)
 
@@ -847,13 +847,13 @@ class GitTest(TeamBase):
         super().setUp()
         self._git_repo()
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
 
     def _nhanh(self):
         return git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
 
     def test_mo_tao_dung_mot_worktree_va_nhanh_dung_khuon(self):
-        rc, out, _err = self.chay("mo", "T1.1")
+        rc, out, _err = self.chay("open", "T1.1")
         self.assertEqual(rc, 0, out)
         wt = git(self.cwd, "worktree", "list")
         self.assertEqual(len([d for d in wt.splitlines() if "t1.1" in d.lower()]), 1, wt)
@@ -864,20 +864,20 @@ class GitTest(TeamBase):
 
     def test_mo_khong_doi_nhanh_dang_dung_cua_user(self):
         truoc = git(self.cwd, "rev-parse", "--abbrev-ref", "HEAD")
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         self.assertEqual(git(self.cwd, "rev-parse", "--abbrev-ref", "HEAD"), truoc)
 
     def test_kiem_bao_xung_dot_va_khong_dung_repo(self):
-        self.chay("mo", "T1.1")
-        self.chay("mo", "T1.2")
+        self.chay("open", "T1.1")
+        self.chay("open", "T1.2")
         for ma in ("T1.1", "T1.2"):
             wt = self._duong_worktree(ma)
             write_file(wt, "chung.txt", f"noi dung cua {ma}\n")
             git(wt, "add", "-A")
             git(wt, "commit", "-q", "-m", f"{ma} sua chung.txt")
-        self.chay("hop", "T1.1")
+        self.chay("merge", "T1.1")
         truoc = git(self.cwd, "status", "--porcelain")
-        rc, out, _err = self.chay("kiem", "T1.2")
+        rc, out, _err = self.chay("check", "T1.2")
         self.assertNotEqual(rc, 0, out)
         self.assertIn("CONFLICT", out.upper())
         self.assertEqual(git(self.cwd, "status", "--porcelain"), truoc)
@@ -885,8 +885,8 @@ class GitTest(TeamBase):
     def test_kiem_khong_chet_khi_git_in_byte_khong_phai_utf8(self):
         # Lỗi thật, lộ ra ở lượt chạy benchmark 2026-08-17: `git merge-tree` in cả nội
         # dung object, gặp byte nhị phân là cả lệnh `kiem` văng UnicodeDecodeError.
-        self.chay("mo", "T1.1")
-        self.chay("mo", "T1.2")
+        self.chay("open", "T1.1")
+        self.chay("open", "T1.2")
         # Không có byte NUL: git coi là file VĂN BẢN nên in thẳng nội dung ra stdout,
         # mà nội dung đó lại không giải mã được bằng UTF-8. Đúng ca đã làm chết `kiem`.
         for ma, byte in (("T1.1", b"latin \xcb\xfe nhanh mot\n"),
@@ -896,30 +896,30 @@ class GitTest(TeamBase):
                 f.write(byte)
             git(wt, "add", "-A")
             git(wt, "commit", "-q", "-m", f"{ma} them file nhi phan")
-        self.chay("hop", "T1.1")
-        rc, out, err = self.chay("kiem", "T1.2")
+        self.chay("merge", "T1.1")
+        rc, out, err = self.chay("check", "T1.2")
         self.assertNotIn("Traceback", out + err)
         self.assertNotIn("UnicodeDecodeError", out + err)
         self.assertIn(rc, (0, 1), out + err)
 
     def test_kiem_khong_xung_dot_thi_exit_0(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, "rieng.txt", "chi mot minh\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "T1.1")
-        rc, out, _err = self.chay("kiem", "T1.1")
+        rc, out, _err = self.chay("check", "T1.1")
         self.assertEqual(rc, 0, out)
 
     def test_hop_ba_nhanh_roi_nhau_du_ba_commit(self):
         for ma in ("T1.1", "T1.2", "T1.3"):
-            self.chay("mo", ma)
+            self.chay("open", ma)
             wt = self._duong_worktree(ma)
             write_file(wt, f"{ma}.txt", "x\n")
             git(wt, "add", "-A")
             git(wt, "commit", "-q", "-m", f"{ma} xong")
         for ma in ("T1.1", "T1.2", "T1.3"):
-            rc, out, _err = self.chay("hop", ma)
+            rc, out, _err = self.chay("merge", ma)
             self.assertEqual(rc, 0, out)
         log = git(self._duong_tich_hop(), "log", "--oneline")
         for ma in ("T1.1", "T1.2", "T1.3"):
@@ -927,30 +927,30 @@ class GitTest(TeamBase):
 
     def test_hop_khong_dong_nhanh_goc_cua_user(self):
         truoc = git(self.cwd, "rev-parse", "chinh")
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, "T1.1.txt", "x\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "T1.1 xong")
-        self.chay("hop", "T1.1")
+        self.chay("merge", "T1.1")
         self.assertEqual(git(self.cwd, "rev-parse", "chinh"), truoc)
 
     def test_hop_chan_khi_xung_dot(self):
         for ma in ("T1.1", "T1.2"):
-            self.chay("mo", ma)
+            self.chay("open", ma)
             wt = self._duong_worktree(ma)
             write_file(wt, "chung.txt", f"{ma}\n")
             git(wt, "add", "-A")
             git(wt, "commit", "-q", "-m", f"{ma}")
-        self.chay("hop", "T1.1")
-        rc, _out, err = self.chay("hop", "T1.2")
+        self.chay("merge", "T1.1")
+        rc, _out, err = self.chay("merge", "T1.2")
         self.assertNotEqual(rc, 0)
-        self.assertIn("kiem", err)
+        self.assertIn("check", err)
 
     def test_don_sach_worktree_va_khong_con_rac(self):
-        self.chay("mo", "T1.1")
-        self.chay("mo", "T1.2")
-        rc, out, _err = self.chay("don")
+        self.chay("open", "T1.1")
+        self.chay("open", "T1.2")
+        rc, out, _err = self.chay("clean")
         self.assertEqual(rc, 0, out)
         wt = git(self.cwd, "worktree", "list")
         self.assertEqual(len(wt.splitlines()), 1, wt)
@@ -1002,20 +1002,20 @@ class HookTest(TeamBase):
     # --- T3.2 ---------------------------------------------------------------
     def test_main_sua_file_cua_task_giao_thi_bi_chan(self):
         self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [~] **T1.1**"))
-        self.chay("phan-cong")
+        self.chay("assign")
         _rc, out, _err = self._sua("scripts/alpha.py")
         self.assertIn('"deny"', out)
         self.assertIn("TDQ:TEAM", out)
 
     def test_main_sua_file_cua_task_tu_lam_thi_khong_chan(self):
         self._plan(PLAN_TRON.replace("- [ ] **T1.4**", "- [~] **T1.4**"))
-        self.chay("phan-cong")
+        self.chay("assign")
         _rc, out, _err = self._sua("scripts/delta.py")
         self.assertNotIn('"deny"', out)
 
     def test_mode_main_thi_khong_chan_du_ban_do_ghi_giao(self):
         self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [~] **T1.1**"), mode="main")
-        self.chay("phan-cong")
+        self.chay("assign")
         _rc, out, _err = self._sua("scripts/alpha.py")
         self.assertNotIn('"deny"', out)
 
@@ -1023,11 +1023,11 @@ class HookTest(TeamBase):
         self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [~] **T1.1**"))
         _rc, out, _err = self._sua("scripts/alpha.py")
         self.assertIn('"deny"', out)
-        self.assertIn("phan-cong", out)
+        self.assertIn("assign", out)
 
     def test_file_ngoai_moi_vung_thi_khong_chan(self):
         self._plan(PLAN_TRON.replace("- [ ] **T1.4**", "- [~] **T1.4**"))
-        self.chay("phan-cong")
+        self.chay("assign")
         _rc, out, _err = self._sua("scripts/khong-ai-nhan.py")
         self.assertNotIn('"deny"', out)
 
@@ -1035,16 +1035,16 @@ class HookTest(TeamBase):
     def test_da_giao_ma_khong_co_nhanh_thi_bi_chan(self):
         self._git_repo()
         self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [>] **T1.1**"))
-        self.chay("phan-cong")
+        self.chay("assign")
         _rc, out, _err = self._sua("scripts/alpha.py")
         self.assertIn('"deny"', out)
-        self.assertIn("mo T1.1", out)
+        self.assertIn("open T1.1", out)
 
     def test_da_giao_va_co_nhanh_that_thi_khong_chan(self):
         self._git_repo()
         self._plan(PLAN_TRON.replace("- [ ] **T1.1**", "- [>] **T1.1**"))
-        self.chay("phan-cong")
-        self.chay("mo", "T1.1")
+        self.chay("assign")
+        self.chay("open", "T1.1")
         _rc, out, _err = self._sua("scripts/alpha.py")
         self.assertNotIn('"deny"', out)
 
@@ -1187,7 +1187,7 @@ class LuatTest(unittest.TestCase):
         noi_dung = _doc(BUILD_SKILL)
         self.assertNotIn("giao ĐÚNG 1 task", noi_dung)
         self.assertIn("team-mode.md", noi_dung)
-        self.assertIn("phan-cong", noi_dung)
+        self.assertIn("assign", noi_dung)
 
     def test_plan_skill_bat_khai_vung_file(self):
         self.assertIn("Chạm:", _doc(PLAN_SKILL))
@@ -1329,7 +1329,7 @@ class SoWorktreeTest(TeamBase):
         super().setUp()
         self._git_repo()
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
 
     def _so(self):
         import tdq_worktree_registry as so
@@ -1340,7 +1340,7 @@ class SoWorktreeTest(TeamBase):
 
     def _lam_xong(self, ma, ten_file=None):
         """Mở worktree cho task, commit một file riêng — nhánh sạch, merge được."""
-        self.chay("mo", ma)
+        self.chay("open", ma)
         wt = self._duong_worktree(ma)
         write_file(wt, ten_file or f"{ma}.txt", "x\n")
         git(wt, "add", "-A")
@@ -1349,7 +1349,7 @@ class SoWorktreeTest(TeamBase):
 
     # ---------------------------------------------------------------- T2.1
     def test_mo_ghi_so_mot_dong_dung_duong_dan(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         dong = self._dong_mo()
         self.assertEqual(len(dong), 1, dong)
         self.assertEqual(dong[0]["ma_task"], "T1.1")
@@ -1357,15 +1357,15 @@ class SoWorktreeTest(TeamBase):
 
     def test_mo_khong_ghi_so_khi_git_that_bai(self):
         """Sổ ghi TRƯỚC khi git thành công thì sổ nói dối ngay từ dòng đầu tiên."""
-        self.chay("mo", "T1.1")
-        rc, _out, _err = self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
+        rc, _out, _err = self.chay("open", "T1.1")
         self.assertNotEqual(rc, 0)
         self.assertEqual(len(self._dong_mo()), 1)
 
     # ---------------------------------------------------------------- T2.2
     def test_hop_don_khi_sach_go_worktree_va_nhanh(self):
         wt = self._lam_xong("T1.1")
-        rc, out, _err = self.chay("hop", "T1.1")
+        rc, out, _err = self.chay("merge", "T1.1")
         self.assertEqual(rc, 0, out)
         self.assertFalse(os.path.isdir(wt), "worktree sạch mà không được dọn")
         nhanh = git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
@@ -1374,13 +1374,13 @@ class SoWorktreeTest(TeamBase):
 
     def test_hop_giu_nhanh_tich_hop(self):
         self._lam_xong("T1.1")
-        self.chay("hop", "T1.1")
+        self.chay("merge", "T1.1")
         nhanh = git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
         self.assertIn(f"tdq/{SLUG}/tich-hop", nhanh, nhanh)
 
     def test_hop_khong_mat_commit_cua_task(self):
         self._lam_xong("T1.1")
-        self.chay("hop", "T1.1")
+        self.chay("merge", "T1.1")
         log = git(self._duong_tich_hop(), "log", "--oneline")
         self.assertIn("T1.1 xong", log)
 
@@ -1388,7 +1388,7 @@ class SoWorktreeTest(TeamBase):
     def test_hop_giu_khi_ban(self):
         wt = self._lam_xong("T1.1")
         write_file(wt, "chua_commit.txt", "dang lam do\n")
-        rc, out, err = self.chay("hop", "T1.1")
+        rc, out, err = self.chay("merge", "T1.1")
         self.assertEqual(rc, 0, out + err)
         self.assertTrue(os.path.isdir(wt), "worktree còn việc chưa commit mà bị xoá")
         self.assertEqual(len(self._dong_mo()), 1)
@@ -1398,24 +1398,24 @@ class SoWorktreeTest(TeamBase):
     def test_hop_giu_khi_chua_merge(self):
         """Xung đột thì `hop` chặn từ đầu — không merge, không xoá, có gợi ý."""
         for ma in ("T1.1", "T1.2"):
-            self.chay("mo", ma)
+            self.chay("open", ma)
             wt = self._duong_worktree(ma)
             write_file(wt, "chung.txt", f"{ma}\n")
             git(wt, "add", "-A")
             git(wt, "commit", "-q", "-m", ma)
-        self.chay("hop", "T1.1")
+        self.chay("merge", "T1.1")
         wt2 = self._duong_worktree("T1.2")
-        rc, out, err = self.chay("hop", "T1.2")
+        rc, out, err = self.chay("merge", "T1.2")
         self.assertNotEqual(rc, 0)
         self.assertTrue(os.path.isdir(wt2))
         self.assertIn("NOT CLEANED UP YET", out + err)
-        self.assertIn("kiem T1.2", out + err)
+        self.assertIn("resolve T1.2", out + err)
 
     def test_khoi_goi_y_in_o_cuoi(self):
         """Khối gợi ý phải là thứ CUỐI CÙNG in ra — nó là thứ user cần đọc và hành động."""
         wt = self._lam_xong("T1.1")
         write_file(wt, "chua_commit.txt", "x\n")
-        _rc, out, _err = self.chay("hop", "T1.1")
+        _rc, out, _err = self.chay("merge", "T1.1")
         dong = [d for d in out.strip().splitlines() if d.strip()]
         vi_tri = [i for i, d in enumerate(dong) if "NOT CLEANED UP YET" in d]
         self.assertTrue(vi_tri, out)
@@ -1424,7 +1424,7 @@ class SoWorktreeTest(TeamBase):
     # ---------------------------------------------------------------- T2.4
     def test_soat_liet_ke_du_nam_cot(self):
         self._lam_xong("T1.1")
-        rc, out, _err = self.chay("soat")
+        rc, out, _err = self.chay("sweep")
         self.assertEqual(rc, 0, out)
         for cot in ("age", "size", "clean", "merged"):
             self.assertIn(cot, out.lower(), out)
@@ -1433,33 +1433,33 @@ class SoWorktreeTest(TeamBase):
     def test_soat_khong_dung_worktree_ngoai_tam(self):
         ngoai = os.path.join(self.cwd, "ngoai-tam")
         git(self.cwd, "worktree", "add", "-q", "-b", "nhanh-ngoai", ngoai)
-        rc, out, _err = self.chay("soat", "--don")
+        rc, out, _err = self.chay("sweep", "--don")
         self.assertEqual(rc, 0, out)
         self.assertTrue(os.path.isdir(ngoai), "worktree ngoài .tdq-worktrees bị xoá")
         self.assertIn("out of scope", out.lower())
 
     def test_soat_tu_dong_dong_dong_tro_vao_thu_muc_bien_mat(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         duong = self._dong_mo()[0]["duong_dan"]
         git(self.cwd, "worktree", "remove", "--force", duong)
-        rc, out, _err = self.chay("soat")
+        rc, out, _err = self.chay("sweep")
         self.assertEqual(rc, 0, out)
         self.assertEqual(self._dong_mo(), [], "dòng sổ mồ côi không được tự đóng")
 
     def test_soat_canh_bao_khi_qua_tuoi(self):
         import tdq_worktree_registry as so
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         du_lieu = so.doc(self.cwd)
         du_lieu["dong"][0]["tao_luc"] = "2020-01-01T00:00:00"
         with open(so.duong_so(self.cwd), "w", encoding="utf-8") as f:
             json.dump(du_lieu, f)
-        _rc, out, _err = self.chay("soat")
+        _rc, out, _err = self.chay("sweep")
         self.assertIn("WARNING", out.upper())
         self.assertIn(str(so.TRAN_TUOI_NGAY), out)
 
     def test_soat_sinh_ban_md(self):
-        self.chay("mo", "T1.1")
-        self.chay("soat")
+        self.chay("open", "T1.1")
+        self.chay("sweep")
         duong = os.path.join(self.cwd, "docs", "tdq", "worktrees.md")
         self.assertTrue(os.path.exists(duong))
         self.assertIn("T1.1", open(duong, encoding="utf-8").read())
@@ -1469,9 +1469,9 @@ class SoWorktreeTest(TeamBase):
         wt1 = self._lam_xong("T1.1")
         wt2 = self._lam_xong("T1.2")
         # T1.1 đã merge và sạch → dọn được. T1.2 bẩn → phải giữ lại kèm gợi ý.
-        self.chay("hop", "T1.1")
+        self.chay("merge", "T1.1")
         write_file(wt2, "chua_commit.txt", "x\n")
-        rc, out, err = self.chay("soat", "--don")
+        rc, out, err = self.chay("sweep", "--don")
         # Spec §2 đầu ra 4: còn worktree bẩn thì lệnh phải thoát khác 0.
         self.assertNotEqual(rc, 0, out + err)
         self.assertFalse(os.path.isdir(wt1))
@@ -1480,13 +1480,13 @@ class SoWorktreeTest(TeamBase):
 
     def test_soat_don_khong_xoa_khi_chua_merge(self):
         wt = self._lam_xong("T1.1")
-        rc, out, _err = self.chay("soat", "--don")
+        rc, out, _err = self.chay("sweep", "--don")
         self.assertEqual(rc, 0, out)
         self.assertTrue(os.path.isdir(wt), "nhánh chưa merge mà worktree đã bị xoá")
-        self.assertIn("hop T1.1", out)
+        self.assertIn("merge T1.1", out)
 
     def test_soat_khong_con_gi_thi_khong_in_khoi_goi_y(self):
-        rc, out, _err = self.chay("soat")
+        rc, out, _err = self.chay("sweep")
         self.assertEqual(rc, 0, out)
         self.assertNotIn("NOT CLEANED UP YET", out)
 
@@ -1498,21 +1498,21 @@ class LogWorktreeTest(TeamBase):
         super().setUp()
         self._git_repo()
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
 
     def test_log_ghi_moc_mo_va_don(self):
-        _rc, _out, err = self.chay("mo", "T1.1")
+        _rc, _out, err = self.chay("open", "T1.1")
         self.assertIn("open 2026-08-17-1828-x/T1.1", err)
         wt = self._duong_worktree("T1.1")
         write_file(wt, "T1.1.txt", "x\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "xong")
-        _rc, _out, err = self.chay("hop", "T1.1")
+        _rc, _out, err = self.chay("merge", "T1.1")
         self.assertIn("cleaned T1.1", err)
         self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
 
     def test_log_tat_duoc_qua_config(self):
-        _rc, _out, err = self.chay("mo", "T1.1", env={"TDQ_LOG": "0"})
+        _rc, _out, err = self.chay("open", "T1.1", env={"TDQ_LOG": "0"})
         self.assertNotIn("open ", err)
         self.assertEqual(err.strip(), "")
 
@@ -1529,7 +1529,7 @@ class VaLuoiWorktreeTest(TeamBase):
         super().setUp()
         self._git_repo()
         self._project(PLAN_8_TASK)
-        self.chay("phan-cong")
+        self.chay("assign")
 
     def _so_json(self):
         return os.path.join(self.cwd, "docs", "tdq", "worktrees.json")
@@ -1542,7 +1542,7 @@ class VaLuoiWorktreeTest(TeamBase):
     def test_so_hong_thi_mo_bao_loi_chu_khong_de_lai_worktree_mo_coi(self):
         """Ghi sổ hỏng thì worktree sinh ra sẽ vô hình với `soat` và với cổng qc."""
         self._so_hong()
-        rc, out, err = self.chay("mo", "T1.1")
+        rc, out, err = self.chay("open", "T1.1")
         self.assertEqual(rc, 1, out + err)
         self.assertNotIn("Traceback", err)
         self.assertIn("ledger", (out + err).lower())
@@ -1551,33 +1551,33 @@ class VaLuoiWorktreeTest(TeamBase):
 
     def test_so_hong_thi_soat_khong_vang_traceback(self):
         self._so_hong()
-        rc, _out, err = self.chay("soat")
+        rc, _out, err = self.chay("sweep")
         self.assertNotIn("Traceback", err)
         self.assertIn(rc, (0, 1))
 
     def test_dong_so_thieu_duong_dan_khong_lam_soat_no(self):
         """Dòng hỏng mà không đóng được thì cổng qc kẹt vĩnh viễn."""
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         with open(self._so_json(), encoding="utf-8") as f:
             du_lieu = json.load(f)
         du_lieu["dong"][0].pop("duong_dan")
         with open(self._so_json(), "w", encoding="utf-8") as f:
             json.dump(du_lieu, f)
-        rc, out, err = self.chay("soat")
+        rc, out, err = self.chay("sweep")
         self.assertNotIn("Traceback", err)
         self.assertEqual(rc, 0, out + err)
         with open(self._so_json(), encoding="utf-8") as f:
             self.assertEqual(json.load(f)["dong"][0]["trang_thai"], "dong")
 
     def test_soat_don_go_ca_worktree_tich_hop_nhung_giu_nhanh(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, "a.txt", "x\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "xong")
         tich_hop = self._duong_tich_hop()
-        self.chay("hop", "T1.1")
-        rc, out, _err = self.chay("soat", "--don")
+        self.chay("merge", "T1.1")
+        rc, out, _err = self.chay("sweep", "--don")
         self.assertEqual(rc, 0, out)
         self.assertFalse(os.path.isdir(tich_hop), out)
         nhanh = git(self.cwd, "branch", "--format=%(refname:short)").splitlines()
@@ -1585,13 +1585,13 @@ class VaLuoiWorktreeTest(TeamBase):
 
     def test_file_bi_gitignore_khong_bi_xoa_am_tham(self):
         """`git worktree remove` xoá cả file bị ignore — `.env` mất là mất hẳn."""
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, ".gitignore", ".env\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "ignore")
         write_file(wt, ".env", "SECRET=1\n")
-        rc, out, err = self.chay("hop", "T1.1")
+        rc, out, err = self.chay("merge", "T1.1")
         self.assertEqual(rc, 0, out + err)
         self.assertTrue(os.path.exists(os.path.join(wt, ".env")), out + err)
         self.assertIn("NOT CLEANED UP YET", out + err)
@@ -1599,36 +1599,36 @@ class VaLuoiWorktreeTest(TeamBase):
 
     def test_rac_sinh_lai_duoc_van_cho_don(self):
         """Chặn vì `__pycache__` thì không bao giờ dọn được gì — cấm chặn kiểu đó."""
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, ".gitignore", "__pycache__/\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "ignore")
         os.makedirs(os.path.join(wt, "__pycache__"), exist_ok=True)
         write_file(wt, os.path.join("__pycache__", "x.pyc"), "x")
-        rc, out, err = self.chay("hop", "T1.1")
+        rc, out, err = self.chay("merge", "T1.1")
         self.assertEqual(rc, 0, out + err)
         self.assertFalse(os.path.isdir(wt), out + err)
 
     def test_don_khong_xoa_worktree_con_viec_chua_commit(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, "dang_lam.txt", "x\n")
-        rc, out, err = self.chay("don")
+        rc, out, err = self.chay("clean")
         self.assertEqual(rc, 0, out + err)
         self.assertTrue(os.path.isdir(wt), "don cũ vẫn xoá worktree còn việc")
         self.assertIn("NOT CLEANED UP YET", out + err)
 
     def test_worktree_bi_khoa_khong_lam_chet_ca_luot_soat(self):
         """Một worktree khoá mà làm văng cả lượt quét thì mọi worktree bẩn khác mất khối gợi ý."""
-        self.chay("mo", "T1.1")
-        self.chay("mo", "T1.2")
+        self.chay("open", "T1.1")
+        self.chay("open", "T1.2")
         ban = self._duong_worktree("T1.2")
         write_file(ban, "dang_lam.txt", "x\n")
         khoa = self._duong_tich_hop()
         git(self.cwd, "worktree", "lock", khoa)
         try:
-            rc, out, err = self.chay("soat", "--don")
+            rc, out, err = self.chay("sweep", "--don")
         finally:
             git(self.cwd, "worktree", "unlock", khoa)
         self.assertNotIn("Traceback", err)
@@ -1638,11 +1638,11 @@ class VaLuoiWorktreeTest(TeamBase):
         self.assertTrue(os.path.isdir(khoa), "worktree bị khoá vẫn bị xoá")
 
     def test_worktree_bi_khoa_khong_lam_chet_don(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         git(self.cwd, "worktree", "lock", wt)
         try:
-            rc, out, err = self.chay("don")
+            rc, out, err = self.chay("clean")
         finally:
             git(self.cwd, "worktree", "unlock", wt)
         self.assertNotIn("Traceback", err)
@@ -1652,27 +1652,27 @@ class VaLuoiWorktreeTest(TeamBase):
 
     def test_rac_ignored_la_ly_do_rieng_va_phuong_an_go_duoc_that(self):
         """Gọi `build/` là 'uncommitted changes' thì user chạy 2 lệnh vô hiệu rồi kẹt mãi."""
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, ".gitignore", "build/\n")
         git(wt, "add", "-A")
         git(wt, "commit", "-q", "-m", "ignore")
         os.makedirs(os.path.join(wt, "build"), exist_ok=True)
         write_file(wt, os.path.join("build", "out.o"), "x")
-        rc, out, _err = self.chay("soat", "--don")
+        rc, out, _err = self.chay("sweep", "--don")
         self.assertNotEqual(rc, 0, out)
         self.assertIn("ignored files here do not regenerate", out, out)
         self.assertIn("clean -fdx", out, out)
         # Phương án gợi ý phải thật sự gỡ được, chạy đúng như in ra.
         git(wt, "clean", "-fdx")
-        rc2, out2, _err2 = self.chay("soat", "--don")
+        rc2, out2, _err2 = self.chay("sweep", "--don")
         # Hết lý do `bo-qua`; còn lại đúng một lý do tiến được là chưa merge.
         self.assertEqual(rc2, 0, out2)
         self.assertNotIn("ignored files here do not regenerate", out2, out2)
 
     def test_worktree_khong_co_dong_so_van_bi_kiem_du_dieu_kien(self):
         """Thư mục lạ trong tầm cũng phải qua đủ ba điều kiện, không chỉ mỗi 'sạch'."""
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         write_file(wt, ".gitignore", ".env\n")
         git(wt, "add", "-A")
@@ -1684,20 +1684,20 @@ class VaLuoiWorktreeTest(TeamBase):
         du_lieu["dong"] = []
         with open(so, "w", encoding="utf-8") as f:
             json.dump(du_lieu, f)
-        rc, out, _err = self.chay("soat", "--don")
+        rc, out, _err = self.chay("sweep", "--don")
         self.assertIn("In scope, no ledger row:", out, out)
         self.assertNotEqual(rc, 0, out)
         self.assertTrue(os.path.exists(os.path.join(wt, ".env")), out)
 
     def test_git_tu_choi_khong_phai_khoa_thi_khong_dan_nhan_khoa(self):
         """Dán nhãn 'khoa' cho lỗi quyền là gửi user đi chạy `worktree unlock` vô ích."""
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         cha = os.path.dirname(wt)
         cu = os.stat(cha).st_mode
         os.chmod(cha, 0o500)
         try:
-            rc, out, err = self.chay("soat", "--don")
+            rc, out, err = self.chay("sweep", "--don")
         finally:
             os.chmod(cha, cu)
         self.assertNotIn("Traceback", err)
@@ -1708,11 +1708,11 @@ class VaLuoiWorktreeTest(TeamBase):
         self.assertEqual(rc, 0, out)
 
     def test_worktree_khoa_that_van_giu_nhan_khoa(self):
-        self.chay("mo", "T1.1")
+        self.chay("open", "T1.1")
         wt = self._duong_worktree("T1.1")
         git(self.cwd, "worktree", "lock", wt)
         try:
-            _rc, out, _err = self.chay("soat", "--don")
+            _rc, out, _err = self.chay("sweep", "--don")
         finally:
             git(self.cwd, "worktree", "unlock", wt)
         self.assertIn("git has this worktree locked", out, out)

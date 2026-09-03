@@ -56,16 +56,39 @@ LY_DO_CHAN = {
              "lenh": "git -C {duong_dan} status --porcelain --ignored=matching"},
             {"mo_ta": "move what matters somewhere safe, then sweep again",
              "lenh": "mv {duong_dan}/<file> <a folder you keep> "
-                     "&& python3 scripts/tdq_team.py soat --don"},
+                     "&& python3 scripts/tdq_team.py sweep --clean"},
             {"mo_ta": "delete them for good — this frees the worktree in one step",
-             "lenh": "git -C {duong_dan} clean -fdx && python3 scripts/tdq_team.py soat --don"},
+             "lenh": "git -C {duong_dan} clean -fdx && python3 scripts/tdq_team.py sweep --clean"},
+        ],
+    },
+    "rebase-hong": {
+        "mo_ta": "the branch does not rebase onto the integration branch",
+        "phuong_an": [
+            {"mo_ta": "rebase it by hand inside the worktree and settle the conflict",
+             "lenh": "git -C {duong_dan} rebase tdq/<slug>/tich-hop"},
+            {"mo_ta": "see which files are in the way",
+             "lenh": "python3 scripts/tdq_team.py resolve {ma_task}"},
+        ],
+    },
+    "test-code": {
+        "mo_ta": "the task's own test is red, so the branch may not merge",
+        "phuong_an": [
+            {"mo_ta": "fix the code in the worktree, then verify again",
+             "lenh": "python3 scripts/tdq_team.py check {ma_task}"},
+        ],
+    },
+    "test-plan": {
+        "mo_ta": "the plan names no runnable command in the task's `Test:` line",
+        "phuong_an": [
+            {"mo_ta": "write the check as a command in backticks in the plan, then verify again",
+             "lenh": "python3 scripts/tdq_team.py check {ma_task}"},
         ],
     },
     "xung-dot": {
         "mo_ta": "the branch conflicts with the integration branch",
         "phuong_an": [
             {"mo_ta": "resolve it inside the worktree, then probe again",
-             "lenh": "python3 scripts/tdq_team.py kiem {ma_task}"},
+             "lenh": "python3 scripts/tdq_team.py check {ma_task}"},
             {"mo_ta": "drop the task branch and redo the task",
              "lenh": "git worktree remove --force {duong_dan} && git branch -D {nhanh}"},
         ],
@@ -74,14 +97,14 @@ LY_DO_CHAN = {
         "mo_ta": "the branch is not in the integration branch yet",
         "phuong_an": [
             {"mo_ta": "merge it in — this also cleans up when it lands",
-             "lenh": "python3 scripts/tdq_team.py hop {ma_task}"},
+             "lenh": "python3 scripts/tdq_team.py merge {ma_task}"},
         ],
     },
     "git-tu-choi": {
         "mo_ta": "git refused to remove this worktree — its own words are in brackets",
         "phuong_an": [
             {"mo_ta": "fix what git named there, then sweep again",
-             "lenh": "python3 scripts/tdq_team.py soat --don"},
+             "lenh": "python3 scripts/tdq_team.py sweep --clean"},
             {"mo_ta": "see what still holds the directory",
              "lenh": "git worktree list --porcelain && ls -la {duong_dan}"},
         ],
@@ -248,7 +271,7 @@ def render_md(du_lieu):
         "",
         "Source: `docs/tdq/worktrees.json` · written only by "
         "`scripts/tdq_worktree_registry.py`.",
-        "Clean up with `python3 scripts/tdq_team.py soat --don`.",
+        "Clean up with `python3 scripts/tdq_team.py sweep --clean`.",
         "",
         f"Open: **{len(mo)}** · rows in total: **{len(dong)}**",
         "",

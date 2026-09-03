@@ -553,8 +553,8 @@ def viec_ke_tiep(state, bang_chung, muc_ket_luan, ca_lech=()):
     da_giao = bang_chung["tick"]["da_giao"]
     if phase == "implement" and da_giao:
         return (f"Task đã giao mà chưa hợp về: {', '.join(da_giao)}. Dò xung đột rồi hợp — "  # i18n-allow
-                f"python3 scripts/tdq_team.py kiem {da_giao[0]} "
-                f"&& python3 scripts/tdq_team.py hop {da_giao[0]}.")
+                f"python3 scripts/tdq_team.py check {da_giao[0]} "
+                f"&& python3 scripts/tdq_team.py merge {da_giao[0]}.")
     return f"Chạy tiếp phase `{phase}` theo skill tương ứng."  # i18n-allow
 
 

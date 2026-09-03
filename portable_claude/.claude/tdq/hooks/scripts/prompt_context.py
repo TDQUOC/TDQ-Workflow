@@ -122,7 +122,7 @@ def _nhac_worktree(cwd):
     """One line, only while the ledger holds an open row — silent the rest of the time.
 
     Outside the 3-line/240-char budget on purpose: it is not part of the standing context,
-    it appears only while disk is being wasted, and it disappears the moment `soat --don`
+    it appears only while disk is being wasted, and it disappears the moment `sweep --clean`
     runs. A ledger that is missing or corrupt says nothing, so it prints nothing: a nudge
     that cries wolf gets ignored, and this one has to still be believed weeks from now.
     """
@@ -133,7 +133,7 @@ def _nhac_worktree(cwd):
         return
     if mo:
         print(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
-              "python3 scripts/tdq_team.py soat")
+              "python3 scripts/tdq_team.py sweep")
 
 
 def main():

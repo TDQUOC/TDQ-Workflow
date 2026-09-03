@@ -46,3 +46,16 @@ BRANCH: <branch name> | MERGE-READY: yes | no
 TICK-READY: yes | no
 NOTES: <≤ 2 lines; when blocked, name exactly what is missing>
 ```
+
+`TICK-READY: yes` is no longer self-certification. Before merging your branch the leader runs
+`tdq_team.py check <task>`, which re-runs the very command on your task's `Test:` line inside
+your worktree; `merge` refuses a branch whose test comes back red, and a task with no runnable
+`Test:` command is refused too. So the number you report is checked against a rerun, not taken
+on trust — report the real result, a red one included, instead of a hopeful one.
+
+Two more things the machine checks, so do not work around them:
+
+- Writing to a file outside the `Chạm:` area your task declared is BLOCKED at write time. Need
+  a file that is not in your area → report it to the leader; do not write it from here.
+- `merge` rebases your branch onto the newest integration branch first. A conflict there stops
+  the merge and the leader clears it with `resolve`; you do not merge into `tich-hop` yourself.

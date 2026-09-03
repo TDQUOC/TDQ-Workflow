@@ -23,6 +23,7 @@ Trạng thái plan: CHỜ DUYỆT
 - P1 — <tên phase>
 - P2 — <tên phase>
 - Dòng `Chạm:` (đặt NGAY DƯỚI mọi task TẠO hoặc SỬA file mã nguồn)
+- Luật file nóng (một file, nhiều task chạm)
 - Dòng `Cần:` (khai phụ thuộc giữa các task)
 - Cụm song song
 - Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
@@ -57,12 +58,12 @@ Trạng thái plan: CHỜ DUYỆT
   - Chạm: `<đường/dẫn/file-moi.py>` → file mới, chưa node nào phụ thuộc
 
 Dòng này có HAI người đọc. Người thứ nhất là bạn: nó trả lời "sửa chỗ này thì vỡ chỗ
-nào". Người thứ hai là máy: `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py phan-cong` đọc các đường dẫn trong
+nào". Người thứ hai là máy: `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py assign` đọc các đường dẫn trong
 backtick để dựng vùng file của task, rồi xếp task đụng chung file vào hai đợt khác nhau.
 
 Vì vậy **mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, kể cả task tạo
 file mới. Đường dẫn phải nằm trong backtick và phải là đường dẫn thật tính từ gốc repo.
-Task thiếu dòng này sẽ bị `phan-cong` xếp vào `tu_lam` với lý do `vung-khoa` — tức là
+Task thiếu dòng này sẽ bị `assign` xếp vào `tu_lam` với lý do `vung-khoa` — tức là
 leader phải tự làm, mất chỗ chạy song song. Task chỉ sửa tài liệu thì bỏ dòng này.
 Node nằm trong mục `## Hub` của `docs/kien-truc.md` → task phải thêm một dòng DoD kiểm
 hồi quy riêng cho node ấy.
@@ -97,12 +98,28 @@ merge mới vỡ. Máy tự chia đợt từ dòng `Chạm:`, nhưng bạn viế
 
 - Gom task cùng chạm một file vào cùng một phase, đặt kề nhau, để thứ tự đọc ra được.
 - Task phụ thuộc task khác thì nhắc mã task đó trong phần mô tả (vd "sau `T1.1`").
-  `phan-cong` đọc mã này để giữ đúng thứ tự.
+  `assign` đọc mã này để giữ đúng thứ tự.
 - Chia nhỏ theo FILE, đừng chia theo bước thời gian. "Viết `a.py`" + "viết test cho
   `a.py`" là một task; "viết `a.py`" + "viết `b.py`" là hai task chạy song song được.
 - Ước lượng nhanh: đếm số task có `Chạm:` không giao nhau. Con số đó là trần tốc độ của
-  mode đội. Đừng đoán bên nào thắng — chạy lệnh `mo-phong` ở bước 1 của
+  mode đội. Đừng đoán bên nào thắng — chạy lệnh `simulate` ở bước 1 của
   [tdq-plan/SKILL.md](../SKILL.md) và lấy dòng `Winner:` làm đề xuất.
+
+## Luật file nóng (một file, nhiều task chạm)
+
+`assign` đếm số task khai mỗi đường dẫn ở dòng `Chạm:`; đường dẫn nào từ 2 task trở lên bị in
+ra dưới nhãn `HOT FILE` kèm mã các task. Worktree KHÔNG cứu được loại file này: mọi nhánh đều
+phải sửa nó, nên đợt nào cũng đụng nhau (nghiên cứu N3 của brief).
+
+Cách nhận diện khi đang viết plan: file kiểu bảng đăng ký, `index`, `__init__`, `manifest`,
+bảng hằng số — thứ mà "thêm một mục" là bước bắt buộc của nhiều task.
+
+Hai cách xử lý, chọn một, không có cách thứ ba:
+
+- **Nâng lên đợt sớm**: tách phần sửa chung thành MỘT task riêng, đặt ở phase trước; các task
+  sau nhánh ra từ file đã ổn định. Đây là cách mặc định.
+- **Một chủ ghi duy nhất**: nếu không tách được, để đúng MỘT task khai file đó ở `Chạm:`, các
+  task còn lại không được chạm; ai cần thay đổi ở đó thì báo để gộp vào task chủ.
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>

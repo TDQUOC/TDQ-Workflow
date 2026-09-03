@@ -171,7 +171,7 @@ def unfinished_reason(state, tick, open_count=None):
     con_ho = tick.get("total", 0) if open_count is None else open_count
     return (f"[TDQ:UNFINISHED] The plan still has {con_ho} open task(s) and the phase is still "
             "implement. Keep going to the end of the plan in this turn: mark [~], do the task, "
-            "mark [x]. Genuinely blocked → run `tdq_state.py tam-hoan --ly-do \"<why>\"` and "
+            "mark [x]. Genuinely blocked → run `tdq_state.py pause --ly-do \"<why>\"` and "
             "tell the user why.")
 
 
@@ -219,7 +219,7 @@ def _chan_chua_xong(cwd, state):
             "hookEventName": "Stop",
             "additionalContext": ("[TDQ:STUCK] The plan has not moved across several stops. "
                                   "Either finish the remaining tasks, or run "
-                                  "`tdq_state.py tam-hoan --ly-do \"<why>\"` and tell the user."),
+                                  "`tdq_state.py pause --ly-do \"<why>\"` and tell the user."),
         }}, ensure_ascii=False))
         return True
     _info(f"stop_gate: block TDQ:UNFINISHED · phase=implement · open={task_open_count(cwd)} "

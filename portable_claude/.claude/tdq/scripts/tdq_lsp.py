@@ -317,7 +317,7 @@ def bac5_lumen():
                    f"ollama pull {MODEL_LUMEN}", chi_canh_bao=True)
     if not _ollama_dang_chay():
         return Bac(5, "sức khoẻ lumen", False,
-                   "ollama chưa chạy — sẽ đánh thức khi cần bằng `tdq_lsp.py danh-thuc`",
+                   "ollama chưa chạy — sẽ đánh thức khi cần bằng `tdq_lsp.py wake`",
                    chi_canh_bao=True)
     return Bac(5, "sức khoẻ lumen", True, f"ollama đang chạy, có {MODEL_LUMEN}")
 
@@ -523,11 +523,18 @@ def cmd_nha(args):
     try:
         os.kill(pid, 15)
         print(f"Đã tắt daemon Ollama do script bật (pid {pid}).")
-        _log(f"nha → tắt daemon pid={pid}")
+        _log(f"release → tắt daemon pid={pid}")
     except OSError as exc:
-        _log(f"nha → daemon pid={pid} đã không còn ({exc})")
+        _log(f"release → daemon pid={pid} đã không còn ({exc})")
     _xoa_dau()
     return EXIT_OK
+
+
+SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SCRIPTS_DIR)
+import tdq_ten_lenh  # noqa: E402
+
+BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_lsp.py"]
 
 
 def parse_args(argv):
@@ -535,18 +542,24 @@ def parse_args(argv):
         description="Chẩn đoán bộ agent-lsp cho máy và cho project này. Script không tự cài gì.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log service")
     sub = ap.add_subparsers(dest="lenh", required=True)
-    sub.add_parser("kiem", help="chạy thang chẩn đoán, in từng bậc")
-    dt = sub.add_parser("danh-thuc", help="đánh thức Ollama theo yêu cầu, chỉ khi LSP tìm không thấy")
+    sub.add_parser("check", help="chạy thang chẩn đoán, in từng bậc")
+    dt = sub.add_parser("wake", help="đánh thức Ollama theo yêu cầu, chỉ khi LSP tìm không thấy")
     dt.add_argument("--han-cho", type=float, default=30.0, help="giây chờ Ollama trả lời (mặc định 30)")
-    sub.add_parser("nha", help="nhả model embedding ngay sau khi tìm xong")
+    sub.add_parser("release", help="nhả model embedding ngay sau khi tìm xong")
     return ap.parse_args(argv)
 
 
 def main(argv):
     global _LOG_TAT
+    argv = list(argv)
+    # Hidden alias (`kiem` → `check`), resolved before argparse sees it.
+    if argv and not argv[0].startswith("-"):
+        chinh_thuc = tdq_ten_lenh.giai_ten(argv[0], BANG_TEN)
+        if chinh_thuc is not None:
+            argv[0] = chinh_thuc
     args = parse_args(argv)
     _LOG_TAT = args.khong_log
-    return {"kiem": cmd_kiem, "danh-thuc": cmd_danh_thuc, "nha": cmd_nha}[args.lenh](args)
+    return {"check": cmd_kiem, "wake": cmd_danh_thuc, "release": cmd_nha}[args.lenh](args)
 
 
 if __name__ == "__main__":

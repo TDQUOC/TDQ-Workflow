@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """Team-mode orchestration: the leader assigns the WHOLE plan, sub-agents run in parallel.
 
-Seven sub-commands, used in exactly this order:
-    phan-cong  — read the whole plan, write the map docs/tdq/team/<slug>.json
-    kiem-ke    — audit the map: a task the leader kept against the rules exits non-zero
-    cum        — print the next wave (assignable tasks touching no locked area)
-    mo <task>  — create a branch + its own git worktree for one task
-    soat       — sweep every worktree of every request; --don removes the safe ones
-    kiem <task>— probe for conflicts with the integration branch, WITHOUT touching the repo
-    hop <task> — merge the task's branch into the integration branch (blocked until `kiem` passes)
-    don        — remove every worktree of the request, prune .git/worktrees clean
+Eight sub-commands, used in exactly this order:
+    assign      — read the whole plan, write the map docs/tdq/team/<slug>.json
+    audit       — audit the map: a task the leader kept against the rules exits non-zero
+    wave        — print the next wave (assignable tasks touching no locked area)
+    open <task> — create a branch + its own git worktree for one task
+    sweep       — sweep every worktree of every request; --clean removes the safe ones
+    check <task>— probe for conflicts with the integration branch, WITHOUT touching the repo
+    merge <task>— merge the task's branch into the integration branch (blocked until `check` passes)
+    clean       — remove every worktree of the request, prune .git/worktrees clean
+
+The old Vietnamese names (phan-cong, kiem-ke, cum, mo, soat, kiem, hop, don) still work as
+hidden aliases; the table lives in scripts/tdq_ten_lenh.py.
 
 Why this tool instead of letting the model wing it: the decision "assign this task or
 keep it" must be MACHINE-CHECKABLE. When the model judges itself, nobody can prove
@@ -69,6 +72,7 @@ TRAN_SONG_SONG = 4
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
 import tdq_state  # noqa: E402
+import tdq_ten_lenh  # noqa: E402
 import tdq_worktree_registry as so_wt  # noqa: E402
 
 
@@ -363,13 +367,13 @@ def _boi_canh(project, can_ban_do=True):
                 ban_do = json.load(f)
         except (ValueError, UnicodeDecodeError) as loi:
             raise LoiLuat(f"The assignment map is broken ({duong}): {loi}. "
-                          f"Run again: python3 scripts/tdq_team.py phan-cong")
+                          f"Run again: python3 scripts/tdq_team.py assign")
     elif can_ban_do:
         raise LoiLuat("No assignment map yet. Run: "
-                      "python3 scripts/tdq_team.py phan-cong")
+                      "python3 scripts/tdq_team.py assign")
     if ban_do is not None and can_ban_do and ban_do.get("plan_sha") != sha_file(plan):
         raise LoiLuat("The plan changed after assignment — the map is stale. "
-                      "Run again: python3 scripts/tdq_team.py phan-cong")
+                      "Run again: python3 scripts/tdq_team.py assign")
     return slug, plan, ban_do
 
 
@@ -404,14 +408,35 @@ def lenh_phan_cong(project, _args):
         json.dump(ban_do, f, ensure_ascii=False, indent=2)
         f.write("\n")
     giao = sum(1 for r in ban_do["tasks"].values() if r["quyet_dinh"] == "giao")
-    _log(f"phan-cong → {len(tasks)} task(s) · assigned {giao} · kept {len(tasks) - giao} "
+    _log(f"assign → {len(tasks)} task(s) · assigned {giao} · kept {len(tasks) - giao} "
          f"· {max(dot.values())} wave(s)")
     print(f"Map: {os.path.relpath(duong, project)}")
     print(f"Assigned to sub-agents: {giao}/{len(tasks)} task(s) · {max(dot.values())} wave(s)")
     for ma, rec in ban_do["tasks"].items():
         if rec["quyet_dinh"] == "tu_lam":
             print(f"  KEPT {ma} — {rec['ly_do']}: {LY_DO_GIU[rec['ly_do']]}")
+    for duong_nong, ma_list in _file_nong(tasks):
+        _log(f"assign → HOT FILE {duong_nong} touched by {len(ma_list)} task(s)")
+        print(f"  HOT FILE {duong_nong} — {len(ma_list)} tasks touch it: "
+              f"{', '.join(ma_list)}")
+        print("     Suggestion: pull the shared change into ONE task in an earlier wave, "
+              "so the rest branch off a settled file.")
     return 0
+
+
+def _file_nong(tasks):
+    """Paths declared by 2+ tasks → [(path, [task codes])], most-touched first.
+
+    Gap H3: worktrees do nothing for a file EVERY branch has to edit (a registry, an index,
+    a manifest). Research N3: split the shared change out as its own step, run it first.
+    """
+    theo_duong = {}
+    for t in tasks:
+        for duong in t.vung_file:
+            theo_duong.setdefault(duong.replace(os.sep, "/"), []).append(t.ma)
+    nong = [(d, ma) for d, ma in theo_duong.items() if len(ma) >= 2]
+    nong.sort(key=lambda x: (-len(x[1]), x[0]))
+    return nong
 
 
 def lenh_kiem_ke(project, _args):
@@ -444,11 +469,11 @@ def lenh_kiem_ke(project, _args):
                           f"{len(LY_DO_GIU)} groups ({', '.join(sorted(LY_DO_GIU))})")
     tong = len(ban_do["tasks"])
     giao = sum(1 for r in ban_do["tasks"].values() if r.get("quyet_dinh") == "giao")
-    _log(f"kiem-ke → {giao}/{tong} assigned · {len(van_de)} problem(s)")
+    _log(f"audit → {giao}/{tong} assigned · {len(van_de)} problem(s)")
     if van_de:
         for dong in van_de:
             _loi(dong)
-        _loi("Fix: python3 scripts/tdq_team.py phan-cong (or hand-fix the map to use "
+        _loi("Fix: python3 scripts/tdq_team.py assign (or hand-fix the map to use "
              f"the {len(LY_DO_GIU)} reason groups)")
         return 1
     print(f"Map clean: {giao}/{tong} task(s) assigned to sub-agents.")
@@ -832,6 +857,72 @@ def _file_xung_dot(ra):
     return sorted(ten)
 
 
+# The task line ends with `— Test: <criterion>`; a runnable criterion states the command in
+# backticks. Prose after `Test:` ("đọc lại thấy đủ 3 mục") carries nothing to run.  # i18n-allow
+_TEST = re.compile(r"Test\s*:\s*(.*)$", re.S)
+_LENH_NGOAC = re.compile(r"`([^`]+)`")
+
+
+def lay_lenh_test(task):
+    """The command a task's `Test:` says to run, or None when there is none to run."""
+    for dong in task.text:
+        m = _TEST.search(dong)
+        if not m:
+            continue
+        lenh = _LENH_NGOAC.search(m.group(1))
+        if lenh:
+            return lenh.group(1).strip()
+    return None
+
+
+def _task_theo_ma(project, ma):
+    """The Task of the current plan carrying this code, or None (a full branch name)."""
+    _slug, plan, _ban_do = _boi_canh(project, can_ban_do=False)
+    for t in doc_plan(plan):
+        if t.ma.lower() == str(ma).lower():
+            return t
+    return None
+
+
+def chay_test_task(duong, task, timeout=600):
+    """Run the task's own check inside its worktree → (exit code, command, output).
+
+    Exit code None means the plan named no command — that is a PLAN defect, not a code one,
+    and the caller reports it differently.
+    """
+    lenh = lay_lenh_test(task)
+    if lenh is None:
+        return None, None, ""
+    proc = subprocess.run(lenh, shell=True, cwd=duong, capture_output=True,
+                          text=True, timeout=timeout)
+    return proc.returncode, lenh, (proc.stdout + proc.stderr)
+
+
+def _kiem_test_cua_task(project, slug, ma, nhanh):
+    """Run the task's own check → (reason it failed or None, the command that was run).
+
+    The sub-agent's `TICK-READY` is its own claim; this is the independent verification,
+    so nothing unproven reaches the integration branch. Two failures are told apart: the
+    plan naming no command (PLAN) and the command coming back red (CODE).
+    """
+    task = _task_theo_ma(project, ma)
+    if task is None:                       # a raw branch name, no task line to read
+        return None, None
+    duong = _duong_worktree(project, slug, str(ma).lower())
+    ma_thoat, lenh, ra = chay_test_task(duong, task)
+    if ma_thoat is None:
+        _log(f"check {nhanh} → PLAN error, no test command")
+        _loi(f"PLAN error at {task.ma}: the `Test:` line names no command to run.")
+        _loi("Fix: write the check as a command in backticks, then run `check` again.")
+        return "plan", None
+    if ma_thoat != 0:
+        _log(f"check {nhanh} → CODE error, the test is red")
+        _loi(f"CODE error at {task.ma}: `{lenh}` exited {ma_thoat} in {duong}.")
+        _loi(ra.strip()[-2000:])
+        return "code", lenh
+    return None, lenh
+
+
 def lenh_kiem(project, args):
     slug, _plan, ban_do = _boi_canh(project)
     if not _la_repo(project):
@@ -840,17 +931,46 @@ def lenh_kiem(project, args):
     nhanh = _nhanh_cua(project, slug, ban_do, args.task)
     if not _co_nhanh(project, nhanh):
         raise LoiLuat(f"No branch {nhanh}. Open it first: "
-                      f"python3 scripts/tdq_team.py mo {args.task}")
+                      f"python3 scripts/tdq_team.py open {args.task}")
     xung_dot, file_dung = _do_xung_dot(project, tich_hop, nhanh)
-    _log(f"kiem {nhanh} → {'CONFLICT' if xung_dot else 'clean'}")
+    _log(f"check {nhanh} → {'CONFLICT' if xung_dot else 'clean'}")
     if xung_dot:
         print(f"CONFLICT: {nhanh} does not merge cleanly into {tich_hop}")
         for duong in file_dung:
             print(f"  {duong}")
         print("How to fix: resolve it inside the task's worktree, then run `kiem` again.")
         return 1
+    # The sub-agent's own `TICK-READY` is its own claim. Verify it here instead: run the
+    # task's `Test:` inside its worktree, so nothing unproven reaches the integration branch.
+    ly_do, lenh = _kiem_test_cua_task(project, slug, args.task, nhanh)
+    if ly_do is not None:
+        return 1
+    if lenh:
+        print(f"Test of {args.task} passed: `{lenh}`")
     print(f"Clean: {nhanh} merges into {tich_hop}.")
     return 0
+
+
+def _rebase_len_tich_hop(project, slug, ma, nhanh, tich_hop):
+    """Rebase the task branch onto the integration tip → None on success, the error text else.
+
+    Run inside the task's own worktree: that is where the branch is checked out, and where a
+    human can look afterwards. A failing rebase is aborted immediately — a worktree left in
+    the middle of a rebase is worse than no rebase at all.
+    """
+    duong = _duong_worktree(project, slug, str(ma).lower())
+    if not os.path.isdir(duong):
+        return None                              # nothing checked out to rebase
+    if _git(project, "merge-base", "--is-ancestor", tich_hop, nhanh,
+            check=False).returncode == 0:
+        return None                              # already on top of it
+    _git(project, "config", "rerere.enabled", "true")
+    proc = _git(duong, "rebase", tich_hop, check=False)
+    if proc.returncode != 0:
+        _git(duong, "rebase", "--abort", check=False)
+        return proc.stdout + proc.stderr
+    _log(f"rebase {nhanh} → onto {tich_hop}")
+    return None
 
 
 def lenh_hop(project, args):
@@ -861,21 +981,44 @@ def lenh_hop(project, args):
     nhanh = _nhanh_cua(project, slug, ban_do, args.task)
     if not _co_nhanh(project, nhanh):
         raise LoiLuat(f"No branch {nhanh}.")
+    # Gap H2: the branch was opened at the start of the wave, so by the time the second agent
+    # merges, its base is already old. Rebase onto the current integration tip FIRST, in the
+    # task's own worktree, so every merge accounts for everything that landed before it.
+    loi_rebase = _rebase_len_tich_hop(project, slug, args.task, nhanh, tich_hop)
+    if loi_rebase is not None:
+        _log(f"merge {nhanh} → BLOCKED by a failed rebase")
+        _loi(f"BLOCKED: {nhanh} does not rebase onto {tich_hop} — the rebase was aborted, "
+             f"the worktree is back where it was.")
+        _loi(loi_rebase.strip()[-2000:])
+        _loi(f"Run `python3 scripts/tdq_team.py check {args.task}` once it is settled.")
+        _in_goi_y([{"ma_task": args.task, "nhanh": nhanh, "ly_do": "rebase-hong",
+                    "duong_dan": _duong_worktree(project, slug, args.task.lower())}])
+        return 1
     xung_dot, file_dung = _do_xung_dot(project, tich_hop, nhanh)
     if xung_dot:
-        _log(f"hop {nhanh} → BLOCKED by a conflict")
+        _log(f"merge {nhanh} → BLOCKED by a conflict")
         _loi(f"BLOCKED: {nhanh} conflicts with {tich_hop} at "
              f"{', '.join(file_dung) or '(file unknown)'}.")
-        _loi(f"Run `python3 scripts/tdq_team.py kiem {args.task}` for the detail, "
+        _loi(f"Run `python3 scripts/tdq_team.py check {args.task}` for the detail, "
              f"merge only once it is resolved.")
         _in_goi_y([{"ma_task": args.task, "nhanh": nhanh, "ly_do": "xung-dot",
+                    "duong_dan": _duong_worktree(project, slug, args.task.lower())}])
+        return 1
+    # The branch merges cleanly — but clean is not the same as correct. Verify the task's own
+    # test before the integration branch takes a single commit.
+    ly_do, _lenh = _kiem_test_cua_task(project, slug, args.task, nhanh)
+    if ly_do is not None:
+        _log(f"merge {nhanh} → BLOCKED by a red test ({ly_do})")
+        _loi(f"BLOCKED: {nhanh} is NOT merged — fix it in the worktree, then run "
+             f"`python3 scripts/tdq_team.py check {args.task}` again.")
+        _in_goi_y([{"ma_task": args.task, "nhanh": nhanh, "ly_do": f"test-{ly_do}",
                     "duong_dan": _duong_worktree(project, slug, args.task.lower())}])
         return 1
     # rerere: a conflict repeating across waves is remembered with its resolution (research §2).
     _git(project, "config", "rerere.enabled", "true")
     _git(duong_tich_hop, "merge", "--no-ff", "-m",
          f"merge {nhanh} into {tich_hop}", nhanh)
-    _log(f"hop {nhanh} → into {tich_hop}")
+    _log(f"merge {nhanh} → into {tich_hop}")
     print(f"Merged {nhanh} into {tich_hop}.")
     print(f"Integration branch at: {duong_tich_hop}")
     duong = _duong_worktree(project, slug, args.task.lower())
@@ -1019,7 +1162,7 @@ def lenh_soat(project, args):
         canh_bao.append(f"WARNING: worktrees take {_doc_mb(tong_byte):.0f} MB "
                         f"(threshold {so_wt.TRAN_TONG_MB} MB) — clean them up.")
     so_wt.ghi_md(project)
-    _log(f"soat → {len(con_lai)} open · {_doc_mb(tong_byte):.1f} MB · "
+    _log(f"sweep → {len(con_lai)} open · {_doc_mb(tong_byte):.1f} MB · "
          f"{len(goi_y)} kept back")
     for dong_canh in canh_bao:
         print(dong_canh)
@@ -1058,7 +1201,7 @@ def lenh_don(project, _args):
                 continue
             da_go += 1
     _git(project, "worktree", "prune")
-    _log(f"don → removed {da_go} worktree(s), kept {len(giu)}")
+    _log(f"clean → removed {da_go} worktree(s), kept {len(giu)}")
     print(f"Removed {da_go} worktree(s) of {slug}, pruned.")
     _in_goi_y(giu)
     return 0
@@ -1121,17 +1264,99 @@ def canh_bao_lach_luat(cwd, rel_target):
         return None
 
 
+def ngoai_vung_khai(cwd, abs_target):
+    """A write from inside a task's worktree, aimed outside that task's `Chạm:`.  # i18n-allow
+
+    Returns None when there is nothing to say — including every write made outside a task
+    worktree, so mode `main` never meets this fence. Otherwise {ma, vung_file, duong}.
+    Gap H1: `Chạm:` was a hand-written declaration nobody checked, so two agents of one wave  # i18n-allow
+    could land on the same undeclared file and only find out at merge time.
+    """
+    try:
+        goc = os.path.realpath(os.environ.get("TDQ_WORKTREE_DIR")
+                               or os.path.join(cwd, ".tdq-worktrees"))
+        that = os.path.realpath(abs_target)
+        if not that.startswith(goc + os.sep):
+            return None
+        phan = that[len(goc) + 1:].split(os.sep)
+        if len(phan) < 3:                       # <slug>/<task>/<path…>
+            return None
+        slug, ten_wt, duong = phan[0], phan[1], "/".join(phan[2:])
+        if ten_wt == "tich-hop":                # the integration worktree owns everything
+            return None
+        # tests/ is exempt for the same reason the tick gate exempts it: the red step writes
+        # a failing test before there is anything to declare.
+        if duong.startswith("tests/"):
+            return None
+        state = tdq_state.load(cwd, heal=False) or {}
+        rel = state.get("plan_file") or os.path.join("docs", "tdq", "plan", f"{slug}.md")
+        plan = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+        if not os.path.isfile(plan):
+            return None
+        for t in doc_plan(plan):
+            if t.ma.lower() != ten_wt.lower():
+                continue
+            vung = [d.replace(os.sep, "/") for d in t.vung_file]
+            if not vung or duong in vung:
+                return None                     # nothing declared = nothing to enforce
+            _log(f"gate → {t.ma} writes {duong}, outside its declared area")
+            return {"ma": t.ma, "vung_file": vung, "duong": duong}
+        return None
+    except Exception:
+        # Same doctrine as canh_bao_lach_luat: this must never be what kills the hook.
+        return None
+
+
+def lenh_go(project, args):
+    """Show what is stuck between the task branch and the integration branch — change nothing.
+
+    Gap H4: until now a conflict only ever produced a refusal. Whoever had to settle it went
+    looking by hand. This prints the files and BOTH sides so the decision can be made at once.
+    Deliberately read-only: no checkout, no merge, no write into any worktree.
+    """
+    slug, _plan, ban_do = _boi_canh(project)
+    if not _la_repo(project):
+        raise LoiLuat("This directory is not a git repo.")
+    tich_hop = _nhanh_tich_hop(slug)
+    nhanh = _nhanh_cua(project, slug, ban_do, args.task)
+    if not _co_nhanh(project, nhanh):
+        raise LoiLuat(f"No branch {nhanh}. Open it first: "
+                      f"python3 scripts/tdq_team.py open {args.task}")
+    xung_dot, file_dung = _do_xung_dot(project, tich_hop, nhanh)
+    duong_wt = _duong_worktree(project, slug, str(args.task).lower())
+    print(f"Branch:      {nhanh}")
+    print(f"Integration: {tich_hop}")
+    print(f"Worktree:    {duong_wt}")
+    if not xung_dot:
+        _log(f"resolve {nhanh} → nothing stuck")
+        print("Nothing is stuck: this branch merges cleanly.")
+        return 0
+    _log(f"resolve {nhanh} → {len(file_dung)} file(s) stuck")
+    for duong in file_dung:
+        print(f"\n=== {duong} ===")
+        for ten, phia in ((tich_hop, "integration"), (nhanh, "task branch")):
+            noi = _git(project, "show", f"{ten}:{duong}", check=False)
+            noi_dung = noi.stdout if noi.returncode == 0 else "(the file does not exist here)"
+            print(f"--- {phia} ({ten}) ---")
+            print(noi_dung.rstrip()[:4000])
+    print("\nNothing was changed. Settle it in the worktree above, then run "
+          f"`python3 scripts/tdq_team.py check {args.task}`.")
+    return 1
+
+
 # ------------------------------------------------------------------ CLI
 LENH = {
-    "phan-cong": (lenh_phan_cong, "read the whole plan, write the assignment map"),
-    "kiem-ke": (lenh_kiem_ke, "audit the map: a kept task must cite 1 closed reason"),
-    "cum": (lenh_cum, "print the next wave, minus the locked file areas"),
-    "mo": (lenh_mo, "create a branch + worktree for one task"),
-    "kiem": (lenh_kiem, "probe for conflicts with the integration branch, repo untouched"),
-    "hop": (lenh_hop, "merge the task's branch into the integration branch"),
-    "soat": (lenh_soat, "sweep every worktree of every request: age, size, clean, merged"),
-    "don": (lenh_don, "remove the request's worktrees and prune"),
+    "assign": (lenh_phan_cong, "read the whole plan, write the assignment map"),
+    "audit": (lenh_kiem_ke, "audit the map: a kept task must cite 1 closed reason"),
+    "wave": (lenh_cum, "print the next wave, minus the locked file areas"),
+    "open": (lenh_mo, "create a branch + worktree for one task"),
+    "check": (lenh_kiem, "probe for conflicts with the integration branch, repo untouched"),
+    "merge": (lenh_hop, "merge the task's branch into the integration branch"),
+    "sweep": (lenh_soat, "sweep every worktree of every request: age, size, clean, merged"),
+    "clean": (lenh_don, "remove the request's worktrees and prune"),
+    "resolve": (lenh_go, "show every stuck file with both sides, changing nothing"),
 }
+BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_team.py"]
 
 
 def build_parser():
@@ -1141,16 +1366,22 @@ def build_parser():
     sub = p.add_subparsers(dest="lenh")
     for ten, (_ham, mo_ta) in LENH.items():
         con = sub.add_parser(ten, help=mo_ta)
-        if ten in ("mo", "kiem", "hop"):
+        if ten in ("open", "check", "merge", "resolve"):
             con.add_argument("task", help="task code (T1.1) or the full branch name")
-        if ten == "soat":
-            con.add_argument("--don", action="store_true",
+        if ten == "sweep":
+            con.add_argument("--clean", "--don", dest="don", action="store_true",
                              help="also remove every worktree that passes all 3 conditions")
     return p
 
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    # Resolve a hidden alias (`hop` → `merge`) before argparse sees it, so `--help`
+    # keeps advertising the English names only.
+    if argv and not argv[0].startswith("-"):
+        chinh_thuc = tdq_ten_lenh.giai_ten(argv[0], BANG_TEN)
+        if chinh_thuc is not None:
+            argv[0] = chinh_thuc
     parser = build_parser()
     args = parser.parse_args(argv)
     if not args.lenh:

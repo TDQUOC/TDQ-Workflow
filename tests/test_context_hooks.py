@@ -321,7 +321,7 @@ class TestNhacWorktree(unittest.TestCase):
         nhac = [d for d in out.splitlines() if d.startswith("[TDQ:WORKTREE]")]
         self.assertEqual(len(nhac), 1, out)
         self.assertIn("2 worktree", nhac[0])
-        self.assertIn("soat", nhac[0])
+        self.assertIn("sweep", nhac[0])
 
     def test_worktree_so_sach_thi_im_lang(self):
         self._so(json.dumps({"schema": 1, "dong": []}))

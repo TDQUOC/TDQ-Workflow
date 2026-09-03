@@ -36,7 +36,7 @@ SKILL_LINE_LIMITS = {
     "tdq-intake": 120,
     "tdq-spec": 100,
     # 2026-08-18: 100 → 110. The mode proposal moved from eyeballing the task count to
-    # running `tdq_bench.py mo-phong` — the command block plus the reason for factor 1.5
+    # running `tdq_bench.py simulate` — the command block plus the reason for factor 1.5
     # must sit in the skill body to be read every time a plan is written.
     "tdq-plan": 110,
     "tdq-build": 150,

@@ -47,7 +47,7 @@ claude mcp add --scope user lumen -- <path to>/lumen stdio
 ## What it still needs, whatever the host
 
 Ollama installed, the daemon reachable, and the embedding model pulled:
-`ollama pull ordis/jina-embeddings-v2-base-code`. Rung 5 of `tdq_lsp.py kiem` checks exactly those
+`ollama pull ordis/jina-embeddings-v2-base-code`. Rung 5 of `tdq_lsp.py check` checks exactly those
 three things — **not** whether the plugin or the MCP server itself is present. A machine can pass
 rung 5 with no lumen tool registered at all, so check the tool list too.
 

@@ -29,12 +29,12 @@ class KhungTest(unittest.TestCase):
     def test_help_exit_0_va_liet_ke_du_4_lenh_con(self):
         rc, out, _err = chay("--help")
         self.assertEqual(rc, 0)
-        for ten in ("dung-plan", "thuc-do", "mo-phong", "quet"):
+        for ten in ("gen-plan", "calibrate", "simulate", "scan"):
             self.assertIn(ten, out)
 
     def test_bon_lenh_con_deu_co_that_trong_bang_lenh(self):
         self.assertEqual(sorted(tdq_bench.LENH),
-                         ["dung-plan", "mo-phong", "quet", "thuc-do"])
+                         ["calibrate", "gen-plan", "scan", "simulate"])
 
     def test_thieu_lenh_con_thi_exit_2_chu_khong_lam_gi(self):
         rc, _out, err = chay()
@@ -43,14 +43,14 @@ class KhungTest(unittest.TestCase):
 
     def test_log_service_bat_mac_dinh_va_tat_bang_bien_moi_truong(self):
         proc = subprocess.run(
-            [sys.executable, BENCH, "dung-plan", "--task", "2"],
+            [sys.executable, BENCH, "gen-plan", "--task", "2"],
             capture_output=True, text=True, timeout=60,
             env={k: v for k, v in os.environ.items() if k != "TDQ_LOG"})
         self.assertNotEqual(proc.stderr.strip(), "")
-        self.assertIn("dung-plan", proc.stderr)
+        self.assertIn("gen-plan", proc.stderr)
         # timestamp ISO: [YYYY-MM-DDTHH:MM:SS]
         self.assertRegex(proc.stderr, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
-        rc, _out, err = chay("dung-plan", "--task", "2")
+        rc, _out, err = chay("gen-plan", "--task", "2")
         self.assertEqual(rc, 0)
         self.assertEqual(err.strip(), "")
 
@@ -86,7 +86,7 @@ class DungPlanTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             duong = os.path.join(tmp, "plan-mau.md")
-            rc, out, err = chay("dung-plan", "--task", "12", "--chong", "0.25",
+            rc, out, err = chay("gen-plan", "--task", "12", "--chong", "0.25",
                                 "--ra", duong)
             self.assertEqual(rc, 0, err)
             self.assertIn("12 task", out)
@@ -98,7 +98,7 @@ class DungPlanTest(unittest.TestCase):
     def test_tham_so_vo_ly_thi_loi_chu_khong_sinh_plan_rac(self):
         for args in (("--task", "0"), ("--chong", "1.5"), ("--phu-thuoc", "99")):
             with self.subTest(args=args):
-                rc, _out, err = chay("dung-plan", *args)
+                rc, _out, err = chay("gen-plan", *args)
                 self.assertEqual(rc, 1)
                 self.assertTrue(err.strip())
 
@@ -113,9 +113,9 @@ class PlanMauChayThatTest(unittest.TestCase):
             slug = "2026-01-01-0000-plan-mau-bench"
             repo, _rel = tdq_bench._dung_repo_tam(goc, slug, 5)
             wt = os.path.join(goc, "worktrees")
-            _giay, rc, ra = tdq_bench._team(repo, "phan-cong", wt=wt)
+            _giay, rc, ra = tdq_bench._team(repo, "assign", wt=wt)
             self.assertEqual(rc, 0, ra)
-            _giay, rc, ra = tdq_bench._team(repo, "kiem-ke", wt=wt)
+            _giay, rc, ra = tdq_bench._team(repo, "audit", wt=wt)
             self.assertEqual(rc, 0, ra)
             duong = os.path.join(repo, "docs", "tdq", "team", f"{slug}.json")
             with open(duong, encoding="utf-8") as f:
@@ -152,23 +152,23 @@ class HangSoTest(unittest.TestCase):
     """T3.1 — cấm bịa hằng số. Thiếu số thật thì lệnh phải chết, không đoán."""
 
     def test_thieu_file_thuc_do_thi_loi_va_khong_in_bang(self):
-        rc, out, err = chay("mo-phong", "--task", "4")
+        rc, out, err = chay("simulate", "--task", "4")
         self.assertEqual(rc, 1)
         self.assertNotIn("| Metric |", out)
         self.assertIn("--thuc-do", err)
 
     def test_file_thuc_do_khong_ton_tai_thi_neu_ten_file_phai_co(self):
-        rc, out, err = chay("mo-phong", "--thuc-do", "/khong/co/that.json")
+        rc, out, err = chay("simulate", "--thuc-do", "/khong/co/that.json")
         self.assertEqual(rc, 1)
         self.assertEqual(out.strip(), "")
         self.assertIn("/khong/co/that.json", err)
-        self.assertIn("thuc-do", err)
+        self.assertIn("calibrate", err)
 
     def test_thieu_mot_hang_so_thi_goi_ten_hang_so_do(self):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             duong = _file_thuc_do(tmp, bo=("t_hop",))
-            rc, out, err = chay("mo-phong", "--thuc-do", duong, "--task", "4")
+            rc, out, err = chay("simulate", "--thuc-do", duong, "--task", "4")
             self.assertEqual(rc, 1)
             self.assertNotIn("| Metric |", out)
             self.assertIn("t_hop", err)
@@ -187,7 +187,7 @@ class HangSoTest(unittest.TestCase):
             duong = os.path.join(tmp, "hong.json")
             with open(duong, "w", encoding="utf-8") as f:
                 f.write("{khong-phai-json")
-            rc, _out, err = chay("mo-phong", "--thuc-do", duong)
+            rc, _out, err = chay("simulate", "--thuc-do", duong)
             self.assertEqual(rc, 1)
             self.assertNotIn("Traceback", err)
             self.assertIn("Measure again", err)
@@ -225,7 +225,7 @@ class CongThucTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             duong = _file_thuc_do(tmp)
-            rc, out, _err = chay("mo-phong", "--thuc-do", duong, "--task", "4",
+            rc, out, _err = chay("simulate", "--thuc-do", duong, "--task", "4",
                                  "--chong", "0.5")
             self.assertEqual(rc, 0)
             self.assertIn("| Metric | main | team |", out)
@@ -240,7 +240,7 @@ class QuetTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             duong = _file_thuc_do(tmp)
-            rc, out, _err = chay("quet", "--thuc-do", duong, "--task", "12",
+            rc, out, _err = chay("scan", "--thuc-do", duong, "--task", "12",
                                  "--buoc", "10")
             self.assertEqual(rc, 0)
             self.assertIn("| Splittable | Waves |", out)
@@ -252,7 +252,7 @@ class QuetTest(unittest.TestCase):
             self.assertIn("đội", thang)
 
     def test_quet_khong_dung_hang_so_bia_khi_thieu_file(self):
-        rc, out, err = chay("quet", "--task", "6")
+        rc, out, err = chay("scan", "--task", "6")
         self.assertEqual(rc, 1)
         self.assertNotIn("| Splittable |", out)
         self.assertIn("--thuc-do", err)
@@ -288,7 +288,7 @@ class ThucDoTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, out, err = chay("thuc-do", "--ra", ra, "--task", "3", "--lap", "3")
+            rc, out, err = chay("calibrate", "--ra", ra, "--task", "3", "--lap", "3")
             self.assertEqual(rc, 0, err)
             with open(ra, encoding="utf-8") as f:
                 du_lieu = json.load(f)
@@ -309,7 +309,7 @@ class ThucDoTest(unittest.TestCase):
         truoc = set(glob.glob(khuon))
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("thuc-do", "--ra", ra, "--task", "3", "--lap", "1",
+            rc, _out, err = chay("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
                                  "--cho-it-mau")
             self.assertEqual(rc, 0, err)
         self.assertEqual(set(glob.glob(khuon)) - truoc, set())
@@ -318,7 +318,7 @@ class ThucDoTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("thuc-do", "--ra", ra, "--task", "3", "--lap", "1",
+            rc, _out, err = chay("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
                                  "--cho-it-mau",
                                  "--mau-that", "t_task=91.2,t_task=104.7,t_task=88.0")
             self.assertEqual(rc, 0, err)
@@ -335,7 +335,7 @@ class ThucDoTest(unittest.TestCase):
             ra = os.path.join(tmp, "thuc-do.json")
             for chuoi in ("t_task", "t_khong_co=1", "t_task=nhanh"):
                 with self.subTest(chuoi=chuoi):
-                    rc, _out, err = chay("thuc-do", "--ra", ra, "--task", "2",
+                    rc, _out, err = chay("calibrate", "--ra", ra, "--task", "2",
                                          "--lap", "1", "--cho-it-mau",
                                          "--mau-that", chuoi)
                     self.assertEqual(rc, 1)
@@ -345,7 +345,7 @@ class ThucDoTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("thuc-do", "--ra", ra, "--task", "1", "--lap", "1")
+            rc, _out, err = chay("calibrate", "--ra", ra, "--task", "1", "--lap", "1")
             self.assertEqual(rc, 1)
             self.assertFalse(os.path.exists(ra))
             self.assertIn("samples", err)
@@ -355,7 +355,7 @@ class ThucDoTest(unittest.TestCase):
         truoc = subprocess.run(["git", "-C", ROOT, "worktree", "list"],
                                capture_output=True, text=True, timeout=60).stdout
         with tempfile.TemporaryDirectory() as tmp:
-            chay("thuc-do", "--ra", os.path.join(tmp, "t.json"), "--task", "3",
+            chay("calibrate", "--ra", os.path.join(tmp, "t.json"), "--task", "3",
                  "--lap", "1", "--cho-it-mau")
         sau = subprocess.run(["git", "-C", ROOT, "worktree", "list"],
                              capture_output=True, text=True, timeout=60).stdout
@@ -374,7 +374,7 @@ class VongFix1Test(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "bia.json")
             chuoi = ",".join(f"{ten}=1.0" for ten in tdq_bench.HANG_SO for _ in range(3))
-            rc, _out, err = chay("thuc-do", "--ra", ra, "--lap", "0", "--mau-that", chuoi)
+            rc, _out, err = chay("calibrate", "--ra", ra, "--lap", "0", "--mau-that", chuoi)
             self.assertEqual(rc, 1)
             self.assertFalse(os.path.exists(ra))
             self.assertIn("--lap", err)
@@ -386,7 +386,7 @@ class VongFix1Test(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
             chuoi = "t_task=90.0,t_task=100.0,t_task=110.0"
-            rc, _out, _err = chay("thuc-do", "--ra", ra, "--task", "3", "--lap", "1",
+            rc, _out, _err = chay("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
                                   "--cho-it-mau", "--mau-that", chuoi)
             self.assertEqual(rc, 0)
             with open(ra, encoding="utf-8") as f:
@@ -401,7 +401,7 @@ class VongFix1Test(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             duong = _file_thuc_do(tmp, so_mau=1)
-            rc, out, err = chay("mo-phong", "--thuc-do", duong, "--task", "4")
+            rc, out, err = chay("simulate", "--thuc-do", duong, "--task", "4")
             self.assertEqual(rc, 1)
             self.assertNotIn("| Metric |", out)
             self.assertIn("so_mau", err)
@@ -413,7 +413,7 @@ class VongFix1Test(unittest.TestCase):
             with self.subTest(giay=xau), tempfile.TemporaryDirectory() as tmp:
                 hs = dict(HS_KIEM_TAY, t_task=xau)
                 duong = _file_thuc_do(tmp, hang_so=hs)
-                rc, out, err = chay("mo-phong", "--thuc-do", duong, "--task", "4")
+                rc, out, err = chay("simulate", "--thuc-do", duong, "--task", "4")
                 self.assertEqual(rc, 1)
                 self.assertNotIn("| Metric |", out)
                 self.assertIn("t_task", err)
@@ -433,14 +433,14 @@ class VongFix1Test(unittest.TestCase):
             with open(khong_so, "w", encoding="utf-8") as f:
                 json.dump(du_lieu, f)
             ca = [
-                ("plan không có", ("mo-phong", "--thuc-do", tot,
+                ("plan không có", ("simulate", "--thuc-do", tot,
                                    "--plan", os.path.join(tmp, "khong-co.md"))),
-                ("thư mục ra không có", ("dung-plan", "--task", "2", "--ra",
+                ("thư mục ra không có", ("gen-plan", "--task", "2", "--ra",
                                          os.path.join(tmp, "khong/co/plan.md"))),
-                ("giay không phải số", ("mo-phong", "--thuc-do", chu, "--task", "4")),
-                ("giay null", ("mo-phong", "--thuc-do", khong_so, "--task", "4")),
-                ("buoc 0", ("quet", "--thuc-do", tot, "--buoc", "0")),
-                ("buoc âm", ("quet", "--thuc-do", tot, "--buoc", "-10")),
+                ("giay không phải số", ("simulate", "--thuc-do", chu, "--task", "4")),
+                ("giay null", ("simulate", "--thuc-do", khong_so, "--task", "4")),
+                ("buoc 0", ("scan", "--thuc-do", tot, "--buoc", "0")),
+                ("buoc âm", ("scan", "--thuc-do", tot, "--buoc", "-10")),
             ]
             for ten, lenh in ca:
                 with self.subTest(ca=ten):
@@ -455,17 +455,17 @@ class VongFix1Test(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             duong = _file_thuc_do(tmp)
-            rc, nhanh, _err = chay("mo-phong", "--thuc-do", duong, "--task", "12",
+            rc, nhanh, _err = chay("simulate", "--thuc-do", duong, "--task", "12",
                                    "--chong", "0.5", "--he-so-agent", "1")
             self.assertEqual(rc, 0)
             self.assertIn("agent factor 1.0", nhanh)
-            rc, cham, _err = chay("mo-phong", "--thuc-do", duong, "--task", "12",
+            rc, cham, _err = chay("simulate", "--thuc-do", duong, "--task", "12",
                                   "--chong", "0.5", "--he-so-agent", "3")
             self.assertEqual(rc, 0)
             self.assertIn("agent factor 3.0", cham)
             self.assertIn("Winner: đội", nhanh)
             self.assertIn("Winner: main", cham)
-            rc, quet, _err = chay("quet", "--thuc-do", duong, "--task", "12",
+            rc, quet, _err = chay("scan", "--thuc-do", duong, "--task", "12",
                                   "--buoc", "50", "--he-so-agent", "2")
             self.assertEqual(rc, 0)
             self.assertIn("agent factor 2.0", quet)

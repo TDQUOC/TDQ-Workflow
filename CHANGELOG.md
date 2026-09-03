@@ -2,6 +2,26 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.42.0 — 2026-09-03
+
+Chống conflict khi chạy sub-agent implement: năm lỗ hổng H1–H5 từ chỗ chỉ là câu chữ trong tài
+liệu nay đều có hàng rào máy. Kèm đổi toàn bộ sub-command của 5 script CLI sang tên tiếng Anh.
+Báo cáo: `docs/tdq/report/2026-09-03-1527-sub-agent-chong-conflict.md`.
+
+- **Tên lệnh tiếng Anh, tên cũ thành bí danh ẩn** — `scripts/tdq_ten_lenh.py` là một nguồn sự
+  thật cho 22 sub-command của `tdq_team`, `tdq_bench`, `tdq_eval`, `tdq_lsp`, `tdq_state`. Bí
+  danh giải ở tầng argv nên `--help` chỉ in tên mới, còn hook/bundle/tài liệu cũ vẫn chạy đúng.
+  Giá trị dữ liệu (`mo`/`dong` của sổ worktree, mã lý do như `vung-khoa`) giữ nguyên tiếng Việt.
+- **`check` kiểm lại thật (H5)** — chạy chính lệnh trên dòng `Test:` của task trong worktree của
+  nó. `TICK-READY` của agent con không còn là lời tự khai.
+- **`merge` từ chối nhánh có test đỏ, và tự rebase trước (H2)** — rebase lên bản tích hợp mới
+  nhất, hỏng thì `rebase --abort` trả worktree về nguyên trạng.
+- **Lệnh mới `resolve` (H4)** — chỉ đọc, in hai phía của từng file kẹt để gỡ conflict.
+- **Dòng `Chạm:` thành hàng rào máy (H1)** — agent con ghi ra ngoài vùng đã khai thì bị chặn
+  ngay lúc ghi, không phải lúc merge. Mode `main` không đổi hành vi.
+- **`assign` cảnh báo file nóng (H3)** — đường dẫn nằm trên ≥2 dòng `Chạm:` được nêu tên trước
+  khi mở nhánh nào, lúc mà cách sửa còn rẻ.
+
 ## 0.41.0 — 2026-09-03
 
 Sửa tương thích thật với cả 3 host: Claude Code, Codex CLI 0.149, Antigravity CLI (agy) 1.1.11.
