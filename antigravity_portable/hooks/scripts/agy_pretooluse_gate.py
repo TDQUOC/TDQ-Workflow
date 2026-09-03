@@ -2,8 +2,8 @@
 """PreToolUse (Antigravity/agy) — hard deny on 2 fixed, pre-existing rules.
 
 Unlike Claude Code's PreToolUse (`hooks/scripts/bash_gate.py`), which only ever REMINDS,
-agy's PreToolUse `decision: "deny"` is a genuine hard block (see
-docs/tdq/research/2026-08-27-1112-antigravity-portable-skill.md, Truy vấn 2). This hook
+agy's PreToolUse deny is a genuine hard block (see
+docs/tdq/brief/2026-09-03-1440-kiem-tuong-thich-3-host.md, sources N5–N6). This hook
 enforces exactly 2 cases that are already-locked project rules, not "not yet approved"
 gates (locked decision docs/kien-truc.md § Đã chốt 2026-07-29 forbids a `deny` used to gate
 on approval state — the 2 cases below are unconditional naming/write rules instead):
@@ -15,9 +15,12 @@ on approval state — the 2 cases below are unconditional naming/write rules ins
       counted as a WRITE when it names an actual write mode ("w"/"a"/"x"); a read
       (`cat`, `head`/`tail`, `sed -n`, or `open()` with no mode / mode "r") is never denied.
 
-agy's exact PreToolUse input JSON schema is not confirmed by public docs as of 2026-08 —
-so `_first_command` tries several plausible field paths for the shell command text, and this
-hook never raises: an unparsable payload, or a command it cannot find, is silently allowed.
+Google publishes no official PreToolUse INPUT schema (checked 2026-09-03; the field list in
+source N5 is third-party), so `_first_command` tries several plausible field paths for the
+shell command text, and this hook never raises: an unparsable payload, or a command it cannot
+find, is silently allowed. Silence on allow is deliberate — a malformed or bare `{}` reply
+makes agy deny EVERY tool call with `invalid_args` (source N6). The output side emits both
+documented deny spellings; see `_deny`.
 """
 import datetime
 import json
@@ -107,8 +110,21 @@ def _log(msg):
 
 
 def _deny(reason):
+    """Emit BOTH deny spellings in one payload.
+
+    `allow_tool: false` is the contract documented for agy agent hooks (third-party guide,
+    read 2026-09-03); `decision: "deny"` is the Claude-Code-style key this hook was first
+    written against. Google publishes no official schema, so neither can be dropped on
+    evidence — and an unknown extra key is inert, whereas guessing wrong means the deny is
+    silently ignored. `reason`/`message` are duplicated for the same reason.
+    """
     _log(f"agy PreToolUse deny — {reason}")
-    print(json.dumps({"decision": "deny", "reason": reason}, ensure_ascii=False))
+    print(json.dumps({
+        "allow_tool": False,
+        "decision": "deny",
+        "reason": reason,
+        "message": reason,
+    }, ensure_ascii=False))
 
 
 def main():

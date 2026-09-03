@@ -136,7 +136,7 @@ A character outside the table must not be added, however harmless it looks. `▸
 exactly that reason. It has never appeared in any string of this codebase, so there is no evidence
 it renders correctly on all three surfaces. Box-drawing characters
 (`─` `│` `├` `└` `┌` `┬` `┐`) are banned too: they demand column alignment, and terminal width
-varies. The machine checks this with `python3 ~/.gemini/antigravity-cli/tdq/scripts/scan_block_symbols.py --chi-khoi`.
+varies. The machine checks this with `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/scan_block_symbols.py --chi-khoi`.
 
 ## Examples
 

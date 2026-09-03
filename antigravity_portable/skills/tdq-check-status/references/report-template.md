@@ -1,6 +1,6 @@
 # The check-status report shape — 6 fixed sections
 
-`~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py report` prints exactly this shape. This file is the human-readable
+`~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py report` prints exactly this shape. This file is the human-readable
 version: use it to check the output carries every section, and to let an outside agent (one
 that cannot run a Python script) fill it in by hand in the right order.
 
@@ -56,7 +56,7 @@ From here to the end of the section is the detector's REAL output, copied verbat
 Chạy sau khi user gật ĐÚNG MỘT lần. Chỉ hai họ `set` và `approve`; không có lệnh nào
 xoá hay ghi đè dữ liệu cũ.
 
-    python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py set started_at=ISO_MỐC_MỞ_REQUEST
+    python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py set started_at=ISO_MỐC_MỞ_REQUEST
 
 ## Việc kế tiếp
 

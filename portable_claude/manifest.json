@@ -85,7 +85,7 @@
     ".claude/tdq/scripts/skill_tokens.py": "99370516a75183e393bc9727d4214356b0a183170df6e599965429402470d7ce",
     ".claude/tdq/scripts/step_audit.py": "f2c74c4afb49628f241a91f5cc466d6f5d43ae938eb2e1b1910a2ea04fbb13c2",
     ".claude/tdq/scripts/tdq_bench.py": "cedb759b182748aacfe4cd6083d09f77e241ff2e0842d7cffac77e3689f2927b",
-    ".claude/tdq/scripts/tdq_checkportable.py": "0173710c16f66c32eb927c72129f763d0dec818e3f596028e68fcd245b233690",
+    ".claude/tdq/scripts/tdq_checkportable.py": "00e601bf600763fc7f53da65da5222270dc6083379b0343c7319362784d4df8e",
     ".claude/tdq/scripts/tdq_checkstatus.py": "f152eee3a271579a8dabeaab8c40fe534eb72bb1c9a69a01149c17d8514f4747",
     ".claude/tdq/scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     ".claude/tdq/scripts/tdq_lsp.py": "3d4bdd721787247dc50ae26cc74ed9c00d4fc1705b3e59c86519c31c42abb4c0",
@@ -102,5 +102,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.40.0"
+  "version": "0.41.0"
 }

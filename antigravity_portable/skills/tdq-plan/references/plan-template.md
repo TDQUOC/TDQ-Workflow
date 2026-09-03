@@ -57,7 +57,7 @@ Trạng thái plan: CHỜ DUYỆT
   - Chạm: `<đường/dẫn/file-moi.py>` → file mới, chưa node nào phụ thuộc
 
 Dòng này có HAI người đọc. Người thứ nhất là bạn: nó trả lời "sửa chỗ này thì vỡ chỗ
-nào". Người thứ hai là máy: `~/.gemini/antigravity-cli/tdq/scripts/tdq_team.py phan-cong` đọc các đường dẫn trong
+nào". Người thứ hai là máy: `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py phan-cong` đọc các đường dẫn trong
 backtick để dựng vùng file của task, rồi xếp task đụng chung file vào hai đợt khác nhau.
 
 Vì vậy **mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, kể cả task tạo

@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-09-03)
 
 ## Corpus Check
-- 98 files · ~148,819 words
+- 98 files · ~149,000 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2261 nodes · 4111 edges · 99 communities (94 shown, 5 thin omitted)
+- 2262 nodes · 4112 edges · 99 communities (94 shown, 5 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 114 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ef959dab`
+- Built from commit: `deec3619`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -119,7 +119,7 @@
 1. `files` - 86 edges
 2. `cli()` - 26 edges
 3. `cli()` - 26 edges
-4. `Changelog` - 21 edges
+4. `Changelog` - 22 edges
 5. `lenh_soat()` - 20 edges
 6. `lenh_soat()` - 20 edges
 7. `Changelog — bản lưu trữ` - 18 edges
@@ -298,7 +298,7 @@ Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), 
 
 ### Community 38 - "Changelog"
 Cohesion: 0.09
-Nodes (21): 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18 (+13 more)
+Nodes (22): 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18 (+14 more)
 
 ### Community 39 - "antigravity_portable/scripts/skill_router.py"
 Cohesion: 0.17
@@ -521,7 +521,7 @@ Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **146 isolated node(s):** `Pipeline`, `Cách hook điều khiển agent`, `Duyệt bằng chat thường`, `Cách 1 — qua marketplace (khuyên dùng)`, `Cách 2 — chạy thẳng từ thư mục, không cài` (+141 more)
+- **147 isolated node(s):** `0.40.0 — 2026-09-03`, `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01` (+142 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -529,13 +529,13 @@ Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A 
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `files` connect `files` to `manifest.json`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+- **Why does `_fail()` connect `_fail` to `cli`, `antigravity_portable/scripts/tdq_state.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `sha256_of()` connect `scripts/claude_export.py` to `build_portable.py`?**
+- **Why does `_dong_so_request_cu()` connect `cli` to `antigravity_portable/scripts/tdq_state.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `iter_events()` connect `iter_events` to `antigravity_portable/scripts/step_audit.py`, `antigravity_portable/scripts/token_audit.py`, `antigravity_portable/scripts/tdq_timing.py`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `Pipeline`, `Cách hook điều khiển agent`, `Duyệt bằng chat thường` to the rest of the system?**
-  _146 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.40.0 — 2026-09-03`, `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02` to the rest of the system?**
+  _147 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
   _Cohesion score 0.023255813953488372 - nodes in this community are weakly interconnected._
 - **Should `build_portable.py` be split into smaller, more focused modules?**

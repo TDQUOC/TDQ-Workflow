@@ -17,12 +17,12 @@ between finding a name and finding the thing. The search-order rule lives in
 ## The one hard rule of this skill
 
 **Never install anything, never edit another plugin's files, without the user saying yes first.**
-`~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
+`~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
 command runs. This holds even when a rung is trivially fixable and even when the build is blocked.
 Starting or stopping a process already installed on the machine is not installing — that is why
 `danh-thuc` and `nha` are allowed to run unattended.
 
-## The ladder — `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem`
+## The ladder — `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py kiem`
 
 Seven rungs, printed one line each, a missing rung printing the command that fixes it.
 
@@ -47,7 +47,7 @@ Rung 7 splits by language, because the same gap has two different meanings:
 - **Warning only** where the root marker is a build manifest (`go.mod`, `Cargo.toml`, `pom.xml`…).
   Missing it means the project does not build, so it announces itself.
 
-Which marker belongs to which language lives in `~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py`, not here — run the command.
+Which marker belongs to which language lives in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py`, not here — run the command.
 Rung 3 sniffs the languages from the files actually in the project, ignoring `.git`,
 `node_modules`, `.venv`, `portable_*` and friends. A language under 3 files is treated as noise.
 YAML and JSON are config formats in nearly every repo, so they never trigger a request.
@@ -113,7 +113,7 @@ raises a prompt, and a search layer that asks permission per call stops being us
 plugin's `hooks.json` up next to itself with the version in the name, drop only `PreToolUse`, keep
 `SessionStart`. Hooks load at session start, so the nudging line keeps appearing until restart.
 
-Done when: `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem` prints seven rungs with no actionable gap and exits 0,
+Done when: `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py kiem` prints seven rungs with no actionable gap and exits 0,
 and the effect check of `tdq-intake` step 1b passes — existence alone proves nothing.
 Next step: the phase does not change — go back to the phase that called this skill, load that
 skill again, and route the search by question kind, per

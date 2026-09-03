@@ -22,7 +22,8 @@ content has blocked that many times in a row with no checkbox movement — other
 that is genuinely stuck has no way to ever end its turn. Nothing open, or no active request →
 silent (no `decision` key at all).
 
-agy's exact Stop payload schema is not confirmed by public docs as of 2026-08 — `_cwd_of`
+Google publishes no official Stop payload schema (checked 2026-09-03; the event list in
+docs/tdq/brief/2026-09-03-1440-kiem-tuong-thich-3-host.md source N5 is third-party) — `_cwd_of`
 tries several plausible field names for the working directory and falls back to `os.getcwd()`;
 this hook never raises on an unexpected payload shape.
 """

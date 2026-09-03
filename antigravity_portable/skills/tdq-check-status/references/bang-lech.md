@@ -1,6 +1,6 @@
 # The 12 drift cases D1–D12
 
-Human-readable mirror of constant `CA_LECH` in `~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py`. A test locks the
+Human-readable mirror of constant `CA_LECH` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py`. A test locks the
 two places to the same codes and the same levels, so editing one side turns the other red.
 
 The root rules on state, approval gates and who may write what live in
@@ -12,7 +12,7 @@ Three levels: `ok` for information only · `canh-bao` should be patched before m
 `chan` must be decided by the user.
 The patch-command column is a TEMPLATE. Every UPPERCASE_UNDERSCORED slot must be replaced
 with the real value before running.
-Every command starts with `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py`; it is shortened here to keep the
+Every command starts with `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py`; it is shortened here to keep the
 table narrow.
 
 | Mã | Dấu hiệu | Mức | Chẩn đoán | Lệnh vá mẫu <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
@@ -41,7 +41,7 @@ table narrow.
 - It does not read an old session's transcript: a transcript does not travel with the repo
   when the machine changes.
 - The `schema_version` value in patch D9 comes from constant `SCHEMA_HIEN_TAI` of
-  `~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py`, i.e. the plugin's current schema. This table prints the number
+  `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py`, i.e. the plugin's current schema. This table prints the number
   as of the day the file was generated; run `report` to get the real one.
 - D12 only exists in mode `subagent`. The mark `[>]` means "handed to a sub-agent", it is NOT
   an error — it only answers "where does the work sit right now". Several `[>]` at once is

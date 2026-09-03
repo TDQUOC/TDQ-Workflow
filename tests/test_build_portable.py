@@ -476,7 +476,7 @@ class TestBanAntigravity(TempDest):
             self.assertTrue(os.access(duong, os.X_OK), f"{ten} phải có quyền thực thi")
 
     def test_hooks_json_dung_2_event_va_command_tro_path_co_dinh(self):
-        duong = os.path.join(self.goc, "config", "hooks.json")
+        duong = os.path.join(self.goc, "hooks.json")
         with open(duong, encoding="utf-8") as f:
             du_lieu = json.load(f)
         su_kien = du_lieu["hooks"]
@@ -486,20 +486,27 @@ class TestBanAntigravity(TempDest):
                 for hook in nhom["hooks"]:
                     lenh = hook["command"]
                     self.assertNotIn("${", lenh, "command không được còn biến chưa thay")
-                    self.assertIn(build_portable.GOC_AGY, lenh,
-                                 "command phải trỏ absolute path cố định dưới GOC_AGY")
+                    self.assertNotIn("~", lenh, "dấu ~ trong nháy không được shell bung → exit 127")
+                    self.assertIn(build_portable.goc_agy_tuyet_doi(), lenh,
+                                  "command phải là absolute path đã bung dưới gốc plugin")
 
-    def test_settings_json_deny_dung_2_case_cam(self):
-        duong = os.path.join(self.goc, "config", "settings.json")
+    def test_khong_ship_settings_json(self):
+        """Bundle KHÔNG được mang `settings.json`: file thật của agy giữ model/colorScheme/
+        trustedWorkspaces và không có mục permissions — copy đè là xoá cấu hình người dùng mà
+        không thêm được hàng rào nào. Hook mới là hàng rào."""
+        self.assertFalse(os.path.exists(os.path.join(self.goc, "config", "settings.json")))
+        self.assertFalse(os.path.exists(os.path.join(self.goc, "settings.json")))
+
+    def test_plugin_json_dung_khuon_agy(self):
+        """`plugin.json` ở GỐC là thứ duy nhất khiến agy 1.1.11 coi thư mục này là plugin."""
+        duong = os.path.join(self.goc, "plugin.json")
         with open(duong, encoding="utf-8") as f:
             du_lieu = json.load(f)
-        tu_choi = " ".join(du_lieu["permissions"]["deny"])
-        self.assertIn("state.json", tu_choi)
-        for ten in ("claude", "antigravity", "gemini", "codex"):
-            self.assertIn(ten, tu_choi, f"thiếu case cấm cho tiền tố {ten}")
+        self.assertEqual(du_lieu["name"], build_portable.TEN_PLUGIN_AGY)
+        self.assertTrue(du_lieu["description"])
 
     def test_mcp_config_du_2_server_va_khong_lo_khoa(self):
-        duong = os.path.join(self.goc, "config", "mcp_config.json")
+        duong = os.path.join(self.goc, "mcp_config.json")
         with open(duong, encoding="utf-8") as f:
             du_lieu = json.load(f)
         self.assertEqual(sorted(du_lieu["mcpServers"]), sorted(build_portable.MCP_SERVERS))
@@ -510,13 +517,13 @@ class TestBanAntigravity(TempDest):
 
     def test_readme_du_3_cum_bat_buoc(self):
         noi_dung = build_portable._doc_text(os.path.join(self.goc, "README.md"))
-        for cum in ("/skills", "/mcp", "/permissions"):
+        for cum in ("/skills", "/mcp", "agy plugin list"):
             self.assertIn(cum, noi_dung, f"README thiếu cụm bắt buộc {cum}")
 
     def test_manifest_liet_ke_du_file_moi(self):
         with open(os.path.join(self.goc, "manifest.json"), encoding="utf-8") as f:
             files = json.load(f)["files"]
-        for duong in ("config/hooks.json", "config/settings.json", "config/mcp_config.json",
+        for duong in ("plugin.json", "hooks.json", "mcp_config.json",
                       "skills/tdq-intake/SKILL.md", "hooks/scripts/agy_pretooluse_gate.py",
                       "hooks/scripts/agy_stop_gate.py", "scripts/tdq_state.py"):
             self.assertIn(duong, files, f"manifest thiếu {duong}")

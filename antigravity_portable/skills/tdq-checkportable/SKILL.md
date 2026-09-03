@@ -12,7 +12,7 @@ chưa cài — cả bốn đều biểu hiện muộn dưới dạng lỗi khó 
 ## Bước 1 — kiểm
 
 ```
-python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_checkportable.py" check
+python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkportable.py" check
 ```
 
 Đọc kết quả theo tiền tố: `SẠCH` xong việc · `THIẾU` chưa có · `LỆCH` nội dung khác manifest ·
@@ -21,7 +21,7 @@ python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_checkportable.py" check
 ## Bước 2 — vá khi có `THIẾU`/`LỆCH`
 
 ```
-python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_checkportable.py" setup
+python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkportable.py" setup
 ```
 
 Lệnh này dựng lại được đúng hai file mà bundle có đủ dữ liệu để tái tạo: `.claude/settings.json`
@@ -37,7 +37,7 @@ Codex bỏ qua TOÀN BỘ tầng `.codex/` của project chưa được tin cậ
 không đọc, bundle trông như rỗng. Hỏi người dùng rồi mới chạy:
 
 ```
-python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_checkportable.py" setup --trust
+python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkportable.py" setup --trust
 ```
 
 Đây là lệnh DUY NHẤT của bộ này ghi ra ngoài bundle (`config.toml` của Codex ở `~/.codex`

@@ -45,7 +45,7 @@ below before writing the report; working from memory is banned.
     trailer; branch named per the conventions.
 
 Done when: the report is written and the user has been asked about the commit.
-Next step: `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=idle`
+Next step: `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=idle`
 (or `reset` when the user wants the slate wiped for a new request).
 
 ## The report shape
