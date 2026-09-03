@@ -35,14 +35,87 @@ Từ 0.3.1, hook còn **nhìn thẳng vào đĩa**: đầu turn chụp `sha256` 
 
 Nhắn "duyệt spec", "ok plan mode main", "duyệt nhanh" — không cần cú pháp lệnh. Agent ghi nhận vào state kèm **nguyên văn** câu bạn nói (`spec_approved_by` / `plan_approved_by` / `quick_approved_by`) để còn đối chiếu. Câu mơ hồ ("ok", "spec ok chưa?") KHÔNG được tính là duyệt — agent phải hỏi lại. Duyệt xong lưu sha256 của spec; spec đổi sau khi duyệt sẽ bị cảnh báo.
 
-## Cài đặt (chỉ trong repo/project)
+## Cài đặt
+
+### Cách 1 — qua marketplace (khuyên dùng)
+
+Repo này tự nó là một marketplace: `.claude-plugin/marketplace.json` khai marketplace tên
+`tdq-local`, chứa plugin `tdq-workflow`. Trong Claude Code:
+
+```
+/plugin marketplace add TDQUOC/TDQ-Workflow
+/plugin install tdq-workflow@tdq-local
+```
+
+Ghim theo nhánh hoặc tag thì thêm `#<ref>` vào URL đầy đủ (dấu `#`, không phải `@` — `@` là dấu
+ngăn giữa tên plugin và tên marketplace lúc install):
+
+```
+/plugin marketplace add https://github.com/TDQUOC/TDQ-Workflow.git#v0.39.0
+```
+
+Cài sẵn cho cả project — ai trust folder là marketplace tự được thêm, không hỏi lại:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "tdq-local": {
+      "source": { "source": "github", "repo": "TDQUOC/TDQ-Workflow" },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": { "tdq-workflow@tdq-local": true }
+}
+```
+
+### Cách 2 — chạy thẳng từ thư mục, không cài
 
 ```bash
 claude --plugin-dir /đường/dẫn/tới/TDQWorkflow
 ```
-Plugin không tự cài user-level. Muốn dùng mọi nơi: xem `docs/notes/user-level-install.md`.
 
-**Bật workflow cho MỌI task**: dán block instruction trong `docs/notes/user-level-install.md` (mục 3) vào `~/.claude/CLAUDE.md` (user-level) hoặc `CLAUDE.md` root project (per-project).
+**Bật workflow cho MỌI task**: dán block instruction trong `docs/notes/user-level-install.md`
+(mục 3) vào `~/.claude/CLAUDE.md` (user-level) hoặc `CLAUDE.md` root project (per-project).
+
+### Cách 3 — agent ngoài Claude Code
+
+Marketplace là cơ chế riêng của Claude Code; Codex, Antigravity, Gemini CLI không đọc
+`.claude-plugin/`. Ba host đó dùng bản portable dựng sẵn trong repo — `portable_claude/`,
+`portable_codex/`, `antigravity_portable/` — mỗi bundle có `README.md` riêng ghi đúng thứ tự cài.
+Host nào không có bundle thì đọc đường dự phòng `portable_codex/workflow/01..09-*.md` theo thứ tự.
+
+## Cập nhật
+
+**Auto-update mặc định TẮT** với marketplace bên thứ ba, kể cả cái này. Bật bằng `/plugin` → tab
+**Marketplaces** → `tdq-local` → **Enable auto-update**, hoặc đặt sẵn `"autoUpdate": true` như
+block JSON ở trên. Bật rồi thì mỗi lần mở session Claude Code làm mới marketplace và cập nhật
+plugin trong nền, delay ngẫu nhiên tới 10 phút để session đang chạy không bị đổi bản giữa chừng;
+xong nó nhắc chạy `/reload-plugins`, hoặc bản mới tự vào ở lần mở kế tiếp.
+
+Cập nhật tay lúc nào cũng được:
+
+```
+/plugin marketplace update tdq-local
+/plugin update tdq-workflow@tdq-local
+```
+
+### Bump version — bắt buộc mỗi lần release
+
+`plugin.json` có khai `version`, nên plugin bị **ghim** vào đúng chuỗi đó. Push commit mới mà
+không đổi số thì máy người dùng thấy version y hệt và **giữ nguyên bản cache** — auto-update coi
+như vô hiệu. Vậy mỗi lần release:
+
+1. Sửa `version` trong `.claude-plugin/plugin.json`.
+2. Ghi mục mới vào `CHANGELOG.md`.
+3. Dựng lại 3 bundle portable: `python3 scripts/build_portable.py` (bundle nhúng số version).
+4. Commit rồi `git push`, kèm tag nếu muốn người dùng ghim được:
+   `git tag v<số> && git push origin v<số>`.
+
+Ai muốn người dùng nhận bản mới theo từng commit thay vì theo release thì **bỏ hẳn** trường
+`version` — Claude Code rơi về commit SHA, có commit mới là có cập nhật.
+
+Nguồn: <https://code.claude.com/docs/en/plugin-marketplaces> ·
+<https://code.claude.com/docs/en/discover-plugins>
 
 
 ## Dùng hằng ngày
