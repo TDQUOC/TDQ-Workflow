@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-03T16:39:32+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-09-03T18:43:02+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-03-1527-sub-agent-chong-conflict |
+| Request | 2026-09-03-1733-sua-loi-da-nen-tang |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-09-03-1527-sub-agent-chong-conflict.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-03-1527-sub-agent-chong-conflict.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-09-03-1733-sua-loi-da-nen-tang.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-09-03-1733-sua-loi-da-nen-tang.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |

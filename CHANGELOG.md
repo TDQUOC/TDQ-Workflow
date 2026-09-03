@@ -2,6 +2,27 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.43.0 — 2026-09-03
+
+Vá bốn lỗi đa nền tảng P1–P4 mà bản rà 1648 tìm ra. Không có máy Windows, nên mọi hạng mục
+Windows nghiệm thu bằng THAM SỐ giả lập: mức khẳng định cao nhất là "hàm cho ra đúng tên lệnh
+khi truyền hệ Windows vào", không phải "đã chạy được trên Windows".
+Báo cáo: `docs/tdq/report/2026-09-03-1733-sua-loi-da-nen-tang.md`.
+
+- **Tên lệnh Python chọn theo hệ đích (P1)** — `tien_to_python(nen_tang)` cho `py -3` trên
+  Windows, `python3` nơi khác. Hook codex/agy sinh qua hàm đó. Riêng `hooks/hooks.json` là file
+  nguồn viết tay nên có lệnh sinh lại tại máy đích: `build_portable.py --sinh-hook-claude
+  [--he-dich win32]`, bất biến, chạy lần hai in `already correct`.
+- **Cổng gác bundle agy hết là mã chết (P2)** — `kiem_layout_agy` parse JSON và chỉ soi `~`
+  trong giá trị `command`, thay vì quét văn bản thô cả file. Hết dương tính giả, nhánh "dựng ở
+  máy khác" nay nổ được, và `hooks.json` hỏng cú pháp được báo thay vì im lặng.
+- **README bundle agy nói rõ chuyện gắn máy dựng (P3)** — đừng copy bundle dựng sẵn, tên lệnh
+  Python khác nhau giữa các hệ, lệnh kiểm lại sau khi copy. Sửa ở hằng `README_AGY`, vì file
+  README của bundle là file sinh ra.
+- **Dòng `Test:` của plan chạy được nơi không có tên lệnh `python3` (P4)** — token đầu đổi sang
+  `sys.executable`. Giữ `shell=True` để không hỏng plan cũ, thay bằng cảnh báo khi gặp toán tử
+  shell vì cú pháp `cmd.exe` khác `sh`.
+
 ## 0.42.0 — 2026-09-03
 
 Chống conflict khi chạy sub-agent implement: năm lỗ hổng H1–H5 từ chỗ chỉ là câu chữ trong tài

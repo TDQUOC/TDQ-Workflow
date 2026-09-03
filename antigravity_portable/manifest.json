@@ -4,12 +4,12 @@
     "graphify"
   ],
   "files": {
-    "README.md": "1ab8f78ff8455bfe3c70aec248bd291b951a7d5b290819ab4fdb717e1bd6072c",
+    "README.md": "c3c8d9b245e77e43b6fd641d72cbae183618fa3c1c4e8736bc09f42d9c3483fa",
     "hooks.json": "b4720a51f5296bb48dcd7cc6b16cfeef754c9d366ea5de62a507efc6d38e2a89",
     "hooks/scripts/agy_pretooluse_gate.py": "026cdffc83f47b4d1901c88587be31a3d9269f94163297d2a1e822daa2c50021",
     "hooks/scripts/agy_stop_gate.py": "87466169ee8676d1c56cbccb000860956c7645fdfef0fa353b57a17fc0a116b5",
     "mcp_config.json": "3da0ec37d1a9e735d2eca9f5f707f101549a6fa064cd960155940c11172b6257",
-    "plugin.json": "4524aa9ca75c6c98acea347c80d9a6b0e3204c91071961bc5aa3b7f1b8924057",
+    "plugin.json": "041cabfc203bb9c7271e67933e5d07d5b52ad7fb0ea248054291b6a6e04f1235",
     "scripts/canvas_a4_ch4_ch7.py": "d1106fc85f4ca9db045de9d77891550162da6f4e24c06ec2c7264dbf07de55ec",
     "scripts/canvas_a4_rebuild.py": "c5294428dc237cfdd37480c698724c10389a74310b4fa83c9734fe21cd3f3fb4",
     "scripts/canvas_draw.py": "de060025c41b729630d9fd4cc95eb8f1f1f5fae0431f6599fd64c197a4239f77",
@@ -30,12 +30,12 @@
     "scripts/skill_tokens.py": "99370516a75183e393bc9727d4214356b0a183170df6e599965429402470d7ce",
     "scripts/step_audit.py": "f2c74c4afb49628f241a91f5cc466d6f5d43ae938eb2e1b1910a2ea04fbb13c2",
     "scripts/tdq_bench.py": "5fa7619e576a30e3399b66dcf8a634c5d36370862d199a2bfd84eb51c94eb398",
-    "scripts/tdq_checkportable.py": "718b8c68f9807148cdbfdfe70a7a9ac929b65678fc5b2c01bf3a0ee78868880a",
+    "scripts/tdq_checkportable.py": "bfe7661d48b61e271a48cde89ae70d74d2e09733b35a685ff08793aa41ef5ae9",
     "scripts/tdq_checkstatus.py": "408ec608486ee8c25a3b83d21b85622e223ef1de98a55e46513abe20b65ebc3b",
     "scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     "scripts/tdq_lsp.py": "18b58bc85fb193ab098686ad851155cff290c25a6d686398a5285b8f248843dc",
     "scripts/tdq_state.py": "ff5bfa2b9999447d6d7daf35dc9eb3d156a3e451b1497e8fe033c7ef8b4956d5",
-    "scripts/tdq_team.py": "ee8f23cdb465420266ef017347e816d51e60ff087ca847b24f204b14a1185a8e",
+    "scripts/tdq_team.py": "bb599504156f878c06f06a1e082d0abe7314463fca80bd3b0fadb29db7b03d92",
     "scripts/tdq_ten_lenh.py": "070de8a19ecc0e050bce809cc09dc479c0da85db458453cfd4646188a1f56810",
     "scripts/tdq_timing.py": "40edc14a717af78301c9e922132797fb1593b676e76adc3b39643df2f9955513",
     "scripts/tdq_worktree_registry.py": "42efc6888a9f8c2555a375a2d1f24e5c95bceb2b074c73dba87f76a6d0bec1af",
@@ -96,5 +96,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.42.0"
+  "version": "0.43.0"
 }

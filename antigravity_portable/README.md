@@ -45,6 +45,18 @@ from a clone of TDQ-Workflow, then copy the freshly built directory over.
 `python3 scripts/tdq_checkportable.py check --root <this directory>` prints a NOTE when the
 baked home does not match the current one.
 
+## Bundle này gắn với MÁY DỰNG — Windows và Linux đọc kỹ mục này
+
+- **Đừng copy bundle dựng sẵn từ máy người khác.** Đường dẫn trong `hooks.json` là thư mục nhà
+  của máy dựng, không phải của bạn. Clone repo TDQ-Workflow rồi chạy
+  `python3 scripts/build_portable.py` ngay trên máy bạn, sau đó mới copy thư mục vừa dựng.
+- **Tên lệnh Python khác nhau giữa các hệ.** Bản dựng chọn `python3` trên macOS/Linux và
+  `py -3` trên Windows — Windows không có `python3` trên PATH (cái tên đó chỉ là stub của
+  Microsoft Store mở cửa hàng ứng dụng). Dựng lại tại máy đích là cách duy nhất để `command`
+  mang đúng tên lệnh của máy đó.
+- **Kiểm lại sau khi copy:** `python3 scripts/tdq_checkportable.py check --root <thư mục này>`
+  in cảnh báo khi bundle được dựng dưới thư mục nhà của người khác.
+
 ## What this bundle cannot do for you
 
 1. **Restart agy** — step 5. Skip it and the files just sit there, unloaded.

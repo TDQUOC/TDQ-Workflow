@@ -85,12 +85,12 @@
     ".claude/tdq/scripts/skill_tokens.py": "99370516a75183e393bc9727d4214356b0a183170df6e599965429402470d7ce",
     ".claude/tdq/scripts/step_audit.py": "f2c74c4afb49628f241a91f5cc466d6f5d43ae938eb2e1b1910a2ea04fbb13c2",
     ".claude/tdq/scripts/tdq_bench.py": "5fa7619e576a30e3399b66dcf8a634c5d36370862d199a2bfd84eb51c94eb398",
-    ".claude/tdq/scripts/tdq_checkportable.py": "00e601bf600763fc7f53da65da5222270dc6083379b0343c7319362784d4df8e",
+    ".claude/tdq/scripts/tdq_checkportable.py": "9bd90a75cb34a92a9a3aeb46ee183c806d6793ec051629c6b4b9cfe96693d653",
     ".claude/tdq/scripts/tdq_checkstatus.py": "408ec608486ee8c25a3b83d21b85622e223ef1de98a55e46513abe20b65ebc3b",
     ".claude/tdq/scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     ".claude/tdq/scripts/tdq_lsp.py": "18b58bc85fb193ab098686ad851155cff290c25a6d686398a5285b8f248843dc",
     ".claude/tdq/scripts/tdq_state.py": "21c9a1099d678227bd2a93e283268ba22be046350289befc7ebd0defe99013ef",
-    ".claude/tdq/scripts/tdq_team.py": "ee8f23cdb465420266ef017347e816d51e60ff087ca847b24f204b14a1185a8e",
+    ".claude/tdq/scripts/tdq_team.py": "bb599504156f878c06f06a1e082d0abe7314463fca80bd3b0fadb29db7b03d92",
     ".claude/tdq/scripts/tdq_ten_lenh.py": "070de8a19ecc0e050bce809cc09dc479c0da85db458453cfd4646188a1f56810",
     ".claude/tdq/scripts/tdq_timing.py": "40edc14a717af78301c9e922132797fb1593b676e76adc3b39643df2f9955513",
     ".claude/tdq/scripts/tdq_worktree_registry.py": "42efc6888a9f8c2555a375a2d1f24e5c95bceb2b074c73dba87f76a6d0bec1af",
@@ -103,5 +103,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.42.0"
+  "version": "0.43.0"
 }

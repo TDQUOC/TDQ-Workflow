@@ -884,6 +884,32 @@ def _task_theo_ma(project, ma):
     return None
 
 
+TOAN_TU_SHELL = ("&&", "||", "|", ">", "<")
+
+
+def chuan_hoa_lenh_test(lenh):
+    """`Test:` của plan → (lệnh chạy được ở máy này, danh sách cảnh báo).
+
+    Mọi plan trong repo viết `Test: python3 -m pytest …`, mà Windows không có tên lệnh `python3`
+    trên PATH — dòng test sẽ đỏ vì lý do sai hoàn toàn, và `merge` từ chối một nhánh thực ra lành
+    lặn. Đổi đúng token ĐẦU TIÊN sang chính Python đang chạy: chắc chắn tồn tại, chắc chắn cùng
+    phiên bản với tiến trình gọi. Mọi dạng khác (`pytest`, `mypython3 x`) giữ nguyên.
+
+    Toán tử shell chỉ CẢNH BÁO chứ không chặn: cú pháp của `cmd.exe` khác `sh`, nhưng nhiều plan
+    cũ đang dùng, và từ chối chạy sẽ hỏng chúng.
+    """
+    canh_bao = []
+    phan = lenh.split(" ", 1)
+    if phan[0] == "python3":
+        # Đường dẫn có dấu cách (rất thường gặp trên Windows: `C:\Program Files\…`) phải bọc
+        # nháy, nếu không shell cắt đôi nó thành hai tham số.
+        exe = f'"{sys.executable}"' if " " in sys.executable else sys.executable
+        lenh = " ".join([exe] + phan[1:])
+    if any(t in lenh for t in TOAN_TU_SHELL):
+        canh_bao.append(f"dòng `Test:` dùng toán tử shell — cú pháp cmd.exe khác sh: {lenh}")
+    return lenh, canh_bao
+
+
 def chay_test_task(duong, task, timeout=600):
     """Run the task's own check inside its worktree → (exit code, command, output).
 
@@ -893,6 +919,9 @@ def chay_test_task(duong, task, timeout=600):
     lenh = lay_lenh_test(task)
     if lenh is None:
         return None, None, ""
+    lenh, canh_bao = chuan_hoa_lenh_test(lenh)
+    for cau in canh_bao:
+        _log(f"WARN {cau}")
     proc = subprocess.run(lenh, shell=True, cwd=duong, capture_output=True,
                           text=True, timeout=timeout)
     return proc.returncode, lenh, (proc.stdout + proc.stderr)

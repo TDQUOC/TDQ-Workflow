@@ -659,7 +659,7 @@ def _sinh_config_toml(duong):
         f.write("\n".join(dong))
 
 
-def _sinh_hooks_codex(duong):
+def _sinh_hooks_codex(duong, nen_tang=None):
     """`.codex/hooks.json` — the same wire shape as `hooks/hooks.json`, other matchers and paths.
 
     The paths are RELATIVE on purpose: real measurement shows Codex runs the hook process with cwd =
@@ -670,7 +670,7 @@ def _sinh_hooks_codex(duong):
     for ten_event, matcher, ten_file in HOOK_CODEX:
         nhom = {"hooks": [{
             "type": "command",
-            "command": f'python3 "hooks/scripts/{ten_file}"',
+            "command": f'{tien_to_python(nen_tang)} "hooks/scripts/{ten_file}"',
         }]}
         if matcher:
             nhom["matcher"] = matcher
@@ -837,6 +837,18 @@ from a clone of TDQ-Workflow, then copy the freshly built directory over.
 `python3 scripts/tdq_checkportable.py check --root <this directory>` prints a NOTE when the
 baked home does not match the current one.
 
+## Bundle này gắn với MÁY DỰNG — Windows và Linux đọc kỹ mục này
+
+- **Đừng copy bundle dựng sẵn từ máy người khác.** Đường dẫn trong `hooks.json` là thư mục nhà
+  của máy dựng, không phải của bạn. Clone repo TDQ-Workflow rồi chạy
+  `python3 scripts/build_portable.py` ngay trên máy bạn, sau đó mới copy thư mục vừa dựng.
+- **Tên lệnh Python khác nhau giữa các hệ.** Bản dựng chọn `python3` trên macOS/Linux và
+  `py -3` trên Windows — Windows không có `python3` trên PATH (cái tên đó chỉ là stub của
+  Microsoft Store mở cửa hàng ứng dụng). Dựng lại tại máy đích là cách duy nhất để `command`
+  mang đúng tên lệnh của máy đó.
+- **Kiểm lại sau khi copy:** `python3 scripts/tdq_checkportable.py check --root <thư mục này>`
+  in cảnh báo khi bundle được dựng dưới thư mục nhà của người khác.
+
 ## What this bundle cannot do for you
 
 1. **Restart agy** — step 5. Skip it and the files just sit there, unloaded.
@@ -879,6 +891,65 @@ def _sua_duong_dan_tuong_doi_agy(goc):
     return so_lan
 
 
+def tien_to_python(nen_tang=None):
+    """Tên lệnh chạy Python 3 trên hệ điều hành `nen_tang` (mặc định: máy đang chạy).
+
+    Windows KHÔNG có `python3` trên PATH: bản cài chính thức đặt `python` và trình khởi chạy
+    `py`, còn `python3` chỉ là cái stub của Microsoft Store mở cửa hàng ứng dụng thay vì chạy
+    Python. Ngược lại, `python` lại vắng mặt trên nhiều bản Linux. Vì vậy `py -3` cho Windows,
+    `python3` cho mọi nơi khác.
+
+    Nhận hệ điều hành làm THAM SỐ chứ không đọc lén `sys.platform`: đó là điều kiện duy nhất để
+    kiểm được hành vi Windows từ một máy macOS.
+    """
+    if (nen_tang or sys.platform).startswith("win"):
+        return "py -3"
+    return "python3"
+
+
+TIEN_TO_PYTHON_BIET = ("py -3", "python3", "python")
+
+
+def sinh_hook_claude(duong, nen_tang=None):
+    """Viết lại tên lệnh Python trong `hooks/hooks.json` theo hệ điều hành máy đích.
+
+    Khác hai file hook kia, `hooks/hooks.json` là file NGUỒN viết tay, commit sẵn và dùng chung
+    cho mọi máy — không có bước sinh nào để chèn tên lệnh theo hệ. Nó giữ mặc định `python3` vì
+    đó là giá trị đúng cho macOS và Linux; người dùng Windows chạy lệnh này một lần.
+
+    Chỉ đụng tiền tố tên lệnh, giữ nguyên phần còn lại (kể cả `${CLAUDE_PLUGIN_ROOT}`) và thứ tự
+    sự kiện. Bất biến: chạy lại trên file đã sinh cho ra đúng file cũ.
+
+    Trả về True khi file thay đổi, False khi đã đúng sẵn.
+    """
+    tien_to = tien_to_python(nen_tang)
+    with open(duong, encoding="utf-8") as f:
+        goc_van_ban = f.read()
+    du_lieu = json.loads(goc_van_ban)
+
+    def _doi(nut):
+        if isinstance(nut, dict):
+            lenh = nut.get("command")
+            if isinstance(lenh, str):
+                for cu in TIEN_TO_PYTHON_BIET:
+                    if lenh.startswith(cu + " "):
+                        nut["command"] = tien_to + lenh[len(cu):]
+                        break
+            for gia_tri in nut.values():
+                _doi(gia_tri)
+        elif isinstance(nut, list):
+            for gia_tri in nut:
+                _doi(gia_tri)
+
+    _doi(du_lieu)
+    moi = json.dumps(du_lieu, ensure_ascii=False, indent=2) + "\n"
+    if moi == goc_van_ban:
+        return False
+    with open(duong, "w", encoding="utf-8") as f:
+        f.write(moi)
+    return True
+
+
 def goc_agy_tuyet_doi():
     """`GOC_AGY` with `~` expanded — agy needs an ABSOLUTE `command`.
 
@@ -891,7 +962,7 @@ def goc_agy_tuyet_doi():
     return os.path.expanduser(GOC_AGY)
 
 
-def _sinh_hooks_agy(duong):
+def _sinh_hooks_agy(duong, nen_tang=None):
     """`hooks.json` at the plugin root — commands are absolute paths into the plugin's own tree.
 
     Wire shape follows the agent-hooks contract documented for agy (source N5, 2026-09-03):
@@ -902,7 +973,7 @@ def _sinh_hooks_agy(duong):
     for ten_event, ten_file in HOOK_AGY:
         su_kien.setdefault(ten_event, []).append({"hooks": [{
             "type": "command",
-            "command": f"python3 {goc}/hooks/scripts/{ten_file}",
+            "command": f"{tien_to_python(nen_tang)} {goc}/hooks/scripts/{ten_file}",
         }]})
     _ghi_json(duong, {
         "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited "
@@ -1034,9 +1105,20 @@ def main(argv=None):
     parser.add_argument("--only", choices=("claude", "codex", "antigravity"),
                         help="generate only one bundle instead of all three")
     parser.add_argument("--repo", help="source repo root, defaults to the script location")
+    parser.add_argument("--sinh-hook-claude", action="store_true",
+                        help="rewrite hooks/hooks.json for the target OS instead of building; "
+                             "Windows needs this once, since `python3` is not a command there")
+    parser.add_argument("--he-dich", help="target OS for the command name (win32/linux/darwin), "
+                                          "defaults to the machine running this")
     args = parser.parse_args(argv)
 
     repo = args.repo or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if args.sinh_hook_claude:
+        duong = os.path.join(repo, "hooks", "hooks.json")
+        doi = sinh_hook_claude(duong, args.he_dich)
+        log(f"{duong}: {'rewritten' if doi else 'already correct'} · "
+            f"command = {tien_to_python(args.he_dich)}")
+        return 0
     dest = args.dest or repo
     version = plugin_version(repo)
     log(f"start · repo={repo} · dest={dest} · version={version or '—'}")

@@ -363,13 +363,39 @@ def kiem_layout_agy(goc, manifest):
     if noi_dung is None:
         ghi_chu.append("hooks.json is missing from the plugin root — the hooks will never load")
         return ghi_chu
+    try:
+        du_lieu = json.loads(noi_dung)
+    except ValueError as loi:
+        ghi_chu.append(f"hooks.json is not valid JSON ({loi}) — agy cannot load a single hook")
+        return ghi_chu
+    lenh = _moi_command(du_lieu)
+    if not lenh:
+        ghi_chu.append("hooks.json declares no `command` — the hooks will never run")
+        return ghi_chu
+    # Only the `command` values matter here. The old check scanned the whole file, and the
+    # file's own description mentions `~/.gemini/...` — so it always fired, and the branch
+    # below (the only one that catches a bundle built under someone else's home) was dead.
     nha = os.path.expanduser("~")
-    if "~" in noi_dung:
+    if any("~" in c for c in lenh):
         ghi_chu.append("hooks.json still holds an unexpanded `~` — agy needs an absolute command")
-    elif nha not in noi_dung:
+    elif not any(nha in c for c in lenh):
         ghi_chu.append(f"hooks.json was built under another home folder (not {nha}) — rebuild "
                        "with `python3 scripts/build_portable.py` before installing")
     return ghi_chu
+
+
+def _moi_command(nut):
+    """Mọi giá trị `command` ở bất kỳ độ sâu nào của cây JSON."""
+    ket = []
+    if isinstance(nut, dict):
+        if isinstance(nut.get("command"), str):
+            ket.append(nut["command"])
+        for gia_tri in nut.values():
+            ket.extend(_moi_command(gia_tri))
+    elif isinstance(nut, list):
+        for gia_tri in nut:
+            ket.extend(_moi_command(gia_tri))
+    return ket
 
 
 # ---------------------------------------------------------------------- CLI
