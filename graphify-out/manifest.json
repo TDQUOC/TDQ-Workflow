@@ -1,11 +1,11 @@
 {
   ".claude-plugin/marketplace.json": {
-    "mtime": 1788422738.437062,
+    "mtime": 1788423636.0867171,
     "ast_hash": "94a15f0cb95344fd190fff2c0ec951bc",
     "semantic_hash": ""
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1788423477.6381845,
+    "mtime": 1788423636.0869765,
     "ast_hash": "570e553ef6ecceba78242b9632264898",
     "semantic_hash": ""
   },
@@ -125,7 +125,7 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1788423521.7186697,
+    "mtime": 1788423636.0874033,
     "ast_hash": "dee9eed529cca5305c029f87ae9d8a62",
     "semantic_hash": ""
   },
@@ -155,12 +155,12 @@
     "semantic_hash": "e92e0edfeee0f49a77d299e5cae7fb93"
   },
   "scripts/build_portable.py": {
-    "mtime": 1788423081.377581,
+    "mtime": 1788423636.1072762,
     "ast_hash": "61c6bed5db8e61af7d89b8d576b45bba",
     "semantic_hash": ""
   },
   "scripts/tdq_checkportable.py": {
-    "mtime": 1788422775.3812191,
+    "mtime": 1788423636.1078248,
     "ast_hash": "e0f6bcbb7a1fceb7667a710bc818fb9f",
     "semantic_hash": ""
   },
@@ -300,17 +300,17 @@
     "semantic_hash": "090f5c12175ecefceab6f682f1546a1b"
   },
   "antigravity_portable/hooks/scripts/agy_pretooluse_gate.py": {
-    "mtime": 1788422673.1504614,
+    "mtime": 1788423636.0881474,
     "ast_hash": "e74b3ed41b57e07fbc75f43c5246b0c8",
     "semantic_hash": ""
   },
   "antigravity_portable/hooks/scripts/agy_stop_gate.py": {
-    "mtime": 1788422680.417712,
+    "mtime": 1788423636.088578,
     "ast_hash": "d57a61f8567ecdc5b25cbe562052de7d",
     "semantic_hash": ""
   },
   "antigravity_portable/manifest.json": {
-    "mtime": 1788423500.4999404,
+    "mtime": 1788423636.0888245,
     "ast_hash": "76e670295287ef1c9f73632b4cdb4175",
     "semantic_hash": ""
   },
@@ -410,7 +410,7 @@
     "semantic_hash": "397afbee72867dc94a096818dc157f44"
   },
   "antigravity_portable/scripts/tdq_checkportable.py": {
-    "mtime": 1788422775.3812191,
+    "mtime": 1788423636.089353,
     "ast_hash": "80f2095a0fcd3198aacbdc3d86e8a726",
     "semantic_hash": ""
   },
@@ -430,7 +430,7 @@
     "semantic_hash": "090f5c12175ecefceab6f682f1546a1b"
   },
   "antigravity_portable/scripts/tdq_state.py": {
-    "mtime": 1788421127.4083679,
+    "mtime": 1788423636.0898335,
     "ast_hash": "48ce6b8d562a4d7f25592f791b09bdf0",
     "semantic_hash": ""
   },
@@ -455,17 +455,17 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "hooks/scripts/agy_pretooluse_gate.py": {
-    "mtime": 1788422673.1504614,
+    "mtime": 1788423636.104201,
     "ast_hash": "e74b3ed41b57e07fbc75f43c5246b0c8",
     "semantic_hash": ""
   },
   "hooks/scripts/agy_stop_gate.py": {
-    "mtime": 1788422680.417712,
+    "mtime": 1788423636.1043804,
     "ast_hash": "d57a61f8567ecdc5b25cbe562052de7d",
     "semantic_hash": ""
   },
   "antigravity_portable/README.md": {
-    "mtime": 1788423500.4949582,
+    "mtime": 1788423636.0876503,
     "ast_hash": "baabf4fb5d1c21cca25b08e362622dac",
     "semantic_hash": ""
   },
@@ -475,17 +475,17 @@
     "semantic_hash": "97b6061ff9791045d457928166bcd49c"
   },
   "antigravity_portable/hooks.json": {
-    "mtime": 1788423500.4948125,
+    "mtime": 1788423636.0877779,
     "ast_hash": "2d4ebdb611bc9815f5152d1b941edaba",
     "semantic_hash": ""
   },
   "antigravity_portable/mcp_config.json": {
-    "mtime": 1788423500.4948902,
+    "mtime": 1788423636.088952,
     "ast_hash": "387c7efef2730ce9b285e53df6ab3e21",
     "semantic_hash": ""
   },
   "antigravity_portable/plugin.json": {
-    "mtime": 1788423500.4947171,
+    "mtime": 1788423636.0890708,
     "ast_hash": "5bdfdb0050614ad4417dff810c4a837b",
     "semantic_hash": ""
   }
