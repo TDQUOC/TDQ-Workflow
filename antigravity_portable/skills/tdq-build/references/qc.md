@@ -36,7 +36,7 @@ before running the first item; working from memory is banned.
    version in section `## When it FAILs` of this file.)
 
 Done when: every QC item PASSes and its evidence sits in the qc file.
-Next step: `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=report`.
+Next step: `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=report`.
 
 ## What to run
 
@@ -70,7 +70,7 @@ completeness:
 - Skill contract: for EVERY `Dùng:` block in the plan, run the command in its `Kiểm` field; the <!-- i18n-allow: canonical field names of the plan -->
   artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus <!-- i18n-allow: canonical verdict value -->
   a closing reason, then rerun
-  `python3 "~/.gemini/antigravity-cli/tdq/scripts/doc_lint.py" --pair <spec> <plan>` until it exits 0.
+  `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/doc_lint.py" --pair <spec> <plan>` until it exits 0.
   Editing §3b edits the spec's CONTENT, so the sha still shifts and the hook still demands
   re-approval — by design: changing a capability verdict changes intent, so the user must be
   asked. Present exactly the one-line diff and ask for re-approval (`approve spec`) inside the

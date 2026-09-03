@@ -34,14 +34,14 @@ user's document language `doc_lang` (deliberate repetition — the original is
 
 2. **Self-review.** Re-read it for holes and contradictions, and fix them. Run the machine
    check (R8 inspects §3b):
-   `python3 "~/.gemini/antigravity-cli/tdq/scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
+   `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
    until it exits 0.
    A deeper review happens only when the user asks for it — that is the one case where
    agent `tdq-reviewer` gets called (optional).
 
 3. **Register the file into state:**
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set spec_file=docs/tdq/spec/<slug>.md
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set spec_file=docs/tdq/spec/<slug>.md
    ```
 
 4. **Present it, then STOP.** Write the spec block per
@@ -75,13 +75,13 @@ user's document language `doc_lang` (deliberate repetition — the original is
 
 5. **The user approves → record it IMMEDIATELY:**
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" approve spec --by "<the user's exact words>"
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" approve spec --by "<the user's exact words>"
    ```
    Ambiguous wording → ASK. Full rule in
    [approval.md](../tdq-conventions/references/approval.md).
 
 Done when: `spec_approved = true` and `spec_file` points at the file you presented.
-Next step: phase `plan` — `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=plan`
+Next step: phase `plan` — `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=plan`
 then on to [tdq-plan](../tdq-plan/SKILL.md) **in that very same turn** — the user is not
 made to send one more message. An approved spec goes straight to the plan; nothing stands
 between the two gates.

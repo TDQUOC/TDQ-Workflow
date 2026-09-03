@@ -1,0 +1,25 @@
+{
+  "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited by hand. Lives at the plugin root; agy reads it once the plugin is enabled in ~/.gemini/config/config.json — see README.md.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/truongdinhquoc/.gemini/config/plugins/tdq-workflow/hooks/scripts/agy_pretooluse_gate.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/truongdinhquoc/.gemini/config/plugins/tdq-workflow/hooks/scripts/agy_stop_gate.py",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

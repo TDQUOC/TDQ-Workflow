@@ -57,7 +57,7 @@
     ".codex/config.toml": "7f6d19b635781cdb444ad9a6f0bac123e0e3016ae570725b8b24cf54a1cc4cc5",
     ".codex/hooks.json": "d700a6a3bd062ce786ec3ea91e1d4fe5ef595a5f2fa7d721837cf524cefc740e",
     "AGENTS.md": "c1002d75cc1af4d22f7b35c8bd836271c0dbcfef4e42dc5e931ec77646152a59",
-    "README.md": "9e4aea1795e44e0ea9b394c8e3ae0c360f9bbd6641b0e0e1ea0f69bbc457cb70",
+    "README.md": "b2fcba1a65efa16500aaf0854afeff7983f99c5438c50efa5f9cb01807f314df",
     "hooks/hooks.json": "d2c430ff260925884101eea0f070585467a58ae40e6faae7e7e3a41254b3a7c6",
     "hooks/scripts/_common.py": "7a3d9c8c4d625980055c3ab08066f78a8c5c540fe6e4293f98b93c5aa5d24542",
     "hooks/scripts/bash_gate.py": "d9ebeebfe5681c9bfce3121f6dc678d9c712f58ae36bbded5fb976503135e069",
@@ -86,7 +86,7 @@
     "scripts/skill_tokens.py": "99370516a75183e393bc9727d4214356b0a183170df6e599965429402470d7ce",
     "scripts/step_audit.py": "f2c74c4afb49628f241a91f5cc466d6f5d43ae938eb2e1b1910a2ea04fbb13c2",
     "scripts/tdq_bench.py": "cedb759b182748aacfe4cd6083d09f77e241ff2e0842d7cffac77e3689f2927b",
-    "scripts/tdq_checkportable.py": "39226f99cd48de1d0ce6d3ae4c484eaad74f66bb160af456ec506a0352c4eca1",
+    "scripts/tdq_checkportable.py": "3401ca9086b6f548f33d43ecb07cda8a49cedbf8a9b19f00c73e20841b391df6",
     "scripts/tdq_checkstatus.py": "f152eee3a271579a8dabeaab8c40fe534eb72bb1c9a69a01149c17d8514f4747",
     "scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     "scripts/tdq_lsp.py": "3d4bdd721787247dc50ae26cc74ed9c00d4fc1705b3e59c86519c31c42abb4c0",
@@ -152,5 +152,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.40.0"
+  "version": "0.41.0"
 }

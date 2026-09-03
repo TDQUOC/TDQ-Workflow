@@ -33,7 +33,7 @@ system. Build or fetch the binary, then point the client at `lumen stdio`:
 git clone https://github.com/ory/lumen && cd lumen && go build -o bin/lumen .
 ```
 
-`~/.gemini/antigravity-cli/tdq/scripts/run` in the repo does the same job for a packaged copy. It resolves the plugin root from
+`~/.gemini/config/plugins/tdq-workflow/scripts/run` in the repo does the same job for a packaged copy. It resolves the plugin root from
 whichever root variable the host exports — Claude Code, Cursor or Codex each set their own. Then
 it looks for `bin/lumen` and `bin/lumen-<os>-<arch>`, downloading the release binary on first run
 when neither is present. That fallback chain is why one bundle works under three hosts.

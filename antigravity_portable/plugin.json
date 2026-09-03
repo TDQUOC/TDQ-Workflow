@@ -1,0 +1,5 @@
+{
+  "description": "Spec-driven TDQ workflow: intake → spec → plan → build → QC → report.",
+  "name": "tdq-workflow",
+  "version": "0.41.0"
+}

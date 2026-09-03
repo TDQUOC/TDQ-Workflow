@@ -6,7 +6,7 @@ Play the expert of the exact field the request belongs to. Goal: leave this phas
 already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- i18n-allow: canonical section name in the default language -->
 
 1. **Capability inventory (B0).** Run
-   `python3 "~/.gemini/antigravity-cli/tdq/scripts/skill_inventory.py" --loc "<keywords of the request>"`;
+   `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/skill_inventory.py" --loc "<keywords of the request>"`;
    the filtered view always keeps every skill from source `project` and
    `plugin:tdq-workflow`. Suspect something is missing → re-run with `--tat-ca` for the
    full table. Add the built-in skills you can see in context, then fill the verdict table
@@ -42,7 +42,7 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
      "which clusters does the project have". Commands: `graphify query|path|explain|affected`.
    - USE grep/read when the question is finding a string, reading a file, or looking at
      specific content — faster, and it does not depend on how fresh the graph is.
-   - The graph holds product source only (`~/.gemini/antigravity-cli/tdq/scripts/`, `~/.gemini/antigravity-cli/tdq/hooks/`); `tests/` and docs are
+   - The graph holds product source only (`~/.gemini/config/plugins/tdq-workflow/scripts/`, `~/.gemini/config/plugins/tdq-workflow/hooks/`); `tests/` and docs are
      excluded by `.graphifyignore`. Need a test or a doc → grep, don't wait for the graph.
 
 3. **Research from several angles — hand it to a subagent.** 2–4 queries from different
@@ -85,6 +85,6 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
 
 Done when: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`) and all 3 gate <!-- i18n-allow: canonical section name in the default language -->
 questions can be answered.
-Next step: `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=spec`
+Next step: `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=spec`
 then on to [tdq-spec](../../tdq-spec/SKILL.md) — same turn if the interview is finished;
 if questions remain, present them and stop.

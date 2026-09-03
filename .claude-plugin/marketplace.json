@@ -1,6 +1,6 @@
 {
   "name": "tdq-local",
-  "description": "Local marketplace cho plugin tdq-workflow (spec-driven workflow, duyệt bằng chat, hook nhắc)",
+  "description": "Marketplace của plugin tdq-workflow (spec-driven workflow, duyệt bằng chat, hook nhắc) — cài từ GitHub TDQUOC/TDQ-Workflow",
   "owner": {
     "name": "TDQ"
   },

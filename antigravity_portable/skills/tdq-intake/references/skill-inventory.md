@@ -10,7 +10,7 @@ Sweep everything; write into the brief only the lines that affect the work.
 
 1. Run the command (it prints the table of skills on disk) and READ all of its output:
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/skill_inventory.py" --loc "<keywords of the request>"
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/skill_inventory.py" --loc "<keywords of the request>"
    ```
    Flag `--loc` trims the table to the relevant part, NEVER hides a skill from source
    `project` or `plugin:tdq-workflow`, and the last line always reports how many were

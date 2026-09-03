@@ -44,7 +44,7 @@ first, then come back to step 1 below.
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
 
-1b. **Check the search layer.** Run `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem` — seven rungs, agent-lsp
+1b. **Check the search layer.** Run `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py kiem` — seven rungs, agent-lsp
    through import-root config. A rung is missing → print the exact command it gave you, **ASK the
    user for permission, and only run it once they say yes.** Never install unasked, never edit
    another plugin's file. Rungs 5–6 only warn. Details:
@@ -70,7 +70,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 3. **Init state** as soon as the user settles the lane:
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" init <slug> <quick|full>
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" init <slug> <quick|full>
    ```
    This command **wipes** the old state. If another request is still unfinished → name the
    slug and phase about to be lost, **ask the user first**, then run it.
@@ -100,7 +100,7 @@ questions can be answered.
 The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving the <!-- i18n-allow: canonical name in the default language -->
 spec approves the route. Name the feature flows the request is built from, one line per flow.
 
-Next step: phase `spec` — `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=spec`
+Next step: phase `spec` — `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=spec`
 then on to [tdq-spec](../tdq-spec/SKILL.md) — same turn if the interview is finished; if
 questions remain, present them and stop.
 

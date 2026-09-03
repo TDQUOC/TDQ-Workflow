@@ -6,8 +6,8 @@ wrong tier is how a rule gets legitimately ignored, so each part stays in its ow
 Measure with two commands:
 
 ```
-python3 "~/.gemini/antigravity-cli/tdq/scripts/step_audit.py" --sessions 2
-python3 "~/.gemini/antigravity-cli/tdq/scripts/token_audit.py" --sessions 2 --top 8
+python3 "~/.gemini/config/plugins/tdq-workflow/scripts/step_audit.py" --sessions 2
+python3 "~/.gemini/config/plugins/tdq-workflow/scripts/token_audit.py" --sessions 2 --top 8
 ```
 
 ## Table of contents

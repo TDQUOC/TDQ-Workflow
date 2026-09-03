@@ -64,6 +64,6 @@ yourself.
 
 ## RIGHT/WRONG examples
 
-- RIGHT: editing `~/.gemini/antigravity-cli/tdq/scripts/scan.py` → load `chung.md` + `python.md`, run `ruff check ~/.gemini/antigravity-cli/tdq/scripts/scan.py`.
+- RIGHT: editing `~/.gemini/config/plugins/tdq-workflow/scripts/scan.py` → load `chung.md` + `python.md`, run `ruff check ~/.gemini/config/plugins/tdq-workflow/scripts/scan.py`.
 - WRONG: hitting a `.kt` file (Kotlin, off-table) → grabbing Java or TS rules and applying them
   anyway. You must follow `them-ngon-ngu.md`: research 4 queries, present the draft, wait for the user to approve.

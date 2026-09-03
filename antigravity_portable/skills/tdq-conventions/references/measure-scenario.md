@@ -2,7 +2,7 @@
 
 Use it to compare how many tokens the TDQ workflow burns before and after a standardisation
 round (e.g. the P1-P4 skill split of `2026-08-05-toi-uu-p0-p1-workflow`). Measure with
-`~/.gemini/antigravity-cli/tdq/scripts/token_audit.py` on a real transcript — never estimate by eye.
+`~/.gemini/config/plugins/tdq-workflow/scripts/token_audit.py` on a real transcript — never estimate by eye.
 
 ## Fixed script (run identically for the before and the after session)
 
@@ -22,7 +22,7 @@ sliced out for measurement.
 ## Measuring with `token_audit.py`
 
 ```bash
-python3 ~/.gemini/antigravity-cli/tdq/scripts/token_audit.py --transcript-dir ~/.claude/projects/<project-slug> --sessions 1 --top 5
+python3 ~/.gemini/config/plugins/tdq-workflow/scripts/token_audit.py --transcript-dir ~/.claude/projects/<project-slug> --sessions 1 --top 5
 ```
 
 - `--transcript-dir` points at the folder holding the throwaway project's `*.jsonl` (the path

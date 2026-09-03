@@ -79,6 +79,36 @@ To check that it took: run `check` again and read the trusted status line.
    you.
 4. **Restart** — new instructions are only loaded after the session restarts.
 
+## Trust hook — separate from trusting the folder, and it is pinned to CONTENT
+
+Hooks carry their own trust gate, and it is not the project-trust gate above. On a live
+`codex-cli 0.149.0-alpha.4.3` (checked 2026-09-03) every entry under `[hooks.state...]` in
+`~/.codex/config.toml` carries a `trusted_hash = "sha256:..."` field. That hash is taken over
+the hook's CONTENT, which has two consequences:
+
+1. A hook only runs after you approve it once — run `/hooks` inside Codex and approve. Until
+   then it is silent, and silence looks exactly like a hook that works and has nothing to say.
+2. **Rebuilding this bundle revokes that trust.** Any edit to a hook script changes its
+   content, so the stored hash no longer matches and the hook goes back to untrusted. After
+   every rebuild of this bundle, open `/hooks` and approve again.
+
+Hooks are enabled by default on 0.149 — there is no `[features] hooks = true` to set, and
+adding one is not what makes them run. Approval is.
+
+## Environment variables — `env_vars` only names them, it never sets them
+
+`[mcp_servers.*]` in `.codex/config.toml` uses `env_vars`, an array of variable NAMES that
+Codex whitelists FROM YOUR SHELL. TOML does no interpolation, so nothing in this bundle can
+give those variables a value. Export them yourself before starting Codex:
+
+```
+export TAVILY_API_KEY=<your key>
+```
+
+Put that line in your shell profile if you want it to survive a new terminal. A variable that
+is not exported means the MCP server starts without it and its calls fail at runtime, not at
+startup — so check `/mcp` if a search tool goes quiet.
+
 ## Why step 3 runs the file directly instead of saying "run the tdq-checkportable skill"
 
 The skill lives inside this very bundle, and Codex only scans `.agents/skills/` after the

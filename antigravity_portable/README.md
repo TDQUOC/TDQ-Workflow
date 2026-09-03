@@ -1,70 +1,57 @@
-# TDQ Workflow — portable bundle for Antigravity CLI (agy)
+# TDQ Workflow — plugin bundle for Antigravity CLI (agy)
 
-agy's exact global config path is NOT settled across sources as of 2026-08 — this bundle does
-not guess one. It installs its own core (skills, hook scripts) at ONE fixed path under your
-home folder, and ships 3 config files whose content you copy into EVERY known candidate
-location. Self-check with agy's own commands tells you which one actually took.
+This directory IS an agy plugin: `plugin.json` at the root, `skills/` beside it, plus
+`hooks.json` and `mcp_config.json`. The layout was read off a live `agy 1.1.11` install on
+2026-09-03. Installing is one copy plus two config keys.
 
-## Install on a new machine — follow this exact order
+## Install — this exact order
 
-1. **Copy the core.** Copy `skills/`, `hooks/`, `scripts/` from this bundle so the whole tree
-   sits at exactly:
+1. **Copy this whole directory** to the plugin root, keeping the directory name:
    ```
-   ~/.gemini/antigravity-cli/tdq/
+   ~/.gemini/config/plugins/tdq-workflow/
    ```
-   (create the folders if they do not exist yet). Every generated config file's command/path
-   below points at this exact location — moving the core elsewhere breaks all 3 config files.
 
-2. **Copy the skill files** into EVERY candidate skill root agy might scan on your version:
-   - `~/.gemini/antigravity-cli/skills/`
-   - `~/.gemini/antigravity/skills/`
-   - `~/.gemini/skills/`
-   (copy the whole content of `skills/` into each — harmless if a path does not exist on your
-   install, just skip it).
+2. **Enable the plugin** in `~/.gemini/config/config.json` — add the key, keep everything else that file
+   already holds:
+   ```json
+   { "plugins": { "tdq-workflow": { "enabled": true } } }
+   ```
 
-3. **Copy `config/hooks.json`** into EVERY candidate hook-config location:
-   - `~/.gemini/config/hooks.json`
-   - `~/.gemini/antigravity-cli/hooks.json`
+3. **Register the skill root** in `~/.gemini/config/skills.json`, appending to the existing `entries` array:
+   ```json
+   { "entries": [ { "path": "~/.gemini/config/plugins/tdq-workflow/skills" } ] }
+   ```
 
-4. **Copy `config/settings.json`** (the Fine-Grained Permissions Engine, a SECOND and coarser
-   defensive layer — the hooks above are the real hard `deny`) into:
-   - `~/.gemini/antigravity-cli/settings.json`
+4. **Set the environment variables** the MCP servers need. This bundle only ever records
+   variable NAMES, never a key value — export `TAVILY_API_KEY` (and the backup server's
+   variable) yourself before using MCP.
 
-5. **Copy `config/mcp_config.json`** into BOTH known locations:
-   - `~/.gemini/config/mcp_config.json`
-   - `~/.gemini/antigravity-cli/mcp_config.json`
+5. **Restart agy**, then self-check with agy's own commands:
+   - `agy plugin list` — is `tdq-workflow` listed and enabled?
+   - `/skills` — do the `tdq-conventions, tdq-lsp-setup, tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-checkportable, tdq-status, tdq-check-status` skills show up?
+   - `/mcp` — are `tavily-primary`/`tavily-backup` listed as configured servers?
 
-6. **Set the environment variables** the MCP servers need. This bundle never writes a key
-   value, only the variable NAMES — set `TAVILY_API_KEY` (and the backup server's variable)
-   yourself before using MCP.
+6. **Smoke-test the hard deny.** Ask agy to run one of the banned cases (e.g.
+   `git checkout -b antigravity-test`, or writing straight to `docs/tdq/state.json` through the
+   shell) and confirm it is refused. Not refused → the hook did not load; re-check steps 1–2.
 
-7. **Restart agy**, then self-check with agy's own commands:
-   - `/skills` — do the `tdq-conventions, tdq-lsp-setup, tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-checkportable, tdq-status, tdq-check-status` skills show up? Not there at one path → try another
-     candidate from step 2 that you have not copied to yet.
-   - `/mcp` — do `tavily-primary`/`tavily-backup` show up as configured servers?
-   - `/permissions` — does the permissions list include the `deny` entries from
-     `config/settings.json`?
+## The hook `command` paths are absolute, and baked at build time
 
-8. **Smoke-test the hard deny manually.** Ask agy to run a command matching one of the 2
-   banned cases (e.g. `git checkout -b antigravity-test`, or writing straight to
-   `docs/tdq/state.json` through the shell) and confirm it is actually refused. If it is NOT
-   refused, the hook did not load — check step 3/2 again, or try another candidate path.
+agy requires an ABSOLUTE `command`; a `~` inside quotes is not expanded and the hook dies with
+exit 127. `hooks.json` therefore carries a real expanded path — the home folder of the machine
+that BUILT the bundle. Copying a prebuilt bundle to another user's machine leaves those paths
+pointing at the wrong home. Rebuild it locally instead — run the repo's `build_portable.py`
+from a clone of TDQ-Workflow, then copy the freshly built directory over.
+`python3 scripts/tdq_checkportable.py check --root <this directory>` prints a NOTE when the
+baked home does not match the current one.
 
 ## What this bundle cannot do for you
 
-1. **Know which candidate path your agy version reads** — no source available as of 2026-08
-   confirms one canonical global path per config type; step 7's self-check is the only way to
-   find out on YOUR machine.
-2. **Restart** — step 7. Skip it and the copied files just sit there, unloaded.
-3. **Set the MCP environment variables** — step 6.
+1. **Restart agy** — step 5. Skip it and the files just sit there, unloaded.
+2. **Set the MCP environment variables** — step 4.
+3. **Guarantee the layout on a different agy version.** It was verified against `agy 1.1.11`
+   only; step 5's self-check is how you find out on YOUR machine.
 
 ## Secret keys
 
-`config/mcp_config.json` only records the NAMES of environment variables, never a key value.
-
-## Known limitation
-
-This bundle has not been exercised against a real agy install — see the risk table in the
-originating spec. The layered design (hard-deny hook + coarser permissions-engine `deny`) is
-meant to degrade safely if one layer does not load on your version: report back which
-candidate paths actually worked so this bundle can drop the ones that never do.
+`mcp_config.json` records only the NAMES of environment variables, never a key value.

@@ -52,7 +52,7 @@ user's gate with your own and is banned. The user asks for plan mode → do it.
 ## Command to run the moment you recognise it
 
 ```
-python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent] --by "<the user's sentence verbatim>"
+python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent] --by "<the user's sentence verbatim>"
 ```
 
 - `--by` is mandatory in practice: it is the only trace tying state back to the conversation.

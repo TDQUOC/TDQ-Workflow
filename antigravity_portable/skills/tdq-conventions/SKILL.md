@@ -14,7 +14,7 @@ One workflow, three kinds of reader, so three language rules. They never mix.
 
 | Layer | What it covers | Language |
 |---|---|---|
-| Rules | `skills/**`, `agents/*.md`, comments and docstrings in `~/.gemini/antigravity-cli/tdq/hooks/` and `~/.gemini/antigravity-cli/tdq/scripts/` | **English**, always |
+| Rules | `skills/**`, `agents/*.md`, comments and docstrings in `~/.gemini/config/plugins/tdq-workflow/hooks/` and `~/.gemini/config/plugins/tdq-workflow/scripts/` | **English**, always |
 | Machine strings | anything a hook or a script PRINTS: log lines, errors, tables, argparse help | **English**, always |
 | Documents & dialogue | brief/spec/plan/qc/report and every sentence spoken to the user | the language of field `doc_lang` |
 
@@ -35,7 +35,7 @@ One workflow, three kinds of reader, so three language rules. They never mix.
 3. A `[TDQ:<CODE>]` line injected by a hook → **do what it says FIRST**, before anything else,
    then print `✓ [TDQ:<CODE>] <what was done>`. Codes: [references/reminder-codes.md](references/reminder-codes.md).
 4. A turn that changed the repo MUST end with the closing command
-   `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_finish.py" --files <files just edited> --log "<summary>" --phase <new phase>`
+   `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_finish.py" --files <files just edited> --log "<summary>" --phase <new phase>`
    — lint those files → append the working log → set phase → graphify. **Never Edit/Read the working log and append by
    hand**, not even when `stop_gate.py` blocks you: a block means "the command has not run", not "run something else to
    dodge it". This command is the **last action** of the turn. It runs BEFORE the closing chat block (summary,
@@ -79,12 +79,12 @@ skill that owns it.
 
 Full table (entry condition / single job / transition command / done when / forbidden):
 [references/phases.md](references/phases.md) — a file **generated** from the `PHASE_TABLE`
-constant in `~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py`. Never copy its commands elsewhere, never hand-edit it.
+constant in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py`. Never copy its commands elsewhere, never hand-edit it.
 
 ## 3. State
 
 - Read and write state **only** through the CLI:
-  `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" <next|get|set|approve|init|reset>`.
+  `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" <next|get|set|approve|init|reset>`.
   Hand-editing `docs/tdq/state.json` or `docs/tdq/STATE.md` is forbidden (generated mirror, read-only).
 - `next` answers "what do I do now". `get <key>` reads one field.
 - `init <slug> <quick|full>` = **open a new request**; it wipes every old field (lane, phase, spec/plan file, every

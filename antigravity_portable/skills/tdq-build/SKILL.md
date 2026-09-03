@@ -17,7 +17,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
 - **The end of the turn is gated, not merely asked for.** While the phase is `implement` and
   the plan still has an open task, the Stop hook refuses to close the turn with
   `[TDQ:UNFINISHED]` and pushes you to keep going. Genuinely stuck on an error you cannot fix
-  yourself → run `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" tam-hoan --ly-do "<why>"`,
+  yourself → run `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" tam-hoan --ly-do "<why>"`,
   TELL THE USER that reason in chat, and only then end the turn; `tiep-tuc` clears it when the
   run resumes. Stopping without declaring a reason is the one thing the gate exists to refuse.
 - **Technical blocker → take the proposed option, do not ask.** When an option exists, TAKE
@@ -62,7 +62,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
      [references/team-mode.md](references/team-mode.md).
    - `subagent` (label the user sees: "giao trợ lý (sub-agent implement)"): you are the LEADER of a <!-- i18n-allow: user-facing mode label -->
      team. **Step 0 — before typing the first line of code: assign the WHOLE plan**
-     (`python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_team.py phan-cong`, then `kiem-ke`). Then loop wave by wave.
+     (`python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py phan-cong`, then `kiem-ke`). Then loop wave by wave.
      `cum` takes the next wave; `mo <task>` opens a branch + worktree per task.
      Call `tdq-implementer` for EVERY task of the wave IN ONE response — several Task calls in
      one response means they run concurrently. Mark the tasks you just handed out `[>]`.
@@ -101,7 +101,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
 
 3. All tasks done: run the full suite EXACTLY ONCE, then close the turn's books with ONE
    command
-   `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_finish.py" --files <edited .md files> --log "<tasks done, files changed, test result>" --phase qc`
+   `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_finish.py" --files <edited .md files> --log "<tasks done, files changed, test result>" --phase qc`
    — lint the right file, append the working log, set the phase, graphify: 4 jobs in 1 call.
 
 Done when: every task in the plan is ticked `[x]` and the test suite is green.
@@ -116,7 +116,7 @@ That same file also
 carries the qc file template and the 3-fix-round cap.
 
 Done when: every QC item PASSes and its evidence sits in the qc file.
-Next step: phase `report` — `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=report`,
+Next step: phase `report` — `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=report`,
 then Part C below.
 
 ## Part C — Report (phase `report`)
@@ -128,5 +128,5 @@ memory is banned.**
 That same file also carries the report template and the verbatim commit question block.
 
 Done when: the report is written and the user has been asked about the commit.
-Next step: phase `idle` — `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=idle`
+Next step: phase `idle` — `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=idle`
 (or `reset` when the user wants the slate wiped for a new request). The request ends there.

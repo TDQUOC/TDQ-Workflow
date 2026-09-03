@@ -2,6 +2,34 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.41.0 — 2026-09-03
+
+Sửa tương thích thật với cả 3 host: Claude Code, Codex CLI 0.149, Antigravity CLI (agy) 1.1.11.
+Trước bản này, bundle agy KHÔNG chạy được (hook sai đường dẫn, sai payload deny, layout không
+phải plugin) và README codex thiếu hai thủ tục bắt buộc. Báo cáo:
+`docs/tdq/reports/2026-09-03-1440-kiem-tuong-thich-3-host.md`.
+
+- **`antigravity_portable/`** — dựng lại đúng chuẩn plugin agy 1.1.11: `plugin.json` ở gốc,
+  `hooks.json` + `mcp_config.json` ở gốc, bỏ hẳn thư mục `config/`. **Bỏ hẳn
+  `settings.json`**: file thật của người dùng giữ `model`/`colorScheme`/`trustedWorkspaces`,
+  copy đè là mất cấu hình mà không thêm được hàng rào nào. README từ 6 đường cài đoán còn 3
+  bước thật (copy thư mục · bật trong `config.json` · khai skill root trong `skills.json`).
+- **`hooks/scripts/agy_pretooluse_gate.py`** — payload deny phát CẢ `allow_tool: false` lẫn
+  `decision: "deny"` vì Google chưa công bố schema chính thức; thiếu khoá đúng thì deny bị bỏ
+  qua trong im lặng. Đường dẫn `command` trong `hooks.json` nay là tuyệt đối đã bung `~` —
+  dấu `~` trong nháy kép không được bung, hook chết exit 127.
+- **`portable_codex/README.md`** — thêm mục trust hook (`trusted_hash` ghim NỘI DUNG hook, dựng
+  lại bundle là mất trust, phải duyệt lại bằng `/hooks`) và mục export biến môi trường
+  (`env_vars` chỉ khai TÊN biến, TOML không nội suy). 0.149 đã bật hooks sẵn, không cần
+  `[features] hooks = true`.
+- **`.claude-plugin/plugin.json`** — thêm `displayName` và `userConfig` cho 2 khoá Tavily,
+  `sensitive: true` để giá trị không bao giờ hiện ra. Validator đòi thêm trường `title` (không
+  có trong tài liệu).
+- **`scripts/tdq_checkportable.py`** — nhận diện layout plugin agy, cảnh báo khi `hooks.json`
+  còn `~` chưa bung hoặc mang `$HOME` của máy khác.
+- **`tests/test_tuong_thich_host.py`** (mới) — 6 test khoá 6 điểm tương thích; 5 test agy cũ
+  trong `test_build_portable.py` viết lại theo layout mới.
+
 ## 0.40.0 — 2026-09-03
 
 Cổng hỏi bằng chat thường, dòng `Next step:` nêu tên pha kế, và đường kẻ `---` kết lượt. Kèm
@@ -446,55 +474,3 @@ phải mở session mới, đổi sang máy khác, và giao một phase cho agen
   `portable/workflow/05-check-status.md` khớp từng bước cho agent ngoài Claude Code.
 - `tdq-status` giữ nguyên vai trò báo nhanh, chỉ thêm một dòng trỏ sang skill mới.
 - Trần tổng `description` của skill nới 900 → 1080 ký tự cho skill thứ bảy.
-
-## 0.20.0 — 2026-08-15
-
-Tên file document mang thêm giờ phút, và workflow tự đếm thời gian: mỗi request tốn bao
-lâu, mỗi phase tốn bao lâu. Trước bản này `state.json` chỉ có `updated_at` và ba mốc duyệt
-— không suy ra được phase nào ngốn thời gian, nên mọi nhận định về "chậm ở đâu" đều là đoán.
-
-- Slug mới: `YYYY-MM-DD-HHMM-<kebab ≤5 từ, không dấu>`, giờ chèn sau ngày để sort tên trùng
-  sort thời gian. **Hai định dạng cùng sống.** Slug cũ chỉ có ngày vẫn ĐỌC được, nên 269
-  file tài liệu cũ giữ nguyên tên. Nhưng `tdq_state.py init` TỪ CHỐI slug ghi mới thiếu giờ
-  phút: cảnh báo suông thì chuẩn mới sẽ trôi ngay lần đầu ai đó bỏ qua.
-- `scripts/tdq_state.py`: thêm `parse_slug()` (trả `(ngày, giờ-phút hoặc None, phần chữ)`),
-  `schema_version` lên 4 với hai trường mới `started_at` và `phase_history`. Mỗi lần ĐỔI
-  phase ghi một mốc; set lại đúng phase đang đứng thì không ghi (tránh mốc 0 giây), quay
-  lại phase cũ thì ghi mốc mới — đó là cơ sở đếm "số lần vào".
-- `scripts/tdq_timing.py` (mới): `show` in bảng Phase · Treo tường · Model chạy · Số lần
-  vào; `status` in một dòng đồng hồ cho `tdq-status`; `close` append đúng một dòng JSON vào
-  `docs/tdq/timing.jsonl`. Hai cột cố ý khác nguồn: treo tường lấy từ mốc state (gồm cả
-  thời gian chờ user duyệt), model chạy cộng khoảng cách giữa các bước model trong
-  transcript và bỏ khoảng > `MAX_GAP_SECONDS` (tái dùng ngưỡng của `step_audit.py`).
-  Không đọc được transcript thì cột model in `—` kèm lý do, vẫn thoát 0.
-- Đóng sổ tự động ở hai cửa: `init` chốt sổ request cũ TRƯỚC khi reset state (không thì mốc
-  của request bỏ dở bay mất), và `tdq_finish.py --phase idle` chốt sổ khi hết request. Đóng
-  sổ hai lần cho cùng một request không đẻ dòng thứ hai.
-- Khuôn report bắt buộc có mục `## Thời gian`; `skills/tdq-status/SKILL.md` in thêm dòng
-  `⏱` của phase đang chạy. Công thức slug đã đồng bộ ở `skills/`, `scripts/`, `portable/`.
-
-## 0.19.0 — 2026-08-15
-
-Cắt thời gian xử lý một request mà không đụng vào luật hay chất lượng đầu ra. Nguyên nhân
-đo được: tổng thời gian tỉ lệ thẳng với SỐ BƯỚC (mỗi tool call ≈ một round-trip 3–4 s),
-context chỉ ảnh hưởng nhẹ; luật gộp tool call đã có nhưng nằm trong file reference ít nạp
-và bị đóng khung là "tiết kiệm context" — tầng thấp nhất của soul, nên bỏ qua vẫn hợp lệ.
-
-- `skills/tdq-conventions/SKILL.md` §10 đổi thành "Luật một lượt (tầng 2 — runtime)":
-  luật gộp chuyển hẳn vào thân skill (nạp mỗi turn) theo khuôn ba mục. Trần dòng của
-  skill này nới 120 → 130 — trần dòng là ràng buộc tầng 3, không được nén luật tầng 2.
-- `references/context-budget.md` tách hai phần rõ ràng: chi phí bước (tầng 2) và chi phí
-  context (tầng 3). Thêm bảng **Cấm gộp** 4 ca (bước đỏ→xanh của TDD, đang khoanh vùng
-  lỗi, lệnh phá hủy, lệnh sau cần kết quả lệnh trước). Sáu luật cũ giữ nguyên văn.
-- Luật đọc lại file là luật **MỀM**: còn nhớ đủ thì đừng đọc lại. Nhưng có 5 ca BẮT BUỘC
-  đọc lại: context bị nén, lần trước đọc một phần, file có thể đã đổi, sắp sửa chính file
-  đó, nhớ không chắc. Nghi ngờ thì đọc lại — không đổi chất lượng lấy tốc độ.
-- `references/soul.md` thêm mục "Xếp luật vào tầng nào": luật đổi số bước → tầng runtime,
-  đổi số token → tầng context cost, đổi đúng-sai đầu ra → tầng chất lượng. Ba tầng gốc
-  giữ nguyên văn. Bản `portable/AGENTS.md` có luật một lượt tương đương.
-- `scripts/step_audit.py` (mới): đo 5 chỉ số chi phí bước, gom theo `requestId` — đếm theo
-  bản ghi jsonl thổi phồng số bước và luôn ra 1,00 tool call mỗi lượt. `token_audit.py`
-  sửa lỗi suy đường dẫn: tên project có gạch dưới cũng đổi thành `-`.
-- Test: 596 → 608 (`tests/test_step_budget.py` mới, 12 test).
-
-Bản 0.18.0 trở về trước: [docs/CHANGELOG-archive.md](docs/CHANGELOG-archive.md).

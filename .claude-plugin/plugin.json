@@ -1,8 +1,25 @@
 {
   "name": "tdq-workflow",
-  "version": "0.40.0",
+  "displayName": "TDQ Workflow",
+  "version": "0.41.0",
   "description": "Spec-driven workflow cho Claude Code: intake → spec → plan → build (implement/QC/report). Duyệt bằng chat tự nhiên, hook nhắc bằng mã [TDQ:*] và kiểm bằng hiệu ứng thật, chế độ nhanh (express) / chuyên sâu (deep), working log bắt buộc, có bản portable cho agent ngoài Claude Code.",
   "author": {
     "name": "TDQ"
+  },
+  "userConfig": {
+    "TAVILY_API_KEY": {
+      "type": "string",
+      "description": "Tavily API key for the tavily-primary MCP server (web search).",
+      "sensitive": true,
+      "required": false,
+      "title": "Tavily API key"
+    },
+    "TAVILY_API_KEY_BACKUP": {
+      "type": "string",
+      "description": "Tavily API key for the tavily-backup MCP server, used only when primary fails.",
+      "sensitive": true,
+      "required": false,
+      "title": "Tavily API key (backup)"
+    }
   }
 }

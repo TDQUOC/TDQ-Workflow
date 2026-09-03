@@ -22,7 +22,7 @@ scope. Spec approved → plan NOW.
      yourself. Rule: `tdq-build/references/team-mode.md`.
    The proposal is **never eyeballed**: once the plan is written (step 2), MEASURE on that very plan:
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_bench.py" mo-phong --plan docs/tdq/plan/<slug>.md \
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_bench.py" mo-phong --plan docs/tdq/plan/<slug>.md \
      --thuc-do docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json --he-so-agent 1.5
    ```
    The `Winner:` line of that command IS the proposal; copy the minute gap into the reason.
@@ -56,11 +56,11 @@ scope. Spec approved → plan NOW.
 
 3. **Optimise.** Cut redundancy, check the dependency order, cross-check the 2 mapping rules: every
    output in spec §2 → ≥ 1 task; every `DÙNG` row in spec §3b → ≥ 1 contract block with all 5 fields <!-- i18n-allow: canonical name kept verbatim -->
-   (`Dùng/Để/Ra/Kiểm/Không dùng cho`). Machine check: `python3 "~/.gemini/antigravity-cli/tdq/scripts/doc_lint.py" --pair <spec> <plan>` must exit 0; a deeper review only when the user asks (`tdq-reviewer`). <!-- i18n-allow: canonical name kept verbatim -->
+   (`Dùng/Để/Ra/Kiểm/Không dùng cho`). Machine check: `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/doc_lint.py" --pair <spec> <plan>` must exit 0; a deeper review only when the user asks (`tdq-reviewer`). <!-- i18n-allow: canonical name kept verbatim -->
 
 4. **Register the file into state:**
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set plan_file=docs/tdq/plan/<slug>.md
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set plan_file=docs/tdq/plan/<slug>.md
    ```
    Do **NOT** set `implement_mode` here — that field is written only when approval is recorded.
 
@@ -90,7 +90,7 @@ scope. Spec approved → plan NOW.
 
 6. **The user approves → record it IMMEDIATELY, then ask about the run mode in the SAME turn:**
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" approve plan --by "<the user's exact words>"
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" approve plan --by "<the user's exact words>"
    ```
    Does the approval sentence already name a mode (`main`/`inline`, `subagent`/`sub-agent`)? Then add
    `--mode <that value>`, **skip** the gate below and build right away — re-asking is banned.
@@ -101,10 +101,10 @@ scope. Spec approved → plan NOW.
    Generalities are banned. Give all 4 grounds read off the plan: task count, dependency chain, how
    many files several tasks touch at once, whether an `(mcp)` label is present. Close with one
    sentence on why not the other option (examples in mode-gate.md). The two names are **display
-   labels**; state records `main`/`subagent` (`MODE_LABELS`/`MODE_ALIASES` in `~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py`).
+   labels**; state records `main`/`subagent` (`MODE_LABELS`/`MODE_ALIASES` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py`).
    The user answers → re-run the command with `--mode <main|subagent>` and build RIGHT AWAY, same
    turn. The settled mode is the USER's, even when it differs from your proposal.
 
 Done when: `plan_approved = true` and `implement_mode` is not empty.
 Next step: phase `implement` — flip the plan header to `ĐÃ DUYỆT`, run <!-- i18n-allow: canonical name kept verbatim -->
-`python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=implement`; then on to [tdq-build](../tdq-build/SKILL.md) **in that very same turn**.
+`python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=implement`; then on to [tdq-build](../tdq-build/SKILL.md) **in that very same turn**.

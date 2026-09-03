@@ -31,7 +31,7 @@ so use it only when context was lost.
 
 1. Run the detector (read-only, writes nothing):
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py" report
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py" report
    ```
    Need machine-readable data → add `--json`. The script finds the project root itself;
    force it with `--project`.

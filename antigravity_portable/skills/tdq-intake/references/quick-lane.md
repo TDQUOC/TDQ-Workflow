@@ -34,7 +34,7 @@ NO approval gate of its own — express keeps exactly one gate. How deep it goes
 
 | Step | Express rule |
 |---|---|
-| B1 read the code | **ALWAYS.** The target is a code symbol → call `mcp__lsp__*` and lumen in parallel, merge both layers, grep last. A question about **links** or the overall map ("who calls X", "what breaks if X changes") → `graphify query\|path\|explain\|affected`; the graph holds only `~/.gemini/antigravity-cli/tdq/scripts/` and `~/.gemini/antigravity-cli/tdq/hooks/` |
+| B1 read the code | **ALWAYS.** The target is a code symbol → call `mcp__lsp__*` and lumen in parallel, merge both layers, grep last. A question about **links** or the overall map ("who calls X", "what breaks if X changes") → `graphify query\|path\|explain\|affected`; the graph holds only `~/.gemini/config/plugins/tdq-workflow/scripts/` and `~/.gemini/config/plugins/tdq-workflow/hooks/` |
 | B0 capability inventory | ONLY when the request touches ground with no precedent — no earlier report under `docs/tdq/report/` touched the same directory |
 | B2 research | ONLY when an unknown outside the repo exists (a library, an API, a version, third-party behaviour) — hand it to a sub-agent, digest ≤ 1,500 characters |
 
@@ -75,13 +75,13 @@ steps below before doing step 1; working from memory is banned.
 ```
 ➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp
 ```
-6. The user approves → run `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" approve quick [--no-qc] --by "<the user's sentence verbatim>"` (`--no-qc` ONLY when the user says so explicitly — silence about QC means QC stays ON).
+6. The user approves → run `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" approve quick [--no-qc] --by "<the user's sentence verbatim>"` (`--no-qc` ONLY when the user says so explicitly — silence about QC means QC stays ON).
 7. Append the mini-plan summary to `docs/workinglog/<today>.md` **BEFORE** touching code.
 8. Implement end-to-end in 1 turn. **Before typing the first line of code, count the tasks
    whose `Chạm:` sets are disjoint** (no task sharing a path with another): <!-- i18n-allow: canonical name in the default language -->
    - **3 or more** → hand them to sub-agent `tdq-implementer`, one agent per task, issued in
      the same response so they run in parallel; the cap is **4 branches**, the same cap
-     `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_team.py cum` applies in deep mode (task 5 prints `CHỜ SLOT`). Build <!-- i18n-allow: canonical name in the default language -->
+     `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py cum` applies in deep mode (task 5 prints `CHỜ SLOT`). Build <!-- i18n-allow: canonical name in the default language -->
      a worktree only for an agent that ACTUALLY writes files. Mark `[>]` when handing over,
      switch to `[x]` as the report lands.
    - **fewer than 3** → run inline; an agent for 1–2 tasks costs more briefing than it saves.
@@ -169,10 +169,10 @@ Only one task carries `[~]` at a time; `[>]` may be several, at most the 4-branc
 **Batching ticks at the end of the turn is banned** — express does the whole
 job in one turn, so batched ticks mean the plan reflected nothing while the work happened.
 
-Fence: `~/.gemini/antigravity-cli/tdq/hooks/~/.gemini/antigravity-cli/tdq/scripts/edit_gate.py` **BLOCKS** (deny) every edit outside `docs/` and
+Fence: `~/.gemini/config/plugins/tdq-workflow/hooks/~/.gemini/config/plugins/tdq-workflow/scripts/edit_gate.py` **BLOCKS** (deny) every edit outside `docs/` and
 `tests/` while the phase is `implement`/`qc` and no task in the plan carries `[~]`.
 `tests/**` is exempt so a red test can still be written first. Blocked while the request is
-in fact closed → run `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py set phase=idle`.
+in fact closed → run `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py set phase=idle`.
 
 ## QC in the express pipeline
 

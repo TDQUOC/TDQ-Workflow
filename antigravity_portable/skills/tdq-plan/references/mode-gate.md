@@ -51,9 +51,9 @@ An example carrying every ground:
 
 Mode B is a hybrid, not "every task pushed to a sub-agent". The leader still keeps for itself
 (`tu_lam`) the tasks matching exactly one group of the closed keep-set: `phu-thuoc`, `vung-khoa`, `mcp`,
-`file-luat`, `hop-dong`. Everything else MUST be handed out — and `~/.gemini/antigravity-cli/tdq/scripts/tdq_team.py kiem-ke`
+`file-luat`, `hop-dong`. Everything else MUST be handed out — and `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py kiem-ke`
 exits non-zero when the leader invents a group outside that set to keep work. The set is the
-constant `LY_DO_GIU` in `~/.gemini/antigravity-cli/tdq/scripts/tdq_team.py`; the full lookup table lives in
+constant `LY_DO_GIU` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_team.py`; the full lookup table lives in
 `tdq-build/references/team-mode.md`.
 
 So the "Vì sao đề xuất" paragraph must never describe B as "handing everything to assistants". <!-- i18n-allow: canonical name of the block -->
@@ -66,5 +66,5 @@ the total task count, decides whether B beats A. Full rule of the team mode:
 (deliberate repetition — the original is step 6 of `skills/tdq-plan/SKILL.md`.)
 
 The two names above are **display labels**. What state records is still `main`/`subagent`
-(`MODE_LABELS`/`MODE_ALIASES` in `~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py`). The user typing "inline",
+(`MODE_LABELS`/`MODE_ALIASES` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py`). The user typing "inline",
 "sub-agent implement" or an old machine name all resolve to the right machine identifier.

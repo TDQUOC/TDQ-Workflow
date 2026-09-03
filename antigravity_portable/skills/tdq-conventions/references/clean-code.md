@@ -60,7 +60,7 @@ functional. So each principle has two readings. Read the column matching what yo
 
 ### SRP
 
-RIGHT — `~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py`: `gom_bang_chung()` only READS the disk, `cham_ca_lech()`
+RIGHT — `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py`: `gom_bang_chung()` only READS the disk, `cham_ca_lech()`
 only JUDGES data already read. Changing how it reads is not changing how it scores.
 
 WRONG — one `kiem_tra()` that opens the file, compares the sha, writes the diagnosis and prints
@@ -68,7 +68,7 @@ the table. Changing the printed table shape forces editing the file-reading func
 
 ### OCP
 
-RIGHT — `~/.gemini/antigravity-cli/tdq/scripts/doc_lint.py`, the `SKILL_LINE_LIMITS` constant: adding a new skill needs one
+RIGHT — `~/.gemini/config/plugins/tdq-workflow/scripts/doc_lint.py`, the `SKILL_LINE_LIMITS` constant: adding a new skill needs one
 new data line and `rule_r6()` does not change by a single character.
 
 WRONG — writing `rule_r6()` as a chain of `if skill == "tdq-intake": ... elif skill == "tdq-spec":`
@@ -76,7 +76,7 @@ Every new skill forces the function body open again.
 
 ### LSP
 
-RIGHT — `~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py`: `doc_state_tho()` returns a 2-element tuple on EVERY
+RIGHT — `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py`: `doc_state_tho()` returns a 2-element tuple on EVERY
 branch, including the missing-file branch and the broken-JSON branch. Callers write exactly one
 unpacking.
 
@@ -89,7 +89,7 @@ words.
 
 ### ISP
 
-RIGHT — `~/.gemini/antigravity-cli/tdq/scripts/tdq_checkstatus.py`: `_dem_tick(cwd, rel)` takes exactly the plan file's path.
+RIGHT — `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_checkstatus.py`: `_dem_tick(cwd, rel)` takes exactly the plan file's path.
 It has no need to know what is in the state, so it does not take the state.
 
 WRONG — `_dem_tick(cwd, state)` digging out `state["plan_file"]` inside. Counting the ticks of any
@@ -97,7 +97,7 @@ other plan file then means building a fake state, even in a test.
 
 ### DIP
 
-RIGHT — `~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py` is the single entry point that writes `docs/tdq/state.json`. Hooks,
+RIGHT — `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py` is the single entry point that writes `docs/tdq/state.json`. Hooks,
 skills and every other script go through that CLI; nowhere opens the file itself.
 
 WRONG — a hook that `json.dump`s straight into `docs/tdq/state.json`. Changing the state format

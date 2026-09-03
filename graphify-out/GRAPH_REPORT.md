@@ -1,22 +1,22 @@
 # Graph Report - TDQWorkflow  (2026-09-03)
 
 ## Corpus Check
-- 98 files · ~148,819 words
+- 98 files · ~149,516 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2261 nodes · 4111 edges · 99 communities (94 shown, 5 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 114 edges (avg confidence: 0.53)
+- 2269 nodes · 4134 edges · 104 communities (97 shown, 7 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ef959dab`
+- Built from commit: `dfa02dab`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - files
-- build_portable.py
+- scripts/tdq_checkportable.py
 - antigravity_portable/scripts/canvas_a4_rebuild.py
 - scripts/canvas_a4_rebuild.py
 - _common.py
@@ -68,13 +68,13 @@
 - log
 - antigravity_portable/scripts/tdq_team.py
 - scripts/tdq_team.py
-- render_state_md
+- effective_phase
 - antigravity_portable/scripts/plugin_tiers.py
 - _log
 - scripts/plugin_tiers.py
 - _log
 - _fail
-- hooks/scripts/agy_stop_gate.py
+- main
 - _fail
 - turn_snapshot
 - main
@@ -99,8 +99,8 @@
 - dod_tick_state
 - quet
 - dod_tick_state
-- TDQ Workflow — portable bundle for Antigravity CLI (agy)
-- find_shadow_states
+- TDQ Workflow — plugin bundle for Antigravity CLI (agy)
+- build_portable.py
 - find_shadow_states
 - Task
 - Lưới hồi quy: đo độ tuân thủ luật TDQ
@@ -114,6 +114,11 @@
 - _file_changed_since_approval
 - iter_events
 - seed/README.md
+- _ghi_json
+- _sinh_hooks_agy
+- _sinh_settings
+- doc_frontmatter
+- tach_duong_dan_patch
 
 ## God Nodes (most connected - your core abstractions)
 1. `files` - 86 edges
@@ -122,35 +127,35 @@
 4. `Changelog` - 21 edges
 5. `lenh_soat()` - 20 edges
 6. `lenh_soat()` - 20 edges
-7. `Changelog — bản lưu trữ` - 18 edges
-8. `log()` - 17 edges
-9. `cmd_build()` - 17 edges
-10. `_git()` - 17 edges
+7. `load()` - 18 edges
+8. `Changelog — bản lưu trữ` - 18 edges
+9. `log()` - 17 edges
+10. `cmd_build()` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `main()` --calls--> `effective_phase()`  [INFERRED]
-  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 - `_continue()` --calls--> `log_enabled()`  [INFERRED]
-  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
+  hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 - `_continue()` --calls--> `now_iso()`  [INFERRED]
-  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
+  hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
+- `main()` --calls--> `load()`  [INFERRED]
+  hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 - `_sha()` --calls--> `sha256_file()`  [INFERRED]
-  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
+  hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 - `_current_snapshot()` --calls--> `today_log_rel()`  [INFERRED]
-  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
+  hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (99 total, 5 thin omitted)
+## Communities (104 total, 7 thin omitted)
 
 ### Community 0 - "files"
 Cohesion: 0.02
-Nodes (86): files, config/hooks.json, config/mcp_config.json, config/settings.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, README.md, scripts/canvas_a4_ch4_ch7.py (+78 more)
+Nodes (86): files, hooks.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, mcp_config.json, plugin.json, README.md, scripts/canvas_a4_ch4_ch7.py (+78 more)
 
-### Community 1 - "build_portable.py"
-Cohesion: 0.05
-Nodes (78): _bo_qua_file(), _bo_qua_thu_muc(), copy_loc(), dem_bien_trong_cay(), doc_frontmatter(), _doc_text(), doi_bien_plugin_root(), _ghi_json() (+70 more)
+### Community 1 - "scripts/tdq_checkportable.py"
+Cohesion: 0.12
+Nodes (32): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _doc(), doc_manifest(), duong_config_codex(), ghi_de_co_backup() (+24 more)
 
 ### Community 2 - "antigravity_portable/scripts/canvas_a4_rebuild.py"
 Cohesion: 0.06
@@ -214,7 +219,7 @@ Nodes (36): ban_do_skill_md(), _chu(), dem_qua_venv(), do_mo_ta(), do_theo_phase
 
 ### Community 17 - "antigravity_portable/scripts/tdq_checkportable.py"
 Cohesion: 0.10
-Nodes (35): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _doc(), doc_manifest(), duong_config_codex(), ghi_de_co_backup() (+27 more)
+Nodes (37): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _doc(), doc_manifest(), duong_config_codex(), ghi_de_co_backup() (+29 more)
 
 ### Community 18 - "antigravity_portable/scripts/tdq_worktree_registry.py"
 Cohesion: 0.12
@@ -225,8 +230,8 @@ Cohesion: 0.12
 Nodes (30): doc(), _doc_de_ghi(), dong_dong(), dong_mo(), duong_md(), duong_so(), _ghi(), ghi_md() (+22 more)
 
 ### Community 20 - "antigravity_portable/scripts/tdq_state.py"
-Cohesion: 0.09
-Nodes (28): _atomic_write(), lane_label(), mode_label(), parse_slug(), plugin_root_cmd(), prompt_context_last(), prompt_context_path(), prompt_context_save() (+20 more)
+Cohesion: 0.07
+Nodes (35): _atomic_write(), find_shadow_states(), lane_label(), mode_label(), parse_slug(), _parse_value(), plugin_root_cmd(), prompt_context_last() (+27 more)
 
 ### Community 21 - "lenh_soat"
 Cohesion: 0.11
@@ -241,12 +246,12 @@ Cohesion: 0.08
 Nodes (29): _atomic_write(), lane_label(), mode_label(), parse_slug(), _parse_value(), plugin_root_cmd(), prompt_context_last(), prompt_context_path() (+21 more)
 
 ### Community 24 - "main"
-Cohesion: 0.13
-Nodes (27): _current_snapshot(), _cwd_of(), _log_changed(), main(), The path to quote — a path new since the baseline wins over one already known., _read_json(), _repo_changed(), _sha() (+19 more)
+Cohesion: 0.14
+Nodes (25): _current_snapshot(), _cwd_of(), _log_changed(), main(), The path to quote — a path new since the baseline wins over one already known., _read_json(), _repo_changed(), _sha() (+17 more)
 
 ### Community 25 - "cli"
-Cohesion: 0.14
-Nodes (28): _continue(), Force the loop onward, and say on stderr which of the 3 cases matched (TDQ_LOG=0, cli(), _cli_approve(), _cli_implement_pause(), default_state(), _dong_so_request_cu(), _echo_state() (+20 more)
+Cohesion: 0.15
+Nodes (27): _continue(), Force the loop onward, and say on stderr which of the 3 cases matched (TDQ_LOG=0, cli(), _cli_approve(), _cli_implement_pause(), default_state(), _dong_so_request_cu(), _echo_state() (+19 more)
 
 ### Community 26 - "antigravity_portable/scripts/token_audit.py"
 Cohesion: 0.12
@@ -298,7 +303,7 @@ Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), 
 
 ### Community 38 - "Changelog"
 Cohesion: 0.09
-Nodes (21): 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18 (+13 more)
+Nodes (21): 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18, 0.27.0 — 2026-08-22, 0.28.0 — 2026-08-22 (+13 more)
 
 ### Community 39 - "antigravity_portable/scripts/skill_router.py"
 Cohesion: 0.17
@@ -356,7 +361,7 @@ Nodes (17): b_level(), build_parser(), _do_xung_dot(), _file_xung_dot(), _kich_t
 Cohesion: 0.15
 Nodes (17): b_level(), build_parser(), _do_xung_dot(), _file_xung_dot(), _kich_thuoc(), lenh_kiem_ke(), _log_enabled(), _loi() (+9 more)
 
-### Community 53 - "render_state_md"
+### Community 53 - "effective_phase"
 Cohesion: 0.17
 Nodes (17): Ported verbatim (pure) from `hooks/scripts/stop_gate.py::unfinished_reason`., unfinished_reason(), cong_dang_cho(), effective_lane(), effective_mode(), effective_phase(), next_headline(), phase_key() (+9 more)
 
@@ -380,9 +385,9 @@ Nodes (17): _bao_dam_tich_hop(), _co_nhanh(), _duong_worktree(), _la_repo(), len
 Cohesion: 0.12
 Nodes (16): _chan_spec_chua_duyet(), _chan_worktree_con_mo(), _fail(), normalize_doc_lang(), normalize_lane(), normalize_mode(), _parse_approve_args(), _pop_lang_flag() (+8 more)
 
-### Community 59 - "hooks/scripts/agy_stop_gate.py"
-Cohesion: 0.23
-Nodes (15): _continue(), _current_snapshot(), _cwd_of(), _log_changed(), main(), The path to quote — a path new since the baseline wins over one already known., Ported verbatim (pure) from `hooks/scripts/stop_gate.py::unfinished_reason`., Force the loop onward, and say on stderr which of the 3 cases matched (TDQ_LOG=0 (+7 more)
+### Community 59 - "main"
+Cohesion: 0.20
+Nodes (17): Paths differing from HEAD (status flags dropped, renames keep the target)., repo_status_paths(), _continue(), _current_snapshot(), _cwd_of(), _log_changed(), main(), The path to quote — a path new since the baseline wins over one already known. (+9 more)
 
 ### Community 60 - "_fail"
 Cohesion: 0.12
@@ -445,12 +450,12 @@ Cohesion: 0.18
 Nodes (11): chay_va_cham(), dau_nhiem(), dau_nhiem_phien(), _ghi_ban_ghi(), _noi_dung(), phan_tich(), The content of a tool_result may be a string or a list of text blocks., Normalise a stream-json transcript into what the scorer reads.      Returns: the (+3 more)
 
 ### Community 75 - "antigravity_portable/hooks/scripts/agy_pretooluse_gate.py"
-Cohesion: 0.33
-Nodes (9): _branch_names(), _clean(), _deny(), _first_command(), _log(), main(), The shell command text off the payload, or "" when no known shape carries one., One timestamped stderr line naming the matched case. Off with TDQ_LOG=0.      De (+1 more)
+Cohesion: 0.29
+Nodes (10): _branch_names(), _clean(), _deny(), _first_command(), _log(), main(), One timestamped stderr line naming the matched case. Off with TDQ_LOG=0.      De, Emit BOTH deny spellings in one payload.      `allow_tool: false` is the contrac (+2 more)
 
 ### Community 76 - "hooks/scripts/agy_pretooluse_gate.py"
-Cohesion: 0.33
-Nodes (9): _branch_names(), _clean(), _deny(), _first_command(), _log(), main(), The shell command text off the payload, or "" when no known shape carries one., One timestamped stderr line naming the matched case. Off with TDQ_LOG=0.      De (+1 more)
+Cohesion: 0.29
+Nodes (10): _branch_names(), _clean(), _deny(), _first_command(), _log(), main(), One timestamped stderr line naming the matched case. Off with TDQ_LOG=0.      De, Emit BOTH deny spellings in one payload.      `allow_tool: false` is the contrac (+2 more)
 
 ### Community 77 - "manifest.json"
 Cohesion: 0.22
@@ -480,13 +485,13 @@ Nodes (7): khoi_mau(), la_ky_hieu(), main(), quet(), True when ch is non-ASCII p
 Cohesion: 0.25
 Nodes (8): _dod_section(), dod_tick_state(), _plan_path(), Absolute path of the plan of the active request, or None when there is none., Every line under a DoD heading, up to the next `## ` heading.      Three details, Checkbox state of the plan's Definition of Done section. Never raises., How many task boxes of the current plan are not `[x]` yet. Never raises.      A, task_open_count()
 
-### Community 84 - "TDQ Workflow — portable bundle for Antigravity CLI (agy)"
+### Community 84 - "TDQ Workflow — plugin bundle for Antigravity CLI (agy)"
 Cohesion: 0.33
-Nodes (5): Install on a new machine — follow this exact order, Known limitation, Secret keys, TDQ Workflow — portable bundle for Antigravity CLI (agy), What this bundle cannot do for you
+Nodes (5): Install — this exact order, Secret keys, TDQ Workflow — plugin bundle for Antigravity CLI (agy), The hook `command` paths are absolute, and baked at build time, What this bundle cannot do for you
 
-### Community 85 - "find_shadow_states"
-Cohesion: 0.33
-Nodes (6): find_shadow_states(), State project root: TDQ_PROJECT_DIR > git root > a dir holding state > cwd., Misplaced state/mirror: state.json outside root, or an orphan STATE.md (S6)., resolve_project_dir(), state_md_path(), state_path()
+### Community 85 - "build_portable.py"
+Cohesion: 0.15
+Nodes (28): _bo_qua_file(), _bo_qua_thu_muc(), copy_loc(), dem_bien_trong_cay(), _doc_text(), doi_bien_plugin_root(), ghi_manifest(), log() (+20 more)
 
 ### Community 86 - "find_shadow_states"
 Cohesion: 0.33
@@ -520,25 +525,37 @@ Nodes (4): _file_changed_since_approval(), True when the spec/plan file changed 
 Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
+### Community 99 - "_ghi_json"
+Cohesion: 0.22
+Nodes (10): _ghi_json(), Write JSON byte-for-byte the way `tdq_checkportable._ghi_json_co_backup` writes, `.codex/hooks.json` — the same wire shape as `hooks/hooks.json`, other matchers, `plugin.json` at the plugin root — the one file that makes agy treat this direct, _sinh_hooks_codex(), _sinh_mcp(), _sinh_mcp_agy(), _sinh_plugin_json_agy() (+2 more)
+
+### Community 100 - "_sinh_hooks_agy"
+Cohesion: 0.50
+Nodes (4): goc_agy_tuyet_doi(), `GOC_AGY` with `~` expanded — agy needs an ABSOLUTE `command`.      A `~` inside, `hooks.json` at the plugin root — commands are absolute paths into the plugin's, _sinh_hooks_agy()
+
+### Community 101 - "_sinh_settings"
+Cohesion: 0.50
+Nodes (4): `hooks/hooks.json` + the repo `env` block → `.claude/settings.json` of the targe, _sinh_settings(), `hooks.json` (shipped with the bundle) → the `.claude/settings.json` of the targ, sinh_settings()
+
 ## Knowledge Gaps
-- **146 isolated node(s):** `Pipeline`, `Cách hook điều khiển agent`, `Duyệt bằng chat thường`, `Cách 1 — qua marketplace (khuyên dùng)`, `Cách 2 — chạy thẳng từ thư mục, không cài` (+141 more)
+- **146 isolated node(s):** `0.41.0 — 2026-09-03`, `0.40.0 — 2026-09-03`, `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01` (+141 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `files` connect `files` to `manifest.json`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `sha256_of()` connect `scripts/claude_export.py` to `build_portable.py`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Why does `iter_events()` connect `iter_events` to `antigravity_portable/scripts/step_audit.py`, `antigravity_portable/scripts/token_audit.py`, `antigravity_portable/scripts/tdq_timing.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `Pipeline`, `Cách hook điều khiển agent`, `Duyệt bằng chat thường` to the rest of the system?**
+- **Why does `main()` connect `main` to `main`, `cli`, `effective_phase`?**
+  _High betweenness centrality (0.001) - this node is a cross-community bridge._
+- **What connects `0.41.0 — 2026-09-03`, `0.40.0 — 2026-09-03`, `0.39.0 — 2026-09-03` to the rest of the system?**
   _146 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
   _Cohesion score 0.023255813953488372 - nodes in this community are weakly interconnected._
-- **Should `build_portable.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.05031645569620253 - nodes in this community are weakly interconnected._
+- **Should `scripts/tdq_checkportable.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.11742424242424243 - nodes in this community are weakly interconnected._
 - **Should `antigravity_portable/scripts/canvas_a4_rebuild.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06013986013986014 - nodes in this community are weakly interconnected._

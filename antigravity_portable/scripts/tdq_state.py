@@ -1154,7 +1154,7 @@ _SCRIPT_PATH = re.compile(r"python3 scripts/(\S+\.py)")
 
 def plugin_root_cmd(cmd):
     """A40: the command form for docs running in the plugin context (conventions §1)."""
-    return _SCRIPT_PATH.sub(r'python3 "~/.gemini/antigravity-cli/tdq/scripts/\1"', cmd)
+    return _SCRIPT_PATH.sub(r'python3 "~/.gemini/config/plugins/tdq-workflow/scripts/\1"', cmd)
 
 
 def render_phases_md(plugin_root=False):

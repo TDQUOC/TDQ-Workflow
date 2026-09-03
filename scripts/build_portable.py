@@ -16,9 +16,10 @@ Three targets, one source (`skills/`, `hooks/`, `agents/`, `scripts/`):
                         `.agents/skills/`, `.codex/config.toml` (MCP), `.codex/hooks.json`
                         + `hooks/`. Plus `AGENTS.md` + `workflow/NN-*.md` as the fallback
                         for any OTHER harness that can only read markdown.
-    antigravity_portable/ — for Antigravity CLI (agy), installed user-level under `$HOME`:
-                        skills + `config/hooks.json` (a REAL `PreToolUse` deny and a `Stop`
-                        `continue`), `config/settings.json` (permissions), `config/mcp_config.json`.
+    antigravity_portable/ — for Antigravity CLI (agy): a plugin directory copied to
+                        `~/.gemini/config/plugins/tdq-workflow/` — `plugin.json`, `skills/`,
+                        `hooks.json` (a REAL `PreToolUse` deny and a `Stop` `continue`),
+                        `mcp_config.json`.
 
 All three carry a `manifest.json` (file+sha256, version, minimum python, external commands, MCP)
 so `tdq_checkportable.py` on the target machine can check and patch itself.
@@ -465,6 +466,36 @@ To check that it took: run `check` again and read the trusted status line.
    you.
 4. **Restart** — new instructions are only loaded after the session restarts.
 
+## Trust hook — separate from trusting the folder, and it is pinned to CONTENT
+
+Hooks carry their own trust gate, and it is not the project-trust gate above. On a live
+`codex-cli 0.149.0-alpha.4.3` (checked 2026-09-03) every entry under `[hooks.state...]` in
+`~/.codex/config.toml` carries a `trusted_hash = "sha256:..."` field. That hash is taken over
+the hook's CONTENT, which has two consequences:
+
+1. A hook only runs after you approve it once — run `/hooks` inside Codex and approve. Until
+   then it is silent, and silence looks exactly like a hook that works and has nothing to say.
+2. **Rebuilding this bundle revokes that trust.** Any edit to a hook script changes its
+   content, so the stored hash no longer matches and the hook goes back to untrusted. After
+   every rebuild of this bundle, open `/hooks` and approve again.
+
+Hooks are enabled by default on 0.149 — there is no `[features] hooks = true` to set, and
+adding one is not what makes them run. Approval is.
+
+## Environment variables — `env_vars` only names them, it never sets them
+
+`[mcp_servers.*]` in `.codex/config.toml` uses `env_vars`, an array of variable NAMES that
+Codex whitelists FROM YOUR SHELL. TOML does no interpolation, so nothing in this bundle can
+give those variables a value. Export them yourself before starting Codex:
+
+```
+export TAVILY_API_KEY=<your key>
+```
+
+Put that line in your shell profile if you want it to survive a new terminal. A variable that
+is not exported means the MCP server starts without it and its calls fail at runtime, not at
+startup — so check `/mcp` if a search tool goes quiet.
+
 ## Why step 3 runs the file directly instead of saying "run the tdq-checkportable skill"
 
 The skill lives inside this very bundle, and Codex only scans `.agents/skills/` after the
@@ -732,108 +763,90 @@ def sinh_ban_codex(repo, dest, version=""):
 
 TEN_BAN_AGY = "antigravity_portable"
 
-# agy's own global config paths are NOT settled across sources as of 2026-08 (see
-# docs/tdq/research/2026-08-27-1112-antigravity-portable-skill.md) — several candidates exist
-# for skill/hook/permissions/MCP config, and none is confirmed as THE one agy reads on every
-# install. Rather than guess wrong, this bundle picks ONE fixed canonical path for its own
-# CORE (scripts/, hooks/scripts/) under $HOME, and every generated config's `command`/path
-# field points at that fixed core — the README then tells the user to copy the config FILES
-# themselves into every candidate path below, and self-check with agy's own `/skills`, `/mcp`,
-# `/permissions` commands to see which one actually took.
-GOC_AGY = "~/.gemini/antigravity-cli/tdq"
+# 2026-09-03: the older "spray the config into 6 guessed paths" design is gone. It was written
+# when no source pinned agy's real layout; a READ-ONLY survey of a live `agy 1.1.11` install
+# settled the question — none of those 6 candidate paths existed on disk. The real layout is a
+# plain plugin directory:
+#     ~/.gemini/config/plugins/<name>/{plugin.json, skills/, hooks.json, mcp_config.json}
+# switched on by the key `plugins.<name>.enabled` in ~/.gemini/config/config.json, with extra
+# skill roots registered as `entries[].path` in ~/.gemini/config/skills.json. So this bundle IS
+# that plugin directory: the install is one copy plus two small config keys.
+TEN_PLUGIN_AGY = "tdq-workflow"
+GOC_AGY = f"~/.gemini/config/plugins/{TEN_PLUGIN_AGY}"
 
-AGY_SKILL_PATHS = (
-    "~/.gemini/antigravity-cli/skills",
-    "~/.gemini/antigravity/skills",
-    "~/.gemini/skills",
-)
-AGY_HOOKS_CONFIG_PATHS = (
-    "~/.gemini/config/hooks.json",
-    "~/.gemini/antigravity-cli/hooks.json",
-)
-AGY_SETTINGS_PATHS = (
-    "~/.gemini/antigravity-cli/settings.json",
-)
-AGY_MCP_PATHS = (
-    "~/.gemini/config/mcp_config.json",
-    "~/.gemini/antigravity-cli/mcp_config.json",
-)
+# The two user-owned config files the install has to touch. Neither is ever written by this
+# script nor shipped in the bundle — the README names the one key to add, because both files
+# hold unrelated user settings an overwrite would destroy.
+AGY_CONFIG_JSON = "~/.gemini/config/config.json"
+AGY_SKILLS_JSON = "~/.gemini/config/skills.json"
 
 HOOK_AGY = (
     ("PreToolUse", "agy_pretooluse_gate.py"),
     ("Stop", "agy_stop_gate.py"),
 )
 
-# The 4 name prefixes the branch/worktree naming rule bans — ported from `bash_gate.py`'s BAN /
-# `agy_pretooluse_gate.py`'s BAN, kept here as the single source the settings.json generator reads.
-AGY_BAN_PREFIXES = ("claude", "antigravity", "gemini", "codex")
+# The bundle used to ship a `settings.json` mirroring the branch-name ban into agy's permissions
+# engine. Dropped 2026-09-03: the real `~/.gemini/antigravity-cli/settings.json` holds the user's
+# `model`/`colorScheme`/`trustedWorkspaces` and has no `permissions` block at all, so the copy
+# step destroyed user settings while adding no guard. The hook is the guard.
 
-README_AGY = """# TDQ Workflow — portable bundle for Antigravity CLI (agy)
+README_AGY = """# TDQ Workflow — plugin bundle for Antigravity CLI (agy)
 
-agy's exact global config path is NOT settled across sources as of 2026-08 — this bundle does
-not guess one. It installs its own core (skills, hook scripts) at ONE fixed path under your
-home folder, and ships 3 config files whose content you copy into EVERY known candidate
-location. Self-check with agy's own commands tells you which one actually took.
+This directory IS an agy plugin: `plugin.json` at the root, `skills/` beside it, plus
+`hooks.json` and `mcp_config.json`. The layout was read off a live `agy 1.1.11` install on
+2026-09-03. Installing is one copy plus two config keys.
 
-## Install on a new machine — follow this exact order
+## Install — this exact order
 
-1. **Copy the core.** Copy `skills/`, `hooks/`, `scripts/` from this bundle so the whole tree
-   sits at exactly:
+1. **Copy this whole directory** to the plugin root, keeping the directory name:
    ```
    {goc_agy}/
    ```
-   (create the folders if they do not exist yet). Every generated config file's command/path
-   below points at this exact location — moving the core elsewhere breaks all 3 config files.
 
-2. **Copy the skill files** into EVERY candidate skill root agy might scan on your version:
-{skill_paths}
-   (copy the whole content of `skills/` into each — harmless if a path does not exist on your
-   install, just skip it).
+2. **Enable the plugin** in `{config_json}` — add the key, keep everything else that file
+   already holds:
+   ```json
+   {{ "plugins": {{ "{ten_plugin}": {{ "enabled": true }} }} }}
+   ```
 
-3. **Copy `config/hooks.json`** into EVERY candidate hook-config location:
-{hooks_paths}
+3. **Register the skill root** in `{skills_json}`, appending to the existing `entries` array:
+   ```json
+   {{ "entries": [ {{ "path": "{goc_agy}/skills" }} ] }}
+   ```
 
-4. **Copy `config/settings.json`** (the Fine-Grained Permissions Engine, a SECOND and coarser
-   defensive layer — the hooks above are the real hard `deny`) into:
-{settings_paths}
+4. **Set the environment variables** the MCP servers need. This bundle only ever records
+   variable NAMES, never a key value — export `TAVILY_API_KEY` (and the backup server's
+   variable) yourself before using MCP.
 
-5. **Copy `config/mcp_config.json`** into BOTH known locations:
-{mcp_paths}
+5. **Restart agy**, then self-check with agy's own commands:
+   - `agy plugin list` — is `{ten_plugin}` listed and enabled?
+   - `/skills` — do the `{danh_sach_ten}` skills show up?
+   - `/mcp` — are `tavily-primary`/`tavily-backup` listed as configured servers?
 
-6. **Set the environment variables** the MCP servers need. This bundle never writes a key
-   value, only the variable NAMES — set `TAVILY_API_KEY` (and the backup server's variable)
-   yourself before using MCP.
+6. **Smoke-test the hard deny.** Ask agy to run one of the banned cases (e.g.
+   `git checkout -b antigravity-test`, or writing straight to `docs/tdq/state.json` through the
+   shell) and confirm it is refused. Not refused → the hook did not load; re-check steps 1–2.
 
-7. **Restart agy**, then self-check with agy's own commands:
-   - `/skills` — do the `{danh_sach_ten}` skills show up? Not there at one path → try another
-     candidate from step 2 that you have not copied to yet.
-   - `/mcp` — do `tavily-primary`/`tavily-backup` show up as configured servers?
-   - `/permissions` — does the permissions list include the `deny` entries from
-     `config/settings.json`?
+## The hook `command` paths are absolute, and baked at build time
 
-8. **Smoke-test the hard deny manually.** Ask agy to run a command matching one of the 2
-   banned cases (e.g. `git checkout -b antigravity-test`, or writing straight to
-   `docs/tdq/state.json` through the shell) and confirm it is actually refused. If it is NOT
-   refused, the hook did not load — check step 3/2 again, or try another candidate path.
+agy requires an ABSOLUTE `command`; a `~` inside quotes is not expanded and the hook dies with
+exit 127. `hooks.json` therefore carries a real expanded path — the home folder of the machine
+that BUILT the bundle. Copying a prebuilt bundle to another user's machine leaves those paths
+pointing at the wrong home. Rebuild it locally instead — run the repo's `build_portable.py`
+from a clone of TDQ-Workflow, then copy the freshly built directory over.
+`python3 scripts/tdq_checkportable.py check --root <this directory>` prints a NOTE when the
+baked home does not match the current one.
 
 ## What this bundle cannot do for you
 
-1. **Know which candidate path your agy version reads** — no source available as of 2026-08
-   confirms one canonical global path per config type; step 7's self-check is the only way to
-   find out on YOUR machine.
-2. **Restart** — step 7. Skip it and the copied files just sit there, unloaded.
-3. **Set the MCP environment variables** — step 6.
+1. **Restart agy** — step 5. Skip it and the files just sit there, unloaded.
+2. **Set the MCP environment variables** — step 4.
+3. **Guarantee the layout on a different agy version.** It was verified against `agy 1.1.11`
+   only; step 5's self-check is how you find out on YOUR machine.
 
 ## Secret keys
 
-`config/mcp_config.json` only records the NAMES of environment variables, never a key value.
-
-## Known limitation
-
-This bundle has not been exercised against a real agy install — see the risk table in the
-originating spec. The layered design (hard-deny hook + coarser permissions-engine `deny`) is
-meant to degrade safely if one layer does not load on your version: report back which
-candidate paths actually worked so this bundle can drop the ones that never do.
+`mcp_config.json` records only the NAMES of environment variables, never a key value.
 """
 
 
@@ -866,38 +879,48 @@ def _sua_duong_dan_tuong_doi_agy(goc):
     return so_lan
 
 
-def _sinh_hooks_agy(duong):
-    """`config/hooks.json` — commands point at the ONE fixed canonical core path (`GOC_AGY`).
+def goc_agy_tuyet_doi():
+    """`GOC_AGY` with `~` expanded — agy needs an ABSOLUTE `command`.
 
-    agy's exact hooks.json schema is not confirmed by public docs as of 2026-08; this reuses
-    the same wire shape as `hooks/hooks.json` / `_sinh_hooks_codex` — the best-precedented guess.
+    A `~` inside the double quotes of a `command` string is NOT expanded by the shell, so the
+    old form died with exit 127 (source N5). Expansion happens at BUILD time, which means a
+    bundle built on one machine carries that machine's `$HOME`: rebuild locally
+    (`python3 scripts/build_portable.py`) rather than copying a prebuilt bundle between users.
+    `tdq_checkportable.py check` prints a NOTE when the baked home is not the current one.
+    """
+    return os.path.expanduser(GOC_AGY)
+
+
+def _sinh_hooks_agy(duong):
+    """`hooks.json` at the plugin root — commands are absolute paths into the plugin's own tree.
+
+    Wire shape follows the agent-hooks contract documented for agy (source N5, 2026-09-03):
+    an event map whose entries carry `hooks[].type = "command"`.
     """
     su_kien = {}
+    goc = goc_agy_tuyet_doi()
     for ten_event, ten_file in HOOK_AGY:
         su_kien.setdefault(ten_event, []).append({"hooks": [{
             "type": "command",
-            "command": f'python3 "{GOC_AGY}/hooks/scripts/{ten_file}"',
+            "command": f"python3 {goc}/hooks/scripts/{ten_file}",
         }]})
     _ghi_json(duong, {
         "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited "
-                        "by hand. Copy this file to EVERY candidate hook-config path — see "
-                        "README.md.",
+                        "by hand. Lives at the plugin root; agy reads it once the plugin is "
+                        "enabled in ~/.gemini/config/config.json — see README.md.",
         "hooks": su_kien,
     })
 
 
-def _sinh_settings_agy(duong):
-    """`config/settings.json` — permissions engine layer 2, coarser than the hook on purpose:
-    the hook is the real hard deny; this is a second net in case the hook does not load."""
-    tu_choi = ["write_file(*state.json)", "write_file(*STATE.md)"]
-    for ten in AGY_BAN_PREFIXES:
-        tu_choi += [
-            f"command(git checkout -b {ten}*)",
-            f"command(git branch {ten}*)",
-            f"command(git switch -c {ten}*)",
-            f"command(git worktree add*{ten}*)",
-        ]
-    _ghi_json(duong, {"permissions": {"deny": tu_choi, "ask": ["*"]}})
+def _sinh_plugin_json_agy(duong, version):
+    """`plugin.json` at the plugin root — the one file that makes agy treat this directory as a
+    plugin. A live `agy 1.1.11` install ships plugins whose manifest is as small as
+    `{"name": "firebase"}`, so only `name` is load-bearing; the rest is for humans."""
+    _ghi_json(duong, {
+        "name": TEN_PLUGIN_AGY,
+        "version": version or "0",
+        "description": "Spec-driven TDQ workflow: intake → spec → plan → build → QC → report.",
+    })
 
 
 def _sinh_mcp_agy(duong):
@@ -915,7 +938,7 @@ def sinh_ban_antigravity(repo, dest, version=""):
     goc = os.path.join(dest, TEN_BAN_AGY)
     if os.path.isdir(goc):
         shutil.rmtree(goc)
-    os.makedirs(os.path.join(goc, "config"), exist_ok=True)
+    os.makedirs(goc, exist_ok=True)
 
     # No `CLAUDE_*` variable exists outside Claude Code, and the install path is fixed and
     # absolute rather than relative to a project cwd — every `${CLAUDE_PLUGIN_ROOT}` becomes
@@ -942,17 +965,16 @@ def sinh_ban_antigravity(repo, dest, version=""):
         shutil.copy2(src, dst)
         os.chmod(dst, 0o755)
 
-    _sinh_hooks_agy(os.path.join(goc, "config", "hooks.json"))
-    _sinh_settings_agy(os.path.join(goc, "config", "settings.json"))
-    _sinh_mcp_agy(os.path.join(goc, "config", "mcp_config.json"))
+    _sinh_plugin_json_agy(os.path.join(goc, "plugin.json"), version)
+    _sinh_hooks_agy(os.path.join(goc, "hooks.json"))
+    _sinh_mcp_agy(os.path.join(goc, "mcp_config.json"))
 
     with open(os.path.join(goc, "README.md"), "w", encoding="utf-8") as f:
         f.write(README_AGY.format(
             goc_agy=GOC_AGY,
-            skill_paths="\n".join(f"   - `{p}/`" for p in AGY_SKILL_PATHS),
-            hooks_paths="\n".join(f"   - `{p}`" for p in AGY_HOOKS_CONFIG_PATHS),
-            settings_paths="\n".join(f"   - `{p}`" for p in AGY_SETTINGS_PATHS),
-            mcp_paths="\n".join(f"   - `{p}`" for p in AGY_MCP_PATHS),
+            ten_plugin=TEN_PLUGIN_AGY,
+            config_json=AGY_CONFIG_JSON,
+            skills_json=AGY_SKILLS_JSON,
             danh_sach_ten=", ".join(dong_danh_sach),
         ))
 

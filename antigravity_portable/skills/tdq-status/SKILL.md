@@ -12,11 +12,11 @@ the original is `skills/tdq-conventions/SKILL.md`), ≤ 10 lines. Read-only: wri
 
 1. Run both commands (merged into ONE Bash call with `&&`):
    ```
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" next --brief
-   python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" get
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" next --brief
+   python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" get
    ```
    A request is open → also run
-   `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_timing.py" status` (same Bash call) for the
+   `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_timing.py" status` (same Bash call) for the
    clock line: how long the current phase has run and how long the whole request took.
    That command only reads, it writes no state.
    Always use `next --brief` (121 characters) — drop `--brief` (1.350 characters) only when

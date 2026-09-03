@@ -336,6 +336,42 @@ def bat_trusted(goc_bundle, moi_truong=None):
     return True, duong, ""
 
 
+# ------------------------------------------------------- agy plugin layout
+
+def kiem_layout_agy(goc, manifest):
+    """Notes specific to the agy bundle → list of strings (never raises, never blocks).
+
+    Recognised by `plugin.json` sitting at the bundle ROOT — that is the file that makes agy
+    treat a directory as a plugin, and it exists in no other bundle. Two things are worth
+    saying that the manifest hash check cannot say by itself:
+
+    1. `config/settings.json` must be gone. Older bundles shipped one and told the user to
+       copy it over `~/.gemini/antigravity-cli/settings.json`, which destroyed their own
+       `model`/`colorScheme`/`trustedWorkspaces` while adding no guard.
+    2. `hooks.json` carries an ABSOLUTE `command`, expanded at BUILD time. A bundle built
+       under a different `$HOME` points its hooks at a path that does not exist here, and agy
+       fails such a hook silently — which is indistinguishable from a hook with nothing to say.
+    """
+    if not os.path.isfile(os.path.join(goc, "plugin.json")):
+        return []
+    ghi_chu = []
+    if os.path.isfile(os.path.join(goc, "config", "settings.json")):
+        ghi_chu.append("stale config/settings.json — an old bundle; rebuild it, do NOT copy that "
+                       "file over your own ~/.gemini/antigravity-cli/settings.json")
+    duong_hooks = os.path.join(goc, "hooks.json")
+    noi_dung = _doc(duong_hooks)
+    if noi_dung is None:
+        ghi_chu.append("hooks.json is missing from the plugin root — the hooks will never load")
+        return ghi_chu
+    nha = os.path.expanduser("~")
+    if "~" in noi_dung:
+        ghi_chu.append("hooks.json still holds an unexpanded `~` — agy needs an absolute command")
+    elif nha not in noi_dung:
+        ghi_chu.append(f"hooks.json was built under another home folder (not {nha}) — rebuild "
+                       "with `python3 scripts/build_portable.py` before installing")
+    return ghi_chu
+
+
 # ---------------------------------------------------------------------- CLI
 
 def _in_ket_qua(goc, manifest):
@@ -351,6 +387,8 @@ def _in_ket_qua(goc, manifest):
         print(f"NOTE     {dong}")
     for dong in bien_moi_truong_mcp(manifest):
         print(f"NOTE     variable {dong}")
+    for dong in kiem_layout_agy(goc, manifest):
+        print(f"NOTE     {dong}")
     # Only the codex bundle has a `.codex/` layer, and only that layer depends on the trust state.
     if ".codex/config.toml" in manifest.get("files", {}):
         if da_trusted(goc):

@@ -54,12 +54,12 @@ machine real memory the whole session for a layer used a fraction of the time. S
 1. A query of the **vague-concept** kind comes in, or one you cannot place in any row of the §2
    table. Those two cases are the trigger — a relationship question or an exact known token
    never wakes lumen.
-2. `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py danh-thuc` — wake the daemon, waiting up to the timeout.
+2. `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py danh-thuc` — wake the daemon, waiting up to the timeout.
 3. Run the lumen query, and the LSP query too when the kind was unclear, then merge before
    reading. lumen's `semantic_search` auto-reindexes the project incrementally (Merkle root-hash
    diff, only changed files re-embedded) whenever its index is stale — no separate reindex step
    or script is needed to keep data fresh.
-4. `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py nha` — release the model IMMEDIATELY, in the same turn.
+4. `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/tdq_lsp.py nha` — release the model IMMEDIATELY, in the same turn.
 
 Rules around those four steps:
 
