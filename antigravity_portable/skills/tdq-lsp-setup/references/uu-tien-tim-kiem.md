@@ -6,59 +6,65 @@ here, and the five hook points keep matching because they only ever point.
 
 ## 1. The order, settled
 
-**agent-lsp and lumen run TOGETHER — call both in parallel for every code-symbol search, merge
-the two result sets before reading. grep is the last layer.**
+**There is no single winning layer. Pick the first layer from the KIND of question you are
+asking — relationship questions go to agent-lsp, an exact known name goes to grep, a vague
+concept goes to lumen. Only when the kind is unclear do you call all of them at once and merge.**
 
 The canonical sentence, quoted verbatim at every hook point:
 
-> Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC gọi song song cả
-> `mcp__lsp__*` và lumen, gộp kết quả hai lớp trước khi đọc; grep là lớp cuối. Luật gốc:
+> Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
+> hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
+> lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
 > `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
 
-This is a soft rule, not a blocking hook. Reaching for grep on a code symbol without trying LSP
-first is a QC defect, not a turn the machine refuses. Two exemptions, both narrow:
+This is a soft rule, not a blocking hook. Picking the wrong first layer for the kind of question
+is a QC defect, not a turn the machine refuses. Two exemptions, both narrow:
 
 - The target is text, not a symbol — a message string, a config key, a comment, a filename.
 - The ladder's rungs 1–4 are not satisfied, so there is no LSP to try. Say so in one line, then
   fall through to grep.
 
-## 2. Why that order, and what lumen still adds
+## 2. The table — kind of question → which layer first, with the numbers
 
-| Question | agent-lsp | lumen |
-|---|---|---|
-| where is this symbol defined | exact, from the compiler's own index | approximate, by embedding distance |
-| who calls this function | exact — `find_references`, call hierarchy | cannot answer |
-| what type is this expression | exact — hover, type hierarchy | cannot answer |
-| rename safely across the repo | exact — the server computes the edits | cannot answer |
-| errors in this file right now | exact — `get_diagnostics` | cannot answer |
-| "the part that handles retry logic" | weak — needs a name to match on | strong — this is what it is for |
-| a language with no server installed | nothing | still works, it only needs text |
-| cost when idle | a binary on disk | an Ollama model resident in RAM |
+Every number below is measured, on this repo, in report
+`docs/tdq/report/2026-09-03-0017-them-pyrightconfig-do-lai.md`. Nothing here is an estimate.
 
-Reading of the table: agent-lsp gives the exact answer for every question with a right answer,
-and lumen keeps exactly one job — a conceptual query with no symbol name to hang it on. That job
-is real, which is why lumen is now called alongside agent-lsp on every code-symbol search instead
-of waiting for LSP to come back empty first: merging both result sets up front means neither the
-exact-match question nor the no-name-to-match-on question gets missed.
+| Kind of question | Example | First layer | The measurement behind it |
+|---|---|---|---|
+| relationship — who calls this, blast radius, safe rename | "who calls `tdq_state.load`" | **agent-lsp** | file coverage **15/15**, zero false positives; grep hits the same 15 but drags in 6 more files it should not — precision 67 % |
+| exact name you already know the token of | "where is `bac6_hook_xung_dot` defined" | **grep** | grep answers in ~0.1 s against LSP's 3–6 s, and both reach 6/6 locations; LSP wins nothing here but time lost |
+| vague concept, no name to hang it on | "the spot that stamps the approval time" | **lumen** | LSP ranks the real target **13/62** — it is a NAME index, it does not understand concepts |
+| type, diagnostics, implementations | "what type does this return" | **agent-lsp** | lumen cannot answer these at all |
+| the kind is unclear | anything you cannot place in a row above | **call in parallel, merge** | cheaper to pay two queries than to pick wrong and re-search |
+
+Two things the table does NOT say. It does not say grep is a fallback — for an exact known token
+grep is the *right* first layer, not a concession. And it does not say LSP is optional: the 15/15
+vs 67 % gap only appeared once the repo had a real `pyrightconfig.json`. An LSP with no import-root
+config silently answers relationship questions with **7 %** coverage while every rung still reports
+ĐẠT, which is why rung 7 exists.
+
+Standing exceptions: a language with no server installed → lumen and grep only. lumen unhealthy →
+agent-lsp then grep.
 
 ## 3. Ollama's lifecycle — on demand, released right after
 
 lumen needs Ollama up and the embedding model loaded. Keeping that model resident costs the
 machine real memory the whole session for a layer used a fraction of the time. So:
 
-1. A code-symbol search query comes in — the trigger, every time now (no longer gated on LSP
-   coming back empty).
+1. A query of the **vague-concept** kind comes in, or one you cannot place in any row of the §2
+   table. Those two cases are the trigger — a relationship question or an exact known token
+   never wakes lumen.
 2. `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py danh-thuc` — wake the daemon, waiting up to the timeout.
-3. Run the LSP query and the lumen query, then merge the two result sets before reading.
-   lumen's `semantic_search` auto-reindexes the project incrementally (Merkle root-hash diff,
-   only changed files re-embedded) whenever its index is stale — no separate reindex step or
-   script is needed to keep data fresh.
+3. Run the lumen query, and the LSP query too when the kind was unclear, then merge before
+   reading. lumen's `semantic_search` auto-reindexes the project incrementally (Merkle root-hash
+   diff, only changed files re-embedded) whenever its index is stale — no separate reindex step
+   or script is needed to keep data fresh.
 4. `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py nha` — release the model IMMEDIATELY, in the same turn.
 
 Rules around those four steps:
 
-- Wake on demand only, on every code-symbol search now that lumen runs alongside LSP instead of
-  after it. Never at session start, never "in case we need it later" beyond that trigger.
+- Wake on demand only, on the two triggers in step 1. Never at session start, never "in case we
+  need it later", and never for a question the §2 table already routes to another layer.
 - The timeout not being met is not a failure of the turn: say so in one line and fall to grep.
 - `nha` stops the daemon only when this script started it. A daemon the user started is left
   running — the workflow only ever turns off what it turned on.

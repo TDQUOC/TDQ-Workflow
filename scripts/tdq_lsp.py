@@ -95,6 +95,59 @@ LANG_SERVER = {
     "json": ("JSON", "vscode-json-language-server", "npm i -g vscode-langservers-extracted"),
 }
 
+# language key → (root-marker files, group). The marker is what the language server walks up the
+# tree to find; without it the server takes the open file's directory as the whole project and
+# every cross-file answer comes back nearly empty.
+#
+# Group "B" — the config is OPTIONAL, so a missing marker fails SILENTLY: the project runs, the
+# tests stay green, and only relationship queries quietly collapse. That is the trap this repo
+# walked into (7 % file coverage while all six older rungs reported ĐẠT), so B blocks.
+# Group "A" — the marker is a build manifest. Without it the project does not build at all, so
+# the gap announces itself long before this rung; A only warns.
+LANG_CONFIG = {
+    "typescript": (["tsconfig.json", "jsconfig.json", "package.json"], "B"),
+    "javascript": (["jsconfig.json", "tsconfig.json", "package.json"], "B"),
+    "python": (["pyrightconfig.json", "pyproject.toml", "setup.py", "setup.cfg"], "B"),
+    "lua": ([".luarc.json", ".luarc.jsonc"], "B"),
+    "c": (["compile_commands.json", "compile_flags.txt"], "B"),
+    "cpp": (["compile_commands.json", "compile_flags.txt"], "B"),
+    "go": (["go.mod"], "A"),
+    "rust": (["Cargo.toml"], "A"),
+    "java": (["pom.xml", "build.gradle", "build.gradle.kts"], "A"),
+    "ruby": (["Gemfile", "*.gemspec"], "A"),
+    "php": (["composer.json"], "A"),
+    "csharp": (["*.csproj", "*.sln"], "A"),
+    "kotlin": (["build.gradle", "build.gradle.kts", "pom.xml"], "A"),
+    "swift": (["Package.swift"], "A"),
+    "zig": (["build.zig"], "A"),
+    "scala": (["build.sbt", "build.sc"], "A"),
+    "gleam": (["gleam.toml"], "A"),
+    "elixir": (["mix.exs"], "A"),
+    "dart": (["pubspec.yaml"], "A"),
+    "clojure": (["deps.edn", "project.clj"], "A"),
+    "nix": (["flake.nix", "default.nix"], "A"),
+    "terraform": (["main.tf", ".terraform.lock.hcl"], "A"),
+    "prisma": (["schema.prisma", "package.json"], "A"),
+    "sql": ([".sqls.yml", "config.yml"], "A"),
+    # Markup and data formats have no import graph, so there is no root to configure and nothing
+    # for this rung to check. An empty marker list means "not applicable", never "missing".
+    "css": ([], "A"),
+    "html": ([], "A"),
+    "yaml": ([], "A"),
+    "json": ([], "A"),
+}
+
+# Content the rung offers to create when a group-B marker is missing. It only ever PRINTS this and
+# asks — writing the file is the user's call, per the one hard rule of the skill.
+GOI_Y_CAU_HINH = {
+    "python": 'pyrightconfig.json: {"include": ["<thư mục mã>"], "extraPaths": ["<gốc import>"]}',
+    "typescript": 'tsconfig.json: {"compilerOptions": {"baseUrl": "."}, "include": ["<thư mục mã>"]}',
+    "javascript": 'jsconfig.json: {"compilerOptions": {"baseUrl": "."}, "include": ["<thư mục mã>"]}',
+    "lua": '.luarc.json: {"workspace": {"library": ["<thư mục thư viện>"]}}',
+    "c": "compile_commands.json — sinh bằng `bear -- make` hoặc `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`",
+    "cpp": "compile_commands.json — sinh bằng `bear -- make` hoặc `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`",
+}
+
 # A language showing up in only one or two files is noise, not a stack worth a server.
 NGUONG_FILE = 3
 
@@ -307,11 +360,60 @@ def bac6_hook_xung_dot(project):
                chi_canh_bao=True)
 
 
+def bac7_cau_hinh_goc_import(project):
+    """Rung 7 — the import-root config each language of THIS project needs.
+
+    Rungs 1–6 all check that something EXISTS. None of them notices a language server that starts
+    fine and then answers every cross-file question from a one-file scope, which is what happens
+    when the root marker is missing. That gap is invisible: the project runs and the tests pass.
+    Group B blocks because there the config is optional and the failure is silent; group A only
+    warns because a missing build manifest breaks the build and reports itself.
+    """
+    ten_bac = "cấu hình gốc import theo ngôn ngữ"
+    ngon_ngu = do_ngon_ngu(project)
+    if not ngon_ngu:
+        return Bac(7, ten_bac, True, "không ngôn ngữ nào vượt ngưỡng file")
+    co_san = set(os.listdir(project)) if os.path.isdir(project) else set()
+
+    def co_moc(moc):
+        for m in moc:
+            if m.startswith("*."):
+                if any(f.endswith(m[1:]) for f in co_san):
+                    return True
+            elif m in co_san:
+                return True
+        return False
+
+    thieu_b, thieu_a = [], []
+    for khoa in ngon_ngu:
+        cau_hinh = LANG_CONFIG.get(khoa)
+        if not cau_hinh:
+            continue
+        moc, nhom = cau_hinh
+        if not moc or co_moc(moc):
+            continue
+        ten = LANG_SERVER[khoa][0]
+        (thieu_b if nhom == "B" else thieu_a).append((khoa, ten, moc))
+    if not thieu_b and not thieu_a:
+        return Bac(7, ten_bac, True, f"{len(ngon_ngu)} ngôn ngữ đều có file mốc ở gốc dự án")
+
+    # Chi tiết luôn liệt kê CẢ hai nhóm — thiếu nhóm A vẫn phải hiện dù nhóm B cũng thiếu.
+    # Mức nghiêm trọng thì do nhóm B quyết định: có B là CHẶN, chỉ có A là cảnh báo.
+    chi_tiet = "; ".join(f"{ten} thiếu {' hoặc '.join(moc)}" for _, ten, moc in thieu_b + thieu_a)
+    if thieu_b:
+        goi_y = " | ".join(GOI_Y_CAU_HINH[k] for k, _, _ in thieu_b if k in GOI_Y_CAU_HINH)
+        return Bac(7, ten_bac, False, chi_tiet,
+                   f"XIN PHÉP user rồi tạo tay — {goi_y}", chi_canh_bao=False)
+    return Bac(7, ten_bac, False, chi_tiet,
+               "dự án thiếu manifest build nên gần như chắc chắn đã hỏng sẵn — báo user, không tự tạo",
+               chi_canh_bao=True)
+
+
 def chay_kiem(project):
     """Run the whole ladder and return the list of rungs, in order."""
     _log(f"kiem · project={project}")
     bac = [bac1_binary(), bac2_mcp(), bac3_language_server(project), bac4_quyen_tool(),
-           bac5_lumen(), bac6_hook_xung_dot(project)]
+           bac5_lumen(), bac6_hook_xung_dot(project), bac7_cau_hinh_goc_import(project)]
     for b in bac:
         _log(f"bậc {b.so} {b.ten} → {'ĐẠT' if b.dat else 'THIẾU'}")
     return bac

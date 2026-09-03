@@ -1,6 +1,6 @@
 ---
 name: tdq-lsp-setup
-description: Check and set up agent-lsp so the workflow searches code by meaning, not by text. Six rungs - binary, lsp MCP server, language servers, tool permissions, lumen health, conflicting plugin hooks. Use when opening a request, when an LSP tool fails, or on a new machine.
+description: Check and set up agent-lsp so the workflow searches code by meaning, not by text. Seven rungs - binary, lsp MCP server, language servers, tool permissions, lumen, hook conflicts, import-root config. Use when opening a request, when an LSP tool fails, or on a new machine.
 ---
 
 # TDQ LSP Setup — agent-lsp as the workflow's search layer
@@ -24,7 +24,7 @@ Starting or stopping a process already installed on the machine is not installin
 
 ## The ladder — `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem`
 
-Six rungs, printed one line each, a missing rung printing the command that fixes it.
+Seven rungs, printed one line each, a missing rung printing the command that fixes it.
 
 | Rung | What it checks | When it is missing |
 |---|---|---|
@@ -34,9 +34,20 @@ Six rungs, printed one line each, a missing rung printing the command that fixes
 | 4 | `mcp__lsp__*` sits in the allow list of `~/.claude/settings.json` | add the entry, otherwise every call prompts |
 | 5 | lumen's health — ollama installed, model pulled, daemon reachable | warning only; lumen is the fallback, not the main layer |
 | 6 | an outside plugin hook pushing a different search order | report the path, ASK the user, never edit it yourself |
+| 7 | the import-root config file each language of THIS project needs | print the file content it wants and ASK; the script never writes it |
 
 Rungs 1–4 are actionable, so a gap there makes the exit code 3. Rungs 5–6 only warn and never
 change the exit code: search still works through agent-lsp and grep without either of them.
+
+Rung 7 splits by language, because the same gap has two different meanings:
+
+- **Blocking** for Python, TypeScript/JavaScript, Lua and C/C++. Here the config is optional, so
+  the project runs and the tests stay green while the cross-file index is dead. This repo carried
+  exactly that: six rungs ĐẠT, relationship queries covering 7 % of files. Exit code 3.
+- **Warning only** where the root marker is a build manifest (`go.mod`, `Cargo.toml`, `pom.xml`…).
+  Missing it means the project does not build, so it announces itself.
+
+Which marker belongs to which language lives in `~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py`, not here — run the command.
 
 Rung 3 sniffs the languages from the files actually in the project, ignoring `.git`,
 `node_modules`, `.venv`, `portable_*` and friends. A language under 3 files is treated as noise.
@@ -45,26 +56,21 @@ YAML and JSON are config formats in nearly every repo, so they never trigger a r
 ## Rung 6 — a conflicting plugin hook
 
 Some plugins register a `PreToolUse` hook on `Grep`/`Bash` that tells the agent to search their
-way first. That competes with the order this workflow settled on. The rung names the plugin and
-the file. What happens next is the USER's call:
-
-1. Report: which plugin, which file, which matcher.
-2. Ask for permission to remove just that `PreToolUse` block, keeping `SessionStart`.
-3. Only then edit it, after backing the file up next to it.
-
-A plugin update reinstalls the hook, and the cache path carries the version number, so expect to
-see this rung come back. That is the point of checking it every time rather than fixing it once.
+way first, competing with the order this workflow settled on. The rung names the plugin and file;
+what happens next is the USER's call: report which plugin, file and matcher · ask for permission
+to remove just that `PreToolUse` block, keeping `SessionStart` · only then edit, after backing the
+file up next to it. A plugin update reinstalls the hook under a new version path, so expect this
+rung to come back — that is why it is checked every run rather than fixed once.
 
 ## Ollama, on demand only
 
-`python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py danh-thuc` wakes the daemon; `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py nha`
-releases the embedding model right after the search. Never leave a model resident — that is the
-machine cost the user objected to. Full lifecycle:
-[references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
+`python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py danh-thuc` wakes the daemon; `nha` releases the embedding model right
+after the search. Never leave a model resident — that is the machine cost the user objected to.
+Full lifecycle: [references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
 
-`nha` kills the daemon only when this script started it, tracked by a marker file. A daemon the
-user started stays up. On macOS the Ollama desktop app supervises the server and restarts it.
-On such a machine the daemon is effectively always up, so only the model release matters.
+`nha` kills the daemon only when this script started it, tracked by a marker file; a daemon the
+user started stays up. On macOS the Ollama desktop app supervises and restarts the server, so the
+daemon is effectively always up there and only the model release matters.
 
 ## Runbook — setting a machine up, and re-configuring it later
 
@@ -108,9 +114,7 @@ next to itself with the version in the name, drop only `PreToolUse`, keep `Sessi
 returns with the next plugin update, and hooks load at session start, so the nudging line keeps
 appearing until the session restarts.
 
-**Acceptance:** `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem` prints six rungs ĐẠT and exits 0.
-
-Done when: `kiem` prints six rungs with no actionable gap, and one `mcp__lsp__*` call returns the
-right file and line for a real function in the repo.
-Next step: go back to the phase that called this skill and search with LSP first, per
+Done when: `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem` prints seven rungs with no actionable gap and exits 0,
+and the effect check of `tdq-intake` step 1b passes — existence alone proves nothing.
+Next step: go back to the phase that called this skill and route the search by question kind, per
 [references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).

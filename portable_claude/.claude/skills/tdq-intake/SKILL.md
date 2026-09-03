@@ -39,20 +39,22 @@ first, then come back to step 1 below.
    `YYYY-MM-DD-HHMM-<kebab, ≤5 words, no accents>`. The brief is the ONLY file of the intake +
    analyze phases, with exactly 3 sections: `## Nguyên văn` (the user's words verbatim <!-- i18n-allow: canonical name in the default language -->
    plus your first reading: goal, guessed scope, unclear spots), `## Hiểu & kiến thức`, <!-- i18n-allow: canonical name in the default language -->
-   `## Hỏi đáp`. Write only the first section here; Part B fills the other two. Line 2 of <!-- i18n-allow: canonical name in the default language -->
-   the brief — right under the title — copies this line verbatim (spec/plan/qc/report
-   carry it too):
+   `## Hỏi đáp`. Write only the first section here; Part B fills the other two. Line 2 — right <!-- i18n-allow: canonical name in the default language -->
+   under the title — copies this verbatim (spec/plan/qc/report carry it too):
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
 
-1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py kiem` — six rungs, agent-lsp
-   through conflicting plugin hooks. A rung is missing → print the exact command it gave you,
-   **ASK the user for permission, and only run it once they say yes.** Never install unasked, and
-   never edit another plugin's file. Rungs 5–6 only warn, so a gap there never holds the request
-   up. Details: [tdq-lsp-setup](../tdq-lsp-setup/SKILL.md). The search order that follows from it
-   is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC gọi song song cả
-   `mcp__lsp__*` và lumen, gộp kết quả hai lớp trước khi đọc; grep là lớp cuối. Luật gốc:
+1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py kiem` — seven rungs, agent-lsp
+   through import-root config. A rung is missing → print the exact command it gave you, **ASK the
+   user for permission, and only run it once they say yes.** Never install unasked, never edit
+   another plugin's file. Rungs 5–6 only warn. Details:
+   [tdq-lsp-setup](../tdq-lsp-setup/SKILL.md). Then prove the index actually answers: the effect
+   check in [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md), once, here —
+   skipping it when the ladder passed is a QC defect, because every rung checks only that
+   something EXISTS. The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
+   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
+   lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
    `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
 
 2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
@@ -62,7 +64,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    the recommendation always at A. The question line is NUMBERED `1.` per rule 8 of
    [user-facing-block.md](../tdq-conventions/references/user-facing-block.md).
    Shape: `1. Bạn muốn chạy pipeline nào?` then `- A (đề xuất): chế độ nhanh (express) — <lý do>` on the next line `- B: chế độ chuyên sâu (deep) — <lý do>`. <!-- i18n-allow: option sample in the default language -->
-   Follow the full template (including the block explaining what the 2 pipelines mean) in
+   Full template, including the block explaining the 2 pipelines:
    [references/lane-decision.md](references/lane-decision.md).
    **STOP and wait for the user's answer.** Never pick the lane yourself.
 
@@ -95,9 +97,8 @@ and one line of reasoning goes into the brief.
 
 Done when: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`) and all 3 gate <!-- i18n-allow: canonical name in the default language -->
 questions can be answered.
-The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving <!-- i18n-allow: canonical name in the default language -->
-the spec approves the route. Say in that section which feature flows the request is built
-from — one line per flow.
+The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving the <!-- i18n-allow: canonical name in the default language -->
+spec approves the route. Name the feature flows the request is built from, one line per flow.
 
 Next step: `python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" set phase=spec`
 then on to [tdq-spec](../tdq-spec/SKILL.md) — same turn if the interview is finished; if
@@ -112,9 +113,8 @@ execution steps — from analysis to asking about the commit — live in
 is banned.** That same file also holds how deep the analysis goes (B1 always, B0 and B2 on
 thresholds), the mini-plan template, the tick rule, the QC rule and the fix round.
 
-Step 1 sets `phase=analyze`, which shows the express analysis as its own row
-(`quick_analyze`) in the phase table. That phase has **NO approval gate** — express keeps
-exactly one gate, the express approval at step 6.
+Step 1 sets `phase=analyze`, showing the express analysis as its own row (`quick_analyze`) in the
+phase table. That phase has **NO approval gate** — express keeps one gate, the approval at step 6.
 
 Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
 Next step: ask the user about the commit; the request is over → `... set phase=idle`.

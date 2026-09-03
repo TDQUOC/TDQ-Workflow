@@ -1,7 +1,7 @@
-# Graph Report - TDQWorkflow  (2026-09-01)
+# Graph Report - TDQWorkflow  (2026-09-02)
 
 ## Corpus Check
-- 97 files · ~147,073 words
+- 97 files · ~146,957 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5dc5b132`
+- Built from commit: `f068b148`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -53,9 +53,9 @@
 - antigravity_portable/scripts/check_canvas_layout.py
 - scripts/check_canvas_layout.py
 - _bash
+- Changelog
 - antigravity_portable/scripts/skill_router.py
 - antigravity_portable/scripts/step_audit.py
-- Changelog
 - scripts/skill_router.py
 - scripts/step_audit.py
 - tdq_eval.py
@@ -296,17 +296,17 @@ Nodes (21): bbox(), boxes_overlap(), center(), check_chapters(), check_contain()
 Cohesion: 0.10
 Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), kiem_L149(), kiem_L218() (+15 more)
 
-### Community 38 - "antigravity_portable/scripts/skill_router.py"
+### Community 38 - "Changelog"
+Cohesion: 0.09
+Nodes (21): 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18 (+13 more)
+
+### Community 39 - "antigravity_portable/scripts/skill_router.py"
 Cohesion: 0.17
 Nodes (16): bo_dau(), doc_kho(), dung_kho(), ghi_kho(), KhoBM25, lenh_dung_kho(), lenh_tra(), _log() (+8 more)
 
-### Community 39 - "antigravity_portable/scripts/step_audit.py"
+### Community 40 - "antigravity_portable/scripts/step_audit.py"
 Cohesion: 0.15
 Nodes (20): _blocks(), _log(), _log_enabled(), main(), median(), merge(), _now(), percentile() (+12 more)
-
-### Community 40 - "Changelog"
-Cohesion: 0.09
-Nodes (21): 0.17.0 — 2026-08-14, 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17 (+13 more)
 
 ### Community 41 - "scripts/skill_router.py"
 Cohesion: 0.17
@@ -521,7 +521,7 @@ Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **141 isolated node(s):** `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01`, `0.35.0 — 2026-08-27`, `0.34.0 — 2026-08-26`, `0.33.0 — 2026-08-24` (+136 more)
+- **141 isolated node(s):** `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01`, `0.35.0 — 2026-08-27`, `0.34.0 — 2026-08-26` (+136 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -530,11 +530,11 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `files` connect `files` to `manifest.json`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `_warn()` connect `cli` to `main`, `render_state_md`, `antigravity_portable/scripts/tdq_state.py`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `plugin_version()` connect `scripts/claude_export.py` to `build_portable.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01`, `0.35.0 — 2026-08-27` to the rest of the system?**
+- **Why does `sha256_of()` connect `scripts/claude_export.py` to `build_portable.py`?**
+  _High betweenness centrality (0.001) - this node is a cross-community bridge._
+- **What connects `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01` to the rest of the system?**
   _141 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
   _Cohesion score 0.023809523809523808 - nodes in this community are weakly interconnected._

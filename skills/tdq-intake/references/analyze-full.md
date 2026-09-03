@@ -17,8 +17,9 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
    config, tests. Write down the versions and frameworks in use.
 
    **LSP and lumen together.** <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → BẮT BUỘC gọi song song cả
-   `mcp__lsp__*` và lumen, gộp kết quả hai lớp trước khi đọc; grep là lớp cuối. Luật gốc:
+   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
+   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
+   lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
    `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
    In practice: `mcp__lsp__find_symbol` to locate it, `mcp__lsp__find_references` for who calls
    it, `mcp__lsp__go_to_definition` for where it comes from, and lumen's `semantic_search`

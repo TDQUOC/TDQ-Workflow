@@ -1,6 +1,6 @@
 {
   "name": "tdq-workflow",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "description": "Spec-driven workflow cho Claude Code: intake → spec → plan → build (implement/QC/report). Duyệt bằng chat tự nhiên, hook nhắc bằng mã [TDQ:*] và kiểm bằng hiệu ứng thật, chế độ nhanh (express) / chuyên sâu (deep), working log bắt buộc, có bản portable cho agent ngoài Claude Code.",
   "author": {
     "name": "TDQ"

@@ -2,6 +2,28 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.39.0 — 2026-09-03
+
+Thang `tdq_lsp.py kiem` thêm **bậc 7** và luật thứ tự tìm kiếm đổi từ một thứ tự cứng sang chọn
+lớp theo LOẠI truy vấn. Lý do: thang cũ báo **6/6 ĐẠT** trong cả trạng thái độ phủ truy vấn quan
+hệ 7 % lẫn 100 % — nó kiểm sự tồn tại, không kiểm hiệu quả. Báo cáo:
+`docs/tdq/report/2026-09-03-0053-sua-luat-va-kiem-lsp-that.md`.
+
+- **`scripts/tdq_lsp.py`** — bảng `LANG_CONFIG` (file mốc gốc import cho 26 ngôn ngữ, chia nhóm
+  A/B) và bậc 7 `bac7_cau_hinh_goc_import`. Nhóm B (Python, TS/JS, Lua, C/C++) thiếu file mốc thì
+  **CHẶN, thoát 3** vì chỉ mục liên file chết âm thầm mà test vẫn xanh; nhóm A (`go.mod`,
+  `Cargo.toml`…) chỉ cảnh báo vì thiếu là dự án không build được, tự lộ. Script chỉ in nội dung
+  cần tạo và xin phép, không bao giờ tự ghi file.
+- **`skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`** — luật gốc thay bằng bảng 4 loại truy
+  vấn kèm số đo: quan hệ → `mcp__lsp__*` (phủ 15/15, grep chỉ precision 67 %); tên chính xác →
+  grep (~0,1 s so với 3–6 s); khái niệm mơ hồ → lumen (LSP xếp đích hạng 13/62); chưa phân loại
+  → gọi song song. Câu luật chép lại nguyên văn ở đủ 5 chỗ móc.
+- **`skills/tdq-intake/references/kiem-lsp-hieu-ung.md`** (mới) — bước kiểm **bằng hiệu ứng** ở
+  intake: so `find_references` với grep theo số file phân biệt, ĐẠT khi LSP ≥ grep. Bậc 7 bắt
+  nguyên nhân đã biết, bước này bắt triệu chứng dù nguyên nhân là gì.
+- **`pyrightconfig.json`** (mới) — chính file mốc mà repo này đang thiếu, đưa độ phủ truy vấn
+  quan hệ từ 1/15 file lên 15/15.
+
 ## 0.38.0 — 2026-09-02
 
 Năm luật rời `~/.claude/CLAUDE.md` về plugin, instruction toàn cục cắt 57 → **29 dòng (−49%)**.
@@ -457,31 +479,4 @@ và bị đóng khung là "tiết kiệm context" — tầng thấp nhất của
   sửa lỗi suy đường dẫn: tên project có gạch dưới cũng đổi thành `-`.
 - Test: 596 → 608 (`tests/test_step_budget.py` mới, 12 test).
 
-## 0.18.0 — 2026-08-14
-
-Set "soul" cho bộ workflow: chất lượng code agent > runtime > context cost. Ba tầng ưu
-tiên này thành luật gốc, mọi khuôn tài liệu khai nó ra, và luật cũ được rà lại theo nó.
-Kèm theo là thư viện rule ngôn ngữ để model yếu cũng viết code sạch, cùng năm cơ chế
-chặn nợ kiến trúc do quick-fix.
-
-- `skills/tdq-conventions/references/soul.md` (mới): ba tầng ưu tiên kèm luật phân xử khi
-  hai tầng đụng nhau. Skill nền và bản portable trỏ về đây, mỗi file đúng một dòng.
-- Rà 28 file luật theo soul, biên bản ở `docs/tdq/knowledge/2026-08-14-ra-soat-luat-theo-soul.md`.
-  Hai chỗ SỬA: khoá cứng phạm vi QC trong `qc.md`, và ngưỡng context trong `context-budget.md`.
-- `skills/tdq-build/references/rules/` (mới, 10 file): chỉ mục + 7 file ngôn ngữ, mỗi file
-  cùng một khuôn (Intentionality, mùi code, công cụ lint, nguồn chính thức có URL thật).
-- `scripts/code_rule_scan.py` (mới): quét file đã đổi theo bảng rule, ba trạng thái PASS /
-  LỖI / CHƯA KIỂM ĐƯỢC — thiếu công cụ lint thì báo đúng trạng thái, không PASS khống.
-  Log stderr có timestamp, tắt bằng `--im`, chi tiết bằng `--chi-tiet`. Không tự cài gói.
-- Cổng clean code ở phase spec: việc chạm mã nguồn thì hỏi user BẬT/TẮT, đáp án ghi vào
-  spec §4. TẮT vẫn tổ chức code theo rule ngôn ngữ, chỉ bỏ bước scan cuối request.
-- Năm cơ chế chống nợ kiến trúc: M1 hồ sơ `docs/kien-truc.md` sinh một lần mỗi project ·
-  M2 khối "Ràng buộc kiến trúc phải giữ" trong spec §5 · M3 luật "Tìm rồi mới tạo" ở bước
-  code · M4 dòng `Chạm:` trong plan lấy từ `graphify affected` · M5 ba hạng mục QC cố định
-  QC-F1→F3, đồng bộ nguyên văn giữa bản skill và bản portable.
-- Năm khuôn tài liệu (brief, spec, plan, qc, report) đều có dòng Soul.
-- Test: 574 → 596 (306 subtest). Nghiệm thu thật bằng agent Haiku đọc rule soát file mẫu
-  5 lỗi cố ý — nêu đúng 5/5, không hỏi lại câu nào.
-
-
-Bản 0.17.0 trở về trước: [docs/CHANGELOG-archive.md](docs/CHANGELOG-archive.md).
+Bản 0.18.0 trở về trước: [docs/CHANGELOG-archive.md](docs/CHANGELOG-archive.md).

@@ -46,12 +46,28 @@ class LuatUuTienTimKiem(unittest.TestCase):
     def setUp(self):
         self.cau = cau_goc()
 
-    def test_cau_goc_du_ba_lop(self):
-        """Câu chuẩn phải nêu đủ 3 lớp theo đúng thứ tự: LSP → lumen → grep."""
-        for manh in ("mcp__lsp__", "lumen", "grep"):
-            self.assertIn(manh, self.cau, f"câu luật gốc thiếu lớp {manh}")
-        self.assertLess(self.cau.index("mcp__lsp__"), self.cau.index("lumen"))
-        self.assertLess(self.cau.index("lumen"), self.cau.index("grep"))
+    def test_cau_goc_du_ba_lop_moi_lop_gan_mot_loai_truy_van(self):
+        """Luật mới KHÔNG còn một thứ tự tuyến tính duy nhất, nên không khoá thứ tự chữ nữa.
+
+        Cái phải khoá là ánh xạ: đủ 3 lớp, và mỗi lớp đứng cạnh loại truy vấn của nó. Số đo ở
+        `docs/tdq/report/2026-09-03-0017-them-pyrightconfig-do-lai.md`: quan hệ thì LSP phủ 15/15
+        còn grep chỉ đúng 67 %; tên chính xác thì grep nhanh gấp bội mà vẫn đủ; khái niệm mơ hồ
+        thì LSP xếp đích hạng 13/62.
+        """
+        for lop in ("mcp__lsp__", "lumen", "grep"):
+            self.assertIn(lop, self.cau, f"câu luật gốc thiếu lớp {lop}")
+        for loai in ("quan hệ", "tên chính xác", "khái niệm mơ hồ"):
+            self.assertIn(loai, self.cau, f"câu luật gốc thiếu loại truy vấn {loai}")
+        # mỗi lớp phải nằm trong 60 ký tự quanh loại truy vấn nó phục vụ
+        for loai, lop in (("quan hệ", "mcp__lsp__"), ("tên chính xác", "grep"),
+                          ("khái niệm mơ hồ", "lumen")):
+            i = self.cau.index(loai)
+            self.assertIn(lop, self.cau[i:i + 60],
+                          f"loại truy vấn '{loai}' không gắn với lớp {lop}")
+
+    def test_cau_goc_khong_con_bat_buoc_goi_song_song(self):
+        """Ràng buộc cũ 'BẮT BUỘC gọi song song ở mọi truy vấn ký hiệu' đã bị bãi bỏ."""
+        self.assertNotIn("BẮT BUỘC gọi song song", self.cau)
 
     def test_nam_cho_moc_deu_co_cau_luat(self):
         """Xoá câu luật ở bất kỳ file móc nào → test này ĐỎ."""

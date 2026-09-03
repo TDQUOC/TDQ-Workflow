@@ -297,6 +297,68 @@ class VongDoiOllama(BaseLsp):
         run.assert_not_called()
 
 
+class Bac7CauHinhGocImport(BaseLsp):
+    """Bậc 7 — cấu hình gốc import, bậc duy nhất bắt được lỗi 'chỉ mục chết mà thang vẫn ĐẠT'."""
+
+    def du_file(self, duoi, so_luong):
+        for i in range(so_luong):
+            with open(os.path.join(self.tmp.name, f"f{i}{duoi}"), "w", encoding="utf-8") as fh:
+                fh.write("x")
+
+    def test_bang_cau_hinh_phu_dung_bo_khoa_cua_lang_server(self):
+        """Thiếu một ngôn ngữ trong LANG_CONFIG là bậc 7 im lặng bỏ qua ngôn ngữ đó."""
+        self.assertEqual(set(tdq_lsp.LANG_CONFIG), set(tdq_lsp.LANG_SERVER))
+
+    def test_nhom_b_thieu_cau_hinh_thi_CHAN(self):
+        """Python không pyrightconfig.json: dự án vẫn chạy, test vẫn xanh, chỉ mục liên file chết."""
+        self.du_file(".py", 5)
+        b = tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        self.assertFalse(b.dat)
+        self.assertFalse(b.chi_canh_bao, "nhóm B phải chặn, không được chỉ cảnh báo")
+        self.assertIn("pyrightconfig.json", b.lenh_cai)
+
+    def test_nhom_a_thieu_cau_hinh_thi_chi_canh_bao(self):
+        """Go không go.mod thì dự án đã không build được — tự lộ, không cần chặn thêm."""
+        self.du_file(".go", 5)
+        b = tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        self.assertFalse(b.dat)
+        self.assertTrue(b.chi_canh_bao, "nhóm A chỉ được cảnh báo")
+
+    def test_thieu_ca_hai_nhom_thi_chi_tiet_liet_ke_ca_hai(self):
+        """Lỗi QC bắt được: `thieu_b or thieu_a` che mất nhóm A khi nhóm B cũng thiếu.
+
+        Người đọc chỉ thấy Python thiếu `pyrightconfig.json`, không biết Go cũng thiếu `go.mod`,
+        nên sửa xong một cái vẫn tưởng đã xong. Mức nghiêm trọng vẫn do nhóm B quyết định.
+        """
+        self.du_file(".py", 5)
+        self.du_file(".go", 5)
+        b = tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        self.assertFalse(b.dat)
+        self.assertFalse(b.chi_canh_bao, "có nhóm B thiếu thì phải CHẶN")
+        self.assertIn("pyright", b.chi_tiet)
+        self.assertIn("go.mod", b.chi_tiet, "nhóm A bị che khi nhóm B cũng thiếu")
+
+    def test_co_cau_hinh_thi_dat(self):
+        self.du_file(".py", 5)
+        with open(os.path.join(self.tmp.name, "pyrightconfig.json"), "w", encoding="utf-8") as fh:
+            fh.write("{}")
+        self.assertTrue(tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name).dat)
+
+    def test_khong_bao_gio_tu_ghi_file_cau_hinh(self):
+        """Luật cứng của skill: script chỉ chẩn đoán và xin phép, không tự tạo file."""
+        self.du_file(".py", 5)
+        truoc = sorted(os.listdir(self.tmp.name))
+        tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        self.assertEqual(sorted(os.listdir(self.tmp.name)), truoc)
+
+    def test_bac7_nam_trong_thang(self):
+        self.du_file(".py", 5)
+        with open(os.path.join(self.tmp.name, "pyrightconfig.json"), "w", encoding="utf-8") as fh:
+            fh.write("{}")
+        so = [b.so for b in tdq_lsp.chay_kiem(self.tmp.name)]
+        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7])
+
+
 class LoiHuaKhongTuCai(BaseLsp):
     def test_khong_co_lenh_cai_dat_nao_duoc_chay(self):
         """Lệnh cài chỉ được nằm trong CHUỖI để in ra, không bao giờ trong lời gọi tiến trình con."""

@@ -3,6 +3,32 @@
 Các bản 0.17.0 trở về trước, tách khỏi `CHANGELOG.md`
 để file chính nằm dưới trần R6 500 dòng. Mới nhất trên cùng.
 
+## 0.18.0 — 2026-08-14
+
+Set "soul" cho bộ workflow: chất lượng code agent > runtime > context cost. Ba tầng ưu
+tiên này thành luật gốc, mọi khuôn tài liệu khai nó ra, và luật cũ được rà lại theo nó.
+Kèm theo là thư viện rule ngôn ngữ để model yếu cũng viết code sạch, cùng năm cơ chế
+chặn nợ kiến trúc do quick-fix.
+
+- `skills/tdq-conventions/references/soul.md` (mới): ba tầng ưu tiên kèm luật phân xử khi
+  hai tầng đụng nhau. Skill nền và bản portable trỏ về đây, mỗi file đúng một dòng.
+- Rà 28 file luật theo soul, biên bản ở `docs/tdq/knowledge/2026-08-14-ra-soat-luat-theo-soul.md`.
+  Hai chỗ SỬA: khoá cứng phạm vi QC trong `qc.md`, và ngưỡng context trong `context-budget.md`.
+- `skills/tdq-build/references/rules/` (mới, 10 file): chỉ mục + 7 file ngôn ngữ, mỗi file
+  cùng một khuôn (Intentionality, mùi code, công cụ lint, nguồn chính thức có URL thật).
+- `scripts/code_rule_scan.py` (mới): quét file đã đổi theo bảng rule, ba trạng thái PASS /
+  LỖI / CHƯA KIỂM ĐƯỢC — thiếu công cụ lint thì báo đúng trạng thái, không PASS khống.
+  Log stderr có timestamp, tắt bằng `--im`, chi tiết bằng `--chi-tiet`. Không tự cài gói.
+- Cổng clean code ở phase spec: việc chạm mã nguồn thì hỏi user BẬT/TẮT, đáp án ghi vào
+  spec §4. TẮT vẫn tổ chức code theo rule ngôn ngữ, chỉ bỏ bước scan cuối request.
+- Năm cơ chế chống nợ kiến trúc: M1 hồ sơ `docs/kien-truc.md` sinh một lần mỗi project ·
+  M2 khối "Ràng buộc kiến trúc phải giữ" trong spec §5 · M3 luật "Tìm rồi mới tạo" ở bước
+  code · M4 dòng `Chạm:` trong plan lấy từ `graphify affected` · M5 ba hạng mục QC cố định
+  QC-F1→F3, đồng bộ nguyên văn giữa bản skill và bản portable.
+- Năm khuôn tài liệu (brief, spec, plan, qc, report) đều có dòng Soul.
+- Test: 574 → 596 (306 subtest). Nghiệm thu thật bằng agent Haiku đọc rule soát file mẫu
+  5 lỗi cố ý — nêu đúng 5/5, không hỏi lại câu nào.
+
 ## 0.17.0 — 2026-08-14
 
 Trang trí khối chat cuối trả lời user: dùng markdown mà cả ba mặt (terminal, app,
