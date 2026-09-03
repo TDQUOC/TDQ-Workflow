@@ -9,7 +9,7 @@
     "hooks/scripts/agy_pretooluse_gate.py": "026cdffc83f47b4d1901c88587be31a3d9269f94163297d2a1e822daa2c50021",
     "hooks/scripts/agy_stop_gate.py": "87466169ee8676d1c56cbccb000860956c7645fdfef0fa353b57a17fc0a116b5",
     "mcp_config.json": "3da0ec37d1a9e735d2eca9f5f707f101549a6fa064cd960155940c11172b6257",
-    "plugin.json": "041cabfc203bb9c7271e67933e5d07d5b52ad7fb0ea248054291b6a6e04f1235",
+    "plugin.json": "2f5a3b047126d295bf8c019c7a97010a68ec11bf65070c99110e60c1f4db486d",
     "scripts/canvas_a4_ch4_ch7.py": "d1106fc85f4ca9db045de9d77891550162da6f4e24c06ec2c7264dbf07de55ec",
     "scripts/canvas_a4_rebuild.py": "c5294428dc237cfdd37480c698724c10389a74310b4fa83c9734fe21cd3f3fb4",
     "scripts/canvas_draw.py": "de060025c41b729630d9fd4cc95eb8f1f1f5fae0431f6599fd64c197a4239f77",
@@ -25,7 +25,7 @@
     "scripts/plugin_tiers.py": "be3acfd13cdaca6edc5af39ad216e71c263bfd7f17aaf64689522afa39807162",
     "scripts/samples/transcript-step-audit.jsonl": "9f3435d72d62601ff272ea391a67dbf1eb0198c023489c4c937c18ae54950e87",
     "scripts/scan_block_symbols.py": "029b8afea75d8c8dcd7bae209c2a0cc7817203a3e0f9abcd5fc821fced132580",
-    "scripts/skill_inventory.py": "8769d64bd041ff60b9063cb7c3286b397968ee7dda8e9381c4e1431899fb776a",
+    "scripts/skill_inventory.py": "09abf83b4f0820503ef7d8a60a6c1b453890bdb228095fa0e2106d7e9651aabd",
     "scripts/skill_router.py": "62b823be11d0eb3e56bbc64fd770c913dcb4ae7faf79e428ee22eb984783bdbe",
     "scripts/skill_tokens.py": "99370516a75183e393bc9727d4214356b0a183170df6e599965429402470d7ce",
     "scripts/step_audit.py": "f2c74c4afb49628f241a91f5cc466d6f5d43ae938eb2e1b1910a2ea04fbb13c2",
@@ -64,7 +64,7 @@
     "skills/tdq-conventions/references/context-budget.md": "818b9cf2040f4c2d951a4820a5788133eaa2e949b3f828af902f8434c329f857",
     "skills/tdq-conventions/references/measure-scenario.md": "1dfb04b201689e8fc0ecbbfc9386553e2c4699cb531cc0ea0cd33e17b0a8de64",
     "skills/tdq-conventions/references/phases.md": "7a88ef91ca6bf3b2de624effecde74340ae4313723b1738149e3ce1b3d5b051d",
-    "skills/tdq-conventions/references/plugin-routing.md": "1966e217517085cc036a02d39e55aa96f1483eb4e334f770348722f221817bb5",
+    "skills/tdq-conventions/references/plugin-routing.md": "e8c60e2726f25823ebaa49cb59d36bbca9d69e383afc2a18209e4c51d7148e0a",
     "skills/tdq-conventions/references/reminder-codes.md": "646938051846515b82b43a648c9218a3265d9c905c0bf6925ce715324a28da50",
     "skills/tdq-conventions/references/soul.md": "ec9292fe436a4a41ad7b325ff1ff69253ea8cbaabce6c91e512e62765076d7ef",
     "skills/tdq-conventions/references/subagent-tuning.md": "8244cc8fd60522b31621a6840273636da61b56c563995ae81496a1aff73b52f0",
@@ -96,5 +96,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.43.0"
+  "version": "0.44.0"
 }

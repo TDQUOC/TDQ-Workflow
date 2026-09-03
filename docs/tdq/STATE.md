@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-03T18:43:02+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-09-03T23:30:11+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-03-1733-sua-loi-da-nen-tang |
+| Request | 2026-09-03-1949-uiux-pro-max-routing |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-09-03-1733-sua-loi-da-nen-tang.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-03-1733-sua-loi-da-nen-tang.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-09-03-1949-uiux-pro-max-routing.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-09-03-1949-uiux-pro-max-routing.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |

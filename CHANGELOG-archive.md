@@ -3,6 +3,93 @@
 Các bản phát hành cũ, cắt ra khỏi `CHANGELOG.md` để file chính không vượt trần 500
 dòng của `doc_lint` rule R6. Mới nhất trên cùng, y như file chính.
 
+## 0.24.0 — 2026-08-17
+
+`portable_codex/` thôi làm markdown đọc tay, chuyển sang dùng đúng ba lớp native của Codex
+CLI. Giả định trong 0.23.0 — "Codex không có hệ thống skill/hook" — đã sai với bản hiện tại:
+thăm dò bằng `codex exec` thật (`codex-cli 0.147.0-alpha.6.5`) cho thấy Codex tự quét
+`.agents/skills/`, đọc `.codex/config.toml` cho MCP và `.codex/hooks.json` cho hook.
+
+- `build_portable.py` sinh thêm cho bản codex: `.agents/skills/` (8 skill), `.codex/config.toml`
+  (`[mcp_servers.*]`, khai bằng `env_vars` vì Codex KHÔNG nở `${VAR}` trong TOML), và
+  `.codex/hooks.json` (4 event / 5 hook, lệnh dùng đường dẫn tương đối vì hook chạy với
+  cwd = gốc project). `hooks/` và `scripts/` nằm cạnh nhau ở gốc bundle theo ràng buộc của
+  `_common.py`. `workflow/NN-*.md` giữ nguyên làm bản dự phòng cho harness khác.
+- Sinh thêm `hooks/scripts/codex_edit_gate.py`: Codex sửa file bằng tool `apply_patch` với
+  `tool_input.command` là thân patch và KHÔNG có `file_path`, nên adapter rút đường dẫn từ
+  patch rồi gọi lại `edit_gate.py`. Hook gốc trong repo không bị sửa.
+- `tdq_checkportable.py` thêm `setup --trust`: ghi `[projects."<path>"] trust_level = "trusted"`
+  vào `~/.codex/config.toml` (hoặc `$CODEX_HOME`), luôn sao lưu `<file>.tdq-bak-<timestamp>`,
+  không ghi chồng block đã có. `check` báo thêm dòng trạng thái trusted.
+- Codex có HAI cổng tin cậy độc lập: trust project (mở được bằng `--trust`) và trust hash của
+  hook, chỉ duyệt được trong giao diện. README/AGENTS.md/SKILL.md đổi từ "ba việc máy không
+  tự làm được" thành bốn.
+- README của cả hai bundle có mục `## Cài ở máy mới` liệt kê từng bước theo thứ tự; bản codex
+  thêm mục ba cách trust và giải thích vì sao bước kiểm đầu tiên phải chạy thẳng file thay vì
+  gọi skill. Test khoá mọi đường dẫn lệnh nêu trong README phải có thật trong chính bundle.
+
+## 0.23.0 — 2026-08-17
+
+Bản portable thôi viết tay, chuyển sang tự sinh — và tách làm hai bản cho hai loại harness.
+`portable/` cũ là bản chép tay, README của chính nó ghi "sửa `skills/` xong nhớ đồng bộ
+tay", còn test khoá đồng bộ đã bị xoá từ 0.10.0: nó đã trôi khỏi bản gốc mà không ai biết.
+
+- Thêm `scripts/build_portable.py`: sinh `portable_claude/` (Claude Code: `.claude/skills`,
+  `.claude/agents`, 5 hook trong `.claude/settings.json`, `.mcp.json`) và `portable_codex/`
+  (markdown thuần: `AGENTS.md` + `workflow/NN-*.md`) từ MỘT nguồn.
+- Bản claude đặt `hooks/` và `scripts/` cạnh nhau dưới `.claude/tdq/` vì `_common.py` suy
+  thư mục scripts bằng `../../scripts`; mọi `${CLAUDE_PLUGIN_ROOT}` được đổi kèm đúng tiền
+  tố đó, và số lần thay được đối chiếu để bắt file bị bỏ sót.
+- Thêm `scripts/tdq_checkportable.py` + skill `tdq-checkportable` (nguồn ở `portable_src/`,
+  không tính vào ngân sách context của bộ chính): đối chiếu sha256 theo `manifest.json`,
+  kiểm Python/lệnh ngoài/MCP, `setup` tự vá và luôn sao lưu `<file>.tdq-bak-<timestamp>`.
+- `.mcp.json` sinh ra chỉ ghi TÊN biến môi trường, không bao giờ ghi giá trị khoá.
+- Xoá `portable/` viết tay; `.graphifyignore` loại ba thư mục portable mới.
+
+## 0.22.0 — 2026-08-16
+
+Clean code thôi làm cổng hỏi, thành luật thường trực. Trước bản này mỗi request chạm mã
+nguồn phải trả lời "Bật clean code cho request này chứ?", rồi cuối request chạy
+`scripts/code_rule_scan.py`. Cổng đó tốn một lượt hỏi mà không trả lại bảo đảm nào:
+script phụ thuộc linter cài sẵn trên máy, request trước vừa báo `CHƯA KIỂM ĐƯỢC — thiếu
+ruff` cho cả 5 file Python.
+
+- Luật mới `skills/tdq-conventions/references/clean-code.md`: 5 nguyên tắc SOLID, mỗi
+  nguyên tắc hai bản đọc (khi có class / khi chỉ có hàm và module) vì repo này có 4 class
+  trên 280 hàm. LSP mang nhãn giới hạn: bản đọc cho hàm là suy diễn, không phải trích
+  Liskov. Mỗi nguyên tắc kèm một ví dụ ĐÚNG và một ví dụ SAI trỏ vào file thật.
+- `tdq-conventions/SKILL.md` §11 nạp luật này mỗi turn; trần dòng của skill nới 130 → 133.
+- Gỡ cổng hỏi: `tdq-spec/SKILL.md` bỏ bước 1b, `spec-template.md` bỏ dòng
+  `Clean code: BẬT|TẮT` và mục `## Khuôn hỏi clean code`.
+- QC: hạng mục cố định thứ tư QC-F4 — trả lời checklist 5 câu có/không, câu nào "không"
+  thì sửa code rồi ghi chỗ đã sửa. Đổi khớp ở cả `skills/` và `portable/`.
+- Xoá `scripts/code_rule_scan.py`, `tests/test_code_rule_scan.py`,
+  `tests/test_clean_code_workflow.py` (graphify xác nhận script là lá, không ai gọi).
+- Bù kiểm bằng lệnh: `doc_lint` R9 phủ thêm `clean-code.md`, và
+  `tests/test_clean_code_rule.py` (20 test) khoá hình dạng file luật.
+
+## 0.21.0 — 2026-08-16
+
+Skill thứ bảy: `tdq-check-status` — dò lại một request đang dở rồi tiếp tục mà không mất
+dữ liệu cũ. Trước bản này, mất ngữ cảnh là mất luôn chỗ dừng: `tdq-status` chỉ đọc lại
+`state.json`, mà `state.json` chính là thứ có thể sai. Ba tình huống đã gặp: session chết
+phải mở session mới, đổi sang máy khác, và giao một phase cho agent ngoài rồi quay lại.
+
+- Nguyên tắc mới: **đĩa là bằng chứng, `state.json` là lời khai**. Bộ dò đọc
+  `docs/tdq/**`, git (`log -20`, `status --short`) và working log hôm nay, rồi đối chiếu
+  với state. Lệch nhau thì tin đĩa.
+- `scripts/tdq_checkstatus.py report [--json]`: chỉ ĐỌC, không bao giờ ghi `state.json`.
+  Nó chấm 11 ca lệch D1–D11 theo một bảng cứng, không để model tự nghĩ chẩn đoán.
+- Ba mức kết luận: `TIẾP TỤC ĐƯỢC` · `VÁ RỒI TIẾP TỤC` · `CẦN USER QUYẾT`.
+- **Luật không mất dữ liệu.** Lệnh vá chỉ thuộc hai họ `tdq_state.py set …` và
+  `tdq_state.py approve …`. Một hàm chặn nội bộ ném lỗi nếu mẫu lệnh chạm tới lệnh khởi
+  tạo lại, lệnh đặt về mặc định, `rm`, `mv` hay chuyển hướng ghi đè.
+- Một cổng gật duy nhất: trình báo cáo → user gật một lần → chạy hết lệnh vá → đi tiếp.
+- `skills/tdq-check-status/` có 7 bước, khuôn báo cáo 6 mục và bảng D1–D11; bản
+  `portable/workflow/05-check-status.md` khớp từng bước cho agent ngoài Claude Code.
+- `tdq-status` giữ nguyên vai trò báo nhanh, chỉ thêm một dòng trỏ sang skill mới.
+- Trần tổng `description` của skill nới 900 → 1080 ký tự cho skill thứ bảy.
+
 ## 0.16.0 — 2026-08-14
 
 Cắt chi phí context của chính workflow mà không bỏ một luật nào: đếm mệnh lệnh theo 10

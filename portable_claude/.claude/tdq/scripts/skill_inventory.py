@@ -176,10 +176,16 @@ def _plugin_skill_dirs(home, project):
             if entry.get("scope") == "project" and \
                     os.path.realpath(str(entry.get("projectPath", ""))) != project_real:
                 continue
-            skills = os.path.join(str(entry.get("installPath", "")), "skills")
-            if os.path.isdir(skills) and skills not in seen:
-                seen.add(skills)
-                dirs.append((key.split("@")[0], skills))
+            # Two layouts in the wild: `<installPath>/skills` and `<installPath>/.claude/skills`.
+            # Try the first, fall back to the second; a plugin with neither adds no row.
+            root = str(entry.get("installPath", ""))
+            for phan in (("skills",), (".claude", "skills")):
+                skills = os.path.join(root, *phan)
+                if os.path.isdir(skills):
+                    if skills not in seen:
+                        seen.add(skills)
+                        dirs.append((key.split("@")[0], skills))
+                    break
     return dirs
 
 
