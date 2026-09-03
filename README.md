@@ -51,7 +51,7 @@ Ghim theo nhánh hoặc tag thì thêm `#<ref>` vào URL đầy đủ (dấu `#`
 ngăn giữa tên plugin và tên marketplace lúc install):
 
 ```
-/plugin marketplace add https://github.com/TDQUOC/TDQ-Workflow.git#v0.39.0
+/plugin marketplace add https://github.com/TDQUOC/TDQ-Workflow.git#v0.40.0
 ```
 
 Cài sẵn cho cả project — ai trust folder là marketplace tự được thêm, không hỏi lại:

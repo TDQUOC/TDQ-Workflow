@@ -2,6 +2,24 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.40.0 — 2026-09-03
+
+Cổng hỏi bằng chat thường, dòng `Next step:` nêu tên pha kế, và đường kẻ `---` kết lượt. Kèm
+phần hướng dẫn cài qua marketplace + auto-update + bump version trong `README.md`. Báo cáo:
+`docs/tdq/report/2026-09-03-1220-gate-chat-va-next-pha.md`.
+
+- **`skills/tdq-conventions/references/user-facing-block.md`** — luật cấm tool hỏi dạng popup
+  (`AskUserQuestion`) chuyển từ `tdq-intake` lên tầng conventions, áp cho MỌI câu hỏi chứ không
+  riêng 7 cổng duyệt; thêm thành phần 6 của khối trả lời: đúng một dòng `---` kết lượt.
+- **`skills/tdq-conventions/references/approval.md`** — mục `## Hỏi xong là kết lượt`.
+- **12 dòng `Next step:` trong 8 skill** — mỗi dòng nêu tên pha kế tiếp hoặc nói rõ pha không
+  đổi kèm skill kế, để host không có hook vẫn đi đúng lộ trình. Lớp này là DỰ PHÒNG,
+  `[TDQ:NEXT]` vẫn là đường chính.
+- **`tests/test_luat_gate_chat.py`** (mới) — 7 test khoá ba luật trên; tên pha đọc thẳng từ
+  `PHASE_TABLE` chứ không chép cứng.
+- **`README.md`** — 3 cách cài (marketplace / `--plugin-dir` / bundle portable), mục
+  `## Cập nhật` và thủ tục bump version bắt buộc mỗi lần release.
+
 ## 0.39.0 — 2026-09-03
 
 Thang `tdq_lsp.py kiem` thêm **bậc 7** và luật thứ tự tìm kiếm đổi từ một thứ tự cứng sang chọn

@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-09-03)
 
 ## Corpus Check
-- 98 files · ~148,282 words
+- 98 files · ~148,819 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2255 nodes · 4105 edges · 99 communities (94 shown, 5 thin omitted)
+- 2261 nodes · 4111 edges · 99 communities (94 shown, 5 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 114 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f3d90baf`
+- Built from commit: `ef959dab`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -116,7 +116,7 @@
 - seed/README.md
 
 ## God Nodes (most connected - your core abstractions)
-1. `files` - 85 edges
+1. `files` - 86 edges
 2. `cli()` - 26 edges
 3. `cli()` - 26 edges
 4. `Changelog` - 21 edges
@@ -146,7 +146,7 @@
 
 ### Community 0 - "files"
 Cohesion: 0.02
-Nodes (85): files, config/hooks.json, config/mcp_config.json, config/settings.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, README.md, scripts/canvas_a4_ch4_ch7.py (+77 more)
+Nodes (86): files, config/hooks.json, config/mcp_config.json, config/settings.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, README.md, scripts/canvas_a4_ch4_ch7.py (+78 more)
 
 ### Community 1 - "build_portable.py"
 Cohesion: 0.05
@@ -457,8 +457,8 @@ Cohesion: 0.22
 Nodes (8): external_commands, mcp_servers, python_min, version, git, graphify, tavily-backup, tavily-primary
 
 ### Community 78 - "tdq-workflow — Plugin Claude Code"
-Cohesion: 0.22
-Nodes (8): Cài đặt (chỉ trong repo/project), Cách hook điều khiển agent, Cấu trúc, Duyệt bằng chat thường, Dùng hằng ngày, Pipeline, Quy ước cứng, tdq-workflow — Plugin Claude Code
+Cohesion: 0.14
+Nodes (13): Bump version — bắt buộc mỗi lần release, Cài đặt, Cách 1 — qua marketplace (khuyên dùng), Cách 2 — chạy thẳng từ thư mục, không cài, Cách 3 — agent ngoài Claude Code, Cách hook điều khiển agent, Cấu trúc, Cập nhật (+5 more)
 
 ### Community 79 - "_chuyen_tick"
 Cohesion: 0.22
@@ -521,7 +521,7 @@ Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **142 isolated node(s):** `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01`, `0.35.0 — 2026-08-27` (+137 more)
+- **146 isolated node(s):** `Pipeline`, `Cách hook điều khiển agent`, `Duyệt bằng chat thường`, `Cách 1 — qua marketplace (khuyên dùng)`, `Cách 2 — chạy thẳng từ thư mục, không cài` (+141 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -532,12 +532,12 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `sha256_of()` connect `scripts/claude_export.py` to `build_portable.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `plugin_version()` connect `scripts/claude_export.py` to `build_portable.py`?**
+- **Why does `iter_events()` connect `iter_events` to `antigravity_portable/scripts/step_audit.py`, `antigravity_portable/scripts/token_audit.py`, `antigravity_portable/scripts/tdq_timing.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01` to the rest of the system?**
-  _142 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Pipeline`, `Cách hook điều khiển agent`, `Duyệt bằng chat thường` to the rest of the system?**
+  _146 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
-  _Cohesion score 0.023529411764705882 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.023255813953488372 - nodes in this community are weakly interconnected._
 - **Should `build_portable.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05031645569620253 - nodes in this community are weakly interconnected._
 - **Should `antigravity_portable/scripts/canvas_a4_rebuild.py` be split into smaller, more focused modules?**
