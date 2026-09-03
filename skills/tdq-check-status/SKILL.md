@@ -67,4 +67,5 @@ so use it only when context was lost.
 
 Done when: the user has read the report, every needed patch command has run, and the skill of
 the correct phase is loaded to continue.
-Next step: the skill at step 7 matching the current phase.
+Next step: the phase does not change by itself here — whatever phase step 7 leaves in state, load
+the skill that owns it, per [phases.md](../tdq-conventions/references/phases.md).

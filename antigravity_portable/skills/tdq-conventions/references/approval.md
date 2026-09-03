@@ -3,6 +3,16 @@
 The user approves in ordinary chat. The agent's job is to **recognise it correctly**
 and **record it** — never to judge generously on the user's behalf.
 
+## Hỏi xong là kết lượt <!-- i18n-allow: canonical rule name in the default language -->
+
+Printing the question is not the end of the job — **ending the turn is**. The agent asks in chat,
+stops there, and waits for the user's next message. Reading on, guessing the answer, or acting on
+the option you recommended is banned, however obvious that option looks. The popup tool is banned
+here too, for every question, per `## Hard rules` of
+[user-facing-block.md](user-facing-block.md).
+
+The one thing that closes a gate is a message from the user matching the two parts below.
+
 ## It is an approval only when BOTH parts are present
 
 1. A word of consent in the user's own language — English: `approve` · `ok` · `go ahead` ·

@@ -105,7 +105,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
    — lint the right file, append the working log, set the phase, graphify: 4 jobs in 1 call.
 
 Done when: every task in the plan is ticked `[x]` and the test suite is green.
-Next step: the `tdq_finish.py … --phase qc` command of item 3 (it sets the phase too).
+Next step: phase `qc` — the `tdq_finish.py … --phase qc` command of item 3 sets it, then Part B.
 
 ## Part B — QC (phase `qc`)
 
@@ -116,7 +116,8 @@ That same file also
 carries the qc file template and the 3-fix-round cap.
 
 Done when: every QC item PASSes and its evidence sits in the qc file.
-Next step: `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=report`.
+Next step: phase `report` — `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=report`,
+then Part C below.
 
 ## Part C — Report (phase `report`)
 
@@ -127,5 +128,5 @@ memory is banned.**
 That same file also carries the report template and the verbatim commit question block.
 
 Done when: the report is written and the user has been asked about the commit.
-Next step: `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=idle`
-(or `reset` when the user wants the slate wiped for a new request).
+Next step: phase `idle` — `python3 "~/.gemini/antigravity-cli/tdq/scripts/tdq_state.py" set phase=idle`
+(or `reset` when the user wants the slate wiped for a new request). The request ends there.

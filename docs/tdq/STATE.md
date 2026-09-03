@@ -1,25 +1,25 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-03T01:40:02+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-09-03T13:20:12+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-03-0053-sua-luat-va-kiem-lsp-that |
+| Request | 2026-09-03-1220-gate-chat-va-next-pha |
 | Lane | full |
-| Phase | implement |
-| Spec | docs/tdq/spec/2026-09-03-0053-sua-luat-va-kiem-lsp-that.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-03-0053-sua-luat-va-kiem-lsp-that.md — ✔ approved |
+| Phase | report |
+| Spec | docs/tdq/spec/2026-09-03-1220-gate-chat-va-next-pha.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-09-03-1220-gate-chat-va-next-pha.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |
 
 ## Where we are
-plan_approved = true and implement_mode is settled. Forbidden: Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py tam-hoan --ly-do "<why>"`, whose reason is shown to the user.
+QC has PASSed. Forbidden: Committing or pushing before the user asks for it.
 
 ## What comes next
-Do the whole plan in one turn, mark [~] when a task starts, red→green, flip to [x] as soon as it passes.
+Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing.
 ```
-python3 scripts/tdq_state.py set phase=qc
+python3 scripts/tdq_state.py set phase=idle
 ```
-Done when: Every task in the plan is ticked [x]
+Done when: The report is written and the user has been asked about committing
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.

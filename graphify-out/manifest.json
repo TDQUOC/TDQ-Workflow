@@ -5,9 +5,9 @@
     "semantic_hash": "abd2649855da365394cdda43af8447e8"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1788356856.2080588,
-    "ast_hash": "c92d9d6555ffd8fafd1a8b2fa937ae92",
-    "semantic_hash": "c92d9d6555ffd8fafd1a8b2fa937ae92"
+    "mtime": 1788402637.268021,
+    "ast_hash": "4cf0e318fa7ce2a8eb73be67ed0d7913",
+    "semantic_hash": ""
   },
   ".claude/settings.json": {
     "mtime": 1785485561.2982607,
@@ -125,8 +125,8 @@
     "semantic_hash": "b68067c3706a0f0584f2c5aa895c4d35"
   },
   "CHANGELOG.md": {
-    "mtime": 1788357183.0884304,
-    "ast_hash": "58e2ad49051b1a5f416e173669ebb8b3",
+    "mtime": 1788402653.639378,
+    "ast_hash": "9d18fa4c32a48351fd46655d948a9519",
     "semantic_hash": ""
   },
   "README.md": {
@@ -300,17 +300,17 @@
     "semantic_hash": "090f5c12175ecefceab6f682f1546a1b"
   },
   "antigravity_portable/config/hooks.json": {
-    "mtime": 1788376114.8221948,
+    "mtime": 1788402657.606222,
     "ast_hash": "f045f865ce424eab65009b5725e0abd2",
     "semantic_hash": "f045f865ce424eab65009b5725e0abd2"
   },
   "antigravity_portable/config/mcp_config.json": {
-    "mtime": 1788376114.8224409,
+    "mtime": 1788402657.606396,
     "ast_hash": "387c7efef2730ce9b285e53df6ab3e21",
     "semantic_hash": "387c7efef2730ce9b285e53df6ab3e21"
   },
   "antigravity_portable/config/settings.json": {
-    "mtime": 1788376114.8223243,
+    "mtime": 1788402657.6063118,
     "ast_hash": "a58223d381c016c397dccc47a928f3b5",
     "semantic_hash": "a58223d381c016c397dccc47a928f3b5"
   },
@@ -325,9 +325,9 @@
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
   },
   "antigravity_portable/manifest.json": {
-    "mtime": 1788376114.831117,
-    "ast_hash": "b535fc85f3f94c2457093d132ce3fad3",
-    "semantic_hash": "b535fc85f3f94c2457093d132ce3fad3"
+    "mtime": 1788402657.613827,
+    "ast_hash": "4cfbd4e20351ddc5ef18141d60d41ded",
+    "semantic_hash": ""
   },
   "antigravity_portable/scripts/canvas_a4_ch4_ch7.py": {
     "mtime": 1787338144.5517437,
@@ -480,7 +480,7 @@
     "semantic_hash": "6c3370662cd51d049aac9be423018fa4"
   },
   "antigravity_portable/README.md": {
-    "mtime": 1788356875.3298562,
+    "mtime": 1788402657.60648,
     "ast_hash": "f4f4428dee9bf8e837d449ecb58d8e16",
     "semantic_hash": ""
   },

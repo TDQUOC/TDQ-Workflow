@@ -66,7 +66,12 @@ SKILL_LINE_LIMITS = {
     # (§7 the git-init allowance and the sole commit exception; §8 the mem0 search-then-store
     # rule). They cost 4 lines here but leave a file loaded on EVERY turn of EVERY project —
     # a net cut. Plan: docs/tdq/plan/2026-09-01-2355-thi-hanh-cat-instruction.md
-    "tdq-conventions": 168,
+    # 2026-09-03: 168 → 177. The `Next step:` rule (every such line names the phase that comes
+    # next) is the fallback layer for hosts with no hooks — Gemini CLI, Copilot CLI, Aider see
+    # the skill text and nothing else. A rule about what every skill body must say cannot live
+    # in a reference the host may never open.
+    # Plan: docs/tdq/plan/2026-09-03-1220-gate-chat-va-next-pha.md
+    "tdq-conventions": 177,
     # The recovery skill: its 7 steps plus the hard "lose no data" rule block must sit in the
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.

@@ -106,5 +106,5 @@ scope. Spec approved → plan NOW.
    turn. The settled mode is the USER's, even when it differs from your proposal.
 
 Done when: `plan_approved = true` and `implement_mode` is not empty.
-Next step: flip the plan header to `ĐÃ DUYỆT`, run <!-- i18n-allow: canonical name kept verbatim -->
+Next step: phase `implement` — flip the plan header to `ĐÃ DUYỆT`, run <!-- i18n-allow: canonical name kept verbatim -->
 `python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" set phase=implement`; then on to [tdq-build](../tdq-build/SKILL.md) **in that very same turn**.

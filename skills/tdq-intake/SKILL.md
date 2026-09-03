@@ -80,7 +80,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    - `quick` → do Part C, skipping Part B.
 
 Done when: `state.json` has `active_request` and the `lane` the user chose.
-Next step: Part B (deep pipeline) or Part C (express pipeline).
+Next step: phase `analyze` (deep, Part B) or `quick_analyze` (express, Part C) — the lane decides.
 
 ## Part B — Analysis (phase `analyze`, deep pipeline only)
 
@@ -100,7 +100,7 @@ questions can be answered.
 The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving the <!-- i18n-allow: canonical name in the default language -->
 spec approves the route. Name the feature flows the request is built from, one line per flow.
 
-Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
+Next step: phase `spec` — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
 then on to [tdq-spec](../tdq-spec/SKILL.md) — same turn if the interview is finished; if
 questions remain, present them and stop.
 
@@ -117,4 +117,4 @@ Step 1 sets `phase=analyze`, showing the express analysis as its own row (`quick
 phase table. That phase has **NO approval gate** — express keeps one gate, the approval at step 6.
 
 Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
-Next step: ask the user about the commit; the request is over → `... set phase=idle`.
+Next step: phase `idle` — ask about the commit, the request is over → `... set phase=idle`.

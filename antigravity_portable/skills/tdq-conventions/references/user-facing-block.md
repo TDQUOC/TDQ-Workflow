@@ -12,7 +12,7 @@ is something else.
 ## Table of contents
 
 - The seven places this shape is mandatory
-- The five components (all five, in order)
+- The six components (all six, in order)
 - The eight decoration rules
 - Hard rules
 - The symbols allowed
@@ -23,7 +23,7 @@ is something else.
 The pipeline question · every interview round · the spec approval gate · the plan approval gate ·
 the mode gate · the express-lane approval gate · the commit question closing a request.
 
-## The five components (all five, in order)
+## The six components (all six, in order)
 
 | # | Component | Presentation used |
 |---|---|---|
@@ -31,7 +31,8 @@ the mode gate · the express-lane approval gate · the commit question closing a
 | 2 | Body | bold field label `**Label:**` + a `- ` bullet per item once there are 2 or more |
 | 3 | File path | the lead-in `Xem đầy đủ tại: ` stays bare, the path goes in backticks | <!-- i18n-allow: sample string of the default language -->
 | 4 | Separator rule | exactly one `---` line, one blank line above and below |
-| 5 | Answer block | bold heading, one blank line, then the `➤` line as the very last line |
+| 5 | Answer block | bold heading, one blank line, then the `➤` line as its last line |
+| 6 | Closing rule of the turn | one `---` line under the `➤` line, the last line of the message |
 
 1. **Opening line** — 1–2 sentences saying what was just finished and what the user is invited to
    do. Address the user directly, neutral tone. No internal jargon unless explained on the spot.
@@ -39,8 +40,17 @@ the mode gate · the express-lane approval gate · the commit question closing a
 3. **Full file path** — a line of its own, shaped `Xem đầy đủ tại: <path>`. Drop this line when <!-- i18n-allow: sample string of the default language -->
    the block is not tied to a file.
 4. **Separator rule** — one `---` line separating the answer block from everything above.
-5. **Answer block** — a bold heading, then the `➤` line. This is always the LAST part of the
-   message, with nothing written below it.
+5. **Answer block** — a bold heading, then the `➤` line. Nothing is written below it except
+   component 6, and no other text ever comes between the two.
+6. **Closing rule of the turn** — one `---` line, one blank line above it, sitting under the `➤`
+   line as the very last line of the message. It is what tells the reader the turn is over and
+   the block rendered whole. The character is three hyphens `---`, the only form a terminal, the
+   app and the extension all draw as a rule running the full width. Three em dashes `———`, three
+   underscores, or any box-drawing character are NOT that line: they render as three letters of
+   fixed length that do not reach the edge, so they are banned here.
+
+**Component 6 closes EVERY turn, not only a turn holding a block.** An answer with no gate, no
+options and no file path still ends on that rule. It is a property of the turn, not of the block.
 
 ## The eight decoration rules
 
@@ -84,12 +94,20 @@ content to be changed, removed or added.
 
 ## Hard rules
 
+- **Every question to the user is asked in chat, never through a popup tool.** The tool
+  `AskUserQuestion` is banned — not only at the seven gates above, but at EVERY question TDQ puts
+  to the user, gate or not. Two reasons. First, the user reads all the options at once and can
+  answer with anything, including a sentence no option covers. Second, the hosts this workflow has
+  to run on (Gemini CLI, GitHub Copilot CLI, Aider) have no such tool at all, so a question shaped
+  around one is a question they cannot ask. Print the block, then **end the turn** and wait for the
+  reply in chat. Recording the answer: [approval.md](approval.md).
 - **No emoji** in any component. The `➤` character stays; it is not an emoji.
 - Several options → **exactly one line per option**, shaped `- A (đề xuất): nội dung`. <!-- i18n-allow: sample string of the default language -->
   Merging options into a paragraph is banned.
 - Terms only a professional understands (`mode`, `subagent`, `lane`, `phase`) → explain them on
   the spot in a short clause; never make the user go and look them up.
-- The answer block comes last. Printing anything after it breaks the shape.
+- The answer block comes last of the block. The only thing under it is the closing rule of
+  component 6; anything else printed there breaks the shape.
 - The turn keeps running after this block was printed → reprint it **word for word, 100%** in the
   last message (rule §1 item 5 of [SKILL.md](../SKILL.md)).
 - **Self-check before sending — mandatory, never skipped.** The block holds at least one option
@@ -164,4 +182,9 @@ Xem đầy đủ tại: `docs/tdq/spec/<slug>.md`
 **Bạn duyệt spec này chứ?**
 
 ➤ Duyệt: nhắn "duyệt spec" (duyệt xong tôi viết plan ngay) · Góp ý: nhắn trực tiếp
+
+---
 ```
+
+The second `---` is component 6, the closing rule of the turn. The `Trước` version has only the
+first one, which is part of what makes it the counter-example.

@@ -1,16 +1,16 @@
-# Graph Report - TDQWorkflow  (2026-09-02)
+# Graph Report - TDQWorkflow  (2026-09-03)
 
 ## Corpus Check
-- 97 files · ~146,957 words
+- 98 files · ~148,282 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2250 nodes · 4094 edges · 99 communities (94 shown, 5 thin omitted)
+- 2255 nodes · 4105 edges · 99 communities (94 shown, 5 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 114 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f068b148`
+- Built from commit: `f3d90baf`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,11 +34,11 @@
 - scripts/skill_tokens.py
 - antigravity_portable/scripts/tdq_checkportable.py
 - antigravity_portable/scripts/tdq_worktree_registry.py
-- scripts/tdq_state.py
 - scripts/tdq_worktree_registry.py
 - antigravity_portable/scripts/tdq_state.py
 - lenh_soat
 - lenh_soat
+- scripts/tdq_state.py
 - main
 - cli
 - antigravity_portable/scripts/token_audit.py
@@ -116,7 +116,7 @@
 - seed/README.md
 
 ## God Nodes (most connected - your core abstractions)
-1. `files` - 84 edges
+1. `files` - 85 edges
 2. `cli()` - 26 edges
 3. `cli()` - 26 edges
 4. `Changelog` - 21 edges
@@ -146,7 +146,7 @@
 
 ### Community 0 - "files"
 Cohesion: 0.02
-Nodes (84): files, config/hooks.json, config/mcp_config.json, config/settings.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, README.md, scripts/canvas_a4_ch4_ch7.py (+76 more)
+Nodes (85): files, config/hooks.json, config/mcp_config.json, config/settings.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, README.md, scripts/canvas_a4_ch4_ch7.py (+77 more)
 
 ### Community 1 - "build_portable.py"
 Cohesion: 0.05
@@ -174,11 +174,11 @@ Nodes (49): collect(), Doc, _doc_lang(), _lane_cua_spec(), lint_file(), _log(), 
 
 ### Community 7 - "antigravity_portable/scripts/tdq_lsp.py"
 Cohesion: 0.08
-Nodes (46): Bac, bac1_binary(), bac2_mcp(), bac3_language_server(), bac4_quyen_tool(), bac5_lumen(), bac6_hook_xung_dot(), chay_kiem() (+38 more)
+Nodes (48): Bac, bac1_binary(), bac2_mcp(), bac3_language_server(), bac4_quyen_tool(), bac5_lumen(), bac6_hook_xung_dot(), bac7_cau_hinh_goc_import() (+40 more)
 
 ### Community 8 - "scripts/tdq_lsp.py"
 Cohesion: 0.08
-Nodes (46): Bac, bac1_binary(), bac2_mcp(), bac3_language_server(), bac4_quyen_tool(), bac5_lumen(), bac6_hook_xung_dot(), chay_kiem() (+38 more)
+Nodes (48): Bac, bac1_binary(), bac2_mcp(), bac3_language_server(), bac4_quyen_tool(), bac5_lumen(), bac6_hook_xung_dot(), bac7_cau_hinh_goc_import() (+40 more)
 
 ### Community 9 - "antigravity_portable/scripts/tdq_checkstatus.py"
 Cohesion: 0.08
@@ -220,25 +220,25 @@ Nodes (35): bat_trusted(), bien_moi_truong_mcp(), chay_setup(), da_trusted(), _d
 Cohesion: 0.12
 Nodes (30): doc(), _doc_de_ghi(), dong_dong(), dong_mo(), duong_md(), duong_so(), _ghi(), ghi_md() (+22 more)
 
-### Community 19 - "scripts/tdq_state.py"
-Cohesion: 0.08
-Nodes (29): _atomic_write(), lane_label(), mode_label(), parse_slug(), _parse_value(), plugin_root_cmd(), prompt_context_last(), prompt_context_path() (+21 more)
-
-### Community 20 - "scripts/tdq_worktree_registry.py"
+### Community 19 - "scripts/tdq_worktree_registry.py"
 Cohesion: 0.12
 Nodes (30): doc(), _doc_de_ghi(), dong_dong(), dong_mo(), duong_md(), duong_so(), _ghi(), ghi_md() (+22 more)
 
-### Community 21 - "antigravity_portable/scripts/tdq_state.py"
+### Community 20 - "antigravity_portable/scripts/tdq_state.py"
 Cohesion: 0.09
 Nodes (28): _atomic_write(), lane_label(), mode_label(), parse_slug(), plugin_root_cmd(), prompt_context_last(), prompt_context_path(), prompt_context_save() (+20 more)
+
+### Community 21 - "lenh_soat"
+Cohesion: 0.11
+Nodes (30): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _git(), _go_thu_muc(), _in_goi_y(), _khoa_khong() (+22 more)
 
 ### Community 22 - "lenh_soat"
 Cohesion: 0.11
 Nodes (30): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _git(), _go_thu_muc(), _in_goi_y(), _khoa_khong() (+22 more)
 
-### Community 23 - "lenh_soat"
-Cohesion: 0.11
-Nodes (30): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _git(), _go_thu_muc(), _in_goi_y(), _khoa_khong() (+22 more)
+### Community 23 - "scripts/tdq_state.py"
+Cohesion: 0.08
+Nodes (29): _atomic_write(), lane_label(), mode_label(), parse_slug(), _parse_value(), plugin_root_cmd(), prompt_context_last(), prompt_context_path() (+21 more)
 
 ### Community 24 - "main"
 Cohesion: 0.13
@@ -298,7 +298,7 @@ Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), 
 
 ### Community 38 - "Changelog"
 Cohesion: 0.09
-Nodes (21): 0.18.0 — 2026-08-14, 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18 (+13 more)
+Nodes (21): 0.19.0 — 2026-08-15, 0.20.0 — 2026-08-15, 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18 (+13 more)
 
 ### Community 39 - "antigravity_portable/scripts/skill_router.py"
 Cohesion: 0.17
@@ -521,7 +521,7 @@ Cohesion: 0.50
 Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A broken/empty line is skipped without spoil, Measure `Read` behaviour: how many calls, how many carry `offset`/`limit`, how m
 
 ## Knowledge Gaps
-- **141 isolated node(s):** `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01`, `0.35.0 — 2026-08-27`, `0.34.0 — 2026-08-26` (+136 more)
+- **142 isolated node(s):** `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01`, `0.35.0 — 2026-08-27` (+137 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -530,14 +530,14 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `files` connect `files` to `manifest.json`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `plugin_version()` connect `scripts/claude_export.py` to `build_portable.py`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `sha256_of()` connect `scripts/claude_export.py` to `build_portable.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01`, `0.36.0 — 2026-09-01` to the rest of the system?**
-  _141 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `plugin_version()` connect `scripts/claude_export.py` to `build_portable.py`?**
+  _High betweenness centrality (0.001) - this node is a cross-community bridge._
+- **What connects `0.39.0 — 2026-09-03`, `0.38.0 — 2026-09-02`, `0.37.0 — 2026-09-01` to the rest of the system?**
+  _142 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
-  _Cohesion score 0.023809523809523808 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.023529411764705882 - nodes in this community are weakly interconnected._
 - **Should `build_portable.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05031645569620253 - nodes in this community are weakly interconnected._
 - **Should `antigravity_portable/scripts/canvas_a4_rebuild.py` be split into smaller, more focused modules?**

@@ -63,8 +63,17 @@ One workflow, three kinds of reader, so three language rules. They never mix.
    Running out of step budget is NOT an exception: report it and carry on. Neither is "let's leave the rest for the
    next turn to keep this one tidy".
 
+**The `Next step:` line of every skill names the phase that comes next** — the phase key itself,
+or, when the phase does not change, that fact plus the skill to load. A bare command is not
+enough. This is the FALLBACK layer: the hook `[TDQ:NEXT]` stays the main road wherever the host
+runs hooks, and this line carries the load where it does not. Gemini CLI, GitHub Copilot CLI and
+Aider have no lifecycle hooks, so on those hosts the skill text is all the agent ever sees.
+Phase keys and what each phase owes: [references/phases.md](references/phases.md).
+
 Done when: the new phase is recorded in state and the working log holds this turn's entry.
-Next step: follow the "transition command" column of [references/phases.md](references/phases.md).
+Next step: phase does not change here — follow the "transition command" column of
+[references/phases.md](references/phases.md) for the phase you are actually in, then load the
+skill that owns it.
 
 ## 2. Phase table
 

@@ -48,29 +48,29 @@ Rung 7 splits by language, because the same gap has two different meanings:
   Missing it means the project does not build, so it announces itself.
 
 Which marker belongs to which language lives in `~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py`, not here — run the command.
-
 Rung 3 sniffs the languages from the files actually in the project, ignoring `.git`,
 `node_modules`, `.venv`, `portable_*` and friends. A language under 3 files is treated as noise.
 YAML and JSON are config formats in nearly every repo, so they never trigger a request.
 
 ## Rung 6 — a conflicting plugin hook
 
-Some plugins register a `PreToolUse` hook on `Grep`/`Bash` that tells the agent to search their
-way first, competing with the order this workflow settled on. The rung names the plugin and file;
-what happens next is the USER's call: report which plugin, file and matcher · ask for permission
-to remove just that `PreToolUse` block, keeping `SessionStart` · only then edit, after backing the
-file up next to it. A plugin update reinstalls the hook under a new version path, so expect this
-rung to come back — that is why it is checked every run rather than fixed once.
+Some plugins register a `PreToolUse` hook on `Grep`/`Bash` telling the agent to search their way
+first, competing with the order this workflow settled on. What happens next is the USER's call:
+report which plugin, file and matcher · ask permission to drop just that `PreToolUse` block,
+keeping `SessionStart` · only then edit, backing the file up next to itself. A plugin update
+reinstalls the hook under a new version path, so expect this rung to come back.
 
-## Ollama, on demand only
+## lumen — where it comes from, and Ollama on demand
 
-`python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py danh-thuc` wakes the daemon; `nha` releases the embedding model right
-after the search. Never leave a model resident — that is the machine cost the user objected to.
-Full lifecycle: [references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
+lumen is upstream <https://github.com/ory/lumen>, a plugin this repo does not ship; measured at
+0.0.42. Rung 5 checks ollama and the model, NOT the plugin — a machine passes rung 5 with no lumen
+tool at all. Install per host (Claude Code, Codex, OpenCode, Cursor, or the bare MCP server for
+anything else), and what to do when there is no plugin system: [references/lumen.md](references/lumen.md).
 
-`nha` kills the daemon only when this script started it, tracked by a marker file; a daemon the
-user started stays up. On macOS the Ollama desktop app supervises and restarts the server, so the
-daemon is effectively always up there and only the model release matters.
+`danh-thuc` wakes the daemon; `nha` releases the model right after the search — never leave one
+resident, that is the machine cost the user objected to. `nha` kills the daemon only when this
+script started it, tracked by a marker file; on macOS the desktop app restarts it anyway, so only
+the model release matters. Full lifecycle: [uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
 
 ## Runbook — setting a machine up, and re-configuring it later
 
@@ -109,12 +109,12 @@ an `mcp__lsp__*` call in the session that registered it will not find the tool y
 `~/.claude/settings.json`, backing that file up beside itself first. Without it every LSP call
 raises a prompt, and a search layer that asks permission per call stops being used.
 
-**Step 5 — the conflicting plugin hook**, per the section above. Back the plugin's `hooks.json` up
-next to itself with the version in the name, drop only `PreToolUse`, keep `SessionStart`. The hook
-returns with the next plugin update, and hooks load at session start, so the nudging line keeps
-appearing until the session restarts.
+**Step 5 — lumen, then the conflicting plugin hook**, both per the section above. Back the
+plugin's `hooks.json` up next to itself with the version in the name, drop only `PreToolUse`, keep
+`SessionStart`. Hooks load at session start, so the nudging line keeps appearing until restart.
 
 Done when: `python3 ~/.gemini/antigravity-cli/tdq/scripts/tdq_lsp.py kiem` prints seven rungs with no actionable gap and exits 0,
 and the effect check of `tdq-intake` step 1b passes — existence alone proves nothing.
-Next step: go back to the phase that called this skill and route the search by question kind, per
+Next step: the phase does not change — go back to the phase that called this skill, load that
+skill again, and route the search by question kind, per
 [references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).

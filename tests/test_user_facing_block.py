@@ -165,11 +165,13 @@ class UserFacingBlockTest(unittest.TestCase):
     def test_block_file_exists(self):
         self.assertTrue(os.path.isfile(BLOCK), "thiếu references/user-facing-block.md")
 
-    def test_lists_five_components(self):
+    def test_lists_six_components(self):
         text = read(BLOCK)
         for token in (("Opening line", "Câu dẫn"), ("Body", "Nội dung"),
                       ("File path", "Đường dẫn file"), ("Separator rule", "Đường kẻ ngăn"),
-                      ("Answer block", "Khối trả lời")):
+                      ("Answer block", "Khối trả lời"),
+                      # 2026-09-03: thành phần 6, đường kẻ kết lượt.
+                      ("Closing rule of the turn", "Đường kẻ kết lượt")):
             with self.subTest(component=token[0]):
                 self.assertTrue(any(t in text for t in token),
                                 f"khuôn thiếu thành phần: {token[0]}")
@@ -203,7 +205,12 @@ class UserFacingBlockTest(unittest.TestCase):
         text = read(BLOCK)
         muc = sections(text)
 
-        bang = [d for d in (muc.get("The five components")
+        # 2026-09-03: thêm "The six components". Yêu cầu gate-chat cộng thành phần 6
+        # (đường kẻ cuối lượt) nên tiêu đề mục đổi từ five sang six; giữ cả hai tên cũ
+        # để bản portable chưa dựng lại không đỏ oan.
+        bang = [d for d in (muc.get("The six components")
+                            or muc.get("The five components")
+                            or muc.get("Sáu thành phần")
                             or muc.get("Năm thành phần", "")).split("\n")
                 if d.lstrip().startswith("|")]
         self.assertGreaterEqual(
@@ -261,6 +268,11 @@ class UserFacingBlockTest(unittest.TestCase):
         for i, khoi in enumerate(khoi_list):
             with self.subTest(file=ten, khoi=i):
                 con = [d for d in khoi if d.strip()]
+                # 2026-09-03: thành phần 6 cho phép đúng MỘT dòng `---` nằm dưới dòng `➤`,
+                # là đường kẻ kết lượt. Bỏ nó ra rồi mới xét luật 7, để luật 7 vẫn bắt được
+                # mọi thứ khác lọt xuống dưới khối trả lời.
+                if con[-1].strip() == "---":
+                    con = con[:-1]
                 self.assertTrue(con[-1].startswith("➤"),
                                 f"luật 7: dòng cuối khối phải là dòng `➤`, đang là {con[-1]!r}")
                 self.assertEqual(1, sum(1 for d in con if d.startswith("➤")),

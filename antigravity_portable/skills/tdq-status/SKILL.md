@@ -49,5 +49,5 @@ state that drifted from disk → stop here and switch to
 [tdq-check-status](../tdq-check-status/SKILL.md) to recover.
 
 Done when: the user finishes reading and knows where things stand and what comes next.
-Next step: the skill matching the current phase — see
-[phases.md](../tdq-conventions/references/phases.md).
+Next step: the phase does not change — reporting status moves nothing. Load the skill owning the
+phase state is already in, per [phases.md](../tdq-conventions/references/phases.md).

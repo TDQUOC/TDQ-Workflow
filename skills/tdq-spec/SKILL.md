@@ -81,7 +81,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    [approval.md](../tdq-conventions/references/approval.md).
 
 Done when: `spec_approved = true` and `spec_file` points at the file you presented.
-Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=plan`
+Next step: phase `plan` — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=plan`
 then on to [tdq-plan](../tdq-plan/SKILL.md) **in that very same turn** — the user is not
 made to send one more message. An approved spec goes straight to the plan; nothing stands
 between the two gates.
