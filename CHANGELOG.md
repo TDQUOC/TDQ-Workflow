@@ -2,6 +2,31 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.45.0 — 2026-09-05
+
+Mỗi request tự mở nhánh git của nó. Trước bản này chỉ mode đội mới đẻ nhánh, còn mode
+`main` làm thẳng lên nhánh user đang đứng. Một request dở dang vì thế không có chỗ nào để lùi
+lại gọn gàng, còn nhánh tích hợp của mode đội thì sống sót thành nhánh mồ côi.
+Báo cáo: `docs/tdq/reports/2026-09-05-0833-gitflow-nhanh-theo-request.md`.
+
+- **Ba khoá state mới, `schema_version` 4 → 5** — `loai_request`, `nhanh_goc`, `nhanh_request`.
+  Chỗ nạp state đã `setdefault` sẵn nên file schema 4 dựng tay nạp lên không mất khoá nào; có
+  ca test khoá đúng điều đó.
+- **Bước 3b của `tdq-intake` — mở nhánh request** — chỉ lane `full` và `quick`, tầng `nhỏ` không
+  mở. Repo bẩn thì DỪNG, in file bẩn, hỏi user; cấm tự `git stash`. Loại request do Claude đề
+  xuất ngay trong câu hỏi chọn lane, không hỏi thêm một câu nào.
+- **Luật tên nhánh `<loại>/<mô tả>`** — đúng năm loại `feature`/`bugfix`/`hotfix`/`chore`/`docs`,
+  kebab-case không dấu, dấu gạch chéo xuôi vì `git check-ref-format --branch` từ chối dạng kia.
+  Bản dài ở `skills/tdq-intake/references/nhanh-request.md`.
+- **Bước 11 của khuôn báo cáo — gộp nhánh về** — chạy trên CẢ hai câu trả lời commit/chưa:
+  `git merge --no-ff` rồi `git branch -d`, sau đó xoá ba khoá state. Đây là chỗ chặn nhánh mồ côi
+  ngay từ gốc.
+- **Mode đội bỏ tầng nhánh tích hợp** — nhánh request thay chỗ nó, ba tầng còn hai. `tdq_team.py`
+  thêm hàng rào: gộp ngay trên cây làm việc chính mà còn thay đổi ĐÃ THEO DÕI thì dừng, vì
+  `merge --no-ff` sẽ nuốt luôn phần đang staged.
+- **Dọn nhánh mồ côi `tdq/2026-08-23-1623-mindmap-html-hai-lop/tich-hop`** — xoá cả local và
+  `origin` sau khi user xác nhận.
+
 ## 0.44.0 — 2026-09-03
 
 Luật routing biết tới UI/UX. Trước bản này bảng routing không có dòng nào cho giao diện, mà

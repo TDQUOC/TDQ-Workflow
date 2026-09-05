@@ -33,7 +33,11 @@ def _log(message):
 
 # The line cap of a SKILL.md by skill name (spec §2.4). The tests share this constant.
 SKILL_LINE_LIMITS = {
-    "tdq-intake": 120,
+    # 2026-09-05: 120 → 135. Step 3b (open the request branch) and the type proposal folded
+    # into the lane question are runtime-tier rules — they run on EVERY request, so they sit
+    # in the body. The long form (commands, the five types, the naming rule) already lives in
+    # references/nhanh-request.md; what stays here is the short form that must be read anyway.
+    "tdq-intake": 135,
     "tdq-spec": 100,
     # 2026-08-18: 100 → 110. The mode proposal moved from eyeballing the task count to
     # running `tdq_bench.py simulate` — the command block plus the reason for factor 1.5
@@ -71,7 +75,11 @@ SKILL_LINE_LIMITS = {
     # the skill text and nothing else. A rule about what every skill body must say cannot live
     # in a reference the host may never open.
     # Plan: docs/tdq/plan/2026-09-03-1220-gate-chat-va-next-pha.md
-    "tdq-conventions": 177,
+    # 2026-09-05: 177 → 183. Section 7 gained the request-branch naming rule (five types,
+    # forward slash, which lane opens one). It is read on every request, so the short form
+    # stays in the body; the commands and the full table live in
+    # skills/tdq-intake/references/nhanh-request.md.
+    "tdq-conventions": 183,
     # The recovery skill: its 7 steps plus the hard "lose no data" rule block must sit in the
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.

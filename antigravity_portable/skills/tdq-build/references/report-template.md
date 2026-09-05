@@ -1,6 +1,13 @@
 # Report template
 
-## The four execution steps
+## Table of contents
+
+- The execution steps
+- The report shape
+- Thời gian
+- Check before presenting
+
+## The execution steps
 
 This is the whole of Part C of [SKILL.md](../SKILL.md) — moved here so the skill body does not
 carry this branch on every call. On entering phase `report` you **must** read all four steps
@@ -44,13 +51,35 @@ below before writing the report; working from memory is banned.
     User agrees → a message describing the change, containing NO "generated with …" and no AI
     trailer; branch named per the conventions.
 
-Done when: the report is written and the user has been asked about the commit.
+11. **Merge the request branch back** — this happens on BOTH answers, so long as state holds a
+    `nhanh_request`. The branch was opened at step 3b of `tdq-intake`; leaving it behind is what
+    used to breed orphan branches.
+    - `"commit"` → commit on the request branch first, then:
+      ```
+      git switch <nhanh_goc>
+      git merge --no-ff <nhanh_request>
+      git branch -d <nhanh_request>
+      ```
+    - `"chưa"` → no new commit, but everything ALREADY committed on the request branch still
+      merges back with the same three commands. What is not committed lives in the working tree
+      and would be dragged along by `git switch`, so run `git status --porcelain` first: not
+      empty → STOP, print the dirty files, ask the user, and do not switch. Same shape as the
+      dirty-repo rule at step 3b.
+    - Merge conflict, or `git branch -d` refuses → do NOT force. Report it and ask the user.
+    - Then clear the three keys:
+      ```
+      python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set loai_request=null nhanh_goc=null nhanh_request=null
+      ```
+    No `nhanh_request` in state (tier `nhỏ`, or a project with no git) → skip this step entirely.
+
+Done when: the report is written, the user has been asked about the commit, and the request
+branch has been merged back into `nhanh_goc`.
 Next step: `python3 "~/.gemini/config/plugins/tdq-workflow/scripts/tdq_state.py" set phase=idle`
 (or `reset` when the user wants the slate wiped for a new request).
 
 ## The report shape
 
-(deliberate repetition — the original is step 7 of `## The four execution steps` in this file.)
+(deliberate repetition — the original is step 7 of `## The execution steps` in this file.)
 
 `docs/tdq/reports/<slug>.md` — in the user's document language, with NO hard line limit.
 **As short as possible, around 10-20 lines**; longer than that, say why (many proposals, many

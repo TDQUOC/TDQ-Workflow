@@ -1,16 +1,16 @@
 # Graph Report - TDQWorkflow  (2026-09-03)
 
 ## Corpus Check
-- 101 files · ~156,030 words
+- 101 files · ~156,338 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2346 nodes · 4239 edges · 109 communities (104 shown, 5 thin omitted)
+- 2347 nodes · 4240 edges · 110 communities (105 shown, 5 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 118 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9544112c`
+- Built from commit: `c10b7b0d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -123,18 +123,19 @@
 - lenh_go
 - antigravity_portable/scripts/tdq_ten_lenh.py
 - scripts/tdq_ten_lenh.py
+- stop_gate.py
 - dem_da_nen_tang.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `files` - 87 edges
 2. `cli()` - 26 edges
 3. `cli()` - 26 edges
-4. `Changelog` - 23 edges
+4. `Changelog — bản lưu trữ` - 22 edges
 5. `_log()` - 21 edges
 6. `_log()` - 21 edges
-7. `lenh_soat()` - 20 edges
+7. `Changelog` - 20 edges
 8. `lenh_soat()` - 20 edges
-9. `_git()` - 19 edges
+9. `lenh_soat()` - 20 edges
 10. `_git()` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -152,7 +153,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (109 total, 5 thin omitted)
+## Communities (110 total, 5 thin omitted)
 
 ### Community 0 - "files"
 Cohesion: 0.02
@@ -171,8 +172,8 @@ Cohesion: 0.06
 Nodes (47): build_ch4(), build_ch7(), build_all(), build_generic(), build_moved(), build_toc(), Builder, chapter_elements() (+39 more)
 
 ### Community 4 - "_common.py"
-Cohesion: 0.06
-Nodes (57): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), block(), echo_line() (+49 more)
+Cohesion: 0.08
+Nodes (40): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), block(), echo_line() (+32 more)
 
 ### Community 5 - "antigravity_portable/scripts/doc_lint.py"
 Cohesion: 0.06
@@ -307,8 +308,8 @@ Cohesion: 0.10
 Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), kiem_L149(), kiem_L218() (+15 more)
 
 ### Community 38 - "Changelog"
-Cohesion: 0.08
-Nodes (23): 0.21.0 — 2026-08-16, 0.22.0 — 2026-08-16, 0.23.0 — 2026-08-17, 0.24.0 — 2026-08-17, 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18, 0.27.0 — 2026-08-22, 0.28.0 — 2026-08-22 (+15 more)
+Cohesion: 0.10
+Nodes (20): 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18, 0.27.0 — 2026-08-22, 0.28.0 — 2026-08-22, 0.29.0 — 2026-08-22, 0.31.0 — 2026-08-23, 0.32.0 — 2026-08-23, 0.33.0 — 2026-08-24 (+12 more)
 
 ### Community 39 - "antigravity_portable/scripts/skill_router.py"
 Cohesion: 0.17
@@ -347,8 +348,8 @@ Cohesion: 0.15
 Nodes (19): _clean(), _condense(), _enabled_plugins(), _filter(), _frontmatter(), inventory(), _load_json(), main() (+11 more)
 
 ### Community 48 - "Changelog — bản lưu trữ"
-Cohesion: 0.11
-Nodes (18): 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.4 trở về 0.7.0, 0.11.5 — 2026-08-13, 0.11.6 — 2026-08-13, 0.11.7 — 2026-08-13 (+10 more)
+Cohesion: 0.09
+Nodes (22): 0.11.10 — 2026-08-13, 0.11.11 — 2026-08-13, 0.11.12 — 2026-08-13, 0.11.13 — 2026-08-13, 0.11.4 trở về 0.7.0, 0.11.5 — 2026-08-13, 0.11.6 — 2026-08-13, 0.11.7 — 2026-08-13 (+14 more)
 
 ### Community 49 - "LoiThieuSo"
 Cohesion: 0.16
@@ -566,12 +567,16 @@ Nodes (6): bi_danh(), giai_ten(), Return the official name for what the user typ
 Cohesion: 0.29
 Nodes (6): bi_danh(), giai_ten(), Return the official name for what the user typed, or None if unknown., The official names of one script, in declaration order, no duplicates., Only the old names — what `--help` must NOT advertise., ten_chinh_thuc()
 
+### Community 108 - "stop_gate.py"
+Cohesion: 0.17
+Nodes (17): _chan_chua_xong(), _dod_hint(), _log_changed(), main(), The file name to quote in the block message — a file new in this turn wins., [TDQ:DOD] — a REMINDER, never a block: the books are being closed while checkbox, Reason to refuse the end of a turn while the plan still has open tasks, or None., Blocks in a row against the SAME plan content; resets as soon as a checkbox move (+9 more)
+
 ### Community 111 - "dem_da_nen_tang.py"
 Cohesion: 0.21
 Nodes (14): _che_do_van_ban(), _co_tham_so(), dem_hook_python3(), dem_ma_nguon(), dem_tat_ca(), _file_python(), _gia_tri_that(), main() (+6 more)
 
 ## Knowledge Gaps
-- **150 isolated node(s):** `0.43.0 — 2026-09-03`, `0.42.0 — 2026-09-03`, `0.41.0 — 2026-09-03`, `0.40.0 — 2026-09-03`, `0.39.0 — 2026-09-03` (+145 more)
+- **151 isolated node(s):** `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16`, `0.21.0 — 2026-08-16`, `0.16.0 — 2026-08-14` (+146 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -579,13 +584,13 @@ Nodes (14): _che_do_van_ban(), _co_tham_so(), dem_hook_python3(), dem_ma_nguon()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `files` connect `files` to `manifest.json`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **Why does `main()` connect `main` to `cli`, `render_state_md`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `Task` connect `doc_plan` to `scripts/tdq_team.py`?**
+- **Why does `iter_events()` connect `iter_events` to `scripts/step_audit.py`, `scripts/token_audit.py`, `scripts/tdq_timing.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `0.43.0 — 2026-09-03`, `0.42.0 — 2026-09-03`, `0.41.0 — 2026-09-03` to the rest of the system?**
-  _150 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16` to the rest of the system?**
+  _151 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
   _Cohesion score 0.022988505747126436 - nodes in this community are weakly interconnected._
 - **Should `scripts/tdq_checkportable.py` be split into smaller, more focused modules?**

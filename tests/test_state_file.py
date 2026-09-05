@@ -62,7 +62,10 @@ class StateFileTest(unittest.TestCase):
         with open(tdq_state.state_path(self.cwd), "w", encoding="utf-8") as f:
             json.dump({"schema_version": 2, "active_request": "r1", "cua_toi": 42}, f)
         state = tdq_state.load(self.cwd)
-        self.assertEqual(state["schema_version"], 4)
+        # Bản schema hiện hành, không ghim số: nâng schema là chuyện thường,
+        # ca này chỉ khẳng định load() nâng cấp file cũ lên bản mới nhất.
+        self.assertEqual(state["schema_version"],
+                         tdq_state.default_state()["schema_version"])
         self.assertEqual(state["active_request"], "r1")
         self.assertFalse(state["spec_approved"])          # khoá thiếu được bù
         self.assertEqual(state["cua_toi"], 42)            # khoá lạ được giữ

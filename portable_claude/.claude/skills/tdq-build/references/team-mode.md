@@ -82,9 +82,9 @@ python3 scripts/tdq_team.py sweep --clean   # end of wave: sweep EVERY request, 
 - **The sub-agent's word is not evidence.** `check` runs the command in that task's `Test:`
   line inside the task's own worktree. Red exits non-zero and says `CODE error`; a `Test:`
   line naming no runnable command says `PLAN error` — fix the plan, that is a defect too.
-- **`merge` refuses a branch whose test is red.** The integration branch takes no commit
+- **`merge` refuses a branch whose test is red.** The request branch takes no commit
   until the task proves itself. `TICK-READY` from a sub-agent is a claim, not a result.
-- **`merge` rebases first.** The branch is rebased onto the current integration tip before
+- **`merge` rebases first.** The branch is rebased onto the current request-branch tip before
   the conflict probe, so every merge accounts for everything that landed before it. A rebase
   that conflicts is aborted at once — the worktree is never left mid-rebase.
 - **`resolve <task>` is the way out of a conflict.** It prints every stuck file with BOTH
@@ -108,7 +108,7 @@ sub-agent (several allowed) · `[x]` done and merged back.
 ```
 TASK: T1.1 — <chép nguyên văn dòng task trong plan, kể cả phần Test:>
 CỤM: đợt 2/5 · chạy song song với T1.2, T1.4
-BASE: tdq/<slug>/tich-hop
+BASE: <nhánh request, vd feature/gitflow-nhanh-theo-request>
 WORKTREE: /đường/dẫn/tuyệt/đối/.tdq-worktrees/<slug>/t1.1
 VÙNG FILE: scripts/alpha.py, tests/test_alpha.py — CẤM sửa file ngoài danh sách này
 TEST: <lệnh kiểm của task> — phải đỏ trước, xanh sau
@@ -158,9 +158,10 @@ python3 scripts/tdq_team.py sweep --clean  # the same sweep, and remove everythi
 ```
 
 **Removing needs all THREE conditions**, checked per worktree, never by feel: the working
-tree is clean · the branch is already in the integration branch · git does not hold it
+tree is clean · the branch is already in the request branch · git does not hold it
 locked. Any one missing and NOTHING is deleted — the row stays open and the reason is
-printed. The task branch is deleted after the merge; the integration branch is kept.
+printed. The task branch is deleted after the merge; the request branch is kept — step 11
+of the report merges it back into `nhanh_goc` and deletes it there.
 
 "Clean" counts ignored files too, unless they regenerate by themselves (`__pycache__`,
 `node_modules`, …): `git worktree remove` deletes a `.env` or a local key without a word,

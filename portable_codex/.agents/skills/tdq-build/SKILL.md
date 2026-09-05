@@ -121,12 +121,14 @@ then Part C below.
 
 ## Part C — Report (phase `report`)
 
-The four execution steps — from writing the report to asking the user about a commit — live in
-[references/report-template.md](references/report-template.md) under `## The four execution steps`.
+The execution steps — from writing the report through asking about the commit to merging the
+request branch back — live in
+[references/report-template.md](references/report-template.md) under `## The execution steps`.
 **You MUST open that file and read all four steps before writing the report; working from
 memory is banned.**
 That same file also carries the report template and the verbatim commit question block.
 
-Done when: the report is written and the user has been asked about the commit.
+Done when: the report is written, the user has been asked about the commit, and the request
+branch has been merged back into `nhanh_goc`.
 Next step: phase `idle` — `python3 "./scripts/tdq_state.py" set phase=idle`
 (or `reset` when the user wants the slate wiped for a new request). The request ends there.

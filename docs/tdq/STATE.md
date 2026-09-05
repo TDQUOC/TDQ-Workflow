@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-03T23:30:11+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
+Updated: 2026-09-05T12:31:50+07:00 · Project: /Users/truongdinhquoc/Documents/TDQWorkflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-03-1949-uiux-pro-max-routing |
+| Request | 2026-09-05-0833-gitflow-nhanh-theo-request |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-09-03-1949-uiux-pro-max-routing.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-03-1949-uiux-pro-max-routing.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-09-05-0833-gitflow-nhanh-theo-request.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-09-05-0833-gitflow-nhanh-theo-request.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Run mode | main |

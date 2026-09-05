@@ -66,6 +66,11 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    Shape: `1. Bạn muốn chạy pipeline nào?` then `- A (đề xuất): chế độ nhanh (express) — <lý do>` on the next line `- B: chế độ chuyên sâu (deep) — <lý do>`. <!-- i18n-allow: option sample in the default language -->
    Full template, including the block explaining the 2 pipelines:
    [references/lane-decision.md](references/lane-decision.md).
+   **In the SAME block, propose the request TYPE — never a second question.** One line under the
+   two options, one of five: `feature`, `bugfix`, `hotfix`, `chore`, `docs` (what each covers:
+   [references/nhanh-request.md](references/nhanh-request.md)). Shape:
+   `Loại request: **feature** — sửa lại nếu bạn thấy khác.` It lands in `loai_request` at step <!-- i18n-allow: option sample in the default language -->
+   3b; the user says nothing about the type → your proposal stands.
    **STOP and wait for the user's answer.** Never pick the lane yourself.
 
 3. **Init state** as soon as the user settles the lane:
@@ -74,6 +79,15 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    ```
    This command **wipes** the old state. If another request is still unfinished → name the
    slug and phase about to be lost, **ask the user first**, then run it.
+
+3b. **Open the request branch** — right after `init`, same turn, in lane `full` and
+   `quick` alike. Tier `nhỏ` never reaches this step; no git repo → skip, keys stay empty. <!-- i18n-allow: canonical name in the default language -->
+   `git status --porcelain` first: not empty → **STOP**, print the dirty files, ask the user, do
+   not switch, and never stash on your own. Clean → the current branch is `nhanh_goc` (step 11
+   of the report merges back into it); `git switch -c <loại>/<mô tả>`, e.g. `feature/login-gui`;
+   record `loai_request`, `nhanh_goc`, `nhanh_request` in one `set` call; say in chat which
+   branch you opened and where it merges back.
+   Commands, the five types, the naming rule: [references/nhanh-request.md](references/nhanh-request.md).
 
 4. **Branch:**
    - `full` → `... set phase=analyze`, continue with Part B inside this same turn.

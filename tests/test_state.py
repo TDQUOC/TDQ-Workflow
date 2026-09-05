@@ -165,7 +165,10 @@ class TestState(unittest.TestCase):
             json.dump({"schema_version": 2, "active_request": "cu", "lane": "full",
                        "phase": "plan", "spec_approved": True}, f)
         state = tdq_state.load(self.cwd)
-        self.assertEqual(state["schema_version"], 4)
+        # Bản schema hiện hành, không ghim số: nâng schema là chuyện thường,
+        # ca này chỉ khẳng định load() nâng cấp file cũ lên bản mới nhất.
+        self.assertEqual(state["schema_version"],
+                         tdq_state.default_state()["schema_version"])
         self.assertTrue(state["spec_approved"])
         for key in ("spec_approved_by", "plan_approved_by", "quick_approved_by"):
             self.assertIn(key, state)

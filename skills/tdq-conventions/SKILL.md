@@ -135,6 +135,12 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 - **Never** commit or push before the user asks. Sole exception: a TDQ build hits a technical
   block only a commit clears → commit it with a proper message, do **NOT** push, list it in the report.
 - No git in the project yet → you may init git or a worktree; check the worktree merges back.
+- **A request branch is named `<loại>/<mô tả>`** — forward slash only, because
+  `git check-ref-format --branch` rejects the backslash form; `<mô tả>` is kebab-case,
+  no accents. Five types: `feature/login-gui`, `bugfix/state-mat-nhanh-goc`,
+  `hotfix/hook-treo-turn`, `chore/bump-phien-ban`, `docs/kien-truc-module`. Lane `full`
+  and `quick` open one, tier `nhỏ` none; it merges back `--no-ff` then is deleted. Rule:
+  [../tdq-intake/references/nhanh-request.md](../tdq-intake/references/nhanh-request.md).
 
 ## 8. Research
 

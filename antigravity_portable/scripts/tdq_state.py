@@ -152,7 +152,7 @@ def normalize_doc_lang(raw):
 
 def default_state():
     return {
-        "schema_version": 4,
+        "schema_version": 5,
         "active_request": None,
         # slug of the request replaced at the last init (trace/log only)
         "previous_request": None,
@@ -194,6 +194,13 @@ def default_state():
         "doc_lang": DEFAULT_DOC_LANG,
         # request opening mark (schema 4) — the origin of every wall-clock count
         "started_at": None,
+        # Git branch life-cycle of the request (schema 5). `loai_request` is one of
+        # feature|bugfix|hotfix|chore|docs; `nhanh_goc` is the branch the user stood on when
+        # the request opened — the one the work merges back into; `nhanh_request` is the
+        # branch opened for it. All three stay None at tier `nhỏ` and in a repo-less project.
+        "loai_request": None,
+        "nhanh_goc": None,
+        "nhanh_request": None,
         # phase history: [{"phase": "spec", "at": "<iso>"}, ...], one mark per
         # phase CHANGE. Re-entering an old phase still adds a mark — that is what
         # counting re-entries is built on.

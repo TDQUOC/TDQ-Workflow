@@ -592,8 +592,22 @@ def _ten_nhanh(slug, ma_task):
     return ten
 
 
-def _nhanh_tich_hop(slug):
-    return f"tdq/{slug}/tich-hop"
+def _nhanh_hien_tai(project):
+    ra = _git(project, "rev-parse", "--abbrev-ref", "HEAD", check=False)
+    return ra.stdout.strip() if ra.returncode == 0 else ""
+
+
+def _nhanh_tich_hop(project, slug):
+    """The branch every task branch merges into — the REQUEST branch when there is one.
+
+    `tdq-intake` step 3b opens `<loại>/<mô tả>` for the request and records it in state, so
+    the team has a branch of its own to gather into and the old middle tier disappears: that
+    third branch was what stayed behind as an orphan when a request ended. Only a project
+    whose request never opened a branch (no git at intake time, or a plan run by hand) falls
+    back to the old integration name, so those runs keep working exactly as before.
+    """
+    nhanh = (tdq_state.load(project, heal=False) or {}).get("nhanh_request")
+    return nhanh or f"tdq/{slug}/tich-hop"
 
 
 def _thu_muc_goc_worktree(project):
@@ -617,8 +631,15 @@ def _co_nhanh(project, nhanh):
 
 
 def _bao_dam_tich_hop(project, slug):
-    """Integration branch + worktree. The merge happens HERE, not where the user stands."""
-    nhanh = _nhanh_tich_hop(slug)
+    """(branch, directory the merge runs in) for the branch the wave gathers into.
+
+    The request branch is already checked out in the main working tree — git allows one
+    checkout per branch — so the merge runs right there. Any other case keeps a worktree of
+    its own, so a merge never lands on the branch the user happens to stand on.
+    """
+    nhanh = _nhanh_tich_hop(project, slug)
+    if _nhanh_hien_tai(project) == nhanh:
+        return nhanh, project
     duong = _duong_worktree(project, slug, "tich-hop")
     if not _co_nhanh(project, nhanh):
         _git(project, "branch", nhanh, "HEAD")
@@ -692,6 +713,19 @@ def _sach(duong):
     proc = _git(duong, "status", "--porcelain", check=False)
     return (proc.returncode == 0 and not proc.stdout.strip()
             and not _file_bo_qua_dang_ke(duong))
+
+
+def _thay_doi_da_theo_doi(project):
+    """Tracked files changed in the working tree or the index, as git prints them.
+
+    Untracked files are deliberately NOT counted: a TDQ run always carries some (the plan,
+    `state.json`, the working log), and a merge neither commits nor overwrites them — git
+    refuses on its own if it would. What must block is a TRACKED change, because
+    `merge --no-ff` commits whatever is staged along with the merge.
+    """
+    ra = _git(project, "status", "--porcelain", check=False)
+    dong = [d for d in ra.stdout.splitlines() if d[:2] != "??"]
+    return "\n".join(dong)
 
 
 def _da_merge(project, nhanh, tich_hop):
@@ -956,7 +990,7 @@ def lenh_kiem(project, args):
     slug, _plan, ban_do = _boi_canh(project)
     if not _la_repo(project):
         raise LoiLuat("This directory is not a git repo.")
-    tich_hop = _nhanh_tich_hop(slug)
+    tich_hop = _nhanh_tich_hop(project, slug)
     nhanh = _nhanh_cua(project, slug, ban_do, args.task)
     if not _co_nhanh(project, nhanh):
         raise LoiLuat(f"No branch {nhanh}. Open it first: "
@@ -1010,6 +1044,15 @@ def lenh_hop(project, args):
     nhanh = _nhanh_cua(project, slug, ban_do, args.task)
     if not _co_nhanh(project, nhanh):
         raise LoiLuat(f"No branch {nhanh}.")
+    # Merging into the request branch means merging into the leader's own working tree. Doing
+    # that on top of uncommitted work is how a merge eats changes nobody asked it to touch —
+    # the same rule the intake step and the report step follow: stop, name the files, ask.
+    ban = _thay_doi_da_theo_doi(project) if duong_tich_hop == project else ""
+    if ban:
+        raise LoiLuat(
+            f"Tracked files are modified, so {nhanh} cannot be merged into {tich_hop} yet — "
+            f"`merge --no-ff` would sweep them into the merge commit. Commit or set them "
+            f"aside, then run merge again:\n{ban}")
     # Gap H2: the branch was opened at the start of the wave, so by the time the second agent
     # merges, its base is already old. Rebase onto the current integration tip FIRST, in the
     # task's own worktree, so every merge accounts for everything that landed before it.
@@ -1049,7 +1092,7 @@ def lenh_hop(project, args):
          f"merge {nhanh} into {tich_hop}", nhanh)
     _log(f"merge {nhanh} → into {tich_hop}")
     print(f"Merged {nhanh} into {tich_hop}.")
-    print(f"Integration branch at: {duong_tich_hop}")
+    print(f"Gathered on: {tich_hop} ({duong_tich_hop})")
     duong = _duong_worktree(project, slug, args.task.lower())
     if not os.path.isdir(duong):
         so_wt.dong_dong(project, slug, args.task, "bien-mat")
@@ -1124,7 +1167,7 @@ def lenh_soat(project, args):
     print("|---|---|---|---|---|---|---|")
     for ban_ghi in con_lai:
         duong, nhanh, slug = ban_ghi["duong_dan"], ban_ghi["nhanh"], ban_ghi["slug"]
-        tich_hop = _nhanh_tich_hop(slug)
+        tich_hop = _nhanh_tich_hop(project, slug)
         byte = _kich_thuoc(duong)
         tong_byte += byte
         tuoi = _tuoi_ngay(ban_ghi.get("tao_luc"))
@@ -1346,7 +1389,7 @@ def lenh_go(project, args):
     slug, _plan, ban_do = _boi_canh(project)
     if not _la_repo(project):
         raise LoiLuat("This directory is not a git repo.")
-    tich_hop = _nhanh_tich_hop(slug)
+    tich_hop = _nhanh_tich_hop(project, slug)
     nhanh = _nhanh_cua(project, slug, ban_do, args.task)
     if not _co_nhanh(project, nhanh):
         raise LoiLuat(f"No branch {nhanh}. Open it first: "

@@ -84,7 +84,10 @@ class MocThoiGianTrongState(TempRepo):
         self.viet_state_tho(schema_version=3, active_request="2026-08-04-demo",
                             lane="full", phase="spec")
         state = read_state(self.cwd)
-        self.assertEqual(state["schema_version"], 4)
+        # Số hiệu schema lấy từ chính default_state() — mỗi lần nâng schema không
+        # phải sửa lại ca test này, mà vẫn khoá đúng lời hứa "nạp là nâng".
+        self.assertEqual(state["schema_version"],
+                         tdq_state.default_state()["schema_version"])
         self.assertEqual(state["active_request"], "2026-08-04-demo")   # slug cũ giữ nguyên
         self.assertIsNone(state["started_at"])
         self.assertEqual(state["phase_history"], [])
