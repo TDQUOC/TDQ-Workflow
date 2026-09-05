@@ -1,16 +1,16 @@
-# Graph Report - TDQWorkflow  (2026-09-03)
+# Graph Report - TDQWorkflow  (2026-09-05)
 
 ## Corpus Check
-- 101 files · ~156,338 words
+- 101 files · ~157,712 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2347 nodes · 4240 edges · 110 communities (105 shown, 5 thin omitted)
+- 2357 nodes · 4258 edges · 109 communities (104 shown, 5 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 118 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c10b7b0d`
+- Built from commit: `de0dd67e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -67,7 +67,7 @@
 - LoiThieuSo
 - log
 - antigravity_portable/scripts/tdq_team.py
-- lenh_go
+- _boi_canh
 - render_state_md
 - antigravity_portable/scripts/plugin_tiers.py
 - _git
@@ -84,7 +84,7 @@
 - _boi_canh
 - _kiem_test_cua_task
 - scripts/luat_phan_loai.py
-- doc_plan
+- lenh_cum
 - scripts/tdq_team.py
 - antigravity_portable/scripts/i18n_check.py
 - scripts/i18n_check.py
@@ -104,7 +104,7 @@
 - find_shadow_states
 - doc_plan
 - Lưới hồi quy: đo độ tuân thủ luật TDQ
-- _boi_canh
+- _kiem_test_cua_task
 - _file_changed_since_approval
 - iter_events
 - bao-loi/seed/src/tien_ich.py
@@ -115,49 +115,48 @@
 - iter_events
 - seed/README.md
 - _ghi_json
-- doc_phu_thuoc
+- _log
 - _sinh_settings
 - doc_frontmatter
 - tach_duong_dan_patch
 - find_shadow_states
-- lenh_go
+- doc_plan
 - antigravity_portable/scripts/tdq_ten_lenh.py
 - scripts/tdq_ten_lenh.py
-- stop_gate.py
 - dem_da_nen_tang.py
 
 ## God Nodes (most connected - your core abstractions)
-1. `files` - 87 edges
+1. `files` - 88 edges
 2. `cli()` - 26 edges
 3. `cli()` - 26 edges
 4. `Changelog — bản lưu trữ` - 22 edges
-5. `_log()` - 21 edges
+5. `Changelog` - 21 edges
 6. `_log()` - 21 edges
-7. `Changelog` - 20 edges
-8. `lenh_soat()` - 20 edges
-9. `lenh_soat()` - 20 edges
-10. `_git()` - 19 edges
+7. `_git()` - 21 edges
+8. `_log()` - 21 edges
+9. `_git()` - 21 edges
+10. `lenh_soat()` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `sinh_manifest()` --calls--> `sha256_of()`  [INFERRED]
-  scripts/build_portable.py → scripts/tdq_checkportable.py
-- `main()` --calls--> `effective_phase()`  [INFERRED]
-  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 - `main()` --calls--> `load()`  [INFERRED]
   antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
-- `_sha()` --calls--> `sha256_file()`  [INFERRED]
+- `main()` --calls--> `effective_phase()`  [INFERRED]
   antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
-- `_current_snapshot()` --calls--> `plan_tick_state()`  [INFERRED]
+- `sinh_manifest()` --calls--> `sha256_of()`  [INFERRED]
+  scripts/build_portable.py → scripts/tdq_checkportable.py
+- `_continue()` --calls--> `log_enabled()`  [INFERRED]
+  antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
+- `_continue()` --calls--> `now_iso()`  [INFERRED]
   antigravity_portable/hooks/scripts/agy_stop_gate.py → antigravity_portable/scripts/tdq_state.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (110 total, 5 thin omitted)
+## Communities (109 total, 5 thin omitted)
 
 ### Community 0 - "files"
 Cohesion: 0.02
-Nodes (87): files, hooks.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, mcp_config.json, plugin.json, README.md, scripts/canvas_a4_ch4_ch7.py (+79 more)
+Nodes (88): files, hooks.json, hooks/scripts/agy_pretooluse_gate.py, hooks/scripts/agy_stop_gate.py, mcp_config.json, plugin.json, README.md, scripts/canvas_a4_ch4_ch7.py (+80 more)
 
 ### Community 1 - "scripts/tdq_checkportable.py"
 Cohesion: 0.11
@@ -172,8 +171,8 @@ Cohesion: 0.06
 Nodes (47): build_ch4(), build_ch7(), build_all(), build_generic(), build_moved(), build_toc(), Builder, chapter_elements() (+39 more)
 
 ### Community 4 - "_common.py"
-Cohesion: 0.08
-Nodes (40): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), block(), echo_line() (+32 more)
+Cohesion: 0.06
+Nodes (57): _check_signal_mismatch(), _clean(), _latest_signal(), main(), The LATEST kind="signal" row matching target (walking the turn ledger backwards), already_reminded(), block(), echo_line() (+49 more)
 
 ### Community 5 - "antigravity_portable/scripts/doc_lint.py"
 Cohesion: 0.06
@@ -240,12 +239,12 @@ Cohesion: 0.09
 Nodes (28): _atomic_write(), lane_label(), mode_label(), parse_slug(), plugin_root_cmd(), prompt_context_last(), prompt_context_path(), prompt_context_save() (+20 more)
 
 ### Community 21 - "lenh_soat"
-Cohesion: 0.11
-Nodes (24): _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _go_thu_muc(), _in_goi_y(), _khoa_khong(), _kich_thuoc(), lenh_don() (+16 more)
+Cohesion: 0.10
+Nodes (28): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _go_thu_muc(), _in_goi_y(), _khoa_khong(), _kich_thuoc() (+20 more)
 
 ### Community 22 - "lenh_soat"
-Cohesion: 0.11
-Nodes (24): _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _go_thu_muc(), _in_goi_y(), _khoa_khong(), _kich_thuoc(), lenh_don() (+16 more)
+Cohesion: 0.10
+Nodes (28): _da_merge(), _doc_mb(), _file_ban(), _file_bo_qua_dang_ke(), _go_thu_muc(), _in_goi_y(), _khoa_khong(), _kich_thuoc() (+20 more)
 
 ### Community 23 - "scripts/tdq_state.py"
 Cohesion: 0.08
@@ -308,8 +307,8 @@ Cohesion: 0.10
 Nodes (23): _bash(), _ca(), kiem_L002(), kiem_L035(), kiem_L121(), kiem_L136(), kiem_L149(), kiem_L218() (+15 more)
 
 ### Community 38 - "Changelog"
-Cohesion: 0.10
-Nodes (20): 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18, 0.27.0 — 2026-08-22, 0.28.0 — 2026-08-22, 0.29.0 — 2026-08-22, 0.31.0 — 2026-08-23, 0.32.0 — 2026-08-23, 0.33.0 — 2026-08-24 (+12 more)
+Cohesion: 0.09
+Nodes (21): 0.25.0 — 2026-08-18, 0.26.0 — 2026-08-18, 0.27.0 — 2026-08-22, 0.28.0 — 2026-08-22, 0.29.0 — 2026-08-22, 0.31.0 — 2026-08-23, 0.32.0 — 2026-08-23, 0.33.0 — 2026-08-24 (+13 more)
 
 ### Community 39 - "antigravity_portable/scripts/skill_router.py"
 Cohesion: 0.17
@@ -360,12 +359,12 @@ Cohesion: 0.13
 Nodes (19): chay_phien(), dong_log(), dung_lenh(), dung_moi_truong(), dung_sandbox(), _git(), kiem_dich(), lenh_dung_nhanh() (+11 more)
 
 ### Community 51 - "antigravity_portable/scripts/tdq_team.py"
-Cohesion: 0.10
-Nodes (33): b_level(), build_parser(), chia_dot(), _chia_dot_theo_phase(), _chia_dot_theo_phu_thuoc(), doc_phu_thuoc(), _dot_som_nhat(), _khoa_phase() (+25 more)
+Cohesion: 0.11
+Nodes (27): b_level(), build_parser(), _chia_dot_theo_phase(), _do_xung_dot(), doc_phu_thuoc(), _file_xung_dot(), _khoa_phase(), _la_file_luat() (+19 more)
 
-### Community 52 - "lenh_go"
-Cohesion: 0.19
-Nodes (14): canh_bao_lach_luat(), _do_xung_dot(), _file_xung_dot(), _la_repo(), lenh_go(), lenh_kiem(), _nhanh_cua(), _nhanh_tich_hop() (+6 more)
+### Community 52 - "_boi_canh"
+Cohesion: 0.16
+Nodes (20): _boi_canh(), canh_bao_lach_luat(), duong_ban_do(), _la_repo(), lenh_go(), lenh_kiem(), lenh_phan_cong(), LoiLuat (+12 more)
 
 ### Community 53 - "render_state_md"
 Cohesion: 0.17
@@ -376,16 +375,16 @@ Cohesion: 0.34
 Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
 
 ### Community 55 - "_git"
-Cohesion: 0.27
-Nodes (15): _bao_dam_tich_hop(), _co_nhanh(), _da_merge(), _duong_worktree(), _git(), lenh_hop(), lenh_mo(), _ly_do_chan() (+7 more)
+Cohesion: 0.29
+Nodes (14): _bao_dam_tich_hop(), _co_nhanh(), _duong_worktree(), _git(), lenh_hop(), lenh_mo(), _nhanh_hien_tai(), Rebase the task branch onto the integration tip → None on success, the error tex (+6 more)
 
 ### Community 56 - "scripts/plugin_tiers.py"
 Cohesion: 0.34
 Nodes (16): _claude_dir(), cmd_enable(), cmd_reset(), cmd_status(), _key_for(), _load_json(), _log(), _log_on() (+8 more)
 
 ### Community 57 - "_git"
-Cohesion: 0.27
-Nodes (15): _bao_dam_tich_hop(), _co_nhanh(), _da_merge(), _duong_worktree(), _git(), lenh_hop(), lenh_mo(), _ly_do_chan() (+7 more)
+Cohesion: 0.24
+Nodes (17): _bao_dam_tich_hop(), _co_nhanh(), _duong_worktree(), _git(), lenh_hop(), lenh_mo(), _log(), _log_enabled() (+9 more)
 
 ### Community 58 - "_fail"
 Cohesion: 0.12
@@ -420,8 +419,8 @@ Cohesion: 0.19
 Nodes (13): bang_nhap(), doc_bang(), doc_ranh_gioi(), goi_y_nhan(), liet_ke_ma(), _log(), main(), The suggested label for one anchor, with its reason.      The order runs from th (+5 more)
 
 ### Community 66 - "_boi_canh"
-Cohesion: 0.27
-Nodes (10): _boi_canh(), duong_ban_do(), _file_nong(), lenh_phan_cong(), LoiLuat, Exception, (slug, plan_path, ban_do|None), or raises LoiLuat., Rule broken or facts missing — exit 1, with the command that fixes it. (+2 more)
+Cohesion: 0.14
+Nodes (22): _boi_canh(), canh_bao_lach_luat(), duong_ban_do(), _file_nong(), _la_repo(), lenh_go(), lenh_kiem(), lenh_phan_cong() (+14 more)
 
 ### Community 67 - "_kiem_test_cua_task"
 Cohesion: 0.20
@@ -431,13 +430,13 @@ Nodes (10): chay_test_task(), chuan_hoa_lenh_test(), _kiem_test_cua_task(), lay_
 Cohesion: 0.19
 Nodes (13): bang_nhap(), doc_bang(), doc_ranh_gioi(), goi_y_nhan(), liet_ke_ma(), _log(), main(), The suggested label for one anchor, with its reason.      The order runs from th (+5 more)
 
-### Community 69 - "doc_plan"
-Cohesion: 0.10
-Nodes (17): b_level(), doc_plan(), lenh_cum(), _ly_do_hoan(), ngoai_vung_khai(), _phut_uoc_luong(), One task of the plan, with everything readable off its own line., A write from inside a task's worktree, aimed outside that task's `Chạm:`.  # i18 (+9 more)
+### Community 69 - "lenh_cum"
+Cohesion: 0.22
+Nodes (9): b_level(), lenh_cum(), _ly_do_hoan(), _phut_uoc_luong(), Estimated minutes read off the `(n3 e20m)` label. Undeclared counts as 1 minute., Task code → total minutes of the LONGEST path from that task to the end of the g, Task code → set of task codes that must be DONE before it is launched.      The, The SPECIFIC reason a task cannot be launched yet, or None when it can. (+1 more)
 
 ### Community 70 - "scripts/tdq_team.py"
-Cohesion: 0.12
-Nodes (27): build_parser(), chay_test_task(), chia_dot(), _chia_dot_theo_phase(), _chia_dot_theo_phu_thuoc(), chuan_hoa_lenh_test(), _dot_som_nhat(), _khoa_phase() (+19 more)
+Cohesion: 0.11
+Nodes (26): build_parser(), chia_dot(), _chia_dot_theo_phase(), _chia_dot_theo_phu_thuoc(), _do_xung_dot(), doc_phu_thuoc(), _dot_som_nhat(), _file_nong() (+18 more)
 
 ### Community 71 - "antigravity_portable/scripts/i18n_check.py"
 Cohesion: 0.24
@@ -505,15 +504,15 @@ Nodes (6): find_shadow_states(), State project root: TDQ_PROJECT_DIR > git root 
 
 ### Community 87 - "doc_plan"
 Cohesion: 0.22
-Nodes (6): doc_plan(), ngoai_vung_khai(), One task of the plan, with everything readable off its own line., A write from inside a task's worktree, aimed outside that task's `Chạm:`.  # i18, Return the list of Tasks in the exact order they appear in the plan., Task
+Nodes (6): doc_plan(), ngoai_vung_khai(), One task of the plan, with everything readable off its own line., Return the list of Tasks in the exact order they appear in the plan., A write from inside a task's worktree, aimed outside that task's `Chạm:`.  # i18, Task
 
 ### Community 88 - "Lưới hồi quy: đo độ tuân thủ luật TDQ"
 Cohesion: 0.40
 Nodes (4): Bộ ca, Chạy lại — một lệnh, Lưới hồi quy: đo độ tuân thủ luật TDQ, Đọc kết quả
 
-### Community 89 - "_boi_canh"
-Cohesion: 0.27
-Nodes (10): _boi_canh(), duong_ban_do(), _file_nong(), lenh_phan_cong(), LoiLuat, Exception, (slug, plan_path, ban_do|None), or raises LoiLuat., Rule broken or facts missing — exit 1, with the command that fixes it. (+2 more)
+### Community 89 - "_kiem_test_cua_task"
+Cohesion: 0.20
+Nodes (10): chay_test_task(), chuan_hoa_lenh_test(), _kiem_test_cua_task(), lay_lenh_test(), The command a task's `Test:` says to run, or None when there is none to run., The Task of the current plan carrying this code, or None (a full branch name)., `Test:` của plan → (lệnh chạy được ở máy này, danh sách cảnh báo).      Mọi plan, Run the task's own check inside its worktree → (exit code, command, output). (+2 more)
 
 ### Community 90 - "_file_changed_since_approval"
 Cohesion: 0.50
@@ -543,9 +542,9 @@ Nodes (4): hanh_vi_read(), iter_events(), Yield the jsonl records one by one. A 
 Cohesion: 0.18
 Nodes (12): _ghi_json(), goc_agy_tuyet_doi(), Write JSON byte-for-byte the way `tdq_checkportable._ghi_json_co_backup` writes, `.codex/config.toml` — declare MCP servers in the Codex `[mcp_servers.<name>]` s, `GOC_AGY` with `~` expanded — agy needs an ABSOLUTE `command`.      A `~` inside, `hooks.json` at the plugin root — commands are absolute paths into the plugin's, _sinh_config_toml(), _sinh_hooks_agy() (+4 more)
 
-### Community 100 - "doc_phu_thuoc"
-Cohesion: 0.40
-Nodes (5): doc_phu_thuoc(), _la_file_luat(), quyet_dinh_task(), Map task code → set of task codes that must finish FIRST, read off the dependenc, (quyet_dinh, ly_do) for one task. Default is ASSIGN — keeping it needs a reason.
+### Community 100 - "_log"
+Cohesion: 0.25
+Nodes (9): chia_dot(), _chia_dot_theo_phu_thuoc(), _dot_som_nhat(), _log(), _log_enabled(), Assign a wave number to each task. Wave 1 runs first, same wave = in parallel., The earliest wave from `dot_toi_thieu` on that touches no other task's files., Topological order: each task sits after the largest wave of the tasks it needs. (+1 more)
 
 ### Community 101 - "_sinh_settings"
 Cohesion: 0.50
@@ -555,9 +554,9 @@ Nodes (4): `hooks/hooks.json` + the repo `env` block → `.claude/settings.json`
 Cohesion: 0.33
 Nodes (6): find_shadow_states(), State project root: TDQ_PROJECT_DIR > git root > a dir holding state > cwd., Misplaced state/mirror: state.json outside root, or an orphan STATE.md (S6)., resolve_project_dir(), state_md_path(), state_path()
 
-### Community 105 - "lenh_go"
-Cohesion: 0.19
-Nodes (14): canh_bao_lach_luat(), _do_xung_dot(), _file_xung_dot(), _la_repo(), lenh_go(), lenh_kiem(), _nhanh_cua(), _nhanh_tich_hop() (+6 more)
+### Community 105 - "doc_plan"
+Cohesion: 0.22
+Nodes (6): doc_plan(), ngoai_vung_khai(), One task of the plan, with everything readable off its own line., Return the list of Tasks in the exact order they appear in the plan., A write from inside a task's worktree, aimed outside that task's `Chạm:`.  # i18, Task
 
 ### Community 106 - "antigravity_portable/scripts/tdq_ten_lenh.py"
 Cohesion: 0.29
@@ -567,32 +566,28 @@ Nodes (6): bi_danh(), giai_ten(), Return the official name for what the user typ
 Cohesion: 0.29
 Nodes (6): bi_danh(), giai_ten(), Return the official name for what the user typed, or None if unknown., The official names of one script, in declaration order, no duplicates., Only the old names — what `--help` must NOT advertise., ten_chinh_thuc()
 
-### Community 108 - "stop_gate.py"
-Cohesion: 0.17
-Nodes (17): _chan_chua_xong(), _dod_hint(), _log_changed(), main(), The file name to quote in the block message — a file new in this turn wins., [TDQ:DOD] — a REMINDER, never a block: the books are being closed while checkbox, Reason to refuse the end of a turn while the plan still has open tasks, or None., Blocks in a row against the SAME plan content; resets as soon as a checkbox move (+9 more)
-
 ### Community 111 - "dem_da_nen_tang.py"
 Cohesion: 0.21
 Nodes (14): _che_do_van_ban(), _co_tham_so(), dem_hook_python3(), dem_ma_nguon(), dem_tat_ca(), _file_python(), _gia_tri_that(), main() (+6 more)
 
 ## Knowledge Gaps
-- **151 isolated node(s):** `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16`, `0.21.0 — 2026-08-16`, `0.16.0 — 2026-08-14` (+146 more)
+- **153 isolated node(s):** `0.45.0 — 2026-09-05`, `0.44.0 — 2026-09-03`, `0.43.0 — 2026-09-03`, `0.42.0 — 2026-09-03`, `0.41.0 — 2026-09-03` (+148 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `sinh_settings()` connect `_sinh_settings` to `scripts/tdq_checkportable.py`, `build_portable.py`?**
+  _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `files` connect `files` to `manifest.json`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `main()` connect `main` to `cli`, `render_state_md`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `iter_events()` connect `iter_events` to `scripts/step_audit.py`, `scripts/token_audit.py`, `scripts/tdq_timing.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `0.24.0 — 2026-08-17`, `0.23.0 — 2026-08-17`, `0.22.0 — 2026-08-16` to the rest of the system?**
-  _151 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `0.45.0 — 2026-09-05`, `0.44.0 — 2026-09-03`, `0.43.0 — 2026-09-03` to the rest of the system?**
+  _153 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `files` be split into smaller, more focused modules?**
-  _Cohesion score 0.022988505747126436 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.022727272727272728 - nodes in this community are weakly interconnected._
 - **Should `scripts/tdq_checkportable.py` be split into smaller, more focused modules?**
   _Cohesion score 0.10634920634920635 - nodes in this community are weakly interconnected._
 - **Should `antigravity_portable/scripts/canvas_a4_rebuild.py` be split into smaller, more focused modules?**
