@@ -9,6 +9,7 @@ Mọi ca đều vá (`patch`) lớp chạm máy thật — `shutil.which`, socke
 """
 import json
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -135,6 +136,53 @@ class Bac4QuyenTool(BaseLsp):
 
 
 class Bac5Lumen(BaseLsp):
+    def ghi_config(self, noi_dung):
+        """Dựng một config.yaml lumen tạm và trỏ tdq_lsp vào đó."""
+        thu_muc = tempfile.mkdtemp()
+        duong_dan = os.path.join(thu_muc, "config.yaml")
+        with open(duong_dan, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+        self.addCleanup(shutil.rmtree, thu_muc, True)
+        return duong_dan
+
+    def test_model_lay_tu_config_lumen(self):
+        """Máy này đã đổi lumen sang qwen3; checker phải hỏi đúng model đó, không phải model mặc định."""
+        cfg = self.ghi_config("servers:\n  - backend: ollama\n    host: http://localhost:11434\n"
+                              "    model: qwen3-embedding:0.6b\n")
+        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
+                mock.patch.dict(os.environ, {"LUMEN_EMBED_MODEL": "env/khong-duoc-uu-tien"}):
+            self.assertEqual(tdq_lsp._model_lumen(), "qwen3-embedding:0.6b")
+
+    def test_khong_co_config_thi_lay_bien_moi_truong(self):
+        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", "/khong/ton/tai/config.yaml"), \
+                mock.patch.dict(os.environ, {"LUMEN_EMBED_MODEL": "nomic-embed-text"}):
+            self.assertEqual(tdq_lsp._model_lumen(), "nomic-embed-text")
+
+    def test_khong_config_khong_env_thi_lay_mac_dinh(self):
+        moi_truong = {k: v for k, v in os.environ.items() if k != "LUMEN_EMBED_MODEL"}
+        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", "/khong/ton/tai/config.yaml"), \
+                mock.patch.dict(os.environ, moi_truong, clear=True):
+            self.assertEqual(tdq_lsp._model_lumen(), tdq_lsp.MODEL_LUMEN_MAC_DINH)
+
+    def test_config_rac_khong_lam_sap_bac5(self):
+        """Config hỏng là chuyện của lumen; bậc 5 chỉ được cảnh báo, tuyệt đối không ném exception."""
+        cfg = self.ghi_config("::: khong phai yaml :::\n\x00\n")
+        moi_truong = {k: v for k, v in os.environ.items() if k != "LUMEN_EMBED_MODEL"}
+        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
+                mock.patch.dict(os.environ, moi_truong, clear=True):
+            self.assertEqual(tdq_lsp._model_lumen(), tdq_lsp.MODEL_LUMEN_MAC_DINH)
+
+    def test_duong_dan_manifest_model_thu_vien_co_tag(self):
+        """`qwen3-embedding:0.6b` không có dấu "/": ghép thẳng sẽ trỏ sai và báo thiếu model đang có."""
+        d = tdq_lsp._duong_dan_manifest("qwen3-embedding:0.6b")
+        self.assertTrue(d.endswith(os.path.join("registry.ollama.ai", "library",
+                                                "qwen3-embedding", "0.6b")), d)
+
+    def test_duong_dan_manifest_model_co_namespace_khong_tag(self):
+        d = tdq_lsp._duong_dan_manifest("ordis/jina-embeddings-v2-base-code")
+        self.assertTrue(d.endswith(os.path.join("registry.ollama.ai", "ordis",
+                                                "jina-embeddings-v2-base-code", "latest")), d)
+
     def test_thieu_ollama_chi_canh_bao(self):
         """lumen là lớp dự phòng: hỏng thì cảnh báo, tuyệt đối không chặn phiên làm việc."""
         with mock.patch.object(tdq_lsp.shutil, "which", return_value=None):
@@ -149,6 +197,18 @@ class Bac5Lumen(BaseLsp):
         self.assertFalse(b.dat)
         self.assertTrue(b.chi_canh_bao)
         self.assertIn("ollama pull", b.lenh_cai)
+
+    def test_thong_diep_bac5_mang_ten_model_that(self):
+        """Cảnh báo phải chỉ đúng model máy đang dùng, nếu không người đọc đi pull nhầm model."""
+        cfg = self.ghi_config("servers:\n  - model: qwen3-embedding:0.6b\n")
+        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
+                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
+                mock.patch.object(tdq_lsp, "_model_da_pull", return_value=False):
+            b = tdq_lsp.bac5_lumen()
+        self.assertTrue(b.chi_canh_bao)
+        self.assertIn("qwen3-embedding:0.6b", b.lenh_cai)
+        self.assertIn("qwen3-embedding:0.6b", b.chi_tiet)
+        self.assertNotIn(tdq_lsp.MODEL_LUMEN_MAC_DINH, b.lenh_cai)
 
     def test_du_do_nhung_daemon_ngu_van_chi_canh_bao(self):
         with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
@@ -277,6 +337,21 @@ class VongDoiOllama(BaseLsp):
         self.assertIn("stop", run.call_args[0][0])
         kill.assert_not_called()
 
+    def test_nha_nha_dung_model_dang_dung(self):
+        """`ollama stop` gọi tên model mặc định thì model thật vẫn nằm giữ RAM — nhả trượt."""
+        thu_muc = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, thu_muc, True)
+        cfg = os.path.join(thu_muc, "config.yaml")
+        with open(cfg, "w", encoding="utf-8") as f:
+            f.write("servers:\n  - model: qwen3-embedding:0.6b\n")
+        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
+                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
+                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
+                mock.patch.object(tdq_lsp, "_run", return_value=(0, "")) as run, \
+                mock.patch.object(tdq_lsp.os, "kill"):
+            tdq_lsp.cmd_nha(Args())
+        self.assertEqual(run.call_args[0][0], ["ollama", "stop", "qwen3-embedding:0.6b"])
+
     def test_nha_giet_dung_daemon_do_script_bat(self):
         tdq_lsp._ghi_dau(99999)
         with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
@@ -308,6 +383,25 @@ class Bac7CauHinhGocImport(BaseLsp):
     def test_bang_cau_hinh_phu_dung_bo_khoa_cua_lang_server(self):
         """Thiếu một ngôn ngữ trong LANG_CONFIG là bậc 7 im lặng bỏ qua ngôn ngữ đó."""
         self.assertEqual(set(tdq_lsp.LANG_CONFIG), set(tdq_lsp.LANG_SERVER))
+
+    def test_dockerfile_co_trong_ca_hai_bang(self):
+        """Máy đã cài docker-language-server; thiếu khoá thì bậc 3 không bao giờ hỏi tới nó."""
+        self.assertIn("dockerfile", tdq_lsp.LANG_SERVER)
+        self.assertEqual(tdq_lsp.LANG_SERVER["dockerfile"][1], "docker-language-server")
+        self.assertIn("dockerfile", tdq_lsp.LANG_CONFIG)
+        self.assertEqual(tdq_lsp.LANG_CONFIG["dockerfile"], ([], "A"))
+
+    def test_lenh_cai_go_dung_duong_brew(self):
+        """`go install ...gopls` cần sẵn Go; trên máy này Go tới từ brew nên lệnh phải nêu brew."""
+        self.assertIn("brew", tdq_lsp.LANG_SERVER["go"][2])
+
+    def test_csharp_dung_omnisharp(self):
+        """csharp-ls sập `abort trap` khi hỏi file .cs mồ côi; OmniSharp sống nên nó là server C# chính thức."""
+        self.assertEqual(tdq_lsp.LANG_SERVER["csharp"][1], "omnisharp")
+
+    def test_lenh_cai_omnisharp_neu_dotnet_root(self):
+        """OmniSharp là bản framework-dependent: thiếu DOTNET_ROOT là chết ngay lúc khởi động."""
+        self.assertIn("DOTNET_ROOT", tdq_lsp.LANG_SERVER["csharp"][2])
 
     def test_nhom_b_thieu_cau_hinh_thi_CHAN(self):
         """Python không pyrightconfig.json: dự án vẫn chạy, test vẫn xanh, chỉ mục liên file chết."""
