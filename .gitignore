@@ -18,3 +18,7 @@ docs/tdq/worktrees.md
 graphify-out/.rebuild.lock
 .venv/
 .venv-tokens/
+
+# Trang trạng thái setup sinh bằng scripts/setup_status.py — chứa đường dẫn máy,
+# địa chỉ tailnet của lumen và danh sách MCP, nên không đẩy lên repo public.
+setup_status.html
