@@ -343,8 +343,8 @@
     "semantic_hash": "e06f59590fe87935ac8c2d18fc340733"
   },
   "scripts/tdq_lsp.py": {
-    "mtime": 1788690666.8364153,
-    "seen": 1788690889.4346318,
+    "mtime": 1788691400.766925,
+    "seen": 1788753614.745683,
     "ast_hash": "2ca510a691e445c02621f57c047ff91c",
     "semantic_hash": "2ca510a691e445c02621f57c047ff91c"
   },
@@ -592,5 +592,17 @@
     "seen": 1788664010.584131,
     "ast_hash": "2d416db9444848fdea0c6f61ca99ffd4",
     "semantic_hash": "2d416db9444848fdea0c6f61ca99ffd4"
+  },
+  "scripts/setup_status.py": {
+    "mtime": 1788753418.8333142,
+    "seen": 1788753614.745525,
+    "ast_hash": "93e3e32564dc869e89e9f3d28876457b",
+    "semantic_hash": "93e3e32564dc869e89e9f3d28876457b"
+  },
+  "scripts/setup_status_render.py": {
+    "mtime": 1788753216.8125968,
+    "seen": 1788753614.745525,
+    "ast_hash": "f5e141d632c7c52225543f56c96201d0",
+    "semantic_hash": "f5e141d632c7c52225543f56c96201d0"
   }
 }
