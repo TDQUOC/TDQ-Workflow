@@ -486,6 +486,10 @@ MA_LY_DO = (
     "model-bao-chua-xong",  # the model itself answered `xong: false`
 )
 
+# The reasons where Codex may well have done the work and only botched the REPLY. For these the
+# test is the judge: the leader reruns it. A model that said `xong: false` is taken at its word.
+MA_LY_DO_CHAY_LAI_TEST = ("khong-co-ket-qua", "ket-qua-sai-khuon")
+
 
 def doc_ket_qua_ly_do(duong):
     """-> (dict, None) or (None, reason). Missing/empty file vs unreadable content are told apart.
@@ -550,6 +554,33 @@ def phan_quyet_ly_do(exit_code, ket_qua, stdout, qua_han, ly_do_doc=None):
 def phan_quyet(exit_code, ket_qua, stdout, qua_han):
     """Four columns of evidence -> one of four states: xong/fail/timeout/deny."""
     return phan_quyet_ly_do(exit_code, ket_qua, stdout, qua_han)[0]
+
+
+def can_chay_lai_test(trang_thai, ly_do, vung_dat):
+    """True only for a `fail` whose reason is rescuable AND whose file-zone audit passed.
+
+    `run` never turns that `fail` into `xong` itself; it only tells the leader the test decides.
+    """
+    return trang_thai == "fail" and ly_do in MA_LY_DO_CHAY_LAI_TEST and vung_dat is True
+
+
+def dung_phan_quyet(trang_thai, giay, ly_do, ket_qua_vung):
+    """The one JSON verdict line of `run`, keys in a fixed order the leader reads.
+
+    A `xong` turn that strayed outside its zone is downgraded to `fail` here, with no reason
+    code: the reply was fine, the zone was not, so rerunning the test cannot rescue it.
+    """
+    if trang_thai == "xong" and not ket_qua_vung.dat:
+        trang_thai = "fail"
+    if trang_thai == "xong":
+        ly_do = None
+    return {
+        "trang_thai": trang_thai,
+        "giay": round(giay, 1),
+        "vung_file": ket_qua_vung.as_dict(),
+        "ly_do": ly_do,
+        "can_chay_lai_test": can_chay_lai_test(trang_thai, ly_do, ket_qua_vung.dat),
+    }
 
 
 # ------------------------------------------------- the early-fence self-check
@@ -817,12 +848,9 @@ def _cli_run(a):
     in_log_luot(dong_log_luot(a.ma_task, model, home, giay, trang_thai, a.prompt, ly_do))
 
     kq = tdq_vungfile.hau_kiem(a.cwd, moc, a.vung, khoa)
-    if trang_thai == "xong" and not kq.dat:
-        trang_thai = "fail"
-
-    print(json.dumps({"trang_thai": trang_thai, "giay": round(giay, 1),
-                      "vung_file": kq.as_dict()}, ensure_ascii=False))
-    return 0 if trang_thai == "xong" else 1
+    phan_quyet_json = dung_phan_quyet(trang_thai, giay, ly_do, kq)
+    print(json.dumps(phan_quyet_json, ensure_ascii=False))
+    return 0 if phan_quyet_json["trang_thai"] == "xong" else 1
 
 
 if __name__ == "__main__":

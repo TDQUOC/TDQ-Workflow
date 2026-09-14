@@ -1261,7 +1261,9 @@ IMPLEMENT_CODEX_ROW = {
         "travel with the call; the locked zone always holds that task's test file",
         "Rerun the test and audit the zone (python3 scripts/tdq_vungfile.py hau-kiem); "
         "a file outside the zone moved means roll back to the mark and redo the task",
-        "Flip to [x] in the plan RIGHT AWAY once the test is green and the audit passes",
+        "Flip to [x] in the plan RIGHT AWAY once the test is green and the audit passes; "
+        "a fail verdict with can_chay_lai_test: true means rerun the test yourself — green "
+        "plus a passed audit still ticks, with the note (cứu bằng test · ly_do=<mã>)",  # i18n-allow: canonical note written into the plan
         "python3 scripts/tdq_codex.py cleanup at the end of the turn — the temporary "
         "CODEX_HOME belongs to nobody else",
     ],
