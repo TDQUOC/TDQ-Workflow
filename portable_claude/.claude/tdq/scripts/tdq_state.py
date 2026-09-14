@@ -28,7 +28,7 @@ STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
 TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
 
 APPROVE_TARGETS = ("spec", "plan", "quick")
-VALID_MODES = ("main", "subagent")
+VALID_MODES = ("main", "subagent", "codex")
 BY_MAX = 200
 VALID_LANES = {"quick", "full", None}
 
@@ -56,6 +56,7 @@ LANE_ALIASES = {
 MODE_LABELS = {
     "main": "inline implement",
     "subagent": "sub-agent implement",
+    "codex": "codex implement",
 }
 
 # TYPED aliases -> machine identifier. Old names keep working; the newer ones are
@@ -67,6 +68,7 @@ MODE_ALIASES = {
     "subagent": "subagent", "sub-agent": "subagent", "sub agent": "subagent",
     "sub-agent implement": "subagent", "sub agent implement": "subagent",
     "subagent implement": "subagent", "sub-agent-implement": "subagent",
+    "codex": "codex", "codex implement": "codex", "codex-implement": "codex",
 }
 VALID_PHASES = {"idle", "analyze", "spec", "plan", "mode", "implement", "qc", "report"}
 
@@ -86,10 +88,10 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "init <slug> [nhanh|express|quick — express mode | chuyen-sau|deep|full — "  # i18n-allow
          "deep mode] [--lang <code>] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
-         "[--mode main|subagent] "
+         "[--mode main|subagent|codex] "
          "[--no-qc (quick only, requires --by)] [--by \"<user sentence>\"] | "
          "pause --ly-do \"<why>\" | resume | "
-         "reset | phases-doc")
+         "reset | phases-doc | modes [--json]")
 
 EXIT_SYNTAX = 2
 
@@ -1001,12 +1003,19 @@ PHASE_TABLE = {
     },
     "mode": {
         "entry": "plan_approved = true but implement_mode is not settled",
-        "action": "Explain the 2 modes briefly, ask the user to choose, STOP for the answer",
-        "cmd": "python3 scripts/tdq_state.py approve plan --mode <main|subagent> --by \"<verbatim>\"",
+        "action": "List the modes `modes --json` reports as offerable, ask the user to choose, "
+                  "STOP for the answer",
+        # The mode list is READ from VALID_MODES, never retyped: a fourth mode must not leave this
+        # command quietly naming three.
+        "cmd": "python3 scripts/tdq_state.py approve plan --mode <"
+               + "|".join(VALID_MODES) + "> --by \"<verbatim>\"",
         "checklist": [
+            "Ask the machine which modes exist: python3 scripts/tdq_state.py modes --json — offer "
+            "exactly the rows with chon_duoc true, and print the ly_do of a row that is not",
             "Present the mode block per the user-facing block rules, one line of meaning per mode: "
             "inline implement = I do it sequentially right here; "
-            "sub-agent implement = several agents run in parallel",
+            "sub-agent implement = several agents run in parallel; "
+            "codex implement = I write the red test, Codex makes it green inside the declared zone",
             "Present 1-3 lines of reasoning for the proposal, grounded IN THE PLAN itself: task "
             "count, tasks chained by dependency, how many files several tasks touch at once, "
             "whether an (mcp) label is present; plus one sentence on why not the other option. "
@@ -1233,17 +1242,124 @@ def phase_key(state):
     return effective_phase(state, warn=False)
 
 
+# The variant of phase `implement` when the user settles on mode `codex`. Same
+# reason as IMPLEMENT_SUBAGENT_ROW for staying out of PHASE_TABLE: state still
+# records the plain word `implement`.
+IMPLEMENT_CODEX_ROW = {
+
+    "entry": "plan_approved = true and implement_mode = codex",
+    "action": "The leader splits every task in two: the leader writes the failing test, "
+              "Codex makes it pass inside the declared file zone, the leader reruns it "
+              "and audits the zone — the leader never hands over the test file",
+    "cmd": "python3 scripts/tdq_state.py set phase=qc",
+    "checklist": [
+        "python3 scripts/tdq_codex.py check --json — Codex not runnable means STOP and "
+        "tell the user, never silently fall back to another mode",
+        "Per task: snapshot the mark first (python3 scripts/tdq_vungfile.py chup-moc), "
+        "write the test, run it to SEE it red",
+        "python3 scripts/tdq_codex.py run <task-id> — the file zone and the locked zone "
+        "travel with the call; the locked zone always holds that task's test file",
+        "Rerun the test and audit the zone (python3 scripts/tdq_vungfile.py hau-kiem); "
+        "a file outside the zone moved means roll back to the mark and redo the task",
+        "Flip to [x] in the plan RIGHT AWAY once the test is green and the audit passes",
+        "python3 scripts/tdq_codex.py cleanup at the end of the turn — the temporary "
+        "CODEX_HOME belongs to nobody else",
+    ],
+    "done_when": "every task in the plan is [x], every zone audit passed, and cleanup has run",
+    "forbidden": "Handing the test file to Codex; letting Codex run outside the file zone; "
+                 "falling back to another mode when Codex is unreachable; auditing the zone "
+                 "against HEAD instead of that task's own mark",
+}
+
+
+# Which PHASE_TABLE row phase `implement` shows, PER MODE. A lookup table rather
+# than a chain of `if mode == ...` so a fourth mode costs one line here and no
+# change to phase_row. `None` means "the plain implement row" — mode `main` is
+# the baseline the table is a variation on.
+MODE_ROWS = {
+    "main": None,
+    "subagent": IMPLEMENT_SUBAGENT_ROW,
+    "codex": IMPLEMENT_CODEX_ROW,
+}
+
+
+def kiem_bang_mode(valid_modes, mode_rows):
+    """A mode that is valid but undeclared is a SILENT display bug — `next` would
+    quietly show the wrong beat. Fail at load time instead, naming the mode."""
+    thieu = [m for m in valid_modes if m not in mode_rows]
+    if thieu:
+        raise RuntimeError(
+            "MODE_ROWS thiếu khai hàng phase `implement` cho mode: "  # i18n-allow
+            + ", ".join(thieu)
+            + " — mỗi mode trong VALID_MODES phải khai đúng một hàng.")  # i18n-allow
+    return True
+
+
+kiem_bang_mode(VALID_MODES, MODE_ROWS)
+
+
+# How the `codex` mode learns whether it is selectable. state.py is the source of
+# truth for the workflow and MUST NOT depend on the Codex layer (tests/test_kien_truc
+# pins that), so the probe runs tdq_codex.py as a SUBPROCESS and is injectable —
+# every test passes its own instead of depending on what the machine has installed.
+CODEX_CHECK_REL = os.path.join("scripts", "tdq_codex.py")
+CODEX_CHECK_TIMEOUT = 60
+
+
+def _probe_codex(cwd=None):
+    """-> (chon_duoc, ly_do). Never raises: an unreachable Codex layer is a
+    "not selectable" answer with a reason, not a crash of the mode gate."""
+    root = cwd or resolve_project_dir(os.getcwd())
+    script = os.path.join(root, CODEX_CHECK_REL)
+    if not os.path.exists(script):
+        return False, "chưa có tầng CLI Codex (scripts/tdq_codex.py)"  # i18n-allow
+    try:
+        proc = subprocess.run(
+            [sys.executable, script, "check", "--json"],
+            capture_output=True, text=True, encoding="utf-8",
+            timeout=CODEX_CHECK_TIMEOUT, stdin=subprocess.DEVNULL)
+        data = json.loads(proc.stdout or "{}")
+    except Exception as exc:  # noqa: BLE001 - any failure is the same answer
+        return False, f"không hỏi được tầng Codex: {type(exc).__name__}"  # i18n-allow
+    if data.get("chay_duoc"):
+        return True, ""
+    return False, data.get("ly_do") or "Codex không chạy được trên máy này"  # i18n-allow
+
+
+def liet_ke_modes(kiem_codex=None, cwd=None):
+    """The ONE list the mode gate is built from — four fields per mode.
+
+    Two modes are always selectable because they need nothing but this repo;
+    `codex` needs a working external CLI, so it carries a reason when it is not.
+    """
+    if kiem_codex is None:
+        def kiem_codex():
+            return _probe_codex(cwd)
+    rows = []
+    for ma in VALID_MODES:
+        if ma == "codex":
+            chon_duoc, ly_do = kiem_codex()
+        else:
+            chon_duoc, ly_do = True, ""
+        rows.append({"ma": ma, "nhan": MODE_LABELS[ma],
+                     "chon_duoc": bool(chon_duoc), "ly_do": ly_do or ""})
+    return rows
+
+
 def phase_row(state):
     """The PHASE_TABLE row to DISPLAY for the current state.
 
-    Unlike `phase_key`, this function knows the mode. Phase `implement` has two
-    wholly different jobs — the leader working alone (`main`) and the leader
-    steering a team (`subagent`) — while state records the single word
-    `implement`, so the fork lives here.
+    Unlike `phase_key`, this function knows the mode. Phase `implement` has one
+    job per mode — the leader working alone (`main`), steering a team
+    (`subagent`), driving Codex (`codex`) — while state records the single word
+    `implement`, so the fork lives here. The fork reads MODE_ROWS; adding a mode
+    never touches this body.
     """
     key = phase_key(state)
-    if key == "implement" and effective_mode(state or {}, warn=False) == "subagent":
-        return IMPLEMENT_SUBAGENT_ROW
+    if key == "implement":
+        row = MODE_ROWS.get(effective_mode(state or {}, warn=False))
+        if row is not None:
+            return row
     return PHASE_TABLE[key]
 
 
@@ -1499,7 +1615,7 @@ def _parse_approve_args(rest):
                 # "sub-agent implement") must land as the machine identifier.
                 mode = normalize_mode(value)
                 if mode is None:
-                    _fail("Invalid mode (main|inline | subagent|sub-agent).")
+                    _fail("Invalid mode (" + " | ".join(VALID_MODES) + ").")
             else:
                 by = value[:BY_MAX]
             i += 2
@@ -1745,6 +1861,21 @@ def cli(argv):
             if extra != "--brief":
                 _fail(f"Invalid argument: {extra}")
         print(render_next(cwd, load(cwd), brief=brief))
+        return
+
+    if cmd == "modes":
+        # Reads no state: it reports which run modes this machine can offer.
+        extra = argv[1:]
+        if extra not in ([], ["--json"]):
+            _fail(f"Invalid argument: {' '.join(extra)}")
+        rows = liet_ke_modes(cwd=cwd)
+        if extra:
+            print(json.dumps(rows, ensure_ascii=False))
+        else:
+            for r in rows:
+                dau = "o" if r["chon_duoc"] else "x"
+                duoi = "" if r["chon_duoc"] else f" — {r['ly_do']}"
+                print(f"[{dau}] {r['ma']} · {r['nhan']}{duoi}")
         return
 
     if cmd == "phases-doc":

@@ -39,7 +39,8 @@ INSTALL_AGENT_LSP = "curl -fsSL https://raw.githubusercontent.com/blackwell-syst
 EXIT_OK = 0
 EXIT_THIEU = 3
 OLLAMA_PORT = 11434
-MODEL_LUMEN = "ordis/jina-embeddings-v2-base-code"
+MODEL_LUMEN_MAC_DINH = "ordis/jina-embeddings-v2-base-code"   # mặc định của chính lumen
+CONFIG_LUMEN = os.path.expanduser("~/.config/lumen/config.yaml")
 PLUGIN_NHA = "tdq-workflow"          # our own plugin — its hooks are the reference, not a conflict
 TOOL_TIM_KIEM = ("Grep", "Glob", "Bash")
 
@@ -68,14 +69,17 @@ LANG_SERVER = {
     "typescript": ("TypeScript", "typescript-language-server", "npm i -g typescript-language-server typescript"),
     "javascript": ("JavaScript", "typescript-language-server", "npm i -g typescript-language-server typescript"),
     "python": ("Python", "pyright-langserver", "npm i -g pyright"),
-    "go": ("Go", "gopls", "go install golang.org/x/tools/gopls@latest"),
+    "go": ("Go", "gopls", "brew install go gopls  # gopls gọi lệnh `go` lúc chạy, thiếu Go là panic"),
     "rust": ("Rust", "rust-analyzer", "rustup component add rust-analyzer"),
     "java": ("Java", "jdtls", "tải từ https://download.eclipse.org/jdtls/snapshots/"),
     "c": ("C", "clangd", "brew install llvm"),
     "cpp": ("C++", "clangd", "brew install llvm"),
     "ruby": ("Ruby", "solargraph", "gem install solargraph"),
     "php": ("PHP", "intelephense", "npm i -g intelephense"),
-    "csharp": ("C#", "csharp-ls", "dotnet tool install -g csharp-ls"),
+    "csharp": ("C#", "omnisharp", "tải omnisharp-osx-arm64-net6.0.tar.gz từ github.com/OmniSharp/omnisharp-roslyn "
+                                 "→ giải nén vào ~/.local/share/omnisharp → ln -sf .../OmniSharp ~/.local/bin/omnisharp "
+                                 "# bản framework-dependent, phải có DOTNET_ROOT lúc chạy"),
+    "dockerfile": ("Dockerfile", "docker-language-server", "brew install docker-language-server"),
     "kotlin": ("Kotlin", "kotlin-language-server", "tải từ https://github.com/fwcd/kotlin-language-server/releases"),
     "lua": ("Lua", "lua-language-server", "brew install lua-language-server"),
     "swift": ("Swift", "sourcekit-lsp", "cài Xcode hoặc Swift toolchain"),
@@ -135,6 +139,7 @@ LANG_CONFIG = {
     "html": ([], "A"),
     "yaml": ([], "A"),
     "json": ([], "A"),
+    "dockerfile": ([], "A"),
 }
 
 # Content the rung offers to create when a group-B marker is missing. It only ever PRINTS this and
@@ -289,6 +294,29 @@ def bac4_quyen_tool():
                f'thêm "{TOOL_PATTERN}*" vào permissions.allow của ~/.claude/settings.json')
 
 
+def _model_lumen():
+    """Model embedding lumen ĐANG dùng, theo đúng thứ tự lumen tự quyết.
+
+    config.yaml → $LUMEN_EMBED_MODEL → mặc định. Hằng số cứng ở đây từng làm bậc 5 đòi một
+    model mà máy đã cố ý thay, nên giá trị phải đọc từ cấu hình thật.
+    Parser tối giản, chỉ stdlib: file chỉ có một trường `model` lặp lại cho mỗi server, và
+    lumen bắt buộc mọi server cùng model (dims lệch thì vector không khớp index) → lấy cái đầu.
+    Config hỏng/không đọc được là chuyện của lumen: rơi về lớp sau, không bao giờ ném lên bậc 5.
+    """
+    try:
+        with open(CONFIG_LUMEN, encoding="utf-8", errors="replace") as f:
+            for dong in f:
+                dong = dong.split("#", 1)[0]
+                khoa, dau, gia_tri = dong.partition("model:")
+                if dau and not khoa.strip(" -\t"):
+                    ten = gia_tri.strip().strip("'\"")
+                    if ten:
+                        return ten
+    except OSError:
+        pass
+    return os.environ.get("LUMEN_EMBED_MODEL") or MODEL_LUMEN_MAC_DINH
+
+
 def _ollama_dang_chay():
     """Is the Ollama daemon answering on its port? A socket probe, no dependency on curl."""
     import socket
@@ -301,10 +329,23 @@ def _ollama_dang_chay():
             return False
 
 
-def _model_da_pull():
-    """Is lumen's embedding model on disk? The manifest is readable even with the daemon down."""
+def _duong_dan_manifest(model):
+    """Manifest của một model trong kho Ollama, theo đúng cách Ollama đặt tên.
+
+    Tên đầy đủ là `namespace/ten:tag`; thiếu namespace thì Ollama hiểu là `library`, thiếu tag
+    thì hiểu là `latest`. Ghép thẳng chuỗi (bản cũ) chỉ đúng với tên có sẵn "/" và không có tag.
+    """
+    ten, _, tag = model.partition(":")
+    namespace, dau, ten_ngan = ten.partition("/")
+    if not dau:
+        namespace, ten_ngan = "library", ten
     goc = os.path.expanduser("~/.ollama/models/manifests/registry.ollama.ai")
-    return os.path.exists(os.path.join(goc, *MODEL_LUMEN.split("/")))
+    return os.path.join(goc, namespace, ten_ngan, tag or "latest")
+
+
+def _model_da_pull(model):
+    """Is lumen's embedding model on disk? The manifest is readable even with the daemon down."""
+    return os.path.exists(_duong_dan_manifest(model))
 
 
 def bac5_lumen():
@@ -312,14 +353,15 @@ def bac5_lumen():
     if not shutil.which("ollama"):
         return Bac(5, "sức khoẻ lumen", False, "thiếu ollama — lumen không chạy được",
                    "brew install ollama", chi_canh_bao=True)
-    if not _model_da_pull():
-        return Bac(5, "sức khoẻ lumen", False, f"thiếu model {MODEL_LUMEN}",
-                   f"ollama pull {MODEL_LUMEN}", chi_canh_bao=True)
+    model = _model_lumen()
+    if not _model_da_pull(model):
+        return Bac(5, "sức khoẻ lumen", False, f"thiếu model {model}",
+                   f"ollama pull {model}", chi_canh_bao=True)
     if not _ollama_dang_chay():
         return Bac(5, "sức khoẻ lumen", False,
                    "ollama chưa chạy — sẽ đánh thức khi cần bằng `tdq_lsp.py wake`",
                    chi_canh_bao=True)
-    return Bac(5, "sức khoẻ lumen", True, f"ollama đang chạy, có {MODEL_LUMEN}")
+    return Bac(5, "sức khoẻ lumen", True, f"ollama đang chạy, có {model}")
 
 
 def _plugin_dang_bat():
@@ -509,8 +551,9 @@ def cmd_nha(args):
     # command reaches it, so calling `stop` on a sleeping machine would wake exactly what we mean
     # to keep asleep. Nothing is resident when the daemon is down, so there is nothing to release.
     if shutil.which("ollama") and _ollama_dang_chay():
-        rc, out = _run(["ollama", "stop", MODEL_LUMEN])
-        print(f"Đã nhả model {MODEL_LUMEN}." if rc == 0 else f"Không nhả được model: {out}")
+        model = _model_lumen()
+        rc, out = _run(["ollama", "stop", model])
+        print(f"Đã nhả model {model}." if rc == 0 else f"Không nhả được model: {out}")
         _log(f"nha · ollama stop → rc={rc}")
     else:
         print("Ollama không chạy — không model nào đang giữ RAM, khỏi nhả.")

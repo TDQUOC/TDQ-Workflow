@@ -1,0 +1,25 @@
+{
+  "description": "TDQ Workflow — hàng rào VÙNG FILE cho mode `codex implement`. VIẾT TAY, cố ý không sinh bằng scripts/build_portable.py: hàm sinh bundle đi hết bảng 5 hook, tức sẽ cắm Stop và UserPromptSubmit vào mọi lượt `codex exec` và lượt Codex tự vướng vào cổng của pipeline đang lái nó. Ở gốc repo chỉ có hai cổng PreToolUse.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"hooks/scripts/codex_edit_gate.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"hooks/scripts/codex_edit_gate.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

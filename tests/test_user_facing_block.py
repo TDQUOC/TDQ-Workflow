@@ -94,7 +94,9 @@ SO_KHOI = {
     "tdq-conventions/references/user-facing-block.md": 1,
     "tdq-spec/SKILL.md": 1,
     "tdq-plan/SKILL.md": 1,
-    "tdq-plan/references/mode-gate.md": 1,
+    # 2026-09-12: 1 → 2. Mode `codex` là mode thứ ba, nên khối hỏi tách đôi: khối 3 lựa
+    # chọn khi codex chạy được, khối 2 lựa chọn khi không. Cả hai đều là khối thật.
+    "tdq-plan/references/mode-gate.md": 2,
     "tdq-intake/references/lane-decision.md": 1,
     # 2026-08-22: 1 → 2. Bước 4 của chín bước trước đây nhét dòng `➤` vào giữa câu văn
     # bằng nháy ngược; bản dịch tách nó ra khối ``` riêng để cụm `i18n-allow` miễn đúng

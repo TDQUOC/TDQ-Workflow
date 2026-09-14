@@ -417,6 +417,17 @@ class TestCodexNativeLayers(TempDest):
         self.assertIn("docs/tdq/plan/x.md", proc.stderr + proc.stdout,
                       "adapter phải rút được đường dẫn ra khỏi thân patch")
 
+    def test_adapter_trong_bundle_khop_nguyen_van_file_nguon(self):
+        goc_repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(os.path.join(goc_repo, "hooks", "scripts", "codex_edit_gate.py"),
+                  encoding="utf-8") as f:
+            nguon = f.read()
+        with open(os.path.join(self.goc, "hooks", "scripts", "codex_edit_gate.py"),
+                  encoding="utf-8") as f:
+            trong_bundle = f.read()
+        self.assertEqual(trong_bundle, nguon,
+                         "bản trong bundle lệch bản nguồn — chép chứ không sinh lại")
+
     # ---- manifest ----
 
     def test_manifest_liet_ke_du_file_native_moi(self):
@@ -553,23 +564,77 @@ class TestBanAntigravityKhongDungHaiBanKia(TempDest):
 
 
 class TestTachPatch(unittest.TestCase):
-    """Rút đường dẫn ra khỏi thân patch của `apply_patch` — hàm thuần, kiểm riêng."""
+    """Rút đường dẫn ra khỏi thân patch của `apply_patch` — hàm thuần, kiểm riêng.
+
+    Nạp thẳng từ file NGUỒN `hooks/scripts/codex_edit_gate.py`: trước đây hàm này có hai
+    bản (một bản sống trong chuỗi sinh bundle, một bản chép lại trong `build_portable.py`
+    chỉ để test bám vào) và hai bản đó có thể lệch nhau mà không ai biết.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        duong = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             "hooks", "scripts", "codex_edit_gate.py")
+        spec = importlib.util.spec_from_file_location("codex_edit_gate_thuan", duong)
+        mo = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mo)
+        cls.tach = staticmethod(mo.tach_duong_dan_patch)
 
     def test_ba_dang_lenh_patch(self):
-        from build_portable import tach_duong_dan_patch as tach
+        tach = self.tach
         self.assertEqual(tach("*** Update File: a/b.py\n"), "a/b.py")
         self.assertEqual(tach("*** Add File: c.md\n@@\n+x\n"), "c.md")
         self.assertEqual(tach("*** Delete File: d.txt\n"), "d.txt")
 
     def test_khong_co_gi_thi_tra_chuoi_rong(self):
-        from build_portable import tach_duong_dan_patch as tach
+        tach = self.tach
         self.assertEqual(tach("khong phai patch"), "")
         self.assertEqual(tach(""), "")
 
     def test_lay_file_dau_tien_khi_patch_nhieu_file(self):
-        from build_portable import tach_duong_dan_patch as tach
         than = "*** Begin Patch\n*** Update File: mot.py\n*** Update File: hai.py\n"
-        self.assertEqual(tach(than), "mot.py")
+        self.assertEqual(self.tach(than), "mot.py")
+
+
+class TestAdapterLaFileThat(unittest.TestCase):
+    """Adapter Codex là FILE nguồn, không còn là chuỗi nằm trong hàm sinh bundle.
+
+    Vì sao khoá: một hook viết dưới dạng chuỗi thì không test được, không lint được,
+    không có diff đọc nổi — và mỗi lần sửa phải nhớ escape tay. T6.2 sắp thêm cả nhánh
+    `Bash` vào đây, nên nó phải là file thật trước đã.
+    """
+
+    GOC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    NGUON = os.path.join(GOC, "hooks", "scripts", "codex_edit_gate.py")
+
+    def test_file_nguon_ton_tai_va_chay_duoc(self):
+        self.assertTrue(os.path.isfile(self.NGUON), "thiếu hooks/scripts/codex_edit_gate.py")
+        self.assertTrue(os.access(self.NGUON, os.X_OK), "file adapter phải có cờ chạy")
+
+    def test_khong_con_chuoi_adapter_trong_build_portable(self):
+        with open(os.path.join(self.GOC, "scripts", "build_portable.py"),
+                  encoding="utf-8") as f:
+            nguon = f.read()
+        self.assertFalse("ADAPTER_CODEX" in nguon,
+                         "adapter vẫn còn dạng chuỗi trong build_portable.py")
+
+    def test_build_portable_doc_file_chu_khong_import(self):
+        """Import một file hook nghĩa là nạp — và nạp nhầm là chạy. Chỉ được đọc."""
+        import ast
+        with open(os.path.join(self.GOC, "scripts", "build_portable.py"),
+                  encoding="utf-8") as f:
+            cay = ast.parse(f.read())
+        for nut in ast.walk(cay):
+            if isinstance(nut, ast.Import):
+                ten = [a.name for a in nut.names]
+            elif isinstance(nut, ast.ImportFrom):
+                ten = [nut.module or ""]
+            else:
+                continue
+            for t in ten:
+                self.assertNotIn("codex_edit_gate", t,
+                                 "build_portable.py phải ĐỌC adapter, không import")
 
 
 class TestHuongDanCaiDat(unittest.TestCase):
@@ -689,3 +754,49 @@ class ReferenceCoDuOCaHaiBan(unittest.TestCase):
             [], thieu,
             "Bản portable thiếu file reference so với `skills/` — chạy lại "
             f"`python3 scripts/build_portable.py`: {thieu}")
+
+def _bam(duong):
+    with open(duong, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+class TangCodexKhongDungGocRepo(TempDest):
+    """T9.2 — sinh bundle KHÔNG được ghi vào `.codex/` của gốc repo.
+
+    Hai file `.codex/config.toml` và `.codex/hooks.json` ở gốc repo là cấu hình của
+    CHÍNH repo này khi mở bằng Codex CLI. Bộ sinh cũng làm ra hai file cùng tên trong
+    bundle, nên chỉ cần một đường dẫn quên nối `dest` là nó ghi đè cấu hình đang dùng
+    — hỏng im lặng, và người dùng chỉ biết khi phiên Codex kế tiếp cư xử khác.
+    """
+
+    FILE_GOC = (os.path.join(ROOT, ".codex", "config.toml"),
+                os.path.join(ROOT, ".codex", "hooks.json"))
+
+    def test_sinh_hai_ban_khong_doi_file_codex_goc_repo(self):
+        truoc = {d: _bam(d) for d in self.FILE_GOC if os.path.isfile(d)}
+        self.assertEqual(len(truoc), 2, "gốc repo phải có đủ hai file `.codex/` để so")
+        build_portable.sinh_ban_claude(ROOT, self.dest)
+        build_portable.sinh_ban_codex(ROOT, self.dest)
+        self.assertEqual({d: _bam(d) for d in self.FILE_GOC}, truoc,
+                         "bộ sinh đã ghi đè `.codex/` của gốc repo")
+
+    def test_ban_codex_co_tang_codex_rieng_cua_no(self):
+        """Không đụng gốc repo KHÔNG được đổi thành không sinh gì: bundle vẫn phải có tầng."""
+        goc = build_portable.sinh_ban_codex(ROOT, self.dest)
+        for ten in ("config.toml", "hooks.json"):
+            self.assertTrue(os.path.isfile(os.path.join(goc, ".codex", ten)), ten)
+        self.assertNotEqual(_bam(os.path.join(goc, ".codex", "hooks.json")),
+                            "", "hooks.json rỗng")
+
+    def test_luat_mode_codex_sang_du_ca_hai_ban(self):
+        """Luật mode `codex` chỉ nằm ở `skills/` thì máy đích chạy theo bộ luật thiếu."""
+        claude = build_portable.sinh_ban_claude(ROOT, self.dest)
+        codex = build_portable.sinh_ban_codex(ROOT, self.dest)
+        for goc, giua in ((claude, os.path.join(".claude", "skills")),
+                          (codex, os.path.join(".agents", "skills"))):
+            duong = os.path.join(goc, giua, "tdq-build", "references", "codex-mode.md")
+            self.assertTrue(os.path.isfile(duong), duong)
+            with open(duong, encoding="utf-8") as f:
+                noi_dung = f.read()
+            self.assertIn("VÙNG KHOÁ", noi_dung)
+            self.assertIn("NOT the fast mode", noi_dung)

@@ -123,3 +123,53 @@ class PhaseTableTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ModeRowsTest(unittest.TestCase):
+    """T1.2 — `phase_row` rẽ bằng BẢNG TRA, không bằng `if == "subagent"`.
+
+    Ba bất biến:
+    1. Mọi mode trong VALID_MODES đều khai một hàng phase `implement`.
+    2. `phase_row` trả đúng hàng đã khai cho từng mode — vòng qua cả bảng,
+       nên thêm mode thứ tư chỉ cần thêm một dòng bảng.
+    3. Mode có trong VALID_MODES mà thiếu khai thì lỗi NGAY lúc nạp bảng,
+       không phải lỗi im lặng lúc hiển thị.
+    """
+
+    def _state(self, mode):
+        return {"active_request": "r", "lane": "full", "phase": "implement",
+                "plan_approved": True, "spec_approved": True,
+                "implement_mode": mode}
+
+    def test_moi_mode_deu_khai_hang_implement(self):
+        for mode in tdq_state.VALID_MODES:
+            with self.subTest(mode=mode):
+                self.assertIn(mode, tdq_state.MODE_ROWS)
+
+    def test_phase_row_tra_dung_hang_da_khai(self):
+        for mode in tdq_state.VALID_MODES:
+            with self.subTest(mode=mode):
+                row = tdq_state.phase_row(self._state(mode))
+                khai = tdq_state.MODE_ROWS[mode] or tdq_state.PHASE_TABLE["implement"]
+                self.assertIs(row, khai)
+                self.assertEqual(REQUIRED_KEYS, set(row))
+
+    def test_hang_cua_moi_mode_la_rieng_biet(self):
+        """Hai mode khác nhau không được dùng chung một hàng — nếu dùng chung
+        thì người đọc `next` không biết mình đang ở nhịp nào."""
+        thay = [id(tdq_state.MODE_ROWS[m] or tdq_state.PHASE_TABLE["implement"])
+                for m in tdq_state.VALID_MODES]
+        self.assertEqual(len(thay), len(set(thay)), "hai mode dùng chung một hàng")
+
+    def test_thieu_khai_thi_loi_ngay_luc_nap_bang(self):
+        with self.assertRaises(Exception) as ctx:
+            tdq_state.kiem_bang_mode(("main", "subagent", "codex", "mode_gia"),
+                                     tdq_state.MODE_ROWS)
+        self.assertIn("mode_gia", str(ctx.exception))
+
+    def test_them_mode_chi_can_them_dong_bang(self):
+        """Thêm mode giả VÀ khai hàng cho nó thì bảng hợp lệ — không phải sửa
+        thân hàm nào."""
+        hang_gia = dict(tdq_state.PHASE_TABLE["implement"])
+        bang = dict(tdq_state.MODE_ROWS, mode_gia=hang_gia)
+        tdq_state.kiem_bang_mode(("main", "subagent", "codex", "mode_gia"), bang)

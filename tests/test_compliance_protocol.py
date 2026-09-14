@@ -255,10 +255,17 @@ class ProtocolTest(unittest.TestCase):
         # target is a different harness: its `PreToolUse` deny is a real hard block and is the
         # whole point of the antigravity bundle (spec §1), and `build_portable.py` writes agy's
         # `permissions.deny` list. Neither goes anywhere near Claude Code's hook path.
+        # The Codex layer is a third harness. `codex_edit_gate.py` runs inside the Codex sandbox,
+        # where `hooks/scripts/_common.py` may not even import, so its deny is Codex's own
+        # permission decision and cannot route through `block()`; `tdq_codex.py` only names
+        # "deny" as one of the four verdict states it reads back. Neither touches Claude Code's
+        # hook path either.
         deny_allowed = {
             os.path.join(ROOT, "hooks", "scripts", "_common.py"),
             os.path.join(ROOT, "hooks", "scripts", "agy_pretooluse_gate.py"),
+            os.path.join(ROOT, "hooks", "scripts", "codex_edit_gate.py"),
             os.path.join(ROOT, "scripts", "build_portable.py"),
+            os.path.join(ROOT, "scripts", "tdq_codex.py"),
         }
         hits = []
         for folder in ("hooks", "scripts"):

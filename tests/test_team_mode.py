@@ -1720,3 +1720,76 @@ class VaLuoiWorktreeTest(TeamBase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ModeQuaDoiTest(unittest.TestCase):
+    """T4.1 — mode nào đi qua ĐỘI được KHAI TƯỜNG MINH, không rẽ bằng `!= "subagent"`.
+
+    Vì sao phải khai: `canh_bao_lach_luat` chỉ có nghĩa với mode giao việc cho
+    nhiều nhánh. Mode `codex` giao việc cho một tác nhân ngoài nhưng leader vẫn
+    ngồi trên nhánh chính, nên nó KHÔNG đi qua đội — và cái "không" đó phải là
+    một dòng người ta đọc được, không phải hệ quả tình cờ của một phép so chuỗi.
+    """
+
+    def test_moi_mode_deu_duoc_khai(self):
+        for mode in tdq_state.VALID_MODES:
+            with self.subTest(mode=mode):
+                self.assertIn(mode, tdq_team.MODE_QUA_DOI)
+
+    def test_gia_tri_khai_la_bool(self):
+        for mode, qua in tdq_team.MODE_QUA_DOI.items():
+            with self.subTest(mode=mode):
+                self.assertIsInstance(qua, bool, f"{mode} khai không phải bool")
+
+    def test_subagent_di_qua_doi_codex_thi_khong(self):
+        self.assertTrue(tdq_team.MODE_QUA_DOI["subagent"])
+        self.assertFalse(tdq_team.MODE_QUA_DOI["codex"])
+        self.assertFalse(tdq_team.MODE_QUA_DOI["main"])
+
+    def test_thieu_khai_thi_loi_ngay_luc_nap_bang(self):
+        with self.assertRaises(Exception) as ctx:
+            tdq_team.kiem_bang_qua_doi(
+                ("main", "subagent", "codex", "mode_gia"), tdq_team.MODE_QUA_DOI)
+        self.assertIn("mode_gia", str(ctx.exception))
+
+    def test_them_mode_chi_can_them_dong_bang(self):
+        bang = dict(tdq_team.MODE_QUA_DOI, mode_gia=False)
+        tdq_team.kiem_bang_qua_doi(
+            ("main", "subagent", "codex", "mode_gia"), bang)
+
+
+class CanhBaoTheoBangTest(unittest.TestCase):
+    """`canh_bao_lach_luat` phải ĐỌC BẢNG, chứng minh bằng hành vi chứ không
+    bằng việc đọc mã nguồn."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = os.path.realpath(self._tmp.name)
+        os.makedirs(os.path.join(self.cwd, "docs", "tdq", "plan"), exist_ok=True)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _dat_state(self, mode):
+        state = tdq_state.default_state()
+        state.update({"active_request": "r", "lane": "full", "phase": "implement",
+                      "spec_approved": True, "plan_approved": True,
+                      "implement_mode": mode})
+        with open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False)
+        with open(os.path.join(self.cwd, "docs", "tdq", "plan", "r.md"), "w",
+                  encoding="utf-8") as f:
+            f.write("# PLAN\n\n- [ ] **T1.1** (e1m) x — Test: y\n")
+
+    def test_codex_khong_bi_canh_bao_vi_da_khai_khong_qua_doi(self):
+        self._dat_state("codex")
+        self.assertIsNone(tdq_team.canh_bao_lach_luat(self.cwd, "scripts/x.py"))
+
+    def test_subagent_van_canh_bao_nhu_cu(self):
+        self._dat_state("subagent")
+        self.assertIsNotNone(tdq_team.canh_bao_lach_luat(self.cwd, "scripts/x.py"))
+
+    def test_main_khong_bi_canh_bao(self):
+        self._dat_state("main")
+        self.assertIsNone(tdq_team.canh_bao_lach_luat(self.cwd, "scripts/x.py"))

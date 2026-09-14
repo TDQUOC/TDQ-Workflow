@@ -19,11 +19,11 @@ from _common import (approve_hint, payload_cwd, plan_mode, read_payload,
                      session_id)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
-from tdq_state import (effective_lane, effective_mode,  # noqa: E402
-                       effective_phase, load, normalize_mode, phase_key,
-                       prompt_context_last, prompt_context_save, render_next,
-                       sha256_noi_dung, turn_log_append, turn_log_clear,
-                       turn_snapshot)
+from tdq_state import (MODE_ALIASES, effective_lane,  # noqa: E402
+                       effective_mode, effective_phase, liet_ke_modes, load,
+                       normalize_mode, phase_key, prompt_context_last,
+                       prompt_context_save, render_next, sha256_noi_dung,
+                       turn_log_append, turn_log_clear, turn_snapshot)
 
 MAX_LINES = 3
 MAX_CHARS = 240
@@ -52,11 +52,15 @@ QUESTION = re.compile(
     r"|\bnot\s+yet\b|\bnot\s+sure\b|\bnot\b|\bdon'?t\b|\bnope\b|\bno\b\s*$"
     r"|\bhold\s+on\b|\bwait\b|\bmaybe\b|\breject(?:ed)?\b|\bcancel\b)",
     re.IGNORECASE)
-# Accepts both the old machine identifiers (main|subagent) and the labels the user reads at
-# the mode gate (inline | sub-agent | sub agent), with an optional "implement" tail. The \b
-# word boundaries stay so "mainline" and "inlineable" are not read as a mode answer.
-MODE = re.compile(r"\b(main|inline|subagent|sub[\s-]?agent)\b(\s+implement)?",
-                  re.IGNORECASE)
+# Built from MODE_ALIASES: every spelling `normalize_mode` understands must also be heard
+# at the mode gate, and adding a mode costs one row in the alias table instead of an edit to
+# the regex here. Longest alias first, because the regex takes the FIRST matching branch
+# ("inline implement" must be tried before "inline"). Spaces inside an alias widen to \s+ so
+# "sub  agent" gets in, while the \b at both ends keeps "mainline" and "inlineable" out.
+_MODE_BI_DANH = "|".join(
+    re.escape(alias).replace(r"\ ", r"\s+")
+    for alias in sorted(MODE_ALIASES, key=len, reverse=True))
+MODE = re.compile(r"\b(%s)\b" % _MODE_BI_DANH, re.IGNORECASE)
 # Every gate template invites the user to answer with a letter, so a bare letter is a valid
 # answer at all 4 gates. Accepted ONLY when it STANDS ALONE (an optional choose-prefix and a
 # short tail are allowed): a full sentence such as "Approve? not sure" must miss.
@@ -71,7 +75,7 @@ LETTER = re.compile(
 APPROVE_LETTER = "a"
 
 
-def looks_like_approval(prompt, target):
+def looks_like_approval(prompt, target, chon_duoc=None):
     if not prompt:
         return False
     if QUESTION.search(prompt):
@@ -80,9 +84,11 @@ def looks_like_approval(prompt, target):
     if target == "mode":
         # An answer at the mode gate is usually bare: "main", "subagent", "choose A".
         # No word of agreement is required — the plan is already approved, this only
-        # picks how to run it. The mode gate offers exactly 2 options, so only a/b count.
+        # picks how to run it. A letter counts exactly when it names one of the options
+        # that were OFFERED: reading "C" as an answer on a 2-option gate would record a
+        # mode the user never saw, so `mode_from_answer` is the single judge of range.
         return bool(MODE.search(prompt)
-                    or (letter and letter.group(1).lower() in ("a", "b")))
+                    or (letter and mode_from_answer(prompt, None, chon_duoc)))
     if letter:
         return letter.group(1).lower() == APPROVE_LETTER
     if target == "quick" and APPROVE_FAST.search(prompt):
@@ -98,11 +104,37 @@ def looks_like_approval(prompt, target):
     return bool(PRONOUN.search(prompt))
 
 
-def mode_from_answer(prompt, planned):
+def mode_mac_dinh():
+    """The mode list with NO probe — only the modes needing nothing outside this machine.
+
+    Without a probe there is no right to claim an outside engine is alive, so it is not
+    offered. Taken from `liet_ke_modes`; no mode name is typed by hand here.
+    """
+    return [row["ma"] for row in liet_ke_modes(kiem_codex=lambda: (False, "not probed"))
+            if row["chon_duoc"]]
+
+
+def thu_tu_mode(planned, chon_duoc=None):
+    """Option order at the mode gate — EXACTLY the letters A, B, C… the user sees.
+
+    The rule: the mode the plan proposes sits at A (the interview template always parks the
+    proposal at A), and the rest keep the order of the `modes --json` list. One rule serves
+    both the printing side and the reading side, so a letter never points at the wrong mode.
+    """
+    ds = list(chon_duoc) if chon_duoc is not None else mode_mac_dinh()
+    if not ds:
+        return []
+    dau = planned if planned in ds else ds[0]
+    return [dau] + [ma for ma in ds if ma != dau]
+
+
+def mode_from_answer(prompt, planned, chon_duoc=None):
     """An answer at the mode gate -> the machine identifier, or None if unreadable.
 
-    The mode name typed out beats the letter. A letter reads by the template: A is the mode the
-    plan PROPOSED (always sitting at option A), B is the other one.
+    The mode name typed out beats the letter — naming a mode is an unambiguous intent, even
+    when that mode is currently unofferable (the implement gate will print the reason, and
+    silently overriding the user is worse). A letter is read through `thu_tu_mode`: exactly
+    the list that was printed, nothing more.
     """
     found = MODE.search(prompt or "")
     if found:
@@ -110,12 +142,13 @@ def mode_from_answer(prompt, planned):
         if said:
             return said
     letter = LETTER.match(prompt or "")
-    if not letter or letter.group(1).lower() not in ("a", "b"):
+    if not letter:
         return None
-    suggested = planned or "main"
-    if letter.group(1).lower() == "a":
-        return suggested
-    return "subagent" if suggested == "main" else "main"
+    thu_tu = thu_tu_mode(planned, chon_duoc)
+    chi_so = ord(letter.group(1).lower()) - ord("a")
+    if 0 <= chi_so < len(thu_tu):
+        return thu_tu[chi_so]
+    return None
 
 
 def _nhac_worktree(cwd):
@@ -186,7 +219,11 @@ def main():
         lines = []
         prompt = payload.get("prompt") or ""
         planned = plan_mode(cwd, state) if pending in ("plan", "mode") else None
-        matched = looks_like_approval(prompt, pending)
+        # The mode list is built only at the mode gate itself: `liet_ke_modes(cwd=...)`
+        # probes the outside engine in a sub-process, too costly to run on every prompt.
+        chon_duoc = ([row["ma"] for row in liet_ke_modes(cwd=cwd) if row["chon_duoc"]]
+                     if pending == "mode" else None)
+        matched = looks_like_approval(prompt, pending, chon_duoc)
         turn_log_append(cwd, "signal", session=sid, event="approve_pending",
                         target=pending, matched=matched, mode_conflict=False)
         if matched:
@@ -196,7 +233,7 @@ def main():
                 # plan proposed is no conflict — a proposal is only a proposal, the user
                 # settles it. Normalised to the machine identifier: the user typing "inline"
                 # must still run --mode main, else state holds a string outside VALID_MODES.
-                said = mode_from_answer(prompt, planned) or planned or "main"
+                said = mode_from_answer(prompt, planned, chon_duoc) or planned or "main"
                 lines.append("[TDQ:APPROVE] The user just picked a mode → run NOW: "
                              f"python3 scripts/tdq_state.py approve plan --mode {said} "
                              f"--by \"{prompt[:60]}\"")

@@ -27,6 +27,7 @@ import argparse
 import json
 import os
 import platform
+import re
 import shutil
 import statistics
 import subprocess
@@ -44,6 +45,12 @@ import tdq_ten_lenh  # noqa: E402
 GIT_TIMEOUT = 120
 # The six constants of the formula. One missing means no computation — there is no default.
 HANG_SO = ("t_task", "t_tick", "t_phat", "t_kiem", "t_hop", "t_don")
+# The two OPTIONAL keys of mode `codex`. Optional on purpose: every measurement file written
+# before this mode existed lacks them, and an old measurement must not expire merely because a
+# new mode arrived. Key missing → drop the `codex` column with a reason, never guess the number.
+# `t_codex_khoi_dong` is the FIXED startup cost of each `codex exec` turn, measured at ~5s; it
+# has to live in the measurement file rather than be hardcoded, per the no-invented-constants law.
+HANG_SO_CODEX = ("t_codex", "t_codex_khoi_dong")
 NGUON_HOP_LE = ("that", "stub")
 SO_MAU_TOI_THIEU = 3
 
@@ -185,31 +192,57 @@ def nap_hang_so(duong):
         raise LoiThieuSo(
             f"Measurement file {duong} is missing constant(s): {', '.join(thieu)}. "
             f"Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
-    ra = {}
-    for ten in HANG_SO:
-        rec = bang[ten]
-        if not isinstance(rec, dict) or "giay" not in rec:
-            raise LoiThieuSo(f"Constant {ten} in {duong} has no \"giay\" field.")
-        try:
-            giay = float(rec["giay"])
-        except (TypeError, ValueError):
-            raise LoiThieuSo(
-                f"Constant {ten} in {duong} has giay = {rec['giay']!r}, which is not a number. "
-                f"Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
-        if not giay > 0 or giay != giay or giay == float("inf"):
-            raise LoiThieuSo(
-                f"Constant {ten} in {duong} is {giay} — a duration must be a positive finite "
-                f"number. Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
-        # This gate must lock at the READING end, not only at the writing end: the file can be
-        # hand-edited after it was written, and the simulation would believe it on sight.
-        so_mau = rec.get("so_mau")
-        if not isinstance(so_mau, int) or so_mau < SO_MAU_TOI_THIEU:
-            raise LoiThieuSo(
-                f"Constant {ten} in {duong} only carries so_mau = {so_mau!r}, at least "
-                f"{SO_MAU_TOI_THIEU} are needed. Measure again: python3 scripts/tdq_bench.py calibrate "
-                f"--ra {duong}")
-        ra[ten] = giay
-    return ra
+    return {ten: _doc_mot_hang_so(bang[ten], ten, duong) for ten in HANG_SO}
+
+
+def _doc_mot_hang_so(rec, ten, duong):
+    """One constant -> seconds. Every failure mode is a LoiThieuSo carrying the re-measure command."""
+    if not isinstance(rec, dict) or "giay" not in rec:
+        raise LoiThieuSo(f"Constant {ten} in {duong} has no \"giay\" field.")
+    try:
+        giay = float(rec["giay"])
+    except (TypeError, ValueError):
+        raise LoiThieuSo(
+            f"Constant {ten} in {duong} has giay = {rec['giay']!r}, which is not a number. "
+            f"Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
+    if not giay > 0 or giay != giay or giay == float("inf"):
+        raise LoiThieuSo(
+            f"Constant {ten} in {duong} is {giay} — a duration must be a positive finite "
+            f"number. Measure again: python3 scripts/tdq_bench.py calibrate --ra {duong}")
+    # This gate must lock at the READING end, not only at the writing end: the file can be
+    # hand-edited after it was written, and the simulation would believe it on sight.
+    so_mau = rec.get("so_mau")
+    if not isinstance(so_mau, int) or so_mau < SO_MAU_TOI_THIEU:
+        raise LoiThieuSo(
+            f"Constant {ten} in {duong} only carries so_mau = {so_mau!r}, at least "
+            f"{SO_MAU_TOI_THIEU} are needed. Measure again: python3 scripts/tdq_bench.py calibrate "
+            f"--ra {duong}")
+    return giay
+
+
+def nap_hang_so_codex(duong):
+    """-> (dict of both keys, "") when fully declared · (None, reason) when not declared.
+
+    The two exits are different things and must never be blended: NOT declaring is normal
+    (return None plus the sentence saying why the column is dropped), while declaring it
+    WRONG — a negative number, too few samples, half a declaration — is a loud error.
+    Swallowing a broken key as "not declared" means the user edited the wrong file and
+    never finds out.
+    """
+    try:
+        with open(duong, encoding="utf-8") as f:
+            bang = (json.load(f) or {}).get("hang_so") or {}
+    except (OSError, ValueError, UnicodeDecodeError):
+        return None, f"cannot read the Codex constants from {duong}"
+    co = [ten for ten in HANG_SO_CODEX if ten in bang]
+    if not co:
+        return None, (f"{duong} carries no Codex constant ({', '.join(HANG_SO_CODEX)}) — "
+                      f"measure them first: python3 scripts/tdq_bench.py calibrate --ra {duong}")
+    thieu = [ten for ten in HANG_SO_CODEX if ten not in bang]
+    if thieu:
+        return None, (f"{duong} declares Codex only halfway: missing {', '.join(thieu)}. "
+                      f"A half-declared mode is not simulated — no number is invented for it.")
+    return {ten: _doc_mot_hang_so(bang[ten], ten, duong) for ten in HANG_SO_CODEX}, ""
 
 
 # --------------------------------------------------------------- simulation
@@ -220,7 +253,7 @@ class KetQua:
         self.__dict__.update(kw)
 
 
-def mo_phong_tasks(tasks, hs, he_so_agent=1.0):
+def mo_phong_tasks(tasks, hs, he_so_agent=1.0, hs_codex=None):
     """Apply the §3 formula of the spec to the list of Tasks read off the plan.
 
     `he_so_agent` is how many times SLOWER a sub-agent is than the leader on the same task.
@@ -253,16 +286,24 @@ def mo_phong_tasks(tasks, hs, he_so_agent=1.0):
     # Bias-check variant: the spec formula does NOT count t_tick for team mode, although the
     # leader still ticks every task in both modes. Computed too, to expose that gap.
     t_doi_kem_tick = t_doi + n * hs["t_tick"]
+    # Mode `codex` runs SEQUENTIALLY: no waves, no hand-out/merge cost, but every task pays the
+    # `codex exec` startup once, and the leader still ticks each task as in every other mode.
+    t_codex = None
+    if hs_codex:
+        t_codex = n * (hs_codex["t_codex"] + hs_codex["t_codex_khoi_dong"]) + n * hs["t_tick"]
+    thang = "đội" if t_doi < t_main else ("main" if t_doi > t_main else "hoà")  # i18n-allow
+    if t_codex is not None and t_codex < min(t_main, t_doi):
+        thang = "codex"
     return KetQua(
         so_task=n, so_giao=len(giao), so_tu_lam=len(tu_lam), so_dot=len(dot),
-        t_main=t_main, t_doi=t_doi, t_doi_kem_tick=t_doi_kem_tick,
+        t_main=t_main, t_doi=t_doi, t_doi_kem_tick=t_doi_kem_tick, t_codex=t_codex,
         chen=chen, phi_dot=phi_dot, tong_max=tong_max, he_so_agent=he_so_agent,
-        thang="đội" if t_doi < t_main else ("main" if t_doi > t_main else "hoà"),  # i18n-allow
+        thang=thang,
     )
 
 
-def mo_phong_van_ban(van_ban, hs, he_so_agent=1.0):
-    return mo_phong_tasks(_tasks_tu_van_ban(van_ban), hs, he_so_agent)
+def mo_phong_van_ban(van_ban, hs, he_so_agent=1.0, hs_codex=None):
+    return mo_phong_tasks(_tasks_tu_van_ban(van_ban), hs, he_so_agent, hs_codex)
 
 
 def _phut(giay):
@@ -407,6 +448,48 @@ def _do_tick(duong_plan, ma):
     return time.perf_counter() - bat_dau
 
 
+# The log line of one Codex turn, produced by `dong_log_luot` in scripts/tdq_codex.py:
+#   [<iso>] luot <ma_task> · model=… · home=… · <giay>s · <trang_thai> · sha256=… · dau="…"
+# Read that line back instead of running another benchmark round: the synthetic round measures
+# Codex on a fake plan, while the log line is the number of real work already done — already paid for.
+MAU_LOG_LUOT = re.compile(
+    r"\bluot\s+(\S+)\s+·.*?·\s+([0-9]+(?:\.[0-9]+)?)s\s+·\s+(\S+)\s+·")
+# Only a `xong` turn is a sample of task time. A `timeout` turn measures the clock running out
+# and a `deny` turn measures the fence stopping it — counting those in is inventing numbers.
+TRANG_THAI_TINH = "xong"
+
+
+def doc_log_codex(van_ban):
+    """Log text → [(task_id, seconds)] of the `xong` turns, in the order met.
+
+    Unknown lines are skipped silently: the log file also holds lines from other commands, and a
+    log reader that falls over on an unfamiliar line is one nobody dares point at a real log.
+    """
+    ra = []
+    for dong in (van_ban or "").splitlines():
+        khop = MAU_LOG_LUOT.search(dong)
+        if khop and khop.group(3) == TRANG_THAI_TINH:
+            ra.append((khop.group(1), float(khop.group(2))))
+    return ra
+
+
+def nap_log_codex(duong):
+    """Log file path → the list of seconds of its `xong` turns."""
+    try:
+        with open(duong, encoding="utf-8") as f:
+            van_ban = f.read()
+    except OSError as loi:
+        raise LoiThieuSo(
+            f"Cannot read the Codex log {duong}: {loi}. Point --log-codex at the file "
+            f"the implement turn wrote, or drop the flag to skip the Codex constants.")
+    mau = [giay for _ma, giay in doc_log_codex(van_ban)]
+    if not mau:
+        raise LoiThieuSo(
+            f"{duong} carries no finished Codex turn (`· {TRANG_THAI_TINH} ·`). "
+            f"Nothing to take samples from — measure during a real implement turn.")
+    return mau
+
+
 def _doc_mau_that(chuoi):
     """"t_task=91.2,t_task=104.7" → {"t_task": [91.2, 104.7]}."""
     ra = {}
@@ -418,9 +501,9 @@ def _doc_mau_that(chuoi):
             raise LoiThieuSo(f"--mau-that is malformed at \"{phan}\" — use name=seconds.")
         ten, gia_tri = phan.split("=", 1)
         ten = ten.strip()
-        if ten not in HANG_SO:
+        if ten not in HANG_SO and ten not in HANG_SO_CODEX:
             raise LoiThieuSo(f"--mau-that: no constant named \"{ten}\". "
-                             f"Accepted: {', '.join(HANG_SO)}")
+                             f"Accepted: {', '.join(HANG_SO + HANG_SO_CODEX)}")
         try:
             ra.setdefault(ten, []).append(float(gia_tri))
         except ValueError:
@@ -452,6 +535,27 @@ def lenh_dung_plan(args):
     return 0
 
 
+def _gom_mau_codex(args, that):
+    """-> (dict name → samples, dict name → how measured). Empty when there is no Codex source.
+
+    Two sources, different enough to carry different `cach_do` values: `doc-log` is the number the
+    machine wrote itself during a real run, `nhap-tay` is one a human typed. Merging them under one
+    label means nobody can later tell which number deserves more trust.
+    """
+    mau = {ten: [] for ten in HANG_SO_CODEX}
+    cach = {ten: "doc-log" for ten in HANG_SO_CODEX}
+    co_nguon = False
+    if getattr(args, "log_codex", None):
+        mau["t_codex"] = nap_log_codex(args.log_codex)
+        co_nguon = True
+    for ten in HANG_SO_CODEX:
+        if that.get(ten):
+            mau[ten] = that[ten]
+            cach[ten] = "nhap-tay"
+            co_nguon = True
+    return (mau if co_nguon else {}), cach
+
+
 def lenh_thuc_do(args):
     # --lap 0 + --mau-that = all 6 constants invented while the file still says nguon=that.
     # Blocked here, and cach_do is written per constant so machine and hand stay apart.
@@ -469,6 +573,8 @@ def lenh_thuc_do(args):
     that = _doc_mau_that(args.mau_that)
     mau_may = {ten: list(gia_tri) for ten, gia_tri in mau.items()}
     for ten, gia_tri in that.items():
+        if ten in HANG_SO_CODEX:
+            continue                  # Codex constants take their own path just below
         mau[ten] = gia_tri            # a real number replaces the stub outright, never mixed
         nguon[ten] = "that"
         cach_do[ten] = "nhap-tay"
@@ -477,6 +583,17 @@ def lenh_thuc_do(args):
         raise LoiThieuSo(
             f"Not yet {SO_MAU_TOI_THIEU} samples for: {', '.join(thieu)}. "
             f"Raise --lap or --task, or feed real numbers with --mau-that.")
+    mau_codex, cach_codex = _gom_mau_codex(args, that)
+    thieu_codex = [(ten, SO_MAU_TOI_THIEU - len(mau_codex[ten])) for ten in HANG_SO_CODEX
+                   if len(mau_codex[ten]) < SO_MAU_TOI_THIEU] if mau_codex else []
+    if thieu_codex and not args.cho_it_mau:
+        raise LoiThieuSo(
+            "Not yet {n} samples for the Codex constant(s): {ds}. Run more tasks in mode "
+            "`codex` and point --log-codex at the log again, or feed the missing ones with "
+            "--mau-that.".format(
+                n=SO_MAU_TOI_THIEU,
+                ds=", ".join(f"{ten} ({SO_MAU_TOI_THIEU - thieu_n} of {SO_MAU_TOI_THIEU}, "
+                             f"{thieu_n} more)" for ten, thieu_n in thieu_codex)))
     du_lieu = {
         "slug": args.slug,
         "ngay": args.ngay or date.today().isoformat(),
@@ -489,6 +606,11 @@ def lenh_thuc_do(args):
             for ten in HANG_SO
         },
     }
+    # A Codex key exists only when it was measured. Absence is a valid answer — `simulate` prints
+    # "not simulated" plus the reason rather than filling the hole with a default number.
+    for ten in HANG_SO_CODEX:
+        if mau_codex.get(ten):
+            du_lieu["hang_so"][ten] = _thong_ke(mau_codex[ten], "that", cach_codex[ten])
     try:
         os.makedirs(os.path.dirname(os.path.abspath(args.ra)), exist_ok=True)
         with open(args.ra, "w", encoding="utf-8") as f:
@@ -498,8 +620,10 @@ def lenh_thuc_do(args):
         raise LoiThieuSo(f"Cannot write {args.ra}: {loi}. "
                          f"Create the parent directory first, then run again.")
     print(f"Measurement: {args.ra}")
-    for ten in HANG_SO:
-        rec = du_lieu["hang_so"][ten]
+    for ten in HANG_SO + HANG_SO_CODEX:
+        rec = du_lieu["hang_so"].get(ten)
+        if rec is None:
+            continue
         print(f"  {ten:8s} {rec['giay']:9.3f}s  ±{rec['do_tan']:.3f}  "
               f"n={rec['so_mau']}  source={rec['nguon']}  method={rec['cach_do']}")
     return 0
@@ -518,18 +642,29 @@ def lenh_mo_phong(args):
                 f"--thuc-do {args.thuc_do} --task 12")
     else:
         van_ban, _ = sinh_plan(args.task, args.chong, args.phu_thuoc)
-    kq = mo_phong_van_ban(van_ban, hs, args.he_so_agent)
+    hs_codex, ly_do_codex = nap_hang_so_codex(args.thuc_do)
+    kq = mo_phong_van_ban(van_ban, hs, args.he_so_agent, hs_codex)
     _log(f"simulate → {kq.so_task} task(s) · {kq.so_dot} wave(s) · winner: {kq.thang}")
     print(f"Plan: {kq.so_task} task(s) · assigned {kq.so_giao} · leader keeps {kq.so_tu_lam} "
           f"· {kq.so_dot} wave(s) · agent factor {kq.he_so_agent}")
-    print("| Metric | main | team |")
-    print("|---|---|---|")
-    print(f"| Model time (minutes) | {_phut(kq.t_main)} | {_phut(kq.t_doi)} |")
-    print(f"| Fixed fee per wave (minutes) | 0.0 | {_phut(kq.phi_dot)} |")
-    print(f"| Waiting on the slowest task (minutes) | — | {_phut(kq.tong_max)} |")
-    print(f"| Leader working in between (minutes) | — | {_phut(kq.chen)} |")
-    print(f"| Including t_tick (minutes) | {_phut(kq.t_main)} | {_phut(kq.t_doi_kem_tick)} |")
+    # The third column grows only when real numbers exist. A "—" cell on every row reads as measured-and-zero.
+    co = kq.t_codex is not None
+    dau, ngan = ("| Metric | main | team | codex |", "|---|---|---|---|") if co else \
+                ("| Metric | main | team |", "|---|---|---|")
+    def _o(gia_tri):
+        return f" {gia_tri} |" if co else ""
+    print(dau)
+    print(ngan)
+    print(f"| Model time (minutes) | {_phut(kq.t_main)} | {_phut(kq.t_doi)} |"
+          + _o(_phut(kq.t_codex) if co else ""))
+    print(f"| Fixed fee per wave (minutes) | 0.0 | {_phut(kq.phi_dot)} |" + _o("—"))
+    print(f"| Waiting on the slowest task (minutes) | — | {_phut(kq.tong_max)} |" + _o("—"))
+    print(f"| Leader working in between (minutes) | — | {_phut(kq.chen)} |" + _o("—"))
+    print(f"| Including t_tick (minutes) | {_phut(kq.t_main)} | {_phut(kq.t_doi_kem_tick)} |"
+          + _o(_phut(kq.t_codex) if co else ""))
     print(f"Winner: {kq.thang} (gap {_phut(abs(kq.t_main - kq.t_doi))} minutes)")
+    if not co:
+        print(f"Mode codex: not simulated — {ly_do_codex}")
     return 0
 
 
@@ -599,6 +734,9 @@ def build_parser():
     td.add_argument("--ngay", help="date written into the file")
     td.add_argument("--mau-that", dest="mau_that",
                     help="samples from a real agent round, shape \"t_task=91.2,t_task=104.7\"")
+    td.add_argument("--log-codex", dest="log_codex",
+                    help="log file of a real implement turn; the `xong` turns in it become "
+                         "the t_codex samples (no separate benchmark round)")
     td.add_argument("--cho-it-mau", action="store_true", dest="cho_it_mau",
                     help="allow writing with fewer than 3 samples (debugging only)")
 

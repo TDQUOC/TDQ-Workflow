@@ -268,6 +268,48 @@ def chay_setup(goc, manifest):
     return da_lam, chiu
 
 
+# ------------------------------------------------ Codex layer: ask before installing
+
+# These sentences are the OUTPUT of the command, not commentary — the user reads the exact
+# words here and types the command back, so the command is spelled out rather than described.
+# They stay in the user's language: everything spoken to the user follows `doc_lang`.
+CAU_HOI_CODEX = (
+    "mode `codex` gọi một CLI ngoài (`codex`) chạy trên máy bạn. Workflow KHÔNG tự bật nó.",  # i18n-allow
+    "Đồng ý thì chạy lại: python3 scripts/tdq_checkportable.py setup --codex",  # i18n-allow
+    "Không đồng ý thì bỏ qua — hai mode `main` và `subagent` vẫn chạy như thường.",  # i18n-allow
+)
+CAU_CAI_CODEX = ("chưa có `codex` trên máy này — cài trước: "  # i18n-allow
+                 "npm i -g @openai/codex (rồi `codex login`)")  # i18n-allow
+
+
+def cai_tang_codex(goc, dong_y, tim_lenh=None):
+    """-> (what was done, the lines to print). Two conditions; miss one and NOTHING is written.
+
+    Condition 1 is the user agreeing, condition 2 is `codex` existing on this machine. Writing
+    the flag on one condition alone makes the later `check` lie: the mode gate would offer a
+    mode that cannot run, and the user finds out in the middle of an implement turn.
+
+    This function writes NOTHING into `.codex/`. That layer has exactly one right source,
+    `build_portable.py`; regenerating it here would be inventing content for a file that
+    already has an original.
+    """
+    tim_lenh = shutil.which if tim_lenh is None else tim_lenh
+    if not dong_y:
+        return [], list(CAU_HOI_CODEX)
+    if not tim_lenh("codex"):
+        return [], [CAU_CAI_CODEX, CAU_HOI_CODEX[1]]
+    try:
+        import tdq_codex
+    except ImportError as loi:                      # bundle is missing scripts/tdq_codex.py
+        return [], [f"cannot load scripts/tdq_codex.py ({loi}) — copy that file back "
+                    f"from the original"]
+    tdq_codex.dat_co_dong_y(goc, True)
+    return [f"wrote the consent flag for calling `codex` into "
+            f"{os.path.join('docs', 'tdq', '.tdq-codex.json')}"], [
+        "the Codex layer is on. One step left: name the model with "
+        "python3 scripts/tdq_codex.py setup-model <ten-model>"]
+
+
 # -------------------------------------------------- project trust for Codex CLI
 
 # The config directory of Codex. `CODEX_HOME` is the variable Codex itself reads, so honouring
@@ -440,6 +482,10 @@ def main(argv=None):
     parser.add_argument("lenh", choices=("check", "setup"))
     parser.add_argument("--root", help="bundle root, by default derived from the script location")
     parser.add_argument(
+        "--codex", action="store_true", dest="codex",
+        help="only with `setup`: you agree that the workflow may call the `codex` CLI. Without "
+             "this flag `setup` only prints the question — it installs nothing and writes no flag.")
+    parser.add_argument(
         "--trust", action="store_true",
         help="only with `setup`: declare this bundle a trusted project in the config.toml of "
              "Codex CLI (default ~/.codex, or $CODEX_HOME). This is the ONLY path writing outside "
@@ -471,10 +517,18 @@ def main(argv=None):
                 return EXIT_LECH
             da_lam.append(f"khai project trusted trong {duong}" if da_ghi
                           else f"skipped --trust: {ly_do}")
+        try:
+            lam_codex, noi_codex = cai_tang_codex(goc, args.codex)
+        except OSError as loi:
+            print(f"ERROR    cannot write the Codex consent flag: {loi}")
+            return EXIT_LECH
+        da_lam.extend(lam_codex)
         for viec in da_lam:
             print(f"DONE     {viec}")
         if not da_lam:
             print("DONE     (nothing needed patching)")
+        for dong in noi_codex:
+            print(f"ASK      {dong}")
         for viec in chiu:
             print(f"LEFT     {viec}")
         sach = _in_ket_qua(goc, manifest)

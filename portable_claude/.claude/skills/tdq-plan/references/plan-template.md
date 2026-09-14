@@ -176,9 +176,9 @@ Rules:
 ## The `Mode thực thi` line <!-- i18n-allow: canonical line name of the plan -->
 
 - It MUST sit on **a line of its own**, never merged into another header line — tooling reads it.
-- The value here is the **machine identifier**: `main` or `subagent`. The label the user reads at
-  gate `mode` is "làm trực tiếp (inline implement)" and "giao trợ lý (sub-agent implement)" — <!-- i18n-allow: user-facing mode labels -->
-  see [mode-gate.md](mode-gate.md).
+- The value here is the **machine identifier**: `main`, `subagent` or `codex`. Which of them the
+  machine can actually offer is what `tdq_state.py modes --json` answers; the labels the user
+  reads at gate `mode` live in [mode-gate.md](mode-gate.md).
 - This is only Claude's **proposal**. After the user approves the plan, phase `mode` asks; the
   mode written into state is the one the user SAID, never the proposal taken as settled. An
   approval sentence that already names a mode skips that gate and goes straight to implement.

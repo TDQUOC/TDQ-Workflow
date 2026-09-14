@@ -83,6 +83,22 @@ class ModeLabelTest(unittest.TestCase):
             with self.subTest(raw=raw):
                 self.assertEqual(tdq_state.normalize_mode(raw), want)
 
+    def test_codex_la_mode_thu_ba(self):
+        """Mode `codex` phải là công dân hạng nhất: có trong VALID_MODES,
+        có nhãn người đọc, và ba cách gõ đều về đúng mã máy."""
+        self.assertIn("codex", tdq_state.VALID_MODES)
+        self.assertEqual(tdq_state.MODE_LABELS["codex"], "codex implement")
+        for raw in ("codex", "codex implement", "codex-implement",
+                    "  CODEX IMPLEMENT  "):
+            with self.subTest(raw=raw):
+                self.assertEqual(tdq_state.normalize_mode(raw), "codex")
+
+    def test_moi_mode_deu_co_nhan(self):
+        """Thêm mode mà quên nhãn là lỗi im lặng ở cổng chọn mode."""
+        for mode in tdq_state.VALID_MODES:
+            with self.subTest(mode=mode):
+                self.assertTrue(tdq_state.MODE_LABELS.get(mode))
+
     def test_normalize_rejects_junk(self):
         for raw in ("xyz", "", None, 5):
             with self.subTest(raw=raw):
