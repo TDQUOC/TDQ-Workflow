@@ -19,11 +19,17 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import time
+
+try:
+    import tomllib
+except ImportError:  # Python < 3.11: no provider copy, the temp home keeps only the model line
+    tomllib = None
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from setup_status import mask_secrets  # noqa: E402
@@ -33,6 +39,9 @@ LOG_PROMPT_REL = os.path.join("docs", "tdq", ".tdq-codex-prompt.log")
 HOME_PREFIX = "tdq-codex-home-"
 TIMEOUT_KIEM_SONG = 30
 TIMEOUT_RUN = 600
+# The liveness turn only has to prove the model ANSWERS, so it may not write anything.
+SANDBOX_KIEM_SONG = "read-only"
+CAU_SAY_HI = "Reply with exactly one word: hi"
 
 # The mode's MARKER environment variable: the gate hook inside the sandbox reads it to learn that
 # this turn belongs to mode `codex`. The name deliberately carries no KEY/TOKEN/SECRET — secret
@@ -105,8 +114,9 @@ def doc_co_dong_y(cwd="."):
 
 
 def dat_co_dong_y(cwd, dong_y, model=None):
-    """Record the USER's decision. Only `tdq_checkportable.py setup` calls this, and only after
-    asking — nowhere else may set it on their behalf."""
+    """Record the USER's decision. Only two doors call this, both typed by the user after being
+    asked: `tdq_codex.py dong-y` (source repo and bundles alike) and `tdq_checkportable.py setup
+    --codex` (bundles) — nowhere else may set it on their behalf."""
     duong = os.path.join(cwd, CO_REL)
     os.makedirs(os.path.dirname(duong), exist_ok=True)
     data = {
@@ -122,11 +132,32 @@ def dat_co_dong_y(cwd, dong_y, model=None):
 
 # ------------------------------------------------------------- liveness check
 
-def _kiem_song(duong_codex, timeout=TIMEOUT_KIEM_SONG):
-    """-> (alive, version, reason). One short `codex --version` turn.
+def _dong_loi(stderr):
+    """-> the most telling stderr line: the last `ERROR` line, else the last non-empty one."""
+    dong = [d.strip() for d in (stderr or "").splitlines() if d.strip()]
+    loi = [d for d in dong if "ERROR" in d]
+    return mask_secrets((loi or dong or [""])[-1])[:160]
+
+
+def doc_file_van_ban(duong):
+    """-> the file's text, or "" when it is missing or unreadable."""
+    try:
+        with open(duong, encoding="utf-8") as f:
+            return f.read()
+    except OSError:
+        return ""
+
+
+def _kiem_song(duong_codex, cwd, model, timeout=TIMEOUT_KIEM_SONG):
+    """-> (alive, version, reason). `codex --version`, then ONE real say-hi turn.
+
+    `--version` alone proves nothing: it exits 0 with the router dead (measured — `check` said
+    runnable while a real turn timed out at 60s). The say hi goes through the SAME temporary
+    CODEX_HOME that `run` builds, so "alive" means `run` can reach the model too.
 
     Closed stdin and an explicit timeout are MANDATORY here, not belt-and-braces: `codex exec`
-    hangs forever when stdin is a waiting pipe.
+    hangs forever when stdin is a waiting pipe. Only this turn's own home is deleted afterwards —
+    `cleanup` would also sweep the home of a `run` in progress.
     """
     try:
         proc = subprocess.run(
@@ -141,7 +172,37 @@ def _kiem_song(duong_codex, timeout=TIMEOUT_KIEM_SONG):
     if proc.returncode != 0:
         return False, "", f"`codex --version` exit {proc.returncode}: " \
                           f"{mask_secrets(proc.stderr.strip())[:120]}"
-    return True, mask_secrets((proc.stdout or proc.stderr).strip()), ""
+    phien_ban = mask_secrets((proc.stdout or proc.stderr).strip())
+
+    c = CO_EXEC
+    home = dung_codex_home(cwd, model)
+    file_tra_loi = os.path.join(home, "say-hi.txt")
+    lenh = [duong_codex, c["lenh"], c["goc_repo"], cwd, c["sandbox"], SANDBOX_KIEM_SONG,
+            c["model"], model, c["ket_qua"], file_tra_loi, c["bo_qua_kiem_git"], CAU_SAY_HI]
+    bat_dau = time.time()
+    try:
+        proc = subprocess.run(
+            lenh, capture_output=True, text=True, encoding="utf-8", timeout=timeout,
+            stdin=subprocess.DEVNULL, env=dict(os.environ, CODEX_HOME=home))
+        tra_loi = (doc_file_van_ban(file_tra_loi) or proc.stdout or "").strip()
+    except subprocess.TimeoutExpired:
+        log(f"say hi: timeout {timeout}s · model={model}")
+        # i18n-allow: reason sentence shown to the user by the mode gate
+        return False, "", f"say hi quá hạn {timeout}s — model không trả lời"  # i18n-allow
+    except OSError as exc:
+        # i18n-allow: reason sentence shown to the user by the mode gate
+        return False, "", f"say hi không chạy được `codex`: {type(exc).__name__}"  # i18n-allow
+    finally:
+        shutil.rmtree(home, ignore_errors=True)
+    log(f"say hi: exit {proc.returncode} · {time.time() - bat_dau:.1f}s · model={model} "
+        f"· reply={len(tra_loi)} chars")
+    if proc.returncode != 0:
+        # i18n-allow: reason sentence shown to the user by the mode gate
+        return False, "", f"say hi exit {proc.returncode}: {_dong_loi(proc.stderr)}"  # i18n-allow
+    if not tra_loi:
+        # i18n-allow: reason sentence shown to the user by the mode gate
+        return False, "", "say hi không nhận được câu trả lời nào từ model"  # i18n-allow
+    return True, phien_ban, ""
 
 
 # -------------------------------------------------------------------- check
@@ -165,20 +226,23 @@ def check(cwd="."):
         return {"co": True, "chay_duoc": False, "phien_ban": "",
                 # i18n-allow: reason and fix, quoted verbatim by the mode gate
                 "ly_do": "có `codex` nhưng bạn chưa duyệt cho workflow gọi nó",  # i18n-allow
-                "goi_y": "python3 scripts/tdq_checkportable.py setup"}
+                "goi_y": "python3 scripts/tdq_codex.py dong-y --model <tên-model>"}  # i18n-allow
 
-    song, phien_ban, ly_do_song = _kiem_song(duong_codex)
+    # The model is asked BEFORE liveness: the say hi needs a model name, and without one it would
+    # fall back to the machine default — exactly what this mode forbids.
+    if not co["codex_model"]:
+        return {"co": True, "chay_duoc": False, "phien_ban": "",
+                # i18n-allow: reason and fix, quoted verbatim by the mode gate
+                "ly_do": "thiếu tên model — mode này cấm rơi về model mặc định của máy",  # i18n-allow
+                "goi_y": "python3 scripts/tdq_codex.py setup-model <tên-model>"}  # i18n-allow
+
+    song, phien_ban, ly_do_song = _kiem_song(duong_codex, cwd, co["codex_model"])
     if not song:
         return {"co": True, "chay_duoc": False, "phien_ban": "",
                 # i18n-allow: reason and fix, quoted verbatim by the mode gate
                 "ly_do": f"`codex` có nhưng không chạy được — {ly_do_song}",  # i18n-allow
-                "goi_y": "codex login  (rồi thử lại `codex --version`)"}  # i18n-allow
-
-    if not co["codex_model"]:
-        return {"co": True, "chay_duoc": False, "phien_ban": phien_ban,
-                # i18n-allow: reason and fix, quoted verbatim by the mode gate
-                "ly_do": "thiếu tên model — mode này cấm rơi về model mặc định của máy",  # i18n-allow
-                "goi_y": "python3 scripts/tdq_codex.py setup-model <tên-model>"}  # i18n-allow
+                "goi_y": ("xem provider/router trong ~/.codex/config.toml hoặc chạy `codex login`, "  # i18n-allow
+                          "rồi chạy lại: python3 scripts/tdq_codex.py check")}  # i18n-allow
 
     return {"co": True, "chay_duoc": True, "phien_ban": phien_ban,
             "ly_do": "", "goi_y": ""}
@@ -261,25 +325,90 @@ def _duong_home(cwd):
     return os.path.join(cwd, "docs", "tdq", ".tdq-codex-home")
 
 
-def dung_codex_home(cwd, model):
-    """A temporary CODEX_HOME directory, mode 700, carrying only the user's `auth.json`.
+def thu_muc_codex_may():
+    """The machine's own Codex config directory — `$CODEX_HOME` first, exactly as Codex reads it."""
+    return os.environ.get("CODEX_HOME") or os.path.join(os.path.expanduser("~"), ".codex")
+
+
+def _toml_khoa(khoa):
+    return khoa if re.fullmatch(r"[A-Za-z0-9_-]+", khoa) else json.dumps(khoa, ensure_ascii=False)
+
+
+def _toml_gia_tri(gia_tri):
+    if isinstance(gia_tri, bool):
+        return "true" if gia_tri else "false"
+    if isinstance(gia_tri, (int, float)):
+        return repr(gia_tri)
+    if isinstance(gia_tri, list):
+        return "[" + ", ".join(_toml_gia_tri(x) for x in gia_tri) + "]"
+    if isinstance(gia_tri, dict):
+        return "{ " + ", ".join(f"{_toml_khoa(k)} = {_toml_gia_tri(v)}"
+                                for k, v in gia_tri.items()) + " }"
+    return json.dumps(str(gia_tri), ensure_ascii=False)
+
+
+def _toml_bang(ten, bang):
+    """-> the lines of one TOML table; nested dicts become `[ten.con]` sub-tables."""
+    dong = [f"[{ten}]"]
+    dong += [f"{_toml_khoa(k)} = {_toml_gia_tri(v)}"
+             for k, v in bang.items() if not isinstance(v, dict)]
+    for k, v in bang.items():
+        if isinstance(v, dict):
+            dong += ["", *_toml_bang(f"{ten}.{_toml_khoa(k)}", v)]
+    return dong
+
+
+def _provider_cua_may(nguon):
+    """-> (provider name, its table or None). A missing or broken config is ("", None).
+
+    Only the provider the machine SELECTED is taken: without it Codex falls back to `openai`,
+    which rejects a router model with 400 "model not supported when using Codex with a ChatGPT
+    account" — measured on a machine behind `9router`.
+    """
+    if tomllib is None:
+        return "", None
+    try:
+        with open(os.path.join(nguon, "config.toml"), "rb") as f:
+            cfg = tomllib.load(f)
+    except (OSError, ValueError):
+        return "", None
+    ten = cfg.get("model_provider")
+    if not isinstance(ten, str) or not ten:
+        return "", None
+    bang = (cfg.get("model_providers") or {}).get(ten)
+    return ten, (bang if isinstance(bang, dict) else None)
+
+
+def dung_codex_home(cwd, model, nguon=None):
+    """A temporary CODEX_HOME directory, mode 700: `auth.json` plus a minimal `config.toml`.
 
     It never copies the whole `~/.codex`: the less that enters the sandbox, the less can leak out.
-    `config.toml` is built minimally on the spot instead of inheriting the machine's configuration.
+    `config.toml` carries the workflow's model and ONLY the machine's selected provider table —
+    no `[agents]`, `[projects]` or `[mcp_servers]`. That table may hold a live header key, so the
+    file is 600 and the parent directory is gitignored.
     """
+    nguon = nguon or thu_muc_codex_may()
     goc = _duong_home(cwd)
     os.makedirs(goc, exist_ok=True)
     home = tempfile.mkdtemp(prefix=HOME_PREFIX, dir=goc)
     os.chmod(home, 0o700)
 
-    that = os.path.join(os.path.expanduser("~"), ".codex", "auth.json")
+    that = os.path.join(nguon, "auth.json")
     if os.path.exists(that):
         shutil.copy2(that, os.path.join(home, "auth.json"))
         os.chmod(os.path.join(home, "auth.json"), 0o600)
 
-    with open(os.path.join(home, "config.toml"), "w", encoding="utf-8") as f:
-        f.write(f'model = "{model}"\n')
-    log(f"temporary CODEX_HOME: {home} (mode 700)")
+    ten, bang = _provider_cua_may(nguon)
+    dong = [f"model = {_toml_gia_tri(model)}"]
+    if ten:
+        dong.append(f"model_provider = {_toml_gia_tri(ten)}")
+    if bang is not None:
+        dong += ["", *_toml_bang(f"model_providers.{_toml_khoa(ten)}", bang)]
+    duong_config = os.path.join(home, "config.toml")
+    with open(duong_config, "w", encoding="utf-8") as f:
+        f.write("\n".join(dong) + "\n")
+    os.chmod(duong_config, 0o600)
+    log(f"temporary CODEX_HOME: {home} (mode 700) · provider={ten or '(codex default)'}")
     return home
 
 
@@ -493,6 +622,9 @@ def cli(argv=None):
     m = sub.add_parser("setup-model", help="set the model name for mode codex")
     m.add_argument("ten")
 
+    d = sub.add_parser("dong-y", help="the user approves mode codex (and names the model) in one step")
+    d.add_argument("--model", default=None, help="model name; omitted → keep the one already set")
+
     r = sub.add_parser("run", help="run one task through Codex inside the declared file zone")
     r.add_argument("ma_task")
     r.add_argument("--prompt", required=True)
@@ -532,9 +664,31 @@ def cli(argv=None):
     if a.lenh == "run":
         return _cli_run(a)
 
+    if a.lenh == "dong-y":
+        return _cli_dong_y(a)
+
     co = doc_co_dong_y(a.cwd)
     dat_co_dong_y(a.cwd, co["nguoi_dung_dong_y"], model=a.ten)
     print(f"codex_model = {a.ten}")
+    return 0
+
+
+def _cli_dong_y(a):
+    """The consent door that needs no `manifest.json`, so it works at the source repo root too.
+
+    Same two conditions as `tdq_checkportable.cai_tang_codex`: the user typed it AND `codex` is on
+    this machine. Missing `codex` → write nothing; a flag pointing at an absent CLI only misleads.
+    """
+    if not shutil.which("codex"):
+        print("codex is not installed on this machine — install first: "
+              "npm i -g @openai/codex (then `codex login`)")
+        log("dong-y refused: codex not on PATH, flag not written")
+        return 1
+    model = a.model or doc_co_dong_y(a.cwd).get("codex_model") or None
+    dat_co_dong_y(a.cwd, True, model=model)
+    print(f"consent written to {CO_REL} · codex_model = {model or '(not set)'}")
+    if not model:
+        print("one step left: python3 scripts/tdq_codex.py setup-model <model-name>")
     return 0
 
 
