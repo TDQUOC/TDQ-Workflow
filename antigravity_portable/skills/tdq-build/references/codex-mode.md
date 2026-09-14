@@ -66,8 +66,11 @@ post-audit; you do not rebuild any of that by hand.
 
 ### Step 4 — read the verdict, not the transcript
 
-The command prints one JSON line: the status and the file-zone result. Read that. The raw
-Codex transcript stays out of your context — see the digest threshold below.
+The command prints one JSON line with five keys, in this order: `trang_thai`, `giay`,
+`vung_file`, `ly_do`, `can_chay_lai_test`. Read four of them: the status, the file-zone
+result, the reason code (`null` when the status is `xong`), and `can_chay_lai_test`, which <!-- i18n-allow: canonical status name -->
+says whether the test gets the last word on a `fail`. Read that. The raw Codex transcript
+stays out of your context — see the digest threshold below.
 
 ### Step 5 — on a zone breach, roll back before anything else
 
@@ -82,8 +85,21 @@ to whoever comes next.
 
 ### Step 6 — close the books on the task
 
-Test green plus zone audit `dat` → tick `[x]` in the plan immediately. Anything else → the <!-- i18n-allow: canonical field name of the audit result -->
-task is not done, and you say which of the two failed.
+Test green plus zone audit `dat` → tick `[x]` in the plan immediately. <!-- i18n-allow: canonical field name of the audit result -->
+
+`can_chay_lai_test` is `true` → the verdict is `fail` only because the REPLY was missing or
+unreadable (`ly_do` is `khong-co-ket-qua` or `ket-qua-sai-khuon`) while the zone audit passed.
+Codex may well have done the work, so the test decides: rerun the task's test yourself.
+
+- Green → tick `[x]` and end the task line with the note `(cứu bằng test · ly_do=<mã>)`, so QC <!-- i18n-allow: canonical note written into the plan -->
+  and the report can count the rescued turns.
+- Red → the task failed, exactly as if the key were `false`.
+
+`run` never turns that `fail` into `xong` itself. A `fail` with `can_chay_lai_test: false` is <!-- i18n-allow: canonical status name -->
+never rescued this way: not a timeout, a deny, a non-zero exit, a model that answered
+`xong: false`, or a turn that strayed outside its zone. <!-- i18n-allow: canonical result key -->
+
+Anything else → the task is not done, and you say which of the two failed.
 
 ## The role contract
 
@@ -115,7 +131,8 @@ reads the reply itself and never guesses:
   or a missing key are all `fail`. Not knowing what happened is not permission to assume it
   went well.
 - A turn that is not `xong` ends its log line with `· ly_do=<code>`, one code from the closed
-  set `MA_LY_DO` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_codex.py` — read that code before rereading the raw reply.
+  set `MA_LY_DO` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_codex.py`. The same code rides in the verdict's `ly_do` key —
+  read that code before rereading the raw reply.
 
 ### The digest threshold
 
@@ -135,10 +152,12 @@ already live in the run log on disk; point at them instead of pasting them.
 
 ## Self-check
 
-Before moving to the next task, all five must hold:
+Before moving to the next task, all six must hold:
 
 1. The test was seen red before Codex was called, and green after.
 2. The zone audit returned `dat`, or the stray files were rolled back. <!-- i18n-allow: canonical field name of the audit result -->
 3. Codex wrote nothing in the locked zone, so the test still measures what it measured.
 4. No raw transcript above 1,500 characters went into the conversation.
 5. The plan carries `[x]` for this task, written the moment it passed.
+6. A `fail` with `can_chay_lai_test: true` had its test rerun, and a tick it earned carries the
+   note `(cứu bằng test · ly_do=<mã>)`. <!-- i18n-allow: canonical note written into the plan -->

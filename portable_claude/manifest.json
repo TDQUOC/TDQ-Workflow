@@ -9,7 +9,7 @@
     ".claude/agents/tdq-reviewer.md": "a52300770c0c1c5e2bc223cdc611fb1e55347cd21c1dca60f77c40005e888cfc",
     ".claude/settings.json": "1804c9de5b4282dad6c45f4c14dd572b7a289b40fe9a591177a6db1a233c1f01",
     ".claude/skills/tdq-build/SKILL.md": "5a38804c65e9f26af8250c950e6977b02ae08a754c6fc0b36d60ce44b995fabd",
-    ".claude/skills/tdq-build/references/codex-mode.md": "e941e7415d3256b942b0eaae76940ce7008550bc16da4d4bad15f03afe0c94e0",
+    ".claude/skills/tdq-build/references/codex-mode.md": "a42cfbdc0dbf8d3a75c1ac5274cbc71716fe287f1be06874fe93781e422811fa",
     ".claude/skills/tdq-build/references/qc.md": "240e9d286e5be77fd361d346b015c4d657a2c9a7deff72440a5a1b2a7a770bea",
     ".claude/skills/tdq-build/references/report-template.md": "03554453f351d04876f4cbbfdc252fddf79ce81b642688a6e280c245567d6392",
     ".claude/skills/tdq-build/references/rules/chung.md": "6168005f3590baa6ed788eb08dd660348f6fb182c0b902d9c4125300b506d6a6",
@@ -92,10 +92,10 @@
     ".claude/tdq/scripts/tdq_bench.py": "c45c9fdff4cb7ad2a31e9136211b7cf0423ba792588b65aa5fa758f5bd92ac8e",
     ".claude/tdq/scripts/tdq_checkportable.py": "39e58b010fdb5b46c4d2e453b8dc00c9a39ace90078a24dacbda875c79748ea2",
     ".claude/tdq/scripts/tdq_checkstatus.py": "408ec608486ee8c25a3b83d21b85622e223ef1de98a55e46513abe20b65ebc3b",
-    ".claude/tdq/scripts/tdq_codex.py": "35d6da9f1fe2bf91036247755358286a90a435542e0deffbe43cd0077dad36ce",
+    ".claude/tdq/scripts/tdq_codex.py": "dd2ef437217f692700761a4ffa2f47d3ce138da19b472d84a5c1b95a090b2b93",
     ".claude/tdq/scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     ".claude/tdq/scripts/tdq_lsp.py": "b8a4ca8cb5450061afa4f89d45372558db4d561f87d52bac5beb5167e451a60b",
-    ".claude/tdq/scripts/tdq_state.py": "4c5b30fa5665f70125be8b014171027d05deb992032a6d33edd1fabb0f254f64",
+    ".claude/tdq/scripts/tdq_state.py": "a89b7d85cd2e05f56a29009a69c79a0d91b8748efa1155faa42f574db9a1dae0",
     ".claude/tdq/scripts/tdq_team.py": "098843f943e78d3c38d6cd73cb24f7c6913aa7241072028de152a7303a78f745",
     ".claude/tdq/scripts/tdq_ten_lenh.py": "070de8a19ecc0e050bce809cc09dc479c0da85db458453cfd4646188a1f56810",
     ".claude/tdq/scripts/tdq_timing.py": "40edc14a717af78301c9e922132797fb1593b676e76adc3b39643df2f9955513",
@@ -110,5 +110,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.46.1"
+  "version": "0.47.0"
 }

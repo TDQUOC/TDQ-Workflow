@@ -3,6 +3,29 @@
 Các bản phát hành cũ, cắt ra khỏi `CHANGELOG.md` để file chính không vượt trần 500
 dòng của `doc_lint` rule R6. Mới nhất trên cùng, y như file chính.
 
+## 0.26.0 — 2026-08-18
+
+Cổng duyệt thôi kêu oan. Đo trên 58 request có spec: 7 ca phải xin duyệt lại, trong đó
+5 ca là hệ quả của chính thiết kế chứ không phải người dùng làm sai
+(`docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`). Cổng kêu vì lý do vô hại
+nhiều lần thì lúc nó kêu đúng cũng không còn ai nghe.
+
+- `tdq_state.sha256_noi_dung()`: `spec_sha256`/`plan_sha256` băm PHẦN NỘI DUNG, tính từ
+  heading `##` đầu tiên. Vùng đầu file (Ngày, Bản, Trạng thái, đường dẫn brief) là sổ sách
+  của chính workflow — ghi sổ không còn bị coi là "tài liệu đổi sau khi duyệt". Không có
+  heading `##` thì băm cả file. Ba nơi so băm (`tdq_state`, hook `prompt_context`,
+  `tdq_checkstatus` ca lệch D3) dùng chung đúng một hàm.
+- `doc_lint` rule **R11**: spec có slug từ 2026-08-19 trở đi không được ghi đường dẫn
+  `tests/test_*` hay cờ `-k` trong §6 — spec giữ ĐIỀU KIỆN PASS, lệnh kiểm là việc của
+  plan. 58 spec sẵn có không bị đụng tới.
+- Khuôn spec §6 đổi cột "Cách kiểm" thành "Điều kiện PASS", có bảng ĐÚNG/SAI;
+  `qc.md` bỏ đoạn dặn chịu đựng sha lệch.
+- `tdq_state.cong_dang_cho()`: cổng duyệt còn thiếu tính theo ĐÚNG lane, `stop_gate` và
+  `edit_gate` dùng chung. Trước đó `stop_gate` duyệt danh sách cứng
+  `("spec", "plan", "quick")` nên lane quick — vốn không có cổng `spec` — luôn bị nhắc
+  "spec vẫn chưa được ghi nhận duyệt", kể cả với request đã duyệt và đã đóng sổ.
+  `edit_gate` khi lane rỗng/lạ nay nhắc cổng đầu tiên thay vì im lặng.
+
 ## 0.25.0 — 2026-08-18
 
 Mode đội: leader chia việc, agent con chạy song song — và tính modular chuyển thành thuộc

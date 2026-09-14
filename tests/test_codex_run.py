@@ -243,6 +243,90 @@ class PhanQuyetLyDoTest(unittest.TestCase):
             self.assertEqual(doc('```json\n{"xong": true}\n```'), ({"xong": True}, None))
 
 
+class ChayLaiTestTest(unittest.TestCase):
+    """Sai khuôn thì lấy test làm chuẩn — chỉ lượt hỏng ở khâu đọc câu trả lời, vùng file đạt, mới đáng chạy lại test."""
+
+    CUU_DUOC = ("khong-co-ket-qua", "ket-qua-sai-khuon")
+
+    def test_tap_cuu_duoc_dung_hai_ma_va_nam_trong_tap_dong(self):
+        self.assertEqual(set(tdq_codex.MA_LY_DO_CHAY_LAI_TEST), set(self.CUU_DUOC))
+        self.assertTrue(set(tdq_codex.MA_LY_DO_CHAY_LAI_TEST) <= set(tdq_codex.MA_LY_DO))
+
+    def test_fail_ma_cuu_duoc_vung_dat_thi_chay_lai(self):
+        for ly_do in self.CUU_DUOC:
+            with self.subTest(ly_do=ly_do):
+                self.assertIs(tdq_codex.can_chay_lai_test("fail", ly_do, True), True)
+
+    def test_moi_ca_con_lai_khong_chay_lai(self):
+        ca = [
+            ("xong", None, True),
+            ("timeout", "qua-han", True),
+            ("deny", "bi-chan", True),
+            ("fail", "exit-khac-0", True),
+            ("fail", "model-bao-chua-xong", True),
+            ("fail", None, True),                   # xong nhưng bị hạ vì vùng file
+            ("fail", "ket-qua-sai-khuon", False),   # sai khuôn mà ghi ra ngoài vùng
+            ("fail", "khong-co-ket-qua", False),
+            ("fail", "ket-qua-sai-khuon", 1),       # chỉ đúng `True` mới là đạt
+        ]
+        for trang_thai, ly_do, dat in ca:
+            with self.subTest(trang_thai=trang_thai, ly_do=ly_do, dat=dat):
+                self.assertIs(tdq_codex.can_chay_lai_test(trang_thai, ly_do, dat), False)
+
+
+class _VungGia:
+    """Stand-in for the zone audit result: only `dat` and `as_dict()` are read."""
+
+    def __init__(self, dat):
+        self.dat = dat
+
+    def as_dict(self):
+        return {"dat": self.dat, "lech": [] if self.dat else ["ngoai.txt"], "khoa_bi_cham": []}
+
+
+class PhanQuyetJsonTest(unittest.TestCase):
+    """Dòng JSON của `run`: 5 khoá đúng thứ tự, leader đọc được lý do và biết có nên chạy lại test."""
+
+    KHOA = ["trang_thai", "giay", "vung_file", "ly_do", "can_chay_lai_test"]
+
+    def test_du_nam_khoa_dung_thu_tu(self):
+        pq = tdq_codex.dung_phan_quyet("fail", 12.34, "ket-qua-sai-khuon", _VungGia(True))
+        self.assertEqual(list(pq), self.KHOA)
+        self.assertEqual(list(json.loads(json.dumps(pq))), self.KHOA)
+        self.assertEqual(pq["giay"], 12.3)
+        self.assertEqual(pq["vung_file"]["dat"], True)
+
+    def test_xong_thi_ly_do_null_va_khong_chay_lai(self):
+        pq = tdq_codex.dung_phan_quyet("xong", 1.0, None, _VungGia(True))
+        self.assertEqual((pq["trang_thai"], pq["ly_do"], pq["can_chay_lai_test"]),
+                         ("xong", None, False))
+
+    def test_sai_khuon_vung_dat_thi_chay_lai(self):
+        for ly_do in tdq_codex.MA_LY_DO_CHAY_LAI_TEST:
+            with self.subTest(ly_do=ly_do):
+                pq = tdq_codex.dung_phan_quyet("fail", 1.0, ly_do, _VungGia(True))
+                self.assertEqual((pq["trang_thai"], pq["ly_do"]), ("fail", ly_do))
+                self.assertIs(pq["can_chay_lai_test"], True)
+
+    def test_can_chay_lai_luon_la_bool(self):
+        for trang_thai, ly_do, dat in (("xong", None, True), ("fail", "ket-qua-sai-khuon", True),
+                                       ("fail", "ket-qua-sai-khuon", False),
+                                       ("timeout", "qua-han", True)):
+            with self.subTest(trang_thai=trang_thai, ly_do=ly_do, dat=dat):
+                pq = tdq_codex.dung_phan_quyet(trang_thai, 1.0, ly_do, _VungGia(dat))
+                self.assertIsInstance(pq["can_chay_lai_test"], bool)
+
+    def test_xong_ma_lech_vung_thi_ha_fail_khong_ly_do_khong_chay_lai(self):
+        pq = tdq_codex.dung_phan_quyet("xong", 1.0, None, _VungGia(False))
+        self.assertEqual((pq["trang_thai"], pq["ly_do"], pq["can_chay_lai_test"]),
+                         ("fail", None, False))
+        self.assertFalse(pq["vung_file"]["dat"])
+
+    def test_sai_khuon_ma_lech_vung_thi_khong_chay_lai(self):
+        pq = tdq_codex.dung_phan_quyet("fail", 1.0, "ket-qua-sai-khuon", _VungGia(False))
+        self.assertEqual((pq["ly_do"], pq["can_chay_lai_test"]), ("ket-qua-sai-khuon", False))
+
+
 class KhuonSchemaTest(unittest.TestCase):
     """T1.3 — schema khai cho Codex đạt điều kiện strict: có additionalProperties false."""
 

@@ -331,6 +331,142 @@ class DongYCliTest(RepoTam):
         self.assertIn(lenh, dong_2[0])
 
 
+def _codex_run_gia(thu_muc, noi_dung, ghi_ngoai_vung=False):
+    """-> path of a fake `codex` for a whole `run` turn.
+
+    It writes `dich.txt` (inside the zone) in the repo named by the `-C` flag, `ngoai.txt` too
+    when asked, then `noi_dung` into the result file — or no result file at all when None. Its
+    CODEX_HOME and that home's config.toml go to `ghi-lai.json`.
+    """
+    duong = os.path.join(thu_muc, "codex")
+    ghi = os.path.join(thu_muc, "ghi-lai.json")
+    with open(duong, "w", encoding="utf-8") as f:
+        f.write(f"""#!{sys.executable}
+import json, os, sys
+args = sys.argv[1:]
+goc = args[args.index({tdq_codex.CO_EXEC["goc_repo"]!r}) + 1]
+home = os.environ.get("CODEX_HOME", "")
+try:
+    cfg = open(os.path.join(home, "config.toml"), encoding="utf-8").read()
+except OSError:
+    cfg = ""
+with open({ghi!r}, "w", encoding="utf-8") as f:
+    json.dump({{"home": home, "config": cfg}}, f)
+with open(os.path.join(goc, "dich.txt"), "w", encoding="utf-8") as f:
+    f.write("xanh\\n")
+if {ghi_ngoai_vung!r}:
+    with open(os.path.join(goc, "ngoai.txt"), "w", encoding="utf-8") as f:
+        f.write("lac\\n")
+noi_dung = {noi_dung!r}
+if noi_dung is not None:
+    with open(args[args.index({tdq_codex.CO_EXEC["ket_qua"]!r}) + 1], "w", encoding="utf-8") as f:
+        f.write(noi_dung)
+sys.exit(0)
+""")
+    os.chmod(duong, 0o755)
+    return ghi
+
+
+class RunDauCuoiTest(unittest.TestCase):
+    """Cả lượt `run` qua tiến trình con với Codex giả: JSON 5 khoá, lý do, có nên chạy lại test.
+
+    Không đọc `~/.codex` thật: `HOME` và `CODEX_HOME` đều trỏ vào thư mục tạm, và phép kiểm soát
+    lại chính file config mà Codex giả nhìn thấy.
+    """
+
+    KHOA = ["trang_thai", "giay", "vung_file", "ly_do", "can_chay_lai_test"]
+    DAU_CONFIG_GIA = 'base_url = "http://r.invalid"'
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        goc_tam = os.path.realpath(self._tmp.name)
+        self.cwd = os.path.join(goc_tam, "repo")
+        self.bin = os.path.join(goc_tam, "bin")
+        self.may = os.path.join(goc_tam, "codex-may")
+        for d in (self.cwd, self.bin, self.may):
+            os.makedirs(d)
+        with open(os.path.join(self.may, "config.toml"), "w", encoding="utf-8") as f:
+            f.write(f'model_provider = "r"\n\n[model_providers.r]\n{self.DAU_CONFIG_GIA}\n')
+        with open(os.path.join(self.cwd, ".gitignore"), "w", encoding="utf-8") as f:
+            f.write("docs/tdq/.tdq-codex-home/\ndocs/tdq/.tdq-codex.json\n"
+                    "docs/tdq/.tdq-codex-prompt.log\n")
+        git = ["git", "-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false"]
+        for lenh in (["git", "init", "-q"], ["git", "add", ".gitignore"],
+                     [*git, "commit", "-q", "-m", "moc"]):
+            subprocess.run(lenh, cwd=self.cwd, check=True, capture_output=True,
+                           stdin=subprocess.DEVNULL, timeout=30)
+        tdq_codex.dat_co_dong_y(self.cwd, True, model="m-test")
+        self.env = dict(os.environ, HOME=goc_tam, CODEX_HOME=self.may,
+                        PATH=self.bin + os.pathsep + os.environ.get("PATH", ""))
+        self.env.pop("TDQ_LOG", None)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _run(self, noi_dung, ghi_ngoai_vung=False, env_them=None):
+        ghi = _codex_run_gia(self.bin, noi_dung, ghi_ngoai_vung)
+        proc = subprocess.run(
+            [sys.executable, CLI, "-C", self.cwd, "run", "T9.9", "--prompt", "p",
+             "--vung", "dich.txt", "--da-thay-do"],
+            capture_output=True, text=True, encoding="utf-8", timeout=120,
+            stdin=subprocess.DEVNULL, env=dict(self.env, **(env_them or {})))
+        dong = [d for d in proc.stdout.splitlines() if d.strip()]
+        self.assertTrue(dong, f"run không in gì ra stdout: {proc.stderr}")
+        return proc, json.loads(dong[-1]), ghi
+
+    def _ba(self, pq):
+        return pq["trang_thai"], pq["ly_do"], pq["can_chay_lai_test"]
+
+    def test_van_thuong_la_sai_khuon_va_chay_lai(self):
+        proc, pq, _ = self._run("Tôi đã sửa xong file dich.txt rồi nhé.")
+        self.assertEqual(list(pq), self.KHOA)
+        self.assertEqual(self._ba(pq), ("fail", "ket-qua-sai-khuon", True))
+        self.assertTrue(pq["vung_file"]["dat"])
+        self.assertEqual(proc.returncode, 1)
+
+    def test_khong_ghi_file_ket_qua_thi_chay_lai(self):
+        proc, pq, _ = self._run(None)
+        self.assertEqual(self._ba(pq), ("fail", "khong-co-ket-qua", True))
+        self.assertEqual(proc.returncode, 1)
+
+    def test_xong_true_thi_xong_khong_ly_do(self):
+        proc, pq, _ = self._run('{"xong": true}')
+        self.assertEqual(list(pq), self.KHOA)
+        self.assertEqual(self._ba(pq), ("xong", None, False))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+
+    def test_model_bao_chua_xong_khong_duoc_cuu(self):
+        proc, pq, _ = self._run('{"xong": false}')
+        self.assertEqual(self._ba(pq), ("fail", "model-bao-chua-xong", False))
+        self.assertEqual(proc.returncode, 1)
+
+    def test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai(self):
+        _, pq, _ = self._run("Xong rồi.", ghi_ngoai_vung=True)
+        self.assertEqual(pq["ly_do"], "ket-qua-sai-khuon")
+        self.assertIs(pq["can_chay_lai_test"], False)
+        self.assertFalse(pq["vung_file"]["dat"])
+        self.assertIn("ngoai.txt", pq["vung_file"]["lech"])
+
+    def test_codex_chi_thay_home_tam_mang_config_gia(self):
+        _, _, ghi = self._run('{"xong": true}')
+        with open(ghi, encoding="utf-8") as f:
+            ban_ghi = json.load(f)
+        self.assertTrue(ban_ghi["home"].startswith(tdq_codex._duong_home(self.cwd)))
+        self.assertIn(self.DAU_CONFIG_GIA, ban_ghi["config"])
+
+    def test_tat_log_van_in_du_phan_quyet(self):
+        proc, pq, _ = self._run("Xong rồi.", env_them={"TDQ_LOG": "0"})
+        self.assertEqual(list(pq), self.KHOA)
+        self.assertEqual(self._ba(pq), ("fail", "ket-qua-sai-khuon", True))
+        self.assertNotIn(" luot T9.9 ", proc.stderr, "TDQ_LOG=0 phải tắt dòng log lượt")
+
+    def test_log_mac_dinh_mang_ly_do_o_cuoi_dong(self):
+        proc, _, _ = self._run("Xong rồi.")
+        dong = [d for d in proc.stderr.splitlines() if " luot T9.9 " in d]
+        self.assertEqual(len(dong), 1, proc.stderr)
+        self.assertTrue(dong[0].endswith("· ly_do=ket-qua-sai-khuon"), dong[0])
+
+
 class GitignoreTest(unittest.TestCase):
     def test_co_dong_y_duoc_gitignore(self):
         """Cờ mức máy là chuyện riêng của máy, không được vào lịch sử repo."""
