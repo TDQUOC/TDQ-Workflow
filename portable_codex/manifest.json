@@ -5,7 +5,7 @@
   ],
   "files": {
     ".agents/skills/tdq-build/SKILL.md": "f8daac42e77104070c5b1d8fdeb6e4eae6a1e0246e2d7d59a2583c66e820c82a",
-    ".agents/skills/tdq-build/references/codex-mode.md": "7907f9eb9cd18acc317e159f998a5164fb0f78ed1ee1b953afb84db2b44233c5",
+    ".agents/skills/tdq-build/references/codex-mode.md": "e941e7415d3256b942b0eaae76940ce7008550bc16da4d4bad15f03afe0c94e0",
     ".agents/skills/tdq-build/references/qc.md": "d8f2c845b82327de717c7cbe54d91c569bfac72a20b08d38fa1d183204cc3ca9",
     ".agents/skills/tdq-build/references/report-template.md": "e463092f56972388ae1a6c5d1bacd2ecdbc1c8c7e996ad7544546dd4cb0ccdec",
     ".agents/skills/tdq-build/references/rules/chung.md": "6168005f3590baa6ed788eb08dd660348f6fb182c0b902d9c4125300b506d6a6",
@@ -92,7 +92,7 @@
     "scripts/tdq_bench.py": "c45c9fdff4cb7ad2a31e9136211b7cf0423ba792588b65aa5fa758f5bd92ac8e",
     "scripts/tdq_checkportable.py": "b32eef5640d3601471d6e1496c7c16aba603f2e8bdd298b1ed356f6676c52d8e",
     "scripts/tdq_checkstatus.py": "408ec608486ee8c25a3b83d21b85622e223ef1de98a55e46513abe20b65ebc3b",
-    "scripts/tdq_codex.py": "8cac1f88877bde374d5505be255f8859806f13d0b376b160f746b32c7361320c",
+    "scripts/tdq_codex.py": "35d6da9f1fe2bf91036247755358286a90a435542e0deffbe43cd0077dad36ce",
     "scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     "scripts/tdq_lsp.py": "b8a4ca8cb5450061afa4f89d45372558db4d561f87d52bac5beb5167e451a60b",
     "scripts/tdq_state.py": "9c16ed01e58d9780521bc2dcd7831516d7593e641ef3f7944ad12de14b7e3e57",
@@ -112,7 +112,7 @@
     "workflow/08-status.md": "0aa9ebb40c970104fee23248d37f92d356bfdc5ea5f2615830984595afda0c0a",
     "workflow/09-check-status.md": "9445a6f7f77f0c842653aaa711eaf0e6de9f353b8a7e1f272c4e0e08ffef5e44",
     "workflow/phases.md": "b195ceb98c7a20b1f34b5e113b10dfe14b53a8551b95d3993531dd830ac3c5b6",
-    "workflow/references/tdq-build/codex-mode.md": "7907f9eb9cd18acc317e159f998a5164fb0f78ed1ee1b953afb84db2b44233c5",
+    "workflow/references/tdq-build/codex-mode.md": "e941e7415d3256b942b0eaae76940ce7008550bc16da4d4bad15f03afe0c94e0",
     "workflow/references/tdq-build/qc.md": "d8f2c845b82327de717c7cbe54d91c569bfac72a20b08d38fa1d183204cc3ca9",
     "workflow/references/tdq-build/report-template.md": "e463092f56972388ae1a6c5d1bacd2ecdbc1c8c7e996ad7544546dd4cb0ccdec",
     "workflow/references/tdq-build/rules/chung.md": "6168005f3590baa6ed788eb08dd660348f6fb182c0b902d9c4125300b506d6a6",
@@ -161,5 +161,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.46.0"
+  "version": "0.46.1"
 }

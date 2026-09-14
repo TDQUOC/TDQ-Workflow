@@ -438,45 +438,118 @@ def cleanup(cwd="."):
 # and not knowing must FAIL rather than be guessed as done.
 SCHEMA_KHOA_BAT_BUOC = ("xong",)
 
+
+def khuon_schema():
+    """The `--output-schema` handed to Codex. `additionalProperties: false` is what OpenAI strict
+    mode demands; without it a real OpenAI provider rejects the schema instead of applying it."""
+    return {"type": "object",
+            "properties": {k: {"type": "boolean"} for k in SCHEMA_KHOA_BAT_BUOC},
+            "required": list(SCHEMA_KHOA_BAT_BUOC),
+            "additionalProperties": False}
+
+
 # The deny markers, looked up as substrings of stdout. `codex` returns exit 0 both when the hook
 # blocks and when the sandbox blocks, so the exit code must NOT decide on its own.
 DAU_HIEU_DENY = ("permissionDecision", "BLOCKED")
 
 
-def doc_ket_qua(duong):
-    """-> a dict or None. A missing file, an empty file and broken JSON are all None."""
+RAO_CODE = "```"
+NHAN_RAO_NHAN = ("", "json")
+
+
+def _boc_rao(noi_dung):
+    """Unwrap exactly one code fence that encloses the WHOLE (already stripped) text.
+
+    Some routers drop `--output-schema`, and the model then wraps correct JSON in a markdown
+    fence. Only the whole-file shape is unwrapped: an opening fence labelled empty or `json`, a
+    closing line of only the fence, and no other fence in between. Anything else is returned
+    untouched, so text around a fence still fails `json.loads` instead of being guessed at.
+    """
+    dong = noi_dung.splitlines()
+    if len(dong) < 2 or not dong[0].startswith(RAO_CODE):
+        return noi_dung
+    nhan = dong[0][len(RAO_CODE):].strip().lower()
+    giua = "\n".join(dong[1:-1])
+    if nhan not in NHAN_RAO_NHAN or dong[-1].strip() != RAO_CODE or RAO_CODE in giua:
+        return noi_dung
+    return giua
+
+
+# The CLOSED set of reasons a turn is not `xong`. Every non-xong verdict carries exactly one of
+# these, so a log line says WHY without anyone rereading the raw result file.
+MA_LY_DO = (
+    "qua-han",              # killed by the timeout
+    "bi-chan",              # a deny marker in stdout
+    "exit-khac-0",          # codex exited non-zero
+    "khong-co-ket-qua",     # the result file is missing or empty
+    "ket-qua-sai-khuon",    # not a JSON object, or `xong` missing / not a boolean
+    "model-bao-chua-xong",  # the model itself answered `xong: false`
+)
+
+
+def doc_ket_qua_ly_do(duong):
+    """-> (dict, None) or (None, reason). Missing/empty file vs unreadable content are told apart.
+
+    Bare JSON and JSON inside one whole-file code fence are both read; see `_boc_rao`.
+    """
     try:
         with open(duong, encoding="utf-8") as f:
             noi_dung = f.read().strip()
     except OSError:
-        return None
+        return None, "khong-co-ket-qua"
     if not noi_dung:
-        return None
+        return None, "khong-co-ket-qua"
     try:
-        data = json.loads(noi_dung)
+        data = json.loads(_boc_rao(noi_dung))
     except ValueError:
+        return None, "ket-qua-sai-khuon"
+    if not isinstance(data, dict):
+        return None, "ket-qua-sai-khuon"
+    return data, None
+
+
+def doc_ket_qua(duong):
+    """-> a dict or None. A missing file, an empty file and broken JSON are all None."""
+    return doc_ket_qua_ly_do(duong)[0]
+
+
+def _ly_do_ket_qua(ket_qua, ly_do_doc):
+    """The reason carried by the result itself, or None when it says `xong` is exactly True."""
+    if ket_qua is None:
+        return ly_do_doc or "khong-co-ket-qua"
+    if not isinstance(ket_qua, dict):
+        return "ket-qua-sai-khuon"
+    if any(k not in ket_qua for k in SCHEMA_KHOA_BAT_BUOC):
+        return "ket-qua-sai-khuon"
+    # `is`, not `==`: `1 == True` in Python, and a string "true" is not a boolean either.
+    if ket_qua["xong"] is True:
         return None
-    return data if isinstance(data, dict) else None
+    if ket_qua["xong"] is False:
+        return "model-bao-chua-xong"
+    return "ket-qua-sai-khuon"
 
 
-def phan_quyet(exit_code, ket_qua, stdout, qua_han):
-    """Four columns of evidence -> one of four states: xong/fail/timeout/deny.
+def phan_quyet_ly_do(exit_code, ket_qua, stdout, qua_han, ly_do_doc=None):
+    """Four columns of evidence -> (state, reason). The reason is None only for `xong`.
 
     The reading order is deliberate: a timeout beats everything (the process was killed, so every
     other marker is untrustworthy), then deny (blocked is blocked, even at exit 0), and only then
-    the result file and the exit code.
+    the exit code and the result file. `ly_do_doc` is the reason `doc_ket_qua_ly_do` gave for a
+    None result, so "no file" and "unreadable file" stay distinct.
     """
     if qua_han:
-        return "timeout"
+        return "timeout", "qua-han"
     if any(d in (stdout or "") for d in DAU_HIEU_DENY):
-        return "deny"
+        return "deny", "bi-chan"
     if exit_code != 0:
-        return "fail"
-    if not isinstance(ket_qua, dict):
-        return "fail"
-    if any(k not in ket_qua for k in SCHEMA_KHOA_BAT_BUOC):
-        return "fail"
-    return "xong"
+        return "fail", "exit-khac-0"
+    ly_do = _ly_do_ket_qua(ket_qua, ly_do_doc)
+    return ("xong", None) if ly_do is None else ("fail", ly_do)
+
+
+def phan_quyet(exit_code, ket_qua, stdout, qua_han):
+    """Four columns of evidence -> one of four states: xong/fail/timeout/deny."""
+    return phan_quyet_ly_do(exit_code, ket_qua, stdout, qua_han)[0]
 
 
 # ------------------------------------------------- the early-fence self-check
@@ -579,11 +652,12 @@ def dong_log_nhip(ma_task, do, xanh):
 
 # --------------------------------------------------------- the log of one turn
 
-def dong_log_luot(ma_task, model, home, giay, trang_thai, prompt):
-    """One line for one Codex call, carrying ALL SEVEN PIECES.
+def dong_log_luot(ma_task, model, home, giay, trang_thai, prompt, ly_do=None):
+    """One line for one Codex call, carrying ALL SEVEN PIECES, plus `ly_do` when not `xong`.
 
     The seven: timestamp · task id · the REAL model name · the CODEX_HOME used · wall time ·
-    state · the sha256 of the prompt plus its masked opening.
+    state · the sha256 of the prompt plus its masked opening. The reason (one of MA_LY_DO) goes
+    LAST, so `tdq_bench.MAU_LOG_LUOT`, anchored on the leading pieces, still reads the line.
 
     It records the sha256 rather than the text: a prompt carries code and sometimes internal
     paths, while this log line lands where git tracks it. The text itself goes only to
@@ -592,8 +666,18 @@ def dong_log_luot(ma_task, model, home, giay, trang_thai, prompt):
     stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
     bam = hashlib.sha256((prompt or "").encode("utf-8")).hexdigest()
     dau = mask_secrets((prompt or "")[:40]).replace("\n", " ")
+    duoi = f" · ly_do={ly_do}" if ly_do and trang_thai != "xong" else ""
     return (f"[{stamp}] luot {ma_task} · model={model} · home={home} · "
-            f"{giay:.1f}s · {trang_thai} · sha256={bam[:16]} · dau=\"{dau}\"")
+            f"{giay:.1f}s · {trang_thai} · sha256={bam[:16]} · dau=\"{dau}\"{duoi}")
+
+
+def in_log_luot(dong):
+    """The turn line to stderr, behind the same TDQ_LOG switch as every other log line.
+
+    Not through `log()`: the line already carries its own timestamp, and `tdq_bench` reads it back.
+    """
+    if _log_enabled():
+        print(dong, file=sys.stderr)
 
 
 def ghi_log_prompt(cwd, ma_task, prompt):
@@ -711,9 +795,7 @@ def _cli_run(a):
 
     file_schema = os.path.join(home, "schema.json")
     with open(file_schema, "w", encoding="utf-8") as f:
-        json.dump({"type": "object",
-                   "properties": {k: {"type": "boolean"} for k in SCHEMA_KHOA_BAT_BUOC},
-                   "required": list(SCHEMA_KHOA_BAT_BUOC)}, f)
+        json.dump(khuon_schema(), f)
     file_ket_qua = os.path.join(home, "ket-qua.json")
 
     lenh = dung_lenh(goc_repo=a.cwd, model=model, file_schema=file_schema,
@@ -730,9 +812,9 @@ def _cli_run(a):
         exit_code, ra, qua_han = -1, "", True
     giay = time.time() - bat_dau
 
-    trang_thai = phan_quyet(exit_code, doc_ket_qua(file_ket_qua), ra, qua_han)
-    print(dong_log_luot(a.ma_task, model, home, giay, trang_thai, a.prompt),
-          file=sys.stderr)
+    ket_qua, ly_do_doc = doc_ket_qua_ly_do(file_ket_qua)
+    trang_thai, ly_do = phan_quyet_ly_do(exit_code, ket_qua, ra, qua_han, ly_do_doc)
+    in_log_luot(dong_log_luot(a.ma_task, model, home, giay, trang_thai, a.prompt, ly_do))
 
     kq = tdq_vungfile.hau_kiem(a.cwd, moc, a.vung, khoa)
     if trang_thai == "xong" and not kq.dat:

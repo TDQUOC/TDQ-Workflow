@@ -584,6 +584,16 @@ class LogCodexTest(unittest.TestCase):
                 self.assertEqual(tdq_bench.doc_log_codex(
                     self.DONG.replace("· xong ·", f"· {trang_thai} ·")), [])
 
+    def test_doc_dung_dong_that_do_tdq_codex_sinh_ra(self):
+        """Q7 — dòng log THẬT của `tdq_codex.dong_log_luot`, cả khi mang `ly_do` ở cuối:
+        lượt xong vẫn là một mẫu, lượt fail có lý do vẫn bị bỏ."""
+        import tdq_codex
+        xong = tdq_codex.dong_log_luot("T2.1", "m", "/tmp/h", 42.0, "xong", "p", None)
+        fail = tdq_codex.dong_log_luot("T2.2", "m", "/tmp/h", 9.0, "fail", "p",
+                                       "ket-qua-sai-khuon")
+        self.assertIn("ly_do=ket-qua-sai-khuon", fail)
+        self.assertEqual(tdq_bench.doc_log_codex(xong + "\n" + fail), [("T2.1", 42.0)])
+
     def test_ba_mau_thi_ghi_duoc_hang_so_codex(self):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:

@@ -100,14 +100,22 @@ Lệnh chạy test: <lệnh>
 CẤM sửa (VÙNG KHOÁ): <danh sách file, luôn gồm file test>
 Không sửa test, không nới điều kiện test, không thêm phụ thuộc mới.
 Xong thì trả JSON đúng khuôn đã khai, khoá `xong` là true/false.
+Chỉ trả object JSON trần, không bọc trong rào code, không kèm câu chữ nào khác.
 ```
 
 ### The result shape Codex must return
 
 One JSON object, with the key `xong` as a boolean. The schema is handed to the CLI on every
-run, so a reply in another shape is a `fail`, never a guess. Missing file, empty file, broken
-JSON and a missing key are all the same verdict: `fail`. Not knowing what happened is not
-permission to assume it went well.
+run, but a router may drop it and the CLI does not check the reply against it, so the wrapper
+reads the reply itself and never guesses:
+
+- Accepted: bare JSON, or JSON inside exactly one code fence that wraps the WHOLE reply (label
+  empty or `json`). Text before or after a fence, two fences, or plain prose is not a result.
+- Only `xong` equal to the boolean `true` is `xong`. `false`, the string `"true"`, `1`, `null`
+  or a missing key are all `fail`. Not knowing what happened is not permission to assume it
+  went well.
+- A turn that is not `xong` ends its log line with `· ly_do=<code>`, one code from the closed
+  set `MA_LY_DO` in `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_codex.py` — read that code before rereading the raw reply.
 
 ### The digest threshold
 
