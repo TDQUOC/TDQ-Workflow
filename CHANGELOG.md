@@ -2,6 +2,17 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.46.1 — 2026-09-14
+
+Hai bản sửa cho mode `codex implement`. Báo cáo: `docs/tdq/reports/2026-09-14-1252-run-cham-fail-sai-schema.md`.
+
+- **`tdq_codex.py run` chấm đúng lượt làm đúng** — nhận JSON trần hoặc đúng một rào code bọc trọn
+  file (nhãn rỗng/`json`). Chỉ `xong` là boolean `true` mới là `xong`; trước đây `{"xong": false}`
+  cũng bị chấm `xong`. Schema thêm `additionalProperties: false`.
+- **Dòng log mang lý do** — lượt không xong kết thúc bằng `· ly_do=<mã>`, mã thuộc tập đóng `MA_LY_DO`.
+- **Sửa `check` Codex** — gửi một lượt say hi thật thay vì chỉ `codex --version`. Có lệnh mới
+  `dong-y --model`, và `CODEX_HOME` tạm mang theo bảng provider.
+
 ## 0.46.0 — 2026-09-14
 
 Mode thực thi thứ ba: `codex implement`. Leader vẫn chạy tuần tự trong turn của mình như mode

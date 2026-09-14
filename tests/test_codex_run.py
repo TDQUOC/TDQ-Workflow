@@ -151,6 +151,113 @@ class PhanQuyetTest(unittest.TestCase):
             self.assertIsNone(tdq_codex.doc_ket_qua(lech))
 
 
+class DocKetQuaRaoTest(unittest.TestCase):
+    """T1.1 — ket-qua.json: JSON trần hoặc ĐÚNG MỘT rào code bao trọn cả file; còn lại là None.
+
+    Nguyên văn của ba lượt thật (Q13, Q21b, R1) nằm trong nhóm bị từ chối: văn thường không
+    bao giờ được đọc thành kết quả."""
+
+    NHAN = {
+        "tran": '{"xong": true}',
+        "rao_json": '```json\n{\n  "xong": true\n}\n```',
+        "rao_khong_nhan": '```\n{"xong": true}\n```',
+        "rao_nhan_hoa": '```JSON\n{"xong": true}\n```',
+        "khoang_trang_quanh_rao": '\n\n  ```json\n{"xong": true}\n```\n  \n',
+    }
+    TU_CHOI = {
+        "van_q13": 'The write was denied with an "operation not permitted" error.',
+        "van_q21b_r1": "Yes, 2 + 2 is equal to 4.",
+        "van_truoc_rao": 'Done:\n```json\n{"xong": true}\n```',
+        "van_sau_rao": '```json\n{"xong": true}\n```\nAll good.',
+        "hai_rao": '```json\n{"xong": true}\n```\n```json\n{"xong": true}\n```',
+        "rao_khong_dong": '```json\n{"xong": true}\n',
+        "rao_nhan_khac": '```python\n{"xong": true}\n```',
+        "mang_json": '```json\n[{"xong": true}]\n```',
+        "rong": "",
+    }
+
+    def _doc(self, noi_dung):
+        with tempfile.TemporaryDirectory() as d:
+            duong = os.path.join(d, "ket-qua.json")
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write(noi_dung)
+            return tdq_codex.doc_ket_qua(duong)
+
+    def test_dang_duoc_nhan_ra_dict(self):
+        for ten, noi_dung in self.NHAN.items():
+            with self.subTest(ten=ten):
+                self.assertEqual(self._doc(noi_dung), {"xong": True})
+
+    def test_dang_bi_tu_choi_ra_none(self):
+        for ten, noi_dung in self.TU_CHOI.items():
+            with self.subTest(ten=ten):
+                self.assertIsNone(self._doc(noi_dung))
+
+    def test_file_khong_co_ra_none(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertIsNone(tdq_codex.doc_ket_qua(os.path.join(d, "khong-co.json")))
+
+
+class PhanQuyetLyDoTest(unittest.TestCase):
+    """T1.2 — mỗi lượt không xong mang đúng một mã lý do trong tập ĐÓNG; chỉ `xong is True` là xong."""
+
+    DUNG = {"xong": True}
+
+    def test_tap_ma_dong_du_sau_ma(self):
+        self.assertEqual(set(tdq_codex.MA_LY_DO), {
+            "qua-han", "bi-chan", "exit-khac-0", "khong-co-ket-qua",
+            "ket-qua-sai-khuon", "model-bao-chua-xong"})
+
+    def test_thu_tu_timeout_deny_exit(self):
+        pq = tdq_codex.phan_quyet_ly_do
+        self.assertEqual(pq(1, None, "BLOCKED", True), ("timeout", "qua-han"))
+        self.assertEqual(pq(1, None, "BLOCKED", False), ("deny", "bi-chan"))
+        self.assertEqual(pq(1, self.DUNG, "", False), ("fail", "exit-khac-0"))
+
+    def test_ket_qua_vang_hoac_sai_khuon(self):
+        pq = tdq_codex.phan_quyet_ly_do
+        self.assertEqual(pq(0, None, "", False), ("fail", "khong-co-ket-qua"))
+        self.assertEqual(pq(0, None, "", False, "ket-qua-sai-khuon"), ("fail", "ket-qua-sai-khuon"))
+        for ket_qua in ({}, {"sai_khoa": True}, {"xong": "true"}, {"xong": 1}, {"xong": None}):
+            with self.subTest(ket_qua=ket_qua):
+                self.assertEqual(pq(0, ket_qua, "", False), ("fail", "ket-qua-sai-khuon"))
+
+    def test_chi_xong_is_true_moi_la_xong(self):
+        pq = tdq_codex.phan_quyet_ly_do
+        self.assertEqual(pq(0, {"xong": False}, "", False), ("fail", "model-bao-chua-xong"))
+        self.assertEqual(pq(0, {"xong": True, "ghi_chu": "x"}, "", False), ("xong", None))
+        self.assertEqual(tdq_codex.phan_quyet(0, {"xong": False}, "", False), "fail")
+
+    def test_doc_ket_qua_ly_do_tach_vang_va_sai_khuon(self):
+        with tempfile.TemporaryDirectory() as d:
+            def doc(noi_dung):
+                duong = os.path.join(d, "ket-qua.json")
+                with open(duong, "w", encoding="utf-8") as f:
+                    f.write(noi_dung)
+                return tdq_codex.doc_ket_qua_ly_do(duong)
+            self.assertEqual(tdq_codex.doc_ket_qua_ly_do(os.path.join(d, "khong-co.json")),
+                             (None, "khong-co-ket-qua"))
+            self.assertEqual(doc("  \n"), (None, "khong-co-ket-qua"))
+            self.assertEqual(doc("Yes, 2 + 2 is equal to 4."), (None, "ket-qua-sai-khuon"))
+            self.assertEqual(doc('[{"xong": true}]'), (None, "ket-qua-sai-khuon"))
+            self.assertEqual(doc('```json\n{"xong": true}\n```'), ({"xong": True}, None))
+
+
+class KhuonSchemaTest(unittest.TestCase):
+    """T1.3 — schema khai cho Codex đạt điều kiện strict: có additionalProperties false."""
+
+    def test_schema_du_dieu_kien_strict(self):
+        self.assertEqual(tdq_codex.khuon_schema(), {
+            "type": "object",
+            "properties": {"xong": {"type": "boolean"}},
+            "required": ["xong"],
+            "additionalProperties": False,
+        })
+
+    def test_schema_ghi_ra_json_duoc(self):
+        self.assertEqual(json.loads(json.dumps(tdq_codex.khuon_schema())), tdq_codex.khuon_schema())
+
+
 class CodexHomeTest(RepoTam):
     """T3.6 — vòng đời CODEX_HOME: quyền 700, không rò `Bearer`, cleanup sạch."""
 
@@ -361,6 +468,44 @@ class LogTest(RepoTam):
             trang_thai="xong", prompt=prompt)
         self.assertNotIn(than, dong)
         self.assertLess(len(dong), 300, "dòng log phình ra là dấu hiệu chép cả prompt")
+
+    def test_luot_khong_xong_ket_thuc_bang_ly_do(self):
+        """T1.4/Q6 — lượt không xong nói lý do ở CUỐI dòng; 7 mảnh cũ còn đủ, dòng vẫn ngắn."""
+        prompt = "y" * 220
+        dong = tdq_codex.dong_log_luot(
+            ma_task="T1.1", model="gpt-5-codex", home="/tmp/h", giay=3.25,
+            trang_thai="fail", prompt=prompt, ly_do="ket-qua-sai-khuon")
+        self.assertTrue(dong.endswith(" · ly_do=ket-qua-sai-khuon"), dong)
+        for manh in ("T1.1", "gpt-5-codex", "/tmp/h", "3.2", "fail", "sha256=", 'dau="'):
+            with self.subTest(manh=manh):
+                self.assertIn(manh, dong)
+        self.assertRegex(dong, r"^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
+        self.assertLess(len(dong), 300)
+
+    def test_luot_xong_khong_mang_ly_do(self):
+        dong = tdq_codex.dong_log_luot(
+            ma_task="T1.1", model="m", home="/tmp/h", giay=1.0,
+            trang_thai="xong", prompt="p", ly_do=None)
+        self.assertNotIn("ly_do=", dong)
+        self.assertTrue(dong.endswith('dau="p"'), dong)
+
+    def _in_log_luot(self, env):
+        import contextlib
+        import io
+        dong = tdq_codex.dong_log_luot("T1.1", "m", "/tmp/h", 1.0, "fail", "p", "bi-chan")
+        buf = io.StringIO()
+        with mock.patch.dict(os.environ, env, clear=False), contextlib.redirect_stderr(buf):
+            tdq_codex.in_log_luot(dong)
+        return buf.getvalue()
+
+    def test_dong_log_luot_bat_mac_dinh_tat_duoc(self):
+        """T4.1 — dòng log lượt đi qua cùng công tắc TDQ_LOG với mọi log khác."""
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("TDQ_LOG", None)
+            ra = self._in_log_luot({})
+        self.assertRegex(ra, r"^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
+        self.assertIn("· ly_do=bi-chan", ra)
+        self.assertEqual(self._in_log_luot({"TDQ_LOG": "0"}), "")
 
     def test_nguyen_van_prompt_chi_vao_file_da_gitignore(self):
         duong = tdq_codex.ghi_log_prompt(self.cwd, "T1.1", "nguyên văn đầy đủ")

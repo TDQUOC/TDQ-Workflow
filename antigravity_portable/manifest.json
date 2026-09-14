@@ -9,7 +9,7 @@
     "hooks/scripts/agy_pretooluse_gate.py": "026cdffc83f47b4d1901c88587be31a3d9269f94163297d2a1e822daa2c50021",
     "hooks/scripts/agy_stop_gate.py": "87466169ee8676d1c56cbccb000860956c7645fdfef0fa353b57a17fc0a116b5",
     "mcp_config.json": "3da0ec37d1a9e735d2eca9f5f707f101549a6fa064cd960155940c11172b6257",
-    "plugin.json": "90a34eef9643375c404ca408fde0d6fd8546d6654ad4f92e282a49fa1c4787f5",
+    "plugin.json": "5e56f8f95e8a64ab6e59b4b7ffc9dbe9a82b68f1077ae450a3d5d260991b6aa6",
     "scripts/canvas_a4_ch4_ch7.py": "d1106fc85f4ca9db045de9d77891550162da6f4e24c06ec2c7264dbf07de55ec",
     "scripts/canvas_a4_rebuild.py": "c5294428dc237cfdd37480c698724c10389a74310b4fa83c9734fe21cd3f3fb4",
     "scripts/canvas_draw.py": "de060025c41b729630d9fd4cc95eb8f1f1f5fae0431f6599fd64c197a4239f77",
@@ -34,7 +34,7 @@
     "scripts/tdq_bench.py": "c45c9fdff4cb7ad2a31e9136211b7cf0423ba792588b65aa5fa758f5bd92ac8e",
     "scripts/tdq_checkportable.py": "8f15b6ee8e0a0f2f4d77dc43ecc491b0e4c7659b46e2a7d3c493c27ea26852f0",
     "scripts/tdq_checkstatus.py": "408ec608486ee8c25a3b83d21b85622e223ef1de98a55e46513abe20b65ebc3b",
-    "scripts/tdq_codex.py": "8cac1f88877bde374d5505be255f8859806f13d0b376b160f746b32c7361320c",
+    "scripts/tdq_codex.py": "35d6da9f1fe2bf91036247755358286a90a435542e0deffbe43cd0077dad36ce",
     "scripts/tdq_finish.py": "a5998941cea6df69f038fdff4a5ee06baecd5b24cbe07ce6b75c4a698b7fdf3b",
     "scripts/tdq_lsp.py": "b8a4ca8cb5450061afa4f89d45372558db4d561f87d52bac5beb5167e451a60b",
     "scripts/tdq_state.py": "6e3824e7497010a9d8c53e71fa062dd3750bbdb587b12c9f1de23480ce298032",
@@ -45,7 +45,7 @@
     "scripts/tdq_worktree_registry.py": "42efc6888a9f8c2555a375a2d1f24e5c95bceb2b074c73dba87f76a6d0bec1af",
     "scripts/token_audit.py": "374f0edac43d75d91da16f8ef9bb2a492d713e007d04756c12bb4c63e3124684",
     "skills/tdq-build/SKILL.md": "1d2252bbbc7dc91aae6a6fe14173f8048ea5f839647a25019b3b08f432cd9bad",
-    "skills/tdq-build/references/codex-mode.md": "a241091479ff6d80c7d3c12fcefabbe8d27064ed79bde4f61fd050fa678acf26",
+    "skills/tdq-build/references/codex-mode.md": "a27e2403a99546055b3f716fb89413a3d28d459714815b5ac0cd0fa9d90b679f",
     "skills/tdq-build/references/qc.md": "3227923744ae58ef32a0a56c6fdeba3992d68a26266aeed0f314deebcc74b660",
     "skills/tdq-build/references/report-template.md": "7f840ee91fb19a43df0c142cc9603d7839b6dcb4d675ec14d6760a66af919853",
     "skills/tdq-build/references/rules/chung.md": "6168005f3590baa6ed788eb08dd660348f6fb182c0b902d9c4125300b506d6a6",
@@ -102,5 +102,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.46.0"
+  "version": "0.46.1"
 }
