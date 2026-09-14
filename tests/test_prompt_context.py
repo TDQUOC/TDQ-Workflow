@@ -164,6 +164,59 @@ class TestModeNaming(unittest.TestCase):
                 self.assertFalse(self.pc.looks_like_approval(said, "mode"), said)
 
 
+class TestChuCaiTheoDanhSachMode(unittest.TestCase):
+    """Chữ cái ở cổng mode map theo ĐÚNG danh sách đã in ra, không theo phép lật nhị phân.
+
+    Phép cũ `"subagent" if x == "main" else "main"` chỉ đúng khi đời chỉ có hai mode:
+    thêm mode thứ ba thì "B" vẫn trả về mode thứ hai và "C" thì vô nghĩa — user chọn
+    một đằng, state ghi một nẻo. Nên bất biến là: thứ tự option = mode plan đề xuất
+    đứng A, phần còn lại giữ nguyên thứ tự của danh sách `modes --json`.
+    """
+
+    setUp = TestModeNaming.setUp
+
+    BA = ["main", "subagent", "codex"]
+    HAI = ["main", "subagent"]
+
+    def test_ba_lua_chon_map_dung(self):
+        for letter, want in (("a", "main"), ("b", "subagent"), ("c", "codex")):
+            with self.subTest(letter=letter):
+                self.assertEqual(
+                    self.pc.mode_from_answer(letter, "main", self.BA), want)
+
+    def test_mode_plan_de_xuat_luon_dung_o_A(self):
+        got = [self.pc.mode_from_answer(c, "subagent", self.BA) for c in "abc"]
+        self.assertEqual(got, ["subagent", "main", "codex"])
+
+    def test_hai_lua_chon_thi_chu_cai_thu_ba_vo_nghia(self):
+        self.assertEqual(self.pc.mode_from_answer("a", "main", self.HAI), "main")
+        self.assertEqual(self.pc.mode_from_answer("b", "main", self.HAI), "subagent")
+        self.assertIsNone(self.pc.mode_from_answer("c", "main", self.HAI))
+
+    def test_chu_cai_ngoai_danh_sach_tra_none(self):
+        for letter in ("d", "c"):
+            with self.subTest(letter=letter):
+                self.assertIsNone(self.pc.mode_from_answer(letter, "main", self.HAI))
+
+    def test_go_thang_ten_codex_van_thang_chu_cai(self):
+        for said in ("codex", "codex implement", "chọn codex-implement"):
+            with self.subTest(said=said):
+                self.assertEqual(
+                    self.pc.mode_from_answer(said, "main", self.BA), "codex")
+
+    def test_cong_mode_chi_nhan_chu_cai_co_trong_danh_sach(self):
+        self.assertTrue(self.pc.looks_like_approval("C", "mode", self.BA))
+        self.assertFalse(self.pc.looks_like_approval("C", "mode", self.HAI))
+        self.assertTrue(self.pc.looks_like_approval("codex", "mode", self.HAI))
+
+    def test_khong_con_phep_lat_nhi_phan_trong_nguon(self):
+        """Xoá hẳn khỏi nguồn, không chỉ đi vòng qua nó."""
+        with open(self.pc.__file__, encoding="utf-8") as f:
+            nguon = f.read()
+        self.assertFalse('"subagent" if' in nguon or "'subagent' if" in nguon,
+                         "phép lật nhị phân vẫn còn trong prompt_context.py")
+
+
 class TestMultilingualGates(unittest.TestCase):
     """Cả 4 cổng nhận 3 dạng trả lời: câu tiếng Việt · câu tiếng Anh · chữ cái đứng riêng."""
 

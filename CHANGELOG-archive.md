@@ -3,6 +3,21 @@
 Các bản phát hành cũ, cắt ra khỏi `CHANGELOG.md` để file chính không vượt trần 500
 dòng của `doc_lint` rule R6. Mới nhất trên cùng, y như file chính.
 
+## 0.25.0 — 2026-08-18
+
+Mode đội: leader chia việc, agent con chạy song song — và tính modular chuyển thành thuộc
+tính của TÀI LIỆU, không còn phụ thuộc mode thực thi.
+
+- `scripts/tdq_team.py`: bản đồ phân công (`phan-cong`, `kiem-ke`, `cum`, `mo`, `kiem`,
+  `hop`, `don`), trần 4 nhánh một đợt. Hook `[TDQ:TEAM]` chặn leader tự gõ code của task
+  đã hứa giao; file ngoài project được miễn vì bản đồ không nói gì về vùng đó.
+- `scripts/tdq_bench.py`: đo và mô phỏng main so với đội, `mo-phong --plan <file>` đọc plan
+  thật để cổng đề xuất mode không phải chép lại luật chia đợt.
+- Khuôn spec thêm mục ranh giới module; plan luôn khai `Chạm:` và dựng `## Cụm song song`.
+  Lane quick được sinh agent con khi mini-plan có từ 3 task tách rời trở lên.
+- `scripts/skill_router.py`, `scripts/skill_tokens.py`: đo và định tuyến chi phí context
+  của bộ skill.
+
 ## 0.24.0 — 2026-08-17
 
 `portable_codex/` thôi làm markdown đọc tay, chuyển sang dùng đúng ba lớp native của Codex

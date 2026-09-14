@@ -5,7 +5,7 @@
       {
         "hooks": [
           {
-            "command": "python3 /Users/truongdinhquoc/.gemini/config/plugins/tdq-workflow/hooks/scripts/agy_pretooluse_gate.py",
+            "command": "python3 /Users/tdq/.gemini/config/plugins/tdq-workflow/hooks/scripts/agy_pretooluse_gate.py",
             "type": "command"
           }
         ]
@@ -15,7 +15,7 @@
       {
         "hooks": [
           {
-            "command": "python3 /Users/truongdinhquoc/.gemini/config/plugins/tdq-workflow/hooks/scripts/agy_stop_gate.py",
+            "command": "python3 /Users/tdq/.gemini/config/plugins/tdq-workflow/hooks/scripts/agy_stop_gate.py",
             "type": "command"
           }
         ]

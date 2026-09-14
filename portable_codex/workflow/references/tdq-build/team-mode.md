@@ -23,6 +23,9 @@ The mode the user picked only changes who types:
 - `main` — the leader does EVERYTHING, but in the plan's wave order and still recording the
   keep reason for each task. Jumping the wave order in mode `main` breaks exactly the thing
   that was measured: wave order is dependency order, not a suggestion.
+- `codex` — the leader writes each failing test and Codex makes it green inside the declared
+  file zone, one task at a time, still in wave order. The keep/hand-out decision is the same
+  decision; only the pair of hands changes. Rule: [codex-mode.md](codex-mode.md).
 
 Team mode does NOT mean every task must be delegated. It means: **whatever can be split must
 be split**, and the leader does the rest — like a real team lead, neither someone who hoards

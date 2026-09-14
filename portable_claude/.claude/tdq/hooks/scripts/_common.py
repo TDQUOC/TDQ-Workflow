@@ -22,7 +22,7 @@ sys.path.insert(0, _SCRIPTS_DIR)
 # edge for the from-import shape. Call through the attribute and the graph goes blind to the
 # whole hook → state chain.
 import tdq_state  # noqa: E402 — kept so other modules can `from _common import tdq_state`
-from tdq_state import (mode_label, resolve_project_dir,  # noqa: E402
+from tdq_state import (VALID_MODES, mode_label, resolve_project_dir,  # noqa: E402
                        turn_log_append, turn_log_read)
 
 # 0.2.0 dropped the hard gate; 0.3.0 dropped the approval slash command too — the user
@@ -46,7 +46,12 @@ APPROVE_HINTS = {
     "quick": 'say "approve quick" or type "A" (skip QC: "approve quick no QC")',
 }
 
-_PLAN_MODE = re.compile(r"Mode thực thi:\s*(main|subagent)", re.IGNORECASE)  # i18n-allow
+# Built from VALID_MODES, never typed by hand: a binary pair hardcoded here means a plan
+# naming the third mode reads back as None, and the mode gate silently proposes the wrong
+# one. Longest code first, because the regex takes the FIRST matching branch: a short code
+# that is the prefix of a longer one would swallow the tail if it came first.
+_MODE_NHANH = "|".join(re.escape(m) for m in sorted(VALID_MODES, key=len, reverse=True))
+_PLAN_MODE = re.compile(r"Mode thực thi:\s*(%s)" % _MODE_NHANH, re.IGNORECASE)  # i18n-allow
 
 
 def plan_mode(cwd, state):

@@ -63,6 +63,28 @@ class TestEditGate(unittest.TestCase):
         self.assert_remind(out, "main|inline")
         self.assertIn("sub-agent", out)
 
+    def test_goi_y_mode_in_du_moi_mode_dang_co(self):
+        """Gợi ý thiếu một mode = mode đó vô hình với người đọc dòng nhắc.
+
+        Sinh từ `MODE_ALIASES` nên thêm mode chỉ tốn một dòng bảng alias; viết cứng
+        cặp `main|subagent` ở đây là chỗ duy nhất còn sót lại của thời chỉ có hai mode.
+        """
+        write_state(self.cwd, active_request="r1", lane="full", phase="plan",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso())
+        rc, out, _ = self.edit("edit_src.json")
+        for ma in tdq_state.VALID_MODES:
+            with self.subTest(ma=ma):
+                self.assertIn(ma, out, f"dòng gợi ý không nhắc mode {ma}")
+
+    def test_goi_y_mode_khong_viet_cung_trong_nguon(self):
+        nguon_path = os.path.join(os.path.dirname(os.path.dirname(tdq_state.__file__)),
+                                  "hooks", "scripts", "edit_gate.py")
+        with open(nguon_path, encoding="utf-8") as f:
+            nguon = f.read()
+        self.assertFalse("main|inline | subagent" in nguon,
+                         "danh sách mode vẫn viết cứng trong edit_gate.py")
+
     def test_docs_edit_is_silent(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="spec")
         rc, out, _ = self.edit("edit_docs_spec.json")

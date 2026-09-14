@@ -1280,19 +1280,47 @@ def lenh_don(project, _args):
 
 
 # ------------------------------------------- anti rule-bending (used by the hook)
+
+# Which run modes hand work to a TEAM of branches. Declared explicitly, one line
+# per mode, rather than inferred from `!= "subagent"`: mode `codex` also hands
+# work away, but to one external agent while the leader stays on the main branch,
+# so the anti-rule-bending warning does not apply to it. That "does not apply" has
+# to be a line a reader can find, not a side effect of a string comparison.
+MODE_QUA_DOI = {
+    "main": False,
+    "subagent": True,
+    "codex": False,
+}
+
+
+def kiem_bang_qua_doi(valid_modes, bang):
+    """A mode nobody declared would silently inherit `False` from `.get` and lose
+    the warning without anyone noticing. Fail at load time, naming the mode."""
+    thieu = [m for m in valid_modes if m not in bang]
+    if thieu:
+        raise RuntimeError(
+            "MODE_QUA_DOI thiếu khai cho mode: " + ", ".join(thieu)  # i18n-allow
+            + " — mỗi mode trong VALID_MODES phải khai đi qua đội hay không.")  # i18n-allow
+    return True
+
+
+kiem_bang_qua_doi(tdq_state.VALID_MODES, MODE_QUA_DOI)
+
+
 def canh_bao_lach_luat(cwd, rel_target):
     """The user picked team mode but the leader types code of a task it promised away → warn.
 
     Returns None when there is nothing to say. Returns dict {kieu, ma, nhanh} on a finding.
     This function is the ONLY place deciding "is the rule being bent" — the hook only prints.
-    Only inspected when: phase implement + mode subagent + the file sits in the area of a
-    task recorded as `giao` that has no branch of its own yet.
+    Only inspected when: phase implement + a mode declared in MODE_QUA_DOI as going
+    through a team + the file sits in the area of a task recorded as `giao` that has
+    no branch of its own yet.
     """
     try:
         state = tdq_state.load(cwd, heal=False) or {}
         if tdq_state.effective_phase(state, warn=False) != "implement":
             return None
-        if tdq_state.effective_mode(state, warn=False) != "subagent":
+        if not MODE_QUA_DOI.get(tdq_state.effective_mode(state, warn=False)):
             return None
         slug = state.get("active_request")
         if not slug:

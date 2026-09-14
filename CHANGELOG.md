@@ -2,6 +2,32 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.46.0 — 2026-09-14
+
+Mode thực thi thứ ba: `codex implement`. Leader vẫn chạy tuần tự trong turn của mình như mode
+`main`, nhưng từng task giao cho `codex exec` viết code rồi leader kiểm lại. Không có sub-agent,
+không có worktree song song.
+Báo cáo: `docs/tdq/reports/2026-09-10-2247-mode-codex-implement.md`.
+
+- **`tdq_state.py` nhận mode thứ ba** — `VALID_MODES`/`MODE_LABELS` có `codex`, `phase_row` đọc
+  bảng tra thay vì rẽ nhánh `if`, và lệnh mới `modes --json` in `{ma, nhan, chon_duoc, ly_do}`
+  làm nguồn máy đọc được cho cổng chọn mode. `tdq_state.py` không được import tầng Codex.
+- **`scripts/tdq_vungfile.py` mới** — `chup-moc`/`hau-kiem`/`hoan-tac`. Mốc git lấy riêng cho
+  từng task, không so với `HEAD`. So với `HEAD` thì task sau FAIL oan vì việc chưa commit của task
+  trước. Hoàn tác bằng `git restore --source=<sha> --worktree`, không đụng index. Vùng khoá gồm file test.
+- **`scripts/tdq_codex.py` mới** — `check` dò máy và kiểm Codex còn sống. `run` chạy một lượt
+  `codex exec` với stdin không phải TTY, mọi cờ gom về một bảng `CO_EXEC`. Phán quyết 4 trạng thái
+  không dựa exit code. `cleanup` dọn `CODEX_HOME` tạm; log ghi sha256 của prompt thay nguyên văn.
+- **Nhịp đỏ → xanh chia đôi** — leader viết test đỏ trước, Codex chỉ được làm xanh; sửa file test
+  là FAIL kể cả khi test xanh.
+- **Hàng rào `hooks/scripts/codex_edit_gate.py`** — nâng từ chuỗi nhúng trong `build_portable.py`
+  thành file thật; dịch `apply_patch` và 5 dạng lệnh shell sang đường ghi, deny `[TDQ:VUNG]` khi
+  ra ngoài vùng. `.codex/hooks.json` ở gốc repo viết tay, đúng hai matcher `PreToolUse`.
+- **Cổng chọn mode động** — Codex sống thì 3 lựa chọn, không thì 2 lựa chọn kèm một dòng lý do.
+  Cài lên máy mới phải có cả đồng ý của người dùng lẫn `codex` trên máy; cờ đồng ý mặc định false.
+- **Giới hạn** — Q13 (sandbox chặn ghi ra ngoài) chưa chạy thật vì cờ đồng ý đang false. Suite
+  290 fail / 4 error bằng đúng mốc trước request (danh sách giống hệt), request thêm 0 fail mới.
+
 ## 0.45.0 — 2026-09-05
 
 Mỗi request tự mở nhánh git của nó. Trước bản này chỉ mode đội mới đẻ nhánh, còn mode
@@ -459,18 +485,3 @@ nhiều lần thì lúc nó kêu đúng cũng không còn ai nghe.
   `("spec", "plan", "quick")` nên lane quick — vốn không có cổng `spec` — luôn bị nhắc
   "spec vẫn chưa được ghi nhận duyệt", kể cả với request đã duyệt và đã đóng sổ.
   `edit_gate` khi lane rỗng/lạ nay nhắc cổng đầu tiên thay vì im lặng.
-
-## 0.25.0 — 2026-08-18
-
-Mode đội: leader chia việc, agent con chạy song song — và tính modular chuyển thành thuộc
-tính của TÀI LIỆU, không còn phụ thuộc mode thực thi.
-
-- `scripts/tdq_team.py`: bản đồ phân công (`phan-cong`, `kiem-ke`, `cum`, `mo`, `kiem`,
-  `hop`, `don`), trần 4 nhánh một đợt. Hook `[TDQ:TEAM]` chặn leader tự gõ code của task
-  đã hứa giao; file ngoài project được miễn vì bản đồ không nói gì về vùng đó.
-- `scripts/tdq_bench.py`: đo và mô phỏng main so với đội, `mo-phong --plan <file>` đọc plan
-  thật để cổng đề xuất mode không phải chép lại luật chia đợt.
-- Khuôn spec thêm mục ranh giới module; plan luôn khai `Chạm:` và dựng `## Cụm song song`.
-  Lane quick được sinh agent con khi mini-plan có từ 3 task tách rời trở lên.
-- `scripts/skill_router.py`, `scripts/skill_tokens.py`: đo và định tuyến chi phí context
-  của bộ skill.

@@ -473,3 +473,154 @@ class VongFix1Test(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HeSoCodexTest(unittest.TestCase):
+    """T8.1 — hệ số mode `codex` là khoá TUỲ CHỌN của file thực đo.
+
+    Hai tính chất phải cùng đúng: file đo CŨ (không có khoá) vẫn chạy y như trước,
+    và file đo mới in thêm cột `codex`. Nếu chỉ kiểm ca mới thì mọi file đo đã ghi
+    trước hôm nay bỗng thành lỗi — một phép đo cũ không được hết hạn vì mode mới.
+    """
+
+    def _file(self, thu_muc, codex=None, so_mau=3):
+        import copy
+        hs = copy.deepcopy(HS_KIEM_TAY)
+        duong = _file_thuc_do(thu_muc, hang_so=hs, so_mau=so_mau)
+        if codex is not None:
+            with open(duong, encoding="utf-8") as f:
+                du_lieu = json.load(f)
+            for ten, giay in codex.items():
+                du_lieu["hang_so"][ten] = {"giay": giay, "so_mau": so_mau, "do_tan": 0.0,
+                                           "nguon": "that", "mau": [giay] * so_mau}
+            with open(duong, "w", encoding="utf-8") as f:
+                json.dump(du_lieu, f, ensure_ascii=False)
+        return duong
+
+    def test_file_do_cu_khong_co_khoa_van_chay_nhu_truoc(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            duong = self._file(tmp)
+            rc, out, _err = chay("simulate", "--thuc-do", duong, "--task", "4")
+            self.assertEqual(rc, 0)
+            self.assertIn("| Metric | main | team |", out)
+            self.assertNotIn("| codex |", out)
+            self.assertIn("codex", out.lower(), "phải nói vì sao KHÔNG có dòng codex")
+
+    def test_co_khoa_thi_in_ba_mode(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            duong = self._file(tmp, codex={"t_codex": 105.8, "t_codex_khoi_dong": 5.0})
+            rc, out, _err = chay("simulate", "--thuc-do", duong, "--task", "4")
+            self.assertEqual(rc, 0)
+            self.assertIn("| Metric | main | team | codex |", out)
+            self.assertIn("Winner:", out)
+
+    def test_khoi_dong_co_dinh_cong_vao_tung_task(self):
+        """4 task × (105,8 + 5) + tick — số tính tay nằm ngay trong test."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            duong = self._file(tmp, codex={"t_codex": 105.8, "t_codex_khoi_dong": 5.0})
+            hs = tdq_bench.nap_hang_so(duong)
+            hs_codex = tdq_bench.nap_hang_so_codex(duong)[0]
+            van_ban, _ = tdq_bench.sinh_plan(4, chong=0.5)
+            kq = tdq_bench.mo_phong_van_ban(van_ban, hs, hs_codex=hs_codex)
+            mong = 4 * (105.8 + 5.0) + 4 * hs["t_tick"]
+            self.assertAlmostEqual(kq.t_codex, mong, places=6)
+
+    def test_so_mau_duoi_nguong_thi_tu_choi_khoa_codex(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            duong = self._file(tmp, codex={"t_codex": 105.8, "t_codex_khoi_dong": 5.0},
+                               so_mau=1)
+            with self.assertRaises(tdq_bench.LoiThieuSo) as bat:
+                tdq_bench.nap_hang_so_codex(duong)
+            self.assertIn("so_mau", str(bat.exception))
+
+    def test_khai_nua_voi_thi_bao_thieu_chu_khong_doan_not(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            duong = self._file(tmp, codex={"t_codex": 105.8})
+            hs_codex, ly_do = tdq_bench.nap_hang_so_codex(duong)
+            self.assertIsNone(hs_codex)
+            self.assertIn("t_codex_khoi_dong", ly_do)
+
+    def test_he_so_codex_khong_duoc_viet_cung_trong_nguon(self):
+        """Số 5s khởi động phải tới từ file đo, không phải từ một literal trong code."""
+        with open(os.path.join(ROOT, "scripts", "tdq_bench.py"), encoding="utf-8") as f:
+            nguon = f.read()
+        for so in ("105.8", "= 5.0", "= 5 "):
+            self.assertFalse(so in nguon,
+                             f"hệ số {so!r} bị viết cứng trong tdq_bench.py — phải đọc file đo")
+
+
+class LogCodexTest(unittest.TestCase):
+    """T8.2 — `calibrate` lấy mẫu từ DÒNG LOG lúc implement, không chạy vòng đo riêng.
+
+    Vì sao đọc log thay vì chạy thêm một vòng benchmark: một vòng tổng hợp đo Codex
+    trên plan giả, còn dòng log là số của chính công việc thật vừa làm. Số thật rẻ hơn
+    và đúng hơn — nó đã được trả tiền một lần rồi.
+    """
+
+    DONG = ('[2026-09-12T09:00:01+07:00] luot T1.1 · model=gpt-5-codex · home=/tmp/h · '
+            '101.5s · xong · sha256=abc · dau="x"')
+
+    def _log(self, thu_muc, giay, trang_thai="xong"):
+        duong = os.path.join(thu_muc, "implement.log")
+        with open(duong, "w", encoding="utf-8") as f:
+            for i, s in enumerate(giay):
+                f.write(f'[2026-09-12T09:0{i}:01+07:00] luot T1.{i} · model=gpt-5-codex · '
+                        f'home=/tmp/h · {s}s · {trang_thai} · sha256=abc · dau="x"\n')
+        return duong
+
+    def test_doc_dung_giay_va_ma_task(self):
+        mau = tdq_bench.doc_log_codex(self.DONG)
+        self.assertEqual(mau, [("T1.1", 101.5)])
+
+    def test_bo_qua_luot_khong_xong(self):
+        """Một lượt `timeout` hay `deny` không phải một mẫu thời gian làm task."""
+        for trang_thai in ("timeout", "deny", "fail"):
+            with self.subTest(trang_thai=trang_thai):
+                self.assertEqual(tdq_bench.doc_log_codex(
+                    self.DONG.replace("· xong ·", f"· {trang_thai} ·")), [])
+
+    def test_ba_mau_thi_ghi_duoc_hang_so_codex(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            log = self._log(tmp, [101.5, 110.0, 99.5])
+            ra = os.path.join(tmp, "thuc-do.json")
+            rc, out, err = chay("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
+                                "--log-codex", log,
+                                "--mau-that", "t_codex_khoi_dong=5.0,t_codex_khoi_dong=5.2,"
+                                              "t_codex_khoi_dong=4.9")
+            self.assertEqual(rc, 0, err)
+            with open(ra, encoding="utf-8") as f:
+                bang = json.load(f)["hang_so"]
+            self.assertIn("t_codex", bang)
+            self.assertEqual(bang["t_codex"]["so_mau"], 3)
+            self.assertEqual(bang["t_codex"]["nguon"], "that")
+            self.assertAlmostEqual(bang["t_codex"]["giay"], 103.6666667, places=4)
+            hs_codex, ly_do = tdq_bench.nap_hang_so_codex(ra)
+            self.assertEqual(ly_do, "")
+            self.assertAlmostEqual(hs_codex["t_codex_khoi_dong"], 5.0333333, places=4)
+
+    def test_hai_mau_thi_tu_choi_va_noi_con_thieu_may_mau(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            log = self._log(tmp, [101.5, 110.0])
+            ra = os.path.join(tmp, "thuc-do.json")
+            rc, _out, err = chay("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
+                                 "--log-codex", log)
+            self.assertEqual(rc, 1)
+            self.assertIn("t_codex", err)
+            self.assertIn("1 more", err)
+            self.assertFalse(os.path.exists(ra), "từ chối thì không được để lại file nửa vời")
+
+    def test_khong_dua_log_thi_file_do_khong_co_khoa_codex(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            ra = os.path.join(tmp, "thuc-do.json")
+            rc, _out, err = chay("calibrate", "--ra", ra, "--lap", "3", "--task", "3")
+            self.assertEqual(rc, 0, err)
+            with open(ra, encoding="utf-8") as f:
+                self.assertNotIn("t_codex", json.load(f)["hang_so"])

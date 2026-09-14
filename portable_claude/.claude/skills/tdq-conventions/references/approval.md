@@ -52,7 +52,7 @@ user's gate with your own and is banned. The user asks for plan mode → do it.
 ## Command to run the moment you recognise it
 
 ```
-python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent] --by "<the user's sentence verbatim>"
+python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" approve <spec|plan|quick> [--mode main|subagent|codex] --by "<the user's sentence verbatim>"
 ```
 
 - `--by` is mandatory in practice: it is the only trace tying state back to the conversation.
@@ -60,9 +60,11 @@ python3 "${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/tdq_state.py" approve <spec|p
 - `approve plan` while the user has not named a mode → **ASK for the mode first**, never guess.
   Ask with the one-option-per-line shape of
   [interview.md](../../tdq-intake/references/interview.md):
-  a numbered question line (`1. …`) followed by
-  `- A (recommended): main — …` / `- B: subagent — …`, with the labels written in the user's
-  language (Vietnamese: `- A (đề xuất): …`). <!-- i18n-allow --> The number is mandatory even
+  a numbered question line (`1. …`) followed by one option per line, the proposal at A. The
+  options are the modes `tdq_state.py modes --json` reports as offerable on this machine —
+  `main` and `subagent` always, `codex` only where the CLI and the user's consent both exist. Labels are written in the user's language
+  (Vietnamese: `- A (đề xuất): …`). <!-- i18n-allow --> The block itself:
+  [mode-gate.md](../../tdq-plan/references/mode-gate.md). The number is mandatory even
   for this single question — rule 8 of [user-facing-block.md](user-facing-block.md).
 - Every approval also adds one line to `docs/workinglog/<today>.md` (what was approved, when,
   and the user's exact words).

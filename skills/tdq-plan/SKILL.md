@@ -13,13 +13,14 @@ scope. Spec approved → plan NOW.
 
 ## Steps
 
-1. **Pick the mode to PROPOSE.** Weigh both options, write the fitting one into the plan at
-   step 2 with its reason; the user settles it at gate `mode` (step 6):
-   - `main` — display label "làm trực tiếp (inline implement)": work through it sequentially <!-- i18n-allow: user-facing mode label -->
-     right inside this conversation (small plan, tightly dependent tasks, shared files).
-   - `subagent` — display label "giao trợ lý (sub-agent implement)": assistants run in parallel, <!-- i18n-allow: user-facing mode label -->
-     you lead and cut the plan into waves, one worktree per agent, doing the unsplittable part
-     yourself. Rule: `tdq-build/references/team-mode.md`.
+1. **Pick the mode to PROPOSE.** Which modes exist depends on the machine: read them with
+   `tdq_state.py modes --json`, never from memory. The user settles it at gate `mode` (step 6).
+   - `main` (label: inline implement): sequential, right inside this conversation (small plan,
+     tightly dependent tasks, shared files).
+   - `subagent` (label: sub-agent implement): agents run in parallel, you cut the plan into waves,
+     one worktree each, keeping the unsplittable part. Rule: `tdq-build/references/team-mode.md`.
+   - `codex` (label: codex implement): you write the failing test, Codex makes it green inside the
+     declared file zone, then re-run and audit. NOT the fast mode. Rule: `tdq-build/references/codex-mode.md`.
    The proposal is **never eyeballed**: once the plan is written (step 2), MEASURE on that very plan:
    ```
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_bench.py" simulate --plan docs/tdq/plan/<slug>.md \
@@ -32,7 +33,7 @@ scope. Spec approved → plan NOW.
 2. **Write** `docs/tdq/plan/<slug>.md` out of the APPROVED spec — the full template lives in
    [references/plan-template.md](references/plan-template.md).
    Must be there: the status header + source spec · **a line of its own**
-   `Mode thực thi: <main|subagent> — <reason>` · the phases with checkbox tasks · a task of its own for <!-- i18n-allow: canonical name kept verbatim -->
+   `Mode thực thi: <main|subagent|codex> — <reason>` · the phases with checkbox tasks · a task of its own for <!-- i18n-allow: canonical name kept verbatim -->
    the log service and for unit tests · a Definition of Done pointing back at §6 of the spec, **every
    DoD line checkable by one command** (QC counts its items off that exact number of lines).
    One task = one piece of work + one measurable check, carrying the minute estimate `(eNm)`:
@@ -92,18 +93,17 @@ scope. Spec approved → plan NOW.
    ```
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve plan --by "<the user's exact words>"
    ```
-   Does the approval sentence already name a mode (`main`/`inline`, `subagent`/`sub-agent`)? Then add
-   `--mode <that value>`, **skip** the gate below and build right away — re-asking is banned.
-   No mode named → state stops at phase `mode`; print the question block then STOP. That block
-   lives verbatim in [references/mode-gate.md](references/mode-gate.md): two options "làm trực <!-- i18n-allow: user-facing mode labels -->
-   tiếp (inline implement)" / "giao trợ lý (sub-agent implement)", one per line, proposal at A. <!-- i18n-allow: user-facing mode labels -->
-   Right under the two options there MUST be a **"Vì sao đề xuất"** paragraph, 1–3 lines long. <!-- i18n-allow: canonical name of the block -->
-   Generalities are banned. Give all 4 grounds read off the plan: task count, dependency chain, how
-   many files several tasks touch at once, whether an `(mcp)` label is present. Close with one
-   sentence on why not the other option (examples in mode-gate.md). The two names are **display
-   labels**; state records `main`/`subagent` (`MODE_LABELS`/`MODE_ALIASES` in `scripts/tdq_state.py`).
-   The user answers → re-run the command with `--mode <main|subagent>` and build RIGHT AWAY, same
-   turn. The settled mode is the USER's, even when it differs from your proposal.
+   Approval sentence already names a mode (`main`, `subagent`, `codex`, or a label such as
+   `inline`)? Add `--mode <that value>`, **skip** the gate below, build now; re-asking is banned.
+   No mode named → state stops at phase `mode`; print the question block then STOP. Never type the
+   options from memory: `modes --json` says which exist on this machine, and the block lives
+   verbatim in [references/mode-gate.md](references/mode-gate.md), proposal always at A.
+   Right under the options: a **"Vì sao đề xuất"** paragraph, 1–3 lines, no generalities. <!-- i18n-allow: canonical name of the block -->
+   Give all 4 grounds read off the plan: task count, dependency chain, how many files several
+   tasks touch at once, whether an `(mcp)` label is present. Close with one sentence on why not
+   the others. The names shown are **display labels**; state records the identifier
+   (`MODE_LABELS`/`MODE_ALIASES` in `scripts/tdq_state.py`). The user answers → re-run with
+   `--mode <the chosen identifier>` and build RIGHT AWAY, same turn. The mode is the USER's.
 
 Done when: `plan_approved = true` and `implement_mode` is not empty.
 Next step: phase `implement` — flip the plan header to `ĐÃ DUYỆT`, run <!-- i18n-allow: canonical name kept verbatim -->

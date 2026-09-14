@@ -74,6 +74,18 @@ This skill owns three phases: `implement` → `qc` → `report`.
      Full rules (decision table, delegation prompt template, RIGHT/WRONG examples, self-check):
      [references/team-mode.md](references/team-mode.md) — **you MUST open and read it before
      assigning; working from memory is banned.**
+   - `codex` (label the user sees: "giao Codex (codex implement)"): you stay the LEADER and <!-- i18n-allow: user-facing mode label -->
+     Codex
+     is a hired hand. Four beats per task, none skipped: you write the failing test, you RUN
+     it and see red, Codex makes it green inside the declared file zone, then you run the test
+     again and audit the zone. The commands are `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_codex.py` (one run per task) and
+     `~/.gemini/config/plugins/tdq-workflow/scripts/tdq_vungfile.py` (mark, audit, rollback). Codex never writes the test that
+     measures it, and green alone is not done — a task that touched a file outside its zone
+     is a FAIL. Never describe this mode as "the fast mode": measured, it lands level with
+     `main`, and what it changes is who writes the code.
+     Full rules (prompt template, result shape, digest threshold, self-check):
+     [references/codex-mode.md](references/codex-mode.md) — **you MUST open and read it
+     before the first task; working from memory is banned.**
    The mode is what the USER said at approval. Missing mode, or you think another mode fits
    better → **STOP and ASK**.
 

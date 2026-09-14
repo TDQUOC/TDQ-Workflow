@@ -19,14 +19,32 @@ from _common import (block, echo_line, observe, payload_cwd, read_payload, remin
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 # `today_log_rel` comes straight from tdq_state — one single source, shared with stop_gate.
-from tdq_state import (cong_dang_cho, effective_phase, load,  # noqa: E402
-                       plan_tick_state, state_md_path, state_path,
-                       today_log_rel)
+from tdq_state import (MODE_ALIASES, VALID_MODES, cong_dang_cho,  # noqa: E402
+                       effective_phase, load, plan_tick_state, state_md_path,
+                       state_path, today_log_rel)
 
 # Streak threshold (spec 2026-08-13-ra-soat-tick-che-do-sau §3): more than THRESHOLD source
 # edits in a row without the plan (checksum) changing since → block the next one. Matches the
 # "fix round" ceiling (3 rounds) already used across the system.
 STREAK_NGUONG = 3
+
+
+def goi_y_mode():
+    """The mode string of the approval hint — generated from `MODE_ALIASES`, never typed.
+
+    Which aliases get in: per mode, the ONE-WORD aliases without the `implement` suffix
+    (`main|inline`, `subagent|sub-agent`, `codex`) — enough for a reader to recognise both
+    the machine identifier and the label at the mode gate, while the hint stays under its
+    200-character ceiling. Adding a mode costs one row in the alias table; nothing here
+    knows in advance how many modes exist.
+    """
+    nhom = {}
+    for alias, ma in MODE_ALIASES.items():
+        if " " in alias or "implement" in alias:
+            continue
+        nhom.setdefault(ma, []).append(alias)
+    return " | ".join("|".join(sorted(nhom[ma], key=len))
+                      for ma in VALID_MODES if nhom.get(ma))
 
 
 def within(child, parent):
@@ -77,7 +95,7 @@ def main():
     pending = cong_dang_cho(state)
     if pending:
         # Name both the machine value and the label the user sees at the mode gate — both accepted.
-        mode = " --mode <main|inline | subagent|sub-agent>" if pending == "plan" else ""
+        mode = f" --mode <{goi_y_mode()}>" if pending == "plan" else ""
         # Command before advice: the 200-char ceiling must cut the least needed part.
         remind(cwd, payload, "TDQ:APPROVE", [
             f"Editing a file outside docs/ while {pending} has no recorded approval.",

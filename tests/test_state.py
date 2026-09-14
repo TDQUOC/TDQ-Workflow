@@ -1,11 +1,13 @@
 """A3 — tdq_state.py: default schema, CLI, protected keys, atomic write."""
 import json
 import os
+import subprocess
+import sys
 import tempfile
 import unittest
 
 import helper
-from helper import run_state_cli, run_state_cli_in, read_state, write_state
+from helper import ROOT, run_state_cli, run_state_cli_in, read_state, write_state
 import tdq_state
 
 
@@ -529,3 +531,52 @@ class ChanWorktreeTest(unittest.TestCase):
         self._so("{ hong")
         rc, _out, err = run_state_cli(self.cwd, "set", "phase=qc")
         self.assertEqual(rc, 0, err)
+
+
+class ModesJsonTest(unittest.TestCase):
+    """T1.3 — `modes --json` là NGUỒN DUY NHẤT của cổng chọn mode.
+
+    `chon_duoc` của mode `codex` đến từ một hàm TIÊM ĐƯỢC: state không được
+    biết tầng Codex tồn tại (xem tests.test_kien_truc), nên phép kiểm ở đây
+    tiêm cả hai chiều thay vì phụ thuộc máy có cài Codex hay không.
+    """
+
+    def test_ba_mode_du_bon_truong(self):
+        rows = tdq_state.liet_ke_modes(kiem_codex=lambda: (True, ""))
+        self.assertEqual([r["ma"] for r in rows], list(tdq_state.VALID_MODES))
+        for r in rows:
+            with self.subTest(ma=r["ma"]):
+                self.assertEqual({"ma", "nhan", "chon_duoc", "ly_do"}, set(r))
+                self.assertTrue(r["nhan"])
+
+    def test_codex_song_thi_chon_duoc(self):
+        rows = tdq_state.liet_ke_modes(kiem_codex=lambda: (True, ""))
+        codex = [r for r in rows if r["ma"] == "codex"][0]
+        self.assertTrue(codex["chon_duoc"])
+
+    def test_codex_chua_cai_thi_khong_chon_duoc_kem_ly_do(self):
+        rows = tdq_state.liet_ke_modes(
+            kiem_codex=lambda: (False, "chưa cài `codex` trên máy này"))
+        codex = [r for r in rows if r["ma"] == "codex"][0]
+        self.assertFalse(codex["chon_duoc"])
+        self.assertTrue(codex["ly_do"].strip(),
+                        "không chọn được thì PHẢI nói vì sao")
+
+    def test_hai_mode_kia_luon_chon_duoc(self):
+        rows = tdq_state.liet_ke_modes(kiem_codex=lambda: (False, "x"))
+        for r in rows:
+            if r["ma"] != "codex":
+                with self.subTest(ma=r["ma"]):
+                    self.assertTrue(r["chon_duoc"])
+                    self.assertEqual(r["ly_do"], "")
+
+    def test_lenh_modes_json_chay_duoc(self):
+        with tempfile.TemporaryDirectory() as cwd:
+            proc = subprocess.run(
+                [sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"),
+                 "modes", "--json"],
+                capture_output=True, text=True, timeout=60,
+                env=dict(os.environ, TDQ_PROJECT_DIR=cwd))
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            rows = json.loads(proc.stdout)
+            self.assertEqual([r["ma"] for r in rows], list(tdq_state.VALID_MODES))

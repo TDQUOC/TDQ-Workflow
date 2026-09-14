@@ -311,3 +311,65 @@ class TestTrustCodex(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _anh_chup_codex(goc):
+    """Ảnh chụp thư mục `.codex/`: đường → sha256. Thư mục không có thì dict rỗng.
+
+    So bằng nội dung chứ không bằng mtime: một lần ghi đè đúng y nội dung cũ vẫn là
+    ghi, nhưng thứ luật T9.1 cấm là ghi ra thay đổi, nên nội dung mới là thước đo.
+    """
+    ra = {}
+    thu_muc = os.path.join(goc, ".codex")
+    for goc_con, _dirs, files in os.walk(thu_muc):
+        for ten in files:
+            duong = os.path.join(goc_con, ten)
+            ra[os.path.relpath(duong, goc)] = tdq_checkportable.sha256_of(duong)
+    return ra
+
+
+class TangCodexTest(CoBanSinh):
+    """T9.1 — `setup` hỏi trước khi cài tầng Codex, và dò `codex` cùng lúc.
+
+    Hai điều kiện, và THIẾU MỘT LÀ KHÔNG GHI GÌ. Gọi một CLI ngoài là quyết định của
+    người dùng, nên cài hộ rồi báo sau là hỏng ngay ở chỗ quan trọng nhất.
+    """
+
+    def _duong_co(self):
+        return os.path.join(self.goc, "docs", "tdq", ".tdq-codex.json")
+
+    def test_chua_co_co_thi_khong_ghi_gi_chi_in_cau_hoi(self):
+        truoc = _anh_chup_codex(self.goc)
+        rc, out, _err = chay("setup", "--root", self.goc, env={"TDQ_LOG": "0"})
+        self.assertEqual(rc, 0)
+        self.assertFalse(os.path.exists(self._duong_co()), "chưa hỏi mà đã ghi cờ")
+        self.assertEqual(_anh_chup_codex(self.goc), truoc, "`.codex/` bị đụng khi chưa đồng ý")
+        self.assertIn("--codex", out)
+
+    def test_dong_y_ma_may_thieu_codex_thi_van_khong_ghi(self):
+        truoc = _anh_chup_codex(self.goc)
+        da_lam, loi_nhan = tdq_checkportable.cai_tang_codex(
+            self.goc, True, tim_lenh=lambda _ten: None)
+        self.assertEqual(da_lam, [])
+        self.assertFalse(os.path.exists(self._duong_co()))
+        self.assertEqual(_anh_chup_codex(self.goc), truoc)
+        self.assertIn("npm i -g @openai/codex", " ".join(loi_nhan))
+
+    def test_du_hai_dieu_kien_thi_ghi_co_va_khong_cham_vao_codex(self):
+        truoc = _anh_chup_codex(self.goc)
+        da_lam, _loi_nhan = tdq_checkportable.cai_tang_codex(
+            self.goc, True, tim_lenh=lambda _ten: "/usr/local/bin/codex")
+        self.assertTrue(da_lam)
+        with open(self._duong_co(), encoding="utf-8") as f:
+            co = json.load(f)
+        self.assertIs(co["nguoi_dung_dong_y"], True)
+        self.assertTrue(co["quyet_dinh_luc"], "cờ thiếu mốc thời gian quyết định")
+        self.assertEqual(_anh_chup_codex(self.goc), truoc,
+                         "`setup` không được ghi vào `.codex/`, kể cả khi đã đồng ý")
+
+    def test_cau_hoi_in_ra_dung_lenh_de_chay_lai(self):
+        _da_lam, loi_nhan = tdq_checkportable.cai_tang_codex(
+            self.goc, False, tim_lenh=lambda _ten: "/usr/local/bin/codex")
+        van = " ".join(loi_nhan)
+        self.assertIn("setup --codex", van)
+        self.assertFalse(os.path.exists(self._duong_co()))
