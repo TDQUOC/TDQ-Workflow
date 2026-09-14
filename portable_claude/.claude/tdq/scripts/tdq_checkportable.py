@@ -275,7 +275,8 @@ def chay_setup(goc, manifest):
 # They stay in the user's language: everything spoken to the user follows `doc_lang`.
 CAU_HOI_CODEX = (
     "mode `codex` gọi một CLI ngoài (`codex`) chạy trên máy bạn. Workflow KHÔNG tự bật nó.",  # i18n-allow
-    "Đồng ý thì chạy lại: python3 scripts/tdq_checkportable.py setup --codex",  # i18n-allow
+    "Đồng ý thì chạy: python3 scripts/tdq_codex.py dong-y --model <tên-model>"  # i18n-allow
+    "  (trong bản portable, python3 scripts/tdq_checkportable.py setup --codex cũng được)",  # i18n-allow
     "Không đồng ý thì bỏ qua — hai mode `main` và `subagent` vẫn chạy như thường.",  # i18n-allow
 )
 CAU_CAI_CODEX = ("chưa có `codex` trên máy này — cài trước: "  # i18n-allow
@@ -307,7 +308,8 @@ def cai_tang_codex(goc, dong_y, tim_lenh=None):
     return [f"wrote the consent flag for calling `codex` into "
             f"{os.path.join('docs', 'tdq', '.tdq-codex.json')}"], [
         "the Codex layer is on. One step left: name the model with "
-        "python3 scripts/tdq_codex.py setup-model <ten-model>"]
+        "python3 scripts/tdq_codex.py setup-model <ten-model>, then confirm the model answers "
+        "with python3 scripts/tdq_codex.py check"]
 
 
 # -------------------------------------------------- project trust for Codex CLI

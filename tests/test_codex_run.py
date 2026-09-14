@@ -187,6 +187,111 @@ class CodexHomeTest(RepoTam):
         self.assertNotIn("sk-abc123secret", tdq_codex.mask_secrets(ban))
 
 
+class CodexHomeProviderTest(RepoTam):
+    """Bugfix 2026-09-14 — CODEX_HOME tạm phải mang provider của máy.
+
+    Thiếu `model_provider`, Codex rơi về `openai` và trả 400 "model not supported when using
+    Codex with a ChatGPT account" — đo thật trên máy dùng router `9router`.
+    """
+
+    CONFIG_MAY = (
+        'model = "model-cua-may"\n'
+        'model_provider = "9router"\n'
+        'approval_policy = "never"\n\n'
+        '[model_providers.9router]\n'
+        'name = "9Router"\n'
+        'base_url = "http://127.0.0.1:20128/v1"\n'
+        'wire_api = "responses"\n\n'
+        '[model_providers.9router.http_headers]\n'
+        'Authorization = "Bearer sk-gia-cho-test"\n\n'
+        '[model_providers.khac]\n'
+        'base_url = "http://khac.invalid/v1"\n\n'
+        '[agents]\n'
+        'default_subagent_model = "x"\n\n'
+        '[projects."/Users/ai-do"]\n'
+        'trust_level = "trusted"\n\n'
+        '[mcp_servers.foo]\n'
+        'command = "foo"\n'
+    )
+
+    def setUp(self):
+        super().setUp()
+        self.nguon = os.path.join(self.cwd, "codex-may")
+        os.makedirs(self.nguon)
+
+    def tearDown(self):
+        tdq_codex.cleanup(self.cwd)
+        super().tearDown()
+
+    def _ghi_nguon(self, noi_dung):
+        with open(os.path.join(self.nguon, "config.toml"), "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+
+    def _doc_config(self, home):
+        import tomllib
+        with open(os.path.join(home, "config.toml"), "rb") as f:
+            return tomllib.load(f)
+
+    def test_chep_dung_provider_dang_chon_kem_bang_con(self):
+        self._ghi_nguon(self.CONFIG_MAY)
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        cfg = self._doc_config(home)
+        self.assertEqual(cfg["model_provider"], "9router")
+        bang = cfg["model_providers"]["9router"]
+        self.assertEqual(bang["base_url"], "http://127.0.0.1:20128/v1")
+        self.assertEqual(bang["wire_api"], "responses")
+        self.assertEqual(bang["http_headers"]["Authorization"], "Bearer sk-gia-cho-test")
+
+    def test_model_la_model_workflow_chon_khong_phai_model_may(self):
+        self._ghi_nguon(self.CONFIG_MAY)
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        self.assertEqual(self._doc_config(home)["model"], "gpt-5-codex")
+
+    def test_khong_chep_bang_ngoai_provider(self):
+        self._ghi_nguon(self.CONFIG_MAY)
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        cfg = self._doc_config(home)
+        self.assertEqual(set(cfg), {"model", "model_provider", "model_providers"})
+        self.assertEqual(set(cfg["model_providers"]), {"9router"},
+                         "chỉ chép provider đang chọn")
+
+    def test_may_khong_khai_provider_thi_chi_co_model(self):
+        self._ghi_nguon('model = "o3"\n')
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        self.assertEqual(self._doc_config(home), {"model": "gpt-5-codex"})
+
+    def test_config_may_thieu_hoac_hong_van_dung_duoc_home(self):
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        self.assertEqual(self._doc_config(home), {"model": "gpt-5-codex"})
+        self._ghi_nguon("[hỏng\n")
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        self.assertEqual(self._doc_config(home), {"model": "gpt-5-codex"})
+
+    def test_auth_json_lay_tu_nguon_quyen_600(self):
+        with open(os.path.join(self.nguon, "auth.json"), "w", encoding="utf-8") as f:
+            f.write("{}")
+        home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
+        duong = os.path.join(home, "auth.json")
+        self.assertTrue(os.path.exists(duong))
+        self.assertEqual(stat.S_IMODE(os.stat(duong).st_mode), 0o600)
+
+    def test_nguon_mac_dinh_theo_bien_codex_home(self):
+        with mock.patch.dict(os.environ, {"CODEX_HOME": self.nguon}):
+            self.assertEqual(tdq_codex.thu_muc_codex_may(), self.nguon)
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("CODEX_HOME", None)
+            self.assertEqual(tdq_codex.thu_muc_codex_may(),
+                             os.path.join(os.path.expanduser("~"), ".codex"))
+
+    def test_thu_muc_home_tam_duoc_gitignore(self):
+        """`auth.json` và khoá provider nằm trong đây; repo công khai thì không được lọt."""
+        mau = os.path.join("docs", "tdq", ".tdq-codex-home", "tdq-codex-home-x", "auth.json")
+        proc = subprocess.run(["git", "check-ignore", "-q", mau], cwd=ROOT,
+                              capture_output=True, text=True, timeout=30,
+                              stdin=subprocess.DEVNULL)
+        self.assertEqual(proc.returncode, 0, f"{mau} chưa được gitignore")
+
+
 class BienMocTest(RepoTam):
     """T3.3/Q21b — biến môi trường mốc của mode, tên KHÔNG chứa KEY/TOKEN/SECRET."""
 

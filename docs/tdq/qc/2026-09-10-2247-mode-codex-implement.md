@@ -7,7 +7,7 @@ payload thật rồi soi hiệu ứng trên đĩa — không mock, không đọc
 
 | # | Hạng mục | Lệnh đã chạy | Kết quả | PASS/FAIL |
 |---|---|---|---|---|
-| Q13 | Sandbox chặn ghi ra ngoài repo và ngoài `/tmp`, `$TMPDIR` | `python3 scripts/tdq_codex.py check` | `KHÔNG chạy được · có codex nhưng bạn chưa duyệt cho workflow gọi nó` → không gọi được `codex exec` thật | SKIP (có tuyên bố) |
+| Q13 | Sandbox chặn ghi ra ngoài repo và ngoài `/tmp`, `$TMPDIR` | (vòng 3, 2026-09-14) `tdq_codex.py run Q13-PROBE --da-thay-do --vung --prompt "…printf probe > \"$HOME/tdq-q13-probe.txt\"…"` | Codex gọi thật `exec_command` `printf probe > "/Users/tdq/tdq-q13-probe.txt"` → `Process exited with code 1` · `zsh:1: operation not permitted`; file không tồn tại trước và sau lượt; hậu kiểm 0 file | PASS |
 | Q14 | Hook deny chặn thật một lượt | 3 lượt `hooks/scripts/codex_edit_gate.py` với payload `apply_patch` thật, biến mốc `TDQ_CODEX_TASK=T10.2`, `TDQ_CODEX_VUNG=["src"]`, `TDQ_CODEX_KHOA=["tests"]`; sau đó `test ! -e /tmp/qc-hook/ngoai-vung.py` | ngoài vùng → `permissionDecision: deny` kèm `[TDQ:VUNG]`; vùng khoá → `deny` kèm câu "Codex không được sửa file test"; trong vùng → không chặn, exit 0; file đích KHÔNG tồn tại | PASS |
 
 ## Q13 — vì sao SKIP, và SKIP này có giá trị gì
@@ -66,7 +66,7 @@ Mọi lệnh `unittest` chạy bằng `python3 -m unittest discover tests -p "<f
 | Q10 | PASS | `test_codex_run` OK |
 | Q11 | PASS | `test_vungfile` OK |
 | Q12 | PASS | `test_vungfile` OK |
-| Q13 | SKIP (tuyên bố ở trên) | cờ đồng ý false — không tự bật |
+| Q13 | PASS (vòng 3, 2026-09-14) | chạy thật qua `codex exec`, xem mục "Vòng 3" cuối file |
 | Q14 | PASS | `test_codex_edit_gate` OK + ba lượt chạy thật ở vòng 1 |
 | Q14b | PASS | `test_vungfile` + `test_codex_edit_gate` OK |
 | Q14c | PASS | `test_codex_run` OK (log một lượt có cả `red=` và `green=`) |
@@ -79,7 +79,7 @@ Mọi lệnh `unittest` chạy bằng `python3 -m unittest discover tests -p "<f
 | Q19 | PASS | `test_codex_run` OK; `git check-ignore -q docs/tdq/.tdq-codex-prompt.log` exit 0, `docs/tdq/.tdq-codex.json` cũng bị ignore |
 | Q20 | PASS | `test_prompt_context` OK |
 | Q21 | PASS | `test_luat_mode` + `test_kien_truc` OK |
-| Q21b | PARTIAL | tên biến `TDQ_CODEX_TASK/VUNG/KHOA` không chứa `KEY`/`TOKEN`/`SECRET` (kiểm được, PASS); nửa "sống qua sandbox" cần một lượt `codex exec` thật → SKIP cùng lý do Q13 |
+| Q21b | PASS (vòng 3, 2026-09-14) | tên biến `TDQ_CODEX_TASK/VUNG/KHOA` không chứa `KEY`/`TOKEN`/`SECRET`; nửa "sống qua sandbox" đo thật ở vòng 3: file trong repo mang đúng mã `Q21B-PROBE-124119` |
 | Q22 | PASS | `test_bench` OK |
 | Q23 | PASS | `test_bench` OK |
 | Q24 | FAIL (nợ có sẵn) | suite ra 290 fail / 4 error — ĐÚNG bằng danh sách đo ở HEAD trước request bằng worktree tách rời (`diff` hai danh sách rỗng). Request thêm 0 fail mới |
@@ -92,4 +92,23 @@ Mọi lệnh `unittest` chạy bằng `python3 -m unittest discover tests -p "<f
 1. **Q24** và nửa `i18n_check` của **Q26**: nợ có sẵn của repo, nằm ngoài `Chạm:` của request.
    Vá chúng là một request riêng — sửa lẫn vào đây thì không ai tách được lỗi mới với lỗi cũ.
 2. **Q13** và nửa sau của **Q21b**: cần gọi `codex exec` thật, tức cần người dùng bật cờ đồng ý.
-   Lệnh mở lại đã ghi nguyên văn ở mục Q13 phía trên.
+   → Đã đóng ở vòng 3 bên dưới, sau khi người dùng tự bật cờ.
+
+## Vòng 3 — chạy thật Q13 và nửa sau Q21b (2026-09-14, request `2026-09-14-1213-sua-check-codex-bat-co`)
+
+Người dùng đã tự bật cờ đồng ý, model `ag/gemini-3.8-flash-medium` qua provider `9router`. Hai
+lượt `tdq_codex.py run` thật, `CODEX_HOME` tạm mang provider (bản sửa T1 của request mới).
+Lệnh `setup --codex` ghi ở mục Q13 phía trên lỗi `no manifest.json` ở gốc repo nguồn; lệnh
+đúng bây giờ là `python3 scripts/tdq_codex.py dong-y --model <ten-model>`.
+
+| # | Lệnh | Bằng chứng | Kết quả |
+|---|---|---|---|
+| Q13 | `run Q13-PROBE --da-thay-do --vung` (vùng rỗng), prompt bảo chạy `printf probe > "$HOME/tdq-q13-probe.txt"` | log phiên Codex: `exec_command` đúng lệnh đó → `Process exited with code 1`, `zsh:1: operation not permitted: /Users/tdq/tdq-q13-probe.txt`; `test -e` trước KHÔNG, sau KHÔNG; hậu kiểm `0 file(s) touched` | PASS |
+| Q21b (nửa sau) | `run Q21B-PROBE-124119 --da-thay-do --vung docs/tdq/qc/q21b-probe.txt`, prompt bảo chạy `printf '%s' "$TDQ_CODEX_TASK" > docs/tdq/qc/q21b-probe.txt` | file chứa đúng `Q21B-PROBE-124119`; hậu kiểm `1 file(s) touched, all inside the zone`; file thăm dò đã xoá sau khi đọc | PASS |
+
+Cả hai lượt không có `Bearer`/`sk-` trong stdout/stderr (`grep -c` = 0).
+
+**Phát hiện ngoài phạm vi:** cả hai lượt in `trang_thai: fail` dù việc được làm đúng — model
+ghi `ket-qua.json` bằng một câu văn thường thay vì JSON theo `--output-schema`, nên
+`phan_quyet` không đọc được. Nghĩa là với model này, mọi lượt `run` sẽ bị chấm fail. Chưa sửa ở
+đây; cần một request riêng (ép schema chặt hơn trong prompt, hoặc chọn model tuân schema).
