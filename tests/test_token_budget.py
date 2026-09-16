@@ -115,7 +115,12 @@ class TokenBudgetTest(unittest.TestCase):
         # tự vì thế nới theo tỉ lệ giãn của chữ, ngân sách token thực tế vẫn giảm.
         # 2026-08-23: 1450 → 1620. Skill thứ 8 (tdq-lsp-setup) thêm 1 description; đây là
         # skill quyết định lớp tìm kiếm của mọi phase sau nên phải nằm trong context.
-        self.assertLessEqual(total, 1620, f"tổng description = {total} ký tự")
+        # 2026-09-17: 1620 → 1800. Skill thứ 9 (tdq-lean) thêm 1 description; đo thật là
+        # 1790 ký tự (tdq-lean 185), trần chừa 10. Description của tdq-lean đã bị cắt một
+        # lượt (224 → 185) trước khi nới trần — nới là bước sau, không phải bước đầu. Nó
+        # phải nằm trong context vì đây là skill duy nhất soi over-engineer; router không
+        # gọi được nó thì luật gọn chỉ còn là lời nhắc.
+        self.assertLessEqual(total, 1800, f"tổng description = {total} ký tự")
 
     def test_reference_files_bounded(self):
         for root in (os.path.join(ROOT, "skills"),):

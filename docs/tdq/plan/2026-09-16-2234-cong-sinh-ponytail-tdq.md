@@ -179,11 +179,21 @@ marker đếm được đúng 7 bậc.
       — Test: `(cd tests && python3 -m unittest test_subagent_start -v)` xanh, có ca payload thiếu khoá và ca `muc_gat=off`
   - Chạm: `hooks/scripts/subagent_start.py`, `hooks/hooks.json`, `tests/test_subagent_start.py` → `hooks.json` lên 6 mục trên 5 sự kiện
   - Cần: T2.1, T2.2
-- [ ] **T3.4** (e12m) Chống chèn hai lần: mỗi kênh dedupe theo lượt, dùng lại cơ chế đã có ở
+- [x] **T3.4** (e12m) Chống chèn hai lần: mỗi kênh dedupe theo lượt, dùng lại cơ chế đã có ở
       `already_reminded` chứ không viết cơ chế thứ hai — bug #10871 làm hook plugin chạy hai lần
       với hai PID. — Test: `(cd tests && python3 -m unittest test_kenh_luat_dedupe -v)` xanh: gọi hook hai lần cùng một lượt thì thân luật xuất hiện **đúng một lần**
   - Chạm: `tests/test_kenh_luat_dedupe.py` → file mới; phần sửa mã nằm trong T3.1–T3.3 theo luật file nóng
   - Cần: T3.1, T3.2, T3.3
+  - Đo được 2026-09-17 (hai chuyện, không sinh task mới):
+    1. `SessionStart` và `SubagentStart` dùng CHUNG một sổ lượt theo `session_id`, nên trong
+       cùng một lượt của cùng một phiên, kênh nào tới trước thì kênh sau im. Đúng tinh thần
+       "một cơ chế dedupe duy nhất" nên giữ nguyên, test đã khoá lại hành vi này. Giá phải
+       trả có thật: `SessionStart:compact` nổ giữa lượt thì trợ lý sinh ra sau đó trong cùng
+       lượt không được nhắc. Chấp nhận — hàng rào thật là `edit_gate` + audit của leader,
+       kênh này chỉ là lời nhắc (issue #23885). Ghi vào report như một giới hạn đã biết.
+    2. Bẫy đếm: chuỗi `| 1 |` KHÔNG dùng được làm mốc đếm số lần chèn thân luật — thân luật
+       có hai bảng nên nó xuất hiện 2 lần cho 1 lần chèn. Mốc đúng là
+       `| 1 | Does this need to exist at all?`.
 
 **Xong P3 khi**: chạy thật cả ba hook bằng payload giả thấy thân luật trong đầu ra (kênh phiên
 có ca `source=compact`); `hooks.json` đọc được bằng máy và khai 6 mục / 5 sự kiện; thân luật
@@ -191,13 +201,20 @@ xuất hiện đúng một lần mỗi lần nạp.
 
 ## P4 — Skill soi over-engineer + cổng nợ marker
 
-- [ ] **T4.1** (e16m) Tạo `skills/tdq-lean/SKILL.md` — một skill, ba chế độ, viết tiếng Anh theo
+- [x] **T4.1** (e16m) Tạo `skills/tdq-lean/SKILL.md` — một skill, ba chế độ, viết tiếng Anh theo
       `docs/kien-truc.md:51`: `review` soi diff, `audit` soi cả repo, `debt` gom marker
       `ponytail:` thành sổ nợ và đánh dấu marker **không có đường nâng** là nợ thối. Frontmatter
       khai `argument-hint: "[review|audit|debt]"`. Nội dung prompt vay từ ba command
       `~/Documents/ponytail/commands/`, KHÔNG vay `/ponytail-gain`.
       — Test: `(cd tests && python3 -m unittest test_skill_lean -v)` xanh: ba mục chế độ có đủ, `argument-hint` khai đúng ba chế độ, `python3 scripts/i18n_check.py skills/tdq-lean/SKILL.md` exit 0
   - Chạm: `skills/tdq-lean/SKILL.md`, `tests/test_skill_lean.py` → file mới; node đọc: `build_portable.py` (T6.1), chỉ mục skill (T6.3)
+  - Chạm (thêm 2026-09-17, plan tôi viết thiếu): `scripts/doc_lint.py`, `tests/test_token_budget.py`
+    → một skill mới không tự đăng ký được. `SKILL_LINE_LIMITS` là sổ hộ khẩu skill
+    (`test_skill_shape.test_exactly_six_skills` so `os.listdir(skills)` với đúng sổ đó), nên
+    thiếu một dòng ở đây là skill mới bị coi như không tồn tại. Trần tổng description cũng
+    phải nới: đo thật 1790 ký tự so với trần 1620. Hai trần đều là ràng buộc tầng 3
+    (`soul.md:101`), nới có ngày và có lý do tại chỗ — nhưng chỉ sau khi đã cắt description
+    của `tdq-lean` một lượt (224 → 185 ký tự): cắt trước, nới sau.
 - [x] **T4.2** (e18m) Tạo `scripts/kiem_no_marker.py` — **một lệnh chạy được, không framework,
       không fixture**: quét comment `ponytail:` trong `scripts/` và `hooks/`, marker nào thiếu
       đường nâng thì in `đường-dẫn:dòng` và thoát mã khác 0; đủ đường nâng thì mã 0. Ghi một
@@ -210,13 +227,25 @@ trên repo hiện tại exit 0.
 
 ## P5 — Log & test bắt buộc
 
-- [ ] **T5.1** (e12m) Khoá log service của ba kênh: mỗi kênh mỗi lần chạy ghi **một dòng** vào
+- [x] **T5.1** (e12m) Khoá log service của ba kênh: mỗi kênh mỗi lần chạy ghi **một dòng** vào
       sổ lượt có sẵn (`turn_log_append`) với timestamp, tên kênh, mức gắt, số dòng luật đã chèn;
       `muc_gat=off` thì không dòng nào. Việc GHI đã gộp vào T3.1–T3.3 theo luật file nóng; task
       này viết phép kiểm. Không dựng sổ log thứ hai.
       — Test: `(cd tests && TDQ_PROJECT_DIR=$(mktemp -d) python3 -m unittest test_log_kenh_luat -v)` xanh
   - Chạm: `tests/test_log_kenh_luat.py` → file mới, chưa node nào phụ thuộc
   - Cần: T3.1, T3.2, T3.3
+  - Đo được 2026-09-17: trợ lý T5.1 báo **trường "số dòng luật đã chèn" KHÔNG có trong mã**.
+    Ba kênh chỉ ghi `event`/`muc_gat` (+ `source` ở SessionStart, `agent` ở SubagentStart).
+    Đúng là lỗi của tôi ở T3.1–T3.3 chứ không phải của phép kiểm: dòng task này đòi trường đó
+    từ đầu. Trợ lý không viết test giả vờ đạt — đó là cách xử lý đúng. Vá ở **T5.4** dưới.
+
+- [ ] **T5.4** (e8m, thêm 2026-09-17 — task vá, không cần duyệt lại) Ba kênh ghi thêm trường
+      `so_dong` = số dòng thân luật thật sự in ra, và `tests/test_log_kenh_luat.py` khoá nó ở
+      cả ba kênh. `muc_gat=off` vẫn không ghi dòng nào, nên không có ca `so_dong=0`.
+      — Test: `(cd tests && TDQ_PROJECT_DIR=$(mktemp -d) python3 -m unittest test_log_kenh_luat -v)` xanh với ca `so_dong` của cả ba kênh
+  - Chạm: `hooks/scripts/session_start.py`, `hooks/scripts/subagent_start.py`,
+    `hooks/scripts/prompt_context.py`, `tests/test_log_kenh_luat.py`
+  - Cần: T5.1
 - [ ] **T5.2** (e10m) Đối chiếu hiệu ứng thật của state và hook: mức gắt ghi trong state đúng
       bằng mức mà hook thật nhận được, đo bằng cách đọc đĩa trực tiếp rồi chạy hook.
       — Test: `python3 scripts/tdq_state.py set muc_gat=lite` rồi chạy `session_start.py` thấy số dòng luật ít hơn ca `full`
@@ -237,7 +266,7 @@ trên repo hiện tại exit 0.
       (`docs/kien-truc.md:13`). — Test: `git status --porcelain portable_claude portable_codex` có thay đổi, và grep thấy thân luật mới trong cả hai bản
   - Chạm: `portable_claude/`, `portable_codex/` → bản SINH, node nguồn là `skills/`+`hooks/`+`agents/`+`scripts/`
   - Cần: T1.1, T3.1, T3.2, T3.3, T4.1
-- [ ] **T6.2** (e5m) Cập nhật `docs/kien-truc.md`: dòng hook đổi từ "5 hook" sang "6 hook trên 5
+- [x] **T6.2** (e5m) Cập nhật `docs/kien-truc.md`: dòng hook đổi từ "5 hook" sang "6 hook trên 5
       sự kiện", và thêm một dòng lịch sử ngày 2026-09-17 ghi việc nội hoá luật. — Test: `grep -c '6 hook' docs/kien-truc.md` ra ≥ 1 và `python3 scripts/doc_lint.py docs/kien-truc.md` exit 0
   - Cần: T3.3
 - [ ] **T6.3** (e8m) Dựng lại chỉ mục skill để `tdq-lean` có mặt. — Test: `python3 scripts/skill_router.py --dung-kho` rồi grep `tdq-lean` trong `docs/tdq/audit/skill-index.json` ra ≥ 1

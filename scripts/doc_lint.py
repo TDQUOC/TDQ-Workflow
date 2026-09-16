@@ -90,6 +90,11 @@ SKILL_LINE_LIMITS = {
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.
     "tdq-check-status": 80,
+    # 2026-09-17: new skill, T4.1 of plan 2026-09-16-2234-cong-sinh-ponytail-tdq. Three modes
+    # (`review`, `audit`, `debt`) in the body and nothing in references: each mode is 3 steps
+    # plus its `Done when:`/`Next step:` pair, and a mode read by halves reports a finding with
+    # no tag — the one thing the skill forbids. Measured 73 lines; the cap leaves 7.
+    "tdq-lean": 80,
 }
 MAX_LINES_ANY = 500
 MAX_SENTENCE_WORDS = 40
