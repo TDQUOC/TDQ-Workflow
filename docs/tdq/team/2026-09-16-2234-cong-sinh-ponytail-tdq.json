@@ -1,7 +1,7 @@
 {
   "slug": "2026-09-16-2234-cong-sinh-ponytail-tdq",
   "plan_file": "docs/tdq/plan/2026-09-16-2234-cong-sinh-ponytail-tdq.md",
-  "plan_sha": "54ae3d9568d648b75ea3f2b2c0a8364751b7c63d5c9bbc35c337ab5535acfd9b",
+  "plan_sha": "c8d16b28d6e01bd1e0f137a5e5e53ce86bbf3266a4458b8330e48cabb9d89ece",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "tu_lam",
@@ -89,9 +89,11 @@
       "ly_do": "file-luat",
       "vung_file": [
         "skills/tdq-lean/SKILL.md",
-        "tests/test_skill_lean.py"
+        "tests/test_skill_lean.py",
+        "scripts/doc_lint.py",
+        "tests/test_token_budget.py"
       ],
-      "dot": 1
+      "dot": 2
     },
     "T4.2": {
       "quyet_dinh": "giao",
@@ -109,6 +111,17 @@
         "tests/test_log_kenh_luat.py"
       ],
       "dot": 4
+    },
+    "T5.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "tests/test_log_kenh_luat.py",
+        "hooks/scripts/session_start.py",
+        "hooks/scripts/subagent_start.py",
+        "hooks/scripts/prompt_context.py"
+      ],
+      "dot": 5
     },
     "T5.2": {
       "quyet_dinh": "tu_lam",
@@ -146,7 +159,7 @@
       "vung_file": [
         "docs/tdq/audit/skill-index.json"
       ],
-      "dot": 2
+      "dot": 3
     }
   }
 }
