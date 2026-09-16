@@ -38,13 +38,26 @@ This skill owns three phases: `implement` → `qc` → `report`.
   one. A task with no estimate is valid too.
 - **Red → green.** Every task: run/write the check first (it must fail), then code, then rerun
   until it passes.
+- **Build less than asked: climb the ladder.** Stop at the first rung that holds. Rung 1: does
+  this thing need to exist at all — a file, a class, a function, a constant, a config key, a
+  dependency, an abstraction layer? A need you inferred rather than read is speculative, so
+  skip it and say so in one line. Rung 2: is it already in this codebase? The ladder only ever
+  chooses among options that ALREADY pass the complexity floor (cyclomatic ≤ 10, cognitive
+  ≤ 15), and no comment or declared "known ceiling" buys an exception to it. The full 7 rungs,
+  the intensity table per `muc_gat` and the RIGHT/WRONG examples live in
+  [references/rules/chung.md](references/rules/chung.md) between `<!-- luat-gon:bat-dau -->`
+  and `<!-- luat-gon:ket-thuc -->`.
+- **Make it run first, refactor after.** Step 1 is code that runs; tidying the project up comes
+  after the feature is done and behaving. Write the simplest, most direct code you can —
+  minimal, with no namespace, no class and no function the feature does not need, so the path
+  of one feature never reads like a spider's web.
 - **Language rules.** About to write/change a source file → open
   [references/rules/index.md](references/rules/index.md), look up the file extension, load
   `chung.md` plus exactly ONE language file. Never load the whole set for one language.
 - **LSP + lumen together, before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
-  Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-  hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-  lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
+  Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan <!-- i18n-allow: canonical rule sentence, line 2/4 -->
+  hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng <!-- i18n-allow: canonical rule sentence, line 3/4 -->
+  lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo: <!-- i18n-allow: canonical rule sentence, line 4/4 -->
   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. The `mcp__lsp__*` tools are missing → say so in one line, then fall through.

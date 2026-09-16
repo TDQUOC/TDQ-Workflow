@@ -43,7 +43,13 @@ SKILL_LINE_LIMITS = {
     # running `tdq_bench.py simulate` — the command block plus the reason for factor 1.5
     # must sit in the skill body to be read every time a plan is written.
     "tdq-plan": 110,
-    "tdq-build": 150,
+    # 2026-09-17: 150 → 165. The build-less-than-asked law landed 2 rules in the body (climb
+    # the ladder before creating anything; make it run first and refactor after). Both are
+    # tier 1–2 by soul.md:99, so they may not be pushed into a reference file, and soul.md:101
+    # settles the collision in advance: a line cap is a tier 3 constraint, so hitting it means
+    # raising the cap, never compressing the law to fit. The 7 rungs, the intensity table and
+    # the examples DID go to references/rules/chung.md — only the rule sentences stayed here.
+    "tdq-build": 165,
     "tdq-status": 60,
     # 2026-08-23: new skill. The setup ladder plus the runbook for re-configuring a machine
     # are read whole when the ladder reports a missing rung, so they stay in the body.
