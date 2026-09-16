@@ -12,7 +12,7 @@ Nguồn sinh: cây thư mục repo · `graphify god-nodes` · `.graphifyignore`.
 | Luật | `skills/` | văn bản chỉ dẫn model; không chạy được, không có trạng thái |
 | Luật bản ngoài | `portable_claude/`, `portable_codex/` | SINH bằng `scripts/build_portable.py` từ `skills/`+`hooks/`+`agents/`+`scripts/`, không sửa tay; bản codex dùng lớp native của Codex CLI (`.agents/skills/`, `.codex/`) |
 | CLI | `scripts/` | mọi hành vi chạy được: state, kết turn, lint, quét rule, đo token |
-| Hook | `hooks/scripts/` | 5 hook cắm vào Claude Code, nhắc mã `[TDQ:*]` và chặn khi thiếu bằng chứng |
+| Hook | `hooks/scripts/` | 6 hook trên 5 sự kiện cắm vào Claude Code, nhắc mã `[TDQ:*]` và chặn khi thiếu bằng chứng |
 | Test | `tests/` | khoá hành vi của tầng CLI, tầng hook và tính nhất quán của tầng luật |
 | Dữ liệu request | `docs/tdq/` | brief, spec, plan, qc, report, state — dữ liệu, không phải code |
 
@@ -53,3 +53,9 @@ khai ở dòng `Chạm:` của plan:
   tra i18n); tài liệu sinh cho user và lời thoại viết theo `doc_lang` khai một lần lúc
   `init`, mặc định `vi`, cố định suốt request. `scripts/i18n_check.py` gác tầng 1-2,
   cụm `i18n-allow` là cửa miễn cho chuỗi user thấy giữ nguyên từng chữ.
+- 2026-09-17: nội hoá luật "build less than asked" — thân luật ở
+  `skills/tdq-build/references/rules/chung.md`, đọc–lọc bằng `hooks/scripts/luat_gon.py` theo
+  `muc_gat` (`off/lite/full/ultra`, mặc định `full`). Ba kênh bơm: `SessionStart` và
+  `SubagentStart` mang thân luật, `UserPromptSubmit` chỉ một dòng con trỏ ở phase `implement`.
+  Thêm mã thứ sáu `TDQ:GON`; đây là lời nhắc chứ không phải hàng rào (issue #23885:
+  `additionalContext` của sub-agent bị prune).
