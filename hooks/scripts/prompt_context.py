@@ -15,18 +15,27 @@ import os
 import re
 import sys
 
-from _common import (approve_hint, payload_cwd, plan_mode, read_payload,
-                     session_id)
+from _common import (already_reminded, approve_hint, payload_cwd, plan_mode,
+                     read_payload, session_id)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (MODE_ALIASES, effective_lane,  # noqa: E402
                        effective_mode, effective_phase, liet_ke_modes, load,
-                       normalize_mode, phase_key, prompt_context_last,
-                       prompt_context_save, render_next, sha256_noi_dung,
-                       turn_log_append, turn_log_clear, turn_snapshot)
+                       muc_gat_hieu_luc, normalize_mode, phase_key,
+                       prompt_context_last, prompt_context_save, render_next,
+                       sha256_noi_dung, turn_log_append, turn_log_clear,
+                       turn_snapshot)
 
 MAX_LINES = 3
 MAX_CHARS = 240
+
+MA_GON = "TDQ:GON"
+# The pointer line has its own budget: the 3-line/240-char ceiling of spec §2.7 keeps its
+# numbers and now measures the standing block (the one before the [TDQ:GON] marker) only.
+MAX_GON_CHARS = 200
+NHAC_GON = ("[{ma}] muc_gat={muc} · build less than asked: climb the ladder from rung 1 "
+            "(nothing new) before adding a file, class or layer. A `ponytail:` marker owes "
+            "a cap and an upgrade path.")
 
 # An approval sign = (a) a word of agreement AND (b) the object waiting for approval.
 AGREE = re.compile(r"\b(duyệt|duyet|ok|oke|okay|đồng\s*ý|dong\s*y|chốt|chot|"  # i18n-allow
@@ -169,6 +178,25 @@ def _nhac_worktree(cwd):
               "python3 scripts/tdq_team.py sweep")
 
 
+def _nhac_gon(cwd, state, payload, session):
+    """One pointer line at phase `implement` — never the law body.
+
+    This channel does NOT read `chung.md` off disk: `UserPromptSubmit` shares a single 30s
+    budget with every other hook on the event, and the body belongs to the SessionStart /
+    SubagentStart channels. Printed after the standing block so nothing can clip that block.
+    Measured 2026-09-17: dedupe here only holds inside one process — `main` clears the turn
+    ledger on entry, so under bug #10871 the second PID starts from a wiped ledger.
+    """
+    if effective_phase(state, warn=False) != "implement":
+        return
+    muc = muc_gat_hieu_luc(state)
+    if muc == "off" or already_reminded(cwd, payload, MA_GON):
+        return
+    turn_log_append(cwd, "remind", session=session, code=MA_GON,
+                    event="UserPromptSubmit", muc_gat=muc)
+    print(_truncate(NHAC_GON.format(ma=MA_GON, muc=muc), MAX_GON_CHARS))
+
+
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
@@ -288,6 +316,9 @@ def main():
             lines.append("[TDQ:APPROVE] ⚠️ The spec changed after approval (sha256 mismatch) — "
                          "present it to the user for re-approval.")
     _emit(cwd, sid, lines, critical=drifted)
+    # AFTER the standing block: _emit cuts from the tail, and the law pointer must not be
+    # what pushes the NEXT line out of the 240-char ceiling.
+    _nhac_gon(cwd, state, payload, sid)
 
 
 def _truncate(text, limit=MAX_CHARS):

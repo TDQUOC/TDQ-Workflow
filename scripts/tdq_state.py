@@ -152,6 +152,28 @@ def normalize_doc_lang(raw):
     return ma if DOC_LANG_RE.match(ma) else None
 
 
+VALID_MUC_GAT = ("lite", "full", "ultra", "off")
+MUC_GAT_MAC_DINH = "full"
+
+
+def normalize_muc_gat(raw):
+    """Mức gắt của luật tinh gọn, chuẩn hoá. Mọi thứ không hợp lệ đều ra `full`.
+
+    Fail-closed có chủ ý: khoá trống, giá trị rác, kiểu sai hay `None` đều về `full`, nên
+    không suy luận nào của agent tắt được luật — chỉ user gõ `set muc_gat=off` mới tắt
+    (bảng cường độ trong skills/tdq-build/references/rules/chung.md).
+    """
+    if not isinstance(raw, str):
+        return MUC_GAT_MAC_DINH
+    muc = raw.strip().lower()
+    return muc if muc in VALID_MUC_GAT else MUC_GAT_MAC_DINH
+
+
+def muc_gat_hieu_luc(state):
+    """Mức gắt đọc từ state (state None hay khoá thiếu → `full`)."""
+    return normalize_muc_gat((state or {}).get("muc_gat"))
+
+
 def default_state():
     return {
         "schema_version": 5,
@@ -194,6 +216,9 @@ def default_state():
         "implement_pause": None,
         # language code of this request's documents (see DEFAULT_DOC_LANG)
         "doc_lang": DEFAULT_DOC_LANG,
+        # Mức gắt của luật tinh gọn (2026-09-17): lite|full|ultra|off. Ba kênh nạp luật đọc
+        # khoá này qua muc_gat_hieu_luc() rồi lọc bằng hooks/scripts/luat_gon.py.
+        "muc_gat": MUC_GAT_MAC_DINH,
         # request opening mark (schema 4) — the origin of every wall-clock count
         "started_at": None,
         # Git branch life-cycle of the request (schema 5). `loai_request` is one of
@@ -1398,7 +1423,8 @@ def render_next(cwd, state, brief=False, compact=False):
     if brief:
         return head
     row = phase_row(state)
-    lines = [head, f"Next: {row['action']}", "Command:", f"  {row['cmd']}"]
+    lines = [head, f"Lean level: {muc_gat_hieu_luc(state)}",
+             f"Next: {row['action']}", "Command:", f"  {row['cmd']}"]
     if compact:
         lines.append("Full checklist: python3 scripts/tdq_state.py next")
     else:
@@ -1433,6 +1459,7 @@ def render_state_md(cwd, state):
         f"| Plan | {plan} |",
         f"| Quick approval | {quick if lane == 'quick' else '(not applicable)'} |",
         f"| Doc language | {state.get('doc_lang') or DEFAULT_DOC_LANG} |",
+        f"| Lean level | {muc_gat_hieu_luc(state)} |",
         f"| Run mode | {effective_mode(state, warn=False) or '(not settled)'} |",
         "",
         "## Where we are",
@@ -1968,6 +1995,9 @@ def cli(argv):
                 if ma is None:
                     _fail("Invalid doc_lang: expected a language code such as vi|en|ja|pt-br.")
                 value = ma
+            if key == "muc_gat":
+                # Chuẩn hoá thay vì fail: giá trị lạ về `full`, đúng luật fail-closed.
+                value = normalize_muc_gat(value)
             if key == "diagrams":
                 _fail(LOI_SO_DO_DA_GO)
             if key == "phase" and value not in VALID_PHASES:

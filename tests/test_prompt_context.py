@@ -5,7 +5,12 @@
 (c) phase idle còn active_request → NEXT + INTAKE, INTAKE nguyên vẹn, tổng ≤ MAX_CHARS;
 (d) phase spec (request mở) → KHÔNG có INTAKE.
 """
+import contextlib
+import importlib.util
+import io
+import json
 import os
+import sys
 import tempfile
 import unittest
 
@@ -13,6 +18,16 @@ from helper import run_hook, write_state, tdq_state
 
 MAX_CHARS = 240
 INTAKE = "[TDQ:INTAKE]"
+
+# 2026-09-17 (T3.2): nạp module để đo dedupe ở mức hàm — hook chạy ra tiến trình riêng nên
+# không đo được "hai lần trong CÙNG một lượt" qua đường hook.
+HOOKS = os.path.normpath(os.path.join(tdq_state.__file__, "..", "..", "hooks", "scripts"))
+if HOOKS not in sys.path:
+    sys.path.insert(0, HOOKS)
+_spec = importlib.util.spec_from_file_location(
+    "pc_for_test", os.path.join(HOOKS, "prompt_context.py"))
+pc = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(pc)
 
 
 def _run(cwd, prompt="câu hỏi bất kỳ"):
@@ -66,6 +81,111 @@ class TestIntakeReminder(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertNotIn(INTAKE, out)
         self.assertIn("[TDQ:NEXT]", out)
+
+
+class TestNhacGonKenhLuot(unittest.TestCase):
+    """T3.2 (2026-09-17): kênh lượt chỉ NHẮC luật gọn, chỉ ở phase `implement`.
+
+    Kênh này KHÔNG đọc `chung.md` — `UserPromptSubmit` chia một ngân sách 30s với mọi
+    hook khác trên cùng sự kiện, nên thân luật thuộc về `SessionStart`/`SubagentStart`.
+    Trần 3 dòng / 240 ký tự của spec §2.7 giữ NGUYÊN SỐ, chỉ đo trên khối đứng trước
+    mốc `[TDQ:GON]`; dòng nhắc có trần riêng 3 dòng / 200 ký tự (cùng cách đặt lại chỗ
+    đo như T3.1).
+    """
+
+    MOC = "[TDQ:GON]"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def state(self, phase="implement", **thay):
+        write_state(self.cwd, active_request="2026-09-16-2234-cong-sinh-ponytail-tdq",
+                    lane="full", phase=phase, spec_approved=True, plan_approved=True,
+                    implement_mode="subagent", spec_file="docs/tdq/spec/x.md",
+                    plan_file="docs/tdq/plan/x.md", **thay)
+
+    def chay(self, session="g1"):
+        rc, out, _err = run_hook("prompt_context.py", {
+            "hook_event_name": "UserPromptSubmit", "cwd": self.cwd,
+            "session_id": session, "prompt": "làm tiếp task sau giúp tôi"})
+        self.assertEqual(rc, 0)
+        return out
+
+    def dong_gon(self, out):
+        dong = [l for l in out.splitlines() if l.startswith(self.MOC)]
+        self.assertEqual(len(dong), 1, out)
+        return dong[0]
+
+    def test_phase_implement_thi_nhac(self):
+        self.state()
+        out = self.chay()
+        self.assertIn("[TDQ:NEXT]", out)
+        self.dong_gon(out)
+
+    def test_phase_khac_thi_khong_nhac(self):
+        for phase in ("analyze", "spec", "plan", "qc", "report"):
+            with self.subTest(phase=phase):
+                self.state(phase=phase)
+                out = self.chay(session=f"g-{phase}")
+                self.assertNotIn(self.MOC, out)
+                self.assertIn("[TDQ:NEXT]", out)
+
+    def test_muc_off_thi_khong_nhac(self):
+        self.state(muc_gat="off")
+        out = self.chay()
+        self.assertNotIn(self.MOC, out)
+
+    def test_dong_nhac_trong_tran_rieng(self):
+        self.state()
+        dong = self.dong_gon(self.chay())
+        self.assertLessEqual(len(dong.splitlines()), 3)
+        self.assertLessEqual(len(dong), 200, dong)
+
+    def test_khoi_dau_van_trong_tran_cu(self):
+        self.state()
+        dau = self.chay().split(self.MOC, 1)[0].rstrip()
+        self.assertLessEqual(len(dau.splitlines()), 3)
+        self.assertLessEqual(len(dau), MAX_CHARS, dau)
+
+    def test_khong_doc_than_luat(self):
+        """Dòng nhắc là con trỏ, không phải thân luật: cấm bê bậc thang vào đây."""
+        self.state()
+        dong = self.dong_gon(self.chay())
+        self.assertNotIn("| 1 |", dong)
+        self.assertNotIn("### ", dong)
+
+    def test_ghi_dung_mot_dong_log(self):
+        self.state()
+        self.chay()
+        with open(os.path.join(self.cwd, "docs", "tdq", ".tdq-turn.jsonl"),
+                  encoding="utf-8") as f:
+            rows = [json.loads(l) for l in f if l.strip()]
+        gon = [r for r in rows if r.get("code") == "TDQ:GON"]
+        self.assertEqual(len(gon), 1, f"kênh lượt phải ghi đúng một dòng log: {rows}")
+        self.assertEqual(gon[0].get("event"), "UserPromptSubmit")
+
+    def test_goi_hai_lan_trong_MOT_luot_thi_nhac_mot_lan(self):
+        """Bug #10871 chạy hook plugin hai lần với hai PID — dedupe dùng lại
+        `already_reminded`, không viết cơ chế thứ hai.
+
+        Đo ở mức HÀM chứ không mức hook, vì `main()` mở đầu bằng `turn_log_clear`: hai
+        lần chạy hook là hai LƯỢT khác nhau, mỗi lượt được nhắc lại là đúng. Cái cần
+        khoá là trong CÙNG một lượt thì chỉ nhắc một lần.
+        """
+        self.state()
+        payload = {"hook_event_name": "UserPromptSubmit", "cwd": self.cwd,
+                   "session_id": "g-dedupe", "prompt": "làm tiếp"}
+        state = tdq_state.load(self.cwd)
+        lan1 = io.StringIO()
+        with contextlib.redirect_stdout(lan1):
+            pc._nhac_gon(self.cwd, state, payload, "g-dedupe")
+        lan2 = io.StringIO()
+        with contextlib.redirect_stdout(lan2):
+            pc._nhac_gon(self.cwd, state, payload, "g-dedupe")
+        self.assertIn(self.MOC, lan1.getvalue())
+        self.assertEqual(lan2.getvalue(), "")
 
 
 class TestSignalWritten(unittest.TestCase):

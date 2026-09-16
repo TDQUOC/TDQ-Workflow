@@ -65,11 +65,19 @@ Trạng thái plan: ĐÃ DUYỆT (2026-09-17, "duyệt plan" · mode `subagent` 
     luật LSP dài 4 dòng nhưng marker `i18n-allow` chỉ đậu 1 dòng, mà `i18n_check.py:137` xét
     marker theo TỪNG dòng. Sửa bằng cách đóng marker cho 3 dòng tiếp, không đổi một chữ nào của
     câu luật. Cùng khuôn lỗi này còn ở các skill khác — ghi nợ, không sửa ngoài vùng.
-- [>] **T1.2** (e8m) Test khoá hình dạng thân luật: khối giữa cặp marker tồn tại, chứa đúng 7
+- [x] **T1.2** (e8m) Test khoá hình dạng thân luật: khối giữa cặp marker tồn tại, chứa đúng 7
       bậc theo thứ tự, và chứa câu món 8; câu luật tầng 1–2 nằm trong thân `SKILL.md` chứ không
       trong reference. — Test: `(cd tests && python3 -m unittest test_than_luat -v)` xanh
   - Chạm: `tests/test_than_luat.py` → file mới, chưa node nào phụ thuộc
   - Cần: T1.1
+  - **Số đo lấy được ở T1.2 ngày 2026-09-17, mọi test đọc khối luật sau này phải biết:** đếm
+    bậc bằng cách khớp `^| N |` trên cả khối ra **9 bậc chứ không phải 7** — bảng
+    `### Two ordered passes, never one merged judgement` trong cùng khối cũng mở dòng bằng
+    `| 1 |` và `| 2 |`. Cách đúng: chỉ quét trong mục
+    `### The ladder — stop at the first rung that holds`, dừng ở `###` kế tiếp. Trợ lý đã
+    chứng minh test có răng bằng 6 đột biến trên bản chép nháp (bỏ bậc 5, xoá dòng
+    "switchable off through config", xoá marker mở, xoá số sàn trong câu luật `SKILL.md`, đổi
+    tên tiêu đề món 8, đổi tên câu luật món 8) — cả 6 đều đỏ.
 
 **Xong P1 khi**: `i18n_check` exit 0 trên cả hai file, `tests.test_than_luat` xanh, và khối
 marker đếm được đúng 7 bậc.
@@ -84,7 +92,7 @@ marker đếm được đúng 7 bậc.
       — Test: `(cd tests && python3 -m unittest test_luat_gon -v)` xanh, phủ cả 4 mức, mức lạ, và trường hợp thiếu marker
   - Chạm: `hooks/scripts/luat_gon.py`, `tests/test_luat_gon.py` → file mới; node sẽ đọc: `session_start.py` (T3.1), `subagent_start.py` (T3.3)
   - Cần: T1.1
-- [~] **T2.2** (e18m) Thêm khoá `muc_gat` vào `scripts/tdq_state.py`: bốn giá trị
+- [x] **T2.2** (e18m) Thêm khoá `muc_gat` vào `scripts/tdq_state.py`: bốn giá trị
       `lite|full|ultra|off`, mặc định `full` khi khoá trống, giá trị lạ về `full`; đọc/ghi qua
       `tdq_state.py set muc_gat=<giá trị>`; phơi giá trị hiện tại trên mặt trạng thái để user
       thấy mình đang ở mức nào. Đây là **chủ ghi duy nhất** của `scripts/tdq_state.py` trong
@@ -102,7 +110,7 @@ marker đếm được đúng 7 bậc.
 
 ## P3 — Ba kênh nạp luật
 
-- [ ] **T3.1** (e22m) Mở rộng `hooks/scripts/session_start.py`: sau khối đầu (dòng luật tuân
+- [x] **T3.1** (e22m) Mở rộng `hooks/scripts/session_start.py`: sau khối đầu (dòng luật tuân
       thủ + khối `next`) chèn thêm **khối thân luật** đã lọc theo `muc_gat`, và ghi một dòng log
       kênh. Giữ **nguyên số** trần khối đầu 12 dòng / 600 ký tự; khai trần mới cho toàn đầu ra
       140 dòng / 7000 ký tự. Sửa **ba assertion** đang đo `len(out) <= 600` trên toàn đầu ra
@@ -117,7 +125,19 @@ marker đếm được đúng 7 bậc.
   - Ra: danh sách ref thật của `render_next`, `trim`, `remind` ghi vào dòng `Chạm:` của T3.1–T3.3
   - Kiểm: `python3 scripts/tdq_lsp.py check` 7/7 ĐẠT, và mỗi đường dẫn trong `Chạm:` mở được
   - Không dùng cho: cài thêm LSP server, sửa file của plugin khác, đổi cấu hình import root
-- [ ] **T3.2** (e16m) Thêm mã thứ sáu `TDQ:GON` vào danh sách mã ĐÓNG ở `hooks/scripts/_common.py`
+  - **LỖI PLAN của tôi, sửa ngày 2026-09-17 — trần toàn đầu ra 140 dòng / 7000 ký tự → 160
+    dòng / 8200 ký tự (cùng loại với quy tắc 10).** Hai số 140/7000 tôi khai ở dòng task là số
+    ƯỚC, khai lúc thân luật chưa tồn tại nên không có gì để đo. Số đo thật của thân luật sau
+    lọc: `lite` 72 dòng / 4404 ký tự · `full` 133 / 6887 · `ultra` 139 / 7123. Cộng khối đầu
+    (≤ 12 dòng / 600 ký tự) và dòng tiêu đề `[TDQ:GON]` thì `full` ≈ 146 dòng / 7590 ký tự và
+    `ultra` ≈ 152 / 7830 — ở trần 140/7000 cả hai bị cắt đuôi, và test
+    `test_lite_ngan_hon_full_ngan_hon_ultra` bắt được đúng cái cắt đó (`7000 not less than
+    6992`: hai mức khác nhau bị trần bóp thành gần bằng nhau). Trần khối đầu 12/600 của spec
+    §2.7 KHÔNG đổi một đơn vị nào. Căn cứ chọn bên nhường: `soul.md:101` — trần dòng là ràng
+    buộc bậc 3, câu luật là bậc 1, nên nâng trần kèm lý do ghi tại chỗ chứ cấm nén luật cho
+    vừa trần (đây là lần thứ ba của run này, sau `SKILL_LINE_LIMITS["tdq-build"]` 150→165 và
+    `TRAN_DONG["chung.md"]` 240).
+- [x] **T3.2** (e16m) Thêm mã thứ sáu `TDQ:GON` vào danh sách mã ĐÓNG ở `hooks/scripts/_common.py`
       (spec §5 đã khai trước, đúng luật ở `hooks/scripts/_common.py:70`), rồi cho
       `hooks/scripts/prompt_context.py` in dòng nhắc ngắn đó **chỉ khi** phase là `implement`,
       trong trần 3 dòng / 200 ký tự, kèm một dòng log kênh. Không đọc thân luật ở kênh này —
@@ -125,7 +145,33 @@ marker đếm được đúng 7 bậc.
       — Test: `(cd tests && python3 -m unittest test_prompt_context test_common -v)` xanh, có ca phase khác không in mã
   - Chạm: `hooks/scripts/_common.py`, `hooks/scripts/prompt_context.py`, `tests/test_prompt_context.py`, `tests/test_common.py` → node bị ảnh hưởng: mọi hook import `_common`
   - Cần: T2.2
-- [ ] **T3.3** (e20m) Tạo `hooks/scripts/subagent_start.py` và khai vào `hooks/hooks.json` —
+  - **Số đo và hai quyết định lấy ở T3.2 ngày 2026-09-17:**
+    1. Đầu ra hiện tại của `prompt_context.py` ở phase `implement` đo được **1 dòng /
+       152 ký tự** (đường project trong test là đường tmp dài). Dòng nhắc gọn dài ~170 ký
+       tự, nên cộng vào là **vượt** trần 240 của spec §2.7. Cách xử lý giống T3.1: giữ
+       NGUYÊN SỐ 3 dòng / 240 ký tự nhưng đo trên **khối đứng trước mốc `[TDQ:GON]`**, và
+       khai trần riêng cho dòng nhắc là 3 dòng / 200 ký tự (đúng số plan đã ghi). Không
+       nén dòng nhắc, không bỏ dòng `next`.
+    2. Dedupe của kênh này **không đo được qua đường hook**: `main()` mở đầu bằng
+       `turn_log_clear`, nên hai lần chạy hook là hai LƯỢT, mỗi lượt nhắc lại là đúng.
+       Test vì thế đo ở mức hàm `_nhac_gon` (gọi hai lần cùng một payload → lần hai im
+       lặng). Đây là số đo T3.4 phải biết: với bug #10871 hai PID trên cùng sự kiện
+       `UserPromptSubmit`, `already_reminded` KHÔNG chặn được lần hai vì PID kia đã xoá sổ
+       trước — kênh lượt chỉ dedupe trong một tiến trình. Kênh phiên và kênh sub-agent
+       không có `turn_log_clear` nên dedupe thật.
+    3. Nửa `CODES` của task này đã về cùng T3.1: `session_start.py` in mã `TDQ:GON` từ
+       T3.1, còn dòng khai mã trong `hooks/scripts/_common.py` nằm ở đây.
+    4. **LỖI PLAN của tôi (số đếm), sửa ngày 2026-09-17:** T3.1 khai "sửa **ba assertion**
+       đang đo `len(out) <= 600` trên toàn đầu ra". Đo thật bằng cách chạy test là **SÁU**
+       chỗ, ở bốn file: `tests/test_context_hooks.py` (3 chỗ),
+       `tests/test_token_budget.py::test_session_start` (1),
+       `tests/test_compliance_protocol.py::test_hooks_reuse_next` +
+       `::test_session_start_budget` (2), cộng thêm
+       `test_token_budget.py::test_user_prompt_submit` là chỗ thứ sáu của kênh lượt. Ba chỗ
+       sau plan không thấy vì phase analyze chỉ grep trong `tests/test_context_hooks.py`.
+       Cách sửa giống nhau cả sáu: giữ nguyên số trần, đổi chỗ đo sang khối trước mốc
+       `[TDQ:GON]`, ghi ngày + lý do tại đúng dòng sửa.
+- [x] **T3.3** (e20m) Tạo `hooks/scripts/subagent_start.py` và khai vào `hooks/hooks.json` —
       sự kiện thứ năm `SubagentStart`, chèn thân luật đã lọc vào đầu hội thoại sub-agent, kèm
       một dòng log kênh. Payload thiếu khoá → in rỗng và **thoát mã 0** (fail-open, không chặn
       lượt). Docstring ghi thẳng: đây là **lời nhắc, không phải hàng rào** — `additionalContext`
@@ -234,7 +280,7 @@ Trỏ về §6 của spec, 13 hạng mục:
 
 - [ ] Q1 Thân luật đủ 7 bậc + món 8, chia đúng hai chỗ theo `soul.md:99` — `(cd tests && python3 -m unittest test_than_luat)` xanh và `python3 scripts/i18n_check.py skills/tdq-build/SKILL.md skills/tdq-build/references/rules/chung.md` exit 0
 - [ ] Q2 Bộ lọc: 4 mức ra 4 kết quả, `off` rỗng, mức lạ về `full` — `(cd tests && python3 -m unittest test_luat_gon)` xanh
-- [ ] Q3 Kênh phiên chèn thật kể cả sau compact, trần khối đầu 12/600 giữ nguyên, toàn đầu ra ≤ 140/7000 — `(cd tests && python3 -m unittest test_context_hooks test_token_budget)` xanh
+- [ ] Q3 Kênh phiên chèn thật kể cả sau compact, trần khối đầu 12/600 giữ nguyên, toàn đầu ra ≤ 160/8200 (số cũ 140/7000 là số ước, xem ghi chú sửa lỗi plan ở T3.1) — `(cd tests && python3 -m unittest test_context_hooks test_token_budget)` xanh
 - [ ] Q4 Dòng nhắc ngắn chỉ ở phase `implement`, ≤ 3 dòng/200 ký tự, danh sách mã đúng 6 mã — `(cd tests && python3 -m unittest test_prompt_context test_common)` xanh
 - [ ] Q5 Kênh sub-agent in thân luật, `hooks.json` 6 mục/5 sự kiện, payload thiếu khoá vẫn mã 0 — `(cd tests && python3 -m unittest test_subagent_start)` xanh
 - [ ] Q6 Khoá `muc_gat` đọc/ghi qua CLI, mặc định và mọi đường lỗi ra `full` — `(cd tests && TDQ_PROJECT_DIR=$(mktemp -d) python3 -m unittest test_state_muc_gat)` xanh

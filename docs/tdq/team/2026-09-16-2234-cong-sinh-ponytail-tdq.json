@@ -1,7 +1,7 @@
 {
   "slug": "2026-09-16-2234-cong-sinh-ponytail-tdq",
   "plan_file": "docs/tdq/plan/2026-09-16-2234-cong-sinh-ponytail-tdq.md",
-  "plan_sha": "ce8c5e00c3e83f42343cd8f1d239b4f75254e462d6eab4fcbfb8c4e868b90255",
+  "plan_sha": "80e0befcda1fc6330be321ada7d7c1976a7ee22a935f0a7131fa8888cf910cda",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "tu_lam",
@@ -61,7 +61,8 @@
         "hooks/scripts/_common.py",
         "hooks/scripts/prompt_context.py",
         "tests/test_prompt_context.py",
-        "tests/test_common.py"
+        "tests/test_common.py",
+        "tests/test_context_hooks.py"
       ],
       "dot": 2
     },

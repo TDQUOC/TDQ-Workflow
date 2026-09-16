@@ -17,6 +17,11 @@ SESSION = "sess-test"
 TODAY_LOG = os.path.join("docs", "workinglog", datetime.now().strftime("%Y-%m-%d") + ".md")
 
 
+def khoi_dau(out):
+    """Phần trước mốc thân luật — chỗ duy nhất trần 12 dòng / 600 ký tự áp vào (2026-09-17)."""
+    return out.split("[TDQ:GON]", 1)[0].rstrip()
+
+
 def rows(cwd, kind=None):
     out = tdq_state.turn_log_read(cwd, session=SESSION)
     return [r for r in out if kind is None or r.get("kind") == kind]
@@ -177,12 +182,17 @@ class ProtocolTest(unittest.TestCase):
         rc, out, _ = run_hook("session_start.py", self.payload("prompt.json"))
         self.assertIn("Next:", out)
         self.assertIn("checklist", out)
-        self.assertLessEqual(len(out.splitlines()), 12, out)
+        # 2026-09-17 (T3.1/T3.2): SessionStart bơm thêm khối thân luật sau mốc [TDQ:GON], nên
+        # trần 12 dòng / 600 ký tự của spec §2.7 đo trên KHỐI ĐẦU — số trần không đổi, chỉ đổi
+        # chỗ đo. Plan T3.1 đoán có ba assertion phải sửa; đo thật ra NĂM: hai chỗ ở file này.
+        self.assertLessEqual(len(khoi_dau(out).splitlines()), 12, out)
 
     def test_session_start_budget(self):
         self.full_state()
         rc, out, _ = run_hook("session_start.py", self.payload("prompt.json"))
-        self.assertLessEqual(len(out), 600, len(out))
+        # 2026-09-17: xem ghi chú ở test_hooks_reuse_next — trần 600 giữ nguyên số, đo trên
+        # khối đầu. Trần toàn đầu ra (160 dòng / 8200 ký tự) do test_token_budget giữ.
+        self.assertLessEqual(len(khoi_dau(out)), 600, len(out))
         self.assertIn("[TDQ] Rule:", out)
 
     def test_prompt_budget(self):
