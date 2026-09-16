@@ -65,7 +65,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-09-17, "duyệt plan" · mode `subagent` 
     luật LSP dài 4 dòng nhưng marker `i18n-allow` chỉ đậu 1 dòng, mà `i18n_check.py:137` xét
     marker theo TỪNG dòng. Sửa bằng cách đóng marker cho 3 dòng tiếp, không đổi một chữ nào của
     câu luật. Cùng khuôn lỗi này còn ở các skill khác — ghi nợ, không sửa ngoài vùng.
-- [ ] **T1.2** (e8m) Test khoá hình dạng thân luật: khối giữa cặp marker tồn tại, chứa đúng 7
+- [>] **T1.2** (e8m) Test khoá hình dạng thân luật: khối giữa cặp marker tồn tại, chứa đúng 7
       bậc theo thứ tự, và chứa câu món 8; câu luật tầng 1–2 nằm trong thân `SKILL.md` chứ không
       trong reference. — Test: `(cd tests && python3 -m unittest test_than_luat -v)` xanh
   - Chạm: `tests/test_than_luat.py` → file mới, chưa node nào phụ thuộc
@@ -76,7 +76,7 @@ marker đếm được đúng 7 bậc.
 
 ## P2 — Nền cơ chế: bộ đọc-lọc + khoá mức gắt
 
-- [ ] **T2.1** (e18m) Tạo `hooks/scripts/luat_gon.py` — **hai hàm thuần, không class**:
+- [x] **T2.1** (e18m) Tạo `hooks/scripts/luat_gon.py` — **hai hàm thuần, không class**:
       `doc_than_luat(goc)` đọc khối giữa cặp marker của T1.1 (thiếu marker → trả chuỗi rỗng và
       một dòng cảnh báo, không ném lỗi), và `loc_than_luat(than, muc_gat)` lọc theo mức: `full`
       giữ đủ 7 bậc, `lite` cắt bảng cường độ và ví dụ, `ultra` giữ tất cả cộng dòng gắt thêm,
@@ -84,7 +84,7 @@ marker đếm được đúng 7 bậc.
       — Test: `(cd tests && python3 -m unittest test_luat_gon -v)` xanh, phủ cả 4 mức, mức lạ, và trường hợp thiếu marker
   - Chạm: `hooks/scripts/luat_gon.py`, `tests/test_luat_gon.py` → file mới; node sẽ đọc: `session_start.py` (T3.1), `subagent_start.py` (T3.3)
   - Cần: T1.1
-- [ ] **T2.2** (e18m) Thêm khoá `muc_gat` vào `scripts/tdq_state.py`: bốn giá trị
+- [~] **T2.2** (e18m) Thêm khoá `muc_gat` vào `scripts/tdq_state.py`: bốn giá trị
       `lite|full|ultra|off`, mặc định `full` khi khoá trống, giá trị lạ về `full`; đọc/ghi qua
       `tdq_state.py set muc_gat=<giá trị>`; phơi giá trị hiện tại trên mặt trạng thái để user
       thấy mình đang ở mức nào. Đây là **chủ ghi duy nhất** của `scripts/tdq_state.py` trong
@@ -152,7 +152,7 @@ xuất hiện đúng một lần mỗi lần nạp.
       `~/Documents/ponytail/commands/`, KHÔNG vay `/ponytail-gain`.
       — Test: `(cd tests && python3 -m unittest test_skill_lean -v)` xanh: ba mục chế độ có đủ, `argument-hint` khai đúng ba chế độ, `python3 scripts/i18n_check.py skills/tdq-lean/SKILL.md` exit 0
   - Chạm: `skills/tdq-lean/SKILL.md`, `tests/test_skill_lean.py` → file mới; node đọc: `build_portable.py` (T6.1), chỉ mục skill (T6.3)
-- [>] **T4.2** (e18m) Tạo `scripts/kiem_no_marker.py` — **một lệnh chạy được, không framework,
+- [x] **T4.2** (e18m) Tạo `scripts/kiem_no_marker.py` — **một lệnh chạy được, không framework,
       không fixture**: quét comment `ponytail:` trong `scripts/` và `hooks/`, marker nào thiếu
       đường nâng thì in `đường-dẫn:dòng` và thoát mã khác 0; đủ đường nâng thì mã 0. Ghi một
       dòng log có timestamp.
