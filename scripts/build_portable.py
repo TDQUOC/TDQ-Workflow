@@ -329,6 +329,10 @@ THU_TU_SKILL = (
     "tdq-spec",
     "tdq-plan",
     "tdq-build",
+    # 2026-09-17: read right after build, because that is when it is used — it hunts
+    # over-engineering in what build just produced, and reading it earlier would have nothing
+    # to look at.
+    "tdq-lean",
     "tdq-checkportable",  # source in PORTABLE_SRC, not in `skills/`
     "tdq-status",
     "tdq-check-status",

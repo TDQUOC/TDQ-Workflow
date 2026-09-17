@@ -7,12 +7,11 @@ timestamp (do `turn_log_append` tự đóng dấu), tên kênh (`event`) và m�
 
 Việc GHI thuộc T3.1–T3.3 (luật file nóng), file này chỉ là phép kiểm — không sửa mã hook.
 
-GHI CHÚ ĐỎ cho người đọc plan: plan T5.1 còn đòi dòng log ghi **số dòng luật đã chèn**.
-Đọc `session_start.py`, `prompt_context.py` (`_nhac_gon`) và `subagent_start.py` ngày
-2026-09-17: trường đó CHƯA có trong mã — ba kênh chỉ ghi `event`, `muc_gat` (+ `source` /
-`agent`). Test ở đây đo đúng những trường THẬT đang có, cố ý không giả vờ đạt và cũng cố ý
-không khoá "vắng mặt" (khoá vắng mặt sẽ thành bẫy cho task sửa sau). Cần một task sửa mã
-để thêm trường đó rồi mở rộng file này.
+T5.4 (2026-09-17) đóng nốt phần plan T5.1 đòi mà mã còn thiếu: trường `so_dong` = số dòng
+luật kênh đó THẬT SỰ in ra. Mỗi kênh đo đầu ra của chính nó, nên con số khác nhau theo
+kênh: hai kênh bơm thân luật đếm số dòng thân còn lại SAU khi cắt trần, kênh lượt chỉ bơm
+một dòng trỏ đường nên đếm đúng một. Test dưới đối chiếu con số trong sổ với đầu ra thật —
+đó là lý do trường này đáng có: nó biến "đã chèn luật" thành một số kiểm được.
 
 Mọi test đặt TDQ_PROJECT_DIR = thư mục tạm của chính nó: `resolve_project_dir` cho env
 thắng payload `cwd`, nên không ghim env thì lệnh chạy test có sẵn biến đó sẽ đẩy hook đi
@@ -123,6 +122,44 @@ class LogBaKenhLuat(unittest.TestCase):
         for kenh in ("SessionStart", "UserPromptSubmit", "SubagentStart"):
             self.chay(kenh, f"off-{kenh}")
         self.assertEqual(self.dong_luat(), [], "muc_gat=off thì sổ không được có dòng luật")
+
+    # -------------------------------------------------- số dòng luật đã chèn (T5.4)
+
+    def than_in_ra(self, out):
+        """Các dòng THÂN luật có thật trong đầu ra: sau dòng mốc `[TDQ:GON]`."""
+        sau = out.partition(f"[{MA}]")[2]
+        return sau.splitlines()[1:] if sau else []
+
+    def test_hai_kenh_bom_than_ghi_dung_so_dong_than_in_ra(self):
+        """Con số trong sổ phải khớp đầu ra THẬT, không phải số dòng định in."""
+        for kenh in ("SessionStart", "SubagentStart"):
+            with self.subTest(kenh=kenh):
+                self.state()
+                session = f"d-{kenh}"
+                _rc, out = self.chay(kenh, session)
+                row = self.dong_luat(session)[0]
+                self.assertEqual(row.get("so_dong"), len(self.than_in_ra(out)), out[-200:])
+                self.assertGreater(row["so_dong"], 10, "thân luật không thể chỉ vài dòng")
+
+    def test_kenh_luot_ghi_mot_dong_vi_chi_bom_mot_dong_tro_duong(self):
+        self.state()
+        _rc, out = self.chay("UserPromptSubmit", "d-luot")
+        row = self.dong_luat("d-luot")[0]
+        self.assertEqual(row.get("so_dong"), 1, out)
+        self.assertEqual(self.than_in_ra(out), [], "kênh lượt không được bơm thân luật")
+
+    def test_muc_gat_cang_chat_thi_so_dong_cang_it(self):
+        """`lite` < `full` < `ultra` — số trong sổ nói đúng độ dày của mức gắt."""
+        for kenh in ("SessionStart", "SubagentStart"):
+            so = {}
+            for muc in ("lite", "full", "ultra"):
+                self.state(muc_gat=muc)
+                session = f"s-{kenh}-{muc}"
+                self.chay(kenh, session)
+                so[muc] = self.dong_luat(session)[0].get("so_dong")
+            with self.subTest(kenh=kenh):
+                self.assertLess(so["lite"], so["full"], so)
+                self.assertLessEqual(so["full"], so["ultra"], so)
 
     # -------------------------------------------------- một sổ duy nhất
 

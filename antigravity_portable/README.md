@@ -28,7 +28,7 @@ This directory IS an agy plugin: `plugin.json` at the root, `skills/` beside it,
 
 5. **Restart agy**, then self-check with agy's own commands:
    - `agy plugin list` — is `tdq-workflow` listed and enabled?
-   - `/skills` — do the `tdq-conventions, tdq-lsp-setup, tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-checkportable, tdq-status, tdq-check-status` skills show up?
+   - `/skills` — do the `tdq-conventions, tdq-lsp-setup, tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-lean, tdq-checkportable, tdq-status, tdq-check-status` skills show up?
    - `/mcp` — are `tavily-primary`/`tavily-backup` listed as configured servers?
 
 6. **Smoke-test the hard deny.** Ask agy to run one of the banned cases (e.g.

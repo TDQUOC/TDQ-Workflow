@@ -65,6 +65,20 @@ class TestHinhDangSkillLean(unittest.TestCase):
         self.assertNotIn("ponytail-gain", self.text)
         self.assertNotIn("/gain", self.text)
 
+    def test_router_tro_dung_duong_dan_skill(self):
+        """T6.3 (2026-09-17) — tầng "đọc SKILL.md trực tiếp" phải tìm ra file này.
+
+        Đây là phép kiểm CHẠY ĐƯỢC của T6.3, thay cho phép kiểm cũ (grep `tdq-lean` trong
+        `docs/tdq/audit/skill-index.json`): chỉ mục dựng từ skill của plugin ĐÃ CÀI, không
+        từ `skills/` của repo, nên nó chỉ nhận skill mới sau lần cài kế tiếp. Bản đồ
+        SKILL.md thì đọc thẳng repo, nên khoá được ngay hôm nay.
+        """
+        sys.path.insert(0, os.path.join(ROOT, "scripts"))
+        import skill_tokens
+        ban_do = skill_tokens.ban_do_skill_md()
+        duong = ban_do.get(skill_tokens.khoa_tra("tdq-lean")) or []
+        self.assertIn(SKILL, duong, f"router không trỏ được tới tdq-lean: {duong}")
+
     def test_i18n_check_xanh(self):
         rc = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "i18n_check.py"),
                              SKILL], capture_output=True, text=True)

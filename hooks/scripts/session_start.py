@@ -65,13 +65,20 @@ def main():
 
     muc = muc_gat_hieu_luc(state)
     than = loc_than_luat(doc_than_luat(GOC_LUAT), muc)
-    if than and not already_reminded(cwd, payload, MA_GON):
-        turn_log_append(cwd, "remind", session=session_id(payload), code=MA_GON,
-                        event="SessionStart", muc_gat=muc,
-                        source=str(payload.get("source") or ""))
+    ghi = bool(than) and not already_reminded(cwd, payload, MA_GON)
+    if ghi:
         out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — climb this "
                 f"ladder before you create anything:\n{than}")
-    print(cap(out, TOAN_MAX_LINES, TOAN_MAX_CHARS))
+    out = cap(out, TOAN_MAX_LINES, TOAN_MAX_CHARS)
+    if ghi:
+        # Logged AFTER the cap on purpose: `so_dong` must be the law lines that actually
+        # survived into the context, not the ones we meant to print. A row claiming 133 while
+        # the cap let 90 through is worse than no row at all.
+        turn_log_append(cwd, "remind", session=session_id(payload), code=MA_GON,
+                        event="SessionStart", muc_gat=muc,
+                        so_dong=len(out.partition(f"[{MA_GON}]")[2].splitlines()[1:]),
+                        source=str(payload.get("source") or ""))
+    print(out)
 
 
 if __name__ == "__main__":

@@ -34,8 +34,8 @@ MA_GON = "TDQ:GON"
 # numbers and now measures the standing block (the one before the [TDQ:GON] marker) only.
 MAX_GON_CHARS = 200
 NHAC_GON = ("[{ma}] muc_gat={muc} · build less than asked: climb the ladder from rung 1 "
-            "(nothing new) before adding a file, class or layer. A `ponytail:` marker owes "
-            "a cap and an upgrade path.")
+            "(nothing new) before adding a file, class or layer. A "
+            "`ponytail:` marker owes a cap and an upgrade path.")  # no-marker: allow — law text
 
 # An approval sign = (a) a word of agreement AND (b) the object waiting for approval.
 AGREE = re.compile(r"\b(duyệt|duyet|ok|oke|okay|đồng\s*ý|dong\s*y|chốt|chot|"  # i18n-allow
@@ -192,9 +192,13 @@ def _nhac_gon(cwd, state, payload, session):
     muc = muc_gat_hieu_luc(state)
     if muc == "off" or already_reminded(cwd, payload, MA_GON):
         return
+    dong = _truncate(NHAC_GON.format(ma=MA_GON, muc=muc), MAX_GON_CHARS)
+    # `so_dong` here is 1, not the body's size: this channel injects the pointer line and
+    # nothing else, and the field means "law lines THIS channel put in the context".
     turn_log_append(cwd, "remind", session=session, code=MA_GON,
-                    event="UserPromptSubmit", muc_gat=muc)
-    print(_truncate(NHAC_GON.format(ma=MA_GON, muc=muc), MAX_GON_CHARS))
+                    event="UserPromptSubmit", muc_gat=muc,
+                    so_dong=len(dong.splitlines()))
+    print(dong)
 
 
 def main():

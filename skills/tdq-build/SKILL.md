@@ -55,9 +55,9 @@ This skill owns three phases: `implement` → `qc` → `report`.
   [references/rules/index.md](references/rules/index.md), look up the file extension, load
   `chung.md` plus exactly ONE language file. Never load the whole set for one language.
 - **LSP + lumen together, before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
-  Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan <!-- i18n-allow: canonical rule sentence, line 2/4 -->
-  hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng <!-- i18n-allow: canonical rule sentence, line 3/4 -->
-  lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo: <!-- i18n-allow: canonical rule sentence, line 4/4 -->
+  Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
+  hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
+  lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. The `mcp__lsp__*` tools are missing → say so in one line, then fall through.

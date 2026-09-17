@@ -59,7 +59,7 @@ names both a ceiling and an upgrade path; a marker naming neither rots silently 
 means never", and this mode exists to make that rot visible.
 
 1. Run the ledger the repo already has — do not grep by hand:
-   `python3 scripts/kiem_no_marker.py`
+   `python3 ~/.gemini/config/plugins/tdq-workflow/scripts/kiem_no_marker.py`
 2. Report one row per marker, grouped by file:
    `<file>:<line> — <what was simplified>. ceiling: <the limit named>. upgrade: <the trigger>.`
 3. Tag every marker that names no ceiling or no trigger as `no-trigger`. Those are the rotten

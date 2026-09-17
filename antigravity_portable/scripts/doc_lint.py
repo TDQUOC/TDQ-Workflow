@@ -43,7 +43,13 @@ SKILL_LINE_LIMITS = {
     # running `tdq_bench.py simulate` — the command block plus the reason for factor 1.5
     # must sit in the skill body to be read every time a plan is written.
     "tdq-plan": 110,
-    "tdq-build": 150,
+    # 2026-09-17: 150 → 165. The build-less-than-asked law landed 2 rules in the body (climb
+    # the ladder before creating anything; make it run first and refactor after). Both are
+    # tier 1–2 by soul.md:99, so they may not be pushed into a reference file, and soul.md:101
+    # settles the collision in advance: a line cap is a tier 3 constraint, so hitting it means
+    # raising the cap, never compressing the law to fit. The 7 rungs, the intensity table and
+    # the examples DID go to references/rules/chung.md — only the rule sentences stayed here.
+    "tdq-build": 165,
     "tdq-status": 60,
     # 2026-08-23: new skill. The setup ladder plus the runbook for re-configuring a machine
     # are read whole when the ladder reports a missing rung, so they stay in the body.
@@ -84,6 +90,11 @@ SKILL_LINE_LIMITS = {
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.
     "tdq-check-status": 80,
+    # 2026-09-17: new skill, T4.1 of plan 2026-09-16-2234-cong-sinh-ponytail-tdq. Three modes
+    # (`review`, `audit`, `debt`) in the body and nothing in references: each mode is 3 steps
+    # plus its `Done when:`/`Next step:` pair, and a mode read by halves reports a finding with
+    # no tag — the one thing the skill forbids. Measured 73 lines; the cap leaves 7.
+    "tdq-lean": 80,
 }
 MAX_LINES_ANY = 500
 MAX_SENTENCE_WORDS = 40

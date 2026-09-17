@@ -122,14 +122,21 @@ class TestBanClaude(TempDest):
         self.assertTrue(os.path.isfile(os.path.join(chung_goc, "hooks/scripts/_common.py")))
         self.assertTrue(os.path.isfile(os.path.join(chung_goc, "scripts/tdq_state.py")))
 
-    def test_settings_co_du_5_hook_va_bien_dung(self):
+    def test_settings_co_du_6_hook_va_bien_dung(self):
+        """2026-09-17: 5 hook / 4 sự kiện → 6 hook / 5 sự kiện.
+
+        Kênh `SubagentStart` (T3.3) bơm thân luật gọn vào đầu hội thoại trợ lý. Bản portable
+        phải chở đúng số hook của `hooks/hooks.json`, nên con số ở đây đi theo mã chứ không
+        phải mã đi theo con số.
+        """
         with open(os.path.join(self.goc, ".claude", "settings.json"), encoding="utf-8") as f:
             cai_dat = json.load(f)
         hooks = cai_dat["hooks"]
         self.assertEqual(
-            sorted(hooks), ["PreToolUse", "SessionStart", "Stop", "UserPromptSubmit"])
+            sorted(hooks),
+            ["PreToolUse", "SessionStart", "Stop", "SubagentStart", "UserPromptSubmit"])
         lenh = [h["command"] for muc in hooks.values() for nhom in muc for h in nhom["hooks"]]
-        self.assertEqual(len(lenh), 5, "phải đủ 5 hook command")
+        self.assertEqual(len(lenh), 6, "phải đủ 6 hook command")
         for mot_lenh in lenh:
             self.assertIn("${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/", mot_lenh)
             self.assertNotIn("CLAUDE_PLUGIN_ROOT", mot_lenh)

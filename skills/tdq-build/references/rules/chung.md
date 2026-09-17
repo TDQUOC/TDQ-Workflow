@@ -3,6 +3,17 @@
 Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line --> · luật gốc: skills/tdq-conventions/references/soul.md
 Load this file FIRST, then the language rule file from the table in `index.md`.
 
+## Table of contents
+
+- [Sources](#Sources)
+- [When it applies](#When it applies)
+- [The Intentionality rule](#The Intentionality rule)
+- [Measurable thresholds](#Measurable thresholds)
+- [The build-less-than-asked law](#The build-less-than-asked law)
+- [What to do](#What to do)
+- [Self-check](#Self-check)
+- [RIGHT/WRONG examples](#RIGHT/WRONG examples)
+
 ## Sources
 
 - SonarSource Clean Code — https://community.sonarsource.com/t/introducing-clean-code-in-our-products/98431 —
