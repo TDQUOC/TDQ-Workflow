@@ -9,7 +9,7 @@
     "hooks/scripts/agy_pretooluse_gate.py": "026cdffc83f47b4d1901c88587be31a3d9269f94163297d2a1e822daa2c50021",
     "hooks/scripts/agy_stop_gate.py": "87466169ee8676d1c56cbccb000860956c7645fdfef0fa353b57a17fc0a116b5",
     "mcp_config.json": "3da0ec37d1a9e735d2eca9f5f707f101549a6fa064cd960155940c11172b6257",
-    "plugin.json": "7d468efc0589037a42607a67ca3220d78abe17279a4585f5a464c128eb4aa6e7",
+    "plugin.json": "b48d3d247845b1620968e397765e6ac5f67057da8832911c2f8742838f4f57aa",
     "scripts/canvas_a4_ch4_ch7.py": "d1106fc85f4ca9db045de9d77891550162da6f4e24c06ec2c7264dbf07de55ec",
     "scripts/canvas_a4_rebuild.py": "c5294428dc237cfdd37480c698724c10389a74310b4fa83c9734fe21cd3f3fb4",
     "scripts/canvas_draw.py": "de060025c41b729630d9fd4cc95eb8f1f1f5fae0431f6599fd64c197a4239f77",
@@ -104,5 +104,5 @@
     "tavily-backup"
   ],
   "python_min": "3.8",
-  "version": "0.47.0"
+  "version": "0.48.0"
 }

@@ -2,6 +2,33 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.48.0 — 2026-09-17
+
+Nội hoá lối code Ponytail vào ruột TDQ-Workflow — Ponytail KHÔNG được cài làm plugin thứ hai,
+phase và hai cổng duyệt giữ nguyên. Báo cáo:
+`docs/tdq/reports/2026-09-16-2234-cong-sinh-ponytail-tdq.md`.
+
+- **Luật `build less than asked`** — bậc thang 7 bậc (dừng ở bậc đầu tiên đứng được) cộng món 8
+  "chạy trước, refactor sau", viết vào thân `skills/tdq-build/SKILL.md` và bảng chi tiết trong
+  `references/rules/chung.md`. Sàn `cyclomatic ≤ 10 / cognitive ≤ 15` là SÀN: phương án vượt sàn
+  chưa từng là phương án, không comment hay annotation nào mở được. Danh sách bất khả xâm phạm:
+  input validation ở biên tin cậy, error handling chống mất dữ liệu, OWASP walk, accessibility,
+  log service bật mặc định, unit test mỗi task red → green.
+- **Bốn mức gắt `muc_gat`** — `off|lite|full|ultra`, khoá mới trong `docs/tdq/state.json` đọc/ghi
+  qua `tdq_state.py`. Fail-closed về `full`: giá trị lạ, khoá trống hay file lỗi đều ra `full`, và
+  không suy luận nào của agent chọn được `off` — chỉ user đặt. Đo thật: 0/72/133/139 dòng luật.
+- **`hooks/scripts/luat_gon.py`** — hai hàm thuần đọc luật từ đĩa rồi lọc theo mức gắt. Luật viết
+  MỘT chỗ, không bản sao trong mã. Thiếu file hay thiếu marker → một dòng cảnh báo, exit 0.
+- **Ba kênh nạp luật, hook 5 → 6 trên 5 sự kiện** — `SessionStart` và `SubagentStart` bơm thân
+  luật (135 ms / 155 ms), `UserPromptSubmit` chỉ một dòng nhắc 137 ký tự và KHÔNG đọc thân luật
+  để không ăn ngân sách 30 s. Mã thứ sáu `TDQ:GON` khai trong spec trước khi thêm.
+- **Skill `tdq-lean`** — ba chế độ `review|audit|debt` soi over-engineering, năm nhãn
+  `delete/stdlib/native/yagni/shrink`, không có gì cắt thì nói đúng `Lean already. Ship.`
+- **`scripts/kiem_no_marker.py`** — sổ nợ marker `ponytail:`: marker phải nêu cả trần và đường
+  nâng cấp, thiếu thì exit khác 0 kèm `đường-dẫn:dòng`. Một lệnh chạy được, không framework,
+  không fixture.
+- **Test** — thêm 105 test, tất cả xanh. Tập TÊN test đỏ lệch 0 so với baseline `main` sạch.
+
 ## 0.47.0 — 2026-09-14
 
 Lượt Codex sai khuôn thì lấy test làm chuẩn. Báo cáo:
