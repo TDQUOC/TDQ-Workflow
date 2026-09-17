@@ -15,6 +15,18 @@ def now_iso():
     return datetime.datetime.now().astimezone().isoformat(timespec="seconds")
 
 
+# 2026-09-17 (T3.1): session_start bơm thêm KHỐI THÂN LUẬT sau khối đầu, nên trần
+# 12 dòng / 600 ký tự của spec §2.7 đo trên KHỐI ĐẦU chứ không phải toàn đầu ra — số trần
+# không đổi một đơn vị nào, chỉ đổi chỗ đo. Trần toàn đầu ra khai riêng: 160 dòng / 8200 ký tự
+# (2026-09-17, sửa số ƯỚC 140/7000 của chính plan sau khi đo — lý do ghi ở test_tran_toan_dau_ra).
+MOC_LUAT = "[TDQ:GON]"
+
+
+def khoi_dau(out):
+    """Phần trước mốc thân luật — chỗ duy nhất trần 12/600 áp vào."""
+    return out.split(MOC_LUAT, 1)[0].rstrip()
+
+
 class TestSessionStart(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -30,8 +42,8 @@ class TestSessionStart(unittest.TestCase):
         self.assertIn("2026-07-27-0900-demo", out)
         self.assertIn("Next:", out)
         self.assertIn("[TDQ] Rule", out)          # instruction: nghe theo mã của hook
-        self.assertLessEqual(len(out.splitlines()), 12)   # trần spec §2.7
-        self.assertLessEqual(len(out), 600)
+        self.assertLessEqual(len(khoi_dau(out).splitlines()), 12)   # trần spec §2.7
+        self.assertLessEqual(len(khoi_dau(out)), 600)   # 2026-09-17: đo trên khối đầu
 
     def test_never_truncated_in_any_phase(self):
         """Trần 600 ký tự không được cắt mất dòng luật hay dòng lệnh."""
@@ -40,19 +52,101 @@ class TestSessionStart(unittest.TestCase):
                 write_state(self.cwd, active_request="2026-07-27-0900-mot-request-ten-kha-dai",
                             lane="full", phase=phase, spec_approved=True, plan_approved=True,
                             spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md")
-                rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})
-                self.assertNotIn("…", out, phase)
-                self.assertIn("[TDQ] Rule", out)
-                self.assertIn("Command:", out)
-                self.assertIn("Done when:", out)
-                self.assertLessEqual(len(out), 600, phase)
-                self.assertLessEqual(len(out.splitlines()), 12, phase)
+                rc, out, _ = run_hook("session_start.py",
+                                      {"cwd": self.cwd, "session_id": f"s1-{phase}"})
+                dau = khoi_dau(out)
+                self.assertNotIn("…", dau, phase)
+                self.assertIn("[TDQ] Rule", dau)
+                self.assertIn("Command:", dau)
+                self.assertIn("Done when:", dau)
+                # 2026-09-17: trần giữ nguyên 600/12, chỉ đo trên khối đầu (xem khoi_dau).
+                self.assertLessEqual(len(dau), 600, phase)
+                self.assertLessEqual(len(dau.splitlines()), 12, phase)
 
     def test_no_state_still_guides(self):
         rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})
         self.assertEqual(rc, 0)
         self.assertIn("[TDQ:NEXT]", out)          # chưa có request → hướng dẫn mở request
-        self.assertLessEqual(len(out.splitlines()), 12)
+        self.assertLessEqual(len(khoi_dau(out).splitlines()), 12)
+
+
+class TestThanLuatKenhPhien(unittest.TestCase):
+    """T3.1 — kênh phiên bơm thân luật tinh gọn đã lọc theo `muc_gat`."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+        self.n = 0
+
+    def chay(self, source="startup", **state):
+        """Chạy hook một lần với session_id mới, trả về đầu ra."""
+        write_state(self.cwd, active_request="2026-09-17-0900-demo", lane="full",
+                    phase="implement", spec_approved=True, plan_approved=True,
+                    spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md",
+                    **state)
+        self.n += 1
+        _, out, _ = run_hook("session_start.py", {
+            "cwd": self.cwd, "session_id": f"g{self.n}", "source": source})
+        return out
+
+    def test_moi_source_deu_co_than_luat(self):
+        for source in ("startup", "resume", "compact"):
+            with self.subTest(source=source):
+                out = self.chay(source)
+                self.assertIn(MOC_LUAT, out, "thiếu mốc thân luật")
+                self.assertIn("| 7 |", out, "thân luật thiếu bậc 7")
+                self.assertIn("Make it run first", out, "thân luật thiếu món 8")
+
+    def test_muc_off_thi_khong_bom_than_luat(self):
+        out = self.chay(muc_gat="off")
+        self.assertNotIn(MOC_LUAT, out, "`off` thì không kênh nào được bơm luật")
+        self.assertIn("[TDQ] Rule", out, "khối đầu vẫn phải còn")
+
+    def test_lite_ngan_hon_full_ngan_hon_ultra(self):
+        dai = {}
+        for muc in ("lite", "full", "ultra"):
+            dai[muc] = len(self.chay(muc_gat=muc))
+        self.assertLess(dai["lite"], dai["full"])
+        self.assertLess(dai["full"], dai["ultra"])
+
+    def test_tran_toan_dau_ra(self):
+        # 2026-09-17 (T3.1, LỖI PLAN của tôi — cùng loại quy tắc 10): plan khai trần toàn
+        # đầu ra 140 dòng / 7000 ký tự khi thân luật CHƯA tồn tại, tức là số ước chứ không
+        # phải số đo. Đo thật thân luật đã lọc: `lite` 72 dòng/4404 ký tự · `full`
+        # 133/6887 · `ultra` 139/7123; cộng khối đầu (≤ 12 dòng/600 ký tự) và dòng tiêu đề
+        # `[TDQ:GON]` thì `full` ≈ 146/7590 và `ultra` ≈ 152/7830 — ở 140/7000 cả hai bị cắt
+        # đuôi, mất đúng mấy bậc cuối của cái thang. soul.md:101: trần là ràng buộc bậc 3,
+        # luật là bậc 1 → nâng trần lên 160/8200, cấm nén luật cho vừa trần.
+        for muc in ("lite", "full", "ultra"):
+            with self.subTest(muc=muc):
+                out = self.chay(muc_gat=muc)
+                self.assertLessEqual(len(out.splitlines()), 160)
+                self.assertLessEqual(len(out), 8200)
+
+    def test_khoi_dau_van_trong_tran_cu(self):
+        dau = khoi_dau(self.chay())
+        self.assertLessEqual(len(dau.splitlines()), 12)
+        self.assertLessEqual(len(dau), 600)
+
+    def test_ghi_mot_dong_log_kenh(self):
+        self.chay()
+        with open(os.path.join(self.cwd, "docs", "tdq", ".tdq-turn.jsonl"),
+                  encoding="utf-8") as f:
+            rows = [json.loads(l) for l in f if l.strip()]
+        gon = [r for r in rows if r.get("code") == "TDQ:GON"]
+        self.assertEqual(len(gon), 1, f"kênh phiên phải ghi đúng một dòng log: {rows}")
+
+    def test_goi_hai_lan_cung_luot_chi_bom_mot_lan(self):
+        """T3.4 — bug #10871: hook plugin chạy hai lần với hai PID trong cùng một lượt."""
+        write_state(self.cwd, active_request="2026-09-17-0900-demo", lane="full",
+                    phase="implement")
+        payload = {"cwd": self.cwd, "session_id": "dup1", "source": "startup"}
+        lan1 = run_hook("session_start.py", payload)[1]
+        lan2 = run_hook("session_start.py", payload)[1]
+        self.assertIn(MOC_LUAT, lan1)
+        self.assertNotIn(MOC_LUAT, lan2, "lần hai trong cùng lượt không được bơm lại")
+        self.assertIn("[TDQ] Rule", lan2, "khối đầu thì lần nào cũng phải có")
 
 
 class TestTruncation(unittest.TestCase):

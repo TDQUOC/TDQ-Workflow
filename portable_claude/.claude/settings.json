@@ -47,6 +47,16 @@
         ]
       }
     ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/subagent_start.py\"",
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [

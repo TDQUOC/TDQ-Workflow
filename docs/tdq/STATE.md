@@ -1,16 +1,17 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-16T19:46:02+07:00 · Project: /Users/tdq/Documents/ForAgentCode/TDQ-Workflow · schema 3
+Updated: 2026-09-17T01:56:26+07:00 · Project: /Users/tdq/Documents/ForAgentCode/TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-16-1447-hop-ponytail-vao-tdq |
+| Request | 2026-09-16-2234-cong-sinh-ponytail-tdq |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-09-16-1447-hop-ponytail-vao-tdq.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-16-1447-hop-ponytail-vao-tdq.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-09-16-2234-cong-sinh-ponytail-tdq.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-09-16-2234-cong-sinh-ponytail-tdq.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
-| Run mode | main |
+| Lean level | full |
+| Run mode | subagent |
 
 ## Where we are
 QC has PASSed. Forbidden: Committing or pushing before the user asks for it.

@@ -20,6 +20,13 @@ EXPECTED_FILES = [
     "go.md", "rust.md", "cpp.md", "html.md", "them-ngon-ngu.md",
 ]
 
+# Trần dòng riêng cho từng file rule; file không có tên ở đây vẫn giữ trần 150.
+# 2026-09-17: chung.md 150 → 240. Thân luật "build less than asked" (bảng 7 bậc, bảng cường
+# độ theo muc_gat, ví dụ RIGHT/WRONG) nằm giữa cặp marker luat-gon trong file này, và
+# soul.md:101 đã phán trước: trần dòng là ràng buộc tầng 3, chạm trần thì nâng trần, cấm nén
+# luật cho vừa. Chỉ nâng cho chung.md — 9 file rule còn lại giữ nguyên 150.
+TRAN_DONG = {"chung.md": 240}
+
 # Khuôn 7 mục — heading cấp 2, so không phân biệt hoa thường, bỏ qua khối fence.
 # Từ 2026-08-22 rule viết tiếng Anh; mỗi mục nhận cả hai cách viết để bản cũ vẫn xanh.
 KHUON_7_MUC = [
@@ -59,7 +66,8 @@ class KhuonNgonNgu(unittest.TestCase):
                 self.assertTrue((RULES_DIR / name).is_file(), f"chưa có {name}")
                 text = (RULES_DIR / name).read_text(encoding="utf-8")
                 self.assertLess(
-                    len(text.splitlines()), 150, f"{name} phải dưới 150 dòng")
+                    len(text.splitlines()), TRAN_DONG.get(name, 150),
+                    f"{name} phải dưới {TRAN_DONG.get(name, 150)} dòng")
                 headings = _headings(text)
                 for muc in KHUON_7_MUC:
                     self.assertTrue(

@@ -34,15 +34,34 @@ class TokenBudgetTest(unittest.TestCase):
             yield phase
 
     def test_session_start(self):
+        # 2026-09-17 (T3.1): đầu ra có thêm khối thân luật sau mốc `[TDQ:GON]`. Trần 12/600
+        # của spec §2.7 giữ nguyên số, chỉ đo trên KHỐI ĐẦU; toàn đầu ra có trần riêng,
+        # kiểm ngay bên dưới.
+        # 2026-09-17 (T3.1, sửa số của chính plan): 140/7000 → 160/8200. Số 140/7000 tôi khai
+        # trong plan là ƯỚC, khai TRƯỚC khi thân luật tồn tại; đo thật thì thân đã lọc là
+        # 72 dòng/4404 ký tự ở `lite`, 133/6887 ở `full`, 139/7123 ở `ultra` — cộng khối đầu
+        # thì `full` và `ultra` đều bị cắt đuôi, tức mất mấy bậc cuối của luật. soul.md:101
+        # phán quyết bên nào nhường: trần là ràng buộc bậc 3, nâng trần chứ không nén luật.
         for phase in self.each_phase():
-            _, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "b1"})
-            budget(self, out, 12, 600, f"SessionStart/{phase}")
+            _, out, _ = run_hook("session_start.py",
+                                 {"cwd": self.cwd, "session_id": f"b1{phase}"})
+            budget(self, out.split("[TDQ:GON]", 1)[0].rstrip(), 12, 600,
+                   f"SessionStart/{phase}")
+            budget(self, out, 160, 8200, f"SessionStart toàn khối/{phase}")
 
     def test_user_prompt_submit(self):
+        # 2026-09-17 (T3.2): ở phase `implement` kênh này in thêm MỘT dòng nhắc luật sau mốc
+        # `[TDQ:GON]`. Trần 3 dòng / 240 ký tự của spec §2.7 giữ nguyên số, đo trên khối
+        # đứng trước mốc; dòng nhắc có trần riêng 3 dòng / 200 ký tự, kiểm ngay bên dưới.
+        # Đo thật khối đầu ở phase implement: 1 dòng / 152 ký tự — cộng dòng nhắc ~170 ký tự
+        # là vượt 240, nên hai khối phải đo rời chứ không gộp.
         for phase in self.each_phase():
             payload = load_fixture("prompt.json", cwd=self.cwd, session_id=f"b2{phase}")
             _, out, _ = run_hook("prompt_context.py", payload)
-            budget(self, out, 3, 240, f"UserPromptSubmit/{phase}")
+            dau, _, gon = out.partition("[TDQ:GON]")
+            budget(self, dau.rstrip(), 3, 240, f"UserPromptSubmit/{phase}")
+            if gon:
+                budget(self, "[TDQ:GON]" + gon, 3, 200, f"UserPromptSubmit nhắc luật/{phase}")
 
     def test_pre_tool_use(self):
         write_file(self.cwd, "src/app.py")
@@ -96,7 +115,12 @@ class TokenBudgetTest(unittest.TestCase):
         # tự vì thế nới theo tỉ lệ giãn của chữ, ngân sách token thực tế vẫn giảm.
         # 2026-08-23: 1450 → 1620. Skill thứ 8 (tdq-lsp-setup) thêm 1 description; đây là
         # skill quyết định lớp tìm kiếm của mọi phase sau nên phải nằm trong context.
-        self.assertLessEqual(total, 1620, f"tổng description = {total} ký tự")
+        # 2026-09-17: 1620 → 1800. Skill thứ 9 (tdq-lean) thêm 1 description; đo thật là
+        # 1790 ký tự (tdq-lean 185), trần chừa 10. Description của tdq-lean đã bị cắt một
+        # lượt (224 → 185) trước khi nới trần — nới là bước sau, không phải bước đầu. Nó
+        # phải nằm trong context vì đây là skill duy nhất soi over-engineer; router không
+        # gọi được nó thì luật gọn chỉ còn là lời nhắc.
+        self.assertLessEqual(total, 1800, f"tổng description = {total} ký tự")
 
     def test_reference_files_bounded(self):
         for root in (os.path.join(ROOT, "skills"),):

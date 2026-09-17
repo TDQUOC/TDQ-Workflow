@@ -91,5 +91,24 @@ class PlanModeRegexTest(unittest.TestCase):
         self.assertIsNone(common.plan_mode(cwd, {"plan_file": rel}))
 
 
+class MaDongTest(unittest.TestCase):
+    """`CODES` là danh sách ĐÓNG (spec §2.1) — thêm mã phải khai ở đây, không rải rác.
+
+    Mã thứ sáu `TDQ:GON` (2026-09-17, T3.2) là mã của ba kênh bơm luật gọn. Test khoá
+    luôn việc mã đó là mã hook thật: `session_start.py` in chính chuỗi này.
+    """
+
+    def test_gon_nam_trong_danh_sach_dong(self):
+        self.assertIn("TDQ:GON", common.CODES)
+
+    def test_moi_ma_dung_khuon_tdq(self):
+        for ma in common.CODES:
+            with self.subTest(ma=ma):
+                self.assertRegex(ma, r"^TDQ:[A-Z]+$")
+
+    def test_khong_ma_trung(self):
+        self.assertEqual(len(common.CODES), len(set(common.CODES)))
+
+
 if __name__ == "__main__":
     unittest.main()

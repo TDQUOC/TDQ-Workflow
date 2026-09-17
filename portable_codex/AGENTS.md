@@ -37,9 +37,10 @@ With no skill system, the number in the file name IS the routing mechanism:
 - `workflow/04-spec.md`
 - `workflow/05-plan.md`
 - `workflow/06-build.md`
-- `workflow/07-checkportable.md`
-- `workflow/08-status.md`
-- `workflow/09-check-status.md`
+- `workflow/07-lean.md`
+- `workflow/08-checkportable.md`
+- `workflow/09-status.md`
+- `workflow/10-check-status.md`
 
 Full phase table: `workflow/phases.md` (generated from the `PHASE_TABLE` constant, never
 edited by hand).

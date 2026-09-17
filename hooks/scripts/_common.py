@@ -68,7 +68,9 @@ def plan_mode(cwd, state):
     return match.group(1).lower() if match else None
 
 # The CLOSED list of codes (spec §2.1). Adding a new code means editing the spec first.
-CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT")
+# 2026-09-17: the sixth code, TDQ:GON — the lean-law channels (SessionStart, SubagentStart
+# carry the law body; UserPromptSubmit carries one pointer line). Declared in spec §5 first.
+CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT", "TDQ:GON")
 
 # The token budget cap (spec §2.7) — measured on the reminder content.
 MAX_REMIND_CHARS = 200
