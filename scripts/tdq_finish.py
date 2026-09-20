@@ -20,6 +20,7 @@ import shutil
 import subprocess
 import sys
 from datetime import datetime
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 CODE_EXT = {".py", ".js", ".ts", ".tsx", ".jsx", ".go", ".rs", ".java", ".rb",
             ".php", ".c", ".h", ".cpp", ".swift", ".kt", ".lua", ".sh"}

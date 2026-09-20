@@ -135,11 +135,24 @@ def _condense(desc):
 
 
 def _scan_skill_dir(root):
-    """[(name, desc)] from one directory holding <skill>/SKILL.md."""
-    rows = []
-    for path in sorted(glob.glob(os.path.join(root, "*", "SKILL.md"))):
-        name, desc = _frontmatter(path)
-        if name is not None:
+    """[(name, desc)] from one directory holding <skill>/SKILL.md.
+
+    Two layouts, because Claude Code changed where it puts account-level skills and the old
+    glob went blind to the new one. Measured on the user's machine: every skill sat under
+    `~/.claude/skills/synced/<uuid>_<uuid>/<name>/SKILL.md`, one level deeper than
+    `<name>/SKILL.md`, so step B0 of the workflow reported `(no skill on disk)` and the model
+    was left guessing about its own capabilities. Both layouts are scanned; a name found in
+    both is kept once, the shallower one winning.
+    """
+    khuon = (os.path.join(root, "*", "SKILL.md"),
+             os.path.join(root, "synced", "*", "*", "SKILL.md"))
+    rows, da_thay = [], set()
+    for mau in khuon:
+        for path in sorted(glob.glob(mau)):
+            name, desc = _frontmatter(path)
+            if name is None or name in da_thay:
+                continue
+            da_thay.add(name)
             rows.append((name, desc))
     return rows
 

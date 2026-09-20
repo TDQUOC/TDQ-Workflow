@@ -45,7 +45,9 @@ class MarkerLedgerTest(unittest.TestCase):
         path = self.write("scripts/a.py", f"x = 1\n{BAD}\ny = 2\n")
         code, out, _ = self.run_tool(self.tmp)
         self.assertEqual(code, 1, out)
-        self.assertIn(f"{path}:2", out)
+        # The tool prints `path:line:` with forward slashes so an editor and a CI log can
+        # both jump to it; compare against the same shape rather than the host's separator.
+        self.assertIn(f"{path.replace(os.sep, '/')}:2", out)
         self.assertIn("global lock", out)
 
     def test_marker_with_upgrade_path_passes(self):

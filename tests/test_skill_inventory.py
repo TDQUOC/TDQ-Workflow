@@ -41,7 +41,10 @@ class InventoryBase(unittest.TestCase):
         return path
 
     def run_inv(self, *args, env_extra=None):
-        env = dict(os.environ, HOME=self.home)
+        # USERPROFILE alongside HOME: `ntpath.expanduser` does NOT read HOME, so on
+        # Windows setting only HOME leaves the child reading the machine's REAL
+        # ~/.claude — the test then measures the developer's own setup.
+        env = dict(os.environ, HOME=self.home, USERPROFILE=self.home)
         env.pop("TDQ_LOG", None)
         if env_extra:
             env.update(env_extra)
@@ -80,7 +83,8 @@ class ProjectDirResolveTest(InventoryBase):
                    skill_md("demo-skill"))
         elsewhere = os.path.join(self.tmp.name, "elsewhere")
         os.makedirs(elsewhere)
-        env = dict(os.environ, HOME=self.home, TDQ_PROJECT_DIR=self.project)
+        env = dict(os.environ, HOME=self.home, USERPROFILE=self.home,
+                   TDQ_PROJECT_DIR=self.project)
         proc = subprocess.run(
             [sys.executable, SCRIPT], capture_output=True, text=True,
             env=env, timeout=30, cwd=elsewhere)
@@ -341,6 +345,43 @@ class FullOutputUnchangedTest(InventoryBase):
         self.assertIn("zeta-khac", out)
         self.assertNotIn("--tat-ca", out)
         self.assertEqual(out.strip().splitlines()[-1], REMINDER_2)
+
+
+class LayoutSyncedTest(InventoryBase):
+    """Claude Code moved account-level skills one level deeper; B0 went blind to all of them.
+
+    Measured on the user's machine: `~/.claude/skills/synced/<uuid>_<uuid>/<name>/SKILL.md`.
+    The old glob only matched `<name>/SKILL.md`, so the capability table came back empty and
+    the model had to guess what it could do.
+    """
+
+    UUID = "5bcd19c7-c812-4332-87c3-070dc316e566_50f4b3bb-9f98-47bf-af71-6ead843ccbc1"
+
+    def test_synced_doc_duoc_skill(self):
+        self.write(f"home/.claude/skills/synced/{self.UUID}/pdf/SKILL.md", skill_md("pdf"))
+        self.write(f"home/.claude/skills/synced/{self.UUID}/docx/SKILL.md", skill_md("docx"))
+        _, out, _ = self.run_inv()
+        self.assertIn("pdf", out)
+        self.assertIn("docx", out)
+
+    def test_layout_cu_van_chay(self):
+        """A machine that has not updated Claude Code must not lose its table."""
+        self.write("home/.claude/skills/alpha/SKILL.md", skill_md("alpha"))
+        _, out, _ = self.run_inv()
+        self.assertIn("alpha", out)
+
+    def test_hai_layout_cung_luc(self):
+        self.write("home/.claude/skills/alpha/SKILL.md", skill_md("alpha"))
+        self.write(f"home/.claude/skills/synced/{self.UUID}/pdf/SKILL.md", skill_md("pdf"))
+        _, out, _ = self.run_inv()
+        self.assertIn("alpha", out)
+        self.assertIn("pdf", out)
+
+    def test_trung_ten_thi_chi_ke_mot_lan(self):
+        self.write("home/.claude/skills/pdf/SKILL.md", skill_md("pdf"))
+        self.write(f"home/.claude/skills/synced/{self.UUID}/pdf/SKILL.md", skill_md("pdf"))
+        _, out, _ = self.run_inv()
+        self.assertEqual(sum(1 for d in out.splitlines() if d.startswith("pdf |")), 1)
 
 
 if __name__ == "__main__":

@@ -434,7 +434,7 @@ def _do_mot_luot(so_task):
     finally:
         if repo:
             _team(repo, "don", wt=os.path.join(goc, "worktrees"))
-        shutil.rmtree(goc, ignore_errors=True)
+        tdq_state.xoa_cay(goc, bo_qua_loi=True)
 
 
 def _do_tick(duong_plan, ma):

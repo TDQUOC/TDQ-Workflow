@@ -24,6 +24,7 @@ import json
 import os
 import subprocess
 import sys
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 EXIT_LECH = 3
 

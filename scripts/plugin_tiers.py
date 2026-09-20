@@ -14,6 +14,7 @@ import os
 import sys
 import tempfile
 from datetime import datetime
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 MARKETPLACE = "@claude-plugins-official"
 USAGE = "usage: plugin_tiers.py status | reset | enable <plugin-name>"

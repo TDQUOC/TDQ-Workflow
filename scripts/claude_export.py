@@ -34,6 +34,8 @@ import shutil
 import subprocess
 import sys
 import zipfile
+import tdq_state  # noqa: E402 — shares xoa_cay
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(SCRIPT_DIR)
@@ -487,7 +489,9 @@ def cmd_build(args):
     repos = resolve_repos(args)
 
     if os.path.isdir(dest):
-        shutil.rmtree(dest)
+        # `xoa_cay` instead of `shutil.rmtree`: git marks its objects read-only, and Windows
+        # refuses to unlink a read-only file — the tree then survives the delete.
+        tdq_state.xoa_cay(dest)
     os.makedirs(dest)
     for name, repo_path in sorted(repos.items()):
         clone_repo(name, repo_path, dest)
@@ -503,7 +507,7 @@ def cmd_build(args):
     log(f"replaced the placeholder in {len(changed)} file(s)")
     hits = scan_secrets(dest, list(secrets.values()) + list(args.extra_secret or []))
     if hits:
-        shutil.rmtree(dest, ignore_errors=True)
+        tdq_state.xoa_cay(dest, bo_qua_loi=True)
         log(f"SECRET STILL PRESENT in {len(hits)} file(s) → the bundle {dest} was deleted. "
             f"First file: {os.path.relpath(hits[0], dest)}")
         return 3

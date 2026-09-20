@@ -37,6 +37,8 @@ CA_DIR = os.path.join(ROOT, "evals", "tuan-thu")
 KET_QUA_DIR = os.path.join(ROOT, "docs", "tdq", "bench", "tuan-thu")
 
 sys.path.insert(0, SCRIPTS_DIR)
+import tdq_state  # noqa: E402 — shares xoa_cay
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import tdq_ten_lenh  # noqa: E402
 
 BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_eval.py"]
@@ -716,7 +718,7 @@ def chay_phien(ca, nhanh, plugin_dir, lan, dich, token=None):
     goc = kiem_dich(dich)
     phien = os.path.join(goc, f"{ca['ma']}__{nhanh}__{lan}")
     if os.path.isdir(phien):
-        shutil.rmtree(phien)
+        tdq_state.xoa_cay(phien)
     hop = dung_sandbox(ca, os.path.join(phien, "hop"), plugin_dir)
     cau_hinh = os.path.join(phien, "cfg")
     os.makedirs(cau_hinh, exist_ok=True)
@@ -747,14 +749,37 @@ def dau_nhiem(van_ban, wt_nhanh):
     dau = []
     if RE_PLUGIN_MAY.search(van_ban):
         dau.append("the plugin copy installed on this machine")
-    goc_wt = os.path.dirname(os.path.realpath(wt_nhanh))
-    ten_nhanh = os.path.basename(os.path.realpath(wt_nhanh))
-    for ten in NHANH:
-        if ten != ten_nhanh and os.path.join(goc_wt, ten) in van_ban:
-            dau.append(f"worktree of branch {ten}")
-    if os.path.realpath(ROOT) in van_ban:
+
+    # The transcript is text from wherever the session RAN, so it may carry POSIX paths while
+    # this code runs on Windows. `os.path.realpath("/private/tmp/x")` there returns
+    # `C:\private\tmp\x` — a path that matches nothing, and the contamination check silently
+    # passed everything. So: keep realpath (it resolves the /tmp symlink on macOS, which is the
+    # reason it is here) but compare the raw form too, in both separators.
+    for goc_wt, ten_nhanh in _cac_dang_worktree(wt_nhanh):
+        for ten in NHANH:
+            if ten == ten_nhanh:
+                continue
+            ung_vien = f"{goc_wt}/{ten}"
+            if ung_vien in van_ban or ung_vien.replace("/", "\\") in van_ban:
+                dau.append(f"worktree of branch {ten}")
+
+    goc_repo = os.path.realpath(ROOT).replace("\\", "/")
+    if goc_repo in van_ban.replace("\\", "/"):
         dau.append("the development repo itself")
-    return dau
+    return sorted(set(dau), key=dau.index)
+
+
+def _cac_dang_worktree(wt_nhanh):
+    """[(parent, branch name)] for the worktree path, raw and resolved, separators normalised."""
+    dang = []
+    for duong in (wt_nhanh, os.path.realpath(wt_nhanh)):
+        chuan = duong.replace("\\", "/").rstrip("/")
+        if "/" not in chuan:
+            continue
+        cap = (chuan.rsplit("/", 1)[0], chuan.rsplit("/", 1)[1])
+        if cap not in dang:
+            dang.append(cap)
+    return dang
 
 
 def dau_nhiem_phien(ph, wt_nhanh):

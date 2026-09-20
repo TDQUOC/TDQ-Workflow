@@ -17,6 +17,7 @@ import os
 import re
 import sys
 from datetime import datetime
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 EXIT_SYNTAX = 2
 

@@ -93,7 +93,10 @@ def _split_frontmatter(raw):
 
 
 def _rel(path):
-    return os.path.relpath(path, ROOT)
+    # Forward slashes: this name is printed in a table and matched by tests and by eye
+    # against paths written as `hooks/scripts/x.py`. A Windows `\` makes the same file
+    # look like a different one.
+    return os.path.relpath(path, ROOT).replace(os.sep, "/")
 
 
 def _row(name, tier, size, freq):

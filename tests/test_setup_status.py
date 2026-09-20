@@ -195,7 +195,13 @@ class ThuLumen(unittest.TestCase):
             "  - backend: ollama\n"
             "    host: http://localhost:11434\n"
             "    model: qwen3-embedding:0.6b\n")
-        with mock.patch.object(setup_status, "CONFIG_LUMEN", duong):
+        # Both symbols, not just the first one. `thu_lumen` reads the endpoints off
+        # `setup_status.CONFIG_LUMEN` but resolves the MODEL through
+        # `tdq_lsp._model_lumen()`, which reads `tdq_lsp.CONFIG_LUMEN`. Patching one left the
+        # resolver pointed at the real machine, so the case asserted the config's model and got
+        # whatever lumen defaults to — a failure that said nothing about the code.
+        with mock.patch.object(setup_status, "CONFIG_LUMEN", duong), \
+                mock.patch.object(setup_status.tdq_lsp, "CONFIG_LUMEN", duong):
             ra = setup_status.thu_lumen()
         self.assertEqual(ra["model"], "qwen3-embedding:0.6b")
         self.assertEqual(ra["endpoint"],

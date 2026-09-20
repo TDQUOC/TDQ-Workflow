@@ -32,6 +32,7 @@ except ImportError:  # Python < 3.11: no provider copy, the temp home keeps only
     tomllib = None
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 from setup_status import mask_secrets  # noqa: E402
 
 CO_REL = os.path.join("docs", "tdq", ".tdq-codex.json")
@@ -161,7 +162,7 @@ def _kiem_song(duong_codex, cwd, model, timeout=TIMEOUT_KIEM_SONG):
     """
     try:
         proc = subprocess.run(
-            [duong_codex, "--version"], capture_output=True, text=True,
+            boc_lenh(duong_codex) + ["--version"], capture_output=True, text=True,
             encoding="utf-8", timeout=timeout, stdin=subprocess.DEVNULL)
     except subprocess.TimeoutExpired:
         # i18n-allow: reason sentence shown to the user by the mode gate
@@ -177,8 +178,9 @@ def _kiem_song(duong_codex, cwd, model, timeout=TIMEOUT_KIEM_SONG):
     c = CO_EXEC
     home = dung_codex_home(cwd, model)
     file_tra_loi = os.path.join(home, "say-hi.txt")
-    lenh = [duong_codex, c["lenh"], c["goc_repo"], cwd, c["sandbox"], SANDBOX_KIEM_SONG,
-            c["model"], model, c["ket_qua"], file_tra_loi, c["bo_qua_kiem_git"], CAU_SAY_HI]
+    lenh = boc_lenh(duong_codex) + [
+        c["lenh"], c["goc_repo"], cwd, c["sandbox"], SANDBOX_KIEM_SONG,
+        c["model"], model, c["ket_qua"], file_tra_loi, c["bo_qua_kiem_git"], CAU_SAY_HI]
     bat_dau = time.time()
     try:
         proc = subprocess.run(
@@ -206,6 +208,30 @@ def _kiem_song(duong_codex, cwd, model, timeout=TIMEOUT_KIEM_SONG):
 
 
 # -------------------------------------------------------------------- check
+
+def boc_lenh(duong):
+    """The argv prefix that actually runs `duong`. A `.cmd`/`.bat` goes through cmd.exe.
+
+    Two Windows facts, both of which broke the codex mode there outright:
+    1. npm installs the CLI as `codex.cmd`, and `CreateProcess` does not walk PATHEXT, so
+       `subprocess.run(["codex", ...])` raises FileNotFoundError while `shutil.which("codex")`
+       happily returns the wrapper.
+    2. `CreateProcess` cannot execute a batch file even when handed its full path — a batch
+       file is interpreted by the command processor, not by the loader. It comes back as
+       OSError, which `kiem_song` reported as "codex will not run" with no way to tell the
+       difference from a broken install.
+
+    Returns a list so the caller writes `boc_lenh(p) + [args...]` and stays host-agnostic.
+    """
+    if os.name == "nt" and duong.lower().endswith((".cmd", ".bat")):
+        return [os.environ.get("COMSPEC", "cmd.exe"), "/c", duong]
+    return [duong]
+
+
+def ten_lenh_codex():
+    """The resolved path of the `codex` CLI, or the bare name when it cannot be resolved."""
+    return shutil.which("codex") or "codex"
+
 
 def check(cwd="."):
     """-> a dict of five keys. NEVER raises, and always carries `ly_do` when unusable.
@@ -276,8 +302,8 @@ def dung_lenh(goc_repo, model, file_schema, file_ket_qua, prompt=None):
     the "the table is the only place" check means anything.
     """
     c = CO_EXEC
-    lenh = [
-        "codex", c["lenh"],
+    lenh = boc_lenh(ten_lenh_codex()) + [
+        c["lenh"],
         c["goc_repo"], goc_repo,
         c["sandbox"], c["sandbox_gia_tri"],
         c["model"], model,

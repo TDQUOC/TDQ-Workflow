@@ -24,6 +24,7 @@ from _common import (already_reminded, payload_cwd, read_payload, session_id,
 # `calls` edge.
 from luat_gon import doc_than_luat, loc_than_luat  # noqa: E402
 from tdq_state import default_state, load, muc_gat_hieu_luc, render_next  # noqa: E402
+from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
 MAX_CHARS = 600
@@ -62,6 +63,14 @@ def main():
     if shutil.which("graphify") is None:
         lines.append("[TDQ] graphify is not installed (optional): uv tool install graphifyy")
     out = cap("\n".join(lines), MAX_LINES, MAX_CHARS)
+
+    # Appended AFTER the head cap, never inside it. The head cuts from the tail at 600
+    # characters, and on Windows the project path alone can be long enough to push a line out —
+    # a reminder that silently vanishes is worse than none. It is also empty on macOS, on Linux
+    # and on a Windows box that already has the shim, so those sessions pay nothing for it.
+    nhac_lenh = can_nhac_ten_lenh()
+    if nhac_lenh:
+        out += "\n" + nhac_lenh
 
     muc = muc_gat_hieu_luc(state)
     than = loc_than_luat(doc_than_luat(GOC_LUAT), muc)

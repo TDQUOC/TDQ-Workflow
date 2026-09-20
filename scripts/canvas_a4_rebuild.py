@@ -24,6 +24,7 @@ import sys
 
 from canvas_draw import K_VI, PALETTE, SAFE, W, X, fit
 from canvas_move_block import api, bbox
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 # ── page size ─────────────────────────────────────────────────────────────
 MARGIN = 40                      # inner margin of the frame

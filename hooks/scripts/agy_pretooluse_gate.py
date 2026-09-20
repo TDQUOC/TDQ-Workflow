@@ -28,6 +28,11 @@ import os
 import re
 import sys
 
+# `utf8_io` lives in scripts/, which is not on sys.path when a hook is spawned directly.
+sys.path.insert(0, os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts")))
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
+
 BAN = re.compile(r"^(claude|antigravity|gemini|codex)", re.IGNORECASE)
 BRANCH_PATTERNS = [
     re.compile(r"git\s+checkout\s+-b\s+(\S+)"),

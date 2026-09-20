@@ -1,1 +1,11 @@
 graphify-out/graph.json merge=graphify
+
+# The three portable bundles are verified by sha256 against their own manifest, so their bytes
+# must be identical on every host. Git for Windows defaults to core.autocrlf=true, which
+# rewrites LF to CRLF on checkout — every file then hashes differently from the manifest built
+# on macOS, and `tdq_checkportable.py check` reports the whole bundle as DRIFT on a clone that
+# is in fact correct. Measured: 104/105, 156/157 and 94/95 files "drifting" for this reason
+# alone. `-text` tells Git to leave the bytes alone in both directions.
+portable_claude/** -text
+portable_codex/** -text
+antigravity_portable/** -text

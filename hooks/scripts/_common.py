@@ -17,6 +17,9 @@ _SCRIPTS_DIR = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts")
 )
 sys.path.insert(0, _SCRIPTS_DIR)
+# `utf8_io` first: a hook that dies on a cp1252 console takes the whole turn with it, and every
+# reminder below carries `✓` plus Vietnamese. Imported for the side effect, not for a name.
+import utf8_io  # noqa: E402,F401 — stdout/stderr become UTF-8 the moment this lands
 # The import MUST be `from tdq_state import <name>` and then call `f()` directly, NEVER
 # through the module attribute: graphify (0.9.28 and 0.9.42) only emits a cross-file `calls`
 # edge for the from-import shape. Call through the attribute and the graph goes blind to the
@@ -96,7 +99,15 @@ def session_id(payload):
 # ------------------------------------------------------------------ turn ledger
 
 def observe(cwd, payload, event, **fields):
-    """Record one real, observed action."""
+    """Record one real, observed action.
+
+    Any `path` is written with forward slashes, whatever the host. The ledger is compared
+    against git output (which always prints `/`) and against prefixes like `docs/workinglog`,
+    so letting a Windows `\\` through would make the same file look like two different ones to
+    every reader downstream.
+    """
+    if isinstance(fields.get("path"), str):
+        fields["path"] = fields["path"].replace(os.sep, "/")
     turn_log_append(cwd, "observe", session=session_id(payload),
                     event=event, **fields)
 

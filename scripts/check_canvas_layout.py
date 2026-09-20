@@ -18,6 +18,7 @@ import json
 import re
 import sys
 import urllib.request
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 FRAME_RE = re.compile(r"^ch(\d+)-frame$")
 TITLE_RE = re.compile(r"^ch(\d+)-title$")

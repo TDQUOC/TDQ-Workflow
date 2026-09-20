@@ -14,7 +14,10 @@ from datetime import datetime
 from helper import ROOT, decision, load_fixture, run_hook, tdq_state, write_state
 
 SESSION = "sess-test"
-TODAY_LOG = os.path.join("docs", "workinglog", datetime.now().strftime("%Y-%m-%d") + ".md")
+# Read from the product, never rebuilt here: this test used to join the path with `os.sep` and
+# so compared `docs\workinglog\x.md` against the `docs/workinglog/x.md` the gates actually
+# speak. Two copies of one path is exactly the drift the hooks were hardened against.
+TODAY_LOG = tdq_state.today_log_rel()
 
 
 def khoi_dau(out):

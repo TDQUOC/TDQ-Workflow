@@ -8,7 +8,9 @@ Sáu điểm, sáu test, mỗi test chạy riêng được bằng `-k`: `plugin_
 `deny`, `trust`, `user_config`.
 """
 import json
+import ntpath
 import os
+import posixpath
 import subprocess
 import sys
 import unittest
@@ -53,7 +55,12 @@ class TuongThichAgy(unittest.TestCase):
         for c in lenh:
             self.assertNotIn("~", c, f"còn dấu ~ chưa bung: {c}")
             duong = c.split()[-1]
-            self.assertTrue(os.path.isabs(duong), f"đường dẫn không tuyệt đối: {duong}")
+            # Both rule sets, not just the host's. The bundle bakes in the absolute path of the
+            # machine that BUILT it, so a bundle built on macOS carries `/Users/...` — and
+            # `ntpath.isabs` calls that relative, failing the case on Windows for a bundle that
+            # is perfectly correct. What the invariant actually says is "absolute somewhere".
+            self.assertTrue(posixpath.isabs(duong) or ntpath.isabs(duong),
+                            f"đường dẫn không tuyệt đối: {duong}")
 
     def test_deny(self):
         """Payload deny phải mang CẢ `allow_tool: false` lẫn `decision: "deny"` — Google chưa
