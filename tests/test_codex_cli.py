@@ -143,13 +143,22 @@ class CheckCliTest(RepoTam):
         self.assertTrue(data["ly_do"])
 
 
+# The Windows wrapper: `%s` is the interpreter, `%s` the script, `%%*` forwards every argument.
+BOC_CMD = '@"%s" "%s" %%*\r\n'
+
+
 def _codex_gia(thu_muc, kieu):
     """-> path of a fake `codex`. kieu: song | chet | treo | rong.
 
     Every `exec` call records its argv, its CODEX_HOME and that home's config.toml into
     `ghi-lai.json`, so a test can prove WHICH home the say hi went through.
     """
-    duong = os.path.join(thu_muc, "codex")
+    # Windows cannot execute an extension-less shebang script: CreateProcess has no notion of
+    # `#!`, so the fake was never runnable there and every case using it died with OSError
+    # before reaching what it meant to test. Write the body as `.py` and lay a `.cmd` beside it
+    # under the plain name — `.cmd` is in PATHEXT, so `shutil.which("codex")` resolves to it.
+    la_win = sys.platform.startswith("win")
+    duong = os.path.join(thu_muc, "codex.py" if la_win else "codex")
     ghi = os.path.join(thu_muc, "ghi-lai.json")
     co_ket_qua = tdq_codex.CO_EXEC["ket_qua"]
     with open(duong, "w", encoding="utf-8") as f:
@@ -178,6 +187,14 @@ if kieu == "song":
 sys.exit(0)
 """)
     os.chmod(duong, 0o755)
+    if la_win:
+        # Hand back the RUNNABLE path: the caller feeds it to a mocked `shutil.which`, and the
+        # product then spawns whatever it got. A `.py` there is as unrunnable as the
+        # extension-less original, so the wrapper is the answer, not the body.
+        boc = os.path.join(thu_muc, "codex.cmd")
+        with open(boc, "w", encoding="utf-8", newline="") as f:
+            f.write(BOC_CMD % (sys.executable, duong))
+        duong = boc
     return duong, ghi
 
 
@@ -338,7 +355,12 @@ def _codex_run_gia(thu_muc, noi_dung, ghi_ngoai_vung=False):
     when asked, then `noi_dung` into the result file — or no result file at all when None. Its
     CODEX_HOME and that home's config.toml go to `ghi-lai.json`.
     """
-    duong = os.path.join(thu_muc, "codex")
+    # Windows cannot execute an extension-less shebang script: CreateProcess has no notion of
+    # `#!`, so the fake was never runnable there and every case using it died with OSError
+    # before reaching what it meant to test. Write the body as `.py` and lay a `.cmd` beside it
+    # under the plain name — `.cmd` is in PATHEXT, so `shutil.which("codex")` resolves to it.
+    la_win = sys.platform.startswith("win")
+    duong = os.path.join(thu_muc, "codex.py" if la_win else "codex")
     ghi = os.path.join(thu_muc, "ghi-lai.json")
     with open(duong, "w", encoding="utf-8") as f:
         f.write(f"""#!{sys.executable}
@@ -364,6 +386,14 @@ if noi_dung is not None:
 sys.exit(0)
 """)
     os.chmod(duong, 0o755)
+    if la_win:
+        # Hand back the RUNNABLE path: the caller feeds it to a mocked `shutil.which`, and the
+        # product then spawns whatever it got. A `.py` there is as unrunnable as the
+        # extension-less original, so the wrapper is the answer, not the body.
+        boc = os.path.join(thu_muc, "codex.cmd")
+        with open(boc, "w", encoding="utf-8", newline="") as f:
+            f.write(BOC_CMD % (sys.executable, duong))
+        duong = boc
     return ghi
 
 

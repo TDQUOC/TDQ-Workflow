@@ -4,6 +4,15 @@ This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and 
 carry one line pointing back here; none of them restates the rule. Change the order → change it
 here, and the five hook points keep matching because they only ever point.
 
+## Table of contents
+
+- 1. The order, settled
+- 2. The table — kind of question → which layer first, with the numbers
+- 3. Ollama's lifecycle — on demand, released right after
+- 4. Outside plugin hooks pushing another order
+- 5. Where this rule is hooked in
+- 6. Never open documents before asking `find_references`
+
 ## 1. The order, settled
 
 **There is no single winning layer. Pick the first layer from the KIND of question you are
@@ -97,3 +106,46 @@ that hook gets to make.
 Each of those five files carries the quoted sentence from section 1 and a link back here. They
 must not drift: `tests/test_tdq_lsp_skill.py` compares them against this file and fails when one
 of them is edited alone.
+
+## 6. Never open documents before asking `find_references`
+
+### When it applies
+
+You are about to call `mcp__lsp__find_references` (or `find_callers`, `blast_radius` — anything
+that answers "who touches this symbol"), and you are tempted to `open_document` the files you
+expect to be involved first, so the server "has them loaded".
+
+### What to do
+
+1. Call `find_references` straight away, on the symbol where it is USED, not only where it is
+   declared. Pass no warm-up.
+2. Read the file count off the answer.
+3. Need more confidence → compare against `grep -rl "<name>"` over the source directories. The
+   LSP count must be greater than or equal to the number of files that genuinely reference the
+   same symbol; grep may legitimately return MORE, because a same-named local definition in
+   another file is a grep hit and an LSP non-hit.
+4. Never call `open_document` as preparation. Open a document only when you are about to edit
+   the buffer through the server.
+
+### Why — measured, not assumed
+
+On this repo, asking who calls `now_iso`:
+
+| How it was called | Files found |
+|---|---|
+| straight to `find_references`, nothing opened | **6** |
+| after opening 3 of the calling files | 4 |
+| after opening all 8 files grep had named | **1** |
+
+More warm-up, worse answer, monotonically. Calling `go_to_definition` first changed nothing —
+6 either way — so the variable is the number of open documents, not the priming call. The
+reading that fits: a `didOpen` hands the server a buffer to treat as the file, and the search
+then narrows toward those buffers instead of the project on disk.
+
+The trap is that the degraded answer looks healthy. One file came back with ten hits in it, no
+error, no warning — exactly the shape of a correct answer to a different question.
+
+### Self-check
+
+Yes/no: "Did I call `open_document` on anything before this search?" — Yes → throw the answer
+away, restart the server's session, and ask again with nothing opened.

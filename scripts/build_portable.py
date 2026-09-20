@@ -47,6 +47,7 @@ from claude_export import plugin_version, sha256_of  # noqa: E402
 # The logic that builds the two config files lives in `tdq_checkportable.py`, not here: only
 # that file ships with the bundle. Importing it back keeps exactly one copy of the logic.
 from tdq_checkportable import sinh_mcp, sinh_settings  # noqa: E402
+import tdq_ten_lenh  # noqa: E402 — owns the interpreter name
 
 EXIT_LOI = 1
 EXIT_SYNTAX = 2
@@ -832,19 +833,13 @@ def _sua_duong_dan_tuong_doi_agy(goc):
 
 
 def tien_to_python(nen_tang=None):
-    """Tên lệnh chạy Python 3 trên hệ điều hành `nen_tang` (mặc định: máy đang chạy).
+    """The command name that runs Python 3 on `nen_tang` (default: the running machine).
 
-    Windows KHÔNG có `python3` trên PATH: bản cài chính thức đặt `python` và trình khởi chạy
-    `py`, còn `python3` chỉ là cái stub của Microsoft Store mở cửa hàng ứng dụng thay vì chạy
-    Python. Ngược lại, `python` lại vắng mặt trên nhiều bản Linux. Vì vậy `py -3` cho Windows,
-    `python3` cho mọi nơi khác.
-
-    Nhận hệ điều hành làm THAM SỐ chứ không đọc lén `sys.platform`: đó là điều kiện duy nhất để
-    kiểm được hành vi Windows từ một máy macOS.
+    Kept as a thin alias: the answer itself moved to `tdq_ten_lenh.ten_lenh_python` so a hook
+    can ask for it without importing this bundle builder. Five call sites here and one in the
+    hook layer now read the same constant instead of two copies drifting apart.
     """
-    if (nen_tang or sys.platform).startswith("win"):
-        return "py -3"
-    return "python3"
+    return tdq_ten_lenh.ten_lenh_python(nen_tang)
 
 
 TIEN_TO_PYTHON_BIET = ("py -3", "python3", "python")

@@ -39,6 +39,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import skill_tokens  # noqa: E402 — share ONE token counter with the skill table
 
 EXIT_THIEU_THU_VIEN = skill_tokens.EXIT_THIEU_THU_VIEN

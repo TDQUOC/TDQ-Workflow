@@ -17,6 +17,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import unittest
 
 GOC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,10 +28,19 @@ gate = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(gate)
 
 
+# One empty directory for the whole module: state lookups land here instead of the real repo.
+_STATE_TAM = tempfile.TemporaryDirectory(prefix="tdq-codex-edit-gate-")
+
+
 def chay(payload, env_them=None, cwd=None):
     """Chạy hook như Codex chạy: payload qua stdin, quyết định qua stdout."""
     env = dict(os.environ, TDQ_LOG="0")
     env.pop("TDQ_CODEX_TASK", None)
+    # The gate runs with cwd = the real repo, so without this it reads the LIVE state of the
+    # machine it runs on. A repo with an open request in phase `implement` then flips three of
+    # these cases to `deny` and the suite goes red for a reason that has nothing to do with the
+    # gate. Point state at an empty temp dir: no request open, which is what these cases assume.
+    env.setdefault("TDQ_PROJECT_DIR", _STATE_TAM.name)
     env.update(env_them or {})
     proc = subprocess.run([sys.executable, GATE], input=json.dumps(payload),
                           capture_output=True, text=True, timeout=60,

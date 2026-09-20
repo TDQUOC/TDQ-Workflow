@@ -25,6 +25,7 @@ Principles:
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
 import argparse
+import glob
 import json
 import os
 import shutil
@@ -365,14 +366,31 @@ def bac5_lumen():
 
 
 def _plugin_dang_bat():
-    """The install paths Claude Code actually loads — the cache also holds stale older versions."""
-    data = _doc_json("~/.claude/plugins/installed_plugins.json")
+    """The install paths Claude Code actually loads — the cache also holds stale older versions.
+
+    Two sources, because one of them is not always there. `installed_plugins.json` covers what
+    was installed on this machine; it is missing entirely on a machine that never ran
+    `plugin install`, and even when present it does not list the plugins Claude Code syncs from
+    the account into `~/.claude/plugins/synced/<uuid>/<name>/`. Measured on the user's machine:
+    the file named one plugin while a second sat, unlisted, under `synced/`. Rung 6 asks
+    "does another plugin push a different search order" — a plugin it cannot see is a plugin it
+    cannot answer for.
+    """
     duong_dan = []
+    data = _doc_json("~/.claude/plugins/installed_plugins.json")
     for ten, ban_ghi in (data.get("plugins") or {}).items():
         for b in ban_ghi if isinstance(ban_ghi, list) else []:
             p = b.get("installPath")
             if p:
                 duong_dan.append((ten, p))
+
+    da_co = {os.path.normpath(p) for _, p in duong_dan}
+    goc_synced = os.path.expanduser("~/.claude/plugins/synced")
+    for uuid in sorted(glob.glob(os.path.join(goc_synced, "*"))):
+        for duong in sorted(glob.glob(os.path.join(uuid, "*"))):
+            if not os.path.isdir(duong) or os.path.normpath(duong) in da_co:
+                continue
+            duong_dan.append((os.path.basename(duong), duong))
     return duong_dan
 
 
@@ -575,6 +593,7 @@ def cmd_nha(args):
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import tdq_ten_lenh  # noqa: E402
 
 BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_lsp.py"]

@@ -33,9 +33,26 @@ import json
 import os
 import shutil
 import sys
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 MANIFEST_NAME = "manifest.json"
 EXIT_LECH = 1
+
+# ------------------------------------------------------------------ the `python3` shim
+# Windows resolves `python3` to a Microsoft Store stub that exits 49 instead of running Python,
+# so every command line the rule layer prints (`python3 scripts/tdq_state.py next` and 95 more)
+# is unusable as written. Two one-line files placed EARLIER on PATH than that stub fix all of
+# them at once, without touching a single rule file. `.cmd` serves cmd.exe and PowerShell, the
+# extension-less one serves Git Bash; measured working in all three.
+SHIM_CMD = "@py -3 %*\r\n"
+SHIM_SH = '#!/bin/sh\nexec py -3 "$@"\n'
+SHIM_FILES = (("python3.cmd", SHIM_CMD), ("python3", SHIM_SH))
+STUB_DIR = "windowsapps"
+# PATH entries that exist only for the life of one shell. Measured on the user's machine: fnm
+# prepends `...\fnm_multishells\<pid>_<timestamp>` to PATH per shell, and it was the first
+# writable entry — so the first version of this code put the shim there, where it would rot as
+# unreachable litter the moment that shell closed. A shim has to outlive the shell that made it.
+THU_MUC_TAM = frozenset(("fnm_multishells", "nvm_multishells", "temp", "tmp"))
 
 # The ONLY two config files a target machine can rebuild from what the bundle carries:
 # `settings.json` generated from the bundled `hooks/hooks.json`, `.mcp.json` from the constant below.
@@ -477,6 +494,84 @@ def _in_ket_qua(goc, manifest):
     return sach
 
 
+def thu_ghi_duoc(thu_muc):
+    """Can we really write here? Create a probe file and delete it.
+
+    `os.access(d, os.W_OK)` is not an answer on Windows: it reports the read-only ATTRIBUTE and
+    ignores ACLs, so it says yes for `C:\\Program Files\\Git\\mingw64\\bin` and the write then
+    fails with EACCES. Measured — that exact directory is what broke the first version.
+    """
+    if not os.path.isdir(thu_muc):
+        return False
+    probe = os.path.join(thu_muc, ".tdq-shim-probe")
+    try:
+        with open(probe, "w", encoding="utf-8") as f:
+            f.write("")
+        os.remove(probe)
+        return True
+    except OSError:
+        return False
+
+
+def chon_thu_muc_shim(chuoi_path, ghi_duoc=None):
+    """The directory the shim must live in: on PATH, writable, BEFORE the Store stub.
+
+    Order is the whole point. A shim placed after the stub never runs, so a directory that
+    merely exists and is writable is not enough. Returns (path, reason-it-failed).
+    """
+    ghi_duoc = ghi_duoc or thu_ghi_duoc
+    muc = [d for d in (chuoi_path or "").split(os.pathsep) if d.strip()]
+    for duong in muc:
+        thuong = duong.lower()
+        if STUB_DIR in thuong.replace(os.sep, "/"):
+            return None, ("every writable PATH entry sits after the Microsoft Store stub "
+                          f"({duong}) — move one earlier, then run this again")
+        # Matched per path COMPONENT, not as a substring: `C:\Windows\Temp` has no separator
+        # after `temp`, and a substring test silently let it through.
+        if THU_MUC_TAM.intersection(thuong.replace("\\", "/").split("/")):
+            continue
+        if ghi_duoc(duong):
+            return duong, ""
+    return None, "no writable directory found on PATH"
+
+
+def cai_shim_python3(nen_tang=None, chuoi_path=None, ghi_duoc=None, ghi_file=None):
+    """Write the two shim files so `python3` becomes typeable. Returns (done, notes).
+
+    Idempotent: a file already holding the right bytes is left alone and reported as such.
+    Every input is injectable so the Windows branch stays testable from a macOS machine — the
+    same discipline that `ten_lenh_python` follows, and for the same reason.
+    """
+    nen_tang = nen_tang or sys.platform
+    if not nen_tang.startswith("win"):
+        return [], [f"skipped --shim: `python3` already runs Python on {nen_tang}"]
+
+    chuoi_path = os.environ.get("PATH", "") if chuoi_path is None else chuoi_path
+    thu_muc, ly_do = chon_thu_muc_shim(chuoi_path, ghi_duoc)
+    if thu_muc is None:
+        return [], [f"skipped --shim: {ly_do}"]
+
+    def _ghi(duong, noi_dung):
+        with open(duong, "w", encoding="utf-8", newline="") as f:
+            f.write(noi_dung)
+
+    ghi_file = ghi_file or _ghi
+    da_lam = []
+    for ten, noi_dung in SHIM_FILES:
+        duong = os.path.join(thu_muc, ten)
+        try:
+            with open(duong, encoding="utf-8", newline="") as f:
+                if f.read() == noi_dung:
+                    continue
+        except OSError:
+            pass
+        ghi_file(duong, noi_dung)
+        da_lam.append(f"wrote the `python3` shim {duong}")
+    if not da_lam:
+        return [], [f"--shim: already correct in {thu_muc}"]
+    return da_lam, [f"--shim: `python3` now runs Python 3 from {thu_muc}"]
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="tdq_checkportable.py",
@@ -492,7 +587,28 @@ def main(argv=None):
         help="only with `setup`: declare this bundle a trusted project in the config.toml of "
              "Codex CLI (default ~/.codex, or $CODEX_HOME). This is the ONLY path writing outside "
              "the bundle; it always leaves a .tdq-bak-<timestamp> backup.")
+    parser.add_argument(
+        "--shim", action="store_true",
+        help="only with `setup`: install the `python3` shim so every command line printed by "
+             "the rule layer is typeable on Windows. No-op on macOS and Linux.")
     args = parser.parse_args(argv)
+
+    # Handled BEFORE the manifest is read: the shim has nothing to do with a bundle, and this
+    # command has to run from a plain repo checkout where no manifest.json exists at all.
+    if args.shim:
+        if args.lenh != "setup":
+            print("ERROR    --shim only works with `setup`")
+            return 2
+        try:
+            da_lam, ghi_chu = cai_shim_python3()
+        except OSError as loi:
+            print(f"ERROR    cannot write the shim: {loi}")
+            return EXIT_LECH
+        for viec in da_lam:
+            print(f"DONE     {viec}")
+        for dong in ghi_chu:
+            print(f"NOTE     {dong}")
+        return 0
 
     goc = args.root or tim_goc_bundle()
     try:

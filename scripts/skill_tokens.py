@@ -40,8 +40,12 @@ import skill_inventory  # noqa: E402 — shares the list of ENABLED skills
 
 # Another python can be pointed at through an environment variable: the tests need to stage
 # a "no venv" world without touching the real venv of the repo.
+# A venv puts its interpreter in `bin/` on macOS and Linux but in `Scripts/` on Windows, with
+# an `.exe` suffix. Hard-coding `bin/python` meant the Windows branch never found the venv it
+# had just been told to create, and reported the library as missing forever.
+_VENV_BIN = ("Scripts", "python.exe") if sys.platform.startswith("win") else ("bin", "python")
 VENV_PYTHON = os.environ.get(
-    "TDQ_TOKENS_VENV", os.path.join(ROOT, ".venv-tokens", "bin", "python"))
+    "TDQ_TOKENS_VENV", os.path.join(ROOT, ".venv-tokens", *_VENV_BIN))
 CAI_DAT = (f"python3 -m venv {os.path.relpath(os.path.join(ROOT, '.venv-tokens'), ROOT)} "
            "&& .venv-tokens/bin/pip install anthropic-tokenizer==0.1.0")
 EXIT_THIEU_THU_VIEN = 3

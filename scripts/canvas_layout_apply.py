@@ -13,6 +13,7 @@ The MOVES table is copied from `docs/tdq/plan/2026-08-12-hoan-thien-doc-excalidr
 import sys
 
 from canvas_move_block import api, plan_move, write_moves
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 MOVES = [
     # (chapter, source region x0,y0,x1,y1, target y, new title, expected element count)

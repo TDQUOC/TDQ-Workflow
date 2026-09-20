@@ -18,6 +18,7 @@ import os
 import sys
 import unicodedata
 from collections import Counter, defaultdict
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

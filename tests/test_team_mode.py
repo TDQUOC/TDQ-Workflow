@@ -9,6 +9,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -1689,6 +1690,15 @@ class VaLuoiWorktreeTest(TeamBase):
         self.assertNotEqual(rc, 0, out)
         self.assertTrue(os.path.exists(os.path.join(wt, ".env")), out)
 
+    @unittest.skipIf(
+        sys.platform.startswith("win"),
+        "the case needs a directory git cannot write into, and it builds one with "
+        "os.chmod(0o500). On Windows chmod only toggles the read-only ATTRIBUTE, which applies "
+        "to files and not to directory creation, so git removes the worktree anyway and the "
+        "case asserts a message that could never appear. Denying a directory there means an "
+        "ACL edit (icacls), a different mechanism the product does not depend on. The behaviour "
+        "under test — labelling a permission error as a lock — is host-independent and stays "
+        "covered on macOS and Linux.")
     def test_git_tu_choi_khong_phai_khoa_thi_khong_dan_nhan_khoa(self):
         """Dán nhãn 'khoa' cho lỗi quyền là gửi user đi chạy `worktree unlock` vô ích."""
         self.chay("open", "T1.1")

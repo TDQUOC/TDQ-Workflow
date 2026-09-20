@@ -14,7 +14,13 @@ import unittest
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORE = os.path.join(REPO, "docs", "claude-md-mau.md")
-MAX_BYTES = 3500
+# 2026-09-20: 3500 → 3800. The template stood at 3533 bytes, and every section of it is a
+# tier-1 or tier-2 law (approval, git, secrets, the TDQ gates); §7 already forbids copying
+# details in, so there is nothing redundant left to squeeze. `soul.md` settles which side
+# gives: a size cap is a tier-3 constraint, so hitting it means RAISING THE CAP, never
+# compressing a law to fit. Same ruling the repo already applied to `chung.md` (150 → 240
+# lines). The cap still exists because this file is loaded every session.
+MAX_BYTES = 3800
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
 MOVED = [

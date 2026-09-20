@@ -345,6 +345,9 @@ class KhuonSchemaTest(unittest.TestCase):
 class CodexHomeTest(RepoTam):
     """T3.6 — vòng đời CODEX_HOME: quyền 700, không rò `Bearer`, cleanup sạch."""
 
+    @unittest.skipIf(
+        sys.platform.startswith("win"),
+        "POSIX permission bits do not exist on Windows: os.chmod only toggles the read-only attribute and stat.S_IMODE always reports 0o666/0o777, so the case can only ever fail there. The product still calls chmod (harmless, and correct everywhere else); expressing this restriction on Windows would mean ACLs, a mechanism the product does not use. The guarantee stays covered on macOS and Linux.")
     def test_thu_muc_tam_quyen_700(self):
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex")
         try:
@@ -458,6 +461,9 @@ class CodexHomeProviderTest(RepoTam):
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
         self.assertEqual(self._doc_config(home), {"model": "gpt-5-codex"})
 
+    @unittest.skipIf(
+        sys.platform.startswith("win"),
+        "POSIX permission bits do not exist on Windows: os.chmod only toggles the read-only attribute and stat.S_IMODE always reports 0o666/0o777, so the case can only ever fail there. The product still calls chmod (harmless, and correct everywhere else); expressing this restriction on Windows would mean ACLs, a mechanism the product does not use. The guarantee stays covered on macOS and Linux.")
     def test_auth_json_lay_tu_nguon_quyen_600(self):
         with open(os.path.join(self.nguon, "auth.json"), "w", encoding="utf-8") as f:
             f.write("{}")

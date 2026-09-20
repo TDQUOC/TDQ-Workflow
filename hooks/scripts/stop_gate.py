@@ -246,7 +246,10 @@ def main():
 
     rows = turn_rows(cwd, payload)
     log_rel = today_log_rel()
-    log_dir = os.path.join("docs", "workinglog")
+    # Forward slashes, not os.path.join: `observe` normalises every ledger path to `/`, so a
+    # `docs\workinglog` prefix would match nothing on Windows and the working log itself would
+    # count as an edited file — a TDQ:LOG block fired at a turn that did everything right.
+    log_dir = "docs/workinglog"
     snap = _snapshot(rows)
 
     edited = [r.get("path", "") for r in rows

@@ -5,6 +5,7 @@ Không có test này thì sửa 1 chỗ là 4 chỗ kia trôi mà không ai bi�
 một thứ tự tìm kiếm khác nhau. Test so câu trích với câu gốc sau khi chuẩn hoá khoảng
 trắng, nên xuống dòng ở đâu là tuỳ file, còn chữ thì phải y nguyên.
 """
+import io
 import os
 import re
 import unittest
@@ -91,6 +92,39 @@ class LuatUuTienTimKiem(unittest.TestCase):
         for path in CHO_MOC:
             ten = os.path.basename(path)
             self.assertIn(ten, src, f"§5 của file luật gốc chưa nhắc {ten}")
+
+
+class LuatKhongMoFileTruoc(unittest.TestCase):
+    """Section 6 — the warm-up that makes `find_references` worse, not better.
+
+    Measured on this repo: asking straight gave 6 files, after opening 3 callers 4 files, after
+    opening all 8 that grep named just 1. The degraded answer carries no error and no warning,
+    which is why the rule has to be written down rather than left to judgement.
+    """
+
+    def setUp(self):
+        with io.open(GOC, encoding="utf-8") as f:
+            self.text = f.read()
+
+    def test_co_muc_luat(self):
+        self.assertIn("Never open documents before asking `find_references`", self.text)
+
+    def test_du_ba_muc_theo_soul_nguyen_tac_3(self):
+        """A rule a weak model can follow needs all three parts, not just the verdict."""
+        muc6 = self.text.split("## 6.", 1)[1]
+        for phan in ("### When it applies", "### What to do", "### Self-check"):
+            with self.subTest(phan=phan):
+                self.assertIn(phan, muc6)
+
+    def test_mang_so_do_chu_khong_chi_lenh(self):
+        """A rule with no measurement behind it is the first one someone argues away."""
+        muc6 = self.text.split("## 6.", 1)[1]
+        for so in ("6", "4", "1"):
+            self.assertIn(f"| **{so}** |".replace("**", ""), muc6.replace("**", ""))
+
+    def test_cam_open_document_lam_buoc_chuan_bi(self):
+        muc6 = self.text.split("## 6.", 1)[1]
+        self.assertIn("Never call `open_document` as preparation", muc6)
 
 
 if __name__ == "__main__":

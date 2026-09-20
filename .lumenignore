@@ -1,0 +1,17 @@
+# What lumen must not index. Same syntax as .gitignore.
+#
+# The three portable bundles are GENERATED copies of scripts/, hooks/, skills/ and agents/ —
+# `scripts/build_portable.py` writes them. Indexing them means every semantic search returns
+# the same file three or four times over.
+#
+# Measured on this repo before this file existed: a search for the code that stamps the
+# approval time put `scripts/tdq_state.py` outside the top 8, because duplicates from the
+# bundles took the slots. With the bundles excluded the same query ranks it 1st, and a second
+# phrasing ranks it 4th.
+portable_claude/
+portable_codex/
+antigravity_portable/
+portable_codex.zip
+
+# Generated analysis output, not source anyone searches for.
+graphify-out/

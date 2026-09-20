@@ -35,6 +35,7 @@ _SCRIPTS_DIR = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts")
 )
 sys.path.insert(0, _SCRIPTS_DIR)
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 from tdq_state import (  # noqa: E402
     effective_phase, load, log_enabled, now_iso, plan_tick_state, repo_status_digest,

@@ -15,12 +15,18 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import stat
 import subprocess
 import sys
 import tempfile
 from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Import order matters: `utf8_io` first, because everything below it prints Vietnamese and a
+# Windows console defaults to cp1252. It carries no import of its own from this package, so
+# there is no cycle.
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import tdq_ten_lenh  # noqa: E402
 
 STATE_REL = os.path.join("docs", "tdq", "state.json")
@@ -479,6 +485,36 @@ def save(cwd, state, expect_updated_at=_MISSING):
     return state
 
 
+def xoa_cay(path, bo_qua_loi=False):
+    """Delete a directory tree, read-only files included. Returns True when it is gone.
+
+    `shutil.rmtree` cannot remove a read-only file on Windows: `os.unlink` raises
+    PermissionError (WinError 5). Git marks every object in `.git/objects` read-only, so any
+    tree holding a clone — an export bundle, a worktree, an eval session — refuses to go.
+    Measured: `claude_export build` over its own previous bundle died there, and the callers
+    using `ignore_errors=True` were quietly WORSE, reporting success while leaving the tree
+    behind for the next run to trip over.
+
+    The retry clears the read-only bit and tries once more, which is the documented fix and
+    the reason `onexc` exists.
+    """
+    def _thu_lai(ham, duong, _loi):
+        os.chmod(duong, stat.S_IWRITE)
+        ham(duong)
+
+    # `onexc` only exists from Python 3.12; `onerror` is the name every older version knows and
+    # it still works in 3.12+ (deprecated, not removed). This module has to keep running on the
+    # oldest Python the repo still supports — `tdq_codex` carries a fallback for < 3.11, so the
+    # floor is below 3.12 and passing `onexc` blindly would raise TypeError there.
+    khoa = "onexc" if sys.version_info >= (3, 12) else "onerror"
+    try:
+        shutil.rmtree(path, **{khoa: _thu_lai})
+    except OSError:
+        if not bo_qua_loi:
+            raise
+    return not os.path.exists(path)
+
+
 def sha256_file(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -537,7 +573,15 @@ _ROOT_CACHE = {}
 
 
 def today_log_rel():
-    return os.path.join("docs", "workinglog", datetime.now().strftime("%Y-%m-%d") + ".md")
+    """Today's working log, relative to the project, ALWAYS with forward slashes.
+
+    Not `os.path.join`: this value is compared against `git status` output and against the
+    turn ledger, and both speak `/` on every host. Joining with the Windows separator made the
+    build compare a backslash path with a forward-slash one, decide the log had not been
+    written, and block a turn that had written it. Opening the file still works: Windows
+    accepts forward slashes in a path.
+    """
+    return "docs/workinglog/" + datetime.now().strftime("%Y-%m-%d") + ".md"
 
 
 def _git(cwd, *args):

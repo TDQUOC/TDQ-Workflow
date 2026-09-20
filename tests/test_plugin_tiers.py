@@ -60,7 +60,10 @@ class TierBase(unittest.TestCase):
             return json.load(f)
 
     def run_cli(self, *args, env_extra=None):
-        env = dict(os.environ, HOME=self.home)
+        # USERPROFILE alongside HOME: `ntpath.expanduser` does NOT read HOME, so on
+        # Windows setting only HOME leaves the child reading the machine's REAL
+        # ~/.claude — the test then measures the developer's own setup.
+        env = dict(os.environ, HOME=self.home, USERPROFILE=self.home)
         env.pop("PLUGIN_TIERS_LOG", None)
         if env_extra:
             env.update(env_extra)

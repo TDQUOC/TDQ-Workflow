@@ -24,6 +24,7 @@ Env: TDQ_LOG=0 turns the log service off (on by default, one ISO-timestamped lin
 import os
 import sys
 from datetime import datetime
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 EXIT_SYNTAX = 2
 MARKER = "ponytail:"  # no-marker: allow — the pattern itself, not a debt entry
@@ -126,7 +127,9 @@ def main(argv):
 
     total, rotten = quet(collect(paths or default_paths()))
     for path, number, text in rotten:
-        print(f"{path}:{number}: {MARKER} {text}".rstrip())
+        # `path:line:` is the shape an editor and a CI log both jump to, and both expect
+        # forward slashes. Normalised here, at the boundary, not in the scanner.
+        print(f"{path.replace(os.sep, '/')}:{number}: {MARKER} {text}".rstrip())
     _log(f"{total} marker(s), {len(rotten)} missing an upgrade path", quiet)
     return 1 if rotten else 0
 

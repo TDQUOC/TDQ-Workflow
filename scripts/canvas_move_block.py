@@ -20,6 +20,7 @@ import json
 import sys
 import urllib.error
 import urllib.request
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
 BASE = "http://127.0.0.1:17739"
 CHAPTER_X = 40

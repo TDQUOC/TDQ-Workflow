@@ -214,7 +214,10 @@ class SnapshotTest(unittest.TestCase):
     def test_snapshot_without_log_file(self):
         snap = tdq_state.turn_snapshot(self.cwd)
         self.assertEqual(set(snap), {"log_rel", "log_sha", "repo_sha", "repo_paths", "plan_sha"})
-        self.assertTrue(snap["log_rel"].startswith(os.path.join("docs", "workinglog")))
+        # `today_log_rel` speaks forward slashes on every host: the value is compared against
+        # git output and against the turn ledger, and both do. Rebuilding the prefix with
+        # `os.path.join` here asked for the Windows separator and failed on it.
+        self.assertTrue(snap["log_rel"].startswith("docs/workinglog"))
         self.assertIsNone(snap["log_sha"])
         self.assertIsNone(snap["repo_sha"])
 

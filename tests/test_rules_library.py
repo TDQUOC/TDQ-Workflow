@@ -96,7 +96,12 @@ class ChiMuc(unittest.TestCase):
         index = RULES_DIR / "index.md"
         self.assertTrue(index.is_file(), "Chưa có rules/index.md")
         text = index.read_text(encoding="utf-8")
-        mentioned = set(re.findall(r"[a-z0-9-]+\.md", text)) - {"index.md"}
+        # Only markdown LINKS count as "the index points at this rule file". A bare filename
+        # inside backticks is something else: the Bash row names
+        # `~/.claude/skills/tdq-rules-bash/bash.md`, a file that lives at user scope and by
+        # design does NOT sit in rules/. Matching every `*.md` token read that path as an
+        # eleventh rule file and failed the case on a repo that was perfectly correct.
+        mentioned = set(re.findall(r"\]\(([a-z0-9-]+\.md)\)", text)) - {"index.md"}
         # Chỉ mục phải khớp danh sách plan; file tồn tại ngoài danh sách do
         # khuon_ngon_ngu bắt (thư mục == EXPECTED), nên hai test gộp lại bảo đảm
         # chỉ mục == thư mục ở trạng thái cuối.
