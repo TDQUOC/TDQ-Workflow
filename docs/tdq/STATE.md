@@ -1,11 +1,11 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-23T11:26:42+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-09-23T11:42:33+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
 | Request | 2026-09-21-0029-hoc-superpowers-da-host |
 | Lane | full |
-| Phase | report |
+| Phase | idle |
 | Spec | docs/tdq/spec/2026-09-21-0029-hoc-superpowers-da-host.md — ✔ approved |
 | Plan | docs/tdq/plan/2026-09-21-0029-hoc-superpowers-da-host.md — ✔ approved |
 | Quick approval | (not applicable) |
@@ -14,13 +14,13 @@ Updated: 2026-09-23T11:26:42+07:00 · Project: C:\Users\admin\Documents\Projects
 | Run mode | main |
 
 ## Where we are
-QC has PASSed. Forbidden: Committing or pushing before the user asks for it.
+Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
 
 ## What comes next
-Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing.
+Wait for a new request from the user.
 ```
-python3 scripts/tdq_state.py set phase=idle
+python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
 ```
-Done when: The report is written and the user has been asked about committing
+Done when: A new request is open
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.
