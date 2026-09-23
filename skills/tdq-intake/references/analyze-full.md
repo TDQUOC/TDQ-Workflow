@@ -1,5 +1,16 @@
 # Part B — Analysis (phase `analyze`, deep pipeline only)
 
+## Table of contents
+
+The file is one numbered run of steps, not sections — this index names them in order:
+
+- 1. Capability inventory (B0)
+- 2. Read the code
+- 3. Research from several angles
+- 4. Interview rounds
+- 5. Settle the knowledge · 5b. Decide the route · 5c. Ask the QC level
+- 6. Gate check
+
 Play the expert of the exact field the request belongs to. Goal: leave this phase with
 **ZERO guesswork**. Everything written in this phase lives in ONE file
 `docs/tdq/brief/<slug>.md`, with exactly 3 sections: `## Nguyên văn` (the user's request, <!-- i18n-allow: canonical section name in the default language -->
@@ -76,6 +87,31 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
    analysis → spec/plan → implement → report. Cut only the steps that are REDUNDANT for
    this particular task, and say why; in doubt → KEEP. This route is copied verbatim into
    spec §1b, and approving the spec approves it too.
+
+5c. **Ask the QC level — the last thing before the spec.** The level decides how much phase
+   `qc` runs, so it has to be settled BEFORE §6 of the spec is written; asking after that means
+   rewriting a section the user already approved. One question, in the same block as the rest of
+   the round, options per [interview.md](interview.md):
+
+<!-- i18n-allow: question block written in the default document language -->
+```
+<số>. Request này bạn muốn QC tới mức nào?
+- A (đề xuất): `full` — DoD + trọn unit test + hồi quy vùng chạm + ràng buộc kiến trúc + clean code. Không chạy runtime test.
+- B: `lite` — DoD + unit test của riêng vùng chạm. Nhanh nhất, đổi lại không ai chạy trọn suite.
+- C: `ultra` — như `full`, thêm smoke test, runtime test và một agent QC độc lập soi lại.
+```
+
+   Rules of this question:
+
+   - The default is `full`: the user says nothing, or says something that is not one of the
+     three, and the level is `full`. Never read silence as `lite`.
+   - **Never offer `off`.** It is a valid value of the key and the user may type
+     `set muc_qc=off` themselves, but a workflow that offers to skip its own QC in a list of
+     options is inviting it. Asked directly for it, record it — do not talk them out of it.
+   - The moment the user answers, write it down — the level lives in state, not in your memory:
+     `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set muc_qc=<lite|full|ultra|off>`.
+   - What each level actually runs is one table, owned by
+     [qc.md](../../tdq-build/references/qc.md). Do not restate the table here; it would drift.
 
 6. **Gate check** before moving on:
    - Is the final scope clear: what gets built, what is new, what exactly is the output?

@@ -138,7 +138,10 @@ class TokenBudgetTest(unittest.TestCase):
                     # 2026-08-22: 200 → 215. Reference chuyển sang tiếng Anh xuống dòng
                     # nhiều hơn ở cùng một nội dung (quick-lane.md: 192 → 203 dòng, không
                     # thêm mục nào). Nới đúng phần giãn, không nới thành cửa cho nội dung mới.
-                    self.assertLessEqual(count, 215, f"{path}: {count} dòng")
+                    # 2026-09-23: 215 → 235. quick-lane.md nhận câu hỏi mức QC ngay trong
+                    # khối mời duyệt (express chỉ có MỘT cổng, nên nó không có chỗ nào khác
+                    # để đứng). Nới đúng phần thêm, không nới thành cửa cho nội dung mới.
+                    self.assertLessEqual(count, 235, f"{path}: {count} dòng")
 
 
 if __name__ == "__main__":

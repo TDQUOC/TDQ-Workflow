@@ -134,6 +134,11 @@ Next step: phase `qc` — the `tdq_finish.py … --phase qc` command of item 3 s
 
 ## Part B — QC (phase `qc`)
 
+**How much QC runs comes from `muc_qc`**, the level the user settled before the spec — the
+table of levels is in [references/qc.md](references/qc.md). Smoke and runtime checks (level
+`ultra`) run under a **120-second cap each**; hitting the cap is a FAIL, and raising the cap
+needs the user's yes, never your own call.
+
 The three execution steps — from counting DoD items to the fix loop on a FAIL — live in
 [references/qc.md](references/qc.md) under `## The three execution steps`. **You MUST open that
 file and read all three steps before running the first item; working from memory is banned.**

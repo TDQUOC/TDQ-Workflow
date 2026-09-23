@@ -2,6 +2,33 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.51.0 — 2026-09-23
+
+Mức độ QC thành quyết định của user, hỏi một lần trước khi viết spec. Báo cáo:
+`docs/tdq/reports/2026-09-23-1148-hoi-muc-qc.md`.
+
+- **Khoá `muc_qc`** — `lite|full|ultra|off`, mặc định `full`, chuẩn hoá fail-closed như
+  `muc_gat`: giá trị rác, trống hay sai kiểu đều về `full`, nên không gõ nhầm nào mua được một
+  vòng QC rẻ hơn. `schema_version` 5 → 6. `next` và `STATE.md` in mức QC trên dòng riêng, không
+  gộp với `Lean level` — hai thang khác nhau, gộp là mời nhầm.
+- **Hỏi ở đâu** — cuối phase `analyze` (bước 5c của `analyze-full.md`), TRƯỚC khi viết spec §6,
+  vì hỏi sau là phải sửa mục user đã duyệt. Lane express hỏi ngay trong khối mời duyệt sẵn có,
+  không thêm lượt dừng nào.
+- **Bảng mức × loại kiểm** — một bảng duy nhất trong `skills/tdq-build/references/qc.md`, mỗi ô
+  là CÓ hoặc KHÔNG cho bốn loại: DoD, unit test, smoke test, runtime test, cộng cột QC độc lập
+  bằng agent. Mức mặc định `full` **không** chạy runtime test: đó là loại từng treo rất lâu, và
+  một vòng QC treo thì bị bỏ dở, mất nhiều hơn được. `ultra` mới chạy runtime và gọi
+  `tdq-qc-tester` — trước đây agent này treo vào câu "việc lớn hoặc rủi ro cao", không ngưỡng
+  nào đo được, nên thực tế không bao giờ chạy.
+- **Trần 120 giây** cho mỗi phép smoke/runtime: chạm trần thì giết tiến trình và ghi FAIL kèm
+  lệnh, rồi phân tích xem là lỗi thật hay việc cần chạy lâu thật. Cấm tự nâng trần — nâng phải
+  hỏi user, vì nâng trần cho một phép đang đỏ là vặn bóng đèn cho đèn khỏi sáng.
+- **Gỡ cờ `--no-qc`** của `approve quick` cùng khoá `quick_qc_skipped`: một cơ chế duy nhất cho
+  cả hai lane. Lệnh cũ chết kèm câu chỉ sang `set muc_qc=off`. Dòng nhắc duyệt không còn mời bỏ
+  QC — `off` vẫn đặt tay được nhưng không bao giờ được bày ra trong danh sách chọn.
+- **Test** — hai file mới khoá khoá state và luồng hỏi, một file khoá bảng mức cùng luật trần.
+  Ba ca cũ ghim `schema_version = 5` nay đọc số từ chính sản phẩm.
+
 ## 0.50.0 — 2026-09-21
 
 Học cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng, không còn bản sao

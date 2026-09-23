@@ -91,12 +91,12 @@ class PhaseTableTest(unittest.TestCase):
             self.assertIn(f"{section}: python3 scripts/tdq_state.py", block,
                           f"khối lệnh nguyên văn mất lệnh tdq_state.py của {section}")
 
-    def test_quick_row_no_qc_variant_and_terminal(self):
-        """A26: dòng duyệt quick khớp intake (biến thể bỏ QC); A6: có bước đóng."""
+    def test_quick_row_muc_qc_and_terminal(self):
+        """2026-09-23: biến thể bỏ QC thay bằng thang mức `muc_qc`; A6: có bước đóng."""
         row = tdq_state.PHASE_TABLE["quick"]
-        self.assertIn("--no-qc", row["cmd"])
+        self.assertNotIn("--no-qc", row["cmd"])
         joined = " ".join(row["checklist"])
-        self.assertIn("--no-qc ONLY when the user says so", joined)
+        self.assertIn("muc_qc", joined)
         self.assertIn("set phase=idle", joined)
 
     def test_render_plugin_root_variant(self):

@@ -11,7 +11,7 @@ only on the thresholds in `## How deep the analysis goes` below — and say why.
 | Interview | loops until nothing is vague | when a question can still change the outcome |
 | Documents | brief + spec + plan | **1 file** `docs/tdq/plan/<slug>.md` |
 | Approval gates | 2 (spec, plan) + 1 question on the run mode | **1** (the express approval) |
-| QC | file `qc/<slug>.md` | one check per DoD line, written into the plan's `## QC` section (ON by default) |
+| QC | file `qc/<slug>.md`, depth per `muc_qc` | one check per DoD line, in the plan's `## QC` section, depth per `muc_qc` |
 | Fix round on FAIL | 3-round cap, written into `qc/` | 3-round cap, written into the plan |
 The scope round in express shares the rule in [scope-round.md](scope-round.md): one trigger
 sign met → ask about areas + context first; none met → write one SKIP reason line into the
@@ -70,12 +70,23 @@ steps below before doing step 1; working from memory is banned.
 4. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, and
    how it is validated. Add exactly 1 line `Ước tính sẽ dùng skill: <the skills that will be <!-- i18n-allow: canonical name in the default language -->
    USED, or "không có">` (in doubt → USE). <!-- i18n-allow: label written in the default language -->
-5. Print exactly this line, then **STOP**:
-<!-- i18n-allow: sample of the approval line, written in doc_lang -->
+5. **Ask the QC level inside the SAME block as the approval invite** — express keeps exactly
+   ONE stop, so this question never gets a turn of its own. Three options, default `full`, and
+   `off` is never offered (full rule: step 5c of [analyze-full.md](analyze-full.md)). Print
+   this, then **STOP**:
+<!-- i18n-allow: sample of the approval block, written in doc_lang -->
 ```
-➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong implement ngay) · Góp ý: nhắn trực tiếp
+<số>. Request này bạn muốn QC tới mức nào?
+- A (đề xuất): `full` — DoD + test của từng task. Không chạy runtime test.
+- B: `lite` — chỉ DoD. Nhanh nhất, đổi lại không ai chạy test của từng task.
+- C: `ultra` — như `full`, thêm smoke test, runtime test và một agent QC độc lập soi lại.
+
+➤ Duyệt: nhắn "duyệt nhanh" kèm mức (vd "duyệt nhanh, QC full"); "duyệt quick" vẫn chạy — duyệt xong implement ngay · Góp ý: nhắn trực tiếp
 ```
-6. The user approves → run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick [--no-qc] --by "<the user's sentence verbatim>"` (`--no-qc` ONLY when the user says so explicitly — silence about QC means QC stays ON).
+6. The user approves → record the level FIRST, then the approval:
+   `... set muc_qc=<lite|full|ultra>`, then
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve quick --by "<the user's sentence verbatim>"`.
+   Approved without naming a level → `full`, and never re-ask.
 7. Append the mini-plan summary to `docs/workinglog/<today>.md` **BEFORE** touching code.
 8. Implement end-to-end in 1 turn. **Before typing the first line of code, count the tasks
    whose `Chạm:` sets are disjoint** (no task sharing a path with another): <!-- i18n-allow: canonical name in the default language -->
@@ -88,9 +99,9 @@ steps below before doing step 1; working from memory is banned.
    Each task: mark `[~]` BEFORE editing code (hook `edit_gate` BLOCKS when the plan has no
    `[~]`; `tests/**` is exempt), red→green, switch to
    `[x]` the moment the test is green — batching ticks at the end of the turn is banned.
-   Then run **QC** (ON by default): one check per DoD line, evidence written into the plan's
-   `## QC` section. `quick_qc_skipped = true` → section `## QC` holds a single line saying
-   it was skipped at the user's request, quoting the user verbatim.
+   Then run **QC at the level in `muc_qc`**: one check per DoD line, evidence written into the
+   plan's `## QC` section. `muc_qc=off` → section `## QC` holds a single line saying it was
+   skipped at the user's request, quoting the user verbatim.
    (The full tick rule is in `## The tick rule` and the full QC rule in `## QC in the express
    pipeline`, both in this file.)
 9. **Fix round when QC FAILs or a bug shows up**: add tasks to the plan under
@@ -150,7 +161,7 @@ Xem đầy đủ tại: `docs/tdq/plan/<slug>.md`
 
 **Bạn duyệt để tôi làm luôn chứ?**
 
-➤ Duyệt: nhắn "duyệt nhanh" (bỏ QC: "duyệt nhanh không QC"; "duyệt quick" vẫn chạy — duyệt xong tôi làm ngay) · Góp ý: nhắn trực tiếp
+➤ Duyệt: nhắn "duyệt nhanh" kèm mức QC (vd "duyệt nhanh, QC full"); "duyệt quick" vẫn chạy — duyệt xong tôi làm ngay · Góp ý: nhắn trực tiếp
 ```
 
 ## The tick rule — `[ ]` · `[~]` · `[x]`
@@ -176,9 +187,12 @@ in fact closed → run `python3 scripts/tdq_state.py set phase=idle`.
 
 ## QC in the express pipeline
 
-ON by default. Run it right after implement finishes, **with as many items as the mini-plan
-has DoD lines**: one command-run check per DoD line, with the real output pasted in.
-Plus one fixed item: run the exact `Test:` command of every task in the plan.
+Depth comes from `muc_qc` (default `full`; read it with `tdq_state.py get muc_qc`). Run it right
+after implement finishes, **with as many items as the mini-plan has DoD lines**: one command-run
+check per DoD line, with the real output pasted in. At `full` and above, add one fixed item: run
+the exact `Test:` command of every task in the plan. At `lite` the DoD lines alone are the QC; at
+`ultra` add the smoke and runtime items, each under the 120-second cap. The level table is owned
+by [qc.md](../../tdq-build/references/qc.md) — do not restate it here, it would drift.
 
 Add no item beyond the DoD. Edges, error paths, logging and placeholders are checked only
 when a DoD line calls for them. Express differs from the deep pipeline here: no
@@ -194,9 +208,9 @@ Evidence is appended to the plan file ITSELF, with no `qc/` file created:
 - Q3 DoD "<nguyên văn dòng DoD 2>": PASS — `<lệnh>` → `<output thật>`
 ```
 
-Opt-out ONLY when the user says so — a sentence such as "duyệt nhanh không QC" → run approve <!-- i18n-allow: canonical name in the default language -->
-with `--no-qc`. Silence about QC means QC HAPPENS. Section `## QC` must still exist, with
-exactly 1 line: <!-- i18n-allow: sample sentence in the default language -->
+Opt-out ONLY when the user says so — a sentence such as "duyệt nhanh không QC" → record it <!-- i18n-allow: canonical name in the default language -->
+with `set muc_qc=off`. Silence about QC means QC HAPPENS at `full`. Section `## QC` must still
+exist, with exactly 1 line: <!-- i18n-allow: sample sentence in the default language -->
 
 <!-- i18n-allow: opt-out template written in the default language -->
 ```markdown

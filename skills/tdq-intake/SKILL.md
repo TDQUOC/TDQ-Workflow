@@ -109,8 +109,11 @@ numbers, per [references/scope-round.md](references/scope-round.md)), and only t
 detail questions inside the areas the user picked. The scope round is conditional; skip it
 and one line of reasoning goes into the brief.
 
-Done when: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`) and all 3 gate <!-- i18n-allow: canonical name in the default language -->
-questions can be answered.
+The LAST step of this phase is step 5c: ask the QC level and write it into `muc_qc`. It sits
+here and not later because spec §6 is written from it.
+
+Done when: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`), `muc_qc` is settled, <!-- i18n-allow: canonical name in the default language -->
+and all 3 gate questions can be answered.
 The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving the <!-- i18n-allow: canonical name in the default language -->
 spec approves the route. Name the feature flows the request is built from, one line per flow.
 

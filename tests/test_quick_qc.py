@@ -47,9 +47,12 @@ class QuickQcDocTest(unittest.TestCase):
 
     def test_quick_lane_ties_qc_items_to_dod(self):
         # Luật mới: số hạng mục QC bằng số dòng DoD, không phải danh sách cố định.
+        # 2026-09-23: so khớp sau khi gộp khoảng trắng — luật nằm ở NỘI DUNG câu, còn chỗ ngắt
+        # dòng đổi mỗi lần ai đó sửa câu bên cạnh, và một test đỏ vì xuống dòng là test nhiễu.
         text = read(N1)
-        self.assertTrue(any(m in text for m in
-                            ("as many items as the mini-plan\nhas DoD lines",
+        goi = " ".join(text.split())
+        self.assertTrue(any(m in goi for m in
+                            ("as many items as the mini-plan has DoD lines",
                              "số hạng mục bằng số dòng DoD")))
         self.assertNotIn("3 hạng mục", text)
 
@@ -90,18 +93,25 @@ class QuickQcPhaseTableTest(unittest.TestCase):
         items = [c for c in tdq_state.PHASE_TABLE["quick"]["checklist"] if "QC" in c]
         self.assertGreaterEqual(len(items), 2, tdq_state.PHASE_TABLE["quick"]["checklist"])
 
-    def test_quick_cmd_offers_no_qc_flag(self):
-        self.assertIn("[--no-qc]", tdq_state.PHASE_TABLE["quick"]["cmd"])
+    def test_quick_cmd_khong_con_co_no_qc(self):
+        """2026-09-23: cờ bỏ QC được thay bằng thang mức `muc_qc`, một cơ chế duy nhất."""
+        self.assertNotIn("--no-qc", tdq_state.PHASE_TABLE["quick"]["cmd"])
 
-    def test_default_state_has_skip_field_without_duplicate(self):
+    def test_quick_checklist_nhac_muc_qc(self):
+        joined = " ".join(tdq_state.PHASE_TABLE["quick"]["checklist"])
+        self.assertIn("muc_qc", joined, "lane quick phải biết hỏi mức QC")
+        self.assertNotIn("--no-qc", joined)
+
+    def test_default_state_khong_con_khoa_bo_qc(self):
         state = tdq_state.default_state()
-        self.assertIs(state["quick_qc_skipped"], False)
-        # quick_approved_by đã giữ nguyên văn cùng câu duyệt — field _by riêng là trùng.
-        self.assertNotIn("quick_qc_skipped_by", state)
+        self.assertNotIn("quick_qc_skipped", state,
+                         "khoá cũ phải biến mất cùng cờ, không để lại field chết")
+        self.assertEqual(state["muc_qc"], "full")
 
 
 class QuickQcApproveCliTest(unittest.TestCase):
-    """N3: cờ --no-qc là đường opt-out DUY NHẤT, và phải để lại dấu vết."""
+    """2026-09-23: cờ --no-qc đã gỡ. Lệnh cũ phải chết CÓ CHỈ ĐƯỜNG — im lặng chấp nhận là tệ
+    nhất (user tưởng đã bỏ QC), mà báo lỗi cụt cũng tệ (user không biết đi đường nào)."""
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -109,35 +119,32 @@ class QuickQcApproveCliTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         run_state_cli(self.cwd, "init", "2026-08-07-0900-demo", "quick")
 
-    def test_approve_quick_no_qc_records_skip(self):
-        said = "duyệt quick không QC"
-        rc, _, _ = run_state_cli(self.cwd, "approve", "quick", "--no-qc", "--by", said)
-        self.assertEqual(rc, 0)
-        state = tdq_state.load(self.cwd)
-        self.assertIs(state["quick_qc_skipped"], True)
-        self.assertEqual(state["quick_approved_by"], said)
-
-    def test_approve_quick_no_qc_logs_timestamped_line(self):
+    def test_approve_quick_co_cu_chet_co_chi_duong(self):
         rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--no-qc",
                                    "--by", "duyệt quick không QC")
-        self.assertEqual(rc, 0)
-        # timestamp chỉ ra từ _info/_warn → stderr; dòng ✅ stdout không có timestamp.
-        self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T")
-
-    def test_approve_quick_no_qc_requires_by(self):
-        """Quyết định 9: bỏ QC vẫn phải để lại nguyên văn câu user."""
-        rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--no-qc")
-        self.assertNotEqual(rc, 0)
-        self.assertIn("--by", err)
-        self.assertIs(tdq_state.load(self.cwd)["quick_qc_skipped"], False)
-
-    def test_approve_spec_rejects_no_qc(self):
-        """Phải từ chối bằng thông báo NÊU TÊN cờ, không phải bằng USAGE chung."""
-        rc, _, err = run_state_cli(self.cwd, "approve", "spec", "--no-qc", "--by", "x")
         self.assertNotEqual(rc, 0)
         first = err.splitlines()[0] if err else ""
-        self.assertIn("--no-qc", first)
-        self.assertIn("quick", first)
+        self.assertIn("--no-qc", first, "thông báo phải nêu tên cờ user vừa gõ")
+        self.assertIn("muc_qc=off", first, "và phải chỉ đúng đường thay thế")
+
+    def test_approve_quick_co_cu_khong_ghi_gi_vao_state(self):
+        run_state_cli(self.cwd, "approve", "quick", "--no-qc", "--by", "x")
+        state = tdq_state.load(self.cwd)
+        self.assertIs(state["quick_approved"], False, "lệnh chết không được ghi nửa vời")
+        self.assertNotIn("quick_qc_skipped", state)
+
+    def test_approve_quick_binh_thuong_van_chay(self):
+        said = "duyệt nhanh"
+        rc, _, err = run_state_cli(self.cwd, "approve", "quick", "--by", said)
+        self.assertEqual(rc, 0, err)
+        state = tdq_state.load(self.cwd)
+        self.assertIs(state["quick_approved"], True)
+        self.assertEqual(state["quick_approved_by"], said)
+
+    def test_approve_spec_cung_tu_choi_co_cu(self):
+        rc, _, err = run_state_cli(self.cwd, "approve", "spec", "--no-qc", "--by", "x")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("--no-qc", err.splitlines()[0] if err else "")
 
 
 class QuickQcPhasesDocTest(unittest.TestCase):
@@ -150,8 +157,12 @@ class QuickQcPhasesDocTest(unittest.TestCase):
 class QuickQcApprovalHintTest(unittest.TestCase):
     """Hook phải mách user đúng biến thể, và không lọc nó thành câu hỏi."""
 
-    def test_hook_hint_offers_no_qc_variant(self):
-        self.assertIn("no QC", _common.APPROVE_HINTS["quick"])
+    def test_hook_hint_khong_moi_bo_qc(self):
+        """Quyết định 2026-09-23: `off` tồn tại nhưng KHÔNG bao giờ được bày ra. Lời mời bỏ QC
+        nằm ngay trong dòng nhắc là bày ra ở chỗ dễ thấy nhất."""
+        hint = _common.APPROVE_HINTS["quick"]
+        self.assertNotIn("skip QC", hint)
+        self.assertNotIn("no QC", hint)
 
     def test_hook_reads_no_qc_sentence_as_approval(self):
         self.assertTrue(
