@@ -95,7 +95,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "deep mode] [--lang <code>] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent|codex] "
-         "[--no-qc (quick only, requires --by)] [--by \"<user sentence>\"] | "
+         "[--by \"<user sentence>\"] | "
          "pause --ly-do \"<why>\" | resume | "
          "reset | phases-doc | modes [--json]")
 
@@ -180,9 +180,35 @@ def muc_gat_hieu_luc(state):
     return normalize_muc_gat((state or {}).get("muc_gat"))
 
 
+# Mức QC của request (2026-09-23). Dùng CHUNG bộ từ với `muc_gat` để user chỉ phải nhớ một
+# thang, nhưng là khoá rời: `muc_gat` lọc luật tinh gọn lúc implement, `muc_qc` quyết phase `qc`
+# chạy bao nhiêu phép kiểm. Bảng mức → loại kiểm nằm ở skills/tdq-build/references/qc.md.
+VALID_MUC_QC = ("lite", "full", "ultra", "off")
+MUC_QC_MAC_DINH = "full"
+
+
+def normalize_muc_qc(raw):
+    """Mức QC chuẩn hoá. Mọi thứ không hợp lệ đều ra `full`.
+
+    Fail-closed như `muc_gat`, và ở đây lý do còn gắt hơn: một giá trị rác im lặng hạ mức QC
+    xuống thấp nhất nghĩa là request tuyên bố "xong" mà chưa chạy trọn suite. Rơi về mức an
+    toàn thì tệ nhất cũng chỉ là chạy thừa. `off` tồn tại nhưng chỉ đến từ tay user
+    (`set muc_qc=off`) — luồng hỏi không bao giờ bày nó ra.
+    """
+    if not isinstance(raw, str):
+        return MUC_QC_MAC_DINH
+    muc = raw.strip().lower()
+    return muc if muc in VALID_MUC_QC else MUC_QC_MAC_DINH
+
+
+def muc_qc_hieu_luc(state):
+    """Mức QC đọc từ state (state None hay khoá thiếu → `full`)."""
+    return normalize_muc_qc((state or {}).get("muc_qc"))
+
+
 def default_state():
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "active_request": None,
         # slug of the request replaced at the last init (trace/log only)
         "previous_request": None,
@@ -207,10 +233,6 @@ def default_state():
         "quick_approved": False,
         "quick_approved_at": None,
         "quick_approved_by": None,
-        # Lane quick: QC follows the DoD and is ON by default; True = the user
-        # opted out deliberately via `approve quick --no-qc`. Who opted out comes
-        # from quick_approved_by (the same approval sentence).
-        "quick_qc_skipped": False,
         "implement_mode": None,
         # Phase `implement` may only end early through a DECLARED pause: the
         # Stop gate refuses to close a turn while the plan still has open tasks,
@@ -225,6 +247,10 @@ def default_state():
         # Mức gắt của luật tinh gọn (2026-09-17): lite|full|ultra|off. Ba kênh nạp luật đọc
         # khoá này qua muc_gat_hieu_luc() rồi lọc bằng hooks/scripts/luat_gon.py.
         "muc_gat": MUC_GAT_MAC_DINH,
+        # Mức QC của request (2026-09-23): lite|full|ultra|off. Phase `qc` đọc khoá này qua
+        # muc_qc_hieu_luc() để biết chạy bao nhiêu phép kiểm; user được hỏi ở cuối phase
+        # `analyze` (lane full) hoặc tại cổng `approve quick` (lane express).
+        "muc_qc": MUC_QC_MAC_DINH,
         # request opening mark (schema 4) — the origin of every wall-clock count
         "started_at": None,
         # Git branch life-cycle of the request (schema 5). `loai_request` is one of
@@ -1171,10 +1197,8 @@ PHASE_TABLE = {
     },
     "quick": {
         "entry": "lane = quick",
-        "action": "Analyse → a mini spec/plan merged into one file → wait for approval → write the working log FIRST → implement → QC against the DoD (ON by default) → a fix round if it FAILs",
-        # A26: matches intake — quick has a no-QC variant ("approve quick without QC"
-        # → --no-qc, which requires --by).
-        "cmd": "python3 scripts/tdq_state.py approve quick [--no-qc] --by \"<the user's sentence verbatim>\"",
+        "action": "Analyse → a mini spec/plan merged into one file → ask the QC level → wait for approval → write the working log FIRST → implement → QC at that level → a fix round if it FAILs",
+        "cmd": "python3 scripts/tdq_state.py approve quick --by \"<the user's sentence verbatim>\"",
         "checklist": [
             "Analyse: read the related code; an unknown outside the repo (a library, an API, a "
             "version) → web search through tavily-primary before writing anything",
@@ -1184,16 +1208,16 @@ PHASE_TABLE = {
             "Write the mini spec/plan MERGED into docs/tdq/plan/<slug>.md (<=40 lines: scope in/out, "
             "tasks with tests, DoD) then present a summary of at most 10 lines in chat, "
             "with one line naming the capabilities that will be used",
-            "Print the approval invite line (including the no-QC variant), then STOP",
-            "The user approves → run the approve command above (--no-qc ONLY when the user says "
-            "so explicitly; silence about QC means QC RUNS)",
+            "Ask the QC level in the SAME block as the approval invite (lite|full|ultra, "
+            "default full), record it with `set muc_qc=<level>`, then STOP",
+            "The user approves → run the approve command above",
             "Append the plan summary to docs/workinglog/<today>.md BEFORE editing any code",
             "Implement task by task: mark [~] on the task BEFORE editing code "
             "(the edit_gate hook BLOCKS when the plan has no [~]), red→green, "
             "flip to [x] AS SOON AS that task's test is green — never batch the ticks",
-            "QC: one command per DoD line, plus an item running each task's test. "
-            "The evidence goes into the QC section of the plan. "
-            "When quick_qc_skipped = true the QC section holds a single line "
+            "QC at the level in `muc_qc`: one command per DoD line, plus an item running each "
+            "task's test. The evidence goes into the QC section of the plan. "
+            "At muc_qc=off that section holds a single line "
             "'SKIPPED at the user's request: \"<verbatim>\"'",
             "QC FAIL or a bug spotted → fix it. "
             "Add tasks to the plan's 'QC round N — fixes' section, fix red→green. "
@@ -1468,6 +1492,7 @@ def render_next(cwd, state, brief=False, compact=False):
         return head
     row = phase_row(state)
     lines = [head, f"Lean level: {muc_gat_hieu_luc(state)}",
+             f"QC level: {muc_qc_hieu_luc(state)}",
              f"Next: {row['action']}", "Command:", f"  {row['cmd']}"]
     if compact:
         lines.append("Full checklist: python3 scripts/tdq_state.py next")
@@ -1504,6 +1529,7 @@ def render_state_md(cwd, state):
         f"| Quick approval | {quick if lane == 'quick' else '(not applicable)'} |",
         f"| Doc language | {state.get('doc_lang') or DEFAULT_DOC_LANG} |",
         f"| Lean level | {muc_gat_hieu_luc(state)} |",
+        f"| QC level | {muc_qc_hieu_luc(state)} |",
         f"| Run mode | {effective_mode(state, warn=False) or '(not settled)'} |",
         "",
         "## Where we are",
@@ -1657,12 +1683,12 @@ def _unfinished(state):
 
 
 def _parse_approve_args(rest):
-    """-> (target, mode, by, no_qc). Fails only on genuinely wrong syntax."""
+    """-> (target, mode, by). Fails only on genuinely wrong syntax."""
     if not rest:
         _fail("Missing approval target (spec|plan|quick).")
     if rest[0] == "diagram":
         _fail(LOI_SO_DO_DA_GO)
-    target, mode, by, no_qc = rest[0], None, None, False
+    target, mode, by = rest[0], None, None
     # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
     if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
         target = "quick"
@@ -1673,12 +1699,12 @@ def _parse_approve_args(rest):
     while i < len(rest):
         flag = rest[i]
         if flag == "--no-qc":
-            # QC on quick is ON by default — only lane quick has this opt-out path.
-            if target != "quick":
-                _fail(f"Flag --no-qc belongs to `approve quick` only, not to {target}.")
-            no_qc = True
-            i += 1
-            continue
+            # Removed on 2026-09-23 — the QC scale replaced it. Dying with a pointer beats both
+            # accepting it silently (the user believes QC is off while it runs) and a bare usage
+            # dump (the user cannot tell what replaced it).
+            _fail("Flag --no-qc was removed on 2026-09-23 — the QC level is a state key now: "
+                  "run `python3 scripts/tdq_state.py set muc_qc=off` instead "
+                  "(levels: lite|full|ultra|off).")
         if flag in ("--mode", "--by"):
             if i + 1 >= len(rest):
                 _fail(f"Missing value for {flag}")
@@ -1700,10 +1726,7 @@ def _parse_approve_args(rest):
             i += 1
             continue
         _fail(f"Invalid argument: {flag}")
-    if no_qc and not by:
-        # Skipping QC must leave the user's own words, otherwise who skipped it and why is lost.
-        _fail('Skipping QC requires --by "<the user\'s exact words>" so a trace remains.')
-    return target, mode, by, no_qc
+    return target, mode, by
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -1726,7 +1749,7 @@ def _file_changed_since_approval(cwd, state, target):
 def _cli_approve(cwd, rest):
     """Record that the user approved. Not a gate: it warns on a mismatch but
     STILL writes and always exits 0 — deadlock-by-gate is what 0.2.0 removed."""
-    target, mode, by, no_qc = _parse_approve_args(rest)
+    target, mode, by = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("No state yet — building the default state then recording the approval. Run init first.")
@@ -1776,18 +1799,12 @@ def _cli_approve(cwd, rest):
         # A6: quick never walks the phase table — push implement so that `set phase=idle`
         # at closing time becomes a terminal distinguishable from the idle before approval.
         state["phase"] = "implement"
-        state["quick_qc_skipped"] = no_qc
     if target == "plan":
         # The mode gate is split from the plan gate: approving the plan without settling the
         # mode stops at phase `mode` (explain + ask). A user who named the mode inside the
         # approval sentence skips that gate and goes straight to implement — never re-ask.
         state["phase"] = "implement" if state.get("implement_mode") else "mode"
     save(cwd, state, expect_updated_at=stamp)
-    if no_qc:
-        # The timestamped line comes out of _info (stderr, silenced by TDQ_LOG=0);
-        # the ✅ stdout line below carries no timestamp, so it cannot serve as this log trace.
-        _info(f'Recorded that the user SKIPPED QC for quick on request: "{by}". '
-              "Skipping QC is not skipping fixes: a red test or a known bug still has to be fixed.")
     if not by:
         _warn("Missing --by \"<the user's exact words>\" — record it so who approved what stays checkable.")
     extra = f", mode {mode}" if mode else ""
@@ -2042,6 +2059,16 @@ def cli(argv):
             if key == "muc_gat":
                 # Chuẩn hoá thay vì fail: giá trị lạ về `full`, đúng luật fail-closed.
                 value = normalize_muc_gat(value)
+            if key == "muc_qc":
+                value = normalize_muc_qc(value)
+                # Logged only when the level actually MOVES, and only for this key: how deep QC
+                # ran is the one setting a later reader needs an audit trail for, while a line on
+                # every `set` would be noise nobody reads. Normalising a typo shows up here too,
+                # which is how the user learns their `set muc_qc=lte` landed on `full`.
+                cu = muc_qc_hieu_luc(state)
+                if value != cu:
+                    _info(f"muc_qc: {cu} → {value} (QC depth for this request; "
+                          "the level table lives in skills/tdq-build/references/qc.md)")
             if key == "diagrams":
                 _fail(LOI_SO_DO_DA_GO)
             if key == "phase" and value not in VALID_PHASES:

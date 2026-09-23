@@ -64,3 +64,9 @@ khai ở dòng `Chạm:` của plan:
   cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng. Đường dẫn adapter do host quy định — `.codex-plugin/`, `.agents/plugins/`,
   `.opencode/plugins/` — nên đây là ngoại lệ của luật "code mới chỉ nằm trong `scripts/` hoặc
   `hooks/`". Adapter OpenCode là JavaScript thuần, không package npm, bọc try/catch mọi bước.
+- 2026-09-23: mức QC là quyết định của USER, không phải suy luận của agent. Khoá `muc_qc`
+  (`lite|full|ultra|off`, mặc định `full`, fail-closed) được hỏi ở cuối phase `analyze` — trước
+  khi viết spec §6 — và tại cổng duyệt của lane express. Bảng "mức nào chạy loại kiểm nào" có
+  đúng một bản, ở `skills/tdq-build/references/qc.md`. Mức `off` tồn tại nhưng KHÔNG bao giờ
+  được bày ra trong danh sách lựa chọn. Cờ `--no-qc` của `approve quick` bị gỡ cùng ngày: một
+  cơ chế duy nhất cho cả hai lane.

@@ -4,12 +4,50 @@ QC means running things for real and pasting the evidence. There is no "probably
 
 ## Table of contents
 
+- The QC level — what each level runs
 - The three execution steps
 - What to run
+- The 120-second cap on smoke and runtime checks
 - Recording the result
 - Evidence
 - Verdict
 - When it FAILs
+
+## The QC level — what each level runs
+
+The level is a state key, settled by the USER at step 5c of intake (deep) or at the approval
+gate (express). Read it, never assume it:
+
+```
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" get muc_qc
+```
+
+Five columns, one row per level. Every cell is CÓ or KHÔNG — a cell reading "as needed" is a <!-- i18n-allow: canonical cell values in the default language -->
+cell each turn reads differently, which is what the key exists to end:
+
+| Mức | DoD | unit test | smoke test | runtime test | QC độc lập (`tdq-qc-tester`) |
+|---|---|---|---|---|---|
+| `lite` | CÓ | CÓ (vùng chạm) | KHÔNG | KHÔNG | KHÔNG |
+| `full` | CÓ | CÓ (trọn suite) | KHÔNG | KHÔNG | KHÔNG |
+| `ultra` | CÓ | CÓ (trọn suite) | CÓ | CÓ | CÓ |
+
+What the four kinds mean here, so nobody has to guess:
+
+| Loại kiểm | Nghĩa | Chi phí điển hình |
+|---|---|---|
+| DoD | one command per Definition-of-Done line, real output pasted | seconds |
+| unit test | the repo's own suite — `vùng chạm` = only the modules on the plan's `Chạm:` lines | minutes |
+| smoke test | the main path end to end through the real CLI, in a temp dir | seconds |
+| runtime test | a real long-lived process: a hook inside a live session, a server, a background agent | the one that HANGS |
+
+`muc_qc=off` runs nothing and is never offered in a question; the qc file then holds exactly one
+line quoting the user's own words. The level only sizes QC — it never excuses a red test, a
+known bug, or a missing fix.
+
+**The default is `full`, and every unreadable value lands there too** (`normalize_muc_qc`), so a
+typo can never quietly buy a cheaper QC. `full` deliberately holds no runtime test: measured on
+this repo, runtime checks are the ones that hang, and a QC round that hangs gets abandoned —
+which costs more coverage than it buys.
 
 ## The three execution steps
 
@@ -21,8 +59,10 @@ before running the first item; working from memory is banned.
 4. **The number of QC items = the number of Definition of Done lines**, plus the four fixed
    items QC-F1→F4. One command-run check per DoD line; beyond the fixed items, add nothing
    that is not in the DoD.
-   Details: section `## What to run` in this file. Large or high-risk work → also call the
-   `tdq-qc-tester` agent for an independent pass.
+   Details: section `## What to run` in this file. Which of those items actually run comes from
+   `muc_qc` — the table in `## The QC level` above. The `tdq-qc-tester` agent runs at `ultra`
+   and only there; it used to hang on "large or high-risk work", a threshold nobody could
+   measure, so in practice it never ran.
 
 5. Write `docs/tdq/qc/<slug>.md`: each DoD item → PASS/FAIL with **evidence** (the command plus
    its real output). Assert nothing you have not run. (File template in section
@@ -61,6 +101,7 @@ the DoD:
 
 Beyond the items above, add no item that is not in the DoD.
 
+
 The things below are **checked only when the DoD reaches them**; do not run them for
 completeness:
 
@@ -78,6 +119,27 @@ completeness:
   Trạng thái) has NOT shifted <!-- i18n-allow: canonical header field names --> the sha since 2026-08-19. And §6 no longer holds check commands
   whose names could go stale. Both sources of "re-approval for a harmless reason" are cut at the
   root.
+
+## The 120-second cap on smoke and runtime checks
+
+Every smoke or runtime check at `ultra` runs under a **120-second cap per check**. Set it on the
+command itself (`timeout=120` in `subprocess.run`, or `timeout 120 <command>` in a shell), never
+by watching the clock yourself.
+
+Hitting the cap:
+
+1. Kill the process. A check left running is a turn that never ends — this is the failure mode
+   the cap exists for, measured on this repo before the cap existed.
+2. Write it up as **FAIL**, with the command, the 120-second cap, and the tail of the output.
+   A timeout is never a silent skip and never a PASS.
+3. Then work out WHY it hung, and say which of the two it was: a real defect (a deadlock, a
+   process waiting on input nobody sends, an infinite loop) or a check that genuinely needs
+   longer than two minutes.
+
+**Never raise the cap on your own.** Only when step 3 shows the second case may you propose
+raising it. Then ask the user: one line naming the check, its measured duration, and the cap
+you propose. Raising it because the check is red is turning a red light green by
+unscrewing the bulb. A defect stays a defect: fix the hang, do not widen the window.
 
 ## Recording the result
 

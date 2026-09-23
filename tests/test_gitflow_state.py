@@ -18,17 +18,21 @@ sys.path.insert(0, os.path.join(GOC, "scripts"))
 import tdq_state  # noqa: E402
 
 KHOA_MOI = ("loai_request", "nhanh_goc", "nhanh_request")
-SCHEMA = 5
+# 2026-09-23: đọc số schema từ chính sản phẩm thay vì ghim 5. Lời hứa cần khoá ở đây là "nạp
+# file cũ không mất khoá nào và số schema được nâng lên bản hiện hành" — ghim con số thì mỗi
+# lần thêm khoá lại đỏ một ca không liên quan tới nội dung nó kiểm.
+SCHEMA = tdq_state.default_state()["schema_version"]
 
 
 class BaKhoaMoiTest(unittest.TestCase):
-    def test_ba_khoa_moi_va_schema_5(self):
+    def test_ba_khoa_moi_va_schema_hien_hanh(self):
         mac_dinh = tdq_state.default_state()
         for khoa in KHOA_MOI:
             with self.subTest(khoa=khoa):
                 self.assertIn(khoa, mac_dinh, f"default_state() thiếu khoá {khoa}")
                 self.assertIsNone(mac_dinh[khoa], f"{khoa} phải mặc định là None")
-        self.assertEqual(mac_dinh["schema_version"], SCHEMA)
+        self.assertGreaterEqual(mac_dinh["schema_version"], 5,
+                                "ba khoá nhánh git có từ schema 5, không được tụt xuống dưới")
 
 
 class DocSchema4Test(unittest.TestCase):
@@ -57,7 +61,8 @@ class DocSchema4Test(unittest.TestCase):
                 continue
             with self.subTest(khoa=khoa):
                 self.assertEqual(nap[khoa], gia_tri, f"nạp state schema 4 làm mất {khoa}")
-        self.assertEqual(nap["schema_version"], SCHEMA, "schema_version phải được nâng lên 5")
+        self.assertEqual(nap["schema_version"], SCHEMA,
+                         "schema_version phải được nâng lên bản hiện hành")
         for khoa in KHOA_MOI:
             with self.subTest(khoa=khoa):
                 self.assertIsNone(nap[khoa], f"{khoa} phải nhận mặc định khi file cũ không có")

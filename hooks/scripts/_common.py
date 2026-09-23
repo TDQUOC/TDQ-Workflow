@@ -45,8 +45,9 @@ APPROVE_HINTS = {
     "mode": 'the plan proposes {mode} — say "inline" (I do it step by step right here) '
             'or "sub-agent" (several assistants in parallel), or type "A"/"B"; '
             'the old names main/subagent still work',
-    # The skip-QC variant has to show up in the hint, or the user never learns the opt-out.
-    "quick": 'say "approve quick" or type "A" (skip QC: "approve quick no QC")',
+    # No skip-QC variant here on purpose (2026-09-23): `muc_qc=off` exists but is never
+    # OFFERED — putting the opt-out in the most-read line is offering it.
+    "quick": 'say "approve quick" or type "A"',
 }
 
 # Built from VALID_MODES, never typed by hand: a binary pair hardcoded here means a plan

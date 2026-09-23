@@ -38,7 +38,11 @@ SKILL_LINE_LIMITS = {
     # into the lane question are runtime-tier rules — they run on EVERY request, so they sit
     # in the body. The long form (commands, the five types, the naming rule) already lives in
     # references/nhanh-request.md; what stays here is the short form that must be read anyway.
-    "tdq-intake": 135,
+    # 2026-09-23: 135 → 140. Bước 5c (hỏi mức QC) chạy trên MỌI request và phải nằm ở thân
+    # skill, vì nó là thứ quyết định phase `qc` chạy bao nhiêu. Phần dài (ba lựa chọn, luật
+    # không bày `off`, lệnh ghi state) nằm ở references/analyze-full.md; ở đây chỉ còn dòng
+    # ngắn nhất. Trần là ràng buộc tầng 3 của soul.md — chạm trần thì nâng trần, không nén luật.
+    "tdq-intake": 140,
     "tdq-spec": 100,
     # 2026-08-18: 100 → 110. The mode proposal moved from eyeballing the task count to
     # running `tdq_bench.py simulate` — the command block plus the reason for factor 1.5
