@@ -36,7 +36,15 @@ import re
 import subprocess
 import sys
 
-MAU_PATCH = re.compile(r"^\*\*\* (?:Update|Add|Delete) File: (.+)$", re.MULTILINE)
+# The two lines `scripts/utf8_io.py` exists for, inlined because this hook may not import from
+# `scripts/`. Without them Windows prints `VÙNG` in cp1252, and a UTF-8 reader chokes on 0xd9.
+for _luong in (sys.stdout, sys.stderr):
+    try:
+        _luong.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
+MAU_PATCH =re.compile(r"^\*\*\* (?:Update|Add|Delete) File: (.+)$", re.MULTILINE)
 
 # The mode's marker variable plus the two zone variables. No name carries KEY/TOKEN/SECRET,
 # because Codex strips variables that look like secrets before handing them to a shell command

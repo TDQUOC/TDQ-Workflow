@@ -1,11 +1,10 @@
-"""Bộ sinh hai bản portable từ một nguồn duy nhất.
+"""Test cho scripts/build_portable.py.
 
-Khoá hành vi của request 2026-08-17-0938-portable-codex:
-  - CLI có đủ cờ và log service tắt được bằng TDQ_LOG=0;
-  - manifest đủ 5 khối và sha256 khớp file thật;
-  - rewrite `${CLAUDE_PLUGIN_ROOT}` → `${CLAUDE_PROJECT_DIR}` ĐẾM ĐÚNG số lần thay
-    (grep bằng 0 chưa đủ: thay sót ở file không được copy vẫn cho grep sạch);
-  - bản sinh không mang theo state/rác của repo nguồn.
+2026-09-21: bản này bỏ chín lớp test cùng lúc với hai hàm chúng kiểm — `sinh_ban_claude` và
+`sinh_ban_codex`. Hai bundle đó không còn tồn tại: Claude Code đọc repo qua
+`.claude-plugin/marketplace.json`, Codex đọc qua `.agents/plugins/marketplace.json`, cả hai trỏ
+thẳng vào `skills/` dùng chung thay vì một bản sao được dựng ra. Phần còn lại của file này vẫn
+áp dụng: đổi biến plugin, copy lọc, manifest, và bản agy — thứ duy nhất còn sinh ra file thật.
 """
 import hashlib
 import json
@@ -27,7 +26,7 @@ def chay(*args, env=None):
     """Gọi build_portable.py như tiến trình con — kiểm cả CLI lẫn log ra stderr."""
     proc = subprocess.run(
         [sys.executable, SCRIPT, *args],
-        capture_output=True, text=True, timeout=120,
+        capture_output=True, encoding="utf-8", text=True, timeout=120,
         env=dict(os.environ, **(env or {})),
     )
     return proc.returncode, proc.stdout, proc.stderr
@@ -46,8 +45,26 @@ class TestCLI(TempDest):
     def test_help_co_du_ba_co(self):
         ma, out, _ = chay("--help")
         self.assertEqual(ma, 0)
-        for co in ("--dest", "--only"):
+        for co in ("--dest", "--sinh-agy", "--sinh-hook-claude"):
             self.assertIn(co, out)
+        # 2026-09-21: `--only` từng được nhận rồi lờ đi — cờ không làm gì còn tệ hơn không có cờ.
+        self.assertNotIn("--only", out)
+        self.assertNotIn("two portable bundles", out)
+
+    def test_khong_co_hanh_dong_thi_thoat_2_va_khong_ghi_gi(self):
+        """Không cờ nào từng mặc định dựng `antigravity_portable/` NGAY TRONG repo — tức mọc lại
+        đúng bundle vừa xoá. Giờ phải chọn hành động rõ ràng."""
+        truoc = sorted(os.listdir(ROOT))
+        ma, _, err = chay()
+        self.assertEqual(ma, 2)
+        self.assertIn("--sinh-agy", err)
+        self.assertEqual(sorted(os.listdir(ROOT)), truoc)
+
+    def test_dest_la_chinh_repo_bi_tu_choi(self):
+        ma, _, err = chay("--dest", ROOT)
+        self.assertEqual(ma, 2)
+        self.assertFalse(os.path.exists(os.path.join(ROOT, "antigravity_portable")))
+        self.assertIn("repo", err)
 
     def test_log_tat_duoc_bang_bien_moi_truong(self):
         _, _, bat = chay("--dest", self.dest)
@@ -95,174 +112,6 @@ class TestDoiBien(unittest.TestCase):
         moi, so_lan = build_portable.doi_bien_plugin_root("khong co gi")
         self.assertEqual(so_lan, 0)
         self.assertEqual(moi, "khong co gi")
-
-
-class TestBanClaude(TempDest):
-    """Bản claude: cấu trúc phải giữ `hooks/` cạnh `scripts/`.
-
-    `hooks/scripts/_common.py` suy thư mục scripts bằng `../../scripts`, nên hai cây này
-    bắt buộc nằm cạnh nhau trong cùng một gốc. Gốc đó là `.claude/tdq/` — không thể đổ
-    thẳng vào `.claude/` vì Claude Code chỉ nạp skill ở đúng `.claude/skills/`.
-    """
-
-    def setUp(self):
-        super().setUp()
-        build_portable.sinh_ban_claude(ROOT, self.dest)
-        self.goc = os.path.join(self.dest, "portable_claude")
-
-    def test_ban_claude_du_thu_muc(self):
-        for duong in (".claude/settings.json", ".claude/skills", ".claude/agents",
-                      ".claude/tdq/scripts", ".claude/tdq/hooks/scripts",
-                      ".mcp.json", "manifest.json", "README.md"):
-            self.assertTrue(os.path.exists(os.path.join(self.goc, duong)),
-                            f"bản claude thiếu {duong}")
-
-    def test_hooks_va_scripts_canh_nhau(self):
-        chung_goc = os.path.join(self.goc, ".claude", "tdq")
-        self.assertTrue(os.path.isfile(os.path.join(chung_goc, "hooks/scripts/_common.py")))
-        self.assertTrue(os.path.isfile(os.path.join(chung_goc, "scripts/tdq_state.py")))
-
-    def test_settings_co_du_6_hook_va_bien_dung(self):
-        """2026-09-17: 5 hook / 4 sự kiện → 6 hook / 5 sự kiện.
-
-        Kênh `SubagentStart` (T3.3) bơm thân luật gọn vào đầu hội thoại trợ lý. Bản portable
-        phải chở đúng số hook của `hooks/hooks.json`, nên con số ở đây đi theo mã chứ không
-        phải mã đi theo con số.
-        """
-        with open(os.path.join(self.goc, ".claude", "settings.json"), encoding="utf-8") as f:
-            cai_dat = json.load(f)
-        hooks = cai_dat["hooks"]
-        self.assertEqual(
-            sorted(hooks),
-            ["PreToolUse", "SessionStart", "Stop", "SubagentStart", "UserPromptSubmit"])
-        lenh = [h["command"] for muc in hooks.values() for nhom in muc for h in nhom["hooks"]]
-        self.assertEqual(len(lenh), 6, "phải đủ 6 hook command")
-        for mot_lenh in lenh:
-            self.assertIn("${CLAUDE_PROJECT_DIR}/.claude/tdq/hooks/scripts/", mot_lenh)
-            self.assertNotIn("CLAUDE_PLUGIN_ROOT", mot_lenh)
-        self.assertIn("env", cai_dat, "phải giữ khối env của repo nguồn")
-
-    def test_mcp_json_khong_co_secret(self):
-        with open(os.path.join(self.goc, ".mcp.json"), encoding="utf-8") as f:
-            tho = f.read()
-        cau_hinh = json.loads(tho)
-        self.assertIn("mcpServers", cau_hinh)
-        for xau_khoa in ("sk-", "tvly-", "api_key", "apiKey", "token"):
-            self.assertNotIn(xau_khoa, tho, f"`.mcp.json` không được chứa {xau_khoa}")
-
-    def test_ban_claude_khong_con_plugin_root(self):
-        sot = []
-        for thu_muc, thu_muc_con, files in os.walk(self.goc):
-            thu_muc_con[:] = [d for d in thu_muc_con if d != "__pycache__"]
-            for ten in files:
-                noi = build_portable._doc_text(os.path.join(thu_muc, ten))
-                if noi and "CLAUDE_PLUGIN_ROOT" in noi:
-                    sot.append(os.path.relpath(os.path.join(thu_muc, ten), self.goc))
-        self.assertEqual(sot, [], f"còn sót biến plugin ở: {sot}")
-
-    def test_lenh_goi_script_tro_dung_goc_tdq(self):
-        """Rewrite phải kèm prefix `.claude/tdq`, nếu không lệnh gọi script trỏ sai chỗ."""
-        duong = os.path.join(self.goc, ".claude", "skills", "tdq-status", "SKILL.md")
-        noi_dung = build_portable._doc_text(duong)
-        self.assertIn("${CLAUDE_PROJECT_DIR}/.claude/tdq/scripts/", noi_dung)
-
-
-class TestBanCodex(TempDest):
-    """Bản codex: harness không có skill/hook system nên mọi thứ phải là markdown đọc tuần tự."""
-
-    def setUp(self):
-        super().setUp()
-        build_portable.sinh_ban_codex(ROOT, self.dest)
-        self.goc = os.path.join(self.dest, "portable_codex")
-
-    def test_ban_codex_du_file_workflow(self):
-        ten = sorted(os.listdir(os.path.join(self.goc, "workflow")))
-        for mo_dau in ("01-", "02-", "03-", "04-", "05-"):
-            self.assertTrue(any(t.startswith(mo_dau) for t in ten),
-                            f"thiếu file workflow số {mo_dau}")
-        self.assertTrue(os.path.isdir(os.path.join(self.goc, "scripts")))
-        self.assertTrue(os.path.isfile(os.path.join(self.goc, "manifest.json")))
-
-    def test_phases_md_khop_phase_table(self):
-        """Bảng phase phải SINH từ hằng, không chép tay — chép tay là lệch khi hằng đổi."""
-        import tdq_state
-        thuc_te = build_portable._doc_text(os.path.join(self.goc, "workflow", "phases.md"))
-        self.assertEqual(thuc_te.strip(), tdq_state.render_phases_md().strip())
-
-    def test_agents_md_tro_checkportable_dau_tien(self):
-        noi_dung = build_portable._doc_text(os.path.join(self.goc, "AGENTS.md"))
-        self.assertIn("tdq_checkportable.py", noi_dung)
-        vi_tri_check = noi_dung.index("tdq_checkportable.py")
-        vi_tri_intake = noi_dung.index("02-")
-        self.assertLess(vi_tri_check, vi_tri_intake,
-                        "bước kiểm tương thích phải đứng TRƯỚC bước mở request")
-
-    def test_ban_codex_khong_con_plugin_root(self):
-        for thu_muc, thu_muc_con, files in os.walk(self.goc):
-            thu_muc_con[:] = [d for d in thu_muc_con if d != "__pycache__"]
-            for ten in files:
-                noi = build_portable._doc_text(os.path.join(thu_muc, ten))
-                self.assertNotIn("CLAUDE_PLUGIN_ROOT", noi or "",
-                                 f"còn biến plugin ở {ten}")
-
-
-class TestCheckportableTrongBanSinh(TempDest):
-    """Skill tự kiểm phải có mặt ở CẢ HAI bản và phải là bước đầu tiên được nhắc tới."""
-
-    def setUp(self):
-        super().setUp()
-        self.claude = build_portable.sinh_ban_claude(ROOT, self.dest)
-        self.codex = build_portable.sinh_ban_codex(ROOT, self.dest)
-
-    def test_claude_co_skill_checkportable(self):
-        duong = os.path.join(self.claude, ".claude", "skills", "tdq-checkportable", "SKILL.md")
-        self.assertTrue(os.path.isfile(duong))
-        noi_dung = build_portable._doc_text(duong)
-        # Skill chỉ NHẮC tên lệnh; chép logic vào skill là tạo bản thứ hai sẽ lệch khi script đổi.
-        self.assertNotIn("\nimport ", noi_dung)
-        self.assertNotIn("\ndef ", noi_dung)
-        self.assertIn("tdq_checkportable.py", noi_dung)
-
-    def test_codex_co_file_checkportable(self):
-        ten = os.listdir(os.path.join(self.codex, "workflow"))
-        # Số đầu tên file là thứ tự đọc do build sinh ra: thêm một skill là số dịch hết.
-        # Khoá vào chữ `checkportable` kèm tiền tố số, không khoá vào con số cụ thể.
-        self.assertTrue(any(re.match(r"\d\d-", t) and "checkportable" in t for t in ten), ten)
-
-    def test_ca_hai_ban_deu_goi_check_dau_tien(self):
-        for duong in (os.path.join(self.claude, "README.md"),
-                      os.path.join(self.codex, "AGENTS.md")):
-            noi_dung = build_portable._doc_text(duong)
-            self.assertIn("checkportable", noi_dung, duong)
-
-    def test_readme_neu_du_3_gioi_han(self):
-        """CẢ HAI bản, không chỉ bản claude — spec §2 đầu ra #4 đòi README cho mỗi bản."""
-        for goc in (self.claude, self.codex):
-            duong = os.path.join(goc, "README.md")
-            self.assertTrue(os.path.isfile(duong), f"{os.path.basename(goc)} thiếu README.md")
-            noi_dung = build_portable._doc_text(duong)
-            for tu_khoa in ("trust", "MCP", "restart"):
-                self.assertIn(tu_khoa.lower(), noi_dung.lower(),
-                              f"{os.path.basename(goc)}/README thiếu giới hạn: {tu_khoa}")
-            self.assertIn("tdq-bak-", noi_dung, "README phải nêu cơ chế sao lưu khi tự vá")
-
-    def test_tai_lieu_khong_hua_qua_nang_luc(self):
-        """Tài liệu không được hứa việc mã không làm.
-
-        Bản trước hứa `setup` "tự cài gói" và "sửa cấu hình mức người dùng" trong khi mã
-        không có một đường nào chạm tới pip hay `~`. Lời hứa sai còn tệ hơn thiếu tính
-        năng: người dùng tin là đã được vá rồi bỏ qua phần phải tự làm.
-        """
-        cam = ("tự cài gói", "mức người dùng", "installs packages", "user-level config")
-        for goc, ten in ((self.claude, "README.md"), (self.codex, "AGENTS.md"),
-                         (self.codex, "README.md")):
-            noi_dung = build_portable._doc_text(os.path.join(goc, ten)) or ""
-            for cum in cam:
-                self.assertNotIn(cum, noi_dung, f"{ten} hứa quá năng lực: {cum!r}")
-        skill = build_portable._doc_text(os.path.join(
-            self.claude, ".claude", "skills", "tdq-checkportable", "SKILL.md"))
-        for cum in cam:
-            self.assertNotIn(cum, skill, f"SKILL.md hứa quá năng lực: {cum!r}")
 
 
 class TestCopyLoc(TempDest):
@@ -322,130 +171,6 @@ class TestCopyLoc(TempDest):
         self.assertTrue(os.access(os.path.join(dich, "run.sh"), os.X_OK))
 
 
-class TestCodexNativeLayers(TempDest):
-    """Ba lớp native của Codex CLI (>= 0.147.0) trong `portable_codex/`.
-
-    Vì sao khoá bằng test: bản trước KHÔNG sinh lớp nào trong ba lớp này vì tin rằng Codex
-    "không có skill/hook system". Giả định đó sai, và cái sai chỉ lộ ra khi có người mở
-    bundle lên hỏi. Số đo thật của từng lớp nằm ở `docs/tdq/qc/2026-08-17-1139-*.md`.
-    """
-
-    def setUp(self):
-        super().setUp()
-        self.goc = build_portable.sinh_ban_codex(ROOT, self.dest)
-
-    # ---- lớp 1: skill auto-load ----
-
-    def test_agents_skills_du_8_skill_va_frontmatter_hop_le(self):
-        goc_skill = os.path.join(self.goc, ".agents", "skills")
-        self.assertTrue(os.path.isdir(goc_skill), "thiếu .agents/skills — Codex quét đúng chỗ này")
-        for ten in build_portable.THU_TU_SKILL:
-            duong = os.path.join(goc_skill, ten, "SKILL.md")
-            self.assertTrue(os.path.isfile(duong), f"thiếu {ten}/SKILL.md")
-            truong = build_portable.doc_frontmatter(build_portable._doc_text(duong))
-            for khoa in ("name", "description"):
-                self.assertTrue(truong.get(khoa), f"{ten}/SKILL.md thiếu frontmatter {khoa}")
-
-    def test_skill_giu_duoc_references_di_kem(self):
-        """Skill mất `references/` là mất phần lớn nội dung — SKILL.md chỉ trỏ sang đó."""
-        duong = os.path.join(self.goc, ".agents", "skills", "tdq-conventions", "references")
-        self.assertTrue(os.path.isdir(duong))
-        self.assertTrue(os.listdir(duong))
-
-    # ---- lớp 2: MCP ----
-
-    def test_config_toml_du_2_server_va_khong_lo_khoa(self):
-        import tomllib
-        duong = os.path.join(self.goc, ".codex", "config.toml")
-        with open(duong, "rb") as f:
-            cau_hinh = tomllib.load(f)
-        self.assertEqual(sorted(cau_hinh["mcp_servers"]), sorted(build_portable.MCP_SERVERS))
-        # Không giá trị nào trong file được trùng giá trị khoá thật đang có ở máy này.
-        noi_dung = build_portable._doc_text(duong)
-        for ten_bien, gia_tri in os.environ.items():
-            if any(d in ten_bien for d in ("KEY", "TOKEN", "SECRET")) and len(gia_tri) > 8:
-                self.assertNotIn(gia_tri, noi_dung, f"config.toml lộ giá trị của {ten_bien}")
-
-    # ---- lớp 3: hook ----
-
-    def test_hooks_nam_canh_scripts_o_goc_bundle(self):
-        """`hooks/scripts/_common.py` suy ra `scripts/` bằng `../../scripts` tính từ nó."""
-        self.assertTrue(os.path.isdir(os.path.join(self.goc, "hooks", "scripts")))
-        self.assertTrue(os.path.isdir(os.path.join(self.goc, "scripts")))
-
-    def test_hook_chay_duoc_trong_bo_cuc_bundle(self):
-        payload = json.dumps({"hook_event_name": "PreToolUse", "tool_name": "Edit",
-                              "tool_input": {"file_path": os.path.join(self.goc, "a.txt")},
-                              "cwd": self.goc})
-        proc = subprocess.run(
-            [sys.executable, os.path.join(self.goc, "hooks", "scripts", "edit_gate.py")],
-            input=payload, capture_output=True, text=True, timeout=60, cwd=self.goc)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
-        json.loads(proc.stdout or "{}")
-
-    def test_hooks_json_du_4_event_va_dung_matcher_that(self):
-        duong = os.path.join(self.goc, ".codex", "hooks.json")
-        with open(duong, encoding="utf-8") as f:
-            du_lieu = json.load(f)
-        su_kien = du_lieu["hooks"]
-        self.assertEqual(sorted(su_kien),
-                         ["PreToolUse", "SessionStart", "Stop", "UserPromptSubmit"])
-        self.assertEqual(len(su_kien["PreToolUse"]), 2, "PreToolUse phải có đúng 2 nhóm matcher")
-        matcher = sorted(nhom.get("matcher", "") for nhom in su_kien["PreToolUse"])
-        # Tên tool THẬT của Codex, đo bằng hook thăm dò — không phải tên của Claude Code.
-        self.assertEqual(matcher, ["Bash", "apply_patch"])
-
-    def test_moi_command_tro_toi_file_co_that_trong_bundle(self):
-        with open(os.path.join(self.goc, ".codex", "hooks.json"), encoding="utf-8") as f:
-            du_lieu = json.load(f)
-        so_lenh = 0
-        for nhom_su_kien in du_lieu["hooks"].values():
-            for nhom in nhom_su_kien:
-                for hook in nhom["hooks"]:
-                    lenh = hook["command"]
-                    self.assertNotIn("${", lenh, "command không được còn biến chưa thay")
-                    duong = lenh.split()[-1].strip('"')
-                    self.assertFalse(os.path.isabs(duong),
-                                     "phải là đường dẫn tương đối: cwd của hook = gốc project")
-                    self.assertTrue(os.path.isfile(os.path.join(self.goc, duong)), duong)
-                    so_lenh += 1
-        self.assertEqual(so_lenh, 5, "đủ 5 hook của bộ TDQ")
-
-    def test_adapter_apply_patch_doc_duoc_duong_dan_trong_than_patch(self):
-        """Codex gửi `tool_input.command` chứa thân patch, KHÔNG có `file_path`."""
-        than = ("*** Begin Patch\n*** Update File: docs/tdq/plan/x.md\n@@\n+y\n*** End Patch")
-        payload = json.dumps({"hook_event_name": "PreToolUse", "tool_name": "apply_patch",
-                              "tool_input": {"command": than}, "cwd": self.goc})
-        proc = subprocess.run(
-            [sys.executable,
-             os.path.join(self.goc, "hooks", "scripts", "codex_edit_gate.py")],
-            input=payload, capture_output=True, text=True, timeout=60, cwd=self.goc)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
-        self.assertIn("docs/tdq/plan/x.md", proc.stderr + proc.stdout,
-                      "adapter phải rút được đường dẫn ra khỏi thân patch")
-
-    def test_adapter_trong_bundle_khop_nguyen_van_file_nguon(self):
-        goc_repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        with open(os.path.join(goc_repo, "hooks", "scripts", "codex_edit_gate.py"),
-                  encoding="utf-8") as f:
-            nguon = f.read()
-        with open(os.path.join(self.goc, "hooks", "scripts", "codex_edit_gate.py"),
-                  encoding="utf-8") as f:
-            trong_bundle = f.read()
-        self.assertEqual(trong_bundle, nguon,
-                         "bản trong bundle lệch bản nguồn — chép chứ không sinh lại")
-
-    # ---- manifest ----
-
-    def test_manifest_liet_ke_du_file_native_moi(self):
-        with open(os.path.join(self.goc, "manifest.json"), encoding="utf-8") as f:
-            files = json.load(f)["files"]
-        for duong in (".codex/config.toml", ".codex/hooks.json",
-                      ".agents/skills/tdq-intake/SKILL.md",
-                      "hooks/scripts/edit_gate.py", "hooks/scripts/codex_edit_gate.py"):
-            self.assertIn(duong, files, f"manifest thiếu {duong}")
-
-
 class TestBanAntigravity(TempDest):
     """Bản antigravity: user-level/global cho agy, đối xứng `TestCodexNativeLayers`.
 
@@ -462,9 +187,14 @@ class TestBanAntigravity(TempDest):
         for ten in build_portable.THU_TU_SKILL:
             duong = os.path.join(self.goc, "skills", ten, "SKILL.md")
             self.assertTrue(os.path.isfile(duong), f"thiếu {ten}/SKILL.md")
-            truong = build_portable.doc_frontmatter(build_portable._doc_text(duong))
-            for khoa in ("name", "description"):
-                self.assertTrue(truong.get(khoa), f"{ten}/SKILL.md thiếu frontmatter {khoa}")
+            # Đọc tại chỗ thay vì gọi `doc_frontmatter`: helper đó sinh ra để phục vụ
+            # adapter của bundle codex, mà bundle đó đã bỏ. Một helper chỉ còn test gọi là
+            # code chết đội lốt code sống.
+            noi_dung = build_portable._doc_text(duong)
+            khoi = noi_dung.split("---", 2)
+            self.assertEqual(len(khoi), 3, f"{ten}/SKILL.md thiếu khối frontmatter")
+            for khoa in ("name:", "description:"):
+                self.assertIn(khoa, khoi[1], f"{ten}/SKILL.md thiếu frontmatter {khoa}")
 
     def test_skill_giu_duoc_references_di_kem(self):
         duong = os.path.join(self.goc, "skills", "tdq-conventions", "references")
@@ -546,28 +276,13 @@ class TestBanAntigravity(TempDest):
                       "hooks/scripts/agy_stop_gate.py", "scripts/tdq_state.py"):
             self.assertIn(duong, files, f"manifest thiếu {duong}")
 
+    @unittest.skipUnless(helper.co_lenh("graphify"), "chưa cài graphify — check báo MISSING, thoát 1")
     def test_checkportable_xac_nhan_ban_sach(self):
         proc = subprocess.run(
             [sys.executable, os.path.join(self.goc, "scripts", "tdq_checkportable.py"),
              "check", "--root", self.goc],
-            capture_output=True, text=True, timeout=60)
+            capture_output=True, encoding="utf-8", text=True, timeout=60)
         self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
-
-
-class TestBanAntigravityKhongDungHaiBanKia(TempDest):
-    """`--only antigravity` không được đụng `portable_claude/`/`portable_codex/`."""
-
-    def test_khong_dung_hai_ban_kia(self):
-        build_portable.sinh_ban_claude(ROOT, self.dest)
-        build_portable.sinh_ban_codex(ROOT, self.dest)
-        truoc = build_portable.sinh_manifest(os.path.join(self.dest, "portable_claude"))["files"]
-        truoc_codex = build_portable.sinh_manifest(os.path.join(self.dest, "portable_codex"))["files"]
-        ma, _, err = chay("--dest", self.dest, "--only", "antigravity")
-        self.assertEqual(ma, 0, err)
-        sau = build_portable.sinh_manifest(os.path.join(self.dest, "portable_claude"))["files"]
-        sau_codex = build_portable.sinh_manifest(os.path.join(self.dest, "portable_codex"))["files"]
-        self.assertEqual(truoc, sau, "--only antigravity không được đụng portable_claude/")
-        self.assertEqual(truoc_codex, sau_codex, "--only antigravity không được đụng portable_codex/")
 
 
 class TestTachPatch(unittest.TestCase):
@@ -644,166 +359,66 @@ class TestAdapterLaFileThat(unittest.TestCase):
                                  "build_portable.py phải ĐỌC adapter, không import")
 
 
-class TestHuongDanCaiDat(unittest.TestCase):
-    """README của mỗi bundle phải nêu ĐÚNG đường dẫn lệnh có thật trong chính bundle đó.
+def _ten_chet(duong, goc_repo):
+    """Tên cấp module (hàm LẪN hằng) không với tới được từ `main`, khối `__main__`, hay từ bất
+    kỳ module nào khác của repo. Đi theo chuỗi: hằng chỉ được một hằng chết dùng cũng là chết."""
+    import ast
+    import glob
+    with open(duong, encoding="utf-8") as f:
+        cay = ast.parse(f.read())
+    dinh = {}
+    for nut in cay.body:
+        if isinstance(nut, (ast.FunctionDef, ast.ClassDef)):
+            dinh[nut.name] = nut
+        elif isinstance(nut, ast.Assign):
+            dinh.update({t.id: nut for t in nut.targets if isinstance(t, ast.Name)})
 
-    Vì sao khoá: hai bundle đặt `tdq_checkportable.py` ở hai chỗ khác nhau
-    (`scripts/` với codex, `.claude/tdq/scripts/` với claude). Chép nhầm dòng lệnh giữa
-    hai README là lỗi im lặng — người dùng chạy ra `No such file` ngay bước đầu tiên.
-    """
+    def ten_dung(nut):
+        return ({x.id for x in ast.walk(nut) if isinstance(x, ast.Name)}
+                | {x.attr for x in ast.walk(nut) if isinstance(x, ast.Attribute)})
 
-    MAU_LENH = re.compile(r"python3 ([\w./-]+\.py)")
-
-    def _kiem(self, ten_ban):
-        with tempfile.TemporaryDirectory() as tmp:
-            build_portable.main(["--dest", tmp, "--only", ten_ban.split("_")[1]])
-            goc = os.path.join(tmp, ten_ban)
-            with open(os.path.join(goc, "README.md"), encoding="utf-8") as f:
-                readme = f.read()
-            duong_dan = set(self.MAU_LENH.findall(readme))
-            self.assertTrue(duong_dan, f"README {ten_ban} không nêu lệnh nào")
-            for duong in duong_dan:
-                self.assertTrue(os.path.isfile(os.path.join(goc, duong)),
-                                f"README {ten_ban} nhắc {duong} nhưng bundle không có file đó")
-
-    def test_lenh_trong_readme_claude_co_that(self):
-        self._kiem("portable_claude")
-
-    def test_lenh_trong_readme_codex_co_that(self):
-        self._kiem("portable_codex")
-
-    def test_readme_codex_neu_du_ba_cach_trust(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            build_portable.main(["--dest", tmp, "--only", "codex"])
-            with open(os.path.join(tmp, "portable_codex", "README.md"), encoding="utf-8") as f:
-                readme = f.read()
-        for manh in ("setup --trust", 'trust_level = "trusted"', "Review hooks"):
-            self.assertIn(manh, readme, f"README codex thiếu hướng dẫn: {manh}")
+    nguon_khac = []
+    for mau in ("scripts/*.py", "hooks/scripts/*.py", "tests/*.py"):
+        for f in glob.glob(os.path.join(goc_repo, mau)):
+            if os.path.abspath(f) != os.path.abspath(duong):
+                with open(f, encoding="utf-8") as g:
+                    nguon_khac.append(g.read())
+    nguon_khac = "\n".join(nguon_khac)
+    # Chỉ tính lời gọi QUA TÊN MODULE. Khớp tên trần thì một hằng trùng tên ở module khác
+    # (`GOC_TDQ` có ở cả `tdq_checkportable`) làm hằng chết trông như còn sống.
+    mod = os.path.splitext(os.path.basename(duong))[0]
+    ngoai = set(re.findall(rf"\b{mod}\.(\w+)", nguon_khac))
+    for cum in re.findall(rf"from {mod} import \(?([\w\s,]+)\)?", nguon_khac):
+        ngoai |= {t.strip() for t in cum.split(",") if t.strip()}
+    song = {"main"} | (set(dinh) & ngoai)
+    for nut in cay.body:
+        if isinstance(nut, ast.If):
+            song |= ten_dung(nut)
+    hang_doi = list(song)
+    while hang_doi:
+        ten = hang_doi.pop()
+        for dung in ten_dung(dinh[ten]) if ten in dinh else ():
+            if dung in dinh and dung not in song:
+                song.add(dung)
+                hang_doi.append(dung)
+    return sorted(set(dinh) - song)
 
 
-class TestLuatMoiCoMatOCaBaBan(unittest.TestCase):
-    """Ba bản phải nói CÙNG một luật.
+class TestKhongConTenChet(unittest.TestCase):
+    """QC vòng 1 (2026-09-21): lượt cắt ở T2.3 chỉ đo HÀM, nên 9 hằng của hai bundle đã gỡ
+    (61 dòng) nằm lại mà không phép kiểm nào thấy. Đo cả hằng, và đo bằng máy."""
 
-    Bản portable là thứ chạy ở máy khác. Luật mới chỉ nằm ở `skills/` mà không sang
-    được hai bản kia thì ở đó agent chạy theo luật cũ, và không ai thấy vì test cũ
-    vẫn xanh — nên khoá bằng dấu vết nội dung, không chỉ bằng "file có tồn tại".
-    """
+    def test_khong_con_ten_chet(self):
+        self.assertEqual(_ten_chet(SCRIPT, ROOT), [])
 
-    # context-budget.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật không đổi,
-    # chỉ đổi ngôn ngữ. Hai dấu vết cũ "vì QUÊN" / "nghi ngờ thì đọc lại" đổi thành đúng
-    # hai câu tương ứng ở bản mới, vẫn khoá đúng hai ý đó chứ không nới lỏng phép kiểm.
-    DAU_VET = (
-        ("context-budget.md", ("MAX_MCP_OUTPUT_TOKENS", "by FORGETTING",
-                               "When in doubt, re-read")),
-        ("bash_gate.py", ("TDQ:OUTPUT",)),
-        ("token_audit.py", ("def dem_anh", "def phan_ra", "def hanh_vi_read")),
-    )
-
-    def _moi_ban_sao(self, ban, ten_file):
-        """Mỗi bản xếp cây thư mục một kiểu (`.claude/`, `.agents/`, `workflow/`), nên
-        tìm theo TÊN FILE và bắt MỌI bản sao phải mang dấu vết — bỏ sót một bản sao là
-        đúng cái lỗi test này canh."""
-        thay = [os.path.join(g, f)
-                for g, _, fs in os.walk(os.path.join(ROOT, ban))
-                for f in fs if f == ten_file]
-        self.assertTrue(thay, f"{ban}: không tìm thấy {ten_file}")
-        return thay
-
-    def test_hai_ban_portable_mang_du_dau_vet_luat_moi(self):
-        for ban in ("portable_claude", "portable_codex"):
-            for ten_file, dau_vet in self.DAU_VET:
-                for that in self._moi_ban_sao(ban, ten_file):
-                    with open(that, encoding="utf-8") as fh:
-                        noi_dung = fh.read()
-                    for chuoi in dau_vet:
-                        with self.subTest(ban=os.path.relpath(that, ROOT), dau_vet=chuoi):
-                            self.assertIn(chuoi, noi_dung)
+    def test_bo_do_bat_duoc_hang_chet_theo_chuoi(self):
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(os.path.join(d, "scripts"))
+            duong = os.path.join(d, "scripts", "mau.py")
+            with open(duong, "w", encoding="utf-8") as f:
+                f.write("A = 1\nB = A + 1\nC = 3\n\ndef main():\n    return C\n")
+            self.assertEqual(_ten_chet(duong, d), ["A", "B"])
 
 
 if __name__ == "__main__":
     unittest.main()
-
-
-class ReferenceCoDuOCaHaiBan(unittest.TestCase):
-    """Mọi file reference của `skills/` phải có mặt ở CẢ HAI bản portable.
-
-    Vì sao khoá riêng chỗ này: hai bản được sinh bằng máy nên người ta tin là đủ, nhưng
-    `copy_loc` đi theo thư mục — thêm một thư mục con mới trong `references/` mà quên
-    đường copy thì bản portable im lặng thiếu luật, không có lỗi nào nổ. Máy đích lúc đó
-    chạy một bộ luật khuyết mà không ai biết.
-    """
-
-    @staticmethod
-    def _reference_nguon():
-        ra = []
-        goc_skills = os.path.join(ROOT, "skills")
-        for ten in sorted(os.listdir(goc_skills)):
-            thu_muc = os.path.join(goc_skills, ten, "references")
-            for goc, _, files in os.walk(thu_muc):
-                for f in sorted(files):
-                    if f.endswith(".md"):
-                        duong = os.path.relpath(os.path.join(goc, f), thu_muc)
-                        ra.append((ten, duong))
-        return ra
-
-    def test_du_reference_o_ban_claude_va_codex(self):
-        thieu = []
-        for ten_skill, duong in self._reference_nguon():
-            claude = os.path.join(ROOT, "portable_claude", ".claude", "skills",
-                                  ten_skill, "references", duong)
-            codex = os.path.join(ROOT, "portable_codex", ".agents", "skills",
-                                 ten_skill, "references", duong)
-            if not os.path.isfile(claude):
-                thieu.append(f"portable_claude thiếu {ten_skill}/{duong}")
-            if not os.path.isfile(codex):
-                thieu.append(f"portable_codex thiếu {ten_skill}/{duong}")
-        self.assertEqual(
-            [], thieu,
-            "Bản portable thiếu file reference so với `skills/` — chạy lại "
-            f"`python3 scripts/build_portable.py`: {thieu}")
-
-def _bam(duong):
-    with open(duong, "rb") as f:
-        return hashlib.sha256(f.read()).hexdigest()
-
-
-class TangCodexKhongDungGocRepo(TempDest):
-    """T9.2 — sinh bundle KHÔNG được ghi vào `.codex/` của gốc repo.
-
-    Hai file `.codex/config.toml` và `.codex/hooks.json` ở gốc repo là cấu hình của
-    CHÍNH repo này khi mở bằng Codex CLI. Bộ sinh cũng làm ra hai file cùng tên trong
-    bundle, nên chỉ cần một đường dẫn quên nối `dest` là nó ghi đè cấu hình đang dùng
-    — hỏng im lặng, và người dùng chỉ biết khi phiên Codex kế tiếp cư xử khác.
-    """
-
-    FILE_GOC = (os.path.join(ROOT, ".codex", "config.toml"),
-                os.path.join(ROOT, ".codex", "hooks.json"))
-
-    def test_sinh_hai_ban_khong_doi_file_codex_goc_repo(self):
-        truoc = {d: _bam(d) for d in self.FILE_GOC if os.path.isfile(d)}
-        self.assertEqual(len(truoc), 2, "gốc repo phải có đủ hai file `.codex/` để so")
-        build_portable.sinh_ban_claude(ROOT, self.dest)
-        build_portable.sinh_ban_codex(ROOT, self.dest)
-        self.assertEqual({d: _bam(d) for d in self.FILE_GOC}, truoc,
-                         "bộ sinh đã ghi đè `.codex/` của gốc repo")
-
-    def test_ban_codex_co_tang_codex_rieng_cua_no(self):
-        """Không đụng gốc repo KHÔNG được đổi thành không sinh gì: bundle vẫn phải có tầng."""
-        goc = build_portable.sinh_ban_codex(ROOT, self.dest)
-        for ten in ("config.toml", "hooks.json"):
-            self.assertTrue(os.path.isfile(os.path.join(goc, ".codex", ten)), ten)
-        self.assertNotEqual(_bam(os.path.join(goc, ".codex", "hooks.json")),
-                            "", "hooks.json rỗng")
-
-    def test_luat_mode_codex_sang_du_ca_hai_ban(self):
-        """Luật mode `codex` chỉ nằm ở `skills/` thì máy đích chạy theo bộ luật thiếu."""
-        claude = build_portable.sinh_ban_claude(ROOT, self.dest)
-        codex = build_portable.sinh_ban_codex(ROOT, self.dest)
-        for goc, giua in ((claude, os.path.join(".claude", "skills")),
-                          (codex, os.path.join(".agents", "skills"))):
-            duong = os.path.join(goc, giua, "tdq-build", "references", "codex-mode.md")
-            self.assertTrue(os.path.isfile(duong), duong)
-            with open(duong, encoding="utf-8") as f:
-                noi_dung = f.read()
-            self.assertIn("VÙNG KHOÁ", noi_dung)
-            self.assertIn("NOT the fast mode", noi_dung)

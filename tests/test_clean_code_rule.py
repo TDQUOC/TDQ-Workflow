@@ -22,8 +22,6 @@ SKILLS = Path(ROOT) / "skills"
 LUAT = SKILLS / "tdq-conventions" / "references" / "clean-code.md"
 CONVENTIONS = SKILLS / "tdq-conventions" / "SKILL.md"
 QC_BUILD = SKILLS / "tdq-build" / "references" / "qc.md"
-QC_PORTABLE = (Path(ROOT) / "portable_codex" / "workflow" / "references"
-               / "tdq-build" / "qc.md")
 RESEARCH = Path(ROOT) / "docs" / "tdq" / "research" / "2026-08-16-bo-cong-clean-code.md"
 
 # Thân luật clean-code.md viết tiếng Anh từ 2026-08-19 (hướng A hybrid): luật và số
@@ -213,24 +211,6 @@ class ConventionsNap(unittest.TestCase):
 
 class QcKhopPortable(unittest.TestCase):
     """T4.1 + T4.2 — hạng mục DoD đổi dạng, hai bản phải khớp nhau."""
-
-    def test_qc_khop_portable_khong_con_script_cu(self):
-        for path in (QC_BUILD, QC_PORTABLE):
-            with self.subTest(file=path.name):
-                self.assertNotIn("code_rule_scan", doc(path),
-                                 f"{path} còn nhắc script đã xoá")
-
-    def test_qc_khop_portable_deu_nhac_checklist(self):
-        for path in (QC_BUILD, QC_PORTABLE):
-            with self.subTest(file=path.name):
-                self.assertIn("clean-code.md", doc(path),
-                              f"{path} phải trỏ tới luật clean code mới")
-
-    def test_qc_khop_portable_khong_con_cong_bat_tat(self):
-        for path in (QC_BUILD, QC_PORTABLE):
-            with self.subTest(file=path.name):
-                self.assertNotIn("Clean code: BẬT", doc(path),
-                                 f"{path} còn dựa vào cổng BẬT/TẮT đã gỡ")
 
 
 if __name__ == "__main__":

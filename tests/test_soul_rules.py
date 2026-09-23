@@ -14,7 +14,6 @@ from helper import ROOT
 
 SOUL = os.path.join(ROOT, "skills", "tdq-conventions", "references", "soul.md")
 CONV_SKILL = os.path.join(ROOT, "skills", "tdq-conventions", "SKILL.md")
-AGENTS = os.path.join(ROOT, "portable_codex", "AGENTS.md")
 PRIORITY = "chất lượng > runtime > context cost"
 # Từ 2026-08-22 luật viết tiếng Anh, tài liệu viết theo `doc_lang`: cả hai cách viết
 # đều là cùng một thứ tự ưu tiên, nên lưới nhận cả hai.
@@ -119,13 +118,11 @@ class SoulRequestDangMo(unittest.TestCase):
 
 
 class SoulPointers(unittest.TestCase):
+    # 2026-09-21: nửa trỏ về `AGENTS.md` của bundle codex đã bỏ cùng bundle; nửa nguồn ở lại.
     def test_dong_tro_soul(self):
-        for path, anchor in ((CONV_SKILL, "references/soul.md"), (AGENTS, "soul")):
-            with self.subTest(path=os.path.relpath(path, ROOT)):
-                text = _read(path)
-                self.assertTrue(_co_uu_tien(text),
-                              "tầng luôn nạp phải in nguyên văn thứ tự ưu tiên")
-                self.assertIn(anchor, text, "thiếu dòng trỏ về soul")
+        text = _read(CONV_SKILL)
+        self.assertTrue(_co_uu_tien(text), "tầng luôn nạp phải in nguyên văn thứ tự ưu tiên")
+        self.assertIn("references/soul.md", text, "thiếu dòng trỏ về soul")
 
 
 if __name__ == "__main__":

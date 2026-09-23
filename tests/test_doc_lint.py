@@ -32,7 +32,7 @@ class LintBase(unittest.TestCase):
 
     def lint(self, *paths):
         proc = subprocess.run([sys.executable, LINT, *paths],
-                              capture_output=True, text=True)
+                              capture_output=True, encoding="utf-8", text=True)
         return proc.returncode, proc.stdout
 
     def assert_hits(self, path, rule):
@@ -50,7 +50,7 @@ class MissingPathTest(LintBase):
 
     def _lint_err(self, *paths):
         proc = subprocess.run([sys.executable, LINT, *paths],
-                              capture_output=True, text=True)
+                              capture_output=True, encoding="utf-8", text=True)
         return proc.returncode, proc.stdout, proc.stderr
 
     def test_missing_path_no_md_suffix_exit_nonzero(self):
@@ -289,7 +289,7 @@ class PairTest(LintBase):
         spec = self.write(os.path.join("spec", "s.md"), spec_text)
         plan = self.write(os.path.join("plan", "p.md"), plan_text)
         proc = subprocess.run([sys.executable, LINT, "--pair", spec, plan],
-                              capture_output=True, text=True)
+                              capture_output=True, encoding="utf-8", text=True)
         return proc.returncode, proc.stdout
 
     def test_pair_ok(self):
@@ -317,7 +317,7 @@ class PairTest(LintBase):
 
     def test_pair_bad_argc(self):
         proc = subprocess.run([sys.executable, LINT, "--pair", "mot-file"],
-                              capture_output=True, text=True)
+                              capture_output=True, encoding="utf-8", text=True)
         self.assertEqual(proc.returncode, 2)
 
     def test_pair_ok_with_mcp_label(self):
@@ -402,7 +402,7 @@ class PairCumSongSongTest(LintBase):
         spec = self.write(os.path.join("spec", "s.md"), SPEC_3B_OK)
         plan = self.write("p.md", plan_text)
         proc = subprocess.run([sys.executable, LINT, "--pair", spec, plan],
-                              capture_output=True, text=True)
+                              capture_output=True, encoding="utf-8", text=True)
         return proc.returncode, proc.stdout
 
     def test_pair_plan_thieu_cum_song_song(self):
@@ -459,7 +459,7 @@ class LogServiceTest(LintBase):
         env = dict(os.environ)
         env.update(env_them or {})
         return subprocess.run([sys.executable, LINT, path], capture_output=True,
-                              text=True, env=env)
+                              encoding="utf-8", text=True, env=env)
 
     def test_log_bat_mac_dinh_ra_stderr(self):
         sach = self.write("sach.md", "# Tiêu đề\n\nMột dòng.\n")

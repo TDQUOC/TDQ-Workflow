@@ -11,6 +11,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO, "scripts"))
 
 import token_audit  # noqa: E402
+from helper import LY_DO_TOKEN, co_bo_dem_token  # noqa: E402
 
 
 def _assistant(tool_id, name, inp, usage=True):
@@ -33,17 +34,8 @@ def _write(path, records):
             fh.write(json.dumps(r) + "\n")
 
 
-def _co_thu_vien():
-    """Có tokenizer thật ở python đang chạy test hay ở venv của repo không."""
-    venv = os.path.join(REPO, ".venv-tokens", "bin", "python")
-    if not os.path.exists(venv):
-        return False
-    proc = subprocess.run([venv, "-c", "import anthropic_tokenizer"],
-                          capture_output=True, timeout=60)
-    return proc.returncode == 0
-
-
-CO_THU_VIEN = _co_thu_vien()
+# 2026-09-21: hỏi chính skill_tokens (đoán `.venv-tokens/bin/python` thì Windows luôn skip).
+CO_THU_VIEN = co_bo_dem_token()
 
 
 class IterEventsTest(unittest.TestCase):
@@ -109,6 +101,7 @@ class CarryCostTest(unittest.TestCase):
 
 
 class UsageTotalsTest(unittest.TestCase):
+    @unittest.skipUnless(co_bo_dem_token(), LY_DO_TOKEN)
     def test_cong_don_usage_va_dem_api_call(self):
         records = [
             _assistant("t1", "Read", {"file_path": "/a.md"}),
@@ -214,7 +207,7 @@ class CliTest(unittest.TestCase):
             e.update(env)
         return subprocess.run(
             [sys.executable, os.path.join(REPO, "scripts", "token_audit.py")] + args,
-            capture_output=True, text=True, env=e)
+            capture_output=True, encoding="utf-8", text=True, env=e)
 
     def test_khong_co_session_van_exit_0(self):
         with tempfile.TemporaryDirectory() as d:
@@ -288,7 +281,7 @@ class DemBangTokenizerThatTest(unittest.TestCase):
             r = subprocess.run(
                 [sys.executable, os.path.join(REPO, "scripts", "token_audit.py"),
                  "--transcript-dir", d],
-                capture_output=True, text=True, env=e)
+                capture_output=True, encoding="utf-8", text=True, env=e)
         if r.returncode == 0:
             self.skipTest("python chạy test đã có sẵn anthropic-tokenizer")
         self.assertEqual(r.returncode, token_audit.EXIT_THIEU_THU_VIEN)
@@ -399,7 +392,8 @@ class PhanRaHanhViTest(unittest.TestCase):
             r = subprocess.run(
                 [sys.executable, os.path.join(REPO, "scripts", "token_audit.py"),
                  "--transcript-dir", d],
-                capture_output=True, text=True, env=dict(os.environ, TDQ_AUDIT_LOG="0"))
+                capture_output=True,
+                encoding="utf-8", text=True, env=dict(os.environ, TDQ_AUDIT_LOG="0"))
         self.assertEqual(r.returncode, 0, r.stderr)
         for cot in ("median", "p90", "p99", "largest"):
             with self.subTest(cot=cot):

@@ -13,7 +13,8 @@ from helper import tdq_state, write_file
 
 
 def git(cwd, *args):
-    subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=30)
+    subprocess.run(["git", *args], cwd=cwd, capture_output=True,
+                   encoding="utf-8", text=True, timeout=30)
 
 
 class RepoDigestTest(unittest.TestCase):

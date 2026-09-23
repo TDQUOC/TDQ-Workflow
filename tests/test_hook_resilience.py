@@ -67,7 +67,7 @@ class ResilienceTest(unittest.TestCase):
             with self.subTest(script=script):
                 proc = subprocess.run([sys.executable, os.path.join(HOOK_DIR, script)],
                                       input="khong-phai-json", capture_output=True,
-                                      text=True, timeout=30)
+                                      encoding="utf-8", text=True, timeout=30)
                 self.assertEqual(proc.returncode, 0, proc.stderr)
                 self.assertNotIn("Traceback", proc.stderr)
 

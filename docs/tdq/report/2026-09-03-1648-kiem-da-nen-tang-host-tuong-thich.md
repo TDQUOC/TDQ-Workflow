@@ -4,6 +4,12 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 Bằng chứng: `2026-09-03-1648-kiem-da-nen-tang-host-bang-chung.md` · Lệnh bạn tự chạy:
 `2026-09-03-1648-kiem-da-nen-tang-host-lenh-kiem.md`
 
+Mọi vị trí `file:dòng` trong báo cáo này đo trên bản **0.48.0**. Từ 0.50.0 mô hình đóng
+gói đổi sang adapter mỏng, `scripts/build_portable.py` co lại còn khoảng hai phần ba,
+nên số dòng ở đây chỉ còn đúng với bản đã ghim — tên file thì vẫn đúng. Mục C1 đóng ở
+0.50.0: mọi lời gọi `subprocess` chế độ văn bản đã khai `encoding=`, khoá bằng
+`tests/test_ma_hoa_subprocess.py`.
+
 **Windows ở đây nghĩa là PowerShell thuần / cmd.exe**, không phải Git Bash và không phải WSL.
 Không có máy Linux/Windows thật để chạy thử, nên mức cao nhất báo cáo này được phép nói là
 "đọc mã không thấy lỗi" — không chỗ nào trong đây khẳng định phần mềm đã hoạt động ở hai hệ đó.

@@ -1,0 +1,34 @@
+# Suite trên 3 hệ điều hành × 2 bản Python — yêu cầu 2026-09-21-0029 (T4.1).
+# Khuôn file này bị khoá bởi tests/test_ci_matrix.py: danh sách viết dạng [a, b] trên một dòng.
+#
+# Cố ý KHÔNG cài công cụ ngoài (pytest, anthropic-tokenizer, graphify, node, codex): suite phải
+# xanh trên máy sạch, phần thiếu công cụ thành skip có ghi lý do. Cũng KHÔNG bật chế độ UTF-8
+# của Python qua biến môi trường — bật là che mất lỗi giải mã cp1252 trên Windows.
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  suite:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Trước checkout: runner Windows bật sẵn autocrlf, CRLF làm lệch sha256 và so khớp văn bản.
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # Vài test tạo repo git tạm rồi commit; runner không có sẵn danh tính.
+      - run: |
+          git config --global user.name "tdq-ci"
+          git config --global user.email "tdq-ci@users.noreply.github.com"
+      - run: python -m unittest discover tests

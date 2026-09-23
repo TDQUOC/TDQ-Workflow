@@ -10,7 +10,7 @@ Nguồn sinh: cây thư mục repo · `graphify god-nodes` · `.graphifyignore`.
 | Tầng | Thư mục | Trách nhiệm |
 |---|---|---|
 | Luật | `skills/` | văn bản chỉ dẫn model; không chạy được, không có trạng thái |
-| Luật bản ngoài | `portable_claude/`, `portable_codex/` | SINH bằng `scripts/build_portable.py` từ `skills/`+`hooks/`+`agents/`+`scripts/`, không sửa tay; bản codex dùng lớp native của Codex CLI (`.agents/skills/`, `.codex/`) |
+| Adapter | `.claude-plugin/`, `.codex-plugin/`, `.agents/plugins/`, `.opencode/plugins/` | khai cho từng host đường tới `skills/` dùng chung — không chép nội dung; Antigravity không đọc thẳng repo nên layout của nó SINH tại máy người dùng bằng `scripts/build_portable.py --sinh-agy` |
 | CLI | `scripts/` | mọi hành vi chạy được: state, kết turn, lint, quét rule, đo token |
 | Hook | `hooks/scripts/` | 6 hook trên 5 sự kiện cắm vào Claude Code, nhắc mã `[TDQ:*]` và chặn khi thiếu bằng chứng |
 | Test | `tests/` | khoá hành vi của tầng CLI, tầng hook và tính nhất quán của tầng luật |
@@ -24,7 +24,8 @@ Nguồn sinh: cây thư mục repo · `graphify god-nodes` · `.graphifyignore`.
   hai bản chép tay sẽ lệch nhau và không có phép kiểm nào bắt được.
 - Chỉ `scripts/tdq_state.py` được ghi `docs/tdq/state.json`; mọi nơi khác chỉ đọc qua CLI.
 - File code MỚI bắt buộc nằm trong `scripts/` hoặc `hooks/` — thư mục khác bị
-  `.graphifyignore` loại nên đồ thị không thấy.
+  `.graphifyignore` loại nên đồ thị không thấy. Ngoại lệ duy nhất: adapter của host (xem mục
+  `Đã chốt`, 2026-09-21), vì đường dẫn do host quy định chứ không do repo chọn.
 - `tests/` gọi được vào mọi tầng; không tầng nào được import `tests/`.
 
 ## Hub
@@ -59,3 +60,7 @@ khai ở dòng `Chạm:` của plan:
   `SubagentStart` mang thân luật, `UserPromptSubmit` chỉ một dòng con trỏ ở phase `implement`.
   Thêm mã thứ sáu `TDQ:GON`; đây là lời nhắc chứ không phải hàng rào (issue #23885:
   `additionalContext` của sub-agent bị prune).
+- 2026-09-21: bỏ mô hình chép — ba bundle dựng sẵn trong repo, mỗi host một bản sao — học theo
+  cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng. Đường dẫn adapter do host quy định — `.codex-plugin/`, `.agents/plugins/`,
+  `.opencode/plugins/` — nên đây là ngoại lệ của luật "code mới chỉ nằm trong `scripts/` hoặc
+  `hooks/`". Adapter OpenCode là JavaScript thuần, không package npm, bọc try/catch mọi bước.

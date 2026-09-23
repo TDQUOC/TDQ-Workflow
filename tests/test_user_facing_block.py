@@ -18,7 +18,6 @@ import scan_block_symbols as scan  # noqa: E402  (dùng chung máy quét của T
 from scan_block_symbols import WHITELIST  # noqa: E402  (whitelist chốt ở T0.2)
 
 SKILLS = os.path.join(ROOT, "skills")
-PORTABLE = os.path.join(ROOT, "portable_codex", "workflow")
 # Bản portable nay do `scripts/build_portable.py` SINH, không chép tay nữa. Vẫn kiểm
 # nó: sinh sai đường dẫn hay sót file thì khuôn vẫn biến mất ở máy đích y như trôi tay.
 BLOCK = os.path.join(SKILLS, "tdq-conventions", "references", "user-facing-block.md")
@@ -73,17 +72,8 @@ MAU = (
     ("tdq-status", "SKILL.md"),
 )
 
-def ten_theo_duoi(duoi):
-    """Tên file bản codex mang số thứ tự đọc do build sinh ra: thêm một skill là số dịch
-    hết. Dò theo đuôi tên để test khoá vào ĐÚNG file, không khoá vào con số."""
-    for ten in sorted(os.listdir(PORTABLE)):
-        if re.match(r"\d\d-", ten) and ten.endswith(duoi):
-            return ten
-    raise AssertionError(f"bản portable thiếu file …{duoi}")
-
-
-PORTABLE_SPEC = ten_theo_duoi("-spec.md")
-PORTABLE_PLAN = ten_theo_duoi("-plan.md")
+# Hai hằng `PORTABLE_SPEC`/`PORTABLE_PLAN` và helper dò tên của chúng đã bỏ cùng
+# bundle codex: không còn bản sao đánh số nào để dò.
 
 
 # Số khối mẫu ĐANG có trong từng file, chốt bằng số đếm thật lúc viết test.
@@ -105,19 +95,14 @@ SO_KHOI = {
     "tdq-intake/references/interview.md": 0,
     "tdq-build/references/report-template.md": 1,
     "tdq-status/SKILL.md": 0,
-    "portable/" + PORTABLE_SPEC: 1,
-    "portable/" + PORTABLE_PLAN: 1,  # bản sinh chép từ tdq-plan/SKILL.md (khối mode-gate ở file riêng)
-    "portable/references/user-facing-block.md": 1,
 }
 
 
-# 12 file phạm vi kiểm: 9 file khuôn/khối mẫu bên `skills/` cộng 3 file bản portable.
+# 9 file phạm vi kiểm, tất cả bên `skills/`. Ba file bản portable đã bỏ cùng bundle codex:
+# chúng là BẢN SAO của chính ba file trên, và canh một bản sao không còn tồn tại là phép kiểm
+# giả — nguồn duy nhất giờ nằm ở `skills/`.
 FILE_PHAM_VI = tuple(
     (os.path.join(SKILLS, *p), "skills/" + "/".join(p)) for p in MAU
-) + tuple(
-    (os.path.join(PORTABLE, *p), "portable/workflow/" + "/".join(p))
-    for p in ((PORTABLE_SPEC,), (PORTABLE_PLAN,),
-              ("references", "tdq-conventions", "user-facing-block.md"))
 )
 
 
@@ -328,29 +313,6 @@ class UserFacingBlockTest(unittest.TestCase):
         self.assertEqual('➤ Approve: say "approve spec" or type "A" · Feedback: just say it',
                          _common.approve_hint("spec"), "chuỗi cổng duyệt spec đổi byte")
 
-    def test_portable_matches_source(self):
-        """Bản portable do máy sinh — kiểm để chắc bộ sinh mang đủ khuôn sang.
-
-        Nó phải mang đủ bảy luật và đúng whitelist của khuôn gốc; hai file spec/plan
-        của nó chép khối mẫu nên chịu chung luật 1, 3, 7.
-        """
-        khuon = read(PORTABLE, "references", "tdq-conventions", "user-facing-block.md")
-        # Từ 2026-08-22 khuôn gốc viết tiếng Anh; bản portable sinh từ nó nên đọc tên
-        # mục tiếng Anh trước, tên cũ giữ lại để bản portable cũ vẫn kiểm được.
-        luat = RULE.findall(sections(khuon).get("The eight decoration rules")
-                            or sections(khuon).get("The seven decoration rules")
-                            or sections(khuon).get("Bảy luật trang trí", ""))
-        self.assertEqual([str(i) for i in range(1, 9)], luat,
-                         f"bản portable thiếu tám luật trang trí, đang là {luat}")
-        for ch in WHITELIST:
-            with self.subTest(ky_tu=ch):
-                muc_ky_hieu = (sections(khuon).get("The symbols allowed")
-                               or sections(khuon).get("Ký hiệu được phép", ""))
-                self.assertIn(ch, muc_ky_hieu,
-                              f"bản portable thiếu ký tự whitelist {ch!r}")
-
-        for ten in (PORTABLE_SPEC, PORTABLE_PLAN):
-            self.kiem_khoi_mau(os.path.join(PORTABLE, ten), f"portable/{ten}")
 
     def test_symbol_whitelist(self):
         """Nội dung khối in cho user chỉ được chứa sáu ký hiệu đã chốt.
@@ -363,15 +325,11 @@ class UserFacingBlockTest(unittest.TestCase):
         self.assertEqual({}, la, f"ký tự ngoài whitelist trong khối mẫu: {la}")
 
     def test_every_user_facing_skill_points_here(self):
+        # 2026-09-21: nửa kiểm bản portable đã bỏ cùng bundle; nửa nguồn ở lại.
         for parts in POINTERS:
             with self.subTest(file="/".join(parts)):
                 self.assertIn("user-facing-block", read(SKILLS, *parts),
                               "file này nói với user nhưng không trỏ về khuôn chung")
-        # Bản portable có khuôn riêng đặt cạnh nó, hai file kia phải trỏ về đúng bản đó.
-        for ten in (PORTABLE_SPEC, PORTABLE_PLAN):
-            with self.subTest(file=f"portable/{ten}"):
-                self.assertIn("user-facing-block", read(PORTABLE, ten),
-                              "file portable này nói với user nhưng không trỏ về khuôn")
 
 
 if __name__ == "__main__":

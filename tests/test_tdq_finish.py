@@ -20,7 +20,7 @@ def _project(tmp):
         fh.write("# Ghi chú\n\n- Một dòng ngắn.\n")
     subprocess.run([sys.executable, os.path.join(REPO, "scripts", "tdq_state.py"),
                     "init", "2026-08-05-0900-thu", "full"],
-                   cwd=tmp, capture_output=True, text=True,
+                   cwd=tmp, capture_output=True, encoding="utf-8", text=True,
                    env={**os.environ, "TDQ_PROJECT_DIR": tmp})
     return doc
 
@@ -30,7 +30,7 @@ def _run(args, tmp, env=None):
     if env:
         e.update(env)
     return subprocess.run([sys.executable, SCRIPT] + args,
-                          cwd=tmp, capture_output=True, text=True, env=e)
+                          cwd=tmp, capture_output=True, encoding="utf-8", text=True, env=e)
 
 
 class DryRunTest(unittest.TestCase):

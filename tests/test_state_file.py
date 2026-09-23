@@ -196,7 +196,7 @@ class StateFileTest(unittest.TestCase):
         import subprocess
         import sys
         proc = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), "next"],
-                              capture_output=True, text=True, env=env, timeout=30)
+                              capture_output=True, encoding="utf-8", text=True, env=env, timeout=30)
         self.assertEqual(proc.returncode, 0)
         self.assertEqual(proc.stderr.strip(), "")
 

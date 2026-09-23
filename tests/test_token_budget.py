@@ -45,7 +45,9 @@ class TokenBudgetTest(unittest.TestCase):
         for phase in self.each_phase():
             _, out, _ = run_hook("session_start.py",
                                  {"cwd": self.cwd, "session_id": f"b1{phase}"})
-            budget(self, out.split("[TDQ:GON]", 1)[0].rstrip(), 12, 600,
+            # 2026-09-21: khối đầu là đoạn văn đầu tiên — dòng nhắc tên lệnh trên Windows là
+            # đoạn riêng, tính vào trần toàn khối chứ không vào trần khối đầu.
+            budget(self, out.split("[TDQ:GON]", 1)[0].split("\n\n", 1)[0].rstrip(), 12, 600,
                    f"SessionStart/{phase}")
             budget(self, out, 160, 8200, f"SessionStart toàn khối/{phase}")
 

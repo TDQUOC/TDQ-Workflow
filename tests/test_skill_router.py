@@ -72,7 +72,7 @@ MAU = [
 
 def chay(*args, env=None):
     proc = subprocess.run([sys.executable, SCRIPT, *args], capture_output=True,
-                          text=True, timeout=300,
+                          encoding="utf-8", text=True, timeout=300,
                           env=dict(os.environ, TDQ_LOG="0", **(env or {})))
     return proc.returncode, proc.stdout, proc.stderr
 
@@ -143,7 +143,7 @@ class KhoTest(unittest.TestCase):
             [sys.executable, "-c",
              "import sys; sys.path.insert(0, %r); import skill_router;"
              "skill_router.doc_kho('/khong/he/co.json')" % os.path.join(ROOT, "scripts")],
-            capture_output=True, text=True, timeout=120,
+            capture_output=True, encoding="utf-8", text=True, timeout=120,
             env=dict(os.environ, TDQ_LOG="0"))
         self.assertEqual(rc2.returncode, skill_router.EXIT_THIEU_KHO)
         self.assertIn("--dung-kho", rc2.stderr)

@@ -345,7 +345,7 @@ class LuatVaKhuon(unittest.TestCase):
         out = subprocess.run(
             ["grep", "-rnI", "YYYY-MM-DD-", "skills", "scripts", "portable_src",
              os.path.join("docs", "tdq", "STATE.md")],
-            cwd=helper.ROOT, capture_output=True, text=True).stdout
+            cwd=helper.ROOT, capture_output=True, encoding="utf-8", text=True).stdout
         thieu = [d for d in out.splitlines() if "HHMM" not in d]
         self.assertEqual(thieu, [], f"Còn {len(thieu)} chỗ in công thức slug cũ")
 

@@ -300,101 +300,11 @@ CAU_CAI_CODEX = ("chưa có `codex` trên máy này — cài trước: "  # i18n
                  "npm i -g @openai/codex (rồi `codex login`)")  # i18n-allow
 
 
-def cai_tang_codex(goc, dong_y, tim_lenh=None):
-    """-> (what was done, the lines to print). Two conditions; miss one and NOTHING is written.
-
-    Condition 1 is the user agreeing, condition 2 is `codex` existing on this machine. Writing
-    the flag on one condition alone makes the later `check` lie: the mode gate would offer a
-    mode that cannot run, and the user finds out in the middle of an implement turn.
-
-    This function writes NOTHING into `.codex/`. That layer has exactly one right source,
-    `build_portable.py`; regenerating it here would be inventing content for a file that
-    already has an original.
-    """
-    tim_lenh = shutil.which if tim_lenh is None else tim_lenh
-    if not dong_y:
-        return [], list(CAU_HOI_CODEX)
-    if not tim_lenh("codex"):
-        return [], [CAU_CAI_CODEX, CAU_HOI_CODEX[1]]
-    try:
-        import tdq_codex
-    except ImportError as loi:                      # bundle is missing scripts/tdq_codex.py
-        return [], [f"cannot load scripts/tdq_codex.py ({loi}) — copy that file back "
-                    f"from the original"]
-    tdq_codex.dat_co_dong_y(goc, True)
-    return [f"wrote the consent flag for calling `codex` into "
-            f"{os.path.join('docs', 'tdq', '.tdq-codex.json')}"], [
-        "the Codex layer is on. One step left: name the model with "
-        "python3 scripts/tdq_codex.py setup-model <ten-model>, then confirm the model answers "
-        "with python3 scripts/tdq_codex.py check"]
-
-
 # -------------------------------------------------- project trust for Codex CLI
 
 # The config directory of Codex. `CODEX_HOME` is the variable Codex itself reads, so honouring
 # it is also what lets the tests run without ever touching the real `~/.codex`.
 THU_MUC_CODEX_MAC_DINH = "~/.codex"
-
-
-def duong_config_codex(moi_truong=None):
-    """The path of the Codex CLI `config.toml` on this machine (it may not exist)."""
-    moi_truong = os.environ if moi_truong is None else moi_truong
-    goc = moi_truong.get("CODEX_HOME") or os.path.expanduser(THU_MUC_CODEX_MAC_DINH)
-    return os.path.join(goc, "config.toml")
-
-
-def _khoa_project(goc_bundle):
-    """The TOML key of a project — Codex matches on the absolute, symlink-resolved path."""
-    return f'[projects."{os.path.realpath(goc_bundle)}"]'
-
-
-def da_trusted(goc_bundle, moi_truong=None):
-    """Whether the project is declared `trust_level = "trusted"`. Missing file/permission → False.
-
-    It raises on no input: this function runs on the `check` path, and a `check` that crashes on a
-    strange machine means the user loses the way to diagnose anything.
-    """
-    noi_dung = _doc(duong_config_codex(moi_truong))
-    if not noi_dung:
-        return False
-    khoa = _khoa_project(goc_bundle)
-    vi_tri = noi_dung.find(khoa)
-    if vi_tri < 0:
-        return False
-    # Read only up to the next block: the `trust_level` of ANOTHER project does not count.
-    con_lai = noi_dung[vi_tri + len(khoa):]
-    ket = con_lai.find("\n[")
-    return 'trust_level = "trusted"' in (con_lai if ket < 0 else con_lai[:ket])
-
-
-def bat_trusted(goc_bundle, moi_truong=None):
-    """Write the block `[projects."<bundle>"] trust_level = "trusted"` into the Codex config.
-
-    This is the ONLY path in this whole file writing outside the bundle tree, so three hard rules
-    bind it: it runs only with the `--trust` flag, it always leaves a `<file>.tdq-bak-<timestamp>`
-    before editing an existing file, and it never writes over the block of a declared project.
-
-    Why it is needed anyway: until the project is trusted Codex ignores its ENTIRE `.codex/` layer
-    — MCP is not loaded, hooks are not read. The bundle looks like it holds nothing, which is the
-    very question that started this request.
-
-    Returns `(written?, config path, reason it was skipped)`.
-    """
-    duong = duong_config_codex(moi_truong)
-    if da_trusted(goc_bundle, moi_truong):
-        return False, duong, "the project was already declared trusted"
-    cu = _doc(duong)
-    khoi = f'\n{_khoa_project(goc_bundle)}\ntrust_level = "trusted"\n'
-    if cu is None:
-        os.makedirs(os.path.dirname(duong), exist_ok=True)
-        with open(duong, "w", encoding="utf-8") as f:
-            f.write("# TDQ Workflow added the block below via `setup --trust`.\n" + khoi)
-        log(f"created {duong} and declared the project trusted")
-        return True, duong, ""
-    moi = cu if cu.endswith("\n") else cu + "\n"
-    ghi_de_co_backup(duong, moi + khoi)
-    log(f"writing {duong}: adding a projects block for {os.path.realpath(goc_bundle)}")
-    return True, duong, ""
 
 
 # ------------------------------------------------------- agy plugin layout
@@ -579,15 +489,6 @@ def main(argv=None):
     parser.add_argument("lenh", choices=("check", "setup"))
     parser.add_argument("--root", help="bundle root, by default derived from the script location")
     parser.add_argument(
-        "--codex", action="store_true", dest="codex",
-        help="only with `setup`: you agree that the workflow may call the `codex` CLI. Without "
-             "this flag `setup` only prints the question — it installs nothing and writes no flag.")
-    parser.add_argument(
-        "--trust", action="store_true",
-        help="only with `setup`: declare this bundle a trusted project in the config.toml of "
-             "Codex CLI (default ~/.codex, or $CODEX_HOME). This is the ONLY path writing outside "
-             "the bundle; it always leaves a .tdq-bak-<timestamp> backup.")
-    parser.add_argument(
         "--shim", action="store_true",
         help="only with `setup`: install the `python3` shim so every command line printed by "
              "the rule layer is typeable on Windows. No-op on macOS and Linux.")
@@ -613,7 +514,21 @@ def main(argv=None):
     goc = args.root or tim_goc_bundle()
     try:
         manifest = doc_manifest(goc)
-    except (FileNotFoundError, ValueError) as loi:
+    except FileNotFoundError:
+        # Không có manifest KHÔNG còn là lỗi. Từ 0.50.0 repo này tự nó là plugin: mỗi host đọc
+        # một manifest mỏng trỏ vào `skills/` dùng chung, nên không có bundle nào để đối chiếu
+        # sha256. Chỉ layout agy — thứ duy nhất còn sinh ra file thật — mới mang manifest.
+        # Vẫn chạy phần kiểm môi trường, vì đó là phần còn giá trị ở mọi máy.
+        print("NOTE     không thấy bundle ở đây — repo này tự là plugin, mỗi host đọc một "
+              "manifest mỏng trỏ vào `skills/` dùng chung")
+        print("NOTE     cần layout Antigravity thì sinh bằng: "
+              "python3 scripts/build_portable.py --sinh-agy")
+        for dong in kiem_moi_truong({})["thieu"]:
+            print(f"MISSING  {dong}")
+        for dong in kiem_moi_truong({})["luu_y"]:
+            print(f"NOTE     {dong}")
+        return 0
+    except ValueError as loi:
         print(f"ERROR    {loi}")
         return EXIT_LECH
 
@@ -627,26 +542,10 @@ def main(argv=None):
             print(f"ERROR    cannot write into the bundle: {loi}")
             print("         fix the directory permissions (chmod -R u+w), then run `setup` again")
             return EXIT_LECH
-        if args.trust:
-            try:
-                da_ghi, duong, ly_do = bat_trusted(goc)
-            except OSError as loi:
-                print(f"ERROR    cannot write the Codex config: {loi}")
-                return EXIT_LECH
-            da_lam.append(f"khai project trusted trong {duong}" if da_ghi
-                          else f"skipped --trust: {ly_do}")
-        try:
-            lam_codex, noi_codex = cai_tang_codex(goc, args.codex)
-        except OSError as loi:
-            print(f"ERROR    cannot write the Codex consent flag: {loi}")
-            return EXIT_LECH
-        da_lam.extend(lam_codex)
         for viec in da_lam:
             print(f"DONE     {viec}")
         if not da_lam:
             print("DONE     (nothing needed patching)")
-        for dong in noi_codex:
-            print(f"ASK      {dong}")
         for viec in chiu:
             print(f"LEFT     {viec}")
         sach = _in_ket_qua(goc, manifest)

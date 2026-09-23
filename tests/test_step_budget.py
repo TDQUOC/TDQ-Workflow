@@ -136,7 +136,7 @@ class StepAudit(unittest.TestCase):
 
     def test_help_du_ba_co(self):
         proc = subprocess.run([sys.executable, os.path.join(SCRIPTS, "step_audit.py"),
-                               "--help"], capture_output=True, text=True)
+                               "--help"], capture_output=True, encoding="utf-8", text=True)
         self.assertEqual(proc.returncode, 0)
         for co in ("--transcript-dir", "--project", "--sessions"):
             self.assertIn(co, proc.stdout)
@@ -146,10 +146,10 @@ class StepAudit(unittest.TestCase):
         env.pop("TDQ_LOG", None)
         cmd = [sys.executable, os.path.join(SCRIPTS, "step_audit.py"),
                "--transcript-dir", os.path.join(SCRIPTS, "samples")]
-        on = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        on = subprocess.run(cmd, capture_output=True, encoding="utf-8", text=True, env=env)
         self.assertGreaterEqual(len([l for l in on.stderr.splitlines() if l.strip()]), 2)
         env["TDQ_LOG"] = "0"
-        off = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        off = subprocess.run(cmd, capture_output=True, encoding="utf-8", text=True, env=env)
         self.assertEqual(off.stderr.strip(), "")
         self.assertEqual(off.returncode, 0)
 

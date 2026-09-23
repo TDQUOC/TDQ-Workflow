@@ -17,7 +17,7 @@ class DocLangTest(unittest.TestCase):
     def run_tool(self, *args):
         env = dict(os.environ, TDQ_PROJECT_DIR=self.dir)
         return subprocess.run([sys.executable, TOOL, *args], capture_output=True,
-                              text=True, env=env)
+                              encoding="utf-8", text=True, env=env)
 
     def state(self):
         with open(os.path.join(self.dir, "docs", "tdq", "state.json"),

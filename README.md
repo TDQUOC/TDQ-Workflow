@@ -77,12 +77,44 @@ claude --plugin-dir /đường/dẫn/tới/TDQWorkflow
 **Bật workflow cho MỌI task**: dán block instruction trong `docs/notes/user-level-install.md`
 (mục 3) vào `~/.claude/CLAUDE.md` (user-level) hoặc `CLAUDE.md` root project (per-project).
 
-### Cách 3 — agent ngoài Claude Code
+### Cách 3 — host khác: Codex, OpenCode, Antigravity
 
-Marketplace là cơ chế riêng của Claude Code; Codex, Antigravity, Gemini CLI không đọc
-`.claude-plugin/`. Ba host đó dùng bản portable dựng sẵn trong repo — `portable_claude/`,
-`portable_codex/`, `antigravity_portable/` — mỗi bundle có `README.md` riêng ghi đúng thứ tự cài.
-Host nào không có bundle thì đọc đường dự phòng `portable_codex/workflow/01..09-*.md` theo thứ tự.
+Mọi host đọc **cùng một** thư mục `skills/`; mỗi host chỉ có một adapter mỏng khai đường tới đó,
+không host nào nhận bản chép. Cập nhật ở đâu cũng là `git pull` hoặc lệnh update của host.
+
+| Host | Adapter | Cài |
+|---|---|---|
+| Claude Code | `.claude-plugin/` | Cách 1 ở trên |
+| Codex CLI | `.agents/plugins/marketplace.json` + `.codex-plugin/plugin.json` | xem dưới |
+| OpenCode | `.opencode/plugins/tdq-workflow.js` | [`.opencode/INSTALL.md`](.opencode/INSTALL.md) |
+| Antigravity | sinh tại chỗ lúc cài | xem dưới |
+
+**Codex CLI** — repo tự là một marketplace của Codex:
+
+```
+codex plugin marketplace add TDQUOC/TDQ-Workflow
+codex plugin add tdq-workflow@tdq-local
+```
+
+**OpenCode** — khai đường tới adapter trong `opencode.json`, cần Node (adapter là JavaScript
+thuần, không package npm nào):
+
+```json
+{ "plugin": ["~/code/TDQ-Workflow/.opencode/plugins/tdq-workflow.js"] }
+```
+
+**Antigravity** — agy không đọc thẳng repo, nên layout của nó được SINH vào đúng thư mục cài
+trên máy bạn (`~/.gemini/config/plugins/tdq-workflow/`), đường dẫn tuyệt đối đã bung sẵn:
+
+```bash
+python3 scripts/build_portable.py --sinh-agy
+```
+
+Lệnh từ chối ghi đè thư mục không phải do nó sinh. Kéo bản mới về thì chạy lại lệnh.
+
+Sau khi cài trên host bất kỳ, kiểm môi trường bằng `python3 scripts/tdq_checkportable.py check`.
+Trên Windows mà `python3` chưa phải lệnh thật, `python3 scripts/tdq_checkportable.py setup --shim`
+đặt một shim trỏ vào `py -3`.
 
 ## Cập nhật
 
@@ -105,10 +137,10 @@ Cập nhật tay lúc nào cũng được:
 không đổi số thì máy người dùng thấy version y hệt và **giữ nguyên bản cache** — auto-update coi
 như vô hiệu. Vậy mỗi lần release:
 
-1. Sửa `version` trong `.claude-plugin/plugin.json`.
+1. Sửa `version` trong `.claude-plugin/plugin.json` và `.codex-plugin/plugin.json` (test
+   `test_docs_consistency` bắt hai số lệch nhau).
 2. Ghi mục mới vào `CHANGELOG.md`.
-3. Dựng lại 3 bundle portable: `python3 scripts/build_portable.py` (bundle nhúng số version).
-4. Commit rồi `git push`, kèm tag nếu muốn người dùng ghim được:
+3. Commit rồi `git push`, kèm tag nếu muốn người dùng ghim được:
    `git tag v<số> && git push origin v<số>`.
 
 Ai muốn người dùng nhận bản mới theo từng commit thay vì theo release thì **bỏ hẳn** trường
@@ -131,9 +163,9 @@ Nguồn: <https://code.claude.com/docs/en/plugin-marketplaces> ·
 
 | Thư mục | Vai trò |
 |---|---|
-| `skills/` (6) | tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-status, tdq-conventions |
+| `skills/` (9) | tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-lean, tdq-status, tdq-check-status, tdq-conventions, tdq-lsp-setup |
 | `agents/` (3) | tdq-reviewer, tdq-implementer, tdq-qc-tester |
-| `hooks/` (5) | edit_gate, bash_gate (nhắc), session_start, prompt_context, stop_gate (chặn working log) |
+| `hooks/` (6 trên 5 sự kiện) | edit_gate, bash_gate (nhắc), session_start, subagent_start, prompt_context, stop_gate (chặn working log) |
 | `scripts/tdq_state.py` | CLI state: `next \| get \| init \| set \| approve \| reset \| phases-doc` |
 | `docs/claude-md-mau.md` | bản mẫu để chép sang `~/.claude/CLAUDE.md` |
 | `tests/` | `python3 -m unittest discover tests` |

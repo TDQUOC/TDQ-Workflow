@@ -381,6 +381,10 @@ class CodexHomeTest(RepoTam):
         self.assertNotIn("sk-abc123secret", tdq_codex.mask_secrets(ban))
 
 
+# Python < 3.11 không có tomllib: sản phẩm cố ý bỏ bước chép provider, chỉ giữ dòng model.
+THIEU_TOMLLIB = "Python < 3.11 không có tomllib"
+
+
 class CodexHomeProviderTest(RepoTam):
     """Bugfix 2026-09-14 — CODEX_HOME tạm phải mang provider của máy.
 
@@ -426,6 +430,7 @@ class CodexHomeProviderTest(RepoTam):
         with open(os.path.join(home, "config.toml"), "rb") as f:
             return tomllib.load(f)
 
+    @unittest.skipIf(tdq_codex.tomllib is None, THIEU_TOMLLIB)
     def test_chep_dung_provider_dang_chon_kem_bang_con(self):
         self._ghi_nguon(self.CONFIG_MAY)
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
@@ -436,11 +441,13 @@ class CodexHomeProviderTest(RepoTam):
         self.assertEqual(bang["wire_api"], "responses")
         self.assertEqual(bang["http_headers"]["Authorization"], "Bearer sk-gia-cho-test")
 
+    @unittest.skipIf(tdq_codex.tomllib is None, THIEU_TOMLLIB)
     def test_model_la_model_workflow_chon_khong_phai_model_may(self):
         self._ghi_nguon(self.CONFIG_MAY)
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
         self.assertEqual(self._doc_config(home)["model"], "gpt-5-codex")
 
+    @unittest.skipIf(tdq_codex.tomllib is None, THIEU_TOMLLIB)
     def test_khong_chep_bang_ngoai_provider(self):
         self._ghi_nguon(self.CONFIG_MAY)
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
@@ -449,11 +456,13 @@ class CodexHomeProviderTest(RepoTam):
         self.assertEqual(set(cfg["model_providers"]), {"9router"},
                          "chỉ chép provider đang chọn")
 
+    @unittest.skipIf(tdq_codex.tomllib is None, THIEU_TOMLLIB)
     def test_may_khong_khai_provider_thi_chi_co_model(self):
         self._ghi_nguon('model = "o3"\n')
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
         self.assertEqual(self._doc_config(home), {"model": "gpt-5-codex"})
 
+    @unittest.skipIf(tdq_codex.tomllib is None, THIEU_TOMLLIB)
     def test_config_may_thieu_hoac_hong_van_dung_duoc_home(self):
         home = tdq_codex.dung_codex_home(self.cwd, model="gpt-5-codex", nguon=self.nguon)
         self.assertEqual(self._doc_config(home), {"model": "gpt-5-codex"})
@@ -484,7 +493,7 @@ class CodexHomeProviderTest(RepoTam):
         """`auth.json` và khoá provider nằm trong đây; repo công khai thì không được lọt."""
         mau = os.path.join("docs", "tdq", ".tdq-codex-home", "tdq-codex-home-x", "auth.json")
         proc = subprocess.run(["git", "check-ignore", "-q", mau], cwd=ROOT,
-                              capture_output=True, text=True, timeout=30,
+                              capture_output=True, encoding="utf-8", text=True, timeout=30,
                               stdin=subprocess.DEVNULL)
         self.assertEqual(proc.returncode, 0, f"{mau} chưa được gitignore")
 

@@ -4,7 +4,12 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
+import unittest
+
+try:
+    import pytest
+except ImportError:  # 2026-09-21 (T3.1): file viết theo pytest — máy chưa cài thì bỏ qua cả file
+    raise unittest.SkipTest("chưa cài pytest")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 

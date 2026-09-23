@@ -18,7 +18,7 @@ TIERS = ("always loaded", "loaded on skill call", "read on demand")
 
 def run(*args, env=None):
     proc = subprocess.run(
-        [sys.executable, SCRIPT, *args], capture_output=True, text=True,
+        [sys.executable, SCRIPT, *args], capture_output=True, encoding="utf-8", text=True,
         timeout=300, env=dict(os.environ, **(env or {})),
     )
     return proc.returncode, proc.stdout, proc.stderr

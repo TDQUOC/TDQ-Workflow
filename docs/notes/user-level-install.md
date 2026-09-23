@@ -73,24 +73,19 @@ Lưu ý tương thích:
 - Nếu `~/.claude/CLAUDE.md` của bạn đã có các mục trùng (Tavily/research, phong cách ngắn gọn, git naming, working log) thì giữ 1 bản, tránh dán lặp; riêng đường log phải là `docs/workinglog/` (xem mục 2).
 - Giới hạn summary trong chat: spec ≤ 50 dòng, plan ≤ 10 dòng.
 
-## 4. Dùng ngoài Claude Code (Codex, Antigravity, …)
+## 4. Dùng ngoài Claude Code (Codex, OpenCode, Antigravity)
 
-Hai bản portable đều **tự sinh**, đừng sửa tay — sinh lại bằng
-`python3 scripts/build_portable.py`:
+Từ 0.50.0 không còn bản sao nào để chép: mọi host đọc cùng thư mục `skills/` qua một adapter
+mỏng. Lệnh cài của từng host nằm ở README, mục **Cài đặt → Cách 3**.
 
-- `portable_claude/` — cho Claude Code ở project khác: chép trọn vào gốc project (giữ nguyên
-  `.claude/` và `.mcp.json`). Skill, agent, 5 hook và `scripts/` đi kèm sẵn.
-- `portable_codex/` — cho harness không có skill/hook system (Codex CLI, Antigravity…):
-  `AGENTS.md` + `workflow/NN-*.md` + `scripts/`.
-
-Chép xong, việc ĐẦU TIÊN ở project đích là kiểm tương thích:
+Cài xong, việc ĐẦU TIÊN ở máy đích là kiểm môi trường:
 
 ```bash
-python3 scripts/tdq_checkportable.py check   # thiếu gì thì chạy tiếp: … setup
+python3 scripts/tdq_checkportable.py check   # Windows chưa có python3 thì: … setup --shim
 ```
 
-Ba việc máy không làm thay được: cấp quyền tin cậy thư mục, duyệt từng MCP server, khởi động
-lại phiên để skill/agent mới được nạp. Chi tiết ở README của từng bản.
+Hai việc máy không làm thay được: duyệt từng MCP server, và khởi động lại phiên để skill mới
+được nạp.
 
 ## 5. Gỡ
 

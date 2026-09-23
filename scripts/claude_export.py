@@ -205,7 +205,8 @@ def collect_config_files(claude_home):
 
 def _git_out(repo, *args):
     proc = subprocess.run(["git", "-C", repo, *args],
-                          capture_output=True, text=True, timeout=120)
+                          capture_output=True,
+                          encoding="utf-8", errors="replace", text=True, timeout=120)
     return proc.stdout.strip() if proc.returncode == 0 else ""
 
 
@@ -364,7 +365,7 @@ def cli_versions():
             continue
         try:
             proc = subprocess.run([tool, "--version"], capture_output=True,
-                                  text=True, timeout=60)
+                                  encoding="utf-8", errors="replace", text=True, timeout=60)
         except (OSError, subprocess.TimeoutExpired):
             continue
         if proc.returncode == 0:

@@ -18,6 +18,12 @@ Log service: ISO timestamps on stderr, on by default, muted with `TDQ_LOG=0`. It
 when nothing changed, so a normal run on macOS adds no noise; set `TDQ_UTF8_LOG_FORCE=1` to log
 the no-op case too.
 
+It also stays silent when stderr is a pipe rather than a console (2026-09-21). On Windows the
+switch happens on EVERY run, and this module fires at import — before the host script has read
+its own `--quiet` — so a piped caller (a hook host, a test asserting an empty stderr, CI) got a
+line it had no way to mute. A person at a console still sees it; `TDQ_UTF8_LOG_FORCE=1` brings
+it back on a pipe.
+
 This module deliberately keeps its own two-line log helper instead of importing the shared one
 from `tdq_state`: `tdq_state` imports THIS module, and reaching back would be a circular import.
 """
@@ -43,6 +49,14 @@ def _log(message):
         print(f"[{stamp}] utf8_io: {message}", file=sys.stderr)
 
 
+def _is_console(stream):
+    """True when a person is reading `stream` live, not a pipe or a file."""
+    try:
+        return bool(stream is not None and stream.isatty())
+    except (AttributeError, ValueError):
+        return False
+
+
 def _needs_switch(stream):
     """True when the stream exists, can be reconfigured, and is not UTF-8 yet."""
     if stream is None or not hasattr(stream, "reconfigure"):
@@ -64,9 +78,10 @@ def force_utf8(out=None, err=None):
             continue
         stream.reconfigure(encoding=TARGET_ENCODING, errors=ERROR_POLICY)
         changed += 1
-    if changed:
+    force = os.environ.get("TDQ_UTF8_LOG_FORCE") == "1"
+    if changed and (force or _is_console(sys.stderr)):
         _log(f"forced {changed} stream(s) to {TARGET_ENCODING}/{ERROR_POLICY}")
-    elif os.environ.get("TDQ_UTF8_LOG_FORCE") == "1":
+    elif not changed and force:
         _log(f"no stream needed switching (already {TARGET_ENCODING})")
     return changed
 

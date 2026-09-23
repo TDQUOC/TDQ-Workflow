@@ -15,6 +15,7 @@ GOC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(GOC, "scripts"))
 
 import doc_dup  # noqa: E402
+from helper import LY_DO_TOKEN, co_bo_dem_token  # noqa: E402
 
 LENH = [sys.executable, os.path.join(GOC, "scripts", "doc_dup.py")]
 
@@ -95,6 +96,7 @@ class ShingleTest(unittest.TestCase):
 class TokenTest(unittest.TestCase):
     """Nhóm `token`: đếm bằng bộ đếm thật, cấm ước lượng ký-tự-chia-bốn."""
 
+    @unittest.skipUnless(co_bo_dem_token(), LY_DO_TOKEN)
     def test_cap_trung_co_so_token_lon_hon_khong(self):
         with tempfile.TemporaryDirectory() as tmp:
             _ghi(tmp, "a.md", DOAN_CHUNG)
@@ -132,7 +134,7 @@ class LogTest(unittest.TestCase):
         env = dict(os.environ)
         env.update(moi_truong or {})
         return subprocess.run(LENH + ["--vung", tmp, *them],
-                              capture_output=True, text=True, env=env)
+                              capture_output=True, encoding="utf-8", text=True, env=env)
 
     def _dung_hai_file(self, tmp):
         _ghi(tmp, "a.md", DOAN_CHUNG)
@@ -144,16 +146,19 @@ class LogTest(unittest.TestCase):
             proc = self._chay(tmp)
             self.assertRegex(proc.stderr, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
 
+    @unittest.skipUnless(co_bo_dem_token(), LY_DO_TOKEN)
     def test_co_quiet_thi_stderr_rong(self):
         with tempfile.TemporaryDirectory() as tmp:
             self._dung_hai_file(tmp)
             self.assertEqual(self._chay(tmp, "--quiet").stderr, "")
 
+    @unittest.skipUnless(co_bo_dem_token(), LY_DO_TOKEN)
     def test_bien_moi_truong_tat_duoc_log(self):
         with tempfile.TemporaryDirectory() as tmp:
             self._dung_hai_file(tmp)
             self.assertEqual(self._chay(tmp, moi_truong={"TDQ_DUP_LOG": "0"}).stderr, "")
 
+    @unittest.skipUnless(co_bo_dem_token(), LY_DO_TOKEN)
     def test_bang_luon_ra_stdout_ke_ca_khi_tat_log(self):
         with tempfile.TemporaryDirectory() as tmp:
             self._dung_hai_file(tmp)
@@ -170,21 +175,23 @@ class LogTest(unittest.TestCase):
 class ThoatTest(unittest.TestCase):
     """Nhóm `thoat`: 0 chạy xong · 2 sai cú pháp · 3 thiếu thư viện đếm."""
 
+    @unittest.skipUnless(co_bo_dem_token(), LY_DO_TOKEN)
     def test_chay_xong_thoat_0(self):
         with tempfile.TemporaryDirectory() as tmp:
             _ghi(tmp, "a.md", DOAN_CHUNG)
             _ghi(tmp, "b.md", DOAN_CHUNG)
             proc = subprocess.run(LENH + ["--vung", tmp, "--quiet"],
-                                  capture_output=True, text=True)
+                                  capture_output=True, encoding="utf-8", text=True)
             self.assertEqual(proc.returncode, 0)
 
     def test_sai_cu_phap_thoat_2(self):
-        proc = subprocess.run(LENH + ["--khong-co-co-nay"], capture_output=True, text=True)
+        proc = subprocess.run(LENH + ["--khong-co-co-nay"], capture_output=True,
+                              encoding="utf-8", text=True)
         self.assertEqual(proc.returncode, 2)
 
     def test_vung_khong_ton_tai_thoat_2(self):
         proc = subprocess.run(LENH + ["--vung", "/khong/ton/tai/that"],
-                              capture_output=True, text=True)
+                              capture_output=True, encoding="utf-8", text=True)
         self.assertEqual(proc.returncode, 2)
 
     def test_ma_thoat_thieu_thu_vien_la_3(self):
@@ -194,7 +201,7 @@ class ThoatTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             _ghi(tmp, "a.md", DOAN_CHUNG)
             proc = subprocess.run(LENH + ["--vung", tmp, "--min-dong", "0"],
-                                  capture_output=True, text=True)
+                                  capture_output=True, encoding="utf-8", text=True)
             self.assertEqual(proc.returncode, 2)
 
 

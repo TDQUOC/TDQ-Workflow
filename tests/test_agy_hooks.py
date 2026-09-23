@@ -202,7 +202,8 @@ class TestAgyStopGate(StopBase):
         # reach outside the temp dir into the real project's own state.json.
         proc = subprocess.run(
             [sys.executable, os.path.join(HOOKS_DIR, "agy_stop_gate.py")],
-            input="not json", capture_output=True, text=True, timeout=30, cwd=self.cwd)
+            input="not json", capture_output=True,
+            encoding="utf-8", text=True, timeout=30, cwd=self.cwd)
         self.assertEqual(proc.returncode, 0)
 
 

@@ -1,36 +1,23 @@
 #!/usr/bin/env python3
-"""build_portable.py — generate the three portable bundles of TDQ Workflow from ONE source.
+"""build_portable.py — sinh layout Antigravity, và viết lại tên lệnh trong `hooks/hooks.json`.
 
-Why this file exists: the old `portable/` bundle was written by hand, its own README said
-"Not generated — after editing `skills/` remember to sync by hand", and the test that locked
-the sync was deleted back in 0.10.0. A hand-written bundle always rots over time. Generating
-it by machine is the only way to keep the portable bundle correct.
+2026-09-21: file này từng dựng BA bundle portable (claude, codex, antigravity) bằng cách chép
+`skills/`, `hooks/`, `agents/` và `scripts/` vào ba cây thư mục riêng — 357 file nhân bản. Mô
+hình đó đã bỏ. Claude Code đọc repo qua `.claude-plugin/marketplace.json`, Codex đọc qua
+`.agents/plugins/marketplace.json`, OpenCode qua `.opencode/plugins/tdq-workflow.js`; cả ba trỏ
+thẳng vào một nguồn chung thay vì một bản sao.
 
-Three targets, one source (`skills/`, `hooks/`, `agents/`, `scripts/`):
+Còn đúng hai việc cần sinh ra file thật:
 
-    portable_claude/  — for Claude Code: `.claude/skills`, `.claude/agents`,
-                        `.claude/settings.json` (hooks), `.mcp.json`, `scripts/`.
-                        Every `${CLAUDE_PLUGIN_ROOT}` becomes `${CLAUDE_PROJECT_DIR}`
-                        because that variable ONLY exists when running as a registered plugin.
-    portable_codex/   — for Codex CLI >= 0.147.0, using its three native layers exactly:
-                        `.agents/skills/`, `.codex/config.toml` (MCP), `.codex/hooks.json`
-                        + `hooks/`. Plus `AGENTS.md` + `workflow/NN-*.md` as the fallback
-                        for any OTHER harness that can only read markdown.
-    antigravity_portable/ — for Antigravity CLI (agy): a plugin directory copied to
-                        `~/.gemini/config/plugins/tdq-workflow/` — `plugin.json`, `skills/`,
-                        `hooks.json` (a REAL `PreToolUse` deny and a `Stop` `continue`),
-                        `mcp_config.json`.
+    --sinh-agy    Antigravity đòi một thư mục plugin ở đường dẫn cố định dưới `$HOME`, không có
+                  cách nào trỏ tới nơi khác. Nên layout đó được sinh TẠI CHỖ trên máy sẽ chạy
+                  nó, chứ không chép sẵn vào repo — bản chép sẵn nướng cứng thư mục nhà của máy
+                  dựng, thứ vô nghĩa với mọi máy khác.
+    --sinh-hook-claude
+                  Viết lại tiền tố tên lệnh Python trong `hooks/hooks.json` theo hệ đích.
 
-All three carry a `manifest.json` (file+sha256, version, minimum python, external commands, MCP)
-so `tdq_checkportable.py` on the target machine can check and patch itself.
-
-Usage:
-    python3 scripts/build_portable.py                    # generate all three into the repo root
-    python3 scripts/build_portable.py --dest /tmp/x      # generate into another folder
-    python3 scripts/build_portable.py --only claude      # only one bundle
-
-Env: TDQ_LOG=0 turns the progress log off (the log goes to stderr).
-Exit: 0 done · 1 generation error · 2 bad syntax.
+Env: TDQ_LOG=0 tắt log tiến độ (log ra stderr).
+Exit: 0 xong · 1 lỗi sinh · 2 sai cú pháp.
 """
 
 import argparse
@@ -43,18 +30,14 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 from claude_export import plugin_version, sha256_of  # noqa: E402
 # The logic that builds the two config files lives in `tdq_checkportable.py`, not here: only
 # that file ships with the bundle. Importing it back keeps exactly one copy of the logic.
-from tdq_checkportable import sinh_mcp, sinh_settings  # noqa: E402
+from tdq_checkportable import sinh_mcp  # noqa: E402
 import tdq_ten_lenh  # noqa: E402 — owns the interpreter name
 
 EXIT_LOI = 1
-EXIT_SYNTAX = 2
-
-# Source folders carried into the portable bundle. `tests/` is deliberately absent: the bundle
-# exists to run the workflow in someone else's project, not to run this repo's own tests.
-SOURCE_DIRS = ("skills", "hooks", "agents", "scripts")
 
 # Junk must never leak into the generated bundle. `docs/tdq` heads the list because it holds the
 # state, brief, spec and plan of THIS source repo — shipping that elsewhere leaks internal data.
@@ -74,13 +57,10 @@ EXCLUDE_FILES = frozenset({
     "tdq_eval.py",
 })
 
-# agy-specific hooks matter ONLY to the antigravity bundle. They are deliberately NOT in
-# `EXCLUDE_FILES`: that set also drives `sinh_manifest`, so listing them there would ship them
-# inside the agy bundle unlisted by its own manifest. Instead the claude/codex builds hand this
-# set to `copy_loc(..., bo_qua_them=...)` for their wholesale `hooks/` copy — Claude Code's
-# PreToolUse only ever reminds and Codex has no `Stop`-continue mechanism, so neither target can
-# do anything with a hard-deny hook written against agy's own schema.
-FILE_HOOK_AGY = frozenset({"agy_pretooluse_gate.py", "agy_stop_gate.py"})
+# The skill that only means something on the TARGET machine (`tdq-checkportable`) lives here and
+# not in `skills/`: putting it there would make every session pay for one more description in its
+# context budget, for a skill this repo never runs. The agy layout still ships it.
+PORTABLE_SRC = "portable_src"
 
 MANIFEST_NAME = "manifest.json"
 PYTHON_MIN = "3.8"
@@ -109,9 +89,9 @@ def log(message):
 def doi_bien_plugin_root(text, thay_bang=None):
     """`${CLAUDE_PLUGIN_ROOT}` and `$CLAUDE_PLUGIN_ROOT` → `${CLAUDE_PROJECT_DIR}`.
 
-    `thay_bang` allows a path suffix to be appended. The claude bundle needs that: the workflow root
-    sits at `.claude/tdq/`, not at the project root, so a bare `${CLAUDE_PROJECT_DIR}` would build
-    a path one level short — and the script call then silently finds no file.
+    `thay_bang` replaces the variable with a fixed path instead. The agy layout needs that: agy
+    expands no plugin variable at all, so every hook command must carry the absolute install root
+    — a bare variable there leaves the script call silently finding no file.
 
     Returns `(new text, number of replacements)`. The count is worth more than the result: grepping
     the generated bundle for 0 matches only proves "gone from the files ALREADY COPIED", while
@@ -159,13 +139,12 @@ def _doc_text(path):
         return None
 
 
-def copy_loc(nguon, dich, doi_bien=False, thay_bang=None, bo_qua_them=()):
+def copy_loc(nguon, dich, doi_bien=False, thay_bang=None):
     """Copy a folder tree through the filter, keeping the executable bit. Returns the rewrite count.
 
-    `doi_bien=True` is only for the claude bundle: text files are rewritten as they are written and
-    binary files copied as-is. Keeping the `x` bit is mandatory — without it the hook cannot run.
-    `bo_qua_them` drops extra file names for THIS call only, without touching `EXCLUDE_FILES`
-    (which `sinh_manifest` shares) — see `FILE_HOOK_AGY`.
+    `doi_bien=True` rewrites the plugin-root variable in text files as they are written (the agy
+    layout needs absolute paths); binary files are copied as-is. Keeping the `x` bit is
+    mandatory — without it the hook cannot run.
     """
     so_lan_doi = 0
     for thu_muc, thu_muc_con, files in os.walk(nguon):
@@ -174,7 +153,7 @@ def copy_loc(nguon, dich, doi_bien=False, thay_bang=None, bo_qua_them=()):
         dich_hien_tai = dich if tuong_doi == "." else os.path.join(dich, tuong_doi)
         os.makedirs(dich_hien_tai, exist_ok=True)
         for ten in files:
-            if _bo_qua_file(ten) or ten in bo_qua_them:
+            if _bo_qua_file(ten):
                 continue
             src = os.path.join(thu_muc, ten)
             dst = os.path.join(dich_hien_tai, ten)
@@ -190,84 +169,6 @@ def copy_loc(nguon, dich, doi_bien=False, thay_bang=None, bo_qua_them=()):
     return so_lan_doi
 
 
-# --------------------------------------------------------- claude bundle
-
-# The workflow root inside the target project. NOT dumped straight into `.claude/`:
-# `hooks/scripts/_common.py` finds `scripts/` via `../../scripts` relative to itself, so `hooks/`
-# and `scripts/` must sit side by side under one root; `skills/` and `agents/` are the opposite —
-# Claude Code scans only `.claude/skills` and `.claude/agents`. A folder of its own satisfies both.
-GOC_TDQ = ".claude/tdq"
-
-# The skill that only means something on the TARGET machine (`tdq-checkportable`) lives here and
-# not in `skills/`: putting it there would make the main bundle pay for one more description in
-# every session's context budget, for a skill this repo never runs.
-PORTABLE_SRC = "portable_src"
-TEN_BAN_CLAUDE = "portable_claude"
-
-README_CLAUDE = """# TDQ Workflow — portable bundle for Claude Code
-
-## Install on a new machine — follow this exact order
-
-1. **Copy** the whole content of this folder into the root of your project, keeping
-   `.claude/` and `.mcp.json` as they are.
-2. **Check** before opening Claude Code:
-   ```
-   python3 .claude/tdq/scripts/tdq_checkportable.py check
-   ```
-   Read by prefix: `CLEAN` done · `MISSING` not there · `DRIFT` differs from the manifest ·
-   `NOTE` something only you can do.
-3. **Patch** if there is any `MISSING`/`DRIFT`: `python3 .claude/tdq/scripts/tdq_checkportable.py setup`
-   (see the warning section below — it can only rebuild two files).
-4. **Set the environment variables** for MCP if `check` reports them missing. The script
-   deliberately does NOT do it for you and never prints a key value — it only names the
-   variable.
-5. **Open Claude Code** in that project. The first time it asks whether you trust this
-   folder → **click yes**. Without that, the hooks and the project config have no effect.
-6. **Restart the session** so the skills and agents in the new folder get scanned.
-7. **Approve the MCP servers** — every server in `.mcp.json` needs one approval from you.
-
-Once the seven steps are done, say `run the tdq-checkportable skill` so the machine runs a
-final check for you.
-
-## Three things the machine CANNOT do for you
-
-1. **Trust the folder** — step 5 above. Only you can click it; no command-line flag in this
-   bundle replaces it.
-2. **Approve the MCP servers** — step 7.
-3. **Restart** — step 6. Skip it and the new skills just sit there, with no error at all.
-
-## Warning about self-patching
-
-`setup` rebuilds exactly the two config files the bundle holds enough data to recreate:
-`.claude/settings.json` (from the bundled `hooks.json`) and `.mcp.json`. Overwriting always
-leaves a backup at `<file>.tdq-bak-<timestamp>`, and the `env` block you added yourself is
-kept.
-
-Any other file that is missing or has drifted is **not** invented by `setup` — it reports
-`LEFT …` and exits non-zero; the only correct source is the original bundle, copy it from
-there. Want a check without any change: use `check`.
-
-## Secret keys
-
-`.mcp.json` only records the NAMES of environment variables, never a key value. Set the
-variables yourself on your own machine before using MCP.
-"""
-
-
-def _sinh_settings(repo, dich_settings):
-    """`hooks/hooks.json` + the repo `env` block → `.claude/settings.json` of the target project."""
-    cai_dat = sinh_settings(repo, os.path.join(repo, "hooks", "hooks.json"))
-    duong_env = os.path.join(repo, ".claude", "settings.json")
-    if os.path.isfile(duong_env):
-        with open(duong_env, encoding="utf-8") as f:
-            cu = json.load(f)
-        if "env" in cu:
-            cai_dat["env"] = cu["env"]
-    cai_dat.setdefault("env", {})
-    _ghi_json(dich_settings, cai_dat)
-    return 0
-
-
 def _ghi_json(duong, du_lieu):
     """Write JSON byte-for-byte the way `tdq_checkportable._ghi_json_co_backup` writes it.
 
@@ -278,51 +179,9 @@ def _ghi_json(duong, du_lieu):
         f.write(json.dumps(du_lieu, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
 
 
-def _sinh_mcp(duong):
-    _ghi_json(duong, sinh_mcp())
+# ------------------------------------------------ skills carried by the agy layout
 
-
-def sinh_ban_claude(repo, dest, version=""):
-    """Build `<dest>/portable_claude/` — the bundle copied straight into a Claude Code project."""
-    goc = os.path.join(dest, TEN_BAN_CLAUDE)
-    if os.path.isdir(goc):
-        shutil.rmtree(goc)
-    thu_muc_claude = os.path.join(goc, ".claude")
-    tdq = os.path.join(goc, GOC_TDQ)
-    moi = "${" + BIEN_MOI + "}/" + GOC_TDQ
-
-    tong_doi = 0
-    tong_doi += copy_loc(os.path.join(repo, "skills"),
-                         os.path.join(thu_muc_claude, "skills"), True, moi)
-    tong_doi += copy_loc(os.path.join(repo, PORTABLE_SRC, "skills"),
-                         os.path.join(thu_muc_claude, "skills"), True, moi)
-    tong_doi += copy_loc(os.path.join(repo, "agents"),
-                         os.path.join(thu_muc_claude, "agents"), True, moi)
-    tong_doi += copy_loc(os.path.join(repo, "scripts"),
-                         os.path.join(tdq, "scripts"), True, moi)
-    tong_doi += copy_loc(os.path.join(repo, "hooks"),
-                         os.path.join(tdq, "hooks"), True, moi, FILE_HOOK_AGY)
-    tong_doi += _sinh_settings(repo, os.path.join(thu_muc_claude, "settings.json"))
-    _sinh_mcp(os.path.join(goc, ".mcp.json"))
-
-    with open(os.path.join(goc, "README.md"), "w", encoding="utf-8") as f:
-        f.write(README_CLAUDE)
-
-    con_lai = dem_bien_trong_cay(goc)
-    if con_lai:
-        raise RuntimeError(f"the claude bundle still has {con_lai} use(s) of {BIEN_CU}")
-    log(f"{TEN_BAN_CLAUDE}: rewrote {tong_doi} plugin-variable use(s), 0 left")
-
-    ghi_manifest(goc, version)
-    return goc
-
-
-# ---------------------------------------------------------- codex bundle
-
-TEN_BAN_CODEX = "portable_codex"
-
-# Reading order, not alphabetical order: a harness with no skill system has nothing to pick the
-# right file at the right moment, so the number in the file name IS the routing mechanism.
+# Reading order, not alphabetical order: it is the order the pipeline uses them in.
 THU_TU_SKILL = (
     "tdq-conventions",
     "tdq-lsp-setup",  # read before intake: it settles the search layer every later phase uses
@@ -338,367 +197,6 @@ THU_TU_SKILL = (
     "tdq-status",
     "tdq-check-status",
 )
-
-DONG_SOUL_AGENTS = ("Soul: chất lượng > runtime > context cost · luật gốc: "  # i18n-allow
-                    "`workflow/references/tdq-conventions/soul.md`")
-
-AGENTS_MD = """# TDQ Workflow — guide for agents
-
-{soul}
-
-This bundle runs a pipeline with approval gates: intake → spec → plan → implement → QC →
-report. Only the USER may approve, and every state change goes through `scripts/tdq_state.py`.
-
-## Step 0 — check compatibility BEFORE anything else
-
-```
-python3 scripts/tdq_checkportable.py check
-```
-
-If it reports something missing, run `python3 scripts/tdq_checkportable.py setup`: it rebuilds
-the two config files that can be recreated (`.claude/settings.json`, `.mcp.json`), always
-leaves a backup at `<file>.tdq-bak-<timestamp>` before overwriting, and reports `LEFT …` for
-whatever is only correct when copied from the original bundle.
-
-The line `NOTE project is not trusted` is the most important line this command prints: while
-untrusted, Codex ignores both `.codex/config.toml` and `.codex/hooks.json`, and the bundle
-runs as if it were not there.
-
-## Running on Codex CLI (>= {codex_min}) — use the native layer, no need to read `workflow/`
-
-- `.agents/skills/` — Codex loads skills by `description` on its own, you do not pick files.
-- `.codex/config.toml` — MCP servers; environment variable NAMES only, set them yourself.
-- `.codex/hooks.json` + `hooks/` — machine-guarded approval gates (`SessionStart`,
-  `UserPromptSubmit`, `PreToolUse` for `Bash` and `apply_patch`, `Stop`).
-
-## Another harness — read `workflow/` in the exact numbered order
-
-With no skill system, the number in the file name IS the routing mechanism:
-
-{danh_sach}
-
-Full phase table: `workflow/phases.md` (generated from the `PHASE_TABLE` constant, never
-edited by hand).
-
-## Four things the machine CANNOT do for you
-
-1. Grant access to the project folder on the first run (`setup --trust` can do this for you).
-2. Approve the hooks in the Codex UI — hooks have their own trust gate, `--trust` does NOT
-   open it.
-3. Approve every MCP server declared in `.codex/config.toml`.
-4. Restart the session after a new instruction folder is added.
-"""
-
-
-README_CODEX = """# TDQ Workflow — portable bundle for Codex CLI
-
-This bundle uses the REAL native mechanisms of Codex, not markdown read by hand:
-
-| Layer | File in the bundle | What Codex does with it |
-|---|---|---|
-| Skill | `.agents/skills/<name>/SKILL.md` | scanned automatically, loaded on demand by `description` |
-| MCP | `.codex/config.toml` | `[mcp_servers.<name>]`, environment variable NAMES only |
-| Hook | `.codex/hooks.json` + `hooks/` | guards `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `Stop` |
-| Fallback | `workflow/NN-*.md` | for any OTHER markdown-only harness to read in order |
-
-Needs Codex CLI >= {codex_min}. An older build can still use `workflow/*.md`, but gets none
-of the native layers.
-
-## Install on a new machine — follow this exact order
-
-The order matters: **trust FIRST, run AFTER**. While the project is untrusted, Codex skips
-the WHOLE `.codex/` layer — MCP is not loaded, `hooks.json` is not read, and the bundle
-looks empty without a single error.
-
-1. **Copy** the whole content of this folder into the project root.
-2. **Trust the project folder** — see the three ways just below.
-3. **Check**:
-   ```
-   python3 scripts/tdq_checkportable.py check
-   ```
-   The output holds one line saying whether the project is trusted yet. Read by prefix:
-   `CLEAN` done · `MISSING` not there · `DRIFT` differs from the manifest · `NOTE` something
-   only you can do.
-4. **Patch** if there is any `MISSING`/`DRIFT`: `python3 scripts/tdq_checkportable.py setup` —
-   it rebuilds the two config files that can be recreated, always leaves a backup at
-   `<file>.tdq-bak-<timestamp>` before overwriting, and reports `LEFT …` for whatever is only
-   correct when copied from the original bundle.
-5. **Set the environment variables** for MCP if `check` reports them missing. The script
-   deliberately does NOT do this for you and never prints a key value — it only names the
-   variable.
-6. **Open Codex CLI** in the project, then **restart the session** once so the skills in
-   `.agents/skills/` get scanned.
-7. **Approve the hooks** in the Codex UI — a SEPARATE gate, see "Four things" below.
-8. **Approve the MCP servers** — one approval per server.
-
-## Trust — three ways, pick one
-
-**Way 1 — let the script do it, no need to open Codex:**
-
-```
-cd <project root the bundle was copied into>
-python3 scripts/tdq_checkportable.py setup --trust
-```
-
-**Way 2 — click inside Codex:** open Codex CLI right in the project folder; the first time it
-enters an unknown folder it asks whether it may work here → pick the option that trusts the
-folder.
-
-**Way 3 — edit by hand** `~/.codex/config.toml` (or `$CODEX_HOME/config.toml`), adding:
-
-```toml
-[projects."/absolute/path/to/the/project"]
-trust_level = "trusted"
-```
-
-The path must be ABSOLUTE with symlinks resolved, matching exactly the folder Codex runs in —
-one character off and it does not take.
-
-Way 1 is the ONLY path in this bundle that writes outside the bundle: it always leaves a
-`<file>.tdq-bak-<timestamp>`, keeps the rest of the file untouched, and never writes over an
-existing block. Without the `--trust` flag, `setup` does not touch that file at all.
-
-To check that it took: run `check` again and read the trusted status line.
-
-## Four things the machine CANNOT do for you
-
-1. **Trust the folder** — `setup --trust` can do it for you (Way 1 above), or click yes in
-   Codex.
-2. **Approve the hooks** — hooks have their OWN trust gate: Codex shows "Review hooks" in the
-   UI and you have to approve once. `--trust` does not open this gate, and editing
-   `hooks.json` means approving again. Until approved, the hooks stay silent and never run.
-3. **Approve the MCP servers** — every server in `.codex/config.toml` needs one approval from
-   you.
-4. **Restart** — new instructions are only loaded after the session restarts.
-
-## Trust hook — separate from trusting the folder, and it is pinned to CONTENT
-
-Hooks carry their own trust gate, and it is not the project-trust gate above. On a live
-`codex-cli 0.149.0-alpha.4.3` (checked 2026-09-03) every entry under `[hooks.state...]` in
-`~/.codex/config.toml` carries a `trusted_hash = "sha256:..."` field. That hash is taken over
-the hook's CONTENT, which has two consequences:
-
-1. A hook only runs after you approve it once — run `/hooks` inside Codex and approve. Until
-   then it is silent, and silence looks exactly like a hook that works and has nothing to say.
-2. **Rebuilding this bundle revokes that trust.** Any edit to a hook script changes its
-   content, so the stored hash no longer matches and the hook goes back to untrusted. After
-   every rebuild of this bundle, open `/hooks` and approve again.
-
-Hooks are enabled by default on 0.149 — there is no `[features] hooks = true` to set, and
-adding one is not what makes them run. Approval is.
-
-## Environment variables — `env_vars` only names them, it never sets them
-
-`[mcp_servers.*]` in `.codex/config.toml` uses `env_vars`, an array of variable NAMES that
-Codex whitelists FROM YOUR SHELL. TOML does no interpolation, so nothing in this bundle can
-give those variables a value. Export them yourself before starting Codex:
-
-```
-export TAVILY_API_KEY=<your key>
-```
-
-Put that line in your shell profile if you want it to survive a new terminal. A variable that
-is not exported means the MCP server starts without it and its calls fail at runtime, not at
-startup — so check `/mcp` if a search tool goes quiet.
-
-## Why step 3 runs the file directly instead of saying "run the tdq-checkportable skill"
-
-The skill lives inside this very bundle, and Codex only scans `.agents/skills/` after the
-project is trusted and the session has restarted. Calling the skill at the first step is a
-circular dependency; running `python3 scripts/tdq_checkportable.py` straight from the
-terminal is not. From the next time on, once everything is loaded, call the skill normally.
-
-## Secret keys
-
-No file in here holds a key value, only environment variable NAMES (`env_vars` in
-`config.toml`). Set the variables yourself on your own machine before using MCP.
-"""
-
-
-# ------------------------------------------- native layer of Codex CLI (>= 0.147.0)
-
-# The three folders Codex scans by itself. Names and places are dictated by Codex:
-#   `.agents/skills/<name>/SKILL.md`  — skills, loaded on demand by the frontmatter description
-#   `.codex/config.toml`              — MCP servers (loaded only once the project is trusted)
-#   `.codex/hooks.json`               — hooks (still needing their own approval in the TUI)
-GOC_SKILL_CODEX = ".agents/skills"
-GOC_CAU_HINH_CODEX = ".codex"
-CODEX_MIN = "0.147.0"
-
-# Mapping of TDQ hooks → Codex event + matcher. The matcher is a regex on `tool_name`, and the
-# REAL Codex tool names were measured with a probe hook (see `docs/tdq/qc/2026-08-17-1139-*.md`):
-# the command tool is named `Bash` (same as Claude Code), while the file-editing tool is named
-# `apply_patch` — NOT `Edit|Write|MultiEdit|NotebookEdit`. Keep Claude Code's matcher and the hook
-# never fires, without an error either: the approval gate is off in silence.
-HOOK_CODEX = (
-    ("SessionStart", None, "session_start.py"),
-    ("UserPromptSubmit", None, "prompt_context.py"),
-    ("PreToolUse", "apply_patch", "codex_edit_gate.py"),
-    ("PreToolUse", "Bash", "bash_gate.py"),
-    ("Stop", None, "stop_gate.py"),
-)
-
-# The Codex adapter lives in `hooks/scripts/codex_edit_gate.py` — a real FILE, not a string.
-# Why it is separate from `edit_gate.py`: `edit_gate.py` is code shared by both harnesses, while
-# the difference here is purely the `tool_input` shape Codex sends. Merging them makes Claude
-# Code carry a branch that never runs, and every gate edit has to remember two payload shapes.
-ADAPTER_REL = os.path.join("hooks", "scripts", "codex_edit_gate.py")
-
-
-def doc_adapter(repo):
-    """Read the adapter as DATA. Never import it: importing a hook is running it."""
-    with open(os.path.join(repo, ADAPTER_REL), encoding="utf-8") as f:
-        return f.read()
-
-
-def doc_frontmatter(text):
-    """One-level YAML frontmatter of SKILL.md → dict. Empty dict if there is no `---` block.
-
-    No YAML library: the bundle runs on a strange machine with a bare Python, and one more
-    dependency is one more reason for the portable bundle to die at the first step.
-    """
-    if not text or not text.startswith("---"):
-        return {}
-    het = text.find("\n---", 3)
-    if het < 0:
-        return {}
-    truong = {}
-    for dong in text[3:het].splitlines():
-        if ":" in dong and not dong.startswith(" "):
-            khoa, _, gia_tri = dong.partition(":")
-            truong[khoa.strip()] = gia_tri.strip()
-    return truong
-
-
-def _sinh_config_toml(duong):
-    """`.codex/config.toml` — declare MCP servers in the Codex `[mcp_servers.<name>]` shape.
-
-    Only environment variable NAMES go in, through `env_vars`, never values: Codex does NOT expand
-    `${VAR}` in TOML, so writing `env = {X = "${X}"}` would pass MCP that literal string rather than
-    the key. `env_vars` is how Codex forwards a variable from the parent environment — exactly what
-    is needed, and the only way that keeps secrets out of the file.
-    """
-    khai_bao = sinh_mcp()["mcpServers"]
-    dong = [
-        "# TDQ Workflow — Codex CLI config, AUTO-GENERATED by scripts/build_portable.py.",
-        f"# Needs Codex CLI >= {CODEX_MIN}. Only loaded once the project is trusted.",
-        "",
-    ]
-    for ten in sorted(khai_bao):
-        cau_hinh = khai_bao[ten]
-        dong.append(f"[mcp_servers.{ten}]")
-        dong.append(f'command = {json.dumps(cau_hinh["command"])}')
-        dong.append("args = [" + ", ".join(json.dumps(a) for a in cau_hinh["args"]) + "]")
-        ten_bien = sorted(cau_hinh.get("env") or {})
-        if ten_bien:
-            dong.append("env_vars = [" + ", ".join(json.dumps(b) for b in ten_bien) + "]")
-        dong.append("")
-    with open(duong, "w", encoding="utf-8") as f:
-        f.write("\n".join(dong))
-
-
-def _sinh_hooks_codex(duong, nen_tang=None):
-    """`.codex/hooks.json` — the same wire shape as `hooks/hooks.json`, other matchers and paths.
-
-    The paths are RELATIVE on purpose: real measurement shows Codex runs the hook process with cwd =
-    the project root, so `hooks/scripts/x.py` is correct on every machine. That makes this a static
-    file inside `manifest.json`, not something `setup` has to regenerate on the target machine.
-    """
-    su_kien = {}
-    for ten_event, matcher, ten_file in HOOK_CODEX:
-        nhom = {"hooks": [{
-            "type": "command",
-            "command": f'{tien_to_python(nen_tang)} "hooks/scripts/{ten_file}"',
-        }]}
-        if matcher:
-            nhom["matcher"] = matcher
-        su_kien.setdefault(ten_event, []).append(nhom)
-    _ghi_json(duong, {
-        "description": "TDQ workflow for Codex CLI — auto-generated, never edited by hand",
-        "hooks": su_kien,
-    })
-
-
-def sinh_ban_codex(repo, dest, version=""):
-    """Build `<dest>/portable_codex/` — the bundle using the REAL native mechanisms of Codex CLI.
-
-    Four groups of artifacts:
-      `.agents/skills/`    skills Codex loads by description;
-      `.codex/config.toml` MCP servers (environment variable NAMES only);
-      `.codex/hooks.json` + `hooks/`  machine-guarded approval gates, reusing the repo's code;
-      `workflow/NN-*.md`   the markdown read in order, keeping this bundle usable by any
-                           markdown-only harness OTHER than Codex.
-
-    The first three layers need Codex CLI >= 0.147.0 and a trusted project; the hooks additionally
-    need the user to approve once in the TUI. Nothing in here can do those steps for you.
-    """
-    import tdq_state
-
-    goc = os.path.join(dest, TEN_BAN_CODEX)
-    if os.path.isdir(goc):
-        shutil.rmtree(goc)
-    thu_muc_wf = os.path.join(goc, "workflow")
-    os.makedirs(thu_muc_wf, exist_ok=True)
-    os.makedirs(os.path.join(goc, GOC_CAU_HINH_CODEX), exist_ok=True)
-
-    # A harness other than Claude Code sets no `CLAUDE_*` variable at all, so the paths in this
-    # bundle must be relative to the bundle root — the user `cd`s in and runs, that is all.
-    moi = "."
-    copy_loc(os.path.join(repo, "scripts"), os.path.join(goc, "scripts"), True, moi)
-
-    dong_danh_sach = []
-    for so, ten_skill in enumerate(THU_TU_SKILL, start=1):
-        thu_muc_skill = os.path.join(repo, "skills", ten_skill)
-        if not os.path.isdir(thu_muc_skill):
-            thu_muc_skill = os.path.join(repo, PORTABLE_SRC, "skills", ten_skill)
-        nguon = os.path.join(thu_muc_skill, "SKILL.md")
-        if not os.path.isfile(nguon):
-            continue
-        ten_file = f"{so:02d}-{ten_skill[len('tdq-'):]}.md"
-        noi_dung, _ = doi_bien_plugin_root(_doc_text(nguon), moi)
-        with open(os.path.join(thu_muc_wf, ten_file), "w", encoding="utf-8") as f:
-            f.write(noi_dung)
-        thu_muc_ref = os.path.join(thu_muc_skill, "references")
-        if os.path.isdir(thu_muc_ref):
-            copy_loc(thu_muc_ref, os.path.join(thu_muc_wf, "references", ten_skill), True, moi)
-        # Native layer: copy the skill tree AS IS into `.agents/skills/<name>/` — keeping the folder
-        # name is what keeps the `../<other skill>/SKILL.md` links inside SKILL.md pointing at the right
-        # place, which the `workflow/NN-*.md` bundle loses because it has to renumber them.
-        copy_loc(thu_muc_skill, os.path.join(goc, GOC_SKILL_CODEX, ten_skill), True, moi)
-        dong_danh_sach.append(f"- `workflow/{ten_file}`")
-
-    # `hooks/` must sit at the bundle ROOT next to `scripts/`: `hooks/scripts/_common.py` derives the
-    # script folder as `../../scripts` relative to itself. Put it under `.codex/` and that breaks.
-    copy_loc(os.path.join(repo, "hooks"), os.path.join(goc, "hooks"), True, moi, FILE_HOOK_AGY)
-    # Write the adapter out explicitly even though `copy_loc` just copied the whole `hooks/`
-    # tree: `copy_loc` takes an exclude list, so "it was copied already" is a coincidence, not a
-    # guarantee. This is the ONE place answering for the adapter's content and exec bit here.
-    duong_adapter = os.path.join(goc, "hooks", "scripts", "codex_edit_gate.py")
-    with open(duong_adapter, "w", encoding="utf-8") as f:
-        f.write(doc_adapter(repo))
-    os.chmod(duong_adapter, 0o755)
-    _sinh_config_toml(os.path.join(goc, GOC_CAU_HINH_CODEX, "config.toml"))
-    _sinh_hooks_codex(os.path.join(goc, GOC_CAU_HINH_CODEX, "hooks.json"))
-
-    with open(os.path.join(thu_muc_wf, "phases.md"), "w", encoding="utf-8") as f:
-        f.write(tdq_state.render_phases_md() + "\n")
-
-    with open(os.path.join(goc, "AGENTS.md"), "w", encoding="utf-8") as f:
-        f.write(AGENTS_MD.format(danh_sach="\n".join(dong_danh_sach), codex_min=CODEX_MIN,
-                         soul=DONG_SOUL_AGENTS))
-
-    with open(os.path.join(goc, "README.md"), "w", encoding="utf-8") as f:
-        f.write(README_CODEX.format(codex_min=CODEX_MIN))
-
-    con_lai = dem_bien_trong_cay(goc)
-    if con_lai:
-        raise RuntimeError(f"the codex bundle still has {con_lai} use(s) of {BIEN_CU}")
-    log(f"{TEN_BAN_CODEX}: {len(dong_danh_sach)} skill (native + workflow), "
-        f"{len(HOOK_CODEX)} hook(s), {len(MCP_SERVERS)} MCP server(s), 0 plugin variable left")
-
-    ghi_manifest(goc, version)
-    return goc
-
 
 # ---------------------------------------------------- antigravity (agy) bundle
 
@@ -803,7 +301,7 @@ baked home does not match the current one.
 """
 
 
-def _sua_duong_dan_tuong_doi_agy(goc):
+def _sua_duong_dan_tuong_doi_agy(goc, goc_cai=None):
     """Second-pass rewrite, agy bundle only, `.md` text under `skills/` — a bare `scripts/`/
     `hooks/` mention NOT already prefixed by `GOC_AGY` becomes absolute too.
 
@@ -812,7 +310,7 @@ def _sua_duong_dan_tuong_doi_agy(goc):
     false here, since agy installs its core at one fixed absolute path outside any project.
     Scoped to `.md` only: touching `.py` source would corrupt real import paths.
     """
-    tien_to = GOC_AGY + "/"
+    tien_to = (goc_cai or GOC_AGY) + "/"
     mau = re.compile(r"(?<!" + re.escape(tien_to) + r")\b(scripts/|hooks/)")
     so_lan = 0
     for thu_muc, thu_muc_con, files in os.walk(goc):
@@ -824,7 +322,11 @@ def _sua_duong_dan_tuong_doi_agy(goc):
             noi_dung = _doc_text(duong)
             if noi_dung is None:
                 continue
-            moi, n = mau.subn(tien_to + r"\1", noi_dung)
+            # A replacement FUNCTION, not a string: `tien_to` can now be an absolute Windows
+            # path, and `re` reads a backslash in a replacement string as an escape — a path
+            # under `C:\Users` died with "bad escape". A function is handed the match and
+            # interprets nothing.
+            moi, n = mau.subn(lambda k: tien_to + k.group(1), noi_dung)
             if n:
                 so_lan += n
                 with open(duong, "w", encoding="utf-8") as f:
@@ -885,7 +387,7 @@ def sinh_hook_claude(duong, nen_tang=None):
     return True
 
 
-def goc_agy_tuyet_doi():
+def goc_agy_tuyet_doi(goc_cai=None):
     """`GOC_AGY` with `~` expanded — agy needs an ABSOLUTE `command`.
 
     A `~` inside the double quotes of a `command` string is NOT expanded by the shell, so the
@@ -894,17 +396,17 @@ def goc_agy_tuyet_doi():
     (`python3 scripts/build_portable.py`) rather than copying a prebuilt bundle between users.
     `tdq_checkportable.py check` prints a NOTE when the baked home is not the current one.
     """
-    return os.path.expanduser(GOC_AGY)
+    return os.path.expanduser(goc_cai or GOC_AGY)
 
 
-def _sinh_hooks_agy(duong, nen_tang=None):
+def _sinh_hooks_agy(duong, nen_tang=None, goc_cai=None):
     """`hooks.json` at the plugin root — commands are absolute paths into the plugin's own tree.
 
     Wire shape follows the agent-hooks contract documented for agy (source N5, 2026-09-03):
     an event map whose entries carry `hooks[].type = "command"`.
     """
     su_kien = {}
-    goc = goc_agy_tuyet_doi()
+    goc = goc_agy_tuyet_doi(goc_cai)
     for ten_event, ten_file in HOOK_AGY:
         su_kien.setdefault(ten_event, []).append({"hooks": [{
             "type": "command",
@@ -933,15 +435,15 @@ def _sinh_mcp_agy(duong):
     _ghi_json(duong, sinh_mcp())
 
 
-def sinh_ban_antigravity(repo, dest, version=""):
+def sinh_ban_antigravity(repo, dest, version="", ten_thu_muc=None, goc_cai=None):
     """Build `<dest>/antigravity_portable/` — bundle for Antigravity CLI (agy), user-level/global.
 
-    Unlike the claude/codex bundles (project-level, copied into one project's own tree), this
-    one is meant to be copied into agy's GLOBAL config paths under `$HOME` — see `README_AGY`.
+    agy reads plugins only from its GLOBAL config paths under `$HOME` — see `README_AGY` — so
+    unlike every other host it cannot read this repo in place.
     The bundle's own core (`skills/`, `scripts/`, `hooks/scripts/`) sits at one FIXED canonical
     path (`GOC_AGY`) that every generated config file's `command`/path field points at.
     """
-    goc = os.path.join(dest, TEN_BAN_AGY)
+    goc = os.path.join(dest, ten_thu_muc or TEN_BAN_AGY)
     if os.path.isdir(goc):
         shutil.rmtree(goc)
     os.makedirs(goc, exist_ok=True)
@@ -949,7 +451,7 @@ def sinh_ban_antigravity(repo, dest, version=""):
     # No `CLAUDE_*` variable exists outside Claude Code, and the install path is fixed and
     # absolute rather than relative to a project cwd — every `${CLAUDE_PLUGIN_ROOT}` becomes
     # that fixed absolute path directly.
-    moi = GOC_AGY
+    moi = goc_cai or GOC_AGY
     copy_loc(os.path.join(repo, "scripts"), os.path.join(goc, "scripts"), True, moi)
 
     dong_danh_sach = []
@@ -962,7 +464,7 @@ def sinh_ban_antigravity(repo, dest, version=""):
             continue
         copy_loc(thu_muc_skill, os.path.join(goc, "skills", ten_skill), True, moi)
         dong_danh_sach.append(ten_skill)
-    _sua_duong_dan_tuong_doi_agy(os.path.join(goc, "skills"))
+    _sua_duong_dan_tuong_doi_agy(os.path.join(goc, "skills"), goc_cai)
 
     os.makedirs(os.path.join(goc, "hooks", "scripts"), exist_ok=True)
     for ten_file in ("agy_pretooluse_gate.py", "agy_stop_gate.py"):
@@ -972,12 +474,12 @@ def sinh_ban_antigravity(repo, dest, version=""):
         os.chmod(dst, 0o755)
 
     _sinh_plugin_json_agy(os.path.join(goc, "plugin.json"), version)
-    _sinh_hooks_agy(os.path.join(goc, "hooks.json"))
+    _sinh_hooks_agy(os.path.join(goc, "hooks.json"), goc_cai=goc_cai)
     _sinh_mcp_agy(os.path.join(goc, "mcp_config.json"))
 
     with open(os.path.join(goc, "README.md"), "w", encoding="utf-8") as f:
         f.write(README_AGY.format(
-            goc_agy=GOC_AGY,
+            goc_agy=goc_cai or GOC_AGY,
             ten_plugin=TEN_PLUGIN_AGY,
             config_json=AGY_CONFIG_JSON,
             skills_json=AGY_SKILLS_JSON,
@@ -1032,19 +534,64 @@ def ghi_manifest(goc, version=""):
 
 # -------------------------------------------------------------------------- CLI
 
+def la_ban_cua_minh(goc):
+    """True khi `goc` trống, chưa có, hoặc đang là một bản cài tdq-workflow.
+
+    Đích mặc định nằm trong thư mục cấu hình của người dùng. Xoá nhầm ở đó là mất dữ liệu thật,
+    nên cổng này mở đúng ba trường hợp trên và đóng với mọi thứ khác.
+    """
+    if not os.path.isdir(goc):
+        return True
+    if not os.listdir(goc):
+        return True
+    dau = os.path.join(goc, "plugin.json")
+    try:
+        with open(dau, encoding="utf-8") as f:
+            return json.load(f).get("name") == TEN_PLUGIN_AGY
+    except (OSError, ValueError):
+        return False
+
+
+def sinh_agy_tai_cho(repo, dich, version=""):
+    """Sinh layout agy THẲNG vào `dich` trên chính máy sẽ chạy nó.
+
+    Đây là thứ thay cho thư mục `antigravity_portable/` từng được commit. Bản cũ nướng cứng thư
+    mục nhà của MÁY DỰNG vào mọi `command`, nên bản dựng trên Windows ra một đường dẫn vô nghĩa
+    với người dùng macOS và ngược lại. Sinh tại chỗ thì `~` bung ra đúng của máy đang cài, và
+    layout luôn đi từ nguồn mới nhất thay vì một bản đông cứng lúc release.
+
+    Trả về đường dẫn đã sinh. Ném RuntimeError khi đích đang giữ thứ không phải của mình.
+    """
+    dich = os.path.abspath(os.path.expanduser(dich))
+    if not la_ban_cua_minh(dich):
+        raise RuntimeError(
+            f"{dich} đang có sẵn nội dung không phải của tdq-workflow — "
+            "chọn đích khác, hoặc tự xoá thư mục đó trước")
+    cha, ten = os.path.dirname(dich), os.path.basename(dich)
+    os.makedirs(cha, exist_ok=True)
+    sinh_ban_antigravity(repo, cha, version, ten_thu_muc=ten, goc_cai=dich)
+    log(f"agy: đã sinh {dich}")
+    return dich
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="build_portable.py",
-        description="Generate the two portable bundles (claude, codex) of TDQ Workflow from one source.")
-    parser.add_argument("--dest", help="destination folder, defaults to the repo root")
-    parser.add_argument("--only", choices=("claude", "codex", "antigravity"),
-                        help="generate only one bundle instead of all three")
+        description="Generate what a host cannot read straight from this repo: the Antigravity "
+                    "layout, and hooks/hooks.json for the target OS. Pick one action.")
+    parser.add_argument("--dest", help="build the Antigravity bundle into DEST/antigravity_portable "
+                                       "(a release step; never the repo itself)")
     parser.add_argument("--repo", help="source repo root, defaults to the script location")
     parser.add_argument("--sinh-hook-claude", action="store_true",
                         help="rewrite hooks/hooks.json for the target OS instead of building; "
                              "Windows needs this once, since `python3` is not a command there")
     parser.add_argument("--he-dich", help="target OS for the command name (win32/linux/darwin), "
                                           "defaults to the machine running this")
+    parser.add_argument("--sinh-agy", action="store_true",
+                        help="generate the Antigravity layout straight into its install "
+                             "directory ON THIS MACHINE, instead of building a bundle to commit")
+    parser.add_argument("--dich", default=GOC_AGY,
+                        help=f"only with --sinh-agy: where to generate (default {GOC_AGY})")
     args = parser.parse_args(argv)
 
     repo = args.repo or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1054,18 +601,28 @@ def main(argv=None):
         log(f"{duong}: {'rewritten' if doi else 'already correct'} · "
             f"command = {tien_to_python(args.he_dich)}")
         return 0
-    dest = args.dest or repo
+    if args.sinh_agy:
+        version = plugin_version(repo)
+        try:
+            sinh_agy_tai_cho(repo, args.dich, version)
+        except (OSError, RuntimeError) as loi:
+            log(f"ERROR {loi}")
+            return EXIT_LOI
+        return 0
+
+    # No default action. Defaulting `--dest` to the repo root used to rebuild
+    # `antigravity_portable/` INSIDE the repo — the very bundle 0.50.0 removed.
+    if not args.dest:
+        parser.error("pick an action: --sinh-agy, --sinh-hook-claude or --dest DEST")
+    dest = args.dest
+    if os.path.realpath(dest) == os.path.realpath(repo):
+        parser.error("--dest must not be the repo itself: the repo ships no bundle since 0.50.0")
     version = plugin_version(repo)
     log(f"start · repo={repo} · dest={dest} · version={version or '—'}")
 
     os.makedirs(dest, exist_ok=True)
     try:
-        if args.only in (None, "claude"):
-            sinh_ban_claude(repo, dest, version)
-        if args.only in (None, "codex"):
-            sinh_ban_codex(repo, dest, version)
-        if args.only in (None, "antigravity"):
-            sinh_ban_antigravity(repo, dest, version)
+        sinh_ban_antigravity(repo, dest, version)
     except (OSError, RuntimeError) as loi:
         log(f"ERROR {loi}")
         return EXIT_LOI

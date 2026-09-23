@@ -1,6 +1,8 @@
 """Shared test utilities: run hook scripts as subprocesses with stdin JSON."""
+import functools
 import json
 import os
+import shutil
 import subprocess
 import sys
 
@@ -14,10 +16,35 @@ import tdq_state  # noqa: E402
 def run_hook(script, payload, env=None):
     proc = subprocess.run(
         [sys.executable, os.path.join(HOOKS, script)],
-        input=json.dumps(payload), capture_output=True, text=True, timeout=30,
+        input=json.dumps(payload), capture_output=True, encoding="utf-8", text=True, timeout=30,
         env=dict(os.environ, **(env or {})),
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
+def co_lenh(ten):
+    """Lệnh ngoài `ten` có trên PATH không — dùng cho `skipUnless` (T3.1, 2026-09-21)."""
+    return shutil.which(ten) is not None
+
+
+@functools.lru_cache(maxsize=None)
+def co_bo_dem_token():
+    """Đếm token thật được không. Hỏi chính `skill_tokens` — cả python đang chạy lẫn venv của
+    repo — thay vì mỗi test tự đoán đường venv (đoán `bin/python` thì sai trên Windows)."""
+    import skill_tokens
+    try:
+        skill_tokens.nap_bo_dem()
+        return True
+    except skill_tokens.ThieuThuVienDem:
+        pass
+    try:
+        skill_tokens.dem_qua_venv(["x"])
+        return True
+    except skill_tokens.ThieuThuVienDem:
+        return False
+
+
+LY_DO_TOKEN = "chưa cài anthropic-tokenizer (python3 scripts/skill_tokens.py in lệnh cài)"
 
 
 def load_fixture(name, **overrides):
@@ -44,7 +71,7 @@ def run_state_cli(cwd, *args):
     env = dict(os.environ, TDQ_PROJECT_DIR=cwd)
     proc = subprocess.run(
         [sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), *args],
-        capture_output=True, text=True, env=env, timeout=30,
+        capture_output=True, encoding="utf-8", text=True, env=env, timeout=30,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -54,7 +81,7 @@ def run_timing_cli(cwd, *args, env=None):
     full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
     proc = subprocess.run(
         [sys.executable, os.path.join(ROOT, "scripts", "tdq_timing.py"), *args],
-        capture_output=True, text=True, env=full_env, timeout=30,
+        capture_output=True, encoding="utf-8", text=True, env=full_env, timeout=30,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -64,7 +91,7 @@ def run_checkstatus_cli(cwd, *args, env=None):
     full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
     proc = subprocess.run(
         [sys.executable, os.path.join(ROOT, "scripts", "tdq_checkstatus.py"), *args],
-        capture_output=True, text=True, env=full_env, timeout=60,
+        capture_output=True, encoding="utf-8", text=True, env=full_env, timeout=60,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -74,7 +101,7 @@ def run_team_cli(cwd, *args, env=None):
     full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
     proc = subprocess.run(
         [sys.executable, os.path.join(ROOT, "scripts", "tdq_team.py"), *args],
-        capture_output=True, text=True, env=full_env, timeout=60,
+        capture_output=True, encoding="utf-8", text=True, env=full_env, timeout=60,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -84,7 +111,7 @@ def run_finish_cli(cwd, *args, env=None):
     full_env = dict(os.environ, TDQ_PROJECT_DIR=cwd, **(env or {}))
     proc = subprocess.run(
         [sys.executable, os.path.join(ROOT, "scripts", "tdq_finish.py"), *args],
-        capture_output=True, text=True, env=full_env, timeout=60,
+        capture_output=True, encoding="utf-8", text=True, env=full_env, timeout=60,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -95,7 +122,7 @@ def run_state_cli_in(cwd, *args):
     env = {k: v for k, v in os.environ.items() if k != "TDQ_PROJECT_DIR"}
     proc = subprocess.run(
         [sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), *args],
-        capture_output=True, text=True, env=env, cwd=cwd, timeout=30,
+        capture_output=True, encoding="utf-8", text=True, env=env, cwd=cwd, timeout=30,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 

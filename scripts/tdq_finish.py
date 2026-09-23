@@ -62,7 +62,8 @@ def _project_dir():
 def _run(cmd, cwd, timeout=STEP_TIMEOUT):
     """Run a child command, return (rc, output). Infrastructure errors become results too, never raised."""
     try:
-        p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+        p = subprocess.run(cmd, cwd=cwd, capture_output=True,
+                           encoding="utf-8", errors="replace", text=True, timeout=timeout)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
         return 1, f"over {timeout}s"
@@ -130,7 +131,8 @@ def step_phase(project, phase):
     env = dict(os.environ, TDQ_PROJECT_DIR=project)
     cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_state.py"), "set", f"phase={phase}"]
     try:
-        p = subprocess.run(cmd, cwd=project, capture_output=True, text=True,
+        p = subprocess.run(cmd, cwd=project, capture_output=True,
+                           encoding="utf-8", errors="replace", text=True,
                            timeout=STEP_TIMEOUT, env=env)
     except (subprocess.TimeoutExpired, OSError) as exc:
         return Step("phase", "fail", str(exc)[:120])
@@ -150,7 +152,8 @@ def step_dong_so(project, phase):
     env = dict(os.environ, TDQ_PROJECT_DIR=project)
     cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_timing.py"), "close"]
     try:
-        p = subprocess.run(cmd, cwd=project, capture_output=True, text=True,
+        p = subprocess.run(cmd, cwd=project, capture_output=True,
+                           encoding="utf-8", errors="replace", text=True,
                            timeout=STEP_TIMEOUT, env=env)
     except (subprocess.TimeoutExpired, OSError) as exc:
         return Step("timing", "fail", str(exc)[:120])

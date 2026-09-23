@@ -122,7 +122,8 @@ def dem_qua_venv(doan):
     if not os.path.exists(VENV_PYTHON):
         raise ThieuThuVienDem(CAI_DAT)
     proc = subprocess.run([VENV_PYTHON, "-c", LENH_DEM_LO],
-                          input=json.dumps(doan), capture_output=True, text=True)
+                          input=json.dumps(doan), capture_output=True,
+                          encoding="utf-8", errors="replace", text=True)
     if proc.returncode != 0:
         raise ThieuThuVienDem(CAI_DAT)
     return json.loads(proc.stdout)

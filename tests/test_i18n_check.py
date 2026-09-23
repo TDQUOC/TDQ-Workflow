@@ -15,7 +15,7 @@ def run(*args, env=None):
     if env:
         e.update(env)
     return subprocess.run([sys.executable, TOOL, *args], capture_output=True,
-                          text=True, env=e)
+                          encoding="utf-8", text=True, env=e)
 
 
 class ScanTest(unittest.TestCase):
