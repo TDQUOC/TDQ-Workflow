@@ -19,7 +19,7 @@ VENV = os.path.join(ROOT, ".venv-tokens", "bin", "python")
 
 def chay(*args, env=None):
     proc = subprocess.run([sys.executable, SCRIPT, *args], capture_output=True,
-                          text=True, timeout=300,
+                          encoding="utf-8", text=True, timeout=300,
                           env=dict(os.environ, TDQ_LOG="0", **(env or {})))
     return proc.returncode, proc.stdout, proc.stderr
 
@@ -105,7 +105,8 @@ class KhungTest(unittest.TestCase):
         moi = dict(os.environ)
         moi.pop("TDQ_LOG", None)
         proc = subprocess.run([sys.executable, SCRIPT, "--theo-phase"],
-                              capture_output=True, text=True, timeout=300, env=moi)
+                              capture_output=True,
+                              encoding="utf-8", text=True, timeout=300, env=moi)
         self.assertRegex(proc.stderr, r"\[\d{4}-\d{2}-\d{2}T")
         _rc, _out, err_tat = chay("--theo-phase")
         self.assertEqual(err_tat.strip(), "")

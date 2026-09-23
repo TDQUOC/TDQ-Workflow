@@ -313,7 +313,7 @@ def _phut(giay):
 # --------------------------------------------------- real measurement (temp repo)
 def _git(cwd, *args, check=True):
     proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
-                          text=True, errors="replace", timeout=GIT_TIMEOUT)
+                          encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
     if check and proc.returncode != 0:
         raise LoiThieuSo(f"git {' '.join(args)} failed: {proc.stderr.strip()}")
     return proc
@@ -327,7 +327,8 @@ def _team(repo, *args, wt=None):
     bat_dau = time.perf_counter()
     proc = subprocess.run(
         [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_team.py"), *args],
-        capture_output=True, text=True, timeout=GIT_TIMEOUT, env=env)
+        capture_output=True,
+        encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT, env=env)
     return time.perf_counter() - bat_dau, proc.returncode, proc.stdout + proc.stderr
 
 
@@ -361,7 +362,8 @@ def _dung_repo_tam(goc, slug, so_task):
 
 def _git_init(repo):
     subprocess.run(["git", "init", "-q", "-b", "main", repo],
-                   capture_output=True, text=True, timeout=GIT_TIMEOUT, check=True)
+                   capture_output=True,
+                   encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT, check=True)
     _git(repo, "config", "user.email", "bench@tdq")
     _git(repo, "config", "user.name", "bench")
 

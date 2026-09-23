@@ -23,8 +23,12 @@ MOC_LUAT = "[TDQ:GON]"
 
 
 def khoi_dau(out):
-    """Phần trước mốc thân luật — chỗ duy nhất trần 12/600 áp vào."""
-    return out.split(MOC_LUAT, 1)[0].rstrip()
+    """Đoạn văn đầu tiên — chỗ duy nhất trần 12/600 áp vào.
+
+    2026-09-21: đo theo đoạn chứ không chỉ theo mốc `[TDQ:GON]`, vì dòng nhắc tên lệnh Python
+    trên Windows đứng giữa khối đầu và thân luật, thành đoạn riêng. Khối đầu không bao giờ có
+    dòng trống bên trong (đã soi cả 7 phase), nên dòng trống đầu tiên là ranh giới đúng."""
+    return out.split(MOC_LUAT, 1)[0].split("\n\n", 1)[0].rstrip()
 
 
 class TestSessionStart(unittest.TestCase):

@@ -580,7 +580,7 @@ def doc_ban_ghi(thu_muc=None):
 # --------------------------------------------------------------------- git
 def _git(*args, cwd=None):
     return subprocess.run(["git", "-C", cwd or ROOT, *args], capture_output=True,
-                          text=True, timeout=GIT_TIMEOUT)
+                          encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT)
 
 
 def kiem_dich(dich):
@@ -658,7 +658,8 @@ def dung_sandbox(ca, dich, plugin_dir):
     for lenh in ca.get("state_lenh", []):
         ket_qua = subprocess.run([sys.executable, state_py, *lenh], cwd=hop,
                                  env=dict(os.environ, TDQ_PROJECT_DIR=hop),
-                                 capture_output=True, text=True, timeout=GIT_TIMEOUT)
+                                 capture_output=True,
+                                 encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT)
         if ket_qua.returncode != 0:
             raise LoiThieuSo(f"building state failed at `{' '.join(lenh)}`: {ket_qua.stderr.strip()}")
     log(f"sandbox {ca['ma']}: {hop}")
@@ -679,7 +680,7 @@ def lay_token():
     """Read the login token from Keychain. NEVER log it, print it, or write it to a file."""
     ket_qua = subprocess.run(
         ["security", "find-generic-password", "-s", "Claude Code-credentials", "-w"],
-        capture_output=True, text=True, timeout=60)
+        capture_output=True, encoding="utf-8", errors="replace", text=True, timeout=60)
     if ket_qua.returncode != 0:
         raise LoiThieuSo("cannot read the login token from Keychain — log in again, then rerun")
     try:
@@ -727,7 +728,8 @@ def chay_phien(ca, nhanh, plugin_dir, lan, dich, token=None):
     moi = dung_moi_truong(cau_hinh, hop, token or lay_token(), plugin_dir, nha)
     log(tom_tat_phien(ca["ma"], nhanh, lan, moi))
     ket_qua = subprocess.run(dung_lenh(ca["prompt"], plugin_dir), cwd=hop, env=moi,
-                             stdin=subprocess.DEVNULL, capture_output=True, text=True,
+                             stdin=subprocess.DEVNULL, capture_output=True,
+                             encoding="utf-8", errors="replace", text=True,
                              timeout=PHIEN_TIMEOUT)
     transcript = os.path.join(phien, "transcript.jsonl")
     with open(transcript, "w", encoding="utf-8") as f:

@@ -22,7 +22,8 @@ TODAY_LOG = tdq_state.today_log_rel()
 
 def khoi_dau(out):
     """Phần trước mốc thân luật — chỗ duy nhất trần 12 dòng / 600 ký tự áp vào (2026-09-17)."""
-    return out.split("[TDQ:GON]", 1)[0].rstrip()
+    # 2026-09-21: đoạn văn đầu tiên — dòng nhắc tên lệnh trên Windows là đoạn riêng sau khối đầu.
+    return out.split("[TDQ:GON]", 1)[0].split("\n\n", 1)[0].rstrip()
 
 
 def rows(cwd, kind=None):

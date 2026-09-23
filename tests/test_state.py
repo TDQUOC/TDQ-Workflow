@@ -575,7 +575,7 @@ class ModesJsonTest(unittest.TestCase):
             proc = subprocess.run(
                 [sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"),
                  "modes", "--json"],
-                capture_output=True, text=True, timeout=60,
+                capture_output=True, encoding="utf-8", text=True, timeout=60,
                 env=dict(os.environ, TDQ_PROJECT_DIR=cwd))
             self.assertEqual(proc.returncode, 0, proc.stderr)
             rows = json.loads(proc.stdout)

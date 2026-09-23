@@ -26,7 +26,7 @@ FAKE_KEY = "tvly-dev-FAKEKEY0123456789abcdefghij"
 def _git(cwd, *args):
     return subprocess.run(
         ["git", "-c", "user.email=t@example.com", "-c", "user.name=tester", *args],
-        cwd=cwd, capture_output=True, text=True, check=True,
+        cwd=cwd, capture_output=True, encoding="utf-8", text=True, check=True,
     ).stdout.strip()
 
 
@@ -34,27 +34,27 @@ def make_repo(base, name="srcrepo"):
     """Repo giả có `.git` thật, 1 file tracked, 1 file untracked bị gitignore."""
     repo = os.path.join(base, name)
     os.makedirs(os.path.join(repo, ".claude-plugin"))
-    with open(os.path.join(repo, ".claude-plugin", "plugin.json"), "w") as f:
+    with open(os.path.join(repo, ".claude-plugin", "plugin.json"), "w", encoding="utf-8") as f:
         json.dump({"name": "tdq-workflow", "version": "9.9.9"}, f)
-    with open(os.path.join(repo, "README.md"), "w") as f:
+    with open(os.path.join(repo, "README.md"), "w", encoding="utf-8") as f:
         f.write("repo giả\n")
-    with open(os.path.join(repo, ".gitignore"), "w") as f:
+    with open(os.path.join(repo, ".gitignore"), "w", encoding="utf-8") as f:
         f.write("junk/\n.DS_Store\n")
     os.makedirs(os.path.join(repo, "junk"))
-    with open(os.path.join(repo, "junk", "big.bin"), "w") as f:
+    with open(os.path.join(repo, "junk", "big.bin"), "w", encoding="utf-8") as f:
         f.write("x" * 1000)
     os.makedirs(os.path.join(repo, ".remember", "tmp"))
     os.makedirs(os.path.join(repo, ".remember", "logs"))
     # giống repo thật: `.remember/.gitignore` = `*` nên cả thư mục là untracked
-    with open(os.path.join(repo, ".remember", ".gitignore"), "w") as f:
+    with open(os.path.join(repo, ".remember", ".gitignore"), "w", encoding="utf-8") as f:
         f.write("*\n")
-    with open(os.path.join(repo, ".remember", "core-memories.md"), "w") as f:
+    with open(os.path.join(repo, ".remember", "core-memories.md"), "w", encoding="utf-8") as f:
         f.write("nhớ cái này\n")
-    with open(os.path.join(repo, ".remember", "tmp", "session.pid"), "w") as f:
+    with open(os.path.join(repo, ".remember", "tmp", "session.pid"), "w", encoding="utf-8") as f:
         f.write("12345\n")
-    with open(os.path.join(repo, ".remember", "logs", "run.log"), "w") as f:
+    with open(os.path.join(repo, ".remember", "logs", "run.log"), "w", encoding="utf-8") as f:
         f.write("log rác\n")
-    with open(os.path.join(repo, ".DS_Store"), "w") as f:
+    with open(os.path.join(repo, ".DS_Store"), "w", encoding="utf-8") as f:
         f.write("rác macOS\n")
     _git(repo, "init", "-q")
     _git(repo, "add", "-A")
@@ -74,26 +74,26 @@ def make_claude_home(base, key=FAKE_KEY):
             "tdq-local": {"source": {"source": "directory", "path": "/duong/dan/cu"}},
         },
     }
-    with open(os.path.join(home, "settings.json"), "w") as f:
+    with open(os.path.join(home, "settings.json"), "w", encoding="utf-8") as f:
         json.dump(settings, f)
-    with open(os.path.join(home, "CLAUDE.md"), "w") as f:
+    with open(os.path.join(home, "CLAUDE.md"), "w", encoding="utf-8") as f:
         f.write("# quy tac\n")
-    with open(os.path.join(home, "statusline.sh"), "w") as f:
+    with open(os.path.join(home, "statusline.sh"), "w", encoding="utf-8") as f:
         f.write("#!/bin/sh\necho hi\n")
-    with open(os.path.join(home, "plugin-tiers.json"), "w") as f:
+    with open(os.path.join(home, "plugin-tiers.json"), "w", encoding="utf-8") as f:
         json.dump({"tiers": {}}, f)
-    with open(os.path.join(home, "skills", "graphify", "SKILL.md"), "w") as f:
+    with open(os.path.join(home, "skills", "graphify", "SKILL.md"), "w", encoding="utf-8") as f:
         f.write("# graphify\n")
-    with open(os.path.join(home, "scripts", "helper.sh"), "w") as f:
+    with open(os.path.join(home, "scripts", "helper.sh"), "w", encoding="utf-8") as f:
         f.write("echo helper\n")
-    with open(os.path.join(home, "plugins", "installed_plugins.json"), "w") as f:
+    with open(os.path.join(home, "plugins", "installed_plugins.json"), "w", encoding="utf-8") as f:
         json.dump({"plugins": {"demo@mkt": [{"scope": "user"}],
                                "local@mkt": [{"scope": "local"}]}}, f)
-    with open(os.path.join(home, "plugins", "known_marketplaces.json"), "w") as f:
+    with open(os.path.join(home, "plugins", "known_marketplaces.json"), "w", encoding="utf-8") as f:
         json.dump({"tdq-local": {"source": {"source": "directory",
                                             "path": "/duong/dan/cu"}}}, f)
     # `~/.claude.json` nằm CẠNH `~/.claude` — script suy ra từ thư mục cha.
-    with open(os.path.join(base, ".claude.json"), "w") as f:
+    with open(os.path.join(base, ".claude.json"), "w", encoding="utf-8") as f:
         json.dump({"oauthAccount": {"emailAddress": "x@y.z"}, "machineID": "abc",
                    "mcpServers": {
                        "tavily-primary": {"type": "http", "url": "https://a.example",
@@ -107,7 +107,7 @@ def run_cli(*args, versions=False):
     """Mặc định tắt bước dò version CLI: 8 lệnh `--version` mỗi lần build là quá chậm."""
     env = dict(os.environ, TDQ_EXPORT_CLI_VERSIONS="1" if versions else "0")
     proc = subprocess.run([sys.executable, SCRIPT, *args],
-                          capture_output=True, text=True, timeout=300, env=env)
+                          capture_output=True, encoding="utf-8", text=True, timeout=300, env=env)
     return proc.returncode, proc.stdout, proc.stderr
 
 
@@ -179,7 +179,7 @@ class ReadMcpServersTest(Fixture):
 
     def test_missing_key_gives_empty_dict(self):
         path = os.path.join(self.base, "trong.json")
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump({"machineID": "abc"}, f)
         self.assertEqual(claude_export.read_mcp_servers(path), {})
 
@@ -194,9 +194,9 @@ class ScanSecretsTest(Fixture):
         os.makedirs(self.tree)
 
     def test_finds_the_only_leaking_file(self):
-        with open(os.path.join(self.tree, "leak.txt"), "w") as f:
+        with open(os.path.join(self.tree, "leak.txt"), "w", encoding="utf-8") as f:
             f.write("Authorization: Bearer " + FAKE_KEY + "\n")
-        with open(os.path.join(self.tree, "sach.txt"), "w") as f:
+        with open(os.path.join(self.tree, "sach.txt"), "w", encoding="utf-8") as f:
             f.write("khong co gi\n")
         hits = claude_export.scan_secrets(self.tree, [FAKE_KEY])
         self.assertEqual([os.path.basename(h) for h in hits], ["leak.txt"])
@@ -205,7 +205,7 @@ class ScanSecretsTest(Fixture):
         self.assertEqual(claude_export.scan_secrets(self.repo, [FAKE_KEY]), [])
 
     def test_ignores_empty_and_short_values(self):
-        with open(os.path.join(self.tree, "a.txt"), "w") as f:
+        with open(os.path.join(self.tree, "a.txt"), "w", encoding="utf-8") as f:
             f.write("abc\n")
         self.assertEqual(claude_export.scan_secrets(self.tree, ["", "abc", None]), [])
 
@@ -213,10 +213,10 @@ class ScanSecretsTest(Fixture):
 class CollectConfigTest(Fixture):
     def test_sha256_changes_with_one_byte(self):
         path = os.path.join(self.base, "f.txt")
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             f.write("a")
         first = claude_export.sha256_of(path)
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             f.write("b")
         self.assertNotEqual(first, claude_export.sha256_of(path))
         self.assertEqual(len(first), 64)
@@ -236,7 +236,7 @@ class CollectConfigTest(Fixture):
 
     def test_harvest_secrets_only_takes_real_values(self):
         path = os.path.join(self.base, "s.json")
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump({"env": {"TAVILY_API_KEY_PRIMARY": FAKE_KEY,
                                "OTHER_TOKEN": "${FROM_ENV}",
                                "EDITOR": "vim"}}, f)
@@ -253,14 +253,14 @@ class BuildGuardTest(Fixture):
 
     def test_own_bundle_is_overwritten(self):
         self.assertEqual(self.build()[0], 0)
-        with open(os.path.join(self.dest, "dau-vet.txt"), "w") as f:
+        with open(os.path.join(self.dest, "dau-vet.txt"), "w", encoding="utf-8") as f:
             f.write("ban cu\n")
         self.assertEqual(self.build()[0], 0)
         self.assertFalse(os.path.exists(os.path.join(self.dest, "dau-vet.txt")))
 
     def test_foreign_dir_refused_with_exit_2(self):
         os.makedirs(self.dest)
-        with open(os.path.join(self.dest, "luan-van.docx"), "w") as f:
+        with open(os.path.join(self.dest, "luan-van.docx"), "w", encoding="utf-8") as f:
             f.write("du lieu cua user\n")
         code, _, err = self.build()
         self.assertEqual(code, 2)
@@ -298,7 +298,7 @@ class MultiRepoTest(Fixture):
         super().setUp()
         self.repo2 = make_repo(self.base, name="mem0fakerepo")
         self.local_repos_path = os.path.join(self.base, "local-repos.json")
-        with open(self.local_repos_path, "w") as f:
+        with open(self.local_repos_path, "w", encoding="utf-8") as f:
             json.dump({"tdqworkflow-repo": self.repo, "mem0-repo": self.repo2}, f)
 
     def build2(self, *extra):
@@ -351,7 +351,7 @@ class MultiRepoTest(Fixture):
 
     def test_check_reports_drift_per_repo(self):
         self.assertEqual(self.build2()[0], 0)
-        with open(os.path.join(self.repo2, "README.md"), "a") as f:
+        with open(os.path.join(self.repo2, "README.md"), "a", encoding="utf-8") as f:
             f.write("doi mem0-repo\n")
         _git(self.repo2, "add", "-A")
         _git(self.repo2, "commit", "-q", "-m", "doi mem0-repo")
@@ -369,7 +369,8 @@ class SkillsGeneralizeTest(Fixture):
     def setUp(self):
         super().setUp()
         os.makedirs(os.path.join(self.home, "skills", "mem0-memory"))
-        with open(os.path.join(self.home, "skills", "mem0-memory", "SKILL.md"), "w") as f:
+        with open(os.path.join(self.home, "skills", "mem0-memory", "SKILL.md"), "w",
+                  encoding="utf-8") as f:
             f.write("# mem0-memory\n")
 
     def test_every_skill_subdir_is_copied(self):
@@ -493,7 +494,7 @@ class BuildSecretScanTest(Fixture):
 class BuildZipTest(Fixture):
     def test_zip_is_valid_and_atomic(self):
         target = self.dest + ".zip"
-        with open(target, "w") as f:
+        with open(target, "w", encoding="utf-8") as f:
             f.write("ban zip cu\n")
         self.assertEqual(self.build("--zip")[0], 0)
         with zipfile.ZipFile(target) as zf:
@@ -503,7 +504,7 @@ class BuildZipTest(Fixture):
 
     def test_no_zip_flag_leaves_zip_untouched(self):
         target = self.dest + ".zip"
-        with open(target, "w") as f:
+        with open(target, "w", encoding="utf-8") as f:
             f.write("ban zip cu\n")
         self.assertEqual(self.build()[0], 0)
         with open(target, encoding="utf-8") as f:
@@ -537,7 +538,7 @@ class CheckTest(Fixture):
 
     def test_config_drift_named_and_exit_1(self):
         self.assertEqual(self.build()[0], 0)
-        with open(os.path.join(self.home, "CLAUDE.md"), "a") as f:
+        with open(os.path.join(self.home, "CLAUDE.md"), "a", encoding="utf-8") as f:
             f.write("them mot dong\n")
         code, out, _ = self.check()
         self.assertEqual(code, 1)
@@ -554,7 +555,7 @@ class CheckTest(Fixture):
     def test_repo_commit_drift_shows_both_sha(self):
         self.assertEqual(self.build()[0], 0)
         old = _git(self.repo, "rev-parse", "HEAD")
-        with open(os.path.join(self.repo, "README.md"), "a") as f:
+        with open(os.path.join(self.repo, "README.md"), "a", encoding="utf-8") as f:
             f.write("doi noi dung\n")
         _git(self.repo, "add", "-A")
         _git(self.repo, "commit", "-q", "-m", "doi repo")
@@ -567,7 +568,7 @@ class CheckTest(Fixture):
     def test_plugin_version_drift_reported(self):
         self.assertEqual(self.build()[0], 0)
         path = os.path.join(self.repo, ".claude-plugin", "plugin.json")
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump({"name": "tdq-workflow", "version": "9.9.10"}, f)
         code, out, _ = self.check()
         self.assertEqual(code, 1)
@@ -580,7 +581,7 @@ class CheckTest(Fixture):
     def test_broken_manifest_exits_2_without_traceback(self):
         """Manifest hỏng là bundle không hợp lệ (2), không phải drift (1)."""
         self.assertEqual(self.build()[0], 0)
-        with open(os.path.join(self.dest, "manifest.json"), "w") as f:
+        with open(os.path.join(self.dest, "manifest.json"), "w", encoding="utf-8") as f:
             f.write("{khong phai json")
         code, _, err = self.check()
         self.assertEqual(code, 2)

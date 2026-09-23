@@ -26,7 +26,7 @@ EVAL = os.path.join(ROOT, "scripts", "tdq_eval.py")
 
 def chay(*args, env=None):
     proc = subprocess.run([sys.executable, EVAL, *args], capture_output=True,
-                          text=True, timeout=300,
+                          encoding="utf-8", text=True, timeout=300,
                           env=dict(os.environ, TDQ_EVAL_LOG="0", **(env or {})))
     return proc.returncode, proc.stdout, proc.stderr
 
@@ -52,7 +52,7 @@ class KhungTest(unittest.TestCase):
     def test_log_bat_mac_dinh_co_timestamp(self):
         proc = subprocess.run(
             [sys.executable, EVAL, "bao-cao", "--dem"], capture_output=True,
-            text=True, timeout=60,
+            encoding="utf-8", text=True, timeout=60,
             env={k: v for k, v in os.environ.items()
                  if k not in ("TDQ_EVAL_LOG", "TDQ_LOG")})
         self.assertRegex(proc.stderr, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
@@ -60,7 +60,7 @@ class KhungTest(unittest.TestCase):
     def test_log_tat_duoc_bang_bien_moi_truong(self):
         proc = subprocess.run(
             [sys.executable, EVAL, "bao-cao", "--dem"], capture_output=True,
-            text=True, timeout=60,
+            encoding="utf-8", text=True, timeout=60,
             env=dict(os.environ, TDQ_EVAL_LOG="0"))
         self.assertNotRegex(proc.stderr, r"\[\d{4}-\d{2}-\d{2}T")
 
@@ -670,7 +670,8 @@ class CaBaoLoiTaiHienDuocTest(unittest.TestCase):
             sys.modules.pop("tien_ich", None)
 
         ket_qua = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests"],
-                                 cwd=hop, capture_output=True, text=True, timeout=60)
+                                 cwd=hop, capture_output=True,
+                                 encoding="utf-8", text=True, timeout=60)
         self.assertEqual(ket_qua.returncode, 0,
                          "bộ test sẵn có phải xanh — lỗi nằm ở chỗ test chưa phủ")
         self.assertTrue(goc)

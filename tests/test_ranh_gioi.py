@@ -68,7 +68,7 @@ class CliTest(unittest.TestCase):
         moi = dict(os.environ)
         moi.update(env or {})
         return subprocess.run([sys.executable, SCRIPT, *args],
-                              capture_output=True, text=True, env=moi)
+                              capture_output=True, encoding="utf-8", text=True, env=moi)
 
     def test_in_bang_nhap_du_dong(self):
         proc = self.chay("--bang", BANG)

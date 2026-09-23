@@ -68,7 +68,7 @@ class TierBase(unittest.TestCase):
         if env_extra:
             env.update(env_extra)
         return subprocess.run([sys.executable, SCRIPT, *args],
-                              capture_output=True, text=True, env=env)
+                              capture_output=True, encoding="utf-8", text=True, env=env)
 
 
 class StatusTest(TierBase):

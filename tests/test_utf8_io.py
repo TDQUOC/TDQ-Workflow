@@ -163,6 +163,24 @@ class LogTest(unittest.TestCase):
         proc = self._run({"TDQ_LOG": "0", "TDQ_UTF8_LOG_FORCE": "1"})
         self.assertEqual(proc.stderr.strip(), "")
 
+    def test_pipe_thi_im_du_co_doi(self):
+        """2026-09-21: stderr là pipe thì không in dòng 'forced' — bên gọi không tắt được nó.
+        Dựng hai luồng cp1252 giả để có thay đổi thật trên mọi hệ điều hành."""
+        code = ("import io, sys; sys.path.insert(0, %r); import utf8_io; "
+                "o = io.TextIOWrapper(io.BytesIO(), encoding='cp1252'); "
+                "e = io.TextIOWrapper(io.BytesIO(), encoding='cp1252'); "
+                "print(utf8_io.force_utf8(o, e))" % os.path.join(ROOT, "scripts"))
+        env = dict(os.environ, TDQ_LOG="1")
+        env.pop("TDQ_UTF8_LOG_FORCE", None)
+        proc = subprocess.run([sys.executable, "-c", code], capture_output=True,
+                              encoding="utf-8", errors="replace", env=env, timeout=60)
+        self.assertEqual(proc.stdout.strip(), "2")          # có đổi thật
+        self.assertNotIn("forced", proc.stderr)             # nhưng im trên pipe
+        env["TDQ_UTF8_LOG_FORCE"] = "1"
+        proc = subprocess.run([sys.executable, "-c", code], capture_output=True,
+                              encoding="utf-8", errors="replace", env=env, timeout=60)
+        self.assertIn("forced 2 stream(s)", proc.stderr)    # bật lại được
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -81,12 +81,12 @@ class TestHinhDangSkillLean(unittest.TestCase):
 
     def test_i18n_check_xanh(self):
         rc = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "i18n_check.py"),
-                             SKILL], capture_output=True, text=True)
+                             SKILL], capture_output=True, encoding="utf-8", text=True)
         self.assertEqual(rc.returncode, 0, rc.stdout + rc.stderr)
 
     def test_doc_lint_xanh(self):
         rc = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "doc_lint.py"),
-                             SKILL], capture_output=True, text=True)
+                             SKILL], capture_output=True, encoding="utf-8", text=True)
         self.assertEqual(rc.returncode, 0, rc.stdout + rc.stderr)
 
 

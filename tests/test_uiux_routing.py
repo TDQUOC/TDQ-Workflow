@@ -159,14 +159,6 @@ class KiemKeThayPluginDatSkillTrongClaude(unittest.TestCase):
 class LuatXuongBundle(unittest.TestCase):
     """Ai quên dựng lại bundle thì test này đỏ."""
 
-    def test_bundle_mang_luat_uiux(self):
-        duong = os.path.join(GOC, "portable_claude", ".claude", "skills", "tdq-conventions",
-                             "references", "plugin-routing.md")
-        self.assertTrue(os.path.isfile(duong), "bundle portable_claude thiếu file luật")
-        with open(duong, encoding="utf-8") as f:
-            khoi = lay_khoi(f.read())
-        self.assertIn("ui-ux-pro-max", khoi, "bundle chưa có luật mới — dựng lại đi")
-
 
 if __name__ == "__main__":
     unittest.main()

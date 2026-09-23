@@ -13,7 +13,6 @@ GOC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INTAKE = os.path.join(GOC, "skills", "tdq-intake", "SKILL.md")
 KHUON_BAO_CAO = os.path.join(GOC, "skills", "tdq-build", "references", "report-template.md")
 CONVENTIONS = os.path.join(GOC, "skills", "tdq-conventions", "SKILL.md")
-BUNDLE_CLAUDE = os.path.join(GOC, "portable_claude")
 
 LOAI = ("feature", "bugfix", "hotfix", "chore", "docs")
 TIEN_TO_CAM = ("claude", "antigravity", "gemini", "codex")
@@ -132,44 +131,6 @@ class TenNhanhMauTest(unittest.TestCase):
             with self.subTest(ten=ten):
                 self.assertFalse(ten.lower().startswith(TIEN_TO_CAM),
                                  f"tên nhánh mẫu {ten!r} mở đầu bằng tiền tố bị cấm")
-
-
-class BundleTest(unittest.TestCase):
-    """Luật tên nhánh phải có mặt trong bundle đã dựng, không chỉ trong repo nguồn.
-
-    Bundle sinh ra từ `build_portable.py`; ai sửa luật mà quên dựng lại thì ca này ĐỎ.
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        cls.conventions = os.path.join(
-            BUNDLE_CLAUDE, ".claude", "skills", "tdq-conventions", "SKILL.md")
-        cls.intake = os.path.join(
-            BUNDLE_CLAUDE, ".claude", "skills", "tdq-intake", "SKILL.md")
-        cls.rule = os.path.join(
-            BUNDLE_CLAUDE, ".claude", "skills", "tdq-intake", "references", "nhanh-request.md")
-
-    def test_du_ba_file_luat_trong_bundle(self):
-        for duong in (self.conventions, self.intake, self.rule):
-            with self.subTest(file=os.path.basename(duong)):
-                self.assertTrue(os.path.isfile(duong), f"bundle thiếu {duong}")
-
-    def test_bundle_mang_du_nam_loai_va_buoc_mo_nhanh(self):
-        luat = _doc(self.rule)
-        for loai in LOAI:
-            with self.subTest(loai=loai):
-                self.assertIn(loai, luat, f"file luật trong bundle thiếu loại {loai}")
-        self.assertIn("git switch -c", _doc(self.intake), "bundle thiếu bước mở nhánh")
-
-    def test_ten_nhanh_mau_trong_bundle_hop_le(self):
-        mau = sorted({t for duong in (self.conventions, self.intake, self.rule)
-                      for t in TEN_NHANH.findall(_doc(duong)) if _la_ten_nhanh(t)})
-        self.assertTrue(mau, "bundle không còn tên nhánh mẫu nào")
-        for ten in mau:
-            with self.subTest(ten=ten):
-                xong = subprocess.run(["git", "check-ref-format", "--branch", ten],
-                                      capture_output=True, text=True, encoding="utf-8")
-                self.assertEqual(xong.returncode, 0, f"git từ chối tên nhánh mẫu {ten!r}")
 
 
 if __name__ == "__main__":

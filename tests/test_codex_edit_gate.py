@@ -43,7 +43,7 @@ def chay(payload, env_them=None, cwd=None):
     env.setdefault("TDQ_PROJECT_DIR", _STATE_TAM.name)
     env.update(env_them or {})
     proc = subprocess.run([sys.executable, GATE], input=json.dumps(payload),
-                          capture_output=True, text=True, timeout=60,
+                          capture_output=True, encoding="utf-8", text=True, timeout=60,
                           cwd=cwd or GOC, env=env)
     try:
         ra = json.loads(proc.stdout) if proc.stdout.strip() else {}
@@ -159,7 +159,7 @@ class TestNgoaiModeChiNhac(unittest.TestCase):
 
     def test_payload_hong_khong_lam_chet_phien(self):
         proc = subprocess.run([sys.executable, GATE], input="{khong phai json",
-                              capture_output=True, text=True, timeout=60, cwd=GOC,
+                              capture_output=True, encoding="utf-8", text=True, timeout=60, cwd=GOC,
                               env=dict(os.environ, TDQ_LOG="0"))
         self.assertEqual(proc.returncode, 0)
 

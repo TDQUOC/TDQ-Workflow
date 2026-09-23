@@ -35,7 +35,7 @@ class MarkerLedgerTest(unittest.TestCase):
 
     def run_tool(self, *args, env=None):
         proc = subprocess.run([sys.executable, TOOL, *args], capture_output=True,
-                              text=True, timeout=60,
+                              encoding="utf-8", text=True, timeout=60,
                               env=dict(os.environ, **(env or {})))
         return proc.returncode, proc.stdout, proc.stderr
 

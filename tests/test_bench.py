@@ -18,7 +18,7 @@ BENCH = os.path.join(ROOT, "scripts", "tdq_bench.py")
 
 def chay(*args, env=None):
     proc = subprocess.run([sys.executable, BENCH, *args], capture_output=True,
-                          text=True, timeout=300,
+                          encoding="utf-8", text=True, timeout=300,
                           env=dict(os.environ, TDQ_LOG="0", **(env or {})))
     return proc.returncode, proc.stdout, proc.stderr
 
@@ -44,7 +44,7 @@ class KhungTest(unittest.TestCase):
     def test_log_service_bat_mac_dinh_va_tat_bang_bien_moi_truong(self):
         proc = subprocess.run(
             [sys.executable, BENCH, "gen-plan", "--task", "2"],
-            capture_output=True, text=True, timeout=60,
+            capture_output=True, encoding="utf-8", text=True, timeout=60,
             env={k: v for k, v in os.environ.items() if k != "TDQ_LOG"})
         self.assertNotEqual(proc.stderr.strip(), "")
         self.assertIn("gen-plan", proc.stderr)
@@ -92,7 +92,7 @@ class DungPlanTest(unittest.TestCase):
             self.assertIn("12 task", out)
             lint = subprocess.run(
                 [sys.executable, os.path.join(ROOT, "scripts", "doc_lint.py"), duong],
-                capture_output=True, text=True, timeout=60)
+                capture_output=True, encoding="utf-8", text=True, timeout=60)
             self.assertEqual(lint.returncode, 0, lint.stdout + lint.stderr)
 
     def test_tham_so_vo_ly_thi_loi_chu_khong_sinh_plan_rac(self):
@@ -353,15 +353,15 @@ class ThucDoTest(unittest.TestCase):
     def test_repo_that_khong_moc_nhanh_hay_worktree_nao(self):
         import tempfile
         truoc = subprocess.run(["git", "-C", ROOT, "worktree", "list"],
-                               capture_output=True, text=True, timeout=60).stdout
+                               capture_output=True, encoding="utf-8", text=True, timeout=60).stdout
         with tempfile.TemporaryDirectory() as tmp:
             chay("calibrate", "--ra", os.path.join(tmp, "t.json"), "--task", "3",
                  "--lap", "1", "--cho-it-mau")
         sau = subprocess.run(["git", "-C", ROOT, "worktree", "list"],
-                             capture_output=True, text=True, timeout=60).stdout
+                             capture_output=True, encoding="utf-8", text=True, timeout=60).stdout
         self.assertEqual(truoc, sau)
         nhanh = subprocess.run(["git", "-C", ROOT, "branch", "--list", "tdq/*"],
-                               capture_output=True, text=True, timeout=60).stdout
+                               capture_output=True, encoding="utf-8", text=True, timeout=60).stdout
         self.assertEqual(nhanh.strip(), "")
 
 

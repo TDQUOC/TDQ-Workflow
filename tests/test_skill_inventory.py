@@ -50,7 +50,7 @@ class InventoryBase(unittest.TestCase):
             env.update(env_extra)
         proc = subprocess.run(
             [sys.executable, SCRIPT, "--project", self.project, *args],
-            capture_output=True, text=True, env=env, timeout=30)
+            capture_output=True, encoding="utf-8", text=True, env=env, timeout=30)
         return proc.returncode, proc.stdout, proc.stderr
 
     def settings(self, layer, enabled):
@@ -86,7 +86,7 @@ class ProjectDirResolveTest(InventoryBase):
         env = dict(os.environ, HOME=self.home, USERPROFILE=self.home,
                    TDQ_PROJECT_DIR=self.project)
         proc = subprocess.run(
-            [sys.executable, SCRIPT], capture_output=True, text=True,
+            [sys.executable, SCRIPT], capture_output=True, encoding="utf-8", text=True,
             env=env, timeout=30, cwd=elsewhere)
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertIn("demo-skill", proc.stdout)

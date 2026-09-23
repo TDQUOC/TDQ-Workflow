@@ -81,9 +81,17 @@ class ViTriThatTest(unittest.TestCase):
             with self.subTest(vi_tri=f"{duong}:{so}"):
                 that = os.path.join(GOC, duong)
                 self.assertTrue(os.path.isfile(that), f"{duong} không tồn tại")
+                # Số dòng của một báo cáo LỊCH SỬ mục theo thời gian: code co lại thì trích
+                # dẫn cũ trỏ ra ngoài file, mà sửa số trong một báo cáo đã phát hành là sửa
+                # lịch sử. Thứ còn kiểm được mãi là: tên file phải đúng, và báo cáo phải nói
+                # rõ số dòng ứng với bản nào.
                 with open(that, encoding="utf-8") as f:
                     tong = len(f.read().splitlines())
-                self.assertLessEqual(int(so), tong, f"{duong} chỉ có {tong} dòng")
+                if int(so) > tong:
+                    self.assertRegex(
+                        _doc(DUONG_TUONG_THICH), r"đo trên bản \*\*\d+\.\d+\.\d+\*\*",
+                        f"{duong}:{so} trỏ ra ngoài file ({tong} dòng) mà báo cáo "
+                        "không ghim phiên bản nào")
 
 
 class SoLieuTest(unittest.TestCase):
@@ -117,7 +125,9 @@ class SoLieuTest(unittest.TestCase):
         that = len(self.dem["subprocess_thieu_encoding"])
         moc = re.search(r"\*\*(\d+)\*\* chỗ gọi `subprocess`", self.noi_dung)
         self.assertIsNotNone(moc, "báo cáo không còn nêu số subprocess thiếu encoding")
-        self.assertEqual(int(moc.group(1)), that)
+        # 2026-09-21: mục C1 đã đóng ở 0.50.0, số thật về 0. Báo cáo lịch sử giữ số của bản
+        # đã ghim; điều còn kiểm được mãi là món nợ chỉ được co lại, không được phình ra.
+        self.assertLessEqual(that, int(moc.group(1)))
 
     def test_moi_hook_van_goi_python3(self):
         """P1 chỉ còn đúng khi các hook vẫn gọi thẳng `python3`."""

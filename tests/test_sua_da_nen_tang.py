@@ -98,15 +98,8 @@ def _command_cua(duong):
 class SinhCommandTest(unittest.TestCase):
     """P1 — hai chỗ sinh `command` cho codex và agy đi qua hàm chọn tên lệnh."""
 
-    def test_sinh_command_codex_theo_he_dich(self):
-        for nen_tang, tien_to in (("win32", "py -3 "), ("darwin", "python3 ")):
-            with self.subTest(nen_tang=nen_tang), tempfile.TemporaryDirectory() as thu_muc:
-                duong = os.path.join(thu_muc, "hooks.json")
-                build_portable._sinh_hooks_codex(duong, nen_tang)
-                lenh = _command_cua(duong)
-                self.assertTrue(lenh, "không sinh được `command` nào")
-                for c in lenh:
-                    self.assertTrue(c.startswith(tien_to), f"{nen_tang}: {c!r}")
+    # Ca kiểm `command` của bundle codex đã bỏ cùng chính bundle đó: Codex nay đọc repo qua
+    # `.agents/plugins/marketplace.json`, không còn file hook nào được sinh ra cho nó.
 
     def test_sinh_command_agy_theo_he_dich(self):
         for nen_tang, tien_to in (("win32", "py -3 "), ("linux", "python3 ")):
@@ -199,8 +192,13 @@ class ReadmeAgyTest(unittest.TestCase):
     """P3 — người ở máy khác phải đọc được cảnh báo, không chỉ docstring của code."""
 
     def test_readme_agy_canh_bao_gan_may_dung_va_ten_lenh(self):
-        with open(os.path.join(GOC, "antigravity_portable", "README.md"), encoding="utf-8") as f:
-            noi_dung = f.read()
+        # README agy không còn nằm sẵn trong repo — nó được SINH ra lúc cài, vào đúng thư mục
+        # cài trên máy người dùng. Nên phải sinh một bản tạm rồi đọc, thay vì đọc bản commit.
+        with tempfile.TemporaryDirectory() as thu_muc:
+            dich = os.path.join(thu_muc, "tdq-workflow")
+            build_portable.sinh_agy_tai_cho(GOC, dich)
+            with open(os.path.join(dich, "README.md"), encoding="utf-8") as f:
+                noi_dung = f.read()
         self.assertIn("build_portable.py", noi_dung)
         for tu_khoa in ("máy dựng", "py -3"):
             with self.subTest(tu_khoa=tu_khoa):

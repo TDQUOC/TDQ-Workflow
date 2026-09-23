@@ -210,7 +210,8 @@ def measure_hooks(runs=5):
             times = []
             for _ in range(runs):
                 start = datetime.datetime.now()
-                subprocess.run([sys.executable, path], input=data, text=True,
+                subprocess.run([sys.executable, path], input=data,
+                               encoding="utf-8", errors="replace", text=True,
                                capture_output=True, timeout=60)
                 times.append((datetime.datetime.now() - start).total_seconds() * 1000)
             median = statistics.median(times)

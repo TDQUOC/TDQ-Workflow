@@ -285,7 +285,8 @@ BAN_DO_REL = os.path.join("docs", "tdq", "team", SLUG + ".json")
 
 
 def git(cwd, *args, check=True):
-    proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True, text=True)
+    proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
+                          encoding="utf-8", text=True)
     if check and proc.returncode != 0:
         raise AssertionError(f"git {' '.join(args)} → {proc.returncode}\n{proc.stderr}")
     return proc.stdout.strip()

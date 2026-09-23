@@ -572,7 +572,7 @@ def _git(cwd, *args, check=True):
     # whole `kiem` command dies with UnicodeDecodeError — a failure that only shows up on
     # a real run, never in tests using pure ASCII files.
     proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
-                          text=True, errors="replace", timeout=GIT_TIMEOUT)
+                          encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
     if check and proc.returncode != 0:
         raise LoiLuat(f"git {' '.join(args)} failed ({proc.returncode}): "
                       f"{proc.stderr.strip() or proc.stdout.strip()}")
@@ -581,7 +581,8 @@ def _git(cwd, *args, check=True):
 
 def _la_repo(project):
     proc = subprocess.run(["git", "-C", project, "rev-parse", "--git-dir"],
-                          capture_output=True, text=True, timeout=GIT_TIMEOUT)
+                          capture_output=True,
+                          encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT)
     return proc.returncode == 0
 
 
@@ -957,7 +958,7 @@ def chay_test_task(duong, task, timeout=600):
     for cau in canh_bao:
         _log(f"WARN {cau}")
     proc = subprocess.run(lenh, shell=True, cwd=duong, capture_output=True,
-                          text=True, timeout=timeout)
+                          encoding="utf-8", errors="replace", text=True, timeout=timeout)
     return proc.returncode, lenh, (proc.stdout + proc.stderr)
 
 

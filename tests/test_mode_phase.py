@@ -20,7 +20,7 @@ STATE_CLI = os.path.join(ROOT, "scripts", "tdq_state.py")
 
 def run(cwd, *args):
     proc = subprocess.run([sys.executable, STATE_CLI, *args], capture_output=True,
-                          text=True, timeout=30,
+                          encoding="utf-8", text=True, timeout=30,
                           env=dict(os.environ, TDQ_PROJECT_DIR=cwd))
     return proc.returncode, proc.stdout.strip()
 
@@ -152,7 +152,7 @@ class ApproveFlowTest(unittest.TestCase):
         # _fail in ra stderr, nên bắt riêng chứ không dùng helper run() (chỉ lấy stdout).
         proc = subprocess.run([sys.executable, STATE_CLI, "approve", "plan",
                                "--mode", "xyz", "--by", "xyz"],
-                              capture_output=True, text=True, timeout=30,
+                              capture_output=True, encoding="utf-8", text=True, timeout=30,
                               env=dict(os.environ, TDQ_PROJECT_DIR=self.cwd))
         self.assertNotEqual(proc.returncode, 0)
         self.assertIn("Invalid mode", proc.stderr)

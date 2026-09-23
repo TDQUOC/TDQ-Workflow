@@ -12,7 +12,12 @@ import re
 import subprocess
 import sys
 
-import pytest
+import unittest
+
+try:
+    import pytest
+except ImportError:  # 2026-09-21 (T3.1): file viết theo pytest — máy chưa cài thì bỏ qua cả file
+    raise unittest.SkipTest("chưa cài pytest")
 
 GOC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(GOC, "scripts")
@@ -76,7 +81,7 @@ def test_doi_ten_bi_danh_khong_dam_len_ten_moi():
 def _chay(script, *args):
     return subprocess.run(
         [sys.executable, os.path.join(SCRIPTS, script), *args],
-        capture_output=True, text=True, cwd=GOC, timeout=120)
+        capture_output=True, encoding="utf-8", text=True, cwd=GOC, timeout=120)
 
 
 @pytest.mark.parametrize("script", sorted(tdq_ten_lenh.BANG_DOI_TEN))
@@ -387,7 +392,7 @@ class RebaseTest(TeamBase):
         self.chay("merge", "T1.2")
         cha2 = git(self.cwd, "rev-parse", f"tdq/{SLUG}/tich-hop^2")
         rc = subprocess.run(["git", "-C", self.cwd, "merge-base", "--is-ancestor", truoc, cha2],
-                            capture_output=True, text=True).returncode
+                            capture_output=True, encoding="utf-8", text=True).returncode
         self.assertEqual(rc, 0, "nhánh task chưa được rebase lên bản tích hợp mới nhất")
 
     def test_rebase_hong_thi_worktree_khong_ket_giua_chung(self):

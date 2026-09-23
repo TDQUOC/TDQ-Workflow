@@ -192,7 +192,8 @@ def _project_dir():
 def _run(cmd, timeout=CHECK_TIMEOUT):
     """Run a read-only probe, return (rc, output). Infrastructure errors become results, never raised."""
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        p = subprocess.run(cmd, capture_output=True,
+                           encoding="utf-8", errors="replace", text=True, timeout=timeout)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
         return 1, f"quá {timeout}s"
@@ -362,7 +363,44 @@ def bac5_lumen():
         return Bac(5, "sức khoẻ lumen", False,
                    "ollama chưa chạy — sẽ đánh thức khi cần bằng `tdq_lsp.py wake`",
                    chi_canh_bao=True)
+    thieu_binary, lenh_va = _lumen_thieu_binary_windows()
+    if thieu_binary:
+        return Bac(5, "sức khoẻ lumen", False, thieu_binary, lenh_va, chi_canh_bao=True)
     return Bac(5, "sức khoẻ lumen", True, f"ollama đang chạy, có {model}")
+
+
+def _lumen_thieu_binary_windows():
+    """-> (lý do, lệnh vá) khi launcher bash của lumen không tìm ra binary trên Windows.
+
+    Đo được trên máy Windows: `scripts/run` của lumen dò nền tảng bằng `uname -s`, mà Git Bash
+    trả `mingw64_nt-10.0-26100` chứ không phải `windows`. Không có nhánh nào ánh xạ `mingw*`, nên
+    nó tìm `bin/lumen-mingw64_nt-...-amd64`, bỏ qua `lumen-windows-amd64.exe` đã nằm sẵn, rồi đi
+    tải một asset cùng tên đó — GitHub trả 404 và hook `SessionStart` chết. Nhánh `.cmd` của
+    chính file đó làm đúng; chỉ nhánh bash thiếu, mà Claude Code khai `"shell": "bash"`.
+
+    Launcher kiểm `bin/lumen` TRƯỚC tiên, không kèm tên hệ — nên một bản sao tên đó vá được mà
+    không phải sửa một dòng code nào của plugin khác. Hàm này chỉ BÁO và in lệnh; theo đúng
+    nguyên tắc đầu file, script không bao giờ tự sửa file của plugin khác.
+
+    Bản vá không sống qua một lần update lumen, vì update tạo thư mục phiên bản mới. Đó chính là
+    lý do phép dò này tồn tại: để lần sau nó hỏng thì bậc thang nói ra, thay vì hook chết im lặng.
+    """
+    if not sys.platform.startswith("win"):
+        return "", ""
+    goc = os.path.expanduser("~/.claude/plugins/cache")
+    ung_vien = sorted(glob.glob(os.path.join(goc, "*", "lumen", "*", "scripts", "run")))
+    if not ung_vien:
+        return "", ""
+    thu_muc = os.path.dirname(os.path.dirname(ung_vien[-1]))
+    if os.path.isfile(os.path.join(thu_muc, "bin", "lumen")):
+        return "", ""
+    exe = glob.glob(os.path.join(thu_muc, "bin", "lumen-windows-*.exe"))
+    if not exe:
+        return ("lumen chưa tải binary cho Windows — chạy `scripts/run.cmd --version` một lần",
+                f'"{os.path.join(thu_muc, "scripts", "run.cmd")}" --version')
+    return ("launcher bash của lumen không dò ra binary trên Windows (uname trả `mingw*`), "
+            "hook SessionStart sẽ chết với 404",
+            f'cp "{exe[-1]}" "{os.path.join(thu_muc, "bin", "lumen")}"')
 
 
 def _plugin_dang_bat():

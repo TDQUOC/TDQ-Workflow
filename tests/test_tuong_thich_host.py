@@ -12,12 +12,19 @@ import ntpath
 import os
 import posixpath
 import subprocess
+import tempfile
 import sys
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BAN_AGY = os.path.join(ROOT, "antigravity_portable")
-BAN_CODEX = os.path.join(ROOT, "portable_codex")
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import build_portable  # noqa: E402
+
+# 2026-09-21: layout agy không còn nằm sẵn trong repo — nó được SINH ra lúc cài, vào đúng thư
+# mục cài trên máy người dùng. Nên test sinh một bản tạm rồi soi bản đó. Bundle codex thì bỏ
+# hẳn: Codex nay đọc repo qua `.agents/plugins/marketplace.json`, không còn file nào để soi.
+_TMP = tempfile.TemporaryDirectory()
+BAN_AGY = build_portable.sinh_agy_tai_cho(ROOT, os.path.join(_TMP.name, "tdq-workflow"))
 
 
 def _doc(*phan):
@@ -69,7 +76,7 @@ class TuongThichAgy(unittest.TestCase):
         vao = json.dumps({"tool_name": "run_command",
                           "tool_input": {"command": "git checkout -b codex-thu"}})
         moi_truong = dict(os.environ, TDQ_LOG="0")
-        ket_qua = subprocess.run([sys.executable, kich_ban], input=vao, text=True,
+        ket_qua = subprocess.run([sys.executable, kich_ban], input=vao, encoding="utf-8", text=True,
                                  capture_output=True, env=moi_truong, check=True)
         payload = json.loads(ket_qua.stdout)
         self.assertIs(payload["allow_tool"], False)
@@ -78,13 +85,6 @@ class TuongThichAgy(unittest.TestCase):
 
 
 class TuongThichCodexVaClaude(unittest.TestCase):
-    def test_trust(self):
-        """README codex phải dạy thủ tục trust theo hash và cách export biến — hai thứ duy
-        nhất chặn hook/MCP chạy mà không báo lỗi gì."""
-        van_ban = _doc(BAN_CODEX, "README.md")
-        self.assertIn("trusted_hash", van_ban)
-        self.assertIn("/hooks", van_ban)
-        self.assertIn("export TAVILY_API_KEY", van_ban)
 
     def test_user_config(self):
         """`plugin.json` của Claude Code khai `displayName` và `userConfig` cho 2 key Tavily,
