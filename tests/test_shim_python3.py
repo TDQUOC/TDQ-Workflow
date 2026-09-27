@@ -20,13 +20,52 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_checkportable as cp  # noqa: E402
 
 
-SCRIPTS = r"C:\Users\ai\AppData\Local\Programs\Python\Python313\Scripts"
-STUB = r"C:\Users\ai\AppData\Local\Microsoft\WindowsApps"
-LOCAL = r"C:\Users\ai\.local\bin"
+# Fixture phải viết theo hệ ĐANG CHẠY, không theo hệ mà tính năng này phục vụ.
+# 2026-09-27: bản cũ dùng đường dẫn Windows cho mọi hệ, và `path_of` nối bằng `os.pathsep` —
+# trên POSIX `os.pathsep` là dấu hai chấm, nên `C:\...` bị xé thành `C` và `\...`, làm 9 ca đỏ
+# trên Ubuntu/macOS (CI run 35957834415). Sản phẩm KHÔNG sai: `chon_thu_muc_shim` quy cả hai dấu
+# chéo về `/` rồi so theo TỪNG THÀNH PHẦN, nên nó đúng ở cả ba hệ. Thứ phải đổi là fixture.
+# Ý nghĩa từng đường dẫn giữ nguyên: một chỗ ghi được, một chỗ là stub của Store, một chỗ sống
+# theo shell, một chỗ là thư mục tạm của hệ.
+if os.name == "nt":
+    SCRIPTS = r"C:\Users\ai\AppData\Local\Programs\Python\Python313\Scripts"
+    STUB = r"C:\Users\ai\AppData\Local\Microsoft\WindowsApps"
+    LOCAL = r"C:\Users\ai\.local\bin"
+    KHONG_GHI = r"C:\Windows\system32"
+    THEO_SHELL = r"C:\Users\ai\AppData\Local\fnm_multishells\16552_1789904142495"
+    THU_MUC_TAM = (r"C:\Windows\Temp", r"C:\Users\ai\AppData\Local\Temp\x")
+else:
+    SCRIPTS = "/home/ai/.local/python313/Scripts"
+    STUB = "/home/ai/.local/microsoft/WindowsApps"
+    LOCAL = "/home/ai/.local/bin"
+    KHONG_GHI = "/usr/bin"
+    THEO_SHELL = "/home/ai/.local/fnm_multishells/16552_1789904142495"
+    THU_MUC_TAM = ("/var/tmp", "/home/ai/.cache/temp/x")
 
 
 def path_of(*muc):
     return os.pathsep.join(muc)
+
+
+class FixtureTest(unittest.TestCase):
+    """Canh đúng cái bẫy vừa sập: fixture không được chứa dấu phân cách PATH của hệ đang chạy.
+
+    Thiếu ca này thì lần sau ai đó lại viết đường dẫn Windows cho mọi hệ, và test chỉ đỏ ở CI —
+    nơi đắt nhất để phát hiện.
+    """
+
+    def test_fixture_khong_chua_dau_phan_cach_path(self):
+        for ten, duong in (("SCRIPTS", SCRIPTS), ("STUB", STUB), ("LOCAL", LOCAL),
+                           ("KHONG_GHI", KHONG_GHI), ("THEO_SHELL", THEO_SHELL)):
+            with self.subTest(fixture=ten):
+                self.assertNotIn(os.pathsep, duong,
+                                 f"{ten} chứa {os.pathsep!r} nên sẽ bị split() xé làm hai")
+        for duong in THU_MUC_TAM:
+            with self.subTest(fixture=duong):
+                self.assertNotIn(os.pathsep, duong)
+
+    def test_path_of_giu_dung_so_muc(self):
+        self.assertEqual(len(path_of(SCRIPTS, STUB, LOCAL).split(os.pathsep)), 3)
 
 
 class ChonThuMucTest(unittest.TestCase):
@@ -39,7 +78,7 @@ class ChonThuMucTest(unittest.TestCase):
         self.assertEqual(ly_do, "")
 
     def test_bo_qua_thu_muc_khong_ghi_duoc(self):
-        duong, _ = cp.chon_thu_muc_shim(path_of(r"C:\Windows\system32", SCRIPTS, STUB),
+        duong, _ = cp.chon_thu_muc_shim(path_of(KHONG_GHI, SCRIPTS, STUB),
                                         ghi_duoc=lambda d: d == SCRIPTS)
         self.assertEqual(duong, SCRIPTS)
 
@@ -52,12 +91,12 @@ class ChonThuMucTest(unittest.TestCase):
     def test_bo_qua_thu_muc_song_theo_shell(self):
         """Measured: fnm prepends a per-shell dir to PATH, and the first version of this code
         put the shim there — litter that dies with the shell and never runs again."""
-        fnm = r"C:\Users\ai\AppData\Local\fnm_multishells\16552_1789904142495"
-        duong, _ = cp.chon_thu_muc_shim(path_of(fnm, SCRIPTS, STUB), ghi_duoc=lambda d: True)
+        duong, _ = cp.chon_thu_muc_shim(path_of(THEO_SHELL, SCRIPTS, STUB),
+                                        ghi_duoc=lambda d: True)
         self.assertEqual(duong, SCRIPTS)
 
     def test_bo_qua_thu_muc_tam_cua_he(self):
-        for tam in (r"C:\Windows\Temp", r"C:\Users\ai\AppData\Local\Temp\x"):
+        for tam in THU_MUC_TAM:
             with self.subTest(tam=tam):
                 duong, _ = cp.chon_thu_muc_shim(path_of(tam, SCRIPTS), ghi_duoc=lambda d: True)
                 self.assertEqual(duong, SCRIPTS)

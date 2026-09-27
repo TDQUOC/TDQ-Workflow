@@ -443,15 +443,24 @@ def _cham_d7(state, bang_chung):
         moc = datetime.datetime.fromisoformat(state["updated_at"])
     except ValueError:
         return None
-    moi = []
+    moi, khong_doc_duoc = [], 0
     for c in git["commit"]:
         try:
             luc = datetime.datetime.fromisoformat(c["luc"])
         except ValueError:
+            # 2026-09-27: trước đây chỗ này `continue` trong im lặng. Hệ quả: một mốc thời gian
+            # lạ (bản Python cũ khó tính hơn, git cấu hình khác, múi giờ viết không chuẩn) làm
+            # cổng này TẮT mà không ai biết — đúng kiểu hỏng tệ nhất, vì nó trông y như "không có
+            # ai commit thêm". Nay đếm lại và nói ra.
+            khong_doc_duoc += 1
             continue
         if luc > moc:
             moi.append(f"{c['sha']} {c['tieu_de']}")
     if not moi:
+        if khong_doc_duoc:
+            return _ca("D7", f"không đọc được mốc thời gian của {khong_doc_duoc} commit — "  # i18n-allow
+                             f"không kết luận được là có ai commit sau mốc {state['updated_at']} "
+                             "hay không")
         return None
     return _ca("D7", f"{len(moi)} commit sau mốc {state['updated_at']}: " + " · ".join(moi))  # i18n-allow
 

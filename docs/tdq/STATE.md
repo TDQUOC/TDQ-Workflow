@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-09-23T21:34:31+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-09-27T19:47:51+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-09-23-1148-hoi-muc-qc |
+| Request | 2026-09-27-1905-ci-do-ba-he |
 | Lane | full |
-| Phase | idle |
-| Spec | docs/tdq/spec/2026-09-23-1148-hoi-muc-qc.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-09-23-1148-hoi-muc-qc.md — ✔ approved |
+| Phase | implement |
+| Spec | docs/tdq/spec/2026-09-27-1905-ci-do-ba-he.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-09-27-1905-ci-do-ba-he.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | full |
@@ -15,13 +15,13 @@ Updated: 2026-09-23T21:34:31+07:00 · Project: C:\Users\admin\Documents\Projects
 | Run mode | main |
 
 ## Where we are
-Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
+plan_approved = true and implement_mode is settled. Forbidden: Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --ly-do "<why>"`, whose reason is shown to the user.
 
 ## What comes next
-Wait for a new request from the user.
+Do the whole plan in one turn, mark [~] when a task starts, red→green, flip to [x] as soon as it passes.
 ```
-python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
+python3 scripts/tdq_state.py set phase=qc
 ```
-Done when: A new request is open
+Done when: Every task in the plan is ticked [x]
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.

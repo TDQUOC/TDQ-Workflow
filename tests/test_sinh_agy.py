@@ -21,6 +21,9 @@ import unittest
 
 from helper import ROOT
 
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import tdq_checkportable  # noqa: E402 — chủ của phép kiểm dấu ~
+
 CLI = os.path.join(ROOT, "scripts", "build_portable.py")
 THANH_PHAN = ("plugin.json", "hooks.json", "mcp_config.json", "skills")
 
@@ -77,7 +80,9 @@ class SinhAgyTest(unittest.TestCase):
                 # `~/.gemini/config/config.json` cho NGƯỜI đọc, và dấu ~ ở đó là đúng chỗ.
                 # Dấu ~ trong một `command` mới là lỗi — shell không bung nó trong nháy kép,
                 # hook chết với exit 127.
-                self.assertNotIn("~", c)
+                # Dùng chung phép kiểm với sản phẩm: `~` giữa tên 8.3 (`RUNNER~1`) là hợp lệ,
+                # chỉ `~` đứng đầu token mới là chưa bung (2026-09-27).
+                self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(c))
 
     def test_chay_hai_lan_khong_doi_gi(self):
         chay("--sinh-agy", "--dich", self.dich)

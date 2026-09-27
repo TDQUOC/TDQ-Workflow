@@ -1466,14 +1466,47 @@ def _mark(approved, registered):
     return "⏳ awaiting approval" if registered else "—"
 
 
+# 32 ký tự, đo trên chính khối đầu: với trần 60 thì dòng `[TDQ:NEXT]` dài 146 ký tự và khối đầu
+# chạm đúng 600, mất chữ ở dòng `Done when:`. Trần này giữ cho phần hiển thị đường dẫn không bao
+# giờ là thứ làm tràn khối đầu.
+TRAN_DUONG_HIEN_THI = 32
+
+
+def duong_hien_thi(duong, tran=TRAN_DUONG_HIEN_THI):
+    """Đường dẫn để IN RA trong khối đầu — dài quá thì rút, có trần cố định.
+
+    Vì sao phải rút: khối đầu của `SessionStart` có trần 600 ký tự (spec §2.7), mà dòng
+    `Project: <đường dẫn>` tính vào trần đó. Đường dẫn là dữ liệu của user — thư mục tạm của
+    macOS runner là `/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/tmpXXXXXXXX` — nên độ dài
+    không ai kiểm soát được. Trước 2026-09-27, một đường dẫn dài đẩy khối đầu vượt trần và `cap()`
+    cắt mất đuôi, tức mất chữ của dòng `Command:`; đo thật trên macOS ở CI run 35957834415.
+
+    Thứ nhường là phần hiển thị, không phải trần: giữ HAI đoạn cuối (đủ để user nhận ra project,
+    và tên thư mục cuối luôn còn), thêm `…` báo đã rút. Đường dẫn ĐẦY ĐỦ vẫn nằm trong `STATE.md`,
+    nơi không có trần nào.
+    """
+    day_du = os.path.abspath(duong)
+    if len(day_du) <= tran:
+        return day_du
+    phan = day_du.replace("\\", "/").rstrip("/").split("/")
+    # Thử hai đoạn cuối trước (đọc dễ hơn), không vừa trần thì lấy đúng đoạn cuối — tên thư mục
+    # cuối là thứ user nhận ra project, nên nó là phần được giữ đến cùng.
+    for so_doan in (2, 1):
+        gon = "…/" + "/".join(phan[-so_doan:])
+        if len(gon) <= tran:
+            return gon
+    # Cả tên thư mục cuối cũng dài quá trần → cắt từ ĐẦU, giữ đuôi.
+    return "…" + gon[-(tran - 1):]
+
+
 def next_headline(cwd, state):
     """Line 1 of `next` — also the entire output of `next --brief`."""
     if not state or not state.get("active_request"):
-        return f"[TDQ:NEXT] no request · phase idle · Project: {os.path.abspath(cwd)}"
+        return f"[TDQ:NEXT] no request · phase idle · Project: {duong_hien_thi(cwd)}"
     # phase_key, not the raw phase: lane quick keeps phase=idle while work is still
     # left — printing "idle" makes the model think it is done (QC1.1).
     return (f"[TDQ:NEXT] {state.get('active_request')} · lane {effective_lane(state, warn=False) or '?'} "
-            f"· phase {phase_key(state)} · Project: {os.path.abspath(cwd)}")
+            f"· phase {phase_key(state)} · Project: {duong_hien_thi(cwd)}")
 
 
 def render_next(cwd, state, brief=False, compact=False):

@@ -189,7 +189,7 @@ def kiem_moi_truong(manifest, tim_lenh=None):
     tim_lenh = tim_lenh or shutil.which
     thieu, luu_y = [], []
 
-    toi_thieu = str(manifest.get("python_min") or "3.8")
+    toi_thieu = str(manifest.get("python_min") or "3.11")
     can = tuple(int(p) for p in toi_thieu.split("."))
     if sys.version_info[:len(can)] < can:
         dang_co = ".".join(str(p) for p in sys.version_info[:3])
@@ -347,12 +347,29 @@ def kiem_layout_agy(goc, manifest):
     # file's own description mentions `~/.gemini/...` — so it always fired, and the branch
     # below (the only one that catches a bundle built under someone else's home) was dead.
     nha = os.path.expanduser("~")
-    if any("~" in c for c in lenh):
+    if any(con_dau_nga_chua_bung(c) for c in lenh):
         ghi_chu.append("hooks.json still holds an unexpanded `~` — agy needs an absolute command")
     elif not any(nha in c for c in lenh):
         ghi_chu.append(f"hooks.json was built under another home folder (not {nha}) — rebuild "
                        "with `python3 scripts/build_portable.py` before installing")
     return ghi_chu
+
+
+def con_dau_nga_chua_bung(lenh):
+    """True khi `lenh` còn dấu `~` CHƯA BUNG của thư mục nhà.
+
+    Không phải mọi dấu `~` đều sai. Windows sinh tên 8.3 như `C:\\Users\\RUNNER~1\\AppData\\...`
+    — đường dẫn đó đã tuyệt đối và chạy đúng. Phép kiểm cũ ("có `~` là sai") báo đỏ oan trên
+    runner CI của GitHub, và tệ hơn: nó nuốt luôn nhánh `elif` phía sau, nên phép kiểm THẬT
+    (bundle dựng dưới thư mục nhà của máy khác) không bao giờ chạy ở đó.
+
+    Dấu `~` chỉ sai khi đứng ở ĐẦU một token — `~`, `~/x`, `~\\x`, `~someone/x`. Đó là dạng
+    shell phải bung, mà trong nháy kép thì nó không bung, và hook chết với exit 127.
+    """
+    for token in str(lenh or "").split():
+        if token.strip("\"'").startswith("~"):
+            return True
+    return False
 
 
 def _moi_command(nut):
@@ -386,13 +403,11 @@ def _in_ket_qua(goc, manifest):
         print(f"NOTE     variable {dong}")
     for dong in kiem_layout_agy(goc, manifest):
         print(f"NOTE     {dong}")
-    # Only the codex bundle has a `.codex/` layer, and only that layer depends on the trust state.
-    if ".codex/config.toml" in manifest.get("files", {}):
-        if da_trusted(goc):
-            print(f"NOTE     the project is trusted in {duong_config_codex()}")
-        else:
-            print("NOTE     the project is not trusted — Codex ignores the WHOLE .codex/ (MCP + hooks)"
-                  " until you run `setup --trust` or click approve inside Codex")
+    # 2026-09-27: khối báo trạng thái trust của Codex đã gỡ. Nó gọi `da_trusted()` và
+    # `duong_config_codex()`, hai hàm biến mất cùng lớp trust ở 0.50.0 — tức từ bản đó tới nay
+    # đây là một `NameError` ngồi chờ, chỉ chưa nổ vì không manifest nào còn khai
+    # `.codex/config.toml`. Codex nay đọc repo qua `.agents/plugins/marketplace.json`, không qua
+    # bundle, nên trạng thái trust không còn là việc của lệnh này.
     # A manifest listing no file proves nothing. Reporting "clean, 0 files" here turns a broken
     # manifest into a certificate of safety.
     if not manifest.get("files"):

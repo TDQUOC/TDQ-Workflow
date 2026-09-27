@@ -141,22 +141,63 @@ class TestKhongLoSecret(unittest.TestCase):
         self.assertTrue(any("TAVILY" in d for d in dong))
 
 
+class DauNgaTest(unittest.TestCase):
+    r"""`con_dau_nga_chua_bung` — phép kiểm dùng chung giữa sản phẩm và 3 file test.
+
+    Bản cũ hỏi "có ký tự `~` không", nên trên runner Windows của GitHub (thư mục nhà dạng 8.3,
+    `C:\Users\RUNNER~1\...`) nó báo đỏ oan, VÀ nuốt luôn nhánh `elif` phía sau — tức phép kiểm
+    thật (bundle dựng dưới thư mục nhà máy khác) không bao giờ chạy ở đó.
+    """
+
+    def test_nga_dau_token_la_chua_bung(self):
+        for lenh in ('py -3 "~/x/y.py"', "py -3 ~/x.py", "sh -c ~", 'py -3 "~someone/x.py"',
+                     r'py -3 "~\x\y.py"'):
+            with self.subTest(lenh=lenh):
+                self.assertTrue(tdq_checkportable.con_dau_nga_chua_bung(lenh),
+                                "dạng này shell phải bung mà trong nháy thì không bung")
+
+    def test_nga_giua_ten_83_la_hop_le(self):
+        """Đây là ca CI 35957834415 từng đỏ oan."""
+        for lenh in (r"py -3 C:\Users\RUNNER~1\AppData\Local\Temp\t\hooks\a.py",
+                     r"py -3 C:\Users\ADMINI~1\x.py"):
+            with self.subTest(lenh=lenh):
+                self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(lenh))
+
+    def test_nga_lenh_rong_hay_none(self):
+        for lenh in ("", None, "   "):
+            with self.subTest(lenh=repr(lenh)):
+                self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(lenh))
+
+
+class TrustDaGoTest(unittest.TestCase):
+    """Lớp trust/codex gỡ ở 0.50.0 — nhưng `_in_ket_qua` vẫn GỌI hai hàm đã xoá tới 2026-09-27.
+
+    Nhánh đó chỉ chạy khi manifest khai `.codex/config.toml`, mà không bundle nào còn khai, nên
+    nó là `NameError` ngồi chờ chứ không phải lỗi đã nổ. Hai ca dưới canh đúng chỗ đó.
+    """
+
+    def test_trust_khong_con_goi_api_da_xoa(self):
+        """Đọc AST nên nhắc tên trong CHÚ THÍCH không tính — chỉ lời gọi thật mới tính."""
+        import ast
+        with open(os.path.join(ROOT, "scripts", "tdq_checkportable.py"), encoding="utf-8") as f:
+            cay = ast.parse(f.read())
+        ten_dung = {n.id for n in ast.walk(cay) if isinstance(n, ast.Name)}
+        for ten in ("da_trusted", "duong_config_codex", "bat_trusted", "cai_tang_codex"):
+            with self.subTest(ten=ten):
+                self.assertNotIn(ten, ten_dung, f"{ten} đã xoá mà code còn gọi")
+
+    def test_trust_manifest_co_codex_van_khong_no(self):
+        """Ca hồi quy thật: manifest khai `.codex/config.toml` thì lệnh in kết quả KHÔNG được nổ."""
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as goc:
+            manifest = {"files": {".codex/config.toml": "a" * 64}, "version": "0.0.0",
+                        "python_min": "3.11", "external_commands": [], "mcp_servers": []}
+            # Bọc stdout: lệnh này in báo cáo cho user, và để nó xả vào đầu ra của suite thì
+            # lần sau ai đọc log test cũng phải đoán dòng `MISSING` đó từ đâu ra.
+            with contextlib.redirect_stdout(io.StringIO()):
+                tdq_checkportable._in_ket_qua(goc, manifest)
+
+
 if __name__ == "__main__":
     unittest.main()
-
-
-def _anh_chup_codex(goc):
-    """Ảnh chụp thư mục `.codex/`: đường → sha256. Thư mục không có thì dict rỗng.
-
-    So bằng nội dung chứ không bằng mtime: một lần ghi đè đúng y nội dung cũ vẫn là
-    ghi, nhưng thứ luật T9.1 cấm là ghi ra thay đổi, nên nội dung mới là thước đo.
-    """
-    ra = {}
-    thu_muc = os.path.join(goc, ".codex")
-    for goc_con, _dirs, files in os.walk(thu_muc):
-        for ten in files:
-            duong = os.path.join(goc_con, ten)
-            ra[os.path.relpath(duong, goc)] = tdq_checkportable.sha256_of(duong)
-    return ra
-
-

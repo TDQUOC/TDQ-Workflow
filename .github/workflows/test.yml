@@ -16,7 +16,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.10", "3.13"]
+        # 2026-09-27: 3.10 → 3.11. Sàn của repo lên 3.11 (bản đầu có `tomllib`), nên job cũ
+        # kiểm một bản không còn được hỗ trợ — và nó là nơi duy nhất hai nhóm ca đỏ vì thiếu
+        # `tomllib`. Vẫn giữ hai bản: sàn và bản hiện hành, để chính cái sàn được chạy thật.
+        python-version: ["3.11", "3.13"]
     runs-on: ${{ matrix.os }}
     steps:
       # Trước checkout: runner Windows bật sẵn autocrlf, CRLF làm lệch sha256 và so khớp văn bản.

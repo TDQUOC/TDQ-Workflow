@@ -19,6 +19,7 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_portable  # noqa: E402
+import tdq_checkportable  # noqa: E402 — chủ của phép kiểm dấu ~
 
 # 2026-09-21: layout agy không còn nằm sẵn trong repo — nó được SINH ra lúc cài, vào đúng thư
 # mục cài trên máy người dùng. Nên test sinh một bản tạm rồi soi bản đó. Bundle codex thì bỏ
@@ -60,7 +61,12 @@ class TuongThichAgy(unittest.TestCase):
                 for nhom in muc for h in nhom["hooks"]]
         self.assertTrue(lenh, "hooks.json agy không khai lệnh nào")
         for c in lenh:
-            self.assertNotIn("~", c, f"còn dấu ~ chưa bung: {c}")
+            # 2026-09-27: hỏi đúng câu "còn `~` CHƯA BUNG không", thay vì "có ký tự `~` không".
+            # Runner Windows của GitHub có thư mục nhà dạng 8.3 (`C:\Users\RUNNER~1\...`) — đường
+            # dẫn đó đã tuyệt đối và chạy đúng, nhưng phép kiểm cũ báo đỏ (CI run 35957834415).
+            # Phép kiểm sống ở `tdq_checkportable`, dùng chung với chính sản phẩm.
+            self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(c),
+                             f"còn dấu ~ chưa bung: {c}")
             duong = c.split()[-1]
             # Both rule sets, not just the host's. The bundle bakes in the absolute path of the
             # machine that BUILT it, so a bundle built on macOS carries `/Users/...` — and

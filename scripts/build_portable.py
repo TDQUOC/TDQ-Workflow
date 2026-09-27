@@ -63,7 +63,9 @@ EXCLUDE_FILES = frozenset({
 PORTABLE_SRC = "portable_src"
 
 MANIFEST_NAME = "manifest.json"
-PYTHON_MIN = "3.8"
+# 2026-09-27: 3.8 → 3.11. Sàn cũ là số khai suông, chưa bao giờ có job CI nào chạy nó; 3.11 là
+# bản đầu tiên có `tomllib` trong thư viện chuẩn, và là bản thấp nhất ma trận CI đang kiểm thật.
+PYTHON_MIN = "3.11"
 EXTERNAL_COMMANDS = ("git", "graphify")
 MCP_SERVERS = ("tavily-primary", "tavily-backup")
 

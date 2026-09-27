@@ -26,10 +26,9 @@ import sys
 import tempfile
 import time
 
-try:
-    import tomllib
-except ImportError:  # Python < 3.11: no provider copy, the temp home keeps only the model line
-    tomllib = None
+# 2026-09-27: import thẳng. Sàn của repo lên 3.11, bản đầu tiên có `tomllib` trong thư viện chuẩn,
+# nên lớp dự phòng `tomllib = None` (và nhánh bỏ bước chép provider đi kèm) không còn lý do sống.
+import tomllib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
@@ -391,8 +390,6 @@ def _provider_cua_may(nguon):
     which rejects a router model with 400 "model not supported when using Codex with a ChatGPT
     account" — measured on a machine behind `9router`.
     """
-    if tomllib is None:
-        return "", None
     try:
         with open(os.path.join(nguon, "config.toml"), "rb") as f:
             cfg = tomllib.load(f)
