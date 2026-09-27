@@ -571,5 +571,49 @@ class LogService(TempRepo):
         self.assertTrue(err.startswith("["), err)
 
 
+class MocKhongDocDuocTest(unittest.TestCase):
+    """Mốc thời gian không đọc được KHÔNG được biến thành im lặng (2026-09-27).
+
+    Vì sao có ca này, và vì sao nó là unit test chứ không chạy qua CLI: CI run 35957834415 có
+    `test_ca_lech_d7_co_commit_sau_updated_at` đỏ trên Python 3.10 ở CẢ Ubuntu và Windows, xanh
+    trên 3.13. Tôi không dựng lại được nguyên nhân — không API 3.11+ nào trong
+    `scripts/tdq_checkstatus.py`, `%cI` luôn có dấu hai chấm nên `fromisoformat` của 3.10 đọc
+    được, `helper.write_state` ghi JSON thẳng nên `updated_at` không bị ghi đè, và git chạy thật
+    (assert ngay trước đó đã xanh) — và không máy nào trong tay tôi có 3.10 để đo. Nên thay vì
+    đoán một nguyên nhân, tôi vá đúng LỚP lỗi: nhánh `except ValueError` của `_cham_d7` từng
+    `continue` trong im lặng, tức cổng phát hiện "agent khác vừa commit" tự tắt mà không ai biết.
+    Gọi thẳng hàm vì phần còn lại của file này chạy script qua subprocess, không chèn được dữ
+    liệu vào giữa.
+    """
+
+    def setUp(self):
+        import importlib.util
+        ten = os.path.join(ROOT, "scripts", "tdq_checkstatus.py")
+        spec = importlib.util.spec_from_file_location("tdq_checkstatus_ut", ten)
+        self.mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.mod)
+
+    def _bang_chung(self, luc):
+        return {"git": {"co": True, "nhanh": "main", "ban": [],
+                        "commit": [{"sha": "abc12345", "luc": luc, "tieu_de": "ai đó commit"}]}}
+
+    def test_moc_khong_doc_duoc_thanh_canh_bao(self):
+        ca = self.mod._cham_d7({"updated_at": "2020-01-01T00:00:00+07:00"},
+                               self._bang_chung("hôm-qua-lúc-nào-ấy"))
+        self.assertIsNotNone(ca, "mốc lạ phải thành cảnh báo, không thành im lặng")
+        self.assertEqual(ca["ma"], "D7")
+        self.assertIn("không đọc được mốc thời gian", ca["chi_tiet"])
+
+    def test_moc_doc_duoc_va_moi_hon_thi_bao_commit(self):
+        ca = self.mod._cham_d7({"updated_at": "2020-01-01T00:00:00+07:00"},
+                               self._bang_chung("2026-09-27T19:00:00+07:00"))
+        self.assertEqual(ca["ma"], "D7")
+        self.assertIn("abc12345", ca["chi_tiet"])
+
+    def test_moc_cu_hon_thi_khong_canh_bao(self):
+        self.assertIsNone(self.mod._cham_d7({"updated_at": "2026-09-27T19:00:00+07:00"},
+                                            self._bang_chung("2019-01-01T00:00:00+07:00")))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -17,6 +17,7 @@ import unittest
 
 import helper  # noqa: F401  — nạp sys.path cho scripts/
 import build_portable
+import tdq_checkportable  # chủ của phép kiểm dấu ~
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "scripts", "build_portable.py")
@@ -234,7 +235,8 @@ class TestBanAntigravity(TempDest):
                 for hook in nhom["hooks"]:
                     lenh = hook["command"]
                     self.assertNotIn("${", lenh, "command không được còn biến chưa thay")
-                    self.assertNotIn("~", lenh, "dấu ~ trong nháy không được shell bung → exit 127")
+                    self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(lenh),
+                                     "dấu ~ chưa bung → shell không bung trong nháy → exit 127")
                     self.assertIn(build_portable.goc_agy_tuyet_doi(), lenh,
                                   "command phải là absolute path đã bung dưới gốc plugin")
 

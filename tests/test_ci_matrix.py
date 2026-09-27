@@ -16,7 +16,9 @@ from helper import ROOT
 
 DUONG_CI = os.path.join(ROOT, ".github", "workflows", "test.yml")
 HE = {"ubuntu-latest", "macos-latest", "windows-latest"}
-PHIEN_BAN = {"3.10", "3.13"}
+# Sàn của repo và bản hiện hành. Đổi tập này là đổi cam kết tương thích — 2026-09-27: 3.10 ra,
+# 3.11 vào, vì 3.11 là bản đầu tiên có `tomllib` trong thư viện chuẩn.
+PHIEN_BAN = {"3.11", "3.13"}
 LENH_SUITE = "python -m unittest discover tests"
 
 

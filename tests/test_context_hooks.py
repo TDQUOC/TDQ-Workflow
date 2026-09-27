@@ -59,7 +59,12 @@ class TestSessionStart(unittest.TestCase):
                 rc, out, _ = run_hook("session_start.py",
                                       {"cwd": self.cwd, "session_id": f"s1-{phase}"})
                 dau = khoi_dau(out)
-                self.assertNotIn("…", dau, phase)
+                # 2026-09-27: `…` nay có HAI nghĩa. Một là dấu rút gọn đường dẫn project do
+                # `tdq_state.duong_hien_thi` đặt (hợp lệ — nó tồn tại để khối đầu không phụ thuộc
+                # độ dài đường dẫn của user). Hai là dấu cắt trần của `cap()` (lỗi), và dấu đó
+                # luôn nằm ở CUỐI khối vì `cap()` cắt từ đuôi. Nên đo bằng "đuôi có bị cắt không"
+                # cộng "dòng cuối còn không", chứ không bằng "có ký tự `…` không".
+                self.assertFalse(dau.endswith("…"), f"{phase}: khối đầu bị cắt trần")
                 self.assertIn("[TDQ] Rule", dau)
                 self.assertIn("Command:", dau)
                 self.assertIn("Done when:", dau)

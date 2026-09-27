@@ -90,7 +90,13 @@ class StateFileTest(unittest.TestCase):
         self._init()
         rc, out, _ = run_state_cli(self.cwd, "next")
         self.assertEqual(rc, 0)
-        self.assertIn(f"Project: {os.path.abspath(self.cwd)}", out)
+        # 2026-09-27: `next` in đường dẫn RÚT GỌN, `STATE.md` giữ bản ĐẦY ĐỦ. Lý do đổi: khối đầu
+        # có trần 600 ký tự, mà đường dẫn là dữ liệu của user — thư mục tạm của macOS runner đủ
+        # dài để đẩy khối đầu vượt trần và cắt mất dòng lệnh (CI run 35957834415). Thứ phải nhường
+        # là phần hiển thị, không phải trần. Điều còn phải đúng: user vẫn nhận ra project, nên tên
+        # thư mục cuối luôn còn, và bản đầy đủ vẫn đọc được ở nơi không có trần.
+        self.assertIn(f"Project: {tdq_state.duong_hien_thi(self.cwd)}", out)
+        self.assertIn(os.path.basename(os.path.abspath(self.cwd)), out)
         md = _read(tdq_state.state_md_path(self.cwd))
         self.assertIn(f"Project: {os.path.abspath(self.cwd)}", md)
 
