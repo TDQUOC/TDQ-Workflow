@@ -2,6 +2,37 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.52.0 — 2026-09-27
+
+CI xanh trên cả ba hệ ở lần chạy thứ hai, và **breaking change**: sàn Python lên 3.11. Báo cáo:
+`docs/tdq/reports/2026-09-27-1905-ci-do-ba-he.md`.
+
+- **BREAKING — sàn Python 3.8 → 3.11.** `PYTHON_MIN` đổi, lớp dự phòng `tomllib = None` trong
+  `tdq_codex.py` bỏ hẳn cùng 6 guard `skipIf` của nó, ma trận CI đổi `3.10` → `3.11`. Ai đang
+  chạy 3.8–3.10 sẽ không dùng được bản này. 3.11 là bản đầu tiên có `tomllib` trong thư viện
+  chuẩn, và nay là bản thấp nhất được CI chạy thật.
+- **Header `SessionStart` không còn phụ thuộc độ dài đường dẫn** — lỗi sản phẩm, đo trên macOS.
+  Khối đầu có trần 600 ký tự và tính cả dòng `Project: <đường dẫn>`. Thư mục tạm của runner macOS
+  là `/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/tmpXXXX`, đủ dài để `cap()` cắt mất dòng
+  lệnh. Đường dẫn là dữ liệu của user, nên phần nhường là phần HIỂN THỊ.
+  `duong_hien_thi()` giữ hai đoạn cuối trong trần 32 ký tự (`…/ForAgentCode/TDQ-Workflow`), còn
+  `STATE.md` vẫn giữ đường dẫn tuyệt đối đầy đủ.
+- **Phép kiểm dấu ngã hỏi đúng câu** — `con_dau_nga_chua_bung()` trong `tdq_checkportable.py`,
+  dùng chung cho sản phẩm và ba file test. Bản cũ ("có ký tự ngã là sai") báo đỏ oan trên runner
+  Windows, nơi thư mục nhà có dạng 8.3 (`RUNNER~1`). Tệ hơn: nó nuốt luôn nhánh `elif` phía sau,
+  nên phép kiểm THẬT — bundle dựng dưới thư mục nhà của máy khác — không bao giờ chạy ở đó.
+- **Fixture test viết theo hệ đang chạy** — 9 ca của `test_shim_python3` dựng PATH giả bằng đường
+  dẫn Windows cho mọi hệ, mà `os.pathsep` trên POSIX là dấu hai chấm nên đường dẫn ổ đĩa bị xé
+  làm hai. Sản phẩm vốn đúng; nay 9 ca đó chạy THẬT trên cả ba hệ thay vì bị skip, cộng một ca
+  canh chính cái bẫy đó.
+- **Cổng D7 không còn tự tắt trong im lặng** — `_cham_d7` từng `continue` khi không đọc được mốc
+  thời gian của commit. Một mốc lạ vì thế làm cổng "agent khác vừa commit" tắt hẳn, mà trông y
+  như "không có ai commit thêm". Nay nó báo rõ là không kết luận được.
+- **Vá lỗi 0.50.0 để lại** — `_in_ket_qua` vẫn gọi `da_trusted()` và `duong_config_codex()`, hai
+  hàm biến mất cùng lớp trust: một `NameError` ngồi chờ từ bản đó tới nay.
+- **Đo trên máy thật, không đoán** — Linux (3.14.4) 1993 ca; macOS pyenv 3.13.15 và brew 3.14.7
+  đều 1993 ca; Windows 3.13.15 2016 ca. Tất cả 0 fail, 0 error. CI xanh cả 6 job (run 36322434130).
+
 ## 0.51.0 — 2026-09-23
 
 Mức độ QC thành quyết định của user, hỏi một lần trước khi viết spec. Báo cáo:
