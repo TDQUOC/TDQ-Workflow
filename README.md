@@ -163,7 +163,7 @@ Nguồn: <https://code.claude.com/docs/en/plugin-marketplaces> ·
 
 | Thư mục | Vai trò |
 |---|---|
-| `skills/` (9) | tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-lean, tdq-status, tdq-check-status, tdq-conventions, tdq-lsp-setup |
+| `skills/` (9) | tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-lean, tdq-status, tdq-check-status, tdq-conventions, tdq-setup |
 | `agents/` (3) | tdq-reviewer, tdq-implementer, tdq-qc-tester |
 | `hooks/` (6 trên 5 sự kiện) | edit_gate, bash_gate (nhắc), session_start, subagent_start, prompt_context, stop_gate (chặn working log) |
 | `scripts/tdq_state.py` | CLI state: `next \| get \| init \| set \| approve \| reset \| phases-doc` |

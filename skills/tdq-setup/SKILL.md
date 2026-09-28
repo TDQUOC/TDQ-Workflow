@@ -1,9 +1,9 @@
 ---
-name: tdq-lsp-setup
-description: Check and set up agent-lsp so the workflow searches code by meaning, not by text. Seven rungs - binary, lsp MCP server, language servers, tool permissions, lumen, hook conflicts, import-root config. Use when opening a request, when an LSP tool fails, or on a new machine.
+name: tdq-setup
+description: Install and prove every dependency the workflow searches with: 8 rungs from the agent-lsp binary to lumen's round trip and the graphify graph. Use when opening a request, when a search tool fails, or on a new machine.
 ---
 
-# TDQ LSP Setup — agent-lsp as the workflow's search layer
+# TDQ Setup — installing and proving the workflow's four search layers
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md).
 Upstream: <https://github.com/blackwell-systems/agent-lsp> · local clone on this machine:

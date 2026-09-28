@@ -311,15 +311,17 @@ class NoiVaoWorkflow(TempRepo):
 
     def test_finish_dong_so_khi_ve_idle(self):
         run_state_cli(self.cwd, "init", "2026-08-15-0900-viec", "full")
+        # 2026-09-28: cờ `--skip-graphify` bị gỡ hẳn — chính nó làm đồ thị cũ 8 ngày. Hai ca này
+        # chạy trên thư mục tạm không có file code nào, nên bước graphify tự `skip`.
         rc, out, err = helper.run_finish_cli(self.cwd, "--phase", "idle",
-                                             "--skip-graphify", "--log", "thử đóng sổ")
+                                             "--log", "thử đóng sổ")
         self.assertEqual(rc, 0, err)
         self.assertEqual([b["slug"] for b in self.doc_timing()], ["2026-08-15-0900-viec"])
         self.assertIn("timing", (out + err).lower())
 
     def test_finish_phase_khac_idle_khong_dong_so(self):
         run_state_cli(self.cwd, "init", "2026-08-15-0900-viec", "full")
-        helper.run_finish_cli(self.cwd, "--phase", "qc", "--skip-graphify", "--log", "chưa xong")
+        helper.run_finish_cli(self.cwd, "--phase", "qc", "--log", "chưa xong")
         self.assertEqual(self.doc_timing(), [])
 
 

@@ -2,6 +2,29 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.53.0 — 2026-09-28
+
+Bộ tìm kiếm chuyển từ "có cài" sang "chứng minh được là đang trả lời đúng", và **breaking
+change**: skill `tdq-lsp-setup` đổi tên thành `tdq-setup`. Báo cáo:
+`docs/tdq/reports/2026-09-28-0910-lumen-check-va-setup-tool.md`.
+
+- **BREAKING — `tdq-lsp-setup` → `tdq-setup`.** Không giữ bí danh: gõ tên cũ sẽ không thấy gì.
+  Tên cũ nói skill này chỉ lo LSP. Thực tế nó vốn đã cài cả lumen, và nay nhận luôn việc cài đủ
+  phụ thuộc cho workflow. Bốn nhóm đã đổi theo: bảng trần dòng của `doc_lint`, danh sách thứ tự
+  nạp của `build_portable`, năm chỗ trích luật tìm kiếm, và file test chống lệch.
+- **Bậc 5 hết mù với chuyện "sống mà trả lời sai".** Nó từng chỉ hỏi "ollama có chạy không", nên
+  suốt phiên 2026-09-28 nó báo ĐẠT trong khi MCP `lumen` chết cả phiên (`CONNECTION_CLOSED`).
+  Nay nó hỏi lumen một câu thật rồi đọc câu trả lời, và đo xem index có nội dung MỚI của cây làm
+  việc hay không. Cả hai phép đo đi bằng CLI: lumen 0.0.42 khai `defaultFreshnessTTL = 30s`, nên
+  đường MCP có thể trả lời từ một lần "fresh" đã cũ.
+- **Bậc 5 không còn dò ollama bằng PATH.** Socket được hỏi TRƯỚC; `which` chỉ còn để phân biệt
+  "cài rồi mà đang ngủ" với "chưa cài bao giờ". Đo trên macOS: `/opt/homebrew/bin/ollama` có
+  thật và login shell tìm ra, nhưng `shutil.which` từ tiến trình không-login trả `None` — thứ tự
+  cũ kết luận "thiếu ollama" và in lệnh cài cho một daemon đang phục vụ.
+- **Thêm bậc 8 — đồ thị graphify.** Công cụ thứ tư của bộ tìm kiếm trước nay không có bậc nào.
+  Nó hỏng đúng kiểu một index không ai dựng lại. Đo được 2026-09-28: đồ thị cũ 8 ngày, 34% node
+  (845/2415) trỏ vào thư mục đã xoá.
+
 ## 0.52.0 — 2026-09-27
 
 CI xanh trên cả ba hệ ở lần chạy thứ hai, và **breaking change**: sàn Python lên 3.11. Báo cáo:

@@ -1,6 +1,6 @@
 """P3 — khoá luật ưu tiên tìm kiếm ở đúng 5 chỗ móc, khớp từng chữ với file luật gốc.
 
-Luật viết 1 chỗ (`skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`), trích ở 5 chỗ.
+Luật viết 1 chỗ (`skills/tdq-setup/references/uu-tien-tim-kiem.md`), trích ở 5 chỗ.
 Không có test này thì sửa 1 chỗ là 4 chỗ kia trôi mà không ai biết: mỗi phase sẽ đọc
 một thứ tự tìm kiếm khác nhau. Test so câu trích với câu gốc sau khi chuẩn hoá khoảng
 trắng, nên xuống dòng ở đâu là tuỳ file, còn chữ thì phải y nguyên.
@@ -12,7 +12,7 @@ import unittest
 
 from helper import ROOT
 
-GOC = os.path.join(ROOT, "skills", "tdq-lsp-setup", "references", "uu-tien-tim-kiem.md")
+GOC = os.path.join(ROOT, "skills", "tdq-setup", "references", "uu-tien-tim-kiem.md")
 
 # 5 chỗ móc — đúng bảng §5 của file luật gốc.
 CHO_MOC = [

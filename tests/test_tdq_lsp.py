@@ -184,8 +184,14 @@ class Bac5Lumen(BaseLsp):
                                                 "jina-embeddings-v2-base-code", "latest")), d)
 
     def test_thieu_ollama_chi_canh_bao(self):
-        """lumen là lớp dự phòng: hỏng thì cảnh báo, tuyệt đối không chặn phiên làm việc."""
-        with mock.patch.object(tdq_lsp.shutil, "which", return_value=None):
+        """lumen là lớp dự phòng: hỏng thì cảnh báo, tuyệt đối không chặn phiên làm việc.
+
+        2026-09-28: ca này từng chỉ vá `which`. Nhưng `which` trả None KHÔNG còn nghĩa là chưa
+        cài — trên macOS một tiến trình không-login không thấy `/opt/homebrew/bin` trong khi
+        daemon vẫn phục vụ. "Chưa cài" nay là CẢ HAI cùng vắng, nên ca phải nói đúng điều đó.
+        """
+        with mock.patch.object(tdq_lsp.shutil, "which", return_value=None), \
+                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False):
             b = tdq_lsp.bac5_lumen()
         self.assertFalse(b.dat)
         self.assertTrue(b.chi_canh_bao)
@@ -219,9 +225,15 @@ class Bac5Lumen(BaseLsp):
         self.assertTrue(b.chi_canh_bao)
 
     def test_du_ca_ba_thi_dat(self):
+        """2026-09-28: ba điều kiện cũ KHÔNG còn đủ — bậc 5 nay hỏi thêm hai phép đo hiệu ứng
+        (index có nội dung mới, lumen trả lời được). Ca này giữ đúng vai trò cũ: khi MỌI phép dò
+        đều xanh thì bậc phải ĐẠT. Ca đo riêng từng phép đo mới nằm ở `test_bac_lumen_hieu_ung`.
+        """
         with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
                 mock.patch.object(tdq_lsp, "_model_da_pull", return_value=True), \
-                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True):
+                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
+                mock.patch.object(tdq_lsp, "_index_cu_hon_code", return_value=(False, "")), \
+                mock.patch.object(tdq_lsp, "_lumen_tra_loi_duoc", return_value=(True, "")):
             b = tdq_lsp.bac5_lumen()
         self.assertTrue(b.dat)
 
@@ -449,8 +461,13 @@ class Bac7CauHinhGocImport(BaseLsp):
         self.du_file(".py", 5)
         with open(os.path.join(self.tmp.name, "pyrightconfig.json"), "w", encoding="utf-8") as fh:
             fh.write("{}")
-        so = [b.so for b in tdq_lsp.chay_kiem(self.tmp.name)]
-        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7])
+        # Vá hai phép đo hiệu ứng của bậc 5: chúng gọi lumen thật, mà ca này chỉ hỏi "thang có
+        # đủ 8 bậc không" — không ca nào được phép ghi vào index của máy đang chạy test.
+        with mock.patch.object(tdq_lsp, "_index_cu_hon_code", return_value=(False, "")),                 mock.patch.object(tdq_lsp, "_lumen_tra_loi_duoc", return_value=(True, "")):
+            so = [b.so for b in tdq_lsp.chay_kiem(self.tmp.name)]
+        # 2026-09-28: thang có thêm bậc 8 (đồ thị graphify) — công cụ thứ tư của bộ tìm kiếm
+        # trước nay không có bậc nào, nên nó hỏng mà không ai bị báo.
+        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7, 8])
 
 
 class LoiHuaKhongTuCai(BaseLsp):

@@ -186,7 +186,7 @@ def _ghi_json(duong, du_lieu):
 # Reading order, not alphabetical order: it is the order the pipeline uses them in.
 THU_TU_SKILL = (
     "tdq-conventions",
-    "tdq-lsp-setup",  # read before intake: it settles the search layer every later phase uses
+    "tdq-setup",  # read before intake: it settles the search layer every later phase uses
     "tdq-intake",
     "tdq-spec",
     "tdq-plan",

@@ -8,6 +8,8 @@ here, and the five hook points keep matching because they only ever point.
 
 - 1. The order, settled
 - 2. The table — kind of question → which layer first, with the numbers
+- 2b. The fourth layer: graphify, the map
+- 2c. Runtime dependencies — what each layer needs, and what it falls back to
 - 3. Ollama's lifecycle — on demand, released right after
 - 4. Outside plugin hooks pushing another order
 - 5. Where this rule is hooked in
@@ -15,16 +17,17 @@ here, and the five hook points keep matching because they only ever point.
 
 ## 1. The order, settled
 
-**There is no single winning layer. Pick the first layer from the KIND of question you are
-asking — relationship questions go to agent-lsp, an exact known name goes to grep, a vague
-concept goes to lumen. Only when the kind is unclear do you call all of them at once and merge.**
+**There is no single winning layer. Four exist, and you pick the first one from the KIND of
+question you are asking.** Relationship questions go to agent-lsp. An exact known name goes to
+grep. A vague concept goes to lumen. A blast-radius or architecture question goes to graphify.
+**Only when the kind is unclear do you call several at once and merge.**
 
 The canonical sentence, quoted verbatim at every hook point:
 
 > Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
 > hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-> lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
-> `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+> lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
+> gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
 
 This is a soft rule, not a blocking hook. Picking the wrong first layer for the kind of question
 is a QC defect, not a turn the machine refuses. Two exemptions, both narrow:
@@ -55,6 +58,56 @@ config silently answers relationship questions with **7 %** coverage while every
 Standing exceptions: a language with no server installed → lumen and grep only. lumen unhealthy →
 agent-lsp then grep.
 
+## 2b. The fourth layer: graphify, the map
+
+graphify answers a question none of the other three can: **who is affected if I change this, two
+hops out.** It reads a graph built from the source, so it costs nothing to traverse and it never
+guesses from names. It is not a type checker and it holds no diagnostics — nodes carry a label,
+a source file and a location, nothing more.
+
+**Its value changes with the KIND of repo, so no number about it means anything without the repo
+name beside it.** Measured 2026-09-28 on two repos with the same tool:
+
+| Measure | TDQ-Workflow (docs/skills heavy) | claudecodeui (995 files, TS/React) |
+|---|---|---|
+| nodes / edges | 2415 / 5139 | 6258 / 16121 |
+| **cross-file edges** | **12%** | **54%** |
+| `calls` crossing files | 100 | **981** |
+| `imports_from` | 8 | **3605** |
+| **`rationale_for`** | **1035** | **2** |
+| rebuild time | — | **16.5 s / 917 files** |
+
+Two faces of one tool: a real code repo gives a **dependency map**, a documentation-heavy repo
+gives **code ↔ reason** links. Neither repo gives both. On claudecodeui, `affected AppError`
+returned **60 files with zero false positives** where `grep -rl` returned 66 — the 6 extra were
+comments, a similarly named `AppErrorOptions`, and the definition site itself.
+
+Cost, measured on claudecodeui: `affected --depth 1` is **12.6 KB against grep -rn's 42.9 KB**,
+3.4× cheaper; `--depth 2` opens 134 → 207 nodes, a question grep cannot answer at any price;
+`god-nodes` costs 251 bytes for 8 hubs.
+
+**The one hard condition: the graph must be FRESH.** A stale graph does not fail loudly; it
+answers about code that no longer exists. Measured on TDQ-Workflow: a graph 8 days old, 34% of
+its nodes (845 of 2415) pointing into a deleted directory. `explain` then needed 3 extra queries
+to disambiguate. Rung 8 of the ladder checks exactly this, and the `graphify` step of
+`tdq_finish.py` rebuilds it whenever a code file changed.
+
+## 2c. Runtime dependencies — what each layer needs, and what it falls back to
+
+A layer never announces its own death. It answers less, or answers about the past, and the shape
+of that answer looks exactly like a correct one. So the fallback is written down in advance:
+
+| Layer | Runtime dependency | Dead → falls back to |
+|---|---|---|
+| grep | nothing | — it IS the floor |
+| agent-lsp | a language server + an import-root marker (`pyrightconfig.json` and friends) | grep, losing types and diagnostics |
+| graphify | a `graph.json` newer than the code | agent-lsp over several round trips, more expensive |
+| lumen | ollama + the embedding model + an index holding the working tree's newest content | grep with more keywords, or reading `docs/` |
+
+Rungs 1–8 of `scripts/tdq_lsp.py check` measure every one of those dependencies. Rungs 5 and 8
+measure them **by effect**: a real round trip, and a real freshness probe. A rung that only
+checks existence is blind to the way these two tools actually fail.
+
 ## 3. Ollama's lifecycle — on demand, released right after
 
 lumen needs Ollama up and the embedding model loaded. Keeping that model resident costs the
@@ -65,9 +118,14 @@ machine real memory the whole session for a layer used a fraction of the time. S
    never wakes lumen.
 2. `python3 scripts/tdq_lsp.py wake` — wake the daemon, waiting up to the timeout.
 3. Run the lumen query, and the LSP query too when the kind was unclear, then merge before
-   reading. lumen's `semantic_search` auto-reindexes the project incrementally (Merkle root-hash
-   diff, only changed files re-embedded) whenever its index is stale — no separate reindex step
-   or script is needed to keep data fresh.
+   reading. lumen re-indexes incrementally (a merkle diff, only changed files re-embedded), but
+   **only when something calls it**, and it trusts a confirmed-fresh index for
+   `defaultFreshnessTTL = 30s` before walking the tree again (lumen 0.0.42, `cmd/stdio.go`). So
+   the freshness of the index is NOT a property you get for free by searching: measured on
+   TDQ-Workflow 2026-09-28, the index stood at 21/09 while a file edited on 27/09 was missing
+   from it entirely, and `index_status` still answered `Stale: no`. The workflow therefore
+   rebuilds it itself, every turn, in the `reindex` step of `scripts/tdq_finish.py`, through the
+   CLI — which walks the tree for real and answers even when the MCP layer is down.
 4. `python3 scripts/tdq_lsp.py release` — release the model IMMEDIATELY, in the same turn.
 
 Rules around those four steps:
@@ -104,7 +162,7 @@ that hook gets to make.
 | implement | `skills/tdq-build/SKILL.md` | `## Hard rules`, and "Search before creating" at step 2.4 |
 
 Each of those five files carries the quoted sentence from section 1 and a link back here. They
-must not drift: `tests/test_tdq_lsp_skill.py` compares them against this file and fails when one
+must not drift: `tests/test_tdq_setup_skill.py` compares them against this file and fails when one
 of them is edited alone.
 
 ## 6. Never open documents before asking `find_references`

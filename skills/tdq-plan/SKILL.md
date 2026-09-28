@@ -47,8 +47,8 @@ scope. Spec approved → plan NOW.
    symbol the task changes, so a caller outside the obvious folder still lands on the line. <!-- i18n-allow: canonical rule sentence in the default language -->
    Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
    hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-   lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
-   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+   lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
+   gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
    **Score `eNm` as you write the task**, never later and never padded: minutes the agent SPENDS
    EXECUTING it (approval waits do not count). Plan ETA = the sum over unfinished tasks; the full
    scoring rule is the last section of plan-template.
