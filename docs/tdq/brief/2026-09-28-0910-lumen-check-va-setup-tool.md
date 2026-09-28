@@ -22,7 +22,10 @@ runtime vào luật tìm kiếm.
 
 > tôi lại skill tdq-lsp-setup thành tdq-setup nó sẽ setup fully dependecy cho workflow luôn
 
-**Cách tôi đọc yêu cầu này — sáu việc**
+> 1b 2b và sẽ đi theo rule sreach và chúng ta đã nói. và trong skill setup cũng sẽ làm điều tương
+> tự, và bổ sung thêm là sau mỗi turn nhớ re index lại project nha
+
+**Cách tôi đọc yêu cầu này — bảy việc**
 
 1. **lumen**: bậc 5 phải đo hiệu ứng thật, không đo daemon; phải đo được index có nội dung MỚI hay
    không; reindex phải nằm trong bước kết turn cạnh graphify; phần setup phải ghi đủ cách cài.
@@ -38,6 +41,8 @@ runtime vào luật tìm kiếm.
    workflow" đồng nghĩa với "mọi thứ đã đủ".
 6. **Đổi tên `tdq-lsp-setup` → `tdq-setup`, và nó nhận việc cài ĐỦ phụ thuộc cho workflow**: không
    còn là skill của riêng LSP mà là cửa cài đặt của cả workflow.
+7. **`setup` phải dọn luôn hook của plugin khác đang đè thứ tự tìm kiếm**, đúng như việc vừa làm
+   tay trong phiên này; và **reindex sau MỖI turn**, không ngưỡng.
 
 ## Hiểu & kiến thức
 
@@ -189,15 +194,197 @@ Nếu skill đã tên `tdq-setup` thì thiếu bậc graphify là lỗi rõ ràn
    xử lý.
 3. **Bản ngắn của hướng dẫn tool dài bao nhiêu** — `docs/claude-md-mau.md` đang có trần 3800 byte;
    thêm bảng 4 tầng vào đó là chạm trần.
-4. **Có ép reindex ở mỗi lần kết turn hay không** — đo xong thì rào cản không còn là thời gian
-   (2,6 s cho một file sửa, 0,2 s khi không có gì đổi), mà là turn sửa nhiều file: ~0,21 s/chunk.
-   Cần chốt: cắm thẳng, hay chỉ cắm khi số chunk thay đổi dưới một ngưỡng.
-5. **Đổi tên rồi có giữ tên cũ làm bí danh không** — người đang cài bản cũ gõ `tdq-lsp-setup` sẽ
+4. **Đổi tên rồi có giữ tên cũ làm bí danh không** — người đang cài bản cũ gõ `tdq-lsp-setup` sẽ
    không thấy gì. Giữ một dòng trỏ sang tên mới, hay đổi dứt điểm và ghi vào CHANGELOG là breaking.
-6. **`setup` ghi instruction user-level bằng cách nào** — `~/.claude/CLAUDE.md` là file toàn cục của
+5. **`setup` ghi instruction user-level bằng cách nào** — `~/.claude/CLAUDE.md` là file toàn cục của
    user, có thể đã có nội dung riêng. Ba lối: chèn một khối có dấu mốc (`<!-- TDQ:TOOLS -->`) để lần
    sau ghi lại đúng khối đó; ghi ra file riêng rồi nhắc user tự `@import`; hay chỉ in ra để user dán.
 
+### Năng lực dùng được (B0)
+
+`skill_inventory.py` **không thấy skill của chính repo** (nguồn `project` / `plugin:tdq-workflow`)
+vì plugin `tdq-workflow` chưa được cắm vào phiên này — đúng phát hiện của report 0.52.0. Nên bảng
+dưới ghép từ hai nguồn: kiểm kê trên đĩa, cộng skill built-in thấy trong context.
+
+| Năng lực | Nguồn | Phán quyết |
+|---|---|---|
+| `lumen:doctor` | `plugin:lumen` | **DÙNG** — đọc trước khi tự viết phép kiểm bậc 5; nó là bản tham chiếu "kiểm lumen bằng hiệu ứng thật" |
+| `lumen:reindex` | `plugin:lumen` | **DÙNG** — mô tả của nó ("prefer MCP-driven refresh, CLI chỉ cho clean rebuild") định hình cách cắm reindex |
+| `update-config` | built-in | **DÙNG** khi phải ghi `settings.json` (env `LUMEN_EMBED_MODEL`) |
+| `code-review`, `simplify` | built-in | **DÙNG ở phase qc** nếu mức QC là `ultra` |
+| `skill-creator` | user | BỎ — đổi tên skill ở đây là việc file + test của repo, không cần bộ sinh skill |
+| `Explore`, `Plan` (agent) | built-in | BỎ — phạm vi đã đọc xong bằng LSP/grep trong phase này |
+| `docx`, `pptx`, `xlsx`, `pdf`, `google-workspace`, `docs`, `morning`, `dataviz`, `bao-cao-tan-an-hoi`, `session-handoff`, `import-memory`, `init`, `run`, `claude-api`, `fewer-permission-prompts` | user / built-in | BỎ — không đầu ra nào của request thuộc các dạng này |
+
+### Điều tra code — mười phát hiện
+
+**Về bậc 5 (việc 1)**
+
+1. **Bậc 5 có một false negative thật trên macOS.** `bac5_lumen()` hỏi `shutil.which("ollama")`
+   TRƯỚC cả phép probe socket. Đo trên máy Mac của user: `/opt/homebrew/bin/ollama` tồn tại,
+   login shell tìm ra, nhưng `python3 -c "shutil.which('ollama')"` trả **None** — PATH của tiến
+   trình không-login không có `/opt/homebrew/bin`. Hệ quả kép: bậc 5 báo "thiếu ollama" và in
+   `brew install ollama`, còn theo yêu cầu mới thì `setup` sẽ đi **cài lại thứ đã có sẵn**.
+   Phép probe socket (`_ollama_dang_chay`) không phụ thuộc PATH, nên thứ tự hiện tại là ngược.
+2. **Bậc 5 chưa hỏi lumen câu nào.** Nó kiểm 4 thứ tồn tại: binary ollama, manifest model trên
+   đĩa, socket daemon, binary lumen. Không vòng đi-về MCP, không một phép đo nào về nội dung
+   index. Đó đúng là lỗ hổng làm nó báo ĐẠT suốt phiên mà MCP `lumen` chết.
+
+**Về reindex (việc 1 + 7)**
+
+3. **Chính luật đang cấm việc user vừa yêu cầu.** §3 bước 3 của `uu-tien-tim-kiem.md` viết:
+   *"lumen's `semantic_search` auto-reindexes the project incrementally … no separate reindex step
+   or script is needed to keep data fresh."* Câu đó là lý do không ai cắm reindex vào kết turn, và
+   nó trái bằng chứng hôm nay (index 21/09 thiếu nội dung 27/09 mà vẫn báo `Stale: no`). Nguyên nhân
+   đã tìm ra ở mục research bên dưới, và là **hai** cái bẫy riêng biệt chứ không phải một: auto-
+   reindex là lazy, ăn theo lời gọi `semantic_search` (MCP chết cả phiên thì cả tuần không ai dựng
+   lại), cộng một cache TTL 30 giây che mắt phép đo staleness trong cửa sổ ngắn. Câu luật ở §3 phải
+   bị xoá, không phải sửa nhẹ.
+4. **`tdq_finish` có khuôn sẵn để cắm.** Mọi bước là một hàm `step_*` trả `Step(tên, trạng thái,
+   chi tiết)` với 3 trạng thái `ok|skip|fail`. Một điểm khác phải để ý: `step_graphify` chỉ chạy
+   khi có file **CODE** đổi (`--code-only`), còn lumen index cả `docs/` — nên điều kiện chạy của
+   hai bước không được sao chép của nhau.
+
+**Về tổ chức lại luật (việc 5)**
+
+5. **graphify xuất hiện 0 lần trong luật tìm kiếm**, dù có trong 6 file skill khác như một bước
+   sổ sách. Doctrine đang là luật **ba tầng** trong khi repo thực tế chạy **bốn công cụ**.
+6. **Mọi số đo của §2 đều đo trên repo này** — đúng cái K2 của knowledge vừa phê. Phải bổ sung số
+   claudecodeui, và ghi tên repo cạnh mỗi con số.
+7. **Câu hỏi "trần 3800 byte" tự trả lời.** `tests/test_claude_md_core.py` đã chốt tiền lệ:
+   *"a size cap is a tier-3 constraint, so hitting it means RAISING THE CAP, never compressing a
+   law to fit"* — cùng phán quyết từng áp cho `chung.md` (150 → 240 dòng). Nên đây không còn là
+   câu để hỏi user: **nâng trần**, không nén luật.
+8. **Bản mẫu đang trỏ vào một skill không tồn tại.** §9 của `docs/claude-md-mau.md` bảo dùng skill
+   `mem0-memory`; máy này không có nó (memory của phiên là file trong `~/.claude/projects/…`).
+   Đúng loại "phụ thuộc thiếu thì ghi thành nợ" mà việc 4 phải xử lý.
+
+**Về hook plugin (việc 7)**
+
+9. **Luật đã có, chỉ thiếu người làm.** §4 của `uu-tien-tim-kiem.md` mô tả đúng từng bước tôi vừa
+   làm tay (báo đường dẫn, xin phép, backup, chỉ gỡ `PreToolUse`, giữ `SessionStart`) và đã tiên
+   đoán *"a plugin update reinstalls the hook under a new version directory"*. Nên việc 7 là **tự
+   động hoá một luật đã tồn tại**, không phải viết luật mới.
+
+**Về kiến trúc (việc 6)**
+
+10. `docs/kien-truc.md` chốt: `skills/` là văn bản **không chạy được**, và **file code mới chỉ
+    được nằm trong `scripts/` hoặc `hooks/`**. Nên mọi logic cài/kiểm phải ở `scripts/`, còn skill
+    `tdq-setup` chỉ được **nhắc tên lệnh**. Một lưu ý: hồ sơ kiến trúc vẫn mang trạng thái
+    **NHÁP — chờ user chốt** từ 15/08, nên tôi dùng nó như gợi ý mạnh, không như luật đã chốt.
+
+### Research ngoài repo — bốn câu, và một nguyên nhân tìm ra
+
+Sub-agent `general-purpose` chạy 4 truy vấn, tự ghi
+`docs/tdq/research/2026-09-28-0910-lumen-check-va-setup-tool.md`, trả digest ≤1500 ký tự. Không có
+`tavily-primary` trong phiên nên nó dùng `WebSearch`/`WebFetch` — ghi rõ trong file đó.
+
+| # | Câu hỏi | Kết luận | Ảnh hưởng |
+|---|---|---|---|
+| 1 | `~/.claude/CLAUDE.md` có hỗ trợ `@path` import? | **CÓ** — relative và absolute, lồng tối đa 4 hop, user-scope không cần duyệt. Nhưng **không tiết kiệm context**: file import vẫn nạp lúc launch | câu hỏi 5 lối B là khả thi về kỹ thuật, nhưng không mua được token |
+| 2 | Có cách tắt hook của MỘT plugin mà không sửa file của nó? | **KHÔNG CÓ.** Doc nói thẳng "There is no way to disable an individual hook while keeping it in the configuration"; chỉ có công tắc tổng `disableAllHooks` | **chốt việc 7**: sửa file plugin là đường duy nhất, nên `setup` buộc phải tự dò + tự vá lại |
+| 3 | lumen tài liệu hoá staleness thế nào? | Merkle tree trên hash file; `semantic_search` tự refresh khi stale — **nhưng có cache TTL** | xem mục dưới |
+| 4 | `qwen3-embedding:0.6b` | ctx 32K, dims tối đa 1024 (MRL 32–1024), MTEB-Code **75.41**; lumen tự xếp nó là **"Untested"** | mức "đủ tốt", và đúng là không có bảo đảm nào |
+
+Về câu 4, digest trả về **KHÔNG KẾT LUẬN ĐƯỢC** cho ý "model yếu ở tra tên ký hiệu chính xác": Qwen
+không công bố điều đó. Nên số đo hôm nay của chính repo này là bằng chứng duy nhất cho ý đó, và nó
+chỉ nói về *model này trên repo này* — không được phát biểu rộng hơn (đúng luật K2).
+
+**Nguyên nhân của cái bẫy, xác minh trên mã nguồn trong máy, không chỉ trên web.** Digest nói TTL
+60 s; đọc chính bản đang cài (`cmd/stdio.go:127` của plugin 0.0.42) thì là **30 s**:
+
+> `const defaultFreshnessTTL = 30 * time.Second` — *"how long a confirmed-fresh index is trusted
+> before the merkle tree is re-walked … re-walking thousands of files on every call adds 1-3s"*
+
+`module github.com/ory/lumen` trong `go.mod` xác nhận nguồn web đúng project. Vậy có **hai** cái bẫy
+riêng biệt, và trước đó tôi gộp chúng làm một:
+
+1. **TTL 30 giây** — sửa file rồi search ngay trong vòng 30 s của một lần "fresh" đã xác nhận thì
+   Merkle không được đi lại, nên nội dung mới vắng mặt mà công cụ vẫn báo fresh. Bẫy thật, nhưng
+   **hẹp**: nó không giải thích được một index cũ 7 ngày.
+2. **Index cũ 7 ngày** — cái này do MCP `lumen` chết cả phiên: không lần `semantic_search` nào chạy
+   thì `EnsureFresh` không bao giờ được gọi. Tức auto-reindex là **lazy và ăn theo lời gọi**; không
+   ai search thì không ai dựng lại, và cả tuần trôi qua.
+
+**Hệ quả thiết kế, có bằng chứng chống lưng:** bước reindex ở kết turn phải đi bằng **CLI**
+(`lumen index <project>`), không đi qua đường MCP — CLI làm phép đi Merkle thật, đúng như đo được
+sáng nay ("root hash changed", 1 file sửa, 2,6 s), nên nó không bị TTL 30 s che mắt và không phụ
+thuộc MCP còn sống hay không. Điều này **lệch với mô tả của skill `lumen:reindex`** ("prefer
+MCP-driven refresh") — lệch có lý do, và lý do ghi ở đây.
+
+### Vì sao bỏ vòng hỏi phạm vi
+
+Vòng hỏi phạm vi (`scope-round.md`) bị bỏ có lý do: phạm vi đã được user kể ra thành **bảy việc
+rời** qua bốn lượt liên tiếp, kèm chỉ định cụ thể tới từng file và từng hành vi. Hỏi lại "request
+này trải những vùng nào" là hỏi lại thứ user vừa nói.
+
 ## Hỏi đáp
 
-*(điền ở phase analyze)*
+**Lane + loại request.** Lane `full` (có spec + plan), loại `feature`. Nhánh
+`feature/tdq-setup-bo-4-tang`, gốc `main`, sẽ hợp lại `main` ở bước 11 của report.
+
+**Q4 — reindex mỗi turn hay theo ngưỡng?** → **cắm thẳng mỗi turn, không ngưỡng.** Số đo chống
+lưng: 0,2 s khi không có gì đổi, 2,6 s cho một file sửa. Ngưỡng là phức tạp không mua được gì.
+
+**Xung đột hook plugin lumen (bậc 6) → đã xử trong phiên này, user cho phép.** Plugin
+`lumen@claude-plugins-official` 0.0.42 cắm `PreToolUse` matcher `Grep|Bash`, chèn câu "dùng
+`semantic_search` thay cho Grep/Bash" vào **mọi** lần gọi — đá thẳng vào luật của repo, nơi grep là
+sàn cho truy vấn tên chính xác (và chính số đo hôm nay cho thấy lumen tra đúng tên ký hiệu thì
+trượt). Đã gỡ khối `PreToolUse`, giữ `SessionStart` (dòng "Lumen index ready" vẫn có ích), lưu bản
+cũ ở `hooks.json.truoc-tdq.bak`. Bậc 6 từ CẢNH BÁO → **ĐẠT, 7/7**.
+
+Hai điều việc 7 phải rút ra từ đây, không được để lặp lại:
+
+1. **Sửa tay là không bền.** File nằm trong `.../cache/claude-plugins-official/lumen/0.0.42/` —
+   phiên bản nằm trong đường dẫn, nên plugin lên 0.0.43 là hook cũ sống lại trong thư mục mới.
+   `setup` phải tự dò và tự dọn lại, chứ không chờ ai nhớ.
+2. **Chỉ dọn cái đè LÊN thứ tự tìm kiếm**, không dọn bừa hook của plugin khác. Đã kiểm: trong toàn
+   bộ cache plugin chỉ có đúng khối này; `hooks-cursor.json` chỉ có `sessionStart`.
+
+**Sáu câu chốt ở cuối phase analyze.**
+
+| # | Câu hỏi | Chốt | Ghi chú |
+|---|---|---|---|
+| 1 | `setup` được phép cài gì | **Cài thẳng, không hỏi lại** — cộng kiểm manifest, smoke test và kiểm config đúng | user chọn nhãn "B" nhưng mô tả là lối C; ghi theo MÔ TẢ, xem mục dưới |
+| 2 | Nợ thiếu phụ thuộc ghi vào đâu | **`docs/tdq/no-phu-thuoc.md`** — một file cố định, mỗi dòng một món kèm ngày + máy | dễ soi, dễ đóng |
+| 3 | Cờ `--skip-graphify` | **Gỡ hẳn** | chính nó làm đồ thị cũ 8 ngày; gỡ cờ là gỡ luôn khả năng tái phạm |
+| 4 | Tên cũ `tdq-lsp-setup` | **Đổi dứt điểm**, khai breaking trong CHANGELOG | không giữ bí danh |
+| 5 | Cách ghi instruction user-level | **Khối có dấu mốc** `<!-- TDQ:TOOLS -->` … `<!-- /TDQ:TOOLS -->` trong `~/.claude/CLAUDE.md` | `@import` khả thi nhưng không mua được token nào |
+| 6 | Mức QC | **`full`** — DoD + trọn unit test + hồi quy vùng chạm + ràng buộc kiến trúc + clean code, không runtime test | đã ghi `muc_qc=full` vào state |
+
+**Câu 1 — nhãn lệch mô tả, và tôi ghi theo mô tả.** Nguyên văn: *"1B nghĩa là tôi gọi skill setup AI
+sẽ tụ động cài và check mainifest và smoke test đảm bảo haojt đọng ổn và config đúng"*. Nhãn B trong
+danh sách là "hỏi từng gói một", còn mô tả đó là lối C. Chốt theo mô tả: `setup` **tự cài, không hỏi
+lại**, vì chính việc user gõ `setup` là sự cho phép. Hai hàng rào giữ nguyên, không thương lượng:
+
+- Chỉ cài đúng **danh sách phụ thuộc đã khai** trong skill; thấy thiếu thứ ngoài danh sách thì ghi
+  nợ, không tự ý cài thêm.
+- **Không bao giờ đụng python hệ thống của Apple** (ràng buộc đứng của user, từ request trước).
+
+Và câu 1 thêm một yêu cầu MỚI mà năm việc trước chưa có: `setup` không chỉ cài, mà phải **kiểm
+manifest + smoke test từng tầng + kiểm config đúng**. Đây là việc 8.
+
+**Một chỗ dễ lẫn giữa câu 1 và câu 6.** "Smoke test" ở câu 1 là **tính năng của sản phẩm** (setup tự
+chứng minh từng tầng trả lời được), khác "smoke test" trong bảng mức QC — thứ mà mức `full` KHÔNG
+chạy ở phase `qc`. Nên: phase `qc` kiểm tính năng đó bằng unit test theo đúng mức `full`, còn bản
+thân đường smoke test sẽ được chạy **một lần trong phase implement** để chứng minh nó hoạt động.
+Không có mâu thuẫn, nhưng phải viết ra để QC không hiểu sai mức.
+
+### Lộ trình
+
+| Bước/phase | CÓ-BỎ | Vì sao |
+|---|---|---|
+| analyze | **CÓ** (đang chạy) | 10 phát hiện code + 4 câu research, không việc nào đoán |
+| research thêm | **BỎ** | 4 câu ngoài repo đã trả lời xong; phần còn lại là đo trên máy, không phải tra web |
+| spec | **CÓ** | 8 việc, chạm 2 file ngoài repo và 1 breaking change — phải có văn bản để duyệt |
+| plan | **CÓ** | đổi tên skill là 7 chỗ cứng phải làm theo thứ tự, không được nhớ nhầm |
+| implement | **CÓ** | — |
+| chia cho sub-agent | **BỎ** | các việc dính nhau qua cùng vài file (`tdq_lsp.py`, luật tìm kiếm); chia ra là tự tạo xung đột |
+| qc | **CÓ**, mức `full` | có breaking change + sửa file ngoài repo |
+| agent QC độc lập | **BỎ** | mức `full` không gọi; muốn thì phải nâng lên `ultra` |
+| đo lại trên Linux + macOS thật | **CÓ** | bậc 5 có lỗi PATH chỉ hiện trên macOS — không đo trên Mac thật thì không biết đã sửa đúng |
+| report | **CÓ** | — |
+
+Các luồng tính năng request này dựng từ đó: (1) thang bậc đo hiệu ứng thật của lumen; (2) bước
+reindex ở kết turn; (3) skill `tdq-setup` cài + kiểm + smoke test + ghi nợ; (4) luật tìm kiếm 4 tầng
+và bản ghim user-level.

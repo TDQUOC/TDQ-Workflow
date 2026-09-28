@@ -48,14 +48,14 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    through import-root config. A rung is missing → print the exact command it gave you, **ASK the
    user for permission, and only run it once they say yes.** Never install unasked, never edit
    another plugin's file. Rungs 5–6 only warn. Details:
-   [tdq-lsp-setup](../tdq-lsp-setup/SKILL.md). Then prove the index actually answers: the effect
+   [tdq-setup](../tdq-setup/SKILL.md). Then prove the index actually answers: the effect
    check in [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md), once, here —
    skipping it when the ladder passed is a QC defect, because every rung checks only that
    something EXISTS. The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
    Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
    hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-   lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
-   `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+   lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
+   gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
 
 2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
    Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you <!-- i18n-allow: canonical name in the default language -->

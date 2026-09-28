@@ -57,8 +57,8 @@ This skill owns three phases: `implement` → `qc` → `report`.
 - **LSP + lumen together, before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-  lumen; chưa chắc thuộc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
-  `skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`.
+  lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
+  gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. The `mcp__lsp__*` tools are missing → say so in one line, then fall through.
 - **No placeholders.** Missing information at this stage means the analysis fell short — say

@@ -11,8 +11,11 @@ The ladder (`kiem`):
   2. the `lsp` MCP server is registered for Claude Code
   3. a language server exists for every language this project actually uses
   4. the `mcp__lsp__*` tools are allowed without a prompt
-  5. lumen's health — the fallback layer (added at T1.2)
+  5. lumen's health — the fallback layer, measured by EFFECT: a real round trip plus an index
+     that actually holds the working tree's newest content (added at T1.2, deepened 2026-09-28)
   6. an outside plugin hook pushing a different search order (added at T1.2)
+  7. the import-root config each language needs
+  8. the graphify graph the fourth search layer reads (added 2026-09-28)
 
 Principles:
 - **This script NEVER installs anything.** A missing rung prints the exact command; a human
@@ -25,9 +28,11 @@ Principles:
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
 import argparse
+import functools
 import glob
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -40,6 +45,16 @@ INSTALL_AGENT_LSP = "curl -fsSL https://raw.githubusercontent.com/blackwell-syst
 EXIT_OK = 0
 EXIT_THIEU = 3
 OLLAMA_PORT = 11434
+# Trần riêng cho hai phép đo hiệu ứng của bậc 5. Chúng chạy ở intake bước 1b của MỌI request nên
+# không được phép kéo dài: đo 2026-09-28 trên repo này, dựng lại tăng trưởng mất 0,2 s khi không
+# có gì đổi và 2,6 s cho một file sửa; một lần tìm mất dưới 2 s.
+TIMEOUT_LUMEN_SEARCH = 15
+# Dấu mốc `tdq_finish` để lại sau mỗi lần dựng index. Bậc 5 chỉ ĐỌC mốc này, không bao giờ ghi —
+# chủ sở hữu duy nhất của việc dựng lại là bước kết lượt.
+DAU_MOC_INDEX = os.path.join("docs", "tdq", ".tdq-lumen-index")
+# Câu hỏi dùng làm phép thử vòng đi-về: khái niệm chung, không gắn với ký hiệu nào của repo nào,
+# nên nó không mục nát khi code đổi tên.
+PROBE_LUMEN = "ghi trạng thái ra file"
 MODEL_LUMEN_MAC_DINH = "ordis/jina-embeddings-v2-base-code"   # mặc định của chính lumen
 CONFIG_LUMEN = os.path.expanduser("~/.config/lumen/config.yaml")
 PLUGIN_NHA = "tdq-workflow"          # our own plugin — its hooks are the reference, not a conflict
@@ -189,10 +204,15 @@ def _project_dir():
         current = parent
 
 
-def _run(cmd, timeout=CHECK_TIMEOUT):
-    """Run a read-only probe, return (rc, output). Infrastructure errors become results, never raised."""
+def _run(cmd, cwd=None, timeout=CHECK_TIMEOUT):
+    """Run a read-only probe, return (rc, output). Infrastructure errors become results, never raised.
+
+    `cwd` matters for any tool that answers about the directory it runs in — `agent-lsp doctor`
+    and `graphify god-nodes` both do. It lives here rather than in a second copy of this wrapper:
+    `tdq_setup.py` had grown its own, identical but for that one argument.
+    """
     try:
-        p = subprocess.run(cmd, capture_output=True,
+        p = subprocess.run(cmd, cwd=cwd, capture_output=True,
                            encoding="utf-8", errors="replace", text=True, timeout=timeout)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
@@ -350,23 +370,159 @@ def _model_da_pull(model):
     return os.path.exists(_duong_dan_manifest(model))
 
 
-def bac5_lumen():
-    """Rung 5 — lumen's health. Warning only: lumen is the FALLBACK, agent-lsp is the main layer."""
-    if not shutil.which("ollama"):
+def bac5_lumen(project=None):
+    """Rung 5 — lumen's health. Warning only: lumen is the FALLBACK, agent-lsp is the main layer.
+
+    The socket is asked FIRST, and `which` only decides between "installed but asleep" and
+    "not installed at all". Measured 2026-09-28 on the user's macOS: `/opt/homebrew/bin/ollama`
+    exists and a login shell finds it, while `shutil.which` from a non-login process returns
+    None — the old order concluded "missing" and printed an install command for something that
+    was serving requests at that very moment. A live socket IS the proof; PATH is not.
+    """
+    dang_chay = _ollama_dang_chay()
+    if not dang_chay and not shutil.which("ollama"):
         return Bac(5, "sức khoẻ lumen", False, "thiếu ollama — lumen không chạy được",
                    "brew install ollama", chi_canh_bao=True)
     model = _model_lumen()
     if not _model_da_pull(model):
         return Bac(5, "sức khoẻ lumen", False, f"thiếu model {model}",
                    f"ollama pull {model}", chi_canh_bao=True)
-    if not _ollama_dang_chay():
+    if not dang_chay:
         return Bac(5, "sức khoẻ lumen", False,
                    "ollama chưa chạy — sẽ đánh thức khi cần bằng `tdq_lsp.py wake`",
                    chi_canh_bao=True)
     thieu_binary, lenh_va = _lumen_thieu_binary_windows()
     if thieu_binary:
         return Bac(5, "sức khoẻ lumen", False, thieu_binary, lenh_va, chi_canh_bao=True)
-    return Bac(5, "sức khoẻ lumen", True, f"ollama đang chạy, có {model}")
+    # Nhận project qua tham số: thang bậc được gọi với MỘT thư mục, và bậc 5 từng tự suy ra thư
+    # mục khác bằng `_project_dir()` — nên `setup_status.py` và test nhận một phán quyết nói về
+    # thư mục khác với các bậc còn lại.
+    project = project or _project_dir()
+    cu, mo_ta = _index_cu_hon_code(project)
+    if cu:
+        return Bac(5, "sức khoẻ lumen", False, f"index chưa có nội dung mới nhất — {mo_ta}",
+                   f"lumen index {project}", chi_canh_bao=True)
+    tra_loi, chi_tiet = _lumen_tra_loi_duoc(project)
+    if not tra_loi:
+        return Bac(5, "sức khoẻ lumen", False,
+                   f"vòng đi-về lumen hỏng — {chi_tiet}",
+                   f"lumen search \"{PROBE_LUMEN}\" -p {project}", chi_canh_bao=True)
+    return Bac(5, "sức khoẻ lumen", True, f"ollama đang chạy, có {model}, lumen trả lời được")
+
+
+@functools.lru_cache(maxsize=8)
+def _moc_code_moi_nhat(project):
+    """Mốc sửa gần nhất trong các file mã nguồn của project (epoch), hoặc None khi không có file nào.
+
+    So với MÃ NGUỒN chứ không so với commit mới nhất. Bản đầu so với commit, và nó sai theo một
+    cách khó thấy: `tdq_finish` dựng lại đồ thị TRONG lượt, còn commit xảy ra SAU đó — nên ngay
+    sau mỗi lần commit, đồ thị luôn "cũ hơn commit" và bậc 8 cảnh báo vĩnh viễn. Chiều ngược lại
+    còn tệ hơn: một đồ thị dựng trước các sửa đổi chưa commit của lượt này vẫn được cho là mới.
+    Câu hỏi thật là "đồ thị có cũ hơn code không", nên hãy hỏi đúng câu đó.
+    """
+    moi_nhat = None
+    for goc, thu_muc, tep in os.walk(project):
+        thu_muc[:] = [t for t in thu_muc if t not in SKIP_DIRS and t != "graphify-out"]
+        for ten in tep:
+            if os.path.splitext(ten)[1] not in EXT_LANG:
+                continue
+            try:
+                moc = os.path.getmtime(os.path.join(goc, ten))
+            except OSError:
+                continue
+            if moi_nhat is None or moc > moi_nhat:
+                moi_nhat = moc
+    return moi_nhat
+
+
+def bac8_graphify(project):
+    """Rung 8 — the graph the fourth search layer reads. Warning only, like rungs 5 and 6.
+
+    Why it exists: graphify was the one tool of the four with no rung at all, and it failed the
+    exact way an unwatched index fails. Measured 2026-09-28 on this repo: the graph was 8 days
+    old and 34% of its nodes (845 of 2415) pointed into a directory deleted a week earlier, so
+    `explain` answered about code that no longer existed. Nobody rebuilt it, and nothing ever
+    said so.
+    """
+    ten = "đồ thị graphify"
+    if not shutil.which("graphify"):
+        return Bac(8, ten, False, "chưa cài graphify — mất tầng bản đồ quan hệ",
+                   "uv tool install graphifyy", chi_canh_bao=True)
+    do_thi = os.path.join(project, "graphify-out", "graph.json")
+    lenh_dung = f"cd {project} && graphify extract . --code-only"
+    if not os.path.isfile(do_thi):
+        return Bac(8, ten, False, "chưa có đồ thị nào", lenh_dung, chi_canh_bao=True)
+    moc_code = _moc_code_moi_nhat(project)
+    if moc_code is None:
+        return Bac(8, ten, True, "có đồ thị (không thấy file mã nguồn nào để so mốc)")
+    tuoi = moc_code - os.path.getmtime(do_thi)
+    if tuoi > 0:
+        return Bac(8, ten, False,
+                   f"đồ thị cũ hơn mã nguồn {int(tuoi // 60)} phút",
+                   lenh_dung, chi_canh_bao=True)
+    return Bac(8, ten, True, "đồ thị mới hơn mọi file mã nguồn")
+
+
+@functools.lru_cache(maxsize=1)
+def _binary_lumen():
+    """Đường dẫn binary lumen chạy được, hoặc "" khi máy chưa có.
+
+    Ưu tiên `bin/lumen` (bản launcher tự dò), rồi tới binary theo nền tảng. Cùng thư mục cache
+    mà `_lumen_thieu_binary_windows` soi, nên hai phép dò không bao giờ nói về hai bản khác nhau.
+    """
+    tren_path = shutil.which("lumen")
+    if tren_path:
+        return tren_path
+    goc = os.path.expanduser("~/.claude/plugins/cache")
+    ung_vien = sorted(glob.glob(os.path.join(goc, "*", "lumen", "*", "bin", "lumen*")))
+    for duong in reversed(ung_vien):
+        if os.path.isfile(duong) and not duong.endswith((".sha256", ".txt")):
+            return duong
+    return ""
+
+
+def _index_cu_hon_code(project):
+    """-> (index cũ hơn code?, mô tả). THUẦN ĐỌC: không chạy lệnh nào, không ghi gì.
+
+    Bản đầu của phép đo này chạy `lumen index` ngay trong lúc chẩn đoán. Sai tầng, và sai theo
+    ba hướng cùng lúc: `tdq_lsp.py` tự khai ở đầu file là nó KHÔNG BAO GIỜ sửa gì; `chay_kiem`
+    chạy ở bước 1b của MỌI request và cả trong trang trạng thái, nên một hàm chỉ để đọc lại đi
+    dựng lại index của user; và `tdq_finish` đã dựng lại ở cuối lượt trước, nên lượt sau dựng
+    thêm một lần nữa cho cùng tập thay đổi.
+
+    Nay chỉ so hai mốc: dấu mốc mà `tdq_finish` để lại sau mỗi lần dựng, với file mã nguồn mới
+    nhất. Cùng kỹ thuật bậc 8 dùng cho đồ thị graphify, và rẻ hơn hai bậc: không spawn tiến
+    trình nào.
+    """
+    dau_moc = os.path.join(project, DAU_MOC_INDEX)
+    moc_code = _moc_code_moi_nhat(project)
+    if moc_code is None:
+        return False, ""
+    if not os.path.isfile(dau_moc):
+        return True, "chưa có lần dựng index nào của workflow"
+    tre = moc_code - os.path.getmtime(dau_moc)
+    if tre > 0:
+        return True, f"code mới hơn lần dựng index gần nhất {int(tre // 60)} phút"
+    return False, ""
+
+
+def _lumen_tra_loi_duoc(project):
+    """-> (trả lời được?, mô tả) — hỏi lumen một câu THẬT rồi đọc câu trả lời.
+
+    Bậc 5 cũ chỉ hỏi "daemon có sống không", nên nó báo ĐẠT suốt một phiên mà MCP `lumen` chết
+    (`CONNECTION_CLOSED`, 2026-09-28). Phép đo này đi bằng CLI chứ không qua MCP: CLI không bị
+    cache TTL che mắt, và nó còn trả lời được khi lớp MCP đã đứt.
+    """
+    lumen = _binary_lumen()
+    if not lumen:
+        return False, "không tìm thấy binary lumen"
+    rc, ra = _run([lumen, "search", PROBE_LUMEN, "-p", project, "-n", "1", "--summary"],
+                  timeout=TIMEOUT_LUMEN_SEARCH)
+    if rc != 0:
+        return False, ra.splitlines()[0][:80] if ra else f"thoát {rc}"
+    if "<result:file" not in ra:
+        return False, "không kết quả nào"
+    return True, "có kết quả"
 
 
 def _lumen_thieu_binary_windows():
@@ -432,10 +588,11 @@ def _plugin_dang_bat():
     return duong_dan
 
 
-def bac6_hook_xung_dot(project):
-    """Rung 6 — an outside plugin hook pushing a search order other than the TDQ one.
+def hook_xung_dot():
+    """-> [(tên plugin, file hooks.json, matcher)] của mọi hook ngoài đang đè thứ tự tìm kiếm.
 
-    Report only: the script NEVER edits another plugin's file. Fixing it is the user's call.
+    Tách riêng khỏi bậc 6 để `tdq_setup.py` dùng lại đúng PHÉP DÒ này khi nó đi vá. Hai nơi cùng
+    một danh sách thì không bao giờ có chuyện bậc thang báo một đằng, lệnh vá làm một nẻo.
     """
     xung_dot = []
     for ten, goc in _plugin_dang_bat():
@@ -450,6 +607,16 @@ def bac6_hook_xung_dot(project):
             if any(t in matcher for t in TOOL_TIM_KIEM):
                 xung_dot.append((ten, f, matcher))
                 break
+    return xung_dot
+
+
+def bac6_hook_xung_dot(project):
+    """Rung 6 — an outside plugin hook pushing a search order other than the TDQ one.
+
+    Report only: THIS script never edits another plugin's file. The one command allowed to do
+    that is `tdq_setup.py`, which the user types themselves.
+    """
+    xung_dot = hook_xung_dot()
     if not xung_dot:
         return Bac(6, "hook plugin ngoài xung đột", True, "không plugin nào chèn thứ tự tìm kiếm khác")
     chi_tiet = "; ".join(f"{ten} (matcher {m}) tại {f}" for ten, f, m in xung_dot)
@@ -511,7 +678,8 @@ def chay_kiem(project):
     """Run the whole ladder and return the list of rungs, in order."""
     _log(f"kiem · project={project}")
     bac = [bac1_binary(), bac2_mcp(), bac3_language_server(project), bac4_quyen_tool(),
-           bac5_lumen(), bac6_hook_xung_dot(project), bac7_cau_hinh_goc_import(project)]
+           bac5_lumen(project), bac6_hook_xung_dot(project), bac7_cau_hinh_goc_import(project),
+           bac8_graphify(project)]
     for b in bac:
         _log(f"bậc {b.so} {b.ten} → {'ĐẠT' if b.dat else 'THIẾU'}")
     return bac

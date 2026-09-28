@@ -115,7 +115,7 @@ class TokenBudgetTest(unittest.TestCase):
         # Đo bằng `anthropic-tokenizer` (venv `.venv-tokens/`) trên đúng 7 skill: 628 token
         # bản tiếng Việt (1063 ký tự) → 304 token bản tiếng Anh (1334 ký tự). Trần đếm ký
         # tự vì thế nới theo tỉ lệ giãn của chữ, ngân sách token thực tế vẫn giảm.
-        # 2026-08-23: 1450 → 1620. Skill thứ 8 (tdq-lsp-setup) thêm 1 description; đây là
+        # 2026-08-23: 1450 → 1620. Skill thứ 8 (nay tên `tdq-setup`) thêm 1 description; đây là
         # skill quyết định lớp tìm kiếm của mọi phase sau nên phải nằm trong context.
         # 2026-09-17: 1620 → 1800. Skill thứ 9 (tdq-lean) thêm 1 description; đo thật là
         # 1790 ký tự (tdq-lean 185), trần chừa 10. Description của tdq-lean đã bị cắt một

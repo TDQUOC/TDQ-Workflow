@@ -51,3 +51,13 @@ ngoài (tạo page Notion, ghi DB, deploy, upload…).
 Việc quan trọng (kiến trúc, sở thích user, lỗi tái diễn) → search mem0
 (project = tên repo) trước khi kết luận, chốt xong thì `remember` một fact ngắn.
 Chi tiết: skill `mem0-memory`.
+
+<!-- TDQ:TOOLS -->
+## Bộ tìm kiếm 4 tầng
+
+- Quan hệ, kiểu, diagnostics, đổi tên → `mcp__lsp__*`. Tên chính xác đã biết → grep.
+  Khái niệm mơ hồ → lumen. Vỡ lan, bản đồ kiến trúc → graphify. Chưa chắc → gọi song song rồi gộp.
+- Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
+- Kiểm cả 8 bậc và cài phần thiếu: `python3 <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py`.
+  Luật đầy đủ kèm số đo: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+<!-- /TDQ:TOOLS -->
