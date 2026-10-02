@@ -118,6 +118,13 @@ chốt bằng LÝ LẼ, không phải số đo: `semantic_search` mặc định 
 lumen chỉ ra tới ~8 chỗ cần grep tiếp — 10 là một trang kết quả cộng phần dư. Đo lại khi có thêm
 phiên thật: `python scripts/search_replay.py <transcript.jsonl> --cua-so N`.
 
+**Đo lại sau F6 (QC vòng 1, 2026-10-03):** bộ phát lại giờ chạy đúng luật của cổng — nhận lần hỏi
+tầng khái niệm bằng `la_goi_khai_niem`, đưa MỌI lệnh shell qua luật, và lần bị chặn không ăn cửa
+sổ. Kết quả với N = 5, 10, 20: **bắt 11 · bắt oan 0 · lọt 0**, chặn ở lượt 4, 7, 9, 10, 11, 13, 14,
+15, 20, 21, 22. Năm lượt 28, 29, 34, 35, 36 không còn bị chặn vì lượt 23 là `graphify god-nodes` —
+một câu hỏi kiến trúc thật mà bộ phát lại cũ bỏ qua (nó lọc trước sự kiện "doc"); cổng thật mở khoá
+ở đó. Bảng trên là số của bộ phát lại cũ, giữ lại để đối chiếu. N vẫn không phân biệt được.
+
 Lượt 4 trong spec 1.1 bị coi là "lọc danh sách file" — sai: cùng lệnh đó còn chạy
 `grep -nE "class (Store|Scene|History|ActionManager)" -r packages`, một lần tìm code 4 nhánh.
 Bị chặn là ĐÚNG; số bắt oan vẫn 0.

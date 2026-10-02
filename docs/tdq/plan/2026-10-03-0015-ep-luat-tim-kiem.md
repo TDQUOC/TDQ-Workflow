@@ -258,7 +258,7 @@ Thêm vào plan theo quy tắc 5, không cần duyệt lại.
   `python -m unittest discover tests -p test_subagent_start.py`
   - Chạm: `hooks/hooks.json`, `tests/test_subagent_start.py` → matcher
   - Cần: F2
-- [ ] **F6** (e20m) Bộ phát lại dùng đúng luật thuần của F1 (đếm cửa sổ chỉ lần được cho; phân loại
+- [x] **F6** (e20m) Bộ phát lại dùng đúng luật thuần của F1 (đếm cửa sổ chỉ lần được cho; phân loại
   mọi lệnh Bash chứ không lọc trước bằng `grep|rg|findstr`), chuỗi in ra về tiếng Anh (V1); đo lại
   Q18 và bảng N — Test: `python -m unittest discover tests -p test_search_replay.py`
   - Chạm: `scripts/search_replay.py`, `tests/test_search_replay.py` → `phat_lai`

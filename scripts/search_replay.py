@@ -9,20 +9,20 @@ Input: a fixture shaped like `tests/fixtures/phien_excalidraw_tim.json`
 Claude transcript `.jsonl`, which is first turned into the same event list (see
 `su_kien_tu_transcript`).
 
-Rules: `scripts/search_rules.py` (`phan_loai`, `quyet_dinh`, `CUA_SO`). Until that module exists
-a stub is used that lets every search through; the output header says which one ran.
+Rules: `scripts/search_rules.py` — the SAME pure functions the gate runs (`phan_loai`,
+`quyet_dinh`, `la_goi_khai_niem`, `trang_thai`, `CUA_SO`); a test may pass its own `luat`.
 
-Replay semantics (the whole input is treated as ONE request):
-- state starts as da_goi_khai_niem=False, so_lan_tim_tu_lan_goi=0, token_prompt=set(),
-  cua_so=CUA_SO (or --cua-so).
-- "prompt"     -> token_prompt = set(event["token"]) (latest prompt only).
-- "he_thong", "skill", "doc" -> no state change; "doc" is not a search and gets no row.
-- "khai_niem"  -> da_goi_khai_niem=True, so_lan_tim_tu_lan_goi=0.
-- "tim"        -> pl = phan_loai(cong_cu, lenh); skipped when pl["loai"] == "khong_phai_tim";
-  otherwise (ok, why) = quyet_dinh(pl, state) and a row is recorded. A "tim_code" search bumps
-  so_lan_tim_tu_lan_goi whether allowed or denied — the real agent did run it.
+Replay semantics (the whole input is treated as ONE request), mirroring `search_gate.quyet`:
+- the replay keeps ledger rows exactly like `search_observe` + the gate write them, and builds
+  the state with `search_rules.trang_thai(rows)` plus cua_so=CUA_SO (or --cua-so).
+- "prompt"     -> a prompt row (latest prompt's tokens win).
+- any tool event whose `la_goi_khai_niem` label is set -> a concept row (re-opens the window);
+  `start_lsp`/`open_document` and other housekeeping are NOT concept queries.
+- every other Bash/Grep/shell event -> pl = phan_loai(cong_cu, lenh); skipped when
+  "khong_phai_tim"; otherwise (ok, why) = quyet_dinh(pl, state) and a table row is recorded.
+  A "tim_code" search adds a ledger row that counts toward the window only when it RAN (allowed).
 Counts: bat = denied rows; bat_oan = denied rows whose loai is "loc_file"; lot = allowed
-"tim_code" rows while da_goi_khai_niem was still False.
+"tim_code" rows while no concept query had been made.
 
 Log service: ISO timestamps on stderr, on by default; TDQ_LOG=0 turns the log off.
 This module never imports from hooks/ (repo law: scripts/ does not import hooks/).
@@ -39,9 +39,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import utf8_io  # noqa: E402,F401 — imported so stdout/stderr become UTF-8
 
+import search_rules  # noqa: E402
+
 DO_DAI_LENH = 70
-# A Bash command counts as a search when it calls one of these tools as a word.
-LENH_TIM = re.compile(r"(?<![\w-])(grep|rg|findstr)(?![\w-])")
 TU_DINH_DANH = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")
 
 
@@ -51,78 +51,44 @@ def _log(message):
               file=sys.stderr)
 
 
-class _LuatStub:
-    """Stand-in for scripts/search_rules.py until it lands: allows every search."""
-    TEN = "stub"
-    CUA_SO = 10
-
-    @staticmethod
-    def phan_loai(cong_cu, lenh):
-        loai = "tim_code" if _la_lenh_tim(cong_cu, lenh) else "khong_phai_tim"
-        return {"loai": loai, "tu_khoa": [], "doan_mo": False}
-
-    @staticmethod
-    def quyet_dinh(pl, trang_thai):
-        return True, "stub: allow all"
-
-
-def _la_lenh_tim(cong_cu, lenh):
-    if cong_cu == "Grep":
-        return True
-    return cong_cu == "Bash" and bool(LENH_TIM.search(lenh or ""))
-
-
-def nap_luat():
-    """Return the real rules module if importable, else the allow-all stub."""
-    try:
-        import search_rules  # noqa: WPS433 — optional until T2.1 lands
-    except ImportError:
-        return _LuatStub
-    return search_rules
-
-
 def ten_luat(luat):
-    return getattr(luat, "TEN", None) or (
-        "stub" if luat is _LuatStub else getattr(luat, "__name__", "search_rules"))
+    return getattr(luat, "TEN", None) or getattr(luat, "__name__", "search_rules")
 
 
 def phat_lai(su_kien, cua_so=None, luat=None):
     """Run events through the rules. Returns {"hang", "bat", "bat_oan", "lot", "bi_chan", "luat"}."""
-    luat = luat or nap_luat()
-    trang_thai = {
-        "da_goi_khai_niem": False,
-        "so_lan_tim_tu_lan_goi": 0,
-        "token_prompt": set(),
-        "cua_so": cua_so if cua_so is not None else luat.CUA_SO,
-    }
-    hang, bat, bat_oan, lot, bi_chan = [], 0, 0, 0, []
+    luat = luat or search_rules
+    cua_so = cua_so if cua_so is not None else luat.CUA_SO
+    so, hang, bat, bat_oan, lot, bi_chan = [], [], 0, 0, 0, []
     for sk in su_kien:
-        loai = sk.get("loai")
+        loai, cong_cu, lenh = sk.get("loai"), sk.get("cong_cu", ""), sk.get("lenh", "")
         if loai == "prompt":
-            trang_thai["token_prompt"] = set(sk.get("token") or [])
-        elif loai == "khai_niem":
-            trang_thai["da_goi_khai_niem"] = True
-            trang_thai["so_lan_tim_tu_lan_goi"] = 0
-        elif loai == "tim":
-            pl = luat.phan_loai(sk.get("cong_cu", ""), sk.get("lenh", ""))
-            if pl["loai"] == "khong_phai_tim":
-                continue
-            # Hand the rules a copy so a buggy rule cannot rewrite the replay's state.
-            ok, ly_do = luat.quyet_dinh(pl, dict(trang_thai, token_prompt=set(trang_thai["token_prompt"])))
-            hang.append({"luot": sk.get("luot"), "cong_cu": sk.get("cong_cu", ""),
-                         "lenh": sk.get("lenh", ""), "loai": pl["loai"], "cho_phep": ok,
-                         "ly_do": ly_do})
-            if not ok:
-                bat += 1
-                bi_chan.append(sk.get("luot"))
-                if pl["loai"] == "loc_file":
-                    bat_oan += 1
-            elif pl["loai"] == "tim_code" and not trang_thai["da_goi_khai_niem"]:
-                lot += 1
-            if pl["loai"] == "tim_code":
-                trang_thai["so_lan_tim_tu_lan_goi"] += 1
-        # he_thong, skill, doc: no state change, no row.
-    _log(f"{len(su_kien)} events · {len(hang)} searches · bat {bat} · bat_oan {bat_oan} · lot {lot}")
+            so.append({"loai": "prompt", "token": list(sk.get("token") or [])})
+            continue
+        if not cong_cu:
+            continue  # he_thong and other bookkeeping: no state change, no row
+        vao = {"command": lenh} if cong_cu != "Grep" else {"pattern": lenh}
+        if search_rules.la_goi_khai_niem(cong_cu, vao):
+            so.append({"loai": "khai_niem"})
+            continue
+        pl = luat.phan_loai(cong_cu, lenh)
+        if pl["loai"] == "khong_phai_tim":
+            continue
+        tt = dict(search_rules.trang_thai(so), cua_so=cua_so)
+        ok, ly_do = luat.quyet_dinh(pl, tt)
+        hang.append({"luot": sk.get("luot"), "cong_cu": cong_cu, "lenh": lenh,
+                     "loai": pl["loai"], "cho_phep": ok, "ly_do": ly_do})
+        if not ok:
+            bat += 1
+            bi_chan.append(sk.get("luot"))
+            if pl["loai"] == "loc_file":
+                bat_oan += 1
+        elif pl["loai"] == "tim_code" and not tt["da_goi_khai_niem"]:
+            lot += 1
+        if pl["loai"] == "tim_code":
+            so.append({"loai": "tim", "cho_phep": ok, "tinh_cua_so": ok})
+    _log(f"{len(su_kien)} events · {len(hang)} searches · denied {bat} · "
+         f"false denials {bat_oan} · leaks {lot}")
     return {"hang": hang, "bat": bat, "bat_oan": bat_oan, "lot": lot, "bi_chan": bi_chan,
             "luat": ten_luat(luat)}
 
@@ -139,15 +105,15 @@ def _noi_dung_text(content):
 
 
 def _su_kien_cong_cu(ten, inp):
-    if ten.startswith("mcp__lsp__") or ten.startswith("mcp__plugin_lumen"):
-        return {"loai": "khai_niem", "cong_cu": ten}
     if ten == "Skill":
         return {"loai": "skill", "cong_cu": ten}
+    if search_rules.la_goi_khai_niem(ten, inp):
+        return {"loai": "khai_niem", "cong_cu": ten}
     if ten == "Grep":
         return {"loai": "tim", "cong_cu": ten, "lenh": inp.get("pattern", "")}
-    if ten == "Bash":
-        lenh = inp.get("command", "")
-        return {"loai": "tim" if LENH_TIM.search(lenh) else "doc", "cong_cu": ten, "lenh": lenh}
+    if str(ten).lower() in search_rules.CONG_CU_SHELL:
+        # Every shell command goes to the rules — the gate sees them all, not a pre-filtered few.
+        return {"loai": "tim", "cong_cu": ten, "lenh": inp.get("command", "")}
     if ten in ("Read", "Glob"):
         return {"loai": "doc", "cong_cu": ten, "lenh": inp.get("file_path") or inp.get("pattern", "")}
     return None
@@ -158,9 +124,9 @@ def su_kien_tu_transcript(duong):
 
     Extraction rules: a user message with plain text (not a tool result) -> "prompt" whose tokens
     are its lower-cased identifier words (3+ chars, text itself not kept); text starting with "<"
-    (system/command wrappers) -> "he_thong". Assistant tool_use: Bash with grep/rg/findstr or the
-    Grep tool -> "tim"; other Bash, Read, Glob -> "doc"; mcp__lsp__* / lumen -> "khai_niem";
-    Skill -> "skill"; any other tool is dropped.
+    (system/command wrappers) -> "he_thong". Assistant tool_use: a concept query per
+    `search_rules.la_goi_khai_niem` -> "khai_niem"; Grep and every shell command -> "tim" (the
+    rules decide); Read, Glob -> "doc"; Skill -> "skill"; any other tool is dropped.
     """
     su_kien = []
     with io.open(duong, encoding="utf-8") as fh:
@@ -206,17 +172,16 @@ def _cat(lenh):
 
 
 def in_bang(kq):
-    nhan = "search_rules" if kq["luat"] != "stub" else "STUB — cho qua tất cả"
-    dong = [f"luật: {nhan}", "", "| luot | cong cu | lenh | quyet dinh | ly do |",
+    dong = [f"rules: {kq['luat']}", "", "| event | tool | command | decision | reason |",
             "|---|---|---|---|---|"]
     for h in kq["hang"]:
-        qd = "cho" if h["cho_phep"] else "chan"
+        qd = "allow" if h["cho_phep"] else "deny"
         dong.append(f"| {h['luot']} | {h['cong_cu']} | {_cat(h['lenh'])} | {qd} | "
                     f"{str(h['ly_do']).replace('|', '/')} |")
-    # "bắt" is every denial (JSON key `bat`); "bắt đúng" is the part that was not a file-list filter.
-    dong += ["", f"bắt: {kq['bat']} (bắt đúng: {kq['bat'] - kq['bat_oan']}) · "
-                 f"bắt oan: {kq['bat_oan']} · lọt: {kq['lot']}",
-             "bị chặn ở lượt: " + (", ".join(str(x) for x in kq["bi_chan"]) or "(none)")]
+    # "denied" is every denial (JSON key `bat`); "right" is the part that was not a file-list filter.
+    dong += ["", f"denied: {kq['bat']} (right: {kq['bat'] - kq['bat_oan']}) · "
+                 f"false denials: {kq['bat_oan']} · leaks: {kq['lot']}",
+             "denied at events: " + (", ".join(str(x) for x in kq["bi_chan"]) or "(none)")]
     return "\n".join(dong)
 
 

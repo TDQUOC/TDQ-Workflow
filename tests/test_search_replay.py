@@ -58,23 +58,25 @@ def _phat(luat, su_kien, cua_so=None):
 
 
 class TestFixtureThat(unittest.TestCase):
-    def test_stub_tren_fixture(self):
-        kq = search_replay.phat_lai(search_replay.doc_dau_vao(FIXTURE), luat=search_replay._LuatStub)
-        self.assertEqual(kq["luat"], "stub")
-        self.assertEqual(kq["bat"], 0)
-        self.assertGreater(kq["lot"], 0)
-        self.assertIn(7, [h["luot"] for h in kq["hang"]])
+    def test_luat_that_tren_fixture(self):
+        """F6: luot 23 `graphify god-nodes` is a real concept query — the gate unlocks there, so
+        the replay must too (the old replay skipped every "doc" event and missed it)."""
+        kq = search_replay.phat_lai(search_replay.doc_dau_vao(FIXTURE))
+        self.assertEqual(kq["luat"], "search_rules")
+        self.assertEqual((kq["bat"], kq["bat_oan"], kq["lot"]), (11, 0, 0))
+        self.assertIn(7, kq["bi_chan"])
+        self.assertNotIn(28, kq["bi_chan"])
 
     def test_cli_bang_va_json(self):
         p = _chay(FIXTURE, env={"TDQ_LOG": "0"})
         self.assertEqual(p.returncode, 0, p.stderr)
-        self.assertRegex(p.stdout, r"luật: (search_rules|STUB — cho qua tất cả)")
-        self.assertIn("| luot | cong cu | lenh | quyet dinh | ly do |", p.stdout)
+        self.assertIn("rules: search_rules", p.stdout)
+        self.assertIn("| event | tool | command | decision | reason |", p.stdout)
         self.assertRegex(p.stdout, r"\| 7 \| Bash \|")
         p = _chay(FIXTURE, "--json", "--cua-so", "5", env={"TDQ_LOG": "0"})
         d = json.loads(p.stdout)
         self.assertEqual(set(d), {"bat", "bat_oan", "lot", "bi_chan", "luat"})
-        self.assertIn(d["luat"], ("stub", "search_rules"))
+        self.assertEqual(d["luat"], "search_rules")
 
     def test_log(self):
         self.assertEqual(_chay(FIXTURE, "--json", env={"TDQ_LOG": "0"}).stderr, "")
@@ -102,24 +104,26 @@ class TestNgunghia(unittest.TestCase):
         self.luat = LuatGia()
         self.kq = _phat(self.luat, self.SK)
 
-    def test_doc_va_khong_phai_tim_bi_bo(self):
+    def test_moi_lenh_shell_deu_qua_luat(self):
+        """F6: the gate sees every shell command, so the replay classifies "doc" events too;
+        only what the rules call khong_phai_tim drops out."""
         luot = [h["luot"] for h in self.kq["hang"]]
-        self.assertEqual(luot, [1, 3, 4, 5, 8])
+        self.assertEqual(luot, [1, 2, 3, 4, 5, 8])
 
     def test_dem(self):
-        # luot 4 is the 3rd tim_code with window 2 -> denied; luot 5 denied loc_file.
-        self.assertEqual(self.kq["bi_chan"], [4, 5])
-        self.assertEqual(self.kq["bat"], 2)
+        # Window 2: luot 1 and 2 run; 3 and 4 are denied; luot 5 is a denied loc_file.
+        self.assertEqual(self.kq["bi_chan"], [3, 4, 5])
+        self.assertEqual(self.kq["bat"], 3)
         self.assertEqual(self.kq["bat_oan"], 1)
-        self.assertEqual(self.kq["lot"], 2)  # luot 1 and 3, before any concept call
+        self.assertEqual(self.kq["lot"], 2)  # luot 1 and 2, before any concept call
         self.assertEqual(self.kq["luat"], "gia")
 
     def test_khai_niem_dat_lai_bo_dem(self):
         tt8 = self.luat.thay[-1]
         self.assertTrue(tt8["da_goi_khai_niem"])
         self.assertEqual(tt8["so_lan_tim_tu_lan_goi"], 0)
-        # Before the reset the counter climbed, denied searches included; loc_file did not count.
-        self.assertEqual([t["so_lan_tim_tu_lan_goi"] for t in self.luat.thay[:4]], [0, 1, 2, 3])
+        # A denied search never ran, so it does not eat the window (same rule as the gate).
+        self.assertEqual([t["so_lan_tim_tu_lan_goi"] for t in self.luat.thay[:5]], [0, 1, 2, 2, 2])
 
     def test_prompt_thay_token(self):
         self.assertEqual(self.luat.thay[0]["token_prompt"], {"alpha"})
@@ -135,7 +139,7 @@ class TestNgunghia(unittest.TestCase):
         bang = search_replay.in_bang({"luat": "stub", "bat": 0, "bat_oan": 0, "lot": 1, "bi_chan": [],
                                       "hang": [{"luot": 1, "cong_cu": "Bash", "lenh": "grep " + "x" * 200,
                                                 "cho_phep": True, "ly_do": "ok"}]})
-        self.assertIn("luật: STUB — cho qua tất cả", bang)
+        self.assertIn("rules: stub", bang)
         dong = [d for d in bang.splitlines() if d.startswith("| 1 |")][0]
         self.assertLessEqual(len(dong.split(" | ")[2]), 70)
 
@@ -156,7 +160,7 @@ class TestTranscript(unittest.TestCase):
             with open(duong, "w", encoding="utf-8") as fh:
                 fh.write("\n".join(json.dumps(x) for x in dong))
             sk = search_replay.doc_dau_vao(duong)
-        self.assertEqual([s["loai"] for s in sk], ["prompt", "tim", "doc", "khai_niem", "tim"])
+        self.assertEqual([s["loai"] for s in sk], ["prompt", "tim", "tim", "khai_niem", "tim"])
         self.assertIn("fontfamily", sk[0]["token"])
         self.assertEqual([s["luot"] for s in sk], [0, 1, 2, 3, 4])
 
