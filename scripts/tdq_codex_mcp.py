@@ -20,6 +20,7 @@ import argparse
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -50,7 +51,7 @@ def _tim_lumen():
         import tdq_lsp
         return tdq_lsp._binary_lumen()
     except Exception as exc:  # a broken import must not stop the lsp half
-        _log(f"không dò được lumen: {exc}")
+        _log(f"could not resolve lumen: {exc}")
         return ""
 
 
@@ -66,7 +67,7 @@ def _ten_tu_mcp_list(codex, env, chay):
     try:
         ma, out, _ = chay([codex, "mcp", "list"], env)
     except Exception as exc:
-        _log(f"codex mcp list lỗi: {exc}")
+        _log(f"codex mcp list failed: {exc}")
         return set()
     if ma != 0:
         return set()
@@ -87,7 +88,7 @@ def _ten_da_co(cfg, codex, env, chay):
         with open(cfg, "rb") as f:
             return set((tomllib.load(f).get("mcp_servers") or {}).keys())
     except (OSError, tomllib.TOMLDecodeError) as exc:
-        _log(f"không đọc được {cfg} ({exc}), chuyển sang codex mcp list")
+        _log(f"cannot read {cfg} ({exc}), falling back to codex mcp list")
         return _ten_tu_mcp_list(codex, env, chay)
 
 
@@ -97,16 +98,16 @@ def _nguon_lsp(claude_json):
         with open(claude_json, encoding="utf-8") as f:
             muc = (json.load(f).get("mcpServers") or {}).get("lsp")
     except (OSError, ValueError) as exc:
-        return None, f"không đọc được {claude_json} ({exc.__class__.__name__})"
+        return None, f"cannot read {claude_json} ({exc.__class__.__name__})"
     if not isinstance(muc, dict) or not muc.get("command"):
-        return None, f"{claude_json} không có mcpServers.lsp"
+        return None, f"{claude_json} has no mcpServers.lsp"
     return [muc["command"], *[str(a) for a in muc.get("args") or []]], ""
 
 
 def _nguon_lumen():
     duong = _tim_lumen()
     if not duong:
-        return None, "không tìm thấy binary lumen"
+        return None, "lumen binary not found"
     return [duong, "stdio"], ""
 
 
@@ -116,8 +117,8 @@ def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
     claude_json = claude_json or os.path.expanduser("~/.claude.json")
     codex = _tim_codex()
     if not codex:
-        _log("không thấy codex trên PATH")
-        return ["Codex chưa cài (không thấy lệnh codex) — không khai MCP nào."]
+        _log("codex not found on PATH")
+        return ["Codex is not installed (no codex command found) - no MCP server declared."]
 
     env = dict(os.environ)
     if codex_home:
@@ -125,17 +126,17 @@ def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
     home = codex_home or os.environ.get("CODEX_HOME") or os.path.expanduser("~/.codex")
     cfg = os.path.join(home, "config.toml")
     da_co = _ten_da_co(cfg, codex, env, chay)
-    _log(f"config={cfg} đã có={sorted(da_co)}")
+    _log(f"config={cfg} present={sorted(da_co)}")
 
     nguon = {"lumen": _nguon_lumen, "lsp": lambda: _nguon_lsp(claude_json)}
     dong, can_them = [], []
     for ten in TEN_MAY_CHU:
         if ten in da_co:
-            dong.append(f"{ten}: đã có, giữ nguyên")
+            dong.append(f"{ten}: already present, left unchanged")
             continue
         lenh, ly_do = nguon[ten]()
         if lenh is None:
-            dong.append(f"{ten}: bỏ qua — {ly_do}")
+            dong.append(f"{ten}: skipped - {ly_do}")
             continue
         can_them.append((ten, lenh))
 
@@ -143,20 +144,20 @@ def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
         bak = f"{cfg}.truoc-tdq-{datetime.now().strftime('%Y%m%d%H%M%S')}.bak"
         shutil.copy2(cfg, bak)
         _log(f"backup {bak}")
-        dong.append(f"đã sao lưu config.toml -> {bak}")
+        dong.append(f"backed up config.toml -> {bak}")
 
     for ten, lenh in can_them:
         argv = [codex, "mcp", "add", ten, "--", *lenh]
-        _log("chạy " + " ".join(argv))
+        _log("running " + " ".join(argv))
         try:
             ma, _, loi = chay(argv, env)
         except Exception as exc:
-            dong.append(f"{ten}: thêm thất bại — {exc}")
+            dong.append(f"{ten}: add failed - {exc}")
             continue
         if ma == 0:
-            dong.append(f"{ten}: đã thêm ({' '.join(lenh)})")
+            dong.append(f"{ten}: added ({' '.join(lenh)})")
         else:
-            dong.append(f"{ten}: thêm thất bại (mã {ma}) — {loi.strip()[-200:]}")
+            dong.append(f"{ten}: add failed (exit {ma}) - {loi.strip()[-200:]}")
     return dong
 
 
@@ -178,27 +179,54 @@ def _lenh_hook(ten):
 
 
 def _hook_can_co():
-    """-> [(event, matcher or None, command)] the search gate needs under Codex.
+    """-> [(event, matcher or None, script, command)] the search gate needs under Codex.
 
     `search_observe` is attached on BOTH PreToolUse and PostToolUse of the concept tools:
     PostToolUse is the right moment (the call happened) but its support under Codex is
     unverified; recording at PreToolUse too means a lumen call is never missed, and a duplicate
     row is harmless — a concept row only resets the unlock counter.
+    It is also attached to PreToolUse `Bash`, in its own entry next to the gate's: under Codex
+    a `graphify query|explain|path|god-nodes|affected` shell command is a concept-layer call,
+    and without this entry it would never be recorded.
     """
-    gate, so = _lenh_hook("search_gate.py"), _lenh_hook("search_observe.py")
-    return [("PreToolUse", "Bash", gate),
-            ("PreToolUse", MATCHER_KHAI_NIEM, so),
-            ("PostToolUse", MATCHER_KHAI_NIEM, so),
-            ("UserPromptSubmit", None, so)]
+    gate, so = "search_gate.py", "search_observe.py"
+    return [(e, m, s, _lenh_hook(s)) for e, m, s in (
+        ("PreToolUse", "Bash", gate),
+        ("PreToolUse", "Bash", so),
+        ("PreToolUse", MATCHER_KHAI_NIEM, so),
+        ("PostToolUse", MATCHER_KHAI_NIEM, so),
+        ("UserPromptSubmit", None, so))]
+
+
+def _la_cua_minh(command, script):
+    """True when `command` runs a script named `script` (any directory, quoted or not)."""
+    return isinstance(command, str) and re.search(
+        r'(^|[\\/"\'\s])' + re.escape(script) + r'["\']?\s*$', command) is not None
+
+
+def _event_hong(entries):
+    """Why a `hooks[event]` value cannot be handled safely, or "" when it can."""
+    if not isinstance(entries, list):
+        return f"is {type(entries).__name__}, not a list"
+    for muc in entries:
+        if not isinstance(muc, dict) or not isinstance(muc.get("hooks"), list):
+            return "has an entry without a `hooks` list"
+        if not all(isinstance(h, dict) for h in muc["hooks"]):
+            return "has a hook that is not an object"
+    return ""
 
 
 def khai_hook_codex(project):
     """Add the search gate to `<project>/.codex/hooks.json`. -> human-readable result lines.
 
-    Same contract as `khai_mcp_codex`: back up before the first change, only ADD, never edit an
-    entry that is already there, and running twice changes nothing. A file that is not valid
-    JSON is left untouched and reported — overwriting a config we cannot read is how a user's
-    hooks get lost.
+    Same contract as `khai_mcp_codex`: back up before the first change, and running twice
+    changes nothing. An entry is OURS when, in the same event and with the same matcher, its
+    command runs a script with the same file name (`search_gate.py` / `search_observe.py`):
+    if its path is stale (the plugin cache path carries the version, so every plugin update
+    moves it) the command is rewritten in place to the current path, never duplicated — a stale
+    path to a deleted file makes `python3` exit 2 on every call. Every other entry is left as is.
+    A file that is not valid JSON, or whose shape for one of our events is unexpected, is left
+    untouched and reported — overwriting a config we cannot read is how a user's hooks get lost.
     """
     duong = os.path.join(project, ".codex", "hooks.json")
     cfg = {"hooks": {}}
@@ -209,24 +237,36 @@ def khai_hook_codex(project):
             if not isinstance(cfg, dict) or not isinstance(cfg.get("hooks", {}), dict):
                 raise ValueError("unexpected shape")
         except (OSError, ValueError) as exc:
-            _log(f"hooks.json không đọc được: {exc}")
-            return [f"hook Codex: {duong} không phải JSON đọc được — để nguyên, không ghi gì ({exc})."]
+            _log(f"hooks.json unreadable: {exc}")
+            return [f"Codex hook: {duong} is not readable JSON - left untouched, nothing written ({exc})."]
     hooks = cfg.setdefault("hooks", {})
 
-    can_them = []
-    for event, matcher, lenh in _hook_can_co():
-        da_co = any(h.get("command") == lenh
-                    for muc in hooks.get(event, []) for h in (muc.get("hooks") or []))
-        if not da_co:
+    can_co = _hook_can_co()
+    for event in dict.fromkeys(e for e, _, _, _ in can_co):
+        ly_do = _event_hong(hooks.get(event, []))
+        if ly_do:
+            _log(f"hooks.json event {event} {ly_do}")
+            return [f"Codex hook: in {duong}, hooks.{event} {ly_do} - left untouched, "
+                    "nothing written."]
+
+    can_them, so_sua = [], 0
+    for event, matcher, script, lenh in can_co:
+        cua_minh = [h for muc in hooks.get(event, []) if muc.get("matcher") == matcher
+                    for h in muc["hooks"] if _la_cua_minh(h.get("command"), script)]
+        if not cua_minh:
             can_them.append((event, matcher, lenh))
-    if not can_them:
-        return ["hook Codex: cổng tìm kiếm đã có trong .codex/hooks.json, giữ nguyên."]
+        for h in cua_minh:
+            if h["command"] != lenh:
+                h["command"] = lenh
+                so_sua += 1
+    if not can_them and not so_sua:
+        return ["Codex hook: the search gate is already in .codex/hooks.json, left unchanged."]
 
     dong = []
     if os.path.isfile(duong):
         bak = f"{duong}.truoc-tdq-{datetime.now().strftime('%Y%m%d%H%M%S')}.bak"
         shutil.copy2(duong, bak)
-        dong.append(f"hook Codex: đã sao lưu hooks.json -> {bak}")
+        dong.append(f"Codex hook: backed up hooks.json -> {bak}")
     for event, matcher, lenh in can_them:
         muc = {"hooks": [{"type": "command", "command": lenh}]}
         if matcher:
@@ -236,17 +276,23 @@ def khai_hook_codex(project):
     with io.open(duong, "w", encoding="utf-8", newline="\n") as fh:
         json.dump(cfg, fh, ensure_ascii=False, indent=2)
         fh.write("\n")
-    _log(f"ghi {len(can_them)} entry vào {duong}")
-    dong.append(f"hook Codex: đã thêm {len(can_them)} entry cổng tìm kiếm vào {duong}")
-    dong.append("hook Codex: hook cấp project phải được TIN CẬY mới chạy — mở `codex` trong project "
-                "này rồi duyệt nó ở `/hooks`.")
+    _log(f"added {len(can_them)}, updated {so_sua} entries in {duong}")
+    if so_sua:
+        dong.append(f"Codex hook: updated {so_sua} search-gate command(s) to the current plugin "
+                    f"path in {duong}")
+    if can_them:
+        dong.append(f"Codex hook: added {len(can_them)} search-gate entries to {duong}")
+    dong.append("Codex hook: project-level hooks only run once TRUSTED - open `codex` in this "
+                "project and approve them under `/hooks`.")
     return dong
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Khai MCP lumen + lsp cho Codex (chỉ thêm, không sửa).")
-    ap.add_argument("--codex-home", help="thư mục CODEX_HOME (mặc định $CODEX_HOME hoặc ~/.codex)")
-    ap.add_argument("--claude-json", help="file claude.json chứa mcpServers.lsp (mặc định ~/.claude.json)")
+    ap = argparse.ArgumentParser(
+        description="Declare the lumen + lsp MCP servers for Codex (add only, never edit).")
+    ap.add_argument("--codex-home", help="CODEX_HOME directory (default $CODEX_HOME or ~/.codex)")
+    ap.add_argument("--claude-json",
+                    help="claude.json file holding mcpServers.lsp (default ~/.claude.json)")
     args = ap.parse_args(argv)
     for dong in khai_mcp_codex(codex_home=args.codex_home, claude_json=args.claude_json):
         print(dong)

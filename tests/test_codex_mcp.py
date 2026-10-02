@@ -116,7 +116,7 @@ class TestKhaiMcpCodex(unittest.TestCase):
             self.assertEqual(f.read(), lan1)
         self.assertEqual(gia2.so_lan_add(), 0)
         self.assertEqual(len(self._bak()), 1)
-        self.assertTrue(any("đã có, giữ nguyên" in d for d in dong))
+        self.assertTrue(any("already present, left unchanged" in d for d in dong))
 
     def test_ten_da_co_thi_khong_add(self):
         with open(self.cfg, "a", encoding="utf-8") as f:
