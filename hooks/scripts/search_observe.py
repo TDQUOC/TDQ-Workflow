@@ -77,7 +77,10 @@ def khoa_hien_tai(cwd, phien):
     """
     try:
         with open(_common.tdq_state.state_path(cwd), "r", encoding="utf-8") as fh:
-            request = (json.load(fh) or {}).get("request")
+            # The key is `active_request` — `tdq_state` writes it under that name. The first
+            # version read `request`, which never exists, so every row fell back to the session
+            # key and a new request inherited the previous one's unlock.
+            request = (json.load(fh) or {}).get("active_request")
     except (OSError, ValueError, TypeError, AttributeError):
         request = None
     return f"yc:{request}" if request else f"phien:{phien}"

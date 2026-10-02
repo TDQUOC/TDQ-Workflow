@@ -34,7 +34,7 @@ class BaseSo(unittest.TestCase):
     def mo_request(self, slug="2026-10-03-0000-thu"):
         with io.open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w",
                      encoding="utf-8") as fh:
-            json.dump({"request": slug, "phase": "analyze"}, fh)
+            json.dump({"active_request": slug, "phase": "analyze"}, fh)
         return f"yc:{slug}"
 
     def goi(self, payload, log="0"):
@@ -122,6 +122,17 @@ class SongQuaLuot(BaseSo):
         khoa_hai = self.mo_request("2026-10-03-0001-hai")
         self.assertFalse(search_observe.trang_thai(self.rows(khoa_hai))["da_goi_khai_niem"],
                          "request mới phải hỏi tầng khái niệm lại từ đầu")
+
+
+class KhoaThatCuaState(BaseSo):
+    """Khoá request phải đọc đúng tên mà `tdq_state` thật ghi — không tự đặt tên rồi tự kiểm."""
+
+    def test_qua_luot_doc_dung_khoa_state_that(self):
+        import subprocess
+        subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), "init",
+                        "2026-10-03-0000-khoa-that", "chuyen-sau"],
+                       capture_output=True, env=dict(os.environ, TDQ_PROJECT_DIR=self.cwd, TDQ_LOG="0"))
+        self.assertEqual(search_observe.khoa_hien_tai(self.cwd, PHIEN), "yc:2026-10-03-0000-khoa-that")
 
 
 class TrangThai(unittest.TestCase):
