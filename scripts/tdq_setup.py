@@ -653,7 +653,7 @@ def khoi_tao_nen(project, chay=None):
                 _log("nền: không thấy codex — bỏ khai MCP cho Codex")
                 return
             import tdq_codex_mcp
-            for dong in tdq_codex_mcp.khai_mcp_codex():
+            for dong in tdq_codex_mcp.khai_mcp_codex() + tdq_codex_mcp.khai_hook_codex(project):
                 _log(f"nền: codex · {dong}")
 
         def graphify():
@@ -714,9 +714,12 @@ def parse_args(argv):
 
 
 def _khai_codex_mac_dinh():
-    """The CLI's Codex step: declare the lumen + lsp MCP servers. -> result lines."""
+    """The CLI's Codex step: the lumen + lsp MCP servers, then the search gate in the project's
+    `.codex/hooks.json` (Codex no longer takes hooks from a plugin). -> result lines."""
     import tdq_codex_mcp
-    return tdq_codex_mcp.khai_mcp_codex()
+    if not shutil.which("codex"):
+        return tdq_codex_mcp.khai_mcp_codex()
+    return tdq_codex_mcp.khai_mcp_codex() + tdq_codex_mcp.khai_hook_codex(tdq_lsp._project_dir())
 
 
 def chay_cli(argv):

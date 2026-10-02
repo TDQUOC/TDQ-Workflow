@@ -103,7 +103,7 @@ trong `hooks.json`.
 
 ## P3 — Codex
 
-- [ ] **T3.1** (e25m) Adapter Codex theo đúng kết quả T1.1: plugin nhận `hooks` → khai trong
+- [x] **T3.1** (e25m) Adapter Codex theo đúng kết quả T1.1: plugin nhận `hooks` → khai trong
   `.codex-plugin/plugin.json`; không nhận → `tdq-setup` ghi `.codex/hooks.json` cấp project (chỉ
   thêm entry, giữ cổng VÙNG FILE đang có). `search_gate.py` in dạng mà Codex đọc được (chỉ
   `deny`) — Test: `python -m unittest discover tests -p test_codex_search_gate.py`

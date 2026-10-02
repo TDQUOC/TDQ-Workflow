@@ -44,16 +44,19 @@ HAN_PHIEN_GIAY = 6 * 3600
 # Same tokenizer the replay fixture used (tests/fixtures/phien_excalidraw_tim.json): ASCII
 # identifier shapes of 3+ characters. Vietnamese words and short noise never collide with code.
 TOKEN = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")
-LUMEN = re.compile(r"^mcp__.*lumen.*__semantic_search$")
+# Name shapes differ by host: Claude Code says `mcp__plugin_lumen_lumen__semantic_search` and
+# `mcp__lsp__find_references`; Codex's MCP tool names could not be observed yet (Codex is not
+# logged in on the dev machine, 2026-10-03), so the match is on the server name and the last
+# segment, whatever the separator (`__` or `.`).
+LUMEN = re.compile(r"lumen.*semantic_search$")
+LSP = re.compile(r"(^|__|\.)lsp(__|\.)")
 # LSP tools that ANSWER a question about the code. Starting a server or opening a document asks
 # nothing — counting those would let `start_lsp` unlock grep without a single real query.
 LSP_KHONG_PHAI_HOI = {
-    "mcp__lsp__start_lsp", "mcp__lsp__restart_lsp_server", "mcp__lsp__open_document",
-    "mcp__lsp__close_document", "mcp__lsp__set_log_level", "mcp__lsp__did_change_watched_files",
-    "mcp__lsp__get_server_capabilities", "mcp__lsp__detect_lsp_servers",
-    "mcp__lsp__list_workspace_folders", "mcp__lsp__add_workspace_folder",
-    "mcp__lsp__remove_workspace_folder", "mcp__lsp__export_cache", "mcp__lsp__import_cache",
-    "mcp__lsp__activate_skill", "mcp__lsp__deactivate_skill", "mcp__lsp__get_skill_phase",
+    "start_lsp", "restart_lsp_server", "open_document", "close_document", "set_log_level",
+    "did_change_watched_files", "get_server_capabilities", "detect_lsp_servers",
+    "list_workspace_folders", "add_workspace_folder", "remove_workspace_folder", "export_cache",
+    "import_cache", "activate_skill", "deactivate_skill", "get_skill_phase",
 }
 GRAPHIFY_HOI = re.compile(r"\bgraphify\s+(query|explain|path|god-nodes|affected)\b")
 
@@ -152,10 +155,13 @@ def trang_thai(rows):
 
 def la_goi_khai_niem(ten_tool, tool_input):
     """-> a short label when this tool call is a concept-layer QUERY, else None."""
-    if LUMEN.match(ten_tool or ""):
+    ten_tool = ten_tool or ""
+    if LUMEN.search(ten_tool):
         return "lumen"
-    if (ten_tool or "").startswith("mcp__lsp__") and ten_tool not in LSP_KHONG_PHAI_HOI:
-        return ten_tool.replace("mcp__lsp__", "lsp:")
+    if LSP.search(ten_tool):
+        cuoi = re.split(r"__|\.", ten_tool)[-1]
+        if cuoi and cuoi not in LSP_KHONG_PHAI_HOI:
+            return f"lsp:{cuoi}"
     if ten_tool == "Bash":
         cmd = (tool_input or {}).get("command") or ""
         khop = GRAPHIFY_HOI.search(cmd) if isinstance(cmd, str) else None

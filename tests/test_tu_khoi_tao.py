@@ -80,6 +80,9 @@ class CoSo(unittest.TestCase):
                 ("graphify", True, "gr"), ("lumen", True, "lu")]),
             mock.patch.object(tdq_codex_mcp, "khai_mcp_codex",
                               side_effect=lambda *a, **k: self.codex_goi.append(1) or ["lsp: giả"]),
+            # T3.1 thêm bước ghi `.codex/hooks.json` vào cùng đường này. Không vá nó thì test ghi
+            # THẬT vào `.codex/hooks.json` của repo (đã xảy ra 2026-10-03, có file .bak làm chứng).
+            mock.patch.object(tdq_codex_mcp, "khai_hook_codex", return_value=["hook: giả"]),
             mock.patch.object(tdq_no, "ghi_no", return_value=0),
         ]
         for va in vas:

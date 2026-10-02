@@ -17,6 +17,7 @@ Usage: python scripts/tdq_codex_mcp.py [--codex-home DIR] [--claude-json FILE]
 Env: CODEX_HOME is the default codex home (else ~/.codex); TDQ_LOG=0 silences the stderr log.
 """
 import argparse
+import io
 import json
 import os
 import shutil
@@ -156,6 +157,89 @@ def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
             dong.append(f"{ten}: đã thêm ({' '.join(lenh)})")
         else:
             dong.append(f"{ten}: thêm thất bại (mã {ma}) — {loi.strip()[-200:]}")
+    return dong
+
+
+# --------------------------------------------------------------- the search gate, for Codex
+# Codex dropped plugin-shipped hooks: `codex features list` on codex-cli 0.155.1 prints
+# `plugin_hooks  removed  false` (measured 2026-10-03), while `hooks` is `stable true`. So the gate
+# cannot travel inside the plugin the way it does for Claude Code; it has to be written into each
+# project's `.codex/hooks.json`. Codex runs no `${CLAUDE_PLUGIN_ROOT}`, so commands carry the
+# absolute path of THIS plugin copy.
+GOC_HOOK = os.path.join(ROOT, "hooks", "scripts").replace(os.sep, "/")
+# Concept-layer MCP tools under Codex. Their exact names could not be observed on this machine
+# (Codex is not logged in here — 401), so the matcher is deliberately broad; `search_observe.py`
+# then decides by name which calls count.
+MATCHER_KHAI_NIEM = ".*lumen.*|.*lsp.*"
+
+
+def _lenh_hook(ten):
+    return f'python3 "{GOC_HOOK}/{ten}"'
+
+
+def _hook_can_co():
+    """-> [(event, matcher or None, command)] the search gate needs under Codex.
+
+    `search_observe` is attached on BOTH PreToolUse and PostToolUse of the concept tools:
+    PostToolUse is the right moment (the call happened) but its support under Codex is
+    unverified; recording at PreToolUse too means a lumen call is never missed, and a duplicate
+    row is harmless — a concept row only resets the unlock counter.
+    """
+    gate, so = _lenh_hook("search_gate.py"), _lenh_hook("search_observe.py")
+    return [("PreToolUse", "Bash", gate),
+            ("PreToolUse", MATCHER_KHAI_NIEM, so),
+            ("PostToolUse", MATCHER_KHAI_NIEM, so),
+            ("UserPromptSubmit", None, so)]
+
+
+def khai_hook_codex(project):
+    """Add the search gate to `<project>/.codex/hooks.json`. -> human-readable result lines.
+
+    Same contract as `khai_mcp_codex`: back up before the first change, only ADD, never edit an
+    entry that is already there, and running twice changes nothing. A file that is not valid
+    JSON is left untouched and reported — overwriting a config we cannot read is how a user's
+    hooks get lost.
+    """
+    duong = os.path.join(project, ".codex", "hooks.json")
+    cfg = {"hooks": {}}
+    if os.path.isfile(duong):
+        try:
+            with io.open(duong, encoding="utf-8") as fh:
+                cfg = json.load(fh)
+            if not isinstance(cfg, dict) or not isinstance(cfg.get("hooks", {}), dict):
+                raise ValueError("unexpected shape")
+        except (OSError, ValueError) as exc:
+            _log(f"hooks.json không đọc được: {exc}")
+            return [f"hook Codex: {duong} không phải JSON đọc được — để nguyên, không ghi gì ({exc})."]
+    hooks = cfg.setdefault("hooks", {})
+
+    can_them = []
+    for event, matcher, lenh in _hook_can_co():
+        da_co = any(h.get("command") == lenh
+                    for muc in hooks.get(event, []) for h in (muc.get("hooks") or []))
+        if not da_co:
+            can_them.append((event, matcher, lenh))
+    if not can_them:
+        return ["hook Codex: cổng tìm kiếm đã có trong .codex/hooks.json, giữ nguyên."]
+
+    dong = []
+    if os.path.isfile(duong):
+        bak = f"{duong}.truoc-tdq-{datetime.now().strftime('%Y%m%d%H%M%S')}.bak"
+        shutil.copy2(duong, bak)
+        dong.append(f"hook Codex: đã sao lưu hooks.json -> {bak}")
+    for event, matcher, lenh in can_them:
+        muc = {"hooks": [{"type": "command", "command": lenh}]}
+        if matcher:
+            muc = {"matcher": matcher, **muc}
+        hooks.setdefault(event, []).append(muc)
+    os.makedirs(os.path.dirname(duong), exist_ok=True)
+    with io.open(duong, "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(cfg, fh, ensure_ascii=False, indent=2)
+        fh.write("\n")
+    _log(f"ghi {len(can_them)} entry vào {duong}")
+    dong.append(f"hook Codex: đã thêm {len(can_them)} entry cổng tìm kiếm vào {duong}")
+    dong.append("hook Codex: hook cấp project phải được TIN CẬY mới chạy — mở `codex` trong project "
+                "này rồi duyệt nó ở `/hooks`.")
     return dong
 
 
