@@ -28,7 +28,7 @@ CUA_SO = 10
 TOKEN = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")
 
 TIM_CODE, LOC_FILE, KHONG = "tim_code", "loc_file", "khong_phai_tim"
-CONG_CU_SHELL = {"bash", "shell", "exec_command", "local_shell"}
+CONG_CU_SHELL = {"bash", "powershell", "shell", "exec_command", "local_shell"}
 CO_SCRIPT = {"-c", "-lc", "-ic", "-command", "/c"}
 
 CHUONG_TRINH_TIM = {"grep", "egrep", "fgrep", "rg", "ag", "ack", "findstr", "select-string", "sls"}
@@ -72,8 +72,10 @@ CHI_HOI = {"--help", "--version"}
 TUY_CHON_CO_GIA_TRI = {"--file", "--regexp", "--glob", "-g", "--type", "-t", "--include",
                        "--exclude", "--max-count", "-Path", "-Pattern", "-Include", "-Exclude"}
 
-LOI_RA = ("Ask first: mcp__plugin_lumen_lumen__semantic_search with a natural-language query "
-          "(what/how/where), mcp__lsp__find_symbol / find_references (a symbol and its callers), "
+# Host-neutral: Claude Code and Codex name the same lumen tool differently (F5).
+LOI_RA = ("Ask first: lumen semantic_search with a natural-language query (what/how/where) — "
+          "mcp__plugin_lumen_lumen__semantic_search in Claude Code, mcp__lumen__semantic_search "
+          "in Codex; mcp__lsp__find_symbol / find_references (a symbol and its callers); "
           "or graphify query \"...\" (architecture).")
 
 

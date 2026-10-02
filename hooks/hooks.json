@@ -64,7 +64,7 @@
         ]
       },
       {
-        "matcher": "Bash|Grep",
+        "matcher": "Bash|Grep|PowerShell",
         "hooks": [
           {
             "type": "command",

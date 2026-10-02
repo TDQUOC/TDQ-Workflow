@@ -253,7 +253,7 @@ Thêm vào plan theo quy tắc 5, không cần duyệt lại.
   `python -m unittest discover tests -p test_search_rules.py -k phan_loai`
   - Chạm: `scripts/search_rules.py`, `tests/test_search_rules.py` → `phan_loai`
   - Cần: F1
-- [ ] **F5** (e10m) Cắm thêm công cụ `PowerShell` vào cổng (`hooks.json` + danh sách shell) (R1#6);
+- [x] **F5** (e10m) Cắm thêm công cụ `PowerShell` vào cổng (`hooks.json` + danh sách shell) (R1#6);
   lý do `deny` gọi tool lumen theo cách trung lập host (Codex có tên khác) — Test:
   `python -m unittest discover tests -p test_subagent_start.py`
   - Chạm: `hooks/hooks.json`, `tests/test_subagent_start.py` → matcher
