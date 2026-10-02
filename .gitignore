@@ -10,6 +10,7 @@ docs/tdq/.tdq-read.jsonl
 docs/tdq/.tdq-search.jsonl
 # Dựng nền ở đầu project: khoá pid và mốc sẵn sàng từng tầng.
 docs/tdq/.tdq-khoi-tao.lock
+docs/tdq/.tdq-khoi-tao.da-goi
 docs/tdq/.tdq-san-sang.json
 # Worktree của mode đội — để ngoài git, nếu không `git add -A` sẽ quét cả cây con vào commit.
 .tdq-worktrees/

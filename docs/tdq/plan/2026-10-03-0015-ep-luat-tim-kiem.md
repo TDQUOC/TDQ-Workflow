@@ -167,7 +167,7 @@ trong `hooks.json`.
   `python -m unittest discover tests -p test_tu_khoi_tao.py` (lệnh giả thay cho lumen/graphify)
   - Chạm: `scripts/tdq_setup.py`, `tests/test_tu_khoi_tao.py` → `main`, hàm mới `khoi_tao_nen`
   - Cần: T4.3
-- [ ] **T6.2** (e30m) `session_start.py`: dò RẺ bằng file mốc (không gọi tiến trình đo); chưa sẵn
+- [x] **T6.2** (e30m) `session_start.py`: dò RẺ bằng file mốc (không gọi tiến trình đo); chưa sẵn
   sàng và không có khoá sống → bật `--nen` tách rời (Windows: cờ tiến trình tách rời) rồi trả về
   ngay, in `[TDQ:SEARCH]` nói tầng nào đang dựng — Test: `-p test_tu_khoi_tao.py` thêm ca: hook trả
   về dưới ngân sách thời gian; hai lần gọi liền nhau → một tiến trình

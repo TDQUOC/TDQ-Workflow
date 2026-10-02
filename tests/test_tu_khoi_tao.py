@@ -316,5 +316,98 @@ class LuongSetupThuong(CoSo):
         self.assertEqual(self.codex_goi, [], "--nen must not run the normal flow too")
 
 
+class SessionStartKichHoat(unittest.TestCase):
+    """T6.2 — `SessionStart` chỉ DÒ mốc rồi bật dựng nền tách rời; nó không bao giờ tự chờ.
+
+    Lệnh nền thật (`tdq_setup.py --nen`) được thay bằng `TDQ_LENH_NEN`: một python ghi đúng một
+    file dấu. Nhờ đó ca này đo được "có bật hay không" bằng hiệu ứng mà không cài/index gì thật.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.cwd = self.tmp.name
+        os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
+        self.dau = os.path.join(self.cwd, "da-chay.txt")
+
+    def env(self, bat=True):
+        lenh = [sys.executable, "-c",
+                f"open(r'{self.dau}', 'a', encoding='utf-8').write('x')"]
+        return {"TDQ_PROJECT_DIR": self.cwd, "TDQ_LOG": "0",
+                "TDQ_KHOI_TAO_NEN": "1" if bat else "0", "TDQ_LENH_NEN": json.dumps(lenh)}
+
+    def goi(self, bat=True):
+        from helper import run_hook
+        t0 = time.time()
+        rc, out, err = run_hook("session_start.py",
+                                {"session_id": "thu-nen", "cwd": self.cwd,
+                                 "hook_event_name": "SessionStart"}, env=self.env(bat))
+        self.assertEqual(rc, 0, err)
+        return out, time.time() - t0
+
+    def cho_dau(self, giay=10):
+        het = time.time() + giay
+        while time.time() < het:
+            if os.path.isfile(self.dau):
+                return True
+            time.sleep(0.2)
+        return False
+
+    def ghi_moc(self, dang_dung=False, tuoi_giay=0, het_san_sang=True):
+        from datetime import datetime, timedelta
+        moc = {"cap_nhat": (datetime.now() - timedelta(seconds=tuoi_giay)).strftime(
+                   "%Y-%m-%dT%H:%M:%S"),
+               "dang_dung": dang_dung, "pid": None,
+               "tang": {t: {"san_sang": het_san_sang, "chi_tiet": ""}
+                        for t in ("grep", "lsp", "graphify", "lumen")}}
+        with io.open(os.path.join(self.cwd, "docs", "tdq", ".tdq-san-sang.json"), "w",
+                     encoding="utf-8") as fh:
+            json.dump(moc, fh)
+
+    def test_kich_hoat_project_chua_dung_thi_bat_nen_va_tra_ve_ngay(self):
+        out, giay = self.goi()
+        self.assertIn("[TDQ:SEARCH]", out)
+        self.assertTrue(self.cho_dau(), "tiến trình nền phải thật sự chạy")
+        self.assertLess(giay, 15, "hook không được chờ tiến trình nền")
+
+    def test_kich_hoat_da_san_sang_thi_khong_bat(self):
+        self.ghi_moc(het_san_sang=True)
+        out, _ = self.goi()
+        self.assertNotIn("[TDQ:SEARCH]", out)
+        self.assertFalse(self.cho_dau(1.5))
+
+    def test_kich_hoat_tat_bang_bien_moi_truong(self):
+        out, _ = self.goi(bat=False)
+        self.assertNotIn("[TDQ:SEARCH]", out)
+        self.assertFalse(self.cho_dau(1.5))
+
+    def test_kich_hoat_tang_hong_chi_thu_lai_sau_6_gio(self):
+        """Không có ollama thì lumen hỏng mãi — bật lại mỗi phiên là chạy lại cùng một lỗi."""
+        self.ghi_moc(het_san_sang=False, tuoi_giay=60)
+        self.goi()
+        self.assertFalse(self.cho_dau(1.5), "mốc còn mới → chưa được thử lại")
+        self.ghi_moc(het_san_sang=False, tuoi_giay=7 * 3600)
+        self.goi()
+        self.assertTrue(self.cho_dau(), "quá 6 giờ → thử lại")
+
+    def test_chong_dang_dung_thi_khong_bat_them(self):
+        self.ghi_moc(dang_dung=True, het_san_sang=False)
+        self.goi()
+        self.assertFalse(self.cho_dau(1.5))
+
+    def test_chong_dang_dung_nhung_da_chet_thi_bat_lai(self):
+        self.ghi_moc(dang_dung=True, het_san_sang=False, tuoi_giay=3 * 3600)
+        self.goi()
+        self.assertTrue(self.cho_dau())
+
+    def test_chong_hai_phien_mo_lien_nhau_chi_bat_mot_lan(self):
+        self.goi()
+        self.assertTrue(self.cho_dau())
+        os.remove(self.dau)
+        out, _ = self.goi()                    # phiên thứ hai, mốc vẫn chưa có
+        self.assertNotIn("[TDQ:SEARCH]", out)
+        self.assertFalse(self.cho_dau(1.5), "dấu `da-goi` còn mới → không bật lần hai")
+
+
 if __name__ == "__main__":
     unittest.main()

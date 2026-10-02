@@ -14,8 +14,13 @@ Budget caps: head <= 12 lines / 600 characters (spec §2.7, unchanged); whole ou
 Injected once per turn: bug #10871 runs a plugin hook twice with two PIDs, so the turn
 ledger (`already_reminded`) is what keeps the law from landing twice.
 """
+import json
 import os
 import shutil
+import subprocess
+import sys
+import time
+from datetime import datetime
 
 from _common import (already_reminded, payload_cwd, read_payload, session_id,
                      turn_log_append)
@@ -47,6 +52,89 @@ MA_GON = "TDQ:GON"
 GOC_LUAT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+# ------------------------------------------------- auto-init of the search layers (2026-10-03)
+# The user asked that a project come up with its search layers READY before work starts. The
+# expensive part cannot run here: a lumen index of excalidraw took 11m5s (843 files). So this
+# hook only PROBES the readiness stamp and, when needed, starts `tdq_setup.py --nen` DETACHED
+# and returns at once; the search gate stands down while that build runs.
+MOC_SAN_SANG = os.path.join("docs", "tdq", ".tdq-san-sang.json")
+# Written by THIS hook when it starts a build. Two sessions opened back to back would otherwise
+# both start one before the first build has taken its pid lock. The builder's lock is still the
+# real guard; this only closes the start-up window.
+DAU_DA_GOI = os.path.join("docs", "tdq", ".tdq-khoi-tao.da-goi")
+CUA_SO_DA_GOI_GIAY = 120
+# A finished build that left a layer down (no ollama, say) is retried only after this long — not
+# at every session, which would re-run the same failing install each time.
+THU_LAI_GIAY = 6 * 3600
+# A stamp claiming "still building" for longer than the builder's own cap is a dead build.
+HAN_DUNG_GIAY = 1800
+GOC_PLUGIN = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+TANG = ("grep", "lsp", "graphify", "lumen")
+
+
+def _tuoi_giay(iso):
+    try:
+        return time.time() - datetime.fromisoformat(str(iso)).timestamp()
+    except (TypeError, ValueError):
+        return float("inf")
+
+
+def can_khoi_tao(cwd):
+    """-> True when the search layers should be (re)built now. Reads files only, never runs."""
+    if os.environ.get("TDQ_KHOI_TAO_NEN", "1") == "0":
+        return False
+    try:
+        if time.time() - os.path.getmtime(os.path.join(cwd, DAU_DA_GOI)) < CUA_SO_DA_GOI_GIAY:
+            return False
+    except OSError:
+        pass
+    try:
+        with open(os.path.join(cwd, MOC_SAN_SANG), "r", encoding="utf-8") as fh:
+            moc = json.load(fh)
+    except (OSError, ValueError):
+        return True                       # never built by us
+    if not isinstance(moc, dict):
+        return True
+    tuoi = _tuoi_giay(moc.get("cap_nhat"))
+    if moc.get("dang_dung"):
+        return tuoi > HAN_DUNG_GIAY       # building → leave it, unless it died
+    tang = moc.get("tang") or {}
+    if all((tang.get(t) or {}).get("san_sang") for t in TANG):
+        return False
+    return tuoi > THU_LAI_GIAY
+
+
+def kich_hoat_nen(cwd):
+    """Start `tdq_setup.py --nen` detached from this hook. -> True when a process was started.
+
+    `TDQ_LENH_NEN` (a JSON argv) replaces the command — tests use it so no real install or index
+    ever runs from a test.
+    """
+    lenh = [sys.executable, os.path.join(GOC_PLUGIN, "scripts", "tdq_setup.py"), "--nen"]
+    if os.environ.get("TDQ_LENH_NEN"):
+        try:
+            lenh = json.loads(os.environ["TDQ_LENH_NEN"])
+        except ValueError:
+            return False
+    kw = {"cwd": cwd, "stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL,
+          "stderr": subprocess.DEVNULL, "close_fds": True,
+          "env": dict(os.environ, TDQ_PROJECT_DIR=cwd)}
+    if os.name == "nt":
+        # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP: the build must outlive this hook and the
+        # host's console; without them Windows kills it when the hook process exits.
+        kw["creationflags"] = 0x00000008 | 0x00000200
+    else:
+        kw["start_new_session"] = True
+    try:
+        os.makedirs(os.path.join(cwd, "docs", "tdq"), exist_ok=True)
+        with open(os.path.join(cwd, DAU_DA_GOI), "w", encoding="utf-8") as fh:
+            fh.write(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+        subprocess.Popen(lenh, **kw)
+    except OSError:
+        return False
+    return True
+
+
 def cap(text, max_lines, max_chars):
     """Cut to the declared budget, from the tail."""
     text = "\n".join(text.splitlines()[:max_lines])
@@ -68,10 +156,14 @@ def main():
     # measured 2026-09-21: the graphify notice came out as `graphify is n…` on a machine without
     # graphify. A notice that silently vanishes is worse than none. Each is empty on a machine
     # that does not need it, so those sessions pay nothing for it.
+    dung_nen = can_khoi_tao(cwd) and kich_hoat_nen(cwd)
     nhac = [n for n in (
         "" if shutil.which("graphify") else
         "[TDQ] graphify is not installed (optional): uv tool install graphifyy",
-        can_nhac_ten_lenh()) if n]
+        can_nhac_ten_lenh(),
+        "[TDQ:SEARCH] Setting up the search layers in the background (dependencies, graphify "
+        "graph, lumen index — minutes on a big repo). Until they answer, the search gate does "
+        "not block." if dung_nen else "") if n]
     if nhac:
         # Their own paragraph: the head never holds a blank line, so the blank line is what
         # tells a reader (and the 12/600 budget) where the head ends.

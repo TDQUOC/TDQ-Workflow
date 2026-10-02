@@ -15,10 +15,13 @@ import tdq_state  # noqa: E402
 
 
 def run_hook(script, payload, env=None):
+    # 2026-10-03: `session_start.py` starts a REAL background build (installs, graphify, lumen
+    # index) in a project whose search layers are not ready — which is every temp dir a test
+    # makes. Off by default here; the auto-init tests turn it on with a harmless TDQ_LENH_NEN.
     proc = subprocess.run(
         [sys.executable, os.path.join(HOOKS, script)],
         input=json.dumps(payload), capture_output=True, encoding="utf-8", text=True, timeout=30,
-        env=dict(os.environ, **(env or {})),
+        env={**os.environ, "TDQ_KHOI_TAO_NEN": "0", **(env or {})},
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
