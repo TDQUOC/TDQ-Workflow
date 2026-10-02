@@ -167,29 +167,67 @@ def kiem_cau_hinh_lumen(duong=None):
     return loi
 
 
-def smoke_grep(project):
-    """Tầng sàn: tìm một chuỗi CHẮC CHẮN có trong mã Python của dự án.
+# Fallback when language detection finds nothing above its threshold (tiny or brand-new project):
+# the common code extensions, so a one-file project still gets a real answer.
+DUOI_MAC_DINH = (".py", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".java",
+                 ".cs", ".c", ".cc", ".cpp", ".h", ".hpp", ".rb", ".php", ".kt", ".swift")
 
-    Quét bằng chính Python chứ không gọi `grep`: Windows không có sẵn `grep`, mà tầng sàn thì
-    không được phép phụ thuộc vào thứ gì cả — đó là lý do nó là sàn.
+# Line markers that look like a definition, per language key of `tdq_lsp.EXT_LANG`.
+# Languages absent here accept any non-empty, non-comment line.
+DAU_DINH_NGHIA = {
+    "python": ("def ", "class "),
+    "typescript": ("function ", "class ", "=>", "export "),
+    "javascript": ("function ", "class ", "=>", "export "),
+}
+DAU_CHU_THICH = ("#", "//", "/*", "*", "--", ";", "<!--")
 
-    Dừng ở file ĐẦU TIÊN khớp. Câu hỏi là "tầng này có trả lời được không", nên đọc hết 505 file
-    (6,6 MB, 0,1 s cache nóng) chỉ để đếm một con số không ai dùng là công thừa.
+
+def _duoi_can_quet(project):
+    """Extensions of the languages the project really uses, reusing rung 3/7's detector.
+
+    Measured 2026-10-02: a hard-coded `*.py` made the floor report TRƯỢT on excalidraw
+    (TypeScript only) while `git grep` answered instantly — a failure that did not exist.
     """
+    ngon_ngu = set(tdq_lsp.do_ngon_ngu(project))
+    duoi = tuple(sorted(d for d, l in tdq_lsp.EXT_LANG.items() if l in ngon_ngu))
+    return duoi or DUOI_MAC_DINH
+
+
+def _giong_dinh_nghia(dong, lang):
+    """Does this line look like a definition for `lang`?"""
+    dau = DAU_DINH_NGHIA.get(lang)
+    if dau:
+        return any(d in dong for d in dau)
+    gon = dong.strip()
+    return bool(gon) and not gon.startswith(DAU_CHU_THICH)
+
+
+def smoke_grep(project):
+    """Floor layer: find a definition that CERTAINLY exists in the project's own languages.
+
+    Scans with Python itself instead of calling `grep`: Windows has no `grep` by default, and the
+    floor must not depend on anything at all — that is why it is the floor.
+
+    Stops at the FIRST matching file. The question is "can this layer answer", so reading all 505
+    files (6.6 MB, 0.1 s warm cache) just to count a number nobody uses is wasted work.
+    """
+    duoi = _duoi_can_quet(project)
     for goc, thu_muc, tep in os.walk(project):
         thu_muc[:] = [t for t in thu_muc
                       if t not in tdq_lsp.SKIP_DIRS and not t.startswith(tdq_lsp.SKIP_PREFIX)]
         for ten in tep:
-            if not ten.endswith(".py"):
+            phan_duoi = os.path.splitext(ten)[1]
+            if phan_duoi not in duoi:
                 continue
+            lang = tdq_lsp.EXT_LANG.get(phan_duoi)
             try:
                 with io.open(os.path.join(goc, ten), encoding="utf-8", errors="replace") as fh:
                     for dong in fh:
-                        if "def " in dong:
-                            return True, f"tìm ra định nghĩa hàm trong {ten}"
+                        if _giong_dinh_nghia(dong, lang):
+                            return True, f"tìm ra định nghĩa trong {ten}"
             except OSError:
                 continue
-    return False, "không quét ra file nào"
+    return False, "không quét ra file nào (" + ", ".join(duoi) + ")"
 
 
 def _smoke(cmd, project, doi_ket_qua=False):
