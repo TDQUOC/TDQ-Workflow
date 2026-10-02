@@ -60,7 +60,7 @@ phát).
 
 ## P2 — Luật và cổng tìm kiếm
 
-- [ ] **T2.1** (e40m) `scripts/search_rules.py` — hàm thuần, không I/O: nhận một lệnh Bash hoặc
+- [>] **T2.1** (e40m) `scripts/search_rules.py` — hàm thuần, không I/O: nhận một lệnh Bash hoặc
   một mẫu `Grep`, trả về LOẠI (lọc-danh-sách-file · tìm-code · không-phải-tìm), các token tìm, và
   hình dạng đoán mò (≥ 3 nhánh `\|`/`|`, hoặc câu tự nhiên ≥ 3 từ). Hàm quyết định nhận thêm trạng
   thái request (đã gọi tầng khái niệm chưa, cách đó bao nhiêu lần tìm, token của prompt) và trả
