@@ -110,7 +110,7 @@ trong `hooks.json`.
   - Chạm: `.codex-plugin/plugin.json`, `.codex/hooks.json`, `hooks/scripts/search_gate.py`,
     `tests/test_codex_search_gate.py` → adapter Codex
   - Cần: T1.1, T2.3
-- [>] **T3.2** (e30m) `scripts/tdq_codex_mcp.py` — khai MCP lumen + LSP vào `~/.codex/config.toml`:
+- [x] **T3.2** (e30m) `scripts/tdq_codex_mcp.py` — khai MCP lumen + LSP vào `~/.codex/config.toml`:
   backup trước, chỉ thêm mục chưa có, không sửa mục sẵn có, chạy hai lần ra một kết quả; gọi từ
   `tdq_setup.py` — Test: `python -m unittest discover tests -p test_codex_mcp.py` (HOME tạm, có
   file config sẵn một MCP khác phải còn nguyên)
