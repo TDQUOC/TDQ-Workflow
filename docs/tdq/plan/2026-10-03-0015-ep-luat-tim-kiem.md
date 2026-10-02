@@ -139,7 +139,7 @@ trong `hooks.json`.
   thay cho `*.py` cứng — Test: `python -m unittest discover tests -p test_smoke_ngon_ngu.py` (project
   tạm chỉ có `.ts` → đạt)
   - Chạm: `scripts/tdq_setup.py`, `tests/test_smoke_ngon_ngu.py` → `smoke_grep`
-- [>] **T4.3** (e25m) Một lệnh kiểm: `tdq_lsp.py check` chạy 8 bậc rồi smoke 4 tầng; dòng tổng chỉ
+- [x] **T4.3** (e25m) Một lệnh kiểm: `tdq_lsp.py check` chạy 8 bậc rồi smoke 4 tầng; dòng tổng chỉ
   ĐẠT khi cả hai đạt; `tdq_setup.py` dùng lại đúng hàm đó — Test:
   `python -m unittest discover tests -p test_mot_lenh_kiem.py`
   - Chạm: `scripts/tdq_lsp.py`, `scripts/tdq_setup.py`, `tests/test_mot_lenh_kiem.py` → `check`, `main`

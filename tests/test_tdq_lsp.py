@@ -284,13 +284,20 @@ class MaThoat(BaseLsp):
             tdq_lsp.Bac(5, "y", not canh_bao, chi_canh_bao=True),
         ]
 
+    # `check` chạy cả smoke 4 tầng từ 2026-10-03 (T4.3). Không vá smoke thì hai ca dưới đây hỏi
+    # thật cả bốn công cụ của máy (~12 s) và đỏ ở bất kỳ máy nào có một tầng đang tắt — tức
+    # đo máy chứ không đo mã thoát. Smoke giả "bốn tầng đều trả lời" giữ đúng điều ca này khoá.
+    SMOKE_DAT = [("grep", True, ""), ("LSP", True, ""), ("graphify", True, ""), ("lumen", True, "")]
+
     def test_thieu_bac_hanh_dong_thi_ma_3(self):
-        with mock.patch.object(tdq_lsp, "chay_kiem", return_value=self.bac_gia(True, False)):
+        with mock.patch.object(tdq_lsp, "chay_kiem", return_value=self.bac_gia(True, False)), \
+                mock.patch.object(tdq_lsp, "chay_smoke", return_value=self.SMOKE_DAT):
             self.assertEqual(tdq_lsp.cmd_kiem(Args()), tdq_lsp.EXIT_THIEU)
 
     def test_chi_canh_bao_thi_van_ma_0(self):
         """Bậc 5-6 hỏng không được đổi mã thoát: tìm kiếm vẫn chạy bằng agent-lsp rồi grep."""
-        with mock.patch.object(tdq_lsp, "chay_kiem", return_value=self.bac_gia(False, True)):
+        with mock.patch.object(tdq_lsp, "chay_kiem", return_value=self.bac_gia(False, True)), \
+                mock.patch.object(tdq_lsp, "chay_smoke", return_value=self.SMOKE_DAT):
             self.assertEqual(tdq_lsp.cmd_kiem(Args()), tdq_lsp.EXIT_OK)
 
 
