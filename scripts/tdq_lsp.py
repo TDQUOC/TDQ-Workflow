@@ -9,7 +9,8 @@ Sub-commands:
 The ladder (`kiem`):
   1. the `agent-lsp` binary is on PATH
   2. the `lsp` MCP server is registered for Claude Code
-  3. a language server exists for every language this project actually uses
+  3. a language server exists for every language this project actually uses, and really starts
+     (`agent-lsp doctor` run in the project)
   4. the `mcp__lsp__*` tools are allowed without a prompt
   5. lumen's health — the fallback layer, measured by EFFECT: a real round trip plus an index
      that actually holds the working tree's newest content (added at T1.2, deepened 2026-09-28)
@@ -49,6 +50,14 @@ OLLAMA_PORT = 11434
 # không được phép kéo dài: đo 2026-09-28 trên repo này, dựng lại tăng trưởng mất 0,2 s khi không
 # có gì đổi và 2,6 s cho một file sửa; một lần tìm mất dưới 2 s.
 TIMEOUT_LUMEN_SEARCH = 15
+# `agent-lsp doctor` starts every declared language server for real; measured 6.0 s for 14 servers
+# (setup_status.py), so 90 s is generous without letting a hung server stall the ladder.
+TIMEOUT_DOCTOR = 90
+# How much of a failed server's `Error:` line rung 3 quotes — enough to name the cause.
+DAI_LOI_DOCTOR = 100
+# `agent-lsp doctor` prints one block per server: "● <lang> (<binary>)", then "Status:"/"Error:".
+_RE_DOCTOR_DAU = re.compile(r"^\s*●\s+(?P<lang>\S+)\s+\(")
+_RE_DOCTOR_TRUONG = re.compile(r"^\s+(?P<khoa>Status|Error):\s*(?P<gia_tri>.*)$")
 # Dấu mốc `tdq_finish` để lại sau mỗi lần dựng index. Bậc 5 chỉ ĐỌC mốc này, không bao giờ ghi —
 # chủ sở hữu duy nhất của việc dựng lại là bước kết lượt.
 DAU_MOC_INDEX = os.path.join("docs", "tdq", ".tdq-lumen-index")
@@ -286,8 +295,57 @@ def do_ngon_ngu(project):
     return {lang: n for lang, n in dem.items() if n >= NGUONG_FILE}
 
 
+def doc_doctor(text):
+    """Parse `agent-lsp doctor` output into {lang: (status, error_or_empty)}; pure, never raises."""
+    ket_qua = {}
+    lang = None
+    for dong in (text or "").splitlines():
+        dau = _RE_DOCTOR_DAU.match(dong)
+        if dau:
+            lang = dau.group("lang").casefold()
+            ket_qua[lang] = ("", "")
+            continue
+        truong = _RE_DOCTOR_TRUONG.match(dong)
+        if truong and lang:
+            status, loi = ket_qua[lang]
+            gia_tri = truong.group("gia_tri").strip()
+            if truong.group("khoa") == "Status":
+                status = gia_tri.casefold()
+            elif not loi:
+                loi = gia_tri
+            ket_qua[lang] = (status, loi)
+    return {k: v for k, v in ket_qua.items() if v[0]}
+
+
+def _chay_doctor(project):
+    """Start the language servers for real via `agent-lsp doctor` in the project.
+
+    Returns (parsed, reason): `parsed` is doc_doctor's dict, or None with a reason when the
+    probe could not run or printed nothing parseable. The binary is called by its resolved
+    path, and with the same server arguments Claude Code registered, so the probe exercises
+    the exact setup the MCP server uses.
+    """
+    agent_lsp = shutil.which("agent-lsp")
+    if not agent_lsp:
+        return None, "không thấy agent-lsp trên PATH"
+    server = (_doc_json("~/.claude.json").get("mcpServers") or {}).get(MCP_SERVER_NAME) or {}
+    args = [str(a) for a in (server.get("args") or []) if isinstance(a, str)]
+    rc, out = _run([agent_lsp, "doctor"] + args, cwd=project, timeout=TIMEOUT_DOCTOR)
+    parsed = doc_doctor(out)
+    if parsed:
+        return parsed, ""
+    ly_do = (out.splitlines()[0].strip() if out else f"mã thoát {rc}, không in gì")
+    return None, ly_do[:DAI_LOI_DOCTOR]
+
+
 def bac3_language_server(project):
-    """Rung 3 — one language server per language the project actually uses."""
+    """Rung 3 — one language server per language the project uses, and it really starts.
+
+    Gate 1: the server binary is on PATH. Gate 2: `agent-lsp doctor` actually starts it; a
+    `failed` status fails the rung with the server's own error. Languages doctor does not
+    report (e.g. CSS) are judged by gate 1 alone; when doctor itself cannot run, the gate-1
+    verdict stands and the detail says the start was not tried.
+    """
     dung = do_ngon_ngu(project)
     if not dung:
         return Bac(3, "language server theo project", True, "project không có ngôn ngữ nào cần server")
@@ -296,11 +354,25 @@ def bac3_language_server(project):
         ten, binary, lenh = LANG_SERVER[lang]
         if not shutil.which(binary):
             thieu.append((ten, binary, lenh))
-    if not thieu:
+    if thieu:
+        chi_tiet = "thiếu " + ", ".join(f"{ten} ({binary})" for ten, binary, _ in thieu)
+        lenh = " ; ".join(sorted({lenh for _, _, lenh in thieu}))
+        return Bac(3, "language server theo project", False, chi_tiet, lenh)
+    du = f"đủ cho {len(dung)} ngôn ngữ: " + ", ".join(LANG_SERVER[l][0] for l in sorted(dung))
+    doctor, ly_do = _chay_doctor(project)
+    if doctor is None:
         return Bac(3, "language server theo project", True,
-                   f"đủ cho {len(dung)} ngôn ngữ: " + ", ".join(LANG_SERVER[l][0] for l in sorted(dung)))
-    chi_tiet = "thiếu " + ", ".join(f"{ten} ({binary})" for ten, binary, _ in thieu)
-    lenh = " ; ".join(sorted({lenh for _, _, lenh in thieu}))
+                   f"{du} (chưa khởi động thử được: {ly_do})")
+    hong = []
+    for lang in sorted(dung):
+        status, loi = doctor.get(lang.casefold(), ("", ""))
+        if status == "failed":
+            hong.append((lang, loi, LANG_SERVER[lang][2]))
+    if not hong:
+        return Bac(3, "language server theo project", True, f"{du}, khởi động thử ok")
+    chi_tiet = "không khởi động được: " + "; ".join(
+        f"{lang} — {' '.join(loi.split())[:DAI_LOI_DOCTOR] or 'không rõ lỗi'}" for lang, loi, _ in hong)
+    lenh = " ; ".join(sorted({lenh for _, _, lenh in hong}))
     return Bac(3, "language server theo project", False, chi_tiet, lenh)
 
 
