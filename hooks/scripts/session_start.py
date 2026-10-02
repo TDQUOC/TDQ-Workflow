@@ -79,9 +79,26 @@ def _tuoi_giay(iso):
         return float("inf")
 
 
+def la_project_that(cwd):
+    """-> True only for a real project: it has a `.git`, and it is neither the home folder nor a
+    drive/filesystem root. Opening a session in `~` or `C:\\` must not start a 25-minute index of
+    the whole disk, nor drop `docs/tdq/` and `.codex/hooks.json` there."""
+    try:
+        cwd = os.path.abspath(cwd)
+    except (TypeError, ValueError):
+        return False
+    if cwd == os.path.abspath(os.path.expanduser("~")):
+        return False
+    if os.path.dirname(cwd) == cwd:            # a drive or filesystem root
+        return False
+    return os.path.exists(os.path.join(cwd, ".git"))
+
+
 def can_khoi_tao(cwd):
     """-> True when the search layers should be (re)built now. Reads files only, never runs."""
     if os.environ.get("TDQ_KHOI_TAO_NEN", "1") == "0":
+        return False
+    if not la_project_that(cwd):
         return False
     try:
         if time.time() - os.path.getmtime(os.path.join(cwd, DAU_DA_GOI)) < CUA_SO_DA_GOI_GIAY:

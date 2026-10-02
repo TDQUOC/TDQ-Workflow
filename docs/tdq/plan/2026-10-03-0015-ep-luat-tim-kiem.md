@@ -221,6 +221,61 @@ về, và cổng không chặn trong lúc dựng.
   - Không dùng cho: săn lỗi đúng-sai — đó là T8.5
   - Cần: T8.5
 
+## QC vòng 1 — fix
+
+Nguồn: hai reviewer độc lập của T8.5 (2026-10-03), 18 phát hiện, gộp trùng còn 16 việc dưới đây.
+Thêm vào plan theo quy tắc 5, không cần duyệt lại.
+
+- [ ] **F1** (e30m) Luật thuần dời về một chỗ: `la_goi_khai_niem` và `trang_thai` chuyển từ
+  `search_observe.py` sang `scripts/search_rules.py` (thuần, không I/O), để cổng VÀ bộ phát lại
+  dùng chung — hết bản sao lệch nhau (V5). Đồng thời: nhận diện graphify bằng bộ phân tích lệnh chứ
+  không bằng chuỗi con (hết `echo graphify query x` mở khoá giả); LSP đếm theo DANH SÁCH các tool
+  HỎI (find_/go_to_/inspect_/explore/list_symbols/…) chứ không theo danh sách loại trừ; `trang_thai`
+  đếm thêm số lần bị chặn liên tiếp — Test: `python -m unittest discover tests -p test_search_rules.py`
+  - Chạm: `scripts/search_rules.py`, `hooks/scripts/search_observe.py`, `tests/test_search_rules.py`, `tests/test_search_observe.py` → luật thuần
+- [ ] **F2** (e30m) Không kẹt: (a) mốc báo cả lumen/LSP/graphify KHÔNG sẵn sàng → cổng đứng xuống,
+  bất kể đang dựng hay đã dựng xong (V2); (b) bị chặn 3 lần liên tiếp mà request chưa ghi được lần
+  gọi tầng khái niệm nào → đứng xuống (cầu dao cho máy không có tầng khái niệm, và cho tên tool
+  Codex chưa quan sát được); (c) khi đứng xuống thì NÓI ra một lần mỗi lượt, nêu đúng tầng nào chưa
+  có (V3) — Test: `python -m unittest discover tests -p test_search_gate.py`
+  - Chạm: `hooks/scripts/search_gate.py`, `tests/test_search_gate.py` → `quyet`, `main`
+  - Cần: F1
+- [ ] **F3** (e20m) Khoá sổ đúng phạm vi: request đã đóng (phase `idle`) → khoá phiên, không dùng
+  lại request cũ (R1#11); trạng thái của request đọc thêm các dòng khoá `phien:<id>` CÙNG phiên, để
+  prompt và lần gọi lumen trước lúc `init` không bị quên (R1#2) — Test:
+  `python -m unittest discover tests -p test_search_observe.py`
+  - Chạm: `hooks/scripts/search_observe.py`, `tests/test_search_observe.py` → `khoa_hien_tai`, `doc_so`
+  - Cần: F1
+- [ ] **F4** (e30m) Phân loại sát hơn: `--help`/`--version` không phải tìm (R1#3); bỏ thân heredoc
+  trước khi tách lệnh (R1#4); mở `bash -c '…'`/`pwsh -c`/`powershell -Command`/`cmd /c` ở dạng chuỗi
+  (R1#7); `find … -exec grep` là tìm (R1#8); `-f FILE` là danh sách đoán mò (R1#9); tìm chỉ trong
+  file không phải code (`.md` `.txt` `.log` `.json` `.yml` …) không phải tìm code (R1#5) — Test:
+  `python -m unittest discover tests -p test_search_rules.py -k phan_loai`
+  - Chạm: `scripts/search_rules.py`, `tests/test_search_rules.py` → `phan_loai`
+  - Cần: F1
+- [ ] **F5** (e10m) Cắm thêm công cụ `PowerShell` vào cổng (`hooks.json` + danh sách shell) (R1#6);
+  lý do `deny` gọi tool lumen theo cách trung lập host (Codex có tên khác) — Test:
+  `python -m unittest discover tests -p test_subagent_start.py`
+  - Chạm: `hooks/hooks.json`, `tests/test_subagent_start.py` → matcher
+  - Cần: F2
+- [ ] **F6** (e20m) Bộ phát lại dùng đúng luật thuần của F1 (đếm cửa sổ chỉ lần được cho; phân loại
+  mọi lệnh Bash chứ không lọc trước bằng `grep|rg|findstr`), chuỗi in ra về tiếng Anh (V1); đo lại
+  Q18 và bảng N — Test: `python -m unittest discover tests -p test_search_replay.py`
+  - Chạm: `scripts/search_replay.py`, `tests/test_search_replay.py` → `phat_lai`
+  - Cần: F1, F4
+- [ ] **F7** (e25m) `tdq_codex_mcp.py`: chuỗi in ra về tiếng Anh (V1); nhận entry cũ theo TÊN script
+  chứ không theo cả đường dẫn có số phiên bản — cập nhật đường dẫn khi plugin lên bản mới thay vì
+  thêm bản thứ hai; chịu được `hooks[event]` không phải list; gắn `search_observe` vào cả shell để
+  `graphify query` dưới Codex được ghi (V4) — Test: `python -m unittest discover tests -p test_codex_search_gate.py`
+  - Chạm: `scripts/tdq_codex_mcp.py`, `tests/test_codex_search_gate.py`, `tests/test_codex_mcp.py` → `khai_hook_codex`
+- [x] **F8** (e20m) Dựng nền chỉ ở project thật: có `.git` và không phải thư mục home/gốc ổ (R1#12);
+  khoá rỗng còn mới coi như đang bị giữ (đua lúc ghi pid, R1#13) — Test:
+  `python -m unittest discover tests -p test_tu_khoi_tao.py`
+  - Chạm: `hooks/scripts/session_start.py`, `scripts/tdq_setup.py`, `tests/test_tu_khoi_tao.py` → `can_khoi_tao`, `_khoa_cu`
+- [ ] **F9** (e10m) Hồ sơ nói đúng số điểm chặn: `edit_gate` đã chặn `TDQ:TICK`/`TDQ:TEAM` từ trước,
+  nên không còn câu "đúng hai điểm chặn" (V6) — Test: `python scripts/doc_lint.py skills` thoát 0
+  và `python scripts/token_budget.py --kiem` thoát 0
+
 ## Cụm song song
 
 Bốn cụm không giao nhau về file, chạy được song song sau P1:

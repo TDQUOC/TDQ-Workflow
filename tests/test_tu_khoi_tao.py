@@ -316,6 +316,25 @@ class LuongSetupThuong(CoSo):
         self.assertEqual(self.codex_goi, [], "--nen must not run the normal flow too")
 
 
+class KhoaRong(unittest.TestCase):
+    """Khoá rỗng còn mới = một bản dựng đang ghi pid, KHÔNG phải khoá chết (F8, R1#13)."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.duong = os.path.join(self.tmp.name, "lock")
+
+    def test_chong_khoa_rong_con_moi_khong_bi_coi_la_chet(self):
+        io.open(self.duong, "w").close()
+        self.assertFalse(tdq_setup._khoa_cu(self.duong))
+
+    def test_chong_khoa_rong_da_lau_thi_la_chet(self):
+        io.open(self.duong, "w").close()
+        cu = time.time() - tdq_setup.KHOA_RONG_GIAY - 5
+        os.utime(self.duong, (cu, cu))
+        self.assertTrue(tdq_setup._khoa_cu(self.duong))
+
+
 class LogDungNen(unittest.TestCase):
     """Log service của đường `--nen`: dựng nền chạy TÁCH RỜI, nên log là thứ duy nhất kể lại
     nó đã làm gì. Timestamp, bật mặc định, tắt bằng TDQ_LOG=0 (công tắc chung của tdq_setup)."""
@@ -346,6 +365,8 @@ class SessionStartKichHoat(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.cwd = self.tmp.name
         os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
+        # A real project has a `.git`; without it the hook refuses to build (F8, R1#12).
+        os.makedirs(os.path.join(self.cwd, ".git"), exist_ok=True)
         self.dau = os.path.join(self.cwd, "da-chay.txt")
 
     def env(self, bat=True):
@@ -417,6 +438,20 @@ class SessionStartKichHoat(unittest.TestCase):
         self.ghi_moc(dang_dung=True, het_san_sang=False, tuoi_giay=3 * 3600)
         self.goi()
         self.assertTrue(self.cho_dau())
+
+    def test_kich_hoat_thu_muc_khong_phai_project_thi_khong_bat(self):
+        """Mở phiên ở một thư mục không có `.git` (home, gốc ổ, thư mục rác) → không dựng gì."""
+        shutil.rmtree(os.path.join(self.cwd, ".git"))
+        out, _ = self.goi()
+        self.assertNotIn("[TDQ:SEARCH]", out)
+        self.assertFalse(self.cho_dau(1.5))
+        self.assertFalse(os.path.exists(os.path.join(self.cwd, ".codex")))
+
+    def test_kich_hoat_thu_muc_home_khong_bao_gio(self):
+        sys.path.insert(0, os.path.join(ROOT, "hooks", "scripts"))
+        import session_start
+        self.assertFalse(session_start.la_project_that(os.path.expanduser("~")))
+        self.assertFalse(session_start.la_project_that(os.path.abspath(os.sep)))
 
     def test_chong_hai_phien_mo_lien_nhau_chi_bat_mot_lan(self):
         self.goi()

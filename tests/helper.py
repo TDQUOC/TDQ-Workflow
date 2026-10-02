@@ -14,6 +14,14 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_state  # noqa: E402
 
 
+# Whole test PROCESS, not only `run_hook`: several tests run hook scripts through their own
+# subprocess calls (test_hook_windows, context_surface's hook timing, token_budget). On
+# 2026-10-03 those started REAL background builds — one ran in this repo and rewrote
+# `.codex/hooks.json`, and a detached child kept a temp dir locked (WinError 32). `discover`
+# imports every test module before running any test, so this line is in place before the first.
+os.environ["TDQ_KHOI_TAO_NEN"] = "0"
+
+
 def run_hook(script, payload, env=None):
     # 2026-10-03: `session_start.py` starts a REAL background build (installs, graphify, lumen
     # index) in a project whose search layers are not ready — which is every temp dir a test

@@ -406,6 +406,9 @@ KHOA_KHOI_TAO = os.path.join("docs", "tdq", ".tdq-khoi-tao.lock")
 # excalidraw; 30 minutes leaves room for installs + graphify on a slower machine, and is also the
 # age after which a lock is stale even if its pid looks alive (pids get recycled).
 TRAN_GIAY = 30 * 60
+# How long an EMPTY lock file is believed to be a builder still writing its pid. Writing a pid
+# takes microseconds; ten seconds is generous and still frees a lock a crash left empty.
+KHOA_RONG_GIAY = 10
 # Per-step caps, each further bounded by what is left of TRAN_GIAY.
 TIMEOUT_GRAPHIFY_NEN = 10 * 60
 TIMEOUT_LUMEN_NEN = 25 * 60
@@ -524,6 +527,11 @@ def _khoa_cu(duong):
         return True
     if tuoi > TRAN_GIAY:
         return True
+    if not noi_dung:
+        # The lock is created with O_EXCL and the pid is written right after: an EMPTY lock this
+        # young is a builder mid-write, not a dead one. Reading it as stale let a second builder
+        # delete a live lock (POSIX), found by review 2026-10-03.
+        return tuoi > KHOA_RONG_GIAY
     return not _pid_con_song(noi_dung)
 
 
