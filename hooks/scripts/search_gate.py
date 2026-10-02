@@ -19,6 +19,7 @@ cheap — no subprocess, and it never opens the files the agent is searching.
 
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
+import json
 import os
 import sys
 import time
@@ -30,6 +31,11 @@ import search_observe  # noqa: E402
 import search_rules  # noqa: E402
 
 MA = "TDQ:SEARCH"
+# The readiness stamp `tdq_setup.py --nen` writes, and how long a "still building" claim is
+# believed: the builder's own overall cap (`tdq_setup.TRAN_GIAY`, 1800 s — sized from an 11-minute
+# lumen index of excalidraw). Past that the build is dead, not slow.
+MOC_SAN_SANG = os.path.join("docs", "tdq", ".tdq-san-sang.json")
+HAN_DUNG_NEN_GIAY = 1800
 # Tool names of a shell across hosts: Claude Code says `Bash`; Codex has used `shell`,
 # `local_shell` and `exec_command`. The rules module accepts the same aliases.
 CONG_CU_SHELL = {"Bash", "shell", "local_shell", "exec_command"}
@@ -49,12 +55,44 @@ def _lenh(ten_tool, vao):
     return vao.get("command") or vao.get("cmd") or ""
 
 
+def dang_dung_tang_khai_niem(cwd):
+    """-> a short reason when the concept layer is still being BUILT, else None.
+
+    Reads `docs/tdq/.tdq-san-sang.json` (written by `tdq_setup.py --nen`) directly — importing
+    `tdq_setup` would drag in the whole setup module before every Bash call. Denying while lumen,
+    LSP and graphify are all still being built would leave the agent with no right way to go, so
+    the gate stands down. A stamp older than the builder's own time cap is a dead build and is
+    ignored. No stamp at all means "never built by us": lumen indexes on its first query anyway,
+    so the gate applies.
+    """
+    try:
+        with open(os.path.join(cwd or ".", MOC_SAN_SANG), "r", encoding="utf-8") as fh:
+            moc = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    if not isinstance(moc, dict) or not moc.get("dang_dung"):
+        return None
+    try:
+        tuoi = time.time() - datetime.fromisoformat(str(moc.get("cap_nhat"))).timestamp()
+    except (TypeError, ValueError):
+        return None
+    if tuoi > HAN_DUNG_NEN_GIAY:
+        return None
+    tang = moc.get("tang") or {}
+    if any((tang.get(t) or {}).get("san_sang") for t in ("lumen", "lsp", "graphify")):
+        return None
+    return "concept layer still being built (lumen/LSP/graphify) — the gate stands down until then"
+
+
 def quyet(cwd, phien, ten_tool, vao):
     """-> (allowed, reason, classification). Pure enough to test without a subprocess."""
     cong_cu = "Grep" if ten_tool == "Grep" else "Bash"
     pl = search_rules.phan_loai(cong_cu, _lenh(ten_tool, vao))
     if pl.get("loai") not in (search_rules.TIM_CODE, search_rules.LOC_FILE):
         return True, "not a search", pl
+    dang_dung = dang_dung_tang_khai_niem(cwd)
+    if dang_dung:
+        return True, dang_dung, pl
     khoa = search_observe.khoa_hien_tai(cwd, phien)
     tt = search_observe.trang_thai(search_observe.doc_so(cwd, khoa))
     tt["cua_so"] = search_rules.CUA_SO

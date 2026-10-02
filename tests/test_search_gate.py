@@ -122,6 +122,43 @@ class Codex(BaseCong):
         self.assertIn("TDQ:SEARCH", self.bi_chan(out))
 
 
+class ChuaSanSang(BaseCong):
+    """T6.3 — chặn khi tầng khái niệm còn đang dựng là bắt agent đứng chờ, không có đường đúng."""
+
+    def ghi_moc(self, dang_dung=True, tuoi_giay=0, lumen=False):
+        from datetime import datetime, timedelta
+        cap_nhat = (datetime.now() - timedelta(seconds=tuoi_giay)).strftime("%Y-%m-%dT%H:%M:%S")
+        moc = {"cap_nhat": cap_nhat, "dang_dung": dang_dung, "pid": 1,
+               "tang": {"grep": {"san_sang": True, "chi_tiet": ""},
+                        "lsp": {"san_sang": False, "chi_tiet": ""},
+                        "graphify": {"san_sang": False, "chi_tiet": ""},
+                        "lumen": {"san_sang": lumen, "chi_tiet": ""}}}
+        with io.open(os.path.join(self.cwd, "docs", "tdq", ".tdq-san-sang.json"), "w",
+                     encoding="utf-8") as fh:
+            json.dump(moc, fh)
+
+    def test_chua_san_sang_dang_dung_thi_khong_chan(self):
+        self.ghi_moc(dang_dung=True)
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        self.assertEqual(out, "")
+
+    def test_chua_san_sang_dung_xong_thi_chan_lai(self):
+        self.ghi_moc(dang_dung=False)
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+
+    def test_chua_san_sang_moc_qua_cu_la_dung_chet(self):
+        self.ghi_moc(dang_dung=True, tuoi_giay=3 * 3600)
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        self.assertIn("TDQ:SEARCH", self.bi_chan(out), "mốc 'đang dựng' quá trần là bản dựng đã chết")
+
+    def test_chua_san_sang_mot_tang_da_xong_thi_chan(self):
+        """Đang dựng nhưng lumen đã trả lời được → có đường đúng để đi → cổng áp luật."""
+        self.ghi_moc(dang_dung=True, lumen=True)
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+
+
 class Nhe(unittest.TestCase):
     def _nguon(self):
         nguon = io.open(os.path.join(ROOT, "hooks", "scripts", "search_gate.py"),
@@ -138,8 +175,11 @@ class Nhe(unittest.TestCase):
             self.assertNotIn(xau, nguon)
 
     def test_nhe_khong_mo_file_code_cua_project(self):
-        """Cổng chỉ đọc state + sổ (qua search_observe); nó không tự mở file nào."""
-        self.assertNotIn("open(", self._nguon())
+        """Cổng chỉ tự mở ĐÚNG MỘT file: mốc sẵn sàng (T6.3). State và sổ đi qua search_observe;
+        file code mà agent đang tìm thì không bao giờ được mở ở đây."""
+        lan_mo = [d for d in self._nguon().splitlines() if "open(" in d]
+        self.assertEqual(len(lan_mo), 1, lan_mo)
+        self.assertIn("MOC_SAN_SANG", lan_mo[0])
 
 
 class KhongLamVo(BaseCong):

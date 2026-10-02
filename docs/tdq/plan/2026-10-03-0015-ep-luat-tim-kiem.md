@@ -173,7 +173,7 @@ trong `hooks.json`.
   về dưới ngân sách thời gian; hai lần gọi liền nhau → một tiến trình
   - Chạm: `hooks/scripts/session_start.py`, `tests/test_tu_khoi_tao.py` → `main`
   - Cần: T6.1
-- [ ] **T6.3** (e10m) `search_gate.py` đọc `.tdq-san-sang.json`: tầng khái niệm chưa sẵn sàng → cho
+- [x] **T6.3** (e10m) `search_gate.py` đọc `.tdq-san-sang.json`: tầng khái niệm chưa sẵn sàng → cho
   qua kèm câu nói tầng đang dựng (Q6) — Test: `-p test_search_gate.py` ca "chưa sẵn sàng"
   - Chạm: `hooks/scripts/search_gate.py`, `tests/test_search_gate.py` → `main`
   - Cần: T6.1, T2.3
