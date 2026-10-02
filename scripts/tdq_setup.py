@@ -41,6 +41,7 @@ from datetime import datetime
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
+import search_rules  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
 import utf8_io  # noqa: E402
@@ -400,7 +401,7 @@ def no_skill_khong_ton_tai(project):
 #   lock   docs/tdq/.tdq-khoi-tao.lock  the builder's pid as text
 # --------------------------------------------------------------------------------------------
 
-MOC_SAN_SANG = os.path.join("docs", "tdq", ".tdq-san-sang.json")
+MOC_SAN_SANG = search_rules.MOC_SAN_SANG
 KHOA_KHOI_TAO = os.path.join("docs", "tdq", ".tdq-khoi-tao.lock")
 # Overall cap of one background build. The measured worst case is the 11-minute lumen index of
 # excalidraw; 30 minutes leaves room for installs + graphify on a slower machine, and is also the

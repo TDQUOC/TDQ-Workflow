@@ -34,15 +34,11 @@ MA = "TDQ:SEARCH"
 # The readiness stamp `tdq_setup.py --nen` writes, and how long a "still building" claim is
 # believed: the builder's own overall cap (`tdq_setup.TRAN_GIAY`, 1800 s — sized from an 11-minute
 # lumen index of excalidraw). Past that the build is dead, not slow.
-MOC_SAN_SANG = os.path.join("docs", "tdq", ".tdq-san-sang.json")
 HAN_DUNG_NEN_GIAY = 1800
 TANG_KHAI_NIEM = ("lumen", "lsp", "graphify")
 # Denials in one scope, with no concept query ever recorded, after which a machine with NO
 # readiness stamp is treated as having no concept layer (see `ly_do_dung_xuong`).
 BREAKER_CHAN = 3
-# Tool names of a shell across hosts: Claude Code says `Bash`; Codex has used `shell`,
-# `local_shell` and `exec_command`. The rules module accepts the same aliases.
-CONG_CU_SHELL = {"Bash", "PowerShell", "shell", "local_shell", "exec_command"}
 
 
 def _log(message):
@@ -66,7 +62,7 @@ def _doc_moc(cwd):
     """-> the readiness stamp `tdq_setup.py --nen` writes, or None. Read directly: importing
     `tdq_setup` would drag the whole setup module in before every Bash call."""
     try:
-        with open(os.path.join(cwd or ".", MOC_SAN_SANG), "r", encoding="utf-8") as fh:
+        with open(os.path.join(cwd or ".", search_rules.MOC_SAN_SANG), "r", encoding="utf-8") as fh:
             moc = json.load(fh)
     except (OSError, ValueError):
         return None
@@ -127,7 +123,7 @@ def main():
     try:
         payload = _common.read_payload()
         ten_tool = payload.get("tool_name") or ""
-        if ten_tool != "Grep" and ten_tool not in CONG_CU_SHELL:
+        if ten_tool != "Grep" and ten_tool.lower() not in search_rules.CONG_CU_SHELL:
             sys.exit(0)
         cwd = _common.payload_cwd(payload)
         vao = payload.get("tool_input") or {}

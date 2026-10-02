@@ -30,6 +30,7 @@ from _common import (already_reminded, payload_cwd, read_payload, session_id,
 from luat_gon import doc_than_luat, loc_than_luat  # noqa: E402
 from tdq_state import (default_state, lenh_cho_project, load,  # noqa: E402
                        muc_gat_hieu_luc, render_next)
+import search_rules  # noqa: E402
 from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
@@ -57,7 +58,6 @@ GOC_LUAT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # expensive part cannot run here: a lumen index of excalidraw took 11m5s (843 files). So this
 # hook only PROBES the readiness stamp and, when needed, starts `tdq_setup.py --nen` DETACHED
 # and returns at once; the search gate stands down while that build runs.
-MOC_SAN_SANG = os.path.join("docs", "tdq", ".tdq-san-sang.json")
 # Written by THIS hook when it starts a build. Two sessions opened back to back would otherwise
 # both start one before the first build has taken its pid lock. The builder's lock is still the
 # real guard; this only closes the start-up window.
@@ -106,7 +106,7 @@ def can_khoi_tao(cwd):
     except OSError:
         pass
     try:
-        with open(os.path.join(cwd, MOC_SAN_SANG), "r", encoding="utf-8") as fh:
+        with open(os.path.join(cwd, search_rules.MOC_SAN_SANG), "r", encoding="utf-8") as fh:
             moc = json.load(fh)
     except (OSError, ValueError):
         return True                       # never built by us

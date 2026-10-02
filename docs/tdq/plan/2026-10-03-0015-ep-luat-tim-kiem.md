@@ -197,9 +197,9 @@ về, và cổng không chặn trong lúc dựng.
 - [x] **T8.1** (e15m) Log service của mọi file mã mới: timestamp, đủ chi tiết debug, tắt bằng
   `TDQ_LOG=0` — Test: `-k log` xanh trên `test_search_rules.py`, `test_search_observe.py`,
   `test_search_gate.py`, `test_search_replay.py`, `test_codex_mcp.py`, `test_tu_khoi_tao.py`
-- [ ] **T8.2** (e10m) Trọn bộ test một lệnh — Test: `python -m unittest discover tests` xanh
+- [x] **T8.2** (e10m) Trọn bộ test một lệnh — Test: `python -m unittest discover tests` xanh
   - Cần: T8.1
-- [ ] **T8.3** (e15m) Phép đo cuối Q18: phát lại fixture với N đã chốt, dán bảng và ba số đếm vào
+- [x] **T8.3** (e15m) Phép đo cuối Q18: phát lại fixture với N đã chốt, dán bảng và ba số đếm vào
   file QC — Test: lượt 7, 9 bị bắt; 0 bắt oan
   - Cần: T8.2
 - [ ] **T8.4** (e20m) Chạy trọn bộ test trên macOS thật (pyenv + brew, thư mục tạm, dọn sạch);
@@ -213,7 +213,7 @@ về, và cổng không chặn trong lúc dựng.
   - Kiểm: mục QC của file đó có một dòng cho mỗi phát hiện
   - Không dùng cho: rút gọn code — đó là T8.6
   - Cần: T8.4
-- [ ] **T8.6** (e10m) Rút gọn phần trùng lặp — Test: trọn bộ test vẫn xanh
+- [x] **T8.6** (e10m) Rút gọn phần trùng lặp — Test: trọn bộ test vẫn xanh
   - Dùng: `simplify`
   - Để: gỡ trùng lặp trong mã mới, không đổi hành vi
   - Ra: mã đã rút gọn
