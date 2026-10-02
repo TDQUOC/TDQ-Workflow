@@ -174,5 +174,23 @@ class TestKhaiMcpCodex(unittest.TestCase):
         self.assertEqual(ten_add, ["lsp"])
 
 
+class LogService(unittest.TestCase):
+    """Log service của tdq_codex_mcp: timestamp ISO ra stderr, bật mặc định, tắt bằng TDQ_LOG=0."""
+
+    def _bat(self, gia_tri):
+        import contextlib
+        import io as _io
+        buf = _io.StringIO()
+        with mock.patch.dict(os.environ, {"TDQ_LOG": gia_tri}), contextlib.redirect_stderr(buf):
+            tdq_codex_mcp._log("thu log")
+        return buf.getvalue()
+
+    def test_log_bat_mac_dinh_co_timestamp(self):
+        self.assertRegex(self._bat("1"), r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_codex_mcp")
+
+    def test_log_tat_duoc_bang_bien_moi_truong(self):
+        self.assertEqual(self._bat("0"), "")
+
+
 if __name__ == "__main__":
     unittest.main()

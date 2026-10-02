@@ -4,6 +4,7 @@ Hàm thuần: phân loại một lệnh Bash / mẫu Grep, rồi quyết `allow`
 Chạy riêng từng nhóm bằng `-k`: `loc_file`, `doan_mo`, `ghep`, `codex`, `mo_dau`,
 `ten_trong_prompt`, `mo_khoa`, `cua_so`, `het_han`, `fixture`.
 """
+import io
 import json
 import os
 import re
@@ -293,6 +294,21 @@ class TestThuan(unittest.TestCase):
         self.assertIsNone(re.search(r"^\s*(from|import)\s+hooks", src, re.M))
         self.assertIsNone(re.search(r"^\s*import\s+(os|subprocess|io|socket)\b", src, re.M))
         self.assertNotIn("open(", src)
+
+
+class LogQuaNguoiGoi(unittest.TestCase):
+    """Ngoại lệ CÓ CHỦ ĐÍCH của luật log service: `search_rules` là module thuần, không I/O — nó
+    chạy trước MỌI lệnh Bash. Log của nó đi qua người gọi: `search_gate.py` ghi loại + quyết định
+    + lý do mỗi lần, `search_replay.py` in cả bảng. Ca này khoá cho nó luôn thuần, để không ai
+    thêm `print` vào rồi tưởng thế là có log."""
+
+    def test_log_module_thuan_khong_tu_in(self):
+        import ast
+        nguon = io.open(os.path.join(ROOT, "scripts", "search_rules.py"), encoding="utf-8").read()
+        goi = {n.func.id for n in ast.walk(ast.parse(nguon))
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+        self.assertNotIn("print", goi)
+        self.assertNotIn("open", goi)
 
 
 if __name__ == "__main__":

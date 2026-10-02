@@ -316,6 +316,24 @@ class LuongSetupThuong(CoSo):
         self.assertEqual(self.codex_goi, [], "--nen must not run the normal flow too")
 
 
+class LogDungNen(unittest.TestCase):
+    """Log service của đường `--nen`: dựng nền chạy TÁCH RỜI, nên log là thứ duy nhất kể lại
+    nó đã làm gì. Timestamp, bật mặc định, tắt bằng TDQ_LOG=0 (công tắc chung của tdq_setup)."""
+
+    def _bat(self, gia_tri):
+        import contextlib
+        buf = io.StringIO()
+        with mock.patch.dict(os.environ, {"TDQ_LOG": gia_tri}), contextlib.redirect_stderr(buf):
+            tdq_setup._log("nền: thử log")
+        return buf.getvalue()
+
+    def test_log_bat_mac_dinh_co_timestamp(self):
+        self.assertRegex(self._bat("1"), r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] nền")
+
+    def test_log_tat_duoc_bang_bien_moi_truong(self):
+        self.assertEqual(self._bat("0"), "")
+
+
 class SessionStartKichHoat(unittest.TestCase):
     """T6.2 — `SessionStart` chỉ DÒ mốc rồi bật dựng nền tách rời; nó không bao giờ tự chờ.
 

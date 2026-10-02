@@ -194,7 +194,7 @@ về, và cổng không chặn trong lúc dựng.
 
 ## P8 — Log, test, đo, ba hệ
 
-- [ ] **T8.1** (e15m) Log service của mọi file mã mới: timestamp, đủ chi tiết debug, tắt bằng
+- [x] **T8.1** (e15m) Log service của mọi file mã mới: timestamp, đủ chi tiết debug, tắt bằng
   `TDQ_LOG=0` — Test: `-k log` xanh trên `test_search_rules.py`, `test_search_observe.py`,
   `test_search_gate.py`, `test_search_replay.py`, `test_codex_mcp.py`, `test_tu_khoi_tao.py`
 - [ ] **T8.2** (e10m) Trọn bộ test một lệnh — Test: `python -m unittest discover tests` xanh
