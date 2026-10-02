@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-0015-ep-luat-tim-kiem",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-0015-ep-luat-tim-kiem.md",
-  "plan_sha": "5615da1431d274473284a06b19b8c6c8165dd36ce602a029a0b6ec29b13f8710",
+  "plan_sha": "54d2aca563437645eb6480b77be50cca571378017d12906c2c494d192aabe534",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "tu_lam",
@@ -123,7 +123,7 @@
         "scripts/tdq_setup.py",
         "tests/test_mot_lenh_kiem.py"
       ],
-      "dot": 2
+      "dot": 3
     },
     "T5.1": {
       "quyet_dinh": "tu_lam",
@@ -146,7 +146,7 @@
         "scripts/tdq_setup.py",
         "tests/test_tu_khoi_tao.py"
       ],
-      "dot": 3
+      "dot": 4
     },
     "T6.2": {
       "quyet_dinh": "tu_lam",
@@ -155,7 +155,7 @@
         "hooks/scripts/session_start.py",
         "tests/test_tu_khoi_tao.py"
       ],
-      "dot": 4
+      "dot": 5
     },
     "T6.3": {
       "quyet_dinh": "tu_lam",
@@ -218,6 +218,88 @@
       "ly_do": "vung-khoa",
       "vung_file": [],
       "dot": 5
+    },
+    "F1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/search_rules.py",
+        "hooks/scripts/search_observe.py",
+        "tests/test_search_rules.py",
+        "tests/test_search_observe.py"
+      ],
+      "dot": 2
+    },
+    "F2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_gate.py",
+        "tests/test_search_gate.py"
+      ],
+      "dot": 1
+    },
+    "F3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_observe.py",
+        "tests/test_search_observe.py"
+      ],
+      "dot": 3
+    },
+    "F4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/search_rules.py",
+        "tests/test_search_rules.py"
+      ],
+      "dot": 1
+    },
+    "F5": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/hooks.json",
+        "tests/test_subagent_start.py"
+      ],
+      "dot": 1
+    },
+    "F6": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/search_replay.py",
+        "tests/test_search_replay.py"
+      ],
+      "dot": 1
+    },
+    "F7": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_codex_mcp.py",
+        "tests/test_codex_search_gate.py",
+        "tests/test_codex_mcp.py"
+      ],
+      "dot": 1
+    },
+    "F8": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/session_start.py",
+        "scripts/tdq_setup.py",
+        "tests/test_tu_khoi_tao.py"
+      ],
+      "dot": 2
+    },
+    "F9": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
     }
   }
 }

@@ -205,7 +205,7 @@ về, và cổng không chặn trong lúc dựng.
 - [ ] **T8.4** (e20m) Chạy trọn bộ test trên macOS thật (pyenv + brew, thư mục tạm, dọn sạch);
   Linux nếu máy đã bật — Test: không fail, không error, không cài gì lên máy
   - Cần: T8.2
-- [ ] **T8.5** (e15m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
+- [x] **T8.5** (e15m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
   lý do bác bỏ vào file QC
   - Dùng: `code-review`
   - Để: tìm lỗi đúng-sai trong cổng, sổ, adapter Codex và dựng nền, trước phase qc
@@ -303,26 +303,26 @@ T3.1 chạm `search_gate.py` của cụm cổng — nên cụm codex phải đi 
 
 Trỏ về §6 của spec. Lệnh dạng `discover` vì `tests/` cố ý không là package.
 
-- [ ] Q1 Chặn đoán mò trước tầng khái niệm — `python -m unittest discover tests -p test_search_rules.py -k doan_mo`
-- [ ] Q2 Không chặn tên chính xác trong cửa sổ — `… -p test_search_rules.py -k cua_so`
-- [ ] Q3 Không chặn lọc danh sách file — `… -p test_search_rules.py -k loc_file`
-- [ ] Q4 Mở khoá sau tầng khái niệm — `… -p test_search_rules.py -k mo_khoa`
-- [ ] Q5 Sổ sống qua lượt — `… -p test_search_observe.py -k qua_luot`
-- [ ] Q6 Không gây kẹt — `… -p test_search_gate.py -k chua_san_sang`
-- [ ] Q7 Cổng rẻ — `… -p test_search_gate.py -k nhe`
-- [ ] Q8 Cổng không làm vỡ lệnh — `… -p test_search_gate.py -k hong`
+- [x] Q1 Chặn đoán mò trước tầng khái niệm — `python -m unittest discover tests -p test_search_rules.py -k doan_mo`
+- [x] Q2 Không chặn tên chính xác trong cửa sổ — `… -p test_search_rules.py -k cua_so`
+- [x] Q3 Không chặn lọc danh sách file — `… -p test_search_rules.py -k loc_file`
+- [x] Q4 Mở khoá sau tầng khái niệm — `… -p test_search_rules.py -k mo_khoa`
+- [x] Q5 Sổ sống qua lượt — `… -p test_search_observe.py -k qua_luot`
+- [x] Q6 Không gây kẹt — `… -p test_search_gate.py -k chua_san_sang`
+- [x] Q7 Cổng rẻ — `… -p test_search_gate.py -k nhe`
+- [x] Q8 Cổng không làm vỡ lệnh — `… -p test_search_gate.py -k hong`
 - [ ] Q9 Codex bị chặn thật — output thật của T3.3 trong file QC
-- [ ] Q10 Codex có công cụ — `codex mcp list` + `… -p test_codex_mcp.py`
-- [ ] Q11 Bậc 3 thật — `… -p test_bac3_khoi_dong.py`
-- [ ] Q12 Smoke grep đa ngôn ngữ — `… -p test_smoke_ngon_ngu.py`
-- [ ] Q13 Một lệnh kiểm — `… -p test_mot_lenh_kiem.py`
-- [ ] Q14 Đường dẫn tuyệt đối — `… -p test_duong_dan_tuyet_doi.py`
-- [ ] Q15 Tự khởi tạo — `… -p test_tu_khoi_tao.py -k kich_hoat`
-- [ ] Q16 Không chạy chồng — `… -p test_tu_khoi_tao.py -k chong`
-- [ ] Q17 Quyết định kiến trúc — `grep -n "2026-10-03" docs/kien-truc.md` + `… -p test_common.py`
-- [ ] Q18 Phát lại phiên thật — `python scripts/search_replay.py tests/fixtures/phien_excalidraw_tim.json`
+- [x] Q10 Codex có công cụ — `codex mcp list` + `… -p test_codex_mcp.py`
+- [x] Q11 Bậc 3 thật — `… -p test_bac3_khoi_dong.py`
+- [x] Q12 Smoke grep đa ngôn ngữ — `… -p test_smoke_ngon_ngu.py`
+- [x] Q13 Một lệnh kiểm — `… -p test_mot_lenh_kiem.py`
+- [x] Q14 Đường dẫn tuyệt đối — `… -p test_duong_dan_tuyet_doi.py`
+- [x] Q15 Tự khởi tạo — `… -p test_tu_khoi_tao.py -k kich_hoat`
+- [x] Q16 Không chạy chồng — `… -p test_tu_khoi_tao.py -k chong`
+- [x] Q17 Quyết định kiến trúc — `grep -n "2026-10-03" docs/kien-truc.md` + `… -p test_common.py`
+- [x] Q18 Phát lại phiên thật — `python scripts/search_replay.py tests/fixtures/phien_excalidraw_tim.json`
 - [ ] Q19 Ba hệ — trọn bộ test trên Windows và macOS thật; Linux khi máy bật
-- [ ] Q20 Ràng buộc kiến trúc — `grep -rn "^import hooks\|from hooks" scripts` → 0 dòng
-- [ ] Q21 Luật mở đầu — `… -p test_search_rules.py -k mo_dau`
-- [ ] Q22 Ngoại lệ tên đã biết — `… -p test_search_rules.py -k ten_trong_prompt`
-- [ ] Q23 Cửa sổ hết hạn — `… -p test_search_rules.py -k het_han`
+- [x] Q20 Ràng buộc kiến trúc — `grep -rn "^import hooks\|from hooks" scripts` → 0 dòng
+- [x] Q21 Luật mở đầu — `… -p test_search_rules.py -k mo_dau`
+- [x] Q22 Ngoại lệ tên đã biết — `… -p test_search_rules.py -k ten_trong_prompt`
+- [x] Q23 Cửa sổ hết hạn — `… -p test_search_rules.py -k het_han`
