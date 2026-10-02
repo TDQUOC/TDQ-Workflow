@@ -43,7 +43,7 @@ Trạng thái plan: CHỜ DUYỆT · 26 task · ETA 575 phút
   Codex có dừng lệnh và đọc lý do không (chạy `codex exec` có cờ bỏ qua trust cho đúng một lần);
   (c) khai MCP trong `config.toml` thì `codex mcp list` có thấy không — Test: brief có mục
   `### Trinh sát Codex` với 3 phán quyết, mỗi phán quyết kèm lệnh và output thật
-- [>] **T1.2** (e15m) Trích các lần tìm của phiên excalidraw thành fixture nhỏ: theo thứ tự, mỗi
+- [x] **T1.2** (e15m) Trích các lần tìm của phiên excalidraw thành fixture nhỏ: theo thứ tự, mỗi
   dòng là (loại sự kiện, công cụ, lệnh/mẫu, token định danh của prompt nếu là prompt). Không chép
   code hay output — Test: `python -c "import json;d=json.load(open('tests/fixtures/phien_excalidraw_tim.json',encoding='utf-8'));e={x['luot']:x for x in d['su_kien']};assert 'fileHandle' in e[7]['lenh'] and '^export' in e[9]['lenh'] and 'beforeunload' in e[10]['lenh'] and e[40]['cong_cu'].endswith('semantic_search')"` (lượt 7 `fileHandle`, lượt 9 `^export`, lượt 10 mẫu 4
   nhánh, lần lumen ở lượt 40)
