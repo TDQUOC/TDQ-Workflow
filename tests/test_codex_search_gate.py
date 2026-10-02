@@ -70,7 +70,7 @@ class GhiHook(unittest.TestCase):
         mot = io.open(self.duong, encoding="utf-8").read()
         dong = tdq_codex_mcp.khai_hook_codex(self.tmp.name)
         self.assertEqual(io.open(self.duong, encoding="utf-8").read(), mot)
-        self.assertTrue(any("giữ nguyên" in d for d in dong))
+        self.assertTrue(any("left unchanged" in d for d in dong))
         bak = [f for f in os.listdir(os.path.dirname(self.duong)) if f.endswith(".bak")]
         self.assertEqual(bak, [], "lần đầu không có file cũ thì không có gì để sao lưu")
 
@@ -80,7 +80,77 @@ class GhiHook(unittest.TestCase):
             fh.write("{khong phai json")
         dong = tdq_codex_mcp.khai_hook_codex(self.tmp.name)
         self.assertEqual(io.open(self.duong, encoding="utf-8").read(), "{khong phai json")
-        self.assertIn("để nguyên", dong[0])
+        self.assertIn("left untouched", dong[0])
+
+    def _ghi(self, cfg):
+        os.makedirs(os.path.dirname(self.duong), exist_ok=True)
+        with io.open(self.duong, "w", encoding="utf-8") as fh:
+            json.dump(cfg, fh)
+
+    def _bak(self):
+        return [f for f in os.listdir(os.path.dirname(self.duong)) if f.endswith(".bak")]
+
+    def test_ghi_hook_cap_nhat_plugin_thi_sua_duong_cu_khong_nhan_doi(self):
+        """Đường cache plugin mang số phiên bản: sau một lần cập nhật plugin, entry cũ trỏ vào
+        file đã xoá phải được sửa tại chỗ — không thêm bộ thứ hai, không đụng entry của người khác."""
+        cu = "C:/Users/x/.claude/plugins/cache/tdq/tdq-workflow/0.54.0/hooks/scripts"
+        la = {"type": "command", "command": "python3 \"hooks/scripts/codex_edit_gate.py\""}
+        self._ghi({"hooks": {
+            "PreToolUse": [
+                {"matcher": "apply_patch", "hooks": [dict(la)]},
+                {"matcher": "Bash", "hooks": [
+                    {"type": "command", "command": f'python3 "{cu}/search_gate.py"'}]},
+                {"matcher": tdq_codex_mcp.MATCHER_KHAI_NIEM, "hooks": [
+                    {"type": "command", "command": f'python3 "{cu}/search_observe.py"'}]}],
+            "PostToolUse": [{"matcher": tdq_codex_mcp.MATCHER_KHAI_NIEM, "hooks": [
+                {"type": "command", "command": f'python3 "{cu}/search_observe.py"'}]}],
+            "UserPromptSubmit": [{"hooks": [
+                {"type": "command", "command": f'python3 "{cu}/search_observe.py"'}]}]}})
+        dong = tdq_codex_mcp.khai_hook_codex(self.tmp.name)
+        cfg = self.doc()
+        tat_ca = [c for ev in cfg["hooks"] for c in self.lenh(cfg, ev)]
+        self.assertFalse([c for c in tat_ca if "0.54.0" in c], "đường cũ phải được sửa hết")
+        for ev, ten in (("PreToolUse", "search_gate.py"), ("PreToolUse", "search_observe.py"),
+                        ("PostToolUse", "search_observe.py"),
+                        ("UserPromptSubmit", "search_observe.py")):
+            moi = tdq_codex_mcp._lenh_hook(ten)
+            self.assertIn(moi, self.lenh(cfg, ev), (ev, ten))
+        # không nhân đôi: mỗi (event, matcher, script) đúng một lệnh
+        for ev, muc_list in cfg["hooks"].items():
+            khoa = [(m.get("matcher"), h["command"]) for m in muc_list for h in m["hooks"]]
+            self.assertEqual(len(khoa), len(set(khoa)), ev)
+        self.assertEqual(cfg["hooks"]["PreToolUse"][0], {"matcher": "apply_patch", "hooks": [la]})
+        self.assertTrue(any("updated" in d for d in dong), dong)
+        self.assertEqual(len(self._bak()), 1)
+
+        truoc = io.open(self.duong, encoding="utf-8").read()
+        dong2 = tdq_codex_mcp.khai_hook_codex(self.tmp.name)
+        self.assertEqual(io.open(self.duong, encoding="utf-8").read(), truoc)
+        self.assertEqual(len(self._bak()), 1, "chạy lại không được sao lưu thêm")
+        self.assertTrue(any("left unchanged" in d for d in dong2))
+
+    def test_ghi_hook_event_khong_phai_list_thi_de_nguyen(self):
+        self._ghi({"hooks": {"PreToolUse": "not-a-list"}})
+        truoc = io.open(self.duong, encoding="utf-8").read()
+        dong = tdq_codex_mcp.khai_hook_codex(self.tmp.name)
+        self.assertEqual(io.open(self.duong, encoding="utf-8").read(), truoc)
+        self.assertIn("left untouched", dong[0])
+        self.assertEqual(self._bak(), [])
+
+    def test_ghi_hook_entry_thieu_hooks_thi_de_nguyen(self):
+        self._ghi({"hooks": {"PostToolUse": [{"matcher": "x"}]}})
+        truoc = io.open(self.duong, encoding="utf-8").read()
+        dong = tdq_codex_mcp.khai_hook_codex(self.tmp.name)
+        self.assertEqual(io.open(self.duong, encoding="utf-8").read(), truoc)
+        self.assertIn("left untouched", dong[0])
+
+    def test_ghi_hook_matcher_bash_co_ca_cong_va_ghi_nhan(self):
+        """V4: `graphify query` chạy qua Bash phải được ghi nhận dưới Codex."""
+        tdq_codex_mcp.khai_hook_codex(self.tmp.name)
+        bash = [h["command"] for m in self.doc()["hooks"]["PreToolUse"]
+                if m.get("matcher") == "Bash" for h in m["hooks"]]
+        self.assertTrue(any(c.endswith('search_gate.py"') for c in bash), bash)
+        self.assertTrue(any(c.endswith('search_observe.py"') for c in bash), bash)
 
 
 class TenTool(unittest.TestCase):
