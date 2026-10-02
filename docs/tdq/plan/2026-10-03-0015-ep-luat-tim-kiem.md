@@ -38,7 +38,7 @@ Trạng thái plan: CHỜ DUYỆT · 26 task · ETA 575 phút
 
 ## P1 — Trinh sát và thước đo
 
-- [~] **T1.1** (e25m) Trinh sát Codex bằng chạy thật `codex-cli 0.155.1`: (a) `plugin.json` của
+- [x] **T1.1** (e25m) Trinh sát Codex bằng chạy thật `codex-cli 0.155.1`: (a) `plugin.json` của
   Codex có nhận khoá `hooks` không; (b) một hook `PreToolUse` trên shell trả `deny` kèm lý do thì
   Codex có dừng lệnh và đọc lý do không (chạy `codex exec` có cờ bỏ qua trust cho đúng một lần);
   (c) khai MCP trong `config.toml` thì `codex mcp list` có thấy không — Test: brief có mục
@@ -130,7 +130,7 @@ trong `hooks.json`.
 
 ## P4 — Kiểm thật thay cho "có cài"
 
-- [>] **T4.1** (e30m) Bậc 3 khởi động thật: chạy `agent-lsp doctor` (có trần thời gian), đọc
+- [x] **T4.1** (e30m) Bậc 3 khởi động thật: chạy `agent-lsp doctor` (có trần thời gian), đọc
   `Status` của từng language server ứng với ngôn ngữ CỦA PROJECT; server nào `failed` → bậc 3 không
   đạt, kèm dòng `Error:` của nó — Test: `python -m unittest discover tests -p test_bac3_khoi_dong.py`
   (output doctor giả: 2 ok 2 failed → không đạt; 4 ok → đạt)

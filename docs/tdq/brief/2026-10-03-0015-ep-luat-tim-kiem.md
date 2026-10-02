@@ -81,6 +81,26 @@ thể là tên đã biết, vừa có thể là tên đoán. Cái đo được b
 request, agent đã hỏi lumen/LSP/graphify lần nào TRƯỚC khi grep chưa. Vì vậy cổng nên kết hợp hai
 tín hiệu: hình dạng mẫu (đoán mò) và trạng thái request (đã hỏi tầng khái niệm chưa).
 
+### Trinh sát Codex (T1.1, chạy thật `codex-cli 0.155.1`, 2026-10-03)
+
+| Câu hỏi | Phán quyết | Bằng chứng |
+|---|---|---|
+| (a) Plugin Codex khai `hooks` được không | **KHÔNG** | `codex features list` → `plugin_hooks  removed  false`; feature `hooks` thì `stable true`. Hook phải nằm ở `.codex/hooks.json` cấp project (hoặc user), không đi theo plugin |
+| (b) `deny` có dừng lệnh và Codex có đọc lý do không | **CHƯA ĐO ĐƯỢC trên máy này** | `codex exec --dangerously-bypass-hook-trust` trong thư mục tạm có hook `PreToolUse` deny-grep → `401 Unauthorized … Missing bearer or basic authentication`: Codex chưa đăng nhập trên Windows (`~/.codex/` không có `auth.json`, không có `model_provider`). Hook không được gọi lần nào vì model chết trước lần gọi tool đầu. Mac (nơi đã đo mode codex 2026-09-10) đang mất kết nối (ssh timeout); Linux tắt |
+| (c) Khai MCP rồi `codex mcp list` có thấy không | **CÓ** | trong `CODEX_HOME` tạm: `codex mcp add lumen -- <bin>/lumen stdio` và `codex mcp add lsp -- agent-lsp` → `codex mcp list` in cả hai, `enabled`; `config.toml` sinh ra đúng 2 bảng `[mcp_servers.*]` |
+
+Hệ quả cho P3:
+
+- T3.1 dùng `.codex/hooks.json` cấp project do `tdq-setup` ghi (đường lùi đã khai sẵn trong spec §5).
+  Bỏ ý định khai trong `.codex-plugin/plugin.json`.
+- T3.2 gọi CLI chính thức `codex mcp add` thay cho tự viết TOML — Codex tự lo cú pháp, ta chỉ lo
+  backup và không ghi đè tên đã có. Lệnh thật: lumen là `<plugin lumen>/bin/lumen stdio` (đúng
+  `args` mà plugin lumen khai cho Claude Code); `lsp` lấy NGUYÊN `command` + `args` của mục `lsp`
+  trong `~/.claude.json`, để Codex khởi động đúng các language server Claude Code đang dùng.
+- Q9 (Codex bị chặn trong một lượt thật) **bị chặn ngoài tầm**: cần user đăng nhập Codex trên
+  Windows (`codex login`), hoặc Mac kết nối lại. Phần kiểm bằng unit test (khuôn `deny` mà Codex
+  đọc, cùng khuôn `codex_edit_gate.py` đang dùng từ 2026-09-10) vẫn làm đủ.
+
 ## Hỏi đáp
 
 **Năm câu chốt ở cuối phase analyze, cộng một yêu cầu bổ sung** (nguyên văn user: `1a 2a 3a 4a 5a
