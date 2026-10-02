@@ -135,7 +135,7 @@ trong `hooks.json`.
   đạt, kèm dòng `Error:` của nó — Test: `python -m unittest discover tests -p test_bac3_khoi_dong.py`
   (output doctor giả: 2 ok 2 failed → không đạt; 4 ok → đạt)
   - Chạm: `scripts/tdq_lsp.py`, `tests/test_bac3_khoi_dong.py` → `bac3_*`
-- [>] **T4.2** (e20m) Smoke grep theo ngôn ngữ thật: lấy đuôi file từ phép dò ngôn ngữ của bậc 7
+- [x] **T4.2** (e20m) Smoke grep theo ngôn ngữ thật: lấy đuôi file từ phép dò ngôn ngữ của bậc 7
   thay cho `*.py` cứng — Test: `python -m unittest discover tests -p test_smoke_ngon_ngu.py` (project
   tạm chỉ có `.ts` → đạt)
   - Chạm: `scripts/tdq_setup.py`, `tests/test_smoke_ngon_ngu.py` → `smoke_grep`
