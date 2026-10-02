@@ -48,7 +48,7 @@ Trạng thái plan: CHỜ DUYỆT · 26 task · ETA 575 phút
   code hay output — Test: `python -c "import json;d=json.load(open('tests/fixtures/phien_excalidraw_tim.json',encoding='utf-8'));e={x['luot']:x for x in d['su_kien']};assert 'fileHandle' in e[7]['lenh'] and '^export' in e[9]['lenh'] and 'beforeunload' in e[10]['lenh'] and e[40]['cong_cu'].endswith('semantic_search')"` (lượt 7 `fileHandle`, lượt 9 `^export`, lượt 10 mẫu 4
   nhánh, lần lumen ở lượt 40)
   - Chạm: `tests/fixtures/phien_excalidraw_tim.json` → file mới, chưa node nào phụ thuộc
-- [ ] **T1.3** (e25m) Bộ phát lại `scripts/search_replay.py`: đọc fixture (hoặc một transcript
+- [>] **T1.3** (e25m) Bộ phát lại `scripts/search_replay.py`: đọc fixture (hoặc một transcript
   JSONL), đưa từng lần tìm qua hàm quyết định, in bảng lượt · lệnh · quyết định · lý do, và ba số
   đếm: bắt đúng, bắt oan, lọt — Test: `python -m unittest discover tests -p test_search_replay.py`
   - Chạm: `scripts/search_replay.py`, `tests/test_search_replay.py` → file mới
@@ -69,7 +69,7 @@ phát).
   nhánh, câu tự nhiên, `rg`, `git grep`, `findstr`, `Select-String`, lệnh ghép `&&`/`|`/`;`)
   - Chạm: `scripts/search_rules.py`, `tests/test_search_rules.py` → file mới
   - Cần: T1.3
-- [ ] **T2.2** (e30m) `hooks/scripts/search_observe.py` — ghi sổ `docs/tdq/.tdq-search.jsonl` theo
+- [x] **T2.2** (e30m) `hooks/scripts/search_observe.py` — ghi sổ `docs/tdq/.tdq-search.jsonl` theo
   request (không có request → theo phiên): `PostToolUse` của lumen `semantic_search`, mọi
   `mcp__lsp__*`, và Bash `graphify query|explain|path|god-nodes|affected`; `UserPromptSubmit` →
   tập token định danh của prompt (không lưu nguyên văn); mỗi lần tìm code được đếm để tính cửa sổ.
@@ -110,7 +110,7 @@ trong `hooks.json`.
   - Chạm: `.codex-plugin/plugin.json`, `.codex/hooks.json`, `hooks/scripts/search_gate.py`,
     `tests/test_codex_search_gate.py` → adapter Codex
   - Cần: T1.1, T2.3
-- [ ] **T3.2** (e30m) `scripts/tdq_codex_mcp.py` — khai MCP lumen + LSP vào `~/.codex/config.toml`:
+- [>] **T3.2** (e30m) `scripts/tdq_codex_mcp.py` — khai MCP lumen + LSP vào `~/.codex/config.toml`:
   backup trước, chỉ thêm mục chưa có, không sửa mục sẵn có, chạy hai lần ra một kết quả; gọi từ
   `tdq_setup.py` — Test: `python -m unittest discover tests -p test_codex_mcp.py` (HOME tạm, có
   file config sẵn một MCP khác phải còn nguyên)
@@ -139,7 +139,7 @@ trong `hooks.json`.
   thay cho `*.py` cứng — Test: `python -m unittest discover tests -p test_smoke_ngon_ngu.py` (project
   tạm chỉ có `.ts` → đạt)
   - Chạm: `scripts/tdq_setup.py`, `tests/test_smoke_ngon_ngu.py` → `smoke_grep`
-- [ ] **T4.3** (e25m) Một lệnh kiểm: `tdq_lsp.py check` chạy 8 bậc rồi smoke 4 tầng; dòng tổng chỉ
+- [>] **T4.3** (e25m) Một lệnh kiểm: `tdq_lsp.py check` chạy 8 bậc rồi smoke 4 tầng; dòng tổng chỉ
   ĐẠT khi cả hai đạt; `tdq_setup.py` dùng lại đúng hàm đó — Test:
   `python -m unittest discover tests -p test_mot_lenh_kiem.py`
   - Chạm: `scripts/tdq_lsp.py`, `scripts/tdq_setup.py`, `tests/test_mot_lenh_kiem.py` → `check`, `main`
