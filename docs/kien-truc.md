@@ -64,7 +64,8 @@ khai ở dòng `Chạm:` của plan:
   cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng. Đường dẫn adapter do host quy định — `.codex-plugin/`, `.agents/plugins/`,
   `.opencode/plugins/` — nên đây là ngoại lệ của luật "code mới chỉ nằm trong `scripts/` hoặc
   `hooks/`". Adapter OpenCode là JavaScript thuần, không package npm, bọc try/catch mọi bước.
-- 2026-10-03: **điểm chặn thứ hai** — `hooks/scripts/search_gate.py` trả `deny` (mã
+- 2026-10-03: **thêm một điểm chặn** (cạnh nhật ký ở `Stop` và `TDQ:TICK`/`TDQ:TEAM` của
+  `edit_gate`) — `hooks/scripts/search_gate.py` trả `deny` (mã
   `TDQ:SEARCH`) cho một lần tìm code đi tắt tầng khái niệm. Dòng 2026-07-29 vẫn đứng: không hook
   nào chặn vì lý do "chưa duyệt"; đây là lý do KHÁC. Ba luật xét theo thứ tự: (1) miễn cho lọc danh
   sách file và cho tên có nguyên văn trong prompt của user; (2) request chưa gọi lumen/LSP/graphify

@@ -272,7 +272,7 @@ Thêm vào plan theo quy tắc 5, không cần duyệt lại.
   khoá rỗng còn mới coi như đang bị giữ (đua lúc ghi pid, R1#13) — Test:
   `python -m unittest discover tests -p test_tu_khoi_tao.py`
   - Chạm: `hooks/scripts/session_start.py`, `scripts/tdq_setup.py`, `tests/test_tu_khoi_tao.py` → `can_khoi_tao`, `_khoa_cu`
-- [ ] **F9** (e10m) Hồ sơ nói đúng số điểm chặn: `edit_gate` đã chặn `TDQ:TICK`/`TDQ:TEAM` từ trước,
+- [x] **F9** (e10m) Hồ sơ nói đúng số điểm chặn: `edit_gate` đã chặn `TDQ:TICK`/`TDQ:TEAM` từ trước,
   nên không còn câu "đúng hai điểm chặn" (V6) — Test: `python scripts/doc_lint.py skills` thoát 0
   và `python scripts/token_budget.py --kiem` thoát 0
 

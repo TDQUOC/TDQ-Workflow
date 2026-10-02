@@ -1,6 +1,6 @@
 # Hook reminder codes
 
-TDQ hooks **do not block**, except in exactly two cases (see `## The two blocking points`). They
+TDQ hooks **do not block**, except in the few cases listed under `## The blocking points`. They
 inject lines shaped `[TDQ:<CODE>] <the job to do>` into the context.
 
 **Rule:** on seeing `[TDQ:<CODE>]` → do what it says **BEFORE** anything else in the turn, then
@@ -22,7 +22,7 @@ gets you reminded again at the end of the turn.
 | `TDQ:DOC` | A file already read whole this session is being read whole again, unchanged | Read the part you need with `offset`/`limit`, or work from what you already hold | — (reminds once per file per session) |
 | `TDQ:SEARCH` | **Blocks** a code search that skipped the concept layer: the request has not asked lumen/LSP/graphify yet, or a guess-list grep came after the unlock window | Ask the concept layer first (`semantic_search`, `find_symbol`/`find_references`, or `graphify query`), then grep the exact names it returned | a concept-layer call recorded in `docs/tdq/.tdq-search.jsonl` |
 
-## The two blocking points
+## The blocking points
 
 1. **The working log.** The `Stop` hook blocks the end of a turn when: this turn **modified a
    file outside** `docs/workinglog/` and **has not** appended today's working log. To clear it:
@@ -32,6 +32,10 @@ gets you reminded again at the end of the turn.
    guess-list grep comes after the unlock window. A name the user typed in the prompt and a
    file-list filter are never blocked, and nothing is blocked while the concept layer is still
    being built. To clear it: run the query the denial names, then search again.
+3. **Editing code in team mode (`TDQ:TICK`, `TDQ:TEAM`).** The `PreToolUse` edit gate denies a
+   source edit during implement/qc while the plan has no task marked `[~]` (`TDQ:TICK`), or one
+   the assignment map does not hand to whoever is editing (`TDQ:TEAM`). To clear it: mark the
+   task `[~]`, or delegate it as the map says.
 
 Every other code only reminds, never blocks.
 

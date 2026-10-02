@@ -14,6 +14,7 @@ docs/tdq/.tdq-khoi-tao.da-goi
 docs/tdq/.tdq-san-sang.json
 # Worktree của mode đội — để ngoài git, nếu không `git add -A` sẽ quét cả cây con vào commit.
 .tdq-worktrees/
+.claude/worktrees/
 # Cờ đồng ý gọi Codex + log nguyên văn prompt: chuyện riêng của MÁY, không vào repo.
 docs/tdq/.tdq-codex.json
 docs/tdq/.tdq-codex-prompt.log
