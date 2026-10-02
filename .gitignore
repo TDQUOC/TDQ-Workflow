@@ -6,6 +6,13 @@ docs/tdq/.tdq-turn.jsonl
 # Sổ riêng của cổng nhắc đọc lại: những file phiên này đã đọc. Chuyện của MỘT PHIÊN trên MỘT
 # máy, hết 6 giờ là vô nghĩa — không vào repo.
 docs/tdq/.tdq-read.jsonl
+# Sổ của cổng tìm kiếm: lần gọi tầng khái niệm + token của prompt, theo request. Chuyện của MÁY.
+docs/tdq/.tdq-search.jsonl
+# Dựng nền ở đầu project: khoá pid và mốc sẵn sàng từng tầng.
+docs/tdq/.tdq-khoi-tao.lock
+docs/tdq/.tdq-san-sang.json
+# Worktree của mode đội — để ngoài git, nếu không `git add -A` sẽ quét cả cây con vào commit.
+.tdq-worktrees/
 # Cờ đồng ý gọi Codex + log nguyên văn prompt: chuyện riêng của MÁY, không vào repo.
 docs/tdq/.tdq-codex.json
 docs/tdq/.tdq-codex-prompt.log

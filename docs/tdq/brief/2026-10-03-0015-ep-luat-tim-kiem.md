@@ -101,6 +101,27 @@ Hệ quả cho P3:
   Windows (`codex login`), hoặc Mac kết nối lại. Phần kiểm bằng unit test (khuôn `deny` mà Codex
   đọc, cùng khuôn `codex_edit_gate.py` đang dùng từ 2026-09-10) vẫn làm đủ.
 
+### Chọn N của cửa sổ mở khoá (T2.5, phát lại phiên excalidraw)
+
+| N | bắt | bắt oan | lọt | lượt bị chặn |
+|---|---|---|---|---|
+| 5 | 16 | 0 | 0 | 4, 7, 9, 10, 11, 13, 14, 15, 20, 21, 22, 28, 29, 34, 35, 36 |
+| 10 | 16 | 0 | 0 | như trên |
+| 15 | 16 | 0 | 0 | như trên |
+| 20 | 16 | 0 | 0 | như trên |
+
+Vạch xuất phát (luật giả "cho qua tất cả"): bắt 0 · lọt 17.
+
+**Fixture này KHÔNG phân biệt được N.** Cả 16 lần chặn nằm trước lần lumen đầu tiên (lượt 40);
+sau đó chỉ còn 3 lần tìm code (47, 53, 57), và cả ba đi qua với mọi N ≥ 2. Nên N = **10** được
+chốt bằng LÝ LẼ, không phải số đo: `semantic_search` mặc định trả 8 kết quả, một câu trả lời của
+lumen chỉ ra tới ~8 chỗ cần grep tiếp — 10 là một trang kết quả cộng phần dư. Đo lại khi có thêm
+phiên thật: `python scripts/search_replay.py <transcript.jsonl> --cua-so N`.
+
+Lượt 4 trong spec 1.1 bị coi là "lọc danh sách file" — sai: cùng lệnh đó còn chạy
+`grep -nE "class (Store|Scene|History|ActionManager)" -r packages`, một lần tìm code 4 nhánh.
+Bị chặn là ĐÚNG; số bắt oan vẫn 0.
+
 ## Hỏi đáp
 
 **Năm câu chốt ở cuối phase analyze, cộng một yêu cầu bổ sung** (nguyên văn user: `1a 2a 3a 4a 5a

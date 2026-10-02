@@ -1,5 +1,5 @@
 {
-  "description": "TDQ workflow: reminders on edit/bash + Stop reminder for the working log + state context injection",
+  "description": "TDQ workflow: reminders on edit/bash + Stop reminder for the working log + state context injection + the search gate (blocks code searches that skip the concept layer)",
   "hooks": {
     "SessionStart": [
       {
@@ -27,6 +27,10 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prompt_context.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/search_observe.py\""
           }
         ]
       }
@@ -56,6 +60,26 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/bash_gate.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/search_gate.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__plugin_lumen_lumen__semantic_search|mcp__lsp__.*|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/search_observe.py\""
           }
         ]
       }

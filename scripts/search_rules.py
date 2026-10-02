@@ -16,6 +16,13 @@ them before EVERY shell command.
 import re
 import shlex
 
+# How many code searches one concept-layer query unlocks. Settled 2026-10-03 (T2.5) by REASON, not
+# by measurement, and said so: replaying the excalidraw session gave the same result for N = 5, 10,
+# 15 and 20 (16 denied, 0 wrongly, 0 slipped through), because every denial sits before the first
+# lumen call and only 3 code searches come after it — the data only says N >= 2. Ten is one page
+# of `semantic_search` results (default limit 8) plus a margin: one lumen answer names up to ~8
+# places, and grepping them is exactly what the unlock is for. Re-measure once more real sessions
+# exist: `python scripts/search_replay.py <transcript.jsonl> --cua-so N`.
 CUA_SO = 10
 # Same tokenizer the ledger uses for prompts (hooks/scripts/search_observe.py).
 TOKEN = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")

@@ -60,7 +60,7 @@ phát).
 
 ## P2 — Luật và cổng tìm kiếm
 
-- [>] **T2.1** (e40m) `scripts/search_rules.py` — hàm thuần, không I/O: nhận một lệnh Bash hoặc
+- [x] **T2.1** (e40m) `scripts/search_rules.py` — hàm thuần, không I/O: nhận một lệnh Bash hoặc
   một mẫu `Grep`, trả về LOẠI (lọc-danh-sách-file · tìm-code · không-phải-tìm), các token tìm, và
   hình dạng đoán mò (≥ 3 nhánh `\|`/`|`, hoặc câu tự nhiên ≥ 3 từ). Hàm quyết định nhận thêm trạng
   thái request (đã gọi tầng khái niệm chưa, cách đó bao nhiêu lần tìm, token của prompt) và trả
@@ -77,7 +77,7 @@ phát).
   `python -m unittest discover tests -p test_search_observe.py` (gồm ca: gọi `turn_log_clear`
   xong sổ vẫn còn)
   - Chạm: `hooks/scripts/search_observe.py`, `tests/test_search_observe.py` → file mới
-- [ ] **T2.3** (e30m) `hooks/scripts/search_gate.py` — `PreToolUse` trên `Bash` và `Grep`: đọc sổ
+- [x] **T2.3** (e30m) `hooks/scripts/search_gate.py` — `PreToolUse` trên `Bash` và `Grep`: đọc sổ
   và file mốc sẵn sàng, gọi `search_rules`, in `deny` + lý do nêu ĐÚNG lệnh cần gọi (không bao giờ
   gợi ý tham số `path` của lumen). Tầng khái niệm chưa sẵn sàng → cho qua và nói tầng nào đang dựng.
   Mọi lỗi I/O/parse → cho qua, thoát 0 — Test:
@@ -85,13 +85,13 @@ phát).
   đọc file code — dò trên AST như `test_read_gate`)
   - Chạm: `hooks/scripts/search_gate.py`, `tests/test_search_gate.py` → file mới
   - Cần: T2.1, T2.2
-- [ ] **T2.4** (e15m) Cắm vào `hooks/hooks.json` (`PreToolUse` `Bash` + `Grep` → gate; `PostToolUse`
+- [x] **T2.4** (e15m) Cắm vào `hooks/hooks.json` (`PreToolUse` `Bash` + `Grep` → gate; `PostToolUse`
   lumen + lsp + `Bash` → observe; `UserPromptSubmit` → observe); thêm `.tdq-search.jsonl` vào
   `.gitignore`; cập nhật đếm entry ở test và README — Test:
   `python -m unittest discover tests -p test_subagent_start.py` và `-p test_build_portable.py`
   - Chạm: `hooks/hooks.json`, `.gitignore`, `README.md`, `tests/test_subagent_start.py` → cấu hình hook
   - Cần: T2.3
-- [ ] **T2.5** (e20m) Chọn N bằng phát lại: chạy `search_replay.py` trên fixture với N = 5, 10, 15,
+- [x] **T2.5** (e20m) Chọn N bằng phát lại: chạy `search_replay.py` trên fixture với N = 5, 10, 15,
   20; chọn N nhỏ nhất bắt được lượt 7 + lượt 9 + mọi lần đoán mò sau cửa sổ, với 0 lần bắt oan một
   lần lọc danh sách file; ghi bảng bốn giá trị vào brief — Test: brief có bảng N và giá trị chốt;
   hằng số trong `search_rules.py` bằng đúng giá trị đó
@@ -161,7 +161,7 @@ trong `hooks.json`.
 
 ## P6 — Tự khởi tạo ở đầu project
 
-- [>] **T6.1** (e40m) `tdq_setup.py --nen`: chạy nền phần đắt (cài phụ thuộc ĐÃ KHAI, dựng đồ thị
+- [x] **T6.1** (e40m) `tdq_setup.py --nen`: chạy nền phần đắt (cài phụ thuộc ĐÃ KHAI, dựng đồ thị
   graphify, index lumen), khoá pid `docs/tdq/.tdq-khoi-tao.lock` (pid chết → lấy lại được), trần
   thời gian, xong thì ghi file mốc sẵn sàng `docs/tdq/.tdq-san-sang.json` theo từng tầng — Test:
   `python -m unittest discover tests -p test_tu_khoi_tao.py` (lệnh giả thay cho lumen/graphify)
