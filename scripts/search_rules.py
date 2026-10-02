@@ -453,3 +453,76 @@ def quyet_dinh(pl, trang_thai):
     if so_lan < cua_so:
         return True, "inside the unlock window"
     return True, "exact name after a concept query"
+
+
+# ---------------------------------------- concept-layer calls and request state (pure, shared)
+# These two used to live in `hooks/scripts/search_observe.py`, and the replay kept its OWN copy of
+# the state logic — with a different meaning (it counted denied searches toward the window and
+# every `mcp__lsp__*` call as a concept query). The replay is in `scripts/` and may not import
+# `hooks/`, so the one shared copy has to live here; the ledger hook imports it from here.
+
+# Name shapes differ by host: Claude Code says `mcp__plugin_lumen_lumen__semantic_search` and
+# `mcp__lsp__find_references`; Codex MCP names could not be observed yet (Codex not logged in on
+# the dev machine, 2026-10-03), so the match is on the server name and the last segment.
+LUMEN = re.compile(r"lumen.*semantic_search$")
+LSP = re.compile(r"(^|__|\.)lsp(__|\.)")
+# LSP tools that ASK a question about the code — an ALLOWLIST. The first version excluded a list
+# of housekeeping tools instead, which let `run_tests`, `apply_edit` or `format_document` count as
+# a concept query and unlock grep without a single question asked.
+LSP_HOI = re.compile(r"^(find_\w+|go_to_\w+|inspect_symbol|explore\w*|list_symbols|blast_radius|"
+                     r"type_hierarchy|get_cross_repo_references|get_document_highlights|"
+                     r"get_symbol_\w+|get_tests_for_file)$")
+GRAPHIFY_HOI = {"query", "explain", "path", "god-nodes", "affected"}
+
+
+def la_goi_khai_niem(ten_tool, tool_input):
+    """-> a short label when this tool call is a concept-layer QUERY, else None.
+
+    `graphify` is recognised by PARSING the shell command — its program and its subcommand — not
+    by searching the text: `echo graphify query x` or a commit message mentioning it must not
+    unlock anything (both did, in the first version).
+    """
+    ten = str(ten_tool or "")
+    if LUMEN.search(ten):
+        return "lumen"
+    if LSP.search(ten):
+        cuoi = re.split(r"__|\.", ten)[-1]
+        return f"lsp:{cuoi}" if LSP_HOI.match(cuoi) else None
+    if ten.lower() in CONG_CU_SHELL or ten.lower() == "powershell":
+        vao = tool_input or {}
+        script = _script_cua(vao.get("command") or vao.get("cmd") or "")
+        try:
+            cac_ong = _tach_script(script)
+        except Exception:  # noqa: BLE001 — a recognizer never raises into a hook
+            return None
+        for ong in cac_ong:
+            for phan in ong:
+                ten_ct, args, _ = _chuan_hoa(_tach_tu(phan))
+                if ten_ct == "graphify" and args and args[0] in GRAPHIFY_HOI:
+                    return f"graphify:{args[0]}"
+    return None
+
+
+def trang_thai(rows):
+    """-> the state `quyet_dinh` needs, built from one scope's ledger rows (oldest first).
+
+    * `so_lan_tim_tu_lan_goi` counts code searches that RAN after the latest concept query —
+      a denied search never executed, so it never eats into the window. Asking again re-opens it.
+    * `so_lan_bi_chan` counts searches DENIED since the latest concept query (or since the
+      start): the gate's breaker for a machine where no concept tool can answer.
+    * `token_prompt` is the token set of the latest prompt only.
+    """
+    da_goi, dem, bi_chan, token = False, 0, 0, set()
+    for row in rows:
+        loai = row.get("loai")
+        if loai == "khai_niem":
+            da_goi, dem, bi_chan = True, 0, 0
+        elif loai == "tim":
+            if row.get("tinh_cua_so", True):
+                dem += 1
+            if row.get("cho_phep") is False:
+                bi_chan += 1
+        elif loai == "prompt":
+            token = set(row.get("token") or [])
+    return {"da_goi_khai_niem": da_goi, "so_lan_tim_tu_lan_goi": dem,
+            "so_lan_bi_chan": bi_chan, "token_prompt": token}

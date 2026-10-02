@@ -226,21 +226,21 @@ về, và cổng không chặn trong lúc dựng.
 Nguồn: hai reviewer độc lập của T8.5 (2026-10-03), 18 phát hiện, gộp trùng còn 16 việc dưới đây.
 Thêm vào plan theo quy tắc 5, không cần duyệt lại.
 
-- [ ] **F1** (e30m) Luật thuần dời về một chỗ: `la_goi_khai_niem` và `trang_thai` chuyển từ
+- [x] **F1** (e30m) Luật thuần dời về một chỗ: `la_goi_khai_niem` và `trang_thai` chuyển từ
   `search_observe.py` sang `scripts/search_rules.py` (thuần, không I/O), để cổng VÀ bộ phát lại
   dùng chung — hết bản sao lệch nhau (V5). Đồng thời: nhận diện graphify bằng bộ phân tích lệnh chứ
   không bằng chuỗi con (hết `echo graphify query x` mở khoá giả); LSP đếm theo DANH SÁCH các tool
   HỎI (find_/go_to_/inspect_/explore/list_symbols/…) chứ không theo danh sách loại trừ; `trang_thai`
   đếm thêm số lần bị chặn liên tiếp — Test: `python -m unittest discover tests -p test_search_rules.py`
   - Chạm: `scripts/search_rules.py`, `hooks/scripts/search_observe.py`, `tests/test_search_rules.py`, `tests/test_search_observe.py` → luật thuần
-- [ ] **F2** (e30m) Không kẹt: (a) mốc báo cả lumen/LSP/graphify KHÔNG sẵn sàng → cổng đứng xuống,
+- [x] **F2** (e30m) Không kẹt: (a) mốc báo cả lumen/LSP/graphify KHÔNG sẵn sàng → cổng đứng xuống,
   bất kể đang dựng hay đã dựng xong (V2); (b) bị chặn 3 lần liên tiếp mà request chưa ghi được lần
   gọi tầng khái niệm nào → đứng xuống (cầu dao cho máy không có tầng khái niệm, và cho tên tool
   Codex chưa quan sát được); (c) khi đứng xuống thì NÓI ra một lần mỗi lượt, nêu đúng tầng nào chưa
   có (V3) — Test: `python -m unittest discover tests -p test_search_gate.py`
   - Chạm: `hooks/scripts/search_gate.py`, `tests/test_search_gate.py` → `quyet`, `main`
   - Cần: F1
-- [ ] **F3** (e20m) Khoá sổ đúng phạm vi: request đã đóng (phase `idle`) → khoá phiên, không dùng
+- [x] **F3** (e20m) Khoá sổ đúng phạm vi: request đã đóng (phase `idle`) → khoá phiên, không dùng
   lại request cũ (R1#11); trạng thái của request đọc thêm các dòng khoá `phien:<id>` CÙNG phiên, để
   prompt và lần gọi lumen trước lúc `init` không bị quên (R1#2) — Test:
   `python -m unittest discover tests -p test_search_observe.py`

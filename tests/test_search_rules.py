@@ -296,6 +296,37 @@ class TestThuan(unittest.TestCase):
         self.assertNotIn("open(", src)
 
 
+class GoiKhaiNiem(unittest.TestCase):
+    """F1 — nhận diện lần gọi tầng khái niệm ở MỘT chỗ thuần, dùng chung cho sổ và bộ phát lại."""
+
+    def test_mo_khoa_gia_bang_chu_khong_tinh(self):
+        """`echo graphify query x` và commit message nhắc tới nó từng mở khoá grep (R1#10)."""
+        for cmd in ("echo graphify query x", 'git commit -m "note: graphify query later"',
+                    "grep -rn 'graphify query' docs"):
+            self.assertIsNone(sr.la_goi_khai_niem("Bash", {"command": cmd}), cmd)
+
+    def test_mo_khoa_graphify_that_thi_tinh(self):
+        self.assertEqual(sr.la_goi_khai_niem("Bash", {"command": 'graphify query "how saving works"'}),
+                         "graphify:query")
+        self.assertEqual(sr.la_goi_khai_niem("Bash", {"command": "cd x && graphify explain Foo"}),
+                         "graphify:explain")
+
+    def test_mo_khoa_lsp_chi_tool_hoi(self):
+        """Danh sách CHO PHÉP: `run_tests`, `apply_edit`, `format_document` không hỏi gì cả."""
+        for ten in ("mcp__lsp__run_tests", "mcp__lsp__apply_edit", "mcp__lsp__format_document",
+                    "mcp__lsp__start_lsp", "mcp__lsp__open_document"):
+            self.assertIsNone(sr.la_goi_khai_niem(ten, {}), ten)
+        for ten in ("mcp__lsp__find_references", "mcp__lsp__inspect_symbol",
+                    "mcp__lsp__explore_symbol", "mcp__lsp__blast_radius"):
+            self.assertIsNotNone(sr.la_goi_khai_niem(ten, {}), ten)
+
+    def test_mo_khoa_bi_chan_khong_an_vao_cua_so(self):
+        tt = sr.trang_thai([{"loai": "khai_niem"},
+                            {"loai": "tim", "cho_phep": False, "tinh_cua_so": False},
+                            {"loai": "tim", "cho_phep": True, "tinh_cua_so": True}])
+        self.assertEqual((tt["so_lan_tim_tu_lan_goi"], tt["so_lan_bi_chan"]), (1, 1))
+
+
 class LogQuaNguoiGoi(unittest.TestCase):
     """Ngoại lệ CÓ CHỦ ĐÍCH của luật log service: `search_rules` là module thuần, không I/O — nó
     chạy trước MỌI lệnh Bash. Log của nó đi qua người gọi: `search_gate.py` ghi loại + quyết định

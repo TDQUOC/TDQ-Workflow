@@ -115,6 +115,13 @@ class GhiSo(BaseCong):
         self.assertEqual([r["cho_phep"] for r in tim], [False, True])
 
 
+class PowerShell(BaseCong):
+    def test_codex_cong_cu_powershell_cung_bi_gac(self):
+        """Trên Windows, `Select-String` qua tool PowerShell từng đi vòng qua cổng (R1#6)."""
+        out, _ = self.goi("PowerShell", command="Select-String -Pattern 'fileHandle' -Path src\\*.ts")
+        self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+
+
 class Codex(BaseCong):
     def test_codex_lenh_dang_danh_sach_bi_chan(self):
         """Codex gửi lệnh shell dạng argv; khuôn `deny` giống hệt khuôn Claude Code đọc."""
@@ -137,20 +144,45 @@ class ChuaSanSang(BaseCong):
                      encoding="utf-8") as fh:
             json.dump(moc, fh)
 
+    def dung_xuong_va_noi_ra(self, out):
+        """Đứng xuống = cho qua (`allow`) VÀ nói ra bằng `[TDQ:SEARCH]` (V3, review 2026-10-03)."""
+        goi = json.loads(out).get("hookSpecificOutput") or {}
+        self.assertEqual(goi.get("permissionDecision"), "allow")
+        self.assertIn("TDQ:SEARCH", goi.get("additionalContext") or "")
+        return goi.get("additionalContext")
+
     def test_chua_san_sang_dang_dung_thi_khong_chan(self):
         self.ghi_moc(dang_dung=True)
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
-        self.assertEqual(out, "")
+        self.assertIn("being built", self.dung_xuong_va_noi_ra(out))
 
-    def test_chua_san_sang_dung_xong_thi_chan_lai(self):
+    def test_chua_san_sang_dung_xong_ma_khong_tang_nao_song_thi_dung_xuong(self):
+        """V2: bản dựng XONG mà lumen/LSP/graphify đều không trả lời được (ollama tắt…) — chặn lúc
+        này là đẩy agent tới công cụ không trả lời. Bản đầu chặn đúng ở đây; ca này khoá ngược lại."""
         self.ghi_moc(dang_dung=False)
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
-        self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+        self.assertIn("not available", self.dung_xuong_va_noi_ra(out))
 
-    def test_chua_san_sang_moc_qua_cu_la_dung_chet(self):
+    def test_chua_san_sang_moc_cu_khong_tang_nao_song_van_dung_xuong(self):
         self.ghi_moc(dang_dung=True, tuoi_giay=3 * 3600)
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
-        self.assertIn("TDQ:SEARCH", self.bi_chan(out), "mốc 'đang dựng' quá trần là bản dựng đã chết")
+        self.dung_xuong_va_noi_ra(out)
+
+    def test_chua_san_sang_cau_dao_khong_moc_bi_chan_3_lan(self):
+        """Không mốc (Codex, tắt dựng nền) + chặn 3 lần mà chưa từng ghi được lần gọi khái niệm
+        nào → máy này không có tầng khái niệm: đứng xuống thay vì khoá cứng."""
+        for _ in range(3):
+            out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+            self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        self.assertIn("tdq-setup", self.dung_xuong_va_noi_ra(out))
+
+    def test_chua_san_sang_cau_dao_khong_mo_khi_moc_bao_lumen_song(self):
+        """Có mốc nói lumen sống → "thử lại 3 lần" KHÔNG được thành đường vòng qua luật."""
+        self.ghi_moc(dang_dung=False, lumen=True)
+        for _ in range(5):
+            out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+            self.assertIn("TDQ:SEARCH", self.bi_chan(out))
 
     def test_chua_san_sang_mot_tang_da_xong_thi_chan(self):
         """Đang dựng nhưng lumen đã trả lời được → có đường đúng để đi → cổng áp luật."""

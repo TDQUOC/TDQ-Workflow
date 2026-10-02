@@ -41,24 +41,10 @@ TRAN_DONG = 600
 # A session-keyed row (no request open) stops counting after this long — same window as the turn
 # ledger. Request-keyed rows never expire: the request is the scope.
 HAN_PHIEN_GIAY = 6 * 3600
-# Same tokenizer the replay fixture used (tests/fixtures/phien_excalidraw_tim.json): ASCII
-# identifier shapes of 3+ characters. Vietnamese words and short noise never collide with code.
-TOKEN = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")
-# Name shapes differ by host: Claude Code says `mcp__plugin_lumen_lumen__semantic_search` and
-# `mcp__lsp__find_references`; Codex's MCP tool names could not be observed yet (Codex is not
-# logged in on the dev machine, 2026-10-03), so the match is on the server name and the last
-# segment, whatever the separator (`__` or `.`).
-LUMEN = re.compile(r"lumen.*semantic_search$")
-LSP = re.compile(r"(^|__|\.)lsp(__|\.)")
-# LSP tools that ANSWER a question about the code. Starting a server or opening a document asks
-# nothing — counting those would let `start_lsp` unlock grep without a single real query.
-LSP_KHONG_PHAI_HOI = {
-    "start_lsp", "restart_lsp_server", "open_document", "close_document", "set_log_level",
-    "did_change_watched_files", "get_server_capabilities", "detect_lsp_servers",
-    "list_workspace_folders", "add_workspace_folder", "remove_workspace_folder", "export_cache",
-    "import_cache", "activate_skill", "deactivate_skill", "get_skill_phase",
-}
-GRAPHIFY_HOI = re.compile(r"\bgraphify\s+(query|explain|path|god-nodes|affected)\b")
+# The tokenizer, the concept-call recognizer and the state builder live in
+# `scripts/search_rules.py` (pure): the replay tool shares them, so the live ledger and the
+# replay can never disagree on what counts (they did, until QC round 1 of 2026-10-03).
+from search_rules import TOKEN, la_goi_khai_niem, trang_thai  # noqa: E402,F401
 
 
 def _log(message):
@@ -73,24 +59,35 @@ def duong_so(cwd):
 
 
 def khoa_hien_tai(cwd, phien):
-    """-> the ledger key: the open request's slug, else `phien:<session>`.
+    """-> the ledger key: the OPEN request's slug, else `phien:<session>`.
 
     Reads `state.json` directly instead of `tdq_state.load`, which may heal the file — far too
     much work for something that runs after every tool call.
     """
     try:
         with open(_common.tdq_state.state_path(cwd), "r", encoding="utf-8") as fh:
-            # The key is `active_request` — `tdq_state` writes it under that name. The first
-            # version read `request`, which never exists, so every row fell back to the session
-            # key and a new request inherited the previous one's unlock.
-            request = (json.load(fh) or {}).get("active_request")
+            st = json.load(fh) or {}
+        # The key is `active_request` — `tdq_state` writes it under that name. The first version
+        # read `request`, which never exists, so every row fell back to the session key.
+        request = st.get("active_request")
+        # `active_request` is never cleared when a request closes; at phase `idle` it names a
+        # FINISHED request. Keying on it let one lumen call from a closed request keep grep
+        # unlocked for every later task (review 2026-10-03).
+        if st.get("phase") == "idle":
+            request = None
     except (OSError, ValueError, TypeError, AttributeError):
         request = None
     return f"yc:{request}" if request else f"phien:{phien}"
 
 
-def doc_so(cwd, khoa):
-    """-> rows of `khoa`, oldest first. Unreadable rows are skipped; a broken file reads as []."""
+def doc_so(cwd, khoa, phien=None):
+    """-> rows of `khoa` (plus this session's `phien:` rows when given), oldest first.
+
+    Why the session rows join a request's scope: the user's prompt and an early lumen call arrive
+    BEFORE `tdq_state.py init` opens the request, i.e. under the session key. Reading only the
+    request key made the gate forget both the moment the request opened — a name the user typed
+    was suddenly denied (review 2026-10-03). Unreadable rows are skipped; a broken file reads []."""
+    khoa_phien = f"phien:{phien}" if phien else None
     bay_gio = time.time()
     ra = []
     try:
@@ -103,9 +100,10 @@ def doc_so(cwd, khoa):
                     row = json.loads(dong)
                 except ValueError:
                     continue
-                if not isinstance(row, dict) or row.get("khoa") != khoa:
+                if not isinstance(row, dict) or row.get("khoa") not in (khoa, khoa_phien):
                     continue
-                if khoa.startswith("phien:") and bay_gio - float(row.get("ts") or 0) > HAN_PHIEN_GIAY:
+                if (str(row.get("khoa")).startswith("phien:")
+                        and bay_gio - float(row.get("ts") or 0) > HAN_PHIEN_GIAY):
                     continue
                 ra.append(row)
     except (OSError, TypeError, ValueError):
@@ -132,42 +130,6 @@ def ghi_so(cwd, row):
             fh.write(dong)
     except OSError:
         pass
-
-
-def trang_thai(rows):
-    """-> the state the decision rules need, built from a key's rows.
-
-    `so_lan_tim_tu_lan_goi` counts code searches AFTER the latest concept-layer call — the
-    unlock window is measured from the latest call, not the first, so asking lumen again re-opens
-    it. `token_prompt` is the token set of the latest prompt only.
-    """
-    da_goi, dem, token = False, 0, set()
-    for row in rows:
-        loai = row.get("loai")
-        if loai == "khai_niem":
-            da_goi, dem = True, 0
-        elif loai == "tim" and row.get("tinh_cua_so", True):
-            dem += 1
-        elif loai == "prompt":
-            token = set(row.get("token") or [])
-    return {"da_goi_khai_niem": da_goi, "so_lan_tim_tu_lan_goi": dem, "token_prompt": token}
-
-
-def la_goi_khai_niem(ten_tool, tool_input):
-    """-> a short label when this tool call is a concept-layer QUERY, else None."""
-    ten_tool = ten_tool or ""
-    if LUMEN.search(ten_tool):
-        return "lumen"
-    if LSP.search(ten_tool):
-        cuoi = re.split(r"__|\.", ten_tool)[-1]
-        if cuoi and cuoi not in LSP_KHONG_PHAI_HOI:
-            return f"lsp:{cuoi}"
-    if ten_tool == "Bash":
-        cmd = (tool_input or {}).get("command") or ""
-        khop = GRAPHIFY_HOI.search(cmd) if isinstance(cmd, str) else None
-        if khop:
-            return f"graphify:{khop.group(1)}"
-    return None
 
 
 def main():

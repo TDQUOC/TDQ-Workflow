@@ -127,12 +127,36 @@ class SongQuaLuot(BaseSo):
 class KhoaThatCuaState(BaseSo):
     """Khoá request phải đọc đúng tên mà `tdq_state` thật ghi — không tự đặt tên rồi tự kiểm."""
 
-    def test_qua_luot_doc_dung_khoa_state_that(self):
+    def _cli(self, *args):
         import subprocess
-        subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), "init",
-                        "2026-10-03-0000-khoa-that", "chuyen-sau"],
-                       capture_output=True, env=dict(os.environ, TDQ_PROJECT_DIR=self.cwd, TDQ_LOG="0"))
+        subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "tdq_state.py"), *args],
+                       capture_output=True,
+                       env=dict(os.environ, TDQ_PROJECT_DIR=self.cwd, TDQ_LOG="0"))
+
+    def test_qua_luot_doc_dung_khoa_state_that(self):
+        """Đúng luồng thật: `init` rồi `set phase=analyze` — request mới MỞ từ lúc đó."""
+        self._cli("init", "2026-10-03-0000-khoa-that", "chuyen-sau")
+        self._cli("set", "phase=analyze")
         self.assertEqual(search_observe.khoa_hien_tai(self.cwd, PHIEN), "yc:2026-10-03-0000-khoa-that")
+
+    def test_qua_luot_request_da_dong_thi_ve_khoa_phien(self):
+        """`active_request` không bao giờ bị xoá khi request đóng; ở phase `idle` nó là request CŨ
+        — dùng nó là để một lần gọi lumen cũ mở khoá cho mọi việc sau (review 2026-10-03)."""
+        self._cli("init", "2026-10-03-0000-da-dong", "chuyen-sau")
+        self._cli("set", "phase=analyze")
+        self._cli("set", "phase=idle")
+        self.assertEqual(search_observe.khoa_hien_tai(self.cwd, PHIEN), f"phien:{PHIEN}")
+
+    def test_qua_luot_prompt_va_lumen_truoc_init_khong_bi_quen(self):
+        """Prompt và lần gọi lumen đến TRƯỚC `init` (khoá phiên); mở request xong vẫn phải nhớ."""
+        self.goi({"hook_event_name": "UserPromptSubmit", "prompt": "fix parseConfig please"})
+        self.tool("mcp__plugin_lumen_lumen__semantic_search", query="config parsing")
+        self._cli("init", "2026-10-03-0000-sau-init", "chuyen-sau")
+        self._cli("set", "phase=analyze")
+        khoa = search_observe.khoa_hien_tai(self.cwd, PHIEN)
+        tt = search_observe.trang_thai(search_observe.doc_so(self.cwd, khoa, PHIEN))
+        self.assertTrue(tt["da_goi_khai_niem"])
+        self.assertIn("parseConfig", tt["token_prompt"])
 
 
 class TrangThai(unittest.TestCase):
@@ -145,7 +169,7 @@ class TrangThai(unittest.TestCase):
     def test_trang_thai_rong(self):
         self.assertEqual(search_observe.trang_thai([]),
                          {"da_goi_khai_niem": False, "so_lan_tim_tu_lan_goi": 0,
-                          "token_prompt": set()})
+                          "so_lan_bi_chan": 0, "token_prompt": set()})
 
     def test_trang_thai_so_co_tran(self):
         with tempfile.TemporaryDirectory() as tmp:
