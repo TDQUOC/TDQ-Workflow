@@ -48,7 +48,7 @@ Trạng thái plan: CHỜ DUYỆT · 26 task · ETA 575 phút
   code hay output — Test: `python -c "import json;d=json.load(open('tests/fixtures/phien_excalidraw_tim.json',encoding='utf-8'));e={x['luot']:x for x in d['su_kien']};assert 'fileHandle' in e[7]['lenh'] and '^export' in e[9]['lenh'] and 'beforeunload' in e[10]['lenh'] and e[40]['cong_cu'].endswith('semantic_search')"` (lượt 7 `fileHandle`, lượt 9 `^export`, lượt 10 mẫu 4
   nhánh, lần lumen ở lượt 40)
   - Chạm: `tests/fixtures/phien_excalidraw_tim.json` → file mới, chưa node nào phụ thuộc
-- [>] **T1.3** (e25m) Bộ phát lại `scripts/search_replay.py`: đọc fixture (hoặc một transcript
+- [x] **T1.3** (e25m) Bộ phát lại `scripts/search_replay.py`: đọc fixture (hoặc một transcript
   JSONL), đưa từng lần tìm qua hàm quyết định, in bảng lượt · lệnh · quyết định · lý do, và ba số
   đếm: bắt đúng, bắt oan, lọt — Test: `python -m unittest discover tests -p test_search_replay.py`
   - Chạm: `scripts/search_replay.py`, `tests/test_search_replay.py` → file mới

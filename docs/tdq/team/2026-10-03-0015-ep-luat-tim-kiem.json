@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-0015-ep-luat-tim-kiem",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-0015-ep-luat-tim-kiem.md",
-  "plan_sha": "97f2bae5c61d2afe0fa92626967cd1577939d4d636d32aa9f958a25d7cac27cb",
+  "plan_sha": "e1bd375f7bea06158b3e89618ac52ba1fbcacf824805b4e286ed0ee38e4dfda3",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "tu_lam",
