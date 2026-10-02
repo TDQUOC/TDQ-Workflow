@@ -4,8 +4,11 @@
 One command, four jobs, in this order:
   1. run the ladder of `tdq_lsp.py` and INSTALL what is missing and allowed
   2. check the configuration each layer needs is actually right
-  3. ask each of the four search layers one real question and read the answer
+  3. re-run `tdq_lsp.kiem_mot_lenh` — the same ladder + four-layer smoke + total line that
+     `tdq_lsp.py check` prints — so both commands judge the machine the same way
   4. write down, as debt, everything it could not fix by itself
+
+Exit code: the one `kiem_mot_lenh` returns (0 total ĐẠT, 3 a rung blocks, 4 a layer failed).
 
 Why this file exists next to `tdq_lsp.py` instead of inside it: `tdq_lsp.py` carries a hard
 promise — it NEVER installs, it only diagnoses and prints the command. That promise is what
@@ -401,19 +404,19 @@ def main(argv):
 
     for dong in da_cai:
         print(f"đã cài · {dong}")
+    print("")
 
-    print("\nSmoke test bốn tầng:")
-    for ten, dat, chi_tiet in smoke_bon_tang(project):
-        print(f"  {ten:<9} {'ĐẠT ' if dat else 'TRƯỢT'} · {chi_tiet}")
-        if not dat:
-            no.append(f"tầng {ten} không trả lời được: {chi_tiet}")
+    # The very same check `tdq_lsp.py check` runs — re-run after installing, so the ladder and
+    # the smoke report the machine as it is now, under one total line.
+    rc, _bac, smoke = tdq_lsp.kiem_mot_lenh(project)
+    no += [f"tầng {ten} không trả lời được: {chi_tiet}" for ten, dat, chi_tiet in smoke if not dat]
 
     for dong in no:
         print(f"nợ · {dong}")
     so = tdq_no.ghi_no(no, project)
     print("")
     print(f"Nợ: {len(no)} món ({so} dòng mới) → {tdq_no.FILE_NO}")
-    return 0
+    return rc
 
 
 if __name__ == "__main__":

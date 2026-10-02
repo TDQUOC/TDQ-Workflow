@@ -17,6 +17,12 @@ The ladder (`kiem`):
   6. an outside plugin hook pushing a different search order (added at T1.2)
   7. the import-root config each language needs
   8. the graphify graph the fourth search layer reads (added 2026-09-28)
+Then the four-layer smoke test (grep, LSP, graphify, lumen each asked one real question), and
+ONE total line: ĐẠT only when no rung blocks AND every layer answered. There is deliberately no
+"ladder only" mode — having one is how a smoke failure went unseen on 2026-10-02.
+
+Exit codes of `check`: 0 total ĐẠT · 3 an actionable rung is missing · 4 rungs fine but a smoke
+layer could not answer.
 
 Principles:
 - **This script NEVER installs anything.** A missing rung prints the exact command; a human
@@ -45,6 +51,7 @@ TOOL_PATTERN = "mcp__lsp__"
 INSTALL_AGENT_LSP = "curl -fsSL https://raw.githubusercontent.com/blackwell-systems/agent-lsp/main/install.sh | sh"
 EXIT_OK = 0
 EXIT_THIEU = 3
+EXIT_SMOKE = 4
 OLLAMA_PORT = 11434
 # Trần riêng cho hai phép đo hiệu ứng của bậc 5. Chúng chạy ở intake bước 1b của MỌI request nên
 # không được phép kéo dài: đo 2026-09-28 trên repo này, dựng lại tăng trưởng mất 0,2 s khi không
@@ -757,20 +764,58 @@ def chay_kiem(project):
     return bac
 
 
-def cmd_kiem(args):
-    project = _project_dir()
+def chay_smoke(project):
+    """Ask each of the four search layers one real question -> [(layer, passed?, detail)].
+
+    The smoke functions stay in `tdq_setup.py` (their public names and the tests that patch them
+    keep working); the import is lazy because `tdq_setup` imports this module at top level.
+    Importing it installs nothing — every install there sits behind its own `main`.
+    """
+    import tdq_setup
+    return tdq_setup.smoke_bon_tang(project)
+
+
+def kiem_mot_lenh(project):
+    """THE one check: the 8 rungs, then the 4-layer smoke, then ONE total line.
+
+    Observed 2026-10-02: with the smoke living only in `tdq_setup.py`, an agent ran just
+    `check`, read "8/8 bậc ĐẠT" and skipped the smoke while two layers could not answer. So the
+    total is ĐẠT only when no rung blocks (warnings do not) AND every smoke layer answered.
+    `tdq_setup.py` calls this same function instead of keeping its own copy.
+
+    -> (exit code, rungs, smoke rows). Exit: EXIT_THIEU when a rung blocks, else EXIT_SMOKE when
+    a layer failed, else EXIT_OK.
+    """
     bac = chay_kiem(project)
     for b in bac:
         b.in_ra()
     thieu = [b for b in bac if not b.dat and not b.chi_canh_bao]
     canh_bao = [b for b in bac if not b.dat and b.chi_canh_bao]
-    print(f"\nTổng: {len(bac) - len(thieu) - len(canh_bao)}/{len(bac)} bậc ĐẠT"
-          + (f" · {len(thieu)} bậc cần bạn cho phép cài" if thieu else "")
-          + (f" · {len(canh_bao)} cảnh báo không chặn" if canh_bao else ""))
+
+    print("\nSmoke test bốn tầng:")
+    smoke = chay_smoke(project)
+    for ten, dat, chi_tiet in smoke:
+        print(f"  {ten:<9} {'ĐẠT ' if dat else 'TRƯỢT'} · {chi_tiet}")
+    truot = [ten for ten, dat, _ in smoke if not dat]
+
+    phan = [f"{len(bac) - len(thieu) - len(canh_bao)}/{len(bac)} bậc ĐẠT",
+            f"smoke {len(smoke) - len(truot)}/{len(smoke)} tầng trả lời được"]
+    if thieu:
+        phan.append(f"{len(thieu)} bậc cần bạn cho phép cài")
+    if canh_bao:
+        phan.append(f"{len(canh_bao)} cảnh báo không chặn")
+    if truot:
+        phan.append(f"{len(truot)} tầng trượt: {', '.join(truot)}")
+    print(f"\nTổng: {'CHƯA ĐẠT' if thieu or truot else 'ĐẠT'} · " + " · ".join(phan))
     if thieu:
         print("Script KHÔNG tự cài. Hãy duyệt từng lệnh ở trên rồi chạy tay.")
-    _log(f"done · {len(thieu)} bậc thiếu · {len(canh_bao)} cảnh báo")
-    return EXIT_THIEU if thieu else EXIT_OK
+    _log(f"done · {len(thieu)} bậc thiếu · {len(canh_bao)} cảnh báo · {len(truot)} tầng trượt")
+    rc = EXIT_THIEU if thieu else (EXIT_SMOKE if truot else EXIT_OK)
+    return rc, bac, smoke
+
+
+def cmd_kiem(args):
+    return kiem_mot_lenh(_project_dir())[0]
 
 
 def _dau_so_huu():
@@ -882,7 +927,7 @@ def parse_args(argv):
         description="Chẩn đoán bộ agent-lsp cho máy và cho project này. Script không tự cài gì.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log service")
     sub = ap.add_subparsers(dest="lenh", required=True)
-    sub.add_parser("check", help="chạy thang chẩn đoán, in từng bậc")
+    sub.add_parser("check", help="chạy 8 bậc rồi smoke 4 tầng, in một dòng tổng")
     dt = sub.add_parser("wake", help="đánh thức Ollama theo yêu cầu, chỉ khi LSP tìm không thấy")
     dt.add_argument("--han-cho", type=float, default=30.0, help="giây chờ Ollama trả lời (mặc định 30)")
     sub.add_parser("release", help="nhả model embedding ngay sau khi tìm xong")
