@@ -246,7 +246,7 @@ Thêm vào plan theo quy tắc 5, không cần duyệt lại.
   `python -m unittest discover tests -p test_search_observe.py`
   - Chạm: `hooks/scripts/search_observe.py`, `tests/test_search_observe.py` → `khoa_hien_tai`, `doc_so`
   - Cần: F1
-- [ ] **F4** (e30m) Phân loại sát hơn: `--help`/`--version` không phải tìm (R1#3); bỏ thân heredoc
+- [x] **F4** (e30m) Phân loại sát hơn: `--help`/`--version` không phải tìm (R1#3); bỏ thân heredoc
   trước khi tách lệnh (R1#4); mở `bash -c '…'`/`pwsh -c`/`powershell -Command`/`cmd /c` ở dạng chuỗi
   (R1#7); `find … -exec grep` là tìm (R1#8); `-f FILE` là danh sách đoán mò (R1#9); tìm chỉ trong
   file không phải code (`.md` `.txt` `.log` `.json` `.yml` …) không phải tìm code (R1#5) — Test:
@@ -263,7 +263,7 @@ Thêm vào plan theo quy tắc 5, không cần duyệt lại.
   Q18 và bảng N — Test: `python -m unittest discover tests -p test_search_replay.py`
   - Chạm: `scripts/search_replay.py`, `tests/test_search_replay.py` → `phat_lai`
   - Cần: F1, F4
-- [ ] **F7** (e25m) `tdq_codex_mcp.py`: chuỗi in ra về tiếng Anh (V1); nhận entry cũ theo TÊN script
+- [x] **F7** (e25m) `tdq_codex_mcp.py`: chuỗi in ra về tiếng Anh (V1); nhận entry cũ theo TÊN script
   chứ không theo cả đường dẫn có số phiên bản — cập nhật đường dẫn khi plugin lên bản mới thay vì
   thêm bản thứ hai; chịu được `hooks[event]` không phải list; gắn `search_observe` vào cả shell để
   `graphify query` dưới Codex được ghi (V4) — Test: `python -m unittest discover tests -p test_codex_search_gate.py`

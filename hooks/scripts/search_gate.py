@@ -53,9 +53,12 @@ def _log(message):
 
 
 def _lenh(ten_tool, vao):
-    """-> what to classify: the shell command (str or argv list) or the Grep pattern."""
+    """-> what to classify: the shell command (str or argv list) or the whole Grep input.
+
+    Grep's `glob`/`path`/`type` decide whether it searches code or documents, so they travel too.
+    """
     if ten_tool == "Grep":
-        return vao.get("pattern") or ""
+        return vao
     return vao.get("command") or vao.get("cmd") or ""
 
 
@@ -148,7 +151,7 @@ def main():
     # `day_du=True`: the 200-character reminder cap would cut the one thing the agent needs here —
     # which query to run instead. The rules already start the reason with the code; drop it so
     # `block()` does not print it twice.
-    dong = ly_do.splitlines() or [ly_do]
+    dong = [str(x) for x in ly_do.splitlines()] or [str(ly_do)]
     dong[0] = dong[0].replace(f"[{MA}] ", "", 1)
     _common.block(cwd, payload, MA, dong, day_du=True)
 

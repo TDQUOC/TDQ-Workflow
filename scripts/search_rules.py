@@ -58,6 +58,19 @@ ONG = re.compile(r"\\\||(?<!\\)\|")
 THOAT_CHU = re.compile(r"\\[A-Za-z]")
 CAU_TU_NHIEN = re.compile(r"[A-Za-z]+(?: +[A-Za-z]+){2,}")
 DO_SAU_TOI_DA = 8
+# Shells whose `-c`/`-Command`/`/c` string is itself a script: `bash -c 'grep foo .'` is a
+# search, and the first version read it as one opaque command (review 2026-10-03, R1#7).
+SHELL_BOC = {"bash", "sh", "zsh", "dash", "ksh", "pwsh", "powershell", "cmd"}
+# Searching only in these is reading documents, not code (review 2026-10-03, R1#5): the rule
+# is about how an agent finds CODE. Directory names count too (`grep -rn x docs/`).
+DUOI_TAI_LIEU = {".md", ".markdown", ".rst", ".txt", ".log", ".json", ".jsonl", ".yml",
+                 ".yaml", ".toml", ".ini", ".cfg", ".csv", ".lock"}
+THU_MUC_TAI_LIEU = {"docs", "doc", "documentation"}
+LOAI_TAI_LIEU = {"md", "markdown", "txt", "json", "yaml", "yml", "toml", "csv", "log", "rst"}
+HEREDOC = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
+CHI_HOI = {"--help", "--version"}
+TUY_CHON_CO_GIA_TRI = {"--file", "--regexp", "--glob", "-g", "--type", "-t", "--include",
+                       "--exclude", "--max-count", "-Path", "-Pattern", "-Include", "-Exclude"}
 
 LOI_RA = ("Ask first: mcp__plugin_lumen_lumen__semantic_search with a natural-language query "
           "(what/how/where), mcp__lsp__find_symbol / find_references (a symbol and its callers), "
@@ -285,6 +298,7 @@ def _mau_kieu_grep(ten, args):
         elif vi_tri is None:
             vi_tri = a
         i += 1
+    _mau_kieu_grep.tu_file = tu_file
     if mau:
         return mau
     if tu_file or vi_tri is None:
@@ -346,7 +360,11 @@ def _lan_tim(ten, args):
         return _hinh_mau(_mau_select_string(args))
     if ten == "git":
         args = _git_lenh_con(args)[1]
-    return _hinh_mau(_mau_kieu_grep(ten, args))
+    nhanh, doan_mo = _hinh_mau(_mau_kieu_grep(ten, args))
+    if getattr(_mau_kieu_grep, "tu_file", False):
+        # `-f patterns.txt`: a guess-list moved into a file is still a guess-list (R1#9).
+        doan_mo = True
+    return nhanh, doan_mo
 
 
 # ---------------------------------------------------------------- classification
@@ -362,13 +380,101 @@ def _script_cua(lenh):
     return "" if lenh is None else str(lenh)
 
 
-def _phan_loai_ong(cac_phan):
+def _bo_heredoc(script):
+    """Drop heredoc BODIES: `cat > x.sh <<'EOF'` followed by a `grep` line is writing a file, not
+    searching. The first version split the body into commands (review 2026-10-03, R1#4)."""
+    if "<<" not in script:
+        return script
+    ra, cho = [], []
+    for dong in script.split("\n"):
+        if cho:
+            if dong.strip() == cho[0]:
+                cho.pop(0)
+            continue
+        ra.append(dong)
+        cho = [m.group(2) for m in HEREDOC.finditer(dong)]
+    return "\n".join(ra)
+
+
+def _la_tai_lieu(duong):
+    """A path that is a document, not code: its extension, or a docs directory in it."""
+    p = str(duong).replace("\\", "/").strip("'\"").rstrip("/")
+    if not p or p.startswith("-"):
+        return False
+    phan = [x for x in p.split("/") if x not in ("", ".")]
+    if any(x.lower() in THU_MUC_TAI_LIEU for x in phan):
+        return True
+    ten = phan[-1].lower() if phan else ""
+    return any(ten.endswith(d) for d in DUOI_TAI_LIEU)
+
+
+def _chi_tim_tai_lieu(args, nhanh):
+    """True when the search names explicit targets and ALL of them are documents.
+
+    The VALUE of an option is never a target: in `grep -f pats.txt src` the `.txt` is the pattern
+    file, and counting it made a code search look like reading documents.
+    """
+    dich, bo_qua = [], False
+    for a in args:
+        if bo_qua:
+            bo_qua = False
+            continue
+        if a.startswith("-"):
+            ten = a.split("=", 1)[0]
+            bo_qua = "=" not in a and (ten in TUY_CHON_CO_GIA_TRI
+                                       or (not ten.startswith("--") and ten[-1:] in "efABCm"))
+            continue
+        if a not in nhanh and ("/" in a or "\\" in a or "." in a.lstrip(".")):
+            dich.append(a)
+    return bool(dich) and all(_la_tai_lieu(a) for a in dich)
+
+
+def _script_boc(ten, args):
+    """The inner script of `bash -c '…'`, `pwsh -Command …`, `cmd /c …`, else None."""
+    if ten not in SHELL_BOC:
+        return None
+    for k, a in enumerate(args):
+        if a.lower() in CO_SCRIPT and k + 1 < len(args):
+            return " ".join(args[k + 1:]) if ten == "cmd" else args[k + 1]
+    return None
+
+
+def _tim_trong_exec(args):
+    """(program, args) of `find … -exec <prog> … ;` when <prog> is a search program."""
+    for k, a in enumerate(args):
+        if a in ("-exec", "-execdir", "-ok") and k + 1 < len(args):
+            con = []
+            for b in args[k + 1:]:
+                if b in (";", "\\;", "+"):
+                    break
+                con.append(b)
+            if con:
+                ten, rest, _ = _chuan_hoa(con)
+                if _kieu(ten, rest) == "search":
+                    return ten, rest
+    return None
+
+
+def _phan_loai_ong(cac_phan, do_sau=0):
     """Yield (loai, alternatives, doan_mo) for every search part of one pipeline."""
     da_chuan = [_chuan_hoa(_tach_tu(p)) for p in cac_phan]
     kieu = [_kieu(ten, args) for ten, args, _ in da_chuan]
     for k, (ten, args, qua_xargs) in enumerate(da_chuan):
+        boc = _script_boc(ten, args)
+        if boc is not None and do_sau < DO_SAU_TOI_DA:
+            for ong in _tach_script(_bo_heredoc(boc)):
+                yield from _phan_loai_ong(ong, do_sau + 1)
+            continue
+        if ten == "find":
+            ex = _tim_trong_exec(args)
+            if ex:
+                nhanh, doan_mo = _lan_tim(*ex)
+                yield (KHONG if _chi_tim_tai_lieu(args, nhanh) else TIM_CODE), nhanh, doan_mo
+            continue
         if kieu[k] != "search":
             continue
+        if CHI_HOI & set(args) or args == ["-V"]:
+            continue                      # `grep --help` asks the program, not the code (R1#3)
         if k == 0 or qua_xargs:
             loai = TIM_CODE
         elif kieu[0] == "listing":
@@ -379,6 +485,8 @@ def _phan_loai_ong(cac_phan):
         else:
             loai = KHONG
         nhanh, doan_mo = _lan_tim(ten, args) if loai == TIM_CODE else ([], False)
+        if loai == TIM_CODE and _chi_tim_tai_lieu(args, nhanh):
+            loai, nhanh, doan_mo = KHONG, [], False
         yield loai, nhanh, doan_mo
 
 
@@ -398,12 +506,17 @@ def _du_phong(script):
 def phan_loai(cong_cu, lenh):
     """Classify a Grep pattern or a shell command. Returns {"loai", "tu_khoa", "doan_mo"}."""
     if cong_cu == "Grep":
-        mau = lenh.get("pattern", "") if isinstance(lenh, dict) else _script_cua(lenh)
-        nhanh, doan_mo = _hinh_mau([mau])
+        vao = lenh if isinstance(lenh, dict) else {"pattern": _script_cua(lenh)}
+        nhanh, doan_mo = _hinh_mau([vao.get("pattern") or ""])
+        loc = str(vao.get("glob") or "")
+        if (str(vao.get("type") or "").lower() in LOAI_TAI_LIEU
+                or (loc and _la_tai_lieu(loc.replace("*", "x")))
+                or (vao.get("path") and _la_tai_lieu(vao.get("path")))):
+            return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
         return {"loai": TIM_CODE, "tu_khoa": nhanh, "doan_mo": doan_mo}
     if str(cong_cu).lower() not in CONG_CU_SHELL:
         return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
-    script = _script_cua(lenh)
+    script = _bo_heredoc(_script_cua(lenh))
     try:
         ket_qua = [r for ong in _tach_script(script) for r in _phan_loai_ong(ong)]
     except Exception:  # noqa: BLE001 — the gate must never break on an odd command

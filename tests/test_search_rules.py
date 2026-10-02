@@ -2,7 +2,7 @@
 
 Hàm thuần: phân loại một lệnh Bash / mẫu Grep, rồi quyết `allow`/`deny` theo 3 luật spec §3.
 Chạy riêng từng nhóm bằng `-k`: `loc_file`, `doan_mo`, `ghep`, `codex`, `mo_dau`,
-`ten_trong_prompt`, `mo_khoa`, `cua_so`, `het_han`, `fixture`.
+`ten_trong_prompt`, `mo_khoa`, `cua_so`, `het_han`, `fixture`, `phan_loai`.
 """
 import io
 import json
@@ -285,6 +285,43 @@ class TestFixture(unittest.TestCase):
         self.assertIn(9, kq["bi_chan"])
         self.assertEqual(kq["bat_oan"], 0)
         self.assertEqual(kq["lot"], 0)
+
+
+class PhanLoaiBien(unittest.TestCase):
+    """F4 (QC vòng 1) — các dạng lệnh làm phân loại lệch: hỏi trợ giúp, heredoc, shell bọc,
+    `find -exec`, `-f FILE`, đích chỉ là tài liệu, và Grep có glob/path/type."""
+
+    def test_phan_loai_hoi_tro_giup_khong_phai_tim(self):
+        for l in ("grep --help", "rg --version", "rg -V"):
+            self.assertEqual(_bash(l)["loai"], "khong_phai_tim", l)
+
+    def test_phan_loai_heredoc_khong_phai_tim(self):
+        l = "cat > x.sh <<'EOF'\ngrep -rn foo src\nEOF"
+        self.assertEqual(_bash(l)["loai"], "khong_phai_tim")
+
+    def test_phan_loai_shell_boc_van_la_tim(self):
+        for l in ("bash -c 'grep -rn foo .'",
+                  "powershell -Command \"Select-String -Path src/*.ts -Pattern foo\"",
+                  "find . -name '*.ts' -exec grep -n foo {} +"):
+            self.assertEqual(_bash(l)["loai"], "tim_code", l)
+
+    def test_phan_loai_file_mau_la_doan_mo(self):
+        for l in ("grep -rn -f pats.txt src", "grep -rnf pats.txt src/"):
+            kq = _bash(l)
+            self.assertEqual((kq["loai"], kq["doan_mo"]), ("tim_code", True), l)
+
+    def test_phan_loai_dich_chi_tai_lieu_khong_phai_tim(self):
+        for l in ("grep -rn fileHandle docs/notes.md", "grep -rn fileHandle docs/",
+                  "grep -e x -e y README.md"):
+            self.assertEqual(_bash(l)["loai"], "khong_phai_tim", l)
+        self.assertEqual(_bash("grep -rn foo src/app.ts")["loai"], "tim_code")
+
+    def test_phan_loai_grep_glob_path_type(self):
+        for vao in ({"pattern": "foo", "glob": "*.md"}, {"pattern": "foo", "type": "md"},
+                    {"pattern": "foo", "path": "docs/notes.md"}):
+            self.assertEqual(sr.phan_loai("Grep", vao)["loai"], "khong_phai_tim", vao)
+        self.assertEqual(sr.phan_loai("Grep", {"pattern": "foo", "path": "src"})["loai"],
+                         "tim_code")
 
 
 class TestThuan(unittest.TestCase):
