@@ -1,0 +1,223 @@
+{
+  "slug": "2026-10-03-0015-ep-luat-tim-kiem",
+  "plan_file": "docs\\tdq\\plan\\2026-10-03-0015-ep-luat-tim-kiem.md",
+  "plan_sha": "8c240669d25638f9100adcd0cf2a4f5cd7cc0317e4be06c651ab0b11fad926e2",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/fixtures/phien_excalidraw_tim.json"
+      ],
+      "dot": 1
+    },
+    "T1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/search_replay.py",
+        "tests/test_search_replay.py"
+      ],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/search_rules.py",
+        "tests/test_search_rules.py"
+      ],
+      "dot": 3
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_observe.py",
+        "docs/tdq/.tdq-search.jsonl",
+        "tests/test_search_observe.py"
+      ],
+      "dot": 1
+    },
+    "T2.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_gate.py",
+        "tests/test_search_gate.py"
+      ],
+      "dot": 4
+    },
+    "T2.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/hooks.json",
+        "tests/test_subagent_start.py"
+      ],
+      "dot": 5
+    },
+    "T2.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/search_rules.py"
+      ],
+      "dot": 4
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        ".codex-plugin/plugin.json",
+        ".codex/hooks.json",
+        "hooks/scripts/search_gate.py",
+        "tests/test_codex_search_gate.py"
+      ],
+      "dot": 5
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_codex_mcp.py",
+        "tests/test_codex_mcp.py"
+      ],
+      "dot": 2
+    },
+    "T3.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 6
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_lsp.py",
+        "tests/test_bac3_khoi_dong.py"
+      ],
+      "dot": 1
+    },
+    "T4.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_setup.py",
+        "tests/test_smoke_ngon_ngu.py"
+      ],
+      "dot": 1
+    },
+    "T4.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_lsp.py",
+        "scripts/tdq_setup.py",
+        "tests/test_mot_lenh_kiem.py"
+      ],
+      "dot": 2
+    },
+    "T5.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "hooks/scripts/edit_gate.py",
+        "hooks/scripts/prompt_context.py",
+        "hooks/scripts/bash_gate.py",
+        "tests/test_duong_dan_tuyet_doi.py"
+      ],
+      "dot": 1
+    },
+    "T6.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/.tdq-khoi-tao.lock",
+        "docs/tdq/.tdq-san-sang.json",
+        "scripts/tdq_setup.py",
+        "tests/test_tu_khoi_tao.py"
+      ],
+      "dot": 3
+    },
+    "T6.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/session_start.py",
+        "tests/test_tu_khoi_tao.py"
+      ],
+      "dot": 4
+    },
+    "T6.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_gate.py",
+        "tests/test_search_gate.py"
+      ],
+      "dot": 6
+    },
+    "T7.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "docs/kien-truc.md",
+        "hooks/scripts/_common.py"
+      ],
+      "dot": 1
+    },
+    "T7.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T8.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T8.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T8.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 3
+    },
+    "T8.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 3
+    },
+    "T8.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-10-03-0015-ep-luat-tim-kiem.md"
+      ],
+      "dot": 4
+    },
+    "T8.6": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 5
+    }
+  }
+}
