@@ -175,7 +175,7 @@ def in_bang(kq):
     dong = [f"rules: {kq['luat']}", "", "| event | tool | command | decision | reason |",
             "|---|---|---|---|---|"]
     for h in kq["hang"]:
-        qd = "allow" if h["cho_phep"] else "deny"
+        qd = "allow" if h["cho_phep"] else "blocked"
         dong.append(f"| {h['luot']} | {h['cong_cu']} | {_cat(h['lenh'])} | {qd} | "
                     f"{str(h['ly_do']).replace('|', '/')} |")
     # "denied" is every denial (JSON key `bat`); "right" is the part that was not a file-list filter.
