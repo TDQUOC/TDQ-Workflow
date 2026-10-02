@@ -149,7 +149,7 @@ trong `hooks.json`.
 
 ## P5 — Đường dẫn tuyệt đối
 
-- [ ] **T5.1** (e35m) Một hàm dựng lệnh ở `scripts/tdq_state.py` trả đường dẫn tuyệt đối của
+- [x] **T5.1** (e35m) Một hàm dựng lệnh ở `scripts/tdq_state.py` trả đường dẫn tuyệt đối của
   plugin; dòng `Command:` của `next` và mọi lệnh hook in ra (`edit_gate`, `prompt_context`,
   `bash_gate`) dùng nó thay cho `python3 scripts/…` — Test:
   `python -m unittest discover tests -p test_duong_dan_tuyet_doi.py` (chạy hook với cwd là một thư
@@ -161,7 +161,7 @@ trong `hooks.json`.
 
 ## P6 — Tự khởi tạo ở đầu project
 
-- [ ] **T6.1** (e40m) `tdq_setup.py --nen`: chạy nền phần đắt (cài phụ thuộc ĐÃ KHAI, dựng đồ thị
+- [>] **T6.1** (e40m) `tdq_setup.py --nen`: chạy nền phần đắt (cài phụ thuộc ĐÃ KHAI, dựng đồ thị
   graphify, index lumen), khoá pid `docs/tdq/.tdq-khoi-tao.lock` (pid chết → lấy lại được), trần
   thời gian, xong thì ghi file mốc sẵn sàng `docs/tdq/.tdq-san-sang.json` theo từng tầng — Test:
   `python -m unittest discover tests -p test_tu_khoi_tao.py` (lệnh giả thay cho lumen/graphify)
@@ -183,11 +183,11 @@ về, và cổng không chặn trong lúc dựng.
 
 ## P7 — Hồ sơ kiến trúc và luật
 
-- [ ] **T7.1** (e15m) `docs/kien-truc.md` thêm dòng chốt 2026-10-03 (điểm chặn thứ hai, lý do,
+- [x] **T7.1** (e15m) `docs/kien-truc.md` thêm dòng chốt 2026-10-03 (điểm chặn thứ hai, lý do,
   điều kiện chặn); mã `TDQ:SEARCH` vào `_common.CODES` kèm dòng lý do có ngày và vào bảng
   `reminder-codes.md` — Test: `python -m unittest discover tests -p test_common.py`
   - Chạm: `hooks/scripts/_common.py` → `CODES`
-- [ ] **T7.2** (e15m) `uu-tien-tim-kiem.md` thêm mục ngắn "cổng giữ luật này thế nào" (ba luật,
+- [x] **T7.2** (e15m) `uu-tien-tim-kiem.md` thêm mục ngắn "cổng giữ luật này thế nào" (ba luật,
   cửa sổ N, cách được mở khoá); giữ dưới trần 3.500 token, sinh lại chỉ mục và tệp khoá — Test:
   `python scripts/token_budget.py --kiem` thoát 0 và `python scripts/doc_index.py --kiem --tat-ca`
   thoát 0

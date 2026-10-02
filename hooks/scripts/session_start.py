@@ -23,7 +23,8 @@ from _common import (already_reminded, payload_cwd, read_payload, session_id,
 # from-import shape (not a module attribute call) is what lets graphify emit a cross-file
 # `calls` edge.
 from luat_gon import doc_than_luat, loc_than_luat  # noqa: E402
-from tdq_state import default_state, load, muc_gat_hieu_luc, render_next  # noqa: E402
+from tdq_state import (default_state, lenh_cho_project, load,  # noqa: E402
+                       muc_gat_hieu_luc, render_next)
 from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
@@ -91,7 +92,9 @@ def main():
                         event="SessionStart", muc_gat=muc,
                         so_dong=len(out.partition(f"[{MA_GON}]")[2].splitlines()[1:]),
                         source=str(payload.get("source") or ""))
-    print(out)
+    # Absolute paths AFTER both caps: the caps measure what the block says; rewriting first
+    # pushed the block over 600 characters and cut its tail off (measured 2026-10-03).
+    print(lenh_cho_project(out, cwd))
 
 
 if __name__ == "__main__":

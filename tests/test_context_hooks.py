@@ -7,7 +7,7 @@ import unittest
 import importlib.util
 import os
 
-from helper import (HOOKS, run_hook, load_fixture, write_state, write_file,
+from helper import (HOOKS, bo_duong_dan_plugin, run_hook, load_fixture, write_state, write_file,
                     tdq_state)
 
 
@@ -28,6 +28,9 @@ def khoi_dau(out):
     2026-09-21: đo theo đoạn chứ không chỉ theo mốc `[TDQ:GON]`, vì dòng nhắc tên lệnh Python
     trên Windows đứng giữa khối đầu và thân luật, thành đoạn riêng. Khối đầu không bao giờ có
     dòng trống bên trong (đã soi cả 7 phase), nên dòng trống đầu tiên là ranh giới đúng."""
+    # 2026-10-03: hook in đường dẫn TUYỆT ĐỐI ở project không có `scripts/` — đúng ca thư mục tạm
+    # của test. Trần đo NỘI DUNG khối đầu; tiền tố đường dẫn là cơ học, đổi sau bước cắt.
+    out = bo_duong_dan_plugin(out)
     return out.split(MOC_LUAT, 1)[0].split("\n\n", 1)[0].rstrip()
 
 
@@ -131,7 +134,7 @@ class TestThanLuatKenhPhien(unittest.TestCase):
             with self.subTest(muc=muc):
                 out = self.chay(muc_gat=muc)
                 self.assertLessEqual(len(out.splitlines()), 160)
-                self.assertLessEqual(len(out), 8200)
+                self.assertLessEqual(len(bo_duong_dan_plugin(out)), 8200)
 
     def test_khoi_dau_van_trong_tran_cu(self):
         dau = khoi_dau(self.chay())
@@ -175,7 +178,7 @@ class TestTruncation(unittest.TestCase):
         text = ("x" * 230
                 + " chạy `python3 scripts/tdq_state.py approve spec` xong")
         out = self.mod._truncate(text)
-        self.assertLessEqual(len(out), 240)
+        self.assertLessEqual(len(bo_duong_dan_plugin(out)), 240)
         self.assertEqual(out.count("`") % 2, 0, out)
         self.assertNotIn("`python3", out)
 
@@ -185,7 +188,7 @@ class TestTruncation(unittest.TestCase):
     def test_truncate_outside_inline_code_keeps_closed_span(self):
         text = "`cmd ok` " + "y" * 300
         out = self.mod._truncate(text)
-        self.assertLessEqual(len(out), 240)
+        self.assertLessEqual(len(bo_duong_dan_plugin(out)), 240)
         self.assertIn("`cmd ok`", out)
 
 
@@ -202,7 +205,7 @@ class TestPromptContext(unittest.TestCase):
 
     def assert_budget(self, out):
         self.assertLessEqual(len(out.splitlines()), 3)
-        self.assertLessEqual(len(out), 240)
+        self.assertLessEqual(len(bo_duong_dan_plugin(out)), 240)
 
     def test_repeated_identical_next_only_shrinks_on_second_turn(self):
         """P1-6/P1-7 — không có gì đang chờ duyệt, nội dung NEXT y hệt turn trước

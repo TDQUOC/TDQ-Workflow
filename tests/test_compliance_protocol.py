@@ -11,7 +11,8 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from helper import ROOT, decision, load_fixture, run_hook, tdq_state, write_state
+from helper import (ROOT, bo_duong_dan_plugin, decision, load_fixture, run_hook, tdq_state,
+                    write_state)
 
 SESSION = "sess-test"
 # Read from the product, never rebuilt here: this test used to join the path with `os.sep` and
@@ -55,7 +56,7 @@ class ProtocolTest(unittest.TestCase):
         self.assertEqual(perm, "allow")                      # không bao giờ chặn
         self.assertTrue(context.startswith("[TDQ:STATE]"), context)
         self.assertLessEqual(len(context.splitlines()), 3, context)
-        self.assertLessEqual(len(context), 200, len(context))
+        self.assertLessEqual(len(bo_duong_dan_plugin(context)), 200, len(context))
         self.assertIn("✓ [TDQ:STATE]", context)              # có dòng echo hướng dẫn
         self.assertEqual(len([r for r in rows(self.cwd, "remind")
                               if r["code"] == "TDQ:STATE"]), 1)
@@ -196,14 +197,14 @@ class ProtocolTest(unittest.TestCase):
         rc, out, _ = run_hook("session_start.py", self.payload("prompt.json"))
         # 2026-09-17: xem ghi chú ở test_hooks_reuse_next — trần 600 giữ nguyên số, đo trên
         # khối đầu. Trần toàn đầu ra (160 dòng / 8200 ký tự) do test_token_budget giữ.
-        self.assertLessEqual(len(khoi_dau(out)), 600, len(out))
+        self.assertLessEqual(len(khoi_dau(bo_duong_dan_plugin(out))), 600, len(out))
         self.assertIn("[TDQ] Rule:", out)
 
     def test_prompt_budget(self):
         self.full_state(phase="spec", spec_file="docs/tdq/spec/x.md")
         rc, out, _ = run_hook("prompt_context.py", self.payload("prompt.json", prompt="duyệt spec"))
         self.assertLessEqual(len(out.splitlines()), 3, out)
-        self.assertLessEqual(len(out), 240, len(out))
+        self.assertLessEqual(len(bo_duong_dan_plugin(out)), 240, len(out))
 
     # T2.10 ----------------------------------------------------------
     def test_stop_gate_decision_matrix(self):

@@ -2,6 +2,7 @@
 import functools
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -20,6 +21,17 @@ def run_hook(script, payload, env=None):
         env=dict(os.environ, **(env or {})),
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
+def bo_duong_dan_plugin(text):
+    """Đưa `python3 "<gốc plugin>/scripts/X.py"` về `python3 scripts/X.py` trước khi đo trần.
+
+    Từ 2026-10-03 hook in đường dẫn TUYỆT ĐỐI khi project không có `scripts/` (đúng ca test chạy
+    trong thư mục tạm). Trần ký tự đo NỘI DUNG lời nhắc; tiền tố đường dẫn là cơ học và được đổi
+    sau bước cắt — đo nó vào trần là bắt lời nhắc trả giá cho độ dài thư mục cài plugin."""
+    goc = os.path.dirname(os.path.dirname(os.path.abspath(__file__))).replace(os.sep, "/")
+    return re.sub(r'python3 "' + re.escape(goc) + r'/scripts/([\w.-]+\.py)"', r"python3 scripts/\1",
+                  text or "")
 
 
 def co_lenh(ten):

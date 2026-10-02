@@ -17,7 +17,7 @@ from helper import ROOT
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_lsp  # noqa: E402
 
-MAU_DOCTOR = """agent-lsp doctor
+MAU_DOCTOR = r"""agent-lsp doctor
 ● javascript (C:\npm\typescript-language-server.cmd)
   Status:  failed
   Error:   initialize request: lsp error -32603: Request initialize failed with message: Could not find a valid TypeScript installation. Please ensure that the "typescript" dependency is installed.

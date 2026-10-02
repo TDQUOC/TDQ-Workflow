@@ -16,7 +16,7 @@ import sys
 import tempfile
 import unittest
 
-from helper import ROOT, run_hook, write_state
+from helper import ROOT, bo_duong_dan_plugin, run_hook, write_state
 
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_state  # noqa: E402
@@ -27,6 +27,9 @@ TRAN_KHOI_DAU = 600
 
 def khoi_dau(out):
     """Đoạn văn đầu tiên — chỗ duy nhất trần 12 dòng / 600 ký tự áp vào (2026-09-21)."""
+    # 2026-10-03: hook in đường dẫn TUYỆT ĐỐI ở project không có `scripts/` — đúng ca thư mục tạm
+    # của test. Trần đo NỘI DUNG khối đầu; tiền tố đường dẫn là cơ học, đổi sau bước cắt.
+    out = bo_duong_dan_plugin(out)
     return out.split(MOC_LUAT, 1)[0].split("\n\n", 1)[0].rstrip()
 
 

@@ -64,6 +64,14 @@ khai ở dòng `Chạm:` của plan:
   cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng. Đường dẫn adapter do host quy định — `.codex-plugin/`, `.agents/plugins/`,
   `.opencode/plugins/` — nên đây là ngoại lệ của luật "code mới chỉ nằm trong `scripts/` hoặc
   `hooks/`". Adapter OpenCode là JavaScript thuần, không package npm, bọc try/catch mọi bước.
+- 2026-10-03: **điểm chặn thứ hai** — `hooks/scripts/search_gate.py` trả `deny` (mã
+  `TDQ:SEARCH`) cho một lần tìm code đi tắt tầng khái niệm. Dòng 2026-07-29 vẫn đứng: không hook
+  nào chặn vì lý do "chưa duyệt"; đây là lý do KHÁC. Ba luật xét theo thứ tự: (1) miễn cho lọc danh
+  sách file và cho tên có nguyên văn trong prompt của user; (2) request chưa gọi lumen/LSP/graphify
+  lần nào → chặn; (3) quá N lần tìm kể từ lần gọi gần nhất mà mẫu có hình đoán mò → chặn. Cổng
+  KHÔNG chặn khi tầng khái niệm chưa dựng xong — chặn mà không có đường đúng để đi là kẹt. Lý do
+  phải chặn chứ không nhắc: user yêu cầu "buộc phải tuân theo", và `PreToolUse` của Codex chỉ có
+  `deny`. Đo trên phiên thật 2026-10-02: ~20 lần tìm qua 4 request, 0 lumen, 0 LSP.
 - 2026-09-23: mức QC là quyết định của USER, không phải suy luận của agent. Khoá `muc_qc`
   (`lite|full|ultra|off`, mặc định `full`, fail-closed) được hỏi ở cuối phase `analyze` — trước
   khi viết spec §6 — và tại cổng duyệt của lane express. Bảng "mức nào chạy loại kiểm nào" có

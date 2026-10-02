@@ -20,7 +20,7 @@ from _common import (already_reminded, approve_hint, payload_cwd, plan_mode,
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (MODE_ALIASES, effective_lane,  # noqa: E402
-                       effective_mode, effective_phase, liet_ke_modes, load,
+                       effective_mode, effective_phase, lenh_cho_project, liet_ke_modes, load,
                        muc_gat_hieu_luc, normalize_mode, phase_key,
                        prompt_context_last, prompt_context_save, render_next,
                        sha256_noi_dung, turn_log_append, turn_log_clear,
@@ -174,8 +174,8 @@ def _nhac_worktree(cwd):
     except Exception:
         return
     if mo:
-        print(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
-              "python3 scripts/tdq_team.py sweep")
+        print(lenh_cho_project(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
+                                         "python3 scripts/tdq_team.py sweep", cwd))
 
 
 def _nhac_gon(cwd, state, payload, session):
@@ -346,7 +346,9 @@ def _compact(text):
 def _emit(cwd, session, lines, critical=False):
     """critical=True: a warning/action specific to this turn (ambiguous approval, mode
     mismatch, spec drift) — never compacted, even when it repeats last turn word for word."""
-    text = _truncate("\n".join(lines[:MAX_LINES]))
+    # Paths are made absolute AFTER the cap, for the reason `_common._tuyet_doi` gives: a cut
+    # command is a command the agent cannot run.
+    text = lenh_cho_project(_truncate("\n".join(lines[:MAX_LINES])), cwd)
     if critical:
         print(text)
         return

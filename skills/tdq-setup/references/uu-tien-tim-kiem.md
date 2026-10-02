@@ -1,10 +1,12 @@
 # The search-order rule — the single source
 <!-- muc-luc-dong:
-  1. The order, settled=14-34 ·
-  2. The table — kind of question → which layer first, with the numbers=35-56 ·
-  2b. The fourth layer: graphify, the map=57-90 ·
-  2c. Runtime dependencies — what each layer needs, and what it falls back to=91-106 ·
-  5. Where this rule is hooked in=107-119 · 3. Three details that live in a sibling file=120
+  1. The order, settled=16-36 ·
+  2. The table — kind of question → which layer first, with the numbers=37-58 ·
+  2b. The fourth layer: graphify, the map=59-92 ·
+  2c. Runtime dependencies — what each layer needs, and what it falls back to=93-108 ·
+  5. Where this rule is hooked in=109-120 ·
+  6. The gate that holds this rule (since 2026-10-03)=121-135 ·
+  3. Three details that live in a sibling file=136
 -->
 
 This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and `tdq-build` each
@@ -113,9 +115,23 @@ checks existence is blind to the way these two tools actually fail.
 | plan | `skills/tdq-plan/SKILL.md` | build the `Chạm:` line from "who calls this", not from a guess |
 | implement | `skills/tdq-build/SKILL.md` | `## Hard rules`, and "Search before creating" at step 2.4 |
 
-Each of those five files carries the quoted sentence from section 1 and a link back here. They
-must not drift: `tests/test_tdq_setup_skill.py` compares them against this file and fails when one
-of them is edited alone.
+Each of those five files carries a short pointer to section 1, never a copy of the rule:
+`tests/test_tdq_setup_skill.py` fails when one of them copies the sentence back or loses the link.
+
+## 6. The gate that holds this rule (since 2026-10-03)
+
+The rule is not only text. `hooks/scripts/search_gate.py` sits on `PreToolUse` for `Bash` and
+`Grep` — on Claude Code and on Codex — and DENIES (code `TDQ:SEARCH`) by three rules, in order:
+
+1. **Exempt:** a file-list filter (`git ls-files | grep …`), and a name the user typed verbatim
+   in the latest prompt.
+2. **Opening rule:** this request has not asked lumen, LSP or `graphify query` yet → denied.
+3. **Bounded unlock:** one concept-layer query unlocks the next `CUA_SO` searches
+   (`scripts/search_rules.py`); after that a guess-list grep is denied again, a single exact name
+   still passes.
+
+The way out is always the same: run the query the denial names, then search again. Nothing is
+denied while the concept layer is still being built.
 
 ## 3. Three details that live in a sibling file
 

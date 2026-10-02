@@ -76,8 +76,11 @@ def plan_mode(cwd, state):
 # carry the law body; UserPromptSubmit carries one pointer line). Declared in spec §5 first.
 # 2026-10-02: the seventh, TDQ:DOC — `read_gate.py` on a whole-file re-read. Declared in spec
 # 2026-09-28-2324 §2 first, and documented in `reminder-codes.md` with the other six.
+# 2026-10-03: the eighth, TDQ:SEARCH — `search_gate.py` DENIES a code search that skips the
+# concept layer. The second blocking point of the workflow; why, in `docs/kien-truc.md` 2026-10-03
+# and spec 2026-10-03-0015 §3.
 CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT", "TDQ:GON",
-         "TDQ:DOC")
+         "TDQ:DOC", "TDQ:SEARCH")
 
 # The token budget cap (spec §2.7) — measured on the reminder content.
 MAX_REMIND_CHARS = 200
@@ -131,6 +134,16 @@ def already_reminded(cwd, payload, code, rows=None):
     return any(r.get("kind") == "remind" and r.get("code") == code for r in rows)
 
 
+def _tuyet_doi(text, cwd):
+    """Make every `python3 scripts/X.py` in a reminder runnable from THIS project.
+
+    Applied AFTER `trim`: the 200-character cap measures what the reminder says, while the path
+    prefix is mechanical. Rewriting before the cap would cut a command in half, and a command cut
+    in half is one the agent cannot run.
+    """
+    return tdq_state.lenh_cho_project(text, cwd)
+
+
 def trim(lines):
     """Force it under the cap: <= 3 lines, <= 200 characters."""
     lines = [l for l in lines if l][:MAX_REMIND_LINES]
@@ -155,13 +168,13 @@ def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
             "hookEventName": event,
             "permissionDecision": "allow",
             "permissionDecisionReason": "TDQ: a reminder, not a block.",
-            "additionalContext": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
+            "additionalContext": _tuyet_doi(trim([f"[{code}] {lines[0]}"] + list(lines[1:])), cwd),
         }
     }, ensure_ascii=False))
     sys.exit(0)
 
 
-def block(cwd, payload, code, lines, event="PreToolUse"):
+def block(cwd, payload, code, lines, event="PreToolUse", day_du=False):
     """BLOCK the tool with a CODE, then exit.
 
     Two deliberate differences from `remind()`:
@@ -170,13 +183,19 @@ def block(cwd, payload, code, lines, event="PreToolUse"):
       asked (e.g. ticks `[~]` into the plan); dedupe would let the second edit slip through
       while that job is still undone, i.e. the fence would only ever work once.
     Written to the turn ledger under kind `block` so it never mixes with `remind`'s dedupe.
+
+    `day_du=True` keeps the whole reason instead of `trim`ming it to 200 characters. Use it only
+    when the reason IS the way out — the search gate's denial names the exact query to run
+    instead, and a reason cut in half leaves the agent blocked with no instruction.
     """
     turn_log_append(cwd, "block", session=session_id(payload), code=code)
+    dong = [f"[{code}] {lines[0]}"] + list(lines[1:])
+    ly_do = "\n".join(l for l in dong if l) if day_du else trim(dong)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": event,
             "permissionDecision": "deny",
-            "permissionDecisionReason": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
+            "permissionDecisionReason": _tuyet_doi(ly_do, cwd),
         }
     }, ensure_ascii=False))
     sys.exit(0)
@@ -191,7 +210,7 @@ def remind_force(cwd, payload, code, lines, event="PreToolUse"):
             "hookEventName": event,
             "permissionDecision": "allow",
             "permissionDecisionReason": "TDQ: a reminder, not a block.",
-            "additionalContext": trim([f"[{code}] {lines[0]}"] + list(lines[1:])),
+            "additionalContext": _tuyet_doi(trim([f"[{code}] {lines[0]}"] + list(lines[1:])), cwd),
         }
     }, ensure_ascii=False))
     sys.exit(0)
