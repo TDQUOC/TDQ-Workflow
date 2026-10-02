@@ -1,4 +1,7 @@
 # The 12 drift cases D1–D12
+<!-- muc-luc-dong:
+  Known limits=36
+-->
 
 Human-readable mirror of constant `CA_LECH` in `scripts/tdq_checkstatus.py`. A test locks the
 two places to the same codes and the same levels, so editing one side turns the other red.

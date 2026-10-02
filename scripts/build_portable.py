@@ -223,6 +223,11 @@ AGY_SKILLS_JSON = "~/.gemini/config/skills.json"
 
 HOOK_AGY = (
     ("PreToolUse", "agy_pretooluse_gate.py"),
+    # 2026-10-02: the read gate goes into the agy bundle too, but it only fires when the payload
+    # carries `tool_input.file_path`. agy's own PreToolUse gate speaks `run_command` and has no
+    # notion of reading a file, so under agy this entry is a no-op until that host grows a read
+    # tool with the same field. Shipping it anyway keeps ONE hook table instead of two that drift.
+    ("PreToolUse", "read_gate.py"),
     ("Stop", "agy_stop_gate.py"),
 )
 
@@ -469,7 +474,11 @@ def sinh_ban_antigravity(repo, dest, version="", ten_thu_muc=None, goc_cai=None)
     _sua_duong_dan_tuong_doi_agy(os.path.join(goc, "skills"), goc_cai)
 
     os.makedirs(os.path.join(goc, "hooks", "scripts"), exist_ok=True)
-    for ten_file in ("agy_pretooluse_gate.py", "agy_stop_gate.py"):
+    # The copy list is DERIVED from HOOK_AGY, never written twice: the bundle shipped a
+    # `hooks.json` entry for `read_gate.py` while the copy list was a hardcoded pair, so every
+    # PreToolUse under agy ran a file that was not there. `_common.py` rides along because the
+    # shared gates import it (the rest of its imports resolve: `scripts/` is copied above).
+    for ten_file in sorted({t for _e, t in HOOK_AGY} | {"_common.py"}):
         src = os.path.join(repo, "hooks", "scripts", ten_file)
         dst = os.path.join(goc, "hooks", "scripts", ten_file)
         shutil.copy2(src, dst)

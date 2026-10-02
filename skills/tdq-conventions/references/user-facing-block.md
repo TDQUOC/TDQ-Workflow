@@ -1,4 +1,9 @@
 # Shape of a block spoken to the user
+<!-- muc-luc-dong:
+  Table of contents=17-25 · The seven places this shape is mandatory=26-30 ·
+  The six components (all six, in order)=31-59 · The eight decoration rules=60-99 ·
+  Hard rules=100-126 · Bảng ký hiệu và ví dụ TRƯỚC/SAU=127
+-->
 
 Applies to **every** place where TDQ asks a question or presents a result to the user. The reader
 is an end user, not a colleague from the trade: they need to know what they are looking at, where
@@ -119,72 +124,9 @@ content to be changed, removed or added.
   rule got broken in practice while the rule itself was already written down: it lived only in
   the skill files that ask questions, and nobody re-read the draft before sending.
 
-## The symbols allowed
+## Bảng ký hiệu và ví dụ TRƯỚC/SAU
 
-A block printed for the user may use exactly six non-ASCII symbols:
+Tách sang file em tầng 1 [user-facing-block-vi-du.md](user-facing-block-vi-du.md) ngày 2026-10-02:
+965 token. Cả hai phần đều là TRA CỨU. Bảng ký hiệu chỉ mở khi không chắc một dấu có được dùng;
+ví dụ chỉ mở khi muốn so khối mình vừa viết với một khối đúng.
 
-| Character | Codepoint | Used for |
-|---|---|---|
-| `➤` | U+27A4 | opens the answer-guidance line, always the last line |
-| `·` | U+00B7 | separates two equal halves on one line |
-| `—` | U+2014 | separates an explanation from the thing explained |
-| `→` | U+2192 | points from one state to the next |
-| `–` | U+2013 | joins the two ends of a range |
-| `…` | U+2026 | cuts short a repeated part in an example |
-
-A character outside the table must not be added, however harmless it looks. `▸` is excluded for
-exactly that reason. It has never appeared in any string of this codebase, so there is no evidence
-it renders correctly on all three surfaces. Box-drawing characters
-(`─` `│` `├` `└` `┌` `┬` `┐`) are banned too: they demand column alignment, and terminal width
-varies. The machine checks this with `python3 scripts/scan_block_symbols.py --chi-khoi`.
-
-## Examples
-
-The same content, differing only in decoration. The `Sau` version changes not one word of the
-`Truoc` version — it only adds bold markers, backticks and line breaks. Both samples are written
-in the default language (`doc_lang = vi`).
-
-### Before (`Trước`) <!-- i18n-allow -->
-
-<!-- i18n-allow — the "Trước" block is deliberately off-shape: it is the counter-example, not a template to copy. -->
-
-```
-Tôi đã viết xong spec cho yêu cầu của bạn.
-
-Mục tiêu: <1–2 câu>.
-Đầu ra chính: <gạch đầu dòng ngắn>.
-Rủi ro đáng chú ý: <gạch đầu dòng ngắn>.
-
-Xem đầy đủ tại: docs/tdq/spec/<slug>.md
-
----
-
-**Bạn duyệt spec này chứ?**
-
-➤ Duyệt: nhắn "duyệt spec" (duyệt xong tôi viết plan ngay) · Góp ý: nhắn trực tiếp
-```
-
-### After (`Sau`) <!-- i18n-allow -->
-
-<!-- i18n-allow: khuôn mẫu viết bằng ngôn ngữ mặc định, chép nguyên văn khi doc_lang = vi -->
-
-```
-Tôi đã viết xong spec cho yêu cầu của bạn.
-
-**Mục tiêu:** <1–2 câu>.
-**Đầu ra chính:** <gạch đầu dòng ngắn>.
-**Rủi ro đáng chú ý:** <gạch đầu dòng ngắn>.
-
-Xem đầy đủ tại: `docs/tdq/spec/<slug>.md`
-
----
-
-**Bạn duyệt spec này chứ?**
-
-➤ Duyệt: nhắn "duyệt spec" (duyệt xong tôi viết plan ngay) · Góp ý: nhắn trực tiếp
-
----
-```
-
-The second `---` is component 6, the closing rule of the turn. The `Trước` version has only the
-first one, which is part of what makes it the counter-example.

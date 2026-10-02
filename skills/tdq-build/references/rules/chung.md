@@ -1,4 +1,14 @@
 # Shared rules for every language
+<!-- muc-luc-dong:
+  Table of contents=16-26 · Sources=27-39 · When it applies=40-45 · The Intentionality rule=46-55 ·
+  Measurable thresholds=56-66 · The build-less-than-asked law=67-75 ·
+  The ladder — stop at the first rung that holds=76-93 · Make it run first, refactor after=94-101 ·
+  The ladder only chooses among options that already pass the floor=102-109 ·
+  Two ordered passes, never one merged judgement=110-121 · Never simplify these away=122-133 ·
+  Say out loud what you climbed past=134-139 · Intensity table=140-150 ·
+  Extra at level ultra=151-156 · RIGHT / WRONG for this law=157-208 · What to do=209-219 ·
+  Self-check=220-226 · RIGHT/WRONG examples=227
+-->
 
 Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line --> · luật gốc: skills/tdq-conventions/references/soul.md
 Load this file FIRST, then the language rule file from the table in `index.md`.

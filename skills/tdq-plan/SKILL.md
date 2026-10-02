@@ -4,6 +4,9 @@ description: Turn an approved spec into a checkbox plan, one test per task: STOP
 ---
 
 # TDQ Plan
+<!-- muc-luc-dong:
+  Steps=17
+-->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). The plan text is written in the user's
 document language `doc_lang` (deliberate repetition — the original is
@@ -21,6 +24,9 @@ scope. Spec approved → plan NOW.
      one worktree each, keeping the unsplittable part. Rule: `tdq-build/references/team-mode.md`.
    - `codex` (label: codex implement): you write the failing test, Codex makes it green inside the
      declared file zone, then re-run and audit. NOT the fast mode. Rule: `tdq-build/references/codex-mode.md`.
+   The detailed rule of a mode is read only when that mode has been CHOSEN, in phase `implement`.
+   Never while writing the plan. A request runs exactly ONE mode, so loading all three rule files
+   here is paying for two that will not be used.
    The proposal is **never eyeballed**: once the plan is written (step 2), MEASURE on that very plan:
    ```
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_bench.py" simulate --plan docs/tdq/plan/<slug>.md \
@@ -31,7 +37,13 @@ scope. Spec approved → plan NOW.
    Command errors (the plan has no `Chạm:` line) → fix the plan and measure again, guessing is banned. <!-- i18n-allow: canonical name kept verbatim -->
 
 2. **Write** `docs/tdq/plan/<slug>.md` out of the APPROVED spec — the full template lives in
-   [references/plan-template.md](references/plan-template.md).
+   [references/plan-template.md](references/plan-template.md) — that is the template to copy.
+   Two TIER-1 siblings, linked straight from here as the one-tier rule requires, each read when
+   its case comes up:
+   [references/plan-template-co-che.md](references/plan-template-co-che.md) for how the three
+   conditional sections work, and
+   [references/plan-template-huong-dan.md](references/plan-template-huong-dan.md) for scoring
+   `eNm`, the `Mode thực thi` line (`main|subagent|codex`) and the self-check.
    Must be there: the status header + source spec · **a line of its own**
    `Mode thực thi: <main|subagent|codex> — <reason>` · the phases with checkbox tasks · a task of its own for <!-- i18n-allow: canonical name kept verbatim -->
    the log service and for unit tests · a Definition of Done pointing back at §6 of the spec, **every
@@ -45,10 +57,9 @@ scope. Spec approved → plan NOW.
    waves. Template: the 2 sections `Chạm:`/`Cụm song song` of plan-template. <!-- i18n-allow: canonical name kept verbatim -->
    **Build `Chạm:` from "who calls this", never by eye:** `mcp__lsp__find_references` on every <!-- i18n-allow: canonical name kept verbatim -->
    symbol the task changes, so a caller outside the obvious folder still lands on the line. <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-   lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
-   gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+   and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
+   top of that file gives the exact line range, so the whole file never has to be read.
    **Score `eNm` as you write the task**, never later and never padded: minutes the agent SPENDS
    EXECUTING it (approval waits do not count). Plan ETA = the sum over unfinished tasks; the full
    scoring rule is the last section of plan-template.

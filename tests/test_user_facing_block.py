@@ -21,6 +21,10 @@ SKILLS = os.path.join(ROOT, "skills")
 # Bản portable nay do `scripts/build_portable.py` SINH, không chép tay nữa. Vẫn kiểm
 # nó: sinh sai đường dẫn hay sót file thì khuôn vẫn biến mất ở máy đích y như trôi tay.
 BLOCK = os.path.join(SKILLS, "tdq-conventions", "references", "user-facing-block.md")
+# 2026-10-02: bảng ký hiệu và hai ví dụ TRƯỚC/SAU tách sang file em tầng 1 (965 token, cả hai
+# là tra cứu). Bất biến không đổi — luật và ví dụ vẫn phải khớp nhau — nên phép kiểm đọc CẶP
+# file; bắt mỗi file tự chứa cả hai sẽ buộc chép lại, đúng thứ việc tách đi cắt.
+VI_DU = os.path.join(SKILLS, "tdq-conventions", "references", "user-facing-block-vi-du.md")
 # Dải emoji hay gặp; `➤` (U+27A4) nằm ngoài các dải này nên vẫn hợp lệ.
 # Thêm U+231B, U+23F3, U+2714 sau T0.2: `⏳` và `✔` từng lọt qua vì không nằm trong dải
 # nào ở trên. `✓` (U+2713) KHÔNG bị cấm — nó là giao ước `✓ [TDQ:<MÃ>]` của workflow.
@@ -62,6 +66,9 @@ CAM = ("~~", "<span", "\x1b[", "─", "│", "┌", "┬", "┐", "├", "└")
 # 8 file skill chép khối mẫu, cộng file khuôn gốc.
 MAU = (
     ("tdq-conventions", "references", "user-facing-block.md"),
+    # 2026-10-02: khối mẫu TRƯỚC/SAU chuyển sang file em tầng 1. Nó vẫn phải theo đúng luật
+    # 1, 3, 7 — một khối mẫu lệch khuôn thì user thấy khối lệch khuôn, bất kể nó ở file nào.
+    ("tdq-conventions", "references", "user-facing-block-vi-du.md"),
     ("tdq-spec", "SKILL.md"),
     ("tdq-plan", "SKILL.md"),
     ("tdq-plan", "references", "mode-gate.md"),
@@ -81,7 +88,9 @@ MAU = (
 # và test đỏ. Hai file mang số 0 là có thật — `interview.md` và `tdq-status/SKILL.md`
 # hướng dẫn bằng văn xuôi, dòng `➤` của chúng nằm ngoài khối ```.
 SO_KHOI = {
-    "tdq-conventions/references/user-facing-block.md": 1,
+    # 2026-10-02: 1 → 0. Khối mẫu duy nhất của file này nằm trong mục `After (Sau)`, nay ở file em.
+    "tdq-conventions/references/user-facing-block.md": 0,
+    "tdq-conventions/references/user-facing-block-vi-du.md": 1,
     "tdq-spec/SKILL.md": 1,
     "tdq-plan/SKILL.md": 1,
     # 2026-09-12: 1 → 2. Mode `codex` là mode thứ ba, nên khối hỏi tách đôi: khối 3 lựa
@@ -189,7 +198,9 @@ class UserFacingBlockTest(unittest.TestCase):
         Ba thứ dễ trôi nhất: bảng ánh xạ thành phần -> cấu trúc dùng, đủ bảy luật
         trang trí đánh số, và một cặp ví dụ trước/sau để người sửa tự đối chiếu.
         """
-        text = read(BLOCK)
+        # Ví dụ TRƯỚC/SAU nay ở file em tầng 1 — đọc cặp file để bất biến "luật và ví dụ khớp
+        # nhau" vẫn được kiểm, mà không buộc chép lại ví dụ vào cả hai.
+        text = read(BLOCK) + chr(10) + read(VI_DU)
         muc = sections(text)
 
         # 2026-09-03: thêm "The six components". Yêu cầu gate-chat cộng thành phần 6
@@ -223,7 +234,7 @@ class UserFacingBlockTest(unittest.TestCase):
         sẵn trong file con — cái thiếu là bước ĐỌC LẠI bản nháp trước khi gửi.
         Xoá bước đó đi thì luật lại trôi y như cũ, nên khoá nó bằng test.
         """
-        muc = sections(read(BLOCK))
+        muc = sections(read(BLOCK) + chr(10) + read(VI_DU))
         cung = muc.get("Hard rules") or muc.get("Luật cứng", "")
         self.assertIn(
             "self-check before sending", cung.lower(),

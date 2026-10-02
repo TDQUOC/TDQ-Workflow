@@ -3,6 +3,9 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 docs/tdq/.tdq-turn.jsonl
+# Sổ riêng của cổng nhắc đọc lại: những file phiên này đã đọc. Chuyện của MỘT PHIÊN trên MỘT
+# máy, hết 6 giờ là vô nghĩa — không vào repo.
+docs/tdq/.tdq-read.jsonl
 # Cờ đồng ý gọi Codex + log nguyên văn prompt: chuyện riêng của MÁY, không vào repo.
 docs/tdq/.tdq-codex.json
 docs/tdq/.tdq-codex-prompt.log

@@ -1,4 +1,8 @@
 # Clean code — the 5 SOLID principles
+<!-- muc-luc-dong:
+  Table of contents=13-19 · Sources=20-37 · When it applies=38-51 · What to do=52-64 · SRP=65-72 ·
+  OCP=73-80 · LSP=81-93 · ISP=94-101 · DIP=102-109 · Self-check=110
+-->
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md  <!-- i18n-allow: soul line, doc_lang wording -->
 

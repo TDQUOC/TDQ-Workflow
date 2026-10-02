@@ -5,8 +5,9 @@ Four steps, always run in this order:
   1. lint     — `doc_lint.py` over the .md files just edited
   2. worklog  — append the summary to docs/workinglog/<today>.md
   3. phase    — `tdq_state.py set phase=<phase>`
-  4. graphify — `graphify extract . --code-only` when a code file changed
-  5. reindex  — `lumen index <project>` every turn: lumen only refreshes when something calls it,
+  4. khoa-token — regenerate `docs/tdq/token-budget.json` when a `.md` rule file changed
+  5. graphify — `graphify extract . --code-only` when a code file changed
+  6. reindex  — `lumen index <project>` every turn: lumen only refreshes when something calls it,
                 so a session that never searches leaves the index days behind (measured 2026-09-28)
 
 Principles:
@@ -205,6 +206,33 @@ def step_reindex(project):
     return Step("reindex", "ok", cuoi[-1][:120] if cuoi else "")
 
 
+def step_khoa_token(project, files):
+    """Regenerate the token lock when this turn touched a rule file under `skills/`.
+
+    Why it belongs to the end-of-turn command: the lock is only right when it is regenerated after
+    every content change, and a number somebody has to remember to refresh by hand is a number
+    that goes stale. And why it runs FIRST: `doc_lint` R13 reads the lock, so linting before the
+    lock is written reddens the turn over a number this very turn is about to update.
+    """
+    if not any(f"{os.sep}skills{os.sep}" in os.path.abspath(f) and f.endswith(".md")
+               for f in files):
+        return Step("khoa-token", "skip", "no rule file changed")
+    sys.path.insert(0, SCRIPTS_DIR)
+    import skill_tokens
+    import token_budget
+    try:
+        so = token_budget.sinh_khoa(project)
+    except skill_tokens.ThieuThuVienDem:
+        return Step("khoa-token", "skip", "no token counter on this machine")
+    except Exception as exc:  # noqa: BLE001 — see the comment below
+        # Catching broadly is DELIBERATE: the contract of this command is that one failing step
+        # must not block the steps after it. Generating the lock goes through a venv process, so
+        # it can fail in ways other than OSError (garbage JSON -> ValueError, a hung venv ->
+        # TimeoutExpired). Letting one of those escape loses the turn's graphify and reindex too.
+        return Step("khoa-token", "fail", f"{type(exc).__name__}: {str(exc)[:100]}")
+    return Step("khoa-token", "ok", f"{so} file")
+
+
 def step_graphify(project, files):
     if not any(os.path.splitext(f)[1] in CODE_EXT for f in files):
         return Step("graphify", "skip", "no code file changed")
@@ -227,7 +255,7 @@ def summarize(steps):
 
 def parse_args(argv):
     ap = argparse.ArgumentParser(
-        description="End-of-turn bookkeeping: lint → working log → phase → graphify → reindex.")
+        description="End-of-turn bookkeeping: token lock → lint → working log → phase → graphify → reindex.")
     ap.add_argument("--phase", help="the new phase, written through tdq_state.py")
     ap.add_argument("--log", dest="summary", help="summary appended to today's working log")
     ap.add_argument("--files", nargs="*", default=None,
@@ -252,7 +280,11 @@ def main(argv):
 
     _log(f"start · project={project} · {len(files)} file(s) changed")
     steps = []
-    for run_step in (lambda: step_lint(project, files),
+    # `khoa-token` runs BEFORE `lint` on purpose: `doc_lint` R13 compares a rule file's sha256
+    # against the lock, so linting before the lock is regenerated reddens every turn that edited a
+    # rule file — red over a number that this same turn is about to update.
+    for run_step in (lambda: step_khoa_token(project, files),
+                     lambda: step_lint(project, files),
                      lambda: step_worklog(project, args.summary),
                      lambda: step_dong_so(project, args.phase),
                      lambda: step_phase(project, args.phase),

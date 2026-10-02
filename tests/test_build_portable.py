@@ -218,11 +218,29 @@ class TestBanAntigravity(TempDest):
                         self.assertEqual(truoc, tien_to,
                                          f"{duong}: '{tu}' trần chưa được thay absolute path")
 
-    def test_hai_hook_agy_nam_dung_cho_va_thuc_thi_duoc(self):
-        for ten in ("agy_pretooluse_gate.py", "agy_stop_gate.py"):
+    def test_moi_hook_khai_trong_hooks_json_deu_co_file_that(self):
+        """Bản dựng từng khai một hook mà không chép file của nó — PreToolUse chạy vào hư vô.
+
+        Nên phép kiểm này đọc đúng `hooks.json` ĐÃ SINH RA, lấy tên file từ đó, chứ không chép
+        tay một danh sách thứ ba để rồi lệch tiếp.
+        """
+        with open(os.path.join(self.goc, "hooks.json"), encoding="utf-8") as f:
+            du_lieu = json.load(f)
+        ten_file = set()
+        for muc in du_lieu["hooks"].values():
+            for matcher in muc:
+                for hook in matcher.get("hooks", []):
+                    ten_file.add(os.path.basename(hook["command"].split()[-1].strip("\"")))
+        self.assertTrue(ten_file, "hooks.json không khai hook nào")
+        for ten in sorted(ten_file):
             duong = os.path.join(self.goc, "hooks", "scripts", ten)
-            self.assertTrue(os.path.isfile(duong), duong)
+            self.assertTrue(os.path.isfile(duong), f"hooks.json khai {ten} mà bản dựng không chép")
             self.assertTrue(os.access(duong, os.X_OK), f"{ten} phải có quyền thực thi")
+
+    def test_phu_thuoc_chung_cua_hook_cung_duoc_chep(self):
+        """`read_gate.py` import `_common.py`; thiếu nó thì hook có mặt vẫn chết lúc nạp."""
+        duong = os.path.join(self.goc, "hooks", "scripts", "_common.py")
+        self.assertTrue(os.path.isfile(duong), "bản agy thiếu hooks/scripts/_common.py")
 
     def test_hooks_json_dung_2_event_va_command_tro_path_co_dinh(self):
         duong = os.path.join(self.goc, "hooks.json")

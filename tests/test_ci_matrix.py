@@ -20,6 +20,7 @@ HE = {"ubuntu-latest", "macos-latest", "windows-latest"}
 # 3.11 vào, vì 3.11 là bản đầu tiên có `tomllib` trong thư viện chuẩn.
 PHIEN_BAN = {"3.11", "3.13"}
 LENH_SUITE = "python -m unittest discover tests"
+LENH_BE_MAT = "python scripts/context_surface.py"
 
 
 def _doc():
@@ -68,6 +69,26 @@ class KhuonCi(unittest.TestCase):
         for action in re.findall(r"uses:\s*(\S+)", self.noi_dung):
             with self.subTest(action=action):
                 self.assertRegex(action, r"@v\d+$")
+
+
+class BangBeMat(unittest.TestCase):
+    """Bước in bảng bề mặt context — yêu cầu 2026-09-28-2324 (T5.1).
+
+    Nó phải ở CI để mỗi PR thấy được mình làm phần "nạp mỗi session" nặng thêm bao nhiêu, và nó
+    phải KHÔNG được làm đỏ build: đây là số đo, không phải luật. Luật trần token nằm ở `doc_lint`.
+    """
+
+    def setUp(self):
+        self.noi_dung = _doc()
+
+    def test_co_buoc_in_bang_be_mat(self):
+        self.assertIn(LENH_BE_MAT, self.noi_dung)
+
+    def test_bang_be_mat_khong_lam_do_build(self):
+        vi_tri = self.noi_dung.index(LENH_BE_MAT)
+        khoi = self.noi_dung[vi_tri - 300:vi_tri]
+        self.assertIn("continue-on-error: true", khoi,
+                      "bước bảng bề mặt thiếu continue-on-error — một số đo không được làm đỏ build")
 
 
 if __name__ == "__main__":

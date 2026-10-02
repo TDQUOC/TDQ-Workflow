@@ -34,6 +34,19 @@ def _log(message):
 
 # The line cap of a SKILL.md by skill name (spec §2.4). The tests share this constant.
 SKILL_LINE_LIMITS = {
+    # 2026-10-02: five caps raised, each by its own measured amount. Two things were added to
+    # every one of these bodies: the line-index block `doc_index.py` writes, and the pointer
+    # sentences to the new sibling files. Measured, file lines HEAD -> now, and cap old -> new:
+    #   tdq-conventions 184 -> 191 (block 7)   cap 183 -> 192
+    #   tdq-intake      138 -> 148 (block 5)   cap 140 -> 148
+    #   tdq-plan        111 -> 120 (block 3)   cap 110 -> 121
+    #   tdq-setup       121 -> 130 (block 6)   cap 120 -> 130
+    #   tdq-build       165 -> 169 (block 4)   cap 165 -> 174
+    # The new cap is the new line count plus at most 5 lines of head-room, so the next edit
+    # does not have to move a number again. The block buys back more than it costs: it is what
+    # lets a reader take ONE section with `offset/limit` instead of the whole file. A line cap
+    # is a tier-3 constraint in soul.md — hitting it means raising the cap, never compressing
+    # a law to fit.
     # 2026-09-05: 120 → 135. Step 3b (open the request branch) and the type proposal folded
     # into the lane question are runtime-tier rules — they run on EVERY request, so they sit
     # in the body. The long form (commands, the five types, the naming rule) already lives in
@@ -42,23 +55,23 @@ SKILL_LINE_LIMITS = {
     # skill, vì nó là thứ quyết định phase `qc` chạy bao nhiêu. Phần dài (ba lựa chọn, luật
     # không bày `off`, lệnh ghi state) nằm ở references/analyze-full.md; ở đây chỉ còn dòng
     # ngắn nhất. Trần là ràng buộc tầng 3 của soul.md — chạm trần thì nâng trần, không nén luật.
-    "tdq-intake": 140,
+    "tdq-intake": 148,
     "tdq-spec": 100,
     # 2026-08-18: 100 → 110. The mode proposal moved from eyeballing the task count to
     # running `tdq_bench.py simulate` — the command block plus the reason for factor 1.5
     # must sit in the skill body to be read every time a plan is written.
-    "tdq-plan": 110,
+    "tdq-plan": 121,
     # 2026-09-17: 150 → 165. The build-less-than-asked law landed 2 rules in the body (climb
     # the ladder before creating anything; make it run first and refactor after). Both are
     # tier 1–2 by soul.md:99, so they may not be pushed into a reference file, and soul.md:101
     # settles the collision in advance: a line cap is a tier 3 constraint, so hitting it means
     # raising the cap, never compressing the law to fit. The 7 rungs, the intensity table and
     # the examples DID go to references/rules/chung.md — only the rule sentences stayed here.
-    "tdq-build": 165,
+    "tdq-build": 174,
     "tdq-status": 60,
     # 2026-08-23: new skill. The setup ladder plus the runbook for re-configuring a machine
     # are read whole when the ladder reports a missing rung, so they stay in the body.
-    "tdq-setup": 120,
+    "tdq-setup": 130,
     # 2026-08-15: 120 → 130. The one-sweep rule (§10) is a runtime-tier rule, so it has to
     # sit in the skill body to be loaded every turn. Soul ranks runtime above context cost,
     # hence 10 more lines to keep the rule readable instead of squeezing it to fit.
@@ -90,7 +103,7 @@ SKILL_LINE_LIMITS = {
     # forward slash, which lane opens one). It is read on every request, so the short form
     # stays in the body; the commands and the full table live in
     # skills/tdq-intake/references/nhanh-request.md.
-    "tdq-conventions": 183,
+    "tdq-conventions": 192,
     # The recovery skill: its 7 steps plus the hard "lose no data" rule block must sit in the
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.
@@ -474,6 +487,34 @@ def rule_r11(doc, out):
                 break
 
 
+# --------------------- R13: the token cap of a rule file, enforced through the lock file
+def kiem_tran_token(paths):
+    """-> the R13 findings for the `skills/` area, read from `docs/tdq/token-budget.json`.
+
+    Why it goes through a lock file instead of counting here: `doc_lint` runs in CI, where this
+    repo deliberately installs no outside tool, so there is NO tokenizer. And no substitute
+    quantity is trustworthy — measured 2026-10-02 over 43 files: tokens per line spread 4.1×,
+    bytes per token 1.81×. So `token_budget.py` measures on a machine that has a tokenizer and
+    locks the number with a `sha256`; here only the hash is compared. A match means the number
+    still holds, a mismatch says the measurement is stale — it never guesses.
+
+    This is a REPO-level check, not a per-file one, so it runs once for the whole lint pass, and
+    only when that pass touched a file under `skills/`.
+    """
+    moc = f"{os.sep}skills{os.sep}"
+    trong_vung = [os.path.abspath(p) for p in paths if moc in os.path.abspath(p)]
+    if not trong_vung:
+        return []
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import token_budget
+    # The root comes from the linted path itself, not from `token_budget.ROOT`: when this plugin
+    # lints ANOTHER project, `ROOT` is the install directory, so the check would talk about TDQ's
+    # own rule files while the lock that needs checking lives in that other project — the two
+    # halves would never meet.
+    goc = trong_vung[0][:trong_vung[0].index(moc)] or token_budget.ROOT
+    return [f"{token_budget.FILE_KHOA}:1: [R13] {d}" for d in token_budget.kiem_khoa(goc)]
+
+
 RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8,
          rule_r9, rule_r10, rule_r11]
 
@@ -677,6 +718,7 @@ def main(argv):
         if loi:
             _log(f"{os.path.basename(path)} → {len(loi)} violation(s)")
         problems += loi
+    problems += kiem_tran_token(paths)
     for line in problems:
         print(line)
     _log(f"done — {len(problems)} violation(s) total, exit {1 if problems else 0}")

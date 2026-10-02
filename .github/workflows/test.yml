@@ -35,3 +35,10 @@ jobs:
           git config --global user.name "tdq-ci"
           git config --global user.email "tdq-ci@users.noreply.github.com"
       - run: python -m unittest discover tests
+      # Bảng bề mặt context: in ra để mỗi PR thấy mình làm phần "nạp mỗi session" nặng thêm bao
+      # nhiêu. `continue-on-error` là cố ý — đây là SỐ ĐO, không phải luật; luật trần token do
+      # `doc_lint` cưỡng chế và nó mới được làm đỏ build. Chỉ một tổ hợp: sáu bảng giống nhau
+      # trong một build là sáu lần không ai đọc.
+      - if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        continue-on-error: true
+        run: python scripts/context_surface.py

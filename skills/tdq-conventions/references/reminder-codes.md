@@ -10,7 +10,7 @@ The `✓` line is for the user to read. The hook does **not** read it — the ho
 effect (which file changed, which command ran), so printing `✓` without doing the work still
 gets you reminded again at the end of the turn.
 
-## The five codes (closed list)
+## The codes (closed list)
 
 | Code | Meaning | What to do | Effect the hook checks |
 |---|---|---|---|
@@ -19,6 +19,7 @@ gets you reminded again at the end of the turn.
 | `TDQ:LOG` | The repo changed but today's working log has no entry | Append an entry to the end of `docs/workinglog/<today>.md` | that exact log file was modified |
 | `TDQ:STATE` | About to hand-edit state | Use `tdq_state.py set\|approve\|init\|reset` | a `tdq_state.py` command actually ran |
 | `TDQ:GIT` | Branch/worktree name or commit message breaks convention | Rename / fix the message before running | — (repeated at Stop) |
+| `TDQ:DOC` | A file already read whole this session is being read whole again, unchanged | Read the part you need with `offset`/`limit`, or work from what you already hold | — (reminds once per file per session) |
 
 ## The only blocking point
 

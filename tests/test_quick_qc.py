@@ -19,13 +19,18 @@ import _common  # noqa: E402
 import prompt_context  # noqa: E402
 
 N1 = os.path.join(ROOT, "skills", "tdq-intake", "references", "quick-lane.md")
+# 2026-10-02: luật tick, QC của lane này và vòng fix tách sang file em TẦNG 1 `quick-lane-qc.md`
+# — không phần nào cần ở bước 1, nên nạp chúng lúc mở lane là trả tiền trước cho ba việc chưa tới
+# (đo: 1.120 token trong một file 4.356). Bất biến vẫn là "luật phải nêu ĐỦ ở nguồn N1", nên N1 nay
+# là CẶP file, và phép kiểm đọc cả hai.
+N1_QC = os.path.join(ROOT, "skills", "tdq-intake", "references", "quick-lane-qc.md")
 N2 = os.path.join(ROOT, "skills", "tdq-intake", "SKILL.md")
 N4_PHASES = os.path.join(ROOT, "skills", "tdq-conventions", "references", "phases.md")
 
 # Luật vòng fix phát biểu ĐỦ ở N1; từ Đ3 (0.16.0) N2 chỉ còn dòng trỏ sang N1 để thân
 # skill khỏi nạp nhánh quick mỗi lần gọi. Bất biến "luật không được biến mất" vẫn kiểm:
 # N1 phải nêu đủ, N2 phải trỏ đúng chỗ (test_skill_body_points_to_quick_lane).
-LAW_DOCS = (N1,)
+LAW_DOCS = (N1, N1_QC)
 
 # Từ 2026-08-22 luật viết tiếng Anh; nhận cả hai cách viết các mốc dưới đây.
 FIX_CAP = ("3-round cap", "trần 3 vòng")
@@ -41,7 +46,7 @@ class QuickQcDocTest(unittest.TestCase):
     """N1: quick-lane.md phải định nghĩa QC, không chỉ nói 'chạy validate'."""
 
     def test_quick_lane_has_qc_section(self):
-        text = read(N1)
+        text = read(N1) + read(N1_QC)
         self.assertTrue(any(m in text for m in
                             ("## QC in the express pipeline", "## QC ở chế độ nhanh")))
 
@@ -49,7 +54,7 @@ class QuickQcDocTest(unittest.TestCase):
         # Luật mới: số hạng mục QC bằng số dòng DoD, không phải danh sách cố định.
         # 2026-09-23: so khớp sau khi gộp khoảng trắng — luật nằm ở NỘI DUNG câu, còn chỗ ngắt
         # dòng đổi mỗi lần ai đó sửa câu bên cạnh, và một test đỏ vì xuống dòng là test nhiễu.
-        text = read(N1)
+        text = read(N1) + read(N1_QC)
         goi = " ".join(text.split())
         self.assertTrue(any(m in goi for m in
                             ("as many items as the mini-plan has DoD lines",
@@ -67,11 +72,11 @@ class QuickQcDocTest(unittest.TestCase):
 
     def test_law_docs_rerun_only_failed_items(self):
         # Vòng fix không chạy lại toàn bộ nữa — chỉ hạng mục FAIL + hạng mục bị ảnh hưởng.
-        for path in LAW_DOCS:
-            with self.subTest(doc=os.path.relpath(path, ROOT)):
-                van = read(path)
-                self.assertTrue(any(m in van for m in
-                                    ("re-run the items that FAILed", "hạng mục đã FAIL")))
+        # 2026-10-02: hỏi trên CẶP file, không hỏi từng file. Luật này phát biểu ở `quick-lane-qc.md`
+        # sau khi tách, và bắt mỗi file phải tự nêu đủ sẽ buộc chép lại — đúng thứ việc tách đi cắt.
+        van = "".join(read(p) for p in LAW_DOCS)
+        self.assertTrue(any(m in van for m in
+                            ("re-run the items that FAILed", "hạng mục đã FAIL")))
 
     def test_law_docs_state_fix_round_cap(self):
         for path in LAW_DOCS:

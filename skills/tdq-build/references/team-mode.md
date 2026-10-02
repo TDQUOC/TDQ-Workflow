@@ -1,4 +1,12 @@
 # Team mode — the leader assigns the whole plan, sub-agents run in parallel
+<!-- muc-luc-dong:
+  Table of contents=16-22 · When it applies=23-41 · What to do=42-43 ·
+  Step 0 — assign the WHOLE plan before typing the first line of code=44-61 ·
+  Decision table — default GIAO, keeping a task must match exactly one row=62-76 ·
+  The wave loop=77-90 · What the machine checks for you, so you do not have to=91-115 ·
+  The delegation prompt template — all 9 fields, none left out=116-135 ·
+  RIGHT/WRONG examples=136-158 · Self-check=159-176 · Sổ worktree=177
+-->
 
 Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
 
@@ -148,42 +156,6 @@ a missing field means it has to guess, and a wrong guess is paid for at merge ti
    - WRONG: delegate all three tasks needing that constant in parallel — each sub-agent invents its
      own name, and only the merge reveals three mismatched versions.
 
-## The worktree ledger
-
-Every worktree `open` opens is written into `docs/tdq/worktrees.json` (machine) and rendered
-into `docs/tdq/worktrees.md` (human). The ledger outlives the request: a row stays open until
-the worktree is really gone, so a worktree of a request finished weeks ago is still findable.
-Write it ONLY through `scripts/tdq_team.py` — the same rule as `state.json`.
-
-```
-python3 scripts/tdq_team.py sweep        # report: task · request · path · age · size · clean · merged
-python3 scripts/tdq_team.py sweep --clean  # the same sweep, and remove everything that is safe
-```
-
-**Removing needs all THREE conditions**, checked per worktree, never by feel: the working
-tree is clean · the branch is already in the request branch · git does not hold it
-locked. Any one missing and NOTHING is deleted — the row stays open and the reason is
-printed. The task branch is deleted after the merge; the request branch is kept — step 11
-of the report merges it back into `nhanh_goc` and deletes it there.
-
-"Clean" counts ignored files too, unless they regenerate by themselves (`__pycache__`,
-`node_modules`, …): `git worktree remove` deletes a `.env` or a local key without a word,
-and those exist nowhere else. Such a worktree is kept with its own reason and its own way
-out, never lumped in with uncommitted changes.
-
-`sweep` only ever deletes inside `.tdq-worktrees/`. A worktree living elsewhere is listed
-under "out of scope" and is never touched: it may well be the user's own working copy.
-
-**Rule — the suggestion block goes at the END of the turn.** A worktree that cannot be
-cleaned up prints a `NOT CLEANED UP YET` block with one option per line. Put that block at the
-end of your reply to the user, as the last thing they read, TRANSLATED into their `doc_lang`
-— the commands stay verbatim, character for character, because the user pastes them. Reason:
-the user is the only one who can decide whether uncommitted work is thrown away or kept, and
-a block buried in the middle of a long turn is a block nobody acts on.
-
-Gate `qc` refuses to open while the ledger still holds an open row, and every turn the hook
-prints one `[TDQ:WORKTREE]` line for as long as that is true.
-
 ## Self-check
 
 Before ending phase implement, all of these must hold:
@@ -201,3 +173,8 @@ And one question to ask yourself, answerable with a number: **how many delegated
 total?** That number must appear in the report. A low delegation ratio with no reason from the
 lookup table means you worked around the user's rule — the user picked team mode to get a team,
 not a promise.
+
+## Sổ worktree
+
+Phần tra cứu, tách sang [team-mode-tra-cuu.md](team-mode-tra-cuu.md): chỉ mở khi cần soi sổ, không
+cần lúc chia đợt hay lúc phát task.

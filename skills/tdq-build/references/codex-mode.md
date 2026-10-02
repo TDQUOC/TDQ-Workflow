@@ -1,4 +1,14 @@
 # Codex mode — the leader writes the failing test, Codex makes it pass
+<!-- muc-luc-dong:
+  Table of contents=19-25 · When it applies=26-36 · What to do=37-38 ·
+  The four beats of ONE task=39-52 · Step 1 — check the machine once per request=53-61 ·
+  Step 2 — declare the zone from the plan=62-66 · Step 3 — run the task=67-76 ·
+  Step 4 — read the verdict, not the transcript=77-84 ·
+  Step 5 — on a zone breach, roll back before anything else=85-95 ·
+  Step 6 — close the books on the task=96-113 · The role contract=114-115 ·
+  The fixed prompt template=116-131 · The result shape Codex must return=132-146 ·
+  The digest threshold=147-153 · What stays with the leader, always=154-162 · Self-check=163
+-->
 
 Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
 

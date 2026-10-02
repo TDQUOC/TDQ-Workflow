@@ -74,7 +74,10 @@ def plan_mode(cwd, state):
 # The CLOSED list of codes (spec §2.1). Adding a new code means editing the spec first.
 # 2026-09-17: the sixth code, TDQ:GON — the lean-law channels (SessionStart, SubagentStart
 # carry the law body; UserPromptSubmit carries one pointer line). Declared in spec §5 first.
-CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT", "TDQ:GON")
+# 2026-10-02: the seventh, TDQ:DOC — `read_gate.py` on a whole-file re-read. Declared in spec
+# 2026-09-28-2324 §2 first, and documented in `reminder-codes.md` with the other six.
+CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT", "TDQ:GON",
+         "TDQ:DOC")
 
 # The token budget cap (spec §2.7) — measured on the reminder content.
 MAX_REMIND_CHARS = 200

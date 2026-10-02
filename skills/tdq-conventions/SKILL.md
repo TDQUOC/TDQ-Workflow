@@ -5,6 +5,13 @@ user-invocable: false
 ---
 
 # TDQ Conventions
+<!-- muc-luc-dong:
+  0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-86 ·
+  2. Phase table=87-92 · 3. State=93-105 · 4. Recording approval=106-115 ·
+  5. Document tree=116-130 · 6. Working log=131-139 · 7. Git=140-153 · 8. Research=154-163 ·
+  9. Sub-agents=164-169 · 10. One-batch rule (tier 2 — runtime) and context cost=170-183 ·
+  11. Quality=184
+-->
 
 Rules shared by every phase. Other skills link here instead of copying them.
 
@@ -50,7 +57,9 @@ One workflow, three kinds of reader, so three language rules. They never mix.
    pointing backwards ("see the question above") loses the user the question and the options
    entirely. Shortening is banned; pointing backwards is banned.
 6. **Every block addressed to the user** — pipeline question, interview, the spec / plan / mode / express
-   gates, the commit question — follows [references/user-facing-block.md](references/user-facing-block.md).
+   gates, the commit question — follows [references/user-facing-block.md](references/user-facing-block.md); the symbol table and a
+BEFORE/AFTER example are in the tier-1 sibling
+[references/user-facing-block-vi-du.md](references/user-facing-block-vi-du.md).
    Its shape: an opening line addressing the user directly, full file paths, a separator rule, the bold
    answer block last, no emoji.
 

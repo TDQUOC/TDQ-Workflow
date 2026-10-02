@@ -1,11 +1,13 @@
-"""P3 — khoá luật ưu tiên tìm kiếm ở đúng 5 chỗ móc, khớp từng chữ với file luật gốc.
+"""P3 — khoá luật ưu tiên tìm kiếm: MỘT bản gốc, 5 chỗ móc chỉ mang CON TRỎ.
 
-Luật viết 1 chỗ (`skills/tdq-setup/references/uu-tien-tim-kiem.md`), trích ở 5 chỗ.
-Không có test này thì sửa 1 chỗ là 4 chỗ kia trôi mà không ai biết: mỗi phase sẽ đọc
-một thứ tự tìm kiếm khác nhau. Test so câu trích với câu gốc sau khi chuẩn hoá khoảng
-trắng, nên xuống dòng ở đâu là tuỳ file, còn chữ thì phải y nguyên.
+Luật viết 1 chỗ (`skills/tdq-setup/references/uu-tien-tim-kiem.md`), 5 phase trỏ về đó.
+
+2026-10-02 — đổi cách khoá, và lý do là số đo. Bản cũ bắt 5 chỗ móc chép NGUYÊN VĂN câu luật rồi
+so từng chữ; `doc_dup.py` đo ra 6 bản của cùng một câu tốn **1.125 token**, và 5 trong 6 bản đó
+không mang thêm thông tin nào. Nay mỗi chỗ móc mang một con trỏ ba dòng, còn chính câu luật chỉ
+tồn tại một lần. Bất biến cần giữ KHÔNG đổi: mọi phase phải chỉ về cùng một nguồn, và nguồn đó
+phải thực sự có câu luật. Mất một trong hai thì mỗi phase lại đọc một thứ tự tìm kiếm khác nhau.
 """
-import io
 import os
 import re
 import unittest
@@ -13,6 +15,11 @@ import unittest
 from helper import ROOT
 
 GOC = os.path.join(ROOT, "skills", "tdq-setup", "references", "uu-tien-tim-kiem.md")
+GOC_REL = "skills/tdq-setup/references/uu-tien-tim-kiem.md"
+# File em giữ phần CHI TIẾT, trong đó có §6. Luật không rời skill khi nó sang file em — nên lưới
+# phải đi theo nó, không được tháo. Bản 2026-10-02 đầu tiên đã TÁO: bốn phép kiểm của §6 bị xoá
+# thay vì trỏ lại, và §6 là nơi duy nhất soul.md nguyên tắc 3 (đủ ba mục) được kiểm bằng máy.
+EM = os.path.join(ROOT, "skills", "tdq-setup", "references", "uu-tien-tim-kiem-chi-tiet.md")
 
 # 5 chỗ móc — đúng bảng §5 của file luật gốc.
 CHO_MOC = [
@@ -23,6 +30,8 @@ CHO_MOC = [
     os.path.join(ROOT, "skills", "tdq-build", "SKILL.md"),
 ]
 
+CAU_LUAT = "Đối tượng tìm là ký hiệu code"
+
 
 def doc(path):
     with open(path, encoding="utf-8") as f:
@@ -30,101 +39,109 @@ def doc(path):
 
 
 def gon(text):
-    """Chuẩn hoá khoảng trắng + bỏ dấu trích dẫn markdown để so chữ, không so cách ngắt dòng."""
     text = re.sub(r"(?m)^\s*>\s?", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
 
-def cau_goc():
-    """Lấy câu luật chuẩn: khối blockquote đầu tiên của §1 trong file luật gốc."""
-    src = doc(GOC)
-    khoi = re.search(r"(?m)^((?:>.*\n)+)", src)
-    assert khoi, "file luật gốc không còn khối blockquote nào — câu luật chuẩn đã mất"
-    return gon(khoi.group(1))
+class NguonDuyNhat(unittest.TestCase):
+    def test_cau_luat_chi_ton_tai_mot_lan_trong_skills(self):
+        dem = sum(doc(os.path.join(goc, f)).count(CAU_LUAT)
+                  for goc, _, tep in os.walk(os.path.join(ROOT, "skills"))
+                  for f in tep if f.endswith(".md"))
+        self.assertEqual(dem, 1, "câu luật phải tồn tại ĐÚNG một lần trong skills/")
+
+    def test_ban_goc_mang_cau_luat(self):
+        than = gon(doc(GOC))
+        self.assertIn(gon(CAU_LUAT), than)
+        for tang in ("mcp__lsp__*", "grep", "lumen", "graphify"):
+            self.assertIn(tang, than, f"câu luật gốc thiếu tầng {tang}")
 
 
-class LuatUuTienTimKiem(unittest.TestCase):
-    def setUp(self):
-        self.cau = cau_goc()
+class MoiChoMocDeuTroVeNguon(unittest.TestCase):
+    def test_du_nam_cho_moc_deu_tro_ve_dung_file_goc(self):
+        for duong in CHO_MOC:
+            with self.subTest(cho=os.path.relpath(duong, ROOT)):
+                self.assertIn(GOC_REL, doc(duong),
+                              "chỗ móc phải trỏ về file luật gốc bằng đường dẫn đầy đủ")
 
-    def test_cau_goc_du_ba_lop_moi_lop_gan_mot_loai_truy_van(self):
-        """Luật mới KHÔNG còn một thứ tự tuyến tính duy nhất, nên không khoá thứ tự chữ nữa.
+    def test_cho_moc_noi_ro_day_la_luat_bat_buoc(self):
+        """Một con trỏ suông thì agent coi là tài liệu tham khảo rồi bỏ qua."""
+        for duong in CHO_MOC:
+            with self.subTest(cho=os.path.relpath(duong, ROOT)):
+                self.assertIn("BẮT BUỘC", doc(duong))
 
-        Cái phải khoá là ánh xạ: đủ 3 lớp, và mỗi lớp đứng cạnh loại truy vấn của nó. Số đo ở
-        `docs/tdq/report/2026-09-03-0017-them-pyrightconfig-do-lai.md`: quan hệ thì LSP phủ 15/15
-        còn grep chỉ đúng 67 %; tên chính xác thì grep nhanh gấp bội mà vẫn đủ; khái niệm mơ hồ
-        thì LSP xếp đích hạng 13/62.
-        """
-        for lop in ("mcp__lsp__", "lumen", "grep"):
-            self.assertIn(lop, self.cau, f"câu luật gốc thiếu lớp {lop}")
-        for loai in ("quan hệ", "tên chính xác", "khái niệm mơ hồ"):
-            self.assertIn(loai, self.cau, f"câu luật gốc thiếu loại truy vấn {loai}")
-        # mỗi lớp phải nằm trong 60 ký tự quanh loại truy vấn nó phục vụ
-        for loai, lop in (("quan hệ", "mcp__lsp__"), ("tên chính xác", "grep"),
-                          ("khái niệm mơ hồ", "lumen")):
-            i = self.cau.index(loai)
-            self.assertIn(lop, self.cau[i:i + 60],
-                          f"loại truy vấn '{loai}' không gắn với lớp {lop}")
+    def test_cho_moc_khong_chep_lai_cau_luat(self):
+        for duong in CHO_MOC:
+            with self.subTest(cho=os.path.relpath(duong, ROOT)):
+                self.assertNotIn(CAU_LUAT, doc(duong),
+                                 "chỗ móc chỉ được TRỎ, không được chép lại câu luật")
 
-    def test_cau_goc_khong_con_bat_buoc_goi_song_song(self):
-        """Ràng buộc cũ 'BẮT BUỘC gọi song song ở mọi truy vấn ký hiệu' đã bị bãi bỏ."""
-        self.assertNotIn("BẮT BUỘC gọi song song", self.cau)
 
-    def test_nam_cho_moc_deu_co_cau_luat(self):
-        """Xoá câu luật ở bất kỳ file móc nào → test này ĐỎ."""
-        for path in CHO_MOC:
-            with self.subTest(file=os.path.relpath(path, ROOT)):
-                self.assertIn(
-                    self.cau,
-                    gon(doc(path)),
-                    "câu luật lệch hoặc đã mất — chép lại nguyên văn từ uu-tien-tim-kiem.md",
-                )
-
-    def test_nam_cho_moc_deu_tro_ve_file_luat_goc(self):
-        """Trích không kèm đường dẫn gốc thì người đọc không lần được về luật đầy đủ."""
-        for path in CHO_MOC:
-            with self.subTest(file=os.path.relpath(path, ROOT)):
-                self.assertIn("uu-tien-tim-kiem.md", doc(path))
-
-    def test_bang_cho_moc_trong_file_goc_khop_danh_sach_that(self):
-        """§5 liệt kê chỗ móc nào thì test phải khoá đúng chừng ấy file."""
-        src = doc(GOC)
-        for path in CHO_MOC:
-            ten = os.path.basename(path)
-            self.assertIn(ten, src, f"§5 của file luật gốc chưa nhắc {ten}")
+class BonTangVanDuMatTrongLuat(unittest.TestCase):
+    def test_luat_goc_co_bang_phan_tuyen_theo_loai_truy_van(self):
+        than = doc(GOC)
+        self.assertIn("## 1.", than)
+        self.assertIn("## 2.", than)
 
 
 class LuatKhongMoFileTruoc(unittest.TestCase):
-    """Section 6 — the warm-up that makes `find_references` worse, not better.
+    """§6 — màn khởi động làm `find_references` TỆ đi, không phải tốt lên.
 
-    Measured on this repo: asking straight gave 6 files, after opening 3 callers 4 files, after
-    opening all 8 that grep named just 1. The degraded answer carries no error and no warning,
-    which is why the rule has to be written down rather than left to judgement.
+    Đo trên repo này: hỏi thẳng ra 6 file; sau khi mở 3 caller còn 4 file; sau khi mở cả 8 file
+    grep nêu tên thì còn 1. Câu trả lời đã tệ đi mà không kèm lỗi, cũng không kèm cảnh báo — nên
+    luật phải được viết ra chứ không để tuỳ cảm nhận. Từ 2026-10-02 luật này ở file em.
     """
 
     def setUp(self):
-        with io.open(GOC, encoding="utf-8") as f:
-            self.text = f.read()
+        self.text = doc(EM)
+        self.muc6 = self.text.split("## 6.", 1)[1]
 
     def test_co_muc_luat(self):
         self.assertIn("Never open documents before asking `find_references`", self.text)
 
     def test_du_ba_muc_theo_soul_nguyen_tac_3(self):
-        """A rule a weak model can follow needs all three parts, not just the verdict."""
-        muc6 = self.text.split("## 6.", 1)[1]
+        """Một luật mà model yếu theo được thì cần đủ ba phần, không chỉ phán quyết."""
         for phan in ("### When it applies", "### What to do", "### Self-check"):
             with self.subTest(phan=phan):
-                self.assertIn(phan, muc6)
+                self.assertIn(phan, self.muc6)
 
     def test_mang_so_do_chu_khong_chi_lenh(self):
-        """A rule with no measurement behind it is the first one someone argues away."""
-        muc6 = self.text.split("## 6.", 1)[1]
+        """Luật không có số đo đứng sau là luật đầu tiên bị ai đó nói cho qua."""
         for so in ("6", "4", "1"):
-            self.assertIn(f"| **{so}** |".replace("**", ""), muc6.replace("**", ""))
+            self.assertIn(f"| {so} |", self.muc6.replace("**", ""))
 
     def test_cam_open_document_lam_buoc_chuan_bi(self):
-        muc6 = self.text.split("## 6.", 1)[1]
-        self.assertIn("Never call `open_document` as preparation", muc6)
+        self.assertIn("Never call `open_document` as preparation", self.muc6)
+
+    def test_em_duoc_tro_tu_skill_md_cua_chinh_no(self):
+        """Một tầng: file em phải được trỏ từ `SKILL.md`, nếu không nó là tầng 2."""
+        skill = doc(os.path.join(ROOT, "skills", "tdq-setup", "SKILL.md"))
+        self.assertIn("uu-tien-tim-kiem-chi-tiet.md", skill)
+
+
+class BaLopGanDungLoaiTruyVan(unittest.TestCase):
+    """Ánh xạ lớp ↔ loại truy vấn, thứ KHÔNG được trôi khi câu luật được viết lại.
+
+    Số đo ở `docs/tdq/report/2026-09-03-0017-them-pyrightconfig-do-lai.md`: quan hệ thì LSP phủ
+    15/15 còn grep đúng 67%; tên chính xác thì grep nhanh gấp bội mà vẫn đủ; khái niệm mơ hồ thì
+    LSP xếp đích hạng 13/62.
+    """
+
+    def setUp(self):
+        self.cau = gon(doc(GOC))
+
+    def test_du_ba_lop_moi_lop_gan_mot_loai_truy_van(self):
+        for lop in ("mcp__lsp__", "lumen", "grep"):
+            self.assertIn(lop, self.cau, f"câu luật gốc thiếu lớp {lop}")
+        for loai, lop in (("quan hệ", "mcp__lsp__"), ("tên chính xác", "grep"),
+                          ("khái niệm mơ hồ", "lumen")):
+            i = self.cau.index(loai)
+            self.assertIn(lop, self.cau[i:i + 80],
+                          f"loại truy vấn '{loai}' không gắn với lớp {lop}")
+
+    def test_khong_con_bat_buoc_goi_song_song(self):
+        """Ràng buộc cũ "BẮT BUỘC gọi song song ở mọi truy vấn ký hiệu" đã bị bãi bỏ."""
+        self.assertNotIn("BẮT BUỘC gọi song song", self.cau)
 
 
 if __name__ == "__main__":

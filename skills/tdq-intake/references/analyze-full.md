@@ -1,4 +1,7 @@
 # Part B — Analysis (phase `analyze`, deep pipeline only)
+<!-- muc-luc-dong:
+  Table of contents=6
+-->
 
 ## Table of contents
 
@@ -28,10 +31,9 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
    config, tests. Write down the versions and frameworks in use.
 
    **LSP and lumen together.** <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-   lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
-   gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+   and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
+   top of that file gives the exact line range, so the whole file never has to be read.
    In practice: `mcp__lsp__find_symbol` to locate it, `mcp__lsp__find_references` for who calls
    it, `mcp__lsp__go_to_definition` for where it comes from, and lumen's `semantic_search`
    alongside for the conceptual angle. A grep for a symbol with no LSP+lumen attempt first is a

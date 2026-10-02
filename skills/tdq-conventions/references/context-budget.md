@@ -1,4 +1,9 @@
 # Step cost & context cost
+<!-- muc-luc-dong:
+  Table of contents=18-22 · Step cost (tier 2 — runtime)=23-41 ·
+  Five cases where re-reading is MANDATORY=42-54 · Re-reading by RULE or by FORGETTING=55-82 ·
+  Never batch these=83-99 · Context cost (tier 3)=100
+-->
 
 Two different costs, sitting on two different tiers of [soul.md](soul.md). Filing a rule in the
 wrong tier is how a rule gets legitimately ignored, so each part stays in its own part.
