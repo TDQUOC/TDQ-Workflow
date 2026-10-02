@@ -110,10 +110,12 @@ class TestKhaiTrongHooksJson(unittest.TestCase):
     def test_co_su_kien_subagent_start(self):
         self.assertIn("SubagentStart", self.cfg)
 
-    def test_dung_6_muc_tren_5_su_kien(self):
+    def test_dung_7_muc_tren_5_su_kien(self):
+        """2026-10-02: 6 → 7 mục. `PreToolUse` thêm matcher `Read` cho cổng nhắc đọc lại — số
+        SỰ KIỆN vẫn là 5, chỉ thêm một matcher trong sự kiện đã có."""
         self.assertEqual(len(self.cfg), 5, sorted(self.cfg))
         muc = sum(len(nhom["hooks"]) for ds in self.cfg.values() for nhom in ds)
-        self.assertEqual(muc, 6, self.cfg)
+        self.assertEqual(muc, 7, self.cfg)
 
     def test_tro_dung_file(self):
         cmd = self.cfg["SubagentStart"][0]["hooks"][0]["command"]

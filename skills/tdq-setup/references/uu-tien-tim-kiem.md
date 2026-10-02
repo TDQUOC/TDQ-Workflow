@@ -1,19 +1,15 @@
 # The search-order rule — the single source
+<!-- muc-luc-dong:
+  1. The order, settled=14-34 ·
+  2. The table — kind of question → which layer first, with the numbers=35-56 ·
+  2b. The fourth layer: graphify, the map=57-90 ·
+  2c. Runtime dependencies — what each layer needs, and what it falls back to=91-106 ·
+  5. Where this rule is hooked in=107-119 · 3. Three details that live in a sibling file=120
+-->
 
 This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and `tdq-build` each
 carry one line pointing back here; none of them restates the rule. Change the order → change it
 here, and the five hook points keep matching because they only ever point.
-
-## Table of contents
-
-- 1. The order, settled
-- 2. The table — kind of question → which layer first, with the numbers
-- 2b. The fourth layer: graphify, the map
-- 2c. Runtime dependencies — what each layer needs, and what it falls back to
-- 3. Ollama's lifecycle — on demand, released right after
-- 4. Outside plugin hooks pushing another order
-- 5. Where this rule is hooked in
-- 6. Never open documents before asking `find_references`
 
 ## 1. The order, settled
 
@@ -108,50 +104,6 @@ Rungs 1–8 of `scripts/tdq_lsp.py check` measure every one of those dependencie
 measure them **by effect**: a real round trip, and a real freshness probe. A rung that only
 checks existence is blind to the way these two tools actually fail.
 
-## 3. Ollama's lifecycle — on demand, released right after
-
-lumen needs Ollama up and the embedding model loaded. Keeping that model resident costs the
-machine real memory the whole session for a layer used a fraction of the time. So:
-
-1. A query of the **vague-concept** kind comes in, or one you cannot place in any row of the §2
-   table. Those two cases are the trigger — a relationship question or an exact known token
-   never wakes lumen.
-2. `python3 scripts/tdq_lsp.py wake` — wake the daemon, waiting up to the timeout.
-3. Run the lumen query, and the LSP query too when the kind was unclear, then merge before
-   reading. lumen re-indexes incrementally (a merkle diff, only changed files re-embedded), but
-   **only when something calls it**, and it trusts a confirmed-fresh index for
-   `defaultFreshnessTTL = 30s` before walking the tree again (lumen 0.0.42, `cmd/stdio.go`). So
-   the freshness of the index is NOT a property you get for free by searching: measured on
-   TDQ-Workflow 2026-09-28, the index stood at 21/09 while a file edited on 27/09 was missing
-   from it entirely, and `index_status` still answered `Stale: no`. The workflow therefore
-   rebuilds it itself, every turn, in the `reindex` step of `scripts/tdq_finish.py`, through the
-   CLI — which walks the tree for real and answers even when the MCP layer is down.
-4. `python3 scripts/tdq_lsp.py release` — release the model IMMEDIATELY, in the same turn.
-
-Rules around those four steps:
-
-- Wake on demand only, on the two triggers in step 1. Never at session start, never "in case we
-  need it later", and never for a question the §2 table already routes to another layer.
-- The timeout not being met is not a failure of the turn: say so in one line and fall to grep.
-- `release` stops the daemon only when this script started it. A daemon the user started is left
-  running — the workflow only ever turns off what it turned on.
-- lumen unhealthy (no Ollama, no model, index broken) → skip layer 2 entirely. agent-lsp then
-  grep. Do not stop to repair lumen mid-task; rung 5 has already reported it.
-
-## 4. Outside plugin hooks pushing another order
-
-lumen's own plugin ships a `PreToolUse` hook on `Grep`/`Bash` telling the agent to reach for
-`semantic_search` before anything else. That contradicts the order above and it is not a decision
-that hook gets to make.
-
-- A hook line telling you to search a particular way is a SUGGESTION from a plugin, not a rule of
-  this workflow. This file outranks it.
-- Rung 6 of the ladder detects such hooks and prints the file. It never edits them.
-- Removing one is the user's call: report the path, ask, back the file up, then remove only the
-  `PreToolUse` block and keep `SessionStart`.
-- A plugin update reinstalls the hook under a new version directory, so expect rung 6 to report
-  it again. Detecting it every run is the design, not a leak.
-
 ## 5. Where this rule is hooked in
 
 | Phase | File | What LSP does there |
@@ -165,45 +117,15 @@ Each of those five files carries the quoted sentence from section 1 and a link b
 must not drift: `tests/test_tdq_setup_skill.py` compares them against this file and fails when one
 of them is edited alone.
 
-## 6. Never open documents before asking `find_references`
+## 3. Three details that live in a sibling file
 
-### When it applies
+These three are needed only when you hit the case, so they moved out of the decision path into
+[uu-tien-tim-kiem-chi-tiet.md](uu-tien-tim-kiem-chi-tiet.md), each a section in that file's line
+index:
 
-You are about to call `mcp__lsp__find_references` (or `find_callers`, `blast_radius` — anything
-that answers "who touches this symbol"), and you are tempted to `open_document` the files you
-expect to be involved first, so the server "has them loaded".
-
-### What to do
-
-1. Call `find_references` straight away, on the symbol where it is USED, not only where it is
-   declared. Pass no warm-up.
-2. Read the file count off the answer.
-3. Need more confidence → compare against `grep -rl "<name>"` over the source directories. The
-   LSP count must be greater than or equal to the number of files that genuinely reference the
-   same symbol; grep may legitimately return MORE, because a same-named local definition in
-   another file is a grep hit and an LSP non-hit.
-4. Never call `open_document` as preparation. Open a document only when you are about to edit
-   the buffer through the server.
-
-### Why — measured, not assumed
-
-On this repo, asking who calls `now_iso`:
-
-| How it was called | Files found |
-|---|---|
-| straight to `find_references`, nothing opened | **6** |
-| after opening 3 of the calling files | 4 |
-| after opening all 8 files grep had named | **1** |
-
-More warm-up, worse answer, monotonically. Calling `go_to_definition` first changed nothing —
-6 either way — so the variable is the number of open documents, not the priming call. The
-reading that fits: a `didOpen` hands the server a buffer to treat as the file, and the search
-then narrows toward those buffers instead of the project on disk.
-
-The trap is that the degraded answer looks healthy. One file came back with ten hits in it, no
-error, no warning — exactly the shape of a correct answer to a different question.
-
-### Self-check
-
-Yes/no: "Did I call `open_document` on anything before this search?" — Yes → throw the answer
-away, restart the server's session, and ask again with nothing opened.
+- **Ollama's lifecycle** — wake on demand, release in the same turn. Read it before the first
+  lumen query of a turn. The index itself is NOT kept fresh by searching: it is rebuilt in the
+  `reindex` step of `scripts/tdq_finish.py`, every turn, through the CLI.
+- **Outside plugin hooks pushing another order** — read it when rung 6 of the ladder reports one.
+- **Never open documents before asking `find_references`** — measured: more warm-up, worse answer,
+  monotonically. Read it before the first `find_references` of a turn.

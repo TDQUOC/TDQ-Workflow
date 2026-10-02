@@ -1,4 +1,8 @@
 # The interview round
+<!-- muc-luc-dong:
+  Table of contents=9-16 · Two tiers of questions — general first, detail second=17-28 ·
+  What to ask=29-44 · How to ask=45-108 · Recording it=109-113 · When to stop=114
+-->
 
 Goal: no question is left whose different answers would lead to a different product.
 

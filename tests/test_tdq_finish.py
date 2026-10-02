@@ -7,6 +7,8 @@ import sys
 import tempfile
 import unittest
 
+from helper import ROOT
+
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(REPO, "scripts", "tdq_finish.py")
 
@@ -117,6 +119,29 @@ class StepsTest(unittest.TestCase):
             _project(tmp)
             r = _run([], tmp)
         self.assertEqual(r.returncode, 0, r.stderr)
+
+
+class KhoaTokenTest(unittest.TestCase):
+    """Bước `khoa-token`: sinh lại tệp khoá khi lượt có chạm file luật.
+
+    Vì sao bước này tồn tại: trần token chỉ cưỡng chế được qua tệp khoá (CI không có tokenizer),
+    và một tệp khoá phải nhớ chạy tay là tệp khoá sẽ cũ. `doc_lint` R13 bắt được khoá cũ, nhưng nó
+    bắt SAU khi đã muộn.
+    """
+
+    def test_khoa_bo_qua_khi_khong_cham_file_luat(self):
+        import tdq_finish
+        b = tdq_finish.step_khoa_token(ROOT, [os.path.join(ROOT, "scripts", "tdq_state.py")])
+        self.assertEqual(b.status, "skip")
+        self.assertIn("no rule file", b.detail)
+
+    def test_khoa_chay_khi_cham_file_luat(self):
+        import tdq_finish
+        duong = os.path.join(ROOT, "skills", "tdq-build", "references", "qc.md")
+        b = tdq_finish.step_khoa_token(ROOT, [duong])
+        self.assertIn(b.status, ("ok", "skip"))
+        if b.status == "skip":
+            self.assertIn("token counter", b.detail)
 
 
 class LogServiceTest(unittest.TestCase):

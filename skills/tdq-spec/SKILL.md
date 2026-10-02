@@ -12,7 +12,8 @@ user's document language `doc_lang` (deliberate repetition — the original is
 ## Steps
 
 1. **Write** `docs/tdq/spec/<slug>.md` out of `docs/tdq/brief/<slug>.md`.
-   Full template: [references/spec-template.md](references/spec-template.md).
+   Full template: [references/spec-template.md](references/spec-template.md); the self-check is in the tier-1 sibling
+[references/spec-template-huong-dan.md](references/spec-template-huong-dan.md).
    Sections that MUST be there: goal & scope (in/out) · **Lộ trình** (copied from the <!-- i18n-allow: canonical spec section names -->
    brief: which phase runs, which is dropped, which skill is used, why — approving the
    spec approves the route with it) · **Ranh giới module** (§2b — module table, file <!-- i18n-allow: canonical spec section names -->
@@ -27,10 +28,9 @@ user's document language `doc_lang` (deliberate repetition — the original is
    who really imports and calls whom — `mcp__lsp__find_references` on the module's entry symbols,
    `mcp__lsp__go_to_definition` on what it pulls in. Guessing the boundary from folder names is a
    defect. <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-   lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
-   gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+   and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
+   top of that file gives the exact line range, so the whole file never has to be read.
 
 2. **Self-review.** Re-read it for holes and contradictions, and fix them. Run the machine
    check (R8 inspects §3b):

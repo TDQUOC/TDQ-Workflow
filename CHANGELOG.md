@@ -2,6 +2,35 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.54.0 — 2026-10-02
+
+Workflow nạp ít chữ hơn mà không mất một luật nào: **sàn tuân thủ của một request lane `full`
+giảm 55.439 → 49.531 token (−10,7%)**, trong khi số mục luật TĂNG 334 → 342. Báo cáo:
+`docs/tdq/reports/2026-09-28-2324-toi-uu-context-workflow.md`.
+
+- **Cổng nhắc đọc lại (`hooks/scripts/read_gate.py`).** Đo trên một phiên thật 22,76 MB:
+  `tdq_state.py` bị đọc 12 lần, `build_portable.py` 19 lần. Riêng hai file đó là 28% nội dung
+  đọc vào. Và 98,2% input của phiên là đọc lại context đã giữ. Cổng CHỈ NHẮC, một lần cho mỗi
+  file, và im khi `offset/limit` nhắm vùng chưa đọc hoặc khi file đã đổi. Nó giữ SỔ RIÊNG chứ
+  không dùng sổ lượt chung. Lý do: sổ lượt bị xoá ở mỗi prompt. Ký ức dựng trên đó không thấy
+  được đúng cái nó phải bắt — việc đọc lại qua nhiều lượt của một phiên.
+- **Chỉ mục dòng cho file luật dài (`scripts/doc_index.py`).** Mỗi file dài nhận một khối chú
+  thích HTML `<!-- muc-luc-dong: Tên=đầu-cuối · … -->`, nhờ đó đọc ĐÚNG MỘT MỤC bằng
+  `offset/limit` thay cho đọc trọn file. Khối ở dạng chú thích chứ không phải bảng vì một bảng
+  cùng lượng thông tin tốn ~230 token/file — tốn đúng vào ngân sách nó đang đi tiết kiệm.
+- **Trần 3.500 token mỗi file luật, cưỡng chế được ở CI.** CI cố ý không có tokenizer, nên
+  `scripts/token_budget.py` đo trên máy CÓ tokenizer và khoá con số bằng `sha256` trong
+  `docs/tdq/token-budget.json`; rule **R13** của `doc_lint` chỉ so hash. Không dùng dòng hay byte
+  làm đại lượng thay thế: đo trên 43 file, token/dòng lệch 4,1 lần và byte/token lệch 1,81 lần.
+  Ba file vượt trần đã được dời phần CÓ ĐIỀU KIỆN sang file em — không nén luật, theo `soul.md`.
+- **Bảy file em TẦNG 1.** Phần chỉ cần khi gặp đúng ca được tách khỏi file cha và trỏ thẳng từ
+  `SKILL.md`, đúng luật một tầng. `plan-template` 5.067 → 3.493, `quick-lane` 4.356 → 3.419,
+  `team-mode` 3.652 → 3.313, `uu-tien-tim-kiem` 3.449 → 2.067 token.
+- **Câu luật tìm kiếm còn một bản.** Sáu bản nguyên văn của cùng một câu (1.125 token) thành một
+  bản gốc + năm con trỏ ba dòng.
+- **CI in bảng bề mặt context** (`continue-on-error`, một tổ hợp). Nó là SỐ ĐO, không phải luật:
+  luật trần token mới được làm đỏ build.
+
 ## 0.53.0 — 2026-09-28
 
 Bộ tìm kiếm chuyển từ "có cài" sang "chứng minh được là đang trả lời đúng", và **breaking

@@ -31,6 +31,9 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
 MAX_BYTES = 4300
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
+# Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file
+# em để xuống dưới trần token, và luật không rời skill — nó sang file em, vẫn được trỏ tới từ cùng
+# `SKILL.md`. Đòi needle nằm đúng file anh là đòi một chi tiết sắp xếp, không phải đòi luật còn.
 MOVED = [
     ("§3 failover Tavily", "skills/tdq-conventions/references/tavily.md",
      ["tavily-primary", "tavily-backup", "websearch"]),
@@ -38,7 +41,8 @@ MOVED = [
      ["docs/workinglog", "working log"]),
     ("§7 xử lý issue user báo", "skills/tdq-intake/references/issue-triage.md",
      ["log", "computer use", "spec"]),
-    ("§8 checklist lập spec", "skills/tdq-spec/references/spec-template.md",
+    ("§8 checklist lập spec", ("skills/tdq-spec/references/spec-template.md",
+                               "skills/tdq-spec/references/spec-template-huong-dan.md"),
      ["qc", "download"]),
     ("§10 bảng định tuyến plugin", "skills/tdq-conventions/references/plugin-routing.md",
      ["data-engineering", "desktop-commander", "notion", "mongodb"]),
@@ -81,13 +85,18 @@ class MovedRulesTest(unittest.TestCase):
     """(a) Luật đã chuyển phải nằm ở file đích, nếu không là mất luật."""
 
     def test_moi_luat_chuyen_deu_co_o_file_dich(self):
-        for label, rel, needles in MOVED:
-            path = os.path.join(REPO, rel)
+        for label, dich, needles in MOVED:
+            rels = (dich,) if isinstance(dich, str) else dich
             with self.subTest(luat=label):
-                self.assertTrue(os.path.exists(path), f"{label}: thiếu file đích {rel}")
-                text = _read(path).lower()
+                van = []
+                for rel in rels:
+                    path = os.path.join(REPO, rel)
+                    self.assertTrue(os.path.exists(path), f"{label}: thiếu file đích {rel}")
+                    van.append(_read(path).lower())
+                text = chr(10).join(van)
                 for needle in needles:
-                    self.assertIn(needle, text, f"{label}: {rel} thiếu \"{needle}\"")
+                    self.assertIn(needle, text,
+                                  f"{label}: {' + '.join(rels)} thiếu \"{needle}\"")
 
 
 class InvariantRulesTest(unittest.TestCase):

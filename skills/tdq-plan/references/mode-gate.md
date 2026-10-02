@@ -1,4 +1,11 @@
 # The mode gate — a question block built from the mode table, not typed by hand
+<!-- muc-luc-dong:
+  Table of contents=14-24 · Where the options come from=25-41 ·
+  The question block — 3 options=42-61 · The question block — 2 options=62-85 ·
+  The proposal always sits at A=86-94 · Why `codex` may be unofferable — the 4 causes=95-109 ·
+  Rule for writing the "Vì sao đề xuất" paragraph=110-131 · What each option does NOT mean=132-152 ·
+  The names=153
+-->
 
 Used at step 6 of [tdq-plan](../SKILL.md), when the plan is approved but the user has not named
 a mode. The block follows

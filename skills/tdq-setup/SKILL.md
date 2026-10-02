@@ -4,6 +4,12 @@ description: Install and prove every dependency the workflow searches with: 8 ru
 ---
 
 # TDQ Setup — installing and proving the workflow's four search layers
+<!-- muc-luc-dong:
+  The one hard rule of this skill=26-33 · The ladder — `python3 scripts/tdq_lsp.py check`=34-63 ·
+  Rung 6 — a conflicting plugin hook=64-71 ·
+  lumen — where it comes from, and Ollama on demand=72-83 ·
+  Runbook — setting a machine up, and re-configuring it later=84
+-->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md).
 Upstream: <https://github.com/blackwell-systems/agent-lsp> · local clone on this machine:
@@ -13,6 +19,9 @@ Upstream: <https://github.com/blackwell-systems/agent-lsp> · local clone on thi
 itself answers — where is this defined, who calls it, what type is it. That is the difference
 between finding a name and finding the thing. The search-order rule lives in
 [references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md) and is binding on every phase.
+Three details sit in a tier-1 sibling,
+[references/uu-tien-tim-kiem-chi-tiet.md](references/uu-tien-tim-kiem-chi-tiet.md): Ollama's
+lifecycle, outside plugin hooks, and the `open_document` trap.
 
 ## The one hard rule of this skill
 

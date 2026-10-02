@@ -1,4 +1,10 @@
 # The scope round — the general tier of the interview
+<!-- muc-luc-dong:
+  Table of contents=14-21 · 1. When it runs=22-44 ·
+  2. Question 1 — which areas this request spans=45-74 ·
+  3. Question 2 — the context in numbers=75-104 · 4. Inferring the investment level=105-124 ·
+  5. Recording it=125
+-->
 
 This round runs BEFORE the detail questions in [interview.md](interview.md). Purpose: know
 which areas the request spans and what the real context is, so the detail round only asks

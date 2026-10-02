@@ -1,4 +1,8 @@
 # Report template
+<!-- muc-luc-dong:
+  Table of contents=7-13 · The execution steps=14-83 · The report shape=84-114 ·
+  Check before presenting=115
+-->
 
 ## Table of contents
 

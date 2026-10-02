@@ -25,7 +25,10 @@ EXPECTED_FILES = [
 # độ theo muc_gat, ví dụ RIGHT/WRONG) nằm giữa cặp marker luat-gon trong file này, và
 # soul.md:101 đã phán trước: trần dòng là ràng buộc tầng 3, chạm trần thì nâng trần, cấm nén
 # luật cho vừa. Chỉ nâng cho chung.md — 9 file rule còn lại giữ nguyên 150.
-TRAN_DONG = {"chung.md": 240}
+# 2026-10-02: 240 → 252. `scripts/doc_index.py` chèn khối chỉ mục dòng 10 dòng vào đầu file
+# (18 mục), và khối đó là thứ cho phép đọc ĐÚNG MỘT mục bằng `offset/limit` thay vì nạp cả
+# 240 dòng luật. Trần là ràng buộc tầng 3 của soul.md: chạm trần thì nâng trần, không nén luật.
+TRAN_DONG = {"chung.md": 252}
 
 # Khuôn 7 mục — heading cấp 2, so không phân biệt hoa thường, bỏ qua khối fence.
 # Từ 2026-08-22 rule viết tiếng Anh; mỗi mục nhận cả hai cách viết để bản cũ vẫn xanh.

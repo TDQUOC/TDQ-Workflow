@@ -1,4 +1,10 @@
 # QC — quality control
+<!-- muc-luc-dong:
+  Table of contents=11-21 · The QC level — what each level runs=22-57 ·
+  The three execution steps=58-86 · What to run=87-127 ·
+  The 120-second cap on smoke and runtime checks=128-148 · Recording the result=149-172 ·
+  When it FAILs=173
+-->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
 
@@ -100,7 +106,6 @@ the DoD:
   answer. No source file touched → write `KHÔNG ÁP DỤNG — không sửa file code`. <!-- i18n-allow: canonical marker written into the qc file -->
 
 Beyond the items above, add no item that is not in the DoD.
-
 
 The things below are **checked only when the DoD reaches them**; do not run them for
 completeness:

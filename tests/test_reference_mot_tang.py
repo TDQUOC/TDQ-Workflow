@@ -113,6 +113,17 @@ def _thuoc_dieu_phoi(path):
 
 # Từ 2026-08-22 reference viết tiếng Anh; nhận cả hai tên mục lục.
 TEN_MUC_LUC = ("## Table of contents", "## Mục lục")
+# 2026-10-02: khối chỉ mục DÒNG do `scripts/doc_index.py` sinh cũng là một mục lục, và nó phục vụ
+# đúng mục đích của luật này TỐT HƠN mục lục chữ: nó cho cả TÊN mục lẫn KHOẢNG DÒNG, nên model
+# `offset/limit` được đúng một mục thay vì đọc trọn file. Giữ cả hai dạng trong cùng một file là kê
+# cùng danh sách tiêu đề hai lần — đúng thứ request này đi cắt. `test_doc_index` khoá chuyện khối
+# đó khớp nội dung thật.
+MUC_LUC_DONG = "<!-- muc-luc-dong:"
+
+
+def _bo_chu_thich(text):
+    """Bỏ chú thích HTML và gom khoảng trắng, để so tên mục giữa hai dạng mục lục."""
+    return re.sub(r"\s+", " ", re.sub(r"<!--.*?-->", "", text)).strip()
 
 
 def _la_muc_luc(dong):
@@ -209,15 +220,22 @@ class MucLuc(unittest.TestCase):
             if len(noi_dung.splitlines()) <= TRAN_DONG:
                 continue
             ngoai = _ngoai_fence(noi_dung)
-            ten_muc_luc = next((t for t in TEN_MUC_LUC if t in ngoai), "")
-            if not ten_muc_luc:
-                thieu.append(_ten_ngan(path))
-                continue
-            khoi = ngoai.split(ten_muc_luc, 1)[1].split("\n## ", 1)[0]
+            if MUC_LUC_DONG in noi_dung:
+                khoi = noi_dung.split(MUC_LUC_DONG, 1)[1].split("-->", 1)[0]
+            else:
+                ten_muc_luc = next((t for t in TEN_MUC_LUC if t in ngoai), "")
+                if not ten_muc_luc:
+                    thieu.append(_ten_ngan(path))
+                    continue
+                khoi = ngoai.split(ten_muc_luc, 1)[1].split("\n## ", 1)[0]
+            # So sau khi bỏ chú thích HTML ở CẢ HAI bên. Mục lục chữ viết kèm `<!-- i18n-allow -->`
+            # của tiêu đề, còn khối chỉ mục dòng bắt buộc phải bỏ nó — dấu `-->` trong một tên sẽ
+            # đóng sớm chính khối comment ấy (đo được trên `soul.md`, mất 4 mục cuối).
+            khoi_sach = _bo_chu_thich(khoi)
             for tieu_de in self._tieu_de(noi_dung):
-                if tieu_de not in khoi:
+                if _bo_chu_thich(tieu_de) not in khoi_sach:
                     lech.append(f"{_ten_ngan(path)}: thiếu mục `{tieu_de}`")
         self.assertEqual(
             [], thieu,
-            f"File reference dài hơn {TRAN_DONG} dòng mà chưa có `## Mục lục`: {thieu}")
+            f"File reference dài hơn {TRAN_DONG} dòng mà chưa có mục lục nào: {thieu}")
         self.assertEqual([], lech, f"Mục lục không khớp tiêu đề thật: {lech}")

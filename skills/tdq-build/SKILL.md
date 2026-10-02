@@ -4,6 +4,10 @@ description: Run an approved TDQ plan end to end in one turn, QC it against the 
 ---
 
 # TDQ Build — Implement → QC → Report
+<!-- muc-luc-dong:
+  Hard rules (all three phases)=15-71 · Part A — Implement (phase `implement`)=72-138 ·
+  Part B — QC (phase `qc`)=139-155 · Part C — Report (phase `report`)=156
+-->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved = true`.
 This skill owns three phases: `implement` → `qc` → `report`.
@@ -55,10 +59,9 @@ This skill owns three phases: `implement` → `qc` → `report`.
   [references/rules/index.md](references/rules/index.md), look up the file extension, load
   `chung.md` plus exactly ONE language file. Never load the whole set for one language.
 - **LSP + lumen together, before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
-  Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-  hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-  lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
-  gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+  The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+  and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
+  top of that file gives the exact line range, so the whole file never has to be read.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. The `mcp__lsp__*` tools are missing → say so in one line, then fall through.
 - **No placeholders.** Missing information at this stage means the analysis fell short — say
@@ -72,7 +75,8 @@ This skill owns three phases: `implement` → `qc` → `report`.
    - `main` (label the user sees: "làm trực tiếp (inline implement)"): do EVERYTHING in this <!-- i18n-allow: user-facing mode label -->
      conversation yourself, but in the plan's cluster order, and still record the reason for
      each task you keep. The leader doctrine applies in every mode:
-     [references/team-mode.md](references/team-mode.md).
+     [references/team-mode.md](references/team-mode.md); the worktree ledger is in the tier-1 sibling
+     [references/team-mode-tra-cuu.md](references/team-mode-tra-cuu.md).
    - `subagent` (label the user sees: "giao trợ lý (sub-agent implement)"): you are the LEADER of a <!-- i18n-allow: user-facing mode label -->
      team. **Step 0 — before typing the first line of code: assign the WHOLE plan**
      (`python3 scripts/tdq_team.py assign`, then `audit`). Then loop wave by wave.
@@ -85,8 +89,8 @@ This skill owns three phases: `implement` → `qc` → `report`.
      set makes `audit` exit non-zero. While a wave is running, the leader works the `tu_lam`
      tasks of that same wave.
      Full rules (decision table, delegation prompt template, RIGHT/WRONG examples, self-check):
-     [references/team-mode.md](references/team-mode.md) — **you MUST open and read it before
-     assigning; working from memory is banned.**
+     [references/team-mode.md](references/team-mode.md) — read the sections you are about to
+     act on, through the line index at the top of that file; working from memory is banned.
    - `codex` (label the user sees: "giao Codex (codex implement)"): you stay the LEADER and <!-- i18n-allow: user-facing mode label -->
      Codex
      is a hired hand. Four beats per task, none skipped: you write the failing test, you RUN
@@ -97,8 +101,8 @@ This skill owns three phases: `implement` → `qc` → `report`.
      is a FAIL. Never describe this mode as "the fast mode": measured, it lands level with
      `main`, and what it changes is who writes the code.
      Full rules (prompt template, result shape, digest threshold, self-check):
-     [references/codex-mode.md](references/codex-mode.md) — **you MUST open and read it
-     before the first task; working from memory is banned.**
+     [references/codex-mode.md](references/codex-mode.md) — read the sections you are about to
+     act on, through the line index at the top of that file; working from memory is banned.
    The mode is what the USER said at approval. Missing mode, or you think another mode fits
    better → **STOP and ASK**.
 
@@ -140,10 +144,10 @@ table of levels is in [references/qc.md](references/qc.md). Smoke and runtime ch
 needs the user's yes, never your own call.
 
 The three execution steps — from counting DoD items to the fix loop on a FAIL — live in
-[references/qc.md](references/qc.md) under `## The three execution steps`. **You MUST open that
-file and read all three steps before running the first item; working from memory is banned.**
-That same file also
-carries the qc file template and the 3-fix-round cap.
+[references/qc.md](references/qc.md) under `## The three execution steps` — read THAT section
+before running the first item, through the line index at the top of the file; working from memory
+is banned. The same file also carries the qc file template and the 3-fix-round cap, each its own
+section in that index, so nothing here needs the whole file in context at once.
 
 Done when: every QC item PASSes and its evidence sits in the qc file.
 Next step: phase `report` — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`,
@@ -154,9 +158,9 @@ then Part C below.
 The execution steps — from writing the report through asking about the commit to merging the
 request branch back — live in
 [references/report-template.md](references/report-template.md) under `## The execution steps`.
-**You MUST open that file and read all four steps before writing the report; working from
-memory is banned.**
-That same file also carries the report template and the verbatim commit question block.
+Read THAT section before writing the report, through the line index at the top of the file.
+Working from memory is banned. The report template and the verbatim commit question block are
+separate sections in the same index, fetched when you reach them.
 
 Done when: the report is written, the user has been asked about the commit, and the request
 branch has been merged back into `nhanh_goc`.

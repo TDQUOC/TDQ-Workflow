@@ -4,6 +4,11 @@ description: Open a new TDQ request - record the ask, pick the lane, init state,
 ---
 
 # TDQ Intake — open the request & analyse
+<!-- muc-luc-dong:
+  Tier `nhỏ` — answer or fix on the spot, no request opened=17-32 ·
+  Part A — Open the request (phase `no_state`)=33-102 ·
+  Part B — Analysis (phase `analyze`, deep pipeline only)=103-129 · Part C — Express pipeline=130
+-->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md) first. Every output for the user is written
 in the user's language (`doc_lang`, default Vietnamese).
@@ -52,10 +57,9 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    check in [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md), once, here —
    skipping it when the ladder passed is a QC defect, because every rung checks only that
    something EXISTS. The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
-   Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-   hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-   lumen; vỡ lan và bản đồ kiến trúc dùng graphify; chưa chắc loại nào thì gọi song song rồi
-   gộp. Bảng đầy đủ kèm số đo: `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
+   of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the top of that
+   file gives the exact line range, so the whole file never has to be read.
 
 2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
    Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you <!-- i18n-allow: canonical name in the default language -->
@@ -105,9 +109,11 @@ gate check) per [references/analyze-full.md](references/analyze-full.md). The ve
 table template for the capability-inventory step (B0):
 [references/skill-inventory.md](references/skill-inventory.md).
 The interview runs general → specific: the **scope round** first (which areas + context in
-numbers, per [references/scope-round.md](references/scope-round.md)), and only then the
-detail questions inside the areas the user picked. The scope round is conditional; skip it
-and one line of reasoning goes into the brief.
+numbers), and only then the detail questions inside the areas the user picked. The scope round
+is conditional; skip it and one line of reasoning goes into the brief.
+[references/scope-round.md](references/scope-round.md) is read ONLY when you actually run that
+round — the whole file is the procedure for it, so a request that skips the round pays 2,066
+tokens for a procedure it never performs.
 
 The LAST step of this phase is step 5c: ask the QC level and write it into `muc_qc`. It sits
 here and not later because spec §6 is written from it.
@@ -125,10 +131,14 @@ questions remain, present them and stop.
 
 Express is a shortened path, NOT a path with thinking steps cut out. The ten
 execution steps — from analysis to asking about the commit — live in
-[references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`.
-**You MUST open that file and read all ten steps before doing step 1; working from memory
-is banned.** That same file also holds how deep the analysis goes (B1 always, B0 and B2 on
-thresholds), the mini-plan template, the tick rule, the QC rule and the fix round.
+[references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`. The tick
+rule, this lane's QC and the fix loop live in the tier-1 sibling
+[references/quick-lane-qc.md](references/quick-lane-qc.md) — read at the step that needs it,
+not at step 1.
+Read THAT section before doing step 1, through the line index at the top of the file; working
+from memory is banned. How deep the analysis goes (B1 always, B0 and B2 on thresholds), the
+mini-plan template, the tick rule, the QC rule and the fix round are separate sections in the
+same index — fetch each when you reach it.
 
 Step 1 sets `phase=analyze`, showing the express analysis as its own row (`quick_analyze`) in the
 phase table. That phase has **NO approval gate** — express keeps one gate, the approval at step 6.
