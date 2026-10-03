@@ -48,3 +48,53 @@ Phạm vi: mọi con số bên ngoài trong `docs/tdq/research/2026-10-03-1101-n
 | N38 | Model nhỏ "5–10× rẻ hơn", Explore "1,5–3K vs 35–45K token" (3.5) | mindstudio.ai/blog/smart-orchestrator-cheaper-sub-agent-models-claude-code | Có câu "5-10x" nhưng không dẫn phép đo; không có cặp số 1,5–3K vs 35–45K | không xác minh được: blog không đo, số Explore không có trong bài — loại khỏi căn cứ |
 
 Tóm tắt: 38 số đã kiểm — 28 khớp, 3 lệch (N18, N28, N31), 7 không xác minh được (N29, N30, N34–N38). Ba số đáng ngờ nhất đều đứng: giá đọc cache 0,05× của Opus 5.5 (N1), hai bài arXiv 2605.10039 và 2606.10209 có thật và số khớp (N20, N23), trần Codex 32 KiB và 8.000 ký tự (N10, N11; 8.000 chỉ là mức dự phòng khi không biết context window). Các số lệch đều nhỏ và không lật hướng đề xuất nào; các số không xác minh được đều đến từ blog bên thứ ba (đã gắn **[chưa kiểm]** sẵn) hoặc là phép suy diễn, nên bỏ khỏi căn cứ. Riêng đề xuất G mất con số "−50%": đề xuất vẫn có thể giữ, nhưng lợi ích phải tự đo.
+
+## Bản đồ chi phí
+
+Nguồn số: `docs/tdq/research/2026-10-03-1101-do-noi-bo.md` (gọi tắt "đo nội bộ"; phương pháp từng số ở mục 0–3 file đó). Ba số lớn nhất đã được chạy lại độc lập ngày 2026-10-03 (bảng "Số chạy lại" cuối mục). "Thời gian máy" = agent làm việc + tool + test, **không** gồm thời gian chờ user. Phiên `tdqwf` = transcript chính `b77dddd9-…` của TDQ-Workflow; `exc1` = phiên excalidraw có cài plugin TDQ.
+
+### Context — xếp theo cỡ
+
+Đơn vị không đồng nhất (có số là tổng phiên, có số là mỗi lần); xếp theo tổng token mà nguồn đó đẩy qua model trong một phiên đo.
+
+| # | Trung tâm chi phí | Số đo | Cách đo (đo nội bộ) |
+|---|---|---|---|
+| 1 | Hội thoại tích luỹ bị đọc lại ở mọi lượt (phiên dài, ít compact) | TB 491k token/lượt × 2.624 lượt → cache_read 1.273M token (tdqwf); ~90% context mỗi lượt là hội thoại tích luỹ, prefix cố định chỉ 38–46k | `message.usage` input + cache_read + cache_creation, khử trùng theo `message.id` (§1.1) |
+| 2 | Ghi cache lạnh lại toàn bộ prefix sau chờ user/resume | 24 lượt ≥ 50k = 11,7M token = 74% cache_creation tdqwf (exc1: 0,94M = 58%) | `cache_creation_input_tokens` ≥ 50k mỗi lượt (§1.1) |
+| 3 | Phí cố định mỗi subagent | lượt đầu TB 22,1k (tdqwf) / 25,9k (exc1); 83 subagent ≈ 2,5M token cache_creation | lượt API đầu mỗi `subagents/*.jsonl` (§1.1, §5.3) |
+| 4 | Output lệnh shell ở main | Bash tdqwf ≈ 831k token, trong đó đọc/tìm bằng shell 895 lệnh ≈ 456k | độ dài tool_result theo tool, phân loại lệnh bằng regex, hệ số ký tự/token hiệu chỉnh (§1.3–1.4) |
+| 5 | `edited_text_file` — harness chèn lại snippet khi plan/QC bị sửa ngoài lượt | 381 lần ≈ 204k token (tdqwf) | attachment `edited_text_file` (§1.5) |
+| 6 | Hook TDQ ở dự án người dùng | ≈ 57k token/phiên exc1, ~46k là SessionStart resume (~2,1k × 22) | attachment hook + tokenizer thật trên mẫu (§1.6, §2) |
+| 7 | Prompt giao subagent nằm lại ở main | exc1 42 prompt ≈ 38k token (TB 3.336 ký tự) | input của tool Agent (§1.6) |
+| 8 | Luật workflow đọc vào (Skill + đọc `skills/**.md` qua shell) | exc1 ≈ 10k + 19k = 29k token | tool_result Skill/shell theo đường dẫn (§1.6) |
+| 9 | Bộ file luật (trần nếu nạp hết) | 100.858 token / 62 file; comment HTML 6.021 (6,1%), trùng nguyên văn chỉ 1.038 (1%) | tokenizer thật từng file (§4) |
+
+### Thời gian máy — xếp theo cỡ (11 cửa sổ request, máy 69.300 s = 14,9% treo tường 464.820 s)
+
+| # | Trung tâm chi phí | Giây | % máy | Cách đo (đo nội bộ §3) |
+|---|---|---|---|---|
+| 1 | Model sinh token (phần máy không nằm trong tool) | 40.853 | 59% | khe event không kết thúc ở tool_result |
+| 2 | Test rộng (mọi lệnh `unittest`/`pytest`/`vitest`/`tsc`…) | 21.454 | 31% | khe `assistant` → `tool_result` của lệnh test |
+| 2a | — trong đó full suite ≥ 200 s (59 lần, TB ~307 s, đã tăng 284 → 363 s) | 18.085 | 26% | thời lượng tool_use → tool_result ≥ 200 s |
+| 3 | Shell khác | 5.779 | 8,3% | như trên, lệnh không phải test |
+| 4 | Độ trễ thêm vì context > 600k (nằm trong #1) | ≈ 1.400 | ≈ 2% | trung vị độ trễ theo bucket context (§3.4) |
+| — | Theo phase: implement | 41.949 | 60,5% | cửa sổ phase dựng lại, xấp xỉ (§3.3) |
+
+Subagent chạy song song 14.989 s không cộng vào "máy" (main chờ song song).
+
+### Số chạy lại
+
+Đã chạy lại ba số lớn nhất ngày 2026-10-03 bằng script tạm viết lại theo mô tả của đo nội bộ (`%TEMP%\tdqt12\m.py`, đã xoá sau khi đo; Python 3.13, chỉ đọc transcript và `timing.jsonl`). Transcript tdqwf vẫn đang lớn lên (chính phiên này ghi thêm: 40,7 MB → 41,2 MB, 2.624 → 2.651 lượt), nên mỗi số được tính hai lần: cắt tại 2026-10-03 04:17 UTC (mốc dữ liệu của đo nội bộ) và toàn file hiện tại. Lệch nhỏ ở bản toàn file là do phiên đang chạy, không phải do phương pháp.
+
+| Số | Trợ lý báo | Chạy lại (2026-10-03) | Lệch % | Phương pháp / lệnh |
+|---|---|---|---|---|
+| Context TB mỗi lượt gọi API (tdqwf main) | TB 491k · trung vị 476k · p90 858k · max 966k · 2.624 lượt | cắt 04:17Z: TB 491.168 · trung vị 476.041 · p90 857.666 · max 966.403 · 2.624 lượt; toàn file: TB 491.806 · 2.651 lượt | 0,0% (cắt) · +0,2% (toàn file) | mỗi dòng `assistant` có `message.usage`, khử trùng theo `message.id`; context = `input_tokens + cache_read_input_tokens + cache_creation_input_tokens` |
+| Thời gian máy (11 cửa sổ) | 69.300 s máy · 391.562 s chờ · 3.933 s không rõ | 69.299 s · 391.562 s · 3.933 s | 0,0% | gộp event `user/assistant` mọi transcript main của dự án, cắt theo `[started_at, closed_at]` của `timing.jsonl` (từ 09-20); khe kết thúc ở prompt người hoặc kết quả `AskUserQuestion` = chờ; kết thúc ở tool_result test/Agent = máy; khe khác > 900 s = không rõ |
+| Full suite ≥ 200 s / thời gian máy | 59 lần · 18.085 s · "30,9%" | 61 lần · 19.177 s = 27,7% máy | +6,0% giây · +3,4% lần | thời lượng tool_use → tool_result của lệnh Bash/PowerShell khớp `unittest\|pytest\|vitest\|tsc`, ≥ 200 s, kết quả nằm trong cửa sổ |
+| Test rộng / thời gian máy | 21.454 s = 31% | 21.747 s = 31,4% | +1,4% | khe `assistant` → `tool_result` của lệnh test (cùng regex) |
+| Tỉ lệ ghi cache lạnh (tdqwf main) | 24 lượt ≥ 50k · 11,7M token · 74,1% cache_creation | cắt 04:17Z: 24 lượt · 11.715.576 / 15.811.966 = 74,1%; toàn file: 11.715.576 / 15.856.936 = 73,9% | 0,0% (cắt) · −0,3% (toàn file) | `cache_creation_input_tokens` ≥ 50.000 mỗi message (khử trùng `message.id`), chia tổng cache_creation |
+
+Lý do lệch > 5% và điều cần sửa trong cách đọc số:
+- Full suite +6,0%: toàn bộ chênh nằm ở request 09-21 (18 lần chạy lại so với 16); bảy request còn lại khớp tới giây. Hai lần thừa là hai lần chạy suite **song song** với một lần chạy khác (09-21 04:20 UTC 547 s và 04:39 UTC 539 s); bỏ hai lần chồng thời gian đó còn 59 lần · ≈ 18.091 s (lệch 0,0%). Đo nội bộ không ghi luật gộp lần chạy chồng nhau, nên bản chạy lại để nguyên.
+- Số "31%" ở dòng 3 bảng tóm tắt đo nội bộ ghép sai cặp: 18.085 s / 69.300 s = **26,1%**, không phải 30,9%; 30,9–31% là tỉ lệ **test rộng** (21.454 s). Bản đồ trên dùng 26% cho full suite ≥ 200 s và 31% cho mọi lần chạy test.
+- Khi chạy lại phải tính prompt người dạng danh sách khối `text` (không chỉ chuỗi) là "chờ user"; nếu không, một khe 16.809 s ở request 10-03-0015 rơi vào "không rõ" thay vì "chờ" (số máy không đổi).
