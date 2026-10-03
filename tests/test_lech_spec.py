@@ -115,6 +115,17 @@ class TestVongDoi(_CoState):
         self.assertEqual(len(self.lech()), 1)
 
 
+class TestJsonSach(_CoState):
+    def test_quyet_lai_json_stdout_van_la_json(self):
+        """Review T5.3: dòng "note … overriding" từng lọt vào stdout làm vỡ `--json`."""
+        run_state_cli(self.cwd, *THEM)
+        run_state_cli(self.cwd, "lech", "duyet", "1", "--by", "ok")
+        rc, out, err = run_state_cli(self.cwd, "lech", "bac", "1", "--by", "thôi", "--json")
+        self.assertEqual(rc, 0, err)
+        json.loads(out)
+        self.assertIn("overriding", err)
+
+
 class TestLoiCuPhap(_CoState):
     def _sai(self, *args):
         rc, _, _ = run_state_cli(self.cwd, *args)

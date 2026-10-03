@@ -265,5 +265,26 @@ class TestR14Log(unittest.TestCase):
         self.assertEqual(self._chay(), [])
 
 
+
+class NgonNguKhac(unittest.TestCase):
+    """Review T5.3: spec viết tiếng Anh (`doc_lang=en`) đặt tên cột bằng tiếng Anh."""
+
+    TEN = "2026-10-05-0000-english-spec.md"
+
+    def _spec(self, dau, hang):
+        return "\n".join(["# SPEC", "", "## 6. QC & Definition of Done", dau,
+                          "|---|---|---|---|---|", hang, "", "## 7. Open questions", ""])
+
+    def test_ngon_ngu_tieng_anh_du_cot_thi_qua(self):
+        dau = "| # | Item | PASS condition | Measured before | Fallback if missed |"
+        hang = "| Q1 | Installer | installer ≤ 200 MB | 212 MB + ~20 MB (vendor page) | bootstrapper |"
+        self.assertEqual(doc_lint.r14_loi(self._spec(dau, hang), self.TEN), [])
+
+    def test_ngon_ngu_tieng_anh_thieu_do_thi_bat(self):
+        dau = "| # | Item | PASS condition | Measured before | Fallback if missed |"
+        hang = "| Q1 | Installer | installer ≤ 200 MB | — | — |"
+        self.assertNotEqual(doc_lint.r14_loi(self._spec(dau, hang), self.TEN), [])
+
+
 if __name__ == "__main__":
     unittest.main()

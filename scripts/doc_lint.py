@@ -670,9 +670,11 @@ def rule_r12(doc, out):
 # two columns, and back-filling them would touch files outside the request.
 R14_MOC = "2026-10-03-0732"
 R14_SLUG = re.compile(r"\d{4}-\d{2}-\d{2}-\d{4}")
-R14_COT_PASS = "điều kiện pass"  # i18n-allow
-R14_COT_DO = "đo trước"  # i18n-allow
-R14_COT_DU_PHONG = "dự phòng nếu trượt"  # i18n-allow
+# Header aliases per document language (`doc_lang`): a spec written in English names the same
+# columns in English, and matching the Vietnamese headers only made every English spec fail R14.
+R14_COT_PASS = ("điều kiện pass", "pass condition", "pass criteria")  # i18n-allow
+R14_COT_DO = ("đo trước", "measured before", "prior measurement", "measurement")  # i18n-allow
+R14_COT_DU_PHONG = ("dự phòng nếu trượt", "fallback")  # i18n-allow
 # A number not glued to a word, a decimal or a section sign: `Q12`, `R14`, `v0.3.3` and
 # `§2 dòng 1` (a pointer to section 2, not "2 lines") never read as a threshold.
 R14_SO = r"(?<![\w.,§])(\d+(?:[.,]\d+)*)(?![\w.,]*\d)"
@@ -714,10 +716,11 @@ def _r14_o(line):
 
 
 def _r14_cot(header, ten):
+    """Index of the first header cell holding one of the aliases in `ten`, else None."""
     if header is None:
         return None
     for idx, cell in enumerate(header):
-        if ten in cell.lower():
+        if any(bi_danh in cell.lower() for bi_danh in ten):
             return idx
     return None
 

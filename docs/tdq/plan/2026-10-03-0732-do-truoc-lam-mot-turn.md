@@ -121,7 +121,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   `test_lech_spec.py`, `test_doc_lint_r14.py`
 - [x] **T5.2** (e10m) Trọn bộ test một lệnh — Test: `python -m unittest discover tests` xanh
   - Cần: T5.1
-- [~] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
+- [x] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
   lý do bác bỏ vào file QC
   - Dùng: `code-review`
   - Để: tìm lỗi đúng-sai trong R14, cổng duyệt, lệnh `lech`/`pause`, hook nhắc
@@ -129,7 +129,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   - Kiểm: mục soát lỗi của file đó có một dòng cho mỗi phát hiện
   - Không dùng cho: rút gọn code — đó là T5.4
   - Cần: T5.2
-- [ ] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: trọn bộ test vẫn xanh
+- [~] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: trọn bộ test vẫn xanh
   - Dùng: `simplify`
   - Để: gỡ trùng lặp trong mã mới, không đổi hành vi
   - Ra: mã đã rút gọn

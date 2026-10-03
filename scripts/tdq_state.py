@@ -2230,7 +2230,9 @@ def _cli_lech(cwd, rest):
         _fail(f"lech {sub}: no spec deviation with id {raw_id!r}.")
     before = item.get("trang_thai")
     if before != "cho":
-        print(f"note: deviation #{raw_id} was already decided ({before}); overriding.")
+        # stderr, not stdout: `--json` callers parse stdout and a note there breaks them.
+        print(f"note: deviation #{raw_id} was already decided ({before}); overriding.",
+              file=sys.stderr)
     item["trang_thai"] = LECH_QUYET[sub]
     item["quyet_at"] = now_iso()
     item["quyet_by"] = by[:400]
