@@ -196,3 +196,179 @@ Cách dựng lại script (đã xoá, viết lại theo mô tả; `<repo>` = g�
 - `lane.py`: hai danh sách FULL/QUICK ở trên; `body()` = đọc UTF-8, CRLF → LF, cắt frontmatter của SKILL.md; tổng = Σ `count_tokens(body)`.
 - `exp.py <mode>`: chép `skills` sang `work\<mode>-<lane>\skills`, áp bước, chạy `<repo>\scripts\doc_index.py <các file có muc-luc-dong>` rồi `--kiem`, đếm lại bằng `lane.py`. Bước 1: xoá `<!--.*?-->` không khớp `^<!--\s*(muc-luc-dong:|i18n-allow|doc-lint: allow|luat-gon:|luat-mode-allow)`. Bước 1b: `re.sub(r"<!--\s*i18n-allow:[^>]*?-->", "<!-- i18n-allow -->")`. Bước 2: fence ` ``` `/`~~~` ≥ 40 token khớp danh sách 22 dòng đầu (file + dòng đầu khối) của bảng hạng A/B/C trên, mang theo dòng `<!-- i18n-allow… -->` ngay trên fence, thay bằng `→ [<tên>-mau.md](<tên>-mau.md) §k (Read it when needed).`. Bước 3: ghép dòng thành đoạn (ngắt ở dòng trống, mục danh sách, heading, bảng, fence, chú thích khối), tách câu ở `[.!?]` trước khoảng trắng, chuẩn hoá (bỏ chú thích, dấu markdown, chữ thường), so với mọi câu đã gặp trong lane: trùng hash hoặc Jaccard 4-gram ký tự ≥ 0,9 → xoá lần sau.
 - Kiểm marker: `$py <repo>\scripts\i18n_check.py work\e1b-full\skills | Select -Last 1` (so với `… skills`).
+
+### T2.3 — hội thoại tích luỹ và cache
+
+Chạy ngày 2026-10-03, **chỉ đọc** transcript tdqwf (`C--Users-admin-Documents-Projects-ForAgentCode-TDQ-Workflow/b77dddd9-….jsonl`, 41,4 MB, 2.661 lượt API sau khử trùng `message.id`, bỏ lượt `<synthetic>`) và `docs/tdq/timing.jsonl`. Script tạm `%TEMP%\tdqt23\t23.py` (Python 3.13) **đã xoá** sau khi đo; mã nguồn đầy đủ ở cuối tiểu mục. Đây là phép ước lượng phản thực (counterfactual) trên số đo cũ, không chạy lại phiên nào; request này không đổi workflow.
+
+**Phạm vi chung.** Request = cửa sổ `[started_at, closed_at]` của `timing.jsonl` có lượt API trong transcript: 9 dòng = 8 request full (09-20-1823 … 10-03-0732) + 1 dòng hủy 09-27-1905 (9 lượt); cộng 2.430 lượt, Σ context 1.216M token, máy 58.569 s, trong đó model 32.172 s (đo nội bộ §3.2). Mốc phase = lệnh `tdq_state.py set phase=<x>` (và `approve plan … --mode` ⇒ implement) trong tool_use Bash/PowerShell, bỏ lệnh thử có `TDQ_PROJECT_DIR`; tổng 52 mốc (kể cả đầu request). Compact thật = `system/compact_boundary`. Đơn vị chi phí = **token input tương đương**: input × 1 + cache_read × 0,05 (Opus 5.5, N1) hoặc × 0,1 (Opus 5, mức chung N1) + ghi cache 1h × 2 / 5m × 1,25 (N2); toàn bộ ghi cache của main là loại 1h (trường `cache_creation.ephemeral_1h_input_tokens`, khớp N5). Quy ra tiền chỉ để minh hoạ: Opus 5.5 input $4/MTok (suy từ N1 + N4: $0,20 = 0,05×). Độ trễ máy = bảng trung vị theo cỡ context ở đo nội bộ §3.4: **thấp** dùng trung vị lượt output < 200 token (2,3 / 2,7 / 3,0 / 3,8 s cho < 100k / 100–300k / 300–600k / > 600k) — tách được hiệu ứng cỡ context khỏi độ dài output; **cao** dùng trung vị mọi lượt (3,9 / 4,4 / 4,9 / 7,3 s) — lẫn cả việc lượt nặng sinh output dài hơn.
+
+#### (i) Tách phiên / compact có chủ đích ở mỗi mốc phase
+
+Phương pháp: với mỗi lượt k sau mốc reset s cùng request, context phản thực `c'ₖ = min(cₖ, R + max(0, cₖ − cₛ))` — tức hội thoại trước mốc được thay bằng R, phần tăng sau mốc giữ nguyên. Nếu trong đoạn đã có compact thật thì từ đó không tính tiết kiệm. Chi phí phản thực: lượt đầu sau mốc ghi lạnh cả R (× 2); lượt vốn là ghi lạnh ≥ 50k ghi c'ₖ thay cₖ; lượt khác giữ nguyên phần input/ghi mới, phần đọc cache = c'ₖ − phần mới. R gồm: prefix cố định (`ctx_first` 38–46k, đo nội bộ §1.1) + phần phải đọc của phase + bản bàn giao 3–5k.
+- **R cao (ước thấp)** = 46.000 + 50.893 (cả tập bắt buộc đọc lane full, T2.1 — coi như phase mới đọc lại toàn bộ luật và artifact) + 5.000 = **101.893**.
+- **R thấp (ước cao)** = 38.000 + 6.000 (luôn nạp 3.643 + một SKILL.md phase ~2,5k, `skill_tokens.py --theo-phase`, đo nội bộ §4) + 3.000 = **47.000**.
+
+| Kịch bản | Token context bớt (9 cửa sổ) | Mỗi request (÷ 8) | % Σ context | Chi phí bớt (token input tương đương) | Mỗi request | Giây máy bớt (thấp – cao) | Mỗi request |
+|---|---|---|---|---|---|---|---|
+| Chỉ tách phiên ở đầu request (9 mốc) | 507M – 610M | 63M – 76M | 42% – 50% | 48,7M – 60,0M (37% – 46% của 130,3M) | 6,1M – 7,5M | 879 – 2.698 s | 110 – 337 s |
+| Tách/compact ở **mọi** mốc phase (52 mốc) | 755M – 865M | 94M – 108M | 62% – 71% | 67,5M – 84,2M (52% – 65%) | 8,4M – 10,5M | 1.157 – 3.392 s | 145 – 424 s |
+
+Nguồn số đầu vào: context/chi phí từng lượt = `message.usage` của transcript; R = đo nội bộ §1.1, §4 và T2.1; bảng độ trễ = đo nội bộ §3.4; hệ số giá = N1, N2, N5.
+
+Theo request (mọi mốc phase, R cao → R thấp): 09-20-1823 52–64% · 09-21-0029 70–77% · 09-23-1148 68–79% · 09-27-1905 77–84% · 09-28-0910 47–63% · 09-28-2324 58–64% · 10-03-0015 65–72% · 10-03-0732 57–71% token context. Chỉ tách ở đầu request thì chênh lớn giữa các request (8% ở 09-28-0910, 10% ở 09-20-1823 vì phiên vừa compact/mới mở; 58–70% ở 09-21, 09-27) — phần lớn tiết kiệm đến từ việc **không chở hội thoại của request trước**; cắt thêm ở mỗi phase cộng ≈ 20 điểm %.
+
+Quy đổi: 67,5M – 84,2M token input tương đương ≈ **$270 – $337** cho 8 request theo giá Opus 5.5 (≈ $34 – $42/request). Thời gian máy bớt 1.157 – 3.392 s = **2,0% – 5,8% máy** (3,6% – 10,5% thời gian model); cận thấp (cùng cỡ output) đáng tin hơn. Phí chưa trừ: mỗi mốc sinh một bản bàn giao 3–5k token output (52 mốc ≈ 156k – 260k output, tức 20k – 33k/request — nhỏ hơn hai bậc so với phần bớt) và một lượt ghi lạnh R (đã trừ trong cột chi phí). Rủi ro chất lượng: mất chi tiết không nằm trong bàn giao/artifact; ngược lại, context ngắn hơn giảm "context rot" (N22) và sau compact Claude Code chỉ giữ 5.000 token đầu mỗi skill, **không** gắn lại file luật đọc bằng Read (N9) — nên compact chủ đích phải kèm đọc lại phần phải đọc của phase, đúng như R cao đã tính.
+
+#### (ii) Đẩy việc đọc nặng cho trợ lý chỉ trả tóm tắt
+
+Phương pháp: mỗi tool_result (Bash/PowerShell/Read/Grep) ≥ ngưỡng T ký tự trong cửa sổ request được thay bằng bản tóm ≤ 1.500 ký tự; token bớt = (ký tự − 1.500) / hệ số ký tự/token (Bash 2,75 · PowerShell 2,78 · Read 2,65 · Grep 2,7, đo nội bộ §0) − prompt giao P (nằm lại ở main), nhân với số lượt API còn lại tới compact thật hoặc hết request (không cộng dồn với (i)). Phí trợ lý trả ở context **của nó**, không ở main: ≥ 2 lượt × S₀ (lượt đầu cố định) + nội dung đọc; chi phí = (S₀ + nội dung) × 1,25 (subagent ghi cache 5m, N5; subagent thường không chia cache với main) + S₀ × 0,1. Thời gian: mỗi lần giao tốn ≥ 2 lượt × ~3,9 s (bucket < 100k) nếu main chờ.
+
+| Kịch bản | Lệnh được giao | Token context main bớt (9 cửa sổ) | Mỗi request | % Σ context | Chi phí ròng (gồm phí trợ lý) | Token trợ lý thêm | Giây model main bớt | Giây chờ trợ lý thêm (≥ n × 7,8 s) |
+|---|---|---|---|---|---|---|---|---|
+| Thấp: chỉ Bash/PowerShell ≥ 8.000 ký tự, bỏ output `tdq_*.py`/`doc_lint` (chỉ dẫn cho agent), S₀ = 25,9k, P = 500 | 21 | 9,7M | 1,2M | 0,8% | **+0,22M** (lãi ≈ $0,9 tổng) | 1,17M | 18 – 40 s | ≈ 164 s |
+| Cao: Bash/PowerShell/Read/Grep ≥ 3.000 ký tự, S₀ = 22,1k, P = 200 | 155 | 31,4M | 3,9M | 2,6% | **−1,73M** (lỗ ≈ $7 tổng) | 7,17M | 43 – 93 s | ≈ 1.209 s |
+
+Nguồn số đầu vào: độ dài tool_result và vị trí lượt = transcript; S₀ 22,1k / 25,9k = lượt đầu subagent tdqwf / exc1 (đo nội bộ §1.1); bản tóm 1.000–2.000 token (N13) → chọn 1.500 ký tự (chặt hơn); fork chia cache với main, subagent thường không (kiểm chéo, N5).
+
+Vì sao nhỏ: trong 2.075 tool_result đọc ở 9 cửa sổ, chỉ 155 cái ≥ 3.000 ký tự (39% ký tự) và 31 cái ≥ 8.000 (14%); 456k token "đọc bằng shell" của Bản đồ #4 rải trên 895 lệnh, TB ≈ 1.400 ký tự/lệnh — đã nhỏ hơn bản tóm. Phần main bớt là đọc cache rẻ (0,05–0,1×), còn trợ lý phải **ghi** cache ~22–26k mỗi lần (1,25×) ⇒ giao lẻ từng lệnh **lỗ** về chi phí và thời gian (thêm 164 – 1.209 s chờ để bớt 18 – 93 s model). Chỉ có lời khi một trợ lý gom **nhiều** lần đọc nặng của cùng một việc (một S₀ cho nhiều kết quả) và chạy nền — đúng là cách mode subagent đang làm cho task build. → **Ước lượng ròng (ii): ≈ 0 – 1,2M token context main/request (0 – 0,8%), chi phí ròng ≈ −0,2M … +0,03M/request**; thấp hơn (i) hai bậc.
+
+#### (iii) Giữ tiền tố ổn định — 24 lượt ghi cache lạnh
+
+Phương pháp: lượt `cache_creation_input_tokens` ≥ 50.000 (như Bản đồ #2), phân loại theo thứ tự: có `compact_boundary` ngay trước → compact; model khác lượt trước (bỏ `<synthetic>`) → đổi model; khe thời gian từ lượt API trước > 1 h → hết TTL 1h (N5); 5 phút – 1 h → khác; còn lại → khác. Đã soát thêm từng lượt: có hook `SessionStart:resume` ở 5/24 lượt (#3, #8, #14, #19, #23) nhưng cả 5 đều có khe > 1 h ⇒ resume không phải nguyên nhân riêng; không có skill nào mang `model:` trước lượt lạnh; không có lượt lạnh nào sau khe 5 phút – 1 h.
+
+| Nguyên nhân | Lượt | Token ghi | Khe trước lượt | Tránh được? | Tiết kiệm nếu tránh (token input tương đương) |
+|---|---|---|---|---|---|
+| Compact (09-28 02:35, 10-02 10:36) | 2 | 0,12M (58k, 65k) | 2–3 phút | Không — đã là bản nhỏ sau compact | 0 |
+| Đổi model Opus 5 → Opus 5.5 (10-02 15:54) | 1 | 0,49M | 9 phút (cache vẫn ấm) | **Có**: đổi model đúng lúc cache đã lạnh hoặc ngay sau một mốc reset/compact | 0,49M × (2 − 0,1) ≈ **0,92M** (≈ $3,7) |
+| User vắng > 1 h (TTL 1h hết) | 21 | 11,11M | 66 phút – 84 giờ; 6 lượt < 90 phút = 2,85M | Không tránh việc ghi (cần giữ cache ấm — Claude Code không có, và đổi workflow); **thu nhỏ được** bằng (i) | xem dưới |
+| **Cộng** | **24** | **11,72M** (73,9% cache_creation 15,88M toàn file) | | | |
+
+Thu nhỏ bằng (i): trong 9 cửa sổ có 7,78M token ghi lạnh (phần còn lại 3,94M nằm giữa hai request hoặc trong request đang mở). Với context phản thực của (i), cùng các lượt lạnh đó chỉ ghi **1,57M – 2,34M** (reset mọi phase) hoặc 3,97M – 4,63M (chỉ đầu request) ⇒ bớt 5,4M – 6,2M token ghi = **10,9M – 12,4M token input tương đương** (≈ $44 – $50 cho 8 request) — **đã nằm trong** cột chi phí của (i), không cộng thêm. Đổi lại, (i) tự sinh 52 lượt ghi lạnh cỡ R (47k – 102k) ở mốc phase; đã trừ trong (i).
+
+→ **Ước lượng (iii) riêng: 1/24 lượt tránh được (0,49M token ghi, ≈ 0,9M token input tương đương ≈ 4% chi phí ghi lạnh); cận cao lý thuyết 7/24 (thêm 6 lượt khe 66–90 phút, 2,85M) nếu có cơ chế giữ cache ấm — ngoài phạm vi vì đổi workflow.** Đòn bẩy thật cho ghi lạnh là cỡ context lúc user quay lại, tức (i). Không thấy lượt lạnh nào do CLAUDE.md/skill/tool đổi giữa phiên (mọi lượt ngoài compact/đổi model đều sau khe > 1 h). Ghi nhận phụ: 10 lượt lạnh đầu (tới 09-28) vẫn đọc cache 29.951 token (phần system prompt dùng chung), từ lượt sau compact 09-28 thì đọc 0 — transcript không cho biết vì sao, chênh ≈ 30k × 14 lượt ≈ 0,4M token ghi.
+
+#### Kết luận T2.3
+
+| Đòn bẩy | Token context bớt / request | Chi phí bớt / request (token input tương đương) | Giây máy bớt / request | Ghi chú |
+|---|---|---|---|---|
+| (i) tách/compact ở mỗi mốc phase | **94M – 108M (62–71%)** | 8,4M – 10,5M (52–65%) | 145 – 424 s (2,0–5,8% máy) | lớn nhất; chất lượng phụ thuộc bản bàn giao + đọc lại luật phase (N9) |
+| (i′) chỉ tách phiên ở đầu request | 63M – 76M (42–50%) | 6,1M – 7,5M | 110 – 337 s | rẻ nhất về rủi ro: artifact spec/plan/report đã là bàn giao |
+| (ii) trợ lý đọc nặng chỉ trả tóm tắt | 0 – 1,2M (0–0,8%) ròng | −0,2M … +0,03M | âm (chờ trợ lý > phần bớt) | chỉ lời khi gom nhiều lần đọc và chạy nền |
+| (iii) tiền tố ổn định | 0 (context không đổi) | ≈ 0,1M (1 lượt đổi model) | ≈ 0 | ghi lạnh do user vắng > 1 h; thu nhỏ qua (i) |
+
+Giới hạn: một phiên (tdqwf, phát triển chính workflow, ít compact) — exc1 không đo lại ở đây; mô hình độ trễ là trung vị theo bucket, không hồi quy; phản thực giả định phần tăng sau mốc không đổi (thực tế agent có thể phải đọc lại nhiều hơn R cao). Số thô: chạy lệnh dưới.
+
+Mã nguồn script (chạy: `python t23.py "<…>/projects/C--Users-admin-Documents-Projects-ForAgentCode-TDQ-Workflow/b77dddd9-9fc5-4b98-9a39-c7aaf7e1b748.jsonl" docs/tdq/timing.jsonl`, `PYTHONIOENCODING=utf-8`; transcript đang lớn lên nên số có thể nhích nhẹ):
+
+```python
+# T2.3 — hội thoại tích luỹ và cache. Chỉ đọc. python t23.py <transcript tdqwf .jsonl> <docs/tdq/timing.jsonl>
+import json, re, sys
+from datetime import datetime
+F = sys.argv[1]
+ts = lambda s: datetime.fromisoformat(s.replace('Z', '+00:00')).timestamp()
+LAT_HI = [(1e5, 3.9), (3e5, 4.4), (6e5, 4.9), (9e9, 7.3)]   # do-noi-bo §3.4: trung vị mọi lượt
+LAT_LO = [(1e5, 2.3), (3e5, 2.7), (6e5, 3.0), (9e9, 3.8)]   # trung vị lượt output < 200 token
+lat = lambda c, T: next(v for b, v in T if c < b)
+RATIO = {'Bash': 2.75, 'PowerShell': 2.78, 'Read': 2.65, 'Grep': 2.7}   # ký tự/token, do-noi-bo §0
+calls, marks, results, tools, seen = [], [], [], {}, set()
+for line in open(F, encoding='utf-8'):
+    d = json.loads(line); t = d.get('type')
+    if t == 'system' and d.get('subtype') == 'compact_boundary':
+        marks.append((len(calls), ts(d['timestamp']), 'compact')); continue
+    if t == 'assistant':
+        m = d['message']; u = m.get('usage') or {}
+        if m.get('model') == '<synthetic>' or not u: continue
+        for c in m.get('content') or []:
+            if c.get('type') == 'tool_use':
+                i = c.get('input') or {}
+                cmd = str(i.get('command') or i.get('file_path') or i.get('pattern') or '')
+                tools[c['id']] = (c['name'], cmd)
+                if c['name'] in ('Bash', 'PowerShell') and 'TDQ_PROJECT_DIR' not in cmd:   # bỏ lệnh thử trong test
+                    for mm in re.finditer(r'tdq_state\.py"?\s+(set\s+phase=(\w+)|approve\s+plan[^\n;|&]*--mode)', cmd):
+                        marks.append((len(calls) + 1, ts(d['timestamp']), mm.group(2) or 'implement'))
+        if m['id'] in seen: continue
+        seen.add(m['id']); e = u.get('cache_creation') or {}
+        calls.append(dict(t=ts(d['timestamp']), model=m['model'], inp=u.get('input_tokens', 0),
+            rd=u.get('cache_read_input_tokens', 0), cc=u.get('cache_creation_input_tokens', 0),
+            c1h=e.get('ephemeral_1h_input_tokens', 0), c5m=e.get('ephemeral_5m_input_tokens', 0)))
+    if t == 'user' and isinstance(d['message']['content'], list):
+        for c in d['message']['content']:
+            if c.get('type') == 'tool_result' and c.get('tool_use_id') in tools:
+                x = c.get('content'); n = len(x) if isinstance(x, str) else sum(len(y.get('text', '')) for y in x or [])
+                results.append((len(calls), *tools[c['tool_use_id']], n))
+N = len(calls)
+for c in calls: c['ctx'] = c['inp'] + c['rd'] + c['cc']; c['r'] = 0.05 if '5-5' in c['model'] else 0.1
+cost = lambda c: c['inp'] + c['rd'] * c['r'] + c['c1h'] * 2 + c['c5m'] * 1.25   # token input tương đương (N1, N2)
+# request = cửa sổ [started_at, closed_at] của docs/tdq/timing.jsonl (argv[2]); mốc reset = đầu request + mỗi phase mới
+reqs = []
+for line in open(sys.argv[2], encoding='utf-8'):
+    j = json.loads(line); A, B = ts(j['started_at']), ts(j['closed_at'])
+    ks = [k for k, c in enumerate(calls) if A <= c['t'] < B]
+    if not ks: continue
+    q = dict(slug=j['slug'], a=ks[0], b=ks[-1] + 1, resets=[ks[0]], compacts=[], last=None); reqs.append(q)
+    for k, tt, v in sorted(marks):
+        if not (A <= tt < B): continue
+        if v == 'compact': q['compacts'].append(k)
+        elif v != q['last'] and v != 'idle' and k > q['resets'][-1] and k < q['b']: q['resets'].append(k); q['last'] = v
+def lever_i(q, R, every_phase=True):
+    s, cut, sv, cu, lt, lt2, cw = None, False, 0, 0, 0, 0, 0
+    for k in range(q['a'], min(q['b'], N)):
+        c = calls[k]
+        if k in (q['resets'] if every_phase else q['resets'][:1]): s, cut = k, False
+        if s is not None and any(s < x <= k for x in q['compacts']): cut = True
+        cf = c['ctx'] if s is None or cut else min(c['ctx'], R + max(0, c['ctx'] - calls[s]['ctx']))
+        if (k == s and not cut) or c['cc'] >= 50000: c2 = cf * 2               # ghi lạnh cỡ cf (1h = 2x)
+        else: c2 = c['inp'] + c['cc'] * (2 if c['c1h'] else 1.25) + max(0, cf - c['inp'] - c['cc']) * c['r']
+        sv += c['ctx'] - cf; cu += cost(c) - c2; cw += cf if c['cc'] >= 50000 else 0
+        lt += lat(c['ctx'], LAT_LO) - lat(cf, LAT_LO); lt2 += lat(c['ctx'], LAT_HI) - lat(cf, LAT_HI)
+    return sv, cu, lt, lt2, cw
+def lever_ii(q, ok, T, S0, P, skip_tdq):
+    ends = sorted(q['compacts'] + [q['b']]); gain = cu = add = n = 0; red = [0] * N
+    for k, name, cmd, ch in results:
+        if not (q['a'] <= k < q['b']) or name not in ok or ch < T: continue
+        if skip_tdq and re.search(r'tdq_\w+\.py|doc_lint', cmd): continue
+        tok = (ch - 1500) / RATIO[name] - P; end = min(next(e for e in ends if e > k), N)
+        n += 1; gain += tok * (end - k); add += 2 * S0 + ch / RATIO[name]
+        cu += tok * sum(calls[j]['r'] for j in range(k, end)) + tok * 2 - (S0 + ch / RATIO[name]) * 1.25 - S0 * 0.1
+        for j in range(k, end): red[j] += tok
+    rng = range(q['a'], min(q['b'], N))
+    lt = sum(lat(calls[j]['ctx'], LAT_LO) - lat(max(0, calls[j]['ctx'] - red[j]), LAT_LO) for j in rng)
+    lt2 = sum(lat(calls[j]['ctx'], LAT_HI) - lat(max(0, calls[j]['ctx'] - red[j]), LAT_HI) for j in rng)
+    return n, gain, cu, add, lt, lt2
+M = lambda x: f'{x/1e6:.2f}M'
+RLO, RHI = 46000 + 50893 + 5000, 38000 + 6000 + 3000   # R cao (ít tiết kiệm) / R thấp (nhiều tiết kiệm)
+print('calls', N, 'requests', len(reqs), 'compacts', sum(1 for m in marks if m[2] == 'compact'))
+S = {}
+for q in reqs:
+    rng = range(q['a'], min(q['b'], N)); ctx = sum(calls[k]['ctx'] for k in rng) or 1; c0 = sum(cost(calls[k]) for k in rng) or 1
+    out = dict(ctx=ctx, cost=c0, n=len(rng), cold=sum(calls[k]['cc'] for k in rng if calls[k]['cc'] >= 50000),
+               rq_lo=lever_i(q, RLO, False), rq_hi=lever_i(q, RHI, False), ph_lo=lever_i(q, RLO), ph_hi=lever_i(q, RHI),
+               off_lo=lever_ii(q, ('Bash', 'PowerShell'), 8000, 25900, 500, True), off_hi=lever_ii(q, tuple(RATIO), 3000, 22100, 200, False))
+    for k, v in out.items(): S.setdefault(k, []).append(v)
+    r = out; print(f"{q['slug'][:28]:28} n={r['n']:4} resets={len(q['resets'])} ctx={M(ctx)} cost={M(c0)} cold={M(r['cold'])}")
+    for key in ('rq_lo', 'rq_hi', 'ph_lo', 'ph_hi'):
+        v = r[key]; print(f"   (i) {key}: tok {M(v[0])} ({v[0]/ctx:.0%}) cost {M(v[1])} ({v[1]/c0:.0%}) s {v[2]:.0f}/{v[3]:.0f} coldwrite' {M(v[4])}")
+    for key in ('off_lo', 'off_hi'):
+        v = r[key]; print(f"   (ii) {key}: n={v[0]} tok {M(v[1])} ({v[1]/ctx:.1%}) cost {M(v[2])} ({v[2]/c0:.1%}) sub+ {M(v[3])} s {v[4]:.0f}/{v[5]:.0f}")
+tot = lambda key, i: sum(v[i] for v in S[key])
+print('TOTAL ctx', M(sum(S['ctx'])), 'cost', M(sum(S['cost'])), 'cold', M(sum(S['cold'])))
+for key in ('rq_lo', 'rq_hi', 'ph_lo', 'ph_hi'):
+    print(f"  {key}: tok {M(tot(key,0))} ({tot(key,0)/sum(S['ctx']):.0%}) cost {M(tot(key,1))} ({tot(key,1)/sum(S['cost']):.0%}) s {tot(key,2):.0f}/{tot(key,3):.0f} coldwrite' {M(tot(key,4))}")
+for key in ('off_lo', 'off_hi'):
+    print(f"  {key}: n={tot(key,0)} tok {M(tot(key,1))} ({tot(key,1)/sum(S['ctx']):.1%}) cost {M(tot(key,2))} sub+ {M(tot(key,3))} s {tot(key,4):.0f}/{tot(key,5):.0f}")
+inw = [r for r in results if r[1] in RATIO and any(q['a'] <= r[0] < q['b'] for q in reqs)]
+for T in (1500, 3000, 8000):
+    g = [r for r in inw if r[3] >= T]; print(f'results>={T}: {len(g)}/{len(inw)} chars {sum(r[3] for r in g)/max(1, sum(r[3] for r in inw)):.0%}')
+cmp = {m[0] for m in marks if m[2] == 'compact'}; rows = []
+for k, c in enumerate(calls):
+    if k == 0 or c['cc'] < 50000: continue
+    dt = c['t'] - calls[k - 1]['t']
+    why = 'compact' if k in cmp else 'model' if c['model'] != calls[k - 1]['model'] else 'ttl>1h' if dt > 3600 else 'ttl>5m' if dt > 300 else 'khac'
+    rows.append((why, c['cc'], dt))
+for w in sorted({r[0] for r in rows}):
+    g = [r for r in rows if r[0] == w]
+    print('cold', w, len(g), M(sum(r[1] for r in g)), 'dt min %.0f-%.0f' % (min(r[2] for r in g) / 60, max(r[2] for r in g) / 60),
+          '<90min', sum(1 for r in g if r[2] < 5400), M(sum(r[1] for r in g if r[2] < 5400)))
+print('cold total', len(rows), M(sum(r[1] for r in rows)), 'all cc', M(sum(c['cc'] for c in calls)))
+```
