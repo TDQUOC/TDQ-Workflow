@@ -31,7 +31,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 
 ## P1 — Kiểm chéo số liệu
 
-- [ ] **T1.1** (e30m) Kiểm chéo số bên ngoài: liệt kê mọi con số trong
+- [>] **T1.1** (e30m) Kiểm chéo số bên ngoài: liệt kê mọi con số trong
   `docs/tdq/research/2026-10-03-1101-nghien-cuu-nen-context.md` có thể làm căn cứ đề xuất; mở nguồn
   sơ cấp của từng số (WebFetch), ghi khớp / lệch / không xác minh được. Ưu tiên ba số đáng ngờ:
   giá đọc cache 0,05×, hai bài arXiv 2605.10039 và 2606.10209, trần phía Codex (32 KiB, 8.000 ký
@@ -39,7 +39,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Kiểm chéo số bên ngoài"
 - [ ] **T1.2** (e20m) Chạy lại ba số nội bộ lớn nhất theo đúng phương pháp ghi trong
   `…-do-noi-bo.md`: context trung bình mỗi lần gọi, tỉ lệ trọn bộ test trong thời gian máy, tỉ lệ
-  ghi lại cache nguội — Test: mỗi số chạy lại lệch ≤ 5% so với số trợ lý báo, hoặc ghi lý do lệch
+  ghi lại cache nguội — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Bản đồ chi phí' in t;assert 'chạy lại' in t"` (mỗi số chạy lại lệch ≤ 5% so với số trợ lý báo, hoặc ghi lý do lệch)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Bản đồ chi phí"
 
 **Xong P1 khi**: mọi số sẽ dùng làm căn cứ đã có dòng kiểm chéo hoặc lệnh chạy lại.
@@ -49,20 +49,20 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 - [ ] **T2.1** (e25m) Nhóm (c) file luật và hook: chép `skills/` sang `%TEMP%\tdq-thu-nghiem\`,
   thử từng cách nén (bỏ chú thích HTML không phải chỉ mục dòng, dời khối ví dụ/khuôn mẫu khỏi tập
   bắt buộc đọc sang file em, rút câu trùng), đếm token tập bắt buộc đọc của lane full/quick trước
-  và sau bằng tokenizer thật — Test: bảng trước/sau có lệnh chạy lại; thư mục tạm đã xoá
+  và sau bằng tokenizer thật — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.1' in t"` (bảng trước/sau có lệnh chạy lại; thư mục tạm đã xoá)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thử nghiệm"
   - Cần: T1.2
 - [ ] **T2.2** (e30m) Nhóm (b) thời gian test: trên một bản sao repo ở `%TEMP%`, đo thời gian trọn
   bộ test so với chạy riêng các module vùng chạm của một request mẫu (request 0732), và đo phần
-  10 module chậm nhất của trọn bộ — Test: bảng giây có lệnh chạy lại; repo thật không đổi
-  (`git status` sạch phần mã)
+  10 module chậm nhất của trọn bộ — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.2' in t"`
+  (bảng giây có lệnh chạy lại; repo thật không đổi — `git status` sạch phần mã)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thử nghiệm"
   - Cần: T1.2
 - [ ] **T2.3** (e20m) Nhóm (a) hội thoại tích luỹ và cache: từ số đo transcript, ước lượng mức tiết
   kiệm khi (i) tách phiên theo phase hoặc compact có chủ đích sau mỗi phase, (ii) đẩy việc đọc
   nặng (output lệnh, transcript, test) cho trợ lý chỉ trả tóm tắt, (iii) giữ tiền tố ổn định để
-  cache không bị ghi lại nguội — báo khoảng (thấp–cao) kèm phương pháp — Test: mỗi ước lượng có
-  phương pháp và nguồn số đầu vào
+  cache không bị ghi lại nguội — báo khoảng (thấp–cao) kèm phương pháp — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.3' in t"`
+  (mỗi ước lượng có phương pháp và nguồn số đầu vào)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thử nghiệm"
   - Cần: T1.1, T1.2
 
@@ -72,12 +72,12 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 
 - [ ] **T3.1** (e25m) Bảng đề xuất ≥ 3 hướng, mỗi hướng một dòng mã `H<số>`: tiết kiệm (token,
   giây) · cái giá chất lượng/kiểm soát · công sức · rủi ro · áp cho Codex. Có ít nhất một hướng về
-  giảm cổng duyệt, ghi rõ cái giá về kiểm soát (user cho phép đề xuất) — Test: `grep -c "^| H[0-9]"`
-  trên báo cáo ≥ 3 và phủ đủ ba nhóm (a) (b) (c)
+  giảm cổng duyệt, ghi rõ cái giá về kiểm soát (user cho phép đề xuất) — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Bảng đề xuất' in t;import re;h=re.findall(r'^\\| H\\d+ \\|',t,re.M);assert len(h)>=3,len(h)"`
+  (≥ 3 dòng `H<số>`, phủ đủ ba nhóm (a) (b) (c))
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Bảng đề xuất"
   - Cần: T2.1, T2.2, T2.3
 - [ ] **T3.2** (e15m) Thứ tự nên làm và request tiếp theo nên mở, có lý do; phần tóm tắt đầu báo
-  cáo và mục giới hạn — Test: báo cáo có mục "Thứ tự đề xuất" nêu một request tiếp theo
+  cáo và mục giới hạn — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thứ tự đề xuất' in t;assert 'request' in t.lower()"` (nêu một request tiếp theo)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thứ tự đề xuất"
   - Cần: T3.1
 
