@@ -61,7 +61,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   Lưu `lech_spec: [{id, q, nguong, do, chon, ly_do, trang_thai: cho|duyet|bac, at, by}]`; alias
   tiếng Việt trong `tdq_ten_lenh.py` nếu bảng có khuôn đó — Test: `python -m unittest discover tests -p test_lech_spec.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_lech`, `default_state`, `cli`; `scripts/tdq_ten_lenh.py` → bảng alias; `tests/test_lech_spec.py` → file mới
-- [>] **T2.2** (e20m) `pause --loai <mat-truy-cap|pha-huy|dau-vao-user|tran-qc> --ly-do "<…>"`:
+- [x] **T2.2** (e20m) `pause --loai <mat-truy-cap|pha-huy|dau-vao-user|tran-qc> --ly-do "<…>"`:
   thiếu `--loai`, loại ngoài danh sách (kể cả `doi-spec`) → từ chối kèm danh sách 4 loại và câu
   "ngưỡng trượt → dùng `lech add`, không dừng"; state lưu `loai` — Test: `python -m unittest discover tests -p test_implement_pause.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_implement_pause`; `tests/test_implement_pause.py` → các ca gọi `pause`
