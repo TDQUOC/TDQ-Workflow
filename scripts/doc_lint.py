@@ -673,7 +673,9 @@ R14_SLUG = re.compile(r"\d{4}-\d{2}-\d{2}-\d{4}")
 R14_COT_PASS = "điều kiện pass"  # i18n-allow
 R14_COT_DO = "đo trước"  # i18n-allow
 R14_COT_DU_PHONG = "dự phòng nếu trượt"  # i18n-allow
-R14_SO = r"(?<![\w.,])(\d+(?:[.,]\d+)*)(?![\w.,]*\d)"
+# A number not glued to a word, a decimal or a section sign: `Q12`, `R14`, `v0.3.3` and
+# `§2 dòng 1` (a pointer to section 2, not "2 lines") never read as a threshold.
+R14_SO = r"(?<![\w.,§])(\d+(?:[.,]\d+)*)(?![\w.,]*\d)"
 R14_DON_VI = r"(?:MB|GB|KB|%|ms|giây|phút|token|ký tự|dòng|s)(?!\w)"  # i18n-allow
 # A comparator followed by a number. `->` / `=>` are arrows, not "greater than".
 R14_SO_SANH = re.compile(
@@ -691,11 +693,11 @@ def _r14_nguong(cell):
     """True when a PASS cell states a numeric threshold, not a presence/absence check.
 
     A bare 0 or 1 is a presence check (`≥ 1 test`, `0 failure`), never a threshold. Inline code
-    is a quoted example, not the condition itself, so it is dropped before matching.
+    counts like any other text: exempting it let a threshold dodge R14 just by being wrapped
+    in backticks (`≤ 200 MB`).
     """
-    text = INLINE_CODE.sub(" ", cell)
     for mau in (R14_SO_SANH, R14_GIOI_TU, R14_SO_DON_VI):
-        for m in mau.finditer(text):
+        for m in mau.finditer(cell):
             if m.group(1) not in ("0", "1"):
                 return True
     return False
