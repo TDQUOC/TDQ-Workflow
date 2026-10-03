@@ -1,9 +1,9 @@
 # QC — quality control
 <!-- muc-luc-dong:
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
-  The three execution steps=58-86 · What to run=87-127 ·
-  The 120-second cap on smoke and runtime checks=128-148 · Recording the result=149-172 ·
-  When it FAILs=173
+  The three execution steps=58-87 · What to run=88-128 ·
+  The 120-second cap on smoke and runtime checks=129-149 · Recording the result=150-180 ·
+  When it FAILs=181
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
@@ -78,8 +78,9 @@ before running the first item; working from memory is banned.
    `## QC vòng N — fix` in exactly the shape `- [ ] **QCn.1** <the work> — Test: <check>`, and work <!-- i18n-allow: canonical section name of the plan -->
    them under Part A's rules (red→green, tick immediately). Then rerun the failed item plus any
    item the fix could have broken, plus the full suite. Cap of 3 rounds; over the cap, STOP and
-   tell the user. Pull the user in mid-way only when the fix demands a scope change. (Full
-   version in section `## When it FAILs` of this file.)
+   tell the user (`pause --loai tran-qc`). Never pull the user in mid-way: an item that misses a
+   spec threshold is recorded with `lech add` and passes as "PASS (lệch, chờ duyệt)" — it is not a
+   FAIL and does not spin the fix loop. (Full version in section `## When it FAILs` of this file.)
 
 Done when: every QC item PASSes and its evidence sits in the qc file.
 Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`.
@@ -166,9 +167,16 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 <output thật, cắt gọn phần dài> <!-- i18n-allow: qc template line in the default document language -->
 ```
 
+## Lệch spec chờ duyệt <!-- i18n-allow: qc template line in the default document language -->
+<chép `tdq_state.py lech list`: Qn · ngưỡng · đo được · phương án đã áp — hoặc "không có"> <!-- i18n-allow: qc template line in the default document language -->
+
 ## Kết luận <!-- i18n-allow: qc template line in the default document language -->
 <PASS toàn bộ | FAIL: liệt kê hạng mục fail và task fix đã thêm vào plan> <!-- i18n-allow: qc template line in the default document language -->
 ```
+
+An item that missed its threshold but carries a recorded deviation is written
+`PASS (lệch, chờ duyệt)` — not FAIL: the fallback was applied on purpose and only the user can
+approve or reject it, which happens in the report.
 
 ## When it FAILs
 
@@ -179,4 +187,4 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    rerun unrelated items.
 4. Repeat until every item PASSes. **Cap of 3 rounds** — over the cap, STOP and tell the user.
 
-Ask the user only when the fix demands a scope change against the approved spec.
+Never ask mid-run. A spec threshold the fix cannot reach → `lech add`, mark the item "PASS (lệch, chờ duyệt)", and the report asks the user.

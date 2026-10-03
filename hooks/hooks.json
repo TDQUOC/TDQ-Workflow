@@ -71,6 +71,15 @@
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/search_gate.py\""
           }
         ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ask_gate.py\""
+          }
+        ]
       }
     ],
     "PostToolUse": [

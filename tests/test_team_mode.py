@@ -1201,15 +1201,17 @@ class LuatTest(unittest.TestCase):
         self.assertIn("tự làm", noi_dung)
         self.assertNotIn("mỗi agent một task, một git worktree", noi_dung)
 
-    def test_conventions_co_luat_chong_ngung_va_dung_3_ngoai_le(self):
+    def test_conventions_co_luat_chong_ngung_va_dung_4_loai_dung(self):
         noi_dung = _doc(CONVENTIONS)
-        # Thân skill viết tiếng Anh từ 2026-08-19; luật và số ngoại lệ không đổi.
+        # Thân skill viết tiếng Anh từ 2026-08-19. 2026-10-03 (yêu cầu 0732): 3 ngoại lệ → 4 loại
+        # bất khả kháng khai bằng `pause --loai`; "đổi phạm vi spec" không còn là lý do dừng.
         self.assertIn("never end a turn while the plan still has tasks", noi_dung.lower())
-        moc = noi_dung.lower().find("three exceptions")
-        self.assertGreater(moc, -1, "thiếu khối 3 ngoại lệ")
-        khoi = noi_dung[moc:moc + 1200]
-        self.assertEqual(len(re.findall(r"^\s*\d\.", khoi, re.M)), 3,
-                         "phải đúng 3 ngoại lệ, không hơn không kém")
+        moc = noi_dung.lower().find("four force-majeure kinds")
+        self.assertGreater(moc, -1, "thiếu khối 4 loại dừng")
+        khoi = noi_dung[moc:moc + 600]
+        loai = re.findall(r"`(mat-truy-cap|pha-huy|dau-vao-user|tran-qc)`", khoi)
+        self.assertEqual(loai, ["mat-truy-cap", "pha-huy", "dau-vao-user", "tran-qc"],
+                         "phải đúng 4 loại, không hơn không kém")
 
 
 PLAN_XUONG_DONG = """## P1 — a

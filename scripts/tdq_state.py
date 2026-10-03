@@ -95,8 +95,10 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "deep mode] [--lang <code>] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent|codex] "
-         "[--by \"<user sentence>\"] | "
-         "pause --ly-do \"<why>\" | resume | "
+         "[--by \"<user sentence>\"] [--bo-qua-do \"<user's reason>\"] | "
+         "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
+         "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
+         "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
          "reset | phases-doc | modes [--json]")
 
 EXIT_SYNTAX = 2
@@ -225,6 +227,10 @@ def default_state():
         # trace left after the hard gate was dropped, must be checkable against
         # the transcript
         "spec_approved_by": None,
+        # The user approved the spec past the R14 gate (doc_lint: a numeric threshold in §6
+        # without a prior measurement / fallback). None = no bypass. Shape when set:
+        # {"ly_do": "<user's reason>", "at": "<iso>", "so_loi": <number of R14 findings>}.
+        "spec_bo_qua_do": None,
         "plan_file": None,
         "plan_approved": False,
         "plan_sha256": None,
@@ -242,6 +248,12 @@ def default_state():
         # tell whether an error is self-fixable, so whoever stops must say why,
         # and that sentence is what gets shown to the user.
         "implement_pause": None,
+        # Spec deviations: a DoD threshold found unreachable during implement/qc.
+        # The agent applies the fallback, records it here with `lech add` and keeps
+        # working; the report asks the user to approve or reject each one. Item shape:
+        # {"id", "q", "nguong", "do", "chon", "ly_do", "trang_thai": cho|duyet|bac,
+        #  "at", "by"} plus "quyet_at"/"quyet_by" once decided.
+        "lech_spec": [],
         # language code of this request's documents (see DEFAULT_DOC_LANG)
         "doc_lang": DEFAULT_DOC_LANG,
         # Mức gắt của luật tinh gọn (2026-09-17): lite|full|ultra|off. Ba kênh nạp luật đọc
@@ -1132,7 +1144,7 @@ PHASE_TABLE = {
             "All tasks done → run the command above",
         ],
         "done_when": "Every task in the plan is ticked [x]",
-        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --ly-do \"<why>\"`, whose reason is shown to the user",
+        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --loai <kind> --ly-do \"<why>\"` (kinds: mat-truy-cap · pha-huy · dau-vao-user · tran-qc), whose reason is shown to the user; an unreachable spec threshold → `lech add`, not a pause",
     },
     "qc": {
         "entry": "Implementation is finished",
@@ -1142,6 +1154,7 @@ PHASE_TABLE = {
             "Run every QC item of the spec, write the evidence into docs/tdq/qc/<slug>.md",
             "FAIL → add a fix task to the plan (no re-approval needed) and carry on",
             "Repeat until every item PASSes",
+            "Missed a threshold but recorded `lech add` → write it 'PASS (lệch, chờ duyệt)', not FAIL",  # i18n-allow: canonical QC label
         ],
         "done_when": "Every QC item of the spec PASSes, with evidence",
         "forbidden": "Ignoring a failing test; reporting PASS without running it",
@@ -1154,6 +1167,8 @@ PHASE_TABLE = {
             "Write docs/tdq/reports/<slug>.md briefly (10-20 lines recommended): "
             "what was done, the QC result, what is still limited",
             "Append to the working log docs/workinglog/<today>.md",
+            "Spec deviations still waiting (`tdq_state.py lech list`): ask the user to approve or reject "
+            "each one; rejected → add a fix task to the plan and `set phase=implement`",
             "Ask the user: commit or not?",
         ],
         "done_when": "The report is written and the user has been asked about committing",
@@ -1535,6 +1550,28 @@ def next_headline(cwd, state):
             f"· phase {phase_key(state)} · Project: {duong_hien_thi(cwd)}")
 
 
+LECH_PHASES = ("qc", "report")   # phases where `next` surfaces pending spec deviations
+LECH_SHOW_MAX = 3                # items listed in full; the rest → `lech list` (20-line cap)
+
+
+def _cut(value, limit=60):
+    text = " ".join(str(value if value is not None else "").split())
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
+def _lech_block(pending):
+    """Lines for `next` (full mode): every pending deviation + the approval question."""
+    out = [f"Pending spec deviations ({len(pending)}) — ask the user to approve or reject each:"]
+    for m in pending[:LECH_SHOW_MAX]:
+        out.append(f"  #{m.get('id')} {_cut(m.get('q'), 8)}: {_cut(m.get('nguong'))} "
+                   f"→ measured {_cut(m.get('do'))} · applied: {_cut(m.get('chon'))}")
+    if len(pending) > LECH_SHOW_MAX:
+        out.append(f"  … +{len(pending) - LECH_SHOW_MAX} more: python3 scripts/tdq_state.py lech list")
+    out.append('  Decide: python3 scripts/tdq_state.py lech duyet|lech bac <id> --by "<user words>"'
+               " · rejected → fix task + set phase=implement")
+    return out
+
+
 def render_next(cwd, state, brief=False, compact=False):
     """The 5-part block (spec §2.2), at most 20 lines.
 
@@ -1547,8 +1584,11 @@ def render_next(cwd, state, brief=False, compact=False):
         effective_lane(state)          # warns (with recovery hints) on a bad enum
         effective_phase(state)
     head = next_headline(cwd, state)
+    pending = lech_cho(state) if phase_key(state) in LECH_PHASES else []
+    short = (f"{len(pending)} pending spec deviation(s) → "
+             "python3 scripts/tdq_state.py lech list") if pending else ""
     if brief:
-        return head
+        return f"{head} · {short}" if short else head
     row = phase_row(state)
     lines = [head, f"Lean level: {muc_gat_hieu_luc(state)}",
              f"QC level: {muc_qc_hieu_luc(state)}",
@@ -1559,6 +1599,10 @@ def render_next(cwd, state, brief=False, compact=False):
         lines.append("Checklist (copy into your answer, tick as you go):")
         lines += [f"- [ ] {item}" for item in row["checklist"]]
     lines.append(f"Done when: {row['done_when']}")
+    if pending and compact:
+        lines.append(short)
+    elif pending:
+        lines += _lech_block(pending)
     # Stays RELATIVE here on purpose: callers cap this text (SessionStart: 600 characters), and
     # absolute paths added before the cap get the block cut short. Each caller rewrites paths
     # with `lenh_cho_project` AFTER its own cap — the CLI `next` and `session_start.py` do.
@@ -1745,12 +1789,15 @@ def _unfinished(state):
 
 
 def _parse_approve_args(rest):
-    """-> (target, mode, by). Fails only on genuinely wrong syntax."""
+    """-> (target, mode, by, bo_qua_do). Fails only on genuinely wrong syntax.
+
+    bo_qua_do is the user's reason for approving past the R14 gate (None when absent);
+    an empty or blank reason is refused — a bypass must say why."""
     if not rest:
         _fail("Missing approval target (spec|plan|quick).")
     if rest[0] == "diagram":
         _fail(LOI_SO_DO_DA_GO)
-    target, mode, by = rest[0], None, None
+    target, mode, by, bo_qua_do = rest[0], None, None, None
     # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
     if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
         target = "quick"
@@ -1767,11 +1814,15 @@ def _parse_approve_args(rest):
             _fail("Flag --no-qc was removed on 2026-09-23 — the QC level is a state key now: "
                   "run `python3 scripts/tdq_state.py set muc_qc=off` instead "
                   "(levels: lite|full|ultra|off).")
-        if flag in ("--mode", "--by"):
+        if flag in ("--mode", "--by", "--bo-qua-do"):
             if i + 1 >= len(rest):
                 _fail(f"Missing value for {flag}")
             value = rest[i + 1]
-            if flag == "--mode":
+            if flag == "--bo-qua-do":
+                if not value.strip():
+                    _fail("--bo-qua-do needs the user's reason — an empty reason is refused.")
+                bo_qua_do = value.strip()[:BY_MAX]
+            elif flag == "--mode":
                 # Through normalize_mode: the labels shown at gate mode ("inline",
                 # "sub-agent implement") must land as the machine identifier.
                 mode = normalize_mode(value)
@@ -1788,7 +1839,7 @@ def _parse_approve_args(rest):
             i += 1
             continue
         _fail(f"Invalid argument: {flag}")
-    return target, mode, by
+    return target, mode, by, bo_qua_do
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -1808,10 +1859,65 @@ def _file_changed_since_approval(cwd, state, target):
         return False
 
 
+def _r14_findings(cwd, rel):
+    """-> [(line, msg)] from doc_lint R14 on the spec file; [] whenever the check cannot run.
+
+    Fail open: an unreadable file, a missing/broken doc_lint or a crash inside it only warns —
+    a broken linter must never block an approval. doc_lint is imported here, not at module
+    top, so every other command keeps working even when doc_lint does not import."""
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    try:
+        with open(path, encoding="utf-8-sig") as f:
+            text = f.read()
+    except (OSError, UnicodeDecodeError):
+        return []  # the sha256 step already warns about an unreadable spec_file
+    try:
+        import doc_lint
+        return list(doc_lint.r14_loi(text, os.path.basename(path)))
+    except Exception as exc:  # noqa: BLE001 — fail open on purpose
+        _warn(f"R14 check skipped — doc_lint failed ({type(exc).__name__}); approving without it.")
+        return []
+
+
+def _r14_gate(cwd, state, target, bo_qua_do):
+    """The one measured gate of `approve`: spec, lane full, spec_file set and readable.
+
+    -> None to go on recording; on a refusal it prints every finding and exits 1 without
+    touching state. With bo_qua_do (the user's reason) it records the bypass instead."""
+    if target != "spec":
+        return
+    # A fresh spec approval drops any bypass left by an earlier version of the spec.
+    state["spec_bo_qua_do"] = None
+    if effective_lane(state) != "full" or not state.get("spec_file"):
+        return
+    rel = state["spec_file"]
+    loi = _r14_findings(cwd, rel)
+    if not loi:
+        return
+    if bo_qua_do:
+        state["spec_bo_qua_do"] = {"ly_do": bo_qua_do, "at": now_iso(), "so_loi": len(loi)}
+        _warn(f"R14: {len(loi)} threshold row(s) in {rel} lack a prior measurement or a "
+              "fallback — approved anyway via --bo-qua-do (reason recorded in spec_bo_qua_do).")
+        return
+    for line, msg in loi:
+        print(f"{rel}:{line}: [R14] {msg}", file=sys.stderr)
+    print("Measure each threshold (Đo trước) and pick a fallback (Dự phòng nếu trượt), "  # i18n-allow
+          "or the user may pass --bo-qua-do \"<reason>\".", file=sys.stderr)
+    _warn(f"approve spec refused by R14: {len(loi)} finding(s) in {rel} — spec_approved unchanged.")
+    sys.exit(1)
+
+
 def _cli_approve(cwd, rest):
-    """Record that the user approved. Not a gate: it warns on a mismatch but
-    STILL writes and always exits 0 — deadlock-by-gate is what 0.2.0 removed."""
-    target, mode, by = _parse_approve_args(rest)
+    """Record that the user approved. Mostly not a gate: it warns on a mismatch but
+    STILL writes and exits 0 — deadlock-by-gate is what 0.2.0 removed.
+
+    The single exception is a measured gate on new specs: `approve spec` (lane full) refuses
+    while doc_lint R14 finds a numeric DoD threshold without `Đo trước` / `Dự phòng nếu trượt`.
+    This does not bring the 0.2.0 deadlock back: R14 is silent on specs older than its cutoff
+    slug, it fails open when the check cannot run, and the user always holds an escape —
+    `--bo-qua-do "<reason>"` approves anyway and records the reason in spec_bo_qua_do.
+    An already approved, unchanged spec is not re-checked."""  # i18n-allow
+    target, mode, by, bo_qua_do = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("No state yet — building the default state then recording the approval. Run init first.")
@@ -1851,6 +1957,8 @@ def _cli_approve(cwd, rest):
                 state[f"{target}_sha256"] = sha256_noi_dung(path)
             except OSError:
                 _warn(f"Cannot read {rel} — skipping the sha256.")
+
+    _r14_gate(cwd, state, target, bo_qua_do)
 
     state[f"{target}_approved"] = True
     state[f"{target}_approved_at"] = now_iso()
@@ -1953,12 +2061,52 @@ def _echo_state(cmd, state, want_json):
           f"lane={state.get('lane')} phase={state.get('phase')}")
 
 
+# The only kinds of stop that may end a turn while `implement` has open tasks
+# (spec 2026-10-03-0732 §2 row 5). Kind → one-line meaning; hooks may import it.
+LOAI_DUNG = {
+    "mat-truy-cap": "lost access/network/permission, or a broken tool or machine, "
+                    "with no workaround the agent may pick",
+    "pha-huy": "destructive or hard-to-undo work beyond a commit (data deletion, "
+               "DB schema, public API contract, push/publish)",
+    "dau-vao-user": "an input only the user holds (secret, account, payment, "
+                    "adding/dropping a spec §2 output)",
+    "tran-qc": "the QC fix loop hit its 3-round cap",
+}
+LECH_KHONG_DUNG = ("An unreachable spec threshold is not a stop: record it with "
+                   "`lech add` and carry on.")
+
+
+def _loai_dung_help():
+    """The refusal text: the 4 legal kinds, one line each, then the `lech add` pointer."""
+    lines = [f"  {k} — {v}" for k, v in LOAI_DUNG.items()]
+    return "\n".join(["Allowed --loai kinds:"] + lines + [LECH_KHONG_DUNG])
+
+
+def _flag_pairs(rest, allowed, cmd, hint=""):
+    """Parse `--flag value` pairs; an unknown flag or a missing value is a syntax error.
+
+    Shared by `pause` and `lech`. `hint` is appended to every syntax error message.
+    """
+    out = {}
+    i = 0
+    while i < len(rest):
+        flag = rest[i]
+        if flag not in allowed:
+            _fail(f"{cmd}: unexpected argument {flag!r}.{hint}")
+        if i + 1 >= len(rest):
+            _fail(f"{cmd}: missing a value after {flag}.{hint}")
+        out[flag] = rest[i + 1].strip()
+        i += 2
+    return out
+
+
 def _cli_implement_pause(cwd, cmd, rest):
-    """`pause --ly-do "<why>"` declares the pause, `resume` clears it.
+    """`pause --loai <kind> --ly-do "<why>"` declares the pause, `resume` clears it.
 
     A declared pause is the only legal way to end a turn while the plan still
-    has open tasks, so the reason is mandatory: an undeclared stop is exactly
-    the silent exit the Stop gate exists to refuse.
+    has open tasks, so both the kind (one of LOAI_DUNG) and the reason are
+    mandatory: an undeclared stop is exactly the silent exit the Stop gate
+    exists to refuse, and a missed spec threshold goes to `lech add` instead.
     """
     rest, want_json = _pop_json_flag(list(rest))
     state = load(cwd)
@@ -1975,19 +2123,121 @@ def _cli_implement_pause(cwd, cmd, rest):
         _echo_state("resume", state, want_json)
         return
 
-    reason = ""
-    if len(rest) >= 2 and rest[0] == "--ly-do":
-        reason = " ".join(rest[1:]).strip()
+    usage = 'pause --loai <kind> --ly-do "<why the run stopped>"'
+    flags = _flag_pairs(rest, ("--loai", "--ly-do"), "pause",
+                        hint=f" Use: {usage}.\n{_loai_dung_help()}")
+    kind = flags.get("--loai", "")
+    reason = flags.get("--ly-do", "")
+    if not kind:
+        _fail(f"pause needs a kind: {usage}.\n{_loai_dung_help()}")
+    if kind not in LOAI_DUNG:
+        _fail(f"pause: {kind!r} is not a legal stop kind.\n{_loai_dung_help()}")
     if not reason:
-        _fail('pause needs a reason: pause --ly-do "<why the run stopped>".')
+        _fail(f"pause needs a reason: {usage}.")
     state["implement_pause"] = {
+        "loai": kind,
         "ly_do": reason[:400],
         "at": now_iso(),
         "by": "claude",
     }
     save(cwd, state, expect_updated_at=stamp)
-    _info(f"implement pause declared: {reason[:120]}")
+    _info(f"implement pause declared [{kind}]: {reason[:120]}")
     _echo_state("pause", state, want_json)
+
+
+# ------------------------------------------------------------ spec deviations
+
+LECH_TRUONG = (("--q", "q"), ("--nguong", "nguong"), ("--do", "do"),
+               ("--chon", "chon"), ("--ly-do", "ly_do"))
+LECH_QUYET = ("duyet", "bac")
+
+
+def lech_cho(state):
+    """Pending spec deviations (trang_thai == "cho"), in recording order.
+
+    Pure helper so `next` can surface what still waits for the user's decision.
+    Tolerates an old state without the key.
+    """
+    return [m for m in (state or {}).get("lech_spec") or []
+            if isinstance(m, dict) and m.get("trang_thai") == "cho"]
+
+
+def _cli_lech(cwd, rest):
+    """`lech add|list|duyet|bac` — record and decide spec deviations."""
+    rest, want_json = _pop_json_flag(list(rest))
+    if not rest:
+        _fail("lech needs a sub-command: add | list | duyet | bac.")
+    sub, rest = rest[0], rest[1:]
+    if sub not in ("add", "list") and sub not in LECH_QUYET:
+        _fail(f"lech: unknown sub-command {sub!r} (add | list | duyet | bac).")
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+    items = [m for m in state.get("lech_spec") or [] if isinstance(m, dict)]
+
+    if sub == "list":
+        if rest:
+            _fail("lech list takes no argument besides --json.")
+        _info(f"spec deviation list: {len(items)} item(s), {len(lech_cho(state))} pending")
+        if want_json:
+            print(json.dumps(items, ensure_ascii=False, indent=2))
+        elif not items:
+            print("no spec deviation recorded")
+        else:
+            for m in items:
+                print(f"#{m.get('id')} [{m.get('trang_thai')}] {m.get('q')}: "
+                      f"threshold {m.get('nguong')!r}, measured {m.get('do')!r} -> "
+                      f"chose {m.get('chon')!r} ({m.get('ly_do')})")
+        return
+
+    if sub == "add":
+        flags = _flag_pairs(rest, {f for f, _ in LECH_TRUONG}, "lech")
+        missing = [f for f, _ in LECH_TRUONG if not flags.get(f)]
+        if missing:
+            _fail(f"lech add is missing: {', '.join(missing)}.")
+        if not re.fullmatch(r"Q\d+", flags["--q"]):
+            _fail(f"lech add: --q must look like Q3, got {flags['--q']!r}.")
+        new_id = max((m.get("id") or 0 for m in items), default=0) + 1
+        item = {"id": new_id}
+        for flag, key in LECH_TRUONG:
+            item[key] = flags[flag][:400]
+        item.update({"trang_thai": "cho", "at": now_iso(), "by": "claude"})
+        items.append(item)
+        state["lech_spec"] = items
+        save(cwd, state, expect_updated_at=stamp)
+        _info(f"spec deviation #{new_id} recorded on {item['q']}: pending user decision")
+        if want_json:
+            print(json.dumps(item, ensure_ascii=False, indent=2))
+        else:
+            print(f"✅ lech add: id={new_id} q={item['q']} trang_thai=cho")
+        return
+
+    # duyet | bac
+    if not rest:
+        _fail(f"lech {sub} needs an id: lech {sub} <id> --by \"<user sentence>\".")
+    raw_id, rest = rest[0], rest[1:]
+    by = _flag_pairs(rest, {"--by"}, "lech").get("--by")
+    if not by:
+        _fail(f"lech {sub} needs --by \"<the user's own words>\".")
+    item = next((m for m in items if str(m.get("id")) == raw_id), None)
+    if item is None:
+        _fail(f"lech {sub}: no spec deviation with id {raw_id!r}.")
+    before = item.get("trang_thai")
+    if before != "cho":
+        # stderr, not stdout: `--json` callers parse stdout and a note there breaks them.
+        print(f"note: deviation #{raw_id} was already decided ({before}); overriding.",
+              file=sys.stderr)
+    item["trang_thai"] = sub
+    item["quyet_at"] = now_iso()
+    item["quyet_by"] = by[:400]
+    state["lech_spec"] = items
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"spec deviation #{raw_id} set to {item['trang_thai']}")
+    if want_json:
+        print(json.dumps(item, ensure_ascii=False, indent=2))
+    else:
+        print(f"✅ lech {sub}: id={raw_id} trang_thai={item['trang_thai']}")
 
 
 def cli(argv):
@@ -2151,6 +2401,9 @@ def cli(argv):
 
     if cmd in ("pause", "resume"):
         return _cli_implement_pause(cwd, cmd, argv[1:])
+
+    if cmd == "lech":
+        return _cli_lech(cwd, argv[1:])
 
     if cmd == "approve":
         return _cli_approve(cwd, argv[1:])

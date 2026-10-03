@@ -6,11 +6,11 @@ user-invocable: false
 
 # TDQ Conventions
 <!-- muc-luc-dong:
-  0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-86 ·
-  2. Phase table=87-92 · 3. State=93-105 · 4. Recording approval=106-115 ·
-  5. Document tree=116-130 · 6. Working log=131-139 · 7. Git=140-153 · 8. Research=154-163 ·
-  9. Sub-agents=164-169 · 10. One-batch rule (tier 2 — runtime) and context cost=170-183 ·
-  11. Quality=184
+  0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-85 ·
+  2. Phase table=86-91 · 3. State=92-104 · 4. Recording approval=105-114 ·
+  5. Document tree=115-129 · 6. Working log=130-138 · 7. Git=139-152 · 8. Research=153-162 ·
+  9. Sub-agents=163-168 · 10. One-batch rule (tier 2 — runtime) and context cost=169-182 ·
+  11. Quality=183
 -->
 
 Rules shared by every phase. Other skills link here instead of copying them.
@@ -64,13 +64,12 @@ BEFORE/AFTER example are in the tier-1 sibling
    answer block last, no emoji.
 
 7. **Never end a turn while the plan still has tasks** — stopping with a `[ ]` task left is abandoning the job,
-   however good the progress report looks. Exactly **three exceptions** may stop a turn:
-   1. Something only the user decides: spec/plan scope change, destructive or hard-to-reverse work, an input only
-      the user holds.
-   2. A technical block with no option you may pick yourself (lost access, no network, broken tool).
-   3. The QC fix loop hit its ceiling of 3 rounds — rule in `tdq-build/references/qc.md`.
-   Running out of step budget is NOT an exception: report it and carry on. Neither is "let's leave the rest for the
-   next turn to keep this one tidy".
+   however good the progress report looks. Only **four force-majeure kinds**, declared with `pause --loai`, stop one:
+   `mat-truy-cap` (lost access, broken tool, no option you may pick) · `pha-huy` (destructive or hard to reverse) ·
+   `dau-vao-user` (secret, account, adding/dropping a spec §2 output) · `tran-qc` (QC fix loop hit 3 rounds, `qc.md`).
+   An unmet spec threshold is NOT one: apply the row's fallback, `lech add`, carry on, ask in the report.
+   Running out of step budget is NOT an exception either: report it and carry on. Neither is "let's leave the rest
+   for the next turn to keep this one tidy".
 
 **The `Next step:` line of every skill names the phase that comes next** — the phase key itself,
 or, when the phase does not change, that fact plus the skill to load. A bare command is not

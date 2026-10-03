@@ -55,6 +55,8 @@ BANG_DOI_TEN = {
     "tdq_state.py": {
         "tam-hoan": "pause", "pause": "pause",
         "tiep-tuc": "resume", "resume": "resume",
+        # `lech` is the spec-fixed official name; `lech-spec` mirrors the state key.
+        "lech-spec": "lech", "lech": "lech",
     },
 }
 
