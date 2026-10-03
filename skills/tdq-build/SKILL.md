@@ -5,8 +5,8 @@ description: Run an approved TDQ plan end to end in one turn, QC it against the 
 
 # TDQ Build — Implement → QC → Report
 <!-- muc-luc-dong:
-  Hard rules (all three phases)=15-71 · Part A — Implement (phase `implement`)=72-138 ·
-  Part B — QC (phase `qc`)=139-155 · Part C — Report (phase `report`)=156
+  Hard rules (all three phases)=15-76 · Part A — Implement (phase `implement`)=77-143 ·
+  Part B — QC (phase `qc`)=144-160 · Part C — Report (phase `report`)=161
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved = true`.

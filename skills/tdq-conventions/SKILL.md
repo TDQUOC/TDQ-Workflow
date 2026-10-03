@@ -6,11 +6,11 @@ user-invocable: false
 
 # TDQ Conventions
 <!-- muc-luc-dong:
-  0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-86 ·
-  2. Phase table=87-92 · 3. State=93-105 · 4. Recording approval=106-115 ·
-  5. Document tree=116-130 · 6. Working log=131-139 · 7. Git=140-153 · 8. Research=154-163 ·
-  9. Sub-agents=164-169 · 10. One-batch rule (tier 2 — runtime) and context cost=170-183 ·
-  11. Quality=184
+  0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-85 ·
+  2. Phase table=86-91 · 3. State=92-104 · 4. Recording approval=105-114 ·
+  5. Document tree=115-129 · 6. Working log=130-138 · 7. Git=139-152 · 8. Research=153-162 ·
+  9. Sub-agents=163-168 · 10. One-batch rule (tier 2 — runtime) and context cost=169-182 ·
+  11. Quality=183
 -->
 
 Rules shared by every phase. Other skills link here instead of copying them.

@@ -64,6 +64,15 @@ khai ở dòng `Chạm:` của plan:
   cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng. Đường dẫn adapter do host quy định — `.codex-plugin/`, `.agents/plugins/`,
   `.opencode/plugins/` — nên đây là ngoại lệ của luật "code mới chỉ nằm trong `scripts/` hoặc
   `hooks/`". Adapter OpenCode là JavaScript thuần, không package npm, bọc try/catch mọi bước.
+- 2026-10-03 (yêu cầu 0732): **đo trước ở spec, không dừng giữa chừng vì ngưỡng.** Lệnh
+  `approve spec` TỪ CHỐI khi luật R14 của `doc_lint` đỏ — mọi ngưỡng số ở §6 của spec mới phải có
+  `Đo trước` và `Dự phòng nếu trượt`. Cổng nằm ở LỆNH duyệt, không ở hook, nên dòng 2026-07-29
+  ("không hook nào chặn vì chưa duyệt") vẫn đứng; và nó không tái tạo bế tắc 0.2.0 vì spec cũ
+  im lặng và user luôn có `--bo-qua-do "<lý do>"`. Ngoại lệ dừng thu về 4 loại khai bằng
+  `pause --loai` (mat-truy-cap · pha-huy · dau-vao-user · tran-qc); ngưỡng trượt lúc chạy thì
+  `lech add` rồi làm tiếp, report hỏi duyệt. Hook `ask_gate.py` (`TDQ:ASK`) chỉ NHẮC khi gọi
+  `AskUserQuestion` ở implement/qc — user chọn không chặn — và không trả `permissionDecision`.
+  Ca gốc: một phiên excalidraw dừng giữa implement để hỏi nâng ngưỡng installer 200 → 250 MB.
 - 2026-10-03: **thêm một điểm chặn** (cạnh nhật ký ở `Stop` và `TDQ:TICK`/`TDQ:TEAM` của
   `edit_gate`) — `hooks/scripts/search_gate.py` trả `deny` (mã
   `TDQ:SEARCH`) cho một lần tìm code đi tắt tầng khái niệm. Dòng 2026-07-29 vẫn đứng: không hook

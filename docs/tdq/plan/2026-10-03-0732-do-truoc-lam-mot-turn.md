@@ -46,7 +46,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   Test: `python -m unittest discover tests -p test_doc_lint_r14.py -k chinh_xac`
   - Chạm: `scripts/doc_lint.py` → bộ nhận ngưỡng (bỏ miễn trừ inline code); `tests/test_doc_lint_r14.py` → lớp `ChinhXac`
   - Cần: T1.1
-- [ ] **T1.3** (e25m) `approve spec` gọi `doc_lint.r14_loi` trên `spec_file`: còn lỗi → in từng
+- [>] **T1.3** (e25m) `approve spec` gọi `doc_lint.r14_loi` trên `spec_file`: còn lỗi → in từng
   hàng thiếu, exit ≠ 0, không ghi duyệt; `--bo-qua-do "<lý do>"` → duyệt, lưu
   `spec_bo_qua_do = {ly_do, at}` vào state — Test: `python -m unittest discover tests -p test_approve_do_truoc.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_approve`, `default_state`; `tests/test_approve_do_truoc.py` → file mới
@@ -105,7 +105,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   `python -m unittest discover tests -p test_luat_dung.py -k qc_report`
   - Chạm: `skills/tdq-build/references/qc.md`, `skills/tdq-build/references/report-template.md`; `tests/test_luat_dung.py` → lớp `QcReport`
   - Cần: T2.1
-- [ ] **T4.4** (e15m) `reminder-codes.md` thêm hàng `TDQ:ASK` (chỉ nhắc); `docs/kien-truc.md` dòng
+- [x] **T4.4** (e15m) `reminder-codes.md` thêm hàng `TDQ:ASK` (chỉ nhắc); `docs/kien-truc.md` dòng
   2026-10-03: cổng mới ở LỆNH `approve spec` (không phải hook), `TDQ:ASK` chỉ nhắc, ngoại lệ dừng
   thu về 4 loại; sinh lại `token_budget` và chỉ mục — Test: `python scripts/doc_lint.py skills`
   thoát 0, `python scripts/token_budget.py --kiem` thoát 0, `python scripts/doc_index.py --kiem --tat-ca` thoát 0

@@ -1,9 +1,9 @@
 # QC — quality control
 <!-- muc-luc-dong:
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
-  The three execution steps=58-86 · What to run=87-127 ·
-  The 120-second cap on smoke and runtime checks=128-148 · Recording the result=149-172 ·
-  When it FAILs=173
+  The three execution steps=58-87 · What to run=88-128 ·
+  The 120-second cap on smoke and runtime checks=129-149 · Recording the result=150-180 ·
+  When it FAILs=181
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".

@@ -4,12 +4,12 @@
     "token": 2552
   },
   "skills/tdq-build/references/qc.md": {
-    "sha256": "1dadadc5c3026c6166ec6cc32d50ec0627c7c91990258936a01922804d5b6784",
-    "token": 2959
+    "sha256": "81da7dac49edc5e9fc43c21d678a039c59cb126b22718d90e165bce64654e707",
+    "token": 3203
   },
   "skills/tdq-build/references/report-template.md": {
-    "sha256": "cfa511aa643ffd2a8d23f1267865b23d3c78bf6c41a1798820a13cb16cad17ce",
-    "token": 1901
+    "sha256": "6630f85b929251d8529c63fdf9d123d905b3ca1f6dffe5ccc546704c902d327f",
+    "token": 2070
   },
   "skills/tdq-build/references/rules/chung.md": {
     "sha256": "e222a06587a2a3db239179dbd068278fbc4a9e6d6969fa94faff093915c1c906",
@@ -84,16 +84,16 @@
     "token": 531
   },
   "skills/tdq-conventions/references/phases.md": {
-    "sha256": "7a4d126e13843248c4ef1c19fcbb5c93aae7772e36c9b8bfedc79ea0a34710b8",
-    "token": 1792
+    "sha256": "de3a4fafcca1b9e1089ad30f813c05ed1476ff78e4a04b6e879ed82c879ff787",
+    "token": 1841
   },
   "skills/tdq-conventions/references/plugin-routing.md": {
     "sha256": "2e221aafedf78df93d541e0c6c3933ffcc5dffa390e0e349df2a564725b23253",
     "token": 1299
   },
   "skills/tdq-conventions/references/reminder-codes.md": {
-    "sha256": "af8267bacdacbdb3dadff3469cfcdb7359dea1bedbe4b61eeba59a5bb6090fe8",
-    "token": 1389
+    "sha256": "2d5949bc5e9dda03611829441ea6cd6f36da70ae85064556e3d9e513e98bf50b",
+    "token": 1469
   },
   "skills/tdq-conventions/references/soul.md": {
     "sha256": "b739ff7b35738a01a160328b8109912620a55b4d5bf2d6ce6d2e7d58f539982f",
@@ -192,11 +192,11 @@
     "token": 2653
   },
   "skills/tdq-spec/references/spec-template-huong-dan.md": {
-    "sha256": "5d7ea0adaef8b80f44d50919b59687b816b7f2c71f292204e8e11bd775450c3b",
-    "token": 1035
+    "sha256": "494d0039e94e83984fd4526ac8d9d82bd6d2cb4bb3bd55a8d539f72c7d0cc5db",
+    "token": 1404
   },
   "skills/tdq-spec/references/spec-template.md": {
-    "sha256": "9d84981f1e01114a447e01408759486449886634252060aef2f6dc155670a516",
-    "token": 2512
+    "sha256": "166095efe528a0821da8c3991e3dd11a21f47aac76db0551436993024e9187e2",
+    "token": 2615
   }
 }
