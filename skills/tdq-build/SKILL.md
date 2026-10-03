@@ -30,7 +30,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
 - **An unreachable spec threshold is NOT a stop.** Apply that §6 row's fallback column (none →
   the option you would recommend), record it with the state command `lech add` (its flags:
   `--q --nguong --do --chon --ly-do`), finish the plan; the report asks for approval of each.
-  Asking mid-run (`AskUserQuestion` too) is the failure this removes; `[TDQ:ASK]` reminds you.
+  Asking mid-run (a question popup too) is the failure this removes; `[TDQ:ASK]` reminds you.
 - **Technical blocker → take the proposed option, do not ask.** When an option exists, TAKE
   IT, write one decision line plus the reason into the working log, and carry on. You may
   COMMIT ON YOUR OWN to clear a blocker (message describing the change, NO push, and list that
