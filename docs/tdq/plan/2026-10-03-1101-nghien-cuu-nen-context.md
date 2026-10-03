@@ -93,7 +93,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 Nguồn: Q4 trượt — mục `### T2.1 — nén file luật` của báo cáo trỏ tới script đo đã xoá, nên số của
 nó không chạy lại được. Thêm theo quy tắc 5, không cần duyệt lại.
 
-- [ ] **QC1.1** (e20m) Viết lại script đo của T2.1 ngay trong báo cáo (khối ```python ở cuối mục
+- [>] **QC1.1** (e20m) Viết lại script đo của T2.1 ngay trong báo cáo (khối ```python ở cuối mục
   T2.1), chạy lại trên bản sao tạm ở `%TEMP%` và ghi bảng đối chiếu số cũ ↔ số chạy lại — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();s=t[t.index('### T2.1'):t.index('### T2.3')];assert '```python' in s and 'chạy lại' in s"`
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "T2.1 — nén file luật"
 
