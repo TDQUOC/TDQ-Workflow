@@ -34,7 +34,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 ## P1 — Luật R14 và cổng duyệt spec
 
-- [>] **T1.1** (e30m) `doc_lint.py` thêm R14 cho file trong `docs/tdq/spec/`: tìm bảng §6, nhận
+- [x] **T1.1** (e30m) `doc_lint.py` thêm R14 cho file trong `docs/tdq/spec/`: tìm bảng §6, nhận
   hàng `| Qn |` có ngưỡng số trong cột điều kiện (so sánh + số khác 0/1, hoặc số + đơn vị), đòi cột
   `Đo trước` và `Dự phòng nếu trượt` có mặt, không rỗng/`—`, và ô `Đo trước` chứa ít nhất một con
   số. Chỉ áp cho slug từ `2026-10-03-0732`. Hàm thuần `r14_loi(text, ten_file)` để `tdq_state`
