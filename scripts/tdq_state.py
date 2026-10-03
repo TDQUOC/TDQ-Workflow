@@ -1262,6 +1262,32 @@ PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc",
 
 
 _SCRIPT_PATH = re.compile(r"python3 scripts/(\S+\.py)")
+# The plugin root is the parent of THIS file's `scripts/` folder — whichever copy is running: the
+# repo itself, or the plugin cache (`~/.claude/plugins/cache/<market>/<plugin>/<version>`).
+GOC_PLUGIN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_LENH_SCRIPT = re.compile(r"python3 scripts/([\w.-]+\.py)")
+
+
+def lenh_cho_project(text, cwd):
+    """Rewrite `python3 scripts/X.py` to the plugin's absolute path when the project cannot run it.
+
+    Measured 2026-10-02 on a project-level install in another repo (excalidraw): every command a
+    hook printed was `python3 scripts/tdq_state.py …`, and that project has no `scripts/` folder,
+    so the very first command the agent was told to run failed. Inside the plugin's own repo the
+    relative form resolves and stays as it is — shorter, and what the repo's docs and tests read.
+    The test is per command (`cwd/scripts/X.py` exists or not), never a guess about the project.
+    """
+    if not text or "python3 scripts/" not in text:
+        return text
+
+    def _thay(m):
+        ten = m.group(1)
+        if os.path.isfile(os.path.join(cwd or ".", "scripts", ten)):
+            return m.group(0)
+        duong = os.path.join(GOC_PLUGIN, "scripts", ten).replace(os.sep, "/")
+        return f'python3 "{duong}"'
+
+    return _LENH_SCRIPT.sub(_thay, text)
 
 
 def plugin_root_cmd(cmd):
@@ -1533,6 +1559,9 @@ def render_next(cwd, state, brief=False, compact=False):
         lines.append("Checklist (copy into your answer, tick as you go):")
         lines += [f"- [ ] {item}" for item in row["checklist"]]
     lines.append(f"Done when: {row['done_when']}")
+    # Stays RELATIVE here on purpose: callers cap this text (SessionStart: 600 characters), and
+    # absolute paths added before the cap get the block cut short. Each caller rewrites paths
+    # with `lenh_cho_project` AFTER its own cap — the CLI `next` and `session_start.py` do.
     return "\n".join(lines)
 
 
@@ -1578,7 +1607,7 @@ def render_state_md(cwd, state):
         "> Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.",
         "",
     ]
-    return "\n".join(lines)
+    return lenh_cho_project("\n".join(lines), cwd)
 
 
 # ------------------------------------------------------------------ turn log
@@ -1983,7 +2012,7 @@ def cli(argv):
         for extra in argv[1:]:
             if extra != "--brief":
                 _fail(f"Invalid argument: {extra}")
-        print(render_next(cwd, load(cwd), brief=brief))
+        print(lenh_cho_project(render_next(cwd, load(cwd), brief=brief), cwd))
         return
 
     if cmd == "modes":

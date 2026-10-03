@@ -110,12 +110,14 @@ class TestKhaiTrongHooksJson(unittest.TestCase):
     def test_co_su_kien_subagent_start(self):
         self.assertIn("SubagentStart", self.cfg)
 
-    def test_dung_7_muc_tren_5_su_kien(self):
-        """2026-10-02: 6 → 7 mục. `PreToolUse` thêm matcher `Read` cho cổng nhắc đọc lại — số
-        SỰ KIỆN vẫn là 5, chỉ thêm một matcher trong sự kiện đã có."""
-        self.assertEqual(len(self.cfg), 5, sorted(self.cfg))
+    def test_dung_10_muc_tren_6_su_kien(self):
+        """2026-10-02: 6 → 7 mục (matcher `Read` cho cổng nhắc đọc lại).
+        2026-10-03: 7 → 10 mục, 5 → 6 sự kiện — cổng tìm kiếm: `search_gate` trên `PreToolUse`
+        `Bash|Grep`, và `search_observe` ở hai chỗ: `PostToolUse` (ghi lần gọi tầng khái niệm SAU
+        khi tool chạy thật) và `UserPromptSubmit` (ghi token định danh của prompt)."""
+        self.assertEqual(len(self.cfg), 6, sorted(self.cfg))
         muc = sum(len(nhom["hooks"]) for ds in self.cfg.values() for nhom in ds)
-        self.assertEqual(muc, 7, self.cfg)
+        self.assertEqual(muc, 10, self.cfg)
 
     def test_tro_dung_file(self):
         cmd = self.cfg["SubagentStart"][0]["hooks"][0]["command"]

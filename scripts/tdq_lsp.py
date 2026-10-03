@@ -9,13 +9,20 @@ Sub-commands:
 The ladder (`kiem`):
   1. the `agent-lsp` binary is on PATH
   2. the `lsp` MCP server is registered for Claude Code
-  3. a language server exists for every language this project actually uses
+  3. a language server exists for every language this project actually uses, and really starts
+     (`agent-lsp doctor` run in the project)
   4. the `mcp__lsp__*` tools are allowed without a prompt
   5. lumen's health — the fallback layer, measured by EFFECT: a real round trip plus an index
      that actually holds the working tree's newest content (added at T1.2, deepened 2026-09-28)
   6. an outside plugin hook pushing a different search order (added at T1.2)
   7. the import-root config each language needs
   8. the graphify graph the fourth search layer reads (added 2026-09-28)
+Then the four-layer smoke test (grep, LSP, graphify, lumen each asked one real question), and
+ONE total line: ĐẠT only when no rung blocks AND every layer answered. There is deliberately no
+"ladder only" mode — having one is how a smoke failure went unseen on 2026-10-02.
+
+Exit codes of `check`: 0 total ĐẠT · 3 an actionable rung is missing · 4 rungs fine but a smoke
+layer could not answer.
 
 Principles:
 - **This script NEVER installs anything.** A missing rung prints the exact command; a human
@@ -44,11 +51,20 @@ TOOL_PATTERN = "mcp__lsp__"
 INSTALL_AGENT_LSP = "curl -fsSL https://raw.githubusercontent.com/blackwell-systems/agent-lsp/main/install.sh | sh"
 EXIT_OK = 0
 EXIT_THIEU = 3
+EXIT_SMOKE = 4
 OLLAMA_PORT = 11434
 # Trần riêng cho hai phép đo hiệu ứng của bậc 5. Chúng chạy ở intake bước 1b của MỌI request nên
 # không được phép kéo dài: đo 2026-09-28 trên repo này, dựng lại tăng trưởng mất 0,2 s khi không
 # có gì đổi và 2,6 s cho một file sửa; một lần tìm mất dưới 2 s.
 TIMEOUT_LUMEN_SEARCH = 15
+# `agent-lsp doctor` starts every declared language server for real; measured 6.0 s for 14 servers
+# (setup_status.py), so 90 s is generous without letting a hung server stall the ladder.
+TIMEOUT_DOCTOR = 90
+# How much of a failed server's `Error:` line rung 3 quotes — enough to name the cause.
+DAI_LOI_DOCTOR = 100
+# `agent-lsp doctor` prints one block per server: "● <lang> (<binary>)", then "Status:"/"Error:".
+_RE_DOCTOR_DAU = re.compile(r"^\s*●\s+(?P<lang>\S+)\s+\(")
+_RE_DOCTOR_TRUONG = re.compile(r"^\s+(?P<khoa>Status|Error):\s*(?P<gia_tri>.*)$")
 # Dấu mốc `tdq_finish` để lại sau mỗi lần dựng index. Bậc 5 chỉ ĐỌC mốc này, không bao giờ ghi —
 # chủ sở hữu duy nhất của việc dựng lại là bước kết lượt.
 DAU_MOC_INDEX = os.path.join("docs", "tdq", ".tdq-lumen-index")
@@ -286,8 +302,57 @@ def do_ngon_ngu(project):
     return {lang: n for lang, n in dem.items() if n >= NGUONG_FILE}
 
 
+def doc_doctor(text):
+    """Parse `agent-lsp doctor` output into {lang: (status, error_or_empty)}; pure, never raises."""
+    ket_qua = {}
+    lang = None
+    for dong in (text or "").splitlines():
+        dau = _RE_DOCTOR_DAU.match(dong)
+        if dau:
+            lang = dau.group("lang").casefold()
+            ket_qua[lang] = ("", "")
+            continue
+        truong = _RE_DOCTOR_TRUONG.match(dong)
+        if truong and lang:
+            status, loi = ket_qua[lang]
+            gia_tri = truong.group("gia_tri").strip()
+            if truong.group("khoa") == "Status":
+                status = gia_tri.casefold()
+            elif not loi:
+                loi = gia_tri
+            ket_qua[lang] = (status, loi)
+    return {k: v for k, v in ket_qua.items() if v[0]}
+
+
+def _chay_doctor(project):
+    """Start the language servers for real via `agent-lsp doctor` in the project.
+
+    Returns (parsed, reason): `parsed` is doc_doctor's dict, or None with a reason when the
+    probe could not run or printed nothing parseable. The binary is called by its resolved
+    path, and with the same server arguments Claude Code registered, so the probe exercises
+    the exact setup the MCP server uses.
+    """
+    agent_lsp = shutil.which("agent-lsp")
+    if not agent_lsp:
+        return None, "không thấy agent-lsp trên PATH"
+    server = (_doc_json("~/.claude.json").get("mcpServers") or {}).get(MCP_SERVER_NAME) or {}
+    args = [str(a) for a in (server.get("args") or []) if isinstance(a, str)]
+    rc, out = _run([agent_lsp, "doctor"] + args, cwd=project, timeout=TIMEOUT_DOCTOR)
+    parsed = doc_doctor(out)
+    if parsed:
+        return parsed, ""
+    ly_do = (out.splitlines()[0].strip() if out else f"mã thoát {rc}, không in gì")
+    return None, ly_do[:DAI_LOI_DOCTOR]
+
+
 def bac3_language_server(project):
-    """Rung 3 — one language server per language the project actually uses."""
+    """Rung 3 — one language server per language the project uses, and it really starts.
+
+    Gate 1: the server binary is on PATH. Gate 2: `agent-lsp doctor` actually starts it; a
+    `failed` status fails the rung with the server's own error. Languages doctor does not
+    report (e.g. CSS) are judged by gate 1 alone; when doctor itself cannot run, the gate-1
+    verdict stands and the detail says the start was not tried.
+    """
     dung = do_ngon_ngu(project)
     if not dung:
         return Bac(3, "language server theo project", True, "project không có ngôn ngữ nào cần server")
@@ -296,11 +361,25 @@ def bac3_language_server(project):
         ten, binary, lenh = LANG_SERVER[lang]
         if not shutil.which(binary):
             thieu.append((ten, binary, lenh))
-    if not thieu:
+    if thieu:
+        chi_tiet = "thiếu " + ", ".join(f"{ten} ({binary})" for ten, binary, _ in thieu)
+        lenh = " ; ".join(sorted({lenh for _, _, lenh in thieu}))
+        return Bac(3, "language server theo project", False, chi_tiet, lenh)
+    du = f"đủ cho {len(dung)} ngôn ngữ: " + ", ".join(LANG_SERVER[l][0] for l in sorted(dung))
+    doctor, ly_do = _chay_doctor(project)
+    if doctor is None:
         return Bac(3, "language server theo project", True,
-                   f"đủ cho {len(dung)} ngôn ngữ: " + ", ".join(LANG_SERVER[l][0] for l in sorted(dung)))
-    chi_tiet = "thiếu " + ", ".join(f"{ten} ({binary})" for ten, binary, _ in thieu)
-    lenh = " ; ".join(sorted({lenh for _, _, lenh in thieu}))
+                   f"{du} (chưa khởi động thử được: {ly_do})")
+    hong = []
+    for lang in sorted(dung):
+        status, loi = doctor.get(lang.casefold(), ("", ""))
+        if status == "failed":
+            hong.append((lang, loi, LANG_SERVER[lang][2]))
+    if not hong:
+        return Bac(3, "language server theo project", True, f"{du}, khởi động thử ok")
+    chi_tiet = "không khởi động được: " + "; ".join(
+        f"{lang} — {' '.join(loi.split())[:DAI_LOI_DOCTOR] or 'không rõ lỗi'}" for lang, loi, _ in hong)
+    lenh = " ; ".join(sorted({lenh for _, _, lenh in hong}))
     return Bac(3, "language server theo project", False, chi_tiet, lenh)
 
 
@@ -685,20 +764,58 @@ def chay_kiem(project):
     return bac
 
 
-def cmd_kiem(args):
-    project = _project_dir()
+def chay_smoke(project):
+    """Ask each of the four search layers one real question -> [(layer, passed?, detail)].
+
+    The smoke functions stay in `tdq_setup.py` (their public names and the tests that patch them
+    keep working); the import is lazy because `tdq_setup` imports this module at top level.
+    Importing it installs nothing — every install there sits behind its own `main`.
+    """
+    import tdq_setup
+    return tdq_setup.smoke_bon_tang(project)
+
+
+def kiem_mot_lenh(project):
+    """THE one check: the 8 rungs, then the 4-layer smoke, then ONE total line.
+
+    Observed 2026-10-02: with the smoke living only in `tdq_setup.py`, an agent ran just
+    `check`, read "8/8 bậc ĐẠT" and skipped the smoke while two layers could not answer. So the
+    total is ĐẠT only when no rung blocks (warnings do not) AND every smoke layer answered.
+    `tdq_setup.py` calls this same function instead of keeping its own copy.
+
+    -> (exit code, rungs, smoke rows). Exit: EXIT_THIEU when a rung blocks, else EXIT_SMOKE when
+    a layer failed, else EXIT_OK.
+    """
     bac = chay_kiem(project)
     for b in bac:
         b.in_ra()
     thieu = [b for b in bac if not b.dat and not b.chi_canh_bao]
     canh_bao = [b for b in bac if not b.dat and b.chi_canh_bao]
-    print(f"\nTổng: {len(bac) - len(thieu) - len(canh_bao)}/{len(bac)} bậc ĐẠT"
-          + (f" · {len(thieu)} bậc cần bạn cho phép cài" if thieu else "")
-          + (f" · {len(canh_bao)} cảnh báo không chặn" if canh_bao else ""))
+
+    print("\nSmoke test bốn tầng:")
+    smoke = chay_smoke(project)
+    for ten, dat, chi_tiet in smoke:
+        print(f"  {ten:<9} {'ĐẠT ' if dat else 'TRƯỢT'} · {chi_tiet}")
+    truot = [ten for ten, dat, _ in smoke if not dat]
+
+    phan = [f"{len(bac) - len(thieu) - len(canh_bao)}/{len(bac)} bậc ĐẠT",
+            f"smoke {len(smoke) - len(truot)}/{len(smoke)} tầng trả lời được"]
+    if thieu:
+        phan.append(f"{len(thieu)} bậc cần bạn cho phép cài")
+    if canh_bao:
+        phan.append(f"{len(canh_bao)} cảnh báo không chặn")
+    if truot:
+        phan.append(f"{len(truot)} tầng trượt: {', '.join(truot)}")
+    print(f"\nTổng: {'CHƯA ĐẠT' if thieu or truot else 'ĐẠT'} · " + " · ".join(phan))
     if thieu:
         print("Script KHÔNG tự cài. Hãy duyệt từng lệnh ở trên rồi chạy tay.")
-    _log(f"done · {len(thieu)} bậc thiếu · {len(canh_bao)} cảnh báo")
-    return EXIT_THIEU if thieu else EXIT_OK
+    _log(f"done · {len(thieu)} bậc thiếu · {len(canh_bao)} cảnh báo · {len(truot)} tầng trượt")
+    rc = EXIT_THIEU if thieu else (EXIT_SMOKE if truot else EXIT_OK)
+    return rc, bac, smoke
+
+
+def cmd_kiem(args):
+    return kiem_mot_lenh(_project_dir())[0]
 
 
 def _dau_so_huu():
@@ -810,7 +927,7 @@ def parse_args(argv):
         description="Chẩn đoán bộ agent-lsp cho máy và cho project này. Script không tự cài gì.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log service")
     sub = ap.add_subparsers(dest="lenh", required=True)
-    sub.add_parser("check", help="chạy thang chẩn đoán, in từng bậc")
+    sub.add_parser("check", help="chạy 8 bậc rồi smoke 4 tầng, in một dòng tổng")
     dt = sub.add_parser("wake", help="đánh thức Ollama theo yêu cầu, chỉ khi LSP tìm không thấy")
     dt.add_argument("--han-cho", type=float, default=30.0, help="giây chờ Ollama trả lời (mặc định 30)")
     sub.add_parser("release", help="nhả model embedding ngay sau khi tìm xong")

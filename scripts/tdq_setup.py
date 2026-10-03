@@ -4,8 +4,11 @@
 One command, four jobs, in this order:
   1. run the ladder of `tdq_lsp.py` and INSTALL what is missing and allowed
   2. check the configuration each layer needs is actually right
-  3. ask each of the four search layers one real question and read the answer
+  3. re-run `tdq_lsp.kiem_mot_lenh` — the same ladder + four-layer smoke + total line that
+     `tdq_lsp.py check` prints — so both commands judge the machine the same way
   4. write down, as debt, everything it could not fix by itself
+
+Exit code: the one `kiem_mot_lenh` returns (0 total ĐẠT, 3 a rung blocks, 4 a layer failed).
 
 Why this file exists next to `tdq_lsp.py` instead of inside it: `tdq_lsp.py` carries a hard
 promise — it NEVER installs, it only diagnoses and prints the command. That promise is what
@@ -15,6 +18,12 @@ what keeps each one readable.
 
 The consent is not unlimited. A command only runs when it matches the declared allow-list
 below; anything else becomes a line of debt, never a silent skip and never a guess.
+
+The CLI also declares the lumen + lsp MCP servers for Codex (`tdq_codex_mcp.khai_mcp_codex`).
+
+`--nen` is the other mode: the detached background build a SessionStart hook spawns (installs,
+graphify graph, lumen index) under a pid lock, ending in the readiness stamp
+`docs/tdq/.tdq-san-sang.json`. See `khoi_tao_nen`.
 
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
@@ -32,6 +41,7 @@ from datetime import datetime
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
+import search_rules  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
 import utf8_io  # noqa: E402
@@ -125,8 +135,13 @@ def _duoc_cai(lenh):
     return True, ""
 
 
-def cai_thieu(bac_list):
-    """-> (đã cài, nợ). Cài mọi bậc còn thiếu mà lệnh của nó nằm trong danh sách đã khai."""
+def cai_thieu(bac_list, chay_lenh=None):
+    """-> (đã cài, nợ). Cài mọi bậc còn thiếu mà lệnh của nó nằm trong danh sách đã khai.
+
+    `chay_lenh` (str -> (rc, output)) defaults to `_chay_lenh`; the background build passes its
+    own runner so its deadline also bounds the installs.
+    """
+    chay_lenh = chay_lenh or _chay_lenh
     da_cai, no = [], []
     for bac in bac_list:
         if bac.dat or not bac.lenh_cai:
@@ -135,7 +150,7 @@ def cai_thieu(bac_list):
         if not duoc:
             no.append(f"bậc {bac.so} ({bac.ten}): {ly_do} — `{bac.lenh_cai}`")
             continue
-        rc, ra = _chay_lenh(bac.lenh_cai)
+        rc, ra = chay_lenh(bac.lenh_cai)
         if rc == 0:
             da_cai.append(f"bậc {bac.so} ({bac.ten}): `{bac.lenh_cai}`")
         else:
@@ -167,29 +182,67 @@ def kiem_cau_hinh_lumen(duong=None):
     return loi
 
 
-def smoke_grep(project):
-    """Tầng sàn: tìm một chuỗi CHẮC CHẮN có trong mã Python của dự án.
+# Fallback when language detection finds nothing above its threshold (tiny or brand-new project):
+# the common code extensions, so a one-file project still gets a real answer.
+DUOI_MAC_DINH = (".py", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".java",
+                 ".cs", ".c", ".cc", ".cpp", ".h", ".hpp", ".rb", ".php", ".kt", ".swift")
 
-    Quét bằng chính Python chứ không gọi `grep`: Windows không có sẵn `grep`, mà tầng sàn thì
-    không được phép phụ thuộc vào thứ gì cả — đó là lý do nó là sàn.
+# Line markers that look like a definition, per language key of `tdq_lsp.EXT_LANG`.
+# Languages absent here accept any non-empty, non-comment line.
+DAU_DINH_NGHIA = {
+    "python": ("def ", "class "),
+    "typescript": ("function ", "class ", "=>", "export "),
+    "javascript": ("function ", "class ", "=>", "export "),
+}
+DAU_CHU_THICH = ("#", "//", "/*", "*", "--", ";", "<!--")
 
-    Dừng ở file ĐẦU TIÊN khớp. Câu hỏi là "tầng này có trả lời được không", nên đọc hết 505 file
-    (6,6 MB, 0,1 s cache nóng) chỉ để đếm một con số không ai dùng là công thừa.
+
+def _duoi_can_quet(project):
+    """Extensions of the languages the project really uses, reusing rung 3/7's detector.
+
+    Measured 2026-10-02: a hard-coded `*.py` made the floor report TRƯỢT on excalidraw
+    (TypeScript only) while `git grep` answered instantly — a failure that did not exist.
     """
+    ngon_ngu = set(tdq_lsp.do_ngon_ngu(project))
+    duoi = tuple(sorted(d for d, l in tdq_lsp.EXT_LANG.items() if l in ngon_ngu))
+    return duoi or DUOI_MAC_DINH
+
+
+def _giong_dinh_nghia(dong, lang):
+    """Does this line look like a definition for `lang`?"""
+    dau = DAU_DINH_NGHIA.get(lang)
+    if dau:
+        return any(d in dong for d in dau)
+    gon = dong.strip()
+    return bool(gon) and not gon.startswith(DAU_CHU_THICH)
+
+
+def smoke_grep(project):
+    """Floor layer: find a definition that CERTAINLY exists in the project's own languages.
+
+    Scans with Python itself instead of calling `grep`: Windows has no `grep` by default, and the
+    floor must not depend on anything at all — that is why it is the floor.
+
+    Stops at the FIRST matching file. The question is "can this layer answer", so reading all 505
+    files (6.6 MB, 0.1 s warm cache) just to count a number nobody uses is wasted work.
+    """
+    duoi = _duoi_can_quet(project)
     for goc, thu_muc, tep in os.walk(project):
         thu_muc[:] = [t for t in thu_muc
                       if t not in tdq_lsp.SKIP_DIRS and not t.startswith(tdq_lsp.SKIP_PREFIX)]
         for ten in tep:
-            if not ten.endswith(".py"):
+            phan_duoi = os.path.splitext(ten)[1]
+            if phan_duoi not in duoi:
                 continue
+            lang = tdq_lsp.EXT_LANG.get(phan_duoi)
             try:
                 with io.open(os.path.join(goc, ten), encoding="utf-8", errors="replace") as fh:
                     for dong in fh:
-                        if "def " in dong:
-                            return True, f"tìm ra định nghĩa hàm trong {ten}"
+                        if _giong_dinh_nghia(dong, lang):
+                            return True, f"tìm ra định nghĩa trong {ten}"
             except OSError:
                 continue
-    return False, "không quét ra file nào"
+    return False, "không quét ra file nào (" + ", ".join(duoi) + ")"
 
 
 def _smoke(cmd, project, doi_ket_qua=False):
@@ -337,20 +390,367 @@ def no_skill_khong_ton_tai(project):
     return no
 
 
+# --------------------------------------------------------------------------------------------
+# Background bootstrap (`--nen`)
+#
+# A SessionStart hook cannot build the expensive layers itself: measured, `lumen index` on
+# excalidraw took 11m5s (843 files, 29,796 chunks). So the hook only reads the readiness stamp
+# and, when the project is not ready, spawns `tdq_setup.py --nen` detached. This block is that
+# detached side. Contract shared with the hook and the search gate — do not rename:
+#   stamp  docs/tdq/.tdq-san-sang.json  {"cap_nhat", "dang_dung", "pid", "tang": {layer: {...}}}
+#   lock   docs/tdq/.tdq-khoi-tao.lock  the builder's pid as text
+# --------------------------------------------------------------------------------------------
+
+MOC_SAN_SANG = search_rules.MOC_SAN_SANG
+KHOA_KHOI_TAO = os.path.join("docs", "tdq", ".tdq-khoi-tao.lock")
+# Overall cap of one background build. The measured worst case is the 11-minute lumen index of
+# excalidraw; 30 minutes leaves room for installs + graphify on a slower machine, and is also the
+# age after which a lock is stale even if its pid looks alive (pids get recycled).
+TRAN_GIAY = 30 * 60
+# How long an EMPTY lock file is believed to be a builder still writing its pid. Writing a pid
+# takes microseconds; ten seconds is generous and still frees a lock a crash left empty.
+KHOA_RONG_GIAY = 10
+# Per-step caps, each further bounded by what is left of TRAN_GIAY.
+TIMEOUT_GRAPHIFY_NEN = 10 * 60
+TIMEOUT_LUMEN_NEN = 25 * 60
+TANG_SAN_SANG = ("grep", "lsp", "graphify", "lumen")
+
+
+def _tim_cong_cu(ten):
+    """Path of an external tool on PATH, or None. One seam so tests never find real tools."""
+    return shutil.which(ten)
+
+
+def _duong_moc(project):
+    return os.path.join(project, MOC_SAN_SANG)
+
+
+def _duong_khoa(project):
+    return os.path.join(project, KHOA_KHOI_TAO)
+
+
+def doc_san_sang(project):
+    """-> the readiness stamp as a dict, or None when it is missing, unreadable or corrupt."""
+    try:
+        with io.open(_duong_moc(project), encoding="utf-8") as fh:
+            du_lieu = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    return du_lieu if isinstance(du_lieu, dict) else None
+
+
+def ghi_san_sang(project, data):
+    """Write the stamp atomically (temp file + os.replace) -> True when written.
+
+    Atomic because the hook may read it at any moment while the builder rewrites it; a reader
+    must see the old stamp or the new one, never half of one. Never raises: a stamp that cannot
+    be written is logged, and the build goes on.
+    """
+    duong = _duong_moc(project)
+    tam = f"{duong}.{os.getpid()}.tmp"
+    try:
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+        with io.open(tam, "w", encoding="utf-8", newline="\n") as fh:
+            json.dump(data, fh, ensure_ascii=False, indent=2)
+            fh.write("\n")
+        os.replace(tam, duong)
+        return True
+    except OSError as exc:
+        _log(f"nền: không ghi được mốc sẵn sàng {duong}: {exc}")
+        try:
+            os.remove(tam)
+        except OSError:
+            pass
+        return False
+
+
+def _pid_con_song(pid):
+    """Is process `pid` alive? Cross-platform, never raises; unsure counts as alive.
+
+    "Unsure -> alive" is the safe side: a wrongly kept lock still expires after TRAN_GIAY,
+    while a wrongly stolen one means two builders indexing the same project.
+    """
+    try:
+        pid = int(pid)
+    except (TypeError, ValueError):
+        return False
+    if pid <= 0:
+        return False
+    if sys.platform.startswith("win"):
+        return _pid_con_song_windows(pid)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except (OSError, OverflowError):
+        return False
+    return True
+
+
+def _pid_con_song_windows(pid):
+    """Windows liveness via OpenProcess + GetExitCodeProcess (os.kill(pid, 0) would KILL it)."""
+    try:
+        import ctypes
+        from ctypes import wintypes
+        k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        k32.OpenProcess.restype = wintypes.HANDLE
+        k32.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+        k32.GetExitCodeProcess.argtypes = (wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD))
+        k32.CloseHandle.argtypes = (wintypes.HANDLE,)
+        if pid > 0xFFFFFFFF:
+            return False
+        process_query_limited_information = 0x1000
+        still_active = 259
+        handle = k32.OpenProcess(process_query_limited_information, False, pid)
+        if not handle:
+            # Access denied means the process exists but belongs to someone else.
+            return ctypes.get_last_error() == 5
+        try:
+            ma = wintypes.DWORD()
+            if not k32.GetExitCodeProcess(handle, ctypes.byref(ma)):
+                return True
+            return ma.value == still_active
+        finally:
+            k32.CloseHandle(handle)
+    except Exception:  # noqa: BLE001 — a liveness probe must never take the builder down
+        return True
+
+
+def _khoa_cu(duong):
+    """Is the lock at `duong` stale: unreadable pid, dead pid, or older than TRAN_GIAY?"""
+    try:
+        with io.open(duong, encoding="utf-8", errors="replace") as fh:
+            noi_dung = fh.read().strip()
+        tuoi = datetime.now().timestamp() - os.path.getmtime(duong)
+    except OSError:
+        return True
+    if tuoi > TRAN_GIAY:
+        return True
+    if not noi_dung:
+        # The lock is created with O_EXCL and the pid is written right after: an EMPTY lock this
+        # young is a builder mid-write, not a dead one. Reading it as stale let a second builder
+        # delete a live lock (POSIX), found by review 2026-10-03.
+        return tuoi > KHOA_RONG_GIAY
+    return not _pid_con_song(noi_dung)
+
+
+def giu_khoa(project):
+    """Take the build lock -> True when this process holds it now.
+
+    O_CREAT|O_EXCL makes the take atomic: of two builders started together exactly one creates
+    the file. A stale lock is removed and the take is retried once.
+    """
+    duong = _duong_khoa(project)
+    try:
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+    except OSError as exc:
+        _log(f"nền: không tạo được thư mục khoá: {exc}")
+        return False
+    for lan in range(2):
+        try:
+            fd = os.open(duong, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            if lan == 0 and _khoa_cu(duong):
+                _log(f"nền: khoá cũ tại {duong} — lấy lại")
+                try:
+                    os.remove(duong)
+                except OSError:
+                    return False
+                continue
+            return False
+        except OSError as exc:
+            _log(f"nền: không tạo được khoá {duong}: {exc}")
+            return False
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(str(os.getpid()))
+        return True
+    return False
+
+
+def nha_khoa(project):
+    """Release the build lock — only if it is still ours. Never raises."""
+    duong = _duong_khoa(project)
+    try:
+        with io.open(duong, encoding="utf-8", errors="replace") as fh:
+            if fh.read().strip() != str(os.getpid()):
+                return
+        os.remove(duong)
+    except OSError:
+        pass
+
+
+def _chay_mac_dinh(argv, cwd=None, timeout=None):
+    """Default command runner of the background build: no shell, bounded, never raises."""
+    return tdq_lsp._run(argv, cwd=cwd, timeout=timeout or TIMEOUT_CAI)
+
+
+def _tang_tu_smoke(smoke):
+    """[(layer, passed, detail)] -> the stamp's `tang` dict, always with the four keys."""
+    tang = {ten: {"san_sang": False, "chi_tiet": "chưa kiểm"} for ten in TANG_SAN_SANG}
+    for ten, dat, chi_tiet in smoke:
+        khoa = str(ten).lower()
+        if khoa in tang:
+            tang[khoa] = {"san_sang": bool(dat), "chi_tiet": str(chi_tiet)}
+    return tang
+
+
+def khoi_tao_nen(project, chay=None):
+    """The `--nen` body: build the expensive layers in the background, then write the stamp.
+
+    Steps, each bounded and none able to stop the others: declared installs (`cai_thieu`),
+    the Codex MCP declaration, `graphify extract`, `lumen index`, then the four-layer smoke.
+    `chay(argv, cwd=None, timeout=None) -> (rc, output)` is the injectable runner.
+    -> 0 always: a background process has nobody to report an exit code to; the stamp is the report.
+    """
+    chay = chay or _chay_mac_dinh
+    if not giu_khoa(project):
+        _log(f"nền: một tiến trình khác đang dựng {project} — thoát")
+        return 0
+    bat_dau = datetime.now().timestamp()
+
+    def con_lai():
+        return TRAN_GIAY - (datetime.now().timestamp() - bat_dau)
+
+    def chay_an_toan(argv, cwd, tran):
+        thoi_gian = min(tran, con_lai())
+        if thoi_gian <= 0:
+            _log(f"nền: hết trần {TRAN_GIAY}s — bỏ {argv[0]}")
+            return 1, "hết trần thời gian"
+        _log(f"nền: chạy {' '.join(str(a) for a in argv)}")
+        try:
+            return chay(argv, cwd=cwd, timeout=thoi_gian)
+        except Exception as exc:  # noqa: BLE001 — one step must never stop the next
+            return 1, f"{type(exc).__name__}: {exc}"
+
+    def buoc(ten, ham):
+        if con_lai() <= 0:
+            _log(f"nền: hết trần {TRAN_GIAY}s — bỏ bước {ten}")
+            return
+        try:
+            ham()
+        except Exception as exc:  # noqa: BLE001 — same contract as chay_an_toan
+            _log(f"nền: bước {ten} lỗi: {type(exc).__name__}: {exc}")
+
+    try:
+        try:
+            grep = [("grep", *smoke_grep(project))]
+        except Exception as exc:  # noqa: BLE001
+            grep = [("grep", False, f"{type(exc).__name__}: {exc}")]
+        tang = _tang_tu_smoke(grep)
+        for ten in TANG_SAN_SANG[1:]:
+            tang[ten]["chi_tiet"] = "đang dựng nền"
+        ghi_san_sang(project, {"cap_nhat": _now(), "dang_dung": True, "pid": os.getpid(),
+                               "tang": tang})
+
+        def cai():
+            def chay_lenh(lenh):
+                try:
+                    argv = shlex.split(lenh)
+                except ValueError as exc:
+                    return 1, f"không tách được lệnh: {exc}"
+                return chay_an_toan(argv, None, TIMEOUT_CAI)
+            da_cai, no = cai_thieu(tdq_lsp.chay_kiem(project), chay_lenh=chay_lenh)
+            for dong in da_cai:
+                _log(f"nền: đã cài · {dong}")
+            if no:
+                tdq_no.ghi_no(no, project)
+
+        def codex():
+            if not _tim_cong_cu("codex"):
+                _log("nền: không thấy codex — bỏ khai MCP cho Codex")
+                return
+            import tdq_codex_mcp
+            for dong in tdq_codex_mcp.khai_mcp_codex() + tdq_codex_mcp.khai_hook_codex(project):
+                _log(f"nền: codex · {dong}")
+
+        def graphify():
+            if not _tim_cong_cu("graphify"):
+                _log("nền: không thấy graphify — bỏ dựng đồ thị")
+                return
+            rc, ra = chay_an_toan(["graphify", "extract", ".", "--code-only"], project,
+                                  TIMEOUT_GRAPHIFY_NEN)
+            _log(f"nền: graphify → {'xong' if rc == 0 else 'hỏng: ' + ra[-120:]}")
+
+        def lumen():
+            # Same guards as tdq_finish.step_reindex: no binary or no embedder -> skip.
+            binary = tdq_lsp._binary_lumen()
+            if not binary:
+                _log("nền: không thấy lumen — bỏ index")
+                return
+            if not tdq_lsp._ollama_dang_chay():
+                _log("nền: ollama chưa chạy — bỏ index lumen")
+                return
+            rc, ra = chay_an_toan([binary, "index", project], project, TIMEOUT_LUMEN_NEN)
+            if rc != 0:
+                _log(f"nền: lumen index hỏng: {ra[-120:]}")
+                return
+            tdq_no.cham_dau_moc(os.path.join(project, tdq_lsp.DAU_MOC_INDEX))
+            _log("nền: lumen index xong")
+
+        for ten, ham in (("cài", cai), ("codex", codex), ("graphify", graphify),
+                         ("lumen", lumen)):
+            buoc(ten, ham)
+
+        smoke = []
+
+        def kiem():
+            smoke.extend(tdq_lsp.chay_smoke(project))
+
+        buoc("smoke", kiem)
+        if smoke:
+            tang = _tang_tu_smoke(smoke)
+        else:
+            for ten in TANG_SAN_SANG[1:]:
+                tang[ten] = {"san_sang": False, "chi_tiet": "không chạy được smoke"}
+        ghi_san_sang(project, {"cap_nhat": _now(), "dang_dung": False, "pid": None,
+                               "tang": tang})
+        _log("nền: xong · " + ", ".join(
+            f"{t}={'ĐẠT' if tang[t]['san_sang'] else 'TRƯỢT'}" for t in TANG_SAN_SANG))
+    finally:
+        nha_khoa(project)
+    return 0
+
+
 def parse_args(argv):
     ap = argparse.ArgumentParser(
         description="Cài và chứng minh mọi phụ thuộc của bộ tìm kiếm 4 tầng.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log ra stderr")
+    ap.add_argument("--nen", action="store_true",
+                    help="dựng nền phần đắt (cài, graphify, lumen) rồi ghi mốc sẵn sàng")
     return ap.parse_args(argv)
 
 
-def main(argv):
+def _khai_codex_mac_dinh():
+    """The CLI's Codex step: the lumen + lsp MCP servers, then the search gate in the project's
+    `.codex/hooks.json` (Codex no longer takes hooks from a plugin). -> result lines."""
+    import tdq_codex_mcp
+    if not shutil.which("codex"):
+        return tdq_codex_mcp.khai_mcp_codex()
+    return tdq_codex_mcp.khai_mcp_codex() + tdq_codex_mcp.khai_hook_codex(tdq_lsp._project_dir())
+
+
+def chay_cli(argv):
+    """The command line entry: `main` WITH the Codex MCP declaration turned on.
+
+    Why `main` does not do it by default: `codex mcp add` writes the user's real
+    `~/.codex/config.toml`, and in-process callers of `main` (the existing tests) must never do
+    that. Typing the command is the consent, exactly as for the installs.
+    """
+    return main(argv, khai_codex=_khai_codex_mac_dinh)
+
+
+def main(argv, khai_codex=None):
     args = parse_args(argv)
     if args.khong_log:
         # Một biến, hai module. Thang bậc có log riêng, nên nếu `--khong-log` chỉ tắt cờ của
         # chính file này thì user gõ nó vẫn nghe một nửa tiếng ồn.
         os.environ["TDQ_LOG"] = "0"
     project = tdq_lsp._project_dir()
+    if args.nen:
+        khoi_tao_nen(project)
+        return 0
     _log(f"setup · project={project} · máy={platform.node()}")
 
     bac = tdq_lsp.chay_kiem(project)
@@ -363,20 +763,26 @@ def main(argv):
 
     for dong in da_cai:
         print(f"đã cài · {dong}")
+    if khai_codex:
+        try:
+            for dong in khai_codex():
+                print(f"codex · {dong}")
+        except Exception as exc:  # noqa: BLE001 — Codex is optional; setup goes on without it
+            no.append(f"không khai được MCP cho Codex: {type(exc).__name__}: {exc}")
+    print("")
 
-    print("\nSmoke test bốn tầng:")
-    for ten, dat, chi_tiet in smoke_bon_tang(project):
-        print(f"  {ten:<9} {'ĐẠT ' if dat else 'TRƯỢT'} · {chi_tiet}")
-        if not dat:
-            no.append(f"tầng {ten} không trả lời được: {chi_tiet}")
+    # The very same check `tdq_lsp.py check` runs — re-run after installing, so the ladder and
+    # the smoke report the machine as it is now, under one total line.
+    rc, _bac, smoke = tdq_lsp.kiem_mot_lenh(project)
+    no += [f"tầng {ten} không trả lời được: {chi_tiet}" for ten, dat, chi_tiet in smoke if not dat]
 
     for dong in no:
         print(f"nợ · {dong}")
     so = tdq_no.ghi_no(no, project)
     print("")
     print(f"Nợ: {len(no)} món ({so} dòng mới) → {tdq_no.FILE_NO}")
-    return 0
+    return rc
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(chay_cli(sys.argv[1:]))

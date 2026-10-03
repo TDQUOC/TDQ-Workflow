@@ -1,7 +1,7 @@
 # Hook reminder codes
 
-TDQ hooks **do not block** (except exactly one case at the end). They inject lines shaped
-`[TDQ:<CODE>] <the job to do>` into the context.
+TDQ hooks **do not block**, except in the few cases listed under `## The blocking points`. They
+inject lines shaped `[TDQ:<CODE>] <the job to do>` into the context.
 
 **Rule:** on seeing `[TDQ:<CODE>]` → do what it says **BEFORE** anything else in the turn, then
 print `✓ [TDQ:<CODE>] <what was done>`.
@@ -20,12 +20,24 @@ gets you reminded again at the end of the turn.
 | `TDQ:STATE` | About to hand-edit state | Use `tdq_state.py set\|approve\|init\|reset` | a `tdq_state.py` command actually ran |
 | `TDQ:GIT` | Branch/worktree name or commit message breaks convention | Rename / fix the message before running | — (repeated at Stop) |
 | `TDQ:DOC` | A file already read whole this session is being read whole again, unchanged | Read the part you need with `offset`/`limit`, or work from what you already hold | — (reminds once per file per session) |
+| `TDQ:SEARCH` | **Blocks** a code search that skipped the concept layer: the request has not asked lumen/LSP/graphify yet, or a guess-list grep came after the unlock window | Ask the concept layer first (`semantic_search`, `find_symbol`/`find_references`, or `graphify query`), then grep the exact names it returned | a concept-layer call recorded in `docs/tdq/.tdq-search.jsonl` |
 
-## The only blocking point
+## The blocking points
 
-The `Stop` hook blocks the end of a turn when: this turn **modified a file outside**
-`docs/workinglog/` and **has not** appended today's working log. To clear it: append the entry,
-then end the turn again. Every other code only reminds, never blocks.
+1. **The working log.** The `Stop` hook blocks the end of a turn when: this turn **modified a
+   file outside** `docs/workinglog/` and **has not** appended today's working log. To clear it:
+   append the entry, then end the turn again.
+2. **The search order (`TDQ:SEARCH`, since 2026-10-03).** The `PreToolUse` gate on `Bash`/`Grep`
+   denies a code search when the request has not asked the concept layer yet, or when a
+   guess-list grep comes after the unlock window. A name the user typed in the prompt and a
+   file-list filter are never blocked, and nothing is blocked while the concept layer is still
+   being built. To clear it: run the query the denial names, then search again.
+3. **Editing code in team mode (`TDQ:TICK`, `TDQ:TEAM`).** The `PreToolUse` edit gate denies a
+   source edit during implement/qc while the plan has no task marked `[~]` (`TDQ:TICK`), or one
+   the assignment map does not hand to whoever is editing (`TDQ:TEAM`). To clear it: mark the
+   task `[~]`, or delegate it as the map says.
+
+Every other code only reminds, never blocks.
 
 ## Appendix
 
