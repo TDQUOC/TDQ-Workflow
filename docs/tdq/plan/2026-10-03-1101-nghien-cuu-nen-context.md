@@ -46,7 +46,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 
 ## P2 — Thử nghiệm trên bản sao
 
-- [ ] **T2.1** (e25m) Nhóm (c) file luật và hook: chép `skills/` sang `%TEMP%\tdq-thu-nghiem\`,
+- [>] **T2.1** (e25m) Nhóm (c) file luật và hook: chép `skills/` sang `%TEMP%\tdq-thu-nghiem\`,
   thử từng cách nén (bỏ chú thích HTML không phải chỉ mục dòng, dời khối ví dụ/khuôn mẫu khỏi tập
   bắt buộc đọc sang file em, rút câu trùng), đếm token tập bắt buộc đọc của lane full/quick trước
   và sau bằng tokenizer thật — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.1' in t"` (bảng trước/sau có lệnh chạy lại; thư mục tạm đã xoá)
