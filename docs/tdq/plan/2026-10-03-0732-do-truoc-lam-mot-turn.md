@@ -34,7 +34,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 ## P1 — Luật R14 và cổng duyệt spec
 
-- [ ] **T1.1** (e30m) `doc_lint.py` thêm R14 cho file trong `docs/tdq/spec/`: tìm bảng §6, nhận
+- [>] **T1.1** (e30m) `doc_lint.py` thêm R14 cho file trong `docs/tdq/spec/`: tìm bảng §6, nhận
   hàng `| Qn |` có ngưỡng số trong cột điều kiện (so sánh + số khác 0/1, hoặc số + đơn vị), đòi cột
   `Đo trước` và `Dự phòng nếu trượt` có mặt, không rỗng/`—`, và ô `Đo trước` chứa ít nhất một con
   số. Chỉ áp cho slug từ `2026-10-03-0732`. Hàm thuần `r14_loi(text, ten_file)` để `tdq_state`
@@ -56,7 +56,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 ## P2 — Lệch spec và tạm dừng có phân loại
 
-- [ ] **T2.1** (e30m) Lệnh `lech`: `add --q Qn --nguong "<…>" --do "<…>" --chon "<phương án>"
+- [>] **T2.1** (e30m) Lệnh `lech`: `add --q Qn --nguong "<…>" --do "<…>" --chon "<phương án>"
   --ly-do "<…>"` · `list [--json]` · `duyet <id> --by "<lời user>"` · `bac <id> --by "<…>"`.
   Lưu `lech_spec: [{id, q, nguong, do, chon, ly_do, trang_thai: cho|duyet|bac, at, by}]`; alias
   tiếng Việt trong `tdq_ten_lenh.py` nếu bảng có khuôn đó — Test: `python -m unittest discover tests -p test_lech_spec.py`
@@ -88,7 +88,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 ## P4 — Luật dừng, khuôn spec, QC và report
 
-- [ ] **T4.1** (e25m) Luật dừng: `tdq-build/SKILL.md` (Hard rules) và `tdq-conventions/SKILL.md`
+- [x] **T4.1** (e25m) Luật dừng: `tdq-build/SKILL.md` (Hard rules) và `tdq-conventions/SKILL.md`
   mục 7 thay "spec/plan scope change" bằng 4 loại bất khả kháng; thêm luật "ngưỡng trượt → áp dự
   phòng của §6 (không có thì phương án đề xuất), `lech add`, làm tiếp"; thêm/bớt đầu ra §2 vẫn là
   đầu vào chỉ user có; `phases.md` hàng `implement`/`qc` theo đó — Test: `python -m unittest discover tests -p test_luat_dung.py`

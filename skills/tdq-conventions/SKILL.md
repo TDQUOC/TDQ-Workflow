@@ -64,13 +64,12 @@ BEFORE/AFTER example are in the tier-1 sibling
    answer block last, no emoji.
 
 7. **Never end a turn while the plan still has tasks** — stopping with a `[ ]` task left is abandoning the job,
-   however good the progress report looks. Exactly **three exceptions** may stop a turn:
-   1. Something only the user decides: spec/plan scope change, destructive or hard-to-reverse work, an input only
-      the user holds.
-   2. A technical block with no option you may pick yourself (lost access, no network, broken tool).
-   3. The QC fix loop hit its ceiling of 3 rounds — rule in `tdq-build/references/qc.md`.
-   Running out of step budget is NOT an exception: report it and carry on. Neither is "let's leave the rest for the
-   next turn to keep this one tidy".
+   however good the progress report looks. Only **four force-majeure kinds**, declared with `pause --loai`, stop one:
+   `mat-truy-cap` (lost access, broken tool, no option you may pick) · `pha-huy` (destructive or hard to reverse) ·
+   `dau-vao-user` (secret, account, adding/dropping a spec §2 output) · `tran-qc` (QC fix loop hit 3 rounds, `qc.md`).
+   An unmet spec threshold is NOT one: apply the row's fallback, `lech add`, carry on, ask in the report.
+   Running out of step budget is NOT an exception either: report it and carry on. Neither is "let's leave the rest
+   for the next turn to keep this one tidy".
 
 **The `Next step:` line of every skill names the phase that comes next** — the phase key itself,
 or, when the phase does not change, that fact plus the skill to load. A bare command is not
