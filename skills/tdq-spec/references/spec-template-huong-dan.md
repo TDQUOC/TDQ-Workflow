@@ -23,6 +23,22 @@ is not sealed, so renaming a test file there is everyday work and touches no app
 Rule **R11** of `doc_lint.py` guards exactly this, and applies only to specs from
 2026-08-19 onward.
 
+## Measure every numeric threshold BEFORE approval
+
+A §6 row whose PASS condition holds a numeric threshold (a comparator with a number other than
+0/1, or a number with a unit: MB, %, ms, giây, token, dòng…) must fill two more cells. Rule **R14**
+of `doc_lint.py` checks it on specs from `2026-10-03-0732` on, and `approve spec` refuses while R14
+is red (the user alone may pass `--bo-qua-do "<reason>"`).
+
+- **Đo trước** — a real measurement beats an estimate; an estimate names its source (vendor size, <!-- i18n-allow: canonical spec column name -->
+  a quick run, a sibling project) and the margin left to the threshold. It must hold a number.
+- **Dự phòng nếu trượt** — the option picked NOW in case the measurement misses. At implement <!-- i18n-allow: canonical spec column name -->
+  time that cell is applied and recorded with `lech add`; the run does not stop to ask.
+
+The case this exists for: a spec set "installer ≤ 200 MB" with no measurement; implement found the
+WebView2 offline installer alone weighs 212 MB, and the run stopped to ask. Reading one vendor
+download page at spec time would have caught it.
+
 ## Check before presenting
 
 - Every output in §2 has at least one QC item in §6.
@@ -32,6 +48,7 @@ Rule **R11** of `doc_lint.py` guards exactly this, and applies only to specs fro
 - §3b is present: one row per skill marked `DÙNG` or `NỀN`, everything else merged into the <!-- i18n-allow: canonical spec section names -->
   summary row `Đã xét <N> skill khác` — machine-checked by `doc_lint.py` rule R8. <!-- i18n-allow: canonical spec section names -->
 - A PASS condition in §6 is measurable by a command, not by feel.
+- Every numeric threshold in §6 has `Đo trước` and `Dự phòng nếu trượt` filled — `doc_lint` R14. <!-- i18n-allow: canonical spec column names -->
 - §7 is empty.
 - No sentence uses a vague word ("phù hợp", "tối ưu", "nếu cần") without a concrete <!-- i18n-allow: the banned words are matched literally by doc_lint -->
   threshold beside it.

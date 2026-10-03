@@ -101,12 +101,18 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 **Kiểm:** <lệnh test + kết quả> · <lint> · QC <PASS x/y mục DoD, defect đã sửa>
 **Đầu ra:** <đường dẫn file chính> · Backup: <đường dẫn, nếu có sửa ngoài repo>
 **Giới hạn:** <cái gì chưa làm, vì sao, ảnh hưởng gì>
+**Lệch spec chờ duyệt:** <mỗi lệch một dòng: Qn · ngưỡng → đo được · phương án đã áp — hoặc "không có">
 **Git:** <chưa commit / commit nào đã tạo>
 
 ## Thời gian
 
 <dán nguyên output của `tdq_timing.py show`: bảng Phase · Wall clock · Model time · Times entered>
 ```
+
+**Spec deviations ride on the commit question.** When `tdq_state.py lech list` shows pending
+items, the closing block asks, before the commit question, one line per deviation: approve
+(`lech duyet <id> --by "<words>"`) or reject (`lech bac <id> --by "<words>"`). A rejected one
+becomes a fix task in the plan and the request goes back with `set phase=implement`.
 
 The two time columns differ on purpose: **wall clock** includes time spent waiting for the
 user's approval, **model time** counts only machine work. A large gap on one phase means that

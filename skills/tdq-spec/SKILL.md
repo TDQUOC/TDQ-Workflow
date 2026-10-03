@@ -35,7 +35,8 @@ user's document language `doc_lang` (deliberate repetition — the original is
 2. **Self-review.** Re-read it for holes and contradictions, and fix them. Run the machine
    check (R8 inspects §3b):
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
-   until it exits 0.
+   until it exits 0. R14 there demands a measurement and a fallback for every numeric threshold
+   in §6, and `approve spec` refuses while it is red — measure BEFORE presenting.
    A deeper review happens only when the user asks for it — that is the one case where
    agent `tdq-reviewer` gets called (optional).
 

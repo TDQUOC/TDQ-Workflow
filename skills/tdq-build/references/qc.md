@@ -167,9 +167,16 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 <output thật, cắt gọn phần dài> <!-- i18n-allow: qc template line in the default document language -->
 ```
 
+## Lệch spec chờ duyệt <!-- i18n-allow: qc template line in the default document language -->
+<chép `tdq_state.py lech list`: Qn · ngưỡng · đo được · phương án đã áp — hoặc "không có"> <!-- i18n-allow: qc template line in the default document language -->
+
 ## Kết luận <!-- i18n-allow: qc template line in the default document language -->
 <PASS toàn bộ | FAIL: liệt kê hạng mục fail và task fix đã thêm vào plan> <!-- i18n-allow: qc template line in the default document language -->
 ```
+
+An item that missed its threshold but carries a recorded deviation is written
+`PASS (lệch, chờ duyệt)` — not FAIL: the fallback was applied on purpose and only the user can
+approve or reject it, which happens in the report.
 
 ## When it FAILs
 

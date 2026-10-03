@@ -40,7 +40,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   số. Chỉ áp cho slug từ `2026-10-03-0732`. Hàm thuần `r14_loi(text, ten_file)` để `tdq_state`
   gọi được — Test: `python -m unittest discover tests -p test_doc_lint_r14.py`
   - Chạm: `scripts/doc_lint.py` → `rule_r14`, `r14_loi`, nhánh `is_output`; `tests/test_doc_lint_r14.py` → file mới
-- [ ] **T1.2** (e15m) Độ chính xác trên spec thật: lấy 10 hàng có ngưỡng từ spec cũ (cố định
+- [>] **T1.2** (e15m) Độ chính xác trên spec thật: lấy 10 hàng có ngưỡng từ spec cũ (cố định
   trong test, chép nguyên văn) + 10 hàng không ngưỡng (`≥ 1`, `0 failure`, số phiên bản, mã Qn);
   R14 nhận đúng ≥ 9/10 và không bắt oan hàng nào; `doc_lint docs/tdq/spec` → 0 lỗi R14 —
   Test: `python -m unittest discover tests -p test_doc_lint_r14.py -k chinh_xac`
@@ -61,7 +61,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   Lưu `lech_spec: [{id, q, nguong, do, chon, ly_do, trang_thai: cho|duyet|bac, at, by}]`; alias
   tiếng Việt trong `tdq_ten_lenh.py` nếu bảng có khuôn đó — Test: `python -m unittest discover tests -p test_lech_spec.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_lech`, `default_state`, `cli`; `scripts/tdq_ten_lenh.py` → bảng alias; `tests/test_lech_spec.py` → file mới
-- [ ] **T2.2** (e20m) `pause --loai <mat-truy-cap|pha-huy|dau-vao-user|tran-qc> --ly-do "<…>"`:
+- [>] **T2.2** (e20m) `pause --loai <mat-truy-cap|pha-huy|dau-vao-user|tran-qc> --ly-do "<…>"`:
   thiếu `--loai`, loại ngoài danh sách (kể cả `doi-spec`) → từ chối kèm danh sách 4 loại và câu
   "ngưỡng trượt → dùng `lech add`, không dừng"; state lưu `loai` — Test: `python -m unittest discover tests -p test_implement_pause.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_implement_pause`; `tests/test_implement_pause.py` → các ca gọi `pause`
@@ -93,13 +93,13 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   phòng của §6 (không có thì phương án đề xuất), `lech add`, làm tiếp"; thêm/bớt đầu ra §2 vẫn là
   đầu vào chỉ user có; `phases.md` hàng `implement`/`qc` theo đó — Test: `python -m unittest discover tests -p test_luat_dung.py`
   - Chạm: `skills/tdq-build/SKILL.md`, `skills/tdq-conventions/SKILL.md`, `skills/tdq-conventions/references/phases.md`; `tests/test_luat_dung.py` → file mới
-- [ ] **T4.2** (e20m) Khuôn spec: §6 thêm 2 cột; `spec-template-huong-dan.md` thêm mục "đo trước
+- [x] **T4.2** (e20m) Khuôn spec: §6 thêm 2 cột; `spec-template-huong-dan.md` thêm mục "đo trước
   thế nào" (số đo thật > ước lượng có nguồn; biên an toàn; không đo được → dự phòng chọn sẵn);
   `tdq-spec/SKILL.md` bước 2 nêu R14 và cổng `approve spec` — Test: khuôn §6 chép ra một spec giả
   có hàng ngưỡng điền đủ → `r14_loi` rỗng (`-k khuon` trong `test_luat_dung.py`)
   - Chạm: `skills/tdq-spec/references/spec-template.md`, `skills/tdq-spec/references/spec-template-huong-dan.md`, `skills/tdq-spec/SKILL.md`; `tests/test_luat_dung.py` → lớp `Khuon`
   - Cần: T1.1
-- [ ] **T4.3** (e20m) `qc.md`: hạng mục trượt có lệch đã ghi → "PASS (lệch, chờ duyệt)", lệch
+- [x] **T4.3** (e20m) `qc.md`: hạng mục trượt có lệch đã ghi → "PASS (lệch, chờ duyệt)", lệch
   không được tính là FAIL để lặp vòng sửa; `report-template.md`: mục "Lệch spec chờ duyệt" + câu
   hỏi duyệt từng lệch trong khối hỏi commit; bác → task fix + `set phase=implement` — Test:
   `python -m unittest discover tests -p test_luat_dung.py -k qc_report`

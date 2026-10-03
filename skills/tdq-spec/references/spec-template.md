@@ -102,9 +102,9 @@ trúc, không bỏ trống khối này.
 |---|---|---|
 
 ## 6. QC & Definition of Done
-| # | Hạng mục kiểm | Điều kiện PASS |
-|---|---|---|
-| Q1 | | |
+| # | Hạng mục kiểm | Điều kiện PASS | Đo trước | Dự phòng nếu trượt |
+|---|---|---|---|---|
+| Q1 | | | <số đo thật hoặc ước lượng + nguồn + biên; không có ngưỡng số → —> | <phương án chọn sẵn; không có ngưỡng số → —> |
 
 DoD: <liệt kê điều kiện đủ để tuyên bố xong>
 
