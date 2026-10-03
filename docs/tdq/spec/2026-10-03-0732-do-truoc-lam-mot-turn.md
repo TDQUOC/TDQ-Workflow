@@ -140,8 +140,8 @@ Cột `Đo trước` và `Dự phòng nếu trượt` dùng đúng khuôn mới 
 
 | # | Hạng mục kiểm | Điều kiện PASS | Đo trước | Dự phòng nếu trượt |
 |---|---|---|---|---|
-| Q1 | R14 bắt ngưỡng thiếu đo | hàng `Installer ≤ 200 MB` thiếu 2 cột → R14 đỏ | — | — |
-| Q2 | R14 im khi đủ cột | cùng hàng có `Đo trước: 212 MB + ~20 MB` và `Dự phòng` → xanh | — | — |
+| Q1 | R14 bắt ngưỡng thiếu đo | hàng `Installer ≤ 200 MB` thiếu 2 cột → R14 đỏ | ví dụ đầu vào của test, không phải ngưỡng sản phẩm: 212 MB + ~20 MB đo ở phiên excalidraw | không áp dụng — ví dụ trong test (lệch #1, user duyệt 2026-10-03) |
+| Q2 | R14 im khi đủ cột | cùng hàng có `Đo trước: 212 MB + ~20 MB` và `Dự phòng` → xanh | ví dụ đầu vào của test, không phải ngưỡng sản phẩm: 212 MB + ~20 MB | không áp dụng — ví dụ trong test (lệch #1, user duyệt 2026-10-03) |
 | Q3 | R14 không bắt phép tồn tại | `≥ 1 test`, `0 failure`, `= 0 dòng` → không bị coi là ngưỡng | — | — |
 | Q4 | R14 không hồi tố | `doc_lint docs/tdq/spec` trên 103 spec cũ → 0 lỗi R14 | 0 lỗi (mốc slug `2026-10-03-0732` loại hết spec cũ) | — |
 | Q5 | Độ chính xác trên spec thật | trong 10 hàng mẫu có ngưỡng từ spec cũ, R14 nhận đúng ≥ 9 | bộ nhận diện thử: 138/1.086 hàng ở 103 spec, mẫu 14 hàng đọc tay không thấy bắt oan | thu hẹp đơn vị/so sánh; ghi lệch |

@@ -3,7 +3,7 @@
 Ngày: 2026-10-03 · Plan: ../plan/2026-10-03-0732-do-truoc-lam-mot-turn.md · Vòng: 1 · Mức QC: `full`
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
-**Kết luận: PASS, có 1 lệch spec chờ duyệt.** Q1–Q16 PASS; Q17 PARTIAL (macOS/Linux tắt). Đây là
+**Kết luận: PASS. Lệch spec #1 đã được user duyệt ("1a") và xử lý.** Q1–Q16 PASS; Q17 PARTIAL (macOS/Linux tắt). Đây là
 request đầu tiên tự áp luật nó vừa xây: một ngưỡng của DoD trượt được ghi bằng `lech add` thay vì
 dừng giữa implement để hỏi.
 

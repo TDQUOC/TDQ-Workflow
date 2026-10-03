@@ -3,7 +3,7 @@
 Ngày: 2026-10-03 · Spec: ../spec/2026-10-03-0732-do-truoc-lam-mot-turn.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — đo bằng `tdq_bench.py simulate` trên chính plan này: đội thắng 16,2 phút (18,4 so với 34,6), 17 task chia 5 đợt, giao 8, leader giữ 9 vì `tdq_state.py` là file nóng của 4 task (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = subagent) · 17 task · ETA 245 phút
+Trạng thái plan: HOÀN THÀNH · mode subagent · 17/17 task · DoD 16/17 (Q17 macOS/Linux tắt) · 1 lệch spec đã duyệt · 17 task · ETA 245 phút
 
 ## Mục lục
 
