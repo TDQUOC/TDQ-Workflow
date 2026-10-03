@@ -31,7 +31,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 
 ## P1 — Kiểm chéo số liệu
 
-- [>] **T1.1** (e30m) Kiểm chéo số bên ngoài: liệt kê mọi con số trong
+- [x] **T1.1** (e30m) Kiểm chéo số bên ngoài: liệt kê mọi con số trong
   `docs/tdq/research/2026-10-03-1101-nghien-cuu-nen-context.md` có thể làm căn cứ đề xuất; mở nguồn
   sơ cấp của từng số (WebFetch), ghi khớp / lệch / không xác minh được. Ưu tiên ba số đáng ngờ:
   giá đọc cache 0,05×, hai bài arXiv 2605.10039 và 2606.10209, trần phía Codex (32 KiB, 8.000 ký
