@@ -164,18 +164,18 @@ Song song: nhanh hơn 49–68% treo tường nhưng **chưa dùng được**: l�
 
 ### T2.1 — nén file luật
 
-Chạy ngày 2026-10-03 trên bản sao `skills/` (commit `71b8919`, nhánh `docs/nghien-cuu-nen-context`) ở `%TEMP%\tdq-thu-nghiem\t21`; mỗi cách nén chạy trên một bản sao riêng `work\<cách>-<lane>\skills`. Tokenizer thật: `.venv-tokens` + `anthropic_tokenizer.count_tokens`. `skills/` `hooks/` `scripts/` `tests/` `agents/` của repo thật không bị sửa (`git status --porcelain` rỗng); `scripts/doc_index.py` và `scripts/i18n_check.py` của repo chỉ được **gọi** trên bản sao. Thư mục `%TEMP%\tdq-thu-nghiem\t21` (bản sao + script) **đã xoá** sau khi đo.
+Chạy ngày 2026-10-03 trên bản sao `skills/` (commit `71b8919`, nhánh `docs/nghien-cuu-nen-context`) ở `%TEMP%\tdq-thu-nghiem\t21`; mỗi cách nén chạy trên một bản sao riêng `work\<cách>-<lane>\skills`. Tokenizer thật: `.venv-tokens` + `anthropic_tokenizer.count_tokens`. `skills/` `hooks/` `scripts/` `tests/` `agents/` của repo thật không bị sửa (`git status --porcelain` rỗng); `scripts/doc_index.py` và `scripts/i18n_check.py` của repo chỉ được **gọi** trên bản sao. Thư mục `%TEMP%\tdq-thu-nghiem\t21` (bản sao + script) **đã xoá** sau khi đo. Script gốc mất theo; ngày 2026-10-03 (QC1.1) đã viết lại thành một script tự đủ `t21.py` (mã đầy đủ ở cuối mục này) và chạy lại trên bản sao mới ở `%TEMP%\tdq-thu-nghiem\qc11` — bảng "Đối chiếu số cũ ↔ chạy lại" ở cuối mục.
 
-Tập bắt buộc đọc: đúng danh sách 23 file (full) / 9 file (quick) của spec; SKILL.md chỉ tính thân (bỏ frontmatter `\A---\n.*?\n---\n`), CRLF → LF, đếm từng file rồi cộng. Đếm lại gốc ra 50.893 / 18.631, lệch 5 và 2 token so với số mốc 50.898 / 18.633 (< 0,01%, do cách cắt frontmatter).
+Tập bắt buộc đọc: đúng danh sách 23 file (full) / 9 file (quick) — liệt kê đủ trong `FULL`/`QUICK` của `t21.py`; SKILL.md chỉ tính thân (bỏ frontmatter `\A---\n.*?\n---\n`), CRLF → LF, đếm từng file rồi cộng. Đếm lại gốc ra 50.893 / 18.631, lệch 5 và 2 token so với số mốc 50.898 / 18.633 (< 0,01%, do cách cắt frontmatter).
 
-| # | Cách nén (trên bản sao) | Full trước → sau | Quick trước → sau | Lệnh chạy lại (trong `%TEMP%\tdq-thu-nghiem\t21`) |
+| # | Cách nén (trên bản sao) | Full trước → sau | Quick trước → sau | Lệnh chạy lại (`t21.py` ở cuối mục; một lần chạy in mọi dòng) |
 |---|---|---|---|---|
-| 0 | Gốc | 50.893 | 18.631 | `python exp.py base --repo=<repo>` |
-| 1 | Bỏ chú thích HTML **không phải** marker | 50.893 → 50.893 (**0**) | 18.631 → 18.631 (**0**) | `python exp.py e1 --repo=<repo>` |
-| 1b | Giữ mọi marker, chỉ cắt phần lý do sau `i18n-allow:` → `<!-- i18n-allow -->` | → 49.877 (−1.016 · −2,0%) | → 18.271 (−360 · −1,9%) | `python exp.py e1b --repo=<repo>` |
-| 2 | Dời khối mẫu/ví dụ sang file em `<tên>-mau.md`, để lại 1 dòng trỏ | → 41.626 (−9.267 · −18,2%) gộp | → 17.295 (−1.336 · −7,2%) gộp | `python exp.py e2 --repo=<repo> -v` |
-| 3 | Gộp câu gần trùng (Jaccard 4-gram ký tự ≥ 0,9, câu ≥ 8 từ) — giữ lần đầu theo thứ tự đọc | → 50.337 (−556 · −1,1%) | → 18.572 (−59 · −0,3%) | `python exp.py e3 --repo=<repo> -v` |
-| 4 | Kết hợp 1 + 1b + 2 + 3 | → 40.238 (−10.655 · −20,9%) gộp | → 16.928 (−1.703 · −9,1%) gộp | `python exp.py all --repo=<repo> -v` |
+| 0 | Gốc | 50.893 | 18.631 | `t21.py <bản sao skills> <repo>` → dòng `[full]`/`[quick]` và `base` |
+| 1 | Bỏ chú thích HTML **không phải** marker | 50.893 → 50.893 (**0**) | 18.631 → 18.631 (**0**) | như trên → dòng `e1` |
+| 1b | Giữ mọi marker, chỉ cắt phần lý do sau `i18n-allow:` → `<!-- i18n-allow -->` | → 49.877 (−1.016 · −2,0%) | → 18.271 (−360 · −1,9%) | như trên → dòng `e1b` |
+| 2 | Dời khối mẫu/ví dụ sang file em `<tên>-mau.md`, để lại 1 dòng trỏ | → 41.626 (−9.267 · −18,2%) gộp | → 17.295 (−1.336 · −7,2%) gộp | như trên → dòng `e2` |
+| 3 | Gộp câu gần trùng (Jaccard 4-gram ký tự ≥ 0,9, câu ≥ 8 từ) — giữ lần đầu theo thứ tự đọc | → 50.337 (−556 · −1,1%) | → 18.572 (−59 · −0,3%) | như trên → dòng `e3` (kèm danh sách câu bỏ); chạy lại ra −583 / −86, xem đối chiếu |
+| 4 | Kết hợp 1 + 1b + 2 + 3 | → 40.238 (−10.655 · −20,9%) gộp | → 16.928 (−1.703 · −9,1%) gộp | như trên → dòng `all`; chạy lại ra −10.682 / −1.730 |
 
 Mọi dòng: sau khi sửa, `doc_index.py` của repo được chạy lại trên các file có chỉ mục dòng của bản sao (cách 2/3 làm lệch 9 file full, 1 file quick) rồi `doc_index.py --kiem` → exit 0; số "sau" đã gồm chỉ mục mới. `i18n_check.py` trên bản sao: 133 dòng báo ở gốc = 133 ở 1b (marker rút gọn vẫn có hiệu lực), 132 ở cách 4.
 
@@ -203,11 +203,165 @@ Quick: ròng ≈ 240 token đọc × ~10 lượt ≈ 2,4k token chở — không
 
 → **Kết luận T2.1:** nén file luật bằng ba cách này chỉ bớt thật **≈ 1,3–2,7k token đọc/full request (2,6–5,3% tập bắt buộc đọc)**, tức ≈ 0,2% context một request; con số "−20,9%" chỉ là token rời tập bắt buộc đọc, ba phần tư trong đó (khuôn spec/plan/QC/report, khối hỏi) bị đọc lại ngay khi việc cần. Chú thích HTML không phải mỏ: 100% là marker công cụ. Phần chắc ăn và rẻ nhất là 1b (−1.016 / −360, không đổi hành vi, công cụ vẫn xanh) và nhóm A (ví dụ RIGHT/WRONG, −413). So với hội thoại tích luỹ (~491k/lượt, Bản đồ #1), file luật là nguồn nhỏ — nén nó không thay được việc compact/cắt hội thoại.
 
-Cách dựng lại script (đã xoá, viết lại theo mô tả; `<repo>` = gốc worktree, `$py` = `.venv-tokens/Scripts/python.exe`, `PYTHONIOENCODING=utf-8`):
-- Chuẩn bị: `New-Item -ItemType Directory -Force $env:TEMP\tdq-thu-nghiem\t21; Copy-Item -Recurse <repo>\skills $env:TEMP\tdq-thu-nghiem\t21\skills`.
-- `lane.py`: hai danh sách FULL/QUICK ở trên; `body()` = đọc UTF-8, CRLF → LF, cắt frontmatter của SKILL.md; tổng = Σ `count_tokens(body)`.
-- `exp.py <mode>`: chép `skills` sang `work\<mode>-<lane>\skills`, áp bước, chạy `<repo>\scripts\doc_index.py <các file có muc-luc-dong>` rồi `--kiem`, đếm lại bằng `lane.py`. Bước 1: xoá `<!--.*?-->` không khớp `^<!--\s*(muc-luc-dong:|i18n-allow|doc-lint: allow|luat-gon:|luat-mode-allow)`. Bước 1b: `re.sub(r"<!--\s*i18n-allow:[^>]*?-->", "<!-- i18n-allow -->")`. Bước 2: fence ` ``` `/`~~~` ≥ 40 token khớp danh sách 22 dòng đầu (file + dòng đầu khối) của bảng hạng A/B/C trên, mang theo dòng `<!-- i18n-allow… -->` ngay trên fence, thay bằng `→ [<tên>-mau.md](<tên>-mau.md) §k (Read it when needed).`. Bước 3: ghép dòng thành đoạn (ngắt ở dòng trống, mục danh sách, heading, bảng, fence, chú thích khối), tách câu ở `[.!?]` trước khoảng trắng, chuẩn hoá (bỏ chú thích, dấu markdown, chữ thường), so với mọi câu đã gặp trong lane: trùng hash hoặc Jaccard 4-gram ký tự ≥ 0,9 → xoá lần sau.
-- Kiểm marker: `$py <repo>\scripts\i18n_check.py work\e1b-full\skills | Select -Last 1` (so với `… skills`).
+Script chạy lại `t21.py` (viết lại ngày 2026-10-03 theo mô tả cũ, QC1.1). Chuẩn bị và chạy (PowerShell, từ gốc repo; `$py` = `.venv-tokens/Scripts/python.exe`; chép khối dưới ra `$env:TEMP\tdq-thu-nghiem\qc11\t21.py`):
+- `New-Item -ItemType Directory -Force $env:TEMP\tdq-thu-nghiem\qc11; Copy-Item -Recurse skills $env:TEMP\tdq-thu-nghiem\qc11\skills`
+- `$env:PYTHONIOENCODING='utf-8'; & $py $env:TEMP\tdq-thu-nghiem\qc11\t21.py $env:TEMP\tdq-thu-nghiem\qc11\skills .`
+- Xong thì `Remove-Item -Recurse -Force $env:TEMP\tdq-thu-nghiem\qc11`. Script chỉ ghi vào bản sao (`work\<cách>-<lane>\skills`); `doc_index.py` và `i18n_check.py` của repo chỉ được gọi trên bản sao.
+
+```python
+"""T2.1 - compress rule files on a COPY of skills/ and count the must-read set with the real tokenizer.
+
+Usage (PowerShell, from the repo root; never point SKILLS at the real skills/):
+    $env:PYTHONIOENCODING='utf-8'; .venv-tokens/Scripts/python.exe t21.py <SKILLS copy> <repo root>
+Each experiment works on its own fresh copy <SKILLS>/../work/<exp>/skills. After editing, the repo's
+scripts/doc_index.py rewrites the line index of every file carrying one, then `--kiem` must exit 0;
+the "after" count includes the new index. scripts/i18n_check.py is only CALLED on the copy.
+Count = sum over the lane's files of count_tokens(body); body = UTF-8, CRLF->LF, SKILL.md without
+its front matter. Experiments: e1 strip non-marker HTML comments · e1b cut the reason after
+`i18n-allow:` · e2 move the 23 example/template fences listed in MOVE to a sibling <name>-mau.md and
+leave a one-line pointer · e3 drop a sentence (>= 8 words) whose hash or char-4-gram Jaccard >= 0.9
+matches a sentence seen earlier in the lane's reading order · all = e1 + e1b + e2 + e3.
+"""
+import re, shutil, subprocess, sys
+from pathlib import Path
+from anthropic_tokenizer import count_tokens
+
+B, C, I, P, S = "tdq-build/", "tdq-conventions/", "tdq-intake/", "tdq-plan/", "tdq-setup/"
+QUICK = [C + "SKILL.md", C + "references/user-facing-block.md", S + "references/uu-tien-tim-kiem.md",
+         I + "SKILL.md", I + "references/kiem-lsp-hieu-ung.md", I + "references/lane-decision.md",
+         I + "references/nhanh-request.md", I + "references/quick-lane.md", I + "references/quick-lane-qc.md"]
+FULL = [C + "SKILL.md", C + "references/user-facing-block.md", C + "references/approval.md",
+        S + "references/uu-tien-tim-kiem.md", I + "SKILL.md", I + "references/kiem-lsp-hieu-ung.md",
+        I + "references/lane-decision.md", I + "references/nhanh-request.md", I + "references/analyze-full.md",
+        I + "references/skill-inventory.md", I + "references/interview.md", "tdq-spec/SKILL.md",
+        "tdq-spec/references/spec-template.md", P + "SKILL.md", P + "references/plan-template.md",
+        P + "references/mode-gate.md", B + "SKILL.md", B + "references/team-mode.md",
+        B + "references/rules/index.md", B + "references/rules/chung.md", B + "references/rules/python.md",
+        B + "references/qc.md", B + "references/report-template.md"]
+# file -> 1-based ordinals of the fenced blocks moved out (ordinal among ALL fences of the original file)
+MOVE = {B + "references/rules/chung.md": [1, 2, 4], B + "references/rules/python.md": [1],
+        P + "references/mode-gate.md": [2, 3], B + "references/team-mode.md": [3],
+        I + "references/interview.md": [1, 2, 3], P + "references/plan-template.md": [1],
+        "tdq-spec/references/spec-template.md": [1], B + "references/report-template.md": [4],
+        I + "references/lane-decision.md": [1, 2], I + "references/skill-inventory.md": [2],
+        I + "references/analyze-full.md": [1], B + "references/qc.md": [2, 3],
+        I + "references/quick-lane.md": [1, 2, 3], I + "references/quick-lane-qc.md": [1]}
+MARKER = re.compile(r"<!--\s*(muc-luc-dong:|i18n-allow|doc-lint: allow|luat-gon:|luat-mode-allow)")
+FRONT = re.compile(r"\A---\n.*?\n---\n", re.S)
+
+def read(p): return p.read_text(encoding="utf-8").replace("\r\n", "\n")
+def write(p, t): p.write_text(t, encoding="utf-8", newline="\n")
+def body(p):
+    t = read(p)
+    return FRONT.sub("", t, count=1) if p.name == "SKILL.md" else t
+def total(root, lane): return sum(count_tokens(body(root / f)) for f in lane)
+
+def comments(root, lane):
+    """Token count of HTML comments in the lane: (all, marker, muc-luc-dong, i18n-allow, n_i18n)."""
+    out = [0, 0, 0, 0, 0]
+    for f in lane:
+        for c in re.findall(r"<!--.*?-->", body(root / f), re.S):
+            n = count_tokens(c); out[0] += n
+            if MARKER.match(c): out[1] += n
+            if c.startswith("<!-- muc-luc-dong"): out[2] += n
+            if re.match(r"<!--\s*i18n-allow", c): out[3] += n; out[4] += 1
+    return out
+
+def e1(t): return re.sub(r"<!--.*?-->", lambda m: m.group(0) if MARKER.match(m.group(0)) else "", t, flags=re.S)
+def e1b(t): return re.sub(r"<!--\s*i18n-allow:[^>]*?-->", "<!-- i18n-allow -->", t)
+
+def fences(lines):
+    """[(start, end)] line spans of top-level fences; an i18n-allow comment right above joins the span."""
+    out, i = [], 0
+    while i < len(lines):
+        m = re.match(r"^\s*(`{3,}|~{3,})", lines[i])
+        if not m: i += 1; continue
+        j, f = i + 1, m.group(1)
+        while j < len(lines) and not re.match(r"^\s*" + re.escape(f[0]) + "{%d,}\\s*$" % len(f), lines[j]): j += 1
+        s = i - 1 if i and re.match(r"^\s*<!--\s*i18n-allow", lines[i - 1]) else i
+        out.append((s, j)); i = j + 1
+    return out
+
+def e2(p, rel):
+    lines = read(p).split("\n"); spans = fences(lines); sib = p.stem + "-mau.md"; moved = []
+    for k, n in enumerate(MOVE.get(rel, []), 1):
+        s, e = spans[n - 1]; moved.append("\n".join(lines[s:e + 1]))
+        lines[s:e + 1] = [f"→ [{sib}]({sib}) §{k} (Read it when needed)."] + [None] * (e - s)
+    if moved:
+        write(p.with_name(sib), "\n\n".join(f"## §{k}\n\n{b}" for k, b in enumerate(moved, 1)) + "\n")
+        write(p, "\n".join(l for l in lines if l is not None))
+
+BREAK = re.compile(r"^\s*($|[-*+] |\d+\. |#|\||<!--|```|~~~)")
+def norm(s): return " ".join(re.sub(r"[`*_#>\[\]()|]", " ", re.sub(r"<!--.*?-->", " ", s)).lower().split())
+def grams(s): return {s[i:i + 4] for i in range(max(1, len(s) - 3))}
+
+def e3(root, lane):
+    seen, dropped = [], []
+    for rel in lane:
+        p = root / rel; text = read(p); lines = text.split("\n"); paras, cur, fence = [], [], False
+        for l in lines + [""]:
+            if re.match(r"^\s*(```|~~~)", l): fence = not fence
+            if fence or BREAK.match(l):
+                if cur: paras.append(" ".join(cur)); cur = []
+                if not fence and re.match(r"^\s*([-*+] |\d+\. )", l): cur = [l.strip()]
+            else: cur.append(l.strip())
+        for para in paras:
+            for sent in re.split(r"(?<=[.!?])\s+", para):
+                n = norm(sent)
+                if len(n.split()) < 8: continue
+                g = grams(n)
+                if any(n == m or len(g & h) / len(g | h) >= 0.9 for m, h in seen):
+                    pat = r"\s*".join(re.escape(w) for w in sent.split())
+                    text, k = re.subn(pat, "", text, count=1)
+                    if k: dropped.append((rel, count_tokens(sent), sent[:70]))
+                else: seen.append((n, g))
+        write(p, text)
+    return dropped
+
+def run(src, repo, mode, lane, name):
+    work = src.parent / "work" / f"{mode}-{name}" / "skills"
+    if work.parent.exists(): shutil.rmtree(work.parent)
+    shutil.copytree(src, work); info = None
+    for rel in lane:
+        p = work / rel
+        if mode in ("e1", "all"): write(p, e1(read(p)))
+        if mode in ("e1b", "all"): write(p, e1b(read(p)))
+        if mode in ("e2", "all"): e2(p, rel)
+    if mode in ("e3", "all"): info = e3(work, lane)
+    idx = [str(work / r) for r in lane if "<!-- muc-luc-dong:" in read(work / r)]
+    if mode != "base":
+        py = sys.executable; subprocess.run([py, str(repo / "scripts/doc_index.py"), *idx], capture_output=True)
+        kiem = subprocess.run([py, str(repo / "scripts/doc_index.py"), "--kiem", *idx], capture_output=True).returncode
+    else: kiem = 0
+    i18n = subprocess.run([sys.executable, str(repo / "scripts/i18n_check.py"), str(work)],
+                          capture_output=True, text=True, encoding="utf-8").stdout.strip().splitlines()
+    return total(work, lane), kiem, (i18n[-1] if i18n else "?"), info
+
+if __name__ == "__main__":
+    src, repo = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
+    for name, lane in (("full", FULL), ("quick", QUICK)):
+        base = total(src, lane); c = comments(src, lane)
+        print(f"[{name}] {len(lane)} file · gốc {base} · chú thích {c[0]} (marker {c[1]}: muc-luc-dong {c[2]}, i18n-allow {c[4]} khối = {c[3]})")
+        for mode in ("base", "e1", "e1b", "e2", "e3", "all"):
+            n, kiem, i18n, info = run(src, repo, mode, lane, name)
+            print(f"  {mode:4} {n:6d}  {n - base:+6d} ({(n - base) / base:+.1%})  doc_index --kiem={kiem}  i18n: {i18n}")
+            for d in info or []: print(f"       bỏ câu {d[1]:3d} tok  {d[0]}: {d[2]}")
+```
+
+**Đối chiếu số cũ ↔ chạy lại** (chạy lại ngày 2026-10-03 trên bản sao `skills/` mới ở `%TEMP%\tdq-thu-nghiem\qc11`, `skills/` không đổi từ `71b8919` tới `b6029c9`; thư mục `qc11` **đã xoá** sau khi đo). Hai danh sách `FULL`/`QUICK` không được bản cũ ghi lại; bản chạy lại dựng chúng là tập file khớp **đồng thời** số gốc và bốn số marker cũ (`muc-luc-dong` 15 khối = 1.217 / 5 = 530, `i18n-allow` 154 = 2.094 / 49 = 703) — với quick đó là tập duy nhất trong các tổ hợp đã dò. `MOVE` gồm 23 khối (bảng hạng A/B/C ở trên; khuôn QC lồng fence của `qc.md` tính 2 khối, nên bản cũ ghi "22 dòng").
+
+| Phép đo | Số cũ | Chạy lại | Lệch % | Ghi chú |
+|---|---|---|---|---|
+| Gốc full / quick | 50.893 / 18.631 | 50.893 / 18.631 | 0,0% / 0,0% | 23 / 9 file |
+| Token chú thích full / quick (đều là marker) | 3.419 / 1.233 | 3.419 / 1.233 | 0,0% | `muc-luc-dong` 1.217 / 530 và `i18n-allow` 154 khối = 2.094 / 49 khối = 703 cũng khớp |
+| (1) bỏ chú thích không phải marker | 0 / 0 | 0 / 0 | 0,0% | |
+| (1b) cắt lý do `i18n-allow:` | −1.016 / −360 | −1.016 / −360 | 0,0% | |
+| (2) dời khối mẫu (gộp) | −9.267 / −1.336 | −9.267 / −1.336 | 0,0% | 41.626 / 17.295 |
+| (3) gộp câu gần trùng, full | −556 (12 câu) | −583 (12 câu) | +4,9% | Cách tách câu của bản cũ không ghi lại; bản chạy lại bỏ thêm câu "Samples: `feature/login-gui`, …" của `nhanh-request.md` (57 token, gần trùng câu "Five types: …" ở `tdq-conventions/SKILL.md` vì phần lớn là mã) |
+| (3) gộp câu gần trùng, quick | −59 (2 câu) | −86 (2 câu) | **+45,8%** | Cùng lý do: chạy lại bỏ "Done when" của `quick-lane.md` (27) + câu "Samples" (57); câu thứ hai của bản cũ (~32 token) không tái lập được. Phép đo này phụ thuộc phán đoán ranh giới câu → **giữ số cũ −59** trong các bảng trên, đánh dấu "không tái lập chính xác"; ròng quick ≈ 59–86 token, không đổi kết luận |
+| (4) kết hợp, full / quick (gộp) | −10.655 / −1.703 | −10.682 / −1.730 | +0,3% / +1,6% | chênh đúng bằng chênh của (3) |
+| `doc_index.py --kiem` sau mỗi cách | exit 0 | exit 0 | — | mọi cách, cả hai lane |
+| `i18n_check.py` trên bản sao (gốc / 1b / 4) | 133 / 133 / 132 | 133 / 133 / 132 | 0,0% | bản sao lane full; dòng 132 là câu 4-layer có chữ Việt trong `tdq-plan/SKILL.md` bị gộp |
 
 ### T2.3 — hội thoại tích luỹ và cache
 
