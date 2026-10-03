@@ -1,0 +1,78 @@
+{
+  "slug": "2026-10-03-1101-nghien-cuu-nen-context",
+  "plan_file": "docs\\tdq\\plan\\2026-10-03-1101-nghien-cuu-nen-context.md",
+  "plan_sha": "260f3c905a3c63989b125d64b9a10eff70f3de349b789b19b2d74c7a3933eac6",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/research/2026-10-03-1101-nghien-cuu-nen-context.md",
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 4
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 5
+    },
+    "T2.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 6
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 7
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 8
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 9
+    },
+    "QC1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md"
+      ],
+      "dot": 3
+    }
+  }
+}
