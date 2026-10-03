@@ -664,6 +664,131 @@ def rule_r12(doc, out):
         dai = 0
 
 
+# --------------------- R14: a numeric threshold in spec §6 must carry a measurement and a fallback
+
+# The slug the rule landed with. Specs before it are not bound: they were written without the
+# two columns, and back-filling them would touch files outside the request.
+R14_MOC = "2026-10-03-0732"
+R14_SLUG = re.compile(r"\d{4}-\d{2}-\d{2}-\d{4}")
+R14_COT_PASS = "điều kiện pass"  # i18n-allow
+R14_COT_DO = "đo trước"  # i18n-allow
+R14_COT_DU_PHONG = "dự phòng nếu trượt"  # i18n-allow
+R14_SO = r"(?<![\w.,])(\d+(?:[.,]\d+)*)(?![\w.,]*\d)"
+R14_DON_VI = r"(?:MB|GB|KB|%|ms|giây|phút|token|ký tự|dòng|s)(?!\w)"  # i18n-allow
+# A comparator followed by a number. `->` / `=>` are arrows, not "greater than".
+R14_SO_SANH = re.compile(
+    r"(?:≤|≥|<=|>=|<|(?<![-=])>|(?<!\w)(?:tối đa|tối thiểu|không quá|ít nhất)(?!\w))"  # i18n-allow
+    r"\s*~?\s*" + R14_SO, re.IGNORECASE)
+# The words for "above"/"below" are also plain prepositions ("over 103 specs"), so they only
+# count as a comparator when the number carries a unit.
+R14_GIOI_TU = re.compile(r"(?<!\w)(?:trên|dưới)\s*~?\s*" + R14_SO + r"\s*" + R14_DON_VI,  # i18n-allow
+                         re.IGNORECASE)
+R14_SO_DON_VI = re.compile(R14_SO + r"\s*" + R14_DON_VI)
+R14_RONG = {"", "—", "-", "–"}
+
+
+def _r14_nguong(cell):
+    """True when a PASS cell states a numeric threshold, not a presence/absence check.
+
+    A bare 0 or 1 is a presence check (`≥ 1 test`, `0 failure`), never a threshold. Inline code
+    is a quoted example, not the condition itself, so it is dropped before matching.
+    """
+    text = INLINE_CODE.sub(" ", cell)
+    for mau in (R14_SO_SANH, R14_GIOI_TU, R14_SO_DON_VI):
+        for m in mau.finditer(text):
+            if m.group(1) not in ("0", "1"):
+                return True
+    return False
+
+
+def _r14_o(line):
+    """Split a table row into stripped cells; `\\|` is a literal pipe, not a separator."""
+    body = line.strip()
+    if body.startswith("|"):
+        body = body[1:]
+    if body.endswith("|") and not body.endswith("\\|"):
+        body = body[:-1]
+    return [c.strip() for c in re.split(r"(?<!\\)\|", body)]
+
+
+def _r14_cot(header, ten):
+    if header is None:
+        return None
+    for idx, cell in enumerate(header):
+        if ten in cell.lower():
+            return idx
+    return None
+
+
+def r14_loi(text, ten_file):
+    """-> [(line_number, message)] for R14. Pure: no I/O, so tdq_state can call it at approval.
+
+    Scans the `| Qn |` rows of the `## 6.` section. A row whose PASS condition holds a numeric
+    threshold needs a measurement cell with a number in it and a non-empty fallback cell.
+    Only specs whose slug sorts at or after R14_MOC are bound.
+    """
+    ten = os.path.basename(ten_file)
+    if not R14_SLUG.match(ten) or ten[:15] < R14_MOC:
+        return []
+    lines = text.splitlines()
+    loi = []
+    trong_6 = fenced = False
+    header = None
+    for i, line in enumerate(lines):
+        if FENCE.match(line):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        if re.match(r"^##\s", line):
+            trong_6 = bool(re.match(r"^##\s+6\.", line))
+            header = None
+            continue
+        if not trong_6 or not line.strip().startswith("|"):
+            if trong_6 and not line.strip():
+                header = None
+            continue
+        nxt = lines[i + 1] if i + 1 < len(lines) else ""
+        if re.match(r"^\s*\|?\s*:?-{3,}", nxt):
+            header = _r14_o(line)
+            continue
+        cells = _r14_o(line)
+        if not cells or not re.fullmatch(r"Q\d+", cells[0]):
+            continue
+        c_pass = _r14_cot(header, R14_COT_PASS)
+        c_pass = 2 if c_pass is None else c_pass
+        if c_pass >= len(cells) or not _r14_nguong(cells[c_pass]):
+            continue
+        c_do = _r14_cot(header, R14_COT_DO)
+        c_du = _r14_cot(header, R14_COT_DU_PHONG)
+        if c_do is None or c_du is None:
+            loi.append((i + 1, f"{cells[0]} states a numeric threshold but the §6 table lacks "
+                               "the `Đo trước` / `Dự phòng nếu trượt` columns"))  # i18n-allow
+            continue
+        do = cells[c_do] if c_do < len(cells) else ""
+        du = cells[c_du] if c_du < len(cells) else ""
+        if do in R14_RONG or du in R14_RONG:
+            loi.append((i + 1, f"{cells[0]} states a numeric threshold but "
+                               "`Đo trước` or `Dự phòng nếu trượt` is empty"))  # i18n-allow
+        elif not re.search(r"\d", do):
+            loi.append((i + 1, f"{cells[0]}: `Đo trước` holds no number — "  # i18n-allow
+                               "a measurement or a sourced estimate is required"))
+    return loi
+
+
+def rule_r14(doc, out):
+    """A numeric threshold in spec §6 carries a prior measurement and a fallback."""
+    if os.path.basename(os.path.dirname(os.path.abspath(doc.path))) != "spec":
+        return
+    ten = os.path.basename(doc.path)
+    if not R14_SLUG.match(ten) or ten[:15] < R14_MOC:
+        return
+    loi = r14_loi("\n".join(doc.lines), doc.path)
+    _log(f"R14 {ten} → {len(loi)} finding(s)")
+    for so_dong, msg in loi:
+        _report(out, doc, so_dong - 1, "R14", msg)
+
+
 def lint_file(path):
     doc = Doc(path)
     out = []
@@ -674,7 +799,7 @@ def lint_file(path):
     abs_path = os.path.abspath(path)
     is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
     if is_output:
-        for rule in (rule_r8, rule_r10, rule_r11, rule_r12):
+        for rule in (rule_r8, rule_r10, rule_r11, rule_r12, rule_r14):
             rule(doc, out)
     else:
         for rule in RULES:
