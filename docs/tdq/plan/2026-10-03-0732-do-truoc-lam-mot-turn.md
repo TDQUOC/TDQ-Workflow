@@ -56,7 +56,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 ## P2 — Lệch spec và tạm dừng có phân loại
 
-- [>] **T2.1** (e30m) Lệnh `lech`: `add --q Qn --nguong "<…>" --do "<…>" --chon "<phương án>"
+- [x] **T2.1** (e30m) Lệnh `lech`: `add --q Qn --nguong "<…>" --do "<…>" --chon "<phương án>"
   --ly-do "<…>"` · `list [--json]` · `duyet <id> --by "<lời user>"` · `bac <id> --by "<…>"`.
   Lưu `lech_spec: [{id, q, nguong, do, chon, ly_do, trang_thai: cho|duyet|bac, at, by}]`; alias
   tiếng Việt trong `tdq_ten_lenh.py` nếu bảng có khuôn đó — Test: `python -m unittest discover tests -p test_lech_spec.py`
