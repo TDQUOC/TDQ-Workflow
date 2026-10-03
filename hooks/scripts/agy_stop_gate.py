@@ -142,9 +142,9 @@ def unfinished_reason(state, tick):
         return None
     con_ho = tick.get("total", 0)
     return (f"[TDQ:UNFINISHED] The plan still has {con_ho} open task(s) and the phase is still "
-            "implement. Keep going to the end of the plan in this turn: mark [~], do the task, "
-            "mark [x]. Genuinely blocked → run `tdq_state.py pause --ly-do \"<why>\"` and "
-            "tell the user why.")
+            "implement. Keep going to the end of the plan: mark [~], do the task, mark [x]. "
+            "Unmet spec threshold → `lech add`, carry on. Force majeure only → "
+            "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`, tell the user.")
 
 
 def _streak_bump(cwd, sha):

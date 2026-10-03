@@ -81,7 +81,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   ngày; matcher vào `hooks.json` — Test: `python -m unittest discover tests -p test_ask_gate.py`
   - Chạm: `hooks/scripts/ask_gate.py` → file mới; `hooks/scripts/_common.py` → `CODES`; `hooks/hooks.json` → PreToolUse; `tests/test_ask_gate.py` → file mới; `tests/test_subagent_start.py` → số hook/event; `README.md` → bảng hook
   - Cần: T2.2
-- [ ] **T3.2** (e15m) Lời chặn `[TDQ:UNFINISHED]`/`[TDQ:STUCK]` ở `stop_gate.py` và
+- [x] **T3.2** (e15m) Lời chặn `[TDQ:UNFINISHED]`/`[TDQ:STUCK]` ở `stop_gate.py` và
   `agy_stop_gate.py` nêu `pause --loai <…>` và `lech add` — Test: `python -m unittest discover tests -p test_stop_gate.py` và `-p test_agy_hooks.py`
   - Chạm: `hooks/scripts/stop_gate.py` → `unfinished_reason`, `_chan_chua_xong`; `hooks/scripts/agy_stop_gate.py` → lời chặn; `tests/test_stop_gate.py`, `tests/test_agy_hooks.py` → chuỗi kỳ vọng
   - Cần: T2.2
