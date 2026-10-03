@@ -74,7 +74,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 ## P3 — Hook nhắc và lời chặn
 
-- [ ] **T3.1** (e25m) `hooks/scripts/ask_gate.py` (PreToolUse `AskUserQuestion`): phase
+- [x] **T3.1** (e25m) `hooks/scripts/ask_gate.py` (PreToolUse `AskUserQuestion`): phase
   `implement`/`qc` và không có `implement_pause` → `_common.remind(…, "TDQ:ASK", …)` nhắc: ngưỡng
   trượt → `lech add` + làm tiếp; chỉ hỏi khi thuộc 4 loại bất khả kháng thì khai `pause --loai`
   trước. Không bao giờ deny; phase khác → im. Mã `TDQ:ASK` vào `_common.CODES` kèm dòng lý do có
