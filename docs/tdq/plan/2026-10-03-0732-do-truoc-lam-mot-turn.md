@@ -162,20 +162,20 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
 
 Trỏ về §6 của spec. Lệnh dạng `discover` vì `tests/` cố ý không là package.
 
-- [ ] Q1 R14 bắt ngưỡng thiếu đo — `python -m unittest discover tests -p test_doc_lint_r14.py -k bat`
-- [ ] Q2 R14 im khi đủ cột — `… -p test_doc_lint_r14.py -k du_cot`
-- [ ] Q3 R14 không bắt phép tồn tại — `… -p test_doc_lint_r14.py -k ton_tai`
-- [ ] Q4 R14 không hồi tố — `python scripts/doc_lint.py docs/tdq/spec` → 0 dòng `[R14]`
-- [ ] Q5 Độ chính xác trên spec thật — `… -p test_doc_lint_r14.py -k chinh_xac`
-- [ ] Q6 `approve spec` từ chối — `… -p test_approve_do_truoc.py -k tu_choi`
-- [ ] Q7 Lối thoát có lý do — `… -p test_approve_do_truoc.py -k bo_qua`
-- [ ] Q8 Vòng đời lệch — `… -p test_lech_spec.py`
-- [ ] Q9 `pause` phân loại — `… -p test_implement_pause.py`
-- [ ] Q10 Hook nhắc — `… -p test_ask_gate.py`
-- [ ] Q11 Lời chặn Stop — `… -p test_stop_gate.py` + `… -p test_agy_hooks.py`
-- [ ] Q12 Luật dừng — `… -p test_luat_dung.py -k dung`
-- [ ] Q13 QC/report thấy lệch — `… -p test_lech_spec.py -k next` + `… -p test_luat_dung.py -k qc_report`
-- [ ] Q14 Kiến trúc — `grep -n "2026-10-03" docs/kien-truc.md` + `… -p test_common.py`
-- [ ] Q15 Trần token — `python scripts/token_budget.py --kiem`
-- [ ] Q16 Trọn bộ test — `python -m unittest discover tests`
+- [x] Q1 R14 bắt ngưỡng thiếu đo — `python -m unittest discover tests -p test_doc_lint_r14.py -k bat`
+- [x] Q2 R14 im khi đủ cột — `… -p test_doc_lint_r14.py -k du_cot`
+- [x] Q3 R14 không bắt phép tồn tại — `… -p test_doc_lint_r14.py -k ton_tai`
+- [x] Q4 R14 không hồi tố — `python scripts/doc_lint.py docs/tdq/spec` → 0 dòng `[R14]`
+- [x] Q5 Độ chính xác trên spec thật — `… -p test_doc_lint_r14.py -k chinh_xac`
+- [x] Q6 `approve spec` từ chối — `… -p test_approve_do_truoc.py -k tu_choi`
+- [x] Q7 Lối thoát có lý do — `… -p test_approve_do_truoc.py -k bo_qua`
+- [x] Q8 Vòng đời lệch — `… -p test_lech_spec.py`
+- [x] Q9 `pause` phân loại — `… -p test_implement_pause.py`
+- [x] Q10 Hook nhắc — `… -p test_ask_gate.py`
+- [x] Q11 Lời chặn Stop — `… -p test_stop_gate.py` + `… -p test_agy_hooks.py`
+- [x] Q12 Luật dừng — `… -p test_luat_dung.py -k dung`
+- [x] Q13 QC/report thấy lệch — `… -p test_lech_spec.py -k next` + `… -p test_luat_dung.py -k qc_report`
+- [x] Q14 Kiến trúc — `grep -n "2026-10-03" docs/kien-truc.md` + `… -p test_common.py`
+- [x] Q15 Trần token — `python scripts/token_budget.py --kiem`
+- [x] Q16 Trọn bộ test — `python -m unittest discover tests`
 - [ ] Q17 Ba hệ — trọn bộ test trên Windows; macOS/Linux khi máy bật

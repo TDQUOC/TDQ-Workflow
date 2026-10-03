@@ -1,11 +1,11 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-03T10:11:11+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-03T10:36:43+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
 | Request | 2026-10-03-0732-do-truoc-lam-mot-turn |
 | Lane | full |
-| Phase | implement |
+| Phase | qc |
 | Spec | docs/tdq/spec/2026-10-03-0732-do-truoc-lam-mot-turn.md — ✔ approved |
 | Plan | docs/tdq/plan/2026-10-03-0732-do-truoc-lam-mot-turn.md — ✔ approved |
 | Quick approval | (not applicable) |
@@ -15,13 +15,13 @@ Updated: 2026-10-03T10:11:11+07:00 · Project: C:\Users\admin\Documents\Projects
 | Run mode | subagent |
 
 ## Where we are
-plan_approved = true and implement_mode = subagent. Forbidden: Doing a task the map marked as dispatched yourself on main; merging before `check` passes; leaving several tasks marked [~].
+Implementation is finished. Forbidden: Ignoring a failing test; reporting PASS without running it.
 
 ## What comes next
-Assign the WHOLE plan first (step 0), then release wave by wave to sub-agents, merging one wave before releasing the next — the leader only does what cannot be split.
+Run the spec's Definition of Done, record the results, fix what fails.
 ```
-python3 scripts/tdq_state.py set phase=qc
+python3 scripts/tdq_state.py set phase=report
 ```
-Done when: Every task in the plan is ticked [x] and no leftover worktree remains
+Done when: Every QC item of the spec PASSes, with evidence
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.
