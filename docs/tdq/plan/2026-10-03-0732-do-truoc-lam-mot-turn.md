@@ -46,7 +46,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   Test: `python -m unittest discover tests -p test_doc_lint_r14.py -k chinh_xac`
   - Chạm: `scripts/doc_lint.py` → bộ nhận ngưỡng (bỏ miễn trừ inline code); `tests/test_doc_lint_r14.py` → lớp `ChinhXac`
   - Cần: T1.1
-- [>] **T1.3** (e25m) `approve spec` gọi `doc_lint.r14_loi` trên `spec_file`: còn lỗi → in từng
+- [x] **T1.3** (e25m) `approve spec` gọi `doc_lint.r14_loi` trên `spec_file`: còn lỗi → in từng
   hàng thiếu, exit ≠ 0, không ghi duyệt; `--bo-qua-do "<lý do>"` → duyệt, lưu
   `spec_bo_qua_do = {ly_do, at}` vào state — Test: `python -m unittest discover tests -p test_approve_do_truoc.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_approve`, `default_state`; `tests/test_approve_do_truoc.py` → file mới
