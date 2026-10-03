@@ -107,10 +107,10 @@ nên có thể chạy song song trong một lượt, nhưng kết quả vẫn gh
 
 Trỏ về §6 của spec. `R` là `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md`.
 
-- [ ] Q1 Đủ số hướng — `grep -c "^| H[0-9]" R` ≥ 3, và bảng có cột nhóm phủ (a) (b) (c)
-- [ ] Q2 Mỗi hướng có số — `grep "^| H[0-9]" R` không còn ô tiết kiệm trống
-- [ ] Q3 Số bên ngoài đã kiểm chéo — `grep -c "^| N[0-9]" R` bằng số số bên ngoài được dùng làm căn cứ
-- [ ] Q4 Thử nghiệm chạy lại được — mục "Thử nghiệm" của R ghi lệnh cho mỗi số trước/sau
-- [ ] Q5 Workflow không bị sửa — `git diff main -- skills hooks scripts tests agents` rỗng
-- [ ] Q6 Có khuyến nghị — `grep -n "## Thứ tự đề xuất" R`
-- [ ] Q7 Lint — `python scripts/doc_lint.py R docs/tdq/spec/2026-10-03-1101-nghien-cuu-nen-context.md docs/tdq/plan/2026-10-03-1101-nghien-cuu-nen-context.md` thoát 0
+- [x] Q1 Đủ số hướng — `grep -c "^| H[0-9]" R` ≥ 3, và bảng có cột nhóm phủ (a) (b) (c)
+- [x] Q2 Mỗi hướng có số — `grep "^| H[0-9]" R` không còn ô tiết kiệm trống
+- [x] Q3 Số bên ngoài đã kiểm chéo — `grep -c "^| N[0-9]" R` bằng số số bên ngoài được dùng làm căn cứ
+- [x] Q4 Thử nghiệm chạy lại được — mục "Thử nghiệm" của R ghi lệnh cho mỗi số trước/sau
+- [x] Q5 Workflow không bị sửa — `git diff main -- skills hooks scripts tests agents` rỗng
+- [x] Q6 Có khuyến nghị — `grep -n "## Thứ tự đề xuất" R`
+- [x] Q7 Lint — `python scripts/doc_lint.py R docs/tdq/spec/2026-10-03-1101-nghien-cuu-nen-context.md docs/tdq/plan/2026-10-03-1101-nghien-cuu-nen-context.md` thoát 0
