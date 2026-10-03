@@ -70,7 +70,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
 
 ## P3 — Bảng đề xuất và báo cáo
 
-- [>] **T3.1** (e25m) Bảng đề xuất ≥ 3 hướng, mỗi hướng một dòng mã `H<số>`: tiết kiệm (token,
+- [x] **T3.1** (e25m) Bảng đề xuất ≥ 3 hướng, mỗi hướng một dòng mã `H<số>`: tiết kiệm (token,
   giây) · cái giá chất lượng/kiểm soát · công sức · rủi ro · áp cho Codex. Có ít nhất một hướng về
   giảm cổng duyệt, ghi rõ cái giá về kiểm soát (user cho phép đề xuất) — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Bảng đề xuất' in t;import re;h=re.findall(r'^\| H\d+ \|',t,re.M);assert len(h)>=3,len(h)"`
   (≥ 3 dòng `H<số>`, phủ đủ ba nhóm (a) (b) (c))
