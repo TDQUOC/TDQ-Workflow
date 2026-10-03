@@ -3,7 +3,7 @@
 Ngày: 2026-10-03 · Spec: ../spec/2026-10-03-1101-nghien-cuu-nen-context.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: main — đo bằng `tdq_bench.py simulate` trên chính plan này: main thắng 5,2 phút (16,3 so với 21,5), vì 7/8 task cùng ghi một file báo cáo nên đội phải chia 7 đợt tuần tự (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = subagent) · 8 task · ETA 165 phút
+Trạng thái plan: HOÀN THÀNH · mode subagent · 9/9 task (8 + QC1.1) · DoD 7/7 · 8 task · ETA 165 phút
 
 ## Mục lục
 

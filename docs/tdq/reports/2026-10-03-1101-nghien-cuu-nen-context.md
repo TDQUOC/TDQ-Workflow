@@ -624,7 +624,45 @@ Thước đo thành công:
 - **Cửa sổ dữ liệu**: số nội bộ đến từ hai transcript — tdqwf (`b77dddd9-…`, phiên phát triển chính workflow, ít compact: 4 lần/13 ngày) và exc1 (excalidraw, có cài plugin TDQ) — cùng `docs/tdq/timing.jsonl` từ request 09-20 tới 10-03 (11 cửa sổ cho thời gian máy, 9 cửa sổ cho T2.3), mốc dữ liệu 2026-10-03 04:17 UTC. Chỉ một máy Windows 11; chưa đo trên macOS/Linux hay trên Codex.
 - **Số không xác minh được** (N29, N30, N34–N38) bị loại khỏi căn cứ và không được dùng ở bất kỳ đề xuất nào; riêng H5 vì thế không dựa vào số "−50%" bên ngoài mà dựa vào phép đo T2.2.
 - **Test song song** (H6) chưa dùng được: mỗi lần chạy đều có một nhóm đỏ; số tiết kiệm của H6 là suy ra, không phải đo.
-- **Script T2.1 đã xoá** sau khi đo: số của T2.1 có phương pháp viết thành chữ (mục "Cách dựng lại script") nhưng không có mã nguồn đính kèm như T2.3; script chạy lại ba số lớn ở "Số chạy lại" cũng đã xoá. Ai chạy lại phải viết lại theo mô tả, số có thể lệch nhỏ.
+- **Script T2.1**: bản gốc đã xoá sau khi đo; QC1.1 (QC vòng 2) viết lại một script tự chứa và đính kèm trong mục T2.1 — khớp chính xác mốc gốc và phép (1), (1b), (2); phép (3) gộp câu gần trùng không tái hiện chính xác (lệch +4,9% full, +45,8% quick vì ranh giới câu). Script chạy lại ba số lớn ở "Số chạy lại" vẫn chỉ có mô tả phương pháp, không đính kèm mã.
 - **Khoảng, không phải điểm**: H1, H2, H5, H7 cho khoảng theo giả định (R cao/thấp, N = 2–3, 30–80% số lượt); cận thấp của giây máy (cùng cỡ output) đáng tin hơn. Độ trễ theo cỡ context là trung vị theo bucket, không hồi quy.
 - **Thời gian model không tách sạch khỏi thời gian tool** ở mọi request: thời gian model là khe event không kết thúc ở tool_result, mốc phase dựng lại xấp xỉ, và còn 3.933 s "không rõ" không gán được cho model hay tool.
 - T2.3 là phản thực trên số đo cũ, giả định phần tăng sau mốc không đổi; exc1 không đo lại ở T2.3.
+
+## Sổ request
+
+**Đã làm:** tìm hiểu bên ngoài (4 góc) + đo nội bộ trên transcript thật · kiểm chéo 38 số bên
+ngoài · chạy lại độc lập 3 số nội bộ lớn nhất · 3 thử nghiệm trên bản sao tạm (nén file luật, thời
+gian test, hội thoại/cache) · bảng 11 hướng H1–H11 · thứ tự đề xuất và request tiếp theo.
+
+**Kiểm:** QC `full` **7/7 PASS ở vòng 2** — vòng 1 trượt Q4 (số T2.1 không chạy lại được), sửa bằng
+QC1.1 (viết lại script trong báo cáo, khớp chính xác 5/7 phép đo, lệch có lý do ở 2). Workflow không
+bị sửa: `git diff main -- skills hooks scripts tests agents` 0 dòng. QC:
+`docs/tdq/qc/2026-10-03-1101-nghien-cuu-nen-context.md`.
+
+**Đầu ra:** báo cáo này · `docs/tdq/research/2026-10-03-1101-nghien-cuu-nen-context.md` (bên ngoài,
+có dấu kiểm chéo) · `docs/tdq/research/2026-10-03-1101-do-noi-bo.md` (đo nội bộ). Không sửa gì
+ngoài repo; mọi thư mục tạm đã xoá.
+
+**Git:** nhánh `docs/nghien-cuu-nen-context`, 39 commit trên `main`, chưa merge. Gồm commit làm việc
+của 8 trợ lý (mỗi nhánh con gộp vào nhánh request) và **18 commit sổ sách để mở khoá merge** —
+`tdq_team.py` từ chối kiểm/gộp khi bản đồ giao việc cũ hơn plan: `fcf4aaa`, `e6e4c9a`, `6672cbb`,
+`2a605da`, `198dcdb`, `d884a06`, `cbf3ca5`, `ea9f878`, `11a7204`, `71b8919`, `141d8aa`, `2e01722`,
+`aea9281`, `b2b3aa1`, `79fedc2`, `0f061a5`, `e3dfe20`, `4eea58f`.
+
+### Thời gian
+
+| Phase | Wall clock | Model time | Times entered |
+|---|---|---|---|
+| idle | 0s | — | 1 |
+| analyze | 16 min | — | 1 |
+| spec | 8 min | — | 1 |
+| plan | 6 min | — | 1 |
+| implement | 1h | — | 1 |
+| qc | 8 min | — | 1 |
+| report | 0s | — | 1 |
+| **Total** | **1h 39min** | **—** | |
+
+Nguyên văn từ `tdq_timing.py show`. Cột `Model time` là `—` vì công cụ không đọc được transcript
+của phiên Windows này (nợ đã khai từ request trước). Mode `subagent` ở đây chạy 9 đợt tuần tự —
+đúng như phép đo lúc đề xuất (làm trực tiếp nhanh hơn 5,2 phút, vì mọi task cùng ghi file này).
