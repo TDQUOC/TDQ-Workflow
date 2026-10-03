@@ -52,7 +52,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
   và sau bằng tokenizer thật — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.1' in t"` (bảng trước/sau có lệnh chạy lại; thư mục tạm đã xoá)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thử nghiệm"
   - Cần: T1.2
-- [ ] **T2.2** (e30m) Nhóm (b) thời gian test: trên một bản sao repo ở `%TEMP%`, đo thời gian trọn
+- [>] **T2.2** (e30m) Nhóm (b) thời gian test: trên một bản sao repo ở `%TEMP%`, đo thời gian trọn
   bộ test so với chạy riêng các module vùng chạm của một request mẫu (request 0732), và đo phần
   10 module chậm nhất của trọn bộ — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.2' in t"`
   (bảng giây có lệnh chạy lại; repo thật không đổi — `git status` sạch phần mã)

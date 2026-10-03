@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-1101-nghien-cuu-nen-context",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-1101-nghien-cuu-nen-context.md",
-  "plan_sha": "c06b13650e99db71d87c1e2c12600a4ac6f4af2aeca808899f9e0fdd68d9a096",
+  "plan_sha": "661fde83ac029fe006f03854b491e43ac253f08fb9dacab2fb017892c64ab898",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",
