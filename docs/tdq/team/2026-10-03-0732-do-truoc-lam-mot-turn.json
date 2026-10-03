@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-0732-do-truoc-lam-mot-turn",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-0732-do-truoc-lam-mot-turn.md",
-  "plan_sha": "aaab812ffd504dc7cccae804eb2dda99dad932448f8dd824dc9f60f5c89ef1e9",
+  "plan_sha": "f9d382e8399f0853e3a2dcbbcd0d5779738cdbadac8c6fe7ebc904cb8b5ca2d9",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",

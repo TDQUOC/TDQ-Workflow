@@ -66,7 +66,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   "ngưỡng trượt → dùng `lech add`, không dừng"; state lưu `loai` — Test: `python -m unittest discover tests -p test_implement_pause.py`
   - Chạm: `scripts/tdq_state.py` → `_cli_implement_pause`; `tests/test_implement_pause.py` → các ca gọi `pause`
   - Cần: T2.1
-- [ ] **T2.3** (e20m) `next` ở phase `qc` và `report` in mọi lệch `cho` (Qn, ngưỡng, đo, phương án)
+- [>] **T2.3** (e20m) `next` ở phase `qc` và `report` in mọi lệch `cho` (Qn, ngưỡng, đo, phương án)
   và câu hỏi duyệt; checklist report thêm dòng "hỏi user duyệt từng lệch; bác → task fix, quay lại
   implement" — Test: `python -m unittest discover tests -p test_lech_spec.py -k next`
   - Chạm: `scripts/tdq_state.py` → `PHASE_TABLE["report"]`, `render_next`; `tests/test_lech_spec.py` → lớp `NextHienLech`
