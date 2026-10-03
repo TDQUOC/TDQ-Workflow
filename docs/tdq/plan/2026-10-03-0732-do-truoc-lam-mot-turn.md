@@ -136,7 +136,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   - Kiểm: `python -m unittest discover tests`
   - Không dùng cho: săn lỗi đúng-sai — đó là T5.3
   - Cần: T5.3
-- [~] **T5.5** (e10m) CHANGELOG 0.56.0, bump hai `plugin.json`; macOS/Linux nếu máy bật —
+- [x] **T5.5** (e10m) CHANGELOG 0.56.0, bump hai `plugin.json`; macOS/Linux nếu máy bật —
   Test: `python -m unittest discover tests -p test_build_portable.py` xanh
   - Chạm: `CHANGELOG.md`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`
   - Cần: T5.4

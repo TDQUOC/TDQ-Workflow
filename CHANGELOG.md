@@ -2,6 +2,28 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.56.0 — 2026-10-03
+
+Đo ngưỡng ở spec, không dừng giữa implement vì ngưỡng. Ca gốc: một phiên excalidraw dừng giữa
+plan để hỏi nâng ngưỡng installer 200 → 250 MB. Riêng bộ cài WebView2 offline đã 212 MB, và một
+lần đọc trang tải ở lúc viết spec là bắt được. Báo cáo:
+`docs/tdq/reports/2026-10-03-0732-do-truoc-lam-mot-turn.md`.
+
+- **Đo trước ở spec (luật R14 của `doc_lint`).** Mỗi ngưỡng số ở §6 của spec mới phải có cột
+  `Đo trước` (số đo thật, hoặc ước lượng có nguồn) và cột `Dự phòng nếu trượt`. Thử trên spec
+  cũ: nhận đúng 10/10 hàng có ngưỡng, 0/10 hàng phép tồn tại. Spec cũ không bị áp hồi tố; tên cột
+  tiếng Anh cũng được nhận.
+- **`approve spec` từ chối khi R14 đỏ.** Lối thoát duy nhất là `--bo-qua-do "<lý do>"` của user,
+  ghi vào state.
+- **Lệch spec thay cho câu hỏi giữa chừng.** Ngưỡng trượt lúc implement/qc → áp cột dự phòng,
+  ghi bằng `tdq_state.py lech add`, làm tiếp. QC ghi "PASS (lệch, chờ duyệt)". `next` ở qc/report
+  liệt kê lệch chờ duyệt, và report hỏi duyệt từng cái (`lech duyet`/`lech bac`).
+- **`pause` chỉ nhận 4 loại bất khả kháng** (`--loai`): mất truy cập/công cụ hỏng · việc phá huỷ
+  khó đảo ngược · đầu vào chỉ user có · QC chạm trần 3 vòng. "Đổi phạm vi spec" không còn là lý
+  do dừng.
+- **Hook `ask_gate.py` (`TDQ:ASK`).** Nó nhắc khi agent hỏi user bằng popup ở implement/qc —
+  đường dừng mà cổng Stop không thấy. Chỉ nhắc, không chặn, không trả quyết định quyền.
+
 ## 0.55.0 — 2026-10-03
 
 Luật tìm kiếm 4 tầng giờ được **cưỡng chế**, không chỉ được nhắc. Soi một phiên thật trên
@@ -461,38 +483,9 @@ hệ 7 % lẫn 100 % — nó kiểm sự tồn tại, không kiểm hiệu quả
 - **`pyrightconfig.json`** (mới) — chính file mốc mà repo này đang thiếu, đưa độ phủ truy vấn
   quan hệ từ 1/15 file lên 15/15.
 
-## 0.38.0 — 2026-09-02
-
-Năm luật rời `~/.claude/CLAUDE.md` về plugin, instruction toàn cục cắt 57 → **29 dòng (−49%)**.
-Thứ tự bắt buộc: viết luật vào `skills/` trước, kiểm, rồi mới cắt. Phương án gốc:
-`docs/tdq/report/2026-09-01-2301-quet-instruction-vao-plugin.md`.
-
-- **`skills/tdq-conventions/`** — `approval.md` nhận luật "không tự vào plan mode" (dưới bảng
-  "NOT an approval", cùng họ); `SKILL.md` §7 Git nhận luật init git/worktree và ngoại lệ tự
-  commit khi build TDQ bị chặn, đặt sát dòng nó là ngoại lệ; §8 Research nhận luật mem0.
-- **`scripts/doc_lint.py`** — trần R6 của `tdq-conventions` 165 → 168, đổi lấy 28 dòng bỏ khỏi
-  file nạp mỗi lượt của mọi project.
-- **`docs/tdq/audit/luat-hien-co.md`** — 10 neo lệch do phần chèn trên được trỏ lại đúng chỗ.
-
-## 0.37.0 — 2026-09-01
-
-Lane nhanh có bước phân tích HIỆN TÊN, và độ sâu của bước đó có ngưỡng rõ ràng. Trước bản này
-`phase_key` nuốt mọi pha của lane nhanh về hàng `quick`, nên phân tích không nhìn thấy được ở
-đâu cả. Quan trọng: đây là phương án KHÔNG thêm cổng duyệt — lane nhanh vẫn đúng một cổng.
-
-- **`scripts/tdq_state.py`** — thêm hàng `quick_analyze` vào `PHASE_TABLE` và `PHASE_ORDER`;
-  `phase_key` trả hàng đó khi `lane=quick`, `phase=analyze` và chưa duyệt. `CONG_THEO_LANE`
-  và `APPROVE_TARGETS` giữ NGUYÊN — có test khoá riêng canh điều này. Thêm khoá `brief_file`
-  để đăng ký đường dẫn brief, ngang hàng `spec_file`/`plan_file`.
-- **`skills/tdq-intake`** — `quick-lane.md` từ 9 lên 10 bước, chèn bước ghi kết quả phân tích
-  vào brief; thêm mục ngưỡng B0/B1/B2: B1 đọc code LUÔN LUÔN (LSP + lumen song song), B0 chỉ
-  khi vùng chưa có tiền lệ, B2 chỉ khi có ẩn số ngoài. Bỏ B0 hay B2 phải ghi một dòng lý do
-  vào `## Phạm vi` của mini-plan — bỏ im lặng là lỗi QC.
-- Ngưỡng lấy từ số đo thật trên 43 request đã đóng sổ. Pha `analyze` trung vị 372 s model,
-  một request lane nhanh trọn gói 533 s. Bắt cả ba bước không điều kiện làm lane nhanh chậm
-  thêm ~70 %. Chi tiết: `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`.
-
 ## Lịch sử cũ hơn
 
-Bản 0.36.0 trở xuống nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì file
-chỉ-thêm này vượt trần 500 dòng của `doc_lint` R6. Chữ nghĩa giữ nguyên, không xoá dòng nào.
+Bản 0.38.0 và 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
+0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6. Bản 0.36.0 trở xuống nằm ở
+`docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
+xoá dòng nào.
