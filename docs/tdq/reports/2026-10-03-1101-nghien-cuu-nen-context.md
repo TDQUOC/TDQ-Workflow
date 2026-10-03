@@ -149,3 +149,50 @@ Song song: nhanh hơn 49–68% treo tường nhưng **chưa dùng được**: l�
 | N = 2, trọn bộ 353,9 s | 2.619 s | 708 + 132 = 840 s | 1.779 s (67,9%) |
 
 → **Tiết kiệm ≈ 1.240–1.780 s mỗi request (≈ 21–30 phút), tức 55–68% thời gian chạy trọn bộ.** Quy ra thời gian máy: phần trọn bộ ≥ 200 s đang chiếm 26,1% máy, sau đổi còn ≈ 8–12% → giảm ≈ 14–18 điểm % thời gian máy. Rủi ro đổi lại: lỗi ở module ngoài vùng chạm chỉ lộ ở cổng phase (muộn hơn), nên cần cổng trọn bộ thật sự bắt buộc; và vùng chạm phải lấy đúng từ dòng `Chạm:` của plan (với 0732, `Chạm:` đã nêu đủ 10 module test).
+
+### T2.1 — nén file luật
+
+Chạy ngày 2026-10-03 trên bản sao `skills/` (commit `71b8919`, nhánh `docs/nghien-cuu-nen-context`) ở `%TEMP%\tdq-thu-nghiem\t21`; mỗi cách nén chạy trên một bản sao riêng `work\<cách>-<lane>\skills`. Tokenizer thật: `.venv-tokens` + `anthropic_tokenizer.count_tokens`. `skills/` `hooks/` `scripts/` `tests/` `agents/` của repo thật không bị sửa (`git status --porcelain` rỗng); `scripts/doc_index.py` và `scripts/i18n_check.py` của repo chỉ được **gọi** trên bản sao. Thư mục `%TEMP%\tdq-thu-nghiem\t21` (bản sao + script) **đã xoá** sau khi đo.
+
+Tập bắt buộc đọc: đúng danh sách 23 file (full) / 9 file (quick) của spec; SKILL.md chỉ tính thân (bỏ frontmatter `\A---\n.*?\n---\n`), CRLF → LF, đếm từng file rồi cộng. Đếm lại gốc ra 50.893 / 18.631, lệch 5 và 2 token so với số mốc 50.898 / 18.633 (< 0,01%, do cách cắt frontmatter).
+
+| # | Cách nén (trên bản sao) | Full trước → sau | Quick trước → sau | Lệnh chạy lại (trong `%TEMP%\tdq-thu-nghiem\t21`) |
+|---|---|---|---|---|
+| 0 | Gốc | 50.893 | 18.631 | `python exp.py base --repo=<repo>` |
+| 1 | Bỏ chú thích HTML **không phải** marker | 50.893 → 50.893 (**0**) | 18.631 → 18.631 (**0**) | `python exp.py e1 --repo=<repo>` |
+| 1b | Giữ mọi marker, chỉ cắt phần lý do sau `i18n-allow:` → `<!-- i18n-allow -->` | → 49.877 (−1.016 · −2,0%) | → 18.271 (−360 · −1,9%) | `python exp.py e1b --repo=<repo>` |
+| 2 | Dời khối mẫu/ví dụ sang file em `<tên>-mau.md`, để lại 1 dòng trỏ | → 41.626 (−9.267 · −18,2%) gộp | → 17.295 (−1.336 · −7,2%) gộp | `python exp.py e2 --repo=<repo> -v` |
+| 3 | Gộp câu gần trùng (Jaccard 4-gram ký tự ≥ 0,9, câu ≥ 8 từ) — giữ lần đầu theo thứ tự đọc | → 50.337 (−556 · −1,1%) | → 18.572 (−59 · −0,3%) | `python exp.py e3 --repo=<repo> -v` |
+| 4 | Kết hợp 1 + 1b + 2 + 3 | → 40.238 (−10.655 · −20,9%) gộp | → 16.928 (−1.703 · −9,1%) gộp | `python exp.py all --repo=<repo> -v` |
+
+Mọi dòng: sau khi sửa, `doc_index.py` của repo được chạy lại trên các file có chỉ mục dòng của bản sao (cách 2/3 làm lệch 9 file full, 1 file quick) rồi `doc_index.py --kiem` → exit 0; số "sau" đã gồm chỉ mục mới. `i18n_check.py` trên bản sao: 133 dòng báo ở gốc = 133 ở 1b (marker rút gọn vẫn có hiệu lực), 132 ở cách 4.
+
+**"Gộp" ≠ "bớt thật".** Cột trên là token rời tập bắt buộc đọc. Phần thật sự không vào context mỗi request (ròng) sau khi trừ khối mẫu vẫn phải đọc vì việc của lane luôn cần nó:
+
+| # | Full ròng/request | Quick ròng/request | Rủi ro chất lượng |
+|---|---|---|---|
+| 1 | 0 | 0 | — Không có chú thích nào "chỉ để người đọc": toàn bộ 3.419 token chú thích của tập full (6,7%) và 1.233 của quick (6,6%) là marker có công cụ đọc → **không đụng được**: `muc-luc-dong` 15 khối = 1.217 (quick 5 = 530, `doc_index.py`), `i18n-allow` 154 = 2.094 (quick 49 = 703, `i18n_check.py` — luật gắn khối mẫu bằng chú thích ngay trên fence), `luat-gon` 44 (`hooks/scripts/luat_gon.py` cắt khối luật gọn), `luat-mode-allow` 46 (`tests/test_luat_mode.py`), `doc-lint: allow` 18 (`doc_lint.py`). |
+| 1b | **1.016** (luôn được) | **360** | Thấp. `i18n_check.py` chỉ tìm chữ `i18n-allow` trong dòng; mất lý do viết cho người sửa file (vì sao dòng đó phải giữ tiếng Việt). Sau 1b còn 2.403 (full) / 873 (quick) token marker thật sự không bớt được. |
+| 2 | ≈ **0 – 1.400**; thường ≈ 500 | **−178** (lỗ) | Chia 3 hạng khối dời (số token khối kèm marker, con trỏ ~25–33 token/khối): **A — ví dụ RIGHT/WRONG, không bao giờ chép** (`rules/chung.md` 3 khối 133+130+131, `rules/python.md` 125 = 519; ròng 413): bớt thật, rủi ro agent không mở ví dụ khi phân vân. **B — chỉ dùng theo trường hợp**: `mode-gate.md` khối 3 phương án 551 / 2 phương án 503 (chỉ một khối được in; chỉ bớt được nếu mỗi khối một file em hoặc đọc theo dòng — gộp chung một file em thì đọc lại cả hai), `team-mode.md` khuôn prompt giao task 495 (cần mỗi lần mode subagent — 5/6 request full gần nhất là subagent), `interview.md` 3 khối 378 (cần khi có vòng hỏi). **C — chép mỗi request của lane** (full 7.348: `plan-template` 3.103, `spec-template` 2.454, `report-template` 449, `lane-decision` 70+431, `skill-inventory` 256, `analyze-full` hỏi mức QC 224, `qc.md` 169+192; quick 1.514: `quick-lane` 283+269+328, `lane-decision` 70+431, `quick-lane-qc` 133): file em **vẫn bị đọc** đúng lúc viết spec/plan/QC/report/khối hỏi → không bớt gì, thêm 1 lượt Read + con trỏ (full −253, quick −178). Tạp: khuôn QC trong `qc.md` lồng fence nên bị cắt làm 2 phần, 1 dòng ≈ 20 token còn lại file gốc. |
+| 3 | ≈ **280** an toàn (gộp 556) | ≈ **59** | 12 câu trùng (full; 520 token khác file), 2 câu (quick). Không gộp được 274 token: câu "4-layer search order is a MANDATORY rule… Read sections 1 and 2…" lặp **cố ý** ở 4 SKILL.md + `analyze-full.md` (mỗi skill nạp riêng, luật ép từ request 10-03-0015). Còn lại gộp được: `Done when:` / `Next step:` chép từ SKILL.md sang `qc.md`, `report-template.md`, `analyze-full.md`, `quick-lane.md` (marker R3 của `doc_lint.py` chỉ bắt buộc trong SKILL.md, bản gốc vẫn còn), câu "This is the whole of Part C…" (`report-template.md` ≈ `qc.md`). Câu "Write the simplest, most direct code…" trùng giữa `tdq-build/SKILL.md` và `chung.md`: phải xoá ở SKILL.md, **không** ở `chung.md` (nằm trong khối `luat-gon` mà hook bơm cho subagent). |
+| 4 | ≈ **1.300 – 2.700**; thường ≈ 1.800 (3,5%) | ≈ **240** (1,3%) | Cộng rủi ro của 1b + 2 + 3. Tính ròng: 10.655 − khối C 7.227 − khối B được dùng (mode-gate 494–542 [hoặc cả 1.036 nếu một file em], team 0/483, interview 0/353) − câu trùng cố ý 274. Chưa trừ phí ~9–11 lượt Read thêm (vài chục token/lượt + một lượt gọi nếu không đọc song song) → ròng thực có thể thấp hơn ≈ 0,4k. Quick: 1.703 − khối C 1.462 = 241, gần như chỉ còn 1b. |
+
+**Quy ra context.** Tập bắt buộc đọc vào context **một lần** mỗi request, rồi nằm lại trong **mọi** lượt gọi API sau đó (đa phần là cache_read) tới khi compact; compact hiếm (4 lần/13 ngày, Bản đồ chi phí). Lượt API mỗi request full: 135–604 (trung vị 378, đo nội bộ §3.2; excalidraw 1.126), quick 17. File luật đọc dần theo phase (intake đầu request, build/QC/report về sau) → giả định mỗi token còn được chở qua 30–80% số lượt của request: **≈ 40–480 lượt**, điển hình ≈ 190 (50% × 378).
+
+| Cách | Token đọc bớt/request (full) | Token chở bớt/request (full, × 40–480 lượt) | Điển hình (× 190) | So với context một request full (378 × 491k ≈ 186M) |
+|---|---|---|---|---|
+| 1b | 1.016 | 41k – 488k | ≈ 193k | ≈ 0,1% |
+| 2 ròng | 0 – 1.400 | 0 – 672k | ≈ 95k (500) | ≈ 0,05% |
+| 3 ròng | ≈ 280 | 11k – 134k | ≈ 53k | ≈ 0,03% |
+| 4 ròng | 1.300 – 2.700 | 52k – 1,3M | ≈ 342k (1.800) | ≈ 0,2% |
+| 4 gộp (cận trên lý thuyết, nếu không file em nào phải đọc lại) | 10.655 | 426k – 5,1M | ≈ 2,0M | ≈ 1,1% |
+
+Quick: ròng ≈ 240 token đọc × ~10 lượt ≈ 2,4k token chở — không đáng kể.
+
+→ **Kết luận T2.1:** nén file luật bằng ba cách này chỉ bớt thật **≈ 1,3–2,7k token đọc/full request (2,6–5,3% tập bắt buộc đọc)**, tức ≈ 0,2% context một request; con số "−20,9%" chỉ là token rời tập bắt buộc đọc, ba phần tư trong đó (khuôn spec/plan/QC/report, khối hỏi) bị đọc lại ngay khi việc cần. Chú thích HTML không phải mỏ: 100% là marker công cụ. Phần chắc ăn và rẻ nhất là 1b (−1.016 / −360, không đổi hành vi, công cụ vẫn xanh) và nhóm A (ví dụ RIGHT/WRONG, −413). So với hội thoại tích luỹ (~491k/lượt, Bản đồ #1), file luật là nguồn nhỏ — nén nó không thay được việc compact/cắt hội thoại.
+
+Cách dựng lại script (đã xoá, viết lại theo mô tả; `<repo>` = gốc worktree, `$py` = `.venv-tokens/Scripts/python.exe`, `PYTHONIOENCODING=utf-8`):
+- Chuẩn bị: `New-Item -ItemType Directory -Force $env:TEMP\tdq-thu-nghiem\t21; Copy-Item -Recurse <repo>\skills $env:TEMP\tdq-thu-nghiem\t21\skills`.
+- `lane.py`: hai danh sách FULL/QUICK ở trên; `body()` = đọc UTF-8, CRLF → LF, cắt frontmatter của SKILL.md; tổng = Σ `count_tokens(body)`.
+- `exp.py <mode>`: chép `skills` sang `work\<mode>-<lane>\skills`, áp bước, chạy `<repo>\scripts\doc_index.py <các file có muc-luc-dong>` rồi `--kiem`, đếm lại bằng `lane.py`. Bước 1: xoá `<!--.*?-->` không khớp `^<!--\s*(muc-luc-dong:|i18n-allow|doc-lint: allow|luat-gon:|luat-mode-allow)`. Bước 1b: `re.sub(r"<!--\s*i18n-allow:[^>]*?-->", "<!-- i18n-allow -->")`. Bước 2: fence ` ``` `/`~~~` ≥ 40 token khớp danh sách 22 dòng đầu (file + dòng đầu khối) của bảng hạng A/B/C trên, mang theo dòng `<!-- i18n-allow… -->` ngay trên fence, thay bằng `→ [<tên>-mau.md](<tên>-mau.md) §k (Read it when needed).`. Bước 3: ghép dòng thành đoạn (ngắt ở dòng trống, mục danh sách, heading, bảng, fence, chú thích khối), tách câu ở `[.!?]` trước khoảng trắng, chuẩn hoá (bỏ chú thích, dấu markdown, chữ thường), so với mọi câu đã gặp trong lane: trùng hash hoặc Jaccard 4-gram ký tự ≥ 0,9 → xoá lần sau.
+- Kiểm marker: `$py <repo>\scripts\i18n_check.py work\e1b-full\skills | Select -Last 1` (so với `… skills`).
