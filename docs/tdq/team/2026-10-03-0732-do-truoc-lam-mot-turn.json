@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-0732-do-truoc-lam-mot-turn",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-0732-do-truoc-lam-mot-turn.md",
-  "plan_sha": "ed050c530cf6130fa02543a87ded8fcd59952aa2fcca4979edd407f62dafba37",
+  "plan_sha": "aa969818901b1fe7d259ff2f35987687e89c20a4ae85633601f385ef07646a41",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",
@@ -16,6 +16,7 @@
       "quyet_dinh": "giao",
       "ly_do": "",
       "vung_file": [
+        "scripts/doc_lint.py",
         "tests/test_doc_lint_r14.py"
       ],
       "dot": 2
