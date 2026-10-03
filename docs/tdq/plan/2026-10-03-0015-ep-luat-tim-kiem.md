@@ -3,7 +3,7 @@
 Ngày: 2026-10-03 · Spec: ../spec/2026-10-03-0015-ep-luat-tim-kiem.md (bản 1.1, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — đo bằng `tdq_bench.py simulate` trên chính plan này: đội thắng 20,3 phút (32,6 so với 52,9), 26 task chia 4 đợt, giao được 10 task, leader giữ 16 vì ba file nóng (`search_gate.py`, `tdq_setup.py`, `tdq_lsp.py`). Request trước user chốt `main` dù đo ra đội thắng (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: CHỜ DUYỆT · 26 task · ETA 575 phút
+Trạng thái plan: HOÀN THÀNH · 35 task (26 + 9 fix QC vòng 1), 33 tick — T3.3 và T8.4 bị chặn ngoài tầm (Codex chưa đăng nhập; macOS/Linux tắt) · ETA 575 phút
 
 ## Mục lục
 
