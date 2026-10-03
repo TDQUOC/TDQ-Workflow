@@ -98,3 +98,54 @@ Lý do lệch > 5% và điều cần sửa trong cách đọc số:
 - Full suite +6,0%: toàn bộ chênh nằm ở request 09-21 (18 lần chạy lại so với 16); bảy request còn lại khớp tới giây. Hai lần thừa là hai lần chạy suite **song song** với một lần chạy khác (09-21 04:20 UTC 547 s và 04:39 UTC 539 s); bỏ hai lần chồng thời gian đó còn 59 lần · ≈ 18.091 s (lệch 0,0%). Đo nội bộ không ghi luật gộp lần chạy chồng nhau, nên bản chạy lại để nguyên.
 - Số "31%" ở dòng 3 bảng tóm tắt đo nội bộ ghép sai cặp: 18.085 s / 69.300 s = **26,1%**, không phải 30,9%; 30,9–31% là tỉ lệ **test rộng** (21.454 s). Bản đồ trên dùng 26% cho full suite ≥ 200 s và 31% cho mọi lần chạy test.
 - Khi chạy lại phải tính prompt người dạng danh sách khối `text` (không chỉ chuỗi) là "chờ user"; nếu không, một khe 16.809 s ở request 10-03-0015 rơi vào "không rõ" thay vì "chờ" (số máy không đổi).
+
+## Thử nghiệm
+
+### T2.2 — thời gian test
+
+Chạy ngày 2026-10-03 trên bản sao `git clone --local` của repo (commit `ea9f878`, nhánh `docs/nghien-cuu-nen-context`) ở `%TEMP%\tdq-thu-nghiem\t22`; Python 3.13.15, Windows 11, 24 luồng CPU. Mọi lệnh chạy từ gốc bản sao trong **Git Bash**. Repo thật và worktree không chạy test nào; sau khi đo, `git status` của bản sao vẫn sạch, không thêm nhánh hay worktree. Thư mục `%TEMP%\tdq-thu-nghiem` (bản sao + script đo tạm) đã xoá sau khi đo. Đây chỉ là phép đo; request này không đổi workflow.
+
+| # | Phép đo | Kết quả | Lệnh chạy lại (gốc bản sao, Git Bash) |
+|---|---|---|---|
+| a | Trọn bộ test, một tiến trình | **353,9 s** treo tường · 2.425 test · OK (skipped=29) | `time python -m unittest discover tests` |
+| a′ | Như (a) nhưng gọi từ PowerShell | 322,7 s · **26 fail + 1 error** (test_bench 3, test_team_mode 9, test_team_chong_conflict, test_gitflow_doi, test_timing): `'true' is not recognized` — test gọi lệnh `true`, chỉ có trong PATH của Git Bash | `Measure-Command { python -m unittest discover tests }` |
+| b | Từng module riêng (126 module, mỗi module một tiến trình) | tổng 355,7 s (≈ (a): phí khởi động mỗi tiến trình không đáng kể); trung vị 0,43 s/module; 10 module chậm nhất = 245,0 s = **68,9%** | `for f in tests/test_*.py; do m=$(basename $f); TIMEFORMAT="$m %R"; time python -m unittest discover tests -p $m 2>/dev/null; done 2>&1 \| sort -k2 -nr \| head -10` |
+| c | Vùng chạm của request 0732 (10 module, một tiến trình) | **24,4 s** · 266 test · OK = **6,9%** của (a) (tổng đo riêng từng module: 22,9 s) | `time python -c "import sys,unittest;l=unittest.TestLoader();s=unittest.TestSuite([l.discover('tests',pattern=p) for p in sys.argv[1:]]);sys.exit(not unittest.TextTestRunner().run(s).wasSuccessful())" test_doc_lint_r14.py test_approve_do_truoc.py test_lech_spec.py test_implement_pause.py test_ask_gate.py test_subagent_start.py test_stop_gate.py test_agy_hooks.py test_luat_dung.py test_build_portable.py` |
+| d1 | Song song 4 tiến trình (chia module theo thời gian đo ở (b), tham lam: module chậm nhất vào nhóm nhẹ nhất → 4 nhóm ≈ 88,9 s) | lần 1: **149,6 s**, 1 nhóm FAILED (errors=2); lần 2: **180,8 s**, 1 nhóm FAILED (`test_bench.ThucDoTest.test_repo_that_khong_moc_nhanh_hay_worktree_nao`) | như (c), mỗi nhóm một tiến trình chạy cùng lúc; danh sách nhóm sinh từ kết quả (b) |
+| d2 | Song song 8 tiến trình (cùng cách chia; nhóm test_bench một mình 72,8 s) | **111,9 s**, 1 nhóm FAILED (errors=4) | như (d1) với 8 nhóm |
+
+Danh sách module vùng chạm ở (c) = mọi file test nêu ở dòng `Test:` và `Chạm:` của `docs/tdq/plan/2026-10-03-0732-do-truoc-lam-mot-turn.md`: `test_doc_lint_r14` 0,35 s · `test_approve_do_truoc` 3,62 · `test_lech_spec` 2,26 · `test_implement_pause` 0,90 · `test_ask_gate` 0,81 · `test_subagent_start` 0,71 · `test_stop_gate` 9,48 · `test_agy_hooks` 2,12 · `test_luat_dung` 0,09 · `test_build_portable` 2,51.
+
+10 module chậm nhất của trọn bộ (đo riêng, lệnh (b)):
+
+| # | Module | Test | Giây | % tổng 355,7 s |
+|---|---|---|---|---|
+| 1 | `test_bench.py` | 46 | 72,8 | 20,5% |
+| 2 | `test_team_mode.py` | 152 | 43,5 | 12,2% |
+| 3 | `test_codex_cli.py` | 32 | 33,6 | 9,4% |
+| 4 | `test_claude_export.py` | 64 | 22,7 | 6,4% |
+| 5 | `test_tdq_finish.py` | 17 | 21,2 | 5,9% |
+| 6 | `test_team_chong_conflict.py` | 25 | 20,0 | 5,6% |
+| 7 | `test_tu_khoi_tao.py` | 34 | 11,3 | 3,2% |
+| 8 | `test_stop_gate.py` | 104 | 9,5 | 2,7% |
+| 9 | `test_timing.py` | 30 | 5,4 | 1,5% |
+| 10 | `test_gitflow_doi.py` | 4 | 5,1 | 1,4% |
+| | **Cộng** | 508 | **245,0** | **68,9%** |
+
+Sáu module đầu (git worktree/nhánh thật, subprocess) chiếm 60,0%; 116 module còn lại cộng 110,7 s.
+
+Song song: nhanh hơn 49–68% treo tường nhưng **chưa dùng được**: lần chạy nào cũng có một nhóm đỏ, mỗi lần một test khác — các test git/worktree dùng chung trạng thái repo (vd. test_bench kiểm "repo thật không mọc nhánh hay worktree nào" trong khi nhóm khác đang tạo). Hai lần 4 tiến trình lệch nhau 21% (149,6 vs 180,8 s), và 4 nhóm cân 88,9 s vẫn mất ≥ 150 s → tranh chấp tài nguyên (git/đĩa), không chỉ chia việc. Muốn song song phải cô lập trạng thái repo cho từng tiến trình trước.
+
+**Tiết kiệm ước tính nếu chạy vùng chạm ở bước trung gian, giữ trọn bộ ở cổng phase.** Giả định:
+- Hiện tại 7,4 lần trọn bộ/request (Bản đồ chi phí, 59 lần / 8 request). Sau đổi: **N = 2–3** lần trọn bộ ở cổng (vd. cuối implement + sau sửa QC [+ trước merge]), 7,4 − N lần còn lại thay bằng chạy vùng chạm.
+- Một lần chạy vùng chạm ≤ 24,4 s (số (c) là hợp của mọi task trong request; một bước trung gian thường chỉ chạm 1–3 module, trung vị 0,43 s/module → đây là cận trên).
+- Giá một lần trọn bộ: 307 s (TB lịch sử, đo nội bộ) đến 353,9 s (đo hôm nay).
+
+| Kịch bản | Trước (7,4 × trọn bộ) | Sau (N × trọn bộ + (7,4 − N) × 24,4 s) | Tiết kiệm/request |
+|---|---|---|---|
+| N = 3, trọn bộ 307 s | 2.272 s | 921 + 107 = 1.028 s | 1.244 s (54,7%) |
+| N = 3, trọn bộ 353,9 s | 2.619 s | 1.062 + 107 = 1.169 s | 1.450 s (55,4%) |
+| N = 2, trọn bộ 307 s | 2.272 s | 614 + 132 = 746 s | 1.526 s (67,2%) |
+| N = 2, trọn bộ 353,9 s | 2.619 s | 708 + 132 = 840 s | 1.779 s (67,9%) |
+
+→ **Tiết kiệm ≈ 1.240–1.780 s mỗi request (≈ 21–30 phút), tức 55–68% thời gian chạy trọn bộ.** Quy ra thời gian máy: phần trọn bộ ≥ 200 s đang chiếm 26,1% máy, sau đổi còn ≈ 8–12% → giảm ≈ 14–18 điểm % thời gian máy. Rủi ro đổi lại: lỗi ở module ngoài vùng chạm chỉ lộ ở cổng phase (muộn hơn), nên cần cổng trọn bộ thật sự bắt buộc; và vùng chạm phải lấy đúng từ dòng `Chạm:` của plan (với 0732, `Chạm:` đã nêu đủ 10 module test).
