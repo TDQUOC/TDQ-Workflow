@@ -95,7 +95,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "deep mode] [--lang <code>] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent|codex] "
-         "[--by \"<user sentence>\"] | "
+         "[--by \"<user sentence>\"] [--bo-qua-do \"<user's reason>\"] | "
          "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
          "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
          "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
@@ -227,6 +227,10 @@ def default_state():
         # trace left after the hard gate was dropped, must be checkable against
         # the transcript
         "spec_approved_by": None,
+        # The user approved the spec past the R14 gate (doc_lint: a numeric threshold in §6
+        # without a prior measurement / fallback). None = no bypass. Shape when set:
+        # {"ly_do": "<user's reason>", "at": "<iso>", "so_loi": <number of R14 findings>}.
+        "spec_bo_qua_do": None,
         "plan_file": None,
         "plan_approved": False,
         "plan_sha256": None,
@@ -1753,12 +1757,15 @@ def _unfinished(state):
 
 
 def _parse_approve_args(rest):
-    """-> (target, mode, by). Fails only on genuinely wrong syntax."""
+    """-> (target, mode, by, bo_qua_do). Fails only on genuinely wrong syntax.
+
+    bo_qua_do is the user's reason for approving past the R14 gate (None when absent);
+    an empty or blank reason is refused — a bypass must say why."""
     if not rest:
         _fail("Missing approval target (spec|plan|quick).")
     if rest[0] == "diagram":
         _fail(LOI_SO_DO_DA_GO)
-    target, mode, by = rest[0], None, None
+    target, mode, by, bo_qua_do = rest[0], None, None, None
     # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
     if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
         target = "quick"
@@ -1775,11 +1782,15 @@ def _parse_approve_args(rest):
             _fail("Flag --no-qc was removed on 2026-09-23 — the QC level is a state key now: "
                   "run `python3 scripts/tdq_state.py set muc_qc=off` instead "
                   "(levels: lite|full|ultra|off).")
-        if flag in ("--mode", "--by"):
+        if flag in ("--mode", "--by", "--bo-qua-do"):
             if i + 1 >= len(rest):
                 _fail(f"Missing value for {flag}")
             value = rest[i + 1]
-            if flag == "--mode":
+            if flag == "--bo-qua-do":
+                if not value.strip():
+                    _fail("--bo-qua-do needs the user's reason — an empty reason is refused.")
+                bo_qua_do = value.strip()[:BY_MAX]
+            elif flag == "--mode":
                 # Through normalize_mode: the labels shown at gate mode ("inline",
                 # "sub-agent implement") must land as the machine identifier.
                 mode = normalize_mode(value)
@@ -1796,7 +1807,7 @@ def _parse_approve_args(rest):
             i += 1
             continue
         _fail(f"Invalid argument: {flag}")
-    return target, mode, by
+    return target, mode, by, bo_qua_do
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -1816,10 +1827,65 @@ def _file_changed_since_approval(cwd, state, target):
         return False
 
 
+def _r14_findings(cwd, rel):
+    """-> [(line, msg)] from doc_lint R14 on the spec file; [] whenever the check cannot run.
+
+    Fail open: an unreadable file, a missing/broken doc_lint or a crash inside it only warns —
+    a broken linter must never block an approval. doc_lint is imported here, not at module
+    top, so every other command keeps working even when doc_lint does not import."""
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    try:
+        with open(path, encoding="utf-8-sig") as f:
+            text = f.read()
+    except (OSError, UnicodeDecodeError):
+        return []  # the sha256 step already warns about an unreadable spec_file
+    try:
+        import doc_lint
+        return list(doc_lint.r14_loi(text, os.path.basename(path)))
+    except Exception as exc:  # noqa: BLE001 — fail open on purpose
+        _warn(f"R14 check skipped — doc_lint failed ({type(exc).__name__}); approving without it.")
+        return []
+
+
+def _r14_gate(cwd, state, target, bo_qua_do):
+    """The one measured gate of `approve`: spec, lane full, spec_file set and readable.
+
+    -> None to go on recording; on a refusal it prints every finding and exits 1 without
+    touching state. With bo_qua_do (the user's reason) it records the bypass instead."""
+    if target != "spec":
+        return
+    # A fresh spec approval drops any bypass left by an earlier version of the spec.
+    state["spec_bo_qua_do"] = None
+    if effective_lane(state) != "full" or not state.get("spec_file"):
+        return
+    rel = state["spec_file"]
+    loi = _r14_findings(cwd, rel)
+    if not loi:
+        return
+    if bo_qua_do:
+        state["spec_bo_qua_do"] = {"ly_do": bo_qua_do, "at": now_iso(), "so_loi": len(loi)}
+        _warn(f"R14: {len(loi)} threshold row(s) in {rel} lack a prior measurement or a "
+              "fallback — approved anyway via --bo-qua-do (reason recorded in spec_bo_qua_do).")
+        return
+    for line, msg in loi:
+        print(f"{rel}:{line}: [R14] {msg}", file=sys.stderr)
+    print("Measure each threshold (Đo trước) and pick a fallback (Dự phòng nếu trượt), "  # i18n-allow
+          "or the user may pass --bo-qua-do \"<reason>\".", file=sys.stderr)
+    _warn(f"approve spec refused by R14: {len(loi)} finding(s) in {rel} — spec_approved unchanged.")
+    sys.exit(1)
+
+
 def _cli_approve(cwd, rest):
-    """Record that the user approved. Not a gate: it warns on a mismatch but
-    STILL writes and always exits 0 — deadlock-by-gate is what 0.2.0 removed."""
-    target, mode, by = _parse_approve_args(rest)
+    """Record that the user approved. Mostly not a gate: it warns on a mismatch but
+    STILL writes and exits 0 — deadlock-by-gate is what 0.2.0 removed.
+
+    The single exception is a measured gate on new specs: `approve spec` (lane full) refuses
+    while doc_lint R14 finds a numeric DoD threshold without `Đo trước` / `Dự phòng nếu trượt`.
+    This does not bring the 0.2.0 deadlock back: R14 is silent on specs older than its cutoff
+    slug, it fails open when the check cannot run, and the user always holds an escape —
+    `--bo-qua-do "<reason>"` approves anyway and records the reason in spec_bo_qua_do.
+    An already approved, unchanged spec is not re-checked."""  # i18n-allow
+    target, mode, by, bo_qua_do = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("No state yet — building the default state then recording the approval. Run init first.")
@@ -1859,6 +1925,8 @@ def _cli_approve(cwd, rest):
                 state[f"{target}_sha256"] = sha256_noi_dung(path)
             except OSError:
                 _warn(f"Cannot read {rel} — skipping the sha256.")
+
+    _r14_gate(cwd, state, target, bo_qua_do)
 
     state[f"{target}_approved"] = True
     state[f"{target}_approved_at"] = now_iso()
