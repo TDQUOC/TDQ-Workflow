@@ -171,5 +171,99 @@ class TestLog(_CoState):
         self.assertEqual(err, "")
 
 
+def _muc(i, q, trang_thai="cho"):
+    return {"id": i, "q": q, "nguong": f"limit {i}", "do": f"measured {i}",
+            "chon": f"option {i}", "ly_do": "why", "trang_thai": trang_thai,
+            "at": "2026-10-03T08:00:00+07:00", "by": "claude"}
+
+
+class NextHienLech(unittest.TestCase):
+    """Chọn bằng `-k next`: `next` ở qc/report hiện mọi lệch còn chờ duyệt."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _state(self, phase, lech):
+        write_state(self.cwd, active_request="2026-10-03-0732-demo", lane="full",
+                    phase=phase, lech_spec=lech)
+        return read_state(self.cwd)
+
+    def _hai_cho(self):
+        return [_muc(1, "Q3"), _muc(2, "Q5", "duyet"), _muc(3, "Q7")]
+
+    def test_next_report_liet_ke_dung_muc_cho(self):
+        state = self._state("report", self._hai_cho())
+        out = tdq_state.render_next(self.cwd, state)
+        self.assertIn("Pending spec deviations (2)", out)
+        self.assertIn("#1 Q3", out)
+        self.assertIn("#3 Q7", out)
+        self.assertNotIn("#2 Q5", out)
+        self.assertIn("measured 1", out)
+        self.assertIn("option 3", out)
+        self.assertIn("lech duyet", out)
+        self.assertIn("lech bac", out)
+        self.assertLessEqual(len(out.splitlines()), 20, out)
+
+    def test_next_cli_report(self):
+        self._state("report", self._hai_cho())
+        rc, out, err = run_state_cli(self.cwd, "next")
+        self.assertEqual(rc, 0, err)
+        self.assertIn("Pending spec deviations (2)", out)
+        self.assertIn("#1 Q3", out)
+
+    def test_next_qc_cung_hien(self):
+        state = self._state("qc", self._hai_cho())
+        out = tdq_state.render_next(self.cwd, state)
+        self.assertIn("Pending spec deviations (2)", out)
+        self.assertIn("#3 Q7", out)
+
+    def test_next_brief_chi_dem_va_lenh(self):
+        state = self._state("report", self._hai_cho())
+        out = tdq_state.render_next(self.cwd, state, brief=True)
+        self.assertEqual(len(out.strip().splitlines()), 1, out)
+        self.assertIn("2 pending spec deviation", out)
+        self.assertIn("lech list", out)
+        self.assertNotIn("#1 Q3", out)
+
+    def test_next_compact_chi_dem_va_lenh(self):
+        state = self._state("qc", self._hai_cho())
+        out = tdq_state.render_next(self.cwd, state, compact=True)
+        self.assertIn("2 pending spec deviation", out)
+        self.assertIn("lech list", out)
+        self.assertNotIn("#1 Q3", out)
+
+    def test_next_nhieu_lech_van_trong_tran_20_dong(self):
+        state = self._state("report", [_muc(i, f"Q{i}") for i in range(1, 12)])
+        out = tdq_state.render_next(self.cwd, state)
+        self.assertLessEqual(len(out.splitlines()), 20, out)
+        self.assertIn("Pending spec deviations (11)", out)
+        self.assertIn("lech list", out)
+
+    def test_next_khong_lech_khong_hien(self):
+        for lech in ([], [_muc(1, "Q3", "duyet"), _muc(2, "Q4", "bac")]):
+            state = self._state("report", lech)
+            for kw in ({}, {"brief": True}, {"compact": True}):
+                out = tdq_state.render_next(self.cwd, state, **kw)
+                self.assertNotIn("Pending spec deviations (", out, (lech, kw))
+                self.assertNotIn("pending spec deviation(s)", out, (lech, kw))
+                self.assertNotIn("#1 Q3", out, (lech, kw))
+
+    def test_next_phase_implement_khong_hien(self):
+        state = self._state("implement", self._hai_cho())
+        for kw in ({}, {"brief": True}, {"compact": True}):
+            out = tdq_state.render_next(self.cwd, state, **kw)
+            self.assertNotIn("Pending spec deviation", out, kw)
+            self.assertNotIn("pending spec deviation", out, kw)
+
+    def test_next_checklist_report_hoi_duyet_tung_lech(self):
+        items = " ".join(tdq_state.PHASE_TABLE["report"]["checklist"])
+        self.assertIn("lech list", items)
+        self.assertIn("phase=implement", items)
+
+
 if __name__ == "__main__":
     unittest.main()

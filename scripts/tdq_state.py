@@ -1154,6 +1154,7 @@ PHASE_TABLE = {
             "Run every QC item of the spec, write the evidence into docs/tdq/qc/<slug>.md",
             "FAIL → add a fix task to the plan (no re-approval needed) and carry on",
             "Repeat until every item PASSes",
+            "Missed a threshold but recorded `lech add` → write it 'PASS (lệch, chờ duyệt)', not FAIL",  # i18n-allow: canonical QC label
         ],
         "done_when": "Every QC item of the spec PASSes, with evidence",
         "forbidden": "Ignoring a failing test; reporting PASS without running it",
@@ -1166,6 +1167,8 @@ PHASE_TABLE = {
             "Write docs/tdq/reports/<slug>.md briefly (10-20 lines recommended): "
             "what was done, the QC result, what is still limited",
             "Append to the working log docs/workinglog/<today>.md",
+            "Spec deviations still waiting (`tdq_state.py lech list`): ask the user to approve or reject "
+            "each one; rejected → add a fix task to the plan and `set phase=implement`",
             "Ask the user: commit or not?",
         ],
         "done_when": "The report is written and the user has been asked about committing",
@@ -1547,6 +1550,28 @@ def next_headline(cwd, state):
             f"· phase {phase_key(state)} · Project: {duong_hien_thi(cwd)}")
 
 
+LECH_PHASES = ("qc", "report")   # phases where `next` surfaces pending spec deviations
+LECH_SHOW_MAX = 3                # items listed in full; the rest → `lech list` (20-line cap)
+
+
+def _cut(value, limit=60):
+    text = " ".join(str(value if value is not None else "").split())
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
+def _lech_block(pending):
+    """Lines for `next` (full mode): every pending deviation + the approval question."""
+    out = [f"Pending spec deviations ({len(pending)}) — ask the user to approve or reject each:"]
+    for m in pending[:LECH_SHOW_MAX]:
+        out.append(f"  #{m.get('id')} {_cut(m.get('q'), 8)}: {_cut(m.get('nguong'))} "
+                   f"→ measured {_cut(m.get('do'))} · applied: {_cut(m.get('chon'))}")
+    if len(pending) > LECH_SHOW_MAX:
+        out.append(f"  … +{len(pending) - LECH_SHOW_MAX} more: python3 scripts/tdq_state.py lech list")
+    out.append('  Decide: python3 scripts/tdq_state.py lech duyet|lech bac <id> --by "<user words>"'
+               " · rejected → fix task + set phase=implement")
+    return out
+
+
 def render_next(cwd, state, brief=False, compact=False):
     """The 5-part block (spec §2.2), at most 20 lines.
 
@@ -1559,8 +1584,11 @@ def render_next(cwd, state, brief=False, compact=False):
         effective_lane(state)          # warns (with recovery hints) on a bad enum
         effective_phase(state)
     head = next_headline(cwd, state)
+    pending = lech_cho(state) if phase_key(state) in LECH_PHASES else []
+    short = (f"{len(pending)} pending spec deviation(s) → "
+             "python3 scripts/tdq_state.py lech list") if pending else ""
     if brief:
-        return head
+        return f"{head} · {short}" if short else head
     row = phase_row(state)
     lines = [head, f"Lean level: {muc_gat_hieu_luc(state)}",
              f"QC level: {muc_qc_hieu_luc(state)}",
@@ -1571,6 +1599,10 @@ def render_next(cwd, state, brief=False, compact=False):
         lines.append("Checklist (copy into your answer, tick as you go):")
         lines += [f"- [ ] {item}" for item in row["checklist"]]
     lines.append(f"Done when: {row['done_when']}")
+    if pending and compact:
+        lines.append(short)
+    elif pending:
+        lines += _lech_block(pending)
     # Stays RELATIVE here on purpose: callers cap this text (SessionStart: 600 characters), and
     # absolute paths added before the cap get the block cut short. Each caller rewrites paths
     # with `lenh_cho_project` AFTER its own cap — the CLI `next` and `session_start.py` do.
