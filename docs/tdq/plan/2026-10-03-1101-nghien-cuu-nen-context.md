@@ -76,14 +76,14 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
   (≥ 3 dòng `H<số>`, phủ đủ ba nhóm (a) (b) (c))
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Bảng đề xuất"
   - Cần: T2.1, T2.2, T2.3
-- [>] **T3.2** (e15m) Thứ tự nên làm và request tiếp theo nên mở, có lý do; phần tóm tắt đầu báo
+- [x] **T3.2** (e15m) Thứ tự nên làm và request tiếp theo nên mở, có lý do; phần tóm tắt đầu báo
   cáo và mục giới hạn — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thứ tự đề xuất' in t;assert 'request' in t.lower()"` (nêu một request tiếp theo)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thứ tự đề xuất"
   - Cần: T3.1
 
 ## P4 — Kiểm chốt
 
-- [ ] **T4.1** (e5m) Workflow không bị sửa và tài liệu qua lint — Test:
+- [x] **T4.1** (e5m) Workflow không bị sửa và tài liệu qua lint — Test:
   `git diff main -- skills hooks scripts tests agents` rỗng và
   `python scripts/doc_lint.py docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` thoát 0
   - Cần: T3.2
