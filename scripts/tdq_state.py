@@ -96,7 +96,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent|codex] "
          "[--by \"<user sentence>\"] | "
-         "pause --ly-do \"<why>\" | resume | "
+         "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
          "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
          "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
          "reset | phases-doc | modes [--json]")
@@ -1140,7 +1140,7 @@ PHASE_TABLE = {
             "All tasks done → run the command above",
         ],
         "done_when": "Every task in the plan is ticked [x]",
-        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --ly-do \"<why>\"`, whose reason is shown to the user",
+        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --loai <kind> --ly-do \"<why>\"` (kinds: mat-truy-cap · pha-huy · dau-vao-user · tran-qc), whose reason is shown to the user; an unreachable spec threshold → `lech add`, not a pause",
     },
     "qc": {
         "entry": "Implementation is finished",
@@ -1961,12 +1961,34 @@ def _echo_state(cmd, state, want_json):
           f"lane={state.get('lane')} phase={state.get('phase')}")
 
 
+# The only kinds of stop that may end a turn while `implement` has open tasks
+# (spec 2026-10-03-0732 §2 row 5). Kind → one-line meaning; hooks may import it.
+LOAI_DUNG = {
+    "mat-truy-cap": "lost access/network/permission, or a broken tool or machine, "
+                    "with no workaround the agent may pick",
+    "pha-huy": "destructive or hard-to-undo work beyond a commit (data deletion, "
+               "DB schema, public API contract, push/publish)",
+    "dau-vao-user": "an input only the user holds (secret, account, payment, "
+                    "adding/dropping a spec §2 output)",
+    "tran-qc": "the QC fix loop hit its 3-round cap",
+}
+LECH_KHONG_DUNG = ("An unreachable spec threshold is not a stop: record it with "
+                   "`lech add` and carry on.")
+
+
+def _loai_dung_help():
+    """The refusal text: the 4 legal kinds, one line each, then the `lech add` pointer."""
+    lines = [f"  {k} — {v}" for k, v in LOAI_DUNG.items()]
+    return "\n".join(["Allowed --loai kinds:"] + lines + [LECH_KHONG_DUNG])
+
+
 def _cli_implement_pause(cwd, cmd, rest):
-    """`pause --ly-do "<why>"` declares the pause, `resume` clears it.
+    """`pause --loai <kind> --ly-do "<why>"` declares the pause, `resume` clears it.
 
     A declared pause is the only legal way to end a turn while the plan still
-    has open tasks, so the reason is mandatory: an undeclared stop is exactly
-    the silent exit the Stop gate exists to refuse.
+    has open tasks, so both the kind (one of LOAI_DUNG) and the reason are
+    mandatory: an undeclared stop is exactly the silent exit the Stop gate
+    exists to refuse, and a missed spec threshold goes to `lech add` instead.
     """
     rest, want_json = _pop_json_flag(list(rest))
     state = load(cwd)
@@ -1983,18 +2005,33 @@ def _cli_implement_pause(cwd, cmd, rest):
         _echo_state("resume", state, want_json)
         return
 
-    reason = ""
-    if len(rest) >= 2 and rest[0] == "--ly-do":
-        reason = " ".join(rest[1:]).strip()
+    usage = 'pause --loai <kind> --ly-do "<why the run stopped>"'
+    flags = {}
+    i = 0
+    while i < len(rest):
+        flag = rest[i]
+        if flag not in ("--loai", "--ly-do"):
+            _fail(f"pause: unexpected argument {flag!r}. Use: {usage}.\n{_loai_dung_help()}")
+        if i + 1 >= len(rest):
+            _fail(f"pause: missing a value after {flag}. Use: {usage}.\n{_loai_dung_help()}")
+        flags[flag] = rest[i + 1].strip()
+        i += 2
+    kind = flags.get("--loai", "")
+    reason = flags.get("--ly-do", "")
+    if not kind:
+        _fail(f"pause needs a kind: {usage}.\n{_loai_dung_help()}")
+    if kind not in LOAI_DUNG:
+        _fail(f"pause: {kind!r} is not a legal stop kind.\n{_loai_dung_help()}")
     if not reason:
-        _fail('pause needs a reason: pause --ly-do "<why the run stopped>".')
+        _fail(f"pause needs a reason: {usage}.")
     state["implement_pause"] = {
+        "loai": kind,
         "ly_do": reason[:400],
         "at": now_iso(),
         "by": "claude",
     }
     save(cwd, state, expect_updated_at=stamp)
-    _info(f"implement pause declared: {reason[:120]}")
+    _info(f"implement pause declared [{kind}]: {reason[:120]}")
     _echo_state("pause", state, want_json)
 
 
