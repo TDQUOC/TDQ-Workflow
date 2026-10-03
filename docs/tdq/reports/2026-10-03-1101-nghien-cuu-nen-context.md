@@ -2,6 +2,18 @@
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
+## Tóm tắt
+
+Phát hiện chính: file luật chỉ là phần nhỏ của chi phí; tiền nằm ở **hội thoại tích luỹ** bị đọc lại mọi lượt (~90% context mỗi lượt, TB 491k token/lượt) và ở **các lần chạy trọn bộ test** (59 lần, 26,1% thời gian máy).
+- (a) Hội thoại/cache: tách/compact ở mọi mốc phase bớt 94M – 108M token/request (62–71%), chỉ tách ở đầu request bớt 63M – 76M (42–50%); giây máy bớt nhỏ (110 – 424 s/request).
+- (b) Test: chạy vùng chạm ở bước trung gian, trọn bộ chỉ ở 2–3 cổng → ≈ 1.240 – 1.780 s máy/request (55–68% thời gian trọn bộ).
+- (c) File luật và hook: nén luật bớt thật ≈ 1,3k – 2,7k token đọc/full request (≈ 0,2% context một request); hook resume ≈ 42k token/phiên exc1; `edited_text_file` cận trên ≈ 204k/phiên.
+- Nên làm trước: H5 (test vùng chạm), H2 (phiên mới mỗi request); sau khi đo lại: H1 (compact ở mọi phase).
+- Không đáng làm: H4 (trợ lý đọc nặng giao lẻ — lỗ tiền và giờ máy), H7 như một request riêng (≈ 0,2% context); H3 chỉ đáng một câu luật (≈ $3,7 một lần).
+- H10/H11 (giảm cổng duyệt) bớt ≈ 0 s máy và đổi bằng kiểm soát của user — để user quyết, xem "Thứ tự đề xuất".
+- Sửa số: "31%" của đo nội bộ là test rộng; full suite ≥ 200 s là 18.085 / 69.300 s = **26,1%** máy (mục "Số chạy lại").
+- 38 số bên ngoài đã kiểm: 28 khớp, 3 lệch nhỏ, 7 không xác minh được và không được dùng.
+
 ## Kiểm chéo số bên ngoài
 
 Phạm vi: mọi con số bên ngoài trong `docs/tdq/research/2026-10-03-1101-nghien-cuu-nen-context.md` có thể làm căn cứ đề xuất. Mỗi nguồn sơ cấp được mở lại ngày 2026-10-03 (WebFetch; với arXiv HTML, raw GitHub và blog thì tải thêm bằng curl rồi grep đúng câu). Số "không xác minh được" bị **loại khỏi căn cứ** đề xuất. Mã N<số> được ghi cạnh số tương ứng trong file nghiên cứu.
@@ -414,3 +426,51 @@ Mỗi hướng một dòng; mọi số lấy từ các mục trên của báo c�
 **H10 — gộp duyệt spec + plan (giảm cổng).** Workflow đổi: agent viết spec rồi plan liền một mạch và trình một lần; user duyệt một lần trước implement. Cái giá về kiểm soát là thật: user mất điểm dừng để chỉnh "làm gì" trước khi agent tốn công "làm thế nào", và một khối duyệt lớn hơn dễ bị duyệt lướt — trong khi implement chiếm 60,5% máy (đo nội bộ §3.3), nên sai hướng lọt qua cổng là đắt nhất. Về thời gian máy: **không bớt** — việc viết spec và plan vẫn phải làm; khi spec bị bác, phần plan đã viết là máy bỏ đi, tức có thể **tăng** máy. Thứ nó bớt là thời gian chờ (user đã loại khỏi mục tiêu) và, gián tiếp, những lần ghi cache lạnh khi user vắng > 1 h ở cổng đó (21/24 lần ghi lạnh là sau user vắng > 1 h, TB ≈ 0,53M token mỗi lần, T2.3 (iii)); nếu H1 đã làm thì lợi này co còn cỡ R. Có thể sai: số cổng spec rơi vào khe > 1 h chưa đo nên lợi có thể ≈ 0. Đo trước khi quyết: với mỗi lượt ghi lạnh ≥ 50k, xác định phase và lệnh AskUserQuestion/approve ngay trước nó (mở rộng phân loại T2.3 (iii)); sau khi đổi: số lần spec/plan bị bác hoặc viết lại.
 
 **H11 — QC sạch thì tự đi tới report (giảm cổng).** Workflow đổi: khi QC không còn phát hiện nào cần sửa, agent viết report luôn thay vì dừng hỏi; cổng duyệt merge/đóng request vẫn giữ. Cái giá về kiểm soát: user không còn xem QC trước report; QC do agent chấm có thể "sạch" sai, khi đó lỗi tới tận cổng merge — chốt chặn cuối là duy nhất. Về thời gian máy: ≈ 0 (qc 3.779 s và report 5.547 s máy trên 11 cửa sổ vẫn phải chạy); phần lớn thời gian ở qc/report là chờ (171.316 s và 83.566 s, đo nội bộ §3.3), ngoài mục tiêu, và một phần trong đó là chờ qua đêm chứ không phải chờ cổng. Lợi cache gián tiếp như H10, số lần chưa đo. Đo sau: cùng phân loại lượt ghi lạnh theo phase như H10, cộng số lỗi bị phát hiện sau report (ở cổng merge hoặc request sau) so với trước khi đổi.
+
+## Thứ tự đề xuất
+
+Xếp theo giá trị / rủi ro / công sức, với soul chất lượng > runtime > context cost. Số ở mỗi dòng lấy từ "Bảng đề xuất".
+
+**Làm trước**
+1. H5 — test vùng chạm ở bước trung gian, trọn bộ ở 2–3 cổng: mỏ thời gian máy lớn nhất đo được (≈ 1.240 – 1.780 s/request), công sức nhỏ – vừa, chất lượng giữ nhờ cổng trọn bộ bắt buộc (H5).
+2. H2 — phiên mới ở đầu mỗi request: 63M – 76M token/request (42–50%), công sức nhỏ, gần như không mất gì vì spec/plan/report đã là bàn giao (H2).
+3. H3 — đổi model ngay sau mốc reset/compact: chỉ một câu luật, giá trị thấp (≈ 0,92M token input tương đương một lần) nên gộp vào request khác, không mở riêng (H3).
+
+**Làm sau khi đo lại**
+4. H1 — compact ở mọi mốc phase: thêm ≈ 20 điểm % so với H2 nhưng rủi ro chất lượng cao nhất (bàn giao thiếu, quên đọc lại luật — N9); chỉ làm sau khi đo lại context/request trên các request đã có H2 (H1).
+5. H6 — trọn bộ song song: nhanh hơn 49–68% treo tường nhưng cả ba lần đều có nhóm đỏ; phải cô lập trạng thái git/worktree rồi chạy ≥ 3 lần liền 0 nhóm đỏ trước (H6).
+6. H9 — tránh `edited_text_file`: 204k token/phiên chỉ là cận trên; tách phần ròng tránh được trước khi đổi sổ sách team (H9).
+7. H8 — SessionStart resume gọn: ≈ 42k token/phiên exc1, nhỏ; đo thêm trên phiên dự án người dùng khác trước khi đụng hook (H8).
+
+**Để user quyết (giảm cổng duyệt)** — đây là lựa chọn, không phải khuyến nghị:
+- H10 — gộp duyệt spec + plan: ≈ 0 s máy (có thể tăng máy khi spec bị bác); đổi bằng mất điểm dừng giữa "làm gì" và "làm thế nào". Lợi gián tiếp ≈ 1,0M token input tương đương mỗi lần chờ > 1 h được bỏ, số lần chưa đo (H10).
+- H11 — QC sạch thì tự viết report: ≈ 0 s máy; đổi bằng việc user không xem QC trước report, cổng merge là chốt chặn duy nhất (H11).
+- Nếu muốn có số trước khi quyết: phân loại các lượt ghi lạnh ≥ 50k theo phase và cổng ngay trước nó (mở rộng T2.3 (iii)).
+
+**Không nên làm**
+- H4 — trợ lý đọc nặng giao lẻ: chi phí ròng −0,2M … +0,03M token/request và thêm 164 – 1.209 s chờ để bớt 18 – 93 s model (H4).
+- H7 như một request riêng: ≈ 0,2% context một request, nhỏ hơn H1/H2 hơn hai bậc; riêng 1b (rút gọn marker `i18n-allow`, −1.016 token) có thể đi kèm khi request khác đã sửa các file đó (H7).
+
+### Request tiếp theo nên mở: `test-vung-cham-buoc-trung-gian`
+
+Lý do chọn H5 thay vì H2: soul đặt runtime trên context cost, H5 là mỏ thời gian máy lớn nhất đo được, và cách đo trước/sau đã có sẵn; H2 nhỏ tới mức có thể đi kèm như một câu luật nếu user muốn.
+
+Phạm vi:
+- Gỡ mâu thuẫn luật chạy test giữa `tdq-build/SKILL.md` ("EXACTLY ONCE"), `plan-template.md` ("sau mỗi phase chạy toàn bộ") và vòng sửa ở `qc.md`: bước trung gian chạy module test của dòng `Chạm:`, trọn bộ chỉ ở 2–3 cổng phase cố định.
+- Cổng trọn bộ chạy trong Git Bash (hoặc sửa các test gọi `true`) để không còn 27 test đỏ giả khi gọi từ PowerShell (T2.2 (a′)).
+- Không đổi cổng duyệt của user.
+
+Thước đo thành công:
+- Số lần lệnh test ≥ 200 s mỗi request giảm từ 7,4 xuống 2–3, và giây "test rộng" mỗi request giảm theo (phương pháp đo nội bộ §3, cùng regex như mục "Số chạy lại").
+- Chất lượng không giảm: đếm số lỗi mà cổng trọn bộ bắt được còn vùng chạm bỏ sót, và số vòng sửa QC mỗi request so với 8 request trước.
+- Script đo của báo cáo này làm thước trước/sau: mã T2.3 in đủ ở trên; lệnh T2.2 (a), (c) chạy lại được; phép đo thời gian máy ở "Số chạy lại" có mô tả phương pháp đủ để viết lại.
+
+## Giới hạn
+
+- **Cửa sổ dữ liệu**: số nội bộ đến từ hai transcript — tdqwf (`b77dddd9-…`, phiên phát triển chính workflow, ít compact: 4 lần/13 ngày) và exc1 (excalidraw, có cài plugin TDQ) — cùng `docs/tdq/timing.jsonl` từ request 09-20 tới 10-03 (11 cửa sổ cho thời gian máy, 9 cửa sổ cho T2.3), mốc dữ liệu 2026-10-03 04:17 UTC. Chỉ một máy Windows 11; chưa đo trên macOS/Linux hay trên Codex.
+- **Số không xác minh được** (N29, N30, N34–N38) bị loại khỏi căn cứ và không được dùng ở bất kỳ đề xuất nào; riêng H5 vì thế không dựa vào số "−50%" bên ngoài mà dựa vào phép đo T2.2.
+- **Test song song** (H6) chưa dùng được: mỗi lần chạy đều có một nhóm đỏ; số tiết kiệm của H6 là suy ra, không phải đo.
+- **Script T2.1 đã xoá** sau khi đo: số của T2.1 có phương pháp viết thành chữ (mục "Cách dựng lại script") nhưng không có mã nguồn đính kèm như T2.3; script chạy lại ba số lớn ở "Số chạy lại" cũng đã xoá. Ai chạy lại phải viết lại theo mô tả, số có thể lệch nhỏ.
+- **Khoảng, không phải điểm**: H1, H2, H5, H7 cho khoảng theo giả định (R cao/thấp, N = 2–3, 30–80% số lượt); cận thấp của giây máy (cùng cỡ output) đáng tin hơn. Độ trễ theo cỡ context là trung vị theo bucket, không hồi quy.
+- **Thời gian model không tách sạch khỏi thời gian tool** ở mọi request: thời gian model là khe event không kết thúc ở tool_result, mốc phase dựng lại xấp xỉ, và còn 3.933 s "không rõ" không gán được cho model hay tool.
+- T2.3 là phản thực trên số đo cũ, giả định phần tăng sau mốc không đổi; exc1 không đo lại ở T2.3.
