@@ -37,7 +37,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
   giá đọc cache 0,05×, hai bài arXiv 2605.10039 và 2606.10209, trần phía Codex (32 KiB, 8.000 ký
   tự) — Test: `python -c "import re;t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();r=re.findall(r'^\| N\d+ \|.*\| *(\S[^|]*?) *\|$',t,re.M);assert len(r)>=3,len(r)"` (bảng kiểm chéo có ≥ 3 dòng `N<số>`, ô cuối là kết luận không trống)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Kiểm chéo số bên ngoài"
-- [ ] **T1.2** (e20m) Chạy lại ba số nội bộ lớn nhất theo đúng phương pháp ghi trong
+- [>] **T1.2** (e20m) Chạy lại ba số nội bộ lớn nhất theo đúng phương pháp ghi trong
   `…-do-noi-bo.md`: context trung bình mỗi lần gọi, tỉ lệ trọn bộ test trong thời gian máy, tỉ lệ
   ghi lại cache nguội — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Bản đồ chi phí' in t;assert 'chạy lại' in t"` (mỗi số chạy lại lệch ≤ 5% so với số trợ lý báo, hoặc ghi lý do lệch)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Bản đồ chi phí"
