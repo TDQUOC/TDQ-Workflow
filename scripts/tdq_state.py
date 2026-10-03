@@ -97,6 +97,8 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "[--mode main|subagent|codex] "
          "[--by \"<user sentence>\"] | "
          "pause --ly-do \"<why>\" | resume | "
+         "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
+         "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
          "reset | phases-doc | modes [--json]")
 
 EXIT_SYNTAX = 2
@@ -242,6 +244,12 @@ def default_state():
         # tell whether an error is self-fixable, so whoever stops must say why,
         # and that sentence is what gets shown to the user.
         "implement_pause": None,
+        # Spec deviations: a DoD threshold found unreachable during implement/qc.
+        # The agent applies the fallback, records it here with `lech add` and keeps
+        # working; the report asks the user to approve or reject each one. Item shape:
+        # {"id", "q", "nguong", "do", "chon", "ly_do", "trang_thai": cho|duyet|bac,
+        #  "at", "by"} plus "quyet_at"/"quyet_by" once decided.
+        "lech_spec": [],
         # language code of this request's documents (see DEFAULT_DOC_LANG)
         "doc_lang": DEFAULT_DOC_LANG,
         # Mức gắt của luật tinh gọn (2026-09-17): lite|full|ultra|off. Ba kênh nạp luật đọc
@@ -1990,6 +1998,114 @@ def _cli_implement_pause(cwd, cmd, rest):
     _echo_state("pause", state, want_json)
 
 
+# ------------------------------------------------------------ spec deviations
+
+LECH_TRUONG = (("--q", "q"), ("--nguong", "nguong"), ("--do", "do"),
+               ("--chon", "chon"), ("--ly-do", "ly_do"))
+LECH_QUYET = {"duyet": "duyet", "bac": "bac"}
+
+
+def lech_cho(state):
+    """Pending spec deviations (trang_thai == "cho"), in recording order.
+
+    Pure helper so `next` can surface what still waits for the user's decision.
+    Tolerates an old state without the key.
+    """
+    return [m for m in (state or {}).get("lech_spec") or []
+            if isinstance(m, dict) and m.get("trang_thai") == "cho"]
+
+
+def _lech_flags(rest, allowed):
+    """Parse `--flag value` pairs; an unknown flag or a missing value is a syntax error."""
+    out = {}
+    i = 0
+    while i < len(rest):
+        flag = rest[i]
+        if flag not in allowed:
+            _fail(f"lech: unexpected argument {flag!r}.")
+        if i + 1 >= len(rest):
+            _fail(f"lech: missing a value after {flag}.")
+        out[flag] = rest[i + 1].strip()
+        i += 2
+    return out
+
+
+def _cli_lech(cwd, rest):
+    """`lech add|list|duyet|bac` — record and decide spec deviations."""
+    rest, want_json = _pop_json_flag(list(rest))
+    if not rest:
+        _fail("lech needs a sub-command: add | list | duyet | bac.")
+    sub, rest = rest[0], rest[1:]
+    if sub not in ("add", "list") and sub not in LECH_QUYET:
+        _fail(f"lech: unknown sub-command {sub!r} (add | list | duyet | bac).")
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+    items = [m for m in state.get("lech_spec") or [] if isinstance(m, dict)]
+
+    if sub == "list":
+        if rest:
+            _fail("lech list takes no argument besides --json.")
+        _info(f"spec deviation list: {len(items)} item(s), {len(lech_cho(state))} pending")
+        if want_json:
+            print(json.dumps(items, ensure_ascii=False, indent=2))
+        elif not items:
+            print("no spec deviation recorded")
+        else:
+            for m in items:
+                print(f"#{m.get('id')} [{m.get('trang_thai')}] {m.get('q')}: "
+                      f"threshold {m.get('nguong')!r}, measured {m.get('do')!r} -> "
+                      f"chose {m.get('chon')!r} ({m.get('ly_do')})")
+        return
+
+    if sub == "add":
+        flags = _lech_flags(rest, {f for f, _ in LECH_TRUONG})
+        missing = [f for f, _ in LECH_TRUONG if not flags.get(f)]
+        if missing:
+            _fail(f"lech add is missing: {', '.join(missing)}.")
+        if not re.fullmatch(r"Q\d+", flags["--q"]):
+            _fail(f"lech add: --q must look like Q3, got {flags['--q']!r}.")
+        new_id = max((m.get("id") or 0 for m in items), default=0) + 1
+        item = {"id": new_id}
+        for flag, key in LECH_TRUONG:
+            item[key] = flags[flag][:400]
+        item.update({"trang_thai": "cho", "at": now_iso(), "by": "claude"})
+        items.append(item)
+        state["lech_spec"] = items
+        save(cwd, state, expect_updated_at=stamp)
+        _info(f"spec deviation #{new_id} recorded on {item['q']}: pending user decision")
+        if want_json:
+            print(json.dumps(item, ensure_ascii=False, indent=2))
+        else:
+            print(f"✅ lech add: id={new_id} q={item['q']} trang_thai=cho")
+        return
+
+    # duyet | bac
+    if not rest:
+        _fail(f"lech {sub} needs an id: lech {sub} <id> --by \"<user sentence>\".")
+    raw_id, rest = rest[0], rest[1:]
+    by = _lech_flags(rest, {"--by"}).get("--by")
+    if not by:
+        _fail(f"lech {sub} needs --by \"<the user's own words>\".")
+    item = next((m for m in items if str(m.get("id")) == raw_id), None)
+    if item is None:
+        _fail(f"lech {sub}: no spec deviation with id {raw_id!r}.")
+    before = item.get("trang_thai")
+    if before != "cho":
+        print(f"note: deviation #{raw_id} was already decided ({before}); overriding.")
+    item["trang_thai"] = LECH_QUYET[sub]
+    item["quyet_at"] = now_iso()
+    item["quyet_by"] = by[:400]
+    state["lech_spec"] = items
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"spec deviation #{raw_id} set to {item['trang_thai']}")
+    if want_json:
+        print(json.dumps(item, ensure_ascii=False, indent=2))
+    else:
+        print(f"✅ lech {sub}: id={raw_id} trang_thai={item['trang_thai']}")
+
+
 def cli(argv):
     started_in = os.getcwd()
     env = os.environ.get("TDQ_PROJECT_DIR")
@@ -2151,6 +2267,9 @@ def cli(argv):
 
     if cmd in ("pause", "resume"):
         return _cli_implement_pause(cwd, cmd, argv[1:])
+
+    if cmd == "lech":
+        return _cli_lech(cwd, argv[1:])
 
     if cmd == "approve":
         return _cli_approve(cwd, argv[1:])
