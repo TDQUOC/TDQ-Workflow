@@ -58,7 +58,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1b" = suba
   (bảng giây có lệnh chạy lại; repo thật không đổi — `git status` sạch phần mã)
   - Chạm: `docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md` → mục "Thử nghiệm"
   - Cần: T1.2
-- [>] **T2.3** (e20m) Nhóm (a) hội thoại tích luỹ và cache: từ số đo transcript, ước lượng mức tiết
+- [x] **T2.3** (e20m) Nhóm (a) hội thoại tích luỹ và cache: từ số đo transcript, ước lượng mức tiết
   kiệm khi (i) tách phiên theo phase hoặc compact có chủ đích sau mỗi phase, (ii) đẩy việc đọc
   nặng (output lệnh, transcript, test) cho trợ lý chỉ trả tóm tắt, (iii) giữ tiền tố ổn định để
   cache không bị ghi lại nguội — báo khoảng (thấp–cao) kèm phương pháp — Test: `python -c "t=open('docs/tdq/reports/2026-10-03-1101-nghien-cuu-nen-context.md',encoding='utf-8').read();assert '## Thử nghiệm' in t;assert 'T2.3' in t"`
