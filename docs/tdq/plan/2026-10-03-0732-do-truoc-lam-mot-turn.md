@@ -40,7 +40,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   số. Chỉ áp cho slug từ `2026-10-03-0732`. Hàm thuần `r14_loi(text, ten_file)` để `tdq_state`
   gọi được — Test: `python -m unittest discover tests -p test_doc_lint_r14.py`
   - Chạm: `scripts/doc_lint.py` → `rule_r14`, `r14_loi`, nhánh `is_output`; `tests/test_doc_lint_r14.py` → file mới
-- [>] **T1.2** (e15m) Độ chính xác trên spec thật: lấy 10 hàng có ngưỡng từ spec cũ (cố định
+- [x] **T1.2** (e15m) Độ chính xác trên spec thật: lấy 10 hàng có ngưỡng từ spec cũ (cố định
   trong test, chép nguyên văn) + 10 hàng không ngưỡng (`≥ 1`, `0 failure`, số phiên bản, mã Qn);
   R14 nhận đúng ≥ 9/10 và không bắt oan hàng nào; `doc_lint docs/tdq/spec` → 0 lỗi R14 —
   Test: `python -m unittest discover tests -p test_doc_lint_r14.py -k chinh_xac`
