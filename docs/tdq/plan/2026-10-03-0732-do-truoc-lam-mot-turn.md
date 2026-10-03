@@ -129,14 +129,14 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-03, "Duyệt plan" · mode "1a" = suba
   - Kiểm: mục soát lỗi của file đó có một dòng cho mỗi phát hiện
   - Không dùng cho: rút gọn code — đó là T5.4
   - Cần: T5.2
-- [~] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: trọn bộ test vẫn xanh
+- [x] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: trọn bộ test vẫn xanh
   - Dùng: `simplify`
   - Để: gỡ trùng lặp trong mã mới, không đổi hành vi
   - Ra: mã đã rút gọn
   - Kiểm: `python -m unittest discover tests`
   - Không dùng cho: săn lỗi đúng-sai — đó là T5.3
   - Cần: T5.3
-- [ ] **T5.5** (e10m) CHANGELOG 0.56.0, bump hai `plugin.json`; macOS/Linux nếu máy bật —
+- [~] **T5.5** (e10m) CHANGELOG 0.56.0, bump hai `plugin.json`; macOS/Linux nếu máy bật —
   Test: `python -m unittest discover tests -p test_build_portable.py` xanh
   - Chạm: `CHANGELOG.md`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`
   - Cần: T5.4

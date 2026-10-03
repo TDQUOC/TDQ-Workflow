@@ -156,24 +156,24 @@ def trim(lines):
     return text
 
 
-def remind(cwd, payload, code, lines, event="PreToolUse", rows=None):
+def remind(cwd, payload, code, lines, event="PreToolUse", rows=None, decide=True):
     """Remind Claude with a CODE WITHOUT blocking the tool, then exit.
 
     The 3-line shape (spec §2.1): the job to do · how to do it · the echo line to print.
     A code already reminded this turn stays silent (dedupe) so no tokens are burnt.
     `rows`: an already-read turn ledger — see `already_reminded` (P0-3).
+    `decide=False` leaves out `permissionDecision`: for AskUserQuestion the tool IS the question
+    to the user, and an "allow" from a hook may answer it (`ask_gate.py`, 2026-10-03).
     """
     if already_reminded(cwd, payload, code, rows=rows):
         sys.exit(0)
     turn_log_append(cwd, "remind", session=session_id(payload), code=code)
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": event,
-            "permissionDecision": "allow",
-            "permissionDecisionReason": "TDQ: a reminder, not a block.",
-            "additionalContext": _tuyet_doi(trim([f"[{code}] {lines[0]}"] + list(lines[1:])), cwd),
-        }
-    }, ensure_ascii=False))
+    out = {"hookEventName": event}
+    if decide:
+        out["permissionDecision"] = "allow"
+        out["permissionDecisionReason"] = "TDQ: a reminder, not a block."
+    out["additionalContext"] = _tuyet_doi(trim([f"[{code}] {lines[0]}"] + list(lines[1:])), cwd)
+    print(json.dumps({"hookSpecificOutput": out}, ensure_ascii=False))
     sys.exit(0)
 
 

@@ -2082,6 +2082,24 @@ def _loai_dung_help():
     return "\n".join(["Allowed --loai kinds:"] + lines + [LECH_KHONG_DUNG])
 
 
+def _flag_pairs(rest, allowed, cmd, hint=""):
+    """Parse `--flag value` pairs; an unknown flag or a missing value is a syntax error.
+
+    Shared by `pause` and `lech`. `hint` is appended to every syntax error message.
+    """
+    out = {}
+    i = 0
+    while i < len(rest):
+        flag = rest[i]
+        if flag not in allowed:
+            _fail(f"{cmd}: unexpected argument {flag!r}.{hint}")
+        if i + 1 >= len(rest):
+            _fail(f"{cmd}: missing a value after {flag}.{hint}")
+        out[flag] = rest[i + 1].strip()
+        i += 2
+    return out
+
+
 def _cli_implement_pause(cwd, cmd, rest):
     """`pause --loai <kind> --ly-do "<why>"` declares the pause, `resume` clears it.
 
@@ -2106,16 +2124,8 @@ def _cli_implement_pause(cwd, cmd, rest):
         return
 
     usage = 'pause --loai <kind> --ly-do "<why the run stopped>"'
-    flags = {}
-    i = 0
-    while i < len(rest):
-        flag = rest[i]
-        if flag not in ("--loai", "--ly-do"):
-            _fail(f"pause: unexpected argument {flag!r}. Use: {usage}.\n{_loai_dung_help()}")
-        if i + 1 >= len(rest):
-            _fail(f"pause: missing a value after {flag}. Use: {usage}.\n{_loai_dung_help()}")
-        flags[flag] = rest[i + 1].strip()
-        i += 2
+    flags = _flag_pairs(rest, ("--loai", "--ly-do"), "pause",
+                        hint=f" Use: {usage}.\n{_loai_dung_help()}")
     kind = flags.get("--loai", "")
     reason = flags.get("--ly-do", "")
     if not kind:
@@ -2139,7 +2149,7 @@ def _cli_implement_pause(cwd, cmd, rest):
 
 LECH_TRUONG = (("--q", "q"), ("--nguong", "nguong"), ("--do", "do"),
                ("--chon", "chon"), ("--ly-do", "ly_do"))
-LECH_QUYET = {"duyet": "duyet", "bac": "bac"}
+LECH_QUYET = ("duyet", "bac")
 
 
 def lech_cho(state):
@@ -2150,21 +2160,6 @@ def lech_cho(state):
     """
     return [m for m in (state or {}).get("lech_spec") or []
             if isinstance(m, dict) and m.get("trang_thai") == "cho"]
-
-
-def _lech_flags(rest, allowed):
-    """Parse `--flag value` pairs; an unknown flag or a missing value is a syntax error."""
-    out = {}
-    i = 0
-    while i < len(rest):
-        flag = rest[i]
-        if flag not in allowed:
-            _fail(f"lech: unexpected argument {flag!r}.")
-        if i + 1 >= len(rest):
-            _fail(f"lech: missing a value after {flag}.")
-        out[flag] = rest[i + 1].strip()
-        i += 2
-    return out
 
 
 def _cli_lech(cwd, rest):
@@ -2197,7 +2192,7 @@ def _cli_lech(cwd, rest):
         return
 
     if sub == "add":
-        flags = _lech_flags(rest, {f for f, _ in LECH_TRUONG})
+        flags = _flag_pairs(rest, {f for f, _ in LECH_TRUONG}, "lech")
         missing = [f for f, _ in LECH_TRUONG if not flags.get(f)]
         if missing:
             _fail(f"lech add is missing: {', '.join(missing)}.")
@@ -2222,7 +2217,7 @@ def _cli_lech(cwd, rest):
     if not rest:
         _fail(f"lech {sub} needs an id: lech {sub} <id> --by \"<user sentence>\".")
     raw_id, rest = rest[0], rest[1:]
-    by = _lech_flags(rest, {"--by"}).get("--by")
+    by = _flag_pairs(rest, {"--by"}, "lech").get("--by")
     if not by:
         _fail(f"lech {sub} needs --by \"<the user's own words>\".")
     item = next((m for m in items if str(m.get("id")) == raw_id), None)
@@ -2233,7 +2228,7 @@ def _cli_lech(cwd, rest):
         # stderr, not stdout: `--json` callers parse stdout and a note there breaks them.
         print(f"note: deviation #{raw_id} was already decided ({before}); overriding.",
               file=sys.stderr)
-    item["trang_thai"] = LECH_QUYET[sub]
+    item["trang_thai"] = sub
     item["quyet_at"] = now_iso()
     item["quyet_by"] = by[:400]
     state["lech_spec"] = items

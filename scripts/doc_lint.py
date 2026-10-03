@@ -738,34 +738,39 @@ def r14_loi(text, ten_file):
     lines = text.splitlines()
     loi = []
     trong_6 = fenced = False
-    header = None
+    # Column indexes depend only on the table header, so they are found once per table.
+    # No header yet → PASS is the 3rd column and the two R14 columns are missing.
+    c_pass, c_do, c_du = 2, None, None
     for i, line in enumerate(lines):
         if FENCE.match(line):
             fenced = not fenced
             continue
         if fenced:
             continue
-        if re.match(r"^##\s", line):
+        if line.startswith("##") and re.match(r"^##\s", line):
             trong_6 = bool(re.match(r"^##\s+6\.", line))
-            header = None
+            c_pass, c_do, c_du = 2, None, None
             continue
-        if not trong_6 or not line.strip().startswith("|"):
-            if trong_6 and not line.strip():
-                header = None
+        if not trong_6:
+            continue
+        if not line.strip():
+            c_pass, c_do, c_du = 2, None, None
+            continue
+        if not line.strip().startswith("|"):
             continue
         nxt = lines[i + 1] if i + 1 < len(lines) else ""
         if re.match(r"^\s*\|?\s*:?-{3,}", nxt):
             header = _r14_o(line)
+            c_pass = _r14_cot(header, R14_COT_PASS)
+            c_pass = 2 if c_pass is None else c_pass
+            c_do = _r14_cot(header, R14_COT_DO)
+            c_du = _r14_cot(header, R14_COT_DU_PHONG)
             continue
         cells = _r14_o(line)
         if not cells or not re.fullmatch(r"Q\d+", cells[0]):
             continue
-        c_pass = _r14_cot(header, R14_COT_PASS)
-        c_pass = 2 if c_pass is None else c_pass
         if c_pass >= len(cells) or not _r14_nguong(cells[c_pass]):
             continue
-        c_do = _r14_cot(header, R14_COT_DO)
-        c_du = _r14_cot(header, R14_COT_DU_PHONG)
         if c_do is None or c_du is None:
             loi.append((i + 1, f"{cells[0]} states a numeric threshold but the §6 table lacks "
                                "the `Đo trước` / `Dự phòng nếu trượt` columns"))  # i18n-allow
@@ -785,11 +790,8 @@ def rule_r14(doc, out):
     """A numeric threshold in spec §6 carries a prior measurement and a fallback."""
     if os.path.basename(os.path.dirname(os.path.abspath(doc.path))) != "spec":
         return
-    ten = os.path.basename(doc.path)
-    if not R14_SLUG.match(ten) or ten[:15] < R14_MOC:
-        return
-    loi = r14_loi("\n".join(doc.lines), doc.path)
-    _log(f"R14 {ten} → {len(loi)} finding(s)")
+    loi = r14_loi("\n".join(doc.lines), doc.path)  # the slug cutoff lives in r14_loi alone
+    _log(f"R14 {os.path.basename(doc.path)} → {len(loi)} finding(s)")
     for so_dong, msg in loi:
         _report(out, doc, so_dong - 1, "R14", msg)
 
