@@ -1,0 +1,113 @@
+{
+  "slug": "2026-10-03-1907-test-vung-cham-buoc-trung-gian",
+  "plan_file": "docs\\tdq\\plan\\2026-10-03-1907-test-vung-cham-buoc-trung-gian.md",
+  "plan_sha": "da15335c2afa3796235aed6d968db286834a40f616be45137dac4510efe94aad",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_test.py",
+        "tests/test_tdq_test.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_test.py",
+        "tests/test_tdq_test.py"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/.tdq-test.jsonl",
+        "scripts/tdq_test.py",
+        "tests/test_tdq_test.py"
+      ],
+      "dot": 3
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_next_tron_bo.py"
+      ],
+      "dot": 4
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "tdq-build/SKILL.md",
+        "skills/tdq-build/SKILL.md",
+        "skills/tdq-plan/references/plan-template.md",
+        "skills/tdq-build/references/qc.md",
+        "docs/tdq/audit/luat-hien-co.md",
+        "docs/tdq/token-budget.json",
+        "tests/test_luat_test.py"
+      ],
+      "dot": 4
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/kien-truc.md"
+      ],
+      "dot": 5
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_bench.py",
+        "tests/test_team_mode.py",
+        "tests/test_team_chong_conflict.py",
+        "tests/test_gitflow_doi.py",
+        "tests/test_timing.py"
+      ],
+      "dot": 1
+    },
+    "T5.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 4
+    },
+    "T5.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 6
+    },
+    "T5.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-10-03-1907-test-vung-cham-buoc-trung-gian.md"
+      ],
+      "dot": 7
+    },
+    "T5.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 8
+    },
+    "T5.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        ".claude-plugin/plugin.json",
+        ".codex-plugin/plugin.json"
+      ],
+      "dot": 9
+    }
+  }
+}
