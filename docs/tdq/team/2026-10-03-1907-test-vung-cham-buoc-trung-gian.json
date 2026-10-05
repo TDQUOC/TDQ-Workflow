@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-1907-test-vung-cham-buoc-trung-gian",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-1907-test-vung-cham-buoc-trung-gian.md",
-  "plan_sha": "6032bc087b4709045ae4d10f9e943f6b364f2be1df55d8034169f02f2d7698c9",
+  "plan_sha": "da9e018bd8441e5e4468a1e76e30bc3c3e6cd417647fcb31a852060fc8d207c1",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",
@@ -19,7 +19,7 @@
         "scripts/tdq_test.py",
         "tests/test_tdq_test.py"
       ],
-      "dot": 2
+      "dot": 3
     },
     "T1.3": {
       "quyet_dinh": "giao",
@@ -29,7 +29,7 @@
         "scripts/tdq_test.py",
         "tests/test_tdq_test.py"
       ],
-      "dot": 3
+      "dot": 4
     },
     "T2.1": {
       "quyet_dinh": "giao",
@@ -38,7 +38,7 @@
         "scripts/tdq_state.py",
         "tests/test_next_tron_bo.py"
       ],
-      "dot": 4
+      "dot": 5
     },
     "T3.1": {
       "quyet_dinh": "tu_lam",
@@ -52,7 +52,7 @@
         "docs/tdq/token-budget.json",
         "tests/test_luat_test.py"
       ],
-      "dot": 4
+      "dot": 5
     },
     "T3.2": {
       "quyet_dinh": "giao",
@@ -60,7 +60,7 @@
       "vung_file": [
         "docs/kien-truc.md"
       ],
-      "dot": 5
+      "dot": 6
     },
     "T4.1": {
       "quyet_dinh": "giao",
@@ -78,13 +78,13 @@
       "quyet_dinh": "tu_lam",
       "ly_do": "vung-khoa",
       "vung_file": [],
-      "dot": 4
+      "dot": 5
     },
     "T5.2": {
       "quyet_dinh": "tu_lam",
       "ly_do": "vung-khoa",
       "vung_file": [],
-      "dot": 6
+      "dot": 7
     },
     "T5.3": {
       "quyet_dinh": "giao",
@@ -92,7 +92,7 @@
       "vung_file": [
         "docs/tdq/qc/2026-10-03-1907-test-vung-cham-buoc-trung-gian.md"
       ],
-      "dot": 7
+      "dot": 8
     },
     "T5.6": {
       "quyet_dinh": "giao",
@@ -101,13 +101,13 @@
         "scripts/tdq_test.py",
         "tests/test_tdq_test.py"
       ],
-      "dot": 8
+      "dot": 9
     },
     "T5.4": {
       "quyet_dinh": "tu_lam",
       "ly_do": "vung-khoa",
       "vung_file": [],
-      "dot": 9
+      "dot": 10
     },
     "T5.5": {
       "quyet_dinh": "giao",
@@ -116,7 +116,16 @@
         ".claude-plugin/plugin.json",
         ".codex-plugin/plugin.json"
       ],
-      "dot": 10
+      "dot": 11
+    },
+    "QC1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_test.py",
+        "tests/test_tdq_test.py"
+      ],
+      "dot": 2
     }
   }
 }
