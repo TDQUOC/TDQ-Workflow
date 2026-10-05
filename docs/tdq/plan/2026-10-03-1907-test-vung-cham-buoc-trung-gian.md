@@ -46,7 +46,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-05, "duyệt plan" · mode "1a" = suba
   `TDQ_LOG=0` — Test: `python -m unittest discover tests -p test_tdq_test.py -k vung_cham`
   - Chạm: `scripts/tdq_test.py` → `cmd_vung_cham`; `tests/test_tdq_test.py` → lớp `VungCham`
   - Cần: T1.1
-- [ ] **T1.3** (e30m) Lệnh `tdq_test.py tron-bo` + sổ `docs/tdq/.tdq-test.jsonl` (gitignore): mỗi
+- [>] **T1.3** (e30m) Lệnh `tdq_test.py tron-bo` + sổ `docs/tdq/.tdq-test.jsonl` (gitignore): mỗi
   lần trọn bộ một dòng (thời điểm, khoá request, phase, kết quả, giây); module đỏ chưa từng được
   `vung-cham` chọn trong request → dòng "bỏ sót"; `tdq_test.py so [--json]` in số lần trọn bộ và
   số lần bỏ sót — Test: `python -m unittest discover tests -p test_tdq_test.py -k so`
