@@ -81,10 +81,10 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P4 — Test chạy được từ mọi shell
 
-- [>] **T4.1** (e30m) Tìm và sửa mọi test gọi lệnh `true` của shell (dòng `Test:` trong plan mẫu,
-  `subprocess` …) ở `test_bench`, `test_team_mode`, `test_team_chong_conflict`, `test_gitflow_doi`,
-  `test_timing`: thay bằng lệnh tương đương luôn thoát 0 qua trình thông dịch Python, giữ nguyên ý
-  nghĩa từng ca — Test: `powershell.exe -NoProfile -Command "python -m unittest discover tests -p 'test_team_mode.py'; if ($LASTEXITCODE) { exit 1 }; python -m unittest discover tests -p 'test_bench.py'; if ($LASTEXITCODE) { exit 1 }"` (và tương tự ba module còn lại)
+- [>] **T4.1** (e30m) Tìm và sửa mọi test gọi lệnh `true` của shell (dòng lệnh kiểm trong plan
+  mẫu, `subprocess` …) ở `test_bench`, `test_team_mode`, `test_team_chong_conflict`,
+  `test_gitflow_doi`, `test_timing`: thay bằng lệnh tương đương luôn thoát 0 qua trình thông dịch
+  Python, giữ nguyên ý nghĩa từng ca — Test: `powershell.exe -NoProfile -Command "foreach ($m in 'test_bench.py','test_team_mode.py','test_team_chong_conflict.py','test_gitflow_doi.py','test_timing.py') { python -m unittest discover tests -p $m; if ($LASTEXITCODE) { exit 1 } }"`
   - Chạm: `tests/test_bench.py`, `tests/test_team_mode.py`, `tests/test_team_chong_conflict.py`, `tests/test_gitflow_doi.py`, `tests/test_timing.py`
 
 ## P5 — Log, test, soát, phát hành
