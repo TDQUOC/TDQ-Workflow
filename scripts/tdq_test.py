@@ -57,7 +57,6 @@ CLI (`python scripts/tdq_test.py <command>`):
 Log service: one ISO-timestamped line per command on stderr, on by default; `TDQ_LOG=0` turns
 it off. Only paths, counts and reasons are logged, never file contents.
 """
-import argparse
 import ast
 import json
 import os
@@ -65,8 +64,10 @@ import re
 import subprocess
 import sys
 import time
-import unittest
-from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import tdq_state  # noqa: E402 — log service, timestamp, project root (it imports us lazily)
 
 TOP_DIRS = frozenset({"scripts", "hooks", "skills", "tests", "agents"})
 # Under these top dirs a file matches by path only; so does every file outside `TOP_DIRS`.
@@ -137,8 +138,12 @@ def _mau_duong_dan(path):
 
 
 def chon_theo_duong_dan(path, sources):
+    # Every pattern contains the path's last segment literally, so a plain substring test drops
+    # most sources before the (slow, lookbehind-anchored) regexes run — same result, ~50x cheaper.
+    last = path.split("/")[-1]
     patterns = _mau_duong_dan(path)
-    return {m for m, src in sources.items() if any(p.search(src) for p in patterns)}
+    return {m for m, src in sources.items()
+            if last in src and any(p.search(src) for p in patterns)}
 
 
 # ---------- (c) reverse import closure ----------
@@ -435,16 +440,12 @@ NHANH_GOC_MAC_DINH = "main"
 GIT_TIMEOUT = 30
 
 
-def log_enabled():
-    return os.environ.get("TDQ_LOG", "1") != "0"
-
-
 def _now_iso():
-    return datetime.now().astimezone().isoformat(timespec="seconds")
+    return tdq_state.now_iso()
 
 
 def _log(message):
-    if log_enabled():
+    if tdq_state.log_enabled():
         print(f"[{_now_iso()}] tdq_test: {message}", file=sys.stderr)
 
 
@@ -566,6 +567,7 @@ def _bo_module_cu(tests_dir, modules):
 
 def chay_module(repo, modules, stream=None):
     """Run `modules` (test file names) in THIS process. True when every test passes."""
+    import unittest  # lazy: see the import note at the top of the module
     if not modules:
         return True
     tests_dir = os.path.join(repo, "tests")
@@ -623,6 +625,7 @@ def _module_cua(test):
     A normal test id is `test_x.Class.method`; a module that fails to import is a
     `_FailedTest` whose method name is the module; a fixture error (`setUpClass`,
     `setUpModule`) is an `_ErrorHolder` whose id reads `setUpClass (test_x.Class)`."""
+    import unittest  # lazy: see the import note at the top of the module
     if isinstance(test, unittest.loader._FailedTest):
         name = test._testMethodName
     else:
@@ -634,6 +637,7 @@ def _module_cua(test):
 
 def chay_tron_bo(repo, stream=None):
     """Run every `tests/test_*.py` in THIS process. (ok, sorted failing module names)."""
+    import unittest  # lazy: see the import note at the top of the module
     tests_dir = os.path.join(repo, "tests")
     if not os.path.isdir(tests_dir):
         return True, []
@@ -710,12 +714,17 @@ def cmd_tron_bo(args):
     return 0 if ok else 1
 
 
+def dem_repo(repo, request):
+    """`dem()` over the ledger of `repo` — the entry point `tdq_state.render_next` calls."""
+    return dem(_doc_so(repo), request)
+
+
 def cmd_so(args):
     """Print how many full-suite runs and radius misses the current request has."""
     repo = os.path.abspath(args.repo)
     state = _doc_state(repo)
     request = state.get("active_request")
-    counts = dem(_doc_so(repo), request)
+    counts = dem_repo(repo, request)
     if args.json:
         print(json.dumps(counts, ensure_ascii=False))
     else:
@@ -729,23 +738,26 @@ def cmd_so(args):
 
 
 def main(argv=None):
+    import argparse  # lazy: see the import note at the top of the module
     import utf8_io  # noqa: F401 — imported for its side effect: stdout/stderr become UTF-8
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--repo", default=None,
+                        help="repo root (default: the project root found from cwd)")
     parser = argparse.ArgumentParser(
         prog="tdq_test.py", description="Run the tests a change can reach.")
     sub = parser.add_subparsers(dest="command", required=True)
-    p = sub.add_parser("vung-cham", help="run the tests of the touched zone and its radius")
+    p = sub.add_parser("vung-cham", parents=[common], help="run the tests of the touched zone and its radius")
     p.add_argument("--files", nargs="*", default=None,
                    help="changed files (default: from git against nhanh_goc)")
-    p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
     p.set_defaults(func=cmd_vung_cham)
-    p = sub.add_parser("tron-bo", help="run the full suite in one process and log misses")
-    p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
+    p = sub.add_parser("tron-bo", parents=[common], help="run the full suite in one process and log misses")
     p.set_defaults(func=cmd_tron_bo)
-    p = sub.add_parser("so", help="count full-suite runs and radius misses of the request")
+    p = sub.add_parser("so", parents=[common], help="count full-suite runs and radius misses of the request")
     p.add_argument("--json", action="store_true", help="print one JSON object")
-    p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
     p.set_defaults(func=cmd_so)
     args = parser.parse_args(argv)
+    if args.repo is None:
+        args.repo = tdq_state.resolve_project_dir(os.getcwd())
     return args.func(args)
 
 

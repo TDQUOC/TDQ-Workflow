@@ -1584,8 +1584,8 @@ def _tron_bo_vuot(cwd, state):
         return None
     try:
         import tdq_test
-        counts = tdq_test.dem(tdq_test._doc_so(cwd), state.get("active_request"))
-        runs, budget = int(counts["tron_bo"]), int(counts["ngan_sach"])
+        counts = tdq_test.dem_repo(cwd, state.get("active_request"))
+        runs, budget = counts["tron_bo"], counts["ngan_sach"]
     except Exception:
         return None
     return (runs, budget) if runs > budget else None

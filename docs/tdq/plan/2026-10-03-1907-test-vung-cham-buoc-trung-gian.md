@@ -111,7 +111,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   mọi test `import helper` / `from helper import` đều được chọn — Test: `python -m unittest discover tests -p test_tdq_test.py -k sua_loi`
   - Chạm: `scripts/tdq_test.py` → `_ly_do_ngoai`, `_chon`; `tests/test_tdq_test.py` → lớp `SuaLoi`
   - Cần: T5.3
-- [~] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: `python scripts/tdq_test.py vung-cham` xanh
+- [x] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: `python scripts/tdq_test.py vung-cham` xanh
   - Dùng: `simplify`
   - Để: gỡ trùng lặp trong mã mới, không đổi hành vi
   - Ra: mã đã rút gọn
