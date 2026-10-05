@@ -154,17 +154,17 @@ worktree riêng), nên mọi module đỏ đều bị tính là bán kính bỏ 
 
 Trỏ về §6 của spec. Lệnh dạng `discover` vì `tests/` cố ý không là package.
 
-- [ ] Q1 Bán kính đúng ở ca đã đo — `python -m unittest discover tests -p test_tdq_test.py -k ca_da_do`
-- [ ] Q2 Không bỏ sót test gọi qua tiến trình con — `… -p test_tdq_test.py -k tien_trinh_con`
-- [ ] Q3 Dò file luật theo đường dẫn — `… -p test_tdq_test.py -k duong_dan`
-- [ ] Q3b Test quét thư mục được chọn — `… -p test_tdq_test.py -k quet_thu_muc`
-- [ ] Q4 Rơi về trọn bộ đúng lúc — `… -p test_tdq_test.py -k tron_bo_khi`
-- [ ] Q5 Bước trung gian nhanh với file lá/luật — `python scripts/tdq_test.py vung-cham --files hooks/scripts/stop_gate.py` (giây ở log ≤ 60)
-- [ ] Q6 Sổ trọn bộ — `… -p test_tdq_test.py -k so` + `… -p test_next_tron_bo.py`
-- [ ] Q6b Sổ bán kính bỏ sót — `… -p test_tdq_test.py -k bo_sot`
-- [ ] Q7 Luật một nguồn — `… -p test_luat_test.py`
-- [ ] Q8 Chạy từ mọi shell — `powershell.exe -NoProfile -Command "python -m unittest discover tests"` 0 fail 0 error
-- [ ] Q9 Trọn bộ xanh — `python scripts/tdq_test.py tron-bo` từ Git Bash thoát 0
-- [ ] Q10 Trần token — `python scripts/token_budget.py --kiem` thoát 0 và `python scripts/doc_lint.py skills` thoát 0
-- [ ] Q11 Kiến trúc — `grep -rn "^import hooks\|^from hooks" scripts` rỗng + dòng 2026-10-03 (yêu cầu 1907) trong `docs/kien-truc.md`
+- [x] Q1 Bán kính đúng ở ca đã đo — `python -m unittest discover tests -p test_tdq_test.py -k ca_da_do`
+- [x] Q2 Không bỏ sót test gọi qua tiến trình con — `… -p test_tdq_test.py -k tien_trinh_con`
+- [x] Q3 Dò file luật theo đường dẫn — `… -p test_tdq_test.py -k duong_dan`
+- [x] Q3b Test quét thư mục được chọn — `… -p test_tdq_test.py -k quet_thu_muc`
+- [x] Q4 Rơi về trọn bộ đúng lúc — `… -p test_tdq_test.py -k tron_bo_khi`
+- [x] Q5 Bước trung gian nhanh với file lá/luật — `python scripts/tdq_test.py vung-cham --files hooks/scripts/stop_gate.py` (giây ở log ≤ 60)
+- [x] Q6 Sổ trọn bộ — `… -p test_tdq_test.py -k so` + `… -p test_next_tron_bo.py`
+- [x] Q6b Sổ bán kính bỏ sót — `… -p test_tdq_test.py -k bo_sot`
+- [x] Q7 Luật một nguồn — `… -p test_luat_test.py`
+- [x] Q8 Chạy từ mọi shell — `powershell.exe -NoProfile -Command "python -m unittest discover tests"` 0 fail 0 error
+- [x] Q9 Trọn bộ xanh — `python scripts/tdq_test.py tron-bo` từ Git Bash thoát 0
+- [x] Q10 Trần token — `python scripts/token_budget.py --kiem` thoát 0 và `python scripts/doc_lint.py skills` thoát 0
+- [x] Q11 Kiến trúc — `grep -rn "^import hooks\|^from hooks" scripts` rỗng + dòng 2026-10-03 (yêu cầu 1907) trong `docs/kien-truc.md`
 - [ ] Q12 Tiết kiệm báo trung thực — report có cả nền cũ (TB 7,4 lần/request) và nền mới (2–3 lần)
