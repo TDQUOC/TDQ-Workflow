@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-1907-test-vung-cham-buoc-trung-gian",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-1907-test-vung-cham-buoc-trung-gian.md",
-  "plan_sha": "b6fb96e0234252b4874407f7ff91196bea499e715361b0a034975029816d9f26",
+  "plan_sha": "cf847fb7908bcc52d4118c509d55a4cc59101606aceeb55dc1ce2fb99d65aeb4",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",
