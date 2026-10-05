@@ -11,12 +11,16 @@ A test module is selected when any of these holds (union):
 - (a) it IS a changed test file;
 - (b) its source mentions the changed file's repo-relative path (forward or back slashes, or
   split into string segments as in `os.path.join(ROOT, "skills", "x", "SKILL.md")`). Files under
-  `skills/`, `agents/`, `docs/` match by PATH only — a bare `SKILL.md` matches every skill (the
-  prototype over-selected 37 modules that way). Other files also match by bare file name;
+  `skills/`, `agents/`, and data files outside `TOP_DIRS` (e.g. `docs/...`) match by PATH only
+  — a bare `SKILL.md` matches every skill (the prototype over-selected 37 modules that way).
+  Other files also match by bare file name;
 - (c) for a changed `.py` under `scripts/` or `hooks/scripts/`: it mentions, as a word or as
   `name.py`, any module of the reverse transitive import closure (AST, imports inside functions
   included) among those two dirs. Matching the NAME, not only the import, catches tests that
-  run hooks through a subprocess (`run_hook("stop_gate.py", ...)`);
+  run hooks through a subprocess (`run_hook("stop_gate.py", ...)`). For a changed non-test
+  `.py` directly under `tests/` (e.g. `helper.py`): it belongs to that module's reverse
+  transitive import closure among `tests/*.py` (AST imports only — a bare word `helper` is too
+  common to match by name);
 - (d) it SCANS the top-level dir of a changed file: an AST call to `os.walk`, `os.listdir`,
   `os.scandir`, `glob.glob`, `glob.iglob`, `Path.glob`/`rglob`/`iterdir` whose path expression
   holds a string constant naming that dir. Names are resolved through local assignments, `for`
@@ -24,7 +28,10 @@ A test module is selected when any of these holds (union):
   so `SKILLS = os.path.join(ROOT, "skills")` then `os.walk(SKILLS)` is caught.
 
 The caller must run the full suite instead (`ly_do_tron_bo` is set, `modules` is every module)
-when a changed path lies outside `TOP_DIRS`, a changed `.py` cannot be parsed, or the selection
+when a changed CODE file or file of unknown kind lies outside `TOP_DIRS` (only the kinds in
+`DATA_EXTS` / `DATA_NAMES` count as data — when unsure, run everything; a data file outside
+`TOP_DIRS` selects only the tests naming its path, and none when no test does — spec deviation
+#1, Q4), a changed `.py` cannot be parsed, or the selection
 reaches `NGUONG_TRON_BO` of all modules — at that size one full-suite process is cheaper than
 picking, and safer.
 
@@ -62,8 +69,15 @@ import unittest
 from datetime import datetime
 
 TOP_DIRS = frozenset({"scripts", "hooks", "skills", "tests", "agents"})
-PATH_ONLY_DIRS = frozenset({"skills", "agents", "docs"})
+# Under these top dirs a file matches by path only; so does every file outside `TOP_DIRS`.
+PATH_ONLY_DIRS = frozenset({"skills", "agents"})
 SOURCE_DIRS = ("scripts", "hooks/scripts")
+TEST_DIR = "tests"
+# Data kinds: outside `TOP_DIRS` these match by path only. Anything else there (`.py .ps1 .sh
+# .js .ts .cmd .bat`, or an extension not listed) is code or unknown -> the full suite runs.
+DATA_EXTS = frozenset({".md", ".json", ".jsonl", ".txt", ".yml", ".yaml", ".toml", ".csv",
+                       ".png", ".svg"})
+DATA_NAMES = frozenset({".gitignore", ".gitattributes", "LICENSE"})
 NGUONG_TRON_BO = 0.6
 
 # Directory-scanning functions -> the module that owns them (a bare name means `from X import f`).
@@ -117,7 +131,7 @@ def _mau_duong_dan(path):
     patterns = [SEGMENT_SEAM.join(re.escape(s) for s in segs)]
     if len(segs) >= 3:  # the path below the top dir, e.g. `tdq-build/references/qc.md`
         patterns.append(SEGMENT_SEAM.join(re.escape(s) for s in segs[1:]))
-    if segs[0] not in PATH_ONLY_DIRS:
+    if segs[0] in TOP_DIRS and segs[0] not in PATH_ONLY_DIRS:
         patterns.append(re.escape(segs[-1]))
     return [re.compile(r"(?<![\w.-])" + p + r"(?![\w-])") for p in patterns]
 
@@ -143,10 +157,10 @@ def _ten_import(tree):
     return names
 
 
-def do_thi_import(repo):
-    """{module name: set of module names it imports} over `SOURCE_DIRS`."""
+def do_thi_import(repo, dirs=SOURCE_DIRS):
+    """{module name: set of module names it imports} over the `.py` files directly in `dirs`."""
     graph = {}
-    for d in SOURCE_DIRS:
+    for d in dirs:
         folder = os.path.join(repo, *d.split("/"))
         if not os.path.isdir(folder):
             continue
@@ -335,15 +349,31 @@ def chon_theo_quet(top_dirs, sources):
 
 # ---------- the radius ----------
 
+def la_du_lieu(path):
+    """True when `path` is a data file by kind (`DATA_NAMES`, or an extension in `DATA_EXTS`)."""
+    name = path.rsplit("/", 1)[-1]
+    return name in DATA_NAMES or os.path.splitext(name)[1].lower() in DATA_EXTS
+
+
 def _ly_do_ngoai(paths):
-    outside = sorted(p for p in paths if p.split("/")[0] not in TOP_DIRS)
+    """Reason to run everything: a code or unknown-kind file outside `TOP_DIRS`; else None."""
+    outside = sorted(p for p in paths
+                     if p.split("/")[0] not in TOP_DIRS and not la_du_lieu(p))
     if outside:
-        return "changed file outside %s: %s" % ("/ ".join(sorted(TOP_DIRS)) + "/", outside[0])
+        return "changed code or unknown-kind file outside %s: %s" % (
+            "/ ".join(sorted(TOP_DIRS)) + "/", outside[0])
     return None
 
 
 def _la_nguon_py(path):
     return path.endswith(".py") and os.path.dirname(path) in SOURCE_DIRS
+
+
+def _la_module_phu_test(path):
+    """A non-test `.py` directly under `tests/` (e.g. `helper.py`): importable by tests."""
+    name = path.rsplit("/", 1)[-1]
+    return (path.endswith(".py") and os.path.dirname(path) == TEST_DIR
+            and not name.startswith("test_"))
 
 
 def _ly_do_khong_doc_duoc(paths, repo):
@@ -362,7 +392,7 @@ def _ly_do_khong_doc_duoc(paths, repo):
 
 def _chon(paths, repo, sources):
     chosen = set()
-    graph = None
+    graph = test_graph = None
     for p in paths:
         name = p.rsplit("/", 1)[-1]
         if p.startswith("tests/") and name in sources:
@@ -371,6 +401,11 @@ def _chon(paths, repo, sources):
         if _la_nguon_py(p):
             graph = do_thi_import(repo) if graph is None else graph
             chosen |= chon_theo_ten_module(bao_dong_nguoc(name[:-3], graph), sources)
+        elif _la_module_phu_test(p):
+            if test_graph is None:
+                test_graph = do_thi_import(repo, (TEST_DIR,))
+            chosen |= {m + ".py" for m in bao_dong_nguoc(name[:-3], test_graph)
+                       if m + ".py" in sources}
     chosen |= chon_theo_quet({p.split("/")[0] for p in paths}, sources)
     return chosen
 
