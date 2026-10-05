@@ -104,14 +104,14 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   - Kiểm: mục soát lỗi của file đó có một dòng cho mỗi phát hiện
   - Không dùng cho: rút gọn code — đó là T5.4
   - Cần: T5.2
-- [>] **T5.6** (e25m) Sửa 2 lỗi từ soát lỗi T5.3: (1) file DỮ LIỆU ngoài 5 thư mục (`.md`
+- [x] **T5.6** (e25m) Sửa 2 lỗi từ soát lỗi T5.3: (1) file DỮ LIỆU ngoài 5 thư mục (`.md`
   `.json` `.jsonl` `.txt` `.gitignore`…) không còn làm rơi về trọn bộ — chỉ chọn test nhắc đường
   dẫn của nó; file mã hoặc loại không rõ ngoài 5 thư mục vẫn rơi về trọn bộ (lệch spec #1, Q4);
   (2) file `.py` không phải test trong `tests/` (vd. `helper.py`) được dò import ngược như module:
   mọi test `import helper` / `from helper import` đều được chọn — Test: `python -m unittest discover tests -p test_tdq_test.py -k sua_loi`
   - Chạm: `scripts/tdq_test.py` → `_ly_do_ngoai`, `_chon`; `tests/test_tdq_test.py` → lớp `SuaLoi`
   - Cần: T5.3
-- [ ] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: `python scripts/tdq_test.py vung-cham` xanh
+- [~] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: `python scripts/tdq_test.py vung-cham` xanh
   - Dùng: `simplify`
   - Để: gỡ trùng lặp trong mã mới, không đổi hành vi
   - Ra: mã đã rút gọn
