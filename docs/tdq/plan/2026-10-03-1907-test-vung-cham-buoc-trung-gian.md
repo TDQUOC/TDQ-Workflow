@@ -73,7 +73,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   Test: `python -m unittest discover tests -p test_luat_test.py`
   - Chạm: `skills/tdq-build/SKILL.md`, `skills/tdq-plan/references/plan-template.md`, `skills/tdq-build/references/qc.md`, `docs/tdq/audit/luat-hien-co.md`, `docs/tdq/token-budget.json`; `tests/test_luat_test.py` → file mới
   - Cần: T1.3
-- [ ] **T3.2** (e10m) `docs/kien-truc.md` dòng 2026-10-03 (yêu cầu 1907): 2 cổng trọn bộ, bán kính
+- [>] **T3.2** (e10m) `docs/kien-truc.md` dòng 2026-10-03 (yêu cầu 1907): 2 cổng trọn bộ, bán kính
   tính bằng máy, rơi về trọn bộ khi không chắc, sổ bỏ sót; `next` nhắc, không chặn — Test:
   `python -c "t=open('docs/kien-truc.md',encoding='utf-8').read();assert '2026-10-03 (yêu cầu 1907)' in t"`
   - Chạm: `docs/kien-truc.md`
@@ -89,7 +89,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P5 — Log, test, soát, phát hành
 
-- [ ] **T5.1** (e10m) Log service của `tdq_test.py`: ISO timestamp, tập file, số module chọn, lý do
+- [x] **T5.1** (e10m) Log service của `tdq_test.py`: ISO timestamp, tập file, số module chọn, lý do
   rơi về trọn bộ, giây chạy; tắt bằng `TDQ_LOG=0` — Test:
   `python -m unittest discover tests -p test_tdq_test.py -k log`
   - Cần: T1.3
