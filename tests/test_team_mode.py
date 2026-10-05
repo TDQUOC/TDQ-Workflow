@@ -17,6 +17,10 @@ from helper import (tdq_state, write_state, write_file, run_state_cli,
                     run_team_cli, run_hook, load_fixture, run_checkstatus_cli)
 import tdq_team                                  # sau helper: helper bơm scripts/ vào sys.path
 
+# Lệnh luôn thoát 0 / luôn thoát 1, chạy qua chính trình thông dịch Python: `true`/`false` chỉ
+# có trong PATH của Git Bash, gọi từ cmd/PowerShell là đỏ vì lý do sai.
+LENH_LUON_XANH = f'"{sys.executable}" -c "pass"'
+
 PLAN_REL = os.path.join("docs", "tdq", "plan", "2026-08-17-1828-x.md")
 
 PLAN_MOT_DOI_BON_GIAO = """## P1 — a
@@ -187,95 +191,95 @@ class CliTest(unittest.TestCase):
         self.assertNotIn("[20", err)
 
 
-PLAN_TRON = """# PLAN — mau
+PLAN_TRON = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) sua alpha — Test: `true`
+- [ ] **T1.1** (n3 e5m) sua alpha — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/alpha.py`
-- [ ] **T1.2** (n3 e5m) sua beta — Test: `true`
+- [ ] **T1.2** (n3 e5m) sua beta — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/beta.py`
-- [ ] **T1.3** (n3 e5m) sua gamma — Test: `true`
+- [ ] **T1.3** (n3 e5m) sua gamma — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/gamma.py`
-- [ ] **T1.4** (n3 e5m) chay sau khi T1.1 xong — Test: `true`
+- [ ] **T1.4** (n3 e5m) chay sau khi T1.1 xong — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/delta.py`
-- [ ] **T1.5** (n3 e5m) tra cuu tai lieu ngoai — Test: `true`
+- [ ] **T1.5** (n3 e5m) tra cuu tai lieu ngoai — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/epsilon.py`
   - Dùng: `context7` (mcp)
 """
 
-PLAN_CHUNG_FILE = """# PLAN — mau
+PLAN_CHUNG_FILE = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) sua alpha lan mot — Test: `true`
+- [ ] **T1.1** (n3 e5m) sua alpha lan mot — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/alpha.py`
-- [ ] **T1.2** (n3 e5m) sua alpha lan hai — Test: `true`
+- [ ] **T1.2** (n3 e5m) sua alpha lan hai — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/alpha.py`
 """
 
-PLAN_8_TASK = """# PLAN — mau
+PLAN_8_TASK = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) viec a — Test: `true`
+- [ ] **T1.1** (n3 e5m) viec a — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/a.py`
-- [ ] **T1.2** (n3 e5m) viec b — Test: `true`
+- [ ] **T1.2** (n3 e5m) viec b — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/b.py`
-- [ ] **T1.3** (n3 e5m) viec c — Test: `true`
+- [ ] **T1.3** (n3 e5m) viec c — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/c.py`
 
 ## P2 — tang tren
-- [ ] **T2.1** (n3 e5m) viec d — Test: `true`
+- [ ] **T2.1** (n3 e5m) viec d — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/d.py`
-- [ ] **T2.2** (n3 e5m) viec e — Test: `true`
+- [ ] **T2.2** (n3 e5m) viec e — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/e.py`
-- [ ] **T2.3** (n3 e5m) viec f — Test: `true`
+- [ ] **T2.3** (n3 e5m) viec f — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/f.py`
-- [ ] **T2.4** (n3 e5m) viec g — Test: `true`
+- [ ] **T2.4** (n3 e5m) viec g — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/g.py`
-- [ ] **T2.5** (n3 e5m) viec h — Test: `true`
+- [ ] **T2.5** (n3 e5m) viec h — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/h.py`
 """
 
-PLAN_CAN = """# PLAN — mau
+PLAN_CAN = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) dung nen — Test: `true`
+- [ ] **T1.1** (n3 e5m) dung nen — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/a.py`
-- [ ] **T1.2** (n3 e5m) doc ket qua cua T1.1 — Test: `true`
+- [ ] **T1.2** (n3 e5m) doc ket qua cua T1.1 — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/b.py`
   - Cần: T1.1
-- [ ] **T1.3** (n3 e5m) can hai task truoc — Test: `true`
+- [ ] **T1.3** (n3 e5m) can hai task truoc — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/c.py`
   - Cần: T1.1, T1.2
-- [ ] **T1.4** (n3 e5m) khong can gi — Test: `true`
+- [ ] **T1.4** (n3 e5m) khong can gi — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/d.py`
 """
 
-PLAN_CAN_CHEO = """# PLAN — mau
+PLAN_CAN_CHEO = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) viec a — Test: `true`
+- [ ] **T1.1** (n3 e5m) viec a — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/a.py`
-- [ ] **T1.2** (n3 e5m) viec b — Test: `true`
+- [ ] **T1.2** (n3 e5m) viec b — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/b.py`
   - Cần: T1.1
 
 ## P2 — tang tren
-- [ ] **T2.1** (n3 e5m) khong dinh gi toi P1 — Test: `true`
+- [ ] **T2.1** (n3 e5m) khong dinh gi toi P1 — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/c.py`
-- [ ] **T2.2** (n3 e5m) cham chung file voi T2.1 — Test: `true`
+- [ ] **T2.2** (n3 e5m) cham chung file voi T2.1 — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/c.py`
 """
 
 PLAN_N_ROI = "# PLAN — mau\n\n## P1 — nen\n" + "".join(
-    f"- [ ] **T1.{i}** (n3 e5m) viec {i} — Test: `true`\n  - Chạm: `scripts/f{i}.py`\n" for i in range(1, 10))
+    f"- [ ] **T1.{i}** (n3 e5m) viec {i} — Test: `{LENH_LUON_XANH}`\n  - Chạm: `scripts/f{i}.py`\n" for i in range(1, 10))
 
-PLAN_CAN_VONG = """# PLAN — mau
+PLAN_CAN_VONG = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) a — Test: `true`
+- [ ] **T1.1** (n3 e5m) a — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/a.py`
   - Cần: T1.2
-- [ ] **T1.2** (n3 e5m) b — Test: `true`
+- [ ] **T1.2** (n3 e5m) b — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/b.py`
   - Cần: T1.1
 """
@@ -537,10 +541,10 @@ class PhanCongTest(TeamBase):
         self.assertEqual(tasks["T1.5"]["ly_do"], "mcp")
 
     def test_khong_khai_vung_file_thi_bi_giu_lai(self):
-        self._project("""# PLAN — mau
+        self._project(f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) viec khong khai file — Test: `true`
+- [ ] **T1.1** (n3 e5m) viec khong khai file — Test: `{LENH_LUON_XANH}`
 """)
         self.chay("assign")
         rec = self._ban_do()["tasks"]["T1.1"]
@@ -548,10 +552,10 @@ class PhanCongTest(TeamBase):
         self.assertEqual(rec["ly_do"], "vung-khoa")
 
     def test_sua_file_luat_thi_bi_giu_lai(self):
-        self._project("""# PLAN — mau
+        self._project(f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (n3 e5m) sua luat build — Test: `true`
+- [ ] **T1.1** (n3 e5m) sua luat build — Test: `{LENH_LUON_XANH}`
   - Chạm: `skills/tdq-build/SKILL.md`
 """)
         self.chay("assign")

@@ -9,22 +9,27 @@ Mọi ca ở đây dựng repo git trong thư mục tạm — không ca nào đ�
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 
 from helper import write_state, write_file, run_team_cli  # noqa: F401 — bơm scripts/ vào sys.path
+
+# Lệnh luôn thoát 0 / luôn thoát 1, chạy qua chính trình thông dịch Python: `true`/`false` chỉ
+# có trong PATH của Git Bash, gọi từ cmd/PowerShell là đỏ vì lý do sai.
+LENH_LUON_XANH = f'"{sys.executable}" -c "pass"'
 
 SLUG = "2026-09-05-0833-thu-doi"
 PLAN_REL = os.path.join("docs", "tdq", "plan", SLUG + ".md")
 NHANH_REQUEST = "feature/thu-doi"
 NHANH_GOC = "chinh"
 
-PLAN = """# PLAN — mau
+PLAN = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (e5m) sua alpha — Test: `true`
+- [ ] **T1.1** (e5m) sua alpha — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/alpha.py`
-- [ ] **T1.2** (e5m) sua beta — Test: `true`
+- [ ] **T1.2** (e5m) sua beta — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/beta.py`
 """
 
