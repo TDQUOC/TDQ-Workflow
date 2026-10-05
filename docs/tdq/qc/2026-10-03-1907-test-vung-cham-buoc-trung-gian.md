@@ -3,7 +3,7 @@
 Ngày: 2026-10-05 · Plan: ../plan/2026-10-03-1907-test-vung-cham-buoc-trung-gian.md · Vòng: 2 · Mức QC: `full`
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
-**Kết luận: PASS ở vòng 2, có 1 lệch spec chờ duyệt.** Vòng 1: QC-F1 đỏ do hai lần chạy trọn bộ
+**Kết luận: PASS ở vòng 2. Lệch spec #1 (Q4) đã được user duyệt ("1a", 2026-10-05).** Vòng 1: QC-F1 đỏ do hai lần chạy trọn bộ
 chồng nhau làm hết bộ nhớ (không phải lỗi mã), nhưng lộ ra một lỗi thật của sổ bỏ sót → QC1.1.
 
 | # | Hạng mục | Lệnh đã chạy | Kết quả | PASS/FAIL |
@@ -12,7 +12,7 @@ chồng nhau làm hết bộ nhớ (không phải lỗi mã), nhưng lộ ra m�
 | Q2 | Không bỏ sót test gọi qua tiến trình con | `… -k tien_trinh_con` | `Ran 2 tests OK` | PASS |
 | Q3 | Dò file luật theo đường dẫn | `… -k duong_dan` | `Ran 5 tests OK` | PASS |
 | Q3b | Test quét thư mục được chọn | `… -k quet_thu_muc` | `Ran 4 tests OK` | PASS |
-| Q4 | Rơi về trọn bộ đúng lúc | `… -k tron_bo_khi` | `Ran 4 tests OK` | PASS (lệch, chờ duyệt) — xem lệch #1 |
+| Q4 | Rơi về trọn bộ đúng lúc | `… -k tron_bo_khi` | `Ran 4 tests OK` | PASS (lệch #1, đã duyệt) |
 | Q5 | Bước trung gian nhanh với file lá | `tdq_test.py vung-cham --files hooks/scripts/stop_gate.py` | 16/129 module · **48,6 s** (ngưỡng 60 s) | PASS |
 | Q6 | Sổ trọn bộ + `next` nhắc | `… -k so` · `-p test_next_tron_bo.py` | `Ran 20 OK` · `Ran 13 OK` | PASS |
 | Q6b | Sổ bán kính bỏ sót | `… -k bo_sot` | `Ran 6 tests OK` | PASS (vòng 2, sau QC1.1) |

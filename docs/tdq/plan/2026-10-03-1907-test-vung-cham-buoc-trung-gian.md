@@ -3,7 +3,7 @@
 Ngày: 2026-10-03 · Spec: ../spec/2026-10-03-1907-test-vung-cham-buoc-trung-gian.md (bản 1.1, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — đo bằng `tdq_bench.py simulate` trên chính plan này: đội thắng 3,0 phút (21,5 so với 24,4), 12 task chia 7 đợt, giao 8, leader giữ 4 (file luật `skills/` và các task cổng); cụm runner tuần tự vì một file nóng, cụm shell chạy song song từ đầu (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: ĐÃ DUYỆT (2026-10-05, "duyệt plan" · mode "1a" = subagent) · 12 task · ETA 255 phút
+Trạng thái plan: HOÀN THÀNH · mode subagent · 14/14 task (12 + T5.6 + QC1.1) · DoD 14/14 · 1 lệch spec đã duyệt · 12 task · ETA 255 phút
 
 ## Mục lục
 
@@ -167,4 +167,4 @@ Trỏ về §6 của spec. Lệnh dạng `discover` vì `tests/` cố ý không 
 - [x] Q9 Trọn bộ xanh — `python scripts/tdq_test.py tron-bo` từ Git Bash thoát 0
 - [x] Q10 Trần token — `python scripts/token_budget.py --kiem` thoát 0 và `python scripts/doc_lint.py skills` thoát 0
 - [x] Q11 Kiến trúc — `grep -rn "^import hooks\|^from hooks" scripts` rỗng + dòng 2026-10-03 (yêu cầu 1907) trong `docs/kien-truc.md`
-- [ ] Q12 Tiết kiệm báo trung thực — report có cả nền cũ (TB 7,4 lần/request) và nền mới (2–3 lần)
+- [x] Q12 Tiết kiệm báo trung thực — report có cả nền cũ (TB 7,4 lần/request) và nền mới (2–3 lần)
