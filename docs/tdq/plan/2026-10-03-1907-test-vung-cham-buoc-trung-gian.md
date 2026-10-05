@@ -93,10 +93,10 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   rơi về trọn bộ, giây chạy; tắt bằng `TDQ_LOG=0` — Test:
   `python -m unittest discover tests -p test_tdq_test.py -k log`
   - Cần: T1.3
-- [~] **T5.2** (e15m) Cổng QC-F1 của chính request này: `tdq_test.py tron-bo` từ Git Bash xanh, và
+- [x] **T5.2** (e15m) Cổng QC-F1 của chính request này: `tdq_test.py tron-bo` từ Git Bash xanh, và
   trọn bộ từ PowerShell 0 fail 0 error — Test: `python scripts/tdq_test.py tron-bo` thoát 0
   - Cần: T2.1, T3.2, T4.1, T5.1
-- [ ] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
+- [~] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
   lý do bác bỏ vào file QC
   - Dùng: `code-review`
   - Để: tìm lỗi đúng-sai trong bán kính, sổ trọn bộ/bỏ sót, nhắc `next`
