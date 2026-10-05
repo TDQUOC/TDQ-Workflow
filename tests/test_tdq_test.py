@@ -6,7 +6,8 @@ Nhóm theo DoD (tên nhóm nằm trong tên method để `-k` chọn được):
 - `duong_dan`: file luật dò theo đường dẫn tương đối, không theo tên trần;
 - `quet_thu_muc`: test quét thư mục cha của file sửa được chọn (dò bằng AST);
 - `tron_bo_khi`: các lúc phải rơi về trọn bộ;
-- `vung_cham` (T1.2): lệnh `vung-cham` trên repo tạm — chọn, chạy một tiến trình, ghi sổ, log.
+- `vung_cham` (T1.2): lệnh `vung-cham` trên repo tạm — chọn, chạy một tiến trình, ghi sổ, log;
+- `so` (T1.3): lệnh `tron-bo` ghi sổ + dòng bỏ sót, lệnh `so` đếm theo request, `dem()` thuần.
 """
 import json
 import os
@@ -399,6 +400,146 @@ class VungCham(unittest.TestCase):
         dong = doc_so(self.goc)[-1]
         self.assertIn("git", dong["fallback"])
         self.assertEqual(len(dong["modules"]), 9)
+
+
+# ---------- T1.3: lệnh `tron-bo` + `so` ----------
+
+def chay_lenh(goc, lenh, *args, log=True):
+    env = dict(os.environ)
+    env["TDQ_LOG"] = "1" if log else "0"
+    env["PYTHONIOENCODING"] = "utf-8"
+    return subprocess.run([sys.executable, SCRIPT, lenh, "--repo", goc, *args],
+                          capture_output=True, text=True, encoding="utf-8", env=env,
+                          timeout=120)
+
+
+def dong_vung_cham(request, modules, fallback=None):
+    return {"ts": "2026-10-05T10:00:00+07:00", "kind": "vung-cham", "request": request,
+            "phase": "implement", "files": [], "modules": modules, "fallback": fallback,
+            "ok": True, "seconds": 0.1}
+
+
+def ghi_so_tay(goc, *rows):
+    ghi(goc, "docs/tdq/.tdq-test.jsonl", "".join(json.dumps(r) + "\n" for r in rows))
+
+
+class So(unittest.TestCase):
+    """`tron-bo` ghi sổ + dòng bỏ sót; `so` đếm theo request (spec §2 hàng 3, 4b; Q6, Q6b)."""
+
+    def setUp(self):
+        self.goc = tempfile.mkdtemp(prefix="tdq-test-so-")
+        self.addCleanup(shutil.rmtree, self.goc, ignore_errors=True)
+        lam_repo_vung_cham(self.goc)
+
+    def test_so_tron_bo_ghi_dong_va_module_do(self):
+        p = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
+        self.assertIn("Ran 9 tests", p.stderr)
+        rows = doc_so(self.goc)
+        tron = [r for r in rows if r["kind"] == "tron-bo"]
+        self.assertEqual(len(tron), 1)
+        dong = tron[0]
+        self.assertEqual(dong["request"], "req-1")
+        self.assertEqual(dong["phase"], "implement")
+        self.assertIs(dong["ok"], False)
+        self.assertEqual(dong["failed_modules"], ["test_b.py"])
+        self.assertIsInstance(dong["seconds"], float)
+        self.assertRegex(dong["ts"], r"^\d{4}-\d\d-\d\dT")
+
+    def test_so_tron_bo_xanh_exit_0(self):
+        ghi(self.goc, "tests/test_b.py", TEST_DAT)
+        p = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        rows = doc_so(self.goc)
+        self.assertEqual([r["kind"] for r in rows], ["tron-bo"])
+        self.assertEqual(rows[0]["failed_modules"], [])
+
+    def test_so_tron_bo_module_import_hong_tinh_la_do(self):
+        ghi(self.goc, "tests/test_hong.py", "import khong_ton_tai_xyz\n")
+        chay_lenh(self.goc, "tron-bo")
+        dong = [r for r in doc_so(self.goc) if r["kind"] == "tron-bo"][-1]
+        self.assertEqual(dong["failed_modules"], ["test_b.py", "test_hong.py"])
+
+    def test_so_bo_sot_khi_module_do_chua_tung_duoc_chon(self):
+        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
+        p = chay_lenh(self.goc, "tron-bo")
+        bo_sot = [r for r in doc_so(self.goc) if r["kind"] == "bo-sot"]
+        self.assertEqual(len(bo_sot), 1)
+        self.assertEqual(bo_sot[0]["module"], "test_b.py")
+        self.assertEqual(bo_sot[0]["request"], "req-1")
+        self.assertIn("test_b.py", p.stdout)
+        self.assertIn("missed", p.stdout)
+
+    def test_so_khong_bo_sot_khi_da_chon_truoc(self):
+        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py", "test_b.py"]))
+        chay_lenh(self.goc, "tron-bo")
+        self.assertEqual([r for r in doc_so(self.goc) if r["kind"] == "bo-sot"], [])
+
+    def test_so_khong_bo_sot_khi_vung_cham_da_roi_ve_tron_bo(self):
+        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"], fallback="outside"))
+        chay_lenh(self.goc, "tron-bo")
+        self.assertEqual([r for r in doc_so(self.goc) if r["kind"] == "bo-sot"], [])
+
+    def test_so_request_khac_khong_tinh(self):
+        ghi_so_tay(self.goc, dong_vung_cham("req-0", ["test_b.py"]),
+                   dong_vung_cham("req-0", [], fallback="outside"))
+        chay_lenh(self.goc, "tron-bo")
+        bo_sot = [r for r in doc_so(self.goc) if r["kind"] == "bo-sot"]
+        self.assertEqual([r["module"] for r in bo_sot], ["test_b.py"])
+
+    def test_so_json_dem_va_ngan_sach(self):
+        p = chay_lenh(self.goc, "so", "--json")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(json.loads(p.stdout), {"request": "req-1", "tron_bo": 0, "bo_sot": 0,
+                                                "modules_bo_sot": [], "ngan_sach": 2})
+        chay_lenh(self.goc, "tron-bo")  # đỏ → có vòng sửa QC → ngân sách 3
+        chay_lenh(self.goc, "tron-bo")
+        d = json.loads(chay_lenh(self.goc, "so", "--json").stdout)
+        self.assertEqual(d["tron_bo"], 2)
+        self.assertEqual(d["bo_sot"], 2)
+        self.assertEqual(d["modules_bo_sot"], ["test_b.py"])
+        self.assertEqual(d["ngan_sach"], 3)
+        chu = chay_lenh(self.goc, "so")
+        self.assertEqual(chu.returncode, 0)
+        self.assertIn("req-1", chu.stdout)
+        self.assertIn("test_b.py", chu.stdout)
+
+    def test_so_dem_thuan(self):
+        rows = [
+            {"kind": "tron-bo", "request": "r", "ok": True},
+            {"kind": "bo-sot", "request": "r", "module": "test_x.py"},
+            {"kind": "bo-sot", "request": "r", "module": "test_x.py"},
+            {"kind": "bo-sot", "request": "khac", "module": "test_y.py"},
+            {"kind": "tron-bo", "request": "khac", "ok": False},
+            {"kind": "vung-cham", "request": "r", "modules": []},
+        ]
+        truoc = json.dumps(rows)
+        d = tdq_test.dem(rows, "r")
+        self.assertEqual(d, {"request": "r", "tron_bo": 1, "bo_sot": 2,
+                             "modules_bo_sot": ["test_x.py"], "ngan_sach": 2})
+        self.assertEqual(json.dumps(rows), truoc)  # không đổi đầu vào
+        self.assertEqual(tdq_test.dem(rows, "khac")["ngan_sach"], 3)
+        self.assertEqual(tdq_test.dem([], None)["tron_bo"], 0)
+
+    def test_so_hong_va_state_hong_coi_la_rong(self):
+        ghi(self.goc, "docs/tdq/.tdq-test.jsonl", "hong\n")
+        ghi(self.goc, "docs/tdq/state.json", "{hong")
+        p = chay_lenh(self.goc, "so", "--json")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(json.loads(p.stdout)["tron_bo"], 0)
+        self.assertIn("warning", p.stderr)
+
+    def test_so_log_iso_va_tdq_log_0_tat(self):
+        bat = chay_lenh(self.goc, "so")
+        self.assertTrue(DONG_LOG.search(bat.stderr), bat.stderr)
+        tat = chay_lenh(self.goc, "tron-bo", log=False)
+        self.assertIsNone(DONG_LOG.search(tat.stderr), tat.stderr)
+        tat = chay_lenh(self.goc, "so", log=False)
+        self.assertIsNone(DONG_LOG.search(tat.stderr), tat.stderr)
+
+    def test_so_gitignore_co_so_test(self):
+        with open(os.path.join(ROOT, ".gitignore"), encoding="utf-8") as f:
+            self.assertIn("docs/tdq/.tdq-test.jsonl", f.read().splitlines())
 
 
 if __name__ == "__main__":
