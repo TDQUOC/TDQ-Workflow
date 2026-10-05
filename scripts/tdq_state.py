@@ -1572,6 +1572,25 @@ def _lech_block(pending):
     return out
 
 
+TRON_BO_PHASES = ("implement", "qc")   # phases where `next` warns about a full suite over budget
+
+
+def _tron_bo_vuot(cwd, state):
+    """(runs, budget) when the request's full-suite runs exceed the budget, else None.
+
+    Reads the ledger through `tdq_test` (lazily) and fails OPEN: any error → None,
+    so `next` — run by every hook — never breaks on a bad ledger."""
+    if phase_key(state) not in TRON_BO_PHASES:
+        return None
+    try:
+        import tdq_test
+        counts = tdq_test.dem_repo(cwd, state.get("active_request"))
+        runs, budget = counts["tron_bo"], counts["ngan_sach"]
+    except Exception:
+        return None
+    return (runs, budget) if runs > budget else None
+
+
 def render_next(cwd, state, brief=False, compact=False):
     """The 5-part block (spec §2.2), at most 20 lines.
 
@@ -1587,6 +1606,9 @@ def render_next(cwd, state, brief=False, compact=False):
     pending = lech_cho(state) if phase_key(state) in LECH_PHASES else []
     short = (f"{len(pending)} pending spec deviation(s) → "
              "python3 scripts/tdq_state.py lech list") if pending else ""
+    over = _tron_bo_vuot(cwd, state) if state and state.get("active_request") else None
+    if over:
+        head = f"{head} · full suite {over[0]}/{over[1]}"
     if brief:
         return f"{head} · {short}" if short else head
     row = phase_row(state)
@@ -1599,6 +1621,10 @@ def render_next(cwd, state, brief=False, compact=False):
         lines.append("Checklist (copy into your answer, tick as you go):")
         lines += [f"- [ ] {item}" for item in row["checklist"]]
     lines.append(f"Done when: {row['done_when']}")
+    if over and not compact:
+        lines.append(f"Full test suite ran {over[0]} times this request (budget {over[1]}): "
+                     "between steps run python3 scripts/tdq_test.py vung-cham; "
+                     "the full suite belongs to the QC gates.")
     if pending and compact:
         lines.append(short)
     elif pending:

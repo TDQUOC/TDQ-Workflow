@@ -24,6 +24,11 @@ SCRIPTS = os.path.join(GOC, "scripts")
 if SCRIPTS not in sys.path:
     sys.path.insert(0, SCRIPTS)
 
+# Lệnh luôn thoát 0 / luôn thoát 1, chạy qua chính trình thông dịch Python: `true`/`false` chỉ
+# có trong PATH của Git Bash, gọi từ cmd/PowerShell là đỏ vì lý do sai.
+LENH_LUON_XANH = f'"{sys.executable}" -c "pass"'
+LENH_LUON_DO = f'"{sys.executable}" -c "raise SystemExit(1)"'
+
 import tdq_ten_lenh  # noqa: E402
 
 
@@ -147,12 +152,12 @@ import datetime  # noqa: E402
 def _hom_nay():
     return datetime.date.today().strftime("%Y-%m-%d")
 
-PLAN_KIEM = """# PLAN — mau
+PLAN_KIEM = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (e5m) viec xanh — Test: `true`
+- [ ] **T1.1** (e5m) viec xanh — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/a.py`
-- [ ] **T1.2** (e5m) viec do — Test: `false`
+- [ ] **T1.2** (e5m) viec do — Test: `{LENH_LUON_DO}`
   - Chạm: `scripts/b.py`
 - [ ] **T1.3** (e5m) viec khong co lenh — Test: đọc lại thấy đủ
   - Chạm: `scripts/c.py`
@@ -180,7 +185,7 @@ class KiemChayTestTest(TeamBase):
         self._lam("T1.1")
         rc, out, err = self.chay("check", "T1.1")
         self.assertEqual(rc, 0, out + err)
-        self.assertIn("true", out + err)
+        self.assertIn(LENH_LUON_XANH, out + err)
 
     def test_kiem_chay_test_do_thi_chan_va_noi_loi_CODE(self):
         self._lam("T1.2")
@@ -338,14 +343,14 @@ class ModeMainKhongDoiTest(TeamBase):
 
 
 
-PLAN_REBASE = """# PLAN — mau
+PLAN_REBASE = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (e5m) viec a — Test: `true`
+- [ ] **T1.1** (e5m) viec a — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/a.py`
-- [ ] **T1.2** (e5m) viec b — Test: `true`
+- [ ] **T1.2** (e5m) viec b — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/b.py`
-- [ ] **T1.3** (e5m) viec c — Test: `true`
+- [ ] **T1.3** (e5m) viec c — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/c.py`
 """
 
@@ -449,14 +454,14 @@ class LenhResolveTest(TeamBase):
 
 
 
-PLAN_FILE_NONG = """# PLAN — mau
+PLAN_FILE_NONG = f"""# PLAN — mau
 
 ## P1 — nen
-- [ ] **T1.1** (e5m) viec a — Test: `true`
+- [ ] **T1.1** (e5m) viec a — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/nong.py`
-- [ ] **T1.2** (e5m) viec b — Test: `true`
+- [ ] **T1.2** (e5m) viec b — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/nong.py`, `scripts/b.py`
-- [ ] **T1.3** (e5m) viec c — Test: `true`
+- [ ] **T1.3** (e5m) viec c — Test: `{LENH_LUON_XANH}`
   - Chạm: `scripts/c.py`
 """
 

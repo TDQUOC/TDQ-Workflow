@@ -61,22 +61,22 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L009 | `skills/tdq-build/SKILL.md:98` | phân công; cấm làm theo trí nhớ.** | act on, through the line index at the top of that file; working from memory is banned. |
 | L010 | `skills/tdq-build/SKILL.md:111` | Mode là thứ USER đã nói lúc duyệt. Thiếu mode, hoặc bạn nghĩ mode khác hợp hơn → **DỪNG và HỎI**. | The mode is what the USER said at approval. Missing mode, or you think another mode fits |
 | L011 | `skills/tdq-build/SKILL.md:117` | `- [~]` chỉ dành cho task LEADER tự làm và vẫn chỉ được đúng một. | allowed); `- [~]` is only for a task the LEADER does personally, and still only one. |
-| L012 | `skills/tdq-build/SKILL.md:130` | để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy. | saved for exactly one run at QC. Paste the real output; never declare done unrun. |
-| L013 | `skills/tdq-build/SKILL.md:131` | Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main | 6. Turn `- [~]` into `- [x]` for that task in the plan IMMEDIATELY — in mode `subagent` the |
-| L014 | `skills/tdq-build/SKILL.md:152` | [references/qc.md](references/qc.md) mục `## Ba bước thi hành`. **BẮT BUỘC mở file đó và | [references/qc.md](references/qc.md) under `## Ba bước thi hành`. **BẮT BUỘC mở file đó và |
-| L015 | `skills/tdq-build/SKILL.md:154` | đọc hết ba bước trước khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.** Cùng file đó có | is banned. The same file also carries the qc file template and the 3-fix-round cap, each its own |
-| L016 | `skills/tdq-build/SKILL.md:163` | BẮT BUỘC mở file đó và đọc hết bốn bước trước khi viết report; cấm làm theo trí nhớ.** | The execution steps — from writing the report through asking about the commit to merging the request branch back — live in |
+| L012 | `skills/tdq-build/SKILL.md:131` | để dành, chạy đúng 1 lần ở QC. Dán kết quả thật, cấm tuyên bố xong khi chưa chạy. | Paste the real output; never declare done unrun. |
+| L013 | `skills/tdq-build/SKILL.md:132` | Đổi `- [~]` thành `- [x]` cho task đó trong plan NGAY — mode `subagent` thì main | 6. Turn `- [~]` into `- [x]` for that task in the plan IMMEDIATELY — in mode `subagent` the |
+| L014 | `skills/tdq-build/SKILL.md:153` | [references/qc.md](references/qc.md) mục `## Ba bước thi hành`. **BẮT BUỘC mở file đó và | [references/qc.md](references/qc.md) under `## Ba bước thi hành`. **BẮT BUỘC mở file đó và |
+| L015 | `skills/tdq-build/SKILL.md:155` | đọc hết ba bước trước khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ.** Cùng file đó có | is banned. The same file also carries the qc file template and the 3-fix-round cap, each its own |
+| L016 | `skills/tdq-build/SKILL.md:164` | BẮT BUỘC mở file đó và đọc hết bốn bước trước khi viết report; cấm làm theo trí nhớ.** | The execution steps — from writing the report through asking about the commit to merging the request branch back — live in |
 | L017 | `skills/tdq-build/references/qc.md:60` | Đây là toàn bộ Phần B của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải | This is the whole of Part B of [SKILL.md](../SKILL.md) — moved here so the skill body does not |
 | L018 | `skills/tdq-build/references/qc.md:61` | nạp nhánh này mỗi lần gọi. Vào phase `qc` là **bắt buộc** đọc hết ba bước dưới đây trước | carry this branch on every call. On entering phase `qc` you **must** read all three steps below |
 | L019 | `skills/tdq-build/references/qc.md:62` | khi chạy hạng mục đầu tiên; cấm làm theo trí nhớ. | before running the first item; working from memory is banned. |
-| L020 | `skills/tdq-build/references/qc.md:80` | mà bản fix có thể làm hỏng, cộng full suite. Trần 3 vòng; vượt trần thì DỪNG, báo user. | item the fix could have broken, plus the full suite. Cap of 3 rounds; over the cap, STOP and |
-| L021 | `skills/tdq-build/references/qc.md:100` | chứa node bị ảnh hưởng. Node không có test → ghi `KHÔNG CÓ TEST: <node>` vào file | module holding the affected node. A node with no test → write `KHÔNG CÓ TEST: <node>` into the |
-| L022 | `skills/tdq-build/references/qc.md:101` | QC; đó là nợ kỹ thuật phải nêu trong report, không được tính là PASS. | QC file; that is technical debt to raise in the report and must not count as PASS. |
-| L023 | `skills/tdq-build/references/qc.md:102` | QC-F3 — ràng buộc kiến trúc: mỗi dòng trong khối "Ràng buộc kiến trúc phải giữ" ở | - QC-F3 — architectural constraints: every line of the "Ràng buộc kiến trúc phải giữ" block in |
-| L024 | `skills/tdq-build/references/qc.md:107` | đáp án. Không chạm mã nguồn → ghi `KHÔNG ÁP DỤNG — không sửa file code`. | answer. No source file touched → write `KHÔNG ÁP DỤNG — không sửa file code`. |
-| L025 | `skills/tdq-build/references/qc.md:115` | Log service: bật mặc định, có timestamp, tắt/giảm mức được qua config. | - Log service: on by default, timestamped, switchable off/down through config. |
-| L026 | `skills/tdq-build/references/qc.md:118` | ở trường `Ra` phải tồn tại. Không có artifact → sửa spec §3b dòng đó thành `KHÔNG` + | artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus |
-| L027 | `skills/tdq-build/references/qc.md:181` | Lặp đến khi mọi hạng mục PASS. **Trần 3 vòng** — vượt trần thì DỪNG và báo user. | 4. Repeat until every item PASSes. **Cap of 3 rounds** — over the cap, STOP and tell the user. |
+| L020 | `skills/tdq-build/references/qc.md:81` | mà bản fix có thể làm hỏng, cộng full suite. Trần 3 vòng; vượt trần thì DỪNG, báo user. | once more only after the LAST fix round. Cap of 3 rounds |
+| L021 | `skills/tdq-build/references/qc.md:102` | chứa node bị ảnh hưởng. Node không có test → ghi `KHÔNG CÓ TEST: <node>` vào file | module holding the affected node. A node with no test → write `KHÔNG CÓ TEST: <node>` into the |
+| L022 | `skills/tdq-build/references/qc.md:103` | QC; đó là nợ kỹ thuật phải nêu trong report, không được tính là PASS. | QC file; that is technical debt to raise in the report and must not count as PASS. |
+| L023 | `skills/tdq-build/references/qc.md:104` | QC-F3 — ràng buộc kiến trúc: mỗi dòng trong khối "Ràng buộc kiến trúc phải giữ" ở | - QC-F3 — architectural constraints: every line of the "Ràng buộc kiến trúc phải giữ" block in |
+| L024 | `skills/tdq-build/references/qc.md:109` | đáp án. Không chạm mã nguồn → ghi `KHÔNG ÁP DỤNG — không sửa file code`. | answer. No source file touched → write `KHÔNG ÁP DỤNG — không sửa file code`. |
+| L025 | `skills/tdq-build/references/qc.md:117` | Log service: bật mặc định, có timestamp, tắt/giảm mức được qua config. | - Log service: on by default, timestamped, switchable off/down through config. |
+| L026 | `skills/tdq-build/references/qc.md:120` | ở trường `Ra` phải tồn tại. Không có artifact → sửa spec §3b dòng đó thành `KHÔNG` + | artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus |
+| L027 | `skills/tdq-build/references/qc.md:190` | Lặp đến khi mọi hạng mục PASS. **Trần 3 vòng** — vượt trần thì DỪNG và báo user. | 4. Repeat until every item PASSes. **Cap of 3 rounds** — over the cap, STOP and tell the user. |
 | L028 | `skills/tdq-build/references/report-template.md:16` | Đây là toàn bộ Phần C của [SKILL.md](../SKILL.md) — chuyển về đây để thân skill không phải | This is the whole of Part C of [SKILL.md](../SKILL.md) — moved here so the skill body does not |
 | L029 | `skills/tdq-build/references/qc.md:61` | nạp nhánh này mỗi lần gọi. Vào phase `report` là **bắt buộc** đọc hết bốn bước dưới đây | carry this branch on every call. On entering phase `report` you **must** read all four steps |
 | L030 | `skills/tdq-build/references/report-template.md:18` | trước khi viết report; cấm làm theo trí nhớ. | below before writing the report; working from memory is banned. |
@@ -86,8 +86,8 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L034 | `skills/tdq-build/references/report-template.md:37` | nhất: commit gỡ chặn giữa build theo Luật cứng, phải liệt kê trong report). Gộp chung | (the single exception: an unblocking commit during build under the Hard rules, which must |
 | L035 | `skills/tdq-build/references/report-template.md:55` | User đồng ý → message mô tả thay đổi, KHÔNG chứa "generated with …" hay trailer AI; | User agrees → a message describing the change, containing NO "generated with …" and no AI |
 | L036 | `skills/tdq-build/references/report-template.md:21` | `docs/tdq/reports/<slug>.md` — tiếng Việt, KHÔNG giới hạn cứng số dòng. Khuyến nghị | `docs/tdq/reports/<slug>.md` — in the user's document language, with NO hard line limit. |
-| L037 | `skills/tdq-build/references/report-template.md:112` | chỉ tính lúc máy làm. Lệch lớn ở một phase nghĩa là phase đó tốn thời gian CHỜ, không phải | user's approval, **model time** counts only machine work. A large gap on one phase means that |
-| L038 | `skills/tdq-build/references/report-template.md:120` | Dòng "Giới hạn" không được bỏ trống khi còn việc dang dở — nói thật, không giấu. | - The "Giới hạn" line must not be left empty while work remains unfinished — tell the truth, hide |
+| L037 | `skills/tdq-build/references/report-template.md:118` | chỉ tính lúc máy làm. Lệch lớn ở một phase nghĩa là phase đó tốn thời gian CHỜ, không phải | user's approval, **model time** counts only machine work. A large gap on one phase means that |
+| L038 | `skills/tdq-build/references/report-template.md:126` | Dòng "Giới hạn" không được bỏ trống khi còn việc dang dở — nói thật, không giấu. | - The "Giới hạn" line must not be left empty while work remains unfinished — tell the truth, hide |
 | L039 | `skills/tdq-build/references/rules/chung.md:35` | SonarQube 10/15(25); ESLint để 20, Microsoft CA1502 để 25 nên phải chốt một mức. | defaults to 10/15(25); ESLint uses 20 and Microsoft CA1502 uses 25, so one level must be |
 | L040 | `skills/tdq-build/references/rules/chung.md:42` | Mọi lần viết hoặc sửa code, bất kể ngôn ngữ — kể cả script nhỏ và test. | - Every time you write or change code, in any language — small scripts and tests included. |
 | L041 | `skills/tdq-build/references/rules/chung.md:49` | ba nhóm còn lại. Ba câu hỏi bắt buộc trước khi nộp code: | BEFORE the other three. Three mandatory questions before submitting code: |
@@ -234,9 +234,9 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L182 | `skills/tdq-conventions/references/plugin-routing.md:87` | (cấm bật) trong `~/.claude/plugin-tiers.json` — chỉ khi user yêu cầu rõ. | `always_off` (never enabled) in `~/.claude/plugin-tiers.json` — only when the user asks for it |
 | L183 | `skills/tdq-conventions/references/reminder-codes.md:4` | những dòng dạng `[TDQ:<MÃ>] <việc phải làm>`. | `[TDQ:<CODE>] <the job to do>` into the context. |
 | L184 | `skills/tdq-conventions/references/reminder-codes.md:15` | \| Mã \| Nghĩa \| Việc phải làm \| Hiệu ứng hook kiểm \| | \| Code \| Meaning \| What to do \| Effect the hook checks \| |
-| L185 | `skills/tdq-conventions/references/reminder-codes.md:48` | Sổ turn** `docs/tdq/.tdq-turn.jsonl` — ghi lại mọi lần sửa file đi qua tool | Turn ledger** `docs/tdq/.tdq-turn.jsonl` — records every file edit that went through the |
-| L186 | `skills/tdq-conventions/references/reminder-codes.md:65` | Project **không phải git repo** thì không có vân tay repo: chiều "đã ghi log" | A project that is **not a git repo** has no repo fingerprint: the "log was written" direction |
-| L187 | `skills/tdq-conventions/references/reminder-codes.md:72` | đang bẩn đầu tiên, có thể không phải file vừa sửa. | first dirty file, which may not be the file you just edited. |
+| L185 | `skills/tdq-conventions/references/reminder-codes.md:49` | Sổ turn** `docs/tdq/.tdq-turn.jsonl` — ghi lại mọi lần sửa file đi qua tool | Turn ledger** `docs/tdq/.tdq-turn.jsonl` — records every file edit that went through the |
+| L186 | `skills/tdq-conventions/references/reminder-codes.md:66` | Project **không phải git repo** thì không có vân tay repo: chiều "đã ghi log" | A project that is **not a git repo** has no repo fingerprint: the "log was written" direction |
+| L187 | `skills/tdq-conventions/references/reminder-codes.md:73` | đang bẩn đầu tiên, có thể không phải file vừa sửa. | first dirty file, which may not be the file you just edited. |
 | L188 | `skills/tdq-conventions/references/soul.md:10` | dù cũ hay mới — thì sửa luật đó, không sửa soul. Muốn đổi soul phải có user duyệt. | is the law that gets fixed; soul does not. Changing soul requires the user's approval. |
 | L189 | `skills/tdq-conventions/references/soul.md:33` | Tầng 1 — chất lượng**: code agent làm ra phải đạt MVP thật — chạy đúng, có test, | - **Tier 1 — quality**: the code the agent produces must be a real MVP — it runs, it has |
 | L190 | `skills/tdq-conventions/references/soul.md:47` | Mọi rule và behavior phải đủ chi tiết để model thấp như Haiku đọc là làm đúng, | Every rule and behaviour must be detailed enough that a low model like Haiku reads it and does |
@@ -344,7 +344,7 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L292 | `skills/tdq-plan/references/mode-gate.md:136` | `file-luat`, `hop-dong`. Phần còn lại bắt buộc phải giao — và `scripts/tdq_team.py` | `file-luat`, `hop-dong`. Everything else MUST be handed out — and `scripts/tdq_team.py kiem-ke` |
 | L293 | `skills/tdq-plan/references/mode-gate.md:143` | phải tổng số task, mới quyết định B có nhanh hơn A hay không. Luật đầy đủ của mode đội: | the total task count, decides whether B beats A. Full rule of the team mode: |
 | L294 | `skills/tdq-plan/references/plan-template.md:38` | `[x]` NGAY vào file này. Trạng thái checkbox: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong. |  |
-| L295 | `skills/tdq-plan/references/plan-template.md:39` | Sau mỗi phase: chạy toàn bộ test suite, phải xanh mới sang phase sau. |  |
+| L295 | `skills/tdq-plan/references/plan-template.md:39` | Sau mỗi phase: chạy toàn bộ test suite, phải xanh mới sang phase sau. | 3. Mỗi bước: `tdq_test.py vung-cham`; trọn bộ chỉ ở QC. |
 | L296 | `skills/tdq-plan/references/plan-template.md:40` | Lệnh nào chạm state của workflow phải có `TDQ_PROJECT_DIR=<thư mục tạm>` ngay trên chính lệnh đó. |  |
 | L297 | `skills/tdq-plan/references/plan-template.md:59` | **Mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, kể cả task tạo file mới; đường |  |
 | L298 | `skills/tdq-plan/references/plan-template.md:60` | dẫn trong backtick, tính từ gốc repo. Task chỉ sửa tài liệu thì bỏ dòng này. Node nằm trong mục |  |
@@ -364,11 +364,11 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L312 | `skills/tdq-spec/SKILL.md:17` | Mục bắt buộc: mục tiêu & phạm vi (in/out) · **Lộ trình** (chép từ brief: phase | Sections that MUST be there: goal & scope (in/out) · **Lộ trình** (copied from the |
 | L313 | `skills/tdq-spec/SKILL.md:23` | yêu cầu bắt buộc (log service bật mặc định, không placeholder, test cho từng phần) · | standing requirements (log service ON by default, no placeholder, a test per part) · |
 | L314 | `skills/tdq-spec/SKILL.md:25` | Mục "câu hỏi còn mở" PHẢI rỗng — còn câu hỏi thì quay lại phase `analyze`. | The "open questions" section MUST be empty — a question left → back to phase `analyze`. |
-| L315 | `skills/tdq-spec/SKILL.md:47` | Trình bày & DỪNG.** Viết khối trình spec theo | **Present it, then STOP.** Write the spec block per |
-| L316 | `skills/tdq-spec/SKILL.md:67` | Phần nội dung ≤ 50 dòng và phải là tóm tắt THẬT — cấm thay bằng câu thông báo suông | The body is ≤ 50 lines and must be a REAL summary — swapping it for a bare status line |
-| L317 | `skills/tdq-spec/SKILL.md:71` | hỏi sau, không phải câu hỏi của turn này)". Mục đích: đọc lại transcript không nhầm là | language: "(template — for later questions, not this turn's question)". The point: someone |
+| L315 | `skills/tdq-spec/SKILL.md:48` | Trình bày & DỪNG.** Viết khối trình spec theo | **Present it, then STOP.** Write the spec block per |
+| L316 | `skills/tdq-spec/SKILL.md:68` | Phần nội dung ≤ 50 dòng và phải là tóm tắt THẬT — cấm thay bằng câu thông báo suông | The body is ≤ 50 lines and must be a REAL summary — swapping it for a bare status line |
+| L317 | `skills/tdq-spec/SKILL.md:72` | hỏi sau, không phải câu hỏi của turn này)". Mục đích: đọc lại transcript không nhầm là | language: "(template — for later questions, not this turn's question)". The point: someone |
 | L318 | `skills/tdq-plan/SKILL.md:103` | User duyệt → ghi nhận NGAY:** | 6. **The user approves → record it IMMEDIATELY, then ask about the run mode in the SAME turn:** |
-| L319 | `skills/tdq-spec/SKILL.md:85` | rồi sang [tdq-plan](../tdq-plan/SKILL.md) **NGAY trong cùng turn** — không bắt user | then on to [tdq-plan](../tdq-plan/SKILL.md) **in that very same turn** — the user is not made to send… |
+| L319 | `skills/tdq-spec/SKILL.md:86` | rồi sang [tdq-plan](../tdq-plan/SKILL.md) **NGAY trong cùng turn** — không bắt user | then on to [tdq-plan](../tdq-plan/SKILL.md) **in that very same turn** — the user is not made to send… |
 | L320 | `skills/tdq-spec/references/spec-template.md:7` | áp dụng, nhưng phải nói rõ **vì sao** không áp dụng. | that does not apply, but say **why** it does not apply. |
 | L321 | `skills/tdq-spec/references/spec-template.md:37` | BẮT BUỘC chép các mặt bị loại ở brief `### Phạm vi đã chốt` vào đây> |  |
 | L322 | `skills/tdq-spec/references/spec-template.md:74` | Phán quyết chỉ nhận: DÙNG / KHÔNG (+ 1 trong 4 lý do đóng) / NỀN (skill khung đang chạy). |  |
@@ -377,7 +377,7 @@ này đã gặp thật lúc thử nghiệm ở T2.6.
 | L325 | `skills/tdq-spec/references/spec-template.md:83` | Dòng này bắt buộc **chỉ khi việc này có runtime** — tức plan sẽ có ít nhất một task tạo |  |
 | L326 | `skills/tdq-spec/references/spec-template.md:93` | Ràng buộc kiến trúc phải giữ (chép từ `docs/kien-truc.md` — chỉ những dòng việc này |  |
 | L327 | `skills/tdq-spec/references/spec-template.md:97` | Không chạm dòng nào → ghi `Ràng buộc kiến trúc phải giữ: không chạm dòng nào — <lý do |  |
-| L328 | `skills/tdq-spec/references/spec-template-huong-dan.md:34` | Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính. | - A PASS condition in §6 is measurable by a command, not by feel. |
-| L329 | `skills/tdq-spec/references/spec-template-huong-dan.md:43` | \| Câu hỏi \| Trả lời phải nằm ở \| | \| What does this work PRODUCE? \| §1 mục tiêu + §2 bảng đầu ra \| |
+| L328 | `skills/tdq-spec/references/spec-template-huong-dan.md:50` | Điều kiện PASS ở §6 đo được bằng lệnh, không phải cảm tính. | - A PASS condition in §6 is measurable by a command, not by feel. |
+| L329 | `skills/tdq-spec/references/spec-template-huong-dan.md:60` | \| Câu hỏi \| Trả lời phải nằm ở \| | \| What does this work PRODUCE? \| §1 mục tiêu + §2 bảng đầu ra \| |
 
 **Tổng: 329 điểm neo** trên 41 file skill.

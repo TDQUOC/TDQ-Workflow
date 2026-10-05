@@ -64,6 +64,17 @@ khai ở dòng `Chạm:` của plan:
   cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng. Đường dẫn adapter do host quy định — `.codex-plugin/`, `.agents/plugins/`,
   `.opencode/plugins/` — nên đây là ngoại lệ của luật "code mới chỉ nằm trong `scripts/` hoặc
   `hooks/`". Adapter OpenCode là JavaScript thuần, không package npm, bọc try/catch mọi bước.
+- 2026-10-03 (yêu cầu 1907): **trọn bộ test chỉ chạy ở 2 cổng.** QC-F1 (thay lần chạy riêng "xong
+  mọi task", vì code không đổi giữa hai lần) và một lần sau vòng sửa QC CUỐI khi có sửa. Giữa các
+  bước, `scripts/tdq_test.py vung-cham` chạy vùng chạm cộng bán kính do máy tính: nhắc tên/đường dẫn,
+  import bắc cầu đọc bằng AST, test quét thư mục cha. Rơi về trọn bộ khi bán kính ≥ 60% số module test
+  hoặc có file sửa ngoài `scripts/ hooks/ skills/ tests/ agents/` — không chắc thì chạy hết (soul:
+  chất lượng > thời gian chạy). `scripts/` chỉ đọc nguồn `hooks/scripts/` bằng AST, không import —
+  luật import 2026-07 vẫn đứng. Sổ bỏ sót: module QC-F1 đỏ mà `vung-cham` chưa từng chọn trong request
+  bị ghi và báo, nên bán kính được đo chứ không được tin. `next` chỉ NHẮC khi trọn bộ chạy quá ngân
+  sách cổng — không hook nào chặn (user chọn; dòng 2026-07-29 vẫn đứng). Đo gốc: 59 lần trọn bộ qua
+  8 request (TB 7,4), hai request gần nhất đã 2–3; sửa hub (`tdq_state.py`) chạm ~96–98/127 module
+  nên ở đó trọn bộ là đúng, sửa file lá/file luật chạm ~7–17 module.
 - 2026-10-03 (yêu cầu 0732): **đo trước ở spec, không dừng giữa chừng vì ngưỡng.** Lệnh
   `approve spec` TỪ CHỐI khi luật R14 của `doc_lint` đỏ — mọi ngưỡng số ở §6 của spec mới phải có
   `Đo trước` và `Dự phòng nếu trượt`. Cổng nằm ở LỆNH duyệt, không ở hook, nên dòng 2026-07-29

@@ -8,6 +8,8 @@ docs/tdq/.tdq-turn.jsonl
 docs/tdq/.tdq-read.jsonl
 # Sổ của cổng tìm kiếm: lần gọi tầng khái niệm + token của prompt, theo request. Chuyện của MÁY.
 docs/tdq/.tdq-search.jsonl
+# Sổ của bước test: mỗi lần vung-cham / trọn bộ / bỏ sót một dòng, theo request. Chuyện của MÁY.
+docs/tdq/.tdq-test.jsonl
 # Dựng nền ở đầu project: khoá pid và mốc sẵn sàng từng tầng.
 docs/tdq/.tdq-khoi-tao.lock
 docs/tdq/.tdq-khoi-tao.da-goi

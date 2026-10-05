@@ -3,10 +3,13 @@
 Luật của bộ test này: không hằng số nào được đặt tay trong code sản phẩm. Test tự
 dựng file thực đo giả để kiểm công thức, và kiểm luôn rằng thiếu file thì lệnh LỖI.
 """
+import atexit
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 
 import helper  # noqa: F401  — chèn scripts/ vào sys.path
@@ -16,10 +19,34 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BENCH = os.path.join(ROOT, "scripts", "tdq_bench.py")
 
 
+_THU_MUC_TRUE = []
+
+
+def _path_co_true():
+    """PATH bảo đảm có lệnh `true`, chạy qua chính trình thông dịch Python.
+
+    Plan mẫu do `tdq_bench.sinh_plan` sinh ghi `Test: `true``, và `calibrate` chạy dòng đó qua
+    shell. `true` chỉ có trong PATH của Git Bash; gọi từ cmd/PowerShell thì mọi ca `calibrate`
+    đỏ vì lý do sai. Thiếu thì dựng `true.cmd` gọi `python -c "pass"` (luôn thoát 0) ở thư mục
+    tạm, chèn vào đầu PATH của tiến trình con — không đụng `os.environ` của tiến trình test.
+    """
+    path = os.environ.get("PATH", "")
+    if shutil.which("true"):
+        return path
+    if not _THU_MUC_TRUE:
+        thu_muc = tempfile.mkdtemp(prefix="tdq-true-")
+        atexit.register(shutil.rmtree, thu_muc, True)
+        with open(os.path.join(thu_muc, "true.cmd"), "w", encoding="utf-8") as f:
+            f.write(f'@"{sys.executable}" -c "pass"\r\n')
+        _THU_MUC_TRUE.append(thu_muc)
+    return _THU_MUC_TRUE[0] + os.pathsep + path
+
+
 def chay(*args, env=None):
     proc = subprocess.run([sys.executable, BENCH, *args], capture_output=True,
                           encoding="utf-8", text=True, timeout=300,
-                          env=dict(os.environ, TDQ_LOG="0", **(env or {})))
+                          env=dict(os.environ, TDQ_LOG="0", PATH=_path_co_true(),
+                                   **(env or {})))
     return proc.returncode, proc.stdout, proc.stderr
 
 
@@ -352,17 +379,22 @@ class ThucDoTest(unittest.TestCase):
 
     def test_repo_that_khong_moc_nhanh_hay_worktree_nao(self):
         import tempfile
+        def nhanh_tdq():
+            # So trước/sau chứ không đòi rỗng: chạy trong worktree của một đội đang làm thì
+            # nhánh `tdq/*` của chính đội đó đã có sẵn — không phải do `calibrate` mọc ra.
+            return subprocess.run(["git", "-C", ROOT, "branch", "--list", "tdq/*"],
+                                  capture_output=True, encoding="utf-8", text=True,
+                                  timeout=60).stdout
         truoc = subprocess.run(["git", "-C", ROOT, "worktree", "list"],
                                capture_output=True, encoding="utf-8", text=True, timeout=60).stdout
+        nhanh_truoc = nhanh_tdq()
         with tempfile.TemporaryDirectory() as tmp:
             chay("calibrate", "--ra", os.path.join(tmp, "t.json"), "--task", "3",
                  "--lap", "1", "--cho-it-mau")
         sau = subprocess.run(["git", "-C", ROOT, "worktree", "list"],
                              capture_output=True, encoding="utf-8", text=True, timeout=60).stdout
         self.assertEqual(truoc, sau)
-        nhanh = subprocess.run(["git", "-C", ROOT, "branch", "--list", "tdq/*"],
-                               capture_output=True, encoding="utf-8", text=True, timeout=60).stdout
-        self.assertEqual(nhanh.strip(), "")
+        self.assertEqual(nhanh_tdq(), nhanh_truoc)
 
 
 class VongFix1Test(unittest.TestCase):
