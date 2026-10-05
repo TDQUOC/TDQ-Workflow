@@ -5,13 +5,18 @@ Nhóm theo DoD (tên nhóm nằm trong tên method để `-k` chọn được):
 - `tien_trinh_con`: test chỉ gọi hook qua tiến trình con vẫn được chọn;
 - `duong_dan`: file luật dò theo đường dẫn tương đối, không theo tên trần;
 - `quet_thu_muc`: test quét thư mục cha của file sửa được chọn (dò bằng AST);
-- `tron_bo_khi`: các lúc phải rơi về trọn bộ.
+- `tron_bo_khi`: các lúc phải rơi về trọn bộ;
+- `vung_cham` (T1.2): lệnh `vung-cham` trên repo tạm — chọn, chạy một tiến trình, ghi sổ, log.
 """
+import json
 import os
+import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 from helper import ROOT
 
@@ -241,6 +246,159 @@ class CaDaDoTest(unittest.TestCase):
         mods, ly_do = tdq_test.ban_kinh(["scripts/tdq_state.py"], ROOT)
         self.assertTrue(ly_do)
         self.assertEqual(len(mods), self.tong)
+
+
+# ---------- T1.2: lệnh `vung-cham` ----------
+
+SCRIPT = os.path.join(ROOT, "scripts", "tdq_test.py")
+TEST_DAT = "import unittest\nclass T(unittest.TestCase):\n    def test_ok(self):\n        pass\n"
+TEST_TRUOT = ("import unittest\nclass T(unittest.TestCase):\n"
+              "    def test_hong(self):\n        self.fail('co y')\n")
+SO_DEM = 6
+
+
+def lam_repo_vung_cham(goc, state=None):
+    """Repo tạm nhỏ: `test_a` đạt, `test_b` trượt, `test_c` đạt, 6 module đệm (đạt)."""
+    ghi(goc, "scripts/lib_a.py", "X = 1\n")
+    ghi(goc, "tests/test_a.py", TEST_DAT)
+    ghi(goc, "tests/test_b.py", TEST_TRUOT)
+    ghi(goc, "tests/test_c.py", TEST_DAT)
+    for i in range(SO_DEM):
+        ghi(goc, f"tests/test_dem_{i:02d}.py", TEST_DAT)
+    if state is None:
+        state = '{"active_request": "req-1", "phase": "implement", "nhanh_goc": "main"}\n'
+    ghi(goc, "docs/tdq/state.json", state)
+
+
+def chay_cli(goc, *args, log=True):
+    env = dict(os.environ)
+    env["TDQ_LOG"] = "1" if log else "0"
+    env["PYTHONIOENCODING"] = "utf-8"
+    return subprocess.run([sys.executable, SCRIPT, "vung-cham", "--repo", goc, *args],
+                          capture_output=True, text=True, encoding="utf-8", env=env,
+                          timeout=120)
+
+
+def doc_so(goc):
+    duong = os.path.join(goc, "docs", "tdq", ".tdq-test.jsonl")
+    with open(duong, encoding="utf-8") as f:
+        return [json.loads(d) for d in f if d.strip().startswith("{")]
+
+
+DONG_LOG = re.compile(r"^\[\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d", re.M)
+
+
+class VungCham(unittest.TestCase):
+    def setUp(self):
+        self.goc = tempfile.mkdtemp(prefix="tdq-test-vung-cham-")
+        self.addCleanup(shutil.rmtree, self.goc, ignore_errors=True)
+        lam_repo_vung_cham(self.goc)
+
+    def test_vung_cham_files_chi_chay_module_chon_dat(self):
+        p = chay_cli(self.goc, "--files", "tests/test_a.py")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("Ran 1 test", p.stderr)
+        self.assertIn("1/9", p.stdout)
+
+    def test_vung_cham_files_module_truot_thi_exit_1(self):
+        p = chay_cli(self.goc, "--files", "tests/test_a.py", "tests/test_b.py")
+        self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
+        self.assertIn("Ran 2 tests", p.stderr)
+
+    def test_vung_cham_ly_do_tron_bo_chay_het(self):
+        p = chay_cli(self.goc, "--files", "README.md")
+        self.assertEqual(p.returncode, 1)  # test_b trượt nằm trong trọn bộ
+        self.assertIn("Ran 9 tests", p.stderr)
+        self.assertIn("full suite", p.stdout)
+        dong = doc_so(self.goc)[-1]
+        self.assertTrue(dong["fallback"])
+        self.assertEqual(len(dong["modules"]), 9)
+
+    def test_vung_cham_ghi_so_du_truong(self):
+        p = chay_cli(self.goc, "--files", "tests\\test_a.py", "tests/test_a.py")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        rows = doc_so(self.goc)
+        self.assertEqual(len(rows), 1)
+        dong = rows[0]
+        self.assertEqual(dong["kind"], "vung-cham")
+        self.assertEqual(dong["request"], "req-1")
+        self.assertEqual(dong["phase"], "implement")
+        self.assertEqual(dong["files"], ["tests/test_a.py"])
+        self.assertEqual(dong["modules"], ["test_a.py"])
+        self.assertIsNone(dong["fallback"])
+        self.assertIs(dong["ok"], True)
+        self.assertIsInstance(dong["seconds"], float)
+        self.assertRegex(dong["ts"], r"^\d{4}-\d\d-\d\dT")
+
+    def test_vung_cham_so_hong_va_state_hong_van_chay(self):
+        ghi(self.goc, "docs/tdq/.tdq-test.jsonl", "khong phai json\n{\"cut\n")
+        ghi(self.goc, "docs/tdq/state.json", "{hong")
+        p = chay_cli(self.goc, "--files", "tests/test_a.py")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        with mock.patch.dict(os.environ, {"TDQ_LOG": "0"}):
+            rows = tdq_test._doc_so(self.goc)
+        self.assertEqual(len(rows), 1)
+        self.assertIsNone(rows[0]["request"])
+        self.assertEqual(rows[0]["modules"], ["test_a.py"])
+
+    def test_vung_cham_doc_so_khong_co_file(self):
+        self.assertEqual(tdq_test._doc_so(self.goc), [])
+
+    def test_vung_cham_log_iso_va_tdq_log_0_tat(self):
+        bat = chay_cli(self.goc, "--files", "tests/test_a.py")
+        self.assertTrue(DONG_LOG.search(bat.stderr), bat.stderr)
+        self.assertIn("vung-cham", bat.stderr)
+        tat = chay_cli(self.goc, "--files", "tests/test_a.py", log=False)
+        self.assertEqual(tat.returncode, 0)
+        self.assertIsNone(DONG_LOG.search(tat.stderr), tat.stderr)
+
+    def test_vung_cham_tap_rong_khong_chay_gi(self):
+        p = chay_cli(self.goc, "--files")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(doc_so(self.goc)[-1]["modules"], [])
+
+    @unittest.skipUnless(shutil.which("git"), "git not installed")
+    def test_vung_cham_lay_file_tu_git(self):
+        g = self.goc
+
+        def git(*args):
+            subprocess.run(["git", "-C", g, *args], check=True, capture_output=True)
+
+        ghi(g, ".gitignore", "__pycache__/\ndocs/tdq/state.json\n")
+        git("init", "-q")
+        git("symbolic-ref", "HEAD", "refs/heads/main")
+        git("config", "user.email", "t@example.com")
+        git("config", "user.name", "t")
+        git("config", "core.autocrlf", "false")
+        git("add", "-A")
+        git("commit", "-q", "-m", "goc")
+        git("checkout", "-q", "-b", "nhanh")
+        ghi(g, "tests/test_a.py", TEST_DAT + "# doi\n")           # commit trên nhánh
+        git("commit", "-q", "-am", "doi a")
+        ghi(g, "tests/test_c.py", TEST_DAT + "# staged\n")        # staged
+        git("add", "tests/test_c.py")
+        ghi(g, "tests/test_dem_00.py", TEST_DAT + "# unstaged\n")  # chưa stage
+        ghi(g, "tests/test_d.py", TEST_DAT)                        # untracked
+        p = chay_cli(g)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        dong = doc_so(g)[-1]
+        self.assertEqual(dong["files"], ["tests/test_a.py", "tests/test_c.py",
+                                         "tests/test_d.py", "tests/test_dem_00.py"])
+        self.assertEqual(dong["modules"], ["test_a.py", "test_c.py", "test_d.py",
+                                           "test_dem_00.py"])
+        self.assertIsNone(dong["fallback"])
+        # Sổ của chính lệnh (untracked) không được tự kéo vào lần chạy sau.
+        p2 = chay_cli(g)
+        self.assertNotIn("docs/tdq/.tdq-test.jsonl", doc_so(g)[-1]["files"])
+        self.assertEqual(p2.returncode, 0)
+
+    def test_vung_cham_git_hong_thi_tron_bo(self):
+        ghi(self.goc, "docs/tdq/state.json", '{"nhanh_goc": "khong-ton-tai"}')
+        p = chay_cli(self.goc)  # không phải repo git
+        self.assertEqual(p.returncode, 1)
+        dong = doc_so(self.goc)[-1]
+        self.assertIn("git", dong["fallback"])
+        self.assertEqual(len(dong["modules"]), 9)
 
 
 if __name__ == "__main__":

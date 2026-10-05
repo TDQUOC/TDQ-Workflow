@@ -32,10 +32,29 @@ Measured by the prototype in the brief (2026-10-03, 126 modules, name + import m
 leaf files (`ask_gate.py`, `tdq_bench.py`) 2 modules; `stop_gate.py` 11 (29 s instead of 353.9 s);
 `qc.md` 7 (22 s); `_common.py` 38 (30%); the hub `tdq_state.py` / `doc_lint.py` 96-102 (76%+),
 where the full suite is the right call. Rule (d) adds the directory scanners on top of that.
+
+CLI (`python scripts/tdq_test.py <command>`):
+
+- `vung-cham [--files F ...] [--repo DIR]`: run the tests of the touched zone. Without
+  `--files` the file set is `git diff --name-only <nhanh_goc>...HEAD` plus every uncommitted
+  change (staged, unstaged, untracked); `nhanh_goc` comes from `docs/tdq/state.json` (fallback
+  `main`). When git fails, or `ban_kinh` gives a reason, the full suite runs instead. The
+  selected modules run in ONE process (`unittest` loader); exit 0 when green, 1 otherwise. One
+  JSON row goes to the ledger `docs/tdq/.tdq-test.jsonl`.
+
+Log service: one ISO-timestamped line per command on stderr, on by default; `TDQ_LOG=0` turns
+it off. Only paths, counts and reasons are logged, never file contents.
 """
+import argparse
 import ast
+import json
 import os
 import re
+import subprocess
+import sys
+import time
+import unittest
+from datetime import datetime
 
 TOP_DIRS = frozenset({"scripts", "hooks", "skills", "tests", "agents"})
 PATH_ONLY_DIRS = frozenset({"skills", "agents", "docs"})
@@ -366,3 +385,208 @@ def ban_kinh(files, repo):
         return everything, "radius %d/%d modules reaches the %d%% threshold" % (
             len(chosen), len(everything), round(NGUONG_TRON_BO * 100))
     return sorted(chosen), None
+
+
+# ---------- log, state and ledger ----------
+
+STATE_PATH = ("docs", "tdq", "state.json")
+LEDGER_PATH = ("docs", "tdq", ".tdq-test.jsonl")
+NHANH_GOC_MAC_DINH = "main"
+GIT_TIMEOUT = 30
+
+
+def log_enabled():
+    return os.environ.get("TDQ_LOG", "1") != "0"
+
+
+def _now_iso():
+    return datetime.now().astimezone().isoformat(timespec="seconds")
+
+
+def _log(message):
+    if log_enabled():
+        print(f"[{_now_iso()}] tdq_test: {message}", file=sys.stderr)
+
+
+def _warn(message):
+    _log(f"warning: {message}")
+
+
+def _doc_state(repo):
+    """`docs/tdq/state.json` as a dict; {} when missing or corrupt (corrupt is warned)."""
+    path = os.path.join(repo, *STATE_PATH)
+    if not os.path.isfile(path):
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            state = json.load(f)
+    except (OSError, ValueError) as exc:
+        _warn(f"cannot read {'/'.join(STATE_PATH)} ({exc.__class__.__name__}); treated as empty")
+        return {}
+    if not isinstance(state, dict):
+        _warn(f"{'/'.join(STATE_PATH)} is not an object; treated as empty")
+        return {}
+    return state
+
+
+def _ghi_so(repo, row):
+    """Append one JSON row to the ledger. True when written; never raises."""
+    path = os.path.join(repo, *LEDGER_PATH)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        return True
+    except OSError as exc:
+        _warn(f"cannot write the ledger {'/'.join(LEDGER_PATH)} ({exc.__class__.__name__})")
+        return False
+
+
+def _doc_so(repo):
+    """Every valid row of the ledger, in order; a missing ledger is []; bad lines are skipped."""
+    path = os.path.join(repo, *LEDGER_PATH)
+    if not os.path.isfile(path):
+        return []
+    rows, bad = [], 0
+    try:
+        with open(path, encoding="utf-8", errors="replace") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    bad += 1
+                    continue
+                if isinstance(row, dict):
+                    rows.append(row)
+                else:
+                    bad += 1
+    except OSError as exc:
+        _warn(f"cannot read the ledger {'/'.join(LEDGER_PATH)} ({exc.__class__.__name__})")
+        return []
+    if bad:
+        _warn(f"skipped {bad} corrupt line(s) in {'/'.join(LEDGER_PATH)}")
+    return rows
+
+
+# ---------- the changed files, from git ----------
+
+def _git(repo, *args):
+    """stdout of `git -C repo args...`; raises RuntimeError on any failure."""
+    try:
+        proc = subprocess.run(["git", "-C", repo, *args], capture_output=True,
+                              timeout=GIT_TIMEOUT)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError(f"git {args[0]} could not run ({exc.__class__.__name__})") from exc
+    if proc.returncode != 0:
+        err = proc.stderr.decode("utf-8", "replace").strip().splitlines()
+        raise RuntimeError(f"git {args[0]} failed: {err[0] if err else proc.returncode}")
+    return proc.stdout.decode("utf-8", "replace")
+
+
+def file_doi_git(repo, base):
+    """(changed repo-relative paths, reason when git fails or None).
+
+    Committed since `base` (`git diff --name-only base...HEAD`) plus every uncommitted change:
+    staged, unstaged and untracked. The ledger itself is left out — the command writes it."""
+    try:
+        committed = _git(repo, "diff", "--name-only", "-z", f"{base}...HEAD").split("\0")
+        status = _git(repo, "status", "--porcelain=v1", "-z", "--untracked-files=all")
+    except RuntimeError as exc:
+        return [], str(exc)
+    uncommitted = []
+    entries = status.split("\0")
+    i = 0
+    while i < len(entries):
+        entry = entries[i]
+        i += 1
+        if len(entry) < 4:
+            continue
+        uncommitted.append(entry[3:])
+        if entry[0] in "RC":  # with -z the rename source follows as its own entry
+            uncommitted.append(entries[i])
+            i += 1
+    ledger = "/".join(LEDGER_PATH)
+    files = {chuan_hoa(p) for p in committed + uncommitted if p.strip()}
+    return sorted(f for f in files if f and f != ledger), None
+
+
+# ---------- running the modules in one process ----------
+
+def _bo_module_cu(tests_dir, modules):
+    """Drop cached test modules imported from another tree, so `discover` loads ours."""
+    for m in modules:
+        cached = sys.modules.get(m[:-3])
+        where = getattr(cached, "__file__", None)
+        if cached is not None and (not where or os.path.dirname(os.path.abspath(where))
+                                   != os.path.abspath(tests_dir)):
+            del sys.modules[m[:-3]]
+
+
+def chay_module(repo, modules, stream=None):
+    """Run `modules` (test file names) in THIS process. True when every test passes."""
+    if not modules:
+        return True
+    tests_dir = os.path.join(repo, "tests")
+    _bo_module_cu(tests_dir, modules)
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite()
+    for m in modules:
+        suite.addTests(loader.discover(tests_dir, pattern=m, top_level_dir=tests_dir))
+    # A module that fails to import becomes a failing `_FailedTest` in the suite: still red.
+    result = unittest.TextTestRunner(stream=stream or sys.stderr, verbosity=1).run(suite)
+    return result.wasSuccessful()
+
+
+# ---------- commands ----------
+
+def cmd_vung_cham(args):
+    """Run the tests of the touched zone; exit 0 when green, 1 otherwise."""
+    start = time.monotonic()
+    repo = os.path.abspath(args.repo)
+    state = _doc_state(repo)
+    if args.files is not None:
+        files, reason = sorted({chuan_hoa(f) for f in args.files if chuan_hoa(f)}), None
+    else:
+        base = state.get("nhanh_goc") or NHANH_GOC_MAC_DINH
+        files, reason = file_doi_git(repo, base)
+    total = len(tat_ca_module(repo))
+    if reason:
+        modules = tat_ca_module(repo)
+    else:
+        modules, reason = ban_kinh(files, repo)
+    if reason:
+        print(f"vung-cham: {len(files)} changed file(s); running the full suite "
+              f"({len(modules)} modules): {reason}")
+    else:
+        print(f"vung-cham: {len(files)} changed file(s); selected {len(modules)}/{total} "
+              f"modules: {' '.join(modules) or '(none)'}")
+    sys.stdout.flush()
+    ok = chay_module(repo, modules)
+    seconds = round(time.monotonic() - start, 2)
+    _ghi_so(repo, {"ts": _now_iso(), "kind": "vung-cham",
+                   "request": state.get("active_request"), "phase": state.get("phase"),
+                   "files": files, "modules": modules, "fallback": reason, "ok": ok,
+                   "seconds": float(seconds)})
+    _log(f"vung-cham files={len(files)} modules={len(modules)}/{total} "
+         f"fallback={reason or 'none'} ok={ok} seconds={seconds}")
+    return 0 if ok else 1
+
+
+def main(argv=None):
+    import utf8_io  # noqa: F401 — imported for its side effect: stdout/stderr become UTF-8
+    parser = argparse.ArgumentParser(
+        prog="tdq_test.py", description="Run the tests a change can reach.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    p = sub.add_parser("vung-cham", help="run the tests of the touched zone and its radius")
+    p.add_argument("--files", nargs="*", default=None,
+                   help="changed files (default: from git against nhanh_goc)")
+    p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
+    p.set_defaults(func=cmd_vung_cham)
+    args = parser.parse_args(argv)
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
