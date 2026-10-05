@@ -118,7 +118,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   - Kiểm: `python scripts/tdq_test.py vung-cham`
   - Không dùng cho: săn lỗi đúng-sai — đó là T5.3
   - Cần: T5.6
-- [>] **T5.5** (e10m) CHANGELOG 0.57.0, bump hai `plugin.json` — Test:
+- [x] **T5.5** (e10m) CHANGELOG 0.57.0, bump hai `plugin.json` — Test:
   `python scripts/doc_lint.py CHANGELOG.md` thoát 0
   - Chạm: `CHANGELOG.md`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`
   - Cần: T5.4
