@@ -96,7 +96,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 - [x] **T5.2** (e15m) Cổng QC-F1 của chính request này: `tdq_test.py tron-bo` từ Git Bash xanh, và
   trọn bộ từ PowerShell 0 fail 0 error — Test: `python scripts/tdq_test.py tron-bo` thoát 0
   - Cần: T2.1, T3.2, T4.1, T5.1
-- [~] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
+- [x] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
   lý do bác bỏ vào file QC
   - Dùng: `code-review`
   - Để: tìm lỗi đúng-sai trong bán kính, sổ trọn bộ/bỏ sót, nhắc `next`
@@ -104,13 +104,20 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   - Kiểm: mục soát lỗi của file đó có một dòng cho mỗi phát hiện
   - Không dùng cho: rút gọn code — đó là T5.4
   - Cần: T5.2
+- [ ] **T5.6** (e25m) Sửa 2 lỗi từ soát lỗi T5.3: (1) file DỮ LIỆU ngoài 5 thư mục (`.md`
+  `.json` `.jsonl` `.txt` `.gitignore`…) không còn làm rơi về trọn bộ — chỉ chọn test nhắc đường
+  dẫn của nó; file mã hoặc loại không rõ ngoài 5 thư mục vẫn rơi về trọn bộ (lệch spec #1, Q4);
+  (2) file `.py` không phải test trong `tests/` (vd. `helper.py`) được dò import ngược như module:
+  mọi test `import helper` / `from helper import` đều được chọn — Test: `python -m unittest discover tests -p test_tdq_test.py -k sua_loi`
+  - Chạm: `scripts/tdq_test.py` → `_ly_do_ngoai`, `_chon`; `tests/test_tdq_test.py` → lớp `SuaLoi`
+  - Cần: T5.3
 - [ ] **T5.4** (e10m) Rút gọn phần trùng lặp — Test: `python scripts/tdq_test.py vung-cham` xanh
   - Dùng: `simplify`
   - Để: gỡ trùng lặp trong mã mới, không đổi hành vi
   - Ra: mã đã rút gọn
   - Kiểm: `python scripts/tdq_test.py vung-cham`
   - Không dùng cho: săn lỗi đúng-sai — đó là T5.3
-  - Cần: T5.3
+  - Cần: T5.6
 - [ ] **T5.5** (e10m) CHANGELOG 0.57.0, bump hai `plugin.json` — Test:
   `python scripts/doc_lint.py CHANGELOG.md` thoát 0
   - Chạm: `CHANGELOG.md`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`

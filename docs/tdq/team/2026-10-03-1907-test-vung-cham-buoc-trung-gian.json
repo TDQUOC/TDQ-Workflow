@@ -1,7 +1,7 @@
 {
   "slug": "2026-10-03-1907-test-vung-cham-buoc-trung-gian",
   "plan_file": "docs\\tdq\\plan\\2026-10-03-1907-test-vung-cham-buoc-trung-gian.md",
-  "plan_sha": "a80a7cae28135e113e8121af2d6735d0e8283f5ff1820645e029e422baf7d5c7",
+  "plan_sha": "5d75829258938d9629b56a0f4bf32e8dbe1caa42af773069e22cc4e2bbcce67b",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",
@@ -94,11 +94,20 @@
       ],
       "dot": 7
     },
+    "T5.6": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_test.py",
+        "tests/test_tdq_test.py"
+      ],
+      "dot": 8
+    },
     "T5.4": {
       "quyet_dinh": "tu_lam",
       "ly_do": "vung-khoa",
       "vung_file": [],
-      "dot": 8
+      "dot": 9
     },
     "T5.5": {
       "quyet_dinh": "giao",
@@ -107,7 +116,7 @@
         ".claude-plugin/plugin.json",
         ".codex-plugin/plugin.json"
       ],
-      "dot": 9
+      "dot": 10
     }
   }
 }
