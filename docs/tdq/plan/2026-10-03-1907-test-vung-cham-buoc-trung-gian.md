@@ -33,7 +33,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-05, "duyệt plan" · mode "1a" = suba
 
 ## P1 — Script chạy test theo bán kính
 
-- [ ] **T1.1** (e40m) `scripts/tdq_test.py` → hàm thuần `ban_kinh(files, repo)`: chọn module test
+- [>] **T1.1** (e40m) `scripts/tdq_test.py` → hàm thuần `ban_kinh(files, repo)`: chọn module test
   nhắc đường dẫn tương đối / tên module của file sửa; cộng import bắc cầu (AST) trong `scripts/`,
   `hooks/scripts/`; cộng test QUÉT thư mục cha (`os.walk`/`glob`/`listdir` trên đường dẫn dựng từ
   `skills`/`hooks`/`scripts`/`agents`/`tests`, dò bằng AST); trả `(modules, ly_do_tron_bo)` — rơi
@@ -81,7 +81,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P4 — Test chạy được từ mọi shell
 
-- [ ] **T4.1** (e30m) Tìm và sửa mọi test gọi lệnh `true` của shell (dòng `Test:` trong plan mẫu,
+- [>] **T4.1** (e30m) Tìm và sửa mọi test gọi lệnh `true` của shell (dòng `Test:` trong plan mẫu,
   `subprocess` …) ở `test_bench`, `test_team_mode`, `test_team_chong_conflict`, `test_gitflow_doi`,
   `test_timing`: thay bằng lệnh tương đương luôn thoát 0 qua trình thông dịch Python, giữ nguyên ý
   nghĩa từng ca — Test: `powershell.exe -NoProfile -Command "python -m unittest discover tests -p 'test_team_mode.py'; if ($LASTEXITCODE) { exit 1 }; python -m unittest discover tests -p 'test_bench.py'; if ($LASTEXITCODE) { exit 1 }"` (và tương tự ba module còn lại)
