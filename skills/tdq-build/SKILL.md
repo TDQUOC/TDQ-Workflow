@@ -5,8 +5,8 @@ description: Run an approved TDQ plan end to end in one turn, QC it against the 
 
 # TDQ Build — Implement → QC → Report
 <!-- muc-luc-dong:
-  Hard rules (all three phases)=15-76 · Part A — Implement (phase `implement`)=77-143 ·
-  Part B — QC (phase `qc`)=144-160 · Part C — Report (phase `report`)=161
+  Hard rules (all three phases)=15-76 · Part A — Implement (phase `implement`)=77-144 ·
+  Part B — QC (phase `qc`)=145-161 · Part C — Report (phase `report`)=162
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved = true`.
@@ -126,15 +126,16 @@ This skill owns three phases: `implement` → `qc` → `report`.
       finding something close → record it in the plan task as
       `Tạo mới thay vì dùng <đường dẫn> vì <lý do>`. Creating without searching is a defect even <!-- i18n-allow: canonical note written into the plan -->
       when the tests are green.
-   5. Green: rerun until it passes, running only **the module's tests** — the full suite is
-      saved for exactly one run at QC. Paste the real output; never declare done unrun.
+   5. Green: rerun until it passes with `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_test.py" vung-cham`
+      — the touched zone PLUS its blast radius (falls back to the full suite by itself when the
+      radius is wide). Paste the real output; never declare done unrun.
    6. Turn `- [~]` into `- [x]` for that task in the plan IMMEDIATELY — in mode `subagent` the
       main agent ticks as soon as the sub-agent's report arrives AND `merge` has completed,
       without waiting for the other tasks.
       (deliberate repetition — the original is in `## Hard rules` in this same file.)
 
-3. All tasks done: run the full suite EXACTLY ONCE, then close the turn's books with ONE
-   command
+3. All tasks done: do NOT run the full suite here — QC-F1 (`tdq_test.py tron-bo`) is that run.
+   Close the turn's books with ONE command
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_finish.py" --files <edited .md files> --log "<tasks done, files changed, test result>" --phase qc`
    — lint the right file, append the working log, set the phase, graphify: 4 jobs in 1 call.
 

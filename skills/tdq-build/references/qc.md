@@ -1,9 +1,9 @@
 # QC — quality control
 <!-- muc-luc-dong:
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
-  The three execution steps=58-87 · What to run=88-128 ·
-  The 120-second cap on smoke and runtime checks=129-149 · Recording the result=150-180 ·
-  When it FAILs=181
+  The three execution steps=58-88 · What to run=89-130 ·
+  The 120-second cap on smoke and runtime checks=131-151 · Recording the result=152-182 ·
+  When it FAILs=183
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
@@ -77,7 +77,8 @@ before running the first item; working from memory is banned.
 6. FAIL → go back to the plan, **no re-approval needed**: add fix tasks to the plan under
    `## QC vòng N — fix` in exactly the shape `- [ ] **QCn.1** <the work> — Test: <check>`, and work <!-- i18n-allow: canonical section name of the plan -->
    them under Part A's rules (red→green, tick immediately). Then rerun the failed item plus any
-   item the fix could have broken, plus the full suite. Cap of 3 rounds; over the cap, STOP and
+   item the fix could have broken, plus `tdq_test.py vung-cham`; the full suite (`tron-bo`) runs
+   once more only after the LAST fix round. Cap of 3 rounds; over the cap, STOP and
    tell the user (`pause --loai tran-qc`). Never pull the user in mid-way: an item that misses a
    spec threshold is recorded with `lech add` and passes as "PASS (lệch, chờ duyệt)" — it is not a
    FAIL and does not spin the fix loop. (Full version in section `## When it FAILs` of this file.)
@@ -93,8 +94,9 @@ pasted. Drop no DoD line. A DoD line that cannot be checked by command is a defe
 fix that line to be measurable before doing QC. The four fixed items always run, independent of
 the DoD:
 
-- QC-F1 — the whole test suite via exactly the command written in the plan, pasting the real
-  pass/fail numbers. Long suite → `<test command> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`,
+- QC-F1 — the whole test suite via `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_test.py" tron-bo`, pasting the real
+  pass/fail numbers, plus `tdq_test.py so` (full runs vs the 2-gate budget, radius misses).
+  A radius miss is a module QC-F1 failed that `vung-cham` never selected — record the count. Long suite → `<test command> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`,
   pasting verbatim only where a FAIL needs evidence.
 - QC-F2 — touched-area regression: for every `Chạm:` line in the plan, run the tests of the <!-- i18n-allow: canonical field name of the plan -->
   module holding the affected node. A node with no test → write `KHÔNG CÓ TEST: <node>` into the <!-- i18n-allow: canonical marker written into the qc file -->
@@ -183,8 +185,8 @@ approve or reject it, which happens in the report.
 1. Add fix tasks to the **approved plan**, under `## QC vòng N — fix`: <!-- i18n-allow: canonical section name of the plan -->
    `- [ ] **QCn.1** <the work> — Test: <check>`. No user re-approval needed.
 2. Work them under the implement rules: red → green, tick `[x]` immediately.
-3. Rerun the failed item, plus any item the fix could have broken, plus the test suite. Do not
-   rerun unrelated items.
+3. Rerun the failed item, plus any item the fix could have broken, plus `tdq_test.py vung-cham`.
+   Do not rerun unrelated items. After the LAST round only: `tdq_test.py tron-bo` once.
 4. Repeat until every item PASSes. **Cap of 3 rounds** — over the cap, STOP and tell the user.
 
 Never ask mid-run. A spec threshold the fix cannot reach → `lech add`, mark the item "PASS (lệch, chờ duyệt)", and the report asks the user.

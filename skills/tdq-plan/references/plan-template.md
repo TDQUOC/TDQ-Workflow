@@ -36,7 +36,7 @@ Trạng thái plan: CHỜ DUYỆT
 1. Thứ tự phase là thứ tự phụ thuộc — không đảo.
 2. Mỗi task: đánh `[~]` khi bắt đầu → viết test trước (đỏ) → code → test xanh → đổi sang
    `[x]` NGAY vào file này. Trạng thái checkbox: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong.
-3. Sau mỗi phase: chạy toàn bộ test suite, phải xanh mới sang phase sau.
+3. Mỗi bước: `tdq_test.py vung-cham`; trọn bộ chỉ ở QC.
 4. Lệnh nào chạm state của workflow phải có `TDQ_PROJECT_DIR=<thư mục tạm>` ngay trên chính lệnh đó.
 5. QC FAIL → thêm task fix vào mục QC của file này (không cần duyệt lại), loop đến khi pass.
 6. Không commit/push cho đến khi user yêu cầu.

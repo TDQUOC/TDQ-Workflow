@@ -58,7 +58,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P2 — `next` nhắc khi vượt số cổng
 
-- [ ] **T2.1** (e20m) `render_next` ở phase implement/qc đọc `tdq_test.py so`: số lần trọn bộ của
+- [>] **T2.1** (e20m) `render_next` ở phase implement/qc đọc `tdq_test.py so`: số lần trọn bộ của
   request vượt 2 (3 khi đã có vòng sửa QC) → một dòng nhắc chạy `vung-cham`; im khi chưa vượt —
   Test: `python -m unittest discover tests -p test_next_tron_bo.py`
   - Chạm: `scripts/tdq_state.py` → `render_next`; `tests/test_next_tron_bo.py` → file mới
@@ -66,7 +66,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P3 — Luật một nguồn
 
-- [ ] **T3.1** (e30m) Viết lại luật chạy test ở ba file cho cùng nói: bước trung gian =
+- [x] **T3.1** (e30m) Viết lại luật chạy test ở ba file cho cùng nói: bước trung gian =
   `tdq_test.py vung-cham`; trọn bộ = 2 cổng (QC-F1 thay cho "xong implement"; sau vòng sửa QC cuối
   nếu có sửa); report in số lần bỏ sót. `tdq-build/SKILL.md` không quá 174 dòng; `plan-template.md`
   quy tắc 3 viết lại không dài hơn bản cũ; sinh lại token budget, chỉ mục dòng, bảng khoá luật —
