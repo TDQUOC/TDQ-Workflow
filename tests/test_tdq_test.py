@@ -575,7 +575,8 @@ class So(unittest.TestCase):
 
     def test_so_request_khac_khong_tinh(self):
         ghi_so_tay(self.goc, dong_vung_cham("req-0", ["test_b.py"]),
-                   dong_vung_cham("req-0", [], fallback="outside"))
+                   dong_vung_cham("req-0", [], fallback="outside"),
+                   dong_vung_cham("req-1", ["test_a.py"]))
         chay_lenh(self.goc, "tron-bo")
         bo_sot = [r for r in doc_so(self.goc) if r["kind"] == "bo-sot"]
         self.assertEqual([r["module"] for r in bo_sot], ["test_b.py"])
@@ -585,6 +586,7 @@ class So(unittest.TestCase):
         self.assertEqual(p.returncode, 0, p.stderr)
         self.assertEqual(json.loads(p.stdout), {"request": "req-1", "tron_bo": 0, "bo_sot": 0,
                                                 "modules_bo_sot": [], "ngan_sach": 2})
+        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
         chay_lenh(self.goc, "tron-bo")  # đỏ → có vòng sửa QC → ngân sách 3
         chay_lenh(self.goc, "tron-bo")
         d = json.loads(chay_lenh(self.goc, "so", "--json").stdout)
@@ -633,6 +635,58 @@ class So(unittest.TestCase):
     def test_so_gitignore_co_so_test(self):
         with open(os.path.join(ROOT, ".gitignore"), encoding="utf-8") as f:
             self.assertIn("docs/tdq/.tdq-test.jsonl", f.read().splitlines())
+
+
+# ---------- QC1.1: chưa có vung-cham thì không kết luận bỏ sót ----------
+
+class KhongCoVungCham(unittest.TestCase):
+    """Bỏ sót chỉ đo được khi request có ít nhất một dòng `vung-cham` để đối chiếu."""
+
+    def setUp(self):
+        self.goc = tempfile.mkdtemp(prefix="tdq-test-kvc-")
+        self.addCleanup(shutil.rmtree, self.goc, ignore_errors=True)
+        lam_repo_vung_cham(self.goc)
+
+    def test_khong_co_vung_cham_tron_bo_do_khong_ghi_bo_sot(self):
+        p = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
+        rows = doc_so(self.goc)
+        self.assertEqual([r["kind"] for r in rows], ["tron-bo"])
+        self.assertIn("radius check skipped: no vung-cham run recorded for this request",
+                      p.stdout)
+        self.assertIn("radius check skipped", p.stderr)  # cũng vào log
+
+    def test_khong_co_vung_cham_cua_request_nay_du_request_khac_co(self):
+        ghi_so_tay(self.goc, dong_vung_cham("req-0", ["test_a.py"]))
+        p = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual([r for r in doc_so(self.goc) if r["kind"] == "bo-sot"], [])
+        self.assertIn("radius check skipped", p.stdout)
+
+    def test_khong_co_vung_cham_xanh_thi_khong_in_dong_bo_qua(self):
+        ghi(self.goc, "tests/test_b.py", TEST_DAT)
+        p = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertNotIn("radius check skipped", p.stdout)
+
+    def test_khong_co_vung_cham_nhung_co_dong_chua_chon_van_bo_sot(self):
+        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
+        p = chay_lenh(self.goc, "tron-bo")
+        bo_sot = [r for r in doc_so(self.goc) if r["kind"] == "bo-sot"]
+        self.assertEqual([r["module"] for r in bo_sot], ["test_b.py"])
+        self.assertNotIn("radius check skipped", p.stdout)
+
+    def test_khong_co_vung_cham_module_bo_sot_thuan(self):
+        f = tdq_test.module_bo_sot
+        self.assertEqual(f([], "r", ["test_x.py"]), [])
+        self.assertEqual(f([{"kind": "tron-bo", "request": "r", "ok": False}], "r",
+                           ["test_x.py"]), [])
+        self.assertEqual(f([dong_vung_cham("khac", ["test_y.py"])], "r", ["test_x.py"]), [])
+        self.assertEqual(f([dong_vung_cham("r", ["test_y.py"])], "r",
+                           ["test_x.py", "test_y.py"]), ["test_x.py"])
+        self.assertEqual(f([dong_vung_cham("r", [])], "r", ["test_x.py"]), ["test_x.py"])
+        self.assertEqual(f([dong_vung_cham("r", ["test_y.py"]),
+                            dong_vung_cham("r", [], fallback="outside")], "r",
+                           ["test_x.py"]), [])
 
 
 if __name__ == "__main__":

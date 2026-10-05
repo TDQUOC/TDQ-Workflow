@@ -51,6 +51,8 @@ CLI (`python scripts/tdq_test.py <command>`):
 - `tron-bo [--repo DIR]`: run every test module in ONE process; exit 0/1. One `tron-bo` row
   (with `failed_modules`), then one `bo-sot` row per red module that no `vung-cham` row of the
   same request selected (none when such a row fell back to the full suite): the radius missed it.
+  With no `vung-cham` row for the request at all, no miss is judged; one "radius check skipped"
+  line is printed instead.
 - `so [--json] [--repo DIR]`: for the active request, the number of `tron-bo` runs, of `bo-sot`
   rows, the missed modules, and the full-suite budget (`dem()`; 2, or 3 after a red `tron-bo`).
 
@@ -653,17 +655,28 @@ def chay_tron_bo(repo, stream=None):
 def module_bo_sot(rows, request, failed_modules):
     """Failing modules that no `vung-cham` row of `request` ever selected.
 
-    Nothing is missed when a `vung-cham` row of that request fell back to the full suite."""
-    selected = set()
+    Nothing is missed when a `vung-cham` row of that request fell back to the full suite.
+    Nothing can be judged when the request has no `vung-cham` row at all (e.g. the radius ran
+    in other worktrees): a miss needs at least one recorded radius run to compare against."""
+    selected, seen = set(), False
     for row in rows:
         if row.get("kind") != "vung-cham" or row.get("request") != request:
             continue
         if row.get("fallback"):
             return []
+        seen = True
         mods = row.get("modules")
         if isinstance(mods, list):
             selected.update(m for m in mods if isinstance(m, str))
+    if not seen:
+        return []
     return sorted(m for m in failed_modules if m not in selected)
+
+
+def co_vung_cham(rows, request):
+    """True when `rows` hold at least one `vung-cham` row of `request`."""
+    return any(isinstance(r, dict) and r.get("kind") == "vung-cham"
+               and r.get("request") == request for r in rows)
 
 
 def dem(rows, request):
@@ -707,6 +720,9 @@ def cmd_tron_bo(args):
         _ghi_so(repo, {"ts": _now_iso(), "kind": "bo-sot", "request": request, "module": m})
         print(f"tron-bo: {m} is red but no vung-cham run of request {request} selected it "
               f"(the radius missed it)")
+    if failed and not co_vung_cham(rows, request):
+        print("tron-bo: radius check skipped: no vung-cham run recorded for this request")
+        _log(f"tron-bo radius check skipped: no vung-cham run recorded for request={request}")
     if failed:
         print(f"tron-bo: red modules: {' '.join(failed)}")
     _log(f"tron-bo modules={total} failed={len(failed)} missed={len(missed)} ok={ok} "
