@@ -130,7 +130,7 @@ Nguồn: QC-F1 vòng 1 đỏ 4 test ở `test_claude_export` (3) và `test_bench
 "bỏ sót" cho hai module đó: sổ của cây chính không có dòng `vung-cham` nào (trợ lý chạy trong
 worktree riêng), nên mọi module đỏ đều bị tính là bán kính bỏ sót — số đo sai. Thêm theo quy tắc 5.
 
-- [ ] **QC1.1** (e15m) `module_bo_sot` chỉ ghi "bỏ sót" khi request có ít nhất một dòng `vung-cham`
+- [>] **QC1.1** (e15m) `module_bo_sot` chỉ ghi "bỏ sót" khi request có ít nhất một dòng `vung-cham`
   để đối chiếu; không có thì không kết luận được — `tron-bo` in một dòng nói rõ "chưa có lần
   vung-cham nào trong request này, bỏ qua kiểm bỏ sót" — Test: `python -m unittest discover tests -p test_tdq_test.py -k khong_co_vung_cham`
   - Chạm: `scripts/tdq_test.py` → `module_bo_sot`, `cmd_tron_bo`; `tests/test_tdq_test.py` → lớp `KhongCoVungCham`
