@@ -172,7 +172,9 @@ class QuetThuMucTest(RepoTam):
 
 class TronBoKhiTest(RepoTam):
     def test_ban_kinh_tron_bo_khi_file_ngoai_5_thu_muc(self):
-        for f in (".gitignore", "README.md", "docs/kien-truc.md"):
+        # T5.6 (lệch spec #1, Q4): chỉ file MÃ / loại không rõ ngoài 5 thư mục mới rơi về trọn
+        # bộ; file dữ liệu (.gitignore, README.md, docs/*.md) giờ chỉ dò theo đường dẫn.
+        for f in ("setup.py", "tools/build.sh", "Makefile", "docs/x.cfg"):
             mods, ly_do = self.ban_kinh("scripts/lib_a.py", f)
             self.assertTrue(ly_do, f)
             self.assertEqual(mods, tdq_test.tat_ca_module(self.goc))
@@ -307,7 +309,7 @@ class VungCham(unittest.TestCase):
         self.assertIn("Ran 2 tests", p.stderr)
 
     def test_vung_cham_ly_do_tron_bo_chay_het(self):
-        p = chay_cli(self.goc, "--files", "README.md")
+        p = chay_cli(self.goc, "--files", "tools/build.sh")  # T5.6: mã ngoài 5 thư mục
         self.assertEqual(p.returncode, 1)  # test_b trượt nằm trong trọn bộ
         self.assertIn("Ran 9 tests", p.stderr)
         self.assertIn("full suite", p.stdout)
@@ -400,6 +402,97 @@ class VungCham(unittest.TestCase):
         dong = doc_so(self.goc)[-1]
         self.assertIn("git", dong["fallback"])
         self.assertEqual(len(dong["modules"]), 9)
+
+
+# ---------- T5.6: sửa 2 lỗi từ soát lỗi T5.3 ----------
+
+class SuaLoi(RepoTam):
+    """Lỗi 1: file DỮ LIỆU ngoài 5 thư mục không còn ép trọn bộ (lệch spec #1, Q4).
+    Lỗi 2: `.py` không phải test trong `tests/` được dò import ngược như module."""
+
+    def test_sua_loi_du_lieu_docs_chi_chon_test_nhac_duong_dan(self):
+        ghi(self.goc, "docs/tdq/plan/x.md", "# plan\n")
+        ghi(self.goc, "tests/test_doc_plan.py", "P = 'docs/tdq/plan/x.md'\n")
+        ghi(self.goc, "tests/test_ten_tran.py", "P = 'x.md'\n")  # tên trần không tính
+        mods, ly_do = self.ban_kinh("docs/tdq/plan/x.md")
+        self.assertIsNone(ly_do)
+        self.assertEqual(mods, ["test_doc_plan.py"])
+
+    def test_sua_loi_du_lieu_khong_ai_nhac_khong_chon_khong_tron_bo(self):
+        for f in ("docs/tdq/STATE.md", "docs/tdq/timing.jsonl", ".gitignore", "README.md",
+                  "LICENSE", ".gitattributes", "docs/a.yaml", "docs/hinh.PNG"):
+            self.assertEqual(self.ban_kinh(f), ([], None), f)
+
+    def test_sua_loi_du_lieu_cung_ma_trong_5_thu_muc(self):
+        ghi(self.goc, "tests/test_lib_a.py", "import lib_a\n")
+        mods, ly_do = self.ban_kinh("scripts/lib_a.py", "docs/tdq/plan/x.md", ".gitignore")
+        self.assertIsNone(ly_do)
+        self.assertEqual(mods, ["test_lib_a.py"])
+
+    def test_sua_loi_py_ngoai_5_thu_muc_tron_bo(self):
+        for f in ("setup.py", "docs/gen.py", "tools/run.ps1", "build.sh", "x.js"):
+            mods, ly_do = self.ban_kinh(f)
+            self.assertTrue(ly_do, f)
+            self.assertIn(f, ly_do)
+            self.assertEqual(mods, tdq_test.tat_ca_module(self.goc))
+
+    def test_sua_loi_duoi_khong_ro_tron_bo(self):
+        for f in ("docs/x.cfg", "Makefile", "data.bin"):
+            mods, ly_do = self.ban_kinh(f)
+            self.assertTrue(ly_do, f)
+            self.assertEqual(mods, tdq_test.tat_ca_module(self.goc))
+
+    def test_sua_loi_helper_chon_moi_test_import_no(self):
+        ghi(self.goc, "tests/helper2.py", "from helper import ROOT\n")
+        ghi(self.goc, "tests/test_h1.py", "import helper\n")
+        ghi(self.goc, "tests/test_h2.py", "def f():\n    from helper import ROOT\n")
+        ghi(self.goc, "tests/test_h3.py", "import helper2\n")  # qua helper khác
+        ghi(self.goc, "tests/test_khong.py", "X = 'helper'\nimport helperx\n")
+        mods, ly_do = self.ban_kinh("tests/helper.py")
+        self.assertIsNone(ly_do)
+        self.assertEqual(mods, ["test_h1.py", "test_h2.py", "test_h3.py"])
+        # Sửa helper2 → chỉ test import helper2.
+        self.assertEqual(self.ban_kinh("tests/helper2.py")[0], ["test_h3.py"])
+
+    def test_sua_loi_helper_vuot_nguong_thi_tron_bo(self):
+        for i in range(self.SO_TEST_DEM):
+            ghi(self.goc, f"tests/test_dem_{i:02d}.py", "import unittest\nimport helper\n")
+        mods, ly_do = self.ban_kinh("tests/helper.py")
+        self.assertTrue(ly_do)
+        self.assertIn("60", ly_do)
+
+    @unittest.skipUnless(shutil.which("git"), "git not installed")
+    def test_sua_loi_vung_cham_git_doi_docs_va_script_la_khong_tron_bo(self):
+        g = tempfile.mkdtemp(prefix="tdq-test-sua-loi-")
+        self.addCleanup(shutil.rmtree, g, ignore_errors=True)
+        lam_repo_vung_cham(g)
+        ghi(g, "tests/test_a.py", TEST_DAT + "# dung lib_a\n")
+
+        def git(*args):
+            subprocess.run(["git", "-C", g, *args], check=True, capture_output=True)
+
+        ghi(g, ".gitignore", "__pycache__/\ndocs/tdq/state.json\n")
+        git("init", "-q")
+        git("symbolic-ref", "HEAD", "refs/heads/main")
+        git("config", "user.email", "t@example.com")
+        git("config", "user.name", "t")
+        git("config", "core.autocrlf", "false")
+        git("add", "-A")
+        git("commit", "-q", "-m", "goc")
+        git("checkout", "-q", "-b", "nhanh")
+        ghi(g, "docs/tdq/plan.md", "# plan\n")                  # commit trên nhánh
+        ghi(g, ".gitignore", "__pycache__/\ndocs/tdq/state.json\n*.tmp\n")
+        git("add", "-A")
+        git("commit", "-q", "-m", "plan")
+        ghi(g, "scripts/lib_a.py", "X = 2\n")                    # chưa stage, script lá
+        ghi(g, "docs/tdq/STATE.md", "# state\n")                 # untracked
+        p = chay_cli(g)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        dong = doc_so(g)[-1]
+        self.assertIn("docs/tdq/plan.md", dong["files"])
+        self.assertIn(".gitignore", dong["files"])
+        self.assertIsNone(dong["fallback"])
+        self.assertEqual(dong["modules"], ["test_a.py"])
 
 
 # ---------- T1.3: lệnh `tron-bo` + `so` ----------
