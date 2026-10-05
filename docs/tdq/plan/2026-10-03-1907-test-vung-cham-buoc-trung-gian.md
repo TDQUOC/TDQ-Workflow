@@ -40,7 +40,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-05, "duyệt plan" · mode "1a" = suba
   về trọn bộ khi bán kính ≥ 60% số module hoặc có file ngoài 5 thư mục — Test:
   `python -m unittest discover tests -p test_tdq_test.py -k ban_kinh`
   - Chạm: `scripts/tdq_test.py` → file mới; `tests/test_tdq_test.py` → file mới
-- [ ] **T1.2** (e30m) Lệnh `tdq_test.py vung-cham [--files …]`: không có `--files` thì lấy file
+- [>] **T1.2** (e30m) Lệnh `tdq_test.py vung-cham [--files …]`: không có `--files` thì lấy file
   đổi từ git so với `nhanh_goc` (cộng file chưa commit); chạy các module đã chọn trong MỘT tiến
   trình (`unittest` loader); ghi tập module đã chọn vào sổ; log ISO ra stderr, tắt bằng
   `TDQ_LOG=0` — Test: `python -m unittest discover tests -p test_tdq_test.py -k vung_cham`
