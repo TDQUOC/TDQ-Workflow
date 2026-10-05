@@ -33,7 +33,7 @@ Trạng thái plan: ĐÃ DUYỆT (2026-10-05, "duyệt plan" · mode "1a" = suba
 
 ## P1 — Script chạy test theo bán kính
 
-- [x] **T1.1** (e40m) `scripts/tdq_test.py` → hàm thuần `ban_kinh(files, repo)`: chọn module test
+- [>] **T1.1** (e40m) `scripts/tdq_test.py` → hàm thuần `ban_kinh(files, repo)`: chọn module test
   nhắc đường dẫn tương đối / tên module của file sửa; cộng import bắc cầu (AST) trong `scripts/`,
   `hooks/scripts/`; cộng test QUÉT thư mục cha (`os.walk`/`glob`/`listdir` trên đường dẫn dựng từ
   `skills`/`hooks`/`scripts`/`agents`/`tests`, dò bằng AST); trả `(modules, ly_do_tron_bo)` — rơi
