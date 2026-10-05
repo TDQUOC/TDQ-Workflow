@@ -343,12 +343,26 @@ class LuatVaKhuon(unittest.TestCase):
 
     def test_cong_thuc_slug_moi_o_moi_noi(self):
         """Mọi chỗ in công thức slug phải có HHMM — sót một chỗ là chuẩn mới trôi."""
-        import subprocess
-        out = subprocess.run(
-            ["grep", "-rnI", "YYYY-MM-DD-", "skills", "scripts", "portable_src",
-             os.path.join("docs", "tdq", "STATE.md")],
-            cwd=helper.ROOT, capture_output=True, encoding="utf-8", text=True).stdout
-        thieu = [d for d in out.splitlines() if "HHMM" not in d]
+        # Tương đương `grep -rnI YYYY-MM-DD- …` viết bằng Python: `grep` chỉ có trong PATH của
+        # Git Bash, gọi từ cmd/PowerShell thì ca này vỡ vì lý do sai.
+        def cac_file(goc):
+            if os.path.isfile(goc):
+                yield goc
+            for thu_muc, _con, ten_file in os.walk(goc):
+                for ten in ten_file:
+                    yield os.path.join(thu_muc, ten)
+
+        out = []
+        for goc in ("skills", "scripts", "portable_src", os.path.join("docs", "tdq", "STATE.md")):
+            for duong in cac_file(os.path.join(helper.ROOT, goc)):
+                with open(duong, "rb") as f:
+                    du_lieu = f.read()
+                if b"\0" in du_lieu:  # -I: bỏ file nhị phân
+                    continue
+                for so, dong in enumerate(du_lieu.decode("utf-8", "replace").splitlines(), 1):
+                    if "YYYY-MM-DD-" in dong:
+                        out.append(f"{os.path.relpath(duong, helper.ROOT)}:{so}:{dong}")
+        thieu = [d for d in out if "HHMM" not in d]
         self.assertEqual(thieu, [], f"Còn {len(thieu)} chỗ in công thức slug cũ")
 
 
