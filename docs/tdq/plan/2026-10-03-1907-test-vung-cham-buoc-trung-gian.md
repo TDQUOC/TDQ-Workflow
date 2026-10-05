@@ -58,7 +58,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P2 — `next` nhắc khi vượt số cổng
 
-- [>] **T2.1** (e20m) `render_next` ở phase implement/qc đọc `tdq_test.py so`: số lần trọn bộ của
+- [x] **T2.1** (e20m) `render_next` ở phase implement/qc đọc `tdq_test.py so`: số lần trọn bộ của
   request vượt 2 (3 khi đã có vòng sửa QC) → một dòng nhắc chạy `vung-cham`; im khi chưa vượt —
   Test: `python -m unittest discover tests -p test_next_tron_bo.py`
   - Chạm: `scripts/tdq_state.py` → `render_next`; `tests/test_next_tron_bo.py` → file mới
