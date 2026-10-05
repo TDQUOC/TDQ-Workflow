@@ -81,7 +81,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
 
 ## P4 — Test chạy được từ mọi shell
 
-- [>] **T4.1** (e30m) Tìm và sửa mọi test gọi lệnh `true` của shell (dòng lệnh kiểm trong plan
+- [x] **T4.1** (e30m) Tìm và sửa mọi test gọi lệnh `true` của shell (dòng lệnh kiểm trong plan
   mẫu, `subprocess` …) ở `test_bench`, `test_team_mode`, `test_team_chong_conflict`,
   `test_gitflow_doi`, `test_timing`: thay bằng lệnh tương đương luôn thoát 0 qua trình thông dịch
   Python, giữ nguyên ý nghĩa từng ca — Test: `powershell.exe -NoProfile -Command "foreach ($m in 'test_bench.py','test_team_mode.py','test_team_chong_conflict.py','test_gitflow_doi.py','test_timing.py') { python -m unittest discover tests -p $m; if ($LASTEXITCODE) { exit 1 } }"`
@@ -93,7 +93,7 @@ test quét `skills/` · `tdq_state.py` → trọn bộ).
   rơi về trọn bộ, giây chạy; tắt bằng `TDQ_LOG=0` — Test:
   `python -m unittest discover tests -p test_tdq_test.py -k log`
   - Cần: T1.3
-- [ ] **T5.2** (e15m) Cổng QC-F1 của chính request này: `tdq_test.py tron-bo` từ Git Bash xanh, và
+- [~] **T5.2** (e15m) Cổng QC-F1 của chính request này: `tdq_test.py tron-bo` từ Git Bash xanh, và
   trọn bộ từ PowerShell 0 fail 0 error — Test: `python scripts/tdq_test.py tron-bo` thoát 0
   - Cần: T2.1, T3.2, T4.1, T5.1
 - [ ] **T5.3** (e20m) Soát lỗi đúng-sai toàn bộ thay đổi — Test: mọi phát hiện được xử lý hoặc ghi
