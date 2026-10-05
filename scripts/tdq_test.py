@@ -41,6 +41,11 @@ CLI (`python scripts/tdq_test.py <command>`):
   `main`). When git fails, or `ban_kinh` gives a reason, the full suite runs instead. The
   selected modules run in ONE process (`unittest` loader); exit 0 when green, 1 otherwise. One
   JSON row goes to the ledger `docs/tdq/.tdq-test.jsonl`.
+- `tron-bo [--repo DIR]`: run every test module in ONE process; exit 0/1. One `tron-bo` row
+  (with `failed_modules`), then one `bo-sot` row per red module that no `vung-cham` row of the
+  same request selected (none when such a row fell back to the full suite): the radius missed it.
+- `so [--json] [--repo DIR]`: for the active request, the number of `tron-bo` runs, of `bo-sot`
+  rows, the missed modules, and the full-suite budget (`dem()`; 2, or 3 after a red `tron-bo`).
 
 Log service: one ISO-timestamped line per command on stderr, on by default; `TDQ_LOG=0` turns
 it off. Only paths, counts and reasons are logged, never file contents.
@@ -574,6 +579,120 @@ def cmd_vung_cham(args):
     return 0 if ok else 1
 
 
+_ID_TRONG_NGOAC = re.compile(r"\(([\w.]+)\)")
+
+
+def _module_cua(test):
+    """`test_x.py` of a failing/erroring test, or None when it cannot be told.
+
+    A normal test id is `test_x.Class.method`; a module that fails to import is a
+    `_FailedTest` whose method name is the module; a fixture error (`setUpClass`,
+    `setUpModule`) is an `_ErrorHolder` whose id reads `setUpClass (test_x.Class)`."""
+    if isinstance(test, unittest.loader._FailedTest):
+        name = test._testMethodName
+    else:
+        tid = test.id()
+        m = _ID_TRONG_NGOAC.search(tid)
+        name = (m.group(1) if m else tid).split(".")[0]
+    return name + ".py" if name.startswith("test_") else None
+
+
+def chay_tron_bo(repo, stream=None):
+    """Run every `tests/test_*.py` in THIS process. (ok, sorted failing module names)."""
+    tests_dir = os.path.join(repo, "tests")
+    if not os.path.isdir(tests_dir):
+        return True, []
+    _bo_module_cu(tests_dir, tat_ca_module(repo))
+    suite = unittest.defaultTestLoader.discover(tests_dir, pattern="test_*.py",
+                                                top_level_dir=tests_dir)
+    result = unittest.TextTestRunner(stream=stream or sys.stderr, verbosity=1).run(suite)
+    failed = {_module_cua(t) for t, _ in result.failures + result.errors}
+    failed |= {_module_cua(t) for t in getattr(result, "unexpectedSuccesses", [])}
+    return result.wasSuccessful(), sorted(m for m in failed if m)
+
+
+def module_bo_sot(rows, request, failed_modules):
+    """Failing modules that no `vung-cham` row of `request` ever selected.
+
+    Nothing is missed when a `vung-cham` row of that request fell back to the full suite."""
+    selected = set()
+    for row in rows:
+        if row.get("kind") != "vung-cham" or row.get("request") != request:
+            continue
+        if row.get("fallback"):
+            return []
+        mods = row.get("modules")
+        if isinstance(mods, list):
+            selected.update(m for m in mods if isinstance(m, str))
+    return sorted(m for m in failed_modules if m not in selected)
+
+
+def dem(rows, request):
+    """Counts of one request over ledger rows; pure (reads `rows`, changes nothing).
+
+    `ngan_sach` is the full-suite budget: 2 (QC-F1 + after the last fix round), or 3 once a
+    red `tron-bo` exists in the request — a red QC-F1 implies a QC fix round."""
+    tron_bo = bo_sot = 0
+    missed, red = set(), False
+    for row in rows:
+        if not isinstance(row, dict) or row.get("request") != request:
+            continue
+        kind = row.get("kind")
+        if kind == "tron-bo":
+            tron_bo += 1
+            red = red or row.get("ok") is False
+        elif kind == "bo-sot":
+            bo_sot += 1
+            if isinstance(row.get("module"), str):
+                missed.add(row["module"])
+    return {"request": request, "tron_bo": tron_bo, "bo_sot": bo_sot,
+            "modules_bo_sot": sorted(missed), "ngan_sach": 3 if red else 2}
+
+
+def cmd_tron_bo(args):
+    """Run the full suite in one process, log it, and flag the modules the radius missed."""
+    start = time.monotonic()
+    repo = os.path.abspath(args.repo)
+    state = _doc_state(repo)
+    request, phase = state.get("active_request"), state.get("phase")
+    total = len(tat_ca_module(repo))
+    print(f"tron-bo: running the full suite ({total} modules)")
+    sys.stdout.flush()
+    ok, failed = chay_tron_bo(repo)
+    seconds = round(time.monotonic() - start, 2)
+    rows = _doc_so(repo)
+    _ghi_so(repo, {"ts": _now_iso(), "kind": "tron-bo", "request": request, "phase": phase,
+                   "ok": ok, "seconds": float(seconds), "failed_modules": failed})
+    missed = module_bo_sot(rows, request, failed)
+    for m in missed:
+        _ghi_so(repo, {"ts": _now_iso(), "kind": "bo-sot", "request": request, "module": m})
+        print(f"tron-bo: {m} is red but no vung-cham run of request {request} selected it "
+              f"(the radius missed it)")
+    if failed:
+        print(f"tron-bo: red modules: {' '.join(failed)}")
+    _log(f"tron-bo modules={total} failed={len(failed)} missed={len(missed)} ok={ok} "
+         f"seconds={seconds}")
+    return 0 if ok else 1
+
+
+def cmd_so(args):
+    """Print how many full-suite runs and radius misses the current request has."""
+    repo = os.path.abspath(args.repo)
+    state = _doc_state(repo)
+    request = state.get("active_request")
+    counts = dem(_doc_so(repo), request)
+    if args.json:
+        print(json.dumps(counts, ensure_ascii=False))
+    else:
+        print(f"request: {request} (phase {state.get('phase')})")
+        print(f"full-suite runs: {counts['tron_bo']} of budget {counts['ngan_sach']}")
+        print(f"radius misses: {counts['bo_sot']}"
+              + (f" ({' '.join(counts['modules_bo_sot'])})" if counts["modules_bo_sot"] else ""))
+    _log(f"so request={request} tron_bo={counts['tron_bo']} bo_sot={counts['bo_sot']} "
+         f"budget={counts['ngan_sach']}")
+    return 0
+
+
 def main(argv=None):
     import utf8_io  # noqa: F401 — imported for its side effect: stdout/stderr become UTF-8
     parser = argparse.ArgumentParser(
@@ -584,6 +703,13 @@ def main(argv=None):
                    help="changed files (default: from git against nhanh_goc)")
     p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
     p.set_defaults(func=cmd_vung_cham)
+    p = sub.add_parser("tron-bo", help="run the full suite in one process and log misses")
+    p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
+    p.set_defaults(func=cmd_tron_bo)
+    p = sub.add_parser("so", help="count full-suite runs and radius misses of the request")
+    p.add_argument("--json", action="store_true", help="print one JSON object")
+    p.add_argument("--repo", default=os.getcwd(), help="repo root (default: cwd)")
+    p.set_defaults(func=cmd_so)
     args = parser.parse_args(argv)
     return args.func(args)
 
