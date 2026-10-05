@@ -1,8 +1,30 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.38.0 và 0.37.0, tách khỏi `CHANGELOG.md` ngày 2026-10-03 để file chính dưới trần R6
+Các bản 0.39.0 đến 0.37.0, tách khỏi `CHANGELOG.md` ngày 2026-10-03 (0.39.0 ngày 2026-10-05) để file chính dưới trần R6
 500 dòng (`docs/CHANGELOG-archive.md` đã đầy). Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.39.0 — 2026-09-03
+
+Thang `tdq_lsp.py kiem` thêm **bậc 7** và luật thứ tự tìm kiếm đổi từ một thứ tự cứng sang chọn
+lớp theo LOẠI truy vấn. Lý do: thang cũ báo **6/6 ĐẠT** trong cả trạng thái độ phủ truy vấn quan
+hệ 7 % lẫn 100 % — nó kiểm sự tồn tại, không kiểm hiệu quả. Báo cáo:
+`docs/tdq/report/2026-09-03-0053-sua-luat-va-kiem-lsp-that.md`.
+
+- **`scripts/tdq_lsp.py`** — bảng `LANG_CONFIG` (file mốc gốc import cho 26 ngôn ngữ, chia nhóm
+  A/B) và bậc 7 `bac7_cau_hinh_goc_import`. Nhóm B (Python, TS/JS, Lua, C/C++) thiếu file mốc thì
+  **CHẶN, thoát 3** vì chỉ mục liên file chết âm thầm mà test vẫn xanh; nhóm A (`go.mod`,
+  `Cargo.toml`…) chỉ cảnh báo vì thiếu là dự án không build được, tự lộ. Script chỉ in nội dung
+  cần tạo và xin phép, không bao giờ tự ghi file.
+- **`skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`** — luật gốc thay bằng bảng 4 loại truy
+  vấn kèm số đo: quan hệ → `mcp__lsp__*` (phủ 15/15, grep chỉ precision 67 %); tên chính xác →
+  grep (~0,1 s so với 3–6 s); khái niệm mơ hồ → lumen (LSP xếp đích hạng 13/62); chưa phân loại
+  → gọi song song. Câu luật chép lại nguyên văn ở đủ 5 chỗ móc.
+- **`skills/tdq-intake/references/kiem-lsp-hieu-ung.md`** (mới) — bước kiểm **bằng hiệu ứng** ở
+  intake: so `find_references` với grep theo số file phân biệt, ĐẠT khi LSP ≥ grep. Bậc 7 bắt
+  nguyên nhân đã biết, bước này bắt triệu chứng dù nguyên nhân là gì.
+- **`pyrightconfig.json`** (mới) — chính file mốc mà repo này đang thiếu, đưa độ phủ truy vấn
+  quan hệ từ 1/15 file lên 15/15.
 
 ## 0.38.0 — 2026-09-02
 

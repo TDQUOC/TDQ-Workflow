@@ -2,6 +2,29 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.57.0 — 2026-10-05
+
+Một luật chạy test, một nguồn. Bước trung gian chỉ chạy test trong vùng chạm, trọn bộ dồn về
+hai cổng. Trước bản này `tdq-build` ("EXACTLY ONCE"), khuôn plan ("sau mỗi phase chạy toàn bộ")
+và `qc.md` (mỗi vòng sửa) nói ba kiểu khác nhau. Báo cáo:
+`docs/tdq/reports/2026-10-03-1907-test-vung-cham-buoc-trung-gian.md`.
+
+- **Bước trung gian chạy `scripts/tdq_test.py vung-cham`.** Nó chọn vùng chạm cộng bán kính ảnh
+  hưởng: test nhắc đường dẫn/tên file, import bắc cầu đọc bằng AST, test quét thư mục cha. Trọn
+  bộ chỉ ở 2 cổng: QC-F1 (thay lần "xong implement") và sau vòng sửa QC cuối nếu có sửa.
+- **Không chắc thì chạy hết.** Bán kính ≥ 60% số module, hoặc file mã/loại không rõ ngoài
+  `scripts/ hooks/ skills/ tests/ agents/` → trọn bộ trong một tiến trình. File dữ liệu (.md,
+  .json…) chỉ kéo theo test nhắc đường dẫn của nó.
+- **Đo trên repo này.** Sửa `stop_gate.py` → 16/129 module, 51,6 s (trọn bộ ~420 s). Sửa hub
+  `tdq_state.py` → 98/129 module → trọn bộ.
+- **Sổ sách.** `tdq_test.py tron-bo` ghi sổ, và có sổ bán kính bỏ sót (QC-F1 đỏ ở module bán kính
+  chưa chọn); report in số lần, xem bằng `tdq_test.py so`. `next` nhắc khi số lần trọn bộ vượt
+  ngân sách 2 (3 sau một lần trọn bộ đỏ) — chỉ nhắc, không chặn.
+- **Test chạy được từ PowerShell.** Bỏ lệnh shell `true` khỏi 5 module test (trước: 26 fail +
+  1 error).
+- **Trung thực về tiết kiệm.** Nền cũ trung bình 7,4 lần trọn bộ/request (59 lần/8 request). Hai
+  request gần nhất đã chỉ 2–3 lần, nên lợi chính là khoá luật cho khỏi trôi ngược.
+
 ## 0.56.0 — 2026-10-03
 
 Đo ngưỡng ở spec, không dừng giữa implement vì ngưỡng. Ca gốc: một phiên excalidraw dừng giữa
@@ -461,31 +484,9 @@ phần hướng dẫn cài qua marketplace + auto-update + bump version trong `R
 - **`README.md`** — 3 cách cài (marketplace / `--plugin-dir` / bundle portable), mục
   `## Cập nhật` và thủ tục bump version bắt buộc mỗi lần release.
 
-## 0.39.0 — 2026-09-03
-
-Thang `tdq_lsp.py kiem` thêm **bậc 7** và luật thứ tự tìm kiếm đổi từ một thứ tự cứng sang chọn
-lớp theo LOẠI truy vấn. Lý do: thang cũ báo **6/6 ĐẠT** trong cả trạng thái độ phủ truy vấn quan
-hệ 7 % lẫn 100 % — nó kiểm sự tồn tại, không kiểm hiệu quả. Báo cáo:
-`docs/tdq/report/2026-09-03-0053-sua-luat-va-kiem-lsp-that.md`.
-
-- **`scripts/tdq_lsp.py`** — bảng `LANG_CONFIG` (file mốc gốc import cho 26 ngôn ngữ, chia nhóm
-  A/B) và bậc 7 `bac7_cau_hinh_goc_import`. Nhóm B (Python, TS/JS, Lua, C/C++) thiếu file mốc thì
-  **CHẶN, thoát 3** vì chỉ mục liên file chết âm thầm mà test vẫn xanh; nhóm A (`go.mod`,
-  `Cargo.toml`…) chỉ cảnh báo vì thiếu là dự án không build được, tự lộ. Script chỉ in nội dung
-  cần tạo và xin phép, không bao giờ tự ghi file.
-- **`skills/tdq-lsp-setup/references/uu-tien-tim-kiem.md`** — luật gốc thay bằng bảng 4 loại truy
-  vấn kèm số đo: quan hệ → `mcp__lsp__*` (phủ 15/15, grep chỉ precision 67 %); tên chính xác →
-  grep (~0,1 s so với 3–6 s); khái niệm mơ hồ → lumen (LSP xếp đích hạng 13/62); chưa phân loại
-  → gọi song song. Câu luật chép lại nguyên văn ở đủ 5 chỗ móc.
-- **`skills/tdq-intake/references/kiem-lsp-hieu-ung.md`** (mới) — bước kiểm **bằng hiệu ứng** ở
-  intake: so `find_references` với grep theo số file phân biệt, ĐẠT khi LSP ≥ grep. Bậc 7 bắt
-  nguyên nhân đã biết, bước này bắt triệu chứng dù nguyên nhân là gì.
-- **`pyrightconfig.json`** (mới) — chính file mốc mà repo này đang thiếu, đưa độ phủ truy vấn
-  quan hệ từ 1/15 file lên 15/15.
-
 ## Lịch sử cũ hơn
 
-Bản 0.38.0 và 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
-0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6. Bản 0.36.0 trở xuống nằm ở
+Bản 0.39.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
+0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05). Bản 0.36.0 trở xuống nằm ở
 `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
 xoá dòng nào.
