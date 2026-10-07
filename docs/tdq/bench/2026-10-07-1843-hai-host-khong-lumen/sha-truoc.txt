@@ -1,0 +1,2 @@
+49dc656427d0f231282683c7dba66bf0fc5da15a641e6a42759c707f53bd9967 */c/Users/admin/.codex/config.toml
+becb30956a9d9ebacef43a5441c53e38eefb1f00726722815284025b3dcc7846 */c/Users/admin/.claude/settings.json
