@@ -55,7 +55,8 @@ GOC_LUAT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # ------------------------------------------------- auto-init of the search layers (2026-10-03)
 # The user asked that a project come up with its search layers READY before work starts. The
-# expensive part cannot run here: a lumen index of excalidraw took 11m5s (843 files). So this
+# expensive part cannot run here: building the layers of a big repo takes minutes (a semantic
+# index of excalidraw took 11m5s before lumen was removed in 0.58.0). So this
 # hook only PROBES the readiness stamp and, when needed, starts `tdq_setup.py --nen` DETACHED
 # and returns at once; the search gate stands down while that build runs.
 # Written by THIS hook when it starts a build. Two sessions opened back to back would otherwise
@@ -69,7 +70,9 @@ THU_LAI_GIAY = 6 * 3600
 # A stamp claiming "still building" for longer than the builder's own cap is a dead build.
 HAN_DUNG_GIAY = 1800
 GOC_PLUGIN = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-TANG = ("grep", "lsp", "graphify", "lumen")
+# A stamp written before 0.58.0 may still carry a `lumen` key; only these three are read, so a
+# removed layer can never keep a project "not ready" and re-trigger the build every 6 hours.
+TANG = ("grep", "lsp", "graphify")
 
 
 def _tuoi_giay(iso):
@@ -179,8 +182,7 @@ def main():
         "[TDQ] graphify is not installed (optional): uv tool install graphifyy",
         can_nhac_ten_lenh(),
         "[TDQ:SEARCH] Setting up the search layers in the background (dependencies, graphify "
-        "graph, lumen index — minutes on a big repo). Until they answer, the search gate does "
-        "not block." if dung_nen else "") if n]
+        "graph — minutes on a big repo). Until they answer, the search gate does not block." if dung_nen else "") if n]
     if nhac:
         # Their own paragraph: the head never holds a blank line, so the blank line is what
         # tells a reader (and the 12/600 budget) where the head ends.

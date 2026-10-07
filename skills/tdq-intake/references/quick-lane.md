@@ -39,7 +39,7 @@ NO approval gate of its own — express keeps exactly one gate. How deep it goes
 
 | Step | Express rule |
 |---|---|
-| B1 read the code | **ALWAYS.** The target is a code symbol → call `mcp__lsp__*` and lumen in parallel, merge both layers, grep last. A question about **links** or the overall map ("who calls X", "what breaks if X changes") → `graphify query\|path\|explain\|affected`; the graph holds only `scripts/` and `hooks/` |
+| B1 read the code | **ALWAYS.** The target is a code symbol → call `mcp__lsp__*` first (`start_lsp` if it answers "not initialized"); a vague concept → `graphify query` plus grep over synonyms, merged; grep last. A question about **links** or the overall map ("who calls X", "what breaks if X changes") → `graphify query\|path\|explain\|affected`; the graph holds only `scripts/` and `hooks/` |
 | B0 capability inventory | ONLY when the request touches ground with no precedent — no earlier report under `docs/tdq/report/` touched the same directory |
 | B2 research | ONLY when an unknown outside the repo exists (a library, an API, a version, third-party behaviour) — hand it to a sub-agent, digest ≤ 1,500 characters |
 

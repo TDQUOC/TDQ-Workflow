@@ -30,14 +30,15 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
 2. **Read the code.** Find everything this request touches: entry point, data flow,
    config, tests. Write down the versions and frameworks in use.
 
-   **LSP and lumen together.** <!-- i18n-allow: canonical rule sentence in the default language -->
-   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+   **LSP first, graphify for the concept, grep last.** <!-- i18n-allow: canonical rule sentence in the default language -->
+   The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
    and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
    top of that file gives the exact line range, so the whole file never has to be read.
    In practice: `mcp__lsp__find_symbol` to locate it, `mcp__lsp__find_references` for who calls
-   it, `mcp__lsp__go_to_definition` for where it comes from, and lumen's `semantic_search`
-   alongside for the conceptual angle. A grep for a symbol with no LSP+lumen attempt first is a
-   QC defect.
+   it, `mcp__lsp__go_to_definition` for where it comes from, and `graphify query "<question>"`
+   alongside for the conceptual angle. A grep for a symbol with no LSP or graphify attempt first is
+   a QC defect. LSP answers "not initialized" → `mcp__lsp__start_lsp` first; a layer the ladder
+   reports dead is skipped with one line, never counted against you.
 
    **Architecture profile — generated once per project.** Open `docs/kien-truc.md`.
    Already there → read it fully before writing a single line of analysis. Not there →

@@ -41,7 +41,7 @@ class CaiThieu(unittest.TestCase):
 
     def test_cai_tu_choi_lenh_ngoai_danh_sach_va_ghi_no(self):
         """Lệnh lạ không được chạy — nó thành NỢ, đúng luật 'ngoài danh sách thì chỉ ghi nợ'."""
-        bac = [_bac(5, "sức khoẻ lumen", False, "rm -rf /nha/cua/toi")]
+        bac = [_bac(5, "hook plugin ngoài xung đột", False, "rm -rf /nha/cua/toi")]
         with mock.patch.object(tdq_setup, "_chay_lenh") as chay:
             da_cai, no = tdq_setup.cai_thieu(bac)
         chay.assert_not_called()
@@ -93,42 +93,11 @@ class CaiThieu(unittest.TestCase):
         self.assertEqual((da_cai, no), ([], []))
 
     def test_cai_lenh_that_bai_thi_thanh_no_chu_khong_im_lang(self):
-        bac = [_bac(8, "đồ thị graphify", False, "uv tool install graphifyy")]
+        bac = [_bac(7, "đồ thị graphify", False, "uv tool install graphifyy")]
         with mock.patch.object(tdq_setup, "_chay_lenh", return_value=(1, "mạng hỏng")):
             da_cai, no = tdq_setup.cai_thieu(bac)
         self.assertEqual(da_cai, [])
         self.assertEqual(len(no), 1)
-
-
-class KiemCauHinh(unittest.TestCase):
-    """"Config đúng" là một trong bốn thứ user đòi, nên nó có phép kiểm riêng."""
-
-    def setUp(self):
-        self.thu_muc = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.thu_muc, True)
-
-    def _ghi(self, noi_dung):
-        duong = os.path.join(self.thu_muc, "config.yaml")
-        with io.open(duong, "w", encoding="utf-8") as fh:
-            fh.write(noi_dung)
-        return duong
-
-    def test_cauhinh_thieu_backend_bi_bat(self):
-        """`backend` thiếu là lỗi lumen báo thẳng: `config: servers[0]: backend is required`."""
-        cfg = self._ghi("servers:\n  - model: qwen3-embedding:0.6b\n")
-        loi = tdq_setup.kiem_cau_hinh_lumen(cfg)
-        self.assertTrue(loi)
-        self.assertIn("backend", loi[0])
-
-    def test_cauhinh_du_thi_khong_loi(self):
-        cfg = self._ghi("servers:\n  - backend: ollama\n    model: qwen3-embedding:0.6b\n")
-        self.assertEqual(tdq_setup.kiem_cau_hinh_lumen(cfg), [])
-
-    def test_cauhinh_chua_co_file_thi_bao_thieu(self):
-        loi = tdq_setup.kiem_cau_hinh_lumen(os.path.join(self.thu_muc, "chua-co.yaml"))
-        self.assertTrue(loi)
-
-
 
 
 class SmokeTungTang(unittest.TestCase):
@@ -165,14 +134,13 @@ class SmokeTungTang(unittest.TestCase):
             dat, _ = tdq_setup.smoke_graphify(self.thu_muc)
         self.assertTrue(dat)
 
-    def test_smoke_bang_du_bon_tang(self):
+    def test_smoke_bang_du_ba_tang(self):
         with mock.patch.object(tdq_setup, "smoke_grep", return_value=(True, "")), \
                 mock.patch.object(tdq_setup, "smoke_lsp", return_value=(True, "")), \
-                mock.patch.object(tdq_setup, "smoke_graphify", return_value=(False, "chưa cài")), \
-                mock.patch.object(tdq_lsp, "_lumen_tra_loi_duoc", return_value=(True, "")):
-            bang = tdq_setup.smoke_bon_tang(self.thu_muc)
-        self.assertEqual([h[0] for h in bang], ["grep", "LSP", "graphify", "lumen"])
-        self.assertEqual([h[1] for h in bang], [True, True, False, True])
+                mock.patch.object(tdq_setup, "smoke_graphify", return_value=(False, "chưa cài")):
+            bang = tdq_setup.smoke_ba_tang(self.thu_muc)
+        self.assertEqual([h[0] for h in bang], ["grep", "LSP", "graphify"])
+        self.assertEqual([h[1] for h in bang], [True, True, False])
 
 
 class VaHookPlugin(unittest.TestCase):
@@ -199,7 +167,7 @@ class VaHookPlugin(unittest.TestCase):
         tep = self._dung_plugin({
             "SessionStart": [{"matcher": "startup", "hooks": [{"type": "command", "command": "x"}]}],
             "PreToolUse": [{"matcher": "Grep|Bash", "hooks": [{"type": "command", "command": "y"}]}]})
-        with mock.patch.object(tdq_lsp, "hook_xung_dot", return_value=[("lumen", tep, "Grep|Bash")]):
+        with mock.patch.object(tdq_lsp, "hook_xung_dot", return_value=[("plugin-ngoai", tep, "Grep|Bash")]):
             da_va, no = tdq_setup.va_hook_xung_dot()
         self.assertEqual(len(da_va), 1)
         self.assertEqual(no, [])
@@ -210,7 +178,7 @@ class VaHookPlugin(unittest.TestCase):
 
     def test_hook_luu_ban_cu_truoc_khi_sua(self):
         tep = self._dung_plugin({"PreToolUse": [{"matcher": "Grep"}]})
-        with mock.patch.object(tdq_lsp, "hook_xung_dot", return_value=[("lumen", tep, "Grep")]):
+        with mock.patch.object(tdq_lsp, "hook_xung_dot", return_value=[("plugin-ngoai", tep, "Grep")]):
             tdq_setup.va_hook_xung_dot()
         self.assertTrue(os.path.isfile(tep + tdq_setup.DUOI_SAO_LUU),
                         "không có bản sao lưu thì không lùi lại được")
@@ -220,7 +188,7 @@ class VaHookPlugin(unittest.TestCase):
         tep = self._dung_plugin({"PreToolUse": [
             {"matcher": "Grep", "hooks": [{"command": "a"}]},
             {"matcher": "WebFetch", "hooks": [{"command": "b"}]}]})
-        with mock.patch.object(tdq_lsp, "hook_xung_dot", return_value=[("lumen", tep, "Grep")]):
+        with mock.patch.object(tdq_lsp, "hook_xung_dot", return_value=[("plugin-ngoai", tep, "Grep")]):
             tdq_setup.va_hook_xung_dot()
         with io.open(tep, encoding="utf-8") as fh:
             con_lai = json.load(fh)["hooks"]["PreToolUse"]
@@ -289,7 +257,7 @@ class LogService(unittest.TestCase):
 
     def test_log_co_dong_lenh_tat_ca_log_cua_thang_bac(self):
         """`--khong-log` phải tắt được cả module kia, không thì im lặng một nửa."""
-        with mock.patch.dict(os.environ, {"TDQ_LOG": "1"}),                 mock.patch.object(tdq_setup.tdq_lsp, "chay_kiem", return_value=[]),                 mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),                 mock.patch.object(tdq_setup, "kiem_cau_hinh_lumen", return_value=[]),                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),                 mock.patch.object(tdq_setup, "smoke_bon_tang", return_value=[]),                 mock.patch.object(tdq_no, "ghi_no", return_value=0),                 mock.patch("sys.stdout", new_callable=io.StringIO):
+        with mock.patch.dict(os.environ, {"TDQ_LOG": "1"}),                 mock.patch.object(tdq_setup.tdq_lsp, "chay_kiem", return_value=[]),                 mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),                 mock.patch.object(tdq_setup, "smoke_ba_tang", return_value=[]),                 mock.patch.object(tdq_no, "ghi_no", return_value=0),                 mock.patch("sys.stdout", new_callable=io.StringIO):
             tdq_setup.main(["--khong-log"])
             self.assertEqual(os.environ["TDQ_LOG"], "0")
 

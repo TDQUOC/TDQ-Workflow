@@ -1,11 +1,12 @@
 """Unit tests for the background bootstrap `tdq_setup.py --nen` (T6.1).
 
-Why it exists: a lumen index of excalidraw took 11m5s, so a SessionStart hook cannot build the
+Why it exists: a semantic index of excalidraw took 11m5s (lumen, removed in 0.58.0) and
+`graphify extract` takes minutes on a big repo, so a SessionStart hook cannot build the
 search layers itself. It spawns `tdq_setup.py --nen` detached; this file locks that side: the
 readiness stamp, the pid lock that prevents two builders, and the build that never raises.
 
 Nothing real runs here: every command goes through a fake `chay`, and every tool lookup
-(codex, graphify, lumen, ollama, the ladder, the smoke) is patched. Each case works in its own
+(codex, graphify, the ladder, the smoke) is patched. Each case works in its own
 temp project directory.
 
 Selectors: `-k kich_hoat` (a build runs end to end), `-k chong` (no two builders at once).
@@ -28,7 +29,7 @@ import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402
 import tdq_setup  # noqa: E402
 
-TANG = ("grep", "lsp", "graphify", "lumen")
+TANG = ("grep", "lsp", "graphify")
 # A pid far above any real pid table, so it is never alive on the test machine.
 PID_CHET = 2_000_000_000
 
@@ -72,12 +73,9 @@ class CoSo(unittest.TestCase):
             mock.patch.dict(os.environ, {"TDQ_LOG": "0"}),
             mock.patch.object(tdq_setup, "_tim_cong_cu",
                               side_effect=lambda ten: f"/gia/{ten}"),
-            mock.patch.object(tdq_lsp, "_binary_lumen", return_value="/gia/lumen"),
-            mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True),
             mock.patch.object(tdq_lsp, "chay_kiem", return_value=[]),
             mock.patch.object(tdq_lsp, "chay_smoke", return_value=[
-                ("grep", True, "g"), ("LSP", True, "l"),
-                ("graphify", True, "gr"), ("lumen", True, "lu")]),
+                ("grep", True, "g"), ("LSP", True, "l"), ("graphify", True, "gr")]),
             mock.patch.object(tdq_codex_mcp, "khai_mcp_codex",
                               side_effect=lambda *a, **k: self.codex_goi.append(1) or ["lsp: giả"]),
             # T3.1 thêm bước ghi `.codex/hooks.json` vào cùng đường này. Không vá nó thì test ghi
@@ -129,19 +127,14 @@ class KichHoat(CoSo):
             self.assertTrue(cuoi["tang"][ten]["san_sang"], ten)
             self.assertIsInstance(cuoi["tang"][ten]["chi_tiet"], str)
 
-    def test_kich_hoat_graphify_lumen_chay_o_project(self):
+    def test_kich_hoat_graphify_chay_o_project(self):
         chay = ChayGia(self.project)
         tdq_setup.khoi_tao_nen(self.project, chay=chay)
         gr = chay.lenh_cua("graphify")
-        lu = chay.lenh_cua("lumen")
         self.assertEqual(len(gr), 1)
         self.assertEqual(gr[0][0][1:], ["extract", ".", "--code-only"])
         self.assertEqual(gr[0][1], self.project)
-        self.assertEqual(len(lu), 1)
-        self.assertEqual(lu[0][0][1:], ["index", self.project])
-        self.assertEqual(lu[0][1], self.project)
-        self.assertTrue(os.path.isfile(os.path.join(self.project, tdq_lsp.DAU_MOC_INDEX)),
-                        "a successful lumen index must touch the index stamp")
+        self.assertEqual(chay.lenh_cua("lumen"), [], "0.58.0: the build no longer indexes lumen")
         self.assertEqual(self.codex_goi, [1])
 
     def test_kich_hoat_nha_khoa_sau_khi_xong(self):
@@ -150,7 +143,7 @@ class KichHoat(CoSo):
 
     def test_kich_hoat_cai_qua_duong_da_khai(self):
         """The install step reuses `cai_thieu`: allowed commands run, others become debt."""
-        bac = [tdq_lsp.Bac(8, "graphify", False, "thiếu", "uv tool install graphifyy", True),
+        bac = [tdq_lsp.Bac(7, "graphify", False, "thiếu", "uv tool install graphifyy", True),
                tdq_lsp.Bac(1, "agent-lsp", False, "thiếu", "curl x | sh")]
         chay = ChayGia(self.project)
         with mock.patch.object(tdq_lsp, "chay_kiem", return_value=bac):
@@ -160,18 +153,10 @@ class KichHoat(CoSo):
 
     def test_kich_hoat_bo_qua_cong_cu_vang_mat(self):
         chay = ChayGia(self.project)
-        with mock.patch.object(tdq_setup, "_tim_cong_cu", return_value=None), \
-                mock.patch.object(tdq_lsp, "_binary_lumen", return_value=""):
+        with mock.patch.object(tdq_setup, "_tim_cong_cu", return_value=None):
             tdq_setup.khoi_tao_nen(self.project, chay=chay)
         self.assertEqual(chay.lenh_cua("graphify"), [])
-        self.assertEqual(chay.lenh_cua("lumen"), [])
         self.assertEqual(self.codex_goi, [], "no codex on PATH -> no MCP declaration")
-
-    def test_kich_hoat_lumen_can_ollama(self):
-        chay = ChayGia(self.project)
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False):
-            tdq_setup.khoi_tao_nen(self.project, chay=chay)
-        self.assertEqual(chay.lenh_cua("lumen"), [])
 
 
 class ChongChayChong(CoSo):
@@ -229,16 +214,13 @@ class KhongNem(CoSo):
         chay = ChayGia(self.project, loi={"graphify"})
         rc = tdq_setup.khoi_tao_nen(self.project, chay=chay)
         self.assertEqual(rc, 0)
-        self.assertEqual(len(chay.lenh_cua("lumen")), 1, "lumen must still run")
         self.assertFalse(tdq_setup.doc_san_sang(self.project)["dang_dung"])
         self.assertFalse(os.path.exists(self.duong(".tdq-khoi-tao.lock")))
 
     def test_lenh_qua_gio_khong_nem(self):
-        chay = ChayGia(self.project, qua_gio={"graphify", "lumen"})
+        chay = ChayGia(self.project, qua_gio={"graphify"})
         rc = tdq_setup.khoi_tao_nen(self.project, chay=chay)
         self.assertEqual(rc, 0)
-        self.assertFalse(os.path.isfile(os.path.join(self.project, tdq_lsp.DAU_MOC_INDEX)),
-                         "a failed index must not claim to be fresh")
         self.assertFalse(tdq_setup.doc_san_sang(self.project)["dang_dung"])
 
     def test_smoke_va_codex_nem_van_xong(self):
@@ -257,7 +239,7 @@ class KhongNem(CoSo):
         with mock.patch.object(tdq_setup, "TRAN_GIAY", 0):
             rc = tdq_setup.khoi_tao_nen(self.project, chay=chay)
         self.assertEqual(rc, 0)
-        self.assertEqual(chay.lenh_cua("lumen"), [])
+        self.assertEqual(chay.lenh_cua("graphify"), [])
         self.assertFalse(tdq_setup.doc_san_sang(self.project)["dang_dung"])
 
 
@@ -283,11 +265,10 @@ class MocSanSang(CoSo):
 
 
 class LuongSetupThuong(CoSo):
-    """The normal setup flow also declares lumen + LSP for Codex."""
+    """The normal setup flow also declares LSP for Codex."""
 
     def _va_main(self):
         return [mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),
-                mock.patch.object(tdq_setup, "kiem_cau_hinh_lumen", return_value=[]),
                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),
                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),
                 mock.patch.object(tdq_lsp, "kiem_mot_lenh", return_value=(0, [], [])),
@@ -398,7 +379,7 @@ class SessionStartKichHoat(unittest.TestCase):
                    "%Y-%m-%dT%H:%M:%S"),
                "dang_dung": dang_dung, "pid": None,
                "tang": {t: {"san_sang": het_san_sang, "chi_tiet": ""}
-                        for t in ("grep", "lsp", "graphify", "lumen")}}
+                        for t in ("grep", "lsp", "graphify")}}
         with io.open(os.path.join(self.cwd, "docs", "tdq", ".tdq-san-sang.json"), "w",
                      encoding="utf-8") as fh:
             json.dump(moc, fh)
@@ -421,13 +402,26 @@ class SessionStartKichHoat(unittest.TestCase):
         self.assertFalse(self.cho_dau(1.5))
 
     def test_kich_hoat_tang_hong_chi_thu_lai_sau_6_gio(self):
-        """Không có ollama thì lumen hỏng mãi — bật lại mỗi phiên là chạy lại cùng một lỗi."""
+        """Một tầng hỏng vì thiếu phụ thuộc thì hỏng mãi — bật lại mỗi phiên là chạy lại cùng một lỗi."""
         self.ghi_moc(het_san_sang=False, tuoi_giay=60)
         self.goi()
         self.assertFalse(self.cho_dau(1.5), "mốc còn mới → chưa được thử lại")
         self.ghi_moc(het_san_sang=False, tuoi_giay=7 * 3600)
         self.goi()
         self.assertTrue(self.cho_dau(), "quá 6 giờ → thử lại")
+
+    def test_kich_hoat_moc_cu_con_khoa_lumen_hong_thi_khong_bat(self):
+        """0.58.0: mốc ghi trước khi gỡ lumen còn khoá `lumen` = hỏng. Ba tầng còn lại sẵn sàng
+        thì project ĐÃ sẵn sàng — không được dựng lại mỗi 6 giờ vì một tầng không còn tồn tại."""
+        self.ghi_moc(het_san_sang=True, tuoi_giay=7 * 3600)
+        duong = os.path.join(self.cwd, "docs", "tdq", ".tdq-san-sang.json")
+        with io.open(duong, encoding="utf-8") as fh:
+            moc = json.load(fh)
+        moc["tang"]["lumen"] = {"san_sang": False, "chi_tiet": "đã gỡ"}
+        with io.open(duong, "w", encoding="utf-8") as fh:
+            json.dump(moc, fh)
+        self.goi()
+        self.assertFalse(self.cho_dau(1.5), "khoá lumen cũ không được kích hoạt dựng lại")
 
     def test_chong_dang_dung_thi_khong_bat_them(self):
         self.ghi_moc(dang_dung=True, het_san_sang=False)

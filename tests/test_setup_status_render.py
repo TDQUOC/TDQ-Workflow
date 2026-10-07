@@ -1,7 +1,7 @@
 """Unit test cho scripts/setup_status_render.py — bộ kết xuất HTML của trang trạng thái.
 
 Bộ kết xuất là hàm thuần: vào một dict, ra một chuỗi. Nhờ vậy mọi ca ở đây chạy được
-trên máy trắng — không cần agent-lsp, lumen, ollama hay graphify — và đó chính là điều
+trên máy trắng — không cần agent-lsp hay graphify — và đó chính là điều
 ca `test_khong_can_cong_cu_ngoai` đóng đinh.
 """
 import os
@@ -25,8 +25,7 @@ def du_lieu_toi_thieu(**ghi_de):
                      "ghi_chu_builtin": "Skill built-in của Claude Code nằm trong binary.",
                      "loi": {}},
         "dependency": [],
-        "chi_tiet": {"lumen": {"model": "", "endpoint": [], "config": "", "chi_tiet": ""},
-                     "lsp": {"may": [], "so_khai_bao": 0, "so_song": 0, "chet": [],
+        "chi_tiet": {"lsp": {"may": [], "so_khai_bao": 0, "so_song": 0, "chet": [],
                              "chi_tiet": ""}},
         "mcp": {"server": [], "chi_tiet": ""},
     }
@@ -113,15 +112,6 @@ class ThoatKyTu(unittest.TestCase):
 class OTrong(unittest.TestCase):
     """Nguồn không đọc được thì nói thẳng, tuyệt đối không điền giá trị đoán."""
 
-    def test_lumen_thieu_config_hien_ly_do(self):
-        du_lieu = du_lieu_toi_thieu()
-        du_lieu["chi_tiet"]["lumen"] = {"model": "qwen3-embedding:0.6b", "endpoint": [],
-                                        "config": "/x.yaml",
-                                        "chi_tiet": "không đọc được /x.yaml: thiếu file"}
-        html = setup_status_render.render(du_lieu)
-        self.assertIn("không đọc được /x.yaml", html)
-        self.assertIn("qwen3-embedding:0.6b", html)
-
     def test_khoi_rong_van_hien_khong_doc_duoc(self):
         html = setup_status_render.render(du_lieu_toi_thieu())
         self.assertIn("không đọc được", html)
@@ -140,12 +130,12 @@ class NoiDungThat(unittest.TestCase):
         du_lieu = du_lieu_toi_thieu(dependency=[
             {"ten": "graphify", "co": True, "ban": "graphify 0.9.55",
              "duong_dan": "/bin/graphify", "chi_tiet": "", "goi_y": ""},
-            {"ten": "lumen", "co": False, "ban": "chưa cài", "duong_dan": "",
-             "chi_tiet": "chưa cài", "goi_y": "cài lumen"},
+            {"ten": "agent-lsp", "co": False, "ban": "chưa cài", "duong_dan": "",
+             "chi_tiet": "chưa cài", "goi_y": "cài agent-lsp"},
         ])
         html = setup_status_render.render(du_lieu)
         self.assertIn("graphify 0.9.55", html)
-        self.assertIn("cài lumen", html)
+        self.assertIn("cài agent-lsp", html)
 
     def test_bay_bac_va_state(self):
         du_lieu = du_lieu_toi_thieu()

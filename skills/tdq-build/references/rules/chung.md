@@ -78,7 +78,7 @@ and SOLID runs after this law, never against it.
 | Rung | Question | When it holds |
 |---|---|---|
 | 1 | Does this need to exist at all? | Skip it and say so in one line. A need you inferred rather than read is speculative, and a thing that already EXISTS anywhere in the repo fails this rung too |
-| 2 | Is it already in this codebase? | Use it. Search before writing: `mcp__lsp__find_symbol` on the name plus two synonyms, then one round of lumen or grep |
+| 2 | Is it already in this codebase? | Use it. Search before writing: `mcp__lsp__find_symbol` on the name plus two synonyms, then one round of `graphify query` or grep |
 | 3 | Does the standard library do it? | Use it |
 | 4 | Does a native platform feature cover it? | Use it — a DB constraint over application code, CSS over JS, a shell builtin over a helper script |
 | 5 | Does an already-installed dependency solve it? | Use it. Never add a new dependency for what a few lines can do |

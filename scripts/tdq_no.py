@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Dependency debt: the one place the workflow writes down what it could not fix by itself.
 
-Why it is its own module. Two very different scripts need it — `tdq_setup.py` when an install is
-outside the declared allow-list, and `tdq_finish.py` when the end-of-turn reindex does not
-finish. Keeping it in the setup script made the bookkeeping step import the installer, which
-points the dependency the wrong way round: bookkeeping is the older, lower layer.
+Why it is its own module. `tdq_setup.py` writes debt when an install is outside the declared
+allow-list, both from the CLI and from the background build. Until 0.58.0 `tdq_finish.py` also
+wrote debt when the end-of-turn lumen reindex failed; keeping the module separate kept the
+bookkeeping step from importing the installer.
 
-Nothing here talks to the network or to another tool. It appends lines to a markdown file and
-touches a stamp file, and both operations are idempotent.
+Nothing here talks to the network or to another tool. It appends lines to a markdown file, and
+the operation is idempotent.
 """
 import io
 import os
@@ -52,13 +52,3 @@ def ghi_no(danh_sach, project):
         fh.write(cu + "".join(them))
     return len(them)
 
-
-def cham_dau_moc(duong):
-    """Chạm dấu mốc "vừa làm xong việc này" — nội dung là mốc thời gian, thứ đọc được bằng mắt.
-
-    Người đọc thật của file này là `mtime` của nó, nhưng ghi cả chuỗi ISO vào trong để ai mở ra
-    cũng hiểu ngay đây là cái gì, thay vì một file rỗng không tên tuổi.
-    """
-    os.makedirs(os.path.dirname(os.path.abspath(duong)), exist_ok=True)
-    with io.open(duong, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + "\n")

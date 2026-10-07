@@ -24,9 +24,10 @@ def _bash(lenh):
     return sr.phan_loai("Bash", lenh)
 
 
-def _tt(da_goi=False, so_lan=0, token=(), cua_so=None):
+def _tt(da_goi=False, so_lan=0, token=(), cua_so=None, tang_song=None):
     return {"da_goi_khai_niem": da_goi, "so_lan_tim_tu_lan_goi": so_lan,
-            "token_prompt": set(token), "cua_so": sr.CUA_SO if cua_so is None else cua_so}
+            "token_prompt": set(token), "cua_so": sr.CUA_SO if cua_so is None else cua_so,
+            "tang_song": tang_song}
 
 
 def _qd(lenh, cong_cu="Bash", **tt):
@@ -183,8 +184,12 @@ class TestMoDau(unittest.TestCase):
         ok, ly_do = _qd("grep -rn fileHandle .")
         self.assertFalse(ok)
         self.assertTrue(ly_do.startswith("[TDQ:SEARCH]"))
-        self.assertIn("mcp__plugin_lumen_lumen__semantic_search", ly_do)
+        self.assertNotIn("lumen", ly_do, "0.58.0: lumen đã gỡ, nhắc nó là đẩy agent tới tool không có")
         self.assertIn("mcp__lsp__find_symbol", ly_do)
+        self.assertIn("start_lsp", ly_do, "LSP chưa khởi động là lượt thừa đo được 2026-10-07")
+        self.assertLess(ly_do.index("start_lsp"), ly_do.index("find_symbol"),
+                        "start_lsp phải đứng TRƯỚC: gọi find_symbol trước là ăn lỗi 'not initialized'")
+        self.assertIn("language_id", ly_do, "thiếu language_id thì start_lsp mở nhầm server TypeScript")
         self.assertIn('graphify query "', ly_do)
         self.assertNotIn("path", ly_do.lower())
         self.assertLessEqual(len(ly_do.splitlines()), 3)
@@ -192,6 +197,31 @@ class TestMoDau(unittest.TestCase):
     def test_mo_dau_mau_khong_co_ten(self):
         ok, _ = _qd('grep -rn "$s" packages')
         self.assertFalse(ok)
+
+
+class TestLoiNhacTangSong(unittest.TestCase):
+    """0.58.0 — lời chặn chỉ nêu tầng khái niệm đang sống, theo dấu mốc sẵn sàng."""
+
+    def test_chi_graphify_song_thi_khong_nhac_lsp(self):
+        ok, ly_do = _qd("grep -rn fileHandle .", tang_song=("graphify",))
+        self.assertFalse(ok)
+        self.assertIn('graphify query "', ly_do)
+        self.assertNotIn("mcp__lsp__", ly_do)
+
+    def test_chi_lsp_song_thi_khong_nhac_graphify(self):
+        ok, ly_do = _qd("grep -rn fileHandle .", tang_song=("lsp",))
+        self.assertFalse(ok)
+        self.assertIn("mcp__lsp__find_symbol", ly_do)
+        self.assertNotIn("graphify", ly_do)
+
+    def test_khong_biet_tang_nao_song_thi_nhac_ca_hai(self):
+        ly_do = sr.loi_nhac(None)
+        self.assertIn("mcp__lsp__find_symbol", ly_do)
+        self.assertIn('graphify query "', ly_do)
+
+    def test_tang_cu_khong_con_ten_thi_bo_qua(self):
+        """Mốc trước 0.58.0 có khoá `lumen`: nó không được lọt vào lời nhắc."""
+        self.assertNotIn("lumen", sr.loi_nhac(("lumen", "graphify")))
 
 
 class TestTenTrongPrompt(unittest.TestCase):
@@ -241,7 +271,8 @@ class TestHetHan(unittest.TestCase):
         self.assertTrue(ly_do.startswith("[TDQ:SEARCH]"))
         self.assertIn("4 alternatives", ly_do)
         self.assertIn("12 searches ago", ly_do)
-        self.assertIn("mcp__plugin_lumen_lumen__semantic_search", ly_do)
+        self.assertNotIn("lumen", ly_do)
+        self.assertIn('graphify query "', ly_do)
         self.assertNotIn("path", ly_do.lower())
         self.assertLessEqual(len(ly_do.splitlines()), 3)
 

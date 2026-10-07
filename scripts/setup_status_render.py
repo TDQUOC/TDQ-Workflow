@@ -2,7 +2,7 @@
 """setup_status_render.py — turn the collected setup data into one self-contained HTML page.
 
 A pure function: dict in, HTML string out. Nothing here touches the machine, which is the
-whole point — the rendering can be tested on a bare checkout with no agent-lsp, lumen, ollama
+whole point — the rendering can be tested on a bare checkout with no agent-lsp
 or graphify installed, while `setup_status.py` owns everything that must run for real.
 
 Self-contained means literally that: the CSS is inline, there is no script tag, no font and
@@ -174,21 +174,8 @@ def _khoi_dependency(dependency):
 
 def _khoi_chi_tiet(chi_tiet):
     chi_tiet = _dict(chi_tiet)
-    lumen = _dict(chi_tiet.get("lumen"))
     lsp = _dict(chi_tiet.get("lsp"))
-    phan = ["<h3>lumen — model embedding đang dùng</h3>"]
-    hang = []
-    if lumen.get("model"):
-        hang.append(["Model", f'<code>{_e(lumen["model"])}</code>'])
-    if lumen.get("config"):
-        hang.append(["File cấu hình", f'<code>{_e(lumen["config"])}</code>'])
-    for i, host in enumerate(lumen.get("endpoint") or []):
-        nhan = "Endpoint chính" if i == 0 else f"Endpoint dự phòng {i}"
-        hang.append([nhan, f'<code>{_e(host)}</code>'])
-    phan.append(_bang(["Mục", "Giá trị"], hang))
-    if lumen.get("chi_tiet"):
-        phan.append(f'<p class="loi">{_e(lumen["chi_tiet"])}</p>')
-
+    phan = []
     khai, song = lsp.get("so_khai_bao") or 0, lsp.get("so_song") or 0
     phan.append("<h3>agent-lsp — khai báo so với thực nhận</h3>")
     if khai:
@@ -236,7 +223,7 @@ def _khoi_mcp(mcp):
 KHOI = (
     ("workflow", "1 · TDQ-Workflow: skill, hook, state", "workflow", _khoi_workflow),
     ("dependency", "2 · Dependency và thư viện liên quan", "dependency", _khoi_dependency),
-    ("chi-tiet", "3 · Chi tiết: lumen và agent-lsp", "chi_tiet", _khoi_chi_tiet),
+    ("chi-tiet", "3 · Chi tiết: agent-lsp", "chi_tiet", _khoi_chi_tiet),
     ("mcp", "4 · MCP mà Claude Code thực sự nhận", "mcp", _khoi_mcp),
 )
 

@@ -113,7 +113,7 @@ class InvariantRulesTest(unittest.TestCase):
 
 
 class KhoiHuongDanToolTest(unittest.TestCase):
-    """(d) Bản ngắn của luật 4 tầng phải được GHIM vào instruction user-level.
+    """(d) Bản ngắn của luật 3 tầng phải được GHIM vào instruction user-level.
 
     Vì sao phải ghim: luật đầy đủ nằm trong `skills/`, thứ chỉ được nạp khi router gọi đúng skill.
     Một agent chưa nạp skill nào vẫn phải biết dùng công cụ nào khi nào, nếu không nó mặc định
@@ -127,11 +127,12 @@ class KhoiHuongDanToolTest(unittest.TestCase):
         self.assertIn(tdq_setup.MOC_DONG, text)
         self.assertEqual(text.count(tdq_setup.MOC_MO), 1, "khối bị nhân bản")
 
-    def test_khoi_ke_du_bon_tang(self):
+    def test_khoi_ke_du_ba_tang(self):
         text = _read(CORE)
         khoi = text.split(tdq_setup.MOC_MO)[1].split(tdq_setup.MOC_DONG)[0]
-        for ten in ("lsp", "grep", "lumen", "graphify"):
+        for ten in ("lsp", "grep", "graphify"):
             self.assertIn(ten, khoi.lower(), f"khối ghim thiếu tầng {ten}")
+        self.assertNotIn("lumen", khoi.lower(), "0.58.0: khối ghim không được dẫn tới lumen")
 
     def test_khoi_ghi_hai_lan_khong_nhan_ban(self):
         with tempfile.TemporaryDirectory() as tmp:

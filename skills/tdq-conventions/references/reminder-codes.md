@@ -20,7 +20,7 @@ gets you reminded again at the end of the turn.
 | `TDQ:STATE` | About to hand-edit state | Use `tdq_state.py set\|approve\|init\|reset` | a `tdq_state.py` command actually ran |
 | `TDQ:GIT` | Branch/worktree name or commit message breaks convention | Rename / fix the message before running | — (repeated at Stop) |
 | `TDQ:DOC` | A file already read whole this session is being read whole again, unchanged | Read the part you need with `offset`/`limit`, or work from what you already hold | — (reminds once per file per session) |
-| `TDQ:SEARCH` | **Blocks** a code search that skipped the concept layer: the request has not asked lumen/LSP/graphify yet, or a guess-list grep came after the unlock window | Ask the concept layer first (`semantic_search`, `find_symbol`/`find_references`, or `graphify query`), then grep the exact names it returned | a concept-layer call recorded in `docs/tdq/.tdq-search.jsonl` |
+| `TDQ:SEARCH` | **Blocks** a code search that skipped the concept layer: the request has not asked LSP/graphify yet, or a guess-list grep came after the unlock window | Ask the concept layer first (`semantic_search`, `find_symbol`/`find_references`, or `graphify query`), then grep the exact names it returned | a concept-layer call recorded in `docs/tdq/.tdq-search.jsonl` |
 | `TDQ:ASK` | The question-popup tool called in phase `implement`/`qc` with no declared pause | An unmet spec threshold is not a reason to ask: apply the spec §6 fallback, `lech add`, carry on; ask only for a `pause --loai` kind | — (reminds once per turn, never blocks) |
 
 ## The blocking points

@@ -73,6 +73,15 @@
         ]
       },
       {
+        "matcher": "mcp__lsp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/search_observe.py\""
+          }
+        ]
+      },
+      {
         "matcher": "AskUserQuestion",
         "hooks": [
           {
@@ -84,7 +93,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__plugin_lumen_lumen__semantic_search|mcp__lsp__.*|Bash",
+        "matcher": "mcp__lsp__.*|Bash",
         "hooks": [
           {
             "type": "command",

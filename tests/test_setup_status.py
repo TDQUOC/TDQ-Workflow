@@ -133,7 +133,7 @@ class ThuDependency(unittest.TestCase):
         with mock.patch.object(setup_status, "_run_tool", self._gia_lap({})):
             hang = setup_status.thu_dependency()
         self.assertEqual([h["ten"] for h in hang],
-                         ["graphify", "lumen", "agent-lsp", "ollama"])
+                         ["graphify", "agent-lsp"])
         for h in hang:
             self.assertFalse(h["co"])
             self.assertEqual(h["ban"], "chưa cài")
@@ -147,81 +147,18 @@ class ThuDependency(unittest.TestCase):
         self.assertNotIn("npm install -g @agent-lsp/cli", goi_y["agent-lsp"])
 
     def test_lay_dong_dau_lam_so_ban(self):
-        ra = {"graphify": "graphify 0.9.55\nextra line\n", "lumen": "lumen 0.0.42\n"}
+        ra = {"graphify": "graphify 0.9.55\nextra line\n", "agent-lsp": "agent-lsp 0.19.2\n"}
         with mock.patch.object(setup_status, "_run_tool", self._gia_lap(ra)):
             hang = {h["ten"]: h for h in setup_status.thu_dependency()}
         self.assertEqual(hang["graphify"]["ban"], "graphify 0.9.55")
-        self.assertEqual(hang["lumen"]["ban"], "lumen 0.0.42")
+        self.assertEqual(hang["agent-lsp"]["ban"], "agent-lsp 0.19.2")
         self.assertEqual(hang["graphify"]["duong_dan"], "/bin/graphify")
 
-    def test_lumen_dung_lenh_version_khong_phai_co_hai_gach(self):
-        goi = []
-
-        def chay(binary, args, goi_y="", timeout=None):
-            goi.append((binary, tuple(args)))
-            return {"co": False, "chay_duoc": False, "duong_dan": "", "ma": None,
-                    "ra": "", "loi": "", "chi_tiet": "chưa cài", "goi_y": goi_y}
-
-        with mock.patch.object(setup_status, "_run_tool", chay):
-            setup_status.thu_dependency()
-        self.assertIn(("lumen", ("version",)), goi)
-
     def test_chay_duoc_nhung_ra_rong_thi_ghi_khong_doc_duoc(self):
-        with mock.patch.object(setup_status, "_run_tool", self._gia_lap({"ollama": "  \n"})):
+        with mock.patch.object(setup_status, "_run_tool", self._gia_lap({"agent-lsp": "  \n"})):
             hang = {h["ten"]: h for h in setup_status.thu_dependency()}
-        self.assertTrue(hang["ollama"]["co"])
-        self.assertEqual(hang["ollama"]["ban"], "không đọc được")
-
-
-class ThuLumen(unittest.TestCase):
-    """thu_lumen() — model thật và các endpoint, đọc từ chính config lumen."""
-
-    def ghi_config(self, noi_dung):
-        duong = os.path.join(self.tmp, "config.yaml")
-        with open(duong, "w", encoding="utf-8") as f:
-            f.write(noi_dung)
-        return duong
-
-    def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.tmp, True)
-
-    def test_doc_du_hai_endpoint_va_model(self):
-        duong = self.ghi_config(
-            "servers:\n"
-            "  - backend: ollama\n"
-            "    host: http://100.122.225.62:11434\n"
-            "    model: qwen3-embedding:0.6b\n"
-            "  - backend: ollama\n"
-            "    host: http://localhost:11434\n"
-            "    model: qwen3-embedding:0.6b\n")
-        # Both symbols, not just the first one. `thu_lumen` reads the endpoints off
-        # `setup_status.CONFIG_LUMEN` but resolves the MODEL through
-        # `tdq_lsp._model_lumen()`, which reads `tdq_lsp.CONFIG_LUMEN`. Patching one left the
-        # resolver pointed at the real machine, so the case asserted the config's model and got
-        # whatever lumen defaults to — a failure that said nothing about the code.
-        with mock.patch.object(setup_status, "CONFIG_LUMEN", duong), \
-                mock.patch.object(setup_status.tdq_lsp, "CONFIG_LUMEN", duong):
-            ra = setup_status.thu_lumen()
-        self.assertEqual(ra["model"], "qwen3-embedding:0.6b")
-        self.assertEqual(ra["endpoint"],
-                         ["http://100.122.225.62:11434", "http://localhost:11434"])
-        self.assertEqual(ra["config"], duong)
-
-    def test_khong_co_config_thi_noi_thang_va_van_co_model_mac_dinh(self):
-        with mock.patch.object(setup_status, "CONFIG_LUMEN",
-                               os.path.join(self.tmp, "khong-ton-tai.yaml")):
-            ra = setup_status.thu_lumen()
-        self.assertEqual(ra["endpoint"], [])
-        self.assertIn("không đọc được", ra["chi_tiet"])
-        self.assertTrue(ra["model"])
-
-    def test_config_rac_khong_lam_vo(self):
-        duong = self.ghi_config(":::: khong phai yaml\n\x00\n")
-        with mock.patch.object(setup_status, "CONFIG_LUMEN", duong):
-            ra = setup_status.thu_lumen()
-        self.assertEqual(ra["endpoint"], [])
-        self.assertTrue(ra["model"])
+        self.assertTrue(hang["agent-lsp"]["co"])
+        self.assertEqual(hang["agent-lsp"]["ban"], "không đọc được")
 
 
 class ThuWorkflow(unittest.TestCase):
@@ -275,7 +212,7 @@ class ThuWorkflow(unittest.TestCase):
 
         ra = self.chay(bac=lambda project: [
             BacGia(1, "binary agent-lsp", True, "0.19.2"),
-            BacGia(5, "lumen", False, "thiếu model", chi_canh_bao=True),
+            BacGia(5, "hook plugin ngoài xung đột", False, "có plugin chèn", chi_canh_bao=True),
         ])
         self.assertEqual(ra["bac"][0]["nhan"], "ĐẠT")
         self.assertEqual(ra["bac"][1]["nhan"], "CẢNH BÁO")
@@ -438,7 +375,6 @@ class ThuTatCa(unittest.TestCase):
         va = [
             mock.patch.object(setup_status, "thu_workflow", lambda project=None: {"skill": []}),
             mock.patch.object(setup_status, "thu_dependency", lambda: [{"ten": "graphify"}]),
-            mock.patch.object(setup_status, "thu_lumen", lambda: {"model": "m"}),
             mock.patch.object(setup_status, "thu_thuc_nhan",
                               lambda: {"mcp": {"server": [], "chi_tiet": ""},
                                        "lsp": {"so_khai_bao": 0}}),
@@ -449,7 +385,7 @@ class ThuTatCa(unittest.TestCase):
         ra = setup_status.thu_tat_ca(project="/du/an")
         self.assertEqual(sorted(ra), ["chi_tiet", "dependency", "mcp", "meta", "workflow"])
         self.assertEqual(ra["meta"]["project"], "/du/an")
-        self.assertEqual(ra["chi_tiet"]["lumen"]["model"], "m")
+        self.assertNotIn("lumen", ra["chi_tiet"], "0.58.0: trang không còn khối lumen")
         self.assertEqual(ra["chi_tiet"]["lsp"]["so_khai_bao"], 0)
         self.assertTrue(ra["meta"]["sinh_luc"])
 

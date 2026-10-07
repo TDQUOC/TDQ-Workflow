@@ -53,11 +53,12 @@ Việc quan trọng (kiến trúc, sở thích user, lỗi tái diễn) → sear
 Chi tiết: skill `mem0-memory`.
 
 <!-- TDQ:TOOLS -->
-## Bộ tìm kiếm 4 tầng
+## Bộ tìm kiếm 3 tầng
 
-- Quan hệ, kiểu, diagnostics, đổi tên → `mcp__lsp__*`. Tên chính xác đã biết → grep.
-  Khái niệm mơ hồ → lumen. Vỡ lan, bản đồ kiến trúc → graphify. Chưa chắc → gọi song song rồi gộp.
+- Quan hệ, kiểu, diagnostics, đổi tên → `mcp__lsp__*` (phiên mới: `start_lsp` kèm `language_id` trước).
+  Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
+  Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
-- Kiểm cả 8 bậc và cài phần thiếu: `python3 <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py`.
+- Kiểm cả 7 bậc và cài phần thiếu: `python3 <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py`.
   Luật đầy đủ kèm số đo: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
 <!-- /TDQ:TOOLS -->

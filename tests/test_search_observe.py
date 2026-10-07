@@ -9,6 +9,7 @@ Chạy riêng từng nhóm bằng `-k`: `khai_niem`, `prompt`, `qua_luot`, `tran
 import io
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
@@ -53,10 +54,28 @@ class BaseSo(unittest.TestCase):
 
 
 class GhiKhaiNiem(BaseSo):
-    def test_khai_niem_lumen_duoc_ghi(self):
+    def test_khai_niem_lumen_khong_con_duoc_ghi(self):
+        """0.58.0: lumen gỡ khỏi bộ tìm kiếm — một lời gọi sót lại không được mở khoá grep."""
         khoa = self.mo_request()
         self.tool("mcp__plugin_lumen_lumen__semantic_search", query="how fonts register")
-        self.assertEqual([r["loai"] for r in self.rows(khoa)], ["khai_niem"])
+        self.assertEqual(self.rows(khoa), [])
+
+    def test_khai_niem_lsp_ghi_ngay_o_pretooluse(self):
+        """Đo 2026-10-07: `find_symbol` trả lỗi "LSP client not initialized" thì PostToolUse không
+        đến, grep kế tiếp bị chặn thêm một lần. Ghi ở PreToolUse thì lời hỏi đã tính."""
+        khoa = self.mo_request()
+        self.goi({"hook_event_name": "PreToolUse", "tool_name": "mcp__lsp__find_symbol",
+                  "tool_input": {"query": "atomic"}})
+        self.assertEqual(self.rows(khoa)[0]["cong_cu"], "lsp:find_symbol")
+
+    def test_khai_niem_hooks_json_noi_lsp_vao_pretooluse(self):
+        with io.open(os.path.join(ROOT, "hooks", "hooks.json"), encoding="utf-8") as fh:
+            hooks = json.load(fh)["hooks"]
+        pre = [m for m in hooks["PreToolUse"]
+               if re.fullmatch(m.get("matcher", ""), "mcp__lsp__find_symbol")]
+        self.assertTrue(any(h["command"].endswith('search_observe.py"')
+                            for m in pre for h in m["hooks"]), pre)
+        self.assertNotIn("lumen", json.dumps(hooks))
 
     def test_khai_niem_lsp_hoi_that_duoc_ghi(self):
         khoa = self.mo_request()
@@ -108,17 +127,17 @@ class SongQuaLuot(BaseSo):
     def test_qua_luot_so_con_sau_khi_so_luot_bi_xoa(self):
         """Đúng việc `prompt_context.py` làm ở mỗi prompt — sổ tìm kiếm không được mất theo."""
         khoa = self.mo_request()
-        self.tool("mcp__plugin_lumen_lumen__semantic_search", query="x")
+        self.tool("mcp__lsp__find_symbol", query="x")
         tdq_state.turn_log_clear(self.cwd, PHIEN)
         self.assertTrue(search_observe.trang_thai(self.rows(khoa))["da_goi_khai_niem"])
 
     def test_qua_luot_khong_request_thi_theo_phien(self):
-        self.tool("mcp__plugin_lumen_lumen__semantic_search", query="x")
+        self.tool("mcp__lsp__find_symbol", query="x")
         self.assertEqual(len(self.rows(f"phien:{PHIEN}")), 1)
 
     def test_qua_luot_request_khac_khong_dung_chung(self):
         self.mo_request("2026-10-03-0000-mot")
-        self.tool("mcp__plugin_lumen_lumen__semantic_search", query="x")
+        self.tool("mcp__lsp__find_symbol", query="x")
         khoa_hai = self.mo_request("2026-10-03-0001-hai")
         self.assertFalse(search_observe.trang_thai(self.rows(khoa_hai))["da_goi_khai_niem"],
                          "request mới phải hỏi tầng khái niệm lại từ đầu")
@@ -150,7 +169,7 @@ class KhoaThatCuaState(BaseSo):
     def test_qua_luot_prompt_va_lumen_truoc_init_khong_bi_quen(self):
         """Prompt và lần gọi lumen đến TRƯỚC `init` (khoá phiên); mở request xong vẫn phải nhớ."""
         self.goi({"hook_event_name": "UserPromptSubmit", "prompt": "fix parseConfig please"})
-        self.tool("mcp__plugin_lumen_lumen__semantic_search", query="config parsing")
+        self.tool("mcp__lsp__find_symbol", query="config parsing")
         self._cli("init", "2026-10-03-0000-sau-init", "chuyen-sau")
         self._cli("set", "phase=analyze")
         khoa = search_observe.khoa_hien_tai(self.cwd, PHIEN)
@@ -189,17 +208,17 @@ class KhongLamVo(BaseSo):
         with io.open(search_observe.duong_so(self.cwd), "w", encoding="utf-8") as fh:
             fh.write("{khong phai json\n[1,2]\n")
         self.assertEqual(self.rows(khoa), [])
-        self.tool("mcp__plugin_lumen_lumen__semantic_search", query="x")
+        self.tool("mcp__lsp__find_symbol", query="x")
         self.assertEqual(len(self.rows(khoa)), 1, "dòng hỏng không được chặn dòng mới")
 
 
 class LogService(BaseSo):
     def test_log_tat_duoc_bang_bien_moi_truong(self):
-        self.assertEqual(self.tool("mcp__plugin_lumen_lumen__semantic_search"), "")
+        self.assertEqual(self.tool("mcp__lsp__find_symbol"), "")
 
     def test_log_bat_mac_dinh_co_timestamp(self):
         err = self.goi({"hook_event_name": "PostToolUse",
-                        "tool_name": "mcp__plugin_lumen_lumen__semantic_search",
+                        "tool_name": "mcp__lsp__find_symbol",
                         "tool_input": {}}, log="1")
         self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] search_observe")
 

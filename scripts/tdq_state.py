@@ -1191,8 +1191,8 @@ PHASE_TABLE = {
         "cmd": "python3 scripts/tdq_state.py set phase=implement",
         "checklist": [
             "B1 read the code — ALWAYS, never skipped. The target is a code symbol → call "
-            "mcp__lsp__* and lumen IN PARALLEL and merge both layers before reading; grep is "
-            "the last layer",
+            "mcp__lsp__* first (start_lsp if it answers 'not initialized'); a vague concept → "
+            "graphify query plus grep over synonyms, merged; grep is the last layer",
             "B0 capability inventory — ONLY when the request touches ground with no precedent "
             "(no earlier report under docs/tdq/report/ touched the same directory). Touching "
             "scripts/tdq_state.py or hooks/ again → skip it, the answer is already known",
@@ -1206,7 +1206,7 @@ PHASE_TABLE = {
         ],
         "done_when": "The brief holds what the analysis settled, and every skipped step has its "
                      "one-line reason ready for the mini-plan",
-        "forbidden": "Skipping B1; grepping for a symbol with no LSP+lumen attempt first; "
+        "forbidden": "Skipping B1; grepping for a symbol with no LSP or graphify attempt first; "
                      "dropping B0 or B2 without writing the reason; waiting for an approval "
                      "that this phase does not have",
     },

@@ -39,7 +39,6 @@ Use only the exact names in the right column.
 | User interface: style, palette, font, token, component (web/mobile/desktop) | ui-ux-pro-max |
 | Repo review/analysis via an external index | greptile |
 | Static quality/security scanning | sonarqube |
-| Log / trace observability | lumen |
 | Per-language LSP | `<lang>-lsp` (clangd, gopls, jdtls, kotlin, lua, php, ruby, rust-analyzer, swift, csharp) |
 
 Work matching no row → do it with the tools already at hand; do not drag a plugin in and pay

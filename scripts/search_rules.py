@@ -19,9 +19,9 @@ import shlex
 # How many code searches one concept-layer query unlocks. Settled 2026-10-03 (T2.5) by REASON, not
 # by measurement, and said so: replaying the excalidraw session gave the same result for N = 5, 10,
 # 15 and 20 (16 denied, 0 wrongly, 0 slipped through), because every denial sits before the first
-# lumen call and only 3 code searches come after it — the data only says N >= 2. Ten is one page
-# of `semantic_search` results (default limit 8) plus a margin: one lumen answer names up to ~8
-# places, and grepping them is exactly what the unlock is for. Re-measure once more real sessions
+# concept call and only 3 code searches come after it — the data only says N >= 2. Ten was sized
+# from one page of lumen results (~8 places) plus a margin; a `find_references` or `graphify query`
+# answer names a similar handful of places, and grepping them is exactly what the unlock is for. Re-measure once more real sessions
 # exist: `python scripts/search_replay.py <transcript.jsonl> --cua-so N`.
 CUA_SO = 10
 # Same tokenizer the ledger uses for prompts (hooks/scripts/search_observe.py).
@@ -75,11 +75,30 @@ CHI_HOI = {"--help", "--version"}
 TUY_CHON_CO_GIA_TRI = {"--file", "--regexp", "--glob", "-g", "--type", "-t", "--include",
                        "--exclude", "--max-count", "-Path", "-Pattern", "-Include", "-Exclude"}
 
-# Host-neutral: Claude Code and Codex name the same lumen tool differently (F5).
-LOI_RA = ("Ask first: lumen semantic_search with a natural-language query (what/how/where) — "
-          "mcp__plugin_lumen_lumen__semantic_search in Claude Code, mcp__lumen__semantic_search "
-          "in Codex; mcp__lsp__find_symbol / find_references (a symbol and its callers); "
-          "or graphify query \"...\" (architecture).")
+# The concept layers a denial may point to, each with the call that asks it, in the order of the
+# search rule. lumen was the first entry until 0.58.0: measured 2026-10-07, a denial that opened
+# with it sent the agent hunting for a tool that no longer existed (one wasted `ToolSearch`).
+# `start_lsp` comes FIRST and names `language_id`: in a fresh session `find_symbol` answers "LSP
+# client not initialized", and `start_lsp` without a language started the TypeScript server on a
+# Python repo ("No Project", a crashed server) — 2-3 wasted calls per session, measured the same day.
+LOP_KHAI_NIEM = (
+    ("lsp", "mcp__lsp__start_lsp (root_dir = the project root, language_id = the language of the "
+            "code, e.g. python) then mcp__lsp__find_symbol / find_references (a symbol and its "
+            "callers)"),
+    ("graphify", "graphify query \"<question>\" (a concept in plain words, or the architecture)"),
+)
+
+
+def loi_nhac(tang_song=None):
+    """-> the "ask first" line, naming only the live concept layers.
+
+    `tang_song` comes from the readiness stamp; None means no stamp (Codex, or never built) and
+    names every layer. A layer the stamp does not mark live is left out: pointing an agent at a
+    tool that cannot answer is the wasted turn this function exists to remove.
+    """
+    lop = [cach for ten, cach in LOP_KHAI_NIEM if tang_song is None or ten in tang_song]
+    return "Ask first: " + "; or ".join(lop or [cach for _, cach in LOP_KHAI_NIEM]) + "."
+
 
 
 # ---------------------------------------------------------------- shell splitting
@@ -560,14 +579,15 @@ def quyet_dinh(pl, trang_thai):
     cua_so = trang_thai.get("cua_so", CUA_SO)
     sau_cua_so = (f"Then exact names may be grepped for the next {cua_so} searches; "
                   "a name the user typed in the prompt is exempt.")
+    nhac = loi_nhac(trang_thai.get("tang_song"))
     if not trang_thai.get("da_goi_khai_niem"):
         return False, ("[TDQ:SEARCH] Code search before any concept query in this request.\n"
-                       f"{LOI_RA}\n{sau_cua_so}")
+                       f"{nhac}\n{sau_cua_so}")
     so_lan = trang_thai.get("so_lan_tim_tu_lan_goi", 0)
     if so_lan >= cua_so and pl.get("doan_mo"):
         return False, (f"[TDQ:SEARCH] Guess-list search ({len(nhanh)} alternatives); the last "
                        f"concept query was {so_lan} searches ago (window {cua_so}).\n"
-                       f"{LOI_RA.replace('Ask first', 'Ask again')}\n{sau_cua_so}")
+                       f"{nhac.replace('Ask first', 'Ask again')}\n{sau_cua_so}")
     if so_lan < cua_so:
         return True, "inside the unlock window"
     return True, "exact name after a concept query"
@@ -579,10 +599,9 @@ def quyet_dinh(pl, trang_thai):
 # every `mcp__lsp__*` call as a concept query). The replay is in `scripts/` and may not import
 # `hooks/`, so the one shared copy has to live here; the ledger hook imports it from here.
 
-# Name shapes differ by host: Claude Code says `mcp__plugin_lumen_lumen__semantic_search` and
-# `mcp__lsp__find_references`; Codex MCP names could not be observed yet (Codex not logged in on
-# the dev machine, 2026-10-03), so the match is on the server name and the last segment.
-LUMEN = re.compile(r"lumen.*semantic_search$")
+# Name shapes differ by host: Claude Code says `mcp__lsp__find_references`; Codex MCP names could
+# not be observed yet (Codex not logged in on the dev machine, 2026-10-03), so the match is on the
+# server name and the last segment. lumen `semantic_search` counted until 0.58.0.
 LSP = re.compile(r"(^|__|\.)lsp(__|\.)")
 # LSP tools that ASK a question about the code — an ALLOWLIST. The first version excluded a list
 # of housekeeping tools instead, which let `run_tests`, `apply_edit` or `format_document` count as
@@ -601,8 +620,6 @@ def la_goi_khai_niem(ten_tool, tool_input):
     unlock anything (both did, in the first version).
     """
     ten = str(ten_tool or "")
-    if LUMEN.search(ten):
-        return "lumen"
     if LSP.search(ten):
         cuoi = re.split(r"__|\.", ten)[-1]
         return f"lsp:{cuoi}" if LSP_HOI.match(cuoi) else None

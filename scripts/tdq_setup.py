@@ -4,7 +4,7 @@
 One command, four jobs, in this order:
   1. run the ladder of `tdq_lsp.py` and INSTALL what is missing and allowed
   2. check the configuration each layer needs is actually right
-  3. re-run `tdq_lsp.kiem_mot_lenh` — the same ladder + four-layer smoke + total line that
+  3. re-run `tdq_lsp.kiem_mot_lenh` — the same ladder + three-layer smoke + total line that
      `tdq_lsp.py check` prints — so both commands judge the machine the same way
   4. write down, as debt, everything it could not fix by itself
 
@@ -19,10 +19,10 @@ what keeps each one readable.
 The consent is not unlimited. A command only runs when it matches the declared allow-list
 below; anything else becomes a line of debt, never a silent skip and never a guess.
 
-The CLI also declares the lumen + lsp MCP servers for Codex (`tdq_codex_mcp.khai_mcp_codex`).
+The CLI also declares the lsp MCP server for Codex (`tdq_codex_mcp.khai_mcp_codex`).
 
 `--nen` is the other mode: the detached background build a SessionStart hook spawns (installs,
-graphify graph, lumen index) under a pid lock, ending in the readiness stamp
+graphify graph) under a pid lock, ending in the readiness stamp
 `docs/tdq/.tdq-san-sang.json`. See `khoi_tao_nen`.
 
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
@@ -60,7 +60,6 @@ DUONG_INSTRUCTION = "~/.claude/CLAUDE.md"
 # phải đồng ý cho script chạy mọi chuỗi mà một bậc thang in ra.
 TIEN_TO_CAI_DUOC = (
     "uv tool install ",
-    "ollama pull ",
     "brew install ",
     "npm i -g ",
     "npm install -g ",
@@ -94,7 +93,8 @@ def _chay_lenh(lenh):
     Bản đầu chạy `shell=True` rồi tự tách chuỗi bằng regex để kiểm từng vế. Đó là viết lại một
     bộ tách lệnh của shell — thứ không bao giờ đúng: nó không thấy xuống dòng, `$(...)`, dấu
     huyền, hay `;` nằm trong nháy. Mà chuỗi lệnh có phần nội suy từ cấu hình của máy
-    (`ollama pull {model}` lấy `model` từ `config.yaml`), nên đó là một đường tiêm lệnh thật.
+    (trước 0.58.0: `ollama pull {model}` lấy `model` từ `config.yaml`), nên đó là một đường tiêm
+    lệnh thật.
 
     Nay `shlex` tách, `shell=False` chạy: vế nào không phải lệnh thì không có gì chạy nó.
     """
@@ -157,29 +157,6 @@ def cai_thieu(bac_list, chay_lenh=None):
             no.append(f"bậc {bac.so} ({bac.ten}): cài thất bại — `{bac.lenh_cai}` → "
                       f"{ra.splitlines()[0][:80] if ra else f'thoát {rc}'}")
     return da_cai, no
-
-
-def kiem_cau_hinh_lumen(duong=None):
-    """-> danh sách lỗi cấu hình lumen. Rỗng nghĩa là cấu hình đủ để lumen chạy.
-
-    Hai lỗi đã gặp thật, nên hai lỗi đó được kiểm: thiếu file, và thiếu khoá `backend` mà lumen
-    từ chối thẳng bằng `config: servers[0]: backend is required`.
-    """
-    duong = duong or tdq_lsp.CONFIG_LUMEN
-    if not os.path.isfile(duong):
-        return [f"chưa có {duong} — lumen sẽ rơi về model mặc định, khác model của máy"]
-    try:
-        with io.open(duong, encoding="utf-8", errors="replace") as fh:
-            noi_dung = fh.read()
-    except OSError as exc:
-        return [f"không đọc được {duong}: {exc}"]
-    loi = []
-    if "backend:" not in noi_dung:
-        loi.append(f"{duong} thiếu khoá `backend` — lumen từ chối với "
-                   "`config: servers[0]: backend is required`")
-    if "model:" not in noi_dung:
-        loi.append(f"{duong} thiếu khoá `model`")
-    return loi
 
 
 # Fallback when language detection finds nothing above its threshold (tiny or brand-new project):
@@ -265,12 +242,11 @@ def smoke_graphify(project):
     return _smoke(["graphify", "god-nodes"], project, doi_ket_qua=True)
 
 
-def smoke_bon_tang(project):
-    """-> [(tên tầng, đạt?, chi tiết)] theo đúng thứ tự của luật tìm kiếm."""
+def smoke_ba_tang(project):
+    """-> [(tên tầng, đạt?, chi tiết)] theo đúng thứ tự của luật tìm kiếm 3 tầng."""
     return [("grep", *smoke_grep(project)),
             ("LSP", *smoke_lsp(project)),
-            ("graphify", *smoke_graphify(project)),
-            ("lumen", *tdq_lsp._lumen_tra_loi_duoc(project))]
+            ("graphify", *smoke_graphify(project))]
 
 
 def va_hook_xung_dot():
@@ -321,12 +297,13 @@ GOC_REPO = os.path.dirname(SCRIPTS_DIR)
 # của máy người dựng nó; đường tuyệt đối chỉ đi vào file thật trên từng máy.
 GOC_MAU = "<đường dẫn thư mục cài TDQ-Workflow>"
 
-KHOI_HUONG_DAN = """## Bộ tìm kiếm 4 tầng
+KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
 
-- Quan hệ, kiểu, diagnostics, đổi tên → `mcp__lsp__*`. Tên chính xác đã biết → grep.
-  Khái niệm mơ hồ → lumen. Vỡ lan, bản đồ kiến trúc → graphify. Chưa chắc → gọi song song rồi gộp.
+- Quan hệ, kiểu, diagnostics, đổi tên → `mcp__lsp__*` (phiên mới: `start_lsp` kèm `language_id` trước).
+  Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
+  Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
-- Kiểm cả 8 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py`.
+- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py`.
   Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`."""
 
 
@@ -342,7 +319,7 @@ def khoi_huong_dan(goc=None):
 
 
 def ghim_huong_dan_tool(duong, goc=None):
-    """Ghim bản ngắn của luật 4 tầng vào instruction user-level, trong một khối có dấu mốc.
+    """Ghim bản ngắn của luật 3 tầng vào instruction user-level, trong một khối có dấu mốc.
 
     Dấu mốc là thứ làm cho lệnh này chạy lại được: ghi lần hai THAY khối cũ thay vì nối thêm một
     khối nữa, và không bao giờ đụng vào phần user tự viết quanh nó. Đây là cách duy nhất còn lại —
@@ -366,7 +343,7 @@ def ghim_huong_dan_tool(duong, goc=None):
     os.makedirs(os.path.dirname(os.path.abspath(duong)), exist_ok=True)
     with io.open(duong, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(moi)
-    _log(f"ghim hướng dẫn 4 tầng vào {duong}")
+    _log(f"ghim hướng dẫn 3 tầng vào {duong}")
     return True
 
 
@@ -393,8 +370,9 @@ def no_skill_khong_ton_tai(project):
 # --------------------------------------------------------------------------------------------
 # Background bootstrap (`--nen`)
 #
-# A SessionStart hook cannot build the expensive layers itself: measured, `lumen index` on
-# excalidraw took 11m5s (843 files, 29,796 chunks). So the hook only reads the readiness stamp
+# A SessionStart hook cannot build the expensive layers itself: measured, a semantic index of
+# excalidraw took 11m5s (843 files, 29,796 chunks; lumen, removed in 0.58.0) and `graphify
+# extract` takes minutes on a big repo. So the hook only reads the readiness stamp
 # and, when the project is not ready, spawns `tdq_setup.py --nen` detached. This block is that
 # detached side. Contract shared with the hook and the search gate — do not rename:
 #   stamp  docs/tdq/.tdq-san-sang.json  {"cap_nhat", "dang_dung", "pid", "tang": {layer: {...}}}
@@ -403,8 +381,8 @@ def no_skill_khong_ton_tai(project):
 
 MOC_SAN_SANG = search_rules.MOC_SAN_SANG
 KHOA_KHOI_TAO = os.path.join("docs", "tdq", ".tdq-khoi-tao.lock")
-# Overall cap of one background build. The measured worst case is the 11-minute lumen index of
-# excalidraw; 30 minutes leaves room for installs + graphify on a slower machine, and is also the
+# Overall cap of one background build. Sized when the build still held an 11-minute lumen index
+# of excalidraw; kept at 30 minutes for installs + graphify on a slower machine, and is also the
 # age after which a lock is stale even if its pid looks alive (pids get recycled).
 TRAN_GIAY = 30 * 60
 # How long an EMPTY lock file is believed to be a builder still writing its pid. Writing a pid
@@ -412,8 +390,7 @@ TRAN_GIAY = 30 * 60
 KHOA_RONG_GIAY = 10
 # Per-step caps, each further bounded by what is left of TRAN_GIAY.
 TIMEOUT_GRAPHIFY_NEN = 10 * 60
-TIMEOUT_LUMEN_NEN = 25 * 60
-TANG_SAN_SANG = ("grep", "lsp", "graphify", "lumen")
+TANG_SAN_SANG = ("grep", "lsp", "graphify")
 
 
 def _tim_cong_cu(ten):
@@ -587,7 +564,7 @@ def _chay_mac_dinh(argv, cwd=None, timeout=None):
 
 
 def _tang_tu_smoke(smoke):
-    """[(layer, passed, detail)] -> the stamp's `tang` dict, always with the four keys."""
+    """[(layer, passed, detail)] -> the stamp's `tang` dict, always with the three keys."""
     tang = {ten: {"san_sang": False, "chi_tiet": "chưa kiểm"} for ten in TANG_SAN_SANG}
     for ten, dat, chi_tiet in smoke:
         khoa = str(ten).lower()
@@ -600,7 +577,7 @@ def khoi_tao_nen(project, chay=None):
     """The `--nen` body: build the expensive layers in the background, then write the stamp.
 
     Steps, each bounded and none able to stop the others: declared installs (`cai_thieu`),
-    the Codex MCP declaration, `graphify extract`, `lumen index`, then the four-layer smoke.
+    the Codex MCP declaration, `graphify extract`, then the three-layer smoke.
     `chay(argv, cwd=None, timeout=None) -> (rc, output)` is the injectable runner.
     -> 0 always: a background process has nobody to report an exit code to; the stamp is the report.
     """
@@ -673,24 +650,7 @@ def khoi_tao_nen(project, chay=None):
                                   TIMEOUT_GRAPHIFY_NEN)
             _log(f"nền: graphify → {'xong' if rc == 0 else 'hỏng: ' + ra[-120:]}")
 
-        def lumen():
-            # Same guards as tdq_finish.step_reindex: no binary or no embedder -> skip.
-            binary = tdq_lsp._binary_lumen()
-            if not binary:
-                _log("nền: không thấy lumen — bỏ index")
-                return
-            if not tdq_lsp._ollama_dang_chay():
-                _log("nền: ollama chưa chạy — bỏ index lumen")
-                return
-            rc, ra = chay_an_toan([binary, "index", project], project, TIMEOUT_LUMEN_NEN)
-            if rc != 0:
-                _log(f"nền: lumen index hỏng: {ra[-120:]}")
-                return
-            tdq_no.cham_dau_moc(os.path.join(project, tdq_lsp.DAU_MOC_INDEX))
-            _log("nền: lumen index xong")
-
-        for ten, ham in (("cài", cai), ("codex", codex), ("graphify", graphify),
-                         ("lumen", lumen)):
+        for ten, ham in (("cài", cai), ("codex", codex), ("graphify", graphify)):
             buoc(ten, ham)
 
         smoke = []
@@ -715,15 +675,15 @@ def khoi_tao_nen(project, chay=None):
 
 def parse_args(argv):
     ap = argparse.ArgumentParser(
-        description="Cài và chứng minh mọi phụ thuộc của bộ tìm kiếm 4 tầng.")
+        description="Cài và chứng minh mọi phụ thuộc của bộ tìm kiếm 3 tầng.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log ra stderr")
     ap.add_argument("--nen", action="store_true",
-                    help="dựng nền phần đắt (cài, graphify, lumen) rồi ghi mốc sẵn sàng")
+                    help="dựng nền phần đắt (cài, graphify) rồi ghi mốc sẵn sàng")
     return ap.parse_args(argv)
 
 
 def _khai_codex_mac_dinh():
-    """The CLI's Codex step: the lumen + lsp MCP servers, then the search gate in the project's
+    """The CLI's Codex step: the lsp MCP server, then the search gate in the project's
     `.codex/hooks.json` (Codex no longer takes hooks from a plugin). -> result lines."""
     import tdq_codex_mcp
     if not shutil.which("codex"):
@@ -757,9 +717,9 @@ def main(argv, khai_codex=None):
     da_cai, no = cai_thieu(bac)
     da_va, no_hook = va_hook_xung_dot()
     da_cai += da_va
-    no += no_hook + kiem_cau_hinh_lumen() + no_skill_khong_ton_tai(project)
+    no += no_hook + no_skill_khong_ton_tai(project)
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
-        da_cai.append(f"ghim hướng dẫn 4 tầng vào {DUONG_INSTRUCTION}")
+        da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
 
     for dong in da_cai:
         print(f"đã cài · {dong}")

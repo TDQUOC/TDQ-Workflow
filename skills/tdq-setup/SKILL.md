@@ -1,14 +1,13 @@
 ---
 name: tdq-setup
-description: Install and prove every dependency the workflow searches with: 8 rungs from the agent-lsp binary to lumen's round trip and the graphify graph. Use when opening a request, when a search tool fails, or on a new machine.
+description: Install and prove every dependency the workflow searches with: 7 rungs from the agent-lsp binary to the import-root config and the graphify graph. Use when opening a request, when a search tool fails, or on a new machine.
 ---
 
-# TDQ Setup — installing and proving the workflow's four search layers
+# TDQ Setup — installing and proving the workflow's three search layers
 <!-- muc-luc-dong:
-  The one hard rule of this skill=26-33 · The ladder — `python3 scripts/tdq_lsp.py check`=34-63 ·
-  Rung 6 — a conflicting plugin hook=64-71 ·
-  lumen — where it comes from, and Ollama on demand=72-83 ·
-  Runbook — setting a machine up, and re-configuring it later=84
+  The one hard rule of this skill=26-31 · The ladder — `python3 scripts/tdq_lsp.py check`=32-63 ·
+  Rung 5 — a conflicting plugin hook=64-71 ·
+  Runbook — setting a machine up, and re-configuring it later=72
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md).
@@ -19,17 +18,16 @@ Upstream: <https://github.com/blackwell-systems/agent-lsp> · local clone on thi
 itself answers — where is this defined, who calls it, what type is it. That is the difference
 between finding a name and finding the thing. The search-order rule lives in
 [references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md) and is binding on every phase.
-Three details sit in a tier-1 sibling,
-[references/uu-tien-tim-kiem-chi-tiet.md](references/uu-tien-tim-kiem-chi-tiet.md): Ollama's
-lifecycle, outside plugin hooks, and the `open_document` trap.
+Two details sit in a tier-1 sibling,
+[references/uu-tien-tim-kiem-chi-tiet.md](references/uu-tien-tim-kiem-chi-tiet.md): outside plugin
+hooks, and the `open_document` trap. lumen (semantic search) and its Ollama lifecycle were removed
+in 0.58.0 — measured, no significant loss without them.
 
 ## The one hard rule of this skill
 
 **Never install anything, never edit another plugin's files, without the user saying yes first.**
 `scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
 command runs. This holds even when a rung is trivially fixable and even when the build is blocked.
-Starting or stopping a process already installed on the machine is not installing — that is why
-`wake` and `release` are allowed to run unattended.
 
 ## The ladder — `python3 scripts/tdq_lsp.py check`
 
@@ -41,18 +39,20 @@ Seven rungs, printed one line each, a missing rung printing the command that fix
 | 2 | the `lsp` MCP server is registered in `~/.claude.json` | `agent-lsp init` |
 | 3 | a language server exists for every language THIS project uses | the per-language command, see [references/languages.md](references/languages.md) |
 | 4 | `mcp__lsp__*` sits in the allow list of `~/.claude/settings.json` | add the entry, otherwise every call prompts |
-| 5 | lumen's health — ollama installed, model pulled, daemon reachable | warning only; lumen is the fallback, not the main layer |
-| 6 | an outside plugin hook pushing a different search order | report the path, ASK the user, never edit it yourself |
-| 7 | the import-root config file each language of THIS project needs | print the file content it wants and ASK; the script never writes it |
+| 5 | an outside plugin hook pushing a different search order | report the path, ASK the user, never edit it yourself |
+| 6 | the import-root config file each language of THIS project needs | print the file content it wants and ASK; the script never writes it |
+| 7 | the graphify graph exists and is newer than every source file | warning only; print `graphify extract . --code-only` |
 
-Rungs 1–4 are actionable, so a gap there makes the exit code 3. Rungs 5–6 only warn and never
-change the exit code: search still works through agent-lsp and grep without either of them.
+Rungs 1–4 are actionable, so a gap there makes the exit code 3. Rungs 5 and 7 only warn and never
+change the exit code: search still works through agent-lsp and grep without either of them. After
+the rungs, a smoke test asks grep, LSP and graphify one real question each; the total line is ĐẠT
+only when no rung blocks and all three answer (exit 4 otherwise).
 
-Rung 7 splits by language, because the same gap has two different meanings:
+Rung 6 splits by language, because the same gap has two different meanings:
 
 - **Blocking** for Python, TypeScript/JavaScript, Lua and C/C++. Here the config is optional, so
   the project runs and the tests stay green while the cross-file index is dead. This repo carried
-  exactly that: six rungs ĐẠT, relationship queries covering 7 % of files. Exit code 3.
+  exactly that: every other rung ĐẠT, relationship queries covering 7 % of files. Exit code 3.
 - **Warning only** where the root marker is a build manifest (`go.mod`, `Cargo.toml`, `pom.xml`…).
   Missing it means the project does not build, so it announces itself.
 
@@ -61,25 +61,13 @@ Rung 3 sniffs the languages from the files actually in the project, ignoring `.g
 `node_modules`, `.venv`, `portable_*` and friends. A language under 3 files is treated as noise.
 YAML and JSON are config formats in nearly every repo, so they never trigger a request.
 
-## Rung 6 — a conflicting plugin hook
+## Rung 5 — a conflicting plugin hook
 
 Some plugins register a `PreToolUse` hook on `Grep`/`Bash` telling the agent to search their way
 first, competing with the order this workflow settled on. What happens next is the USER's call:
 report which plugin, file and matcher · ask permission to drop just that `PreToolUse` block,
 keeping `SessionStart` · only then edit, backing the file up next to itself. A plugin update
 reinstalls the hook under a new version path, so expect this rung to come back.
-
-## lumen — where it comes from, and Ollama on demand
-
-lumen is upstream <https://github.com/ory/lumen>, a plugin this repo does not ship; measured at
-0.0.42. Rung 5 checks ollama and the model, NOT the plugin — a machine passes rung 5 with no lumen
-tool at all. Install per host (Claude Code, Codex, OpenCode, Cursor, or the bare MCP server for
-anything else), and what to do when there is no plugin system: [references/lumen.md](references/lumen.md).
-
-`wake` wakes the daemon; `release` releases the model right after the search — never leave one
-resident, that is the machine cost the user objected to. `release` kills the daemon only when this
-script started it, tracked by a marker file; on macOS the desktop app restarts it anyway, so only
-the model release matters. Full lifecycle: [uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
 
 ## Runbook — setting a machine up, and re-configuring it later
 
@@ -118,7 +106,7 @@ an `mcp__lsp__*` call in the session that registered it will not find the tool y
 `~/.claude/settings.json`, backing that file up beside itself first. Without it every LSP call
 raises a prompt, and a search layer that asks permission per call stops being used.
 
-**Step 5 — lumen, then the conflicting plugin hook**, both per the section above. Back the
+**Step 5 — the conflicting plugin hook**, per the section above. Back the
 plugin's `hooks.json` up next to itself with the version in the name, drop only `PreToolUse`, keep
 `SessionStart`. Hooks load at session start, so the nudging line keeps appearing until restart.
 

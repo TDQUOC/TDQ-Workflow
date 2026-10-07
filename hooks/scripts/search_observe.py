@@ -4,10 +4,13 @@
 Three kinds of row go into `docs/tdq/.tdq-search.jsonl`, each tagged with the key of the current
 request (or `phien:<session>` when no request is open):
 
-  * `khai_niem` — a call to the concept layer actually happened: lumen `semantic_search`, an LSP
-    query tool (`mcp__lsp__*` minus pure housekeeping), or `graphify query|explain|path|god-nodes|
-    affected` through Bash. Written by THIS hook on `PostToolUse`, i.e. after the tool ran — the
-    agent saying "I asked lumen" proves nothing; the tool call does.
+  * `khai_niem` — a call to the concept layer actually happened: an LSP query tool
+    (`mcp__lsp__*` minus pure housekeeping), or `graphify query|explain|path|god-nodes|affected`
+    through Bash. Written by THIS hook from the tool call itself — the agent saying "I asked LSP"
+    proves nothing; the call does. LSP calls are recorded at `PreToolUse` as well (0.58.0): a call
+    that fails ("LSP client not initialized") never reaches `PostToolUse`, and that cost one extra
+    denial per session (measured 2026-10-07). A duplicate row only resets the window again.
+    lumen `semantic_search` counted here until 0.58.0.
   * `prompt` — the identifier-shaped tokens of the user's latest prompt, written on
     `UserPromptSubmit`. NOT the prompt text: the gate only needs to know whether a name the agent
     greps for appeared in what the user typed.
@@ -71,7 +74,7 @@ def khoa_hien_tai(cwd, phien):
         # read `request`, which never exists, so every row fell back to the session key.
         request = st.get("active_request")
         # `active_request` is never cleared when a request closes; at phase `idle` it names a
-        # FINISHED request. Keying on it let one lumen call from a closed request keep grep
+        # FINISHED request. Keying on it let one concept call from a closed request keep grep
         # unlocked for every later task (review 2026-10-03).
         if st.get("phase") == "idle":
             request = None
@@ -83,7 +86,7 @@ def khoa_hien_tai(cwd, phien):
 def doc_so(cwd, khoa, phien=None):
     """-> rows of `khoa` (plus this session's `phien:` rows when given), oldest first.
 
-    Why the session rows join a request's scope: the user's prompt and an early lumen call arrive
+    Why the session rows join a request's scope: the user's prompt and an early concept call arrive
     BEFORE `tdq_state.py init` opens the request, i.e. under the session key. Reading only the
     request key made the gate forget both the moment the request opened — a name the user typed
     was suddenly denied (review 2026-10-03). Unreadable rows are skipped; a broken file reads []."""

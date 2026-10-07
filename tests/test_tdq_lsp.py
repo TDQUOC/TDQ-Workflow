@@ -1,8 +1,8 @@
-"""P5 — unit test cho scripts/tdq_lsp.py: 6 bậc của thang chẩn đoán + vòng đời Ollama.
+"""P5 — unit test cho scripts/tdq_lsp.py: 7 bậc của thang chẩn đoán (lumen và vòng đời Ollama gỡ ở 0.58.0).
 
 Script này quyết định workflow có được dùng LSP hay không, và nó có một lời hứa cứng:
-KHÔNG bao giờ tự cài, KHÔNG bao giờ sửa file plugin khác, KHÔNG tắt daemon của user.
-Ba lời hứa đó chỉ là chữ nếu không có test đóng đinh, nên mỗi lời hứa có một ca riêng.
+KHÔNG bao giờ tự cài, KHÔNG bao giờ sửa file plugin khác.
+Hai lời hứa đó chỉ là chữ nếu không có test đóng đinh, nên mỗi lời hứa có một ca riêng.
 
 Mọi ca đều vá (`patch`) lớp chạm máy thật — `shutil.which`, socket probe, subprocess —
 để suite chạy được trên máy chưa cài gì mà vẫn kiểm đúng nhánh logic.
@@ -32,11 +32,6 @@ class BaseLsp(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        # Dấu sở hữu phải nằm trong tmp, nếu không test sẽ giẫm lên phiên làm việc thật.
-        self.dau = os.path.join(self.tmp.name, "owner.json")
-        p = mock.patch.object(tdq_lsp, "_dau_so_huu", lambda: self.dau)
-        p.start()
-        self.addCleanup(p.stop)
 
     def ghi_json(self, ten, data):
         path = os.path.join(self.tmp.name, ten)
@@ -135,110 +130,7 @@ class Bac4QuyenTool(BaseLsp):
         self.assertTrue(b.dat)
 
 
-class Bac5Lumen(BaseLsp):
-    def ghi_config(self, noi_dung):
-        """Dựng một config.yaml lumen tạm và trỏ tdq_lsp vào đó."""
-        thu_muc = tempfile.mkdtemp()
-        duong_dan = os.path.join(thu_muc, "config.yaml")
-        with open(duong_dan, "w", encoding="utf-8") as f:
-            f.write(noi_dung)
-        self.addCleanup(shutil.rmtree, thu_muc, True)
-        return duong_dan
-
-    def test_model_lay_tu_config_lumen(self):
-        """Máy này đã đổi lumen sang qwen3; checker phải hỏi đúng model đó, không phải model mặc định."""
-        cfg = self.ghi_config("servers:\n  - backend: ollama\n    host: http://localhost:11434\n"
-                              "    model: qwen3-embedding:0.6b\n")
-        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
-                mock.patch.dict(os.environ, {"LUMEN_EMBED_MODEL": "env/khong-duoc-uu-tien"}):
-            self.assertEqual(tdq_lsp._model_lumen(), "qwen3-embedding:0.6b")
-
-    def test_khong_co_config_thi_lay_bien_moi_truong(self):
-        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", "/khong/ton/tai/config.yaml"), \
-                mock.patch.dict(os.environ, {"LUMEN_EMBED_MODEL": "nomic-embed-text"}):
-            self.assertEqual(tdq_lsp._model_lumen(), "nomic-embed-text")
-
-    def test_khong_config_khong_env_thi_lay_mac_dinh(self):
-        moi_truong = {k: v for k, v in os.environ.items() if k != "LUMEN_EMBED_MODEL"}
-        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", "/khong/ton/tai/config.yaml"), \
-                mock.patch.dict(os.environ, moi_truong, clear=True):
-            self.assertEqual(tdq_lsp._model_lumen(), tdq_lsp.MODEL_LUMEN_MAC_DINH)
-
-    def test_config_rac_khong_lam_sap_bac5(self):
-        """Config hỏng là chuyện của lumen; bậc 5 chỉ được cảnh báo, tuyệt đối không ném exception."""
-        cfg = self.ghi_config("::: khong phai yaml :::\n\x00\n")
-        moi_truong = {k: v for k, v in os.environ.items() if k != "LUMEN_EMBED_MODEL"}
-        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
-                mock.patch.dict(os.environ, moi_truong, clear=True):
-            self.assertEqual(tdq_lsp._model_lumen(), tdq_lsp.MODEL_LUMEN_MAC_DINH)
-
-    def test_duong_dan_manifest_model_thu_vien_co_tag(self):
-        """`qwen3-embedding:0.6b` không có dấu "/": ghép thẳng sẽ trỏ sai và báo thiếu model đang có."""
-        d = tdq_lsp._duong_dan_manifest("qwen3-embedding:0.6b")
-        self.assertTrue(d.endswith(os.path.join("registry.ollama.ai", "library",
-                                                "qwen3-embedding", "0.6b")), d)
-
-    def test_duong_dan_manifest_model_co_namespace_khong_tag(self):
-        d = tdq_lsp._duong_dan_manifest("ordis/jina-embeddings-v2-base-code")
-        self.assertTrue(d.endswith(os.path.join("registry.ollama.ai", "ordis",
-                                                "jina-embeddings-v2-base-code", "latest")), d)
-
-    def test_thieu_ollama_chi_canh_bao(self):
-        """lumen là lớp dự phòng: hỏng thì cảnh báo, tuyệt đối không chặn phiên làm việc.
-
-        2026-09-28: ca này từng chỉ vá `which`. Nhưng `which` trả None KHÔNG còn nghĩa là chưa
-        cài — trên macOS một tiến trình không-login không thấy `/opt/homebrew/bin` trong khi
-        daemon vẫn phục vụ. "Chưa cài" nay là CẢ HAI cùng vắng, nên ca phải nói đúng điều đó.
-        """
-        with mock.patch.object(tdq_lsp.shutil, "which", return_value=None), \
-                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False):
-            b = tdq_lsp.bac5_lumen()
-        self.assertFalse(b.dat)
-        self.assertTrue(b.chi_canh_bao)
-
-    def test_thieu_model_chi_canh_bao(self):
-        with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_model_da_pull", return_value=False):
-            b = tdq_lsp.bac5_lumen()
-        self.assertFalse(b.dat)
-        self.assertTrue(b.chi_canh_bao)
-        self.assertIn("ollama pull", b.lenh_cai)
-
-    def test_thong_diep_bac5_mang_ten_model_that(self):
-        """Cảnh báo phải chỉ đúng model máy đang dùng, nếu không người đọc đi pull nhầm model."""
-        cfg = self.ghi_config("servers:\n  - model: qwen3-embedding:0.6b\n")
-        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_model_da_pull", return_value=False):
-            b = tdq_lsp.bac5_lumen()
-        self.assertTrue(b.chi_canh_bao)
-        self.assertIn("qwen3-embedding:0.6b", b.lenh_cai)
-        self.assertIn("qwen3-embedding:0.6b", b.chi_tiet)
-        self.assertNotIn(tdq_lsp.MODEL_LUMEN_MAC_DINH, b.lenh_cai)
-
-    def test_du_do_nhung_daemon_ngu_van_chi_canh_bao(self):
-        with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_model_da_pull", return_value=True), \
-                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False):
-            b = tdq_lsp.bac5_lumen()
-        self.assertFalse(b.dat)
-        self.assertTrue(b.chi_canh_bao)
-
-    def test_du_ca_ba_thi_dat(self):
-        """2026-09-28: ba điều kiện cũ KHÔNG còn đủ — bậc 5 nay hỏi thêm hai phép đo hiệu ứng
-        (index có nội dung mới, lumen trả lời được). Ca này giữ đúng vai trò cũ: khi MỌI phép dò
-        đều xanh thì bậc phải ĐẠT. Ca đo riêng từng phép đo mới nằm ở `test_bac_lumen_hieu_ung`.
-        """
-        with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_model_da_pull", return_value=True), \
-                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
-                mock.patch.object(tdq_lsp, "_index_cu_hon_code", return_value=(False, "")), \
-                mock.patch.object(tdq_lsp, "_lumen_tra_loi_duoc", return_value=(True, "")):
-            b = tdq_lsp.bac5_lumen()
-        self.assertTrue(b.dat)
-
-
-class Bac6HookXungDot(BaseLsp):
+class Bac5HookXungDot(BaseLsp):
     def dung_plugin(self, ten, hooks):
         goc = os.path.join(self.tmp.name, ten)
         os.makedirs(os.path.join(goc, "hooks"), exist_ok=True)
@@ -247,33 +139,33 @@ class Bac6HookXungDot(BaseLsp):
         return goc
 
     def test_bat_duoc_hook_chen_thu_tu_khac(self):
-        goc = self.dung_plugin("lumen", {"PreToolUse": [{"matcher": "Grep|Bash"}],
+        goc = self.dung_plugin("plugin-ngoai", {"PreToolUse": [{"matcher": "Grep|Bash"}],
                                          "SessionStart": [{"matcher": "*"}]})
-        with mock.patch.object(tdq_lsp, "_plugin_dang_bat", return_value=[("lumen", goc)]):
-            b = tdq_lsp.bac6_hook_xung_dot(self.tmp.name)
+        with mock.patch.object(tdq_lsp, "_plugin_dang_bat", return_value=[("plugin-ngoai", goc)]):
+            b = tdq_lsp.bac5_hook_xung_dot(self.tmp.name)
         self.assertFalse(b.dat)
-        self.assertTrue(b.chi_canh_bao, "bậc 6 chỉ được cảnh báo, không được chặn")
-        self.assertIn("lumen", b.chi_tiet)
+        self.assertTrue(b.chi_canh_bao, "bậc 5 chỉ được cảnh báo, không được chặn")
+        self.assertIn("plugin-ngoai", b.chi_tiet)
 
     def test_hook_khong_lien_quan_tim_kiem_thi_bo_qua(self):
         goc = self.dung_plugin("khac", {"PreToolUse": [{"matcher": "Write"}]})
         with mock.patch.object(tdq_lsp, "_plugin_dang_bat", return_value=[("khac", goc)]):
-            b = tdq_lsp.bac6_hook_xung_dot(self.tmp.name)
+            b = tdq_lsp.bac5_hook_xung_dot(self.tmp.name)
         self.assertTrue(b.dat)
 
     def test_khong_soi_plugin_nha(self):
         """Hook của chính tdq-workflow là chuẩn mực, không phải xung đột."""
         goc = self.dung_plugin("tdq-workflow", {"PreToolUse": [{"matcher": "Bash"}]})
         with mock.patch.object(tdq_lsp, "_plugin_dang_bat", return_value=[("tdq-workflow", goc)]):
-            b = tdq_lsp.bac6_hook_xung_dot(self.tmp.name)
+            b = tdq_lsp.bac5_hook_xung_dot(self.tmp.name)
         self.assertTrue(b.dat)
 
     def test_khong_ghi_gi_vao_file_plugin(self):
-        goc = self.dung_plugin("lumen", {"PreToolUse": [{"matcher": "Grep"}]})
+        goc = self.dung_plugin("plugin-ngoai", {"PreToolUse": [{"matcher": "Grep"}]})
         f = os.path.join(goc, "hooks", "hooks.json")
         truoc = open(f, encoding="utf-8").read()
-        with mock.patch.object(tdq_lsp, "_plugin_dang_bat", return_value=[("lumen", goc)]):
-            tdq_lsp.bac6_hook_xung_dot(self.tmp.name)
+        with mock.patch.object(tdq_lsp, "_plugin_dang_bat", return_value=[("plugin-ngoai", goc)]):
+            tdq_lsp.bac5_hook_xung_dot(self.tmp.name)
         self.assertEqual(truoc, open(f, encoding="utf-8").read())
 
 
@@ -284,10 +176,10 @@ class MaThoat(BaseLsp):
             tdq_lsp.Bac(5, "y", not canh_bao, chi_canh_bao=True),
         ]
 
-    # `check` chạy cả smoke 4 tầng từ 2026-10-03 (T4.3). Không vá smoke thì hai ca dưới đây hỏi
-    # thật cả bốn công cụ của máy (~12 s) và đỏ ở bất kỳ máy nào có một tầng đang tắt — tức
-    # đo máy chứ không đo mã thoát. Smoke giả "bốn tầng đều trả lời" giữ đúng điều ca này khoá.
-    SMOKE_DAT = [("grep", True, ""), ("LSP", True, ""), ("graphify", True, ""), ("lumen", True, "")]
+    # `check` chạy cả smoke từ 2026-10-03 (T4.3). Không vá smoke thì hai ca dưới đây hỏi thật
+    # các công cụ của máy (~12 s) và đỏ ở bất kỳ máy nào có một tầng đang tắt — tức đo máy chứ
+    # không đo mã thoát. Smoke giả "ba tầng đều trả lời" giữ đúng điều ca này khoá.
+    SMOKE_DAT = [("grep", True, ""), ("LSP", True, ""), ("graphify", True, "")]
 
     def test_thieu_bac_hanh_dong_thi_ma_3(self):
         with mock.patch.object(tdq_lsp, "chay_kiem", return_value=self.bac_gia(True, False)), \
@@ -295,104 +187,14 @@ class MaThoat(BaseLsp):
             self.assertEqual(tdq_lsp.cmd_kiem(Args()), tdq_lsp.EXIT_THIEU)
 
     def test_chi_canh_bao_thi_van_ma_0(self):
-        """Bậc 5-6 hỏng không được đổi mã thoát: tìm kiếm vẫn chạy bằng agent-lsp rồi grep."""
+        """Bậc chỉ cảnh báo (5, 7) hỏng không được đổi mã thoát: tìm kiếm vẫn chạy bằng agent-lsp rồi grep."""
         with mock.patch.object(tdq_lsp, "chay_kiem", return_value=self.bac_gia(False, True)), \
                 mock.patch.object(tdq_lsp, "chay_smoke", return_value=self.SMOKE_DAT):
             self.assertEqual(tdq_lsp.cmd_kiem(Args()), tdq_lsp.EXIT_OK)
 
 
-class VongDoiOllama(BaseLsp):
-    def test_da_chay_san_thi_khong_nhan_so_huu(self):
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
-                mock.patch.object(tdq_lsp.subprocess, "Popen") as popen:
-            rc = tdq_lsp.cmd_danh_thuc(Args(han_cho=1.0))
-        self.assertEqual(rc, tdq_lsp.EXIT_OK)
-        popen.assert_not_called()
-        self.assertFalse(os.path.exists(self.dau), "daemon của user mà nhận sở hữu là sai")
-
-    def test_khong_co_binary_thi_bo_qua_khong_chan(self):
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value=None), \
-                mock.patch.object(tdq_lsp.subprocess, "Popen") as popen:
-            rc = tdq_lsp.cmd_danh_thuc(Args(han_cho=1.0))
-        self.assertEqual(rc, tdq_lsp.EXIT_OK, "thiếu Ollama không được chặn lượt làm việc")
-        popen.assert_not_called()
-
-    def test_danh_thuc_lanh_thi_nhan_so_huu(self):
-        trang_thai = {"len": False}
-
-        def dang_chay():
-            return trang_thai["len"]
-
-        def popen(*a, **kw):
-            trang_thai["len"] = True
-            return mock.Mock(pid=4242)
-
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", side_effect=dang_chay), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp.subprocess, "Popen", side_effect=popen):
-            rc = tdq_lsp.cmd_danh_thuc(Args(han_cho=5.0))
-        self.assertEqual(rc, tdq_lsp.EXIT_OK)
-        self.assertEqual(tdq_lsp._doc_dau(), 4242)
-
-    def test_qua_han_thi_don_tien_trinh_va_khong_chan(self):
-        p = mock.Mock(pid=777)
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp.subprocess, "Popen", return_value=p):
-            rc = tdq_lsp.cmd_danh_thuc(Args(han_cho=0.01))
-        self.assertEqual(rc, tdq_lsp.EXIT_OK, "quá hạn là rơi xuống grep, không phải hỏng lượt")
-        p.terminate.assert_called_once()
-        self.assertFalse(os.path.exists(self.dau))
-
-    def test_nha_khong_giet_daemon_cua_user(self):
-        """Ca user tự bật: không có dấu sở hữu → nhả model nhưng để daemon sống."""
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_run", return_value=(0, "")) as run, \
-                mock.patch.object(tdq_lsp.os, "kill") as kill:
-            rc = tdq_lsp.cmd_nha(Args())
-        self.assertEqual(rc, tdq_lsp.EXIT_OK)
-        self.assertIn("stop", run.call_args[0][0])
-        kill.assert_not_called()
-
-    def test_nha_nha_dung_model_dang_dung(self):
-        """`ollama stop` gọi tên model mặc định thì model thật vẫn nằm giữ RAM — nhả trượt."""
-        thu_muc = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, thu_muc, True)
-        cfg = os.path.join(thu_muc, "config.yaml")
-        with open(cfg, "w", encoding="utf-8") as f:
-            f.write("servers:\n  - model: qwen3-embedding:0.6b\n")
-        with mock.patch.object(tdq_lsp, "CONFIG_LUMEN", cfg), \
-                mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_run", return_value=(0, "")) as run, \
-                mock.patch.object(tdq_lsp.os, "kill"):
-            tdq_lsp.cmd_nha(Args())
-        self.assertEqual(run.call_args[0][0], ["ollama", "stop", "qwen3-embedding:0.6b"])
-
-    def test_nha_giet_dung_daemon_do_script_bat(self):
-        tdq_lsp._ghi_dau(99999)
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=True), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_run", return_value=(0, "")), \
-                mock.patch.object(tdq_lsp.os, "kill") as kill:
-            tdq_lsp.cmd_nha(Args())
-        kill.assert_called_once_with(99999, 15)
-        self.assertFalse(os.path.exists(self.dau), "tắt xong phải xoá dấu, nếu không lần sau tắt nhầm")
-
-    def test_daemon_ngu_thi_khong_goi_ollama_stop(self):
-        """macOS: gọi `ollama stop` lúc daemon ngủ sẽ đánh thức đúng thứ đang muốn để yên."""
-        with mock.patch.object(tdq_lsp, "_ollama_dang_chay", return_value=False), \
-                mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/ollama"), \
-                mock.patch.object(tdq_lsp, "_run") as run:
-            rc = tdq_lsp.cmd_nha(Args())
-        self.assertEqual(rc, tdq_lsp.EXIT_OK)
-        run.assert_not_called()
-
-
-class Bac7CauHinhGocImport(BaseLsp):
-    """Bậc 7 — cấu hình gốc import, bậc duy nhất bắt được lỗi 'chỉ mục chết mà thang vẫn ĐẠT'."""
+class Bac6CauHinhGocImport(BaseLsp):
+    """Bậc 6 — cấu hình gốc import, bậc duy nhất bắt được lỗi 'chỉ mục chết mà thang vẫn ĐẠT'."""
 
     def du_file(self, duoi, so_luong):
         for i in range(so_luong):
@@ -400,7 +202,7 @@ class Bac7CauHinhGocImport(BaseLsp):
                 fh.write("x")
 
     def test_bang_cau_hinh_phu_dung_bo_khoa_cua_lang_server(self):
-        """Thiếu một ngôn ngữ trong LANG_CONFIG là bậc 7 im lặng bỏ qua ngôn ngữ đó."""
+        """Thiếu một ngôn ngữ trong LANG_CONFIG là bậc 6 im lặng bỏ qua ngôn ngữ đó."""
         self.assertEqual(set(tdq_lsp.LANG_CONFIG), set(tdq_lsp.LANG_SERVER))
 
     def test_dockerfile_co_trong_ca_hai_bang(self):
@@ -425,7 +227,7 @@ class Bac7CauHinhGocImport(BaseLsp):
     def test_nhom_b_thieu_cau_hinh_thi_CHAN(self):
         """Python không pyrightconfig.json: dự án vẫn chạy, test vẫn xanh, chỉ mục liên file chết."""
         self.du_file(".py", 5)
-        b = tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        b = tdq_lsp.bac6_cau_hinh_goc_import(self.tmp.name)
         self.assertFalse(b.dat)
         self.assertFalse(b.chi_canh_bao, "nhóm B phải chặn, không được chỉ cảnh báo")
         self.assertIn("pyrightconfig.json", b.lenh_cai)
@@ -433,7 +235,7 @@ class Bac7CauHinhGocImport(BaseLsp):
     def test_nhom_a_thieu_cau_hinh_thi_chi_canh_bao(self):
         """Go không go.mod thì dự án đã không build được — tự lộ, không cần chặn thêm."""
         self.du_file(".go", 5)
-        b = tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        b = tdq_lsp.bac6_cau_hinh_goc_import(self.tmp.name)
         self.assertFalse(b.dat)
         self.assertTrue(b.chi_canh_bao, "nhóm A chỉ được cảnh báo")
 
@@ -445,7 +247,7 @@ class Bac7CauHinhGocImport(BaseLsp):
         """
         self.du_file(".py", 5)
         self.du_file(".go", 5)
-        b = tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        b = tdq_lsp.bac6_cau_hinh_goc_import(self.tmp.name)
         self.assertFalse(b.dat)
         self.assertFalse(b.chi_canh_bao, "có nhóm B thiếu thì phải CHẶN")
         self.assertIn("pyright", b.chi_tiet)
@@ -455,26 +257,22 @@ class Bac7CauHinhGocImport(BaseLsp):
         self.du_file(".py", 5)
         with open(os.path.join(self.tmp.name, "pyrightconfig.json"), "w", encoding="utf-8") as fh:
             fh.write("{}")
-        self.assertTrue(tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name).dat)
+        self.assertTrue(tdq_lsp.bac6_cau_hinh_goc_import(self.tmp.name).dat)
 
     def test_khong_bao_gio_tu_ghi_file_cau_hinh(self):
         """Luật cứng của skill: script chỉ chẩn đoán và xin phép, không tự tạo file."""
         self.du_file(".py", 5)
         truoc = sorted(os.listdir(self.tmp.name))
-        tdq_lsp.bac7_cau_hinh_goc_import(self.tmp.name)
+        tdq_lsp.bac6_cau_hinh_goc_import(self.tmp.name)
         self.assertEqual(sorted(os.listdir(self.tmp.name)), truoc)
 
-    def test_bac7_nam_trong_thang(self):
+    def test_bac6_nam_trong_thang(self):
         self.du_file(".py", 5)
         with open(os.path.join(self.tmp.name, "pyrightconfig.json"), "w", encoding="utf-8") as fh:
             fh.write("{}")
-        # Vá hai phép đo hiệu ứng của bậc 5: chúng gọi lumen thật, mà ca này chỉ hỏi "thang có
-        # đủ 8 bậc không" — không ca nào được phép ghi vào index của máy đang chạy test.
-        with mock.patch.object(tdq_lsp, "_index_cu_hon_code", return_value=(False, "")),                 mock.patch.object(tdq_lsp, "_lumen_tra_loi_duoc", return_value=(True, "")):
-            so = [b.so for b in tdq_lsp.chay_kiem(self.tmp.name)]
-        # 2026-09-28: thang có thêm bậc 8 (đồ thị graphify) — công cụ thứ tư của bộ tìm kiếm
-        # trước nay không có bậc nào, nên nó hỏng mà không ai bị báo.
-        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7, 8])
+        so = [b.so for b in tdq_lsp.chay_kiem(self.tmp.name)]
+        # 0.58.0: lumen (bậc 5 cũ) gỡ, thang còn 7 bậc đánh số liền — không để lỗ ở số 5.
+        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7])
 
 
 class LoiHuaKhongTuCai(BaseLsp):
