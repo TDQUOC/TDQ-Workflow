@@ -22,8 +22,6 @@ docs/tdq/.tdq-codex.json
 docs/tdq/.tdq-codex-prompt.log
 docs/tdq/.tdq-codex-home/
 docs/tdq/.tdq-prompt-last.json
-# Dấu mốc lần dựng index lumen gần nhất — mốc thời gian của MÁY, không phải của repo.
-docs/tdq/.tdq-lumen-index
 graphify-out/cache/
 graphify-out/20*/
 graphify-out/graph.html
@@ -40,7 +38,7 @@ graphify-out/.rebuild.lock
 .venv-tokens/
 
 # Trang trạng thái setup sinh bằng scripts/setup_status.py — chứa đường dẫn máy,
-# địa chỉ tailnet của lumen và danh sách MCP, nên không đẩy lên repo public.
+# đường dẫn language server khai báo và danh sách MCP, nên không đẩy lên repo public.
 setup_status.html
 
 # Logs

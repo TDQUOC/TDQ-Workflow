@@ -12,8 +12,8 @@
     "token": 2070
   },
   "skills/tdq-build/references/rules/chung.md": {
-    "sha256": "e222a06587a2a3db239179dbd068278fbc4a9e6d6969fa94faff093915c1c906",
-    "token": 3229
+    "sha256": "4a91daa7bd6bc21a4280d0cdda0c4eda523b7940c7e7f098b682eba774f9b7ec",
+    "token": 3232
   },
   "skills/tdq-build/references/rules/cpp.md": {
     "sha256": "09fc5a2ad661500d211b4eb9accab4f1a537dd8723d6277bdd9b768fcc268c61",
@@ -84,16 +84,16 @@
     "token": 531
   },
   "skills/tdq-conventions/references/phases.md": {
-    "sha256": "de3a4fafcca1b9e1089ad30f813c05ed1476ff78e4a04b6e879ed82c879ff787",
+    "sha256": "9310823aa5feb10122bb5438823f04b01c0de310f80a2610bc8ed5fdcb1e5f74",
     "token": 1841
   },
   "skills/tdq-conventions/references/plugin-routing.md": {
-    "sha256": "2e221aafedf78df93d541e0c6c3933ffcc5dffa390e0e349df2a564725b23253",
-    "token": 1299
+    "sha256": "c995a6f79eb8b6019ed2c2473360d2f5fcfbb7d9b1c57f413e52ad2af3dd6d74",
+    "token": 1288
   },
   "skills/tdq-conventions/references/reminder-codes.md": {
-    "sha256": "04b34188d0d05401bc8d679b46be15511ebc6861398c59f06bc3c2a30893b269",
-    "token": 1469
+    "sha256": "7cf17271e5e7cda157ff302284f55e1025fc0e3e57440af9353fb2a9e9e568bf",
+    "token": 1466
   },
   "skills/tdq-conventions/references/soul.md": {
     "sha256": "b739ff7b35738a01a160328b8109912620a55b4d5bf2d6ce6d2e7d58f539982f",
@@ -120,8 +120,8 @@
     "token": 300
   },
   "skills/tdq-intake/references/analyze-full.md": {
-    "sha256": "e9934bc08972a20a0369bf229ddb5494f1782974e9673fc57fae48338d2f6799",
-    "token": 2440
+    "sha256": "1796e48740a3226d7726d702cc01fe5b0dfb768ba5def06db2632e6373078cb2",
+    "token": 2486
   },
   "skills/tdq-intake/references/interview.md": {
     "sha256": "6697665adcdefdd3b068e4ebeb59debb2a62c8749d5ecad556d98444547b4452",
@@ -132,7 +132,7 @@
     "token": 458
   },
   "skills/tdq-intake/references/kiem-lsp-hieu-ung.md": {
-    "sha256": "0a3a0c1fb2b8d8c50bfaca556f24103bb8bedb48317628e91808c725960eda8a",
+    "sha256": "61692058e5d66007407cd78ea927184a8c2a2966a4bf58f4972d0c4f4d5f98b4",
     "token": 717
   },
   "skills/tdq-intake/references/lane-decision.md": {
@@ -148,8 +148,8 @@
     "token": 1266
   },
   "skills/tdq-intake/references/quick-lane.md": {
-    "sha256": "c21b71aa58b8fb6d2e9be9970f12eedd3bd46598413d6c4f75d8e3c7f5ab57c6",
-    "token": 3419
+    "sha256": "c7a387a8d45b5afd15c5a94723c155b1ecf5c20e420a92d9dabe564f3eda12e0",
+    "token": 3440
   },
   "skills/tdq-intake/references/scope-round.md": {
     "sha256": "cf0d8c355914939bd5f28db1976c7503c7570e5efe093ac24999702e157817bf",
@@ -179,17 +179,13 @@
     "sha256": "b31c78227a57017f86e0f27b4558fd509ba9b52374e072bb30eae26f1ca29129",
     "token": 1367
   },
-  "skills/tdq-setup/references/lumen.md": {
-    "sha256": "6b58af976d17f93dd5ad3a82d908f42587d3c17b874b0a25df469babb8611e47",
-    "token": 851
-  },
   "skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md": {
-    "sha256": "ada33879f845d235f633c528a66ed9c99a5e13012b63fe53c3339b9b25cea446",
-    "token": 1518
+    "sha256": "2057e03d6dbbee7cb730e10177ebd8f30c003ba3e18138332c86f27960aac029",
+    "token": 959
   },
   "skills/tdq-setup/references/uu-tien-tim-kiem.md": {
-    "sha256": "14871164ea28cde94f89307dbd8e765ee6d0b1fd2390d83308eac89d8ce28e61",
-    "token": 2653
+    "sha256": "c5a2ea5bb33e1e8780e8e2137fbe41c75a16a2fd9c3384fad6f6b2bcc223052f",
+    "token": 2991
   },
   "skills/tdq-spec/references/spec-template-huong-dan.md": {
     "sha256": "494d0039e94e83984fd4526ac8d9d82bd6d2cb4bb3bd55a8d539f72c7d0cc5db",

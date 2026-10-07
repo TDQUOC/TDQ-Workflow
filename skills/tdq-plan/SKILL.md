@@ -57,7 +57,7 @@ scope. Spec approved → plan NOW.
    waves. Template: the 2 sections `Chạm:`/`Cụm song song` of plan-template. <!-- i18n-allow: canonical name kept verbatim -->
    **Build `Chạm:` from "who calls this", never by eye:** `mcp__lsp__find_references` on every <!-- i18n-allow: canonical name kept verbatim -->
    symbol the task changes, so a caller outside the obvious folder still lands on the line. <!-- i18n-allow: canonical rule sentence in the default language -->
-   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+   The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
    and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
    top of that file gives the exact line range, so the whole file never has to be read.
    **Score `eNm` as you write the task**, never later and never padded: minutes the agent SPENDS

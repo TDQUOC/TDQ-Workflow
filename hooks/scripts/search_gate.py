@@ -35,7 +35,9 @@ MA = "TDQ:SEARCH"
 # believed: the builder's own overall cap (`tdq_setup.TRAN_GIAY`, 1800 s — sized from an 11-minute
 # lumen index of excalidraw). Past that the build is dead, not slow.
 HAN_DUNG_NEN_GIAY = 1800
-TANG_KHAI_NIEM = ("lumen", "lsp", "graphify")
+# The concept layers of the readiness stamp. A stamp written before 0.58.0 may still carry a
+# `lumen` key; it is never read, so a removed layer can neither unlock the rule nor be suggested.
+TANG_KHAI_NIEM = ("lsp", "graphify")
 # Denials in one scope, with no concept query ever recorded, after which a machine with NO
 # readiness stamp is treated as having no concept layer (see `ly_do_dung_xuong`).
 BREAKER_CHAN = 3
@@ -69,10 +71,18 @@ def _doc_moc(cwd):
     return moc if isinstance(moc, dict) else None
 
 
+def tang_song(moc):
+    """-> the concept layers the stamp marks ready, in rule order; None when there is no stamp."""
+    if moc is None:
+        return None
+    tang = moc.get("tang") or {}
+    return tuple(t for t in TANG_KHAI_NIEM if (tang.get(t) or {}).get("san_sang"))
+
+
 def ly_do_dung_xuong(moc, tt):
     """-> why the gate must stand down (the agent has no right way to go), else None.
 
-    1. The stamp says NONE of lumen, LSP, graphify can answer — whether it is still building or
+    1. The stamp says NEITHER LSP nor graphify can answer — whether it is still building or
        finished that way (ollama off, no language server). Denying then sends the agent to tools
        that cannot answer; the first version did exactly that once a build had finished (review
        2026-10-03).
@@ -87,7 +97,7 @@ def ly_do_dung_xuong(moc, tt):
         song = [t for t in TANG_KHAI_NIEM if (tang.get(t) or {}).get("san_sang")]
         if not song:
             trang = "being built" if moc.get("dang_dung") else "not available here"
-            return (f"no concept layer can answer yet (lumen, LSP, graphify: {trang}) — "
+            return (f"no concept layer can answer yet (LSP, graphify: {trang}) — "
                     "searching freely until one does; run tdq-setup to fix it")
         return None
     if not tt.get("da_goi_khai_niem") and tt.get("so_lan_bi_chan", 0) >= BREAKER_CHAN:
@@ -105,10 +115,13 @@ def quyet(cwd, phien, ten_tool, vao):
     khoa = search_observe.khoa_hien_tai(cwd, phien)
     tt = search_rules.trang_thai(search_observe.doc_so(cwd, khoa, phien))
     tt["cua_so"] = search_rules.CUA_SO
+    moc = _doc_moc(cwd)
+    tt["tang_song"] = tang_song(moc)
     ok, ly_do = search_rules.quyet_dinh(pl, tt)
     dung_xuong = None
     if not ok:
-        dung_xuong = ly_do_dung_xuong(_doc_moc(cwd), tt)
+        _log(f"nhắc tầng: {', '.join(tt['tang_song']) if tt['tang_song'] is not None else 'mọi tầng (không có mốc)'}")
+        dung_xuong = ly_do_dung_xuong(moc, tt)
         if dung_xuong:
             ok, ly_do = True, dung_xuong
     if pl.get("loai") == search_rules.TIM_CODE:
@@ -139,8 +152,8 @@ def main():
     if dung_xuong:
         # Say it — once per turn (`remind` dedupes by code): a gate that silently stops gating
         # leaves the agent believing the rule holds (review 2026-10-03, spec §2 row 3).
-        _common.remind(cwd, payload, MA, [ly_do, "Concept layer: lumen semantic_search, LSP "
-                                      "find_symbol/find_references, graphify query."])
+        _common.remind(cwd, payload, MA, [ly_do, "Concept layer: LSP find_symbol/find_references, "
+                                      "graphify query."])
     if ok:
         sys.exit(0)
     # Every Claude Code deny goes through `_common.block()` (pinned by test_compliance_protocol).

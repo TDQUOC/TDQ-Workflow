@@ -53,7 +53,7 @@ class NguonDuyNhat(unittest.TestCase):
     def test_ban_goc_mang_cau_luat(self):
         than = gon(doc(GOC))
         self.assertIn(gon(CAU_LUAT), than)
-        for tang in ("mcp__lsp__*", "grep", "lumen", "graphify"):
+        for tang in ("mcp__lsp__*", "grep", "graphify"):
             self.assertIn(tang, than, f"câu luật gốc thiếu tầng {tang}")
 
 
@@ -131,10 +131,10 @@ class BaLopGanDungLoaiTruyVan(unittest.TestCase):
         self.cau = gon(doc(GOC))
 
     def test_du_ba_lop_moi_lop_gan_mot_loai_truy_van(self):
-        for lop in ("mcp__lsp__", "lumen", "grep"):
+        for lop in ("mcp__lsp__", "graphify", "grep"):
             self.assertIn(lop, self.cau, f"câu luật gốc thiếu lớp {lop}")
         for loai, lop in (("quan hệ", "mcp__lsp__"), ("tên chính xác", "grep"),
-                          ("khái niệm mơ hồ", "lumen")):
+                          ("khái niệm mơ hồ", "graphify")):
             i = self.cau.index(loai)
             self.assertIn(lop, self.cau[i:i + 80],
                           f"loại truy vấn '{loai}' không gắn với lớp {lop}")

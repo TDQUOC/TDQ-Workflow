@@ -15,7 +15,7 @@ That is not hypothetical. This repo ran that way through three consecutive reque
 really call it — 7 % coverage. Adding one `pyrightconfig.json` took it to 15/15. Measured in
 `docs/tdq/report/2026-09-03-0017-them-pyrightconfig-do-lai.md`.
 
-Rung 7 now catches the specific cause (a missing import-root marker). This check catches the
+Rung 6 now catches the specific cause (a missing import-root marker). This check catches the
 *symptom*, whatever the cause, which is why both exist.
 
 ## The three steps
@@ -43,7 +43,7 @@ Do not stop the request and do not start repairing the index mid-task:
 1. Write one line in the brief: the index is not answering cross-file, with both counts.
 2. Work through grep for the rest of this request — and say so in the brief, so the QC round
    knows why the search layer was not used.
-3. Raise rung 7's printed suggestion with the user as a separate fix. The script never writes a
+3. Raise rung 6's printed suggestion with the user as a separate fix. The script never writes a
    config file itself; that stays the user's call.
 
 Skipping this check when the ladder passed is a QC defect. The ladder is structurally blind to

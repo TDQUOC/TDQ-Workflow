@@ -38,6 +38,29 @@ class GhiHook(unittest.TestCase):
     def lenh(self, cfg, event):
         return [h["command"] for m in cfg["hooks"].get(event, []) for h in m.get("hooks", [])]
 
+    def test_ghi_hook_khong_ghi_vao_chinh_repo_plugin(self):
+        """`.codex/hooks.json` ở gốc repo TDQ là hàng rào vùng VIẾT TAY cho mode codex implement.
+        `tdq_setup` từng ghi đè nó hai lần (2026-10-03, 2026-10-07) — chạy trên chính repo plugin
+        thì phải bỏ qua, không ghi một byte."""
+        duong = os.path.join(tdq_codex_mcp.ROOT, ".codex", "hooks.json")
+        with io.open(duong, "rb") as fh:
+            truoc = fh.read()
+        dong = tdq_codex_mcp.khai_hook_codex(tdq_codex_mcp.ROOT)
+        with io.open(duong, "rb") as fh:
+            self.assertEqual(fh.read(), truoc)
+        self.assertTrue(any("plugin" in d and "left unchanged" in d for d in dong), dong)
+
+    def test_ghi_hook_nhac_duyet_va_sandbox(self):
+        """Đo 2026-10-07: hook dự án chưa duyệt bị bỏ qua lặng lẽ, và sandbox Windows chặn tiến
+        trình hook. Ghi xong mà không nói hai điều này là để user tin rằng cổng đang chạy."""
+        dong = " ".join(tdq_codex_mcp.khai_hook_codex(self.tmp.name))
+        self.assertIn("/hooks", dong)
+        self.assertIn("sandbox", dong)
+
+    def test_ghi_hook_matcher_khong_con_lumen(self):
+        tdq_codex_mcp.khai_hook_codex(self.tmp.name)
+        self.assertNotIn("lumen", json.dumps(self.doc()))
+
     def test_ghi_hook_project_moi_co_du_bon_entry(self):
         tdq_codex_mcp.khai_hook_codex(self.tmp.name)
         cfg = self.doc()
@@ -155,14 +178,10 @@ class GhiHook(unittest.TestCase):
 
 class TenTool(unittest.TestCase):
     def test_ten_tool_claude_van_nhan(self):
-        self.assertEqual(search_observe.la_goi_khai_niem(
-            "mcp__plugin_lumen_lumen__semantic_search", {}), "lumen")
         self.assertEqual(search_observe.la_goi_khai_niem("mcp__lsp__find_references", {}),
                          "lsp:find_references")
 
     def test_ten_tool_kieu_codex_nhan_duoc(self):
-        for ten in ("mcp__lumen__semantic_search", "lumen.semantic_search"):
-            self.assertEqual(search_observe.la_goi_khai_niem(ten, {}), "lumen", ten)
         for ten in ("mcp__lsp__find_symbol", "lsp.find_symbol"):
             self.assertEqual(search_observe.la_goi_khai_niem(ten, {}), "lsp:find_symbol", ten)
 
@@ -171,7 +190,8 @@ class TenTool(unittest.TestCase):
             self.assertIsNone(search_observe.la_goi_khai_niem(ten, {}), ten)
 
     def test_ten_tool_khong_lien_quan(self):
-        for ten in ("mcp__claude_ai_Figma__whoami", "Read", "mcp__lumen__health_check"):
+        for ten in ("mcp__claude_ai_Figma__whoami", "Read", "mcp__lumen__health_check",
+                    "mcp__lumen__semantic_search", "mcp__plugin_lumen_lumen__semantic_search"):
             self.assertIsNone(search_observe.la_goi_khai_niem(ten, {}), ten)
 
 

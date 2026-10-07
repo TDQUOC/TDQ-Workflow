@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Declare the lumen and lsp MCP servers for Codex, the same ones Claude Code starts.
+"""Declare the lsp MCP server for Codex, the same one Claude Code starts (lumen left in 0.58.0).
 
 Contract:
 - Only ADDS servers that are missing. An existing `[mcp_servers.<name>]` entry is never edited,
@@ -10,8 +10,9 @@ Contract:
   and only when something will actually be added — so a second run makes no second backup.
 - lsp: command and args copied verbatim from `~/.claude.json` -> `mcpServers.lsp`, so Codex
   starts exactly the language servers Claude Code starts.
-- lumen: `<lumen binary> stdio`, the binary found by `tdq_lsp._binary_lumen` (one resolver only).
-- A missing source (no codex, no lumen, no lsp entry) is reported and skipped, never raised.
+- A missing source (no codex, no lsp entry) is reported and skipped, never raised.
+- An old `[mcp_servers.lumen]` entry is left alone like any other existing entry: Codex starts
+  fine with it pointing at a deleted binary (measured 2026-10-07); removing it is the user's call.
 
 Usage: python scripts/tdq_codex_mcp.py [--codex-home DIR] [--claude-json FILE]
 Env: CODEX_HOME is the default codex home (else ~/.codex); TDQ_LOG=0 silences the stderr log.
@@ -31,7 +32,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import utf8_io  # noqa: E402,F401 — imported so stdout/stderr become UTF-8
 
-TEN_MAY_CHU = ("lumen", "lsp")
+TEN_MAY_CHU = ("lsp",)
 TIMEOUT_GIAY = 60
 
 
@@ -43,16 +44,6 @@ def _log(message):
 
 def _tim_codex():
     return shutil.which("codex")
-
-
-def _tim_lumen():
-    """The lumen binary, via the single resolver in tdq_lsp. "" when absent."""
-    try:
-        import tdq_lsp
-        return tdq_lsp._binary_lumen()
-    except Exception as exc:  # a broken import must not stop the lsp half
-        _log(f"could not resolve lumen: {exc}")
-        return ""
 
 
 def _chay_that(argv, env=None):
@@ -104,15 +95,8 @@ def _nguon_lsp(claude_json):
     return [muc["command"], *[str(a) for a in muc.get("args") or []]], ""
 
 
-def _nguon_lumen():
-    duong = _tim_lumen()
-    if not duong:
-        return None, "lumen binary not found"
-    return [duong, "stdio"], ""
-
-
 def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
-    """Add the missing lumen/lsp MCP servers to Codex. -> human-readable result lines."""
+    """Add the missing lsp MCP server to Codex. -> human-readable result lines."""
     chay = chay or _chay_that
     claude_json = claude_json or os.path.expanduser("~/.claude.json")
     codex = _tim_codex()
@@ -128,7 +112,7 @@ def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
     da_co = _ten_da_co(cfg, codex, env, chay)
     _log(f"config={cfg} present={sorted(da_co)}")
 
-    nguon = {"lumen": _nguon_lumen, "lsp": lambda: _nguon_lsp(claude_json)}
+    nguon = {"lsp": lambda: _nguon_lsp(claude_json)}
     dong, can_them = [], []
     for ten in TEN_MAY_CHU:
         if ten in da_co:
@@ -170,8 +154,8 @@ def khai_mcp_codex(codex_home=None, claude_json=None, chay=None):
 GOC_HOOK = os.path.join(ROOT, "hooks", "scripts").replace(os.sep, "/")
 # Concept-layer MCP tools under Codex. Their exact names could not be observed on this machine
 # (Codex is not logged in here — 401), so the matcher is deliberately broad; `search_observe.py`
-# then decides by name which calls count.
-MATCHER_KHAI_NIEM = ".*lumen.*|.*lsp.*"
+# then decides by name which calls count. lumen tools matched here too until 0.58.0.
+MATCHER_KHAI_NIEM = ".*lsp.*"
 
 
 def _lenh_hook(ten):
@@ -183,7 +167,7 @@ def _hook_can_co():
 
     `search_observe` is attached on BOTH PreToolUse and PostToolUse of the concept tools:
     PostToolUse is the right moment (the call happened) but its support under Codex is
-    unverified; recording at PreToolUse too means a lumen call is never missed, and a duplicate
+    unverified; recording at PreToolUse too means a concept call is never missed, and a duplicate
     row is harmless — a concept row only resets the unlock counter.
     It is also attached to PreToolUse `Bash`, in its own entry next to the gate's: under Codex
     a `graphify query|explain|path|god-nodes|affected` shell command is a concept-layer call,
@@ -216,6 +200,28 @@ def _event_hong(entries):
     return ""
 
 
+# The two conditions a written hook needs before Codex runs it, both measured on Windows
+# 2026-10-07 (`docs/tdq/research/2026-10-07-2041-hook-codex.md`). Neither is visible from inside a
+# `codex exec` run: an untrusted hook is skipped without a warning, and a blocked process looks
+# like "the environment blocks commands". Said on every write, because every write changes the
+# hook hash and so needs a new review.
+DIEU_KIEN_CHAY = (
+    "Codex hook: project-level hooks only run once TRUSTED, and every rewrite of hooks.json needs "
+    "a new review - open `codex` in this project and approve them under `/hooks`.",
+    "Codex hook: on Windows the `read-only` and `workspace-write` sandboxes block every new process, "
+    "hook processes included - the gate only runs where Codex may start processes.",
+)
+
+
+def _la_repo_plugin(project):
+    """True when `project` is this plugin's own source repo, whose `.codex/hooks.json` is the
+    hand-written fence of `codex implement` (locked by `tests/test_codex_hooks_json.py`)."""
+    try:
+        return os.path.samefile(project, ROOT)
+    except OSError:
+        return False
+
+
 def khai_hook_codex(project):
     """Add the search gate to `<project>/.codex/hooks.json`. -> human-readable result lines.
 
@@ -228,6 +234,10 @@ def khai_hook_codex(project):
     A file that is not valid JSON, or whose shape for one of our events is unexpected, is left
     untouched and reported — overwriting a config we cannot read is how a user's hooks get lost.
     """
+    if _la_repo_plugin(project):
+        _log(f"{project} is the plugin's own repo - its .codex/hooks.json is hand-written")
+        return ["Codex hook: this is the TDQ plugin's own repo - its .codex/hooks.json is the "
+                "hand-written file fence of `codex implement`, left unchanged."]
     duong = os.path.join(project, ".codex", "hooks.json")
     cfg = {"hooks": {}}
     if os.path.isfile(duong):
@@ -260,7 +270,8 @@ def khai_hook_codex(project):
                 h["command"] = lenh
                 so_sua += 1
     if not can_them and not so_sua:
-        return ["Codex hook: the search gate is already in .codex/hooks.json, left unchanged."]
+        return ["Codex hook: the search gate is already in .codex/hooks.json, left unchanged.",
+                *DIEU_KIEN_CHAY]
 
     dong = []
     if os.path.isfile(duong):
@@ -282,14 +293,13 @@ def khai_hook_codex(project):
                     f"path in {duong}")
     if can_them:
         dong.append(f"Codex hook: added {len(can_them)} search-gate entries to {duong}")
-    dong.append("Codex hook: project-level hooks only run once TRUSTED - open `codex` in this "
-                "project and approve them under `/hooks`.")
+    dong.extend(DIEU_KIEN_CHAY)
     return dong
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(
-        description="Declare the lumen + lsp MCP servers for Codex (add only, never edit).")
+        description="Declare the lsp MCP server for Codex (add only, never edit).")
     ap.add_argument("--codex-home", help="CODEX_HOME directory (default $CODEX_HOME or ~/.codex)")
     ap.add_argument("--claude-json",
                     help="claude.json file holding mcpServers.lsp (default ~/.claude.json)")

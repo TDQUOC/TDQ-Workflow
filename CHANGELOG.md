@@ -2,6 +2,32 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.58.0 — 2026-10-07
+
+Gỡ lumen, luật tìm kiếm còn ba tầng (LSP · grep · graphify), cổng tìm kiếm dẫn tới tầng đang
+sống. Đo trước khi gỡ (request `2026-10-07-1843-phan-tich-bo-lumen`): 12 câu khái niệm trên
+TDQ-Workflow và claudecodeui, không lumen vẫn trúng 11/12 và 10/12 (trượt 0), token 0,88× và
+1,06× — không giảm đáng kể. Báo cáo: `docs/tdq/reports/2026-10-07-2041-go-lumen-toi-uu-tim-kiem.md`.
+
+- **lumen ra khỏi mã.** Thang `tdq_lsp.py check` còn 7 bậc đánh số liền (bậc lumen cũ là 5;
+  hook xung đột 6→5, cấu hình gốc import 7→6, graphify 8→7), smoke còn 3 tầng — máy không cài
+  lumen không còn "CHƯA ĐẠT, exit 4" vĩnh viễn. Bỏ `wake`/`release` của ollama, bước `reindex`
+  của `tdq_finish.py`, phần lumen của `tdq_setup.py` (cấu hình, dựng nền, khối ghim CLAUDE.md),
+  `setup_status`, khai MCP lumen cho Codex; xoá `skills/tdq-setup/references/lumen.md`,
+  `.lumenignore`.
+- **Cổng `TDQ:SEARCH` bớt lượt thừa.** Lời chặn chỉ nêu tầng mà dấu mốc sẵn sàng ghi là sống,
+  kèm lệnh dùng ngay (`start_lsp` khi LSP báo chưa khởi động). Lời gọi `mcp__lsp__*` được ghi sổ
+  ngay ở PreToolUse, nên lời gọi lỗi vẫn tính là đã hỏi. Mốc cũ còn khoá `lumen` không còn làm
+  dựng lại nền mỗi 6 giờ.
+- **Luật chữ 3 tầng.** Bốn câu từng chấm agent oan khi lumen vắng (`analyze-full.md`,
+  `quick-lane.md`, `tdq-build/SKILL.md`, `PHASE_TABLE`) nay đòi LSP rồi graphify; câu chuẩn và
+  bảng loại câu hỏi trong `uu-tien-tim-kiem.md` mang số đo mới kèm tên repo.
+- **Codex.** `tdq_codex_mcp.khai_hook_codex` không còn ghi đè `.codex/hooks.json` viết tay của
+  chính repo plugin (đã xảy ra 2026-10-03 và 2026-10-07). Mỗi lần ghi hook, nó nói rõ hai điều
+  kiện để hook chạy. Một: hook phải được duyệt ở `/hooks`, hook chưa duyệt bị bỏ qua lặng lẽ. Hai:
+  trên Windows, sandbox `read-only`/`workspace-write` chặn mọi tiến trình, kể cả tiến trình hook
+  (`docs/tdq/research/2026-10-07-2041-hook-codex.md`).
+
 ## 0.57.0 — 2026-10-05
 
 Một luật chạy test, một nguồn. Bước trung gian chỉ chạy test trong vùng chạm, trọn bộ dồn về
@@ -466,27 +492,9 @@ phải plugin) và README codex thiếu hai thủ tục bắt buộc. Báo cáo:
 - **`tests/test_tuong_thich_host.py`** (mới) — 6 test khoá 6 điểm tương thích; 5 test agy cũ
   trong `test_build_portable.py` viết lại theo layout mới.
 
-## 0.40.0 — 2026-09-03
-
-Cổng hỏi bằng chat thường, dòng `Next step:` nêu tên pha kế, và đường kẻ `---` kết lượt. Kèm
-phần hướng dẫn cài qua marketplace + auto-update + bump version trong `README.md`. Báo cáo:
-`docs/tdq/report/2026-09-03-1220-gate-chat-va-next-pha.md`.
-
-- **`skills/tdq-conventions/references/user-facing-block.md`** — luật cấm tool hỏi dạng popup
-  (`AskUserQuestion`) chuyển từ `tdq-intake` lên tầng conventions, áp cho MỌI câu hỏi chứ không
-  riêng 7 cổng duyệt; thêm thành phần 6 của khối trả lời: đúng một dòng `---` kết lượt.
-- **`skills/tdq-conventions/references/approval.md`** — mục `## Hỏi xong là kết lượt`.
-- **12 dòng `Next step:` trong 8 skill** — mỗi dòng nêu tên pha kế tiếp hoặc nói rõ pha không
-  đổi kèm skill kế, để host không có hook vẫn đi đúng lộ trình. Lớp này là DỰ PHÒNG,
-  `[TDQ:NEXT]` vẫn là đường chính.
-- **`tests/test_luat_gate_chat.py`** (mới) — 7 test khoá ba luật trên; tên pha đọc thẳng từ
-  `PHASE_TABLE` chứ không chép cứng.
-- **`README.md`** — 3 cách cài (marketplace / `--plugin-dir` / bundle portable), mục
-  `## Cập nhật` và thủ tục bump version bắt buộc mỗi lần release.
-
 ## Lịch sử cũ hơn
 
-Bản 0.39.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
-0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05). Bản 0.36.0 trở xuống nằm ở
+Bản 0.40.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
+0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07). Bản 0.36.0 trở xuống nằm ở
 `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
 xoá dòng nào.

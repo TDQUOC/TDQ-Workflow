@@ -28,7 +28,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    who really imports and calls whom — `mcp__lsp__find_references` on the module's entry symbols,
    `mcp__lsp__go_to_definition` on what it pulls in. Guessing the boundary from folder names is a
    defect. <!-- i18n-allow: canonical rule sentence in the default language -->
-   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+   The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
    and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
    top of that file gives the exact line range, so the whole file never has to be read.
 

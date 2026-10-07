@@ -67,7 +67,7 @@ MUC = (
     ("workflow", ("tdq-workflow", "superpowers", "claude-md-management",
                   "remember", "hookify")),
     ("code", ("plugin-dev", "mcp-server-dev", "skill-creator", "sonarqube",
-              "code-simplifier", "feature-dev", "lumen", "playground")),
+              "code-simplifier", "feature-dev", "playground")),
     ("design", ("figma", "canva", "adobe-for-creativity", "frontend-design")),
     ("game engine", ("unity", "unreal", "qt-development-skills")),
     ("web", ("playwright", "chrome-devtools-mcp", "firecrawl", "tavily",

@@ -1,4 +1,4 @@
-"""T3.2 — declare the lumen + lsp MCP servers for Codex without touching existing entries.
+"""T3.2 — declare the lsp MCP server for Codex without touching existing entries (lumen left in 0.58.0).
 
 Never calls the real `codex` and never touches the real ~/.codex: every test uses a temp
 CODEX_HOME, a temp claude.json and a fake command runner that writes what the real CLI would.
@@ -65,11 +65,9 @@ class TestKhaiMcpCodex(unittest.TestCase):
         with open(self.claude_json, "w", encoding="utf-8") as f:
             json.dump({"mcpServers": {"lsp": {"type": "stdio", "command": "C:/a/agent-lsp.exe",
                                               "args": LSP_ARGS}}}, f)
-        self.lumen = os.path.join(self.tmp, "bin", "lumen.exe")
         p1 = mock.patch.object(tdq_codex_mcp, "_tim_codex", return_value="C:/fake/codex.exe")
-        p2 = mock.patch.object(tdq_codex_mcp, "_tim_lumen", return_value=self.lumen)
         p3 = mock.patch.dict(os.environ, {"TDQ_LOG": "0"})
-        for p in (p1, p2, p3):
+        for p in (p1, p3):
             p.start()
         self.addCleanup(mock.patch.stopall)
 
@@ -84,20 +82,19 @@ class TestKhaiMcpCodex(unittest.TestCase):
     def _bak(self):
         return glob.glob(self.cfg + ".truoc-tdq-*.bak")
 
-    def test_them_ca_hai_giu_nguyen_muc_san_co(self):
+    def test_them_lsp_giu_nguyen_muc_san_co(self):
         gia = GiaCodex()
         dong = self._chay(gia)
         cfg = self._doc()["mcp_servers"]
-        self.assertIn("lumen", cfg)
         self.assertIn("lsp", cfg)
-        self.assertEqual(cfg["lumen"], {"command": self.lumen, "args": ["stdio"]})
+        self.assertNotIn("lumen", cfg, "0.58.0: không còn khai lumen cho Codex")
         with open(self.cfg, encoding="utf-8", newline="") as f:
             self.assertTrue(f.read().startswith(KHOI_CO_SAN))
         baks = self._bak()
         self.assertEqual(len(baks), 1)
         with open(baks[0], encoding="utf-8", newline="") as f:
             self.assertEqual(f.read(), KHOI_CO_SAN)
-        self.assertEqual(gia.so_lan_add(), 2)
+        self.assertEqual(gia.so_lan_add(), 1)
         self.assertTrue(dong)
 
     def test_lsp_args_chep_nguyen_van(self):
@@ -120,12 +117,12 @@ class TestKhaiMcpCodex(unittest.TestCase):
 
     def test_ten_da_co_thi_khong_add(self):
         with open(self.cfg, "a", encoding="utf-8") as f:
-            f.write('\n[mcp_servers.lumen]\ncommand = "khac"\nargs = []\n')
+            f.write('\n[mcp_servers.lsp]\ncommand = "khac"\nargs = []\n')
         gia = GiaCodex()
         self._chay(gia)
         ten_add = [g[3] for g in gia.goi if g[1:3] == ["mcp", "add"]]
-        self.assertEqual(ten_add, ["lsp"])
-        self.assertEqual(self._doc()["mcp_servers"]["lumen"]["command"], "khac")
+        self.assertEqual(ten_add, [])
+        self.assertEqual(self._doc()["mcp_servers"]["lsp"]["command"], "khac")
 
     def test_khong_co_codex_thi_khong_ghi(self):
         with open(self.cfg, "rb") as f:
@@ -142,11 +139,10 @@ class TestKhaiMcpCodex(unittest.TestCase):
     def test_thieu_nguon_thi_bo_qua_khong_raise(self):
         os.remove(self.claude_json)
         gia = GiaCodex()
-        with mock.patch.object(tdq_codex_mcp, "_tim_lumen", return_value=""):
-            dong = self._chay(gia)
+        dong = self._chay(gia)
         self.assertEqual(gia.so_lan_add(), 0)
         self.assertEqual(self._bak(), [])
-        self.assertEqual(len(dong), 2)
+        self.assertEqual(len(dong), 1)
 
     def test_khong_co_config_thi_khong_backup(self):
         os.remove(self.cfg)
@@ -160,7 +156,7 @@ class TestKhaiMcpCodex(unittest.TestCase):
         gia = GiaCodex()
         bang = ("Name              Command  Args  Env  Cwd  Status   Auth\n"
                 "cloudcli-browser  node     x     -    -    enabled  Unsupported\n"
-                "lumen             l        stdio -    -    enabled  Unsupported\n")
+                "lsp               l        x     -    -    enabled  Unsupported\n")
 
         def chay(argv, env=None):
             if argv[1:3] == ["mcp", "list"]:
@@ -171,7 +167,7 @@ class TestKhaiMcpCodex(unittest.TestCase):
         tdq_codex_mcp.khai_mcp_codex(codex_home=self.home, claude_json=self.claude_json,
                                      chay=chay)
         ten_add = [g[3] for g in gia.goi if g[1:3] == ["mcp", "add"]]
-        self.assertEqual(ten_add, ["lsp"])
+        self.assertEqual(ten_add, [], "lsp đã có trong `codex mcp list` -> không add")
 
 
 class LogService(unittest.TestCase):

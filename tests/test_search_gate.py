@@ -62,15 +62,15 @@ class Chan(BaseCong):
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" packages/excalidraw/data/json.ts')
         ly_do = self.bi_chan(out)
         self.assertIn("TDQ:SEARCH", ly_do)
-        self.assertIn("semantic_search", ly_do)
-        self.assertNotIn("path", ly_do.replace("file", ""), "không được gợi ý tham số `path` của lumen")
+        self.assertIn("find_symbol", ly_do)
+        self.assertNotIn("lumen", ly_do)
 
     def test_chan_cong_cu_grep_danh_sach_doan(self):
         out, _ = self.goi("Grep", pattern="static|register|export|class ")
         self.assertIn("TDQ:SEARCH", self.bi_chan(out))
 
     def test_chan_doan_mo_sau_khi_cua_so_het(self):
-        self.ghi(loai="khai_niem", cong_cu="lumen")
+        self.ghi(loai="khai_niem", cong_cu="graphify:query")
         for _ in range(search_rules.CUA_SO):
             self.ghi(loai="tim", tinh_cua_so=True)
         out, _ = self.goi("Bash", command='grep -rn "saveFileToDisk\\|isSaved\\|beforeunload" .')
@@ -94,7 +94,7 @@ class Cho(BaseCong):
         self.assertEqual(out, "")
 
     def test_cho_sau_khi_hoi_tang_khai_niem(self):
-        self.ghi(loai="khai_niem", cong_cu="lumen")
+        self.ghi(loai="khai_niem", cong_cu="graphify:query")
         out, _ = self.goi("Bash", command='grep -rn "saveFileToDisk\\|isSaved\\|beforeunload" .')
         self.assertEqual(out, "", "trong cửa sổ mở khoá, kể cả danh sách nhiều nhánh cũng đi qua")
 
@@ -107,7 +107,7 @@ class GhiSo(BaseCong):
     def test_ghi_so_lan_tim_duoc_cho_moi_tinh_cua_so(self):
         """Lần bị chặn không chạy — nó không được ăn vào cửa sổ mở khoá."""
         self.goi("Bash", command='grep -rn "fileHandle" .')            # bị chặn
-        self.ghi(loai="khai_niem", cong_cu="lumen")
+        self.ghi(loai="khai_niem", cong_cu="graphify:query")
         self.goi("Bash", command='grep -rn "fileHandle" .')            # được cho
         tt = search_observe.trang_thai(search_observe.doc_so(self.cwd, self.khoa))
         self.assertEqual(tt["so_lan_tim_tu_lan_goi"], 1)
@@ -132,14 +132,15 @@ class Codex(BaseCong):
 class ChuaSanSang(BaseCong):
     """T6.3 — chặn khi tầng khái niệm còn đang dựng là bắt agent đứng chờ, không có đường đúng."""
 
-    def ghi_moc(self, dang_dung=True, tuoi_giay=0, lumen=False):
+    def ghi_moc(self, dang_dung=True, tuoi_giay=0, graphify=False, lumen=None):
         from datetime import datetime, timedelta
         cap_nhat = (datetime.now() - timedelta(seconds=tuoi_giay)).strftime("%Y-%m-%dT%H:%M:%S")
         moc = {"cap_nhat": cap_nhat, "dang_dung": dang_dung, "pid": 1,
                "tang": {"grep": {"san_sang": True, "chi_tiet": ""},
                         "lsp": {"san_sang": False, "chi_tiet": ""},
-                        "graphify": {"san_sang": False, "chi_tiet": ""},
-                        "lumen": {"san_sang": lumen, "chi_tiet": ""}}}
+                        "graphify": {"san_sang": graphify, "chi_tiet": ""}}}
+        if lumen is not None:          # mốc ghi trước 0.58.0 còn khoá này
+            moc["tang"]["lumen"] = {"san_sang": lumen, "chi_tiet": ""}
         with io.open(os.path.join(self.cwd, "docs", "tdq", ".tdq-san-sang.json"), "w",
                      encoding="utf-8") as fh:
             json.dump(moc, fh)
@@ -157,7 +158,7 @@ class ChuaSanSang(BaseCong):
         self.assertIn("being built", self.dung_xuong_va_noi_ra(out))
 
     def test_chua_san_sang_dung_xong_ma_khong_tang_nao_song_thi_dung_xuong(self):
-        """V2: bản dựng XONG mà lumen/LSP/graphify đều không trả lời được (ollama tắt…) — chặn lúc
+        """V2: bản dựng XONG mà LSP/graphify đều không trả lời được — chặn lúc
         này là đẩy agent tới công cụ không trả lời. Bản đầu chặn đúng ở đây; ca này khoá ngược lại."""
         self.ghi_moc(dang_dung=False)
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
@@ -177,18 +178,33 @@ class ChuaSanSang(BaseCong):
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
         self.assertIn("tdq-setup", self.dung_xuong_va_noi_ra(out))
 
-    def test_chua_san_sang_cau_dao_khong_mo_khi_moc_bao_lumen_song(self):
-        """Có mốc nói lumen sống → "thử lại 3 lần" KHÔNG được thành đường vòng qua luật."""
-        self.ghi_moc(dang_dung=False, lumen=True)
+    def test_chua_san_sang_cau_dao_khong_mo_khi_moc_bao_graphify_song(self):
+        """Có mốc nói graphify sống → "thử lại 3 lần" KHÔNG được thành đường vòng qua luật."""
+        self.ghi_moc(dang_dung=False, graphify=True)
         for _ in range(5):
             out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
             self.assertIn("TDQ:SEARCH", self.bi_chan(out))
 
     def test_chua_san_sang_mot_tang_da_xong_thi_chan(self):
-        """Đang dựng nhưng lumen đã trả lời được → có đường đúng để đi → cổng áp luật."""
-        self.ghi_moc(dang_dung=True, lumen=True)
+        """Đang dựng nhưng graphify đã trả lời được → có đường đúng để đi → cổng áp luật."""
+        self.ghi_moc(dang_dung=True, graphify=True)
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
         self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+
+    def test_chua_san_sang_chi_graphify_song_thi_loi_chan_chi_nhac_graphify(self):
+        """0.58.0: lời chặn sinh từ tầng sống — không nhắc LSP khi mốc nói LSP không trả lời."""
+        self.ghi_moc(dang_dung=False, graphify=True)
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        ly_do = self.bi_chan(out)
+        self.assertIn('graphify query "', ly_do)
+        self.assertNotIn("mcp__lsp__", ly_do)
+
+    def test_chua_san_sang_moc_cu_chi_lumen_song_thi_dung_xuong(self):
+        """Mốc trước 0.58.0: lumen sống, LSP/graphify không. Lumen đã gỡ nên không còn tầng nào
+        để chỉ tới — chặn lúc này là đẩy agent vào ngõ cụt."""
+        self.ghi_moc(dang_dung=False, lumen=True)
+        out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
+        self.dung_xuong_va_noi_ra(out)
 
 
 class Nhe(unittest.TestCase):
@@ -238,6 +254,13 @@ class LogService(BaseCong):
     def test_log_bat_mac_dinh_co_timestamp(self):
         _, err = self.goi("Bash", command='grep -rn "x" .', log="1")
         self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] search_gate")
+
+    def test_log_ghi_tang_duoc_nhac_khi_chan(self):
+        """0.58.0: lời chặn sinh từ tầng sống — log nói nó đã nhắc tầng nào, để soát lại được."""
+        _, err = self.goi("Bash", command='grep -rn "fileHandle" .', log="1")
+        self.assertIn("nhắc tầng: mọi tầng (không có mốc)", err)
+        _, im = self.goi("Bash", command='grep -rn "fileHandle" .', log="0")
+        self.assertEqual(im, "")
 
 
 if __name__ == "__main__":

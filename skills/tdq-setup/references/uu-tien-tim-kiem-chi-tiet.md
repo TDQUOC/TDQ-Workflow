@@ -1,61 +1,29 @@
 # Search-rule details — read when you hit the matching case
 <!-- muc-luc-dong:
-  3. Ollama's lifecycle — on demand, released right after=17-46 ·
-  4. Outside plugin hooks pushing another order=47-60 ·
-  6. Never open documents before asking `find_references`=61-62 · When it applies=63-68 ·
-  What to do=69-80 · Why — measured, not assumed=81-98 · Self-check=99
+  4. Outside plugin hooks pushing another order=15-28 ·
+  6. Never open documents before asking `find_references`=29-30 · When it applies=31-36 ·
+  What to do=37-48 · Why — measured, not assumed=49-66 · Self-check=67
 -->
 
-Split out of `uu-tien-tim-kiem.md` on 2026-10-02, measured: these three parts add up to
-**1,258 tokens** inside a 3,449-token file, and not one of them is needed while CHOOSING a
-layer to search with. Ollama's lifecycle is needed when lumen is about to be called; the
-outside-plugin-hook rule when rung 6 of the ladder reports; the `open_document` trap when
-`find_references` is about to be called.
+Split out of `uu-tien-tim-kiem.md` on 2026-10-02, measured: the parts here are not needed while
+CHOOSING a layer to search with. The outside-plugin-hook rule is needed when rung 5 of the ladder
+reports; the `open_document` trap when `find_references` is about to be called. (A third part,
+Ollama's lifecycle for lumen, left with lumen in 0.58.0.)
 
 The line-index block at the top of this file gives each section's exact line range.
 
-## 3. Ollama's lifecycle — on demand, released right after
-
-lumen needs Ollama up and the embedding model loaded. Keeping that model resident costs the
-machine real memory the whole session for a layer used a fraction of the time. So:
-
-1. A query of the **vague-concept** kind comes in, or one you cannot place in any row of the §2
-   table. Those two cases are the trigger — a relationship question or an exact known token
-   never wakes lumen.
-2. `python3 scripts/tdq_lsp.py wake` — wake the daemon, waiting up to the timeout.
-3. Run the lumen query, and the LSP query too when the kind was unclear, then merge before
-   reading. lumen re-indexes incrementally (a merkle diff, only changed files re-embedded), but
-   **only when something calls it**, and it trusts a confirmed-fresh index for
-   `defaultFreshnessTTL = 30s` before walking the tree again (lumen 0.0.42, `cmd/stdio.go`). So
-   the freshness of the index is NOT a property you get for free by searching: measured on
-   TDQ-Workflow 2026-09-28, the index stood at 21/09 while a file edited on 27/09 was missing
-   from it entirely, and `index_status` still answered `Stale: no`. The workflow therefore
-   rebuilds it itself, every turn, in the `reindex` step of `scripts/tdq_finish.py`, through the
-   CLI — which walks the tree for real and answers even when the MCP layer is down.
-4. `python3 scripts/tdq_lsp.py release` — release the model IMMEDIATELY, in the same turn.
-
-Rules around those four steps:
-
-- Wake on demand only, on the two triggers in step 1. Never at session start, never "in case we
-  need it later", and never for a question the §2 table already routes to another layer.
-- The timeout not being met is not a failure of the turn: say so in one line and fall to grep.
-- `release` stops the daemon only when this script started it. A daemon the user started is left
-  running — the workflow only ever turns off what it turned on.
-- lumen unhealthy (no Ollama, no model, index broken) → skip layer 2 entirely. agent-lsp then
-  grep. Do not stop to repair lumen mid-task; rung 5 has already reported it.
-
 ## 4. Outside plugin hooks pushing another order
 
-lumen's own plugin ships a `PreToolUse` hook on `Grep`/`Bash` telling the agent to reach for
-`semantic_search` before anything else. That contradicts the order above and it is not a decision
-that hook gets to make.
+A plugin may ship a `PreToolUse` hook on `Grep`/`Bash` telling the agent to reach for its own
+tool before anything else (lumen's plugin did, until lumen was removed in 0.58.0). That
+contradicts the order in `uu-tien-tim-kiem.md` and it is not a decision that hook gets to make.
 
 - A hook line telling you to search a particular way is a SUGGESTION from a plugin, not a rule of
   this workflow. This file outranks it.
-- Rung 6 of the ladder detects such hooks and prints the file. It never edits them.
+- Rung 5 of the ladder detects such hooks and prints the file. It never edits them.
 - Removing one is the user's call: report the path, ask, back the file up, then remove only the
   `PreToolUse` block and keep `SessionStart`.
-- A plugin update reinstalls the hook under a new version directory, so expect rung 6 to report
+- A plugin update reinstalls the hook under a new version directory, so expect rung 5 to report
   it again. Detecting it every run is the design, not a leak.
 
 ## 6. Never open documents before asking `find_references`

@@ -1,4 +1,5 @@
-"""Luật tìm kiếm phải là luật BỐN tầng, và mọi số đo trong đó phải ghi kèm tên repo.
+"""Luật tìm kiếm phải là luật BA tầng (LSP, grep, graphify — lumen gỡ ở 0.58.0), và mọi số đo
+trong đó phải ghi kèm tên repo.
 
 Hai lỗi đã xảy ra thật, nên hai lỗi đó bị khoá ở đây:
 
@@ -29,10 +30,17 @@ class LuatBonTang(unittest.TestCase):
     def test_graphify_la_mot_tang_trong_luat(self):
         self.assertIn("graphify", _doc(), "công cụ thứ tư phải có mặt trong chính luật tìm kiếm")
 
-    def test_du_ca_bon_ten_cong_cu(self):
+    def test_du_ca_ba_ten_cong_cu(self):
         noi_dung = _doc()
-        for ten in ("grep", "graphify", "lumen", "agent-lsp"):
+        for ten in ("grep", "graphify", "agent-lsp"):
             self.assertIn(ten, noi_dung, f"thiếu tầng {ten}")
+
+    def test_khong_tang_nao_con_tro_toi_lumen(self):
+        """0.58.0: bảng loại câu hỏi và bảng phụ thuộc không được còn hàng nào dẫn tới lumen."""
+        for dong in _doc().splitlines():
+            if dong.startswith("|"):
+                self.assertNotIn("**lumen**", dong, dong)
+                self.assertFalse(dong.startswith("| lumen"), dong)
 
     def test_co_bang_phu_thuoc_runtime(self):
         """Mỗi tầng chết thì rơi xuống đâu — thứ luật cũ không có, và là lý do hỏng âm thầm.
@@ -55,8 +63,8 @@ class LuatBonTang(unittest.TestCase):
         self.assertNotIn("no separate reindex step", noi_dung,
                          "câu này là lý do không ai dựng lại index suốt nhiều tháng")
 
-    def test_noi_ro_reindex_nam_o_buoc_ket_turn(self):
-        self.assertIn("tdq_finish", _doc(), "luật phải chỉ ra AI dựng lại index và dựng lúc nào")
+    def test_noi_ro_do_thi_dung_lai_o_buoc_ket_turn(self):
+        self.assertIn("tdq_finish", _doc(), "luật phải chỉ ra AI dựng lại đồ thị và dựng lúc nào")
 
 
 if __name__ == "__main__":

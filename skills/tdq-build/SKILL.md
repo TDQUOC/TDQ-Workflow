@@ -63,12 +63,12 @@ This skill owns three phases: `implement` → `qc` → `report`.
 - **Language rules.** About to write/change a source file → open
   [references/rules/index.md](references/rules/index.md), look up the file extension, load
   `chung.md` plus exactly ONE language file. Never load the whole set for one language.
-- **LSP + lumen together, before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
-  The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
+- **LSP first (graphify for a concept), before grep, on every search of a code symbol.** <!-- i18n-allow: canonical rule sentence in the default language -->
+  The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
   and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
   top of that file gives the exact line range, so the whole file never has to be read.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
-  blocked edit. The `mcp__lsp__*` tools are missing → say so in one line, then fall through.
+  blocked edit. `mcp__lsp__*` missing → say so in one line, fall through to graphify, then grep.
 - **No placeholders.** Missing information at this stage means the analysis fell short — say
   so, do not stub.
 - **If a subagent is running, wait it out**, or set a trigger to resume automatically. Never

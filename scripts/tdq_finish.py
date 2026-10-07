@@ -7,8 +7,7 @@ Four steps, always run in this order:
   3. phase    — `tdq_state.py set phase=<phase>`
   4. khoa-token — regenerate `docs/tdq/token-budget.json` when a `.md` rule file changed
   5. graphify — `graphify extract . --code-only` when a code file changed
-  6. reindex  — `lumen index <project>` every turn: lumen only refreshes when something calls it,
-                so a session that never searches leaves the index days behind (measured 2026-09-28)
+  (6. reindex — the per-turn `lumen index` — was removed with lumen in 0.58.0.)
 
 Principles:
 - A failing step does NOT block the steps after it; the exit code is the aggregate (0 = nothing failed).
@@ -29,15 +28,9 @@ CODE_EXT = {".py", ".js", ".ts", ".tsx", ".jsx", ".go", ".rs", ".java", ".rb",
             ".php", ".c", ".h", ".cpp", ".swift", ".kt", ".lua", ".sh"}
 STEP_TIMEOUT = 120
 GRAPHIFY_TIMEOUT = 300
-# Trần của bước reindex. Đo trên repo này 2026-09-28: 0,2 s khi không có gì đổi, 2,6 s cho một
-# file sửa, suất ~0,21 s/chunk. Trần 120 s bao được một turn sửa vài chục file; quá trần là lượt
-# của user đang bị giữ, nên bước này THUA và ghi nợ chứ không bao giờ chờ tiếp.
-REINDEX_TIMEOUT = 120
 MAX_SHORT_OUT = 200
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
-import tdq_lsp  # noqa: E402 — chủ của phép dò binary lumen và của dấu mốc index
-import tdq_no  # noqa: E402 — hạ tầng ghi nợ, dùng chung với tdq_setup.py
 
 
 def _now():
@@ -172,40 +165,6 @@ def step_dong_so(project, phase):
     return Step("timing", "ok", "timing.jsonl written")
 
 
-def step_reindex(project):
-    """Rebuild lumen's index, every turn, through the CLI.
-
-    Why every turn and why the CLI. lumen only refreshes when something CALLS `semantic_search`,
-    so a session where the MCP layer is down never refreshes at all — measured 2026-09-28, the
-    index stood at 21/09 while a file edited on 27/09 was missing from it entirely, and
-    `index_status` still said `Stale: no`. On top of that lumen 0.0.42 trusts a confirmed-fresh
-    index for `defaultFreshnessTTL = 30s` before walking the merkle tree again. The CLI walks it
-    for real, and it answers even when MCP does not.
-
-    It is affordable: measured on this repo, 0.2s when nothing changed, 2.6s for one edited file.
-    So there is no threshold and no flag — a threshold would be complexity buying nothing.
-    """
-    lumen = tdq_lsp._binary_lumen()
-    if not lumen:
-        return Step("reindex", "skip", "lumen not installed")
-    # Ollama has to be up for the embedder, and §3 of the search rule tells the workflow to
-    # RELEASE the daemon right after a lumen query. So on exactly the turns that used lumen, it
-    # may now be down — and without this guard every one of those turns would fail the step and
-    # write one more line of debt, while the index still never got rebuilt.
-    if not tdq_lsp._ollama_dang_chay():
-        return Step("reindex", "skip", "ollama down — wake it and rerun to refresh the index")
-    rc, out = _run([lumen, "index", project], project, REINDEX_TIMEOUT)
-    if rc != 0:
-        ly_do = (out.splitlines()[-1] if out else f"exit {rc}")[:120]
-        tdq_no.ghi_no([f"reindex lumen không xong ở bước kết turn: {ly_do}"], project)
-        return Step("reindex", "fail", ly_do)
-    # Dấu mốc cho bậc 5 đọc. Không có nó, bậc 5 phải tự chạy `lumen index` để biết index có mới
-    # không — tức tầng chẩn đoán lại đi ghi, và cùng một việc chạy hai lần mỗi lượt.
-    tdq_no.cham_dau_moc(os.path.join(project, tdq_lsp.DAU_MOC_INDEX))
-    cuoi = [d for d in out.splitlines() if d.startswith(("Done.", "Index is already"))]
-    return Step("reindex", "ok", cuoi[-1][:120] if cuoi else "")
-
-
 def step_khoa_token(project, files):
     """Regenerate the token lock when this turn touched a rule file under `skills/`.
 
@@ -228,7 +187,7 @@ def step_khoa_token(project, files):
         # Catching broadly is DELIBERATE: the contract of this command is that one failing step
         # must not block the steps after it. Generating the lock goes through a venv process, so
         # it can fail in ways other than OSError (garbage JSON -> ValueError, a hung venv ->
-        # TimeoutExpired). Letting one of those escape loses the turn's graphify and reindex too.
+        # TimeoutExpired). Letting one of those escape loses the turn's graphify too.
         return Step("khoa-token", "fail", f"{type(exc).__name__}: {str(exc)[:100]}")
     return Step("khoa-token", "ok", f"{so} file")
 
@@ -255,7 +214,7 @@ def summarize(steps):
 
 def parse_args(argv):
     ap = argparse.ArgumentParser(
-        description="End-of-turn bookkeeping: token lock → lint → working log → phase → graphify → reindex.")
+        description="End-of-turn bookkeeping: token lock → lint → working log → phase → graphify.")
     ap.add_argument("--phase", help="the new phase, written through tdq_state.py")
     ap.add_argument("--log", dest="summary", help="summary appended to today's working log")
     ap.add_argument("--files", nargs="*", default=None,
@@ -275,7 +234,7 @@ def main(argv):
         docs = sum(1 for f in files if f.endswith(".md"))
         print(f"dry-run: lint {docs} .md file(s) · worklog "
               f"{'yes' if args.summary else 'no'} · phase {args.phase or 'unchanged'} · "
-              "graphify if code changed · reindex always")
+              "graphify if code changed")
         return 0
 
     _log(f"start · project={project} · {len(files)} file(s) changed")
@@ -288,8 +247,7 @@ def main(argv):
                      lambda: step_worklog(project, args.summary),
                      lambda: step_dong_so(project, args.phase),
                      lambda: step_phase(project, args.phase),
-                     lambda: step_graphify(project, files),
-                     lambda: step_reindex(project)):
+                     lambda: step_graphify(project, files)):
         step = run_step()
         steps.append(step)
         _log(f"{step.name} → {step.status}" + (f" ({step.detail})" if step.detail else ""))

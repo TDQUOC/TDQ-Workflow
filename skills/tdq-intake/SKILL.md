@@ -50,14 +50,14 @@ first, then come back to step 1 below.
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
 
 1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py check` — seven rungs, agent-lsp
-   through import-root config. A rung is missing → print the exact command it gave you, **ASK the
+   through the graphify graph, then a 3-layer smoke. A rung is missing → print the exact command it gave you, **ASK the
    user for permission, and only run it once they say yes.** Never install unasked, never edit
-   another plugin's file. Rungs 5–6 only warn. Details:
+   another plugin's file. Rungs 5 and 7 only warn. Details:
    [tdq-setup](../tdq-setup/SKILL.md). Then prove the index actually answers: the effect
    check in [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md), once, here —
    skipping it when the ladder passed is a QC defect, because every rung checks only that
    something EXISTS. The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
-   The 4-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
+   The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
    of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the top of that
    file gives the exact line range, so the whole file never has to be read.
 

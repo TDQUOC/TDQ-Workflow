@@ -7,9 +7,9 @@ reading a declaration. Four blocks are collected:
 
   1. workflow   — skills on disk, hooks and their measured cost, the current request state,
                   and the seven rungs of the LSP ladder.
-  2. dependency — graphify, lumen, agent-lsp, ollama: present or not, version, binary path.
-  3. detail     — which embedding model lumen uses and through which endpoints; which
-                  language servers agent-lsp declares versus how many really start.
+  2. dependency — graphify, agent-lsp: present or not, version, binary path.
+  3. detail     — which language servers agent-lsp declares versus how many really start.
+                  (lumen and ollama left the page with lumen in 0.58.0.)
   4. mcp        — the MCP servers Claude Code has registered, with their connection state.
 
 Usage:
@@ -33,11 +33,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import context_surface  # noqa: E402 — the documentation surface and the hook timings
 import skill_inventory  # noqa: E402 — the skills that really sit on disk
-import tdq_lsp  # noqa: E402 — reuse its rung ladder and its lumen-model resolution
+import tdq_lsp  # noqa: E402 — reuse its rung ladder
 import setup_status_render  # noqa: E402 — the renderer, kept free of any machine access
 import tdq_state  # noqa: E402 — the request state, read-only
 
-CONFIG_LUMEN = os.path.expanduser("~/.config/lumen/config.yaml")
 CAU_HINH_CLAUDE = os.path.expanduser("~/.claude.json")
 
 # The MCP server that owns the language servers; its `args` are the DECLARED list and
@@ -49,15 +48,11 @@ MCP_LSP = "lsp"
 DAI_NGUYEN_VAN = 200
 
 # One row per tool: (name, the argv that prints its version, the install hint).
-# `lumen` has no `--version` flag — the sub-command is `lumen version`, and getting that wrong
-# is exactly the kind of silent "chưa cài" this page exists to stop reporting.
 CONG_CU = (
     ("graphify", ["--version"], "xem https://github.com/Graphify-Labs/graphify"),
-    ("lumen", ["version"], "cài lumen rồi đặt ~/.config/lumen/config.yaml"),
     # Single source of truth: `tdq_lsp` is the module that owns the ladder, so the install
     # command lives there and is never re-typed here.
     ("agent-lsp", ["--version"], tdq_lsp.INSTALL_AGENT_LSP),
-    ("ollama", ["--version"], "brew install ollama"),
 )
 
 # How long any single external command may take. `agent-lsp doctor` starts 14 real language
@@ -78,7 +73,7 @@ GHI_CHU_SKILL_BUILTIN = (
 MASK = "***"
 
 # The page lands at the repository root and is listed in .gitignore: it carries local paths,
-# the tailnet address of the lumen primary and the MCP inventory of this machine.
+# the declared language-server paths and the MCP inventory of this machine.
 DUONG_DAN_RA = os.path.join(ROOT, "setup_status.html")
 
 # Query parameters whose VALUE is a credential. Matched case-insensitively on the parameter
@@ -185,7 +180,7 @@ def khung_du_lieu():
         },
         "workflow": {"skill": [], "hook": [], "state": {}, "bac": [], "loi": {}},
         "dependency": [],
-        "chi_tiet": {"lumen": {}, "lsp": {}},
+        "chi_tiet": {"lsp": {}},
         "mcp": {"server": [], "loi": ""},
     }
 
@@ -222,41 +217,6 @@ def thu_dependency():
             "goi_y": goi_y,
         })
     return hang
-
-
-def _endpoint_lumen(duong_dan):
-    """Every `host:` value of the lumen config, in priority order (index 0 is the primary).
-
-    Parsed by hand rather than with a YAML library: `scripts/` may not add a dependency the
-    machine might lack, and the shape here is two flat keys under a list.
-    """
-    hosts = []
-    with open(duong_dan, encoding="utf-8", errors="replace") as f:
-        for dong in f:
-            dong = dong.split("#", 1)[0]
-            khoa, dau, gia_tri = dong.partition("host:")
-            if dau and not khoa.strip(" -\t"):
-                host = gia_tri.strip().strip("'\"")
-                if host:
-                    hosts.append(host)
-    return hosts
-
-
-def thu_lumen():
-    """Which embedding model lumen really uses, and through which endpoints.
-
-    The model is resolved by `tdq_lsp._model_lumen()` — the same order lumen itself follows
-    (config file, then $LUMEN_EMBED_MODEL, then its built-in default), so this page cannot
-    drift away from the rung-5 check the way a hardcoded constant once did.
-    """
-    model = tdq_lsp._model_lumen()
-    try:
-        hosts = _endpoint_lumen(CONFIG_LUMEN)
-        chi_tiet = "" if hosts else "config không khai host nào"
-    except OSError as err:
-        hosts, chi_tiet = [], f"không đọc được {CONFIG_LUMEN}: {err}"
-    _log(f"lumen: model={model} endpoints={len(hosts)}")
-    return {"model": model, "endpoint": hosts, "config": CONFIG_LUMEN, "chi_tiet": chi_tiet}
 
 
 # The five sources of the workflow block, each wrapped so a test can swap it for a fixture and
@@ -496,7 +456,7 @@ def thu_tat_ca(project=ROOT):
     du_lieu["workflow"] = thu_workflow(project)
     du_lieu["dependency"] = thu_dependency()
     thuc_nhan = thu_thuc_nhan()
-    du_lieu["chi_tiet"] = {"lumen": thu_lumen(), "lsp": thuc_nhan["lsp"]}
+    du_lieu["chi_tiet"] = {"lsp": thuc_nhan["lsp"]}
     du_lieu["mcp"] = thuc_nhan["mcp"]
     return du_lieu
 
