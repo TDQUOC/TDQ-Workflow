@@ -22,7 +22,7 @@ import tdq_no  # noqa: E402
 import tdq_setup  # noqa: E402
 
 TEN_BAC = ["bac1_binary", "bac2_mcp", "bac3_language_server", "bac4_quyen_tool",
-           "bac5_hook_xung_dot", "bac6_cau_hinh_goc_import", "bac7_graphify"]
+           "bac5_hook_xung_dot", "bac6_cau_hinh_goc_import", "bac7_graphify", "bac8_module"]
 
 
 class Args:
@@ -39,7 +39,7 @@ class MotLenhKiem(unittest.TestCase):
         self.addCleanup(p.stop)
 
     def va_gia(self, bac_hong=(), tang_hong=()):
-        """Patch the 7 rungs and the 3 smoke layers; numbers in `bac_hong` / names in `tang_hong` fail."""
+        """Patch the 8 rungs and the 3 smoke layers; numbers in `bac_hong` / names in `tang_hong` fail."""
         vas = []
         for i, ten in enumerate(TEN_BAC, start=1):
             bac = tdq_lsp.Bac(i, ten, i not in bac_hong, "giả", "lệnh giả" if i in bac_hong else "")
@@ -66,7 +66,7 @@ class MotLenhKiem(unittest.TestCase):
         rc, ra = self.chay_check()
         self.assertEqual(rc, tdq_lsp.EXIT_OK)
         self.assertIn("Smoke test ba tầng:", ra)
-        self.assertEqual(ra.count("Bậc "), 7)
+        self.assertEqual(ra.count("Bậc "), 8)
         tong = self.dong_tong(ra)
         self.assertIn("ĐẠT", tong)
         self.assertNotIn("CHƯA", tong)

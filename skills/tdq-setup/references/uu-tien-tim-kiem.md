@@ -1,12 +1,12 @@
 # The search-order rule — the single source
 <!-- muc-luc-dong:
-  1. The order, settled=16-42 ·
-  2. The table — kind of question → which layer first, with the numbers=43-71 ·
-  2b. graphify, the map=72-105 ·
-  2c. Runtime dependencies — what each layer needs, and what it falls back to=106-120 ·
-  5. Where this rule is hooked in=121-132 ·
-  6. The gate that holds this rule (since 2026-10-03)=133-153 ·
-  3. Two details that live in a sibling file=154
+  1. The order, settled=16-59 ·
+  2. The table — kind of question → which layer first, with the numbers=60-88 ·
+  2b. graphify, the map=89-122 ·
+  2c. Runtime dependencies — what each layer needs, and what it falls back to=123-139 ·
+  5. Where this rule is hooked in=140-151 ·
+  6. The gate that holds this rule (since 2026-10-03)=152-172 ·
+  3. Two details that live in a sibling file=173
 -->
 
 This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and `tdq-build` each
@@ -36,9 +36,26 @@ question is a QC defect, not a turn the machine refuses. Two exemptions, both na
 - The ladder's rungs 1–4 are not satisfied, so there is no LSP to try. Say so in one line, then
   fall through to graphify and grep.
 
-An LSP that answers "LSP client not initialized" is not dead: call `mcp__lsp__start_lsp` with the
-project root, then ask again. Measured 2026-10-07: reading that answer as "LSP is dead" cost a
-session one extra denied search.
+An LSP that answers "LSP client not initialized" is not dead: call `mcp__lsp__start_lsp`, then ask
+again. Measured 2026-10-07: reading that answer as "LSP is dead" cost a session one extra denied
+search.
+
+**Calling LSP per module (0.59.0, BINDING).** A project is a list of LSP modules — one
+(language, root) pair each, printed by `python3 scripts/tdq_lsp.py module`; a one-language repo is
+one row, a monorepo with two `tsconfig.json` is two. agent-lsp runs every configured server side by
+side and routes a FILE tool (`find_references`, `find_callers`, `list_symbols`…) by the file's
+extension, but `find_symbol` only ever asks the server of the LAST `start_lsp` (upstream issue #55).
+So:
+
+1. Before working inside a module: `start_lsp` with `root_dir` = that module's root AND
+   `language_id` = its language. Never omit `language_id` — agent-lsp then starts every server and
+   makes TypeScript current (crash `0xc0000409` / "No Project" on a Python repo, 2026-10-07). The
+   hook `lsp_gate.py` (`TDQ:LSP`) denies such a call and lists the valid ones.
+2. TypeScript/JavaScript: `open_document` one file of the module before asking anything —
+   tsserver answers "No Project" until a file is open.
+3. Prefer the file tools; they cannot hit the wrong server. `find_symbol` comes back empty after a
+   `start_lsp` for another language — that is the routing, not a missing symbol.
+4. Moving to another module = `start_lsp` again with that module's root and language.
 
 ## 2. The table — kind of question → which layer first, with the numbers
 
@@ -114,9 +131,11 @@ of that answer looks exactly like a correct one. So the fallback is written down
 | agent-lsp | a language server + an import-root marker (`pyrightconfig.json` and friends) | graphify, then grep, losing types and diagnostics |
 | graphify | a `graph.json` newer than the code | agent-lsp over several round trips, more expensive; grep over synonyms for a concept |
 
-Rungs 1–7 of `scripts/tdq_lsp.py check` measure every one of those dependencies. Rung 7 measures
+Rungs 1–8 of `scripts/tdq_lsp.py check` measure every one of those dependencies. Rung 7 measures
 graphify **by effect** — a real freshness probe — because a rung that only checks existence is
-blind to the way a graph actually fails.
+blind to the way a graph actually fails. Rung 8 measures agent-lsp the same way, per module,
+through the MCP path itself (`tdq_lsp.py kich-ban` → the agent sends the calls → `ghi-kiem`):
+`agent-lsp doctor` reported healthy in all three failures measured on 2026-10-07.
 
 ## 5. Where this rule is hooked in
 

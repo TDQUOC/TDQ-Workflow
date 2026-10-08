@@ -98,7 +98,11 @@ def la_project_that(cwd):
 
 
 def can_khoi_tao(cwd):
-    """-> True when the search layers should be (re)built now. Reads files only, never runs."""
+    """-> True when the search layers should be (re)built now.
+
+    Reads files, plus one `git ls-files` when the project has an LSP module table
+    (`co_ngon_ngu_moi`, measured 0.05–0.08 s) — never an install, never a server.
+    """
     if os.environ.get("TDQ_KHOI_TAO_NEN", "1") == "0":
         return False
     if not la_project_that(cwd):
@@ -118,10 +122,31 @@ def can_khoi_tao(cwd):
     tuoi = _tuoi_giay(moc.get("cap_nhat"))
     if moc.get("dang_dung"):
         return tuoi > HAN_DUNG_GIAY       # building → leave it, unless it died
+    if co_ngon_ngu_moi(cwd):
+        return True                       # a language the LSP setup has never seen
     tang = moc.get("tang") or {}
     if all((tang.get(t) or {}).get("san_sang") for t in TANG):
         return False
     return tuoi > THU_LAI_GIAY
+
+
+def co_ngon_ngu_moi(cwd):
+    """-> True when the project now holds a language the LSP module table has never seen.
+
+    0.59.0, the user's case: a project starts as Python, later grows JS + HTML. The three layers
+    still read "ready", yet the new servers are neither installed nor declared in MCP `lsp`. Only
+    projects that already have a table are asked (one walk, measured ≤ 0.31 s on 7,994 files); the
+    import is lazy so sessions elsewhere pay nothing. Any failure answers False — a SessionStart
+    hook must never break the session.
+    """
+    if not os.path.isfile(os.path.join(cwd, "docs", "tdq", ".tdq-lsp-module.json")):
+        return False
+    try:
+        import lsp_module
+        lsp_module.tdq_lsp._LOG_TAT = True
+        return bool(lsp_module.ngon_ngu_moi(cwd))
+    except Exception:  # noqa: BLE001
+        return False
 
 
 def kich_hoat_nen(cwd):

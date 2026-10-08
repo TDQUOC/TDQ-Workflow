@@ -1,50 +1,63 @@
-# The effect check — proving the LSP index is actually alive
+# The effect check — proving every LSP module actually answers
+<!-- muc-luc-dong:
+  Why the ladder alone is not enough=11-25 · What a module is=26-33 ·
+  The four steps, per module=34-51 · When a module fails=52
+-->
 
-Run this once per request, at intake step 1b, right after the ladder comes back with no
-actionable gap. It takes one LSP call and one grep.
+Run at intake step 1b whenever rung 8 of `python3 scripts/tdq_lsp.py check` does not pass. Since
+0.59.0 this is no longer a soft step: `tdq_state.py init` refuses to open a request while any LSP
+module of the project is unproven, stale or failed.
 
-## Why the ladder is not enough
+## Why the ladder alone is not enough
 
-All seven rungs of `python3 scripts/tdq_lsp.py check` check that something EXISTS: a binary, a
-registered server, a permission entry, a config file. None of them asks the server a question and
-looks at the answer. A language server whose import root is wrong starts fine, reports healthy,
-and then answers every cross-file question from the scope of the single open file.
+Rungs 1–7 check that something EXISTS: a binary, a registered server, a permission entry, a
+config file — and `agent-lsp doctor`, which starts every server. None of them sends the question the
+agent will send. On 2026-10-07 `doctor` reported healthy in all three failures measured that day:
 
-That is not hypothetical. This repo ran that way through three consecutive requests: six rungs
-ĐẠT, tests green, and `find_callers` on `tdq_state.load` reaching **1 of the 15 files** that
-really call it — 7 % coverage. Adding one `pyrightconfig.json` took it to 15/15. Measured in
-`docs/tdq/report/2026-09-03-0017-them-pyrightconfig-do-lai.md`.
+- `start_lsp` without `language_id` on a Python repo → agent-lsp started every server, made
+  TypeScript current, tsserver crashed `0xc0000409` or answered "No Project";
+- a TypeScript monorepo with two `tsconfig.json` → "No Project" until a file was opened;
+- `start_lsp html` after `start_lsp python` → `find_symbol` answered empty for Python names.
 
-Rung 6 now catches the specific cause (a missing import-root marker). This check catches the
-*symptom*, whatever the cause, which is why both exist.
+And earlier (2026-09-03): a missing import-root marker left `find_callers` reaching 1 of 15 files
+while six rungs read ĐẠT. Rung 6 catches that cause; this check catches the symptom, whatever the
+cause.
 
-## The three steps
+## What a module is
 
-1. **Pick** a function that really exists in the repo and is called from more than one file. Any
-   one will do — pick it fresh each time. Never hard-code a file and line: the moment the code
-   moves, a pinned check goes red for a reason that has nothing to do with the index.
-2. **Compare** two answers for that one symbol:
-   - `mcp__lsp__find_references` on its definition
-   - `grep -rn "<the name>"` over the source directories
-   Count **distinct files** on each side, not the number of hits.
-3. **PASS** when the LSP file count is greater than or equal to the grep file count.
+One (language, root) pair: the root is the deepest directory holding that language's marker
+(`tsconfig.json` > `jsconfig.json` > `package.json`; `pyrightconfig.json` > `pyproject.toml` >
+`setup.py`; `go.mod`; `Cargo.toml`…). A one-language repo is one module; claudecodeui is
+`typescript:.` + `typescript:server`. `python3 scripts/tdq_lsp.py module` prints the list with the
+status of each. Markup (HTML, CSS) has no import graph and is never checked.
 
-## The one trap in counting
+## The four steps, per module
 
-`find_callers` prints **namespaces** (`TDQWorkflow/scripts.thu_thap`), not file paths. Counting
-its lines as if they were files undercounts LSP badly — that mistake produced a false "3 files
-missing" conclusion once already. Map each name back to its file before counting, or use
-`find_references`, which does give locations.
+1. `python3 scripts/tdq_lsp.py kich-ban` — for every module still blocking, the script picks a
+   symbol defined once in that module and used from at least one other file, and prints three MCP
+   calls: `start_lsp` (that module's root + `language_id`), `open_document`, `find_references`.
+2. Send those three calls EXACTLY as printed — same root, same `language_id`, same line/column.
+   Changing them proves a different path from the one the agent will use. `find_references`
+   answering "workspace is still being indexed" is not a failure: a fresh daemon indexes for a
+   while (a large TypeScript repo took over 20 s on 2026-10-08) — do other work, then resend it.
+3. Read `symbols=N` on the `find_references` answer. `find_references` through agent-lsp prints
+   namespaces, not file paths, so the script judges the COUNT: it passes when N is greater than the
+   occurrences of the name in its own file, i.e. at least one reference came from another file.
+4. `python3 scripts/tdq_lsp.py ghi-kiem <module> <N>` — the script records the verdict. Do not
+   judge it yourself.
 
-## When it fails
+A result stays valid 24 hours, and until the module's marker file or its MCP `lsp` entry changes;
+after that the module is stale and the steps run again for that module only.
 
-Do not stop the request and do not start repairing the index mid-task:
+## When a module fails
 
-1. Write one line in the brief: the index is not answering cross-file, with both counts.
-2. Work through grep for the rest of this request — and say so in the brief, so the QC round
-   knows why the search layer was not used.
-3. Raise rung 6's printed suggestion with the user as a separate fix. The script never writes a
-   config file itself; that stays the user's call.
-
-Skipping this check when the ladder passed is a QC defect. The ladder is structurally blind to
-this failure, so "seven rungs ĐẠT" is not an excuse for not running it.
+1. Read the cause, in this order: `start_lsp` returned an error (server crash → rung 3 and the
+   commit-memory warning of `tdq_setup.py`; a crash `0xc0000409` with little free commit is
+   `VirtualAlloc failed`, fixed by a larger pagefile, not by reinstalling) · N = 0 or only the
+   own-file count (wrong root, missing marker → rung 6) · `No Project` (TypeScript: the file was
+   not opened first).
+2. Fix what is yours to fix — `python3 scripts/tdq_setup.py` again, a reconnect of MCP `lsp`
+   (`/mcp`) after a server was declared — then rerun `kich-ban` for that module.
+3. Still failing → tell the user the module, the count and the cause in one block. Only the user
+   may open the request anyway, with `init ... --bo-qua-lsp "<reason>"`; the reason lands in state
+   (`lsp_bo_qua`) and the report reads it out.

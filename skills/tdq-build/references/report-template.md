@@ -125,4 +125,7 @@ phase spent its time WAITING, not working — read the numbers before deciding w
   gets said plainly in the "Kết quả" line. <!-- i18n-allow: canonical line name of the report -->
 - The "Giới hạn" line must not be left empty <!-- i18n-allow: canonical line name of the report --> while work remains unfinished — tell the truth, hide
   nothing.
+- `tdq_state.py get lsp_bo_qua` not null → the request opened past the LSP gate of `init`: the
+  "Giới hạn" line <!-- i18n-allow: canonical line name of the report --> quotes its `ly_do` and
+  `module`, so work built on grep alone never reads as a normal request.
 - End by asking the user whether they want a commit (asked in chat, not written into the file).

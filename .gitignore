@@ -14,6 +14,8 @@ docs/tdq/.tdq-test.jsonl
 docs/tdq/.tdq-khoi-tao.lock
 docs/tdq/.tdq-khoi-tao.da-goi
 docs/tdq/.tdq-san-sang.json
+# Bảng module LSP (0.59.0): vân tay theo máy (đường dẫn server MCP, mốc giờ) — không chép sang máy khác.
+docs/tdq/.tdq-lsp-module.json
 # Worktree của mode đội — để ngoài git, nếu không `git add -A` sẽ quét cả cây con vào commit.
 .tdq-worktrees/
 .claude/worktrees/

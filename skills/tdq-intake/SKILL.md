@@ -6,8 +6,8 @@ description: Open a new TDQ request - record the ask, pick the lane, init state,
 # TDQ Intake — open the request & analyse
 <!-- muc-luc-dong:
   Tier `nhỏ` — answer or fix on the spot, no request opened=17-32 ·
-  Part A — Open the request (phase `no_state`)=33-102 ·
-  Part B — Analysis (phase `analyze`, deep pipeline only)=103-129 · Part C — Express pipeline=130
+  Part A — Open the request (phase `no_state`)=33-103 ·
+  Part B — Analysis (phase `analyze`, deep pipeline only)=104-130 · Part C — Express pipeline=131
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md) first. Every output for the user is written
@@ -49,14 +49,14 @@ first, then come back to step 1 below.
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
 
-1b. **Check the search layer.** Run `python3 scripts/tdq_lsp.py check` — seven rungs, agent-lsp
-   through the graphify graph, then a 3-layer smoke. A rung is missing → print the exact command it gave you, **ASK the
-   user for permission, and only run it once they say yes.** Never install unasked, never edit
-   another plugin's file. Rungs 5 and 7 only warn. Details:
-   [tdq-setup](../tdq-setup/SKILL.md). Then prove the index actually answers: the effect
-   check in [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md), once, here —
-   skipping it when the ladder passed is a QC defect, because every rung checks only that
-   something EXISTS. The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
+1b. **Set up and prove the search layer — automatic, nothing asked (0.59.0).** Run
+   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_setup.py"` (installs what is missing, declares a
+   newly appeared language in MCP `lsp` — it then asks for a reconnect: have the user run `/mcp` on `lsp`),
+   then `python3 scripts/tdq_lsp.py check`. Rung 8 not passing → the per-module effect check in
+   [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md). `init` refuses while a
+   module is unproven; only the user may choose `--bo-qua-lsp "<reason>"`. Never edit another
+   plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).
+   The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
    The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
    of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the top of that
    file gives the exact line range, so the whole file never has to be read.
@@ -81,6 +81,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    ```
    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>
    ```
+   Refused with an LSP module list → back to step 1b; do not reach for `--bo-qua-lsp` yourself.
    This command **wipes** the old state. If another request is still unfinished → name the
    slug and phase about to be lost, **ask the user first**, then run it.
 

@@ -22,6 +22,7 @@ gets you reminded again at the end of the turn.
 | `TDQ:DOC` | A file already read whole this session is being read whole again, unchanged | Read the part you need with `offset`/`limit`, or work from what you already hold | — (reminds once per file per session) |
 | `TDQ:SEARCH` | **Blocks** a code search that skipped the concept layer: the request has not asked LSP/graphify yet, or a guess-list grep came after the unlock window | Ask the concept layer first (`semantic_search`, `find_symbol`/`find_references`, or `graphify query`), then grep the exact names it returned | a concept-layer call recorded in `docs/tdq/.tdq-search.jsonl` |
 | `TDQ:ASK` | The question-popup tool called in phase `implement`/`qc` with no declared pause | An unmet spec threshold is not a reason to ask: apply the spec §6 fallback, `lech add`, carry on; ask only for a `pause --loai` kind | — (reminds once per turn, never blocks) |
+| `TDQ:LSP` | **Blocks** `mcp__lsp__start_lsp` sent without `language_id`, or with a (root, language) pair no LSP module of the project has | Send one of the `start_lsp` calls the denial lists; a new module → `tdq_lsp.py kich-ban` refreshes the table | the next `start_lsp` passes |
 
 ## The blocking points
 
@@ -37,6 +38,10 @@ gets you reminded again at the end of the turn.
    source edit during implement/qc while the plan has no task marked `[~]` (`TDQ:TICK`), or one
    the assignment map does not hand to whoever is editing (`TDQ:TEAM`). To clear it: mark the
    task `[~]`, or delegate it as the map says.
+4. **Starting LSP on the wrong server (`TDQ:LSP`, since 0.59.0).** The `PreToolUse` gate on
+   `mcp__lsp__start_lsp` denies a start without `language_id` (agent-lsp would start every server
+   and make TypeScript current) or on a (root, language) pair outside the module table. It blocks
+   a wrong call, never a missing approval. To clear it: send one of the calls it lists.
 
 Every other code only reminds, never blocks.
 

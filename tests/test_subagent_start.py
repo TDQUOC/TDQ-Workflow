@@ -118,10 +118,12 @@ class TestKhaiTrongHooksJson(unittest.TestCase):
         2026-10-03 (yêu cầu 0732): 10 → 11 mục — `ask_gate` trên `PreToolUse` `AskUserQuestion`,
         chỉ nhắc `[TDQ:ASK]` khi hỏi user giữa implement/qc.
         2026-10-07 (0.58.0): 11 → 12 mục — `search_observe` thêm trên `PreToolUse` `mcp__lsp__.*`,
-        để lời gọi LSP lỗi ("chưa khởi động", không tới PostToolUse) vẫn được tính là đã hỏi."""
+        để lời gọi LSP lỗi ("chưa khởi động", không tới PostToolUse) vẫn được tính là đã hỏi.
+        2026-10-08 (0.59.0): 12 → 13 mục — `lsp_gate` trên `PreToolUse` `mcp__lsp__start_lsp`,
+        CHẶN `start_lsp` thiếu `language_id` hoặc sai cặp (gốc, ngôn ngữ)."""
         self.assertEqual(len(self.cfg), 6, sorted(self.cfg))
         muc = sum(len(nhom["hooks"]) for ds in self.cfg.values() for nhom in ds)
-        self.assertEqual(muc, 12, self.cfg)
+        self.assertEqual(muc, 13, self.cfg)
 
     def test_tro_dung_file(self):
         cmd = self.cfg["SubagentStart"][0]["hooks"][0]["command"]

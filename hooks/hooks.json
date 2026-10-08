@@ -73,6 +73,15 @@
         ]
       },
       {
+        "matcher": "mcp__lsp__start_lsp",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/lsp_gate.py\""
+          }
+        ]
+      },
+      {
         "matcher": "mcp__lsp__.*",
         "hooks": [
           {

@@ -49,6 +49,7 @@ BANG_DOI_TEN = {
     },
     "tdq_lsp.py": {
         "kiem": "check", "check": "check",
+        "module": "module", "kich-ban": "kich-ban", "ghi-kiem": "ghi-kiem",
     },
     "tdq_state.py": {
         "tam-hoan": "pause", "pause": "pause",

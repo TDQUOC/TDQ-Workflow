@@ -165,7 +165,7 @@ Nguồn: <https://code.claude.com/docs/en/plugin-marketplaces> ·
 |---|---|
 | `skills/` (9) | tdq-intake, tdq-spec, tdq-plan, tdq-build, tdq-lean, tdq-status, tdq-check-status, tdq-conventions, tdq-setup |
 | `agents/` (3) | tdq-reviewer, tdq-implementer, tdq-qc-tester |
-| `hooks/` (12 trên 6 sự kiện) | edit_gate, bash_gate, read_gate (nhắc khi đọc lại file không đổi), search_gate (CHẶN lần tìm code đi tắt tầng khái niệm) + search_observe (sổ của nó, ghi lời gọi LSP ngay ở PreToolUse), ask_gate (nhắc khi hỏi user giữa implement/qc), session_start, subagent_start, prompt_context, stop_gate (chặn working log) |
+| `hooks/` (13 trên 6 sự kiện) | edit_gate, bash_gate, read_gate (nhắc khi đọc lại file không đổi), search_gate (CHẶN lần tìm code đi tắt tầng khái niệm) + search_observe (sổ của nó, ghi lời gọi LSP ngay ở PreToolUse), lsp_gate (CHẶN `start_lsp` thiếu `language_id` hoặc sai cặp gốc–ngôn ngữ), ask_gate (nhắc khi hỏi user giữa implement/qc), session_start, subagent_start, prompt_context, stop_gate (chặn working log) |
 | `scripts/tdq_state.py` | CLI state: `next \| get \| init \| set \| approve \| reset \| phases-doc` |
 | `docs/claude-md-mau.md` | bản mẫu để chép sang `~/.claude/CLAUDE.md` |
 | `tests/` | `python3 -m unittest discover tests` |

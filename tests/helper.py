@@ -20,6 +20,10 @@ import tdq_state  # noqa: E402
 # `.codex/hooks.json`, and a detached child kept a temp dir locked (WinError 32). `discover`
 # imports every test module before running any test, so this line is in place before the first.
 os.environ["TDQ_KHOI_TAO_NEN"] = "0"
+# Same reason, 2026-10-08: setup now installs agent-lsp, rewrites ~/.claude.json and stops orphan
+# agent-lsp brokers by itself. Under this flag those three refuse the REAL machine; a test that
+# exercises them passes fake targets (download function, config path, process list).
+os.environ["TDQ_KHONG_CHAM_MAY"] = "1"
 
 
 def run_hook(script, payload, env=None):
