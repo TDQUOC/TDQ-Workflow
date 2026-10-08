@@ -93,6 +93,14 @@ khai ở dòng `Chạm:` của plan:
   KHÔNG chặn khi tầng khái niệm chưa dựng xong — chặn mà không có đường đúng để đi là kẹt. Lý do
   phải chặn chứ không nhắc: user yêu cầu "buộc phải tuân theo", và `PreToolUse` của Codex chỉ có
   `deny`. Đo trên phiên thật 2026-10-02: ~20 lần tìm qua 4 request, 0 lumen, 0 LSP.
+- 2026-10-08 (yêu cầu 2225): **cổng LSP ở lệnh `init`, điểm chặn thứ năm ở hook.** `tdq_state.py init`
+  từ chối mở request khi còn module LSP (ngôn ngữ, gốc) chưa được chứng minh qua đường MCP thật
+  (`scripts/lsp_module.py`, bậc 8); lối thoát `--bo-qua-lsp "<lý do>"` chỉ user chọn, ghi vào state.
+  Cổng nằm ở LỆNH như R14 của `approve spec`. Hook `hooks/scripts/lsp_gate.py` (`TDQ:LSP`) trả `deny`
+  cho `start_lsp` thiếu `language_id` hoặc sai cặp — lý do là lời gọi sai, không phải "chưa duyệt",
+  nên dòng 2026-07-29 vẫn đứng. `tdq_setup.py` nay tự cài không hỏi (user chọn 2B), kể cả agent-lsp và
+  dòng MCP `lsp` trong `~/.claude.json` (sao lưu trước khi ghi); test khoá việc chạm máy bằng
+  `TDQ_KHONG_CHAM_MAY=1`. Ca gốc: `agent-lsp doctor` báo khoẻ trong cả ba lỗi đo ngày 2026-10-07.
 - 2026-09-23: mức QC là quyết định của USER, không phải suy luận của agent. Khoá `muc_qc`
   (`lite|full|ultra|off`, mặc định `full`, fail-closed) được hỏi ở cuối phase `analyze` — trước
   khi viết spec §6 — và tại cổng duyệt của lane express. Bảng "mức nào chạy loại kiểm nào" có

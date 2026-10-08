@@ -77,7 +77,10 @@ class CoreFileTest(unittest.TestCase):
         self.assertTrue(os.path.exists(CORE), f"thiếu nguồn sự thật {CORE}")
 
     def test_c_kich_thuoc_khong_qua_tran(self):
-        size = os.path.getsize(CORE)
+        # Measured as git stores it (LF): a Windows checkout with core.autocrlf adds one byte per
+        # line, and read 4314 bytes for a 4250-byte template (2026-10-08).
+        with open(CORE, "rb") as fh:
+            size = len(fh.read().replace(b"\r\n", b"\n"))
         self.assertLessEqual(size, MAX_BYTES, f"bản mẫu {size} byte > {MAX_BYTES}")
 
 

@@ -2,7 +2,10 @@
 """Diagnose the agent-lsp setup of the machine and of this project (stdlib only).
 
 Sub-commands:
-  kiem       — run the diagnostic ladder and print one line per rung
+  check      — run the diagnostic ladder and print one line per rung (alias `kiem`)
+  module     — print the LSP modules of the project and the status of each
+  kich-ban   — write and print the MCP script of every module still blocking rung 8
+  ghi-kiem   — record the reference count `find_references` returned for one module
 
 The ladder (`kiem`):
   1. the `agent-lsp` binary is on PATH
@@ -13,6 +16,9 @@ The ladder (`kiem`):
   5. an outside plugin hook pushing a different search order (added at T1.2)
   6. the import-root config each language needs
   7. the graphify graph the third search layer reads (added 2026-09-28)
+  8. every LSP module (language, root) of the project proven through the MCP path the agent uses
+     (added 0.59.0, `lsp_module.py`) — `agent-lsp doctor` reported healthy in all three failures
+     measured 2026-10-07, so only a real `start_lsp` → `find_references` round proves a module
 Then the three-layer smoke test (grep, LSP, graphify each asked one real question), and
 ONE total line: ĐẠT only when no rung blocks AND every layer answered. There is deliberately no
 "ladder only" mode — having one is how a smoke failure went unseen on 2026-10-02.
@@ -23,7 +29,7 @@ layer could not answer.
 Principles:
 - **This script NEVER installs anything.** A missing rung prints the exact command; a human
   approves it and runs it.
-- Rungs 1–4 are actionable → a gap makes the exit code 3. Rungs 5 and 7 only warn, and rung 6
+- Rungs 1–4 and 8 are actionable → a gap makes the exit code 3. Rungs 5 and 7 only warn, and rung 6
   warns unless a config the language server silently needs is missing: search still works
   through agent-lsp and grep without them.
 - lumen was rung 5 until 0.58.0; it was removed with the semantic layer (measured 2026-10-07:
@@ -46,7 +52,9 @@ from datetime import datetime
 CHECK_TIMEOUT = 20
 MCP_SERVER_NAME = "lsp"
 TOOL_PATTERN = "mcp__lsp__"
-INSTALL_AGENT_LSP = "curl -fsSL https://raw.githubusercontent.com/blackwell-systems/agent-lsp/main/install.sh | sh"
+# Upstream ships `install.sh | sh`, which refuses Windows (`uname` only knows darwin/linux). The
+# setup script installs from the GitHub release instead — every OS, SHA256-checked, no shell.
+INSTALL_AGENT_LSP = "python3 scripts/tdq_setup.py  (tải bản phát hành agent-lsp, kiểm SHA256, đặt vào ~/.local/bin)"
 EXIT_OK = 0
 EXIT_THIEU = 3
 EXIT_SMOKE = 4
@@ -253,6 +261,16 @@ class Bac:
             print(f"  {'Xử lý' if self.chi_canh_bao else 'Cài'}: {self.lenh_cai}")
 
 
+def _lenh_cho(text, project):
+    """`python3 scripts/X.py` -> the plugin's absolute path when the project has no `scripts/X.py`.
+
+    The commands this ladder prints are copied and run inside the USER's project, which has no
+    `scripts/` folder (code review 2026-10-08). The rewrite itself lives in `tdq_state`.
+    """
+    import tdq_state
+    return tdq_state.lenh_cho_project(text, project)
+
+
 def bac1_binary():
     """Rung 1 — the agent-lsp binary itself."""
     duong_dan = shutil.which("agent-lsp")
@@ -262,6 +280,28 @@ def bac1_binary():
     rc, out = _run(["agent-lsp", "--version"])
     ban = out.splitlines()[0].strip() if rc == 0 and out else "không đọc được bản"
     return Bac(1, "binary agent-lsp", True, ban)
+
+
+# JavaScript is served by the TypeScript server: an entry for either language covers it.
+TUONG_DUONG_MCP = {"javascript": "typescript"}
+
+
+def mcp_args(duong="~/.claude.json"):
+    """-> the `args` list of the `lsp` MCP server, or None when that server is not registered."""
+    server = (_doc_json(duong).get("mcpServers") or {}).get(MCP_SERVER_NAME)
+    if not isinstance(server, dict):
+        return None
+    args = server.get("args")
+    return [str(a) for a in args] if isinstance(args, list) else []
+
+
+def lang_mcp(args, lang):
+    """-> the language id an `args` entry is declared under for `lang` ('' when none serves it)."""
+    khai = {a.split(":", 1)[0] for a in args or () if ":" in a}
+    if lang in khai:
+        return lang
+    tuong_duong = TUONG_DUONG_MCP.get(lang, "")
+    return tuong_duong if tuong_duong in khai else ""
 
 
 def bac2_mcp():
@@ -333,7 +373,8 @@ def _chay_doctor(project):
 def bac3_language_server(project):
     """Rung 3 — one language server per language the project uses, and it really starts.
 
-    Gate 1: the server binary is on PATH. Gate 2: `agent-lsp doctor` actually starts it; a
+    Gate 1: the server binary is on PATH. Gate 3: the `lsp` MCP server declares it in its `args`
+    (checked before gate 2, which is slow). Gate 2: `agent-lsp doctor` actually starts it; a
     `failed` status fails the rung with the server's own error. Languages doctor does not
     report (e.g. CSS) are judged by gate 1 alone; when doctor itself cannot run, the gate-1
     verdict stands and the detail says the start was not tried.
@@ -351,6 +392,15 @@ def bac3_language_server(project):
         lenh = " ; ".join(sorted({lenh for _, _, lenh in thieu}))
         return Bac(3, "language server theo project", False, chi_tiet, lenh)
     du = f"đủ cho {len(dung)} ngôn ngữ: " + ", ".join(LANG_SERVER[l][0] for l in sorted(dung))
+    # Gate 3 (0.59.0): a server on PATH is useless until the `lsp` MCP server declares it — a
+    # language added to the project later (Python, then JS + HTML) lands exactly in this gap.
+    args = mcp_args()
+    chua_khai = [l for l in sorted(dung) if args is not None and not lang_mcp(args, l)]
+    if chua_khai:
+        return Bac(3, "language server theo project", False,
+                   "MCP `lsp` chưa khai server cho " + ", ".join(LANG_SERVER[l][0] for l in chua_khai),
+                   _lenh_cho("python3 scripts/tdq_setup.py  (tự thêm vào MCP `lsp`, rồi gõ /mcp để kết nối lại)",
+                             project))
     doctor, ly_do = _chay_doctor(project)
     if doctor is None:
         return Bac(3, "language server theo project", True,
@@ -548,11 +598,39 @@ def bac6_cau_hinh_goc_import(project):
                chi_canh_bao=True)
 
 
+LENH_KICH_BAN = ("python3 scripts/tdq_lsp.py kich-ban → gửi đúng các lời gọi MCP nó in → "
+                 "python3 scripts/tdq_lsp.py ghi-kiem <module> <số tham chiếu>")
+
+
+def bac8_module(project):
+    """Rung 8 — every LSP module of the project proven through the MCP path, result still fresh.
+
+    Blocks on a module never checked, stale (marker or MCP entry changed, older than 24 h) or
+    failed. A module with nothing to prove (markup, no symbol used from a second file) only warns.
+    The import is lazy: `lsp_module` imports this module at top level.
+    """
+    import lsp_module
+    ten = "LSP theo module"
+    hang = lsp_module.trang_thai(project)
+    if not hang:
+        return Bac(8, ten, True, "project không có module nào cần LSP")
+    chan = [(m, tt) for m, tt, _ in hang if tt in lsp_module.CHAN]
+    if chan:
+        return Bac(8, ten, False, "; ".join(f"{m['id']} {tt}" for m, tt in chan),
+                   _lenh_cho(LENH_KICH_BAN, project))
+    dat = sum(1 for _, tt, _ in hang if tt == lsp_module.DAT)
+    chi_tiet = f"{dat}/{len(hang)} module ĐẠT qua MCP"
+    if dat < len(hang):
+        chi_tiet += f", {len(hang) - dat} không có gì để kiểm (đánh dấu / không đủ mẫu)"
+    return Bac(8, ten, True, chi_tiet)
+
+
 def chay_kiem(project):
     """Run the whole ladder and return the list of rungs, in order."""
     _log(f"kiem · project={project}")
     bac = [bac1_binary(), bac2_mcp(), bac3_language_server(project), bac4_quyen_tool(),
-           bac5_hook_xung_dot(project), bac6_cau_hinh_goc_import(project), bac7_graphify(project)]
+           bac5_hook_xung_dot(project), bac6_cau_hinh_goc_import(project), bac7_graphify(project),
+           bac8_module(project)]
     for b in bac:
         _log(f"bậc {b.so} {b.ten} → {'ĐẠT' if b.dat else 'THIẾU'}")
     return bac
@@ -570,7 +648,7 @@ def chay_smoke(project):
 
 
 def kiem_mot_lenh(project):
-    """THE one check: the 7 rungs, then the 3-layer smoke, then ONE total line.
+    """THE one check: the 8 rungs, then the 3-layer smoke, then ONE total line.
 
     Observed 2026-10-02: with the smoke living only in `tdq_setup.py`, an agent ran just
     `check`, read "8/8 bậc ĐẠT" (the ladder had 8 rungs then) and skipped the smoke while two layers could not answer. So the
@@ -602,7 +680,8 @@ def kiem_mot_lenh(project):
         phan.append(f"{len(truot)} tầng trượt: {', '.join(truot)}")
     print(f"\nTổng: {'CHƯA ĐẠT' if thieu or truot else 'ĐẠT'} · " + " · ".join(phan))
     if thieu:
-        print("Script KHÔNG tự cài. Hãy duyệt từng lệnh ở trên rồi chạy tay.")
+        print("Script này KHÔNG tự cài: `python3 scripts/tdq_setup.py` tự cài phần thiếu, "
+              "rồi chạy kịch bản của bậc 8.")
     _log(f"done · {len(thieu)} bậc thiếu · {len(canh_bao)} cảnh báo · {len(truot)} tầng trượt")
     rc = EXIT_THIEU if thieu else (EXIT_SMOKE if truot else EXIT_OK)
     return rc, bac, smoke
@@ -610,6 +689,49 @@ def kiem_mot_lenh(project):
 
 def cmd_kiem(args):
     return kiem_mot_lenh(_project_dir())[0]
+
+
+def cmd_module(args):
+    import lsp_module
+    hang = lsp_module.trang_thai(_project_dir())
+    if not hang:
+        print("Project không có module nào cần LSP.")
+    for m, tt, chi_tiet in hang:
+        moc = m["moc"] or "không có file mốc"
+        print(f"{m['id']:<40} {m['so_file']:>5} file · {moc:<18} · {tt}" + (f" · {chi_tiet}" if chi_tiet else ""))
+    return EXIT_THIEU if any(tt in lsp_module.CHAN for _, tt, _ in hang) else EXIT_OK
+
+
+def cmd_kich_ban(args):
+    import lsp_module
+    project = _project_dir()
+    hang = lsp_module.lap_kich_ban(project, chi_module=args.module)
+    if not hang:
+        print("Không module nào cần kiểm: mọi module đã ĐẠT và còn hạn.")
+        return EXIT_OK
+    for m, kb in hang:
+        if kb is None:
+            print(f"\n{m['id']} → KHONG_DU_MAU (không symbol nào được dùng từ file thứ hai) — không chặn.")
+            continue
+        print(f"\n{m['id']} — symbol `{kb['symbol']}` ({os.path.relpath(kb['file'], project)}:{kb['line']})")
+        for i, goi in enumerate(lsp_module.loi_goi_mcp(m, kb), 1):
+            print(f"  {i}. {goi}")
+        print(_lenh_cho(f"  4. python3 scripts/tdq_lsp.py ghi-kiem {m['id']} <N>   "
+                        f"(N = số `symbols=` của find_references; ĐẠT khi N > {kb['so_lan_file_dinh_nghia']})",
+                        project))
+    return EXIT_OK
+
+
+def cmd_ghi_kiem(args):
+    import lsp_module
+    try:
+        tt = lsp_module.ghi_ket_qua(_project_dir(), args.module, args.so_tham_chieu)
+    except ValueError as exc:
+        print(f"Lỗi: {exc}", file=sys.stderr)
+        return 2
+    muc = lsp_module.doc_bang(_project_dir())["module"][args.module]["ket_qua"]
+    print(f"{args.module} → {tt} · {muc['chi_tiet']}")
+    return EXIT_OK if tt == lsp_module.DAT else EXIT_THIEU
 
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -625,7 +747,13 @@ def parse_args(argv):
         description="Chẩn đoán bộ agent-lsp cho máy và cho project này. Script không tự cài gì.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log service")
     sub = ap.add_subparsers(dest="lenh", required=True)
-    sub.add_parser("check", help="chạy 7 bậc rồi smoke 3 tầng, in một dòng tổng")
+    sub.add_parser("check", help="chạy 8 bậc rồi smoke 3 tầng, in một dòng tổng")
+    sub.add_parser("module", help="in các module LSP (ngôn ngữ, gốc) và trạng thái từng module")
+    kb = sub.add_parser("kich-ban", help="in kịch bản MCP cho mọi module chưa ĐẠT")
+    kb.add_argument("--module", help="chỉ một module, dạng <ngôn ngữ>:<gốc>")
+    gk = sub.add_parser("ghi-kiem", help="ghi số tham chiếu find_references trả cho một module")
+    gk.add_argument("module", help="dạng <ngôn ngữ>:<gốc>, đúng như `kich-ban` in")
+    gk.add_argument("so_tham_chieu", type=int, help="số `symbols=` find_references trả về")
     return ap.parse_args(argv)
 
 
@@ -639,7 +767,8 @@ def main(argv):
             argv[0] = chinh_thuc
     args = parse_args(argv)
     _LOG_TAT = args.khong_log
-    return {"check": cmd_kiem}[args.lenh](args)
+    return {"check": cmd_kiem, "module": cmd_module, "kich-ban": cmd_kich_ban,
+            "ghi-kiem": cmd_ghi_kiem}[args.lenh](args)
 
 
 if __name__ == "__main__":

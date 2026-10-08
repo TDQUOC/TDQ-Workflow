@@ -8,8 +8,8 @@
     "token": 3329
   },
   "skills/tdq-build/references/report-template.md": {
-    "sha256": "6630f85b929251d8529c63fdf9d123d905b3ca1f6dffe5ccc546704c902d327f",
-    "token": 2070
+    "sha256": "478d56417f869a349ba5871c53727f426c5dab450afd504b887bfe996407dbe9",
+    "token": 2155
   },
   "skills/tdq-build/references/rules/chung.md": {
     "sha256": "4a91daa7bd6bc21a4280d0cdda0c4eda523b7940c7e7f098b682eba774f9b7ec",
@@ -92,8 +92,8 @@
     "token": 1288
   },
   "skills/tdq-conventions/references/reminder-codes.md": {
-    "sha256": "7cf17271e5e7cda157ff302284f55e1025fc0e3e57440af9353fb2a9e9e568bf",
-    "token": 1466
+    "sha256": "4f22fcbc592b74f7c7f946afe5636dcc05d356e7a4b238fbf1e664d6a4b254ba",
+    "token": 1674
   },
   "skills/tdq-conventions/references/soul.md": {
     "sha256": "b739ff7b35738a01a160328b8109912620a55b4d5bf2d6ce6d2e7d58f539982f",
@@ -132,8 +132,8 @@
     "token": 458
   },
   "skills/tdq-intake/references/kiem-lsp-hieu-ung.md": {
-    "sha256": "61692058e5d66007407cd78ea927184a8c2a2966a4bf58f4972d0c4f4d5f98b4",
-    "token": 717
+    "sha256": "886313e4f10d1b2b7ca32b515c04cc2139fbfaca4b38c16008ee6b5cf8a17044",
+    "token": 1138
   },
   "skills/tdq-intake/references/lane-decision.md": {
     "sha256": "6d40ede55fd23c128e77a9115ae5710a4c60431de567f718fd9ce87ac298ccd6",
@@ -184,8 +184,8 @@
     "token": 959
   },
   "skills/tdq-setup/references/uu-tien-tim-kiem.md": {
-    "sha256": "c5a2ea5bb33e1e8780e8e2137fbe41c75a16a2fd9c3384fad6f6b2bcc223052f",
-    "token": 2991
+    "sha256": "7173d2eb841272e6341c707ac84c856ce21f3ec579f2f87b68fb5a116fa113f8",
+    "token": 3429
   },
   "skills/tdq-spec/references/spec-template-huong-dan.md": {
     "sha256": "494d0039e94e83984fd4526ac8d9d82bd6d2cb4bb3bd55a8d539f72c7d0cc5db",

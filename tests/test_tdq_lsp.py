@@ -50,7 +50,7 @@ class Bac1Binary(BaseLsp):
         with mock.patch.object(tdq_lsp.shutil, "which", return_value=None):
             b = tdq_lsp.bac1_binary()
         self.assertFalse(b.dat)
-        self.assertIn("install.sh", b.lenh_cai)
+        self.assertIn("tdq_setup.py", b.lenh_cai)
 
     def test_co_binary_thi_dat_va_doc_ban(self):
         with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/local/bin/agent-lsp"), \
@@ -110,6 +110,26 @@ class Bac3LanguageServer(BaseLsp):
         with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/bin/pyright-langserver"):
             b = tdq_lsp.bac3_language_server(self.tmp.name)
         self.assertTrue(b.dat)
+
+    def test_cong3_ngon_ngu_chua_khai_trong_mcp_thi_truot(self):
+        """0.59.0: có server trên PATH mà MCP `lsp` chưa khai → agent không gọi tới được."""
+        self.du_file(".py", 5)
+        self.du_file(".html", 3)
+        cau_hinh = {"~/.claude.json": {"mcpServers": {"lsp": {"args": ["python:pyright-langserver,--stdio"]}}}}
+        with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/bin/x"), self.vao_json(cau_hinh):
+            b = tdq_lsp.bac3_language_server(self.tmp.name)
+        self.assertFalse(b.dat)
+        self.assertIn("HTML", b.chi_tiet)
+        self.assertIn("tdq_setup.py", b.lenh_cai)
+
+    def test_cong3_javascript_duoc_entry_typescript_phuc_vu(self):
+        self.du_file(".js", 5)
+        cau_hinh = {"~/.claude.json": {"mcpServers": {"lsp": {"args": ["typescript:tsls,--stdio"]}}}}
+        with mock.patch.object(tdq_lsp.shutil, "which", return_value="/usr/bin/x"), self.vao_json(cau_hinh), \
+                mock.patch.object(tdq_lsp, "_chay_doctor", return_value=(None, "bỏ")):
+            b = tdq_lsp.bac3_language_server(self.tmp.name)
+        self.assertTrue(b.dat)
+        self.assertEqual(tdq_lsp.lang_mcp(["typescript:tsls"], "javascript"), "typescript")
 
     def test_project_khong_co_ngon_ngu_nao_van_dat(self):
         b = tdq_lsp.bac3_language_server(self.tmp.name)
@@ -271,8 +291,8 @@ class Bac6CauHinhGocImport(BaseLsp):
         with open(os.path.join(self.tmp.name, "pyrightconfig.json"), "w", encoding="utf-8") as fh:
             fh.write("{}")
         so = [b.so for b in tdq_lsp.chay_kiem(self.tmp.name)]
-        # 0.58.0: lumen (bậc 5 cũ) gỡ, thang còn 7 bậc đánh số liền — không để lỗ ở số 5.
-        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7])
+        # 0.58.0: lumen (bậc 5 cũ) gỡ; 0.59.0: thêm bậc 8 LSP theo module — số liền, không lỗ.
+        self.assertEqual(so, [1, 2, 3, 4, 5, 6, 7, 8])
 
 
 class LoiHuaKhongTuCai(BaseLsp):

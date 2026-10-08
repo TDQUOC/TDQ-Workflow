@@ -2,6 +2,36 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.59.0 — 2026-10-08
+
+Mỗi project chỉ mở được request khi LSP đã được CHỨNG MINH trả lời đúng cho từng module (ngôn ngữ,
+gốc), qua đúng đường MCP agent dùng. Ca gốc (bench 2026-10-07): `start_lsp` thiếu `language_id`
+trên repo Python → agent-lsp bật hết server, TypeScript thành server hiện hành → crash
+`0xc0000409` / "No Project", trong khi `agent-lsp doctor` vẫn báo khoẻ.
+Báo cáo: `docs/tdq/reports/2026-10-07-2225-tu-dong-setup-lsp.md`.
+
+- **Module LSP** (`scripts/lsp_module.py`, mới). Dò (ngôn ngữ, gốc) theo file mốc sâu nhất —
+  repo một ngôn ngữ là một dòng, claudecodeui là `typescript:.` + `typescript:server`. Lệnh mới
+  `tdq_lsp.py module | kich-ban | ghi-kiem`: script chọn symbol và in sẵn ba lời gọi MCP, agent gửi,
+  script chấm (tham chiếu LSP > số lần trong file định nghĩa). Kết quả hạn 24 giờ hoặc tới khi file
+  mốc / dòng MCP đổi.
+- **Bậc 8 "LSP theo module"** trong `tdq_lsp.py check`; bậc 3 thêm cổng: mỗi ngôn ngữ của project
+  phải có dòng trong `args` của MCP `lsp`.
+- **Cổng `init`.** `tdq_state.py init` từ chối khi còn module chưa ĐẠT; lối thoát
+  `--bo-qua-lsp "<lý do>"` ghi vào `lsp_bo_qua`, report đọc ra.
+- **Hook `lsp_gate.py` (`TDQ:LSP`, chặn).** `start_lsp` thiếu `language_id` hoặc sai cặp
+  (gốc, ngôn ngữ) bị từ chối, lời chặn liệt kê lời gọi đúng.
+- **Tự cài không hỏi.** `tdq_setup.py` cài agent-lsp từ bản phát hành GitHub (kiểm SHA256 theo
+  `checksums.txt`, chạy được trên Windows — `install.sh` upstream thì không); ngôn ngữ mới xuất hiện
+  trong project (vd. Python rồi thêm JS + HTML) được cài server và khai vào MCP `lsp` (sao lưu
+  `~/.claude.json` trước khi ghi, rồi nhắc `/mcp` kết nối lại); SessionStart dựng nền lại khi tập
+  ngôn ngữ đổi. Tắt `agent-lsp daemon-broker` mồ côi, cảnh báo bộ nhớ commit < 4 GB.
+- **Luật chữ.** Intake 1b tự chạy setup → check → kịch bản; `kiem-lsp-hieu-ung.md` viết lại theo
+  module; `uu-tien-tim-kiem.md` thêm luật gọi `start_lsp` theo module (TS mở file trước, ưu tiên
+  tool theo file, `find_symbol` chỉ hỏi server hiện hành — issue #55 upstream).
+- **Test không chạm máy.** `TDQ_KHONG_CHAM_MAY=1` (đặt cho cả tiến trình test) khoá ba việc chạm
+  máy thật: tải/cài agent-lsp, ghi `~/.claude.json`, tắt tiến trình.
+
 ## 0.58.0 — 2026-10-07
 
 Gỡ lumen, luật tìm kiếm còn ba tầng (LSP · grep · graphify), cổng tìm kiếm dẫn tới tầng đang
@@ -444,57 +474,9 @@ Báo cáo: `docs/tdq/report/2026-09-03-1733-sua-loi-da-nen-tang.md`.
   `sys.executable`. Giữ `shell=True` để không hỏng plan cũ, thay bằng cảnh báo khi gặp toán tử
   shell vì cú pháp `cmd.exe` khác `sh`.
 
-## 0.42.0 — 2026-09-03
-
-Chống conflict khi chạy sub-agent implement: năm lỗ hổng H1–H5 từ chỗ chỉ là câu chữ trong tài
-liệu nay đều có hàng rào máy. Kèm đổi toàn bộ sub-command của 5 script CLI sang tên tiếng Anh.
-Báo cáo: `docs/tdq/report/2026-09-03-1527-sub-agent-chong-conflict.md`.
-
-- **Tên lệnh tiếng Anh, tên cũ thành bí danh ẩn** — `scripts/tdq_ten_lenh.py` là một nguồn sự
-  thật cho 22 sub-command của `tdq_team`, `tdq_bench`, `tdq_eval`, `tdq_lsp`, `tdq_state`. Bí
-  danh giải ở tầng argv nên `--help` chỉ in tên mới, còn hook/bundle/tài liệu cũ vẫn chạy đúng.
-  Giá trị dữ liệu (`mo`/`dong` của sổ worktree, mã lý do như `vung-khoa`) giữ nguyên tiếng Việt.
-- **`check` kiểm lại thật (H5)** — chạy chính lệnh trên dòng `Test:` của task trong worktree của
-  nó. `TICK-READY` của agent con không còn là lời tự khai.
-- **`merge` từ chối nhánh có test đỏ, và tự rebase trước (H2)** — rebase lên bản tích hợp mới
-  nhất, hỏng thì `rebase --abort` trả worktree về nguyên trạng.
-- **Lệnh mới `resolve` (H4)** — chỉ đọc, in hai phía của từng file kẹt để gỡ conflict.
-- **Dòng `Chạm:` thành hàng rào máy (H1)** — agent con ghi ra ngoài vùng đã khai thì bị chặn
-  ngay lúc ghi, không phải lúc merge. Mode `main` không đổi hành vi.
-- **`assign` cảnh báo file nóng (H3)** — đường dẫn nằm trên ≥2 dòng `Chạm:` được nêu tên trước
-  khi mở nhánh nào, lúc mà cách sửa còn rẻ.
-
-## 0.41.0 — 2026-09-03
-
-Sửa tương thích thật với cả 3 host: Claude Code, Codex CLI 0.149, Antigravity CLI (agy) 1.1.11.
-Trước bản này, bundle agy KHÔNG chạy được (hook sai đường dẫn, sai payload deny, layout không
-phải plugin) và README codex thiếu hai thủ tục bắt buộc. Báo cáo:
-`docs/tdq/reports/2026-09-03-1440-kiem-tuong-thich-3-host.md`.
-
-- **`antigravity_portable/`** — dựng lại đúng chuẩn plugin agy 1.1.11: `plugin.json` ở gốc,
-  `hooks.json` + `mcp_config.json` ở gốc, bỏ hẳn thư mục `config/`. **Bỏ hẳn
-  `settings.json`**: file thật của người dùng giữ `model`/`colorScheme`/`trustedWorkspaces`,
-  copy đè là mất cấu hình mà không thêm được hàng rào nào. README từ 6 đường cài đoán còn 3
-  bước thật (copy thư mục · bật trong `config.json` · khai skill root trong `skills.json`).
-- **`hooks/scripts/agy_pretooluse_gate.py`** — payload deny phát CẢ `allow_tool: false` lẫn
-  `decision: "deny"` vì Google chưa công bố schema chính thức; thiếu khoá đúng thì deny bị bỏ
-  qua trong im lặng. Đường dẫn `command` trong `hooks.json` nay là tuyệt đối đã bung `~` —
-  dấu `~` trong nháy kép không được bung, hook chết exit 127.
-- **`portable_codex/README.md`** — thêm mục trust hook (`trusted_hash` ghim NỘI DUNG hook, dựng
-  lại bundle là mất trust, phải duyệt lại bằng `/hooks`) và mục export biến môi trường
-  (`env_vars` chỉ khai TÊN biến, TOML không nội suy). 0.149 đã bật hooks sẵn, không cần
-  `[features] hooks = true`.
-- **`.claude-plugin/plugin.json`** — thêm `displayName` và `userConfig` cho 2 khoá Tavily,
-  `sensitive: true` để giá trị không bao giờ hiện ra. Validator đòi thêm trường `title` (không
-  có trong tài liệu).
-- **`scripts/tdq_checkportable.py`** — nhận diện layout plugin agy, cảnh báo khi `hooks.json`
-  còn `~` chưa bung hoặc mang `$HOME` của máy khác.
-- **`tests/test_tuong_thich_host.py`** (mới) — 6 test khoá 6 điểm tương thích; 5 test agy cũ
-  trong `test_build_portable.py` viết lại theo layout mới.
-
 ## Lịch sử cũ hơn
 
-Bản 0.40.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
-0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07). Bản 0.36.0 trở xuống nằm ở
+Bản 0.42.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
+0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08). Bản 0.36.0 trở xuống nằm ở
 `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
 xoá dòng nào.

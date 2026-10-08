@@ -423,6 +423,34 @@ class SessionStartKichHoat(unittest.TestCase):
         self.goi()
         self.assertFalse(self.cho_dau(1.5), "khoá lumen cũ không được kích hoạt dựng lại")
 
+    def ghi_bang_module(self, ngon_ngu):
+        with io.open(os.path.join(self.cwd, "docs", "tdq", ".tdq-lsp-module.json"), "w",
+                     encoding="utf-8") as fh:
+            json.dump({"ngon_ngu": ngon_ngu, "module": {}}, fh)
+
+    def ghi_nguon(self, duoi, so=3):
+        for i in range(so):
+            with io.open(os.path.join(self.cwd, f"f{i}{duoi}"), "w", encoding="utf-8") as fh:
+                fh.write("x = 1\n")
+
+    def test_kich_hoat_ngon_ngu_moi_thi_bat_du_moc_san_sang(self):
+        """0.59.0: project chỉ Python, sau thêm JS + HTML → dựng nền lại dù 3 tầng đều sẵn sàng."""
+        self.ghi_moc(het_san_sang=True)
+        self.ghi_nguon(".py")
+        self.ghi_bang_module(["python"])
+        self.goi()
+        self.assertFalse(self.cho_dau(1.5), "chưa có ngôn ngữ mới → không bật")
+        self.ghi_nguon(".js")
+        self.ghi_nguon(".html")
+        self.goi()
+        self.assertTrue(self.cho_dau(), "có JS + HTML mới → phải dựng nền")
+
+    def test_kich_hoat_chua_co_bang_module_thi_khong_hoi_ngon_ngu(self):
+        self.ghi_moc(het_san_sang=True)
+        self.ghi_nguon(".js")
+        self.goi()
+        self.assertFalse(self.cho_dau(1.5))
+
     def test_chong_dang_dung_thi_khong_bat_them(self):
         self.ghi_moc(dang_dung=True, het_san_sang=False)
         self.goi()

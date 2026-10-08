@@ -82,8 +82,12 @@ def plan_mode(cwd, state):
 # 2026-10-03: the ninth, TDQ:ASK — `ask_gate.py` REMINDS (never blocks) when AskUserQuestion is
 # called in implement/qc: an unmet spec threshold is recorded with `lech add`, not asked about.
 # Why, in `docs/kien-truc.md` 2026-10-03 and spec 2026-10-03-0732 §3.
+# 2026-10-08: the tenth, TDQ:LSP — `lsp_gate.py` DENIES `mcp__lsp__start_lsp` sent without a
+# `language_id` or with a (root, language) pair no LSP module of the project has. The reason is a
+# wrong call, not a missing approval; why, in `docs/kien-truc.md` 2026-10-08 and spec
+# 2026-10-07-2225 §3.
 CODES = ("TDQ:NEXT", "TDQ:APPROVE", "TDQ:LOG", "TDQ:STATE", "TDQ:GIT", "TDQ:GON",
-         "TDQ:DOC", "TDQ:SEARCH", "TDQ:ASK")
+         "TDQ:DOC", "TDQ:SEARCH", "TDQ:ASK", "TDQ:LSP")
 
 # The token budget cap (spec §2.7) — measured on the reminder content.
 MAX_REMIND_CHARS = 200

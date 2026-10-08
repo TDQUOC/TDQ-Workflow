@@ -11,10 +11,11 @@ One command, four jobs, in this order:
 Exit code: the one `kiem_mot_lenh` returns (0 total ĐẠT, 3 a rung blocks, 4 a layer failed).
 
 Why this file exists next to `tdq_lsp.py` instead of inside it: `tdq_lsp.py` carries a hard
-promise — it NEVER installs, it only diagnoses and prints the command. That promise is what
-makes it safe to run on every request at intake. This script is the opposite half: the user
-types it, and typing it IS the consent to install. Keeping the two promises in two files is
-what keeps each one readable.
+promise — it NEVER installs, it only diagnoses and prints the command. This script is the opposite
+half. Since 0.59.0 intake runs it on every request without asking (the user's choice, 2B): it
+installs agent-lsp from its release, the language servers, declares a language that appeared since
+last time in MCP `lsp`, and stops orphan agent-lsp brokers. Keeping the two promises in two files
+is what keeps each one readable.
 
 The consent is not unlimited. A command only runs when it matches the declared allow-list
 below; anything else becomes a line of debt, never a silent skip and never a guess.
@@ -28,6 +29,7 @@ graphify graph) under a pid lock, ending in the readiness stamp
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
 import argparse
+import hashlib
 import io
 import json
 import os
@@ -37,10 +39,15 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tarfile
+import tempfile
+import urllib.request
+import zipfile
 from datetime import datetime
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
+import lsp_module  # noqa: E402
 import search_rules  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
@@ -135,16 +142,125 @@ def _duoc_cai(lenh):
     return True, ""
 
 
-def cai_thieu(bac_list, chay_lenh=None):
+# Set by the test suite for the whole process (tests/helper.py), like TDQ_KHOI_TAO_NEN=0. With it,
+# the three functions that touch the REAL machine — download + install agent-lsp, rewrite
+# ~/.claude.json, stop processes — do nothing unless the caller injected a fake target. Measured
+# 2026-10-08: an older test handing rung 1 to `cai_thieu` downloaded the real release and tried to
+# overwrite the running ~/.local/bin/agent-lsp.exe (Windows refused it).
+def _khong_cham_may():
+    return os.environ.get("TDQ_KHONG_CHAM_MAY") == "1"
+
+
+REPO_AGENT_LSP = "blackwell-systems/agent-lsp"
+URL_PHAT_HANH = f"https://api.github.com/repos/{REPO_AGENT_LSP}/releases/latest"
+TIMEOUT_TAI = 120
+
+
+def _tai_mac_dinh(url):
+    """GET -> bytes. GitHub's API refuses a request without a User-Agent."""
+    yeu_cau = urllib.request.Request(url, headers={"User-Agent": "tdq-setup"})
+    with urllib.request.urlopen(yeu_cau, timeout=TIMEOUT_TAI) as resp:  # noqa: S310 — fixed https URLs
+        return resp.read()
+
+
+def ten_goi_agent_lsp(he=None, kien_truc=None):
+    """-> the release asset of this machine, e.g. `agent-lsp_windows_amd64.zip`."""
+    he = he or sys.platform
+    he = "windows" if he.startswith("win") else ("darwin" if he == "darwin" else "linux")
+    kien_truc = (kien_truc or platform.machine()).lower()
+    kien_truc = "arm64" if kien_truc in ("arm64", "aarch64") else "amd64"
+    return f"agent-lsp_{he}_{kien_truc}.{'zip' if he == 'windows' else 'tar.gz'}"
+
+
+def _lay_binary(goi, ten_goi, ten_bin):
+    """Pull the one binary named `ten_bin` out of the archive bytes -> bytes or None."""
+    if ten_goi.endswith(".zip"):
+        with zipfile.ZipFile(io.BytesIO(goi)) as zf:
+            ten = next((n for n in zf.namelist() if os.path.basename(n) == ten_bin), None)
+            return zf.read(ten) if ten else None
+    with tarfile.open(fileobj=io.BytesIO(goi), mode="r:gz") as tf:
+        thanh_vien = next((m for m in tf.getmembers() if m.isfile() and os.path.basename(m.name) == ten_bin), None)
+        tep = tf.extractfile(thanh_vien) if thanh_vien else None
+        return tep.read() if tep else None
+
+
+def cai_agent_lsp(tai=None, thu_muc=None, ten_goi=None):
+    """Install agent-lsp from its latest GitHub release -> (ok, line).
+
+    Upstream's `install.sh | sh` does not run on Windows, and piping a download into a shell is
+    exactly what `_chay_lenh` refuses. This path needs no shell: the asset is checked against the
+    release's `checksums.txt` (SHA256) before a single byte lands on disk; a mismatch installs
+    nothing. Only the binary is extracted — never a path from the archive — into `~/.local/bin`.
+    """
+    if tai is None and _khong_cham_may():
+        return False, "TDQ_KHONG_CHAM_MAY=1 — không cài thật"
+    tai = tai or _tai_mac_dinh
+    thu_muc = thu_muc or os.path.expanduser(os.path.join("~", ".local", "bin"))
+    ten_goi = ten_goi or ten_goi_agent_lsp()
+    try:
+        phat_hanh = json.loads(tai(URL_PHAT_HANH))
+        tag = phat_hanh.get("tag_name", "?")
+        tai_san = {a.get("name"): a.get("browser_download_url") for a in phat_hanh.get("assets") or []}
+        if ten_goi not in tai_san or "checksums.txt" not in tai_san:
+            return False, f"bản {tag} không có {ten_goi} hoặc checksums.txt"
+        goi = tai(tai_san[ten_goi])
+        tong = tai(tai_san["checksums.txt"]).decode("utf-8", "replace")
+    except (OSError, ValueError) as exc:
+        return False, f"không tải được bản phát hành: {type(exc).__name__}: {exc}"
+    mong = next((d.split()[0].lower() for d in tong.splitlines() if d.split()[-1:] == [ten_goi]), "")
+    that = hashlib.sha256(goi).hexdigest()
+    if not mong or that != mong:
+        return False, f"SHA256 của {ten_goi} không khớp checksums.txt ({that[:12]} ≠ {mong[:12] or 'không có'}) — không cài"
+    ten_bin = "agent-lsp.exe" if ten_goi.startswith("agent-lsp_windows") else "agent-lsp"
+    try:
+        binary = _lay_binary(goi, ten_goi, ten_bin)
+    except (OSError, zipfile.BadZipFile, tarfile.TarError) as exc:
+        return False, f"không giải nén được {ten_goi}: {exc}"
+    if not binary:
+        return False, f"{ten_goi} không chứa {ten_bin}"
+    os.makedirs(thu_muc, exist_ok=True)
+    dich = os.path.join(thu_muc, ten_bin)
+    fd, tam = tempfile.mkstemp(dir=thu_muc, prefix=".agent-lsp-", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(binary)
+        os.chmod(tam, 0o755)
+        os.replace(tam, dich)
+    except OSError as exc:
+        # Windows refuses to replace a running .exe: leave the old binary, never a stray temp file.
+        if os.path.exists(tam):
+            os.remove(tam)
+        return False, f"không ghi được {dich}: {exc}"
+    _log(f"cài agent-lsp {tag} → {dich} (sha256 {that[:12]})")
+    tren_path = os.path.normcase(thu_muc) in [os.path.normcase(p) for p in os.environ.get("PATH", "").split(os.pathsep)]
+    return True, f"agent-lsp {tag} → {dich}" + ("" if tren_path else f" (thêm {thu_muc} vào PATH)")
+
+
+# A rung whose fix is a workflow command, not an installer: setup handles it itself (MCP entries,
+# the module script), so it is neither run as an install nor written down as debt. Both forms:
+# `python3 scripts/X.py` in this repo, `python3 "<plugin>/scripts/X.py"` once `lenh_cho_project`
+# rewrote it for a project without `scripts/` (diff review 2026-10-08).
+_RE_LENH_WORKFLOW = re.compile(r'^python3 "?(?:[^"\s]*/)?scripts/tdq_\w+\.py')
+
+
+def cai_thieu(bac_list, chay_lenh=None, cai_agent=None):
     """-> (đã cài, nợ). Cài mọi bậc còn thiếu mà lệnh của nó nằm trong danh sách đã khai.
 
     `chay_lenh` (str -> (rc, output)) defaults to `_chay_lenh`; the background build passes its
-    own runner so its deadline also bounds the installs.
+    own runner so its deadline also bounds the installs. Rung 1 (agent-lsp itself) goes through
+    `cai_agent_lsp` — `cai_agent` replaces it in tests.
     """
     chay_lenh = chay_lenh or _chay_lenh
+    cai_agent = cai_agent or cai_agent_lsp
     da_cai, no = [], []
     for bac in bac_list:
         if bac.dat or not bac.lenh_cai:
+            continue
+        if bac.lenh_cai == tdq_lsp.INSTALL_AGENT_LSP:
+            ok, dong = cai_agent()
+            (da_cai if ok else no).append(f"bậc 1 ({bac.ten}): {dong}")
+            continue
+        if _RE_LENH_WORKFLOW.match(bac.lenh_cai):
             continue
         duoc, ly_do = _duoc_cai(bac.lenh_cai)
         if not duoc:
@@ -157,6 +273,141 @@ def cai_thieu(bac_list, chay_lenh=None):
             no.append(f"bậc {bac.so} ({bac.ten}): cài thất bại — `{bac.lenh_cai}` → "
                       f"{ra.splitlines()[0][:80] if ra else f'thoát {rc}'}")
     return da_cai, no
+
+
+# Language servers that need `--stdio` to speak LSP on stdin/stdout; the rest (gopls,
+# rust-analyzer, clangd…) do it by default.
+CAN_STDIO = ("typescript-language-server", "pyright-langserver", "vscode-html-language-server",
+             "vscode-css-language-server", "vscode-json-language-server", "intelephense",
+             "yaml-language-server", "prisma-language-server")
+
+
+def _ghi_json_nguyen_tu(duong, du_lieu):
+    """Atomic JSON write next to the target, after a timestamped backup of the old file."""
+    moc = datetime.now().strftime("%Y%m%d%H%M%S")
+    shutil.copyfile(duong, f"{duong}.truoc-tdq-{moc}.bak")
+    fd, tam = tempfile.mkstemp(dir=os.path.dirname(duong) or ".", prefix=".tdq-mcp-", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            json.dump(du_lieu, fh, ensure_ascii=False, indent=2)
+        os.replace(tam, duong)
+    except BaseException:
+        if os.path.exists(tam):
+            os.remove(tam)
+        raise
+
+
+def _duong_ben_vung(binary, duong_which, args):
+    """-> a binary path that outlives this shell.
+
+    Measured 2026-10-08: under fnm, `shutil.which` answers `.../fnm_multishells/<pid>_<ts>/x.CMD`,
+    a per-shell directory that disappears with the shell — an MCP entry pointing there breaks in
+    the next session. First choice: the directory the already-declared servers live in (the user's
+    own setup, e.g. `fnm/aliases/default`). Second: fnm's `aliases/default` for a multishell path.
+    """
+    duoi = os.path.splitext(duong_which)[1]
+    for a in args:
+        lenh = a.split(":", 1)[1].split(",", 1)[0] if ":" in a else ""
+        thu_muc = os.path.dirname(lenh)
+        if not thu_muc:
+            continue
+        for ten in (binary + duoi, binary + duoi.lower(), binary + ".cmd", binary):
+            ung_vien = os.path.join(thu_muc, ten)
+            if os.path.isfile(ung_vien):
+                return ung_vien
+    if "fnm_multishells" in duong_which:
+        mac_dinh = os.path.join(os.environ.get("APPDATA", ""), "fnm", "aliases", "default",
+                                os.path.basename(duong_which))
+        if os.path.isfile(mac_dinh):
+            return mac_dinh
+    return duong_which
+
+
+def _ghi_args_mcp(duong, duong_cau_hinh, args_moi):
+    """Write the new `args` of server `lsp` -> '' or an error line.
+
+    The real ~/.claude.json is rewritten by Claude Code itself all the time, so two writers race
+    (code review 2026-10-08). For that file the official CLI does the write — `claude mcp
+    remove` + `add-json -s user` — after a timestamped backup. Any other path (tests, a copy) is
+    written directly and atomically.
+    """
+    try:
+        with open(duong, encoding="utf-8") as fh:
+            du_lieu = json.load(fh)
+        server = dict(du_lieu["mcpServers"][tdq_lsp.MCP_SERVER_NAME], args=args_moi)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return f"không đọc được {duong_cau_hinh}: {type(exc).__name__}: {exc}"
+    claude = shutil.which("claude")
+    if duong_cau_hinh == "~/.claude.json" and claude:
+        moc = datetime.now().strftime("%Y%m%d%H%M%S")
+        shutil.copyfile(duong, f"{duong}.truoc-tdq-{moc}.bak")
+        ten = tdq_lsp.MCP_SERVER_NAME
+        for argv in ([claude, "mcp", "remove", ten, "-s", "user"],
+                     [claude, "mcp", "add-json", ten, json.dumps(server), "-s", "user"]):
+            rc, ra = tdq_lsp._run(argv, timeout=60)
+            if rc != 0:
+                return f"`claude mcp {argv[2]}` thất bại: {ra.splitlines()[-1][:120] if ra else rc}"
+        return ""
+    try:
+        du_lieu["mcpServers"][tdq_lsp.MCP_SERVER_NAME] = server
+        _ghi_json_nguyen_tu(duong, du_lieu)
+    except (OSError, ValueError, TypeError) as exc:
+        return f"không ghi được {duong_cau_hinh}: {type(exc).__name__}: {exc}"
+    return ""
+
+
+def khai_server_mcp(project, duong_cau_hinh="~/.claude.json", chay_lenh=None, which=None):
+    """Declare in the `lsp` MCP server every language of the project it does not serve yet.
+
+    The case it exists for: a project starts as Python, later grows JS + HTML. Per missing
+    language: install its server (`LANG_SERVER`, same allow-list as every install), find the real
+    binary path, append `<lang>:<path>[,--stdio]` to the `args` of server `lsp`. Only that one array
+    changes; the file is backed up with a timestamp first and written atomically.
+    -> (lines added, debt). Claude Code reads MCP config at start only — the caller must say so.
+    """
+    if duong_cau_hinh == "~/.claude.json" and _khong_cham_may():
+        return [], []
+    chay_lenh = chay_lenh or _chay_lenh
+    which = which or shutil.which
+    duong = os.path.expanduser(duong_cau_hinh)
+    args = tdq_lsp.mcp_args(duong)
+    if args is None:
+        return [], []
+    them, no = [], []
+    # TypeScript first: its entry also serves JavaScript, so a JS + TS project gets one tsserver,
+    # not two (each costs ~0.5 GB of commit — the very pressure behind 0xc0000409).
+    for lang in sorted(tdq_lsp.do_ngon_ngu(project), key=lambda l: (l != "typescript", l)):
+        if tdq_lsp.lang_mcp(args + them, lang) or lang not in tdq_lsp.LANG_SERVER:
+            continue
+        ten, binary, lenh = tdq_lsp.LANG_SERVER[lang]
+        if not which(binary):
+            duoc, ly_do = _duoc_cai(lenh)
+            if duoc:
+                chay_lenh(lenh)
+            elif ly_do:
+                no.append(f"{ten}: {ly_do} — `{lenh}`")
+                continue
+        duong_bin = which(binary)
+        if not duong_bin:
+            no.append(f"{ten}: cài `{lenh}` xong vẫn không thấy `{binary}` trên PATH")
+            continue
+        duong_bin = _duong_ben_vung(binary, duong_bin, args)
+        them.append(f"{lang}:{duong_bin}" + (",--stdio" if binary in CAN_STDIO else ""))
+    if them:
+        loi = _ghi_args_mcp(duong, duong_cau_hinh, args + them)
+        if loi:
+            return [], no + [loi]
+        _log(f"MCP lsp: thêm {len(them)} server → {', '.join(t.split(':', 1)[0] for t in them)}")
+    return them, no
+
+
+def don_may(doc=None, tat=None, trong=None):
+    """Stop orphan agent-lsp brokers, then check free commit memory -> (done lines, warnings)."""
+    if doc is None and _khong_cham_may():
+        return [], []
+    xong = [f"tắt broker agent-lsp mồ côi pid={pid}" for pid in lsp_module.don_broker(doc, tat)]
+    canh_bao = lsp_module.canh_bao_commit(trong)
+    return xong, [canh_bao] if canh_bao else []
 
 
 # Fallback when language detection finds nothing above its threshold (tiny or brand-new project):
@@ -620,6 +871,8 @@ def khoi_tao_nen(project, chay=None):
             tang[ten]["chi_tiet"] = "đang dựng nền"
         ghi_san_sang(project, {"cap_nhat": _now(), "dang_dung": True, "pid": os.getpid(),
                                "tang": tang})
+        if os.path.isfile(lsp_module.duong_bang(project)):
+            lsp_module.ghi_ngon_ngu(project)
 
         def cai():
             def chay_lenh(lenh):
@@ -629,10 +882,16 @@ def khoi_tao_nen(project, chay=None):
                     return 1, f"không tách được lệnh: {exc}"
                 return chay_an_toan(argv, None, TIMEOUT_CAI)
             da_cai, no = cai_thieu(tdq_lsp.chay_kiem(project), chay_lenh=chay_lenh)
-            for dong in da_cai:
+            them, no_mcp = khai_server_mcp(project, chay_lenh=chay_lenh)
+            for dong in da_cai + [f"MCP lsp + {t}" for t in them]:
                 _log(f"nền: đã cài · {dong}")
-            if no:
-                tdq_no.ghi_no(no, project)
+            if no + no_mcp:
+                tdq_no.ghi_no(no + no_mcp, project)
+
+        def don():
+            xong, canh_bao = don_may()
+            for dong in xong + canh_bao:
+                _log(f"nền: {dong}")
 
         def codex():
             if not _tim_cong_cu("codex"):
@@ -650,7 +909,7 @@ def khoi_tao_nen(project, chay=None):
                                   TIMEOUT_GRAPHIFY_NEN)
             _log(f"nền: graphify → {'xong' if rc == 0 else 'hỏng: ' + ra[-120:]}")
 
-        for ten, ham in (("cài", cai), ("codex", codex), ("graphify", graphify)):
+        for ten, ham in (("cài", cai), ("dọn", don), ("codex", codex), ("graphify", graphify)):
             buoc(ten, ham)
 
         smoke = []
@@ -715,6 +974,11 @@ def main(argv, khai_codex=None):
 
     bac = tdq_lsp.chay_kiem(project)
     da_cai, no = cai_thieu(bac)
+    them, no_mcp = khai_server_mcp(project)
+    da_cai += [f"MCP `lsp` + {t}" for t in them]
+    no += no_mcp
+    xong, canh_bao = don_may()
+    da_cai += xong
     da_va, no_hook = va_hook_xung_dot()
     da_cai += da_va
     no += no_hook + no_skill_khong_ton_tai(project)
@@ -723,6 +987,11 @@ def main(argv, khai_codex=None):
 
     for dong in da_cai:
         print(f"đã cài · {dong}")
+    for dong in canh_bao:
+        print(f"cảnh báo · {dong}")
+    if them:
+        print("→ Claude Code chỉ đọc cấu hình MCP lúc khởi động: gõ /mcp và kết nối lại `lsp` "
+              "(hoặc mở phiên mới) rồi chạy kịch bản của bậc 8.")
     if khai_codex:
         try:
             for dong in khai_codex():

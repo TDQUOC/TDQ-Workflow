@@ -92,7 +92,7 @@ LOI_SO_DO_DA_GO = ("The diagram phase was removed from the workflow on "
 
 USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "init <slug> [nhanh|express|quick — express mode | chuyen-sau|deep|full — "  # i18n-allow
-         "deep mode] [--lang <code>] | "
+         "deep mode] [--lang <code>] [--bo-qua-lsp \"<user's reason>\"] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent|codex] "
          "[--by \"<user sentence>\"] [--bo-qua-do \"<user's reason>\"] | "
@@ -231,6 +231,11 @@ def default_state():
         # without a prior measurement / fallback). None = no bypass. Shape when set:
         # {"ly_do": "<user's reason>", "at": "<iso>", "so_loi": <number of R14 findings>}.
         "spec_bo_qua_do": None,
+        # The request was opened past the LSP gate of `init` (0.59.0): some LSP module of the
+        # project was not proven through MCP. None = no bypass. Shape when set:
+        # {"ly_do": "<user's reason>", "at": "<iso>", "module": ["<id> → <status> (<detail>)", ...]}.
+        # The report reads it out, so a request built on grep alone never passes as a normal one.
+        "lsp_bo_qua": None,
         "plan_file": None,
         "plan_approved": False,
         "plan_sha256": None,
@@ -2052,6 +2057,49 @@ def _pop_json_flag(argv):
     return rest, len(rest) != len(argv)
 
 
+def _pop_bo_qua_lsp(argv):
+    """Strip the `--bo-qua-lsp "<reason>"` pair out of the argv of `init` -> (rest, reason or None)."""
+    if "--bo-qua-lsp" not in argv:
+        return argv, None
+    i = argv.index("--bo-qua-lsp")
+    ly_do = argv[i + 1].strip() if i + 1 < len(argv) else ""
+    if not ly_do or ly_do.startswith("--"):
+        _fail('--bo-qua-lsp needs a reason: --bo-qua-lsp "<why this request runs without proven LSP>"')
+    return argv[:i] + argv[i + 2:], ly_do
+
+
+def _cong_lsp(cwd, bo_qua):
+    """The LSP gate of `init` (0.59.0) -> the `lsp_bo_qua` value to record (None when it passed).
+
+    A request may only open once every LSP module of the project (language, root) has been proven
+    through the MCP path the agent uses — `agent-lsp doctor` reported healthy in all three failures
+    measured 2026-10-07. The gate sits in this COMMAND, not in a hook, like the R14 gate of
+    `approve spec`; tier `nhỏ` never calls `init` and is never blocked. The import is lazy so
+    every other sub-command stays as cheap as before.
+    """
+    import lsp_module
+    # `init` is silent on a clean run (its own contract, tests pin it): the module scan's log line
+    # would be the only stderr output, so it is muted for this one call.
+    tat_truoc = lsp_module.tdq_lsp._LOG_TAT
+    lsp_module.tdq_lsp._LOG_TAT = True
+    try:
+        ok, dong = lsp_module.cong_init(cwd)
+    finally:
+        lsp_module.tdq_lsp._LOG_TAT = tat_truoc
+    if ok:
+        return None
+    if bo_qua:
+        _warn("Opening past the LSP gate (--bo-qua-lsp): " + "; ".join(dong))
+        return {"ly_do": bo_qua[:200], "at": now_iso(), "module": dong}
+    _fail(lenh_cho_project(
+        "LSP is not proven for every module of this project — init refused:\n  "
+        + "\n  ".join(dong)
+        + "\nFix: python3 scripts/tdq_setup.py (installs what is missing), then "
+          "python3 scripts/tdq_lsp.py kich-ban and send the MCP calls it prints, then "
+          "python3 scripts/tdq_lsp.py ghi-kiem <module> <N>.\n"
+          'Force majeure only: --bo-qua-lsp "<reason>" (recorded, shown in the report).', cwd))
+
+
 def _pop_lang_flag(argv):
     """Strip the `--lang <code>` pair out of the argv of `init`.
 
@@ -2332,6 +2380,7 @@ def cli(argv):
     if cmd == "init":
         argv, want_json = _pop_json_flag(argv)
         argv, doc_lang = _pop_lang_flag(argv)
+        argv, bo_qua_lsp = _pop_bo_qua_lsp(argv)
         if len(argv) < 2:
             _fail(f"Missing slug. Formula: {SLUG_FORMULA}")
         # Writing a new one requires the hour and minute. A bare warning changes no
@@ -2343,6 +2392,7 @@ def cli(argv):
         if phan_tich[1] is None:
             _fail(f"Slug missing the hour and minute: {argv[1]}. Formula: {SLUG_FORMULA} "
                   f"(example {phan_tich[0]}-{datetime.now().strftime('%H%M')}-{phan_tich[2]})")
+        lsp_bo_qua = _cong_lsp(cwd, bo_qua_lsp)
         # init = OPEN A NEW REQUEST: it resets the whole state (request, lane, phase,
         # spec/plan file, every approval field, implement_mode). If the open request is
         # still unfinished a warning goes to stderr — it still runs, but leaves a trace.
@@ -2367,6 +2417,7 @@ def cli(argv):
                       "(express mode) · chuyen-sau|deep|full (deep mode).")
             state["lane"] = lane
         state["doc_lang"] = doc_lang
+        state["lsp_bo_qua"] = lsp_bo_qua
         save(cwd, state)
         _echo_state("init", state, want_json)
         return

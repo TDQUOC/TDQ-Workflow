@@ -76,10 +76,10 @@ class Bac7Graphify(unittest.TestCase):
         self.assertTrue(b.dat)
 
     def test_graphify_nam_trong_thang_bac(self):
-        """Thang có đúng 7 bậc đánh số liền, graphify là bậc cuối."""
+        """Thang có đúng 8 bậc đánh số liền; graphify là bậc 7, module LSP là bậc 8 (0.59.0)."""
         b = tdq_lsp.chay_kiem(ROOT)
-        self.assertEqual([x.so for x in b], [1, 2, 3, 4, 5, 6, 7])
-        self.assertEqual(b[-1].ten, "đồ thị graphify")
+        self.assertEqual([x.so for x in b], [1, 2, 3, 4, 5, 6, 7, 8])
+        self.assertEqual(b[6].ten, "đồ thị graphify")
 
 
 if __name__ == "__main__":

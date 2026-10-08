@@ -85,6 +85,21 @@ class CaiThieu(unittest.TestCase):
         self.assertEqual(len(no), 1)
         self.assertIn("python", no[0].lower())
 
+    def test_cai_bo_qua_lenh_workflow_ca_dang_duong_dan_tuyet_doi(self):
+        """Bậc 3 cổng 3 và bậc 8 in lệnh workflow, không phải lệnh cài — không chạy, không ghi nợ.
+
+        Trong project của user (không có `scripts/`), `lenh_cho_project` viết lại lệnh thành
+        `python3 "<plugin>/scripts/X.py"`; so tiền tố `python3 scripts/` thì lọt, thành nợ giả
+        mỗi lần setup chạy (soát diff 2026-10-08).
+        """
+        bac = [_bac(3, "language server", False, 'python3 "C:/plugin/scripts/tdq_setup.py"  (tự thêm)'),
+               _bac(8, "LSP theo module", False, "python3 /opt/plugin/scripts/tdq_lsp.py kich-ban"),
+               _bac(8, "LSP theo module", False, "python3 scripts/tdq_lsp.py kich-ban")]
+        with mock.patch.object(tdq_setup, "_chay_lenh") as chay:
+            da_cai, no = tdq_setup.cai_thieu(bac)
+        chay.assert_not_called()
+        self.assertEqual((da_cai, no), ([], []))
+
     def test_cai_bac_da_dat_thi_khong_dung_toi(self):
         bac = [_bac(1, "binary agent-lsp", True, "uv tool install graphifyy")]
         with mock.patch.object(tdq_setup, "_chay_lenh") as chay:
@@ -260,6 +275,178 @@ class LogService(unittest.TestCase):
         with mock.patch.dict(os.environ, {"TDQ_LOG": "1"}),                 mock.patch.object(tdq_setup.tdq_lsp, "chay_kiem", return_value=[]),                 mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),                 mock.patch.object(tdq_setup, "smoke_ba_tang", return_value=[]),                 mock.patch.object(tdq_no, "ghi_no", return_value=0),                 mock.patch("sys.stdout", new_callable=io.StringIO):
             tdq_setup.main(["--khong-log"])
             self.assertEqual(os.environ["TDQ_LOG"], "0")
+
+
+def _goi_zip(ten_bin, noi_dung=b"BINARY"):
+    import zipfile
+    bo_nho = io.BytesIO()
+    with zipfile.ZipFile(bo_nho, "w") as zf:
+        zf.writestr(f"agent-lsp_v9/{ten_bin}", noi_dung)
+        zf.writestr("README.md", "x")
+    return bo_nho.getvalue()
+
+
+class CaiAgentLsp(unittest.TestCase):
+    """T5.1 (0.59.0): agent-lsp cài từ bản phát hành, kiểm SHA256, không qua shell — cả Windows."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="tdq-agent-lsp-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def tai_gia(self, goi, tong=None):
+        import hashlib
+        ten = "agent-lsp_windows_amd64.zip"
+        tong = tong if tong is not None else f"{hashlib.sha256(goi).hexdigest()}  {ten}\n".encode()
+        kho = {tdq_setup.URL_PHAT_HANH: json.dumps({"tag_name": "v9.9.9", "assets": [
+                   {"name": ten, "browser_download_url": "https://x/goi"},
+                   {"name": "checksums.txt", "browser_download_url": "https://x/tong"}]}).encode(),
+               "https://x/goi": goi, "https://x/tong": tong}
+        return kho.__getitem__
+
+    def test_agent_lsp_dung_checksum_thi_cai_dung_binary(self):
+        goi = _goi_zip("agent-lsp.exe")
+        ok, dong = tdq_setup.cai_agent_lsp(self.tai_gia(goi), self.tmp, "agent-lsp_windows_amd64.zip")
+        self.assertTrue(ok, dong)
+        with open(os.path.join(self.tmp, "agent-lsp.exe"), "rb") as fh:
+            self.assertEqual(fh.read(), b"BINARY")
+        self.assertEqual(sorted(os.listdir(self.tmp)), ["agent-lsp.exe"])
+
+    def test_agent_lsp_sai_checksum_thi_khong_cai(self):
+        goi = _goi_zip("agent-lsp.exe")
+        ok, dong = tdq_setup.cai_agent_lsp(self.tai_gia(goi, b"deadbeef  agent-lsp_windows_amd64.zip\n"),
+                                           self.tmp, "agent-lsp_windows_amd64.zip")
+        self.assertFalse(ok)
+        self.assertIn("SHA256", dong)
+        self.assertEqual(os.listdir(self.tmp), [])
+
+    def test_agent_lsp_ten_goi_theo_may(self):
+        self.assertEqual(tdq_setup.ten_goi_agent_lsp("win32", "AMD64"), "agent-lsp_windows_amd64.zip")
+        self.assertEqual(tdq_setup.ten_goi_agent_lsp("linux", "aarch64"), "agent-lsp_linux_arm64.tar.gz")
+        self.assertEqual(tdq_setup.ten_goi_agent_lsp("darwin", "arm64"), "agent-lsp_darwin_arm64.tar.gz")
+
+    def test_agent_lsp_cai_thieu_goi_ham_cai_khong_qua_shell(self):
+        bac = [_bac(1, "binary agent-lsp", False, tdq_lsp.INSTALL_AGENT_LSP)]
+        with mock.patch.object(tdq_setup, "_chay_lenh") as chay:
+            da_cai, no = tdq_setup.cai_thieu(bac, cai_agent=lambda: (True, "agent-lsp v9 → x"))
+        chay.assert_not_called()
+        self.assertEqual((len(da_cai), no), (1, []))
+
+    def test_agent_lsp_co_khoa_khong_cham_may_thi_khong_tai(self):
+        with mock.patch.dict(os.environ, {"TDQ_KHONG_CHAM_MAY": "1"}):
+            ok, dong = tdq_setup.cai_agent_lsp()
+        self.assertFalse(ok)
+        self.assertIn("TDQ_KHONG_CHAM_MAY", dong)
+
+
+class KhaiServerMcp(unittest.TestCase):
+    """T5.2 (0.59.0): ban đầu chỉ Python, sau thêm JS + HTML → tự cài + tự khai vào MCP `lsp`."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="tdq-khai-mcp-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.project = os.path.join(self.tmp, "proj")
+        os.makedirs(self.project)
+        for i in range(3):
+            self.ghi(f"m{i}.py", "x = 1\n")
+        self.cau_hinh = os.path.join(self.tmp, "claude.json")
+        self.goc = {"theme": "dark", "projects": {"a": {"x": 1}},
+                    "mcpServers": {"lsp": {"type": "stdio", "command": "agent-lsp",
+                                           "args": ["python:/bin/pyright-langserver,--stdio"]},
+                                   "khac": {"command": "k"}}}
+        with open(self.cau_hinh, "w", encoding="utf-8") as fh:
+            json.dump(self.goc, fh)
+
+    def ghi(self, rel, noi_dung):
+        with open(os.path.join(self.project, rel), "w", encoding="utf-8") as fh:
+            fh.write(noi_dung)
+
+    def doc(self):
+        with open(self.cau_hinh, encoding="utf-8") as fh:
+            return json.load(fh)
+
+    def test_khai_server_mcp_khong_doi_khi_du_ngon_ngu(self):
+        them, no = tdq_setup.khai_server_mcp(self.project, self.cau_hinh, which=lambda b: f"/bin/{b}")
+        self.assertEqual((them, no), ([], []))
+        self.assertEqual(self.doc(), self.goc)
+
+    def test_khai_server_mcp_ngon_ngu_moi_duoc_cai_va_khai(self):
+        for i in range(3):
+            self.ghi(f"s{i}.js", "export const a = 1\n")
+            self.ghi(f"t{i}.html", "<p></p>")
+        da_cai = []
+        tren_path = {"pyright-langserver"}
+
+        def chay(lenh):
+            da_cai.append(lenh)
+            tren_path.update({"typescript-language-server", "vscode-html-language-server"})
+            return 0, ""
+
+        which = lambda b: f"/bin/{b}" if b in tren_path else None  # noqa: E731
+        them, no = tdq_setup.khai_server_mcp(self.project, self.cau_hinh, chay_lenh=chay, which=which)
+        self.assertEqual(no, [])
+        self.assertEqual(them, ["html:/bin/vscode-html-language-server,--stdio",
+                                "javascript:/bin/typescript-language-server,--stdio"])
+        moi = self.doc()
+        self.assertEqual(moi["mcpServers"]["lsp"]["args"][0], "python:/bin/pyright-langserver,--stdio")
+        self.assertEqual(moi["mcpServers"]["lsp"]["args"][1:], them)
+        for khoa in ("theme", "projects"):
+            self.assertEqual(moi[khoa], self.goc[khoa])
+        self.assertEqual(moi["mcpServers"]["khac"], self.goc["mcpServers"]["khac"])
+        self.assertTrue(any(f.startswith("claude.json.truoc-tdq-") for f in os.listdir(self.tmp)))
+        self.assertTrue(da_cai)
+
+    def test_khai_server_mcp_cai_hong_thi_ghi_no_khong_ghi_file(self):
+        for i in range(3):
+            self.ghi(f"t{i}.html", "<p></p>")
+        them, no = tdq_setup.khai_server_mcp(self.project, self.cau_hinh, chay_lenh=lambda l: (1, "lỗi"),
+                                             which=lambda b: "/bin/x" if b == "pyright-langserver" else None)
+        self.assertEqual(them, [])
+        self.assertIn("HTML", no[0])
+        self.assertEqual(self.doc(), self.goc)
+
+    def test_khai_server_mcp_js_va_ts_chi_mot_tsserver(self):
+        for i in range(3):
+            self.ghi(f"a{i}.js", "export const a = 1\n")
+            self.ghi(f"b{i}.ts", "export const b = 1\n")
+        them, _no = tdq_setup.khai_server_mcp(self.project, self.cau_hinh, which=lambda b: f"/bin/{b}")
+        self.assertEqual([t.split(":", 1)[0] for t in them], ["typescript"])
+
+    def test_khai_server_mcp_khong_dung_duong_fnm_multishell(self):
+        """fnm: which() trả thư mục tạm của từng shell — phải lấy thư mục ổn định của server đã khai."""
+        on_dinh = os.path.join(self.tmp, "aliases", "default")
+        os.makedirs(on_dinh)
+        for ten in ("pyright-langserver.cmd", "vscode-html-language-server.cmd"):
+            open(os.path.join(on_dinh, ten), "w", encoding="utf-8").close()
+        self.goc["mcpServers"]["lsp"]["args"] = [f"python:{os.path.join(on_dinh, 'pyright-langserver.cmd')},--stdio"]
+        with open(self.cau_hinh, "w", encoding="utf-8") as fh:
+            json.dump(self.goc, fh)
+        for i in range(3):
+            self.ghi(f"t{i}.html", "<p></p>")
+        tam = os.path.join(self.tmp, "fnm_multishells", "5276_1", "vscode-html-language-server.cmd")
+        them, _no = tdq_setup.khai_server_mcp(self.project, self.cau_hinh,
+                                              which=lambda b: tam if "html" in b else "/bin/x")
+        self.assertEqual(them, [f"html:{os.path.join(on_dinh, 'vscode-html-language-server.cmd')},--stdio"])
+
+    def test_khai_server_mcp_khoa_khong_cham_may_bo_qua_file_that(self):
+        self.assertEqual(tdq_setup.khai_server_mcp(self.project), ([], []))
+
+
+class DonMay(unittest.TestCase):
+    """T5.3 (0.59.0): dọn broker mồ côi + cảnh báo commit thấp."""
+
+    def test_broker_don_may_tat_mo_coi_va_canh_bao_commit(self):
+        lenh = "agent-lsp daemon-broker --root-dir=/khong/con/ton/tai --language=python"
+        tat = []
+        xong, canh_bao = tdq_setup.don_may(doc=lambda: [{"pid": 7, "khoi_dong": 1.0, "lenh": lenh}],
+                                           tat=lambda pid: tat.append(pid) or True, trong=1.5)
+        self.assertEqual(tat, [7])
+        self.assertIn("pid=7", xong[0])
+        self.assertIn("1.5 GB", canh_bao[0])
+
+    def test_broker_khoa_khong_cham_may_khong_liet_ke_that(self):
+        with mock.patch.object(tdq_setup.lsp_module, "don_broker") as don:
+            self.assertEqual(tdq_setup.don_may(), ([], []))
+        don.assert_not_called()
 
 
 if __name__ == "__main__":
