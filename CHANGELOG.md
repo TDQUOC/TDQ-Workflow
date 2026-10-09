@@ -2,6 +2,20 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.60.0 — 2026-10-10
+
+Bổ sung chỉ dẫn rõ ràng vào các phase: user trả lời và duyệt trực tiếp trong chat (dạng `1a 2b 3c`,
+"duyệt spec", "duyệt plan", "duyệt nhanh"), tuyệt đối cấm mở popup tool / dialog câu hỏi chọn
+(`AskUserQuestion`). Kế hoạch: `docs/tdq/plan/2026-10-09-1948-luat-hoi-duyet-trong-chat.md`.
+
+- **Cấm `AskUserQuestion` và popup tool.** Bổ sung quy định chat-only tại 6 file:
+  `skills/tdq-conventions/references/user-facing-block.md`,
+  `skills/tdq-conventions/references/approval.md`, `skills/tdq-conventions/SKILL.md`,
+  `skills/tdq-intake/references/interview.md`, `skills/tdq-spec/SKILL.md`, `skills/tdq-plan/SKILL.md`.
+- **Khối trả lời chuẩn.** Hướng dẫn rõ ràng định dạng trả lời `1a 2b 3c` hoặc câu tự nhiên, kết
+  lượt chờ user nhắn trong chat thay vì gọi tool popup.
+- **Giữ nguyên điểm neo luật.** Bảo toàn số dòng của các quy tắc trong `docs/tdq/audit/luat-hien-co.md`.
+
 ## 0.59.0 — 2026-10-08
 
 Mỗi project chỉ mở được request khi LSP đã được CHỨNG MINH trả lời đúng cho từng module (ngôn ngữ,
@@ -453,30 +467,9 @@ Báo cáo: `docs/tdq/report/2026-09-03-1949-uiux-pro-max-routing.md`.
 - **Dọn `CHANGELOG.md`** — cắt 0.21.0–0.24.0 sang `CHANGELOG-archive.md` để file chính về
   dưới trần 500 dòng của doc_lint R6.
 
-## 0.43.0 — 2026-09-03
-
-Vá bốn lỗi đa nền tảng P1–P4 mà bản rà 1648 tìm ra. Không có máy Windows, nên mọi hạng mục
-Windows nghiệm thu bằng THAM SỐ giả lập: mức khẳng định cao nhất là "hàm cho ra đúng tên lệnh
-khi truyền hệ Windows vào", không phải "đã chạy được trên Windows".
-Báo cáo: `docs/tdq/report/2026-09-03-1733-sua-loi-da-nen-tang.md`.
-
-- **Tên lệnh Python chọn theo hệ đích (P1)** — `tien_to_python(nen_tang)` cho `py -3` trên
-  Windows, `python3` nơi khác. Hook codex/agy sinh qua hàm đó. Riêng `hooks/hooks.json` là file
-  nguồn viết tay nên có lệnh sinh lại tại máy đích: `build_portable.py --sinh-hook-claude
-  [--he-dich win32]`, bất biến, chạy lần hai in `already correct`.
-- **Cổng gác bundle agy hết là mã chết (P2)** — `kiem_layout_agy` parse JSON và chỉ soi `~`
-  trong giá trị `command`, thay vì quét văn bản thô cả file. Hết dương tính giả, nhánh "dựng ở
-  máy khác" nay nổ được, và `hooks.json` hỏng cú pháp được báo thay vì im lặng.
-- **README bundle agy nói rõ chuyện gắn máy dựng (P3)** — đừng copy bundle dựng sẵn, tên lệnh
-  Python khác nhau giữa các hệ, lệnh kiểm lại sau khi copy. Sửa ở hằng `README_AGY`, vì file
-  README của bundle là file sinh ra.
-- **Dòng `Test:` của plan chạy được nơi không có tên lệnh `python3` (P4)** — token đầu đổi sang
-  `sys.executable`. Giữ `shell=True` để không hỏng plan cũ, thay bằng cảnh báo khi gặp toán tử
-  shell vì cú pháp `cmd.exe` khác `sh`.
-
 ## Lịch sử cũ hơn
 
-Bản 0.42.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
-0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08). Bản 0.36.0 trở xuống nằm ở
+Bản 0.43.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
+0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10). Bản 0.36.0 trở xuống nằm ở
 `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
 xoá dòng nào.

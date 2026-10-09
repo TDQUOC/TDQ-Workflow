@@ -6,9 +6,9 @@ and **record it** — never to judge generously on the user's behalf.
 ## Hỏi xong là kết lượt <!-- i18n-allow: canonical rule name in the default language -->
 
 Printing the question is not the end of the job — **ending the turn is**. The agent asks in chat,
-stops there, and waits for the user's next message. Reading on, guessing the answer, or acting on
-the option you recommended is banned, however obvious that option looks. The popup tool is banned
-here too, for every question, per `## Hard rules` of
+stops there, and waits for user's chat message (e.g. `1a 2b 3c`, "duyệt spec"). Reading on, guessing,
+or acting on recommended option is banned. Popup tool / dialog is banned here too, for every
+question & gate: user answers & approves directly in chat, per `## Hard rules` of
 [user-facing-block.md](user-facing-block.md).
 
 The one thing that closes a gate is a message from the user matching the two parts below.

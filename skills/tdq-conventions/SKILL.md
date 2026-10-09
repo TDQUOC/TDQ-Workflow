@@ -60,8 +60,8 @@ One workflow, three kinds of reader, so three language rules. They never mix.
    gates, the commit question — follows [references/user-facing-block.md](references/user-facing-block.md); the symbol table and a
 BEFORE/AFTER example are in the tier-1 sibling
 [references/user-facing-block-vi-du.md](references/user-facing-block-vi-du.md).
-   Its shape: an opening line addressing the user directly, full file paths, a separator rule, the bold
-   answer block last, no emoji.
+   Its shape: an opening line directly in chat, full file paths, separator rule, bold answer block last,
+   no emoji. Chat only: user answers (e.g. `1a 2b 3c`) and approves in chat; popup tool banned.
 
 7. **Never end a turn while the plan still has tasks** — stopping with a `[ ]` task left is abandoning the job,
    however good the progress report looks. Only **four force-majeure kinds**, declared with `pause --loai`, stop one:

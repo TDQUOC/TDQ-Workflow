@@ -104,8 +104,8 @@ content to be changed, removed or added.
   to the user, gate or not. Two reasons. First, the user reads all the options at once and can
   answer with anything, including a sentence no option covers. Second, the hosts this workflow has
   to run on (Gemini CLI, GitHub Copilot CLI, Aider) have no such tool at all, so a question shaped
-  around one is a question they cannot ask. Print the block, then **end the turn** and wait for the
-  reply in chat. Recording the answer: [approval.md](approval.md).
+  around one is a question they cannot ask. User answers in chat (`1a 2b 3c`), never a popup dialog.
+  Print the block, then **end the turn** and wait for reply in chat. Recording: [approval.md](approval.md).
 - **No emoji** in any component. The `➤` character stays; it is not an emoji.
 - Several options → **exactly one line per option**, shaped `- A (đề xuất): nội dung`. <!-- i18n-allow: sample string of the default language -->
   Merging options into a paragraph is banned.

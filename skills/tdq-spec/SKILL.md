@@ -71,7 +71,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    quote that block as an example, label the quote right before it, in the user's document
    language: "(template — for later questions, not this turn's question)". The point: someone
    re-reading the transcript must not mistake it for a question being asked again.
-   Then **end the turn**. Do not write the plan, do not touch code. The user comments
+   Then **end the turn** (chat approval only, no popup). Do not write plan. The user comments
    instead of approving → fix the spec, bump the version number, present again, wait again.
 
 5. **The user approves → record it IMMEDIATELY:**

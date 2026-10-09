@@ -14,3 +14,4 @@ Ghi kèm tên máy vì một món có thể thiếu trên máy này mà đủ tr
 - 2026-10-07 · DESKTOP-QNBEKDT · tầng LSP không trả lời được: agent-lsp doctor
 - 2026-10-07 · DESKTOP-QNBEKDT · tầng lumen không trả lời được: Error: load config: config: servers[0]: host is required
 - 2026-10-07 · DESKTOP-QNBEKDT · tầng lumen không trả lời được: tree-sitter failed to allocate 4640392 bytes
+- 2026-10-09 · DESKTOP-QNBEKDT · bậc 7 (đồ thị graphify): lệnh có ký tự của shell — không chạy chuỗi ghép, hãy khai từng lệnh một — `cd C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow && graphify extract . --code-only`

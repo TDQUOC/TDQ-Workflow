@@ -97,7 +97,7 @@ scope. Spec approved → plan NOW.
    ```
    The body is ≤ 10 lines and a REAL summary; a bare status line ("written to the log, waiting for
    approval") is banned. Quoting a template as an example → label it right before the excerpt, in the
-   user's language: "(template — not this turn's question)". Then **end the turn**; comments → fix,
+   user's language: "(template — not this turn's question)". Then **end the turn** (chat only); comments → fix,
    present again, wait.
 
 6. **The user approves → record it IMMEDIATELY, then ask about the run mode in the SAME turn:**

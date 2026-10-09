@@ -45,7 +45,7 @@ already holds, what is only a presentation preference.
 ## How to ask
 
 Every question carries **2–4 concrete options**. **Always ask with a list in chat** — no
-AskUserQuestion, so the user reads every option at once and can answer freely.
+popup tool / AskUserQuestion: user reads options at once and answers in chat (e.g. `1a 2b 3c`).
 
 The whole round is one block spoken to the user: wrap it per
 [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — an opening

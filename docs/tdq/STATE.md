@@ -1,18 +1,18 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-08T09:10:15+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-10T04:26:46+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-07-2225-tu-dong-setup-lsp |
-| Lane | full |
+| Request | 2026-10-09-1948-luat-hoi-duyet-trong-chat |
+| Lane | quick |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-10-07-2225-tu-dong-setup-lsp.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-07-2225-tu-dong-setup-lsp.md — ✔ approved |
-| Quick approval | (not applicable) |
+| Spec | (none) |
+| Plan | (none) |
+| Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
-| QC level | full |
-| Run mode | main |
+| QC level | lite |
+| Run mode | (not settled) |
 
 ## Where we are
 Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.

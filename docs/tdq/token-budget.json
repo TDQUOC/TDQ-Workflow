@@ -68,8 +68,8 @@
     "token": 1307
   },
   "skills/tdq-conventions/references/approval.md": {
-    "sha256": "fa0bdd3caabeaa068d1123ed4ba4787b22cafcdd469cf64fb148e40450911e72",
-    "token": 1218
+    "sha256": "7c0735f7908251402310ce48867ea589b30e8901b77b2a91c86180dc03bbeab9",
+    "token": 1240
   },
   "skills/tdq-conventions/references/clean-code.md": {
     "sha256": "00b9eb95dd4af4f5b84db0c53b66beccc51aca6312edd80beda59e90f6c26426",
@@ -112,8 +112,8 @@
     "token": 1075
   },
   "skills/tdq-conventions/references/user-facing-block.md": {
-    "sha256": "96a08e26325ffca650b8a8037f56f7dcf1da433300368529148342d58c0d3972",
-    "token": 2377
+    "sha256": "969b295c9b00d9450bd0b6a1fec0f7982dba350a8cbc10f21b7b78d86c9514c4",
+    "token": 2392
   },
   "skills/tdq-conventions/references/worklog-images.md": {
     "sha256": "a4cada8935d0db3dedd422f86df7c5824866e573ed386b56abb81b01abe3f7bd",
@@ -124,8 +124,8 @@
     "token": 2486
   },
   "skills/tdq-intake/references/interview.md": {
-    "sha256": "6697665adcdefdd3b068e4ebeb59debb2a62c8749d5ecad556d98444547b4452",
-    "token": 1592
+    "sha256": "b0cb65cb02ff2955d9dae94ac265af6b2862458f6be99a7f9d2c70b4239be291",
+    "token": 1604
   },
   "skills/tdq-intake/references/issue-triage.md": {
     "sha256": "edec01e8bd7cc3f708a03a39fd96ec7bd85772237cd58dd4a1b437364a4b84e8",
