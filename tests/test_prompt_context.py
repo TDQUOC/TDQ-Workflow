@@ -55,6 +55,7 @@ class TestIntakeReminder(unittest.TestCase):
         self.assertNotIn("[TDQ:NEXT]", out)
         self.assertLessEqual(len(line), 160, line)
         self.assertNotIn("…", line)
+        self.assertIn("tdq-workflow:tdq-intake", line)
 
     def test_b_state_without_active_request_prints_only_intake(self):
         write_state(self.cwd, active_request=None, lane="full", phase="idle")

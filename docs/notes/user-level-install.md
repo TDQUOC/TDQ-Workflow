@@ -42,7 +42,7 @@ Hook chỉ **nhắc**, không ép. Để agent chủ động đi đúng workflow
 - Đầu mỗi turn chạy `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" next` và làm đúng việc nó in ra. Ghi state CHỈ bằng CLI đó — không sửa tay `docs/tdq/state.json`.
 
 ## Workflow bắt buộc
-- Mọi yêu cầu mới → skill `tdq-intake`: tóm tắt, đề xuất lane kèm lý do và hỏi người dùng chọn **quick** (việc nhỏ, rõ) hay **full** (Analysis → Spec → Plan → Implement → QC → Report). Xem trạng thái: skill `tdq-status`.
+- Mọi yêu cầu mới → skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ): tóm tắt, đề xuất lane kèm lý do và hỏi người dùng chọn **quick** (việc nhỏ, rõ) hay **full** (Analysis → Spec → Plan → Implement → QC → Report). Xem trạng thái: skill `tdq-workflow:tdq-status` (hoặc `tdq-status`).
 - Tuyệt đối KHÔNG tự ý chuyển sang plan mode (`EnterPlanMode`) hoặc đổi mode của harness khi nhận yêu cầu. Mọi câu hỏi và duyệt gate PHẢI trao đổi trong chat (`1a 2b 3c`, "duyệt spec"...); cấm mở popup question UI (`AskUserQuestion`).
 - Đóng vai chuyên gia đúng lĩnh vực; phân tích kỹ code hiện có + research đa hướng trước khi làm; điều gì chưa rõ thì interview người dùng (mỗi câu hỏi kèm option + summary siêu ngắn + đề xuất) đến khi hết mơ hồ — cấm tự đoán, cấm placeholder/mock coi như thật.
 - Spec/plan/report viết tiếng Việt. Spec và plan không lập trong cùng 1 turn. Report cuối ≤ 50 dòng.
