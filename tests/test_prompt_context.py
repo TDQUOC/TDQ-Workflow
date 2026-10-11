@@ -394,14 +394,13 @@ class TestMultilingualGates(unittest.TestCase):
 
 
 class TestActionApprovalSentences(unittest.TestCase):
-    """Câu hành động dứt khoát ('làm đi', 'tiến hành đi'...) được tính là duyệt hợp lệ
-    khi đang chờ spec, plan, hoặc quick.
-    Tuyệt đối từ chối khi ở cổng mode, hoặc khi câu nói chứa điều kiện/confirm/nghi vấn.
+    """Câu hành động dứt khoát ('làm đi', 'tiến hành đi'...) buộc phải bị từ chối
+    nếu không kèm đối tượng (spec/plan/quick) hoặc đại từ (cái này).
     """
 
     setUp = TestModeNaming.setUp
 
-    def test_action_sentences_approve_at_spec_and_plan(self):
+    def test_action_sentences_rejected_without_object(self):
         cases = [
             "làm đi",
             "okay làm đi",
@@ -414,33 +413,6 @@ class TestActionApprovalSentences(unittest.TestCase):
             "làm luôn đi",
             "thực hiện đi",
             "chạy đi",
-        ]
-        for gate in ("spec", "plan"):
-            for said in cases:
-                with self.subTest(gate=gate, said=said):
-                    self.assertTrue(self.pc.looks_like_approval(said, gate), (said, gate))
-
-    def test_action_sentence_rejected_at_mode_and_quick_gate(self):
-        """Cổng mode có câu hỏi chọn mode (main/subagent), cổng quick có câu hỏi chọn
-        mức QC (full/lite/ultra) — câu hành động trần không trả lời câu hỏi nên bắt buộc
-        phải bị từ chối, yêu cầu trả lời câu hỏi trước."""
-        for gate in ("mode", "quick"):
-            for said in ("làm đi", "okay làm đi", "tiến hành đi", "triển đi", "go ahead"):
-                with self.subTest(gate=gate, said=said):
-                    self.assertFalse(self.pc.looks_like_approval(said, gate), (said, gate))
-
-    def test_action_sentence_rejected_when_confirm_or_question_present(self):
-        """Nếu ngoài ý định hành động còn có câu hỏi, điều kiện hoặc yêu cầu confirm
-        (nhưng, confirm, xác nhận, nếu, ?), không được tính là duyệt — phải trả lời trước."""
-        cases = [
-            "làm đi nhưng confirm lại X cho tôi",
-            "làm đi nhưng nhớ kiểm tra test",
-            "làm đi nếu test xanh",
-            "làm đi, nhớ confirm lại nhé",
-            "làm đi?",
-            "tiến hành nhưng báo trước nhé",
-            "go ahead but verify first",
-            "triển đi nếu không lỗi",
         ]
         for gate in ("spec", "plan", "quick"):
             for said in cases:
