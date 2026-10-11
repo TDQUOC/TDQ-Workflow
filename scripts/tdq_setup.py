@@ -555,7 +555,13 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
 - Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py`.
-  Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`."""
+  Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+
+## Nguyên tắc TDQ Workflow bắt buộc
+
+- Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-intake` và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
+- Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
+- Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code."""
 
 
 def khoi_huong_dan(goc=None):
@@ -651,6 +657,91 @@ def _tim_cong_cu(ten):
 
 def _duong_moc(project):
     return os.path.join(project, MOC_SAN_SANG)
+
+
+def _duong_phat_hanh(project):
+    return os.path.join(project, search_rules.MOC_PHAT_HANH)
+
+
+def doc_phat_hanh(project):
+    """-> mốc phiên bản đã setup của project, hoặc None nếu chưa có/lỗi."""
+    try:
+        with io.open(_duong_phat_hanh(project), encoding="utf-8") as fh:
+            du_lieu = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    return du_lieu if isinstance(du_lieu, dict) else None
+
+
+def ghi_phat_hanh(project, phien_ban):
+    """Ghi mốc phiên bản đã setup cho project."""
+    duong = _duong_phat_hanh(project)
+    tam = f"{duong}.{os.getpid()}.tmp"
+    try:
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+        with io.open(tam, "w", encoding="utf-8", newline="\n") as fh:
+            json.dump({"phien_ban": str(phien_ban), "cap_nhat": _now()}, fh, ensure_ascii=False, indent=2)
+            fh.write("\n")
+        os.replace(tam, duong)
+        return True
+    except OSError as exc:
+        _log(f"không ghi được mốc phiên bản {duong}: {exc}")
+        try:
+            os.remove(tam)
+        except OSError:
+            pass
+        return False
+
+
+def doc_phien_ban_plugin(goc_plugin=None):
+    """Đọc version hiện hành từ plugin.json."""
+    goc = goc_plugin or GOC_REPO
+    for man in (os.path.join(goc, ".claude-plugin", "plugin.json"),
+                os.path.join(goc, ".codex-plugin", "plugin.json")):
+        try:
+            with io.open(man, encoding="utf-8") as fh:
+                d = json.load(fh)
+                if d.get("version"):
+                    return str(d["version"])
+        except (OSError, ValueError):
+            continue
+    return None
+
+
+def can_cap_nhat_phien_ban(project, goc_plugin=None):
+    """-> True nếu phiên bản plugin hiện hành khác với mốc phiên bản đã setup trong project."""
+    hien_tai = doc_phien_ban_plugin(goc_plugin)
+    if not hien_tai:
+        return False
+    da_ghi = doc_phat_hanh(project)
+    if not da_ghi or da_ghi.get("phien_ban") != hien_tai:
+        return True
+    return False
+
+
+def tu_dong_cap_nhat_khi_doi_phien_ban(project, goc_plugin=None):
+    """Chạy đồng bộ instruction, cấu hình Codex và ghim version mới vào mốc."""
+    hien_tai = doc_phien_ban_plugin(goc_plugin)
+    _log(f"tự động cập nhật cho phiên bản {hien_tai} tại {project}")
+    # 1. Ghim instruction vào ~/.claude/CLAUDE.md
+    ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
+    # 2. Khai báo hook/MCP cho Codex nếu có
+    if _tim_cong_cu("codex"):
+        try:
+            import tdq_codex_mcp
+            tdq_codex_mcp.khai_mcp_codex()
+            tdq_codex_mcp.khai_hook_codex(project)
+        except Exception as exc:  # noqa: BLE001
+            _log(f"lỗi khai codex khi đổi phiên bản: {exc}")
+    # 3. Dọn tiến trình broker thừa
+    try:
+        don_may()
+    except Exception as exc:  # noqa: BLE001
+        _log(f"lỗi dọn máy khi đổi phiên bản: {exc}")
+    # 4. Ghi nhận mốc phiên bản đã setup
+    if hien_tai:
+        ghi_phat_hanh(project, hien_tai)
+    return True
 
 
 def _duong_khoa(project):
@@ -984,6 +1075,9 @@ def main(argv, khai_codex=None):
     no += no_hook + no_skill_khong_ton_tai(project)
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
         da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
+    phien_ban_moi = doc_phien_ban_plugin(GOC_REPO)
+    if phien_ban_moi:
+        ghi_phat_hanh(project, phien_ban_moi)
 
     for dong in da_cai:
         print(f"đã cài · {dong}")

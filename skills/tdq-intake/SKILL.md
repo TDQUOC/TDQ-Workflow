@@ -35,7 +35,7 @@ broke, then open a normal request from Part A. Never keep going at tier `nhỏ`.
 Definition of a "new request": ANY user prompt while NO request is open — open means
 `active_request` exists AND `phase != idle`. When phase ≠ idle the user's message belongs
 to the running request (approval, feedback, interview answer); never nest a new request.
-
+Any new request MUST use tdq-intake; switching mode or entering harness plan mode is banned.
 The request is a BUG REPORT rather than a feature ("it runs wrong", "it hangs", "the result
 is not what I expected") → follow [references/issue-triage.md](references/issue-triage.md)
 first, then come back to step 1 below.

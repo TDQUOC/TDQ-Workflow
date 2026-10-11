@@ -32,6 +32,7 @@ CONG_CU_SHELL = {"bash", "powershell", "shell", "exec_command", "local_shell"}
 # Readiness stamp: `tdq_setup.khoi_tao_nen` writes it, the gate and session start read it.
 # One name for all three (T8.6); a relative path with "/" joins fine on every OS.
 MOC_SAN_SANG = "docs/tdq/.tdq-san-sang.json"
+MOC_PHAT_HANH = "docs/tdq/.tdq-phat-hanh.json"
 CO_SCRIPT = {"-c", "-lc", "-ic", "-command", "/c"}
 
 CHUONG_TRINH_TIM = {"grep", "egrep", "fgrep", "rg", "ag", "ack", "findstr", "select-string", "sls"}

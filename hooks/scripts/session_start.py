@@ -31,6 +31,7 @@ from luat_gon import doc_than_luat, loc_than_luat  # noqa: E402
 from tdq_state import (default_state, lenh_cho_project, load,  # noqa: E402
                        muc_gat_hieu_luc, render_next)
 import search_rules  # noqa: E402
+import tdq_setup  # noqa: E402
 from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
@@ -201,8 +202,15 @@ def main():
     # measured 2026-09-21: the graphify notice came out as `graphify is n…` on a machine without
     # graphify. A notice that silently vanishes is worse than none. Each is empty on a machine
     # that does not need it, so those sessions pay nothing for it.
+    da_cap_nhat_ver = False
+    try:
+        if tdq_setup.can_cap_nhat_phien_ban(cwd, goc_plugin=GOC_PLUGIN):
+            da_cap_nhat_ver = tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(cwd, goc_plugin=GOC_PLUGIN)
+    except Exception:  # noqa: BLE001
+        pass
     dung_nen = can_khoi_tao(cwd) and kich_hoat_nen(cwd)
     nhac = [n for n in (
+        "[TDQ] Đã tự động cập nhật instruction và cấu hình cho phiên bản mới." if da_cap_nhat_ver else "",
         "" if shutil.which("graphify") else
         "[TDQ] graphify is not installed (optional): uv tool install graphifyy",
         can_nhac_ten_lenh(),

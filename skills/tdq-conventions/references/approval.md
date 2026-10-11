@@ -45,9 +45,9 @@ Valid examples:
 
 Ambiguous → **ASK**. Never approve on the user's behalf.
 
-**Never enter plan mode on your own initiative.** The plan is presented in chat or in a file
-and then waits for the user; switching the harness into plan mode yourself replaces the
-user's gate with your own and is banned. The user asks for plan mode → do it.
+**Never switch mode or enter plan mode.** Switching the harness into plan mode (`EnterPlanMode`)
+or changing mode on your own initiative is strictly banned: it bypasses the intake/spec pipeline.
+The plan is presented in chat or in a file and then waits for user approval; never call EnterPlanMode.
 
 ## Command to run the moment you recognise it
 
