@@ -272,9 +272,83 @@ class LogService(unittest.TestCase):
 
     def test_log_co_dong_lenh_tat_ca_log_cua_thang_bac(self):
         """`--khong-log` phải tắt được cả module kia, không thì im lặng một nửa."""
-        with mock.patch.dict(os.environ, {"TDQ_LOG": "1"}),                 mock.patch.object(tdq_setup.tdq_lsp, "chay_kiem", return_value=[]),                 mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),                 mock.patch.object(tdq_setup, "smoke_ba_tang", return_value=[]),                 mock.patch.object(tdq_no, "ghi_no", return_value=0),                 mock.patch("sys.stdout", new_callable=io.StringIO):
+        with mock.patch.dict(os.environ, {"TDQ_LOG": "1"}),                 mock.patch.object(tdq_setup.tdq_lsp, "chay_kiem", return_value=[]),                 mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),                 mock.patch.object(tdq_setup, "kiem_plugin_user", return_value=([], [], [])),                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),                 mock.patch.object(tdq_setup, "smoke_ba_tang", return_value=[]),                 mock.patch.object(tdq_no, "ghi_no", return_value=0),                 mock.patch("sys.stdout", new_callable=io.StringIO):
             tdq_setup.main(["--khong-log"])
             self.assertEqual(os.environ["TDQ_LOG"], "0")
+
+
+class KiemPluginUser(unittest.TestCase):
+    """Plugin cài scope user mà chưa bật ở settings user → harness báo `Unknown skill`."""
+
+    def setUp(self):
+        self.home = tempfile.mkdtemp(prefix="tdq-plugin-user-")
+        self.addCleanup(shutil.rmtree, self.home, True)
+        self.claude = os.path.join(self.home, ".claude")
+        os.makedirs(os.path.join(self.claude, "plugins"))
+        self.settings = os.path.join(self.claude, "settings.json")
+        self.goc = os.path.join(self.home, "goc")
+        os.makedirs(os.path.join(self.goc, ".claude-plugin"))
+        self._ghi(os.path.join(self.goc, ".claude-plugin", "plugin.json"), {"version": "1.0.0"})
+
+    def _ghi(self, duong, du_lieu):
+        with io.open(duong, "w", encoding="utf-8") as fh:
+            json.dump(du_lieu, fh)
+
+    def _cai(self, version="1.0.0", scope="user"):
+        self._ghi(os.path.join(self.claude, "plugins", "installed_plugins.json"),
+                  {"version": 2, "plugins": {"tdq-workflow@tdq-local": [
+                      {"scope": "project", "projectPath": "/x", "version": "0.1.0"},
+                      {"scope": scope, "version": version}]}})
+
+    def _bat(self):
+        with io.open(self.settings, encoding="utf-8") as fh:
+            return json.load(fh)["enabledPlugins"]
+
+    def _kiem(self, cham_may=True):
+        return tdq_setup.kiem_plugin_user(home=self.home, goc_plugin=self.goc, cham_may=cham_may)
+
+    def test_plugin_user_chua_bat_thi_bat_va_sao_luu(self):
+        self._cai()
+        self._ghi(self.settings, {"enabledPlugins": {"khac@mk": True}})
+        da_cai, canh_bao, no = self._kiem()
+        self.assertIs(self._bat()["tdq-workflow@tdq-local"], True)
+        self.assertIs(self._bat()["khac@mk"], True)
+        self.assertTrue(os.path.exists(self.settings + ".bak"))
+        self.assertEqual(len(da_cai), 1)
+        self.assertIn("mở phiên mới", da_cai[0])
+        self.assertEqual((canh_bao, no), ([], []))
+
+    def test_plugin_user_da_bat_khong_ghi(self):
+        self._cai()
+        self._ghi(self.settings, {"enabledPlugins": {"tdq-workflow@tdq-local": True}})
+        self.assertEqual(self._kiem(), ([], [], []))
+        self.assertFalse(os.path.exists(self.settings + ".bak"))
+
+    def test_plugin_user_chua_cai_thi_ghi_no(self):
+        self._cai(scope="project")
+        self._ghi(self.settings, {})
+        da_cai, _canh_bao, no = self._kiem()
+        self.assertEqual(da_cai, [])
+        self.assertEqual(len(no), 1)
+        self.assertIn("/plugin install tdq-workflow@tdq-local", no[0])
+
+    def test_plugin_user_lech_phien_ban_thi_canh_bao(self):
+        self._cai(version="0.59.0")
+        self._ghi(self.settings, {"enabledPlugins": {"tdq-workflow@tdq-local": True}})
+        _da_cai, canh_bao, no = self._kiem()
+        self.assertEqual(no, [])
+        self.assertEqual(len(canh_bao), 1)
+        self.assertIn("0.59.0", canh_bao[0])
+        self.assertIn("1.0.0", canh_bao[0])
+        self.assertIn("/plugin update tdq-workflow@tdq-local", canh_bao[0])
+
+    def test_plugin_user_khong_cham_may_chi_ghi_no(self):
+        self._cai()
+        self._ghi(self.settings, {"enabledPlugins": {}})
+        da_cai, _canh_bao, no = self._kiem(cham_may=False)
+        self.assertEqual(da_cai, [])
+        self.assertEqual(len(no), 1)
+        self.assertNotIn("tdq-workflow@tdq-local", self._bat())
 
 
 def _goi_zip(ten_bin, noi_dung=b"BINARY"):

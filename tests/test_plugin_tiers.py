@@ -218,5 +218,46 @@ class IdempotentTest(TierBase):
             self.assertIn("0 changes", f.read())
 
 
+class BatKhoaTest(TierBase):
+    """bat_khoa(path, key): bật một khóa bất kỳ, không qua tier."""
+
+    def setUp(self):
+        super().setUp()
+        sys.path.insert(0, os.path.join(ROOT, "scripts"))
+        import plugin_tiers
+        self.pt = plugin_tiers
+
+    def test_bat_khoa_moi(self):
+        ok, msg = self.pt.bat_khoa(self.settings_path, "moi@mk")
+        self.assertTrue(ok, msg)
+        self.assertIs(self.read_settings()["enabledPlugins"]["moi@mk"], True)
+        self.assertIn("moi@mk", msg)
+
+    def test_da_bat_khong_ghi(self):
+        ok, msg = self.pt.bat_khoa(self.settings_path, "tdq-workflow@tdq-local")
+        self.assertFalse(ok)
+        self.assertEqual(msg, "đã bật")
+        self.assertFalse(os.path.exists(self.settings_path + ".bak"))
+
+    def test_file_hong_khong_ghi(self):
+        with open(self.settings_path, "w", encoding="utf-8") as f:
+            f.write("{hỏng")
+        ok, _ = self.pt.bat_khoa(self.settings_path, "moi@mk")
+        self.assertFalse(ok)
+        with open(self.settings_path, encoding="utf-8") as f:
+            self.assertEqual(f.read(), "{hỏng")
+        self.write_settings({"enabledPlugins": []})
+        ok, _ = self.pt.bat_khoa(self.settings_path, "moi@mk")
+        self.assertFalse(ok)
+
+    def test_giu_khoa_khac_va_bak(self):
+        self.pt.bat_khoa(self.settings_path, "moi@mk")
+        sau = self.read_settings()
+        self.assertEqual(sau["env"], {"FOO": "bar"})
+        self.assertIs(sau["enabledPlugins"]["tavily" + MK], True)
+        with open(self.settings_path + ".bak", encoding="utf-8") as f:
+            self.assertEqual(json.load(f), self.base_settings)
+
+
 if __name__ == "__main__":
     unittest.main()

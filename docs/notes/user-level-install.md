@@ -26,6 +26,22 @@ Lưu ý: repo chưa có file `.claude-plugin/marketplace.json` thì lệnh add s
 }
 ```
 
+### Plugin phải bật ở scope user
+
+Cài xong chưa đủ: Claude Code chỉ nạp skill và hook của plugin có trong `enabledPlugins`
+(gộp `~/.claude/settings.json` → `.claude/settings.json` → `.claude/settings.local.json`).
+Khối ghim ở `~/.claude/CLAUDE.md` áp cho MỌI repo. Plugin chỉ bật trong settings của vài
+project thì ở repo khác, lệnh gọi `tdq-workflow:tdq-intake` gặp `Unknown skill` và hook
+`[TDQ:*]` cũng im. Đo 2026-10-11 trên 12 phiên: project có `enabledPlugins` nạp được, project
+không có thì lỗi; host CLI hay CloudCLI không phải biến quyết định.
+
+- `python3 <thư mục cài>/scripts/tdq_setup.py` tự bật `tdq-workflow@<marketplace>` trong
+  `~/.claude/settings.json` (sao lưu `settings.json.bak` trước) khi đã có bản cài scope user.
+- Việc setup KHÔNG làm thay được (lệnh của harness), phải tự gõ:
+  - chưa có bản cài scope user → `/plugin install tdq-workflow@tdq-local`;
+  - setup báo bản cài lệch phiên bản → `/plugin update tdq-workflow@tdq-local`;
+  - sau khi bật → mở phiên mới để harness nạp plugin.
+
 ## 2. Đồng bộ rule working log ở `~/.claude/CLAUDE.md`
 
 Nếu rule user-level của bạn ghi log vào chỗ khác (ví dụ `docs/superpowers/workinglog/`) thì sẽ có 2 chỗ log lệch nhau. Đổi mọi đường dẫn log về `docs/workinglog/YYYY-MM-DD.md` — hook `stop_gate`/`edit_gate` của plugin chỉ nhìn `docs/workinglog/`.

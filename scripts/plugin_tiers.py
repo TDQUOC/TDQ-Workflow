@@ -107,6 +107,27 @@ def _write_settings(data, path):
         return False
 
 
+def bat_khoa(path, key):
+    """Turn on enabledPlugins[key] in the settings file at `path`, bypassing tiers.
+
+    Returns (changed, message). The caller logs the message; nothing is written when the
+    file is unreadable, enabledPlugins is not an object, or the key is already on.
+    """
+    data, err = _load_json(path)
+    if err is not None or not isinstance(data, dict):
+        return False, f"không đọc được {path}: {err or 'không phải object JSON'}"
+    enabled = data.setdefault("enabledPlugins", {})
+    if not isinstance(enabled, dict):
+        return False, f"{path}: enabledPlugins không phải object — bỏ qua"
+    old = enabled.get(key, "chưa có khóa")
+    if old is True:
+        return False, "đã bật"
+    enabled[key] = True
+    if not _write_settings(data, path):
+        return False, f"không ghi được {path}"
+    return True, f"{key}: {old}→True ({path})"
+
+
 def cmd_reset():
     tiers = _tiers()
     if tiers is None:
