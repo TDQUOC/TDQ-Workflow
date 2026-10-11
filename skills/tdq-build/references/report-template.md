@@ -52,8 +52,8 @@ below before writing the report; working from memory is banned.
 
     ➤ Trả lời: nhắn "commit" (tôi commit, không push) hoặc "chưa" (giữ nguyên chỗ làm việc) · Góp ý: nhắn trực tiếp
     ```
-    User agrees → a message describing the change, containing NO "generated with …" and no AI
-    trailer; branch named per the conventions.
+    User agrees → a message describing the change, containing NO "generated with …", NO
+    "Co-Authored-By: Claude Code...", and no AI trailer; branch named per the conventions.
 
 11. **Merge the request branch back** — this happens on BOTH answers, so long as state holds a
     `nhanh_request`. The branch was opened at step 3b of `tdq-intake`; leaving it behind is what

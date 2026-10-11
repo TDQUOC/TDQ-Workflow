@@ -5,7 +5,7 @@ description: Install and prove every dependency the workflow searches with: 7 ru
 
 # TDQ Setup — installing and proving the workflow's three search layers
 <!-- muc-luc-dong:
-  The one hard rule of this skill=26-31 · The ladder — `python3 scripts/tdq_lsp.py check`=32-63 ·
+  The one hard rule of this skill=26-31 · The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=32-63 ·
   Rung 5 — a conflicting plugin hook=64-71 ·
   Runbook — setting a machine up, and re-configuring it later=72
 -->
@@ -26,10 +26,10 @@ in 0.58.0 — measured, no significant loss without them.
 ## The one hard rule of this skill
 
 **Never install anything, never edit another plugin's files, without the user saying yes first.**
-`scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
+`${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
 command runs. This holds even when a rung is trivially fixable and even when the build is blocked.
 
-## The ladder — `python3 scripts/tdq_lsp.py check`
+## The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`
 
 Seven rungs, printed one line each, a missing rung printing the command that fixes it.
 
@@ -110,7 +110,7 @@ raises a prompt, and a search layer that asks permission per call stops being us
 plugin's `hooks.json` up next to itself with the version in the name, drop only `PreToolUse`, keep
 `SessionStart`. Hooks load at session start, so the nudging line keeps appearing until restart.
 
-Done when: `python3 scripts/tdq_lsp.py check` prints seven rungs with no actionable gap and exits 0,
+Done when: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check` prints seven rungs with no actionable gap and exits 0,
 and the effect check of `tdq-intake` step 1b passes — existence alone proves nothing.
 Next step: the phase does not change — go back to the phase that called this skill, load that
 skill again, and route the search by question kind, per

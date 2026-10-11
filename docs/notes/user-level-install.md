@@ -65,7 +65,7 @@ Hook chỉ **nhắc**, không ép. Để agent chủ động đi đúng workflow
 - Turn nào có thay đổi repo → append working log `docs/workinglog/YYYY-MM-DD.md` (append CUỐI file). Đây là điểm CHẶN duy nhất: quên thì không kết thúc turn được.
 
 ## Git & Graphify
-- Tên branch/commit/worktree không bắt đầu bằng `claude|antigravity|gemini|codex`; commit message không chứa "generated with …"/"được tạo cùng/với …"/Co-Authored-By AI; chỉ commit/push khi người dùng yêu cầu.
+- Tên branch/commit/worktree không bắt đầu bằng `claude|antigravity|gemini|codex`. Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào commit message hay PR body; chỉ commit/push khi người dùng yêu cầu.
 - Check graphify ready (`graphify --version`); chưa có thì đề xuất người dùng setup theo https://github.com/Graphify-Labs/graphify. Cuối turn có thay đổi code → chạy `graphify extract . --code-only` để graph luôn mới (commit thì hook post-commit tự rebuild).
 ```
 

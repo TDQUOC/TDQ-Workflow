@@ -44,8 +44,8 @@ all the work nor someone who scatters it blindly.
 ### Step 0 — assign the WHOLE plan before typing the first line of code
 
 ```
-python3 scripts/tdq_team.py assign
-python3 scripts/tdq_team.py audit
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" assign
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" audit
 ```
 
 `assign` reads the ENTIRE plan (not one task at a time), builds each task's file region from
@@ -68,7 +68,7 @@ in the region of a task recorded as `giao` without having opened its branch.
 | `mcp` | the task's `Dùng:` line ends with the `(mcp)` label | `grep '(mcp)' <plan>` <!-- i18n-allow: canonical field names of the plan --> |
 | `file-luat` | the file region touches `skills/`, `hooks/`, `agents/`, `.claude/`, `.codex/`, `CLAUDE.md`, `AGENTS.md` | look at `vung_file` in the map |
 | `hop-dong` | the task builds a shared contract (data type, constant, message template, registry) that later tasks read | several other tasks declare `Cần:` pointing at it <!-- i18n-allow: canonical field names of the plan --> |
-| **mặc định: GIAO** | **matches none of the 5 rows above** | `python3 scripts/tdq_team.py audit` exit 0 <!-- i18n-allow: canonical field names of the plan --> |
+| **mặc định: GIAO** | **matches none of the 5 rows above** | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" audit` exit 0 <!-- i18n-allow: canonical field names of the plan --> |
 
 These five groups are a CLOSED set. Inventing a sixth reason ("this is faster if I do it",
 "this task is too small", "explaining it to a sub-agent takes longer than doing it") is working
@@ -77,15 +77,15 @@ around the rule, and `audit` will go red.
 ### The wave loop
 
 ```
-python3 scripts/tdq_team.py wave            # next wave: delegatable tasks with no locked region
-python3 scripts/tdq_team.py open T1.1        # branch + its own worktree for the task
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" wave            # next wave: delegatable tasks with no locked region
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" open T1.1        # branch + its own worktree for the task
 # → call the tdq-implementer agent with the prompt template below, EVERY task of the wave in ONE response
 # → mark every task you just handed out [>] in the plan (several [>] is valid)
-python3 scripts/tdq_team.py check T1.1      # probe for conflicts AND rerun the task's own `Test:`
-python3 scripts/tdq_team.py merge T1.1       # rebase → probe → rerun the test → merge → clean up
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" check T1.1      # probe for conflicts AND rerun the task's own `Test:`
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" merge T1.1       # rebase → probe → rerun the test → merge → clean up
 # → turn [>] into [x] IMMEDIATELY once the merge lands
-python3 scripts/tdq_team.py resolve T1.1     # only when something is stuck: prints both sides
-python3 scripts/tdq_team.py sweep --clean   # end of wave: sweep EVERY request, then back to `wave`
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" resolve T1.1     # only when something is stuck: prints both sides
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" sweep --clean   # end of wave: sweep EVERY request, then back to `wave`
 ```
 
 ### What the machine checks for you, so you do not have to
@@ -161,10 +161,10 @@ a missing field means it has to guess, and a wrong guess is paid for at merge ti
 Before ending phase implement, all of these must hold:
 
 ```
-python3 scripts/tdq_team.py audit          # exit 0
-python3 scripts/tdq_team.py wave              # prints "HẾT: không còn task nào để giao" <!-- i18n-allow: quoted machine output -->
-python3 scripts/tdq_team.py sweep --clean       # every worktree cleaned up, across all requests
-python3 scripts/tdq_team.py sweep             # the ledger holds no open row left
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" audit          # exit 0
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" wave              # prints "HẾT: không còn task nào để giao" <!-- i18n-allow: quoted machine output -->
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" sweep --clean       # every worktree cleaned up, across all requests
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" sweep             # the ledger holds no open row left
 git worktree list                            # only the root worktree left
 grep -c '^- \[x\]' docs/tdq/plan/<slug>.md   # equals the total task count
 ```

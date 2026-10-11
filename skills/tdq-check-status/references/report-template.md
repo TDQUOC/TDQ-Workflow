@@ -56,7 +56,7 @@ From here to the end of the section is the detector's REAL output, copied verbat
 Chạy sau khi user gật ĐÚNG MỘT lần. Chỉ hai họ `set` và `approve`; không có lệnh nào
 xoá hay ghi đè dữ liệu cũ.
 
-    python3 scripts/tdq_state.py set started_at=ISO_MỐC_MỞ_REQUEST
+    python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set started_at=ISO_MỐC_MỞ_REQUEST
 
 ## Việc kế tiếp
 

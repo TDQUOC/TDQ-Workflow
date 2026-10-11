@@ -53,7 +53,7 @@ Every task in the plan runs these four beats, in this order, with nothing skippe
 ### Step 1 — check the machine once per request
 
 ```
-python3 scripts/tdq_codex.py check
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_codex.py" check
 ```
 
 Not runnable → say the printed reason to the user and go back to the mode gate. Never install
@@ -67,7 +67,7 @@ task's own test file plus anything the plan names as untouchable.
 ### Step 3 — run the task
 
 ```
-python3 scripts/tdq_codex.py run <ma-task> --prompt "<prompt>" --vung <file...> --khoa <file...> --da-thay-do
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_codex.py" run <ma-task> --prompt "<prompt>" --vung <file...> --khoa <file...> --da-thay-do
 ```
 
 `--da-thay-do` is your signature on beat 2. Passing it without having seen red is lying to
@@ -85,7 +85,7 @@ stays out of your context — see the digest threshold below.
 ### Step 5 — on a zone breach, roll back before anything else
 
 ```
-python3 scripts/tdq_vungfile.py hoan-tac --moc <json> --file <file...>
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_vungfile.py" hoan-tac --moc <json> --file <file...>
 ```
 
 Roll back the stray files first, then decide: retry the task with a tighter prompt, or take

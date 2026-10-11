@@ -9,11 +9,11 @@ inside a 3,652-token file.
 Every worktree `open` opens is written into `docs/tdq/worktrees.json` (machine) and rendered
 into `docs/tdq/worktrees.md` (human). The ledger outlives the request: a row stays open until
 the worktree is really gone, so a worktree of a request finished weeks ago is still findable.
-Write it ONLY through `scripts/tdq_team.py` — the same rule as `state.json`.
+Write it ONLY through `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py"` — the same rule as `state.json`.
 
 ```
-python3 scripts/tdq_team.py sweep        # report: task · request · path · age · size · clean · merged
-python3 scripts/tdq_team.py sweep --clean  # the same sweep, and remove everything that is safe
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" sweep        # report: task · request · path · age · size · clean · merged
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" sweep --clean  # the same sweep, and remove everything that is safe
 ```
 
 **Removing needs all THREE conditions**, checked per worktree, never by feel: the working

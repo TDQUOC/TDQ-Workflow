@@ -2,6 +2,14 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.65.0 — 2026-10-11
+
+Cấm attribution trailer `Co-Authored-By`, chuẩn hóa đường dẫn script plugin trong toàn bộ skills.
+Kế hoạch: `docs/tdq/plan/2026-10-11-1346-cam-co-author-fix-path-script.md`.
+
+- **Cấm Co-Authored-By.** Thêm điều luật vào `KHOI_HUONG_DAN` của `tdq_setup.py`; đồng bộ `~/.claude/CLAUDE.md`, conventions và mẫu report.
+- **Chuẩn hóa đường dẫn script.** Các lệnh nội bộ trong `skills/` dùng `${CLAUDE_PLUGIN_ROOT}` để chạy đúng khi working directory là project khác.
+
 ## 0.64.0 — 2026-10-11
 
 Siết chặt cổng duyệt: yêu cầu lệnh chính thức hoặc đủ động từ + tân ngữ, gỡ bỏ duyệt tự nhiên trần.
@@ -14,7 +22,7 @@ Kế hoạch: `docs/tdq/plan/2026-10-11-1327-siet-chat-cong-duyet-lenh.md`.
 Tự động mang theo các file docs/log khi mở request branch.
 Kế hoạch: `docs/tdq/plan/2026-10-11-1300-tu-dong-mo-nhanh-doc-log.md`.
 
-- **Mở branch không ngắt quãng cho docs/log.** Ở bước 3b của `tdq-intake` và khi hoàn tất report, nếu `git status --porcelain` bị dirty nhưng toàn bộ file chỉ thuộc nhóm tài liệu, log, cache (`docs/**`, `*.md`, `logs/**`, `*.log`), hệ thống sẽ tự động tạo/gộp nhánh và mang theo chúng. Chỉ dừng và hỏi người dùng khi có file mã nguồn code thay đổi.
+- **Mở branch không ngắt quãng cho docs/log.** Ở bước 3b của `tdq-intake`, nếu working tree chỉ có tài liệu, log hoặc cache (`docs/**`, `*.md`, `logs/**`, `*.log`), hệ thống tự động tạo branch và mang file theo. Có file code thì dừng hỏi người dùng.
 
 ## 0.62.0 — 2026-10-11
 
@@ -463,34 +471,6 @@ Báo cáo: `docs/tdq/reports/2026-09-10-2247-mode-codex-implement.md`.
   Cài lên máy mới phải có cả đồng ý của người dùng lẫn `codex` trên máy; cờ đồng ý mặc định false.
 - **Giới hạn** — Q13 (sandbox chặn ghi ra ngoài) chưa chạy thật vì cờ đồng ý đang false. Suite
   290 fail / 4 error bằng đúng mốc trước request (danh sách giống hệt), request thêm 0 fail mới.
-
-## 0.45.0 — 2026-09-05
-
-Mỗi request tự mở nhánh git của nó. Trước bản này chỉ mode đội mới đẻ nhánh, còn mode
-`main` làm thẳng lên nhánh user đang đứng. Một request dở dang vì thế không có chỗ nào để lùi
-lại gọn gàng, còn nhánh tích hợp của mode đội thì sống sót thành nhánh mồ côi.
-Báo cáo: `docs/tdq/reports/2026-09-05-0833-gitflow-nhanh-theo-request.md`.
-
-- **Ba khoá state mới, `schema_version` 4 → 5** — `loai_request`, `nhanh_goc`, `nhanh_request`.
-  Chỗ nạp state đã `setdefault` sẵn nên file schema 4 dựng tay nạp lên không mất khoá nào; có
-  ca test khoá đúng điều đó.
-- **Bước 3b của `tdq-intake` — mở nhánh request** — chỉ lane `full` và `quick`, tầng `nhỏ` không
-  mở. Repo bẩn thì DỪNG, in file bẩn, hỏi user; cấm tự `git stash`. Loại request do Claude đề
-  xuất ngay trong câu hỏi chọn lane, không hỏi thêm một câu nào.
-- **Luật tên nhánh `<loại>/<mô tả>`** — đúng năm loại `feature`/`bugfix`/`hotfix`/`chore`/`docs`,
-  kebab-case không dấu, dấu gạch chéo xuôi vì `git check-ref-format --branch` từ chối dạng kia.
-  Bản dài ở `skills/tdq-intake/references/nhanh-request.md`.
-- **Bước 11 của khuôn báo cáo — gộp nhánh về** — chạy trên CẢ hai câu trả lời commit/chưa:
-  `git merge --no-ff` rồi `git branch -d`, sau đó xoá ba khoá state. Đây là chỗ chặn nhánh mồ côi
-  ngay từ gốc.
-- **Mode đội bỏ tầng nhánh tích hợp** — nhánh request thay chỗ nó, ba tầng còn hai. `tdq_team.py`
-  thêm hàng rào: gộp ngay trên cây làm việc chính mà còn thay đổi ĐÃ THEO DÕI thì dừng, vì
-  `merge --no-ff` sẽ nuốt luôn phần đang staged.
-- **Dọn nhánh mồ côi `tdq/2026-08-23-1623-mindmap-html-hai-lop/tich-hop`** — xoá cả local và
-  `origin` sau khi user xác nhận.
-
-- **Dọn `CHANGELOG.md`** — cắt 0.21.0–0.24.0 sang `CHANGELOG-archive.md` để file chính về
-  dưới trần 500 dòng của doc_lint R6.
 
 ## Lịch sử cũ hơn
 
