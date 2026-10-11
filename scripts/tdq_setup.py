@@ -559,7 +559,7 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
 
 ## Nguyên tắc TDQ Workflow bắt buộc
 
-- Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-intake` và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
+- Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
 - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
 - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
 

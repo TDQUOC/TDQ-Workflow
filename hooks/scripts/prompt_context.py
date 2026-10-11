@@ -218,7 +218,7 @@ def main():
     # No OPEN request (open = active_request exists AND phase != idle) → point at intake.
     # The INTAKE line comes FIRST so _truncate (which cuts from the tail) never clips it.
     intake = ("[TDQ:INTAKE] No request is open — unless this prompt belongs to an intake round "
-              "already running, open tdq-intake before doing anything else.")
+              "already running, open tdq-workflow:tdq-intake (or tdq-intake).")
     state = load(cwd)
     if state is None or not state.get("active_request"):
         _emit(cwd, sid, [intake])
