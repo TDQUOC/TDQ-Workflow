@@ -26,7 +26,7 @@ job in one turn, so batched ticks mean the plan reflected nothing while the work
 Fence: `hooks/scripts/edit_gate.py` **BLOCKS** (deny) every edit outside `docs/` and
 `tests/` while the phase is `implement`/`qc` and no task in the plan carries `[~]`.
 `tests/**` is exempt so a red test can still be written first. Blocked while the request is
-in fact closed → run `python3 scripts/tdq_state.py set phase=idle`.
+in fact closed → run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`.
 
 ## QC in the express pipeline
 

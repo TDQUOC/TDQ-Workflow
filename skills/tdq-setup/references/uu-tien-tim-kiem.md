@@ -41,7 +41,7 @@ again. Measured 2026-10-07: reading that answer as "LSP is dead" cost a session 
 search.
 
 **Calling LSP per module (0.59.0, BINDING).** A project is a list of LSP modules — one
-(language, root) pair each, printed by `python3 scripts/tdq_lsp.py module`; a one-language repo is
+(language, root) pair each, printed by `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" module`; a one-language repo is
 one row, a monorepo with two `tsconfig.json` is two. agent-lsp runs every configured server side by
 side and routes a FILE tool (`find_references`, `find_callers`, `list_symbols`…) by the file's
 extension, but `find_symbol` only ever asks the server of the LAST `start_lsp` (upstream issue #55).

@@ -139,7 +139,7 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 ## 7. Git
 
 - Branch, commit and worktree names **never** start with `claude`, `antigravity`, `gemini`, `codex`.
-- Commit messages **never** contain "generated with <AI>", any translation of that phrase, or an AI Co-Authored-By trailer.
+- Commit messages and PR bodies **never** contain "generated with <AI>", any translation, or "Co-Authored-By: Claude Code...".
 - **Never** commit or push before the user asks. Sole exception: a TDQ build hits a technical
   block only a commit clears → commit it with a proper message, do **NOT** push, list it in the report.
 - No git in the project yet → you may init git or a worktree; check the worktree merges back.

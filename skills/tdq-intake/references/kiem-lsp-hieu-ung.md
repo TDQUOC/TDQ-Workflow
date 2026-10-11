@@ -4,7 +4,7 @@
   The four steps, per module=34-51 · When a module fails=52
 -->
 
-Run at intake step 1b whenever rung 8 of `python3 scripts/tdq_lsp.py check` does not pass. Since
+Run at intake step 1b whenever rung 8 of `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check` does not pass. Since
 0.59.0 this is no longer a soft step: `tdq_state.py init` refuses to open a request while any LSP
 module of the project is unproven, stale or failed.
 
@@ -28,12 +28,12 @@ cause.
 One (language, root) pair: the root is the deepest directory holding that language's marker
 (`tsconfig.json` > `jsconfig.json` > `package.json`; `pyrightconfig.json` > `pyproject.toml` >
 `setup.py`; `go.mod`; `Cargo.toml`…). A one-language repo is one module; claudecodeui is
-`typescript:.` + `typescript:server`. `python3 scripts/tdq_lsp.py module` prints the list with the
+`typescript:.` + `typescript:server`. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" module` prints the list with the
 status of each. Markup (HTML, CSS) has no import graph and is never checked.
 
 ## The four steps, per module
 
-1. `python3 scripts/tdq_lsp.py kich-ban` — for every module still blocking, the script picks a
+1. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" kich-ban` — for every module still blocking, the script picks a
    symbol defined once in that module and used from at least one other file, and prints three MCP
    calls: `start_lsp` (that module's root + `language_id`), `open_document`, `find_references`.
 2. Send those three calls EXACTLY as printed — same root, same `language_id`, same line/column.
@@ -43,7 +43,7 @@ status of each. Markup (HTML, CSS) has no import graph and is never checked.
 3. Read `symbols=N` on the `find_references` answer. `find_references` through agent-lsp prints
    namespaces, not file paths, so the script judges the COUNT: it passes when N is greater than the
    occurrences of the name in its own file, i.e. at least one reference came from another file.
-4. `python3 scripts/tdq_lsp.py ghi-kiem <module> <N>` — the script records the verdict. Do not
+4. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" ghi-kiem <module> <N>` — the script records the verdict. Do not
    judge it yourself.
 
 A result stays valid 24 hours, and until the module's marker file or its MCP `lsp` entry changes;
@@ -56,7 +56,7 @@ after that the module is stale and the steps run again for that module only.
    `VirtualAlloc failed`, fixed by a larger pagefile, not by reinstalling) · N = 0 or only the
    own-file count (wrong root, missing marker → rung 6) · `No Project` (TypeScript: the file was
    not opened first).
-2. Fix what is yours to fix — `python3 scripts/tdq_setup.py` again, a reconnect of MCP `lsp`
+2. Fix what is yours to fix — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_setup.py"` again, a reconnect of MCP `lsp`
    (`/mcp`) after a server was declared — then rerun `kich-ban` for that module.
 3. Still failing → tell the user the module, the count and the cause in one block. Only the user
    may open the request anyway, with `init ... --bo-qua-lsp "<reason>"`; the reason lands in state

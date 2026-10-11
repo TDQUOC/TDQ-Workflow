@@ -84,7 +84,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
      [references/team-mode-tra-cuu.md](references/team-mode-tra-cuu.md).
    - `subagent` (label the user sees: "giao trợ lý (sub-agent implement)"): you are the LEADER of a <!-- i18n-allow: user-facing mode label -->
      team. **Step 0 — before typing the first line of code: assign the WHOLE plan**
-     (`python3 scripts/tdq_team.py assign`, then `audit`). Then loop wave by wave.
+     (`python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_team.py" assign`, then `audit`). Then loop wave by wave.
      `wave` takes the next wave; `open <task>` opens a branch + worktree per task.
      Call `tdq-implementer` for EVERY task of the wave IN ONE response — several Task calls in
      one response means they run concurrently. Mark the tasks you just handed out `[>]`.

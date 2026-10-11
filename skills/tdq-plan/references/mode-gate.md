@@ -28,7 +28,7 @@ a mode. The block follows
 ask the machine:
 
 ```
-python3 scripts/tdq_state.py modes --json
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" modes --json
 ```
 
 It prints one row per mode with four keys: `ma` (the machine identifier), `nhan` (the display
@@ -100,9 +100,9 @@ never merge them into "Codex is unavailable".
 | # | Cause | What `ly_do` says | Fix printed to the user |
 |---|---|---|---|
 | 1 | CLI not installed | chưa cài `codex` trên máy này | `npm i -g @openai/codex`, then `codex login` | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
-| 2 | Installed, not approved | có `codex` nhưng bạn chưa duyệt cho workflow gọi nó | `python3 scripts/tdq_codex.py dong-y --model <ten-model>` — only after the user says yes | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
-| 3 | Approved, model does not answer the say hi | `codex` có nhưng không chạy được — <chi tiết> | check the provider/router in `~/.codex/config.toml` or run `codex login`, then rerun `python3 scripts/tdq_codex.py check` | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
-| 4 | No model name | thiếu tên model — mode này cấm rơi về model mặc định của máy | `python3 scripts/tdq_codex.py setup-model <ten-model>` | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
+| 2 | Installed, not approved | có `codex` nhưng bạn chưa duyệt cho workflow gọi nó | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_codex.py" dong-y --model <ten-model>` — only after the user says yes | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
+| 3 | Approved, model does not answer the say hi | `codex` có nhưng không chạy được — <chi tiết> | check the provider/router in `~/.codex/config.toml` or run `codex login`, then rerun `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_codex.py" check` | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
+| 4 | No model name | thiếu tên model — mode này cấm rơi về model mặc định của máy | `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_codex.py" setup-model <ten-model>` | <!-- i18n-allow: reason sentence printed verbatim by the check command -->
 
 Never install anything and never flip the consent flag yourself. Cause 2 exists precisely
 because calling an outside CLI is the user's decision, not yours.

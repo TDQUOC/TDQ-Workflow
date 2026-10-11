@@ -52,7 +52,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 1b. **Set up and prove the search layer — automatic, nothing asked (0.59.0).** Run
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_setup.py"` (installs what is missing, declares a
    newly appeared language in MCP `lsp` — it then asks for a reconnect: have the user run `/mcp` on `lsp`),
-   then `python3 scripts/tdq_lsp.py check`. Rung 8 not passing → the per-module effect check in
+   then `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`. Rung 8 not passing → the per-module effect check in
    [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md). `init` refuses while a
    module is unproven; only the user may choose `--bo-qua-lsp "<reason>"`. Never edit another
    plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).

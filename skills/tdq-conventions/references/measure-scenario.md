@@ -22,7 +22,7 @@ sliced out for measurement.
 ## Measuring with `token_audit.py`
 
 ```bash
-python3 scripts/token_audit.py --transcript-dir ~/.claude/projects/<project-slug> --sessions 1 --top 5
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/token_audit.py" --transcript-dir ~/.claude/projects/<project-slug> --sessions 1 --top 5
 ```
 
 - `--transcript-dir` points at the folder holding the throwaway project's `*.jsonl` (the path

@@ -15,7 +15,7 @@ Three levels: `ok` for information only · `canh-bao` should be patched before m
 `chan` must be decided by the user.
 The patch-command column is a TEMPLATE. Every UPPERCASE_UNDERSCORED slot must be replaced
 with the real value before running.
-Every command starts with `python3 scripts/tdq_state.py`; it is shortened here to keep the
+Every command starts with `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py"`; it is shortened here to keep the
 table narrow.
 
 | Mã | Dấu hiệu | Mức | Chẩn đoán | Lệnh vá mẫu <!-- i18n-allow: mirror of the strings tdq_checkstatus.py prints --> |
