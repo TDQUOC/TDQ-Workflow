@@ -34,7 +34,7 @@ else: `git check-ref-format --branch` rejects the backslash form. The banned pre
 ### The commands
 
 ```
-git status --porcelain                 # not empty → STOP, print the files, ask the user
+git status --porcelain                 # dirty but ONLY docs/logs → switch and carry along. ANY other dirty file → STOP
 git rev-parse --abbrev-ref HEAD        # this is nhanh_goc
 git switch -c <loại>/<mô tả>
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set loai_request=<loại> nhanh_goc=<cũ> nhanh_request=<mới>
@@ -44,4 +44,4 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set loai_request=<loại> n
 
 - `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" get` shows all three keys filled.
 - `git rev-parse --abbrev-ref HEAD` returns the branch just opened.
-- `git status --porcelain` is empty — a dirty tree means step 3b was skipped wrongly.
+- `git status --porcelain` is empty (or contains only carried-over docs/logs) — a dirty tree of other files means step 3b was skipped wrongly.

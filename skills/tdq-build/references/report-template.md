@@ -66,9 +66,9 @@ below before writing the report; working from memory is banned.
       ```
     - `"chưa"` → no new commit, but everything ALREADY committed on the request branch still
       merges back with the same three commands. What is not committed lives in the working tree
-      and would be dragged along by `git switch`, so run `git status --porcelain` first: not
-      empty → STOP, print the dirty files, ask the user, and do not switch. Same shape as the
-      dirty-repo rule at step 3b.
+      and would be dragged along by `git switch`, so run `git status --porcelain` first: dirty but
+      ONLY docs/logs → switch and carry them along; ANY other dirty file → STOP, print them, ask
+      the user, and do not switch. Same shape as the dirty-repo rule at step 3b.
     - Merge conflict, or `git branch -d` refuses → do NOT force. Report it and ask the user.
     - Then clear the three keys:
       ```
