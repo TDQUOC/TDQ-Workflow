@@ -1,17 +1,17 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-11T10:20:23+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-11T13:12:56+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-11-0932-auto-update-setup-version |
+| Request | 2026-10-11-1300-tu-dong-mo-nhanh-doc-log |
 | Lane | quick |
 | Phase | idle |
 | Spec | (none) |
-| Plan | docs/tdq/plan/2026-10-11-0932-auto-update-setup-version.md — ⏳ awaiting approval |
+| Plan | docs/tdq/plan/2026-10-11-1300-tu-dong-mo-nhanh-doc-log.md — ⏳ awaiting approval |
 | Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
-| QC level | full |
+| QC level | lite |
 | Run mode | (not settled) |
 
 ## Where we are

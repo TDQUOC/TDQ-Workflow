@@ -2,6 +2,13 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.63.0 — 2026-10-11
+
+Tự động mang theo các file docs/log khi mở request branch.
+Kế hoạch: `docs/tdq/plan/2026-10-11-1300-tu-dong-mo-nhanh-doc-log.md`.
+
+- **Mở branch không ngắt quãng cho docs/log.** Ở bước 3b của `tdq-intake` và khi hoàn tất report, nếu `git status --porcelain` bị dirty nhưng toàn bộ file chỉ thuộc nhóm tài liệu, log, cache (`docs/**`, `*.md`, `logs/**`, `*.log`), hệ thống sẽ tự động tạo/gộp nhánh và mang theo chúng. Chỉ dừng và hỏi người dùng khi có file mã nguồn code thay đổi.
+
 ## 0.62.0 — 2026-10-11
 
 Tự động cập nhật setup, dependencies và instruction user-level (`CLAUDE.md`) khi phát hiện version mới
