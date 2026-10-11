@@ -61,4 +61,15 @@ Chi tiết: skill `mem0-memory`.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
 - Kiểm cả 7 bậc và cài phần thiếu: `python3 <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py`.
   Luật đầy đủ kèm số đo: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+
+## Nguyên tắc TDQ Workflow bắt buộc
+
+- Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
+- Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-intake/SKILL.md`, thay `${CLAUDE_PLUGIN_ROOT}` bằng `<đường dẫn thư mục cài TDQ-Workflow>`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
+- Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
+- Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
+
+## Quy tắc Git và Attribution bắt buộc
+
+- Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
 <!-- /TDQ:TOOLS -->

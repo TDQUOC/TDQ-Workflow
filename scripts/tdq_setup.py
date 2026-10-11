@@ -48,6 +48,7 @@ from datetime import datetime
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
 import lsp_module  # noqa: E402
+import plugin_tiers  # noqa: E402 — ghi enabledPlugins nguyên tử + .bak
 import search_rules  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
@@ -538,6 +539,65 @@ def va_hook_xung_dot():
     return da_va, no
 
 
+def _ban_cai_user(home):
+    """-> (khóa, version) của bản cài `tdq-workflow@*` scope user, hoặc None."""
+    duong = os.path.join(home, ".claude", "plugins", "installed_plugins.json")
+    du_lieu = tdq_lsp._doc_json(duong)
+    plugins = du_lieu.get("plugins") if isinstance(du_lieu, dict) else None
+    for khoa, ban_cai in (plugins or {}).items():
+        if not khoa.startswith("tdq-workflow@") or not isinstance(ban_cai, list):
+            continue
+        for ban in ban_cai:
+            if isinstance(ban, dict) and ban.get("scope") == "user":
+                return khoa, str(ban.get("version") or "")
+    return None
+
+
+def _da_bat(duong_settings, khoa):
+    du_lieu = tdq_lsp._doc_json(duong_settings)
+    bat = du_lieu.get("enabledPlugins") if isinstance(du_lieu, dict) else None
+    return isinstance(bat, dict) and bat.get(khoa) is True
+
+
+def kiem_plugin_user(home=None, goc_plugin=None, cham_may=None):
+    """-> (đã cài, cảnh báo, nợ). Plugin phải BẬT ở settings user, không chỉ nằm trên đĩa.
+
+    Instruction được ghim ở `~/.claude/CLAUDE.md` nên áp cho mọi repo; plugin chỉ bật trong
+    `.claude/settings.json` của vài project thì ở repo khác skill và hook đều không nạp, model
+    gặp `Unknown skill`. Đo 2026-10-11 trên 12 phiên của máy dev. `/plugin install|update` là
+    lệnh của harness nên ở đây chỉ in ra, không gọi thay.
+    """
+    if cham_may is None:
+        cham_may = home is not None or not _khong_cham_may()
+    home = home or os.path.expanduser("~")
+    ban = _ban_cai_user(home)
+    if ban is None:
+        _log("plugin user: chưa có bản cài tdq-workflow scope user")
+        return [], [], ["plugin tdq-workflow chưa cài ở scope user — chạy "
+                        "/plugin install tdq-workflow@tdq-local"]
+    khoa, v_cai = ban
+    da_cai, canh_bao, no = [], [], []
+    v_goc = doc_phien_ban_plugin(goc_plugin)
+    if v_goc and v_cai != v_goc:
+        _log(f"plugin user: {khoa} {v_cai} lệch {v_goc}")
+        canh_bao.append(f"bản cài {khoa} {v_cai} lệch instruction {v_goc} — chạy "
+                        f"/plugin update {khoa}")
+    duong = os.path.join(home, ".claude", "settings.json")
+    if _da_bat(duong, khoa):
+        return da_cai, canh_bao, no
+    if not cham_may:
+        no.append(f"plugin {khoa} chưa bật ở scope user ({duong}) — chạy lại setup không đặt "
+                  "TDQ_KHONG_CHAM_MAY")
+        return da_cai, canh_bao, no
+    doi, mo_ta = plugin_tiers.bat_khoa(duong, khoa)
+    _log(f"plugin user: {mo_ta}")
+    if doi:
+        da_cai.append(f"bật plugin {khoa} ở scope user (mở phiên mới để nạp)")
+    else:
+        no.append(f"không bật được plugin {khoa}: {mo_ta}")
+    return da_cai, canh_bao, no
+
+
 MOC_MO = "<!-- TDQ:TOOLS -->"
 MOC_DONG = "<!-- /TDQ:TOOLS -->"
 
@@ -560,6 +620,7 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
 ## Nguyên tắc TDQ Workflow bắt buộc
 
 - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
+- Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `{goc}/skills/tdq-intake/SKILL.md`, thay `{bien_plugin}` bằng `{goc}`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
 - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
 - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
 
@@ -576,7 +637,10 @@ def khoi_huong_dan(goc=None):
     — agent đọc được một chuỗi không trỏ tới đâu cả. Instruction user-level áp cho mọi repo trên
     máy, nên thứ duy nhất luôn đúng ở đó là đường dẫn tuyệt đối.
     """
-    return KHOI_HUONG_DAN.format(goc=(goc or GOC_REPO).replace("\\", "/"))
+    # Biến plugin đi qua tham số, không viết `${{...}}` trong hằng số: bản build portable chỉ thay
+    # được chuỗi literal, một tên biến kẹp trong ngoặc kép làm nó báo còn sót biến.
+    return KHOI_HUONG_DAN.format(goc=(goc or GOC_REPO).replace("\\", "/"),
+                                 bien_plugin="${CLAUDE_PLUGIN_ROOT}")
 
 
 def ghim_huong_dan_tool(duong, goc=None):
@@ -1076,7 +1140,10 @@ def main(argv, khai_codex=None):
     da_cai += xong
     da_va, no_hook = va_hook_xung_dot()
     da_cai += da_va
-    no += no_hook + no_skill_khong_ton_tai(project)
+    bat_plugin, lech_plugin, no_plugin = kiem_plugin_user()
+    da_cai += bat_plugin
+    canh_bao += lech_plugin
+    no += no_hook + no_plugin + no_skill_khong_ton_tai(project)
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
         da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
     phien_ban_moi = doc_phien_ban_plugin(GOC_REPO)

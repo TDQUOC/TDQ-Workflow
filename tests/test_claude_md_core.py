@@ -28,7 +28,10 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
 # agent phải biết TRƯỚC khi nạp bất kỳ skill nào — chưa biết thì nó grep mọi thứ. Cùng phán quyết
 # của soul.md như lần trước: trần kích thước là ràng buộc tầng 3, nên chạm trần là NÂNG TRẦN chứ
 # không nén luật. Khối đo được 466 byte, trần chừa phần cho một lần sửa chữ sau này.
-MAX_BYTES = 4300
+# 2026-10-11: 4300 → 6000. 0.65/0.66 thêm hai mục luật cứng vào khối ghim (cấm plan mode/popup,
+# cấm trailer AI) và 0.67 thêm dòng dự phòng `Unknown skill` — kênh duy nhất tới model ở project
+# chưa bật plugin. Bản mẫu đo 5.6 KB sau khi đồng bộ lại; cùng phán quyết soul.md: nâng trần.
+MAX_BYTES = 6000
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
 # Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file
@@ -169,6 +172,15 @@ class KhoiHuongDanToolTest(unittest.TestCase):
         text = _read(CORE)
         trong_mau = text.split(tdq_setup.MOC_MO)[1].split(tdq_setup.MOC_DONG)[0].strip()
         self.assertEqual(trong_mau, tdq_setup.khoi_huong_dan(tdq_setup.GOC_MAU).strip())
+
+    def test_khoi_co_duong_du_phong_unknown_skill(self):
+        """Project chưa bật plugin: hook không chạy, khối ghim là kênh duy nhất tới model."""
+        goc = "/may/goc"
+        dong = [d for d in tdq_setup.khoi_huong_dan(goc).splitlines() if "Unknown skill" in d]
+        self.assertEqual(len(dong), 1, "cần đúng một dòng dự phòng")
+        self.assertLessEqual(len(dong[0]), 300, f"dòng dự phòng {len(dong[0])} ký tự > 300")
+        self.assertIn(f"{goc}/skills/tdq-intake/SKILL.md", dong[0])
+        self.assertIn("setup", dong[0])
 
     def test_khoi_trong_ban_mau_khong_mang_duong_dan_cua_mot_may_cu_the(self):
         """Bản mẫu là tài liệu chung — đường dẫn tuyệt đối của máy người dựng không được lọt vào."""

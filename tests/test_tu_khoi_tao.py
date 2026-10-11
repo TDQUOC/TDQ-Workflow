@@ -269,6 +269,7 @@ class LuongSetupThuong(CoSo):
 
     def _va_main(self):
         return [mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])),
+                mock.patch.object(tdq_setup, "kiem_plugin_user", return_value=([], [], [])),
                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]),
                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False),
                 mock.patch.object(tdq_lsp, "kiem_mot_lenh", return_value=(0, [], [])),

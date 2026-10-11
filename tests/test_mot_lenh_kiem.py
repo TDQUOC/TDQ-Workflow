@@ -89,6 +89,7 @@ class MotLenhKiem(unittest.TestCase):
     def test_setup_dung_lai_dung_ham_chung(self):
         with mock.patch.object(tdq_lsp, "chay_kiem", return_value=[]), \
                 mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])), \
+                mock.patch.object(tdq_setup, "kiem_plugin_user", return_value=([], [], [])), \
                 mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]), \
                 mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False), \
                 mock.patch.object(tdq_setup, "smoke_ba_tang") as smoke_rieng, \
@@ -101,6 +102,22 @@ class MotLenhKiem(unittest.TestCase):
         smoke_rieng.assert_not_called()
         no = ghi_no.call_args[0][0]
         self.assertTrue(any("graphify" in d for d in no), "tầng trượt vẫn phải thành nợ")
+
+    def test_setup_gop_ket_qua_kiem_plugin_user(self):
+        ket_qua = (["bật plugin p@mk"], ["bản cài lệch"], ["plugin chưa cài"])
+        with mock.patch.object(tdq_lsp, "chay_kiem", return_value=[]), \
+                mock.patch.object(tdq_setup, "va_hook_xung_dot", return_value=([], [])), \
+                mock.patch.object(tdq_setup, "kiem_plugin_user", return_value=ket_qua) as kiem, \
+                mock.patch.object(tdq_setup, "no_skill_khong_ton_tai", return_value=[]), \
+                mock.patch.object(tdq_setup, "ghim_huong_dan_tool", return_value=False), \
+                mock.patch.object(tdq_lsp, "kiem_mot_lenh", return_value=(tdq_lsp.EXIT_OK, [], [])), \
+                mock.patch.object(tdq_no, "ghi_no", return_value=0) as ghi_no, \
+                mock.patch("sys.stdout", new_callable=io.StringIO) as ra:
+            tdq_setup.main(["--khong-log"])
+        kiem.assert_called_once()
+        self.assertIn("đã cài · bật plugin p@mk", ra.getvalue())
+        self.assertIn("cảnh báo · bản cài lệch", ra.getvalue())
+        self.assertIn("plugin chưa cài", ghi_no.call_args[0][0])
 
 
 if __name__ == "__main__":
