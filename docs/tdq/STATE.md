@@ -1,17 +1,17 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-10T04:26:46+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-11T02:41:51+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-09-1948-luat-hoi-duyet-trong-chat |
+| Request | 2026-10-11-0159-hop-thuc-hoa-duyet-tu-nhien |
 | Lane | quick |
 | Phase | idle |
 | Spec | (none) |
-| Plan | (none) |
+| Plan | docs/tdq/plan/2026-10-11-0159-hop-thuc-hoa-duyet-tu-nhien.md — ⏳ awaiting approval |
 | Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
-| QC level | lite |
+| QC level | full |
 | Run mode | (not settled) |
 
 ## Where we are

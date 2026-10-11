@@ -1,8 +1,29 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.43.0 đến 0.37.0, tách khỏi `CHANGELOG.md` ngày 2026-10-03 (0.39.0 ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10) để file chính dưới trần R6
+Các bản 0.44.0 đến 0.37.0, tách khỏi `CHANGELOG.md` ngày 2026-10-03 (0.39.0 ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10, 0.44.0 ngày 2026-10-11) để file chính dưới trần R6
 500 dòng (`docs/CHANGELOG-archive.md` đã đầy). Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.44.0 — 2026-09-03
+
+Luật routing biết tới UI/UX. Trước bản này bảng routing không có dòng nào cho giao diện, mà
+dòng chốt bảng lại bảo "việc không khớp dòng nào thì đừng kéo plugin vào" — nên `ui-ux-pro-max`
+đang bị luật cản chứ không trung lập.
+Báo cáo: `docs/tdq/report/2026-09-03-1949-uiux-pro-max-routing.md`.
+
+- **Khối luật `UI/UX — three layers`** — chia việc giao diện làm ba tầng: chiến lược sản phẩm
+  (chưa plugin nào phủ), quyết định thiết kế (tầng DUY NHẤT `ui-ux-pro-max` phủ), kiểm chứng
+  trên máy thật (`chrome-devtools-mcp`). Kèm một dòng mới trong bảng routing.
+- **Chữ dùng là tra cứu, không phải mệnh lệnh** — plugin được mô tả là "CATALOGUE TO CONSULT,
+  not a step to execute"; mặc định tra khi trúng tầng 2, bỏ qua được chỉ cần một dòng lý do.
+  Có ca test cấm các từ ra lệnh tuyệt đối lọt vào khối luật.
+- **Ghép được, không loại trừ nhau** — `frontend-design`, `figma`, `chrome-devtools-mcp` dùng
+  chung được khi hai bên bổ trợ. Loại trừ Unity/game vì bộ dữ liệu không có dòng nào cho nó.
+- **Vá `skill_inventory.py`** — thử `<installPath>/skills` rồi mới `.claude/skills`, nên bước
+  B0 hết mù với plugin để skill theo bố cục thứ hai: 0 → 7 dòng `plugin:ui-ux-pro-max`, các
+  nguồn plugin khác không đổi một dòng nào.
+- **Dọn `CHANGELOG.md`** — cắt 0.21.0–0.24.0 sang `CHANGELOG-archive.md` để file chính về
+  dưới trần 500 dòng của doc_lint R6.
 
 ## 0.43.0 — 2026-09-03
 

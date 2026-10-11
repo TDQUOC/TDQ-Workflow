@@ -41,7 +41,8 @@ NHAC_GON = ("[{ma}] muc_gat={muc} · build less than asked: climb the ladder fro
 AGREE = re.compile(r"\b(duyệt|duyet|ok|oke|okay|đồng\s*ý|dong\s*y|chốt|chot|"  # i18n-allow
                    r"approve[sd]?|approved|accept(?:ed)?|confirm(?:ed)?|agree[d]?|yes|yep|"
                    r"lgtm|go\s*ahead|proceed|ship\s*it|sounds\s*good|looks\s*good|"
-                   r"làm\s*đi|lam\s*di|tiến\s*hành|tien\s*hanh)\b", re.IGNORECASE)  # i18n-allow
+                   r"làm\s*đi|lam\s*di|tiến\s*hành|tien\s*hanh|"  # i18n-allow
+                   r"triển\s*khai|trien\s*khai|triển|trien|thực\s*hiện|thuc\s*hien)\b", re.IGNORECASE)  # i18n-allow
 OBJECT = re.compile(r"\b(spec|plan|quick|mini-?plan)\b", re.IGNORECASE)
 # Vietnamese/English aliases of lane quick. "nhanh" is a very common adjective in ordinary
 # Vietnamese requests ("do it quickly for me"), so it only counts as an approval when it
@@ -59,7 +60,9 @@ PRONOUN = re.compile(r"(cái\s*này|cai\s*nay|cái\s*đó|cai\s*do|cái\s*trên|
 QUESTION = re.compile(
     r"(\?|\bchưa\b|\bchua\b|\bkhông\b\s*$|\bko\b\s*$"  # i18n-allow
     r"|\bnot\s+yet\b|\bnot\s+sure\b|\bnot\b|\bdon'?t\b|\bnope\b|\bno\b\s*$"
-    r"|\bhold\s+on\b|\bwait\b|\bmaybe\b|\breject(?:ed)?\b|\bcancel\b)",
+    r"|\bhold\s+on\b|\bwait\b|\bmaybe\b|\breject(?:ed)?\b|\bcancel\b"
+    r"|\bnhưng\b|\bnhung\b|\bbut\b|\bconfirm\b|\bxác\s*nhận\b|\bxac\s*nhan\b"  # i18n-allow
+    r"|\bnếu\b|\bneu\b|\bif\b)",  # i18n-allow
     re.IGNORECASE)
 # Built from MODE_ALIASES: every spelling `normalize_mode` understands must also be heard
 # at the mode gate, and adding a mode costs one row in the alias table instead of an edit to
@@ -70,6 +73,18 @@ _MODE_BI_DANH = "|".join(
     re.escape(alias).replace(r"\ ", r"\s+")
     for alias in sorted(MODE_ALIASES, key=len, reverse=True))
 MODE = re.compile(r"\b(%s)\b" % _MODE_BI_DANH, re.IGNORECASE)
+# Decisive action consent: a standalone command ("làm đi", "tiến hành đi", "go ahead")
+# accepted when awaiting spec, plan or quick, as long as no question/condition is attached.
+ACTION_APPROVAL = re.compile(
+    r"^\s*(?:ok|oke|okay|được|duoc|dạ|da|vâng|vang|ừ|u)?\s*"  # i18n-allow
+    r"(?:cứ|cu|hãy|hay)?\s*"  # i18n-allow
+    r"(?:làm\s*đi|lam\s*di|tiến\s*hành\s*đi|tien\s*hanh\s*di|tiến\s*hành|tien\s*hanh|"  # i18n-allow
+    r"triển\s*đi|trien\s*di|triển\s*khai\s*đi|trien\s*khai\s*di|triển\s*khai|trien\s*khai|"  # i18n-allow
+    r"triển\s*luôn|trien\s*luon|làm\s*luôn|lam\s*luon|chạy\s*đi|chay\s*di|"  # i18n-allow
+    r"thực\s*hiện\s*đi|thuc\s*hien\s*di|thực\s*hiện|thuc\s*hien|"  # i18n-allow
+    r"go\s*ahead|proceed|do\s*it)\b"
+    r"\s*(?:nhé|nhe|đi|di|nào|nao|thôi|thoi|nha|nhá|luôn|luon|please|thanks|!|\.)?\s*$",  # i18n-allow
+    re.IGNORECASE)
 # Every gate template invites the user to answer with a letter, so a bare letter is a valid
 # answer at all 4 gates. Accepted ONLY when it STANDS ALONE (an optional choose-prefix and a
 # short tail are allowed): a full sentence such as "Approve? not sure" must miss.
@@ -101,6 +116,8 @@ def looks_like_approval(prompt, target, chon_duoc=None):
     if letter:
         return letter.group(1).lower() == APPROVE_LETTER
     if target == "quick" and APPROVE_FAST.search(prompt):
+        return True
+    if target in ("spec", "plan") and ACTION_APPROVAL.match(prompt):
         return True
     if not AGREE.search(prompt):
         return False

@@ -2,6 +2,20 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.61.0 — 2026-10-11
+
+Hợp thức hóa các câu lệnh hành động dứt khoát tự nhiên ("làm đi", "tiến hành đi", "triển đi",
+"go ahead"...) thành câu duyệt hợp lệ cho các cổng `spec` và `plan`. Tuyệt đối cấm ở cổng `mode`
+hoặc cổng `quick` (nơi còn câu hỏi mode hoặc mức QC đang chờ), và chặn câu hành động khi có câu hỏi
+hoặc điều kiện/confirm đi kèm. Kế hoạch: `docs/tdq/plan/2026-10-11-0159-hop-thuc-hoa-duyet-tu-nhien.md`.
+
+- **Cụm hành động tự nhiên (`ACTION_APPROVAL`).** Trong `hooks/scripts/prompt_context.py`, nhận diện
+  các câu dứt khoát ("làm đi", "tiến hành", "triển đi"...) là duyệt khi đang chờ `spec` hoặc `plan`.
+- **Chặn khi có câu hỏi hoặc điều kiện.** Chặn câu hành động trần ở cổng `mode` và `quick` (bắt buộc
+  chọn mode/QC); chặn khi câu nói chứa nghi vấn, điều kiện hoặc confirm (`nhưng`, `confirm`, `xác nhận`, `nếu`, `?`...).
+- **Cập nhật quy định.** `skills/tdq-conventions/references/approval.md` ghi rõ nguyên tắc duyệt tự nhiên
+  theo ngữ cảnh và các ngoại lệ bắt buộc hỏi lại. Bảo toàn các điểm neo luật trong `docs/tdq/audit/luat-hien-co.md`.
+
 ## 0.60.0 — 2026-10-10
 
 Bổ sung chỉ dẫn rõ ràng vào các phase: user trả lời và duyệt trực tiếp trong chat (dạng `1a 2b 3c`,
@@ -446,30 +460,12 @@ Báo cáo: `docs/tdq/reports/2026-09-05-0833-gitflow-nhanh-theo-request.md`.
 - **Dọn nhánh mồ côi `tdq/2026-08-23-1623-mindmap-html-hai-lop/tich-hop`** — xoá cả local và
   `origin` sau khi user xác nhận.
 
-## 0.44.0 — 2026-09-03
-
-Luật routing biết tới UI/UX. Trước bản này bảng routing không có dòng nào cho giao diện, mà
-dòng chốt bảng lại bảo "việc không khớp dòng nào thì đừng kéo plugin vào" — nên `ui-ux-pro-max`
-đang bị luật cản chứ không trung lập.
-Báo cáo: `docs/tdq/report/2026-09-03-1949-uiux-pro-max-routing.md`.
-
-- **Khối luật `UI/UX — three layers`** — chia việc giao diện làm ba tầng: chiến lược sản phẩm
-  (chưa plugin nào phủ), quyết định thiết kế (tầng DUY NHẤT `ui-ux-pro-max` phủ), kiểm chứng
-  trên máy thật (`chrome-devtools-mcp`). Kèm một dòng mới trong bảng routing.
-- **Chữ dùng là tra cứu, không phải mệnh lệnh** — plugin được mô tả là "CATALOGUE TO CONSULT,
-  not a step to execute"; mặc định tra khi trúng tầng 2, bỏ qua được chỉ cần một dòng lý do.
-  Có ca test cấm các từ ra lệnh tuyệt đối lọt vào khối luật.
-- **Ghép được, không loại trừ nhau** — `frontend-design`, `figma`, `chrome-devtools-mcp` dùng
-  chung được khi hai bên bổ trợ. Loại trừ Unity/game vì bộ dữ liệu không có dòng nào cho nó.
-- **Vá `skill_inventory.py`** — thử `<installPath>/skills` rồi mới `.claude/skills`, nên bước
-  B0 hết mù với plugin để skill theo bố cục thứ hai: 0 → 7 dòng `plugin:ui-ux-pro-max`, các
-  nguồn plugin khác không đổi một dòng nào.
 - **Dọn `CHANGELOG.md`** — cắt 0.21.0–0.24.0 sang `CHANGELOG-archive.md` để file chính về
   dưới trần 500 dòng của doc_lint R6.
 
 ## Lịch sử cũ hơn
 
-Bản 0.43.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
-0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10). Bản 0.36.0 trở xuống nằm ở
+Bản 0.44.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
+0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10, 0.44.0 ngày 2026-10-11). Bản 0.36.0 trở xuống nằm ở
 `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
 xoá dòng nào.
