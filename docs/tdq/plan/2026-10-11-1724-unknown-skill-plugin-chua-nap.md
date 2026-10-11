@@ -75,11 +75,11 @@ Một cụm vì `scripts/tdq_setup.py` là file nóng (T2.1, T2.2, T2.3 cùng ch
 **Xong P3 khi**: tài liệu có mục mới, máy này đã bật plugin, token budget hợp lệ.
 
 ## Definition of Done
-- [ ] DoD 1 (Q1): `python -m pytest tests/test_plugin_tiers.py -q` xanh.
-- [ ] DoD 2 (Q2): `python -m pytest tests/test_tdq_setup.py -q -k plugin_user` xanh (5 ca, HOME tạm).
-- [ ] DoD 3 (Q3): `python -m pytest tests/test_claude_md_core.py -q` xanh và dòng dự phòng ≤ 300 ký tự.
-- [ ] DoD 4 (Q4): `python -m pytest tests/test_tdq_setup.py tests/test_tdq_setup_skill.py tests/test_setup_status.py tests/test_setup_status_render.py tests/test_plugin_tiers.py tests/test_claude_md_core.py tests/test_mot_lenh_kiem.py tests/test_tu_khoi_tao.py tests/test_auto_update_setup.py tests/test_docs_consistency.py -q` xanh.
-- [ ] DoD 5 (Q5): lệnh kiểm của T3.2 thoát 0.
+- [x] DoD 1 (Q1): `python -m pytest tests/test_plugin_tiers.py -q` xanh.
+- [x] DoD 2 (Q2): `python -m pytest tests/test_tdq_setup.py -q -k plugin_user` xanh (5 ca, HOME tạm).
+- [x] DoD 3 (Q3): `python -m pytest tests/test_claude_md_core.py -q` xanh và dòng dự phòng ≤ 300 ký tự.
+- [x] DoD 4 (Q4): `python -m pytest tests/test_tdq_setup.py tests/test_tdq_setup_skill.py tests/test_setup_status.py tests/test_setup_status_render.py tests/test_plugin_tiers.py tests/test_claude_md_core.py tests/test_mot_lenh_kiem.py tests/test_tu_khoi_tao.py tests/test_auto_update_setup.py tests/test_docs_consistency.py -q` xanh.
+- [x] DoD 5 (Q5): lệnh kiểm của T3.2 thoát 0.
 
 ## QC vòng 1 — fix
 - [x] **QC1.1** Dòng dự phòng viết tên biến plugin dưới dạng `${{...}}` trong `KHOI_HUONG_DAN` → `build_portable` đếm còn 1 lần `CLAUDE_PLUGIN_ROOT` mà không thay được, bản Antigravity vỡ. Đưa biến vào qua tham số `format` (literal `${CLAUDE_PLUGIN_ROOT}`) để bộ build thay như mọi chỗ khác. — Test: `python -m pytest tests/test_tuong_thich_host.py tests/test_build_portable.py tests/test_claude_md_core.py -q`
