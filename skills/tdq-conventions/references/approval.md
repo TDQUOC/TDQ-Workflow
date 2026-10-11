@@ -69,14 +69,3 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" approve <spec|plan|quick> [
 - Every approval also adds one line to `docs/workinglog/<today>.md` (what was approved, when,
   and the user's exact words).
 
-## Natural action phrases as approval <!-- i18n-allow -->
-
-When a single gate is pending (`spec` or `plan`) AND **no other questions or confirmations are open**:
-Decisive action commands in the user's language — English: `go ahead` · `proceed` · `do it`; Vietnamese: `làm đi` · `tiến hành đi` · `tiến hành` · `triển đi` · `làm luôn` <!-- i18n-allow --> — are recognized as a valid approval for that pending gate.
-
-**Hard exception — when questions or confirmations remain:**
-1. At the **mode gate** (`phase = mode`) or **express gate** (`quick`): bare action phrases are **strictly banned**; the user must explicitly choose the mode (`main` vs `subagent`) or answer the QC level question (`full`/`lite`/`ultra`, e.g. `1a` or `duyệt nhanh`).
-2. If there are other open questions (interview rounds, clarification options `1a`/`1b`, risk confirmations) or if the sentence attaches conditions or questions (`nhưng`, `confirm`, `xác nhận`, `?`, `nếu`): <!-- i18n-allow -->
-   - The action phrase is **NOT an approval**.
-   - The agent **MUST answer or re-ask** the question and wait for reply in chat. Bypassing the question is banned.
-
