@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-"""build_portable.py — sinh layout Antigravity, và viết lại tên lệnh trong `hooks/hooks.json`.
+"""build_portable.py — generate the Antigravity layout, rewrite hooks/hooks.json, or publish main.
 
-2026-09-21: file này từng dựng BA bundle portable (claude, codex, antigravity) bằng cách chép
-`skills/`, `hooks/`, `agents/` và `scripts/` vào ba cây thư mục riêng — 357 file nhân bản. Mô
-hình đó đã bỏ. Claude Code đọc repo qua `.claude-plugin/marketplace.json`, Codex đọc qua
-`.agents/plugins/marketplace.json`, OpenCode qua `.opencode/plugins/tdq-workflow.js`; cả ba trỏ
-thẳng vào một nguồn chung thay vì một bản sao.
+2026-09-21: this script used to build THREE portable bundles (claude, codex, antigravity) by
+copying `skills/`, `hooks/`, `agents/` and `scripts/` into three separate trees — 357 duplicated
+files. That model is gone. Claude Code reads the repo via `.claude-plugin/marketplace.json`,
+Codex via `.agents/plugins/marketplace.json`, OpenCode via `.opencode/plugins/tdq-workflow.js`;
+all three point straight at the shared source instead of a copy.
 
-Còn đúng hai việc cần sinh ra file thật:
+Actions:
 
-    --sinh-agy    Antigravity đòi một thư mục plugin ở đường dẫn cố định dưới `$HOME`, không có
-                  cách nào trỏ tới nơi khác. Nên layout đó được sinh TẠI CHỖ trên máy sẽ chạy
-                  nó, chứ không chép sẵn vào repo — bản chép sẵn nướng cứng thư mục nhà của máy
-                  dựng, thứ vô nghĩa với mọi máy khác.
+    --sinh-agy    Antigravity requires a plugin directory at a fixed path under `$HOME`, with no
+                  way to point elsewhere. Generate that layout IN PLACE on the machine that will
+                  run it instead of committing a prebuilt copy with baked home paths.
     --sinh-hook-claude
-                  Viết lại tiền tố tên lệnh Python trong `hooks/hooks.json` theo hệ đích.
+                  Rewrite the Python command prefix in `hooks/hooks.json` for the target OS.
+    --sinh-main   Publish a clean release snapshot from `dev` onto `main` using git plumbing.
 
-Env: TDQ_LOG=0 tắt log tiến độ (log ra stderr).
-Exit: 0 xong · 1 lỗi sinh · 2 sai cú pháp.
+Env: TDQ_LOG=0 turns off progress logging (logged to stderr).
+Exit: 0 done · 1 build error · 2 bad arguments.
 """
 
 import argparse
@@ -26,7 +26,9 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,14 +59,31 @@ EXCLUDE_FILES = frozenset({
     "tdq_eval.py",
 })
 
+RELEASE_EXCLUDE_DIRS = frozenset({
+    ".git", "docs", "tests", "evals", "graphify-out", ".taskmaster",
+    "tools_kiem", ".github", "portable", "portable_claude", "portable_codex",
+    "__pycache__", ".pytest_cache", ".venv", "node_modules", ".remember",
+    "ClaudeExport",
+})
+RELEASE_EXCLUDE_FILES = frozenset({
+    ".DS_Store", "CHANGELOG-archive.md", "pyrightconfig.json",
+    "state.json", ".tdq-turn.jsonl",
+})
+RELEASE_EXCLUDE_SCRIPTS = frozenset({
+    "canvas_a4_ch4_ch7.py", "canvas_a4_rebuild.py", "canvas_draw.py",
+    "canvas_layout_apply.py", "canvas_move_block.py", "check_canvas_layout.py",
+    "doc_dup.py", "doc_index.py", "i18n_check.py", "luat_phan_loai.py",
+    "skill_router.py", "tdq_eval.py",
+})
+
 # The skill that only means something on the TARGET machine (`tdq-checkportable`) lives here and
 # not in `skills/`: putting it there would make every session pay for one more description in its
 # context budget, for a skill this repo never runs. The agy layout still ships it.
 PORTABLE_SRC = "portable_src"
 
 MANIFEST_NAME = "manifest.json"
-# 2026-09-27: 3.8 → 3.11. Sàn cũ là số khai suông, chưa bao giờ có job CI nào chạy nó; 3.11 là
-# bản đầu tiên có `tomllib` trong thư viện chuẩn, và là bản thấp nhất ma trận CI đang kiểm thật.
+# 2026-09-27: 3.8 -> 3.11. Python 3.11 is the first standard library release with `tomllib`
+# and the lowest version tested in the CI matrix.
 PYTHON_MIN = "3.11"
 EXTERNAL_COMMANDS = ("git", "graphify")
 MCP_SERVERS = ("tavily-primary", "tavily-backup")
@@ -283,17 +302,17 @@ from a clone of TDQ-Workflow, then copy the freshly built directory over.
 `python3 scripts/tdq_checkportable.py check --root <this directory>` prints a NOTE when the
 baked home does not match the current one.
 
-## Bundle này gắn với MÁY DỰNG — Windows và Linux đọc kỹ mục này
+## Bundle này gắn với MÁY DỰNG — Windows và Linux đọc kỹ mục này <!-- i18n-allow -->
 
-- **Đừng copy bundle dựng sẵn từ máy người khác.** Đường dẫn trong `hooks.json` là thư mục nhà
-  của máy dựng, không phải của bạn. Clone repo TDQ-Workflow rồi chạy
-  `python3 scripts/build_portable.py` ngay trên máy bạn, sau đó mới copy thư mục vừa dựng.
-- **Tên lệnh Python khác nhau giữa các hệ.** Bản dựng chọn `python3` trên macOS/Linux và
-  `py -3` trên Windows — Windows không có `python3` trên PATH (cái tên đó chỉ là stub của
-  Microsoft Store mở cửa hàng ứng dụng). Dựng lại tại máy đích là cách duy nhất để `command`
-  mang đúng tên lệnh của máy đó.
-- **Kiểm lại sau khi copy:** `python3 scripts/tdq_checkportable.py check --root <thư mục này>`
-  in cảnh báo khi bundle được dựng dưới thư mục nhà của người khác.
+- **Đừng copy bundle dựng sẵn từ máy người khác.** Đường dẫn trong `hooks.json` là thư mục nhà <!-- i18n-allow -->
+  của máy dựng, không phải của bạn. Clone repo TDQ-Workflow rồi chạy <!-- i18n-allow -->
+  `python3 scripts/build_portable.py` ngay trên máy bạn, sau đó mới copy thư mục vừa dựng. <!-- i18n-allow -->
+- **Tên lệnh Python khác nhau giữa các hệ.** Bản dựng chọn `python3` trên macOS/Linux và <!-- i18n-allow -->
+  `py -3` trên Windows — Windows không có `python3` trên PATH (cái tên đó chỉ là stub của <!-- i18n-allow -->
+  Microsoft Store mở cửa hàng ứng dụng). Dựng lại tại máy đích là cách duy nhất để `command` <!-- i18n-allow -->
+  mang đúng tên lệnh của máy đó. <!-- i18n-allow -->
+- **Kiểm lại sau khi copy:** `python3 scripts/tdq_checkportable.py check --root <thư mục này>` <!-- i18n-allow -->
+  in cảnh báo khi bundle được dựng dưới thư mục nhà của người khác. <!-- i18n-allow -->
 
 ## What this bundle cannot do for you
 
@@ -355,16 +374,13 @@ TIEN_TO_PYTHON_BIET = ("py -3", "python3", "python")
 
 
 def sinh_hook_claude(duong, nen_tang=None):
-    """Viết lại tên lệnh Python trong `hooks/hooks.json` theo hệ điều hành máy đích.
+    """Rewrite the Python command prefix in `hooks/hooks.json` for the target OS.
 
-    Khác hai file hook kia, `hooks/hooks.json` là file NGUỒN viết tay, commit sẵn và dùng chung
-    cho mọi máy — không có bước sinh nào để chèn tên lệnh theo hệ. Nó giữ mặc định `python3` vì
-    đó là giá trị đúng cho macOS và Linux; người dùng Windows chạy lệnh này một lần.
+    Unlike generated hook bundles, `hooks/hooks.json` is a hand-maintained source file committed
+    and shared across machines. It defaults to `python3` for macOS and Linux; Windows users run
+    this command once to switch the prefix while keeping `${CLAUDE_PLUGIN_ROOT}` and event order.
 
-    Chỉ đụng tiền tố tên lệnh, giữ nguyên phần còn lại (kể cả `${CLAUDE_PLUGIN_ROOT}`) và thứ tự
-    sự kiện. Bất biến: chạy lại trên file đã sinh cho ra đúng file cũ.
-
-    Trả về True khi file thay đổi, False khi đã đúng sẵn.
+    Returns True when the file changed, False when already up to date.
     """
     tien_to = tien_to_python(nen_tang)
     with open(duong, encoding="utf-8") as f:
@@ -546,11 +562,7 @@ def ghi_manifest(goc, version=""):
 # -------------------------------------------------------------------------- CLI
 
 def la_ban_cua_minh(goc):
-    """True khi `goc` trống, chưa có, hoặc đang là một bản cài tdq-workflow.
-
-    Đích mặc định nằm trong thư mục cấu hình của người dùng. Xoá nhầm ở đó là mất dữ liệu thật,
-    nên cổng này mở đúng ba trường hợp trên và đóng với mọi thứ khác.
-    """
+    """Return True when `goc` is missing, empty, or an existing tdq-workflow installation."""
     if not os.path.isdir(goc):
         return True
     if not os.listdir(goc):
@@ -564,32 +576,128 @@ def la_ban_cua_minh(goc):
 
 
 def sinh_agy_tai_cho(repo, dich, version=""):
-    """Sinh layout agy THẲNG vào `dich` trên chính máy sẽ chạy nó.
+    """Generate the Antigravity layout directly into `dich` on the target machine.
 
-    Đây là thứ thay cho thư mục `antigravity_portable/` từng được commit. Bản cũ nướng cứng thư
-    mục nhà của MÁY DỰNG vào mọi `command`, nên bản dựng trên Windows ra một đường dẫn vô nghĩa
-    với người dùng macOS và ngược lại. Sinh tại chỗ thì `~` bung ra đúng của máy đang cài, và
-    layout luôn đi từ nguồn mới nhất thay vì một bản đông cứng lúc release.
-
-    Trả về đường dẫn đã sinh. Ném RuntimeError khi đích đang giữ thứ không phải của mình.
+    Returns the generated directory path; raises RuntimeError if `dich` belongs to another tool.
     """
     dich = os.path.abspath(os.path.expanduser(dich))
     if not la_ban_cua_minh(dich):
         raise RuntimeError(
-            f"{dich} đang có sẵn nội dung không phải của tdq-workflow — "
-            "chọn đích khác, hoặc tự xoá thư mục đó trước")
+            f"{dich} đang có sẵn nội dung không phải của tdq-workflow — "  # i18n-allow
+            "chọn đích khác, hoặc tự xoá thư mục đó trước")  # i18n-allow
     cha, ten = os.path.dirname(dich), os.path.basename(dich)
     os.makedirs(cha, exist_ok=True)
     sinh_ban_antigravity(repo, cha, version, ten_thu_muc=ten, goc_cai=dich)
-    log(f"agy: đã sinh {dich}")
+    log(f"agy: đã sinh {dich}")  # i18n-allow
     return dich
 
 
-def main(argv=None):
+def la_duong_dan_release(rel_path):
+    """Return True if the repo-relative path belongs on the clean release branch."""
+    norm = rel_path.replace("\\", "/").strip("/")
+    if not norm:
+        return False
+    parts = norm.split("/")
+    if any(p in RELEASE_EXCLUDE_DIRS for p in parts[:-1]):
+        return False
+    if parts[-1] in RELEASE_EXCLUDE_FILES:
+        return False
+    if parts[0] == "scripts":
+        if len(parts) > 2 and parts[1] == "samples":
+            return False
+        if len(parts) == 2 and parts[1] in RELEASE_EXCLUDE_SCRIPTS:
+            return False
+    return True
+
+
+def loc_muc_ls_tree(raw_bytes):
+    """Filter NUL-delimited `git ls-tree -r -z` output, keeping only release paths."""
+    kept = []
+    for entry in raw_bytes.split(b"\0"):
+        if not entry or b"\t" not in entry:
+            continue
+        rel_path = entry.split(b"\t", 1)[1].decode("utf-8")
+        if la_duong_dan_release(rel_path):
+            kept.append(entry)
+    return kept
+
+
+def _git_text(repo, *args, check=True):
+    """Run git in text mode and return stripped stdout."""
+    proc = subprocess.run(
+        ["git", "-C", repo, *args],
+        capture_output=True, encoding="utf-8", text=True, check=check, timeout=60,
+    )
+    return proc.stdout.strip()
+
+
+def _tao_tree_release(repo, kept_entries):
+    """Write filtered ls-tree entries into a temporary git index and return tree SHA."""
+    with tempfile.TemporaryDirectory(prefix="tdq-release-idx-") as tmp_dir:
+        env = dict(os.environ, GIT_INDEX_FILE=os.path.join(tmp_dir, "index"))
+        payload = b"\0".join(kept_entries) + (b"\0" if kept_entries else b"")
+        subprocess.run(
+            ["git", "-C", repo, "update-index", "-z", "--index-info"],
+            input=payload, capture_output=True, check=True, env=env, timeout=60,
+        )
+        proc = subprocess.run(
+            ["git", "-C", repo, "write-tree"],
+            capture_output=True, encoding="utf-8", text=True, check=True, env=env, timeout=60,
+        )
+        return proc.stdout.strip()
+
+
+def sinh_nhanh_main(repo, nguon="dev", nhanh_dich="main", dry_run=False):
+    """Build or update the clean release branch from `nguon` without touching the working tree."""
+    source_sha = _git_text(repo, "rev-parse", "--verify", f"{nguon}^{{commit}}")
+    ls_proc = subprocess.run(
+        ["git", "-C", repo, "ls-tree", "-r", "-z", source_sha],
+        capture_output=True, check=True, timeout=60,
+    )
+    all_entries = [e for e in ls_proc.stdout.split(b"\0") if e and b"\t" in e]
+    kept_entries = loc_muc_ls_tree(ls_proc.stdout)
+    kept = len(kept_entries)
+    dropped = len(all_entries) - kept
+    if dry_run:
+        log(f"build_portable: dry-run {nguon}@{source_sha[:7]} -> {nhanh_dich} · "
+            f"kept={kept} dropped={dropped}")
+        return {
+            "kept": kept, "dropped": dropped, "source_sha": source_sha,
+            "tree_sha": None, "commit_sha": None, "changed": True,
+        }
+    tree_sha = _tao_tree_release(repo, kept_entries)
+    ref_name = f"refs/heads/{nhanh_dich}"
+    ref_proc = subprocess.run(
+        ["git", "-C", repo, "rev-parse", "--verify", "--quiet", ref_name],
+        capture_output=True, encoding="utf-8", text=True, timeout=30,
+    )
+    parent_sha = ref_proc.stdout.strip() if ref_proc.returncode == 0 else ""
+    if parent_sha and _git_text(repo, "rev-parse", f"{parent_sha}^{{tree}}") == tree_sha:
+        log(f"build_portable: {nhanh_dich} already up to date with {nguon}@{source_sha[:7]} "
+            f"(tree={tree_sha[:7]}, kept={kept}, dropped={dropped})")
+        return {
+            "kept": kept, "dropped": dropped, "source_sha": source_sha,
+            "tree_sha": tree_sha, "commit_sha": parent_sha, "changed": False,
+        }
+    version = plugin_version(repo) or "0.0.0"
+    msg = f"release: v{version} (from {nguon}@{source_sha[:7]})"
+    cmd = ["commit-tree", tree_sha] + (["-p", parent_sha] if parent_sha else []) + ["-m", msg]
+    commit_sha = _git_text(repo, *cmd)
+    _git_text(repo, "update-ref", ref_name, commit_sha)
+    log(f"build_portable: published {nhanh_dich}@{commit_sha[:7]} from {nguon}@{source_sha[:7]} · "
+        f"tree={tree_sha[:7]} · kept={kept} · dropped={dropped}")
+    return {
+        "kept": kept, "dropped": dropped, "source_sha": source_sha,
+        "tree_sha": tree_sha, "commit_sha": commit_sha, "changed": True,
+    }
+
+
+def _xay_parser():
     parser = argparse.ArgumentParser(
         prog="build_portable.py",
         description="Generate what a host cannot read straight from this repo: the Antigravity "
-                    "layout, and hooks/hooks.json for the target OS. Pick one action.")
+                    "layout, hooks/hooks.json for the target OS, or the clean release branch. "
+                    "Pick one action.")
     parser.add_argument("--dest", help="build the Antigravity bundle into DEST/antigravity_portable "
                                        "(a release step; never the repo itself)")
     parser.add_argument("--repo", help="source repo root, defaults to the script location")
@@ -603,34 +711,22 @@ def main(argv=None):
                              "directory ON THIS MACHINE, instead of building a bundle to commit")
     parser.add_argument("--dich", default=GOC_AGY,
                         help=f"only with --sinh-agy: where to generate (default {GOC_AGY})")
-    args = parser.parse_args(argv)
+    parser.add_argument("--sinh-main", action="store_true",
+                        help="publish a clean release snapshot from --nguon onto --nhanh-dich")
+    parser.add_argument("--nguon", default="dev",
+                        help="only with --sinh-main: source branch or ref (default: dev)")
+    parser.add_argument("--nhanh-dich", default="main",
+                        help="only with --sinh-main: target release branch (default: main)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="only with --sinh-main: compute kept/dropped counts without updating refs")
+    return parser
 
-    repo = args.repo or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    if args.sinh_hook_claude:
-        duong = os.path.join(repo, "hooks", "hooks.json")
-        doi = sinh_hook_claude(duong, args.he_dich)
-        log(f"{duong}: {'rewritten' if doi else 'already correct'} · "
-            f"command = {tien_to_python(args.he_dich)}")
-        return 0
-    if args.sinh_agy:
-        version = plugin_version(repo)
-        try:
-            sinh_agy_tai_cho(repo, args.dich, version)
-        except (OSError, RuntimeError) as loi:
-            log(f"ERROR {loi}")
-            return EXIT_LOI
-        return 0
 
-    # No default action. Defaulting `--dest` to the repo root used to rebuild
-    # `antigravity_portable/` INSIDE the repo — the very bundle 0.50.0 removed.
-    if not args.dest:
-        parser.error("pick an action: --sinh-agy, --sinh-hook-claude or --dest DEST")
-    dest = args.dest
+def _chay_dest(parser, repo, dest):
     if os.path.realpath(dest) == os.path.realpath(repo):
         parser.error("--dest must not be the repo itself: the repo ships no bundle since 0.50.0")
     version = plugin_version(repo)
     log(f"start · repo={repo} · dest={dest} · version={version or '—'}")
-
     os.makedirs(dest, exist_ok=True)
     try:
         sinh_ban_antigravity(repo, dest, version)
@@ -639,6 +735,35 @@ def main(argv=None):
         return EXIT_LOI
     log("done")
     return 0
+
+
+def main(argv=None):
+    parser = _xay_parser()
+    args = parser.parse_args(argv)
+    repo = args.repo or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if args.sinh_hook_claude:
+        duong = os.path.join(repo, "hooks", "hooks.json")
+        doi = sinh_hook_claude(duong, args.he_dich)
+        log(f"{duong}: {'rewritten' if doi else 'already correct'} · "
+            f"command = {tien_to_python(args.he_dich)}")
+        return 0
+    if args.sinh_agy:
+        try:
+            sinh_agy_tai_cho(repo, args.dich, plugin_version(repo))
+        except (OSError, RuntimeError) as loi:
+            log(f"ERROR {loi}")
+            return EXIT_LOI
+        return 0
+    if args.sinh_main:
+        try:
+            sinh_nhanh_main(repo, nguon=args.nguon, nhanh_dich=args.nhanh_dich, dry_run=args.dry_run)
+        except (OSError, RuntimeError, subprocess.CalledProcessError) as loi:
+            log(f"ERROR {loi}")
+            return EXIT_LOI
+        return 0
+    if not args.dest:
+        parser.error("pick an action: --sinh-agy, --sinh-hook-claude, --sinh-main or --dest DEST")
+    return _chay_dest(parser, repo, args.dest)
 
 
 if __name__ == "__main__":

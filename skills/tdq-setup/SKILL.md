@@ -5,9 +5,10 @@ description: Install and prove every dependency the workflow searches with: 7 ru
 
 # TDQ Setup — installing and proving the workflow's three search layers
 <!-- muc-luc-dong:
-  The one hard rule of this skill=26-31 · The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=32-63 ·
-  Rung 5 — a conflicting plugin hook=64-71 ·
-  Runbook — setting a machine up, and re-configuring it later=72
+  The one hard rule of this skill=27-32 ·
+  The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=33-64 ·
+  Rung 5 — a conflicting plugin hook=65-72 ·
+  Runbook — setting a machine up, and re-configuring it later=73
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md).
