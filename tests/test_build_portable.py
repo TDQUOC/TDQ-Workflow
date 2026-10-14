@@ -46,7 +46,7 @@ class TestCLI(TempDest):
     def test_help_co_du_ba_co(self):
         ma, out, _ = chay("--help")
         self.assertEqual(ma, 0)
-        for co in ("--dest", "--sinh-agy", "--sinh-hook-claude"):
+        for co in ("--dest", "--sinh-agy", "--sinh-hook-claude", "--sinh-main"):
             self.assertIn(co, out)
         # 2026-09-21: `--only` từng được nhận rồi lờ đi — cờ không làm gì còn tệ hơn không có cờ.
         self.assertNotIn("--only", out)
@@ -438,6 +438,205 @@ class TestKhongConTenChet(unittest.TestCase):
             with open(duong, "w", encoding="utf-8") as f:
                 f.write("A = 1\nB = A + 1\nC = 3\n\ndef main():\n    return C\n")
             self.assertEqual(_ten_chet(duong, d), ["A", "B"])
+
+
+class TestSinhNhanhRelease(TempDest):
+    """Kiểm chứng bộ lọc đường dẫn release và lệnh `--sinh-main` bằng Git plumbing."""
+
+    def _git(self, repo, *args):
+        proc = subprocess.run(
+            ["git", "-C", repo, *args],
+            capture_output=True, encoding="utf-8", text=True, check=True, timeout=30,
+        )
+        return proc.stdout.strip()
+
+    def _tao_repo_dev_gia(self):
+        repo = os.path.join(self.dest, "repo_release")
+        os.makedirs(repo, exist_ok=True)
+        self._git(repo, "init", "-b", "dev")
+        self._git(repo, "config", "user.name", "TDQ Test")
+        self._git(repo, "config", "user.email", "tdq@example.com")
+        files = {
+            "README.md": "# TDQ\n",
+            ".claude-plugin/plugin.json": json.dumps({"name": "tdq-workflow", "version": "0.59.0"}),
+            "skills/tdq-intake/SKILL.md": "---\nname: tdq-intake\n---\n",
+            "scripts/tdq_state.py": "X = 1\n",
+            "docs/tdq/STATE.md": "internal state\n",
+            "tests/test_sample.py": "import unittest\n",
+            "scripts/i18n_check.py": "dev only\n",
+            "scripts/samples/transcript-step-audit.jsonl": "{}\n",
+            "CHANGELOG-archive.md": "old\n",
+            "pyrightconfig.json": "{}\n",
+        }
+        for rel, content in files.items():
+            full = os.path.join(repo, *rel.split("/"))
+            os.makedirs(os.path.dirname(full), exist_ok=True)
+            with open(full, "w", encoding="utf-8") as f:
+                f.write(content)
+        self._git(repo, "add", "-A")
+        self._git(repo, "commit", "-m", "init dev")
+        return repo
+
+    def test_release_loai_bo_docs_tests_va_12_script_dev(self):
+        bi_loai = (
+            "docs/tdq/STATE.md",
+            "tests/test_build_portable.py",
+            "evals/a.json",
+            "graphify-out/graph.json",
+            ".taskmaster/config.json",
+            "tools_kiem/dem_da_nen_tang.py",
+            ".github/workflows/test.yml",
+            "CHANGELOG-archive.md",
+            "pyrightconfig.json",
+            "scripts/samples/transcript-step-audit.jsonl",
+            "scripts/canvas_a4_ch4_ch7.py",
+            "scripts/canvas_a4_rebuild.py",
+            "scripts/canvas_draw.py",
+            "scripts/canvas_layout_apply.py",
+            "scripts/canvas_move_block.py",
+            "scripts/check_canvas_layout.py",
+            "scripts/doc_dup.py",
+            "scripts/doc_index.py",
+            "scripts/i18n_check.py",
+            "scripts/luat_phan_loai.py",
+            "scripts/skill_router.py",
+            "scripts/tdq_eval.py",
+        )
+        for duong in bi_loai:
+            self.assertFalse(build_portable.la_duong_dan_release(duong),
+                             f"Đường dẫn dev {duong} phải bị loại khỏi nhánh release")
+        duoc_giu = (
+            "README.md",
+            "CHANGELOG.md",
+            "skills/tdq-intake/SKILL.md",
+            "hooks/hooks.json",
+            "agents/tdq-implementer.md",
+            ".claude-plugin/plugin.json",
+            ".codex-plugin/plugin.json",
+            ".opencode/plugins/tdq-workflow.js",
+            "scripts/tdq_state.py",
+            "scripts/build_portable.py",
+            "scripts/tdq_test.py",
+            "scripts/tdq_vision_diff.py",
+        )
+        for duong in duoc_giu:
+            self.assertTrue(build_portable.la_duong_dan_release(duong),
+                            f"Đường dẫn runtime {duong} phải được giữ trên nhánh release")
+
+    def test_release_bao_dong_import_35_script_runtime(self):
+        import ast
+        scripts_dir = os.path.join(ROOT, "scripts")
+        all_py = {f[:-3] for f in os.listdir(scripts_dir) if f.endswith(".py")}
+        kept_py = {
+            m for m in all_py
+            if build_portable.la_duong_dan_release(f"scripts/{m}.py")
+        }
+        self.assertEqual(len(kept_py), 35, f"Kỳ vọng đúng 35 script runtime, thực tế: {len(kept_py)}")
+        for mod in sorted(kept_py):
+            duong = os.path.join(scripts_dir, f"{mod}.py")
+            with open(duong, encoding="utf-8") as f:
+                cay = ast.parse(f.read(), duong)
+            for nut in ast.walk(cay):
+                if isinstance(nut, ast.Import):
+                    targets = [a.name.split(".")[0] for a in nut.names]
+                elif isinstance(nut, ast.ImportFrom) and nut.module:
+                    targets = [nut.module.split(".")[0]]
+                else:
+                    continue
+                for t in targets:
+                    if t in all_py:
+                        self.assertIn(
+                            t, kept_py,
+                            f"Script runtime scripts/{mod}.py import scripts/{t}.py nhưng {t}.py bị loại!"
+                        )
+
+    def test_release_loc_cay_repo_that_duoi_150_file(self):
+        proc = subprocess.run(
+            ["git", "-C", ROOT, "ls-tree", "-r", "-z", "HEAD"],
+            capture_output=True, check=True, timeout=30,
+        )
+        kept = build_portable.loc_muc_ls_tree(proc.stdout)
+        self.assertLessEqual(len(kept), 150)
+        self.assertGreaterEqual(len(kept), 120)
+        for entry in kept:
+            path = entry.split(b"\t", 1)[1].decode("utf-8")
+            self.assertFalse(path.startswith(("docs/", "tests/", "evals/", "graphify-out/")))
+
+    def test_release_sinh_nhanh_main_tren_repo_tam_idempotent_va_dry_run(self):
+        repo = self._tao_repo_dev_gia()
+        dirty_file = os.path.join(repo, "untracked_dirty.txt")
+        with open(dirty_file, "w", encoding="utf-8") as f:
+            f.write("dang lam do tren dev\n")
+
+        # 1. Dry-run không được tạo nhánh main
+        kq_dry = build_portable.sinh_nhanh_main(repo, nguon="dev", nhanh_dich="main", dry_run=True)
+        self.assertEqual(kq_dry["kept"], 4)
+        self.assertEqual(kq_dry["dropped"], 6)
+        self.assertIsNone(kq_dry["commit_sha"])
+        self.assertTrue(kq_dry["changed"])
+        proc_ref = subprocess.run(
+            ["git", "-C", repo, "show-ref", "--verify", "--quiet", "refs/heads/main"],
+            capture_output=True, timeout=10,
+        )
+        self.assertNotEqual(proc_ref.returncode, 0, "dry_run không được ghi refs/heads/main")
+
+        # 2. Chạy thật tạo nhánh main sạch
+        kq1 = build_portable.sinh_nhanh_main(repo, nguon="dev", nhanh_dich="main", dry_run=False)
+        self.assertTrue(kq1["changed"])
+        self.assertIsNotNone(kq1["commit_sha"])
+        ds_main = self._git(repo, "ls-tree", "-r", "--name-only", "main").splitlines()
+        self.assertEqual(
+            sorted(ds_main),
+            [".claude-plugin/plugin.json", "README.md", "scripts/tdq_state.py", "skills/tdq-intake/SKILL.md"],
+        )
+        msg = self._git(repo, "log", "-1", "--format=%s", "main")
+        self.assertIn("release: v0.59.0 (from dev@", msg)
+        # Working tree hiện tại vẫn ở dev và file untracked còn nguyên
+        self.assertEqual(self._git(repo, "rev-parse", "--abbrev-ref", "HEAD"), "dev")
+        self.assertTrue(os.path.isfile(dirty_file))
+
+        # 3. Chạy lần 2 liên tiếp khi dev không đổi -> idempotent (changed=False)
+        kq2 = build_portable.sinh_nhanh_main(repo, nguon="dev", nhanh_dich="main", dry_run=False)
+        self.assertFalse(kq2["changed"])
+        self.assertEqual(kq2["commit_sha"], kq1["commit_sha"])
+
+        # 4. Thêm commit chỉ sửa docs/ trên dev -> cây release không đổi -> vẫn idempotent
+        with open(os.path.join(repo, "docs", "tdq", "STATE.md"), "w", encoding="utf-8") as f:
+            f.write("updated docs only\n")
+        self._git(repo, "add", "docs/tdq/STATE.md")
+        self._git(repo, "commit", "-m", "docs update")
+        kq3 = build_portable.sinh_nhanh_main(repo, nguon="dev", nhanh_dich="main", dry_run=False)
+        self.assertFalse(kq3["changed"])
+        self.assertEqual(kq3["commit_sha"], kq1["commit_sha"])
+
+        # 5. Sửa file runtime README.md trên dev -> tạo commit mới nối đúng 1 parent là main cũ
+        with open(os.path.join(repo, "README.md"), "w", encoding="utf-8") as f:
+            f.write("# TDQ v2\n")
+        self._git(repo, "add", "README.md")
+        self._git(repo, "commit", "-m", "update readme")
+        kq4 = build_portable.sinh_nhanh_main(repo, nguon="dev", nhanh_dich="main", dry_run=False)
+        self.assertTrue(kq4["changed"])
+        self.assertNotEqual(kq4["commit_sha"], kq1["commit_sha"])
+        parents = self._git(repo, "rev-list", "--parents", "-n", "1", "main").split()
+        self.assertEqual(parents, [kq4["commit_sha"], kq1["commit_sha"]])
+
+    def test_release_cli_sinh_main_va_log_service(self):
+        repo = self._tao_repo_dev_gia()
+        ma, _, err_bat = chay("--repo", repo, "--sinh-main", "--nguon", "dev", "--nhanh-dich", "main")
+        self.assertEqual(ma, 0, err_bat)
+        self.assertIn("build_portable:", err_bat)
+        self.assertRegex(err_bat, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
+        ma2, _, err_tat = chay(
+            "--repo", repo, "--sinh-main", "--nguon", "dev", "--nhanh-dich", "main",
+            env={"TDQ_LOG": "0"},
+        )
+        self.assertEqual(ma2, 0)
+        self.assertEqual(err_tat.strip(), "")
+        ma_loi, _, err_loi = chay(
+            "--repo", repo, "--sinh-main", "--nguon", "nhanh-khong-ton-tai", "--nhanh-dich", "main"
+        )
+        self.assertEqual(ma_loi, 1)
+        self.assertIn("ERROR", err_loi)
 
 
 if __name__ == "__main__":

@@ -689,5 +689,58 @@ class KhongCoVungCham(unittest.TestCase):
                            ["test_x.py"]), [])
 
 
+class NhanhGocMacDinhTest(unittest.TestCase):
+    """Tự động nhận diện nhánh gốc `dev` khi `refs/heads/dev` tồn tại trong repo."""
+
+    def setUp(self):
+        self.goc = tempfile.mkdtemp(prefix="tdq-test-nhanh-goc-")
+        self.addCleanup(shutil.rmtree, self.goc, ignore_errors=True)
+        lam_repo_vung_cham(self.goc)
+
+    def _git(self, *args):
+        subprocess.run(["git", "-C", self.goc, *args], check=True, capture_output=True)
+
+    @unittest.skipUnless(shutil.which("git"), "git not installed")
+    def test_nhanh_goc_mac_dinh_fallback_main_khi_chua_co_dev(self):
+        self._git("init", "-q")
+        self._git("symbolic-ref", "HEAD", "refs/heads/main")
+        self._git("config", "user.email", "t@example.com")
+        self._git("config", "user.name", "t")
+        self._git("add", "-A")
+        self._git("commit", "-q", "-m", "init main")
+        self.assertEqual(tdq_test.nhanh_goc_mac_dinh(self.goc), "main")
+
+    @unittest.skipUnless(shutil.which("git"), "git not installed")
+    def test_nhanh_goc_mac_dinh_uu_tien_dev_va_vung_cham_so_diff_voi_dev(self):
+        ghi(self.goc, ".gitignore", "__pycache__/\ndocs/tdq/state.json\n")
+        # Xóa state.json để không có khóa nhanh_goc
+        state_file = os.path.join(self.goc, "docs", "tdq", "state.json")
+        if os.path.exists(state_file):
+            os.remove(state_file)
+        self._git("init", "-q")
+        self._git("symbolic-ref", "HEAD", "refs/heads/main")
+        self._git("config", "user.email", "t@example.com")
+        self._git("config", "user.name", "t")
+        self._git("config", "core.autocrlf", "false")
+        # Trên main chỉ có README.md (giả lập nhánh release sạch)
+        ghi(self.goc, "README.md", "# release\n")
+        self._git("add", "README.md", ".gitignore")
+        self._git("commit", "-q", "-m", "release main")
+        # Tạo nhánh dev chứa đầy đủ tests/ và scripts/
+        self._git("checkout", "-q", "-b", "dev")
+        self._git("add", "-A")
+        self._git("commit", "-q", "-m", "full dev tree")
+        self.assertEqual(tdq_test.nhanh_goc_mac_dinh(self.goc), "dev")
+        # Tách nhánh feature từ dev và chỉ sửa tests/test_a.py
+        self._git("checkout", "-q", "-b", "feature/x")
+        ghi(self.goc, "tests/test_a.py", TEST_DAT + "# doi tren feature\n")
+        self._git("commit", "-q", "-am", "sua test_a")
+        p = chay_cli(self.goc)
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        dong = doc_so(self.goc)[-1]
+        self.assertEqual(dong["files"], ["tests/test_a.py"])
+        self.assertEqual(dong["modules"], ["test_a.py"])
+
+
 if __name__ == "__main__":
     unittest.main()

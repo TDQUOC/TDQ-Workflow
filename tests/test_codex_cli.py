@@ -345,7 +345,8 @@ class DongYCliTest(RepoTam):
                   encoding="utf-8") as f:
             dong_2 = [d for d in f if d.startswith("| 2 |")]
         self.assertEqual(len(dong_2), 1)
-        self.assertIn(lenh, dong_2[0])
+        chuan_dong_2 = dong_2[0].replace('"${CLAUDE_PLUGIN_ROOT}/', "").replace('"', "")
+        self.assertIn(lenh, chuan_dong_2)
 
 
 def _codex_run_gia(thu_muc, noi_dung, ghi_ngoai_vung=False):

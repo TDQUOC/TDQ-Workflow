@@ -528,6 +528,15 @@ def _git(repo, *args):
     return proc.stdout.decode("utf-8", "replace")
 
 
+def nhanh_goc_mac_dinh(repo):
+    """Default base branch: 'dev' when refs/heads/dev exists in the repo, else NHANH_GOC_MAC_DINH."""
+    try:
+        _git(repo, "show-ref", "--verify", "--quiet", "refs/heads/dev")
+        return "dev"
+    except RuntimeError:
+        return NHANH_GOC_MAC_DINH
+
+
 def file_doi_git(repo, base):
     """(changed repo-relative paths, reason when git fails or None).
 
@@ -593,7 +602,7 @@ def cmd_vung_cham(args):
     if args.files is not None:
         files, reason = sorted({chuan_hoa(f) for f in args.files if chuan_hoa(f)}), None
     else:
-        base = state.get("nhanh_goc") or NHANH_GOC_MAC_DINH
+        base = state.get("nhanh_goc") or nhanh_goc_mac_dinh(repo)
         files, reason = file_doi_git(repo, base)
     total = len(tat_ca_module(repo))
     if reason:
