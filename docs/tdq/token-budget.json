@@ -4,16 +4,16 @@
     "token": 2582
   },
   "skills/tdq-build/references/qc.md": {
-    "sha256": "1252dfbb1aeffbeb62b0f97cf1a51837d2d3fbedb1455f40c935b70153a41bd6",
-    "token": 3398
+    "sha256": "665c208cdfbcb6a5049866de1c8c6c70283db873adfc7d867220a71b04534b89",
+    "token": 3354
   },
   "skills/tdq-build/references/report-template.md": {
     "sha256": "e2be7f62da7c4908f8d38c04f2f2df4710d567304fe4613d846a48ac43d2fb8c",
     "token": 2181
   },
   "skills/tdq-build/references/rules/chung.md": {
-    "sha256": "8c4a26395ac09afd9c1d9536239dbbceb50dfbab871b6246ac9ac8c5774bdd07",
-    "token": 3262
+    "sha256": "19c86aa4966e227cf17f4eab6c25ba33ddc6269270a9ea3b003edf6b83bb4805",
+    "token": 3261
   },
   "skills/tdq-build/references/rules/cpp.md": {
     "sha256": "09fc5a2ad661500d211b4eb9accab4f1a537dd8723d6277bdd9b768fcc268c61",
