@@ -21,7 +21,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    output · the approach + its reason · **Năng lực & công cụ** (§3b — copy the verdict table <!-- i18n-allow: canonical spec section names -->
    from the brief, machine-checked by doc_lint R8) ·
    standing requirements (log service ON by default, no placeholder, a test per part) ·
-   constraints & risks · QC scope + Definition of Done · open questions.
+   constraints & risks · QC scope + Definition of Done (see [../tdq-build/references/vision-test-loop.md](../tdq-build/references/vision-test-loop.md) for 3-tier scenarios & visual diffs) · open questions.
    The "open questions" section MUST be empty — a question left → back to phase `analyze`.
 
    **§2b is built from LSP semantics, not from directory names.** A module boundary comes from

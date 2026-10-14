@@ -46,7 +46,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
   and it does NOT change the tick rule above — an `(e60m)` task ticks exactly like an `(e5m)`
   one. A task with no estimate is valid too.
 - **Red → green.** Every task: run/write the check first (it must fail), then code, then rerun
-  until it passes.
+  until it passes; follow [references/vision-test-loop.md](references/vision-test-loop.md) for scenario and visual checks.
 - **Build less than asked: climb the ladder.** Stop at the first rung that holds. Rung 1: does
   this thing need to exist at all — a file, a class, a function, a constant, a config key, a
   dependency, an abstraction layer? A need you inferred rather than read is speculative, so

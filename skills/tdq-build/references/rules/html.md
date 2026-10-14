@@ -43,6 +43,8 @@ Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul l
 4. Public pages get validated through https://validator.w3.org/nu before delivery.
 5. Run `htmlhint <path>` with the rule set under Sources; if the machine lacks htmlhint,
    write "not checked yet".
+6. When a mockup, wireframe, screenshot, prototype, or Figma reference exists, run the 6-step
+   Vision Test Loop in [../vision-test-loop.md](../vision-test-loop.md) (`tdq_vision_diff.py`).
 
 ## Self-check
 

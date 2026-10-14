@@ -1,17 +1,17 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-14T12:12:01+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-14T14:29:37+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-14-1022-che-do-tdq-direct |
+| Request | 2026-10-14-1303-tich-hop-vision-test-loop |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-10-14-1022-che-do-tdq-direct.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-14-1022-che-do-tdq-direct.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-10-14-1303-tich-hop-vision-test-loop.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-10-14-1303-tich-hop-vision-test-loop.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | full |
-| QC level | full |
+| QC level | ultra |
 | Run mode | subagent |
 
 ## Where we are

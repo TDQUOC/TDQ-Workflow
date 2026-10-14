@@ -129,7 +129,7 @@ asked for included. Two more are settled by user ruling on 2026-09-16:
   timestamped, detailed enough to debug the event and its data, switchable off through config.
   It is a standing requirement of the workflow, so it counts as explicitly requested and no rung
   can ever reach it.
-- **The unit test of every task, red → green. No exemption, not even for a one-line change.**
+- **The unit test of every task, red → green. No exemption, not even for a one-line change.** Follow [../vision-test-loop.md](../vision-test-loop.md) for 3-tier scenarios and visual diffs.
 
 ### Say out loud what you climbed past
 
