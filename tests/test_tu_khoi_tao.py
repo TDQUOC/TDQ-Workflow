@@ -302,7 +302,7 @@ class KhoaRong(unittest.TestCase):
     """Khoá rỗng còn mới = một bản dựng đang ghi pid, KHÔNG phải khoá chết (F8, R1#13)."""
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
         self.addCleanup(self.tmp.cleanup)
         self.duong = os.path.join(self.tmp.name, "lock")
 
@@ -343,7 +343,7 @@ class SessionStartKichHoat(unittest.TestCase):
     """
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
         self.addCleanup(self.tmp.cleanup)
         self.cwd = self.tmp.name
         os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)

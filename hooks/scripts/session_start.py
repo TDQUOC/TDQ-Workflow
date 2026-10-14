@@ -204,7 +204,7 @@ def main():
     # that does not need it, so those sessions pay nothing for it.
     da_cap_nhat_ver = False
     try:
-        if tdq_setup.can_cap_nhat_phien_ban(cwd, goc_plugin=GOC_PLUGIN):
+        if la_project_that(cwd) and tdq_setup.can_cap_nhat_phien_ban(cwd, goc_plugin=GOC_PLUGIN):
             da_cap_nhat_ver = tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(cwd, goc_plugin=GOC_PLUGIN)
     except Exception:  # noqa: BLE001
         pass

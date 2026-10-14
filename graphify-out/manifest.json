@@ -48,10 +48,10 @@
     "semantic_hash": "ef30e3dd36e2bbbcac54992cd72d364a"
   },
   "hooks/scripts/session_start.py": {
-    "mtime": 1791688599.1980515,
-    "seen": 1791724122.5640454,
-    "ast_hash": "c883242db92d11c4252818ac9de7a646",
-    "semantic_hash": "c883242db92d11c4252818ac9de7a646"
+    "mtime": 1791975650.5098238,
+    "seen": 1791977294.3416996,
+    "ast_hash": "4f2ff3bd592c415eb966ea28065015dd",
+    "semantic_hash": "4f2ff3bd592c415eb966ea28065015dd"
   },
   "hooks/scripts/stop_gate.py": {
     "mtime": 1790999017.9192772,
@@ -178,10 +178,10 @@
     "semantic_hash": "4abbe96e8ac3d58267796ee0458146de"
   },
   "scripts/build_portable.py": {
-    "mtime": 1790942949.578614,
-    "seen": 1791359066.5497794,
-    "ast_hash": "1fa444f68956a898d33100ec163bc475",
-    "semantic_hash": "1fa444f68956a898d33100ec163bc475"
+    "mtime": 1791974964.0439644,
+    "seen": 1791974969.1498234,
+    "ast_hash": "7d0c1dc59e9bafa294c70c616572e75a",
+    "semantic_hash": "7d0c1dc59e9bafa294c70c616572e75a"
   },
   "scripts/tdq_checkportable.py": {
     "mtime": 1790530901.7024515,
@@ -190,10 +190,10 @@
     "semantic_hash": "4b56728689d6928b9141696e92cdc31d"
   },
   "scripts/tdq_team.py": {
-    "mtime": 1790138252.4497025,
-    "seen": 1790579329.4274614,
-    "ast_hash": "ce0efca2ed4fd2e8bf20ee4485192b89",
-    "semantic_hash": "ce0efca2ed4fd2e8bf20ee4485192b89"
+    "mtime": 1791976573.709731,
+    "seen": 1791977294.3488238,
+    "ast_hash": "85316e5e6103f78257225c0655339f0f",
+    "semantic_hash": "85316e5e6103f78257225c0655339f0f"
   },
   "scripts/tdq_bench.py": {
     "mtime": 1790138252.445154,
@@ -535,10 +535,10 @@
     "semantic_hash": "67116108e12804c670a26ee43a30262f"
   },
   "scripts/tdq_test.py": {
-    "mtime": 1791191247.9003615,
-    "seen": 1791359066.5547378,
-    "ast_hash": "d22e8eb6f7ad8e710e22fc9e44b7e880",
-    "semantic_hash": "d22e8eb6f7ad8e710e22fc9e44b7e880"
+    "mtime": 1791974546.0973225,
+    "seen": 1791974969.1550438,
+    "ast_hash": "b7dfd6525b12962054d3d0c7a600e48a",
+    "semantic_hash": "b7dfd6525b12962054d3d0c7a600e48a"
   },
   "hooks/scripts/lsp_gate.py": {
     "mtime": 1791425411.8532128,
@@ -553,8 +553,8 @@
     "semantic_hash": "7672e75f2e0e926cbc514ed9c4dcfd2a"
   },
   "scripts/tdq_vision_diff.py": {
-    "mtime": 1791960690.632452,
-    "seen": 1791961795.5461938,
+    "mtime": 1791966008.7403922,
+    "seen": 1791974969.155193,
     "ast_hash": "1f58c234f581df5ab58a8693f6a70214",
     "semantic_hash": "1f58c234f581df5ab58a8693f6a70214"
   }

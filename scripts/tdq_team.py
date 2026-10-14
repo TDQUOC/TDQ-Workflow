@@ -28,6 +28,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import datetime
 
 GIT_TIMEOUT = 120
@@ -571,12 +572,17 @@ def _git(cwd, *args, check=True):
     # non-UTF-8 bytes (a binary file, or a string cut mid-character). On the default the
     # whole `kiem` command dies with UnicodeDecodeError — a failure that only shows up on
     # a real run, never in tests using pure ASCII files.
-    proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
-                          encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
-    if check and proc.returncode != 0:
-        raise LoiLuat(f"git {' '.join(args)} failed ({proc.returncode}): "
-                      f"{proc.stderr.strip() or proc.stdout.strip()}")
-    return proc
+    for attempt in range(3):
+        proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
+                              encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
+        if proc.returncode == 0 or not check:
+            return proc
+        if attempt < 2 and (args[:1] == ("worktree",) or ".lock" in (proc.stderr or "")):
+            time.sleep(0.15 * (attempt + 1))
+            continue
+        break
+    raise LoiLuat(f"git {' '.join(args)} failed ({proc.returncode}): "
+                  f"{proc.stderr.strip() or proc.stdout.strip()}")
 
 
 def _la_repo(project):

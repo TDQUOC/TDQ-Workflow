@@ -107,3 +107,12 @@ khai ở dòng `Chạm:` của plan:
   đúng một bản, ở `skills/tdq-build/references/qc.md`. Mức `off` tồn tại nhưng KHÔNG bao giờ
   được bày ra trong danh sách lựa chọn. Cờ `--no-qc` của `approve quick` bị gỡ cùng ngày: một
   cơ chế duy nhất cho cả hai lane.
+- 2026-10-14 (yêu cầu 1713): **mô hình 2 nhánh `dev` (develop) và `main` (release sạch).** Nhánh
+  `dev` là nhánh phát triển chính lưu giữ đầy đủ `docs/`, `tests/`, `evals/`, `graphify-out/` và
+  công cụ nội bộ; các nhánh request mở từ `dev` và gộp về `dev`. Nhánh `main` chỉ chứa phần lõi
+  runtime của plugin (~136 files). Lệnh `scripts/build_portable.py --sinh-main` lọc bỏ `docs/`,
+  `tests/`, `evals/`, `graphify-out/`, `.taskmaster/`, `tools_kiem/`, `.github/`,
+  `CHANGELOG-archive.md`, `pyrightconfig.json`, `scripts/samples/` và 12 script thuần
+  dev/canvas/audit. Quá trình xuất bản dùng Git plumbing (`commit-tree` trên `GIT_INDEX_FILE` tạm,
+  nối 1 parent vào `main` cũ để tránh xung đột `modify/delete`). `scripts/tdq_test.py` tự động ưu
+  tiên `dev` làm `nhanh_goc` mặc định khi `refs/heads/dev` tồn tại.
