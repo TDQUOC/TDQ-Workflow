@@ -14,6 +14,9 @@ import sys
 import tempfile
 import unittest
 
+_DIR = os.path.dirname(os.path.abspath(__file__))
+if _DIR not in sys.path:
+    sys.path.insert(0, _DIR)
 from helper import run_hook, write_state, tdq_state
 
 MAX_CHARS = 240
@@ -82,6 +85,124 @@ class TestIntakeReminder(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertNotIn(INTAKE, out)
         self.assertIn("[TDQ:NEXT]", out)
+
+
+class TestIntakeDirectReminder(unittest.TestCase):
+    """T1.1 (2026-10-14): Kiểm tra nhận diện `_tdq_direct` và phát dòng nhắc direct."""
+
+    DONG_DIRECT = (
+        "[TDQ:INTAKE] Yêu cầu chứa '_tdq_direct' → chạy chế độ direct: "
+        "tự động phân tích & tìm kiếm, lập mini-plan và chỉ dừng ở 1 cổng duyệt "
+        "mini-plan (không hỏi chọn pipeline, không phỏng vấn)."
+    )
+    DONG_DIRECT_LEN = len(DONG_DIRECT)
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def _chay(self, prompt, session="s1"):
+        rc, out, _err = run_hook("prompt_context.py", {
+            "hook_event_name": "UserPromptSubmit", "cwd": self.cwd,
+            "session_id": session, "prompt": prompt})
+        return rc, out
+
+    def _intake_line(self, out):
+        lines = [l for l in out.splitlines() if l.startswith(INTAKE)]
+        self.assertEqual(len(lines), 1, out)
+        return lines[0]
+
+    def test_dong_direct_len(self):
+        """DoD Q2: Dòng nhắc direct ≤ 240 ký tự."""
+        self.assertLessEqual(self.DONG_DIRECT_LEN, 240)
+        self.assertLessEqual(len(self.DONG_DIRECT), 240)
+
+    def test_prompt_direct_state_none(self):
+        """Prompt có _tdq_direct khi state None -> phát dòng nhắc direct."""
+        rc, out = self._chay("_tdq_direct")
+        self.assertEqual(rc, 0)
+        line = self._intake_line(out)
+        self.assertEqual(line, self.DONG_DIRECT)
+        self.assertNotIn("…", line)
+        self.assertLessEqual(len(line), MAX_CHARS)
+
+    def test_prompt_direct_case_insensitive(self):
+        """Prompt có _TDQ_DIRECT hoa thường các kiểu -> phát dòng nhắc direct."""
+        prompts = ("_TDQ_DIRECT", "_tdq_direct", "_Tdq_Direct",
+                   "làm _tdq_direct giúp tôi", "yêu cầu này cần _TDQ_DIRECT nhé")
+        for idx, p in enumerate(prompts):
+            with self.subTest(prompt=p):
+                rc, out = self._chay(p, session=f"s-case-{idx}")
+                self.assertEqual(rc, 0)
+                line = self._intake_line(out)
+                self.assertEqual(line, self.DONG_DIRECT)
+
+    def test_prompt_direct_without_active_request(self):
+        """State không có active_request và prompt có _tdq_direct -> phát dòng nhắc direct."""
+        write_state(self.cwd, active_request=None, lane="full", phase="idle")
+        rc, out = self._chay("tính năng X _tdq_direct")
+        self.assertEqual(rc, 0)
+        line = self._intake_line(out)
+        self.assertEqual(line, self.DONG_DIRECT)
+
+    def test_prompt_direct_phase_idle(self):
+        """State có phase idle và prompt có _tdq_direct -> phát dòng nhắc direct và NEXT."""
+        write_state(self.cwd, active_request="2026-08-02-0900-demo", lane="full", phase="idle")
+        rc, out = self._chay("_TDQ_DIRECT làm tiếp task")
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:NEXT]", out)
+        line = self._intake_line(out)
+        self.assertEqual(line, self.DONG_DIRECT)
+        self.assertNotIn("…", line)
+        self.assertLessEqual(len(line), MAX_CHARS)
+
+    def test_prompt_binh_thuong_khong_phat_direct(self):
+        """Prompt bình thường không chứa _tdq_direct -> nhận dòng INTAKE tiêu chuẩn cũ."""
+        rc, out = self._chay("làm tính năng mới")
+        self.assertEqual(rc, 0)
+        line = self._intake_line(out)
+        self.assertIn("No request is open", line)
+        self.assertNotIn("chế độ direct", line)
+
+    def test_prompt_co_active_request_phase_not_idle_khong_phat_intake(self):
+        """Khi có active_request và phase != idle -> không phát dòng [TDQ:INTAKE] nào."""
+        write_state(self.cwd, active_request="2026-08-02-0900-demo", lane="full",
+                    phase="spec", spec_file="docs/tdq/spec/x.md")
+        rc, out = self._chay("chạy _tdq_direct")
+        self.assertEqual(rc, 0)
+        self.assertNotIn(INTAKE, out)
+        self.assertIn("[TDQ:NEXT]", out)
+
+    def test_regex_direct_boundary_cases(self):
+        r"""Kiểm tra các trường hợp biên của regex r'(?:^|\s|[^\w])_tdq_direct(?:\s|[^\w]|$)'."""
+        khop = [
+            "_tdq_direct",
+            "_TDQ_DIRECT",
+            "[_tdq_direct]",
+            "(_tdq_direct)",
+            "tính năng: _tdq_direct.",
+            "prompt với `_tdq_direct`",
+        ]
+        for idx, p in enumerate(khop):
+            with self.subTest(prompt=p, should_match=True):
+                rc, out = self._chay(p, session=f"s-match-{idx}")
+                self.assertEqual(rc, 0)
+                line = self._intake_line(out)
+                self.assertEqual(line, self.DONG_DIRECT)
+
+        khong_khop = [
+            "my_tdq_direct",
+            "_tdq_direction",
+            "not_tdq_direct_really",
+        ]
+        for idx, p in enumerate(khong_khop):
+            with self.subTest(prompt=p, should_match=False):
+                rc, out = self._chay(p, session=f"s-nomatch-{idx}")
+                self.assertEqual(rc, 0)
+                line = self._intake_line(out)
+                self.assertIn("No request is open", line)
+                self.assertNotIn("chế độ direct", line)
 
 
 class TestNhacGonKenhLuot(unittest.TestCase):
