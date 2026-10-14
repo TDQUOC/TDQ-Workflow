@@ -85,6 +85,7 @@ LETTER = re.compile(
 # and only A — is the approving letter. b/c/d there answer some other question: they are not
 # read as an approval, so the agent has to ASK instead of guessing.
 APPROVE_LETTER = "a"
+RE_DIRECT = re.compile(r"(?:^|\s|[^\w])_tdq_direct(?:\s|[^\w]|$)", re.IGNORECASE)
 
 
 def looks_like_approval(prompt, target, chon_duoc=None):
@@ -217,8 +218,16 @@ def main():
 
     # No OPEN request (open = active_request exists AND phase != idle) → point at intake.
     # The INTAKE line comes FIRST so _truncate (which cuts from the tail) never clips it.
-    intake = ("[TDQ:INTAKE] No request is open — unless this prompt belongs to an intake round "
-              "already running, open tdq-workflow:tdq-intake (or tdq-intake).")
+    prompt = payload.get("prompt") or ""
+    if RE_DIRECT.search(prompt):
+        intake = (
+            "[TDQ:INTAKE] Yêu cầu chứa '_tdq_direct' → chạy chế độ direct: "  # i18n-allow
+            "tự động phân tích & tìm kiếm, lập mini-plan và chỉ dừng ở 1 cổng duyệt "  # i18n-allow
+            "mini-plan (không hỏi chọn pipeline, không phỏng vấn)."  # i18n-allow
+        )
+    else:
+        intake = ("[TDQ:INTAKE] No request is open — unless this prompt belongs to an intake round "
+                  "already running, open tdq-workflow:tdq-intake (or tdq-intake).")
     state = load(cwd)
     if state is None or not state.get("active_request"):
         _emit(cwd, sid, [intake])

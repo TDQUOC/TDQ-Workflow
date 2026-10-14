@@ -1,18 +1,18 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-11T20:33:28+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-14T12:12:01+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-11-1724-unknown-skill-plugin-chua-nap |
+| Request | 2026-10-14-1022-che-do-tdq-direct |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-10-11-1724-unknown-skill-plugin-chua-nap.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-11-1724-unknown-skill-plugin-chua-nap.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-10-14-1022-che-do-tdq-direct.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-10-14-1022-che-do-tdq-direct.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | full |
 | QC level | full |
-| Run mode | main |
+| Run mode | subagent |
 
 ## Where we are
 Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.

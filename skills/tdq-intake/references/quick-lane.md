@@ -1,8 +1,8 @@
 # Express pipeline — detail
 <!-- muc-luc-dong:
-  Table of contents=25-34 · How deep the analysis goes — B0, B1, B2=35-52 ·
-  The ten execution steps=53-121 · Mini spec/plan template (≤ 40 lines)=122-148 ·
-  The block that presents the mini-plan to the user=149-171 · Ba phần tách sang file em=172
+  Table of contents=27-36 · How deep the analysis goes — B0, B1, B2=37-54 ·
+  The ten execution steps=55-123 · Mini spec/plan template (≤ 40 lines)=124-150 ·
+  The block that presents the mini-plan to the user=151-173 · Ba phần tách sang file em=174
 -->
 
 Express differs from the deep pipeline by **merging the documents and merging the
@@ -21,6 +21,8 @@ only on the thresholds in `## How deep the analysis goes` below — and say why.
 The scope round in express shares the rule in [scope-round.md](scope-round.md): one trigger
 sign met → ask about areas + context first; none met → write one SKIP reason line into the
 mini-plan under `## Phạm vi` and move on. <!-- i18n-allow: canonical name in the default language -->
+
+**Direct (`_tdq_direct`):** skips pipeline question & interview; runs B1 code search, mini-plan ≤ 40 lines (`docs/tdq/plan/<slug>.md`), 1 gate (`quick_approved`), then implements.
 
 ## Table of contents
 
@@ -46,9 +48,9 @@ NO approval gate of its own — express keeps exactly one gate. How deep it goes
 **Skipping B0 or B2 costs one line**: the reason goes under the mini-plan's `## Phạm vi` <!-- i18n-allow: canonical section name in the default language -->
 section, shape `Bỏ B0: <lý do>`. A step dropped in silence is a QC defect; B1 is never skipped. <!-- i18n-allow: sample line in the default language -->
 
-Why not "always all three": over 43 closed requests, phase `analyze` costs a median 372 s
-and a whole express request 533 s — running all three unconditionally makes express ~70 %
-slower. Numbers: `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`.
+Why not "always all three": over 43 closed requests, running all three unconditionally
+makes express ~70 % slower (median 533 s vs 372 s).
+Report: `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`.
 
 ## The ten execution steps
 

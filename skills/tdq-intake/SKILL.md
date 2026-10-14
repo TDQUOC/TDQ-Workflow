@@ -6,8 +6,8 @@ description: Open a new TDQ request - record the ask, pick the lane, init state,
 # TDQ Intake — open the request & analyse
 <!-- muc-luc-dong:
   Tier `nhỏ` — answer or fix on the spot, no request opened=17-32 ·
-  Part A — Open the request (phase `no_state`)=33-103 ·
-  Part B — Analysis (phase `analyze`, deep pipeline only)=104-130 · Part C — Express pipeline=131
+  Part A — Open the request (phase `no_state`)=33-101 ·
+  Part B — Analysis (phase `analyze`, deep pipeline only)=102-128 · Part C — Express pipeline=129
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md) first. Every output for the user is written
@@ -76,11 +76,9 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    `Loại request: **feature** — sửa lại nếu bạn thấy khác.` It lands in `loai_request` at step <!-- i18n-allow: option sample in the default language -->
    3b; the user says nothing about the type → your proposal stands.
    **STOP and wait for the user's answer.** Never pick the lane yourself.
+   Ngoại lệ `_tdq_direct`: prompt chứa `_tdq_direct` (không phân biệt hoa thường) → bỏ qua bước hỏi này. Tự động `init <slug> quick`, mở branch git và chuyển thẳng Part C để lập mini-plan.
 
-3. **Init state** as soon as the user settles the lane:
-   ```
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>
-   ```
+3. **Init state** as soon as the user settles the lane: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>`.
    Refused with an LSP module list → back to step 1b; do not reach for `--bo-qua-lsp` yourself.
    This command **wipes** the old state. If another request is still unfinished → name the
    slug and phase about to be lost, **ask the user first**, then run it.
