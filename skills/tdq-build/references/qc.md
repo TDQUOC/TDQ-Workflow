@@ -1,9 +1,9 @@
 # QC — quality control
 <!-- muc-luc-dong:
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
-  The three execution steps=58-88 · What to run=89-130 ·
-  The 120-second cap on smoke and runtime checks=131-151 · Recording the result=152-182 ·
-  When it FAILs=183
+  The three execution steps=58-88 · What to run=89-132 ·
+  The 120-second cap on smoke and runtime checks=133-153 · Recording the result=154-184 ·
+  When it FAILs=185
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
@@ -115,6 +115,8 @@ completeness:
 
 - Edges & error paths: empty input, wrong type, missing file, permission denied, network down.
 - Log service: on by default, timestamped, switchable off/down through config.
+- Scenario & visual fidelity: verify 3-tier scenarios (`Given - When - Then`), reject `ANTI-1`..`ANTI-6`,
+  and run `tdq_vision_diff.py` when a visual reference exists per [vision-test-loop.md](vision-test-loop.md).
 - No placeholders: `TODO`, `FIXME`, leftover mock data presented as real.
 - Skill contract: for EVERY `Dùng:` block in the plan, run the command in its `Kiểm` field; the <!-- i18n-allow: canonical field names of the plan -->
   artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus <!-- i18n-allow: canonical verdict value -->

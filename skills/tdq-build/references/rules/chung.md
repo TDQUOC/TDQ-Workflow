@@ -4,10 +4,10 @@
   Measurable thresholds=56-66 · The build-less-than-asked law=67-75 ·
   The ladder — stop at the first rung that holds=76-93 · Make it run first, refactor after=94-101 ·
   The ladder only chooses among options that already pass the floor=102-109 ·
-  Two ordered passes, never one merged judgement=110-121 · Never simplify these away=122-133 ·
-  Say out loud what you climbed past=134-139 · Intensity table=140-150 ·
-  Extra at level ultra=151-156 · RIGHT / WRONG for this law=157-208 · What to do=209-219 ·
-  Self-check=220-226 · RIGHT/WRONG examples=227
+  Two ordered passes, never one merged judgement=110-121 · Never simplify these away=122-134 ·
+  Say out loud what you climbed past=135-140 · Intensity table=141-151 ·
+  Extra at level ultra=152-157 · RIGHT / WRONG for this law=158-209 · What to do=210-220 ·
+  Self-check=221-227 · RIGHT/WRONG examples=228
 -->
 
 Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line --> · luật gốc: skills/tdq-conventions/references/soul.md
@@ -129,7 +129,8 @@ asked for included. Two more are settled by user ruling on 2026-09-16:
   timestamped, detailed enough to debug the event and its data, switchable off through config.
   It is a standing requirement of the workflow, so it counts as explicitly requested and no rung
   can ever reach it.
-- **The unit test of every task, red → green. No exemption, not even for a one-line change.**
+- **The unit test of every task, red → green. No exemption, not even for a one-line change.** Follow
+  [../vision-test-loop.md](../vision-test-loop.md) for 3-tier scenarios and visual diffs.
 
 ### Say out loud what you climbed past
 

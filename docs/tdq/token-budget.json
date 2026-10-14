@@ -4,16 +4,16 @@
     "token": 2582
   },
   "skills/tdq-build/references/qc.md": {
-    "sha256": "cb608586bde4881910c3b45ecf75e4ffab92516cf7cc4ea853389a8c660a3a3e",
-    "token": 3329
+    "sha256": "1252dfbb1aeffbeb62b0f97cf1a51837d2d3fbedb1455f40c935b70153a41bd6",
+    "token": 3398
   },
   "skills/tdq-build/references/report-template.md": {
     "sha256": "e2be7f62da7c4908f8d38c04f2f2df4710d567304fe4613d846a48ac43d2fb8c",
     "token": 2181
   },
   "skills/tdq-build/references/rules/chung.md": {
-    "sha256": "4a91daa7bd6bc21a4280d0cdda0c4eda523b7940c7e7f098b682eba774f9b7ec",
-    "token": 3232
+    "sha256": "8c4a26395ac09afd9c1d9536239dbbceb50dfbab871b6246ac9ac8c5774bdd07",
+    "token": 3262
   },
   "skills/tdq-build/references/rules/cpp.md": {
     "sha256": "09fc5a2ad661500d211b4eb9accab4f1a537dd8723d6277bdd9b768fcc268c61",
@@ -28,8 +28,8 @@
     "token": 901
   },
   "skills/tdq-build/references/rules/html.md": {
-    "sha256": "aac6a5be768281fa39ff8443754c6e5624d06f03bc85d6dad8a834fdc4d0327c",
-    "token": 867
+    "sha256": "7a153451aa1b6223e0345ed933768e1bb46ae99dac73eb0442918a3608cf2350",
+    "token": 927
   },
   "skills/tdq-build/references/rules/index.md": {
     "sha256": "7c8f22878af50584d68d4b979feaee01599662fb384877f3d94466758cac8e10",
@@ -58,6 +58,10 @@
   "skills/tdq-build/references/team-mode.md": {
     "sha256": "76648c48d1df78728625523c9c2de84e53eaa4cf24c6e8cade57cea01c7b82be",
     "token": 3443
+  },
+  "skills/tdq-build/references/vision-test-loop.md": {
+    "sha256": "64c283fb985585203670f226ba0bd1404850c69402598095d9f86372844d46fc",
+    "token": 3322
   },
   "skills/tdq-check-status/references/bang-lech.md": {
     "sha256": "b2380e933af0c59f555fc085fa30df023d60775ebd9999657cfcc6142f53c4ae",
@@ -192,7 +196,7 @@
     "token": 1404
   },
   "skills/tdq-spec/references/spec-template.md": {
-    "sha256": "166095efe528a0821da8c3991e3dd11a21f47aac76db0551436993024e9187e2",
-    "token": 2615
+    "sha256": "913dd8d75d1e540e864edaa019455212a8d62cd54b8363f272b34ceedeff1d3b",
+    "token": 2646
   }
 }

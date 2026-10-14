@@ -106,7 +106,7 @@ trúc, không bỏ trống khối này.
 |---|---|---|---|---|
 | Q1 | | | <số đo thật hoặc ước lượng + nguồn + biên; không có ngưỡng số → —> | <phương án chọn sẵn; không có ngưỡng số → —> |
 
-DoD: <liệt kê điều kiện đủ để tuyên bố xong>
+DoD: <liệt kê điều kiện đủ để tuyên bố xong; có tham chiếu thị giác thì kèm Vision Test Loop theo vision-test-loop.md>
 
 ## 7. Câu hỏi còn mở
 (Phải RỖNG. Còn câu hỏi → quay lại phase analyze.)
