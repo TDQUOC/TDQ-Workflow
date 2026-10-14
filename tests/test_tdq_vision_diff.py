@@ -2,6 +2,7 @@
 import io
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -223,6 +224,53 @@ class VisionDiffUnitTests(unittest.TestCase):
             with mock.patch("sys.stderr", buf_off):
                 tdq_vision_diff.log_event("should not appear")
         self.assertEqual(buf_off.getvalue(), "")
+
+    def test_cli_subprocess_log_service_on_and_off(self) -> None:
+        """Running scripts/tdq_vision_diff.py as a subprocess logs ISO timestamp by default and is silent when TDQ_LOG=0."""
+        src_path = self.work_dir / "sub_source.png"
+        dist_path = self.work_dir / "sub_dist.png"
+        out_on = self.work_dir / "sub_out_on"
+        out_off = self.work_dir / "sub_out_off"
+
+        img = _make_solid_image(64, 64, (220, 220, 220, 255))
+        img.save(src_path)
+        img.save(dist_path)
+
+        script_path = ROOT / "scripts" / "tdq_vision_diff.py"
+        base_cmd = [
+            sys.executable,
+            str(script_path),
+            "--source", str(src_path),
+            "--dist", str(dist_path),
+            "--slug", "sub-log-check",
+        ]
+
+        env_default = os.environ.copy()
+        env_default.pop("TDQ_LOG", None)
+        proc_on = subprocess.run(
+            [*base_cmd, "--out-dir", str(out_on)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            env=env_default,
+        )
+        self.assertEqual(proc_on.returncode, 0)
+        self.assertRegex(
+            proc_on.stderr,
+            r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\] tdq_vision_diff:",
+        )
+
+        env_off = os.environ.copy()
+        env_off["TDQ_LOG"] = "0"
+        proc_off = subprocess.run(
+            [*base_cmd, "--out-dir", str(out_off)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            env=env_off,
+        )
+        self.assertEqual(proc_off.returncode, 0)
+        self.assertEqual(proc_off.stderr, "")
 
     def test_cli_missing_input_returns_exit_2(self) -> None:
         """Missing source/dist files or invalid arguments return exit code 2."""

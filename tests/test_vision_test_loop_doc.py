@@ -72,6 +72,51 @@ class TestVisionTestLoopDoc(unittest.TestCase):
         )
         self.assertEqual(i18n_proc.returncode, 0, f"i18n_check failed:\n{i18n_proc.stdout}\n{i18n_proc.stderr}")
 
+    def test_tier1_wiring_across_skills(self):
+        """All Tier 1 skill and reference files must link to vision-test-loop.md and pass i18n_check.py."""
+        import json
+
+        wired_files = [
+            ROOT / "skills" / "tdq-build" / "SKILL.md",
+            ROOT / "skills" / "tdq-spec" / "SKILL.md",
+            ROOT / "skills" / "tdq-build" / "references" / "qc.md",
+            ROOT / "skills" / "tdq-build" / "references" / "rules" / "chung.md",
+            ROOT / "skills" / "tdq-build" / "references" / "rules" / "html.md",
+            ROOT / "skills" / "tdq-spec" / "references" / "spec-template.md",
+        ]
+        for path in wired_files:
+            self.assertTrue(path.is_file(), f"Missing Tier 1 file: {path}")
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("vision-test-loop.md", text, f"Missing vision-test-loop.md link in {path}")
+
+        clean_targets = [
+            ROOT / "scripts" / "tdq_vision_diff.py",
+            VISION_DOC,
+            ROOT / "skills" / "tdq-build" / "references" / "rules" / "chung.md",
+            ROOT / "skills" / "tdq-build" / "references" / "rules" / "html.md",
+        ]
+        i18n_clean = subprocess.run(
+            [sys.executable, str(I18N_CHECK), *(str(p) for p in clean_targets)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        self.assertEqual(i18n_clean.returncode, 0, f"i18n_check failed:\n{i18n_clean.stdout}\n{i18n_clean.stderr}")
+
+        i18n_wired = subprocess.run(
+            [sys.executable, str(I18N_CHECK), "--json", *(str(p) for p in wired_files)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        payload = json.loads(i18n_wired.stdout)
+        vision_findings = [
+            row for row in payload.get("findings", [])
+            if "vision-test-loop" in row.get("text", "").lower()
+            or "tdq_vision_diff" in row.get("text", "").lower()
+        ]
+        self.assertEqual(vision_findings, [], f"Vietnamese text found in vision-test-loop wiring: {vision_findings}")
+
 
 if __name__ == "__main__":
     unittest.main()
