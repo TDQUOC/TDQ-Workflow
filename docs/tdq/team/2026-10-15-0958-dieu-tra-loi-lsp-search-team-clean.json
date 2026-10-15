@@ -1,0 +1,49 @@
+{
+  "slug": "2026-10-15-0958-dieu-tra-loi-lsp-search-team-clean",
+  "plan_file": "docs\\tdq\\plan\\2026-10-15-0958-dieu-tra-loi-lsp-search-team-clean.md",
+  "plan_sha": "2223ebda67d17f58020c22b51e2d21ad5638df1493e31b9841228ebba8b993c7",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/tdq_team.py",
+        "tests/test_team_mode.py",
+        "skills/tdq-build/SKILL.md",
+        "skills/tdq-build/references/team-mode.md"
+      ],
+      "dot": 1
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/search_rules.py",
+        "hooks/scripts/search_gate.py",
+        "tests/test_search_rules.py",
+        "tests/test_search_gate.py"
+      ],
+      "dot": 1
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/tdq_setup.py",
+        "skills/tdq-setup/references/uu-tien-tim-kiem.md",
+        "scripts/token_budget.py",
+        "docs/tdq/token-budget.json"
+      ],
+      "dot": 2
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_team_mode.py",
+        "tests/test_search_rules.py"
+      ],
+      "dot": 3
+    }
+  }
+}

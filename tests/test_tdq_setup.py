@@ -523,5 +523,16 @@ class DonMay(unittest.TestCase):
         don.assert_not_called()
 
 
+class TestKhoiHuongDan(unittest.TestCase):
+    def test_khoi_huong_dan_co_cac_buoc_lsp_va_duoi_25_dong(self):
+        huong_dan = tdq_setup.khoi_huong_dan()
+        dong = huong_dan.splitlines()
+        self.assertLessEqual(len(dong), 25, f"KHOI_HUONG_DAN quá dài: {len(dong)} dòng")
+        self.assertIn("mcp__lsp__start_lsp", huong_dan)
+        self.assertIn("open_document", huong_dan)
+        self.assertIn("list_symbols", huong_dan)
+        self.assertIn("find_symbol", huong_dan)
+
+
 if __name__ == "__main__":
     unittest.main()

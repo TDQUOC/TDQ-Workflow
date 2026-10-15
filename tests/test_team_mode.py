@@ -964,6 +964,27 @@ class GitTest(TeamBase):
         con_lai = os.listdir(thu_muc) if os.path.isdir(thu_muc) else []
         self.assertEqual(con_lai, [], con_lai)
 
+    def test_clean_mot_task_khi_worktree_con_ton_tai(self):
+        self.chay("open", "T1.1")
+        self.chay("open", "T1.2")
+        rc, out, err = self.chay("clean", "T1.1")
+        self.assertEqual(rc, 0, out + err)
+        self.assertIn("T1.1", out)
+        wt = git(self.cwd, "worktree", "list")
+        self.assertNotIn("t1.1", wt.lower())
+        self.assertIn("t1.2", wt.lower(), "clean T1.1 không được xóa T1.2")
+
+    def test_clean_mot_task_khi_da_duoc_merge_don_truoc(self):
+        self.chay("open", "T1.1")
+        wt = self._duong_worktree("T1.1")
+        write_file(wt, "scripts/a.py", "x = 1\n")
+        git(wt, "add", "-A")
+        git(wt, "commit", "-q", "-m", "T1.1")
+        self.chay("merge", "T1.1")
+        rc, out, err = self.chay("clean", "T1.1")
+        self.assertEqual(rc, 0, out + err)
+        self.assertIn("already cleaned", out.lower())
+
 class HookTest(TeamBase):
     """T3.1 → T3.3 — edit_gate nới cho `[>]` nhưng chặn đúng ca lách luật."""
 

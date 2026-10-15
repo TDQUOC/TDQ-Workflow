@@ -31,7 +31,8 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
 # 2026-10-11: 4300 → 6000. 0.65/0.66 thêm hai mục luật cứng vào khối ghim (cấm plan mode/popup,
 # cấm trailer AI) và 0.67 thêm dòng dự phòng `Unknown skill` — kênh duy nhất tới model ở project
 # chưa bật plugin. Bản mẫu đo 5.6 KB sau khi đồng bộ lại; cùng phán quyết soul.md: nâng trần.
-MAX_BYTES = 6000
+# 2026-10-15: 6000 → 6500. Thêm hướng dẫn khởi tạo LSP và tra symbol vào khối ghim; cùng phán quyết.
+MAX_BYTES = 6500
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
 # Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file

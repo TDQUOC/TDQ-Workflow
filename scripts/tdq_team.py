@@ -1251,10 +1251,28 @@ def lenh_soat(project, args):
     return 1 if any(m["ly_do"] in ("ban", "bo-qua") for m in goi_y) else 0
 
 
-def lenh_don(project, _args):
+def lenh_don(project, args):
     slug, _plan, _ban_do = _boi_canh(project, can_ban_do=False)
     if not _la_repo(project):
         raise LoiLuat("This directory is not a git repo.")
+    task = getattr(args, "task", None)
+    if task:
+        duong = _duong_worktree(project, slug, task.lower())
+        nhanh = _ten_nhanh(slug, task)
+        tich_hop = _nhanh_tich_hop(project, slug)
+        if not os.path.isdir(duong):
+            so_wt.dong_dong(project, slug, task, "bien-mat")
+            so_wt.ghi_md(project)
+            print(f"Worktree for {task} already cleaned.")
+            _log(f"clean {task} → already cleaned")
+            return 0
+        chan = _thu_don(project, slug, task, nhanh, duong, tich_hop)
+        so_wt.ghi_md(project)
+        if chan is not None:
+            _in_goi_y([chan])
+            return 1
+        print(f"Removed worktree of {task}, pruned.")
+        return 0
     goc = os.path.join(_thu_muc_goc_worktree(project), slug)
     ra = _git(project, "worktree", "list", "--porcelain").stdout
     duong_list = [d.split(" ", 1)[1] for d in ra.splitlines() if d.startswith("worktree ")]
@@ -1475,6 +1493,9 @@ def build_parser():
         con = sub.add_parser(ten, help=mo_ta)
         if ten in ("open", "check", "merge", "resolve"):
             con.add_argument("task", help="task code (T1.1) or the full branch name")
+        if ten == "clean":
+            con.add_argument("task", nargs="?", default=None,
+                             help="optional task code (T1.1) or branch name to clean")
         if ten == "sweep":
             con.add_argument("--clean", "--don", dest="don", action="store_true",
                              help="also remove every worktree that passes all 3 conditions")

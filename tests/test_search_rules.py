@@ -24,10 +24,10 @@ def _bash(lenh):
     return sr.phan_loai("Bash", lenh)
 
 
-def _tt(da_goi=False, so_lan=0, token=(), cua_so=None, tang_song=None):
+def _tt(da_goi=False, so_lan=0, token=(), cua_so=None, tang_song=None, ngon_ngu=None):
     return {"da_goi_khai_niem": da_goi, "so_lan_tim_tu_lan_goi": so_lan,
             "token_prompt": set(token), "cua_so": sr.CUA_SO if cua_so is None else cua_so,
-            "tang_song": tang_song}
+            "tang_song": tang_song, "ngon_ngu": ngon_ngu}
 
 
 def _qd(lenh, cong_cu="Bash", **tt):
@@ -222,6 +222,27 @@ class TestLoiNhacTangSong(unittest.TestCase):
     def test_tang_cu_khong_con_ten_thi_bo_qua(self):
         """Mốc trước 0.58.0 có khoá `lumen`: nó không được lọt vào lời nhắc."""
         self.assertNotIn("lumen", sr.loi_nhac(("lumen", "graphify")))
+
+    def test_loi_nhac_ngon_ngu_typescript_va_python(self):
+        nhac_ts = sr.loi_nhac(tang_song=("lsp",), ngon_ngu="typescript")
+        self.assertIn('language_id = "typescript"', nhac_ts)
+        self.assertIn("open_document", nhac_ts)
+        self.assertNotIn("e.g. python", nhac_ts)
+
+        nhac_py = sr.loi_nhac(tang_song=("lsp",), ngon_ngu="python")
+        self.assertIn('language_id = "python"', nhac_py)
+        self.assertNotIn("open_document", nhac_py)
+        self.assertNotIn("e.g. python", nhac_py)
+
+    def test_quyet_dinh_goi_y_list_symbols_cho_file_cu_the(self):
+        pl = sr.phan_loai("Grep", {"pattern": "abort|stopBackgroundTask|asyncTask",
+                                   "path": "server/modules/provider-runtime.service.ts"})
+        self.assertTrue(pl["doan_mo"])
+        self.assertEqual(pl["file_dich"], "server/modules/provider-runtime.service.ts")
+        ok, ly_do = sr.quyet_dinh(pl, _tt(da_goi=False, tang_song=("lsp",), ngon_ngu="typescript"))
+        self.assertFalse(ok)
+        self.assertIn("list_symbols", ly_do)
+        self.assertIn("provider-runtime.service.ts", ly_do)
 
 
 class TestTenTrongPrompt(unittest.TestCase):
