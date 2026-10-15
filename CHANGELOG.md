@@ -2,6 +2,17 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.70.0 — 2026-10-15
+
+Tối ưu hóa toàn diện instruction và kiến trúc Lazy Loading ngữ cảnh cho model tier thấp.
+Kế hoạch: `docs/tdq/plan/2026-10-15-1425-cap-nhat-full-de-xuat-instruction.md`.
+
+- **Bộ mã cấm tường minh (`ANTI-1` .. `ANTI-6`).** Tích hợp chuẩn hóa bộ 6 mã cấm cơ học (Fake Red, Blind Assertion, Dirty State Git, Late Tick, Raw Dump, Broad Area) vào các tài liệu hướng dẫn và agent. Giúp các mô hình nhỏ tránh lỗi cú pháp, assertion rỗng và vi phạm checklist.
+- **Thư viện Cookbooks thực chiến (Tầng 3).** Xây dựng thư viện Cookbooks tại `skills/tdq-build/references/rules/cookbooks/` với các giải pháp thực chiến cho Python và TypeScript/JS (async concurrency, database transaction context manager, domain error handling, clean architecture dependency injection, structured ISO logging).
+- **JIT Micro-injection & Neo Phục Hồi sau Compaction.** Hook `edit_gate.py` tự động mớm 3 dòng quy tắc vàng khi sửa code lần đầu; hook `session_start.py` trang bị Khối Neo Phục Hồi `[TDQ:ANCHOR]` ngắn gọn (< 200 tokens) trỏ lại state, plan và mã cấm khi phiên bị nén (compaction); hook `prompt_context.py` tự mớm DoD checklist khi vào phase `qc`.
+- **Chế độ Silent CLI trong `tdq_test.py`.** Hỗ trợ cờ `--silent` ghi log chi tiết ra `docs/tdq/.tdq-test.log`, terminal chỉ in `≤ 2` dòng tóm tắt và lỗi chính, bảo vệ context window khỏi rác log kiểm thử.
+- **Bảo toàn hàng rào Codex.** Tinh chỉnh `_la_repo_plugin` trong `scripts/tdq_codex_mcp.py` bảo đảm `.codex/hooks.json` của repo TDQ Workflow luôn giữ đúng hàng rào 2 cổng viết tay.
+
 ## 0.69.0 — 2026-10-15
 
 Khắc phục lỗi CLI `tdq_team clean <task>`, tự động phát hiện ngôn ngữ dự án trong search gate và ghim hướng dẫn 3 bước LSP.
@@ -471,20 +482,9 @@ Lượt Codex sai khuôn thì lấy test làm chuẩn. Báo cáo:
 - **Test đầu-cuối `RunDauCuoiTest`** — chạy `run` thật qua tiến trình con với Codex giả và
   `CODEX_HOME` giả: 5 ca phán quyết, cách ly cấu hình máy, log lượt tắt được bằng `TDQ_LOG=0`.
 
-## 0.46.1 — 2026-09-14
-
-Hai bản sửa cho mode `codex implement`. Báo cáo: `docs/tdq/reports/2026-09-14-1252-run-cham-fail-sai-schema.md`.
-
-- **`tdq_codex.py run` chấm đúng lượt làm đúng** — nhận JSON trần hoặc đúng một rào code bọc trọn
-  file (nhãn rỗng/`json`). Chỉ `xong` là boolean `true` mới là `xong`; trước đây `{"xong": false}`
-  cũng bị chấm `xong`. Schema thêm `additionalProperties: false`.
-- **Dòng log mang lý do** — lượt không xong kết thúc bằng `· ly_do=<mã>`, mã thuộc tập đóng `MA_LY_DO`.
-- **Sửa `check` Codex** — gửi một lượt say hi thật thay vì chỉ `codex --version`. Có lệnh mới
-  `dong-y --model`, và `CODEX_HOME` tạm mang theo bảng provider.
-
 ## Lịch sử cũ hơn
 
-Bản 0.46.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.46.0 dời ngày 2026-10-15). Bản 0.36.0 trở xuống
+Bản 0.46.1 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.46.1 dời ngày 2026-10-15). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.

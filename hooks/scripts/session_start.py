@@ -236,6 +236,13 @@ def main():
         else:
             out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — full ladder "
                     f"loads during phase implement (see skills/tdq-build/references/rules/chung.md).")
+    if payload.get("source") == "compact" and (state or {}).get("active_request"):
+        plan_f = (state or {}).get("plan_file") or "docs/tdq/plan/<slug>.md"
+        out += (
+            f"\n\n[TDQ:ANCHOR] Compact recovery: request={state.get('active_request')} phase={pha} plan={plan_f}\n"
+            f"Core anti-patterns: ANTI-1 (no fake red) · ANTI-2 (no blind assert) · ANTI-3 (clean git state) · "
+            f"ANTI-4 (tick before code) · ANTI-5 (cap logs <= 15 lines) · ANTI-6 (explicit files in Cham)."
+        )
     out = cap(out, TOAN_MAX_LINES, TOAN_MAX_CHARS)
     if ghi:
         # Logged AFTER the cap on purpose: `so_dong` must be the law lines that actually

@@ -1,9 +1,20 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.46.0 đến 0.37.0, tách khỏi `CHANGELOG.md` từ 2026-10-03 để file chính dưới trần R6 500 dòng
-(`docs/CHANGELOG-archive.md` đã đầy). Bản 0.46.0 được chuyển sang ngày 2026-10-15.
+Các bản 0.46.1 đến 0.37.0, tách khỏi `CHANGELOG.md` từ 2026-10-03 để file chính dưới trần R6 500 dòng
+(`docs/CHANGELOG-archive.md` đã đầy). Bản 0.46.1 được chuyển sang ngày 2026-10-15.
 Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.46.1 — 2026-09-14
+
+Hai bản sửa cho mode `codex implement`. Báo cáo: `docs/tdq/reports/2026-09-14-1252-run-cham-fail-sai-schema.md`.
+
+- **`tdq_codex.py run` chấm đúng lượt làm đúng** — nhận JSON trần hoặc đúng một rào code bọc trọn
+  file (nhãn rỗng/`json`). Chỉ `xong` là boolean `true` mới là `xong`; trước đây `{"xong": false}`
+  cũng bị chấm `xong`. Schema thêm `additionalProperties: false`.
+- **Dòng log mang lý do** — lượt không xong kết thúc bằng `· ly_do=<mã>`, mã thuộc tập đóng `MA_LY_DO`.
+- **Sửa `check` Codex** — gửi một lượt say hi thật thay vì chỉ `codex --version`. Có lệnh mới
+  `dong-y --model`, và `CODEX_HOME` tạm mang theo bảng provider.
 
 ## 0.46.0 — 2026-09-14
 

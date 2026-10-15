@@ -106,9 +106,13 @@ def _ten_ngan(path):
 
 def _thuoc_dieu_phoi(path):
     """File có nằm trong một nhóm điều phối không (và không phải chính cửa vào)."""
-    thu_muc = os.path.dirname(os.path.relpath(path, SKILLS))
-    cua_vao = DIEU_PHOI.get(thu_muc)
-    return cua_vao is not None and os.path.basename(path) != cua_vao
+    rel = os.path.relpath(path, SKILLS)
+    for thu_muc, cua_vao in DIEU_PHOI.items():
+        if rel == os.path.join(thu_muc, cua_vao):
+            return False
+        if rel.startswith(thu_muc + os.sep):
+            return True
+    return False
 
 
 # Từ 2026-08-22 reference viết tiếng Anh; nhận cả hai tên mục lục.

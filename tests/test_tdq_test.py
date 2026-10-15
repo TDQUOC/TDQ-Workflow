@@ -308,6 +308,17 @@ class VungCham(unittest.TestCase):
         self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
         self.assertIn("Ran 2 tests", p.stderr)
 
+    def test_vung_cham_silent_flag_writes_log_file(self):
+        p = chay_cli(self.goc, "--files", "tests/test_a.py", "--silent")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("[TDQ:TEST] PASS", p.stdout)
+        self.assertNotIn("Ran 1 test", p.stderr)
+        log_path = os.path.join(self.goc, "docs", "tdq", ".tdq-test.log")
+        self.assertTrue(os.path.isfile(log_path))
+        with open(log_path, encoding="utf-8") as f:
+            log_content = f.read()
+        self.assertIn("Ran 1 test", log_content)
+
     def test_vung_cham_ly_do_tron_bo_chay_het(self):
         p = chay_cli(self.goc, "--files", "tools/build.sh")  # T5.6: mã ngoài 5 thư mục
         self.assertEqual(p.returncode, 1)  # test_b trượt nằm trong trọn bộ
