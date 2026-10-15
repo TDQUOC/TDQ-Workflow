@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.68.0 — 2026-10-15
+
+Tách 2 nhánh `dev` (phát triển) và `main` (release sạch), tích hợp khung mindset kiểm thử thực tế và Vision Test Loop.
+Kế hoạch: `docs/tdq/plan/2026-10-14-1713-tach-nhanh-dev-main-release.md`.
+
+- **Mô hình 2 nhánh `dev` và `main`.** Nhánh `dev` là nhánh phát triển chính lưu giữ đầy đủ mã nguồn, tài liệu, test và công cụ nội bộ; nhánh `main` là nhánh phát hành gọn sạch (~135 files, giảm 90.8% số file và 93.5% dung lượng).
+- **Lệnh phát hành Git plumbing.** Mở rộng `scripts/build_portable.py` với cờ `--sinh-main [--nguon] [--nhanh-dich] [--dry-run]` tự động tạo commit snapshot release độc lập trên `main` qua Git plumbing (`commit-tree` trên `GIT_INDEX_FILE` tạm), tránh xung đột merge `modify/delete` và không làm bẩn working tree hiện tại.
+- **Tự động nhận diện nhánh gốc.** `scripts/tdq_test.py` tự động nhận diện nhánh `dev` làm `nhanh_goc` mặc định khi tồn tại trong repo để tính vùng chạm chính xác.
+- **Vision Test Loop & Mindset kiểm thử thực tế.** Công cụ `scripts/tdq_vision_diff.py` và hướng dẫn `skills/tdq-build/references/vision-test-loop.md` hỗ trợ đối chiếu giao diện hình ảnh, Canvas Padding, Masking, Bounding Box đánh số, xuất báo cáo `.md`/`.html` và tích hợp Figma.
+
 ## 0.67.0 — 2026-10-14
 
 Bổ sung chế độ kích hoạt nhanh `_tdq_direct` tự động phân tích mã nguồn và chỉ có 1 cổng duyệt mini-plan.
@@ -463,35 +473,9 @@ Hai bản sửa cho mode `codex implement`. Báo cáo: `docs/tdq/reports/2026-09
 - **Sửa `check` Codex** — gửi một lượt say hi thật thay vì chỉ `codex --version`. Có lệnh mới
   `dong-y --model`, và `CODEX_HOME` tạm mang theo bảng provider.
 
-## 0.46.0 — 2026-09-14
-
-Mode thực thi thứ ba: `codex implement`. Leader vẫn chạy tuần tự trong turn của mình như mode
-`main`, nhưng từng task giao cho `codex exec` viết code rồi leader kiểm lại. Không có sub-agent,
-không có worktree song song.
-Báo cáo: `docs/tdq/reports/2026-09-10-2247-mode-codex-implement.md`.
-
-- **`tdq_state.py` nhận mode thứ ba** — `VALID_MODES`/`MODE_LABELS` có `codex`, `phase_row` đọc
-  bảng tra thay vì rẽ nhánh `if`, và lệnh mới `modes --json` in `{ma, nhan, chon_duoc, ly_do}`
-  làm nguồn máy đọc được cho cổng chọn mode. `tdq_state.py` không được import tầng Codex.
-- **`scripts/tdq_vungfile.py` mới** — `chup-moc`/`hau-kiem`/`hoan-tac`. Mốc git lấy riêng cho
-  từng task, không so với `HEAD`. So với `HEAD` thì task sau FAIL oan vì việc chưa commit của task
-  trước. Hoàn tác bằng `git restore --source=<sha> --worktree`, không đụng index. Vùng khoá gồm file test.
-- **`scripts/tdq_codex.py` mới** — `check` dò máy và kiểm Codex còn sống. `run` chạy một lượt
-  `codex exec` với stdin không phải TTY, mọi cờ gom về một bảng `CO_EXEC`. Phán quyết 4 trạng thái
-  không dựa exit code. `cleanup` dọn `CODEX_HOME` tạm; log ghi sha256 của prompt thay nguyên văn.
-- **Nhịp đỏ → xanh chia đôi** — leader viết test đỏ trước, Codex chỉ được làm xanh; sửa file test
-  là FAIL kể cả khi test xanh.
-- **Hàng rào `hooks/scripts/codex_edit_gate.py`** — nâng từ chuỗi nhúng trong `build_portable.py`
-  thành file thật; dịch `apply_patch` và 5 dạng lệnh shell sang đường ghi, deny `[TDQ:VUNG]` khi
-  ra ngoài vùng. `.codex/hooks.json` ở gốc repo viết tay, đúng hai matcher `PreToolUse`.
-- **Cổng chọn mode động** — Codex sống thì 3 lựa chọn, không thì 2 lựa chọn kèm một dòng lý do.
-  Cài lên máy mới phải có cả đồng ý của người dùng lẫn `codex` trên máy; cờ đồng ý mặc định false.
-- **Giới hạn** — Q13 (sandbox chặn ghi ra ngoài) chưa chạy thật vì cờ đồng ý đang false. Suite
-  290 fail / 4 error bằng đúng mốc trước request (danh sách giống hệt), request thêm 0 fail mới.
-
 ## Lịch sử cũ hơn
 
-Bản 0.44.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md` — tách ra ngày 2026-10-03 khi bản
-0.56.0 đẩy file này qua trần 500 dòng của `doc_lint` R6 (0.39.0 dời thêm ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10, 0.44.0 ngày 2026-10-11). Bản 0.36.0 trở xuống nằm ở
-`docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên, không
-xoá dòng nào.
+Bản 0.46.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.46.0 dời ngày 2026-10-15). Bản 0.36.0 trở xuống
+nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
+không xoá dòng nào.
