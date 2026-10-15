@@ -335,6 +335,26 @@ def main():
     # AFTER the standing block: _emit cuts from the tail, and the law pointer must not be
     # what pushes the NEXT line out of the 240-char ceiling.
     _nhac_gon(cwd, state, payload, sid)
+    _nhac_qc(cwd, state, payload, sid)
+
+
+def _nhac_qc(cwd, state, payload, session):
+    """At phase `qc`, inject the 5 SOLID questions and DoD reminder when QC is invoked."""
+    if effective_phase(state, warn=False) != "qc":
+        return
+    prompt = (payload.get("prompt") or "").lower()
+    if not any(k in prompt for k in ("qc", "kiểm tra", "dod")):
+        return
+    ma_qc = "TDQ:QC"
+    if already_reminded(cwd, payload, ma_qc):
+        return
+    dong = (
+        f"[{ma_qc}] Quality Control checklist: verify DoD items with evidence; "
+        "check 5 SOLID questions (clean-code.md); ensure zero false red tests."
+    )
+    turn_log_append(cwd, "remind", session=session, code=ma_qc,
+                    event="UserPromptSubmit", so_dong=1)
+    print(dong)
 
 
 def _truncate(text, limit=MAX_CHARS):

@@ -28,7 +28,7 @@ from _common import (already_reminded, payload_cwd, read_payload, session_id,
 # from-import shape (not a module attribute call) is what lets graphify emit a cross-file
 # `calls` edge.
 from luat_gon import doc_than_luat, loc_than_luat  # noqa: E402
-from tdq_state import (default_state, lenh_cho_project, load,  # noqa: E402
+from tdq_state import (default_state, effective_phase, lenh_cho_project, load,  # noqa: E402
                        muc_gat_hieu_luc, render_next)
 import search_rules  # noqa: E402
 import tdq_setup  # noqa: E402
@@ -224,9 +224,25 @@ def main():
     muc = muc_gat_hieu_luc(state)
     than = loc_than_luat(doc_than_luat(GOC_LUAT), muc)
     ghi = bool(than) and not already_reminded(cwd, payload, MA_GON)
+    pha = effective_phase(state, warn=False)
+    # Lazy load: only load the full law body during phase 'implement' (or when no active request
+    # is open yet, preserving standalone usage). In other phases (idle, analyze, spec, plan, qc,
+    # report), inject a concise 1-line pointer to save ~2,000 tokens of carry-cost per turn.
+    nap_day_du = (pha == "implement") or (not (state or {}).get("active_request"))
     if ghi:
-        out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — climb this "
-                f"ladder before you create anything:\n{than}")
+        if nap_day_du:
+            out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — climb this "
+                    f"ladder before you create anything:\n{than}")
+        else:
+            out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — full ladder "
+                    f"loads during phase implement (see skills/tdq-build/references/rules/chung.md).")
+    if payload.get("source") == "compact" and (state or {}).get("active_request"):
+        plan_f = (state or {}).get("plan_file") or "docs/tdq/plan/<slug>.md"
+        out += (
+            f"\n\n[TDQ:ANCHOR] Compact recovery: request={state.get('active_request')} phase={pha} plan={plan_f}\n"
+            f"Core anti-patterns: ANTI-1 (no fake red) · ANTI-2 (no blind assert) · ANTI-3 (clean git state) · "
+            f"ANTI-4 (tick before code) · ANTI-5 (cap logs <= 15 lines) · ANTI-6 (explicit files in Cham)."
+        )
     out = cap(out, TOAN_MAX_LINES, TOAN_MAX_CHARS)
     if ghi:
         # Logged AFTER the cap on purpose: `so_dong` must be the law lines that actually
@@ -234,7 +250,7 @@ def main():
         # the cap let 90 through is worse than no row at all.
         turn_log_append(cwd, "remind", session=session_id(payload), code=MA_GON,
                         event="SessionStart", muc_gat=muc,
-                        so_dong=len(out.partition(f"[{MA_GON}]")[2].splitlines()[1:]),
+                        so_dong=len(out.partition(f"[{MA_GON}]")[2].splitlines()[1:]) if nap_day_du else 1,
                         source=str(payload.get("source") or ""))
     # Absolute paths AFTER both caps: the caps measure what the block says; rewriting first
     # pushed the block over 600 characters and cut its tail off (measured 2026-10-03).

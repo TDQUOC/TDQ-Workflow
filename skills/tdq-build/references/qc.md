@@ -3,7 +3,7 @@
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
   The three execution steps=58-88 · What to run=89-130 ·
   The 120-second cap on smoke and runtime checks=131-151 · Recording the result=152-182 ·
-  When it FAILs=183
+  Explicit Anti-Patterns=183-190 · When it FAILs=191
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
@@ -179,6 +179,14 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 An item that missed its threshold but carries a recorded deviation is written
 `PASS (lệch, chờ duyệt)` — not FAIL: the fallback was applied on purpose and only the user can
 approve or reject it, which happens in the report.
+
+## Explicit Anti-Patterns
+
+Rules that lead to immediate QC rejection:
+
+- `ANTI-1 (Fake Red)`: A test that fails because of syntax error, bad import, or wrong file path is NOT valid RED.
+- `ANTI-2 (Blind Assertion)`: Writing assertions that cannot fail (`assert True`, `assert len(x) >= 0`, empty checks) is banned.
+- `ANTI-5 (Raw Dump)`: Pasting raw test logs longer than 15 lines into chat is banned; summarize the outcome and isolate deciding error lines.
 
 ## When it FAILs
 

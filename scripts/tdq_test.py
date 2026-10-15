@@ -609,14 +609,29 @@ def cmd_vung_cham(args):
         modules = tat_ca_module(repo)
     else:
         modules, reason = ban_kinh(files, repo)
-    if reason:
-        print(f"vung-cham: {len(files)} changed file(s); running the full suite "
-              f"({len(modules)} modules): {reason}")
-    else:
-        print(f"vung-cham: {len(files)} changed file(s); selected {len(modules)}/{total} "
-              f"modules: {' '.join(modules) or '(none)'}")
-    sys.stdout.flush()
-    ok = chay_module(repo, modules)
+    silent = getattr(args, "silent", False)
+    if not silent:
+        if reason:
+            print(f"vung-cham: {len(files)} changed file(s); running the full suite "
+                  f"({len(modules)} modules): {reason}")
+        else:
+            print(f"vung-cham: {len(files)} changed file(s); selected {len(modules)}/{total} "
+                  f"modules: {' '.join(modules) or '(none)'}")
+        sys.stdout.flush()
+
+    log_file = None
+    stream = None
+    log_path = os.path.join(repo, "docs", "tdq", ".tdq-test.log")
+    if silent:
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        log_file = open(log_path, "w", encoding="utf-8")
+        stream = log_file
+    try:
+        ok = chay_module(repo, modules, stream=stream)
+    finally:
+        if log_file:
+            log_file.close()
+
     seconds = round(time.monotonic() - start, 2)
     _ghi_so(repo, {"ts": _now_iso(), "kind": "vung-cham",
                    "request": state.get("active_request"), "phase": state.get("phase"),
@@ -624,6 +639,18 @@ def cmd_vung_cham(args):
                    "seconds": float(seconds)})
     _log(f"vung-cham files={len(files)} modules={len(modules)}/{total} "
          f"fallback={reason or 'none'} ok={ok} seconds={seconds}")
+    if silent:
+        if ok:
+            print(f"[TDQ:TEST] PASS — {len(modules)} modules tested in {seconds}s.")
+        else:
+            print(f"[TDQ:TEST] FAIL — test suite failed in {seconds}s (log: docs/tdq/.tdq-test.log).")
+            try:
+                with open(log_path, "r", encoding="utf-8") as lf:
+                    lines = [l.strip() for l in lf if "FAIL:" in l or "ERROR:" in l]
+                for err_line in lines[:2]:
+                    print(f"  {err_line}")
+            except Exception:
+                pass
     return 0 if ok else 1
 
 
@@ -717,9 +744,22 @@ def cmd_tron_bo(args):
     state = _doc_state(repo)
     request, phase = state.get("active_request"), state.get("phase")
     total = len(tat_ca_module(repo))
-    print(f"tron-bo: running the full suite ({total} modules)")
-    sys.stdout.flush()
-    ok, failed = chay_tron_bo(repo)
+    silent = getattr(args, "silent", False)
+    if not silent:
+        print(f"tron-bo: running the full suite ({total} modules)")
+        sys.stdout.flush()
+    log_file = None
+    stream = None
+    log_path = os.path.join(repo, "docs", "tdq", ".tdq-test.log")
+    if silent:
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        log_file = open(log_path, "w", encoding="utf-8")
+        stream = log_file
+    try:
+        ok, failed = chay_tron_bo(repo, stream=stream)
+    finally:
+        if log_file:
+            log_file.close()
     seconds = round(time.monotonic() - start, 2)
     rows = _doc_so(repo)
     _ghi_so(repo, {"ts": _now_iso(), "kind": "tron-bo", "request": request, "phase": phase,
@@ -727,15 +767,21 @@ def cmd_tron_bo(args):
     missed = module_bo_sot(rows, request, failed)
     for m in missed:
         _ghi_so(repo, {"ts": _now_iso(), "kind": "bo-sot", "request": request, "module": m})
-        print(f"tron-bo: {m} is red but no vung-cham run of request {request} selected it "
-              f"(the radius missed it)")
-    if failed and not co_vung_cham(rows, request):
+        if not silent:
+            print(f"tron-bo: {m} is red but no vung-cham run of request {request} selected it "
+                  f"(the radius missed it)")
+    if failed and not co_vung_cham(rows, request) and not silent:
         print("tron-bo: radius check skipped: no vung-cham run recorded for this request")
         _log(f"tron-bo radius check skipped: no vung-cham run recorded for request={request}")
-    if failed:
+    if failed and not silent:
         print(f"tron-bo: red modules: {' '.join(failed)}")
     _log(f"tron-bo modules={total} failed={len(failed)} missed={len(missed)} ok={ok} "
          f"seconds={seconds}")
+    if silent:
+        if ok:
+            print(f"[TDQ:TEST] PASS — full suite ({total} modules) passed in {seconds}s.")
+        else:
+            print(f"[TDQ:TEST] FAIL — full suite failed in {seconds}s (failed: {' '.join(failed)}).")
     return 0 if ok else 1
 
 
@@ -768,6 +814,8 @@ def main(argv=None):
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--repo", default=None,
                         help="repo root (default: the project root found from cwd)")
+    common.add_argument("--silent", action="store_true",
+                        help="write detailed output to log file, print <= 2 summary lines to terminal")
     parser = argparse.ArgumentParser(
         prog="tdq_test.py", description="Run the tests a change can reach.")
     sub = parser.add_subparsers(dest="command", required=True)

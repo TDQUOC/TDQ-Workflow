@@ -217,9 +217,21 @@ def _la_repo_plugin(project):
     """True when `project` is this plugin's own source repo, whose `.codex/hooks.json` is the
     hand-written fence of `codex implement` (locked by `tests/test_codex_hooks_json.py`)."""
     try:
-        return os.path.samefile(project, ROOT)
+        if os.path.samefile(project, ROOT):
+            return True
     except OSError:
-        return False
+        pass
+    plugin_json = os.path.join(project, ".claude-plugin", "plugin.json")
+    if os.path.isfile(plugin_json):
+        try:
+            with io.open(plugin_json, encoding="utf-8") as f:
+                data = json.load(f)
+            if (data.get("name") == "tdq-workflow"
+                    and os.path.isfile(os.path.join(project, "hooks", "scripts", "codex_edit_gate.py"))):
+                return True
+        except (OSError, ValueError):
+            pass
+    return False
 
 
 def khai_hook_codex(project):

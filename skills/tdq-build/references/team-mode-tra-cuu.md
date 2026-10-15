@@ -39,3 +39,27 @@ a block buried in the middle of a long turn is a block nobody acts on.
 
 Gate `qc` refuses to open while the ledger still holds an open row, and every turn the hook
 prints one `[TDQ:WORKTREE]` line for as long as that is true.
+
+## RIGHT/WRONG examples
+
+1. Splitting the work
+   - RIGHT: `assign` done, 9/12 tasks `giao`, 3 tasks `tu_lam` with reason codes; `audit` exit 0.
+   - WRONG: read the plan, think "faster if I just do it", work on main, never generate the map.
+2. Delegation rhythm
+   - RIGHT: one response calling the agent 4 times for 4 tasks of the same wave — they run concurrently.
+   - WRONG: call 1 agent, wait for it, then call the next — that is mode `main` wearing a team costume.
+3. Merging
+   - RIGHT: `kiem T1.2` clean → `hop T1.2` → tick `[x]` right away.
+   - WRONG: merge straight through with no `check`, hit a conflict midway, patch it up in the main repo.
+4. Tick marks
+   - RIGHT: 4 tasks `[>]` at once plus 1 `[~]` task of the leader.
+   - WRONG: 4 tasks `[~]` at once — the hook blocks it, and nobody can tell where the leader really is.
+5. File regions
+   - RIGHT: two tasks both touch `scripts/a.py` → `assign` puts them in two different waves.
+   - WRONG: delegate both in one wave because "it'll probably be fine" — git says nothing until the merge breaks.
+6. Shared contracts
+   - RIGHT: the task creating the `TRAN_SONG_SONG` constant and the message template is kept and
+     finished FIRST, only then is the wave that reads both dispatched.
+   - WRONG: delegate all three tasks needing that constant in parallel — each sub-agent invents its
+     own name, and only the merge reveals three mismatched versions.
+

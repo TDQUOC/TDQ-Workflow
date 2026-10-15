@@ -1,11 +1,12 @@
 # Team mode — the leader assigns the whole plan, sub-agents run in parallel
 <!-- muc-luc-dong:
-  Table of contents=16-22 · When it applies=23-41 · What to do=42-43 ·
-  Step 0 — assign the WHOLE plan before typing the first line of code=44-61 ·
-  Decision table — default GIAO, keeping a task must match exactly one row=62-76 ·
-  The wave loop=77-90 · What the machine checks for you, so you do not have to=91-115 ·
-  The delegation prompt template — all 9 fields, none left out=116-135 ·
-  RIGHT/WRONG examples=136-158 · Self-check=159-176 · Sổ worktree=177
+  Table of contents=17-23 · When it applies=24-42 · What to do=43-44 ·
+  Step 0 — assign the WHOLE plan before typing the first line of code=45-62 ·
+  Decision table — default GIAO, keeping a task must match exactly one row=63-77 ·
+  The wave loop=78-91 · What the machine checks for you, so you do not have to=92-116 ·
+  The delegation prompt template — all 9 fields, none left out=117-136 ·
+  RIGHT/WRONG examples=137-146 · Explicit Anti-Patterns=147-154 · Self-check=155-172 ·
+  Sổ worktree=173
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
@@ -135,26 +136,21 @@ a missing field means it has to guess, and a wrong guess is paid for at merge ti
 
 ### RIGHT/WRONG examples
 
-1. Splitting the work
-   - RIGHT: `assign` done, 9/12 tasks `giao`, 3 tasks `tu_lam` with reason codes; `audit` exit 0.
-   - WRONG: read the plan, think "faster if I just do it", work on main, never generate the map.
-2. Delegation rhythm
-   - RIGHT: one response calling the agent 4 times for 4 tasks of the same wave — they run concurrently.
-   - WRONG: call 1 agent, wait for it, then call the next — that is mode `main` wearing a team costume.
-3. Merging
-   - RIGHT: `kiem T1.2` clean → `hop T1.2` → tick `[x]` right away.
-   - WRONG: merge straight through with no `check`, hit a conflict midway, patch it up in the main repo.
-4. Tick marks
-   - RIGHT: 4 tasks `[>]` at once plus 1 `[~]` task of the leader.
-   - WRONG: 4 tasks `[~]` at once — the hook blocks it, and nobody can tell where the leader really is.
-5. File regions
-   - RIGHT: two tasks both touch `scripts/a.py` → `assign` puts them in two different waves.
-   - WRONG: delegate both in one wave because "it'll probably be fine" — git says nothing until the merge breaks.
-6. Shared contracts
-   - RIGHT: the task creating the `TRAN_SONG_SONG` constant and the message template is kept and
-     finished FIRST, only then is the wave that reads both dispatched.
-   - WRONG: delegate all three tasks needing that constant in parallel — each sub-agent invents its
-     own name, and only the merge reveals three mismatched versions.
+1. Splitting: RIGHT: assign done, 9/12 tasks giao · WRONG: work on main, never generate the map.
+2. Rhythm: RIGHT: dispatch 4 tasks of the same wave concurrently · WRONG: call 1 agent, wait for it, then next.
+3. Merging: RIGHT: check clean -> merge -> tick [x] right away · WRONG: merge straight through with no check.
+4. Ticks: RIGHT: 4 tasks [>] plus 1 [~] task of leader · WRONG: 4 tasks [~] at once.
+5. Shared contracts: RIGHT: finish constant first, then dispatch · WRONG: dispatch in parallel before contract is merged.
+
+Full cases: [team-mode-tra-cuu.md](team-mode-tra-cuu.md).
+
+## Explicit Anti-Patterns
+
+Rules that lead to immediate rejection:
+
+- `ANTI-3 (Dirty State Git)`: Never run `git checkout`, `git switch` or `git reset --hard` when `git status` reports uncommitted changes.
+- `ANTI-4 (Late Tick)`: Never issue more than 2 `Edit` tool calls without marking the in-progress task `[~]` in the plan.
+- `ANTI-6 (Broad Area)`: Never declare a file region (`Chạm:`) using wildcard patterns (`*`) or umbrella parent directories.
 
 ## Self-check
 

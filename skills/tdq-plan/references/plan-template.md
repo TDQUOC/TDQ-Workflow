@@ -1,6 +1,6 @@
 # The plan shape
 <!-- muc-luc-dong:
-  The minute estimate `(eNm)`=124
+  The minute estimate `(eNm)`=121
 -->
 
 Copy the whole block into `docs/tdq/plan/<slug>.md` and fill it in. File em:
@@ -40,6 +40,7 @@ Trạng thái plan: CHỜ DUYỆT
 4. Lệnh nào chạm state của workflow phải có `TDQ_PROJECT_DIR=<thư mục tạm>` ngay trên chính lệnh đó.
 5. QC FAIL → thêm task fix vào mục QC của file này (không cần duyệt lại), loop đến khi pass.
 6. Không commit/push cho đến khi user yêu cầu.
+7. Tuân thủ 6 mã cấm cơ học (ANTI-1 Fake Red, ANTI-2 Blind Assertion, ANTI-3 Dirty State Git, ANTI-4 Late Tick, ANTI-5 Raw Dump, ANTI-6 Broad Area).
 
 ## P1 — <tên phase>
 - [ ] **T1.1** (e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
@@ -115,17 +116,8 @@ Trỏ về §6 của spec. Liệt kê lại từng hạng mục QC + lệnh ki�
 - [ ] Q2 <điều kiện đủ> — <lệnh kiểm>
 ```
 
-These boxes are **the close-out evidence**, not decoration: mark `[x]` when that item PASSes
-and its evidence already sits in the qc file. The machine counts them — `dod_tick_state()`
-reads this section on its own, and hook `Stop` fires `[TDQ:DOD]` when the books close on an
-open box while QC has passed everything. A DoD written without boxes still runs, it just
-loses that net.
+Mark `[x]` when that item PASSes and evidence sits in the qc file. Hook `Stop` checks these boxes via `[TDQ:DOD]`.
 
 ## The minute estimate `(eNm)`
 
-Goes **right after the task code**, before the work itself:
-`- [ ] **T2.1** (e12m) <work> — Test: ...`. `eNm` = minutes
-Claude estimates it needs to EXECUTE that task, an integer 1–999, scored as the task is written
-and never padded. Plan ETA = the sum over unfinished tasks. The six rules in full, including what
-`eNm` deliberately does NOT promise: section `The minute estimate (eNm)` of
-[plan-template-huong-dan.md](plan-template-huong-dan.md).
+Goes **right after the task code**: `- [ ] **T2.1** (e12m) <work> — Test: ...`. `eNm` = estimated minutes to execute (integer 1–999). Details in [plan-template-huong-dan.md](plan-template-huong-dan.md).
