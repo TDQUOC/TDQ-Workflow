@@ -36,10 +36,12 @@ class LogBaKenhLuat(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
 
     def state(self, **thay):
-        write_state(self.cwd, active_request="2026-09-16-2234-cong-sinh-ponytail-tdq",
-                    lane="full", phase="implement", spec_approved=True, plan_approved=True,
-                    implement_mode="subagent", spec_file="docs/tdq/spec/x.md",
-                    plan_file="docs/tdq/plan/x.md", **thay)
+        du_lieu = dict(active_request="2026-09-16-2234-cong-sinh-ponytail-tdq",
+                       lane="full", phase="implement", spec_approved=True, plan_approved=True,
+                       implement_mode="subagent", spec_file="docs/tdq/spec/x.md",
+                       plan_file="docs/tdq/plan/x.md")
+        du_lieu.update(thay)
+        write_state(self.cwd, **du_lieu)
 
     def chay(self, kenh, session):
         """Chạy một kênh, trả về (rc, stdout). Kênh = tên sự kiện hook."""
@@ -147,6 +149,17 @@ class LogBaKenhLuat(unittest.TestCase):
         row = self.dong_luat("d-luot")[0]
         self.assertEqual(row.get("so_dong"), 1, out)
         self.assertEqual(self.than_in_ra(out), [], "kênh lượt không được bơm thân luật")
+
+    def test_session_start_phase_ngoai_implement_ghi_so_dong_mot(self):
+        """2026-10-15 (T3.1): SessionStart ở phase ngoài implement chỉ bơm dòng trỏ và ghi so_dong=1."""
+        for phase in ("idle", "analyze", "spec", "plan", "qc", "report"):
+            with self.subTest(phase=phase):
+                self.state(phase=phase)
+                session = f"s-lazy-{phase}"
+                _rc, out = self.chay("SessionStart", session)
+                row = self.dong_luat(session)[0]
+                self.assertEqual(row.get("so_dong"), 1, f"{phase} phải ghi so_dong=1: {row}")
+                self.assertEqual(self.than_in_ra(out), [], f"{phase} không được có thân luật")
 
     def test_muc_gat_cang_chat_thi_so_dong_cang_it(self):
         """`lite` < `full` < `ultra` — số trong sổ nói đúng độ dày của mức gắt."""
