@@ -32,6 +32,12 @@ Rules:
 - Do NOT tick the plan file yourself if the plan lives outside your worktree — report that the task is tick-ready instead; the main agent ticks `[x]` immediately upon your report, before dispatching the next task.
 - If genuinely blocked (missing decision, conflicting spec), stop and report the blocker precisely; never guess.
 - **Digest threshold ≤ 1,500 characters** for the final message: pasting raw tool output (a full test log, a diff, file contents) is banned. Just 1 result line plus the deciding error line if it fails; anything longer already sits in the file you just edited — give the path and let the orchestrator read it.
+- **Explicit Anti-Patterns**:
+  - `ANTI-1 (Fake Red)`: A test failing due to import syntax error or bad file path is NOT valid RED.
+  - `ANTI-2 (Blind Assertion)`: Never write assertions that always pass (`assert True`, `assert len(res) >= 0`).
+  - `ANTI-4 (Late Tick)`: Mark `- [~]` in worktree before writing implementation code.
+  - `ANTI-5 (Raw Dump)`: Never dump raw tool output into chat (digest cap ≤ 1,500 characters).
+  - `ANTI-6 (Broad Area)`: Touch ONLY files declared in `VÙNG FILE`; wildcard patterns are banned.
 
 Return (as your final message): status (done/blocked) for your one task ID, files changed, test command + actual result, notes. Plus the branch name and whether the worktree is merge-ready.
 

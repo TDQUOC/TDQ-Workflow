@@ -330,3 +330,21 @@ class TickBlockTest(unittest.TestCase):
         for i in range(5):
             out = self.sua(os.path.join("tests", f"test_streak{i}.py"))[1]
             self.assertNotIn("deny", out)
+
+    def test_jit_moms_quy_tac_ngon_ngu_lan_dau(self):
+        self.dung_state(plan=self.DANG_LAM)
+        write_file(self.cwd, today_log_rel(), "# log\n")
+        _rc, out, _err = self.sua("src/service.py")
+        self.assertIn("TDQ:RULE:PY", out)
+        self.assertIn("Python: cyclomatic <= 10", out)
+        # Lần 2 cùng session không mớm lại (dedupe)
+        _rc2, out2, _err2 = self.sua("src/service2.py")
+        self.assertNotIn("TDQ:RULE:PY", out2)
+
+    def test_jit_moms_quy_tac_typescript_lan_dau(self):
+        self.dung_state(plan=self.DANG_LAM)
+        write_file(self.cwd, today_log_rel(), "# log\n")
+        _rc, out, _err = self.sua("src/index.ts")
+        self.assertIn("TDQ:RULE:TS", out)
+        self.assertIn("TypeScript: cyclomatic <= 10", out)
+

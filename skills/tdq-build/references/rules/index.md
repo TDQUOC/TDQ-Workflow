@@ -53,6 +53,13 @@ The three loading tiers (keeping context cheap without lowering quality):
 3. **Off-table tier**: an extension not in the table → follow [them-ngon-ngu.md](them-ngon-ngu.md);
    inventing a rule or borrowing another language's rules is banned.
 
+## Deep Cookbooks (Tầng 3)
+
+When dealing with complex architecture, async concurrency, transaction management, or subtle edge cases, consult the dedicated battle-tested cookbooks:
+
+- Python: [python-cookbook.md](cookbooks/python-cookbook.md)
+- TypeScript & JavaScript: [typescript-js-cookbook.md](cookbooks/typescript-js-cookbook.md)
+
 Linter missing on the machine → write "not checked yet", never write PASS, never install it
 yourself.
 

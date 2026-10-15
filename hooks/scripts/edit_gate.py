@@ -14,7 +14,7 @@ Two jobs, in this order:
 """
 import os
 
-from _common import (block, echo_line, observe, payload_cwd, read_payload, remind,
+from _common import (already_reminded, block, echo_line, observe, payload_cwd, read_payload, remind,
                      turn_rows)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
@@ -27,6 +27,29 @@ from tdq_state import (MODE_ALIASES, VALID_MODES, cong_dang_cho,  # noqa: E402
 # edits in a row without the plan (checksum) changing since → block the next one. Matches the
 # "fix round" ceiling (3 rounds) already used across the system.
 STREAK_NGUONG = 3
+
+QUY_TAC_NGON_NGU = {
+    ".py": [
+        "Python: cyclomatic <= 10, cognitive <= 15; no bare except; use standard library first.",
+        "Run `ruff check <file>` before finishing; consult rules/python-cookbook.md for non-trivial async/transactions/errors.",
+    ],
+    ".ts": [
+        "TypeScript: cyclomatic <= 10, cognitive <= 15; strict types; immutable state updates.",
+        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for non-trivial async/results/errors.",
+    ],
+    ".tsx": [
+        "TypeScript: cyclomatic <= 10, cognitive <= 15; strict types; immutable state updates.",
+        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for non-trivial async/results/errors.",
+    ],
+    ".js": [
+        "JavaScript: cyclomatic <= 10, cognitive <= 15; avoid untyped throw; immutable state updates.",
+        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for async/patterns.",
+    ],
+    ".jsx": [
+        "JavaScript: cyclomatic <= 10, cognitive <= 15; avoid untyped throw; immutable state updates.",
+        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for async/patterns.",
+    ],
+}
 
 
 def goi_y_mode():
@@ -220,10 +243,21 @@ def main():
             if streak >= STREAK_NGUONG:
                 block(cwd, payload, "TDQ:TICK", [
                     f"{streak} edits in a row with no tick in the plan — close the task before editing on.",
+                    "Task still in progress → update notes or tasks in the plan file to reset the streak.",
                     "Test green → flip to [x] now; a different task → tick it before coding.",
                     "Request already finished → tdq_state.py set phase=idle.",
                 ])
             observe(cwd, payload, "code_edit", path=rel_target, plan_sha=tick["sha"])
+
+        # (3) JIT micro-rules injection: remind language rules once on first edit to source file
+        if tick["exists"] and tick["has_doing"]:
+            _, ext = os.path.splitext(rel_target)
+            ext = ext.lower()
+            if ext in QUY_TAC_NGON_NGU:
+                code_lang = "TS" if ext in (".ts", ".tsx") else ("JS" if ext in (".js", ".jsx") else "PY")
+                ma_code = f"TDQ:RULE:{code_lang}"
+                if not already_reminded(cwd, payload, ma_code):
+                    remind(cwd, payload, ma_code, QUY_TAC_NGON_NGU[ext])
 
 
 if __name__ == "__main__":

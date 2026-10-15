@@ -160,6 +160,14 @@ class TestThanLuatKenhPhien(unittest.TestCase):
         self.assertIn("| 7 |", out)
         self.assertIn("Make it run first", out)
 
+    def test_compact_source_boms_khoi_neo_phuc_hoi(self):
+        """2026-10-15: source=compact bơm khối neo phục hồi chống mất mát ngữ cảnh."""
+        out = self.chay(source="compact")
+        self.assertIn("[TDQ:ANCHOR]", out)
+        self.assertIn("Compact recovery:", out)
+        self.assertIn("ANTI-1", out)
+        self.assertIn("docs/tdq/plan/x.md", out)
+
     def test_ghi_mot_dong_log_kenh(self):
         self.chay()
         with open(os.path.join(self.cwd, "docs", "tdq", ".tdq-turn.jsonl"),
@@ -262,6 +270,18 @@ class TestPromptContext(unittest.TestCase):
         rc, out, _ = self.ctx("duyệt quick")
         self.assertIn("approve quick", out)
         self.assertIn("--by", out)
+
+    def test_qc_phase_injects_checklist(self):
+        """2026-10-15: phase qc mớm checklist DoD và SOLID."""
+        write_state(self.cwd, active_request="r1", lane="full", phase="qc",
+                    spec_file="docs/tdq/spec/x.md", spec_approved=True,
+                    plan_file="docs/tdq/plan/x.md", plan_approved=True,
+                    implement_mode="main")
+        rc, out, _ = self.ctx("chạy kiểm tra QC", session="qc-check-1")
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:QC]", out)
+        self.assertIn("Quality Control checklist", out)
+        self.assertIn("5 SOLID questions", out)
 
     def _pending_plan(self, plan_body):
         # spec đã duyệt, plan đã đăng ký nhưng chưa duyệt → pending = plan

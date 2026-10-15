@@ -633,12 +633,11 @@ def kiem_hook_ban(cwd="."):
     except (OSError, ValueError) as loi:
         return False, f"cannot read {HOOKS_JSON_REL} ({loi.__class__.__name__})"
     nhom = (khai.get("hooks") or {}).get("PreToolUse") or []
-    matcher = sorted(str(n.get("matcher")) for n in nhom)
+    nhom_gate = [n for n in nhom if any("codex_edit_gate.py" in (h.get("command") or "")
+                                         for h in (n.get("hooks") or []))]
+    matcher = sorted(str(n.get("matcher")) for n in nhom_gate)
     if matcher != ["Bash", "apply_patch"]:
         return False, f"{HOOKS_JSON_REL} must wire exactly the two matchers Bash + apply_patch"
-    if not all("codex_edit_gate.py" in (n.get("hooks") or [{}])[0].get("command", "")
-               for n in nhom):
-        return False, f"{HOOKS_JSON_REL} does not point back at the zone fence"
     # Look the TABLE up instead of retyping the flag name: writing it out here would create a
     # second copy, and changing the table while forgetting this spot would leave the check green
     # while the hook had already gone silent.
