@@ -1,8 +1,35 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.44.0 đến 0.37.0, tách khỏi `CHANGELOG.md` ngày 2026-10-03 (0.39.0 ngày 2026-10-05, 0.40.0 ngày 2026-10-07, 0.42.0–0.41.0 ngày 2026-10-08, 0.43.0 ngày 2026-10-10, 0.44.0 ngày 2026-10-11) để file chính dưới trần R6
-500 dòng (`docs/CHANGELOG-archive.md` đã đầy). Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
+Các bản 0.46.0 đến 0.37.0, tách khỏi `CHANGELOG.md` từ 2026-10-03 để file chính dưới trần R6 500 dòng
+(`docs/CHANGELOG-archive.md` đã đầy). Bản 0.46.0 được chuyển sang ngày 2026-10-15.
+Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.46.0 — 2026-09-14
+
+Mode thực thi thứ ba: `codex implement`. Leader vẫn chạy tuần tự trong turn của mình như mode
+`main`, nhưng từng task giao cho `codex exec` viết code rồi leader kiểm lại. Không có sub-agent,
+không có worktree song song.
+Báo cáo: `docs/tdq/reports/2026-09-10-2247-mode-codex-implement.md`.
+
+- **`tdq_state.py` nhận mode thứ ba** — `VALID_MODES`/`MODE_LABELS` có `codex`, `phase_row` đọc
+  bảng tra thay vì rẽ nhánh `if`, và lệnh mới `modes --json` in `{ma, nhan, chon_duoc, ly_do}`
+  làm nguồn máy đọc được cho cổng chọn mode. `tdq_state.py` không được import tầng Codex.
+- **`scripts/tdq_vungfile.py` mới** — `chup-moc`/`hau-kiem`/`hoan-tac`. Mốc git lấy riêng cho
+  từng task, không so với `HEAD`. So với `HEAD` thì task sau FAIL oan vì việc chưa commit của task
+  trước. Hoàn tác bằng `git restore --source=<sha> --worktree`, không đụng index. Vùng khoá gồm file test.
+- **`scripts/tdq_codex.py` mới** — `check` dò máy và kiểm Codex còn sống. `run` chạy một lượt
+  `codex exec` với stdin không phải TTY, mọi cờ gom về một bảng `CO_EXEC`. Phán quyết 4 trạng thái
+  không dựa exit code. `cleanup` dọn `CODEX_HOME` tạm; log ghi sha256 của prompt thay nguyên văn.
+- **Nhịp đỏ → xanh chia đôi** — leader viết test đỏ trước, Codex chỉ được làm xanh; sửa file test
+  là FAIL kể cả khi test xanh.
+- **Hàng rào `hooks/scripts/codex_edit_gate.py`** — nâng từ chuỗi nhúng trong `build_portable.py`
+  thành file thật; dịch `apply_patch` và 5 dạng lệnh shell sang đường ghi, deny `[TDQ:VUNG]` khi
+  ra ngoài vùng. `.codex/hooks.json` ở gốc repo viết tay, đúng hai matcher `PreToolUse`.
+- **Cổng chọn mode động** — Codex sống thì 3 lựa chọn, không thì 2 lựa chọn kèm một dòng lý do.
+  Cài lên máy mới phải có cả đồng ý của người dùng lẫn `codex` trên máy; cờ đồng ý mặc định false.
+- **Giới hạn** — Q13 (sandbox chặn ghi ra ngoài) chưa chạy thật vì cờ đồng ý đang false. Suite
+  290 fail / 4 error bằng đúng mốc trước request (danh sách giống hệt), request thêm 0 fail mới.
 
 ## 0.44.0 — 2026-09-03
 
