@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 sys.path.insert(0, os.path.join(ROOT, "hooks", "scripts"))
 import search_observe  # noqa: E402
 import search_rules  # noqa: E402
+import search_gate  # noqa: E402
 
 GATE = "search_gate.py"
 PHIEN = "phien-thu-search-gate"
@@ -261,6 +262,44 @@ class LogService(BaseCong):
         self.assertIn("nhắc tầng: mọi tầng (không có mốc)", err)
         _, im = self.goi("Bash", command='grep -rn "fileHandle" .', log="0")
         self.assertEqual(im, "")
+
+
+class TestDoNgonNguDuAn(unittest.TestCase):
+    def test_do_ngon_ngu_du_an(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertIsNone(search_gate.do_ngon_ngu_du_an(d))
+            with open(os.path.join(d, "package.json"), "w", encoding="utf-8") as f:
+                f.write("{}")
+            self.assertEqual(search_gate.do_ngon_ngu_du_an(d), "typescript")
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "pyproject.toml"), "w", encoding="utf-8") as f:
+                f.write("")
+            self.assertEqual(search_gate.do_ngon_ngu_du_an(d), "python")
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "go.mod"), "w", encoding="utf-8") as f:
+                f.write("module x")
+            self.assertEqual(search_gate.do_ngon_ngu_du_an(d), "go")
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "Cargo.toml"), "w", encoding="utf-8") as f:
+                f.write("")
+            self.assertEqual(search_gate.do_ngon_ngu_du_an(d), "rust")
+
+    def test_search_gate_nhac_dung_ngon_ngu_typescript(self):
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(os.path.join(d, "docs", "tdq"), exist_ok=True)
+            with open(os.path.join(d, "package.json"), "w", encoding="utf-8") as f:
+                f.write("{}")
+            payload = {"session_id": "test-ts", "cwd": d, "hook_event_name": "PreToolUse",
+                       "tool_name": "Grep", "tool_input": {"pattern": "abort|stopTask|asyncTask", "path": "src/app.ts"}}
+            rc, out, err = run_hook("search_gate.py", payload, env={"TDQ_PROJECT_DIR": d, "TDQ_LOG": "0"})
+            self.assertEqual(rc, 0)
+            goi = json.loads(out).get("hookSpecificOutput") or {}
+            self.assertEqual(goi.get("permissionDecision"), "deny")
+            ly_do = goi.get("permissionDecisionReason") or ""
+            self.assertIn('language_id = "typescript"', ly_do)
+            self.assertIn("open_document", ly_do)
+            self.assertIn("list_symbols", ly_do)
+            self.assertNotIn("e.g. python", ly_do)
 
 
 if __name__ == "__main__":

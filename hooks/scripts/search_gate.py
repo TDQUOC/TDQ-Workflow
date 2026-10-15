@@ -71,6 +71,29 @@ def _doc_moc(cwd):
     return moc if isinstance(moc, dict) else None
 
 
+FILE_MOC_NGON_NGU = (
+    ("tsconfig.json", "typescript"),
+    ("package.json", "typescript"),
+    ("jsconfig.json", "javascript"),
+    ("pyproject.toml", "python"),
+    ("requirements.txt", "python"),
+    ("Pipfile", "python"),
+    ("setup.py", "python"),
+    ("go.mod", "go"),
+    ("Cargo.toml", "rust"),
+)
+
+
+def do_ngon_ngu_du_an(cwd):
+    """Detect the project's primary language_id from marker files."""
+    if not cwd or not os.path.isdir(cwd):
+        return None
+    for ten_file, lang in FILE_MOC_NGON_NGU:
+        if os.path.isfile(os.path.join(cwd, ten_file)):
+            return lang
+    return None
+
+
 def tang_song(moc):
     """-> the concept layers the stamp marks ready, in rule order; None when there is no stamp."""
     if moc is None:
@@ -117,10 +140,11 @@ def quyet(cwd, phien, ten_tool, vao):
     tt["cua_so"] = search_rules.CUA_SO
     moc = _doc_moc(cwd)
     tt["tang_song"] = tang_song(moc)
+    tt["ngon_ngu"] = do_ngon_ngu_du_an(cwd)
     ok, ly_do = search_rules.quyet_dinh(pl, tt)
     dung_xuong = None
     if not ok:
-        _log(f"nhắc tầng: {', '.join(tt['tang_song']) if tt['tang_song'] is not None else 'mọi tầng (không có mốc)'}")
+        _log(f"nhắc tầng: {', '.join(tt['tang_song']) if tt['tang_song'] is not None else 'mọi tầng (không có mốc)'}")  # i18n-allow
         dung_xuong = ly_do_dung_xuong(moc, tt)
         if dung_xuong:
             ok, ly_do = True, dung_xuong

@@ -71,6 +71,16 @@ DUOI_TAI_LIEU = {".md", ".markdown", ".rst", ".txt", ".log", ".json", ".jsonl", 
                  ".yaml", ".toml", ".ini", ".cfg", ".csv", ".lock"}
 THU_MUC_TAI_LIEU = {"docs", "doc", "documentation"}
 LOAI_TAI_LIEU = {"md", "markdown", "txt", "json", "yaml", "yml", "toml", "csv", "log", "rst"}
+DUOI_CODE = frozenset({
+    ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
+    ".py", ".pyw",
+    ".go",
+    ".rs",
+    ".java", ".kt", ".scala",
+    ".c", ".cpp", ".cc", ".cxx", ".h", ".hpp",
+    ".cs", ".fs",
+    ".rb", ".php", ".swift", ".dart",
+})
 HEREDOC = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
 CHI_HOI = {"--help", "--version"}
 TUY_CHON_CO_GIA_TRI = {"--file", "--regexp", "--glob", "-g", "--type", "-t", "--include",
@@ -84,21 +94,38 @@ TUY_CHON_CO_GIA_TRI = {"--file", "--regexp", "--glob", "-g", "--type", "-t", "--
 # Python repo ("No Project", a crashed server) — 2-3 wasted calls per session, measured the same day.
 LOP_KHAI_NIEM = (
     ("lsp", "mcp__lsp__start_lsp (root_dir = the project root, language_id = the language of the "
-            "code, e.g. python) then mcp__lsp__find_symbol / find_references (a symbol and its "
+            "code, e.g. python, typescript, go) then mcp__lsp__find_symbol / find_references (a symbol and its "
             "callers)"),
     ("graphify", "graphify query \"<question>\" (a concept in plain words, or the architecture)"),
 )
 
 
-def loi_nhac(tang_song=None):
-    """-> the "ask first" line, naming only the live concept layers.
-
-    `tang_song` comes from the readiness stamp; None means no stamp (Codex, or never built) and
-    names every layer. A layer the stamp does not mark live is left out: pointing an agent at a
-    tool that cannot answer is the wasted turn this function exists to remove.
-    """
-    lop = [cach for ten, cach in LOP_KHAI_NIEM if tang_song is None or ten in tang_song]
-    return "Ask first: " + "; or ".join(lop or [cach for _, cach in LOP_KHAI_NIEM]) + "."
+def loi_nhac(tang_song=None, ngon_ngu=None, file_dich=None):
+    """-> the "ask first" line, naming only the live concept layers with language-specific guidance."""
+    cac_lop = []
+    for ten, cach in LOP_KHAI_NIEM:
+        if tang_song is not None and ten not in tang_song:
+            continue
+        if ten == "lsp":
+            if ngon_ngu:
+                lsp_txt = (f'mcp__lsp__start_lsp (root_dir = the project root, language_id = "{ngon_ngu}") '
+                           f'then mcp__lsp__find_symbol / find_references (a symbol and its callers)')
+                if ngon_ngu in ("typescript", "javascript"):
+                    lsp_txt += ' (for TypeScript/JS: open_document a source file first to avoid "No Project")'
+            else:
+                lsp_txt = ("mcp__lsp__start_lsp (root_dir = the project root, language_id = the language of the "
+                           "code, e.g. python, typescript, go) then mcp__lsp__find_symbol / find_references "
+                           "(a symbol and its callers)")
+            cac_lop.append(lsp_txt)
+        else:
+            cac_lop.append(cach)
+    res = "Ask first: " + "; or ".join(cac_lop or [cach for _, cach in LOP_KHAI_NIEM]) + "."
+    if file_dich:
+        ten = file_dich.replace("\\", "/").rsplit("/", 1)[-1]
+        dot = ten.rfind(".")
+        if dot >= 0 and ten[dot:].lower() in DUOI_CODE:
+            res += f'\nLooking inside a single file? Call mcp__lsp__list_symbols(file_path="{file_dich}") instead of grep.'
+    return res
 
 
 
@@ -534,11 +561,12 @@ def phan_loai(cong_cu, lenh):
         vao = lenh if isinstance(lenh, dict) else {"pattern": _script_cua(lenh)}
         nhanh, doan_mo = _hinh_mau([vao.get("pattern") or ""])
         loc = str(vao.get("glob") or "")
+        path = str(vao.get("path") or "")
         if (str(vao.get("type") or "").lower() in LOAI_TAI_LIEU
                 or (loc and _la_tai_lieu(loc.replace("*", "x")))
-                or (vao.get("path") and _la_tai_lieu(vao.get("path")))):
+                or (path and _la_tai_lieu(path))):
             return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
-        return {"loai": TIM_CODE, "tu_khoa": nhanh, "doan_mo": doan_mo}
+        return {"loai": TIM_CODE, "tu_khoa": nhanh, "doan_mo": doan_mo, "file_dich": path or None}
     if str(cong_cu).lower() not in CONG_CU_SHELL:
         return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
     script = _bo_heredoc(_script_cua(lenh))
@@ -580,7 +608,9 @@ def quyet_dinh(pl, trang_thai):
     cua_so = trang_thai.get("cua_so", CUA_SO)
     sau_cua_so = (f"Then exact names may be grepped for the next {cua_so} searches; "
                   "a name the user typed in the prompt is exempt.")
-    nhac = loi_nhac(trang_thai.get("tang_song"))
+    nhac = loi_nhac(trang_thai.get("tang_song"),
+                    ngon_ngu=trang_thai.get("ngon_ngu"),
+                    file_dich=pl.get("file_dich"))
     if not trang_thai.get("da_goi_khai_niem"):
         return False, ("[TDQ:SEARCH] Code search before any concept query in this request.\n"
                        f"{nhac}\n{sau_cua_so}")

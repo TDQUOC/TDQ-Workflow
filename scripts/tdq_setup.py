@@ -610,7 +610,8 @@ GOC_MAU = "<đường dẫn thư mục cài TDQ-Workflow>"
 
 KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
 
-- Quan hệ, kiểu, diagnostics, đổi tên → `mcp__lsp__*` (phiên mới: `start_lsp` kèm `language_id` trước).
+- Bắt đầu phiên/tra cứu code: gọi `mcp__lsp__start_lsp(root_dir, language_id)` trước (TS/JS cần mở 1 file bằng `open_document` để nhận project).
+  Tra symbol: `list_symbols` (trong file), `find_symbol` (workspace), `find_references` (nơi gọi). Gọi LSP mở khóa 10 lượt grep.
   Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.

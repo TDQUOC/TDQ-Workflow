@@ -88,8 +88,8 @@ This skill owns three phases: `implement` → `qc` → `report`.
      `wave` takes the next wave; `open <task>` opens a branch + worktree per task.
      Call `tdq-implementer` for EVERY task of the wave IN ONE response — several Task calls in
      one response means they run concurrently. Mark the tasks you just handed out `[>]`.
-     On receiving a report, run `check` then `merge`, tick `[x]` IMMEDIATELY, `clean`, then back to
-     `wave`. The default is DELEGATE. You may keep a task only when it matches exactly one group
+     On receiving a report, run `check` then `merge` (which cleans up the task's worktree), tick `[x]` IMMEDIATELY, then back to <!-- i18n-allow -->
+     `wave`. The default is DELEGATE. You may keep a task only when it matches exactly one group <!-- i18n-allow -->
      in the closed reason set (lookup table in `team-mode.md`); inventing a group outside that
      set makes `audit` exit non-zero. While a wave is running, the leader works the `tu_lam`
      tasks of that same wave.

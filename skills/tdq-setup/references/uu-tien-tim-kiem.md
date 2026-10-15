@@ -1,12 +1,12 @@
 # The search-order rule — the single source
 <!-- muc-luc-dong:
-  1. The order, settled=16-59 ·
-  2. The table — kind of question → which layer first, with the numbers=60-88 ·
-  2b. graphify, the map=89-122 ·
-  2c. Runtime dependencies — what each layer needs, and what it falls back to=123-139 ·
-  5. Where this rule is hooked in=140-151 ·
-  6. The gate that holds this rule (since 2026-10-03)=152-172 ·
-  3. Two details that live in a sibling file=173
+  1. The order, settled=16-61 ·
+  2. The table — kind of question → which layer first, with the numbers=62-87 ·
+  2b. graphify, the map=88-121 ·
+  2c. Runtime dependencies — what each layer needs, and what it falls back to=122-138 ·
+  5. Where this rule is hooked in=139-150 ·
+  6. The gate that holds this rule (since 2026-10-03)=151-171 ·
+  3. Two details that live in a sibling file=172
 -->
 
 This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and `tdq-build` each
@@ -23,11 +23,11 @@ several at once and merge.**
 
 The canonical sentence, quoted verbatim at every hook point:
 
-> Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: quan
-> hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng
-> `graphify query` song song grep nhiều từ đồng nghĩa; vỡ lan và bản đồ kiến trúc dùng graphify;
-> chưa chắc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo:
-> `skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+> Đối tượng tìm là ký hiệu code (hàm, class, biến, kiểu) → chọn lớp theo LOẠI truy vấn: <!-- i18n-allow -->
+> quan hệ và đổi tên dùng `mcp__lsp__*`; tên chính xác đã biết dùng grep; khái niệm mơ hồ dùng <!-- i18n-allow -->
+> `graphify query` song song grep nhiều từ đồng nghĩa; vỡ lan và bản đồ kiến trúc dùng graphify; <!-- i18n-allow -->
+> chưa chắc loại nào thì gọi song song rồi gộp. Bảng đầy đủ kèm số đo: <!-- i18n-allow -->
+> `skills/tdq-setup/references/uu-tien-tim-kiem.md`. <!-- i18n-allow -->
 
 This is a soft rule for the CHOICE of layer: picking the wrong first layer for the kind of
 question is a QC defect, not a turn the machine refuses. Two exemptions, both narrow:
@@ -57,6 +57,8 @@ So:
    `start_lsp` for another language — that is the routing, not a missing symbol.
 4. Moving to another module = `start_lsp` again with that module's root and language.
 
+5. Every concept query (LSP/graphify) unlocks exact-name grep for the next 10 searches.
+
 ## 2. The table — kind of question → which layer first, with the numbers
 
 Every number names the repo it was measured on. The LSP and grep rows come from
@@ -66,6 +68,7 @@ claudecodeui, 12 concept questions each).
 
 | Kind of question | Example | First layer | The measurement behind it |
 |---|---|---|---|
+| symbol structure inside a file | "list functions/methods in `api.ts`" | **`mcp__lsp__list_symbols`** | instant AST outline of the file without regex guessing |
 | relationship — who calls this, blast radius, safe rename | "who calls `tdq_state.load`" | **agent-lsp** | file coverage **15/15**, zero false positives; grep hits the same 15 but drags in 6 more files it should not — precision 67 % |
 | exact name you already know the token of | "where is `bac5_hook_xung_dot` defined" | **grep** | grep answers in ~0.1 s against LSP's 3–6 s, and both reach 6/6 locations; LSP wins nothing here but time lost |
 | vague concept, no name to hang it on | "the spot that writes a temp file then swaps it in" | **`graphify query` + grep over synonyms, merged** | LSP ranks the real target **13/62** — it is a NAME index. Without a semantic layer, agents on grep/LSP/graphify hit **11/12** (TDQ-Workflow) and **10/12** (claudecodeui) fully and missed **0**, against 12/12 and 11/12 with lumen, at **0.88×** and **1.06×** the tokens |
@@ -76,15 +79,11 @@ Two things the table does NOT say. It does not say grep is a fallback — for an
 grep is the *right* first layer, not a concession. And it does not say LSP is optional: the 15/15
 vs 67 % gap only appeared once the repo had a real `pyrightconfig.json`. An LSP with no import-root
 config silently answers relationship questions with **7 %** coverage while every rung still reports
-ĐẠT, which is why rung 6 exists.
+ĐẠT, which is why rung 6 exists. <!-- i18n-allow -->
 
 Standing exception: a language with no server installed → graphify and grep only.
 
-lumen (semantic search) was a fourth layer until 0.58.0. It was removed because the measurement
-above showed no significant loss without it, while it cost an ollama daemon, a per-turn reindex
-and a layer that went silently stale. Its concept questions were written by agents searching with
-grep, so they favour grep — the measurement refutes "worse without lumen", it does not prove lumen
-useless anywhere.
+lumen was removed in 0.58.0: measurements showed no loss without it, while costing an ollama daemon.
 
 ## 2b. graphify, the map
 
