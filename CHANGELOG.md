@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.69.0 — 2026-10-15
+
+Khắc phục lỗi CLI `tdq_team clean <task>`, tự động phát hiện ngôn ngữ dự án trong search gate và ghim hướng dẫn 3 bước LSP.
+Kế hoạch: `docs/tdq/plan/2026-10-15-0958-dieu-tra-loi-lsp-search-team-clean.md`.
+
+- **Hỗ trợ tham số cho lệnh clean.** `scripts/tdq_team.py clean [task]` hỗ trợ tham số task tùy chọn; báo `already cleaned` và thoát `0` nếu task đã được dọn bởi `merge`, tránh văng lỗi CLI cú pháp `exit 2`.
+- **Phát hiện ngôn ngữ tự động trong search gate.** `hooks/scripts/search_gate.py` và `scripts/search_rules.py` tự động phát hiện ngôn ngữ dự án (`typescript`, `python`, `go`, `rust`...). Câu thông báo in đúng `language_id` thực tế thay vì gán cứng `e.g. python`, đồng thời tự gợi ý `mcp__lsp__list_symbols` khi grep trong file cụ thể.
+- **Hướng dẫn cơ học 3 bước khởi tạo LSP.** `KHOI_HUONG_DAN` trong `scripts/tdq_setup.py`, `CLAUDE.md` và tài liệu tìm kiếm nêu rõ quy trình: gọi `start_lsp` đầu phiên kèm `language_id`. Đối với TypeScript/JS cần mở file bằng `open_document` để tránh bẫy "No Project" trước khi tra cứu symbol.
+
 ## 0.68.0 — 2026-10-15
 
 Tách 2 nhánh `dev` (phát triển) và `main` (release sạch), tích hợp khung mindset kiểm thử thực tế và Vision Test Loop.
