@@ -93,10 +93,11 @@ class TestThanLuatKenhPhien(unittest.TestCase):
 
     def chay(self, source="startup", **state):
         """Chạy hook một lần với session_id mới, trả về đầu ra."""
-        write_state(self.cwd, active_request="2026-09-17-0900-demo", lane="full",
-                    phase="implement", spec_approved=True, plan_approved=True,
-                    spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md",
-                    **state)
+        du_lieu = dict(active_request="2026-09-17-0900-demo", lane="full",
+                       phase="implement", spec_approved=True, plan_approved=True,
+                       spec_file="docs/tdq/spec/x.md", plan_file="docs/tdq/plan/x.md")
+        du_lieu.update(state)
+        write_state(self.cwd, **du_lieu)
         self.n += 1
         _, out, _ = run_hook("session_start.py", {
             "cwd": self.cwd, "session_id": f"g{self.n}", "source": source})
@@ -140,6 +141,24 @@ class TestThanLuatKenhPhien(unittest.TestCase):
         dau = khoi_dau(self.chay())
         self.assertLessEqual(len(dau.splitlines()), 12)
         self.assertLessEqual(len(dau), 600)
+
+    def test_phase_ngoai_implement_chi_bom_dong_tom_tat(self):
+        """2026-10-15 (T3.1): Lazy loading — phase ngoài implement chỉ bơm dòng tóm tắt nhẹ."""
+        for phase in ("idle", "analyze", "spec", "plan", "qc", "report"):
+            with self.subTest(phase=phase):
+                out = self.chay(phase=phase)
+                self.assertIn(MOC_LUAT, out)
+                self.assertNotIn("| 7 |", out, f"{phase} không được nạp thân luật bậc 7")
+                self.assertIn("full ladder loads during phase implement", out)
+                # Dòng tóm tắt nhẹ, tổng độ dài dưới 1500 ký tự (thay vì ~7000-8000 ký tự)
+                self.assertLess(len(out), 1500, f"{phase} vượt trần tóm tắt nhẹ")
+
+    def test_phase_implement_bom_day_du_than_luat(self):
+        """2026-10-15 (T3.1): Phase implement nạp đầy đủ bậc thang."""
+        out = self.chay(phase="implement")
+        self.assertIn(MOC_LUAT, out)
+        self.assertIn("| 7 |", out)
+        self.assertIn("Make it run first", out)
 
     def test_ghi_mot_dong_log_kenh(self):
         self.chay()

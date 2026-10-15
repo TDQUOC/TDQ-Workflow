@@ -19,6 +19,54 @@
             "command": "python3 \"hooks/scripts/codex_edit_gate.py\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"C:/Users/admin/.claude/plugins/cache/tdq-local/tdq-workflow/0.68.0/hooks/scripts/search_gate.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"C:/Users/admin/.claude/plugins/cache/tdq-local/tdq-workflow/0.68.0/hooks/scripts/search_observe.py\""
+          }
+        ]
+      },
+      {
+        "matcher": ".*lsp.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"C:/Users/admin/.claude/plugins/cache/tdq-local/tdq-workflow/0.68.0/hooks/scripts/search_observe.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*lsp.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"C:/Users/admin/.claude/plugins/cache/tdq-local/tdq-workflow/0.68.0/hooks/scripts/search_observe.py\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"C:/Users/admin/.claude/plugins/cache/tdq-local/tdq-workflow/0.68.0/hooks/scripts/search_observe.py\""
+          }
+        ]
       }
     ]
   }
