@@ -51,7 +51,7 @@ BEFORE the other three. Three mandatory questions before submitting code:
 1. **Does the name say what it does?** A function/variable name must read as the work it does.
 2. **Is the logic complete?** No dangling TODO, no empty conditional branch, no silently
    swallowed error.
-3. **Is there dead code?** Unused variables, extra imports, functions nobody calls → delete.
+3. **Is there dead code?** Delete unused variables/imports/functions that YOUR changes made unused; report pre-existing dead code instead of deleting it in a feature diff. Surgical rule: every changed line must trace directly to the user's request (no drive-by refactoring or adjacent style edits).
 
 ## Measurable thresholds
 

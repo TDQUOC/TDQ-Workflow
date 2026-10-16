@@ -1,7 +1,7 @@
 # Clean code — the 5 SOLID principles
 <!-- muc-luc-dong:
-  Table of contents=13-19 · Sources=20-37 · When it applies=38-51 · What to do=52-64 · SRP=65-72 ·
-  OCP=73-80 · LSP=81-93 · ISP=94-101 · DIP=102-109 · Self-check=110
+  Table of contents=13-19 · Sources=20-37 · When it applies=38-51 · What to do=52-66 · SRP=67-74 ·
+  OCP=75-82 · LSP=83-95 · ISP=96-103 · DIP=104-111 · Self-check=112
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md  <!-- i18n-allow: soul line, doc_lang wording -->
@@ -50,6 +50,8 @@ This rule applies to EVERY language. Numeric thresholds and per-language rules l
 `skills/tdq-build/references/rules/` — load `chung.md` first, then exactly one language file.
 
 ## What to do
+
+**YAGNI before SOLID (Simplicity First):** Never create an Interface, Abstract Class, or Strategy Pattern for single-use code. One use case = one flat function; apply OCP/DIP abstractions only when a second real use case exists.
 
 This repo has 4 `class` declarations against 280 `def` declarations, i.e. it is nearly purely
 functional. So each principle has two readings. Read the column matching what you are writing.
