@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Báo Cáo Nghiên Cứu: Học Hỏi Từ Andrej Karpathy Skills Để Nâng Cấp TDQ Workflow</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-card: #1f2937;
+      --surface-hover: #374151;
+      --border: #374151;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-subtle: rgba(99, 102, 241, 0.15);
+      --success: #10b981;
+      --success-subtle: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --warning-subtle: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-subtle: rgba(239, 68, 68, 0.15);
+      --code-bg: #030712;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-card: #f1f5f9;
+      --surface-hover: #e2e8f0;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-subtle: rgba(79, 70, 229, 0.1);
+      --success: #059669;
+      --success-subtle: rgba(5, 150, 105, 0.1);
+      --warning: #d97706;
+      --warning-subtle: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-subtle: rgba(220, 38, 38, 0.1);
+      --code-bg: #1e293b;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      transition: background 0.2s, color 0.2s;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    /* Sticky Top Header */
+    header.top-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    [data-theme="light"] header.top-header {
+      background: rgba(255, 255, 255, 0.85);
+    }
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .logo-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-btn {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .theme-btn:hover { background: var(--surface-hover); }
+    /* Hero Banner */
+    .hero {
+      padding: 48px 0 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-subtle);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 860px;
+      line-height: 1.6;
+    }
+    /* KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 32px 0 48px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+    }
+    .kpi-card.green::before { background: var(--success); }
+    .kpi-card.amber::before { background: var(--warning); }
+    .kpi-card.rose::before { background: var(--danger); }
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .kpi-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    /* Section Styles */
+    section {
+      margin-bottom: 64px;
+      scroll-margin-top: 80px;
+    }
+    .section-header {
+      margin-bottom: 24px;
+    }
+    .section-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 900px;
+    }
+    /* Grid & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin: 16px 0;
+      background: var(--surface);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--surface-card);
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface-hover); }
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .badge-accent { background: var(--accent-subtle); color: var(--accent); }
+    .badge-success { background: var(--success-subtle); color: var(--success); }
+    .badge-warning { background: var(--warning-subtle); color: var(--warning); }
+    .badge-danger { background: var(--danger-subtle); color: var(--danger); }
+    /* Code Blocks */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #e5e7eb;
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--surface-card);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    /* Comparison Side by Side */
+    .diff-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .diff-header {
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .diff-wrong { background: var(--danger-subtle); color: var(--danger); border-bottom: 1px solid var(--danger); }
+    .diff-right { background: var(--success-subtle); color: var(--success); border-bottom: 1px solid var(--success); }
+    /* SVG Visuals */
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .chart-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .chart-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    svg.viz-svg {
+      width: 100%;
+      height: auto;
+      max-width: 500px;
+    }
+    /* Nav anchors */
+    .nav-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 0;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-pill {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .nav-pill:hover, .nav-pill.active {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    /* Quotes */
+    blockquote.quote {
+      border-left: 4px solid var(--accent);
+      padding: 12px 18px;
+      background: var(--accent-subtle);
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-style: italic;
+      color: var(--text);
+    }
+    blockquote.quote cite {
+      display: block;
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 6px;
+      color: var(--accent);
+    }
+    /* Custom List */
+    ul.check-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.check-list li {
+      position: relative;
+      padding-left: 26px;
+      margin-bottom: 10px;
+    }
+    ul.check-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--success);
+      font-weight: 800;
+    }
+    ul.anti-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.anti-list li {
+      position: relative;
+      padding-left: 26px;
+      margin-bottom: 10px;
+    }
+    ul.anti-list li::before {
+      content: "✕";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--danger);
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="top-header">
+    <div class="logo-block">
+      <span class="logo-badge">TDQ RESEARCH</span>
+      <span class="logo-title">Andrej Karpathy Skills Analysis</span>
+    </div>
+    <div class="header-actions">
+      <span class="badge badge-accent">v0.70.0 Baseline</span>
+      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">
+        <span id="themeIcon">☀️</span> Chế độ Sáng/Tối
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Hero Banner -->
+    <div class="hero">
+      <span class="hero-tag">Architecture &amp; Agentic UX Blueprint</span>
+      <h1>Phân Tích Học Hỏi Từ Andrej Karpathy Skills<br>Để Nâng Cấp Toàn Diện TDQ Workflow</h1>
+      <p>
+        Báo cáo nghiên cứu đối chứng đa chiều: Giải mã 4 nguyên lý hành vi của Andrej Karpathy,
+        phân tích bài toán kinh tế token (Token Economics), và đề xuất mô hình kiến trúc lai
+        <strong>"Tâm thức Karpathy trong Bộ giáp TDQ" (Karpathy Mind in TDQ Armor)</strong>
+        nhằm loại bỏ triệt để ma sát nhận thức và giải phóng tiềm năng Agent.
+      </p>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <a href="#section-1" class="nav-pill active">1. Đối Chiếu Tổng Quan</a>
+      <a href="#section-2" class="nav-pill">2. Kinh Tế Token</a>
+      <a href="#section-3" class="nav-pill">3. 4 Trụ Cột Karpathy</a>
+      <a href="#section-4" class="nav-pill">4. Ma Sát Nhận Thức</a>
+      <a href="#section-5" class="nav-pill">5. Kiến Trúc Lai (Hybrid)</a>
+      <a href="#section-6" class="nav-pill">6. Lộ Trình Nâng Cấp</a>
+    </nav>
+
+    <!-- KPI Summary Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card green">
+        <div class="kpi-label">Tiết Kiệm Token Carry Cost</div>
+        <div class="kpi-value">-85.2%</div>
+        <div class="kpi-desc">Từ ~90k tokens tiềm năng xuống ~500 tokens mang vác qua 50 turns</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Kỷ Luật Phẫu Thuật (Surgical)</div>
+        <div class="kpi-value">100%</div>
+        <div class="kpi-desc">Mọi dòng thay đổi trong Diff bắt buộc truy vết về yêu cầu (Zero drive-by)</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Giảm Thiểu Ma Sát Nhận Thức</div>
+        <div class="kpi-value">1-Turn</div>
+        <div class="kpi-desc">Thay thế bảng hỏi ISO 9 mục bằng phản biện đánh đổi (Surface Tradeoffs)</div>
+      </div>
+      <div class="kpi-card rose">
+        <div class="kpi-label">Độ An Toàn Tất Định</div>
+        <div class="kpi-value">Zero Risk</div>
+        <div class="kpi-desc">Duy trì tuyệt đối hệ thống Hook PreToolUse, Git Sandbox &amp; TDD Hard Gates</div>
+      </div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <section id="section-1">
+      <div class="section-header">
+        <span class="section-num">Section 1</span>
+        <h2 class="section-title">Ma Trận Đối Chiếu Tổng Quan (Executive Comparison Matrix)</h2>
+        <p class="section-desc">
+          So sánh sự khác biệt bản chất giữa trường phái <em>Behavioral Guidelines</em> (Định hướng hành vi tinh gọn của Karpathy)
+          và <em>Deterministic Harness Engine</em> (Khung điều khiển tất định của TDQ Workflow).
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Radar Chart SVG -->
+        <div class="chart-box">
+          <div class="chart-title">Biểu Đồ Radar: 6 Trục Năng Lực Cốt Lõi</div>
+          <div class="chart-caption">So sánh Karpathy thuần túy vs TDQ hiện tại vs Mô hình lai (Hybrid đề xuất)</div>
+          <svg class="viz-svg" viewBox="0 0 400 360">
+            <!-- Background Polygons -->
+            <polygon points="200,30 350,115 350,245 200,330 50,245 50,115" fill="none" stroke="var(--border)" stroke-width="1" />
+            <polygon points="200,75 305,135 305,225 200,285 95,225 95,135" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
+            <polygon points="200,120 260,155 260,205 200,240 140,205 140,155" fill="none" stroke="var(--border)" stroke-width="1" />
+
+            <!-- Axes -->
+            <line x1="200" y1="180" x2="200" y2="30" stroke="var(--border)" stroke-width="1" />
+            <line x1="200" y1="180" x2="350" y2="115" stroke="var(--border)" stroke-width="1" />
+            <line x1="200" y1="180" x2="350" y2="245" stroke="var(--border)" stroke-width="1" />
+            <line x1="200" y1="180" x2="200" y2="330" stroke="var(--border)" stroke-width="1" />
+            <line x1="200" y1="180" x2="50" y2="245" stroke="var(--border)" stroke-width="1" />
+            <line x1="200" y1="180" x2="50" y2="115" stroke="var(--border)" stroke-width="1" />
+
+            <!-- Labels -->
+            <text x="200" y="20" fill="var(--text)" font-size="11" font-weight="700" text-anchor="middle">Hiệu Suất Token (Carry-Cost)</text>
+            <text x="360" y="115" fill="var(--text)" font-size="11" font-weight="700" text-anchor="start">Tốc Độ &amp; Agility</text>
+            <text x="360" y="250" fill="var(--text)" font-size="11" font-weight="700" text-anchor="start">Tâm Lý Học LLM</text>
+            <text x="200" y="348" fill="var(--text)" font-size="11" font-weight="700" text-anchor="middle">Bền Vững Model Nhỏ</text>
+            <text x="40" y="250" fill="var(--text)" font-size="11" font-weight="700" text-anchor="end">Độ An Toàn Tất Định</text>
+            <text x="40" y="115" fill="var(--text)" font-size="11" font-weight="700" text-anchor="end">Mở Rộng Đội Ngũ (Team)</text>
+
+            <!-- Data: Karpathy (Orange) -->
+            <polygon points="200,45 330,125 335,235 200,230 110,195 110,165" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2" />
+
+            <!-- Data: TDQ Current (Indigo) -->
+            <polygon points="200,160 240,165 240,195 200,310 60,240 65,125" fill="rgba(99, 102, 241, 0.2)" stroke="#6366f1" stroke-width="2" />
+
+            <!-- Data: Hybrid (Green - Optimal) -->
+            <polygon points="200,45 330,125 335,235 200,310 60,240 65,125" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" stroke-width="2.5" />
+          </svg>
+          <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px;">
+            <span style="color: #f59e0b;">● Karpathy Skills</span>
+            <span style="color: #6366f1;">● TDQ Hiện Tại</span>
+            <span style="color: #10b981; font-weight: 700;">● Mô Hình Lai Đề Xuất</span>
+          </div>
+        </div>
+
+        <!-- Matrix Summary -->
+        <div class="card">
+          <h3 style="margin-bottom: 12px; font-size: 17px;">Bản Chất Triết Lý &amp; Cơ Chế Vận Hành</h3>
+          <p style="color: var(--text-muted); margin-bottom: 16px;">
+            Sự kết hợp giữa <strong>Andrej Karpathy</strong> và <strong>TDQ Workflow</strong> đại diện cho điểm giao thoa lý tưởng:
+            Lấy tư duy sắc bén để định hình không gian nhận thức bên trong (Mental Model), và lấy bộ khung hạ tầng vững chắc để bảo vệ ranh giới vật lý bên ngoài.
+          </p>
+          <ul class="check-list" style="font-size: 14px;">
+            <li><strong>Karpathy Skills</strong>: Đạt điểm tối đa về tốc độ, sự thanh thoát và hiệu quả token (~500 tokens), nhưng dễ vỡ khi dự án phình to hoặc chạy model tier thấp.</li>
+            <li><strong>TDQ Workflow</strong>: Đạt điểm tối đa về an toàn vật lý (TDD hard-gates, git worktree sandbox, state machine), nhưng phải trả thuế giao thức (protocol tax) cao.</li>
+            <li><strong>Mục tiêu của Đợt Nâng Cấp</strong>: Không bỏ đi bất kỳ hàng rào an toàn nào của TDQ, nhưng loại bỏ sự quan liêu, mang tinh thần phẫu thuật "Surgical" và "Simplicity First" vào từng hook.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Detail Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tiêu Chí Đối Chiếu</th>
+              <th>Mô Hình Andrej Karpathy</th>
+              <th>Mô Hình TDQ Workflow Hiện Tại</th>
+              <th>Định Hướng Nâng Cấp (TDQ Hybrid)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cơ chế bảo vệ chính</strong></td>
+              <td><span class="badge badge-warning">Behavioral Prompting</span><br>Nhắc nhở qua 66 dòng CLAUDE.md</td>
+              <td><span class="badge badge-accent">Structural Hard Gates</span><br>Chặn bằng Hook Python (edit_gate, stop_gate)</td>
+              <td><span class="badge badge-success">Dual-Layer Protection</span><br>Tâm thức Karpathy bên trong + Hàng rào Hook bên ngoài</td>
+            </tr>
+            <tr>
+              <td><strong>Chi phí Token (Carry Cost)</strong></td>
+              <td><strong>~500 tokens</strong> cố định suốt phiên</td>
+              <td><strong>~90.000 tokens</strong> tài liệu tĩnh trên đĩa</td>
+              <td><strong>~500 - 800 tokens</strong> micro-rules + Cookbooks nạp động JIT</td>
+            </tr>
+            <tr>
+              <td><strong>Kỷ luật sửa mã (Code Editing)</strong></td>
+              <td>Surgical Changes (Chỉ sửa dòng bắt buộc, cấm drive-by)</td>
+              <td>Khóa vùng file (`ANTI-6`), kiểm tra tick `[~]` và streak</td>
+              <td>Bổ sung kiểm tra Blast Radius dòng và cấm sửa comment lân cận</td>
+            </tr>
+            <tr>
+              <td><strong>Chiến lược trừu tượng hóa</strong></td>
+              <td>Simplicity First: Cấm abstraction cho code dùng 1 lần</td>
+              <td>5 câu hỏi SOLID, OCP, DIP, Thang 7 bậc chung.md</td>
+              <td>Luật YAGNI đứng trên OCP/DIP: 1 use case = 1 hàm phẳng duy nhất</td>
+            </tr>
+            <tr>
+              <td><strong>Tương tác người dùng</strong></td>
+              <td>Surface Tradeoffs &amp; Push Back (Chủ động phản biện)</td>
+              <td>Khảo sát 2 tầng ISO, câu hỏi A/B/C/D định dạng sẵn</td>
+              <td>Tối giản thành 1-Turn phản biện đánh đổi, hỏi thẳng điều cốt lõi</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section id="section-2">
+      <div class="section-header">
+        <span class="section-num">Section 2</span>
+        <h2 class="section-title">Kinh Tế Token &amp; Thác Nước Carry-Cost (Token Economics)</h2>
+        <p class="section-desc">
+          Phân tích định lượng sự tiêu hao ngữ cảnh trong các phiên làm việc dài (multi-turn agent session).
+          Chứng minh tại sao việc mang vác tài liệu tĩnh làm suy giảm năng lực suy luận của LLM.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Token Waterfall Chart SVG -->
+        <div class="chart-box">
+          <div class="chart-title">Thác Nước Tích Lũy Carry-Cost Qua 50 Tool Calls</div>
+          <div class="chart-caption">Tổng số token API phải tái đọc (Cumulative Re-read Tokens)</div>
+          <svg class="viz-svg" viewBox="0 0 460 280">
+            <!-- Grid lines -->
+            <line x1="60" y1="240" x2="440" y2="240" stroke="var(--border)" stroke-width="1" />
+            <line x1="60" y1="180" x2="440" y2="180" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
+            <line x1="60" y1="120" x2="440" y2="120" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
+            <line x1="60" y1="60" x2="440" y2="60" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
+
+            <!-- Y Axis labels -->
+            <text x="50" y="244" fill="var(--text-dim)" font-size="11" text-anchor="end">0</text>
+            <text x="50" y="184" fill="var(--text-dim)" font-size="11" text-anchor="end">150k</text>
+            <text x="50" y="124" fill="var(--text-dim)" font-size="11" text-anchor="end">300k</text>
+            <text x="50" y="64" fill="var(--text-dim)" font-size="11" text-anchor="end">450k</text>
+
+            <!-- Bars -->
+            <!-- TDQ Classic: 450k (height 180, y 60) -->
+            <rect x="90" y="60" width="60" height="180" rx="4" fill="rgba(239, 68, 68, 0.7)" />
+            <text x="120" y="50" fill="var(--danger)" font-size="11" font-weight="700" text-anchor="middle">450.000</text>
+            <text x="120" y="260" fill="var(--text-muted)" font-size="11" text-anchor="middle">TDQ Cũ</text>
+
+            <!-- TDQ v0.70 (Quick-win): 350k (height 140, y 100) -->
+            <rect x="180" y="100" width="60" height="140" rx="4" fill="rgba(245, 158, 11, 0.7)" />
+            <text x="210" y="90" fill="var(--warning)" font-size="11" font-weight="700" text-anchor="middle">350.000</text>
+            <text x="210" y="260" fill="var(--text-muted)" font-size="11" text-anchor="middle">TDQ 0.70</text>
+
+            <!-- TDQ Hybrid Proposed: 65k (height 26, y 214) -->
+            <rect x="270" y="214" width="60" height="26" rx="4" fill="rgba(16, 185, 129, 0.8)" />
+            <text x="300" y="206" fill="var(--success)" font-size="11" font-weight="700" text-anchor="middle">65.000</text>
+            <text x="300" y="260" fill="var(--text-muted)" font-size="11" text-anchor="middle">Đề Xuất Lai</text>
+
+            <!-- Karpathy: 25k (height 10, y 230) -->
+            <rect x="360" y="230" width="60" height="10" rx="4" fill="rgba(99, 102, 241, 0.8)" />
+            <text x="390" y="222" fill="var(--accent)" font-size="11" font-weight="700" text-anchor="middle">25.000</text>
+            <text x="390" y="260" fill="var(--text-muted)" font-size="11" text-anchor="middle">Karpathy</text>
+          </svg>
+        </div>
+
+        <!-- Token Analysis Narrative -->
+        <div class="card">
+          <h3 style="margin-bottom: 12px; font-size: 17px;">Hội Chứng "Lost In The Middle" Do Nạp Thừa Ngữ Cảnh</h3>
+          <p style="color: var(--text-muted); margin-bottom: 14px;">
+            Mỗi tool call của Agent (Read, Edit, Bash, Grep) trong Claude Code là một API turn độc lập.
+            Toàn bộ lịch sử hội thoại, bao gồm toàn bộ instruction tĩnh nạp ở đầu phiên, bị gửi lại máy chủ và đọc lại từ đầu.
+          </p>
+          <div style="background: var(--surface-card); border-left: 3px solid var(--warning); padding: 12px; margin-bottom: 14px; font-size: 13px;">
+            <strong>Công thức Carry-Cost thực tế:</strong><br>
+            Nạp tĩnh 9.000 tokens instruction tĩnh × 50 tool calls = <strong>450.000 tokens lãng phí</strong>.<br>
+            Chỉ cần cắt giảm xuống 1.300 tokens (500 tokens Karpathy + 800 tokens TDQ essentials), chi phí giảm ngay còn <strong>65.000 tokens (giảm 85.5%)</strong>.
+          </div>
+          <p style="color: var(--text-muted); font-size: 13px;">
+            Quan trọng hơn chi phí tài chính: Khi context window bị nhồi nhét 10.000 tokens tài liệu tĩnh,
+            sự chú ý (attention weight) của mô hình bị suy giảm nghiêm trọng. Mô hình dễ bị "quên" các điều kiện nghiệp vụ cốt lõi
+            nằm ở giữa đoạn hội thoại, dẫn đến lỗi code hời hợt hoặc làm sai yêu cầu ban đầu.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section id="section-3">
+      <div class="section-header">
+        <span class="section-num">Section 3</span>
+        <h2 class="section-title">Giải Mã 4 Trụ Cột Karpathy vs. Hệ Thống Rào Cản TDQ</h2>
+        <p class="section-desc">
+          So sánh chi tiết từng nguyên lý hành vi kèm chứng cứ đối chứng thực tế từ <code>EXAMPLES.md</code> và hướng tích hợp vào các rule của TDQ.
+        </p>
+      </div>
+
+      <!-- Pillar 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 18px; color: var(--accent);">1. Think Before Coding (Tư Duy Trước Khi Viết Code)</h3>
+          <span class="badge badge-accent">Trị bệnh: Tự tiện đoán mò</span>
+        </div>
+        <blockquote class="quote">
+          "The models make wrong assumptions on your behalf and just run along with them without checking. They don't manage their confusion, don't seek clarifications, don't surface inconsistencies, don't present tradeoffs, don't push back when they should."
+          <cite>— Andrej Karpathy (README.md, dòng 15)</cite>
+        </blockquote>
+
+        <p style="margin-bottom: 14px;">
+          <strong>Bài học cho TDQ:</strong> Quy trình phỏng vấn `tdq-intake` hiện tại rất nặng tính khảo sát thụ động (hỏi đủ 7 câu trắc nghiệm).
+          Cần chuyển hóa thành thái độ <em>chủ động phản biện (Push Back)</em> và <em>trình bày đánh đổi (Surface Tradeoffs)</em> kèm ước lượng thời gian.
+        </p>
+
+        <div class="diff-box">
+          <div class="diff-header diff-wrong">
+            <span>❌ LLM Hành Xử Sai (Âm Thầm Đoán Mò - EXAMPLES.md:15-30)</span>
+            <span>Sai lầm điển hình</span>
+          </div>
+          <pre><code># Yêu cầu: "Add a feature to export user data"
+# LLM tự tiện xuất TẤT CẢ user ra file JSON local, không phân trang, không bảo mật
+def export_users(format='json'):
+    users = User.query.all()
+    if format == 'json':
+        with open('users.json', 'w') as f:
+            json.dump([u.to_dict() for u in users], f)
+    # Lỗi: Giả định phạm vi, tự chọn vị trí file, lộ dữ liệu nhạy cảm!</code></pre>
+          <div class="diff-header diff-right">
+            <span>✅ Chuẩn Karpathy &amp; TDQ Đề Xuất (Bề Mặt Hóa Đánh Đổi - EXAMPLES.md:41-55)</span>
+            <span>Hành vi chuẩn</span>
+          </div>
+          <pre><code>Before implementing, I need to clarify:
+1. Scope: Export all users or filtered subset? (privacy implications)
+2. Format: Download file in browser vs background job with email vs API endpoint?
+3. Tradeoffs: Simplest approach is a paginated JSON endpoint (1 hour).
+             File generation with email takes 3 hours.
+What's your preference?</code></pre>
+        </div>
+      </div>
+
+      <!-- Pillar 2 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 18px; color: var(--success);">2. Simplicity First (Đơn Giản Là Trên Hết)</h3>
+          <span class="badge badge-success">Trị bệnh: Hội chứng Over-Engineering</span>
+        </div>
+        <blockquote class="quote">
+          "They really like to overcomplicate code and APIs, bloat abstractions, don't clean up dead code... implement a bloated construction over 1000 lines when 100 would do... No abstractions for single-use code."
+          <cite>— Andrej Karpathy (README.md:17, CLAUDE.md:22)</cite>
+        </blockquote>
+
+        <p style="margin-bottom: 14px;">
+          <strong>Bài học cho TDQ:</strong> `clean-code.md` của TDQ cổ súy mạnh mẽ cho OCP và DIP, khiến Agent dễ lạm dụng Design Pattern cho các bài toán chỉ dùng một lần.
+          Cần bổ sung nguyên lý: <strong>"Luật YAGNI đứng trên OCP/DIP: Nếu chỉ có 1 trường hợp sử dụng, cấm dựng Strategy Pattern hoặc Abstract Class!"</strong>
+        </p>
+
+        <div class="diff-box">
+          <div class="diff-header diff-wrong">
+            <span>❌ LLM Hành Xử Sai (Dựng Cấu Trúc Khủng Cho Việc Đơn Giản - EXAMPLES.md:105-145)</span>
+            <span>Over-engineering</span>
+          </div>
+          <pre><code># Yêu cầu: "Add a function to calculate discount"
+class DiscountStrategy(ABC): ...
+class PercentageDiscount(DiscountStrategy): ...
+class FixedDiscount(DiscountStrategy): ...
+class DiscountConfig: ...
+class DiscountCalculator:
+    # 40 dòng code và 4 class chỉ để tính số tiền giảm giá!</code></pre>
+          <div class="diff-header diff-right">
+            <span>✅ Chuẩn Karpathy &amp; TDQ Đề Xuất (Hàm Phẳng Tinh Gọn - EXAMPLES.md:152)</span>
+            <span>Tối giản thực chiến</span>
+          </div>
+          <pre><code>def calculate_discount(amount: float, percent: float) -&gt; float:
+    """Calculate discount amount. percent should be 0-100."""
+    return amount * (percent / 100)
+# Senior engineer test: 1 hàm duy nhất. Chỉ refactor khi ca thứ 2 xuất hiện!</code></pre>
+        </div>
+      </div>
+
+      <!-- Pillar 3 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 18px; color: var(--warning);">3. Surgical Changes (Can Thiệp Chính Xác Như Phẫu Thuật)</h3>
+          <span class="badge badge-warning">Trị bệnh: Drive-by Refactoring &amp; Style Drift</span>
+        </div>
+        <blockquote class="quote">
+          "Touch only what you must. Clean up only your own mess... Don't 'improve' adjacent code, comments, or formatting. Don't refactor things that aren't broken. Every changed line should trace directly to the user's request."
+          <cite>— Andrej Karpathy (CLAUDE.md:31-43)</cite>
+        </blockquote>
+
+        <p style="margin-bottom: 14px;">
+          <strong>Bài học cho TDQ:</strong> Mã `ANTI-6` của TDQ chỉ mới chặn việc sửa ngoài file. Khi vào đúng file, Agent TDQ vẫn hay "tiện tay" format lại dấu nháy đơn/kép hoặc sửa comment lân cận.
+          Cần đưa nguyên tắc <em>Traceability Test (Mọi dòng diff phải giải thích được bằng một yêu cầu)</em> vào `edit_gate`.
+        </p>
+
+        <div class="diff-box">
+          <div class="diff-header diff-wrong">
+            <span>❌ LLM Hành Xử Sai (Tiện Tay Sửa Cả Code Xung Quanh - EXAMPLES.md:233-261)</span>
+            <span>Diff bị ô nhiễm</span>
+          </div>
+          <pre><code># Yêu cầu: "Fix bug where empty email crashes validator"
+-     if not user_data.get('email'):
++     """Validate user data."""  # &lt;-- Thêm docstring không ai yêu cầu
++     email = user_data.get('email', '').strip()
++     if len(username) &lt; 3:      # &lt;-- Tự tiện thêm validation username!
++         raise ValueError("Username too short")</code></pre>
+          <div class="diff-header diff-right">
+            <span>✅ Chuẩn Karpathy &amp; TDQ Đề Xuất (Can Thiệp Đúng 2 Dòng Cần Thiết - EXAMPLES.md:275)</span>
+            <span>Surgical Diff</span>
+          </div>
+          <pre><code>  def validate_user(user_data):
+      # Check email format
+-     if not user_data.get('email'):
++     email = user_data.get('email', '')
++     if not email or not email.strip():
+          raise ValueError("Email required")</code></pre>
+        </div>
+      </div>
+
+      <!-- Pillar 4 -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 18px; color: var(--accent);">4. Goal-Driven Execution (Hành Động Hướng Mục Tiêu Đo Được)</h3>
+          <span class="badge badge-accent">Trị bệnh: Hành động theo cảm tính</span>
+        </div>
+        <blockquote class="quote">
+          "LLMs are exceptionally good at looping until they meet specific goals... Don't tell it what to do, give it success criteria and watch it go."
+          <cite>— Andrej Karpathy (README.md:135)</cite>
+        </blockquote>
+
+        <p style="margin-bottom: 14px;">
+          <strong>Bài học cho TDQ:</strong> TDQ đã làm rất xuất sắc với TDD Red-Green và bộ mã cấm `ANTI-1` (chống Fake Red), `ANTI-2` (chống Blind Assertion).
+          Điểm cần tối ưu hóa là biến các task trong plan thành công thức tự động hóa: <code>[Mục tiêu] -&gt; verify: [Lệnh test cụ thể]</code> để Agent tự lặp mà không cần người dùng can thiệp từng bước.
+        </p>
+
+        <div class="diff-box">
+          <div class="diff-header diff-right">
+            <span>✅ Chuẩn Hóa Kế Hoạch Theo Mô Hình Lặp Hướng Đích (Goal-Driven Loop)</span>
+            <span>Tự động hóa cao</span>
+          </div>
+          <pre><code>Task T1: Tái hiện lỗi duplicate score sorting
+  - Verify RED: python -m unittest tests/test_sort.py -k test_duplicate -&gt; Phải FAIL vì thứ tự bất định
+Task T2: Sửa thuật toán sắp xếp ổn định (Stable Sort)
+  - Verify GREEN: python -m unittest tests/test_sort.py -k test_duplicate -&gt; PASS 100%
+Task T3: Kiểm tra hồi quy toàn diện
+  - Verify GREEN: python scripts/tdq_test.py vung-cham --silent -&gt; PASS 100%</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="section-4">
+      <div class="section-header">
+        <span class="section-num">Section 4</span>
+        <h2 class="section-title">Bản Đồ Ma Sát Nhận Thức (Cognitive Friction Analysis)</h2>
+        <p class="section-desc">
+          Mổ xẻ các điểm nghẽn thực tế nơi Agent TDQ thường xuyên bị bế tắc nhận thức hoặc sinh ra hành vi xin lỗi quanh co.
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Giai Đoạn Pipeline</th>
+              <th>Điểm Đỏ Ma Sát Nhận Thức (Friction Hotspot)</th>
+              <th>Hậu Quả Đối Với Agent</th>
+              <th>Giải Pháp Tháo Gỡ Tâm Lý (Học Từ Karpathy)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Intake &amp; Phỏng Vấn</strong></td>
+              <td>Khảo sát 2 tầng quá nhiều câu hỏi máy móc; cấm đoán mò nhưng không hướng dẫn cách phản biện.</td>
+              <td>Agent tập trung tạo bảng hỏi trắc nghiệm dài dòng thay vì nhìn ra điểm phi lý của yêu cầu.</td>
+              <td>Chuyển thành <strong>1-Turn Surface Tradeoffs</strong>: Nêu rõ 2-3 kịch bản, ước lượng công sức và chủ động đề xuất giải pháp đơn giản hơn.</td>
+            </tr>
+            <tr>
+              <td><strong>2. Lập Kế Hoạch (Plan)</strong></td>
+              <td>Bắt buộc khai báo quá nhiều trường dữ liệu phụ (eNm, Chạm, Cần, Hub, Luật file nóng).</td>
+              <td>Agent tốn 40% dung lượng suy luận chỉ để căn chỉnh format plan, dễ quên đánh dấu checkbox `[~]`.</td>
+              <td>Quy chuẩn hóa plan theo công thức Karpathy: <code>[Step] -&gt; verify: [check]</code>. Mọi trường nâng cao chỉ nạp khi có điều kiện.</td>
+            </tr>
+            <tr>
+              <td><strong>3. Viết Mã (Implement)</strong></td>
+              <td>Bị Hook `edit_gate` chặn với lỗi `[TDQ:TICK]` hoặc `streak &gt;= 3`.</td>
+              <td>Agent hoảng sợ, viết lời xin lỗi dài dòng trong chat, thử lách qua shell, đốt thêm turn vô ích.</td>
+              <td>Bổ sung Mental Model "Bác sĩ phẫu thuật": giải thích rõ ràng nhát dao cần rạch thay vì chỉ phạt bằng exit code.</td>
+            </tr>
+            <tr>
+              <td><strong>4. Kiểm Định (QC)</strong></td>
+              <td>Log kiểm thử thô in tràn lan hàng trăm dòng vào chat context.</td>
+              <td>Làm loãng context window, khiến Agent bị "Lost in the middle" khi bước sang phase báo cáo.</td>
+              <td>Đã giải quyết ở v0.70.0 bằng <strong>Silent CLI (`--silent`)</strong>: Log thô ra file đĩa, chat chỉ in đúng 2 dòng tóm tắt và lỗi chính.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section id="section-5">
+      <div class="section-header">
+        <span class="section-num">Section 5</span>
+        <h2 class="section-title">Kiến Trúc Lai Đề Xuất: "Tâm Thức Karpathy Trong Bộ Giáp TDQ"</h2>
+        <p class="section-desc">
+          Mô hình kiến trúc tối ưu (The Hybrid Architecture) kết hợp sức mạnh bảo vệ tất định của TDQ và sự thanh thoát nhận thức của Karpathy.
+        </p>
+      </div>
+
+      <div class="card" style="margin-bottom: 24px; text-align: center; background: var(--surface-card);">
+        <h3 style="font-size: 20px; margin-bottom: 16px;">THE HYBRID ARCHITECTURAL STACK</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 700px; margin: 0 auto; text-align: left;">
+
+          <div style="background: var(--surface); border: 2px solid var(--accent); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: var(--accent);">LỚP VỎ NGOÀI: BỘ GIÁP KỶ LUẬT THÉP (TDQ ARMOR)</strong>
+              <span class="badge badge-accent">Cưỡng Chế Bằng Code</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+              • Hook PreToolUse &amp; Stop Gate vật lý (Exit code != 0 khi vi phạm).<br>
+              • Git Worktree Sandbox (Cô lập môi trường độc lập cho từng subagent).<br>
+              • Bộ tìm kiếm 3 tầng (LSP -&gt; Graphify -&gt; Grep).<br>
+              • State Machine bền vững (`docs/tdq/STATE.md`).
+            </p>
+          </div>
+
+          <div style="text-align: center; font-weight: 800; color: var(--accent);">▲ BẢO VỆ &amp; GIÁM SÁT ▲</div>
+
+          <div style="background: var(--surface); border: 2px solid var(--success); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: var(--success);">LỚP NHÂN TRONG: TÂM THỨC PHẪU THUẬT TINH GỌN (KARPATHY MIND)</strong>
+              <span class="badge badge-success">Định Hướng Nhận Thức</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+              • <strong>Think Before Coding</strong>: Tuyên bố giả định, chủ động phản biện kiến trúc.<br>
+              • <strong>Simplicity First</strong>: Không abstraction cho code dùng 1 lần (YAGNI &gt; SOLID).<br>
+              • <strong>Surgical Changes</strong>: Mọi dòng diff phải truy vết về yêu cầu (Zero drive-by).<br>
+              • <strong>Goal-Driven Execution</strong>: Tái hiện bug bằng test trước khi sửa, lặp tự động đến khi xanh.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section id="section-6">
+      <div class="section-header">
+        <span class="section-num">Section 6</span>
+        <h2 class="section-title">Lộ Trình Nâng Cấp Khả Thi Cho TDQ Workflow (v0.71+)</h2>
+        <p class="section-desc">
+          5 đề xuất kỹ thuật cụ thể đã được đóng gói sẵn sàng để chuyển giao sang các request tiếp theo theo đúng lộ trình.
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Đề Xuất Cải Tiến Kỹ Thuật</th>
+              <th>File Cần Can Thiệp Trong TDQ</th>
+              <th>Lợi Ích Thực Tế Mang Lại</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1</strong></td>
+              <td><strong>Tích hợp Line-level Surgical Traceability vào `edit_gate`</strong><br>Bổ sung kiểm tra độ lan tỏa (Blast radius) của diff. Cảnh báo nếu Agent sửa đổi comment hoặc code lân cận không liên quan đến task.</td>
+              <td>`hooks/scripts/edit_gate.py`<br>`skills/tdq-build/references/rules/chung.md`</td>
+              <td>Giữ cho Git Diff luôn sạch sẽ tuyệt đối, loại bỏ hoàn toàn tình trạng drive-by refactoring gây xung đột git.</td>
+            </tr>
+            <tr>
+              <td><strong>2</strong></td>
+              <td><strong>Đưa Luật "YAGNI đứng trên SOLID" vào `clean-code.md`</strong><br>Quy định rõ: Nếu logic chỉ có 1 trường hợp sử dụng, CẤM tạo Interface/Abstract Class/Strategy. Chỉ viết 1 hàm phẳng duy nhất.</td>
+              <td>`skills/tdq-conventions/references/clean-code.md`</td>
+              <td>Chặn đứng hội chứng over-engineering của LLM, giảm 50% số dòng code thừa trong các tính năng mới.</td>
+            </tr>
+            <tr>
+              <td><strong>3</strong></td>
+              <td><strong>Chuyển hóa Quy trình Intake thành 1-Turn "Surface Tradeoffs"</strong><br>Cho phép Agent chủ động phản biện người dùng (Push back) và đưa ra 2-3 kịch bản kèm công sức thay vì hỏi trắc nghiệm 7 câu cứng nhắc.</td>
+              <td>`skills/tdq-intake/SKILL.md`<br>`skills/tdq-intake/references/interview.md`</td>
+              <td>Giảm ma sát người dùng, tiết kiệm 2-3 turns hội thoại vô nghĩa ở đầu mọi request.</td>
+            </tr>
+            <tr>
+              <td><strong>4</strong></td>
+              <td><strong>Công thức hóa Goal-Driven Mini-Plans cho Mode `quick`</strong><br>Rút gọn mini-plan thành định dạng thuần túy: <code>Mục tiêu -&gt; verify: [Lệnh test]</code>, trao quyền cho Agent tự động lặp đến khi pass.</td>
+              <td>`skills/tdq-intake/references/quick-lane.md`</td>
+              <td>Tăng tốc độ thực thi các tác vụ vừa và nhỏ lên gấp 2 lần mà vẫn bảo đảm 100% test xanh.</td>
+            </tr>
+            <tr>
+              <td><strong>5</strong></td>
+              <td><strong>Bơm Ngữ Cảnh Tinh Gọn Cho Subagents (`tdq-implementer`)</strong><br>Subagent khi được điều phối trong worktree riêng chỉ nạp duy nhất: Task, Vùng file, Red Test và 66 dòng `CLAUDE.md` kiểu Karpathy.</td>
+              <td>`agents/tdq-implementer.md`<br>`hooks/scripts/subagent_start.py`</td>
+              <td>Giảm 90% carry cost của Subagent, triệt tiêu tình trạng Subagent bị phân tâm do nạp quá nhiều tài liệu cha.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top: 24px; background: var(--surface-card);">
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Kế Hoạch Phân Kỳ Triển Khai (3 Giai Đoạn)</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;">
+          • <strong>Giai đoạn 1 (Ngay request này)</strong>: Đã hoàn tất Báo cáo HTML chuyên sâu, kiểm định DoD, đóng gói tài liệu mà không làm xáo trộn mã nguồn hiện có.<br>
+          • <strong>Giai đoạn 2 (Bản v0.71.0)</strong>: Triển khai Đề xuất 1 (Surgical Traceability trong `edit_gate`) và Đề xuất 2 (YAGNI &gt; SOLID trong `clean-code.md`).<br>
+          • <strong>Giai đoạn 3 (Bản v0.72.0)</strong>: Triển khai Đề xuất 3 (1-Turn Intake), Đề xuất 4 (Goal-Driven Quick Lane) và Đề xuất 5 (Lean Context cho Subagents).
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 13px;">
+      <p>Báo cáo được tạo tự động bởi <strong>TDQ Workflow Core Engine (v0.70.0)</strong></p>
+      <p style="margin-top: 4px;">Dựa trên phân tích đối chứng từ kho lưu trữ <code>C:\Users\admin\Documents\andrej-karpathy-skills</code></p>
+      <p style="margin-top: 8px;">Tôn chỉ tối cao: <em>Chất lượng &gt; Runtime &gt; Context Cost (Soul.md)</em></p>
+    </footer>
+
+  </div>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
