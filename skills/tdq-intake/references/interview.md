@@ -1,7 +1,7 @@
 # The interview round
 <!-- muc-luc-dong:
   Table of contents=9-16 · Two tiers of questions — general first, detail second=17-28 ·
-  What to ask=29-44 · How to ask=45-108 · Recording it=109-113 · When to stop=114
+  What to ask=29-46 · How to ask=47-110 · Recording it=111-115 · When to stop=116
 -->
 
 Goal: no question is left whose different answers would lead to a different product.
@@ -27,6 +27,8 @@ Run tier 1 before tier 2. If the scope round was SKIPPED by its own criteria, ti
 exactly as it did before.
 
 ## What to ask
+
+**Think Before Coding (Surface Tradeoffs & Push Back):** State assumptions explicitly. When a simpler approach exists than what the user asked for, push back and offer the simpler option at `A` with effort tradeoffs.
 
 Ask only what **changes the outcome**. For each item below: if you can answer it yourself,
 skip it; if you cannot, ask.

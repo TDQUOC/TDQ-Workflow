@@ -2,6 +2,19 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.71.0 — 2026-10-16
+
+Áp dụng nâng cấp triết lý và kiến trúc Andrej Karpathy vào TDQ Workflow.
+Kế hoạch: `docs/tdq/plan/2026-10-16-1410-nang-cap-triet-ly-karpathy.md`.
+
+- **Kỷ luật phẫu thuật cấp dòng (Surgical Changes).** Bổ sung quy tắc vào `chung.md` cấm drive-by refactor, cấm sửa comment hay quote style lân cận. Mọi dòng thêm mới hoặc chỉnh sửa trong git diff phải truy vết trực tiếp về yêu cầu.
+- **Quy tắc dọn rác của chính mình.** Tinh chỉnh Intentionality trong `chung.md`: chỉ dọn dẹp biến, hàm và import mồ côi do chính thay đổi của mình tạo ra. Dead code có sẵn từ trước chỉ nêu trong báo cáo, cấm tự ý xóa.
+- **Luật YAGNI đứng trên SOLID.** Bổ sung vào `clean-code.md`: cấm tạo Interface, Abstract Class hay Strategy Pattern cho code chỉ dùng 1 lần. Một use case chỉ viết một hàm phẳng duy nhất; chỉ trừu tượng hóa khi có ca thứ hai.
+- **Tư duy phản biện (Think Before Coding).** Bổ sung vào `interview.md`: chủ động phản biện giải pháp quá phức tạp và đề xuất phương án đơn giản hơn kèm ước lượng công sức thay vì thụ động làm theo.
+- **Tâm thức Karpathy cho Subagents.** Bổ sung vào `agents/tdq-implementer.md` 4 nguyên lý Karpathy và vòng lặp hướng mục tiêu `[Step] -> verify: [Test]`.
+- **Tối ưu hóa bộ lọc thân luật.** Cập nhật `hooks/scripts/luat_gon.py`: ở mức `full` lọc bỏ 56 dòng ví dụ dài, giảm ~500 tokens mang vác cho mỗi lượt gọi tool trong phase `implement` và mỗi khi gọi `SubagentStart`.
+- **JIT Micro-rules phẫu thuật.** Cập nhật `hooks/scripts/edit_gate.py` nhắc nhở `surgical edits only, no single-use abstraction` dưới trần 200 ký tự khi sửa code lần đầu.
+
 ## 0.70.0 — 2026-10-15
 
 Tối ưu hóa toàn diện instruction và kiến trúc Lazy Loading ngữ cảnh cho model tier thấp.
@@ -465,26 +478,9 @@ phase và hai cổng duyệt giữ nguyên. Báo cáo:
   không fixture.
 - **Test** — thêm 105 test, tất cả xanh. Tập TÊN test đỏ lệch 0 so với baseline `main` sạch.
 
-## 0.47.0 — 2026-09-14
-
-Lượt Codex sai khuôn thì lấy test làm chuẩn. Báo cáo:
-`docs/tdq/reports/2026-09-14-1417-sai-khuon-lay-test-lam-chuan.md`.
-
-- **Phán quyết của `tdq_codex.py run` thêm 2 khoá** — `ly_do` (mã thuộc `MA_LY_DO`, `null` khi
-  `xong`) và `can_chay_lai_test`. Thứ tự 5 khoá cố định, `dung_phan_quyet` dựng dòng JSON.
-- **Tập mã cứu được `MA_LY_DO_CHAY_LAI_TEST`** — chỉ `khong-co-ket-qua` và `ket-qua-sai-khuon`.
-  `can_chay_lai_test` là `true` khi lượt `fail` vì một trong 2 mã đó VÀ vùng file `dat`; timeout,
-  deny, exit khác 0, `xong: false` hay lệch vùng không bao giờ được cứu. `run` không tự đổi `fail`
-  thành `xong`, exit vẫn 1.
-- **Luật `codex-mode.md` bước 6** — leader chạy lại test: xanh thì tick `[x]` kèm ghi chú
-  `(cứu bằng test · ly_do=<mã>)`, đỏ thì task fail. Checklist mode `codex` trong `tdq_state.py` và
-  mục tự kiểm số 6 nói cùng điều đó.
-- **Test đầu-cuối `RunDauCuoiTest`** — chạy `run` thật qua tiến trình con với Codex giả và
-  `CODEX_HOME` giả: 5 ca phán quyết, cách ly cấu hình máy, log lượt tắt được bằng `TDQ_LOG=0`.
-
 ## Lịch sử cũ hơn
 
-Bản 0.46.1 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.46.1 dời ngày 2026-10-15). Bản 0.36.0 trở xuống
+Bản 0.47.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.47.0 dời ngày 2026-10-16). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.

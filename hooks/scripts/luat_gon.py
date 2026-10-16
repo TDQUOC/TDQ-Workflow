@@ -27,7 +27,7 @@ MUC_ULTRA = "### Extra at level ultra"
 CAT_THEO_MUC = {
     "off": (),  # trả rỗng ngay, không cần danh sách cắt
     "lite": (MUC_BANG_CUONG_DO, MUC_VI_DU, MUC_ULTRA),
-    "full": (MUC_ULTRA,),
+    "full": (MUC_VI_DU, MUC_ULTRA),
     "ultra": (),
 }
 MUC_MAC_DINH = "full"
