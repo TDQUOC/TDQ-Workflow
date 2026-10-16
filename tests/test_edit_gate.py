@@ -337,6 +337,8 @@ class TickBlockTest(unittest.TestCase):
         _rc, out, _err = self.sua("src/service.py")
         self.assertIn("TDQ:RULE:PY", out)
         self.assertIn("Python: cyclomatic <= 10", out)
+        self.assertIn("surgical", out.lower())
+        self.assertIn("no single-use abstraction", out.lower())
         # Lần 2 cùng session không mớm lại (dedupe)
         _rc2, out2, _err2 = self.sua("src/service2.py")
         self.assertNotIn("TDQ:RULE:PY", out2)
@@ -347,4 +349,6 @@ class TickBlockTest(unittest.TestCase):
         _rc, out, _err = self.sua("src/index.ts")
         self.assertIn("TDQ:RULE:TS", out)
         self.assertIn("TypeScript: cyclomatic <= 10", out)
+        self.assertIn("surgical", out.lower())
+        self.assertIn("no single-use abstraction", out.lower())
 

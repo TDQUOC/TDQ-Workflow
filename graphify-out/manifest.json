@@ -6,10 +6,10 @@
     "semantic_hash": "80ef98b882da0cfb57f0bc2a2c634788"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1792043728.4945142,
-    "seen": 1792046353.1472878,
-    "ast_hash": "31f12b679396b9ab858d3293647ced32",
-    "semantic_hash": "31f12b679396b9ab858d3293647ced32"
+    "mtime": 1792053764.1040735,
+    "seen": 1792137385.4315171,
+    "ast_hash": "57f3a336ad74d2972e45b22f87c8eb68",
+    "semantic_hash": "57f3a336ad74d2972e45b22f87c8eb68"
   },
   ".claude/settings.json": {
     "mtime": 1789900266.4991295,
@@ -36,20 +36,20 @@
     "semantic_hash": "f61a11c7b7c678948d74d90a3140d1a5"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1792051621.7532084,
-    "seen": 1792053242.5172615,
-    "ast_hash": "d01d7ec0ba3edefbf5838043a4bf0c21",
-    "semantic_hash": "d01d7ec0ba3edefbf5838043a4bf0c21"
+    "mtime": 1792135907.6479871,
+    "seen": 1792137385.4347615,
+    "ast_hash": "ac5a69e9daec961b97db96e6c2728858",
+    "semantic_hash": "ac5a69e9daec961b97db96e6c2728858"
   },
   "hooks/scripts/prompt_context.py": {
-    "mtime": 1792051675.8550305,
-    "seen": 1792053242.5175252,
+    "mtime": 1792053764.123832,
+    "seen": 1792137385.4348865,
     "ast_hash": "6f541c57ee88e83488793e99665307bd",
     "semantic_hash": "6f541c57ee88e83488793e99665307bd"
   },
   "hooks/scripts/session_start.py": {
-    "mtime": 1792050413.5474515,
-    "seen": 1792053242.5179114,
+    "mtime": 1792053764.124832,
+    "seen": 1792137385.4352612,
     "ast_hash": "de17bebec7c75fabd5cee23cb25b2a68",
     "semantic_hash": "de17bebec7c75fabd5cee23cb25b2a68"
   },
@@ -391,10 +391,10 @@
     "semantic_hash": "f16952e1979486ad62981a3d90537aa6"
   },
   ".codex/hooks.json": {
-    "mtime": 1792052917.6790686,
-    "seen": 1792053242.51375,
-    "ast_hash": "2ed4d20e6c9404a590c4d773fea48f3d",
-    "semantic_hash": "2ed4d20e6c9404a590c4d773fea48f3d"
+    "mtime": 1792053764.105582,
+    "seen": 1792137385.431677,
+    "ast_hash": "e6ed2e8b8e2ef270beab09452302ecbd",
+    "semantic_hash": "e6ed2e8b8e2ef270beab09452302ecbd"
   },
   "hooks/scripts/codex_edit_gate.py": {
     "mtime": 1790138252.4335904,
@@ -403,8 +403,8 @@
     "semantic_hash": "7d80cc1124195d5c8ca9071f39a0366a"
   },
   "scripts/tdq_codex.py": {
-    "mtime": 1792052426.216574,
-    "seen": 1792053242.5223649,
+    "mtime": 1792053764.1258318,
+    "seen": 1792137385.4397602,
     "ast_hash": "a33eb87079bf52fa660542cc18d05887",
     "semantic_hash": "a33eb87079bf52fa660542cc18d05887"
   },
@@ -415,10 +415,10 @@
     "semantic_hash": "6d7f428a432bcfc06a517718ae07c76e"
   },
   "hooks/scripts/luat_gon.py": {
-    "mtime": 1789900266.987387,
-    "seen": 1790579329.427417,
-    "ast_hash": "c22afa8b960dac5113973b584a3db73e",
-    "semantic_hash": "c22afa8b960dac5113973b584a3db73e"
+    "mtime": 1792135719.6811535,
+    "seen": 1792137385.4348848,
+    "ast_hash": "046709beafc227134e860e67c53838e1",
+    "semantic_hash": "046709beafc227134e860e67c53838e1"
   },
   "hooks/scripts/subagent_start.py": {
     "mtime": 1789900266.988393,
@@ -439,10 +439,10 @@
     "semantic_hash": "41b15e96b67c441f2d65a1125974b705"
   },
   ".codex-plugin/plugin.json": {
-    "mtime": 1792043728.49602,
-    "seen": 1792046353.1474228,
-    "ast_hash": "91c44c25ca2ac60e5808294e98d31c6a",
-    "semantic_hash": "91c44c25ca2ac60e5808294e98d31c6a"
+    "mtime": 1792053764.1040735,
+    "seen": 1792137385.4316747,
+    "ast_hash": "a70df04a3f429c3172b688825877ba12",
+    "semantic_hash": "a70df04a3f429c3172b688825877ba12"
   },
   ".opencode/plugins/tdq-workflow.js": {
     "mtime": 1790138252.4325833,
@@ -529,14 +529,14 @@
     "semantic_hash": "02dbe691ffa8206d7cc53d2c5dce2533"
   },
   "scripts/tdq_codex_mcp.py": {
-    "mtime": 1792052907.740962,
-    "seen": 1792053242.522367,
+    "mtime": 1792053764.1258318,
+    "seen": 1792137385.439762,
     "ast_hash": "e1dd3ecd9d6ce983d177a6f69d88d942",
     "semantic_hash": "e1dd3ecd9d6ce983d177a6f69d88d942"
   },
   "scripts/tdq_test.py": {
-    "mtime": 1792050675.9821851,
-    "seen": 1792053242.5233817,
+    "mtime": 1792053764.126832,
+    "seen": 1792137385.4407902,
     "ast_hash": "25b286bb8554e5215e6b85da492baa44",
     "semantic_hash": "25b286bb8554e5215e6b85da492baa44"
   },

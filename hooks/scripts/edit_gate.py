@@ -30,24 +30,24 @@ STREAK_NGUONG = 3
 
 QUY_TAC_NGON_NGU = {
     ".py": [
-        "Python: cyclomatic <= 10, cognitive <= 15; no bare except; use standard library first.",
-        "Run `ruff check <file>` before finishing; consult rules/python-cookbook.md for non-trivial async/transactions/errors.",
+        "Python: cyclomatic <= 10, cognitive <= 15; surgical edits only; no single-use abstraction.",
+        "Run `ruff check <file>`; see rules/cookbooks/python-cookbook.md.",
     ],
     ".ts": [
-        "TypeScript: cyclomatic <= 10, cognitive <= 15; strict types; immutable state updates.",
-        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for non-trivial async/results/errors.",
+        "TypeScript: cyclomatic <= 10, cognitive <= 15; surgical edits only; no single-use abstraction.",
+        "Run `eslint <file>`; see rules/cookbooks/typescript-js-cookbook.md.",
     ],
     ".tsx": [
-        "TypeScript: cyclomatic <= 10, cognitive <= 15; strict types; immutable state updates.",
-        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for non-trivial async/results/errors.",
+        "TypeScript: cyclomatic <= 10, cognitive <= 15; surgical edits only; no single-use abstraction.",
+        "Run `eslint <file>`; see rules/cookbooks/typescript-js-cookbook.md.",
     ],
     ".js": [
-        "JavaScript: cyclomatic <= 10, cognitive <= 15; avoid untyped throw; immutable state updates.",
-        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for async/patterns.",
+        "JavaScript: cyclomatic <= 10, cognitive <= 15; surgical edits only; no single-use abstraction.",
+        "Run `eslint <file>`; see rules/cookbooks/typescript-js-cookbook.md.",
     ],
     ".jsx": [
-        "JavaScript: cyclomatic <= 10, cognitive <= 15; avoid untyped throw; immutable state updates.",
-        "Run `eslint <file>` before finishing; consult rules/typescript-js-cookbook.md for async/patterns.",
+        "JavaScript: cyclomatic <= 10, cognitive <= 15; surgical edits only; no single-use abstraction.",
+        "Run `eslint <file>`; see rules/cookbooks/typescript-js-cookbook.md.",
     ],
 }
 

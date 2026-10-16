@@ -81,7 +81,7 @@ class LocThanLuat(unittest.TestCase):
     def test_full_giu_bang_va_vi_du_nhung_bo_muc_ultra(self):
         ra = luat_gon.loc_than_luat(self.than, "full")
         self.assertIn(MUC_BANG_CUONG_DO, ra, "full phải giữ bảng cường độ")
-        self.assertIn(MUC_VI_DU, ra, "full phải giữ ví dụ RIGHT/WRONG")
+        self.assertNotIn(MUC_VI_DU, ra, "full cắt ví dụ dài để tiết kiệm context")
         self.assertNotIn(MUC_ULTRA, ra, "mục riêng của ultra chỉ hiện ở mức ultra")
 
     def test_ultra_giu_tat_ca(self):

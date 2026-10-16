@@ -1,9 +1,26 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.46.1 đến 0.37.0, tách khỏi `CHANGELOG.md` từ 2026-10-03 để file chính dưới trần R6 500 dòng
-(`docs/CHANGELOG-archive.md` đã đầy). Bản 0.46.1 được chuyển sang ngày 2026-10-15.
+Các bản 0.47.0 đến 0.37.0, tách khỏi `CHANGELOG.md` từ 2026-10-03 để file chính dưới trần R6 500 dòng
+(`docs/CHANGELOG-archive.md` đã đầy). Bản 0.47.0 được chuyển sang ngày 2026-10-16.
 Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.47.0 — 2026-09-14
+
+Lượt Codex sai khuôn thì lấy test làm chuẩn. Báo cáo:
+`docs/tdq/reports/2026-09-14-1417-sai-khuon-lay-test-lam-chuan.md`.
+
+- **Phán quyết của `tdq_codex.py run` thêm 2 khoá** — `ly_do` (mã thuộc `MA_LY_DO`, `null` khi
+  `xong`) và `can_chay_lai_test`. Thứ tự 5 khoá cố định, `dung_phan_quyet` dựng dòng JSON.
+- **Tập mã cứu được `MA_LY_DO_CHAY_LAI_TEST`** — chỉ `khong-co-ket-qua` và `ket-qua-sai-khuon`.
+  `can_chay_lai_test` là `true` khi lượt `fail` vì một trong 2 mã đó VÀ vùng file `dat`; timeout,
+  deny, exit khác 0, `xong: false` hay lệch vùng không bao giờ được cứu. `run` không tự đổi `fail`
+  thành `xong`, exit vẫn 1.
+- **Luật `codex-mode.md` bước 6** — leader chạy lại test: xanh thì tick `[x]` kèm ghi chú
+  `(cứu bằng test · ly_do=<mã>)`, đỏ thì task fail. Checklist mode `codex` trong `tdq_state.py` và
+  mục tự kiểm số 6 nói cùng điều đó.
+- **Test đầu-cuối `RunDauCuoiTest`** — chạy `run` thật qua tiến trình con với Codex giả và
+  `CODEX_HOME` giả: 5 ca phán quyết, cách ly cấu hình máy, log lượt tắt được bằng `TDQ_LOG=0`.
 
 ## 0.46.1 — 2026-09-14
 
