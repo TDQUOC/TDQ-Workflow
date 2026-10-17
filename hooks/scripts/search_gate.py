@@ -133,7 +133,7 @@ def quyet(cwd, phien, ten_tool, vao):
     """-> (allowed, reason, classification, stand_down). Testable without a subprocess."""
     cong_cu = "Grep" if ten_tool == "Grep" else "Bash"
     pl = search_rules.phan_loai(cong_cu, _lenh(ten_tool, vao))
-    if pl.get("loai") not in (search_rules.TIM_CODE, search_rules.LOC_FILE):
+    if pl.get("status") != "unknown" and pl.get("loai") not in (search_rules.TIM_CODE, search_rules.LOC_FILE):
         return True, "not a search", pl, False
     khoa = search_observe.khoa_hien_tai(cwd, phien)
     tt = search_rules.trang_thai(search_observe.doc_so(cwd, khoa, phien))
@@ -148,7 +148,7 @@ def quyet(cwd, phien, ten_tool, vao):
         dung_xuong = ly_do_dung_xuong(moc, tt)
         if dung_xuong:
             ok, ly_do = True, dung_xuong
-    if pl.get("loai") == search_rules.TIM_CODE:
+    if pl.get("loai") == search_rules.TIM_CODE or pl.get("status") == "unknown":
         # Only a search that RAN counts toward the unlock window: a denied one never executed.
         search_observe.ghi_so(cwd, {"ts": time.time(), "khoa": khoa, "loai": "tim",
                                     "cho_phep": ok, "tinh_cua_so": ok,

@@ -77,9 +77,12 @@ MODE = re.compile(r"\b(%s)\b" % _MODE_BI_DANH, re.IGNORECASE)
 # answer at all 4 gates. Accepted ONLY when it STANDS ALONE (an optional choose-prefix and a
 # short tail are allowed): a full sentence such as "Approve? not sure" must miss.
 # a-d, not just a-b: the option lists of the interview template run up to D.
+# Enhanced for 1a, 1. a, câu 1a, 1) a at single gate (O01).
 LETTER = re.compile(
-    r"^\s*(?:chọn\s+|chon\s+|choose\s+|option\s+|pick\s+|answer\s+)?"  # i18n-allow
-    r"([a-d])\b\s*(?:nhé|nhe|đi|di|please|thanks|!|\.)?\s*$",  # i18n-allow
+    r"^\s*(?:chọn\s+|chon\s+|choose\s+|option\s+|pick\s+|answer\s+)?"
+    r"(?:(?:câu\s+)?1[.:)\-\s]*)?"
+    r"(?:chọn\s+|chon\s+|choose\s+|option\s+|pick\s+|answer\s+)?"
+    r"([a-d])\b\s*(?:nhé|nhe|đi|di|please|thanks|!|\.)?\s*$",
     re.IGNORECASE)
 # At the 3 approval gates the recommendation always sits at option A (interview.md), so A —
 # and only A — is the approving letter. b/c/d there answer some other question: they are not
@@ -87,9 +90,47 @@ LETTER = re.compile(
 APPROVE_LETTER = "a"
 RE_DIRECT = re.compile(r"(?:^|\s|[^\w])_tdq_direct(?:\s|[^\w]|$)", re.IGNORECASE)
 
+NON_HUMAN_RE = re.compile(
+    r"(?:<notification\b|<system-reminder\b|<cross-session|<system\b|<TDQ_WORKFLOW\b|"
+    r"\[(?:tool_result|notification|system|cross-session))",
+    re.IGNORECASE)
+
+OPENCODE_WRAPPER_RE = re.compile(r"<TDQ_WORKFLOW>.*?</TDQ_WORKFLOW>", re.IGNORECASE | re.DOTALL)
+
+
+def _tach_prompt_thuc(prompt):
+    """Strip <TDQ_WORKFLOW>...</TDQ_WORKFLOW> wrapper inserted automatically by OpenCode plugin (O03)."""
+    if not prompt:
+        return ""
+    return OPENCODE_WRAPPER_RE.sub("", str(prompt)).strip()
+
+
+QUOTED_SPEECH_RE = re.compile(
+    r"""(?i)(?:the user said|claude asked|trích dẫn|người dùng nói)\s*:\s*["'“]"""
+)
+
+
+def _an_toan_by(prompt):
+    """Sanitize user prompt for --by flag to prevent command injection and quote breakage (O01)."""
+    clean_p = _tach_prompt_thuc(prompt)
+    if not clean_p:
+        return "user"
+    safe = re.sub(r'["\'`$;|&<>\\{}\n\r]', ' ', clean_p[:60])
+    safe = " ".join(safe.split())
+    return safe or "user"
+
 
 def looks_like_approval(prompt, target, chon_duoc=None):
     if not prompt:
+        return False
+    # Check for quotes and non-human / system tags (O01)
+    prompt = _tach_prompt_thuc(prompt)
+    if not prompt:
+        return False
+    p_strip = prompt.strip()
+    if (p_strip.startswith(('"', "'", "“")) and p_strip.endswith(('"', "'", "”")) and len(p_strip) >= 2):
+        return False
+    if NON_HUMAN_RE.search(prompt) or QUOTED_SPEECH_RE.search(prompt):
         return False
     if QUESTION.search(prompt):
         return False
@@ -280,7 +321,7 @@ def main():
                 said = mode_from_answer(prompt, planned, chon_duoc) or planned or "main"
                 lines.append("[TDQ:APPROVE] The user just picked a mode → run NOW: "
                              f"python3 scripts/tdq_state.py approve plan --mode {said} "
-                             f"--by \"{prompt[:60]}\"")
+                             f"--by \"{_an_toan_by(prompt)}\"")
                 lines.append(render_next(cwd, state, brief=True))
                 _emit(cwd, sid, lines, critical=True)
                 return
@@ -303,7 +344,7 @@ def main():
                 mode = f" --mode {said}" if said else ""
             lines.append(f"[TDQ:APPROVE] The user just approved {pending} → run NOW: "
                          f"python3 scripts/tdq_state.py approve {pending}{mode} "
-                         f"--by \"{prompt[:60]}\"")
+                         f"--by \"{_an_toan_by(prompt)}\"")
         else:
             waiting = ("the user to pick a mode" if pending == "mode"
                        else f"{pending} approval")
