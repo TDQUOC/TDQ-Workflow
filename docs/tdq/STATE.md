@@ -1,18 +1,18 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-18T00:42:47+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-18T01:05:00+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-18-0009-nang-cap-toan-dien-tdq-workflow |
-| Lane | full |
+| Request | 2026-10-18-0056-kiem-thu-cross-platform |
+| Lane | quick |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-10-18-0009-nang-cap-toan-dien-tdq-workflow.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-18-0009-nang-cap-toan-dien-tdq-workflow.md — ✔ approved |
-| Quick approval | (not applicable) |
+| Spec | (none) |
+| Plan | (none) |
+| Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
-| QC level | ultra |
-| Run mode | main |
+| QC level | full |
+| Run mode | (not settled) |
 
 ## Where we are
 Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
