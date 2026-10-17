@@ -112,12 +112,12 @@
     "token": 1674
   },
   "skills/tdq-conventions/references/soul.md": {
-    "sha256": "b739ff7b35738a01a160328b8109912620a55b4d5bf2d6ce6d2e7d58f539982f",
-    "token": 1492
+    "sha256": "46bd74760c3d12da34f4fce3dad201c6bbfa5777f9cff49c237c5c2eaffcc7e7",
+    "token": 1669
   },
   "skills/tdq-conventions/references/subagent-tuning.md": {
-    "sha256": "8244cc8fd60522b31621a6840273636da61b56c563995ae81496a1aff73b52f0",
-    "token": 837
+    "sha256": "5996aaea4fa4e8be4ff0473c84362e2b51b6f96d4536eefd73ffcffb1d973ea1",
+    "token": 927
   },
   "skills/tdq-conventions/references/tavily.md": {
     "sha256": "1f2e19794b95b79a241b59fd151c88051b189270059b3e14c981ac8bb330173d",

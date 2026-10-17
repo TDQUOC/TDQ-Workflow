@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TDQ_HANDOFF_PAYLOAD",
+  "description": "Standardized lightweight subagent-to-leader handoff payload under 200 tokens",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Canonical task identifier (e.g. T1.1, T2.3)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "failed", "blocked"],
+      "description": "Execution status outcome"
+    },
+    "modified_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of relative paths modified by the subagent"
+    },
+    "test_command": {
+      "type": "string",
+      "description": "Command executed to verify changes"
+    },
+    "test_verdict": {
+      "type": "string",
+      "enum": ["pass", "fail"],
+      "description": "Verification test outcome"
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "Concise technical statement of modifications made"
+    },
+    "blocker": {
+      "type": "string",
+      "description": "Explicit reason if execution was blocked or failed"
+    }
+  },
+  "required": [
+    "task_id",
+    "status",
+    "modified_files",
+    "test_verdict",
+    "summary"
+  ],
+  "additionalProperties": false
+}

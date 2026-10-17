@@ -22,6 +22,7 @@ Exit code: 0 = fine · 1 = rule broken / conflict / missing facts · 2 = wrong u
 Env: TDQ_PROJECT_DIR anchors the project · TDQ_LOG=0 mutes the log · TDQ_WORKTREE_DIR moves worktrees.
 """
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -399,7 +400,7 @@ def quyet_dinh_task(task, tasks):
     return "giao", ""
 
 
-def chia_dot(tasks, quyet_dinh):
+def chia_dot(tasks, quyet_dinh, project_root="."):
     """Assign a wave number to each task. Wave 1 runs first, same wave = in parallel.
 
     At least one task declares a dependency line → order by the DEPENDENCY GRAPH: a task sits
@@ -407,66 +408,140 @@ def chia_dot(tasks, quyet_dinh):
     phase boundaries. No task declares one → fall back to the old rule by phase name, so plans
     written before this rule produce exactly the same waves as before.
 
-    Rule for both paths: two tasks touching the same file are never in the same wave.
+    Rule for both paths: two tasks touching the same file are never in the same wave (TCAS collision checked).
     """
     phu_thuoc = doc_phu_thuoc(tasks)
     if not any(phu_thuoc.values()):
         _log("chia-dot → no task declares a dependency line, falling back to phase-name order")
-        return _chia_dot_theo_phase(tasks)
+        return _chia_dot_theo_phase(tasks, project_root)
     khai = sum(1 for v in phu_thuoc.values() if v)
     _log(f"chia-dot → {khai}/{len(tasks)} task(s) declare dependencies, ordering by graph")
-    return _chia_dot_theo_phu_thuoc(tasks, phu_thuoc)
+    return _chia_dot_theo_phu_thuoc(tasks, phu_thuoc, project_root)
 
 
-def _dot_som_nhat(files, dot_toi_thieu, chiem_theo_dot):
-    """The earliest wave from `dot_toi_thieu` on that touches no other task's files."""
+# ------------------------------------------------------------- TCAS AST Analysis
+def extract_ast_imports(file_path):
+    """Parse a python file using ast.parse and extract imported module names."""
+    if not os.path.isfile(file_path) or not file_path.endswith(".py"):
+        return set()
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            tree = ast.parse(f.read(), filename=file_path)
+    except Exception:
+        return set()
+
+    imports = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                parts = alias.name.split(".")
+                imports.add(parts[0])
+                imports.add(alias.name)
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                parts = node.module.split(".")
+                imports.add(parts[0])
+                imports.add(node.module)
+    return imports
+
+
+def file_to_module_names(rel_path):
+    """Convert relative file path to possible module import names."""
+    p = rel_path.replace("\\", "/")
+    if not p.endswith(".py"):
+        return set()
+    p_no_ext = p[:-3]
+    parts = p_no_ext.split("/")
+    names = {parts[-1]}  # e.g., 'stop_batch_checker'
+    dotted = ".".join(parts)
+    names.add(dotted)    # e.g., 'hooks.scripts.stop_batch_checker'
+    for i in range(1, len(parts)):
+        names.add(".".join(parts[i:]))
+    return names
+
+
+def detect_tcas_collision(task_a_files, task_b_files, project_root="."):
+    """Detect if task_b imports code modified by task_a, or vice-versa."""
+    # 1. Direct file collision
+    direct = set(task_a_files) & set(task_b_files)
+    if direct:
+        return True, f"Direct file collision: {direct}"
+
+    # 2. TCAS AST Import Dependency Analysis
+    mod_names_a = set()
+    for f in task_a_files:
+        mod_names_a.update(file_to_module_names(f))
+
+    mod_names_b = set()
+    for f in task_b_files:
+        mod_names_b.update(file_to_module_names(f))
+
+    for fb in task_b_files:
+        full_b = os.path.join(project_root, fb)
+        imports_b = extract_ast_imports(full_b)
+        hit = imports_b & mod_names_a
+        if hit:
+            return True, f"TCAS AST collision: {fb} imports modified module {hit}"
+
+    for fa in task_a_files:
+        full_a = os.path.join(project_root, fa)
+        imports_a = extract_ast_imports(full_a)
+        hit = imports_a & mod_names_b
+        if hit:
+            return True, f"TCAS AST collision: {fa} imports modified module {hit}"
+
+    return False, ""
+
+
+def _dot_som_nhat(task, dot_toi_thieu, tasks_theo_dot, project_root="."):
+    """The earliest wave from `dot_toi_thieu` on that touches no other task's files (TCAS aware)."""
     dot = dot_toi_thieu
-    while files & chiem_theo_dot.get(dot, set()):
+    files = set(task.vung_file)
+    while True:
+        co_va_cham = False
+        for other in tasks_theo_dot.get(dot, []):
+            va_cham, ly_do = detect_tcas_collision(other.vung_file, files, project_root)
+            if va_cham:
+                _log(f"tcas-collision → {task.ma} collisions with {other.ma} ({ly_do}) at wave {dot}")
+                co_va_cham = True
+                break
+        if not co_va_cham:
+            break
         dot += 1
-    chiem_theo_dot.setdefault(dot, set()).update(files)
+    tasks_theo_dot.setdefault(dot, []).append(task)
     return dot
 
 
-def _chia_dot_theo_phu_thuoc(tasks, phu_thuoc):
-    """Topological order: each task sits after the largest wave of the tasks it needs."""
+def _chia_dot_theo_phu_thuoc(tasks, phu_thuoc, project_root="."):
+    """Topological order: each task sits after the largest wave of the tasks it needs (TCAS aware)."""
     con_lai = {t.ma: t for t in tasks}
     dot_theo_task = {}
-    chiem_theo_dot = {}
+    tasks_theo_dot = {}
     while con_lai:
         san_sang = [t for t in con_lai.values()
                     if all(c in dot_theo_task for c in phu_thuoc[t.ma])]
         cat_vong = not san_sang
         if cat_vong:
-            # A cycle in the `Cần:` declarations — the plan is wrong. Cut the cycle and carry on  # i18n-allow
-            # instead of dying: the wave command is not the place to report plan syntax, the linter is.
             _log(f"chia-dot → cut the dependency cycle at {', '.join(sorted(con_lai))}")
             san_sang = list(con_lai.values())
         for t in san_sang:
-            # `.get(...,  0)` because on the cycle-cut path a needed task may not be placed yet.
             nen = max((dot_theo_task.get(c, 0) for c in phu_thuoc[t.ma]), default=0) + 1
-            dot_theo_task[t.ma] = _dot_som_nhat(set(t.vung_file), nen, chiem_theo_dot)
+            dot_theo_task[t.ma] = _dot_som_nhat(t, nen, tasks_theo_dot, project_root)
             del con_lai[t.ma]
     return dot_theo_task
 
 
-def _chia_dot_theo_phase(tasks):
-    """Old rule: phase order IS dependency order; split files inside each phase."""
+def _chia_dot_theo_phase(tasks, project_root="."):
+    """Old rule: phase order IS dependency order; split files inside each phase (TCAS aware)."""
     dot_theo_task = {}
     nen = 0
     for phase in sorted({t.phase for t in tasks}, key=_khoa_phase):
         trong_phase = [t for t in tasks if t.phase == phase]
-        thung = []                                  # thung[i] = set of files already taken
+        tasks_theo_dot = {}
         for t in trong_phase:
-            files = set(t.vung_file)
-            for i, chiem in enumerate(thung):
-                if not (files & chiem):
-                    chiem |= files
-                    dot_theo_task[t.ma] = nen + i + 1
-                    break
-            else:
-                thung.append(set(files))
-                dot_theo_task[t.ma] = nen + len(thung)
-        nen += len(thung)
+            dot_rel = _dot_som_nhat(t, 1, tasks_theo_dot, project_root)
+            dot_theo_task[t.ma] = nen + dot_rel
+        nen += max(tasks_theo_dot.keys(), default=0)
     return dot_theo_task
 
 
@@ -540,7 +615,7 @@ def lenh_phan_cong(project, _args):
     if not tasks:
         raise LoiLuat(f"The plan holds no readable task: {plan}")
     quyet = {t.ma: quyet_dinh_task(t, tasks) for t in tasks}
-    dot = chia_dot(tasks, quyet)
+    dot = chia_dot(tasks, quyet, project_root=project)
     proj_sha, proj_mode = tinh_sha_projection(tasks)
     ban_do = {
         "slug": slug,
@@ -985,6 +1060,35 @@ def _in_goi_y(muc):
         print(khoi)
 
 
+def _tao_ntfs_junction_sharing(project_dir, worktree_dir):
+    """Link heavy dependencies (.venv, node_modules) via NTFS Junction on Windows 11."""
+    if sys.platform != "win32":
+        return []
+    try:
+        proj_drive = os.path.splitdrive(os.path.abspath(project_dir))[0].upper()
+        wt_drive = os.path.splitdrive(os.path.abspath(worktree_dir))[0].upper()
+        if proj_drive != wt_drive:
+            return []
+
+        targets = ["node_modules", ".venv"]
+        linked = []
+        for tgt in targets:
+            src = os.path.join(project_dir, tgt)
+            dst = os.path.join(worktree_dir, tgt)
+            if os.path.isdir(src) and not os.path.exists(dst):
+                res = subprocess.run(
+                    ["cmd.exe", "/c", "mklink", "/J", os.path.abspath(dst), os.path.abspath(src)],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
+                if res.returncode == 0:
+                    linked.append(tgt)
+        return linked
+    except Exception:
+        return []
+
+
 def lenh_mo(project, args):
     slug, plan, ban_do = _boi_canh_ban_do(project)
     ma = args.task
@@ -1012,9 +1116,13 @@ def lenh_mo(project, args):
     # Only AFTER git succeeded: a row written any earlier is a row that lies.
     so_wt.mo_dong(project, slug, ma, nhanh, duong)
     so_wt.ghi_md(project)
+    junctions = _tao_ntfs_junction_sharing(project, duong)
     _log(f"mo {ma} → branch {nhanh} · worktree {duong}")
     print(f"{ma}: branch {nhanh}")
     print(f"  worktree: {duong}")
+    if junctions:
+        print(f"  ntfs junctions: {', '.join(junctions)}")
+        _log(f"mo {ma} → ntfs junctions: {', '.join(junctions)}")
     print(f"  file area: {' '.join(rec['vung_file']) or '(not declared)'}")
     print(f"  base: {tich_hop}")
     return 0
