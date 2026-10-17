@@ -1,0 +1,31 @@
+{
+  "slug": "2026-10-17-1208-deep-research-kien-truc-ecc",
+  "plan_file": "docs\\tdq\\plan\\2026-10-17-1208-deep-research-kien-truc-ecc.md",
+  "plan_sha": "571311e09aa234de47d94b5efaa3761bc3e3a9d7c8bcfd5b7cd5d391b5f31a16",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-17-1208-deep-research-kien-truc-ecc.md"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-10-17-1208-deep-research-kien-truc-ecc.html"
+      ],
+      "dot": 1
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_report_kien_truc_ecc.py"
+      ],
+      "dot": 1
+    }
+  }
+}

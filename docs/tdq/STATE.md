@@ -1,18 +1,18 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-16T14:58:47+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-17T14:38:09+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-16-1410-nang-cap-triet-ly-karpathy |
+| Request | 2026-10-17-1208-deep-research-kien-truc-ecc |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-10-16-1410-nang-cap-triet-ly-karpathy.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-16-1410-nang-cap-triet-ly-karpathy.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-10-17-1208-deep-research-kien-truc-ecc.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-10-17-1208-deep-research-kien-truc-ecc.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | full |
 | QC level | ultra |
-| Run mode | main |
+| Run mode | subagent |
 
 ## Where we are
 Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
