@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import helper  # noqa: F401  — chèn scripts/ vào sys.path
 import tdq_eval
@@ -79,6 +80,27 @@ class KhungTest(unittest.TestCase):
 class DungNhanhTest(unittest.TestCase):
     """T1.3 — dựng hai worktree trong thư mục tạm, và chặn khi bị gọi vào repo thật."""
 
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.repo = os.path.join(tmp.name, "repo")
+        subprocess.run(
+            ["git", "clone", "--no-hardlinks", "--no-checkout", ROOT, self.repo],
+            capture_output=True, text=True, encoding="utf-8", check=True, timeout=60)
+        patcher = mock.patch.object(tdq_eval, "ROOT", self.repo)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_fixture_git_khong_dung_registry_repo_goc(self):
+        self.assertNotEqual(os.path.realpath(tdq_eval.ROOT), os.path.realpath(ROOT))
+        goc = subprocess.run(
+            ["git", "-C", ROOT, "rev-parse", "--path-format=absolute", "--git-common-dir"],
+            capture_output=True, text=True, encoding="utf-8", check=True).stdout.strip()
+        rieng = tdq_eval._git("rev-parse", "--path-format=absolute",
+                              "--git-common-dir")
+        self.assertEqual(rieng.returncode, 0, rieng.stderr)
+        self.assertNotEqual(os.path.realpath(rieng.stdout.strip()), os.path.realpath(goc))
+
     def test_hai_nhanh_khai_dung_hai_commit_can_so(self):
         self.assertEqual(sorted(tdq_eval.NHANH), ["lai", "viet"])
         self.assertTrue(tdq_eval.NHANH["viet"].startswith("ea0cdbd"))
@@ -93,8 +115,11 @@ class DungNhanhTest(unittest.TestCase):
     def test_dung_hai_worktree_co_du_plugin_json(self):
         with tempfile.TemporaryDirectory() as tmp:
             dich = os.path.join(tmp, "nhanh")
-            rc, out, err = chay("dung-nhanh", "--dich", dich)
-            self.assertEqual(rc, 0, err)
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = tdq_eval.lenh_dung_nhanh(argparse.Namespace(dich=dich))
+            out = buf.getvalue()
+            self.assertEqual(rc, 0)
             try:
                 for ten in ("viet", "lai"):
                     manifest = os.path.join(dich, ten, ".claude-plugin", "plugin.json")
@@ -102,16 +127,19 @@ class DungNhanhTest(unittest.TestCase):
                     self.assertIn(ten, out)
             finally:
                 for ten in ("viet", "lai"):
-                    subprocess.run(["git", "-C", ROOT, "worktree", "remove", "--force",
-                                    os.path.join(dich, ten)], capture_output=True)
-                subprocess.run(["git", "-C", ROOT, "worktree", "prune"], capture_output=True)
+                    subprocess.run(["git", "-C", self.repo, "worktree", "remove", "--force",
+                                    os.path.join(dich, ten)], capture_output=True,
+                                   check=True, timeout=30)
+                subprocess.run(["git", "-C", self.repo, "worktree", "prune"],
+                               capture_output=True, check=True, timeout=30)
 
     def test_hai_worktree_dung_ngon_ngu_khac_nhau_o_skill(self):
         """Bằng chứng hai nhánh thật sự khác nhau: câu luật Red-green ở hai thứ tiếng."""
         with tempfile.TemporaryDirectory() as tmp:
             dich = os.path.join(tmp, "nhanh")
-            rc, _out, err = chay("dung-nhanh", "--dich", dich)
-            self.assertEqual(rc, 0, err)
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = tdq_eval.lenh_dung_nhanh(argparse.Namespace(dich=dich))
+            self.assertEqual(rc, 0)
             try:
                 doc = {}
                 for ten in ("viet", "lai"):
@@ -122,9 +150,11 @@ class DungNhanhTest(unittest.TestCase):
                 self.assertNotIn("Mỗi task: chạy/viết check trước", doc["lai"])
             finally:
                 for ten in ("viet", "lai"):
-                    subprocess.run(["git", "-C", ROOT, "worktree", "remove", "--force",
-                                    os.path.join(dich, ten)], capture_output=True)
-                subprocess.run(["git", "-C", ROOT, "worktree", "prune"], capture_output=True)
+                    subprocess.run(["git", "-C", self.repo, "worktree", "remove", "--force",
+                                    os.path.join(dich, ten)], capture_output=True,
+                                   check=True, timeout=30)
+                subprocess.run(["git", "-C", self.repo, "worktree", "prune"],
+                               capture_output=True, check=True, timeout=30)
 
 
 class BoCaTest(unittest.TestCase):
@@ -1080,6 +1110,160 @@ class TachMaThemSauTest(unittest.TestCase):
         van = tdq_eval.viet_audit(bc, "2026-08-20")
         self.assertIn(f"\np = {bc['p_dang_ky']:.4f} —", van)
         self.assertIn("**SỤT.**", van)
+
+
+class OfflineTraceScorerTest(unittest.TestCase):
+    """T3.2 / O11 — Kiểm tra trace parser, tool result presence/identity, aliases và offline scorer."""
+
+    def test_doc_transcript_doc_duoc_ca_json_array_va_jsonl(self):
+        """doc_transcript đọc được cả định dạng JSONL truyền thống và JSON array."""
+        with tempfile.TemporaryDirectory() as tmp:
+            # 1. JSON Array
+            p_arr = os.path.join(tmp, "array.json")
+            su_kien_arr = [
+                {"type": "user", "message": {"content": "chào"}},
+                {"type": "assistant", "message": {"content": "xin chào"}},
+            ]
+            with open(p_arr, "w", encoding="utf-8") as f:
+                json.dump(su_kien_arr, f, indent=2)
+            doc_arr = tdq_eval.doc_transcript(p_arr)
+            self.assertEqual(len(doc_arr), 2)
+            self.assertEqual(doc_arr[0]["type"], "user")
+
+            # 2. JSONL
+            p_jl = os.path.join(tmp, "stream.jsonl")
+            with open(p_jl, "w", encoding="utf-8") as f:
+                f.write('{"type": "user", "content": "1"}\n{"type": "assistant", "content": "2"}\n')
+            doc_jl = tdq_eval.doc_transcript(p_jl)
+            self.assertEqual(len(doc_jl), 2)
+
+    def test_phan_tich_nested_content_va_tool_calls(self):
+        """phan_tich mở khóa content lồng nhau và định dạng tool_calls của Codex/OpenAI."""
+        su_kien = [
+            {
+                "type": "assistant",
+                "message": {
+                    "content": [
+                        {
+                            "type": "content",
+                            "content": [
+                                {
+                                    "type": "tool_use",
+                                    "id": "call_1",
+                                    "name": "terminal",
+                                    "input": {"command": "pytest tests/test_a.py"},
+                                }
+                            ],
+                        }
+                    ],
+                    "tool_calls": [
+                        {
+                            "id": "call_2",
+                            "function": {
+                                "name": "safe_edit",
+                                "arguments": json.dumps({"file_path": "src/a.py", "new_text": "pass"}),
+                            },
+                        }
+                    ],
+                },
+            },
+            {
+                "type": "user",
+                "message": {
+                    "content": [
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": "call_1",
+                            "content": [{"type": "text", "text": "1 passed in 0.05s"}],
+                            "is_error": False,
+                        }
+                    ]
+                },
+            },
+        ]
+        ph = tdq_eval.phan_tich(su_kien)
+        self.assertEqual(len(ph["goi"]), 2)
+        # call_1 đã có kết quả
+        g1 = ph["goi"][0]
+        self.assertEqual(g1["id"], "call_1")
+        self.assertEqual(g1["ten"], "terminal")
+        self.assertEqual(g1["lenh"], "pytest tests/test_a.py")
+        self.assertTrue(g1["co_ket_qua"])
+        self.assertIn("1 passed", g1["ket_qua"])
+        # call_2 chưa có kết quả (invocation without result)
+        g2 = ph["goi"][1]
+        self.assertEqual(g2["id"], "call_2")
+        self.assertEqual(g2["ten"], "safe_edit")
+        self.assertEqual(g2["file"], "src/a.py")
+        self.assertFalse(g2["co_ket_qua"])
+        self.assertTrue(ph["thieu_ket_qua"])
+        self.assertEqual(ph["trang_thai_thuc_thi"], "missing")
+
+    def test_tool_aliases_shell_va_ghi_file(self):
+        """Các alias shell (PowerShell, terminal, exec) và file (write_file, apply_edit) được nhận diện."""
+        goi = [
+            {"ten": "PowerShell", "lenh": "pytest", "file": "", "co_ket_qua": True, "ket_qua": "ok", "loi": False, "input": {}},
+            {"ten": "write_file", "lenh": "", "file": "src/x.py", "co_ket_qua": True, "ket_qua": "ok", "loi": False, "input": {"path": "src/x.py", "content": "123"}},
+        ]
+        ph = {"goi": goi, "van_ban_cuoi": "", "chi_phi": 0.0, "so_luot": 1}
+        self.assertEqual(len(tdq_eval._bash(ph)), 1)
+        self.assertEqual(tdq_eval._bash(ph)[0]["ten"], "PowerShell")
+        self.assertEqual(len(tdq_eval._ghi_file(ph)), 1)
+        self.assertEqual(tdq_eval._ghi_file(ph)[0]["ten"], "write_file")
+        self.assertEqual(len(tdq_eval._viet(ph)), 1)
+        self.assertEqual(tdq_eval._viet(ph)[0][1], "src/x.py")
+
+    def test_missing_result_khong_tinh_la_test_xanh(self):
+        """Lệnh test thiếu tool_result (co_ket_qua=False) tuyệt đối không được tính là test thành công."""
+        # Lệnh test đầu fail (đỏ hợp lệ)
+        g1 = {"ten": "Bash", "lenh": "pytest test_x.py", "co_ket_qua": True, "ket_qua": "FAILED", "loi": True, "input": {}}
+        # Lệnh test sau không có tool_result (missing)
+        g2 = {"ten": "Bash", "lenh": "pytest test_x.py", "co_ket_qua": False, "ket_qua": "", "loi": False, "input": {}}
+        ph = {"goi": [g1, g2], "van_ban_cuoi": "", "chi_phi": 0.0, "so_luot": 1}
+        # kiem_L005 phải vi-pham vì không có test xanh có kết quả thực
+        self.assertEqual(tdq_eval.kiem_L005(ph), "vi-pham")
+
+        # Khi g2 có kết quả xanh thực:
+        g2["co_ket_qua"] = True
+        g2["ket_qua"] = "1 passed in 0.1s"
+        self.assertEqual(tdq_eval.kiem_L005(ph), "dat")
+
+    def test_danh_gia_ca_offline_chuan_xac_theo_upgrade_corpus(self):
+        """Hàm danh_gia_ca_offline đánh giá chính xác các ca E01, E02, E03 trong upgrade corpus."""
+        with open(os.path.join(ROOT, "evals", "tdq-upgrade-offline.json"), encoding="utf-8") as f:
+            corpus = json.load(f)
+        eval_cases = [c for c in corpus["cases"] if c["group"] == "eval"]
+        self.assertEqual(len(eval_cases), 3)
+
+        for case in eval_cases:
+            with self.subTest(case=case["id"]):
+                res = tdq_eval.danh_gia_ca_offline(case)
+                expected = case["expected"]
+                self.assertEqual(res["execution"], expected["execution"])
+                self.assertEqual(res["pass"], expected["pass"])
+
+    def test_phan_biet_trang_thai_missing_unsupported_voi_na_va_pass(self):
+        """Các trạng thái missing, unsupported, failed, invalid không bị đồng hóa thành N/A hoặc PASS."""
+        self.assertIn("missing", tdq_eval.TRANG_THAI_THUC_THI)
+        self.assertIn("unsupported", tdq_eval.TRANG_THAI_THUC_THI)
+        self.assertIn("failed", tdq_eval.TRANG_THAI_THUC_THI)
+        self.assertIn("invalid", tdq_eval.TRANG_THAI_THUC_THI)
+        self.assertIn("skip", tdq_eval.TRANG_THAI_THUC_THI)
+        self.assertIn("xong", tdq_eval.TRANG_THAI_THUC_THI)
+
+        # Missing input -> execution missing, pass is False, KHÔNG phải True (PASS)
+        res_missing = tdq_eval.danh_gia_ca_offline({
+            "input": {"trace": [{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "1", "name": "Bash", "input": {}}]}}]}
+        })
+        self.assertEqual(res_missing["execution"], "missing")
+        self.assertFalse(res_missing["pass"])
+
+        # Cross task -> execution unsupported, pass is False, KHÔNG phải True (PASS)
+        res_cross = tdq_eval.danh_gia_ca_offline({
+            "input": {"task": "T2.1", "result_task": "T1.1", "result": "PASS"}
+        })
+        self.assertEqual(res_cross["execution"], "unsupported")
+        self.assertFalse(res_cross["pass"])
 
 
 if __name__ == "__main__":

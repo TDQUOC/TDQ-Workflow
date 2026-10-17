@@ -2,6 +2,19 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.72.0 — 2026-10-17
+
+Nâng cấp toàn diện hệ thống TDQ Workflow từ nghiên cứu kiến trúc và giải thuật ECC v2.2.3.
+Kế hoạch: `docs/tdq/plan/2026-10-17-1741-nang-cap-tdq-toan-dien.md`.
+
+- **Windows Parity & UTF-8 Stdio.** Mở rộng matcher `Bash|PowerShell` trong `hooks/hooks.json` cho `PreToolUse` (bash_gate) và `PostToolUse` (search_observe). Nâng cấp `utf8_io.py` ép UTF-8 cho cả `sys.stdin` an toàn trên Windows locale cp1252. Bao bọc quote-path chống lỗi khoảng trắng thư mục trên launcher Antigravity. Tách lọc wrapper `<TDQ_WORKFLOW>` từ OpenCode ngăn kích hoạt nhầm duyệt.
+- **Protocol đo lường Dispatcher (O08) & Phán quyết NO-GO.** Thiết lập protocol đo lường paired runs baseline vs candidate trên Windows host. Thực nghiệm 10 runs đạt speedup 48.67% nhưng vi phạm tương đương ngữ nghĩa (equivalence FAIL); đưa ra phán quyết NO-GO chính xác, bảo toàn trọn vẹn kiến trúc hook riêng rẽ hiện hành (`bash_gate.py` và `search_gate.py`).
+- **Hợp đồng kiểm duyệt nghiêm ngặt (Strict Provenance).** Chuẩn hóa cơ chế phê duyệt: cấm suy luận approval từ text phi nhân tạo, notification hay trích dẫn; kích hoạt re-approval khi scope hoặc plan bị thay đổi ngữ nghĩa.
+- **Phân định kết quả QC (Anti-False Clean PASS).** Bổ sung `ANTI-6` trong `qc.md` và `test_plan_tick.py`, nghiêm cấm coi timeout, crash, missing hay unknown/unverified là clean PASS.
+- **Bộ phân tích ngân sách 4 chiều.** Nâng cấp `search_rules.py` với ngân sách 4 chiều (`input_chars`, `work_units`, `nesting`, `output_items`), chặn an toàn lệnh malformed/unknown không cấp credit khái niệm.
+- **Tối thiểu hóa dữ liệu & Logging ISO chuẩn hóa.** Chuẩn hóa ISO timestamp trên stderr, hỗ trợ tắt sạch qua `TDQ_LOG=0`. Giảm thiểu dữ liệu mang vác trong turn ledger và context hook.
+- **Khung đánh giá Offline & Knowledge Contract.** Xây dựng bộ công cụ eval hoàn toàn offline (`tdq_eval.py`, `evals/tdq-upgrade-offline.json`) và hợp đồng quản lý tri thức (`tdq_knowledge.py`).
+
 ## 0.71.0 — 2026-10-16
 
 Áp dụng nâng cấp triết lý và kiến trúc Andrej Karpathy vào TDQ Workflow.

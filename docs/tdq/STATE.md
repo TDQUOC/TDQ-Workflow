@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-17T15:49:58+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-17T22:15:07+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-17-1442-de-xuat-nang-cap-tu-ecc |
+| Request | 2026-10-17-1741-nang-cap-tdq-toan-dien |
 | Lane | full |
 | Phase | report |
-| Spec | docs/tdq/spec/2026-10-17-1442-de-xuat-nang-cap-tu-ecc.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-17-1442-de-xuat-nang-cap-tu-ecc.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-10-17-1741-nang-cap-tdq-toan-dien.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-10-17-1741-nang-cap-tdq-toan-dien.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | full |

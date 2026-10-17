@@ -64,20 +64,26 @@ def _needs_switch(stream):
     return (getattr(stream, "encoding", "") or "").lower() not in ("utf-8", "utf8")
 
 
-def force_utf8(out=None, err=None):
-    """Switch `out` and `err` to UTF-8. Returns how many streams actually changed.
+def force_utf8(out=None, err=None, inp=None):
+    """Switch `out`, `err`, and `inp` to UTF-8. Returns how many streams actually changed.
 
-    Defaults to the real `sys.stdout`/`sys.stderr`. A stream that is None, that carries no
+    Defaults to the real `sys.stdout`/`sys.stderr`/`sys.stdin`. A stream that is None, that carries no
     `reconfigure` (a test harness often swaps one in), or that already speaks UTF-8 is left
     alone rather than treated as an error.
     """
-    streams = ((sys.stdout if out is None else out), (sys.stderr if err is None else err))
+    streams = (
+        (sys.stdout if out is None else out),
+        (sys.stderr if err is None else err),
+        (sys.stdin if inp is None else inp),
+    )
     changed = 0
     for stream in streams:
         if not _needs_switch(stream):
             continue
-        stream.reconfigure(encoding=TARGET_ENCODING, errors=ERROR_POLICY)
-        changed += 1
+        reconf = getattr(stream, "reconfigure", None)
+        if callable(reconf):
+            reconf(encoding=TARGET_ENCODING, errors=ERROR_POLICY)
+            changed += 1
     force = os.environ.get("TDQ_UTF8_LOG_FORCE") == "1"
     if changed and (force or _is_console(sys.stderr)):
         _log(f"forced {changed} stream(s) to {TARGET_ENCODING}/{ERROR_POLICY}")
@@ -99,4 +105,5 @@ _force_once()
 
 if __name__ == "__main__":
     print(f"utf8_io: stdout={getattr(sys.stdout, 'encoding', None)} "
-          f"stderr={getattr(sys.stderr, 'encoding', None)}")
+          f"stderr={getattr(sys.stderr, 'encoding', None)} "
+          f"stdin={getattr(sys.stdin, 'encoding', None)}")

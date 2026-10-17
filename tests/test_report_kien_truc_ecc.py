@@ -4,11 +4,13 @@ Kiểm tra cả hai định dạng xuất bản:
 1. Báo cáo kỹ thuật Markdown 11 chương (`docs/tdq/reports/2026-10-17-1208-deep-research-kien-truc-ecc.md`).
 2. Standalone HTML Dashboard Report 100% offline (`docs/tdq/reports/2026-10-17-1208-deep-research-kien-truc-ecc.html`).
 
-Hỗ trợ chạy độc lập trong worktree cô lập (`t2.1`) lẫn sau khi hợp nhất nhánh tích hợp.
+Acceptance requires artifacts in this checkout; fixtures exercise validators only.
 """
 from html.parser import HTMLParser
 from pathlib import Path
+import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 REL_MD = "docs/tdq/reports/2026-10-17-1208-deep-research-kien-truc-ecc.md"
@@ -65,23 +67,10 @@ class _BoDemHTML(HTMLParser):
         )
 
 
-def _ung_vien_duong_dan(rel_path):
-    """Sinh danh sách đường dẫn ứng viên tại ROOT, các worktree anh em và repo gốc."""
-    ung_vien = [ROOT / rel_path]
-    cha_wt = ROOT.parent
-    for nhanh in ("t1.1", "t1.2"):
-        ung_vien.append(cha_wt / nhanh / rel_path)
-    for muc_cha in ROOT.parents:
-        ung_vien.append(muc_cha / rel_path)
-    return ung_vien
-
-
 def tim_file_bao_cao(rel_path):
-    """Tìm file báo cáo tại ROOT hoặc dò sang worktree anh em / repo chính."""
-    for duong_dan in _ung_vien_duong_dan(rel_path):
-        if duong_dan.is_file():
-            return duong_dan
-    return None
+    """Find a report only in the checkout under acceptance testing."""
+    duong_dan = ROOT / rel_path
+    return duong_dan if duong_dan.is_file() else None
 
 
 def _tim_muc_thieu(text, danh_sach):
@@ -205,22 +194,42 @@ class KiemThuValidatorBaoCaoTest(unittest.TestCase):
 class KiemThuFileBaoCaoThucTeTest(unittest.TestCase):
     """Kiểm thử hai file báo cáo thực tế (.md và .html) khi có mặt trên đĩa."""
 
+    def test_khong_muon_bao_cao_tu_sibling_hoac_ancestor(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cha = Path(tmp)
+            root = cha / "t1.0"
+            root.mkdir()
+            for base in (cha, cha / "t1.1", cha / "t1.2"):
+                file = base / REL_MD
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_text(_tao_mau_markdown_hop_le(), encoding="utf-8")
+            with mock.patch(f"{__name__}.ROOT", root):
+                self.assertIsNone(tim_file_bao_cao(REL_MD))
+
+    def test_thieu_artifact_khong_duoc_thay_bang_fixture(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch(f"{__name__}.ROOT", Path(tmp)):
+                for ten in ("test_bao_cao_markdown_thuc_te_dat_chuan",
+                            "test_bao_cao_html_thuc_te_dat_chuan"):
+                    ket = unittest.TestResult()
+                    type(self)(ten).run(ket)
+                    self.assertEqual(len(ket.failures), 1, ten)
+                    self.assertFalse(ket.errors, ket.errors)
+
     def test_tim_file_bao_cao_tra_ve_none_khi_khong_ton_tai(self):
         self.assertIsNone(tim_file_bao_cao("docs/tdq/reports/khong-ton-tai-xyz.md"))
 
     def test_bao_cao_markdown_thuc_te_dat_chuan(self):
         duong_dan = tim_file_bao_cao(REL_MD)
         if duong_dan is None:
-            self.assertEqual(kiem_tra_noi_dung_markdown(_tao_mau_markdown_hop_le()), [])
-            return
+            self.fail(f"Missing required artifact: {REL_MD}")
         noi_dung = duong_dan.read_text(encoding="utf-8")
         self.assertEqual(kiem_tra_noi_dung_markdown(noi_dung), [])
 
     def test_bao_cao_html_thuc_te_dat_chuan(self):
         duong_dan = tim_file_bao_cao(REL_HTML)
         if duong_dan is None:
-            self.assertEqual(kiem_tra_noi_dung_html(_tao_mau_html_hop_le()), [])
-            return
+            self.fail(f"Missing required artifact: {REL_HTML}")
         noi_dung = duong_dan.read_text(encoding="utf-8")
         self.assertEqual(kiem_tra_noi_dung_html(noi_dung), [])
 

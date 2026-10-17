@@ -51,8 +51,8 @@ def _log(msg):
 
 def bo_dau(chu):
     """Strip Vietnamese diacritics so an accented word and its bare form hit the same entry."""
-    tach = unicodedata.normalize("NFD", chu)
-    return "".join(c for c in tach if unicodedata.category(c) != "Mn").replace("đ", "d")  # i18n-allow
+    tach = unicodedata.normalize("NFD", unicodedata.normalize("NFC", chu))
+    return "".join(c for c in tach if unicodedata.category(c) != "Mn").replace("đ", "d").replace("Đ", "d")  # i18n-allow
 
 
 TU_RE = re.compile(r"[a-z0-9]+")
@@ -75,8 +75,13 @@ vua xong y toi ban minh chung ho no cai nhieu it hon nua lan cach kieu tren duoi
 
 
 def tach_tu(chu, bo_hu_tu=True):
-    """str → list of normalised words. The same function builds the store and queries it."""
-    tu = TU_RE.findall(bo_dau(chu.lower()))
+    """str → list of normalised words with camel/snake/acronym tokenization and NFC/casefold."""
+    chu_nfc = unicodedata.normalize("NFC", chu)
+    # Tách camelCase, PascalCase, acronyms:
+    s1 = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", chu_nfc)
+    s2 = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1 \2", s1)
+    s_khong_dau = bo_dau(s2.casefold())
+    tu = TU_RE.findall(s_khong_dau)
     return [t for t in tu if t not in DUNG_TU] if bo_hu_tu else tu
 
 

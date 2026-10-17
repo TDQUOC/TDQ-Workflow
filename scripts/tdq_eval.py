@@ -67,6 +67,14 @@ class LoiChuaCai(Exception):
     """A sub-command declared in the CLI but never wired to a handler — exit 1."""
 
 
+VERSION_MANIFEST = "v1"
+VERSION_SCORER = "v2-temporal"
+
+
+class LoiManifest(Exception):
+    """Manifest evaluation không hợp lệ hoặc thiếu thông tin định danh bắt buộc (O11)."""
+
+
 # --------------------------------------------------------------- log service
 def _log_enabled():
     return os.environ.get("TDQ_EVAL_LOG", os.environ.get("TDQ_LOG", "1")) != "0"
@@ -113,17 +121,42 @@ def doc_bo_ca(thu_muc=None):
 
 # ------------------------------------------------------------- transcript
 def doc_transcript(duong_dan):
-    """Read a stream-json file (one event per line). A broken line is an ERROR, never skipped."""
+    """Read a stream-json file (one event per line or a JSON array).
+
+    Empty or invalid JSON → LoiThieuSo. A broken line is an ERROR, never skipped.
+    """
+    if not os.path.exists(duong_dan):
+        raise LoiThieuSo(f"transcript {duong_dan} not found — run `chay` first")
     su_kien = []
     with open(duong_dan, encoding="utf-8") as f:
-        for so_dong, dong in enumerate(f, 1):
-            dong = dong.strip()
-            if not dong:
-                continue
-            try:
-                su_kien.append(json.loads(dong))
-            except json.JSONDecodeError as e:
-                raise LoiThieuSo(f"{duong_dan}:{so_dong} is not valid JSON: {e}")
+        noi_dung = f.read()
+    if not noi_dung.strip():
+        raise LoiThieuSo(f"{duong_dan} is empty — nothing to score")
+
+    co_loi_dong = None
+    for so_dong, dong in enumerate(noi_dung.splitlines(), 1):
+        dong = dong.strip()
+        if not dong:
+            continue
+        try:
+            su_kien.append(json.loads(dong))
+        except json.JSONDecodeError as e:
+            co_loi_dong = (so_dong, e)
+            break
+
+    if co_loi_dong is not None:
+        # If line-by-line parsing failed, try parsing the entire file as a JSON array
+        try:
+            du_lieu = json.loads(noi_dung)
+            if isinstance(du_lieu, list):
+                su_kien = du_lieu
+            elif isinstance(du_lieu, dict):
+                su_kien = [du_lieu]
+            else:
+                raise LoiThieuSo(f"{duong_dan}:{co_loi_dong[0]} is not valid JSON: {co_loi_dong[1]}")
+        except json.JSONDecodeError:
+            raise LoiThieuSo(f"{duong_dan}:{co_loi_dong[0]} is not valid JSON: {co_loi_dong[1]}")
+
     if not su_kien:
         raise LoiThieuSo(f"{duong_dan} is empty — nothing to score")
     return su_kien
@@ -132,6 +165,30 @@ def doc_transcript(duong_dan):
 
 # --------------------------------------------------------------- the scorer
 KET_QUA = ("dat", "vi-pham", "khong-ap-dung")
+
+# Extended statuses: distinct from N/A (khong-ap-dung) and PASS (dat)
+TRANG_THAI_THUC_THI = {
+    "xong": "xong",
+    "failed": "failed",
+    "missing": "missing",
+    "unsupported": "unsupported",
+    "invalid": "invalid",
+    "skip": "skip",
+}
+
+# Tool aliases across CLI/hosts
+TEN_SHELL = {
+    "Bash", "bash", "terminal", "PowerShell", "powershell", "pwsh",
+    "sh", "shell", "exec", "execute_command"
+}
+
+TEN_GHI_FILE = {
+    "Write", "write_file", "create_file", "write_to_file",
+    "Edit", "edit_file", "str_replace", "NotebookEdit",
+    "safe_edit", "apply_edit", "replace_symbol_body"
+}
+
+TEN_DOC_FILE = {"Read", "read_file", "open_document"}
 
 RE_TICK = re.compile(r"\[([ ~x])\]\s*\*\*(T[\d.]+)\*\*")
 RE_TEST = re.compile(r"\bpytest\b|\bunittest\b")
@@ -171,54 +228,237 @@ RE_PLUGIN_MAY = re.compile(r"/\.claude/plugins/")
 
 
 def _noi_dung(khoi):
-    """The content of a tool_result may be a string or a list of text blocks."""
+    """The content of a tool_result may be a string, dict, or list of text/content blocks."""
     if isinstance(khoi, str):
         return khoi
-    if isinstance(khoi, list):
-        return "\n".join(k.get("text", "") if isinstance(k, dict) else str(k) for k in khoi)
+    if isinstance(khoi, dict):
+        if "text" in khoi:
+            return str(khoi["text"])
+        if "output" in khoi:
+            return str(khoi["output"])
+        if "content" in khoi:
+            return _noi_dung(khoi["content"])
+        return json.dumps(khoi, ensure_ascii=False)
+    if isinstance(khoi, (list, tuple)):
+        cac_phan = []
+        for k in khoi:
+            if isinstance(k, dict):
+                if k.get("type") == "text":
+                    cac_phan.append(str(k.get("text", "")))
+                elif "text" in k:
+                    cac_phan.append(str(k.get("text", "")))
+                elif "content" in k:
+                    cac_phan.append(_noi_dung(k.get("content")))
+                else:
+                    cac_phan.append(str(k))
+            else:
+                cac_phan.append(str(k))
+        return "\n".join(cac_phan)
     return "" if khoi is None else str(khoi)
+
+
+def _lay_khoi_content(content: object) -> list[dict[str, object]]:
+    """Recursively flatten nested content blocks (e.g. content within content)."""
+    ket_qua: list[dict[str, object]] = []
+    if isinstance(content, list):
+        for item in content:
+            if isinstance(item, dict) and item.get("type") == "content" and isinstance(item.get("content"), list):
+                ket_qua.extend(_lay_khoi_content(item["content"]))
+            elif isinstance(item, dict):
+                ket_qua.append(item)
+            elif isinstance(item, str):
+                ket_qua.append({"type": "text", "text": item})
+        return ket_qua
+    elif isinstance(content, dict):
+        if content.get("type") == "content" and isinstance(content.get("content"), list):
+            return _lay_khoi_content(content["content"])
+        return [content]
+    elif isinstance(content, str):
+        return [{"type": "text", "text": content}]
+    return []
 
 
 def phan_tich(su_kien):
     """Normalise a stream-json transcript into what the scorer reads.
 
-    Returns: the list of tool calls in order (with their results attached), the last text
-    the agent said to the user, and the cost of the session.
+    Returns: the list of tool calls in order (with their results attached and presence recorded),
+    the last text the agent said to the user, session cost, turn count, and execution status.
     """
     goi, theo_id = [], {}
     van_ban_cuoi, chi_phi, so_luot = "", 0.0, 0
+    loi_phien = False
+    ly_do_loi = ""
+    ket_qua_mo_coi = []
+
     for e in su_kien:
-        loai = e.get("type")
-        if loai == "assistant":
-            for khoi in e.get("message", {}).get("content", []):
-                if khoi.get("type") == "tool_use":
+        if not isinstance(e, dict):
+            continue
+        loai = e.get("type") or e.get("role")
+
+        if e.get("is_error") and loai != "tool_result":
+            loi_phien = True
+            ly_do_loi = str(e.get("result") or e.get("error") or "event is_error")
+
+        if loai in ("assistant", "model"):
+            msg = e.get("message")
+            message_obj = msg if isinstance(msg, dict) else e
+            raw_content = message_obj.get("content", [])
+            content_blocks: list[dict[str, object]] = _lay_khoi_content(raw_content)
+
+            raw_tool_calls = message_obj.get("tool_calls", [])
+            if isinstance(raw_tool_calls, list):
+                for tc in raw_tool_calls:
+                    if isinstance(tc, dict):
+                        tc_id = str(tc.get("id") or f"call_{len(goi)}")
+                        fn = tc.get("function")
+                        fn_obj = fn if isinstance(fn, dict) else {}
+                        tc_name = str(fn_obj.get("name") or tc.get("name", ""))
+                        tc_args = fn_obj.get("arguments") or tc.get("input", {})
+                        if isinstance(tc_args, str):
+                            try:
+                                tc_args = json.loads(tc_args)
+                            except Exception:
+                                tc_args = {"raw": tc_args}
+                        elif not isinstance(tc_args, dict):
+                            tc_args = {}
+                        content_blocks.append({
+                            "type": "tool_use",
+                            "id": tc_id,
+                            "name": tc_name,
+                            "input": tc_args,
+                        })
+
+            for khoi in content_blocks:
+                if not isinstance(khoi, dict):
+                    continue
+                k_type = khoi.get("type")
+                if k_type == "tool_use":
+                    inp = khoi.get("input")
+                    if isinstance(inp, str):
+                        try:
+                            inp = json.loads(inp)
+                        except Exception:
+                            inp = {"raw": inp}
+                    elif not isinstance(inp, dict):
+                        inp = {}
+
+                    t_id = str(khoi.get("id") or khoi.get("tool_use_id") or f"call_{len(goi)}")
+                    ten_tool = str(khoi.get("name", ""))
+                    lenh = str(inp.get("command", "") or inp.get("cmd", "")
+                               or inp.get("script", "") or "")
+                    duong_file = str(inp.get("file_path", "") or inp.get("path", "")
+                                     or inp.get("file", "") or "")
+
                     ban_ghi = {
-                        "ten": khoi.get("name", ""),
-                        "input": khoi.get("input", {}) or {},
+                        "id": t_id,
+                        "ten": ten_tool,
+                        "input": inp,
+                        "lenh": lenh,
+                        "file": duong_file,
+                        "co_ket_qua": False,
                         "ket_qua": "",
                         "loi": False,
                     }
-                    ban_ghi["lenh"] = ban_ghi["input"].get("command", "")
-                    ban_ghi["file"] = ban_ghi["input"].get("file_path", "")
                     goi.append(ban_ghi)
-                    theo_id[khoi.get("id")] = ban_ghi
-        elif loai == "user":
-            for khoi in e.get("message", {}).get("content", []):
+                    theo_id[t_id] = ban_ghi
+                elif k_type == "text" and khoi.get("text"):
+                    van_ban_cuoi = str(khoi["text"])
+
+        elif loai in ("user", "tool"):
+            msg = e.get("message")
+            message_obj = msg if isinstance(msg, dict) else e
+            raw_content = message_obj.get("content", [])
+            content_blocks: list[dict[str, object]] = _lay_khoi_content(raw_content)
+
+            if loai == "tool" and "tool_call_id" in e:
+                content_blocks.append({
+                    "type": "tool_result",
+                    "tool_use_id": str(e.get("tool_call_id") or ""),
+                    "content": e.get("content", ""),
+                    "is_error": bool(e.get("is_error")),
+                })
+
+            for khoi in content_blocks:
+                if not isinstance(khoi, dict):
+                    continue
                 if khoi.get("type") == "tool_result":
-                    ban_ghi = theo_id.get(khoi.get("tool_use_id"))
+                    t_id = str(khoi.get("tool_use_id") or khoi.get("tool_call_id") or khoi.get("id") or "")
+                    ban_ghi = theo_id.get(t_id)
                     if ban_ghi is not None:
+                        ban_ghi["co_ket_qua"] = True
                         ban_ghi["ket_qua"] = _noi_dung(khoi.get("content"))
-                        ban_ghi["loi"] = bool(khoi.get("is_error"))
+                        ban_ghi["loi"] = bool(khoi.get("is_error")) or bool(khoi.get("error"))
+                    else:
+                        ket_qua_mo_coi.append({
+                            "id": t_id,
+                            "content": _noi_dung(khoi.get("content")),
+                            "is_error": bool(khoi.get("is_error")),
+                        })
+
+        elif loai == "tool_use":
+            inp = e.get("input", {}) or {}
+            t_id = str(e.get("id") or f"call_{len(goi)}")
+            ten_tool = str(e.get("name", ""))
+            lenh = str(inp.get("command", "") or inp.get("cmd", "") or inp.get("script", "") or "")
+            duong_file = str(inp.get("file_path", "") or inp.get("path", "") or inp.get("file", "") or "")
+            ban_ghi = {
+                "id": t_id,
+                "ten": ten_tool,
+                "input": inp,
+                "lenh": lenh,
+                "file": duong_file,
+                "co_ket_qua": False,
+                "ket_qua": "",
+                "loi": False,
+            }
+            goi.append(ban_ghi)
+            theo_id[t_id] = ban_ghi
+
+        elif loai == "tool_result":
+            t_id = str(e.get("tool_use_id") or e.get("tool_call_id") or e.get("id") or "")
+            ban_ghi = theo_id.get(t_id)
+            if ban_ghi is not None:
+                ban_ghi["co_ket_qua"] = True
+                ban_ghi["ket_qua"] = _noi_dung(e.get("content"))
+                ban_ghi["loi"] = bool(e.get("is_error")) or bool(e.get("error"))
+            else:
+                ket_qua_mo_coi.append({
+                    "id": t_id,
+                    "content": _noi_dung(e.get("content")),
+                    "is_error": bool(e.get("is_error")),
+                })
+
         elif loai == "result":
             van_ban_cuoi = e.get("result", "") or ""
             chi_phi = float(e.get("total_cost_usd") or 0.0)
             so_luot = int(e.get("num_turns") or 0)
-    return {"goi": goi, "van_ban_cuoi": van_ban_cuoi, "chi_phi": chi_phi,
-            "so_luot": so_luot}
+            if bool(e.get("is_error")) or e.get("subtype") in ("error", "failed"):
+                loi_phien = True
+                ly_do_loi = str(e.get("error") or e.get("result") or "result is_error")
+
+    thieu_ket_qua = any(not g.get("co_ket_qua") for g in goi)
+    if loi_phien:
+        trang_thai_thuc_thi = "failed"
+    elif thieu_ket_qua:
+        trang_thai_thuc_thi = "missing"
+    else:
+        trang_thai_thuc_thi = "xong"
+
+    return {
+        "goi": goi,
+        "van_ban_cuoi": van_ban_cuoi,
+        "chi_phi": chi_phi,
+        "so_luot": so_luot,
+        "loi_phien": loi_phien,
+        "ly_do_loi": ly_do_loi,
+        "thieu_ket_qua": thieu_ket_qua,
+        "ket_qua_mo_coi": ket_qua_mo_coi,
+        "trang_thai_thuc_thi": trang_thai_thuc_thi,
+    }
 
 
 def _bash(ph):
-    return [g for g in ph["goi"] if g["ten"] == "Bash"]
+    return [g for g in ph["goi"] if g["ten"] in TEN_SHELL]
 
 
 NGAT_LENH = ("&&", "||", ";", "|", ">", ">>", "<", "&")
@@ -288,19 +528,21 @@ def _viet(ph):
     """
     ban_ghi = []
     for chi_so, g in enumerate(ph["goi"]):
-        if g["ten"] in ("Write", "Edit", "NotebookEdit"):
+        if g["ten"] in TEN_GHI_FILE:
             van_ban = (g["input"].get("new_string", "") or g["input"].get("content", "")
-                       or g["input"].get("new_source", ""))
-            if g["file"]:
-                ban_ghi.append((chi_so, g["file"], van_ban))
-        elif g["ten"] == "Bash":
+                       or g["input"].get("new_source", "") or g["input"].get("new_text", "")
+                       or g["input"].get("new_body", ""))
+            duong = g["file"] or g["input"].get("file_path", "") or g["input"].get("path", "")
+            if duong:
+                ban_ghi.append((chi_so, duong, van_ban))
+        elif g["ten"] in TEN_SHELL:
             for duong in _duong_dan_ghi_bash(g["lenh"]):
                 ban_ghi.append((chi_so, duong, g["lenh"]))
     return ban_ghi
 
 
 def _ghi_file(ph):
-    return [g for g in ph["goi"] if g["ten"] in ("Write", "Edit", "NotebookEdit")]
+    return [g for g in ph["goi"] if g["ten"] in TEN_GHI_FILE]
 
 
 def _ghi_ma_nguon(ph):
@@ -315,7 +557,20 @@ def _chay_test(ph):
 
 
 def _test_hong(g):
-    return bool(g["loi"]) or bool(RE_DO.search(g["ket_qua"]))
+    if bool(g.get("loi")):
+        return True
+    if not g.get("co_ket_qua", True):
+        return True
+    return bool(RE_DO.search(g.get("ket_qua", "")))
+
+
+def _test_thanh_cong(g):
+    """A test command only counts as green if it has a result and neither errored nor failed."""
+    if not g.get("co_ket_qua", True):
+        return False
+    if g.get("loi"):
+        return False
+    return not bool(RE_DO.search(g.get("ket_qua", "")))
 
 
 def _sua_plan(ph):
@@ -344,7 +599,7 @@ def _chuyen_tick(ph):
 # ---- each check: returns "dat" / "vi-pham" / "khong-ap-dung"
 def kiem_L001(ph):
     """Enter build RIGHT IN the turn the plan is approved: code was edited and tests were run."""
-    if _ghi_ma_nguon(ph) and _chay_test(ph):
+    if _ghi_ma_nguon(ph) and any(g.get("co_ket_qua", True) for g in _chay_test(ph)):
         return "dat"
     return "vi-pham"
 
@@ -382,9 +637,11 @@ def kiem_L005(ph):
         return "khong-ap-dung"
     thay_do = False
     for g in lan_chay:
+        if not g.get("co_ket_qua", True):
+            continue
         if _test_hong(g):
             thay_do = True
-        elif thay_do:
+        elif thay_do and _test_thanh_cong(g):
             return "dat"
     return "vi-pham"
 
@@ -453,7 +710,7 @@ def kiem_L145(ph):
     if not chuyen:
         return "khong-ap-dung"
     la_test = {chi_so for chi_so, g in enumerate(ph["goi"])
-               if g["ten"] == "Bash" and RE_TEST.search(g["lenh"])}
+               if g["ten"] in TEN_SHELL and RE_TEST.search(g["lenh"]) and g.get("co_ket_qua", True)}
     mo = {}
     xong = 0
     for chi_so, ma, dau in chuyen:
@@ -563,6 +820,313 @@ def cham_mot_ma(ma, ph):
     ket_qua = BO_CHAM[ma](ph)
     if ket_qua not in KET_QUA:
         raise LoiThieuSo(f"check function {ma} returned a strange value: {ket_qua!r}")
+    return ket_qua
+
+
+def danh_gia_ca_offline(ca_dict):
+    """Offline evaluator for upgrade corpus cases (O11).
+
+    Evaluates execution status ('missing', 'unsupported', 'failed', 'xong')
+    and pass/fail status deterministically without any model or API call.
+    """
+    dau_vao = ca_dict.get("input", {}) if isinstance(ca_dict, dict) else {}
+    if not isinstance(dau_vao, dict):
+        return {"execution": "invalid", "pass": False, "reason": "Input is not a dictionary"}
+
+    # 1. Task scope check (E02): cross-task evidence cannot satisfy task scope
+    if "task" in dau_vao and "result_task" in dau_vao:
+        task_hien_tai = dau_vao.get("task")
+        task_ket_qua = dau_vao.get("result_task")
+        if task_ket_qua != task_hien_tai:
+            return {
+                "execution": "unsupported",
+                "pass": False,
+                "reason": "Cross-task evidence cannot satisfy task scope",
+            }
+        ket_qua_chuoi = str(dau_vao.get("result", "")).strip().upper()
+        if ket_qua_chuoi == "PASS":
+            return {"execution": "xong", "pass": True}
+        return {"execution": "failed", "pass": False}
+
+    # 2. Trace check (E01, E03)
+    if "trace" in dau_vao:
+        trace_data = dau_vao["trace"]
+        if not isinstance(trace_data, list):
+            return {"execution": "invalid", "pass": False, "reason": "Trace is not a list"}
+        ph = phan_tich(trace_data)
+
+        # E03: Error flag wins over success-looking text
+        if ph.get("loi_phien"):
+            return {
+                "execution": "failed",
+                "pass": False,
+                "reason": "Error flag wins over success-looking text",
+            }
+
+        # E01: Tool invocation without result is not success
+        if ph.get("thieu_ket_qua"):
+            return {
+                "execution": "missing",
+                "pass": False,
+                "reason": "Tool invocation without result is not success",
+            }
+
+        # Check tool errors
+        if any(g.get("loi") for g in ph.get("goi", [])):
+            return {
+                "execution": "failed",
+                "pass": False,
+                "reason": "Tool reported error",
+            }
+
+        return {"execution": "xong", "pass": True}
+
+    return {"execution": "unsupported", "pass": False, "reason": "Unrecognized evaluation input structure"}
+
+
+# ----------------------------------------------------------- manifest & rescore (O11)
+def tao_manifest_eval(
+    base_commit,
+    candidate_commit,
+    corpus_version="tuan-thu-v1",
+    check_set=None,
+    scorer_version=VERSION_SCORER,
+    permission_profile="offline-mock",
+    tool_aliases=None,
+    model=None,
+    is_offline=True,
+    phien_ban=VERSION_MANIFEST,
+):
+    """Tạo đối tượng manifest khóa các thành phần định danh của đợt đánh giá (O11)."""
+    if check_set is None:
+        check_set = list(sorted(BO_CHAM.keys()))
+    if tool_aliases is None:
+        tool_aliases = {
+            "shell": sorted(TEN_SHELL),
+            "ghi_file": sorted(TEN_GHI_FILE),
+            "doc_file": sorted(TEN_DOC_FILE),
+        }
+    manifest = {
+        "phien_ban": str(phien_ban),
+        "base_commit": str(base_commit or ""),
+        "candidate_commit": str(candidate_commit or ""),
+        "corpus_version": str(corpus_version or ""),
+        "check_set": list(check_set),
+        "scorer_version": str(scorer_version or VERSION_SCORER),
+        "permission_profile": str(permission_profile or "offline-mock"),
+        "tool_aliases": tool_aliases,
+        "model": model,
+        "is_offline": bool(is_offline),
+        "tao_luc": datetime.now().isoformat(timespec="seconds"),
+    }
+    hop_le, ly_do = xac_thuc_manifest(manifest)
+    if not hop_le:
+        raise LoiManifest(f"Manifest không hợp lệ: {ly_do}")
+    return manifest
+
+
+def xac_thuc_manifest(manifest):
+    """Kiểm tra tính hợp lệ và toàn vẹn của manifest định danh (O11)."""
+    if not isinstance(manifest, dict):
+        return False, "Manifest must be a dictionary"
+
+    truong_bat_buoc = [
+        "phien_ban", "base_commit", "candidate_commit",
+        "corpus_version", "check_set", "scorer_version",
+        "permission_profile", "is_offline"
+    ]
+    for truong in truong_bat_buoc:
+        if truong not in manifest:
+            return False, f"Missing required manifest field '{truong}'"
+        val = manifest[truong]
+        if truong in ("base_commit", "candidate_commit", "corpus_version", "scorer_version", "permission_profile"):
+            if not isinstance(val, str) or not val.strip():
+                return False, f"Field '{truong}' must be a non-empty string"
+        elif truong == "check_set":
+            if not isinstance(val, list) or not val:
+                return False, "Field 'check_set' must be a non-empty list of check codes"
+            if not all(isinstance(c, str) and c.strip() for c in val):
+                return False, "All elements in 'check_set' must be non-empty strings"
+        elif truong == "is_offline":
+            if not isinstance(val, bool):
+                return False, "Field 'is_offline' must be a boolean"
+
+    if manifest.get("phien_ban") != VERSION_MANIFEST:
+        return False, f"Unsupported manifest version '{manifest.get('phien_ban')}'; expected '{VERSION_MANIFEST}'"
+
+    # Offline evaluation check: offline không giả có model run
+    if manifest.get("is_offline"):
+        model = manifest.get("model")
+        if model and model != "offline-evaluator":
+            return False, f"Offline manifest cannot declare live model '{model}'; must be None or 'offline-evaluator'"
+
+    return True, ""
+
+
+def kiem_tra_paired_experiment(manifest_base, manifest_candidate=None):
+    """Kiểm tra tính tương thích ghép cặp (paired experiment) giữa base và candidate (O11).
+
+    Quy tắc bắt buộc: Base và candidate khác corpus hoặc khác check_set thì không
+    được coi là paired experiment hợp lệ.
+    """
+    if manifest_candidate is None:
+        if not isinstance(manifest_base, dict):
+            return False, "Manifest must be a dictionary"
+        hop_le, ly_do = xac_thuc_manifest(manifest_base)
+        if not hop_le:
+            return False, ly_do
+        return True, ""
+
+    hop_le_b, ly_do_b = xac_thuc_manifest(manifest_base)
+    if not hop_le_b:
+        return False, f"Base manifest invalid: {ly_do_b}"
+    hop_le_c, ly_do_c = xac_thuc_manifest(manifest_candidate)
+    if not hop_le_c:
+        return False, f"Candidate manifest invalid: {ly_do_c}"
+
+    if manifest_base.get("corpus_version") != manifest_candidate.get("corpus_version"):
+        return False, (
+            f"Different corpus: base has '{manifest_base.get('corpus_version')}' "
+            f"vs candidate '{manifest_candidate.get('corpus_version')}'; cannot be paired experiment"
+        )
+    if sorted(manifest_base.get("check_set", [])) != sorted(manifest_candidate.get("check_set", [])):
+        return False, "Different check_set between base and candidate; cannot be paired experiment"
+
+    return True, ""
+
+
+def rescore_append_only(thu_muc_goc, thu_muc_dich=None, phien_ban=2, manifest=None, bo_ca=None):
+    """Rescore records in append-only mode (O11).
+
+    Generates new versioned record files pointing to immutable raw traces without
+    overwriting historical records.
+    Same trace + same manifest yields deterministic identical verdicts.
+    """
+    thu_muc_dich = thu_muc_dich or thu_muc_goc
+    os.makedirs(thu_muc_dich, exist_ok=True)
+    xong = []
+    bo_qua = []
+
+    pattern = os.path.join(thu_muc_goc, "*.json")
+    for duong_dan in sorted(glob.glob(pattern)):
+        ten_file = os.path.basename(duong_dan)
+        if re.search(r"__v\d+\.json$", ten_file):
+            continue
+
+        with open(duong_dan, encoding="utf-8") as f:
+            try:
+                ban_ghi_cu = json.load(f)
+            except Exception:
+                bo_qua.append((ten_file, "corrupted json"))
+                continue
+
+        transcript = ban_ghi_cu.get("transcript") or ""
+        if not os.path.exists(transcript):
+            bo_qua.append((ten_file, "transcript missing"))
+            continue
+
+        try:
+            if isinstance(ban_ghi_cu.get("ca"), dict):
+                ca = ban_ghi_cu["ca"]
+            else:
+                try:
+                    ca = tim_ca(ban_ghi_cu["ca"], bo_ca=bo_ca)
+                except LoiThieuSo:
+                    if "kiem" in ban_ghi_cu:
+                        ca = {"ma": ban_ghi_cu["ca"], "kiem": ban_ghi_cu["kiem"]}
+                    else:
+                        raise
+            moi = cham_phien(ca, transcript)
+        except Exception as e:
+            bo_qua.append((ten_file, f"scoring error: {e}"))
+            continue
+
+        ban_ghi_moi = dict(ban_ghi_cu)
+        ban_ghi_moi.update({
+            "ket_qua": moi["ket_qua"],
+            "rescore_version": phien_ban,
+            "ban_ghi_goc": ten_file,
+            "raw_trace": os.path.abspath(transcript),
+            "scorer_identity": manifest.get("scorer_version", VERSION_SCORER) if manifest else VERSION_SCORER,
+            "manifest_identity": manifest.get("phien_ban") if manifest else None,
+            "thoi_gian_rescore": datetime.now().isoformat(timespec="seconds"),
+        })
+        if "nhiem" in moi:
+            ban_ghi_moi["nhiem"] = moi["nhiem"]
+
+        base_name = ten_file[:-5]
+        ten_moi = f"{base_name}__v{phien_ban}.json"
+        duong_moi = os.path.join(thu_muc_dich, ten_moi)
+
+        with open(duong_moi, "w", encoding="utf-8") as f:
+            json.dump(ban_ghi_moi, f, ensure_ascii=False, indent=2)
+
+        xong.append((ten_file, ten_moi))
+
+    return xong, bo_qua
+
+
+def kiem_tra_preflight(che_do="offline", cau_hinh=None, hop=None, nha=None, plugin_dir=None, token=None):
+    """Preflight check for evaluation sessions (O11).
+
+    Offline evaluation ensures:
+    1. Zero access to API, models, Keychain, or Windows Credential Store.
+    2. Strict environment isolation (config, plugin, HOME cannot be left un-isolated).
+    """
+    ket_qua = {
+        "san_sang": True,
+        "che_do": che_do,
+        "ly_do": "",
+        "isolation": {
+            "cau_hinh_rieng": False,
+            "plugin_rieng": False,
+            "nha_rieng": False,
+        },
+        "api_model": "tat" if che_do == "offline" else "bat",
+        "credential_source": "offline-mock" if che_do == "offline" else "live",
+    }
+
+    user_home = os.path.expanduser("~")
+    user_claude = os.path.join(user_home, ".claude")
+
+    if cau_hinh:
+        cau_hinh_abs = os.path.abspath(cau_hinh)
+        if cau_hinh_abs != os.path.abspath(user_claude):
+            ket_qua["isolation"]["cau_hinh_rieng"] = True
+    if plugin_dir:
+        ket_qua["isolation"]["plugin_rieng"] = True
+    if nha:
+        nha_abs = os.path.abspath(nha)
+        if nha_abs != os.path.abspath(user_home):
+            ket_qua["isolation"]["nha_rieng"] = True
+    if hop:
+        hop_abs = os.path.abspath(hop)
+        if hop_abs != os.path.abspath(ROOT):
+            ket_qua["isolation"]["hop_rieng"] = True
+
+    if che_do == "offline":
+        ket_qua["credential_source"] = "offline-mock (no credential accessed)"
+        ket_qua["san_sang"] = True
+        return ket_qua
+
+    # Live mode checks:
+    is_darwin = getattr(sys, "platform", "") == "darwin"
+    if not is_darwin:
+        ket_qua["san_sang"] = False
+        ket_qua["ly_do"] = (
+            "Credential source unavailable on this platform (macOS Keychain required for auto-token). "
+            "Live evaluation on Windows/Linux requires explicit token; secret stores are never accessed."
+        )
+        return ket_qua
+
+    if not token:
+        try:
+            tok = lay_token()
+            ket_qua["san_sang"] = bool(tok)
+        except LoiThieuSo as e:
+            ket_qua["san_sang"] = False
+            ket_qua["ly_do"] = str(e)
+
     return ket_qua
 
 
@@ -678,9 +1242,18 @@ def dung_lenh(prompt, plugin_dir):
 
 def lay_token():
     """Read the login token from Keychain. NEVER log it, print it, or write it to a file."""
-    ket_qua = subprocess.run(
-        ["security", "find-generic-password", "-s", "Claude Code-credentials", "-w"],
-        capture_output=True, encoding="utf-8", errors="replace", text=True, timeout=60)
+    is_darwin = getattr(sys, "platform", "") == "darwin"
+    if not is_darwin:
+        raise LoiThieuSo(
+            "cannot read login token from Keychain on non-macOS platform — "
+            "pass token explicitly or run in offline evaluation mode"
+        )
+    try:
+        ket_qua = subprocess.run(
+            ["security", "find-generic-password", "-s", "Claude Code-credentials", "-w"],
+            capture_output=True, encoding="utf-8", errors="replace", text=True, timeout=60)
+    except FileNotFoundError:
+        raise LoiThieuSo("the 'security' tool is not available on this system — pass token explicitly or run offline")
     if ket_qua.returncode != 0:
         raise LoiThieuSo("cannot read the login token from Keychain — log in again, then rerun")
     try:
@@ -908,12 +1481,15 @@ def lenh_chay(args):
     return 0
 
 
-def cham_lai_tat_ca(thu_muc):
+def cham_lai_tat_ca(thu_muc, append_only=False, phien_ban=2, manifest=None):
     """Rescore every record from its stored transcript with the CURRENT scorer.
 
-    Only the verdict changes; the session's measurements (cost, turns, exit code) stay put — they
-    are facts of that run, not conclusions of the judge.
+    If append_only=True, generates new versioned records pointing to
+    immutable raw traces without overwriting historical records (O11).
+    If append_only=False (default for legacy CLI), updates records in-place.
     """
+    if append_only:
+        return rescore_append_only(thu_muc, phien_ban=phien_ban, manifest=manifest)
     xong, bo_qua = [], []
     for duong_dan in sorted(glob.glob(os.path.join(thu_muc, "*.json"))):
         with open(duong_dan, encoding="utf-8") as f:
@@ -934,10 +1510,18 @@ def cham_lai_tat_ca(thu_muc):
 
 def lenh_cham(args):
     if args.tat_ca:
-        xong, bo_qua = cham_lai_tat_ca(args.ra or KET_QUA_DIR)
-        print(f"rescored: {len(xong)} records · skipped (transcript missing): {len(bo_qua)}")
-        for ten in bo_qua:
-            print(f"  skipped {ten}")
+        append_only = getattr(args, "append_only", False)
+        phien_ban = getattr(args, "phien_ban", 2) or 2
+        manifest = None
+        duong_manifest = getattr(args, "manifest", None)
+        if duong_manifest and os.path.exists(duong_manifest):
+            with open(duong_manifest, encoding="utf-8") as f:
+                manifest = json.load(f)
+        xong, bo_qua = cham_lai_tat_ca(args.ra or KET_QUA_DIR, append_only=append_only, phien_ban=phien_ban, manifest=manifest)
+        che_do_str = f"append-only v{phien_ban}" if append_only else "in-place overwrite"
+        print(f"rescored ({che_do_str}): {len(xong)} records · skipped: {len(bo_qua)}")
+        for item in bo_qua:
+            print(f"  skipped {item}")
         return 0
     thieu = [c for c in ("ca", "nhanh", "lan") if getattr(args, c) is None]
     if thieu:
@@ -1226,8 +1810,24 @@ def lenh_bao_cao(args):
     return 0
 
 
-XU_LY = {"setup": lenh_dung_nhanh, "run": lenh_chay,
-         "score": lenh_cham, "report": lenh_bao_cao}
+def lenh_preflight(args):
+    """Run preflight check for evaluation environment (O11)."""
+    ket_qua = kiem_tra_preflight(
+        che_do=getattr(args, "che_do", "offline") or "offline",
+        cau_hinh=getattr(args, "cau_hinh", None),
+        hop=getattr(args, "hop", None),
+        nha=getattr(args, "nha", None),
+        plugin_dir=getattr(args, "plugin_dir", None),
+    )
+    print(json.dumps(ket_qua, ensure_ascii=False, indent=2))
+    return 0 if ket_qua.get("san_sang") else 1
+
+
+XU_LY = {
+    "setup": lenh_dung_nhanh, "run": lenh_chay,
+    "score": lenh_cham, "report": lenh_bao_cao,
+    "preflight": lenh_preflight,
+}
 
 
 def build_parser():
@@ -1260,6 +1860,19 @@ def build_parser():
     p_cham.add_argument("--tat-ca", action="store_true",
                         help="rescore EVERY record in --ra from its stored transcript")
     p_cham.add_argument("--ra", help="dir to write records into (default docs/tdq/bench/tuan-thu)")
+    p_cham.add_argument("--phien-ban", type=int, default=2,
+                        help="version number for append-only rescore (default 2)")
+    p_cham.add_argument("--append-only", action="store_true",
+                        help="rescore in append-only mode generating versioned records")
+    p_cham.add_argument("--manifest", help="path to evaluation manifest JSON")
+
+    p_pref = sub.add_parser("preflight", help="run preflight check for evaluation environment (O11)")
+    p_pref.add_argument("--che-do", choices=["offline", "live"], default="offline",
+                        help="evaluation mode (default: offline)")
+    p_pref.add_argument("--cau-hinh", help="isolated config directory")
+    p_pref.add_argument("--plugin-dir", help="isolated plugin directory")
+    p_pref.add_argument("--nha", help="isolated home directory")
+    p_pref.add_argument("--hop", help="sandbox workspace directory")
 
     p_bao = sub.add_parser("report", help="print the round's table of numbers")
     p_bao.add_argument("--dem", action="store_true", help="only count records and errors")

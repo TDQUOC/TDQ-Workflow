@@ -95,10 +95,44 @@ MAX_REMIND_LINES = 3
 
 
 def read_payload():
+    """Read an object payload and discard ill-typed protocol fields."""
     try:
-        return json.load(sys.stdin)
-    except Exception:
+        payload = json.load(sys.stdin)
+    except (ValueError, OSError, UnicodeError):
+        tdq_state._warn("Hook payload rejected: invalid JSON or unreadable stdin")
         return {}
+    if not isinstance(payload, dict):
+        tdq_state._warn("Hook payload rejected: expected an object")
+        return {}
+    expected = {"cwd": str, "session_id": str, "tool_name": str,
+                "hook_event_name": str, "prompt": str, "source": str,
+                "agent_type": str, "stop_hook_active": bool, "tool_input": dict}
+    for field, kind in expected.items():
+        if field in payload and not isinstance(payload[field], kind):
+            tdq_state._warn(f"Hook payload field rejected: {field}")
+            payload.pop(field)
+            if field == "tool_input":
+                payload["tool_input"] = {}
+                payload.pop("tool_name", None)
+    _sanitize_tool_input(payload)
+    return payload
+
+
+def _sanitize_tool_input(payload):
+    tool_input = payload.get("tool_input", {})
+    expected = {"command": (str, list), "cmd": str, "file_path": str,
+                "notebook_path": str, "path": str, "pattern": str,
+                "root_dir": str, "language_id": str}
+    for field in tool_input.keys() & expected.keys():
+        value = tool_input[field]
+        valid = isinstance(value, expected[field])
+        if isinstance(value, list):
+            valid = isinstance(value, expected[field]) and all(
+                isinstance(arg, str) for arg in value)
+        if not valid:
+            tdq_state._warn(f"Hook payload field rejected: tool_input.{field}")
+            tool_input.pop(field)
+            payload.pop("tool_name", None)
 
 
 def payload_cwd(payload):
@@ -181,23 +215,63 @@ def remind(cwd, payload, code, lines, event="PreToolUse", rows=None, decide=True
     sys.exit(0)
 
 
+def format_denial(code, lines, repeat_count=0, day_du=False):
+    """Format denial lines according to first vs repeat occurrence in the turn (O07).
+
+    - First occurrence (repeat_count == 0): full remediation instructions.
+    - Repeat occurrence (repeat_count > 0): concise message saving context tokens
+      while preserving the actionable recovery path.
+    """
+    dong = [f"[{code}] {lines[0]}"] + list(lines[1:])
+    if repeat_count <= 0:
+        return "\n".join(l for l in dong if l) if day_du else trim(dong)
+
+    tag = f"[{code}] (lặp x{repeat_count + 1})" if repeat_count > 1 else f"[{code}] (lặp)"
+    first_summary = lines[0].strip() if lines else ""
+
+    action_summary = []
+    for l in lines[1:]:
+        l_s = l.strip()
+        if not l_s:
+            continue
+        action_summary.append(l_s)
+
+    repeat_body = [f"{tag} {first_summary}"]
+    if action_summary:
+        # Keep only the primary actionable remediation line on repeat
+        primary_action = action_summary[0]
+        if primary_action.endswith(":") and len(action_summary) > 1:
+            primary_action = f"{primary_action} {action_summary[1]}"
+        repeat_body.append(f"Gỡ nhanh: {primary_action}")
+
+    res = "\n".join(repeat_body)
+    return res if day_du else trim(repeat_body)
+
+
 def block(cwd, payload, code, lines, event="PreToolUse", day_du=False):
     """BLOCK the tool with a CODE, then exit.
 
     Two deliberate differences from `remind()`:
     - `permissionDecision: "deny"` — the tool does not run.
-    - NO dedupe by code. The blocking condition dissolves by itself once Claude does what was
-      asked (e.g. ticks `[~]` into the plan); dedupe would let the second edit slip through
-      while that job is still undone, i.e. the fence would only ever work once.
-    Written to the turn ledger under kind `block` so it never mixes with `remind`'s dedupe.
+    - NO dedupe by code: does not turn deny into allow. The blocking condition
+      remains active while the job is undone.
+    - O07: Repeated denials in the same turn with the same reason/evidence are
+      formatted concisely to minimize token consumption while preserving the
+      actionable remediation. New reasons or first occurrences emit full remediation.
+    Written to the turn ledger under kind `block` with repeat metadata.
 
     `day_du=True` keeps the whole reason instead of `trim`ming it to 200 characters. Use it only
     when the reason IS the way out — the search gate's denial names the exact query to run
     instead, and a reason cut in half leaves the agent blocked with no instruction.
     """
-    turn_log_append(cwd, "block", session=session_id(payload), code=code)
-    dong = [f"[{code}] {lines[0]}"] + list(lines[1:])
-    ly_do = "\n".join(l for l in dong if l) if day_du else trim(dong)
+    rows = turn_rows(cwd, payload)
+    reason_key = lines[0].strip() if lines else ""
+    prev_blocks = [r for r in rows if r.get("kind") == "block" and r.get("code") == code and r.get("reason_key") == reason_key]
+    repeat_count = len(prev_blocks)
+
+    turn_log_append(cwd, "block", session=session_id(payload), code=code,
+                    reason_key=reason_key, repeat_count=repeat_count)
+    ly_do = format_denial(code, lines, repeat_count=repeat_count, day_du=day_du)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": event,

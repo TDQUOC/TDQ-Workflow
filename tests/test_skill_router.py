@@ -163,6 +163,18 @@ class TachTuTest(unittest.TestCase):
         self.assertEqual(skill_router.tach_tu("unity-3d, shader!"),
                          ["unity", "3d", "shader"])
 
+    def test_camel_case_va_acronym_va_snake_case(self):
+        self.assertEqual(skill_router.tach_tu("getHTTPResponse"),
+                         ["get", "http", "response"])
+        self.assertEqual(skill_router.tach_tu("camelCase"),
+                         ["camel", "case"])
+        self.assertEqual(skill_router.tach_tu("snake_case_query"),
+                         ["snake", "case", "query"])
+
+    def test_chu_d_hoa_gach_ngang_ve_d_thuong(self):
+        self.assertIn("dong", skill_router.tach_tu("ĐóngGói"))
+        self.assertIn("goi", skill_router.tach_tu("ĐóngGói"))
+
 
 class TraTest(unittest.TestCase):
     """Hành vi tra: offline, có thứ tự điểm, không văng khi không khớp gì."""
@@ -232,7 +244,7 @@ class TiLeTrungTest(unittest.TestCase):
         t1 = sum(1 for r in top1 if r[3]) / len(top1) * 100
         t5 = sum(1 for r in top5 if r[3]) / len(top5) * 100
         theo_kho = {}
-        for _p, _d, do_kho, ok, _ten in top5:
+        for _, _, do_kho, ok, _ in top5:
             o = theo_kho.setdefault(do_kho, [0, 0])
             o[0] += int(ok)
             o[1] += 1
@@ -267,8 +279,8 @@ class TiLeTrungTest(unittest.TestCase):
         ]
         viet = anh = 0
         for cau_viet, cau_anh, dung in cap:
-            tv = dung in [b["ten"] for _d, b in self.kho.tra(cau_viet, 5)]
-            ta = dung in [b["ten"] for _d, b in self.kho.tra(cau_anh, 5)]
+            tv = dung in [b["ten"] for _, b in self.kho.tra(cau_viet, 5)]
+            ta = dung in [b["ten"] for _, b in self.kho.tra(cau_anh, 5)]
             viet += tv
             anh += ta
             print(f"  {dung}: VI={'trúng' if tv else 'TRƯỢT'} · "
