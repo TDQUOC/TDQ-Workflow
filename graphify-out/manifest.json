@@ -6,10 +6,10 @@
     "semantic_hash": "80ef98b882da0cfb57f0bc2a2c634788"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1792053764.1040735,
-    "seen": 1792137385.4315171,
-    "ast_hash": "57f3a336ad74d2972e45b22f87c8eb68",
-    "semantic_hash": "57f3a336ad74d2972e45b22f87c8eb68"
+    "mtime": 1792137548.7666483,
+    "seen": 1792229107.7021272,
+    "ast_hash": "297d63d909e2ce21a031c62c7fb32ee6",
+    "semantic_hash": "297d63d909e2ce21a031c62c7fb32ee6"
   },
   ".claude/settings.json": {
     "mtime": 1789900266.4991295,
@@ -36,8 +36,8 @@
     "semantic_hash": "f61a11c7b7c678948d74d90a3140d1a5"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1792135907.6479871,
-    "seen": 1792137385.4347615,
+    "mtime": 1792137548.7844565,
+    "seen": 1792229107.7055867,
     "ast_hash": "ac5a69e9daec961b97db96e6c2728858",
     "semantic_hash": "ac5a69e9daec961b97db96e6c2728858"
   },
@@ -361,8 +361,8 @@
     "semantic_hash": "941e417516758f2a3386fdef3bf3e142"
   },
   "pyrightconfig.json": {
-    "mtime": 1789900267.0752628,
-    "seen": 1790579329.427423,
+    "mtime": 1792228961.993929,
+    "seen": 1792229107.7066145,
     "ast_hash": "9d75580abaee0ad92642c94b1590ac75",
     "semantic_hash": "9d75580abaee0ad92642c94b1590ac75"
   },
@@ -415,8 +415,8 @@
     "semantic_hash": "6d7f428a432bcfc06a517718ae07c76e"
   },
   "hooks/scripts/luat_gon.py": {
-    "mtime": 1792135719.6811535,
-    "seen": 1792137385.4348848,
+    "mtime": 1792137548.7844565,
+    "seen": 1792229107.7057161,
     "ast_hash": "046709beafc227134e860e67c53838e1",
     "semantic_hash": "046709beafc227134e860e67c53838e1"
   },
@@ -439,10 +439,10 @@
     "semantic_hash": "41b15e96b67c441f2d65a1125974b705"
   },
   ".codex-plugin/plugin.json": {
-    "mtime": 1792053764.1040735,
-    "seen": 1792137385.4316747,
-    "ast_hash": "a70df04a3f429c3172b688825877ba12",
-    "semantic_hash": "a70df04a3f429c3172b688825877ba12"
+    "mtime": 1792137548.7681527,
+    "seen": 1792229107.702265,
+    "ast_hash": "af06cecbe8956d56c210a3b1fbe5e85e",
+    "semantic_hash": "af06cecbe8956d56c210a3b1fbe5e85e"
   },
   ".opencode/plugins/tdq-workflow.js": {
     "mtime": 1790138252.4325833,

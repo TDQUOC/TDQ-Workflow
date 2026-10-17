@@ -73,7 +73,7 @@ RELEASE_EXCLUDE_SCRIPTS = frozenset({
     "canvas_a4_ch4_ch7.py", "canvas_a4_rebuild.py", "canvas_draw.py",
     "canvas_layout_apply.py", "canvas_move_block.py", "check_canvas_layout.py",
     "doc_dup.py", "doc_index.py", "i18n_check.py", "luat_phan_loai.py",
-    "skill_router.py", "tdq_eval.py",
+    "skill_router.py", "tdq_eval.py", "tdq_knowledge.py",
 })
 
 # The skill that only means something on the TARGET machine (`tdq-checkportable`) lives here and
@@ -433,7 +433,7 @@ def _sinh_hooks_agy(duong, nen_tang=None, goc_cai=None):
     for ten_event, ten_file in HOOK_AGY:
         su_kien.setdefault(ten_event, []).append({"hooks": [{
             "type": "command",
-            "command": f"{tien_to_python(nen_tang)} {goc}/hooks/scripts/{ten_file}",
+            "command": f'{tien_to_python(nen_tang)} "{goc}/hooks/scripts/{ten_file}"',
         }]})
     _ghi_json(duong, {
         "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited "

@@ -324,10 +324,6 @@ class HoiQuyBoDemTaskTest(unittest.TestCase):
                     "doing_count", "dispatched_count", "dispatched_ids"]))
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 PLAN_DOD_HAI_MUC = """## Definition of Done
 - [x] Q1 dieu kien mot — lenh
 
@@ -426,3 +422,131 @@ class DodCaBienTest(unittest.TestCase):
         self.assertEqual(info["passed"], 1)
         self.assertEqual(info["pending"], 1)
         self.assertFalse(info["all_pass"])
+
+
+class QcEvidenceParserO04Test(unittest.TestCase):
+    """O04 (T4.3) — QC evidence parser và hook consumer không coi unknown/missing/timeout là clean PASS."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cwd = self.tmp.name
+        self.addCleanup(self.tmp.cleanup)
+
+    def _state(self, qc_content):
+        write_state(self.cwd, active_request="2026-08-12-0900-abc", lane="full",
+                    phase="report", plan_file=PLAN_REL)
+        write_file(self.cwd, QC_REL, qc_content)
+
+    def test_bang_4_cot_toan_pass(self):
+        qc = """# QC
+| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | test1 | PASS | ok 10 tests |
+| Q2 | test2 | PASS | exit code 0 |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 2)
+        self.assertEqual(info["failed"], 0)
+        self.assertEqual(info["timeout"], 0)
+        self.assertEqual(info["missing"], 0)
+        self.assertEqual(info["unknown"], 0)
+        self.assertTrue(info["all_pass"])
+
+    def test_row_co_timeout_trong_verdict_khong_cho_all_pass(self):
+        qc = """# QC
+| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | test1 | PASS | ok |
+| Q2 | test2 | TIMEOUT | 120s exceeded |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 1)
+        self.assertEqual(info["timeout"], 1)
+        self.assertFalse(info["all_pass"])
+
+    def test_row_co_missing_trong_verdict_khong_cho_all_pass(self):
+        qc = """# QC
+| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | test1 | PASS | ok |
+| Q2 | test2 | MISSING | file not found |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 1)
+        self.assertEqual(info["missing"], 1)
+        self.assertFalse(info["all_pass"])
+
+    def test_row_co_unknown_hoac_malformed_verdict_khong_cho_all_pass(self):
+        qc = """# QC
+| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | test1 | PASS | ok |
+| Q2 | test2 | UNKNOWN | unverified |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 1)
+        self.assertEqual(info["unknown"], 1)
+        self.assertFalse(info["all_pass"])
+
+    def test_execution_timeout_nhung_verdict_ghi_pass_bi_bat(self):
+        qc = """# QC
+| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | test1 | pytest | ok | PASS |
+| Q2 | test2 | pytest | Command timed out after 120s | PASS |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 1)
+        self.assertEqual(info["timeout"], 1)
+        self.assertFalse(info["all_pass"])
+
+    def test_execution_error_exit_code_nhung_verdict_ghi_pass_bi_bat(self):
+        qc = """# QC
+| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | test1 | pytest | ok | PASS |
+| Q2 | test2 | pytest | Process crashed with exit code 1 | PASS |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 1)
+        self.assertEqual(info["failed"], 1)
+        self.assertFalse(info["all_pass"])
+
+    def test_bo_qua_bang_trong_khoi_fence(self):
+        qc = """# QC
+```markdown
+| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | fake | pytest | ok | FAIL |
+```
+| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | real | PASS | ok |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 1)
+        self.assertEqual(info["failed"], 0)
+        self.assertTrue(info["all_pass"])
+
+    def test_bang_khong_co_pass_nao_thi_all_pass_false(self):
+        qc = """# QC
+| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | test1 | SKIP | not applicable |
+"""
+        self._state(qc)
+        info = tdq_state.qc_result_state(self.cwd)
+        self.assertEqual(info["passed"], 0)
+        self.assertEqual(info["pending"], 1)
+        self.assertFalse(info["all_pass"])
+
+
+if __name__ == "__main__":
+    unittest.main()

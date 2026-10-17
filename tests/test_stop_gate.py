@@ -501,9 +501,41 @@ class TestDodNhac(StopGateBase):
         self.assertIn("stop_gate:", err)
         self.assertIn("TDQ:DOD", err)
 
+    def test_dod_im_khi_qc_timeout(self):
+        qc = """| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | mot | lenh | ok | TIMEOUT |
+"""
+        self._dung(qc=qc)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_dod_im_khi_qc_missing(self):
+        qc = """| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | mot | lenh | ok | MISSING |
+"""
+        self._dung(qc=qc)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_im_khi_qc_unknown(self):
+        qc = """| # | Hang muc | Lenh | Ket qua | PASS/FAIL |
+|---|---|---|---|---|
+| Q1 | mot | lenh | ok | UNKNOWN |
+"""
+        self._dung(qc=qc)
+        _, out, _ = self.stop()
+        self.assertNotIn("[TDQ:DOD]", out)
+
+    def test_dod_nhac_khi_qc_4_cot_toan_pass(self):
+        qc = """| # | Hang muc | Ket qua | Bang chung |
+|---|---|---|---|
+| Q1 | mot | PASS | ok |
+"""
+        self._dung(qc=qc)
+        _, out, _ = self.stop()
+        self.assertIn("[TDQ:DOD]", out)
 
 
 class TestStopGateTick(StopGateBase):
@@ -840,3 +872,7 @@ class TestUnfinishedLog(TestStopGateUnfinished):
         _, out, err = run_hook("stop_gate.py", payload, env={"TDQ_LOG": "0"})
         self.assertIn("[TDQ:UNFINISHED]", out)
         self.assertNotIn("stop_gate:", err)
+
+
+if __name__ == "__main__":
+    unittest.main()

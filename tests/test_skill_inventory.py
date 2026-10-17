@@ -347,6 +347,52 @@ class FullOutputUnchangedTest(InventoryBase):
         self.assertEqual(out.strip().splitlines()[-1], REMINDER_2)
 
 
+class FullDescriptionAndProvenanceTest(InventoryBase):
+    """O13 (T3.4) — Tìm kiếm trên mô tả đầy đủ trước khi condense, bảo toàn provenance."""
+
+    def test_loc_matches_keyword_in_full_description_beyond_cutoff(self):
+        """Từ khóa nằm sau ngưỡng 60 ký tự không bị bỏ rơi vì condense (O13)."""
+        # Mô tả dài: từ khóa 'postgresql-database' nằm ở cuối (ký tự > 100), không có trigger phrase
+        desc_dai = "Cong cu quan ly he thong hieu nang cao danh cho backend service tich hop postgresql-database va cache."
+        self.write("home/.claude/skills/db-tool/SKILL.md", skill_md("db-tool", desc_dai))
+        self.write("home/.claude/skills/other-tool/SKILL.md", skill_md("other-tool", "cong cu khac"))
+
+        rc, out, _ = self.run_inv("--loc", "postgresql-database")
+        self.assertEqual(rc, 0)
+        self.assertIn("db-tool", out, "db-tool có từ khóa trong mô tả đầy đủ nhưng bị ẩn do condense trước lọc!")
+
+    def test_project_skill_not_hidden_by_same_named_user_skill(self):
+        """Kỹ năng trùng tên ở project không bị kỹ năng user âm thầm che khuất (O13)."""
+        self.write("home/.claude/skills/shared-skill/SKILL.md",
+                   skill_md("shared-skill", "ban cua user"))
+        self.write("proj/.claude/skills/shared-skill/SKILL.md",
+                   skill_md("shared-skill", "ban cua project"))
+
+        rc, out, _ = self.run_inv()
+        self.assertEqual(rc, 0)
+        # Cả hai nguồn hoặc bản project phải được bảo toàn và có mặt trong bảng
+        dòng_project = [d for d in out.splitlines() if d.startswith("shared-skill |") and "project" in d]
+        self.assertEqual(len(dòng_project), 1, f"Bản project bị mất trong output:\n{out}")
+
+    def test_filter_normalizes_unicode_nfc_and_casefold_and_d(self):
+        """Lọc hỗ trợ Unicode NFC, casefold và đ/Đ -> d không phụ thuộc cách gõ."""
+        self.write("home/.claude/skills/viet-skill/SKILL.md",
+                   skill_md("viet-skill", "Công cụ định dạng và tối ưu hoá"))
+        self.write("home/.claude/skills/khac/SKILL.md", skill_md("khac", "khong lien quan"))
+
+        rc1, out1, _ = self.run_inv("--loc", "định dạng")
+        self.assertEqual(rc1, 0)
+        self.assertIn("viet-skill", out1)
+
+        rc2, out2, _ = self.run_inv("--loc", "ĐỊNH DẠNG")
+        self.assertEqual(rc2, 0)
+        self.assertIn("viet-skill", out2)
+
+        rc3, out3, _ = self.run_inv("--loc", "dinh dang")
+        self.assertEqual(rc3, 0)
+        self.assertIn("viet-skill", out3)
+
+
 class LayoutSyncedTest(InventoryBase):
     """Claude Code moved account-level skills one level deeper; B0 went blind to all of them.
 

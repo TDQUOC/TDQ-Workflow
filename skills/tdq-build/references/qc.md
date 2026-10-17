@@ -182,11 +182,10 @@ approve or reject it, which happens in the report.
 
 ## Explicit Anti-Patterns
 
-Rules that lead to immediate QC rejection:
-
-- `ANTI-1 (Fake Red)`: A test that fails because of syntax error, bad import, or wrong file path is NOT valid RED.
-- `ANTI-2 (Blind Assertion)`: Writing assertions that cannot fail (`assert True`, `assert len(x) >= 0`, empty checks) is banned.
-- `ANTI-5 (Raw Dump)`: Pasting raw test logs longer than 15 lines into chat is banned; summarize the outcome and isolate deciding error lines.
+- `ANTI-1 (Fake Red)`: Test failing on syntax error/bad import/wrong path is NOT valid RED.
+- `ANTI-2 (Blind Assertion)`: Assertions that cannot fail (`assert True`, empty checks) are banned.
+- `ANTI-5 (Raw Dump)`: Pasting test logs >15 lines into chat is banned; summarize outcome.
+- `ANTI-6 (False Clean PASS)`: Treating timeout/crash/missing evidence/unverified as PASS is banned (O04); mark FAIL or HOLD/CHỜ.
 
 ## When it FAILs
 

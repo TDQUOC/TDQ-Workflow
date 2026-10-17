@@ -95,7 +95,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "deep mode] [--lang <code>] [--bo-qua-lsp \"<user's reason>\"] | "
          "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
          "[--mode main|subagent|codex] "
-         "[--by \"<user sentence>\"] [--bo-qua-do \"<user's reason>\"] | "
+         "[--by \"<user sentence>\"] [--expected-sha <sha256>] [--strict] [--bo-qua-do \"<user's reason>\"] | "
          "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
          "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
          "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
@@ -223,6 +223,7 @@ def default_state():
         "spec_approved": False,
         "spec_sha256": None,
         "spec_approved_at": None,
+        "spec_descriptor": None,
         # the user's approval sentence verbatim (cut at 200 chars) — the only
         # trace left after the hard gate was dropped, must be checkable against
         # the transcript
@@ -241,9 +242,11 @@ def default_state():
         "plan_sha256": None,
         "plan_approved_at": None,
         "plan_approved_by": None,
+        "plan_descriptor": None,
         "quick_approved": False,
         "quick_approved_at": None,
         "quick_approved_by": None,
+        "quick_descriptor": None,
         "implement_mode": None,
         # Phase `implement` may only end early through a DECLARED pause: the
         # Stop gate refuses to close a turn while the plan still has open tasks,
@@ -882,9 +885,25 @@ _QC_ROW = re.compile(r"^\s*\|.*\|\s*(PASS|FAIL|SKIP|TODO|PENDING|N/A)\s*\|\s*$")
 
 
 def qc_result_state(cwd):
-    """PASS/FAIL tally of the qc file of the active request. Never raises."""
-    trong = {"path": None, "exists": False, "passed": 0, "failed": 0, "pending": 0,
-             "all_pass": False}
+    """PASS/FAIL tally of the qc file of the active request. Never raises (O04).
+
+    Separates execution status from outcome verdict:
+    - Does not treat unknown, missing, timeout, or malformed rows as clean PASS.
+    - Accurately parses tables where verdict is in the last column or 'Ket qua' column.
+    - Detects execution failures (timeout, error) even if outcome claims PASS.
+    """
+    trong = {
+        "path": None,
+        "exists": False,
+        "passed": 0,
+        "failed": 0,
+        "pending": 0,
+        "timeout": 0,
+        "missing": 0,
+        "unknown": 0,
+        "total": 0,
+        "all_pass": False,
+    }
     try:
         state = load(cwd, heal=False) or {}
     except Exception:
@@ -900,21 +919,116 @@ def qc_result_state(cwd):
     except (OSError, UnicodeDecodeError):
         return trong
 
-    dat = hong = cho = 0
+    trong_rao = False
+    dat = hong = cho = qua_gio = thieu = chua_ro = 0
+    verdict_col_idx = None
+    exec_col_idx = None
+
     for line in noi_dung.splitlines():
-        m = _QC_ROW.match(line)
-        if not m:
+        if _FENCE.match(line):
+            trong_rao = not trong_rao
             continue
-        if m.group(1) == "PASS":
-            dat += 1
-        elif m.group(1) == "FAIL":
-            hong += 1
+        if trong_rao:
+            continue
+
+        stripped = line.strip()
+        if not (stripped.startswith("|") and stripped.endswith("|")):
+            verdict_col_idx = None
+            exec_col_idx = None
+            continue
+
+        raw_cells = [c.strip() for c in stripped.strip("|").split("|")]
+        if len(raw_cells) < 2:
+            continue
+
+        # Check separator row
+        if all(re.match(r"^:?-+:?$", c) for c in raw_cells if c):
+            continue
+
+        lower_cells = [c.lower() for c in raw_cells]
+
+        # Check header row (only when verdict_col_idx is not yet established)
+        if verdict_col_idx is None:
+            hdr_verdict = None
+            hdr_result = None
+            hdr_evidence = None
+            hdr_cmd = None
+
+            for idx, c in enumerate(lower_cells):
+                if "pass/fail" in c or c in ("verdict", "trạng thái", "trang thai", "đánh giá", "danh gia"):
+                    hdr_verdict = idx
+                elif c in ("kết quả", "ket qua", "outcome", "result"):
+                    hdr_result = idx
+                elif c in ("lệnh", "lenh", "command", "lệnh đã chạy", "lenh da chay"):
+                    hdr_cmd = idx
+                elif c in ("bằng chứng", "bang chung", "evidence", "log", "chi tiết", "chi tiet", "ghi chú", "ghi chu"):
+                    hdr_evidence = idx
+
+            if hdr_verdict is not None:
+                verdict_col_idx = hdr_verdict
+                exec_col_idx = hdr_result if hdr_result is not None else (hdr_evidence if hdr_evidence is not None else hdr_cmd)
+                continue
+            elif hdr_result is not None:
+                verdict_col_idx = hdr_result
+                exec_col_idx = hdr_evidence if hdr_evidence is not None else hdr_cmd
+                continue
+
+        # Determine verdict cell and execution cell for data row
+        if verdict_col_idx is not None and verdict_col_idx < len(raw_cells):
+            verdict_text = raw_cells[verdict_col_idx]
         else:
-            # SKIP / TODO / PENDING / N/A: the item has no verdict yet. Not a failure, but
-            # not proof either — the reminder must not fire off a half-finished QC.
+            verdict_text = raw_cells[-1]
+
+        exec_text = ""
+        if exec_col_idx is not None and exec_col_idx < len(raw_cells):
+            exec_text = raw_cells[exec_col_idx]
+        elif len(raw_cells) >= 3 and (verdict_col_idx is None or verdict_col_idx == len(raw_cells) - 1):
+            exec_text = raw_cells[-2]
+
+        v_clean = re.sub(r"[*_`]", "", verdict_text).strip()
+        v_upper = v_clean.upper()
+        exec_lower = exec_text.lower()
+
+        # Check execution status (Execution và outcome tách)
+        exec_timeout = bool(re.search(r"\b(timeout|timed out|quá giờ|het gio|hết giờ)\b", exec_lower))
+        exec_error = bool(re.search(
+            r"\b(traceback|syntaxerror|nameerror|command not found|crash|killed)\b"
+            r"|\bexit (?:code )?[1-9]\d*\b"
+            r"|\b[1-9]\d*\s*(?:failed|errors?|lỗi)\b"
+            r"|\b(?:failures?|errors?)=[1-9]\d*\b",
+            exec_lower
+        ))
+        exec_missing = bool(re.search(r"\b(missing|not found|không tìm thấy|chưa có)\b", exec_lower))
+
+        if v_upper.startswith("TIMEOUT") or exec_timeout:
+            qua_gio += 1
+        elif v_upper.startswith("MISSING") or exec_missing:
+            thieu += 1
+        elif v_upper.startswith("FAIL") or v_upper.startswith("ERROR") or v_upper.startswith("HỎNG") or exec_error:
+            hong += 1
+        elif v_upper.startswith("PASS"):
+            dat += 1
+        elif (v_upper in ("SKIP", "TODO", "PENDING", "N/A", "HOLD", "CHỜ", "CHO")
+              or v_upper.startswith("CHỜ") or v_upper.startswith("BỊ CHẶN")
+              or v_upper.startswith("PARTIAL")):
             cho += 1
-    trong.update(exists=True, passed=dat, failed=hong, pending=cho,
-                 all_pass=dat > 0 and hong == 0 and cho == 0)
+        else:
+            chua_ro += 1
+
+    total = dat + hong + cho + qua_gio + thieu + chua_ro
+    all_pass = (dat > 0 and hong == 0 and cho == 0 and qua_gio == 0 and thieu == 0 and chua_ro == 0)
+
+    trong.update(
+        exists=True,
+        passed=dat,
+        failed=hong,
+        pending=cho,
+        timeout=qua_gio,
+        missing=thieu,
+        unknown=chua_ro,
+        total=total,
+        all_pass=all_pass,
+    )
     return trong
 
 
@@ -1828,7 +1942,7 @@ def _parse_approve_args(rest):
         _fail("Missing approval target (spec|plan|quick).")
     if rest[0] == "diagram":
         _fail(LOI_SO_DO_DA_GO)
-    target, mode, by, bo_qua_do = rest[0], None, None, None
+    target, mode, by, bo_qua_do, expected_sha, strict = rest[0], None, None, None, None, False
     # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
     if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
         target = "quick"
@@ -1845,7 +1959,7 @@ def _parse_approve_args(rest):
             _fail("Flag --no-qc was removed on 2026-09-23 — the QC level is a state key now: "
                   "run `python3 scripts/tdq_state.py set muc_qc=off` instead "
                   "(levels: lite|full|ultra|off).")
-        if flag in ("--mode", "--by", "--bo-qua-do"):
+        if flag in ("--mode", "--by", "--bo-qua-do", "--expected-sha"):
             if i + 1 >= len(rest):
                 _fail(f"Missing value for {flag}")
             value = rest[i + 1]
@@ -1853,6 +1967,8 @@ def _parse_approve_args(rest):
                 if not value.strip():
                     _fail("--bo-qua-do needs the user's reason — an empty reason is refused.")
                 bo_qua_do = value.strip()[:BY_MAX]
+            elif flag == "--expected-sha":
+                expected_sha = value.strip().lower()
             elif flag == "--mode":
                 # Through normalize_mode: the labels shown at gate mode ("inline",
                 # "sub-agent implement") must land as the machine identifier.
@@ -1863,6 +1979,10 @@ def _parse_approve_args(rest):
                 by = value[:BY_MAX]
             i += 2
             continue
+        if flag == "--strict":
+            strict = True
+            i += 1
+            continue
         # allow "approve plan main" (shorthand) — the mode sits right after the target.
         # Aliases accepted too, but only while no mode is set: a stray argument must still blow up.
         if mode is None and normalize_mode(flag):
@@ -1870,7 +1990,7 @@ def _parse_approve_args(rest):
             i += 1
             continue
         _fail(f"Invalid argument: {flag}")
-    return target, mode, by, bo_qua_do
+    return target, mode, by, bo_qua_do, expected_sha, strict
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -1948,7 +2068,7 @@ def _cli_approve(cwd, rest):
     slug, it fails open when the check cannot run, and the user always holds an escape —
     `--bo-qua-do "<reason>"` approves anyway and records the reason in spec_bo_qua_do.
     An already approved, unchanged spec is not re-checked."""  # i18n-allow
-    target, mode, by, bo_qua_do = _parse_approve_args(rest)
+    target, mode, by, bo_qua_do, expected_sha, strict = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("No state yet — building the default state then recording the approval. Run init first.")
@@ -1969,31 +2089,74 @@ def _cli_approve(cwd, rest):
     reapproved = bool(state.get(f"{target}_approved"))
 
     lane = effective_lane(state)
-    if not state.get("active_request"):
-        _warn("No TDQ request is open — recording anyway, but you should run init first.")
-    if target == "quick" and lane != "quick":
-        _warn(f"Approving quick while the request sits in lane {lane}.")
-    if target in ("spec", "plan") and lane != "full":
-        _warn(f"Approving {target} while the request sits in lane {lane}.")
-    if target == "plan" and not state.get("spec_approved"):
-        _warn("Approving the plan while no spec approval is recorded — check the order.")
-
+    has_active = bool(state.get("active_request"))
+    lane_ok = (lane == "quick") if target == "quick" else (lane == "full")
+    order_ok = True if target != "plan" else bool(state.get("spec_approved"))
+    file_registered = True
+    file_readable = True
+    actual_sha = None
+    rel = None
     if target in ("spec", "plan"):
         rel = state.get(f"{target}_file")
         if not rel:
-            _warn(f"{target}_file is not registered in state — cannot compute the sha256.")
+            file_registered = False
         else:
             path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
             try:
-                state[f"{target}_sha256"] = sha256_noi_dung(path)
+                actual_sha = sha256_noi_dung(path)
+                state[f"{target}_sha256"] = actual_sha
             except OSError:
-                _warn(f"Cannot read {rel} — skipping the sha256.")
+                file_readable = False
+
+    hash_match = True
+    if expected_sha:
+        if actual_sha is None or actual_sha != expected_sha:
+            hash_match = False
+
+    if strict:
+        if not has_active:
+            _fail("No TDQ request is open — run init first (--strict).")
+        if not lane_ok:
+            _fail(f"Approving {target} while the request sits in lane {lane} (--strict).")
+        if not order_ok:
+            _fail("Approving the plan while no spec approval is recorded — check the order (--strict).")
+        if not file_registered:
+            _fail(f"{target}_file is not registered in state — cannot compute the sha256 (--strict).")
+        elif not file_readable:
+            _fail(f"Cannot read {rel} — skipping the sha256 (--strict).")
+    else:
+        if not has_active:
+            _warn("No TDQ request is open — recording anyway, but you should run init first.")
+        if not lane_ok:
+            _warn(f"Approving {target} while the request sits in lane {lane}.")
+        if not order_ok:
+            _warn("Approving the plan while no spec approval is recorded — check the order.")
+        if not file_registered:
+            _warn(f"{target}_file is not registered in state — cannot compute the sha256.")
+        elif not file_readable:
+            _warn(f"Cannot read {rel} — skipping the sha256.")
+
+    if not hash_match:
+        _fail(f"Approval hash mismatch: expected {expected_sha}, computed {actual_sha}.")
 
     _r14_gate(cwd, state, target, bo_qua_do)
 
     state[f"{target}_approved"] = True
     state[f"{target}_approved_at"] = now_iso()
     state[f"{target}_approved_by"] = by
+    old_desc = state.get(f"{target}_descriptor") or {}
+    version = (old_desc.get("version") or 0) + 1 if isinstance(old_desc, dict) else 1
+    state[f"{target}_descriptor"] = {
+        "target": target,
+        "request": state.get("active_request"),
+        "lane": lane,
+        "file": rel,
+        "sha256": actual_sha,
+        "by": by,
+        "at": state[f"{target}_approved_at"],
+        "assurance": "cli-verified" if (has_active and lane_ok and order_ok and file_registered and file_readable) else "legacy-unverified",
+        "version": version,
+    }
     if mode:
         state["implement_mode"] = mode
     if target == "quick":

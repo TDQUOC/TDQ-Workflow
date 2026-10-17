@@ -59,6 +59,17 @@ class ResilienceTest(unittest.TestCase):
                     self.assertEqual(rc, 0, f"{script}: {err}")
                     self.assertNotIn("Traceback", err, f"{script}: {err}")
 
+    def test_non_object_and_wrong_nested_payloads(self):
+        for payload in (None, [], 1, "bad", {"cwd": 42, "session_id": [],
+                        "tool_name": {}, "prompt": [], "tool_input": [1]}):
+            for script in HOOKS:
+                with self.subTest(payload=payload, script=script):
+                    rc, out, err = run_hook(script, payload,
+                                           env={"TDQ_PROJECT_DIR": self.cwd})
+                    self.assertEqual(rc, 0, err)
+                    self.assertNotIn("Traceback", err)
+                    self.assertNotIn('"permissionDecision": "deny"', out)
+
     def test_invalid_json_stdin(self):
         import subprocess
         import sys

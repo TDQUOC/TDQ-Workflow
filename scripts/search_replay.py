@@ -72,20 +72,21 @@ def phat_lai(su_kien, cua_so=None, luat=None):
             so.append({"loai": "khai_niem"})
             continue
         pl = luat.phan_loai(cong_cu, lenh)
-        if pl["loai"] == "khong_phai_tim":
+        if pl.get("status") != "unknown" and pl.get("loai") == "khong_phai_tim":
             continue
         tt = dict(search_rules.trang_thai(so), cua_so=cua_so)
         ok, ly_do = luat.quyet_dinh(pl, tt)
         hang.append({"luot": sk.get("luot"), "cong_cu": cong_cu, "lenh": lenh,
-                     "loai": pl["loai"], "cho_phep": ok, "ly_do": ly_do})
+                     "loai": pl.get("loai"), "status": pl.get("status"), "kind": pl.get("kind"),
+                     "cho_phep": ok, "ly_do": ly_do})
         if not ok:
             bat += 1
             bi_chan.append(sk.get("luot"))
-            if pl["loai"] == "loc_file":
+            if pl.get("loai") == "loc_file":
                 bat_oan += 1
-        elif pl["loai"] == "tim_code" and not tt["da_goi_khai_niem"]:
+        elif pl.get("loai") == "tim_code" and not tt["da_goi_khai_niem"]:
             lot += 1
-        if pl["loai"] == "tim_code":
+        if pl.get("loai") == "tim_code" or pl.get("status") == "unknown":
             so.append({"loai": "tim", "cho_phep": ok, "tinh_cua_so": ok})
     _log(f"{len(su_kien)} events · {len(hang)} searches · denied {bat} · "
          f"false denials {bat_oan} · leaks {lot}")

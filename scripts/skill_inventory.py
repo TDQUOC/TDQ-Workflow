@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tdq_state  # noqa: E402 — shares the log service (_warn, TDQ_LOG, timestamp)
@@ -202,37 +203,83 @@ def _plugin_skill_dirs(home, project):
     return dirs
 
 
-def inventory(project):
-    """[(name, shortened desc, source)] — on a name clash the source scanned first wins."""
+def bo_dau_chu(chu):
+    """Normalize and strip Vietnamese diacritics with đ/Đ -> d as secondary signal (O13)."""
+    tach = unicodedata.normalize("NFD", unicodedata.normalize("NFC", chu))
+    return "".join(c for c in tach if unicodedata.category(c) != "Mn").replace("đ", "d").replace("Đ", "d")
+
+
+def inventory_records(project):
+    """Scans enabled/on-disk skills and returns list of dict records.
+
+    Each record: {'name': name, 'desc': full_desc, 'condensed': _condense(full_desc), 'source': source}.
+    Scan order: project first, then plugins, then user.
+    Deduplicates by (name, source) to preserve provenance and prevent project skills
+    from being silently shadowed by user skills (O13).
+    """
     home = os.path.expanduser("~")
-    rows, seen = [], set()
+    records, seen = [], set()
 
     def add(name, desc, source):
-        if name in seen:
+        key = (name, source)
+        if key in seen:
             return
-        seen.add(name)
-        rows.append((name, _condense(desc), source))
+        seen.add(key)
+        records.append({
+            "name": name,
+            "desc": desc or "",
+            "condensed": _condense(desc),
+            "source": source,
+        })
 
-    for name, desc in _scan_skill_dir(os.path.join(home, ".claude", "skills")):
-        add(name, desc, "user")
+    # Scan project first, then plugins, then user (project takes precedence and is not shadowed)
     for name, desc in _scan_skill_dir(os.path.join(project, ".claude", "skills")):
         add(name, desc, "project")
     for plugin, skill_dir in _plugin_skill_dirs(home, project):
         for name, desc in _scan_skill_dir(skill_dir):
             add(name, desc, f"plugin:{plugin}")
-    return rows
+    for name, desc in _scan_skill_dir(os.path.join(home, ".claude", "skills")):
+        add(name, desc, "user")
+    return records
 
 
-def _filter(rows, keyword):
-    """(rows kept, rows hidden) — matching the keyword OR belonging to a never-hidden source."""
-    needle = keyword.casefold()
+def inventory(project):
+    """[(name, shortened desc, source)] — retains source provenance without hiding project skills."""
+    return [(r["name"], r["condensed"], r["source"]) for r in inventory_records(project)]
+
+
+def _filter(records_or_rows, keyword):
+    """(rows kept, rows hidden) — matching keyword against full description or protected source.
+
+    Searches on the FULL description BEFORE condensing, avoiding false negative drops (O13).
+    Normalizes with Unicode NFC, casefold, and diacritic stripping (đ/Đ -> d) as secondary signal.
+    Accepts both inventory_records (dicts) and legacy inventory rows (tuples).
+    Returns (kept_rows_as_tuples, hidden_count).
+    """
+    needle = unicodedata.normalize("NFC", keyword).casefold()
+    needle_kodau = bo_dau_chu(needle)
     kept, hidden = [], 0
-    for name, desc, source in rows:
+
+    for item in records_or_rows:
+        if isinstance(item, dict):
+            name = item["name"]
+            full_desc = item["desc"]
+            condensed = item["condensed"]
+            source = item["source"]
+        else:
+            name, desc, source = item[0], item[1], item[2]
+            full_desc = desc
+            condensed = desc
+
         protected = source in KEEP_SOURCES or source.startswith(KEEP_SOURCE_PREFIX)
-        if protected or needle in f"{name} {desc}".casefold():
-            kept.append((name, desc, source))
+        haystack = unicodedata.normalize("NFC", f"{name} {full_desc}").casefold()
+        haystack_kodau = bo_dau_chu(haystack)
+
+        if protected or (needle in haystack) or (needle_kodau and needle_kodau in haystack_kodau):
+            kept.append((name, condensed, source))
         else:
             hidden += 1
+
     return kept, hidden
 
 
@@ -255,13 +302,15 @@ def main(argv):
             print(f"unknown argument: {arg}", file=sys.stderr)
             print(USAGE, file=sys.stderr)
             return 2
-    rows = inventory(project)
+    records = inventory_records(project)
     # `--tat-ca` beats `--loc`: typing both means wanting to see everything.
     hidden = 0
     if keyword and not show_all:
-        rows, hidden = _filter(rows, keyword)
+        rows, hidden = _filter(records, keyword)
         tdq_state._info(
             f"skill_inventory: filtered on {keyword!r} — kept {len(rows)}, hid {hidden}")
+    else:
+        rows = [(r["name"], r["condensed"], r["source"]) for r in records]
     if rows:
         for name, desc, source in rows:
             print(f"{name} | {desc} | {source}")

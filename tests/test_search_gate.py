@@ -150,8 +150,9 @@ class ChuaSanSang(BaseCong):
         """Đứng xuống = cho qua (`allow`) VÀ nói ra bằng `[TDQ:SEARCH]` (V3, review 2026-10-03)."""
         goi = json.loads(out).get("hookSpecificOutput") or {}
         self.assertEqual(goi.get("permissionDecision"), "allow")
-        self.assertIn("TDQ:SEARCH", goi.get("additionalContext") or "")
-        return goi.get("additionalContext")
+        ctx = str(goi.get("additionalContext") or "")
+        self.assertIn("TDQ:SEARCH", ctx)
+        return ctx
 
     def test_chua_san_sang_dang_dung_thi_khong_chan(self):
         self.ghi_moc(dang_dung=True)
@@ -206,6 +207,52 @@ class ChuaSanSang(BaseCong):
         self.ghi_moc(dang_dung=False, lumen=True)
         out, _ = self.goi("Bash", command='grep -rn "fileHandle" .')
         self.dung_xuong_va_noi_ra(out)
+
+
+class UnknownCommand(BaseCong):
+    """T4.2 — Lệnh unknown/exhausted không được tự động cho qua và ghi nhận đúng vào sổ."""
+
+    def test_chan_lenh_unknown_do_vuot_ngan_sach(self):
+        """Lệnh vượt quá ngân sách input_chars trả về status=unknown và bị chặn."""
+        lenh_dai = "grep " + ("a" * 35000)
+        out, _ = self.goi("Bash", command=lenh_dai)
+        ly_do = self.bi_chan(out)
+        self.assertIn("TDQ:SEARCH", ly_do)
+        self.assertIn("could not be parsed safely (exhausted)", ly_do)
+
+    def test_unknown_ghi_so_tang_so_lan_bi_chan(self):
+        """Khi lệnh unknown bị chặn, sổ ghi nhận loai=tim với cho_phep=False, tăng so_lan_bi_chan."""
+        lenh_dai = "grep " + ("a" * 35000)
+        self.goi("Bash", command=lenh_dai)
+        tt = search_rules.trang_thai(search_observe.doc_so(self.cwd, self.khoa))
+        self.assertEqual(tt["so_lan_bi_chan"], 1)
+        self.assertEqual(tt["so_lan_tim_tu_lan_goi"], 0, "Lệnh bị chặn không tính vào cửa sổ")
+
+    def test_unknown_kich_hoat_readiness_breaker_sau_3_lan(self):
+        """3 lần unknown bị chặn trên máy không mốc kích hoạt breaker đứng xuống ở lần thứ 4."""
+        lenh_dai = "grep " + ("a" * 35000)
+        for _ in range(3):
+            out, _ = self.goi("Bash", command=lenh_dai)
+            self.assertIn("TDQ:SEARCH", self.bi_chan(out))
+        out, _ = self.goi("Bash", command=lenh_dai)
+        goi = json.loads(out).get("hookSpecificOutput") or {}
+        self.assertEqual(goi.get("permissionDecision"), "allow")
+        self.assertIn("tdq-setup", goi.get("additionalContext") or "")
+
+    def test_unknown_khong_kich_hoat_breaker_khi_moc_san_sang(self):
+        """Khi có mốc sẵn sàng (graphify), 4 lần unknown vẫn bị chặn, không bypass."""
+        cap_nhat = time.strftime("%Y-%m-%dT%H:%M:%S")
+        moc = {"cap_nhat": cap_nhat, "dang_dung": False, "pid": 1,
+               "tang": {"grep": {"san_sang": True},
+                        "lsp": {"san_sang": False},
+                        "graphify": {"san_sang": True}}}
+        with io.open(os.path.join(self.cwd, "docs", "tdq", ".tdq-san-sang.json"), "w",
+                     encoding="utf-8") as fh:
+            json.dump(moc, fh)
+        lenh_dai = "grep " + ("a" * 35000)
+        for _ in range(4):
+            out, _ = self.goi("Bash", command=lenh_dai)
+            self.assertIn("TDQ:SEARCH", self.bi_chan(out))
 
 
 class Nhe(unittest.TestCase):
@@ -291,7 +338,7 @@ class TestDoNgonNguDuAn(unittest.TestCase):
                 f.write("{}")
             payload = {"session_id": "test-ts", "cwd": d, "hook_event_name": "PreToolUse",
                        "tool_name": "Grep", "tool_input": {"pattern": "abort|stopTask|asyncTask", "path": "src/app.ts"}}
-            rc, out, err = run_hook("search_gate.py", payload, env={"TDQ_PROJECT_DIR": d, "TDQ_LOG": "0"})
+            rc, out, _ = run_hook("search_gate.py", payload, env={"TDQ_PROJECT_DIR": d, "TDQ_LOG": "0"})
             self.assertEqual(rc, 0)
             goi = json.loads(out).get("hookSpecificOutput") or {}
             self.assertEqual(goi.get("permissionDecision"), "deny")
