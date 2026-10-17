@@ -501,6 +501,7 @@ class TestSinhNhanhRelease(TempDest):
             "scripts/luat_phan_loai.py",
             "scripts/skill_router.py",
             "scripts/tdq_eval.py",
+            "scripts/tdq_knowledge.py",
         )
         for duong in bi_loai:
             self.assertFalse(build_portable.la_duong_dan_release(duong),

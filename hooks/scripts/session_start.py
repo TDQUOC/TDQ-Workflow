@@ -28,8 +28,8 @@ from _common import (already_reminded, payload_cwd, read_payload, session_id,
 # from-import shape (not a module attribute call) is what lets graphify emit a cross-file
 # `calls` edge.
 from luat_gon import doc_than_luat, loc_than_luat  # noqa: E402
-from tdq_state import (default_state, effective_phase, lenh_cho_project, load,  # noqa: E402
-                       muc_gat_hieu_luc, render_next)
+from tdq_state import (_TASK_LINE, default_state, effective_phase, lenh_cho_project, load,  # noqa: E402
+                       muc_gat_hieu_luc, phase_row, plan_tick_state, render_next)
 import search_rules  # noqa: E402
 import tdq_setup  # noqa: E402
 from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
@@ -192,7 +192,7 @@ def cap(text, max_lines, max_chars):
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
-    state = load(cwd) or default_state()
+    state = load(cwd, heal=False) or default_state()
 
     lines = [RULE] + render_next(cwd, state, compact=True).splitlines()
     out = cap("\n".join(lines), MAX_LINES, MAX_CHARS)
@@ -229,32 +229,96 @@ def main():
     # is open yet, preserving standalone usage). In other phases (idle, analyze, spec, plan, qc,
     # report), inject a concise 1-line pointer to save ~2,000 tokens of carry-cost per turn.
     nap_day_du = (pha == "implement") or (not (state or {}).get("active_request"))
+    law_text = ""
     if ghi:
         if nap_day_du:
-            out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — climb this "
-                    f"ladder before you create anything:\n{than}")
+            law_text = (f"[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — climb this "
+                        f"ladder before you create anything:\n{than}")
         else:
-            out += (f"\n\n[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — full ladder "
-                    f"loads during phase implement (see skills/tdq-build/references/rules/chung.md).")
-    if payload.get("source") == "compact" and (state or {}).get("active_request"):
-        plan_f = (state or {}).get("plan_file") or "docs/tdq/plan/<slug>.md"
-        out += (
-            f"\n\n[TDQ:ANCHOR] Compact recovery: request={state.get('active_request')} phase={pha} plan={plan_f}\n"
+            law_text = (f"[{MA_GON}] The build-less-than-asked law (muc_gat={muc}) — full ladder "
+                        f"loads during phase implement (see skills/tdq-build/references/rules/chung.md).")
+
+    # Derived recovery anchor block (O10)
+    src = str(payload.get("source") or "")
+    has_active = bool((state or {}).get("active_request"))
+    anchor_block = ""
+    if has_active and (src in ("compact", "resume") or payload.get("source") == "compact"):
+        req = state.get("active_request")
+        plan_f = state.get("plan_file") or f"docs/tdq/plan/{req}.md"
+        owner = state.get("implement_mode") or "main"
+        pts = plan_tick_state(cwd)
+        doing_tasks = []
+        if pts.get("path") and os.path.isfile(str(pts["path"])):
+            try:
+                with open(str(pts["path"]), encoding="utf-8") as f:
+                    for line in f:
+                        m = _TASK_LINE.match(line)
+                        if m and m.group(1) == "~":
+                            doing_tasks.append(m.group(2))
+            except OSError:
+                pass
+        doing_str = ",".join(doing_tasks) or "none"
+        dispatched_str = ",".join(pts.get("dispatched_ids", [])) or "none"
+        row = phase_row(state)
+        next_hint = row.get("cmd") or row.get("action") or "none"
+
+        raw_cwd = str(payload.get("cwd") or os.getcwd())
+        cwd_str = str(cwd)
+        if os.path.normpath(raw_cwd) == os.path.normpath(cwd_str):
+            wt_str = "root"
+        else:
+            try:
+                wt_str = os.path.relpath(raw_cwd, cwd_str).replace(os.sep, "/")
+            except ValueError:
+                wt_str = raw_cwd.replace(os.sep, "/")
+            if os.path.isfile(os.path.join(raw_cwd, ".git")):
+                wt_str = f"worktree:{wt_str}"
+
+        label = "Compact recovery:" if src == "compact" else f"{src.capitalize()} recovery:"
+        anchor_block = (
+            f"[TDQ:ANCHOR] {label} request={req} phase={pha} source={src} owner={owner} "
+            f"plan={plan_f} doing={doing_str} dispatched={dispatched_str} next={next_hint} worktree={wt_str}\n"
             f"Core anti-patterns: ANTI-1 (no fake red) · ANTI-2 (no blind assert) · ANTI-3 (clean git state) · "
             f"ANTI-4 (tick before code) · ANTI-5 (cap logs <= 15 lines) · ANTI-6 (explicit files in Cham)."
         )
-    out = cap(out, TOAN_MAX_LINES, TOAN_MAX_CHARS)
+
+    sections = [out]
+    if law_text:
+        sections.append(law_text)
+    if anchor_block:
+        sections.append(anchor_block)
+
+    full_out = "\n\n".join(sections)
+    rewritten = lenh_cho_project(full_out, cwd)
+
+    # Capping AFTER rewrite (O10):
+    # Essential information: Head and Anchor block must NEVER be cut!
+    if anchor_block and "[TDQ:ANCHOR]" in rewritten:
+        anchor_idx = rewritten.rfind("[TDQ:ANCHOR]")
+        pre_anchor = rewritten[:anchor_idx].rstrip()
+        post_anchor = rewritten[anchor_idx:]
+
+        if len(rewritten) > TOAN_MAX_CHARS:
+            needed = TOAN_MAX_CHARS - len(post_anchor) - 2
+            if needed > 0:
+                pre_anchor = pre_anchor[:needed - 1].rstrip() + "…"
+            rewritten = pre_anchor + "\n\n" + post_anchor
+
+        if len(rewritten.splitlines()) > TOAN_MAX_LINES:
+            anc_lines = len(post_anchor.splitlines())
+            max_pre = TOAN_MAX_LINES - anc_lines - 1
+            if max_pre > 0:
+                pre_anchor = "\n".join(pre_anchor.splitlines()[:max_pre])
+            rewritten = pre_anchor + "\n\n" + post_anchor
+    else:
+        rewritten = cap(rewritten, TOAN_MAX_LINES, TOAN_MAX_CHARS)
+
     if ghi:
-        # Logged AFTER the cap on purpose: `so_dong` must be the law lines that actually
-        # survived into the context, not the ones we meant to print. A row claiming 133 while
-        # the cap let 90 through is worse than no row at all.
         turn_log_append(cwd, "remind", session=session_id(payload), code=MA_GON,
                         event="SessionStart", muc_gat=muc,
-                        so_dong=len(out.partition(f"[{MA_GON}]")[2].splitlines()[1:]) if nap_day_du else 1,
+                        so_dong=len(rewritten.partition(f"[{MA_GON}]")[2].splitlines()[1:]) if nap_day_du else 1,
                         source=str(payload.get("source") or ""))
-    # Absolute paths AFTER both caps: the caps measure what the block says; rewriting first
-    # pushed the block over 600 characters and cut its tail off (measured 2026-10-03).
-    print(lenh_cho_project(out, cwd))
+    print(rewritten)
 
 
 if __name__ == "__main__":

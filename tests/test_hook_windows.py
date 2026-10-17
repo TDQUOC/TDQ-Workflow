@@ -31,8 +31,18 @@ CA_KIEM = {
     "stop_gate.py": ({"hook_event_name": "Stop"}, ""),
     "edit_gate.py": ({"hook_event_name": "PreToolUse", "tool_name": "Edit",
                       "tool_input": {"file_path": "src/a.py"}}, ""),
+    "read_gate.py": ({"hook_event_name": "PreToolUse", "tool_name": "Read",
+                      "tool_input": {"file_path": "src/a.py"}}, ""),
     "bash_gate.py": ({"hook_event_name": "PreToolUse", "tool_name": "Bash",
                       "tool_input": {"command": "git commit -m x"}}, ""),
+    "search_gate.py": ({"hook_event_name": "PreToolUse", "tool_name": "Grep",
+                        "tool_input": {"pattern": "foo"}}, ""),
+    "search_observe.py": ({"hook_event_name": "PostToolUse", "tool_name": "mcp__lsp__find_symbol",
+                           "tool_input": {"name": "bar"}}, ""),
+    "lsp_gate.py": ({"hook_event_name": "PreToolUse", "tool_name": "mcp__lsp__start_lsp",
+                     "tool_input": {"root_dir": "c:/repo", "language_id": "python"}}, ""),
+    "ask_gate.py": ({"hook_event_name": "PreToolUse", "tool_name": "AskUserQuestion",
+                     "tool_input": {"question": "ok?"}}, ""),
 }
 
 
@@ -98,6 +108,80 @@ class SauHookSongTest(unittest.TestCase):
                     encoding="utf-8", errors="replace",
                     env=moi_truong_nhu_host(), timeout=120)
                 self.assertEqual(proc.returncode, 0, ten_hook)
+
+    def test_bash_gate_powershell_parity(self):
+        """PowerShell commands receive the exact same git/ai trace inspection as Bash (O03)."""
+        proc = self.chay("bash_gate.py", {
+            "hook_event_name": "PreToolUse",
+            "tool_name": "PowerShell",
+            "tool_input": {"command": "git commit -m 'feat: test co-authored-by: claude'"}
+        })
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("TDQ:GIT", proc.stdout + proc.stderr)
+
+    def test_opencode_tdq_workflow_wrapper_filtered(self):
+        """Injected <TDQ_WORKFLOW> wrapper from OpenCode is stripped before checking approval (O03)."""
+        sys.path.insert(0, HOOKS)
+        try:
+            import prompt_context
+            # Prompt that only has approval words INSIDE wrapper is NOT an approval
+            p_wrapped_only = "<TDQ_WORKFLOW>Quy tắc: duyệt spec khi sẵn sàng</TDQ_WORKFLOW>\n\nHãy giải thích code này"
+            self.assertFalse(prompt_context.looks_like_approval(p_wrapped_only, "spec"))
+
+            # Prompt that has approval OUTSIDE wrapper IS an approval
+            p_real_approve = "<TDQ_WORKFLOW>Chỉ dẫn hệ thống</TDQ_WORKFLOW>\n\nduyệt spec"
+            self.assertTrue(prompt_context.looks_like_approval(p_real_approve, "spec"))
+        finally:
+            if sys.path and sys.path[0] == HOOKS:
+                sys.path.pop(0)
+
+    def test_quote_path_in_build_portable_antigravity(self):
+        """Antigravity hook commands must quote script paths to survive spaces on Windows (O03)."""
+        sys.path.insert(0, os.path.join(ROOT, "scripts"))
+        try:
+            import build_portable
+            out_file = os.path.join(self.tmp.name, "hooks.json")
+            build_portable._sinh_hooks_agy(out_file, nen_tang="win32", goc_cai="C:/Program Files/My Plugin")
+            with open(out_file, encoding="utf-8") as f:
+                data = json.load(f)
+            hooks = data.get("hooks", {})
+            found = False
+            for hook_list in hooks.values():
+                for h_entry in hook_list:
+                    for h in h_entry.get("hooks", []):
+                        cmd = h.get("command", "")
+                        if "agy_pretooluse_gate.py" in cmd:
+                            found = True
+                            self.assertIn('"C:/Program Files/My Plugin/hooks/scripts/agy_pretooluse_gate.py"', cmd)
+            self.assertTrue(found, "Did not find agy_pretooluse_gate hook in antigravity hooks")
+        finally:
+            if sys.path and sys.path[0] == os.path.join(ROOT, "scripts"):
+                sys.path.pop(0)
+
+    def test_utf8_io_switches_stdin(self):
+        """force_utf8 must be able to switch stdin encoding as well (O03)."""
+        sys.path.insert(0, os.path.join(ROOT, "scripts"))
+        try:
+            import utf8_io
+            class FakeStream:
+                def __init__(self, enc):
+                    self.encoding = enc
+                    self.reconfigured = False
+                def reconfigure(self, encoding, errors=None):
+                    del errors
+                    self.encoding = encoding
+                    self.reconfigured = True
+
+            fake_in = FakeStream("cp1252")
+            fake_out = FakeStream("utf-8")
+            fake_err = FakeStream("utf-8")
+            changed = utf8_io.force_utf8(out=fake_out, err=fake_err, inp=fake_in)
+            self.assertEqual(changed, 1)
+            self.assertTrue(fake_in.reconfigured)
+            self.assertEqual(fake_in.encoding, "utf-8")
+        finally:
+            if sys.path and sys.path[0] == os.path.join(ROOT, "scripts"):
+                sys.path.pop(0)
 
 
 if __name__ == "__main__":

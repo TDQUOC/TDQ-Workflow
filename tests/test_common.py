@@ -4,6 +4,9 @@ Chữ cái là lối vào cho user không gõ tiếng Việt: `prompt_context.LE
 đứng riêng, và đề xuất luôn ở option A, nên "A" là câu duyệt ở cả 3 cổng duyệt.
 """
 import importlib.util
+import io
+import json
+from unittest import mock
 import os
 import re
 import sys
@@ -22,6 +25,55 @@ pc = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(pc)
 
 MAX_CHARS = 240
+
+
+class PayloadBoundaryTest(unittest.TestCase):
+    def test_non_object_json_is_not_a_payload(self):
+        for value in (None, [], [1], 42, True, "approval"):
+            with self.subTest(value=value):
+                with mock.patch.object(sys, "stdin", io.StringIO(json.dumps(value))):
+                    self.assertEqual(common.read_payload(), {})
+
+    def test_nested_fields_are_type_checked(self):
+        payload = {"cwd": 42, "session_id": [], "tool_input": [1],
+                   "tool_name": {}, "prompt": False, "stop_hook_active": "false"}
+        with mock.patch.object(sys, "stdin", io.StringIO(json.dumps(payload))):
+            parsed = common.read_payload()
+        self.assertNotIn("cwd", parsed)
+        self.assertNotIn("session_id", parsed)
+        self.assertEqual(parsed["tool_input"], {})
+        self.assertNotIn("tool_name", parsed)
+        self.assertNotIn("prompt", parsed)
+        self.assertNotIn("stop_hook_active", parsed)
+
+    def test_invalid_tool_input_cannot_credit_a_concept_call(self):
+        payload = {"tool_name": "mcp__lsp__find_symbol", "tool_input": []}
+        with mock.patch.object(sys, "stdin", io.StringIO(json.dumps(payload))):
+            parsed = common.read_payload()
+        self.assertNotIn("tool_name", parsed)
+
+    def test_command_argv_is_preserved(self):
+        payload = {"tool_name": "shell", "tool_input": {
+            "command": ["bash", "-lc", "rg symbol"]}}
+        with mock.patch.object(sys, "stdin", io.StringIO(json.dumps(payload))):
+            self.assertEqual(common.read_payload(), payload)
+
+    def test_invalid_nested_values_cannot_credit_a_concept_call(self):
+        for field, value in (("command", ["rg", 42]), ("command", {}),
+                             ("pattern", []), ("root_dir", 42)):
+            with self.subTest(field=field, value=value):
+                payload = {"tool_name": "mcp__lsp__find_symbol",
+                           "tool_input": {field: value}}
+                with mock.patch.object(sys, "stdin", io.StringIO(json.dumps(payload))):
+                    parsed = common.read_payload()
+                self.assertNotIn(field, parsed["tool_input"])
+                self.assertNotIn("tool_name", parsed)
+
+    def test_valid_payload_is_preserved(self):
+        payload = {"cwd": "C:/project", "session_id": "s", "tool_name": "Bash",
+                   "tool_input": {"command": "rg symbol"}, "stop_hook_active": False}
+        with mock.patch.object(sys, "stdin", io.StringIO(json.dumps(payload))):
+            self.assertEqual(common.read_payload(), payload)
 
 
 class ApproveHintTest(unittest.TestCase):
@@ -108,6 +160,29 @@ class MaDongTest(unittest.TestCase):
 
     def test_khong_ma_trung(self):
         self.assertEqual(len(common.CODES), len(set(common.CODES)))
+
+
+class FormatDenialTest(unittest.TestCase):
+    """O07 — format_denial sinh đúng định dạng cho lần đầu và lần lặp."""
+
+    def test_lan_dau_full_remediation(self):
+        lines = ["Chặn code.", "Dòng 1", "Dòng 2"]
+        res = common.format_denial("TDQ:TEST", lines, repeat_count=0, day_du=True)
+        self.assertIn("[TDQ:TEST] Chặn code.", res)
+        self.assertIn("Dòng 1", res)
+        self.assertIn("Dòng 2", res)
+        self.assertNotIn("(lặp)", res)
+
+    def test_lan_lap_shortened_co_tag_va_action(self):
+        lines = ["Chặn code.", "Dòng 1: hướng dẫn", "Dòng 2: chi tiết"]
+        res1 = common.format_denial("TDQ:TEST", lines, repeat_count=0, day_du=True)
+        res2 = common.format_denial("TDQ:TEST", lines, repeat_count=1, day_du=True)
+        res3 = common.format_denial("TDQ:TEST", lines, repeat_count=2, day_du=True)
+
+        self.assertIn("(lặp)", res2)
+        self.assertIn("(lặp x3)", res3)
+        self.assertLess(len(res2), len(res1))
+        self.assertIn("Gỡ nhanh:", res2)
 
 
 if __name__ == "__main__":

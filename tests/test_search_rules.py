@@ -424,11 +424,135 @@ class LogQuaNguoiGoi(unittest.TestCase):
 
     def test_log_module_thuan_khong_tu_in(self):
         import ast
-        nguon = io.open(os.path.join(ROOT, "scripts", "search_rules.py"), encoding="utf-8").read()
+        with io.open(os.path.join(ROOT, "scripts", "search_rules.py"), encoding="utf-8") as f:
+            nguon = f.read()
         goi = {n.func.id for n in ast.walk(ast.parse(nguon))
                if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
         self.assertNotIn("print", goi)
         self.assertNotIn("open", goi)
+
+
+class TestParserRecognitionVaBudget(unittest.TestCase):
+    """Test O05 / U05: Parser status (recognized, not-recognized, unknown) và operational budget."""
+
+    def test_corpus_p01_bash_rg_recognized_code_search(self):
+        pl = sr.phan_loai("Bash", "rg 'read_payload' hooks")
+        self.assertEqual(pl["status"], "recognized")
+        self.assertEqual(pl["kind"], "code-search")
+        self.assertEqual(pl["loai"], sr.TIM_CODE)
+        self.assertEqual(pl["tu_khoa"], ["read_payload"])
+
+    def test_corpus_p02_printf_khong_cap_concept_credit(self):
+        credit = sr.la_goi_khai_niem("Bash", {"command": "printf '%s' 'graphify query approval'"})
+        self.assertIsNone(credit)
+
+    def test_corpus_p03_powershell_select_string_recognized(self):
+        pl = sr.phan_loai("PowerShell", "Select-String -Path scripts/*.py -Pattern 'approval'")
+        self.assertEqual(pl["status"], "recognized")
+        self.assertEqual(pl["kind"], "code-search")
+        self.assertEqual(pl["loai"], sr.TIM_CODE)
+        self.assertEqual(pl["tu_khoa"], ["approval"])
+
+    def test_corpus_p04_bash_c_unterminated_quote_unknown_malformed(self):
+        pl = sr.phan_loai("Bash", 'bash -c "rg \'unterminated"')
+        self.assertEqual(pl["status"], "unknown")
+        self.assertEqual(pl["reason"], "malformed")
+
+    def test_non_search_command_not_recognized(self):
+        pl = sr.phan_loai("Bash", "git status")
+        self.assertEqual(pl["status"], "not-recognized")
+        self.assertEqual(pl["kind"], "other")
+        self.assertEqual(pl["loai"], sr.KHONG)
+
+    def test_loc_file_command_recognized(self):
+        pl = sr.phan_loai("Bash", "ls src | grep Font")
+        self.assertEqual(pl["status"], "recognized")
+        self.assertEqual(pl["kind"], "file-list")
+        self.assertEqual(pl["loai"], sr.LOC_FILE)
+
+    def test_budget_input_chars_boundary(self):
+        limit = sr.GIOI_HAN_KY_TU
+        # limit - 1
+        cmd_under = "echo " + "a" * (limit - 6)
+        self.assertEqual(len(cmd_under), limit - 1)
+        pl_under = sr.phan_loai("Bash", cmd_under)
+        self.assertNotEqual(pl_under.get("reason"), "exhausted")
+
+        # limit
+        cmd_exact = "echo " + "a" * (limit - 5)
+        self.assertEqual(len(cmd_exact), limit)
+        pl_exact = sr.phan_loai("Bash", cmd_exact)
+        self.assertNotEqual(pl_exact.get("reason"), "exhausted")
+
+        # limit + 1
+        cmd_over = "echo " + "a" * (limit - 4)
+        self.assertEqual(len(cmd_over), limit + 1)
+        pl_over = sr.phan_loai("Bash", cmd_over)
+        self.assertEqual(pl_over["status"], "unknown")
+        self.assertEqual(pl_over["reason"], "exhausted")
+
+    def test_budget_nesting_depth_boundary(self):
+        # Build nested subshells $( ... $( ... ) ... )
+        # depth 7 (limit - 1)
+        cmd_7 = "echo " + "$(" * 7 + "grep foo a.ts" + ")" * 7
+        pl_7 = sr.phan_loai("Bash", cmd_7)
+        self.assertNotEqual(pl_7.get("reason"), "exhausted")
+
+        # depth 8 (limit)
+        cmd_8 = "echo " + "$(" * 8 + "grep foo a.ts" + ")" * 8
+        pl_8 = sr.phan_loai("Bash", cmd_8)
+        self.assertNotEqual(pl_8.get("reason"), "exhausted")
+
+        # depth 9 (limit + 1)
+        cmd_9 = "echo " + "$(" * 9 + "grep foo a.ts" + ")" * 9
+        pl_9 = sr.phan_loai("Bash", cmd_9)
+        self.assertEqual(pl_9["status"], "unknown")
+        self.assertEqual(pl_9["reason"], "exhausted")
+
+    def test_budget_work_units_boundary(self):
+        cmd = "echo hello world"  # 16 chars -> 16 in _tach_script + 16 in _tach_tu = 32 units
+        ns_under = sr.NganSach(max_work=50)
+        pl_under = sr.phan_loai("Bash", cmd, ngan_sach=ns_under)
+        self.assertNotEqual(pl_under.get("reason"), "exhausted")
+
+        ns_exact = sr.NganSach(max_work=32)
+        pl_exact = sr.phan_loai("Bash", cmd, ngan_sach=ns_exact)
+        self.assertNotEqual(pl_exact.get("reason"), "exhausted")
+
+        ns_over = sr.NganSach(max_work=31)
+        pl_over = sr.phan_loai("Bash", cmd, ngan_sach=ns_over)
+        self.assertEqual(pl_over["status"], "unknown")
+        self.assertEqual(pl_over["reason"], "exhausted")
+
+    def test_budget_output_items_boundary(self):
+        ns_under = sr.NganSach(max_output=10)
+        pl_under = sr.phan_loai("Bash", "cmd1 | cmd2 | cmd3", ngan_sach=ns_under)
+        self.assertNotEqual(pl_under.get("reason"), "exhausted")
+
+        ns_over = sr.NganSach(max_output=2)
+        pl_over = sr.phan_loai("Bash", "cmd1 | cmd2 | cmd3 | cmd4", ngan_sach=ns_over)
+        self.assertEqual(pl_over["status"], "unknown")
+        self.assertEqual(pl_over["reason"], "exhausted")
+
+    def test_budget_is_cumulative_across_branches(self):
+        ns = sr.NganSach(max_work=200)
+        cmd = "echo $(echo branch1); echo $(echo branch2); echo $(echo branch3)"
+        sr.phan_loai("Bash", cmd, ngan_sach=ns)
+        self.assertGreater(ns.work_units, len("branch1") + len("branch2") + len("branch3"))
+
+    def test_loai_bo_mutable_function_attribute(self):
+        pl1 = sr.phan_loai("Bash", "grep -f patterns.txt a.ts")
+        self.assertTrue(pl1["doan_mo"])
+        self.assertFalse(hasattr(sr._mau_kieu_grep, "tu_file"))
+        pl2 = sr.phan_loai("Bash", "grep 'single' a.ts")
+        self.assertFalse(pl2["doan_mo"])
+
+    def test_quyet_dinh_tu_choi_unknown_khong_fail_open(self):
+        pl_unknown = {"status": "unknown", "reason": "exhausted", "loai": "unknown", "tu_khoa": ["foo"]}
+        ok, ly_do = sr.quyet_dinh(pl_unknown, _tt(da_goi=True, so_lan=0, token=["foo"]))
+        self.assertFalse(ok)
+        self.assertIn("Command could not be parsed safely", ly_do)
+        self.assertIn("exhausted", ly_do)
 
 
 if __name__ == "__main__":

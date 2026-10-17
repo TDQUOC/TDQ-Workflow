@@ -28,10 +28,17 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import datetime
 
 GIT_TIMEOUT = 120
+
+U09_STATUS = "HOLD"
+U09_REASON = (
+    "Chưa đủ history/corpus case để mở advisory hoặc speculative probe; "
+    "giữ nguyên git merge-tree probe hiện hữu phân biệt clean/conflict/error."
+)
 
 # --- plan reading rules ------------------------------------------------------
 # Task line: `- [ ] **T1.1** (n3 e5m) work — Test: ...`
@@ -209,6 +216,137 @@ def _phut_uoc_luong(task):
     return 1
 
 
+# The task line ends with `— Test: <criterion>`; a runnable criterion states the command in
+# backticks. Prose after `Test:` ("đọc lại thấy đủ 3 mục") carries nothing to run.  # i18n-allow
+_TEST = re.compile(r"Test\s*:\s*(.*)$", re.S)
+_LENH_NGOAC = re.compile(r"`([^`]+)`")
+
+
+def lay_lenh_test(task):
+    """The command a task's `Test:` says to run, or None when there is none to run."""
+    for dong in task.text:
+        m = _TEST.search(dong)
+        if not m:
+            continue
+        lenh = _LENH_NGOAC.search(m.group(1))
+        if lenh:
+            return lenh.group(1).strip()
+    return None
+
+
+def chieu_phan_cong(tasks):
+    """Compute the assignment projection object and mode for a list of tasks (O06).
+
+    The projection captures all fields that participate in assignment and scheduling:
+    task order, phase, task code (ID), contract/description, test, dependencies,
+    file zones, MCP requirements, and estimates.
+
+    In explicit mode (at least one task declares explicit `Cần:`), progress checkbox
+    states and progress note lines are excluded from the projection.
+    In legacy-conservative mode (no task declares explicit `Cần:`), checkbox states
+    are included to preserve conservative legacy behavior.
+    """
+    phu_thuoc = doc_phu_thuoc(tasks)
+    mode = "explicit" if any(phu_thuoc.values()) else "legacy-conservative"
+    chieu = []
+    for t in tasks:
+        cac_dong = []
+        for dong in t.text[1:]:
+            d_strip = dong.strip()
+            # Ignore progress-only lines in projection
+            if d_strip.lower().startswith((
+                "tiến độ:", "tiến độ inline:", "tiến độ hoàn tất:", "progress:",
+                "progress inline:", "status:"
+            )):
+                continue
+            cac_dong.append(d_strip)
+
+        item = {
+            "ma": t.ma,
+            "phase": t.phase,
+            "mo_ta": t.text[0].strip() if t.text else "",
+            "dong_hop_dong": cac_dong,
+            "vung_file": sorted(t.vung_file),
+            "can_mcp": bool(t.can_mcp),
+            "uoc_luong": _phut_uoc_luong(t),
+            "test": lay_lenh_test(t),
+            "deps": sorted(phu_thuoc.get(t.ma, ())),
+        }
+        if mode == "legacy-conservative":
+            item["trang_thai"] = t.trang_thai
+        chieu.append(item)
+    return chieu, mode
+
+
+def tinh_sha_projection(tasks):
+    """(sha256_hex, mode) of canonical JSON representation of assignment projection."""
+    chieu, mode = chieu_phan_cong(tasks)
+    chuan = json.dumps(chieu, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    sha = hashlib.sha256(chuan.encode("utf-8")).hexdigest()
+    return sha, mode
+
+
+def ghi_ban_do_atomic(duong, ban_do):
+    """Write assignment map atomically via mkstemp + replace in the target directory."""
+    os.makedirs(os.path.dirname(duong), exist_ok=True)
+    noi_dung = json.dumps(ban_do, ensure_ascii=False, indent=2) + "\n"
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(duong), prefix=".team-", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(noi_dung)
+        os.replace(tmp, duong)
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+
+
+def kiem_tra_stale(plan_path, ban_do):
+    """Check if the plan on disk has changed in a way that makes ban_do stale.
+
+    Returns (is_stale: bool, reason: str).
+    """
+    if not isinstance(ban_do, dict):
+        return True, "Assignment map is not a valid object"
+
+    proj_version = ban_do.get("projection_version")
+    if proj_version is not None and proj_version != "v1":
+        # Unknown future version — per spec: Unknown version/unparseable không giả current.
+        return True, f"Unknown projection version '{proj_version}'"
+
+    if not os.path.isfile(plan_path):
+        return True, f"Plan file not found: {plan_path}"
+
+    current_tasks = doc_plan(plan_path)
+    if not current_tasks:
+        return True, "The plan holds no readable task"
+
+    if proj_version == "v1":
+        stored_mode = ban_do.get("projection_mode", "legacy-conservative")
+        current_sha, current_mode = tinh_sha_projection(current_tasks)
+        if stored_mode == "explicit":
+            if current_mode != "explicit":
+                return True, "Plan dependencies were removed (mode changed to legacy-conservative)"
+            stored_sha = ban_do.get("plan_assignment_sha")
+            if stored_sha != current_sha:
+                return True, "Plan structure or task assignment dependencies changed"
+            return False, ""
+        else:  # stored_mode == "legacy-conservative"
+            # Legacy plans without explicit dependencies remain conservative per spec:
+            # any content change to the plan file invalidates the map.
+            if ban_do.get("plan_sha") != sha_file(plan_path):
+                return True, "Plan file content changed (legacy-conservative whole-file SHA)"
+            return False, ""
+
+    # Legacy map without projection_version
+    stored_plan_sha = ban_do.get("plan_sha")
+    if stored_plan_sha != sha_file(plan_path):
+        return True, "The plan changed after assignment (legacy map without projection version)"
+    return False, ""
+
+
 def b_level(tasks, phu_thuoc):
     """Task code → total minutes of the LONGEST path from that task to the end of the graph.
 
@@ -372,9 +510,22 @@ def _boi_canh(project, can_ban_do=True):
     elif can_ban_do:
         raise LoiLuat("No assignment map yet. Run: "
                       "python3 scripts/tdq_team.py assign")
-    if ban_do is not None and can_ban_do and ban_do.get("plan_sha") != sha_file(plan):
-        raise LoiLuat("The plan changed after assignment — the map is stale. "
-                      "Run again: python3 scripts/tdq_team.py assign")
+    if can_ban_do:
+        if ban_do is None:
+            raise LoiLuat("No assignment map yet. Run: "
+                          "python3 scripts/tdq_team.py assign")
+        stale, ly_do = kiem_tra_stale(plan, ban_do)
+        if stale:
+            raise LoiLuat(f"The plan changed after assignment — the map is stale ({ly_do}). "
+                          f"Run again: python3 scripts/tdq_team.py assign")
+    return slug, plan, ban_do
+
+
+def _boi_canh_ban_do(project):
+    """(slug, plan_path, ban_do) guaranteed non-None ban_do, or raises LoiLuat."""
+    slug, plan, ban_do = _boi_canh(project, can_ban_do=True)
+    if ban_do is None:
+        raise LoiLuat("No assignment map yet. Run: python3 scripts/tdq_team.py assign")
     return slug, plan, ban_do
 
 
@@ -390,10 +541,14 @@ def lenh_phan_cong(project, _args):
         raise LoiLuat(f"The plan holds no readable task: {plan}")
     quyet = {t.ma: quyet_dinh_task(t, tasks) for t in tasks}
     dot = chia_dot(tasks, quyet)
+    proj_sha, proj_mode = tinh_sha_projection(tasks)
     ban_do = {
         "slug": slug,
         "plan_file": os.path.relpath(plan, project),
         "plan_sha": sha_file(plan),
+        "projection_version": "v1",
+        "projection_mode": proj_mode,
+        "plan_assignment_sha": proj_sha,
         "tasks": {
             t.ma: {
                 "quyet_dinh": quyet[t.ma][0],
@@ -404,10 +559,7 @@ def lenh_phan_cong(project, _args):
         },
     }
     duong = duong_ban_do(project, slug)
-    os.makedirs(os.path.dirname(duong), exist_ok=True)
-    with open(duong, "w", encoding="utf-8") as f:
-        json.dump(ban_do, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    ghi_ban_do_atomic(duong, ban_do)
     giao = sum(1 for r in ban_do["tasks"].values() if r["quyet_dinh"] == "giao")
     _log(f"assign → {len(tasks)} task(s) · assigned {giao} · kept {len(tasks) - giao} "
          f"· {max(dot.values())} wave(s)")
@@ -441,7 +593,7 @@ def _file_nong(tasks):
 
 
 def lenh_kiem_ke(project, _args):
-    _slug, _plan, ban_do = _boi_canh(project)
+    _slug, _plan, ban_do = _boi_canh_ban_do(project)
     van_de = []
     for ma, rec in ban_do["tasks"].items():
         if rec.get("quyet_dinh") == "giao":
@@ -507,7 +659,7 @@ def _ly_do_hoan(ma, tien_quyet, tasks, khoa, vung_file):
 
 
 def lenh_cum(project, _args):
-    _slug, plan, ban_do = _boi_canh(project)
+    _slug, plan, ban_do = _boi_canh_ban_do(project)
     danh_sach = doc_plan(plan)
     tasks = {t.ma: t for t in danh_sach}
     phu_thuoc = doc_phu_thuoc(danh_sach)
@@ -572,6 +724,7 @@ def _git(cwd, *args, check=True):
     # non-UTF-8 bytes (a binary file, or a string cut mid-character). On the default the
     # whole `kiem` command dies with UnicodeDecodeError — a failure that only shows up on
     # a real run, never in tests using pure ASCII files.
+    proc = None
     for attempt in range(3):
         proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
                               encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
@@ -581,6 +734,8 @@ def _git(cwd, *args, check=True):
             time.sleep(0.15 * (attempt + 1))
             continue
         break
+    if proc is None:
+        raise LoiLuat(f"git {' '.join(args)} could not be run")
     raise LoiLuat(f"git {' '.join(args)} failed ({proc.returncode}): "
                   f"{proc.stderr.strip() or proc.stdout.strip()}")
 
@@ -831,7 +986,7 @@ def _in_goi_y(muc):
 
 
 def lenh_mo(project, args):
-    slug, plan, ban_do = _boi_canh(project)
+    slug, plan, ban_do = _boi_canh_ban_do(project)
     ma = args.task
     if ma not in ban_do["tasks"]:
         raise LoiLuat(f"The map holds no task {ma}.")
@@ -898,27 +1053,9 @@ def _file_xung_dot(ra):
     return sorted(ten)
 
 
-# The task line ends with `— Test: <criterion>`; a runnable criterion states the command in
-# backticks. Prose after `Test:` ("đọc lại thấy đủ 3 mục") carries nothing to run.  # i18n-allow
-_TEST = re.compile(r"Test\s*:\s*(.*)$", re.S)
-_LENH_NGOAC = re.compile(r"`([^`]+)`")
-
-
-def lay_lenh_test(task):
-    """The command a task's `Test:` says to run, or None when there is none to run."""
-    for dong in task.text:
-        m = _TEST.search(dong)
-        if not m:
-            continue
-        lenh = _LENH_NGOAC.search(m.group(1))
-        if lenh:
-            return lenh.group(1).strip()
-    return None
-
-
 def _task_theo_ma(project, ma):
     """The Task of the current plan carrying this code, or None (a full branch name)."""
-    _slug, plan, _ban_do = _boi_canh(project, can_ban_do=False)
+    _slug, plan, _ = _boi_canh(project, can_ban_do=False)
     for t in doc_plan(plan):
         if t.ma.lower() == str(ma).lower():
             return t
@@ -994,7 +1131,7 @@ def _kiem_test_cua_task(project, slug, ma, nhanh):
 
 
 def lenh_kiem(project, args):
-    slug, _plan, ban_do = _boi_canh(project)
+    slug, _plan, ban_do = _boi_canh_ban_do(project)
     if not _la_repo(project):
         raise LoiLuat("This directory is not a git repo.")
     tich_hop = _nhanh_tich_hop(project, slug)
@@ -1044,7 +1181,7 @@ def _rebase_len_tich_hop(project, slug, ma, nhanh, tich_hop):
 
 
 def lenh_hop(project, args):
-    slug, _plan, ban_do = _boi_canh(project)
+    slug, _plan, ban_do = _boi_canh_ban_do(project)
     if not _la_repo(project):
         raise LoiLuat("This directory is not a git repo.")
     tich_hop, duong_tich_hop = _bao_dam_tich_hop(project, slug)
@@ -1345,7 +1482,8 @@ def canh_bao_lach_luat(cwd, rel_target):
         state = tdq_state.load(cwd, heal=False) or {}
         if tdq_state.effective_phase(state, warn=False) != "implement":
             return None
-        if not MODE_QUA_DOI.get(tdq_state.effective_mode(state, warn=False)):
+        mode = tdq_state.effective_mode(state, warn=False)
+        if not mode or not MODE_QUA_DOI.get(mode):
             return None
         slug = state.get("active_request")
         if not slug:

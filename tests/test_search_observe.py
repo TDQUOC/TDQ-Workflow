@@ -101,6 +101,13 @@ class GhiKhaiNiem(BaseSo):
         self.tool("Bash", command="graphify extract . --code-only")
         self.assertEqual(self.rows(khoa), [], "grep và dựng đồ thị không phải câu hỏi khái niệm")
 
+    def test_khai_niem_khong_nhan_lenh_malformed_hoac_unknown(self):
+        """Lệnh graphify malformed (unclosed quote) hoặc vượt ngân sách không được nhận diện là khái niệm."""
+        khoa = self.mo_request()
+        self.tool("Bash", command="graphify query 'unclosed quote")
+        self.tool("Bash", command="graphify query " + ("a" * 35000))
+        self.assertEqual(self.rows(khoa), [], "lệnh lỗi/unknown không được cấp credit khái niệm")
+
 
 class GhiPrompt(BaseSo):
     def test_prompt_chi_luu_token_khong_luu_nguyen_van(self):
@@ -189,6 +196,13 @@ class TrangThai(unittest.TestCase):
         self.assertEqual(search_observe.trang_thai([]),
                          {"da_goi_khai_niem": False, "so_lan_tim_tu_lan_goi": 0,
                           "so_lan_bi_chan": 0, "token_prompt": set()})
+
+    def test_trang_thai_ghi_nhan_unknown_bi_chan_chinh_xac(self):
+        """Lệnh unknown bị chặn ghi nhận cho_phep=False và tinh_cua_so=False."""
+        rows = [{"loai": "tim", "cho_phep": False, "tinh_cua_so": False}]
+        tt = search_observe.trang_thai(rows)
+        self.assertEqual(tt["so_lan_bi_chan"], 1)
+        self.assertEqual(tt["so_lan_tim_tu_lan_goi"], 0)
 
     def test_trang_thai_so_co_tran(self):
         with tempfile.TemporaryDirectory() as tmp:

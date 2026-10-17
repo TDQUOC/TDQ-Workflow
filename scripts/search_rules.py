@@ -62,6 +62,57 @@ ONG = re.compile(r"\\\||(?<!\\)\|")
 THOAT_CHU = re.compile(r"\\[A-Za-z]")
 CAU_TU_NHIEN = re.compile(r"[A-Za-z]+(?: +[A-Za-z]+){2,}")
 DO_SAU_TOI_DA = 8
+GIOI_HAN_KY_TU = 32768
+GIOI_HAN_CONG_VIEC = 262144
+GIOI_HAN_DAU_RA = 1024
+
+
+class NganSach:
+    """Cumulative operational budget for search parsing (O05).
+
+    Limits:
+      - input_chars: 32768
+      - work_units: 262144
+      - nesting: 8
+      - output_items: 1024
+    """
+
+    def __init__(self, max_input=GIOI_HAN_KY_TU, max_work=GIOI_HAN_CONG_VIEC,
+                 max_depth=DO_SAU_TOI_DA, max_output=GIOI_HAN_DAU_RA):
+        self.max_input = max_input
+        self.max_work = max_work
+        self.max_depth = max_depth
+        self.max_output = max_output
+        self.input_chars = 0
+        self.work_units = 0
+        self.output_items = 0
+        self.can_kiet = False
+        self.ly_do = None
+        self.la_malformed = False
+
+    def ghi_nhan_dau_vao(self, n):
+        self.input_chars += n
+        if self.input_chars > self.max_input:
+            self.can_kiet = True
+            self.ly_do = "exhausted"
+            return False
+        return True
+
+    def tinh_cong_viec(self, n=1):
+        self.work_units += n
+        if self.work_units > self.max_work:
+            self.can_kiet = True
+            self.ly_do = "exhausted"
+            return False
+        return True
+
+    def ghi_nhan_dau_ra(self, n=1):
+        self.output_items += n
+        if self.output_items > self.max_output:
+            self.can_kiet = True
+            self.ly_do = "exhausted"
+            return False
+        return True
 # Shells whose `-c`/`-Command`/`/c` string is itself a script: `bash -c 'grep foo .'` is a
 # search, and the first version read it as one opaque command (review 2026-10-03, R1#7).
 SHELL_BOC = {"bash", "sh", "zsh", "dash", "ksh", "pwsh", "powershell", "cmd"}
@@ -131,16 +182,20 @@ def loi_nhac(tang_song=None, ngon_ngu=None, file_dich=None):
 
 # ---------------------------------------------------------------- shell splitting
 
-def _khop_ngoac(s, i):
+def _khop_ngoac(s, i, ngan_sach=None):
     """Index of the ')' closing a '(' opened just before s[i]; len(s) when unbalanced."""
     sau, ngoac, n = 1, None, len(s)
     while i < n:
+        if ngan_sach and not ngan_sach.tinh_cong_viec(1):
+            break
         c = s[i]
         if ngoac == "'":
             if c == "'":
                 ngoac = None
         elif c == "\\":
             i += 1
+            if ngan_sach:
+                ngan_sach.tinh_cong_viec(1)
         elif ngoac == '"':
             if c == '"':
                 ngoac = None
@@ -153,28 +208,49 @@ def _khop_ngoac(s, i):
             if sau == 0:
                 return i
         i += 1
+    if sau != 0 or ngoac is not None:
+        if ngan_sach:
+            ngan_sach.la_malformed = True
     return n
 
 
-def _tach_script(s, do_sau=0):
+def _tach_script(s, do_sau=0, ngan_sach=None):
     """Split a shell script into pipelines (lists of command strings), quote-aware.
 
     Separators: && || ; & newline; pipes: | and |&. Bodies of $( ... ), <( ... ) and backticks
     are parsed as pipelines of their own and replaced in the parent by a placeholder.
     """
+    if ngan_sach is None:
+        ngan_sach = NganSach()
+    if do_sau > ngan_sach.max_depth:
+        ngan_sach.can_kiet = True
+        ngan_sach.ly_do = "exhausted"
+        return []
+
     ong_list, phan, buf, con = [], [], [], []
     ngoac, i, n = None, 0, len(s)
 
     def het_phan():
-        phan.append("".join(buf))
-        buf.clear()
+        if buf:
+            phan.append("".join(buf))
+            buf.clear()
+            if not ngan_sach.ghi_nhan_dau_ra(1):
+                return False
+        return True
 
     def het_ong():
         het_phan()
-        ong_list.append([p for p in phan if p.strip()])
+        filtered = [p for p in phan if p.strip()]
+        if filtered:
+            ong_list.append(filtered)
+            if not ngan_sach.ghi_nhan_dau_ra(1):
+                return False
         phan.clear()
+        return True
 
     while i < n:
+        if not ngan_sach.tinh_cong_viec(1):
+            break
         c = s[i]
         if ngoac == "'":
             buf.append(c)
@@ -185,17 +261,26 @@ def _tach_script(s, do_sau=0):
         if c == "\\" and i + 1 < n:
             buf.append(s[i:i + 2])
             i += 2
+            ngan_sach.tinh_cong_viec(1)
             continue
         if (c == "$" or (c == "<" and ngoac is None)) and s.startswith("(", i + 1):
-            j = _khop_ngoac(s, i + 2)
-            con.append(s[i + 2:j])
+            j = _khop_ngoac(s, i + 2, ngan_sach)
+            if j < n:
+                con.append(s[i + 2:j])
+            else:
+                con.append(s[i + 2:])
+                ngan_sach.la_malformed = True
             buf.append(CHO_THAY)
             i = j + 1
             continue
         if c == "`":
             j = s.find("`", i + 1)
-            j = n if j < 0 else j
-            con.append(s[i + 1:j])
+            if j < 0:
+                j = n
+                ngan_sach.la_malformed = True
+                con.append(s[i + 1:])
+            else:
+                con.append(s[i + 1:j])
             buf.append(CHO_THAY)
             i = j + 1
             continue
@@ -234,18 +319,30 @@ def _tach_script(s, do_sau=0):
         else:
             buf.append(c)
         i += 1
+
+    if ngoac is not None:
+        ngan_sach.la_malformed = True
     het_ong()
-    if do_sau < DO_SAU_TOI_DA:
-        for than in con:
-            ong_list.extend(_tach_script(than, do_sau + 1))
+
+    if con:
+        if do_sau >= ngan_sach.max_depth:
+            ngan_sach.can_kiet = True
+            ngan_sach.ly_do = "exhausted"
+        elif not ngan_sach.can_kiet:
+            for than in con:
+                ong_list.extend(_tach_script(than, do_sau + 1, ngan_sach))
     return [o for o in ong_list if o]
 
 
-def _tach_tu(phan):
+def _tach_tu(phan, ngan_sach=None):
     """argv of one command; best effort when quotes are unbalanced."""
+    if ngan_sach:
+        ngan_sach.tinh_cong_viec(len(phan))
     try:
         return shlex.split(phan, posix=True)
     except ValueError:
+        if ngan_sach:
+            ngan_sach.la_malformed = True
         return [t.strip("'\"") for t in re.findall(r"\"[^\"]*\"?|'[^']*'?|\S+", phan)]
 
 
@@ -315,7 +412,7 @@ def _kieu(ten, args):
 # ---------------------------------------------------------------- pattern extraction
 
 def _mau_kieu_grep(ten, args):
-    """Patterns of grep/rg/ag/ack/git grep: every -e/--regexp, else the first positional."""
+    """Patterns of grep/rg/ag/ack/git grep: returns (patterns, tu_file)."""
     ngan = GIA_TRI_NGAN.get(ten, GIA_TRI_NGAN["grep"])
     mau, vi_tri, tu_file, het_tuy_chon, i = [], None, False, False, 0
     while i < len(args):
@@ -350,12 +447,11 @@ def _mau_kieu_grep(ten, args):
         elif vi_tri is None:
             vi_tri = a
         i += 1
-    _mau_kieu_grep.tu_file = tu_file
     if mau:
-        return mau
+        return mau, tu_file
     if tu_file or vi_tri is None:
-        return []
-    return [vi_tri]
+        return [], tu_file
+    return [vi_tri], tu_file
 
 
 def _mau_findstr(args):
@@ -412,8 +508,9 @@ def _lan_tim(ten, args):
         return _hinh_mau(_mau_select_string(args))
     if ten == "git":
         args = _git_lenh_con(args)[1]
-    nhanh, doan_mo = _hinh_mau(_mau_kieu_grep(ten, args))
-    if getattr(_mau_kieu_grep, "tu_file", False):
+    cac_mau, tu_file = _mau_kieu_grep(ten, args)
+    nhanh, doan_mo = _hinh_mau(cac_mau)
+    if tu_file:
         # `-f patterns.txt`: a guess-list moved into a file is still a guess-list (R1#9).
         doan_mo = True
     return nhanh, doan_mo
@@ -507,15 +604,28 @@ def _tim_trong_exec(args):
     return None
 
 
-def _phan_loai_ong(cac_phan, do_sau=0):
+def _phan_loai_ong(cac_phan, do_sau=0, ngan_sach=None):
     """Yield (loai, alternatives, doan_mo) for every search part of one pipeline."""
-    da_chuan = [_chuan_hoa(_tach_tu(p)) for p in cac_phan]
+    if ngan_sach is None:
+        ngan_sach = NganSach()
+    if do_sau > ngan_sach.max_depth:
+        ngan_sach.can_kiet = True
+        ngan_sach.ly_do = "exhausted"
+        return
+
+    da_chuan = [_chuan_hoa(_tach_tu(p, ngan_sach)) for p in cac_phan]
     kieu = [_kieu(ten, args) for ten, args, _ in da_chuan]
     for k, (ten, args, qua_xargs) in enumerate(da_chuan):
+        if ngan_sach.can_kiet:
+            break
         boc = _script_boc(ten, args)
-        if boc is not None and do_sau < DO_SAU_TOI_DA:
-            for ong in _tach_script(_bo_heredoc(boc)):
-                yield from _phan_loai_ong(ong, do_sau + 1)
+        if boc is not None:
+            if do_sau >= ngan_sach.max_depth:
+                ngan_sach.can_kiet = True
+                ngan_sach.ly_do = "exhausted"
+                break
+            for ong in _tach_script(_bo_heredoc(boc), do_sau + 1, ngan_sach):
+                yield from _phan_loai_ong(ong, do_sau + 1, ngan_sach)
             continue
         if ten == "find":
             ex = _tim_trong_exec(args)
@@ -543,45 +653,157 @@ def _phan_loai_ong(cac_phan, do_sau=0):
 
 
 def _du_phong(script):
-    """Regex best effort when the structured parse fails: any search program -> tim_code."""
+    """Regex fallback when structured parse fails: unknown / malformed."""
     m = re.search(r"(?<![\w-])(grep|egrep|fgrep|rg|ag|ack|findstr|select-string|sls)(?![\w-])"
                   r"[^\n'\"]*?(['\"])(.*?)\2", script, re.I)
     if m:
         nhanh, doan_mo = _hinh_mau([m.group(3)])
-        return {"loai": TIM_CODE, "tu_khoa": nhanh, "doan_mo": doan_mo}
+        return {"loai": TIM_CODE, "status": "unknown", "reason": "malformed",
+                "kind": None, "tu_khoa": nhanh, "doan_mo": doan_mo}
     if re.search(r"(?<![\w-])(grep|egrep|fgrep|rg|ag|ack|findstr|select-string|sls)(?![\w-])",
                  script, re.I):
-        return {"loai": TIM_CODE, "tu_khoa": [], "doan_mo": False}
-    return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
+        return {"loai": TIM_CODE, "status": "unknown", "reason": "malformed",
+                "kind": None, "tu_khoa": [], "doan_mo": False}
+    return {"loai": "unknown", "status": "unknown", "reason": "malformed",
+            "kind": None, "tu_khoa": [], "doan_mo": False}
 
 
-def phan_loai(cong_cu, lenh):
-    """Classify a Grep pattern or a shell command. Returns {"loai", "tu_khoa", "doan_mo"}."""
+def phan_loai(cong_cu, lenh, ngan_sach=None):
+    """Classify a Grep pattern or a shell command.
+
+    Returns {"loai", "status", "kind", "reason", "tu_khoa", "doan_mo"}.
+    - status: "recognized" | "not-recognized" | "unknown"
+    - kind: "code-search" | "file-list" | "other" | None
+    - reason: "code_search" | "file_listing" | "not_search" | "exhausted" | "malformed" | "unsupported"
+    """
+    if ngan_sach is None:
+        ngan_sach = NganSach()
+
     if cong_cu == "Grep":
         vao = lenh if isinstance(lenh, dict) else {"pattern": _script_cua(lenh)}
-        nhanh, doan_mo = _hinh_mau([vao.get("pattern") or ""])
+        raw_pat = str(vao.get("pattern") or "")
+        if not ngan_sach.ghi_nhan_dau_vao(len(raw_pat)):
+            return {
+                "loai": "unknown",
+                "status": "unknown",
+                "reason": "exhausted",
+                "kind": None,
+                "tu_khoa": [],
+                "doan_mo": False,
+            }
+        nhanh, doan_mo = _hinh_mau([raw_pat])
         loc = str(vao.get("glob") or "")
         path = str(vao.get("path") or "")
         if (str(vao.get("type") or "").lower() in LOAI_TAI_LIEU
                 or (loc and _la_tai_lieu(loc.replace("*", "x")))
                 or (path and _la_tai_lieu(path))):
-            return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
-        return {"loai": TIM_CODE, "tu_khoa": nhanh, "doan_mo": doan_mo, "file_dich": path or None}
+            return {
+                "loai": KHONG,
+                "status": "not-recognized",
+                "kind": "other",
+                "reason": "not_search",
+                "tu_khoa": [],
+                "doan_mo": False,
+            }
+        return {
+            "loai": TIM_CODE,
+            "status": "recognized",
+            "kind": "code-search",
+            "reason": "code_search",
+            "tu_khoa": nhanh,
+            "doan_mo": doan_mo,
+            "file_dich": path or None,
+        }
+
     if str(cong_cu).lower() not in CONG_CU_SHELL:
-        return {"loai": KHONG, "tu_khoa": [], "doan_mo": False}
-    script = _bo_heredoc(_script_cua(lenh))
+        return {
+            "loai": KHONG,
+            "status": "not-recognized",
+            "kind": "other",
+            "reason": "not_shell",
+            "tu_khoa": [],
+            "doan_mo": False,
+        }
+
+    raw_script = _script_cua(lenh)
+    if not ngan_sach.ghi_nhan_dau_vao(len(raw_script)):
+        return {
+            "loai": "unknown",
+            "status": "unknown",
+            "reason": "exhausted",
+            "kind": None,
+            "tu_khoa": [],
+            "doan_mo": False,
+        }
+
+    script = _bo_heredoc(raw_script)
     try:
-        ket_qua = [r for ong in _tach_script(script) for r in _phan_loai_ong(ong)]
+        ket_qua = [r for ong in _tach_script(script, ngan_sach=ngan_sach)
+                   for r in _phan_loai_ong(ong, ngan_sach=ngan_sach)]
     except Exception:  # noqa: BLE001 — the gate must never break on an odd command
         return _du_phong(script)
+
+    if ngan_sach.can_kiet:
+        return {
+            "loai": "unknown",
+            "status": "unknown",
+            "reason": "exhausted",
+            "kind": None,
+            "tu_khoa": [],
+            "doan_mo": False,
+        }
+
+    if ngan_sach.la_malformed:
+        m = re.search(r"(?<![\w-])(grep|egrep|fgrep|rg|ag|ack|findstr|select-string|sls)(?![\w-])",
+                      script, re.I)
+        loai = TIM_CODE if m else "unknown"
+        nhanh, doan_mo = ([], False)
+        if m:
+            m_sub = re.search(r"(?<![\w-])(grep|egrep|fgrep|rg|ag|ack|findstr|select-string|sls)(?![\w-])"
+                              r"[^\n'\"]*?(['\"])(.*?)\2", script, re.I)
+            if m_sub:
+                nhanh, doan_mo = _hinh_mau([m_sub.group(3)])
+        return {
+            "loai": loai,
+            "status": "unknown",
+            "reason": "malformed",
+            "kind": None,
+            "tu_khoa": nhanh,
+            "doan_mo": doan_mo,
+        }
+
     tim = [r for r in ket_qua if r[0] == TIM_CODE]
     if tim:
         tu_khoa = []
         for _, nhanh, _ in tim:
             tu_khoa.extend(x for x in nhanh if x not in tu_khoa)
-        return {"loai": TIM_CODE, "tu_khoa": tu_khoa, "doan_mo": any(r[2] for r in tim)}
+        return {
+            "loai": TIM_CODE,
+            "status": "recognized",
+            "kind": "code-search",
+            "reason": "code_search",
+            "tu_khoa": tu_khoa,
+            "doan_mo": any(r[2] for r in tim),
+        }
+
     loai = LOC_FILE if any(r[0] == LOC_FILE for r in ket_qua) else KHONG
-    return {"loai": loai, "tu_khoa": [], "doan_mo": False}
+    if loai == LOC_FILE:
+        return {
+            "loai": LOC_FILE,
+            "status": "recognized",
+            "kind": "file-list",
+            "reason": "file_listing",
+            "tu_khoa": [],
+            "doan_mo": False,
+        }
+    return {
+        "loai": KHONG,
+        "status": "not-recognized",
+        "kind": "other",
+        "reason": "not_search",
+        "tu_khoa": [],
+        "doan_mo": False,
+    }
 
 
 # ---------------------------------------------------------------- decision
@@ -595,6 +817,13 @@ def _token(nhanh):
 
 def quyet_dinh(pl, trang_thai):
     """Apply the three rules of spec §3 in order. Returns (allowed, reason)."""
+    status = pl.get("status")
+    if status == "unknown":
+        ly_do = pl.get("reason") or "unknown"
+        nhac = loi_nhac(trang_thai.get("tang_song"),
+                        ngon_ngu=trang_thai.get("ngon_ngu"),
+                        file_dich=pl.get("file_dich"))
+        return False, f"[TDQ:SEARCH] Command could not be parsed safely ({ly_do}).\n{nhac}"
     loai = pl.get("loai")
     if loai == LOC_FILE:
         return True, "file-list filtering"
@@ -656,14 +885,23 @@ def la_goi_khai_niem(ten_tool, tool_input):
         return f"lsp:{cuoi}" if LSP_HOI.match(cuoi) else None
     if ten.lower() in CONG_CU_SHELL or ten.lower() == "powershell":
         vao = tool_input or {}
+        if not isinstance(vao, dict):
+            return None
         script = _script_cua(vao.get("command") or vao.get("cmd") or "")
+        ngan_sach = NganSach()
+        if not ngan_sach.ghi_nhan_dau_vao(len(script)):
+            return None
         try:
-            cac_ong = _tach_script(script)
+            cac_ong = _tach_script(script, ngan_sach=ngan_sach)
+            if ngan_sach.la_malformed or ngan_sach.can_kiet:
+                return None
         except Exception:  # noqa: BLE001 — a recognizer never raises into a hook
             return None
         for ong in cac_ong:
             for phan in ong:
-                ten_ct, args, _ = _chuan_hoa(_tach_tu(phan))
+                ten_ct, args, _ = _chuan_hoa(_tach_tu(phan, ngan_sach))
+                if ngan_sach.la_malformed or ngan_sach.can_kiet:
+                    return None
                 if ten_ct == "graphify" and args and args[0] in GRAPHIFY_HOI:
                     return f"graphify:{args[0]}"
     return None

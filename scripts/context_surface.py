@@ -221,6 +221,85 @@ def measure_hooks(runs=5):
     return rows
 
 
+def measure_dispatcher_parity(runs=10):
+    """Protocol O08: Measure paired runs between baseline (separate bash_gate + search_gate)
+    and candidate unified dispatch on host Windows.
+
+    Returns:
+      dict with keys: baseline_median_ms, candidate_median_ms, speedup_pct, equivalent, decision, runs
+    """
+    baseline_times = []
+    candidate_times = []
+    equivalent = True
+
+    cases = [
+        ("allow", {"hook_event_name": "PreToolUse", "tool_name": "Bash",
+                   "tool_input": {"command": "git status"}}),
+        ("remind", {"hook_event_name": "PreToolUse", "tool_name": "Bash",
+                    "tool_input": {"command": "git commit -m 'feat: co-authored-by: claude'"}}),
+    ]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        cwd = _seed_project(tmp)
+        bash_gate_script = os.path.join(ROOT, "hooks", "scripts", "bash_gate.py")
+        search_gate_script = os.path.join(ROOT, "hooks", "scripts", "search_gate.py")
+
+        cand_script = os.path.join(tmp, "candidate_dispatch.py")
+        scripts_dir = os.path.join(ROOT, "hooks", "scripts").replace("\\", "/")
+        with open(cand_script, "w", encoding="utf-8") as f:
+            f.write(
+                f'import sys, os\n'
+                f'sys.path.insert(0, "{scripts_dir}")\n'
+                f'import _common\n'
+                f'import bash_gate\n'
+                f'import search_gate\n'
+                f'payload = _common.read_payload()\n'
+                f'bash_gate.main()\n'
+                f'search_gate.main()\n'
+            )
+
+        for case_name, base_payload in cases:
+            payload = dict(base_payload, cwd=cwd, session_id="meas_s1")
+            data = json.dumps(payload)
+
+            for _ in range(runs):
+                t0 = datetime.datetime.now()
+                p1 = subprocess.run([sys.executable, bash_gate_script], input=data,
+                                    capture_output=True, text=True, encoding="utf-8", timeout=30)
+                p2 = subprocess.run([sys.executable, search_gate_script], input=data,
+                                    capture_output=True, text=True, encoding="utf-8", timeout=30)
+                t_base = (datetime.datetime.now() - t0).total_seconds() * 1000
+                baseline_times.append(t_base)
+
+                t1 = datetime.datetime.now()
+                p_cand = subprocess.run([sys.executable, cand_script], input=data,
+                                        capture_output=True, text=True, encoding="utf-8", timeout=30)
+                t_cand = (datetime.datetime.now() - t1).total_seconds() * 1000
+                candidate_times.append(t_cand)
+
+                base_out = (p1.stdout or "") + (p1.stderr or "") + (p2.stdout or "") + (p2.stderr or "")
+                cand_out = (p_cand.stdout or "") + (p_cand.stderr or "")
+                if case_name == "remind" and ("TDQ:GIT" in base_out) != ("TDQ:GIT" in cand_out):
+                    equivalent = False
+
+        base_med = statistics.median(baseline_times) if baseline_times else 0.0
+        cand_med = statistics.median(candidate_times) if candidate_times else 0.0
+        speedup = ((base_med - cand_med) / base_med * 100) if base_med > 0 else 0.0
+
+        decision = "GO" if (speedup >= 30.0 and equivalent) else "NO-GO"
+
+        res = {
+            "baseline_median_ms": round(base_med, 2),
+            "candidate_median_ms": round(cand_med, 2),
+            "speedup_pct": round(speedup, 2),
+            "equivalent": equivalent,
+            "decision": decision,
+            "runs": runs,
+            "cases_count": len(cases),
+        }
+        return res
+
+
 # ------------------------------------------------------------------------- in
 
 def print_table(headers, rows):
@@ -236,6 +315,8 @@ def main(argv=None):
         description="Measure the context surface and hook speed of tdq-workflow.")
     parser.add_argument("--hooks", action="store_true",
                         help="time each hook instead of scanning the surface")
+    parser.add_argument("--dispatcher", action="store_true",
+                        help="measure dispatcher baseline vs candidate parity under O08 protocol")
     parser.add_argument("--runs", type=int, default=5,
                         help="how many runs per hook with --hooks (default 5)")
     parser.add_argument("--quiet", action="store_true", help="turn the progress log off")
@@ -249,6 +330,23 @@ def main(argv=None):
               f"empty temp project, median taken.")
         print()
         print_table(("hook", "situation", "median", "fastest", "slowest"), rows)
+        return 0
+
+    if args.dispatcher:
+        _log(f"measuring dispatcher parity, {args.runs} paired run(s)")
+        res = measure_dispatcher_parity(args.runs)
+        print(f"O08 Dispatcher Protocol: {args.runs} paired run(s) on Windows host")
+        print()
+        print_table(
+            ("metric", "value"),
+            [
+                ["baseline_median", f"{res['baseline_median_ms']}ms"],
+                ["candidate_median", f"{res['candidate_median_ms']}ms"],
+                ["speedup", f"{res['speedup_pct']}%"],
+                ["equivalence", "PASS" if res["equivalent"] else "FAIL"],
+                ["protocol_decision", res["decision"]],
+            ]
+        )
         return 0
 
     _log("starting the surface scan")

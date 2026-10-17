@@ -484,3 +484,130 @@ class TestNhacWorktree(unittest.TestCase):
         rc, out, _err = self.ctx()
         self.assertEqual(rc, 0)
         self.assertNotIn("[TDQ:WORKTREE]", out)
+
+
+class TestSessionStartCheckpointO10(unittest.TestCase):
+    """Hợp đồng Checkpoint pure derived/no-heal và cap sau rewrite — O10 (T4.5)."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def test_no_heal_corrupt_state_not_renamed_or_mutated(self):
+        """Corrupt state.json trên đĩa KHÔNG bị heal, đổi tên hay ghi đè."""
+        state_dir = os.path.join(self.cwd, "docs", "tdq")
+        os.makedirs(state_dir, exist_ok=True)
+        broken_path = os.path.join(state_dir, "state.json")
+        broken_content = '{"active_request": "corrupt", unclosed_json'
+        with open(broken_path, "w", encoding="utf-8") as f:
+            f.write(broken_content)
+
+        rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s-corrupt"})
+        self.assertEqual(rc, 0)
+        # File gốc vẫn còn nguyên, không bị đổi tên hay xoá
+        self.assertTrue(os.path.isfile(broken_path))
+        with open(broken_path, "r", encoding="utf-8") as f:
+            self.assertEqual(f.read(), broken_content)
+        # Không có file corrupt mới sinh ra
+        corrupt_files = [f for f in os.listdir(state_dir) if "corrupt" in f and f != "state.json"]
+        self.assertEqual(len(corrupt_files), 0)
+        # Rơi xuống default hướng dẫn an toàn, không giả hoàn tất hay anchor giả
+        self.assertIn("[TDQ:NEXT]", out)
+        self.assertNotIn("[TDQ:ANCHOR]", out)
+
+    def test_no_heal_missing_state_does_not_create_file(self):
+        """Missing state không tự tạo file hay thay đổi filesystem."""
+        rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s-missing"})
+        self.assertEqual(rc, 0)
+        self.assertFalse(os.path.exists(os.path.join(self.cwd, "docs", "tdq", "state.json")))
+        self.assertIn("[TDQ:NEXT]", out)
+        self.assertNotIn("[TDQ:ANCHOR]", out)
+
+    def test_anchor_derived_fields_doing_dispatched_owner_source_next_worktree(self):
+        """Checkpoint dẫn xuất đầy đủ các trường: doing, dispatched, owner, source, next, worktree."""
+        plan_content = """# Plan
+- [x] **T1.0** setup
+- [~] **T1.1** (e10m) task dang lam
+- [>] **T1.2** (e15m) task da giao subagent
+- [ ] **T1.3** task chua lam
+"""
+        plan_rel = "docs/tdq/plan/2026-10-17-test-o10.md"
+        write_file(self.cwd, plan_rel, plan_content)
+        write_state(self.cwd, active_request="2026-10-17-test-o10", lane="full",
+                    phase="implement", implement_mode="subagent",
+                    plan_file=plan_rel, plan_approved=True, spec_approved=True)
+
+        rc, out, _ = run_hook("session_start.py", {
+            "cwd": self.cwd, "session_id": "s-anchor-1", "source": "compact"
+        })
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:ANCHOR]", out)
+        self.assertIn("Compact recovery:", out)
+        self.assertIn("request=2026-10-17-test-o10", out)
+        self.assertIn("phase=implement", out)
+        self.assertIn("source=compact", out)
+        self.assertIn("owner=subagent", out)
+        self.assertIn("doing=T1.1", out)
+        self.assertIn("dispatched=T1.2", out)
+        self.assertIn("worktree=root", out)
+        self.assertIn("plan=docs/tdq/plan/2026-10-17-test-o10.md", out)
+        self.assertIn("Core anti-patterns: ANTI-1", out)
+
+    def test_anchor_resume_recovery_source(self):
+        """Kênh resume phát Resume recovery với đúng source=resume."""
+        write_state(self.cwd, active_request="2026-10-17-resume-req", lane="full",
+                    phase="implement", implement_mode="main")
+        rc, out, _ = run_hook("session_start.py", {
+            "cwd": self.cwd, "session_id": "s-resume-1", "source": "resume"
+        })
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:ANCHOR]", out)
+        self.assertIn("Resume recovery:", out)
+        self.assertIn("source=resume", out)
+        self.assertIn("owner=main", out)
+        self.assertIn("doing=none", out)
+        self.assertIn("dispatched=none", out)
+
+    def test_anchor_worktree_detection(self):
+        """Phát hiện chính xác môi trường worktree tách biệt."""
+        wt_dir = os.path.join(self.cwd, ".claude", "worktrees", "task-1")
+        os.makedirs(wt_dir, exist_ok=True)
+        # Giả lập file .git của git worktree
+        with open(os.path.join(wt_dir, ".git"), "w", encoding="utf-8") as f:
+            f.write("gitdir: ...\n")
+
+        write_state(self.cwd, active_request="2026-10-17-wt-req", lane="full",
+                    phase="implement", implement_mode="main")
+        rc, out, _ = run_hook("session_start.py", {
+            "cwd": wt_dir, "session_id": "s-wt-1", "source": "compact"
+        }, env={"TDQ_PROJECT_DIR": self.cwd})
+        self.assertEqual(rc, 0)
+        self.assertIn("[TDQ:ANCHOR]", out)
+        self.assertIn("worktree:", out)
+
+    def test_cap_sau_rewrite_preserves_anchor_under_budget(self):
+        """Cap sau rewrite đảm bảo tổng đầu ra không vượt trần mà không cắt Anchor."""
+        plan_content = "- [~] **T1.1** dang lam\n"
+        plan_rel = "docs/tdq/plan/2026-10-17-ultra-req.md"
+        write_file(self.cwd, plan_rel, plan_content)
+        write_state(self.cwd, active_request="2026-10-17-ultra-req", lane="full",
+                    phase="implement", muc_gat="ultra",
+                    plan_file=plan_rel, plan_approved=True, spec_approved=True)
+
+        rc, out, _ = run_hook("session_start.py", {
+            "cwd": self.cwd, "session_id": "s-ultra-cap", "source": "compact"
+        })
+        self.assertEqual(rc, 0)
+        # Trần toàn bộ đầu ra
+        self.assertLessEqual(len(out.splitlines()), 160)
+        self.assertLessEqual(len(out), 8200)
+        # Khối Anchor ở cuối vẫn nguyên vẹn 100%, không bị cắt đứt
+        self.assertIn("[TDQ:ANCHOR]", out)
+        self.assertIn("ANTI-6", out)
+        self.assertIn("doing=T1.1", out)
+        self.assertFalse(out.endswith("…"), "Anchor cuối không được bị cắt dở bởi dấu …")
+
+
+if __name__ == "__main__":
+    unittest.main()
