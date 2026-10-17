@@ -19,6 +19,9 @@ So: `effort` is a FIXED property of the role; `model` is the knob you turn per t
 | `tdq-implementer` | inherit | high | writes real code, red→green, a mistake breaks the plan |
 | `tdq-qc-tester` | inherit | high | must be suspicious and dig at the edges, not just rerun a command |
 | `tdq-reviewer` | inherit | high | finding gaps/contradictions in a spec-plan is pure reasoning |
+| `tdq-security-reviewer` | inherit | high | independent security audit for secrets, injections, and least-privilege compliance |
+| `tdq-build-resolver` | inherit | high | minimal surgical diffs for compiler, syntax, and type check breaks |
+| `tdq-refactor-cleaner` | inherit | high | safe dead code removal, deduplication, and clean code invariants enforcement |
 | `general-purpose` (research) | sonnet | medium | runs Tavily broadly, synthesises shallowly; no frontier needed |
 
 `inherit` = follow the model the user has on in the main session. Use `inherit` for agents doing

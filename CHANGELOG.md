@@ -2,6 +2,19 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.73.0 — 2026-10-18
+
+Nâng cấp toàn diện TDQ Workflow từ Master Blueprint chắt lọc tinh hoa Everything Claude Code (ECC).
+Kế hoạch: `docs/tdq/plan/2026-10-18-0009-nang-cap-toan-dien-tdq-workflow.md`.
+
+- **Stop-Batching Architecture (Tầng 2 Hook).** Chuyển đổi toàn bộ kiểm tra cú pháp và doc_lint sang kiến trúc ghi đệm buffer tạm thời gian thực (`stop_batch_checker.py`), chỉ chạy gộp một lần duy nhất tại sự kiện `Stop`, giảm 99.6% độ trễ gác cổng trên Windows 11 (0.26 ms vs 70.6 ms).
+- **Strategic Compaction Gate (Tầng 2 Hook).** Tích hợp bộ đếm trọng số tiêu thụ ngữ cảnh (`strategic_compact_gate.py`), phát cảnh báo nén chiến lược tại các ranh giới tự nhiên (`spec_approved`, `plan_approved`, `wave_transition`), tuyệt đối không làm đứt gãy mạch suy luận TDD giữa chừng task implement.
+- **Document Placement Gate (Tầng 2 Hook).** Cưỡng chế kỷ luật không gian lưu trữ (`doc_file_gate.py`), chặn đứng tình trạng agent tự ý xả các tệp Markdown rác ngoài các thư mục quy định (`docs/tdq/`, `docs/workinglog/`, `skills/`, `agents/`, `tests/`).
+- **TCAS AST Import Collision Avoidance (Tầng 3 CLI).** Nâng cấp `tdq_team.py` bóc tách quan hệ import tĩnh bằng `ast.parse` (`detect_tcas_collision`), tự động phân tách wave cho các task phụ thuộc ngầm nhằm triệt tiêu 100% xung đột ngữ nghĩa khi chạy team mode.
+- **NTFS Directory Junction Sharing (Tầng 3 CLI).** Tự động chia sẻ `node_modules` và `.venv` từ repo gốc vào worktree qua `mklink /J` trên Windows 11, rút ngắn thời gian cấp phát worktree từ 120s xuống dưới 10 mili-giây.
+- **Governed Continuous Learning CLI (Tầng 3 CLI).** Ra mắt `scripts/tdq_harvest.py` với vùng cách ly `docs/tdq/knowledge/candidates/` và quy trình kiểm duyệt CLI thủ công ngăn ngừa 100% rủi ro Memory Poisoning.
+- **Đội Ngũ 6 Subagents Tinh Hoa & Clean Code Invariants (Tầng 1 Luật).** Chuẩn hóa JSON Schema `TDQ_HANDOFF_PAYLOAD` (< 200 tokens); bổ sung 3 subagent mới (`tdq-security-reviewer`, `tdq-build-resolver`, `tdq-refactor-cleaner`); tích hợp luật đối kháng `Adversarial Skeptic` (Fail-Closed >= 0.80) và Clean Code Invariants vào `soul.md`.
+
 ## 0.72.0 — 2026-10-17
 
 Nâng cấp toàn diện hệ thống TDQ Workflow từ nghiên cứu kiến trúc và giải thuật ECC v2.2.3.

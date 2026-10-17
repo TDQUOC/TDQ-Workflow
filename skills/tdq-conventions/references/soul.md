@@ -15,6 +15,7 @@ is the law that gets fixed; soul does not. Changing soul requires the user's app
 - When it applies
 - What to do
 - Which tier a law belongs to
+- Clean Code Invariants
 - Self-check
 
 ## The four principles
@@ -106,6 +107,22 @@ Consequence for placement: tier 1 and tier 2 laws must live in the body of a ski
 turn; only tier 3 laws and detailed tables get pushed into a reference file. A skill's line cap
 is a tier 3 constraint — hitting the cap means raising the cap, never compressing a tier 2 law
 to fit.
+
+## Clean Code Invariants
+
+Mandatory structural baselines applicable across all implemented code in TDQ:
+
+1. **Immutability by Default**:
+   - Prefer immutable data structures; eliminate hidden in-place mutations and unintended side-effects.
+   - Functions must return new state structures rather than mutating inputs in-place unless an explicit performance-critical memory buffer is required.
+
+2. **Function Length Ceiling ($\le 50$ lines)**:
+   - Every function and method must stay under 50 physical lines.
+   - When logic expands beyond 50 lines, split into single-responsibility private helper functions.
+
+3. **Strict Test-Driven Development (TDD)**:
+   - Always establish the Red baseline before authoring implementation code.
+   - Never write speculative implementation ahead of a failing test assertion.
 
 ## Self-check
 
