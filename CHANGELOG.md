@@ -2,18 +2,26 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.73.1 — 2026-10-18
+
+Bảo tồn tinh túy kiến trúc TDQ Workflow & Xác thực Đa nền tảng Cross-Platform.
+Kế hoạch: `docs/tdq/plan/2026-10-18-0056-kiem-thu-cross-platform.md`.
+
+- **Xác thực Đa nền tảng Thực tế (Cross-Platform Verification).** Kiểm thử trực tiếp qua SSH trên cả 3 môi trường phân tán: Windows 11 Host, macOS Sequoia Apple Silicon (ARM64) và Linux Ubuntu (x86_64). Đồng bộ mã nguồn, cache plugin, chạy 100% xanh bộ test suite cốt lõi (0.07s trên macOS, 0.18s trên Linux) và khởi tạo dự án mẫu thành công.
+- **Bản thiết kế Bất biến & 6 Trụ cột Tinh túy (`tinh-tuy-tdq-workflow.md`).** Chuẩn hóa văn bản kiến trúc bảo tồn vĩnh viễn các giá trị cốt lõi. Tài liệu bao gồm: Hiệu năng thực thi (Stop-Batching, NTFS Junctions), Kỷ luật ngữ cảnh (Strategic Compaction, Digest <= 1.500 chars), An toàn song song (TCAS AST Collision). Đồng thời quy định: Học tập có kiểm duyệt (Governed Harvest), Clean Code Invariants & Soul, và Đội ngũ 6 Subagents phân nhiệm theo Least Privilege.
+
 ## 0.73.0 — 2026-10-18
 
 Nâng cấp toàn diện TDQ Workflow từ Master Blueprint chắt lọc tinh hoa Everything Claude Code (ECC).
 Kế hoạch: `docs/tdq/plan/2026-10-18-0009-nang-cap-toan-dien-tdq-workflow.md`.
 
-- **Stop-Batching Architecture (Tầng 2 Hook).** Chuyển đổi toàn bộ kiểm tra cú pháp và doc_lint sang kiến trúc ghi đệm buffer tạm thời gian thực (`stop_batch_checker.py`), chỉ chạy gộp một lần duy nhất tại sự kiện `Stop`, giảm 99.6% độ trễ gác cổng trên Windows 11 (0.26 ms vs 70.6 ms).
-- **Strategic Compaction Gate (Tầng 2 Hook).** Tích hợp bộ đếm trọng số tiêu thụ ngữ cảnh (`strategic_compact_gate.py`), phát cảnh báo nén chiến lược tại các ranh giới tự nhiên (`spec_approved`, `plan_approved`, `wave_transition`), tuyệt đối không làm đứt gãy mạch suy luận TDD giữa chừng task implement.
+- **Stop-Batching Architecture (Tầng 2 Hook).** Chuyển đổi kiểm tra cú pháp và doc_lint sang ghi đệm buffer tạm (`stop_batch_checker.py`). Cơ chế chỉ chạy gộp một lần tại sự kiện `Stop`, giảm 99.6% độ trễ trên Windows 11 (0.26 ms vs 70.6 ms).
+- **Strategic Compaction Gate (Tầng 2 Hook).** Tích hợp bộ đếm trọng số tiêu thụ ngữ cảnh (`strategic_compact_gate.py`). Cảnh báo nén phát ra tại ranh giới tự nhiên (`spec_approved`, `plan_approved`, `wave_transition`), không đứt gãy mạch TDD.
 - **Document Placement Gate (Tầng 2 Hook).** Cưỡng chế kỷ luật không gian lưu trữ (`doc_file_gate.py`), chặn đứng tình trạng agent tự ý xả các tệp Markdown rác ngoài các thư mục quy định (`docs/tdq/`, `docs/workinglog/`, `skills/`, `agents/`, `tests/`).
-- **TCAS AST Import Collision Avoidance (Tầng 3 CLI).** Nâng cấp `tdq_team.py` bóc tách quan hệ import tĩnh bằng `ast.parse` (`detect_tcas_collision`), tự động phân tách wave cho các task phụ thuộc ngầm nhằm triệt tiêu 100% xung đột ngữ nghĩa khi chạy team mode.
+- **TCAS AST Import Collision Avoidance (Tầng 3 CLI).** Nâng cấp `tdq_team.py` bóc tách quan hệ import tĩnh bằng `ast.parse` (`detect_tcas_collision`). Tự động phân tách wave cho các task phụ thuộc ngầm nhằm triệt tiêu xung đột ngữ nghĩa.
 - **NTFS Directory Junction Sharing (Tầng 3 CLI).** Tự động chia sẻ `node_modules` và `.venv` từ repo gốc vào worktree qua `mklink /J` trên Windows 11, rút ngắn thời gian cấp phát worktree từ 120s xuống dưới 10 mili-giây.
 - **Governed Continuous Learning CLI (Tầng 3 CLI).** Ra mắt `scripts/tdq_harvest.py` với vùng cách ly `docs/tdq/knowledge/candidates/` và quy trình kiểm duyệt CLI thủ công ngăn ngừa 100% rủi ro Memory Poisoning.
-- **Đội Ngũ 6 Subagents Tinh Hoa & Clean Code Invariants (Tầng 1 Luật).** Chuẩn hóa JSON Schema `TDQ_HANDOFF_PAYLOAD` (< 200 tokens); bổ sung 3 subagent mới (`tdq-security-reviewer`, `tdq-build-resolver`, `tdq-refactor-cleaner`); tích hợp luật đối kháng `Adversarial Skeptic` (Fail-Closed >= 0.80) và Clean Code Invariants vào `soul.md`.
+- **Đội Ngũ 6 Subagents Tinh Hoa & Clean Code Invariants (Tầng 1 Luật).** Chuẩn hóa JSON Schema `TDQ_HANDOFF_PAYLOAD` (< 200 tokens). Bổ sung 3 subagent mới (`tdq-security-reviewer`, `tdq-build-resolver`, `tdq-refactor-cleaner`). Tích hợp luật đối kháng `Adversarial Skeptic` (Fail-Closed >= 0.80) và Clean Code Invariants vào `soul.md`.
 
 ## 0.72.0 — 2026-10-17
 
@@ -476,37 +484,9 @@ Báo cáo: `docs/tdq/reports/2026-09-20-1823-sua-tdq-chay-windows.md`.
 - **Xoá `portable_codex.zip`** — đứng yên từ 0.24.0 trong khi `portable_codex/` đã lên 0.48.0,
   và `build_portable.py` chưa bao giờ dựng nó.
 
-## 0.48.0 — 2026-09-17
-
-Nội hoá lối code Ponytail vào ruột TDQ-Workflow — Ponytail KHÔNG được cài làm plugin thứ hai,
-phase và hai cổng duyệt giữ nguyên. Báo cáo:
-`docs/tdq/reports/2026-09-16-2234-cong-sinh-ponytail-tdq.md`.
-
-- **Luật `build less than asked`** — bậc thang 7 bậc (dừng ở bậc đầu tiên đứng được) cộng món 8
-  "chạy trước, refactor sau", viết vào thân `skills/tdq-build/SKILL.md` và bảng chi tiết trong
-  `references/rules/chung.md`. Sàn `cyclomatic ≤ 10 / cognitive ≤ 15` là SÀN: phương án vượt sàn
-  chưa từng là phương án, không comment hay annotation nào mở được. Danh sách bất khả xâm phạm:
-  input validation ở biên tin cậy, error handling chống mất dữ liệu, OWASP walk, accessibility,
-  log service bật mặc định, unit test mỗi task red → green.
-- **Bốn mức gắt `muc_gat`** — `off|lite|full|ultra`, khoá mới trong `docs/tdq/state.json` đọc/ghi
-  qua `tdq_state.py`. Fail-closed về `full`: giá trị lạ, khoá trống hay file lỗi đều ra `full`, và
-  không suy luận nào của agent chọn được `off` — chỉ user đặt. Đo thật: 0/72/133/139 dòng luật.
-- **`hooks/scripts/luat_gon.py`** — hai hàm thuần đọc luật từ đĩa rồi lọc theo mức gắt. Luật viết
-  MỘT chỗ, không bản sao trong mã. Thiếu file hay thiếu marker → một dòng cảnh báo, exit 0.
-- **Ba kênh nạp luật, hook 5 → 6 trên 5 sự kiện** — `SessionStart` và `SubagentStart` bơm thân
-  luật (đo thật 135 ms / 155 ms). Kênh `UserPromptSubmit` chỉ in một dòng nhắc 137 ký tự và
-  KHÔNG đọc thân luật, để không ăn ngân sách 30 s chia chung. Mã thứ sáu `TDQ:GON` được khai
-  trong spec trước khi thêm.
-- **Skill `tdq-lean`** — ba chế độ `review|audit|debt` soi over-engineering, năm nhãn
-  `delete/stdlib/native/yagni/shrink`, không có gì cắt thì nói đúng `Lean already. Ship.`
-- **`scripts/kiem_no_marker.py`** — sổ nợ marker `ponytail:`: marker phải nêu cả trần và đường
-  nâng cấp, thiếu thì exit khác 0 kèm `đường-dẫn:dòng`. Một lệnh chạy được, không framework,
-  không fixture.
-- **Test** — thêm 105 test, tất cả xanh. Tập TÊN test đỏ lệch 0 so với baseline `main` sạch.
-
 ## Lịch sử cũ hơn
 
-Bản 0.47.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.47.0 dời ngày 2026-10-16). Bản 0.36.0 trở xuống
+Bản 0.48.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.48.0 dời ngày 2026-10-18). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.
