@@ -33,7 +33,7 @@ from tdq_state import (_TASK_LINE, default_state, effective_phase, lenh_cho_proj
 import search_rules  # noqa: E402
 import tdq_setup  # noqa: E402
 import tdq_devtool_mcp  # noqa: E402
-from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
+from tdq_ten_lenh import can_nhac_ten_lenh, co_shim_python3, la_windows  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
 MAX_CHARS = 600
@@ -190,6 +190,17 @@ def cap(text, max_lines, max_chars):
     return text
 
 
+def kiem_can_setup_lan_dau(cwd):
+    """-> True nếu project hoặc môi trường cần chạy setup lần đầu sau khi cài đặt plugin."""
+    if not la_project_that(cwd):
+        return False
+    if not tdq_setup.doc_phat_hanh(cwd):
+        return True
+    if la_windows() and not co_shim_python3():
+        return True
+    return False
+
+
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
@@ -209,14 +220,25 @@ def main():
             da_cap_nhat_ver = tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(cwd, goc_plugin=GOC_PLUGIN)
     except Exception:  # noqa: BLE001
         pass
-    dung_nen = can_khoi_tao(cwd) and kich_hoat_nen(cwd)
+    can_setup = False
+    try:
+        can_setup = kiem_can_setup_lan_dau(cwd)
+    except Exception:  # noqa: BLE001
+        pass
+    dung_nen = (can_khoi_tao(cwd) or can_setup) and kich_hoat_nen(cwd)
     nhac_devtool = ""
     try:
         nhac_devtool = tdq_devtool_mcp.check_session_start(cwd=cwd)
     except Exception:
         pass
+    nhac_setup = (
+        f"[TDQ:SETUP] Plugin mới cài đặt hoặc chưa hoàn tất thiết lập: chạy "
+        f"`python3 {os.path.join(GOC_PLUGIN, 'scripts', 'tdq_setup.py')}` (hoặc gọi skill tdq-setup)."
+        if can_setup else ""
+    )
     nhac = [n for n in (
         "[TDQ] Đã tự động cập nhật instruction và cấu hình cho phiên bản mới." if da_cap_nhat_ver else "",
+        nhac_setup,
         "" if shutil.which("graphify") else
         "[TDQ] graphify is not installed (optional): uv tool install graphifyy",
         nhac_devtool,

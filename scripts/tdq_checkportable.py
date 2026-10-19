@@ -460,7 +460,45 @@ def chon_thu_muc_shim(chuoi_path, ghi_duoc=None):
     return None, "no writable directory found on PATH"
 
 
-def cai_shim_python3(nen_tang=None, chuoi_path=None, ghi_duoc=None, ghi_file=None):
+def chon_thu_muc_du_phong_scripts():
+    """-> thư mục Scripts của Python interpreter thực tế hoặc User bin khả dụng."""
+    cac_ung_vien = []
+    goc_exe = os.path.dirname(sys.executable)
+    if goc_exe:
+        cac_ung_vien.append(os.path.join(goc_exe, "Scripts"))
+        cac_ung_vien.append(goc_exe)
+    user_bin = os.path.join(os.path.expanduser("~"), ".local", "bin")
+    cac_ung_vien.append(user_bin)
+    for muc in cac_ung_vien:
+        if STUB_DIR not in muc.lower().replace(os.sep, "/"):
+            return muc
+    return None
+
+
+def them_thu_muc_user_path_windows(thu_muc):
+    """Thêm thư mục vào User PATH trong Registry HKCU\\Environment (Windows only)."""
+    if not sys.platform.startswith("win"):
+        return False
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0,
+                            winreg.KEY_READ | winreg.KEY_WRITE) as key:
+            try:
+                cu, kieu = winreg.QueryValueEx(key, "Path")
+            except OSError:
+                cu, kieu = "", winreg.REG_EXPAND_SZ
+            muc_list = [p for p in cu.split(os.pathsep) if p]
+            if thu_muc.lower() not in [p.lower() for p in muc_list]:
+                moi = thu_muc + (os.pathsep + cu if cu else "")
+                winreg.SetValueEx(key, "Path", 0, kieu, moi)
+                return True
+    except Exception:  # noqa: BLE001
+        return False
+    return False
+
+
+def cai_shim_python3(nen_tang=None, chuoi_path=None, ghi_duoc=None, ghi_file=None,
+                     tu_dong_them_path=False):
     """Write the two shim files so `python3` becomes typeable. Returns (done, notes).
 
     Idempotent: a file already holding the right bytes is left alone and reported as such.
@@ -473,6 +511,23 @@ def cai_shim_python3(nen_tang=None, chuoi_path=None, ghi_duoc=None, ghi_file=Non
 
     chuoi_path = os.environ.get("PATH", "") if chuoi_path is None else chuoi_path
     thu_muc, ly_do = chon_thu_muc_shim(chuoi_path, ghi_duoc)
+    ghi_duoc_fn = ghi_duoc or thu_ghi_duoc
+    ghi_chu_them = []
+
+    if thu_muc is None and tu_dong_them_path:
+        du_phong = chon_thu_muc_du_phong_scripts()
+        if du_phong:
+            try:
+                os.makedirs(du_phong, exist_ok=True)
+            except OSError:
+                pass
+            if ghi_duoc_fn(du_phong):
+                thu_muc = du_phong
+                ly_do = ""
+                os.environ["PATH"] = du_phong + os.pathsep + os.environ.get("PATH", "")
+                if them_thu_muc_user_path_windows(du_phong):
+                    ghi_chu_them.append(f"added {du_phong} to User PATH")
+
     if thu_muc is None:
         return [], [f"skipped --shim: {ly_do}"]
 
@@ -493,8 +548,8 @@ def cai_shim_python3(nen_tang=None, chuoi_path=None, ghi_duoc=None, ghi_file=Non
         ghi_file(duong, noi_dung)
         da_lam.append(f"wrote the `python3` shim {duong}")
     if not da_lam:
-        return [], [f"--shim: already correct in {thu_muc}"]
-    return da_lam, [f"--shim: `python3` now runs Python 3 from {thu_muc}"]
+        return [], [f"--shim: already correct in {thu_muc}"] + ghi_chu_them
+    return da_lam, [f"--shim: `python3` now runs Python 3 from {thu_muc}"] + ghi_chu_them
 
 
 def main(argv=None):
