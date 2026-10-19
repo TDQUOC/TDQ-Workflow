@@ -39,24 +39,18 @@ def run_batch_checks(buffer_path: Path = BUFFER_FILE) -> int:
         py_files = [str(f) for f in unique_files if f.suffix == ".py"]
 
         # 1. Batch document linting
+        kw: dict = {"capture_output": True, "text": True, "encoding": "utf-8"}
+        if sys.platform == "win32":
+            kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+
         if doc_files and Path("scripts/doc_lint.py").exists():
-            res = subprocess.run(
-                [sys.executable, "scripts/doc_lint.py"] + doc_files,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-            )
+            res = subprocess.run([sys.executable, "scripts/doc_lint.py"] + doc_files, **kw)  # type: ignore[call-overload]
             if res.returncode != 0:
                 errors.append(f"[TDQ Stop-Batch: DocLint Error]\n{res.stdout}\n{res.stderr}")
 
         # 2. Batch Python syntax compilation check
         if py_files:
-            res = subprocess.run(
-                [sys.executable, "-m", "py_compile"] + py_files,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-            )
+            res = subprocess.run([sys.executable, "-m", "py_compile"] + py_files, **kw)  # type: ignore[call-overload]
             if res.returncode != 0:
                 errors.append(f"[TDQ Stop-Batch: Python Syntax Error]\n{res.stderr}")
 

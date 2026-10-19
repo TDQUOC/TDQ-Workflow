@@ -18,10 +18,10 @@
     "semantic_hash": "9c97dd11628f1ab6fc581dc2d42c0cc0"
   },
   "hooks/hooks.json": {
-    "mtime": 1792400310.1125436,
-    "seen": 1792401618.5466025,
-    "ast_hash": "175184c7d1bc437a6943c7638432d71a",
-    "semantic_hash": "175184c7d1bc437a6943c7638432d71a"
+    "mtime": 1792401872.636,
+    "seen": 1792402152.1152353,
+    "ast_hash": "1a7a1cc671e5d3bc659c854353d8d4c5",
+    "semantic_hash": "1a7a1cc671e5d3bc659c854353d8d4c5"
   },
   "hooks/scripts/_common.py": {
     "mtime": 1792250782.761787,
@@ -48,8 +48,8 @@
     "semantic_hash": "b8e74cd8940b0d85972a6137ba6ab4f0"
   },
   "hooks/scripts/session_start.py": {
-    "mtime": 1792400379.9632413,
-    "seen": 1792401618.5485501,
+    "mtime": 1792401872.6369996,
+    "seen": 1792402152.1170745,
     "ast_hash": "081b50a0e924cf5056bd329976139e3f",
     "semantic_hash": "081b50a0e924cf5056bd329976139e3f"
   },
@@ -126,10 +126,10 @@
     "semantic_hash": "28f6d477685c456d720b8a3a9bea6736"
   },
   "scripts/tdq_finish.py": {
-    "mtime": 1791386170.1585598,
-    "seen": 1791424311.9941838,
-    "ast_hash": "30ab2fa2b90fdc365e67697bc85c9b25",
-    "semantic_hash": "30ab2fa2b90fdc365e67697bc85c9b25"
+    "mtime": 1792402701.7979047,
+    "seen": 1792402762.2043443,
+    "ast_hash": "00474103a78984783b9d5afa80f5a171",
+    "semantic_hash": "00474103a78984783b9d5afa80f5a171"
   },
   "scripts/tdq_state.py": {
     "mtime": 1792250782.770246,
@@ -184,8 +184,8 @@
     "semantic_hash": "548ac0ca45e7dbe1d51cc110c5b77222"
   },
   "scripts/tdq_checkportable.py": {
-    "mtime": 1792400461.9932933,
-    "seen": 1792401618.5527618,
+    "mtime": 1792401872.6369996,
+    "seen": 1792402152.1220958,
     "ast_hash": "e8694062574703c6a174489298b673a1",
     "semantic_hash": "e8694062574703c6a174489298b673a1"
   },
@@ -343,10 +343,10 @@
     "semantic_hash": "c710188a604cc79beaaa93a11a544406"
   },
   "scripts/tdq_lsp.py": {
-    "mtime": 1791425411.855469,
-    "seen": 1791724122.568581,
-    "ast_hash": "6a691fbc58c029c23113c87502214ba8",
-    "semantic_hash": "6a691fbc58c029c23113c87502214ba8"
+    "mtime": 1792402751.051502,
+    "seen": 1792402762.204592,
+    "ast_hash": "16f6d400025f0178ebe98f324cb550cc",
+    "semantic_hash": "16f6d400025f0178ebe98f324cb550cc"
   },
   "hooks/scripts/agy_pretooluse_gate.py": {
     "mtime": 1789925094.0715265,
@@ -367,10 +367,10 @@
     "semantic_hash": "9d75580abaee0ad92642c94b1590ac75"
   },
   "scripts/tdq_ten_lenh.py": {
-    "mtime": 1791425411.857983,
-    "seen": 1791724122.568838,
-    "ast_hash": "16f9e09490efa3adc6132bdb00f4dfcf",
-    "semantic_hash": "16f9e09490efa3adc6132bdb00f4dfcf"
+    "mtime": 1792402683.3330085,
+    "seen": 1792402762.205114,
+    "ast_hash": "8561c437c1c4fd2910ea51657acfcc8a",
+    "semantic_hash": "8561c437c1c4fd2910ea51657acfcc8a"
   },
   "tools_kiem/dem_da_nen_tang.py": {
     "mtime": 1792259147.935917,
@@ -379,10 +379,10 @@
     "semantic_hash": "5b9aae09bbdd917807c0b8a7a2bf614a"
   },
   "scripts/setup_status.py": {
-    "mtime": 1791386170.1557686,
-    "seen": 1791424311.9931302,
-    "ast_hash": "a1eea34d7b2be20edb5753a3c28f0ec1",
-    "semantic_hash": "a1eea34d7b2be20edb5753a3c28f0ec1"
+    "mtime": 1792402823.556769,
+    "seen": 1792402928.1980398,
+    "ast_hash": "48c9d8558561370d50c6f7aa2f48c36d",
+    "semantic_hash": "48c9d8558561370d50c6f7aa2f48c36d"
   },
   "scripts/setup_status_render.py": {
     "mtime": 1791386170.156802,
@@ -463,10 +463,10 @@
     "semantic_hash": "24325d1fd31510142978f9812d999790"
   },
   "scripts/tdq_setup.py": {
-    "mtime": 1792400713.2469316,
-    "seen": 1792401618.5539079,
-    "ast_hash": "50fa8b8b9612524fd9bf23ec522da071",
-    "semantic_hash": "50fa8b8b9612524fd9bf23ec522da071"
+    "mtime": 1792402787.320866,
+    "seen": 1792402928.2002556,
+    "ast_hash": "f72a4932123d325b99de2584ed3f416b",
+    "semantic_hash": "f72a4932123d325b99de2584ed3f416b"
   },
   "scripts/utf8_io.py": {
     "mtime": 1792250782.771837,
@@ -571,10 +571,10 @@
     "semantic_hash": "c15771b4fa77b2e9fe7895b11e95fc76"
   },
   "hooks/scripts/stop_batch_checker.py": {
-    "mtime": 1792259147.8124242,
-    "seen": 1792263180.0039818,
-    "ast_hash": "498174baf4e3fe1f65f56c6b86f1ea99",
-    "semantic_hash": "498174baf4e3fe1f65f56c6b86f1ea99"
+    "mtime": 1792402844.8733149,
+    "seen": 1792402928.194885,
+    "ast_hash": "ad043cf4a9f32d66f2cd5a8f36b912b1",
+    "semantic_hash": "ad043cf4a9f32d66f2cd5a8f36b912b1"
   },
   "hooks/scripts/strategic_compact_gate.py": {
     "mtime": 1792259147.8129573,

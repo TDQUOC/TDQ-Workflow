@@ -36,6 +36,7 @@ import skill_inventory  # noqa: E402 — the skills that really sit on disk
 import tdq_lsp  # noqa: E402 — reuse its rung ladder
 import setup_status_render  # noqa: E402 — the renderer, kept free of any machine access
 import tdq_state  # noqa: E402 — the request state, read-only
+import tdq_ten_lenh  # noqa: E402 — platform commands and subprocess wrapper
 
 CAU_HINH_CLAUDE = os.path.expanduser("~/.claude.json")
 
@@ -143,9 +144,9 @@ def _run_tool(binary, args, goi_y="", timeout=TIMEOUT_MAC_DINH, env=None):
         moi_truong = None if env is None else {**os.environ, **env}
         # `encoding=` rather than a bare `text=True`: on Windows text mode would otherwise
         # decode through the active code page — the cross-platform rule this repo tracks.
-        ket_qua = subprocess.run([duong_dan] + list(args), capture_output=True,
-                                 encoding="utf-8", errors="replace",
-                                 timeout=timeout, env=moi_truong)
+        ket_qua = tdq_ten_lenh.chay_subprocess([duong_dan] + list(args), capture_output=True,
+                                               encoding="utf-8", errors="replace",
+                                               timeout=timeout, env=moi_truong)
     except subprocess.TimeoutExpired:
         _log(f"{binary}: timed out after {timeout}s")
         return {"co": True, "chay_duoc": False, "duong_dan": duong_dan, "ma": None,

@@ -1,27 +1,27 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-19T16:21:42+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-19T16:42:04+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-19-1538-auto-fix-hook-python-not-found |
-| Lane | full |
-| Phase | report |
-| Spec | docs/tdq/spec/2026-10-19-1538-auto-fix-hook-python-not-found.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-19-1538-auto-fix-hook-python-not-found.md — ✔ approved |
-| Quick approval | (not applicable) |
+| Request | 2026-10-19-1630-an-cua-so-popup-cmd-windows |
+| Lane | quick |
+| Phase | idle |
+| Spec | (none) |
+| Plan | (none) |
+| Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
-| QC level | ultra |
-| Run mode | main |
+| QC level | full |
+| Run mode | (not settled) |
 
 ## Where we are
-QC has PASSed. Forbidden: Committing or pushing before the user asks for it.
+Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
 
 ## What comes next
-Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing.
+Wait for a new request from the user.
 ```
-python3 scripts/tdq_state.py set phase=idle
+python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
 ```
-Done when: The report is written and the user has been asked about committing
+Done when: A new request is open
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.
