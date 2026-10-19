@@ -49,6 +49,12 @@ import subprocess
 import sys
 from datetime import datetime
 
+SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
+import tdq_ten_lenh  # noqa: E402
+
 CHECK_TIMEOUT = 20
 MCP_SERVER_NAME = "lsp"
 TOOL_PATTERN = "mcp__lsp__"
@@ -221,8 +227,8 @@ def _run(cmd, cwd=None, timeout=CHECK_TIMEOUT):
     `tdq_setup.py` had grown its own, identical but for that one argument.
     """
     try:
-        p = subprocess.run(cmd, cwd=cwd, capture_output=True,
-                           encoding="utf-8", errors="replace", text=True, timeout=timeout)
+        p = tdq_ten_lenh.chay_subprocess(cmd, cwd=cwd, capture_output=True,
+                                         encoding="utf-8", errors="replace", text=True, timeout=timeout)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
         return 1, f"quá {timeout}s"
@@ -734,12 +740,8 @@ def cmd_ghi_kiem(args):
     return EXIT_OK if tt == lsp_module.DAT else EXIT_THIEU
 
 
-SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, SCRIPTS_DIR)
-import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
-import tdq_ten_lenh  # noqa: E402
-
 BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_lsp.py"]
+
 
 
 def parse_args(argv):
