@@ -20,15 +20,15 @@ Trạng thái: CHỜ DUYỆT
 - 1b. Lộ trình
 - 2. Đầu ra cụ thể
 - 2b. Ranh giới module
+- 2c. Luồng hoạt động & Sơ đồ kiến trúc
 - 3. Cách tiếp cận & lý do
 - 3b. Năng lực & công cụ
+- 3c. Giải thuật & Xử lý cốt lõi
+- 3d. Mental Model cho Fresher Dev
 - 4. Yêu cầu bắt buộc
 - 5. Ràng buộc & rủi ro
 - 6. QC & Definition of Done
 - 7. Câu hỏi còn mở
-- §6 giữ điều kiện, KHÔNG giữ lệnh kiểm
-- Kiểm trước khi trình
-- Checklist scope — trả lời được hết mới trình
 
 ## 1. Mục tiêu & phạm vi
 - Mục tiêu: <1–3 câu, đo được>
@@ -51,16 +51,36 @@ Chép từ brief mục `### Lộ trình`. User duyệt spec là duyệt luôn l�
 | 1 | | | |
 
 ## 2b. Ranh giới module
-
-Chia việc thành các module tách rời được, để phase `plan` có sẵn đường cắt. Một module =
-một vùng file không giao với module khác. Bắt buộc với lane full; lane quick BỎ mục này.
+Bắt buộc với lane full (lane quick BỎ). Một module = một vùng file không giao nhau.
 
 | Module | Vùng file | Phụ thuộc module | Đầu ra §2 nào <!-- i18n-allow: canonical spec section names --> |
 |---|---|---|---|
-| <tên ngắn> | `<đường/dẫn>`, `<đường/dẫn>` | <tên module khác, hoặc "không"> | <số thứ tự ở §2> <!-- i18n-allow: canonical spec section names --> |
+| <tên ngắn> | `<đường/dẫn>` | <tên module khác, hoặc "không"> | <số thứ tự ở §2> <!-- i18n-allow: canonical spec section names --> |
 
-Hai module không được khai chung một đường dẫn. Trùng nghĩa là chưa tách xong — gộp lại
-thành một module, hoặc tách file ra trước.
+## 2c. Luồng hoạt động & Sơ đồ kiến trúc
+
+Trực quan hóa luồng dữ liệu và tương tác hệ thống. Bắt buộc có sơ đồ Mermaid (Sequence Diagram hoặc Flowchart) để fresher dev dễ hình dung.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Người dùng / Caller
+    participant Core as Thành phần xử lý
+    participant Storage as Bộ lưu trữ / DB
+
+    User->>Core: Gửi yêu cầu
+    Core->>Storage: Truy vấn dữ liệu
+    Storage-->>Core: Trả kết quả
+    Core-->>User: Phản hồi kết quả
+```
+
+Nếu việc này là cập nhật, tối ưu hoặc refactor mã nguồn: BẮT BUỘC có bảng đối chiếu Trước vs Sau:
+
+| Khía cạnh | Hiện trạng (Trước) | Thiết kế mới (Sau) |
+|---|---|---|
+| Luồng thực thi | <mô tả luồng cũ> | <mô tả luồng mới tối ưu> |
+| Thành phần chạm | <danh sách thành phần cũ> | <thành phần mới / thay thế> |
+| Điểm nghẽn giải quyết | <vấn đề tồn đọng> | <kết quả cải thiện đo được> |
 
 ## 3. Cách tiếp cận & lý do
 - Chọn: <cách làm>
@@ -68,35 +88,44 @@ thành một module, hoặc tách file ra trước.
 - Đã loại: <phương án> — vì <lý do>
 
 ## 3b. Năng lực & công cụ
-Chép từ brief mục `### Năng lực dùng được`. Phân vân → DÙNG.
-Một dòng cho mỗi skill DÙNG hoặc NỀN, cộng đúng một dòng tổng cho phần còn lại.
-Không xoá mục này kể cả khi không có dòng DÙNG nào.
-Phán quyết chỉ nhận: DÙNG / KHÔNG (+ 1 trong 4 lý do đóng) / NỀN (skill khung đang chạy).
+Chép từ brief mục `### Năng lực dùng được`. Phán quyết: DÙNG / KHÔNG (+ lý do) / NỀN.
 
 | Skill | Nguồn | Phán quyết | Dùng ở đâu / Lý do loại |
 |---|---|---|---|
-| <tên> | <user\|project\|plugin:x\|built-in> | DÙNG | <đầu ra hoặc task nào> |
+| <tên> | <user|project|plugin:x|built-in> | DÙNG | <đầu ra hoặc task nào> |
 | Đã xét <N> skill khác | user/plugin/built-in | KHÔNG | khác lĩnh vực |
 
+## 3c. Giải thuật & Xử lý cốt lõi
+
+Bóc tách thuật toán chi tiết để lập trình viên fresher nắm chắc nghiệp vụ logic:
+
+- **Từng bước giải thuật (Step-by-step Execution Logic)**:
+  1. Bước 1: <khởi tạo cấu trúc dữ liệu, đọc tham số đầu vào>.
+  2. Bước 2: <vòng lặp, điều kiện rẽ nhánh, biến đổi trạng thái>.
+  3. Bước 3: <tổng hợp kết quả, xử lý trả về>.
+- **Độ phức tạp tính toán**:
+  - Thời gian (Time Complexity): $O(\dots)$ — <giải thích ngắn gọn>.
+  - Không gian (Space Complexity): $O(\dots)$ — <giải thích bộ nhớ đệm sử dụng>.
+- **Các ca góc hiểm (Edge Cases & Defensive Handling)**:
+  - Đầu vào rỗng hoặc null: <cách xử lý phòng thủ>.
+  - Timeout, mất kết nối hoặc dữ liệu không hợp lệ: <cách phục hồi an toàn>.
+
+## 3d. Mental Model cho Fresher Dev
+
+- **Ẩn dụ trực quan (Analogy)**: <1 đoạn ngắn ví von cơ chế hoạt động với một hiện tượng thực tế đời thường giúp dev dễ hình dung>.
+- **Thuật ngữ dự án (Glossary)**:
+  - `<Khái niệm A>`: <giải thích ngắn gọn 1 câu>.
+  - `<Khái niệm B>`: <giải thích ngắn gọn 1 câu>.
+
 ## 4. Yêu cầu bắt buộc
-- Log service bật mặc định: timestamp, đủ chi tiết debug, tắt/giảm được qua config.
-  Dòng này bắt buộc **chỉ khi việc này có runtime** — tức plan sẽ có ít nhất một task tạo
-  hoặc sửa file mã nguồn chạy được. Không có runtime (chỉ sửa tài liệu, khuôn mẫu, cấu
-  hình) → thay dòng này bằng `Log service: BỎ — <lý do một câu>`.
+- Log service: bật mặc định (có runtime) hoặc BỎ (không runtime) — <lý do>.
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
 - Mỗi thành phần có unit test riêng, chạy được bằng một lệnh.
-- Code viết ra bám 5 nguyên tắc SOLID theo
-  `skills/tdq-conventions/references/clean-code.md`, và bám rule ngôn ngữ trong
-  `skills/tdq-build/references/rules/`. Luật này luôn áp, không có cổng bật/tắt.
+- Bám 5 nguyên tắc SOLID và rule ngôn ngữ trong `skills/tdq-build/references/rules/`.
 
 ## 5. Ràng buộc & rủi ro
-Ràng buộc kiến trúc phải giữ (chép từ `docs/kien-truc.md` — chỉ những dòng việc này
-chạm tới, không chép cả file):
-- <nguyên văn dòng luật gọi / đã chốt> — việc này chạm ở <file/hàm>
-
-Không chạm dòng nào → ghi `Ràng buộc kiến trúc phải giữ: không chạm dòng nào — <lý do
-một câu>`. Chưa có `docs/kien-truc.md` → quay lại analyze sinh theo luật hồ sơ kiến
-trúc, không bỏ trống khối này.
+Ràng buộc kiến trúc phải giữ (chép từ `docs/kien-truc.md`, không chạm → ghi "không chạm dòng nào — <lý do>"):
+- <nguyên văn dòng luật> — chạm ở <file/hàm>
 
 | Rủi ro | Ảnh hưởng | Cách giảm |
 |---|---|---|
@@ -104,9 +133,9 @@ trúc, không bỏ trống khối này.
 ## 6. QC & Definition of Done
 | # | Hạng mục kiểm | Điều kiện PASS | Đo trước | Dự phòng nếu trượt |
 |---|---|---|---|---|
-| Q1 | | | <số đo thật hoặc ước lượng + nguồn + biên; không có ngưỡng số → —> | <phương án chọn sẵn; không có ngưỡng số → —> |
+| Q1 | | | <số đo hoặc —> | <phương án hoặc —> |
 
-DoD: <liệt kê điều kiện đủ để tuyên bố xong; có tham chiếu thị giác thì kèm Vision Test Loop theo vision-test-loop.md>
+DoD: <liệt kê điều kiện đủ để tuyên bố xong; có tham chiếu thị giác thì kèm Vision Test Loop>
 
 ## 7. Câu hỏi còn mở
 (Phải RỖNG. Còn câu hỏi → quay lại phase analyze.)
@@ -114,6 +143,7 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong; có tham chiếu t
 
 ## File em
 
-[spec-template-huong-dan.md](spec-template-huong-dan.md) — §6 giữ điều kiện chứ không giữ lệnh,
-checklist tự soát, và checklist phạm vi. Đọc khi soát spec trước khi trình.
+[spec-template-huong-dan.md](spec-template-huong-dan.md) — Hướng dẫn chi tiết các mục spec,
+§6 giữ điều kiện chứ không giữ lệnh, checklist tự soát và fresher accessibility check.
+Đọc khi soát spec trước khi trình.
 

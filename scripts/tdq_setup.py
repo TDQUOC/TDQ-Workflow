@@ -50,6 +50,7 @@ sys.path.insert(0, SCRIPTS_DIR)
 import lsp_module  # noqa: E402
 import plugin_tiers  # noqa: E402 — ghi enabledPlugins nguyên tử + .bak
 import search_rules  # noqa: E402
+import tdq_devtool_mcp  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
 import utf8_io  # noqa: E402
@@ -1148,6 +1149,15 @@ def main(argv, khai_codex=None):
     no += no_hook + no_plugin + no_skill_khong_ton_tai(project)
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
         da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
+    if tdq_devtool_mcp.is_enabled(cwd=project):
+        st = tdq_devtool_mcp.check_devtool_setup()
+        if not st["all_ready"]:
+            if tdq_devtool_mcp.setup_devtool_mcp():
+                da_cai.append("cấu hình Chrome DevTools MCP (~/.claude.json, permissions.allow, profile)")
+            else:
+                no.append("lỗi tự động cài đặt Chrome DevTools MCP")
+        else:
+            da_cai.append("Chrome DevTools MCP đã sẵn sàng")
     phien_ban_moi = doc_phien_ban_plugin(GOC_REPO)
     if phien_ban_moi:
         ghi_phat_hanh(project, phien_ban_moi)

@@ -15,14 +15,12 @@ user's document language `doc_lang` (deliberate repetition — the original is
    Full template: [references/spec-template.md](references/spec-template.md); the self-check is in the tier-1 sibling
 [references/spec-template-huong-dan.md](references/spec-template-huong-dan.md).
    Sections that MUST be there: goal & scope (in/out) · **Lộ trình** (copied from the <!-- i18n-allow: canonical spec section names -->
-   brief: which phase runs, which is dropped, which skill is used, why — approving the
-   spec approves the route with it) · **Ranh giới module** (§2b — module table, file <!-- i18n-allow: canonical spec section names -->
-   areas, dependencies; required in lane full, dropped in lane quick) · a measurable
-   output · the approach + its reason · **Năng lực & công cụ** (§3b — copy the verdict table <!-- i18n-allow: canonical spec section names -->
-   from the brief, machine-checked by doc_lint R8) ·
-   standing requirements (log service ON by default, no placeholder, a test per part) ·
-   constraints & risks · QC scope + Definition of Done (see [../tdq-build/references/vision-test-loop.md](../tdq-build/references/vision-test-loop.md) for 3-tier scenarios & visual diffs) · open questions.
-   The "open questions" section MUST be empty — a question left → back to phase `analyze`.
+   brief: which phase runs, dropped, skill used, why) · **Ranh giới module** (§2b — lane full) ·
+   a measurable output · **Luồng & Sơ đồ kiến trúc** (§2c — Mermaid diagram, Trước vs Sau) ·
+   approach + reason · **Năng lực & công cụ** (§3b — verdict table checked by R8) ·
+   **Giải thuật cốt lõi** (§3c — step-by-step logic, O(T), O(S), edge cases) ·
+   **Mental Model cho Fresher** (§3d — analogy + glossary) · standing requirements ·
+   constraints & risks · QC scope + Definition of Done · open questions (MUST be empty).
 
    **§2b is built from LSP semantics, not from directory names.** A module boundary comes from
    who really imports and calls whom — `mcp__lsp__find_references` on the module's entry symbols,
@@ -32,11 +30,11 @@ user's document language `doc_lang` (deliberate repetition — the original is
    and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
    top of that file gives the exact line range, so the whole file never has to be read.
 
-2. **Self-review.** Re-read it for holes and contradictions, and fix them. Run the machine
-   check (R8 inspects §3b):
+2. **Self-review.** Re-read it for holes and contradictions. Run Fresher Accessibility
+   Check in `references/spec-template-huong-dan.md` to ensure a fresher grasps the logic.
+   Run the machine check (R8 inspects §3b, R14 inspects thresholds):
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" docs/tdq/spec/<slug>.md`
-   until it exits 0. R14 there demands a measurement and a fallback for every numeric threshold
-   in §6, and `approve spec` refuses while it is red — measure BEFORE presenting.
+   until it exits 0. Measure BEFORE presenting.
    A deeper review happens only when the user asks for it — that is the one case where
    agent `tdq-reviewer` gets called (optional).
 
@@ -46,7 +44,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    ```
 
 4. **Present it, then STOP.** Write the spec block per
-   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — all 5
+   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md) — all
    components, in that order, the approval block at the end of the message:
    <!-- i18n-allow: chat block written in the user's document language -->
    ```
@@ -54,6 +52,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
 
    **Mục tiêu:** <1–2 câu>.
    **Đầu ra chính:** <gạch đầu dòng ngắn>.
+   **Luồng & Giải thuật:** <1–2 câu tóm tắt sơ đồ luồng và giải thuật chính>.
    **Định nghĩa hoàn thành:** <gạch đầu dòng ngắn>.
    **Rủi ro đáng chú ý:** <gạch đầu dòng ngắn>.
 
