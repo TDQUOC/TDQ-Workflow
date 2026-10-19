@@ -50,9 +50,11 @@ sys.path.insert(0, SCRIPTS_DIR)
 import lsp_module  # noqa: E402
 import plugin_tiers  # noqa: E402 — ghi enabledPlugins nguyên tử + .bak
 import search_rules  # noqa: E402
+import tdq_checkportable  # noqa: E402
 import tdq_devtool_mcp  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
+import tdq_ten_lenh  # noqa: E402
 import utf8_io  # noqa: E402
 
 TIMEOUT_CAI = 300
@@ -599,6 +601,69 @@ def kiem_plugin_user(home=None, goc_plugin=None, cham_may=None):
     return da_cai, canh_bao, no
 
 
+def kiem_va_cai_shim_python3(tu_dong_them_path=True):
+    """Tự động kiểm tra và cài đặt shim python3 trên Windows nếu thiếu hoặc lỗi. -> (da_cai, canh_bao, no)."""
+    if not tdq_ten_lenh.la_windows():
+        return [], [], []
+
+    song = False
+    try:
+        res = subprocess.run("python3 -c \"import sys; sys.exit(0)\"",
+                             shell=True, capture_output=True, timeout=5)
+        song = (res.returncode == 0)
+    except Exception:  # noqa: BLE001
+        song = False
+
+    if song and tdq_ten_lenh.co_shim_python3():
+        return ["shim `python3` đã sẵn sàng"], [], []
+
+    _log("phát hiện `python3` chưa hoạt động hoặc dính Microsoft Store stub — tiến hành cài shim")
+    da_lam, ghi_chu = tdq_checkportable.cai_shim_python3(nen_tang="win32", tu_dong_them_path=tu_dong_them_path)
+    if da_lam:
+        return [f"shim `python3`: {d}" for d in da_lam], ghi_chu, []
+    # Nếu không có file mới được ghi nhưng ghi_chu cho thấy đã đúng sẵn hoặc song == True
+    if any("already correct" in g for g in ghi_chu) or song:
+        return ["shim `python3` đã sẵn sàng"], ghi_chu, []
+    return [], ghi_chu, ["không thể tự cài shim `python3` tự động (cần cấp quyền PATH)"]
+
+
+def kiem_dryrun_hook(goc_plugin=None):
+    """Chạy thử (smoke dry-run) script hook bằng lệnh cấu hình để đảm bảo hook không lỗi. -> (dat, chi_tiet)."""
+    goc = goc_plugin or GOC_REPO
+    script = os.path.join(goc, "hooks", "scripts", "prompt_context.py")
+    if not os.path.isfile(script):
+        return True, "không có script hook mẫu để test"
+
+    # Kiểm tra bằng python3 qua shell
+    try:
+        cmd_str = f'python3 "{script}" --help' if tdq_ten_lenh.la_windows() else ["python3", script, "--help"]
+        res = subprocess.run(cmd_str, shell=tdq_ten_lenh.la_windows(), capture_output=True, timeout=5)
+        if res.returncode == 0 or b"prompt_context" in res.stdout or b"usage:" in res.stdout:
+            return True, "hook dry-run thành công với `python3`"
+        if b"Python was not found" in res.stderr:
+            return False, "hook vẫn dính lỗi 'Python was not found' từ Microsoft Store stub"
+    except FileNotFoundError:
+        pass
+    except Exception as exc:  # noqa: BLE001
+        return False, f"lỗi chạy hook dry-run: {exc}"
+
+    # Kiểm tra fallback qua py -3 hoặc python
+    for cmd in ("py", "python"):
+        try:
+            if tdq_ten_lenh.la_windows():
+                c_str = f'{cmd} -3 "{script}" --help' if cmd == "py" else f'{cmd} "{script}" --help'
+                res = subprocess.run(c_str, shell=True, capture_output=True, timeout=5)
+            else:
+                args = [cmd, "-3", script, "--help"] if cmd == "py" else [cmd, script, "--help"]
+                res = subprocess.run(args, capture_output=True, timeout=5)
+            if res.returncode == 0 or b"usage:" in res.stdout:
+                return True, f"hook dry-run thành công qua fallback `{cmd}`"
+        except Exception:  # noqa: BLE001
+            continue
+
+    return False, "không chạy được hook script bằng cả python3, py và python"
+
+
 MOC_MO = "<!-- TDQ:TOOLS -->"
 MOC_DONG = "<!-- /TDQ:TOOLS -->"
 
@@ -616,13 +681,14 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
   Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
-- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py`.
+- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
   Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
 
 ## Nguyên tắc TDQ Workflow bắt buộc
 
 - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
 - Yêu cầu chứa '_tdq_direct' → tự động phân tích & tìm kiếm mã nguồn, lập mini-plan và chỉ dừng ở 1 cổng duyệt mini-plan (không hỏi chọn pipeline, không phỏng vấn).
+- Tự phục hồi môi trường (Self-healing): Khi gặp lỗi 'Python was not found' hoặc lỗi hook, Agent tự động chạy lệnh setup bằng Python hiện có (`python {goc}/scripts/tdq_setup.py` hoặc `py -3 ...`) để tự vá shim và sửa môi trường.
 - Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `{goc}/skills/tdq-intake/SKILL.md`, thay `{bien_plugin}` bằng `{goc}`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
 - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
 - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
@@ -1043,6 +1109,11 @@ def khoi_tao_nen(project, chay=None):
                 except ValueError as exc:
                     return 1, f"không tách được lệnh: {exc}"
                 return chay_an_toan(argv, None, TIMEOUT_CAI)
+            da_shim, _, no_shim = kiem_va_cai_shim_python3()
+            for d in da_shim:
+                _log(f"nền: {d}")
+            if no_shim:
+                tdq_no.ghi_no(no_shim, project)
             da_cai, no = cai_thieu(tdq_lsp.chay_kiem(project), chay_lenh=chay_lenh)
             them, no_mcp = khai_server_mcp(project, chay_lenh=chay_lenh)
             for dong in da_cai + [f"MCP lsp + {t}" for t in them]:
@@ -1136,10 +1207,15 @@ def main(argv, khai_codex=None):
 
     bac = tdq_lsp.chay_kiem(project)
     da_cai, no = cai_thieu(bac)
+    da_shim, cb_shim, no_shim = kiem_va_cai_shim_python3()
+    da_cai += da_shim
+    canh_bao_shim = cb_shim
+    no += no_shim
     them, no_mcp = khai_server_mcp(project)
     da_cai += [f"MCP `lsp` + {t}" for t in them]
     no += no_mcp
     xong, canh_bao = don_may()
+    canh_bao += canh_bao_shim
     da_cai += xong
     da_va, no_hook = va_hook_xung_dot()
     da_cai += da_va
@@ -1147,6 +1223,11 @@ def main(argv, khai_codex=None):
     da_cai += bat_plugin
     canh_bao += lech_plugin
     no += no_hook + no_plugin + no_skill_khong_ton_tai(project)
+    dat_dryrun, chi_tiet_dryrun = kiem_dryrun_hook(GOC_REPO)
+    if dat_dryrun:
+        da_cai.append(f"hook dry-run: {chi_tiet_dryrun}")
+    else:
+        no.append(f"hook dry-run thất bại: {chi_tiet_dryrun}")
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
         da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
     if tdq_devtool_mcp.is_enabled(cwd=project):
