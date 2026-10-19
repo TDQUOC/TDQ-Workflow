@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-19T16:42:04+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-19T16:57:08+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-19-1630-an-cua-so-popup-cmd-windows |
+| Request | 2026-10-19-1645-kiem-thu-da-nen-tang |
 | Lane | quick |
 | Phase | idle |
 | Spec | (none) |
-| Plan | (none) |
+| Plan | docs/tdq/plan/2026-10-19-1645-kiem-thu-da-nen-tang.md — ⏳ awaiting approval |
 | Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
