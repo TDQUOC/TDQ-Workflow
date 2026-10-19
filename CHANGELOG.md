@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.74.0 — 2026-10-19
+
+Tích hợp Chrome DevTools MCP tự động hóa & Bộ đôi kỹ năng Trình duyệt Chuyên sâu.
+Kế hoạch: `docs/tdq/plan/2026-10-18-1630-feasibility-enable-devtoolmcp.md`.
+
+- **Cấu hình & Tự động hóa Chrome DevTools MCP (`tdq_devtool_mcp.py`).** Bổ sung cờ cấu hình `ENABLE_DEVTOOL_MCP` trong `.claude-plugin/plugin.json`. Hỗ trợ kiểm tra phi chặn (< 30ms) tại `session_start.py` và auto-setup zero-prompt `~/.claude.json`. Cấp quyền wildcard `mcp__chrome-devtools__*` trong `settings.json` và tạo profile cách ly `~/ChromeDevProfile`. Tự động khởi chạy Chrome ở chế độ nền khi CDP port 9222 chưa mở.
+- **Kỹ năng Kiểm thử Trình duyệt Phân vùng 5 lớp (`tdq-browser-test`).** Ra mắt skill kiểm thử E2E UI/UX theo quy trình 5 lớp. Bao gồm: Visual Layout, Interactive Elements, Responsive Breakpoints, Console/Network Errors, Accessibility/Contrast. Chống kiểm thử sơ sài, đảm bảo web mượt mà và không lỗi ẩn.
+- **Kỹ năng Cào Dữ liệu & Nghiên cứu Web Phòng thủ (`tdq-browser-research`).** Ra mắt skill trích xuất dữ liệu và Deep Research web chuyên sâu. Trang bị cơ chế Adaptive Polling và Exponential Backoff Timeout. Tự động phục hồi khi trang tải chậm hoặc SPA rendering phức tạp.
+- **Tài liệu Hướng dẫn & Tích hợp Setup.** Bổ sung cẩm nang `chrome-devtools-mcp-guide.md` tại `skills/tdq-setup/references/`. Tích hợp kiểm tra tự động vào quy trình `tdq_setup.py`.
+
 ## 0.73.1 — 2026-10-18
 
 Bảo tồn tinh túy kiến trúc TDQ Workflow & Xác thực Đa nền tảng Cross-Platform.
@@ -443,50 +453,9 @@ nào trong repo. Báo cáo: `docs/tdq/reports/2026-09-21-0029-hoc-superpowers-da
 - **Tài liệu** — README viết lại phần cài cho bốn host; `docs/kien-truc.md` thay tầng "luật bản
   ngoài" bằng tầng Adapter và ghi ngoại lệ đường dẫn adapter vào `Đã chốt`.
 
-## 0.49.0 — 2026-09-20
-
-Bộ workflow chạy được đủ tính năng trên Windows. Trước bản này cả 6 hook đều chết ngay ở dòng
-`print` đầu tiên trên một máy Windows sạch, nên phần nhắc `[TDQ:*]` mất trắng mà không ai biết.
-Báo cáo: `docs/tdq/reports/2026-09-20-1823-sua-tdq-chay-windows.md`.
-
-- **`scripts/utf8_io.py`** — ép `stdout`/`stderr` sang UTF-8 với `errors="replace"`, idempotent,
-  log service bật mặc định tắt bằng `TDQ_LOG=0`. Nạp qua `tdq_state.py` và
-  `hooks/scripts/_common.py` (phủ 18/40 entry point) cộng một dòng import ở 21 file còn lại.
-  Python lấy encoding console theo locale, mà Windows sạch trả `cp1252`, nên mọi `✓`, `✗` và
-  tiếng Việt đều ném `UnicodeEncodeError`. Đo lại: 6/6 hook sống, không cần biến môi trường nào.
-- **Shim `python3`** — `tdq_checkportable.py setup --shim` đặt hai file một dòng vào thư mục
-  ổn định đứng đầu PATH, để 96 chuỗi lệnh trong `skills/` gõ được nguyên văn ở Git Bash,
-  `cmd.exe` và PowerShell. `hooks.json` vì thế GIỮ `python3` cho cả ba hệ. Máy Windows chưa cài
-  shim thì `session_start` in thêm đúng một dòng quy ước, đặt ngoài trần 600 ký tự của header.
-- **`ten_lenh_python`** chuyển từ `build_portable.py` sang `tdq_ten_lenh.py` — hook không được
-  import bộ dựng bundle; `build_portable` nay gọi lại, hết hai bản chép.
-- **Dấu chéo ở biên xuất** — `observe`, `today_log_rel`, `context_surface`, `kiem_no_marker` đều
-  in và ghi bằng `/`. Sổ turn được đối chiếu với đầu ra `git`, thứ luôn dùng `/`, nên một
-  `docs\workinglog\x.md` từng làm cổng `Stop` chặn nhầm một lượt đã ghi log đầy đủ.
-- **`tdq_state.xoa_cay`** — `shutil.rmtree` không xoá nổi file read-only trên Windows, mà git
-  đánh dấu mọi object như vậy; dùng ở 4 chỗ xoá cây có `.git`.
-- **Mode codex chạy được trên Windows** — `boc_lenh` bọc `.cmd` qua `cmd.exe /c`
-  (`CreateProcess` không chạy batch file, cũng không tra `PATHEXT`), và tên lệnh nay lấy từ
-  `shutil.which`. npm cài codex đúng dạng `codex.cmd`, nên trước bản này mode đó không thể chạy.
-- **Layout mới của Claude Code** — `skill_inventory` quét thêm
-  `~/.claude/skills/synced/<uuid>/<tên>/`, `tdq_lsp` thấy thêm plugin trong
-  `~/.claude/plugins/synced/`. Bước kiểm kê năng lực B0 trên máy thử từ 0 lên 11 skill.
-- **`.lumenignore`** — loại ba bundle portable khỏi index ngữ nghĩa: 1488 → 1140 file,
-  27318 → 14503 chunk. Bản sao sinh ra từng chiếm hết top-10 của mọi truy vấn.
-- **Luật mới** — `uu-tien-tim-kiem.md` mục 6: cấm mở file trước khi hỏi `find_references`.
-  Đo được: hỏi thẳng ra 6 file, mở sẵn 3 file còn 4, mở sẵn 8 file còn 1.
-- **Bộ test** — 1983 ca, 0 fail, 0 error trên Windows (trước: 670 fail / 97 error). Vá các ca
-  tự dựng lại đường dẫn bằng `os.path.join`, đọc state sống của máy, hoặc set `HOME` mà quên
-  `USERPROFILE` (`ntpath.expanduser` không đọc `HOME`). Ba ca không dựng lại được trên Windows
-  (bit quyền POSIX, chmod thư mục) được bỏ qua kèm lý do.
-- **`docs/claude-md-mau.md`** trần 3500 → 3800 byte theo phán quyết sẵn có của `soul.md`: trần
-  kích thước là ràng buộc tầng 3, chạm trần thì nâng trần chứ không nén luật.
-- **Xoá `portable_codex.zip`** — đứng yên từ 0.24.0 trong khi `portable_codex/` đã lên 0.48.0,
-  và `build_portable.py` chưa bao giờ dựng nó.
-
 ## Lịch sử cũ hơn
 
-Bản 0.48.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.48.0 dời ngày 2026-10-18). Bản 0.36.0 trở xuống
+Bản 0.49.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.49.0 dời ngày 2026-10-19). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.

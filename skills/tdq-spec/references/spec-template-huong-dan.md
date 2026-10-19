@@ -66,3 +66,26 @@ download page at spec time would have caught it.
 | How is QC/test/validate done? | §6 bảng QC + DoD <!-- i18n-allow: canonical spec section names --> |
 
 One box still unanswered → the spec is not ready to present, go back to phase analyze.
+
+## Fresher Accessibility Check — thẩm định độ thấu suốt cho Fresher Dev
+
+Tự kiểm tra độ thân thiện và minh bạch của bản đặc tả với lập trình viên mới:
+
+| Câu hỏi thẩm định | Yêu cầu đạt | Vị trí trong Spec |
+|---|---|---|
+| **Sơ đồ luồng (§2c)** | Có sơ đồ Mermaid rõ luồng gọi và dữ liệu di chuyển | §2c Luồng hoạt động |
+| **Trước vs Sau (§2c)** | Bắt buộc với refactor/update: rõ thành phần cũ vs mới | §2c Bảng đối chiếu |
+| **Giải thuật 1-2-3 (§3c)** | Từng bước logic mạch lạc, fresher có thể code lại | §3c Giải thuật |
+| **Độ phức tạp (§3c)** | Có định lượng $O(T)$ và $O(S)$ kèm giải thích ngắn | §3c Độ phức tạp |
+| **Ca góc hiểm (§3c)** | Nêu tối thiểu 2 edge cases kèm cách phòng thủ | §3c Ca góc hiểm |
+| **Ẩn dụ trực quan (§3d)** | Có ví von thực tế đời thường giúp dễ hình dung | §3d Mental Model |
+| **Thuật ngữ (§3d)** | Giải nghĩa các khái niệm mới hoặc viết tắt | §3d Glossary |
+
+Tiêu chí quyết định: "Một lập trình viên fresher đọc bản spec này có nắm trọn kiến trúc và giải thuật mà AI chuẩn bị làm hay không?". Nếu câu trả lời là chưa rõ ràng, phải viết lại trước khi trình duyệt.
+
+## Quy tắc chi tiết các phần điều kiện trong Spec
+
+- **§2b Ranh giới module**: Hai module không được khai chung một đường dẫn. Trùng nghĩa là chưa tách xong — gộp lại thành một module, hoặc tách file ra trước.
+- **§3b Năng lực & công cụ**: Một dòng cho mỗi skill DÙNG hoặc NỀN, cộng đúng một dòng tổng cho phần còn lại. Không xoá mục này kể cả khi không có dòng DÙNG nào.
+- **§4 Yêu cầu bắt buộc**: Dòng Log service bắt buộc chỉ khi việc này có runtime (có ít nhất một task tạo hoặc sửa file mã nguồn chạy được). Không có runtime → thay bằng `Log service: BỎ — <lý do một câu>`.
+- **§5 Ràng buộc kiến trúc**: Chép nguyên văn dòng luật từ `docs/kien-truc.md` mà việc này chạm tới. Chưa có `docs/kien-truc.md` → quay lại analyze sinh theo luật hồ sơ kiến trúc, không bỏ trống.
