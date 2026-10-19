@@ -1,7 +1,7 @@
 {
   "name": "tdq-workflow",
   "displayName": "TDQ Workflow",
-  "version": "0.73.1",
+  "version": "0.74.0",
   "description": "Spec-driven workflow cho Claude Code: intake → spec → plan → build (implement/QC/report). Duyệt bằng chat tự nhiên, hook nhắc bằng mã [TDQ:*] và kiểm bằng hiệu ứng thật, chế độ nhanh (express) / chuyên sâu (deep), working log bắt buộc. Một nguồn skills/ chạy trên Claude Code, Codex, OpenCode và Antigravity.",
   "author": {
     "name": "TDQ"
@@ -20,6 +20,13 @@
       "sensitive": true,
       "required": false,
       "title": "Tavily API key (backup)"
+    },
+    "ENABLE_DEVTOOL_MCP": {
+      "type": "boolean",
+      "description": "Bật tích hợp Chrome DevTools MCP để hỗ trợ E2E UI/UX Testing, Visual Smoke Test, Web Scraping và Deep Research.",
+      "default": false,
+      "required": false,
+      "title": "Enable Chrome DevTools MCP"
     }
   }
 }

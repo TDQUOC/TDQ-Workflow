@@ -32,6 +32,7 @@ from tdq_state import (_TASK_LINE, default_state, effective_phase, lenh_cho_proj
                        muc_gat_hieu_luc, phase_row, plan_tick_state, render_next)
 import search_rules  # noqa: E402
 import tdq_setup  # noqa: E402
+import tdq_devtool_mcp  # noqa: E402
 from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
@@ -209,10 +210,16 @@ def main():
     except Exception:  # noqa: BLE001
         pass
     dung_nen = can_khoi_tao(cwd) and kich_hoat_nen(cwd)
+    nhac_devtool = ""
+    try:
+        nhac_devtool = tdq_devtool_mcp.check_session_start(cwd=cwd)
+    except Exception:
+        pass
     nhac = [n for n in (
         "[TDQ] Đã tự động cập nhật instruction và cấu hình cho phiên bản mới." if da_cap_nhat_ver else "",
         "" if shutil.which("graphify") else
         "[TDQ] graphify is not installed (optional): uv tool install graphifyy",
+        nhac_devtool,
         can_nhac_ten_lenh(),
         "[TDQ:SEARCH] Setting up the search layers in the background (dependencies, graphify "
         "graph — minutes on a big repo). Until they answer, the search gate does not block." if dung_nen else "") if n]
