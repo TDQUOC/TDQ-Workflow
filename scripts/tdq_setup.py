@@ -637,7 +637,7 @@ def kiem_dryrun_hook(goc_plugin=None):
     # Kiểm tra bằng python3 qua shell
     try:
         cmd_str = f'python3 "{script}" --help' if tdq_ten_lenh.la_windows() else ["python3", script, "--help"]
-        res = tdq_ten_lenh.chay_subprocess(cmd_str, shell=tdq_ten_lenh.la_windows(), capture_output=True, timeout=5)
+        res = tdq_ten_lenh.chay_subprocess(cmd_str, shell=tdq_ten_lenh.la_windows(), capture_output=True, stdin=subprocess.DEVNULL, timeout=5)
         if res.returncode == 0 or b"prompt_context" in res.stdout or b"usage:" in res.stdout:
             return True, "hook dry-run thành công với `python3`"
         if b"Python was not found" in res.stderr:
@@ -652,10 +652,10 @@ def kiem_dryrun_hook(goc_plugin=None):
         try:
             if tdq_ten_lenh.la_windows():
                 c_str = f'{cmd} -3 "{script}" --help' if cmd == "py" else f'{cmd} "{script}" --help'
-                res = tdq_ten_lenh.chay_subprocess(c_str, shell=True, capture_output=True, timeout=5)
+                res = tdq_ten_lenh.chay_subprocess(c_str, shell=True, capture_output=True, stdin=subprocess.DEVNULL, timeout=5)
             else:
                 args = [cmd, "-3", script, "--help"] if cmd == "py" else [cmd, script, "--help"]
-                res = tdq_ten_lenh.chay_subprocess(args, capture_output=True, timeout=5)
+                res = tdq_ten_lenh.chay_subprocess(args, capture_output=True, stdin=subprocess.DEVNULL, timeout=5)
             if res.returncode == 0 or b"usage:" in res.stdout:
                 return True, f"hook dry-run thành công qua fallback `{cmd}`"
         except Exception:  # noqa: BLE001
