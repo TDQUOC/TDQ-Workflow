@@ -801,8 +801,8 @@ def _git(cwd, *args, check=True):
     # a real run, never in tests using pure ASCII files.
     proc = None
     for attempt in range(3):
-        proc = subprocess.run(["git", "-C", cwd, *args], capture_output=True,
-                              encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
+        proc = tdq_ten_lenh.chay_subprocess(["git", "-C", cwd, *args], capture_output=True,
+                                            encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
         if proc.returncode == 0 or not check:
             return proc
         if attempt < 2 and (args[:1] == ("worktree",) or ".lock" in (proc.stderr or "")):
@@ -816,9 +816,9 @@ def _git(cwd, *args, check=True):
 
 
 def _la_repo(project):
-    proc = subprocess.run(["git", "-C", project, "rev-parse", "--git-dir"],
-                          capture_output=True,
-                          encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT)
+    proc = tdq_ten_lenh.chay_subprocess(["git", "-C", project, "rev-parse", "--git-dir"],
+                                        capture_output=True,
+                                        encoding="utf-8", errors="replace", text=True, timeout=GIT_TIMEOUT)
     return proc.returncode == 0
 
 
@@ -1076,7 +1076,7 @@ def _tao_ntfs_junction_sharing(project_dir, worktree_dir):
             src = os.path.join(project_dir, tgt)
             dst = os.path.join(worktree_dir, tgt)
             if os.path.isdir(src) and not os.path.exists(dst):
-                res = subprocess.run(
+                res = tdq_ten_lenh.chay_subprocess(
                     ["cmd.exe", "/c", "mklink", "/J", os.path.abspath(dst), os.path.abspath(src)],
                     capture_output=True,
                     text=True,
@@ -1208,8 +1208,8 @@ def chay_test_task(duong, task, timeout=600):
     lenh, canh_bao = chuan_hoa_lenh_test(lenh)
     for cau in canh_bao:
         _log(f"WARN {cau}")
-    proc = subprocess.run(lenh, shell=True, cwd=duong, capture_output=True,
-                          encoding="utf-8", errors="replace", text=True, timeout=timeout)
+    proc = tdq_ten_lenh.chay_subprocess(lenh, shell=True, cwd=duong, capture_output=True,
+                                         encoding="utf-8", errors="replace", text=True, timeout=timeout)
     return proc.returncode, lenh, (proc.stdout + proc.stderr)
 
 

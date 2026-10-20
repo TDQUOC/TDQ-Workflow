@@ -167,9 +167,10 @@ def kich_hoat_nen(cwd):
           "stderr": subprocess.DEVNULL, "close_fds": True,
           "env": dict(os.environ, TDQ_PROJECT_DIR=cwd)}
     if os.name == "nt":
-        # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP: the build must outlive this hook and the
-        # host's console; without them Windows kills it when the hook process exits.
-        kw["creationflags"] = 0x00000008 | 0x00000200
+        # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW:
+        # the build must outlive this hook without opening or flashing a console window.
+        c_flags = 0x00000008 | 0x00000200 | getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+        kw["creationflags"] = c_flags
     else:
         kw["start_new_session"] = True
     try:

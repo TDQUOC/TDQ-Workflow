@@ -70,6 +70,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import tdq_state  # noqa: E402 — log service, timestamp, project root (it imports us lazily)
+import tdq_ten_lenh  # noqa: E402
 
 TOP_DIRS = frozenset({"scripts", "hooks", "skills", "tests", "agents"})
 # Under these top dirs a file matches by path only; so does every file outside `TOP_DIRS`.
@@ -518,8 +519,8 @@ def _doc_so(repo):
 def _git(repo, *args):
     """stdout of `git -C repo args...`; raises RuntimeError on any failure."""
     try:
-        proc = subprocess.run(["git", "-C", repo, *args], capture_output=True,
-                              timeout=GIT_TIMEOUT)
+        proc = tdq_ten_lenh.chay_subprocess(["git", "-C", repo, *args], capture_output=True,
+                                            timeout=GIT_TIMEOUT)
     except (OSError, subprocess.SubprocessError) as exc:
         raise RuntimeError(f"git {args[0]} could not run ({exc.__class__.__name__})") from exc
     if proc.returncode != 0:

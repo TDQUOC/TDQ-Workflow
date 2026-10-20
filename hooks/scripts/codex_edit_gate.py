@@ -210,8 +210,10 @@ def main():
     that = os.path.join(os.path.dirname(os.path.abspath(__file__)), "edit_gate.py")
     # encoding is spelled out: the deny reason carries Vietnamese, and a Windows host would
     # otherwise decode it with the ANSI code page and hand back mojibake.
-    proc = subprocess.run([sys.executable, that], input=json.dumps(payload),
-                          capture_output=True, text=True, encoding="utf-8")
+    kw = {"input": json.dumps(payload), "capture_output": True, "text": True, "encoding": "utf-8"}
+    if sys.platform == "win32":
+        kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+    proc = subprocess.run([sys.executable, that], **kw)
     sys.stdout.write(proc.stdout)
     sys.stderr.write(proc.stderr)
     return proc.returncode
