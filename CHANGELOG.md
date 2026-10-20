@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.79.0 — 2026-10-20
+
+Triệt Tiêu Hoàn Toàn Hiện Tượng Cửa Sổ Command Console Chớp Nháy Trên Windows.
+Kế hoạch: `docs/tdq/plan/2026-10-20-1230-fix-chop-nhay-console-windows.md`.
+
+- **Bao bọc cờ CREATE_NO_WINDOW toàn diện (`tdq_ten_lenh.py`).** Tự động gắn cờ `0x08000000` cho mọi lệnh `subprocess.run` và `subprocess.Popen` trên Windows, ngăn chặn Windows kernel cấp phát console window.
+- **Tiến trình chạy nền & Hook (`session_start.py`, `codex_edit_gate.py`).** Khởi chạy `tdq_setup.py --nen` và hook con hoàn toàn vô hình, không làm chớp nháy màn hình khi mở phiên hoặc duyệt code.
+- **Các lệnh Git nội bộ & NTFS Junctions (`tdq_team.py`, `tdq_state.py`, `tdq_test.py`).** Đồng bộ 100% cuộc gọi git status, rev-parse, merge-tree và mklink qua cờ ẩn cửa sổ.
+
 ## 0.78.0 — 2026-10-20
 
 Quyền Tự Quyết Cổng LSP, Tự Cài Dependency & Bảo Toàn Quy Tắc Qua Compaction.
@@ -447,54 +456,9 @@ Mức độ QC thành quyết định của user, hỏi một lần trước khi
 - **Test** — hai file mới khoá khoá state và luồng hỏi, một file khoá bảng mức cùng luật trần.
   Ba ca cũ ghim `schema_version = 5` nay đọc số từ chính sản phẩm.
 
-## 0.50.0 — 2026-09-21
-
-Học cách superpowers tổ chức: một nguồn `skills/`, mỗi host một adapter mỏng, không còn bản sao
-nào trong repo. Báo cáo: `docs/tdq/reports/2026-09-21-0029-hoc-superpowers-da-host.md`.
-
-- **Adapter Codex CLI** — `.agents/plugins/marketplace.json` (`"url": "./"`) và
-  `.codex-plugin/plugin.json` (`"skills": "./skills/"`). Đo trên Codex CLI 0.155.1:
-  `codex plugin list` ra `tdq-workflow@tdq-local`. Policy xác thực phải là `ON_INSTALL` hoặc
-  `ON_USE` — CLI từ chối `NONE`, test khoá giá trị.
-- **Adapter OpenCode** — `.opencode/plugins/tdq-workflow.js`, JavaScript thuần (`node:path`,
-  `node:fs`, `node:url`), đọc thẳng `skills/*/SKILL.md`, bọc try/catch mọi bước để một lỗi không
-  kéo sập plugin khác của host. Hướng dẫn cài ở `.opencode/INSTALL.md`.
-- **Antigravity sinh tại chỗ** — `build_portable.py --sinh-agy` sinh layout vào
-  `~/.gemini/config/plugins/tdq-workflow/` trên máy người dùng, bất biến, từ chối ghi đè thư
-  mục không phải do nó sinh. Đường dẫn tuyệt đối vì thế là của đúng máy chạy.
-- **Gỡ ba bundle** — `portable_claude/`, `portable_codex/`, `antigravity_portable/` ra khỏi repo
-  (`git rm`, lịch sử còn nguyên). `build_portable.py` 1077 → 634 dòng, không còn hàm hay hằng nào
-  không có nơi dùng (khoá bằng test đo khả năng với tới từ `main`); bỏ cờ `--only` (được nhận
-  rồi lờ đi), và chạy không cờ nay thoát 2 thay vì dựng lại bundle NGAY TRONG repo.
-  `tdq_checkportable.py` 675 → 560 dòng: bỏ lớp trust/codex, thiếu `manifest.json` chỉ còn là
-  NOTE; giữ `setup --shim` và phần kiểm môi trường.
-- **Sửa lỗi mã hoá của 0.49.0** — 89 lời gọi `subprocess` chế độ văn bản (20 trong `scripts/`)
-  và 36 `open()` trong test chưa khai `encoding=`, nên Windows giải mã đầu ra UTF-8 bằng cp1252
-  và `proc.stdout` thành `None`. Con số "1983 ca, 0 fail" của 0.49.0 đo khi máy có
-  `PYTHONUTF8=1`; bỏ biến đó thì là 273 error. Khoá bằng `tests/test_ma_hoa_subprocess.py`
-  (đọc AST, bắt cả lời gọi trải nhiều dòng). `codex_edit_gate.py` ép UTF-8 tại chỗ vì không
-  được import `scripts/`.
-- **`utf8_io` im trên pipe** — dòng "forced 2 stream(s)" chỉ in khi stderr là console (hoặc
-  `TDQ_UTF8_LOG_FORCE=1`). Nó chạy lúc import, trước khi script đọc `--quiet` của chính mình,
-  nên hook và test không có cách tắt.
-- **Header `SessionStart`** — dòng nhắc graphify và dòng nhắc tên lệnh Python chuyển ra sau
-  trần 600 ký tự, thành đoạn riêng. Trên Windows đường dẫn dài từng cắt dòng graphify còn
-  `graphify is n…`.
-- **Suite chạy được trên máy sạch** — thiếu pytest, anthropic-tokenizer, graphify, node hay
-  codex thì ca tương ứng thành skip có ghi lý do: 1917 ca, 0 fail, 0 error, 30 skip. Phép dò
-  tokenizer nay hỏi chính `skill_tokens` — bản cũ tìm `.venv-tokens/bin/python`, nên trên
-  Windows ba ca luôn bị skip dù đã cài.
-- **CI ba hệ** — `.github/workflows/test.yml`: Ubuntu, macOS, Windows × Python 3.10 và 3.13,
-  không cài công cụ ngoài, không bật chế độ UTF-8, tắt `core.autocrlf` trước checkout. Chưa
-  chạy lần nào trên GitHub.
-- **Lumen trên Windows** — `tdq_lsp.py` cảnh báo khi plugin lumen thiếu `bin/lumen` và in lệnh
-  chép `lumen-windows-amd64.exe` sang; script `run` của lumen đoán sai tên hệ dưới Git Bash.
-- **Tài liệu** — README viết lại phần cài cho bốn host; `docs/kien-truc.md` thay tầng "luật bản
-  ngoài" bằng tầng Adapter và ghi ngoại lệ đường dẫn adapter vào `Đã chốt`.
-
 ## Lịch sử cũ hơn
 
-Bản 0.49.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.49.0 dời ngày 2026-10-19). Bản 0.36.0 trở xuống
+Bản 0.50.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.50.0 dời ngày 2026-10-20). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.
