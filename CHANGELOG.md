@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.75.0 — 2026-10-20
+
+Nâng cấp Graphify Full Extraction, Wiki Provenance & Cấu hình Custom Provider An toàn.
+Kế hoạch: `docs/tdq/plan/2026-10-20-0032-graphify-full-wiki-search.md`.
+
+- **Cấu hình Custom Provider an toàn & Degraded Runner (`tdq_graphify.py`, `docs/tdq/config.json`).** Bổ sung cấu hình `GRAPHIFY_CUSTOM_PROVIDER` (`enabled`, `endpoint`, `model`, `api_key_env`). API key chỉ đọc từ biến môi trường, tuyệt đối không lưu secret trong repo/config/manifest/log. Tự động kích hoạt chế độ `code-only degraded` kèm hướng dẫn chi tiết khi chưa cấu hình hoặc thiếu API key, đảm bảo không ngắt quãng workflow. Khi cấu hình hợp lệ nhưng lệnh extraction/wiki thất bại, hệ thống fail-closed và cảnh báo sử dụng LSP + grep.
+- **Quy trình Full Extraction Transaction & Wiki Provenance.** Hợp nhất toàn bộ luồng full extract và export wiki vào một transaction kiểm soát tính tươi mới (freshness). Xác thực tính toàn vẹn dựa trên mã băm nội dung mã nguồn, tài liệu, ignore file, provider endpoint/model và sự hiện diện của wiki (`graphify-out/wiki/index.md`). Loại trừ output wiki khỏi đầu vào để triệt tiêu nguy cơ self-ingest.
+- **Tích hợp Tự khởi tạo & Bậc 7 Kiểm tra Tìm kiếm.** Đồng bộ `tdq_setup.py` và `tdq_lsp.py` nhận diện trạng thái full fresh vs degraded, bảo vệ bộ tìm kiếm 3 tầng không dùng đồ thị/wiki cũ khi chưa đồng bộ.
+- **Benchmark A/B 3 Biến thể & Phán quyết Giữ nguyên Selector 3 Tầng.** Khảo sát thực nghiệm đo lường 3 cấu hình (code-only, full, full+wiki) trên TDQ-Workflow và Photoboth360. Dữ liệu chứng minh Graphify hỗ trợ tốt bản đồ cấu trúc macro và community wiki nhưng ngữ cảnh BFS từ CLI chưa vượt trội so với LSP/grep, quyết định giữ vững thứ tự tìm kiếm 3 tầng chuẩn.
+
 ## 0.74.0 — 2026-10-19
 
 Tích hợp Chrome DevTools MCP tự động hóa & Bộ đôi kỹ năng Trình duyệt Chuyên sâu.
