@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.77.0 — 2026-10-20
+
+Tự Động Mang Theo & Hợp Nhất File Docs và Graphify Khi Đổi Nhánh (Auto-Carry Zone).
+Kế hoạch: `docs/tdq/plan/2026-10-20-1145-auto-carry-docs-graphify.md`.
+
+- **Mở rộng Vùng Tự Động Mang Theo (`tdq-intake`, `nhanh-request.md`).** Cho phép tự động chuyển nhánh khi working tree dirty thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**`. Không dừng lại hỏi người dùng nếu không có dirty ở mã nguồn.
+- **Tự động Commit & Merge khi Kết thúc Request (`report-template.md`).** Các thay đổi dirty ở tài liệu và đồ thị graphify được tự động add/commit hoặc merge về nhánh gốc. Tránh việc git switch bị chặn và triệt tiêu các hộp thoại xác nhận lặp lại.
+- **Đồng bộ Quy Tắc Toàn Cục (`scripts/tdq_setup.py`, `CLAUDE.md`).** Bổ sung điều luật auto-carry zone vào `KHOI_HUONG_DAN` ghim tự động vào `CLAUDE.md` giúp toàn bộ phiên làm việc tuân thủ nhất quán.
+
 ## 0.76.0 — 2026-10-20
 
 Ưu tiên MCP & Kỹ năng MCP Toàn Cục, Pre-flight Check, Auto-Setup Incremental & Auto-Update Plugin.

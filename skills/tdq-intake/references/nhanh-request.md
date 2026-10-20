@@ -34,7 +34,7 @@ else: `git check-ref-format --branch` rejects the backslash form. The banned pre
 ### The commands
 
 ```
-git status --porcelain                 # dirty but ONLY docs/logs → switch and carry along. ANY other dirty file → STOP
+git status --porcelain                 # dirty but ONLY docs/logs/graphify (docs/**, *.md, logs/**, *.log, graphify-out/**) → switch and carry along. ANY other dirty file → STOP
 git rev-parse --abbrev-ref HEAD        # this is nhanh_goc (normally `dev`)
 git switch -c <loại>/<mô tả> <!-- i18n-allow -->
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set loai_request=<loại> nhanh_goc=<cũ> nhanh_request=<mới> <!-- i18n-allow -->
