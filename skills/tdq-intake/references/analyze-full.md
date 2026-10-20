@@ -34,11 +34,13 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
    The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1
    and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
    top of that file gives the exact line range, so the whole file never has to be read.
-   In practice: `mcp__lsp__find_symbol` to locate it, `mcp__lsp__find_references` for who calls
-   it, `mcp__lsp__go_to_definition` for where it comes from, and `graphify query "<question>"`
-   alongside for the conceptual angle. A grep for a symbol with no LSP or graphify attempt first is
-   a QC defect. LSP answers "not initialized" → `mcp__lsp__start_lsp` first; a layer the ladder
-   reports dead is skipped with one line, never counted against you.
+
+   **Tam Giác Khảo Sát 3 Chiều (Triangulation Code Exploration — BẮT BUỘC):**
+   Để không bỏ sót mã nguồn và phân tích đúng chủ đích người dùng khi Refactor hoặc bổ sung tính năng:
+   - **Chiều 1 (Quét rộng - Grep/Text)**: Tự do grep diện rộng (route, endpoint, config, event, UI string, model) gom đủ candidate files. Phase analyze cho phép grep không giới hạn quota.
+   - **Chiều 2 (Đào sâu cấu trúc - LSP)**: Gọi `mcp__lsp__find_references`, `go_to_definition` với symbol cốt lõi để bắt trúng caller ngầm, alias, re-export mà text grep dễ sót.
+   - **Chiều 3 (Quét vỡ lan - Graphify)**: Gọi `graphify affected "<symbol>"` kiểm tra hiệu ứng domino 2 bước nhảy, nhận diện ranh giới module.
+   - Lập bảng đối chiếu vùng chạm trong brief: `| Vùng file chạm | Phát hiện qua lớp nào (Grep/LSP/Graphify) | Tác động & quan hệ |`.
 
    **Architecture profile — generated once per project.** Open `docs/kien-truc.md`.
    Already there → read it fully before writing a single line of analysis. Not there →

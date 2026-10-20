@@ -834,6 +834,9 @@ def quyet_dinh(pl, trang_thai):
     prompt = {str(t).lower() for t in trang_thai.get("token_prompt") or ()}
     if toks and all(t.lower() in prompt for t in toks):
         return True, "every name is in the user's prompt"
+    pha = trang_thai.get("phase")
+    if pha and pha in ("analyze", "quick_analyze", "spec"):
+        return True, f"free code search in exploration phase ({pha})"
     cua_so = trang_thai.get("cua_so", CUA_SO)
     sau_cua_so = (f"Then exact names may be grepped for the next {cua_so} searches; "
                   "a name the user typed in the prompt is exempt.")
@@ -930,3 +933,20 @@ def trang_thai(rows):
             token = set(row.get("token") or [])
     return {"da_goi_khai_niem": da_goi, "so_lan_tim_tu_lan_goi": dem,
             "so_lan_bi_chan": bi_chan, "token_prompt": token}
+
+
+def tam_giac_khao_sat(rows):
+    """Thống kê tam giác khảo sát (Grep diện rộng, LSP cấu trúc, Graphify vỡ lan) trong scope."""
+    co_lsp, co_graphify, so_grep = False, False, 0
+    for row in rows:
+        loai = row.get("loai")
+        if loai == "khai_niem":
+            nhan = str(row.get("nhan") or "")
+            if nhan.startswith("lsp:"):
+                co_lsp = True
+            elif nhan.startswith("graphify:"):
+                co_graphify = True
+        elif loai == "tim":
+            so_grep += 1
+    return {"co_lsp": co_lsp, "co_graphify": co_graphify, "so_grep": so_grep,
+            "du_3_chieu": bool(so_grep > 0 and co_lsp and co_graphify)}

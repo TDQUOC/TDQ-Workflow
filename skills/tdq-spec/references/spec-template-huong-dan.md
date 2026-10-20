@@ -1,4 +1,11 @@
 # Checking a spec before presenting it
+<!-- muc-luc-dong:
+  §6 holds the CONDITION, never the check command=14-32 ·
+  Measure every numeric threshold BEFORE approval=33-48 · Check before presenting=49-62 ·
+  The scope checklist — every box answered before presenting=63-76 ·
+  Fresher Accessibility Check — thẩm định độ thấu suốt cho Fresher Dev=77-92 ·
+  Quy tắc chi tiết các phần điều kiện trong Spec=93
+-->
 
 Split out of `spec-template.md` on 2026-10-02 (954 tokens). The three sections below are SELF-CHECK
 work, done once at the end of phase `spec`. None of it is copied into the spec, so none of it has

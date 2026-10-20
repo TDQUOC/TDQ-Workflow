@@ -1,8 +1,8 @@
 # Express pipeline — detail
 <!-- muc-luc-dong:
-  Table of contents=27-36 · How deep the analysis goes — B0, B1, B2=37-54 ·
-  The ten execution steps=55-123 · Mini spec/plan template (≤ 40 lines)=124-150 ·
-  The block that presents the mini-plan to the user=151-173 · Ba phần tách sang file em=174
+  Table of contents=27-36 · How deep the analysis goes — B0, B1, B2=37-52 ·
+  The ten execution steps=53-121 · Mini spec/plan template (≤ 40 lines)=122-148 ·
+  The block that presents the mini-plan to the user=149-171 · Ba phần tách sang file em=172
 -->
 
 Express differs from the deep pipeline by **merging the documents and merging the
@@ -41,16 +41,14 @@ NO approval gate of its own — express keeps exactly one gate. How deep it goes
 
 | Step | Express rule |
 |---|---|
-| B1 read the code | **ALWAYS.** The target is a code symbol → call `mcp__lsp__*` first (`start_lsp` if it answers "not initialized"); a vague concept → `graphify query` plus grep over synonyms, merged; grep last. A question about **links** or the overall map ("who calls X", "what breaks if X changes") → `graphify query\|path\|explain\|affected`; the graph holds only `scripts/` and `hooks/` |
+| B1 read the code | **ALWAYS.** Khảo sát 3 chiều: Grep tự do diện rộng gom file (không giới hạn quota trong analyze) → LSP đào sâu cấu trúc symbol → Graphify quét vỡ lan; tránh sót mã nguồn. |
 | B0 capability inventory | ONLY when the request touches ground with no precedent — no earlier report under `docs/tdq/report/` touched the same directory |
 | B2 research | ONLY when an unknown outside the repo exists (a library, an API, a version, third-party behaviour) — hand it to a sub-agent, digest ≤ 1,500 characters |
 
 **Skipping B0 or B2 costs one line**: the reason goes under the mini-plan's `## Phạm vi` <!-- i18n-allow: canonical section name in the default language -->
 section, shape `Bỏ B0: <lý do>`. A step dropped in silence is a QC defect; B1 is never skipped. <!-- i18n-allow: sample line in the default language -->
 
-Why not "always all three": over 43 closed requests, running all three unconditionally
-makes express ~70 % slower (median 533 s vs 372 s).
-Report: `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`.
+Why not "always all three": chạy cả 3 bước khiến express chậm hơn ~70% (median 533s vs 372s, đo trên 43 requests; xem `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`).
 
 ## The ten execution steps
 

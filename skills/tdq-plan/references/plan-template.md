@@ -1,6 +1,6 @@
 # The plan shape
 <!-- muc-luc-dong:
-  The minute estimate `(eNm)`=108
+  The minute estimate `(eNm)`=115
 -->
 
 Copy the whole block into `docs/tdq/plan/<slug>.md` and fill it in. File em:
@@ -19,6 +19,7 @@ Trạng thái plan: CHỜ DUYỆT
 ## Mục lục
 
 - Quy tắc thi hành (áp cho mọi task)
+- Thiết kế Trước vs Sau (khi bổ sung hoặc refactor)
 - P1 — <tên phase>
 - P2 — <tên phase>
 - Dòng `Chạm:` (đặt NGAY DƯỚI mọi task TẠO hoặc SỬA file mã nguồn)
@@ -41,6 +42,12 @@ Trạng thái plan: CHỜ DUYỆT
 5. QC FAIL → thêm task fix vào mục QC của file này (không cần duyệt lại), loop đến khi pass.
 6. Không commit/push cho đến khi user yêu cầu.
 7. Tuân thủ 6 mã cấm cơ học (ANTI-1 Fake Red, ANTI-2 Blind Assertion, ANTI-3 Dirty State Git, ANTI-4 Late Tick, ANTI-5 Raw Dump, ANTI-6 Broad Area).
+
+## Thiết kế Trước vs Sau (áp dụng khi Refactor hoặc bổ sung tính năng)
+| Khía cạnh | Hiện trạng (Trước) | Thiết kế mới (Sau) |
+|---|---|---|
+| Luồng thực thi | <mô tả luồng cũ> | <mô tả luồng mới tối ưu> |
+| Thành phần chạm | <danh sách thành phần cũ> | <thành phần mới / thay thế> |
 
 ## P1 — <tên phase>
 - [ ] **T1.1** (e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>

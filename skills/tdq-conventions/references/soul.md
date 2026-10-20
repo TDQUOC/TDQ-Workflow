@@ -1,9 +1,9 @@
 # Soul — the root law of TDQ Workflow
 <!-- muc-luc-dong:
-  Table of contents=12-19 · The four principles=20-21 · 1. What the harness is for=22-27 ·
-  2. Priority order: chất lượng > runtime > context cost=28-44 ·
-  3. Write for the weakest model=45-53 · 4. Scope=54-65 · When it applies=66-74 · What to do=75-89 ·
-  Which tier a law belongs to=90-109 · Self-check=110
+  Table of contents=12-20 · The four principles=21-22 · 1. What the harness is for=23-28 ·
+  2. Priority order: chất lượng > runtime > context cost=29-45 ·
+  3. Write for the weakest model=46-54 · 4. Scope=55-66 · When it applies=67-75 · What to do=76-90 ·
+  Which tier a law belongs to=91-110 · Clean Code Invariants=111-126 · Self-check=127
 -->
 
 Soul stands above every other law in the workflow. A law that contradicts soul — old or new —
