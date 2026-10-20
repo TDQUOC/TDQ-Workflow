@@ -1,27 +1,27 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-20T11:39:48+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-20T11:51:39+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-20-1115-uu-tien-mcp-auto-setup |
-| Lane | full |
-| Phase | idle |
-| Spec | docs/tdq/spec/2026-10-20-1115-uu-tien-mcp-auto-setup.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-10-20-1115-uu-tien-mcp-auto-setup.md — ✔ approved |
-| Quick approval | (not applicable) |
+| Request | 2026-10-20-1145-auto-carry-docs-graphify |
+| Lane | quick |
+| Phase | implement |
+| Spec | (none) |
+| Plan | docs/tdq/plan/2026-10-20-1145-auto-carry-docs-graphify.md — ⏳ awaiting approval |
+| Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |
 | QC level | full |
 | Run mode | (not settled) |
 
 ## Where we are
-Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
+lane = quick. Forbidden: Implementing before the working log is written; batching the ticks at the end of the turn or leaving several tasks marked [~]; closing the job with a red test or a known bug; running set phase=idle after the 3-round fix cap without telling the user.
 
 ## What comes next
-Wait for a new request from the user.
+Analyse → a mini spec/plan merged into one file → ask the QC level → wait for approval → write the working log FIRST → implement → QC at that level → a fix round if it FAILs.
 ```
-python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
+python3 scripts/tdq_state.py approve quick --by "<the user's sentence verbatim>"
 ```
-Done when: A new request is open
+Done when: quick_approved = true, the log is written, the plan's QC section exists (evidence or the skipped-at-user's-request line), no red test is left, phase is back to idle
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.

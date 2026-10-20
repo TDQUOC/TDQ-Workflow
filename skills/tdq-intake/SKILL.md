@@ -85,11 +85,11 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 3b. **Open the request branch** — right after `init`, same turn, in lane `full` and
    `quick` alike. Tier `nhỏ` never reaches this step; no git repo → skip, keys stay empty. <!-- i18n-allow: canonical name in the default language -->
-   `git status --porcelain`: dirty but ONLY docs/logs (`docs/**`, `*.md`, `logs/**`, `*.log`)
-   → switch and carry them along. ANY other dirty file → **STOP**, print them, ask the user, do
-   not switch. Clean/Docs → current branch is `nhanh_goc`; `git switch -c <loại>/<mô tả>`; record
-   `loai_request`, `nhanh_goc`, `nhanh_request` in one `set` call; say in chat which branch you
-   opened and where it merges back.
+   `git status --porcelain`: dirty but ONLY docs/logs/graphify (`docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**`)
+   → switch and carry them along. ANY other dirty file (source code in `scripts/`, `src/`, `hooks/`, `tests/`...)
+   → **STOP**, print them, ask the user, do not switch. Clean/Docs/Graphify → current branch is `nhanh_goc`;
+   `git switch -c <loại>/<mô tả>`; record `loai_request`, `nhanh_goc`, `nhanh_request` in one `set` call; say in chat
+   which branch you opened and where it merges back.
    Commands, the five types, the naming rule: [references/nhanh-request.md](references/nhanh-request.md).
 
 4. **Branch:**

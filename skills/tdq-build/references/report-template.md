@@ -58,7 +58,7 @@ below before writing the report; working from memory is banned.
 11. **Merge the request branch back** — this happens on BOTH answers, so long as state holds a
     `nhanh_request`. The branch was opened at step 3b of `tdq-intake`; leaving it behind is what
     used to breed orphan branches.
-    - `"commit"` → commit on the request branch first, then:
+    - `"commit"` → commit on the request branch first (dirty ở `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` được tự động add/commit cùng hoặc mang theo, không cần hỏi). Then:
       ```
       git switch <nhanh_goc>
       git merge --no-ff <nhanh_request>
@@ -67,7 +67,8 @@ below before writing the report; working from memory is banned.
     - `"chưa"` → no new commit, but everything ALREADY committed on the request branch still
       merges back with the same three commands. What is not committed lives in the working tree
       and would be dragged along by `git switch`, so run `git status --porcelain` first: dirty but
-      ONLY docs/logs → switch and carry them along; ANY other dirty file → STOP, print them, ask
+      ONLY docs/logs/graphify (`docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**`) → switch and carry them along;
+      ANY other dirty file (code trong `scripts/`, `src/`, `hooks/`, `tests/`...) → STOP, print them, ask
       the user, and do not switch. Same shape as the dirty-repo rule at step 3b.
     - Merge conflict, or `git branch -d` refuses → do NOT force. Report it and ask the user.
     - Then clear the three keys:
