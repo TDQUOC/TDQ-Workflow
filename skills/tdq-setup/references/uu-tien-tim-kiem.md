@@ -2,11 +2,11 @@
 <!-- muc-luc-dong:
   1. The order, settled=16-61 ·
   2. The table — kind of question → which layer first, with the numbers=62-87 ·
-  2b. graphify, the map=88-121 ·
-  2c. Runtime dependencies — what each layer needs, and what it falls back to=122-138 ·
-  5. Where this rule is hooked in=139-150 ·
-  6. The gate that holds this rule (since 2026-10-03)=151-171 ·
-  3. Two details that live in a sibling file=172
+  2b. graphify, the map=88-99 ·
+  2c. Runtime dependencies — what each layer needs, and what it falls back to=100-114 ·
+  5. Where this rule is hooked in=115-126 ·
+  6. The gate that holds this rule (since 2026-10-03)=127-147 ·
+  3. Two details that live in a sibling file=148
 -->
 
 This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and `tdq-build` each
@@ -92,32 +92,10 @@ It reads a graph built from the source, so it costs nothing to traverse and it n
 names. It is not a type checker and it holds no diagnostics — nodes carry a label, a source file
 and a location, nothing more.
 
-**Its value changes with the KIND of repo, so no number about it means anything without the repo
-name beside it.** Measured 2026-09-28 on two repos with the same tool:
-
-| Measure | TDQ-Workflow (docs/skills heavy) | claudecodeui (995 files, TS/React) |
-|---|---|---|
-| nodes / edges | 2415 / 5139 | 6258 / 16121 |
-| **cross-file edges** | **12%** | **54%** |
-| `calls` crossing files | 100 | **981** |
-| `imports_from` | 8 | **3605** |
-| **`rationale_for`** | **1035** | **2** |
-| rebuild time | — | **16.5 s / 917 files** |
-
-Two faces of one tool: a real code repo gives a **dependency map**, a documentation-heavy repo
-gives **code ↔ reason** links. Neither repo gives both. On claudecodeui, `affected AppError`
-returned **60 files with zero false positives** where `grep -rl` returned 66 — the 6 extra were
-comments, a similarly named `AppErrorOptions`, and the definition site itself.
-
-Cost, measured on claudecodeui: `affected --depth 1` is **12.6 KB against grep -rn's 42.9 KB**,
-3.4× cheaper; `--depth 2` opens 134 → 207 nodes, a question grep cannot answer at any price;
-`god-nodes` costs 251 bytes for 8 hubs.
+**Giá trị graphify đảo theo loại repo**: repo code thật cho bản đồ phụ thuộc, repo nhiều doc cho liên kết code ↔ lý do (chi tiết: `memory/bo-tim-kiem-do-hai-repo.md`). Trên claudecodeui, `affected AppError` trả về 60 files sạch 0 false positive, rẻ hơn 3.4× so với grep.
 
 **The one hard condition: the graph must be FRESH.** A stale graph does not fail loudly; it
-answers about code that no longer exists. Measured on TDQ-Workflow: a graph 8 days old, 34% of
-its nodes (845 of 2415) pointing into a deleted directory. `explain` then needed 3 extra queries
-to disambiguate. Rung 7 of the ladder checks exactly this, and the `graphify` step of
-`tdq_finish.py` rebuilds it whenever a code file changed.
+answers about code that no longer exists. Rung 7 checks this, and `tdq_finish.py` rebuilds it on code change.
 
 ## 2c. Runtime dependencies — what each layer needs, and what it falls back to
 
@@ -131,10 +109,8 @@ of that answer looks exactly like a correct one. So the fallback is written down
 | graphify | a `graph.json` newer than the code | agent-lsp over several round trips, more expensive; grep over synonyms for a concept |
 
 Rungs 1–8 of `scripts/tdq_lsp.py check` measure every one of those dependencies. Rung 7 measures
-graphify **by effect** — a real freshness probe — because a rung that only checks existence is
-blind to the way a graph actually fails. Rung 8 measures agent-lsp the same way, per module,
-through the MCP path itself (`tdq_lsp.py kich-ban` → the agent sends the calls → `ghi-kiem`):
-`agent-lsp doctor` reported healthy in all three failures measured on 2026-10-07.
+graphify **by effect**; Rung 8 measures agent-lsp through the MCP path itself.
+Nếu thiếu Language Server cho task, Agent có toàn quyền tự tìm và cài dependency còn thiếu. Cho phép dùng `uv tool install`, `npm i -g`, `pipx`, `brew` mà không cần hỏi người dùng.
 
 ## 5. Where this rule is hooked in
 

@@ -746,6 +746,7 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
 - Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
   Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+- Toàn quyền tự quyết xử lý LSP: Agent có toàn quyền tự động áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` khi mở request cho tài liệu/nghiên cứu/cài MCP, hoặc khi kịch bản kiểm chứng chỉ có tham chiếu nội tệp trong dự án phát triển mà không dừng lại hỏi người dùng. Nếu thiếu Language Server hoặc công cụ phụ thuộc của LSP cho task cần làm, Agent có toàn quyền tự động tìm kiếm, cài đặt và cấu hình dependency còn thiếu (qua `npm i -g`, `uv tool install`, `pipx`, `brew`...) để đảm bảo môi trường hoạt động đúng và đủ.
 
 ## Nguyên tắc TDQ Workflow bắt buộc
 

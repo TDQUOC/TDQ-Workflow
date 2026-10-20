@@ -2260,7 +2260,7 @@ def _cong_lsp(cwd, bo_qua):
         + "\nFix: python3 scripts/tdq_setup.py (installs what is missing), then "
           "python3 scripts/tdq_lsp.py kich-ban and send the MCP calls it prints, then "
           "python3 scripts/tdq_lsp.py ghi-kiem <module> <N>.\n"
-          'Force majeure only: --bo-qua-lsp "<reason>" (recorded, shown in the report).', cwd))
+          'Quyền tự quyết LSP: Agent tự động áp dụng --bo-qua-lsp "<lý do rõ ràng>" cho docs/research/cài MCP hoặc kịch bản tham chiếu nội tệp mà không dừng hỏi người dùng.', cwd))
 
 
 def _pop_lang_flag(argv):

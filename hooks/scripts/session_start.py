@@ -315,7 +315,7 @@ def main():
         anchor_block = (
             f"[TDQ:ANCHOR] {label} request={req} phase={pha} source={src} owner={owner} "
             f"plan={plan_f} doing={doing_str} dispatched={dispatched_str} next={next_hint} worktree={wt_str}\n"
-            f"MCP-First: ưu tiên MCP & bộ skill MCP, pre-flight check kết nối trước khi làm, hướng dẫn bật nếu chưa mở.\n"
+            f"MCP-First: ưu tiên MCP & bộ skill MCP, pre-flight check kết nối; LSP-Autonomy: toàn quyền tự quyết gate LSP (--bo-qua-lsp cho doc/research/internal-ref), tự tìm & cài dependency LSP thiếu, không hỏi người dùng.\n"
             f"Core anti-patterns: ANTI-1 (no fake red) · ANTI-2 (no blind assert) · ANTI-3 (clean git state) · "
             f"ANTI-4 (tick before code) · ANTI-5 (cap logs <= 15 lines) · ANTI-6 (explicit files in Cham)."
         )
