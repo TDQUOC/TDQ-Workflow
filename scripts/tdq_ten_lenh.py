@@ -130,3 +130,27 @@ def can_nhac_ten_lenh(nen_tang=None, tim_lenh=None):
     return (f"[TDQ] On this machine `python3` is not a command: type `{LENH_PYTHON_WINDOWS}` "
             f"instead, or install the shim once with "
             f"`{LENH_PYTHON_WINDOWS} scripts/tdq_checkportable.py setup --shim`.")
+
+
+def tham_so_subprocess_an_cua_so(nen_tang=None):
+    """Tham số truyền vào subprocess.run / subprocess.Popen để ẩn cửa sổ console trên Windows.
+
+    Trên Windows, mọi tiến trình con binary dòng lệnh (như graphify.exe, git.exe, python.exe)
+    sẽ tự động cấp phát một cửa sổ console (conhost.exe) và hiển thị chớp nháy lên màn hình
+    nếu không có cờ CREATE_NO_WINDOW (0x08000000). Trên POSIX (Linux/macOS), trả về dict rỗng {}.
+    """
+    if not la_windows(nen_tang):
+        return {}
+    import subprocess
+    cflags = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+    return {"creationflags": cflags}
+
+
+def chay_subprocess(cmd, nen_tang=None, **kwargs):
+    """Thực thi subprocess.run tự động gắn cờ ẩn cửa sổ console trên Windows."""
+    import subprocess
+    kw = dict(kwargs)
+    kw.update(tham_so_subprocess_an_cua_so(nen_tang=nen_tang))
+    return subprocess.run(cmd, **kw)
+
+

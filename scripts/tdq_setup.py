@@ -50,9 +50,11 @@ sys.path.insert(0, SCRIPTS_DIR)
 import lsp_module  # noqa: E402
 import plugin_tiers  # noqa: E402 — ghi enabledPlugins nguyên tử + .bak
 import search_rules  # noqa: E402
+import tdq_checkportable  # noqa: E402
 import tdq_devtool_mcp  # noqa: E402
 import tdq_lsp  # noqa: E402
 import tdq_no  # noqa: E402 — hạ tầng ghi nợ dùng chung với tdq_finish.py
+import tdq_ten_lenh  # noqa: E402
 import utf8_io  # noqa: E402
 
 TIMEOUT_CAI = 300
@@ -115,8 +117,8 @@ def _chay_lenh(lenh):
     if not argv:
         return 1, "lệnh rỗng"
     try:
-        p = subprocess.run(argv, capture_output=True,
-                           encoding="utf-8", errors="replace", text=True, timeout=TIMEOUT_CAI)
+        p = tdq_ten_lenh.chay_subprocess(argv, capture_output=True,
+                                         encoding="utf-8", errors="replace", text=True, timeout=TIMEOUT_CAI)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
         return 1, f"quá {TIMEOUT_CAI}s"
@@ -599,6 +601,132 @@ def kiem_plugin_user(home=None, goc_plugin=None, cham_may=None):
     return da_cai, canh_bao, no
 
 
+def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None):
+    """Tự động kiểm tra và nâng cấp plugin scope user khi repo nguồn có version mới hơn."""
+    home = home or os.path.expanduser("~")
+    ban = _ban_cai_user(home)
+    if ban is None:
+        return False, ""
+    khoa, v_cai = ban
+    v_nguon = doc_phien_ban_plugin(goc_plugin)
+    if not v_nguon or v_cai == v_nguon:
+        return False, ""
+
+    _log(f"phát hiện bản cài {khoa} {v_cai} cũ hơn nguồn {v_nguon} — tiến hành tự động cập nhật")
+    claude = shutil.which("claude")
+    chay = chay_lenh or _chay_lenh
+    thanh_cong = False
+
+    # Thử 1: Gọi CLI chính thức nếu có
+    if claude and not _khong_cham_may():
+        try:
+            rc, _ = chay(f'"{claude}" plugin update {khoa} -s user -y')
+            if rc == 0:
+                thanh_cong = True
+        except Exception:  # noqa: BLE001
+            thanh_cong = False
+
+    # Thử 2: Đồng bộ trực tiếp vào cache nếu CLI không khả dụng hoặc thất bại
+    if not thanh_cong and not _khong_cham_may():
+        try:
+            goc = goc_plugin or GOC_REPO
+            thu_muc_dich = os.path.join(home, ".claude", "plugins", "cache", "tdq-local", "tdq-workflow", v_nguon)
+            os.makedirs(thu_muc_dich, exist_ok=True)
+            bo_qua = shutil.ignore_patterns(".git", ".venv", ".venv-tokens", "__pycache__", "graphify-out", ".tdq-worktrees")
+            for item in os.listdir(goc):
+                if item in (".git", ".venv", ".venv-tokens", "__pycache__", "graphify-out", ".tdq-worktrees"):
+                    continue
+                s = os.path.join(goc, item)
+                d = os.path.join(thu_muc_dich, item)
+                if os.path.isdir(s):
+                    if os.path.exists(d):
+                        shutil.rmtree(d, ignore_errors=True)
+                    shutil.copytree(s, d, ignore=bo_qua)
+                else:
+                    shutil.copy2(s, d)
+
+            tep_json = os.path.join(home, ".claude", "plugins", "installed_plugins.json")
+            du_lieu = tdq_lsp._doc_json(tep_json)
+            if isinstance(du_lieu, dict) and "plugins" in du_lieu and khoa in du_lieu["plugins"]:
+                for b in du_lieu["plugins"][khoa]:
+                    if b.get("scope") == "user":
+                        b["version"] = v_nguon
+                        b["installPath"] = thu_muc_dich
+                        b["lastUpdated"] = datetime.now().isoformat() + "Z"
+                _ghi_json_nguyen_tu(tep_json, du_lieu)
+                thanh_cong = True
+        except Exception as exc:  # noqa: BLE001
+            _log(f"lỗi đồng bộ cache plugin cục bộ: {exc}")
+
+    if thanh_cong:
+        _log(f"đã tự động cập nhật {khoa} lên {v_nguon}")
+        return True, f"[TDQ] Đã tự động cập nhật plugin tdq-workflow lên phiên bản {v_nguon}."
+    return False, ""
+
+
+def kiem_va_cai_shim_python3(tu_dong_them_path=True):
+    """Tự động kiểm tra và cài đặt shim python3 trên Windows nếu thiếu hoặc lỗi. -> (da_cai, canh_bao, no)."""
+    if not tdq_ten_lenh.la_windows():
+        return [], [], []
+
+    song = False
+    try:
+        res = tdq_ten_lenh.chay_subprocess("python3 -c \"import sys; sys.exit(0)\"",
+                                           shell=True, capture_output=True, timeout=5)
+        song = (res.returncode == 0)
+    except Exception:  # noqa: BLE001
+        song = False
+
+    if song and tdq_ten_lenh.co_shim_python3():
+        return ["shim `python3` đã sẵn sàng"], [], []
+
+    _log("phát hiện `python3` chưa hoạt động hoặc dính Microsoft Store stub — tiến hành cài shim")
+    da_lam, ghi_chu = tdq_checkportable.cai_shim_python3(nen_tang="win32", tu_dong_them_path=tu_dong_them_path)
+    if da_lam:
+        return [f"shim `python3`: {d}" for d in da_lam], ghi_chu, []
+    # Nếu không có file mới được ghi nhưng ghi_chu cho thấy đã đúng sẵn hoặc song == True
+    if any("already correct" in g for g in ghi_chu) or song:
+        return ["shim `python3` đã sẵn sàng"], ghi_chu, []
+    return [], ghi_chu, ["không thể tự cài shim `python3` tự động (cần cấp quyền PATH)"]
+
+
+def kiem_dryrun_hook(goc_plugin=None):
+    """Chạy thử (smoke dry-run) script hook bằng lệnh cấu hình để đảm bảo hook không lỗi. -> (dat, chi_tiet)."""
+    goc = goc_plugin or GOC_REPO
+    script = os.path.join(goc, "hooks", "scripts", "prompt_context.py")
+    if not os.path.isfile(script):
+        return True, "không có script hook mẫu để test"
+
+    # Kiểm tra bằng python3 qua shell
+    try:
+        cmd_str = f'python3 "{script}" --help' if tdq_ten_lenh.la_windows() else ["python3", script, "--help"]
+        res = tdq_ten_lenh.chay_subprocess(cmd_str, shell=tdq_ten_lenh.la_windows(), capture_output=True, stdin=subprocess.DEVNULL, timeout=5)
+        if res.returncode == 0 or b"prompt_context" in res.stdout or b"usage:" in res.stdout:
+            return True, "hook dry-run thành công với `python3`"
+        if b"Python was not found" in res.stderr:
+            return False, "hook vẫn dính lỗi 'Python was not found' từ Microsoft Store stub"
+    except FileNotFoundError:
+        pass
+    except Exception as exc:  # noqa: BLE001
+        return False, f"lỗi chạy hook dry-run: {exc}"
+
+    # Kiểm tra fallback qua py -3 hoặc python
+    for cmd in ("py", "python"):
+        try:
+            if tdq_ten_lenh.la_windows():
+                c_str = f'{cmd} -3 "{script}" --help' if cmd == "py" else f'{cmd} "{script}" --help'
+                res = tdq_ten_lenh.chay_subprocess(c_str, shell=True, capture_output=True, stdin=subprocess.DEVNULL, timeout=5)
+            else:
+                args = [cmd, "-3", script, "--help"] if cmd == "py" else [cmd, script, "--help"]
+                res = tdq_ten_lenh.chay_subprocess(args, capture_output=True, stdin=subprocess.DEVNULL, timeout=5)
+            if res.returncode == 0 or b"usage:" in res.stdout:
+                return True, f"hook dry-run thành công qua fallback `{cmd}`"
+        except Exception:  # noqa: BLE001
+            continue
+
+    return False, "không chạy được hook script bằng cả python3, py và python"
+
+
 MOC_MO = "<!-- TDQ:TOOLS -->"
 MOC_DONG = "<!-- /TDQ:TOOLS -->"
 
@@ -616,20 +744,30 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
   Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
-- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py`.
+- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
   Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+- Toàn quyền tự quyết xử lý LSP: Agent có toàn quyền tự động áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` khi mở request cho tài liệu/nghiên cứu/cài MCP, hoặc khi kịch bản kiểm chứng chỉ có tham chiếu nội tệp trong dự án phát triển mà không dừng lại hỏi người dùng. Nếu thiếu Language Server hoặc công cụ phụ thuộc của LSP cho task cần làm, Agent có toàn quyền tự động tìm kiếm, cài đặt và cấu hình dependency còn thiếu (qua `npm i -g`, `uv tool install`, `pipx`, `brew`...) để đảm bảo môi trường hoạt động đúng và đủ.
 
 ## Nguyên tắc TDQ Workflow bắt buộc
 
 - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
 - Yêu cầu chứa '_tdq_direct' → tự động phân tích & tìm kiếm mã nguồn, lập mini-plan và chỉ dừng ở 1 cổng duyệt mini-plan (không hỏi chọn pipeline, không phỏng vấn).
+- Tự phục hồi môi trường (Self-healing): Khi gặp lỗi 'Python was not found' hoặc lỗi hook, Agent tự động chạy lệnh setup bằng Python hiện có (`python {goc}/scripts/tdq_setup.py` hoặc `py -3 ...`) để tự vá shim và sửa môi trường.
 - Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `{goc}/skills/tdq-intake/SKILL.md`, thay `{bien_plugin}` bằng `{goc}`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
 - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
 - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
 
+## Nguyên tắc Ưu tiên MCP & Bộ kỹ năng MCP (MCP-First)
+
+- Luôn ưu tiên dùng MCP và bộ skill của MCP (nếu có); ưu tiên lập phương án dùng MCP trong spec/plan để giải quyết trọn vẹn yêu cầu người dùng.
+- Kiểm tra kết nối trước (Pre-flight check): Trước khi gọi hoặc lập plan dùng tool MCP, phải kiểm tra trạng thái kết nối hoặc cổng service (ví dụ: port 9222 cho Chrome DevTools, cổng/môi trường cho Roblox/Unity...). Nếu có MCP mà chưa kết nối được, BẮT BUỘC hướng dẫn người dùng cách bật/kết nối trước khi thực thi hoặc báo lỗi.
+- Ví dụ: Khi phát triển mã nguồn Roblox hoặc Unity, luôn kiểm tra sự hiện diện của MCP và bộ skill/tool của MCP tương ứng để thực hiện và kiểm chứng thay vì thao tác mù mờ.
+Chi tiết cẩm nang: `{goc}/skills/tdq-setup/references/mcp-first-guide.md`.
+
 ## Quy tắc Git và Attribution bắt buộc
 
-- Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi."""
+- Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
+- Vùng tự động mang theo khi đổi/hợp nhất nhánh: Khi mở nhánh request hoặc khi merge về nhánh gốc, nếu working tree dirty nhưng CHỈ thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` thì TỰ ĐỘNG mang theo, commit hoặc merge mà KHÔNG CẦN hỏi người dùng. Chỉ dừng hỏi khi có thay đổi dirty ở mã nguồn (`scripts/`, `src/`, `hooks/`, `tests/`...)."""
 
 
 def khoi_huong_dan(goc=None):
@@ -790,26 +928,65 @@ def can_cap_nhat_phien_ban(project, goc_plugin=None):
     return False
 
 
-def tu_dong_cap_nhat_khi_doi_phien_ban(project, goc_plugin=None):
-    """Chạy đồng bộ instruction, cấu hình Codex và ghim version mới vào mốc."""
-    hien_tai = doc_phien_ban_plugin(goc_plugin)
-    _log(f"tự động cập nhật cho phiên bản {hien_tai} tại {project}")
-    # 1. Ghim instruction vào ~/.claude/CLAUDE.md
-    ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
-    # 2. Khai báo hook/MCP cho Codex nếu có
+def thuc_hien_setup_bu(project, v_cu, v_moi, goc_plugin=None):
+    """Chạy kiểm thử và thiết lập bù các thành phần mới từ version cũ lên version mới."""
+    _log(f"thực hiện setup bù từ {v_cu} lên {v_moi} tại {project}")
+    ket_qua = []
+    # 1. Cài đặt / kiểm tra shim python3 trên Windows
+    try:
+        da_cai, _, _ = kiem_va_cai_shim_python3()
+        if da_cai:
+            ket_qua.extend(da_cai)
+    except Exception as exc:  # noqa: BLE001
+        _log(f"lỗi kiểm tra shim khi setup bù: {exc}")
+
+    # 2. Đồng bộ instruction CLAUDE.md
+    try:
+        ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
+        ket_qua.append("ghim instruction mới")
+    except Exception as exc:  # noqa: BLE001
+        _log(f"lỗi ghim instruction khi setup bù: {exc}")
+
+    # 3. Đồng bộ Codex MCP & hook nếu có
     if _tim_cong_cu("codex"):
         try:
             import tdq_codex_mcp
             tdq_codex_mcp.khai_mcp_codex()
             tdq_codex_mcp.khai_hook_codex(project)
+            ket_qua.append("đồng bộ cấu hình codex")
         except Exception as exc:  # noqa: BLE001
-            _log(f"lỗi khai codex khi đổi phiên bản: {exc}")
-    # 3. Dọn tiến trình broker thừa
+            _log(f"lỗi khai codex khi setup bù: {exc}")
+
+    # 4. Kiểm tra Chrome DevTools MCP
+    try:
+        tdq_devtool_mcp.check_session_start(cwd=project)
+    except Exception:  # noqa: BLE001
+        pass
+
+    # 5. Kiểm thử dry-run hook
+    try:
+        ok, chi_tiet = kiem_dryrun_hook(goc_plugin=goc_plugin)
+        if ok:
+            ket_qua.append(f"dry-run hook ĐẠT ({chi_tiet})")
+    except Exception as exc:  # noqa: BLE001
+        _log(f"lỗi dry-run hook khi setup bù: {exc}")
+
+    # 6. Dọn tiến trình broker cũ
     try:
         don_may()
-    except Exception as exc:  # noqa: BLE001
-        _log(f"lỗi dọn máy khi đổi phiên bản: {exc}")
-    # 4. Ghi nhận mốc phiên bản đã setup
+    except Exception:  # noqa: BLE001
+        pass
+
+    return ket_qua
+
+
+def tu_dong_cap_nhat_khi_doi_phien_ban(project, goc_plugin=None):
+    """Chạy đồng bộ instruction, cấu hình Codex, setup bù và ghim version mới vào mốc."""
+    hien_tai = doc_phien_ban_plugin(goc_plugin)
+    da_ghi = doc_phat_hanh(project)
+    v_cu = da_ghi.get("phien_ban") if da_ghi else "0.0.0"
+    _log(f"tự động cập nhật cho phiên bản {hien_tai} (từ {v_cu}) tại {project}")
+    thuc_hien_setup_bu(project, v_cu, hien_tai, goc_plugin=goc_plugin)
     if hien_tai:
         ghi_phat_hanh(project, hien_tai)
     return True
@@ -1043,6 +1220,11 @@ def khoi_tao_nen(project, chay=None):
                 except ValueError as exc:
                     return 1, f"không tách được lệnh: {exc}"
                 return chay_an_toan(argv, None, TIMEOUT_CAI)
+            da_shim, _, no_shim = kiem_va_cai_shim_python3()
+            for d in da_shim:
+                _log(f"nền: {d}")
+            if no_shim:
+                tdq_no.ghi_no(no_shim, project)
             da_cai, no = cai_thieu(tdq_lsp.chay_kiem(project), chay_lenh=chay_lenh)
             them, no_mcp = khai_server_mcp(project, chay_lenh=chay_lenh)
             for dong in da_cai + [f"MCP lsp + {t}" for t in them]:
@@ -1136,10 +1318,15 @@ def main(argv, khai_codex=None):
 
     bac = tdq_lsp.chay_kiem(project)
     da_cai, no = cai_thieu(bac)
+    da_shim, cb_shim, no_shim = kiem_va_cai_shim_python3()
+    da_cai += da_shim
+    canh_bao_shim = cb_shim
+    no += no_shim
     them, no_mcp = khai_server_mcp(project)
     da_cai += [f"MCP `lsp` + {t}" for t in them]
     no += no_mcp
     xong, canh_bao = don_may()
+    canh_bao += canh_bao_shim
     da_cai += xong
     da_va, no_hook = va_hook_xung_dot()
     da_cai += da_va
@@ -1147,6 +1334,11 @@ def main(argv, khai_codex=None):
     da_cai += bat_plugin
     canh_bao += lech_plugin
     no += no_hook + no_plugin + no_skill_khong_ton_tai(project)
+    dat_dryrun, chi_tiet_dryrun = kiem_dryrun_hook(GOC_REPO)
+    if dat_dryrun:
+        da_cai.append(f"hook dry-run: {chi_tiet_dryrun}")
+    else:
+        no.append(f"hook dry-run thất bại: {chi_tiet_dryrun}")
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
         da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
     if tdq_devtool_mcp.is_enabled(cwd=project):

@@ -31,6 +31,7 @@ GRAPHIFY_TIMEOUT = 300
 MAX_SHORT_OUT = 200
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
+import tdq_ten_lenh  # noqa: E402
 
 
 def _now():
@@ -65,8 +66,8 @@ def _project_dir():
 def _run(cmd, cwd, timeout=STEP_TIMEOUT):
     """Run a child command, return (rc, output). Infrastructure errors become results too, never raised."""
     try:
-        p = subprocess.run(cmd, cwd=cwd, capture_output=True,
-                           encoding="utf-8", errors="replace", text=True, timeout=timeout)
+        p = tdq_ten_lenh.chay_subprocess(cmd, cwd=cwd, capture_output=True,
+                                         encoding="utf-8", errors="replace", text=True, timeout=timeout)
         return p.returncode, (p.stdout + p.stderr).strip()
     except subprocess.TimeoutExpired:
         return 1, f"over {timeout}s"
@@ -134,9 +135,9 @@ def step_phase(project, phase):
     env = dict(os.environ, TDQ_PROJECT_DIR=project)
     cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_state.py"), "set", f"phase={phase}"]
     try:
-        p = subprocess.run(cmd, cwd=project, capture_output=True,
-                           encoding="utf-8", errors="replace", text=True,
-                           timeout=STEP_TIMEOUT, env=env)
+        p = tdq_ten_lenh.chay_subprocess(cmd, cwd=project, capture_output=True,
+                                         encoding="utf-8", errors="replace", text=True,
+                                         timeout=STEP_TIMEOUT, env=env)
     except (subprocess.TimeoutExpired, OSError) as exc:
         return Step("phase", "fail", str(exc)[:120])
     if p.returncode != 0:
@@ -155,9 +156,9 @@ def step_dong_so(project, phase):
     env = dict(os.environ, TDQ_PROJECT_DIR=project)
     cmd = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_timing.py"), "close"]
     try:
-        p = subprocess.run(cmd, cwd=project, capture_output=True,
-                           encoding="utf-8", errors="replace", text=True,
-                           timeout=STEP_TIMEOUT, env=env)
+        p = tdq_ten_lenh.chay_subprocess(cmd, cwd=project, capture_output=True,
+                                         encoding="utf-8", errors="replace", text=True,
+                                         timeout=STEP_TIMEOUT, env=env)
     except (subprocess.TimeoutExpired, OSError) as exc:
         return Step("timing", "fail", str(exc)[:120])
     if p.returncode != 0:

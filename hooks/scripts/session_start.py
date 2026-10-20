@@ -33,7 +33,7 @@ from tdq_state import (_TASK_LINE, default_state, effective_phase, lenh_cho_proj
 import search_rules  # noqa: E402
 import tdq_setup  # noqa: E402
 import tdq_devtool_mcp  # noqa: E402
-from tdq_ten_lenh import can_nhac_ten_lenh  # noqa: E402 — the interpreter-name safety net
+from tdq_ten_lenh import can_nhac_ten_lenh, co_shim_python3, la_windows  # noqa: E402 — the interpreter-name safety net
 
 MAX_LINES = 12
 MAX_CHARS = 600
@@ -190,6 +190,17 @@ def cap(text, max_lines, max_chars):
     return text
 
 
+def kiem_can_setup_lan_dau(cwd):
+    """-> True nếu project hoặc môi trường cần chạy setup lần đầu sau khi cài đặt plugin."""
+    if not la_project_that(cwd):
+        return False
+    if not tdq_setup.doc_phat_hanh(cwd):
+        return True
+    if la_windows() and not co_shim_python3():
+        return True
+    return False
+
+
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
@@ -203,20 +214,39 @@ def main():
     # measured 2026-09-21: the graphify notice came out as `graphify is n…` on a machine without
     # graphify. A notice that silently vanishes is worse than none. Each is empty on a machine
     # that does not need it, so those sessions pay nothing for it.
+    thong_bao_update_plugin = ""
+    try:
+        _, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(goc_plugin=GOC_PLUGIN)
+        if msg:
+            thong_bao_update_plugin = msg
+    except Exception:  # noqa: BLE001
+        pass
     da_cap_nhat_ver = False
     try:
         if la_project_that(cwd) and tdq_setup.can_cap_nhat_phien_ban(cwd, goc_plugin=GOC_PLUGIN):
             da_cap_nhat_ver = tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(cwd, goc_plugin=GOC_PLUGIN)
     except Exception:  # noqa: BLE001
         pass
-    dung_nen = can_khoi_tao(cwd) and kich_hoat_nen(cwd)
+    can_setup = False
+    try:
+        can_setup = kiem_can_setup_lan_dau(cwd)
+    except Exception:  # noqa: BLE001
+        pass
+    dung_nen = (can_khoi_tao(cwd) or can_setup) and kich_hoat_nen(cwd)
     nhac_devtool = ""
     try:
         nhac_devtool = tdq_devtool_mcp.check_session_start(cwd=cwd)
     except Exception:
         pass
+    nhac_setup = (
+        f"[TDQ:SETUP] Plugin mới cài đặt hoặc chưa hoàn tất thiết lập: chạy "
+        f"`python3 {os.path.join(GOC_PLUGIN, 'scripts', 'tdq_setup.py')}` (hoặc gọi skill tdq-setup)."
+        if can_setup else ""
+    )
     nhac = [n for n in (
+        thong_bao_update_plugin,
         "[TDQ] Đã tự động cập nhật instruction và cấu hình cho phiên bản mới." if da_cap_nhat_ver else "",
+        nhac_setup,
         "" if shutil.which("graphify") else
         "[TDQ] graphify is not installed (optional): uv tool install graphifyy",
         nhac_devtool,
@@ -285,6 +315,7 @@ def main():
         anchor_block = (
             f"[TDQ:ANCHOR] {label} request={req} phase={pha} source={src} owner={owner} "
             f"plan={plan_f} doing={doing_str} dispatched={dispatched_str} next={next_hint} worktree={wt_str}\n"
+            f"MCP-First: ưu tiên MCP & bộ skill MCP, pre-flight check kết nối; LSP-Autonomy: toàn quyền tự quyết gate LSP (--bo-qua-lsp cho doc/research/internal-ref), tự tìm & cài dependency LSP thiếu, không hỏi người dùng.\n"
             f"Core anti-patterns: ANTI-1 (no fake red) · ANTI-2 (no blind assert) · ANTI-3 (clean git state) · "
             f"ANTI-4 (tick before code) · ANTI-5 (cap logs <= 15 lines) · ANTI-6 (explicit files in Cham)."
         )
