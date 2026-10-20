@@ -633,8 +633,10 @@ def today_log_rel():
 def _git(cwd, *args):
     """stdout (bytes) of a git command, or None when it cannot run."""
     try:
-        proc = subprocess.run(["git", "-C", cwd, *args],
-                              capture_output=True, timeout=GIT_STATUS_TIMEOUT)
+        kw = {"capture_output": True, "timeout": GIT_STATUS_TIMEOUT}
+        if sys.platform == "win32":
+            kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+        proc = subprocess.run(["git", "-C", cwd, *args], **kw)
     except subprocess.TimeoutExpired:
         _warn(f"git {args[0]} took over {GIT_STATUS_TIMEOUT}s in {cwd} — skipping disk evidence")
         return None
@@ -1569,10 +1571,12 @@ def _probe_codex(cwd=None):
     if not os.path.exists(script):
         return False, "chưa có tầng CLI Codex (scripts/tdq_codex.py)"  # i18n-allow
     try:
+        kw = {"capture_output": True, "text": True, "encoding": "utf-8",
+              "timeout": CODEX_CHECK_TIMEOUT, "stdin": subprocess.DEVNULL}
+        if sys.platform == "win32":
+            kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
         proc = subprocess.run(
-            [sys.executable, script, "check", "--json"],
-            capture_output=True, text=True, encoding="utf-8",
-            timeout=CODEX_CHECK_TIMEOUT, stdin=subprocess.DEVNULL)
+            [sys.executable, script, "check", "--json"], **kw)
         data = json.loads(proc.stdout or "{}")
     except Exception as exc:  # noqa: BLE001 - any failure is the same answer
         return False, f"không hỏi được tầng Codex: {type(exc).__name__}"  # i18n-allow

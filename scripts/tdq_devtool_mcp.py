@@ -272,8 +272,8 @@ def ensure_chrome_running(port=DEFAULT_CDP_PORT, timeout=3.0) -> bool:
     try:
         creationflags = 0
         if platform.system().lower() == "windows":
-            # DETACHED_PROCESS = 0x00000008
-            creationflags = 0x00000008
+            # DETACHED_PROCESS = 0x00000008 | CREATE_NO_WINDOW = 0x08000000
+            creationflags = 0x00000008 | getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
 
         subprocess.Popen(
             args,
