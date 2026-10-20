@@ -89,6 +89,7 @@ Nếu việc này là cập nhật, tối ưu hoặc refactor mã nguồn: BẮT
 
 ## 3b. Năng lực & công cụ
 Chép từ brief mục `### Năng lực dùng được`. Phán quyết: DÙNG / KHÔNG (+ lý do) / NỀN.
+Ưu tiên MCP-First: Luôn rà soát MCP tools/skills phù hợp (Roblox, Unity, DevTools, DB...) và đặt điều kiện pre-flight check kết nối.
 
 | Skill | Nguồn | Phán quyết | Dùng ở đâu / Lý do loại |
 |---|---|---|---|
