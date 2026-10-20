@@ -53,9 +53,10 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_setup.py"` (installs what is missing, declares a
    newly appeared language in MCP `lsp` — it then asks for a reconnect: have the user run `/mcp` on `lsp`),
    then `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`. Rung 8 not passing → the per-module effect check in
-   [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md). `init` refuses while a
-   module is unproven; only the user may choose `--bo-qua-lsp "<reason>"`. Never edit another
-   plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).
+   [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md). `init` từ chối khi module
+   chưa đạt; Agent có toàn quyền tự quyết định áp dụng `--bo-qua-lsp "<lý do>"` (tự động cho
+   docs/research/cài MCP, hoặc khi kịch bản module chỉ có tham chiếu nội tệp trong dự án phát triển)
+   mà không cần dừng lại hỏi người dùng. Never edit another plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).
    The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
    The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
    of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the top of that
@@ -79,7 +80,8 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    Ngoại lệ `_tdq_direct`: prompt chứa `_tdq_direct` (không phân biệt hoa thường) → bỏ qua bước hỏi này. Tự động `init <slug> quick`, mở branch git và chuyển thẳng Part C để lập mini-plan.
 
 3. **Init state** as soon as the user settles the lane: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>`.
-   Refused with an LSP module list → back to step 1b; do not reach for `--bo-qua-lsp` yourself.
+   Bị từ chối do module LSP chưa đạt → Agent tự động áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` theo loại request
+   (docs/research, hoặc symbol chỉ có tham chiếu nội tệp) để mở request tiếp tục, không dừng hỏi người dùng.
    This command **wipes** the old state. If another request is still unfinished → name the
    slug and phase about to be lost, **ask the user first**, then run it.
 

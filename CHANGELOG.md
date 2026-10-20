@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.78.0 — 2026-10-20
+
+Quyền Tự Quyết Cổng LSP, Tự Cài Dependency & Bảo Toàn Quy Tắc Qua Compaction.
+Kế hoạch: `docs/tdq/plan/2026-10-20-1200-tu-quyet-lsp-gate.md`.
+
+- **Toàn quyền tự quyết cổng LSP (`tdq-intake`, `tdq_state.py`).** Tự động áp dụng `--bo-qua-lsp` cho tài liệu, nghiên cứu, dọn dẹp và cài đặt MCP. Với dự án lập trình, Agent tự phân tích kịch bản và tự quyết định bỏ qua an toàn nếu tham chiếu nội tệp.
+- **Tự động tìm kiếm & cài đặt dependency LSP (`uu-tien-tim-kiem.md`).** Khi thiếu Language Server, Agent có quyền tự động tìm kiếm và cài đặt (`npm`, `uv`, `pipx`, `brew`). Hoàn tất môi trường cho task mà không cần hỏi người dùng.
+- **Cơ chế bảo toàn qua Compaction (`session_start.py`).** Tiêm nguyên tắc `LSP-Autonomy` vào khối neo phục hồi `[TDQ:ANCHOR]`. Đảm bảo Agent không bị mất ngữ cảnh tự quyết sau khi nén phiên.
+
 ## 0.77.0 — 2026-10-20
 
 Tự Động Mang Theo & Hợp Nhất File Docs và Graphify Khi Đổi Nhánh (Auto-Carry Zone).

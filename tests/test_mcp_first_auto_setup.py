@@ -87,8 +87,9 @@ class MCPFirstAndAutoSetupTests(unittest.TestCase):
         try:
             os.environ["TDQ_KHONG_CHAM_MAY"] = "0"
             cap_nhat, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(home=fake_home, goc_plugin=ROOT, chay_lenh=fake_runner)
+            v_hien_tai = tdq_setup.doc_phien_ban_plugin(ROOT)
             self.assertTrue(cap_nhat)
-            self.assertIn("0.75.0", msg)
+            self.assertIn(v_hien_tai, msg)
         finally:
             if old_val is None:
                 os.environ.pop("TDQ_KHONG_CHAM_MAY", None)
@@ -100,6 +101,7 @@ class MCPFirstAndAutoSetupTests(unittest.TestCase):
         with open(script_path, encoding="utf-8") as f:
             code = f.read()
         self.assertIn("MCP-First: ưu tiên MCP & bộ skill MCP", code)
+        self.assertIn("LSP-Autonomy: toàn quyền tự quyết gate LSP", code)
         self.assertTrue(callable(session_start.main))
 
 
