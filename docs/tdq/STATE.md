@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-10-19T17:53:24+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-10-20T12:26:02+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-10-19-1750-test-graphify-semantic-backend |
+| Request | 2026-10-20-1200-tu-quyet-lsp-gate |
 | Lane | quick |
 | Phase | idle |
 | Spec | (none) |
-| Plan | docs/tdq/plan/2026-10-19-1750-test-graphify-semantic-backend.md — ⏳ awaiting approval |
+| Plan | docs/tdq/plan/2026-10-20-1200-tu-quyet-lsp-gate.md — ⏳ awaiting approval |
 | Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | full |

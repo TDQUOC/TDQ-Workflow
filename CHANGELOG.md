@@ -2,6 +2,45 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.78.0 — 2026-10-20
+
+Quyền Tự Quyết Cổng LSP, Tự Cài Dependency & Bảo Toàn Quy Tắc Qua Compaction.
+Kế hoạch: `docs/tdq/plan/2026-10-20-1200-tu-quyet-lsp-gate.md`.
+
+- **Toàn quyền tự quyết cổng LSP (`tdq-intake`, `tdq_state.py`).** Tự động áp dụng `--bo-qua-lsp` cho tài liệu, nghiên cứu, dọn dẹp và cài đặt MCP. Với dự án lập trình, Agent tự phân tích kịch bản và tự quyết định bỏ qua an toàn nếu tham chiếu nội tệp.
+- **Tự động tìm kiếm & cài đặt dependency LSP (`uu-tien-tim-kiem.md`).** Khi thiếu Language Server, Agent có quyền tự động tìm kiếm và cài đặt (`npm`, `uv`, `pipx`, `brew`). Hoàn tất môi trường cho task mà không cần hỏi người dùng.
+- **Cơ chế bảo toàn qua Compaction (`session_start.py`).** Tiêm nguyên tắc `LSP-Autonomy` vào khối neo phục hồi `[TDQ:ANCHOR]`. Đảm bảo Agent không bị mất ngữ cảnh tự quyết sau khi nén phiên.
+
+## 0.77.0 — 2026-10-20
+
+Tự Động Mang Theo & Hợp Nhất File Docs và Graphify Khi Đổi Nhánh (Auto-Carry Zone).
+Kế hoạch: `docs/tdq/plan/2026-10-20-1145-auto-carry-docs-graphify.md`.
+
+- **Mở rộng Vùng Tự Động Mang Theo (`tdq-intake`, `nhanh-request.md`).** Cho phép tự động chuyển nhánh khi working tree dirty thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**`. Không dừng lại hỏi người dùng nếu không có dirty ở mã nguồn.
+- **Tự động Commit & Merge khi Kết thúc Request (`report-template.md`).** Các thay đổi dirty ở tài liệu và đồ thị graphify được tự động add/commit hoặc merge về nhánh gốc. Tránh việc git switch bị chặn và triệt tiêu các hộp thoại xác nhận lặp lại.
+- **Đồng bộ Quy Tắc Toàn Cục (`scripts/tdq_setup.py`, `CLAUDE.md`).** Bổ sung điều luật auto-carry zone vào `KHOI_HUONG_DAN` ghim tự động vào `CLAUDE.md` giúp toàn bộ phiên làm việc tuân thủ nhất quán.
+
+## 0.76.0 — 2026-10-20
+
+Ưu tiên MCP & Kỹ năng MCP Toàn Cục, Pre-flight Check, Auto-Setup Incremental & Auto-Update Plugin.
+Kế hoạch: `docs/tdq/plan/2026-10-20-1115-uu-tien-mcp-auto-setup.md`.
+
+- **Nguyên tắc Toàn cục MCP-First (`scripts/tdq_setup.py`, `CLAUDE.md`).** Bổ sung điều luật bắt buộc trong `KHOI_HUONG_DAN`. Luôn ưu tiên dùng MCP và bộ kỹ năng MCP trong spec, plan và thực thi cho môi trường chuyên biệt (Roblox, Unity, Chrome DevTools, DB, Docker).
+- **Khối Neo Phục Hồi sau Nén (`session_start.py`).** Tiêm nguyên tắc `MCP-First` vào khối `[TDQ:ANCHOR]` khi phiên làm việc bị nén (`compact`) hoặc phục hồi (`resume`), chống tình trạng Agent quên công cụ.
+- **Cẩm nang Pre-flight Connection Check (`mcp-first-guide.md`).** Chuẩn hóa kịch bản kiểm tra kết nối (cổng 9222 Chrome CDP, socket Unity, bridge Roblox Studio). Bổ sung câu thông báo hướng dẫn người dùng bật server khi chưa mở.
+- **Tự động Setup Bù khi Đổi Version (`tdq_setup.py`).** Nâng cấp `tu_dong_cap_nhat_khi_doi_phien_ban` và `thuc_hien_setup_bu`: Tự động so sánh phiên bản cũ/mới, cài bù shim, ghim instruction, đồng bộ cấu hình Codex và kiểm thử hook dry-run.
+- **Hook SessionStart Tự động Cập nhật Plugin (`session_start.py`).** Tự động phát hiện bản cài plugin scope user cũ hơn mã nguồn repository. Kích hoạt cập nhật CLI hoặc đồng bộ cache trực tiếp không cần thao tác thủ công.
+
+## 0.75.0 — 2026-10-20
+
+Nâng cấp Graphify Full Extraction, Wiki Provenance & Cấu hình Custom Provider An toàn.
+Kế hoạch: `docs/tdq/plan/2026-10-20-0032-graphify-full-wiki-search.md`.
+
+- **Cấu hình Custom Provider an toàn & Degraded Runner (`tdq_graphify.py`, `docs/tdq/config.json`).** Bổ sung cấu hình `GRAPHIFY_CUSTOM_PROVIDER` (`enabled`, `endpoint`, `model`, `api_key_env`). API key chỉ đọc từ biến môi trường, tuyệt đối không lưu secret trong repo/config/manifest/log. Tự động kích hoạt chế độ `code-only degraded` kèm hướng dẫn chi tiết khi chưa cấu hình hoặc thiếu API key, đảm bảo không ngắt quãng workflow. Khi cấu hình hợp lệ nhưng lệnh extraction/wiki thất bại, hệ thống fail-closed và cảnh báo sử dụng LSP + grep.
+- **Quy trình Full Extraction Transaction & Wiki Provenance.** Hợp nhất toàn bộ luồng full extract và export wiki vào một transaction kiểm soát tính tươi mới (freshness). Xác thực tính toàn vẹn dựa trên mã băm nội dung mã nguồn, tài liệu, ignore file, provider endpoint/model và sự hiện diện của wiki (`graphify-out/wiki/index.md`). Loại trừ output wiki khỏi đầu vào để triệt tiêu nguy cơ self-ingest.
+- **Tích hợp Tự khởi tạo & Bậc 7 Kiểm tra Tìm kiếm.** Đồng bộ `tdq_setup.py` và `tdq_lsp.py` nhận diện trạng thái full fresh vs degraded, bảo vệ bộ tìm kiếm 3 tầng không dùng đồ thị/wiki cũ khi chưa đồng bộ.
+- **Benchmark A/B 3 Biến thể & Phán quyết Giữ nguyên Selector 3 Tầng.** Khảo sát thực nghiệm đo lường 3 cấu hình (code-only, full, full+wiki) trên TDQ-Workflow và Photoboth360. Dữ liệu chứng minh Graphify hỗ trợ tốt bản đồ cấu trúc macro và community wiki nhưng ngữ cảnh BFS từ CLI chưa vượt trội so với LSP/grep, quyết định giữ vững thứ tự tìm kiếm 3 tầng chuẩn.
+
 ## 0.74.0 — 2026-10-19
 
 Tích hợp Chrome DevTools MCP tự động hóa & Bộ đôi kỹ năng Trình duyệt Chuyên sâu.

@@ -1,6 +1,6 @@
 # The plan shape
 <!-- muc-luc-dong:
-  The minute estimate `(eNm)`=121
+  The minute estimate `(eNm)`=108
 -->
 
 Copy the whole block into `docs/tdq/plan/<slug>.md` and fill it in. File em:
@@ -57,38 +57,24 @@ Trạng thái plan: CHỜ DUYỆT
 - [ ] **T<x.z>** <việc tạo file mới> — Test: <...>
   - Chạm: `<đường/dẫn/file-moi.py>` → file mới, chưa node nào phụ thuộc
 
-**Mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, kể cả task tạo file mới; đường
-dẫn trong backtick, tính từ gốc repo. Task chỉ sửa tài liệu thì bỏ dòng này. Node nằm trong mục
-`## Hub` của `docs/kien-truc.md` thì task phải thêm một dòng DoD kiểm hồi quy riêng cho node ấy.
-Hai người đọc dòng này, và cái giá của việc thiếu nó: mục `Dòng Chạm` của
-[plan-template-co-che.md](plan-template-co-che.md).
+**Mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, đường dẫn trong backtick tính từ gốc repo. Task chỉ sửa tài liệu thì bỏ dòng này. Chi tiết: [plan-template-co-che.md](plan-template-co-che.md).
 
 ## Dòng `Cần:` (khai phụ thuộc giữa các task)
 
-Đặt ngay dưới task, sau dòng `Chạm:` nếu có. Một dòng, mã task ngoài backtick, phân cách
-bằng dấu phẩy:
+Đặt ngay dưới task, sau dòng `Chạm:` nếu có. Một dòng, mã task ngoài backtick:
 
 - [ ] **T3.2** việc đọc đầu ra của task khác — Test: <...>
   - Cần: T3.1, T1.3
 
-Task nào ĐỌC đầu ra của task khác thì BẮT BUỘC khai. Cấm khai vòng: A cần B mà B cần A thì máy
-báo lỗi và dừng. Cách máy dùng dòng này để xếp đợt, và luật lùi khi plan không khai `Cần:` ở đâu
-cả: mục `Dòng Cần` của [plan-template-co-che.md](plan-template-co-che.md).
+Task ĐỌC đầu ra của task khác BẮT BUỘC khai. Cấm khai vòng: A cần B mà B cần A. Chi tiết: [plan-template-co-che.md](plan-template-co-che.md).
 
 ## Cụm song song
 
-Mục này BẮT BUỘC có trong mọi plan, mọi lane, mọi mode — kể cả khi kết luận là chỉ một cụm. Lý
-do: tính modular là thuộc tính của TÀI LIỆU, không phải của mode thi hành. Viết "một cụm vì
-<lý do>" vẫn hợp lệ; bỏ trắng mục thì `doc_lint --pair` báo lỗi. Cách chia cho đúng (4 luật, kèm
-cách ước lượng trần tốc độ): mục `Cụm song song` của
-[plan-template-co-che.md](plan-template-co-che.md).
+Mục này BẮT BUỘC có trong mọi plan (kể cả một cụm: ghi rõ lý do). Chi tiết: [plan-template-co-che.md](plan-template-co-che.md).
 
 ## Luật file nóng (một file, nhiều task chạm)
 
-Đường dẫn bị từ 2 task trở lên khai ở `Chạm:` là FILE NÓNG, và worktree không cứu được: mọi nhánh
-đều phải sửa nó. Hai cách xử, chọn một, không có cách thứ ba — **nâng lên đợt sớm** (mặc định) hoặc
-**một chủ ghi duy nhất**. Cách nhận diện và chi tiết hai cách: mục `Luật file nóng` của
-[plan-template-co-che.md](plan-template-co-che.md).
+Đường dẫn bị từ 2 task trở lên khai ở `Chạm:` là FILE NÓNG. Chọn một trong hai cách: **nâng lên đợt sớm** (mặc định) hoặc **một chủ ghi duy nhất**. Chi tiết: [plan-template-co-che.md](plan-template-co-che.md).
 
 ## Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - [ ] **T<x.y>** <việc của task> — Test: <...>
@@ -101,6 +87,7 @@ cách ước lượng trần tốc độ): mục `Cụm song song` của
 Skill cần MCP tool lúc chạy → dòng `Dùng:` phải kết thúc bằng nhãn ` (mcp)` NGOÀI backtick. Năm
 trường và luật nhãn đầy đủ: mục `Khuôn khối hợp đồng skill` của
 [plan-template-co-che.md](plan-template-co-che.md).
+Quy tắc MCP-First: Với task dùng MCP, phải có bước kiểm tra kết nối (pre-flight probe) trước khi gọi tool, và hướng dẫn user mở server nếu chưa kết nối (xem `skills/tdq-setup/references/mcp-first-guide.md`).
 ## Px — Log & test bắt buộc
 Phase này bắt buộc **chỉ khi việc này có runtime** — tức có ít nhất một task tạo hoặc sửa
 file mã nguồn chạy được. Không có runtime (chỉ sửa tài liệu, khuôn mẫu, cấu hình) → bỏ

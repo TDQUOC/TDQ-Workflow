@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Đánh giá ngắn gọn Graphify: hiệu năng, độ chính xác, LSP/Lumen và khả năng tiết kiệm token, tool call.">
+  <title>Graphify — Đọc nhanh, hiểu đúng</title>
+  <style>
+    :root { color-scheme: light; --ink: #172333; --muted: #495769; --paper: #ffffff; --page: #f4f6f8; --line: #ced6df; --accent: #174d79; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--page); color: var(--ink); font: 17px/1.65 system-ui, sans-serif; }
+    main { max-width: 1040px; margin: auto; padding: 48px 28px; }
+    header { border-top: 5px solid var(--accent); padding: 24px 0 18px; }
+    .eyebrow { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    h1 { font-size: clamp(2.1rem, 5vw, 3.5rem); line-height: 1.12; letter-spacing: -.045em; margin: 12px 0 20px; }
+    h2 { font-size: 1.45rem; line-height: 1.35; margin: 0 0 16px; }
+    h3 { font-size: 1rem; margin: 20px 0 8px; }
+    p { margin: 10px 0 16px; }
+    .intro { font-size: 1.15rem; max-width: 780px; }
+    .meta, .note, footer { color: var(--muted); font-size: .88rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 16px 0 24px; }
+    a { color: var(--accent); text-underline-offset: 3px; overflow-wrap: anywhere; }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    section { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 28px; margin: 0 0 20px; scroll-margin-top: 20px; }
+    .answer { border-left: 4px solid var(--accent); padding: 8px 16px; background: var(--page); }
+    .table-wrap { overflow-x: auto; margin: 18px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    caption { text-align: left; font-weight: 700; padding-bottom: 10px; }
+    th, td { text-align: left; vertical-align: top; padding: 11px 12px; border-bottom: 1px solid var(--line); }
+    thead th { background: var(--page); }
+    th[scope="row"] { font-weight: 600; }
+    .number { white-space: nowrap; font-variant-numeric: tabular-nums; }
+    ul, ol { padding-left: 24px; margin: 10px 0; }
+    li { margin: 7px 0; }
+    code { font: .87em ui-monospace, monospace; overflow-wrap: anywhere; }
+    details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
+    summary { cursor: pointer; font-weight: 600; }
+    .verdict { font-size: 1.05rem; }
+    footer { padding: 6px 2px; }
+    @media (max-width: 640px) { main { padding: 20px 14px; } section { padding: 20px 16px; } body { font-size: 16px; } th, td { padding: 9px 8px; } }
+    @media print { body { background: white; font-size: 11pt; } main { max-width: none; padding: 0; } nav { display: none; } section { border-radius: 0; break-inside: avoid; } a { color: inherit; } }
+    @media (forced-colors: active) { section, .answer { border: 1px solid CanvasText; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Ghi chú kỹ thuật · Photoboth360 · 19/10/2026</div>
+    <h1>Graphify: bản đồ tốt,<br>không phải trình biên dịch.</h1>
+    <p class="intro">Giúp AI biết <strong>nên tìm ở đâu và xem gì tiếp theo</strong>. Không thay được LSP; có thể giảm việc dò tìm, nhưng chưa có số đo chứng minh tiết kiệm token trên dự án này.</p>
+    <p class="meta">Cập nhật 20/10/2026 · Có benchmark FP/FN và ranking mới: 11 file, 12 truy vấn · Đọc khoảng 5 phút</p>
+  </header>
+  <nav aria-label="Mục lục">
+    <a href="#accuracy">01 · Chính xác &amp; tốc độ</a>
+    <a href="#replace">02 · LSP / Lumen</a>
+    <a href="#find">03 · AI tìm code</a>
+    <a href="#cost">04 · Token / tool call</a>
+  </nav>
+
+  <section id="accuracy" aria-labelledby="accuracy-title">
+    <h2 id="accuracy-title">01 / Chính xác đến đâu, nhanh thế nào?</h2>
+    <p class="answer"><strong>Smoke test cũ: 50/50 PASS, nhưng phép đo nghiêm ngặt mới cho thấy có bỏ sót và nhiễu.</strong> Precision/recall dưới đây chỉ áp dụng cho 11 file đã đọc và 12 câu hỏi có đáp án chuẩn, không phải accuracy toàn dự án.</p>
+    <p>Đồ thị có <strong>21,585 nodes</strong> và <strong>52,741 links</strong>. Báo cáo audit ghi <strong>535 communities</strong>; số cụm hay nhãn LLM không chứng minh mọi tính năng đều đã được hiểu đúng.</p>
+    <div class="table-wrap" role="region" aria-label="Bảng kết quả audit cũ" tabindex="0">
+      <table>
+        <caption>Kết quả smoke test cũ (đạt/chưa đạt trên điều kiện rộng, không phải precision/recall)</caption>
+        <thead><tr><th scope="col">Nhóm</th><th scope="col">PASS</th><th scope="col">TB</th><th scope="col">Đo điều gì?</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Entity Coverage</th><td class="number">10/10</td><td class="number">2.19 ms</td><td>Tìm node trong JSON đã nạp vào RAM.</td></tr>
+          <tr><th scope="row">Dependency Accuracy</th><td class="number">10/10</td><td class="number">29.53 ms</td><td>Quét cạnh trong RAM, khớp chuỗi rộng.</td></tr>
+          <tr><th scope="row">Structural &amp; Call Flow</th><td class="number">10/10</td><td class="number">19.00 ms</td><td>Chủ yếu kiểm thành viên/cấu trúc; không xác minh toàn bộ luồng gọi.</td></tr>
+          <tr><th scope="row">Semantic Query</th><td class="number">10/10</td><td class="number">2698.47 ms</td><td>Chạy CLI mới mỗi lần; khoảng 2.70 giây/truy vấn.</td></tr>
+          <tr><th scope="row">Architectural Impact</th><td class="number">10/10</td><td class="number">706.49 ms</td><td>Trộn CLI affected/god-nodes/explain với đọc báo cáo trên đĩa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="precision-results" class="table-wrap" role="region" aria-label="Bảng kết quả precision recall thực đo" tabindex="0">
+      <table>
+        <caption>Kết quả đo thực tế theo gold set độc lập (11 file JS nodeserver · 12 câu hỏi)</caption>
+        <thead>
+          <tr><th scope="col">Phần đánh giá</th><th scope="col">TP / FP / FN</th><th scope="col">Micro P</th><th scope="col">Micro R</th><th scope="col">Micro F1</th><th scope="col">Đánh giá ngắn</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Cạnh imports_from</th>
+            <td class="number">57 / 0 / 5</td>
+            <td class="number">100.0%</td>
+            <td class="number">91.9%</td>
+            <td class="number">95.8%</td>
+            <td>Bắt đúng hầu hết require chuỗi; bỏ sót socket.io, connect-mongo, multer và 2 require gọi lồng.</td>
+          </tr>
+          <tr>
+            <th scope="row">Hàm có tên</th>
+            <td class="number">22 / 0 / 5</td>
+            <td class="number">100.0%</td>
+            <td class="number">81.5%</td>
+            <td class="number">89.8%</td>
+            <td>Bắt đủ function thường/exports; bỏ sót 5 phương thức trong Schema.methods của Mongoose.</td>
+          </tr>
+          <tr>
+            <th scope="row">Scorer nội bộ (top 5)</th>
+            <td class="number">12 / 30 / 2</td>
+            <td class="number">28.6%</td>
+            <td class="number">85.7%</td>
+            <td class="number">42.9%</td>
+            <td>Xếp hạng nội bộ tìm đúng 12/14 file mục tiêu trong top 5; kèm 30 lượt file phụ/nhiễu.</td>
+          </tr>
+          <tr>
+            <th scope="row">Ngữ cảnh CLI (budget 1500)</th>
+            <td class="number">4 / 14 / 10</td>
+            <td class="number">22.2%</td>
+            <td class="number">28.6%</td>
+            <td class="number">25.0%</td>
+            <td>Context trả về theo BFS chỉ trúng 4 lượt file triển khai trực tiếp, bỏ sót 10 lượt file đúng.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap" role="region" aria-label="Bảng thứ hạng truy vấn" tabindex="0">
+      <table>
+        <caption>Chỉ số thứ hạng trung bình trên 12 câu hỏi (tính theo scorer nội bộ trong 11 file đã đánh giá)</caption>
+        <thead>
+          <tr><th scope="col">Chỉ số</th><th scope="col">Giá trị</th><th scope="col">Ý nghĩa</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Precision@5</th><td class="number">0.200</td><td>Trung bình 1 trên 5 vị trí đầu là file triển khai trực tiếp tính năng.</td></tr>
+          <tr><th scope="row">Recall@5</th><td class="number">0.833</td><td>Bao phủ được hơn 83% các file mục tiêu trong 5 vị trí đầu.</td></tr>
+          <tr><th scope="row">Hit@5</th><td class="number">0.833</td><td>10/12 câu hỏi có ít nhất một file đúng lọt vào top 5.</td></tr>
+          <tr><th scope="row">MRR@10</th><td class="number">0.554</td><td>File đúng đầu tiên thường xuất hiện quanh vị trí 1–2 (nghịch đảo trung bình).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note">Lưu ý quan trọng: thứ tự NODE trong output CLI không phải bảng xếp hạng tìm kiếm; đó là thứ tự duyệt đồ thị theo BFS. Scorer nội bộ xếp hạng tốt hơn, nhưng context CLI thực tế đưa cho AI hẹp hơn nhiều và có thể thiếu file quan trọng.</p>
+    <details>
+      <summary>Vì sao không gọi đây là “accuracy 100%”?</summary>
+      <ul>
+        <li><code>query</code> chỉ cần xuất hiện một từ khóa; <code>affected</code> cũng chỉ cần một từ, chưa đối chiếu tập file ảnh hưởng chuẩn. <code>explain</code> chỉ kiểm mã thoát và chiều dài đầu ra.</li>
+        <li>Phép kiểm node/cạnh dùng substring nên có thể khớp nhầm; chưa đo false positives, false negatives hay thứ hạng kết quả.</li>
+        <li>T14 từng không tìm được cạnh <code>socket.io</code>, sau đó đổi sang kiểm <code>path</code>. PASS mới không chứng minh thiếu sót cũ đã được sửa.</li>
+        <li>JSONL có trạng thái, latency và tóm tắt nhưng thiếu raw stdout/stderr đầy đủ để kiểm toán lại mọi câu trả lời CLI.</li>
+      </ul>
+    </details>
+  </section>
+
+  <section id="replace" aria-labelledby="replace-title">
+    <h2 id="replace-title">02 / Có thay LSP hoặc Lumen được không?</h2>
+    <div class="table-wrap" role="region" aria-label="So sánh công cụ" tabindex="0">
+      <table>
+        <caption>Chọn công cụ theo câu hỏi, không chọn một công cụ cho tất cả</caption>
+        <thead><tr><th scope="col">Công cụ</th><th scope="col">Vai trò</th><th scope="col">Kết luận</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Graphify</th><td>Bản đồ module, cạnh phụ thuộc, cụm, vết ảnh hưởng và liên kết code–tài liệu khi có trích xuất phù hợp.</td><td>Định hướng tốt; chất lượng phụ thuộc extractor, phạm vi và độ mới của graph.</td></tr>
+          <tr><th scope="row">LSP</th><td>Định nghĩa, tham chiếu theo ngữ nghĩa ngôn ngữ, kiểu, diagnostics và hỗ trợ rename.</td><td><strong>Không thay được.</strong> Graph không có cơ chế kiểm kiểu/diagnostics của language server; rename vẫn cần kiểm thử.</td></tr>
+          <tr><th scope="row">Lumen</th><td>Lớp tìm kiếm ngữ nghĩa từng dùng trong TDQ Workflow.</td><td><strong>Có thể thay một phần nhu cầu tìm kiếm</strong> bằng Graphify + grep + LSP; không đồng nghĩa tương đương toàn bộ khả năng.</td></tr>
+          <tr><th scope="row">Grep</th><td>Tìm tên chính xác, literal, cấu hình và nội dung mới nhất.</td><td>Vẫn cần; đơn giản và phù hợp khi đã biết từ cần tìm.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">TDQ đã gỡ Lumen từ 0.58.0 sau thử nghiệm nội bộ. Đây là quyết định của workflow, không phải benchmark Graphify thắng Lumen trên Photoboth360 hay kết luận về mọi phiên bản Lumen.</p>
+  </section>
+
+  <section id="find" aria-labelledby="find-title">
+    <h2 id="find-title">03 / Extract full có giúp AI dễ tìm hơn?</h2>
+    <p class="answer"><strong>Có tiềm năng rõ nhất khi chưa biết tên hàm.</strong> AI có thêm đường đi giữa tính năng, file, symbol và phụ thuộc thay vì đoán nhiều từ khóa rời rạc.</p>
+    <p><strong>Ví dụ cách dùng</strong> — không phải luồng đã được benchmark trọn vẹn:</p>
+    <ol>
+      <li>Hỏi “xử lý thumbnail video ở đâu?” bằng <code>graphify query</code>, kết hợp grep các từ đồng nghĩa.</li>
+      <li>Dùng kết quả để định vị <code>nodeserver/app/utils/ffmpeg.js</code>, rồi mở đúng hàm <code>thumbnail</code>.</li>
+      <li>Dùng graph xem phụ thuộc; dùng LSP kiểm tham chiếu và kiểu trước khi sửa; chạy test sau sửa.</li>
+    </ol>
+    <p><strong>Full ≠ mọi thứ:</strong> chỉ bao phủ file không bị ignore và các cấu trúc extractor hỗ trợ. Dynamic require, reflection, event wiring hoặc suy luận LLM vẫn có thể thiếu/sai. Nhãn cụm không chứng minh đã chạy semantic extraction đầy đủ trên mọi file.</p>
+    <p class="note">Cần cập nhật graph sau thay đổi code, giữ đường dẫn/dòng nguồn và ưu tiên kiểm chứng cạnh suy luận. Graph cũ có thể dẫn AI tới code đã đổi hoặc bị xóa; graph quá nhiều thư viện vendor cũng có thể làm loãng kết quả.</p>
+  </section>
+
+  <section id="cost" aria-labelledby="cost-title">
+    <h2 id="cost-title">04 / Có tiết kiệm token và tool call?</h2>
+    <p class="answer"><strong>Có thể, nhưng chưa đo A/B trên Photoboth360.</strong> Chưa thể đưa ra phần trăm tiết kiệm hay hứa luôn ít tool call hơn.</p>
+    <ul>
+      <li><strong>Có lợi khi:</strong> graph mới, trả ngữ cảnh ngắn và đúng; một truy vấn bản đồ thay được nhiều lượt grep/đọc file dò đường, dùng lại index cho nhiều tác vụ.</li>
+      <li><strong>Có thể tốn thêm khi:</strong> đã biết tên cần grep, graph nhiễu/cũ, output dài hoặc phải gọi lại nhiều lần. Full semantic extraction và cập nhật cũng có thể tốn token/chi phí riêng.</li>
+      <li><strong>Không tự động tiết kiệm:</strong> agent phải thực sự dùng graph để chọn ít file hơn; không nạp toàn bộ <code>graph.json</code> vào context. Giới hạn output không có nghĩa đã giảm tổng token.</li>
+    </ul>
+    <details>
+      <summary>Đo thế nào để kết luận chắc chắn?</summary>
+      <p>Chạy cùng bộ tác vụ với hai cấu hình: <strong>grep + LSP</strong> và <strong>Graphify + grep + LSP</strong>; giữ model, chất lượng đầu ra và điều kiện chạy tương đương. Đo token vào/ra, tool calls, thời gian, số lần mở nhầm file, tỷ lệ hoàn thành và chi phí xây/cập nhật index. Chạy lặp để có phân phối thay vì chỉ một trung bình.</p>
+      <p>Chỉ gọi là tiết kiệm khi đạt chất lượng tương đương và <strong>chi phí dò tìm tránh được lớn hơn chi phí query + index phân bổ</strong>.</p>
+    </details>
+    <p class="verdict"><strong>Khuyến nghị:</strong> giữ <strong>Graphify + LSP + grep</strong>. Graphify chỉ đường, LSP kiểm ngữ nghĩa code, grep tìm chính xác. Đừng thay LSP; đừng coi full extraction là bảo đảm đầy đủ hoặc tiết kiệm.</p>
+  </section>
+
+  <section id="sources" aria-labelledby="sources-title">
+    <h2 id="sources-title">Nguồn &amp; phạm vi tin cậy</h2>
+    <ul>
+      <li><a href="../../../evals/photoboth360_precision_summary.md">Báo cáo precision/recall &amp; ranking</a> — số liệu thực đo theo gold set đóng băng.</li>
+      <li><a href="../../../evals/photoboth360_precision_logs.jsonl">Log chi tiết có raw output &amp; evidence</a> · <a href="../../../evals/photoboth360_precision_gold.json">Gold set có hash &amp; dòng chứng cứ</a> · <a href="../../../evals/audit_photoboth360_precision.py">Harness đo</a></li>
+      <li><a href="../../../evals/photoboth360_audit_summary.md">Báo cáo smoke test cũ</a> — 50/50 đạt trên điều kiện rộng, đối chiếu cùng benchmark mới.</li>
+      <li><a href="../../../skills/tdq-setup/references/uu-tien-tim-kiem.md">Quy tắc tìm kiếm TDQ, mục 1–2b</a> — phân vai công cụ.</li>
+    </ul>
+    <p class="note">HTML tự chứa, không script, telemetry, CDN hay API. Nội dung đọc được khi chỉ sao chép file HTML; liên kết nguồn cần giữ cấu trúc thư mục của repo. Các nhận định “có thể” là phân tích có điều kiện, không phải số đo mới.</p>
+  </section>
+  <footer>Graphify · Đọc nhanh, hiểu đúng · Bản phân tích ngày 19/10/2026</footer>
+</main>
+</body>
+</html>
