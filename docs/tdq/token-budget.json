@@ -188,8 +188,8 @@
     "token": 597
   },
   "skills/tdq-plan/references/plan-template.md": {
-    "sha256": "8261479ab406d9fc8cc144ec046d747f5e2072fa88c11bbbb09d8d4843a2a984",
-    "token": 3434
+    "sha256": "46fbeaba5b794099ab79efe7294a3ff4517e939574f363947473d3419ff217b7",
+    "token": 3022
   },
   "skills/tdq-setup/references/chrome-devtools-mcp-guide.md": {
     "sha256": "01a287ea8cc52bda2a87d6349d7cca1beceb3ed1d3a23e885dd91491c28730be",
@@ -198,6 +198,10 @@
   "skills/tdq-setup/references/languages.md": {
     "sha256": "b31c78227a57017f86e0f27b4558fd509ba9b52374e072bb30eae26f1ca29129",
     "token": 1367
+  },
+  "skills/tdq-setup/references/mcp-first-guide.md": {
+    "sha256": "d702965f66c1935c789cfa9bf6546eb21570d0f7db98d8ea20b71c56271f81d8",
+    "token": 2515
   },
   "skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md": {
     "sha256": "2057e03d6dbbee7cb730e10177ebd8f30c003ba3e18138332c86f27960aac029",
@@ -212,7 +216,7 @@
     "token": 2622
   },
   "skills/tdq-spec/references/spec-template.md": {
-    "sha256": "4d3706f42a891f1db4ddfb371ce01b11a89050f9ce4092ae34e43982c088fd18",
-    "token": 3136
+    "sha256": "1e9b3dff5034922710415213c916445e4b4c8412efc6acb40c4087ca980d5489",
+    "token": 3204
   }
 }

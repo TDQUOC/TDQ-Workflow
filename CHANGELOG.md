@@ -2,6 +2,17 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.76.0 — 2026-10-20
+
+Ưu tiên MCP & Kỹ năng MCP Toàn Cục, Pre-flight Check, Auto-Setup Incremental & Auto-Update Plugin.
+Kế hoạch: `docs/tdq/plan/2026-10-20-1115-uu-tien-mcp-auto-setup.md`.
+
+- **Nguyên tắc Toàn cục MCP-First (`scripts/tdq_setup.py`, `CLAUDE.md`).** Bổ sung điều luật bắt buộc trong `KHOI_HUONG_DAN`. Luôn ưu tiên dùng MCP và bộ kỹ năng MCP trong spec, plan và thực thi cho môi trường chuyên biệt (Roblox, Unity, Chrome DevTools, DB, Docker).
+- **Khối Neo Phục Hồi sau Nén (`session_start.py`).** Tiêm nguyên tắc `MCP-First` vào khối `[TDQ:ANCHOR]` khi phiên làm việc bị nén (`compact`) hoặc phục hồi (`resume`), chống tình trạng Agent quên công cụ.
+- **Cẩm nang Pre-flight Connection Check (`mcp-first-guide.md`).** Chuẩn hóa kịch bản kiểm tra kết nối (cổng 9222 Chrome CDP, socket Unity, bridge Roblox Studio). Bổ sung câu thông báo hướng dẫn người dùng bật server khi chưa mở.
+- **Tự động Setup Bù khi Đổi Version (`tdq_setup.py`).** Nâng cấp `tu_dong_cap_nhat_khi_doi_phien_ban` và `thuc_hien_setup_bu`: Tự động so sánh phiên bản cũ/mới, cài bù shim, ghim instruction, đồng bộ cấu hình Codex và kiểm thử hook dry-run.
+- **Hook SessionStart Tự động Cập nhật Plugin (`session_start.py`).** Tự động phát hiện bản cài plugin scope user cũ hơn mã nguồn repository. Kích hoạt cập nhật CLI hoặc đồng bộ cache trực tiếp không cần thao tác thủ công.
+
 ## 0.75.0 — 2026-10-20
 
 Nâng cấp Graphify Full Extraction, Wiki Provenance & Cấu hình Custom Provider An toàn.
