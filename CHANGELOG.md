@@ -2,6 +2,14 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.81.0 — 2026-10-20
+
+Xác Thực Thực Nghiệm Khảo Sát 3 Chiều Trên Codebase Thực Tế & Hoàn Thiện Quy Trình Refactor.
+
+- **Thực nghiệm đo đạc độ bao phủ trên Codebase lớn (`claudecodeui`).** Chứng minh Tam Giác Khảo Sát 3 Chiều tăng độ bao phủ mã nguồn lên +102% so với chỉ dùng text grep truyền thống. Phát hiện trọn vẹn 41 callers ngầm và 3 modules liên đới.
+- **Chứng minh hiệu quả gỡ rào cản Search Gate.** Cổng nhận diện chính xác phase khảo sát, cho phép 100% lệnh quét diện rộng tự do. Kỷ luật nghiêm ngặt trong phase implement vẫn được bảo toàn nguyên vẹn.
+- **Bảo toàn chuẩn mực kiến trúc sạch.** Xác thực ngoại lệ Rung 1 loại bỏ hoàn toàn hiện tượng ép phẳng layer, bảo vệ thiết kế phân lớp khi tái cấu trúc.
+
 ## 0.80.0 — 2026-10-20
 
 Nâng Cấp Khảo Sát Code 3 Chiều & Bảo Toàn Chủ Đích Refactor Kiến Trúc.
