@@ -1,4 +1,10 @@
 # Cẩm Nang: Nguyên Tắc MCP-First & Kịch Bản Pre-flight Connection Check
+<!-- muc-luc-dong:
+  1. Nguyên Tắc MCP-First (Ưu Tiên MCP Hàng Đầu)=13-24 ·
+  2. Kịch Bản Kiểm Tra Kết Nối Trước Khi Thực Thi (Pre-flight Check)=25-28 ·
+  Bảng Kiểm Tra Các Nền Tảng Phổ Biến=29-39 · 3. Quy Trình Xử Lý Khi Chưa Kết Nối Được=40-45 ·
+  Mẫu Thông Báo Hướng Dẫn Người Dùng=46-79 · 4. Tóm Tắt Quy Tắc Cho Agent=80
+-->
 
 Tài liệu chuẩn hóa nguyên tắc ưu tiên sử dụng Model Context Protocol (MCP) và bộ kỹ năng của MCP trong toàn bộ quy trình TDQ Workflow (từ phân tích, lập spec, lên plan đến triển khai thực tế).
 

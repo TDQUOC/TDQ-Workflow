@@ -141,6 +141,14 @@ def quyet(cwd, phien, ten_tool, vao):
     moc = _doc_moc(cwd)
     tt["tang_song"] = tang_song(moc)
     tt["ngon_ngu"] = do_ngon_ngu_du_an(cwd)
+    pha = None
+    try:
+        from tdq_state import effective_phase, load
+        st = load(cwd, heal=False)
+        pha = effective_phase(st, warn=False)
+    except Exception:
+        pass
+    tt["phase"] = pha
     ok, ly_do = search_rules.quyet_dinh(pl, tt)
     dung_xuong = None
     if not ok:

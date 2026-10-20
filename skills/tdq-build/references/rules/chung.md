@@ -4,10 +4,10 @@
   Measurable thresholds=56-66 · The build-less-than-asked law=67-75 ·
   The ladder — stop at the first rung that holds=76-93 · Make it run first, refactor after=94-101 ·
   The ladder only chooses among options that already pass the floor=102-109 ·
-  Two ordered passes, never one merged judgement=110-121 · Never simplify these away=122-133 ·
-  Say out loud what you climbed past=134-139 · Intensity table=140-150 ·
-  Extra at level ultra=151-156 · RIGHT / WRONG for this law=157-208 · What to do=209-219 ·
-  Self-check=220-226 · RIGHT/WRONG examples=227
+  Two ordered passes, never one merged judgement=110-121 · Never simplify these away=122-134 ·
+  Say out loud what you climbed past=135-140 · Intensity table=141-151 ·
+  Extra at level ultra=152-157 · RIGHT / WRONG for this law=158-198 · What to do=199-209 ·
+  Self-check=210-216 · RIGHT/WRONG examples=217
 -->
 
 Soul: chất lượng > runtime > context cost <!-- i18n-allow: canonical Soul line --> · luật gốc: skills/tdq-conventions/references/soul.md
@@ -130,6 +130,7 @@ asked for included. Two more are settled by user ruling on 2026-09-16:
   It is a standing requirement of the workflow, so it counts as explicitly requested and no rung
   can ever reach it.
 - **The unit test of every task, red → green. No exemption, not even for a one-line change.** Follow [../vision-test-loop.md](../vision-test-loop.md) for 3-tier scenarios and visual diffs.
+- **Chủ đích Refactor & Mở rộng Kiến trúc:** Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc áp dụng Clean Architecture/SOLID: cấu trúc sạch và tính mở rộng đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các layer, service, adapter hợp lý thành hàm phẳng nếu làm vỡ thiết kế mong muốn.
 
 ### Say out loud what you climbed past
 
@@ -156,23 +157,16 @@ defect on its own.
 
 ### RIGHT / WRONG for this law
 
-The ladder against the floor is the single easiest thing here to read wrong, so it gets the
-example. The task: parse a config value that may be a plain number, a string with a unit
-suffix, or a nested object with an explicit unit key.
+Task sample: parse duration config (number, "30m", or {"value": 30, "unit": "m"}).
 
-WRONG — the ladder used to justify crossing the floor:
+WRONG — crossing the floor (one-liner breaking cognitive complexity):
 
 ```python
-# "Rung 6: can it be one line?" -> made it one line.
 def parse(v):
     return (v if isinstance(v, (int, float)) else int(v[:-1]) * {"s": 1, "m": 60, "h": 3600}[v[-1]] if isinstance(v, str) and v[-1] in "smh" else int(v["value"]) * {"s": 1, "m": 60, "h": 3600}[v["unit"]] if isinstance(v, dict) and "unit" in v else int(v))
 ```
 
-It is one line and it is smaller, but its cognitive complexity is over the floor and nobody can
-change it safely. A candidate that breaks the floor was never a candidate, so rung 6 did not
-hold here and the honest answer was to climb on to rung 7.
-
-RIGHT — the lowest rung that holds AND passes the floor:
+RIGHT — lowest rung holding AND passing the floor:
 
 ```python
 UNITS = {"s": 1, "m": 60, "h": 3600}
@@ -189,11 +183,7 @@ def parse(value):
     return int(value)
 ```
 
-Rung 7, the smallest code that works, four flat branches, under both thresholds. No parser class
-(rung 1 held against it), no new dependency (rung 5), and no "strategy" abstraction for three
-cases nobody will extend.
-
-WRONG — the other direction, the ladder ignored entirely:
+WRONG — ladder ignored entirely (over-engineering nobody asked for):
 
 ```python
 class DurationParser(AbstractConfigParser):

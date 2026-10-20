@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.80.0 — 2026-10-20
+
+Nâng Cấp Khảo Sát Code 3 Chiều & Bảo Toàn Chủ Đích Refactor Kiến Trúc.
+Kế hoạch: `docs/tdq/plan/2026-10-20-1355-nang-cap-khao-sat-3-chieu-refactor.md`.
+
+- **Mở khóa Grep tự do trong Phase Khảo sát (`search_gate.py`, `search_rules.py`).** Không giới hạn quota và không deny tool Grep trong các phase `analyze`, `quick_analyze` và `spec`. Duy trì nghiêm ngặt kỷ luật cổng 3 tầng khi bước vào phase `implement`.
+- **Tam Giác Khảo Sát 3 Chiều (`SKILL.md`, `analyze-full.md`, `quick-lane.md`).** Chuẩn hóa quy trình: Grep quét rộng gom candidate files, LSP đào sâu cấu trúc symbol ngầm, Graphify quét vỡ lan hiệu ứng domino. Bắt buộc lập bảng đối chiếu vùng chạm trong brief.
+- **Ngoại lệ Refactor & Clean Architecture cho Rung 1 (`chung.md`).** Khi người dùng yêu cầu Refactor hoặc SOLID, cấu trúc sạch và tính mở rộng module đứng trên luật phẫu thuật 1 dòng tối thiểu. Nghiêm cấm tự ý ép gộp các layer/adapter thành hàm phẳng.
+- **Khối so sánh Trước vs Sau & Đồng bộ Toàn cục (`spec-template.md`, `plan-template.md`, `CLAUDE.md`).** Chuẩn hóa bảng so sánh Trước vs Sau cho spec/plan. Đồng bộ quy tắc vào instruction toàn cục.
+
 ## 0.79.0 — 2026-10-20
 
 Triệt Tiêu Hoàn Toàn Hiện Tượng Cửa Sổ Command Console Chớp Nháy Trên Windows.

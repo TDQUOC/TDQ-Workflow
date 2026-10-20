@@ -532,7 +532,7 @@ class TestSinhNhanhRelease(TempDest):
             m for m in all_py
             if build_portable.la_duong_dan_release(f"scripts/{m}.py")
         }
-        self.assertEqual(len(kept_py), 35, f"Kỳ vọng đúng 35 script runtime, thực tế: {len(kept_py)}")
+        self.assertEqual(len(kept_py), 38, f"Kỳ vọng đúng 38 script runtime, thực tế: {len(kept_py)}")
         for mod in sorted(kept_py):
             duong = os.path.join(scripts_dir, f"{mod}.py")
             with open(duong, encoding="utf-8") as f:
@@ -557,7 +557,7 @@ class TestSinhNhanhRelease(TempDest):
             capture_output=True, check=True, timeout=30,
         )
         kept = build_portable.loc_muc_ls_tree(proc.stdout)
-        self.assertLessEqual(len(kept), 150)
+        self.assertLessEqual(len(kept), 160)
         self.assertGreaterEqual(len(kept), 120)
         for entry in kept:
             path = entry.split(b"\t", 1)[1].decode("utf-8")

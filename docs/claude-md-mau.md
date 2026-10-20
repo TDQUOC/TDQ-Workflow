@@ -62,17 +62,28 @@ Chi tiết: skill `mem0-memory`.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
 - Kiểm cả 7 bậc và cài phần thiếu: `python3 <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
   Luật đầy đủ kèm số đo: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+- Khảo sát code 3 chiều (Triangulation Code Exploration) trong phase analyze/quick_analyze: Quét rộng bằng Grep tự do không giới hạn quota. Đào sâu cấu trúc bằng LSP (find_references, go_to_definition) và quét vỡ lan bằng Graphify (affected 2 bước). Lập bảng đối chiếu vùng chạm để không bỏ sót mã nguồn khi refactor hoặc mở rộng.
+- Toàn quyền tự quyết xử lý LSP: Agent có toàn quyền áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` khi mở request cho tài liệu, nghiên cứu, hoặc cài MCP. Tương tự khi kiểm chứng chỉ có tham chiếu nội tệp trong dự án phát triển, không dừng lại hỏi người dùng. Khi thiếu Language Server hoặc phụ thuộc của LSP, Agent tự tìm kiếm và cài đặt dependency (qua `npm i -g`, `uv tool install`, `pipx`, `brew`...). Môi trường được cấu hình tự động để hoạt động đúng và đủ.
 
 ## Nguyên tắc TDQ Workflow bắt buộc
 
 - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
 - Yêu cầu chứa '_tdq_direct' → tự động phân tích & tìm kiếm mã nguồn, lập mini-plan và chỉ dừng ở 1 cổng duyệt mini-plan (không hỏi chọn pipeline, không phỏng vấn).
+- Ngoại lệ Refactor & Kiến trúc sạch (Rung 1): Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc Clean Architecture/SOLID, cấu trúc sạch và tính mở rộng module đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các tầng/lớp hợp lý thành hàm phẳng nếu làm vỡ chủ đích thiết kế.
 - Tự phục hồi môi trường (Self-healing): Khi gặp lỗi 'Python was not found' hoặc lỗi hook, Agent tự động chạy lệnh setup bằng Python hiện có (`python <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py` hoặc `py -3 ...`) để tự vá shim và sửa môi trường.
 - Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-intake/SKILL.md`, thay `${CLAUDE_PLUGIN_ROOT}` bằng `<đường dẫn thư mục cài TDQ-Workflow>`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
 - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
 - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
 
+## Nguyên tắc Ưu tiên MCP & Bộ kỹ năng MCP (MCP-First)
+
+- Luôn ưu tiên dùng MCP và bộ skill của MCP (nếu có); ưu tiên lập phương án dùng MCP trong spec/plan để giải quyết trọn vẹn yêu cầu người dùng.
+- Kiểm tra kết nối trước (Pre-flight check): Trước khi gọi hoặc lập plan dùng tool MCP, phải kiểm tra trạng thái kết nối hoặc cổng service (ví dụ: port 9222 cho Chrome DevTools, cổng/môi trường cho Roblox/Unity...). Nếu có MCP mà chưa kết nối được, BẮT BUỘC hướng dẫn người dùng cách bật/kết nối trước khi thực thi hoặc báo lỗi.
+- Ví dụ: Khi phát triển mã nguồn Roblox hoặc Unity, luôn kiểm tra sự hiện diện của MCP và bộ skill/tool của MCP tương ứng để thực hiện và kiểm chứng thay vì thao tác mù mờ.
+Chi tiết cẩm nang: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/mcp-first-guide.md`.
+
 ## Quy tắc Git và Attribution bắt buộc
 
 - Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
+- Vùng tự động mang theo khi đổi/hợp nhất nhánh: Khi mở nhánh request hoặc khi merge về nhánh gốc, nếu working tree dirty nhưng CHỈ thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` thì TỰ ĐỘNG mang theo, commit hoặc merge. Không cần dừng lại hỏi người dùng. Chỉ dừng hỏi khi có thay đổi dirty ở mã nguồn (`scripts/`, `src/`, `hooks/`, `tests/`...).
 <!-- /TDQ:TOOLS -->

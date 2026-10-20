@@ -6,8 +6,8 @@ description: Open a new TDQ request - record the ask, pick the lane, init state,
 # TDQ Intake — open the request & analyse
 <!-- muc-luc-dong:
   Tier `nhỏ` — answer or fix on the spot, no request opened=17-32 ·
-  Part A — Open the request (phase `no_state`)=33-101 ·
-  Part B — Analysis (phase `analyze`, deep pipeline only)=102-128 · Part C — Express pipeline=129
+  Part A — Open the request (phase `no_state`)=33-102 ·
+  Part B — Analysis (phase `analyze`, deep pipeline only)=103-129 · Part C — Express pipeline=130
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md) first. Every output for the user is written
@@ -54,13 +54,12 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    newly appeared language in MCP `lsp` — it then asks for a reconnect: have the user run `/mcp` on `lsp`),
    then `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`. Rung 8 not passing → the per-module effect check in
    [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md). `init` từ chối khi module
-   chưa đạt; Agent có toàn quyền tự quyết định áp dụng `--bo-qua-lsp "<lý do>"` (tự động cho
-   docs/research/cài MCP, hoặc khi kịch bản module chỉ có tham chiếu nội tệp trong dự án phát triển)
-   mà không cần dừng lại hỏi người dùng. Never edit another plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).
+   chưa đạt; Agent toàn quyền tự quyết định áp dụng `--bo-qua-lsp "<lý do>"` (cho docs/research/cài MCP hoặc tham chiếu nội tệp) mà không dừng hỏi người dùng. Never edit another plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).
    The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
    The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
    of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the top of that
    file gives the exact line range, so the whole file never has to be read.
+   Phase khảo sát (`analyze`/`quick_analyze`) áp dụng Tam Giác Khảo Sát 3 Chiều: Grep tự do quét rộng gom đủ file, LSP đào sâu cấu trúc, Graphify quét vỡ lan; không giới hạn quota grep.
 
 2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
    Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you <!-- i18n-allow: canonical name in the default language -->

@@ -32,7 +32,8 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
 # cấm trailer AI) và 0.67 thêm dòng dự phòng `Unknown skill` — kênh duy nhất tới model ở project
 # chưa bật plugin. Bản mẫu đo 5.6 KB sau khi đồng bộ lại; cùng phán quyết soul.md: nâng trần.
 # 2026-10-15: 6000 → 6500. Thêm hướng dẫn khởi tạo LSP và tra symbol vào khối ghim; cùng phán quyết.
-MAX_BYTES = 6500
+# 2026-10-20: 6500 → 10000. Bổ sung MCP-First, LSP-Autonomy, Auto-carry dirty zone, Khảo sát 3 chiều và Ngoại lệ Refactor; cùng phán quyết soul.md.
+MAX_BYTES = 10000
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
 # Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file

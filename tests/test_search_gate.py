@@ -36,7 +36,7 @@ class BaseCong(unittest.TestCase):
         os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
         with io.open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w",
                      encoding="utf-8") as fh:
-            json.dump({"active_request": SLUG, "phase": "analyze"}, fh)
+            json.dump({"active_request": SLUG, "phase": "implement"}, fh)
         self.khoa = f"yc:{SLUG}"
 
     def ghi(self, **row):
@@ -347,6 +347,18 @@ class TestDoNgonNguDuAn(unittest.TestCase):
             self.assertIn("open_document", ly_do)
             self.assertIn("list_symbols", ly_do)
             self.assertNotIn("e.g. python", ly_do)
+
+
+class TestPhaKhaoSat(BaseCong):
+    def setUp(self):
+        super().setUp()
+        with io.open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w",
+                     encoding="utf-8") as fh:
+            json.dump({"active_request": SLUG, "phase": "analyze"}, fh)
+
+    def test_phase_analyze_cho_phep_grep_tu_do(self):
+        out, _ = self.goi("Grep", pattern="some_symbol")
+        self.assertEqual(self.bi_chan(out), "", "phase analyze phải cho phép grep tự do không bị chặn")
 
 
 if __name__ == "__main__":
