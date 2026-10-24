@@ -48,7 +48,7 @@ Trạng thái plan: ĐÃ DUYỆT
   - Kiểm: `python3 scripts/doc_lint.py docs/kien-truc-tich-hop-archify.md`
   - Không dùng cho: Sửa mã nguồn gốc trong thư mục archify ngoài
 
-- [~] **T1.2** (e5m) Bổ sung cấu hình biến môi trường AI Endpoint và tài liệu hướng dẫn trong `.env.example` — Test: `.env.example` có đầy đủ biến `ARCHIFY_AI_ENDPOINT`, `ARCHIFY_API_KEY`, `ARCHIFY_MODEL`
+- [x] **T1.2** (e5m) Bổ sung cấu hình biến môi trường AI Endpoint và tài liệu hướng dẫn trong `.env.example` — Test: `.env.example` có đầy đủ biến `ARCHIFY_AI_ENDPOINT`, `ARCHIFY_API_KEY`, `ARCHIFY_MODEL`
   - Dùng: `claude-api`
   - Để: Chuẩn hóa tham số cấu hình endpoint LLM cho adapter, nạp skill TRƯỚC bước đỏ
   - Ra: `.env.example`
@@ -62,7 +62,7 @@ Trạng thái plan: ĐÃ DUYỆT
 - [x] **T2.1** (e20m) Xây dựng module `scripts/tdq_archify.py` với các hàm cốt lõi (find root, pre-flight kiểm tra Node/Archify, build CLI command, execute finalize, atomic delivery, open file) — Test: `python3 scripts/tdq_archify.py check` chạy thành công
   - Chạm: `scripts/tdq_archify.py`
 
-- [ ] **T2.2** (e15m) Bổ sung cầu nối trích xuất và chuyển đổi đồ thị Graphify sang Archify JSON-IR (`graphify_to_archify`) trong `scripts/tdq_archify.py` — Test: Hàm chuyển đổi sinh đúng schema architecture/workflow từ graph.json mẫu
+- [>] **T2.2** (e15m) Bổ sung cầu nối trích xuất và chuyển đổi đồ thị Graphify sang Archify JSON-IR (`graphify_to_archify`) trong `scripts/tdq_archify.py` — Test: `python3 scripts/tdq_archify.py test-bridge`
   - Chạm: `scripts/tdq_archify.py`
   - Cần: T2.1
 
@@ -70,28 +70,28 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P3 — Tích hợp quy chuẩn BA vào Spec & Quick Lane và Setup Pre-flight
 
-- [ ] **T3.1** (e10m) Cập nhật `skills/tdq-spec/SKILL.md` và `references/spec-template.md` chuẩn hóa việc sinh `<slug>-preview.html` tại §2c — Test: File template phản ánh đúng cú pháp HTML preview và khối duyệt spec
+- [x] **T3.1** (e10m) Cập nhật `skills/tdq-spec/SKILL.md` và `references/spec-template.md` chuẩn hóa việc sinh `<slug>-preview.html` tại §2c — Test: File template phản ánh đúng cú pháp HTML preview và khối duyệt spec
   - Dùng: `tdq-spec`
   - Để: Bổ sung chỉ dẫn sinh sơ đồ BA tương tác vào quy trình spec, nạp skill TRƯỚC bước đỏ
   - Ra: `skills/tdq-spec/SKILL.md`, `skills/tdq-spec/references/spec-template.md`
   - Kiểm: `git diff skills/tdq-spec/`
   - Không dùng cho: Thay đổi các section khác ngoài §2c
 
-- [ ] **T3.2** (e8m) Cập nhật `skills/tdq-intake/references/quick-lane.md` bổ sung hướng dẫn sinh mini-workflow cho các task chạm $\ge 2$ module hoặc refactor — Test: `quick-lane.md` có điều kiện kích hoạt rõ ràng
+- [x] **T3.2** (e8m) Cập nhật `skills/tdq-intake/references/quick-lane.md` bổ sung hướng dẫn sinh mini-workflow cho các task chạm $\ge 2$ module hoặc refactor — Test: `quick-lane.md` có điều kiện kích hoạt rõ ràng
   - Dùng: `tdq-intake`
   - Để: Tích hợp BA preview tinh gọn vào express pipeline, nạp skill TRƯỚC bước đỏ
   - Ra: `skills/tdq-intake/references/quick-lane.md`
   - Kiểm: `git diff skills/tdq-intake/references/quick-lane.md`
   - Không dùng cho: Ép buộc sinh HTML cho task siêu nhỏ
 
-- [ ] **T3.3** (e8m) Cập nhật `skills/tdq-plan/references/plan-template.md` hướng dẫn đối chiếu node/boundary kiến trúc từ Archify khi lập WBS — Test: `plan-template.md` có hướng dẫn đối chiếu
+- [x] **T3.3** (e8m) Cập nhật `skills/tdq-plan/references/plan-template.md` hướng dẫn đối chiếu node/boundary kiến trúc từ Archify khi lập WBS — Test: `plan-template.md` có hướng dẫn đối chiếu
   - Dùng: `tdq-plan`
   - Để: Đồng bộ liên kết giữa sơ đồ kiến trúc và kế hoạch task, nạp skill TRƯỚC bước đỏ
   - Ra: `skills/tdq-plan/references/plan-template.md`
   - Kiểm: `git diff skills/tdq-plan/references/plan-template.md`
   - Không dùng cho: Sửa đổi các rule cơ học của plan
 
-- [>] **T3.4** (e10m) Bổ sung bậc kiểm tra Node.js $\ge 18$ và đường dẫn Archify trong `scripts/tdq_setup.py` — Test: `python3 scripts/tdq_setup.py --kiem-archify` chạy không lỗi
+- [x] **T3.4** (e10m) Bổ sung bậc kiểm tra Node.js $\ge 18$ và đường dẫn Archify trong `scripts/tdq_setup.py` — Test: `python3 scripts/tdq_setup.py --kiem-archify` chạy không lỗi
   - Chạm: `scripts/tdq_setup.py`
   - Dùng: `tdq-setup`
   - Để: Tự động hóa kiểm tra môi trường chạy của Archify, nạp skill TRƯỚC bước đỏ

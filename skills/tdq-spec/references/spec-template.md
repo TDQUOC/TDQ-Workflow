@@ -60,6 +60,7 @@ Bắt buộc với lane full (lane quick BỎ). Một module = một vùng file 
 ## 2c. Luồng hoạt động & Sơ đồ kiến trúc
 
 Trực quan hóa luồng dữ liệu và tương tác hệ thống. Bắt buộc có sơ đồ Mermaid (Sequence Diagram hoặc Flowchart) để fresher dev dễ hình dung.
+Khi môi trường có sẵn Node.js và Archify: Agent tạo thêm file candidate JSON (`workflow` hoặc `architecture`) và gọi `python3 scripts/tdq_archify.py render <type> <candidate> docs/tdq/spec/<slug>-preview.html` để sinh bản xem trước tương tác ngoại tuyến (Task Scope BA Flow). Dev và người dùng có thể mở nhanh qua lệnh `python3 scripts/tdq_archify.py open docs/tdq/spec/<slug>-preview.html`.
 
 ```mermaid
 sequenceDiagram

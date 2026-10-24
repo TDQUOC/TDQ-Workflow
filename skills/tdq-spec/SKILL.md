@@ -16,7 +16,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
 [references/spec-template-huong-dan.md](references/spec-template-huong-dan.md).
    Sections that MUST be there: goal & scope (in/out) · **Lộ trình** (copied from the <!-- i18n-allow: canonical spec section names -->
    brief: which phase runs, dropped, skill used, why) · **Ranh giới module** (§2b — lane full) ·
-   a measurable output · **Luồng & Sơ đồ kiến trúc** (§2c — Mermaid diagram, Trước vs Sau) ·
+   a measurable output · **Luồng & Sơ đồ kiến trúc** (§2c — Mermaid diagram, Trước vs Sau; sinh kèm file HTML tương tác `docs/tdq/spec/<slug>-preview.html` qua `scripts/tdq_archify.py` khi có Archify) ·
    approach + reason · **Năng lực & công cụ** (§3b — verdict table checked by R8) ·
    **Giải thuật cốt lõi** (§3c — step-by-step logic, O(T), O(S), edge cases) ·
    **Mental Model cho Fresher** (§3d — analogy + glossary) · standing requirements ·
@@ -53,6 +53,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    **Mục tiêu:** <1–2 câu>.
    **Đầu ra chính:** <gạch đầu dòng ngắn>.
    **Luồng & Giải thuật:** <1–2 câu tóm tắt sơ đồ luồng và giải thuật chính>.
+   **Bản xem trước kiến trúc tương tác:** `docs/tdq/spec/<slug>-preview.html` (kèm lệnh CLI mở nhanh: `python3 scripts/tdq_archify.py open`).
    **Định nghĩa hoàn thành:** <gạch đầu dòng ngắn>.
    **Rủi ro đáng chú ý:** <gạch đầu dòng ngắn>.
 

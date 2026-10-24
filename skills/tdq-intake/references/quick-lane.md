@@ -72,9 +72,10 @@ steps below before doing step 1; working from memory is banned.
    `[ ]` not started · `[~]` in progress · `[>]` handed to a sub-agent · `[x]` done. At
    implement time (step 8) mark `[~]` when the task starts and switch to `[x]` the moment
    the test is green.
+   Khi task chạm từ 2 module trở lên hoặc là tác vụ refactor kiến trúc: Agent có thể sinh sơ đồ mini-workflow tinh gọn (<10 nút) qua `python3 scripts/tdq_archify.py render workflow <candidate> docs/tdq/plan/<slug>-flow.html` để dev xem trực quan luồng nghiệp vụ trước khi duyệt.
 4. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, and
    how it is validated. Add exactly 1 line `Ước tính sẽ dùng skill: <the skills that will be <!-- i18n-allow: canonical name in the default language -->
-   USED, or "không có">` (in doubt → USE). <!-- i18n-allow: label written in the default language -->
+   USED, or "không có">` (in doubt → USE). Kèm link sơ đồ HTML preview nếu có sinh ở bước 3. <!-- i18n-allow: label written in the default language -->
 5. **Ask the QC level inside the SAME block as the approval invite** — express keeps exactly
    ONE stop, so this question never gets a turn of its own. Three options, default `full`, and
    `off` is never offered (full rule: step 5c of [analyze-full.md](analyze-full.md)). Print

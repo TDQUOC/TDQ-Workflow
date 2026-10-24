@@ -49,6 +49,8 @@ Trạng thái plan: CHỜ DUYỆT
 | Luồng thực thi | <mô tả luồng cũ> | <mô tả luồng mới tối ưu> |
 | Thành phần chạm | <danh sách thành phần cũ> | <thành phần mới / thay thế> |
 
+*Đối chiếu sơ đồ kiến trúc:* Khi spec có sinh sơ đồ Archify preview (`<slug>-preview.html`), WBS các task cần bám sát đúng các node và boundary trên sơ đồ để không bỏ sót thành phần.
+
 ## P1 — <tên phase>
 - [ ] **T1.1** (e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
 - [ ] **T1.2** (e12m) <việc cụ thể> — Test: <...>
