@@ -41,7 +41,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P1 — Đặc tả kiến trúc hệ thống (Blueprint RFC) & Cấu hình môi trường
 
-- [>] **T1.1** (e15m) Soạn thảo tài liệu đặc tả kiến trúc tích hợp `docs/kien-truc-tich-hop-archify.md` chi tiết 8 phân hệ, mô hình 2 tầng, data contract và cơ chế endpoint — Test: `python3 scripts/doc_lint.py docs/kien-truc-tich-hop-archify.md`
+- [x] **T1.1** (e15m) Soạn thảo tài liệu đặc tả kiến trúc tích hợp `docs/kien-truc-tich-hop-archify.md` chi tiết 8 phân hệ, mô hình 2 tầng, data contract và cơ chế endpoint — Test: `python3 scripts/doc_lint.py docs/kien-truc-tich-hop-archify.md`
   - Dùng: `archify`
   - Để: Đối chiếu schema JSON-IR và viewer runtime của Archify, nạp skill TRƯỚC bước đỏ
   - Ra: `docs/kien-truc-tich-hop-archify.md`
@@ -49,7 +49,6 @@ Trạng thái plan: ĐÃ DUYỆT
   - Không dùng cho: Sửa mã nguồn gốc trong thư mục archify ngoài
 
 - [~] **T1.2** (e5m) Bổ sung cấu hình biến môi trường AI Endpoint và tài liệu hướng dẫn trong `.env.example` — Test: `.env.example` có đầy đủ biến `ARCHIFY_AI_ENDPOINT`, `ARCHIFY_API_KEY`, `ARCHIFY_MODEL`
-  - Chạm: `./.env.example`
   - Dùng: `claude-api`
   - Để: Chuẩn hóa tham số cấu hình endpoint LLM cho adapter, nạp skill TRƯỚC bước đỏ
   - Ra: `.env.example`
