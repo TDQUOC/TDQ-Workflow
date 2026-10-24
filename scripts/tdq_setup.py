@@ -727,6 +727,61 @@ def kiem_dryrun_hook(goc_plugin=None):
     return False, "không chạy được hook script bằng cả python3, py và python"
 
 
+def kiem_tra_archify(project=None):
+    """Kiểm tra môi trường chạy cho Archify: Node.js >= 18 và file bin/archify.mjs.
+
+    -> (ok: bool, detail: str)
+    """
+    node_bin = shutil.which("node")
+    if not node_bin:
+        return False, "không tìm thấy Node.js trong PATH (yêu cầu Node.js >= 18)"
+
+    node_ver = ""
+    try:
+        cmd = f'"{node_bin}" -v' if tdq_ten_lenh.la_windows() else [node_bin, "-v"]
+        res = tdq_ten_lenh.chay_subprocess(cmd, shell=tdq_ten_lenh.la_windows(),
+                                           capture_output=True, text=True, timeout=5)
+        out = (res.stdout or res.stderr or "").strip()
+        m = re.search(r"v?(\d+)(?:\.(\d+))?", out)
+        if not m:
+            return False, f"không nhận dạng được phiên bản Node.js: {out}"
+        major = int(m.group(1))
+        node_ver = out
+        if major < 18:
+            return False, f"Node.js phiên bản {out} cũ hơn yêu cầu (cần >= 18)"
+    except Exception as exc:  # noqa: BLE001
+        return False, f"lỗi kiểm tra phiên bản Node.js: {exc}"
+
+    goc = project or GOC_REPO
+    ung_vien = []
+    env_root = os.environ.get("ARCHIFY_ROOT")
+    if env_root:
+        ung_vien.append(env_root)
+    ung_vien.append(os.path.join(os.path.expanduser("~"), "Documents", "archify"))
+    if tdq_ten_lenh.la_windows():
+        ung_vien.append(r"C:\Users\admin\Documents\archify")
+    ung_vien.append(os.path.abspath(os.path.join(goc, "..", "archify")))
+    ung_vien.append("../archify")
+
+    archify_bin = None
+    for uv in ung_vien:
+        if not uv:
+            continue
+        p1 = os.path.join(uv, "bin", "archify.mjs")
+        if os.path.isfile(p1):
+            archify_bin = p1
+            break
+        p2 = os.path.join(uv, "archify", "bin", "archify.mjs")
+        if os.path.isfile(p2):
+            archify_bin = p2
+            break
+
+    if not archify_bin:
+        return False, f"Node.js {node_ver} (>= 18) · không tìm thấy file bin/archify.mjs (đã dò ARCHIFY_ROOT, Documents/archify, ../archify)"
+
+    return True, f"Node.js {node_ver} (>= 18) · Archify tại {archify_bin}"
+
+
 MOC_MO = "<!-- TDQ:TOOLS -->"
 MOC_DONG = "<!-- /TDQ:TOOLS -->"
 
@@ -1284,6 +1339,8 @@ def parse_args(argv):
     ap.add_argument("--khong-log", action="store_true", help="tắt log ra stderr")
     ap.add_argument("--nen", action="store_true",
                     help="dựng nền phần đắt (cài, graphify) rồi ghi mốc sẵn sàng")
+    ap.add_argument("--kiem-archify", action="store_true",
+                    help="chỉ kiểm tra môi trường Node.js >= 18 và gói Archify")
     return ap.parse_args(argv)
 
 
@@ -1313,6 +1370,13 @@ def main(argv, khai_codex=None):
         # chính file này thì user gõ nó vẫn nghe một nửa tiếng ồn.
         os.environ["TDQ_LOG"] = "0"
     project = tdq_lsp._project_dir()
+    if args.kiem_archify:
+        ok, chi_tiet = kiem_tra_archify(project)
+        if ok:
+            print(f"archify · ĐẠT ({chi_tiet})")
+        else:
+            print(f"cảnh báo · archify chưa sẵn sàng ({chi_tiet})")
+        return 0
     if args.nen:
         khoi_tao_nen(project)
         return 0
@@ -1352,6 +1416,14 @@ def main(argv, khai_codex=None):
                 no.append("lỗi tự động cài đặt Chrome DevTools MCP")
         else:
             da_cai.append("Chrome DevTools MCP đã sẵn sàng")
+    try:
+        dat_archify, chi_tiet_archify = kiem_tra_archify(project)
+        if dat_archify:
+            da_cai.append(f"tiện ích Archify: {chi_tiet_archify}")
+        else:
+            canh_bao.append(f"tiện ích Archify: {chi_tiet_archify}")
+    except Exception as exc:  # noqa: BLE001
+        canh_bao.append(f"lỗi kiểm tra tiện ích Archify: {exc}")
     phien_ban_moi = doc_phien_ban_plugin(GOC_REPO)
     if phien_ban_moi:
         ghi_phat_hanh(project, phien_ban_moi)
