@@ -62,7 +62,7 @@ Trạng thái plan: ĐÃ DUYỆT
 - [x] **T2.1** (e20m) Xây dựng module `scripts/tdq_archify.py` với các hàm cốt lõi (find root, pre-flight kiểm tra Node/Archify, build CLI command, execute finalize, atomic delivery, open file) — Test: `python3 scripts/tdq_archify.py check` chạy thành công
   - Chạm: `scripts/tdq_archify.py`
 
-- [>] **T2.2** (e15m) Bổ sung cầu nối trích xuất và chuyển đổi đồ thị Graphify sang Archify JSON-IR (`graphify_to_archify`) trong `scripts/tdq_archify.py` — Test: `python3 scripts/tdq_archify.py test-bridge`
+- [x] **T2.2** (e15m) Bổ sung cầu nối trích xuất và chuyển đổi đồ thị Graphify sang Archify JSON-IR (`graphify_to_archify`) trong `scripts/tdq_archify.py` — Test: `python3 scripts/tdq_archify.py test-bridge`
   - Chạm: `scripts/tdq_archify.py`
   - Cần: T2.1
 
@@ -103,7 +103,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P4 — Kiểm thử tự động & Thẩm định QC Độc lập (Ultra)
 
-- [ ] **T4.1** (e15m) Xây dựng bộ test suite `tests/test_tdq_archify.py` bao phủ các trường hợp: phát hiện root, build command, kiểm tra lỗi thiếu Node, và parser graphify — Test: `pytest tests/test_tdq_archify.py` đạt 100% PASS
+- [>] **T4.1** (e15m) Xây dựng bộ test suite `tests/test_tdq_archify.py` bao phủ các trường hợp: phát hiện root, build command, kiểm tra lỗi thiếu Node, và parser graphify — Test: `pytest tests/test_tdq_archify.py` đạt 100% PASS
   - Chạm: `tests/test_tdq_archify.py`
   - Cần: T2.1, T2.2
 
