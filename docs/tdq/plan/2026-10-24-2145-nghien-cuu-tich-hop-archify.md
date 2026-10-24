@@ -59,7 +59,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P2 — Module điều phối TDQ-Archify Adapter (Python CLI)
 
-- [>] **T2.1** (e20m) Xây dựng module `scripts/tdq_archify.py` với các hàm cốt lõi (find root, pre-flight kiểm tra Node/Archify, build CLI command, execute finalize, atomic delivery, open file) — Test: `python3 scripts/tdq_archify.py check` chạy thành công
+- [x] **T2.1** (e20m) Xây dựng module `scripts/tdq_archify.py` với các hàm cốt lõi (find root, pre-flight kiểm tra Node/Archify, build CLI command, execute finalize, atomic delivery, open file) — Test: `python3 scripts/tdq_archify.py check` chạy thành công
   - Chạm: `scripts/tdq_archify.py`
 
 - [ ] **T2.2** (e15m) Bổ sung cầu nối trích xuất và chuyển đổi đồ thị Graphify sang Archify JSON-IR (`graphify_to_archify`) trong `scripts/tdq_archify.py` — Test: Hàm chuyển đổi sinh đúng schema architecture/workflow từ graph.json mẫu
