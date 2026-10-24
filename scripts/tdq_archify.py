@@ -8,6 +8,9 @@ Provides core functions for integrating Archify engine into TDQ-Workflow:
 - run_finalize / execute_finalize: compiles candidate JSON to standalone HTML
 - atomic_delivery: safe atomic file writes
 - open_artifact: opens generated diagrams in default browser
+- graphify_to_archify: converts Graphify graph.json AST data to Archify JSON-IR
+- test_bridge: self-tests graphify-to-archify conversion logic
+- sync_master: synchronizes codebase master architecture diagram
 
 Strictly stdlib-only.
 """
@@ -327,6 +330,281 @@ def open_artifact(file_path: Union[str, Path]) -> bool:
         return False
 
 
+def graphify_to_archify(
+    graph_json_path: Union[str, Path, dict],
+    focus_community: Optional[Union[int, str]] = None,
+    max_nodes: int = 25,
+) -> dict:
+    """Convert Graphify graph.json AST/semantic data to Archify JSON-IR format.
+
+    - Extracts nodes and links
+    - Filters by community if focus_community is specified
+    - Filters by top-degree nodes if count exceeds max_nodes
+    - Generates valid Archify JSON-IR (schema_version 1, architecture diagram_type,
+      components with id, label, type, sources, and connections with from, to, label).
+    """
+    if isinstance(graph_json_path, dict):
+        data = graph_json_path
+    else:
+        path_obj = Path(graph_json_path)
+        if not path_obj.is_file():
+            raise FileNotFoundError(f"Graph file not found: {path_obj}")
+        with open(path_obj, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+    raw_nodes = list(data.get("nodes", []))
+    raw_links = list(data.get("links") or data.get("edges") or [])
+
+    # Filter by focus_community if requested
+    if focus_community is not None:
+        comm_str = str(focus_community)
+        raw_nodes = [
+            n for n in raw_nodes if str(n.get("community", "")) == comm_str
+        ]
+
+    # Calculate degrees for each node
+    valid_ids = {str(n.get("id")) for n in raw_nodes if n.get("id")}
+    degrees: dict[str, int] = {nid: 0 for nid in valid_ids}
+
+    for link in raw_links:
+        src = str(link.get("source") or link.get("from") or "")
+        tgt = str(link.get("target") or link.get("to") or "")
+        if src in degrees:
+            degrees[src] += 1
+        if tgt in degrees:
+            degrees[tgt] += 1
+
+    # Filter top-degree nodes if exceeding max_nodes
+    if len(raw_nodes) > max_nodes:
+        raw_nodes.sort(
+            key=lambda n: (
+                degrees.get(str(n.get("id")), 0),
+                str(n.get("label") or n.get("id") or ""),
+            ),
+            reverse=True,
+        )
+        raw_nodes = raw_nodes[:max_nodes]
+
+    selected_ids = {str(n.get("id")) for n in raw_nodes if n.get("id")}
+
+    valid_types = {
+        "frontend",
+        "backend",
+        "database",
+        "cloud",
+        "security",
+        "messagebus",
+        "external",
+    }
+
+    components = []
+    for node in raw_nodes:
+        nid = str(node.get("id") or "")
+        label = str(node.get("label") or nid)
+
+        # Detect component type
+        comp_type = "backend"
+        declared_type = str(node.get("type") or "").lower()
+        if declared_type in valid_types:
+            comp_type = declared_type
+        elif node.get("external") or node.get("file_type") == "concept":
+            comp_type = "external"
+        else:
+            haystack = f"{nid} {label} {node.get('source_file', '')}".lower()
+            if any(k in haystack for k in ("auth", "security", "gate", "permission", "jwt", "crypto")):
+                comp_type = "security"
+            elif any(k in haystack for k in ("db", "database", "sql", "cache", "redis", "postgres", "store", "model", "repo")):
+                comp_type = "database"
+            elif any(k in haystack for k in ("queue", "bus", "message", "event", "stream", "kafka", "mq", "pubsub")):
+                comp_type = "messagebus"
+            elif any(k in haystack for k in ("cloud", "aws", "s3", "gcp", "azure", "cdn", "bucket")):
+                comp_type = "cloud"
+            elif any(k in haystack for k in ("ui", "frontend", "view", "component", "page", "react", "html", "css", "client")):
+                comp_type = "frontend"
+
+        comp: dict[str, Union[str, list]] = {
+            "id": nid,
+            "type": comp_type,
+            "label": label,
+        }
+
+        # Handle source file and location
+        source_file = node.get("source_file")
+        if source_file:
+            source_entry: dict[str, Union[str, int]] = {"path": str(source_file)}
+            loc_str = str(node.get("source_location") or "")
+            line_numbers = re.findall(r"\d+", loc_str)
+            if len(line_numbers) == 1:
+                line_val = int(line_numbers[0])
+                source_entry["startLine"] = line_val
+                source_entry["endLine"] = line_val
+            elif len(line_numbers) >= 2:
+                source_entry["startLine"] = int(line_numbers[0])
+                source_entry["endLine"] = int(line_numbers[1])
+
+            comp["sources"] = [source_entry]
+
+        components.append(comp)
+
+    # Connections
+    connections = []
+    seen_connections = set()
+    conn_counter = 1
+
+    for link in raw_links:
+        src = str(link.get("source") or link.get("from") or "")
+        tgt = str(link.get("target") or link.get("to") or "")
+        if src in selected_ids and tgt in selected_ids and src != tgt:
+            conn_pair = (src, tgt)
+            if conn_pair in seen_connections:
+                continue
+            seen_connections.add(conn_pair)
+            label = str(link.get("relation") or link.get("label") or "depends")
+            connections.append({
+                "id": f"conn-{conn_counter}",
+                "from": src,
+                "to": tgt,
+                "label": label,
+            })
+            conn_counter += 1
+
+    title = (
+        f"Community {focus_community} Architecture"
+        if focus_community is not None
+        else "Codebase Architecture"
+    )
+
+    return {
+        "schema_version": 1,
+        "diagram_type": "architecture",
+        "meta": {
+            "title": title,
+            "output": "master.architecture.html",
+        },
+        "components": components,
+        "connections": connections,
+    }
+
+
+def test_bridge() -> bool:
+    """Self-test graphify_to_archify conversion with mock in-memory graph data."""
+    mock_graph = {
+        "nodes": [
+            {
+                "id": "app_gateway",
+                "label": "App Gateway",
+                "community": 1,
+                "source_file": "src/gateway.py",
+                "source_location": "L10-L50",
+                "type": "security",
+            },
+            {
+                "id": "order_service",
+                "label": "Order Service",
+                "community": 1,
+                "source_file": "src/order.py",
+                "source_location": "L25",
+                "type": "backend",
+            },
+            {
+                "id": "order_db",
+                "label": "Order Database",
+                "community": 1,
+                "source_file": "src/db.py",
+                "source_location": "L100",
+                "type": "database",
+            },
+            {
+                "id": "notification_queue",
+                "label": "Notification Queue",
+                "community": 2,
+                "source_file": "src/queue.py",
+                "source_location": "L15",
+                "type": "messagebus",
+            },
+        ],
+        "links": [
+            {"source": "app_gateway", "target": "order_service", "relation": "routes"},
+            {"source": "order_service", "target": "order_db", "relation": "queries"},
+            {"source": "order_service", "target": "notification_queue", "relation": "publishes"},
+        ],
+    }
+
+    # 1. Full conversion test
+    ir = graphify_to_archify(mock_graph)
+    assert ir["schema_version"] == 1, "schema_version must be 1"
+    assert ir["diagram_type"] == "architecture", "diagram_type must be architecture"
+    assert len(ir["components"]) == 4, f"expected 4 components, got {len(ir['components'])}"
+    assert len(ir["connections"]) == 3, f"expected 3 connections, got {len(ir['connections'])}"
+
+    gw = next(c for c in ir["components"] if c["id"] == "app_gateway")
+    assert gw["type"] == "security", f"expected security, got {gw['type']}"
+    assert gw["label"] == "App Gateway"
+    assert len(gw.get("sources", [])) == 1
+    assert gw["sources"][0]["path"] == "src/gateway.py"
+    assert gw["sources"][0]["startLine"] == 10
+    assert gw["sources"][0]["endLine"] == 50
+
+    ord_svc = next(c for c in ir["components"] if c["id"] == "order_service")
+    assert ord_svc["sources"][0]["startLine"] == 25
+    assert ord_svc["sources"][0]["endLine"] == 25
+
+    conn0 = next(c for c in ir["connections"] if c["from"] == "app_gateway" and c["to"] == "order_service")
+    assert conn0["label"] == "routes"
+
+    # 2. Community filter test
+    ir_comm1 = graphify_to_archify(mock_graph, focus_community=1)
+    assert len(ir_comm1["components"]) == 3, "expected 3 components for community 1"
+    assert len(ir_comm1["connections"]) == 2, "expected 2 connections for community 1"
+    assert not any(c["id"] == "notification_queue" for c in ir_comm1["components"])
+
+    # 3. Max nodes filter test
+    ir_max2 = graphify_to_archify(mock_graph, max_nodes=2)
+    assert len(ir_max2["components"]) == 2, "expected 2 components for max_nodes=2"
+    assert any(c["id"] == "order_service" for c in ir_max2["components"])
+
+    print("BRIDGE OK")
+    return True
+
+
+def sync_master(
+    graph_path: Optional[Union[str, Path]] = None,
+    out_path: Optional[Union[str, Path]] = None,
+    max_nodes: int = 25,
+) -> bool:
+    """Sync graphify-out/graph.json to docs/architecture/master.architecture.json."""
+    if graph_path:
+        target_graph = Path(graph_path)
+    else:
+        current_file = Path(__file__).resolve()
+        candidates = [
+            Path("graphify-out/graph.json"),
+            current_file.parent.parent / "graphify-out" / "graph.json",
+        ]
+        target_graph = None
+        for cand in candidates:
+            if cand.is_file():
+                target_graph = cand
+                break
+
+    if not target_graph or not target_graph.is_file():
+        sys.stderr.write(f"Warning: Graph file not found: {target_graph or 'graphify-out/graph.json'}, skipping sync.\n")
+        return False
+
+    if out_path:
+        target_out = Path(out_path)
+    else:
+        current_file = Path(__file__).resolve()
+        repo_root = current_file.parent.parent
+        target_out = repo_root / "docs" / "architecture" / "master.architecture.json"
+
+    ir = graphify_to_archify(target_graph, max_nodes=max_nodes)
+    content = json.dumps(ir, indent=2, ensure_ascii=False)
+    atomic_delivery(target_out, content)
+    print(f"Master architecture JSON synchronized: {target_out}")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="TDQ Archify Adapter CLI — orchestrate diagram generation and environment pre-flight."
@@ -367,6 +645,42 @@ def main() -> int:
     )
     open_parser.add_argument("file_path", help="Path to file to open")
 
+    # bridge
+    bridge_parser = subparsers.add_parser(
+        "bridge", help="Convert Graphify graph.json to Archify JSON-IR"
+    )
+    bridge_parser.add_argument(
+        "--graph", required=True, help="Path to input graph.json"
+    )
+    bridge_parser.add_argument(
+        "--out", required=True, help="Path to output architecture JSON-IR"
+    )
+    bridge_parser.add_argument(
+        "--community", default=None, help="Filter by community id"
+    )
+    bridge_parser.add_argument(
+        "--max-nodes", type=int, default=25, help="Maximum number of nodes (default: 25)"
+    )
+
+    # test-bridge
+    subparsers.add_parser(
+        "test-bridge", help="Self-test graphify-to-archify conversion logic"
+    )
+
+    # sync-master
+    sync_parser = subparsers.add_parser(
+        "sync-master", help="Sync graphify-out/graph.json to master architecture JSON"
+    )
+    sync_parser.add_argument(
+        "--graph", default=None, help="Path to input graph.json (default: auto-detect)"
+    )
+    sync_parser.add_argument(
+        "--out", default=None, help="Path to output JSON (default: docs/architecture/master.architecture.json)"
+    )
+    sync_parser.add_argument(
+        "--max-nodes", type=int, default=25, help="Maximum number of nodes (default: 25)"
+    )
+
     args = parser.parse_args()
 
     if args.command == "check":
@@ -387,6 +701,33 @@ def main() -> int:
 
     elif args.command == "open":
         ok = open_artifact(args.file_path)
+        return 0 if ok else 1
+
+    elif args.command == "bridge":
+        ir = graphify_to_archify(
+            graph_json_path=args.graph,
+            focus_community=args.community,
+            max_nodes=args.max_nodes,
+        )
+        content = json.dumps(ir, indent=2, ensure_ascii=False)
+        atomic_delivery(args.out, content)
+        print(f"Archify JSON-IR generated: {args.out}")
+        return 0
+
+    elif args.command == "test-bridge":
+        try:
+            ok = test_bridge()
+            return 0 if ok else 1
+        except Exception as e:
+            sys.stderr.write(f"Test failed: {e}\n")
+            return 1
+
+    elif args.command == "sync-master":
+        ok = sync_master(
+            graph_path=args.graph,
+            out_path=args.out,
+            max_nodes=args.max_nodes,
+        )
         return 0 if ok else 1
 
     else:
