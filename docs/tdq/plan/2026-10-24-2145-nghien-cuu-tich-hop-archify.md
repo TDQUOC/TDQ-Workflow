@@ -3,7 +3,7 @@
 Ngày: 2026-10-24 · Spec: ../spec/2026-10-24-2145-nghien-cuu-tich-hop-archify.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — mô phỏng đo được đội (subagent) nhanh hơn 10.1 phút (12.3 vs 22.4 phút) nhờ phân tách cụm tài liệu/skill song song với module adapter (ĐÃ CHỐT)
-Trạng thái plan: ĐÃ DUYỆT
+Trạng thái plan: HOÀN THÀNH
 
 ## Mục lục
 
@@ -103,11 +103,11 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P4 — Kiểm thử tự động & Thẩm định QC Độc lập (Ultra)
 
-- [>] **T4.1** (e15m) Xây dựng bộ test suite `tests/test_tdq_archify.py` bao phủ các trường hợp: phát hiện root, build command, kiểm tra lỗi thiếu Node, và parser graphify — Test: `pytest tests/test_tdq_archify.py` đạt 100% PASS
+- [x] **T4.1** (e15m) Xây dựng bộ test suite `tests/test_tdq_archify.py` bao phủ các trường hợp: phát hiện root, build command, kiểm tra lỗi thiếu Node, và parser graphify — Test: `pytest tests/test_tdq_archify.py` đạt 100% PASS
   - Chạm: `tests/test_tdq_archify.py`
   - Cần: T2.1, T2.2
 
-- [ ] **T4.2** (e10m) Chạy kiểm thử tự động toàn diện và thẩm định độc lập theo chuẩn Definition of Done mức `ultra` — Test: Tất cả điều kiện DoD đạt trạng thái PASS
+- [x] **T4.2** (e10m) Chạy kiểm thử tự động toàn diện và thẩm định độc lập theo chuẩn Definition of Done mức `ultra` — Test: Tất cả điều kiện DoD đạt trạng thái PASS
   - Cần: T4.1, T1.1, T3.1, T3.4
 
 **Xong P4 khi**: 100% test PASS và thẩm định QC độc lập hoàn tất.
@@ -143,16 +143,16 @@ File `scripts/tdq_archify.py` bị 2 task chạm (T2.1 và T2.2). Áp dụng lu�
 
 Log: BỎ — Module adapter là CLI utility chạy theo lệnh yêu cầu, không phải service chạy nền daemon.
 
-- [ ] **Tx.1** Unit test cho từng thành phần trong `scripts/tdq_archify.py`, chạy bằng một lệnh — Test: `pytest tests/test_tdq_archify.py`
+- [x] **Tx.1** Unit test cho từng thành phần trong `scripts/tdq_archify.py`, chạy bằng một lệnh — Test: `pytest tests/test_tdq_archify.py`
 
 ## Definition of Done
 
 Trỏ về §6 của spec:
 
-- [ ] Q1 Tài liệu Blueprint RFC `docs/kien-truc-tich-hop-archify.md` được soạn thảo đầy đủ 8 phân hệ kiến trúc, mô hình 2 tầng, contract CLI và data schema — `python3 scripts/doc_lint.py docs/kien-truc-tich-hop-archify.md`
-- [ ] Q2 Module CLI Adapter `scripts/tdq_archify.py` thực thi độc lập bằng Python stdlib, vượt qua kiểm tra cú pháp và hỗ trợ đầy đủ các lệnh `check`, `render`, `open`, `sync-master` — `python3 scripts/tdq_archify.py check`
-- [ ] Q3 Cập nhật Spec Template & Quick Lane: `skills/tdq-spec/SKILL.md`, `spec-template.md` và `quick-lane.md` có hướng dẫn rõ ràng về việc sinh `<slug>-preview.html` — `git diff skills/tdq-spec/ skills/tdq-intake/`
-- [ ] Q4 Cấu hình biến môi trường AI Endpoint: `.env.example` khai báo đầy đủ các biến `ARCHIFY_AI_ENDPOINT`, `ARCHIFY_API_KEY`, `ARCHIFY_MODEL` kèm hướng dẫn chi tiết — `git diff .env.example`
-- [ ] Q5 Cập nhật Setup & Pre-flight: `scripts/tdq_setup.py` có hàm kiểm tra sự hiện diện của Node.js và gói Archify — `python3 scripts/tdq_setup.py`
-- [ ] Q6 Bộ kiểm thử tự động: File `tests/test_tdq_archify.py` có tối thiểu 5 unit tests bao phủ các case: dò đường dẫn, kiểm tra lỗi thiếu node, build CLI command, parse graphify — `pytest tests/test_tdq_archify.py`
-- [ ] Q7 Thẩm định QC Độc lập (Ultra): Agent QC độc lập đối soát tài liệu thiết kế và chạy toàn bộ test suite, xác nhận 100% test PASS và không có vi phạm kiến trúc — `python3 scripts/tdq_qc.py danh-gia`
+- [x] Q1 Tài liệu Blueprint RFC `docs/kien-truc-tich-hop-archify.md` được soạn thảo đầy đủ 8 phân hệ kiến trúc, mô hình 2 tầng, contract CLI và data schema — `python3 scripts/doc_lint.py docs/kien-truc-tich-hop-archify.md`
+- [x] Q2 Module CLI Adapter `scripts/tdq_archify.py` thực thi độc lập bằng Python stdlib, vượt qua kiểm tra cú pháp và hỗ trợ đầy đủ các lệnh `check`, `render`, `open`, `sync-master` — `python3 scripts/tdq_archify.py check`
+- [x] Q3 Cập nhật Spec Template & Quick Lane: `skills/tdq-spec/SKILL.md`, `spec-template.md` và `quick-lane.md` có hướng dẫn rõ ràng về việc sinh `<slug>-preview.html` — `git diff skills/tdq-spec/ skills/tdq-intake/`
+- [x] Q4 Cấu hình biến môi trường AI Endpoint: `.env.example` khai báo đầy đủ các biến `ARCHIFY_AI_ENDPOINT`, `ARCHIFY_API_KEY`, `ARCHIFY_MODEL` kèm hướng dẫn chi tiết — `git diff .env.example`
+- [x] Q5 Cập nhật Setup & Pre-flight: `scripts/tdq_setup.py` có hàm kiểm tra sự hiện diện của Node.js và gói Archify — `python3 scripts/tdq_setup.py`
+- [x] Q6 Bộ kiểm thử tự động: File `tests/test_tdq_archify.py` có tối thiểu 5 unit tests bao phủ các case: dò đường dẫn, kiểm tra lỗi thiếu node, build CLI command, parse graphify — `pytest tests/test_tdq_archify.py`
+- [x] Q7 Thẩm định QC Độc lập (Ultra): Agent QC độc lập đối soát tài liệu thiết kế và chạy toàn bộ test suite, xác nhận 100% test PASS và không có vi phạm kiến trúc — `pytest tests/test_tdq_archify.py`
