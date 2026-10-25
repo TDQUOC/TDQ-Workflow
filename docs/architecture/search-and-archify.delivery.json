@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "cea65003-8aaa-42a2-802a-a92378fa575a",
+  "receiptId": "d745e5dd-20c2-4008-b29c-3d0a44e74708",
   "status": "current",
   "command": "deliver",
   "type": "architecture",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\search-and-archify.json",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.bb36437edd284dbba7847693e92febc2\\search-and-archify.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.5cf885eb47b34df4a2e49709697fd489\\search-and-archify.html",
   "specification": {
     "sha256": "d002eb22caba2406d1659b77167231ae20f40ab2dcd350a91dbee02c4ceb0e0e",
     "bytes": 4803
