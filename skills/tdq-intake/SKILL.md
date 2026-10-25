@@ -129,6 +129,7 @@ questions remain, present them and stop.
 
 ## Part C — Express pipeline
 
+For multi-module/refactor work, load [Archify quick BA](references/archify-quick.md) before mini-plan approval.
 Express is a shortened path, NOT a path with thinking steps cut out. The ten
 execution steps — from analysis to asking about the commit — live in
 [references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`. The tick

@@ -1,8 +1,8 @@
 # Express pipeline — detail
 <!-- muc-luc-dong:
-  Table of contents=27-36 · How deep the analysis goes — B0, B1, B2=37-52 ·
-  The ten execution steps=53-121 · Mini spec/plan template (≤ 40 lines)=122-148 ·
-  The block that presents the mini-plan to the user=149-171 · Ba phần tách sang file em=172
+  How deep the analysis goes — B0, B1, B2=27-42 · The ten execution steps=43-112 ·
+  Mini spec/plan template (≤ 40 lines)=113-139 ·
+  The block that presents the mini-plan to the user=140-162 · Ba phần tách sang file em=163
 -->
 
 Express differs from the deep pipeline by **merging the documents and merging the
@@ -23,16 +23,6 @@ sign met → ask about areas + context first; none met → write one SKIP reason
 mini-plan under `## Phạm vi` and move on. <!-- i18n-allow: canonical name in the default language -->
 
 **Direct (`_tdq_direct`):** skips pipeline question & interview; runs B1 code search, mini-plan ≤ 40 lines (`docs/tdq/plan/<slug>.md`), 1 gate (`quick_approved`), then implements.
-
-## Table of contents
-
-- How deep the analysis goes — B0, B1, B2
-- The ten execution steps
-- Mini spec/plan template (≤ 40 lines)
-- The block that presents the mini-plan to the user
-- The tick rule — `[ ]` · `[~]` · `[x]`
-- QC in the express pipeline
-- The fix round
 
 ## How deep the analysis goes — B0, B1, B2
 
@@ -72,6 +62,7 @@ steps below before doing step 1; working from memory is banned.
    `[ ]` not started · `[~]` in progress · `[>]` handed to a sub-agent · `[x]` done. At
    implement time (step 8) mark `[~]` when the task starts and switch to `[x]` the moment
    the test is green.
+   Multi-module/refactor work: follow [Archify quick BA](archify-quick.md) before approval.
 4. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, and
    how it is validated. Add exactly 1 line `Ước tính sẽ dùng skill: <the skills that will be <!-- i18n-allow: canonical name in the default language -->
    USED, or "không có">` (in doubt → USE). <!-- i18n-allow: label written in the default language -->

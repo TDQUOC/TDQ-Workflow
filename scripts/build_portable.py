@@ -610,6 +610,50 @@ def la_duong_dan_release(rel_path):
     return True
 
 
+def tinh_bao_dong_import(scripts_dir, diem_vao=None):
+    """Tính bao đóng import (transitive import closure) của các script runtime trong `scripts/`.
+
+    Nếu `diem_vao` được chỉ định (tập hợp tên module không kèm đuôi .py), bắt đầu từ các điểm vào
+    đó và lần theo tất cả import nội bộ trong `scripts/`.
+    Nếu `diem_vao` là None, lấy tất cả module trong `scripts/` thoả mãn `la_duong_dan_release`.
+    Trả về tập hợp tên các module (không đuôi .py) thuộc bao đóng.
+    """
+    import ast
+
+    all_py = {f[:-3] for f in os.listdir(scripts_dir) if f.endswith(".py")}
+    if diem_vao is None:
+        tap_xet = {m for m in all_py if la_duong_dan_release(f"scripts/{m}.py")}
+    else:
+        tap_xet = set(diem_vao)
+
+    bao_dong = set(tap_xet)
+    hang_doi = list(tap_xet)
+
+    while hang_doi:
+        mod = hang_doi.pop()
+        duong = os.path.join(scripts_dir, f"{mod}.py")
+        if not os.path.isfile(duong):
+            continue
+        try:
+            with open(duong, encoding="utf-8") as f:
+                cay = ast.parse(f.read(), duong)
+        except Exception:
+            continue
+
+        for nut in ast.walk(cay):
+            targets = []
+            if isinstance(nut, ast.Import):
+                targets = [a.name.split(".")[0] for a in nut.names]
+            elif isinstance(nut, ast.ImportFrom) and nut.module:
+                targets = [nut.module.split(".")[0]]
+            for t in targets:
+                if t in all_py and t not in bao_dong:
+                    bao_dong.add(t)
+                    hang_doi.append(t)
+
+    return bao_dong
+
+
 def loc_muc_ls_tree(raw_bytes):
     """Filter NUL-delimited `git ls-tree -r -z` output, keeping only release paths."""
     kept = []
