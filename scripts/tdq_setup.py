@@ -670,7 +670,8 @@ def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None, cwd
     if claude and not _khong_cham_may():
         try:
             rc, _ = chay(f'"{claude}" plugin update {khoa} -s user -y')
-            if rc == 0:
+            ban_moi = _ban_cai_user(home)
+            if rc == 0 and ban_moi and tach_version(ban_moi[1]) >= tach_version(v_nguon):
                 thanh_cong = True
         except Exception:  # noqa: BLE001
             thanh_cong = False
