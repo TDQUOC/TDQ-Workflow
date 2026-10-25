@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "13 Lifecycle Hooks & Verify-by-Effect Enforcement",
+    "subtitle": "SessionStart · PromptSubmit · PreToolUse Hard Gates · PostToolUse Observers · Stop SHA-256 Verification",
+    "output": "hooks-and-gates.html",
+    "locale": "en",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "standard",
+    "legend": {
+      "entries": {
+        "external": { "label": "Lifecycle Event" },
+        "frontend": { "label": "Context Injector" },
+        "security": { "label": "Blocking Gate (Deny)" },
+        "backend": { "label": "Observer & CLI" },
+        "database": { "label": "SHA-256 State Ledger" }
+      }
+    },
+    "translations": {
+      "legend.workflow.external": "Lifecycle Event",
+      "legend.workflow.frontend": "Context Injector",
+      "legend.workflow.security": "Blocking Gate (Deny)",
+      "legend.workflow.backend": "Observer & CLI",
+      "legend.workflow.database": "SHA-256 State Ledger",
+      "viewer.kind.external": "Lifecycle Event",
+      "viewer.kind.frontend": "Context Injector",
+      "viewer.kind.security": "Blocking Gate (Deny)",
+      "viewer.kind.backend": "Observer & CLI",
+      "viewer.kind.database": "SHA-256 State Ledger"
+    }
+  },
+  "lanes": [
+    { "id": "events", "label": "Host Lifecycle Events" },
+    { "id": "gates", "label": "Context & Blocking Gates", "variant": "exception" },
+    { "id": "ledger", "label": "Observers & SHA-256 Ledger" }
+  ],
+  "phases": [
+    { "id": "p_start", "label": "Session & Prompt", "fromCol": 0, "toCol": 1 },
+    { "id": "p_tool", "label": "PreTool & PostTool", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "p_stop", "label": "Stop Verification", "fromCol": 4, "toCol": 4, "variant": "dashed" }
+  ],
+  "mainPath": ["ev_start", "hk_context", "ev_pretool", "hk_pre_gates", "hk_observers", "hk_stop_gate", "state_ledger"],
+  "nodes": [
+    { "id": "ev_start", "lane": "events", "col": 0, "type": "external", "label": "Session & Prompt", "sublabel": "SessionStart + Submit", "width": 148 },
+    { "id": "ev_pretool", "lane": "events", "col": 2, "type": "external", "label": "PreToolUse Event", "sublabel": "Edit · Bash · Grep · Ask", "width": 148 },
+    { "id": "ev_stop", "lane": "events", "col": 4, "type": "external", "label": "Stop Event", "sublabel": "end of agent turn", "width": 148 },
+    { "id": "hk_context", "lane": "gates", "col": 1, "type": "frontend", "label": "session + prompt", "sublabel": "inject [TDQ:NEXT] & anchor", "tag": "2 hooks", "width": 148 },
+    { "id": "hk_pre_gates", "lane": "gates", "col": 2, "type": "security", "label": "6 PreTool Hard Gates", "sublabel": "search · lsp · edit · bash · ask", "tag": "deny on violation", "width": 148 },
+    { "id": "hk_stop_gate", "lane": "gates", "col": 4, "type": "security", "label": "stop_gate.py", "sublabel": "Verify-by-Effect check", "tag": "block if unverified", "width": 148 },
+    { "id": "baseline_sha", "lane": "ledger", "col": 1, "type": "database", "label": "Baseline Snapshot", "sublabel": "SHA-256 before turn", "width": 148 },
+    { "id": "hk_observers", "lane": "ledger", "col": 3, "type": "backend", "label": "PostTool Observers", "sublabel": "search_observe + lsp_post", "tag": "unlock 10 greps", "width": 148 },
+    { "id": "state_ledger", "lane": "ledger", "col": 4, "type": "database", "label": "Verified Ledger", "sublabel": "state.json + workinglog", "tag": "tdq_finish.py", "width": 148 }
+  ],
+  "edges": [
+    { "id": "e_start_ctx", "from": "ev_start", "to": "hk_context", "variant": "emphasis" },
+    { "id": "e_ctx_base", "from": "hk_context", "to": "baseline_sha", "variant": "dashed" },
+    { "id": "e_ctx_pre", "from": "hk_context", "to": "ev_pretool" },
+    { "id": "e_pre_gate", "from": "ev_pretool", "to": "hk_pre_gates", "variant": "security" },
+    { "id": "e_gate_obs", "from": "hk_pre_gates", "to": "hk_observers", "variant": "emphasis" },
+    { "id": "e_obs_stop", "from": "hk_observers", "to": "hk_stop_gate" },
+    { "id": "e_evstop_gate", "from": "ev_stop", "to": "hk_stop_gate", "variant": "security" },
+    { "id": "e_stop_ledger", "from": "hk_stop_gate", "to": "state_ledger", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "PreToolUse Hard Gates",
+      "items": [
+        "search_gate and lsp_gate enforce 3-tier search order before allowing Grep",
+        "edit_gate, bash_gate, and ask_gate protect unapproved specs, state.json, and chat-only UX"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Verify-by-Effect at Stop",
+      "items": [
+        "prompt_context captures disk SHA-256 baselines at the start of every turn",
+        "stop_gate verifies real disk mutations on Plan checkboxes, tests, and workinglog"
+      ]
+    }
+  ]
+}

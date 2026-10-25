@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "standard",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
+    "sha256": "5404b0b7806bcec96468a333925cf89abeeb37adcabcf2557f5a0945aa8aba8f",
+    "bytes": 5323
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.html",
+    "sha256": "9c9d9f3120e3421ac1de5fc064684d350222fbad7eff9fd02fb0a4eb3e1664c4",
+    "bytes": 826515
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2684,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

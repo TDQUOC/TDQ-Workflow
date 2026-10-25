@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TDQ-Workflow — Master Architecture Portal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; line-height: 1.6; }
+    .portal-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f8fafc; padding: 3rem 2rem; border-bottom: 1px solid #334155; }
+    .container { max-width: 1160px; margin: 0 auto; padding: 2rem; }
+    h1 { margin: 0 0 0.5rem 0; font-size: 2.25rem; letter-spacing: -0.02em; }
+    .subtitle { color: #94a3b8; margin: 0; font-size: 1.05rem; }
+    .meta-box { background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04); margin-bottom: 2rem; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .meta-item { background: #f8fafc; padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.95rem; }
+    .module-bar { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .module-pill { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+    h2 { font-size: 1.4rem; margin: 1.5rem 0 1rem 0; color: #0f172a; }
+    table { border-collapse: collapse; width: 100%; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04); }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 1rem 1.25rem; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; color: #334155; font-size: 0.9rem; }
+    tr:last-child td { border-bottom: none; }
+    .type-badge { background: #f1f5f9; color: #334155; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; }
+    .view-btn { display: inline-block; background: #2563eb; color: #ffffff; padding: 0.45rem 0.95rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+    .view-btn:hover { background: #1d4ed8; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="portal-header">
+    <div class="container" style="padding: 0;">
+      <h1>TDQ-Workflow — Master Architecture Portal</h1>
+      <p class="subtitle">Interactive Master Architecture Portal · Verified by TDQ-Workflow &amp; Archify</p>
+    </div>
+  </header>
+  <main class="container">
+    <div class="meta-box">
+      <div class="meta-grid">
+        <div class="meta-item"><strong>Evidence Kind:</strong> working-tree</div>
+        <div class="meta-item"><strong>Revision:</strong> N/A</div>
+        <div class="meta-item"><strong>Repository:</strong> N/A</div>
+        <div class="meta-item"><strong>Coverage:</strong> 6 modules, 0 excluded, 0 unknown</div>
+      </div>
+      <div class="module-bar"><span class="module-pill">skills-layer-11 · selected</span> <span class="module-pill">agents-layer-6 · selected</span> <span class="module-pill">hooks-layer-13 · selected</span> <span class="module-pill">cli-scripts-43 · selected</span> <span class="module-pill">archify-2tier-engine · selected</span> <span class="module-pill">search-3tier-engine · selected</span></div>
+    </div>
+    <h2>Views Inventory</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Summary</th>
+          <th>Artifact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>overview</strong></td><td><span class="type-badge">architecture</span></td><td>Kiến trúc tổng thể 6 tầng của TDQ-Workflow (4 Host Adapters, 11 Skills, 6 Sub-Agents, 13 Hooks, 3-Tier Search &amp; 43 CLI Scripts)</td><td><a class="view-btn" href="overview.html">View Diagram</a></td></tr>
+<tr><td><strong>pipeline-lifecycle</strong></td><td><span class="type-badge">lifecycle</span></td><td>Máy trạng thái Spec-Driven (7 pha Deep Pipeline, 2 cổng duyệt chữ ký SHA-256 qua chat và vòng lặp tự chữa lành QC)</td><td><a class="view-btn" href="pipeline-lifecycle.html">View Diagram</a></td></tr>
+<tr><td><strong>search-and-archify</strong></td><td><span class="type-badge">architecture</span></td><td>Tam Giác Tìm Kiếm 3 Tầng (LSP, Graphify, Grep) kết hợp Trực quan hóa Archify 2 Tầng (Personal BA &amp; Master Map)</td><td><a class="view-btn" href="search-and-archify.html">View Diagram</a></td></tr>
+<tr><td><strong>hooks-and-gates</strong></td><td><span class="type-badge">workflow</span></td><td>Luồng thực thi 13 Lifecycle Hooks trên 3 làn (Host Events, PreToolUse Hard Gates, Observers &amp; Stop Verify-by-Effect)</td><td><a class="view-btn" href="hooks-and-gates.html">View Diagram</a></td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

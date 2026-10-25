@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "startedAt": "2026-10-25T10:22:52.404Z",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+    "sha256": "1e454b1c177216aadd3d635718d377f3c04d7a08b7cdd69e5d7597f368ffd606",
+    "bytes": 1670
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+    "sha256": "64088403ba9c0f4ea9946bb6e5ecab9031420ed6ccb031852183acf9a7e7431c",
+    "bytes": 488986
+  },
+  "stages": {
+    "browser-check": {
+      "status": "not-run",
+      "execution": "not-requested"
+    },
+    "validate": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": null,
+      "execution": "embedded-in-deliver",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "deliver",
+        "explainer",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": true,
+        "command": "validate",
+        "specification": {
+          "sha256": "1e454b1c177216aadd3d635718d377f3c04d7a08b7cdd69e5d7597f368ffd606",
+          "bytes": 1670
+        },
+        "validation": {
+          "checksPassed": 4,
+          "checkCount": 4,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    },
+    "deliver": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 811,
+      "command": [
+        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "deliver",
+        "explainer",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "receiptId": "b10e61a9-95c9-4503-8070-2158233e508a",
+        "ok": true,
+        "command": "deliver",
+        "type": "explainer",
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+        "explainer": {
+          "preparedSha256": "f45f0612ba7ee13c31503f6711591e539d76e3295d28414771d6792bf62e86a0",
+          "dependencies": [
+            {
+              "kind": "diagram-spec",
+              "id": "mastermap-readme-flow",
+              "inline": true,
+              "sha256": "35addcfaab963c516eb91a73a1111796e23310ce352aeabe7c2df2daada517d8",
+              "bytes": 910
+            }
+          ]
+        },
+        "specification": {
+          "sha256": "1e454b1c177216aadd3d635718d377f3c04d7a08b7cdd69e5d7597f368ffd606",
+          "bytes": 1670
+        },
+        "artifact": {
+          "sha256": "64088403ba9c0f4ea9946bb6e5ecab9031420ed6ccb031852183acf9a7e7431c",
+          "bytes": 488986
+        },
+        "validation": {
+          "checksPassed": 4,
+          "checkCount": 4,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        },
+        "diagnostics": [
+          {
+            "code": "explainer/writing-verdict-emphasis",
+            "severity": "warning",
+            "message": "Most of the conclusion is bold, so nothing stands out.",
+            "subject": {
+              "line": 3,
+              "component": "answer",
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md"
+            },
+            "evidence": {
+              "rule": "verdict-emphasis",
+              "reason": "Most of the conclusion is bold, so nothing stands out.",
+              "example": "先做**模块化单体**，等边界稳定后再拆。 / Keep a **modular monolith** until boundaries settle."
+            },
+            "supportedFixes": [
+              "Bold only the few words that carry the decision."
+            ]
+          }
+        ],
+        "update": {
+          "status": "unavailable",
+          "installedVersion": null,
+          "availableVersion": null,
+          "releaseNotes": null,
+          "checkedAt": null,
+          "source": null,
+          "noticeRequired": false,
+          "noticeText": null,
+          "reason": "disabled"
+        }
+      },
+      "stderr": "archify: Most of the conclusion is bold, so nothing stands out."
+    },
+    "check": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 359,
+      "command": [
+        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "check",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+        "--require-provenance"
+      ],
+      "receipt": {
+        "ok": true,
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+        "family": "explainer",
+        "artifact": {
+          "sha256": "64088403ba9c0f4ea9946bb6e5ecab9031420ed6ccb031852183acf9a7e7431c",
+          "bytes": 488986
+        },
+        "checks": [
+          {
+            "name": "explainer_structure",
+            "ok": true,
+            "details": [
+              "25 unique DOM IDs"
+            ]
+          },
+          {
+            "name": "explainer_payload_identity",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "explainer_dependencies",
+            "ok": true,
+            "details": [
+              "1 frozen dependencies"
+            ]
+          },
+          {
+            "name": "explainer_native_diagrams",
+            "ok": true,
+            "details": [
+              "mastermap-readme-flow: pass"
+            ]
+          }
+        ],
+        "composition": {
+          "schemaVersion": 1,
+          "profile": "showcase",
+          "status": "pass",
+          "summary": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "issues": [],
+          "nativeDiagrams": [
+            {
+              "id": "mastermap-readme-flow",
+              "receipt": {
+                "ok": true,
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-2sucds\\child.html",
+                "artifact": {
+                  "sha256": "388f3f43ee00e156adb3ac9d0c9243d5dec6d429c1eda62863e268d2701c3c14",
+                  "bytes": 809160
+                },
+                "checks": [
+                  {
+                    "name": "single_svg",
+                    "ok": true,
+                    "details": [
+                      "found 1 <svg> block(s)"
+                    ]
+                  },
+                  {
+                    "name": "finite_svg",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "orthogonal_arrows",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "label_route_clearance",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_crossings",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_corridors",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "container_border_runs",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "route_rhythm",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "legend_clearance",
+                    "ok": true,
+                    "details": []
+                  }
+                ],
+                "composition": {
+                  "schemaVersion": 1,
+                  "profile": "showcase",
+                  "status": "pass",
+                  "summary": {
+                    "errors": 0,
+                    "warnings": 0
+                  },
+                  "metrics": {
+                    "properCrossings": 0,
+                    "resolvedCrossovers": 0,
+                    "ambiguousCorridors": 0,
+                    "arrowheadCollisions": 0,
+                    "containerBorderRuns": 0,
+                    "labelRouteClearanceIssues": 0,
+                    "labelCanvasOverflowIssues": 0,
+                    "minLabelRouteClearance": 141.1,
+                    "desktopReadabilityIssues": 0,
+                    "viewportHeightIssues": 0,
+                    "minProjectedNodeTextPx": 7.092469018112488,
+                    "maxBends": 0,
+                    "routesOverSuggestedBends": 0,
+                    "maxStretch": 1,
+                    "routesOverSuggestedStretch": 0,
+                    "minSegmentPx": 42,
+                    "minInteriorSegmentPx": null,
+                    "shortSegmentCount": 0,
+                    "shortEndpointSegmentCount": 0,
+                    "shortInteriorSegmentCount": 0,
+                    "microSegmentCount": 0
+                  },
+                  "suggestedLimits": {
+                    "bendsPerRelationship": 2,
+                    "stretch": 1.35,
+                    "segmentPx": 16,
+                    "microSegmentPx": 8
+                  },
+                  "routeReview": {
+                    "crossings": [],
+                    "detours": []
+                  },
+                  "leadingSpace": {
+                    "measured": false,
+                    "reviewSuggested": false
+                  },
+                  "desktopReadability": {
+                    "budgetBasis": "legacy-930",
+                    "readerContract": "declared-wide-v1",
+                    "availableDiagramWidth": 930,
+                    "actualBudgetPx": 930,
+                    "limit": "legacy",
+                    "requestedTargetPx": null,
+                    "requestedTargetMet": null,
+                    "hardFloorPx": 6,
+                    "hardFloorMet": true,
+                    "minimumOwner": {
+                      "kind": "edge",
+                      "id": "master-to-readme-1",
+                      "from": "master",
+                      "to": "readme"
+                    },
+                    "minimumSourceTextPx": 8,
+                    "minimumProjectedTextPx": 7.092469018112488,
+                    "semanticTextCount": 7
+                  },
+                  "issues": []
+                }
+              }
+            }
+          ]
+        },
+        "diagnostics": [],
+        "provenance": "current",
+        "deliveryReceiptId": "b10e61a9-95c9-4503-8070-2158233e508a"
+      }
+    }
+  },
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-verdict-emphasis",
+      "severity": "warning",
+      "message": "Most of the conclusion is bold, so nothing stands out.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+        "line": 3,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Most of the conclusion is bold, so nothing stands out.",
+        "example": "先做**模块化单体**，等边界稳定后再拆。 / Keep a **modular monolith** until boundaries settle.",
+        "rule": "verdict-emphasis"
+      },
+      "supportedFixes": [
+        "Bold only the few words that carry the decision."
+      ]
+    }
+  ],
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "finishedAt": "2026-10-25T10:22:54.198Z",
+  "durationMs": 1793,
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  }
+}

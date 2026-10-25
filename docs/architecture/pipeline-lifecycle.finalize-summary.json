@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "lifecycle",
+  "quality": "standard",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\pipeline-lifecycle.json",
+    "sha256": "15c8bdede572f4eebed294b93d2c2a3545c85d87b9811dd1305b8bf4d2574bc1",
+    "bytes": 4128
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.html",
+    "sha256": "72fab5e522b45c4096e31959c1e0276e44245c5d77979661b145c206465427ad",
+    "bytes": 824757
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2630,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}
