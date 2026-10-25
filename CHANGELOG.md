@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.83.0 — 2026-10-25
+
+Tự Động Cập Nhật (Auto-Update) Plugin TDQ-Workflow Trong Claude Code & Chống Hạ Cấp Phiên Bản.
+Kế hoạch: `docs/tdq/plan/2026-10-25-2025-auto-update-plugin.md`.
+
+- **Cơ chế Tự động Cập nhật Đa Tầng (`scripts/tdq_setup.py`, `hooks/scripts/session_start.py`).** Tự động phát hiện phiên bản mới từ đa nguồn (`cwd` dự án nguồn, `marketplaces/tdq-local`, `GOC_PLUGIN`, `GOC_REPO`). Tiến hành cập nhật bản cài user-scope `tdq-workflow@tdq-local`.
+- **Kiểm tra Cập nhật Ngầm Tách Biệt & Điều Tiết (Throttle).** Khởi chạy tiến trình kiểm tra cập nhật remote GitHub ngầm tách biệt hoàn toàn không chặn phiên làm việc. Tự động điều tiết tần suất kiểm tra định kỳ 2 giờ qua mốc thời gian.
+- **Bộ Chốt Chặn Chống Hạ Cấp Phiên Bản (Anti-Downgrade Safeguard).** So sánh phiên bản dạng số học ngữ nghĩa `(major, minor, patch)`. Ngăn chặn việc ghi đè mốc phiên bản hoặc cập nhật ngược từ các cache cũ.
+
 ## 0.82.0 — 2026-10-25
 
 Tích Hợp Trực Quan Hóa Kiến Trúc Archify 2 Tầng, Chrome DevTools MCP & Xuất Bản Master Map Flagship.
