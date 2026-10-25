@@ -534,5 +534,71 @@ class TestKhoiHuongDan(unittest.TestCase):
         self.assertIn("find_symbol", huong_dan)
 
 
+class TestKiemTraArchify(unittest.TestCase):
+    """Kiểm tra kiem_tra_archify tái sử dụng archify_delivery.check_environment."""
+
+    def test_kiem_tra_archify_san_sang(self):
+        env_san_sang = {
+            "node_ok": True,
+            "node_version": "v20.10.0",
+            "archify_root": "/custom/path/archify",
+            "ready": True,
+            "error": None,
+        }
+        with mock.patch("archify_delivery.check_environment", return_value=env_san_sang):
+            with mock.patch("archify_delivery.get_archify_bin", return_value="/custom/path/archify/bin/archify.mjs"):
+                ok, chi_tiet = tdq_setup.kiem_tra_archify()
+        self.assertTrue(ok)
+        self.assertIn("v20.10.0", chi_tiet)
+        self.assertIn("archify.mjs", chi_tiet)
+
+    def test_kiem_tra_archify_thieu_node(self):
+        env_thieu_node = {
+            "node_ok": False,
+            "node_version": "",
+            "archify_root": "",
+            "ready": False,
+            "error": "Node.js executable not found in PATH",
+        }
+        with mock.patch("archify_delivery.check_environment", return_value=env_thieu_node):
+            ok, chi_tiet = tdq_setup.kiem_tra_archify()
+        self.assertFalse(ok)
+        self.assertIn("Node.js", chi_tiet)
+
+    def test_kiem_tra_archify_node_phien_ban_cu(self):
+        env_node_cu = {
+            "node_ok": False,
+            "node_version": "v16.14.0",
+            "archify_root": "",
+            "ready": False,
+            "error": "Node.js version v16.14.0 is < 18; Node.js >= 18 is required",
+        }
+        with mock.patch("archify_delivery.check_environment", return_value=env_node_cu):
+            ok, chi_tiet = tdq_setup.kiem_tra_archify()
+        self.assertFalse(ok)
+        self.assertIn("18", chi_tiet)
+
+    def test_kiem_tra_archify_thieu_engine(self):
+        env_thieu_engine = {
+            "node_ok": True,
+            "node_version": "v20.10.0",
+            "archify_root": "",
+            "ready": False,
+            "error": "Archify root directory not found (set ARCHIFY_ROOT or install to ~/Documents/archify)",
+        }
+        with mock.patch("archify_delivery.check_environment", return_value=env_thieu_engine):
+            ok, chi_tiet = tdq_setup.kiem_tra_archify()
+        self.assertFalse(ok)
+        self.assertIn("v20.10.0", chi_tiet)
+        self.assertIn("ARCHIFY_ROOT", chi_tiet)
+
+    def test_kiem_tra_archify_khong_hardcode_admin(self):
+        """Đảm bảo không hard-code đường dẫn user admin trong tdq_setup.py."""
+        import inspect
+        src = inspect.getsource(tdq_setup.kiem_tra_archify)
+        self.assertNotIn("admin", src.lower())
+        self.assertNotIn("Users", src)
+
+
 if __name__ == "__main__":
     unittest.main()

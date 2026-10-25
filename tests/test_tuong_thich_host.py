@@ -67,7 +67,7 @@ class TuongThichAgy(unittest.TestCase):
             # Phép kiểm sống ở `tdq_checkportable`, dùng chung với chính sản phẩm.
             self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(c),
                              f"còn dấu ~ chưa bung: {c}")
-            duong = c.split()[-1]
+            duong = c.split('"')[-2] if '"' in c else c.split()[-1]
             # Both rule sets, not just the host's. The bundle bakes in the absolute path of the
             # machine that BUILT it, so a bundle built on macOS carries `/Users/...` — and
             # `ntpath.isabs` calls that relative, failing the case on Windows for a bundle that

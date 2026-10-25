@@ -19,6 +19,9 @@ import sys
 import time
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import utf8_io  # noqa: E402, F401
+
 DEVTOOL_SERVER_NAME = "chrome-devtools"
 DEFAULT_CDP_PORT = 9222
 DEFAULT_CDP_HOST = "127.0.0.1"

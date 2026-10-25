@@ -8,6 +8,9 @@ import sys
 import subprocess
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _common  # noqa: E402, F401
+
 BUFFER_FILE = Path(".claude/tmp/edited_files.txt")
 
 

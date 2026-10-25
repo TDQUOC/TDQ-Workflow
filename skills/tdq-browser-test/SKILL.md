@@ -74,4 +74,4 @@ Every UI/UX test run must output a structured verification block:
 - **Artifacts Saved**: paths to generated screenshots.
 
 Done when: all 5 inspection layers pass without unhandled errors, responsive viewports verified, and screenshots captured.
-Next step: proceed to write QC evidence into docs/tdq/qc/<slug>.md or report findings.
+Next step: the phase does not change — proceed to write QC evidence into docs/tdq/qc/<slug>.md or report findings.

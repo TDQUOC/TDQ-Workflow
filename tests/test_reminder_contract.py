@@ -171,7 +171,21 @@ class SearchGateDenialRepeatTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
         with open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w", encoding="utf-8") as f:
+            json.dump({"active_request": "2026-10-17-test-repeat", "phase": "implement"}, f)
+
+    def test_search_gate_allows_free_search_in_analyze_phase(self):
+        with open(os.path.join(self.cwd, "docs", "tdq", "state.json"), "w", encoding="utf-8") as f:
             json.dump({"active_request": "2026-10-17-test-repeat", "phase": "analyze"}, f)
+        payload = {
+            "session_id": "test-search-analyze",
+            "cwd": self.cwd,
+            "hook_event_name": "PreToolUse",
+            "tool_name": "Bash",
+            "tool_input": {"command": 'grep -rn "fileHandle" .'},
+        }
+        rc, out, _ = run_hook("search_gate.py", payload, env={"TDQ_PROJECT_DIR": self.cwd, "TDQ_LOG": "0"})
+        self.assertEqual(rc, 0)
+        self.assertEqual(out.strip(), "")
 
     def test_search_gate_repeat_denial_shorter_and_preserves_recovery(self):
         payload = {

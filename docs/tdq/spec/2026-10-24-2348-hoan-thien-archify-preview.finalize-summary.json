@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\archify-spec-preview.archify.md",
+    "sha256": "8217499ddb4b52ac4a105855d54dadfcc338764edd715af9be3b910057b0c583",
+    "bytes": 3676
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-10-24-2348-hoan-thien-archify-preview.html",
+    "sha256": "12a2ec993334a36608c5008478caf1bbe036dd14c1a1e3c05dcbadfae1cfa1cb",
+    "bytes": 878472
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-10-24-2348-hoan-thien-archify-preview.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-10-24-2348-hoan-thien-archify-preview.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1933,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

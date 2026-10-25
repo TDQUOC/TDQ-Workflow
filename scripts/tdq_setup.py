@@ -47,6 +47,7 @@ from datetime import datetime
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS_DIR)
+import archify_delivery  # noqa: E402
 import lsp_module  # noqa: E402
 import plugin_tiers  # noqa: E402 — ghi enabledPlugins nguyên tử + .bak
 import search_rules  # noqa: E402
@@ -728,58 +729,27 @@ def kiem_dryrun_hook(goc_plugin=None):
 
 
 def kiem_tra_archify(project=None):
-    """Kiểm tra môi trường chạy cho Archify: Node.js >= 18 và file bin/archify.mjs.
+    """Kiểm tra môi trường chạy cho Archify tái sử dụng archify_delivery.check_environment().
 
     -> (ok: bool, detail: str)
     """
-    node_bin = shutil.which("node")
-    if not node_bin:
-        return False, "không tìm thấy Node.js trong PATH (yêu cầu Node.js >= 18)"
+    env_info = archify_delivery.check_environment()
+    node_ok = env_info.get("node_ok", False)
+    node_ver = env_info.get("node_version", "")
+    root = env_info.get("archify_root", "")
+    ready = env_info.get("ready", False)
+    err = env_info.get("error")
 
-    node_ver = ""
-    try:
-        cmd = f'"{node_bin}" -v' if tdq_ten_lenh.la_windows() else [node_bin, "-v"]
-        res = tdq_ten_lenh.chay_subprocess(cmd, shell=tdq_ten_lenh.la_windows(),
-                                           capture_output=True, text=True, timeout=5)
-        out = (res.stdout or res.stderr or "").strip()
-        m = re.search(r"v?(\d+)(?:\.(\d+))?", out)
-        if not m:
-            return False, f"không nhận dạng được phiên bản Node.js: {out}"
-        major = int(m.group(1))
-        node_ver = out
-        if major < 18:
-            return False, f"Node.js phiên bản {out} cũ hơn yêu cầu (cần >= 18)"
-    except Exception as exc:  # noqa: BLE001
-        return False, f"lỗi kiểm tra phiên bản Node.js: {exc}"
+    if ready:
+        archify_bin = archify_delivery.get_archify_bin(root)
+        ver_str = f"Node.js {node_ver} (>= 18)" if node_ver else "Node.js (>= 18)"
+        return True, f"{ver_str} · Archify tại {archify_bin}"
 
-    goc = project or GOC_REPO
-    ung_vien = []
-    env_root = os.environ.get("ARCHIFY_ROOT")
-    if env_root:
-        ung_vien.append(env_root)
-    ung_vien.append(os.path.join(os.path.expanduser("~"), "Documents", "archify"))
-    if tdq_ten_lenh.la_windows():
-        ung_vien.append(r"C:\Users\admin\Documents\archify")
-    ung_vien.append(os.path.abspath(os.path.join(goc, "..", "archify")))
-    ung_vien.append("../archify")
+    if not node_ok:
+        return False, err or "không tìm thấy Node.js trong PATH (yêu cầu Node.js >= 18)"
 
-    archify_bin = None
-    for uv in ung_vien:
-        if not uv:
-            continue
-        p1 = os.path.join(uv, "bin", "archify.mjs")
-        if os.path.isfile(p1):
-            archify_bin = p1
-            break
-        p2 = os.path.join(uv, "archify", "bin", "archify.mjs")
-        if os.path.isfile(p2):
-            archify_bin = p2
-            break
-
-    if not archify_bin:
-        return False, f"Node.js {node_ver} (>= 18) · không tìm thấy file bin/archify.mjs (đã dò ARCHIFY_ROOT, Documents/archify, ../archify)"
-
-    return True, f"Node.js {node_ver} (>= 18) · Archify tại {archify_bin}"
+    ver_str = f"Node.js {node_ver} (>= 18)" if node_ver else "Node.js (>= 18)"
+    return False, f"{ver_str} · {err or 'không tìm thấy file bin/archify.mjs'}"
 
 
 MOC_MO = "<!-- TDQ:TOOLS -->"

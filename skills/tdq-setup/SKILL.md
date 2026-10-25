@@ -115,4 +115,4 @@ Done when: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check` prints sev
 and the effect check of `tdq-intake` step 1b passes — existence alone proves nothing.
 Next step: the phase does not change — go back to the phase that called this skill, load that
 skill again, and route the search by question kind, per
-[references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md).
+[references/uu-tien-tim-kiem.md](references/uu-tien-tim-kiem.md) (MCP setup guides: [references/mcp-first-guide.md](references/mcp-first-guide.md), [references/chrome-devtools-mcp-guide.md](references/chrome-devtools-mcp-guide.md)).

@@ -125,7 +125,9 @@ class TokenBudgetTest(unittest.TestCase):
         # lượt (224 → 185) trước khi nới trần — nới là bước sau, không phải bước đầu. Nó
         # phải nằm trong context vì đây là skill duy nhất soi over-engineer; router không
         # gọi được nó thì luật gọn chỉ còn là lời nhắc.
-        self.assertLessEqual(total, 1800, f"tổng description = {total} ký tự")
+        # 2026-10-25: 1800 → 2150. Skills 10 & 11 (tdq-browser-research, tdq-browser-test) added
+        # 311 chars (measured total 2051 chars across 11 skills); cap raised per user approval.
+        self.assertLessEqual(total, 2150, f"tổng description = {total} ký tự")
 
     def test_reference_files_bounded(self):
         for root in (os.path.join(ROOT, "skills"),):
