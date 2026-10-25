@@ -9,6 +9,9 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _common  # noqa: E402, F401
+
 TRACKER_FILE = Path(".claude/tmp/tool_weights_tracker.json")
 NATURAL_BOUNDARIES = {"spec", "plan", "wave_transition", "spec_approved", "plan_approved"}
 

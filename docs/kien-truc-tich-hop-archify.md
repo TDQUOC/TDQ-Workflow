@@ -1,245 +1,110 @@
-# Đặc Tả Kiến Trúc Tích Hợp Archify Vào TDQ-Workflow
+# Hợp đồng tích hợp Archify — agent-first
 
-Tài liệu này xác lập thiết kế kiến trúc chuẩn hóa cho việc tích hợp bộ công cụ Archify (`v3.2.0`) vào hệ thống TDQ-Workflow (`v0.81.0`).
-Mục tiêu là cung cấp năng lực trực quan hóa kiến trúc dự án và hỗ trợ nghiệp vụ tương tác (Personal Business Analyst) cho lập trình viên trước khi viết mã.
+Phiên bản hợp đồng: 1 · 2026-10-25 · Request: `2026-10-24-2348-hoan-thien-archify`.
+Đây là thiết kế thực thi đã chốt, chưa phải báo cáo nghiệm thu. Thay thế các nhận định thiếu bằng chứng của bản trước.
 
----
+## 1. Trách nhiệm
 
-## 1. Tổng Quan & Triết Lý Thiết Kế Mô Hình 2 Tầng
+Agent hiện tại khảo sát bằng LSP/Grep/Graphify có kiểm freshness, viết BA và candidate. Archify 3.2.0 kiểm schema, bố cục và dựng HTML; không tự phân tích repo. TDQ giữ binding, snapshot và trạng thái publish. Không gọi endpoint AI riêng trong đợt này.
 
-### 1.1 Bối cảnh & Mục tiêu
-TDQ-Workflow hướng tới việc tối ưu hóa chu trình phát triển phần mềm có sự tham gia của AI.
-Tuy nhiên, giai đoạn thiết kế ban đầu thường thiếu phương tiện trực quan hóa luồng nghiệp vụ tương tác.
-Các lập trình viên, đặc biệt là fresher và junior, gặp khó khăn khi hình dung toàn cảnh tác động từ các khối văn bản thuần túy.
-Việc tích hợp Archify mang lại khả năng mô phỏng luồng tương tác ngay từ bước lập đặc tả (`spec`).
-Hệ thống giúp phân định ranh giới module, điều kiện rẽ nhánh và các trường hợp ngoại lệ trước khi triển khai mã nguồn.
+Một BA có actor, trigger, input, rules, happy path, exceptions, output và acceptance. View lựa chọn architecture/workflow/sequence/lifecycle/ERD theo câu hỏi, không bắt tất cả dạng cho mọi task.
 
-### 1.2 Triết lý "Personal Business Analyst"
-Hệ sinh thái TDQ-Workflow đóng vai trò như một chuyên viên phân tích nghiệp vụ cá nhân cho từng lập trình viên.
-Mỗi tính năng trước khi bước vào giai đoạn viết code đều được trực quan hóa thành sơ đồ tương tác đa chiều.
-Lập trình viên có thể kiểm tra trực tiếp luồng đi của dữ liệu, điểm chặn lỗi và cách các tầng giao tiếp với nhau.
+## 2. Giao diện module đã khóa
 
-### 1.3 Mô hình kiến trúc 2 tầng (Two-Tier Visualization Model)
-Hệ thống tổ chức trực quan hóa thành 2 tầng phân tách rõ rệt về phạm vi nhận thức:
+Các module đều stdlib; hàm công khai dưới đây là contract cho triển khai. Tên chỉ đổi nếu đồng bộ caller/tests/docs cùng nhau.
 
-1. **Tầng 1 — Master Architecture Console (`docs/architecture/index.html`):**
-   - Đại diện cho bức tranh toàn cảnh vĩ mô của toàn bộ kho mã nguồn.
-   - Thể hiện đầy đủ các phân hệ, ranh giới bảo vệ (boundary) và các luồng gọi chéo module.
-   - Được cập nhật định kỳ khi nghiệm thu tính năng mới hoặc sau mỗi lần quét mã nguồn toàn diện.
+### Delivery — scripts/archify_delivery.py
 
-2. **Tầng 2 — Task Scope BA Flow (`docs/tdq/spec/<slug>-preview.html`):**
-   - Đại diện cho góc nhìn vi mô phục vụ riêng cho một yêu cầu hoặc một tính năng cụ thể.
-   - Tập trung trực diện vào các thành phần chịu tác động theo phân làn: UI -> Core -> Storage -> External.
-   - Hỗ trợ đối chiếu trạng thái Hiện trạng (Trước) và Thiết kế mới (Sau) khi thực hiện refactor.
+- `find_archify_root() -> str | None`: ARCHIFY_ROOT explicit sai không fallback; nếu không khai dùng home/Documents/archify và sibling dự án, chấp nhận root gói trực tiếp hoặc repo chứa archify/bin. Không hard-code admin.
+- `get_archify_bin(root=None) -> Path | None`.
+- `check_environment() -> dict`: node_ok, node_version, archify_root, ready; error giải thích nếu thiếu. Node từ 18.
+- `build_finalize_command(diagram_type, candidate_path, output_path, quality='showcase', repo_root=None, archify_root=None) -> list[str]`.
+- `run_finalize(diagram_type, candidate_path, output_path, quality='showcase', repo_root=None, archify_root=None, timeout=120) -> FinalizeResult`: dataclass `status: bool`, `receipt: dict`; optional get cho tương thích, không override tuple.
+- `open_artifact(file_path) -> bool`: chỉ file HTML có thật, truyền file URI qua browser/platform API an toàn, không nội suy PowerShell.
+- `atomic_delivery(target_path, content) -> Path`: ghi file tạm độc quyền cùng thư mục, fsync, replace, từ chối symlink. Không ghi nhiều artifact cùng PID vào một temp cố định.
 
-### 1.4 Các nguyên tắc thiết kế bất biến
-- **Không xâm lấn (Non-invasive):** Không can thiệp hay sửa đổi trực tiếp vào kho mã nguồn gốc của Archify.
-- **Tiêu chuẩn Python thuần (Stdlib Only):** Module adapter chỉ sử dụng thư viện chuẩn của Python, không thêm dependency bên ngoài.
-- **Ngoại tuyến hoàn toàn (Zero-Network):** Tài liệu xuất bản đóng gói trọn vẹn tài nguyên, hoạt động không cần kết nối internet.
-- **Nguyên tắc tinh gọn (Lean Principle):** Không áp đặt sinh sơ đồ cho các tác vụ siêu nhỏ, bảo toàn tốc độ của pipeline nhánh nhanh.
+run_finalize không publish Master hay bind doc. Nó tạo output trong staging của caller khi caller cần rollback toàn bộ. Thành công đòi exit 0, JSON object, ok=true, status=pass, gates validate/deliver/check=pass, native browser-check=pass; explainer chấp nhận not-run. Artifact path/hash/bytes khớp receipt, candidate hash trước/sau không đổi. Hash trong compact receipt phải kiểm thật. Timeout/malformed/stale output trả false có diagnostics. UTF-8 rõ ràng, stderr timestamp qua TDQ_LOG, stdout CLI chỉ JSON. CI offline đặt ARCHIFY_UPDATE_CHECK_DISABLED=1.
 
----
+### Model — scripts/archify_model.py
 
-## 2. Sơ Đồ Kiến Trúc Tổng Thể & Luồng Dữ Liệu
+- `graphify_to_archify(graph_json_path, focus_community=None, max_nodes=None, *, repository=None, evidence_kind='working-tree') -> dict`: trả **Archify IR thuần**, không có trường TDQ ngoài schema. Topology raw chỉ là candidate chưa publish.
+- `graph_coverage(graph, selected_ids) -> dict`: total/selected/excluded/unknown inventory, directed flag, lý do lọc và quan hệ không đủ hướng.
+- `validate_model(model) -> dict`: kiểm object envelope dưới đây, path tương đối an toàn, ID/view trùng, current cần revision đúng 40 hex và repository; view không vượt root. Trả model hợp lệ hoặc ValueError.
 
-### 2.1 Sơ đồ tuần tự tương tác (Sequence Architecture)
+Sources dùng path/line/end_line đúng upstream; không bịa vai trò từ tên file; mặc định backend khi không khai loại nhưng ghi rõ là topology candidate. Graph không directed thì không vẽ cạnh như call có hướng; coverage giữ quan hệ unknown. Không gắn committed sources nếu evidence_kind planned/working-tree. repository có url/revision/link_mode và chỉ dẫn nguồn đúng snapshot; engine kiểm cuối bằng Git. Layout grid explicit để engine không phải đoán tọa độ thiếu.
 
-```text
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  NGƯỜI DÙNG  │     │   TDQ SPEC   │     │ TDQ ADAPTER  │     │ARCHIFY ENGINE│     │VIEWER RUNTIME│
-│  (Developer) │     │  (Intake)    │     │(Python CLI)  │     │  (Node.js)   │     │  (HTML/JS)   │
-└──────┬───────┘     └──────┬───────┘     └──────┬───────┘     └──────┬───────┘     └──────┬───────┘
-       │                    │                    │                    │                    │
-       │ 1. Gửi yêu cầu     │                    │                    │                    │
-       │───────────────────>│                    │                    │                    │
-       │                    │ 2. Thiết kế luồng  │                    │                    │
-       │                    │    & tạo JSON-IR   │                    │                    │
-       │                    │───────────────────>│                    │                    │
-       │                    │                    │ 3. Pre-flight      │                    │
-       │                    │                    │    & finalize      │                    │
-       │                    │                    │───────────────────>│                    │
-       │                    │                    │                    │ 4. A* routing,     │
-       │                    │                    │                    │    nhúng font/CSS  │
-       │                    │                    │                    │    & xuất HTML     │
-       │                    │                    │ 5. Báo hoàn tất    │<───────────────────│
-       │                    │                    │<───────────────────│                    │
-       │                    │ 6. Đường dẫn HTML  │                    │                    │
-       │                    │<───────────────────│                    │                    │
-       │ 7. Khối duyệt spec kèm preview HTML     │                    │                    │
-       │<───────────────────│                    │                    │                    │
-       │                    │                    │                    │                    │
-       │ 8. Mở xem trực quan (CLI open)          │                    │                    │
-       │────────────────────────────────────────>│                    │                    │
-       │                    │                    │ 9. Kích hoạt mở    │                    │
-       │                    │                    │────────────────────────────────────────>│
-       │ 10. Thao tác tương tác, soi reachability, duyệt spec         │                    │
-       │──────────────────────────────────────────────────────────────────────────────────>│
+### Artifacts — scripts/archify_artifacts.py
+
+- `document_digest(path) -> str`: SHA-256 UTF-8 bytes của doc sau loại đúng khối `<!-- tdq-archify-binding:start -->` đến `<!-- tdq-archify-binding:end -->`; chặn nhiều khối hoặc marker thiếu cặp.
+- `source_fingerprint(project, paths=None) -> dict`: map path tương đối -> SHA-256, không theo symlink ra ngoài; exclude .git, node_modules, .venv, __pycache__, graphify-out, docs/architecture và docs/tdq, logs, docs/workinglog, output candidate/receipts. Khi explicit paths là nguồn, không tự mở rộng ngoài root.
+- `build_manifest(project, document, candidate, artifact, receipt, *, evidence_kind='planned', revision=None, coverage=None, request=None, lane=None) -> dict`: schema_version=1; giữ file path khả chuyển, các hash document/candidate/artifact, source_files fingerprint, evidence_kind, revision, coverage, engine và receipt. Không ghi secret. Đầu vào receipt dict.
+- `check_manifest(project, manifest) -> dict`: trả `{status: 'current'|'stale'|'invalid', reasons: [...]}`; kiểm hash nguồn, tài liệu/candidate/artifact, revision khi committed, không coi thiếu file như current.
+- `bind_document(document, manifest_path) -> None`: chèn/đổi khối binding chứa đường dẫn manifest và hash manifest. document_digest không phụ thuộc khối này, không vòng tự băm.
+- `check_binding(document, manifest_path) -> dict`: kiểm hash manifest trong binding cùng document_digest.
+- `publish_bundle(staging, destination) -> Path`: directory bundle hợp lệ; lock độc quyền cạnh destination; không xóa lock tự ý nếu không biết owner sống/chết. Stage phải chứa index.html và manifest.json; caller đã validate. Hoán đổi snapshot bằng rename với backup/rollback, reject symlink và path nesting; cleanup chỉ file do mình tạo. Trả destination/index.html.
+- `mark_stale(project) -> dict`: đọc docs/architecture/manifest.json nếu có, check freshness, ghi status.json riêng (không sửa manifest đã bind); absent -> skip, lỗi -> invalid.
+
+Delivery không import artifacts/model. Model không import delivery. Artifacts không import CLI. CLI import ba module. Finish gọi mark_stale, không gọi AI/render.
+
+## 3. CLI và envelope Master
+
+Tất cả CLI chạy từ project đích; scripts nằm dưới plugin root, không giả target repo có scripts TDQ.
+
+| Lệnh | Contract |
+|---|---|
+| check | Kiểm Node/engine, exit 0 khi ready |
+| render | `--type TYPE --candidate PATH --out HTML [--quality standard|showcase] [--repo-root ROOT] [--document MD --request SLUG --lane full|quick]` |
+| open | `HTML` |
+| bridge | `--graph JSON --out JSON [--community ID] [--max-nodes N]` tạo candidate và coverage sidecar, không publish Master |
+| sync-master | `--model JSON [--project ROOT] [--out DIR]` dựng mô hình agent-authored; mặc định out docs/architecture; graph raw không phải model |
+| status | `[--project ROOT]` kiểm manifest Master và in freshness |
+| verify | `--document MD --manifest JSON [--project ROOT]` kiểm binding/freshness, exit khác 0 khi stale |
+
+render không document trả artifact_unbound rõ. Có document: sinh candidate/manifest cạnh output, bind trước cổng duyệt; không sửa doc đã duyệt âm thầm. Plan kiểm verify trước code. Đường CLI giữ receipt local được engine phát và không sửa bytes HTML sau finalize.
+
+Master model (input agent viết, không phải schema Archify):
+
+```json
+{
+  "schema_version": 1,
+  "title": "Kiến trúc dự án",
+  "evidence_kind": "committed",
+  "revision": "40-hex-commit",
+  "repository": {"url": "https://example.invalid/team/repo.git", "revision": "40-hex-commit", "link_mode": "local-only"},
+  "source_paths": ["src/main.py"],
+  "coverage": {"modules": [{"id": "app", "status": "verified"}], "unknown": [], "excluded": []},
+  "views": [{"id": "overview", "type": "architecture", "candidate": "overview.json", "summary": "Bản đồ module"}]
+}
 ```
 
-### 2.2 Luồng xử lý dữ liệu qua các bước
-1. **Khởi tạo dữ liệu:** Agent tiếp nhận yêu cầu, phân tích logic nghiệp vụ và sinh candidate JSON-IR chuẩn.
-2. **Kiểm tra môi trường:** Adapter xác thực Node.js và vị trí gói Archify engine trước khi gọi biên dịch.
-3. **Biên dịch bố cục:** Engine Archify tính toán tọa độ theo giải thuật A* trực giao, cân bằng khoảng cách và né vật cản.
-4. **Đóng gói nguyên tử:** Engine xuất file HTML độc lập chứa đầy đủ font JetBrains Mono Base64 và CSS/JS runtime.
-5. **Duyệt và phản hồi:** Khối duyệt spec hiển thị đường dẫn HTML; người dùng kiểm tra trực quan và xác nhận duyệt.
+Đây là minh họa cấu trúc, không là fixture evidence. Revision thực phải hợp lệ. `working-tree`/`planned` phải ghi nhãn, không xuất thành committed. Candidate relative to model parent, cấm path traversal/symlink escape; external repo root qua --project. Model agent authored phải cover inventory hoặc ghi unknown/excluded. Không có trần view im lặng. Master index là HTML cục bộ có thông tin revision/freshness/coverage và links tới từng view Archify; mỗi view tự chứa tài nguyên. Index dùng markup an toàn và escaped labels, không renderer sơ đồ tự viết. Không nhúng hơn giới hạn upstream vào explainer để vượt hợp đồng.
 
----
+## 4. Lifecycle
 
-## 3. Phân Hệ Adapter Python CLI (`scripts/tdq_archify.py`)
+Full: spec + candidate + HTML + manifest → binding vào spec → user duyệt → plan tham chiếu → verify trước code. Quick tương tự tại mini-plan. Binding không là gate mới.
 
-Module `scripts/tdq_archify.py` đóng vai trò cầu nối điều phối giữa TDQ-Workflow và engine Archify.
+Master được dựng từ model của snapshot xác định. Code đổi → finish mark_stale → agent đọc diff/evidence và sửa model → sync-master. Sau merge kiểm revision nhánh đích, không cho bản nhánh khác tự nhận current. HTML offline là snapshot: status CLI/finish là nơi phát hiện thay đổi, không hứa trang tĩnh theo dõi file.
 
-### 3.1 Hợp đồng giao tiếp (Contracts & API)
-Adapter cung cấp các hàm chức năng xử lý nghiệp vụ với chuẩn đầu vào và đầu ra nghiêm ngặt:
+Task preview planned được giữ làm lịch sử, không cập nhật bằng Master. Compare chỉ hiển thị diff, không merge mô hình. Nếu publish lỗi giữ bản đã xác minh, báo stale/invalid có nguyên nhân.
 
-- `find_archify_root() -> Optional[Path]`:
-  Dò tìm đường dẫn thư mục gốc của Archify theo thứ tự ưu tiên: biến môi trường `ARCHIFY_ROOT`, thư mục lân cận `../archify`, và cache plugin.
-- `preflight_check() -> Tuple[bool, str]`:
-  Kiểm tra sự hiện diện của Node.js (phiên bản 18 trở lên) và file thực thi `bin/archify.mjs`.
-- `build_finalize_command(...) -> List[str]`:
-  Xây dựng danh sách tham số dòng lệnh để gọi tiến trình con Node.js thực thi lệnh `finalize`.
-- `atomic_delivery(temp_file: Path, target_file: Path) -> None`:
-  Thực hiện ghi file tạm an toàn và sử dụng `os.replace` để hoán đổi nguyên tử, chống ghi đè lỗi.
-- `open_viewer(file_path: Path) -> bool`:
-  Kích hoạt trình duyệt web mặc định của hệ điều hành để mở file HTML tương tác.
+## 5. Agent-first và môi trường
 
-### 3.2 Các lệnh điều phối (CLI Subcommands)
-Adapter hỗ trợ các lệnh thông qua giao diện dòng lệnh tiêu chuẩn:
+ARCHIFY_ROOT là cấu hình active duy nhất cần thiết cho engine. Agent dùng context hiện tại vẫn có chi phí của host; không gọi là zero-cost. Endpoint OpenAI-compatible chỉ là hướng dự phòng nếu đường agent không dùng được, chưa có client trong đợt này. Không đọc key store của harness; không truyền env secrets vào HTML. User cho phép dữ liệu dự án khi thực sự cần endpoint đã cấu hình, không bao gồm dữ liệu ngoài dự án.
 
-| Lệnh | Cú pháp | Mục đích |
-|---|---|---|
-| `check` | `python3 scripts/tdq_archify.py check` | Kiểm tra tính sẵn sàng của Node.js và đường dẫn Archify |
-| `render` | `python3 scripts/tdq_archify.py render <type> <json> <out.html>` | Biên dịch sơ đồ sang file HTML tương tác hoàn chỉnh |
-| `open` | `python3 scripts/tdq_archify.py open <file.html>` | Mở file HTML tương tác trên trình duyệt mặc định |
-| `sync-master` | `python3 scripts/tdq_archify.py sync-master` | Cập nhật các thay đổi vào Master Architecture Console |
+Engine ghim hợp đồng 3.2.0, Node >=18. Giữ native browser gate; explainer browser-check not-run không bằng visual review. Test offline tắt update check. Cấu hình fallback thiếu engine là thông báo rõ, không link tới file chưa có.
 
-### 3.3 Cơ chế phòng thủ và thoái lui mềm (Graceful Fallback)
-Khi môi trường thiếu Node.js hoặc không tìm thấy Archify, adapter kích hoạt chế độ thoái lui:
-- Trả về mã lỗi có cấu trúc kèm thông báo hướng dẫn rõ ràng.
-- Giữ nguyên khối mã Mermaid dạng văn bản tĩnh trong tài liệu markdown để không làm gián đoạn chu trình TDQ.
+## 6. Tính khả chuyển và lỗi
 
----
+Dùng sys.executable hoặc python theo môi trường, đường CLI absolute plugin root, output project root. Mở file qua URI, không shell interpolation. Temp file unique, concurrent lock, UTF-8 stdout/stderr và child decoding. Không sửa state trực tiếp.
 
-## 4. Phân Hệ Cầu Nối Graphify-to-Archify
+Runtime bundle phải gồm module phụ thuộc thực tế; tests kiểm closure import, không chỉ đếm số file. Ràng buộc scripts không import hooks giữ nguyên. Không sửa luật workflow chỉ để vượt token budget; dùng reference một tầng và generator indices/lock.
 
-Phân hệ này giải quyết triệt để điểm nghẽn phụ thuộc mạng bên ngoài của Graphify hiện tại.
+## 7. Baseline và kiểm chứng
 
-### 4.1 Điểm nghẽn hiện tại của tầng hiển thị Graphify
-Hiện tại, `scripts/tdq_graphify.py` xuất file `CALLFLOW.html` sử dụng thư viện Mermaid tải qua CDN internet.
-Cách làm này bộc lộ ba hạn chế lớn:
-1. Không hoạt động được trong môi trường cô lập mạng (air-gapped).
-2. Đồ thị tĩnh không cho phép lập trình viên tương tác để lọc bớt các thành phần gây nhiễu.
-3. Nhãn chữ và dây nối dễ bị chồng chéo khi đồ thị vượt quá 20 nút.
+Baseline trước request mới: 5d6570d; nền trước tích hợp: a03d698. Log cũ bpzrsod7w: 2829 tests, 14 failures, 1 error, 9 skipped. Không coi mọi lỗi là baseline khi chưa đối chứng. Hai lỗi tái hiện ở phân tích: encoding adapter (150,266) và indices quick-lane/plan-template/spec-template. False-success finalize tái hiện bằng mocked process: exit 1/check fail/HTML cũ -> status true. Cú pháp skill positional -> argparse exit 2.
 
-### 4.2 Cơ chế chuyển đổi dữ liệu (`graphify_to_archify`)
-Adapter bổ sung hàm chuyển đổi từ `graphify-out/graph.json` sang định dạng JSON-IR của Archify:
-- Đọc danh sách `nodes` và `edges` từ dữ liệu AST của Graphify.
-- Trích xuất thông tin `source_file` và `source_location` để ánh xạ vào trường `sources: [{ path, startLine, endLine }]`.
-- Gom nhóm các hàm và lớp vào các khối `boundaries` dựa trên phân cụm cộng đồng Louvain hoặc cấu trúc thư mục.
-- Chuyển đổi các liên kết phụ thuộc thành quan hệ định tuyến trực giao rõ ràng.
+Kiểm đơn vị: delivery, model, artifacts, pipeline, distribution, finish, workflow-contract. Runtime: repo fixture có commit thật, native và explainer render bằng engine thật, Master cập nhật khi source đổi, doc/candidate mutation stale. Browser: đọc nhãn, focus, zoom, view links, console; mỗi smoke/runtime cap 120s. Không coi test mock xanh là schema/render đạt.
 
-### 4.3 Năng lực tương tác vượt trội sau chuyển đổi
-- **Khảo sát vỡ lan tương tác (Interactive Blast Radius):** Nhấp vào một module để xem toàn bộ chuỗi tác động trước và sau.
-- **Dò tìm đường gọi (Route-probe):** Cho phép chọn hai hàm bất kỳ để tìm đường dẫn gọi ngắn nhất qua các tầng.
-- **Truy vết mã nguồn tại chỗ:** Nhấp vào nút sơ đồ để xem vị trí dòng mã thực tế trong kho lưu trữ Git.
+## 8. Tiêu chí bàn giao
 
----
-
-## 5. Phân Hệ Tích Hợp Quy Chuẩn BA Vào Spec & Quick Lane
-
-### 5.1 Nâng cấp Phase `spec` (Pipeline `full`)
-Quy chuẩn biên soạn đặc tả trong `skills/tdq-spec/` được nâng cấp đồng bộ:
-- Tại mục **§2b (Ranh giới module)**: Xác định rõ ràng các ranh giới kiến trúc và trách nhiệm của từng vùng.
-- Tại mục **§2c (Luồng hoạt động & Sơ đồ kiến trúc)**:
-  - Sinh đồng thời khối mã minh họa logic và file HTML tương tác `docs/tdq/spec/<slug>-preview.html`.
-  - Khối giao tiếp duyệt spec hiển thị đường link trực quan để người dùng kiểm tra trước khi bấm duyệt.
-- Giới hạn token nghiêm ngặt: Bản mô tả JSON-IR chỉ chứa khung cấu trúc dưới 15 nút và dưới 700 tokens.
-
-### 5.2 Tích hợp quy chuẩn Quick Lane BA
-Trong `skills/tdq-intake/references/quick-lane.md`, quy chuẩn trực quan hóa được phân tầng theo độ phức tạp:
-- **Tác vụ đơn lẻ (1 file mã nguồn):** Duy trì sơ đồ văn bản tinh gọn để tối ưu hóa thời gian thực thi.
-- **Tác vụ chạm từ 2 module trở lên hoặc tái cấu trúc (Refactor):**
-  - Tự động kích hoạt việc sinh mini-workflow dưới 10 nút.
-  - Phân làn rõ ràng giữa trạng thái Trước và Sau để lập trình viên tự tin thao tác mà không gây vỡ mã nguồn.
-
----
-
-## 6. Phân Hệ Cấu Hình Hybrid AI Endpoint
-
-Hệ thống thiết lập cơ chế cấu hình AI lai, đáp ứng hài hòa giữa tính kinh tế và năng lực mở rộng.
-
-### 6.1 Kiến trúc lai 2 chế độ (Hybrid AI Architecture)
-
-1. **Chế độ 1 — Tận dụng phiên Agent hiện tại (Mặc định / Zero Cost):**
-   - Bộ não Claude Code hoặc Codex trực tiếp tạo cấu trúc JSON-IR thông qua context đang làm việc.
-   - Adapter chỉ tiếp nhận JSON và gọi engine Archify nội bộ để biên dịch, không phát sinh chi phí gọi API riêng.
-
-2. **Chế độ 2 — Autonomous Codebase Scanning (Dành cho quét toàn dự án):**
-   - Khi cần phân tích và dựng lại toàn bộ kiến trúc cho một kho mã nguồn lớn nhiều chục nghìn dòng.
-   - Hệ thống kết nối với một Endpoint AI chuyên dụng được khai báo riêng, giải phóng tải cho phiên làm việc chính.
-
-### 6.2 Cấu hình biến môi trường trong `.env.example`
-Các tham số kết nối được quy chuẩn hóa trong file `.env.example`:
-
-```bash
-# ==============================================================================
-# ARCHIFY AI ENDPOINT & ENGINE CONFIGURATION
-# ==============================================================================
-# Đường dẫn cài đặt Archify engine cục bộ (mặc định tự dò ../archify)
-ARCHIFY_ROOT=
-
-# Endpoint API dành riêng cho chế độ quét tự động toàn bộ codebase
-ARCHIFY_AI_ENDPOINT=https://api.anthropic.com/v1
-
-# Khóa xác thực API (chỉ lưu placeholder, không commit khóa thật)
-ARCHIFY_API_KEY=your-api-key-here
-
-# Tên mô hình AI đảm nhận việc phân tích kiến trúc
-ARCHIFY_MODEL=claude-3-7-sonnet-20250219
-```
-
-### 6.3 An toàn và bảo mật thông tin
-- Adapter đọc các tham số thông qua biến môi trường của hệ thống hoặc file cấu hình cục bộ không commit Git.
-- Khóa bí mật luôn được ẩn khỏi các thông điệp ghi log và báo cáo kiểm thử.
-
----
-
-## 7. Phân Hệ Standalone Interactive Viewer Runtime
-
-Trọng tâm trải nghiệm người dùng nằm ở file artifact HTML xuất bản từ engine Archify.
-
-### 7.1 Đặc tính Zero-Network & Tự chứa (Self-contained)
-File HTML xuất bản có dung lượng khoảng 1.2MB, bao gồm:
-- Toàn bộ vector đồ họa SVG biểu diễn kiến trúc và sơ đồ luồng.
-- Bộ font JetBrains Mono định dạng WOFF2 được mã hóa Base64 trực tiếp.
-- Bộ phong cách hiển thị Midnight Console cao cấp và toàn bộ mã nguồn JavaScript xử lý tương tác.
-- Hoạt động ổn định trên mọi trình duyệt hiện đại mà không cần nạp bất kỳ tài nguyên mạng nào.
-
-### 7.2 Bộ tính năng tương tác hỗ trợ phát triển
-1. **Semantic Passport:** Nhấp vào nút để xem thông số chi tiết, cổng giao tiếp và các ràng buộc kỹ thuật.
-2. **Upstream / Downstream Reachability:** Làm sáng toàn bộ chuỗi tác động trước và sau của một thành phần được chọn.
-3. **Route-probe (`#route=A~B`):** Tự động dò tìm và đánh dấu đường đi ngắn nhất giữa hai nút bất kỳ trên sơ đồ.
-4. **Semantic Lens & Minimap:** Cho phép lọc nhanh theo vai trò thành phần và điều hướng qua bản đồ thu nhỏ.
-5. **Motion Governor:** Mô phỏng dòng chảy dữ liệu thực tế bằng các hạt ánh sáng chuyển động dọc theo liên kết.
-
----
-
-## 8. Lộ Trình Triển Khai & Ma Trận Kiểm Thử Nghiệm Thu
-
-### 8.1 Lộ trình triển khai 4 giai đoạn
-- **Giai đoạn 1 — Đặc tả kiến trúc & Môi trường:** Hoàn thiện tài liệu kiến trúc tích hợp và khai báo cấu hình mẫu.
-- **Giai đoạn 2 — Xây dựng module điều phối CLI:** Triển khai `scripts/tdq_archify.py` và cầu nối `graphify_to_archify`.
-- **Giai đoạn 3 — Đồng bộ quy chuẩn kỹ năng:** Cập nhật các tài liệu chỉ dẫn cho `tdq-spec`, `tdq-intake` và `tdq-setup`.
-- **Giai đoạn 4 — Kiểm thử & Nghiệm thu:** Xây dựng bộ test suite tự động và tiến hành thẩm định độc lập mức `ultra`.
-
-### 8.2 Ma trận kiểm thử nghiệm thu (DoD Q1 - Q7)
-
-| Mã | Hạng mục kiểm tra | Tiêu chí đạt | Lệnh kiểm chứng |
-|---|---|---|---|
-| Q1 | Tài liệu kiến trúc tích hợp | Hoàn thiện đủ 8 phân hệ, đạt chuẩn linting markdown | `python3 scripts/doc_lint.py docs/kien-truc-tich-hop-archify.md` |
-| Q2 | Module CLI Adapter | Chạy độc lập bằng Python stdlib, hỗ trợ đầy đủ lệnh | `python3 scripts/tdq_archify.py check` |
-| Q3 | Đồng bộ Spec & Quick Lane | Hướng dẫn rõ ràng việc sinh HTML preview và khối duyệt | `git diff skills/tdq-spec/ skills/tdq-intake/` |
-| Q4 | Khai báo biến môi trường | File `.env.example` có đầy đủ các biến Archify | `git diff .env.example` |
-| Q5 | Kiểm tra môi trường setup | Script cài đặt hỗ trợ kiểm tra Node.js và Archify | `python3 scripts/tdq_setup.py` |
-| Q6 | Bộ unit test adapter | Tối thiểu 5 bài kiểm thử tự động đạt kết quả thành công | `pytest tests/test_tdq_archify.py` |
-| Q7 | Thẩm định độc lập Ultra | Hoàn tất rà soát chất lượng và xác nhận mọi tiêu chí | `python3 scripts/tdq_qc.py danh-gia` |
+Các mục Q1–Q8 trong spec mới là authority. Report tách unit/runtime/browser/reviewer/baseline, chờ hết tác vụ nền. Không có điều kiện tự tick thành công nếu thiếu Chrome hoặc thiếu renderer. Không commit/merge/push cho tới khi user yêu cầu. Mọi thiếu đầu ra phải báo, không lấp bằng config không có consumer hoặc lời hứa scanner.

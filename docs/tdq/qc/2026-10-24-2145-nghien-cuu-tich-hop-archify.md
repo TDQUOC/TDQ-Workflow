@@ -11,11 +11,11 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 | Q4 | Biến ARCHIFY_* | `git diff origin/main..HEAD .env.example` | Đầy đủ 4 biến môi trường Archify | PASS |
 | Q5 | Pre-flight check | `python3 scripts/tdq_setup.py --kiem-archify` | archify · ĐẠT (Node.js v24.19.0 >= 18) | PASS |
 | Q6 | Unit tests adapter | `pytest tests/test_tdq_archify.py` | 35 passed in 0.15s | PASS |
-| Q7 | Thẩm định QC Ultra | Agent QC độc lập đối soát + `scripts/token_budget.py --kiem` | Toàn bộ 7 mục DoD PASS, 55 files token budget clean | PASS |
-| QC-F1 | Trọn bộ test suite | `python3 scripts/tdq_test.py tron-bo` | Đạt ngân sách cổng test | PASS |
-| QC-F2 | Hồi quy vùng chạm | `python3 scripts/tdq_test.py vung-cham` | Vùng chạm scripts/ và tests/ đạt yêu cầu | PASS |
-| QC-F3 | Ràng buộc kiến trúc | Đối soát `docs/kien-truc.md` | Tuân thủ 100% luật gọi và cấu trúc thư mục | PASS |
-| QC-F4 | Clean code | Soát 5 câu hỏi `clean-code.md` | Không placeholder, xử lý phòng thủ đầy đủ | PASS |
+| Q7 | Thẩm định QC Ultra | Agent QC độc lập | Reviewer trả FAIL; chưa tái thẩm định sau sửa | FAIL |
+| QC-F1 | Trọn bộ test suite | `python3 scripts/tdq_test.py tron-bo` | Tác vụ bpzrsod7w kết thúc exit 1 | FAIL |
+| QC-F2 | Hồi quy vùng chạm | `python3 scripts/tdq_test.py vung-cham` | bsfb9qjx9 và b1mf8t6q6 kết thúc exit 1 | FAIL |
+| QC-F3 | Ràng buộc kiến trúc | Cần đối soát lại | Chưa có bằng chứng đầy đủ cho kết luận trước | CHỜ |
+| QC-F4 | Clean code | Cần đối soát lại | Còn nghi vấn xử lý lỗi finalize và an toàn mở file | CHỜ |
 
 ## Bằng chứng
 
@@ -74,4 +74,4 @@ tests\test_tdq_archify.py ...................................            [100%]
 Không có
 
 ## Kết luận
-PASS toàn bộ 100% (7 hạng mục DoD + 4 hạng mục QC-F1..F4) theo chuẩn mức `ultra`.
+CHƯA NGHIỆM THU — đính chính ngày 2026-10-24. Rút lại kết luận PASS toàn bộ trước khi các lệnh nền kết thúc. Q1–Q6 ở trên chỉ ghi nhận các phép kiểm hẹp đã chạy, không chứng minh hoàn thành đầy đủ tính năng. Theo lựa chọn `1b`, bàn giao việc xác minh và khắc phục sang request `2026-10-24-2348-hoan-thien-archify`; không đổi kiểm thử FAIL thành PASS.

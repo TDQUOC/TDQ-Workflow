@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "request": null,
+  "lane": null,
+  "evidence_kind": "working-tree",
+  "revision": null,
+  "document_path": "models/master.json",
+  "document_digest": "16ef7bd041535a501edc252bfe728c3b4617e001a8571256495eee64c731a3a0",
+  "candidate_path": "models/master.json",
+  "candidate_digest": "16ef7bd041535a501edc252bfe728c3b4617e001a8571256495eee64c731a3a0",
+  "artifact_path": "docs/architecture/index.html",
+  "artifact_digest": "4dcb95a3a9f47923610a1eeefb7c072df41fe3cd83cf60ba93dca52f8fd8586d",
+  "source_paths": [
+    "src"
+  ],
+  "source_files": {
+    "src/app.py": "5d51eb2857a20ccf636f995d626569aa5237da347cf4c682e5d83611db36e189"
+  },
+  "coverage": {
+    "modules": [
+      {
+        "id": "app",
+        "status": "selected"
+      }
+    ],
+    "unknown": [
+      "Illustrative fixture, not a production architecture"
+    ],
+    "excluded": []
+  },
+  "engine": "archify",
+  "receipt": {
+    "ok": true,
+    "status": "pass",
+    "engine": "archify",
+    "views_count": 1,
+    "index": "index.html"
+  },
+  "child_files": {
+    "overview.html": "21f58a65a701427ba3f729c005a1a2935b49800691edb60b4aa233a8d57650dd",
+    "overview.candidate.json": "e94e5679e8fd1a86729cd8f869eefb9c77d081ae88940a66b2a7a5dc9fc8b92f"
+  },
+  "views": [
+    {
+      "id": "overview",
+      "type": "architecture",
+      "summary": "Illustrative component responsibilities",
+      "file": "overview.html",
+      "hash": "21f58a65a701427ba3f729c005a1a2935b49800691edb60b4aa233a8d57650dd"
+    }
+  ],
+  "view_receipts": {
+    "overview": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "finalize",
+      "status": "pass",
+      "type": "architecture",
+      "quality": "standard",
+      "specification": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\models\\ba.json",
+        "sha256": "69056c02c4476b0a24c12017ce789df3777ef805be5713c23979da71756030ed",
+        "bytes": 633
+      },
+      "artifact": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\docs\\.staging.c05292463906414c944325f04fb18885\\overview.html",
+        "sha256": "21f58a65a701427ba3f729c005a1a2935b49800691edb60b4aa233a8d57650dd",
+        "bytes": 807472
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "diagnosticSummary": {
+        "total": 0,
+        "shown": 0,
+        "truncated": false
+      },
+      "evidence": {
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\docs\\.staging.c05292463906414c944325f04fb18885\\overview.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\docs\\.staging.c05292463906414c944325f04fb18885\\overview.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\docs\\.staging.c05292463906414c944325f04fb18885\\overview.browser-check.json"
+      },
+      "visualReview": "not-requested",
+      "durationMs": 2771,
+      "browserCheck": {
+        "requested": true,
+        "ran": true
+      }
+    }
+  }
+}

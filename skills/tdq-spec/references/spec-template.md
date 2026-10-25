@@ -1,6 +1,6 @@
 # The spec shape
 <!-- muc-luc-dong:
-  File em=145
+  File em=149
 -->
 
 Copy the whole block below into `docs/tdq/spec/<slug>.md` and fill it in. Drop a section
@@ -60,7 +60,7 @@ Bắt buộc với lane full (lane quick BỎ). Một module = một vùng file 
 ## 2c. Luồng hoạt động & Sơ đồ kiến trúc
 
 Trực quan hóa luồng dữ liệu và tương tác hệ thống. Bắt buộc có sơ đồ Mermaid (Sequence Diagram hoặc Flowchart) để fresher dev dễ hình dung.
-Khi môi trường có sẵn Node.js và Archify: Agent tạo thêm file candidate JSON (`workflow` hoặc `architecture`) và gọi `python3 scripts/tdq_archify.py render <type> <candidate> docs/tdq/spec/<slug>-preview.html` để sinh bản xem trước tương tác ngoại tuyến (Task Scope BA Flow). Dev và người dùng có thể mở nhanh qua lệnh `python3 scripts/tdq_archify.py open docs/tdq/spec/<slug>-preview.html`.
+Preview và manifest: theo [Archify BA](archify-ba.md) để dựng, bind trước duyệt, ghi fallback khi thiếu công cụ và phân biệt thiết kế với hiện trạng.
 
 ```mermaid
 sequenceDiagram
@@ -89,7 +89,8 @@ Nếu việc này là cập nhật, tối ưu hoặc refactor mã nguồn: BẮT
 - Đã loại: <phương án> — vì <lý do>
 
 ## 3b. Năng lực & công cụ
-Chép từ brief mục `### Năng lực dùng được`. Phán quyết: DÙNG / KHÔNG (+ lý do) / NỀN.
+Chép từ brief mục `### Năng lực dùng được`.
+Phán quyết chỉ nhận: DÙNG / KHÔNG (+ 1 trong 4 lý do đóng) / NỀN (skill khung đang chạy).
 Ưu tiên MCP-First: Luôn rà soát MCP tools/skills phù hợp (Roblox, Unity, DevTools, DB...) và đặt điều kiện pre-flight check kết nối.
 
 | Skill | Nguồn | Phán quyết | Dùng ở đâu / Lý do loại |
@@ -120,13 +121,15 @@ Bóc tách thuật toán chi tiết để lập trình viên fresher nắm chắ
   - `<Khái niệm B>`: <giải thích ngắn gọn 1 câu>.
 
 ## 4. Yêu cầu bắt buộc
-- Log service: bật mặc định (có runtime) hoặc BỎ (không runtime) — <lý do>.
+- Log service bật mặc định: timestamp, đủ chi tiết debug, tắt/giảm được qua config.
+  Dòng này bắt buộc **chỉ khi việc này có runtime** — tức plan sẽ có ít nhất một task tạo hoặc sửa mã chạy được; không runtime thì ghi BỎ và lý do.
 - Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
 - Mỗi thành phần có unit test riêng, chạy được bằng một lệnh.
 - Bám 5 nguyên tắc SOLID và rule ngôn ngữ trong `skills/tdq-build/references/rules/`.
 
 ## 5. Ràng buộc & rủi ro
-Ràng buộc kiến trúc phải giữ (chép từ `docs/kien-truc.md`, không chạm → ghi "không chạm dòng nào — <lý do>"):
+Ràng buộc kiến trúc phải giữ (chép từ `docs/kien-truc.md`).
+Không chạm dòng nào → ghi `Ràng buộc kiến trúc phải giữ: không chạm dòng nào — <lý do>`.
 - <nguyên văn dòng luật> — chạm ở <file/hàm>
 
 | Rủi ro | Ảnh hưởng | Cách giảm |
@@ -148,4 +151,5 @@ DoD: <liệt kê điều kiện đủ để tuyên bố xong; có tham chiếu t
 [spec-template-huong-dan.md](spec-template-huong-dan.md) — Hướng dẫn chi tiết các mục spec,
 §6 giữ điều kiện chứ không giữ lệnh, checklist tự soát và fresher accessibility check.
 Đọc khi soát spec trước khi trình.
+For visual & 3-tier scenario checks in §6, follow [vision-test-loop.md](../../tdq-build/references/vision-test-loop.md).
 

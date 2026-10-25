@@ -479,7 +479,14 @@ class SessionStartKichHoat(unittest.TestCase):
     def test_chong_hai_phien_mo_lien_nhau_chi_bat_mot_lan(self):
         self.goi()
         self.assertTrue(self.cho_dau())
-        os.remove(self.dau)
+        for i in range(10):
+            try:
+                os.remove(self.dau)
+                break
+            except PermissionError:
+                if i == 9:
+                    raise
+                time.sleep(0.05)
         out, _ = self.goi()                    # phiên thứ hai, mốc vẫn chưa có
         self.assertNotIn("[TDQ:SEARCH]", out)
         self.assertFalse(self.cho_dau(1.5), "dấu `da-goi` còn mới → không bật lần hai")
