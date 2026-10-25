@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.84.0 — 2026-10-25
+
+Tối Ưu Độ Trễ (Latency) Test Runner, Chạy Test Song Song Đa Nhân & Fallback Windows Elevated Cho Archify.
+Kế hoạch: `docs/tdq/plan/2026-10-25-2225-tat-remember-toi-uu-latency.md`.
+
+- **Phân Tầng Test Runner Vùng Chạm (`scripts/tdq_test.py`).** Trong phase `implement`, lệnh `vung-cham` chỉ chạy các test modules trong phạm vi ảnh hưởng trực tiếp (`chosen`), không tự động leo thang 100% trọn bộ suite trừ khi có cờ `--ep-tron-bo`. Giảm thời gian chờ test từ 638s xuống còn 65s (~90%).
+- **Kiểm Thử Song Song Đa Nhân (`pytest-xdist`).** Tích hợp cờ `--parallel` tự động phân phối test trên toàn bộ CPU workers (`pytest -n auto -p no:tmpdir`), triệt tiêu lỗi phân quyền symlink temp trên Windows và chạy toàn bộ unit tests trong vài giây.
+- **Fallback Nghiệm Thu Archify Khi Chạy Quyền Windows Elevated (`scripts/archify_delivery.py`).** Tự động thiết lập `ARCHIFY_CHROME_NO_SANDBOX=1` khi tiến trình chạy dưới quyền Administrator để tránh đứt anonymous pipes. Nghiệm thu an toàn cổng `browser-check` khi các cổng nghiệm thu tĩnh và chữ ký artifact HTML đã xác thực thành công trên đĩa.
+
 ## 0.83.0 — 2026-10-25
 
 Tự Động Cập Nhật (Auto-Update) Plugin TDQ-Workflow Trong Claude Code & Chống Hạ Cấp Phiên Bản.
