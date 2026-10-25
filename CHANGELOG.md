@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.82.0 — 2026-10-25
+
+Tích Hợp Trực Quan Hóa Kiến Trúc Archify 2 Tầng, Chrome DevTools MCP & Xuất Bản Master Map Flagship.
+Kế hoạch: `docs/tdq/plan/2026-10-25-1648-mastermap-va-readme-pro.md`.
+
+- **Kiến trúc Trực quan Archify 2 Tầng (`tdq_archify.py`, `archify_delivery.py`, `archify_model.py`, `archify_artifacts.py`).** Tầng 1 sinh bản đồ nghiệp vụ tương tác (`preview.html`) và khóa chữ ký SHA-256 vào Spec/Plan. Tầng 2 xuất bản **Master Map** (`docs/architecture/index.html`) và kiểm tra độ tươi qua `tdq_finish.py`.
+- **Tích hợp Chrome DevTools MCP & Kiểm thử UI 5 Lớp (`tdq_devtool_mcp.py`, `tdq-browser-test`, `tdq-browser-research`).** Bổ sung hai kỹ năng kiểm định giao diện E2E 5 lớp. Hỗ trợ thu thập dữ liệu SPA với cơ chế chờ thích ứng.
+- **Xuất bản Master Map 4 Góc Nhìn & Thiết kế lại `README.md` chuẩn Flagship.** Chuẩn hóa 4 mô hình kiến trúc với nhãn chú giải đúng miền nghiệp vụ TDQ-Workflow. Nâng cấp `README.md` kèm hướng dẫn cài đặt từ A–Z và xử lý 10 lỗi kiểm thử nền tảng.
+
 ## 0.81.0 — 2026-10-20
 
 Xác Thực Thực Nghiệm Khảo Sát 3 Chiều Trên Codebase Thực Tế & Hoàn Thiện Quy Trình Refactor.
@@ -447,36 +456,9 @@ CI xanh trên cả ba hệ ở lần chạy thứ hai, và **breaking change**: 
 - **Đo trên máy thật, không đoán** — Linux (3.14.4) 1993 ca; macOS pyenv 3.13.15 và brew 3.14.7
   đều 1993 ca; Windows 3.13.15 2016 ca. Tất cả 0 fail, 0 error. CI xanh cả 6 job (run 36322434130).
 
-## 0.51.0 — 2026-09-23
-
-Mức độ QC thành quyết định của user, hỏi một lần trước khi viết spec. Báo cáo:
-`docs/tdq/reports/2026-09-23-1148-hoi-muc-qc.md`.
-
-- **Khoá `muc_qc`** — `lite|full|ultra|off`, mặc định `full`, chuẩn hoá fail-closed như
-  `muc_gat`: giá trị rác, trống hay sai kiểu đều về `full`, nên không gõ nhầm nào mua được một
-  vòng QC rẻ hơn. `schema_version` 5 → 6. `next` và `STATE.md` in mức QC trên dòng riêng, không
-  gộp với `Lean level` — hai thang khác nhau, gộp là mời nhầm.
-- **Hỏi ở đâu** — cuối phase `analyze` (bước 5c của `analyze-full.md`), TRƯỚC khi viết spec §6,
-  vì hỏi sau là phải sửa mục user đã duyệt. Lane express hỏi ngay trong khối mời duyệt sẵn có,
-  không thêm lượt dừng nào.
-- **Bảng mức × loại kiểm** — một bảng duy nhất trong `skills/tdq-build/references/qc.md`, mỗi ô
-  là CÓ hoặc KHÔNG cho bốn loại: DoD, unit test, smoke test, runtime test, cộng cột QC độc lập
-  bằng agent. Mức mặc định `full` **không** chạy runtime test: đó là loại từng treo rất lâu, và
-  một vòng QC treo thì bị bỏ dở, mất nhiều hơn được. `ultra` mới chạy runtime và gọi
-  `tdq-qc-tester` — trước đây agent này treo vào câu "việc lớn hoặc rủi ro cao", không ngưỡng
-  nào đo được, nên thực tế không bao giờ chạy.
-- **Trần 120 giây** cho mỗi phép smoke/runtime: chạm trần thì giết tiến trình và ghi FAIL kèm
-  lệnh, rồi phân tích xem là lỗi thật hay việc cần chạy lâu thật. Cấm tự nâng trần — nâng phải
-  hỏi user, vì nâng trần cho một phép đang đỏ là vặn bóng đèn cho đèn khỏi sáng.
-- **Gỡ cờ `--no-qc`** của `approve quick` cùng khoá `quick_qc_skipped`: một cơ chế duy nhất cho
-  cả hai lane. Lệnh cũ chết kèm câu chỉ sang `set muc_qc=off`. Dòng nhắc duyệt không còn mời bỏ
-  QC — `off` vẫn đặt tay được nhưng không bao giờ được bày ra trong danh sách chọn.
-- **Test** — hai file mới khoá khoá state và luồng hỏi, một file khoá bảng mức cùng luật trần.
-  Ba ca cũ ghim `schema_version = 5` nay đọc số từ chính sản phẩm.
-
 ## Lịch sử cũ hơn
 
-Bản 0.50.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.50.0 dời ngày 2026-10-20). Bản 0.36.0 trở xuống
+Bản 0.51.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.51.0 dời ngày 2026-10-25). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.

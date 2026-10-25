@@ -1,6 +1,6 @@
 # TDQ-Workflow — Hệ Điều Hành Spec-Driven & Kiến Trúc Tương Tác Cho AI Coding Agents
 
-![Version](https://img.shields.io/badge/version-0.81.0-2563eb?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-0.82.0-2563eb?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/tests-2977%20passed-16a34a?style=for-the-badge)
 ![Search](https://img.shields.io/badge/search-3--tier%20LSP%20%C2%B7%20Graphify%20%C2%B7%20Grep-0d9488?style=for-the-badge)
 ![Visual BA](https://img.shields.io/badge/archify-2--tier%20Personal%20BA%20%26%20Master%20Map-7c3aed?style=for-the-badge)

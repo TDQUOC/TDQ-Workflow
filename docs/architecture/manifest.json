@@ -7,7 +7,7 @@
   "document_path": "docs/tdq/models/master.model.json",
   "document_digest": "fa4e82c1fa3ca73bd1c85f1b293ab81d303fccc71c44d03f37426d4059f66a3b",
   "candidate_path": "docs/tdq/models/master.model.json",
-  "candidate_digest": "fa4e82c1fa3ca73bd1c85f1b293ab81d303fccc71c44d03f37426d4059f66a3b",
+  "candidate_digest": "1082e66c77ce882c46eabbee9671cd061f5992bac09c5ebc587b33972cd5f3b3",
   "artifact_path": "docs/architecture/index.html",
   "artifact_digest": "1976d7ac469f89e95e94bef70f48c9193eb2819d637c62ea962b74e1747a0ae8",
   "source_paths": [
@@ -209,13 +209,13 @@
     "index": "index.html"
   },
   "child_files": {
-    "overview.html": "9c9d9f3120e3421ac1de5fc064684d350222fbad7eff9fd02fb0a4eb3e1664c4",
+    "overview.html": "16457a5ce596ce61dab76d0d50e231e58e6f8277169841db63897febcec4b40c",
     "overview.candidate.json": "278380d2e1ffd42a6a615b32d149d6b6f26e3952d38aab41f05ab721a0a299bf",
-    "pipeline-lifecycle.html": "72fab5e522b45c4096e31959c1e0276e44245c5d77979661b145c206465427ad",
+    "pipeline-lifecycle.html": "19c4333a3cc21853b809cf0c2b7254fa5507aab6a284e349c971d1d3f218174a",
     "pipeline-lifecycle.candidate.json": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
-    "search-and-archify.html": "dcdcbec050ac7014d2d7dd80e00f23f1535f8919ff7ff8a48dc1dd077a3cfdeb",
+    "search-and-archify.html": "5e11823995bf2c4cd6ead885b2def7096b803da588e448a32be62e76afbb3a00",
     "search-and-archify.candidate.json": "d002eb22caba2406d1659b77167231ae20f40ab2dcd350a91dbee02c4ceb0e0e",
-    "hooks-and-gates.html": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314",
+    "hooks-and-gates.html": "f69a7d576a546c53b54a1f562310616bff62145d35425eddbfdb70ba580c90ad",
     "hooks-and-gates.candidate.json": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e"
   },
   "views": [
