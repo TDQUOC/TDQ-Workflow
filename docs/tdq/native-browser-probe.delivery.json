@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "73b04cee-af2a-408b-825d-29b6d1a40391",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\Users\\admin\\Documents\\archify\\archify\\examples\\agent-tool-call.workflow.json",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\native-browser-probe.html",
+  "specification": {
+    "sha256": "d67965d50872c97e4ff3476271e645bf19fab6b3ab44e111bdb44b063e3aa36f",
+    "bytes": 4939
+  },
+  "artifact": {
+    "sha256": "38220f39f8110f9f0b1fdbd96fd750bd33a3750de45dc2913827e3fc30224c85",
+    "bytes": 830859
+  }
+}

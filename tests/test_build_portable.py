@@ -525,6 +525,13 @@ class TestSinhNhanhRelease(TempDest):
                             f"Đường dẫn runtime {duong} phải được giữ trên nhánh release")
 
     def test_release_bao_dong_import_35_script_runtime(self):
+        """Kiểm tra bao đóng import runtime của release branch:
+        - Không dùng con số đếm cứng dễ vỡ (như đúng 38 file).
+        - Kiểm tra các điểm vào bắt buộc (bao gồm các module archify mới) đều thuộc release.
+        - Kiểm tra bao đóng import bắc cầu (transitive closure) từ các điểm vào và giữa tất cả script runtime:
+          mọi script được import nội bộ đều không bị loại khỏi release.
+        - Đảm bảo số lượng script runtime không tụt dưới ngưỡng sàn 38.
+        """
         import ast
         scripts_dir = os.path.join(ROOT, "scripts")
         all_py = {f[:-3] for f in os.listdir(scripts_dir) if f.endswith(".py")}
@@ -532,7 +539,38 @@ class TestSinhNhanhRelease(TempDest):
             m for m in all_py
             if build_portable.la_duong_dan_release(f"scripts/{m}.py")
         }
-        self.assertEqual(len(kept_py), 38, f"Kỳ vọng đúng 38 script runtime, thực tế: {len(kept_py)}")
+        # Ngưỡng sàn bảo vệ: không để mất script runtime ngoài ý muốn
+        self.assertGreaterEqual(
+            len(kept_py), 38,
+            f"Kỳ vọng ít nhất 38 script runtime trên nhánh release, thực tế: {len(kept_py)}"
+        )
+
+        # 1. Các điểm vào runtime bắt buộc phải nằm trong release branch
+        diem_vao_bat_buoc = {
+            "tdq_setup", "tdq_state", "tdq_finish", "tdq_archify",
+            "archify_delivery", "archify_model", "archify_artifacts",
+            "tdq_lsp", "build_portable", "tdq_test", "tdq_checkportable",
+        }
+        for dv in diem_vao_bat_buoc:
+            if dv in all_py:
+                self.assertIn(
+                    dv, kept_py,
+                    f"Điểm vào runtime bắt buộc '{dv}.py' phải được giữ trên nhánh release"
+                )
+
+        # 2. Bao đóng import từ các điểm vào bắt buộc: tất cả dependencies phải thuộc kept_py
+        bao_dong_entry = build_portable.tinh_bao_dong_import(scripts_dir, diem_vao=diem_vao_bat_buoc & all_py)
+        for dep in bao_dong_entry:
+            self.assertIn(
+                dep, kept_py,
+                f"Dependency '{dep}.py' trong bao đóng import của entrypoints nhưng bị loại khỏi release!"
+            )
+            self.assertNotIn(
+                f"{dep}.py", build_portable.RELEASE_EXCLUDE_SCRIPTS,
+                f"Dependency '{dep}.py' không được nằm trong RELEASE_EXCLUDE_SCRIPTS!"
+            )
+
+        # 3. Tính đóng (closure): Mọi script trong kept_py khi import script nội bộ khác thì script đó cũng phải được giữ
         for mod in sorted(kept_py):
             duong = os.path.join(scripts_dir, f"{mod}.py")
             with open(duong, encoding="utf-8") as f:
@@ -550,6 +588,16 @@ class TestSinhNhanhRelease(TempDest):
                             t, kept_py,
                             f"Script runtime scripts/{mod}.py import scripts/{t}.py nhưng {t}.py bị loại!"
                         )
+
+        # 4. Các script thuần dev trong RELEASE_EXCLUDE_SCRIPTS phải bị loại
+        for excl in build_portable.RELEASE_EXCLUDE_SCRIPTS:
+            if excl.endswith(".py"):
+                base_name = excl[:-3]
+                if base_name in all_py:
+                    self.assertNotIn(
+                        base_name, kept_py,
+                        f"Script dev '{excl}' phải bị loại khỏi release branch"
+                    )
 
     def test_release_loc_cay_repo_that_duoi_150_file(self):
         proc = subprocess.run(

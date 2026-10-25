@@ -1,6 +1,6 @@
 # Hướng Dẫn: Cài Đặt & Cấu Hình Chrome DevTools MCP Cho Claude Code
 
-Tài liệu tóm lược cách tích hợp **Google Chrome** với **Claude Code** qua **Chrome DevTools MCP**, cấu hình bypass quyền 2 tầng và cơ chế auto-launch. Chi tiết script nâng cao xem tại [chrome-devtools-mcp-scripts.md](chrome-devtools-mcp-scripts.md).
+Tài liệu tóm lược cách tích hợp **Google Chrome** với **Claude Code** qua **Chrome DevTools MCP**, cấu hình bypass quyền 2 tầng và cơ chế auto-launch. Chi tiết script nâng cao xem tại `scripts/tdq_devtool_mcp.py`.
 
 ## 1. Tổng Quan Kiến Trúc
 ```

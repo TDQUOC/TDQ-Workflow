@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "0df5e3db-282c-4036-bf96-ef6988af99ee",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\archify-spec-preview.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-10-24-2348-hoan-thien-archify-preview.html",
+  "specification": {
+    "sha256": "8217499ddb4b52ac4a105855d54dadfcc338764edd715af9be3b910057b0c583",
+    "bytes": 3676
+  },
+  "artifact": {
+    "sha256": "12a2ec993334a36608c5008478caf1bbe036dd14c1a1e3c05dcbadfae1cfa1cb",
+    "bytes": 878472
+  },
+  "explainer": {
+    "preparedSha256": "dce7b5dba62aec47e1dcf07f5b0a5e44d45ffef4b90378d145b94b9dfc5eb732",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "authoring-flow",
+        "inline": true,
+        "sha256": "c16ca2576ecfa8b92c1f82c7ec7973d0d1bab63a58fbf9626573b3c95a355e83",
+        "bytes": 1001
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "refresh-flow",
+        "inline": true,
+        "sha256": "83a53cf3698126370940ddb753fb04390d919097237993b57947b77e3df452e8",
+        "bytes": 1076
+      }
+    ]
+  }
+}

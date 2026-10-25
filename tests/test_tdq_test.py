@@ -221,7 +221,8 @@ class CaDaDoTest(unittest.TestCase):
         for ten in set(mods) - nhac:
             with open(os.path.join(ROOT, "tests", ten), encoding="utf-8") as f:
                 self.assertIn("hooks", tdq_test.thu_muc_bi_quet(f.read()), ten)
-        self.assertLessEqual(len(nhac), 3, sorted(nhac))
+        # 2026-10-25: 3 → 4 (test_ask_gate, test_hook_windows, test_subagent_start, test_tdq_test).
+        self.assertLessEqual(len(nhac), 4, sorted(nhac))
         self.assertLessEqual(len(mods), 10, mods)
 
     def test_ban_kinh_ca_da_do_stop_gate(self):

@@ -120,6 +120,16 @@ class SkillShapeTest(unittest.TestCase):
             self.assertIn(ref, text)
             self.assertTrue(os.path.isfile(os.path.join(SKILLS, "tdq-conventions", ref)), ref)
 
+    def test_browser_research_shape(self):
+        text = self.assert_shape("tdq-browser-research")
+        self.assert_steps("tdq-browser-research", text)
+        self.assertIn("tdq_devtool_mcp.py", text)
+
+    def test_browser_test_shape(self):
+        text = self.assert_shape("tdq-browser-test")
+        self.assertIn("tdq_devtool_mcp.py", text)
+        self.assertIn("vision-test-loop.md", text)
+
     def test_exactly_six_skills(self):
         dirs = sorted(d for d in os.listdir(SKILLS)
                       if os.path.isdir(os.path.join(SKILLS, d)))

@@ -48,4 +48,4 @@ When dealing with slow endpoints, heavy dashboards, or paginated data tables, ap
    - For visual references or complex diagrams, take full-page screenshot into `docs/workinglog/images/`.
 
 Done when: dynamic content is fully captured from rendered DOM without truncated or missing data blocks.
-Next step: summarize insights into docs/tdq/research/<slug>.md or return structured data to the caller.
+Next step: the phase does not change — summarize insights into docs/tdq/research/<slug>.md or return structured data to the caller.
