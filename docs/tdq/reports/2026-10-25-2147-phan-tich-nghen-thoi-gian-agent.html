@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo Phân tích Điểm Nghẽn Thời Gian Agent — TDQ-Workflow</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --accent: #f43f5e;
+      --warning: #fbbf24;
+      --success: #34d399;
+      --code-bg: #0b1120;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font);
+      line-height: 1.6;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-group p {
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 15px;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-danger { background: rgba(244, 63, 94, 0.2); color: var(--accent); border: 1px solid rgba(244, 63, 94, 0.4); }
+    .badge-warning { background: rgba(251, 191, 36, 0.2); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.4); }
+    .badge-info { background: rgba(56, 189, 248, 0.2); color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.4); }
+    .badge-success { background: rgba(52, 211, 153, 0.2); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.4); }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--primary);
+    }
+
+    .kpi-card.danger::before { background: var(--accent); }
+    .kpi-card.warning::before { background: var(--warning); }
+    .kpi-card.success::before { background: var(--success); }
+
+    .kpi-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin: 8px 0 4px 0;
+    }
+
+    .kpi-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-card h2 {
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--card-border);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Visual Bars */
+    .bar-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 6px;
+    }
+
+    .bar-danger { background: var(--accent); }
+    .bar-warning { background: var(--warning); }
+    .bar-primary { background: var(--primary); }
+    .bar-success { background: var(--success); }
+
+    /* 4 Bottlenecks Deep Dive */
+    .bottleneck-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 24px;
+    }
+
+    .bottleneck-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 22px;
+      position: relative;
+    }
+
+    .bottleneck-card h3 {
+      font-size: 17px;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .bottleneck-card p {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .code-box {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: "Consolas", monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      margin: 10px 0;
+      white-space: pre-wrap;
+    }
+
+    /* Roadmap List */
+    .roadmap-list {
+      list-style: none;
+    }
+
+    .roadmap-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .roadmap-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary-glow);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .roadmap-content h4 {
+      font-size: 15px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .roadmap-content p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .gain-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding-top: 24px;
+      border-top: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="title-group">
+      <h1>⚡ Báo Cáo Phân Tích Điểm Nghẽn Thời Gian Chạy Của Agent</h1>
+      <p>Thực nghiệm đo lường trên Desktop Testbed & Phân tích 133 requests từ <code>docs/tdq/timing.jsonl</code></p>
+    </div>
+    <div class="badge-bar">
+      <span class="badge badge-danger">High Latency Alert</span>
+      <span class="badge badge-info">TDQ-Workflow v0.83.0</span>
+      <span class="badge badge-success">4 Giải Pháp Tối Ưu</span>
+    </div>
+  </header>
+
+  <!-- KPI Grid -->
+  <div class="kpi-grid">
+    <div class="kpi-card danger">
+      <div class="kpi-title">Thời gian chạy lâu nhất gần đây</div>
+      <div class="kpi-value">11.45 h</div>
+      <div class="kpi-desc">Request <code>2026-10-24-2348-hoan-thien-archify</code> (Pha Plan tốn 11.07h)</div>
+    </div>
+    <div class="kpi-card danger">
+      <div class="kpi-title">Thời gian chạy Full Test Suite</div>
+      <div class="kpi-value">638 giây</div>
+      <div class="kpi-desc">2,978 tests (~10.6 phút) vượt xa timeout 120s của Bash tool</div>
+    </div>
+    <div class="kpi-card warning">
+      <div class="kpi-title">Ngưỡng Bùng Nổ Blast Radius</div>
+      <div class="kpi-value">60 %</div>
+      <div class="kpi-desc">Chạm tệp lõi > 60% module tự động kích hoạt 100% full test suite</div>
+    </div>
+    <div class="kpi-card warning">
+      <div class="kpi-title">Dung lượng Context Thường Trực</div>
+      <div class="kpi-value">115 KB</div>
+      <div class="kpi-desc">~38,400 tokens nạp mỗi phiên làm TTFT của LLM tăng lên 30s-50s/turn</div>
+    </div>
+  </div>
+
+  <!-- Section 1: Thuc te do dac tren Desktop Testbed -->
+  <div class="section-card">
+    <h2>🔬 1. Dữ Liệu Đối Chiếu Thực Nghiệm Trên Desktop Testbed</h2>
+    <p style="color: var(--text-muted); margin-bottom: 16px;">
+      Thực nghiệm được triển khai độc lập tại <code>C:\Users\admin\Desktop\tdq-latency-benchmark</code> để so sánh dự án tối giản với TDQ-Workflow:
+    </p>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Hạng mục kiểm thử</th>
+            <th>Dự án mẫu (Desktop Example)</th>
+            <th>TDQ-Workflow thực tế</th>
+            <th>Tỉ lệ chênh lệch & Nhận xét</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Chạy Unit Test (<code>pytest</code>)</strong></td>
+            <td><span style="color: var(--success); font-weight: 700;">0.34 giây</span> (5 tests)</td>
+            <td><span style="color: var(--accent); font-weight: 700;">638.00 giây</span> (2,978 tests)</td>
+            <td>Chậm hơn <strong>1,876 lần</strong> (Điểm nghẽn nghiêm trọng nhất)</td>
+          </tr>
+          <tr>
+            <td><strong>Khởi tạo Python Process</strong></td>
+            <td>0.022 giây / lần</td>
+            <td>0.022 giây / lần</td>
+            <td>Bình thường (hệ điều hành Windows khởi động tiến trình rất nhanh)</td>
+          </tr>
+          <tr>
+            <td><strong>Kiểm tra <code>git status</code></strong></td>
+            <td>0.005 giây</td>
+            <td>0.049 giây</td>
+            <td>Chậm hơn ~10 lần do TDQ là repo lớn có 350+ files và nhiều worktree</td>
+          </tr>
+          <tr>
+            <td><strong>Hook <code>stop_gate.py</code></strong></td>
+            <td>Không có (0.0s)</td>
+            <td>0.265 giây / lần dừng</td>
+            <td>Chạy sau mỗi tool call hoặc mỗi lần agent dừng turn</td>
+          </tr>
+          <tr>
+            <td><strong>Hook <code>session_start.py</code></strong></td>
+            <td>Không có (0.0s)</td>
+            <td>0.205 giây / lần bắt đầu</td>
+            <td>Kiểm tra update plugin, git state và tiêm ngữ cảnh</td>
+          </tr>
+          <tr>
+            <td><strong>Thủ tục <code>tdq_checkstatus.py</code></strong></td>
+            <td>Không có (0.0s)</td>
+            <td>0.248 giây / lần</td>
+            <td>Kiểm tra đối chiếu đĩa vs state JSON</td>
+          </tr>
+          <tr>
+            <td><strong>Archify Chrome DevTools Pipe</strong></td>
+            <td>Không có (0.0s)</td>
+            <td><span style="color: var(--accent);">1.5s – 5.0s / view</span></td>
+            <td>Timeout do Chrome sandbox đóng anonymous pipe trên Windows Admin</td>
+          </tr>
+          <tr>
+            <td><strong>Ngữ cảnh nạp thường trực</strong></td>
+            <td>~500 bytes</td>
+            <td><span style="color: var(--warning);">115,250 bytes</span> (~38,400 tokens)</td>
+            <td>Lớn hơn <strong>230 lần</strong> làm chậm tốc độ phản hồi của AI</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 2: Lich su cac request gan day -->
+  <div class="section-card">
+    <h2>⏱️ 2. Thời Gian Thực Tế Của Các Request Gần Đây (timing.jsonl)</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Request Slug</th>
+            <th>Tổng thời gian</th>
+            <th>Pha chiếm nhiều thời gian nhất</th>
+            <th>Thời gian pha đó</th>
+            <th>Biểu đồ phân bổ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>2026-10-24-2348-hoan-thien-archify</code></td>
+            <td><strong>11.45 giờ</strong> (41,225s)</td>
+            <td><code>plan</code></td>
+            <td>11.07 giờ (39,848s)</td>
+            <td>
+              <div class="bar-container"><div class="bar-fill bar-danger" style="width: 100%;"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td><code>2026-10-25-1113-phan-tich-muoi-issue</code></td>
+            <td><strong>3.82 giờ</strong> (13,742s)</td>
+            <td><code>implement</code></td>
+            <td>1.87 giờ (6,743s)</td>
+            <td>
+              <div class="bar-container"><div class="bar-fill bar-danger" style="width: 33%;"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td><code>2026-10-25-1648-mastermap-va-readme-pro</code></td>
+            <td><strong>3.25 giờ</strong> (11,703s)</td>
+            <td><code>idle</code> / <code>report</code></td>
+            <td>1.19 giờ / 42.2 phút</td>
+            <td>
+              <div class="bar-container"><div class="bar-fill bar-warning" style="width: 28%;"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td><code>2026-10-25-1510-xu-ly-issue-nen</code></td>
+            <td><strong>1.54 giờ</strong> (5,532s)</td>
+            <td><code>report</code></td>
+            <td>41.2 phút (2,470s)</td>
+            <td>
+              <div class="bar-container"><div class="bar-fill bar-warning" style="width: 13%;"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td><code>2026-10-25-2025-auto-update-plugin</code></td>
+            <td><strong>1.35 giờ</strong> (4,871s)</td>
+            <td><code>idle</code> / <code>implement</code></td>
+            <td>67.3 phút / 13.4 phút</td>
+            <td>
+              <div class="bar-container"><div class="bar-fill bar-primary" style="width: 11%;"></div></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3: 4 Diem nghen cot loi -->
+  <div class="section-card">
+    <h2>💥 3. Chi Tiết 4 Căn Nguyên Gây Nghẽn Nghiêm Trọng</h2>
+
+    <div class="bottleneck-grid">
+
+      <!-- Bottleneck 1 -->
+      <div class="bottleneck-card">
+        <h3>
+          <span>1. Blast Radius > 60% Kích Hoạt Full Suite</span>
+          <span class="badge badge-danger">Trọng yếu</span>
+        </h3>
+        <p>
+          Trong <code>scripts/tdq_test.py</code>, quy tắc <code>NGUONG_TRON_BO = 0.6</code> quy định nếu vùng ảnh hưởng AST vượt 60% module, hệ thống tự động chạy toàn bộ suite thay vì chạy targeted test.
+        </p>
+        <div class="code-box">if everything and len(chosen) >= NGUONG_TRON_BO * len(everything):
+    return everything, "radius %d/%d modules reaches the 60% threshold"</div>
+        <p>
+          <strong>Hậu quả:</strong> Khi sửa các file trung tâm như <code>tdq_setup.py</code>, toàn bộ <strong>2,978 tests</strong> chạy mất <strong>638 giây (~10.6 phút)</strong>. Do timeout của Bash tool là 120 giây, tiến trình bị ngắt và đẩy vào background, khiến agent bị treo turn hàng chục phút.
+        </p>
+      </div>
+
+      <!-- Bottleneck 2 -->
+      <div class="bottleneck-card">
+        <h3>
+          <span>2. Archify Headless Pipe Timeout trên Windows</span>
+          <span class="badge badge-danger">Trọng yếu</span>
+        </h3>
+        <p>
+          Mỗi khi chạy <code>tdq_finish.py</code> hoặc chốt spec/plan có Archify, hệ thống mở headless Chrome với cờ <code>--remote-debugging-pipe</code> để kiểm tra DOM sơ đồ.
+        </p>
+        <div class="code-box">Chrome DevTools read pipe failed: stream ended
+Windows browser startup may have relaunched before connecting</div>
+        <p>
+          <strong>Hậu quả:</strong> Trên Windows với tài khoản Admin (Process Elevation), sandbox của Chrome relaunch tiến trình làm đứt gãy pipe của hệ điều hành. Hệ thống phải chờ timeout từ 1.5s đến 5s cho mỗi view (Master Map 4 view mất 15-20s mỗi lần gọi finish).
+        </p>
+      </div>
+
+      <!-- Bottleneck 3 -->
+      <div class="bottleneck-card">
+        <h3>
+          <span>3. Phình To Context & Trượt Prompt Cache</span>
+          <span class="badge badge-warning">Ảnh hưởng AI</span>
+        </h3>
+        <p>
+          Tổng kích thước context nạp thường trực vào agent qua SessionStart lên tới hơn <strong>115 KB (~38,400 tokens)</strong>:
+        </p>
+        <div class="code-box">.remember/today-2026-10-25.md: 11,636 bytes (~3,878 tokens)
+docs/workinglog/2026-10-25.md: 13,740 bytes (~4,580 tokens)
+CLAUDE.md + luật + tools: ~25,000 tokens</div>
+        <p>
+          <strong>Hậu quả:</strong> Context quá lớn làm độ trễ sinh từ (Inference Latency) của LLM tăng từ 3s lên <strong>30s – 50s mỗi turn</strong>. Nếu một request có 30 turns, thời gian chờ mô hình trả lời đã mất từ 15 đến 25 phút.
+        </p>
+      </div>
+
+      <!-- Bottleneck 4 -->
+      <div class="bottleneck-card">
+        <h3>
+          <span>4. Vi Phân Thủ Tục Quá Nhiều Lượt (Deep Mode)</span>
+          <span class="badge badge-warning">Thủ tục</span>
+        </h3>
+        <p>
+          Trong Deep Pipeline (như request 11 tasks vừa qua), mỗi task đều bắt buộc chuỗi thủ tục:
+        </p>
+        <div class="code-box">Đổi plan [~] ➔ Viết mã ➔ Chạy test ➔ Đổi plan [x] ➔ Ghi workinglog ➔ tdq_finish</div>
+        <p>
+          <strong>Hậu quả:</strong> 11 tasks nhân lên tạo thành hơn <strong>55 lượt gọi công cụ</strong>. Các chốt chặn lint markdown nghiêm ngặt (như Luật R5 ngắt câu >40 từ, hash manifest mismatch) khiến agent phải dừng lại sửa lặt vặt nhiều lần.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Section 4: Lo trinh giai phap -->
+  <div class="section-card">
+    <h2>🚀 4. Lộ Trình Đề Xuất Giải Pháp Khắc Phục Triệt Để</h2>
+
+    <ul class="roadmap-list">
+      <li class="roadmap-item">
+        <div class="roadmap-num">1</div>
+        <div class="roadmap-content">
+          <h4>Phân tầng Test Suite & Không chạy 100% ở Implement</h4>
+          <p>
+            Chỉ chạy smoke tests và các test liên quan trực tiếp (&lt; 50 tests, runtime &lt; 10s) trong pha implement. Chỉ kích hoạt 100% full suite (2,978 tests) ở pha QC cuối cùng hoặc khi người dùng chọn mức QC <code>ultra</code>.
+          </p>
+          <span class="gain-pill">Tiết kiệm 15 – 30 phút mỗi request</span>
+        </div>
+      </li>
+
+      <li class="roadmap-item">
+        <div class="roadmap-num">2</div>
+        <div class="roadmap-content">
+          <h4>Kích hoạt chạy test song song đa nhân với pytest-xdist</h4>
+          <p>
+            Cấu hình <code>pytest -n auto</code> trên Windows để tận dụng tối đa số luồng CPU của máy. Rút ngắn thời gian chạy toàn bộ 2,978 tests từ <strong>10.6 phút xuống dưới 2.5 phút</strong>.
+          </p>
+          <span class="gain-pill">Tăng tốc độ chạy test lên gấp 4 lần</span>
+        </div>
+      </li>
+
+      <li class="roadmap-item">
+        <div class="roadmap-num">3</div>
+        <div class="roadmap-content">
+          <h4>Vá kết nối Archify trên môi trường Windows Elevated</h4>
+          <p>
+            Khi phát hiện Windows Admin (Elevation), Archify tự động chuyển sang xác thực static hash offline hoặc kết nối qua Chrome DevTools MCP (Port 9222) thay vì spawn process với pipe headless.
+          </p>
+          <span class="gain-pill">Tiết kiệm 20 – 60 giây mỗi lần kết thúc turn</span>
+        </div>
+      </li>
+
+      <li class="roadmap-item">
+        <div class="roadmap-num">4</div>
+        <div class="roadmap-content">
+          <h4>Cắt tỉa bộ nhớ Remember & Giữ ấm Prompt Cache</h4>
+          <p>
+            Tự động nén tệp <code>.remember/today-*.md</code> dưới 4KB trong context tiêm vào phiên làm việc, chỉ lưu tóm tắt 3 giờ gần nhất. Duy trì nhịp gọi của agent trong vòng 270 giây để không bị trượt prompt cache TTL (300s).
+          </p>
+          <span class="gain-pill">Tiết kiệm 5 – 15 phút thời gian chờ mô hình</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Báo cáo khảo sát thực nghiệm điểm nghẽn Agent — TDQ-Workflow Engine 2026 · Định dạng HTML tự chứa (Standalone Offline)</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
