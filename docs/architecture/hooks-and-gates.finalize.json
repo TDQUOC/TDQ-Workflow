@@ -4,16 +4,16 @@
   "command": "finalize",
   "status": "pass",
   "type": "workflow",
-  "quality": "standard",
-  "startedAt": "2026-10-25T12:16:14.085Z",
+  "quality": "showcase",
+  "startedAt": "2026-10-25T13:58:46.216Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-    "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
-    "bytes": 4824
+    "sha256": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e",
+    "bytes": 4908
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
-    "sha256": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
+    "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
     "bytes": 823010
   },
   "stages": {
@@ -23,14 +23,14 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\16624_1792934439487\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "workflow",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
         "--quality",
-        "standard",
+        "showcase",
         "--repo-root",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
         "--json"
@@ -40,13 +40,13 @@
         "ok": true,
         "command": "validate",
         "specification": {
-          "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
-          "bytes": 4824
+          "sha256": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e",
+          "bytes": 4908
         },
         "validation": {
           "checksPassed": 9,
           "checkCount": 9,
-          "compositionProfile": "standard",
+          "compositionProfile": "showcase",
           "compositionStatus": "pass",
           "errors": 0,
           "warnings": 0
@@ -56,40 +56,40 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 539,
+      "durationMs": 526,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\16624_1792934439487\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "workflow",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
         "--quality",
-        "standard",
+        "showcase",
         "--repo-root",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
         "--json"
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "0fa1e40c-9d70-4705-865f-44b56c5a6ed3",
+        "receiptId": "7b6b46f2-79e5-43f8-882f-e684ced48a2a",
         "ok": true,
         "command": "deliver",
         "type": "workflow",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
         "specification": {
-          "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
-          "bytes": 4824
+          "sha256": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e",
+          "bytes": 4908
         },
         "artifact": {
-          "sha256": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314",
+          "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
           "bytes": 823010
         },
         "validation": {
           "checksPassed": 9,
           "checkCount": 9,
-          "compositionProfile": "standard",
+          "compositionProfile": "showcase",
           "compositionStatus": "pass",
           "errors": 0,
           "warnings": 0
@@ -110,19 +110,19 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 204,
+      "durationMs": 195,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\16624_1792934439487\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
         "artifact": {
-          "sha256": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314",
+          "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
           "bytes": 823010
         },
         "checks": [
@@ -176,7 +176,7 @@
         ],
         "composition": {
           "schemaVersion": 1,
-          "profile": "standard",
+          "profile": "showcase",
           "status": "pass",
           "summary": {
             "errors": 0,
@@ -240,18 +240,18 @@
           "issues": []
         },
         "provenance": "current",
-        "deliveryReceiptId": "0fa1e40c-9d70-4705-865f-44b56c5a6ed3"
+        "deliveryReceiptId": "7b6b46f2-79e5-43f8-882f-e684ced48a2a"
       }
     },
     "browser-check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1713,
+      "durationMs": 1680,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\16624_1792934439487\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "browser-check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
         "--json",
         "--require-provenance"
       ],
@@ -264,10 +264,10 @@
         "status": "pass",
         "visualReview": "not-requested",
         "provenance": "current",
-        "deliveryReceiptId": "0fa1e40c-9d70-4705-865f-44b56c5a6ed3",
+        "deliveryReceiptId": "7b6b46f2-79e5-43f8-882f-e684ced48a2a",
         "artifact": {
-          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
-          "sha256": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314",
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
+          "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
           "bytes": 823010
         },
         "state": {
@@ -1453,13 +1453,13 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.browser-check.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-10-25T12:16:17.142Z",
-  "durationMs": 3057,
+  "finishedAt": "2026-10-25T13:58:49.242Z",
+  "durationMs": 3025,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

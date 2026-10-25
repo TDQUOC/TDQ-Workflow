@@ -6,10 +6,10 @@
   "status": "pass",
   "visualReview": "not-requested",
   "provenance": "current",
-  "deliveryReceiptId": "5a4a9103-73d7-486d-a842-54f9ce816bd6",
+  "deliveryReceiptId": "64aa0984-68e2-4e51-8f61-588d5961b542",
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\search-and-archify.html",
-    "sha256": "dcdcbec050ac7014d2d7dd80e00f23f1535f8919ff7ff8a48dc1dd077a3cfdeb",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\search-and-archify.html",
+    "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
     "bytes": 824633
   },
   "state": {

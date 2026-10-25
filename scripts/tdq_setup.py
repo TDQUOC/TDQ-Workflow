@@ -41,6 +41,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import urllib.request
 import zipfile
 from datetime import datetime
@@ -602,15 +603,62 @@ def kiem_plugin_user(home=None, goc_plugin=None, cham_may=None):
     return da_cai, canh_bao, no
 
 
-def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None):
+def tach_version(ver_str):
+    """-> tuple of ints from version string, e.g. '0.82.0' -> (0, 82, 0)."""
+    if not ver_str:
+        return (0, 0, 0)
+    so = [int(x) for x in re.findall(r"\d+", str(ver_str))]
+    return tuple(so) if so else (0, 0, 0)
+
+
+def la_project_that(cwd):
+    """-> True nếu cwd là một thư mục project hợp lệ (có .git hoặc .claude-plugin)."""
+    try:
+        if not cwd or not os.path.isdir(cwd):
+            return False
+        cwd = os.path.abspath(cwd)
+        if cwd == os.path.abspath(os.path.expanduser("~")) or os.path.dirname(cwd) == cwd:
+            return False
+        return os.path.exists(os.path.join(cwd, ".git")) or os.path.exists(os.path.join(cwd, ".claude-plugin"))
+    except Exception:
+        return False
+
+
+def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None, cwd=None):
     """Tự động kiểm tra và nâng cấp plugin scope user khi repo nguồn có version mới hơn."""
     home = home or os.path.expanduser("~")
     ban = _ban_cai_user(home)
     if ban is None:
         return False, ""
     khoa, v_cai = ban
-    v_nguon = doc_phien_ban_plugin(goc_plugin)
-    if not v_nguon or v_cai == v_nguon:
+
+    nguon_list = []
+    if goc_plugin:
+        v_goc = doc_phien_ban_plugin(goc_plugin)
+        if v_goc:
+            nguon_list.append((v_goc, goc_plugin))
+    cwd = cwd or os.getcwd()
+    if la_project_that(cwd):
+        v_cwd = doc_phien_ban_plugin(cwd)
+        if v_cwd:
+            nguon_list.append((v_cwd, cwd))
+    mkt_dir = os.path.join(home, ".claude", "plugins", "marketplaces", "tdq-local")
+    if os.path.isdir(mkt_dir):
+        v_mkt = doc_phien_ban_plugin(mkt_dir)
+        if v_mkt:
+            nguon_list.append((v_mkt, mkt_dir))
+    if not nguon_list and GOC_REPO:
+        v_repo = doc_phien_ban_plugin(GOC_REPO)
+        if v_repo:
+            nguon_list.append((v_repo, GOC_REPO))
+
+    if not nguon_list:
+        return False, ""
+
+    nguon_list.sort(key=lambda item: tach_version(item[0]), reverse=True)
+    v_nguon, goc_nguon = nguon_list[0]
+
+    if tach_version(v_nguon) <= tach_version(v_cai):
         return False, ""
 
     _log(f"phát hiện bản cài {khoa} {v_cai} cũ hơn nguồn {v_nguon} — tiến hành tự động cập nhật")
@@ -630,14 +678,13 @@ def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None):
     # Thử 2: Đồng bộ trực tiếp vào cache nếu CLI không khả dụng hoặc thất bại
     if not thanh_cong and not _khong_cham_may():
         try:
-            goc = goc_plugin or GOC_REPO
             thu_muc_dich = os.path.join(home, ".claude", "plugins", "cache", "tdq-local", "tdq-workflow", v_nguon)
             os.makedirs(thu_muc_dich, exist_ok=True)
             bo_qua = shutil.ignore_patterns(".git", ".venv", ".venv-tokens", "__pycache__", "graphify-out", ".tdq-worktrees")
-            for item in os.listdir(goc):
+            for item in os.listdir(goc_nguon):
                 if item in (".git", ".venv", ".venv-tokens", "__pycache__", "graphify-out", ".tdq-worktrees"):
                     continue
-                s = os.path.join(goc, item)
+                s = os.path.join(goc_nguon, item)
                 d = os.path.join(thu_muc_dich, item)
                 if os.path.isdir(s):
                     if os.path.exists(d):
@@ -662,6 +709,148 @@ def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None):
     if thanh_cong:
         _log(f"đã tự động cập nhật {khoa} lên {v_nguon}")
         return True, f"[TDQ] Đã tự động cập nhật plugin tdq-workflow lên phiên bản {v_nguon}."
+    return False, ""
+
+
+THU_MUC_PLUGINS_STAMP = os.path.join(".claude", "plugins")
+TEP_UPDATE_STAMP = ".tdq-update-stamp.json"
+THROTTLE_UPDATE_GIAY = 7200  # 2 giờ
+
+
+def _duong_update_stamp(home=None):
+    home = home or os.path.expanduser("~")
+    return os.path.join(home, THU_MUC_PLUGINS_STAMP, TEP_UPDATE_STAMP)
+
+
+def doc_update_stamp(home=None):
+    """-> nội dung file stamp theo dõi update remote, hoặc None."""
+    try:
+        with io.open(_duong_update_stamp(home), encoding="utf-8") as fh:
+            d = json.load(fh)
+            return d if isinstance(d, dict) else None
+    except (OSError, ValueError):
+        return None
+
+
+def ghi_update_stamp(home=None, data=None):
+    """Ghi dữ liệu vào stamp theo dõi update remote."""
+    duong = _duong_update_stamp(home)
+    tam = f"{duong}.{os.getpid()}.tmp"
+    try:
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+        with io.open(tam, "w", encoding="utf-8", newline="\n") as fh:
+            json.dump(data or {}, fh, ensure_ascii=False, indent=2)
+            fh.write("\n")
+        os.replace(tam, duong)
+        return True
+    except OSError as exc:
+        _log(f"không ghi được update stamp {duong}: {exc}")
+        try:
+            os.remove(tam)
+        except OSError:
+            pass
+        return False
+
+
+def can_kiem_tra_remote(home=None, throttle_seconds=None):
+    """-> True nếu đã qua khoảng thời gian throttle kể từ lần kiểm tra remote gần nhất."""
+    if os.environ.get("TDQ_AUTO_UPDATE", "1") == "0":
+        return False
+    throttle = throttle_seconds if throttle_seconds is not None else int(
+        os.environ.get("TDQ_UPDATE_INTERVAL_SECONDS", str(THROTTLE_UPDATE_GIAY)))
+    stamp = doc_update_stamp(home)
+    if not stamp or not stamp.get("last_check"):
+        return True
+    try:
+        dt = datetime.fromisoformat(str(stamp["last_check"]))
+        tuoi = time.time() - dt.timestamp()
+        return tuoi > throttle
+    except (TypeError, ValueError):
+        return True
+
+
+def thuc_hien_cap_nhat_remote(home=None, chay_lenh=None):
+    """Cập nhật marketplace tdq-local và nâng cấp plugin tdq-workflow nếu có bản mới. -> (cap_nhat, msg)"""
+    home = home or os.path.expanduser("~")
+    chay = chay_lenh or _chay_lenh
+    claude = shutil.which("claude")
+    stamp = doc_update_stamp(home) or {}
+    stamp["last_check"] = _now()
+    ghi_update_stamp(home, stamp)
+
+    if not claude or _khong_cham_may():
+        return False, "claude CLI không khả dụng hoặc bị cấm chạm máy"
+
+    # 1. Update marketplace
+    _log("cập nhật marketplace tdq-local...")
+    rc_mkt, out_mkt = chay(f'"{claude}" plugin marketplace update tdq-local')
+    if rc_mkt != 0:
+        _log(f"cập nhật marketplace thất bại: {out_mkt}")
+        stamp["last_error"] = f"marketplace update error: {out_mkt}"
+        ghi_update_stamp(home, stamp)
+        return False, out_mkt
+
+    # 2. Update plugin
+    ban = _ban_cai_user(home)
+    if not ban:
+        return False, "chưa cài plugin tdq-workflow scope user"
+    khoa, v_cai = ban
+
+    mkt_dir = os.path.join(home, ".claude", "plugins", "marketplaces", "tdq-local")
+    v_mkt = doc_phien_ban_plugin(mkt_dir)
+
+    if v_mkt and tach_version(v_mkt) > tach_version(v_cai):
+        _log(f"phát hiện bản mới {v_mkt} trên marketplace (hiện tại {v_cai}) — cập nhật...")
+        rc_up, out_up = chay(f'"{claude}" plugin update {khoa} -s user -y')
+        if rc_up == 0:
+            stamp["updated_version"] = v_mkt
+            stamp["updated_at"] = _now()
+            stamp.pop("last_error", None)
+            ghi_update_stamp(home, stamp)
+            return True, f"đã cập nhật {khoa} lên {v_mkt}"
+        else:
+            stamp["last_error"] = f"plugin update error: {out_up}"
+            ghi_update_stamp(home, stamp)
+            return False, out_up
+
+    stamp["last_status"] = f"up to date ({v_cai})"
+    ghi_update_stamp(home, stamp)
+    return False, f"đang ở phiên bản mới nhất ({v_cai})"
+
+
+def kich_hoat_kiem_tra_remote_nen(home=None):
+    """Kích hoạt tiến trình ngầm (detached) kiểm tra & cập nhật plugin từ remote nếu đến hạn."""
+    if not can_kiem_tra_remote(home):
+        return False
+    stamp = doc_update_stamp(home) or {}
+    stamp["last_check"] = _now()
+    ghi_update_stamp(home, stamp)
+
+    lenh = [sys.executable, os.path.join(SCRIPTS_DIR, "tdq_setup.py"), "--update-plugin", "--khong-log"]
+    kw = {"stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL,
+          "stderr": subprocess.DEVNULL, "close_fds": True}
+    if os.name == "nt":
+        c_flags = 0x00000008 | 0x00000200 | getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+        kw["creationflags"] = c_flags
+    else:
+        kw["start_new_session"] = True
+    try:
+        subprocess.Popen(lenh, **kw)
+        _log("đã kích hoạt tiến trình ngầm kiểm tra cập nhật plugin từ remote")
+        return True
+    except OSError as exc:
+        _log(f"không khởi động được tiến trình ngầm kiểm tra cập nhật: {exc}")
+        return False
+
+
+def doc_thong_bao_update_moi(home=None):
+    """-> chuỗi thông báo nếu vừa có bản cập nhật mới từ tiến trình nền, và dọn cờ thông báo."""
+    stamp = doc_update_stamp(home)
+    if not stamp or not stamp.get("updated_version"):
+        return ""
+    v_moi = stamp.pop("updated_version")
+    ghi_update_stamp(home, stamp)
+    return f"[TDQ] Plugin tdq-workflow đã được tự động cập nhật lên phiên bản {v_moi}."
     return False, ""
 
 
@@ -910,7 +1099,12 @@ def doc_phat_hanh(project):
 
 
 def ghi_phat_hanh(project, phien_ban):
-    """Ghi mốc phiên bản đã setup cho project."""
+    """Ghi mốc phiên bản đã setup cho project (không ghi đè nếu phiên bản hiện có cao hơn)."""
+    da_ghi = doc_phat_hanh(project)
+    if da_ghi and da_ghi.get("phien_ban"):
+        if tach_version(phien_ban) < tach_version(da_ghi.get("phien_ban")):
+            _log(f"bỏ qua hạ cấp mốc phiên bản {project}: {da_ghi.get('phien_ban')} > {phien_ban}")
+            return False
     duong = _duong_phat_hanh(project)
     tam = f"{duong}.{os.getpid()}.tmp"
     try:
@@ -945,14 +1139,14 @@ def doc_phien_ban_plugin(goc_plugin=None):
 
 
 def can_cap_nhat_phien_ban(project, goc_plugin=None):
-    """-> True nếu phiên bản plugin hiện hành khác với mốc phiên bản đã setup trong project."""
+    """-> True nếu phiên bản plugin hiện hành mới hơn mốc phiên bản đã setup trong project."""
     hien_tai = doc_phien_ban_plugin(goc_plugin)
     if not hien_tai:
         return False
     da_ghi = doc_phat_hanh(project)
-    if not da_ghi or da_ghi.get("phien_ban") != hien_tai:
+    if not da_ghi or not da_ghi.get("phien_ban"):
         return True
-    return False
+    return tach_version(hien_tai) > tach_version(da_ghi.get("phien_ban"))
 
 
 def thuc_hien_setup_bu(project, v_cu, v_moi, goc_plugin=None):
@@ -1012,6 +1206,8 @@ def tu_dong_cap_nhat_khi_doi_phien_ban(project, goc_plugin=None):
     hien_tai = doc_phien_ban_plugin(goc_plugin)
     da_ghi = doc_phat_hanh(project)
     v_cu = da_ghi.get("phien_ban") if da_ghi else "0.0.0"
+    if da_ghi and da_ghi.get("phien_ban") and tach_version(hien_tai) <= tach_version(v_cu):
+        return False
     _log(f"tự động cập nhật cho phiên bản {hien_tai} (từ {v_cu}) tại {project}")
     thuc_hien_setup_bu(project, v_cu, hien_tai, goc_plugin=goc_plugin)
     if hien_tai:
@@ -1311,6 +1507,8 @@ def parse_args(argv):
                     help="dựng nền phần đắt (cài, graphify) rồi ghi mốc sẵn sàng")
     ap.add_argument("--kiem-archify", action="store_true",
                     help="chỉ kiểm tra môi trường Node.js >= 18 và gói Archify")
+    ap.add_argument("--update-plugin", action="store_true",
+                    help="kiểm tra và cập nhật plugin tdq-workflow từ remote marketplace")
     return ap.parse_args(argv)
 
 
@@ -1346,6 +1544,10 @@ def main(argv, khai_codex=None):
             print(f"archify · ĐẠT ({chi_tiet})")
         else:
             print(f"cảnh báo · archify chưa sẵn sàng ({chi_tiet})")
+        return 0
+    if args.update_plugin:
+        ok, msg = thuc_hien_cap_nhat_remote()
+        print(f"cập nhật plugin · {'ĐẠT' if ok else 'THÔNG TIN'}: {msg}")
         return 0
     if args.nen:
         khoi_tao_nen(project)
@@ -1415,7 +1617,7 @@ def main(argv, khai_codex=None):
 
     # The very same check `tdq_lsp.py check` runs — re-run after installing, so the ladder and
     # the smoke report the machine as it is now, under one total line.
-    rc, _bac, smoke = tdq_lsp.kiem_mot_lenh(project)
+    rc, _, smoke = tdq_lsp.kiem_mot_lenh(project)
     no += [f"tầng {ten} không trả lời được: {chi_tiet}" for ten, dat, chi_tiet in smoke if not dat]
 
     for dong in no:

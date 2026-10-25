@@ -38,7 +38,7 @@
     "hooks/scripts/read_gate.py": "4ca24a34d3c0c51f53992773dcaec8f95f9e30511c4d27ceb877aaf533915784",
     "hooks/scripts/search_gate.py": "7d13107f85ae0beefb483951357289302843e3a3a9324c28395b7da5231b6957",
     "hooks/scripts/search_observe.py": "f2884c1477c392d25af131540565318d4cd4e327a4f1dbefa12d259f6985cc19",
-    "hooks/scripts/session_start.py": "2ef838032626453f1e03b6b2e71aaf893bc967a249806133e5279d2b251ce890",
+    "hooks/scripts/session_start.py": "1a43f8a99627a36b9f97505cf37fff3935db37a005129e4ab2c20f46567dea1a",
     "hooks/scripts/stop_batch_checker.py": "c22d7a2c00953df1a7e5196d7104c51f159739175db5af30f34801b3f24fce23",
     "hooks/scripts/stop_gate.py": "017cd29a40d71509617894eb89a6761dde3c95bbfaa17e222977b0ff4d9cd8dd",
     "hooks/scripts/strategic_compact_gate.py": "5e8c27a7e879fbf7a6ca96bea82913581a0d2d648d1b15c361efa70cee96aa07",
@@ -87,7 +87,7 @@
     "scripts/tdq_knowledge.py": "3ec06513f22f11f2bf3ccca576e06fd6f5204d2a84860632cebbb5de91c53ad2",
     "scripts/tdq_lsp.py": "e22118341f0d9027a86bd64a0739625378644ae060bb8a0d925d619158ab7e75",
     "scripts/tdq_no.py": "af5981ce57bca5e3e51b70c939eb5f0511289063b671ab47cd4599db563b7197",
-    "scripts/tdq_setup.py": "b653e8f0ef34c265b13ee60b5f5ef56f7e9593c3db0fafa385b7e6abcf51f66e",
+    "scripts/tdq_setup.py": "3f8a304306e63b76fb3d9cae41b76a6a7c632872273f088914aee84e7d86075e",
     "scripts/tdq_state.py": "94a90f5e99549089fd61b7db0216f10cc3a0371733fa5d14b8fff63002db4397",
     "scripts/tdq_team.py": "7f24a5bae1b8112016145a2757ea304a04b4269ed6047f5271a03bdaff1ada1d",
     "scripts/tdq_ten_lenh.py": "3bfb2a8d1713c97670172f85af2fea107746655e4e325687fdcf0c660f7cb0c4",
@@ -209,13 +209,13 @@
     "index": "index.html"
   },
   "child_files": {
-    "overview.html": "16457a5ce596ce61dab76d0d50e231e58e6f8277169841db63897febcec4b40c",
+    "overview.html": "442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0",
     "overview.candidate.json": "278380d2e1ffd42a6a615b32d149d6b6f26e3952d38aab41f05ab721a0a299bf",
-    "pipeline-lifecycle.html": "19c4333a3cc21853b809cf0c2b7254fa5507aab6a284e349c971d1d3f218174a",
+    "pipeline-lifecycle.html": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
     "pipeline-lifecycle.candidate.json": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
-    "search-and-archify.html": "5e11823995bf2c4cd6ead885b2def7096b803da588e448a32be62e76afbb3a00",
+    "search-and-archify.html": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
     "search-and-archify.candidate.json": "d002eb22caba2406d1659b77167231ae20f40ab2dcd350a91dbee02c4ceb0e0e",
-    "hooks-and-gates.html": "f69a7d576a546c53b54a1f562310616bff62145d35425eddbfdb70ba580c90ad",
+    "hooks-and-gates.html": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
     "hooks-and-gates.candidate.json": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e"
   },
   "views": [
@@ -224,28 +224,28 @@
       "type": "architecture",
       "summary": "Kiến trúc tổng thể 6 tầng của TDQ-Workflow (4 Host Adapters, 11 Skills, 6 Sub-Agents, 13 Hooks, 3-Tier Search & 43 CLI Scripts)",
       "file": "overview.html",
-      "hash": "9c9d9f3120e3421ac1de5fc064684d350222fbad7eff9fd02fb0a4eb3e1664c4"
+      "hash": "442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0"
     },
     {
       "id": "pipeline-lifecycle",
       "type": "lifecycle",
       "summary": "Máy trạng thái Spec-Driven (7 pha Deep Pipeline, 2 cổng duyệt chữ ký SHA-256 qua chat và vòng lặp tự chữa lành QC)",
       "file": "pipeline-lifecycle.html",
-      "hash": "72fab5e522b45c4096e31959c1e0276e44245c5d77979661b145c206465427ad"
+      "hash": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d"
     },
     {
       "id": "search-and-archify",
       "type": "architecture",
       "summary": "Tam Giác Tìm Kiếm 3 Tầng (LSP, Graphify, Grep) kết hợp Trực quan hóa Archify 2 Tầng (Personal BA & Master Map)",
       "file": "search-and-archify.html",
-      "hash": "dcdcbec050ac7014d2d7dd80e00f23f1535f8919ff7ff8a48dc1dd077a3cfdeb"
+      "hash": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e"
     },
     {
       "id": "hooks-and-gates",
       "type": "workflow",
       "summary": "Luồng thực thi 13 Lifecycle Hooks trên 3 làn (Host Events, PreToolUse Hard Gates, Observers & Stop Verify-by-Effect)",
       "file": "hooks-and-gates.html",
-      "hash": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314"
+      "hash": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e"
     }
   ],
   "view_receipts": {
@@ -255,15 +255,15 @@
       "command": "finalize",
       "status": "pass",
       "type": "architecture",
-      "quality": "standard",
+      "quality": "showcase",
       "specification": {
         "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-        "sha256": "5404b0b7806bcec96468a333925cf89abeeb37adcabcf2557f5a0945aa8aba8f",
-        "bytes": 5323
+        "sha256": "278380d2e1ffd42a6a615b32d149d6b6f26e3952d38aab41f05ab721a0a299bf",
+        "bytes": 5478
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.html",
-        "sha256": "9c9d9f3120e3421ac1de5fc064684d350222fbad7eff9fd02fb0a4eb3e1664c4",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\overview.html",
+        "sha256": "442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0",
         "bytes": 826515
       },
       "gates": {
@@ -279,12 +279,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\overview.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\overview.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\overview.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\overview.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 2684,
+      "durationMs": 2650,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -296,15 +296,15 @@
       "command": "finalize",
       "status": "pass",
       "type": "lifecycle",
-      "quality": "standard",
+      "quality": "showcase",
       "specification": {
         "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\pipeline-lifecycle.json",
-        "sha256": "15c8bdede572f4eebed294b93d2c2a3545c85d87b9811dd1305b8bf4d2574bc1",
-        "bytes": 4128
+        "sha256": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
+        "bytes": 4207
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.html",
-        "sha256": "72fab5e522b45c4096e31959c1e0276e44245c5d77979661b145c206465427ad",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\pipeline-lifecycle.html",
+        "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
         "bytes": 824757
       },
       "gates": {
@@ -320,12 +320,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\pipeline-lifecycle.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\pipeline-lifecycle.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\pipeline-lifecycle.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\pipeline-lifecycle.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 2630,
+      "durationMs": 2587,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -337,15 +337,15 @@
       "command": "finalize",
       "status": "pass",
       "type": "architecture",
-      "quality": "standard",
+      "quality": "showcase",
       "specification": {
         "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\search-and-archify.json",
-        "sha256": "da28a34fe219d0ad42fac31aa775d95a84fa17834b6bc6be714232df14d1906a",
-        "bytes": 4663
+        "sha256": "d002eb22caba2406d1659b77167231ae20f40ab2dcd350a91dbee02c4ceb0e0e",
+        "bytes": 4803
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\search-and-archify.html",
-        "sha256": "dcdcbec050ac7014d2d7dd80e00f23f1535f8919ff7ff8a48dc1dd077a3cfdeb",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\search-and-archify.html",
+        "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
         "bytes": 824633
       },
       "gates": {
@@ -361,12 +361,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\search-and-archify.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\search-and-archify.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\search-and-archify.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\search-and-archify.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\search-and-archify.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\search-and-archify.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 2652,
+      "durationMs": 2602,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -378,15 +378,15 @@
       "command": "finalize",
       "status": "pass",
       "type": "workflow",
-      "quality": "standard",
+      "quality": "showcase",
       "specification": {
         "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
-        "bytes": 4824
+        "sha256": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e",
+        "bytes": 4908
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.html",
-        "sha256": "6ae60f3cd2d364fce25a2b006e6779f3d2ab87615b484bcf52a2548abb95d314",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.html",
+        "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
         "bytes": 823010
       },
       "gates": {
@@ -402,12 +402,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4d83358b9df947588e8864d6aae7e3ce\\hooks-and-gates.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\hooks-and-gates.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3057,
+      "durationMs": 3025,
       "browserCheck": {
         "requested": true,
         "ran": true
