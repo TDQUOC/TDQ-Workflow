@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "a7fa8a7c-f6e8-4477-b0c0-40fa0414ae0e",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\models\\ba.json",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\master-demo\\docs\\.staging.c05292463906414c944325f04fb18885\\overview.html",
+  "specification": {
+    "sha256": "69056c02c4476b0a24c12017ce789df3777ef805be5713c23979da71756030ed",
+    "bytes": 633
+  },
+  "artifact": {
+    "sha256": "21f58a65a701427ba3f729c005a1a2935b49800691edb60b4aa233a8d57650dd",
+    "bytes": 807472
+  }
+}

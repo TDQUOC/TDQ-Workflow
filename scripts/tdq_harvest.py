@@ -14,6 +14,9 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import utf8_io  # noqa: E402, F401
+
 CANDIDATES_DIR = Path("docs/tdq/knowledge/candidates")
 APPROVED_DIR = Path("docs/tdq/knowledge/approved")
 

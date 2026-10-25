@@ -113,6 +113,9 @@ SKILL_LINE_LIMITS = {
     # plus its `Done when:`/`Next step:` pair, and a mode read by halves reports a finding with
     # no tag — the one thing the skill forbids. Measured 73 lines; the cap leaves 7.
     "tdq-lean": 80,
+    # 2026-10-25: two browser MCP skills added in 0.74.0 (measured 51 and 77 lines; caps leave 9 and 8).
+    "tdq-browser-research": 60,
+    "tdq-browser-test": 85,
 }
 MAX_LINES_ANY = 500
 MAX_SENTENCE_WORDS = 40

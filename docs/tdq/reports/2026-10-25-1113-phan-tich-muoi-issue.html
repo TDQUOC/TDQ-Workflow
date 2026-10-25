@@ -1,0 +1,252 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>10 issue TDQ — Phân tích & đề xuất</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f5f3ee;color:#203239;font:17px/1.7 system-ui,sans-serif}header{background:#163d43;color:#fff;padding:48px max(24px,calc((100vw - 1240px)/2))}header p{max-width:850px}h1{font-size:clamp(30px,4vw,48px);line-height:1.2;margin:12px 0}header small{letter-spacing:.12em}a{color:#12636d}header a{color:#e3f7f4}.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:32px;max-width:1240px;margin:32px auto;padding:0 24px}nav{position:sticky;top:20px;align-self:start;max-height:90vh;overflow:auto;font-size:14px}nav a{display:block;padding:7px 10px;border-bottom:1px solid #ddd}section,details{background:white;border:1px solid #d7dfdc;border-radius:12px;margin:0 0 20px;padding:24px;scroll-margin-top:16px}summary{font-size:21px;font-weight:700;cursor:pointer;line-height:1.4}summary::marker{color:#12636d}.body{padding-top:18px}h2{line-height:1.3;font-size:26px}li{margin-bottom:10px}code{font-size:.86em;background:#edf2f1;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{overflow:auto;padding:16px;background:#edf2f1}table{display:block;overflow:auto;border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #d5dfdc;padding:10px;min-width:90px;text-align:left;vertical-align:top}th{background:#edf2f1}.notice{background:#fff2d8;border-left:4px solid #956400;padding:18px 22px;margin-bottom:24px}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}button{font:inherit;border:1px solid #b5c9c5;border-radius:8px;background:white;padding:8px 16px;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #c07813;outline-offset:3px}footer{padding:28px;text-align:center;color:#536565}p,li{overflow-wrap:anywhere}@media(max-width:780px){.layout{display:block;padding:0 16px}nav{position:static;max-height:220px;margin-bottom:24px}header{padding:30px 20px}section,details{padding:18px}summary{font-size:19px}}@media print{nav,.tools{display:none}.layout{display:block;max-width:none}header{background:white;color:black}details,section{break-inside:avoid}body{background:white}a{color:inherit}}</style></head><body><header><small>TDQ WORKFLOW / BÁO CÁO KỸ THUẬT / 25.10.2026</small><h1>10 issue.<br>Hiểu đúng trước khi sửa.</h1><p>Nguyên nhân, phương án xử lý và test bảo vệ — bản đọc offline từ báo cáo đã kiểm chứng. Chỉ đề xuất, chưa áp dụng bản vá.</p></header><div class="layout"><nav aria-label="Mục lục"><strong>MỤC LỤC</strong><a href="#section-1">Kết luận điều hành</a><a href="#section-3">I01 — Browser skills không nói rõ pha kế tiếp</a><a href="#section-5">I02 — Ba reference chưa được liên kết trực tiếp</a><a href="#section-7">I03 — Link hướng dẫn script không tồn tại</a><a href="#section-9">I04 — Registry giới hạn chưa đăng ký hai browser skills</a><a href="#section-11">I05 — Description vượt ngân sách 1800 ký tự</a><a href="#section-13">I06 — Năm entrypoint thiếu đường bootstrap UTF-8</a><a href="#section-15">I07 — Thiếu Vision Test Loop ở spec và template</a><a href="#section-17">I08 — Fixture denial nằm trong phase được phép tìm kiếm</a><a href="#section-19">I09 — Cap số module phụ thuộc vào repo đang tăng trưởng</a><a href="#section-21">I10 — Phép tách chuỗi lệnh làm hỏng đường dẫn có quote</a><a href="#section-23">Ngân sách ứng viên — chưa áp dụng</a><a href="#section-25">Lộ trình xử lý đề xuất</a><a href="#section-27">Giới hạn và quyết định</a><a href="#section-29">Kết quả QC và phát hiện bổ sung ngoài 10 issue</a><a href="#section-31">Thời gian</a></nav><main><div class="notice"><strong>Chưa fix · Toàn repo vẫn FAIL</strong><br>Full suite: 2.974 test, 9 failures, 2 errors, 10 skipped. Có một lỗi WinError 32 bổ sung ngoài 10 issue; chưa đối chứng baseline. 356 file nguồn giữ nguyên hash tại lượt QC báo cáo.</div><div class="tools"><button id="expand">Mở toàn bộ issue</button><button id="collapse">Thu gọn issue</button><button id="print">In / Lưu PDF</button></div><section id="section-1"><h2>Kết luận điều hành</h2><p>I01–I07 là thiếu đồng bộ quy chuẩn/tài liệu/bootstrap; I08 và I10 có bằng chứng trực tiếp fixture/phép kiểm sai với contract hiện tại; I09 là giới hạn đo trên repo biến động và selector cố ý bảo thủ. Không nên áp cùng một cách &quot;sửa production&quot; cho cả 10.</p>
+<p>Ưu tiên đề xuất: bảo vệ bootstrap I06; chỉnh phép kiểm đúng contract I08/I10; xử lý nhóm skill I01/I04/I05; sửa link chết rồi wiring I03/I02/I07; cuối cùng chuẩn hóa test bán kính I09. Có thể đổi thứ tự theo phạm vi release, nhưng không làm suy yếu kiểm để đạt số xanh.</p>
+<p>Baseline kế thừa: a03d698 và 5d6570d đều tái hiện 10 lỗi theo QC Archify. Log cuối Archify: 2974 tests,9 failures,1 error,10 skipped. Kết quả đó không thay thế lượt QC mới của báo cáo này.</p>
+</section><details id="section-3"><summary>I01 — Browser skills không nói rõ pha kế tiếp</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> hai dòng Next step bị test quy chuẩn từ chối.</li>
+<li><strong>Nguyên nhân:</strong> browser-research và browser-test là công cụ phục vụ nhiều phase nhưng dòng cuối chỉ nói tác vụ kế tiếp, không chỉ rõ phase giữ nguyên hay chuyển.</li>
+<li><strong>Bằng chứng:</strong> <code>skills/tdq-browser-research/SKILL.md:51</code>, <code>skills/tdq-browser-test/SKILL.md:77</code>; <code>tests/test_luat_gate_chat.py:90</code>. ĐÃ XÁC MINH qua source và failure baseline.</li>
+<li><strong>Phân loại:</strong> lỗi hợp đồng tài liệu, không phải lỗi kết nối trình duyệt.</li>
+<li><strong>Phương án chọn:</strong> thêm ý <code>the phase does not change</code> và trả điều phối cho skill gọi; giữ hướng dẫn xuất nghiên cứu/QC hiện tại. Tool skill không tự chuyển phase.</li>
+<li><strong>Phương án loại:</strong> ép research về analyze và browser-test về qc; sai khi chúng được dùng ở implement hoặc kiểm preview trước duyệt.</li>
+<li><strong>Vùng ảnh hưởng:</strong> hai SKILL.md; cập nhật index/token lock/neo luật bằng generator nếu dòng thay đổi. Không sửa tdq_state.PHASE_TABLE.</li>
+<li><strong>Test bảo vệ:</strong> dương: cả hai skill nêu giữ phase và còn đường bàn giao; âm: bỏ câu phase phải bị phát hiện. Thử đọc skill trong analyze/implement/qc, không sinh lệnh set phase ngoài caller. Rollback: hoàn nguyên riêng câu sửa nếu lệch contract, giữ test báo đỏ.</li>
+</ul>
+</div></details><details id="section-5"><summary>I02 — Ba reference chưa được liên kết trực tiếp</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> knowledge-template.md, chrome-devtools-mcp-guide.md và mcp-first-guide.md bị liệt kê ngoài tầng một.</li>
+<li><strong>Nguyên nhân:</strong> file tồn tại nhưng chưa có SKILL.md trỏ thẳng; link từ template/reference khác không đáp ứng hợp đồng repo.</li>
+<li><strong>Bằng chứng:</strong> <code>tests/test_reference_mot_tang.py:155</code>; các file dưới skills/tdq-conventions/references và skills/tdq-setup/references. Đây là luật nội bộ repo, không quy kết thành chuẩn bắt buộc của mọi nền tảng.</li>
+<li><strong>Phân loại:</strong> wiring tài liệu.</li>
+<li><strong>Phương án chọn:</strong> conventions trỏ knowledge-template ở mục cây tài liệu; setup trỏ hai guide ở bước MCP. Link đúng chủ, có điều kiện khi nào đọc; giữ instruction hiện có khi cân trần dòng.</li>
+<li><strong>Phương án loại:</strong> đưa vào whitelist DIEU_PHOI để miễn kiểm, hoặc nối tất cả vào một skill không liên quan. Cả hai chỉ che thiếu ownership.</li>
+<li><strong>Vùng ảnh hưởng:</strong> skills/tdq-conventions/SKILL.md và skills/tdq-setup/SKILL.md; index/ledger/token lock liên quan. I03 phải xử lý trước khi quảng bá guide có link chết.</li>
+<li><strong>Test bảo vệ:</strong> dương: ba reference đều reachable trực tiếp; âm: bỏ từng link phải fail và chỉ đúng file. Kiểm line/token cap, relative link và nội dung cũ không bị rút mất. Rollback từng link độc lập, không sửa whitelist.</li>
+</ul>
+</div></details><details id="section-7"><summary>I03 — Link hướng dẫn script không tồn tại</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> chrome-devtools-mcp-guide.md trỏ chrome-devtools-mcp-scripts.md không có trên đĩa.</li>
+<li><strong>Nguyên nhân:</strong> tài liệu trỏ tên cũ/không được bàn giao; runtime thực tế nằm ở tdq_devtool_mcp.py. Chưa đủ chứng cứ khẳng định mọi nội dung tưởng định của file mất đã nằm trong script.</li>
+<li><strong>Bằng chứng:</strong> <code>skills/tdq-setup/references/chrome-devtools-mcp-guide.md:3</code>; <code>tests/test_reference_mot_tang.py:193</code>; script thật <code>scripts/tdq_devtool_mcp.py:1</code>.</li>
+<li><strong>Phân loại:</strong> link chết trong tài liệu.</li>
+<li><strong>Phương án chọn:</strong> đối chiếu nội dung guide và CLI thực, thay link bằng đường dẫn tương đối có thật tới script/hướng dẫn hiện có; diễn đạt rõ đó là mã thực thi, không hứa có hướng dẫn nâng cao chưa tồn tại. Viết tiếng Anh ở rule layer.</li>
+<li><strong>Phương án loại:</strong> tạo một file rỗng chỉ để tồn tại, hoặc đổi thành text tên file không tồn tại nhằm né regex link checker.</li>
+<li><strong>Vùng ảnh hưởng:</strong> guide và các link giới thiệu nó; không viết lại launcher hoặc thêm dependency.</li>
+<li><strong>Test bảo vệ:</strong> dương: link mới resolve đúng file và lệnh được mô tả khớp CLI; âm: link Markdown không có đích vẫn fail. Kiểm thư mục project khác để không hard-code admin path. Rollback tài liệu không ảnh hưởng runtime.</li>
+</ul>
+</div></details><details id="section-9"><summary>I04 — Registry giới hạn chưa đăng ký hai browser skills</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> 11 skill directories nhưng chỉ 9 keys trong bảng giới hạn.</li>
+<li><strong>Nguyên nhân:</strong> thêm browser skills không đồng bộ registry SKILL_LINE_LIMITS. Test tên exactly_six_skills lỗi thời về tên nhưng assertion thực so sets, không phải cố định số6.</li>
+<li><strong>Bằng chứng:</strong> <code>scripts/doc_lint.py:36</code>; <code>tests/test_skill_shape.py:123</code>. Comment quy tắc headroom ở <code>scripts/doc_lint.py:45</code> yêu cầu có số đo chứ không tự bịa trần.</li>
+<li><strong>Phân loại:</strong> thiếu khai báo code/config hợp đồng và thiếu shape coverage, không phải lý do xóa tính năng.</li>
+<li><strong>Phương án chọn:</strong> đăng ký hai keys với cap đo trên nội dung sau I01, headroom có giải trình theo quy tắc hiện hữu; bổ sung shape tests tương ứng, đổi tên/docstring test về registry consistency. Không thay các cap đã tồn tại.</li>
+<li><strong>Phương án loại:</strong> bỏ hai skill khỏi so sánh hoặc tăng mọi cap đồng loạt. Các con số 60/85 từng được khảo sát nêu chỉ là ứng viên chưa duyệt, không là kết quả đã đo sau sửa.</li>
+<li><strong>Vùng ảnh hưởng:</strong> doc_lint registry, test_skill_shape, hai browser skills; kiểm portable skill inventory riêng vì packaging có bảng thứ tự độc lập.</li>
+<li><strong>Test bảo vệ:</strong> dương: mọi skill có key và không vượt cap; âm: skill lạ, thiếu key, nội dung cap+1 đều fail. Kiểm không thêm duplicate keys. Rollback registry/shape test cùng nhau, không xóa browser feature.</li>
+</ul>
+</div></details><details id="section-11"><summary>I05 — Description vượt ngân sách 1800 ký tự</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> tổng2051, vượt251 ký tự.</li>
+<li><strong>Nguyên nhân:</strong> tổng description của11 skills lớn hơn ngân sách toàn context. Đây là số ký tự Python, không đồng nghĩa token count; thân luật và description có chức năng khác nhau.</li>
+<li><strong>Bằng chứng:</strong> <code>tests/test_token_budget.py:100</code>; phép đo đọc frontmatter main ngày2026-10-25 trả2051. Bốn description dài: spec230, setup221, check-status216, plan210.</li>
+<li><strong>Phân loại:</strong> ngân sách routing metadata.</li>
+<li><strong>Phương án chọn:</strong> cô đọng đúng bốn description trên, giữ điều kiện gọi, bước duyệt, ngôn ngữ và phạm vi. Câu ứng viên và số đo nằm ở mục Ngân sách ứng viên bên dưới, chưa ghi vào skill thật.</li>
+<li><strong>Phương án loại:</strong> nâng1800→2100; xóa trigger hoặc chuyển luật thân skill vào mô tả để bù. Không dùng số token ước lượng để báo ký tự đã đạt.</li>
+<li><strong>Vùng ảnh hưởng:</strong> frontmatter bốn SKILL.md khi triển khai; token lock generator; tests/token/router. Không sửa thân quy trình hoặc approval.</li>
+<li><strong>Test bảo vệ:</strong> dương: tổng≤1800 và routing cho spec sau analyze, plan sau spec duyệt, setup khi search fail/new machine, check-status khi resume đều đúng; âm: mô tả vượt cap và câu làm mất trigger phải fail. Router test dựa keyword không đủ chứng minh ngữ nghĩa, cần review bảng before/after. Rollback bốn descriptions cùng lock, không nâng cap.</li>
+</ul>
+</div></details><details id="section-13"><summary>I06 — Năm entrypoint thiếu đường bootstrap UTF-8</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> scanner tìm năm entrypoint chưa tới chokepoint: scripts/tdq_devtool_mcp.py, scripts/tdq_harvest.py, hooks/scripts/doc_file_gate.py, hooks/scripts/stop_batch_checker.py, hooks/scripts/strategic_compact_gate.py.</li>
+<li><strong>Nguyên nhân:</strong> các entrypoint mới chưa dùng bootstrap chung; test hiện dò marker text, không chứng minh mọi nhánh chạy hoặc crash Unicode thật. Encoding Windows phụ thuộc console/redirect/env, không luôn là cp1252.</li>
+<li><strong>Bằng chứng:</strong> <code>tests/test_utf8_io.py:127</code> (scanner), <code>tests/test_utf8_io.py:133</code> (kiểm child encoding); chokepoint <code>_common</code> ở <code>tests/test_utf8_io.py:118</code>.</li>
+<li><strong>Phân loại:</strong> thiếu tuân thủ runtime bootstrap; mức ảnh hưởng thực tế cần kiểm từng entrypoint.</li>
+<li><strong>Phương án chọn:</strong> hai scripts dùng import utf8_io theo idiom hiện có; ba hooks đi qua _common nếu phù hợp dependency. Chỉ thêm sys.path khi cách gọi standalone thực sự thiếu module; không nhét machinery dư. Kiểm mọi import side effect, portable closure và cwd khác root trước chốt patch.</li>
+<li><strong>Phương án loại:</strong> chỉ đặt PYTHONUTF8 ở shell người dùng, chèn comment chứa marker để scanner xanh, hoặc đổi scanner loại trừ các file.</li>
+<li><strong>Vùng ảnh hưởng:</strong> đúng năm file, dependency bootstrap và packaging tests. scripts không import hooks. Không làm mất JSON stdout của hook vì log bootstrap.</li>
+<li><strong>Test bảo vệ:</strong> stdout/stderr tiếng Việt và ký hiệu dưới PYTHONIOENCODING=cp1252, env UTF8 disabled; redirected streams, pythonw None, import lặp và cwd tạm. Mock network/browser ở fixture, không khởi chạy máy thật chỉ để kiểm encoding. Âm: bỏ bootstrap thì case cưỡng bức encoding phải bắt được. Rollback từng entrypoint nhưng giữ fail report.</li>
+</ul>
+</div></details><details id="section-15"><summary>I07 — Thiếu Vision Test Loop ở spec và template</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> test dừng ở tdq-spec/SKILL.md; spec-template cũng cần được kiểm, không chỉ fix assertion đầu.</li>
+<li><strong>Nguyên nhân:</strong> hướng dẫn/chuỗi nhắc Vision Test Loop không phải link tới vision-test-loop.md, nên hợp đồng wiring không được thỏa.</li>
+<li><strong>Bằng chứng:</strong> <code>tests/test_vision_test_loop_doc.py:79</code>–90 liệt kê6 file; <code>skills/tdq-spec/references/spec-template.md:143</code> có nhắc tên nhưng không phải link trực tiếp tới tài liệu.</li>
+<li><strong>Phân loại:</strong> thiếu liên kết quy chuẩn.</li>
+<li><strong>Phương án chọn:</strong> thêm reference đúng relative path vào SKILL.md và template tại nơi viết DoD/visual requirements. Chỉ áp dụng visual checks khi task có UI, không ép mọi docs task chạy browser.</li>
+<li><strong>Phương án loại:</strong> gỡ file khỏi wired_files hoặc thêm tên vào comment để test substring xanh mà không có link dùng được.</li>
+<li><strong>Vùng ảnh hưởng:</strong> tdq-spec/SKILL.md, spec-template, index/token/ledger; giữ giới hạn dòng, không xóa quy tắc khác.</li>
+<li><strong>Test bảo vệ:</strong> dương: cả6 references đúng đích, nội dung phase phù hợp; âm: bỏ link ở phần tử cuối vẫn fail. Chạy link checker và i18n, không chỉ substring assertion. Rollback cùng index/ledger.</li>
+</ul>
+</div></details><details id="section-17"><summary>I08 — Fixture denial nằm trong phase được phép tìm kiếm</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> json.loads(out1) lỗi vì stdout rỗng, exit0.</li>
+<li><strong>Nguyên nhân:</strong> fixture đặt phase analyze, nhưng policy cho phép grep ở analyze/quick_analyze/spec. Hook allow kết thúc không in JSON deny; test tự kỳ vọng sai điều kiện denial.</li>
+<li><strong>Bằng chứng:</strong> <code>tests/test_reminder_contract.py:174</code>, <code>tests/test_reminder_contract.py:190</code>; <code>scripts/search_rules.py:838</code>; <code>hooks/scripts/search_gate.py:189</code>. Probe thực: analyze=True, implement=False với cùng search và trạng thái chưa gọi concept.</li>
+<li><strong>Phân loại:</strong> fixture test không đồng bộ policy, không phải lỗi serializer đã được chứng minh.</li>
+<li><strong>Phương án chọn:</strong> denial-repeat test đặt phase implement với state tối thiểu hợp lệ; giữ2 lần gọi trong cùng session/turn, chưa có concept query, readiness có layer hoạt động để tránh breaker làm lệch case. Thêm test riêng cho exploratory phase: exit0/không deny và không ép JSON khi rỗng. Giữ assert deny/recovery/shorter ở case denial.</li>
+<li><strong>Phương án loại:</strong> sửa sản phẩm chặn analyze, hoặc parse rỗng thành dict rồi bỏ assert deny. Đều thay policy/giảm sức kiểm.</li>
+<li><strong>Vùng ảnh hưởng:</strong> test_reminder_contract, fixtures/hook integration tests; không cần sửa search_rules nếu các probes đạt contract.</li>
+<li><strong>Test bảo vệ:</strong> deny lần1 đầy đủ, lần2 ngắn hơn và còn đường phục hồi, turn mới reset, readiness unavailable stand-down, analyze/quick_analyze/spec allow. Xác minh stderr có log lỗi không bị bỏ qua. Rollback fixture độc lập, không đổi policy để chữa test.</li>
+</ul>
+</div></details><details id="section-19"><summary>I09 — Cap số module phụ thuộc vào repo đang tăng trưởng</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> selector trả4 module nhắc ask_gate nhưng test yêu cầu≤3.</li>
+<li><strong>Nguyên nhân:</strong> chon_theo_ten_module regex trên toàn source, gồm docstrings. test_subagent_start nhắc ask_gate trong lịch sử hooks; test_tdq_test tự nhắc symbol của phép đo. Con số3 từ repo cũ không là bằng chứng rằng module thứ4 sai.</li>
+<li><strong>Bằng chứng:</strong> <code>scripts/tdq_test.py:198</code>–203; <code>tests/test_tdq_test.py:220</code>–225; <code>tests/test_subagent_start.py:118</code>. Tập thực: test_ask_gate, test_hook_windows, test_subagent_start, test_tdq_test. Graph stale gợi ý ban_kinh → cmd_vung_cham → main, không đủ thay chứng cứ text.</li>
+<li><strong>Phân loại:</strong> phép kiểm performance/size gắn snapshot repo; có false-positive bảo thủ, chưa chứng minh false-negative hay defect selector.</li>
+<li><strong>Phương án chọn:</strong> test selection trên fixture nhỏ có module caller/noncaller/scanner xác định, giữ giới hạn dựa số đo fixture; test integration repo giữ required callers + scanner provenance + ngưỡng fallback và log số lượng. Mọi thay assert phải có coverage tương đương hoặc mạnh hơn, không đơn giản bỏ cap. Ghi baseline đo mới và lý do từng module.</li>
+<li><strong>Phương án loại:</strong> tăng3→4 mà không giải thích; xóa comment lịch sử chỉ để giảm selection; loại module thứ4 khỏi selector. Phương án AST lọc comment/docstring chỉ xét sau khi chứng minh giữ imports động, string paths và config contracts, vì chi phí lớn và có thể mất coverage.</li>
+<li><strong>Vùng ảnh hưởng:</strong> test_tdq_test và fixture; chỉ sửa production selector trong request riêng nếu có bằng chứng defect. Không bỏ test scanner đọc hooks/.</li>
+<li><strong>Test bảo vệ:</strong> module có call/import/path string phải được chọn; unrelated module không chọn trên fixture; directory scanner được chọn; unknown/deleted source fallback toàn bộ; cap fixture vượt dự kiến phải fail. Rollback test bằng phiên bản trước và giữ cả số đo mới, không tô xanh dữ liệu.</li>
+</ul>
+</div></details><details id="section-21"><summary>I10 — Phép tách chuỗi lệnh làm hỏng đường dẫn có quote</summary><div class="body"><ul>
+<li><strong>Triệu chứng:</strong> isabs nhận token có dấu nháy hoặc mảnh cuối path và báo không tuyệt đối.</li>
+<li><strong>Nguyên nhân:</strong> generator bao path bằng nháy kép; consumer test c.split()[-1] không phải parser command line. Cả path không có space vẫn có quote; path có space còn mất prefix. Mixed separators không phải nguyên nhân đã được chứng minh của failure này.</li>
+<li><strong>Bằng chứng:</strong> <code>scripts/build_portable.py:436</code>; <code>tests/test_tuong_thich_host.py:70</code>–75. Probe đường dẫn C:/Users/Test User/hook.py tuyệt đối, naive token User/hook.py&quot; không tuyệt đối.</li>
+<li><strong>Phân loại:</strong> lỗi phép kiểm command, chưa chứng minh host runtime hỏng.</li>
+<li><strong>Phương án chọn:</strong> kiểm schema command do generator sở hữu: interpreter prefix hợp lệ + đúng một script argument quote hợp lệ, lấy path theo parser/contract Windows/POSIX tương ứng; kiểm absolute trên path đã parse, không trên command. Tận dụng parser sẵn có nếu có và đúng semantics; shlex POSIX không mặc nhiên dùng cho Windows. Phần mở rộng ký tự shell phải có test host riêng trước tuyên bố runtime portable toàn diện.</li>
+<li><strong>Phương án loại:</strong> bỏ quote generator; split rồi strip mọi quote; replace backslash/slash hàng loạt. Những cách đó phá path spaces, mất escaping hoặc che malformed input.</li>
+<li><strong>Vùng ảnh hưởng:</strong> test_tuong_thich_host và fixture parser/command tests; build_portable chỉ thay khi phát hiện producer sai bằng chứng độc lập.</li>
+<li><strong>Test bảo vệ:</strong> Windows drive, UNC, POSIX root, space, Unicode, tên8.3 có~, interpreter py -3/python3; âm: relative, ~ chưa bung, quote không cân, thiếu script, trailing argument ngoài contract. Dùng fixture không chạy arbitrary shell input. Rollback test parser không làm đổi command generator.</li>
+</ul>
+</div></details><section id="section-23"><h2>Ngân sách ứng viên — chưa áp dụng</h2><p>Đo bằng len trên đúng chuỗi bên dưới, giữ nguyên7 descriptions còn lại: tổng2051→1709 ký tự, giảm342, dư91 so với trần1800. Đây là đo câu đề xuất, KHÔNG phải số đo source đã sửa. Không thay SKILL.md, không tuyên bố router sau patch đã PASS.</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Trước</th>
+<th>Ứng viên</th>
+<th>Nội dung ứng viên</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tdq-spec</td>
+<td>230</td>
+<td>134</td>
+<td>Write and register a spec in the user language after deep analysis. Stop for approval; once approved, write the plan in the same turn.</td>
+</tr>
+<tr>
+<td>tdq-plan</td>
+<td>210</td>
+<td>126</td>
+<td>After spec approval, write a checkbox plan with task tests. Stop for plan approval, ask run mode, then build in the same turn.</td>
+</tr>
+<tr>
+<td>tdq-setup</td>
+<td>221</td>
+<td>137</td>
+<td>Install and verify search dependencies: LSP, import roots, Graphify and module checks. Use at intake, on search failure or a new machine.</td>
+</tr>
+<tr>
+<td>tdq-check-status</td>
+<td>216</td>
+<td>138</td>
+<td>Recover an unfinished request from disk after session loss, machine switch or another agent run. Report; continue after user confirmation.</td>
+</tr>
+</tbody>
+</table>
+<p>Review nghĩa: spec giữ user language, sau analyze, đăng ký, chờ duyệt, sang plan cùng turn; plan giữ sau spec duyệt, task checks, duyệt plan, hỏi mode; setup giữ LSP/import roots/Graphify và ba tình huống gọi, không khóa số rung dễ cũ; check-status giữ đọc disk, ba tình huống resume, user confirmation. Tên deep analysis tương đương trigger hiện tại cần kiểm router ở lần fix, không chỉ so số ký tự.</p>
+</section><section id="section-25"><h2>Lộ trình xử lý đề xuất</h2><p><em>Thứ tự xử lý được trình bày bằng bảng ngay bên dưới.</em></p>
+<p>Sơ đồ thứ tự đề xuất, không biểu diễn các bước đã fix; bảng sau mang cùng nội dung để đọc không cần renderer. Mermaid chưa được review hình ảnh, không coi đây là bằng chứng UI.</p>
+<p>Chưa triển khai bất kỳ bước fix nào. Một request bugfix riêng cần chốt phạm vi source và test trước khi thực hiện.</p>
+<table>
+<thead>
+<tr>
+<th>Đợt</th>
+<th>Issue</th>
+<th>Điều kiện đi tiếp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>I06</td>
+<td>Bootstrap không làm đổi JSON/log và portable imports; ca encoding cưỡng bức đạt</td>
+</tr>
+<tr>
+<td>B</td>
+<td>I08, I10</td>
+<td>Test phản ánh policy/argv, không đổi runtime đúng</td>
+</tr>
+<tr>
+<td>C</td>
+<td>I01, I04, I05</td>
+<td>Đủ registry/shape, phase không đổi; descriptions đo thật dưới cap và routing giữ nghĩa</td>
+</tr>
+<tr>
+<td>D</td>
+<td>I03 → I02, I07</td>
+<td>Đích link thật, ownership đúng, giới hạn skill và ledger/index đồng bộ</td>
+</tr>
+<tr>
+<td>E</td>
+<td>I09</td>
+<td>Fixture coverage thay số đo biến động; không bỏ caller/scanner</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Tổng hợp</td>
+<td>Vùng chạm rồi full suite sau vòng sửa cuối; tách lỗi mới với baseline</td>
+</tr>
+</tbody>
+</table>
+</section><section id="section-27"><h2>Giới hạn và quyết định</h2><ul>
+<li>Báo cáo đề xuất có thể hoàn thành trong khi sản phẩm còn đỏ; không gọi10issue đã sửa.</li>
+<li>Không đổi policy, budgets hoặc assertions bằng request này. Số trần cho skill mới và thay cấu trúc test I09 cần được duyệt ở request fix.</li>
+<li>Đã giữ snapshot state/approval Archify: <code>docs/tdq/2026-10-24-2348-hoan-thien-archify.resume.json</code>; hướng dẫn <code>docs/tdq/reports/2026-10-24-2348-hoan-thien-archify-resume.md</code>. Khi user yêu cầu continue: đối chiếu branch/dirty state/digest, dùng tdq_state API để khôi phục, không tạo lời duyệt hộ user.</li>
+<li>Sáu worktree Archify còn dirty được giữ nguyên. Không tự commit/push/merge/clean; hoàn tất phân tích không tự giải quyết gate dọn worktree cũ.</li>
+<li>Một số assertions chỉ dò text; test xanh tương lai phải kèm kiểm behavior/links/encoding, không chỉ thêm marker vào comment.</li>
+</ul>
+</section><section id="section-29"><h2>Kết quả QC và phát hiện bổ sung ngoài 10 issue</h2><ul>
+<li>Targeted9modules:10failed,116passed,2subtests passed trong15.18s; đúng10issue đã phân tích. Log: <code>docs/tdq/2026-10-25-1113-phan-tich-muoi-issue-tests.log</code>.</li>
+<li>Full suite request mới, Elevated=False:2974tests trong637.997s,9failures,2errors,10skipped,exit1. Log: <code>docs/tdq/2026-10-25-1113-full-stderr.log</code>, stdout/status cùng prefix. Không có tác vụ kiểm nền còn chạy.</li>
+<li>Lỗi bổ sung: <code>tests/test_tu_khoi_tao.py:482</code>, test_chong_hai_phien_mo_lien_nhau_chi_bat_mot_lan gọi os.remove trên da-chay.txt khi file còn bị process giữ, WinError32. Rerun riêng:1failed trong0.57s. Đây là phát hiện ngoài inventory, CHƯA đối chứng hai baseline và CHƯA xác định nguyên nhân gốc; không gọi là hồi quy mới do request tài liệu hoặc mặc nhiên lỗi cũ. Không áp patch hay mở rộng10issue âm thầm.</li>
+<li>C1/C2/C3/C5 sau suite đều đạt:10hồ sơ đủ trường, citations resolve, phương án và resume có mặt,356file nguồn giữ nguyên hash. Lint được chạy lại sau cập nhật cuối. Không có chứng cứ nguồn bị sửa trong request này.</li>
+<li>Ledger:1lượt tron-bo,0radius misses; runner không có lượt vung-cham ghi ledger nên0 không chứng minh đủ coverage. QC-F2 dựa targeted9modules đã khai, tránh full suite trùng cho docs.</li>
+<li>Kiểm chứng tài liệu đạt không đồng nghĩa runtime đạt: giữ QC-F1 FAIL và ghi giới hạn này khi bàn giao. Đề xuất phát hiện WinError32 thành đầu việc triage riêng nếu người dùng muốn xử lý.</li>
+</ul>
+</section><section id="section-31"><h2>Thời gian</h2><p>Output <code>python scripts/tdq_timing.py show</code> lúc13:32 ngày2026-10-25:</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Wall clock</th>
+<th>Model time</th>
+<th>Times entered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idle</td>
+<td>0s</td>
+<td>—</td>
+<td>1</td>
+</tr>
+<tr>
+<td>analyze</td>
+<td>48 min</td>
+<td>—</td>
+<td>1</td>
+</tr>
+<tr>
+<td>spec</td>
+<td>18 min</td>
+<td>—</td>
+<td>1</td>
+</tr>
+<tr>
+<td>plan</td>
+<td>51 min</td>
+<td>—</td>
+<td>1</td>
+</tr>
+<tr>
+<td>implement</td>
+<td>18 min</td>
+<td>—</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>2h 14min</strong></td>
+<td><strong>—</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Công cụ không tìm thấy thư mục transcript nên không có model time; wall clock gồm thời gian chờ user. Không dùng bảng này để suy agent thực thi chậm/nhanh hơn mô phỏng.</p>
+<p><strong>Git:</strong> chưa commit/push/merge. <strong>Tiếp theo:</strong> người dùng quyết định riêng có triển khai các phương án hay không; request Archify tiếp tục từ snapshot khi được yêu cầu, không tự nghiệm thu.</p>
+</section></main></div><footer>Bản trình bày, không thay đổi kết luận QC. <a href="2026-10-25-1113-phan-tich-muoi-issue.md">Báo cáo Markdown gốc</a></footer><script>const issues=()=>document.querySelectorAll('details');document.querySelector('#expand').onclick=()=>issues().forEach(x=>x.open=true);document.querySelector('#collapse').onclick=()=>issues().forEach(x=>x.open=false);document.querySelector('#print').onclick=()=>{issues().forEach(x=>x.open=true);window.print()};document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>{const t=document.querySelector(a.getAttribute('href'));if(t.tagName==='DETAILS')t.open=true}));window.addEventListener('beforeprint',()=>issues().forEach(x=>x.open=true));</script></body></html>

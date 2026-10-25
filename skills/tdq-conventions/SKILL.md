@@ -125,7 +125,7 @@ Slug: `YYYY-MM-DD-HHMM-<kebab, ≤5 words, unaccented ASCII>` (local time, so so
 time), the same in every folder. Old date-only slugs still READ fine; writing a new one without hour
 and minute makes `init` refuse. `brief/` merges request, knowledge and Q&A into one file with exactly
 three sections — verbatim request · understanding & knowledge · Q&A. The heading wording is the one
-`doc_lint.py` checks for that language; keep the three sections, in that order, whatever the language.
+`doc_lint.py` checks for that language; keep the three sections, in that order, whatever the language (knowledge template: [references/knowledge-template.md](references/knowledge-template.md)).
 
 ## 6. Working log
 

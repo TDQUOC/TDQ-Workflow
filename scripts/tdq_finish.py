@@ -17,7 +17,9 @@ Principles:
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
 import argparse
+import json
 import os
+from pathlib import Path
 import shutil
 import subprocess
 import sys
@@ -205,6 +207,58 @@ def step_graphify(project, files):
     return Step("graphify", "ok")
 
 
+def step_archify(project):
+    """Archify freshness check: reads docs/architecture/manifest.json, updates status.json.
+
+    Absent manifest -> skip.
+    Current -> ok.
+    Stale -> stale (refresh needed: ...).
+    Invalid or error -> fail.
+    """
+    manifest_path = os.path.join(project, "docs", "architecture", "manifest.json")
+    if not os.path.isfile(manifest_path):
+        return Step("archify", "skip", "no manifest")
+
+    sys.path.insert(0, SCRIPTS_DIR)
+    try:
+        import archify_artifacts
+    except ImportError as exc:
+        return Step("archify", "fail", f"archify_artifacts not available: {exc}")
+
+    try:
+        res = archify_artifacts.mark_stale(project)
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        return Step("archify", "fail", f"{type(exc).__name__}: {str(exc)[:100]}")
+    except Exception as exc:  # noqa: BLE001
+        return Step("archify", "fail", f"{type(exc).__name__}: {str(exc)[:100]}")
+
+    if not isinstance(res, dict):
+        return Step("archify", "fail", f"invalid mark_stale result type: {type(res).__name__}")
+
+    raw_reasons = res.get("reasons", [])
+    if not isinstance(raw_reasons, (list, tuple)):
+        return Step("archify", "fail", f"invalid reasons type in mark_stale: {type(raw_reasons).__name__}")
+    reasons = [str(r) for r in raw_reasons]
+
+    status_val = res.get("status")
+
+    if status_val == "skip":
+        return Step("archify", "skip", "no manifest")
+
+    if status_val == "invalid":
+        detail = reasons[0] if reasons else "manifest invalid"
+        return Step("archify", "fail", detail[:120])
+
+    if status_val == "stale":
+        reason_txt = reasons[0] if reasons else "source or revision changed"
+        return Step("archify", "stale", f"refresh needed: {reason_txt}"[:120])
+
+    if status_val == "current":
+        return Step("archify", "ok", "current")
+
+    return Step("archify", "fail", f"unknown status: {status_val}")
+
+
 def summarize(steps):
     """One line of at most 200 characters for the everything-passed case."""
     mark = "✗" if any(s.status == "fail" for s in steps) else "✓"
@@ -235,7 +289,7 @@ def main(argv):
         docs = sum(1 for f in files if f.endswith(".md"))
         print(f"dry-run: lint {docs} .md file(s) · worklog "
               f"{'yes' if args.summary else 'no'} · phase {args.phase or 'unchanged'} · "
-              "graphify if code changed")
+              "archify mark-stale if manifest · graphify if code changed")
         return 0
 
     _log(f"start · project={project} · {len(files)} file(s) changed")
@@ -248,15 +302,17 @@ def main(argv):
                      lambda: step_worklog(project, args.summary),
                      lambda: step_dong_so(project, args.phase),
                      lambda: step_phase(project, args.phase),
+                     lambda: step_archify(project),
                      lambda: step_graphify(project, files)):
         step = run_step()
         steps.append(step)
         _log(f"{step.name} → {step.status}" + (f" ({step.detail})" if step.detail else ""))
 
     failed = [s for s in steps if s.status == "fail"]
+    stale = [s for s in steps if s.status == "stale"]
     print(summarize(steps))
-    if args.verbose or failed:
-        for s in (steps if args.verbose else failed):
+    if args.verbose or failed or stale:
+        for s in (steps if args.verbose else (failed + stale)):
             print(f"  - {s.line()}")
     _log(f"done · {len(failed)} step(s) failed")
     return 1 if failed else 0

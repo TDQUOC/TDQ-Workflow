@@ -24,6 +24,7 @@ from unittest import mock
 from helper import ROOT
 
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import archify_delivery  # noqa: E402
 import tdq_archify  # noqa: E402
 
 
@@ -95,7 +96,7 @@ class TestCheckEnvironment(unittest.TestCase):
     def test_check_environment_no_node(self):
         """When Node.js is not installed, node_ok and ready must be False."""
         with mock.patch("shutil.which", return_value=None):
-            with mock.patch("tdq_archify.find_archify_root", return_value=None):
+            with mock.patch("archify_delivery.find_archify_root", return_value=None):
                 env = tdq_archify.check_environment()
                 self.assertFalse(env["node_ok"])
                 self.assertEqual(env["node_version"], "")
@@ -106,8 +107,8 @@ class TestCheckEnvironment(unittest.TestCase):
         mock_proc = mock.MagicMock(stdout="v16.14.2\n")
         with mock.patch("shutil.which", return_value="node"):
             with mock.patch("subprocess.run", return_value=mock_proc):
-                with mock.patch("tdq_archify.find_archify_root", return_value="/opt/archify"):
-                    with mock.patch("tdq_archify.get_archify_bin", return_value=Path("/opt/archify/bin/archify.mjs")):
+                with mock.patch("archify_delivery.find_archify_root", return_value="/opt/archify"):
+                    with mock.patch("archify_delivery.get_archify_bin", return_value=Path("/opt/archify/bin/archify.mjs")):
                         env = tdq_archify.check_environment()
                         self.assertFalse(env["node_ok"])
                         self.assertIn("16", env["node_version"])
@@ -118,8 +119,8 @@ class TestCheckEnvironment(unittest.TestCase):
         mock_proc = mock.MagicMock(stdout="v20.10.0\n")
         with mock.patch("shutil.which", return_value="node"):
             with mock.patch("subprocess.run", return_value=mock_proc):
-                with mock.patch("tdq_archify.find_archify_root", return_value="/opt/archify"):
-                    with mock.patch("tdq_archify.get_archify_bin", return_value=Path("/opt/archify/bin/archify.mjs")):
+                with mock.patch("archify_delivery.find_archify_root", return_value="/opt/archify"):
+                    with mock.patch("archify_delivery.get_archify_bin", return_value=Path("/opt/archify/bin/archify.mjs")):
                         env = tdq_archify.check_environment()
                         self.assertTrue(env["node_ok"])
                         self.assertEqual(env["node_version"], "v20.10.0")
@@ -131,7 +132,7 @@ class TestCheckEnvironment(unittest.TestCase):
         mock_proc = mock.MagicMock(stdout="v22.5.0\n")
         with mock.patch("shutil.which", return_value="node"):
             with mock.patch("subprocess.run", return_value=mock_proc):
-                with mock.patch("tdq_archify.find_archify_root", return_value=None):
+                with mock.patch("archify_delivery.find_archify_root", return_value=None):
                     env = tdq_archify.check_environment()
                     self.assertTrue(env["node_ok"])
                     self.assertFalse(env["ready"])
@@ -144,7 +145,7 @@ class TestBuildFinalizeCommand(unittest.TestCase):
         """Verify command arguments match CLI contract."""
         fake_bin = Path("/tmp/archify/bin/archify.mjs")
         with mock.patch("shutil.which", return_value="node"):
-            with mock.patch("tdq_archify.get_archify_bin", return_value=fake_bin):
+            with mock.patch("archify_delivery.get_archify_bin", return_value=fake_bin):
                 cmd = tdq_archify.build_finalize_command(
                     diagram_type="architecture",
                     candidate_path="candidate.json",
@@ -165,7 +166,7 @@ class TestBuildFinalizeCommand(unittest.TestCase):
         """Verify --repo-root is appended when specified."""
         fake_bin = Path("/tmp/archify/bin/archify.mjs")
         with mock.patch("shutil.which", return_value="node"):
-            with mock.patch("tdq_archify.get_archify_bin", return_value=fake_bin):
+            with mock.patch("archify_delivery.get_archify_bin", return_value=fake_bin):
                 cmd = tdq_archify.build_finalize_command(
                     diagram_type="architecture",
                     candidate_path="candidate.json",
@@ -177,7 +178,7 @@ class TestBuildFinalizeCommand(unittest.TestCase):
 
     def test_build_finalize_command_missing_archify_bin(self):
         """Raises FileNotFoundError when archify binary cannot be located."""
-        with mock.patch("tdq_archify.get_archify_bin", return_value=None):
+        with mock.patch("archify_delivery.get_archify_bin", return_value=None):
             with self.assertRaises(FileNotFoundError):
                 tdq_archify.build_finalize_command(
                     diagram_type="architecture",
@@ -191,6 +192,7 @@ class TestGraphifyToArchify(unittest.TestCase):
 
     def setUp(self):
         self.sample_graph = {
+            "directed": True,
             "nodes": [
                 {
                     "id": "auth_svc",
@@ -265,16 +267,17 @@ class TestGraphifyToArchify(unittest.TestCase):
 
     def test_sources_and_line_number_parsing(self):
         """Tests line range L10-L40 vs single line L50 parsing."""
-        ir = tdq_archify.graphify_to_archify(self.sample_graph)
+        repo = {"url": "https://example.com/repo.git", "revision": "a" * 40, "link_mode": "local-only"}
+        ir = tdq_archify.graphify_to_archify(self.sample_graph, repository=repo, evidence_kind="committed")
         auth = next(c for c in ir["components"] if c["id"] == "auth_svc")
         self.assertEqual(len(auth["sources"]), 1)
         self.assertEqual(auth["sources"][0]["path"], "src/auth.py")
-        self.assertEqual(auth["sources"][0]["startLine"], 10)
-        self.assertEqual(auth["sources"][0]["endLine"], 40)
+        self.assertEqual(auth["sources"][0]["line"], 10)
+        self.assertEqual(auth["sources"][0]["end_line"], 40)
 
         order = next(c for c in ir["components"] if c["id"] == "order_api")
-        self.assertEqual(order["sources"][0]["startLine"], 50)
-        self.assertEqual(order["sources"][0]["endLine"], 50)
+        self.assertEqual(order["sources"][0]["line"], 50)
+        self.assertEqual(order["sources"][0]["end_line"], 50)
 
     def test_type_heuristics_and_mappings(self):
         """Tests type categorization for frontend, cloud, messagebus, external."""
@@ -334,20 +337,18 @@ class TestOpenArtifact(unittest.TestCase):
         self.assertFalse(ok)
 
     def test_open_artifact_windows(self):
-        """Verifies powershell Start-Process invocation on Windows."""
+        """Verifies safe OS API invocation on Windows."""
         with mock.patch("platform.system", return_value="Windows"):
-            with mock.patch("subprocess.run") as mock_run:
+            with mock.patch("os.startfile", create=True) as mock_startfile:
                 ok = tdq_archify.open_artifact(self.temp_file.name)
                 self.assertTrue(ok)
-                mock_run.assert_called_once()
-                args = mock_run.call_args[0][0]
-                self.assertEqual(args[0], "powershell.exe")
-                self.assertIn("Start-Process", args[4])
+                mock_startfile.assert_called_once()
 
     def test_open_artifact_darwin(self):
         """Verifies open command invocation on macOS (Darwin)."""
         with mock.patch("platform.system", return_value="Darwin"):
             with mock.patch("subprocess.run") as mock_run:
+                mock_run.return_value = mock.MagicMock(returncode=0)
                 ok = tdq_archify.open_artifact(self.temp_file.name)
                 self.assertTrue(ok)
                 mock_run.assert_called_once()
@@ -358,6 +359,7 @@ class TestOpenArtifact(unittest.TestCase):
         """Verifies xdg-open command invocation on Linux."""
         with mock.patch("platform.system", return_value="Linux"):
             with mock.patch("subprocess.run") as mock_run:
+                mock_run.return_value = mock.MagicMock(returncode=0)
                 ok = tdq_archify.open_artifact(self.temp_file.name)
                 self.assertTrue(ok)
                 mock_run.assert_called_once()
@@ -368,6 +370,14 @@ class TestOpenArtifact(unittest.TestCase):
         """Returns False when subprocess raises an exception."""
         with mock.patch("platform.system", return_value="Linux"):
             with mock.patch("subprocess.run", side_effect=OSError("Exec failed")):
+                ok = tdq_archify.open_artifact(self.temp_file.name)
+                self.assertFalse(ok)
+
+    def test_open_artifact_non_zero_exit_fails(self):
+        """Returns False when browser command exits with non-zero code."""
+        with mock.patch("platform.system", return_value="Linux"):
+            with mock.patch("subprocess.run") as mock_run:
+                mock_run.return_value = mock.MagicMock(returncode=1)
                 ok = tdq_archify.open_artifact(self.temp_file.name)
                 self.assertFalse(ok)
 
@@ -406,32 +416,50 @@ class TestCliCommands(unittest.TestCase):
                 self.assertEqual(code, 1)
 
     def test_cli_render(self):
-        """CLI 'render' calls run_finalize and handles status."""
-        fake_res = tdq_archify.FinalizeResult(status=True, receipt={"ok": True})
-        with mock.patch("tdq_archify.run_finalize", return_value=fake_res):
-            with mock.patch.object(
-                sys,
-                "argv",
-                [
-                    "tdq_archify.py",
-                    "render",
-                    "--type",
-                    "architecture",
-                    "--candidate",
-                    "cand.json",
-                    "--out",
-                    "out.html",
-                ],
-            ):
-                code = tdq_archify.main()
-                self.assertEqual(code, 0)
+        """Reject a missing candidate before starting the engine."""
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = Path(directory) / "missing.json"
+            output = Path(directory) / "out.html"
+            with mock.patch("tdq_archify.run_finalize") as engine:
+                with mock.patch.object(sys, "argv", [
+                    "tdq_archify.py", "render", "--type", "architecture",
+                    "--candidate", str(candidate), "--out", str(output),
+                ]):
+                    self.assertNotEqual(tdq_archify.main(), 0)
+                engine.assert_not_called()
+            self.assertFalse(output.exists())
 
-    def test_cli_bridge(self):
-        """CLI 'bridge' runs graphify_to_archify and atomic_delivery."""
+    def test_cli_bridge_empty_graph_fails(self):
+        """CLI 'bridge' with empty graph asserts non-zero exit code, error, and no output."""
         temp_dir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, temp_dir, True)
-        graph_file = Path(temp_dir) / "graph.json"
+        graph_file = Path(temp_dir) / "empty_graph.json"
         graph_file.write_text(json.dumps({"nodes": [], "links": []}), encoding="utf-8")
+        out_file = Path(temp_dir) / "out.json"
+
+        with mock.patch.object(
+            sys,
+            "argv",
+            [
+                "tdq_archify.py",
+                "bridge",
+                "--graph",
+                str(graph_file),
+                "--out",
+                str(out_file),
+            ],
+        ):
+            code = tdq_archify.main()
+            self.assertNotEqual(code, 0)
+            self.assertFalse(out_file.is_file())
+
+    def test_cli_bridge_valid_graph_success(self):
+        """CLI 'bridge' with valid graph generates output and exits 0."""
+        temp_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, temp_dir, True)
+        graph_file = Path(temp_dir) / "valid_graph.json"
+        valid_data = {"directed": True, "nodes": [{"id": "n1", "label": "Node 1"}], "links": []}
+        graph_file.write_text(json.dumps(valid_data), encoding="utf-8")
         out_file = Path(temp_dir) / "out.json"
 
         with mock.patch.object(
