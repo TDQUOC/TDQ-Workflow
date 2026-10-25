@@ -273,10 +273,10 @@ def main():
     than = loc_than_luat(doc_than_luat(GOC_LUAT), muc)
     ghi = bool(than) and not already_reminded(cwd, payload, MA_GON)
     pha = effective_phase(state, warn=False)
-    # Lazy load: only load the full law body during phase 'implement' (or when no active request
-    # is open yet, preserving standalone usage). In other phases (idle, analyze, spec, plan, qc,
-    # report), inject a concise 1-line pointer to save ~2,000 tokens of carry-cost per turn.
-    nap_day_du = (pha == "implement") or (not (state or {}).get("active_request"))
+    # Lazy load: only load the full law body during phase 'implement'. In all other phases
+    # (idle, analyze, spec, plan, qc, report) or when no active request is open, inject a
+    # concise 1-line pointer to save ~2,000 tokens of carry-cost per turn.
+    nap_day_du = (pha == "implement")
     law_text = ""
     if ghi:
         if nap_day_du:

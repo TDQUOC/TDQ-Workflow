@@ -2,6 +2,13 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.84.1 — 2026-10-26
+
+Sửa nạp luật SessionStart khi workspace chưa mở request.
+
+- **Giảm context khi chưa có request (`hooks/scripts/session_start.py`).** Chỉ chèn toàn bộ thân luật `[TDQ:GON]` trong phase `implement`; workspace mới hoặc idle chỉ nhận một dòng trỏ tới luật.
+- **Kiểm thử hồi quy.** Bổ sung kiểm tra workspace không có `active_request` và workspace chưa có `state.json`; giữ nguyên nạp luật khi implement và cơ chế chống nhắc trùng.
+
 ## 0.84.0 — 2026-10-25
 
 Tối Ưu Độ Trễ (Latency) Test Runner, Chạy Test Song Song Đa Nhân & Fallback Windows Elevated Cho Archify.
