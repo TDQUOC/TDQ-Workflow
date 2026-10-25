@@ -217,9 +217,18 @@ def main():
     # that does not need it, so those sessions pay nothing for it.
     thong_bao_update_plugin = ""
     try:
-        _, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(goc_plugin=GOC_PLUGIN)
+        _, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(goc_plugin=GOC_PLUGIN, cwd=cwd)
         if msg:
             thong_bao_update_plugin = msg
+    except Exception:  # noqa: BLE001
+        pass
+    thong_bao_update_nen = ""
+    try:
+        thong_bao_update_nen = tdq_setup.doc_thong_bao_update_moi()
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        tdq_setup.kich_hoat_kiem_tra_remote_nen()
     except Exception:  # noqa: BLE001
         pass
     da_cap_nhat_ver = False
@@ -246,6 +255,7 @@ def main():
     )
     nhac = [n for n in (
         thong_bao_update_plugin,
+        thong_bao_update_nen,
         "[TDQ] Đã tự động cập nhật instruction và cấu hình cho phiên bản mới." if da_cap_nhat_ver else "",
         nhac_setup,
         "" if shutil.which("graphify") else
