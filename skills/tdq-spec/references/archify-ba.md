@@ -6,7 +6,7 @@ Load while authoring a full spec, before presenting its approval gate. The curre
 
 Record the actor, trigger, inputs, business rules, happy path, exceptions/fallbacks, outputs and acceptance criteria. Derive existing responsibilities from evidence; label proposed behavior as planned and unresolved claims as unknown. Choose architecture for components, workflow for business steps, sequence for ordered messages, lifecycle for states and ERD for data. Do not drop behavior to meet an arbitrary node count; split views instead.
 
-Read the installed Archify SKILL.md and the selected schema/example. Keep candidates and receipts outside the spec Markdown namespace, for example under `docs/tdq/artifacts/<slug>/`. Use committed citations only against their actual revision; sources use `path`, `line`, `end_line`. Never invent a repository URL or source for planned code.
+Read the installed Archify SKILL.md and the selected schema/example. Keep candidates and receipts outside the spec Markdown namespace, for example under `docs/tdq/artifacts/<slug>/`. Always customize `meta.legend.entries` and `meta.translations` (`viewer.kind.*`, `legend.architecture.*`, `legend.workflow.*`) to match the domain roles of the system (e.g., `Host Adapters`, `Skills & Agents`, `Lifecycle Hooks`, `CLI Runtime`) instead of leaving Web-App defaults (`Frontend`, `Backend`, `Database`). Use committed citations only against their actual revision; sources use `path`, `line`, `end_line`. Never invent a repository URL or source for planned code.
 
 ## Render and bind before approval
 

@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "TDQ-Workflow — 6-Layer System Architecture",
+    "subtitle": "4 Host Adapters · 11 Skills · 6 Sub-Agents · 13 Lifecycle Hooks · 3-Tier Search · 43 CLI Scripts",
+    "output": "overview.html",
+    "locale": "en",
+    "animation": "trace",
+    "visual_preset": "blueprint",
+    "quality_profile": "standard",
+    "legend": {
+      "entries": {
+        "external": { "label": "Host Adapters" },
+        "frontend": { "label": "Skills & Sub-Agents" },
+        "security": { "label": "Lifecycle Hooks" },
+        "cloud": { "label": "3-Tier Search & BA" },
+        "backend": { "label": "CLI Core Runtime" },
+        "messagebus": { "label": "Team & Worktrees" },
+        "database": { "label": "State & Docs Ledger" }
+      }
+    },
+    "translations": {
+      "legend.architecture.external": "Host Adapters",
+      "legend.architecture.frontend": "Skills & Sub-Agents",
+      "legend.architecture.security": "Lifecycle Hooks",
+      "legend.architecture.cloud": "3-Tier Search & BA",
+      "legend.architecture.backend": "CLI Core Runtime",
+      "legend.architecture.messagebus": "Team & Worktrees",
+      "legend.architecture.database": "State & Docs Ledger",
+      "viewer.kind.external": "Host Adapters",
+      "viewer.kind.frontend": "Skills & Sub-Agents",
+      "viewer.kind.security": "Lifecycle Hooks",
+      "viewer.kind.cloud": "3-Tier Search & BA",
+      "viewer.kind.backend": "CLI Core Runtime",
+      "viewer.kind.messagebus": "Team & Worktrees",
+      "viewer.kind.database": "State & Docs Ledger"
+    }
+  },
+  "components": [
+    {
+      "id": "hosts",
+      "type": "external",
+      "label": "4 Host Adapters",
+      "sublabel": "Claude · Codex · OpenCode · AGY",
+      "tag": "adapters",
+      "pos": [50, 90],
+      "size": [210, 72]
+    },
+    {
+      "id": "skills",
+      "type": "frontend",
+      "label": "11 Skills & 6 Agents",
+      "sublabel": "intake · spec · plan · build",
+      "tag": "cognitive",
+      "pos": [50, 320],
+      "size": [210, 72]
+    },
+    {
+      "id": "hooks",
+      "type": "security",
+      "label": "13 Lifecycle Hooks",
+      "sublabel": "6 events · Verify-by-Effect",
+      "tag": "gates",
+      "pos": [420, 90],
+      "size": [210, 72]
+    },
+    {
+      "id": "team",
+      "type": "messagebus",
+      "label": "Team Orchestrator",
+      "sublabel": "tdq_team · TCAS · Worktrees",
+      "tag": "waves",
+      "pos": [770, 90],
+      "size": [210, 72]
+    },
+    {
+      "id": "search",
+      "type": "cloud",
+      "label": "3-Tier Search & Archify",
+      "sublabel": "LSP · Graphify · Archify 2-Tier",
+      "tag": "intelligence",
+      "pos": [420, 320],
+      "size": [210, 72]
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "43 CLI Core Scripts",
+      "sublabel": "tdq_state · tdq_test · tdq_finish",
+      "tag": "stdlib",
+      "pos": [770, 320],
+      "size": [210, 72]
+    },
+    {
+      "id": "state",
+      "type": "database",
+      "label": "State & Docs Ledger",
+      "sublabel": "state.json · docs/tdq · Master Map",
+      "tag": "sha256",
+      "pos": [1120, 205],
+      "size": [210, 72]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Host & Cognitive Layer",
+      "wraps": ["hosts", "skills"],
+      "pad": 22
+    },
+    {
+      "kind": "security-group",
+      "label": "Enforcement, Intelligence & CLI Runtime Layer",
+      "wraps": ["hooks", "team", "search", "cli", "state"],
+      "pad": 22
+    }
+  ],
+  "connections": [
+    { "id": "c_host_skills", "from": "hosts", "to": "skills", "label": "load", "variant": "emphasis", "labelAt": [155, 240] },
+    { "id": "c_host_hooks", "from": "hosts", "to": "hooks", "label": "events", "variant": "security" },
+    { "id": "c_skills_search", "from": "skills", "to": "search", "label": "query", "variant": "emphasis" },
+    { "id": "c_hooks_team", "from": "hooks", "to": "team", "label": "waves" },
+    { "id": "c_hooks_cli", "from": "hooks", "to": "cli", "label": "enforce", "variant": "security", "labelAt": [695, 240] },
+    { "id": "c_search_cli", "from": "search", "to": "cli", "label": "evidence" },
+    { "id": "c_team_state", "from": "team", "to": "state", "label": "sweep", "variant": "dashed" },
+    { "id": "c_cli_state", "from": "cli", "to": "state", "label": "commit", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Unified Multi-Host Architecture",
+      "items": [
+        "Claude Code, Codex, OpenCode, and Antigravity share one canonical skills/ and hooks/ codebase",
+        "11 Skills and 6 specialized Sub-Agents drive Intake, Spec, Plan, Build, and QC"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "3-Tier Search & 2-Tier Archify",
+      "items": [
+        "LSP (compiler semantics), Graphify (AST blast radius), and Grep triangulate code before edits",
+        "Archify renders bound Task BA previews and the project-wide Master Map portal"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Deterministic Enforcement",
+      "items": [
+        "13 Lifecycle Hooks enforce search order, chat approvals, and SHA-256 Verify-by-Effect at Stop",
+        "43 pure-Python CLI scripts manage state.json, radius testing, and isolated Git worktrees"
+      ]
+    }
+  ]
+}

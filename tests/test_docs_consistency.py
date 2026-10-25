@@ -98,6 +98,19 @@ class TaiLieuCaiDatTest(unittest.TestCase):
         da_chot = kien_truc.split("## Đã chốt", 1)[1]
         self.assertIn("2026-09-21", da_chot)
 
+    def test_readme_co_mastermap_va_huong_dan_setup_dependencies(self):
+        with open(os.path.join(ROOT, "README.md"), encoding="utf-8") as f:
+            readme = f.read()
+        for tu_khoa in (
+            "docs/architecture/index.html",
+            "scripts/tdq_setup.py",
+            "agent-lsp",
+            "graphify",
+            "archify",
+        ):
+            with self.subTest(tu_khoa=tu_khoa):
+                self.assertIn(tu_khoa, readme)
+
 
 if __name__ == "__main__":
     unittest.main()

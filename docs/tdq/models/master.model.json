@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "title": "TDQ-Workflow — Master Architecture Portal",
+  "evidence_kind": "working-tree",
+  "source_paths": [
+    "scripts",
+    "hooks",
+    "skills",
+    "agents"
+  ],
+  "coverage": {
+    "modules": [
+      { "id": "skills-layer-11", "status": "selected" },
+      { "id": "agents-layer-6", "status": "selected" },
+      { "id": "hooks-layer-13", "status": "selected" },
+      { "id": "cli-scripts-43", "status": "selected" },
+      { "id": "archify-2tier-engine", "status": "selected" },
+      { "id": "search-3tier-engine", "status": "selected" }
+    ],
+    "excluded": [],
+    "unknown": []
+  },
+  "views": [
+    {
+      "id": "overview",
+      "type": "architecture",
+      "candidate": "overview.json",
+      "summary": "Kiến trúc tổng thể 6 tầng của TDQ-Workflow (4 Host Adapters, 11 Skills, 6 Sub-Agents, 13 Hooks, 3-Tier Search & 43 CLI Scripts)"
+    },
+    {
+      "id": "pipeline-lifecycle",
+      "type": "lifecycle",
+      "candidate": "pipeline-lifecycle.json",
+      "summary": "Máy trạng thái Spec-Driven (7 pha Deep Pipeline, 2 cổng duyệt chữ ký SHA-256 qua chat và vòng lặp tự chữa lành QC)"
+    },
+    {
+      "id": "search-and-archify",
+      "type": "architecture",
+      "candidate": "search-and-archify.json",
+      "summary": "Tam Giác Tìm Kiếm 3 Tầng (LSP, Graphify, Grep) kết hợp Trực quan hóa Archify 2 Tầng (Personal BA & Master Map)"
+    },
+    {
+      "id": "hooks-and-gates",
+      "type": "workflow",
+      "candidate": "hooks-and-gates.json",
+      "summary": "Luồng thực thi 13 Lifecycle Hooks trên 3 làn (Host Events, PreToolUse Hard Gates, Observers & Stop Verify-by-Effect)"
+    }
+  ]
+}

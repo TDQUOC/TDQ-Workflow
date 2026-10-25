@@ -257,22 +257,27 @@ def _render_views_to_staging(
 
 
 def _generate_index_html(validated_model: dict, rendered_views: list[dict]) -> str:
-    """Generate index HTML with escaped text labels and relative links."""
+    """Generate index HTML with escaped text labels, dashboard layout, and relative links."""
     escaped_title = html.escape(str(validated_model.get("title", "Master Architecture")))
     escaped_rev = html.escape(str(validated_model.get("revision", "N/A")))
     escaped_kind = html.escape(str(validated_model.get("evidence_kind", "unknown")))
     coverage = validated_model.get("coverage", {})
     repo_info = validated_model.get("repository") or {}
     escaped_repo_url = html.escape(str(repo_info.get("url", "")))
+    modules_list = coverage.get("modules", [])
+    module_pills = " ".join(
+        f'<span class="module-pill">{html.escape(str(m.get("id", "")))} · {html.escape(str(m.get("status", "selected")))}</span>'
+        for m in modules_list if isinstance(m, dict)
+    )
 
     table_rows = []
     for rv in rendered_views:
         row = (
             f"<tr>"
             f"<td><strong>{html.escape(rv['id'])}</strong></td>"
-            f"<td>{html.escape(rv['type'])}</td>"
+            f"<td><span class=\"type-badge\">{html.escape(rv['type'])}</span></td>"
             f"<td>{html.escape(rv['summary'])}</td>"
-            f"<td><a href=\"{html.escape(rv['file'])}\">View Diagram</a></td>"
+            f"<td><a class=\"view-btn\" href=\"{html.escape(rv['file'])}\">View Diagram</a></td>"
             f"</tr>"
         )
         table_rows.append(row)
@@ -282,41 +287,62 @@ def _generate_index_html(validated_model: dict, rendered_views: list[dict]) -> s
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escaped_title}</title>
   <style>
-    body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 2rem; color: #1a1a1a; }}
-    h1 {{ margin-bottom: 0.5rem; }}
-    .meta-box {{ background: #f4f4f5; padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }}
-    .meta-item {{ margin: 0.25rem 0; }}
-    table {{ border-collapse: collapse; width: 100%; margin-top: 1rem; }}
-    th, td {{ border: 1px solid #e4e4e7; padding: 0.75rem; text-align: left; }}
-    th {{ background: #fafafa; }}
-    a {{ color: #2563eb; text-decoration: none; }}
-    a:hover {{ text-decoration: underline; }}
+    * {{ box-sizing: border-box; }}
+    body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; line-height: 1.6; }}
+    .portal-header {{ background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f8fafc; padding: 3rem 2rem; border-bottom: 1px solid #334155; }}
+    .container {{ max-width: 1160px; margin: 0 auto; padding: 2rem; }}
+    h1 {{ margin: 0 0 0.5rem 0; font-size: 2.25rem; letter-spacing: -0.02em; }}
+    .subtitle {{ color: #94a3b8; margin: 0; font-size: 1.05rem; }}
+    .meta-box {{ background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04); margin-bottom: 2rem; }}
+    .meta-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }}
+    .meta-item {{ background: #f8fafc; padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.95rem; }}
+    .module-bar {{ margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }}
+    .module-pill {{ background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }}
+    h2 {{ font-size: 1.4rem; margin: 1.5rem 0 1rem 0; color: #0f172a; }}
+    table {{ border-collapse: collapse; width: 100%; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04); }}
+    th, td {{ border-bottom: 1px solid #e2e8f0; padding: 1rem 1.25rem; text-align: left; }}
+    th {{ background: #f1f5f9; font-weight: 600; color: #334155; font-size: 0.9rem; }}
+    tr:last-child td {{ border-bottom: none; }}
+    .type-badge {{ background: #f1f5f9; color: #334155; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; }}
+    .view-btn {{ display: inline-block; background: #2563eb; color: #ffffff; padding: 0.45rem 0.95rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }}
+    .view-btn:hover {{ background: #1d4ed8; text-decoration: none; }}
   </style>
 </head>
 <body>
-  <h1>{escaped_title}</h1>
-  <div class="meta-box">
-    <div class="meta-item"><strong>Evidence Kind:</strong> {escaped_kind}</div>
-    <div class="meta-item"><strong>Revision:</strong> {escaped_rev}</div>
-    <div class="meta-item"><strong>Repository:</strong> {escaped_repo_url or 'N/A'}</div>
-    <div class="meta-item"><strong>Coverage:</strong> {len(coverage.get('modules', []))} modules, {len(coverage.get('excluded', []))} excluded, {len(coverage.get('unknown', []))} unknown</div>
-  </div>
-  <h2>Views Inventory</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Type</th>
-        <th>Summary</th>
-        <th>Artifact</th>
-      </tr>
-    </thead>
-    <tbody>
-      {inventory_html}
-    </tbody>
-  </table>
+  <header class="portal-header">
+    <div class="container" style="padding: 0;">
+      <h1>{escaped_title}</h1>
+      <p class="subtitle">Interactive Master Architecture Portal · Verified by TDQ-Workflow &amp; Archify</p>
+    </div>
+  </header>
+  <main class="container">
+    <div class="meta-box">
+      <div class="meta-grid">
+        <div class="meta-item"><strong>Evidence Kind:</strong> {escaped_kind}</div>
+        <div class="meta-item"><strong>Revision:</strong> {escaped_rev}</div>
+        <div class="meta-item"><strong>Repository:</strong> {escaped_repo_url or 'N/A'}</div>
+        <div class="meta-item"><strong>Coverage:</strong> {len(coverage.get('modules', []))} modules, {len(coverage.get('excluded', []))} excluded, {len(coverage.get('unknown', []))} unknown</div>
+      </div>
+      <div class="module-bar">{module_pills}</div>
+    </div>
+    <h2>Views Inventory</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Summary</th>
+          <th>Artifact</th>
+        </tr>
+      </thead>
+      <tbody>
+        {inventory_html}
+      </tbody>
+    </table>
+  </main>
 </body>
 </html>"""
 

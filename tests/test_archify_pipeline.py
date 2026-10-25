@@ -673,6 +673,9 @@ class TestSyncMasterPipeline(unittest.TestCase):
         self.assertIn(html.escape("Master Architecture <Test & Escape>"), content)
         self.assertIn(html.escape("Overview View <Escaped>"), content)
         self.assertNotIn("<Test & Escape>", content)
+        self.assertIn("portal-header", content)
+        self.assertIn("meta-grid", content)
+        self.assertIn("view-btn", content)
 
         manifest_data = json.loads(manifest_json.read_text(encoding="utf-8"))
         self.assertNotIn("tmp", manifest_data["artifact_path"])
