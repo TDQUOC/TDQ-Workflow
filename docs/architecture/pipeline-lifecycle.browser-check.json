@@ -6,9 +6,9 @@
   "status": "pass",
   "visualReview": "not-requested",
   "provenance": "current",
-  "deliveryReceiptId": "93160380-0db8-417b-a5d0-1846a3742583",
+  "deliveryReceiptId": "f9733f98-fc6b-4714-9f0a-c1f337fe2c2d",
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.ff19070703484f4f9f5f7c225eecf141\\pipeline-lifecycle.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.bb36437edd284dbba7847693e92febc2\\pipeline-lifecycle.html",
     "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
     "bytes": 824757
   },

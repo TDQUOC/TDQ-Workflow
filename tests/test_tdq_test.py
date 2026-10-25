@@ -187,6 +187,14 @@ class TronBoKhiTest(RepoTam):
         self.assertTrue(ly_do)
         self.assertIn("60", ly_do)
 
+    def test_ban_kinh_khong_ep_tron_bo_khi_vuot_nguong(self):
+        so = len(tdq_test.tat_ca_module(self.goc))
+        for i in range(so * 2):
+            ghi(self.goc, f"tests/test_nhac_{i:02d}.py", "import lib_a\n")
+        mods_khong_ep, ly_do_khong_ep = tdq_test.ban_kinh(["scripts/lib_a.py"], self.goc, ep_tron_bo=False)
+        self.assertIsNone(ly_do_khong_ep)
+        self.assertGreater(len(mods_khong_ep), 0)
+
     def test_ban_kinh_tron_bo_khi_khong_doc_duoc_py(self):
         ghi(self.goc, "scripts/hong.py", "def (:\n")
         mods, ly_do = self.ban_kinh("scripts/hong.py")
@@ -329,6 +337,25 @@ class VungCham(unittest.TestCase):
         self.assertTrue(dong["fallback"])
         self.assertEqual(len(dong["modules"]), 9)
 
+    def test_vung_cham_khong_ep_tron_bo_cli(self):
+        p = chay_cli(self.goc, "--files", "tests/test_a.py", "--khong-ep-tron-bo")
+        self.assertEqual(p.returncode, 0)
+        self.assertIn("1/9", p.stdout or "")
+
+    def test_vung_cham_ep_tron_bo_cli(self):
+        p = chay_cli(self.goc, "--files", "tests/test_a.py", "--ep-tron-bo")
+        self.assertEqual(p.returncode, 0)
+        self.assertIn("1/9", p.stdout or "")
+
+    def test_tron_bo_parallel_cli(self):
+        env = dict(os.environ)
+        env["PYTHONIOENCODING"] = "utf-8"
+        p = subprocess.run([sys.executable, SCRIPT, "tron-bo", "--repo", self.goc, "--parallel"],
+                           capture_output=True, text=True, encoding="utf-8", env=env,
+                           timeout=120)
+        self.assertEqual(p.returncode, 1)  # test_b fails
+        self.assertIn("[parallel xdist]", p.stdout)
+
     def test_vung_cham_ghi_so_du_truong(self):
         p = chay_cli(self.goc, "--files", "tests\\test_a.py", "tests/test_a.py")
         self.assertEqual(p.returncode, 0, p.stderr)
@@ -445,7 +472,7 @@ class SuaLoi(RepoTam):
         for f in ("setup.py", "docs/gen.py", "tools/run.ps1", "build.sh", "x.js"):
             mods, ly_do = self.ban_kinh(f)
             self.assertTrue(ly_do, f)
-            self.assertIn(f, ly_do)
+            self.assertIn(f, ly_do or "")
             self.assertEqual(mods, tdq_test.tat_ca_module(self.goc))
 
     def test_sua_loi_duoi_khong_ro_tron_bo(self):
@@ -471,7 +498,8 @@ class SuaLoi(RepoTam):
             ghi(self.goc, f"tests/test_dem_{i:02d}.py", "import unittest\nimport helper\n")
         mods, ly_do = self.ban_kinh("tests/helper.py")
         self.assertTrue(ly_do)
-        self.assertIn("60", ly_do)
+        self.assertIn("60", ly_do or "")
+        self.assertEqual(mods, tdq_test.tat_ca_module(self.goc))
 
     @unittest.skipUnless(shutil.which("git"), "git not installed")
     def test_sua_loi_vung_cham_git_doi_docs_va_script_la_khong_tron_bo(self):

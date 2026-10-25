@@ -398,7 +398,7 @@ def _ly_do_khong_doc_duoc(paths, repo):
     return None
 
 
-def _chon(paths, repo, sources):
+def _chon(paths, repo, sources, quet=True, truc_tiep=False):
     chosen = set()
     graph = test_graph = None
     for p in paths:
@@ -407,18 +407,22 @@ def _chon(paths, repo, sources):
             chosen.add(name)
         chosen |= chon_theo_duong_dan(p, sources)
         if _la_nguon_py(p):
-            graph = do_thi_import(repo) if graph is None else graph
-            chosen |= chon_theo_ten_module(bao_dong_nguoc(name[:-3], graph), sources)
+            if truc_tiep:
+                chosen |= chon_theo_ten_module({name[:-3]}, sources)
+            else:
+                graph = do_thi_import(repo) if graph is None else graph
+                chosen |= chon_theo_ten_module(bao_dong_nguoc(name[:-3], graph), sources)
         elif _la_module_phu_test(p):
             if test_graph is None:
                 test_graph = do_thi_import(repo, (TEST_DIR,))
             chosen |= {m + ".py" for m in bao_dong_nguoc(name[:-3], test_graph)
                        if m + ".py" in sources}
-    chosen |= chon_theo_quet({p.split("/")[0] for p in paths}, sources)
+    if quet:
+        chosen |= chon_theo_quet({p.split("/")[0] for p in paths}, sources)
     return chosen
 
 
-def ban_kinh(files, repo):
+def ban_kinh(files, repo, ep_tron_bo=True, quet=True, truc_tiep=False):
     """(sorted test module names, reason to run the full suite instead or None)."""
     paths = sorted({chuan_hoa(f) for f in files if chuan_hoa(f)})
     everything = tat_ca_module(repo)
@@ -428,8 +432,8 @@ def ban_kinh(files, repo):
     if reason:
         return everything, reason
     sources = _nguon_test(repo)
-    chosen = _chon(paths, repo, sources)
-    if everything and len(chosen) >= NGUONG_TRON_BO * len(everything):
+    chosen = _chon(paths, repo, sources, quet=quet, truc_tiep=truc_tiep)
+    if ep_tron_bo and everything and len(chosen) >= NGUONG_TRON_BO * len(everything):
         return everything, "radius %d/%d modules reaches the %d%% threshold" % (
             len(chosen), len(everything), round(NGUONG_TRON_BO * 100))
     return sorted(chosen), None
@@ -600,6 +604,11 @@ def cmd_vung_cham(args):
     start = time.monotonic()
     repo = os.path.abspath(args.repo)
     state = _doc_state(repo)
+    phase = state.get("phase")
+    ep_tron_bo = getattr(args, "ep_tron_bo", False)
+    khong_ep = getattr(args, "khong_ep_tron_bo", False)
+    can_ep = ep_tron_bo or (phase != "implement" and not khong_ep)
+
     if args.files is not None:
         files, reason = sorted({chuan_hoa(f) for f in args.files if chuan_hoa(f)}), None
     else:
@@ -609,7 +618,7 @@ def cmd_vung_cham(args):
     if reason:
         modules = tat_ca_module(repo)
     else:
-        modules, reason = ban_kinh(files, repo)
+        modules, reason = ban_kinh(files, repo, ep_tron_bo=can_ep, quet=can_ep, truc_tiep=(not can_ep))
     silent = getattr(args, "silent", False)
     if not silent:
         if reason:
@@ -674,12 +683,38 @@ def _module_cua(test):
     return name + ".py" if name.startswith("test_") else None
 
 
-def chay_tron_bo(repo, stream=None):
-    """Run every `tests/test_*.py` in THIS process. (ok, sorted failing module names)."""
-    import unittest  # lazy: see the import note at the top of the module
+def chay_tron_bo(repo, stream=None, parallel=False):
+    """Run every `tests/test_*.py`. (ok, sorted failing module names)."""
     tests_dir = os.path.join(repo, "tests")
     if not os.path.isdir(tests_dir):
         return True, []
+    if parallel:
+        try:
+            cmd = [
+                sys.executable, "-m", "pytest",
+                "-n", "auto",
+                "-p", "no:tmpdir",
+                "-q",
+                "--tb=line",
+                tests_dir
+            ]
+            proc = subprocess.run(cmd, cwd=repo, capture_output=True, text=True, encoding="utf-8", errors="replace")
+            if stream:
+                stream.write(proc.stdout + "\n" + proc.stderr)
+            ok = proc.returncode == 0
+            failed = []
+            if not ok:
+                for line in proc.stdout.splitlines():
+                    if "FAILED " in line or "ERROR " in line:
+                        for token in line.split():
+                            norm = token.replace("\\", "/")
+                            if norm.startswith("tests/test_") and norm.endswith(".py"):
+                                failed.append(norm.split("/")[-1])
+            return ok, sorted(set(failed))
+        except Exception as exc:
+            if stream:
+                stream.write(f"Parallel run failed, falling back to unittest: {exc}\n")
+    import unittest  # lazy: see the import note at the top of the module
     _bo_module_cu(tests_dir, tat_ca_module(repo))
     suite = unittest.defaultTestLoader.discover(tests_dir, pattern="test_*.py",
                                                 top_level_dir=tests_dir)
@@ -746,8 +781,10 @@ def cmd_tron_bo(args):
     request, phase = state.get("active_request"), state.get("phase")
     total = len(tat_ca_module(repo))
     silent = getattr(args, "silent", False)
+    parallel = getattr(args, "parallel", False)
     if not silent:
-        print(f"tron-bo: running the full suite ({total} modules)")
+        par_txt = " [parallel xdist]" if parallel else ""
+        print(f"tron-bo: running the full suite ({total} modules){par_txt}")
         sys.stdout.flush()
     log_file = None
     stream = None
@@ -757,7 +794,7 @@ def cmd_tron_bo(args):
         log_file = open(log_path, "w", encoding="utf-8")
         stream = log_file
     try:
-        ok, failed = chay_tron_bo(repo, stream=stream)
+        ok, failed = chay_tron_bo(repo, stream=stream, parallel=parallel)
     finally:
         if log_file:
             log_file.close()
@@ -823,8 +860,14 @@ def main(argv=None):
     p = sub.add_parser("vung-cham", parents=[common], help="run the tests of the touched zone and its radius")
     p.add_argument("--files", nargs="*", default=None,
                    help="changed files (default: from git against nhanh_goc)")
+    p.add_argument("--ep-tron-bo", action="store_true", default=False,
+                   help="ép chạy toàn bộ suite khi vượt ngưỡng radius (mặc định tắt trong phase implement)")
+    p.add_argument("--khong-ep-tron-bo", action="store_true", default=False,
+                   help="không ép chạy toàn bộ suite ngay cả ngoài phase implement")
     p.set_defaults(func=cmd_vung_cham)
     p = sub.add_parser("tron-bo", parents=[common], help="run the full suite in one process and log misses")
+    p.add_argument("--parallel", "-n", action="store_true", default=False,
+                   help="chạy song song đa tiến trình với pytest-xdist nếu có")
     p.set_defaults(func=cmd_tron_bo)
     p = sub.add_parser("so", parents=[common], help="count full-suite runs and radius misses of the request")
     p.add_argument("--json", action="store_true", help="print one JSON object")

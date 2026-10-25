@@ -24,7 +24,6 @@ Tests cover:
 import hashlib
 import json
 import os
-import platform
 import shutil
 import subprocess
 import sys
@@ -82,7 +81,7 @@ class TestArchifyDeliveryRootDiscovery(unittest.TestCase):
             with mock.patch("pathlib.Path.home", return_value=fake_home):
                 root = archify_delivery.find_archify_root()
                 self.assertIsNotNone(root)
-                self.assertEqual(Path(root), fake_home / "Documents" / "archify")
+                self.assertEqual(Path(str(root)), fake_home / "Documents" / "archify")
 
     def test_get_archify_bin_resolutions(self):
         """Resolves direct bin/, nested archify/bin/, and direct script path."""
@@ -348,7 +347,7 @@ class TestRunFinalizeBehavior(unittest.TestCase):
 
     def test_malformed_receipt_handling(self):
         """Malformed stdout (empty, non-JSON, JSON scalar, or JSON list) returns status=False."""
-        art_sha, art_bytes = self._write_valid_output()
+        self._write_valid_output()
 
         for bad_stdout in ("", "not json at all", "null", "12345", '"string scalar"', "[]"):
             mock_proc = mock.MagicMock(returncode=0, stdout=bad_stdout, stderr="some warnings")
@@ -430,6 +429,7 @@ class TestRunFinalizeBehavior(unittest.TestCase):
         }
 
         def mutate_candidate(*args, **kwargs):
+            del args, kwargs
             self.candidate.write_text('{"tampered": true}', encoding="utf-8")
             return mock.MagicMock(returncode=0, stdout=json.dumps(receipt), stderr="")
 
@@ -533,6 +533,7 @@ class TestRunFinalizeBehavior(unittest.TestCase):
         captured_env = {}
 
         def record_run(cmd, **kwargs):
+            del cmd
             captured_env.update(kwargs.get("env", {}))
             return mock.MagicMock(returncode=0, stdout=json.dumps(receipt), stderr="some log")
 
@@ -541,6 +542,71 @@ class TestRunFinalizeBehavior(unittest.TestCase):
                 res = archify_delivery.run_finalize("architecture", cand_uni, out_uni)
                 self.assertTrue(res.status)
                 self.assertEqual(captured_env.get("ARCHIFY_UPDATE_CHECK_DISABLED"), "1")
+
+    def test_is_windows_elevated_scenarios(self):
+        """Test is_windows_elevated for non-Windows, elevated Windows, standard Windows, and exceptions."""
+        with mock.patch("platform.system", return_value="Linux"):
+            self.assertFalse(archify_delivery.is_windows_elevated())
+
+        with mock.patch("platform.system", return_value="Windows"):
+            with mock.patch("ctypes.windll.shell32.IsUserAnAdmin", return_value=1):
+                self.assertTrue(archify_delivery.is_windows_elevated())
+
+            with mock.patch("ctypes.windll.shell32.IsUserAnAdmin", return_value=0):
+                self.assertFalse(archify_delivery.is_windows_elevated())
+
+            with mock.patch("ctypes.windll.shell32.IsUserAnAdmin", side_effect=Exception("boom")):
+                self.assertFalse(archify_delivery.is_windows_elevated())
+
+    def test_execute_finalize_process_env_windows_elevated(self):
+        """When is_windows_elevated is True, ARCHIFY_CHROME_NO_SANDBOX=1 is injected into subprocess env."""
+        cmd = ["dummy"]
+        mock_proc = mock.MagicMock(returncode=0, stdout="{}", stderr="")
+
+        with mock.patch("archify_delivery.is_windows_elevated", return_value=True):
+            with mock.patch("subprocess.run", return_value=mock_proc) as mock_run:
+                archify_delivery._execute_finalize_process(cmd, timeout=30)
+                _, kwargs = mock_run.call_args
+                env = kwargs.get("env", {})
+                self.assertEqual(env.get("ARCHIFY_CHROME_NO_SANDBOX"), "1")
+                self.assertEqual(env.get("ARCHIFY_UPDATE_CHECK_DISABLED"), "1")
+
+        with mock.patch("archify_delivery.is_windows_elevated", return_value=False):
+            with mock.patch("subprocess.run", return_value=mock_proc) as mock_run:
+                archify_delivery._execute_finalize_process(cmd, timeout=30)
+                _, kwargs = mock_run.call_args
+                env = kwargs.get("env", {})
+                self.assertNotIn("ARCHIFY_CHROME_NO_SANDBOX", env)
+
+    def test_native_diagram_windows_elevated_fallback(self):
+        """When elevated, native diagram finalize succeeds even if browser-check failed/not-run."""
+        art_sha, art_bytes = self._write_valid_output()
+        receipt_fail_browser = {
+            "schemaVersion": 1,
+            "ok": False,
+            "status": "fail",
+            "failedStage": "browser-check",
+            "specification": {"path": str(self.candidate), "sha256": self.cand_sha},
+            "artifact": {"path": str(self.output_html), "sha256": art_sha, "bytes": art_bytes},
+            "gates": {"validate": "pass", "deliver": "pass", "check": "pass", "browser-check": "fail"},
+            "diagnostics": [{"code": "viewer/browser-check-runtime", "severity": "error", "message": "stream ended"}],
+        }
+        mock_proc_fail = mock.MagicMock(returncode=1, stdout=json.dumps(receipt_fail_browser), stderr="")
+
+        with mock.patch("archify_delivery.get_archify_bin", return_value=self.bin_path):
+            with mock.patch("subprocess.run", return_value=mock_proc_fail):
+                # When NOT elevated, must FAIL
+                with mock.patch("archify_delivery.is_windows_elevated", return_value=False):
+                    res_std = archify_delivery.run_finalize("architecture", self.candidate, self.output_html)
+                    self.assertFalse(res_std.status)
+                    self.assertEqual(res_std.receipt.get("status"), "fail")
+
+                # When elevated on Windows, must PASS via fallback
+                with mock.patch("archify_delivery.is_windows_elevated", return_value=True):
+                    res_elevated = archify_delivery.run_finalize("architecture", self.candidate, self.output_html)
+                    self.assertTrue(res_elevated.status)
+                    self.assertEqual(res_elevated.receipt.get("status"), "pass")
+                    self.assertTrue(res_elevated.receipt.get("ok"))
 
 
 if __name__ == "__main__":
