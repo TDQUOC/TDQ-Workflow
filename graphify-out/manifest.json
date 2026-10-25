@@ -6,10 +6,10 @@
     "semantic_hash": "80ef98b882da0cfb57f0bc2a2c634788"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1792936839.3897672,
-    "seen": 1792944028.5129325,
-    "ast_hash": "c484145f53549f94f2fb750bc544df8e",
-    "semantic_hash": "c484145f53549f94f2fb750bc544df8e"
+    "mtime": 1792944684.3197408,
+    "seen": 1792944993.5338213,
+    "ast_hash": "a0762ea75aed0c6f589f3aba96c57e4f",
+    "semantic_hash": "a0762ea75aed0c6f589f3aba96c57e4f"
   },
   ".claude/settings.json": {
     "mtime": 1789900266.4991295,
@@ -439,10 +439,10 @@
     "semantic_hash": "41b15e96b67c441f2d65a1125974b705"
   },
   ".codex-plugin/plugin.json": {
-    "mtime": 1792936841.8861864,
-    "seen": 1792944028.5131612,
-    "ast_hash": "ab8bfb26b5a9ed64138e3f31ca109bb7",
-    "semantic_hash": "ab8bfb26b5a9ed64138e3f31ca109bb7"
+    "mtime": 1792944692.184718,
+    "seen": 1792944993.5340917,
+    "ast_hash": "5b372f5f28e8c8ff8b8061ce3584418d",
+    "semantic_hash": "5b372f5f28e8c8ff8b8061ce3584418d"
   },
   ".opencode/plugins/tdq-workflow.js": {
     "mtime": 1790138252.4325833,
@@ -463,10 +463,10 @@
     "semantic_hash": "24325d1fd31510142978f9812d999790"
   },
   "scripts/tdq_setup.py": {
-    "mtime": 1792936811.9658935,
-    "seen": 1792944028.5263512,
-    "ast_hash": "76f403693d69632b2bd9d44335b28dff",
-    "semantic_hash": "76f403693d69632b2bd9d44335b28dff"
+    "mtime": 1792944951.1037252,
+    "seen": 1792944993.5452893,
+    "ast_hash": "64fbaf8d5a1aa4aefee08898ddc100ca",
+    "semantic_hash": "64fbaf8d5a1aa4aefee08898ddc100ca"
   },
   "scripts/utf8_io.py": {
     "mtime": 1792250782.771837,
@@ -535,8 +535,8 @@
     "semantic_hash": "e1dd3ecd9d6ce983d177a6f69d88d942"
   },
   "scripts/tdq_test.py": {
-    "mtime": 1792943824.1842566,
-    "seen": 1792944028.526752,
+    "mtime": 1792944152.1765394,
+    "seen": 1792944993.5456755,
     "ast_hash": "04bf6ff2fd5e19878920837f3580fb2e",
     "semantic_hash": "04bf6ff2fd5e19878920837f3580fb2e"
   },
@@ -643,8 +643,8 @@
     "semantic_hash": "51c16ee3083f95ba3d70da9290767c2e"
   },
   "scripts/archify_delivery.py": {
-    "mtime": 1792943940.6552374,
-    "seen": 1792944028.5202057,
+    "mtime": 1792944152.1759622,
+    "seen": 1792944993.5401623,
     "ast_hash": "1a10facd93942612f9996dd94565a7df",
     "semantic_hash": "1a10facd93942612f9996dd94565a7df"
   },

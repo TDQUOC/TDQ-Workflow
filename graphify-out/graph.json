@@ -4703,7 +4703,7 @@
       "file_type": "code",
       "norm_label": "chay_cli()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1524"
+      "source_location": "L1525"
     },
     {
       "id": "scripts_tdq_setup_khai_codex_mac_dinh",
@@ -4714,7 +4714,7 @@
       "file_type": "code",
       "norm_label": "_khai_codex_mac_dinh()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1515"
+      "source_location": "L1516"
     },
     {
       "id": "scripts_tdq_setup_ghi_args_mcp",
@@ -8542,7 +8542,7 @@
       "file_type": "code",
       "norm_label": "ghim_huong_dan_tool()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1003"
+      "source_location": "L1004"
     },
     {
       "id": "scripts_tdq_setup_khoi_huong_dan",
@@ -8553,7 +8553,7 @@
       "file_type": "code",
       "norm_label": "khoi_huong_dan()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L989"
+      "source_location": "L990"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen",
@@ -8564,7 +8564,7 @@
       "file_type": "code",
       "norm_label": "khoi_tao_nen()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1389"
+      "source_location": "L1390"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_buoc",
@@ -8575,7 +8575,7 @@
       "file_type": "code",
       "norm_label": "buoc()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1417"
+      "source_location": "L1418"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_chay_an_toan",
@@ -8586,7 +8586,7 @@
       "file_type": "code",
       "norm_label": "chay_an_toan()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1406"
+      "source_location": "L1407"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_codex",
@@ -8597,7 +8597,7 @@
       "file_type": "code",
       "norm_label": "codex()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1463"
+      "source_location": "L1464"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_con_lai",
@@ -8608,7 +8608,7 @@
       "file_type": "code",
       "norm_label": "con_lai()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1403"
+      "source_location": "L1404"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_don",
@@ -8619,7 +8619,7 @@
       "file_type": "code",
       "norm_label": "don()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1458"
+      "source_location": "L1459"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_graphify",
@@ -8630,7 +8630,7 @@
       "file_type": "code",
       "norm_label": "graphify()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1471"
+      "source_location": "L1472"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_kiem",
@@ -8641,7 +8641,7 @@
       "file_type": "code",
       "norm_label": "kiem()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1484"
+      "source_location": "L1485"
     },
     {
       "id": "scripts_tdq_setup_log",
@@ -8674,7 +8674,7 @@
       "file_type": "code",
       "norm_label": "_tang_tu_smoke()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1379"
+      "source_location": "L1380"
     },
     {
       "id": "scripts_tdq_setup_thuc_hien_setup_bu",
@@ -8685,7 +8685,7 @@
       "file_type": "code",
       "norm_label": "thuc_hien_setup_bu()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1152"
+      "source_location": "L1153"
     },
     {
       "id": "scripts_tdq_setup_tim_cong_cu",
@@ -8696,7 +8696,7 @@
       "file_type": "code",
       "norm_label": "_tim_cong_cu()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1078"
+      "source_location": "L1079"
     },
     {
       "id": "scripts_doc_dup_bam_shingle",
@@ -10368,7 +10368,7 @@
       "file_type": "code",
       "norm_label": "_chay_mac_dinh()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1374"
+      "source_location": "L1375"
     },
     {
       "id": "scripts_tdq_setup_doc_san_sang",
@@ -10379,7 +10379,7 @@
       "file_type": "code",
       "norm_label": "doc_san_sang()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1222"
+      "source_location": "L1223"
     },
     {
       "id": "scripts_tdq_setup_duong_khoa",
@@ -10390,7 +10390,7 @@
       "file_type": "code",
       "norm_label": "_duong_khoa()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1218"
+      "source_location": "L1219"
     },
     {
       "id": "scripts_tdq_setup_duong_moc",
@@ -10401,7 +10401,7 @@
       "file_type": "code",
       "norm_label": "_duong_moc()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1083"
+      "source_location": "L1084"
     },
     {
       "id": "scripts_tdq_setup_ghi_san_sang",
@@ -10412,7 +10412,7 @@
       "file_type": "code",
       "norm_label": "ghi_san_sang()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1232"
+      "source_location": "L1233"
     },
     {
       "id": "scripts_tdq_setup_giu_khoa",
@@ -10423,7 +10423,7 @@
       "file_type": "code",
       "norm_label": "giu_khoa()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1329"
+      "source_location": "L1330"
     },
     {
       "id": "scripts_tdq_setup_khoa_cu",
@@ -10434,7 +10434,7 @@
       "file_type": "code",
       "norm_label": "_khoa_cu()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1311"
+      "source_location": "L1312"
     },
     {
       "id": "scripts_tdq_setup_nha_khoa",
@@ -10445,7 +10445,7 @@
       "file_type": "code",
       "norm_label": "nha_khoa()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1362"
+      "source_location": "L1363"
     },
     {
       "id": "scripts_tdq_setup_pid_con_song",
@@ -10456,7 +10456,7 @@
       "file_type": "code",
       "norm_label": "_pid_con_song()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1257"
+      "source_location": "L1258"
     },
     {
       "id": "scripts_tdq_setup_pid_con_song_windows",
@@ -10467,7 +10467,7 @@
       "file_type": "code",
       "norm_label": "_pid_con_song_windows()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1282"
+      "source_location": "L1283"
     },
     {
       "id": "scripts_tdq_setup_tai_mac_dinh",
@@ -10632,7 +10632,7 @@
       "file_type": "code",
       "norm_label": "cai()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1439"
+      "source_location": "L1440"
     },
     {
       "id": "scripts_tdq_setup_khoi_tao_nen_cai_chay_lenh",
@@ -10643,7 +10643,7 @@
       "file_type": "code",
       "norm_label": "chay_lenh()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1440"
+      "source_location": "L1441"
     },
     {
       "id": "scripts_tdq_setup_kiem_dryrun_hook",
@@ -10654,7 +10654,7 @@
       "file_type": "code",
       "norm_label": "kiem_dryrun_hook()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L883"
+      "source_location": "L884"
     },
     {
       "id": "scripts_tdq_setup_kiem_tra_archify",
@@ -10665,7 +10665,7 @@
       "file_type": "code",
       "norm_label": "kiem_tra_archify()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L920"
+      "source_location": "L921"
     },
     {
       "id": "scripts_tdq_setup_kiem_va_cai_shim_python3",
@@ -10676,7 +10676,7 @@
       "file_type": "code",
       "norm_label": "kiem_va_cai_shim_python3()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L857"
+      "source_location": "L858"
     },
     {
       "id": "scripts_tdq_setup_main",
@@ -10687,7 +10687,7 @@
       "file_type": "code",
       "norm_label": "main()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1534"
+      "source_location": "L1535"
     },
     {
       "id": "scripts_tdq_setup_no_skill_khong_ton_tai",
@@ -10698,7 +10698,7 @@
       "file_type": "code",
       "norm_label": "no_skill_khong_ton_tai()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1032"
+      "source_location": "L1033"
     },
     {
       "id": "scripts_tdq_setup_parse_args",
@@ -10709,7 +10709,7 @@
       "file_type": "code",
       "norm_label": "parse_args()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1502"
+      "source_location": "L1503"
     },
     {
       "id": "scripts_tdq_setup_va_hook_xung_dot",
@@ -12865,7 +12865,7 @@
       "file_type": "code",
       "norm_label": "can_cap_nhat_phien_ban()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1141"
+      "source_location": "L1142"
     },
     {
       "id": "scripts_tdq_setup_doc_phat_hanh",
@@ -12876,7 +12876,7 @@
       "file_type": "code",
       "norm_label": "doc_phat_hanh()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1091"
+      "source_location": "L1092"
     },
     {
       "id": "scripts_tdq_setup_doc_phien_ban_plugin",
@@ -12887,7 +12887,7 @@
       "file_type": "code",
       "norm_label": "doc_phien_ban_plugin()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1126"
+      "source_location": "L1127"
     },
     {
       "id": "scripts_tdq_setup_duong_phat_hanh",
@@ -12898,7 +12898,7 @@
       "file_type": "code",
       "norm_label": "_duong_phat_hanh()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1087"
+      "source_location": "L1088"
     },
     {
       "id": "scripts_tdq_setup_ghi_phat_hanh",
@@ -12909,7 +12909,7 @@
       "file_type": "code",
       "norm_label": "ghi_phat_hanh()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1101"
+      "source_location": "L1102"
     },
     {
       "id": "scripts_tdq_setup_la_project_that",
@@ -12942,7 +12942,7 @@
       "file_type": "code",
       "norm_label": "tu_dong_cap_nhat_khi_doi_phien_ban()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1204"
+      "source_location": "L1205"
     },
     {
       "id": "scripts_tdq_setup_tu_dong_cap_nhat_plugin_user",
@@ -15340,7 +15340,7 @@
       "file_type": "code",
       "norm_label": "can_kiem_tra_remote()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L755"
+      "source_location": "L756"
     },
     {
       "id": "scripts_tdq_setup_doc_thong_bao_update_moi",
@@ -15351,7 +15351,7 @@
       "file_type": "code",
       "norm_label": "doc_thong_bao_update_moi()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L846"
+      "source_location": "L847"
     },
     {
       "id": "scripts_tdq_setup_doc_update_stamp",
@@ -15362,7 +15362,7 @@
       "file_type": "code",
       "norm_label": "doc_update_stamp()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L725"
+      "source_location": "L726"
     },
     {
       "id": "scripts_tdq_setup_duong_update_stamp",
@@ -15373,7 +15373,7 @@
       "file_type": "code",
       "norm_label": "_duong_update_stamp()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L720"
+      "source_location": "L721"
     },
     {
       "id": "scripts_tdq_setup_ghi_update_stamp",
@@ -15384,7 +15384,7 @@
       "file_type": "code",
       "norm_label": "ghi_update_stamp()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L735"
+      "source_location": "L736"
     },
     {
       "id": "scripts_tdq_setup_kich_hoat_kiem_tra_remote_nen",
@@ -15395,7 +15395,7 @@
       "file_type": "code",
       "norm_label": "kich_hoat_kiem_tra_remote_nen()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L821"
+      "source_location": "L822"
     },
     {
       "id": "scripts_tdq_setup_now",
@@ -15417,7 +15417,7 @@
       "file_type": "code",
       "norm_label": "thuc_hien_cap_nhat_remote()",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L772"
+      "source_location": "L773"
     },
     {
       "id": "scripts_tdq_setup_duoi_can_quet",
@@ -20322,24 +20322,24 @@
       "source_location": "L465"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1516",
+      "id": "scripts_tdq_setup_rationale_1517",
       "label": "The CLI's Codex step: the lsp MCP server, then the search gate in the project's\u2026",
       "_origin": "ast",
       "community": 151,
       "file_type": "rationale",
       "norm_label": "the cli's codex step: the lsp mcp server, then the search gate in the project's...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1516"
+      "source_location": "L1517"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1525",
+      "id": "scripts_tdq_setup_rationale_1526",
       "label": "The command line entry: `main` WITH the Codex MCP declaration turned on. Why\u2026",
       "_origin": "ast",
       "community": 151,
       "file_type": "rationale",
       "norm_label": "the command line entry: `main` with the codex mcp declaration turned on. why...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1525"
+      "source_location": "L1526"
     },
     {
       "id": "scripts_tdq_setup_rationale_292",
@@ -23117,14 +23117,14 @@
       "source_location": "L92"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1004",
+      "id": "scripts_tdq_setup_rationale_1005",
       "label": "Ghim b\u1ea3n ng\u1eafn c\u1ee7a lu\u1eadt 3 t\u1ea7ng v\u00e0o instruction user-level, trong m\u1ed9t kh\u1ed1i c\u00f3 d\u1ea5u\u2026",
       "_origin": "ast",
       "community": 32,
       "file_type": "rationale",
       "norm_label": "ghim ban ngan cua luat 3 tang vao instruction user-level, trong mot khoi co dau...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1004"
+      "source_location": "L1005"
     },
     {
       "id": "scripts_tdq_setup_rationale_104",
@@ -23137,44 +23137,44 @@
       "source_location": "L104"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1079",
+      "id": "scripts_tdq_setup_rationale_1080",
       "label": "Path of an external tool on PATH, or None. One seam so tests never find real\u2026",
       "_origin": "ast",
       "community": 32,
       "file_type": "rationale",
       "norm_label": "path of an external tool on path, or none. one seam so tests never find real...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1079"
+      "source_location": "L1080"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1153",
+      "id": "scripts_tdq_setup_rationale_1154",
       "label": "Ch\u1ea1y ki\u1ec3m th\u1eed v\u00e0 thi\u1ebft l\u1eadp b\u00f9 c\u00e1c th\u00e0nh ph\u1ea7n m\u1edbi t\u1eeb version c\u0169 l\u00ean version m\u1edbi.",
       "_origin": "ast",
       "community": 32,
       "file_type": "rationale",
       "norm_label": "chay kiem thu va thiet lap bu cac thanh phan moi tu version cu len version moi.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1153"
+      "source_location": "L1154"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1380",
+      "id": "scripts_tdq_setup_rationale_1381",
       "label": "[(layer, passed, detail)] -> the stamp's `tang` dict, always with the three\u2026",
       "_origin": "ast",
       "community": 32,
       "file_type": "rationale",
       "norm_label": "[(layer, passed, detail)] -> the stamp's `tang` dict, always with the three...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1380"
+      "source_location": "L1381"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1390",
+      "id": "scripts_tdq_setup_rationale_1391",
       "label": "The `--nen` body: build the expensive layers in the background, then write the\u2026",
       "_origin": "ast",
       "community": 32,
       "file_type": "rationale",
       "norm_label": "the `--nen` body: build the expensive layers in the background, then write the...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1390"
+      "source_location": "L1391"
     },
     {
       "id": "scripts_tdq_setup_rationale_411",
@@ -23197,14 +23197,14 @@
       "source_location": "L94"
     },
     {
-      "id": "scripts_tdq_setup_rationale_990",
+      "id": "scripts_tdq_setup_rationale_991",
       "label": "Kh\u1ed1i ghim, v\u1edbi \u0111\u01b0\u1eddng d\u1eabn TUY\u1ec6T \u0110\u1ed0I c\u1ee7a b\u1ea3n c\u00e0i tr\u00ean m\u00e1y n\u00e0y. Hai b\u1ea3n tr\u01b0\u1edbc \u0111\u1ec1u\u2026",
       "_origin": "ast",
       "community": 32,
       "file_type": "rationale",
       "norm_label": "khoi ghim, voi \u0111uong dan tuyet \u0111oi cua ban cai tren may nay. hai ban truoc \u0111eu...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L990"
+      "source_location": "L991"
     },
     {
       "id": "scripts_doc_dup",
@@ -24620,84 +24620,84 @@
       "source_location": "L1"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1223",
+      "id": "scripts_tdq_setup_rationale_1224",
       "label": "-> the readiness stamp as a dict, or None when it is missing, unreadable or\u2026",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "-> the readiness stamp as a dict, or none when it is missing, unreadable or...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1223"
+      "source_location": "L1224"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1233",
+      "id": "scripts_tdq_setup_rationale_1234",
       "label": "Write the stamp atomically (temp file + os.replace) -> True when written.\u2026",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "write the stamp atomically (temp file + os.replace) -> true when written....",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1233"
+      "source_location": "L1234"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1258",
+      "id": "scripts_tdq_setup_rationale_1259",
       "label": "Is process `pid` alive? Cross-platform, never raises; unsure counts as alive.\u2026",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "is process `pid` alive? cross-platform, never raises; unsure counts as alive....",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1258"
+      "source_location": "L1259"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1283",
+      "id": "scripts_tdq_setup_rationale_1284",
       "label": "Windows liveness via OpenProcess + GetExitCodeProcess (os.kill(pid, 0) would\u2026",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "windows liveness via openprocess + getexitcodeprocess (os.kill(pid, 0) would...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1283"
+      "source_location": "L1284"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1312",
+      "id": "scripts_tdq_setup_rationale_1313",
       "label": "Is the lock at `duong` stale: unreadable pid, dead pid, or older than TRAN_GIAY?",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "is the lock at `duong` stale: unreadable pid, dead pid, or older than tran_giay?",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1312"
+      "source_location": "L1313"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1330",
+      "id": "scripts_tdq_setup_rationale_1331",
       "label": "Take the build lock -> True when this process holds it now. O_CREAT|O_EXCL\u2026",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "take the build lock -> true when this process holds it now. o_creat|o_excl...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1330"
+      "source_location": "L1331"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1363",
+      "id": "scripts_tdq_setup_rationale_1364",
       "label": "Release the build lock \u2014 only if it is still ours. Never raises.",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "release the build lock \u2014 only if it is still ours. never raises.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1363"
+      "source_location": "L1364"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1375",
+      "id": "scripts_tdq_setup_rationale_1376",
       "label": "Default command runner of the background build: no shell, bounded, never raises.",
       "_origin": "ast",
       "community": 43,
       "file_type": "rationale",
       "norm_label": "default command runner of the background build: no shell, bounded, never raises.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1375"
+      "source_location": "L1376"
     },
     {
       "id": "scripts_tdq_setup_rationale_166",
@@ -25082,14 +25082,14 @@
       "source_location": "L95"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1033",
+      "id": "scripts_tdq_setup_rationale_1034",
       "label": "-> n\u1ee3 cho m\u1ed7i skill m\u00e0 b\u1ea3n m\u1eabu instruction b\u1ea3o d\u00f9ng nh\u01b0ng m\u00e1y n\u00e0y kh\u00f4ng c\u00f3. M\u1ed9t\u2026",
       "_origin": "ast",
       "community": 46,
       "file_type": "rationale",
       "norm_label": "-> no cho moi skill ma ban mau instruction bao dung nhung may nay khong co. mot...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1033"
+      "source_location": "L1034"
     },
     {
       "id": "scripts_tdq_setup_rationale_132",
@@ -25142,34 +25142,34 @@
       "source_location": "L510"
     },
     {
-      "id": "scripts_tdq_setup_rationale_858",
+      "id": "scripts_tdq_setup_rationale_859",
       "label": "T\u1ef1 \u0111\u1ed9ng ki\u1ec3m tra v\u00e0 c\u00e0i \u0111\u1eb7t shim python3 tr\u00ean Windows n\u1ebfu thi\u1ebfu ho\u1eb7c l\u1ed7i. ->\u2026",
       "_origin": "ast",
       "community": 46,
       "file_type": "rationale",
       "norm_label": "tu \u0111ong kiem tra va cai \u0111at shim python3 tren windows neu thieu hoac loi. ->...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L858"
+      "source_location": "L859"
     },
     {
-      "id": "scripts_tdq_setup_rationale_884",
+      "id": "scripts_tdq_setup_rationale_885",
       "label": "Ch\u1ea1y th\u1eed (smoke dry-run) script hook b\u1eb1ng l\u1ec7nh c\u1ea5u h\u00ecnh \u0111\u1ec3 \u0111\u1ea3m b\u1ea3o hook kh\u00f4ng\u2026",
       "_origin": "ast",
       "community": 46,
       "file_type": "rationale",
       "norm_label": "chay thu (smoke dry-run) script hook bang lenh cau hinh \u0111e \u0111am bao hook khong...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L884"
+      "source_location": "L885"
     },
     {
-      "id": "scripts_tdq_setup_rationale_921",
+      "id": "scripts_tdq_setup_rationale_922",
       "label": "Ki\u1ec3m tra m\u00f4i tr\u01b0\u1eddng ch\u1ea1y cho Archify t\u00e1i s\u1eed d\u1ee5ng\u2026",
       "_origin": "ast",
       "community": 46,
       "file_type": "rationale",
       "norm_label": "kiem tra moi truong chay cho archify tai su dung...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L921"
+      "source_location": "L922"
     },
     {
       "id": "scripts_archify_artifacts_py_any",
@@ -26753,54 +26753,54 @@
       "source_location": "L85"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1092",
+      "id": "scripts_tdq_setup_rationale_1093",
       "label": "-> m\u1ed1c phi\u00ean b\u1ea3n \u0111\u00e3 setup c\u1ee7a project, ho\u1eb7c None n\u1ebfu ch\u01b0a c\u00f3/l\u1ed7i.",
       "_origin": "ast",
       "community": 60,
       "file_type": "rationale",
       "norm_label": "-> moc phien ban \u0111a setup cua project, hoac none neu chua co/loi.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1092"
+      "source_location": "L1093"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1102",
+      "id": "scripts_tdq_setup_rationale_1103",
       "label": "Ghi m\u1ed1c phi\u00ean b\u1ea3n \u0111\u00e3 setup cho project (kh\u00f4ng ghi \u0111\u00e8 n\u1ebfu phi\u00ean b\u1ea3n hi\u1ec7n c\u00f3 cao\u2026",
       "_origin": "ast",
       "community": 60,
       "file_type": "rationale",
       "norm_label": "ghi moc phien ban \u0111a setup cho project (khong ghi \u0111e neu phien ban hien co cao...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1102"
+      "source_location": "L1103"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1127",
+      "id": "scripts_tdq_setup_rationale_1128",
       "label": "\u0110\u1ecdc version hi\u1ec7n h\u00e0nh t\u1eeb plugin.json.",
       "_origin": "ast",
       "community": 60,
       "file_type": "rationale",
       "norm_label": "\u0111oc version hien hanh tu plugin.json.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1127"
+      "source_location": "L1128"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1142",
+      "id": "scripts_tdq_setup_rationale_1143",
       "label": "-> True n\u1ebfu phi\u00ean b\u1ea3n plugin hi\u1ec7n h\u00e0nh m\u1edbi h\u01a1n m\u1ed1c phi\u00ean b\u1ea3n \u0111\u00e3 setup trong\u2026",
       "_origin": "ast",
       "community": 60,
       "file_type": "rationale",
       "norm_label": "-> true neu phien ban plugin hien hanh moi hon moc phien ban \u0111a setup trong...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1142"
+      "source_location": "L1143"
     },
     {
-      "id": "scripts_tdq_setup_rationale_1205",
+      "id": "scripts_tdq_setup_rationale_1206",
       "label": "Ch\u1ea1y \u0111\u1ed3ng b\u1ed9 instruction, c\u1ea5u h\u00ecnh Codex, setup b\u00f9 v\u00e0 ghim version m\u1edbi v\u00e0o m\u1ed1c.",
       "_origin": "ast",
       "community": 60,
       "file_type": "rationale",
       "norm_label": "chay \u0111ong bo instruction, cau hinh codex, setup bu va ghim version moi vao moc.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1205"
+      "source_location": "L1206"
     },
     {
       "id": "scripts_tdq_setup_rationale_607",
@@ -28827,64 +28827,64 @@
       "source_location": "L657"
     },
     {
-      "id": "scripts_tdq_setup_rationale_726",
+      "id": "scripts_tdq_setup_rationale_727",
       "label": "-> n\u1ed9i dung file stamp theo d\u00f5i update remote, ho\u1eb7c None.",
       "_origin": "ast",
       "community": 83,
       "file_type": "rationale",
       "norm_label": "-> noi dung file stamp theo doi update remote, hoac none.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L726"
+      "source_location": "L727"
     },
     {
-      "id": "scripts_tdq_setup_rationale_736",
+      "id": "scripts_tdq_setup_rationale_737",
       "label": "Ghi d\u1eef li\u1ec7u v\u00e0o stamp theo d\u00f5i update remote.",
       "_origin": "ast",
       "community": 83,
       "file_type": "rationale",
       "norm_label": "ghi du lieu vao stamp theo doi update remote.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L736"
+      "source_location": "L737"
     },
     {
-      "id": "scripts_tdq_setup_rationale_756",
+      "id": "scripts_tdq_setup_rationale_757",
       "label": "-> True n\u1ebfu \u0111\u00e3 qua kho\u1ea3ng th\u1eddi gian throttle k\u1ec3 t\u1eeb l\u1ea7n ki\u1ec3m tra remote g\u1ea7n nh\u1ea5t.",
       "_origin": "ast",
       "community": 83,
       "file_type": "rationale",
       "norm_label": "-> true neu \u0111a qua khoang thoi gian throttle ke tu lan kiem tra remote gan nhat.",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L756"
+      "source_location": "L757"
     },
     {
-      "id": "scripts_tdq_setup_rationale_773",
+      "id": "scripts_tdq_setup_rationale_774",
       "label": "C\u1eadp nh\u1eadt marketplace tdq-local v\u00e0 n\u00e2ng c\u1ea5p plugin tdq-workflow n\u1ebfu c\u00f3 b\u1ea3n m\u1edbi.\u2026",
       "_origin": "ast",
       "community": 83,
       "file_type": "rationale",
       "norm_label": "cap nhat marketplace tdq-local va nang cap plugin tdq-workflow neu co ban moi....",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L773"
+      "source_location": "L774"
     },
     {
-      "id": "scripts_tdq_setup_rationale_822",
+      "id": "scripts_tdq_setup_rationale_823",
       "label": "K\u00edch ho\u1ea1t ti\u1ebfn tr\u00ecnh ng\u1ea7m (detached) ki\u1ec3m tra & c\u1eadp nh\u1eadt plugin t\u1eeb remote n\u1ebfu\u2026",
       "_origin": "ast",
       "community": 83,
       "file_type": "rationale",
       "norm_label": "kich hoat tien trinh ngam (detached) kiem tra & cap nhat plugin tu remote neu...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L822"
+      "source_location": "L823"
     },
     {
-      "id": "scripts_tdq_setup_rationale_847",
+      "id": "scripts_tdq_setup_rationale_848",
       "label": "-> chu\u1ed7i th\u00f4ng b\u00e1o n\u1ebfu v\u1eeba c\u00f3 b\u1ea3n c\u1eadp nh\u1eadt m\u1edbi t\u1eeb ti\u1ebfn tr\u00ecnh n\u1ec1n, v\u00e0 d\u1ecdn c\u1edd\u2026",
       "_origin": "ast",
       "community": 83,
       "file_type": "rationale",
       "norm_label": "-> chuoi thong bao neu vua co ban cap nhat moi tu tien trinh nen, va don co...",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L847"
+      "source_location": "L848"
     },
     {
       "id": "scripts_tdq_setup_rationale_435",
@@ -46778,7 +46778,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1143",
+      "source_location": "L1144",
       "weight": 1.0
     },
     {
@@ -46790,7 +46790,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1146",
+      "source_location": "L1147",
       "weight": 1.0
     },
     {
@@ -46802,7 +46802,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1149",
+      "source_location": "L1150",
       "weight": 1.0
     },
     {
@@ -46814,7 +46814,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L761",
+      "source_location": "L762",
       "weight": 1.0
     },
     {
@@ -46826,7 +46826,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1531",
+      "source_location": "L1532",
       "weight": 1.0
     },
     {
@@ -46850,7 +46850,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1094",
+      "source_location": "L1095",
       "weight": 1.0
     },
     {
@@ -46862,7 +46862,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1225",
+      "source_location": "L1226",
       "weight": 1.0
     },
     {
@@ -46874,7 +46874,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L848",
+      "source_location": "L849",
       "weight": 1.0
     },
     {
@@ -46886,7 +46886,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L852",
+      "source_location": "L853",
       "weight": 1.0
     },
     {
@@ -46898,7 +46898,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L728",
+      "source_location": "L729",
       "weight": 1.0
     },
     {
@@ -46934,7 +46934,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1103",
+      "source_location": "L1104",
       "weight": 1.0
     },
     {
@@ -46946,7 +46946,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1105",
+      "source_location": "L1106",
       "weight": 1.0
     },
     {
@@ -46958,7 +46958,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1106",
+      "source_location": "L1107",
       "weight": 1.0
     },
     {
@@ -46970,7 +46970,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1108",
+      "source_location": "L1109",
       "weight": 1.0
     },
     {
@@ -46982,7 +46982,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1113",
+      "source_location": "L1114",
       "weight": 1.0
     },
     {
@@ -46994,7 +46994,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1239",
+      "source_location": "L1240",
       "weight": 1.0
     },
     {
@@ -47006,7 +47006,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1249",
+      "source_location": "L1250",
       "weight": 1.0
     },
     {
@@ -47018,7 +47018,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L737",
+      "source_location": "L738",
       "weight": 1.0
     },
     {
@@ -47030,7 +47030,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L747",
+      "source_location": "L748",
       "weight": 1.0
     },
     {
@@ -47042,7 +47042,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1012",
+      "source_location": "L1013",
       "weight": 1.0
     },
     {
@@ -47054,7 +47054,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1028",
+      "source_location": "L1029",
       "weight": 1.0
     },
     {
@@ -47066,7 +47066,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1335",
+      "source_location": "L1336",
       "weight": 1.0
     },
     {
@@ -47078,7 +47078,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1339",
+      "source_location": "L1340",
       "weight": 1.0
     },
     {
@@ -47090,7 +47090,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1345",
+      "source_location": "L1346",
       "weight": 1.0
     },
     {
@@ -47174,7 +47174,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1326",
+      "source_location": "L1327",
       "weight": 1.0
     },
     {
@@ -47186,7 +47186,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1398",
+      "source_location": "L1399",
       "weight": 1.0
     },
     {
@@ -47198,7 +47198,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1399",
+      "source_location": "L1400",
       "weight": 1.0
     },
     {
@@ -47210,7 +47210,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1428",
+      "source_location": "L1429",
       "weight": 1.0
     },
     {
@@ -47222,7 +47222,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1431",
+      "source_location": "L1432",
       "weight": 1.0
     },
     {
@@ -47234,7 +47234,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1434",
+      "source_location": "L1435",
       "weight": 1.0
     },
     {
@@ -47246,7 +47246,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1434",
+      "source_location": "L1435",
       "weight": 1.0
     },
     {
@@ -47258,7 +47258,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1498",
+      "source_location": "L1499",
       "weight": 1.0
     },
     {
@@ -47270,7 +47270,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1418",
+      "source_location": "L1419",
       "weight": 1.0
     },
     {
@@ -47282,7 +47282,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1419",
+      "source_location": "L1420",
       "weight": 1.0
     },
     {
@@ -47294,7 +47294,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1446",
+      "source_location": "L1447",
       "weight": 1.0
     },
     {
@@ -47306,7 +47306,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1448",
+      "source_location": "L1449",
       "weight": 1.0
     },
     {
@@ -47318,7 +47318,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1451",
+      "source_location": "L1452",
       "weight": 1.0
     },
     {
@@ -47330,7 +47330,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1452",
+      "source_location": "L1453",
       "weight": 1.0
     },
     {
@@ -47342,7 +47342,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1445",
+      "source_location": "L1446",
       "weight": 1.0
     },
     {
@@ -47354,7 +47354,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1407",
+      "source_location": "L1408",
       "weight": 1.0
     },
     {
@@ -47366,7 +47366,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1409",
+      "source_location": "L1410",
       "weight": 1.0
     },
     {
@@ -47378,7 +47378,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1464",
+      "source_location": "L1465",
       "weight": 1.0
     },
     {
@@ -47390,7 +47390,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1465",
+      "source_location": "L1466",
       "weight": 1.0
     },
     {
@@ -47402,7 +47402,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1459",
+      "source_location": "L1460",
       "weight": 1.0
     },
     {
@@ -47414,7 +47414,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1461",
+      "source_location": "L1462",
       "weight": 1.0
     },
     {
@@ -47426,7 +47426,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1472",
+      "source_location": "L1473",
       "weight": 1.0
     },
     {
@@ -47438,7 +47438,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1473",
+      "source_location": "L1474",
       "weight": 1.0
     },
     {
@@ -47450,7 +47450,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1475",
+      "source_location": "L1476",
       "weight": 1.0
     },
     {
@@ -47462,7 +47462,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L823",
+      "source_location": "L824",
       "weight": 1.0
     },
     {
@@ -47474,7 +47474,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L825",
+      "source_location": "L826",
       "weight": 1.0
     },
     {
@@ -47486,7 +47486,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L826",
+      "source_location": "L827",
       "weight": 1.0
     },
     {
@@ -47498,7 +47498,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L827",
+      "source_location": "L828",
       "weight": 1.0
     },
     {
@@ -47510,7 +47510,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L839",
+      "source_location": "L840",
       "weight": 1.0
     },
     {
@@ -47582,7 +47582,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L873",
+      "source_location": "L874",
       "weight": 1.0
     },
     {
@@ -47618,7 +47618,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1535",
+      "source_location": "L1536",
       "weight": 1.0
     },
     {
@@ -47630,7 +47630,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1542",
+      "source_location": "L1543",
       "weight": 1.0
     },
     {
@@ -47642,7 +47642,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1549",
+      "source_location": "L1550",
       "weight": 1.0
     },
     {
@@ -47654,7 +47654,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1553",
+      "source_location": "L1554",
       "weight": 1.0
     },
     {
@@ -47666,7 +47666,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1555",
+      "source_location": "L1556",
       "weight": 1.0
     },
     {
@@ -47678,7 +47678,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1558",
+      "source_location": "L1559",
       "weight": 1.0
     },
     {
@@ -47690,7 +47690,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1559",
+      "source_location": "L1560",
       "weight": 1.0
     },
     {
@@ -47702,7 +47702,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1563",
+      "source_location": "L1564",
       "weight": 1.0
     },
     {
@@ -47714,7 +47714,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1566",
+      "source_location": "L1567",
       "weight": 1.0
     },
     {
@@ -47726,7 +47726,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1569",
+      "source_location": "L1570",
       "weight": 1.0
     },
     {
@@ -47738,7 +47738,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1571",
+      "source_location": "L1572",
       "weight": 1.0
     },
     {
@@ -47750,7 +47750,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1574",
+      "source_location": "L1575",
       "weight": 1.0
     },
     {
@@ -47762,7 +47762,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1575",
+      "source_location": "L1576",
       "weight": 1.0
     },
     {
@@ -47774,7 +47774,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1580",
+      "source_location": "L1581",
       "weight": 1.0
     },
     {
@@ -47786,7 +47786,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1599",
+      "source_location": "L1600",
       "weight": 1.0
     },
     {
@@ -47798,7 +47798,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1601",
+      "source_location": "L1602",
       "weight": 1.0
     },
     {
@@ -47810,7 +47810,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1364",
+      "source_location": "L1365",
       "weight": 1.0
     },
     {
@@ -47822,7 +47822,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1270",
+      "source_location": "L1271",
       "weight": 1.0
     },
     {
@@ -47918,7 +47918,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L777",
+      "source_location": "L778",
       "weight": 1.0
     },
     {
@@ -47930,7 +47930,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L778",
+      "source_location": "L779",
       "weight": 1.0
     },
     {
@@ -47942,7 +47942,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L779",
+      "source_location": "L780",
       "weight": 1.0
     },
     {
@@ -47954,7 +47954,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L781",
+      "source_location": "L782",
       "weight": 1.0
     },
     {
@@ -47966,7 +47966,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L785",
+      "source_location": "L786",
       "weight": 1.0
     },
     {
@@ -47978,7 +47978,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L794",
+      "source_location": "L795",
       "weight": 1.0
     },
     {
@@ -47990,7 +47990,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L800",
+      "source_location": "L801",
       "weight": 1.0
     },
     {
@@ -48002,7 +48002,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L802",
+      "source_location": "L803",
       "weight": 1.0
     },
     {
@@ -48014,7 +48014,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1154",
+      "source_location": "L1155",
       "weight": 1.0
     },
     {
@@ -48026,7 +48026,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1158",
+      "source_location": "L1159",
       "weight": 1.0
     },
     {
@@ -48038,7 +48038,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1166",
+      "source_location": "L1167",
       "weight": 1.0
     },
     {
@@ -48050,7 +48050,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1172",
+      "source_location": "L1173",
       "weight": 1.0
     },
     {
@@ -48062,7 +48062,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1189",
+      "source_location": "L1190",
       "weight": 1.0
     },
     {
@@ -48074,7 +48074,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1197",
+      "source_location": "L1198",
       "weight": 1.0
     },
     {
@@ -48086,7 +48086,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1206",
+      "source_location": "L1207",
       "weight": 1.0
     },
     {
@@ -48098,7 +48098,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1207",
+      "source_location": "L1208",
       "weight": 1.0
     },
     {
@@ -48110,7 +48110,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1209",
+      "source_location": "L1210",
       "weight": 1.0
     },
     {
@@ -48122,7 +48122,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1211",
+      "source_location": "L1212",
       "weight": 1.0
     },
     {
@@ -48134,7 +48134,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1212",
+      "source_location": "L1213",
       "weight": 1.0
     },
     {
@@ -48146,7 +48146,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1214",
+      "source_location": "L1215",
       "weight": 1.0
     },
     {
@@ -48230,7 +48230,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L704",
+      "source_location": "L705",
       "weight": 1.0
     },
     {
@@ -55562,7 +55562,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1417",
+      "source_location": "L1418",
       "weight": 1.0
     },
     {
@@ -76924,7 +76924,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1003",
+      "source_location": "L1004",
       "weight": 1.0
     },
     {
@@ -76946,7 +76946,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1032",
+      "source_location": "L1033",
       "weight": 1.0
     },
     {
@@ -76957,7 +76957,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1078",
+      "source_location": "L1079",
       "weight": 1.0
     },
     {
@@ -76968,7 +76968,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1083",
+      "source_location": "L1084",
       "weight": 1.0
     },
     {
@@ -76979,7 +76979,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1087",
+      "source_location": "L1088",
       "weight": 1.0
     },
     {
@@ -76990,7 +76990,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1091",
+      "source_location": "L1092",
       "weight": 1.0
     },
     {
@@ -77001,7 +77001,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1101",
+      "source_location": "L1102",
       "weight": 1.0
     },
     {
@@ -77012,7 +77012,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1126",
+      "source_location": "L1127",
       "weight": 1.0
     },
     {
@@ -77023,7 +77023,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1141",
+      "source_location": "L1142",
       "weight": 1.0
     },
     {
@@ -77034,7 +77034,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1152",
+      "source_location": "L1153",
       "weight": 1.0
     },
     {
@@ -77045,7 +77045,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1204",
+      "source_location": "L1205",
       "weight": 1.0
     },
     {
@@ -77056,7 +77056,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1218",
+      "source_location": "L1219",
       "weight": 1.0
     },
     {
@@ -77067,7 +77067,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1222",
+      "source_location": "L1223",
       "weight": 1.0
     },
     {
@@ -77078,7 +77078,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1232",
+      "source_location": "L1233",
       "weight": 1.0
     },
     {
@@ -77089,7 +77089,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1257",
+      "source_location": "L1258",
       "weight": 1.0
     },
     {
@@ -77100,7 +77100,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1282",
+      "source_location": "L1283",
       "weight": 1.0
     },
     {
@@ -77122,7 +77122,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1311",
+      "source_location": "L1312",
       "weight": 1.0
     },
     {
@@ -77133,7 +77133,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1329",
+      "source_location": "L1330",
       "weight": 1.0
     },
     {
@@ -77144,7 +77144,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1362",
+      "source_location": "L1363",
       "weight": 1.0
     },
     {
@@ -77155,7 +77155,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1374",
+      "source_location": "L1375",
       "weight": 1.0
     },
     {
@@ -77166,7 +77166,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1379",
+      "source_location": "L1380",
       "weight": 1.0
     },
     {
@@ -77177,7 +77177,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1389",
+      "source_location": "L1390",
       "weight": 1.0
     },
     {
@@ -77188,7 +77188,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1502",
+      "source_location": "L1503",
       "weight": 1.0
     },
     {
@@ -77199,7 +77199,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1515",
+      "source_location": "L1516",
       "weight": 1.0
     },
     {
@@ -77210,7 +77210,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1524",
+      "source_location": "L1525",
       "weight": 1.0
     },
     {
@@ -77221,7 +77221,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1534",
+      "source_location": "L1535",
       "weight": 1.0
     },
     {
@@ -77507,7 +77507,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L720",
+      "source_location": "L721",
       "weight": 1.0
     },
     {
@@ -77518,7 +77518,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L725",
+      "source_location": "L726",
       "weight": 1.0
     },
     {
@@ -77529,7 +77529,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L735",
+      "source_location": "L736",
       "weight": 1.0
     },
     {
@@ -77540,7 +77540,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L755",
+      "source_location": "L756",
       "weight": 1.0
     },
     {
@@ -77551,7 +77551,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L772",
+      "source_location": "L773",
       "weight": 1.0
     },
     {
@@ -77562,7 +77562,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L821",
+      "source_location": "L822",
       "weight": 1.0
     },
     {
@@ -77573,7 +77573,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L846",
+      "source_location": "L847",
       "weight": 1.0
     },
     {
@@ -77584,7 +77584,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L857",
+      "source_location": "L858",
       "weight": 1.0
     },
     {
@@ -77595,7 +77595,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L883",
+      "source_location": "L884",
       "weight": 1.0
     },
     {
@@ -77617,7 +77617,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L920",
+      "source_location": "L921",
       "weight": 1.0
     },
     {
@@ -77650,7 +77650,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L989",
+      "source_location": "L990",
       "weight": 1.0
     },
     {
@@ -77661,7 +77661,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1403",
+      "source_location": "L1404",
       "weight": 1.0
     },
     {
@@ -77672,7 +77672,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1406",
+      "source_location": "L1407",
       "weight": 1.0
     },
     {
@@ -91041,25 +91041,25 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1004",
+      "source": "scripts_tdq_setup_rationale_1005",
       "target": "scripts_tdq_setup_ghim_huong_dan_tool",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1004",
+      "source_location": "L1005",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1033",
+      "source": "scripts_tdq_setup_rationale_1034",
       "target": "scripts_tdq_setup_no_skill_khong_ton_tai",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1033",
+      "source_location": "L1034",
       "weight": 1.0
     },
     {
@@ -91074,135 +91074,135 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1079",
+      "source": "scripts_tdq_setup_rationale_1080",
       "target": "scripts_tdq_setup_tim_cong_cu",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1079",
+      "source_location": "L1080",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1092",
+      "source": "scripts_tdq_setup_rationale_1093",
       "target": "scripts_tdq_setup_doc_phat_hanh",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1092",
+      "source_location": "L1093",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1102",
+      "source": "scripts_tdq_setup_rationale_1103",
       "target": "scripts_tdq_setup_ghi_phat_hanh",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1102",
+      "source_location": "L1103",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1127",
+      "source": "scripts_tdq_setup_rationale_1128",
       "target": "scripts_tdq_setup_doc_phien_ban_plugin",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1127",
+      "source_location": "L1128",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1142",
+      "source": "scripts_tdq_setup_rationale_1143",
       "target": "scripts_tdq_setup_can_cap_nhat_phien_ban",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1142",
+      "source_location": "L1143",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1153",
+      "source": "scripts_tdq_setup_rationale_1154",
       "target": "scripts_tdq_setup_thuc_hien_setup_bu",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1153",
+      "source_location": "L1154",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1205",
+      "source": "scripts_tdq_setup_rationale_1206",
       "target": "scripts_tdq_setup_tu_dong_cap_nhat_khi_doi_phien_ban",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1205",
+      "source_location": "L1206",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1223",
+      "source": "scripts_tdq_setup_rationale_1224",
       "target": "scripts_tdq_setup_doc_san_sang",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1223",
+      "source_location": "L1224",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1233",
+      "source": "scripts_tdq_setup_rationale_1234",
       "target": "scripts_tdq_setup_ghi_san_sang",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1233",
+      "source_location": "L1234",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1258",
+      "source": "scripts_tdq_setup_rationale_1259",
       "target": "scripts_tdq_setup_pid_con_song",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1258",
+      "source_location": "L1259",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1283",
+      "source": "scripts_tdq_setup_rationale_1284",
       "target": "scripts_tdq_setup_pid_con_song_windows",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1283",
+      "source_location": "L1284",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1312",
+      "source": "scripts_tdq_setup_rationale_1313",
       "target": "scripts_tdq_setup_khoa_cu",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1312",
+      "source_location": "L1313",
       "weight": 1.0
     },
     {
@@ -91217,80 +91217,80 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1330",
+      "source": "scripts_tdq_setup_rationale_1331",
       "target": "scripts_tdq_setup_giu_khoa",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1330",
+      "source_location": "L1331",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1363",
+      "source": "scripts_tdq_setup_rationale_1364",
       "target": "scripts_tdq_setup_nha_khoa",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1363",
+      "source_location": "L1364",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1375",
+      "source": "scripts_tdq_setup_rationale_1376",
       "target": "scripts_tdq_setup_chay_mac_dinh",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1375",
+      "source_location": "L1376",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1380",
+      "source": "scripts_tdq_setup_rationale_1381",
       "target": "scripts_tdq_setup_tang_tu_smoke",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1380",
+      "source_location": "L1381",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1390",
+      "source": "scripts_tdq_setup_rationale_1391",
       "target": "scripts_tdq_setup_khoi_tao_nen",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1390",
+      "source_location": "L1391",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1516",
+      "source": "scripts_tdq_setup_rationale_1517",
       "target": "scripts_tdq_setup_khai_codex_mac_dinh",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1516",
+      "source_location": "L1517",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_1525",
+      "source": "scripts_tdq_setup_rationale_1526",
       "target": "scripts_tdq_setup_chay_cli",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1525",
+      "source_location": "L1526",
       "weight": 1.0
     },
     {
@@ -91558,102 +91558,102 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_726",
+      "source": "scripts_tdq_setup_rationale_727",
       "target": "scripts_tdq_setup_doc_update_stamp",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L726",
+      "source_location": "L727",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_736",
+      "source": "scripts_tdq_setup_rationale_737",
       "target": "scripts_tdq_setup_ghi_update_stamp",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L736",
+      "source_location": "L737",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_756",
+      "source": "scripts_tdq_setup_rationale_757",
       "target": "scripts_tdq_setup_can_kiem_tra_remote",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L756",
+      "source_location": "L757",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_773",
+      "source": "scripts_tdq_setup_rationale_774",
       "target": "scripts_tdq_setup_thuc_hien_cap_nhat_remote",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L773",
+      "source_location": "L774",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_822",
+      "source": "scripts_tdq_setup_rationale_823",
       "target": "scripts_tdq_setup_kich_hoat_kiem_tra_remote_nen",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L822",
+      "source_location": "L823",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_847",
+      "source": "scripts_tdq_setup_rationale_848",
       "target": "scripts_tdq_setup_doc_thong_bao_update_moi",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L847",
+      "source_location": "L848",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_858",
+      "source": "scripts_tdq_setup_rationale_859",
       "target": "scripts_tdq_setup_kiem_va_cai_shim_python3",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L858",
+      "source_location": "L859",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_884",
+      "source": "scripts_tdq_setup_rationale_885",
       "target": "scripts_tdq_setup_kiem_dryrun_hook",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L884",
+      "source_location": "L885",
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_921",
+      "source": "scripts_tdq_setup_rationale_922",
       "target": "scripts_tdq_setup_kiem_tra_archify",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L921",
+      "source_location": "L922",
       "weight": 1.0
     },
     {
@@ -91668,14 +91668,14 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_tdq_setup_rationale_990",
+      "source": "scripts_tdq_setup_rationale_991",
       "target": "scripts_tdq_setup_khoi_huong_dan",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L990",
+      "source_location": "L991",
       "weight": 1.0
     },
     {
@@ -94707,7 +94707,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1531",
+      "source_location": "L1532",
       "weight": 1.0
     },
     {
@@ -94719,7 +94719,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1487",
+      "source_location": "L1488",
       "weight": 1.0
     },
     {
@@ -94731,7 +94731,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1451",
+      "source_location": "L1452",
       "weight": 1.0
     },
     {
@@ -96495,7 +96495,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1413",
+      "source_location": "L1414",
       "weight": 1.0
     },
     {
@@ -97371,7 +97371,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1479",
+      "source_location": "L1480",
       "weight": 1.0
     },
     {
@@ -97383,7 +97383,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1479",
+      "source_location": "L1480",
       "weight": 1.0
     },
     {
@@ -97395,7 +97395,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1479",
+      "source_location": "L1480",
       "weight": 1.0
     },
     {
@@ -97407,7 +97407,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "scripts/tdq_setup.py",
-      "source_location": "L1479",
+      "source_location": "L1480",
       "weight": 1.0
     },
     {
@@ -97532,5 +97532,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "371dc7adeb471befb3db4cd9c0958d83504ad84b"
+  "built_at_commit": "07ebfdb95703f855aa24b1d79a0ae86de3115ec7"
 }
