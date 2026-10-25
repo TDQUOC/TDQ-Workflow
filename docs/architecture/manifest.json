@@ -38,7 +38,7 @@
     "hooks/scripts/read_gate.py": "4ca24a34d3c0c51f53992773dcaec8f95f9e30511c4d27ceb877aaf533915784",
     "hooks/scripts/search_gate.py": "7d13107f85ae0beefb483951357289302843e3a3a9324c28395b7da5231b6957",
     "hooks/scripts/search_observe.py": "f2884c1477c392d25af131540565318d4cd4e327a4f1dbefa12d259f6985cc19",
-    "hooks/scripts/session_start.py": "1a43f8a99627a36b9f97505cf37fff3935db37a005129e4ab2c20f46567dea1a",
+    "hooks/scripts/session_start.py": "c708215acc58437f18072958910db686c99c4ae45637f17c6d4c3c5e30be6858",
     "hooks/scripts/stop_batch_checker.py": "c22d7a2c00953df1a7e5196d7104c51f159739175db5af30f34801b3f24fce23",
     "hooks/scripts/stop_gate.py": "017cd29a40d71509617894eb89a6761dde3c95bbfaa17e222977b0ff4d9cd8dd",
     "hooks/scripts/strategic_compact_gate.py": "5e8c27a7e879fbf7a6ca96bea82913581a0d2d648d1b15c361efa70cee96aa07",

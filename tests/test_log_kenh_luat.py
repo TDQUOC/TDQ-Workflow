@@ -161,6 +161,29 @@ class LogBaKenhLuat(unittest.TestCase):
                 self.assertEqual(row.get("so_dong"), 1, f"{phase} phải ghi so_dong=1: {row}")
                 self.assertEqual(self.than_in_ra(out), [], f"{phase} không được có thân luật")
 
+    def test_session_start_khong_co_active_request_ghi_so_dong_mot(self):
+        """2026-10-25: SessionStart khi không có active_request (workspace idle / chưa mở request)
+        chỉ xuất dòng trỏ 1 dòng và ghi so_dong=1, tuyệt đối không bơm 133 dòng thân luật."""
+        # 1. State có nhưng active_request=None (ví dụ request đã đóng hoặc workspace idle)
+        self.state(active_request=None, phase="idle")
+        session_no_req = "s-no-active-req"
+        _rc, out = self.chay("SessionStart", session_no_req)
+        row = self.dong_luat(session_no_req)[0]
+        self.assertEqual(row.get("so_dong"), 1, f"không có active_request phải ghi so_dong=1: {row}")
+        self.assertEqual(self.than_in_ra(out), [], "không được có thân luật khi không có active_request")
+        self.assertIn("full ladder loads during phase implement", out)
+
+        # 2. Workspace hoàn toàn chưa có state.json (state mặc định)
+        tmp_fresh = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp_fresh.cleanup)
+        goi = {"hook_event_name": "SessionStart", "cwd": tmp_fresh.name, "session_id": "s-fresh", "source": "startup"}
+        rc, out_fresh, _err = run_hook("session_start.py", goi, env={"TDQ_PROJECT_DIR": tmp_fresh.name})
+        self.assertEqual(rc, 0)
+        self.assertIn("full ladder loads during phase implement", out_fresh)
+        sau = out_fresh.partition(f"[{MA}]")[2]
+        lines_sau = sau.splitlines()[1:] if sau else []
+        self.assertEqual(lines_sau, [], "fresh workspace không được có thân luật")
+
     def test_muc_gat_cang_chat_thi_so_dong_cang_it(self):
         """`lite` < `full` < `ultra` — số trong sổ nói đúng độ dày của mức gắt."""
         for kenh in ("SessionStart", "SubagentStart"):
