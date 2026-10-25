@@ -130,7 +130,7 @@ asked for included. Two more are settled by user ruling on 2026-09-16:
   It is a standing requirement of the workflow, so it counts as explicitly requested and no rung
   can ever reach it.
 - **The unit test of every task, red → green. No exemption, not even for a one-line change.** Follow [../vision-test-loop.md](../vision-test-loop.md) for 3-tier scenarios and visual diffs.
-- **Chủ đích Refactor & Mở rộng Kiến trúc:** Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc áp dụng Clean Architecture/SOLID: cấu trúc sạch và tính mở rộng đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các layer, service, adapter hợp lý thành hàm phẳng nếu làm vỡ thiết kế mong muốn.
+- **Chủ đích Refactor & Mở rộng Kiến trúc:** Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc áp dụng Clean Architecture/SOLID: cấu trúc sạch và tính mở rộng đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các layer, service, adapter hợp lý thành hàm phẳng nếu làm vỡ thiết kế mong muốn. <!-- i18n-allow: canonical rule sentence in the default language -->
 
 ### Say out loud what you climbed past
 

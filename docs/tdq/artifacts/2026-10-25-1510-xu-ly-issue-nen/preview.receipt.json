@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\candidate.archify.md",
+    "sha256": "e485574e179b5906326d2cf3be0669334408eb16b793e05bd0f65714ca7b021b",
+    "bytes": 1645
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\.tmp.preview.0a79b3d2245249709790418703fddc67.html",
+    "sha256": "5af5c9c7de9dbbf9db74d9e8164a1e70c96933727f79e14fa8ce6c3645226a8c",
+    "bytes": 483510
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-verdict-emphasis",
+      "severity": "warning",
+      "message": "Most of the conclusion is bold, so nothing stands out.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\candidate.archify.md",
+        "line": 3,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Most of the conclusion is bold, so nothing stands out.",
+        "example": "先做**模块化单体**，等边界稳定后再拆。 / Keep a **modular monolith** until boundaries settle.",
+        "rule": "verdict-emphasis"
+      },
+      "supportedFixes": [
+        "Bold only the few words that carry the decision."
+      ]
+    },
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 30 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\candidate.archify.md",
+        "line": 7,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Sentence has 30 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 30,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 2,
+    "shown": 2,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\.tmp.preview.0a79b3d2245249709790418703fddc67.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\.tmp.preview.0a79b3d2245249709790418703fddc67.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1676,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

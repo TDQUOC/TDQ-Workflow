@@ -120,6 +120,13 @@ class StepsTest(unittest.TestCase):
             r = _run([], tmp)
         self.assertEqual(r.returncode, 0, r.stderr)
 
+    def test_buoc_archify_xuat_hien_khi_verbose(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            doc = _project(tmp)
+            r = _run(["--files", doc, "--verbose"], tmp)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("archify skip", r.stdout)
+
 
 class KhoaTokenTest(unittest.TestCase):
     """Bước `khoa-token`: sinh lại tệp khoá khi lượt có chạm file luật.

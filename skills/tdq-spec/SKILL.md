@@ -4,6 +4,9 @@ description: Write the spec for a TDQ request in the user's document language, r
 ---
 
 # TDQ Spec
+<!-- muc-luc-dong:
+  Steps=15
+-->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). The spec text itself is written in the
 user's document language `doc_lang` (deliberate repetition — the original is
@@ -14,13 +17,17 @@ user's document language `doc_lang` (deliberate repetition — the original is
 1. **Write** `docs/tdq/spec/<slug>.md` out of `docs/tdq/brief/<slug>.md`.
    Full template: [references/spec-template.md](references/spec-template.md); the self-check is in the tier-1 sibling
 [references/spec-template-huong-dan.md](references/spec-template-huong-dan.md).
+   Before the approval gate, author and bind the HTML preview per
+   [Archify BA](references/archify-ba.md); disclose any fallback instead of linking missing output.
    Sections that MUST be there: goal & scope (in/out) · **Lộ trình** (copied from the <!-- i18n-allow: canonical spec section names -->
    brief: which phase runs, dropped, skill used, why) · **Ranh giới module** (§2b — lane full) ·
-   a measurable output · **Luồng & Sơ đồ kiến trúc** (§2c — Mermaid diagram, Trước vs Sau) ·
+   a measurable output · **Luồng & Sơ đồ kiến trúc** (§2c — Mermaid, before/after and bound Archify preview when available) ·
    approach + reason · **Năng lực & công cụ** (§3b — verdict table checked by R8) ·
    **Giải thuật cốt lõi** (§3c — step-by-step logic, O(T), O(S), edge cases) ·
-   **Mental Model cho Fresher** (§3d — analogy + glossary) · standing requirements ·
-   constraints & risks · QC scope + Definition of Done · open questions (MUST be empty).
+   **Mental Model cho Fresher** (§3d — analogy + glossary) ·
+   standing requirements (log service ON by default, no placeholder, a test per part) ·
+   constraints & risks · QC scope + Definition of Done (visual checks per [vision-test-loop.md](../tdq-build/references/vision-test-loop.md)).
+   The "open questions" section MUST be empty — a question left → back to phase `analyze`.
 
    **§2b is built from LSP semantics, not from directory names.** A module boundary comes from
    who really imports and calls whom — `mcp__lsp__find_references` on the module's entry symbols,
@@ -53,6 +60,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    **Mục tiêu:** <1–2 câu>.
    **Đầu ra chính:** <gạch đầu dòng ngắn>.
    **Luồng & Giải thuật:** <1–2 câu tóm tắt sơ đồ luồng và giải thuật chính>.
+   **Bản xem trước kiến trúc:** <link HTML đã kiểm và tồn tại; nếu chưa sinh được, nêu lý do và phần kiểm còn thiếu>.
    **Định nghĩa hoàn thành:** <gạch đầu dòng ngắn>.
    **Rủi ro đáng chú ý:** <gạch đầu dòng ngắn>.
 

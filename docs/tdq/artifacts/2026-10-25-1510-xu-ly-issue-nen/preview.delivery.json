@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "0d01d1c4-7690-4c94-b8cd-ae4160c2c9c1",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\candidate.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1510-xu-ly-issue-nen\\.tmp.preview.0a79b3d2245249709790418703fddc67.html",
+  "specification": {
+    "sha256": "e485574e179b5906326d2cf3be0669334408eb16b793e05bd0f65714ca7b021b",
+    "bytes": 1645
+  },
+  "artifact": {
+    "sha256": "5af5c9c7de9dbbf9db74d9e8164a1e70c96933727f79e14fa8ce6c3645226a8c",
+    "bytes": 483510
+  },
+  "explainer": {
+    "preparedSha256": "82411d65acbe0e178a7adee875d05688d0903723a0c6cd5c98c52f4cddc6de9c",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "fix-flow",
+        "inline": true,
+        "sha256": "cfa161c3d6c6d4ac6189fc55c0865ab771c13b778810050ae952aa9b7c1b1e8c",
+        "bytes": 840
+      }
+    ]
+  }
+}

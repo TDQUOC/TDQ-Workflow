@@ -1,0 +1,163 @@
+{
+  "slug": "2026-10-24-2348-hoan-thien-archify",
+  "plan_file": "docs\\tdq\\plan\\2026-10-24-2348-hoan-thien-archify.md",
+  "plan_sha": "0bc916fb2944f2464420a1f84b70e426932d301398798034c6f739123c43c5ea",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "b9c3a2c999df6ee7087cfa01ef5376cc52455b64ab45607f03456589e93ff8b3",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "docs/kien-truc-tich-hop-archify.md"
+      ],
+      "dot": 1
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_archify.py",
+        "scripts/archify_delivery.py",
+        "tests/test_tdq_archify.py",
+        "tests/test_archify_delivery.py"
+      ],
+      "dot": 2
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/archify_model.py",
+        "tests/test_archify_model.py"
+      ],
+      "dot": 3
+    },
+    "T2.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/archify_artifacts.py",
+        "tests/test_archify_artifacts.py"
+      ],
+      "dot": 3
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_archify.py",
+        "tests/test_archify_pipeline.py"
+      ],
+      "dot": 4
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_setup.py",
+        "scripts/build_portable.py",
+        "tests/test_tdq_setup.py",
+        "tests/test_archify_distribution.py",
+        "tests/test_build_portable.py"
+      ],
+      "dot": 4
+    },
+    "T3.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_finish.py",
+        "tests/test_tdq_finish.py",
+        "tests/test_archify_finish.py"
+      ],
+      "dot": 6
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-spec/SKILL.md",
+        "skills/tdq-spec/references/spec-template.md",
+        "skills/tdq-spec/references/archify-ba.md",
+        "skills/tdq-intake/SKILL.md",
+        "skills/tdq-intake/references/quick-lane.md",
+        "skills/tdq-intake/references/archify-quick.md",
+        "skills/tdq-plan/references/plan-template.md",
+        "skills/tdq-build/SKILL.md",
+        "skills/tdq-build/references/archify-lifecycle.md",
+        "tests/test_archify_workflow_contract.py"
+      ],
+      "dot": 7
+    },
+    "T4.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/references/quick-lane.md",
+        "docs/tdq/audit/luat-hien-co.md",
+        "docs/tdq/token-budget.json",
+        "skills/tdq-plan/references/plan-template.md",
+        "skills/tdq-spec/references/spec-template.md"
+      ],
+      "dot": 8
+    },
+    "T5.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "tests/test_archify_e2e.py",
+        "tests/fixtures/archify/ba.json",
+        "tests/fixtures/archify/workflow.json",
+        "tests/fixtures/archify/master.json",
+        "docs/tdq/qc/2026-10-24-2348-hoan-thien-archify.md"
+      ],
+      "dot": 9
+    },
+    "T5.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-10-24-2348-hoan-thien-archify.md",
+        "docs/tdq/reports/2026-10-24-2348-hoan-thien-archify.md"
+      ],
+      "dot": 10
+    },
+    "QC1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/archify_artifacts.py",
+        "tests/test_archify_artifacts.py"
+      ],
+      "dot": 5
+    },
+    "QC1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_archify.py",
+        "tests/test_archify_pipeline.py"
+      ],
+      "dot": 6
+    },
+    "QC1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/archify_model.py",
+        "tests/test_archify_model.py"
+      ],
+      "dot": 5
+    },
+    "QC2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_archify_artifacts.py"
+      ],
+      "dot": 1
+    }
+  }
+}
