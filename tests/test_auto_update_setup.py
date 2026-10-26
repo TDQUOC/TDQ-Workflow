@@ -176,3 +176,30 @@ class TestAutoUpdateSetup(unittest.TestCase):
             self.assertIn("0.63.0", tb)
             # Lần 2 đã xóa -> rỗng
             self.assertEqual(tdq_setup.doc_thong_bao_update_moi(home=fake_home), "")
+
+    def test_cai_dat_env_timeout_mcp(self):
+        fake_home = os.path.join(self.project, "fake_home_env")
+        settings_path = os.path.join(fake_home, ".claude", "settings.json")
+
+        # 1. Chưa có file settings -> tự tạo và đặt 90000
+        ok = tdq_setup._cai_dat_env_timeout_mcp(settings_path, cham_may=True)
+        self.assertTrue(ok)
+        with open(settings_path, encoding="utf-8") as fh:
+            data = json.load(fh)
+        self.assertEqual(data.get("env", {}).get("CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT"), "90000")
+        self.assertTrue(os.path.isfile(settings_path))
+
+        # 2. Đã có giá trị riêng của user -> giữ nguyên, không ghi đè
+        data["env"]["CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT"] = "60000"
+        with open(settings_path, "w", encoding="utf-8") as fh:
+            json.dump(data, fh)
+        ok2 = tdq_setup._cai_dat_env_timeout_mcp(settings_path, cham_may=True)
+        self.assertFalse(ok2)
+        with open(settings_path, encoding="utf-8") as fh:
+            data2 = json.load(fh)
+        self.assertEqual(data2.get("env", {}).get("CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT"), "60000")
+
+        # 3. Khi TDQ_KHONG_CHAM_MAY=1 -> không chạm
+        with mock.patch.dict(os.environ, {"TDQ_KHONG_CHAM_MAY": "1"}):
+            self.assertFalse(tdq_setup._cai_dat_env_timeout_mcp(settings_path, cham_may=True))
+

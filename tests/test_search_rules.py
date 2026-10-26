@@ -347,6 +347,140 @@ class PhanLoaiBien(unittest.TestCase):
         for l in ("grep --help", "rg --version", "rg -V"):
             self.assertEqual(_bash(l)["loai"], "khong_phai_tim", l)
 
+
+class TestCircuitBreakerLSP(unittest.TestCase):
+    def test_trang_thai_lsp_mac_dinh_dong(self):
+        tt = sr.trang_thai_lsp([])
+        self.assertFalse(tt["mach_ngat_mo"])
+        self.assertEqual(tt["so_loi_lien_tiep"], 0)
+        self.assertIsNone(tt["lan_cuoi_blast_radius"])
+
+    def test_trang_thai_lsp_blast_radius_timeout_mo_mach(self):
+        rows = [
+            {"loai": "lsp_ket_qua", "cong_cu": "mcp__lsp__blast_radius", "outcome": "timeout", "duration_ms": 90000}
+        ]
+        tt = sr.trang_thai_lsp(rows)
+        self.assertTrue(tt["mach_ngat_mo"])
+        self.assertEqual(tt["lan_cuoi_blast_radius"], "timeout")
+        self.assertEqual(tt["ly_do_ngat"], "blast_radius_that_bai")
+
+    def test_trang_thai_lsp_blast_radius_error_mo_mach(self):
+        rows = [
+            {"loai": "lsp_ket_qua", "cong_cu": "lsp:blast_radius", "outcome": "error", "duration_ms": 1200}
+        ]
+        tt = sr.trang_thai_lsp(rows)
+        self.assertTrue(tt["mach_ngat_mo"])
+        self.assertEqual(tt["lan_cuoi_blast_radius"], "error")
+
+    def test_trang_thai_lsp_hai_loi_lien_tiep_mo_mach(self):
+        rows = [
+            {"loai": "lsp_ket_qua", "cong_cu": "mcp__lsp__find_references", "outcome": "error", "duration_ms": 500},
+            {"loai": "lsp_ket_qua", "cong_cu": "mcp__lsp__find_symbol", "outcome": "timeout", "duration_ms": 90000},
+        ]
+        tt = sr.trang_thai_lsp(rows)
+        self.assertTrue(tt["mach_ngat_mo"])
+        self.assertEqual(tt["so_loi_lien_tiep"], 2)
+        self.assertEqual(tt["ly_do_ngat"], "nhieu_loi_lien_tiep")
+
+    def test_trang_thai_lsp_thanh_cong_dong_mach(self):
+        rows = [
+            {"loai": "lsp_ket_qua", "cong_cu": "mcp__lsp__blast_radius", "outcome": "error", "duration_ms": 1000},
+            {"loai": "lsp_ket_qua", "cong_cu": "mcp__lsp__find_references", "outcome": "ok", "duration_ms": 200},
+            {"loai": "lsp_ket_qua", "cong_cu": "mcp__lsp__blast_radius", "outcome": "ok", "duration_ms": 300},
+        ]
+        tt = sr.trang_thai_lsp(rows)
+        self.assertFalse(tt["mach_ngat_mo"])
+        self.assertEqual(tt["so_loi_lien_tiep"], 0)
+        self.assertEqual(tt["lan_cuoi_blast_radius"], "ok")
+
+
+class TestPhanLoaiKetQuaLSP(unittest.TestCase):
+    def test_outcome_timeout_tu_failure(self):
+        payload = {"error": "LSP tool call timed out after 90000ms"}
+        outcome = sr.phan_loai_ket_qua_lsp("PostToolUseFailure", payload)
+        self.assertEqual(outcome, "timeout")
+
+    def test_outcome_timeout_tu_tool_response(self):
+        payload = {"tool_response": {"error": "sent no response or progress within 90s"}}
+        outcome = sr.phan_loai_ket_qua_lsp("PostToolUse", payload)
+        self.assertEqual(outcome, "timeout")
+
+    def test_outcome_error_tu_failure(self):
+        payload = {"error": "LSP client not initialized"}
+        outcome = sr.phan_loai_ket_qua_lsp("PostToolUseFailure", payload)
+        self.assertEqual(outcome, "error")
+
+    def test_outcome_error_tu_is_error(self):
+        payload = {"tool_response": {"is_error": True, "content": "Failed to compile"}}
+        outcome = sr.phan_loai_ket_qua_lsp("PostToolUse", payload)
+        self.assertEqual(outcome, "error")
+
+    def test_outcome_empty_khi_symbols_0_hoac_khong_references(self):
+        payload1 = {"tool_response": "affected_symbols [0]"}
+        self.assertEqual(sr.phan_loai_ket_qua_lsp("PostToolUse", payload1), "empty")
+        payload2 = {"tool_response": {"references": []}}
+        self.assertEqual(sr.phan_loai_ket_qua_lsp("PostToolUse", payload2), "empty")
+        payload3 = {"tool_response": "0 references found"}
+        self.assertEqual(sr.phan_loai_ket_qua_lsp("PostToolUse", payload3), "empty")
+
+    def test_outcome_ok_khi_co_ket_qua(self):
+        payload1 = {"tool_response": {"references": ["file.py:10"]}}
+        self.assertEqual(sr.phan_loai_ket_qua_lsp("PostToolUse", payload1), "ok")
+        payload2 = {"tool_response": "## affected_symbols [2]{file,name}\na.py|foo"}
+        self.assertEqual(sr.phan_loai_ket_qua_lsp("PostToolUse", payload2), "ok")
+
+
+class TestThongKeLSPVaOracle(unittest.TestCase):
+    def test_thong_ke_lsp_rong(self):
+        tk = sr.thong_ke_lsp([])
+        self.assertEqual(tk["tong_so"], 0)
+        self.assertEqual(tk["p50_ms"], 0)
+        self.assertEqual(tk["p95_ms"], 0)
+        self.assertEqual(tk["max_ms"], 0)
+        self.assertEqual(tk["dem_outcome"], {"ok": 0, "empty": 0, "error": 0, "timeout": 0})
+        self.assertFalse(tk["mach_ngat_mo"])
+
+    def test_thong_ke_lsp_tinh_p50_p95_va_outcome(self):
+        rows = [
+            {"loai": "lsp_ket_qua", "outcome": "ok", "duration_ms": 10},
+            {"loai": "lsp_ket_qua", "outcome": "ok", "duration_ms": 20},
+            {"loai": "lsp_ket_qua", "outcome": "empty", "duration_ms": 30},
+            {"loai": "lsp_ket_qua", "outcome": "error", "duration_ms": 40},
+            {"loai": "lsp_ket_qua", "outcome": "timeout", "duration_ms": 90000},
+        ]
+        tk = sr.thong_ke_lsp(rows)
+        self.assertEqual(tk["tong_so"], 5)
+        self.assertEqual(tk["dem_outcome"]["ok"], 2)
+        self.assertEqual(tk["dem_outcome"]["empty"], 1)
+        self.assertEqual(tk["dem_outcome"]["error"], 1)
+        self.assertEqual(tk["dem_outcome"]["timeout"], 1)
+        self.assertEqual(tk["p50_ms"], 30)
+        self.assertEqual(tk["max_ms"], 90000)
+        self.assertGreater(tk["p95_ms"], 40)
+        self.assertTrue(tk["mach_ngat_mo"])
+
+    def test_doi_chieu_caller_oracle(self):
+        tap_tim_thay = ["src/a.ts:10", "src/b.ts:25", "src/c.ts:5"]
+        tap_chuan = ["src/a.ts:10", "src/b.ts:25", "src/d.ts:99"]
+        kq = sr.doi_chieu_caller_oracle(tap_tim_thay, tap_chuan)
+        # Recall: 2/3 = 66.67%
+        self.assertAlmostEqual(kq["recall"], 2 / 3, places=2)
+        # Precision: 2/3 = 66.67%
+        self.assertAlmostEqual(kq["precision"], 2 / 3, places=2)
+        self.assertEqual(kq["dung"], {"src/a.ts:10", "src/b.ts:25"})
+        self.assertEqual(kq["thieu"], {"src/d.ts:99"})
+        self.assertEqual(kq["du"], {"src/c.ts:5"})
+
+    def test_doi_chieu_caller_oracle_chuan_hoa_duong_dan(self):
+        tap_tim_thay = ["src\\a.ts:10"]
+        tap_chuan = ["src/a.ts:10"]
+        kq = sr.doi_chieu_caller_oracle(tap_tim_thay, tap_chuan)
+        self.assertEqual(kq["recall"], 1.0)
+        self.assertEqual(kq["precision"], 1.0)
+
+
+
+
     def test_phan_loai_heredoc_khong_phai_tim(self):
         l = "cat > x.sh <<'EOF'\ngrep -rn foo src\nEOF"
         self.assertEqual(_bash(l)["loai"], "khong_phai_tim")

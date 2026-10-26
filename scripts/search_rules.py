@@ -950,3 +950,179 @@ def tam_giac_khao_sat(rows):
             so_grep += 1
     return {"co_lsp": co_lsp, "co_graphify": co_graphify, "so_grep": so_grep,
             "du_3_chieu": bool(so_grep > 0 and co_lsp and co_graphify)}
+
+
+def trang_thai_lsp(rows):
+    """Trạng thái mạch ngắt (circuit breaker) và telemetry LSP từ các dòng sổ tìm kiếm.
+
+    Quy tắc ngắt mạch (O3/spec §3c Bước 2):
+    - mach_ngat_mo = True nếu:
+      1. Lần gọi blast_radius gần nhất có outcome in ("timeout", "error").
+      2. Có từ 2 lần gọi LSP liên tiếp có outcome in ("timeout", "error") mà không có lần thành công nào xen giữa.
+    - mach_ngat_mo = False nếu chưa có lỗi hoặc đã được đóng lại bởi lần gọi blast_radius thành công gần nhất.
+    """
+    so_loi_lien_tiep = 0
+    lan_cuoi_blast_radius = None
+    ly_do_ngat = None
+
+    for row in rows:
+        if row.get("loai") != "lsp_ket_qua":
+            continue
+        outcome = str(row.get("outcome") or "")
+        cong_cu = str(row.get("cong_cu") or "")
+        la_blast = ("blast_radius" in cong_cu)
+
+        if la_blast:
+            lan_cuoi_blast_radius = outcome
+
+        if outcome in ("timeout", "error"):
+            so_loi_lien_tiep += 1
+        elif outcome in ("ok", "empty"):
+            so_loi_lien_tiep = 0
+
+    mach_ngat_mo = False
+    if lan_cuoi_blast_radius in ("timeout", "error"):
+        mach_ngat_mo = True
+        ly_do_ngat = "blast_radius_that_bai"
+    elif so_loi_lien_tiep >= 2:
+        mach_ngat_mo = True
+        ly_do_ngat = "nhieu_loi_lien_tiep"
+
+    return {
+        "mach_ngat_mo": mach_ngat_mo,
+        "so_loi_lien_tiep": so_loi_lien_tiep,
+        "lan_cuoi_blast_radius": lan_cuoi_blast_radius,
+        "ly_do_ngat": ly_do_ngat,
+    }
+
+
+def phan_loai_ket_qua_lsp(su_kien, payload):
+    """Phân loại 4 nhãn outcome: timeout, error, empty, ok (spec §3c Bước 3).
+
+    Hàm thuần: nhận su_kien ("PostToolUse", "PostToolUseFailure") và payload dict.
+    - timeout: lỗi hoặc phản hồi chứa dấu hiệu timeout / idle limit / aborting
+    - error: lỗi từ Failure, is_error=True, hoặc thông báo lỗi LSP
+    - empty: phản hồi rỗng, symbols=0, 0 references, mảng rỗng
+    - ok: có kết quả dữ liệu
+    """
+    if not isinstance(payload, dict):
+        return "error" if su_kien == "PostToolUseFailure" else "empty"
+
+    raw_err = str(payload.get("error") or "")
+    tool_resp = payload.get("tool_response")
+    resp_str = str(tool_resp) if tool_resp is not None else ""
+
+    combined = f"{raw_err} {resp_str}".lower()
+
+    # 1. Timeout check
+    if any(k in combined for k in (
+        "timed out", "timeout", "sent no response or progress",
+        "deadline exceeded", "aborting", "idle timeout"
+    )):
+        return "timeout"
+
+    # 2. Error check
+    if su_kien == "PostToolUseFailure":
+        return "error"
+
+    if isinstance(tool_resp, dict) and tool_resp.get("is_error") is True:
+        return "error"
+
+    if any(k in combined for k in (
+        "lsp client not initialized", "error:", "failed", "exception"
+    )):
+        return "error"
+
+    # 3. Empty check
+    if isinstance(tool_resp, dict):
+        # Check dict keys like references: [], symbols: []
+        for k in ("references", "symbols", "callers", "items", "results"):
+            if k in tool_resp and isinstance(tool_resp[k], list) and len(tool_resp[k]) == 0:
+                return "empty"
+    elif isinstance(tool_resp, list) and len(tool_resp) == 0:
+        return "empty"
+
+    if any(k in combined for k in (
+        "symbols=0", "0 references", "no references found",
+        "affected_symbols [0]", "no symbols found"
+    )):
+        return "empty"
+
+    if not resp_str.strip() or resp_str.strip() in ("[]", "{}"):
+        return "empty"
+
+    # 4. OK
+    return "ok"
+
+
+def thong_ke_lsp(rows):
+    """Tính các số đo phân vị p50, p95, max và phân loại outcome từ các dòng lsp_ket_qua (O5)."""
+    dem_outcome = {"ok": 0, "empty": 0, "error": 0, "timeout": 0}
+    durations = []
+
+    for r in rows:
+        if r.get("loai") != "lsp_ket_qua":
+            continue
+        outcome = r.get("outcome")
+        if outcome in dem_outcome:
+            dem_outcome[outcome] += 1
+        d = r.get("duration_ms")
+        if isinstance(d, (int, float)) and d >= 0:
+            durations.append(int(d))
+
+    durations.sort()
+    n = len(durations)
+    if n == 0:
+        p50 = 0
+        p95 = 0
+        max_ms = 0
+    else:
+        # Nearest rank or interpolated percentile
+        idx_p50 = int(round(0.50 * (n - 1)))
+        idx_p95 = int(round(0.95 * (n - 1)))
+        p50 = durations[idx_p50]
+        p95 = durations[idx_p95]
+        max_ms = durations[-1]
+
+    tt = trang_thai_lsp(rows)
+
+    return {
+        "tong_so": sum(dem_outcome.values()),
+        "dem_outcome": dem_outcome,
+        "durations": durations,
+        "p50_ms": p50,
+        "p95_ms": p95,
+        "max_ms": max_ms,
+        "mach_ngat_mo": tt.get("mach_ngat_mo", False),
+    }
+
+
+def doi_chieu_caller_oracle(tap_tim_thay, tap_chuan):
+    """Đối chiếu tập caller tìm thấy với oracle chuẩn, tính recall và precision (O5).
+
+    Chuẩn hóa các đường dẫn dấu gạch chéo ngược Windows thành gạch chéo xuôi.
+    """
+    def _chuan_item(item):
+        s = str(item or "").strip().replace("\\", "/")
+        return s
+
+    thay = {_chuan_item(x) for x in (tap_tim_thay or []) if _chuan_item(x)}
+    chuan = {_chuan_item(x) for x in (tap_chuan or []) if _chuan_item(x)}
+
+    dung = thay & chuan
+    thieu = chuan - thay
+    du = thay - chuan
+
+    recall = len(dung) / len(chuan) if chuan else 1.0
+    precision = len(dung) / len(thay) if thay else 1.0
+
+    return {
+        "recall": recall,
+        "precision": precision,
+        "dung": dung,
+        "thieu": thieu,
+        "du": du,
+    }
+
+
+

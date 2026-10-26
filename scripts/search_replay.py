@@ -160,6 +160,62 @@ def su_kien_tu_transcript(duong):
     return su_kien
 
 
+def phan_tich_lsp_telemetry(duong):
+    """Trích xuất và tổng hợp telemetry LSP từ transcript JSONL hoặc file sổ (O5)."""
+    rows_lsp = []
+    if duong.lower().endswith(".jsonl"):
+        # Ghép cặp tool_use và tool_result từ transcript JSONL
+        pending_use = {}
+        with io.open(duong, encoding="utf-8") as fh:
+            for dong in fh:
+                dong = dong.strip()
+                if not dong:
+                    continue
+                try:
+                    ban_ghi = json.loads(dong)
+                except ValueError:
+                    continue
+                msg = ban_ghi.get("message") or {}
+                if ban_ghi.get("type") == "assistant" and isinstance(msg.get("content"), list):
+                    for c in msg["content"]:
+                        if isinstance(c, dict) and c.get("type") == "tool_use":
+                            name = str(c.get("name") or "")
+                            if "lsp" in name.lower():
+                                call_id = c.get("id")
+                                if call_id:
+                                    pending_use[call_id] = {
+                                        "name": name,
+                                        "ts": float(ban_ghi.get("timestamp") or 0)
+                                    }
+                elif ban_ghi.get("type") == "user" and isinstance(msg.get("content"), list):
+                    for c in msg["content"]:
+                        if isinstance(c, dict) and c.get("type") == "tool_result":
+                            call_id = c.get("tool_use_id")
+                            if call_id and call_id in pending_use:
+                                info = pending_use.pop(call_id)
+                                ts_end = float(ban_ghi.get("timestamp") or 0)
+                                dur = int(round((ts_end - info["ts"]) * 1000)) if (ts_end and info["ts"]) else None
+                                outcome = search_rules.phan_loai_ket_qua_lsp("PostToolUse", {"tool_response": c.get("content")})
+                                rows_lsp.append({
+                                    "loai": "lsp_ket_qua",
+                                    "cong_cu": info["name"],
+                                    "outcome": outcome,
+                                    "duration_ms": max(0, dur) if dur is not None else 0,
+                                    "tool_use_id": call_id,
+                                })
+    elif duong.lower().endswith(".json"):
+        # Fixture hoặc file JSON xuất
+        with io.open(duong, encoding="utf-8") as fh:
+            data = json.load(fh)
+        if isinstance(data, list):
+            rows_lsp = [r for r in data if r.get("loai") == "lsp_ket_qua"]
+        elif isinstance(data, dict):
+            su_kien = data.get("su_kien") or []
+            rows_lsp = [r for r in su_kien if r.get("loai") == "lsp_ket_qua"]
+
+    return search_rules.thong_ke_lsp(rows_lsp)
+
+
 def doc_dau_vao(duong):
     if duong.lower().endswith(".jsonl"):
         return su_kien_tu_transcript(duong)
@@ -186,13 +242,43 @@ def in_bang(kq):
     return "\n".join(dong)
 
 
+def in_bang_lsp_telemetry(tk):
+    dong = [
+        "LSP Telemetry & Circuit Breaker Report",
+        "",
+        f"Total LSP Calls: {tk.get('tong_so', 0)}",
+        f"Circuit Breaker Status: {'OPEN (HALTED)' if tk.get('mach_ngat_mo') else 'CLOSED (HEALTHY)'}",
+        "",
+        "Outcome Breakdown:",
+        f"  - ok:      {tk.get('dem_outcome', {}).get('ok', 0)}",
+        f"  - empty:   {tk.get('dem_outcome', {}).get('empty', 0)}",
+        f"  - error:   {tk.get('dem_outcome', {}).get('error', 0)}",
+        f"  - timeout: {tk.get('dem_outcome', {}).get('timeout', 0)}",
+        "",
+        "Latency Percentiles:",
+        f"  - p50: {tk.get('p50_ms', 0)} ms",
+        f"  - p95: {tk.get('p95_ms', 0)} ms",
+        f"  - max: {tk.get('max_ms', 0)} ms",
+    ]
+    return "\n".join(dong)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Replay a session's searches through the search rules.")
     ap.add_argument("duong", help="fixture .json or Claude transcript .jsonl")
     ap.add_argument("--cua-so", type=int, default=None, help="override CUA_SO (search window)")
     ap.add_argument("--json", action="store_true", help="print counts as JSON")
+    ap.add_argument("--lsp-telemetry", action="store_true", help="extract and report LSP latency and outcome telemetry")
     args = ap.parse_args(argv)
     _log(f"reading {args.duong}")
+    if args.lsp_telemetry:
+        tk = phan_tich_lsp_telemetry(args.duong)
+        if args.json:
+            print(json.dumps(tk, ensure_ascii=False))
+        else:
+            print(in_bang_lsp_telemetry(tk))
+        return 0
+
     kq = phat_lai(doc_dau_vao(args.duong), cua_so=args.cua_so)
     if args.json:
         print(json.dumps({k: kq[k] for k in ("bat", "bat_oan", "lot", "bi_chan", "luat")},
@@ -200,6 +286,7 @@ def main(argv=None):
     else:
         print(in_bang(kq))
     return 0
+
 
 
 if __name__ == "__main__":

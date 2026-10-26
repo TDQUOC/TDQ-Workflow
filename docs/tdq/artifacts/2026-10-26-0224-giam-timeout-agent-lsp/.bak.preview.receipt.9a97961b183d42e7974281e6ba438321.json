@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+    "sha256": "86d0fd8f79aa8ae6636ac9d91a7982f341cc25594e97c6cab22711a9490631a2",
+    "bytes": 2323
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.6fd78897e77a41db9b174cdad0dc393c.html",
+    "sha256": "a0ca1ce87e774f6accf61fd5f29ff85416b6583e36f85e3a2f8a05ec84ee3f8e",
+    "bytes": 492129
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 38 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+        "line": 3,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Sentence has 38 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 38,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    },
+    {
+      "code": "explainer/writing-verdict-emphasis",
+      "severity": "warning",
+      "message": "Most of the conclusion is bold, so nothing stands out.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+        "line": 3,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Most of the conclusion is bold, so nothing stands out.",
+        "example": "先做**模块化单体**，等边界稳定后再拆。 / Keep a **modular monolith** until boundaries settle.",
+        "rule": "verdict-emphasis"
+      },
+      "supportedFixes": [
+        "Bold only the few words that carry the decision."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 2,
+    "shown": 2,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.6fd78897e77a41db9b174cdad0dc393c.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.6fd78897e77a41db9b174cdad0dc393c.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1652,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

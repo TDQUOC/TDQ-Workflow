@@ -1,6 +1,15 @@
 {
   "schema_version": 1,
-  "status": "current",
-  "reasons": [],
-  "checked_at": "2026-10-25T17:24:47Z"
+  "status": "stale",
+  "reasons": [
+    "Source file modified: hooks/hooks.json",
+    "Source file modified: hooks/scripts/lsp_gate.py",
+    "Source file modified: hooks/scripts/search_observe.py",
+    "Source file modified: scripts/search_replay.py",
+    "Source file modified: scripts/search_rules.py",
+    "Source file modified: scripts/tdq_setup.py",
+    "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md",
+    "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem.md"
+  ],
+  "checked_at": "2026-10-26T09:06:47Z"
 }

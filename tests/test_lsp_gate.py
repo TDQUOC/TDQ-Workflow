@@ -82,5 +82,60 @@ class LspGate(unittest.TestCase):
         self.assertLess(min(do), 0.2, f"thời gian chạy: {do}")
 
 
+class BlastRadiusGate(unittest.TestCase):
+    def setUp(self):
+        self.cwd = tempfile.mkdtemp(prefix="tdq-blast-gate-")
+        self.addCleanup(shutil.rmtree, self.cwd, True)
+        os.makedirs(os.path.join(self.cwd, "docs", "tdq"), exist_ok=True)
+        self.ledger = os.path.join(self.cwd, "docs", "tdq", ".tdq-search.jsonl")
+
+    def goi(self, tool_input):
+        payload = {"tool_name": "mcp__lsp__blast_radius", "tool_input": tool_input, "cwd": self.cwd,
+                   "session_id": "phien-blast-gate"}
+        rc, out, _err = run_hook(HOOK, payload, env={"TDQ_LOG": "0", "TDQ_PROJECT_DIR": self.cwd})
+        self.assertEqual(rc, 0)
+        return json.loads(out)["hookSpecificOutput"] if out else None
+
+    def test_deny_khi_changed_files_lon_hon_3(self):
+        ra = self.goi({"changed_files": ["a.py", "b.py", "c.py", "d.py"]}) or {}
+        self.assertEqual(ra.get("permissionDecision"), "deny")
+        self.assertIn("4 files > 3", ra.get("permissionDecisionReason", ""))
+        self.assertIn("find_references", ra.get("permissionDecisionReason", ""))
+
+    def test_deny_khi_changed_files_rong_hoac_khong_phai_list(self):
+        ra = self.goi({"changed_files": []}) or {}
+        self.assertEqual(ra.get("permissionDecision"), "deny")
+        ra2 = self.goi({"changed_files": "a.py"}) or {}
+        self.assertEqual(ra2.get("permissionDecision"), "deny")
+
+    def test_deny_khi_scope_khong_phai_exported(self):
+        ra = self.goi({"changed_files": ["a.py"], "scope": "all"}) or {}
+        self.assertEqual(ra.get("permissionDecision"), "deny")
+        self.assertIn("scope='all'", ra.get("permissionDecisionReason", ""))
+
+    def test_deny_khi_include_transitive_true(self):
+        ra = self.goi({"changed_files": ["a.py"], "include_transitive": True}) or {}
+        self.assertEqual(ra.get("permissionDecision"), "deny")
+        self.assertIn("include_transitive", ra.get("permissionDecisionReason", ""))
+
+    def test_deny_khi_circuit_breaker_mo(self):
+        with open(self.ledger, "w", encoding="utf-8") as fh:
+            fh.write(json.dumps({
+                "ts": time.time(),
+                "khoa": "phien:phien-blast-gate",
+                "loai": "lsp_ket_qua",
+                "cong_cu": "mcp__lsp__blast_radius",
+                "outcome": "timeout"
+            }) + "\n")
+        ra = self.goi({"changed_files": ["a.py"]}) or {}
+        self.assertEqual(ra.get("permissionDecision"), "deny")
+        self.assertIn("Circuit breaker", ra.get("permissionDecisionReason", ""))
+
+    def test_allow_khi_hop_le_va_mach_dong(self):
+        ra = self.goi({"changed_files": ["a.py", "b.py"], "scope": "exported", "include_transitive": False})
+        self.assertIsNone(ra)
+
+
+
 if __name__ == "__main__":
     unittest.main()

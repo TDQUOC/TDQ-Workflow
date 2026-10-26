@@ -226,6 +226,68 @@ class KhongLamVo(BaseSo):
         self.assertEqual(len(self.rows(khoa)), 1, "dòng hỏng không được chặn dòng mới")
 
 
+class TelemetryLSP(BaseSo):
+    def test_ghi_lsp_ket_qua_post_tool_use_thanh_cong(self):
+        khoa = self.mo_request()
+        # 1. PreToolUse
+        self.goi({
+            "hook_event_name": "PreToolUse",
+            "tool_name": "mcp__lsp__find_references",
+            "tool_use_id": "call-123",
+            "tool_input": {"symbol": "saveFile"}
+        })
+        # 2. PostToolUse
+        self.goi({
+            "hook_event_name": "PostToolUse",
+            "tool_name": "mcp__lsp__find_references",
+            "tool_use_id": "call-123",
+            "tool_input": {"symbol": "saveFile"},
+            "tool_response": {"references": ["a.py:10"]}
+        })
+        rows = self.rows(khoa)
+        # PreToolUse ghi khai_niem
+        self.assertEqual(rows[0]["loai"], "khai_niem")
+        self.assertEqual(rows[0]["cong_cu"], "lsp:find_references")
+        # PostToolUse ghi lsp_ket_qua
+        self.assertEqual(rows[1]["loai"], "lsp_ket_qua")
+        self.assertEqual(rows[1]["outcome"], "ok")
+        self.assertIsNotNone(rows[1].get("duration_ms"))
+        self.assertGreaterEqual(rows[1]["duration_ms"], 0)
+        self.assertEqual(rows[1]["tool_use_id"], "call-123")
+
+    def test_ghi_lsp_ket_qua_post_tool_use_failure_timeout(self):
+        khoa = self.mo_request()
+        # 1. PreToolUse
+        self.goi({
+            "hook_event_name": "PreToolUse",
+            "tool_name": "mcp__lsp__blast_radius",
+            "tool_use_id": "call-456",
+            "tool_input": {"changed_files": ["a.py"]}
+        })
+        # 2. PostToolUseFailure
+        self.goi({
+            "hook_event_name": "PostToolUseFailure",
+            "tool_name": "mcp__lsp__blast_radius",
+            "tool_use_id": "call-456",
+            "tool_input": {"changed_files": ["a.py"]},
+            "error": "timed out after 90000ms"
+        })
+        rows = self.rows(khoa)
+        self.assertEqual(rows[0]["loai"], "khai_niem")
+        self.assertEqual(rows[1]["loai"], "lsp_ket_qua")
+        self.assertEqual(rows[1]["outcome"], "timeout")
+        self.assertEqual(rows[1]["tool_use_id"], "call-456")
+
+    def test_hooks_json_dang_ky_post_tool_use_failure_lsp(self):
+        with open(os.path.join(ROOT, "hooks", "hooks.json"), encoding="utf-8") as fh:
+            hooks = json.load(fh)["hooks"]
+        self.assertIn("PostToolUseFailure", hooks)
+        post_fail = hooks["PostToolUseFailure"]
+        khop = [m for m in post_fail if re.fullmatch(m.get("matcher", ""), "mcp__lsp__blast_radius")]
+        self.assertTrue(any(h["command"].endswith('search_observe.py"')
+                            for m in khop for h in m["hooks"]), khop)
+
+
 class LogService(BaseSo):
     def test_log_tat_duoc_bang_bien_moi_truong(self):
         self.assertEqual(self.tool("mcp__lsp__find_symbol"), "")

@@ -6,10 +6,10 @@
     "semantic_hash": "80ef98b882da0cfb57f0bc2a2c634788"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1792944684.3197408,
-    "seen": 1792944993.5338213,
-    "ast_hash": "a0762ea75aed0c6f589f3aba96c57e4f",
-    "semantic_hash": "a0762ea75aed0c6f589f3aba96c57e4f"
+    "mtime": 1793005556.7172165,
+    "seen": 1793005610.8553326,
+    "ast_hash": "07ad0adee3ca8b33ed3c9fde90275d61",
+    "semantic_hash": "07ad0adee3ca8b33ed3c9fde90275d61"
   },
   ".claude/settings.json": {
     "mtime": 1789900266.4991295,
@@ -18,10 +18,10 @@
     "semantic_hash": "9c97dd11628f1ab6fc581dc2d42c0cc0"
   },
   "hooks/hooks.json": {
-    "mtime": 1792401872.636,
-    "seen": 1792402152.1152353,
-    "ast_hash": "1a7a1cc671e5d3bc659c854353d8d4c5",
-    "semantic_hash": "1a7a1cc671e5d3bc659c854353d8d4c5"
+    "mtime": 1793003830.820838,
+    "seen": 1793005257.1642942,
+    "ast_hash": "c8b96c7d2566b516f7e0eb634f858e78",
+    "semantic_hash": "c8b96c7d2566b516f7e0eb634f858e78"
   },
   "hooks/scripts/_common.py": {
     "mtime": 1792250782.761787,
@@ -48,8 +48,8 @@
     "semantic_hash": "b8e74cd8940b0d85972a6137ba6ab4f0"
   },
   "hooks/scripts/session_start.py": {
-    "mtime": 1792947315.5990472,
-    "seen": 1792947518.6333208,
+    "mtime": 1792948421.0621772,
+    "seen": 1793005257.1658385,
     "ast_hash": "a1ee21278ff743313af5d24146c72b29",
     "semantic_hash": "a1ee21278ff743313af5d24146c72b29"
   },
@@ -439,10 +439,10 @@
     "semantic_hash": "41b15e96b67c441f2d65a1125974b705"
   },
   ".codex-plugin/plugin.json": {
-    "mtime": 1792944692.184718,
-    "seen": 1792944993.5340917,
-    "ast_hash": "5b372f5f28e8c8ff8b8061ce3584418d",
-    "semantic_hash": "5b372f5f28e8c8ff8b8061ce3584418d"
+    "mtime": 1793005562.9738,
+    "seen": 1793005610.8556774,
+    "ast_hash": "a071bee98185829eb63637a2bc46f745",
+    "semantic_hash": "a071bee98185829eb63637a2bc46f745"
   },
   ".opencode/plugins/tdq-workflow.js": {
     "mtime": 1790138252.4325833,
@@ -463,10 +463,10 @@
     "semantic_hash": "24325d1fd31510142978f9812d999790"
   },
   "scripts/tdq_setup.py": {
-    "mtime": 1792944951.1037252,
-    "seen": 1792944993.5452893,
-    "ast_hash": "64fbaf8d5a1aa4aefee08898ddc100ca",
-    "semantic_hash": "64fbaf8d5a1aa4aefee08898ddc100ca"
+    "mtime": 1793003375.5612178,
+    "seen": 1793005257.171961,
+    "ast_hash": "951e60deafb6d87df50efc6cbdf6c863",
+    "semantic_hash": "951e60deafb6d87df50efc6cbdf6c863"
   },
   "scripts/utf8_io.py": {
     "mtime": 1792250782.771837,
@@ -511,22 +511,22 @@
     "semantic_hash": "8f44871825e007521181af39971e7b0b"
   },
   "hooks/scripts/search_observe.py": {
-    "mtime": 1791386170.1537008,
-    "seen": 1791424311.9902651,
-    "ast_hash": "f3ab3b367882798954faf0fe3c08833a",
-    "semantic_hash": "f3ab3b367882798954faf0fe3c08833a"
+    "mtime": 1793003955.402851,
+    "seen": 1793005257.1658366,
+    "ast_hash": "ffcf5079a1217f7f7edcdaaa391efa62",
+    "semantic_hash": "ffcf5079a1217f7f7edcdaaa391efa62"
   },
   "scripts/search_replay.py": {
-    "mtime": 1792250782.765982,
-    "seen": 1792263180.005019,
-    "ast_hash": "c12de27dfe510b170dddea7cb2dc6fd4",
-    "semantic_hash": "c12de27dfe510b170dddea7cb2dc6fd4"
+    "mtime": 1793004332.6975589,
+    "seen": 1793005257.1692867,
+    "ast_hash": "0fc0a46b8bb2edf20500644f74f0a0a3",
+    "semantic_hash": "0fc0a46b8bb2edf20500644f74f0a0a3"
   },
   "scripts/search_rules.py": {
-    "mtime": 1792483110.7746966,
-    "seen": 1792867696.188641,
-    "ast_hash": "3d7dab497173a4f1c8e168360eef449e",
-    "semantic_hash": "3d7dab497173a4f1c8e168360eef449e"
+    "mtime": 1793004245.0420077,
+    "seen": 1793005257.1692882,
+    "ast_hash": "b7c7feb882fb0b4759af452f15151bca",
+    "semantic_hash": "b7c7feb882fb0b4759af452f15151bca"
   },
   "scripts/tdq_codex_mcp.py": {
     "mtime": 1792053764.1258318,
@@ -541,10 +541,10 @@
     "semantic_hash": "04bf6ff2fd5e19878920837f3580fb2e"
   },
   "hooks/scripts/lsp_gate.py": {
-    "mtime": 1791425411.8532128,
-    "seen": 1791724122.563398,
-    "ast_hash": "21792c7fa93e13b7410884ecac591408",
-    "semantic_hash": "21792c7fa93e13b7410884ecac591408"
+    "mtime": 1793003627.0700924,
+    "seen": 1793005257.1653123,
+    "ast_hash": "2e577d5dc9a26c33c6f8d1725b97f0b7",
+    "semantic_hash": "2e577d5dc9a26c33c6f8d1725b97f0b7"
   },
   "scripts/lsp_module.py": {
     "mtime": 1791425411.8542113,

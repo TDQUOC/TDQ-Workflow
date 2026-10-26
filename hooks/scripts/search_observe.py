@@ -47,7 +47,7 @@ HAN_PHIEN_GIAY = 6 * 3600
 # The tokenizer, the concept-call recognizer and the state builder live in
 # `scripts/search_rules.py` (pure): the replay tool shares them, so the live ledger and the
 # replay can never disagree on what counts (they did, until QC round 1 of 2026-10-03).
-from search_rules import TOKEN, la_goi_khai_niem, trang_thai  # noqa: E402,F401
+from search_rules import TOKEN, la_goi_khai_niem, phan_loai_ket_qua_lsp, trang_thai  # noqa: E402,F401
 
 
 def _log(message):
@@ -148,11 +148,74 @@ def main():
         _log(f"prompt · {len(token)} token · {khoa}")
         sys.exit(0)
 
-    nhan = la_goi_khai_niem(payload.get("tool_name"), payload.get("tool_input"))
+    tool_name = str(payload.get("tool_name") or "")
+    tool_input = payload.get("tool_input")
+    tool_use_id = payload.get("tool_use_id")
+
+    if su_kien == "PreToolUse":
+        nhan = la_goi_khai_niem(tool_name, tool_input)
+        if nhan:
+            row = {
+                "ts": time.time(),
+                "khoa": khoa,
+                "loai": "khai_niem",
+                "cong_cu": nhan,
+                "su_kien": "PreToolUse",
+            }
+            if tool_use_id:
+                row["tool_use_id"] = tool_use_id
+            ghi_so(cwd, row)
+            _log(f"khai_niem · {nhan} · {khoa}")
+        sys.exit(0)
+
+    # PostToolUse or PostToolUseFailure
+    if su_kien in ("PostToolUse", "PostToolUseFailure"):
+        if "lsp" in tool_name.lower():
+            outcome = phan_loai_ket_qua_lsp(su_kien, payload)
+            now = time.time()
+            rows = doc_so(cwd, khoa, phien)
+            ts_bat_dau = None
+            if tool_use_id:
+                for r in reversed(rows):
+                    if r.get("tool_use_id") == tool_use_id and r.get("ts"):
+                        ts_bat_dau = float(r["ts"])
+                        break
+            if ts_bat_dau is None:
+                for r in reversed(rows):
+                    if r.get("su_kien") == "PreToolUse" and r.get("ts"):
+                        ts_bat_dau = float(r["ts"])
+                        break
+
+            # If tool_use_id was present or there was a PreToolUse matching start, record telemetry
+            duration_ms = max(0, int(round((now - ts_bat_dau) * 1000))) if ts_bat_dau is not None else None
+            if tool_use_id or ts_bat_dau is not None or su_kien == "PostToolUseFailure":
+                row_lsp = {
+                    "ts": now,
+                    "khoa": khoa,
+                    "loai": "lsp_ket_qua",
+                    "cong_cu": tool_name,
+                    "outcome": outcome,
+                    "duration_ms": duration_ms,
+                }
+                if tool_use_id:
+                    row_lsp["tool_use_id"] = tool_use_id
+                ghi_so(cwd, row_lsp)
+                _log(f"lsp_ket_qua · {tool_name} · outcome={outcome} · duration={duration_ms}ms · {khoa}")
+
+        if su_kien == "PostToolUse":
+            nhan = la_goi_khai_niem(tool_name, tool_input)
+            if nhan:
+                ghi_so(cwd, {"ts": time.time(), "khoa": khoa, "loai": "khai_niem", "cong_cu": nhan})
+                _log(f"khai_niem · {nhan} · {khoa}")
+        sys.exit(0)
+
+    # Fallback for events without explicit hook_event_name
+    nhan = la_goi_khai_niem(tool_name, tool_input)
     if nhan:
         ghi_so(cwd, {"ts": time.time(), "khoa": khoa, "loai": "khai_niem", "cong_cu": nhan})
         _log(f"khai_niem · {nhan} · {khoa}")
     sys.exit(0)
+
 
 
 if __name__ == "__main__":

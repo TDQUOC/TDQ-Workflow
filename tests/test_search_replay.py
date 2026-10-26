@@ -169,5 +169,34 @@ class TestTranscript(unittest.TestCase):
             self.assertIsNone(re.search(r"^\s*(from|import)\s+hooks", fh.read(), re.M))
 
 
+class TestLspTelemetryReplay(unittest.TestCase):
+    def test_trich_xuat_telemetry_lsp_tu_transcript(self):
+        dong = [
+            {"type": "user", "message": {"content": "start search"}},
+            {"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "id": "call-1", "name": "mcp__lsp__find_references",
+                 "input": {"symbol": "saveFile"}}
+            ]}},
+            {"type": "user", "message": {"content": [
+                {"type": "tool_result", "tool_use_id": "call-1", "content": "## references [1]\nsrc/a.ts:10"}
+            ]}},
+        ]
+        with tempfile.TemporaryDirectory() as d:
+            duong = os.path.join(d, "lsp.jsonl")
+            with open(duong, "w", encoding="utf-8") as fh:
+                fh.write("\n".join(json.dumps(x) for x in dong))
+            kq = search_replay.phan_tich_lsp_telemetry(duong)
+            self.assertEqual(kq["tong_so"], 1)
+            self.assertEqual(kq["dem_outcome"]["ok"], 1)
+
+    def test_cli_lsp_telemetry_json(self):
+        p = _chay(FIXTURE, "--lsp-telemetry", "--json", env={"TDQ_LOG": "0"})
+        self.assertEqual(p.returncode, 0, p.stderr)
+        data = json.loads(p.stdout)
+        self.assertIn("dem_outcome", data)
+        self.assertIn("p50_ms", data)
+
+
+
 if __name__ == "__main__":
     unittest.main()
