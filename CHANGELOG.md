@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.84.2 — 2026-10-26
+
+Giảm Timeout Và Thời Gian Chờ agent-lsp (Mạch Ngắt Circuit Breaker & Idle Timeout 90s).
+
+- **Thiết lập giới hạn chờ Idle Timeout 90s (`scripts/tdq_setup.py`).** Tự động cấu hình `CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT = "90000"` trong `~/.claude/settings.json`, cắt đứt hoàn toàn nguy cơ client bị treo 1.800 giây khi server LSP kẹt socket hoặc semaphore worker pool.
+- **Cổng kiểm soát phạm vi và mạch ngắt Circuit Breaker (`hooks/scripts/lsp_gate.py`, `hooks/hooks.json`).** Chặn có điều kiện lệnh gọi `blast_radius` khi `changed_files` > 3 tệp, `scope != "exported"`, hoặc `include_transitive=true`. Tự động ngắt mạch (trạng thái MỞ) khi lần gọi `blast_radius` gần nhất thất bại hoặc có ≥2 lỗi LSP liên tiếp, điều hướng an toàn sang `find_references` hoặc `Grep` + `Graphify`.
+- **Quan sát thời gian chạy và phân loại kết quả LSP (`hooks/scripts/search_observe.py`).** Đăng ký hook `PostToolUseFailure`, đo lường chính xác `duration_ms` và gán nhãn 4 trạng thái `outcome` (`ok`, `empty`, `error`, `timeout`), bảo toàn hợp đồng mở khóa `khai_niem` ở `PreToolUse`.
+- **Thống kê phân vị độ trễ và đối chiếu Caller Oracle (`scripts/search_rules.py`, `scripts/search_replay.py`).** Cung cấp các hàm thuần tính toán p50/p95, max_ms và đối chiếu độ phủ caller oracle (`recall`, `precision`); CLI `--lsp-telemetry` xuất báo cáo telemetry LSP trực tiếp từ transcript JSONL hoặc file sổ.
+
 ## 0.84.1 — 2026-10-26
 
 Sửa nạp luật SessionStart khi workspace chưa mở request.

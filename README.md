@@ -1,6 +1,6 @@
 # TDQ-Workflow — Hệ Điều Hành Spec-Driven & Kiến Trúc Tương Tác Cho AI Coding Agents
 
-![Version](https://img.shields.io/badge/version-0.84.1-2563eb?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-0.84.2-2563eb?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/tests-2977%20passed-16a34a?style=for-the-badge)
 ![Search](https://img.shields.io/badge/search-3--tier%20LSP%20%C2%B7%20Graphify%20%C2%B7%20Grep-0d9488?style=for-the-badge)
 ![Visual BA](https://img.shields.io/badge/archify-2--tier%20Personal%20BA%20%26%20Master%20Map-7c3aed?style=for-the-badge)
@@ -184,7 +184,7 @@ Hệ thống gồm 13 hooks lắng nghe trên 6 sự kiện vòng đời, kết 
 |---|---|
 | `skills/` (11) | `tdq-intake`, `tdq-spec`, `tdq-plan`, `tdq-build`, `tdq-lean`, `tdq-status`, `tdq-check-status`, `tdq-conventions`, `tdq-setup`, `tdq-browser-research`, `tdq-browser-test` |
 | `agents/` (6) | `tdq-reviewer`, `tdq-implementer`, `tdq-qc-tester`, `tdq-refactor-cleaner`, `tdq-security-reviewer`, `tdq-build-resolver` |
-| `hooks/` (13 trên 6 sự kiện) | `session_start`, `subagent_start`, `prompt_context`, `search_observe` (2 sự kiện), `edit_gate`, `bash_gate`, `read_gate`, `search_gate`, `lsp_gate`, `ask_gate`, `lsp_post_observe`, `stop_gate` |
+| `hooks/` (14 trên 7 sự kiện) | `session_start`, `subagent_start`, `prompt_context`, `search_observe` (3 sự kiện), `edit_gate`, `bash_gate`, `read_gate`, `search_gate`, `lsp_gate`, `ask_gate`, `stop_gate` |
 | `scripts/` (43) | Tầng CLI lõi: `tdq_state.py`, `tdq_finish.py`, `tdq_test.py`, `tdq_team.py`, `tdq_archify.py`, `archify_delivery.py`, `archify_model.py`, `archify_artifacts.py`, `tdq_lsp.py`, `tdq_setup.py`, `doc_lint.py`, `token_budget.py`, `build_portable.py`... |
 | `docs/architecture/` | Cổng thông tin **Master Map** (`index.html`, 4 bản đồ tương tác `.html` và `manifest.json`) |
 | `docs/tdq/` | Hồ sơ theo từng request (`brief/`, `spec/`, `plan/`, `qc/`, `reports/`, `state.json`, `token-budget.json`) |

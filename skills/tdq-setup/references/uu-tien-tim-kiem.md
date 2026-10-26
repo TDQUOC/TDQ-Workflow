@@ -1,12 +1,12 @@
 # The search-order rule — the single source
 <!-- muc-luc-dong:
-  1. The order, settled=16-61 ·
-  2. The table — kind of question → which layer first, with the numbers=62-87 ·
-  2b. graphify, the map=88-99 ·
-  2c. Runtime dependencies — what each layer needs, and what it falls back to=100-114 ·
-  5. Where this rule is hooked in=115-126 ·
-  6. The gate that holds this rule (since 2026-10-03)=127-147 ·
-  3. Two details that live in a sibling file=148
+  1. The order, settled=16-62 ·
+  2. The table — kind of question → which layer first, with the numbers=63-89 ·
+  2b. graphify, the map=90-101 ·
+  2c. Runtime dependencies — what each layer needs, and what it falls back to=102-116 ·
+  5. Where this rule is hooked in=117-128 ·
+  6. The gate that holds this rule (since 2026-10-03)=129-149 ·
+  3. Two details that live in a sibling file=150
 -->
 
 This file is the ORIGINAL. `tdq-intake` (two spots), `tdq-spec`, `tdq-plan` and `tdq-build` each
@@ -58,6 +58,7 @@ So:
 4. Moving to another module = `start_lsp` again with that module's root and language.
 
 5. Every concept query (LSP/graphify) unlocks exact-name grep for the next 10 searches.
+6. Overriding upstream `blast_radius` instruction: `agent-lsp` instructs "call blast_radius before editing any file". That is an upstream suggestion, NOT a TDQ requirement. Calling `blast_radius` indiscriminately causes severe timeouts (measured: 1800s aborts). Prefer `find_references` for a single symbol, or `graphify affected` for cross-file blast radius. Use `blast_radius` ONLY when inspecting ≤3 specific files with `scope="exported"` and `include_transitive=false`.
 
 ## 2. The table — kind of question → which layer first, with the numbers
 
@@ -69,7 +70,8 @@ claudecodeui, 12 concept questions each).
 | Kind of question | Example | First layer | The measurement behind it |
 |---|---|---|---|
 | symbol structure inside a file | "list functions/methods in `api.ts`" | **`mcp__lsp__list_symbols`** | instant AST outline of the file without regex guessing |
-| relationship — who calls this, blast radius, safe rename | "who calls `tdq_state.load`" | **agent-lsp** | file coverage **15/15**, zero false positives; grep hits the same 15 but drags in 6 more files it should not — precision 67 % |
+| relationship — who calls this, safe rename | "who calls `tdq_state.load`" | **agent-lsp (`find_references`)** | file coverage **15/15**, zero false positives; grep hits the same 15 but drags in 6 more files it should not — precision 67 % |
+| blast radius, multi-hop impact | "who is affected if I change this" | **`graphify affected`** | traverses 2-hop dependencies across files in zero round trips; use `blast_radius` only for ≤3 files, exported only, with transitive=false |
 | exact name you already know the token of | "where is `bac5_hook_xung_dot` defined" | **grep** | grep answers in ~0.1 s against LSP's 3–6 s, and both reach 6/6 locations; LSP wins nothing here but time lost |
 | vague concept, no name to hang it on | "the spot that writes a temp file then swaps it in" | **`graphify query` + grep over synonyms, merged** | LSP ranks the real target **13/62** — it is a NAME index. Without a semantic layer, agents on grep/LSP/graphify hit **11/12** (TDQ-Workflow) and **10/12** (claudecodeui) fully and missed **0**, against 12/12 and 11/12 with lumen, at **0.88×** and **1.06×** the tokens |
 | type, diagnostics, implementations | "what type does this return" | **agent-lsp** | the only layer that answers these at all |
@@ -152,5 +154,6 @@ These two are needed only when you hit the case, so they live outside the decisi
 index:
 
 - **Outside plugin hooks pushing another order** — read it when rung 5 of the ladder reports one.
+- **Overriding upstream `blast_radius` instruction** — why `blast_radius` is restricted to ≤3 files, exported, non-transitive.
 - **Never open documents before asking `find_references`** — measured: more warm-up, worse answer,
   monotonically. Read it before the first `find_references` of a turn.

@@ -26,6 +26,17 @@ contradicts the order in `uu-tien-tim-kiem.md` and it is not a decision that hoo
 - A plugin update reinstalls the hook under a new version directory, so expect rung 5 to report
   it again. Detecting it every run is the design, not a leak.
 
+## 5. Overriding upstream `blast_radius` instruction
+
+Upstream `agent-lsp` includes a hardcoded prompt instruction: *"IMPORTANT: call blast_radius before editing any file"*.
+This instruction is designed for standalone LLM agents without external static graphs. In TDQ Workflow:
+
+1. **Severe latency / timeout risk**: `blast_radius` computes all exported symbols across the workspace, partitioned into test vs non-test callers. In multi-file scenarios or complex workspaces, it easily exhausts semaphore pools and times out (5 measured aborts at 1800s in historical logs).
+2. **Proper tools for the job**:
+   - For a specific symbol or function rename/change: use `mcp__lsp__find_references`.
+   - For cross-file architecture blast radius or dependency impact: use `graphify affected "<symbol>" --depth 2` (instant AST graph, zero round-trip overhead).
+3. **When `blast_radius` is allowed**: Only for small, explicit diff targets (≤ 3 files), with `scope="exported"` and `include_transitive=false`. The hook `lsp_gate.py` (`TDQ:LSP`) actively denies calls exceeding 3 files or requesting `scope="all"` / `include_transitive=true`.
+
 ## 6. Never open documents before asking `find_references`
 
 ### When it applies

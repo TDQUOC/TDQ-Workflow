@@ -27,10 +27,13 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _common  # noqa: E402
+from search_rules import trang_thai_lsp  # noqa: E402
+from search_observe import doc_so, khoa_hien_tai  # noqa: E402
 
 MA = "TDQ:LSP"
 FILE_BANG = os.path.join("docs", "tdq", ".tdq-lsp-module.json")
 HO_TS = ("typescript", "javascript")
+TRAN_FILE_BLAST_RADIUS = 3
 
 
 def _log(message):
@@ -81,10 +84,54 @@ def phan_xu(cwd, tool_input):
             "New module? python3 scripts/tdq_lsp.py kich-ban refreshes the table."]
 
 
+def phan_xu_blast_radius(cwd, tool_input, rows=None):
+    """-> [] to allow, or deny lines for mcp__lsp__blast_radius (O3/spec §3c Bước 2)."""
+    changed_files = tool_input.get("changed_files")
+    if not isinstance(changed_files, list) or len(changed_files) == 0:
+        return [
+            "blast_radius requires a non-empty list of changed_files.",
+            "Use find_references for single symbols, or pass 1-3 files to blast_radius."
+        ]
+    if len(changed_files) > TRAN_FILE_BLAST_RADIUS:
+        return [
+            f"blast_radius requested on {len(changed_files)} files > {TRAN_FILE_BLAST_RADIUS}.",
+            "Calling blast_radius across >3 files causes severe upstream timeouts (measured 1800s aborts).",
+            "Narrow to <=3 changed files, use find_references per symbol, or use graphify affected."
+        ]
+    scope = tool_input.get("scope", "exported")
+    if scope != "exported":
+        return [
+            f"blast_radius with scope='{scope}' is denied (only scope='exported' is permitted).",
+            "scope='all' scans entire workspace private symbols and exhausts semaphore worker pools.",
+            "Use scope='exported' (default), or find_references for targeted lookups."
+        ]
+    if bool(tool_input.get("include_transitive")) is True:
+        return [
+            "blast_radius with include_transitive=true is denied.",
+            "Transitive symbol exploration causes combinatorial graph traversal and timeouts.",
+            "Use graphify affected \"<symbol>\" --depth 2 for instant static graph traversal."
+        ]
+
+    # Circuit breaker check
+    if rows is not None:
+        tt = trang_thai_lsp(rows)
+        if tt.get("mach_ngat_mo"):
+            ly_do = tt.get("ly_do_ngat")
+            return [
+                f"Circuit breaker is OPEN for blast_radius ({ly_do}).",
+                "Recent LSP call(s) failed or timed out in this workspace.",
+                "blast_radius is temporarily halted. Use find_references or Grep + Graphify instead."
+            ]
+
+    return []
+
+
 def main():
     try:
         payload = _common.read_payload()
         cwd = _common.payload_cwd(payload)
+        phien = _common.session_id(payload)
+        tool_name = str(payload.get("tool_name") or "")
         tool_input = payload.get("tool_input")
     except Exception as loi:  # noqa: BLE001 — a broken payload must never block the tool
         _log(f"cannot read payload ({loi}) — silent")
@@ -94,12 +141,22 @@ def main():
         # because of a transport fault (measured 2026-10-08 with a shell-mangled JSON payload).
         _log("payload without tool_input — silent")
         sys.exit(0)
-    dong = phan_xu(cwd, tool_input)
-    _log(f"language_id={tool_input.get('language_id')!r} root={tool_input.get('root_dir')!r} · "
-         f"{'deny' if dong else 'allow'}")
+
+    dong = []
+    if "blast_radius" in tool_name:
+        khoa = khoa_hien_tai(cwd, phien)
+        rows = doc_so(cwd, khoa, phien)
+        dong = phan_xu_blast_radius(cwd, tool_input, rows)
+        _log(f"blast_radius files={len(tool_input.get('changed_files') or [])} · {'deny' if dong else 'allow'}")
+    else:
+        dong = phan_xu(cwd, tool_input)
+        _log(f"language_id={tool_input.get('language_id')!r} root={tool_input.get('root_dir')!r} · "
+             f"{'deny' if dong else 'allow'}")
+
     if dong:
         _common.block(cwd, payload, MA, dong, day_du=True)
     sys.exit(0)
+
 
 
 if __name__ == "__main__":

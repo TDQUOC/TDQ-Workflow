@@ -558,6 +558,40 @@ def _ban_cai_user(home):
     return None
 
 
+def _cai_dat_env_timeout_mcp(duong_settings, cham_may=None):
+    """Set default CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT=90000 in env of settings.json."""
+    if cham_may is False or (cham_may is None and _khong_cham_may()):
+        return False
+    try:
+        du_lieu = {}
+        if os.path.isfile(duong_settings):
+            with io.open(duong_settings, "r", encoding="utf-8") as fh:
+                noi_dung = fh.read().strip()
+                if noi_dung:
+                    du_lieu = json.loads(noi_dung)
+        if not isinstance(du_lieu, dict):
+            return False
+        env_khoi = du_lieu.setdefault("env", {})
+        if not isinstance(env_khoi, dict):
+            return False
+        if env_khoi.get("CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT"):
+            return False
+        env_khoi["CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT"] = "90000"
+        os.makedirs(os.path.dirname(os.path.abspath(duong_settings)), exist_ok=True)
+        if os.path.isfile(duong_settings):
+            shutil.copyfile(duong_settings, duong_settings + ".tdq.bak")
+        tam = f"{duong_settings}.{os.getpid()}.tmp"
+        with io.open(tam, "w", encoding="utf-8", newline="\n") as fh:
+            json.dump(du_lieu, fh, indent=2, ensure_ascii=False)
+            fh.write("\n")
+        os.replace(tam, duong_settings)
+        _log(f"đã đặt CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT=90000 tại {duong_settings}")
+        return True
+    except (OSError, ValueError, TypeError) as exc:
+        _log(f"không đặt được env timeout tại {duong_settings}: {exc}")
+        return False
+
+
 def _da_bat(duong_settings, khoa):
     du_lieu = tdq_lsp._doc_json(duong_settings)
     bat = du_lieu.get("enabledPlugins") if isinstance(du_lieu, dict) else None
@@ -588,6 +622,7 @@ def kiem_plugin_user(home=None, goc_plugin=None, cham_may=None):
         canh_bao.append(f"bản cài {khoa} {v_cai} lệch instruction {v_goc} — chạy "
                         f"/plugin update {khoa}")
     duong = os.path.join(home, ".claude", "settings.json")
+    _cai_dat_env_timeout_mcp(duong, cham_may)
     if _da_bat(duong, khoa):
         return da_cai, canh_bao, no
     if not cham_may:
