@@ -133,6 +133,10 @@ class StepAudit(unittest.TestCase):
         out = step_audit.report(self.stats)
         self.assertIn("| Tool calls per turn | 1.25 (4 turn(s)) |", out)
         self.assertIn("| Repeat Read of one file | 1 |", out)
+        self.assertIn("| Median legacy assistant-gap estimate | 3.5 s |", out)
+        self.assertIn("| p90 legacy assistant-gap estimate | 10.0 s |", out)
+        self.assertIn("not API latency or model compute time", out)
+        self.assertIn("300 s", out)
 
     def test_help_du_ba_co(self):
         proc = subprocess.run([sys.executable, os.path.join(SCRIPTS, "step_audit.py"),

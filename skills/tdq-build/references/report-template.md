@@ -107,7 +107,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 ## Thời gian
 
-<dán nguyên output của `tdq_timing.py show`: bảng Phase · Wall clock · Model time · Times entered>
+<dán nguyên output của `tdq_timing.py show`, gồm bảng timing v2, quality và chú thích nguồn>
 ```
 
 **Spec deviations ride on the commit question.** When `tdq_state.py lech list` shows pending
@@ -115,9 +115,11 @@ items, the closing block asks, before the commit question, one line per deviatio
 (`lech duyet <id> --by "<words>"`) or reject (`lech bac <id> --by "<words>"`). A rejected one
 becomes a fix task in the plan and the request goes back with `set phase=implement`.
 
-The two time columns differ on purpose: **wall clock** includes time spent waiting for the
-user's approval, **model time** counts only machine work. A large gap on one phase means that
-phase spent its time WAITING, not working — read the numbers before deciding what to optimise.
+**Wall clock** includes approval waits. V2 reports API latency, host tool wait, confirmed
+background jobs, their observed union and unattributed time, each with quality and reason.
+Intervals overlap: do not add those columns. Unattributed time is not evidence of user idle
+or model compute; `model_giay` is null. Preserve partial/unavailable labels and source scope.
+V1 timing and step-audit gaps remain **legacy assistant-gap estimates**, not model time.
 
 ## Check before presenting
 

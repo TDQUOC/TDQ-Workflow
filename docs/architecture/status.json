@@ -11,9 +11,17 @@
     "Source file modified: hooks/scripts/search_observe.py",
     "Source file modified: scripts/search_replay.py",
     "Source file modified: scripts/search_rules.py",
+    "Source file modified: scripts/step_audit.py",
     "Source file modified: scripts/tdq_setup.py",
+    "Source file modified: scripts/tdq_test.py",
+    "Source file modified: scripts/tdq_timing.py",
+    "Source file modified: scripts/token_audit.py",
+    "Source file modified: skills/tdq-build/references/report-template.md",
     "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md",
-    "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem.md"
+    "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem.md",
+    "Source file modified: skills/tdq-status/SKILL.md",
+    "Source file added: scripts/tdq_test_result.py",
+    "Source file added: scripts/tdq_transcript.py"
   ],
-  "checked_at": "2026-10-27T06:57:43Z"
+  "checked_at": "2026-10-27T07:20:55Z"
 }
