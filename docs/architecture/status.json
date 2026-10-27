@@ -2,6 +2,10 @@
   "schema_version": 1,
   "status": "stale",
   "reasons": [
+    "Child file digest mismatch for overview.html: manifest 442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0 != current 81155cd6795eeaebadddfb0b8e88b85b9a44462f096089fa7aa65d69c315c55c",
+    "Child file digest mismatch for pipeline-lifecycle.html: manifest 71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d != current e7b340b89631f60f466f296d4b0c03bf21b8cc103b2b6a05fecf89177e6b96d6",
+    "Child file digest mismatch for search-and-archify.html: manifest b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e != current d17afd3b3b149693972578ee57ee74341f867e822982a16dad125fc3ffb3d3ff",
+    "Child file digest mismatch for hooks-and-gates.html: manifest 255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e != current a150fe3a207287a85ca41aa540bd9b2cec6a880b1e1091818fe07734a0c4bcf0",
     "Source file modified: hooks/hooks.json",
     "Source file modified: hooks/scripts/lsp_gate.py",
     "Source file modified: hooks/scripts/search_observe.py",
@@ -11,5 +15,5 @@
     "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md",
     "Source file modified: skills/tdq-setup/references/uu-tien-tim-kiem.md"
   ],
-  "checked_at": "2026-10-26T09:06:47Z"
+  "checked_at": "2026-10-27T06:57:43Z"
 }
