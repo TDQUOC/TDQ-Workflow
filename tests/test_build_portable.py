@@ -21,6 +21,7 @@ import tdq_checkportable  # chủ của phép kiểm dấu ~
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "scripts", "build_portable.py")
+PHASE1_RUNTIME_MODULES = {"tdq_transcript", "tdq_test_result"}
 
 
 def chay(*args, env=None):
@@ -295,6 +296,9 @@ class TestBanAntigravity(TempDest):
                       "skills/tdq-intake/SKILL.md", "hooks/scripts/agy_pretooluse_gate.py",
                       "hooks/scripts/agy_stop_gate.py", "scripts/tdq_state.py"):
             self.assertIn(duong, files, f"manifest thiếu {duong}")
+        for module in PHASE1_RUNTIME_MODULES:
+            self.assertIn(f"scripts/{module}.py", files,
+                          "Approved runtime modules must be packaged")
 
     @unittest.skipUnless(helper.co_lenh("graphify"), "chưa cài graphify — check báo MISSING, thoát 1")
     def test_checkportable_xac_nhan_ban_sach(self):
@@ -550,7 +554,9 @@ class TestSinhNhanhRelease(TempDest):
             "tdq_setup", "tdq_state", "tdq_finish", "tdq_archify",
             "archify_delivery", "archify_model", "archify_artifacts",
             "tdq_lsp", "build_portable", "tdq_test", "tdq_checkportable",
-        }
+        } | PHASE1_RUNTIME_MODULES
+        self.assertLessEqual(PHASE1_RUNTIME_MODULES, kept_py,
+                             "Approved runtime modules must remain in release")
         for dv in diem_vao_bat_buoc:
             if dv in all_py:
                 self.assertIn(
@@ -599,16 +605,19 @@ class TestSinhNhanhRelease(TempDest):
                         f"Script dev '{excl}' phải bị loại khỏi release branch"
                     )
 
-    def test_release_loc_cay_repo_that_duoi_150_file(self):
+    def test_release_budget_excludes_only_approved_runtime_modules(self):
         proc = subprocess.run(
             ["git", "-C", ROOT, "ls-tree", "-r", "-z", "HEAD"],
             capture_output=True, check=True, timeout=30,
         )
         kept = build_portable.loc_muc_ls_tree(proc.stdout)
-        self.assertLessEqual(len(kept), 160)
+        paths = {entry.split(b"\t", 1)[1].decode("utf-8") for entry in kept}
+        approved_paths = {f"scripts/{module}.py" for module in PHASE1_RUNTIME_MODULES}
+        self.assertLessEqual(approved_paths, paths)
+        # The existing budget stays unchanged for every other release file.
+        self.assertLessEqual(len(paths - approved_paths), 160)
         self.assertGreaterEqual(len(kept), 120)
-        for entry in kept:
-            path = entry.split(b"\t", 1)[1].decode("utf-8")
+        for path in paths:
             self.assertFalse(path.startswith(("docs/", "tests/", "evals/", "graphify-out/")))
 
     def test_release_sinh_nhanh_main_tren_repo_tam_idempotent_va_dry_run(self):
