@@ -46,8 +46,10 @@ CLI (`python scripts/tdq_test.py <command>`):
   `--files` the file set is `git diff --name-only <nhanh_goc>...HEAD` plus every uncommitted
   change (staged, unstaged, untracked); `nhanh_goc` comes from `docs/tdq/state.json` (fallback
   `main`). When git fails, or `ban_kinh` gives a reason, the full suite runs instead. The
-  selected modules run in ONE process (`unittest` loader); exit 0 when green, 1 otherwise. One
-  JSON row goes to the ledger `docs/tdq/.tdq-test.jsonl`.
+  selected modules run in ONE process (`unittest` loader). Empty direct
+  selection for source tries transitive selection, then full fallback.
+  A no-op is SKIP (exit 0); missing execution evidence is INCOMPLETE (exit 1).
+  One versioned JSON result goes to the test ledger.
 - `tron-bo [--repo DIR]`: run every test module in ONE process; exit 0/1. One `tron-bo` row
   (with `failed_modules`), then one `bo-sot` row per red module that no `vung-cham` row of the
   same request selected (none when such a row fell back to the full suite): the radius missed it.
@@ -60,17 +62,22 @@ Log service: one ISO-timestamped line per command on stderr, on by default; `TDQ
 it off. Only paths, counts and reasons are logged, never file contents.
 """
 import ast
+import contextlib
+import importlib.util
 import json
 import os
 import re
 import subprocess
 import sys
+import tempfile
 import time
+import xml.etree.ElementTree as ET
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import tdq_state  # noqa: E402 — log service, timestamp, project root (it imports us lazily)
 import tdq_ten_lenh  # noqa: E402
+import tdq_test_result  # noqa: E402
 
 TOP_DIRS = frozenset({"scripts", "hooks", "skills", "tests", "agents"})
 # Under these top dirs a file matches by path only; so does every file outside `TOP_DIRS`.
@@ -392,9 +399,10 @@ def _ly_do_khong_doc_duoc(paths, repo):
         if not os.path.isfile(full):
             return "changed .py is missing (deleted or renamed): %s" % p
         try:
-            ast.parse(_doc(full))
-        except SyntaxError:
-            return "changed .py cannot be parsed: %s" % p
+            with open(full, encoding="utf-8") as source:
+                ast.parse(source.read())
+        except (OSError, UnicodeError, SyntaxError):
+            return "changed .py cannot be read or parsed: %s" % p
     return None
 
 
@@ -582,173 +590,364 @@ def _bo_module_cu(tests_dir, modules):
 
 
 def chay_module(repo, modules, stream=None):
-    """Run `modules` (test file names) in THIS process. True when every test passes."""
+    """Keep the boolean API; only verified test execution returns True."""
+    return chay_module_result(repo, modules, stream=stream)["status"] == "PASS"
+
+
+def _suite_modules(suite, inventory):
+    import unittest
+    observed, complete = set(), True
+    for test in suite:
+        if isinstance(test, unittest.TestSuite):
+            modules, mapped = _suite_modules(test, inventory)
+            observed.update(modules)
+            complete = complete and mapped
+        else:
+            # Reuse the shared internal mapper for actual discovered test IDs.
+            identifier = tdq_test_result._test_id(test)
+            module = tdq_test_result._module_for(identifier, inventory)
+            complete = complete and module is not None
+            if module is not None:
+                observed.add(module)
+    return sorted(observed), complete
+
+
+def _run_unittest_suite(suite, modules, stream):
     import unittest  # lazy: see the import note at the top of the module
+    runner = unittest.TextTestRunner(stream=stream or sys.stderr, verbosity=1)
+    result = unittest.TextTestResult(runner.stream, runner.descriptions,
+                                     runner.verbosity)
+    runner.resultclass = lambda *args: result
+    try:
+        runner.run(suite)
+    except KeyboardInterrupt:
+        parsed = tdq_test_result.from_unittest_result(
+            result, modules, exit_code=130)
+        parsed["details_complete"] = False
+        parsed["reason"] = "Unittest interrupted; " + parsed["reason"]
+        return parsed
+    except Exception:
+        result.addError(unittest.suite._ErrorHolder("<runner>"),
+                        sys.exc_info())
+        parsed = tdq_test_result.from_unittest_result(result, modules,
+                                                     exit_code=1)
+        parsed["details_complete"] = False
+        parsed["reason"] = "Unittest runner error; " + parsed["reason"]
+        return parsed
+    return tdq_test_result.from_unittest_result(result, modules)
+
+
+def chay_module_result(repo, modules, stream=None, *, full=False):
+    """Run selected modules and return the shared structured result."""
+    import unittest
     if not modules:
-        return True
+        return tdq_test_result.empty_result("unittest", "No test modules")
     tests_dir = os.path.join(repo, "tests")
     _bo_module_cu(tests_dir, modules)
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    for m in modules:
-        suite.addTests(loader.discover(tests_dir, pattern=m, top_level_dir=tests_dir))
-    # A module that fails to import becomes a failing `_FailedTest` in the suite: still red.
-    result = unittest.TextTestRunner(stream=stream or sys.stderr, verbosity=1).run(suite)
-    return result.wasSuccessful()
+    try:
+        if full:
+            suite = loader.discover(tests_dir, pattern="test_*.py",
+                                     top_level_dir=tests_dir)
+        else:
+            for module in modules:
+                suite.addTests(loader.discover(
+                    tests_dir, pattern=module, top_level_dir=tests_dir))
+        observed, mapped = _suite_modules(suite, modules)
+        result = _run_unittest_suite(suite, modules, stream)
+        result["modules"] = observed
+        result["details_complete"] = result["details_complete"] and mapped
+        if not mapped:
+            result["reason"] += "; Discovered module mapping is incomplete"
+    except KeyboardInterrupt:
+        result = tdq_test_result.empty_result(
+            "unittest", "Unittest collection interrupted", exit_code=130)
+    except Exception as exc:
+        result = tdq_test_result.empty_result(
+            "unittest", f"Runner error: {exc}", status="ERROR")
+    _log(f"backend=unittest status={result['status']} "
+         f"tests_run={result['tests_run']} reason={result['reason']}")
+    return result
 
 
 # ---------- commands ----------
 
+def _changed_files(args, repo, state):
+    if args.files is not None:
+        return sorted({chuan_hoa(f) for f in args.files if chuan_hoa(f)}), None
+    base = state.get("nhanh_goc") or nhanh_goc_mac_dinh(repo)
+    return file_doi_git(repo, base)
+
+
+def _select_tests(files, repo, can_ep, reason=None):
+    if reason:
+        return tat_ca_module(repo), reason, "full"
+    modules, reason = ban_kinh(files, repo, ep_tron_bo=can_ep,
+                               quet=can_ep, truc_tiep=not can_ep)
+    if reason:
+        return modules, reason, "full"
+    if modules:
+        return modules, None, "transitive" if can_ep else "direct"
+    if not any(not la_du_lieu(path) for path in files):
+        return [], None, "none"
+    modules, reason = ban_kinh(files, repo, ep_tron_bo=can_ep,
+                               quet=can_ep, truc_tiep=False)
+    if reason:
+        return modules, reason, "full"
+    if modules:
+        return (modules, "direct selection empty; transitive fallback",
+                "transitive")
+    return (tat_ca_module(repo), "source has no selected tests; full fallback",
+            "full")
+
+
+def _output_stream(repo, silent):
+    if not silent:
+        return contextlib.nullcontext(None)
+    path = os.path.join(repo, "docs", "tdq", ".tdq-test.log")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    return open(path, "w", encoding="utf-8")
+
+
+def _record_result(repo, state, kind, result, *, seconds, selection_scope,
+                   modules, files=None, fallback=None, radius_complete=None):
+    status = result["status"]
+    row = dict(result, schema_version=2, ts=_now_iso(), kind=kind,
+               request=state.get("active_request"), phase=state.get("phase"),
+               files=files or [], modules=result.get("modules", []),
+               selected_modules=modules, fallback=fallback,
+               ok=None if status == "SKIP" else status == "PASS",
+               seconds=float(seconds), selection_scope=selection_scope)
+    if radius_complete is not None:
+        row["radius_complete"] = radius_complete
+    _ghi_so(repo, row)
+    _log(f"{kind} backend={result['backend']} scope={selection_scope} "
+         f"status={status} tests_run={result['tests_run']} "
+         f"details_complete={result['details_complete']} "
+         f"fallback={fallback or 'none'} seconds={seconds} "
+         f"reason={result['reason']}")
+
+
+def _print_result(result, seconds, scope):
+    print(f"[TDQ:TEST] {result['status']} — scope={scope} "
+          f"backend={result['backend']} tests={result['tests_run']} "
+          f"skipped={result['skipped']} in {seconds}s.")
+    if result["status"] != "PASS":
+        print(f"  {result['reason']}")
+
+
 def cmd_vung_cham(args):
-    """Run the tests of the touched zone; exit 0 when green, 1 otherwise."""
+    """Run selected tests; distinguish no-op from missing test evidence."""
     start = time.monotonic()
     repo = os.path.abspath(args.repo)
     state = _doc_state(repo)
-    phase = state.get("phase")
     ep_tron_bo = getattr(args, "ep_tron_bo", False)
     khong_ep = getattr(args, "khong_ep_tron_bo", False)
-    can_ep = ep_tron_bo or (phase != "implement" and not khong_ep)
-
-    if args.files is not None:
-        files, reason = sorted({chuan_hoa(f) for f in args.files if chuan_hoa(f)}), None
-    else:
-        base = state.get("nhanh_goc") or nhanh_goc_mac_dinh(repo)
-        files, reason = file_doi_git(repo, base)
+    can_ep = ep_tron_bo or (state.get("phase") != "implement" and not khong_ep)
+    files, reason = _changed_files(args, repo, state)
+    modules, reason, scope = _select_tests(files, repo, can_ep, reason)
+    if scope == "full":
+        modules = _result_inventory(repo)
     total = len(tat_ca_module(repo))
-    if reason:
-        modules = tat_ca_module(repo)
-    else:
-        modules, reason = ban_kinh(files, repo, ep_tron_bo=can_ep, quet=can_ep, truc_tiep=(not can_ep))
     silent = getattr(args, "silent", False)
     if not silent:
-        if reason:
-            print(f"vung-cham: {len(files)} changed file(s); running the full suite "
-                  f"({len(modules)} modules): {reason}")
-        else:
-            print(f"vung-cham: {len(files)} changed file(s); selected {len(modules)}/{total} "
-                  f"modules: {' '.join(modules) or '(none)'}")
+        selection = "full suite" if scope == "full" else scope
+        print(f"vung-cham: {len(files)} changed file(s); "
+              f"selected {len(modules)}/{total} modules ({selection}): "
+              f"{' '.join(modules) or '(none)'}; {reason or 'no fallback'}")
         sys.stdout.flush()
-
-    log_file = None
-    stream = None
-    log_path = os.path.join(repo, "docs", "tdq", ".tdq-test.log")
-    if silent:
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-        log_file = open(log_path, "w", encoding="utf-8")
-        stream = log_file
-    try:
-        ok = chay_module(repo, modules, stream=stream)
-    finally:
-        if log_file:
-            log_file.close()
-
-    seconds = round(time.monotonic() - start, 2)
-    _ghi_so(repo, {"ts": _now_iso(), "kind": "vung-cham",
-                   "request": state.get("active_request"), "phase": state.get("phase"),
-                   "files": files, "modules": modules, "fallback": reason, "ok": ok,
-                   "seconds": float(seconds)})
-    _log(f"vung-cham files={len(files)} modules={len(modules)}/{total} "
-         f"fallback={reason or 'none'} ok={ok} seconds={seconds}")
-    if silent:
-        if ok:
-            print(f"[TDQ:TEST] PASS — {len(modules)} modules tested in {seconds}s.")
+    with _output_stream(repo, silent) as stream:
+        if scope == "none":
+            result = tdq_test_result.empty_result(
+                "none", "No changed source or related tests", status="SKIP",
+                exit_code=0)
         else:
-            print(f"[TDQ:TEST] FAIL — test suite failed in {seconds}s (log: docs/tdq/.tdq-test.log).")
-            try:
-                with open(log_path, "r", encoding="utf-8") as lf:
-                    lines = [l.strip() for l in lf if "FAIL:" in l or "ERROR:" in l]
-                for err_line in lines[:2]:
-                    print(f"  {err_line}")
-            except Exception:
-                pass
-    return 0 if ok else 1
-
-
-_ID_TRONG_NGOAC = re.compile(r"\(([\w.]+)\)")
-
-
-def _module_cua(test):
-    """`test_x.py` of a failing/erroring test, or None when it cannot be told.
-
-    A normal test id is `test_x.Class.method`; a module that fails to import is a
-    `_FailedTest` whose method name is the module; a fixture error (`setUpClass`,
-    `setUpModule`) is an `_ErrorHolder` whose id reads `setUpClass (test_x.Class)`."""
-    import unittest  # lazy: see the import note at the top of the module
-    if isinstance(test, unittest.loader._FailedTest):
-        name = test._testMethodName
-    else:
-        tid = test.id()
-        m = _ID_TRONG_NGOAC.search(tid)
-        name = (m.group(1) if m else tid).split(".")[0]
-    return name + ".py" if name.startswith("test_") else None
+            result = chay_module_result(repo, modules, stream=stream,
+                                         full=scope == "full")
+    seconds = round(time.monotonic() - start, 2)
+    _record_result(repo, state, "vung-cham", result, seconds=seconds,
+                   selection_scope=scope, modules=modules, files=files,
+                   fallback=reason)
+    _print_result(result, seconds, scope)
+    return 0 if result["status"] in {"PASS", "SKIP"} else 1
 
 
 def chay_tron_bo(repo, stream=None, parallel=False):
-    """Run every `tests/test_*.py`. (ok, sorted failing module names)."""
+    """Keep the tuple API; only verified test execution returns True."""
+    result = chay_tron_bo_result(repo, stream=stream, parallel=parallel)
+    return result["status"] == "PASS", result["failed_modules"]
+
+
+def _result_inventory(repo):
     tests_dir = os.path.join(repo, "tests")
-    if not os.path.isdir(tests_dir):
-        return True, []
-    if parallel:
+    return sorted(os.path.relpath(os.path.join(folder, name), tests_dir)
+                  .replace("\\", "/")
+                  for folder, _, names in os.walk(tests_dir)
+                  for name in names
+                  if name.startswith("test_") and name.endswith(".py"))
+
+
+def _pytest_available():
+    try:
+        return all(importlib.util.find_spec(name) is not None
+                   for name in ("pytest", "xdist"))
+    except (ImportError, OSError, ValueError) as exc:
+        _warn(f"pytest dependency check failed: {exc}")
+        return False
+
+
+def _junit_modules(xml, inventory):
+    if not xml:
+        return [], False
+    try:
+        root = ET.fromstring(xml)
+    except (ET.ParseError, ValueError):
+        return [], False
+    modules, complete = set(), True
+    for case in root.iter():
+        if case.tag.rsplit("}", 1)[-1] != "testcase":
+            continue
+        identifier = ".".join(filter(None, (case.get("classname"),
+                                             case.get("name"))))
+        module = tdq_test_result._module_for(
+            identifier, inventory, case.get("file", ""))
+        if module is not None:
+            modules.add(module)
+        else:
+            complete = False
+    return sorted(modules), complete
+
+
+def _read_pytest_result(path, exit_code, inventory, output):
+    try:
+        with open(path, encoding="utf-8") as report:
+            xml = report.read()
+    except (OSError, UnicodeError) as exc:
+        _warn(f"JUnit report unavailable: {exc}")
+        xml = None
+    result = tdq_test_result.from_junit_xml(
+        xml, exit_code, inventory, output=output)
+    modules, mapped = _junit_modules(xml, inventory)
+    result["modules"] = modules
+    result["details_complete"] = result["details_complete"] and mapped
+    if not mapped:
+        result["reason"] += "; Report module mapping is incomplete"
+    return result
+
+
+def _partial_output(exc):
+    parts = [getattr(exc, "stdout", ""), getattr(exc, "stderr", "")]
+    return "\n".join(part.decode("utf-8", "replace")
+                     if isinstance(part, bytes) else part or ""
+                     for part in parts)
+
+
+def _run_pytest(repo, inventory, stream, report_path):
+    command = [sys.executable, "-m", "pytest", "-n", "auto",
+               "-p", "no:tmpdir", "-q", "--tb=line",
+               "--junitxml=" + report_path, os.path.join(repo, "tests")]
+    try:
+        proc = subprocess.run(command, cwd=repo, capture_output=True,
+                              text=True, encoding="utf-8", errors="replace")
+    except (subprocess.TimeoutExpired, KeyboardInterrupt) as exc:
+        output = _partial_output(exc)
+        result = _read_pytest_result(report_path, None, inventory, output)
+        result["details_complete"] = False
+        result["reason"] = f"{type(exc).__name__}; " + result["reason"]
+        return result
+    except (OSError, subprocess.SubprocessError) as exc:
+        return tdq_test_result.empty_result(
+            "pytest", f"Runner error: {exc}", status="ERROR")
+    output = proc.stdout + "\n" + proc.stderr
+    if stream:
+        stream.write(output)
+    return _read_pytest_result(report_path, proc.returncode, inventory, output)
+
+
+def chay_tron_bo_result(repo, stream=None, parallel=False):
+    """Run the full suite, falling back only before pytest has started."""
+    inventory = _result_inventory(repo)
+    if not inventory:
+        return tdq_test_result.empty_result("unittest", "No test modules")
+    if parallel and _pytest_available():
         try:
-            cmd = [
-                sys.executable, "-m", "pytest",
-                "-n", "auto",
-                "-p", "no:tmpdir",
-                "-q",
-                "--tb=line",
-                tests_dir
-            ]
-            proc = subprocess.run(cmd, cwd=repo, capture_output=True, text=True, encoding="utf-8", errors="replace")
-            if stream:
-                stream.write(proc.stdout + "\n" + proc.stderr)
-            ok = proc.returncode == 0
-            failed = []
-            if not ok:
-                for line in proc.stdout.splitlines():
-                    if "FAILED " in line or "ERROR " in line:
-                        for token in line.split():
-                            norm = token.replace("\\", "/")
-                            if norm.startswith("tests/test_") and norm.endswith(".py"):
-                                failed.append(norm.split("/")[-1])
-            return ok, sorted(set(failed))
-        except Exception as exc:
-            if stream:
-                stream.write(f"Parallel run failed, falling back to unittest: {exc}\n")
-    import unittest  # lazy: see the import note at the top of the module
-    _bo_module_cu(tests_dir, tat_ca_module(repo))
-    suite = unittest.defaultTestLoader.discover(tests_dir, pattern="test_*.py",
-                                                top_level_dir=tests_dir)
-    result = unittest.TextTestRunner(stream=stream or sys.stderr, verbosity=1).run(suite)
-    failed = {_module_cua(t) for t, _ in result.failures + result.errors}
-    failed |= {_module_cua(t) for t in getattr(result, "unexpectedSuccesses", [])}
-    return result.wasSuccessful(), sorted(m for m in failed if m)
+            with tempfile.TemporaryDirectory(prefix="tdq-pytest-") as temp_dir:
+                report = os.path.join(temp_dir, "result.xml")
+                result = _run_pytest(repo, inventory, stream, report)
+        except OSError as exc:
+            result = tdq_test_result.empty_result(
+                "pytest", f"Report directory error: {exc}", status="ERROR")
+        _log(f"backend=pytest status={result['status']} "
+             f"details_complete={result['details_complete']} "
+             f"reason={result['reason']}")
+        return result
+    result = chay_module_result(repo, inventory, stream=stream, full=True)
+    if parallel:
+        reason = "pytest/xdist unavailable before launch; using unittest"
+        result["reason"] = reason + "; " + result["reason"]
+        _log(f"backend=unittest fallback={reason}")
+    return result
+
+
+def _radius_rows(rows, request):
+    return [row for row in rows if isinstance(row, dict)
+            and row.get("kind") == "vung-cham"
+            and row.get("request") == request
+            and (row.get("schema_version") != 2
+                 or row.get("status") != "SKIP")]
 
 
 def module_bo_sot(rows, request, failed_modules):
     """Failing modules that no `vung-cham` row of `request` ever selected.
 
-    Nothing is missed when a `vung-cham` row of that request fell back to the full suite.
+    Version 2 compares discovered/reported modules, never a fallback label.
+    Legacy rows keep the old convention that fallback meant the full suite.
     Nothing can be judged when the request has no `vung-cham` row at all (e.g. the radius ran
     in other worktrees): a miss needs at least one recorded radius run to compare against."""
-    selected, seen = set(), False
-    for row in rows:
-        if row.get("kind") != "vung-cham" or row.get("request") != request:
-            continue
-        if row.get("fallback"):
+    selected = set()
+    radius = _radius_rows(rows, request)
+    for row in radius:
+        if row.get("schema_version") != 2 and row.get("fallback"):
             return []
-        seen = True
         mods = row.get("modules")
         if isinstance(mods, list):
             selected.update(m for m in mods if isinstance(m, str))
-    if not seen:
+    if not radius:
         return []
     return sorted(m for m in failed_modules if m not in selected)
 
 
 def co_vung_cham(rows, request):
-    """True when `rows` hold at least one `vung-cham` row of `request`."""
-    return any(isinstance(r, dict) and r.get("kind") == "vung-cham"
-               and r.get("request") == request for r in rows)
+    """True when the request has a radius attempt beyond a version 2 no-op."""
+    return bool(_radius_rows(rows, request))
+
+
+def _radius_complete(rows, request, result):
+    radius = _radius_rows(rows, request)
+    if not radius or not result["details_complete"]:
+        return False
+    for row in radius:
+        if row.get("schema_version") != 2:
+            continue
+        if row.get("status") == "INCOMPLETE":
+            return False
+        if not row.get("details_complete"):
+            return False
+    return True
+
+
+def _radius_summary(rows, request):
+    comparisons = [row for row in rows if isinstance(row, dict)
+                   and row.get("request") == request
+                   and row.get("kind") == "tron-bo"
+                   and row.get("schema_version") == 2]
+    if not comparisons:
+        return {}
+    complete = all(row.get("radius_complete") is True for row in comparisons)
+    reason = ("Recorded comparisons have complete failure mapping"
+              if complete else "Radius misses are partial or unavailable")
+    return {"radius_complete": complete, "radius_reason": reason}
 
 
 def dem(rows, request):
@@ -770,57 +969,58 @@ def dem(rows, request):
             if isinstance(row.get("module"), str):
                 missed.add(row["module"])
     return {"request": request, "tron_bo": tron_bo, "bo_sot": bo_sot,
-            "modules_bo_sot": sorted(missed), "ngan_sach": 3 if red else 2}
+            "modules_bo_sot": sorted(missed), "ngan_sach": 3 if red else 2,
+            **_radius_summary(rows, request)}
+
+
+def _report_misses(repo, rows, request, result, silent):
+    failed = result["failed_modules"]
+    missed = module_bo_sot(rows, request, failed)
+    for module in missed:
+        _ghi_so(repo, {"ts": _now_iso(), "kind": "bo-sot",
+                       "request": request, "module": module})
+        if not silent:
+            print(f"tron-bo: {module} is red but no vung-cham run of "
+                  f"request {request} selected it (the radius missed it)")
+    if failed and not co_vung_cham(rows, request) and not silent:
+        reason = ("radius check skipped: "
+                  "no vung-cham run recorded for this request")
+        print("tron-bo: " + reason)
+        _log(f"tron-bo {reason} request={request}")
+    if failed and not silent:
+        print(f"tron-bo: red modules: {' '.join(failed)}")
+    complete = _radius_complete(rows, request, result)
+    if not complete:
+        _warn("radius misses are partial or unavailable; "
+              "not a zero-miss certificate")
+    return complete
 
 
 def cmd_tron_bo(args):
-    """Run the full suite in one process, log it, and flag the modules the radius missed."""
+    """Run the full suite and persist the same verdict shown by the CLI."""
     start = time.monotonic()
     repo = os.path.abspath(args.repo)
     state = _doc_state(repo)
-    request, phase = state.get("active_request"), state.get("phase")
-    total = len(tat_ca_module(repo))
+    request = state.get("active_request")
+    inventory = _result_inventory(repo)
     silent = getattr(args, "silent", False)
     parallel = getattr(args, "parallel", False)
     if not silent:
-        par_txt = " [parallel xdist]" if parallel else ""
-        print(f"tron-bo: running the full suite ({total} modules){par_txt}")
+        parallel_label = " [parallel xdist]" if parallel else ""
+        print(f"tron-bo: running the full suite "
+              f"({len(inventory)} modules){parallel_label}")
         sys.stdout.flush()
-    log_file = None
-    stream = None
-    log_path = os.path.join(repo, "docs", "tdq", ".tdq-test.log")
-    if silent:
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-        log_file = open(log_path, "w", encoding="utf-8")
-        stream = log_file
-    try:
-        ok, failed = chay_tron_bo(repo, stream=stream, parallel=parallel)
-    finally:
-        if log_file:
-            log_file.close()
+    with _output_stream(repo, silent) as stream:
+        result = chay_tron_bo_result(repo, stream=stream, parallel=parallel)
     seconds = round(time.monotonic() - start, 2)
     rows = _doc_so(repo)
-    _ghi_so(repo, {"ts": _now_iso(), "kind": "tron-bo", "request": request, "phase": phase,
-                   "ok": ok, "seconds": float(seconds), "failed_modules": failed})
-    missed = module_bo_sot(rows, request, failed)
-    for m in missed:
-        _ghi_so(repo, {"ts": _now_iso(), "kind": "bo-sot", "request": request, "module": m})
-        if not silent:
-            print(f"tron-bo: {m} is red but no vung-cham run of request {request} selected it "
-                  f"(the radius missed it)")
-    if failed and not co_vung_cham(rows, request) and not silent:
-        print("tron-bo: radius check skipped: no vung-cham run recorded for this request")
-        _log(f"tron-bo radius check skipped: no vung-cham run recorded for request={request}")
-    if failed and not silent:
-        print(f"tron-bo: red modules: {' '.join(failed)}")
-    _log(f"tron-bo modules={total} failed={len(failed)} missed={len(missed)} ok={ok} "
-         f"seconds={seconds}")
-    if silent:
-        if ok:
-            print(f"[TDQ:TEST] PASS — full suite ({total} modules) passed in {seconds}s.")
-        else:
-            print(f"[TDQ:TEST] FAIL — full suite failed in {seconds}s (failed: {' '.join(failed)}).")
-    return 0 if ok else 1
+    complete = _radius_complete(rows, request, result)
+    _record_result(repo, state, "tron-bo", result, seconds=seconds,
+                   selection_scope="full", modules=inventory,
+                   radius_complete=complete)
+    _report_misses(repo, rows, request, result, silent)
+    _print_result(result, seconds, "full")
+    return 0 if result["status"] == "PASS" else 1
 
 
 def dem_repo(repo, request):
@@ -841,6 +1041,8 @@ def cmd_so(args):
         print(f"full-suite runs: {counts['tron_bo']} of budget {counts['ngan_sach']}")
         print(f"radius misses: {counts['bo_sot']}"
               + (f" ({' '.join(counts['modules_bo_sot'])})" if counts["modules_bo_sot"] else ""))
+        if counts.get("radius_complete") is False:
+            print("radius statistics: partial or unavailable")
     _log(f"so request={request} tron_bo={counts['tron_bo']} bo_sot={counts['bo_sot']} "
          f"budget={counts['ngan_sach']}")
     return 0
