@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helper import ROOT
@@ -20,6 +21,15 @@ class MCPFirstAndAutoSetupTests(unittest.TestCase):
         self.addCleanup(self.temp_dir.cleanup)
         self.project = self.temp_dir.name
         os.makedirs(os.path.join(self.project, "docs", "tdq"), exist_ok=True)
+        fake_home = os.path.join(self.project, "home")
+        os.makedirs(fake_home)
+        environment = patch.dict(os.environ, {
+            "HOME": fake_home, "USERPROFILE": fake_home,
+            "TDQ_PROJECT_DIR": self.project, "TDQ_KHONG_CHAM_MAY": "1",
+            "TDQ_KHOI_TAO_NEN": "0",
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
 
     def test_khoi_huong_dan_chua_mcp_first(self):
         huong_dan = tdq_setup.khoi_huong_dan(goc=self.project)
@@ -58,7 +68,17 @@ class MCPFirstAndAutoSetupTests(unittest.TestCase):
             json.dump({"phien_ban": hien_tai, "cap_nhat": "2026-10-20"}, f)
         self.assertFalse(tdq_setup.can_cap_nhat_phien_ban(self.project, goc_plugin=ROOT))
 
-    def test_tu_dong_cap_nhat_plugin_user_with_cli_runner(self):
+    def test_plugin_update_copies_fixture_when_cli_leaves_metadata_unchanged(self):
+        current_version = tdq_setup.doc_phien_ban_plugin(ROOT)
+        plugin_source = os.path.join(self.temp_dir.name, "plugin-source")
+        manifest_dir = os.path.join(plugin_source, ".claude-plugin")
+        os.makedirs(manifest_dir)
+        with open(os.path.join(manifest_dir, "plugin.json"), "w", encoding="utf-8") as f:
+            json.dump({"name": "tdq-workflow", "version": current_version}, f)
+        payload = "isolated plugin payload\n"
+        with open(os.path.join(plugin_source, "payload.txt"), "w", encoding="utf-8") as f:
+            f.write(payload)
+
         fake_home = os.path.join(self.temp_dir.name, "home")
         plugins_dir = os.path.join(fake_home, ".claude", "plugins")
         os.makedirs(plugins_dir, exist_ok=True)
@@ -81,21 +101,31 @@ class MCPFirstAndAutoSetupTests(unittest.TestCase):
 
         def fake_runner(cmd):
             calls.append(cmd)
+            # A successful exit alone cannot update installed metadata.
             return 0, "updated successfully"
 
-        # Tắt _khong_cham_may trong phạm vi test để runner được gọi
-        old_val = os.environ.get("TDQ_KHONG_CHAM_MAY")
-        try:
-            os.environ["TDQ_KHONG_CHAM_MAY"] = "0"
-            cap_nhat, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(home=fake_home, goc_plugin=ROOT, chay_lenh=fake_runner)
-            v_hien_tai = tdq_setup.doc_phien_ban_plugin(ROOT)
-            self.assertTrue(cap_nhat)
-            self.assertIn(v_hien_tai, msg)
-        finally:
-            if old_val is None:
-                os.environ.pop("TDQ_KHONG_CHAM_MAY", None)
-            else:
-                os.environ["TDQ_KHONG_CHAM_MAY"] = old_val
+        # Stub CLI discovery only; fallback copies the temporary source for real.
+        with patch.dict(os.environ, {"TDQ_KHONG_CHAM_MAY": "0",
+                                     "HOME": fake_home, "USERPROFILE": fake_home}), \
+                patch.object(tdq_setup.shutil, "which", return_value="fixture-claude"):
+            cap_nhat, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(
+                home=fake_home, goc_plugin=plugin_source, cwd=self.project,
+                chay_lenh=fake_runner)
+
+        self.assertTrue(cap_nhat)
+        self.assertIn(current_version, msg)
+        self.assertEqual(calls, [
+            '"fixture-claude" plugin update tdq-workflow@tdq-local -s user -y'])
+        expected_path = os.path.join(plugins_dir, "cache", "tdq-local", "tdq-workflow",
+                                     current_version)
+        with open(os.path.join(expected_path, "payload.txt"), encoding="utf-8") as f:
+            self.assertEqual(f.read(), payload)
+        self.assertEqual(tdq_setup.doc_phien_ban_plugin(expected_path), current_version)
+        with open(installed_file, encoding="utf-8") as f:
+            updated = json.load(f)["plugins"]["tdq-workflow@tdq-local"][0]
+        self.assertEqual(updated["scope"], "user")
+        self.assertEqual(updated["version"], current_version)
+        self.assertEqual(updated["installPath"], expected_path)
 
     def test_session_start_script_contains_mcp_first_in_anchor(self):
         script_path = os.path.join(ROOT, "hooks", "scripts", "session_start.py")
