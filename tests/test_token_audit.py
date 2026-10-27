@@ -54,6 +54,19 @@ class IterEventsTest(unittest.TestCase):
         self.assertEqual(list(token_audit.iter_events("/khong/co/that.jsonl")), [])
 
 
+class TranscriptPathTest(unittest.TestCase):
+    def test_windows_drive_and_both_separators(self):
+        for project in (r"C:\Users\Example\TDQ_Workflow", "C:/Users/Example/TDQ_Workflow"):
+            with self.subTest(project=project):
+                actual = token_audit.default_transcript_dir(project)
+                self.assertEqual(os.path.basename(actual), "C--Users-Example-TDQ-Workflow")
+                self.assertEqual(os.path.basename(os.path.dirname(actual)), "projects")
+
+    def test_posix_unicode_and_spaces(self):
+        actual = token_audit.default_transcript_dir("/Users/Example/Dự án_test")
+        self.assertEqual(os.path.basename(actual), "-Users-Example-D---n-test")
+
+
 class CarryCostTest(unittest.TestCase):
     @unittest.skipUnless(CO_THU_VIEN, "chưa cài anthropic-tokenizer trong .venv-tokens")
     def test_cong_thuc_token_that_nhan_so_call_con_lai(self):
