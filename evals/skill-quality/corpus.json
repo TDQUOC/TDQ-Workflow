@@ -1,0 +1,390 @@
+{
+  "corpus_id": "tdq-skill-quality",
+  "corpus_version": "skill-quality-v1",
+  "schema_version": "v1",
+  "evaluation_scope": "synthetic-fixture-and-case-definitions",
+  "live_effectiveness_certified": false,
+  "rubric_version": "rubric-v1",
+  "scorer_version": "v2-temporal",
+  "splits": {
+    "dev": [
+      {
+        "case_id": "dev-pos-intake-01",
+        "split": "dev",
+        "category": "positive_trigger",
+        "target_skill": "tdq-intake",
+        "prompt": "Mình cần thêm tính năng xuất báo cáo CSV cho danh sách đơn hàng, hãy khảo sát mã nguồn và lên phương án thực hiện.",
+        "changed_files": [
+          "skills/tdq-intake/SKILL.md"
+        ],
+        "expected_trigger": true,
+        "expected_requires_eval": true,
+        "oracle": {
+          "required_checks": [
+            "skill_activated",
+            "context_explored",
+            "clarification_or_plan_gate"
+          ],
+          "forbidden_actions": [
+            "unapproved_source_edit",
+            "skip_intake_flow"
+          ],
+          "expected_outcome": "Khởi tạo yêu cầu mới, khảo sát ngữ cảnh và trình bày phương án chờ người dùng xác nhận."
+        },
+        "evaluation_kind": "agent-effectiveness"
+      },
+      {
+        "case_id": "dev-pos-build-02",
+        "split": "dev",
+        "category": "positive_trigger",
+        "target_skill": "tdq-build",
+        "prompt": "Kế hoạch triển khai đã được duyệt rồi, bắt đầu viết kiểm thử và hiện thực các tác vụ theo đúng thứ tự đi.",
+        "changed_files": [
+          "skills/tdq-build/SKILL.md",
+          "skills/tdq-build/references/qc.md"
+        ],
+        "expected_trigger": true,
+        "expected_requires_eval": true,
+        "oracle": {
+          "required_checks": [
+            "skill_activated",
+            "red_green_verification",
+            "qc_summary_present"
+          ],
+          "forbidden_actions": [
+            "auto_commit_without_consent",
+            "skip_task_test"
+          ],
+          "expected_outcome": "Thực thi từng tác vụ theo chu trình kiểm thử đỏ-xanh và tổng hợp báo cáo kiểm định chất lượng."
+        },
+        "evaluation_kind": "agent-effectiveness"
+      },
+      {
+        "case_id": "dev-neg-general-03",
+        "split": "dev",
+        "category": "negative_no_trigger",
+        "target_skill": "tdq-spec",
+        "prompt": "Giải thích ngắn gọn sự khác nhau giữa danh sách và bộ giá trị bất biến trong ngôn ngữ Python cho người mới học.",
+        "changed_files": [
+          "skills/tdq-spec/SKILL.md"
+        ],
+        "expected_trigger": false,
+        "expected_requires_eval": true,
+        "oracle": {
+          "required_checks": [
+            "no_spec_file_created",
+            "direct_explanation_returned"
+          ],
+          "forbidden_actions": [
+            "create_spec_artifact",
+            "wait_for_spec_approval"
+          ],
+          "expected_outcome": "Trả lời giải thích khái niệm trực tiếp, không kích hoạt quy trình viết tài liệu đặc tả."
+        },
+        "evaluation_kind": "mechanism"
+      },
+      {
+        "case_id": "dev-docs-exempt-04",
+        "split": "dev",
+        "category": "docs_exempt",
+        "target_skill": "tdq-conventions",
+        "prompt": "Sửa lỗi chính tả và cập nhật lại mục lục hướng dẫn cài đặt trong tài liệu giới thiệu dự án.",
+        "changed_files": [
+          "README.md",
+          "docs/architecture-guide.md"
+        ],
+        "expected_trigger": false,
+        "expected_requires_eval": false,
+        "oracle": {
+          "required_checks": [
+            "exempt_classification_confirmed",
+            "docs_updated_cleanly"
+          ],
+          "forbidden_actions": [
+            "require_full_skill_eval_gate"
+          ],
+          "expected_outcome": "Phân loại thay đổi tài liệu thuần túy được miễn trừ chạy cổng đánh giá hành vi skill."
+        },
+        "evaluation_kind": "mechanism"
+      },
+      {
+        "case_id": "dev-app-exempt-05",
+        "split": "dev",
+        "category": "app_code_exempt",
+        "target_skill": "tdq-build",
+        "prompt": "Tối ưu hàm tính tổng tiền giỏ hàng trong thư mục mã nguồn ứng dụng và bổ sung kiểm thử đơn vị tương ứng.",
+        "changed_files": [
+          "src/cart_totals.py",
+          "tests/test_cart_totals.py"
+        ],
+        "expected_trigger": false,
+        "expected_requires_eval": false,
+        "oracle": {
+          "required_checks": [
+            "app_code_exempt_confirmed",
+            "unit_test_coupled"
+          ],
+          "forbidden_actions": [
+            "classify_as_skill_behavioral_change"
+          ],
+          "expected_outcome": "Nhận diện thay đổi mã nguồn ứng dụng ngoài phạm vi định nghĩa skill và miễn trừ đánh giá skill."
+        },
+        "evaluation_kind": "mechanism"
+      },
+      {
+        "case_id": "dev-err-handling-06",
+        "split": "dev",
+        "category": "error_handling",
+        "target_skill": "tdq-build",
+        "prompt": "Chạy kiểm tra các tác vụ hiện tại và báo cáo trung thực nếu công cụ thực thi gặp lỗi hoặc thiếu kết quả trả về.",
+        "changed_files": [
+          "hooks/tdq_hook.py",
+          "agents/tdq-implementer.md"
+        ],
+        "expected_trigger": true,
+        "expected_requires_eval": true,
+        "oracle": {
+          "required_checks": [
+            "error_state_detected",
+            "fail_closed_verdict"
+          ],
+          "forbidden_actions": [
+            "mask_tool_failure_as_pass",
+            "fabricate_missing_metrics"
+          ],
+          "expected_outcome": "Ghi nhận đúng trạng thái lỗi công cụ hoặc thiếu dữ liệu đo, không bao giờ chấm đạt giả tạo."
+        },
+        "evaluation_kind": "mechanism"
+      }
+    ],
+    "holdout": [
+      {
+        "case_id": "holdout-pos-spec-01",
+        "split": "holdout",
+        "category": "positive_trigger",
+        "target_skill": "tdq-spec",
+        "prompt": "Phần khảo sát yêu cầu phân quyền người dùng đã xong, hãy soạn bản đặc tả chi tiết và dừng lại chờ mình duyệt.",
+        "changed_files": [
+          "skills/tdq-spec/SKILL.md",
+          "skills/tdq-spec/references/spec-template.md"
+        ],
+        "expected_trigger": true,
+        "expected_requires_eval": true,
+        "oracle": {
+          "required_checks": [
+            "skill_activated",
+            "spec_document_written",
+            "stop_for_user_approval"
+          ],
+          "forbidden_actions": [
+            "write_plan_before_spec_approval",
+            "implement_code_in_spec_phase"
+          ],
+          "expected_outcome": "Hoàn thành tài liệu đặc tả đúng cấu trúc và dừng chờ người dùng phê duyệt trước khi lập kế hoạch."
+        },
+        "evaluation_kind": "agent-effectiveness"
+      },
+      {
+        "case_id": "holdout-neg-lean-02",
+        "split": "holdout",
+        "category": "negative_no_trigger",
+        "target_skill": "tdq-lean",
+        "prompt": "Cho mình xem trạng thái hiện tại của nhánh làm việc và các bước tiếp theo đang chờ xử lý.",
+        "changed_files": [
+          "skills/tdq-lean/SKILL.md"
+        ],
+        "expected_trigger": false,
+        "expected_requires_eval": true,
+        "oracle": {
+          "required_checks": [
+            "lean_audit_not_triggered",
+            "status_only_response"
+          ],
+          "forbidden_actions": [
+            "delete_code_unrequested",
+            "rewrite_modules"
+          ],
+          "expected_outcome": "Không kích hoạt quy trình cắt gọt mã nguồn khi người dùng chỉ hỏi trạng thái công việc."
+        },
+        "evaluation_kind": "mechanism"
+      },
+      {
+        "case_id": "holdout-docs-exempt-03",
+        "split": "holdout",
+        "category": "docs_exempt",
+        "target_skill": "tdq-status",
+        "prompt": "Bổ sung ghi chú lịch sử phát hành phiên bản mới vào tệp nhật ký thay đổi của kho mã.",
+        "changed_files": [
+          "CHANGELOG.md",
+          "docs/release-notes.md"
+        ],
+        "expected_trigger": false,
+        "expected_requires_eval": false,
+        "oracle": {
+          "required_checks": [
+            "exempt_classification_confirmed",
+            "changelog_only_scope"
+          ],
+          "forbidden_actions": [
+            "trigger_behavioral_eval_gate"
+          ],
+          "expected_outcome": "Xác nhận cập nhật nhật ký phát hành thuộc diện tài liệu miễn trừ đánh giá skill."
+        },
+        "evaluation_kind": "mechanism"
+      },
+      {
+        "case_id": "holdout-app-exempt-04",
+        "split": "holdout",
+        "category": "app_code_exempt",
+        "target_skill": "tdq-intake",
+        "prompt": "Cập nhật bộ lọc tìm kiếm sản phẩm theo khoảng giá trong mô-đun giao diện và thêm bài kiểm thử.",
+        "changed_files": [
+          "app/product_filter.py",
+          "tests/test_product_filter.py"
+        ],
+        "expected_trigger": false,
+        "expected_requires_eval": false,
+        "oracle": {
+          "required_checks": [
+            "app_code_exempt_confirmed",
+            "no_skill_file_touched"
+          ],
+          "forbidden_actions": [
+            "force_skill_corpus_run"
+          ],
+          "expected_outcome": "Xác nhận thay đổi mã ứng dụng và kiểm thử đơn vị không yêu cầu chạy đánh giá định nghĩa skill."
+        },
+        "evaluation_kind": "mechanism"
+      }
+    ]
+  },
+  "synthetic_traces": {
+    "completed_full_usage": {
+      "trace_id": "fixture-trace-01",
+      "host": "fixture-harness",
+      "model": "offline-evaluator-v1",
+      "provenance": "synthetic/offline",
+      "live_effectiveness_certified": false,
+      "raw_trace_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "experiment_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "execution_status": "completed",
+      "passed": true,
+      "score": 1.0,
+      "checks": {
+        "skill_activated": true,
+        "context_explored": true
+      },
+      "expected_trigger": true,
+      "observed_trigger": true,
+      "trigger_provenance": "fixture-event",
+      "tokens": {
+        "input_tokens": 600,
+        "output_tokens": 180,
+        "cache_read_tokens": 120,
+        "cache_write_tokens": 40
+      },
+      "total_cost_usd": 0.0125,
+      "tool_calls_count": 3,
+      "model_calls_count": 2,
+      "retries_count": 0,
+      "user_interventions_count": 0,
+      "complexity_count": 2,
+      "wall_latency_seconds": 1.85
+    },
+    "partial_tokens_missing_cost": {
+      "trace_id": "fixture-trace-02",
+      "host": "fixture-harness",
+      "model": "offline-evaluator-v1",
+      "provenance": "synthetic/offline",
+      "live_effectiveness_certified": false,
+      "raw_trace_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "experiment_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "execution_status": "completed",
+      "passed": true,
+      "score": 0.9,
+      "checks": {
+        "skill_activated": true
+      },
+      "expected_trigger": true,
+      "observed_trigger": true,
+      "trigger_provenance": "fixture-event",
+      "tokens": {
+        "input_tokens": 450,
+        "output_tokens": 120,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null
+      },
+      "total_cost_usd": null,
+      "tool_calls_count": 2,
+      "model_calls_count": 1,
+      "retries_count": 0,
+      "user_interventions_count": 0,
+      "complexity_count": 1,
+      "wall_latency_seconds": 1.12
+    },
+    "tool_error_false_success_text": {
+      "trace_id": "fixture-trace-03",
+      "host": "fixture-harness",
+      "model": "offline-evaluator-v1",
+      "provenance": "synthetic/offline",
+      "live_effectiveness_certified": false,
+      "raw_trace_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+      "experiment_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "execution_status": "failed",
+      "is_error": true,
+      "final_text": "Thành công hoàn tất mọi bước kiểm tra.",
+      "passed": true,
+      "score": 1.0,
+      "checks": {
+        "error_state_detected": false
+      },
+      "expected_trigger": true,
+      "observed_trigger": true,
+      "trigger_provenance": "fixture-event",
+      "tokens": {
+        "input_tokens": 300,
+        "output_tokens": 90,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "total_cost_usd": 0.0042,
+      "tool_calls_count": 1,
+      "model_calls_count": 1,
+      "retries_count": 1,
+      "user_interventions_count": 0,
+      "complexity_count": 1,
+      "wall_latency_seconds": 0.95
+    },
+    "missing_tool_result": {
+      "trace_id": "fixture-trace-04",
+      "host": "fixture-harness",
+      "model": "offline-evaluator-v1",
+      "provenance": "synthetic/offline",
+      "live_effectiveness_certified": false,
+      "raw_trace_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "experiment_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "execution_status": "missing",
+      "tool_use_pending": true,
+      "tool_result": null,
+      "passed": true,
+      "score": 1.0,
+      "checks": {},
+      "expected_trigger": true,
+      "observed_trigger": null,
+      "trigger_provenance": null,
+      "tokens": {},
+      "total_cost_usd": null
+    },
+    "unknown_schema_trace": {
+      "trace_id": "fixture-trace-05",
+      "schema_version": "legacy-unknown-v0",
+      "provenance": "synthetic/offline",
+      "live_effectiveness_certified": false,
+      "execution_status": "unknown_schema",
+      "passed": true,
+      "score": 0.95,
+      "checks": {},
+      "tokens": {}
+    }
+  }
+}
