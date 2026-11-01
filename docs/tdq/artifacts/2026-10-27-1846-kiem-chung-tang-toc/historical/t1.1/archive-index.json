@@ -1,0 +1,27 @@
+{
+  "origin_worktree": "t1.1",
+  "files": [
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/normal-launch-140ced0b871a4ab9b59e792d92bd0adb.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/normal-launch-14f0fa6b1ca04380a071656a4b50d8a5.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/normal-launch-6231bb2d86b541ed999494478a633269.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/normal-launch-a890660d40e848089efe79ab14209f20.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/normal-launch-e34939f468a54582a9407aff64574ff0.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/T1.1.xml",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-71ed513fa94f48638627d9398a5d7c95/receipt.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-cb211413c46442fea36e45324399ee2c/receipt.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-ea8a3dd7ecac4c2ea89ae458c4208d0b/receipt.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-ff7ec5ea819c47c2b5203f9a807fe559/receipt.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-red-c4231dd8b46947038bdd9a0c36866ae4/receipt.json",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-71ed513fa94f48638627d9398a5d7c95/stdout.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-cb211413c46442fea36e45324399ee2c/stdout.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-ea8a3dd7ecac4c2ea89ae458c4208d0b/stdout.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-ff7ec5ea819c47c2b5203f9a807fe559/stdout.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-red-c4231dd8b46947038bdd9a0c36866ae4/stdout.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-71ed513fa94f48638627d9398a5d7c95/stderr.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-cb211413c46442fea36e45324399ee2c/stderr.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-ea8a3dd7ecac4c2ea89ae458c4208d0b/stderr.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-ff7ec5ea819c47c2b5203f9a807fe559/stderr.txt",
+    "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/historical/t1.1/runs/T1.1-red-c4231dd8b46947038bdd9a0c36866ae4/stderr.txt"
+  ],
+  "purpose": "historical attempts, not final-source certification"
+}

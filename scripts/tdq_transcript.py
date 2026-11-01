@@ -7,6 +7,8 @@ Claude/Codex schemas do not establish a background job's complete lifecycle.
 
 import collections
 import datetime
+import functools
+import io
 import json
 import ntpath
 import os
@@ -15,7 +17,10 @@ import re
 import sys
 from pathlib import Path
 
+import tdq_transcript_cache
+
 KINDS = ("api", "tool", "job")
+PARSER_VERSION = "normalized-trace-1"
 UTC = datetime.timezone.utc
 CLAUDE_TYPES = {"api-request", "assistant", "user", "system", "progress"}
 CODEX_TYPES = {"session_meta", "response_item", "event_msg", "turn_context"}
@@ -125,23 +130,106 @@ def _issue(source, reason, kind=None):
     target.add(reason)
 
 
-def _iter_records(path, source):
+def _normalized_delta(source):
+    delta = {key: sorted(source[key]) for key in
+             ("_hosts", "_projects", "_sessions", "_general", "_capabilities")
+             if source[key]}
+    if source["counters"]:
+        delta["counters"] = dict(source["counters"])
+    if any(source["_issues"].values()):
+        delta["_issues"] = {key: sorted(value) for key, value in source["_issues"].items() if value}
+    if source["_marks"]:
+        delta["_marks"] = [{**mark, "at": mark["at"].isoformat()} for mark in source["_marks"]]
+    return delta
+
+
+def _normalize_line(line):
+    metadata, events = _new_source(""), _new_source("")
     try:
-        with open(path, "rb") as stream:
-            for line in stream:
-                if not line.strip():
-                    continue
-                try:
-                    record = json.loads(line.decode("utf-8-sig"))
-                except (ValueError, UnicodeError):
-                    _issue(source, "malformed_lines")
-                    continue
-                if isinstance(record, dict):
-                    yield record
-                else:
-                    _issue(source, "non_object_lines")
-    except OSError:
-        _issue(source, "unreadable_files")
+        record = json.loads(line.decode("utf-8-sig"))
+    except (ValueError, UnicodeError):
+        _issue(metadata, "malformed_lines")
+        return [_normalized_delta(metadata), {}]
+    if not isinstance(record, dict):
+        _issue(metadata, "non_object_lines")
+    elif not isinstance(record.get("type"), str):
+        _issue(metadata, "invalid_records")
+    else:
+        _read_metadata(record, metadata)
+        _read_claude(record, events)
+        _read_codex(record, events)
+    return [_normalized_delta(metadata), _normalized_delta(events)]
+
+
+def _parse_snapshot(content):
+    return [_normalize_line(line) for line in io.BytesIO(content) if line.strip()]
+
+
+def _parse_selected_snapshot(content, project, host, session_ids):
+    """Off keeps the legacy early stop for foreign logs, after snapshot hashing."""
+    trace, identity = [], _new_source("")
+    for line in io.BytesIO(content):
+        if not line.strip():
+            continue
+        row = _normalize_line(line)
+        trace.append(row)
+        _apply_delta(identity, row[0])
+        if _selection_rejection(identity, project, host, session_ids):
+            break
+    return trace
+
+
+def _valid_delta(delta):
+    sets = {"_hosts", "_projects", "_sessions", "_general", "_capabilities"}
+    if not isinstance(delta, dict) or set(delta).difference(sets | {"counters", "_issues", "_marks"}):
+        return False
+    for key in sets.intersection(delta):
+        if not isinstance(delta[key], list) or not all(isinstance(item, str) for item in delta[key]):
+            return False
+    return _valid_delta_details(delta)
+
+
+def _valid_delta_details(delta):
+    counters = delta.get("counters", {})
+    if not isinstance(counters, dict) or not all(
+            isinstance(key, str) and isinstance(value, int) and value >= 0
+            for key, value in counters.items()):
+        return False
+    marks = delta.get("_marks", [])
+    return (_valid_issues(delta.get("_issues", {})) and isinstance(marks, list)
+            and all(_valid_mark(mark) for mark in marks))
+
+
+def _valid_issues(issues):
+    if not isinstance(issues, dict) or any(key not in KINDS for key in issues):
+        return False
+    return all(isinstance(value, list) and all(isinstance(item, str) for item in value)
+               for value in issues.values())
+
+
+def _valid_mark(mark):
+    if not isinstance(mark, dict) or set(mark) != {"kind", "phase", "id", "at", "event_id"}:
+        return False
+    return (mark["kind"] in KINDS and mark["phase"] in ("start", "end", "progress")
+            and isinstance(mark["id"], str) and bool(mark["id"])
+            and parse_timestamp(mark["at"]) is not None
+            and (mark["event_id"] is None or isinstance(mark["event_id"], (str, int))))
+
+
+def _valid_trace(trace):
+    return isinstance(trace, list) and all(
+        isinstance(row, list) and len(row) == 2 and all(_valid_delta(delta) for delta in row)
+        for row in trace)
+
+
+def _apply_delta(source, delta):
+    for key in ("_hosts", "_projects", "_sessions", "_general", "_capabilities"):
+        source[key].update(delta.get(key, []))
+    source["counters"].update(delta.get("counters", {}))
+    for key, values in delta.get("_issues", {}).items():
+        source["_issues"][key].update(values)
+    source["_marks"].extend({**mark, "at": parse_timestamp(mark["at"])}
+                             for mark in delta.get("_marks", []))
 
 
 def _identity_value(source, value, target):
@@ -306,17 +394,21 @@ def _select_source(source, path, project, host, session_ids, explicit):
     return _select_session(source, path, sessions, session_ids)
 
 
-def _read_source(path, project, host, session_ids, explicit):
+def _read_source(path, project, host, session_ids, explicit, *, cache):
     source = _new_source(path)
-    for record in _iter_records(path, source):
-        if not isinstance(record.get("type"), str):
-            _issue(source, "invalid_records")
-            continue
-        _read_metadata(record, source)
+    parser = _parse_snapshot
+    if cache.directory is None:
+        parser = functools.partial(_parse_selected_snapshot, project=project,
+                                   host=host, session_ids=session_ids)
+    trace, issue = cache.read(path, host=host, parser_version=PARSER_VERSION,
+                              parse=parser, validate=_valid_trace)
+    if issue:
+        _issue(source, issue)
+    for metadata, events in trace:
+        _apply_delta(source, metadata)
         if _selection_rejection(source, project, host, session_ids):
             break
-        _read_claude(record, source)
-        _read_codex(record, source)
+        _apply_delta(source, events)
     reason = _select_source(source, path, project, host, session_ids, explicit)
     if reason is None:
         reason = "metadata_partial" if "missing_metadata" in source["_general"] else "metadata_matched"
@@ -420,13 +512,18 @@ def _public_sources(sources):
     return result
 
 
-def read_transcripts(project_dir, transcript_dir=None, host="auto", session_ids=None, home=None):
+def read_transcripts(project_dir, transcript_dir=None, host="auto", session_ids=None, home=None,
+                     *, cache="off", request_id=None, cache_stats=None,
+                     cache_max_bytes=tdq_transcript_cache.DEFAULT_MAX_BYTES,
+                     cache_max_age_seconds=tdq_transcript_cache.DEFAULT_MAX_AGE):
     """Resolve Claude/Codex files and return spans, sources, quality, attribution.
 
     Spans contain UTC datetime objects. No time-window filter is applied here:
     callers clip spans, so sessions crossing midnight remain measurable. Only
     explicit sources/session IDs permit missing metadata, marked partial. The
     optional home argument isolates discovery in tests without changing env.
+    Cache is off by default; auto requires a request_id. Optional cache_stats is
+    filled with lookup/timing counters without altering the business result.
     """
     if host not in ("auto", "claude", "codex"):
         raise ValueError("host must be auto, claude or codex")
@@ -435,11 +532,16 @@ def read_transcripts(project_dir, transcript_dir=None, host="auto", session_ids=
     selected = set(session_ids or [])
     project = normalize_project(project_dir)
     paths = _candidate_paths(project_dir, transcript_dir, host, home)
-    sources = [_read_source(path, project, host, selected, transcript_dir is not None)
+    reader = tdq_transcript_cache.TranscriptCache(
+        project, request_id, mode=cache, stats=cache_stats,
+        max_bytes=cache_max_bytes, max_age_seconds=cache_max_age_seconds)
+    sources = [_read_source(path, project, host, selected, transcript_dir is not None, cache=reader)
                for path in paths]
     spans = _pair_spans(sources)
     qualities = {kind: _quality(sources, kind) for kind in KINDS}
     if not paths:
         _log("no transcript source found; timing unavailable")
-    return {"spans": spans, "sources": _public_sources(sources), "quality": qualities,
-            "attribution": "session" if selected else "project_window"}
+    result = {"spans": spans, "sources": _public_sources(sources), "quality": qualities,
+              "attribution": "session" if selected else "project_window"}
+    reader.finish()
+    return result

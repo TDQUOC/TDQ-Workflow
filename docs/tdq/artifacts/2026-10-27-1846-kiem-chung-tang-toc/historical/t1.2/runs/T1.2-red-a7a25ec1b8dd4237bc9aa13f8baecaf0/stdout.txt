@@ -1,0 +1,16 @@
+
+=================================== ERRORS ====================================
+______________ ERROR collecting tests/test_tdq_test_manifest.py _______________
+ImportError while importing test module 'C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1846-kiem-chung-tang-toc\t1.2\tests\test_tdq_test_manifest.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_tdq_test_manifest.py:11: in <module>
+    import tdq_test_manifest as manifest
+E   ModuleNotFoundError: No module named 'tdq_test_manifest'
+=========================== short test summary info ===========================
+ERROR tests/test_tdq_test_manifest.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.27s

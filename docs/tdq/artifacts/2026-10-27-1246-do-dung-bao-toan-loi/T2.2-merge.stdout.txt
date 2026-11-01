@@ -1,0 +1,7 @@
+Merged tdq/2026-10-27-1246-do-dung-bao-toan-loi/t2.2 into bugfix/do-dung-bao-toan-loi.
+Gathered on: bugfix/do-dung-bao-toan-loi (C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow)
+NOT CLEANED UP YET: 1 worktree(s)
+  T2.2  C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t2.2
+        reason: git refused to remove this worktree — its own words are in brackets (error: failed to delete 'C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/.tdq-worktrees/2026-10-27-1246-do-dung-bao-toan-loi/t2.2': Permission denied)
+        → fix what git named there, then sweep again: python3 scripts/tdq_team.py sweep --clean
+        → see what still holds the directory: git worktree list --porcelain && ls -la C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t2.2

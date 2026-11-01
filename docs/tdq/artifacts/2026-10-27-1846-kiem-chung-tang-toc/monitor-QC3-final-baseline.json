@@ -1,0 +1,12 @@
+{
+  "observed_at": 1793455884.78982,
+  "role": "Advisory only; final harness receipt authoritative",
+  "config": {
+    ".claude/CLAUDE.md": "ed672c167f3a758ed21cc1bdc40d3f16bc7730ff3f6274aee6b0065c5d7cf67f",
+    ".claude/settings.json": "db59a47fb48e6a3671d74945eeb6836c15ba1261490c102b8c2986ddcefa74c2",
+    ".claude.json": "d38373f2d3b8b4cd3b5f1306db32003c0826c083c62ada7705a686b8975b360a",
+    ".codex/AGENTS.md": "b50fa71a30162bac7eb0beda805ca35dc11477d952d1bf15ca2d3310e7d81a47",
+    ".codex/config.toml": "405a547acf970c046f38f5187a7a5bf6c9865dd5a84ff441b3c93abcd48848a5",
+    ".codex/auth.json": "3389f8b1afedb077ea668d5e18e3fc670b0765060d186291f8ba1755503dc75f"
+  }
+}

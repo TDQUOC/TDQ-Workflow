@@ -1,8 +1,8 @@
 # Step cost & context cost
 <!-- muc-luc-dong:
-  Table of contents=18-22 · Step cost (tier 2 — runtime)=23-41 ·
-  Five cases where re-reading is MANDATORY=42-54 · Re-reading by RULE or by FORGETTING=55-82 ·
-  Never batch these=83-99 · Context cost (tier 3)=100
+  Table of contents=18-22 · Step cost (tier 2 — runtime)=23-42 ·
+  Five cases where re-reading is MANDATORY=43-55 · Re-reading by RULE or by FORGETTING=56-83 ·
+  Never batch these=84-102 · Context cost (tier 3)=103
 -->
 
 Two different costs, sitting on two different tiers of [soul.md](soul.md). Filing a rule in the
@@ -26,12 +26,13 @@ One tool call = one round-trip. Measured on real sessions: median **3.3 s** per 
 12.3 s. Total time scales DIRECTLY with the number of steps, so this is the runtime tier, not
 context cost.
 
-- **Batch tool calls.** Knowing 2–5 independent tool calls up front (Bash, Read, Grep) → issue
-  them ALL IN ONE TURN; several independent Bash commands get joined with `&&`. Split them when
-  you need to isolate a failure.
-- **Batch Bash commands.** Several independent shell commands in one piece of work → one
-  command joined by `&&`, or `;` when you want them all to run even if one fails. Never split
-  into several turns just to see each command's output separately.
+- **Batch independent reads.** Knowing 2–5 independent read-only calls up front → submit
+  them concurrently in one batch and await all results. Inspect each result, including errors;
+  one failed call must not hide the remaining results. Keep each command's exit status and output.
+- **Shell sequencing is not concurrency.** `&&` runs sequentially and stops after failure;
+  `;` also runs sequentially. Use the host's concurrent tool-call facility when available.
+  Without one, run reads sequentially and describe that honestly. Never add a process framework
+  just to batch a few reads.
 - **Conditional re-reading (SOFT rule).** When the information is still complete and intact in
   context, do not re-read the file. But you MUST re-read on any of the five cases below. This
   rule must never be turned into a blocking check.
@@ -82,7 +83,7 @@ whenever the five conditions are not certainly all true — **when in doubt, re-
 
 ### Never batch these
 
-Splitting the four cases below is RIGHT and batching them is WRONG, even where batching is
+Splitting the six cases below is RIGHT and batching them is WRONG, even where batching is
 technically possible.
 
 | Case | Why batching it is banned here |
@@ -91,6 +92,8 @@ technically possible.
 | Isolating a failure | batch 5 commands and you cannot tell which failed, so you rerun them one by one — more steps, not fewer |
 | Destructive or hard-to-undo commands | delete, overwrite, `git reset` — you must see the previous command's result before running the next |
 | A command that needs the previous command's result | batched, the later command runs on an assumption and returns a wrong result nobody notices |
+| State mutations, approval gates or shared lock ownership | the next action must observe the completed transition |
+| Performance samples and unrelated test/setup jobs | overlapping workloads change the conditions being measured |
 
 RIGHT example: one turn issuing `Read a.py`, `Read b.py`, `grep -n "foo" c.py` — three unrelated
 pieces of work; you reason only after all three land.

@@ -1,0 +1,67 @@
+................[2026-10-27T14:46:26+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:26+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:26+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:26+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:26+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:26+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:26+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:26+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:26+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:26+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:27+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:27+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:27+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:27+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:27+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:27+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:27+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:27+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:27+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:27+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:27+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:27+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:28+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:28+07:00] manifest: 133 file(s) in antigravity_portable
+..................F[2026-10-27T14:46:30+07:00] build_portable: dry-run dev@c5e6cd2 -> main · kept=4 dropped=6
+[2026-10-27T14:46:30+07:00] build_portable: published main@76aa887 from dev@c5e6cd2 · tree=5734f53 · kept=4 · dropped=6
+[2026-10-27T14:46:31+07:00] build_portable: main already up to date with dev@c5e6cd2 (tree=5734f53, kept=4, dropped=6)
+[2026-10-27T14:46:31+07:00] build_portable: main already up to date with dev@2a438a7 (tree=5734f53, kept=4, dropped=6)
+[2026-10-27T14:46:31+07:00] build_portable: published main@3b4a750 from dev@7290cd9 · tree=5fb517b · kept=4 · dropped=6
+....[2026-10-27T14:46:31] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 1 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 2 section(s) · block 3 line(s)
+......[2026-10-27T14:46:31] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+[2026-10-27T14:46:31] doc_index: f.md · 5 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+....[2026-10-27T14:46:31] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+..[2026-10-27T14:46:31] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 3 section(s) · block 3 line(s)
+.[2026-10-27T14:46:31] doc_index: f.md · 2 section(s) · block 3 line(s)
+...........................................................................................[2026-10-27T14:46:33+07:00] SKILL.md map: 58 lookup key(s)
+.sssss...s.....................................................................................................WARNING: missing file portable/workflow/02-spec.md
+WARNING: missing file portable/workflow/03-plan.md
+WARNING: missing file portable/workflow/references/user-facing-block.md
+.
+======================================================================
+FAIL: test_release_loc_cay_repo_that_duoi_150_file (test_build_portable.TestSinhNhanhRelease.test_release_loc_cay_repo_that_duoi_150_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_build_portable.py", line 608, in test_release_loc_cay_repo_that_duoi_150_file
+    self.assertLessEqual(len(kept), 160)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: 161 not less than or equal to 160
+
+----------------------------------------------------------------------
+Ran 278 tests in 14.512s
+
+FAILED (failures=1, skipped=6)
+[2026-10-27T14:46:40+07:00] tdq_test: backend=unittest status=FAIL tests_run=278 reason=Test failure or unexpected success
+[2026-10-27T14:46:40+07:00] tdq_test: vung-cham backend=unittest scope=transitive status=FAIL tests_run=278 details_complete=True fallback=none seconds=15.31 reason=Test failure or unexpected success

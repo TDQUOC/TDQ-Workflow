@@ -1,0 +1,41 @@
+{
+  "status": "stale",
+  "reasons": [
+    "Source file modified: scripts/step_audit.py",
+    "Source file modified: scripts/tdq_state.py",
+    "Source file modified: scripts/tdq_test.py",
+    "Source file modified: scripts/tdq_timing.py",
+    "Source file modified: scripts/token_audit.py",
+    "Source file modified: skills/tdq-build/references/report-template.md",
+    "Source file modified: skills/tdq-status/SKILL.md",
+    "Source file modified: tests/test_next_tron_bo.py",
+    "Source file modified: tests/test_step_budget.py",
+    "Source file modified: tests/test_tdq_test.py",
+    "Source file modified: tests/test_timing.py",
+    "Source file modified: tests/test_token_audit.py"
+  ],
+  "binding": {
+    "status": "current",
+    "valid": true,
+    "reasons": [],
+    "document_digest": "223cea52fef1835a30f7a34bd58594d5056589ba3d303ffe08971994797c81b6",
+    "manifest_digest": "cbbffd9e249744fc9de920ab31c0cc4c2c6b5b30b2da252cba9d68eb5a6f4d70"
+  },
+  "manifest": {
+    "status": "stale",
+    "reasons": [
+      "Source file modified: scripts/step_audit.py",
+      "Source file modified: scripts/tdq_state.py",
+      "Source file modified: scripts/tdq_test.py",
+      "Source file modified: scripts/tdq_timing.py",
+      "Source file modified: scripts/token_audit.py",
+      "Source file modified: skills/tdq-build/references/report-template.md",
+      "Source file modified: skills/tdq-status/SKILL.md",
+      "Source file modified: tests/test_next_tron_bo.py",
+      "Source file modified: tests/test_step_budget.py",
+      "Source file modified: tests/test_tdq_test.py",
+      "Source file modified: tests/test_timing.py",
+      "Source file modified: tests/test_token_audit.py"
+    ]
+  }
+}

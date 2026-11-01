@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 6.170000415295362e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 22252,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "transcript",
+  "stdout": "",
+  "stderr": "[2026-10-31T21:31:03+07:00] transcript-cache: miss: parsed-current-snapshot\n[2026-10-31T21:31:03+07:00] transcript: codex accepted: metadata_matched; counters={}\n[2026-10-31T21:31:03+07:00] transcript-cache: miss: cache-unavailable-or-invalid\n[2026-10-31T21:31:03+07:00] transcript-cache: miss: parsed-current-snapshot\n[2026-10-31T21:31:03+07:00] transcript: codex accepted: metadata_matched; counters={}\n[2026-10-31T21:31:03+07:00] transcript-cache: hit: content-verified\n[2026-10-31T21:31:03+07:00] transcript: codex accepted: metadata_matched; counters={}\n",
+  "duration_seconds": 0.343030100048054,
+  "wall_seconds": 0.343030100048054,
+  "execute_seconds": 0.34296840004390106,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ogxr63hu\\temp\\tdq-i9vqsze1\\workers\\controller\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ogxr63hu\\temp\\tdq-i9vqsze1\\workers\\controller\\tmp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ogxr63hu\\temp\\tdq-i9vqsze1\\pytest"
+  }
+}

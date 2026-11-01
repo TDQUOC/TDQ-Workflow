@@ -1,0 +1,40 @@
+{
+  "title": "TDQ Workflow — báo cáo kiểm chứng",
+  "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/reports/2026-10-27-1846-kiem-chung-tang-toc.html#rollback",
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "scroll_width": 375,
+  "client_width": 375,
+  "sections": [
+    "results",
+    "raw-samples",
+    "limitations",
+    "before-after",
+    "recommendations",
+    "rollback"
+  ],
+  "anchor_check": {
+    "hash": "#rollback",
+    "target_visible": true
+  },
+  "details_check": {
+    "open": true,
+    "scroll_width": 375,
+    "client_width": 375
+  },
+  "table_check": {
+    "client_width": 317,
+    "scroll_width": 520,
+    "scroll_left": 203,
+    "can_scroll": true
+  },
+  "keyboard_focus": true,
+  "external_assets": 0,
+  "device_proof": false,
+  "html_sha256": "ba00fdebf62a420019ce39066eedb2acb8f70f4fa4c51f19b15749cf1fb90595",
+  "console_errors": [],
+  "tool": "mcp__chrome_devtools",
+  "page_id": 3
+}

@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 5.640002200379968e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 9584,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "owner-crash",
+  "stdout": "",
+  "stderr": "[2026-10-31T14:30:53+00:00] tdq_test_process reason=exited exit_code=0 wall=0.739424 cleanup=0.000053\n[2026-10-31T14:30:56+00:00] tdq_test_process reason=exited exit_code=0 wall=2.755819 cleanup=0.000063\n[2026-10-31T14:30:56.922153+00:00] receipt action=executed reason=cache_miss\n[2026-10-31T21:30:57+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=4.224953499971889 reason=Executed tests completed successfully\n",
+  "duration_seconds": 5.911589000024833,
+  "wall_seconds": 5.911589000024833,
+  "execute_seconds": 5.911532600002829,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ogxr63hu\\temp\\tdq-ywyaaqym\\workers\\controller\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ogxr63hu\\temp\\tdq-ywyaaqym\\workers\\controller\\tmp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ogxr63hu\\temp\\tdq-ywyaaqym\\pytest"
+  }
+}

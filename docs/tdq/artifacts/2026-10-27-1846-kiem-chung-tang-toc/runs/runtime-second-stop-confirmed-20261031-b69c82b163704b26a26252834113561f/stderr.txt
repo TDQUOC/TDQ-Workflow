@@ -1,0 +1,7 @@
+[2026-10-31T13:02:49+00:00] tdq_test_process reason=exited exit_code=0 wall=3.394519 cleanup=0.000049
+[2026-10-31T13:02:49+00:00] tdq_test_process reason=exited exit_code=0 wall=0.634500 cleanup=0.000054
+[2026-10-31T13:02:55+00:00] tdq_test_process reason=exited exit_code=0 wall=5.552342 cleanup=0.000048
+[2026-10-31T13:03:01+00:00] tdq_test_process reason=exited exit_code=0 wall=5.886515 cleanup=0.000045
+[2026-10-31T13:03:07+00:00] tdq_test_process reason=exited exit_code=0 wall=5.637522 cleanup=0.000059
+[2026-10-31T13:03:07+00:00] tdq_test_process reason=exited exit_code=0 wall=0.335400 cleanup=0.000055
+[2026-10-31T13:03:09.208803+00:00] runtime-bench: runtime-smoke PERFORMANCE_MET samples=6

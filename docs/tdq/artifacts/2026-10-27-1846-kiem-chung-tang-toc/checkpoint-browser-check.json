@@ -1,0 +1,77 @@
+{
+  "schema": "tdq-checkpoint-browser/v1",
+  "at": "2026-10-27T22:21:28+07:00",
+  "kind": "checkpoint-only-not-D12-certification",
+  "html_sha256": "93f5dc0a638c9afc62f460a8b3737c61582a7e72547fd98fde6c8167508983e2",
+  "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/checkpoint.html",
+  "views": [
+    {
+      "view": "desktop",
+      "screenshot": "checkpoint-desktop.png",
+      "screenshot_sha256": "0c16c93fb13be40a80e407ddffa2938db64715cbee39371fb433a8b58ed18815",
+      "png_size": [
+        1440,
+        900
+      ],
+      "metrics": {
+        "width": 1440,
+        "height": 900,
+        "clientWidth": 1425,
+        "scrollWidth": 1425,
+        "taskCount": "15/24 task",
+        "links": 28,
+        "emptySections": 0
+      },
+      "visual_review": "PASS: readable text, no overlapping panels; mobile tables scroll inside their containers"
+    },
+    {
+      "view": "mobile",
+      "screenshot": "checkpoint-mobile.png",
+      "screenshot_sha256": "18eda05d8f04d3326d796c96c64a6b106095390eb7392ed6e7ae9cf2ffef78fd",
+      "png_size": [
+        375,
+        812
+      ],
+      "metrics": {
+        "width": 375,
+        "height": 812,
+        "clientWidth": 375,
+        "scrollWidth": 375,
+        "detailsOpen": true,
+        "focus": true,
+        "outline": "rgb(214, 138, 26) solid 3px",
+        "anchors": true,
+        "tableWidths": [
+          {
+            "client": 309,
+            "scroll": 620
+          },
+          {
+            "client": 309,
+            "scroll": 620
+          },
+          {
+            "client": 309,
+            "scroll": 620
+          },
+          {
+            "client": 309,
+            "scroll": 620
+          }
+        ]
+      },
+      "visual_review": "PASS: readable text, no overlapping panels; mobile tables scroll inside their containers"
+    }
+  ],
+  "console_errors": [],
+  "console_warnings": [],
+  "network": "Local HTML 200; embedded CSS, no external assets",
+  "local_links_checked": 22,
+  "missing_links": [],
+  "anchors_valid": true,
+  "interaction": "Details expanded/collapsed; focus visible with 3px outline",
+  "limitations": [
+    "No reference design supplied; no pixel baseline comparison",
+    "Checkpoint does not certify Full/benchmark/DoD"
+  ]
+}

@@ -1,0 +1,9 @@
+[2026-10-27T14:29:31] start · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · 2 file(s) changed
+[2026-10-27T14:29:31] khoa-token → skip (no rule file changed)
+[2026-10-27T14:29:31] lint → ok (2 file)
+[2026-10-27T14:29:31] worklog → ok (2026-10-27 14:29)
+[2026-10-27T14:29:31] timing → skip (books close only on idle)
+[2026-10-27T14:29:31] phase → ok (qc)
+[2026-10-27T14:29:32] archify → stale (refresh needed: Child file digest mismatch for overview.html: manifest 442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8)
+[2026-10-27T14:29:32] graphify → skip (no code file changed)
+[2026-10-27T14:29:32] done · 0 step(s) failed

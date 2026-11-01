@@ -1,0 +1,17 @@
+bringing up nodes...
+bringing up nodes...
+
+E                                                                        [100%]
+=================================== ERRORS ====================================
+________________ ERROR at setup of test_document_digest_basic _________________
+[gw0] win32 -- Python 3.13.15 C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe
+file C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_archify_artifacts.py, line 36
+  def test_document_digest_basic(tmp_path):
+E       fixture 'tmp_path' not found
+>       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, testrun_uid, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_archify_artifacts.py:36
+=========================== short test summary info ===========================
+ERROR tests/test_archify_artifacts.py::test_document_digest_basic - file C:\U...
+1 error in 0.57s

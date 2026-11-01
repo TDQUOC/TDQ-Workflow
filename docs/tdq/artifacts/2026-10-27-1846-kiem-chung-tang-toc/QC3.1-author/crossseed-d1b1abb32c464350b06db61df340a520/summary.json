@@ -1,0 +1,32 @@
+{
+  "runs": [
+    {
+      "workers": 0,
+      "PYTHONHASHSEED": "17",
+      "cases": 2,
+      "subtests": [
+        15,
+        4
+      ],
+      "sidecar": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\QC3.1-author\\crossseed-d1b1abb32c464350b06db61df340a520\\serial.json",
+      "sidecar_sha256": "417601b8af6f65c0f39c179194e5a61d9316d60093c7f8b7420f15e8c6b5da8c",
+      "exit_code": 0,
+      "complete": true
+    },
+    {
+      "workers": 2,
+      "PYTHONHASHSEED": "91",
+      "cases": 2,
+      "subtests": [
+        15,
+        4
+      ],
+      "sidecar": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\QC3.1-author\\crossseed-d1b1abb32c464350b06db61df340a520\\parallel.json",
+      "sidecar_sha256": "2969610636d00d2e95f6cc6710a6ae128025e1b5ccc790c6a79f24b6ef13c6f9",
+      "exit_code": 0,
+      "complete": true
+    }
+  ],
+  "case_phase_reason_subtest_parity_duration_excluded": true,
+  "retained_subtests_per_run": 19
+}

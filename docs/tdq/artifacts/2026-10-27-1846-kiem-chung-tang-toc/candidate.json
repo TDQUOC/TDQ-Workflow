@@ -1,0 +1,282 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Ba đợt tăng tốc — Thiết kế chờ duyệt",
+    "locale": "vi",
+    "quality_profile": "showcase",
+    "output": "docs/tdq/spec/2026-10-27-1846-kiem-chung-tang-toc-preview.html",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "external": {
+          "label": "Yêu cầu"
+        },
+        "security": {
+          "label": "Kiểm chất lượng"
+        },
+        "backend": {
+          "label": "Triển khai"
+        },
+        "database": {
+          "label": "Bằng chứng"
+        },
+        "messagebus": {
+          "label": "Quyết định đo"
+        },
+        "frontend": {
+          "label": "Báo cáo"
+        },
+        "cloud": {
+          "label": "Môi trường"
+        }
+      }
+    },
+    "translations": {
+      "viewer.kind.external": "Yêu cầu",
+      "legend.workflow.external": "Yêu cầu",
+      "legend.architecture.external": "Yêu cầu",
+      "viewer.kind.security": "Kiểm chất lượng",
+      "legend.workflow.security": "Kiểm chất lượng",
+      "legend.architecture.security": "Kiểm chất lượng",
+      "viewer.kind.backend": "Triển khai",
+      "legend.workflow.backend": "Triển khai",
+      "legend.architecture.backend": "Triển khai",
+      "viewer.kind.database": "Bằng chứng",
+      "legend.workflow.database": "Bằng chứng",
+      "legend.architecture.database": "Bằng chứng",
+      "viewer.kind.messagebus": "Quyết định đo",
+      "legend.workflow.messagebus": "Quyết định đo",
+      "legend.architecture.messagebus": "Quyết định đo",
+      "viewer.kind.frontend": "Báo cáo",
+      "legend.workflow.frontend": "Báo cáo",
+      "legend.architecture.frontend": "Báo cáo",
+      "viewer.kind.cloud": "Môi trường",
+      "legend.workflow.cloud": "Môi trường",
+      "legend.architecture.cloud": "Môi trường"
+    }
+  },
+  "lanes": [
+    {
+      "id": "delivery",
+      "label": "Triển khai và đo"
+    },
+    {
+      "id": "correctness",
+      "label": "Điều kiện chất lượng",
+      "variant": "exception"
+    },
+    {
+      "id": "performance",
+      "label": "Không đạt tốc độ",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "ask",
+    "foundation",
+    "reuse",
+    "speed",
+    "benchmark",
+    "report"
+  ],
+  "nodes": [
+    {
+      "id": "ask",
+      "lane": "delivery",
+      "col": 1,
+      "type": "external",
+      "label": "Yêu cầu đã chốt",
+      "sublabel": "P0 + P1 + P2 / Ultra"
+    },
+    {
+      "id": "foundation",
+      "lane": "delivery",
+      "col": 2,
+      "type": "security",
+      "label": "P0 · Test đúng",
+      "sublabel": "Case, fixture, isolation"
+    },
+    {
+      "id": "reuse",
+      "lane": "delivery",
+      "col": 3,
+      "type": "backend",
+      "label": "P1 · Bớt lặp",
+      "sublabel": "Receipt, join, readiness"
+    },
+    {
+      "id": "speed",
+      "lane": "delivery",
+      "col": 4,
+      "type": "backend",
+      "label": "P2 · Chạy nhanh",
+      "sublabel": "Worker, cache transcript",
+      "yOffset": -92
+    },
+    {
+      "id": "benchmark",
+      "lane": "delivery",
+      "col": 4,
+      "type": "messagebus",
+      "label": "A/B và QC",
+      "sublabel": "Cùng input, đủ case",
+      "yOffset": 0
+    },
+    {
+      "id": "report",
+      "lane": "delivery",
+      "col": 4,
+      "type": "frontend",
+      "label": "Báo cáo cuối",
+      "sublabel": "Số đo và đề xuất tiếp",
+      "yOffset": 92
+    },
+    {
+      "id": "repair",
+      "lane": "correctness",
+      "col": 0,
+      "type": "security",
+      "label": "Sửa lỗi nền",
+      "sublabel": "Không bỏ hoặc che test",
+      "yOffset": -46
+    },
+    {
+      "id": "qualityfix",
+      "lane": "correctness",
+      "col": 0,
+      "type": "security",
+      "label": "Sửa hồi quy",
+      "sublabel": "Chưa được nghiệm thu",
+      "yOffset": 46
+    },
+    {
+      "id": "fallback",
+      "lane": "performance",
+      "col": 5,
+      "type": "database",
+      "label": "Giữ off / serial",
+      "sublabel": "Báo số đo không đạt",
+      "yOffset": -46
+    },
+    {
+      "id": "limits",
+      "lane": "performance",
+      "col": 5,
+      "type": "frontend",
+      "label": "Ghi rõ giới hạn",
+      "sublabel": "Không nhận tăng tốc",
+      "yOffset": 46
+    }
+  ],
+  "edges": [
+    {
+      "id": "intake",
+      "from": "ask",
+      "to": "foundation"
+    },
+    {
+      "id": "p0good",
+      "from": "foundation",
+      "to": "reuse",
+      "label": "Đạt",
+      "variant": "emphasis"
+    },
+    {
+      "id": "p0fail",
+      "from": "foundation",
+      "to": "repair",
+      "label": "Lỗi",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "p0retry",
+      "from": "repair",
+      "to": "foundation",
+      "label": "Kiểm lại",
+      "role": "return",
+      "route": "auto"
+    },
+    {
+      "id": "p1p2",
+      "from": "reuse",
+      "to": "speed"
+    },
+    {
+      "id": "measure",
+      "from": "speed",
+      "to": "benchmark"
+    },
+    {
+      "id": "qualified",
+      "from": "benchmark",
+      "to": "report",
+      "label": "Đạt",
+      "variant": "emphasis"
+    },
+    {
+      "id": "qcerror",
+      "from": "benchmark",
+      "to": "qualityfix",
+      "label": "Sai kết quả",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "qcretry",
+      "from": "qualityfix",
+      "to": "benchmark",
+      "label": "Sửa, kiểm lại",
+      "role": "return",
+      "route": "auto"
+    },
+    {
+      "id": "slow",
+      "from": "benchmark",
+      "to": "fallback",
+      "label": "Không nhanh",
+      "role": "branch"
+    },
+    {
+      "id": "notfast",
+      "from": "fallback",
+      "to": "limits"
+    },
+    {
+      "id": "limitedreport",
+      "from": "limits",
+      "to": "report",
+      "label": "Có giới hạn",
+      "role": "return",
+      "route": "auto"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "P0 — Nền tảng đáng tin",
+      "items": [
+        "Manifest từng case, tokenizer portable, tmp_path và HOME riêng.",
+        "Timeout/cancel phải dừng đúng cây job; lỗi giữ nguyên verdict."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "P1 / P2 — Implementation thật",
+      "items": [
+        "Reuse chỉ khi eligible + fingerprint khớp; job trùng được join có hạn.",
+        "Readiness vẫn kiểm kết nối sống; transcript cache giữ quality và kiểm nội dung."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Nghiệm thu và kích hoạt",
+      "items": [
+        "Full fresh và QC Ultra độc lập; ít nhất ba cặp A/B đảo thứ tự.",
+        "Parallel chỉ được khuyến nghị khi median giảm ít nhất 20%; cache không hiệu quả giữ off.",
+        "Sơ đồ dự kiến cho spec, không phải bằng chứng đã triển khai."
+      ]
+    }
+  ]
+}

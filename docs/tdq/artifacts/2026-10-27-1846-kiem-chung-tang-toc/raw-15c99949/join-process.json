@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 4.8200017772614956e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 46152,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "join",
+  "stdout": "",
+  "stderr": "[2026-10-31T11:47:23+00:00] tdq_test_process reason=exited exit_code=0 wall=0.794793 cleanup=0.000057\n[2026-10-31T11:47:25+00:00] tdq_test_process reason=exited exit_code=0 wall=0.806932 cleanup=0.000063\n[2026-10-31T11:47:26+00:00] tdq_test_process reason=exited exit_code=0 wall=0.831897 cleanup=0.000055\n[2026-10-31T11:47:27.145154+00:00] receipt action=executed reason=cache_miss\n[2026-10-31T18:47:27+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=5.417078100028448 reason=Executed tests completed successfully\n[2026-10-31T11:47:28.020972+00:00] receipt action=joined reason=joined_owner\n[2026-10-31T18:47:28+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=4.218171999964397 reason=Executed tests completed successfully\n",
+  "duration_seconds": 6.231974499998614,
+  "wall_seconds": 6.231974499998614,
+  "execute_seconds": 6.231926299980842,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-v395x9ue\\workers\\controller\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-v395x9ue\\workers\\controller\\tmp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-v395x9ue\\pytest"
+  }
+}

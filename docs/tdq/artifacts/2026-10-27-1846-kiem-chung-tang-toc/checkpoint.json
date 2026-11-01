@@ -1,0 +1,144 @@
+{
+  "request": "2026-10-27-1846-kiem-chung-tang-toc",
+  "generated_at": "2026-10-27T22:20:26+07:00",
+  "kind": "implementation-checkpoint",
+  "final_dod_certified": false,
+  "full_benchmark_completed": false,
+  "completed_tasks": 15,
+  "total_tasks": 24,
+  "tasks": [
+    {
+      "task": "T1.2",
+      "status": "Đạt gate module",
+      "cases": "75 passed, 67 subtests passed in 6.62s",
+      "seconds": 7.874,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/t1.2/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/T1.2-0394a10759a8426a9f22be05d7051b0e/receipt.json"
+    },
+    {
+      "task": "T2.1",
+      "status": "Đạt gate module",
+      "cases": "109 passed in 47.61s",
+      "seconds": 49.036,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/t2.1/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/T2.1-57a615484c644d62b7525395b937f06e/receipt.json"
+    },
+    {
+      "task": "T3.1",
+      "status": "Đạt gate module",
+      "cases": "121 passed, 15 subtests passed in 110.60s (0:01:50)",
+      "seconds": 111.932,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/t3.1/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/T3.1-aa0b6c9a14234fd682bfd8426263cae4/receipt.json"
+    },
+    {
+      "task": "T3.2",
+      "status": "Đạt gate module",
+      "cases": "16 passed in 61.20s (0:01:01)",
+      "seconds": 62.481,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/t3.2/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/T3.2-2576f526fdef4cf58e76df59254f31fe/receipt.json"
+    },
+    {
+      "task": "T4.1",
+      "status": "Đạt gate module",
+      "cases": "12 passed in 3.93s",
+      "seconds": 5.211,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/t4.1/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/T4.1-bec73a2f2edd459da1bf049af2681c41/receipt.json"
+    },
+    {
+      "task": "T4.2",
+      "status": "Đạt gate module",
+      "cases": "252 passed, 1 skipped, 33 subtests passed in 170.82s (0:02:50)",
+      "seconds": 172.394,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/t4.2/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/T4.2-80f206fb508c41a7a24c29ea1baa3fed/receipt.json"
+    },
+    {
+      "task": "QC-F1",
+      "status": "Chưa đạt gate",
+      "cases": "3411 pass / 158 fail / 10 skip (case chuẩn hóa, trước QC1)",
+      "seconds": 877.4,
+      "verdict": "FAIL",
+      "child_exit": 1,
+      "failures": [
+        "config_guard"
+      ],
+      "changed_config": [
+        ".claude.json"
+      ],
+      "receipt": "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/QC-F1-7e866460be9f4839bf273828842cd049/receipt.json"
+    },
+    {
+      "task": "QC1.1",
+      "status": "Chưa đạt gate",
+      "cases": "513 passed, 2 skipped, 215 subtests passed in 180.79s (0:03:00)",
+      "seconds": 182.064,
+      "verdict": "FAIL",
+      "child_exit": 0,
+      "failures": [
+        "config_guard"
+      ],
+      "changed_config": [
+        ".claude.json"
+      ],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/qc1.1/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/QC1.1-a67a697d95db4b36b49b7698d1c22f5a/receipt.json"
+    },
+    {
+      "task": "QC1.2",
+      "status": "Đạt gate module",
+      "cases": "2 passed, 2 subtests passed in 14.76s",
+      "seconds": 16.131,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/qc1.2/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/QC1.2-1f66ae1b7ead47c4a0c315ba49543968/receipt.json"
+    },
+    {
+      "task": "QC1.3",
+      "status": "Chưa đạt gate",
+      "cases": "57 passed, 34 subtests passed in 62.99s (0:01:02)",
+      "seconds": 64.33,
+      "verdict": "FAIL",
+      "child_exit": 0,
+      "failures": [
+        "config_guard"
+      ],
+      "changed_config": [
+        ".claude.json"
+      ],
+      "receipt": ".tdq-worktrees/2026-10-27-1846-kiem-chung-tang-toc/qc1.3/docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/QC1.3-ecfe0ece71ee4548b6ae26e4cfb62fe6/receipt.json"
+    },
+    {
+      "task": "QC1.4",
+      "status": "Đạt gate module",
+      "cases": "22 passed, 329 subtests passed in 0.54s",
+      "seconds": 1.874,
+      "verdict": "PASS",
+      "child_exit": 0,
+      "failures": [],
+      "changed_config": [],
+      "receipt": "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/QC1.4-0f73bacd1cc34d45b5f4fed19537bc74/receipt.json"
+    }
+  ]
+}

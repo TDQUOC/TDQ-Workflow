@@ -6,9 +6,9 @@ description: Install and prove every dependency the workflow searches with: 7 ru
 # TDQ Setup — installing and proving the workflow's three search layers
 <!-- muc-luc-dong:
   The one hard rule of this skill=27-32 ·
-  The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=33-64 ·
-  Rung 5 — a conflicting plugin hook=65-72 ·
-  Runbook — setting a machine up, and re-configuring it later=73
+  The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=33-71 ·
+  Rung 5 — a conflicting plugin hook=72-79 ·
+  Runbook — setting a machine up, and re-configuring it later=80
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md).
@@ -31,6 +31,13 @@ in 0.58.0 — measured, no significant loss without them.
 command runs. This holds even when a rung is trivially fixable and even when the build is blocked.
 
 ## The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`
+
+Readiness caching defaults to `off`. An explicit `--readiness-cache auto` may reuse static
+binary/version and language-inventory probes within a request; connection checks, doctor,
+config existence, graph freshness and the effect smoke check still run live. Missing request
+identity or unverifiable cache inputs fall back to fresh probes. This option does not change
+installation policy. Activation, measurement limits and rollback:
+[runtime speed](../tdq-build/references/runtime-speed.md).
 
 Seven rungs, printed one line each, a missing rung printing the command that fixes it.
 

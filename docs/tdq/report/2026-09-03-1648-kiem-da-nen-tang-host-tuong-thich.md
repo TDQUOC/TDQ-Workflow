@@ -88,8 +88,11 @@ Số liệu lấy từ `python3 tools_kiem/dem_da_nen_tang.py`, chạy lại lú
 - `open()` chế độ văn bản thiếu `encoding=`: **0**. Toàn bộ `scripts/` + `hooks/` đọc file bằng
   UTF-8 tường minh, nên tài liệu tiếng Việt không vỡ vì code page của Windows. Đây là nửa khó
   nhất của bài toán encoding, và nó đã đúng sẵn.
-- Import stdlib chỉ có trên POSIX (`fcntl`, `pwd`, `grp`, `termios`, `tty`, `resource`): **0**.
-  Không module nào sẽ ném `ImportError` ngay dòng đầu trên Windows.
+- Import stdlib chỉ có trên POSIX (`fcntl`, `pwd`, `grp`, `termios`, `tty`, `resource`): **1**.
+  Cập nhật ngày 2026-10-27: `scripts/tdq_test_receipt.py` import `fcntl` trong nhánh POSIX
+  của `_lock`; nhánh `os.name == "nt"` dùng `msvcrt`. Đây là số lần xuất hiện import,
+  không phải lỗi import vô điều kiện trên Windows. Nhánh POSIX chưa được kiểm chứng trên
+  host POSIX thật. Số liệu lịch sử tại bản 0.48.0 là 0 lần import POSIX.
 - **Đường dẫn tuyệt đối cứng trong `scripts/` + `hooks/`: 0**, và chỉ **1** chỗ đọc
   `sys.platform` (`scripts/claude_export.py:436`, thuần trang trí). Mã gần như không phân biệt
   hệ điều hành — nghĩa là không có nhánh macOS nào phải gỡ, chỉ có vài chỗ chung phải làm đúng.

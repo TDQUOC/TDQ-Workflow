@@ -125,7 +125,7 @@ class VongDoiTest(unittest.TestCase):
                                  f"git từ chối tên nhánh {nhanh!r}")
 
     def test_khong_pham_luat_bay(self):
-        for nhanh in set(NHANH_BAT_KY.findall(_doc(DUONG_PHUONG_AN))):
+        for nhanh in sorted(set(NHANH_BAT_KY.findall(_doc(DUONG_PHUONG_AN)))):
             with self.subTest(nhanh=nhanh):
                 self.assertFalse(nhanh.lower().startswith(TIEN_TO_CAM),
                                  f"{nhanh} phạm luật §7 của tdq-conventions")

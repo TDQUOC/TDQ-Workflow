@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import time
 from contextlib import redirect_stderr, redirect_stdout
 from types import SimpleNamespace
 from unittest import mock
@@ -312,29 +313,29 @@ class VungCham(unittest.TestCase):
     def test_vung_cham_files_chi_chay_module_chon_dat(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
-        self.assertIn("Ran 1 test", p.stderr)
+        self.assertIn("1 passed", p.stderr)
         self.assertIn("1/9", p.stdout)
 
     def test_vung_cham_files_module_truot_thi_exit_1(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py", "tests/test_b.py")
         self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
-        self.assertIn("Ran 2 tests", p.stderr)
+        self.assertIn("1 failed, 1 passed", p.stderr)
 
     def test_vung_cham_silent_flag_writes_log_file(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py", "--silent")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertIn("[TDQ:TEST] PASS", p.stdout)
-        self.assertNotIn("Ran 1 test", p.stderr)
+        self.assertNotIn("1 passed", p.stderr)
         log_path = os.path.join(self.goc, "docs", "tdq", ".tdq-test.log")
         self.assertTrue(os.path.isfile(log_path))
         with open(log_path, encoding="utf-8") as f:
             log_content = f.read()
-        self.assertIn("Ran 1 test", log_content)
+        self.assertIn("1 passed", log_content)
 
     def test_vung_cham_ly_do_tron_bo_chay_het(self):
         p = chay_cli(self.goc, "--files", "tools/build.sh")  # T5.6: mã ngoài 5 thư mục
         self.assertEqual(p.returncode, 1)  # test_b trượt nằm trong trọn bộ
-        self.assertIn("Ran 9 tests", p.stderr)
+        self.assertIn("1 failed, 8 passed", p.stderr)
         self.assertIn("full suite", p.stdout)
         dong = doc_so(self.goc)[-1]
         self.assertTrue(dong["fallback"])
@@ -572,7 +573,7 @@ class So(unittest.TestCase):
     def test_so_tron_bo_ghi_dong_va_module_do(self):
         p = chay_lenh(self.goc, "tron-bo")
         self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
-        self.assertIn("Ran 9 tests", p.stderr)
+        self.assertIn("1 failed, 8 passed", p.stderr)
         rows = doc_so(self.goc)
         tron = [r for r in rows if r["kind"] == "tron-bo"]
         self.assertEqual(len(tron), 1)
@@ -596,7 +597,9 @@ class So(unittest.TestCase):
         ghi(self.goc, "tests/test_hong.py", "import khong_ton_tai_xyz\n")
         chay_lenh(self.goc, "tron-bo")
         dong = [r for r in doc_so(self.goc) if r["kind"] == "tron-bo"][-1]
-        self.assertEqual(dong["failed_modules"], ["test_b.py", "test_hong.py"])
+        self.assertEqual(dong["failed_modules"], ["test_hong.py"])
+        self.assertEqual(dong["status"], "ERROR")
+        self.assertNotIn("execution", dong["process"])
 
     def test_so_bo_sot_khi_module_do_chua_tung_duoc_chon(self):
         ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
@@ -917,9 +920,9 @@ class IndirectSelection(unittest.TestCase):
         self.assertEqual(run.returncode, 1)
         row = doc_so(self.goc)[-1]
         self.assertEqual(row["failed_modules"],
-                         ["right/test_same.py", "test_facade.py"])
+                         ["ignored/test_uncollected.py", "right/test_same.py", "test_facade.py"])
         self.assertIn("left/test_same.py", row["modules"])
-        self.assertNotIn("ignored/test_uncollected.py", row["modules"])
+        self.assertIn("ignored/test_uncollected.py", row["modules"])
         self.assertIn("ignored/test_uncollected.py", row["selected_modules"])
 
     def test_unexpected_success_remains_failure_in_ledger(self):
@@ -938,10 +941,10 @@ class BackendResults(unittest.TestCase):
     """Mock process boundaries, keeping the runner/parser/ledger real."""
 
     PASS_XML = ('<testsuite tests="1" failures="0" errors="0" skipped="0">'
-                '<testcase classname="test_backend.T" name="test_ok"/>'
+                '<testcase classname="tests.test_backend.T" name="test_ok"/>'
                 '</testsuite>')
     FAIL_XML = ('<testsuite tests="1" failures="1" errors="0" skipped="0">'
-                '<testcase classname="test_backend.T" name="test_bad[a-b]">'
+                '<testcase classname="tests.test_backend.T" name="test_bad[a-b]">'
                 '<failure>assertion</failure></testcase></testsuite>')
 
     def setUp(self):
@@ -960,24 +963,71 @@ class BackendResults(unittest.TestCase):
             lambda: sys.path.__setitem__(slice(None), self.saved_path))
 
     def process(self, xml, exit_code, output=""):
-        def run(command, **kwargs):
+        def run(job, command, *, phase):
             report = next(arg.split("=", 1)[1] for arg in command
                           if arg.startswith("--junitxml="))
             self.assertFalse(os.path.exists(report))
-            self.paths.append(report)
-            self.assertEqual(command[command.index("-n") + 1], "auto")
-            self.assertNotIn("timeout", kwargs)
-            if xml is not None:
+            collecting = phase == "collection"
+            self.assertEqual(command[command.index("-n") + 1], "0" if collecting else "2")
+            self.assertGreater(job.deadline, time.monotonic())
+            if not collecting:
+                self.paths.append(report)
+            if xml is not None and not collecting:
                 with open(report, "w", encoding="utf-8") as target:
                     target.write(xml)
-            return subprocess.CompletedProcess(command, exit_code, output, "")
+            self.sidecar(job, xml, exit_code, collecting)
+            return self.process_record(0 if collecting else exit_code, output)
         return run
 
+    def process_record(self, code, output="", reason="exited"):
+        return {"exit_code": code, "stdout": output, "stderr": "", "reason": reason,
+                "timed_out": reason == "timeout", "cancelled": reason == "cancelled",
+                "cleanup_complete": True, "duration_seconds": 0.01,
+                "execute_seconds": 0.005, "cleanup_seconds": 0.005,
+                "ownership": {"verified": True}}
+
+    def case_phases(self, outcome):
+        phases = [{"phase": name, "outcome": "pass", "reason": "", "duration_seconds": 0.01}
+                  for name in ("setup", "call", "teardown")]
+        phases[1]["outcome"] = outcome
+        if outcome == "error":
+            phases = [dict(phases[0], outcome="error"), phases[2]]
+        return phases
+
+    def sidecar(self, job, xml, exit_code, collecting):
+        identifier = "tests/test_backend.py::T::test_ok"
+        outcome = "pass"
+        if xml and "test_bad" in xml:
+            identifier = "tests/test_backend.py::T::test_bad[a-b]"
+            outcome = "fail"
+        if xml and "<error>" in xml:
+            outcome = "error"
+        manifest = tdq_test.tdq_test_manifest.make_manifest(
+            [identifier], selectors=["tests"], scope="full")
+        cases = [{"case_id": identifier, "outcome": outcome, "reason": "",
+                  "capability": None, "phases": self.case_phases(outcome), "subtests": []}]
+        if collecting or (xml and xml != "<broken"):
+            value = {"schema_version": 1, "manifest": manifest,
+                     "outcomes": [] if collecting else cases,
+                     "completed": not collecting, "exit_code": 0 if collecting else exit_code}
+            with open(job.env["TDQ_TEST_MANIFEST_OUTPUT"], "w", encoding="utf-8") as target:
+                json.dump(value, target)
+
     def run_parallel(self, process):
+        if isinstance(process, BaseException):
+            error = process
+            def process(job, command, *, phase):
+                if phase == "collection":
+                    self.sidecar(job, self.PASS_XML, 0, True)
+                    return self.process_record(0)
+                if isinstance(error, OSError):
+                    raise error
+                output = tdq_test._partial_output(error)
+                reason = "cancelled" if isinstance(error, KeyboardInterrupt) else "timeout"
+                return self.process_record(None, output, reason)
         with mock.patch.object(tdq_test.importlib.util, "find_spec",
                                return_value=object()):
-            with mock.patch.object(tdq_test.subprocess, "run",
-                                   side_effect=process):
+            with mock.patch.object(tdq_test.IsolatedJob, "run", new=process):
                 with mock.patch.object(tdq_test, "chay_module_result",
                                        side_effect=AssertionError("fallback")):
                     return tdq_test.chay_tron_bo_result(
@@ -993,10 +1043,11 @@ class BackendResults(unittest.TestCase):
     def test_report_is_unique_and_never_reused_after_green_run(self):
         first = self.run_parallel(self.process(self.PASS_XML, 0))
         second = self.run_parallel(self.process(None, 0))
-        self.assertEqual(first["status"], "PASS")
+        self.assertEqual(first["status"], "PASS", first)
         self.assertEqual(second["status"], "INCOMPLETE")
         self.assertEqual(len(set(self.paths)), 2)
-        self.assertTrue(all(not os.path.exists(path) for path in self.paths))
+        self.assertTrue(os.path.isfile(self.paths[0]))
+        self.assertFalse(os.path.exists(self.paths[1]))
 
     def test_missing_and_malformed_report_never_fall_back(self):
         for xml in (None, "<broken"):
@@ -1037,8 +1088,9 @@ class BackendResults(unittest.TestCase):
                 result = tdq_test.chay_tron_bo_result(
                     self.goc, stream=io.StringIO(), parallel=True)
         process.assert_not_called()
-        self.assertEqual(result["backend"], "unittest")
-        self.assertEqual(result["status"], "PASS")
+        # Historical nodeid retained; full mixed collection now fails closed.
+        self.assertEqual(result["backend"], "pytest")
+        self.assertEqual(result["status"], "ERROR")
         self.assertIn("before launch", result["reason"])
 
     def test_legacy_wrappers_reject_empty_execution(self):
@@ -1052,8 +1104,8 @@ class BackendResults(unittest.TestCase):
         output = io.StringIO()
         with mock.patch.object(tdq_test.importlib.util, "find_spec",
                                return_value=object()):
-            with mock.patch.object(tdq_test.subprocess, "run",
-                                   side_effect=self.process(None, 0)):
+            with mock.patch.object(tdq_test.IsolatedJob, "run",
+                                   new=self.process(None, 0)):
                 with redirect_stdout(output), redirect_stderr(io.StringIO()):
                     exit_code = tdq_test.cmd_tron_bo(args)
         self.assertEqual(exit_code, 1)

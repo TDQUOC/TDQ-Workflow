@@ -1,0 +1,43 @@
+{
+  "discovered_cases": 3206,
+  "declared_skips": [
+    {
+      "id": "test_codex_run.CodexHomeProviderTest.test_auth_json_lay_tu_nguon_quyen_600",
+      "reason": "POSIX permission bits do not exist on Windows: os.chmod only toggles the read-only attribute and stat.S_IMODE always reports 0o666/0o777, so the case can only ever fail there. The product still calls chmod (harmless, and correct everywhere else); expressing this restriction on Windows would mean ACLs, a mechanism the product does not use. The guarantee stays covered on macOS and Linux."
+    },
+    {
+      "id": "test_codex_run.CodexHomeTest.test_thu_muc_tam_quyen_700",
+      "reason": "POSIX permission bits do not exist on Windows: os.chmod only toggles the read-only attribute and stat.S_IMODE always reports 0o666/0o777, so the case can only ever fail there. The product still calls chmod (harmless, and correct everywhere else); expressing this restriction on Windows would mean ACLs, a mechanism the product does not use. The guarantee stays covered on macOS and Linux."
+    },
+    {
+      "id": "test_skill_tokens.DoMoTaTest.test_bang_co_ca_cot_token_va_cot_muc",
+      "reason": "venv .venv-tokens chưa cài anthropic-tokenizer"
+    },
+    {
+      "id": "test_skill_tokens.DoMoTaTest.test_so_skill_khop_dung_skill_inventory",
+      "reason": "venv .venv-tokens chưa cài anthropic-tokenizer"
+    },
+    {
+      "id": "test_skill_tokens.DoMoTaTest.test_token_chi_giu_ten_luon_nho_hon_token_mo_ta",
+      "reason": "venv .venv-tokens chưa cài anthropic-tokenizer"
+    },
+    {
+      "id": "test_skill_tokens.DoTheoPhaseTest.test_in_du_sau_khoi_va_thoat_0",
+      "reason": "venv .venv-tokens chưa cài anthropic-tokenizer"
+    },
+    {
+      "id": "test_skill_tokens.DoTheoPhaseTest.test_khai_ro_la_tran_tren_chu_khong_phai_so_that",
+      "reason": "venv .venv-tokens chưa cài anthropic-tokenizer"
+    },
+    {
+      "id": "test_skill_tokens.KhungTest.test_log_bat_mac_dinh_va_tat_duoc",
+      "reason": "venv .venv-tokens chưa cài anthropic-tokenizer"
+    },
+    {
+      "id": "test_team_mode.VaLuoiWorktreeTest.test_git_tu_choi_khong_phai_khoa_thi_khong_dan_nhan_khoa",
+      "reason": "the case needs a directory git cannot write into, and it builds one with os.chmod(0o500). On Windows chmod only toggles the read-only ATTRIBUTE, which applies to files and not to directory creation, so git removes the worktree anyway and the case asserts a message that could never appear. Denying a directory there means an ACL edit (icacls), a different mechanism the product does not depend on. The behaviour under test — labelling a permission error as a lock — is host-independent and stays covered on macOS and Linux."
+    }
+  ],
+  "declared_skip_count": 9,
+  "method": "discovery only, no test execution"
+}

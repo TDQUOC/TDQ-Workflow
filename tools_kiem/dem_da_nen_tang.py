@@ -9,7 +9,7 @@ Năm khoá đầu ra:
   subprocess_thieu_encoding — gọi subprocess có text=True (hoặc universal_newlines=True)
                               mà không khai encoding=; trên Windows sẽ giải mã theo code page.
   open_thieu_encoding       — open() chế độ văn bản không khai encoding=; cùng hậu quả.
-  import_chi_posix          — import stdlib chỉ tồn tại trên POSIX; mỗi cái là một lỗi cứng.
+  import_chi_posix          — số lần import stdlib chỉ có trên POSIX; cần xét guard hệ điều hành.
   goi_chmod                 — os.chmod: bit quyền POSIX, trên Windows gần như vô nghĩa.
   hook_goi_python3          — hook khai `command` gọi thẳng tên lệnh `python3`, tên mà
                               PowerShell thuần không phân giải được.
@@ -64,10 +64,11 @@ def _ten_ham(node):
 
 
 def _che_do_van_ban(node):
-    """open() ở chế độ văn bản? Không khai mode → mặc định 'r', là văn bản."""
+    """Builtin open nhận mode thứ hai; phương thức Path.open nhận mode đầu tiên."""
     mode = None
-    if len(node.args) >= 2 and isinstance(node.args[1], ast.Constant):
-        mode = node.args[1].value
+    vi_tri = 0 if isinstance(node.func, ast.Attribute) else 1
+    if len(node.args) > vi_tri and isinstance(node.args[vi_tri], ast.Constant):
+        mode = node.args[vi_tri].value
     for kw in node.keywords:
         if kw.arg == "mode" and isinstance(kw.value, ast.Constant):
             mode = kw.value.value

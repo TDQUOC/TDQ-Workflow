@@ -1,8 +1,11 @@
 """Pure, conservative result adapters for unittest and pytest JUnit reports."""
+from collections import Counter
 import posixpath
 import re
 import unittest
 import xml.etree.ElementTree as ET
+
+import tdq_test_manifest
 
 
 def _inventory_paths(inventory):
@@ -119,7 +122,8 @@ def _valid_count(value):
             and value >= 0)
 
 
-def from_unittest_result(result, inventory, *, exit_code=None):
+def from_unittest_result(result, inventory, *, exit_code=None, manifest=None,
+                         outcomes=None, completed=None):
     """Normalize a completed unittest TestResult without reading any files."""
     failures = _unittest_failures(result, _inventory_paths(inventory))
     count = getattr(result, "testsRun", None)
@@ -139,9 +143,11 @@ def from_unittest_result(result, inventory, *, exit_code=None):
     if (exit_code == 0) != successful:
         complete = False
         reasons.append("Exit code contradicts unittest result")
-    status = _status(failures, complete, tests_run, skipped, exit_code)
-    return _result("unittest", status, tests_run, skipped, failures, complete,
-                   exit_code, _reason(status, reasons))
+    expected_failures = len(getattr(result, "expectedFailures", []))
+    status = _status(failures, complete, tests_run, skipped + expected_failures, exit_code)
+    legacy = _result("unittest", status, tests_run, skipped, failures, complete,
+                     exit_code, _reason(status, reasons))
+    return _with_case_evidence(legacy, manifest, outcomes, inventory, completed)
 
 
 def _tag(element):
@@ -182,8 +188,11 @@ def _xml_counts(element):
     return counts
 
 
-def _counter_issues(element):
+def _counter_issues(element, expected=None):
     counts = _xml_counts(element)
+    if expected is not None:
+        keys = {_xml_case_key(case) for case in element.iter() if _tag(case) == "testcase"}
+        counts["tests"] = sum(expected.get(key, {}).get("tests", 1) for key in keys)
     issues = []
     required = _tag(element) == "testsuite"
     for key, actual in counts.items():
@@ -197,7 +206,7 @@ def _counter_issues(element):
     return issues
 
 
-def _read_cases(root, inventory):
+def _read_cases(root, inventory, structured=False):
     failures, skipped, tests_run, issues = [], 0, 0, []
     for case in root.iter():
         if _tag(case) != "testcase":
@@ -206,7 +215,7 @@ def _read_cases(root, inventory):
         failures.extend(found)
         skipped += skipped_count
         tests_run += 1
-        if len(outcomes) > 1:
+        if len(outcomes) > 1 and not structured:
             issues.append("JUnit testcase has contradictory outcomes")
         if not case.get("name"):
             issues.append("JUnit testcase is missing its test name")
@@ -217,7 +226,7 @@ def _read_cases(root, inventory):
     return failures, tests_run, skipped, issues
 
 
-def _xml_report(xml_text, inventory):
+def _xml_report(xml_text, inventory, expected=None):
     if not xml_text:
         return [], 0, 0, ["JUnit report is missing or empty"]
     try:
@@ -227,13 +236,15 @@ def _xml_report(xml_text, inventory):
     if _tag(root) not in {"testsuite", "testsuites"}:
         return [], 0, 0, ["Unexpected JUnit root element"]
     suites = [item for item in root.iter() if _tag(item) == "testsuite"]
-    failures, tests_run, skipped, issues = _read_cases(root, inventory)
+    failures, tests_run, skipped, issues = _read_cases(root, inventory, expected is not None)
+    if expected is not None:
+        issues.extend(_junit_parity_issues(root, expected))
     if not suites:
         issues.append("JUnit report has no test suite")
     for suite in suites:
-        issues.extend(_counter_issues(suite))
+        issues.extend(_counter_issues(suite, expected))
     if _tag(root) == "testsuites":
-        issues.extend(_counter_issues(root))
+        issues.extend(_counter_issues(root, expected))
     return failures, tests_run, skipped, issues
 
 
@@ -314,15 +325,195 @@ def _reason(status, issues):
             "INCOMPLETE": "No non-skipped test execution"}[status]
 
 
-def from_junit_xml(xml_text, exit_code, inventory, *, output=""):
+def _xml_case_key(case):
+    return case.get("classname", ""), case.get("name", "")
+
+
+def _junit_case_key(identifier):
+    # Match pytest's mangle_test_address without normalizing parameter contents.
+    address, bracket, parameters = identifier.partition("[")
+    names = address.split("::")
+    names[0] = names[0].replace("/", ".").removesuffix(".py")
+    names[-1] += bracket + parameters
+    illegal = "[^\\u0009\\u000a\\u000d\\u0020-\\u007e\\u0080-\\ud7ff\\ue000-\\ufffd\\U00010000-\\U0010ffff]"
+    name = re.sub(illegal, lambda match: f"#x{ord(match.group()):02X}", names[-1])
+    return ".".join(names[:-1]), name
+
+
+def _junit_event(report):
+    status = report["outcome"]
+    if status == "pass":
+        return "pass" if report["phase"] == "call" else None
+    if status == "xpass":
+        return "failure" if report["reason"].startswith("[XPASS(strict)]") else "pass"
+    return {"fail": "failure", "error": "error", "skip": "skip", "xfail": "xfail"}[status]
+
+
+def _junit_case_model(case):
+    reports = case["phases"] + case["subtests"]
+    events = Counter(event for report in reports if (event := _junit_event(report)) is not None)
+    teardown_error = any(item["phase"] == "teardown" and item["outcome"] == "error"
+                         for item in case["phases"])
+    call_failure = any(item["phase"] == "call" and _junit_event(item) == "failure" for item in reports)
+    # Pytest emits a second node for call failure + teardown error, otherwise
+    # teardown error shares the existing node and reduces its event counter once.
+    split = teardown_error and call_failure
+    correction = int(teardown_error and not split and sum(events.values()) > 1)
+    tests = sum(events.values()) - correction
+    events.pop("pass", None)
+    return {"tags": events, "rows": 2 if split else 1, "tests": tests,
+            "file": case["case_id"].partition("::")[0]}
+
+
+def _junit_expected(manifest, outcomes, completed, exit_code):
+    if manifest is None and outcomes is None:
+        return None, []
+    coverage = tdq_test_manifest.reconcile_cases(manifest, outcomes,
+        completed=completed if completed is not None else True, exit_code=exit_code)
+    if not coverage["complete"]:
+        return None, []  # The authoritative adapter already rejects incomplete evidence.
+    expected = {}
+    for case in outcomes:
+        key = _junit_case_key(case["case_id"])
+        if key in expected:
+            return None, ["JUnit case identity is ambiguous after pytest serialization"]
+        expected[key] = _junit_case_model(case)
+    return expected, []
+
+
+def _junit_tags(cases):
+    tags = Counter()
+    for case in cases:
+        for child in case:
+            tag = _tag(child)
+            if tag == "skipped":
+                tags["xfail" if child.get("type") == "pytest.xfail" else "skip"] += 1
+            elif tag in {"error", "failure"}:
+                tags[tag] += 1
+    return tags
+
+
+def _junit_parity_issues(root, expected):
+    observed = {}
+    for case in root.iter():
+        if _tag(case) == "testcase":
+            observed.setdefault(_xml_case_key(case), []).append(case)
+    issues = []
+    if observed.keys() != expected.keys():
+        issues.append("JUnit/sidecar case identities differ (missing or extra cases)")
+    for key in observed.keys() & expected.keys():
+        model = expected[key]
+        if len(observed[key]) != model["rows"]:
+            issues.append("JUnit/sidecar testcase multiplicity differs: " + repr(key))
+        if _junit_tags(observed[key]) != model["tags"]:
+            issues.append("JUnit/sidecar outcomes differ: " + repr(key))
+        for case in observed[key]:
+            if case.get("file") and _file_module(case.get("file"), [model["file"]]) is None:
+                issues.append("JUnit file contradicts case identity: " + repr(key))
+    return issues
+
+
+def from_junit_xml(xml_text, exit_code, inventory, *, output="", manifest=None,
+                   outcomes=None, completed=None):
     """Reconcile pytest XML, process exit, and supplemental failure text."""
     inventory = _inventory_paths(inventory)
-    failures, tests_run, skipped, issues = _xml_report(xml_text, inventory)
+    expected, parity_issues = _junit_expected(manifest, outcomes, completed, exit_code)
+    failures, tests_run, skipped, issues = _xml_report(xml_text, inventory, expected)
+    issues.extend(parity_issues)
     supplemental = _output_failures(output, inventory)
     if _append_output_failures(failures, supplemental):
         issues.append("Output contains failure details absent from JUnit")
     _reconcile_exit(failures, exit_code, issues)
     complete = not issues
     status = _status(failures, complete, tests_run, skipped, exit_code)
-    return _result("pytest", status, tests_run, skipped, failures, complete,
-                   exit_code, _reason(status, issues))
+    legacy = _result("pytest", status, tests_run, skipped, failures, complete,
+                     exit_code, _reason(status, issues))
+    return _with_case_evidence(legacy, manifest, outcomes, inventory, completed,
+                               reconciled_junit=expected is not None and not issues)
+
+
+def _case_failures(outcomes, inventory):
+    failures = []
+    if not isinstance(outcomes, list):
+        return failures
+    kinds = {"fail": "failure", "error": "error", "xpass": "unexpected_success"}
+    for case in outcomes:
+        if not isinstance(case, dict) or not isinstance(case.get("outcome"), str):
+            continue
+        if case["outcome"] not in kinds:
+            continue
+        identifier = case.get("case_id")
+        if not isinstance(identifier, str):
+            identifier = "<unknown-case>"
+        failures.append(_failure(identifier, kinds[case["outcome"]],
+                                 str(case.get("reason") or case["outcome"]), inventory))
+    return failures
+
+
+def _collection_failures(manifest, inventory):
+    if not isinstance(manifest, dict) or not isinstance(manifest.get("diagnostics"), list):
+        return []
+    failures = []
+    for diagnostic in manifest["diagnostics"]:
+        if isinstance(diagnostic, dict) and diagnostic.get("kind") == "collection_error":
+            identifier = diagnostic.get("nodeid") or "<collection>"
+            failures.append(_failure(str(identifier), "error",
+                                     str(diagnostic.get("message", "Collection error")), inventory))
+    return failures
+
+
+def from_case_evidence(manifest, outcomes, exit_code, inventory, *, completed=True):
+    """Certify a job from exact identities and outcomes, without JUnit's lossy XPASS encoding."""
+    inventory = _inventory_paths(inventory)
+    coverage = tdq_test_manifest.reconcile_cases(manifest, outcomes,
+                                                completed=completed, exit_code=exit_code)
+    failures = _case_failures(outcomes, inventory) + _collection_failures(manifest, inventory)
+    issues = list(coverage["diagnostics"])
+    # Pytest deliberately exits zero for non-strict XPASS; TDQ still rejects it.
+    only_xpass = failures and all(item["kind"] == "unexpected_success" for item in failures)
+    if not (exit_code == 0 and type(exit_code) is int and only_xpass):
+        _reconcile_exit(failures, exit_code, issues)
+    complete = coverage["complete"] and not issues
+    counts = coverage["counts"]
+    tests_run = len(set(coverage["observed"]))
+    status = _status(failures, complete, tests_run,
+                     tests_run - counts["pass"], exit_code)
+    backend = manifest.get("backend", "pytest") if isinstance(manifest, dict) else "pytest"
+    actual = _result(backend, status, tests_run, counts["skip"], failures,
+                     complete, exit_code, _reason(status, issues))
+    actual.update(manifest=manifest, case_outcomes=outcomes, coverage=coverage,
+                  action="executed", source_receipt_id=None,
+                  timings={"verify_seconds": 0.0, "wait_seconds": 0.0,
+                           "execute_seconds": 0.0})
+    return actual
+
+
+def _retain_legacy_failures(actual, legacy, reconciled_junit=False):
+    added = _append_output_failures(actual["failures"], legacy["failures"])
+    if added and not reconciled_junit:
+        actual["details_complete"] = False
+        actual["coverage"]["complete"] = False
+        actual["coverage"]["diagnostics"].append("Legacy failures absent from case evidence")
+    actual["failed_modules"] = sorted({item["module"] for item in actual["failures"]
+                                       if item["module"] is not None})
+    actual["unmapped_failures"] = [item for item in actual["failures"] if item["module"] is None]
+    # Missing completion evidence cannot erase an already observed failure.
+    # Preserve ERROR from either source; the caller only supplies FAIL/ERROR.
+    if actual["status"] != "ERROR":
+        actual["status"] = legacy["status"]
+
+
+def _with_case_evidence(legacy, manifest, outcomes, inventory, completed, *, reconciled_junit=False):
+    if manifest is None and outcomes is None:
+        return legacy
+    actual = from_case_evidence(manifest, outcomes, legacy["exit_code"], inventory,
+                                completed=completed if completed is not None else True)
+    if legacy["status"] in {"FAIL", "ERROR"}:
+        _retain_legacy_failures(actual, legacy, reconciled_junit)
+    if not legacy["details_complete"] or actual["unmapped_failures"]:
+        actual["details_complete"] = False
+        actual["coverage"]["complete"] = False
+        actual["reason"] += "; Legacy report incomplete: " + legacy["reason"]
+        if actual["status"] == "PASS":
+            actual["status"] = "INCOMPLETE"
+    return actual

@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "all_local_links_exist": true,
+    "no_external_assets": true,
+    "critical_results_present": true,
+    "full_rendered_markdown_included": true,
+    "responsive_table_wrappers": true
+  },
+  "missing_links": [],
+  "links": 17,
+  "markdown_sha256": "cb320248181ae1de5af5bbfa8ccced4a6e5a1f9da310e9cb352f2718312daf58",
+  "html_sha256": "6359958fb3858227b1e28b46bfa0fbf89b0aeb0331faee01b03ebdb0f36e942b",
+  "validation_scope": "Static structure/content/link checks; no fresh browser screenshot for this supplemental report"
+}

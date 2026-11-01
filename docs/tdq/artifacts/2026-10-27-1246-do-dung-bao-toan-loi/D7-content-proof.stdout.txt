@@ -1,0 +1,23 @@
+{
+  "checks": {
+    "full_counts_and_exit": true,
+    "pytest_counts_and_exit": true,
+    "full_duration_matches_report": true,
+    "supplement_duration_matches_report": true,
+    "combined_inventory_167": true,
+    "ledger_history_preserved": true,
+    "timing_stdout_verbatim": true,
+    "preview_binding_and_source_drift_explicit": true,
+    "preview_html_hash_unchanged": true,
+    "same_source_head": true,
+    "same_all_342_source_hashes": true,
+    "user_config_still_restored": true,
+    "all_links_readable_nonempty": true,
+    "limits_not_hidden": true
+  },
+  "linked_content_count": 64,
+  "missing_links": [],
+  "source_head": "d1b90b825596e84aba7136b02a545bc2fa06c21a",
+  "report_sha256": "4afc72e6049d0dda30c5b8dfd75a82c2b9e3acc5df0bdf5bec21a42639510c34",
+  "qc_sha256": "26c5aa45b363e07f92a4630d4ffc628559a8e7ec8ddc1adb03a4fbf56863b013"
+}

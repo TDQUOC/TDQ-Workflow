@@ -1,0 +1,308 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Đợt 1 — Thiết kế dự kiến",
+    "locale": "vi",
+    "quality_profile": "showcase",
+    "output": "docs/tdq/spec/2026-10-27-1246-do-dung-bao-toan-loi-preview.html",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "external": {
+          "label": "Đầu vào cục bộ"
+        },
+        "backend": {
+          "label": "Xử lý dữ liệu"
+        },
+        "security": {
+          "label": "Kiểm bằng chứng"
+        },
+        "database": {
+          "label": "Kết quả và sổ"
+        },
+        "messagebus": {
+          "label": "Sự kiện chuẩn hóa"
+        },
+        "frontend": {
+          "label": "Giao diện CLI"
+        },
+        "cloud": {
+          "label": "Nguồn host"
+        }
+      }
+    },
+    "translations": {
+      "viewer.kind.workflow": "Luồng dự kiến",
+      "viewer.kind.architecture": "Kiến trúc",
+      "viewer.kind.external": "Đầu vào cục bộ",
+      "legend.architecture.external": "Đầu vào cục bộ",
+      "legend.workflow.external": "Đầu vào cục bộ",
+      "viewer.kind.backend": "Xử lý dữ liệu",
+      "legend.architecture.backend": "Xử lý dữ liệu",
+      "legend.workflow.backend": "Xử lý dữ liệu",
+      "viewer.kind.security": "Kiểm bằng chứng",
+      "legend.architecture.security": "Kiểm bằng chứng",
+      "legend.workflow.security": "Kiểm bằng chứng",
+      "viewer.kind.database": "Kết quả và sổ",
+      "legend.architecture.database": "Kết quả và sổ",
+      "legend.workflow.database": "Kết quả và sổ",
+      "viewer.kind.messagebus": "Sự kiện chuẩn hóa",
+      "legend.architecture.messagebus": "Sự kiện chuẩn hóa",
+      "legend.workflow.messagebus": "Sự kiện chuẩn hóa",
+      "viewer.kind.frontend": "Giao diện CLI",
+      "legend.architecture.frontend": "Giao diện CLI",
+      "legend.workflow.frontend": "Giao diện CLI",
+      "viewer.kind.cloud": "Nguồn host",
+      "legend.architecture.cloud": "Nguồn host",
+      "legend.workflow.cloud": "Nguồn host"
+    }
+  },
+  "lanes": [
+    {
+      "id": "timing",
+      "label": "Đo thời gian"
+    },
+    {
+      "id": "uncertainty",
+      "label": "Thiếu bằng chứng",
+      "variant": "exception"
+    },
+    {
+      "id": "testing",
+      "label": "Kiểm thử"
+    }
+  ],
+  "mainPath": [
+    "logs",
+    "identity",
+    "pairing",
+    "union",
+    "timing_record"
+  ],
+  "nodes": [
+    {
+      "id": "logs",
+      "lane": "timing",
+      "col": 0,
+      "type": "external",
+      "label": "Log host",
+      "sublabel": "Claude / Codex"
+    },
+    {
+      "id": "identity",
+      "lane": "timing",
+      "col": 1,
+      "type": "security",
+      "label": "Đúng nguồn",
+      "sublabel": "project + session"
+    },
+    {
+      "id": "pairing",
+      "lane": "timing",
+      "col": 2,
+      "type": "messagebus",
+      "label": "Ghép ID",
+      "sublabel": "start / end"
+    },
+    {
+      "id": "union",
+      "lane": "timing",
+      "col": 3,
+      "type": "backend",
+      "label": "Hợp khoảng",
+      "sublabel": "cắt theo phase"
+    },
+    {
+      "id": "timing_record",
+      "lane": "timing",
+      "col": 4,
+      "type": "database",
+      "label": "Timing v2",
+      "sublabel": "số đo + chất lượng"
+    },
+    {
+      "id": "unknown",
+      "lane": "uncertainty",
+      "col": 2,
+      "type": "security",
+      "label": "Chưa đủ dữ liệu",
+      "sublabel": "partial / unavailable"
+    },
+    {
+      "id": "changes",
+      "lane": "testing",
+      "col": 0,
+      "type": "external",
+      "label": "File thay đổi",
+      "sublabel": "hoặc toàn suite"
+    },
+    {
+      "id": "selection",
+      "lane": "testing",
+      "col": 1,
+      "type": "backend",
+      "label": "Chọn test",
+      "sublabel": "direct → bắc cầu"
+    },
+    {
+      "id": "runner",
+      "lane": "testing",
+      "col": 2,
+      "type": "backend",
+      "label": "Chạy test",
+      "sublabel": "unittest / pytest"
+    },
+    {
+      "id": "verdict",
+      "lane": "testing",
+      "col": 3,
+      "type": "security",
+      "label": "Đối chiếu",
+      "sublabel": "exit + report + count"
+    },
+    {
+      "id": "ledger",
+      "lane": "testing",
+      "col": 4,
+      "type": "database",
+      "label": "Sổ kết quả",
+      "sublabel": "verdict + lỗi + scope"
+    }
+  ],
+  "edges": [
+    {
+      "id": "read",
+      "from": "logs",
+      "to": "identity"
+    },
+    {
+      "id": "accept",
+      "from": "identity",
+      "to": "pairing",
+      "label": "khớp"
+    },
+    {
+      "id": "intervals",
+      "from": "pairing",
+      "to": "union",
+      "label": "có cặp"
+    },
+    {
+      "id": "save_timing",
+      "from": "union",
+      "to": "timing_record"
+    },
+    {
+      "id": "source_unknown",
+      "from": "identity",
+      "to": "unknown",
+      "role": "error",
+      "variant": "security",
+      "label": "thiếu/sai"
+    },
+    {
+      "id": "pair_unknown",
+      "from": "pairing",
+      "to": "unknown",
+      "role": "branch",
+      "variant": "security",
+      "label": "thiếu mốc"
+    },
+    {
+      "id": "quality",
+      "from": "unknown",
+      "to": "timing_record",
+      "role": "branch",
+      "variant": "security",
+      "label": "ghi lý do"
+    },
+    {
+      "id": "select",
+      "from": "changes",
+      "to": "selection"
+    },
+    {
+      "id": "execute",
+      "from": "selection",
+      "to": "runner",
+      "label": "có test"
+    },
+    {
+      "id": "empty",
+      "from": "selection",
+      "to": "verdict",
+      "role": "branch",
+      "variant": "security",
+      "label": "còn rỗng"
+    },
+    {
+      "id": "result",
+      "from": "runner",
+      "to": "verdict"
+    },
+    {
+      "id": "save_test",
+      "from": "verdict",
+      "to": "ledger"
+    }
+  ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "logs",
+      "changes"
+    ],
+    "allowedTerminals": [
+      "timing_record",
+      "ledger"
+    ],
+    "requiredPaths": [
+      {
+        "from": "logs",
+        "to": "timing_record"
+      },
+      {
+        "from": "changes",
+        "to": "ledger"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Thiết kế chờ duyệt",
+      "items": [
+        "Chưa sửa mã runtime; sơ đồ mô tả hành vi đề xuất trong spec v1.0.",
+        "Hai nhánh độc lập: xem/đóng timing và chạy kiểm thử.",
+        "Lọc đúng project chưa chứng minh mọi phiên thuộc riêng request: tự dò ghi project_window."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Đo đúng phạm vi",
+      "items": [
+        "API là khoảng host quan sát, không phải thời gian GPU. Codex thiếu mốc API thì chưa xác định.",
+        "Tool trả job nền không có nghĩa job đã xong; thiếu mốc hoàn tất giữ quality chưa đầy đủ.",
+        "Hợp khoảng chống cộng lặp; phần còn lại là chưa phân loại, không tự gọi là chờ user."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Không làm mất lỗi",
+      "items": [
+        "Source direct rỗng: thử bắc cầu rồi fallback full; vẫn thiếu test → INCOMPLETE.",
+        "No-op tài liệu → SKIP. Có lỗi → FAIL/ERROR; timeout, report hỏng hoặc chỉ skip không PASS.",
+        "Giữ lỗi chưa ánh xạ; đọc XML pytest và đối chiếu exit code, không chỉ cắt chuỗi màn hình."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Nghiệm thu đợt 1",
+      "items": [
+        "QC Full: DoD + toàn unit suite + hồi quy vùng chạm + kiến trúc và clean code.",
+        "Direct xanh chỉ chứng minh tập đã chạy; test gián tiếp đỏ phải bị bắt ở QC.",
+        "Giữ lịch sử cũ và đóng sổ một lần; chưa tăng worker, tái dùng PASS hoặc hứa mức tăng tốc."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "scratch": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-phase1-analysis-_hfunkev",
+  "source_repo": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "timing": {
+    "gap_120_reported_model_seconds": 120.0,
+    "gap_360_reported_model_seconds": 0.0
+  },
+  "transcript": {
+    "generated": "C:\\Users\\admin\\.claude\\projects\\-Users-admin-Documents-Projects-ForAgentCode-TDQ-Workflow",
+    "generated_exists": false,
+    "actual": "C:\\Users\\admin\\.claude\\projects\\C--Users-admin-Documents-Projects-ForAgentCode-TDQ-Workflow",
+    "actual_exists": true
+  },
+  "selection": {
+    "direct": [],
+    "transitive": [
+      "test_facade.py"
+    ],
+    "implement_cli_exit": 0,
+    "implement_cli_output": "[2026-10-27T12:53:44+07:00] tdq_test: vung-cham files=1 modules=0/1 fallback=none ok=True seconds=0.0\n[TDQ:TEST] PASS — 0 modules tested in 0.0s.\n"
+  },
+  "actual_test": {
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--tb=line",
+      "--junitxml",
+      "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-phase1-analysis-_hfunkev\\results.xml",
+      "tests"
+    ],
+    "exit_code": 1,
+    "junit": [
+      {
+        "classname": "tests.test_facade.TestFacade",
+        "name": "test_value",
+        "time": "0.001",
+        "failures": 1,
+        "errors": 0
+      }
+    ]
+  },
+  "current_parallel_parser": {
+    "ok": false,
+    "failed_modules": []
+  }
+}

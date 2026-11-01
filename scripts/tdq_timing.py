@@ -219,7 +219,8 @@ def _phase_totals(windows, intervals, qualities, diagnostics):
     return list(groups.values())
 
 
-def tong_hop(state, ket_thuc, transcript_dir=None, *, project_dir=None, host="auto", session_ids=None):
+def tong_hop(state, ket_thuc, transcript_dir=None, *, project_dir=None, host="auto", session_ids=None,
+             cache="off", cache_stats=None):
     """Return timing v2; retain the legacy positional caller and never write state."""
     if not state.get("active_request"):
         return None
@@ -227,7 +228,8 @@ def tong_hop(state, ket_thuc, transcript_dir=None, *, project_dir=None, host="au
     diagnostics = []
     windows = cua_so_phase(state, ket_thuc, diagnostics)
     source = read_transcripts(project_dir or tdq_state.resolve_project_dir(), transcript_dir,
-                              host=host, session_ids=session_ids)
+                              host=host, session_ids=session_ids, cache=cache,
+                              request_id=state["active_request"], cache_stats=cache_stats)
     intervals = _prepared_intervals(source["spans"])
     wall = None
     if start is not None and end is not None and end >= start:
@@ -365,6 +367,8 @@ def main(argv=None):
     parser.add_argument("--project", help="project folder, defaults to TDQ_PROJECT_DIR/git root")
     parser.add_argument("--host", choices=("auto", "claude", "codex"), default="auto")
     parser.add_argument("--session-id", action="append", default=[], help="select a session; repeatable")
+    parser.add_argument("--transcript-cache", choices=("off", "auto"), default="off",
+                        help="request-local normalized parse cache (default: off)")
     args = parser.parse_args(argv)
 
     cwd = args.project or tdq_state.resolve_project_dir()
@@ -381,7 +385,7 @@ def main(argv=None):
         return 0
 
     so_lieu = tong_hop(state, ket_thuc, args.transcript_dir, project_dir=cwd,
-                       host=args.host, session_ids=args.session_id)
+                       host=args.host, session_ids=args.session_id, cache=args.transcript_cache)
 
     if args.cmd == "close":
         dong_so(cwd, so_lieu)

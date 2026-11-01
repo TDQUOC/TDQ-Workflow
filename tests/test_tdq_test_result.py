@@ -1,5 +1,6 @@
 """Test result contracts using real unittest results and minimal JUnit XML."""
 import io
+from copy import deepcopy
 import os
 import sys
 import unittest
@@ -9,6 +10,7 @@ from helper import ROOT
 
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_test_result as results  # noqa: E402
+import tdq_test_manifest as manifests  # noqa: E402
 
 
 def junit(cases, **counters):
@@ -363,3 +365,155 @@ class EmptyResultTest(unittest.TestCase):
     def test_empty_constructor_rejects_pass(self):
         with self.assertRaises(ValueError):
             results.empty_result("pytest", "No tests", status="PASS")
+
+
+class CaseEvidenceTest(unittest.TestCase):
+    def parse(self, status, *, exit_code=0):
+        manifest = manifests.make_manifest(["test_sample.py::Sample::test_ok"])
+        outcomes = [{"case_id": manifest["case_ids"][0], "outcome": status,
+                     "reason": "fixture reason", "capability": None,
+                     "phases": [{"phase": phase, "outcome": status if phase == "call" else "pass",
+                                 "reason": "fixture reason", "duration_seconds": 0.0}
+                                for phase in ("setup", "call", "teardown")], "subtests": []}]
+        return results.from_case_evidence(manifest, outcomes, exit_code, ["test_sample.py"])
+
+    def test_additive_keys_keep_legacy_contract_and_explicit_accounting(self):
+        actual = self.parse("pass")
+        self.assertEqual(actual["status"], "PASS")
+        self.assertTrue(actual["details_complete"])
+        self.assertEqual(actual["tests_run"], 1)
+        self.assertEqual(actual["action"], "executed")
+        self.assertIsNone(actual["source_receipt_id"])
+        self.assertEqual(actual["timings"]["wait_seconds"], 0)
+        self.assertTrue(actual["coverage"]["complete"])
+
+    def test_skip_and_xfail_only_do_not_certify_pass(self):
+        for status in ("skip", "xfail"):
+            with self.subTest(status=status):
+                actual = self.parse(status)
+                self.assertEqual(actual["status"], "INCOMPLETE")
+                self.assertEqual(actual["coverage"]["counts"]["pass"], 0)
+
+    def test_xpass_is_failure_even_when_pytest_exit_is_zero(self):
+        actual = self.parse("xpass")
+        self.assertEqual(actual["status"], "FAIL")
+        self.assertTrue(actual["details_complete"], actual)
+        self.assertEqual(actual["failures"][0]["kind"], "unexpected_success")
+
+    def test_missing_evidence_cannot_become_pass_via_green_junit(self):
+        manifest = manifests.make_manifest(["test_sample.py::Sample::test_ok"])
+        actual = results.from_junit_xml(junit(JunitResultTest.PASS_CASE), 0,
+                                        ["test_sample.py"], manifest=manifest, outcomes=[])
+        self.assertEqual(actual["status"], "INCOMPLETE")
+        self.assertFalse(actual["coverage"]["complete"])
+
+    def test_interrupted_sidecar_keeps_known_output_failure(self):
+        manifest = manifests.make_manifest(["tests/test_backend.py::T::test_ok"],
+                                            selectors=["tests"], scope="full")
+        for label, expected in (("FAILED", "FAIL"), ("ERROR", "ERROR")):
+            with self.subTest(label=label):
+                actual = results.from_junit_xml(
+                    None, None, ["test_backend.py"],
+                    output=f"{label} tests/test_backend.py::T::test_bad - known failure",
+                    manifest=manifest, outcomes=[], completed=False)
+                self.assertEqual(actual["status"], expected)
+                self.assertFalse(actual["details_complete"])
+                self.assertFalse(actual["coverage"]["complete"])
+                self.assertEqual(actual["failed_modules"], ["test_backend.py"])
+                self.assertIn("known failure", actual["failures"][0]["message"])
+
+    def test_actual_error_dominates_supplemental_assertion_failure(self):
+        error = self.parse("error", exit_code=1)
+        actual = results.from_junit_xml(
+            None, None, ["test_sample.py"],
+            output="FAILED tests/test_sample.py::Sample::test_other - known assertion",
+            manifest=error["manifest"], outcomes=error["case_outcomes"], completed=False)
+        self.assertEqual(actual["status"], "ERROR")
+        self.assertEqual({failure["kind"] for failure in actual["failures"]},
+                         {"error", "failure"})
+        self.assertFalse(actual["details_complete"])
+
+    def test_junit_failure_cannot_be_hidden_by_passing_sidecar(self):
+        passing = self.parse("pass")
+        xml = junit('<testcase classname="test_sample.Sample" name="test_ok">'
+                    '<failure>unreported failure</failure></testcase>')
+        actual = results.from_junit_xml(xml, 1, ["test_sample.py"],
+                                        manifest=passing["manifest"],
+                                        outcomes=passing["case_outcomes"])
+        self.assertEqual(actual["status"], "FAIL")
+        self.assertFalse(actual["details_complete"])
+
+    def test_legacy_unittest_expected_failure_is_not_executed_pass(self):
+        actual = results.from_unittest_result(
+            run_case(unittest.expectedFailure(fail_test)), ["test_sample.py"])
+        self.assertEqual(actual["status"], "INCOMPLETE")
+
+    def test_malformed_outcome_never_throws_or_certifies_pass(self):
+        manifest = manifests.make_manifest(["test_sample.py::test_ok"])
+        for outcome in (None, [], {"outcome": []}, {"case_id": 7, "outcome": "error"}):
+            with self.subTest(outcome=outcome):
+                actual = results.from_case_evidence(manifest, [outcome], 0, ["test_sample.py"])
+                self.assertNotEqual(actual["status"], "PASS")
+
+
+class JunitSidecarParityTest(unittest.TestCase):
+    def sidecar(self, names=("test_ok",), status="pass"):
+        template = CaseEvidenceTest().parse(status)
+        outcomes = []
+        for name in names:
+            case = deepcopy(template["case_outcomes"][0])
+            case["case_id"] = "test_sample.py::Sample::" + name
+            outcomes.append(case)
+        return manifests.make_manifest([case["case_id"] for case in outcomes]), outcomes
+
+    def parse(self, xml, names=("test_ok",), status="pass", exit_code=0):
+        manifest, outcomes = self.sidecar(names, status)
+        return results.from_junit_xml(xml, exit_code, ["test_sample.py"],
+                                     manifest=manifest, outcomes=outcomes)
+
+    def test_missing_extra_duplicate_or_different_xml_cases_are_incomplete(self):
+        cases = JunitResultTest.PASS_CASE
+        for xml, names in ((junit(cases), ("test_ok", "test_other")),
+                           (junit(cases * 2), ("test_ok",)),
+                           (junit(cases.replace("test_ok", "test_other")), ("test_ok",)),
+                           (junit(cases.replace("Sample", "Other")), ("test_ok",))):
+            with self.subTest(xml=xml, names=names):
+                result = self.parse(xml, names)
+                self.assertEqual(result["status"], "INCOMPLETE", result)
+                self.assertFalse(result["details_complete"])
+                self.assertFalse(result["coverage"]["complete"])
+
+    def test_skip_or_xfail_xml_cannot_certify_sidecar_pass(self):
+        for kind in ("pytest.skip", "pytest.xfail"):
+            xml = junit('<testcase classname="test_sample.Sample" name="test_ok">'
+                        f'<skipped type="{kind}"/></testcase>')
+            result = self.parse(xml)
+            self.assertEqual(result["status"], "INCOMPLETE", result)
+            self.assertFalse(result["coverage"]["complete"])
+
+    def test_xml_pass_cannot_hide_skipped_sidecar_case_in_mixed_run(self):
+        manifest, outcomes = self.sidecar(("test_ok", "test_other"))
+        outcomes[1]["outcome"] = "skip"
+        outcomes[1]["phases"][1]["outcome"] = "skip"
+        xml = junit(JunitResultTest.PASS_CASE + JunitResultTest.PASS_CASE.replace("test_ok", "test_other"))
+        result = results.from_junit_xml(xml, 0, ["test_sample.py"], manifest=manifest, outcomes=outcomes)
+        self.assertEqual(result["status"], "INCOMPLETE", result)
+
+    def test_parameter_text_is_exact_not_a_prefix_or_dotted_alias(self):
+        for name in ("test_ok[a::b.c]", "test_ok[a/b]", "test_ok[a\\b]"):
+            xml = junit('<testcase classname="test_sample.Sample" name="' + name + '"/>')
+            self.assertEqual(self.parse(xml, (name,))["status"], "PASS")
+            self.assertEqual(self.parse(xml, (name + "other",))["status"], "INCOMPLETE")
+
+    def test_known_error_dominates_xml_identity_mismatch(self):
+        xml = junit(JunitResultTest.PASS_CASE.replace("test_ok", "test_other"))
+        result = self.parse(xml, status="error", exit_code=1)
+        self.assertEqual(result["status"], "ERROR")
+        self.assertTrue(result["failures"])
+        self.assertFalse(result["coverage"]["complete"])
+
+    def test_xunit1_file_metadata_must_agree_with_exact_case_identity(self):
+        xml = JunitResultTest.PASS_CASE.replace('<testcase ', '<testcase file="C:/repo/tests/test_sample.py" ')
+        self.assertEqual(self.parse(junit(xml))["status"], "PASS")
+        result = self.parse(junit(xml.replace('tests/test_sample.py', 'tests/test_other.py')))
+        self.assertEqual(result["status"], "INCOMPLETE", result)

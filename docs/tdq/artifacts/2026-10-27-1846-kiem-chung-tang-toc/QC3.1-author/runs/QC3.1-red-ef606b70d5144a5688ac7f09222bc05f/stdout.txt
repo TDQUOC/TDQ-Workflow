@@ -1,0 +1,58 @@
+...............F.                             [100%]
+================================== FAILURES ===================================
+____ PytestPluginTest.test_subtest_metadata_matches_serial_and_two_workers ____
+
+self = <test_tdq_test_manifest.PytestPluginTest testMethod=test_subtest_metadata_matches_serial_and_two_workers>
+
+        def test_subtest_metadata_matches_serial_and_two_workers(self):
+            message = 'message "quoted" \\ path'
+            values = ["marketplace.json", "'quoted'", r"directory\file", 17,
+                      [1, "'two'", r"x\y"], {"nested": [r"a\b", "'value'"]}]
+            source = f'''import pytest, unittest
+    MESSAGE = {message!r}
+    VALUES = {values!r}
+    def test_values(subtests):
+        for value in VALUES:
+            with subtests.test(msg=MESSAGE, value=value): pass
+    class Sample(unittest.TestCase):
+        def test_unittest_values(self):
+            for value in VALUES:
+                with self.subTest(msg=MESSAGE, value=value): pass
+    def test_children(subtests):
+        for state in ("pass", "fail", "skip", "xfail"):
+            with subtests.test(msg=MESSAGE, state=state):
+                if state == "fail": assert False, "child failure"
+                if state == "skip": pytest.skip("optional child capability")
+                if state == "xfail": pytest.xfail("known child issue")
+    @pytest.mark.skip(reason="optional parent capability")
+    def test_skip(): pass
+    @pytest.mark.xfail(reason="known parent issue")
+    def test_xfail(): assert False
+    @pytest.mark.xfail(reason="unexpected parent fix", strict=False)
+    def test_xpass(): pass
+    '''
+            observations = []
+            for workers in (0, 2):
+                process, evidence = self.run_fixture(source, workers)
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                coverage = manifest.reconcile_cases(
+                    evidence["manifest"], evidence["outcomes"],
+                    completed=evidence["completed"], exit_code=evidence["exit_code"])
+                self.assertTrue(coverage["complete"], coverage)
+                self.assertEqual(coverage["counts"], {
+                    "pass": 2, "fail": 1, "error": 0,
+                    "skip": 1, "xfail": 1, "xpass": 1})
+                observations.append({case["case_id"].split("::")[-1]: case
+                                     for case in evidence["outcomes"]})
+            for cases in observations:
+                for case in cases.values():
+                    for report in case["phases"] + case["subtests"]:
+                        report.pop("duration_seconds")
+>           self.assertEqual(observations[0], observations[1])
+E           AssertionError: {'tes[414 chars]e': '"\'marketplace.json\'"'}}}, {'phase': 'ca[5046 chars] []}} != {'tes[414 chars]e': '\'"\\\'marketplace.json\\\'"\''}}}, {'pha[5310 chars] []}}
+E           Diff is 24445 characters long. Set self.maxDiff to None to see it.
+
+tests\test_tdq_test_manifest.py:237: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tdq_test_manifest.py::PytestPluginTest::test_subtest_metadata_matches_serial_and_two_workers
+1 failed, 16 passed, 27 subtests passed in 13.18s

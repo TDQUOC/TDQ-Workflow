@@ -1,0 +1,15 @@
+COMMAND: python -m unittest discover -s tests -p test_tdq_test.py
+.................................................................................................
+----------------------------------------------------------------------
+Ran 97 tests in 15.082s
+
+OK
+EXIT_CODE=0
+
+COMMAND: python -m unittest discover -s tests -p test_next_tron_bo.py
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 1.375s
+
+OK
+EXIT_CODE=0

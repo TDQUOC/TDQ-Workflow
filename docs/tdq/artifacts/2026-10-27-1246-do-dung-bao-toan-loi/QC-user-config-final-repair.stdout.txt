@@ -1,0 +1,14 @@
+{
+  "changed": true,
+  "before_sha256": "6f2213bdc87814b8db5eeece275308547e54f35fa90c406861be080facaeb2af",
+  "after_sha256": "b50fa71a30162bac7eb0beda805ca35dc11477d952d1bf15ca2d3310e7d81a47",
+  "backup_local_only": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-phase1-user-claude-before-final-repin.md",
+  "checks": {
+    "known_checkout_block_before_repair": true,
+    "surrounding_content_matches_previous_backup": true,
+    "outside_block_unchanged": true,
+    "installed_block_matches": true,
+    "restored_same_hash_as_first_repin": true
+  },
+  "limitation": "Existing SessionStart version-upgrade safety gap remains; no claim of permanent repair."
+}

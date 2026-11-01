@@ -297,6 +297,30 @@ class LuongSetupThuong(CoSo):
         nen.assert_called_once_with(self.project)
         self.assertEqual(self.codex_goi, [], "--nen must not run the normal flow too")
 
+    def test_cli_nen_cache_opt_in_passes_namespace(self):
+        with mock.patch.object(tdq_setup, "khoi_tao_nen", return_value=0) as nen, \
+                mock.patch.dict(os.environ, {"TDQ_PROJECT_DIR": self.project}):
+            rc = tdq_setup.chay_cli(["--nen", "--readiness-cache", "auto", "--request", "fixture"])
+        self.assertEqual(rc, 0)
+        nen.assert_called_once_with(self.project, cache_mode="auto", request="fixture")
+
+    def test_setup_handoff_is_shared_but_live_check_still_called(self):
+        vas = self._va_main()
+        for va in vas:
+            va.start()
+        try:
+            with mock.patch.object(tdq_lsp, "chay_kiem", return_value=[]) as initial, \
+                    mock.patch.object(tdq_lsp, "kiem_mot_lenh", return_value=(0, [], [])) as final:
+                rc = tdq_setup.chay_cli(["--readiness-cache", "auto", "--request", "fixture"])
+            self.assertEqual(rc, 0)
+            initial.assert_called_once()
+            final.assert_called_once()
+            self.assertIs(initial.call_args.kwargs["handoff"], final.call_args.kwargs["handoff"])
+            self.assertEqual(final.call_args.kwargs["cache_mode"], "auto")
+        finally:
+            for va in reversed(vas):
+                va.stop()
+
 
 class KhoaRong(unittest.TestCase):
     """Khoá rỗng còn mới = một bản dựng đang ghi pid, KHÔNG phải khoá chết (F8, R1#13)."""
