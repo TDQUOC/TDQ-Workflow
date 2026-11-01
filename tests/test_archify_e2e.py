@@ -32,7 +32,8 @@ class RealArchifyE2E(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
 
     def run_cli(self, *args, expected=0):
-        env = dict(os.environ, ARCHIFY_UPDATE_CHECK_DISABLED="1", TDQ_LOG="0")
+        env = dict(os.environ, ARCHIFY_UPDATE_CHECK_DISABLED="1", TDQ_LOG="0",
+                   TDQ_PROJECT_DIR=str(self.project))
         result = subprocess.run([sys.executable, str(CLI), *map(str, args)],
                                 cwd=self.project, capture_output=True, text=True,
                                 encoding="utf-8", timeout=120, env=env)

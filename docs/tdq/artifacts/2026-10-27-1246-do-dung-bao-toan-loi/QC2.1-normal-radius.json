@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "scripts/tdq_test.py",
+    "vung-cham",
+    "--files",
+    "tests/test_mcp_first_auto_setup.py"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T15:04:14.165655+07:00",
+  "seconds": 10.011,
+  "exit_code": 0,
+  "stdout": "QC2.1-normal-radius.stdout.txt",
+  "stderr": "QC2.1-normal-radius.stderr.txt"
+}

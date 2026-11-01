@@ -1,0 +1,53 @@
+{
+  "kind": "protected-codex-config-drift",
+  "source_sha256": "81c1946345d8495ef32dbb3924de801020c957c5599918b9c3d4317c5f3278ad",
+  "full_receipt": "runs/QC-F1-final-after-QC3-20261031-6add68337dd44ca9b785b1603918f786/receipt.json",
+  "full_verdict": "PASS",
+  "runtime_verdict": "PASS",
+  "receipt": "runs/benchmark-full-final-after-QC3-9e893fa657584476a8a85ee20c8110ae/receipt.json",
+  "receipt_sha256": "cc93e4fbe4134521ec71d629e51a69ef85842e36694cf09d82cfe56360790805",
+  "harness_exit_code": -1,
+  "child_exit_code": -1,
+  "guard_failures": [
+    {
+      "stage": "config_guard",
+      "type": "ValueError",
+      "message": "config changed during command"
+    }
+  ],
+  "config_changed": [
+    ".codex/config.toml"
+  ],
+  "source_unchanged": true,
+  "cleanup": "complete",
+  "observed_file_lastwrite_local": "2026-10-31T21:58:38.1385815+07:00",
+  "completed_samples": [
+    {
+      "pair": 1,
+      "workers": 1,
+      "wall_seconds": 1159.9919125000015,
+      "result_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-5cc9afd1\\0\\839110b0b0b546c996ed9f55add3e439\\result.json",
+      "result_sha256": "4e79ab156e4d74eb5a90f8bc8d599024178b8e2e31460f51053ac490e3b2c507"
+    }
+  ],
+  "cancelled_owned_child": {
+    "pid": 40992,
+    "parent_pid": 8904
+  },
+  "other_process_observation": {
+    "agent_lsp_pid": 10984,
+    "parent_agent_lsp_pid": 24648,
+    "created_local": "2026-10-31T21:58:11.316796+07:00",
+    "cwd": "C:/Users/admin/Documents/Coloring_System",
+    "type": "time correlation only, not writer attribution"
+  },
+  "other_chat_observation": {
+    "id": "01a191da-9293-7313-ac74-21f7f058196a",
+    "title": "Check request",
+    "cwd": "C:/Users/admin/Documents/Coloring_System",
+    "status": "active",
+    "direct_config_write_found": false
+  },
+  "writer_identified": false,
+  "certified_benchmark": false
+}

@@ -1,0 +1,656 @@
+﻿[
+    {
+        "Time":  "2026-10-27T22:44:21.3881786+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d697470f8"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d69e44aa0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "10200"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "35651617"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "128"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "3"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3883079+07:00",
+        "EventId":  30,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d697470f8"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d69e44aa0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "10200"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "35651617"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "128"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "3"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3883111+07:00",
+        "EventId":  10,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8481180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3883553+07:00",
+        "EventId":  11,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8481180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3886465+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b24b0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "7184"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "16777248"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "128"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "7"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3914566+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b0250"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "8928"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "18874436"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "5"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3916294+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b03e0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "8928"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "83886148"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "32"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude\\backups\\.claude.json.backup.1793115861391"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3917470+07:00",
+        "EventId":  30,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b03e0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "8928"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "83886148"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "32"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude\\backups\\.claude.json.backup.1793115861391"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3917499+07:00",
+        "EventId":  10,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87a6805180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude\\backups\\.claude.json.backup.1793115861391"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3924840+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696bae30"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "7184"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "18874400"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "7"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude\\backups\\.claude.json.backup.1793115534822"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3936046+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b8a40"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "1772"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "18874400"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3944488+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b88b0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "12180"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "33554464"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "128"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "7"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.tmp.6196.6c9fc0e9d9cf"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3945713+07:00",
+        "EventId":  30,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d5dff3a88"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696b88b0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "12180"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "33554464"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "128"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "7"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.tmp.6196.6c9fc0e9d9cf"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3945776+07:00",
+        "EventId":  10,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8637180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.tmp.6196.6c9fc0e9d9cf"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3954413+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d618470f8"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d696706a0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "1772"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "16777312"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.tmp.6196.6c9fc0e9d9cf"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3971727+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d675d4748"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d69e442d0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "17340"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "18874400"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "7"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.tmp.6196.6c9fc0e9d9cf"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3973927+07:00",
+        "EventId":  27,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d675d4748"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d69e442d0"
+                     },
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8637180"
+                     },
+                     {
+                         "Name":  "ExtraInformation",
+                         "Value":  "0x0"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "17340"
+                     },
+                     {
+                         "Name":  "InfoClass",
+                         "Value":  "10"
+                     },
+                     {
+                         "Name":  "FilePath",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3975527+07:00",
+        "EventId":  11,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8637180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.tmp.6196.6c9fc0e9d9cf"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3975530+07:00",
+        "EventId":  10,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8637180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3977474+07:00",
+        "EventId":  12,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "Irp",
+                         "Value":  "0xffffb18d675d4748"
+                     },
+                     {
+                         "Name":  "FileObject",
+                         "Value":  "0xffffb18d69e4a540"
+                     },
+                     {
+                         "Name":  "IssuingThreadId",
+                         "Value":  "8796"
+                     },
+                     {
+                         "Name":  "CreateOptions",
+                         "Value":  "18874400"
+                     },
+                     {
+                         "Name":  "CreateAttributes",
+                         "Value":  "0"
+                     },
+                     {
+                         "Name":  "ShareAccess",
+                         "Value":  "7"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3977855+07:00",
+        "EventId":  10,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8481180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    },
+    {
+        "Time":  "2026-10-27T22:44:21.3979353+07:00",
+        "EventId":  11,
+        "PID":  6196,
+        "Opcode":  "Info",
+        "Task":  null,
+        "Data":  [
+                     {
+                         "Name":  "FileKey",
+                         "Value":  "0xffff9d87c8481180"
+                     },
+                     {
+                         "Name":  "FileName",
+                         "Value":  "\\Device\\HarddiskVolume3\\Users\\admin\\.claude.json.lock"
+                     }
+                 ]
+    }
+]

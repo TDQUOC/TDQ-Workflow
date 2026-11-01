@@ -1,0 +1,5 @@
+tron-bo: running the full suite (176 modules)
+tron-bo: radius check skipped: no vung-cham run recorded for this request
+tron-bo: red modules: test_archify_e2e.py test_bao_cao_da_nen_tang.py test_bash_gate.py test_compliance_protocol.py test_context_hooks.py test_e2e_chain.py test_edit_gate.py test_header_duong_dan.py test_kenh_luat_dedupe.py test_luat_skill.py test_ma_hoa_subprocess.py test_prompt_context.py test_step_budget.py test_stop_gate.py test_subagent_start.py test_team_chong_conflict.py test_team_mode.py test_turn_ledger.py test_utf8_io.py
+[TDQ:TEST] FAIL — scope=full backend=pytest tests=3579 skipped=10 in 876.31s.
+TDQ_RESULT {"path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\cache\\test-runs\\c030d75ca44ab99e\\c5e00196c76c4b079b9df51ffd588958\\result.json", "sha256": "9d66f23a5120dd2b1ed53cd4f0e392d991d4b4d17e92c15493102ee7178c596d"}

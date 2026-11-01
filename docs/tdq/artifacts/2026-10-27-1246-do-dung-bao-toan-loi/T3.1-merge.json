@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "C:/Users/admin/.codex/plugins/cache/tdq-local/tdq-workflow/0.84.2/scripts/tdq_team.py",
+    "merge",
+    "T3.1"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:29:11.154639+07:00",
+  "seconds": 5.023,
+  "exit_code": 0,
+  "stdout": "T3.1-merge.stdout.txt",
+  "stderr": "T3.1-merge.stderr.txt"
+}

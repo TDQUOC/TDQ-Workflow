@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "scripts/doc_lint.py",
+    "docs/tdq/qc/2026-10-27-1246-do-dung-bao-toan-loi.md",
+    "docs/tdq/reports/2026-10-27-1246-do-dung-bao-toan-loi.md"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T15:28:34.508109+07:00",
+  "seconds": 0.048,
+  "exit_code": 0,
+  "stdout": "D7-doc-lint.stdout.txt",
+  "stderr": "D7-doc-lint.stderr.txt"
+}

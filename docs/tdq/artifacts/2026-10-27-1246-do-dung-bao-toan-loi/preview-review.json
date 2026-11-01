@@ -1,0 +1,28 @@
+﻿{
+    "kind":  "supplemental-chrome-cdp-review",
+    "artifact":  "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-10-27-1246-do-dung-bao-toan-loi-preview.html",
+    "sha256":  "01f5773aa2f4a300556a34f8d8a42d2d229f5a9ebcff35d61dba08837ef13989",
+    "native_archify_browser_gate":  "failed: Chrome DevTools pipe startup",
+    "replaces_native_gate":  false,
+    "checks":  [
+                   {
+                       "width":  1440,
+                       "scrollWidth":  1425,
+                       "height":  1624,
+                       "result":  "pass",
+                       "screenshot":  "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1246-do-dung-bao-toan-loi\\preview-1440.png"
+                   },
+                   {
+                       "width":  390,
+                       "scrollWidth":  375,
+                       "height":  1590,
+                       "result":  "pass",
+                       "screenshot":  "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1246-do-dung-bao-toan-loi\\preview-390.png"
+                   }
+               ],
+    "exceptions":  [
+
+                   ],
+    "verdict":  "pass",
+    "visual_review":  "inspected: desktop readable; mobile canvas requires pan or zoom; native gate remains failed"
+}

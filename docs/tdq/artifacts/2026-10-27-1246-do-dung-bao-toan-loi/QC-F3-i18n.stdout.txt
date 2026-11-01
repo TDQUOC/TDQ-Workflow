@@ -1,0 +1,64 @@
+scripts/tdq_state.py:168: [string] """Mức gắt của luật tinh gọn, chuẩn hoá. Mọi thứ không hợp lệ đều ra `full`.
+scripts/tdq_state.py:170: [string] Fail-closed có chủ ý: khoá trống, giá trị rác, kiểu sai hay `None` đều về `full`, nên
+scripts/tdq_state.py:171: [string] không suy luận nào của agent tắt được luật — chỉ user gõ `set muc_gat=off` mới tắt
+scripts/tdq_state.py:172: [string] (bảng cường độ trong skills/tdq-build/references/rules/chung.md).
+scripts/tdq_state.py:181: [string] """Mức gắt đọc từ state (state None hay khoá thiếu → `full`)."""
+scripts/tdq_state.py:185: [comment] # Mức QC của request (2026-09-23). Dùng CHUNG bộ từ với `muc_gat` để user chỉ phải nhớ một
+scripts/tdq_state.py:186: [comment] # thang, nhưng là khoá rời: `muc_gat` lọc luật tinh gọn lúc implement, `muc_qc` quyết phase `qc`
+scripts/tdq_state.py:187: [comment] # chạy bao nhiêu phép kiểm. Bảng mức → loại kiểm nằm ở skills/tdq-build/references/qc.md.
+scripts/tdq_state.py:193: [string] """Mức QC chuẩn hoá. Mọi thứ không hợp lệ đều ra `full`.
+scripts/tdq_state.py:195: [string] Fail-closed như `muc_gat`, và ở đây lý do còn gắt hơn: một giá trị rác im lặng hạ mức QC
+scripts/tdq_state.py:196: [string] xuống thấp nhất nghĩa là request tuyên bố "xong" mà chưa chạy trọn suite. Rơi về mức an
+scripts/tdq_state.py:197: [string] toàn thì tệ nhất cũng chỉ là chạy thừa. `off` tồn tại nhưng chỉ đến từ tay user
+scripts/tdq_state.py:198: [string] (`set muc_qc=off`) — luồng hỏi không bao giờ bày nó ra.
+scripts/tdq_state.py:207: [string] """Mức QC đọc từ state (state None hay khoá thiếu → `full`)."""
+scripts/tdq_state.py:219: [comment] # Sản phẩm của bước phân tích. Cả hai lane đều đẻ ra brief ngay ở intake, nhưng
+scripts/tdq_state.py:220: [comment] # trước 2026-09-01 không đâu ghi lại đường dẫn — khác hẳn spec_file/plan_file.
+scripts/tdq_state.py:267: [comment] # Mức gắt của luật tinh gọn (2026-09-17): lite|full|ultra|off. Ba kênh nạp luật đọc
+scripts/tdq_state.py:268: [comment] # khoá này qua muc_gat_hieu_luc() rồi lọc bằng hooks/scripts/luat_gon.py.
+scripts/tdq_state.py:270: [comment] # Mức QC của request (2026-09-23): lite|full|ultra|off. Phase `qc` đọc khoá này qua
+scripts/tdq_state.py:271: [comment] # muc_qc_hieu_luc() để biết chạy bao nhiêu phép kiểm; user được hỏi ở cuối phase
+scripts/tdq_state.py:272: [comment] # `analyze` (lane full) hoặc tại cổng `approve quick` (lane express).
+scripts/tdq_state.py:279: [comment] # branch opened for it. All three stay None at tier `nhỏ` and in a repo-less project.
+scripts/tdq_state.py:962: [string] if "pass/fail" in c or c in ("verdict", "trạng thái", "trang thai", "đánh giá", "danh gia"):
+scripts/tdq_state.py:964: [string] elif c in ("kết quả", "ket qua", "outcome", "result"):
+scripts/tdq_state.py:966: [string] elif c in ("lệnh", "lenh", "command", "lệnh đã chạy", "lenh da chay"):
+scripts/tdq_state.py:968: [string] elif c in ("bằng chứng", "bang chung", "evidence", "log", "chi tiết", "chi tiet", "ghi chú", "ghi chu"):
+scripts/tdq_state.py:996: [comment] # Check execution status (Execution và outcome tách)
+scripts/tdq_state.py:997: [string] exec_timeout = bool(re.search(r"\b(timeout|timed out|quá giờ|het gio|hết giờ)\b", exec_lower))
+scripts/tdq_state.py:1001: [string] r"|\b[1-9]\d*\s*(?:failed|errors?|lỗi)\b"
+scripts/tdq_state.py:1005: [string] exec_missing = bool(re.search(r"\b(missing|not found|không tìm thấy|chưa có)\b", exec_lower))
+scripts/tdq_state.py:1011: [string] elif v_upper.startswith("FAIL") or v_upper.startswith("ERROR") or v_upper.startswith("HỎNG") or exec_error:
+scripts/tdq_state.py:1015: [string] elif (v_upper in ("SKIP", "TODO", "PENDING", "N/A", "HOLD", "CHỜ", "CHO")
+scripts/tdq_state.py:1016: [string] or v_upper.startswith("CHỜ") or v_upper.startswith("BỊ CHẶN")
+scripts/tdq_state.py:1327: [string] "Write what you settled into the brief's 'Hiểu & kiến thức' section, then move on "
+scripts/tdq_state.py:1492: [comment] # Phương án 2a (2026-09-01): bước phân tích của lane nhanh có hàng riêng để
+scripts/tdq_state.py:1493: [comment] # NHÌN THẤY được, nhưng không kèm cổng duyệt — `CONG_THEO_LANE["quick"]` vẫn
+scripts/tdq_state.py:1494: [comment] # đúng một cổng. Đã duyệt rồi thì phân tích xong từ lâu, không quay lại hàng này.
+scripts/tdq_state.py:1635: [comment] # 32 ký tự, đo trên chính khối đầu: với trần 60 thì dòng `[TDQ:NEXT]` dài 146 ký tự và khối đầu
+scripts/tdq_state.py:1636: [comment] # chạm đúng 600, mất chữ ở dòng `Done when:`. Trần này giữ cho phần hiển thị đường dẫn không bao
+scripts/tdq_state.py:1637: [comment] # giờ là thứ làm tràn khối đầu.
+scripts/tdq_state.py:1642: [string] """Đường dẫn để IN RA trong khối đầu — dài quá thì rút, có trần cố định.
+scripts/tdq_state.py:1644: [string] Vì sao phải rút: khối đầu của `SessionStart` có trần 600 ký tự (spec §2.7), mà dòng
+scripts/tdq_state.py:1645: [string] `Project: <đường dẫn>` tính vào trần đó. Đường dẫn là dữ liệu của user — thư mục tạm của
+scripts/tdq_state.py:1646: [string] macOS runner là `/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/tmpXXXXXXXX` — nên độ dài
+scripts/tdq_state.py:1647: [string] không ai kiểm soát được. Trước 2026-09-27, một đường dẫn dài đẩy khối đầu vượt trần và `cap()`
+scripts/tdq_state.py:1648: [string] cắt mất đuôi, tức mất chữ của dòng `Command:`; đo thật trên macOS ở CI run 35957834415.
+scripts/tdq_state.py:1650: [string] Thứ nhường là phần hiển thị, không phải trần: giữ HAI đoạn cuối (đủ để user nhận ra project,
+scripts/tdq_state.py:1651: [string] và tên thư mục cuối luôn còn), thêm `…` báo đã rút. Đường dẫn ĐẦY ĐỦ vẫn nằm trong `STATE.md`,
+scripts/tdq_state.py:1652: [string] nơi không có trần nào.
+scripts/tdq_state.py:1658: [comment] # Thử hai đoạn cuối trước (đọc dễ hơn), không vừa trần thì lấy đúng đoạn cuối — tên thư mục
+scripts/tdq_state.py:1659: [comment] # cuối là thứ user nhận ra project, nên nó là phần được giữ đến cùng.
+scripts/tdq_state.py:1664: [comment] # Cả tên thư mục cuối cũng dài quá trần → cắt từ ĐẦU, giữ đuôi.
+scripts/tdq_state.py:2072: [string] while doc_lint R14 finds a numeric DoD threshold without `Đo trước` / `Dự phòng nếu trượt`.
+scripts/tdq_state.py:2246: [string] `approve spec`; tier `nhỏ` never calls `init` and is never blocked. The import is lazy so
+scripts/tdq_state.py:2269: [string] 'Quyền tự quyết LSP: Agent tự động áp dụng --bo-qua-lsp "<lý do rõ ràng>" cho docs/research/cài MCP hoặc kịch bản tham chiếu nội tệp mà không dừng hỏi người dùng.', cwd))
+scripts/tdq_state.py:2618: [comment] # Chuẩn hoá thay vì fail: giá trị lạ về `full`, đúng luật fail-closed.
+scripts/tdq_test.py:1066: [string] help="ép chạy toàn bộ suite khi vượt ngưỡng radius (mặc định tắt trong phase implement)")
+scripts/tdq_test.py:1068: [string] help="không ép chạy toàn bộ suite ngay cả ngoài phase implement")
+scripts/tdq_test.py:1072: [string] help="chạy song song đa tiến trình với pytest-xdist nếu có")
+skills/tdq-build/references/report-template.md:11: [body] - Thời gian
+skills/tdq-build/references/report-template.md:61: [body] - `"commit"` → commit on the request branch first (dirty ở `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` được tự động add/commit cùng hoặc mang theo, không cần hỏi). Then:
+skills/tdq-build/references/report-template.md:67: [body] - `"chưa"` → no new commit, but everything ALREADY committed on the request branch still
+skills/tdq-build/references/report-template.md:78: [body] No `nhanh_request` in state (tier `nhỏ`, or a project with no git) → skip this step entirely.
+63 Vietnamese line(s) in 9 file(s)

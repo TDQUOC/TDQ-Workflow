@@ -1,0 +1,9 @@
+[2026-10-27T14:20:28] start · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · 2 file(s) changed
+[2026-10-27T14:20:28] khoa-token → skip (no token counter on this machine)
+[2026-10-27T14:20:28] lint → fail (docs\tdq\token-budget.json:1: [R13] skills/tdq-build/references/report-template.md: the token measurement is stale (sha2)
+[2026-10-27T14:20:28] worklog → ok (2026-10-27 14:20)
+[2026-10-27T14:20:28] timing → skip (books close only on idle)
+[2026-10-27T14:20:28] phase → skip (no --phase)
+[2026-10-27T14:20:28] archify → stale (refresh needed: Child file digest mismatch for overview.html: manifest 442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8)
+[2026-10-27T14:20:28] graphify → skip (no code file changed)
+[2026-10-27T14:20:28] done · 1 step(s) failed

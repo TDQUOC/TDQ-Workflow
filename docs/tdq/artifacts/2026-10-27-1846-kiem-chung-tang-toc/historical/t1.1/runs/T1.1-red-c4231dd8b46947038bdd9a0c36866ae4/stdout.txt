@@ -1,0 +1,15 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________ CamDoanTokenTest.test_capability_uses_shared_portable_probe _________
+
+self = <test_skill_tokens.CamDoanTokenTest testMethod=test_capability_uses_shared_portable_probe>
+
+    def test_capability_uses_shared_portable_probe(self):
+        with mock.patch.object(helper, "co_bo_dem_token", return_value=True):
+>           self.assertTrue(co_thu_vien())
+E           AssertionError: False is not true
+
+tests\test_skill_tokens.py:45: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_skill_tokens.py::CamDoanTokenTest::test_capability_uses_shared_portable_probe
+1 failed, 18 deselected in 0.18s

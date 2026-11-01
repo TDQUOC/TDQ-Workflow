@@ -102,7 +102,7 @@ Next step: phase `analyze` (deep, Part B) or `quick_analyze` (express, Part C) �
 
 ## Part B — Analysis (phase `analyze`, deep pipeline only)
 
-Load this only for the deep pipeline — express does not need it. Play the
+Deep pipeline only. Follow [runtime speed](../tdq-build/references/runtime-speed.md) for batch reads/opt-in readiness; keep live checks and gates. Play the
 expert of that exact field; the goal is to leave this phase with ZERO guesswork. Do all 6
 steps (capability inventory, read the code, research, interview, settle the knowledge,
 gate check) per [references/analyze-full.md](references/analyze-full.md). The verdict

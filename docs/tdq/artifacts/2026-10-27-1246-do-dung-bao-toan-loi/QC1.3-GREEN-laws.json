@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_luat_skill.py"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:46:14.022921+07:00",
+  "seconds": 0.221,
+  "exit_code": 0,
+  "stdout": "QC1.3-GREEN-laws.stdout.txt",
+  "stderr": "QC1.3-GREEN-laws.stderr.txt"
+}

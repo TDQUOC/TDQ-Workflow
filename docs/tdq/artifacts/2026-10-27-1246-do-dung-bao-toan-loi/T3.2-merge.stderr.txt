@@ -1,0 +1,4 @@
+[2026-10-27T14:28:54] merge · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow
+[2026-10-27T14:28:57] merge tdq/2026-10-27-1246-do-dung-bao-toan-loi/t3.2 → into bugfix/do-dung-bao-toan-loi
+[2026-10-27T14:28:58] worktree-so: close 2026-10-27-1246-do-dung-bao-toan-loi/T3.2 (merged)
+[2026-10-27T14:28:58] cleaned T3.2 → worktree C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.2 + branch tdq/2026-10-27-1246-do-dung-bao-toan-loi/t3.2 removed

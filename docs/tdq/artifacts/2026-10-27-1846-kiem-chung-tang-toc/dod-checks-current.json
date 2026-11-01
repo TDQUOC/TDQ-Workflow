@@ -1,0 +1,106 @@
+[
+  {
+    "check": "D1",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D1"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D1\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 75, \"baseline_cases\": 3306, \"current_cases\": 3601, \"remapped\": 0}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D2",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D2"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D2\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 27}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D3",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D3"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D3\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 14}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D4",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D4"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D4\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 121}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D5",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D5"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D5\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 61}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D6",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D6"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D6\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 37}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D7",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D7"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D7\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 18}}\n",
+    "stderr": ""
+  },
+  {
+    "check": "D8",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\verify_dod.py",
+      "D8"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"check\": \"D8\", \"status\": \"PASS\", \"details\": {\"required_assertions\": 20}}\n",
+    "stderr": ""
+  }
+]

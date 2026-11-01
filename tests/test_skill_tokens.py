@@ -4,33 +4,38 @@ Luật của bộ test này: **cấm chấp nhận số đoán**. Test quan tr�
 phải "script in ra bảng", mà "script THÀ LỖI còn hơn ước lượng ký tự chia bốn" —
 vì cả request này đứng trên giả định con số đo được là con số thật.
 """
+import json
 import os
 import subprocess
 import sys
+import tempfile
 import unittest
+from unittest import mock
 
 import helper  # noqa: F401  — chèn scripts/ vào sys.path
 import skill_tokens
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "scripts", "skill_tokens.py")
-VENV = os.path.join(ROOT, ".venv-tokens", "bin", "python")
+
+
+def moi_truong_token():
+    """Provide a verified interpreter to this child only; no global mutation."""
+    interpreter = helper.python_bo_dem_token()
+    return {"TDQ_TOKENS_VENV": interpreter} if interpreter else {}
 
 
 def chay(*args, env=None):
     proc = subprocess.run([sys.executable, SCRIPT, *args], capture_output=True,
                           encoding="utf-8", text=True, timeout=300,
-                          env=dict(os.environ, TDQ_LOG="0", **(env or {})))
+                          env={**os.environ, "TDQ_LOG": "0",
+                               **moi_truong_token(), **(env or {})})
     return proc.returncode, proc.stdout, proc.stderr
 
 
 def co_thu_vien():
-    """Venv có thư viện đếm token không — quyết định test nào chạy được thật."""
-    if not os.path.exists(VENV):
-        return False
-    proc = subprocess.run([VENV, "-c", "import anthropic_tokenizer"],
-                          capture_output=True, timeout=60)
-    return proc.returncode == 0
+    """Use the shared capability probe, including Windows and worktrees."""
+    return helper.co_bo_dem_token()
 
 
 CO_THU_VIEN = co_thu_vien()
@@ -38,6 +43,33 @@ CO_THU_VIEN = co_thu_vien()
 
 class CamDoanTokenTest(unittest.TestCase):
     """Luật xương sống: thiếu thư viện thì LỖI, không rơi về ký tự/4."""
+
+    def test_capability_uses_shared_portable_probe(self):
+        with mock.patch.object(helper, "co_bo_dem_token", return_value=True):
+            self.assertTrue(co_thu_vien())
+        with mock.patch.object(helper, "co_bo_dem_token", return_value=False):
+            self.assertFalse(co_thu_vien())
+
+    def test_local_tokenizer_does_not_require_git(self):
+        helper.python_bo_dem_token.cache_clear()
+        self.addCleanup(helper.python_bo_dem_token.cache_clear)
+        with mock.patch.object(skill_tokens, "nap_bo_dem",
+                               side_effect=skill_tokens.ThieuThuVienDem), \
+                mock.patch.object(skill_tokens, "VENV_PYTHON", "local-python"), \
+                mock.patch.object(helper.os.path, "isfile", return_value=True), \
+                mock.patch.object(helper.subprocess, "run", return_value=
+                                  subprocess.CompletedProcess([], 0, "[1]")) as run:
+            self.assertEqual(helper.python_bo_dem_token(), "local-python")
+        self.assertEqual(run.call_count, 1)
+        self.assertEqual(run.call_args.args[0][0], "local-python")
+
+    def test_broken_counter_is_not_a_capability(self):
+        with mock.patch.object(helper.os.path, "isfile", return_value=True):
+            for output in ("not-json", "[]", "[0]", "[100]", "[true]"):
+                with self.subTest(output=output), mock.patch.object(
+                        helper.subprocess, "run", return_value=
+                        subprocess.CompletedProcess([], 0, output)):
+                    self.assertFalse(helper._python_dem_duoc("fake-python"))
 
     def test_thieu_thu_vien_thi_thoat_ma_3_va_khong_in_bang(self):
         """Chặn đường nhảy sang venv để dựng lại đúng cảnh máy chưa cài gì."""
@@ -103,6 +135,7 @@ class KhungTest(unittest.TestCase):
     @unittest.skipUnless(CO_THU_VIEN, "venv .venv-tokens chưa cài anthropic-tokenizer")
     def test_log_bat_mac_dinh_va_tat_duoc(self):
         moi = dict(os.environ)
+        moi.update(moi_truong_token())
         moi.pop("TDQ_LOG", None)
         proc = subprocess.run([sys.executable, SCRIPT, "--theo-phase"],
                               capture_output=True,
@@ -139,16 +172,40 @@ class DoTheoPhaseTest(unittest.TestCase):
 class DoMoTaTest(unittest.TestCase):
     """`--mo-ta`: tổng phải khớp inventory, nếu không thì đang đếm nhầm tập skill."""
 
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-token-inventory-")
+        self.addCleanup(temporary.cleanup)
+        self.project = os.path.join(temporary.name, "project")
+        home = os.path.join(temporary.name, "home")
+        os.makedirs(self.project)
+        plugins = {}
+        for index in range(12):
+            name = f"fixture-plugin-{index}"
+            install = os.path.join(home, ".claude", "plugins", name)
+            helper.write_file(install, f"skills/fixture-skill-{index}/SKILL.md",
+                              f"---\nname: fixture-skill-{index}\n"
+                              "description: Read the complete fixture description "
+                              "and verify real token counts across independent "
+                              "plugin sources without using personal configuration.\n---\n")
+            plugins[name + "@fixture"] = [{"installPath": install, "scope": "user"}]
+        helper.write_file(home, ".claude/settings.json",
+                          json.dumps({"enabledPlugins": dict.fromkeys(plugins, True)}))
+        helper.write_file(home, ".claude/plugins/installed_plugins.json",
+                          json.dumps({"plugins": plugins}))
+        patcher = mock.patch.dict(os.environ, {"HOME": home, "USERPROFILE": home})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     @unittest.skipUnless(CO_THU_VIEN, "venv .venv-tokens chưa cài anthropic-tokenizer")
     def test_so_skill_khop_dung_skill_inventory(self):
         import skill_inventory
-        mong_doi = len(skill_inventory.inventory(ROOT))
-        _rc, out, _err = chay("--mo-ta")
+        mong_doi = len(skill_inventory.inventory(self.project))
+        _rc, out, _err = chay("--mo-ta", "--project", self.project)
         self.assertIn(f"Total: {mong_doi} enabled skill(s)", out)
 
     @unittest.skipUnless(CO_THU_VIEN, "venv .venv-tokens chưa cài anthropic-tokenizer")
     def test_bang_co_ca_cot_token_va_cot_muc(self):
-        _rc, out, _err = chay("--mo-ta")
+        _rc, out, _err = chay("--mo-ta", "--project", self.project)
         self.assertIn("desc tokens", out)
         self.assertIn("| group |", out)
 
@@ -159,7 +216,7 @@ class DoMoTaTest(unittest.TestCase):
         Đọc qua CLI chứ không gọi hàm trong tiến trình: python chạy pytest không có
         thư viện đếm token, gọi thẳng thì test bị skip và mất luôn phép kiểm này.
         """
-        _rc, out, _err = chay("--mo-ta")
+        _rc, out, _err = chay("--mo-ta", "--project", self.project)
         so_dong = 0
         for dong in out.splitlines():
             o = [c.strip() for c in dong.strip().strip("|").split("|")]

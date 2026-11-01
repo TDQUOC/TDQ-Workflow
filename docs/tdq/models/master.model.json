@@ -10,12 +10,34 @@
   ],
   "coverage": {
     "modules": [
-      { "id": "skills-layer-11", "status": "selected" },
-      { "id": "agents-layer-6", "status": "selected" },
-      { "id": "hooks-layer-13", "status": "selected" },
-      { "id": "cli-scripts-43", "status": "selected" },
-      { "id": "archify-2tier-engine", "status": "selected" },
-      { "id": "search-3tier-engine", "status": "selected" }
+      {
+        "id": "skills-layer-11",
+        "status": "selected"
+      },
+      {
+        "id": "agents-layer-6",
+        "status": "selected"
+      },
+      {
+        "id": "hooks-layer-13",
+        "status": "selected"
+      },
+      {
+        "id": "cli-runtime-modules",
+        "status": "selected"
+      },
+      {
+        "id": "archify-2tier-engine",
+        "status": "selected"
+      },
+      {
+        "id": "search-3tier-engine",
+        "status": "selected"
+      },
+      {
+        "id": "runtime-verification-and-caches",
+        "status": "selected"
+      }
     ],
     "excluded": [],
     "unknown": []
@@ -25,7 +47,7 @@
       "id": "overview",
       "type": "architecture",
       "candidate": "overview.json",
-      "summary": "Kiến trúc tổng thể 6 tầng của TDQ-Workflow (4 Host Adapters, 11 Skills, 6 Sub-Agents, 13 Hooks, 3-Tier Search & 43 CLI Scripts)"
+      "summary": "Kiến trúc tổng thể: Host Adapters, Skills, Sub-Agents, Lifecycle Hooks, Search và CLI Runtime"
     },
     {
       "id": "pipeline-lifecycle",
@@ -44,6 +66,12 @@
       "type": "workflow",
       "candidate": "hooks-and-gates.json",
       "summary": "Luồng thực thi 13 Lifecycle Hooks trên 3 làn (Host Events, PreToolUse Hard Gates, Observers & Stop Verify-by-Effect)"
+    },
+    {
+      "id": "runtime-verification",
+      "type": "architecture",
+      "candidate": "runtime-verification.json",
+      "summary": "Manifest từng case, process isolation, receipt reuse/join, readiness và transcript cache mặc định tắt; biểu diễn source working-tree, chưa phải chứng nhận QC."
     }
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "exit_code": 1,
+  "seconds": 2.847,
+  "real_user_config_unchanged": true,
+  "fixture": "Private HOME with enabledPlugins and installed plugin path registry; real skill files read only; no settings content retained in artifacts",
+  "scope": "Six existing assertions with skip decorator unwrapped in memory; not a fix to standard discovery"
+}

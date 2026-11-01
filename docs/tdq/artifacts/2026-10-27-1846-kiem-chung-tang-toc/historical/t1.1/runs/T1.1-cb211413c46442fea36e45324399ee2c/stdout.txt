@@ -1,0 +1,92 @@
+.............FFFF..                 [100%]
+================================== FAILURES ===================================
+_______ DoMoTaTest.test_ban_do_skill_md_quet_mot_lan_va_co_du_skill_tdq _______
+
+self = <test_skill_tokens.DoMoTaTest testMethod=test_ban_do_skill_md_quet_mot_lan_va_co_du_skill_tdq>
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-token-inventory-")
+        self.addCleanup(temporary.cleanup)
+        self.project = os.path.join(temporary.name, "project")
+        home = os.path.join(temporary.name, "home")
+>       os.makedirs(self.project)
+
+tests\test_skill_tokens.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-to...-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-n46mfp_z\\project'
+mode = 511, exist_ok = False
+
+>   ???
+E   FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-toc\\t1.1\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-n46mfp_z\\project'
+
+<frozen os>:228: FileNotFoundError
+_______________ DoMoTaTest.test_bang_co_ca_cot_token_va_cot_muc _______________
+
+self = <test_skill_tokens.DoMoTaTest testMethod=test_bang_co_ca_cot_token_va_cot_muc>
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-token-inventory-")
+        self.addCleanup(temporary.cleanup)
+        self.project = os.path.join(temporary.name, "project")
+        home = os.path.join(temporary.name, "home")
+>       os.makedirs(self.project)
+
+tests\test_skill_tokens.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-to...-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-6jl3yyat\\project'
+mode = 511, exist_ok = False
+
+>   ???
+E   FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-toc\\t1.1\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-6jl3yyat\\project'
+
+<frozen os>:228: FileNotFoundError
+_____________ DoMoTaTest.test_so_skill_khop_dung_skill_inventory ______________
+
+self = <test_skill_tokens.DoMoTaTest testMethod=test_so_skill_khop_dung_skill_inventory>
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-token-inventory-")
+        self.addCleanup(temporary.cleanup)
+        self.project = os.path.join(temporary.name, "project")
+        home = os.path.join(temporary.name, "home")
+>       os.makedirs(self.project)
+
+tests\test_skill_tokens.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-to...-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-rxdcnn30\\project'
+mode = 511, exist_ok = False
+
+>   ???
+E   FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-toc\\t1.1\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-rxdcnn30\\project'
+
+<frozen os>:228: FileNotFoundError
+_________ DoMoTaTest.test_token_chi_giu_ten_luon_nho_hon_token_mo_ta __________
+
+self = <test_skill_tokens.DoMoTaTest testMethod=test_token_chi_giu_ten_luon_nho_hon_token_mo_ta>
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-token-inventory-")
+        self.addCleanup(temporary.cleanup)
+        self.project = os.path.join(temporary.name, "project")
+        home = os.path.join(temporary.name, "home")
+>       os.makedirs(self.project)
+
+tests\test_skill_tokens.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-to...-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-f74jo2zd\\project'
+mode = 511, exist_ok = False
+
+>   ???
+E   FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\.tdq-worktrees\\2026-10-27-1846-kiem-chung-tang-toc\\t1.1\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\T1.1-cb211413c46442fea36e45324399ee2c\\temp\\tdq-token-inventory-f74jo2zd\\project'
+
+<frozen os>:228: FileNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/test_skill_tokens.py::DoMoTaTest::test_ban_do_skill_md_quet_mot_lan_va_co_du_skill_tdq
+FAILED tests/test_skill_tokens.py::DoMoTaTest::test_bang_co_ca_cot_token_va_cot_muc
+FAILED tests/test_skill_tokens.py::DoMoTaTest::test_so_skill_khop_dung_skill_inventory
+FAILED tests/test_skill_tokens.py::DoMoTaTest::test_token_chi_giu_ten_luon_nho_hon_token_mo_ta
+4 failed, 15 passed, 37 subtests passed in 2.41s

@@ -1,13 +1,15 @@
 """Test cho scripts/tdq_finish.py — gộp 4 việc bookkeeping cuối turn thành 1 lệnh."""
 
+import hashlib
 import json
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
-from helper import ROOT
+from helper import ROOT, write_file
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(REPO, "scripts", "tdq_finish.py")
@@ -143,12 +145,51 @@ class KhoaTokenTest(unittest.TestCase):
         self.assertIn("no rule file", b.detail)
 
     def test_khoa_chay_khi_cham_file_luat(self):
+        """Exercise lock generation without a machine's tokenizer or cache."""
         import tdq_finish
-        duong = os.path.join(ROOT, "skills", "tdq-build", "references", "qc.md")
-        b = tdq_finish.step_khoa_token(ROOT, [duong])
-        self.assertIn(b.status, ("ok", "skip"))
-        if b.status == "skip":
-            self.assertIn("token counter", b.detail)
+        rel = "skills/fixture/references/qc.md"
+        content = "# Fixture rule\n"
+        counter = mock.Mock(return_value=7)
+        with tempfile.TemporaryDirectory() as tmp, mock.patch(
+                "skill_tokens.nap_bo_dem", return_value=counter):
+            duong = write_file(tmp, rel, content)
+            b = tdq_finish.step_khoa_token(tmp, [duong])
+            self.assertEqual(b.status, "ok", b.detail)
+            with open(os.path.join(tmp, "docs", "tdq", "token-budget.json"),
+                      encoding="utf-8") as fh:
+                lock = json.load(fh)
+        self.assertEqual(lock, {rel: {
+            "token": 7,
+            "sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        }})
+        counter.assert_called_once_with(content)
+
+    def test_khoa_bo_qua_khi_thieu_bo_dem(self):
+        import skill_tokens
+        import tdq_finish
+        with tempfile.TemporaryDirectory() as tmp, mock.patch(
+                "skill_tokens.nap_bo_dem",
+                side_effect=skill_tokens.ThieuThuVienDem), mock.patch(
+                "skill_tokens.dem_qua_venv",
+                side_effect=skill_tokens.ThieuThuVienDem):
+            duong = write_file(tmp, "skills/fixture/references/qc.md")
+            b = tdq_finish.step_khoa_token(tmp, [duong])
+            self.assertFalse(os.path.exists(os.path.join(
+                tmp, "docs", "tdq", "token-budget.json")))
+        self.assertEqual(b.status, "skip", b.detail)
+        self.assertIn("token counter", b.detail)
+
+    def test_khoa_fail_khi_bo_dem_loi(self):
+        import tdq_finish
+        counter = mock.Mock(side_effect=ValueError("broken counter"))
+        with tempfile.TemporaryDirectory() as tmp, mock.patch(
+                "skill_tokens.nap_bo_dem", return_value=counter):
+            duong = write_file(tmp, "skills/fixture/references/qc.md")
+            b = tdq_finish.step_khoa_token(tmp, [duong])
+            self.assertFalse(os.path.exists(os.path.join(
+                tmp, "docs", "tdq", "token-budget.json")))
+        self.assertEqual(b.status, "fail", b.detail)
+        self.assertIn("ValueError: broken counter", b.detail)
 
 
 class LogServiceTest(unittest.TestCase):

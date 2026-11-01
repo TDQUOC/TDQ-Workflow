@@ -31,8 +31,9 @@ SECTION_10_BUDGET = 900
 # Sáu gạch đầu dòng luật đã có trong context-budget.md trước request này. Plan cấm
 # xoá hoặc rút gọn bất kỳ dòng nào — chỉ được đổi chỗ và đổi nhãn tầng. Từ 2026-08-19
 # (hướng A hybrid) file viết tiếng Anh: vẫn đủ sáu dòng, chỉ đổi ngôn ngữ của nhãn.
+# 2026-10-27: batching now explicitly means concurrent independent reads.
 OLD_BULLETS = [
-    "- **Batch tool calls.**",
+    "- **Batch independent reads.**",
     "- **Lint the exact file.**",
     "- **Quiet CLI.**",
     "- **Read just enough.**",
@@ -77,9 +78,10 @@ class LuatMotLuot(unittest.TestCase):
         table = section(budget, "### Never batch these", "## Context cost")
         rows = [r for r in table.splitlines()
                 if r.startswith("|") and "---" not in r and "Why batching" not in r]
-        self.assertEqual(len(rows), 4, "bảng cấm gộp phải có đúng 4 ca")
-        for dau_hieu in ("red", "Isolating", "Destructive", "previous command's result"):
-            self.assertIn(dau_hieu, table)
+        self.assertEqual(len(rows), 6, "six independent safety constraints")
+        for marker in ("red", "Isolating", "Destructive", "previous command's result",
+                       "State mutations", "Performance samples"):
+            self.assertIn(marker, table)
 
     def test_doc_lai_mem(self):
         """Luật đọc lại là luật MỀM: user chốt không đổi chất lượng lấy tốc độ."""
@@ -96,6 +98,8 @@ class LuatMotLuot(unittest.TestCase):
         budget = read(BUDGET)
         for bullet in OLD_BULLETS:
             self.assertIn(bullet, budget, f"mất luật cũ: {bullet}")
+        self.assertIn("concurrently in one batch and await all results", budget)
+        self.assertIn("`&&` runs sequentially and stops after failure", budget)
 
     def test_ba_tang_soul_khong_doi(self):
         soul = read(SOUL)

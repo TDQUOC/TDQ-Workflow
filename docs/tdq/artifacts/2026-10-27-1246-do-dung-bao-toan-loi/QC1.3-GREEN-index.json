@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_doc_index.py"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:46:14.023560+07:00",
+  "seconds": 0.213,
+  "exit_code": 0,
+  "stdout": "QC1.3-GREEN-index.stdout.txt",
+  "stderr": "QC1.3-GREEN-index.stderr.txt"
+}

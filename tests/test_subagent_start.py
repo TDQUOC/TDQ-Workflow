@@ -60,9 +60,10 @@ class TestKenhSubagent(unittest.TestCase):
     def test_payload_thieu_khoa_van_thoat_0(self):
         """Fail-open: thiếu khoá nào cũng không được chặn lượt của trợ lý."""
         self.state()
-        for goi in ({}, {"cwd": self.cwd}, {"session_id": "x"},
-                    {"cwd": None, "session_id": None}):
-            with self.subTest(goi=goi):
+        for scenario, goi in (("empty", {}), ("cwd-only", {"cwd": self.cwd}),
+                              ("session-only", {"session_id": "x"}),
+                              ("null-values", {"cwd": None, "session_id": None})):
+            with self.subTest(scenario=scenario):
                 rc, _out, _err = run_hook("subagent_start.py", goi)
                 self.assertEqual(rc, 0)
 

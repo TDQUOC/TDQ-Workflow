@@ -1,0 +1,22 @@
+COMMAND: C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe -m unittest discover -s tests -p test_phase1_contract.py
+EXIT: 0
+STDOUT:
+
+STDERR:
+......
+----------------------------------------------------------------------
+Ran 6 tests in 1.807s
+
+OK
+
+
+COMMAND: C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe -m unittest discover -s tests -p test_phase1_contract.py -k Compatibility
+EXIT: 0
+STDOUT:
+
+STDERR:
+....
+----------------------------------------------------------------------
+Ran 4 tests in 1.240s
+
+OK

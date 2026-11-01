@@ -1,0 +1,91 @@
+{
+  "schema_version": 6,
+  "active_request": "2026-10-27-1246-do-dung-bao-toan-loi",
+  "previous_request": "2026-10-26-0224-giam-timeout-agent-lsp",
+  "lane": "full",
+  "phase": "report",
+  "brief_file": "docs/tdq/brief/2026-10-27-1246-do-dung-bao-toan-loi.md",
+  "spec_file": "docs/tdq/spec/2026-10-27-1246-do-dung-bao-toan-loi.md",
+  "spec_approved": true,
+  "spec_sha256": "4f1545b001b09fa45604e9d386028c0f70dcd969535a09185e34f63f514b3995",
+  "spec_approved_at": "2026-10-27T13:21:48+07:00",
+  "spec_descriptor": {
+    "target": "spec",
+    "request": "2026-10-27-1246-do-dung-bao-toan-loi",
+    "lane": "full",
+    "file": "docs/tdq/spec/2026-10-27-1246-do-dung-bao-toan-loi.md",
+    "sha256": "4f1545b001b09fa45604e9d386028c0f70dcd969535a09185e34f63f514b3995",
+    "by": "duyệt spec",
+    "at": "2026-10-27T13:21:48+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "spec_approved_by": "duyệt spec",
+  "spec_bo_qua_do": null,
+  "lsp_bo_qua": null,
+  "plan_file": "docs/tdq/plan/2026-10-27-1246-do-dung-bao-toan-loi.md",
+  "plan_approved": true,
+  "plan_sha256": "2ef6ed16b60e5d40707b02dca99111358a6dd62e38a3dc9408ae38f3d13d3dfc",
+  "plan_approved_at": "2026-10-27T13:49:57+07:00",
+  "plan_approved_by": "duyệt plan",
+  "plan_descriptor": {
+    "target": "plan",
+    "request": "2026-10-27-1246-do-dung-bao-toan-loi",
+    "lane": "full",
+    "file": "docs/tdq/plan/2026-10-27-1246-do-dung-bao-toan-loi.md",
+    "sha256": "2ef6ed16b60e5d40707b02dca99111358a6dd62e38a3dc9408ae38f3d13d3dfc",
+    "by": "duyệt plan",
+    "at": "2026-10-27T13:49:57+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "quick_approved": false,
+  "quick_approved_at": null,
+  "quick_approved_by": null,
+  "quick_descriptor": null,
+  "implement_mode": "subagent",
+  "implement_pause": null,
+  "lech_spec": [],
+  "doc_lang": "vi",
+  "muc_gat": "full",
+  "muc_qc": "full",
+  "started_at": "2026-10-27T12:50:47+07:00",
+  "loai_request": "bugfix",
+  "nhanh_goc": "dev",
+  "nhanh_request": "bugfix/do-dung-bao-toan-loi",
+  "phase_history": [
+    {
+      "phase": "idle",
+      "at": "2026-10-27T12:50:47+07:00"
+    },
+    {
+      "phase": "analyze",
+      "at": "2026-10-27T12:50:48+07:00"
+    },
+    {
+      "phase": "spec",
+      "at": "2026-10-27T13:03:04+07:00"
+    },
+    {
+      "phase": "plan",
+      "at": "2026-10-27T13:22:16+07:00"
+    },
+    {
+      "phase": "mode",
+      "at": "2026-10-27T13:50:47+07:00"
+    },
+    {
+      "phase": "implement",
+      "at": "2026-10-27T13:52:55+07:00"
+    },
+    {
+      "phase": "qc",
+      "at": "2026-10-27T14:29:31+07:00"
+    },
+    {
+      "phase": "report",
+      "at": "2026-10-27T15:24:39+07:00"
+    }
+  ],
+  "updated_at": "2026-10-27T15:24:39+07:00"
+}

@@ -1,0 +1,7 @@
+ss.s........s..s..[2026-10-27T14:04:20+07:00] s.jsonl: skipped 1 unreadable line(s)
+.[2026-10-27T14:04:20+07:00] skipping that.jsonl: [Errno 2] No such file or directory: '/khong/co/that.jsonl'
+.....s.ss....s
+----------------------------------------------------------------------
+Ran 33 tests in 0.325s
+
+OK (skipped=9)

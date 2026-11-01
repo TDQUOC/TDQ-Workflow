@@ -1,0 +1,51 @@
+{
+  "kind": "resume-environment-diagnostic",
+  "at": "2026-10-27T22:46:52+07:00",
+  "observed_writer": {
+    "pid": 6196,
+    "name": "claude.exe",
+    "executable": "C:/Users/admin/.local/bin/claude.exe",
+    "parent_pid": 15104,
+    "parent": "CloudCLI Node server",
+    "created_local": "2026-10-27T22:37:53.591+07:00"
+  },
+  "observation": "2026-10-27T22:44:21+07:00: Kernel-File event16 writes121929bytes to matched FileObject; event27 InfoClass10 replaces .claude.json from process-owned temporary file. This attributes the observed write, not all historical config drift.",
+  "evidence": [
+    {
+      "path": "config-writer-events.json",
+      "sha256": "f97318b0ef86895818dffcfeb5a4fa046095a5a911d7fc6f663e94ad6ec94a52"
+    },
+    {
+      "path": "config-writer-writes.json",
+      "sha256": "d06ecb7c824daaccb72cf17932a4e0cdaf683f00f896c587047e646810801a67"
+    },
+    {
+      "path": "config-writer-watch.json",
+      "sha256": "dd644d728452410bc94b4c0fad149ee166c3e070018de2f0258caf6c7e9608bc"
+    }
+  ],
+  "raw_trace_hashes": [
+    {
+      "path": "config-writer.etl",
+      "sha256": "694288e8ee93d7683d4907d7bb1646ee3827d76e8ba18381916e772dacefadac"
+    },
+    {
+      "path": "config-writer-watch.etl",
+      "sha256": "b3de4d48c23d8adea418c3582f1bfa23a9fad15530ac568ccf295024ee0e084d"
+    }
+  ],
+  "raw_trace_retention": "Remove owned unfiltered ETL after preserving only relevant target-path events; no config content captured.",
+  "actions_performed": [
+    "Restored existing normal-user Explorer dispatch",
+    "Re-ran QC1.3 once after dispatch repair",
+    "Re-ran QC1.1 once",
+    "Started and stopped two uniquely named ETW trace sessions"
+  ],
+  "actions_not_performed": [
+    "Did not stop external Claude or CloudCLI",
+    "Did not change or restore personal config",
+    "Did not weaken guards",
+    "Did not start Full or benchmarks with failed prerequisite gates"
+  ],
+  "permission_needed": "Stop only identified external Claude writer after rechecking executable, PID creation time and parent; leave CloudCLI server and other processes running. If identity changed, identify replacement before acting."
+}

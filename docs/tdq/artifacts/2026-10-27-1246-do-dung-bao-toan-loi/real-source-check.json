@@ -1,0 +1,82 @@
+{
+  "at": "2026-10-27T14:07:15.872807+07:00",
+  "purpose": "Read-only compatibility probe on two sessions selected by the original audit; no transcript body retained.",
+  "checks": [
+    {
+      "host": "claude",
+      "session_id": "48b5b0db-3299-4888-ad76-86d8150fead6",
+      "input_bytes": 23722946,
+      "read_seconds": 0.284,
+      "attribution": "session",
+      "sources": [
+        {
+          "path": "C:\\Users\\admin\\.claude\\projects\\C--Users-admin-Documents-Projects-ForAgentCode-TDQ-Workflow\\48b5b0db-3299-4888-ad76-86d8150fead6.jsonl",
+          "host": "claude",
+          "session_id": "48b5b0db-3299-4888-ad76-86d8150fead6",
+          "status": "accepted",
+          "reason": "metadata_matched",
+          "counters": {
+            "unknown_events": 3365,
+            "conflicts": 3,
+            "missing_pairs": 10
+          }
+        }
+      ],
+      "quality": {
+        "api": {
+          "quality": "partial",
+          "reason": "missing_pairs,unknown_events"
+        },
+        "tool": {
+          "quality": "partial",
+          "reason": "conflicts,unknown_events"
+        },
+        "job": {
+          "quality": "unavailable",
+          "reason": "schema_has_no_confirmed_lifecycle"
+        }
+      },
+      "span_counts": {
+        "api": 1576,
+        "tool": 1565,
+        "job": 0
+      }
+    },
+    {
+      "host": "codex",
+      "session_id": "01a1783c-fb9a-7580-addf-1c182be3b0e0",
+      "input_bytes": 907915,
+      "read_seconds": 0.008,
+      "attribution": "session",
+      "sources": [
+        {
+          "path": "C:\\Users\\admin\\.codex\\sessions\\2026\\10\\26\\rollout-2026-10-26T19-43-45-01a1783c-fb9a-7580-addf-1c182be3b0e0.jsonl",
+          "host": "codex",
+          "session_id": "01a1783c-fb9a-7580-addf-1c182be3b0e0",
+          "status": "accepted",
+          "reason": "metadata_matched",
+          "counters": {}
+        }
+      ],
+      "quality": {
+        "api": {
+          "quality": "unavailable",
+          "reason": "schema_has_no_confirmed_lifecycle"
+        },
+        "tool": {
+          "quality": "complete",
+          "reason": "selected_logs_complete"
+        },
+        "job": {
+          "quality": "unavailable",
+          "reason": "schema_has_no_confirmed_lifecycle"
+        }
+      },
+      "span_counts": {
+        "api": 0,
+        "tool": 21,
+        "job": 0
+      }
+    }
+  ]
+}

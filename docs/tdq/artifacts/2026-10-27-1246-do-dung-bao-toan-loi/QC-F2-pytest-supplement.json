@@ -1,0 +1,23 @@
+{
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=docs/tdq/artifacts/2026-10-27-1246-do-dung-bao-toan-loi/QC-F2-pytest-supplement.xml",
+    "tests/test_archify_artifacts.py",
+    "tests/test_canvas_draw.py",
+    "tests/test_check_canvas_layout.py",
+    "tests/test_harvest.py",
+    "tests/test_stop_batching.py",
+    "tests/test_tcas_ast.py"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T15:18:40.171992+07:00",
+  "seconds": 7.092,
+  "exit_code": 1,
+  "stdout": "QC-F2-pytest-supplement.stdout.txt",
+  "stderr": "QC-F2-pytest-supplement.stderr.txt"
+}
