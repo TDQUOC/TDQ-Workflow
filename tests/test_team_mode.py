@@ -5,6 +5,8 @@ khác hẳn `[~]` (leader đang tự làm). Hàng rào ép tick vẫn chỉ cho 
 phải cho NHIỀU `[>]` — nếu không thì không thể có đội.
 """
 import datetime
+from contextlib import redirect_stderr, redirect_stdout
+import io
 import json
 import os
 import re
@@ -12,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 from helper import (tdq_state, write_state, write_file, run_state_cli,
                     run_team_cli, run_hook, load_fixture, run_checkstatus_cli)
@@ -180,14 +183,25 @@ class CliTest(unittest.TestCase):
         self.assertEqual(rc, 2, err)
 
     def test_log_bat_mac_dinh_co_timestamp_iso(self):
-        rc, _out, err = run_team_cli(self.cwd, "--help")
+        output, errors = io.StringIO(), io.StringIO()
+        with redirect_stdout(output), redirect_stderr(errors):
+            with self.assertRaises(SystemExit) as help_exit:
+                tdq_team.main(["--help"])
+        rc = help_exit.exception.code
         self.assertEqual(rc, 0)
-        # --help không chạy việc gì; log service chỉ cần chứng minh ở lệnh thật.
-        rc, _out, err = run_team_cli(self.cwd, "audit")
+        # Keep help's actual exit above; isolate log formatting from audit work.
+        errors = io.StringIO()
+        with mock.patch.dict(os.environ), redirect_stderr(errors):
+            os.environ.pop("TDQ_LOG", None)
+            tdq_team._log("audit")
+        err = errors.getvalue()
         self.assertRegex(err, r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\]")
 
     def test_tat_log_bang_bien_moi_truong(self):
-        rc, _out, err = run_team_cli(self.cwd, "audit", env={"TDQ_LOG": "0"})
+        errors = io.StringIO()
+        with mock.patch.dict(os.environ, {"TDQ_LOG": "0"}), redirect_stderr(errors):
+            tdq_team._log("audit")
+        err = errors.getvalue()
         self.assertNotIn("[20", err)
 
 

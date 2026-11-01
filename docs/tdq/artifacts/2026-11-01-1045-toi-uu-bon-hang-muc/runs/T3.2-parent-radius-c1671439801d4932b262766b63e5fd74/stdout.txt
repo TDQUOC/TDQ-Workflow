@@ -1,0 +1,26 @@
+vung-cham: 2 changed file(s); selected 2/181 modules (direct): test_optimize_contracts.py test_runtime_contracts.py; no fallback
+[TDQ:TEST] PASS — scope=direct backend=pytest tests=18 skipped=0 in 24.15s.
+Slow-test duration quality: complete; execution phases=19.070274700017762s; wall=24.093584900001588s (separate).
+Top20 cases (execution phase seconds)
+  13.139413  tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting  pass
+  2.599688  tests/test_optimize_contracts.py::test_mixed_identity_and_legacy_verdict_survive_summary_and_export  pass
+  2.574864  tests/test_runtime_contracts.py::test_mixed_failure_survives_artifact_ledger_and_existing_state_consumer  pass
+  0.538836  tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs  pass
+  0.059108  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test]  pass
+  0.041464  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_runtime_bench]  pass
+  0.023824  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_receipt]  pass
+  0.019207  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript]  pass
+  0.019083  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_result]  pass
+  0.014504  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_manifest]  pass
+  0.012026  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_process]  pass
+  0.011371  tests/test_runtime_contracts.py::test_document_noop_never_launches_or_consumes_full_budget  pass
+  0.008333  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript_cache]  pass
+  0.005582  tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_readiness]  pass
+  0.000954  tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import hooks.scripts.stop_gate as gate\ngate.main()]  pass
+  0.000846  tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tests.helper import ROOT]  pass
+  0.000626  tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import tdq_state as state\nstate.save_state('project', {})]  pass
+  0.000544  tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tdq_state import save_state as write\nwrite('project', {})]  pass
+Top20 modules (execution phase seconds)
+  15.931751  tests/test_runtime_contracts.py  cases=16
+  3.138524  tests/test_optimize_contracts.py  cases=2
+TDQ_RESULT {"path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\cache\\test-runs\\e37e717ca14c6170\\dc978ab07e794d1aa1393456530326b6\\result.json", "sha256": "1d0ef9c22475371c8d763a29cb4095ec739ce71faf807edb7bc5661467c0c823"}

@@ -1,0 +1,26 @@
+{
+  "kind": "observed-preflight-summary",
+  "request": "2026-11-01-1045-toi-uu-bon-hang-muc",
+  "recorded_at": "2026-11-01T16:27:00+07:00",
+  "python": "3.13.15",
+  "pytest": "9.1.1",
+  "xdist": "3.8.0",
+  "new_dependency_installed": false,
+  "lsp": {
+    "implementation": "References and blast-radius were used before production edits; task provenance in plan and integration artifacts.",
+    "final_check": "tdq_lsp check: rungs1-6 PASS, graph freshness warning, module session expired; smoke3/3 answered. Subsequent MCP start/open succeeded, find_references returned LSP process has exited.",
+    "final_status": "DEGRADED",
+    "fallback": "No production edits after Full. Final AST/grep review only; do not claim fresh final LSP references."
+  },
+  "browser": {
+    "port": 9222,
+    "chrome": "156.0.8078.76",
+    "mcp": "Transport closed",
+    "fallback": "Actual Chrome direct CDP using existing websocket-client; screenshots, DOM, accessibility and console evidence in final-browser, not a string-only HTML inspection."
+  },
+  "archify": {
+    "final_observation": "tdq_archify.py status: current, reasons[]",
+    "build_assessment": "master-build/output-assessment.json"
+  },
+  "certification": "This summary is environment provenance, not a test PASS receipt."
+}

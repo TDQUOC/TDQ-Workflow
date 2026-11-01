@@ -1,0 +1,18 @@
+{
+  "schema_contracts": "PASS",
+  "bindings": {
+    "runtime_receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/T4.2-author-final-4c5dde6a400d4dabb8afddff8638efad/receipt.json",
+      "sha256": "c554ebdc609b2dde9513bdd151fa1c823db96007df0f529924de069838271a7e"
+    },
+    "runtime": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime.json",
+      "sha256": "9cbbeb1d82b78a282591367e20c789b3df2a8fff4f62f79bd9a47854063c27b2"
+    }
+  },
+  "helper": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime_checks.py",
+    "sha256": "6a53a33850edb84b680688b575cf88ab175aaaf10efce471f3c9e9ba45b32e79"
+  },
+  "method": "existing verify_scope.runtime + runtime_contracts + runtime_row against actual guarded receipt and raw files"
+}

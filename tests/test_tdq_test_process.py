@@ -99,6 +99,56 @@ def test_no_spawn_after_deadline(tmp_path):
     assert not marker.exists()
 
 
+def test_owned_job_preserves_environment_without_pytest_layer(tmp_path, monkeypatch):
+    caller = {"HOME": str(tmp_path / "caller-home"), "USERPROFILE": str(tmp_path / "caller-profile"),
+              "CODEX_HOME": str(tmp_path / "codex"), "TDQ_TEST_JOB_ROOT": "caller-marker",
+              "PYTHONPATH": "caller-pythonpath", "PYTEST_CURRENT_TEST": "caller-test"}
+    for name, value in caller.items():
+        monkeypatch.setenv(name, value)
+    expected = dict(os.environ)
+    with process.OwnedProcessJob(tmp_path) as job:
+        root = job.root
+        result = job.run(python("import json,os,sys; print(json.dumps({k:os.environ.get(k) for k in "
+            + repr(list(caller)) + "})); print(json.dumps({'eof':sys.stdin.read() == '', 'tty':sys.stdin.isatty()}))"), phase="owned")
+        environment, stdin = map(json.loads, result["stdout"].splitlines())
+        assert environment == caller
+        assert stdin == {"eof": True, "tty": os.name == "nt"}  # Windows NUL reports isatty.
+        assert result["cleanup_complete"] and result["ownership"]["verified"]
+        assert job.env == expected
+        assert root.is_dir()
+    assert not root.exists()
+    assert dict(os.environ) == expected
+
+
+def test_isolated_sanitizes_pytest_identity_before_enter(tmp_path):
+    identities = {key: "caller" for key in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT",
+        "PYTEST_XDIST_TESTRUNUID", "PYTEST_CURRENT_TEST")}
+    job = process.IsolatedJob(tmp_path, env=identities)
+    assert not set(identities).intersection(job.env)
+
+
+def test_cleanup_shares_one_budget(monkeypatch):
+    clock = [100.0]
+    waits = []
+    class Owner:
+        def stop(self, deadline):
+            assert deadline == 105.0
+            clock[0] = 104.75
+            return True
+        def close(self):
+            waits.append("closed")
+    class Child:
+        def wait(self, timeout):
+            waits.append(timeout)
+            clock[0] += timeout
+            return 0
+    monkeypatch.setattr(process.time, "monotonic", lambda: clock[0])
+    complete, elapsed = process.OwnedProcessJob._cleanup(Owner(), Child())
+    assert complete
+    assert waits == [.25, "closed"]
+    assert elapsed == 5.0
+
+
 def test_missing_command_is_error(tmp_path):
     with process.IsolatedJob(tmp_path) as job:
         result = job.run([str(tmp_path / "missing-executable")], phase="run")

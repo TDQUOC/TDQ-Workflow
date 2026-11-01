@@ -1,0 +1,29 @@
+[2026-11-01T08:40:13+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=1.274767 cleanup=0.000061 cleanup_complete=True
+[2026-11-01T08:40:33+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=20.259902 cleanup=0.000051 cleanup_complete=True
+[2026-11-01T08:40:33.686724+00:00] receipt action=executed reason=fresh
+[2026-11-01T15:40:35+07:00] tdq_test: summary stage=complete cases=18 quality=complete status=PASS
+..................                                                       [100%]
+18 passed in 19.24s
+[2026-11-01T08:40:33.512680+00:00] manifest cases=18 complete=True exit=0 action=executed
+tests/test_optimize_contracts.py::test_mixed_identity_and_legacy_verdict_survive_summary_and_export
+tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_manifest]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_result]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_process]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_receipt]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_readiness]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript_cache]
+tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_runtime_bench]
+tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import hooks.scripts.stop_gate as gate\ngate.main()]
+tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tests.helper import ROOT]
+tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import tdq_state as state\nstate.save_state('project', {})]
+tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tdq_state import save_state as write\nwrite('project', {})]
+tests/test_runtime_contracts.py::test_mixed_failure_survives_artifact_ledger_and_existing_state_consumer
+tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting
+tests/test_runtime_contracts.py::test_document_noop_never_launches_or_consumes_full_budget
+
+18 tests collected in 0.22s
+[2026-11-01T08:40:13.335600+00:00] manifest cases=0 complete=False exit=0 action=executed
+[2026-11-01T15:40:35+07:00] tdq_test: vung-cham backend=pytest scope=direct status=PASS tests_run=18 details_complete=True fallback=none seconds=24.15 reason=Executed tests completed successfully

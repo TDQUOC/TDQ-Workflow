@@ -1,0 +1,30 @@
+TDQ_T21_CALL {"command": ["so", "--json"], "returncode": 0, "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T2.1-author\\observer-diagnostic-da0680e5c7c64ae0b1813add1800832e\\1.json", "sha256": "64c2203b1a0c5ba291f41750f254c796e2c5de7b8d1a6ee9f6f94080433e7545"}
+TDQ_T21_CALL {"command": ["tron-bo"], "returncode": 1, "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T2.1-author\\observer-diagnostic-da0680e5c7c64ae0b1813add1800832e\\2.json", "sha256": "4d7898d112d158dfaa063db7a36b7ccb3f79570ed6819496d78e3f35cc643239"}
+TDQ_T21_CALL {"command": ["tron-bo"], "returncode": 1, "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T2.1-author\\observer-diagnostic-da0680e5c7c64ae0b1813add1800832e\\3.json", "sha256": "2e69e9b26676c899664ea754ed0d84fb94326ae773265279512ffca56bad2b07"}
+TDQ_T21_CALL {"command": ["so", "--json"], "returncode": 0, "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T2.1-author\\observer-diagnostic-da0680e5c7c64ae0b1813add1800832e\\4.json", "sha256": "b698e3b27e4f729bcb4f6988f51e94628e0f0c2cd65f0ec199da1a1edcd0b131"}
+TDQ_T21_DIAGNOSTIC C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\T2.1-author\observer-diagnostic-da0680e5c7c64ae0b1813add1800832e\manifest.json
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_tdq_test.py::So::test_so_json_dem_va_ngan_sach", "source_file_sha256": "b634510b17a76b5db9413f8bd4f0391755f9beb905fa85506d7fbcce16658f19", "subprocess_calls": 6, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-c94d2cb5cbd14295ba5c46bfba866b16-f94d4b1cbfd0.jsonl", "observation_sha256": "44e00cec013da62279542f9e8e9d1c02392e6c325cf7acbc468ca0767ead996d"}
+
+================================== FAILURES ===================================
+______________________ So.test_so_json_dem_va_ngan_sach _______________________
+
+self = <test_tdq_test.So testMethod=test_so_json_dem_va_ngan_sach>
+
+    def test_so_json_dem_va_ngan_sach(self):
+        p = chay_lenh(self.goc, "so", "--json")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertEqual(json.loads(p.stdout), {"request": "req-1", "tron_bo": 0, "bo_sot": 0,
+                                                "modules_bo_sot": [], "ngan_sach": 2})
+        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
+        chay_lenh(self.goc, "tron-bo")  # đỏ → có vòng sửa QC → ngân sách 3
+        chay_lenh(self.goc, "tron-bo")
+        d = json.loads(chay_lenh(self.goc, "so", "--json").stdout)
+        self.assertEqual(d["tron_bo"], 2)
+>       self.assertEqual(d["bo_sot"], 2)
+E       AssertionError: 0 != 2
+
+tests\test_tdq_test.py:642: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tdq_test.py::So::test_so_json_dem_va_ngan_sach - AssertionE...
+1 failed in 4.89s

@@ -5,11 +5,11 @@
   "evidence_kind": "working-tree",
   "revision": null,
   "document_path": "docs/tdq/models/master.model.json",
-  "document_digest": "784f86c7b19946f4d955bb9a59667360054bf81920f734c399696b80fac30178",
+  "document_digest": "f762b060ab972a81a1a6b61f84b4bad15657fa3c7badf39ba5b78908a2442548",
   "candidate_path": "docs/tdq/models/master.model.json",
-  "candidate_digest": "4df075ab1ba3f92013cc450bc0b27032d4b71cf47e8c59bf86a593c7dc0607b5",
+  "candidate_digest": "a75eba87efe8528e4d40f8c922214b70fc45f9760791af70e4086d08941e0fde",
   "artifact_path": "docs/architecture/index.html",
-  "artifact_digest": "1a037dfe80c92987bfa74daf664792b0f487ab2fa2fcc76be7bc3e9de123e42e",
+  "artifact_digest": "faf0a45230c9bb76064711525eb59f84f4b45ddffedd02c5b8e7c759879c00e5",
   "source_paths": [
     "scripts",
     "hooks",
@@ -38,7 +38,7 @@
     "hooks/scripts/read_gate.py": "4ca24a34d3c0c51f53992773dcaec8f95f9e30511c4d27ceb877aaf533915784",
     "hooks/scripts/search_gate.py": "7d13107f85ae0beefb483951357289302843e3a3a9324c28395b7da5231b6957",
     "hooks/scripts/search_observe.py": "a8db7f0fbbc57afc756e29c04f2382aa2979a3281215b041e7027e603e2af0e9",
-    "hooks/scripts/session_start.py": "b7f137c3420668904efa429887a06003353e259b58b8130597cd8acfaf3f6edd",
+    "hooks/scripts/session_start.py": "e89b8ef80f15de4f45dff3c88f4a598e9699fd573a2c7b5a3c51df66607047c4",
     "hooks/scripts/stop_batch_checker.py": "c22d7a2c00953df1a7e5196d7104c51f159739175db5af30f34801b3f24fce23",
     "hooks/scripts/stop_gate.py": "017cd29a40d71509617894eb89a6761dde3c95bbfaa17e222977b0ff4d9cd8dd",
     "hooks/scripts/strategic_compact_gate.py": "5e8c27a7e879fbf7a6ca96bea82913581a0d2d648d1b15c361efa70cee96aa07",
@@ -72,12 +72,12 @@
     "scripts/skill_inventory.py": "36787cd79015a4c7bb3d09a4e526b71fcd36021e16c25c5f0489ee7515367d04",
     "scripts/skill_router.py": "83ef04ffd76117e5eafc127bd8b7fc6c84a7bcd8b93165dbe90056d05e0a740c",
     "scripts/skill_tokens.py": "1126f553519eb8eda701e48a0292890dbf98a5bb05ab40d25bcd7f3e690306f7",
-    "scripts/step_audit.py": "e9a5fce387437823c3736fcdc6be2c9e059ab71c03a8a4b95f0aae9d2f0d81c6",
+    "scripts/step_audit.py": "834bb7735883d23ff6ac1e924534ac29d13cf4fa2129d2a15a8ed0e0e7f93b05",
     "scripts/tdq_archify.py": "70fef5e28396b221bba1ff1b3ffe3f7e0eb0278a6f5bc657889137dd96ee63fe",
-    "scripts/tdq_bench.py": "759d10bb353cf68b1a603d2e74c18b0ead5e8d2d7bcc76831a549451086755b4",
+    "scripts/tdq_bench.py": "cc44350a8e64e6e6ceb5d01af31f6eb5f3402e857f66264163e7e197a9995822",
     "scripts/tdq_checkportable.py": "517829b6b5ab6e60885c6479edd03a4c0dfd3bb1a1d9079b61d17700e323331a",
     "scripts/tdq_checkstatus.py": "ac23eb7c007f2eedbb3bce67a289281f5aafc9e47432e08f776d1cacba8bdd16",
-    "scripts/tdq_codex.py": "763ccae81086059cd836d68443dce073b7762f16b7e7c411bd1e7b71c089bb92",
+    "scripts/tdq_codex.py": "cce66bc17f42d056938af4a341715217fed6d465d6888aada0d7735e73bb5f39",
     "scripts/tdq_codex_mcp.py": "8b96be414bbc0791146b065aa4034ee26d62262cb6b9a72d827936e3490006f6",
     "scripts/tdq_devtool_mcp.py": "1ee0b1f2d29686ae2b36bd136d574e0525e408d0452b705faee756ec0b00ff96",
     "scripts/tdq_eval.py": "0cd51a6147c6bbb1fcd7c4299f0c754518f78444c6fe5f90b53f1b272e3c7497",
@@ -85,22 +85,23 @@
     "scripts/tdq_graphify.py": "1a28616755a8a6f1698f63fadd6d510ab73b7a5634b74356194b391ba0c74ac7",
     "scripts/tdq_harvest.py": "fc4f710b5360d036221930b02e34cabc2679ef8fd956090995bc2c9c1dfa59bb",
     "scripts/tdq_knowledge.py": "3ec06513f22f11f2bf3ccca576e06fd6f5204d2a84860632cebbb5de91c53ad2",
-    "scripts/tdq_lsp.py": "65f305a2663bc8bc1a72442c81906bf002ac5a93499275d5fd48ccf0a334e506",
+    "scripts/tdq_lsp.py": "9f6d06cc6178f5079ff708cec59bdf9c81c2a6d30d6f8c78716cd2c82955cf47",
     "scripts/tdq_no.py": "af5981ce57bca5e3e51b70c939eb5f0511289063b671ab47cd4599db563b7197",
-    "scripts/tdq_readiness.py": "f6c956ae3a48b3f84d54d08b4423f4f5f48ca44aeda1dd213f6007a3df0a7ab1",
-    "scripts/tdq_runtime_bench.py": "e9e253c0910d24e81ea692173eb5f6946d89c90edc73bccc9d911e594260a5f7",
-    "scripts/tdq_setup.py": "a067e128d816c7509fa4df8c816e028c7d6c2788ad1c89bf4810370a0fe7b0f7",
+    "scripts/tdq_readiness.py": "9eee5c8cc4106290c149bea9d4b81c3a5c18c1c3336f190a3d91f0b98476603b",
+    "scripts/tdq_runtime_bench.py": "d172e87bd579f94f589fa4283f2357c69904efad8b6a4bdbed045df189e507d1",
+    "scripts/tdq_setup.py": "125587d15e578ebe9a8b968416d8a722f5b604c70d5167e662107fead709ab8e",
     "scripts/tdq_state.py": "2dcafe4e23b3c821cb10e037c25483d92a5e2d3e608ade8f2b04dd3b85252ff9",
     "scripts/tdq_team.py": "7f24a5bae1b8112016145a2757ea304a04b4269ed6047f5271a03bdaff1ada1d",
     "scripts/tdq_ten_lenh.py": "3bfb2a8d1713c97670172f85af2fea107746655e4e325687fdcf0c660f7cb0c4",
-    "scripts/tdq_test.py": "83006abf653c6bc8dca2e32edf97927638f7999c13aefba901c0b3bf4742fb73",
-    "scripts/tdq_test_manifest.py": "691275336a0cac2d8a4517dd23c279a5de27e8ab99fd48fce8ffd37b6ba6f5e9",
-    "scripts/tdq_test_process.py": "c4024dd79466c6d682d71c36812970e343cc2f1c970c4666cef791ba5abce06e",
-    "scripts/tdq_test_receipt.py": "fcff089ccd1c86462cdd73c153d8c6066a026da56cf91b7e545f81e4f79805ea",
-    "scripts/tdq_test_result.py": "1a25951e675460e05c48de8f4c4f95f3c1616d31c384cdf10af2f63dc3b8a0d5",
-    "scripts/tdq_timing.py": "eb05d818746b3efd34be6968735431502246e3789008102b260abaa98056a3e5",
-    "scripts/tdq_transcript.py": "9501eba19719e8f78087822a271a901f44fc22ec4b794dbb6062d08b997856da",
-    "scripts/tdq_transcript_cache.py": "9aa724a7fb8f1c8c5daff3ee24b0718988fcc3233a92baaac364434577c110a7",
+    "scripts/tdq_test.py": "04086c0f6c525aede81d5df722a36011d6714f21387d505c2d571c1270cc71a3",
+    "scripts/tdq_test_manifest.py": "95cbc392bef7c87ecad518c0ec08e06aa6b247a8afd2f00c195222236d5efaa4",
+    "scripts/tdq_test_process.py": "a4342947fd03f6fd548584b40e2f63c60e649731d38b981af2d12aff15133ce7",
+    "scripts/tdq_test_receipt.py": "ad15683e12cc85c16d401a954d93fb77b8eca5fc183fc1285c73be85dd1cfd78",
+    "scripts/tdq_test_report.py": "9d2412e269b956d798a9a1637ae05632839f651b1a40eb14d26d69dba94dc275",
+    "scripts/tdq_test_result.py": "5398b501123402c78cf3aea457a348e2633095d1294da5064337670ec2517620",
+    "scripts/tdq_timing.py": "a9c2ca82eae41f3c60fbab97ded6bd997bd51ab63158c091588fcde1c7a1d908",
+    "scripts/tdq_transcript.py": "783b7a030bd8ec929a9d026ce7e7eea9bfd8b51287bb68352839d9e5e4f8b1e8",
+    "scripts/tdq_transcript_cache.py": "67a419929e5368839078e823a585656fcd6b5bd311e17b342cd50bfb2a16f286",
     "scripts/tdq_vision_diff.py": "a2027cdedf89554478b3c3f483fd031a8465b065fac034375c47db404ad94f97",
     "scripts/tdq_vungfile.py": "0b8e42f10f24104acb2640e549092456ea5bf1c54094ba0751b0ef6cb6fc3812",
     "scripts/tdq_worktree_registry.py": "d0dff6740147aa6f40bcacf614f81b196645b3e6e4ae5fdda8d91c6f8d73d1be",
@@ -113,7 +114,7 @@
     "skills/tdq-build/references/archify-lifecycle.md": "6e6082205b8b965df7cdcfab29969dc4dcf07bc357934ff0ee5e8d608c06825b",
     "skills/tdq-build/references/codex-mode.md": "e286d113878265cbf251292bf29ef50b592fbd639fa65aacd7b78d6f00ef6049",
     "skills/tdq-build/references/qc.md": "b2168debe2e03db000b8f43fbce0c05fcab68f9ee154e4805c2fb21e1dd6400c",
-    "skills/tdq-build/references/report-template.md": "7cb00d16576bfba3bb9ea4d8e0cd76d6b3f8d091fc8e2b6b82a77037a7ef7a3b",
+    "skills/tdq-build/references/report-template.md": "c05508b38419885a1583436189f4cc68f9dff9a862fbd16829b4dcd1c0c0d8b6",
     "skills/tdq-build/references/rules/chung.md": "5b5c725b67e6451d6f532d87256ca86cf13a821db2ccb2b18d88d4af03fb3d76",
     "skills/tdq-build/references/rules/cookbooks/python-cookbook.md": "f82de74286799efd5fbe5ab1dff0155f45879611e26e3dd64c6b9e1c87a44b69",
     "skills/tdq-build/references/rules/cookbooks/typescript-js-cookbook.md": "b6b715df50127f19f6577586dd3d8fa69ac8535cd191a7e8ff80f924e425e3c0",
@@ -126,17 +127,17 @@
     "skills/tdq-build/references/rules/rust.md": "5e614b57156fb67de2ce888b175900592479139e0d7824761ce4e0f7133741a5",
     "skills/tdq-build/references/rules/them-ngon-ngu.md": "bc5e4c73aa17ff54e62bc6338ce73c17eaceb521a3ba674946a1936cf0b0b0dd",
     "skills/tdq-build/references/rules/typescript-js.md": "e128fe1b6deeb027f5113fa8ddbeaa49f53e9c19be71efb392297bab61b6f26e",
-    "skills/tdq-build/references/runtime-speed.md": "390e55f8b67aa818a5866e19f28a6b0ebfdbf0e06505fa2c34d704d5458528b0",
+    "skills/tdq-build/references/runtime-speed.md": "f4ef3be8f71df89f24edea451d146bc1501f6b1c0ac99448f7f55197b754067b",
     "skills/tdq-build/references/team-mode-tra-cuu.md": "2350b9380bced576c6e1693b1c6c1b8e0f81ac5cd72e0701edda159efbcd9f15",
     "skills/tdq-build/references/team-mode.md": "7767efeab7b6fe9269c552c75ec343c1a9fbd18955a637d09c6d572ff9fdd448",
     "skills/tdq-build/references/vision-test-loop.md": "cbeb41a32a2925e8ca9f52adec4a1df7b0589b2e0df68e6678fe1f4c4d00389f",
     "skills/tdq-check-status/SKILL.md": "b9477bb7248c6476b022b01e08bdcdaf567113b1a16ce71de658f81b890a3fbf",
     "skills/tdq-check-status/references/bang-lech.md": "8358c252fe43d22b1bd5f7717ec221ebf4b7420a9f3569849b766f5b9cecf4b0",
     "skills/tdq-check-status/references/report-template.md": "5c9e62227a65a7508c34e2bcdc4728b0c3068b507d75f699bf9d0e64d5e896eb",
-    "skills/tdq-conventions/SKILL.md": "c05b7cd8e860265e51599d6bd3eb0ff10c3b9939c526d30eb12e70b788b6c4d4",
+    "skills/tdq-conventions/SKILL.md": "40aae636f16d58968a4cfa158117231854d849bc16ef68a17f84c8f67e69d9f5",
     "skills/tdq-conventions/references/approval.md": "0c8949e4649ac88123f1be274de8656d278a148a0cea57b4f0cbe50d79de3952",
     "skills/tdq-conventions/references/clean-code.md": "610466a5ede13a51761e70d6c082c4df55a1864acef4d94dc5f1337dc848eef1",
-    "skills/tdq-conventions/references/context-budget.md": "80eeb5680eed5710013212e774571fcb041c493509b91c378bbc174c10dd3969",
+    "skills/tdq-conventions/references/context-budget.md": "647e36b1fefe349f8fdc1722847333c134e097e285ef0deeb17b96a314b55def",
     "skills/tdq-conventions/references/handoff-schema.json": "7e38fd5de35155161606ecd026e022bf9e963fb29acb66b157ff905cd03f73b6",
     "skills/tdq-conventions/references/knowledge-template.md": "bc0df3b15da0c6bf03ef76ac42768c8c40da640a7004bdcd9ea25946bb872a25",
     "skills/tdq-conventions/references/measure-scenario.md": "4b9d187c454d46d446df9c76570464d975de1b958e62aeef1afcfcdbf1187204",
@@ -149,7 +150,7 @@
     "skills/tdq-conventions/references/user-facing-block-vi-du.md": "e5b097f3301b9bd9a05727965e118cdeb53d16dce3fd0586a343a84d0a9ad214",
     "skills/tdq-conventions/references/user-facing-block.md": "d0ba0d64ed92dbd1ef076761a92f8bb1e09c37a334ae3eb6b20550e3f5fcf699",
     "skills/tdq-conventions/references/worklog-images.md": "dc462cb48316d8cbf33e31f30066d718d50734c9779b0a18350ec363297a902a",
-    "skills/tdq-intake/SKILL.md": "6077b1d7bc14ec927b0b8573685d23bd8b136cf2248244be18265c11af69e61e",
+    "skills/tdq-intake/SKILL.md": "a605f14017f0f7855ded8c848fd3a85ecaf6d480369a9ec5f2e2444a5d7ab8a7",
     "skills/tdq-intake/references/analyze-full.md": "59c62d428486cdc2095f07b599a3a70b9418868ba7d49e6b7c3f05ec54f09d09",
     "skills/tdq-intake/references/archify-quick.md": "5b2b3ad2fc97eb01cd1196e447395276c44a702037d851e2bb159f8207e466d4",
     "skills/tdq-intake/references/interview.md": "290c490f3d02c65f61fedb461d321b89cbfbde943e8cba099a21b0732d182f40",
@@ -167,7 +168,7 @@
     "skills/tdq-plan/references/plan-template-co-che.md": "1684ba4e69507b2c0aa0e581861345420d739718479095842c4d73824fff4e7c",
     "skills/tdq-plan/references/plan-template-huong-dan.md": "154f58e6645c1a558ece38d2f05ca18a3f8b9aa9c0c54bb48cb64056b4ee987e",
     "skills/tdq-plan/references/plan-template.md": "e61002d95ea38a9a9c822ff6a96c0aca81bac058b30f8f279b1af2b02dec4e4d",
-    "skills/tdq-setup/SKILL.md": "9afb2d24c4bf1e93b4d421a8ec35cddd17673df6ec30ff1ff36768aa8512be75",
+    "skills/tdq-setup/SKILL.md": "7a2de0ae22f74ab54dbb153ef8d541ff3fea00144e4773000dc69e75da58d890",
     "skills/tdq-setup/references/chrome-devtools-mcp-guide.md": "78f0041f646b254927afe63f992721f72cfc8a7484c7010cab395df23b6f0629",
     "skills/tdq-setup/references/languages.md": "b8c39cd8d8de1905d0bbb64f3ed1ee18e214d27318cc8e66ca271e0cfd3811b6",
     "skills/tdq-setup/references/mcp-first-guide.md": "712d01a9fab8561e56dbb4f6e493c70ee6cb596b194044ee17978735c5ba0c2c",
@@ -177,7 +178,7 @@
     "skills/tdq-spec/references/archify-ba.md": "680b0f2f392ed70827e66dcd1d161bf15019682dec236e64755b9468d2570da5",
     "skills/tdq-spec/references/spec-template-huong-dan.md": "bac8d2b88253c71540233947fa90c944f76bbafa7bdd4c0c2a0fad5f4575142f",
     "skills/tdq-spec/references/spec-template.md": "1134694956cd2161008dce7b7101cbdda3cd32b992b2d0c1e6e04781001f72c6",
-    "skills/tdq-status/SKILL.md": "1e4e1a93af5b2a1df7e52698f72387c280a4ca9c12822fb036ec9b634c589af2"
+    "skills/tdq-status/SKILL.md": "e7ee2e3189846a819e53198f35a9af026a6bccb8150193a0bf1219bfe7e296a8"
   },
   "coverage": {
     "modules": [
@@ -208,6 +209,10 @@
       {
         "id": "runtime-verification-and-caches",
         "status": "selected"
+      },
+      {
+        "id": "optimization-report-runtime",
+        "status": "selected"
       }
     ],
     "excluded": [],
@@ -218,7 +223,7 @@
     "ok": true,
     "status": "pass",
     "engine": "archify",
-    "views_count": 5,
+    "views_count": 6,
     "index": "index.html"
   },
   "child_files": {
@@ -231,7 +236,9 @@
     "hooks-and-gates.html": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
     "hooks-and-gates.candidate.json": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e",
     "runtime-verification.html": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a",
-    "runtime-verification.candidate.json": "24278842a4c68cfec74761449ac521c22259f8bc7f375e2ec67e070df15fb234"
+    "runtime-verification.candidate.json": "24278842a4c68cfec74761449ac521c22259f8bc7f375e2ec67e070df15fb234",
+    "optimization-report.html": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5",
+    "optimization-report.candidate.json": "ef83b7effbcb1c3b7062f61cad2b58a9a3f657ee3b5add9ed9d4b2fc4acce2ac"
   },
   "views": [
     {
@@ -268,6 +275,13 @@
       "summary": "Manifest từng case, process isolation, receipt reuse/join, readiness và transcript cache mặc định tắt; biểu diễn source working-tree, chưa phải chứng nhận QC.",
       "file": "runtime-verification.html",
       "hash": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a"
+    },
+    {
+      "id": "optimization-report",
+      "type": "architecture",
+      "summary": "Validation sớm, OwnedProcessJob và summary thuần dùng chung cho result/CLI/export offline; nguồn chưa commit.",
+      "file": "optimization-report.html",
+      "hash": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5"
     }
   ],
   "view_receipts": {
@@ -284,7 +298,7 @@
         "bytes": 6420
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
         "sha256": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
         "bytes": 826463
       },
@@ -301,12 +315,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3290,
+      "durationMs": 3495,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -325,7 +339,7 @@
         "bytes": 4207
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
         "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
         "bytes": 824757
       },
@@ -342,9 +356,9 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.browser-check.json"
       },
       "visualReview": "not-requested",
       "durationMs": 3052,
@@ -366,7 +380,7 @@
         "bytes": 4803
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.html",
         "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
         "bytes": 824633
       },
@@ -383,12 +397,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3254,
+      "durationMs": 3196,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -407,7 +421,7 @@
         "bytes": 4908
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.html",
         "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
         "bytes": 823010
       },
@@ -424,12 +438,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3537,
+      "durationMs": 3819,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -448,7 +462,7 @@
         "bytes": 4891
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\runtime-verification.html",
         "sha256": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a",
         "bytes": 822816
       },
@@ -490,12 +504,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\runtime-verification.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\runtime-verification.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\runtime-verification.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3251,
+      "durationMs": 3429,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -528,6 +542,72 @@
           "transcript → cache needs 3 bends: move node transcript or cache so they share a row or column with matching centers, or sit diagonally with a clear corner."
         ],
         "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+      }
+    },
+    "optimization-report": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "finalize",
+      "status": "pass",
+      "type": "architecture",
+      "quality": "showcase",
+      "specification": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\optimization-report.json",
+        "sha256": "ef83b7effbcb1c3b7062f61cad2b58a9a3f657ee3b5add9ed9d4b2fc4acce2ac",
+        "bytes": 4466
+      },
+      "artifact": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\optimization-report.html",
+        "sha256": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5",
+        "bytes": 820910
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [
+        {
+          "code": "i18n/locale-fallback",
+          "severity": "warning",
+          "message": "meta.locale \"vi\" has no bundled catalog and no usable meta.translations; the Viewer chrome and <html lang> fall back to English.",
+          "subject": {
+            "diagramType": "architecture",
+            "path": "/meta/locale"
+          },
+          "evidence": {
+            "locale": "vi",
+            "bundledLocales": [
+              "en",
+              "zh-CN",
+              "zh-TW",
+              "es",
+              "ko",
+              "ar"
+            ]
+          },
+          "supportedFixes": [
+            "Supply meta.translations for this locale.",
+            "Use a bundled locale: en, zh-CN, zh-TW, es, ko, ar."
+          ]
+        }
+      ],
+      "diagnosticSummary": {
+        "total": 1,
+        "shown": 1,
+        "truncated": false
+      },
+      "evidence": {
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\optimization-report.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\optimization-report.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\optimization-report.browser-check.json"
+      },
+      "visualReview": "not-requested",
+      "durationMs": 4086,
+      "browserCheck": {
+        "requested": true,
+        "ran": true
       }
     }
   }

@@ -1,0 +1,24 @@
+{
+  "version": "0.85.0",
+  "full_source_sha256": "6f03e5bec06c11ed1bc7d9c14609d09ce9f3b55f2fc0b069057c80cce97543bc",
+  "runtime_test_hook_files_verified": 313,
+  "changed_runtime_test_hook_files": [],
+  "full_verdict_scope": "pre-release metadata; no new Full claim after version/changelog/attributes bump",
+  "changelog_lines": 479,
+  "archived_section": "0.52.0",
+  "archived_text_sha256": "66ede6457310b0b55a214588a94366f674e866fc063faa0182214c7892d0a68d",
+  "additional_tests": {
+    "passed": 60,
+    "subtests_passed": 28,
+    "child_exit_code": 0,
+    "harness_exit_code": 126,
+    "guard_verdict": "FAIL",
+    "failure": "config changed during command",
+    "receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/release-metadata-tests-fca832c1ea0344389494bfe29383724f/receipt.json",
+      "sha256": "e167f9ac8cfbc8c4fc820c0e6fd4f41d59a5dba75e0a54ad967060848577b94d"
+    },
+    "certified": false,
+    "action": "Preserve FAIL; no personal config mutation or quiet-window retry; publish with pre-bump Full scope and unchanged runtime/test/hook proof."
+  }
+}

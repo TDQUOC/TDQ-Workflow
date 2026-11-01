@@ -1,0 +1,803 @@
+{
+  "schema": "tdq-task-migration-fragment/v1",
+  "task": "T1.2",
+  "base": "6c00d6ea5087a0e50dd8f481fcb9aafa51dc0190",
+  "sources": {
+    "scripts/tdq_codex.py": {
+      "before_sha256": "763ccae81086059cd836d68443dce073b7762f16b7e7c411bd1e7b71c089bb92",
+      "after_sha256": "cce66bc17f42d056938af4a341715217fed6d465d6888aada0d7735e73bb5f39"
+    },
+    "scripts/tdq_test_process.py": {
+      "before_sha256": "d596345b3c7d56b1ccbe31d50a2ab7c722b524566c4b5da46875fd8fc3f00ab6",
+      "after_sha256": "00820d930a8c50919cb5f7d85960e478c8dd29e6602fa5e8e9678ea27511415e"
+    },
+    "tests/test_codex_cli.py": {
+      "before_sha256": "3feaa0c961b8b6d730da7506eaa6e6476c358321838c443b8106b6f20708e4b5",
+      "after_sha256": "6fddf4fe06f71926827b1ff3ff3b667b7f7435aa3dbd692b91422b3912558581"
+    },
+    "tests/test_tdq_test_process.py": {
+      "before_sha256": "b9bab98af589c12fa0fd4810fdb83c7c9967706454742d4f8f35b5830775ce8d",
+      "after_sha256": "fcb7f9b88bafc7b522743578c3368f6a25b829948ad626ce108f0d7c294baa9d"
+    }
+  },
+  "existing_case_count": 46,
+  "existing_case_ids": [
+    "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex",
+    "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau",
+    "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc",
+    "tests/test_codex_cli.py::CheckTest::test_du_bon_truong_hop_dong",
+    "tests/test_codex_cli.py::CheckTest::test_kiem_song_qua_han_thi_khong_chay_duoc",
+    "tests/test_codex_cli.py::CheckTest::test_nguoi_dung_tu_choi_thi_co_ly_do_rieng",
+    "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0",
+    "tests/test_codex_cli.py::CoDongYTest::test_chua_co_file_thi_tra_mac_dinh_chua_dong_y",
+    "tests/test_codex_cli.py::CoDongYTest::test_file_hong_khong_lam_sap_cong_chon_mode",
+    "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa",
+    "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh",
+    "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest",
+    "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu",
+    "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_2_chi_lenh_dong_y",
+    "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_3_khong_con_bao_thu_codex_version",
+    "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co",
+    "tests/test_codex_cli.py::GitignoreTest::test_co_dong_y_duoc_gitignore",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_home_tam_bi_don_sau_khi_kiem",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_say_hi_di_qua_home_tam_mang_provider",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_tra_loi_rong_thi_khong_chay_duoc",
+    "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_codex_chi_thay_home_tam_mang_config_gia",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_khong_ghi_file_ket_qua_thi_chay_lai",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_log_mac_dinh_mang_ly_do_o_cuoi_dong",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_model_bao_chua_xong_khong_duoc_cuu",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai",
+    "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do",
+    "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target",
+    "tests/test_tdq_test_process.py::test_cancel_event",
+    "tests/test_tdq_test_process.py::test_invalid_timeout",
+    "tests/test_tdq_test_process.py::test_isolation_and_parent_environment",
+    "tests/test_tdq_test_process.py::test_keyboard_interrupt_cleans_real_process",
+    "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable",
+    "tests/test_tdq_test_process.py::test_missing_command_is_error",
+    "tests/test_tdq_test_process.py::test_no_spawn_after_deadline",
+    "tests/test_tdq_test_process.py::test_nonzero_and_large_output",
+    "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives",
+    "tests/test_tdq_test_process.py::test_owner_crash_closes_job_handle",
+    "tests/test_tdq_test_process.py::test_posix_process_group_cleanup",
+    "tests/test_tdq_test_process.py::test_timeout_shared_across_phases",
+    "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path"
+  ],
+  "existing_case_definitions_unchanged": true,
+  "missing_cases": [],
+  "changed_case_definitions": [],
+  "assertion_map": [
+    {
+      "before": "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex#assertion-1",
+      "sha256": "bbca596e7abca5b9b620b78f063314a0de81608a850a1da945dd71bdb493acbf"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex#assertion-2",
+      "after": "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex#assertion-2",
+      "sha256": "1ec917e67768e25316b0c747faf40be21587c3ad201314558d921c7b6795b951"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex#assertion-3",
+      "after": "tests/test_codex_cli.py::CheckCliTest::test_lenh_check_json_exit_0_ngay_ca_khi_thieu_codex#assertion-3",
+      "sha256": "9696dfc5053ab7656b0519ea8faf22c389350b2b3124b048070e7110f1d38be2"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau#assertion-1",
+      "sha256": "e94432caf58461513cd09e56471bfe2775243ea7c24f77b8d3f77a7afd260c3e"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau#assertion-2",
+      "after": "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau#assertion-2",
+      "sha256": "922bd40b7d5c73901aa671b8b3b865bf8be13b0851b3006cde30e301942a8790"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau#assertion-3",
+      "after": "tests/test_codex_cli.py::CheckTest::test_bon_nguyen_nhan_ra_bon_ly_do_khac_nhau#assertion-3",
+      "sha256": "2b66f99ae260f93394302d650cc7988de4a63179e061e1548d0129b007c66d3f"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc#assertion-1",
+      "sha256": "0862aa026568de6bd9d47825b9d02e7c52e3eefba790cc1f661209fb47cb3ef5"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc#assertion-2",
+      "after": "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc#assertion-2",
+      "sha256": "48643100887ddcea52c8206f0d5853f1ba39966a101e5ae93589988b0f634a10"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc#assertion-3",
+      "after": "tests/test_codex_cli.py::CheckTest::test_co_codex_va_song_thi_chay_duoc#assertion-3",
+      "sha256": "2b4fccc9cba30afc5c29e11a082a96e1a0d2798b1bca589d5ae6ac8caf4701b8"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_du_bon_truong_hop_dong#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckTest::test_du_bon_truong_hop_dong#assertion-1",
+      "sha256": "c44ccf559d870a36e4c3e83bff875787f7a5ab89cbdee10fceb7099efd42aa83"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_kiem_song_qua_han_thi_khong_chay_duoc#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckTest::test_kiem_song_qua_han_thi_khong_chay_duoc#assertion-1",
+      "sha256": "8c0110d8a6834ad01a0772348d23711b48bf58e4613835d6790a1fcb8477ae82"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_kiem_song_qua_han_thi_khong_chay_duoc#assertion-2",
+      "after": "tests/test_codex_cli.py::CheckTest::test_kiem_song_qua_han_thi_khong_chay_duoc#assertion-2",
+      "sha256": "7406aff33e8b4c74795748f109e898352793bfe7f33cf91e26ae0b964a7c0f21"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_nguoi_dung_tu_choi_thi_co_ly_do_rieng#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckTest::test_nguoi_dung_tu_choi_thi_co_ly_do_rieng#assertion-1",
+      "sha256": "8c0110d8a6834ad01a0772348d23711b48bf58e4613835d6790a1fcb8477ae82"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_nguoi_dung_tu_choi_thi_co_ly_do_rieng#assertion-2",
+      "after": "tests/test_codex_cli.py::CheckTest::test_nguoi_dung_tu_choi_thi_co_ly_do_rieng#assertion-2",
+      "sha256": "884fafe5d4a8c7190d1d87a1288748a26f289f2e467e080bb393920abd50dc94"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-1",
+      "after": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-1",
+      "sha256": "e99fd09980599a98fcae5f67fe0e33697587afb21f27a7cd57b1fe58215c2743"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-2",
+      "after": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-2",
+      "sha256": "8c0110d8a6834ad01a0772348d23711b48bf58e4613835d6790a1fcb8477ae82"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-3",
+      "after": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-3",
+      "sha256": "884fafe5d4a8c7190d1d87a1288748a26f289f2e467e080bb393920abd50dc94"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-4",
+      "after": "tests/test_codex_cli.py::CheckTest::test_thieu_codex_van_exit_0#assertion-4",
+      "sha256": "3b9c3bc59788cec1454b10fe14dc55d5bcf37ccea401c61bf82f81882f308c26"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CoDongYTest::test_chua_co_file_thi_tra_mac_dinh_chua_dong_y#assertion-1",
+      "after": "tests/test_codex_cli.py::CoDongYTest::test_chua_co_file_thi_tra_mac_dinh_chua_dong_y#assertion-1",
+      "sha256": "725cb035c1aec54bad85240f6d98909e9724ae382adf0a2a2671d7b16a69bf33"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CoDongYTest::test_file_hong_khong_lam_sap_cong_chon_mode#assertion-1",
+      "after": "tests/test_codex_cli.py::CoDongYTest::test_file_hong_khong_lam_sap_cong_chon_mode#assertion-1",
+      "sha256": "96ab842352c9ce866a35169034fd27fe67f60b70d73a8a6ad9dea338023e5ece"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa#assertion-1",
+      "after": "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa#assertion-1",
+      "sha256": "29a524e6b38a79c3497c0aa9fab8ba4011720a289b111df60e8b67d2f8e60234"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa#assertion-2",
+      "after": "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa#assertion-2",
+      "sha256": "9c4992f1b4d5c36614cb4f284fdbee6f1e5ab3614c2791ed19736d42d193fbc2"
+    },
+    {
+      "before": "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa#assertion-3",
+      "after": "tests/test_codex_cli.py::CoDongYTest::test_ghi_va_doc_lai_du_ba_khoa#assertion-3",
+      "sha256": "4820cb42e230f4370236a46baa367ff314ceac0e355f783f7008cca7730859a9"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh#assertion-1",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh#assertion-1",
+      "sha256": "1fbf16a5d57cae1e2dd9a9bfaa41453f9748449bd3fd88c65c0c93cbbd40f9b9"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh#assertion-2",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh#assertion-2",
+      "sha256": "c05693ebb375001a36711ca3bcf8b8383c08d09b2f925a1e85f176a89d4c4420"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh#assertion-3",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_ba_cho_goi_y_cung_mot_lenh#assertion-3",
+      "sha256": "3bf7a33505b359c76510f8be6f9f40e8a69b4dd2c3d2f4d5c65ecb1ec288733d"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-1",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-1",
+      "sha256": "9128093ccfe8760da76a085c535ecb2822d6da5808fff2dad16a6a4d661717dc"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-2",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-2",
+      "sha256": "f4a7fac6df2ac9f4109ebc3562a807f1225f8beda570ac39df6377b515d16056"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-3",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-3",
+      "sha256": "29a524e6b38a79c3497c0aa9fab8ba4011720a289b111df60e8b67d2f8e60234"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-4",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_chay_duoc_khi_khong_co_manifest#assertion-4",
+      "sha256": "63a282399a45662bfba9f1274303e55c2e0f82b36c2a4f3b2b84110836a05913"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu#assertion-1",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu#assertion-1",
+      "sha256": "9128093ccfe8760da76a085c535ecb2822d6da5808fff2dad16a6a4d661717dc"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu#assertion-2",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu#assertion-2",
+      "sha256": "29a524e6b38a79c3497c0aa9fab8ba4011720a289b111df60e8b67d2f8e60234"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu#assertion-3",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_dong_y_khong_kem_model_thi_giu_model_cu#assertion-3",
+      "sha256": "ba467275d1f060708c131e6dbe9fbc551a5bcbb4ff826a3f5662c73dd2125d03"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_2_chi_lenh_dong_y#assertion-1",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_2_chi_lenh_dong_y#assertion-1",
+      "sha256": "1523df0b0970c73aa5d3f7af5bdcfc6105ce56cf305d755d3439b2743382149e"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_3_khong_con_bao_thu_codex_version#assertion-1",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_3_khong_con_bao_thu_codex_version#assertion-1",
+      "sha256": "7cd1ef58fd4f4e34ecc42fd55819da9144a700a5b7fa8f170a41c4fab9ebbd94"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_3_khong_con_bao_thu_codex_version#assertion-2",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_goi_y_nguyen_nhan_3_khong_con_bao_thu_codex_version#assertion-2",
+      "sha256": "f2410bda51c84206efaff627f196b7aa0642ccfb97266c712bb47de5d8caf857"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co#assertion-1",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co#assertion-1",
+      "sha256": "c383fdc8bc2ac018e8cefef367e3cd1389e500576d19e6249b96d81f5cb4c73d"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co#assertion-2",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co#assertion-2",
+      "sha256": "921603532377f82fcf0379e137c073357332810ffd5146149cfdcf29849c1be9"
+    },
+    {
+      "before": "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co#assertion-3",
+      "after": "tests/test_codex_cli.py::DongYCliTest::test_thieu_codex_thi_khong_ghi_co#assertion-3",
+      "sha256": "0321d68048caab10c68b06b974e865d2d00ac2a86c620f827b88cb466cbb31ea"
+    },
+    {
+      "before": "tests/test_codex_cli.py::GitignoreTest::test_co_dong_y_duoc_gitignore#assertion-1",
+      "after": "tests/test_codex_cli.py::GitignoreTest::test_co_dong_y_duoc_gitignore#assertion-1",
+      "sha256": "b517bf9d25eead87320c2dfe156502fcce8e884529d849828facac960c1af3b3"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_home_tam_bi_don_sau_khi_kiem#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_home_tam_bi_don_sau_khi_kiem#assertion-1",
+      "sha256": "037170d883b1a1a2d4d268cddb277e6857a2ad3b6522aef475048a72c20fea7b"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi#assertion-1",
+      "sha256": "8c0110d8a6834ad01a0772348d23711b48bf58e4613835d6790a1fcb8477ae82"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi#assertion-2",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi#assertion-2",
+      "sha256": "ce10ae46d4a271a94efc45d75cce77bd199c82724d40a3ecbb6e2cf511c7470d"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi#assertion-3",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_chet_thi_khong_chay_duoc_kem_loi#assertion-3",
+      "sha256": "222a670bd800f109c01cc7e9ac4e81ec00008be0943028032b17273420a65888"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-1",
+      "sha256": "1d8d31a4b1de45f5d77cfbead2b50fefecc9378190709bf1be5e1949b0c7df34"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-2",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-2",
+      "sha256": "ebeeb570a0935ffa8f9b52f1fb7bc50d17f33b02396052e8d4979ef8ee8f2f30"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-3",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-3",
+      "sha256": "21c7de23487532d40456d467bedacc8da2da8818e3b3bdbee3c8ff062220d97a"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-4",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-4",
+      "sha256": "f07b991886a0c19abb2f7464ba0ec4bf36c5e94ca24126428b47d05c6d188aea"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-5",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_model_tra_loi_thi_chay_duoc#assertion-5",
+      "sha256": "e7604af79e417cda1174d09a6e8500816879840c3ffcc9331187f05980fa13d4"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_say_hi_di_qua_home_tam_mang_provider#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_say_hi_di_qua_home_tam_mang_provider#assertion-1",
+      "sha256": "bdba6dcf37e69d94441d4891d0151c51812c95b5ac995734efdc75555594478f"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_say_hi_di_qua_home_tam_mang_provider#assertion-2",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_say_hi_di_qua_home_tam_mang_provider#assertion-2",
+      "sha256": "3a83aec640e082f4a66191171b80b8d3e9a500e7a91edca5c20e5f2d21172a88"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi#assertion-1",
+      "sha256": "8c0110d8a6834ad01a0772348d23711b48bf58e4613835d6790a1fcb8477ae82"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi#assertion-2",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi#assertion-2",
+      "sha256": "e2de74a20b40dc9d0049f6bc49b60012acc5a1e4bb94d551d56714ca45eaf801"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi#assertion-3",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_thieu_model_thi_khong_goi_say_hi#assertion-3",
+      "sha256": "d287091e207166be8b532613bac170d35c37a2a4d657480e40dab6d42205bf77"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_tra_loi_rong_thi_khong_chay_duoc#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_tra_loi_rong_thi_khong_chay_duoc#assertion-1",
+      "sha256": "8c0110d8a6834ad01a0772348d23711b48bf58e4613835d6790a1fcb8477ae82"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_tra_loi_rong_thi_khong_chay_duoc#assertion-2",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_tra_loi_rong_thi_khong_chay_duoc#assertion-2",
+      "sha256": "ce10ae46d4a271a94efc45d75cce77bd199c82724d40a3ecbb6e2cf511c7470d"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home#assertion-1",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home#assertion-1",
+      "sha256": "f3f8f55d136aaea939fef755c53aaa36c1cd84294321314d273763a6da655eb4"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home#assertion-2",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home#assertion-2",
+      "sha256": "2fc4d06f259f6dd7d876f1e888102d68adbc1aea3a2492b89aeeb32c41a6a795"
+    },
+    {
+      "before": "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home#assertion-3",
+      "after": "tests/test_codex_cli.py::KiemSongThatTest::test_treo_thi_qua_han_va_van_don_home#assertion-3",
+      "sha256": "037170d883b1a1a2d4d268cddb277e6857a2ad3b6522aef475048a72c20fea7b"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_codex_chi_thay_home_tam_mang_config_gia#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_codex_chi_thay_home_tam_mang_config_gia#assertion-1",
+      "sha256": "ddd8e63b7bb68f0fe405cf0b37f6b4dbba33bb9b5d0c6aeffdda7a05212ab875"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_codex_chi_thay_home_tam_mang_config_gia#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_codex_chi_thay_home_tam_mang_config_gia#assertion-2",
+      "sha256": "1928fc3dbf2f4382ae2a2ea16b7d3a7f42e9d03bd8623af416384269f6c0e336"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_khong_ghi_file_ket_qua_thi_chay_lai#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_khong_ghi_file_ket_qua_thi_chay_lai#assertion-1",
+      "sha256": "b077d35819b57a807508304f8baef2823a8102bb95ce27ea92d20975a138fe7d"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_khong_ghi_file_ket_qua_thi_chay_lai#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_khong_ghi_file_ket_qua_thi_chay_lai#assertion-2",
+      "sha256": "fece3996c02e03ba77af4b95c47999a16acc3774569d26752aaca29078df3502"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_log_mac_dinh_mang_ly_do_o_cuoi_dong#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_log_mac_dinh_mang_ly_do_o_cuoi_dong#assertion-1",
+      "sha256": "1c5abeff76dafd338fc0e3cec7a187ba1891cd42acd756f13441419dbf79ec89"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_log_mac_dinh_mang_ly_do_o_cuoi_dong#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_log_mac_dinh_mang_ly_do_o_cuoi_dong#assertion-2",
+      "sha256": "564a50ba95e86d316f311a9ab1835fed1833b4ea2ea65b75f5d8af0097f1982b"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_model_bao_chua_xong_khong_duoc_cuu#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_model_bao_chua_xong_khong_duoc_cuu#assertion-1",
+      "sha256": "08ceb55f32c53104c2e1876a528b56576353800366d5a0a54a3322e68590da4c"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_model_bao_chua_xong_khong_duoc_cuu#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_model_bao_chua_xong_khong_duoc_cuu#assertion-2",
+      "sha256": "fece3996c02e03ba77af4b95c47999a16acc3774569d26752aaca29078df3502"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-1",
+      "sha256": "da78ed5bfdf1a84892f08471e3e53943421369049383f0db1292b3c0320453d4"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-2",
+      "sha256": "65d4d4dfd2f554a2e51ae78f139a1e418699ad4b2e4a3213eba8b15b0d2ea468"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-3",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-3",
+      "sha256": "235a564a2f436b1e0b13bfde1df2315f68a1a2c229a58bab1cffc1ec4e0bd55e"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-4",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_sai_khuon_ma_ghi_ngoai_vung_thi_khong_chay_lai#assertion-4",
+      "sha256": "ce63354bb2cfbed95bb2cb0dac6d9a337829d64bb5cce8251679e0c9e5c2abd5"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet#assertion-1",
+      "sha256": "073893384d04fc006d0cb4c0787aae146756d0803e12291a05edefca486871d1"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet#assertion-2",
+      "sha256": "93ffe16e1ad1609db2c6e88a6a5c02634989da00fb4f351513e6f344527dd66a"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet#assertion-3",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_tat_log_van_in_du_phan_quyet#assertion-3",
+      "sha256": "c17f57fe514c969a154043323d703a88b6007e8df33db891e0e502b8c4c5760d"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-1",
+      "sha256": "073893384d04fc006d0cb4c0787aae146756d0803e12291a05edefca486871d1"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-2",
+      "sha256": "93ffe16e1ad1609db2c6e88a6a5c02634989da00fb4f351513e6f344527dd66a"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-3",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-3",
+      "sha256": "8b4359178b8cd28a76665c1f19b5d4ad129f595c2f911ab1387d5d921c7de4a3"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-4",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_van_thuong_la_sai_khuon_va_chay_lai#assertion-4",
+      "sha256": "fece3996c02e03ba77af4b95c47999a16acc3774569d26752aaca29078df3502"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do#assertion-1",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do#assertion-1",
+      "sha256": "073893384d04fc006d0cb4c0787aae146756d0803e12291a05edefca486871d1"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do#assertion-2",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do#assertion-2",
+      "sha256": "2e055eab111981c85eb38ed6aca8d442ee95847cb1370cda6c345f8179129968"
+    },
+    {
+      "before": "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do#assertion-3",
+      "after": "tests/test_codex_cli.py::RunDauCuoiTest::test_xong_true_thi_xong_khong_ly_do#assertion-3",
+      "sha256": "bbca596e7abca5b9b620b78f063314a0de81608a850a1da945dd71bdb493acbf"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-1",
+      "sha256": "f207174019a88a7ce76c8aa99689217c45b9c8c5051dadd493f3862613efb9bc"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-2",
+      "sha256": "fce2557bbdb6933415ee0668e2c2898856e027ed002b18c39522f15d7764ce08"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-3",
+      "sha256": "e9318c811707ab2b0c8123e1ea468dc810180cf444e95265f00387745966cf71"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-4",
+      "after": "tests/test_tdq_test_process.py::test_assign_failure_never_launches_target#assertion-4",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_cancel_event#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_cancel_event#assertion-1",
+      "sha256": "b2f5775141107d039d5366955781b7d637c55c2adf63e3631fe38cb2935609e0"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_cancel_event#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_cancel_event#assertion-2",
+      "sha256": "2858b81a913ca7aac5119af97718edd75a337e2db31d7699fbb570b962b2759a"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_cancel_event#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_cancel_event#assertion-3",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_invalid_timeout#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_invalid_timeout#assertion-1",
+      "sha256": "2429df42b51352e43ebd9b9ee614c4ac391eb76539ba4d60947b4bc46be85336"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-1",
+      "sha256": "d19b6efe6deed6b547816a226545a3532dee412dfd3510a2f1139131f8404064"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-2",
+      "sha256": "2c79a555b3ebdd963d56464b7da304de7c7c3f4dc9e1430295a4c2a3d1b269cf"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-3",
+      "sha256": "1373110c24f719a12aff36424cc2d3e26d6df91be02b7ec2b6dd1cfe3aa6b684"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-4",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-4",
+      "sha256": "244c82166e497d5aacd4678ed2bad5bf58a55fc2490caa2203be52e049b4e6ed"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-5",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-5",
+      "sha256": "4444422c969a8df4c0474e96cdd2e789424013c232740a35785ec1abe9ea1797"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-6",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-6",
+      "sha256": "0d10de4cd7f97ac279c31f50238a6b529f957be06f0f567882829aa7d18fcdfe"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-7",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-7",
+      "sha256": "38fa6df924d7ecba2402c34042c99a08e8e03c505609b6226b3e0725ebe66f59"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-8",
+      "after": "tests/test_tdq_test_process.py::test_isolation_and_parent_environment#assertion-8",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_keyboard_interrupt_cleans_real_process#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_keyboard_interrupt_cleans_real_process#assertion-1",
+      "sha256": "b2f5775141107d039d5366955781b7d637c55c2adf63e3631fe38cb2935609e0"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_keyboard_interrupt_cleans_real_process#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_keyboard_interrupt_cleans_real_process#assertion-2",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable#assertion-1",
+      "sha256": "d282f61ead1883a9272f26d8caff9d836cb401d3bf385f21d3a718e3f807256b"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable#assertion-2",
+      "sha256": "55e67b08264e434e1d7f1aeb91c297fa5c5273c6523f81a529fc4b1df8c28dfb"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_log_scrubs_command_and_can_disable#assertion-3",
+      "sha256": "e8274d13424799399c93d35f0298a8dc649dae4fc429baf62a5ec70bae8a3c28"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_missing_command_is_error#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_missing_command_is_error#assertion-1",
+      "sha256": "ab136287d6533a724cde3ecf580f9819b2c401b45986155eb7a4e09d67c6b749"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_missing_command_is_error#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_missing_command_is_error#assertion-2",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_no_spawn_after_deadline#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_no_spawn_after_deadline#assertion-1",
+      "sha256": "fdb3c27ba6ec8c4195b4071ee075300aab67c271dc166178d04a27bc4627199e"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_no_spawn_after_deadline#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_no_spawn_after_deadline#assertion-2",
+      "sha256": "e9318c811707ab2b0c8123e1ea468dc810180cf444e95265f00387745966cf71"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-1",
+      "sha256": "2c60d5a6a49bb912ce2c41af67786f1cc524d9af656557929855b8af22234796"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-2",
+      "sha256": "60ee2bb34ed1cb72f413a393d9b67dfafe7aeec8cf3809ffe6688a2d2de2657d"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-3",
+      "sha256": "b78dadc46fda4ddd6cf831b62c172e798f617a164aadc3660219825e01143699"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-4",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-4",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-5",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-5",
+      "sha256": "2858b81a913ca7aac5119af97718edd75a337e2db31d7699fbb570b962b2759a"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-6",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-6",
+      "sha256": "c98792abb97f9f367d2561faa8e0848cbce1583a278d74511c6f0d4d772b439e"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-7",
+      "after": "tests/test_tdq_test_process.py::test_nonzero_and_large_output#assertion-7",
+      "sha256": "4625281f395a2c4c77105035fac32e357875ec0bfca62f7b79991c36a195c07f"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-1",
+      "sha256": "351510ddc2b05b971e35d63357bffc530eb19c65aa432120a8c0201b9971aeba"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-2",
+      "sha256": "2400f50507cc3384dfbf3142173f4720c9848a5f3ef21ad69c5f9b3f777b96b4"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-3",
+      "sha256": "feb3ba1986f31536ea8f43f71293387ce75ef2e49d36887a23037103a8608d56"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-4",
+      "after": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-4",
+      "sha256": "0e7311f13ed08da4b6a18457c63cc35ff9bfa6be964c112353a3ec7632934af9"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-5",
+      "after": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-5",
+      "sha256": "a5bdca8f9b3133d7dc8ebdea6b88a274ef9926ebb6271b855c9897b861f06ba6"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-6",
+      "after": "tests/test_tdq_test_process.py::test_owned_grandchildren_stop_but_control_survives#assertion-6",
+      "sha256": "fae2e9aaf3620fffb34b144030d023d139863012bb2cd89d119be203594368ea"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owner_crash_closes_job_handle#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_owner_crash_closes_job_handle#assertion-1",
+      "sha256": "585a19317a9ef6083c5da48021392b34fe0c8788e6ca541aaba8d7bc466cedd6"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_owner_crash_closes_job_handle#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_owner_crash_closes_job_handle#assertion-2",
+      "sha256": "34fa9151275241fa555c95f21ef2d71fba15087f0203c7c60628ee15e3c464f7"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup#assertion-1",
+      "sha256": "fdb3c27ba6ec8c4195b4071ee075300aab67c271dc166178d04a27bc4627199e"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup#assertion-2",
+      "sha256": "36b93a0627bd8a78ea641b8b2daba718c5264c6127a233792917a5d3bc5b0aec"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup#assertion-3",
+      "sha256": "9df6bd13dac8222748a6fb2cb7c1fc52ad7823b476a2879c9c09b9ab61f8e6ee"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-1",
+      "sha256": "c3fc1ec54a998b89b7bee41ce137deddb2851d282d8ac76a363dd8cad4ceb6ef"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-2",
+      "sha256": "dae13b68a684e6a32472022ccdd0dfde3f9eebe49016384fdf517016e62f0456"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-3",
+      "sha256": "5433716f7eaf83ac9911fa56f17e066eab3dac113f05c58b2d7f4c2a7b8ddd15"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-4",
+      "after": "tests/test_tdq_test_process.py::test_timeout_shared_across_phases#assertion-4",
+      "sha256": "be360fbd4b39b699263df8c0696afab01364c4e3c1809edc6cb4404244211617"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-1",
+      "after": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-1",
+      "sha256": "a9686fcb4dda07c669ec29d077a5a367ee66704530096b5fbf835ca1aadf0ead"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-2",
+      "after": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-2",
+      "sha256": "a299d13b412de4dd42f8fd4b779589a4a1d220b838b9588a6ba636ec6cd9ab79"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-3",
+      "after": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-3",
+      "sha256": "961ab5b9234327b677e122d69e335373da79c780f6f447a9fdd2e3f7894a47ba"
+    },
+    {
+      "before": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-4",
+      "after": "tests/test_tdq_test_process.py::test_worker_homes_and_tmp_path#assertion-4",
+      "sha256": "75fefe7a2947038b0d176b1553d73cd7fc37f822f4178b25f1bceebbd6e755ab"
+    }
+  ],
+  "migrations": [],
+  "new_cases": [
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_assignment_failure_never_runs_unmanaged_say_hi",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_caller_home_and_stdin_are_preserved_on_success",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_failed_probe_preserves_other_jobs_home",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_home_factory_failure_removes_only_partial_home",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_say_hi_deadline_includes_home_setup",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_version_and_say_hi_keep_independent_deadlines",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_version_timeout_owns_descendants_without_creating_home",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_codex_cli.py::KiemSongThatTest::test_windows_cmd_descendant_timeout_is_bounded",
+      "classification": "integration"
+    },
+    {
+      "case_id": "tests/test_tdq_test_process.py::test_cleanup_shares_one_budget",
+      "classification": "pure"
+    },
+    {
+      "case_id": "tests/test_tdq_test_process.py::test_isolated_sanitizes_pytest_identity_before_enter",
+      "classification": "pure"
+    },
+    {
+      "case_id": "tests/test_tdq_test_process.py::test_owned_job_preserves_environment_without_pytest_layer",
+      "classification": "integration"
+    }
+  ],
+  "fixture_changes": [
+    {
+      "helper": "tests/test_codex_cli.py::_codex_gia",
+      "classification": "integration",
+      "reason": "Preserves argv/home/config and fake CLI outcomes; adds PID, caller HOME and closed-stdin observations plus descendant/version-deadline scenarios. Real process orchestration uses a synthetic Codex executable, not a real model capability claim."
+    }
+  ],
+  "red_receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T1.2-author\\runs\\T1.2-red-62b24881d31a4f13a38345c1dc9385b0\\receipt.json",
+  "green_receipt": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T1.2-author\\runs\\T1.2-final-green-723006d5cad247b0bdd3e6a7b26ed32c\\receipt.json",
+    "sha256": "9a5dfd793c8883ee4a82d232489b398061eba6044dc74a0c5e58d379a3776b6a"
+  },
+  "additional_red_receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T1.2-author\\runs\\T1.2-home-red-361c98c68ee34b9a8bd0078b30c5a768\\receipt.json",
+  "source_snapshot_sha256": "c462ea6de1acda324a327814b333c3b72ee42236eafff6efc68e118cdad7f7f6",
+  "notes": [
+    "DEVNULL preserves closed EOF; Windows NUL reports isatty=True, so no false cross-platform TTY claim.",
+    "Real Windows process ownership is measured with a synthetic Codex executable, not a live model capability.",
+    "Earlier receipts are retained; intermediate TTY assertion failure is explained rather than replaced."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "INTEGRATED_PENDING_PARENT",
+  "files": {
+    "scripts/tdq_test.py": "e6545bdab3a7a3fb6120dcbbc7f9599d37c134075290bbc099aefed73415a3a1",
+    "tests/test_tdq_runner_integration.py": "5aebc5c72729f385433602ee2ebf325463f4b35b418e6e8f2dfba15b76d416c6"
+  },
+  "author": "57PASS35subtests",
+  "parent_check": "combined production radius including both required test files",
+  "latest_owner_fix": {
+    "status": "PASS",
+    "parent_receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/T3.1-owner-parent-radius-a31fa0a7c529410ba39392d9fb8c354f/receipt.json",
+      "sha256": "c00b6405ed9aa6ca04c467466a9b8c4c754d6be9f7f883cce469a949b223d1eb"
+    },
+    "source_files": {
+      "scripts/tdq_test_report.py": "9d2412e269b956d798a9a1637ae05632839f651b1a40eb14d26d69dba94dc275",
+      "scripts/tdq_test.py": "04086c0f6c525aede81d5df722a36011d6714f21387d505c2d571c1270cc71a3",
+      "scripts/tdq_test_process.py": "a4342947fd03f6fd548584b40e2f63c60e649731d38b981af2d12aff15133ce7"
+    }
+  }
+}

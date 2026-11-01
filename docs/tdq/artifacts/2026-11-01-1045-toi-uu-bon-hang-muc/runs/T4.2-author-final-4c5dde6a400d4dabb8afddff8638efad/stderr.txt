@@ -1,0 +1,4 @@
+[2026-11-01T09:16:49+00:00] tdq_test_process reason=exited phase=calibration-valid exit_code=0 wall=11.298640 cleanup=0.000057 cleanup_complete=True
+[2026-11-01T09:16:50+00:00] tdq_test_process reason=exited phase=reject-early exit_code=0 wall=0.341586 cleanup=0.000063 cleanup_complete=True
+[2026-11-01T09:16:52+00:00] tdq_test_process reason=exited phase=timeout-cleanup exit_code=0 wall=2.718004 cleanup=0.000066 cleanup_complete=True
+[2026-11-01T09:16:54+00:00] tdq_test_process reason=exited phase=report-offline exit_code=0 wall=1.276247 cleanup=0.000055 cleanup_complete=True

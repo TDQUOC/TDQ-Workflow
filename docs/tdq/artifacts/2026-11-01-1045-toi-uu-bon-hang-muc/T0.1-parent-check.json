@@ -1,0 +1,119 @@
+[
+  {
+    "check": "--self-test",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "--self-test"
+    ],
+    "exit_code": 0,
+    "stdout": "test_dependency_mutation (__main__.self_test.<locals>.ValidatorTests.test_dependency_mutation) ... ok\ntest_dropped_assertion_mapping (__main__.self_test.<locals>.ValidatorTests.test_dropped_assertion_mapping) ... ok\ntest_false_pass_payload (__main__.self_test.<locals>.ValidatorTests.test_false_pass_payload) ... ok\ntest_false_pass_receipt (__main__.self_test.<locals>.ValidatorTests.test_false_pass_receipt) ... ok\ntest_missing_binding_is_not_pass (__main__.self_test.<locals>.ValidatorTests.test_missing_binding_is_not_pass) ... ok\ntest_missing_browser (__main__.self_test.<locals>.ValidatorTests.test_missing_browser) ... ok\ntest_missing_receipt (__main__.self_test.<locals>.ValidatorTests.test_missing_receipt) ... ok\ntest_raw_capture_mutation (__main__.self_test.<locals>.ValidatorTests.test_raw_capture_mutation) ... ok\ntest_raw_full_mutation (__main__.self_test.<locals>.ValidatorTests.test_raw_full_mutation) ... ok\ntest_stale_source (__main__.self_test.<locals>.ValidatorTests.test_stale_source) ... ok\ntest_timeout_budget_not_self_declared_pass (__main__.self_test.<locals>.ValidatorTests.test_timeout_budget_not_self_declared_pass) ... ok\ntest_valid_assertion_mapping_control (__main__.self_test.<locals>.ValidatorTests.test_valid_assertion_mapping_control) ... ok\ntest_valid_raw_full_control (__main__.self_test.<locals>.ValidatorTests.test_valid_raw_full_control) ... ok\ntest_valid_receipt_control (__main__.self_test.<locals>.ValidatorTests.test_valid_receipt_control) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 1.550s\n\nOK\n{\"kind\": \"synthetic-validator-selftest\", \"tests_run\": 14, \"successful\": true, \"task_evidence\": false}\n",
+    "stderr": ""
+  },
+  {
+    "check": "Q1",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q1"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q1\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:20.179546+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q2",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q2"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q2\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:20.526094+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q3",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q3"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q3\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:20.866741+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q4",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q4"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q4\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:21.197908+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q5",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q5"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q5\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:21.523115+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q6",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q6"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q6\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:21.851980+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q7",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q7"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q7\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:22.193072+00:00] scope ValueError: Missing artifact binding\n"
+  },
+  {
+    "check": "Q8",
+    "command": [
+      "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-X",
+      "utf8",
+      "docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\verify_scope.py",
+      "Q8"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"check\": \"Q8\", \"status\": \"FAIL\", \"error\": \"ValueError: Missing artifact binding\"}\n",
+    "stderr": "[2026-11-01T04:31:22.523708+00:00] scope ValueError: Missing artifact binding\n"
+  }
+]

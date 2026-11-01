@@ -6,6 +6,7 @@
 thẳng vào `skills/` dùng chung thay vì một bản sao được dựng ra. Phần còn lại của file này vẫn
 áp dụng: đổi biến plugin, copy lọc, manifest, và bản agy — thứ duy nhất còn sinh ra file thật.
 """
+import ast
 import hashlib
 import json
 import os
@@ -14,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import helper  # noqa: F401  — nạp sys.path cho scripts/
 import build_portable
@@ -21,7 +23,25 @@ import tdq_checkportable  # chủ của phép kiểm dấu ~
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "scripts", "build_portable.py")
-PHASE1_RUNTIME_MODULES = {"tdq_transcript", "tdq_test_result"}
+# Committed O1-O6 runtime additions from the approved 2026-10-27 request.
+PHASE1_RUNTIME_MODULES = {
+    "tdq_transcript", "tdq_test_result", "tdq_readiness", "tdq_runtime_bench",
+    "tdq_test_manifest", "tdq_test_process", "tdq_test_receipt", "tdq_transcript_cache",
+}
+# Current O4 is required in live packaging, but may not yet exist in Git HEAD.
+APPROVED_RUNTIME_MODULES = PHASE1_RUNTIME_MODULES | {"tdq_test_report"}
+
+
+def _imports_report(source):
+    """Recognize only the named report dependency in a committed source blob."""
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            if any(name.name.split(".")[0] == "tdq_test_report" for name in node.names):
+                return True
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            if node.module.split(".")[0] == "tdq_test_report":
+                return True
+    return False
 
 
 def chay(*args, env=None):
@@ -296,7 +316,7 @@ class TestBanAntigravity(TempDest):
                       "skills/tdq-intake/SKILL.md", "hooks/scripts/agy_pretooluse_gate.py",
                       "hooks/scripts/agy_stop_gate.py", "scripts/tdq_state.py"):
             self.assertIn(duong, files, f"manifest thiếu {duong}")
-        for module in PHASE1_RUNTIME_MODULES:
+        for module in APPROVED_RUNTIME_MODULES:
             self.assertIn(f"scripts/{module}.py", files,
                           "Approved runtime modules must be packaged")
 
@@ -554,8 +574,8 @@ class TestSinhNhanhRelease(TempDest):
             "tdq_setup", "tdq_state", "tdq_finish", "tdq_archify",
             "archify_delivery", "archify_model", "archify_artifacts",
             "tdq_lsp", "build_portable", "tdq_test", "tdq_checkportable",
-        } | PHASE1_RUNTIME_MODULES
-        self.assertLessEqual(PHASE1_RUNTIME_MODULES, kept_py,
+        } | APPROVED_RUNTIME_MODULES
+        self.assertLessEqual(APPROVED_RUNTIME_MODULES, kept_py,
                              "Approved runtime modules must remain in release")
         for dv in diem_vao_bat_buoc:
             if dv in all_py:
@@ -614,11 +634,55 @@ class TestSinhNhanhRelease(TempDest):
         paths = {entry.split(b"\t", 1)[1].decode("utf-8") for entry in kept}
         approved_paths = {f"scripts/{module}.py" for module in PHASE1_RUNTIME_MODULES}
         self.assertLessEqual(approved_paths, paths)
+        source = subprocess.run(
+            ["git", "-C", ROOT, "show", "HEAD:scripts/tdq_test.py"],
+            capture_output=True, check=True, timeout=30,
+        )
+        if _imports_report(source.stdout):
+            self.assertIn("scripts/tdq_test_report.py", paths,
+                          "HEAD imports tdq_test_report; release must keep it")
+        approved_paths = {f"scripts/{module}.py" for module in APPROVED_RUNTIME_MODULES}
         # The existing budget stays unchanged for every other release file.
         self.assertLessEqual(len(paths - approved_paths), 160)
         self.assertGreaterEqual(len(kept), 120)
         for path in paths:
             self.assertFalse(path.startswith(("docs/", "tests/", "evals/", "graphify-out/")))
+
+    def test_head_report_import_requires_kept_module(self):
+        legacy = {"tdq_transcript", "tdq_test_result", "tdq_readiness", "tdq_runtime_bench",
+                  "tdq_test_manifest", "tdq_test_process", "tdq_test_receipt", "tdq_transcript_cache"}
+        for label, imports_report, has_report, excludes_report, valid in (
+                ("legacy-head", False, False, False, True),
+                ("missing-report", True, False, False, False),
+                ("filtered-report", True, True, True, False),
+                ("complete-head", True, True, False, True)):
+            with self.subTest(scenario=label):
+                paths = {f"scripts/{module}.py" for module in legacy} | {"scripts/tdq_test.py"}
+                paths.update(f"skills/fixture-{index}/SKILL.md" for index in range(120))
+                if has_report:
+                    paths.add("scripts/tdq_test_report.py")
+                tree = b"".join(f"100644 blob {'0' * 40}\t{path}\0".encode()
+                                for path in sorted(paths))
+                source = b"VALUE = 1\n"
+                if imports_report:
+                    source = (b"from tdq_test_report import summarize_result\n" if label == "filtered-report"
+                              else b"import tdq_test_report\n")
+                def head(command, **kwargs):
+                    if "ls-tree" in command:
+                        return subprocess.CompletedProcess(command, 0, tree, b"")
+                    if command[-1] == "HEAD:scripts/tdq_test.py":
+                        return subprocess.CompletedProcess(command, 0, source, b"")
+                    self.fail(f"Unexpected Git read: {command}")
+                excluded = set(build_portable.RELEASE_EXCLUDE_SCRIPTS)
+                if excludes_report:
+                    excluded.add("tdq_test_report.py")
+                with mock.patch.object(subprocess, "run", side_effect=head), \
+                        mock.patch.object(build_portable, "RELEASE_EXCLUDE_SCRIPTS", excluded):
+                    if valid:
+                        self.test_release_budget_excludes_only_approved_runtime_modules()
+                    else:
+                        with self.assertRaisesRegex(AssertionError, "tdq_test_report"):
+                            self.test_release_budget_excludes_only_approved_runtime_modules()
 
     def test_release_sinh_nhanh_main_tren_repo_tam_idempotent_va_dry_run(self):
         repo = self._tao_repo_dev_gia()

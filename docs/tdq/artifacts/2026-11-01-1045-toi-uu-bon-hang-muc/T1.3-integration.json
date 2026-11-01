@@ -1,0 +1,22 @@
+{
+  "files": {
+    "scripts/tdq_test_report.py": "5db020a09fd25cebac6c8c67eb14cf7109138b1efa30cb3eb14cea011cde035b",
+    "tests/test_tdq_test_report.py": "55f515e45d353a369d67b228a346b9010d8332913f324410c0ae09e53bc3c180"
+  },
+  "mode": "reviewed SHA copy; parent unit and radius PASS at their source snapshot",
+  "author_guard_pass": true,
+  "parent_receipt": "runs/T1.3-parent-6e33442ea13740a492f244b507c60b1d/receipt.json",
+  "radius_receipt": "runs/T1.3-parent-radius-5babaf829ab34ffeaa36bc4a65ff1276/receipt.json",
+  "latest_owner_fix": {
+    "status": "PASS",
+    "parent_receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/T3.1-owner-parent-radius-a31fa0a7c529410ba39392d9fb8c354f/receipt.json",
+      "sha256": "c00b6405ed9aa6ca04c467466a9b8c4c754d6be9f7f883cce469a949b223d1eb"
+    },
+    "source_files": {
+      "scripts/tdq_test_report.py": "9d2412e269b956d798a9a1637ae05632839f651b1a40eb14d26d69dba94dc275",
+      "scripts/tdq_test.py": "04086c0f6c525aede81d5df722a36011d6714f21387d505c2d571c1270cc71a3",
+      "scripts/tdq_test_process.py": "a4342947fd03f6fd548584b40e2f63c60e649731d38b981af2d12aff15133ce7"
+    }
+  }
+}

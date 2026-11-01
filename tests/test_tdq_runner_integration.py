@@ -9,10 +9,12 @@ import sys
 import tempfile
 import unittest
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import redirect_stderr, redirect_stdout
 from unittest import mock
 
 from helper import ROOT
 import tdq_test
+import tdq_test_report
 
 
 class RunnerIntegration(unittest.TestCase):
@@ -374,3 +376,192 @@ def test_mutate():
         self.assertLess(len(json.dumps(large)), small + 32)
         self.assertEqual(large["case_inventory_count"], 10000)
         self.assertEqual(large["result_artifact"], result["result_artifact"])
+
+    def report_cli(self, source, prefix, *flags, env=None):
+        return subprocess.run([sys.executable, str(Path(ROOT, "scripts/tdq_test.py")),
+                               "report", "--result", str(source), "--out-prefix", str(prefix), *flags],
+                              capture_output=True, text=True, encoding="utf-8",
+                              errors="replace", timeout=30, env=env)
+
+    def test_fresh_result_persists_one_slow_test_summary(self):
+        self.source("def test_ok(): assert 1 + 1 == 2\n")
+        summarize = tdq_test_report.summarize_result
+        with mock.patch.object(tdq_test_report, "summarize_result", wraps=summarize) as calls:
+            result = self.run_full(fresh=True, reuse="off")
+            self.assertEqual(result["status"], "PASS", result)
+            self.assertIn("slow_tests", result)
+            output = io.StringIO()
+            with redirect_stdout(output):
+                tdq_test._print_result(result, 1.0, "full")
+            self.assertEqual(calls.call_count, 1)
+        summary = result["slow_tests"]
+        persisted = json.loads(Path(result["result_artifact"]["path"]).read_text())
+        self.assertEqual(persisted["slow_tests"], summary)
+        self.assertEqual(summary["quality"]["status"], "complete")
+        self.assertEqual(summary["result_status"], result["status"])
+        self.assertEqual(summary["wall_seconds"], result["timings"]["wall_seconds"])
+        self.assertEqual(len(summary["top_cases"]), 1)
+        self.assertEqual(len(summary["top_modules"]), 1)
+        self.assertNotIn("input_sha256", summary)
+        self.assertIn("Top20 cases", output.getvalue())
+        self.assertIn("Top20 modules", output.getvalue())
+        self.assertIn(summary["top_cases"][0]["case_id"], output.getvalue())
+        self.assertTrue(output.getvalue().splitlines()[-1].startswith("TDQ_RESULT "))
+        expected = hashlib.sha256(Path(tdq_test_report.__file__).read_bytes()).hexdigest()
+        self.assertEqual(result["source_before"]["implementation"]["tdq_test_report"]["sha256"], expected)
+
+    def test_offline_cli_accepts_legacy_result_and_dotted_prefix(self):
+        source = self.repo / "legacy.json"
+        original = json.dumps({"status": "PASS", "exit_code": 0, "schema_version": 2,
+                               "tests_run": 7}).encode()
+        source.write_bytes(original)
+        prefix = self.repo / "summary.v1"
+        run = self.report_cli(source, prefix, env={**os.environ, "TDQ_LOG": "0"})
+        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+        self.assertEqual(source.read_bytes(), original)
+        self.assertEqual(run.stderr, "")
+        self.assertIn("TDQ_REPORT ", run.stdout)
+        for suffix in (".json", ".md", ".html"):
+            self.assertTrue((prefix.parent / (prefix.name + suffix)).is_file())
+        summary = json.loads((self.repo / "summary.v1.json").read_text())
+        self.assertEqual(summary["input_sha256"], hashlib.sha256(original).hexdigest())
+        self.assertEqual(summary["result_status"], "PASS")
+        self.assertEqual(summary["quality"]["status"], "unavailable")
+
+    def test_offline_dispatch_never_resolves_project_or_launches_runner(self):
+        source = self.repo / "offline.json"
+        source.write_text(json.dumps({"status": "PASS", "schema_version": 2,
+                                      "raw_payload": "PRIVATE_INPUT_PAYLOAD"}), encoding="utf-8")
+        original, stamp = source.read_bytes(), source.stat().st_mtime_ns
+        state = (self.repo / "docs/tdq/state.json").read_bytes()
+        output, errors = io.StringIO(), io.StringIO()
+        deny = AssertionError("Offline export must not execute or resolve a project")
+        with mock.patch.dict(os.environ), \
+                mock.patch.object(tdq_test, "_run_pytest", side_effect=deny), \
+                mock.patch.object(tdq_test, "chay_tron_bo_result", side_effect=deny), \
+                mock.patch.object(tdq_test.tdq_state, "resolve_project_dir", side_effect=deny), \
+                mock.patch.object(tdq_test.subprocess, "Popen", side_effect=deny), \
+                redirect_stdout(output), redirect_stderr(errors):
+            os.environ.pop("TDQ_LOG", None)
+            code = tdq_test.main(["report", "--result", str(source),
+                                  "--out-prefix", str(self.repo / "offline-export")])
+        self.assertEqual(code, 0, errors.getvalue())
+        self.assertEqual(source.read_bytes(), original)
+        self.assertEqual(source.stat().st_mtime_ns, stamp)
+        self.assertEqual((self.repo / "docs/tdq/state.json").read_bytes(), state)
+        self.assertFalse((self.repo / "docs/tdq/.tdq-test.jsonl").exists())
+        self.assertNotIn("PRIVATE_INPUT_PAYLOAD", output.getvalue() + errors.getvalue())
+        self.assertRegex(errors.getvalue(), r"\[\d{4}-\d\d-\d\dT.*stage=exported")
+
+    def test_saved_failure_real_cli_roundtrip_does_not_execute_again(self):
+        counter_dir = tempfile.TemporaryDirectory(prefix="tdq-offline-counter-")
+        self.addCleanup(counter_dir.cleanup)
+        counter = Path(counter_dir.name) / "executions.txt"
+        self.source("from pathlib import Path\ndef test_failure():\n"
+                    f"    with Path({str(counter)!r}).open('a') as output: output.write('run\\n')\n"
+                    "    assert False, 'fixture failure'\n")
+        result = self.run_full(fresh=True, reuse="off")
+        self.assertEqual(result["status"], "FAIL", result)
+        self.assertEqual(counter.read_text(), "run\n")
+        source = Path(result["result_artifact"]["path"])
+        original, stamp = source.read_bytes(), source.stat().st_mtime_ns
+        ledger = tdq_test._doc_so(self.repo)
+        prefix = self.repo / "failure.report"
+        run = self.report_cli(source, prefix, env={**os.environ, "TDQ_LOG": "0"})
+        self.assertEqual(run.returncode, 1, run.stdout + run.stderr)
+        self.assertEqual(run.stderr, "")
+        self.assertEqual(counter.read_text(), "run\n")
+        self.assertEqual(source.read_bytes(), original)
+        self.assertEqual(source.stat().st_mtime_ns, stamp)
+        self.assertEqual(tdq_test._doc_so(self.repo), ledger)
+        metadata = json.loads(next(line.removeprefix("TDQ_REPORT ")
+            for line in run.stdout.splitlines() if line.startswith("TDQ_REPORT ")))
+        self.assertEqual(metadata["result_status"], "FAIL")
+        self.assertEqual(metadata["input_sha256"], hashlib.sha256(original).hexdigest())
+        exported = json.loads((self.repo / "failure.report.json").read_text())
+        for key, value in result["slow_tests"].items():
+            self.assertEqual(exported[key], value, key)
+        self.assertEqual(exported["result_exit_code"], 1)
+        for role in ("markdown", "html"):
+            artifact = exported["artifacts"][role]
+            content = (prefix.parent / artifact["path"]).read_bytes()
+            self.assertEqual(hashlib.sha256(content).hexdigest(), artifact["sha256"])
+            self.assertIn("FAIL", content.decode())
+
+    def test_silent_cli_keeps_bound_marker_without_top_tables(self):
+        self.source("def test_ok(): assert True\n")
+        with mock.patch.dict(os.environ, {"TDQ_LOG": "0"}):
+            run = self.cli("--silent", "--fresh", "--reuse", "off")
+        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+        self.assertEqual(run.stderr, "")
+        self.assertNotIn("Top20", run.stdout)
+        self.assertLessEqual(len(run.stdout.strip().splitlines()), 2)
+        marker = next(line.removeprefix("TDQ_RESULT ") for line in run.stdout.splitlines()
+                      if line.startswith("TDQ_RESULT "))
+        binding = json.loads(marker)
+        raw = Path(binding["path"]).read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), binding["sha256"])
+        self.assertIn("slow_tests", json.loads(raw))
+
+    def test_summary_and_persistence_errors_keep_original_failure(self):
+        self.source("def test_bad(): assert False, 'original execution failure'\n")
+        for boundary in ("summary", "persist"):
+            with self.subTest(boundary=boundary):
+                target = tdq_test_report if boundary == "summary" else tdq_test
+                name = "summarize_result" if boundary == "summary" else "_persist_result"
+                failure = RuntimeError("private summary error") if boundary == "summary" else OSError("write denied")
+                with mock.patch.object(target, name, side_effect=failure) as calls:
+                    result = self.run_full(fresh=True, reuse="off")
+                self.assertEqual(calls.call_count, 1)
+                self.assertEqual(result["status"], "FAIL", result)
+                self.assertEqual(result["exit_code"], 1)
+                self.assertIn("original execution failure", json.dumps(result["failures"]))
+                self.assertFalse(result["finalization"]["complete"])
+                self.assertNotIn("result_artifact", result)
+                self.assertNotIn("slow_tests", result)
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    tdq_test._print_result(result, 0, "full")
+                self.assertIn("[TDQ:TEST] FAIL", output.getvalue())
+                self.assertNotIn("Top20", output.getvalue())
+
+    def test_report_errors_do_not_publish_success_or_overwrite_input(self):
+        source = self.repo / "source.json"
+        source.write_text('{"status":"FAIL","exit_code":1}', encoding="utf-8")
+        original = source.read_bytes()
+        output, errors = io.StringIO(), io.StringIO()
+        with redirect_stdout(output), redirect_stderr(errors):
+            code = tdq_test.main(["report", "--result", str(source),
+                                  "--out-prefix", str(source.with_suffix(""))])
+        self.assertEqual(code, 1)
+        self.assertEqual(source.read_bytes(), original)
+        self.assertNotIn("TDQ_REPORT", output.getvalue())
+        self.assertIn("ReportError", errors.getvalue())
+        self.assertIn("Output must not overwrite the input result", errors.getvalue())
+        output, errors = io.StringIO(), io.StringIO()
+        with mock.patch.object(tdq_test_report, "export_report", side_effect=RuntimeError("PRIVATE_EXPORT_PAYLOAD")), \
+                redirect_stdout(output), redirect_stderr(errors):
+            code = tdq_test.main(["report", "--result", str(source),
+                                  "--out-prefix", str(self.repo / "safe")])
+        self.assertEqual(code, 1)
+        self.assertNotIn("TDQ_REPORT", output.getvalue())
+        self.assertIn("RuntimeError", errors.getvalue())
+        self.assertNotIn("PRIVATE_EXPORT_PAYLOAD", errors.getvalue())
+        self.assertFalse((self.repo / "safe.json").exists())
+        self.assertEqual(source.read_bytes(), original)
+
+    def test_report_requires_explicit_output_prefix(self):
+        source = self.repo / "source.json"
+        source.write_text('{"status":"PASS"}', encoding="utf-8")
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as stopped:
+            tdq_test.main(["report", "--result", str(source)])
+        self.assertEqual(stopped.exception.code, 2)
+        self.assertFalse((self.repo / "slow-tests.json").exists())
+
+    def test_ledger_does_not_duplicate_summary_quality_payload(self):
+        result = {"manifest": {"case_ids": ["case"]},
+                  "slow_tests": {"quality": {"issues": []}}}
+        small = tdq_test._ledger_result(result)
+        result["slow_tests"]["quality"]["issues"] = [{"case_id": "case", "reason": "missing"}] * 10000
+        self.assertEqual(tdq_test._ledger_result(result), small)
+        self.assertNotIn("slow_tests", small)

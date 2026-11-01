@@ -1,0 +1,83 @@
+{
+  "slug": "",
+  "ngay": "2026-11-01",
+  "may": {
+    "python": "3.13.15",
+    "he_dieu_hanh": "Windows-11-10.0.26100-SP0"
+  },
+  "ghi_chu": "nguon=stub is the mechanical floor; nguon=that is timed from a real agent round. cach_do=nhap-tay means a human entered it, the machine sample stays in mau_may",
+  "hang_so": {
+    "t_task": {
+      "giay": 0.118343,
+      "so_mau": 3,
+      "do_tan": 0.001117,
+      "nguon": "stub",
+      "cach_do": "may",
+      "mau": [
+        0.116845,
+        0.118656,
+        0.119527
+      ]
+    },
+    "t_tick": {
+      "giay": 0.000622,
+      "so_mau": 3,
+      "do_tan": 1.3e-05,
+      "nguon": "stub",
+      "cach_do": "may",
+      "mau": [
+        0.00061,
+        0.00064,
+        0.000617
+      ]
+    },
+    "t_phat": {
+      "giay": 0.926013,
+      "so_mau": 3,
+      "do_tan": 0.012336,
+      "nguon": "stub",
+      "cach_do": "may",
+      "mau": [
+        0.925107,
+        0.941554,
+        0.911378
+      ]
+    },
+    "t_kiem": {
+      "giay": 0.360707,
+      "so_mau": 3,
+      "do_tan": 0.004398,
+      "nguon": "stub",
+      "cach_do": "may",
+      "mau": [
+        0.365577,
+        0.361623,
+        0.354923
+      ]
+    },
+    "t_hop": {
+      "giay": 1.094428,
+      "so_mau": 3,
+      "do_tan": 0.052766,
+      "nguon": "stub",
+      "cach_do": "may",
+      "mau": [
+        1.155835,
+        1.100445,
+        1.027005
+      ]
+    },
+    "t_don": {
+      "giay": 0.461014,
+      "so_mau": 3,
+      "do_tan": 0.015723,
+      "nguon": "stub",
+      "cach_do": "may",
+      "mau": [
+        0.482945,
+        0.453221,
+        0.446876
+      ]
+    }
+  }
+}

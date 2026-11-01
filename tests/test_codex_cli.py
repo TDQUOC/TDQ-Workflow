@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -19,6 +20,7 @@ from helper import ROOT
 
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import tdq_codex  # noqa: E402
+import tdq_test_process as process  # noqa: E402
 
 CLI = os.path.join(ROOT, "scripts", "tdq_codex.py")
 
@@ -163,9 +165,18 @@ def _codex_gia(thu_muc, kieu):
     co_ket_qua = tdq_codex.CO_EXEC["ket_qua"]
     with open(duong, "w", encoding="utf-8") as f:
         f.write(f"""#!{sys.executable}
-import json, os, sys, time
+import json, os, subprocess, sys, time
 args = sys.argv[1:]
+kieu = {kieu!r}
 if args == ["--version"]:
+    if kieu == "version-tree":
+        child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+        with open({ghi!r}, "w", encoding="utf-8") as f:
+            json.dump({{"pid": os.getpid(), "descendant_pid": child.pid}}, f)
+        print("version tree started", flush=True)
+        time.sleep(30)
+    if kieu == "slow-both":
+        time.sleep(.7)
     print("codex-cli 9.9.9")
     sys.exit(0)
 home = os.environ.get("CODEX_HOME", "")
@@ -174,14 +185,28 @@ try:
 except OSError:
     cfg = ""
 with open({ghi!r}, "w", encoding="utf-8") as f:
-    json.dump({{"args": args, "home": home, "config": cfg}}, f)
-kieu = {kieu!r}
+    json.dump({{"args": args, "home": home, "config": cfg,
+               "caller_home": os.environ.get("HOME"),
+               "caller_userprofile": os.environ.get("USERPROFILE"),
+               "stdin_eof": sys.stdin.read() == "", "stdin_tty": sys.stdin.isatty(),
+               "pid": os.getpid()}}, f)
+if kieu == "slow-both":
+    time.sleep(.7)
+if kieu == "tree":
+    child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+    with open({ghi!r}, encoding="utf-8") as f:
+        record = json.load(f)
+    record["descendant_pid"] = child.pid
+    with open({ghi!r}, "w", encoding="utf-8") as f:
+        json.dump(record, f)
+    print("tree started", flush=True)
+    time.sleep(30)
 if kieu == "treo":
     time.sleep(30)
 if kieu == "chet":
     print('ERROR: {{"status":400,"message":"model not supported"}}', file=sys.stderr)
     sys.exit(1)
-if kieu == "song":
+if kieu in ("song", "slow-both"):
     with open(args[args.index({co_ket_qua!r}) + 1], "w", encoding="utf-8") as f:
         f.write("hi\\n")
 sys.exit(0)
@@ -270,6 +295,131 @@ class KiemSongThatTest(RepoTam):
         goc = tdq_codex._duong_home(self.cwd)
         con = os.listdir(goc) if os.path.isdir(goc) else []
         self.assertEqual([t for t in con if t.startswith(tdq_codex.HOME_PREFIX)], [])
+
+    @unittest.skipUnless(os.name == "nt", "Windows .cmd descendant/pipe proof")
+    def test_windows_cmd_descendant_timeout_is_bounded(self):
+        duong, ghi = _codex_gia(self.bin, "tree")
+        control = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(90)"],
+                                   stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                   stderr=subprocess.DEVNULL)
+        try:
+            started = time.monotonic()
+            song, _, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=2)
+            elapsed = time.monotonic() - started
+            record = self._ghi_lai(ghi)
+            self.assertFalse(song)
+            self.assertIn("quá hạn", reason)
+            self.assertLessEqual(elapsed, 8, f"whole liveness call took {elapsed:.3f}s")
+            self.assertFalse(process._windows_pid_alive(record["pid"]))
+            self.assertFalse(process._windows_pid_alive(record["descendant_pid"]))
+            self.assertIsNone(control.poll(), "unrelated process must survive")
+            self.assertEqual(record["caller_home"], os.environ.get("HOME"))
+            self.assertEqual(record["caller_userprofile"], os.environ.get("USERPROFILE"))
+            self.assertTrue(record["stdin_eof"])
+            self.assertEqual(record["stdin_tty"], os.name == "nt", "Windows NUL is a character device; EOF proves closed stdin")
+            self.assertFalse(os.path.exists(record["home"]))
+        finally:
+            control.terminate()
+            control.wait(timeout=5)
+
+    @unittest.skipUnless(os.name == "nt", "Windows version descendant/pipe proof")
+    def test_version_timeout_owns_descendants_without_creating_home(self):
+        duong, ghi = _codex_gia(self.bin, "version-tree")
+        started = time.monotonic()
+        song, _, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=2)
+        elapsed = time.monotonic() - started
+        record = self._ghi_lai(ghi)
+        self.assertFalse(song)
+        self.assertIn("--version", reason)
+        self.assertIn("quá hạn", reason)
+        self.assertLessEqual(elapsed, 8)
+        self.assertFalse(process._windows_pid_alive(record["pid"]))
+        self.assertFalse(process._windows_pid_alive(record["descendant_pid"]))
+        self.assertFalse(os.path.exists(tdq_codex._duong_home(self.cwd)))
+
+    def test_version_and_say_hi_keep_independent_deadlines(self):
+        duong, _ = _codex_gia(self.bin, "slow-both")
+        started = time.monotonic()
+        song, version, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=1.3)
+        elapsed = time.monotonic() - started
+        self.assertTrue(song, reason)
+        self.assertIn("9.9.9", version)
+        self.assertGreater(elapsed, 1.3)
+        self.assertLessEqual(elapsed, 8)
+
+    def test_caller_home_and_stdin_are_preserved_on_success(self):
+        caller_home = os.path.join(self.cwd, "caller-home")
+        caller_profile = os.path.join(self.cwd, "caller-profile")
+        with mock.patch.dict(os.environ, HOME=caller_home, USERPROFILE=caller_profile):
+            result, ghi = self._check("song")
+        self.assertTrue(result["chay_duoc"], result)
+        record = self._ghi_lai(ghi)
+        self.assertEqual(record["caller_home"], caller_home)
+        self.assertEqual(record["caller_userprofile"], caller_profile)
+        self.assertTrue(record["stdin_eof"])
+        self.assertEqual(record["stdin_tty"], os.name == "nt", "Windows NUL is a character device; EOF proves closed stdin")
+        self.assertIn('model_provider = "r"', record["config"])
+        self.assertEqual(record["args"][-1], tdq_codex.CAU_SAY_HI)
+        self.assertFalse(os.path.exists(record["home"]))
+
+    def test_say_hi_deadline_includes_home_setup(self):
+        duong, ghi = _codex_gia(self.bin, "song")
+        make_home = tdq_codex.dung_codex_home
+        homes = []
+        def slow_home(*args):
+            time.sleep(.8)
+            homes.append(make_home(*args))
+            return homes[-1]
+        with mock.patch.object(tdq_codex, "dung_codex_home", side_effect=slow_home):
+            song, _, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=.5)
+        self.assertFalse(song)
+        self.assertIn("quá hạn", reason)
+        self.assertFalse(os.path.exists(ghi), "no target spawn after home setup consumes deadline")
+        self.assertEqual(len(homes), 1)
+        self.assertFalse(os.path.exists(homes[0]))
+
+    @unittest.skipUnless(os.name == "nt", "Windows ownership rejection proof")
+    def test_assignment_failure_never_runs_unmanaged_say_hi(self):
+        duong, ghi = _codex_gia(self.bin, "song")
+        assign = process._WindowsJob.assign
+        calls = []
+        def reject_second(owner, child):
+            calls.append(child.pid)
+            if len(calls) == 2:
+                raise OSError("fixture assignment denied")
+            return assign(owner, child)
+        with mock.patch.object(process._WindowsJob, "assign", reject_second):
+            song, _, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=2)
+        self.assertFalse(song)
+        self.assertIn("launch-error", reason)
+        self.assertEqual(len(calls), 2)
+        self.assertFalse(os.path.exists(ghi))
+        self.assertEqual(os.listdir(tdq_codex._duong_home(self.cwd)), [])
+
+    def test_failed_probe_preserves_other_jobs_home(self):
+        sibling = os.path.join(tdq_codex._duong_home(self.cwd), tdq_codex.HOME_PREFIX + "other-job")
+        os.makedirs(sibling)
+        sentinel = os.path.join(sibling, "sentinel.txt")
+        with open(sentinel, "w", encoding="utf-8") as stream:
+            stream.write("other job")
+        result, ghi = self._check("chet")
+        self.assertFalse(result["chay_duoc"])
+        self.assertTrue(os.path.isfile(sentinel))
+        self.assertFalse(os.path.exists(self._ghi_lai(ghi)["home"]))
+
+    def test_home_factory_failure_removes_only_partial_home(self):
+        source = tdq_codex.thu_muc_codex_may()
+        with open(os.path.join(source, "auth.json"), "w", encoding="utf-8") as stream:
+            json.dump({"synthetic": True}, stream)
+        sibling = os.path.join(tdq_codex._duong_home(self.cwd), tdq_codex.HOME_PREFIX + "other-job")
+        os.makedirs(sibling)
+        duong, ghi = _codex_gia(self.bin, "song")
+        with mock.patch.object(tdq_codex.shutil, "copy2", side_effect=PermissionError("fixture denied auth copy")):
+            song, _, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=2)
+        self.assertFalse(song)
+        self.assertIn("PermissionError", reason)
+        self.assertFalse(os.path.exists(ghi))
+        self.assertEqual(os.listdir(tdq_codex._duong_home(self.cwd)), [os.path.basename(sibling)])
 
     def test_thieu_model_thi_khong_goi_say_hi(self):
         tdq_codex.dat_co_dong_y(self.cwd, True, model=None)

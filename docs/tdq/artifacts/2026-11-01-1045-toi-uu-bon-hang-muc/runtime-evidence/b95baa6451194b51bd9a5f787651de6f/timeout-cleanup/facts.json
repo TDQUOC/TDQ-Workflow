@@ -1,0 +1,33 @@
+{
+  "timeout_seconds": 2,
+  "call_elapsed_seconds": 2.188583400005882,
+  "ready_observed": true,
+  "descendants_observed": [
+    29664,
+    33916
+  ],
+  "descendants_alive_after": [],
+  "home_existed_before": true,
+  "home_exists_after": false,
+  "unrelated_before": {
+    "pid": 41708,
+    "identity": "134379982106968541",
+    "alive": true,
+    "home_exists": true,
+    "marker_sha256": "414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445"
+  },
+  "unrelated_after": {
+    "pid": 41708,
+    "identity": "134379982106968541",
+    "alive": true,
+    "home_exists": true,
+    "marker_sha256": "414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445"
+  },
+  "alive_result": false,
+  "version": "",
+  "reason": "say hi quá hạn 2s — model không trả lời",
+  "caller_home_preserved": true,
+  "caller_userprofile_preserved": true,
+  "observer_enabled": true,
+  "observed_process_calls": 3
+}

@@ -1,0 +1,525 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "schema_version": 1,
+    "backend": "pytest",
+    "selectors": [
+      "tests/test_optimize_contracts.py",
+      "tests/test_runtime_contracts.py"
+    ],
+    "scope": "direct",
+    "case_ids": [
+      "tests/test_optimize_contracts.py::test_mixed_identity_and_legacy_verdict_survive_summary_and_export",
+      "tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_manifest]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_result]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_process]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_receipt]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_readiness]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript_cache]",
+      "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_runtime_bench]",
+      "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import hooks.scripts.stop_gate as gate\\ngate.main()]",
+      "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tests.helper import ROOT]",
+      "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import tdq_state as state\\nstate.save_state('project', {})]",
+      "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tdq_state import save_state as write\\nwrite('project', {})]",
+      "tests/test_runtime_contracts.py::test_mixed_failure_survives_artifact_ledger_and_existing_state_consumer",
+      "tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting",
+      "tests/test_runtime_contracts.py::test_document_noop_never_launches_or_consumes_full_budget"
+    ],
+    "diagnostics": [],
+    "fingerprint": null,
+    "complete": true
+  },
+  "outcomes": [
+    {
+      "case_id": "tests/test_optimize_contracts.py::test_mixed_identity_and_legacy_verdict_survive_summary_and_export",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 2.5856162999989465
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.013731200000620447
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003401000067242421
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.001983299996936694
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.5365611000015633
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00029200000426499173
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003595999951357953
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.05849179999495391
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00025689999893074855
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_manifest]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000338099998771213
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.013908299995819107
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002578999992692843
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_result]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00035569999454310164
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.018408399999316316
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003193000011378899
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_process]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003792000061366707
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.011407900004996918
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002386999985901639
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_test_receipt]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00033660000190138817
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.023271800004295073
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00021600000036414713
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_readiness]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00022799999715061858
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.005134900005941745
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00021949999791104347
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003336000008857809
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.018597000002046116
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000276099999609869
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_transcript_cache]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003646000041044317
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.007730600002105348
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00023820000205887482
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_runtime_dependency_boundary[tdq_runtime_bench]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000320700004522223
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.040977600001497194
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00016570000298088416
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import hooks.scripts.stop_gate as gate\\ngate.main()]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00032250000367639586
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00041820000478764996
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00021299999934853986
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tests.helper import ROOT]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00029889999859733507
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000338099998771213
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002089000045089051
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[import tdq_state as state\\nstate.save_state('project', {})]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002486000012140721
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00024920000578276813
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012840000272262841
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_dependency_guard_detects_reverse_import_and_aliased_state_write[from tdq_state import save_state as write\\nwrite('project', {})]",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00018589999672258273
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002333999946131371
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012489999789977446
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_mixed_failure_survives_artifact_ledger_and_existing_state_consumer",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0018474000025889836
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 2.563845399999991
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.009170999997877516
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.002116099996783305
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 13.119310199996107
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.017987200000789016
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_runtime_contracts.py::test_document_noop_never_launches_or_consumes_full_budget",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.002219499998318497
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.007582699996419251
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0015684999962104484
+        }
+      ],
+      "subtests": []
+    }
+  ],
+  "completed": true,
+  "exit_code": 0
+}

@@ -57,6 +57,8 @@ CLI (`python scripts/tdq_test.py <command>`):
   line is printed instead.
 - `so [--json] [--repo DIR]`: for the active request, the number of `tron-bo` runs, of `bo-sot`
   rows, the missed modules, and the full-suite budget (`dem()`; 2, or 3 after a red `tron-bo`).
+- `report --result PATH --out-prefix PATH`: export source-bound JSON/MD/HTML offline.
+  The source result is unchanged; FAIL/ERROR/INCOMPLETE sources keep exit 1.
 
 Log service: one ISO-timestamped line per command on stderr, on by default; `TDQ_LOG=0` turns
 it off. Only paths, counts and reasons are logged, never file contents.
@@ -89,6 +91,7 @@ import tdq_test_result  # noqa: E402
 import tdq_test_manifest  # noqa: E402
 import tdq_test_process  # noqa: E402
 import tdq_test_receipt  # noqa: E402
+import tdq_test_report  # noqa: E402
 from tdq_test_process import IsolatedJob  # noqa: E402
 
 TOP_DIRS = frozenset({"scripts", "hooks", "skills", "tests", "agents"})
@@ -756,7 +759,7 @@ def _output_stream(repo, silent):
 def _ledger_result(result):
     """Keep the ledger small; exact case/source evidence is digest-bound on disk."""
     large = {"manifest", "case_outcomes", "evidence", "evidence_paths",
-             "source_before", "source_after", "process", "coverage"}
+             "source_before", "source_after", "process", "coverage", "slow_tests"}
     value = {key: item for key, item in result.items() if key not in large}
     value["case_inventory_count"] = len(result.get("manifest", {}).get("case_ids", []))
     value["coverage_summary"] = {key: result.get("coverage", {}).get(key)
@@ -789,10 +792,28 @@ def _record_result(repo, state, kind, result, *, seconds, selection_scope,
          f"reason={result['reason']}")
 
 
-def _print_result(result, seconds, scope):
+def _print_slow_tests(summary):
+    print(f"Slow-test duration quality: {summary['quality']['status']}; "
+          f"execution phases={summary['execution_phase_seconds']}s; "
+          f"wall={summary['wall_seconds']}s (separate).")
+    print("Top20 cases (execution phase seconds)")
+    for row in summary["top_cases"]:
+        print(f"  {row['duration_seconds']:.6f}  {row['case_id']}  {row['outcome']}")
+    if not summary["top_cases"]:
+        print("  unavailable")
+    print("Top20 modules (execution phase seconds)")
+    for row in summary["top_modules"]:
+        print(f"  {row['duration_seconds']:.6f}  {row['module']}  cases={row['case_count']}")
+    if not summary["top_modules"]:
+        print("  unavailable")
+
+
+def _print_result(result, seconds, scope, *, silent=False):
     print(f"[TDQ:TEST] {result['status']} — scope={scope} "
           f"backend={result['backend']} tests={result['tests_run']} "
           f"skipped={result['skipped']} in {seconds}s.")
+    if not silent and result.get("slow_tests"):
+        _print_slow_tests(result["slow_tests"])
     if result.get("result_artifact"):
         print("TDQ_RESULT " + json.dumps(result["result_artifact"], ensure_ascii=False))
     elif result["status"] != "PASS":
@@ -846,7 +867,7 @@ def cmd_vung_cham(args):
     _record_result(repo, state, "vung-cham", result, seconds=seconds,
                    selection_scope=scope, modules=modules, files=files,
                    fallback=reason)
-    _print_result(result, seconds, scope)
+    _print_result(result, seconds, scope, silent=silent)
     return 0 if result["status"] in {"PASS", "SKIP"} else 1
 
 
@@ -1059,7 +1080,8 @@ def _phase_result(directory, phase, process, evidence, inventory, expected=None)
 def _source_fingerprint(repo, request, environment):
     # Workers are deliberately absent: paired benchmark jobs share this envelope.
     implementation = {"tdq_test": _artifact_digest(Path(__file__)),
-                      "tdq_test_process": _artifact_digest(Path(tdq_test_process.__file__))}
+                      "tdq_test_process": _artifact_digest(Path(tdq_test_process.__file__)),
+                      "tdq_test_report": _artifact_digest(Path(tdq_test_report.__file__))}
     value = tdq_test_receipt.build_fingerprint(
         repo, request, {}, environment=environment, flags={"implementation": implementation})
     value["implementation"] = implementation
@@ -1152,6 +1174,16 @@ def _finish_run(result, before, after, directory, verify_seconds, start):
     paths = result.get("evidence_paths", [])
     paths += [str(path) for path in directory.iterdir() if path.is_file()]
     result["evidence_paths"] = sorted(set(paths))
+    try:
+        result["slow_tests"] = tdq_test_report.summarize_result(result)
+        summary = result["slow_tests"]
+        _log(f"summary stage=complete cases={summary['case_count']} "
+             f"quality={summary['quality']['status']} status={summary['result_status']}")
+    except Exception as error:
+        # Keep executed evidence and its FAIL verdict on presentation failure.
+        result["slow_tests_error"] = {"stage": "summary", "error_type": type(error).__name__}
+        _log(f"summary unavailable: error={type(error).__name__}")
+        raise tdq_test_report.ReportError("Slow-test summary unavailable") from error
     _persist_result(result, directory)
     return result
 
@@ -1163,6 +1195,7 @@ def _proof_error_result(result, error, stage, start, verify_seconds):
     else:
         _invalidate_result(result, reason)
     result.pop("result_artifact", None)
+    result.pop("slow_tests", None)  # Finalization can downgrade the original verdict.
     result["finalization"] = {"complete": False, "stage": stage,
                                "error_type": type(error).__name__, "reason": "runner_evidence_error"}
     timings = result.setdefault("timings", {})
@@ -1374,7 +1407,7 @@ def cmd_tron_bo(args):
                    radius_complete=complete)
     if result.get("action", "executed") == "executed":
         _report_misses(repo, rows, request, result, silent)
-    _print_result(result, seconds, "full")
+    _print_result(result, seconds, "full", silent=silent)
     return 0 if result["status"] == "PASS" else 1
 
 
@@ -1401,6 +1434,21 @@ def cmd_so(args):
     _log(f"so request={request} tron_bo={counts['tron_bo']} bo_sot={counts['bo_sot']} "
          f"budget={counts['ngan_sach']}")
     return 0
+
+
+def cmd_report(args):
+    """Export an existing result without resolving a project or running tests."""
+    try:
+        exported = tdq_test_report.export_report(args.result, args.out_prefix)
+    except Exception as error:
+        reason = f" reason={error}" if isinstance(error, tdq_test_report.ReportError) else ""
+        print(f"report failed: input={args.result} prefix={args.out_prefix} "
+              f"error={type(error).__name__}{reason}", file=sys.stderr)
+        return 1
+    status = exported["result_status"]
+    print("TDQ_REPORT " + json.dumps({"input_sha256": exported["input_sha256"],
+          "result_status": status, "outputs": exported["outputs"]}, ensure_ascii=False))
+    return 0 if status in {"PASS", "SKIP"} else 1
 
 
 def _positive_number(value):
@@ -1460,7 +1508,13 @@ def main(argv=None):
     p = sub.add_parser("so", parents=[common], help="count full-suite runs and radius misses of the request")
     p.add_argument("--json", action="store_true", help="print one JSON object")
     p.set_defaults(func=cmd_so)
+    p = sub.add_parser("report", help="export a saved result as JSON/MD/HTML without running tests")
+    p.add_argument("--result", required=True, help="saved result JSON input")
+    p.add_argument("--out-prefix", required=True, help="output prefix for .json, .md and .html")
+    p.set_defaults(func=cmd_report)
     args = parser.parse_args(argv)
+    if args.command == "report":
+        return args.func(args)
     if args.repo is None:
         args.repo = tdq_state.resolve_project_dir(os.getcwd())
     return args.func(args)

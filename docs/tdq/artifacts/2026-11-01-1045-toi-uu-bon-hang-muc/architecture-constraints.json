@@ -1,0 +1,116 @@
+{
+  "scripts_do_not_import_hooks": {
+    "status": "PASS",
+    "method": "AST all imports in five touched production modules",
+    "imports": {
+      "scripts/tdq_bench.py": [
+        "argparse",
+        "json",
+        "math",
+        "os",
+        "platform",
+        "re",
+        "shutil",
+        "statistics",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "time",
+        "datetime",
+        "tdq_state",
+        "tdq_team",
+        "tdq_ten_lenh"
+      ],
+      "scripts/tdq_codex.py": [
+        "argparse",
+        "datetime",
+        "hashlib",
+        "json",
+        "os",
+        "re",
+        "shutil",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "time",
+        "tomllib",
+        "utf8_io",
+        "setup_status",
+        "tdq_test_process",
+        "tdq_vungfile"
+      ],
+      "scripts/tdq_test.py": [
+        "ast",
+        "contextlib",
+        "hashlib",
+        "importlib.util",
+        "json",
+        "os",
+        "re",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "time",
+        "uuid",
+        "pathlib",
+        "xml.etree.ElementTree",
+        "tdq_state",
+        "tdq_ten_lenh",
+        "tdq_test_result",
+        "tdq_test_manifest",
+        "tdq_test_process",
+        "tdq_test_receipt",
+        "tdq_test_report",
+        "tdq_test_process",
+        "unittest",
+        "unittest",
+        "unittest",
+        "argparse",
+        "argparse",
+        "math",
+        "argparse",
+        "argparse",
+        "utf8_io"
+      ],
+      "scripts/tdq_test_process.py": [
+        "ctypes",
+        "ctypes",
+        "datetime",
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "signal",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "time"
+      ],
+      "scripts/tdq_test_report.py": [
+        "collections",
+        "datetime",
+        "hashlib",
+        "html",
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "sys",
+        "tempfile",
+        "urllib.parse"
+      ]
+    }
+  },
+  "state_single_writer": {
+    "status": "PASS",
+    "method": "Reviewed final diff and write sites; runner writes test result/cache, renderer only export bundle; no new state writer. Existing bench temporary-project state uses tdq_state.save."
+  },
+  "production_does_not_import_tests": {
+    "status": "PASS",
+    "method": "Same AST import inventory; real CLI regression and Full architectural tests passed."
+  },
+  "new_code_module_location": {
+    "status": "PASS",
+    "path": "scripts/tdq_test_report.py"
+  }
+}
