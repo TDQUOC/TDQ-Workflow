@@ -9,3 +9,11 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 - Thay đổi dùng hằng số và entry point hiện có; không thêm module runtime, abstraction hay dependency.
 - Phiên bản hai manifest: 0.85.1. Release notes và kết quả đối chiếu gói phát hành lưu trong artifact.
 - Giới hạn: không có lượt Full/benchmark mới; CI nền 0.85.0 còn lỗi; Master Map và guard 11 worktree cũ chưa được xử lý trong bản vá mặc định này.
+
+## Phát hành
+
+- Commit triển khai: `cf2389f`; merge dev: `be0ba7a`; main release: `fe528a8`.
+- [GitHub Release 0.85.1](https://github.com/TDQUOC/TDQ-Workflow/releases/tag/v0.85.1); đã push dev/main/tag và đối chiếu remote refs.
+- ZIP 169 file, kiểm cú pháp 70 file Python; chạy import thực từ ZIP xác nhận Ponytail ultra, QC full và lựa chọn full giữ nguyên.
+- Hai asset ZIP/SHA256SUMS đã đối chiếu SHA256 và size với GitHub API.
+- CI nguồn bản vá: in_progress; conclusion=; https://github.com/TDQUOC/TDQ-Workflow/actions/runs/41303198375. CI nền trước đó FAIL được ghi rõ trong release notes.
