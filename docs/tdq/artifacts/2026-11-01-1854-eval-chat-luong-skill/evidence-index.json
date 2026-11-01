@@ -1,5 +1,7 @@
 {
-  "schema": "tdq-scope-evidence/v1",
+  "schema": "tdq-scope-evidence/v2",
+  "receipt_schema": "tdq-scope-observation/v1",
+  "receipt_contract": "verify_scope.py module docstring defines mandatory fields; empty source_files/observations/coverage and null digests are pending evidence, never PASS. Capture commands once in producing tasks; verifier never reruns them.",
   "slug": "2026-11-01-1854-eval-chat-luong-skill",
   "request": "2026-11-01-1854-eval-chat-luong-skill",
   "spec_path": "docs/tdq/spec/2026-11-01-1854-eval-chat-luong-skill.md",
@@ -81,6 +83,11 @@
       "test_files": [
         "tests/test_tdq_eval_contract.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "target_classifier_identifies_skill_hook_plugin_changes",
         "target_classifier_exempts_pure_docs_and_unrelated_app_code",
@@ -100,6 +107,11 @@
       "test_files": [
         "tests/test_tdq_eval_contract.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "reject_mismatched_model_host_permission_scorer_4_of_4",
         "reject_mismatched_corpus_version_check_set_cache_profile",
@@ -118,6 +130,11 @@
       "test_files": [
         "tests/test_tdq_eval_contract.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "three_independent_metric_groups_trigger_outcome_efficiency",
         "missing_cost_remains_none_or_unavailable_not_zero",
@@ -135,6 +152,11 @@
       "test_files": [
         "tests/test_tdq_eval_hosts.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "windows_adapters_claude_and_codex_present",
         "native_preflight_never_invokes_model",
@@ -156,6 +178,11 @@
         "tests/test_tdq_skill_eval.py",
         "tests/test_skill_quality_corpus.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "balanced_ab_ba_pair_scheduling",
         "resume_skip_by_experiment_hash",
@@ -177,6 +204,11 @@
         "tests/test_tdq_eval_contract.py",
         "tests/test_tdq_skill_eval.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "per_cell_host_model_json_and_markdown_reports",
         "deterministic_recommendations_keep_trim_drop_inconclusive_with_guardrails",
@@ -202,6 +234,11 @@
         "tests/test_tdq_eval.py",
         "tests/test_eval_manifest.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "build_portable_ships_eval_contract_hosts_and_skill_eval",
         "build_portable_excludes_legacy_tdq_eval_evals_and_tests",
@@ -222,6 +259,11 @@
         "tests/test_eval_workflow_gate.py",
         "tests/test_eval_logging.py"
       ],
+      "required_artifacts": {"regression": "regression"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "workflow_gate_checks_evidence_without_model_launch",
         "default_on_iso_logging_and_clean_disable_without_secret_leaks",
@@ -240,6 +282,11 @@
       "test_files": [
         "tests/test_eval_contracts_e2e.py"
       ],
+      "required_artifacts": {"regression": "regression", "full": "full", "runtime": "runtime", "review": "review"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "runtime_smoke_pass_under_120s_without_paid_model_calls",
         "independent_reviewer_pass_with_zero_open_correctness_findings",
@@ -259,6 +306,11 @@
         "docs/tdq/reports/2026-11-01-1854-eval-chat-luong-skill.md"
       ],
       "test_files": [],
+      "required_artifacts": {"regression": "regression", "lint": "lint"},
+      "source_files": {},
+      "source_sha256": null,
+      "observations": {},
+      "coverage": {},
       "conditions": [
         "archify_preview_binding_valid_and_current",
         "skill_eval_qc_and_report_docs_present_with_synthetic_offline_provenance",
