@@ -221,12 +221,17 @@ def load_full_validator(root):
     """Reuse only offline Full parsing; validate_receipt calls git, so not used."""
     files = (("safe_run", "safe_run.py", SAFE_RUN_SHA),
              ("_scope_full_validator", "verify_dod.py", FULL_VALIDATOR_SHA))
+    module = None
     for name, filename, expected in files:
         path = bound(root, {"path": LEGACY + filename, "sha256": expected})
         spec = importlib.util.spec_from_file_location(name, path)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Cannot load module {name} from {path}")
         module = importlib.util.module_from_spec(spec)
         sys.modules[name] = module
         spec.loader.exec_module(module)
+    if module is None:
+        raise ImportError("Failed to load full validator module")
     return module
 
 
@@ -235,7 +240,11 @@ def verify_full(root, result, required):
     require(result.get("evidence"), "Full missing raw evidence")
     snapshot = result.get("source_before")
     require(isinstance(snapshot, dict) and snapshot == result.get("source_after"), "Missing/mutated Full source")
-    source_scope(root, snapshot.get("files"), snapshot.get("sha256"), required)
+    files = snapshot.get("files")
+    if files is None and isinstance(snapshot.get("inputs"), dict):
+        files = snapshot["inputs"].get("files")
+    expected = snapshot.get("sha256") or (digest(files) if files else None)
+    source_scope(root, files, expected, required)
     # Existing checker reparses execution.xml and execution.json, compares coverage.
     load_full_validator(root).validate_full_payload(result, root)
 

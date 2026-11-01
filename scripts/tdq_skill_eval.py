@@ -371,10 +371,14 @@ def _summarize_cell_metrics(pairs: List[Dict[str, Any]]) -> Dict[str, Any]:
 
     tok_avail = "available" if token_availabilities == {"available"} else ("partial" if "available" in token_availabilities or "partial" in token_availabilities else "unavailable")
 
+    base_m = _mean(base_scores)
+    cand_m = _mean(cand_scores)
+    score_delta = (cand_m - base_m) if (base_m is not None and cand_m is not None) else None
+
     return {
-        "base_mean_score": _mean(base_scores),
-        "cand_mean_score": _mean(cand_scores),
-        "score_delta": (_mean(cand_scores) or 0.0) - (_mean(base_scores) or 0.0),
+        "base_mean_score": base_m,
+        "cand_mean_score": cand_m,
+        "score_delta": score_delta,
         "base_score_variance": _variance(base_scores),
         "cand_score_variance": _variance(cand_scores),
         "base_trigger_match_rate": sum(base_triggers) / len(base_triggers) if base_triggers else None,

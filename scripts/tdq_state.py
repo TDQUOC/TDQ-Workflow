@@ -21,6 +21,7 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime, timezone
+from typing import NoReturn
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # Import order matters: `utf8_io` first, because everything below it prints Vietnamese and a
@@ -329,7 +330,7 @@ def _info(msg):
         print(f"[{now_iso()}] ℹ️ {msg}", file=sys.stderr)
 
 
-def _fail(msg):
+def _fail(msg: str) -> NoReturn:
     """Only for a BAD COMMAND SYNTAX — exit 2 (spec §2.9.4)."""
     print(msg, file=sys.stderr)
     print(USAGE, file=sys.stderr)
@@ -2309,16 +2310,23 @@ def _chan_eval_evidence_chua_co(cwd, state):
     except Exception as exc:
         _fail(f"Không đọc được eval-plan ({plan_rel}): {exc}")
 
+    target_spec = plan_data.get("targets", {})
+    actual_hashes = {}
+    target_iterable = target_spec.keys() if isinstance(target_spec, dict) else (target_spec if isinstance(target_spec, list) else [])
+    for t in target_iterable:
+        t_path = os.path.join(cwd, str(t))
+        actual_hashes[str(t)] = sha256_noi_dung(t_path) if os.path.isfile(t_path) else ""
+
     slug = state.get("active_request")
     art_dir = os.path.join(cwd, "docs", "tdq", "artifacts", str(slug))
     records = []
     if os.path.isdir(art_dir):
         for fname in os.listdir(art_dir):
-            if fname.endswith(".json") and fname not in ("analysis-baseline.json", "evidence-index.json"):
+            if fname.endswith(".json") and (fname.startswith("trial_") or fname.startswith("rec_")):
                 try:
                     with open(os.path.join(art_dir, fname), encoding="utf-8") as f:
                         data = json.load(f)
-                        if isinstance(data, dict):
+                        if isinstance(data, dict) and ("trial_id" in data or data.get("schema") == "tdq-trial-record/v1"):
                             records.append(data)
                 except Exception:
                     pass
@@ -2326,6 +2334,7 @@ def _chan_eval_evidence_chua_co(cwd, state):
     gate_res = tdq_eval_contract.check_eval_gate(
         plan_data,
         stage="pre_report",
+        actual_target_hashes=actual_hashes,
         evidence_records=records,
     )
     if gate_res.get("verdict") != "PASS":
