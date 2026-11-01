@@ -41,6 +41,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import skill_tokens  # noqa: E402 — share ONE token counter with the skill table
+from tdq_transcript import claude_transcript_dir  # noqa: E402
 
 EXIT_THIEU_THU_VIEN = skill_tokens.EXIT_THIEU_THU_VIEN
 
@@ -142,12 +143,7 @@ def iter_events(path):
 
 def default_transcript_dir(project_dir=None):
     """The Claude Code transcript folder for a project (~/.claude/projects/<slug>)."""
-    project = os.path.abspath(os.path.expanduser(project_dir or os.getcwd()))
-    # Claude Code turns BOTH the folder separator AND the underscore into `-` when it builds
-    # the transcript folder name. Without the `_` half, a project with an underscore
-    # (Heineken_AppKetNoi) always yields a path that does not exist — read as "no session at all".
-    slug = project.replace(os.sep, "-").replace("_", "-")
-    return os.path.join(os.path.expanduser("~"), ".claude", "projects", slug)
+    return claude_transcript_dir(project_dir)
 
 
 def find_sessions(transcript_dir, limit=3):

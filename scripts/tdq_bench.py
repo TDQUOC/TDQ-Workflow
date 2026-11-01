@@ -25,6 +25,7 @@ Env: TDQ_LOG=0 mutes the log.
 """
 import argparse
 import json
+import math
 import os
 import platform
 import re
@@ -558,13 +559,63 @@ def _gom_mau_codex(args, that):
     return (mau if co_nguon else {}), cach
 
 
-def lenh_thuc_do(args):
+def _kiem_gia_tri_mau(mau):
+    """Reject known invalid samples before any machine measurement."""
+    for ten, gia_tri in mau.items():
+        if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+            raise LoiThieuSo(f"Sample {ten} must contain positive, finite seconds. "
+                             "Fix --mau-that or --log-codex, then run again.")
+
+
+def _kiem_so_mau_may(so_mau, cho_it_mau):
+    """Check declared counts before measuring and observed counts afterwards."""
+    thieu = [ten for ten in HANG_SO if so_mau[ten] < SO_MAU_TOI_THIEU]
+    if thieu and not cho_it_mau:
+        raise LoiThieuSo(
+            f"Not yet {SO_MAU_TOI_THIEU} samples for: {', '.join(thieu)}. "
+            f"Raise --lap or --task, or feed real numbers with --mau-that.")
+
+
+def _kiem_so_mau_codex(mau_codex, cho_it_mau):
+    """Codex sources are independent of the mechanical measuring rounds."""
+    if not mau_codex or cho_it_mau:
+        return
+    thieu = [(ten, SO_MAU_TOI_THIEU - len(mau_codex[ten])) for ten in HANG_SO_CODEX
+             if len(mau_codex[ten]) < SO_MAU_TOI_THIEU]
+    if thieu:
+        raise LoiThieuSo(
+            "Not yet {n} samples for the Codex constant(s): {ds}. Run more tasks in mode "
+            "`codex` and point --log-codex at the log again, or feed the missing ones with "
+            "--mau-that.".format(
+                n=SO_MAU_TOI_THIEU,
+                ds=", ".join(f"{ten} ({SO_MAU_TOI_THIEU - missing} of {SO_MAU_TOI_THIEU}, "
+                             f"{missing} more)" for ten, missing in thieu)))
+
+
+def _chuan_bi_thuc_do(args):
+    """Parse once and reject input/count failures that do not need machine work."""
     # --lap 0 + --mau-that = all 6 constants invented while the file still says nguon=that.
     # Blocked here, and cach_do is written per constant so machine and hand stay apart.
     if args.lap < 1:
         raise LoiThieuSo(
             f"--lap = {args.lap} — at least 1 machine round is required. "
             f"Run: python3 scripts/tdq_bench.py calibrate --lap 3 --ra {args.ra}")
+    if args.task < 1:
+        raise LoiThieuSo("--task must be at least 1. Run calibrate --task 3 --lap 3.")
+    that = _doc_mau_that(args.mau_that)
+    _kiem_gia_tri_mau(that)
+    so_mau = {ten: len(that[ten]) if ten in that else
+              args.lap * (1 if ten in ("t_phat", "t_don") else args.task)
+              for ten in HANG_SO}
+    _kiem_so_mau_may(so_mau, args.cho_it_mau)
+    mau_codex, cach_codex = _gom_mau_codex(args, that)
+    _kiem_gia_tri_mau(mau_codex)
+    _kiem_so_mau_codex(mau_codex, args.cho_it_mau)
+    return that, mau_codex, cach_codex
+
+
+def lenh_thuc_do(args):
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
     mau = {ten: [] for ten in HANG_SO}
     nguon = {ten: "stub" for ten in HANG_SO}
     cach_do = {ten: "may" for ten in HANG_SO}
@@ -572,7 +623,6 @@ def lenh_thuc_do(args):
         _log(f"thuc-do → round {lan + 1}/{args.lap} in a temp git repo")
         for ten, gia_tri in _do_mot_luot(args.task).items():
             mau[ten].extend(gia_tri)
-    that = _doc_mau_that(args.mau_that)
     mau_may = {ten: list(gia_tri) for ten, gia_tri in mau.items()}
     for ten, gia_tri in that.items():
         if ten in HANG_SO_CODEX:
@@ -580,22 +630,7 @@ def lenh_thuc_do(args):
         mau[ten] = gia_tri            # a real number replaces the stub outright, never mixed
         nguon[ten] = "that"
         cach_do[ten] = "nhap-tay"
-    thieu = [ten for ten in HANG_SO if len(mau[ten]) < SO_MAU_TOI_THIEU]
-    if thieu and not args.cho_it_mau:
-        raise LoiThieuSo(
-            f"Not yet {SO_MAU_TOI_THIEU} samples for: {', '.join(thieu)}. "
-            f"Raise --lap or --task, or feed real numbers with --mau-that.")
-    mau_codex, cach_codex = _gom_mau_codex(args, that)
-    thieu_codex = [(ten, SO_MAU_TOI_THIEU - len(mau_codex[ten])) for ten in HANG_SO_CODEX
-                   if len(mau_codex[ten]) < SO_MAU_TOI_THIEU] if mau_codex else []
-    if thieu_codex and not args.cho_it_mau:
-        raise LoiThieuSo(
-            "Not yet {n} samples for the Codex constant(s): {ds}. Run more tasks in mode "
-            "`codex` and point --log-codex at the log again, or feed the missing ones with "
-            "--mau-that.".format(
-                n=SO_MAU_TOI_THIEU,
-                ds=", ".join(f"{ten} ({SO_MAU_TOI_THIEU - thieu_n} of {SO_MAU_TOI_THIEU}, "
-                             f"{thieu_n} more)" for ten, thieu_n in thieu_codex)))
+    _kiem_so_mau_may({ten: len(gia_tri) for ten, gia_tri in mau.items()}, args.cho_it_mau)
     du_lieu = {
         "slug": args.slug,
         "ngay": args.ngay or date.today().isoformat(),

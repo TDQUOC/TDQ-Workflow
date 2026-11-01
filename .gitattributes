@@ -9,3 +9,8 @@ graphify-out/graph.json merge=graphify
 portable_claude/** -text
 portable_codex/** -text
 antigravity_portable/** -text
+
+# Evidence receipts bind exact bytes; preserve their hashes across Windows checkouts.
+docs/tdq/** -text
+docs/architecture/** -text
+docs/.staging.*/** -text

@@ -8,7 +8,7 @@ Dependency direction: this layer KNOWS `tdq_vungfile`, and `tdq_state` does NOT 
 The backbone principles:
 - `check` never raises. Every problem is "not offerable WITH A REASON", exit 0. Four causes give
   four different sentences, because the reader needs to know what to do next.
-- Every `codex` call leaves stdin NOT a TTY plus an explicit timeout — `codex exec` was measured
+- Every `codex` call uses closed stdin (DEVNULL) plus an explicit timeout — `codex exec` was measured
   hanging forever when stdin is a waiting pipe.
 - Every output stream passes through `mask_secrets` before it leaves a function.
 
@@ -33,6 +33,7 @@ import tomllib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 from setup_status import mask_secrets  # noqa: E402
+from tdq_test_process import OwnedProcessJob  # noqa: E402
 
 CO_REL = os.path.join("docs", "tdq", ".tdq-codex.json")
 LOG_PROMPT_REL = os.path.join("docs", "tdq", ".tdq-codex-prompt.log")
@@ -148,6 +149,36 @@ def doc_file_van_ban(duong):
         return ""
 
 
+def _say_hi_owned(duong_codex, cwd, model, timeout):
+    """Probe with caller HOME, private CODEX_HOME and assigned tree ownership."""
+    home = None
+    with OwnedProcessJob(os.getcwd(), timeout_seconds=timeout) as job:
+        try:
+            home = dung_codex_home(cwd, model)
+            job.env["CODEX_HOME"] = home
+            file_tra_loi = os.path.join(home, "say-hi.txt")
+            c = CO_EXEC
+            lenh = boc_lenh(duong_codex) + [
+                c["lenh"], c["goc_repo"], cwd, c["sandbox"], SANDBOX_KIEM_SONG,
+                c["model"], model, c["ket_qua"], file_tra_loi, c["bo_qua_kiem_git"], CAU_SAY_HI]
+            result = job.run(lenh, phase="codex-say-hi")
+            reply = (doc_file_van_ban(file_tra_loi) or result["stdout"] or "").strip()
+            return result, reply
+        finally:
+            if home is not None:
+                shutil.rmtree(home)
+
+
+def _probe_problem(result):
+    if not result["cleanup_complete"]:
+        return "process cleanup failed"
+    if result["reason"] != "exited":
+        return "process " + result["reason"]
+    if not result["ownership"]["verified"]:
+        return "process ownership was not verified"
+    return ""
+
+
 def _kiem_song(duong_codex, cwd, model, timeout=TIMEOUT_KIEM_SONG):
     """-> (alive, version, reason). `codex --version`, then ONE real say-hi turn.
 
@@ -160,46 +191,36 @@ def _kiem_song(duong_codex, cwd, model, timeout=TIMEOUT_KIEM_SONG):
     `cleanup` would also sweep the home of a `run` in progress.
     """
     try:
-        proc = subprocess.run(
-            boc_lenh(duong_codex) + ["--version"], capture_output=True, text=True,
-            encoding="utf-8", timeout=timeout, stdin=subprocess.DEVNULL)
-    except subprocess.TimeoutExpired:
+        with OwnedProcessJob(os.getcwd(), timeout_seconds=timeout) as job:
+            proc = job.run(boc_lenh(duong_codex) + ["--version"], phase="codex-version")
+    except OSError as exc:
+        return False, "", f"không chạy được `codex`: {type(exc).__name__}"  # i18n-allow
+    if proc["timed_out"]:
         # i18n-allow: reason sentence shown to the user by the mode gate
         return False, "", f"`codex --version` quá hạn {timeout}s"  # i18n-allow
-    except OSError as exc:
-        # i18n-allow: reason sentence shown to the user by the mode gate
-        return False, "", f"không chạy được `codex`: {type(exc).__name__}"  # i18n-allow
-    if proc.returncode != 0:
-        return False, "", f"`codex --version` exit {proc.returncode}: " \
-                          f"{mask_secrets(proc.stderr.strip())[:120]}"
-    phien_ban = mask_secrets((proc.stdout or proc.stderr).strip())
-
-    c = CO_EXEC
-    home = dung_codex_home(cwd, model)
-    file_tra_loi = os.path.join(home, "say-hi.txt")
-    lenh = boc_lenh(duong_codex) + [
-        c["lenh"], c["goc_repo"], cwd, c["sandbox"], SANDBOX_KIEM_SONG,
-        c["model"], model, c["ket_qua"], file_tra_loi, c["bo_qua_kiem_git"], CAU_SAY_HI]
-    bat_dau = time.time()
+    problem = _probe_problem(proc)
+    if problem:
+        return False, "", "`codex --version`: " + problem
+    if proc["exit_code"] != 0:
+        return False, "", f"`codex --version` exit {proc['exit_code']}: " \
+                          f"{mask_secrets(proc['stderr'].strip())[:120]}"
+    phien_ban = mask_secrets((proc["stdout"] or proc["stderr"]).strip())
     try:
-        proc = subprocess.run(
-            lenh, capture_output=True, text=True, encoding="utf-8", timeout=timeout,
-            stdin=subprocess.DEVNULL, env=dict(os.environ, CODEX_HOME=home))
-        tra_loi = (doc_file_van_ban(file_tra_loi) or proc.stdout or "").strip()
-    except subprocess.TimeoutExpired:
+        proc, tra_loi = _say_hi_owned(duong_codex, cwd, model, timeout)
+    except OSError as exc:
+        return False, "", f"say hi không chạy được `codex`: {type(exc).__name__}"  # i18n-allow
+    if proc["timed_out"]:
         log(f"say hi: timeout {timeout}s · model={model}")
         # i18n-allow: reason sentence shown to the user by the mode gate
         return False, "", f"say hi quá hạn {timeout}s — model không trả lời"  # i18n-allow
-    except OSError as exc:
-        # i18n-allow: reason sentence shown to the user by the mode gate
-        return False, "", f"say hi không chạy được `codex`: {type(exc).__name__}"  # i18n-allow
-    finally:
-        shutil.rmtree(home, ignore_errors=True)
-    log(f"say hi: exit {proc.returncode} · {time.time() - bat_dau:.1f}s · model={model} "
+    problem = _probe_problem(proc)
+    if problem:
+        return False, "", "say hi: " + problem
+    log(f"say hi: exit {proc['exit_code']} · {proc['wall_seconds']:.1f}s · model={model} "
         f"· reply={len(tra_loi)} chars")
-    if proc.returncode != 0:
+    if proc["exit_code"] != 0:
         # i18n-allow: reason sentence shown to the user by the mode gate
-        return False, "", f"say hi exit {proc.returncode}: {_dong_loi(proc.stderr)}"  # i18n-allow
+        return False, "", f"say hi exit {proc['exit_code']}: {_dong_loi(proc['stderr'])}"  # i18n-allow
     if not tra_loi:
         # i18n-allow: reason sentence shown to the user by the mode gate
         return False, "", "say hi không nhận được câu trả lời nào từ model"  # i18n-allow
@@ -414,24 +435,28 @@ def dung_codex_home(cwd, model, nguon=None):
     goc = _duong_home(cwd)
     os.makedirs(goc, exist_ok=True)
     home = tempfile.mkdtemp(prefix=HOME_PREFIX, dir=goc)
-    os.chmod(home, 0o700)
+    try:
+        os.chmod(home, 0o700)
+        that = os.path.join(nguon, "auth.json")
+        if os.path.exists(that):
+            shutil.copy2(that, os.path.join(home, "auth.json"))
+            os.chmod(os.path.join(home, "auth.json"), 0o600)
 
-    that = os.path.join(nguon, "auth.json")
-    if os.path.exists(that):
-        shutil.copy2(that, os.path.join(home, "auth.json"))
-        os.chmod(os.path.join(home, "auth.json"), 0o600)
-
-    ten, bang = _provider_cua_may(nguon)
-    dong = [f"model = {_toml_gia_tri(model)}"]
-    if ten:
-        dong.append(f"model_provider = {_toml_gia_tri(ten)}")
-    if bang is not None:
-        dong += ["", *_toml_bang(f"model_providers.{_toml_khoa(ten)}", bang)]
-    duong_config = os.path.join(home, "config.toml")
-    with open(duong_config, "w", encoding="utf-8") as f:
-        f.write("\n".join(dong) + "\n")
-    os.chmod(duong_config, 0o600)
-    log(f"temporary CODEX_HOME: {home} (mode 700) · provider={ten or '(codex default)'}")
+        ten, bang = _provider_cua_may(nguon)
+        dong = [f"model = {_toml_gia_tri(model)}"]
+        if ten:
+            dong.append(f"model_provider = {_toml_gia_tri(ten)}")
+        if bang is not None:
+            dong += ["", *_toml_bang(f"model_providers.{_toml_khoa(ten)}", bang)]
+        duong_config = os.path.join(home, "config.toml")
+        with open(duong_config, "w", encoding="utf-8") as f:
+            f.write("\n".join(dong) + "\n")
+        os.chmod(duong_config, 0o600)
+        log(f"temporary CODEX_HOME: {home} (mode 700) · provider={ten or '(codex default)'}")
+    except BaseException:
+        # Until return, this factory owns only the directory it just created.
+        shutil.rmtree(home)
+        raise
     return home
 
 
