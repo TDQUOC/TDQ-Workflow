@@ -1,3 +1,5 @@
+> **CI đa nền tảng chưa đạt:** [run 41301102960](https://github.com/TDQUOC/TDQ-Workflow/actions/runs/41301102960) đã có bốn job Linux/macOS FAIL; hai job Windows còn chạy tại lần kiểm cuối. Log Ubuntu 3.13 có 87 failure, 23 error, gồm lỗi thiếu dependency `PIL`, `pytest`. Không tuyên bố release đã qua CI đa nền tảng.
+
 ## Thay đổi chính
 
 - Validation calibration chạy trước vòng đo; input sai không tạo output mới.

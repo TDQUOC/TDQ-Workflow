@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
-  "status": "current",
-  "reasons": [],
-  "checked_at": "2026-11-01T11:11:26Z"
+  "status": "stale",
+  "reasons": [
+    "Source file modified: scripts/tdq_test_report.py"
+  ],
+  "checked_at": "2026-11-01T11:24:46Z"
 }
