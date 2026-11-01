@@ -1,0 +1,81 @@
+Baseline commit: 3e0ef5f8a148cbf8aae1e932995e844e8f62ccd9
+Scripts snapshot: C:\Users\admin\AppData\Local\Temp\tdq-t3.1-baseline-v8niovls
+test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) ... 
+  test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) (command='show') ... FAIL
+  test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) (command='status') ... ERROR
+  test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) (command='close') ... FAIL
+test_runner_transitive_fallback_logs_failure_reason (test_phase1_logging.Phase1Logging.test_runner_transitive_fallback_logs_failure_reason) ... 
+  test_runner_transitive_fallback_logs_failure_reason (test_phase1_logging.Phase1Logging.test_runner_transitive_fallback_logs_failure_reason) (log=None) ... FAIL
+  test_runner_transitive_fallback_logs_failure_reason (test_phase1_logging.Phase1Logging.test_runner_transitive_fallback_logs_failure_reason) (log='0') ... FAIL
+
+======================================================================
+ERROR: test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) (command='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 143, in test_timing_missing_source_logs_reason_and_clean_json
+    payload = self._json(result)
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 79, in _json
+    payload = json.loads(result.stdout)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+FAIL: test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) (command='show')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 145, in test_timing_missing_source_logs_reason_and_clean_json
+    self.assertIn("no transcript source found", result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no transcript source found' not found in '[2026-10-27T14:27:35+07:00] no transcript folder: C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-log-contract-weh8s6n_\\home\\.claude\\projects\\-Users-admin-AppData-Local-Temp-tdq-log-contract-weh8s6n--project — dropping the model time column\n'
+
+======================================================================
+FAIL: test_timing_missing_source_logs_reason_and_clean_json (test_phase1_logging.Phase1Logging.test_timing_missing_source_logs_reason_and_clean_json) (command='close')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 145, in test_timing_missing_source_logs_reason_and_clean_json
+    self.assertIn("no transcript source found", result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no transcript source found' not found in '[2026-10-27T14:27:35+07:00] no transcript folder: C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-log-contract-weh8s6n_\\home\\.claude\\projects\\-Users-admin-AppData-Local-Temp-tdq-log-contract-weh8s6n--project — dropping the model time column\n[2026-10-27T14:27:35+07:00] closed the books on 2026-10-27-0000-logging into docs\\tdq\\timing.jsonl\n'
+
+======================================================================
+FAIL: test_runner_transitive_fallback_logs_failure_reason (test_phase1_logging.Phase1Logging.test_runner_transitive_fallback_logs_failure_reason) (log=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 184, in test_runner_transitive_fallback_logs_failure_reason
+    row = self._assert_runner_log(
+        result, log, "transitive", "FAIL", 1)
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 93, in _assert_runner_log
+    self.assertEqual(result.returncode, 0 if status == "PASS" else 1,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     result.stdout + result.stderr)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : [TDQ:TEST] PASS — 0 modules tested in 0.02s.
+[2026-10-27T14:27:35+07:00] tdq_test: vung-cham files=1 modules=0/1 fallback=none ok=True seconds=0.02
+
+
+======================================================================
+FAIL: test_runner_transitive_fallback_logs_failure_reason (test_phase1_logging.Phase1Logging.test_runner_transitive_fallback_logs_failure_reason) (log='0')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 184, in test_runner_transitive_fallback_logs_failure_reason
+    row = self._assert_runner_log(
+        result, log, "transitive", "FAIL", 1)
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\t3.1\tests\test_phase1_logging.py", line 93, in _assert_runner_log
+    self.assertEqual(result.returncode, 0 if status == "PASS" else 1,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     result.stdout + result.stderr)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : [TDQ:TEST] PASS — 0 modules tested in 0.02s.
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.748s
+
+FAILED (failures=4, errors=1)

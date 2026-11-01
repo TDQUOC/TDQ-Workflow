@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "cccb471e-ab93-40eb-a2d9-e4c3e048a937",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1246-do-dung-bao-toan-loi\\candidate.json",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-10-27-1246-do-dung-bao-toan-loi-preview.b0017d0883304a64b86421a296685b1d.html",
+  "specification": {
+    "sha256": "ddd748f9e7723b6febc72bb41669865f12a38254278d84fd1e9f142f6752bb64",
+    "bytes": 8327
+  },
+  "artifact": {
+    "sha256": "01f5773aa2f4a300556a34f8d8a42d2d229f5a9ebcff35d61dba08837ef13989",
+    "bytes": 827753
+  }
+}

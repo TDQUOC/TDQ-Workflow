@@ -1,0 +1,3249 @@
+{
+  "results": [
+    {
+      "status": "PASS",
+      "backend": "pytest",
+      "tests_run": 1,
+      "skipped": 0,
+      "failed_modules": [],
+      "failures": [],
+      "unmapped_failures": [],
+      "details_complete": true,
+      "exit_code": 0,
+      "reason": "Executed tests completed successfully",
+      "manifest": {
+        "schema_version": 1,
+        "backend": "pytest",
+        "selectors": [
+          "tests"
+        ],
+        "scope": "full",
+        "case_ids": [
+          "tests/test_case.py::test_ok"
+        ],
+        "diagnostics": [],
+        "fingerprint": null,
+        "complete": true
+      },
+      "case_outcomes": [
+        {
+          "case_id": "tests/test_case.py::test_ok",
+          "outcome": "pass",
+          "reason": "",
+          "capability": null,
+          "phases": [
+            {
+              "phase": "setup",
+              "outcome": "pass",
+              "reason": "",
+              "duration_seconds": 0.002961200021672994
+            },
+            {
+              "phase": "call",
+              "outcome": "pass",
+              "reason": "",
+              "duration_seconds": 0.0008154999813996255
+            },
+            {
+              "phase": "teardown",
+              "outcome": "pass",
+              "reason": "",
+              "duration_seconds": 0.0001713000237941742
+            }
+          ],
+          "subtests": []
+        }
+      ],
+      "coverage": {
+        "expected": [
+          "tests/test_case.py::test_ok"
+        ],
+        "observed": [
+          "tests/test_case.py::test_ok"
+        ],
+        "missing": [],
+        "extra": [],
+        "duplicates": [],
+        "counts": {
+          "pass": 1,
+          "fail": 0,
+          "error": 0,
+          "skip": 0,
+          "xfail": 0,
+          "xpass": 0
+        },
+        "complete": true,
+        "diagnostics": []
+      },
+      "action": "executed",
+      "source_receipt_id": "\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\r\\docs\\tdq\\cache\\r-b920da39d672533d\\188c022da09536ba314ee179a889ff08\\cee21954c02f49808443ef367e1524c9.json",
+      "timings": {
+        "verify_seconds": 1.840935200045351,
+        "wait_seconds": 0.0015602000057697296,
+        "execute_seconds": 0.7563232000102289,
+        "collection_seconds": 0.7328948999638669,
+        "wall_seconds": 4.823545899998862
+      },
+      "modules": [
+        "test_case.py"
+      ],
+      "process": {
+        "execution": {
+          "exit_code": 0,
+          "reason": "exited",
+          "timed_out": false,
+          "cancelled": false,
+          "cleanup_complete": true,
+          "cleanup_seconds": 5.6699966080486774e-05,
+          "ownership": {
+            "mechanism": "windows-job",
+            "root_pid": 29656,
+            "assignment_verified": true,
+            "verified": true,
+            "cleanup_scope": "job-object"
+          },
+          "schema_version": 1,
+          "phase": "execution",
+          "stdout": ".                                                                        [100%]\n1 passed in 0.05s\n",
+          "stderr": "[2026-10-31T13:02:53.931277+00:00] manifest cases=1 complete=True exit=0 action=executed\n",
+          "duration_seconds": 0.7461683999863453,
+          "wall_seconds": 0.7461683999863453,
+          "execute_seconds": 0.7461117000202648,
+          "paths": {
+            "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\workers\\controller\\home",
+            "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\workers\\controller\\tmp",
+            "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\pytest"
+          },
+          "launch_options": {
+            "schema_version": 1,
+            "backend": "pytest",
+            "valid": true,
+            "numprocesses": 0,
+            "workers": 1,
+            "dist": "no",
+            "collect_only": false
+          },
+          "launch_matches_request": true
+        },
+        "collection": {
+          "exit_code": 0,
+          "reason": "exited",
+          "timed_out": false,
+          "cancelled": false,
+          "cleanup_complete": true,
+          "cleanup_seconds": 5.670002428814769e-05,
+          "ownership": {
+            "mechanism": "windows-job",
+            "root_pid": 55948,
+            "assignment_verified": true,
+            "verified": true,
+            "cleanup_scope": "job-object"
+          },
+          "schema_version": 1,
+          "phase": "collection",
+          "stdout": "tests/test_case.py::test_ok\n\n1 test collected in 0.04s\n",
+          "stderr": "[2026-10-31T13:02:51.330463+00:00] manifest cases=0 complete=False exit=0 action=executed\n",
+          "duration_seconds": 0.7328948999638669,
+          "wall_seconds": 0.7328948999638669,
+          "execute_seconds": 0.7328381999395788,
+          "paths": {
+            "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\workers\\controller\\home",
+            "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\workers\\controller\\tmp",
+            "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\pytest"
+          },
+          "launch_options": {
+            "schema_version": 1,
+            "backend": "pytest",
+            "valid": true,
+            "numprocesses": 0,
+            "workers": 1,
+            "dist": "no",
+            "collect_only": true
+          },
+          "launch_matches_request": true
+        }
+      },
+      "evidence_paths": [
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.json",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stderr.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stdout.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.xml",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.json",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stderr.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stdout.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.xml"
+      ],
+      "receipt_reason": "cache_miss",
+      "run_options": {
+        "schema_version": 1,
+        "workers": 1,
+        "reuse": "auto",
+        "fresh": false,
+        "timeout_seconds": 1800
+      },
+      "source_before": {
+        "key": "f53bf820e37d921b446830e2f9b090435fe9c367a47c5d0fc0102347c15d8792",
+        "inputs": {
+          "schema_version": 1,
+          "project": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\r",
+          "request": "runtime-join",
+          "files": {
+            "docs/tdq/reuse-policy.json": "8e1435004111d2d7e2adce30223a0536e940ba7dae20d887ff0f2cc59fe845fc",
+            "tests/test_case.py": "b1fb3b3c8f77f8d1e8e6d1510958c0c185b6b5c5c9a33ce92805db9f48af54ed"
+          },
+          "runtime": {
+            "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+            "executable": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+            "executable_sha256": "85b71d8c6ec1905935f74be0c9869aae198d00e98f39df699ec66f9c5a84cecd",
+            "os": "Windows-11-10.0.26100-SP0",
+            "architecture": "AMD64",
+            "privileged": false,
+            "packages": [
+              [
+                "Jinja2",
+                "3.1.6"
+              ],
+              [
+                "MarkupSafe",
+                "3.0.4"
+              ],
+              [
+                "PyJWT",
+                "2.15.1"
+              ],
+              [
+                "PyNaCl",
+                "1.6.2"
+              ],
+              [
+                "PyYAML",
+                "6.0.3"
+              ],
+              [
+                "Pygments",
+                "2.21.0"
+              ],
+              [
+                "RapidFuzz",
+                "3.14.6"
+              ],
+              [
+                "aiohappyeyeballs",
+                "2.7.1"
+              ],
+              [
+                "aiohttp",
+                "3.14.4"
+              ],
+              [
+                "aiosignal",
+                "1.4.0"
+              ],
+              [
+                "annotated-doc",
+                "0.0.5"
+              ],
+              [
+                "annotated-types",
+                "0.8.0"
+              ],
+              [
+                "anyio",
+                "4.15.1"
+              ],
+              [
+                "asn1crypto",
+                "1.5.1"
+              ],
+              [
+                "ast-grep-cli",
+                "0.45.3"
+              ],
+              [
+                "attrs",
+                "26.1.0"
+              ],
+              [
+                "bcrypt",
+                "5.0.0"
+              ],
+              [
+                "bidict",
+                "0.24.1"
+              ],
+              [
+                "boto3",
+                "1.43.108"
+              ],
+              [
+                "botocore",
+                "1.43.108"
+              ],
+              [
+                "certifi",
+                "2026.7.22"
+              ],
+              [
+                "cffi",
+                "2.1.1"
+              ],
+              [
+                "charset-normalizer",
+                "3.5.1"
+              ],
+              [
+                "click",
+                "8.5.0"
+              ],
+              [
+                "colorama",
+                "0.4.6"
+              ],
+              [
+                "cryptography",
+                "50.0.1"
+              ],
+              [
+                "distro",
+                "1.9.0"
+              ],
+              [
+                "et_xmlfile",
+                "2.0.0"
+              ],
+              [
+                "execnet",
+                "2.1.2"
+              ],
+              [
+                "fastapi",
+                "0.142.2"
+              ],
+              [
+                "fasttext-langdetect",
+                "1.1.1"
+              ],
+              [
+                "fasttext-predict",
+                "0.9.2.4"
+              ],
+              [
+                "fastuuid",
+                "0.14.0"
+              ],
+              [
+                "filelock",
+                "3.32.7"
+              ],
+              [
+                "flatbuffers",
+                "25.12.19"
+              ],
+              [
+                "frozenlist",
+                "1.8.0"
+              ],
+              [
+                "fsspec",
+                "2026.9.0"
+              ],
+              [
+                "google-play-scraper",
+                "1.2.7"
+              ],
+              [
+                "gplaycli",
+                "3.29"
+              ],
+              [
+                "graphifyy",
+                "0.9.64"
+              ],
+              [
+                "h11",
+                "0.16.0"
+              ],
+              [
+                "h2",
+                "4.4.1"
+              ],
+              [
+                "headroom-ai",
+                "0.40.0"
+              ],
+              [
+                "hf-xet",
+                "1.6.0"
+              ],
+              [
+                "hpack",
+                "4.2.0"
+              ],
+              [
+                "httpcore",
+                "1.0.9"
+              ],
+              [
+                "httpx",
+                "0.28.1"
+              ],
+              [
+                "httpx-sse",
+                "0.4.3"
+              ],
+              [
+                "huggingface_hub",
+                "1.33.0"
+              ],
+              [
+                "hyperframe",
+                "6.1.0"
+              ],
+              [
+                "idna",
+                "3.20"
+              ],
+              [
+                "importlib_metadata",
+                "8.9.0"
+              ],
+              [
+                "iniconfig",
+                "2.3.0"
+              ],
+              [
+                "invoke",
+                "3.0.3"
+              ],
+              [
+                "jiter",
+                "0.17.0"
+              ],
+              [
+                "jmespath",
+                "1.1.0"
+              ],
+              [
+                "jsonschema",
+                "4.26.0"
+              ],
+              [
+                "jsonschema-specifications",
+                "2025.9.1"
+              ],
+              [
+                "litellm",
+                "1.104.0"
+              ],
+              [
+                "lxml",
+                "6.1.3"
+              ],
+              [
+                "magika",
+                "1.0.3"
+              ],
+              [
+                "markdown-it-py",
+                "4.2.0"
+              ],
+              [
+                "matlink-gpapi",
+                "0.4.4.5"
+              ],
+              [
+                "mcp",
+                "1.30.0"
+              ],
+              [
+                "mdurl",
+                "0.1.2"
+              ],
+              [
+                "ml_dtypes",
+                "0.6.0"
+              ],
+              [
+                "mpmath",
+                "1.3.0"
+              ],
+              [
+                "multidict",
+                "6.9.1"
+              ],
+              [
+                "networkx",
+                "3.6.1"
+              ],
+              [
+                "numpy",
+                "2.5.3"
+              ],
+              [
+                "onnx",
+                "1.23.2"
+              ],
+              [
+                "onnx-ir",
+                "1.1.0"
+              ],
+              [
+                "onnxruntime",
+                "1.30.0"
+              ],
+              [
+                "onnxscript",
+                "0.7.2"
+              ],
+              [
+                "openai",
+                "2.54.0"
+              ],
+              [
+                "openpyxl",
+                "3.1.5"
+              ],
+              [
+                "opentelemetry-api",
+                "1.45.1"
+              ],
+              [
+                "orjson",
+                "3.12.0"
+              ],
+              [
+                "packaging",
+                "26.3"
+              ],
+              [
+                "paramiko",
+                "5.0.0"
+              ],
+              [
+                "pillow",
+                "13.0.0"
+              ],
+              [
+                "pip",
+                "26.2.1"
+              ],
+              [
+                "pluggy",
+                "1.6.0"
+              ],
+              [
+                "propcache",
+                "0.5.4"
+              ],
+              [
+                "protobuf",
+                "7.36.2"
+              ],
+              [
+                "pyaxmlparser",
+                "0.3.31"
+              ],
+              [
+                "pycparser",
+                "3.0"
+              ],
+              [
+                "pydantic",
+                "2.13.5"
+              ],
+              [
+                "pydantic-settings",
+                "2.15.0"
+              ],
+              [
+                "pydantic_core",
+                "2.46.5"
+              ],
+              [
+                "pypdf",
+                "6.19.0"
+              ],
+              [
+                "pytest",
+                "9.1.1"
+              ],
+              [
+                "pytest-xdist",
+                "3.8.0"
+              ],
+              [
+                "python-dateutil",
+                "2.9.0.post0"
+              ],
+              [
+                "python-docx",
+                "1.2.0"
+              ],
+              [
+                "python-dotenv",
+                "1.2.4"
+              ],
+              [
+                "python-engineio",
+                "4.14.0"
+              ],
+              [
+                "python-multipart",
+                "0.0.32"
+              ],
+              [
+                "python-socketio",
+                "5.17.0"
+              ],
+              [
+                "pywin32",
+                "312"
+              ],
+              [
+                "referencing",
+                "0.37.0"
+              ],
+              [
+                "regex",
+                "2026.9.29"
+              ],
+              [
+                "requests",
+                "2.34.2"
+              ],
+              [
+                "rich",
+                "15.0.0"
+              ],
+              [
+                "rpds-py",
+                "2026.9.1"
+              ],
+              [
+                "s3transfer",
+                "0.19.2"
+              ],
+              [
+                "safetensors",
+                "0.8.0"
+              ],
+              [
+                "shellingham",
+                "1.5.4"
+              ],
+              [
+                "sherpa-onnx-core",
+                "1.13.8"
+              ],
+              [
+                "sherpa_onnx",
+                "1.13.8"
+              ],
+              [
+                "simple-websocket",
+                "1.1.0"
+              ],
+              [
+                "sniffio",
+                "1.3.1"
+              ],
+              [
+                "sqlite-vec",
+                "0.1.9"
+              ],
+              [
+                "sse-starlette",
+                "3.5.0"
+              ],
+              [
+                "starlette",
+                "1.7.0"
+              ],
+              [
+                "sympy",
+                "1.14.0"
+              ],
+              [
+                "tiktoken",
+                "0.14.0"
+              ],
+              [
+                "tokenizers",
+                "0.23.2"
+              ],
+              [
+                "tomlkit",
+                "0.15.1"
+              ],
+              [
+                "torch",
+                "2.14.1"
+              ],
+              [
+                "tqdm",
+                "4.70.1"
+              ],
+              [
+                "transformers",
+                "5.19.0"
+              ],
+              [
+                "tree-sitter",
+                "0.25.2"
+              ],
+              [
+                "tree-sitter-bash",
+                "0.25.1"
+              ],
+              [
+                "tree-sitter-c",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-c-sharp",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-cpp",
+                "0.23.4"
+              ],
+              [
+                "tree-sitter-elixir",
+                "0.3.5"
+              ],
+              [
+                "tree-sitter-fortran",
+                "0.6.0"
+              ],
+              [
+                "tree-sitter-go",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-groovy",
+                "0.1.2"
+              ],
+              [
+                "tree-sitter-java",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-javascript",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-json",
+                "0.24.8"
+              ],
+              [
+                "tree-sitter-julia",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-kotlin",
+                "1.1.0"
+              ],
+              [
+                "tree-sitter-lua",
+                "0.5.0"
+              ],
+              [
+                "tree-sitter-objc",
+                "3.0.2"
+              ],
+              [
+                "tree-sitter-php",
+                "0.24.1"
+              ],
+              [
+                "tree-sitter-powershell",
+                "0.26.4"
+              ],
+              [
+                "tree-sitter-python",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-ruby",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-rust",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-scala",
+                "0.26.2"
+              ],
+              [
+                "tree-sitter-swift",
+                "0.7.3"
+              ],
+              [
+                "tree-sitter-typescript",
+                "0.23.2"
+              ],
+              [
+                "tree-sitter-verilog",
+                "1.0.3"
+              ],
+              [
+                "tree-sitter-zig",
+                "1.1.2"
+              ],
+              [
+                "truststore",
+                "0.10.4"
+              ],
+              [
+                "typer",
+                "0.27.3"
+              ],
+              [
+                "typing-inspection",
+                "0.4.4"
+              ],
+              [
+                "urllib3",
+                "2.8.0"
+              ],
+              [
+                "uvicorn",
+                "0.54.0"
+              ],
+              [
+                "watchdog",
+                "6.0.0"
+              ],
+              [
+                "websocket-client",
+                "1.9.2"
+              ],
+              [
+                "websockets",
+                "17.2"
+              ],
+              [
+                "wsproto",
+                "1.3.2"
+              ],
+              [
+                "xlsxwriter",
+                "3.2.9"
+              ],
+              [
+                "yarl",
+                "1.25.1"
+              ],
+              [
+                "zipp",
+                "4.1.1"
+              ],
+              [
+                "zstandard",
+                "0.25.0"
+              ]
+            ]
+          },
+          "implementation": {
+            "tdq_test_receipt.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_receipt.py",
+              "sha256": "fcff089ccd1c86462cdd73c153d8c6066a026da56cf91b7e545f81e4f79805ea"
+            },
+            "tdq_test_manifest.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_manifest.py",
+              "sha256": "31f568ed945c2f9e565acf40cb41b8233868de10e29aeb063dc372078ec1e8e9"
+            },
+            "tdq_test_result.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_result.py",
+              "sha256": "1a25951e675460e05c48de8f4c4f95f3c1616d31c384cdf10af2f63dc3b8a0d5"
+            }
+          },
+          "manifest": {},
+          "flags_sha256": "a24c2e6d02d3a7848d080e961ae74c1eeb4bdaf86e976327ae87fd7ac17982a7",
+          "policy_sha256": "de8b87914285e29ff65f0dee4cdaecc6e49efc7ce37b56e36890573dc3b4d32a",
+          "environment_sha256": "6c9b8ea4320fd2178e1e291b3750b3be62f4f47e7e6aaf66bed7567c7a0334d5"
+        },
+        "implementation": {
+          "tdq_test": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py",
+            "sha256": "83006abf653c6bc8dca2e32edf97927638f7999c13aefba901c0b3bf4742fb73"
+          },
+          "tdq_test_process": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_process.py",
+            "sha256": "c4024dd79466c6d682d71c36812970e343cc2f1c970c4666cef791ba5abce06e"
+          }
+        }
+      },
+      "job_classification": "benchmark",
+      "execution_provenance": "current_job",
+      "source_after": {
+        "key": "f53bf820e37d921b446830e2f9b090435fe9c367a47c5d0fc0102347c15d8792",
+        "inputs": {
+          "schema_version": 1,
+          "project": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\r",
+          "request": "runtime-join",
+          "files": {
+            "docs/tdq/reuse-policy.json": "8e1435004111d2d7e2adce30223a0536e940ba7dae20d887ff0f2cc59fe845fc",
+            "tests/test_case.py": "b1fb3b3c8f77f8d1e8e6d1510958c0c185b6b5c5c9a33ce92805db9f48af54ed"
+          },
+          "runtime": {
+            "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+            "executable": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+            "executable_sha256": "85b71d8c6ec1905935f74be0c9869aae198d00e98f39df699ec66f9c5a84cecd",
+            "os": "Windows-11-10.0.26100-SP0",
+            "architecture": "AMD64",
+            "privileged": false,
+            "packages": [
+              [
+                "Jinja2",
+                "3.1.6"
+              ],
+              [
+                "MarkupSafe",
+                "3.0.4"
+              ],
+              [
+                "PyJWT",
+                "2.15.1"
+              ],
+              [
+                "PyNaCl",
+                "1.6.2"
+              ],
+              [
+                "PyYAML",
+                "6.0.3"
+              ],
+              [
+                "Pygments",
+                "2.21.0"
+              ],
+              [
+                "RapidFuzz",
+                "3.14.6"
+              ],
+              [
+                "aiohappyeyeballs",
+                "2.7.1"
+              ],
+              [
+                "aiohttp",
+                "3.14.4"
+              ],
+              [
+                "aiosignal",
+                "1.4.0"
+              ],
+              [
+                "annotated-doc",
+                "0.0.5"
+              ],
+              [
+                "annotated-types",
+                "0.8.0"
+              ],
+              [
+                "anyio",
+                "4.15.1"
+              ],
+              [
+                "asn1crypto",
+                "1.5.1"
+              ],
+              [
+                "ast-grep-cli",
+                "0.45.3"
+              ],
+              [
+                "attrs",
+                "26.1.0"
+              ],
+              [
+                "bcrypt",
+                "5.0.0"
+              ],
+              [
+                "bidict",
+                "0.24.1"
+              ],
+              [
+                "boto3",
+                "1.43.108"
+              ],
+              [
+                "botocore",
+                "1.43.108"
+              ],
+              [
+                "certifi",
+                "2026.7.22"
+              ],
+              [
+                "cffi",
+                "2.1.1"
+              ],
+              [
+                "charset-normalizer",
+                "3.5.1"
+              ],
+              [
+                "click",
+                "8.5.0"
+              ],
+              [
+                "colorama",
+                "0.4.6"
+              ],
+              [
+                "cryptography",
+                "50.0.1"
+              ],
+              [
+                "distro",
+                "1.9.0"
+              ],
+              [
+                "et_xmlfile",
+                "2.0.0"
+              ],
+              [
+                "execnet",
+                "2.1.2"
+              ],
+              [
+                "fastapi",
+                "0.142.2"
+              ],
+              [
+                "fasttext-langdetect",
+                "1.1.1"
+              ],
+              [
+                "fasttext-predict",
+                "0.9.2.4"
+              ],
+              [
+                "fastuuid",
+                "0.14.0"
+              ],
+              [
+                "filelock",
+                "3.32.7"
+              ],
+              [
+                "flatbuffers",
+                "25.12.19"
+              ],
+              [
+                "frozenlist",
+                "1.8.0"
+              ],
+              [
+                "fsspec",
+                "2026.9.0"
+              ],
+              [
+                "google-play-scraper",
+                "1.2.7"
+              ],
+              [
+                "gplaycli",
+                "3.29"
+              ],
+              [
+                "graphifyy",
+                "0.9.64"
+              ],
+              [
+                "h11",
+                "0.16.0"
+              ],
+              [
+                "h2",
+                "4.4.1"
+              ],
+              [
+                "headroom-ai",
+                "0.40.0"
+              ],
+              [
+                "hf-xet",
+                "1.6.0"
+              ],
+              [
+                "hpack",
+                "4.2.0"
+              ],
+              [
+                "httpcore",
+                "1.0.9"
+              ],
+              [
+                "httpx",
+                "0.28.1"
+              ],
+              [
+                "httpx-sse",
+                "0.4.3"
+              ],
+              [
+                "huggingface_hub",
+                "1.33.0"
+              ],
+              [
+                "hyperframe",
+                "6.1.0"
+              ],
+              [
+                "idna",
+                "3.20"
+              ],
+              [
+                "importlib_metadata",
+                "8.9.0"
+              ],
+              [
+                "iniconfig",
+                "2.3.0"
+              ],
+              [
+                "invoke",
+                "3.0.3"
+              ],
+              [
+                "jiter",
+                "0.17.0"
+              ],
+              [
+                "jmespath",
+                "1.1.0"
+              ],
+              [
+                "jsonschema",
+                "4.26.0"
+              ],
+              [
+                "jsonschema-specifications",
+                "2025.9.1"
+              ],
+              [
+                "litellm",
+                "1.104.0"
+              ],
+              [
+                "lxml",
+                "6.1.3"
+              ],
+              [
+                "magika",
+                "1.0.3"
+              ],
+              [
+                "markdown-it-py",
+                "4.2.0"
+              ],
+              [
+                "matlink-gpapi",
+                "0.4.4.5"
+              ],
+              [
+                "mcp",
+                "1.30.0"
+              ],
+              [
+                "mdurl",
+                "0.1.2"
+              ],
+              [
+                "ml_dtypes",
+                "0.6.0"
+              ],
+              [
+                "mpmath",
+                "1.3.0"
+              ],
+              [
+                "multidict",
+                "6.9.1"
+              ],
+              [
+                "networkx",
+                "3.6.1"
+              ],
+              [
+                "numpy",
+                "2.5.3"
+              ],
+              [
+                "onnx",
+                "1.23.2"
+              ],
+              [
+                "onnx-ir",
+                "1.1.0"
+              ],
+              [
+                "onnxruntime",
+                "1.30.0"
+              ],
+              [
+                "onnxscript",
+                "0.7.2"
+              ],
+              [
+                "openai",
+                "2.54.0"
+              ],
+              [
+                "openpyxl",
+                "3.1.5"
+              ],
+              [
+                "opentelemetry-api",
+                "1.45.1"
+              ],
+              [
+                "orjson",
+                "3.12.0"
+              ],
+              [
+                "packaging",
+                "26.3"
+              ],
+              [
+                "paramiko",
+                "5.0.0"
+              ],
+              [
+                "pillow",
+                "13.0.0"
+              ],
+              [
+                "pip",
+                "26.2.1"
+              ],
+              [
+                "pluggy",
+                "1.6.0"
+              ],
+              [
+                "propcache",
+                "0.5.4"
+              ],
+              [
+                "protobuf",
+                "7.36.2"
+              ],
+              [
+                "pyaxmlparser",
+                "0.3.31"
+              ],
+              [
+                "pycparser",
+                "3.0"
+              ],
+              [
+                "pydantic",
+                "2.13.5"
+              ],
+              [
+                "pydantic-settings",
+                "2.15.0"
+              ],
+              [
+                "pydantic_core",
+                "2.46.5"
+              ],
+              [
+                "pypdf",
+                "6.19.0"
+              ],
+              [
+                "pytest",
+                "9.1.1"
+              ],
+              [
+                "pytest-xdist",
+                "3.8.0"
+              ],
+              [
+                "python-dateutil",
+                "2.9.0.post0"
+              ],
+              [
+                "python-docx",
+                "1.2.0"
+              ],
+              [
+                "python-dotenv",
+                "1.2.4"
+              ],
+              [
+                "python-engineio",
+                "4.14.0"
+              ],
+              [
+                "python-multipart",
+                "0.0.32"
+              ],
+              [
+                "python-socketio",
+                "5.17.0"
+              ],
+              [
+                "pywin32",
+                "312"
+              ],
+              [
+                "referencing",
+                "0.37.0"
+              ],
+              [
+                "regex",
+                "2026.9.29"
+              ],
+              [
+                "requests",
+                "2.34.2"
+              ],
+              [
+                "rich",
+                "15.0.0"
+              ],
+              [
+                "rpds-py",
+                "2026.9.1"
+              ],
+              [
+                "s3transfer",
+                "0.19.2"
+              ],
+              [
+                "safetensors",
+                "0.8.0"
+              ],
+              [
+                "shellingham",
+                "1.5.4"
+              ],
+              [
+                "sherpa-onnx-core",
+                "1.13.8"
+              ],
+              [
+                "sherpa_onnx",
+                "1.13.8"
+              ],
+              [
+                "simple-websocket",
+                "1.1.0"
+              ],
+              [
+                "sniffio",
+                "1.3.1"
+              ],
+              [
+                "sqlite-vec",
+                "0.1.9"
+              ],
+              [
+                "sse-starlette",
+                "3.5.0"
+              ],
+              [
+                "starlette",
+                "1.7.0"
+              ],
+              [
+                "sympy",
+                "1.14.0"
+              ],
+              [
+                "tiktoken",
+                "0.14.0"
+              ],
+              [
+                "tokenizers",
+                "0.23.2"
+              ],
+              [
+                "tomlkit",
+                "0.15.1"
+              ],
+              [
+                "torch",
+                "2.14.1"
+              ],
+              [
+                "tqdm",
+                "4.70.1"
+              ],
+              [
+                "transformers",
+                "5.19.0"
+              ],
+              [
+                "tree-sitter",
+                "0.25.2"
+              ],
+              [
+                "tree-sitter-bash",
+                "0.25.1"
+              ],
+              [
+                "tree-sitter-c",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-c-sharp",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-cpp",
+                "0.23.4"
+              ],
+              [
+                "tree-sitter-elixir",
+                "0.3.5"
+              ],
+              [
+                "tree-sitter-fortran",
+                "0.6.0"
+              ],
+              [
+                "tree-sitter-go",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-groovy",
+                "0.1.2"
+              ],
+              [
+                "tree-sitter-java",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-javascript",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-json",
+                "0.24.8"
+              ],
+              [
+                "tree-sitter-julia",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-kotlin",
+                "1.1.0"
+              ],
+              [
+                "tree-sitter-lua",
+                "0.5.0"
+              ],
+              [
+                "tree-sitter-objc",
+                "3.0.2"
+              ],
+              [
+                "tree-sitter-php",
+                "0.24.1"
+              ],
+              [
+                "tree-sitter-powershell",
+                "0.26.4"
+              ],
+              [
+                "tree-sitter-python",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-ruby",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-rust",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-scala",
+                "0.26.2"
+              ],
+              [
+                "tree-sitter-swift",
+                "0.7.3"
+              ],
+              [
+                "tree-sitter-typescript",
+                "0.23.2"
+              ],
+              [
+                "tree-sitter-verilog",
+                "1.0.3"
+              ],
+              [
+                "tree-sitter-zig",
+                "1.1.2"
+              ],
+              [
+                "truststore",
+                "0.10.4"
+              ],
+              [
+                "typer",
+                "0.27.3"
+              ],
+              [
+                "typing-inspection",
+                "0.4.4"
+              ],
+              [
+                "urllib3",
+                "2.8.0"
+              ],
+              [
+                "uvicorn",
+                "0.54.0"
+              ],
+              [
+                "watchdog",
+                "6.0.0"
+              ],
+              [
+                "websocket-client",
+                "1.9.2"
+              ],
+              [
+                "websockets",
+                "17.2"
+              ],
+              [
+                "wsproto",
+                "1.3.2"
+              ],
+              [
+                "xlsxwriter",
+                "3.2.9"
+              ],
+              [
+                "yarl",
+                "1.25.1"
+              ],
+              [
+                "zipp",
+                "4.1.1"
+              ],
+              [
+                "zstandard",
+                "0.25.0"
+              ]
+            ]
+          },
+          "implementation": {
+            "tdq_test_receipt.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_receipt.py",
+              "sha256": "fcff089ccd1c86462cdd73c153d8c6066a026da56cf91b7e545f81e4f79805ea"
+            },
+            "tdq_test_manifest.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_manifest.py",
+              "sha256": "31f568ed945c2f9e565acf40cb41b8233868de10e29aeb063dc372078ec1e8e9"
+            },
+            "tdq_test_result.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_result.py",
+              "sha256": "1a25951e675460e05c48de8f4c4f95f3c1616d31c384cdf10af2f63dc3b8a0d5"
+            }
+          },
+          "manifest": {},
+          "flags_sha256": "a24c2e6d02d3a7848d080e961ae74c1eeb4bdaf86e976327ae87fd7ac17982a7",
+          "policy_sha256": "de8b87914285e29ff65f0dee4cdaecc6e49efc7ce37b56e36890573dc3b4d32a",
+          "environment_sha256": "6c9b8ea4320fd2178e1e291b3750b3be62f4f47e7e6aaf66bed7567c7a0334d5"
+        },
+        "implementation": {
+          "tdq_test": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py",
+            "sha256": "83006abf653c6bc8dca2e32edf97927638f7999c13aefba901c0b3bf4742fb73"
+          },
+          "tdq_test_process": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_process.py",
+            "sha256": "c4024dd79466c6d682d71c36812970e343cc2f1c970c4666cef791ba5abce06e"
+          }
+        }
+      },
+      "evidence": {
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.json": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.json",
+          "sha256": "47600f59616b0aba41b45595ec62dd042cd3d6615fa2c456b139d66d119e7b1d"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stderr.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stderr.txt",
+          "sha256": "cebaf6504618b81d5c309c571bdae42b58501aac3d53b65f6baa61e48b6fa83a"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stdout.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stdout.txt",
+          "sha256": "0ea6e1a75fa419b4133f8bfc021fd24d6eb5f2123d011911fdfdef4922c7a24c"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.xml": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.xml",
+          "sha256": "181a20d22474ba9f1fff7f097b2fba699343c6bf551da54b7f483b0dacdef901"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.json": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.json",
+          "sha256": "830815f20ceacedee414bd8ba556186af45c5539e6ce0f29716b7ab8ac6a7039"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stderr.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stderr.txt",
+          "sha256": "3b94ed608f12a954ca57a124bba2918d631dce87cefb4f5c5708304498046a12"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stdout.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stdout.txt",
+          "sha256": "d124f9696ed40502b4b30c0104e7d254a7e35a3d854991f72025ba67c7e5c805"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.xml": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.xml",
+          "sha256": "7f8ef0667f11502071d382a0a9693b86057241d7d2253f34b63756ad3af19dd8"
+        }
+      },
+      "result_artifact": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\result.json",
+        "sha256": "e572aa883512ed0509bfaeb7e074abc6daed5a6e0373ef415b51262ae99fb0b8"
+      }
+    },
+    {
+      "action": "joined",
+      "backend": "pytest",
+      "case_outcomes": [
+        {
+          "capability": null,
+          "case_id": "tests/test_case.py::test_ok",
+          "outcome": "pass",
+          "phases": [
+            {
+              "duration_seconds": 0.002961200021672994,
+              "outcome": "pass",
+              "phase": "setup",
+              "reason": ""
+            },
+            {
+              "duration_seconds": 0.0008154999813996255,
+              "outcome": "pass",
+              "phase": "call",
+              "reason": ""
+            },
+            {
+              "duration_seconds": 0.0001713000237941742,
+              "outcome": "pass",
+              "phase": "teardown",
+              "reason": ""
+            }
+          ],
+          "reason": "",
+          "subtests": []
+        }
+      ],
+      "coverage": {
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "fail": 0,
+          "pass": 1,
+          "skip": 0,
+          "xfail": 0,
+          "xpass": 0
+        },
+        "diagnostics": [],
+        "duplicates": [],
+        "expected": [
+          "tests/test_case.py::test_ok"
+        ],
+        "extra": [],
+        "missing": [],
+        "observed": [
+          "tests/test_case.py::test_ok"
+        ]
+      },
+      "details_complete": true,
+      "evidence_paths": [
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.json",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stderr.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stdout.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.xml",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.json",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stderr.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stdout.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.xml",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.json",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.stderr.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.stdout.txt",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.xml"
+      ],
+      "exit_code": 0,
+      "failed_modules": [],
+      "failures": [],
+      "manifest": {
+        "backend": "pytest",
+        "case_ids": [
+          "tests/test_case.py::test_ok"
+        ],
+        "complete": true,
+        "diagnostics": [],
+        "fingerprint": null,
+        "schema_version": 1,
+        "scope": "full",
+        "selectors": [
+          "tests"
+        ]
+      },
+      "modules": [
+        "test_case.py"
+      ],
+      "process": {
+        "execution": {
+          "cancelled": false,
+          "cleanup_complete": true,
+          "cleanup_seconds": 5.6699966080486774e-05,
+          "duration_seconds": 0.7461683999863453,
+          "execute_seconds": 0.7461117000202648,
+          "exit_code": 0,
+          "launch_matches_request": true,
+          "launch_options": {
+            "backend": "pytest",
+            "collect_only": false,
+            "dist": "no",
+            "numprocesses": 0,
+            "schema_version": 1,
+            "valid": true,
+            "workers": 1
+          },
+          "ownership": {
+            "assignment_verified": true,
+            "cleanup_scope": "job-object",
+            "mechanism": "windows-job",
+            "root_pid": 29656,
+            "verified": true
+          },
+          "paths": {
+            "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\pytest",
+            "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\workers\\controller\\home",
+            "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-q8y273ig\\workers\\controller\\tmp"
+          },
+          "phase": "execution",
+          "reason": "exited",
+          "schema_version": 1,
+          "stderr": "[2026-10-31T13:02:53.931277+00:00] manifest cases=1 complete=True exit=0 action=executed\n",
+          "stdout": ".                                                                        [100%]\n1 passed in 0.05s\n",
+          "timed_out": false,
+          "wall_seconds": 0.7461683999863453
+        },
+        "collection": {
+          "exit_code": 0,
+          "reason": "exited",
+          "timed_out": false,
+          "cancelled": false,
+          "cleanup_complete": true,
+          "cleanup_seconds": 5.849997978657484e-05,
+          "ownership": {
+            "mechanism": "windows-job",
+            "root_pid": 46224,
+            "assignment_verified": true,
+            "verified": true,
+            "cleanup_scope": "job-object"
+          },
+          "schema_version": 1,
+          "phase": "collection",
+          "stdout": "tests/test_case.py::test_ok\n\n1 test collected in 0.04s\n",
+          "stderr": "[2026-10-31T13:02:52.815083+00:00] manifest cases=0 complete=False exit=0 action=executed\n",
+          "duration_seconds": 0.7352953999652527,
+          "wall_seconds": 0.7352953999652527,
+          "execute_seconds": 0.7352368999854662,
+          "paths": {
+            "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-6ualji5r\\workers\\controller\\home",
+            "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-6ualji5r\\workers\\controller\\tmp",
+            "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\workers\\controller\\tmp\\tdq-6ualji5r\\pytest"
+          },
+          "launch_options": {
+            "schema_version": 1,
+            "backend": "pytest",
+            "valid": true,
+            "numprocesses": 0,
+            "workers": 1,
+            "dist": "no",
+            "collect_only": true
+          },
+          "launch_matches_request": true
+        }
+      },
+      "reason": "Executed tests completed successfully",
+      "skipped": 0,
+      "source_receipt_id": "\\\\?\\C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\r\\docs\\tdq\\cache\\r-b920da39d672533d\\188c022da09536ba314ee179a889ff08\\cee21954c02f49808443ef367e1524c9.json",
+      "status": "PASS",
+      "tests_run": 1,
+      "timings": {
+        "verify_seconds": 1.7289374999818392,
+        "wait_seconds": 1.1934195999638177,
+        "execute_seconds": 0,
+        "collection_seconds": 0.7352953999652527,
+        "wall_seconds": 3.669638900028076
+      },
+      "unmapped_failures": [],
+      "receipt_reason": "joined_owner",
+      "run_options": {
+        "schema_version": 1,
+        "workers": 1,
+        "reuse": "auto",
+        "fresh": false,
+        "timeout_seconds": 1800
+      },
+      "source_before": {
+        "key": "f53bf820e37d921b446830e2f9b090435fe9c367a47c5d0fc0102347c15d8792",
+        "inputs": {
+          "schema_version": 1,
+          "project": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\r",
+          "request": "runtime-join",
+          "files": {
+            "docs/tdq/reuse-policy.json": "8e1435004111d2d7e2adce30223a0536e940ba7dae20d887ff0f2cc59fe845fc",
+            "tests/test_case.py": "b1fb3b3c8f77f8d1e8e6d1510958c0c185b6b5c5c9a33ce92805db9f48af54ed"
+          },
+          "runtime": {
+            "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+            "executable": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+            "executable_sha256": "85b71d8c6ec1905935f74be0c9869aae198d00e98f39df699ec66f9c5a84cecd",
+            "os": "Windows-11-10.0.26100-SP0",
+            "architecture": "AMD64",
+            "privileged": false,
+            "packages": [
+              [
+                "Jinja2",
+                "3.1.6"
+              ],
+              [
+                "MarkupSafe",
+                "3.0.4"
+              ],
+              [
+                "PyJWT",
+                "2.15.1"
+              ],
+              [
+                "PyNaCl",
+                "1.6.2"
+              ],
+              [
+                "PyYAML",
+                "6.0.3"
+              ],
+              [
+                "Pygments",
+                "2.21.0"
+              ],
+              [
+                "RapidFuzz",
+                "3.14.6"
+              ],
+              [
+                "aiohappyeyeballs",
+                "2.7.1"
+              ],
+              [
+                "aiohttp",
+                "3.14.4"
+              ],
+              [
+                "aiosignal",
+                "1.4.0"
+              ],
+              [
+                "annotated-doc",
+                "0.0.5"
+              ],
+              [
+                "annotated-types",
+                "0.8.0"
+              ],
+              [
+                "anyio",
+                "4.15.1"
+              ],
+              [
+                "asn1crypto",
+                "1.5.1"
+              ],
+              [
+                "ast-grep-cli",
+                "0.45.3"
+              ],
+              [
+                "attrs",
+                "26.1.0"
+              ],
+              [
+                "bcrypt",
+                "5.0.0"
+              ],
+              [
+                "bidict",
+                "0.24.1"
+              ],
+              [
+                "boto3",
+                "1.43.108"
+              ],
+              [
+                "botocore",
+                "1.43.108"
+              ],
+              [
+                "certifi",
+                "2026.7.22"
+              ],
+              [
+                "cffi",
+                "2.1.1"
+              ],
+              [
+                "charset-normalizer",
+                "3.5.1"
+              ],
+              [
+                "click",
+                "8.5.0"
+              ],
+              [
+                "colorama",
+                "0.4.6"
+              ],
+              [
+                "cryptography",
+                "50.0.1"
+              ],
+              [
+                "distro",
+                "1.9.0"
+              ],
+              [
+                "et_xmlfile",
+                "2.0.0"
+              ],
+              [
+                "execnet",
+                "2.1.2"
+              ],
+              [
+                "fastapi",
+                "0.142.2"
+              ],
+              [
+                "fasttext-langdetect",
+                "1.1.1"
+              ],
+              [
+                "fasttext-predict",
+                "0.9.2.4"
+              ],
+              [
+                "fastuuid",
+                "0.14.0"
+              ],
+              [
+                "filelock",
+                "3.32.7"
+              ],
+              [
+                "flatbuffers",
+                "25.12.19"
+              ],
+              [
+                "frozenlist",
+                "1.8.0"
+              ],
+              [
+                "fsspec",
+                "2026.9.0"
+              ],
+              [
+                "google-play-scraper",
+                "1.2.7"
+              ],
+              [
+                "gplaycli",
+                "3.29"
+              ],
+              [
+                "graphifyy",
+                "0.9.64"
+              ],
+              [
+                "h11",
+                "0.16.0"
+              ],
+              [
+                "h2",
+                "4.4.1"
+              ],
+              [
+                "headroom-ai",
+                "0.40.0"
+              ],
+              [
+                "hf-xet",
+                "1.6.0"
+              ],
+              [
+                "hpack",
+                "4.2.0"
+              ],
+              [
+                "httpcore",
+                "1.0.9"
+              ],
+              [
+                "httpx",
+                "0.28.1"
+              ],
+              [
+                "httpx-sse",
+                "0.4.3"
+              ],
+              [
+                "huggingface_hub",
+                "1.33.0"
+              ],
+              [
+                "hyperframe",
+                "6.1.0"
+              ],
+              [
+                "idna",
+                "3.20"
+              ],
+              [
+                "importlib_metadata",
+                "8.9.0"
+              ],
+              [
+                "iniconfig",
+                "2.3.0"
+              ],
+              [
+                "invoke",
+                "3.0.3"
+              ],
+              [
+                "jiter",
+                "0.17.0"
+              ],
+              [
+                "jmespath",
+                "1.1.0"
+              ],
+              [
+                "jsonschema",
+                "4.26.0"
+              ],
+              [
+                "jsonschema-specifications",
+                "2025.9.1"
+              ],
+              [
+                "litellm",
+                "1.104.0"
+              ],
+              [
+                "lxml",
+                "6.1.3"
+              ],
+              [
+                "magika",
+                "1.0.3"
+              ],
+              [
+                "markdown-it-py",
+                "4.2.0"
+              ],
+              [
+                "matlink-gpapi",
+                "0.4.4.5"
+              ],
+              [
+                "mcp",
+                "1.30.0"
+              ],
+              [
+                "mdurl",
+                "0.1.2"
+              ],
+              [
+                "ml_dtypes",
+                "0.6.0"
+              ],
+              [
+                "mpmath",
+                "1.3.0"
+              ],
+              [
+                "multidict",
+                "6.9.1"
+              ],
+              [
+                "networkx",
+                "3.6.1"
+              ],
+              [
+                "numpy",
+                "2.5.3"
+              ],
+              [
+                "onnx",
+                "1.23.2"
+              ],
+              [
+                "onnx-ir",
+                "1.1.0"
+              ],
+              [
+                "onnxruntime",
+                "1.30.0"
+              ],
+              [
+                "onnxscript",
+                "0.7.2"
+              ],
+              [
+                "openai",
+                "2.54.0"
+              ],
+              [
+                "openpyxl",
+                "3.1.5"
+              ],
+              [
+                "opentelemetry-api",
+                "1.45.1"
+              ],
+              [
+                "orjson",
+                "3.12.0"
+              ],
+              [
+                "packaging",
+                "26.3"
+              ],
+              [
+                "paramiko",
+                "5.0.0"
+              ],
+              [
+                "pillow",
+                "13.0.0"
+              ],
+              [
+                "pip",
+                "26.2.1"
+              ],
+              [
+                "pluggy",
+                "1.6.0"
+              ],
+              [
+                "propcache",
+                "0.5.4"
+              ],
+              [
+                "protobuf",
+                "7.36.2"
+              ],
+              [
+                "pyaxmlparser",
+                "0.3.31"
+              ],
+              [
+                "pycparser",
+                "3.0"
+              ],
+              [
+                "pydantic",
+                "2.13.5"
+              ],
+              [
+                "pydantic-settings",
+                "2.15.0"
+              ],
+              [
+                "pydantic_core",
+                "2.46.5"
+              ],
+              [
+                "pypdf",
+                "6.19.0"
+              ],
+              [
+                "pytest",
+                "9.1.1"
+              ],
+              [
+                "pytest-xdist",
+                "3.8.0"
+              ],
+              [
+                "python-dateutil",
+                "2.9.0.post0"
+              ],
+              [
+                "python-docx",
+                "1.2.0"
+              ],
+              [
+                "python-dotenv",
+                "1.2.4"
+              ],
+              [
+                "python-engineio",
+                "4.14.0"
+              ],
+              [
+                "python-multipart",
+                "0.0.32"
+              ],
+              [
+                "python-socketio",
+                "5.17.0"
+              ],
+              [
+                "pywin32",
+                "312"
+              ],
+              [
+                "referencing",
+                "0.37.0"
+              ],
+              [
+                "regex",
+                "2026.9.29"
+              ],
+              [
+                "requests",
+                "2.34.2"
+              ],
+              [
+                "rich",
+                "15.0.0"
+              ],
+              [
+                "rpds-py",
+                "2026.9.1"
+              ],
+              [
+                "s3transfer",
+                "0.19.2"
+              ],
+              [
+                "safetensors",
+                "0.8.0"
+              ],
+              [
+                "shellingham",
+                "1.5.4"
+              ],
+              [
+                "sherpa-onnx-core",
+                "1.13.8"
+              ],
+              [
+                "sherpa_onnx",
+                "1.13.8"
+              ],
+              [
+                "simple-websocket",
+                "1.1.0"
+              ],
+              [
+                "sniffio",
+                "1.3.1"
+              ],
+              [
+                "sqlite-vec",
+                "0.1.9"
+              ],
+              [
+                "sse-starlette",
+                "3.5.0"
+              ],
+              [
+                "starlette",
+                "1.7.0"
+              ],
+              [
+                "sympy",
+                "1.14.0"
+              ],
+              [
+                "tiktoken",
+                "0.14.0"
+              ],
+              [
+                "tokenizers",
+                "0.23.2"
+              ],
+              [
+                "tomlkit",
+                "0.15.1"
+              ],
+              [
+                "torch",
+                "2.14.1"
+              ],
+              [
+                "tqdm",
+                "4.70.1"
+              ],
+              [
+                "transformers",
+                "5.19.0"
+              ],
+              [
+                "tree-sitter",
+                "0.25.2"
+              ],
+              [
+                "tree-sitter-bash",
+                "0.25.1"
+              ],
+              [
+                "tree-sitter-c",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-c-sharp",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-cpp",
+                "0.23.4"
+              ],
+              [
+                "tree-sitter-elixir",
+                "0.3.5"
+              ],
+              [
+                "tree-sitter-fortran",
+                "0.6.0"
+              ],
+              [
+                "tree-sitter-go",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-groovy",
+                "0.1.2"
+              ],
+              [
+                "tree-sitter-java",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-javascript",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-json",
+                "0.24.8"
+              ],
+              [
+                "tree-sitter-julia",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-kotlin",
+                "1.1.0"
+              ],
+              [
+                "tree-sitter-lua",
+                "0.5.0"
+              ],
+              [
+                "tree-sitter-objc",
+                "3.0.2"
+              ],
+              [
+                "tree-sitter-php",
+                "0.24.1"
+              ],
+              [
+                "tree-sitter-powershell",
+                "0.26.4"
+              ],
+              [
+                "tree-sitter-python",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-ruby",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-rust",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-scala",
+                "0.26.2"
+              ],
+              [
+                "tree-sitter-swift",
+                "0.7.3"
+              ],
+              [
+                "tree-sitter-typescript",
+                "0.23.2"
+              ],
+              [
+                "tree-sitter-verilog",
+                "1.0.3"
+              ],
+              [
+                "tree-sitter-zig",
+                "1.1.2"
+              ],
+              [
+                "truststore",
+                "0.10.4"
+              ],
+              [
+                "typer",
+                "0.27.3"
+              ],
+              [
+                "typing-inspection",
+                "0.4.4"
+              ],
+              [
+                "urllib3",
+                "2.8.0"
+              ],
+              [
+                "uvicorn",
+                "0.54.0"
+              ],
+              [
+                "watchdog",
+                "6.0.0"
+              ],
+              [
+                "websocket-client",
+                "1.9.2"
+              ],
+              [
+                "websockets",
+                "17.2"
+              ],
+              [
+                "wsproto",
+                "1.3.2"
+              ],
+              [
+                "xlsxwriter",
+                "3.2.9"
+              ],
+              [
+                "yarl",
+                "1.25.1"
+              ],
+              [
+                "zipp",
+                "4.1.1"
+              ],
+              [
+                "zstandard",
+                "0.25.0"
+              ]
+            ]
+          },
+          "implementation": {
+            "tdq_test_receipt.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_receipt.py",
+              "sha256": "fcff089ccd1c86462cdd73c153d8c6066a026da56cf91b7e545f81e4f79805ea"
+            },
+            "tdq_test_manifest.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_manifest.py",
+              "sha256": "31f568ed945c2f9e565acf40cb41b8233868de10e29aeb063dc372078ec1e8e9"
+            },
+            "tdq_test_result.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_result.py",
+              "sha256": "1a25951e675460e05c48de8f4c4f95f3c1616d31c384cdf10af2f63dc3b8a0d5"
+            }
+          },
+          "manifest": {},
+          "flags_sha256": "a24c2e6d02d3a7848d080e961ae74c1eeb4bdaf86e976327ae87fd7ac17982a7",
+          "policy_sha256": "de8b87914285e29ff65f0dee4cdaecc6e49efc7ce37b56e36890573dc3b4d32a",
+          "environment_sha256": "6c9b8ea4320fd2178e1e291b3750b3be62f4f47e7e6aaf66bed7567c7a0334d5"
+        },
+        "implementation": {
+          "tdq_test": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py",
+            "sha256": "83006abf653c6bc8dca2e32edf97927638f7999c13aefba901c0b3bf4742fb73"
+          },
+          "tdq_test_process": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_process.py",
+            "sha256": "c4024dd79466c6d682d71c36812970e343cc2f1c970c4666cef791ba5abce06e"
+          }
+        }
+      },
+      "job_classification": "benchmark",
+      "execution_provenance": "source_receipt",
+      "source_after": {
+        "key": "f53bf820e37d921b446830e2f9b090435fe9c367a47c5d0fc0102347c15d8792",
+        "inputs": {
+          "schema_version": 1,
+          "project": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-f8l2opjf\\temp\\tdq-p140ro7z\\r",
+          "request": "runtime-join",
+          "files": {
+            "docs/tdq/reuse-policy.json": "8e1435004111d2d7e2adce30223a0536e940ba7dae20d887ff0f2cc59fe845fc",
+            "tests/test_case.py": "b1fb3b3c8f77f8d1e8e6d1510958c0c185b6b5c5c9a33ce92805db9f48af54ed"
+          },
+          "runtime": {
+            "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+            "executable": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+            "executable_sha256": "85b71d8c6ec1905935f74be0c9869aae198d00e98f39df699ec66f9c5a84cecd",
+            "os": "Windows-11-10.0.26100-SP0",
+            "architecture": "AMD64",
+            "privileged": false,
+            "packages": [
+              [
+                "Jinja2",
+                "3.1.6"
+              ],
+              [
+                "MarkupSafe",
+                "3.0.4"
+              ],
+              [
+                "PyJWT",
+                "2.15.1"
+              ],
+              [
+                "PyNaCl",
+                "1.6.2"
+              ],
+              [
+                "PyYAML",
+                "6.0.3"
+              ],
+              [
+                "Pygments",
+                "2.21.0"
+              ],
+              [
+                "RapidFuzz",
+                "3.14.6"
+              ],
+              [
+                "aiohappyeyeballs",
+                "2.7.1"
+              ],
+              [
+                "aiohttp",
+                "3.14.4"
+              ],
+              [
+                "aiosignal",
+                "1.4.0"
+              ],
+              [
+                "annotated-doc",
+                "0.0.5"
+              ],
+              [
+                "annotated-types",
+                "0.8.0"
+              ],
+              [
+                "anyio",
+                "4.15.1"
+              ],
+              [
+                "asn1crypto",
+                "1.5.1"
+              ],
+              [
+                "ast-grep-cli",
+                "0.45.3"
+              ],
+              [
+                "attrs",
+                "26.1.0"
+              ],
+              [
+                "bcrypt",
+                "5.0.0"
+              ],
+              [
+                "bidict",
+                "0.24.1"
+              ],
+              [
+                "boto3",
+                "1.43.108"
+              ],
+              [
+                "botocore",
+                "1.43.108"
+              ],
+              [
+                "certifi",
+                "2026.7.22"
+              ],
+              [
+                "cffi",
+                "2.1.1"
+              ],
+              [
+                "charset-normalizer",
+                "3.5.1"
+              ],
+              [
+                "click",
+                "8.5.0"
+              ],
+              [
+                "colorama",
+                "0.4.6"
+              ],
+              [
+                "cryptography",
+                "50.0.1"
+              ],
+              [
+                "distro",
+                "1.9.0"
+              ],
+              [
+                "et_xmlfile",
+                "2.0.0"
+              ],
+              [
+                "execnet",
+                "2.1.2"
+              ],
+              [
+                "fastapi",
+                "0.142.2"
+              ],
+              [
+                "fasttext-langdetect",
+                "1.1.1"
+              ],
+              [
+                "fasttext-predict",
+                "0.9.2.4"
+              ],
+              [
+                "fastuuid",
+                "0.14.0"
+              ],
+              [
+                "filelock",
+                "3.32.7"
+              ],
+              [
+                "flatbuffers",
+                "25.12.19"
+              ],
+              [
+                "frozenlist",
+                "1.8.0"
+              ],
+              [
+                "fsspec",
+                "2026.9.0"
+              ],
+              [
+                "google-play-scraper",
+                "1.2.7"
+              ],
+              [
+                "gplaycli",
+                "3.29"
+              ],
+              [
+                "graphifyy",
+                "0.9.64"
+              ],
+              [
+                "h11",
+                "0.16.0"
+              ],
+              [
+                "h2",
+                "4.4.1"
+              ],
+              [
+                "headroom-ai",
+                "0.40.0"
+              ],
+              [
+                "hf-xet",
+                "1.6.0"
+              ],
+              [
+                "hpack",
+                "4.2.0"
+              ],
+              [
+                "httpcore",
+                "1.0.9"
+              ],
+              [
+                "httpx",
+                "0.28.1"
+              ],
+              [
+                "httpx-sse",
+                "0.4.3"
+              ],
+              [
+                "huggingface_hub",
+                "1.33.0"
+              ],
+              [
+                "hyperframe",
+                "6.1.0"
+              ],
+              [
+                "idna",
+                "3.20"
+              ],
+              [
+                "importlib_metadata",
+                "8.9.0"
+              ],
+              [
+                "iniconfig",
+                "2.3.0"
+              ],
+              [
+                "invoke",
+                "3.0.3"
+              ],
+              [
+                "jiter",
+                "0.17.0"
+              ],
+              [
+                "jmespath",
+                "1.1.0"
+              ],
+              [
+                "jsonschema",
+                "4.26.0"
+              ],
+              [
+                "jsonschema-specifications",
+                "2025.9.1"
+              ],
+              [
+                "litellm",
+                "1.104.0"
+              ],
+              [
+                "lxml",
+                "6.1.3"
+              ],
+              [
+                "magika",
+                "1.0.3"
+              ],
+              [
+                "markdown-it-py",
+                "4.2.0"
+              ],
+              [
+                "matlink-gpapi",
+                "0.4.4.5"
+              ],
+              [
+                "mcp",
+                "1.30.0"
+              ],
+              [
+                "mdurl",
+                "0.1.2"
+              ],
+              [
+                "ml_dtypes",
+                "0.6.0"
+              ],
+              [
+                "mpmath",
+                "1.3.0"
+              ],
+              [
+                "multidict",
+                "6.9.1"
+              ],
+              [
+                "networkx",
+                "3.6.1"
+              ],
+              [
+                "numpy",
+                "2.5.3"
+              ],
+              [
+                "onnx",
+                "1.23.2"
+              ],
+              [
+                "onnx-ir",
+                "1.1.0"
+              ],
+              [
+                "onnxruntime",
+                "1.30.0"
+              ],
+              [
+                "onnxscript",
+                "0.7.2"
+              ],
+              [
+                "openai",
+                "2.54.0"
+              ],
+              [
+                "openpyxl",
+                "3.1.5"
+              ],
+              [
+                "opentelemetry-api",
+                "1.45.1"
+              ],
+              [
+                "orjson",
+                "3.12.0"
+              ],
+              [
+                "packaging",
+                "26.3"
+              ],
+              [
+                "paramiko",
+                "5.0.0"
+              ],
+              [
+                "pillow",
+                "13.0.0"
+              ],
+              [
+                "pip",
+                "26.2.1"
+              ],
+              [
+                "pluggy",
+                "1.6.0"
+              ],
+              [
+                "propcache",
+                "0.5.4"
+              ],
+              [
+                "protobuf",
+                "7.36.2"
+              ],
+              [
+                "pyaxmlparser",
+                "0.3.31"
+              ],
+              [
+                "pycparser",
+                "3.0"
+              ],
+              [
+                "pydantic",
+                "2.13.5"
+              ],
+              [
+                "pydantic-settings",
+                "2.15.0"
+              ],
+              [
+                "pydantic_core",
+                "2.46.5"
+              ],
+              [
+                "pypdf",
+                "6.19.0"
+              ],
+              [
+                "pytest",
+                "9.1.1"
+              ],
+              [
+                "pytest-xdist",
+                "3.8.0"
+              ],
+              [
+                "python-dateutil",
+                "2.9.0.post0"
+              ],
+              [
+                "python-docx",
+                "1.2.0"
+              ],
+              [
+                "python-dotenv",
+                "1.2.4"
+              ],
+              [
+                "python-engineio",
+                "4.14.0"
+              ],
+              [
+                "python-multipart",
+                "0.0.32"
+              ],
+              [
+                "python-socketio",
+                "5.17.0"
+              ],
+              [
+                "pywin32",
+                "312"
+              ],
+              [
+                "referencing",
+                "0.37.0"
+              ],
+              [
+                "regex",
+                "2026.9.29"
+              ],
+              [
+                "requests",
+                "2.34.2"
+              ],
+              [
+                "rich",
+                "15.0.0"
+              ],
+              [
+                "rpds-py",
+                "2026.9.1"
+              ],
+              [
+                "s3transfer",
+                "0.19.2"
+              ],
+              [
+                "safetensors",
+                "0.8.0"
+              ],
+              [
+                "shellingham",
+                "1.5.4"
+              ],
+              [
+                "sherpa-onnx-core",
+                "1.13.8"
+              ],
+              [
+                "sherpa_onnx",
+                "1.13.8"
+              ],
+              [
+                "simple-websocket",
+                "1.1.0"
+              ],
+              [
+                "sniffio",
+                "1.3.1"
+              ],
+              [
+                "sqlite-vec",
+                "0.1.9"
+              ],
+              [
+                "sse-starlette",
+                "3.5.0"
+              ],
+              [
+                "starlette",
+                "1.7.0"
+              ],
+              [
+                "sympy",
+                "1.14.0"
+              ],
+              [
+                "tiktoken",
+                "0.14.0"
+              ],
+              [
+                "tokenizers",
+                "0.23.2"
+              ],
+              [
+                "tomlkit",
+                "0.15.1"
+              ],
+              [
+                "torch",
+                "2.14.1"
+              ],
+              [
+                "tqdm",
+                "4.70.1"
+              ],
+              [
+                "transformers",
+                "5.19.0"
+              ],
+              [
+                "tree-sitter",
+                "0.25.2"
+              ],
+              [
+                "tree-sitter-bash",
+                "0.25.1"
+              ],
+              [
+                "tree-sitter-c",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-c-sharp",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-cpp",
+                "0.23.4"
+              ],
+              [
+                "tree-sitter-elixir",
+                "0.3.5"
+              ],
+              [
+                "tree-sitter-fortran",
+                "0.6.0"
+              ],
+              [
+                "tree-sitter-go",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-groovy",
+                "0.1.2"
+              ],
+              [
+                "tree-sitter-java",
+                "0.23.5"
+              ],
+              [
+                "tree-sitter-javascript",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-json",
+                "0.24.8"
+              ],
+              [
+                "tree-sitter-julia",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-kotlin",
+                "1.1.0"
+              ],
+              [
+                "tree-sitter-lua",
+                "0.5.0"
+              ],
+              [
+                "tree-sitter-objc",
+                "3.0.2"
+              ],
+              [
+                "tree-sitter-php",
+                "0.24.1"
+              ],
+              [
+                "tree-sitter-powershell",
+                "0.26.4"
+              ],
+              [
+                "tree-sitter-python",
+                "0.25.0"
+              ],
+              [
+                "tree-sitter-ruby",
+                "0.23.1"
+              ],
+              [
+                "tree-sitter-rust",
+                "0.24.2"
+              ],
+              [
+                "tree-sitter-scala",
+                "0.26.2"
+              ],
+              [
+                "tree-sitter-swift",
+                "0.7.3"
+              ],
+              [
+                "tree-sitter-typescript",
+                "0.23.2"
+              ],
+              [
+                "tree-sitter-verilog",
+                "1.0.3"
+              ],
+              [
+                "tree-sitter-zig",
+                "1.1.2"
+              ],
+              [
+                "truststore",
+                "0.10.4"
+              ],
+              [
+                "typer",
+                "0.27.3"
+              ],
+              [
+                "typing-inspection",
+                "0.4.4"
+              ],
+              [
+                "urllib3",
+                "2.8.0"
+              ],
+              [
+                "uvicorn",
+                "0.54.0"
+              ],
+              [
+                "watchdog",
+                "6.0.0"
+              ],
+              [
+                "websocket-client",
+                "1.9.2"
+              ],
+              [
+                "websockets",
+                "17.2"
+              ],
+              [
+                "wsproto",
+                "1.3.2"
+              ],
+              [
+                "xlsxwriter",
+                "3.2.9"
+              ],
+              [
+                "yarl",
+                "1.25.1"
+              ],
+              [
+                "zipp",
+                "4.1.1"
+              ],
+              [
+                "zstandard",
+                "0.25.0"
+              ]
+            ]
+          },
+          "implementation": {
+            "tdq_test_receipt.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_receipt.py",
+              "sha256": "fcff089ccd1c86462cdd73c153d8c6066a026da56cf91b7e545f81e4f79805ea"
+            },
+            "tdq_test_manifest.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_manifest.py",
+              "sha256": "31f568ed945c2f9e565acf40cb41b8233868de10e29aeb063dc372078ec1e8e9"
+            },
+            "tdq_test_result.py": {
+              "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_result.py",
+              "sha256": "1a25951e675460e05c48de8f4c4f95f3c1616d31c384cdf10af2f63dc3b8a0d5"
+            }
+          },
+          "manifest": {},
+          "flags_sha256": "a24c2e6d02d3a7848d080e961ae74c1eeb4bdaf86e976327ae87fd7ac17982a7",
+          "policy_sha256": "de8b87914285e29ff65f0dee4cdaecc6e49efc7ce37b56e36890573dc3b4d32a",
+          "environment_sha256": "6c9b8ea4320fd2178e1e291b3750b3be62f4f47e7e6aaf66bed7567c7a0334d5"
+        },
+        "implementation": {
+          "tdq_test": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py",
+            "sha256": "83006abf653c6bc8dca2e32edf97927638f7999c13aefba901c0b3bf4742fb73"
+          },
+          "tdq_test_process": {
+            "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test_process.py",
+            "sha256": "c4024dd79466c6d682d71c36812970e343cc2f1c970c4666cef791ba5abce06e"
+          }
+        }
+      },
+      "evidence": {
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.json": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.json",
+          "sha256": "47600f59616b0aba41b45595ec62dd042cd3d6615fa2c456b139d66d119e7b1d"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stderr.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stderr.txt",
+          "sha256": "cebaf6504618b81d5c309c571bdae42b58501aac3d53b65f6baa61e48b6fa83a"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stdout.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.stdout.txt",
+          "sha256": "0ea6e1a75fa419b4133f8bfc021fd24d6eb5f2123d011911fdfdef4922c7a24c"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.xml": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\collection.xml",
+          "sha256": "181a20d22474ba9f1fff7f097b2fba699343c6bf551da54b7f483b0dacdef901"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.json": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.json",
+          "sha256": "830815f20ceacedee414bd8ba556186af45c5539e6ce0f29716b7ab8ac6a7039"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stderr.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stderr.txt",
+          "sha256": "3b94ed608f12a954ca57a124bba2918d631dce87cefb4f5c5708304498046a12"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stdout.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.stdout.txt",
+          "sha256": "d124f9696ed40502b4b30c0104e7d254a7e35a3d854991f72025ba67c7e5c805"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.xml": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\22d18b42142c4804aa6c0064567b0c68\\execution.xml",
+          "sha256": "7f8ef0667f11502071d382a0a9693b86057241d7d2253f34b63756ad3af19dd8"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.json": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.json",
+          "sha256": "47600f59616b0aba41b45595ec62dd042cd3d6615fa2c456b139d66d119e7b1d"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.stderr.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.stderr.txt",
+          "sha256": "f473bcabd20628f81ccff9b062e25e80957409ed6093f01666d3597043683eb7"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.stdout.txt": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.stdout.txt",
+          "sha256": "0ea6e1a75fa419b4133f8bfc021fd24d6eb5f2123d011911fdfdef4922c7a24c"
+        },
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.xml": {
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\collection.xml",
+          "sha256": "dd5217acc2d1c6d52b8335b86d75e7f45dceae6f789e909241df118b6efe8869"
+        }
+      },
+      "result_artifact": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-a791cb70\\join\\a59359dc4aee41ae8e3576ee39b1347b\\result.json",
+        "sha256": "8155df386660af74dcf953313d96611c29d973933b896a132be1801ab6bac828"
+      }
+    }
+  ],
+  "execution_count": 1,
+  "handshake": {
+    "owner_ready_at": 336484.2476727,
+    "join_ready_at": 336485.7252224
+  }
+}

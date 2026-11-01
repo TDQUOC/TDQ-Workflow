@@ -1,0 +1,70 @@
+{
+  "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/reports/2026-10-27-1246-do-dung-bao-toan-loi.html",
+  "desktop": {
+    "width": 1440,
+    "scrollWidth": 1425,
+    "detailTogglesPassed": [
+      true,
+      true,
+      true
+    ],
+    "fullReportOpen": false,
+    "fullReportTables": 3,
+    "navLinks": 7,
+    "anchorsValid": true,
+    "metrics": [
+      "7/7",
+      "3.290",
+      "167/167",
+      "12"
+    ]
+  },
+  "mobile": {
+    "width": 375,
+    "scrollWidth": 375,
+    "reportOpen": true,
+    "articleVisible": true,
+    "tables": [
+      {
+        "container": 295,
+        "table": 640
+      },
+      {
+        "container": 295,
+        "table": 640
+      },
+      {
+        "container": 295,
+        "table": 752
+      }
+    ],
+    "metrics": [
+      "7/7",
+      "3.290",
+      "167/167",
+      "12"
+    ]
+  },
+  "keyboard": {
+    "focusedTag": "A",
+    "focusVisible": true,
+    "outline": "solid",
+    "outlineWidth": "3px"
+  },
+  "hover": {
+    "hoverThickness": "2px",
+    "hoverDecoration": "underline"
+  },
+  "console": "Emulating viewport: {\"deviceScaleFactor\":1,\"isMobile\":false,\"hasTouch\":false,\"isLandscape\":false,\"width\":1440,\"height\":900}\n## Console messages\n<no console messages found>",
+  "network": "Emulating viewport: {\"deviceScaleFactor\":1,\"isMobile\":false,\"hasTouch\":false,\"isLandscape\":false,\"width\":1440,\"height\":900}\n## Network requests\nShowing 1-1 of 1 (Page 1 of 1).\nreqid=4 GET file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/reports/2026-10-27-1246-do-dung-bao-toan-loi.html [200]",
+  "visual_review": "Desktop header/KPIs and mobile header/QC cards reviewed; no text clipping or document horizontal overflow. Long detail tables scroll within their own containers.",
+  "screenshots": [
+    "report-html-desktop.jpg",
+    "../../../workinglog/images/2026-10-27-1246-do-dung-bao-toan-loi-report-mobile.jpg"
+  ],
+  "notes": [
+    "MCP direct file output rejected because its configured workspace roots differ; inline results and screenshots were captured and saved through the workspace tools.",
+    "Native resize clamped to 500px; mobile evidence uses explicit CDP viewport emulation at 375x812.",
+    "No visual reference supplied; no pixel-diff claim. No form/backend or destructive action in this report."
+  ]
+}

@@ -35,7 +35,9 @@ the original is `skills/tdq-conventions/SKILL.md`), ≤ 10 lines. Read-only: wri
      mismatch warns that the spec changed after approval and must be approved again.
    - Phase `implement`/`qc` → count `- [x]` over the total tasks in the plan file → progress.
    - The clock: print the `⏱ …` line returned by `tdq_timing.py status` verbatim (how long
-     the current phase cost in wall/model time, and how long the request cost).
+     the current phase wall/observed time across its entries, request totals and quality).
+     Preserve partial/unavailable labels; unattributed time does not prove user idle or
+     model compute. V1 gaps are legacy estimates; v2 `model_giay` is null.
 
 3. Close with the next step, taking the "next job" and "command" lines verbatim from the
    `next` output. Waiting on an approval → also print: <!-- i18n-allow: the approval line is printed verbatim -->

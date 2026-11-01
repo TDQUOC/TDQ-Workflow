@@ -1,0 +1,14 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "C:/Users/admin/AppData/Local/Temp/tdq-phase1-repair-config-final.py"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T15:23:02.931669+07:00",
+  "seconds": 0.169,
+  "exit_code": 0,
+  "stdout": "QC-user-config-final-repair.stdout.txt",
+  "stderr": "QC-user-config-final-repair.stderr.txt"
+}

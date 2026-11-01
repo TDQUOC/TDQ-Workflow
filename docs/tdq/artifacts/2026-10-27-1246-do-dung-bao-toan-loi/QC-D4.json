@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_tdq_test.py",
+    "-k",
+    "IndirectSelection"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:33:02.481549+07:00",
+  "seconds": 2.037,
+  "exit_code": 0,
+  "stdout": "QC-D4.stdout.txt",
+  "stderr": "QC-D4.stderr.txt"
+}

@@ -1,0 +1,12 @@
+{
+  "checks": {
+    "binding_valid": true,
+    "document_digest_unchanged": true,
+    "manifest_digest_unchanged": true,
+    "html_hash_unchanged": true,
+    "only_source_drift": true
+  },
+  "source_drift_count": 14,
+  "html_sha256": "01f5773aa2f4a300556a34f8d8a42d2d229f5a9ebcff35d61dba08837ef13989",
+  "overall_verifier_status": "stale"
+}

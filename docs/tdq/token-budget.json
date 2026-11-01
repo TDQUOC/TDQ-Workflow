@@ -12,8 +12,8 @@
     "token": 3491
   },
   "skills/tdq-build/references/report-template.md": {
-    "sha256": "29f130db81676004af1b8b7c1894032fe8fc125d4fb390a4fced55cf29bbbe28",
-    "token": 2293
+    "sha256": "7cb00d16576bfba3bb9ea4d8e0cd76d6b3f8d091fc8e2b6b82a77037a7ef7a3b",
+    "token": 2345
   },
   "skills/tdq-build/references/rules/chung.md": {
     "sha256": "a4ac6183a5b806ebaf2364b04bdb942a46e44efa0644d591daf22b42d057b985",
@@ -63,6 +63,10 @@
     "sha256": "c9d665ff8c3ad99dad6d26acecdf1dd031d7cdb98c5a8f2ce12e6158b8e1295c",
     "token": 958
   },
+  "skills/tdq-build/references/runtime-speed.md": {
+    "sha256": "390e55f8b67aa818a5866e19f28a6b0ebfdbf0e06505fa2c34d704d5458528b0",
+    "token": 1106
+  },
   "skills/tdq-build/references/team-mode-tra-cuu.md": {
     "sha256": "6eacac324af8d49c3678a2eb2f66840c487ff5c3495f160e5b762fb02cc68295",
     "token": 1070
@@ -92,8 +96,8 @@
     "token": 1852
   },
   "skills/tdq-conventions/references/context-budget.md": {
-    "sha256": "ccb615c2027299d21f3d1e644aef5a0490d9a2df72a02eebfeb6ecca11390601",
-    "token": 1972
+    "sha256": "80eeb5680eed5710013212e774571fcb041c493509b91c378bbc174c10dd3969",
+    "token": 2025
   },
   "skills/tdq-conventions/references/knowledge-template.md": {
     "sha256": "08239ab13e471b74b92466b4209884eeca2cd725601dad37926ea6bb9f680889",

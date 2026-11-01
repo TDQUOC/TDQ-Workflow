@@ -1,0 +1,14 @@
+{
+  "duration_seconds": 50.056,
+  "observations": [
+    {
+      "elapsed_seconds": 47.554,
+      "changed_top_level_keys": [
+        "pluginUsage"
+      ],
+      "before_sha256": "8a64a1968cf2fc4a708abc3d3f7c1597a0e632f6a48421e103f7de50081c2851",
+      "after_sha256": "a33d187224cb4c27dfbd678d40296f9cc98b7e60aafa460cbd851f79be362a70"
+    }
+  ],
+  "raw_values_recorded": false
+}

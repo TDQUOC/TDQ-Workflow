@@ -1,0 +1,20 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ JunitSidecarParityTest.test_xunit1_file_metadata_must_agree_with_exact_case_identity _
+
+self = <test_tdq_test_result.JunitSidecarParityTest testMethod=test_xunit1_file_metadata_must_agree_with_exact_case_identity>
+
+    def test_xunit1_file_metadata_must_agree_with_exact_case_identity(self):
+        xml = JunitResultTest.PASS_CASE.replace('<testcase ', '<testcase file="C:/repo/tests/test_sample.py" ')
+        self.assertEqual(self.parse(junit(xml))["status"], "PASS")
+        result = self.parse(junit(xml.replace('tests/test_sample.py', 'tests/test_other.py')))
+>       self.assertEqual(result["status"], "INCOMPLETE", result)
+E       AssertionError: 'PASS' != 'INCOMPLETE'
+E       - PASS
+E       + INCOMPLETE
+E        : {'status': 'PASS', 'backend': 'pytest', 'tests_run': 1, 'skipped': 0, 'failed_modules': [], 'failures': [], 'unmapped_failures': [], 'details_complete': True, 'exit_code': 0, 'reason': 'Executed tests completed successfully', 'manifest': {'schema_version': 1, 'backend': 'pytest', 'selectors': [], 'scope': 'selected', 'case_ids': ['test_sample.py::Sample::test_ok'], 'diagnostics': [], 'fingerprint': None, 'complete': True}, 'case_outcomes': [{'case_id': 'test_sample.py::Sample::test_ok', 'outcome': 'pass', 'reason': 'fixture reason', 'capability': None, 'phases': [{'phase': 'setup', 'outcome': 'pass', 'reason': 'fixture reason', 'duration_seconds': 0.0}, {'phase': 'call', 'outcome': 'pass', 'reason': 'fixture reason', 'duration_seconds': 0.0}, {'phase': 'teardown', 'outcome': 'pass', 'reason': 'fixture reason', 'duration_seconds': 0.0}], 'subtests': []}], 'coverage': {'expected': ['test_sample.py::Sample::test_ok'], 'observed': ['test_sample.py::Sample::test_ok'], 'missing': [], 'extra': [], 'duplicates': [], 'counts': {'pass': 1, 'fail': 0, 'error': 0, 'skip': 0, 'xfail': 0, 'xpass': 0}, 'complete': True, 'diagnostics': []}, 'action': 'executed', 'source_receipt_id': None, 'timings': {'verify_seconds': 0.0, 'wait_seconds': 0.0, 'execute_seconds': 0.0}}
+
+tests\test_tdq_test_result.py:519: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tdq_test_result.py::JunitSidecarParityTest::test_xunit1_file_metadata_must_agree_with_exact_case_identity
+1 failed in 0.13s

@@ -9,8 +9,8 @@ user-invocable: false
   0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-85 ·
   2. Phase table=86-91 · 3. State=92-104 · 4. Recording approval=105-114 ·
   5. Document tree=115-129 · 6. Working log=130-138 · 7. Git=139-152 · 8. Research=153-162 ·
-  9. Sub-agents=163-168 · 10. One-batch rule (tier 2 — runtime) and context cost=169-182 ·
-  11. Quality=183
+  9. Sub-agents=163-168 · 10. One-batch rule (tier 2 — runtime) and context cost=169-183 ·
+  11. Quality=184
 -->
 
 Rules shared by every phase. Other skills link here instead of copying them.
@@ -168,13 +168,14 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 
 ## 10. One-batch rule (tier 2 — runtime) and context cost
 
-One tool call is one round trip ≈ 3.3 s. Total time scales with the NUMBER OF STEPS; context size only nudges it.
-That is why this rule belongs to the **runtime** tier, not to context cost.
-
 - **When it applies:** you are about to issue two or more tool calls and none of them needs another's result.
-- **What to do:** issue them all in ONE batch; join independent Bash commands with `&&`; do not re-read a file whose
-  content is still in context.
+- **What to do:** run independent read-only calls concurrently in ONE batch; await and inspect every result.
+- `&&` is sequential and short-circuits. Do not re-read unchanged content still complete in context.
+- Keep mutations, approvals, dependent reads, locks and red-to-green steps sequential; isolate benchmarks.
 - **Self-check:** "Does the later call need the earlier call's result?" — No → batch. Yes → split.
+
+Opt-in test/readiness/transcript reuse: [runtime speed](../tdq-build/references/runtime-speed.md).
+Defaults remain one worker and caches off; measure before recommending an option.
 
 Cases where batching is banned, the (soft) re-read rule with RULE-vs-FORGOT, the MCP output ceiling, reading just
 enough, handing heavy work to a subagent: [references/context-budget.md](references/context-budget.md); the

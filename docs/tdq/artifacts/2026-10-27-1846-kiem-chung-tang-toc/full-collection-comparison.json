@@ -1,0 +1,17 @@
+{
+    "kind":  "collection-only-not-outcome",
+    "baseline_cases":  3306,
+    "current_cases":  3579,
+    "added_cases":  273,
+    "missing":  [
+
+                ],
+    "baseline":  {
+                     "sha256":  "ba31b3b2df65709a2096d0430b95481d886a24509f57abe822e1ef5778eacd00",
+                     "path":  "docs/tdq/artifacts/2026-10-27-1246-do-dung-bao-toan-loi/review-collection.json"
+                 },
+    "collection":  {
+                       "sha256":  "653dc97fefb67384a2ff76b6534a681a9bd2461732614b1868cc98da8087f219",
+                       "path":  "docs/tdq/cache/test-runs/c030d75ca44ab99e/c5e00196c76c4b079b9df51ffd588958/collection.json"
+                   }
+}

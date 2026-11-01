@@ -5,11 +5,11 @@
   "evidence_kind": "working-tree",
   "revision": null,
   "document_path": "docs/tdq/models/master.model.json",
-  "document_digest": "fa4e82c1fa3ca73bd1c85f1b293ab81d303fccc71c44d03f37426d4059f66a3b",
+  "document_digest": "784f86c7b19946f4d955bb9a59667360054bf81920f734c399696b80fac30178",
   "candidate_path": "docs/tdq/models/master.model.json",
-  "candidate_digest": "1082e66c77ce882c46eabbee9671cd061f5992bac09c5ebc587b33972cd5f3b3",
+  "candidate_digest": "4df075ab1ba3f92013cc450bc0b27032d4b71cf47e8c59bf86a593c7dc0607b5",
   "artifact_path": "docs/architecture/index.html",
-  "artifact_digest": "1976d7ac469f89e95e94bef70f48c9193eb2819d637c62ea962b74e1747a0ae8",
+  "artifact_digest": "1a037dfe80c92987bfa74daf664792b0f487ab2fa2fcc76be7bc3e9de123e42e",
   "source_paths": [
     "scripts",
     "hooks",
@@ -23,7 +23,7 @@
     "agents/tdq-refactor-cleaner.md": "f33170f84840f0fdeb700fb3a1837dfb9e6ccc60ab8b3a3e38f68421b95ae8ca",
     "agents/tdq-reviewer.md": "5ddf8f08c6db18916c2027ad349e250fe641c3c896ae09c0e1718f1d5f7f97ec",
     "agents/tdq-security-reviewer.md": "2c9641d2bdfde0875d54d8896330d56ae2b89beab0cd5f68ec73e6bf93f98897",
-    "hooks/hooks.json": "367a843a4b85a9fd716cccae71e6b02aa7ac11fbc943338237e1368ffcfd8e88",
+    "hooks/hooks.json": "b29e3f3f45892f3ddb56274d5c722e241cfb2756a83948df0254007cfe883dee",
     "hooks/scripts/_common.py": "ed1acb347fa77d32d2e1ba0c8acce68577d1892f376635c816940276fbaa2159",
     "hooks/scripts/agy_pretooluse_gate.py": "626124a223e37c6a921f14aa71405d80acbccdf090a77401c9fb89959b5fab29",
     "hooks/scripts/agy_stop_gate.py": "45cc49db2fbc4d74fabea0bbc647bd78553ae5aa24581e8c18b4e7736ab0a4a8",
@@ -32,13 +32,13 @@
     "hooks/scripts/codex_edit_gate.py": "6c60f42b3893e1722d7f0c835239f795e96c4a8753b3e4ec5d3b28e478cac8c1",
     "hooks/scripts/doc_file_gate.py": "76b698ae4a51722754206c3d61fef807400e894ca405fef03b04699e147d29e0",
     "hooks/scripts/edit_gate.py": "853a82080685bdb81282e74e850f7b8d7517ef3bdb341dae154f0aafc04dbbeb",
-    "hooks/scripts/lsp_gate.py": "2465c93789f6452d51fb52c6adc1aa4482ffdef2fa69731c9cb6b56652ecd905",
+    "hooks/scripts/lsp_gate.py": "c018e79997462a43822da880a54cb7a19fc0feace0c8bda21e93844cd721869a",
     "hooks/scripts/luat_gon.py": "b12489a92c57dc21b4dac1073834d8f00cdebfaf12c9900d36b03c84dfe33569",
     "hooks/scripts/prompt_context.py": "fa6d9856a6086e3b6119b200cc6fbf315fa9c81ea9b23405e4ba7ce0e66b25b8",
     "hooks/scripts/read_gate.py": "4ca24a34d3c0c51f53992773dcaec8f95f9e30511c4d27ceb877aaf533915784",
     "hooks/scripts/search_gate.py": "7d13107f85ae0beefb483951357289302843e3a3a9324c28395b7da5231b6957",
-    "hooks/scripts/search_observe.py": "f2884c1477c392d25af131540565318d4cd4e327a4f1dbefa12d259f6985cc19",
-    "hooks/scripts/session_start.py": "c708215acc58437f18072958910db686c99c4ae45637f17c6d4c3c5e30be6858",
+    "hooks/scripts/search_observe.py": "a8db7f0fbbc57afc756e29c04f2382aa2979a3281215b041e7027e603e2af0e9",
+    "hooks/scripts/session_start.py": "b7f137c3420668904efa429887a06003353e259b58b8130597cd8acfaf3f6edd",
     "hooks/scripts/stop_batch_checker.py": "c22d7a2c00953df1a7e5196d7104c51f159739175db5af30f34801b3f24fce23",
     "hooks/scripts/stop_gate.py": "017cd29a40d71509617894eb89a6761dde3c95bbfaa17e222977b0ff4d9cd8dd",
     "hooks/scripts/strategic_compact_gate.py": "5e8c27a7e879fbf7a6ca96bea82913581a0d2d648d1b15c361efa70cee96aa07",
@@ -65,14 +65,14 @@
     "scripts/plugin_tiers.py": "618f34eaf7cc759ef3e566ae90bdfc6424796d2fdad950758dd076b9f756b841",
     "scripts/samples/transcript-step-audit.jsonl": "0c027ee9ed37512db10b14428e07d7ec96b499c15ccd82dfa953d0b196af0bd6",
     "scripts/scan_block_symbols.py": "b676c10d91c8ce0102e845cb5d7964dc9a00b8e1eba1ed9c7555021f98482874",
-    "scripts/search_replay.py": "15a1489b0a016702a14ddf66aa123f8ebe9fad35380921ece73817ce22d5f4c0",
-    "scripts/search_rules.py": "a4872676f5eda3b28cb6b1a34d2fded92e614952de08495c7ee811012817c2ed",
+    "scripts/search_replay.py": "62a43b58f9ec14b8fab36bdd76bbf123f2b91c60eaa4bc9b8860aaf56e1ccf07",
+    "scripts/search_rules.py": "c9d15eb6802d4458c6d9bf4afe96240ec918410add835a276d297e82db0d56d4",
     "scripts/setup_status.py": "992b1b82b77d2cbeb9a0e04b4dc8dc9d592f4d8f4b73751433e622223f672d25",
     "scripts/setup_status_render.py": "92ed6e0ee3fbc0ff9636dfbc9bea0254074a67d1f958d060c78ad34a9a9a76b4",
     "scripts/skill_inventory.py": "36787cd79015a4c7bb3d09a4e526b71fcd36021e16c25c5f0489ee7515367d04",
     "scripts/skill_router.py": "83ef04ffd76117e5eafc127bd8b7fc6c84a7bcd8b93165dbe90056d05e0a740c",
     "scripts/skill_tokens.py": "1126f553519eb8eda701e48a0292890dbf98a5bb05ab40d25bcd7f3e690306f7",
-    "scripts/step_audit.py": "ed6b57138fc61b9a5970304b7acbee6516e2790f16697d5df1bed25f90a42e16",
+    "scripts/step_audit.py": "e9a5fce387437823c3736fcdc6be2c9e059ab71c03a8a4b95f0aae9d2f0d81c6",
     "scripts/tdq_archify.py": "70fef5e28396b221bba1ff1b3ffe3f7e0eb0278a6f5bc657889137dd96ee63fe",
     "scripts/tdq_bench.py": "759d10bb353cf68b1a603d2e74c18b0ead5e8d2d7bcc76831a549451086755b4",
     "scripts/tdq_checkportable.py": "517829b6b5ab6e60885c6479edd03a4c0dfd3bb1a1d9079b61d17700e323331a",
@@ -85,18 +85,26 @@
     "scripts/tdq_graphify.py": "1a28616755a8a6f1698f63fadd6d510ab73b7a5634b74356194b391ba0c74ac7",
     "scripts/tdq_harvest.py": "fc4f710b5360d036221930b02e34cabc2679ef8fd956090995bc2c9c1dfa59bb",
     "scripts/tdq_knowledge.py": "3ec06513f22f11f2bf3ccca576e06fd6f5204d2a84860632cebbb5de91c53ad2",
-    "scripts/tdq_lsp.py": "e22118341f0d9027a86bd64a0739625378644ae060bb8a0d925d619158ab7e75",
+    "scripts/tdq_lsp.py": "65f305a2663bc8bc1a72442c81906bf002ac5a93499275d5fd48ccf0a334e506",
     "scripts/tdq_no.py": "af5981ce57bca5e3e51b70c939eb5f0511289063b671ab47cd4599db563b7197",
-    "scripts/tdq_setup.py": "75323e1e3c93beb2fba254f84e673b8bbfca11e9f55dbbdecfad0e509c5c6a78",
-    "scripts/tdq_state.py": "94a90f5e99549089fd61b7db0216f10cc3a0371733fa5d14b8fff63002db4397",
+    "scripts/tdq_readiness.py": "f6c956ae3a48b3f84d54d08b4423f4f5f48ca44aeda1dd213f6007a3df0a7ab1",
+    "scripts/tdq_runtime_bench.py": "e9e253c0910d24e81ea692173eb5f6946d89c90edc73bccc9d911e594260a5f7",
+    "scripts/tdq_setup.py": "a067e128d816c7509fa4df8c816e028c7d6c2788ad1c89bf4810370a0fe7b0f7",
+    "scripts/tdq_state.py": "2dcafe4e23b3c821cb10e037c25483d92a5e2d3e608ade8f2b04dd3b85252ff9",
     "scripts/tdq_team.py": "7f24a5bae1b8112016145a2757ea304a04b4269ed6047f5271a03bdaff1ada1d",
     "scripts/tdq_ten_lenh.py": "3bfb2a8d1713c97670172f85af2fea107746655e4e325687fdcf0c660f7cb0c4",
-    "scripts/tdq_test.py": "f243276c5c4ade6d58e02596d5824bd102a21290a33edfb80ecbe77cb7c51fcc",
-    "scripts/tdq_timing.py": "1f53f8bef0ca1df41c19be48c1d767a6aea9d74f252f0a78734420a5e31231be",
+    "scripts/tdq_test.py": "83006abf653c6bc8dca2e32edf97927638f7999c13aefba901c0b3bf4742fb73",
+    "scripts/tdq_test_manifest.py": "691275336a0cac2d8a4517dd23c279a5de27e8ab99fd48fce8ffd37b6ba6f5e9",
+    "scripts/tdq_test_process.py": "c4024dd79466c6d682d71c36812970e343cc2f1c970c4666cef791ba5abce06e",
+    "scripts/tdq_test_receipt.py": "fcff089ccd1c86462cdd73c153d8c6066a026da56cf91b7e545f81e4f79805ea",
+    "scripts/tdq_test_result.py": "1a25951e675460e05c48de8f4c4f95f3c1616d31c384cdf10af2f63dc3b8a0d5",
+    "scripts/tdq_timing.py": "eb05d818746b3efd34be6968735431502246e3789008102b260abaa98056a3e5",
+    "scripts/tdq_transcript.py": "9501eba19719e8f78087822a271a901f44fc22ec4b794dbb6062d08b997856da",
+    "scripts/tdq_transcript_cache.py": "9aa724a7fb8f1c8c5daff3ee24b0718988fcc3233a92baaac364434577c110a7",
     "scripts/tdq_vision_diff.py": "a2027cdedf89554478b3c3f483fd031a8465b065fac034375c47db404ad94f97",
     "scripts/tdq_vungfile.py": "0b8e42f10f24104acb2640e549092456ea5bf1c54094ba0751b0ef6cb6fc3812",
     "scripts/tdq_worktree_registry.py": "d0dff6740147aa6f40bcacf614f81b196645b3e6e4ae5fdda8d91c6f8d73d1be",
-    "scripts/token_audit.py": "bf596af6beadd61a8bb00959860fe3e3f491615c02965649ded16db53af80cfd",
+    "scripts/token_audit.py": "fabfbf52c5a83be8f49a0113dbcec4103f3e7ac67cfc35f768fd00222e531a8b",
     "scripts/token_budget.py": "513fae931e4dc1cd9d3a0465791dbf447587183434ad153cac76e7f66d4787b3",
     "scripts/utf8_io.py": "877b1d17abec12356c0a63d71b9cd1be27e6a8bf5752f1683d0518976779f513",
     "skills/tdq-browser-research/SKILL.md": "5a0f0e3b89f5958eb79b815ac22b658e6a8bc121bd49b4950bfc3087b5819881",
@@ -105,7 +113,7 @@
     "skills/tdq-build/references/archify-lifecycle.md": "6e6082205b8b965df7cdcfab29969dc4dcf07bc357934ff0ee5e8d608c06825b",
     "skills/tdq-build/references/codex-mode.md": "e286d113878265cbf251292bf29ef50b592fbd639fa65aacd7b78d6f00ef6049",
     "skills/tdq-build/references/qc.md": "b2168debe2e03db000b8f43fbce0c05fcab68f9ee154e4805c2fb21e1dd6400c",
-    "skills/tdq-build/references/report-template.md": "70eb659795a36b937958e84fced07f18a5a6e6e01f2285f049ea2cc8698eebc1",
+    "skills/tdq-build/references/report-template.md": "7cb00d16576bfba3bb9ea4d8e0cd76d6b3f8d091fc8e2b6b82a77037a7ef7a3b",
     "skills/tdq-build/references/rules/chung.md": "5b5c725b67e6451d6f532d87256ca86cf13a821db2ccb2b18d88d4af03fb3d76",
     "skills/tdq-build/references/rules/cookbooks/python-cookbook.md": "f82de74286799efd5fbe5ab1dff0155f45879611e26e3dd64c6b9e1c87a44b69",
     "skills/tdq-build/references/rules/cookbooks/typescript-js-cookbook.md": "b6b715df50127f19f6577586dd3d8fa69ac8535cd191a7e8ff80f924e425e3c0",
@@ -118,16 +126,17 @@
     "skills/tdq-build/references/rules/rust.md": "5e614b57156fb67de2ce888b175900592479139e0d7824761ce4e0f7133741a5",
     "skills/tdq-build/references/rules/them-ngon-ngu.md": "bc5e4c73aa17ff54e62bc6338ce73c17eaceb521a3ba674946a1936cf0b0b0dd",
     "skills/tdq-build/references/rules/typescript-js.md": "e128fe1b6deeb027f5113fa8ddbeaa49f53e9c19be71efb392297bab61b6f26e",
+    "skills/tdq-build/references/runtime-speed.md": "390e55f8b67aa818a5866e19f28a6b0ebfdbf0e06505fa2c34d704d5458528b0",
     "skills/tdq-build/references/team-mode-tra-cuu.md": "2350b9380bced576c6e1693b1c6c1b8e0f81ac5cd72e0701edda159efbcd9f15",
     "skills/tdq-build/references/team-mode.md": "7767efeab7b6fe9269c552c75ec343c1a9fbd18955a637d09c6d572ff9fdd448",
     "skills/tdq-build/references/vision-test-loop.md": "cbeb41a32a2925e8ca9f52adec4a1df7b0589b2e0df68e6678fe1f4c4d00389f",
     "skills/tdq-check-status/SKILL.md": "b9477bb7248c6476b022b01e08bdcdaf567113b1a16ce71de658f81b890a3fbf",
     "skills/tdq-check-status/references/bang-lech.md": "8358c252fe43d22b1bd5f7717ec221ebf4b7420a9f3569849b766f5b9cecf4b0",
     "skills/tdq-check-status/references/report-template.md": "5c9e62227a65a7508c34e2bcdc4728b0c3068b507d75f699bf9d0e64d5e896eb",
-    "skills/tdq-conventions/SKILL.md": "b74485ea272af8fe477bf3d6459c6fcfcf9743d4fee292b8cb75d388848e3893",
+    "skills/tdq-conventions/SKILL.md": "c05b7cd8e860265e51599d6bd3eb0ff10c3b9939c526d30eb12e70b788b6c4d4",
     "skills/tdq-conventions/references/approval.md": "0c8949e4649ac88123f1be274de8656d278a148a0cea57b4f0cbe50d79de3952",
     "skills/tdq-conventions/references/clean-code.md": "610466a5ede13a51761e70d6c082c4df55a1864acef4d94dc5f1337dc848eef1",
-    "skills/tdq-conventions/references/context-budget.md": "38df9975b8625929332e495374d1b71270f4fb976bb82db14114a2cf4cd3b267",
+    "skills/tdq-conventions/references/context-budget.md": "80eeb5680eed5710013212e774571fcb041c493509b91c378bbc174c10dd3969",
     "skills/tdq-conventions/references/handoff-schema.json": "7e38fd5de35155161606ecd026e022bf9e963fb29acb66b157ff905cd03f73b6",
     "skills/tdq-conventions/references/knowledge-template.md": "bc0df3b15da0c6bf03ef76ac42768c8c40da640a7004bdcd9ea25946bb872a25",
     "skills/tdq-conventions/references/measure-scenario.md": "4b9d187c454d46d446df9c76570464d975de1b958e62aeef1afcfcdbf1187204",
@@ -140,7 +149,7 @@
     "skills/tdq-conventions/references/user-facing-block-vi-du.md": "e5b097f3301b9bd9a05727965e118cdeb53d16dce3fd0586a343a84d0a9ad214",
     "skills/tdq-conventions/references/user-facing-block.md": "d0ba0d64ed92dbd1ef076761a92f8bb1e09c37a334ae3eb6b20550e3f5fcf699",
     "skills/tdq-conventions/references/worklog-images.md": "dc462cb48316d8cbf33e31f30066d718d50734c9779b0a18350ec363297a902a",
-    "skills/tdq-intake/SKILL.md": "cc0b9f9386127352434b681adda79c75c62509e029efbb8f21b7a0726aa71998",
+    "skills/tdq-intake/SKILL.md": "6077b1d7bc14ec927b0b8573685d23bd8b136cf2248244be18265c11af69e61e",
     "skills/tdq-intake/references/analyze-full.md": "59c62d428486cdc2095f07b599a3a70b9418868ba7d49e6b7c3f05ec54f09d09",
     "skills/tdq-intake/references/archify-quick.md": "5b2b3ad2fc97eb01cd1196e447395276c44a702037d851e2bb159f8207e466d4",
     "skills/tdq-intake/references/interview.md": "290c490f3d02c65f61fedb461d321b89cbfbde943e8cba099a21b0732d182f40",
@@ -158,17 +167,17 @@
     "skills/tdq-plan/references/plan-template-co-che.md": "1684ba4e69507b2c0aa0e581861345420d739718479095842c4d73824fff4e7c",
     "skills/tdq-plan/references/plan-template-huong-dan.md": "154f58e6645c1a558ece38d2f05ca18a3f8b9aa9c0c54bb48cb64056b4ee987e",
     "skills/tdq-plan/references/plan-template.md": "e61002d95ea38a9a9c822ff6a96c0aca81bac058b30f8f279b1af2b02dec4e4d",
-    "skills/tdq-setup/SKILL.md": "ef5141ac566976b778adbefdbb2c92f0a13bb8b6872b8038d044f0f7226a135c",
+    "skills/tdq-setup/SKILL.md": "9afb2d24c4bf1e93b4d421a8ec35cddd17673df6ec30ff1ff36768aa8512be75",
     "skills/tdq-setup/references/chrome-devtools-mcp-guide.md": "78f0041f646b254927afe63f992721f72cfc8a7484c7010cab395df23b6f0629",
     "skills/tdq-setup/references/languages.md": "b8c39cd8d8de1905d0bbb64f3ed1ee18e214d27318cc8e66ca271e0cfd3811b6",
     "skills/tdq-setup/references/mcp-first-guide.md": "712d01a9fab8561e56dbb4f6e493c70ee6cb596b194044ee17978735c5ba0c2c",
-    "skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md": "cd455723d35354436a2e14843afe223250449c06224dd6ae8c9419fe8ce3a0a3",
-    "skills/tdq-setup/references/uu-tien-tim-kiem.md": "a9d807d3f407c14caf2f276d87dd4855b29cada290e8cf40e94872c018f08bfe",
+    "skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md": "9e21f655974409bf220e9873fdd26f707465d44eb2ba43e7d21ea013acc1c78e",
+    "skills/tdq-setup/references/uu-tien-tim-kiem.md": "61ec405bf6cb75e3aae4a07014014b2ea3db6de88359e97532bfb1c4587e2051",
     "skills/tdq-spec/SKILL.md": "cd510998d28eb707dde899fead86416436f1801b52656ac113b5555c828d369b",
     "skills/tdq-spec/references/archify-ba.md": "680b0f2f392ed70827e66dcd1d161bf15019682dec236e64755b9468d2570da5",
     "skills/tdq-spec/references/spec-template-huong-dan.md": "bac8d2b88253c71540233947fa90c944f76bbafa7bdd4c0c2a0fad5f4575142f",
     "skills/tdq-spec/references/spec-template.md": "1134694956cd2161008dce7b7101cbdda3cd32b992b2d0c1e6e04781001f72c6",
-    "skills/tdq-status/SKILL.md": "047547aa746f04b7468b02bacc0b84bf0f06ce25072796ecdc88bc69eff1d250"
+    "skills/tdq-status/SKILL.md": "1e4e1a93af5b2a1df7e52698f72387c280a4ca9c12822fb036ec9b634c589af2"
   },
   "coverage": {
     "modules": [
@@ -185,7 +194,7 @@
         "status": "selected"
       },
       {
-        "id": "cli-scripts-43",
+        "id": "cli-runtime-modules",
         "status": "selected"
       },
       {
@@ -194,6 +203,10 @@
       },
       {
         "id": "search-3tier-engine",
+        "status": "selected"
+      },
+      {
+        "id": "runtime-verification-and-caches",
         "status": "selected"
       }
     ],
@@ -205,26 +218,28 @@
     "ok": true,
     "status": "pass",
     "engine": "archify",
-    "views_count": 4,
+    "views_count": 5,
     "index": "index.html"
   },
   "child_files": {
-    "overview.html": "442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0",
-    "overview.candidate.json": "278380d2e1ffd42a6a615b32d149d6b6f26e3952d38aab41f05ab721a0a299bf",
+    "overview.html": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
+    "overview.candidate.json": "c3bc2ebd2e337efd130d6a49a287504a11fa87df457a39106a51bbdf6116e4a3",
     "pipeline-lifecycle.html": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
     "pipeline-lifecycle.candidate.json": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
     "search-and-archify.html": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
     "search-and-archify.candidate.json": "d002eb22caba2406d1659b77167231ae20f40ab2dcd350a91dbee02c4ceb0e0e",
     "hooks-and-gates.html": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
-    "hooks-and-gates.candidate.json": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e"
+    "hooks-and-gates.candidate.json": "d8ebfb033534a6a93de8fe6973281066d0a048c87105c66820f8d52358caa77e",
+    "runtime-verification.html": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a",
+    "runtime-verification.candidate.json": "24278842a4c68cfec74761449ac521c22259f8bc7f375e2ec67e070df15fb234"
   },
   "views": [
     {
       "id": "overview",
       "type": "architecture",
-      "summary": "Kiến trúc tổng thể 6 tầng của TDQ-Workflow (4 Host Adapters, 11 Skills, 6 Sub-Agents, 13 Hooks, 3-Tier Search & 43 CLI Scripts)",
+      "summary": "Kiến trúc tổng thể: Host Adapters, Skills, Sub-Agents, Lifecycle Hooks, Search và CLI Runtime",
       "file": "overview.html",
-      "hash": "442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0"
+      "hash": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988"
     },
     {
       "id": "pipeline-lifecycle",
@@ -246,6 +261,13 @@
       "summary": "Luồng thực thi 13 Lifecycle Hooks trên 3 làn (Host Events, PreToolUse Hard Gates, Observers & Stop Verify-by-Effect)",
       "file": "hooks-and-gates.html",
       "hash": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e"
+    },
+    {
+      "id": "runtime-verification",
+      "type": "architecture",
+      "summary": "Manifest từng case, process isolation, receipt reuse/join, readiness và transcript cache mặc định tắt; biểu diễn source working-tree, chưa phải chứng nhận QC.",
+      "file": "runtime-verification.html",
+      "hash": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a"
     }
   ],
   "view_receipts": {
@@ -258,52 +280,36 @@
       "quality": "showcase",
       "specification": {
         "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-        "sha256": "278380d2e1ffd42a6a615b32d149d6b6f26e3952d38aab41f05ab721a0a299bf",
-        "bytes": 5478
+        "sha256": "9927f3980f8ebc366f88da103551ca959e9ae67fe0c97edf53830878c8c2ce47",
+        "bytes": 6420
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\overview.html",
-        "sha256": "442a0196b1c7e105230e94ecb7cc7ed2a24d4cd78a0c01de8f7778a0f2ef0cf0",
-        "bytes": 826515
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.html",
+        "sha256": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
+        "bytes": 826463
       },
       "gates": {
         "validate": "pass",
         "deliver": "pass",
         "check": "pass",
-        "browser-check": "fail"
+        "browser-check": "pass"
       },
-      "failedStage": "browser-check",
-      "diagnostics": [
-        {
-          "code": "viewer/browser-check-runtime",
-          "severity": "error",
-          "message": "browser-check could not complete its Chrome inspection.",
-          "subject": {
-            "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\overview.html"
-          },
-          "evidence": {
-            "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=22868, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
-          },
-          "supportedFixes": [
-            "resolve the reported Chrome inspection error, then rerun browser-check"
-          ]
-        }
-      ],
+      "diagnostics": [],
       "diagnosticSummary": {
-        "total": 1,
-        "shown": 1,
+        "total": 0,
+        "shown": 0,
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\overview.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\overview.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\overview.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\overview.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 1291,
+      "durationMs": 3290,
       "browserCheck": {
         "requested": true,
-        "ran": false
+        "ran": true
       }
     },
     "pipeline-lifecycle": {
@@ -319,7 +325,7 @@
         "bytes": 4207
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\pipeline-lifecycle.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.html",
         "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
         "bytes": 824757
       },
@@ -327,40 +333,24 @@
         "validate": "pass",
         "deliver": "pass",
         "check": "pass",
-        "browser-check": "fail"
+        "browser-check": "pass"
       },
-      "failedStage": "browser-check",
-      "diagnostics": [
-        {
-          "code": "viewer/browser-check-runtime",
-          "severity": "error",
-          "message": "browser-check could not complete its Chrome inspection.",
-          "subject": {
-            "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\pipeline-lifecycle.html"
-          },
-          "evidence": {
-            "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=10076, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
-          },
-          "supportedFixes": [
-            "resolve the reported Chrome inspection error, then rerun browser-check"
-          ]
-        }
-      ],
+      "diagnostics": [],
       "diagnosticSummary": {
-        "total": 1,
-        "shown": 1,
+        "total": 0,
+        "shown": 0,
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\pipeline-lifecycle.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\pipeline-lifecycle.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\pipeline-lifecycle.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\pipeline-lifecycle.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 1282,
+      "durationMs": 3052,
       "browserCheck": {
         "requested": true,
-        "ran": false
+        "ran": true
       }
     },
     "search-and-archify": {
@@ -376,7 +366,7 @@
         "bytes": 4803
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\search-and-archify.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.html",
         "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
         "bytes": 824633
       },
@@ -384,40 +374,24 @@
         "validate": "pass",
         "deliver": "pass",
         "check": "pass",
-        "browser-check": "fail"
+        "browser-check": "pass"
       },
-      "failedStage": "browser-check",
-      "diagnostics": [
-        {
-          "code": "viewer/browser-check-runtime",
-          "severity": "error",
-          "message": "browser-check could not complete its Chrome inspection.",
-          "subject": {
-            "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\search-and-archify.html"
-          },
-          "evidence": {
-            "reason": "Chrome DevTools write pipe failed: stream closed\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=23264, exitCode=null, signalCode=null.\nChrome read pipe: readable=true, ended=false, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=true, completedWrites=1, writtenBytes=50, bufferedBytes=0."
-          },
-          "supportedFixes": [
-            "resolve the reported Chrome inspection error, then rerun browser-check"
-          ]
-        }
-      ],
+      "diagnostics": [],
       "diagnosticSummary": {
-        "total": 1,
-        "shown": 1,
+        "total": 0,
+        "shown": 0,
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\search-and-archify.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\search-and-archify.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\search-and-archify.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 1215,
+      "durationMs": 3254,
       "browserCheck": {
         "requested": true,
-        "ran": false
+        "ran": true
       }
     },
     "hooks-and-gates": {
@@ -433,7 +407,7 @@
         "bytes": 4908
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\hooks-and-gates.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.html",
         "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
         "bytes": 823010
       },
@@ -441,22 +415,72 @@
         "validate": "pass",
         "deliver": "pass",
         "check": "pass",
-        "browser-check": "fail"
+        "browser-check": "pass"
       },
-      "failedStage": "browser-check",
+      "diagnostics": [],
+      "diagnosticSummary": {
+        "total": 0,
+        "shown": 0,
+        "truncated": false
+      },
+      "evidence": {
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.browser-check.json"
+      },
+      "visualReview": "not-requested",
+      "durationMs": 3537,
+      "browserCheck": {
+        "requested": true,
+        "ran": true
+      }
+    },
+    "runtime-verification": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "finalize",
+      "status": "pass",
+      "type": "architecture",
+      "quality": "showcase",
+      "specification": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\runtime-verification.json",
+        "sha256": "6cdfbc0286fe2098905d2ca3fc35f267482d34a17e2148faed1971d93cd0e90e",
+        "bytes": 4891
+      },
+      "artifact": {
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.html",
+        "sha256": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a",
+        "bytes": 822816
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
       "diagnostics": [
         {
-          "code": "viewer/browser-check-runtime",
-          "severity": "error",
-          "message": "browser-check could not complete its Chrome inspection.",
+          "code": "i18n/locale-fallback",
+          "severity": "warning",
+          "message": "meta.locale \"vi\" has no bundled catalog and no usable meta.translations; the Viewer chrome and <html lang> fall back to English.",
           "subject": {
-            "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\hooks-and-gates.html"
+            "diagramType": "architecture",
+            "path": "/meta/locale"
           },
           "evidence": {
-            "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=22744, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+            "locale": "vi",
+            "bundledLocales": [
+              "en",
+              "zh-CN",
+              "zh-TW",
+              "es",
+              "ko",
+              "ar"
+            ]
           },
           "supportedFixes": [
-            "resolve the reported Chrome inspection error, then rerun browser-check"
+            "Supply meta.translations for this locale.",
+            "Use a bundled locale: en, zh-CN, zh-TW, es, ko, ar."
           ]
         }
       ],
@@ -466,15 +490,44 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\hooks-and-gates.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\hooks-and-gates.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.a10d5dbcec004fef96a8258ac6109ab6\\hooks-and-gates.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\runtime-verification.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 1250,
+      "durationMs": 3251,
       "browserCheck": {
         "requested": true,
-        "ran": false
+        "ran": true
+      },
+      "visualReviewRecommendation": {
+        "action": "inspect-route-readability",
+        "signals": {
+          "routesOverSuggestedBends": 1
+        },
+        "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+        "affectedRoutes": {
+          "crossings": [],
+          "detours": [
+            {
+              "relationship": {
+                "id": "c7",
+                "from": "transcript",
+                "to": "cache",
+                "label": "hash / phân tích / tính lại",
+                "collectionIndex": 6,
+                "artifactIndex": 7
+              },
+              "bends": 3,
+              "stretch": 1.181
+            }
+          ],
+          "truncated": false
+        },
+        "hints": [
+          "transcript → cache needs 3 bends: move node transcript or cache so they share a row or column with matching centers, or sit diagonally with a clear corner."
+        ],
+        "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
       }
     }
   }

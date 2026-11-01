@@ -6,14 +6,20 @@ Khoá hành vi của request 2026-08-15-1207-gio-phut-dem-thoi-gian:
   - `state.json` giữ mốc mở request và lịch sử phase;
   - `tdq_timing.py` dựng bảng thời gian hai cột và đóng sổ vào timing.jsonl.
 """
+import contextlib
+import datetime
+import io
 import json
 import os
 import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 import helper  # noqa: F401  — nạp sys.path cho scripts/
 from helper import read_state, run_state_cli
 import tdq_state
+import tdq_timing
 
 
 def duyet_spec(cwd):
@@ -191,8 +197,8 @@ class BangThoiGian(TempRepo):
         self.assertIn("24 min", dong[0])       # 20 phút + 4 phút
         self.assertIn("2", dong[0])            # vào 2 lần
 
-    def test_thoi_gian_model_lay_tu_transcript(self):
-        """Cột model chỉ cộng khoảng cách giữa các bước model NẰM TRONG cửa sổ phase."""
+    def test_assistant_gap_cannot_be_presented_as_model(self):
+        """Assistant timestamps alone do not establish model compute time."""
         helper.write_state(self.cwd, active_request="2026-08-15-0900-viec", lane="full",
                            phase="spec", started_at="2026-08-15T09:00:00+07:00",
                            phase_history=[moc("spec", 9, 0)])
@@ -202,11 +208,10 @@ class BangThoiGian(TempRepo):
         so_lieu = json.loads(out)
         spec = [p for p in so_lieu["phases"] if p["phase"] == "spec"][0]
         self.assertEqual(spec["treo_tuong_giay"], 3600)
-        self.assertEqual(spec["model_giay"], 180)   # 1 phút + 2 phút, không tính giờ chờ
+        self.assertIsNone(spec["model_giay"])
 
-    def test_tong_model_do_tren_ca_cua_so_request(self):
-        """Hai tổng phải cùng một cửa sổ: started_at → lúc chốt, kể cả khi mốc phase
-        bắt đầu muộn hơn (state cũ được vá started_at về sau)."""
+    def test_request_wall_window_does_not_infer_model(self):
+        """The whole request retains wall time even with incomplete phase coverage."""
         helper.write_state(self.cwd, active_request="2026-08-15-0900-viec", lane="full",
                            phase="qc", started_at="2026-08-15T09:00:00+07:00",
                            phase_history=[moc("qc", 9, 30)])
@@ -216,20 +221,20 @@ class BangThoiGian(TempRepo):
         self.assertEqual(rc, 0)
         so_lieu = json.loads(out)
         qc = [p for p in so_lieu["phases"] if p["phase"] == "qc"][0]
-        self.assertEqual(qc["model_giay"], 60)
+        self.assertIsNone(qc["model_giay"])
         self.assertEqual(so_lieu["treo_tuong_giay"], 2400)      # 09:00 → 09:40
-        self.assertEqual(so_lieu["model_giay"], 180)            # 120 + 60, không chỉ 60
+        self.assertIsNone(so_lieu["model_giay"])
 
-    def test_nguong_cho_dai_khong_tinh_vao_model(self):
+    def test_long_gap_does_not_identify_user_absence(self):
         helper.write_state(self.cwd, active_request="2026-08-15-0900-viec", lane="full",
                            phase="spec", started_at="2026-08-15T09:00:00+07:00",
                            phase_history=[moc("spec", 9, 0)])
-        # 9:00 → 9:02 là model chạy; 9:02 → 9:30 là user đi vắng (> MAX_GAP_SECONDS)
+        # Neither short nor long gaps prove model compute time or user absence.
         self.viet_transcript(su_kien(9, 0), su_kien(9, 2), su_kien(9, 30))
         rc, out, _err = self.chay("show", "--now", "2026-08-15T10:00:00+07:00", "--json")
         self.assertEqual(rc, 0)
         spec = [p for p in json.loads(out)["phases"] if p["phase"] == "spec"][0]
-        self.assertEqual(spec["model_giay"], 120)
+        self.assertIsNone(spec["model_giay"])
 
     def test_khong_transcript_thi_gach_ngang_va_van_thoat_0(self):
         helper.write_state(self.cwd, active_request="2026-08-15-0900-viec", lane="full",
@@ -375,6 +380,342 @@ class LogService(TempRepo):
         self.assertEqual(err, "")
         _rc, _out, err_bat = helper.run_timing_cli(self.cwd, "show", env={"TDQ_LOG": "1"})
         self.assertTrue(err_bat, "log mặc định phải BẬT")
+
+
+BASE = datetime.datetime(2026, 10, 27, tzinfo=datetime.timezone.utc)
+
+
+def at_second(seconds):
+    return (BASE + datetime.timedelta(seconds=seconds)).isoformat()
+
+
+class TimingV2(TempRepo):
+    def setUp(self):
+        super().setUp()
+        self.logs = Path(self.cwd) / "logs"
+        self.logs.mkdir()
+        self.state = {"active_request": "2026-10-27-0000-fixture", "lane": "full",
+                      "phase": "implement", "started_at": at_second(0),
+                      "phase_history": [{"phase": "analyze", "at": at_second(0)},
+                                        {"phase": "implement", "at": at_second(10)}]}
+        self.quiet = patch.dict(os.environ, {"TDQ_LOG": "0"})
+        self.quiet.start()
+        self.addCleanup(self.quiet.stop)
+
+    def event(self, event_type, seconds, **fields):
+        return {"type": event_type, "timestamp": at_second(seconds),
+                "cwd": self.cwd, "sessionId": "session", **fields}
+
+    def api(self, start, end, identity="request", final=True):
+        return [self.event("api-request", start, id=identity),
+                self.event("assistant", end, requestRef=identity, uuid=identity + "-reply",
+                           message={"content": [], "stop_reason": "end_turn" if final else None})]
+
+    def tool(self, start, end, identity="tool", output="synthetic"):
+        return [self.event("assistant", start, message={"content": [
+            {"type": "tool_use", "id": identity, "name": "Read", "input": {}}]}),
+            self.event("user", end, message={"content": [
+                {"type": "tool_result", "tool_use_id": identity, "content": output}]})]
+
+    def write(self, records, name="session.jsonl"):
+        path = self.logs / name
+        path.write_text("".join(json.dumps(record) + "\n" for record in records), encoding="utf-8")
+        return path
+
+    def measure(self, records, end=20, **kwargs):
+        self.write(records)
+        return tdq_timing.tong_hop(self.state, BASE + datetime.timedelta(seconds=end),
+                                  self.logs, project_dir=self.cwd, **kwargs)
+
+    def number(self, data, metric):
+        return data["metrics"][metric]["seconds"]
+
+    def test_known_overlap_and_phase_clipping(self):
+        data = self.measure(self.api(0, 10) + self.tool(5, 15))
+        self.assertEqual(data["schema_version"], 2)
+        self.assertEqual(data["treo_tuong_giay"], 20)
+        expected = {"api_request_seconds": 10, "tool_call_seconds": 10,
+                    "background_job_seconds": None, "observed_union_seconds": 15,
+                    "unattributed_seconds": 5}
+        self.assertEqual({key: value["seconds"] for key, value in data["metrics"].items()}, expected)
+        self.assertIsNone(data["model_giay"])
+        analyze, implement = data["phases"]
+        self.assertEqual(self.number(analyze, "tool_call_seconds"), 5)
+        self.assertEqual(self.number(implement, "tool_call_seconds"), 5)
+        self.assertEqual(self.number(analyze, "observed_union_seconds"), 10)
+        self.assertEqual(self.number(implement, "observed_union_seconds"), 5)
+        self.assertEqual(self.number(implement, "api_request_seconds"), 0)
+        self.assertIsNone(analyze["model_giay"])
+        self.assertEqual(data["metrics"]["observed_union_seconds"]["quality"], "complete")
+
+    def test_same_kind_overlap_is_merged_before_cross_kind_union(self):
+        data = self.measure(self.api(0, 10, "one") + self.api(8, 12, "two") + self.tool(10, 20), end=30)
+        self.assertEqual(self.number(data, "api_request_seconds"), 12)
+        self.assertEqual(self.number(data, "tool_call_seconds"), 10)
+        self.assertEqual(self.number(data, "observed_union_seconds"), 20)
+        self.assertEqual(self.number(data, "unattributed_seconds"), 10)
+
+    def test_long_span_is_retained_without_300_second_threshold(self):
+        data = self.measure(self.api(0, 600), end=620)
+        self.assertEqual(self.number(data, "api_request_seconds"), 600)
+        self.assertEqual(self.number(data, "unattributed_seconds"), 20)
+        self.assertIsNone(data["model_giay"])
+
+    def test_spans_are_clipped_at_both_request_boundaries(self):
+        data = self.measure(self.api(-5, 25))
+        self.assertEqual(self.number(data, "api_request_seconds"), 20)
+        self.assertEqual([self.number(row, "api_request_seconds") for row in data["phases"]], [10, 10])
+
+    def test_half_open_window_excludes_boundary_only_intervals(self):
+        data = self.measure(self.api(-5, 0) + self.tool(20, 30))
+        self.assertEqual(self.number(data, "observed_union_seconds"), 0)
+        self.assertEqual(self.number(data, "unattributed_seconds"), 20)
+
+    def test_repeated_phase_accumulates_duration_and_entry_count(self):
+        self.state["phase_history"] = [{"phase": phase, "at": at_second(at)}
+                                       for phase, at in [("analyze", 0), ("implement", 5), ("analyze", 10)]]
+        data = self.measure(self.api(0, 20))
+        analyze = data["phases"][0]
+        self.assertEqual(analyze["so_lan"], 2)
+        self.assertEqual(analyze["treo_tuong_giay"], 15)
+        self.assertEqual(self.number(analyze, "api_request_seconds"), 15)
+        self.assertEqual(data["current_phase"], "analyze")
+        self.assertTrue(tdq_timing.dong_ho_ngan(data).startswith("⏱ analyze"))
+
+    def test_total_uses_request_window_even_before_first_phase(self):
+        self.state["phase_history"] = [{"phase": "qc", "at": at_second(10)}]
+        data = self.measure(self.api(1, 4) + self.tool(12, 15))
+        self.assertEqual(self.number(data, "observed_union_seconds"), 6)
+        self.assertEqual(self.number(data["phases"][0], "observed_union_seconds"), 3)
+
+    def test_phases_before_request_are_clipped(self):
+        self.state["started_at"] = at_second(5)
+        data = self.measure(self.api(0, 20))
+        self.assertEqual(data["treo_tuong_giay"], 15)
+        self.assertEqual([row["treo_tuong_giay"] for row in data["phases"]], [5, 10])
+        self.assertEqual(self.number(data, "observed_union_seconds"), 15)
+
+    def test_phase_ending_at_request_start_is_not_an_entry_inside_window(self):
+        self.state["started_at"] = at_second(10)
+        data = self.measure(self.api(0, 20))
+        self.assertEqual([row["phase"] for row in data["phases"]], ["implement"])
+        self.assertEqual(data["phases"][0]["so_lan"], 1)
+
+    def test_fractional_seconds_are_not_rounded_before_aggregation(self):
+        self.state["phase_history"] = [{"phase": "analyze", "at": at_second(0)},
+                                       {"phase": "implement", "at": at_second(0.4)}]
+        data = self.measure(self.api(0.1, 0.8), end=1)
+        self.assertAlmostEqual(self.number(data, "api_request_seconds"), 0.7)
+        self.assertAlmostEqual(self.number(data["phases"][0], "api_request_seconds"), 0.3)
+        self.assertAlmostEqual(self.number(data["phases"][1], "api_request_seconds"), 0.4)
+        self.assertAlmostEqual(self.number(data, "unattributed_seconds"), 0.3)
+
+    def test_many_repeated_phases_conserve_observed_time(self):
+        self.state["phase_history"] = [{"phase": ("analyze", "implement")[index % 2],
+                                        "at": at_second(index)} for index in range(200)]
+        data = self.measure(self.api(-1, 201), end=200)
+        self.assertEqual(sum(row["so_lan"] for row in data["phases"]), 200)
+        self.assertEqual(sum(self.number(row, "api_request_seconds") for row in data["phases"]), 200)
+
+    def test_incomplete_stream_preserves_confirmed_partial_time(self):
+        data = self.measure(self.api(0, 5, "complete") + self.api(6, 8, "pending", final=False))
+        self.assertEqual(self.number(data, "api_request_seconds"), 5)
+        self.assertEqual(data["metrics"]["api_request_seconds"]["quality"], "partial")
+        self.assertEqual(data["metrics"]["observed_union_seconds"]["quality"], "partial")
+        self.assertEqual(self.number(data, "unattributed_seconds"), 15)
+
+    def test_incomplete_stream_without_valid_spans_does_not_claim_zero(self):
+        data = self.measure(self.api(0, 5, final=False))
+        self.assertIsNone(self.number(data, "api_request_seconds"))
+        self.assertIsNone(self.number(data, "observed_union_seconds"))
+        self.assertIsNone(self.number(data, "unattributed_seconds"))
+        self.assertEqual(data["metrics"]["api_request_seconds"]["quality"], "partial")
+
+    def test_missing_sources_keep_wall_but_not_fake_zero(self):
+        data = self.measure([])
+        self.assertEqual(data["treo_tuong_giay"], 20)
+        self.assertEqual({value["quality"] for value in data["metrics"].values()}, {"unavailable"})
+        self.assertEqual({value["seconds"] for value in data["metrics"].values()}, {None})
+
+    def test_malformed_log_reduces_quality_without_losing_known_span(self):
+        path = self.write(self.tool(0, 5))
+        with path.open("a", encoding="utf-8") as stream:
+            stream.write("{broken\n")
+        data = tdq_timing.tong_hop(self.state, BASE + datetime.timedelta(seconds=20),
+                                  self.logs, project_dir=self.cwd)
+        self.assertEqual(self.number(data, "tool_call_seconds"), 5)
+        self.assertEqual(data["metrics"]["tool_call_seconds"]["quality"], "partial")
+
+    def test_background_tool_return_does_not_infer_job_duration(self):
+        data = self.measure(self.tool(0, 1, output="Script running with cell ID 12"))
+        self.assertEqual(self.number(data, "tool_call_seconds"), 1)
+        self.assertIsNone(self.number(data, "background_job_seconds"))
+        self.assertEqual(self.number(data, "unattributed_seconds"), 19)
+
+    def test_codex_task_wall_is_not_an_api_span(self):
+        records = [{"type": "session_meta", "payload": {"id": "codex", "cwd": self.cwd}},
+                   {"type": "event_msg", "timestamp": at_second(0), "payload": {"type": "task_started"}},
+                   {"type": "event_msg", "timestamp": at_second(15), "payload": {"type": "task_complete"}}]
+        data = self.measure(records)
+        self.assertIsNone(self.number(data, "api_request_seconds"))
+        self.assertEqual(self.number(data, "tool_call_seconds"), 0)
+        self.assertEqual(self.number(data, "observed_union_seconds"), 0)
+        self.assertIsNone(data["model_giay"])
+
+    def test_session_filter_controls_attribution(self):
+        foreign = [{**record, "sessionId": "other"} for record in self.tool(0, 20)]
+        self.write(foreign, "other.jsonl")
+        data = self.measure(self.tool(0, 5), session_ids=["session"])
+        self.assertEqual(self.number(data, "tool_call_seconds"), 5)
+        self.assertEqual(data["attribution"], "session")
+
+    def test_out_of_order_phase_marks_cannot_double_count(self):
+        self.state["phase_history"].append({"phase": "qc", "at": at_second(5)})
+        data = self.measure(self.api(0, 20))
+        self.assertIn("phase_out_of_order", data["diagnostics"])
+        self.assertEqual(sum(row["treo_tuong_giay"] for row in data["phases"]), 20)
+        self.assertEqual(sum(self.number(row, "api_request_seconds") for row in data["phases"]), 20)
+        self.assertEqual(data["phases"][0]["metrics"]["api_request_seconds"]["quality"], "partial")
+
+    def test_bad_phase_mark_types_are_diagnosed(self):
+        self.state["phase_history"].extend([None, {"phase": [], "at": at_second(12)},
+                                            {"phase": "qc", "at": "2026-10-27T00:00:13"}])
+        data = self.measure(self.tool(0, 20))
+        self.assertIn("invalid_phase_mark", data["diagnostics"])
+        self.assertEqual(len(data["phases"]), 2)
+
+    def test_duplicate_phase_mark_does_not_add_an_entry(self):
+        self.state["phase_history"].insert(0, dict(self.state["phase_history"][0]))
+        data = self.measure(self.api(0, 20))
+        self.assertEqual(data["phases"][0]["so_lan"], 1)
+        self.assertIn("duplicate_phase_mark", data["diagnostics"])
+
+    def test_simultaneous_phase_transitions_remain_disjoint(self):
+        self.state["phase_history"][1]["at"] = at_second(0)
+        data = self.measure(self.api(0, 20))
+        self.assertEqual([row["treo_tuong_giay"] for row in data["phases"]], [0, 20])
+        self.assertEqual([self.number(row, "api_request_seconds") for row in data["phases"]], [0, 20])
+
+    def test_missing_request_start_does_not_fall_back_to_phase(self):
+        self.state["started_at"] = None
+        data = self.measure(self.api(0, 20))
+        self.assertIsNone(data["treo_tuong_giay"])
+        self.assertIsNone(self.number(data, "observed_union_seconds"))
+        self.assertIn("invalid_request_window", data["diagnostics"])
+
+    def test_naive_end_or_end_before_start_is_unavailable(self):
+        self.write(self.api(0, 20))
+        for end in (BASE.replace(tzinfo=None), BASE - datetime.timedelta(seconds=1), None):
+            with self.subTest(end=end):
+                data = tdq_timing.tong_hop(self.state, end, self.logs, project_dir=self.cwd)
+                self.assertIsNone(data["treo_tuong_giay"])
+                self.assertIsNone(self.number(data, "unattributed_seconds"))
+
+    def test_invalid_history_is_reported_without_changing_request_measurement(self):
+        self.state["phase_history"] = "invalid"
+        data = self.measure(self.api(0, 20))
+        self.assertEqual(data["phases"], [])
+        self.assertIn("invalid_phase_history", data["diagnostics"])
+        self.assertEqual(self.number(data, "api_request_seconds"), 20)
+
+    def test_json_markdown_status_preserve_quality_and_meaning(self):
+        data = self.measure(self.api(0, 10) + self.tool(5, 15))
+        decoded = json.loads(json.dumps(data))
+        markdown, status = tdq_timing.bang_markdown(decoded), tdq_timing.dong_ho_ngan(decoded)
+        for label in ("API request", "Tool wait", "Background job", "Observed union", "Unattributed"):
+            self.assertIn(label, markdown)
+            self.assertIn(label, status)
+        self.assertIn("15s [complete]", markdown)
+        self.assertIn("15s [complete]", status)
+        self.assertIn("— [unavailable]", markdown)
+        self.assertIn("model_giay=null", markdown)
+        self.assertNotIn("\n", status)
+
+    def test_status_includes_current_phase_wall_and_observed_quality(self):
+        data = self.measure(self.api(0, 10) + self.tool(5, 15))
+        row = data["phases"][1]
+        status = tdq_timing.dong_ho_ngan(data)
+        self.assertIn("implement (all entries) wall " + tdq_timing.dinh_dang(row["treo_tuong_giay"]), status)
+        self.assertIn("phase observed 5s [complete]", status)
+        self.assertIn("whole request 20s", status)
+
+    def test_v1_formatter_uses_legacy_label_without_mutating_history(self):
+        legacy = {"slug": "old", "lane": "full", "started_at": at_second(0),
+                  "treo_tuong_giay": 600, "model_giay": 120,
+                  "phases": [{"phase": "spec", "treo_tuong_giay": 600, "model_giay": 120, "so_lan": 1}]}
+        before = json.dumps(legacy)
+        self.assertIn("legacy assistant-gap estimate", tdq_timing.bang_markdown(legacy))
+        self.assertIn("legacy assistant-gap estimate", tdq_timing.dong_ho_ngan(legacy))
+        self.assertEqual(json.dumps(legacy), before)
+
+    def test_close_preserves_history_and_uses_request_start_pair(self):
+        data = self.measure(self.api(0, 10))
+        history = Path(self.cwd) / tdq_timing.TIMING_REL
+        history.parent.mkdir(parents=True)
+        old = b'{"slug":"old","started_at":"old","model_giay":120}\n[]\n{broken\n'
+        history.write_bytes(old)
+        self.assertTrue(tdq_timing.dong_so(self.cwd, data))
+        first = history.read_bytes()
+        self.assertTrue(first.startswith(old))
+        self.assertFalse(tdq_timing.dong_so(self.cwd, dict(data, closed_at=at_second(30))))
+        self.assertEqual(history.read_bytes(), first)
+        self.assertTrue(tdq_timing.dong_so(self.cwd, dict(data, started_at=at_second(1))))
+
+    def init_cli_state(self):
+        result = run_state_cli(self.cwd, "init", self.state["active_request"], "full")
+        self.assertEqual(result[0], 0, result[2])
+        result = run_state_cli(self.cwd, "set", "started_at=" + self.state["started_at"],
+                               "phase_history=" + json.dumps(self.state["phase_history"]))
+        self.assertEqual(result[0], 0, result[2])
+
+    def test_cli_host_repeatable_sessions_and_status_json(self):
+        self.init_cli_state()
+        self.write(self.tool(0, 5))
+        self.write([{**record, "sessionId": "other"} for record in self.tool(10, 15)], "other.jsonl")
+        common = ("--transcript-dir", str(self.logs), "--now", at_second(20), "--host", "claude",
+                  "--session-id", "session", "--session-id", "other", "--json")
+        show = helper.run_timing_cli(self.cwd, "show", *common)
+        status = helper.run_timing_cli(self.cwd, "status", *common)
+        self.assertEqual(show[0], 0, show[2])
+        self.assertEqual(status[0], 0, status[2])
+        self.assertEqual(json.loads(show[1]), json.loads(status[1]))
+        self.assertEqual(self.number(json.loads(show[1]), "tool_call_seconds"), 10)
+        self.assertEqual(json.loads(show[1])["attribution"], "session")
+
+    def test_cli_auto_resolves_codex_without_claude_default(self):
+        self.init_cli_state()
+        home = Path(self.cwd) / "home"
+        sessions = home / ".codex" / "sessions" / "2020" / "01" / "01"
+        sessions.mkdir(parents=True)
+        records = [{"type": "session_meta", "payload": {"id": "codex", "cwd": self.cwd}},
+                   {"type": "response_item", "timestamp": at_second(1),
+                    "payload": {"type": "function_call", "call_id": "call"}},
+                   {"type": "response_item", "timestamp": at_second(4),
+                    "payload": {"type": "function_call_output", "call_id": "call"}}]
+        (sessions / "session.jsonl").write_text("".join(json.dumps(row) + "\n" for row in records), encoding="utf-8")
+        result = helper.run_timing_cli(self.cwd, "show", "--json", "--now", at_second(20),
+                                       env={"HOME": str(home), "USERPROFILE": str(home)})
+        self.assertEqual(result[0], 0, result[2])
+        data = json.loads(result[1])
+        self.assertEqual(self.number(data, "tool_call_seconds"), 3)
+        self.assertIsNone(self.number(data, "api_request_seconds"))
+
+    def test_cli_naive_now_rejected_and_json_empty_state_is_null(self):
+        result = helper.run_timing_cli(self.cwd, "show", "--now", "2026-10-27T00:00:00")
+        self.assertEqual(result[0], tdq_timing.EXIT_SYNTAX)
+        result = helper.run_timing_cli(self.cwd, "show", "--json")
+        self.assertEqual(result[0], 0)
+        self.assertIsNone(json.loads(result[1]))
+
+    def test_public_aggregation_logs_diagnostics_to_stderr_only(self):
+        self.state["phase_history"] = [None]
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch.dict(os.environ, {"TDQ_LOG": "1"}), contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            data = self.measure(self.tool(0, 5))
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertRegex(stderr.getvalue(), r"\[\d{4}-\d{2}-\d{2}T")
+        self.assertIn("invalid_phase_mark", stderr.getvalue())
+        self.assertEqual(self.number(data, "tool_call_seconds"), 5)
 
 
 if __name__ == "__main__":

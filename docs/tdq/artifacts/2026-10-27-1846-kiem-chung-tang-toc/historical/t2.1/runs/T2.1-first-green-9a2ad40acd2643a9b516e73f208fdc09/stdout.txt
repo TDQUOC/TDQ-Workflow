@@ -1,0 +1,27 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___________ test_eligible_second_call_reuses_complete_case_evidence ___________
+
+tmp_path = WindowsPath('C:/Users/admin/AppData/Local/Temp/tdq-9renpo3y/temp/pytest-of-admin/pytest-0/test_eligible_second_call_reus0')
+
+    def test_eligible_second_call_reuses_complete_case_evidence(tmp_path):
+        project, manifest, declarations = fixture(tmp_path)
+        calls = []
+        def execute():
+            calls.append(1)
+            return result_for(manifest)
+        first = receipts.run_with_receipt(project, "request", manifest, execute,
+                                         reuse="auto", declarations=declarations)
+        second = receipts.run_with_receipt(project, "request", manifest, execute,
+                                          reuse="auto", declarations=declarations)
+>       assert len(calls) == 1
+E       assert 2 == 1
+E        +  where 2 = len([1, 1])
+
+tests\test_tdq_test_receipt.py:53: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[2026-10-27T13:14:18.240070+00:00] receipt action=executed reason=cache_miss
+[2026-10-27T13:14:18.500660+00:00] receipt action=executed reason=cache_miss
+=========================== short test summary info ===========================
+FAILED tests/test_tdq_test_receipt.py::test_eligible_second_call_reuses_complete_case_evidence
+1 failed in 0.73s

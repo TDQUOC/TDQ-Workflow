@@ -1,0 +1,106 @@
+{
+  "kind": "real-full-pair-subtest-parity-failure",
+  "samples": [
+    {
+      "workers": 1,
+      "seconds": 1113.663398900011,
+      "result_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-bbb9c700\\0\\8573a30b75c443dea3ef752a7f9e9abb\\result.json",
+      "result_sha256": "d01eaf6862d1bb7d09e37f1e0c9e400b8d2d58c8a36b5e32617c58689e2f46a2"
+    },
+    {
+      "workers": 2,
+      "seconds": 610.2338293000357,
+      "result_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\raw-bbb9c700\\1\\fa7edc0fa9af4c6eb0bcdc584312c809\\result.json",
+      "result_sha256": "720b3fb2049dfa307ef9ef08683a76123a34569a3ddf67257f3f0179c66442e9"
+    }
+  ],
+  "individual_statuses": [
+    "PASS",
+    "PASS"
+  ],
+  "case_ids_equal": true,
+  "counts": [
+    {
+      "pass": 3593,
+      "fail": 0,
+      "error": 0,
+      "skip": 8,
+      "xfail": 0,
+      "xpass": 0
+    },
+    {
+      "pass": 3593,
+      "fail": 0,
+      "error": 0,
+      "skip": 8,
+      "xfail": 0,
+      "xpass": 0
+    }
+  ],
+  "parity": false,
+  "raw_evidence_errors": [],
+  "differing_cases": 293,
+  "difference_fields": [
+    "subtests.parameters"
+  ],
+  "example": {
+    "case_id": "tests/test_adapter_host.py::CodexAdapterTest::test_codex_co_du_hai_manifest",
+    "serial": [
+      {
+        "phase": "call",
+        "outcome": "pass",
+        "reason": "",
+        "subtest": {
+          "message": "",
+          "parameters": {
+            "duong": "\"'marketplace.json'\""
+          }
+        }
+      },
+      {
+        "phase": "call",
+        "outcome": "pass",
+        "reason": "",
+        "subtest": {
+          "message": "",
+          "parameters": {
+            "duong": "\"'plugin.json'\""
+          }
+        }
+      }
+    ],
+    "parallel": [
+      {
+        "phase": "call",
+        "outcome": "pass",
+        "reason": "",
+        "subtest": {
+          "message": "",
+          "parameters": {
+            "duong": "'\"\\'marketplace.json\\'\"'"
+          }
+        }
+      },
+      {
+        "phase": "call",
+        "outcome": "pass",
+        "reason": "",
+        "subtest": {
+          "message": "",
+          "parameters": {
+            "duong": "'\"\\'plugin.json\\'\"'"
+          }
+        }
+      }
+    ]
+  },
+  "receipt": "docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\benchmark-full-second-confirmation-20261031-600569d1c8a04060afbab87731124f12\\receipt.json",
+  "receipt_sha256": "12c2cfd3f2c44e04ddab2ce0dfe26507136d1a62927b2fcf3fa81d0b7708e303",
+  "guard_failures": [],
+  "cleanup": "complete",
+  "cancelled_owned_child": {
+    "pid": 52760,
+    "parent_pid": 50216
+  },
+  "certified_benchmark": false
+}

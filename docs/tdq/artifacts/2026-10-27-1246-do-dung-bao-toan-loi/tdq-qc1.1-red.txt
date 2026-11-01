@@ -1,0 +1,48 @@
+COMMAND: C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe -m unittest discover -s tests -p test_build_portable.py
+EXIT: 1
+STDOUT:
+
+STDERR:
+...[2026-10-27T14:46:00+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:00+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:00+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:00+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:00+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:00+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:01+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:01+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:01+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:01+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:01+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:01+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:01+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:01+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:01+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:01+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:02+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:02+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:02+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:02+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:02+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:02+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T14:46:02+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T14:46:02+07:00] manifest: 133 file(s) in antigravity_portable
+..................F[2026-10-27T14:46:05+07:00] build_portable: dry-run dev@2f4dcad -> main · kept=4 dropped=6
+[2026-10-27T14:46:05+07:00] build_portable: published main@3c95161 from dev@2f4dcad · tree=5734f53 · kept=4 · dropped=6
+[2026-10-27T14:46:06+07:00] build_portable: main already up to date with dev@2f4dcad (tree=5734f53, kept=4, dropped=6)
+[2026-10-27T14:46:06+07:00] build_portable: main already up to date with dev@f498e91 (tree=5734f53, kept=4, dropped=6)
+[2026-10-27T14:46:06+07:00] build_portable: published main@3d19126 from dev@6e185b0 · tree=5fb517b · kept=4 · dropped=6
+....
+======================================================================
+FAIL: test_release_loc_cay_repo_that_duoi_150_file (test_build_portable.TestSinhNhanhRelease.test_release_loc_cay_repo_that_duoi_150_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\qc1.1\tests\test_build_portable.py", line 608, in test_release_loc_cay_repo_that_duoi_150_file
+    self.assertLessEqual(len(kept), 160)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: 161 not less than or equal to 160
+
+----------------------------------------------------------------------
+Ran 37 tests in 6.611s
+
+FAILED (failures=1)

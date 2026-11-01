@@ -10,6 +10,7 @@ Nhóm theo DoD (tên nhóm nằm trong tên method để `-k` chọn được):
 - `so` (T1.3): lệnh `tron-bo` ghi sổ + dòng bỏ sót, lệnh `so` đếm theo request, `dem()` thuần.
 """
 import json
+import io
 import os
 import re
 import shutil
@@ -17,6 +18,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import time
+from contextlib import redirect_stderr, redirect_stdout
+from types import SimpleNamespace
 from unittest import mock
 
 from helper import ROOT
@@ -309,29 +313,29 @@ class VungCham(unittest.TestCase):
     def test_vung_cham_files_chi_chay_module_chon_dat(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
-        self.assertIn("Ran 1 test", p.stderr)
+        self.assertIn("1 passed", p.stderr)
         self.assertIn("1/9", p.stdout)
 
     def test_vung_cham_files_module_truot_thi_exit_1(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py", "tests/test_b.py")
         self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
-        self.assertIn("Ran 2 tests", p.stderr)
+        self.assertIn("1 failed, 1 passed", p.stderr)
 
     def test_vung_cham_silent_flag_writes_log_file(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py", "--silent")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertIn("[TDQ:TEST] PASS", p.stdout)
-        self.assertNotIn("Ran 1 test", p.stderr)
+        self.assertNotIn("1 passed", p.stderr)
         log_path = os.path.join(self.goc, "docs", "tdq", ".tdq-test.log")
         self.assertTrue(os.path.isfile(log_path))
         with open(log_path, encoding="utf-8") as f:
             log_content = f.read()
-        self.assertIn("Ran 1 test", log_content)
+        self.assertIn("1 passed", log_content)
 
     def test_vung_cham_ly_do_tron_bo_chay_het(self):
         p = chay_cli(self.goc, "--files", "tools/build.sh")  # T5.6: mã ngoài 5 thư mục
         self.assertEqual(p.returncode, 1)  # test_b trượt nằm trong trọn bộ
-        self.assertIn("Ran 9 tests", p.stderr)
+        self.assertIn("1 failed, 8 passed", p.stderr)
         self.assertIn("full suite", p.stdout)
         dong = doc_so(self.goc)[-1]
         self.assertTrue(dong["fallback"])
@@ -350,11 +354,13 @@ class VungCham(unittest.TestCase):
     def test_tron_bo_parallel_cli(self):
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
+        env["PYTEST_XDIST_AUTO_NUM_WORKERS"] = "1"
         p = subprocess.run([sys.executable, SCRIPT, "tron-bo", "--repo", self.goc, "--parallel"],
                            capture_output=True, text=True, encoding="utf-8", env=env,
                            timeout=120)
         self.assertEqual(p.returncode, 1)  # test_b fails
         self.assertIn("[parallel xdist]", p.stdout)
+        self.assertEqual(doc_so(self.goc)[0]["failed_modules"], ["test_b.py"])
 
     def test_vung_cham_ghi_so_du_truong(self):
         p = chay_cli(self.goc, "--files", "tests\\test_a.py", "tests/test_a.py")
@@ -567,7 +573,7 @@ class So(unittest.TestCase):
     def test_so_tron_bo_ghi_dong_va_module_do(self):
         p = chay_lenh(self.goc, "tron-bo")
         self.assertEqual(p.returncode, 1, p.stdout + p.stderr)
-        self.assertIn("Ran 9 tests", p.stderr)
+        self.assertIn("1 failed, 8 passed", p.stderr)
         rows = doc_so(self.goc)
         tron = [r for r in rows if r["kind"] == "tron-bo"]
         self.assertEqual(len(tron), 1)
@@ -591,7 +597,9 @@ class So(unittest.TestCase):
         ghi(self.goc, "tests/test_hong.py", "import khong_ton_tai_xyz\n")
         chay_lenh(self.goc, "tron-bo")
         dong = [r for r in doc_so(self.goc) if r["kind"] == "tron-bo"][-1]
-        self.assertEqual(dong["failed_modules"], ["test_b.py", "test_hong.py"])
+        self.assertEqual(dong["failed_modules"], ["test_hong.py"])
+        self.assertEqual(dong["status"], "ERROR")
+        self.assertNotIn("execution", dong["process"])
 
     def test_so_bo_sot_khi_module_do_chua_tung_duoc_chon(self):
         ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
@@ -780,6 +788,422 @@ class NhanhGocMacDinhTest(unittest.TestCase):
         dong = doc_so(self.goc)[-1]
         self.assertEqual(dong["files"], ["tests/test_a.py"])
         self.assertEqual(dong["modules"], ["test_a.py"])
+
+
+class IndirectSelection(unittest.TestCase):
+    """Run CLI fixtures without changing the active request state."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-indirect-")
+        self.addCleanup(temporary.cleanup)
+        self.goc = temporary.name
+        ghi(self.goc, "docs/tdq/state.json", json.dumps({
+            "active_request": "indirect-fixture", "phase": "implement"}))
+        ghi(self.goc, "scripts/core.py", "VALUE = 0\n")
+        ghi(self.goc, "scripts/facade.py", "from core import VALUE\n")
+        self.facade_test = (
+            "import os, sys, unittest\n"
+            "sys.path.insert(0, os.path.join(os.path.dirname(__file__), "
+            "'..', 'scripts'))\n"
+            "from facade import VALUE\n"
+            "class Contract(unittest.TestCase):\n"
+            "    def test_value(self):\n"
+            "        self.assertEqual(VALUE, 1)\n")
+        ghi(self.goc, "tests/test_facade.py", self.facade_test)
+
+    def test_direct_empty_runs_transitive_failure(self):
+        direct, _ = tdq_test.ban_kinh(
+            ["scripts/core.py"], self.goc, ep_tron_bo=False,
+            quet=False, truc_tiep=True)
+        self.assertEqual(direct, [])
+        run = chay_cli(self.goc, "--files", "scripts/core.py", "--silent")
+        self.assertEqual(run.returncode, 1, run.stdout + run.stderr)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["modules"], ["test_facade.py"])
+        self.assertIs(row["ok"], False)
+        self.assertEqual(row["selection_scope"], "transitive")
+        self.assertEqual(row["status"], "FAIL")
+
+    def test_direct_green_does_not_certify_indirect_test(self):
+        ghi(self.goc, "tests/test_core.py", TEST_DAT + "# core\n")
+        direct = chay_cli(self.goc, "--files", "scripts/core.py")
+        self.assertEqual(direct.returncode, 0, direct.stdout + direct.stderr)
+        self.assertEqual(doc_so(self.goc)[-1]["selection_scope"], "direct")
+        full = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual(full.returncode, 1, full.stdout + full.stderr)
+        row = next(row for row in reversed(doc_so(self.goc))
+                   if row["kind"] == "tron-bo")
+        self.assertEqual(row["failed_modules"], ["test_facade.py"])
+        self.assertEqual(row["selection_scope"], "full")
+
+    def test_docs_and_empty_input_are_skip_not_pass(self):
+        for files in ([], ["README.md"]):
+            with self.subTest(files=files):
+                run = chay_cli(self.goc, "--files", *files, "--silent")
+                self.assertEqual(run.returncode, 0)
+                self.assertIn("[TDQ:TEST] SKIP", run.stdout)
+                self.assertNotIn("[TDQ:TEST] PASS", run.stdout)
+                row = doc_so(self.goc)[-1]
+                self.assertIsNone(row["ok"])
+                self.assertEqual(row["selection_scope"], "none")
+                self.assertEqual(row["tests_run"], 0)
+
+    def test_source_without_tests_stays_incomplete_with_flag(self):
+        os.remove(os.path.join(self.goc, "tests", "test_facade.py"))
+        run = chay_cli(self.goc, "--files", "scripts/core.py",
+                       "--khong-ep-tron-bo")
+        self.assertEqual(run.returncode, 1)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["status"], "INCOMPLETE")
+        self.assertEqual(row["selection_scope"], "full")
+        self.assertIs(row["ok"], False)
+
+    def test_full_without_tests_is_incomplete(self):
+        os.remove(os.path.join(self.goc, "tests", "test_facade.py"))
+        run = chay_lenh(self.goc, "tron-bo", "--silent")
+        self.assertEqual(run.returncode, 1)
+        self.assertIn("[TDQ:TEST] INCOMPLETE", run.stdout)
+
+    def test_unrelated_source_falls_back_to_full(self):
+        ghi(self.goc, "scripts/unused.py", "VALUE = 1\n")
+        run = chay_cli(self.goc, "--files", "scripts/unused.py")
+        self.assertEqual(run.returncode, 1)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["selection_scope"], "full")
+        self.assertEqual(row["failed_modules"], ["test_facade.py"])
+
+    def test_deleted_source_uses_full_and_keeps_import_error(self):
+        os.remove(os.path.join(self.goc, "scripts", "core.py"))
+        run = chay_cli(self.goc, "--files", "scripts/core.py")
+        self.assertEqual(run.returncode, 1)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["selection_scope"], "full")
+        self.assertEqual(row["status"], "ERROR")
+        self.assertEqual(row["failed_modules"], ["test_facade.py"])
+
+    def test_skipped_or_testless_module_is_incomplete(self):
+        skip = ("import unittest\n@unittest.skip('fixture')\n"
+                "class T(unittest.TestCase):\n"
+                "    def test_skip(self):\n        pass\n")
+        for source in (skip, "VALUE = 1\n"):
+            with self.subTest(source=source):
+                ghi(self.goc, "tests/test_empty.py", source)
+                run = chay_cli(self.goc, "--files", "tests/test_empty.py")
+                self.assertEqual(run.returncode, 1)
+                self.assertEqual(doc_so(self.goc)[-1]["status"], "INCOMPLETE")
+
+    def test_docs_with_related_test_are_executed(self):
+        ghi(self.goc, "tests/test_document.py", TEST_DAT + "# docs/guide.md\n")
+        run = chay_cli(self.goc, "--files", "docs/guide.md")
+        self.assertEqual(run.returncode, 0)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["status"], "PASS")
+        self.assertEqual(row["modules"], ["test_document.py"])
+
+    def test_document_noop_does_not_poison_later_real_comparison(self):
+        docs = chay_cli(self.goc, "--files", "README.md")
+        self.assertEqual(docs.returncode, 0)
+        self.assertEqual(chay_cli(self.goc, "--files",
+                                  "scripts/core.py").returncode, 1)
+        self.assertEqual(chay_lenh(self.goc, "tron-bo").returncode, 1)
+        row = next(row for row in reversed(doc_so(self.goc))
+                   if row["kind"] == "tron-bo")
+        self.assertTrue(row["radius_complete"])
+
+    def test_nested_tests_and_duplicate_basenames_map_actual_modules(self):
+        for package in ("left", "right"):
+            ghi(self.goc, f"tests/{package}/__init__.py", "")
+        ghi(self.goc, "tests/left/test_same.py", TEST_DAT)
+        ghi(self.goc, "tests/right/test_same.py", TEST_TRUOT)
+        ghi(self.goc, "tests/ignored/test_uncollected.py", TEST_TRUOT)
+        run = chay_lenh(self.goc, "tron-bo")
+        self.assertEqual(run.returncode, 1)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["failed_modules"],
+                         ["ignored/test_uncollected.py", "right/test_same.py", "test_facade.py"])
+        self.assertIn("left/test_same.py", row["modules"])
+        self.assertIn("ignored/test_uncollected.py", row["modules"])
+        self.assertIn("ignored/test_uncollected.py", row["selected_modules"])
+
+    def test_unexpected_success_remains_failure_in_ledger(self):
+        source = ("import unittest\nclass T(unittest.TestCase):\n"
+                  "    @unittest.expectedFailure\n"
+                  "    def test_xpass(self):\n        pass\n")
+        ghi(self.goc, "tests/test_xpass.py", source)
+        run = chay_cli(self.goc, "--files", "tests/test_xpass.py")
+        self.assertEqual(run.returncode, 1)
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["status"], "FAIL")
+        self.assertEqual(row["failed_modules"], ["test_xpass.py"])
+
+
+class BackendResults(unittest.TestCase):
+    """Mock process boundaries, keeping the runner/parser/ledger real."""
+
+    PASS_XML = ('<testsuite tests="1" failures="0" errors="0" skipped="0">'
+                '<testcase classname="tests.test_backend.T" name="test_ok"/>'
+                '</testsuite>')
+    FAIL_XML = ('<testsuite tests="1" failures="1" errors="0" skipped="0">'
+                '<testcase classname="tests.test_backend.T" name="test_bad[a-b]">'
+                '<failure>assertion</failure></testcase></testsuite>')
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="tdq-backend-")
+        self.addCleanup(temporary.cleanup)
+        self.goc = temporary.name
+        ghi(self.goc, "tests/test_backend.py", TEST_DAT)
+        ghi(self.goc, "docs/tdq/state.json", json.dumps({
+            "active_request": "backend-fixture", "phase": "qc"}))
+        self.paths = []
+        logging = mock.patch.dict(os.environ, {"TDQ_LOG": "0"})
+        logging.start()
+        self.addCleanup(logging.stop)
+        self.saved_path = list(sys.path)
+        self.addCleanup(
+            lambda: sys.path.__setitem__(slice(None), self.saved_path))
+
+    def process(self, xml, exit_code, output=""):
+        def run(job, command, *, phase):
+            report = next(arg.split("=", 1)[1] for arg in command
+                          if arg.startswith("--junitxml="))
+            self.assertFalse(os.path.exists(report))
+            collecting = phase == "collection"
+            self.assertEqual(command[command.index("-n") + 1], "0" if collecting else "2")
+            self.assertGreater(job.deadline, time.monotonic())
+            if not collecting:
+                self.paths.append(report)
+            if xml is not None and not collecting:
+                with open(report, "w", encoding="utf-8") as target:
+                    target.write(xml)
+            self.sidecar(job, xml, exit_code, collecting)
+            return self.process_record(0 if collecting else exit_code, output)
+        return run
+
+    def process_record(self, code, output="", reason="exited"):
+        return {"exit_code": code, "stdout": output, "stderr": "", "reason": reason,
+                "timed_out": reason == "timeout", "cancelled": reason == "cancelled",
+                "cleanup_complete": True, "duration_seconds": 0.01,
+                "execute_seconds": 0.005, "cleanup_seconds": 0.005,
+                "ownership": {"verified": True}}
+
+    def case_phases(self, outcome):
+        phases = [{"phase": name, "outcome": "pass", "reason": "", "duration_seconds": 0.01}
+                  for name in ("setup", "call", "teardown")]
+        phases[1]["outcome"] = outcome
+        if outcome == "error":
+            phases = [dict(phases[0], outcome="error"), phases[2]]
+        return phases
+
+    def sidecar(self, job, xml, exit_code, collecting):
+        identifier = "tests/test_backend.py::T::test_ok"
+        outcome = "pass"
+        if xml and "test_bad" in xml:
+            identifier = "tests/test_backend.py::T::test_bad[a-b]"
+            outcome = "fail"
+        if xml and "<error>" in xml:
+            outcome = "error"
+        manifest = tdq_test.tdq_test_manifest.make_manifest(
+            [identifier], selectors=["tests"], scope="full")
+        cases = [{"case_id": identifier, "outcome": outcome, "reason": "",
+                  "capability": None, "phases": self.case_phases(outcome), "subtests": []}]
+        if collecting or (xml and xml != "<broken"):
+            value = {"schema_version": 1, "manifest": manifest,
+                     "outcomes": [] if collecting else cases,
+                     "completed": not collecting, "exit_code": 0 if collecting else exit_code}
+            with open(job.env["TDQ_TEST_MANIFEST_OUTPUT"], "w", encoding="utf-8") as target:
+                json.dump(value, target)
+
+    def run_parallel(self, process):
+        if isinstance(process, BaseException):
+            error = process
+            def process(job, command, *, phase):
+                if phase == "collection":
+                    self.sidecar(job, self.PASS_XML, 0, True)
+                    return self.process_record(0)
+                if isinstance(error, OSError):
+                    raise error
+                output = tdq_test._partial_output(error)
+                reason = "cancelled" if isinstance(error, KeyboardInterrupt) else "timeout"
+                return self.process_record(None, output, reason)
+        with mock.patch.object(tdq_test.importlib.util, "find_spec",
+                               return_value=object()):
+            with mock.patch.object(tdq_test.IsolatedJob, "run", new=process):
+                with mock.patch.object(tdq_test, "chay_module_result",
+                                       side_effect=AssertionError("fallback")):
+                    return tdq_test.chay_tron_bo_result(
+                        self.goc, stream=io.StringIO(), parallel=True)
+
+    def test_pytest_failure_report_keeps_module_and_parameter(self):
+        result = self.run_parallel(self.process(self.FAIL_XML, 1))
+        self.assertEqual(result["status"], "FAIL")
+        self.assertEqual(result["failed_modules"], ["test_backend.py"])
+        self.assertEqual(result["modules"], ["test_backend.py"])
+        self.assertIn("[a-b]", result["failures"][0]["id"])
+
+    def test_report_is_unique_and_never_reused_after_green_run(self):
+        first = self.run_parallel(self.process(self.PASS_XML, 0))
+        second = self.run_parallel(self.process(None, 0))
+        self.assertEqual(first["status"], "PASS", first)
+        self.assertEqual(second["status"], "INCOMPLETE")
+        self.assertEqual(len(set(self.paths)), 2)
+        self.assertTrue(os.path.isfile(self.paths[0]))
+        self.assertFalse(os.path.exists(self.paths[1]))
+
+    def test_missing_and_malformed_report_never_fall_back(self):
+        for xml in (None, "<broken"):
+            with self.subTest(xml=xml):
+                result = self.run_parallel(self.process(xml, 0))
+                self.assertEqual(result["status"], "INCOMPLETE")
+                self.assertFalse(result["details_complete"])
+
+    def test_output_keeps_failure_when_xml_is_missing(self):
+        output = "FAILED tests/test_backend.py::T::test_bad[a-b] - assertion"
+        result = self.run_parallel(self.process(None, 1, output))
+        self.assertEqual(result["status"], "FAIL")
+        self.assertEqual(result["failed_modules"], ["test_backend.py"])
+        self.assertFalse(result["details_complete"])
+
+    def test_timeout_keeps_known_failure_and_interrupt_stays_incomplete(self):
+        error = subprocess.TimeoutExpired(
+            ["pytest"], 1,
+            output=b"FAILED tests/test_backend.py::T::test_bad - assertion")
+        result = self.run_parallel(error)
+        self.assertEqual(result["status"], "FAIL")
+        self.assertEqual(result["failed_modules"], ["test_backend.py"])
+        self.assertFalse(result["details_complete"])
+        result = self.run_parallel(KeyboardInterrupt())
+        self.assertEqual(result["status"], "INCOMPLETE")
+
+    def test_runner_error_and_worker_death_do_not_fall_back(self):
+        result = self.run_parallel(OSError("cannot launch"))
+        self.assertEqual(result["status"], "ERROR")
+        result = self.run_parallel(self.process(None, 3, "worker crashed"))
+        self.assertEqual(result["status"], "ERROR")
+        self.assertFalse(result["details_complete"])
+
+    def test_missing_dependency_falls_back_before_launch(self):
+        with mock.patch.object(tdq_test.importlib.util, "find_spec",
+                               return_value=None):
+            with mock.patch.object(tdq_test.subprocess, "run") as process:
+                result = tdq_test.chay_tron_bo_result(
+                    self.goc, stream=io.StringIO(), parallel=True)
+        process.assert_not_called()
+        # Historical nodeid retained; full mixed collection now fails closed.
+        self.assertEqual(result["backend"], "pytest")
+        self.assertEqual(result["status"], "ERROR")
+        self.assertIn("before launch", result["reason"])
+
+    def test_legacy_wrappers_reject_empty_execution(self):
+        self.assertIs(tdq_test.chay_module(self.goc, [], io.StringIO()), False)
+        ghi(self.goc, "tests/test_backend.py", "VALUE = 1\n")
+        result = tdq_test.chay_tron_bo(self.goc, stream=io.StringIO())
+        self.assertEqual(result, (False, []))
+
+    def test_cli_ledger_and_stdout_have_identical_incomplete_verdict(self):
+        args = SimpleNamespace(repo=self.goc, silent=True, parallel=True)
+        output = io.StringIO()
+        with mock.patch.object(tdq_test.importlib.util, "find_spec",
+                               return_value=object()):
+            with mock.patch.object(tdq_test.IsolatedJob, "run",
+                                   new=self.process(None, 0)):
+                with redirect_stdout(output), redirect_stderr(io.StringIO()):
+                    exit_code = tdq_test.cmd_tron_bo(args)
+        self.assertEqual(exit_code, 1)
+        self.assertIn("[TDQ:TEST] INCOMPLETE", output.getvalue())
+        row = doc_so(self.goc)[-1]
+        self.assertEqual(row["status"], "INCOMPLETE")
+        self.assertEqual(row["backend"], "pytest")
+        self.assertEqual(row["schema_version"], 2)
+        self.assertIs(row["ok"], False)
+        self.assertFalse(row["radius_complete"])
+        self.assertEqual(row["modules"], [])
+
+    def test_unittest_interrupt_keeps_previous_assertion(self):
+        source = ("import unittest\nclass T(unittest.TestCase):\n"
+                  "    def test_a_fail(self):\n        self.fail('known')\n"
+                  "    def test_b_stop(self):\n"
+                  "        raise KeyboardInterrupt\n")
+        ghi(self.goc, "tests/test_interrupt.py", source)
+        result = tdq_test.chay_module_result(
+            self.goc, ["test_interrupt.py"], stream=io.StringIO())
+        self.assertEqual(result["status"], "FAIL")
+        self.assertEqual(result["failed_modules"], ["test_interrupt.py"])
+        self.assertFalse(result["details_complete"])
+
+    def test_unmapped_green_case_has_incomplete_module_details(self):
+        xml = self.PASS_XML.replace("test_backend.T", "unmapped.T")
+        result = self.run_parallel(self.process(xml, 0))
+        self.assertFalse(result["details_complete"])
+        self.assertEqual(result["modules"], [])
+        self.assertIn("mapping is incomplete", result["reason"])
+
+    def test_unittest_runner_crash_retains_prior_failure(self):
+        source = (TEST_TRUOT + "\n"
+                  "class BrokenSuite(unittest.TestSuite):\n"
+                  "    def run(self, result, debug=False):\n"
+                  "        super().run(result, debug)\n"
+                  "        raise RuntimeError('runner crashed')\n"
+                  "def load_tests(loader, tests, pattern):\n"
+                  "    return BrokenSuite(tests)\n")
+        ghi(self.goc, "tests/test_crash.py", source)
+        result = tdq_test.chay_module_result(
+            self.goc, ["test_crash.py"], stream=io.StringIO())
+        self.assertEqual(result["status"], "ERROR")
+        self.assertEqual(result["failed_modules"], ["test_crash.py"])
+        self.assertEqual(len(result["failures"]), 2)
+        self.assertEqual(len(result["unmapped_failures"]), 1)
+        self.assertFalse(result["details_complete"])
+
+    def test_collection_error_with_no_file_maps_module(self):
+        xml = ('<testsuite tests="1" failures="0" errors="1" skipped="0">'
+               '<testcase name="tests/test_backend.py">'
+               '<error>collection failed</error></testcase></testsuite>')
+        result = self.run_parallel(self.process(xml, 2))
+        self.assertEqual(result["status"], "ERROR")
+        self.assertEqual(result["modules"], ["test_backend.py"])
+        self.assertEqual(result["failed_modules"], ["test_backend.py"])
+
+    def test_report_directory_failure_does_not_fall_back(self):
+        with mock.patch.object(tdq_test.tempfile, "TemporaryDirectory",
+                               side_effect=PermissionError("report denied")):
+            result = self.run_parallel(self.process(self.PASS_XML, 0))
+        self.assertEqual(result["status"], "ERROR")
+        self.assertEqual(result["backend"], "pytest")
+
+
+class StructuredRadiusAccounting(unittest.TestCase):
+    def test_fallback_text_does_not_certify_full_scope(self):
+        row = dict(dong_vung_cham("r", ["test_a.py"], "transitive fallback"),
+                   schema_version=2, selection_scope="transitive",
+                   status="PASS", details_complete=True)
+        for scope in ("direct", "transitive", "full"):
+            with self.subTest(scope=scope):
+                row["selection_scope"] = scope
+                self.assertEqual(tdq_test.module_bo_sot(
+                    [row], "r", ["test_b.py"]), ["test_b.py"])
+
+    def test_incomplete_full_result_cannot_certify_zero_misses(self):
+        rows = [{"kind": "tron-bo", "request": "r", "ok": False,
+                 "schema_version": 2, "radius_complete": False,
+                 "details_complete": False}]
+        actual = tdq_test.dem(rows, "r")
+        self.assertEqual(actual["bo_sot"], 0)
+        self.assertFalse(actual["radius_complete"])
+        self.assertIn("partial", actual["radius_reason"])
+        self.assertEqual(actual["ngan_sach"], 3)
+
+    def test_complete_comparison_reports_known_miss(self):
+        rows = [{"kind": "tron-bo", "request": "r", "ok": False,
+                 "schema_version": 2, "radius_complete": True},
+                {"kind": "bo-sot", "request": "r", "module": "test_b.py"}]
+        actual = tdq_test.dem(rows, "r")
+        self.assertTrue(actual["radius_complete"])
+        self.assertEqual(actual["modules_bo_sot"], ["test_b.py"])
+
+    def test_legacy_rows_keep_previous_read_contract(self):
+        row = dong_vung_cham("r", [], "old full fallback")
+        self.assertEqual(tdq_test.module_bo_sot([row], "r", ["test_b.py"]), [])
+        self.assertNotIn("radius_complete", tdq_test.dem([row], "r"))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "observations": [
+    {
+      "id": "windows-long-private-temp",
+      "time": "2026-10-27T19:55:00+07:00",
+      "evidence": "T1.1 first green attempt: 15 PASS, 4 setup FAIL WinError 206 under worktree/artifacts/runs/UUID/temp",
+      "resolution": "T0.1 owner replacing runtime sandbox with short owned OS temporary directory; evidence remains under request artifacts",
+      "status": "fixed_self_test_8_checks_normal_privilege"
+    },
+    {
+      "id": "assignment-progress-staleness",
+      "time": "2026-10-27T19:57:14+07:00",
+      "evidence": "Two agents reported TDQ:TEAM no assignment map after progress checkbox update. scripts/tdq_team.py canh_bao_lach_luat compares ban_do.plan_sha with sha_file(plan), while assignment also stores semantic projection. Running assign then audit cleared blocks.",
+      "resolution": "Regenerate assignment after each plan update; do not bypass hook",
+      "proposal": "Unify hook freshness with the same semantic assignment projection already used by audit, retaining invalidation for file zones, dependencies and execution commands; prove checkbox-only mutation does not invalidate and semantic mutations do.",
+      "status": "recorded_for_followup_not_implemented"
+    },
+    {
+      "id": "protected-config-changed-during-tokenizer-check",
+      "time": "2026-10-27T19:58:56+07:00",
+      "evidence": "T1.1 worktree receipt ff7ec5ea819c47c2b5203f9a807fe559: tests exit0 21pass, guard verdictFAIL exit126 because .claude.json digest changed",
+      "analysis": "Readonly trace found no real configuration write path in skill_tokens/skill_inventory; concurrent host mutation is plausible but cause unproven. Independent repeat and integrated run had unchanged config. Failed attempt retained in historical/t1.1.",
+      "status": "failed_attempt_retained_no_restore_no_causal_claim"
+    },
+    {
+      "id": "windows-dispatch-reply-read-race",
+      "time": "2026-10-27T19:59:50+07:00",
+      "evidence": "wrapper read raised PermissionError on normal-launch reply; terminal child reply exit0 and full receipt independently verified PASS; T1.1.xml confirmed six target assertions",
+      "resolution": "Bounded retry of reply read only, preserving original deadline and never re-executing child. 9 harness selfchecks pass under normal privilege.",
+      "status": "fixed"
+    },
+    {
+      "id": "config-plugin-usage-churn",
+      "evidence": "config-churn-observation.json: 45-second read-only observation found one raw digest change confined to top-level pluginUsage; no raw values retained",
+      "resolution": "Keep strict whole-file guard; a quiet 35-second rerun passed unchanged config. Full benchmarks must avoid concurrent tools/agent activity; exact writer remains unproven.",
+      "status": "observed_metadata_only_not_attributed"
+    },
+    {
+      "id": "windows-dead-owner-handle",
+      "evidence": "T2.1 expanded concurrency test found exited process still had queryable creation time while Popen retained handle; join waited as if alive. Failed/terminated attempt retained.",
+      "resolution": "Check GetExitCodeProcess before creation-time ownership comparison; bounded real crash recovery test now passes.",
+      "status": "fixed_in_receipt_module"
+    },
+    {
+      "id": "readiness-overhash-self-invalidation",
+      "evidence": "Peer review found inventory/fingerprint walk mismatch and generated release stamp invalidating handoff; read-receipt input mutation and unreadable hit regressions reproduced.",
+      "resolution": "Shared walk excludes generated cache; hash relevant source/rootconfig/graph, retain live doctor and smoke. Recheck inputs around lookup; fresh fallback on unreadable. Cache speed still unproven until benchmark.",
+      "status": "fixed_and_tested"
+    },
+    {
+      "id": "runner-final-config-guard-reject",
+      "evidence": "T3.1-final-c95394374dca45ab8b642aa9cacce839: 109 PASS + 12 subtests, 90.89s; harness guard exit126 because .claude.json digest changed. Other five protected files unchanged.",
+      "analysis": "A roughly 105-second quiet window did not guarantee unchanged config; metadata writer remains unproven. Agent task might have started after window timing began.",
+      "resolution": "Preserve rejected receipt; parent check with all agents idle until explicit completion. Do not relax hash guard or restore user config.",
+      "status": "followup_required"
+    },
+    {
+      "id": "early-consumer-review-before-full",
+      "reviewer": "/root/t0_1_harness",
+      "classification": "implementation review; not independent final QC",
+      "findings": [
+        {
+          "owner": "T1.2",
+          "severity": "P1",
+          "finding": "JUnit/sidecar exact-case and outcome parity not enforced"
+        },
+        {
+          "owner": "T3.1",
+          "severity": "P1",
+          "finding": "Partial environment fingerprint differs from merged child inheritance"
+        },
+        {
+          "owner": "T3.1/T2.1",
+          "severity": "P1",
+          "finding": "Finalize/publish exceptions can erase observed failure provenance"
+        },
+        {
+          "owner": "T2.1",
+          "severity": "P2",
+          "finding": "Direct receipt API permits nonfinite timeout"
+        }
+      ],
+      "status": "source_fixes_integrated_final_certification_pending",
+      "followup": "T1.2 exact parity parent PASS; T2.1 109 cases PASS but parent config guard rejected; T3.1 final-boundaries 36 cases and 8 subtests PASS, parent full zone pending."
+    },
+    {
+      "id": "t2.3-cleanup-policy-block",
+      "time": "2026-10-27T21:13:00+07:00",
+      "status": "retained_no_retry",
+      "evidence": "Git registry no longer lists T2.3; empty directory remains held by owned LSP broker. Combined Stop-Process and Remove-Item action was rejected by automatic policy: blocked by policy. No alternative deletion attempted."
+    },
+    {
+      "id": "t3.3-runtime-guide",
+      "time": "2026-10-27T21:16:31+07:00",
+      "status": "doc_lint_pass",
+      "evidence": "Five changed rule documents pass doc_lint; token lock regenerated without increasing caps. Removed contradictory sequential-shell batching instructions. Defaults off/one worker, warm versus off, cold overhead, real/simulation and rollback documented."
+    },
+    {
+      "id": "harness-125-missing-receipt",
+      "status": "owner_fix_in_progress",
+      "evidence": "T3.2-e5268d34f3d3430abaf0c328cd99cc54 stdout 8 passed/40.26s, stderr empty, no receipt. T3.2-d8ba4421f07a4b22b345baad86398712 stdout 1 failed/6 passed/23.30s, no receipt. Actual exception unproven; cleanup is a hypothesis, not a config-guard finding."
+    },
+    {
+      "id": "readonly-git-cleanup-proven",
+      "status": "fixed_parent_selftest_pass",
+      "evidence": "T3.1-c5864ce3fc584734b545a6aa491ace60: 119 cases and 15 subtests PASS, strict config unchanged, cleanup failed on readonly Git object. T0.1 reproduced real readonly object RED; bounded owned-path retry GREEN including locked-file and reparse rejection; parent 15 selfchecks PASS."
+    },
+    {
+      "id": "runner-latest-config-reject",
+      "status": "external_condition_unresolved",
+      "evidence": "T3.1-5b7ab901562542e98404b9b3a2767281: 121 cases and 15 subtests PASS in 113.59s; cleanup complete; guard126 solely config_guard. Config writer remains unproven, no user confirmation that other sessions stopped."
+    },
+    {
+      "id": "benchmark-pre-review-findings",
+      "status": "fixed_parent_gate_pass",
+      "evidence": "Independent reviewer PRE-01 blank skip and PRE-02 missing actual worker binding reproduced RED and fixed. Parent T1.2 75 cases and 67 subtests PASS; parent T3.2 16 cases PASS. Runtime heartbeat truncate and late join both reproduced; atomic publication and bounded branch-observed synchronization fixed simulation fixtures."
+    },
+    {
+      "id": "archify-master-native-browser-fallback",
+      "status": "static_render_complete_native_browser_not_certified",
+      "evidence": "sync-master first failed two label overlaps; precise labelAt fixed. Second sync exit0 published docs/architecture/index.html, but all five native browser gates logged fail accepted via Windows elevated fallback. Do not report this as native browser PASS; no sandbox flags changed by this task."
+    },
+    {
+      "id": "qc1-checkpoint-environment-blocker",
+      "time": "2026-10-27T22:22:01+07:00",
+      "status": "paused_environment_not_complete",
+      "evidence": "First Full normalized3411pass158fail10skip; QC1.1 parent513pass2skip215subtests and QC1.3 parent57pass34subtests rejected by config guard. QC1.2 parent native Edge PASS after CLI precedence fix; QC1.4 PASS.",
+      "resolution": "Keep 15/24 tasks complete; retain failed attempts; no more unchanged retries. Wait for protected config stability, then certify open targeted gates, refresh Master, Full, runtime, benchmarks, independentQC and finalDoD.",
+      "checkpoint": "checkpoint.html",
+      "browser_evidence": "checkpoint-browser-check.json",
+      "limitations": [
+        "Exact config writer remains unproven",
+        "Ruff unavailable; AST/LSP/diff checks do not replace Ruff",
+        "No final speed measurements or DoD certification",
+        "No commit/merge/push/release/installed-plugin update"
+      ]
+    }
+  ]
+}

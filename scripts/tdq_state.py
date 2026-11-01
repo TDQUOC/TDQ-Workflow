@@ -470,16 +470,18 @@ def _dong_so_request_cu(cwd):
         # For the details, call `tdq_timing.py close` directly.
         os.environ["TDQ_LOG"] = "0"
         so_lieu = tdq_timing.tong_hop(state, datetime.now().astimezone(),
-                                      tdq_timing.default_transcript_dir(cwd))
+                                      project_dir=cwd)
         return bool(so_lieu) and tdq_timing.dong_so(cwd, so_lieu)
     except Exception as exc:                     # noqa: BLE001 — must not block init
-        _warn(f"could not close the timing books of the old request: {exc.__class__.__name__}")
-        return False
+        error_name = exc.__class__.__name__
     finally:
         if cu is None:
             os.environ.pop("TDQ_LOG", None)
         else:
             os.environ["TDQ_LOG"] = cu
+    # Report failure after restoring the caller's logging preference.
+    _warn(f"could not close the timing books of the old request: {error_name}")
+    return False
 
 
 def ghi_moc_phase(state, phase, at=None):

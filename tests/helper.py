@@ -30,10 +30,16 @@ def run_hook(script, payload, env=None):
     # 2026-10-03: `session_start.py` starts a REAL background build (installs, graphify, lumen
     # index) in a project whose search layers are not ready — which is every temp dir a test
     # makes. Off by default here; the auto-init tests turn it on with a harmless TDQ_LENH_NEN.
+    full_env = {**os.environ, "TDQ_KHOI_TAO_NEN": "0"}
+    fixture_cwd = payload.get("cwd") if isinstance(payload, dict) else None
+    if isinstance(fixture_cwd, str) and fixture_cwd:
+        # Resolve the fixture normally, without an inherited harness project anchor.
+        full_env["TDQ_PROJECT_DIR"] = tdq_state.resolve_project_dir(fixture_cwd, env=None)
+    full_env.update(env or {})
     proc = subprocess.run(
         [sys.executable, os.path.join(HOOKS, script)],
         input=json.dumps(payload), capture_output=True, encoding="utf-8", text=True, timeout=30,
-        env={**os.environ, "TDQ_KHOI_TAO_NEN": "0", **(env or {})},
+        env=full_env,
     )
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
 
@@ -54,21 +60,52 @@ def co_lenh(ten):
     return shutil.which(ten) is not None
 
 
+def _python_dem_duoc(candidate):
+    """A missing or broken interpreter is an unavailable test capability."""
+    import skill_tokens
+    if not os.path.isfile(candidate):
+        return False
+    try:
+        probe = subprocess.run(
+            [candidate, "-c", skill_tokens.LENH_DEM_LO], input='["x"]',
+            capture_output=True, text=True, encoding="utf-8", timeout=60,
+        )
+        counts = json.loads(probe.stdout) if probe.returncode == 0 else None
+        return counts == [1] and type(counts[0]) is int
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return False
+
+
 @functools.lru_cache(maxsize=None)
-def co_bo_dem_token():
-    """Đếm token thật được không. Hỏi chính `skill_tokens` — cả python đang chạy lẫn venv của
-    repo — thay vì mỗi test tự đoán đường venv (đoán `bin/python` thì sai trên Windows)."""
+def python_bo_dem_token():
+    """Return a verified tokenizer interpreter, including the main checkout's venv."""
     import skill_tokens
     try:
         skill_tokens.nap_bo_dem()
-        return True
+        return sys.executable
     except skill_tokens.ThieuThuVienDem:
         pass
+    if _python_dem_duoc(skill_tokens.VENV_PYTHON):
+        return skill_tokens.VENV_PYTHON
     try:
-        skill_tokens.dem_qua_venv(["x"])
-        return True
-    except skill_tokens.ThieuThuVienDem:
-        return False
+        common = subprocess.run(
+            ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8", timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if common.returncode != 0:
+        return None
+    checkout = os.path.dirname(common.stdout.strip())
+    venv_bin = ("Scripts", "python.exe") if os.name == "nt" else ("bin", "python")
+    candidate = os.path.join(checkout, ".venv-tokens", *venv_bin)
+    return candidate if _python_dem_duoc(candidate) else None
+
+
+@functools.lru_cache(maxsize=None)
+def co_bo_dem_token():
+    """Whether a real tokenizer is available, without assuming a venv platform."""
+    return python_bo_dem_token() is not None
 
 
 LY_DO_TOKEN = "chưa cài anthropic-tokenizer (python3 scripts/skill_tokens.py in lệnh cài)"

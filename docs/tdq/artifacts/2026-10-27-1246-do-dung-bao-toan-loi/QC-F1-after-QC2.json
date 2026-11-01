@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "scripts/tdq_test.py",
+    "tron-bo"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T15:05:02.980804+07:00",
+  "seconds": 688.269,
+  "exit_code": 0,
+  "stdout": "QC-F1-after-QC2.stdout.txt",
+  "stderr": "QC-F1-after-QC2.stderr.txt"
+}

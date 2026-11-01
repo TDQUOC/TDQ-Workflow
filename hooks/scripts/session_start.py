@@ -158,6 +158,9 @@ def kich_hoat_nen(cwd):
     ever runs from a test.
     """
     lenh = [sys.executable, os.path.join(GOC_PLUGIN, "scripts", "tdq_setup.py"), "--nen"]
+    # Opt-in is invocation-local. A warm static cache never replaces the background smoke.
+    if os.environ.get("TDQ_READINESS_CACHE", "off") == "auto":
+        lenh.extend(["--readiness-cache", "auto"])
     if os.environ.get("TDQ_LENH_NEN"):
         try:
             lenh = json.loads(os.environ["TDQ_LENH_NEN"])

@@ -1,0 +1,89 @@
+{
+  "kind": "uncertified-full-observation",
+  "date": "2026-10-31",
+  "receipt": "docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\QC-F1-codex-20261031-0e56356e147e430b84172ce2feaf5f0e\\receipt.json",
+  "receipt_sha256": "f2d48664e37116055596fba497132eb42ab8aac8164f93451a86ac7b184773b0",
+  "result": "docs\\tdq\\cache\\test-runs\\c030d75ca44ab99e\\0a5f3ce24d7f4dc3adf9e5486cee3685\\result.json",
+  "result_sha256": "af3c1fefdf44a255b3ef95dfc3ae9cf75324ff6bc5cdf84b95d7e9c1ccf4f2e1",
+  "status": "FAIL",
+  "counts": {
+    "pass": 3590,
+    "fail": 1,
+    "error": 0,
+    "skip": 8,
+    "xfail": 0,
+    "xpass": 0
+  },
+  "complete": true,
+  "missing": [],
+  "extra": [],
+  "duplicates": [],
+  "baseline": "docs\\tdq\\artifacts\\2026-10-27-1246-do-dung-bao-toan-loi\\review-collection.json",
+  "baseline_sha256": "ba31b3b2df65709a2096d0430b95481d886a24509f57abe822e1ef5778eacd00",
+  "baseline_cases": 3306,
+  "current_cases": 3599,
+  "baseline_missing": [],
+  "added_cases": 293,
+  "nonpass": [
+    {
+      "case_id": "tests/test_tdq_finish.py::KhoaTokenTest::test_khoa_chay_khi_cham_file_luat",
+      "outcome": "fail",
+      "reason": "E   AssertionError: 'fail' not found in ('ok', 'skip')"
+    }
+  ],
+  "skips": [
+    {
+      "case_id": "tests/test_archify_artifacts.py::test_source_fingerprint_symlink_outside_root",
+      "reason": "Symlinks not supported in this environment",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_archify_artifacts.py::test_publish_bundle_rejects_symlinks",
+      "reason": "Symlinks not supported",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_archify_delivery.py::TestAtomicDelivery::test_atomic_delivery_rejects_symlink",
+      "reason": "Symlinks not supported in this environment",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_codex_run.py::CodexHomeTest::test_thu_muc_tam_quyen_700",
+      "reason": "POSIX permission bits do not exist on Windows: os.chmod only toggles the read-only attribute and stat.S_IMODE always reports 0o666/0o777, so the case can only ever fail there. The product still calls chmod (harmless, and correct everywhere else); expressing this restriction on Windows would mean ACLs, a mechanism the product does not use. The guarantee stays covered on macOS and Linux.",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_codex_run.py::CodexHomeProviderTest::test_auth_json_lay_tu_nguon_quyen_600",
+      "reason": "POSIX permission bits do not exist on Windows: os.chmod only toggles the read-only attribute and stat.S_IMODE always reports 0o666/0o777, so the case can only ever fail there. The product still calls chmod (harmless, and correct everywhere else); expressing this restriction on Windows would mean ACLs, a mechanism the product does not use. The guarantee stays covered on macOS and Linux.",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_tdq_test_process.py::test_posix_process_group_cleanup",
+      "reason": "POSIX proof requires actual POSIX host",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_team_chong_conflict.py::test_doi_ten_help_chi_in_ten_moi[tdq_state.py]",
+      "reason": "tdq_state.py dispatches by hand, it has no argparse --help",
+      "capability": "runtime-reported"
+    },
+    {
+      "case_id": "tests/test_team_mode.py::VaLuoiWorktreeTest::test_git_tu_choi_khong_phai_khoa_thi_khong_dan_nhan_khoa",
+      "reason": "the case needs a directory git cannot write into, and it builds one with os.chmod(0o500). On Windows chmod only toggles the read-only ATTRIBUTE, which applies to files and not to directory creation, so git removes the worktree anyway and the case asserts a message that could never appear. Denying a directory there means an ACL edit (icacls), a different mechanism the product does not depend on. The behaviour under test — labelling a permission error as a lock — is host-independent and stays covered on macOS and Linux.",
+      "capability": "runtime-reported"
+    }
+  ],
+  "source_sha256": "5439e41524c826e800503388bf2450eaec4fb42f9bf8122d8360643744fc5977",
+  "config_changed": [
+    ".claude.json"
+  ],
+  "guard_failures": [
+    {
+      "stage": "config_guard",
+      "type": "ValueError",
+      "message": "config changed during command"
+    }
+  ],
+  "cleanup": "complete",
+  "certified": false
+}

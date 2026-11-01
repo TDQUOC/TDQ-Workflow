@@ -1,0 +1,19 @@
+Request `2026-10-27-1846-kiem-chung-tang-toc` · lane full · opened at 2026-10-27T19:02:05+07:00
+
+| Phase | Wall clock | API request | Tool wait | Background job | Observed union | Unattributed | Times entered |
+|---|---|---|---|---|---|---|---|
+| idle | 5s | — [partial] | 1s [partial] | — [unavailable] | 1s [partial] | 4s [partial] | 1 |
+| analyze | 9 min | — [partial] | 1 min [partial] | — [unavailable] | 1 min [partial] | 8 min [partial] | 1 |
+| spec | 26 min | — [partial] | 34s [partial] | — [unavailable] | 34s [partial] | 26 min [partial] | 1 |
+| plan | 8 min | — [partial] | 13s [partial] | — [unavailable] | 13s [partial] | 7 min [partial] | 1 |
+| mode | 56s | — [partial] | 2s [partial] | — [unavailable] | 2s [partial] | 54s [partial] | 1 |
+| implement | 98h 46min | — [partial] | 3h 18min [partial] | — [unavailable] | 3h 18min [partial] | 95h 27min [partial] | 1 |
+| Total | 99h 29min | — [partial] | 3h 20min [partial] | — [unavailable] | 3h 20min [partial] | 96h 08min [partial] |  |
+
+Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.
+- api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window
+- tool_call_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source
+- background_job_seconds: schema_has_no_confirmed_lifecycle
+- observed_union_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- unattributed_seconds: wall_minus_observed_union;conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema

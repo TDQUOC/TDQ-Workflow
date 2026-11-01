@@ -1,0 +1,32 @@
+{
+  "process": {
+    "exit_code": null,
+    "reason": "cancelled",
+    "timed_out": false,
+    "cancelled": true,
+    "cleanup_complete": true,
+    "cleanup_seconds": 0.0034460999886505306,
+    "ownership": {
+      "mechanism": "windows-job",
+      "root_pid": 34088,
+      "assignment_verified": true,
+      "verified": true,
+      "cleanup_scope": "job-object"
+    },
+    "schema_version": 1,
+    "phase": "runtime-tree",
+    "stdout": "",
+    "stderr": "",
+    "duration_seconds": 0.2450216999859549,
+    "wall_seconds": 0.2450216999859549,
+    "execute_seconds": 0.24157559999730438,
+    "paths": {
+      "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-m39s55tn\\workers\\controller\\tmp\\tdq-rvxx96j2\\workers\\controller\\home",
+      "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-m39s55tn\\workers\\controller\\tmp\\tdq-rvxx96j2\\workers\\controller\\tmp",
+      "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-m39s55tn\\workers\\controller\\tmp\\tdq-rvxx96j2\\pytest"
+    }
+  },
+  "ready_observed": true,
+  "heartbeat_before": "21360:1793447242069690600",
+  "heartbeat_after": "21360:1793447242069690600"
+}

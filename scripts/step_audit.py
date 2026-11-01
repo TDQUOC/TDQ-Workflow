@@ -2,8 +2,8 @@
 """step_audit.py — measure the STEP cost of one Claude Code session.
 
 Unlike `token_audit.py`: that file measures tokens (layer 3 — context cost), this one measures
-the number of steps (layer 2 — runtime). One tool call = one round-trip; the total time of a
-request is DIRECTLY proportional to the step count, so the step count is the main speed variable.
+the number of steps (layer 2 — runtime). Step and tool counts describe orchestration;
+they do not determine elapsed time when durations and overlap vary.
 
 The five metrics printed:
       1. Step count         — the number of distinct model `requestId`s (each one an API call).
@@ -12,8 +12,9 @@ The five metrics printed:
       2. Tool calls per turn — total tool calls / turns THAT HAVE tool calls. A value of 1.00
             means the batch-into-one-turn rule has never once been applied.
       3. Repeat Read        — how many times a file already read is read again in one session.
-      4. Median latency     — seconds between the previous record and the next model turn.
-      5. p90 latency        — nearest-rank: element ceil(0.9 × n) after sorting.
+      4. Median legacy gap  — seconds between the previous record and the next model turn.
+      5. p90 legacy gap     — nearest-rank: element ceil(0.9 × n) after sorting.
+These assistant-gap estimates are not API latency or model compute time.
 
 Usage:
         python3 scripts/step_audit.py                       # current project, 3 latest sessions
@@ -36,8 +37,7 @@ import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stder
 
 from token_audit import default_transcript_dir, find_sessions, iter_events  # noqa: E402
 
-# A gap larger than this threshold means the user went away and came back, not model
-# latency — dropped from the statistics so the median is not skewed.
+# Preserve the historical cutoff for comparison. A long gap does not prove user idle.
 MAX_GAP_SECONDS = 300
 
 
@@ -171,8 +171,11 @@ def report(total):
         f"| Model steps | {total['steps']} |",
         f"| Tool calls per turn | {per_turn:.2f} ({total['turns_with_tools']} turn(s)) |",
         f"| Repeat Read of one file | {total['repeat_reads']} |",
-        f"| Median latency | {median(total['latencies']):.1f} s |",
-        f"| p90 latency | {percentile(total['latencies'], 0.9):.1f} s |",
+        f"| Median legacy assistant-gap estimate | {median(total['latencies']):.1f} s |",
+        f"| p90 legacy assistant-gap estimate | {percentile(total['latencies'], 0.9):.1f} s |",
+        "",
+        "Legacy assistant-gap estimates are not API latency or model compute time. "
+        f"Gaps above {MAX_GAP_SECONDS} s are omitted by the historical heuristic.",
     ]
     return "\n".join(lines)
 

@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "TDQ-Workflow — 6-Layer System Architecture",
-    "subtitle": "4 Host Adapters · 11 Skills · 6 Sub-Agents · 13 Lifecycle Hooks · 3-Tier Search · 43 CLI Scripts",
+    "subtitle": "Host Adapters · Skills · Sub-Agents · Lifecycle Hooks · Search · CLI Runtime",
     "output": "overview.html",
     "locale": "en",
     "animation": "trace",
@@ -11,13 +11,27 @@
     "quality_profile": "standard",
     "legend": {
       "entries": {
-        "external": { "label": "Host Adapters" },
-        "frontend": { "label": "Skills & Sub-Agents" },
-        "security": { "label": "Lifecycle Hooks" },
-        "cloud": { "label": "3-Tier Search & BA" },
-        "backend": { "label": "CLI Core Runtime" },
-        "messagebus": { "label": "Team & Worktrees" },
-        "database": { "label": "State & Docs Ledger" }
+        "external": {
+          "label": "Host Adapters"
+        },
+        "frontend": {
+          "label": "Skills & Sub-Agents"
+        },
+        "security": {
+          "label": "Lifecycle Hooks"
+        },
+        "cloud": {
+          "label": "3-Tier Search & BA"
+        },
+        "backend": {
+          "label": "CLI Core Runtime"
+        },
+        "messagebus": {
+          "label": "Team & Worktrees"
+        },
+        "database": {
+          "label": "State & Docs Ledger"
+        }
       }
     },
     "translations": {
@@ -44,8 +58,14 @@
       "label": "4 Host Adapters",
       "sublabel": "Claude · Codex · OpenCode · AGY",
       "tag": "adapters",
-      "pos": [50, 90],
-      "size": [210, 72]
+      "pos": [
+        50,
+        90
+      ],
+      "size": [
+        210,
+        72
+      ]
     },
     {
       "id": "skills",
@@ -53,8 +73,14 @@
       "label": "11 Skills & 6 Agents",
       "sublabel": "intake · spec · plan · build",
       "tag": "cognitive",
-      "pos": [50, 320],
-      "size": [210, 72]
+      "pos": [
+        50,
+        320
+      ],
+      "size": [
+        210,
+        72
+      ]
     },
     {
       "id": "hooks",
@@ -62,8 +88,14 @@
       "label": "13 Lifecycle Hooks",
       "sublabel": "6 events · Verify-by-Effect",
       "tag": "gates",
-      "pos": [420, 90],
-      "size": [210, 72]
+      "pos": [
+        420,
+        90
+      ],
+      "size": [
+        210,
+        72
+      ]
     },
     {
       "id": "team",
@@ -71,8 +103,14 @@
       "label": "Team Orchestrator",
       "sublabel": "tdq_team · TCAS · Worktrees",
       "tag": "waves",
-      "pos": [770, 90],
-      "size": [210, 72]
+      "pos": [
+        770,
+        90
+      ],
+      "size": [
+        210,
+        72
+      ]
     },
     {
       "id": "search",
@@ -80,17 +118,29 @@
       "label": "3-Tier Search & Archify",
       "sublabel": "LSP · Graphify · Archify 2-Tier",
       "tag": "intelligence",
-      "pos": [420, 320],
-      "size": [210, 72]
+      "pos": [
+        420,
+        320
+      ],
+      "size": [
+        210,
+        72
+      ]
     },
     {
       "id": "cli",
       "type": "backend",
-      "label": "43 CLI Core Scripts",
-      "sublabel": "tdq_state · tdq_test · tdq_finish",
+      "label": "CLI Runtime Modules",
+      "sublabel": "state · tests · timing · finish",
       "tag": "stdlib",
-      "pos": [770, 320],
-      "size": [210, 72]
+      "pos": [
+        770,
+        320
+      ],
+      "size": [
+        210,
+        72
+      ]
     },
     {
       "id": "state",
@@ -98,33 +148,102 @@
       "label": "State & Docs Ledger",
       "sublabel": "state.json · docs/tdq · Master Map",
       "tag": "sha256",
-      "pos": [1120, 205],
-      "size": [210, 72]
+      "pos": [
+        1120,
+        205
+      ],
+      "size": [
+        210,
+        72
+      ]
     }
   ],
   "boundaries": [
     {
       "kind": "region",
       "label": "Host & Cognitive Layer",
-      "wraps": ["hosts", "skills"],
+      "wraps": [
+        "hosts",
+        "skills"
+      ],
       "pad": 22
     },
     {
       "kind": "security-group",
       "label": "Enforcement, Intelligence & CLI Runtime Layer",
-      "wraps": ["hooks", "team", "search", "cli", "state"],
+      "wraps": [
+        "hooks",
+        "team",
+        "search",
+        "cli",
+        "state"
+      ],
       "pad": 22
     }
   ],
   "connections": [
-    { "id": "c_host_skills", "from": "hosts", "to": "skills", "label": "load", "variant": "emphasis", "labelAt": [155, 240] },
-    { "id": "c_host_hooks", "from": "hosts", "to": "hooks", "label": "events", "variant": "security" },
-    { "id": "c_skills_search", "from": "skills", "to": "search", "label": "query", "variant": "emphasis" },
-    { "id": "c_hooks_team", "from": "hooks", "to": "team", "label": "waves" },
-    { "id": "c_hooks_cli", "from": "hooks", "to": "cli", "label": "enforce", "variant": "security", "labelAt": [695, 240] },
-    { "id": "c_search_cli", "from": "search", "to": "cli", "label": "evidence" },
-    { "id": "c_team_state", "from": "team", "to": "state", "label": "sweep", "variant": "dashed" },
-    { "id": "c_cli_state", "from": "cli", "to": "state", "label": "commit", "variant": "emphasis" }
+    {
+      "id": "c_host_skills",
+      "from": "hosts",
+      "to": "skills",
+      "label": "load",
+      "variant": "emphasis",
+      "labelAt": [
+        155,
+        240
+      ]
+    },
+    {
+      "id": "c_host_hooks",
+      "from": "hosts",
+      "to": "hooks",
+      "label": "events",
+      "variant": "security"
+    },
+    {
+      "id": "c_skills_search",
+      "from": "skills",
+      "to": "search",
+      "label": "query",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c_hooks_team",
+      "from": "hooks",
+      "to": "team",
+      "label": "waves"
+    },
+    {
+      "id": "c_hooks_cli",
+      "from": "hooks",
+      "to": "cli",
+      "label": "enforce",
+      "variant": "security",
+      "labelAt": [
+        695,
+        240
+      ]
+    },
+    {
+      "id": "c_search_cli",
+      "from": "search",
+      "to": "cli",
+      "label": "evidence"
+    },
+    {
+      "id": "c_team_state",
+      "from": "team",
+      "to": "state",
+      "label": "sweep",
+      "variant": "dashed"
+    },
+    {
+      "id": "c_cli_state",
+      "from": "cli",
+      "to": "state",
+      "label": "commit",
+      "variant": "emphasis"
+    }
   ],
   "cards": [
     {
@@ -148,7 +267,7 @@
       "title": "Deterministic Enforcement",
       "items": [
         "13 Lifecycle Hooks enforce search order, chat approvals, and SHA-256 Verify-by-Effect at Stop",
-        "43 pure-Python CLI scripts manage state.json, radius testing, and isolated Git worktrees"
+        "Python CLI modules manage state.json, radius testing, and isolated Git worktrees"
       ]
     }
   ]

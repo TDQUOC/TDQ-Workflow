@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "C:/Users/admin/.codex/plugins/cache/tdq-local/tdq-workflow/0.84.2/scripts/tdq_team.py",
+    "check",
+    "T1.1"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:05:27.475200+07:00",
+  "seconds": 0.467,
+  "exit_code": 0,
+  "stdout": "T1.1-check.stdout.txt",
+  "stderr": "T1.1-check.stderr.txt"
+}

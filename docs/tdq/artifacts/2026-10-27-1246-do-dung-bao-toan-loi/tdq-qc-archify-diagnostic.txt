@@ -1,0 +1,27 @@
+Read-only QC1.2 diagnostic, 2026-10-27
+
+Outcome: no supported in-session workaround found. Keep native browser gate FAIL.
+
+Observed:
+- Current tool PowerShell reports WindowsPrincipal Administrator=True.
+- No ARCHIFY_CHROME, ARCHIFY_CHROME_NO_SANDBOX, __COMPAT_LAYER, or NODE_OPTIONS override was present in the probe environment.
+- TDQ resolves the native engine to C:/Users/admin/Documents/archify/archify/bin/archify.mjs.
+- Node v24.21.0 / libuv 1.52.1 / win32.
+- Chrome 155.0.8059.86 and Edge 156.0.4314.42 are already installed.
+- Direct ChromeVisualBrowser attach probes, using the installed engine unchanged and normal sandbox settings, both fail before any CDP response:
+  Chrome: 86 ms; Edge selected through supported ARCHIFY_CHROME: 65 ms.
+  Error: Chrome DevTools read pipe failed: stream ended; Chrome process still running; receivedBytes=0; messages=0; completedWrites=1; writtenBytes=50.
+- These are transport probes, not replacement E2E gates; no passing browser receipt is claimed.
+
+Supported options and likely cause:
+- visual-check.mjs:1326 accepts ARCHIFY_CHROME; :1528 fixes transport to --remote-debugging-pipe; :1591 uses inherited stdio pipes 3/4. No CDP URL/9222/WebSocket transport option exists in the inspected native CLI paths.
+- delivery-contract.md:426-431 documents Chrome/Chromium/Edge selection; :473-483 explicitly calls elevated-shell relaunches unsupported and says to rerun from a normally opened non-elevated PowerShell outside an elevated/compatibility parent.
+- Elevation plus zero-byte immediate pipe closure matches this documented startup limitation. This supports the diagnosis but does not prove which Windows relaunch mechanism closed the handle.
+- Switching the installed browser did not help. A separate supported non-elevated execution context is the documented remedy; no sandbox or de-elevation bypass was attempted.
+
+Additional pre-existing observation:
+- TDQ scripts/archify_delivery.py:349-350 currently injects ARCHIFY_CHROME_NO_SANDBOX=1 when is_windows_elevated() is true. This was already present at baseline 3e0ef5f; no changes were made. The standalone probes intentionally used the normal inherited environment without this injection and reproduce the same pipe failure. Investigating or changing this pre-existing policy is outside this read-only task.
+- git diff from baseline is empty for tdq_archify.py, archify_delivery.py, archify_artifacts.py, archify_model.py, and test_archify_e2e.py.
+
+Evidence: C:/Users/admin/AppData/Local/Temp/tdq-qc-archify-transport-probe.json
+No source, test, skill, state, external installation, or dependency was changed. No full suite was run.

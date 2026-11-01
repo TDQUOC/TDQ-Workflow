@@ -54,6 +54,7 @@ if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import tdq_ten_lenh  # noqa: E402
+import tdq_readiness  # noqa: E402
 
 CHECK_TIMEOUT = 20
 MCP_SERVER_NAME = "lsp"
@@ -283,7 +284,10 @@ def bac1_binary():
     if not duong_dan:
         return Bac(1, "binary agent-lsp", False,
                    "không thấy trên PATH", INSTALL_AGENT_LSP)
-    rc, out = _run(["agent-lsp", "--version"])
+    rc, out = tdq_readiness.static_probe(
+        "binary-version", lambda: _run(["agent-lsp", "--version"]),
+        [duong_dan, __file__, os.path.expanduser("~/.claude.json")],
+        environment={"PATH": os.environ.get("PATH", "")})
     ban = out.splitlines()[0].strip() if rc == 0 and out else "không đọc được bản"
     return Bac(1, "binary agent-lsp", True, ban)
 
@@ -322,10 +326,34 @@ def bac2_mcp():
 
 def do_ngon_ngu(project):
     """Count source files per language so rung 3 only asks for servers this project truly needs."""
-    dem = {}
+    return tdq_readiness.static_probe(
+        "language-inventory", lambda: _do_ngon_ngu(project),
+        lambda: _readiness_inputs(project), environment={"threshold": NGUONG_FILE})
+
+
+def _readiness_inputs(project):
+    inputs = [__file__, os.path.expanduser("~/.claude.json"),
+              os.path.expanduser("~/.claude/settings.json"),
+              os.path.join(project, "graphify-out", "graph.json")]
+    for goc, files in _language_files(project):
+        inputs.extend(os.path.join(goc, name) for name in files
+                      if os.path.splitext(name)[1] in EXT_LANG or os.path.abspath(goc) == os.path.abspath(project))
+    return inputs
+
+
+def _language_files(project):
     for goc, thu_muc, files in os.walk(project):
         thu_muc[:] = [d for d in thu_muc
                       if d not in SKIP_DIRS and not d.startswith(SKIP_PREFIX) and not d.startswith(".")]
+        if os.path.normcase(os.path.abspath(goc)) == os.path.normcase(
+                os.path.abspath(os.path.join(project, "docs", "tdq"))):
+            thu_muc[:] = [d for d in thu_muc if d != "cache"]
+        yield goc, files
+
+
+def _do_ngon_ngu(project):
+    dem = {}
+    for _goc, files in _language_files(project):
         for ten in files:
             lang = EXT_LANG.get(os.path.splitext(ten)[1])
             if lang:
@@ -631,12 +659,16 @@ def bac8_module(project):
     return Bac(8, ten, True, chi_tiet)
 
 
-def chay_kiem(project):
+def chay_kiem(project, *, cache_mode="off", request=None, handoff=None, stats=None):
     """Run the whole ladder and return the list of rungs, in order."""
     _log(f"kiem · project={project}")
-    bac = [bac1_binary(), bac2_mcp(), bac3_language_server(project), bac4_quyen_tool(),
-           bac5_hook_xung_dot(project), bac6_cau_hinh_goc_import(project), bac7_graphify(project),
-           bac8_module(project)]
+    # Only binary-version and language inventory are static. Doctor, configuration,
+    # graph/module freshness and the caller's real smoke never come from this cache.
+    with tdq_readiness.probe_context(project, mode=cache_mode, request=request, handoff=handoff, stats=stats):
+        _moc_code_moi_nhat.cache_clear()
+        bac = [bac1_binary(), bac2_mcp(), bac3_language_server(project), bac4_quyen_tool(),
+               bac5_hook_xung_dot(project), bac6_cau_hinh_goc_import(project), bac7_graphify(project),
+               bac8_module(project)]
     for b in bac:
         _log(f"bậc {b.so} {b.ten} → {'ĐẠT' if b.dat else 'THIẾU'}")
     return bac
@@ -653,7 +685,7 @@ def chay_smoke(project):
     return tdq_setup.smoke_ba_tang(project)
 
 
-def kiem_mot_lenh(project):
+def kiem_mot_lenh(project, *, cache_mode="off", request=None, handoff=None, stats=None):
     """THE one check: the 8 rungs, then the 3-layer smoke, then ONE total line.
 
     Observed 2026-10-02: with the smoke living only in `tdq_setup.py`, an agent ran just
@@ -664,7 +696,10 @@ def kiem_mot_lenh(project):
     -> (exit code, rungs, smoke rows). Exit: EXIT_THIEU when a rung blocks, else EXIT_SMOKE when
     a layer failed, else EXIT_OK.
     """
-    bac = chay_kiem(project)
+    options = {"cache_mode": cache_mode, "request": request, "handoff": handoff}
+    if stats is not None:
+        options["stats"] = stats
+    bac = chay_kiem(project, **options) if cache_mode != "off" or stats is not None else chay_kiem(project)
     for b in bac:
         b.in_ra()
     thieu = [b for b in bac if not b.dat and not b.chi_canh_bao]
@@ -694,7 +729,10 @@ def kiem_mot_lenh(project):
 
 
 def cmd_kiem(args):
-    return kiem_mot_lenh(_project_dir())[0]
+    if getattr(args, "readiness_cache", "off") == "off":
+        return kiem_mot_lenh(_project_dir())[0]
+    return kiem_mot_lenh(_project_dir(), cache_mode=args.readiness_cache,
+                        request=getattr(args, "request", None))[0]
 
 
 def cmd_module(args):
@@ -749,7 +787,9 @@ def parse_args(argv):
         description="Chẩn đoán bộ agent-lsp cho máy và cho project này. Script không tự cài gì.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log service")
     sub = ap.add_subparsers(dest="lenh", required=True)
-    sub.add_parser("check", help="chạy 8 bậc rồi smoke 3 tầng, in một dòng tổng")
+    check = sub.add_parser("check", help="chạy 8 bậc rồi smoke 3 tầng, in một dòng tổng")
+    check.add_argument("--readiness-cache", choices=("off", "auto"), default="off")
+    check.add_argument("--request", help="Request cache namespace (defaults to active state)")
     sub.add_parser("module", help="in các module LSP (ngôn ngữ, gốc) và trạng thái từng module")
     kb = sub.add_parser("kich-ban", help="in kịch bản MCP cho mọi module chưa ĐẠT")
     kb.add_argument("--module", help="chỉ một module, dạng <ngôn ngữ>:<gốc>")

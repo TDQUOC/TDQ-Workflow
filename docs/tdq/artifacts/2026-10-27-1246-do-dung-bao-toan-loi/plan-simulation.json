@@ -1,0 +1,200 @@
+{
+  "recorded_at": "2026-10-27T13:34:38.080688+07:00",
+  "kind": "plan_simulation_not_runtime_benchmark",
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-X",
+    "utf8",
+    "C:\\Users\\admin\\.codex\\plugins\\cache\\tdq-local\\tdq-workflow\\0.84.2\\scripts\\tdq_bench.py",
+    "simulate",
+    "--plan",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\2026-10-27-1246-do-dung-bao-toan-loi.md",
+    "--thuc-do",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\bench\\2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json",
+    "--he-so-agent",
+    "1.5"
+  ],
+  "exit_code": 0,
+  "stdout": "Plan: 11 task(s) · assigned 7 · leader keeps 4 · 4 wave(s) · agent factor 1.5\n| Metric | main | team |\n|---|---|---|\n| Model time (minutes) | 22.4 | 12.3 |\n| Fixed fee per wave (minutes) | 0.0 | 0.0 |\n| Waiting on the slowest task (minutes) | — | 12.2 |\n| Leader working in between (minutes) | — | 0.0 |\n| Including t_tick (minutes) | 22.4 | 12.3 |\nWinner: đội (gap 10.1 minutes)\nMode codex: not simulated — C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\bench\\2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json carries no Codex constant (t_codex, t_codex_khoi_dong) — measure them first: python3 scripts/tdq_bench.py calibrate --ra C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\bench\\2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json\n",
+  "stderr": "[2026-10-27T13:34:37] simulate · --plan C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\2026-10-27-1246-do-dung-bao-toan-loi.md --thuc-do C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\bench\\2026-08-17-2001-smoke-test-main-vs-doi-thuc-do.json --he-so-agent 1.5\n[2026-10-27T13:34:37] chia-dot → 10/11 task(s) declare dependencies, ordering by graph\n[2026-10-27T13:34:38] simulate → 11 task(s) · 4 wave(s) · winner: đội\n",
+  "plan_sha256": "71abf7133af6cef496610aba198f6ff93a8c726f698e43413ce55f0218e430c9",
+  "calibration_sha256": "7e3e65a416b39c5f8cbe17545d70c14585e4d28fe25d6972354e724093386b22",
+  "structure": {
+    "tasks": [
+      {
+        "id": "T0.1",
+        "decision": [
+          "tu_lam",
+          "vung-khoa"
+        ],
+        "files": [],
+        "dependencies": [],
+        "minutes": 1
+      },
+      {
+        "id": "T1.1",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "scripts/tdq_transcript.py",
+          "scripts/token_audit.py",
+          "tests/test_transcript.py",
+          "tests/test_token_audit.py"
+        ],
+        "dependencies": [
+          "T0.1"
+        ],
+        "minutes": 12
+      },
+      {
+        "id": "T1.2",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "scripts/tdq_test_result.py",
+          "tests/test_tdq_test_result.py"
+        ],
+        "dependencies": [
+          "T0.1"
+        ],
+        "minutes": 10
+      },
+      {
+        "id": "T2.1",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "scripts/tdq_timing.py",
+          "tests/test_timing.py"
+        ],
+        "dependencies": [
+          "T1.1"
+        ],
+        "minutes": 12
+      },
+      {
+        "id": "T2.2",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "scripts/tdq_test.py",
+          "tests/test_tdq_test.py",
+          "tests/test_next_tron_bo.py"
+        ],
+        "dependencies": [
+          "T1.2"
+        ],
+        "minutes": 16
+      },
+      {
+        "id": "T2.3",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "scripts/tdq_state.py",
+          "tests/test_timing_lifecycle.py"
+        ],
+        "dependencies": [
+          "T2.1"
+        ],
+        "minutes": 6
+      },
+      {
+        "id": "T2.4",
+        "decision": [
+          "tu_lam",
+          "file-luat"
+        ],
+        "files": [
+          "scripts/step_audit.py",
+          "tests/test_step_budget.py",
+          "skills/tdq-build/references/report-template.md",
+          "skills/tdq-status/SKILL.md"
+        ],
+        "dependencies": [
+          "T2.1",
+          "T2.2"
+        ],
+        "minutes": 4
+      },
+      {
+        "id": "T3.1",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "tests/test_phase1_logging.py"
+        ],
+        "dependencies": [
+          "T2.1",
+          "T2.2",
+          "T2.3",
+          "T2.4"
+        ],
+        "minutes": 4
+      },
+      {
+        "id": "T3.2",
+        "decision": [
+          "giao",
+          ""
+        ],
+        "files": [
+          "tests/test_phase1_contract.py"
+        ],
+        "dependencies": [
+          "T2.1",
+          "T2.2",
+          "T2.3",
+          "T2.4"
+        ],
+        "minutes": 6
+      },
+      {
+        "id": "T4.1",
+        "decision": [
+          "tu_lam",
+          "vung-khoa"
+        ],
+        "files": [],
+        "dependencies": [
+          "T3.1",
+          "T3.2"
+        ],
+        "minutes": 10
+      },
+      {
+        "id": "T4.2",
+        "decision": [
+          "tu_lam",
+          "vung-khoa"
+        ],
+        "files": [],
+        "dependencies": [
+          "T4.1"
+        ],
+        "minutes": 4
+      }
+    ],
+    "total_minutes": 85,
+    "dependency_order_valid": true,
+    "duplicate_file_owners": []
+  },
+  "limits": [
+    "Historical macOS constants include manual task duration and stub overhead.",
+    "Simulation uses uniform task duration rather than per-task eNm.",
+    "Leader work overlap is approximated and does not fully model leader dependency constraints.",
+    "Mode recommendation only; no implementation-mode authorization."
+  ]
+}

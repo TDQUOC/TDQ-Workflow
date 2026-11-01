@@ -1,0 +1,21 @@
+{
+  "command": [
+    "python",
+    "scripts/i18n_check.py",
+    "scripts/tdq_transcript.py",
+    "scripts/tdq_test_result.py",
+    "scripts/token_audit.py",
+    "scripts/tdq_timing.py",
+    "scripts/tdq_test.py",
+    "scripts/tdq_state.py",
+    "scripts/step_audit.py",
+    "skills/tdq-build/references/report-template.md",
+    "skills/tdq-status/SKILL.md"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:30:44.039280+07:00",
+  "seconds": 0.086,
+  "exit_code": 1,
+  "stdout": "QC-F3-i18n.stdout.txt",
+  "stderr": "QC-F3-i18n.stderr.txt"
+}

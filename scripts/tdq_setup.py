@@ -1422,7 +1422,7 @@ def _tang_tu_smoke(smoke):
     return tang
 
 
-def khoi_tao_nen(project, chay=None):
+def khoi_tao_nen(project, chay=None, *, cache_mode="off", request=None):
     """The `--nen` body: build the expensive layers in the background, then write the stamp.
 
     Steps, each bounded and none able to stop the others: declared installs (`cai_thieu`),
@@ -1484,7 +1484,8 @@ def khoi_tao_nen(project, chay=None):
                 _log(f"nền: {d}")
             if no_shim:
                 tdq_no.ghi_no(no_shim, project)
-            da_cai, no = cai_thieu(tdq_lsp.chay_kiem(project), chay_lenh=chay_lenh)
+            options = {"cache_mode": cache_mode, "request": request} if cache_mode != "off" else {}
+            da_cai, no = cai_thieu(tdq_lsp.chay_kiem(project, **options), chay_lenh=chay_lenh)
             them, no_mcp = khai_server_mcp(project, chay_lenh=chay_lenh)
             for dong in da_cai + [f"MCP lsp + {t}" for t in them]:
                 _log(f"nền: đã cài · {dong}")
@@ -1539,6 +1540,8 @@ def parse_args(argv):
     ap = argparse.ArgumentParser(
         description="Cài và chứng minh mọi phụ thuộc của bộ tìm kiếm 3 tầng.")
     ap.add_argument("--khong-log", action="store_true", help="tắt log ra stderr")
+    ap.add_argument("--readiness-cache", choices=("off", "auto"), default="off")
+    ap.add_argument("--request", help="Request cache namespace (defaults to active state)")
     ap.add_argument("--nen", action="store_true",
                     help="dựng nền phần đắt (cài, graphify) rồi ghi mốc sẵn sàng")
     ap.add_argument("--kiem-archify", action="store_true",
@@ -1586,11 +1589,18 @@ def main(argv, khai_codex=None):
         print(f"cập nhật plugin · {'ĐẠT' if ok else 'THÔNG TIN'}: {msg}")
         return 0
     if args.nen:
-        khoi_tao_nen(project)
+        options = {"cache_mode": args.readiness_cache, "request": args.request}
+        if args.readiness_cache == "off":
+            khoi_tao_nen(project)
+        else:
+            khoi_tao_nen(project, **options)
         return 0
     _log(f"setup · project={project} · máy={platform.node()}")
 
-    bac = tdq_lsp.chay_kiem(project)
+    # Handoff contains only static probe receipts; each reuse hashes its inputs again.
+    options = ({"cache_mode": args.readiness_cache, "request": args.request, "handoff": {}}
+               if args.readiness_cache != "off" else {})
+    bac = tdq_lsp.chay_kiem(project, **options)
     da_cai, no = cai_thieu(bac)
     da_shim, cb_shim, no_shim = kiem_va_cai_shim_python3()
     da_cai += da_shim
@@ -1653,7 +1663,7 @@ def main(argv, khai_codex=None):
 
     # The very same check `tdq_lsp.py check` runs — re-run after installing, so the ladder and
     # the smoke report the machine as it is now, under one total line.
-    rc, _, smoke = tdq_lsp.kiem_mot_lenh(project)
+    rc, _, smoke = tdq_lsp.kiem_mot_lenh(project, **options)
     no += [f"tầng {ten} không trả lời được: {chi_tiet}" for ten, dat, chi_tiet in smoke if not dat]
 
     for dong in no:

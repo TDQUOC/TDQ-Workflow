@@ -83,6 +83,25 @@ class NextNhacTronBo(unittest.TestCase):
         self.assertIn(DAU_HIEU, out)
         self.assertIn("budget 3", out)
 
+    def test_structured_incomplete_result_keeps_budget_hint(self):
+        self._state("qc")
+        incomplete = dict(_dong(ok=False), schema_version=2,
+                          status="INCOMPLETE", backend="pytest",
+                          details_complete=False, radius_complete=False,
+                          selection_scope="full", tests_run=0)
+        self._so([incomplete, _dong(), _dong(), _dong()])
+        out = self._next()
+        self.assertIn("budget 3", out)
+        self.assertIn(DAU_HIEU, out)
+
+    def test_structured_pass_preserves_success_budget(self):
+        self._state("implement")
+        passed = dict(_dong(), schema_version=2, status="PASS",
+                      details_complete=True, radius_complete=True,
+                      selection_scope="full", tests_run=1)
+        self._so([passed, passed, passed])
+        self.assertIn("budget 2", self._next())
+
     def test_brief_van_mot_dong(self):
         self._state("implement")
         self._so([_dong()] * 3)
