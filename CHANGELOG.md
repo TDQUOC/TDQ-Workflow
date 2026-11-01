@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.85.1 — 2026-11-01
+
+Đặt mặc định Ponytail ở mức `ultra`.
+
+- State mới, state thiếu khoá và giá trị không hợp lệ đều dùng `muc_gat=ultra`; fallback của bộ lọc luật đồng bộ cùng mức này.
+- Giữ nguyên lựa chọn rõ ràng `lite`, `full`, `ultra`, `off`; không nâng cấp cưỡng bức các project đã chọn mức riêng.
+- Mức QC (`muc_qc`) vẫn mặc định `full`, độc lập với mức gắt Ponytail.
+- Đồng bộ bảng cường độ và regression cho default/fallback, CLI và khả năng chọn mức khác.
+
 ## 0.85.0 — 2026-11-01
 
 Tối ưu calibration, quản lý tiến trình Codex và báo cáo test; giữ mặc định bảo thủ.
