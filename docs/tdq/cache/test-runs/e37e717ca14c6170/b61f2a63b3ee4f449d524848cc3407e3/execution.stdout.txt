@@ -1,0 +1,10 @@
+.................................F...................................... [ 27%]
+............................................................................................................................ [ 75%]
+.............................................. [ 92%]
+...................                                            [100%]
+================================== FAILURES ===================================
+E   AssertionError: 166 not less than or equal to 160
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 166 not less than or equal to 160
+=========================== short test summary info ===========================
+FAILED tests/test_build_portable.py::TestSinhNhanhRelease::test_release_budget_excludes_only_approved_runtime_modules
+1 failed, 260 passed, 56 subtests passed in 212.79s (0:03:32)

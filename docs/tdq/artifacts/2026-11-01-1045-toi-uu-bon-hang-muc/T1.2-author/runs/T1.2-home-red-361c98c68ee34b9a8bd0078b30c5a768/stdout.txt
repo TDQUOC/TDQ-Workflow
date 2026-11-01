@@ -1,0 +1,39 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+____ KiemSongThatTest.test_home_factory_failure_removes_only_partial_home _____
+
+self = <test_codex_cli.KiemSongThatTest testMethod=test_home_factory_failure_removes_only_partial_home>
+
+    def test_home_factory_failure_removes_only_partial_home(self):
+        source = tdq_codex.thu_muc_codex_may()
+        with open(os.path.join(source, "auth.json"), "w", encoding="utf-8") as stream:
+            json.dump({"synthetic": True}, stream)
+        sibling = os.path.join(tdq_codex._duong_home(self.cwd), tdq_codex.HOME_PREFIX + "other-job")
+        os.makedirs(sibling)
+        duong, ghi = _codex_gia(self.bin, "song")
+        with mock.patch.object(tdq_codex.shutil, "copy2", side_effect=PermissionError("fixture denied auth copy")):
+            song, _, reason = tdq_codex._kiem_song(duong, self.cwd, "m-test", timeout=2)
+        self.assertFalse(song)
+        self.assertIn("PermissionError", reason)
+        self.assertFalse(os.path.exists(ghi))
+>       self.assertEqual(os.listdir(tdq_codex._duong_home(self.cwd)), [os.path.basename(sibling)])
+E       AssertionError: Lists differ: ['tdq-codex-home-nmoyoi7z', 'tdq-codex-home-other-job'] != ['tdq-codex-home-other-job']
+E       
+E       First differing element 0:
+E       'tdq-codex-home-nmoyoi7z'
+E       'tdq-codex-home-other-job'
+E       
+E       First list contains 1 additional elements.
+E       First extra element 1:
+E       'tdq-codex-home-other-job'
+E       
+E       - ['tdq-codex-home-nmoyoi7z', 'tdq-codex-home-other-job']
+E       + ['tdq-codex-home-other-job']
+
+tests\test_codex_cli.py:422: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[2026-11-01T13:58:46+07:00] tdq_codex: consent flag: yes � model=m-test
+[2026-11-01T06:58:47+00:00] tdq_test_process reason=exited exit_code=0 wall=0.162366 cleanup=0.000056
+=========================== short test summary info ===========================
+FAILED tests/test_codex_cli.py::KiemSongThatTest::test_home_factory_failure_removes_only_partial_home
+1 failed in 0.44s

@@ -1,0 +1,82 @@
+{
+  "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/reports/2026-11-01-1045-toi-uu-bon-hang-muc-tom-tat.html",
+  "title": "Tóm tắt báo cáo tối ưu TDQ Workflow",
+  "lang": "vi",
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "scroll_width": 375,
+  "client_width": 375,
+  "regions": [
+    {
+      "tag": "MAIN",
+      "id": "",
+      "width": 351,
+      "height": 1361.375
+    },
+    {
+      "tag": "HEADER",
+      "id": "",
+      "width": 309,
+      "height": 252.5
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "width": 309,
+      "height": 200.421875
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "width": 309,
+      "height": 495.859375
+    },
+    {
+      "tag": "NAV",
+      "id": "",
+      "width": 309,
+      "height": 18.59375
+    }
+  ],
+  "headings": [
+    {
+      "level": "H1",
+      "text": "Hoàn tất bốn hạng mục tối ưu"
+    },
+    {
+      "level": "H2",
+      "text": "Những gì đã thay đổi"
+    }
+  ],
+  "links": [
+    {
+      "text": "Báo cáo đầy đủ",
+      "href": "2026-11-01-1045-toi-uu-bon-hang-muc.md",
+      "width": 81.40625,
+      "height": 18.59375
+    },
+    {
+      "text": "Hồ sơ QC",
+      "href": "../qc/2026-11-01-1045-toi-uu-bon-hang-muc.md",
+      "width": 50.859375,
+      "height": 18.59375
+    },
+    {
+      "text": "Top20 test chậm",
+      "href": "../artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+      "width": 87,
+      "height": 18.59375
+    }
+  ],
+  "tables": [],
+  "assets": [],
+  "forms": 0,
+  "body_font": "16px",
+  "body_color": "rgb(23, 38, 59)",
+  "body_background": "rgba(0, 0, 0, 0)",
+  "text_length": 1131,
+  "console_errors": [],
+  "html_sha256": "2c874f4dcd531e67971f17c426d6ed172767f4e417292d1a168f27c5352a0845"
+}

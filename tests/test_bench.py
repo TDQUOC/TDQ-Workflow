@@ -4,6 +4,8 @@ Luật của bộ test này: không hằng số nào được đặt tay trong c
 dựng file thực đo giả để kiểm công thức, và kiểm luôn rằng thiếu file thì lệnh LỖI.
 """
 import atexit
+from contextlib import redirect_stderr, redirect_stdout
+import io
 import json
 import os
 import shutil
@@ -11,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import helper  # noqa: F401  — chèn scripts/ vào sys.path
 import tdq_bench
@@ -161,6 +164,18 @@ class PlanMauChayThatTest(unittest.TestCase):
 # số nào như thế này — nó bắt buộc đọc từ file thực đo.
 HS_KIEM_TAY = {"t_task": 100.0, "t_tick": 10.0, "t_phat": 20.0,
                "t_kiem": 5.0, "t_hop": 5.0, "t_don": 15.0}
+
+
+def _calibrate_fixture(*args):
+    """Check calibration data/format with explicit samples, not real git work."""
+    output, error = io.StringIO(), io.StringIO()
+    with mock.patch.object(tdq_bench, "_do_mot_luot", side_effect=lambda task: {
+            name: [value] * (1 if name in ("t_phat", "t_don") else task)
+            for name, value in HS_KIEM_TAY.items()}), \
+            mock.patch.dict(os.environ, {"TDQ_LOG": "0"}), \
+            redirect_stdout(output), redirect_stderr(error):
+        code = tdq_bench.main(list(args))
+    return code, output.getvalue(), error.getvalue()
 
 
 def _file_thuc_do(thu_muc, hang_so=None, bo=(), so_mau=3):
@@ -345,7 +360,7 @@ class ThucDoTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
+            rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
                                  "--cho-it-mau",
                                  "--mau-that", "t_task=91.2,t_task=104.7,t_task=88.0")
             self.assertEqual(rc, 0, err)
@@ -362,7 +377,7 @@ class ThucDoTest(unittest.TestCase):
             ra = os.path.join(tmp, "thuc-do.json")
             for chuoi in ("t_task", "t_khong_co=1", "t_task=nhanh"):
                 with self.subTest(chuoi=chuoi):
-                    rc, _out, err = chay("calibrate", "--ra", ra, "--task", "2",
+                    rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--task", "2",
                                          "--lap", "1", "--cho-it-mau",
                                          "--mau-that", chuoi)
                     self.assertEqual(rc, 1)
@@ -372,7 +387,7 @@ class ThucDoTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("calibrate", "--ra", ra, "--task", "1", "--lap", "1")
+            rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--task", "1", "--lap", "1")
             self.assertEqual(rc, 1)
             self.assertFalse(os.path.exists(ra))
             self.assertIn("samples", err)
@@ -418,7 +433,7 @@ class VongFix1Test(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
             chuoi = "t_task=90.0,t_task=100.0,t_task=110.0"
-            rc, _out, _err = chay("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
+            rc, _out, _err = _calibrate_fixture("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
                                   "--cho-it-mau", "--mau-that", chuoi)
             self.assertEqual(rc, 0)
             with open(ra, encoding="utf-8") as f:
@@ -631,7 +646,7 @@ class LogCodexTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             log = self._log(tmp, [101.5, 110.0, 99.5])
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, out, err = chay("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
+            rc, out, err = _calibrate_fixture("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
                                 "--log-codex", log,
                                 "--mau-that", "t_codex_khoi_dong=5.0,t_codex_khoi_dong=5.2,"
                                               "t_codex_khoi_dong=4.9")
@@ -651,7 +666,7 @@ class LogCodexTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             log = self._log(tmp, [101.5, 110.0])
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
+            rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
                                  "--log-codex", log)
             self.assertEqual(rc, 1)
             self.assertIn("t_codex", err)
@@ -662,7 +677,111 @@ class LogCodexTest(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             ra = os.path.join(tmp, "thuc-do.json")
-            rc, _out, err = chay("calibrate", "--ra", ra, "--lap", "3", "--task", "3")
+            rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--lap", "3", "--task", "3")
             self.assertEqual(rc, 0, err)
             with open(ra, encoding="utf-8") as f:
                 self.assertNotIn("t_codex", json.load(f)["hang_so"])
+
+
+class EarlyValidationTest(unittest.TestCase):
+    """Invalid calibration inputs must fail before expensive work or output."""
+
+    def reject_before_measurement(self, output, *options):
+        args = tdq_bench.build_parser().parse_args(
+            ["calibrate", "--ra", output, "--lap", "3", *options])
+        with mock.patch.object(tdq_bench, "_do_mot_luot",
+                               side_effect=AssertionError("machine round started")) as measured:
+            with self.assertRaises(tdq_bench.LoiThieuSo):
+                tdq_bench.lenh_thuc_do(args)
+        measured.assert_not_called()
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+                self.reject_before_measurement(output, "--mau-that", value)
+                with open(output, encoding="utf-8") as stream:
+                    self.assertEqual(stream.read(), "existing evidence")
+
+    def test_bad_log_and_missing_codex_samples_never_measure_or_create_output(self):
+        for kind in ("missing", "empty", "unfinished", "short", "zero"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                log_path = os.path.join(tmp, "codex.log")
+                if kind != "missing":
+                    line = LogCodexTest.DONG
+                    text = {"empty": "", "unfinished": line.replace("· xong ·", "· timeout ·"),
+                            "short": line + "\n" + line, "zero": line.replace("101.5s", "0.0s")}[kind]
+                    with open(log_path, "w", encoding="utf-8") as stream:
+                        stream.write(text)
+                output = os.path.join(tmp, "output.json")
+                self.reject_before_measurement(
+                    output, "--log-codex", log_path, "--mau-that",
+                    "t_codex_khoi_dong=1,t_codex_khoi_dong=1,t_codex_khoi_dong=1")
+                self.assertFalse(os.path.exists(output))
+
+    def test_predictable_machine_shortfall_never_measures(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            self.reject_before_measurement(output, "--lap", "1", "--task", "1")
+            self.assertFalse(os.path.exists(output))
+
+    def test_valid_inputs_measure_and_preserve_machine_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            log_path = os.path.join(tmp, "codex.log")
+            with open(log_path, "w", encoding="utf-8") as stream:
+                stream.write((LogCodexTest.DONG + "\n") * 3)
+            args = tdq_bench.build_parser().parse_args([
+                "calibrate", "--ra", output, "--lap", "3", "--log-codex", log_path,
+                "--mau-that", "t_task=90,t_task=100,t_task=110,"
+                "t_codex_khoi_dong=1,t_codex_khoi_dong=2,t_codex_khoi_dong=3"])
+            samples = {name: [value] for name, value in HS_KIEM_TAY.items()}
+            with mock.patch.object(tdq_bench, "_do_mot_luot", return_value=samples) as measured, \
+                    mock.patch.object(tdq_bench, "nap_log_codex", wraps=tdq_bench.nap_log_codex) as read_log:
+                self.assertEqual(tdq_bench.lenh_thuc_do(args), 0)
+            self.assertEqual(measured.call_count, 3)
+            read_log.assert_called_once_with(log_path)
+            with open(output, encoding="utf-8") as stream:
+                data = json.load(stream)
+            self.assertEqual(data["hang_so"]["t_task"]["mau"], [90.0, 100.0, 110.0])
+            self.assertEqual(data["hang_so"]["t_task"]["mau_may"], [100.0] * 3)
+            self.assertEqual(data["hang_so"]["t_task"]["cach_do"], "nhap-tay")
+            self.assertEqual(data["hang_so"]["t_codex"]["cach_do"], "doc-log")
+            self.assertEqual(data["hang_so"]["t_codex_khoi_dong"]["cach_do"], "nhap-tay")
+
+    def test_actual_machine_shortfall_is_still_checked_after_measurement(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            args = tdq_bench.build_parser().parse_args(["calibrate", "--ra", output])
+            with mock.patch.object(tdq_bench, "_do_mot_luot",
+                                   return_value={name: [] for name in tdq_bench.HANG_SO}) as measured:
+                with self.assertRaises(tdq_bench.LoiThieuSo):
+                    tdq_bench.lenh_thuc_do(args)
+            self.assertEqual(measured.call_count, 3)
+            self.assertFalse(os.path.exists(output))
+
+    def test_debug_short_samples_still_require_a_machine_round(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            args = tdq_bench.build_parser().parse_args([
+                "calibrate", "--ra", output, "--lap", "1", "--task", "1", "--cho-it-mau"])
+            with mock.patch.object(tdq_bench, "_do_mot_luot",
+                                   return_value={name: [value] for name, value in HS_KIEM_TAY.items()}) as measured:
+                self.assertEqual(tdq_bench.lenh_thuc_do(args), 0)
+            measured.assert_called_once_with(1)
+            with open(output, encoding="utf-8") as stream:
+                self.assertEqual(json.load(stream)["hang_so"]["t_task"]["so_mau"], 1)
+
+    def test_cli_rejects_nonfinite_samples_without_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            code, _out, error = chay("calibrate", "--ra", output, "--lap", "1",
+                                    "--task", "1", "--cho-it-mau", "--mau-that", "t_task=nan")
+            self.assertEqual(code, 1)
+            self.assertNotIn("Traceback", error)
+            self.assertFalse(os.path.exists(output))

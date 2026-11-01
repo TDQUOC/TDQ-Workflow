@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tóm tắt báo cáo tối ưu TDQ Workflow</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#17263b;background:#eef2f6;font-size:16px;line-height:1.55}
+    *{box-sizing:border-box}body{margin:0;padding:36px 20px}main{max-width:920px;margin:auto;background:#fff;border:1px solid #dce3eb;border-radius:20px;padding:38px}
+    .eyebrow{font-size:12px;letter-spacing:.12em;font-weight:700;text-transform:uppercase;color:#52657d;margin:0 0 10px}h1{font-size:32px;line-height:1.2;letter-spacing:-.03em;margin:0 0 12px}h2{font-size:18px;margin:26px 0 12px}p{margin:8px 0}.lead{color:#52657d;max-width:720px}.status{display:inline-block;background:#e7f5ee;color:#176044;border-radius:7px;padding:5px 10px;font-size:13px;font-weight:700;margin:12px 0 4px}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}.metric{background:#f5f8fc;border:1px solid #e2e9f2;border-radius:12px;padding:16px}.metric strong{display:block;font-size:29px;line-height:1.25;color:#174a85}.metric span{display:block;font-size:13px;color:#52657d;margin-top:5px}
+    ol{list-style:none;padding:0;margin:0;counter-reset:item}li{counter-increment:item;display:grid;grid-template-columns:30px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid #e7ecf2}li:before{content:counter(item,decimal-leading-zero);font-weight:700;color:#66809e;padding-top:1px}li p{margin:3px 0 0;color:#52657d;font-size:14px}.note{border-left:3px solid #c49136;background:#fff9ee;padding:13px 16px;margin-top:24px;font-size:14px}.note p{margin:3px 0}footer{border-top:1px solid #e7ecf2;margin-top:25px;padding-top:15px;font-size:12px;color:#607085}a{color:#174a85;text-underline-offset:3px}a:focus-visible{outline:3px solid #bd841f;outline-offset:4px}footer nav{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+    @media(max-width:600px){body{padding:12px}main{padding:23px 20px;border-radius:14px}h1{font-size:27px}.metrics{grid-template-columns:repeat(2,1fr);gap:9px}.metric{padding:13px}.metric strong{font-size:26px}}
+    @media print{@page{size:A4;margin:15mm}body{padding:0;background:#fff;font-size:10pt}main{padding:0;border:0;max-width:none}h1{font-size:25pt}.metrics{margin:18px 0}.metric{padding:11px}h2{margin-top:18px}li{padding:9px 0}.note{margin-top:18px}footer{margin-top:18px}main,li,.metrics,.note{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">TDQ Workflow · Báo cáo ngày 01/11/2026</p>
+    <h1>Hoàn tất bốn hạng mục tối ưu</h1>
+    <p class="lead">Giảm công việc kiểm tra lặp, xử lý timeout đúng và tự động tổng hợp các test chậm để hỗ trợ tối ưu tiếp.</p>
+    <span class="status">Triển khai &amp; QC: ĐẠT</span>
+  </header>
+  <section class="metrics" aria-label="Kết quả kiểm chứng">
+    <div class="metric"><strong>3.657</strong><span>test PASS · 8 SKIP</span></div>
+    <div class="metric"><strong>12/12</strong><span>mục QC đạt</span></div>
+    <div class="metric"><strong>2,72 giây</strong><span>thoát và dọn với timeout 2s</span></div>
+    <div class="metric"><strong>11 ca</strong><span>kiểm thuần không gọi subprocess</span></div>
+  </section>
+  <section aria-labelledby="changes">
+    <h2 id="changes">Những gì đã thay đổi</h2>
+    <ol>
+      <li><div><strong>Kiểm tra input trước khi calibration</strong><p>Input sai bị từ chối trước vòng đo, không tạo output mới.</p></div></li>
+      <li><div><strong>Kiểm soát timeout và tiến trình Codex</strong><p>Dọn đúng tiến trình con và HOME của lượt chạy; giữ nguyên job khác.</p></div></li>
+      <li><div><strong>Loại bỏ công việc lặp trong kiểm thuần</strong><p>Giữ đủ 3.602 case baseline và các integration thực; bổ sung 63 case.</p></div></li>
+      <li><div><strong>Tự động xuất báo cáo Top20</strong><p>Xếp hạng case/module chậm; xuất JSON, Markdown, HTML từ result có sẵn, không chạy lại test.</p></div></li>
+    </ol>
+  </section>
+  <aside class="note" aria-label="Giới hạn và trạng thái bàn giao">
+    <p><strong>Giới hạn:</strong> D9/D10 giữ <code>SKIPPED_USER</code>; chưa chứng nhận % tăng tốc. Review độc lập và HTML desktop/mobile đã đạt.</p>
+    <p><strong>Bàn giao:</strong> Chưa commit/push. Cổng đóng workflow còn bị chặn bởi 11 worktree cũ có thay đổi chưa commit; dữ liệu được giữ nguyên.</p>
+  </aside>
+  <footer>
+    Nguồn: kết quả Full và hồ sơ QC của request 2026-11-01-1045-toi-uu-bon-hang-muc.
+    <nav aria-label="Báo cáo chi tiết">
+      <a href="2026-11-01-1045-toi-uu-bon-hang-muc.md">Báo cáo đầy đủ</a>
+      <a href="../qc/2026-11-01-1045-toi-uu-bon-hang-muc.md">Hồ sơ QC</a>
+      <a href="../artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html">Top20 test chậm</a>
+    </nav>
+  </footer>
+</main>
+</body>
+</html>

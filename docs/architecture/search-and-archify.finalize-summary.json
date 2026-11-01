@@ -11,7 +11,7 @@
     "bytes": 4803
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.html",
     "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
     "bytes": 824633
   },
@@ -28,12 +28,12 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\search-and-archify.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.browser-check.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 3254,
+  "durationMs": 3196,
   "browserCheck": {
     "requested": true,
     "ran": true

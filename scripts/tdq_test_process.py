@@ -148,10 +148,10 @@ class _WindowsJob:
         if not self.api.AssignProcessToJobObject(self.handle, int(child._handle)):
             raise ctypes.WinError(ctypes.get_last_error())
 
-    def stop(self):
+    def stop(self, deadline=None):
         if not self.api.TerminateJobObject(self.handle, 1):
             raise ctypes.WinError(ctypes.get_last_error())
-        deadline = time.monotonic() + 5
+        deadline = time.monotonic() + 5 if deadline is None else deadline
         while time.monotonic() < deadline:
             account = _Accounting()
             if not self.api.QueryInformationJobObject(
@@ -177,7 +177,7 @@ class _PosixGroup:
     def assign(self, child):
         self.pid = child.pid
 
-    def stop(self):
+    def stop(self, deadline=None):
         if self.pid is None:
             return True
         try:
@@ -186,10 +186,10 @@ class _PosixGroup:
             return True
         return True
 
-    def verify(self):
+    def verify(self, deadline=None):
         if self.pid is None:
             return True
-        deadline = time.monotonic() + 5
+        deadline = time.monotonic() + 5 if deadline is None else deadline
         while time.monotonic() < deadline:
             try:
                 os.killpg(self.pid, 0)
@@ -202,8 +202,8 @@ class _PosixGroup:
         pass
 
 
-class IsolatedJob:
-    """Run collection and execution with one deadline and private filesystem."""
+class OwnedProcessJob:
+    """Own a process tree with bounded cleanup while preserving caller env."""
 
     def __init__(self, repo, *, timeout_seconds=1800, env=None,
                  temp_parent=None, cancel_event=None):
@@ -214,9 +214,6 @@ class IsolatedJob:
             raise ValueError("repo must be a directory")
         self.original_env = dict(os.environ)
         self.env = {**self.original_env, **(env or {})}
-        for key in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT",
-                    "PYTEST_XDIST_TESTRUNUID", "PYTEST_CURRENT_TEST"):
-            self.env.pop(key, None)
         self.timeout_seconds = timeout_seconds
         self.cancel_event = cancel_event
         self.temp_parent = temp_parent
@@ -226,31 +223,27 @@ class IsolatedJob:
         self._sequence = 0
 
     def __enter__(self):
+        self.deadline = time.monotonic() + self.timeout_seconds
         self._temporary = tempfile.TemporaryDirectory(prefix="tdq-", dir=self.temp_parent)
         self.root = Path(self._temporary.name).resolve()
-        self.env.update(_private_environment(self.root / "workers" / "controller"))
-        scripts = str(Path(__file__).resolve().parent)
-        self.env["PYTHONPATH"] = scripts + os.pathsep + self.env.get("PYTHONPATH", "")
-        self.env["TDQ_TEST_JOB_ROOT"] = str(self.root)
-        self.deadline = time.monotonic() + self.timeout_seconds
         return self
 
     def __exit__(self, exc_type, exc, traceback):
-        self._temporary.cleanup()
-        self.deadline = None
-
-    def pytest_args(self):
-        """Return plugin and per-job basetemp arguments, preserving tmpdir."""
-        return ["-p", "tdq_test_process", "--basetemp=" + str(self.root / "pytest")]
+        try:
+            self._temporary.cleanup()
+        finally:
+            self.deadline = None
 
     def _log(self, result):
         if self.env.get("TDQ_LOG") == "0":
             return
         stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
         print(f"[{stamp}] tdq_test_process reason={result['reason']} "
+              f"phase={result['phase']} "
               f"exit_code={result['exit_code']} "
               f"wall={result['duration_seconds']:.6f} "
-              f"cleanup={result['cleanup_seconds']:.6f}", file=sys.stderr)
+              f"cleanup={result['cleanup_seconds']:.6f} "
+              f"cleanup_complete={result['cleanup_complete']}", file=sys.stderr)
 
     def _interruption(self):
         if self.cancel_event is not None and self.cancel_event.is_set():
@@ -292,14 +285,15 @@ class IsolatedJob:
     @staticmethod
     def _cleanup(owner, child):
         started = time.monotonic()
+        deadline = started + 5
         complete = True
         try:
             if owner is not None:
-                complete = owner.stop()
+                complete = owner.stop(deadline=deadline)
             if child is not None:
-                child.wait(timeout=5)
+                child.wait(timeout=max(0, deadline - time.monotonic()))
             if isinstance(owner, _PosixGroup):
-                complete = owner.verify() and complete
+                complete = owner.verify(deadline=deadline) and complete
         except (OSError, subprocess.TimeoutExpired):
             complete = False
         finally:
@@ -341,7 +335,7 @@ class IsolatedJob:
         consumers must not add wall/duration to cleanup when aggregating time.
         """
         if self.deadline is None:
-            raise RuntimeError("IsolatedJob must be entered before run")
+            raise RuntimeError("Process job must be entered before run")
         if not argv:
             raise ValueError("argv must not be empty")
         started = time.monotonic()
@@ -357,8 +351,36 @@ class IsolatedJob:
             "stderr": err_path.read_text(encoding="utf-8", errors="replace"),
             "duration_seconds": wall_seconds, "wall_seconds": wall_seconds,
             "execute_seconds": max(0.0, wall_seconds - result["cleanup_seconds"]),
-            "paths": {"home": self.env["HOME"], "temp": self.env["TMP"],
+            "paths": {"home": self.env.get("HOME"), "temp": self.env.get("TMP", self.env.get("TEMP")),
                       "basetemp": str(self.root / "pytest")},
         })
         self._log(result)
         return result
+
+
+class IsolatedJob(OwnedProcessJob):
+    """Layer private pytest homes onto the shared process ownership primitive."""
+
+    def __init__(self, repo, *, timeout_seconds=1800, env=None,
+                 temp_parent=None, cancel_event=None):
+        super().__init__(repo, timeout_seconds=timeout_seconds, env=env,
+                         temp_parent=temp_parent, cancel_event=cancel_event)
+        for key in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT",
+                    "PYTEST_XDIST_TESTRUNUID", "PYTEST_CURRENT_TEST"):
+            self.env.pop(key, None)
+
+    def __enter__(self):
+        super().__enter__()
+        try:
+            self.env.update(_private_environment(self.root / "workers" / "controller"))
+            scripts = str(Path(__file__).resolve().parent)
+            self.env["PYTHONPATH"] = scripts + os.pathsep + self.env.get("PYTHONPATH", "")
+            self.env["TDQ_TEST_JOB_ROOT"] = str(self.root)
+            return self
+        except BaseException:
+            super().__exit__(*sys.exc_info())
+            raise
+
+    def pytest_args(self):
+        """Return plugin and per-job basetemp arguments, preserving tmpdir."""
+        return ["-p", "tdq_test_process", "--basetemp=" + str(self.root / "pytest")]

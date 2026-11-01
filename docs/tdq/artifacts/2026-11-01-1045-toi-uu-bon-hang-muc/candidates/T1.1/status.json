@@ -1,0 +1,11 @@
+{
+  "status": "FUNCTIONAL_GREEN_UNCERTIFIED",
+  "source_files": {
+    "scripts/tdq_bench.py": "cc44350a8e64e6e6ceb5d01af31f6eb5f3402e857f66264163e7e197a9995822",
+    "tests/test_bench.py": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1"
+  },
+  "unit_pass": 53,
+  "subtest_pass": 39,
+  "config_guard": "FAIL126: .claude.json changed",
+  "integrated_into_product_source": false
+}

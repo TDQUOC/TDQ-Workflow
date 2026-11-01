@@ -562,6 +562,26 @@ def ghi_so_tay(goc, *rows):
     ghi(goc, "docs/tdq/.tdq-test.jsonl", "".join(json.dumps(r) + "\n" for r in rows))
 
 
+def capture_ledger_command(goc, *, as_json=False):
+    """Capture the real ledger reader/formatter without launching a suite."""
+    output, errors = io.StringIO(), io.StringIO()
+    with redirect_stdout(output), redirect_stderr(errors):
+        code = tdq_test.cmd_so(SimpleNamespace(repo=goc, json=as_json))
+    return SimpleNamespace(returncode=code, stdout=output.getvalue(), stderr=errors.getvalue())
+
+
+def capture_log_line(message, *, enabled=True):
+    """Exercise the real log service with default-on or explicitly muted env."""
+    errors = io.StringIO()
+    with mock.patch.dict(os.environ), redirect_stderr(errors):
+        if enabled:
+            os.environ.pop("TDQ_LOG", None)
+        else:
+            os.environ["TDQ_LOG"] = "0"
+        tdq_test._log(message)
+    return SimpleNamespace(stderr=errors.getvalue())
+
+
 class So(unittest.TestCase):
     """`tron-bo` ghi sổ + dòng bỏ sót; `so` đếm theo request (spec §2 hàng 3, 4b; Q6, Q6b)."""
 
@@ -630,19 +650,24 @@ class So(unittest.TestCase):
         self.assertEqual([r["module"] for r in bo_sot], ["test_b.py"])
 
     def test_so_json_dem_va_ngan_sach(self):
-        p = chay_lenh(self.goc, "so", "--json")
+        p = capture_ledger_command(self.goc, as_json=True)
         self.assertEqual(p.returncode, 0, p.stderr)
         self.assertEqual(json.loads(p.stdout), {"request": "req-1", "tron_bo": 0, "bo_sot": 0,
                                                 "modules_bo_sot": [], "ngan_sach": 2})
-        ghi_so_tay(self.goc, dong_vung_cham("req-1", ["test_a.py"]))
-        chay_lenh(self.goc, "tron-bo")  # đỏ → có vòng sửa QC → ngân sách 3
-        chay_lenh(self.goc, "tron-bo")
-        d = json.loads(chay_lenh(self.goc, "so", "--json").stdout)
+        # Synthetic ledger input; real Full-to-ledger integration stays above.
+        rows = [dong_vung_cham("req-1", ["test_a.py"])]
+        for _ in range(2):
+            rows.extend([
+                {"kind": "tron-bo", "request": "req-1", "ok": False, "action": "executed"},
+                {"kind": "bo-sot", "request": "req-1", "module": "test_b.py"},
+            ])
+        ghi_so_tay(self.goc, *rows)
+        d = json.loads(capture_ledger_command(self.goc, as_json=True).stdout)
         self.assertEqual(d["tron_bo"], 2)
         self.assertEqual(d["bo_sot"], 2)
         self.assertEqual(d["modules_bo_sot"], ["test_b.py"])
         self.assertEqual(d["ngan_sach"], 3)
-        chu = chay_lenh(self.goc, "so")
+        chu = capture_ledger_command(self.goc)
         self.assertEqual(chu.returncode, 0)
         self.assertIn("req-1", chu.stdout)
         self.assertIn("test_b.py", chu.stdout)
@@ -673,11 +698,11 @@ class So(unittest.TestCase):
         self.assertIn("warning", p.stderr)
 
     def test_so_log_iso_va_tdq_log_0_tat(self):
-        bat = chay_lenh(self.goc, "so")
+        bat = capture_log_line("so")
         self.assertTrue(DONG_LOG.search(bat.stderr), bat.stderr)
-        tat = chay_lenh(self.goc, "tron-bo", log=False)
+        tat = capture_log_line("tron-bo", enabled=False)
         self.assertIsNone(DONG_LOG.search(tat.stderr), tat.stderr)
-        tat = chay_lenh(self.goc, "so", log=False)
+        tat = capture_log_line("so", enabled=False)
         self.assertIsNone(DONG_LOG.search(tat.stderr), tat.stderr)
 
     def test_so_gitignore_co_so_test(self):

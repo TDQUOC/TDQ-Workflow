@@ -1,0 +1,17 @@
+{
+  "classification": "actual audit/profile events; not performance benchmark",
+  "files": [
+    {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/measure_work.py",
+      "sha256": "3a9f446b6afd5b4d428a2b5aeb264664eb60ef41606488fa7a9fd999e8b3d4ed"
+    },
+    {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/work-probe/sitecustomize.py",
+      "sha256": "d64cb25be181be943f3d103ea27d7d81f79f3124c82973d8b02fca4c79bb1494"
+    },
+    {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/work-probe/work_probe.py",
+      "sha256": "96aeed950c8de14095d2b9d28ca7db6c0cc3b87b9f665be7288526518ed535b0"
+    }
+  ]
+}

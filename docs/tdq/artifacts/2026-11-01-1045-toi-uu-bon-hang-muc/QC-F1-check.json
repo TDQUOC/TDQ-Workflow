@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_sha256": "6f03e5bec06c11ed1bc7d9c14609d09ce9f3b55f2fc0b069057c80cce97543bc",
+  "counts": {
+    "pass": 3657,
+    "skip": 8
+  },
+  "inventory": {
+    "baseline_cases": 3602,
+    "current_cases": 3665,
+    "remapped": 0
+  },
+  "wall_seconds": 1030.256894399994,
+  "full_result": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/final-result.json",
+    "sha256": "ec60b7816e0f7efc06f5b4784e3fd3f5c3ea0adf604ddbbeaac8cff700e7d7d2"
+  },
+  "receipt": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/QC-F1-final-a114787b746743078d2bfb03a7fdfab9/receipt.json",
+    "sha256": "af40162d77cec49688bdd0f1c161d6ec66bd61bb89c7e7584571a89eb08e4d63"
+  },
+  "config_raw_changed": true,
+  "semantic_config_unchanged": true
+}

@@ -37,6 +37,10 @@
       {
         "id": "runtime-verification-and-caches",
         "status": "selected"
+      },
+      {
+        "id": "optimization-report-runtime",
+        "status": "selected"
       }
     ],
     "excluded": [],
@@ -72,6 +76,12 @@
       "type": "architecture",
       "candidate": "runtime-verification.json",
       "summary": "Manifest từng case, process isolation, receipt reuse/join, readiness và transcript cache mặc định tắt; biểu diễn source working-tree, chưa phải chứng nhận QC."
+    },
+    {
+      "id": "optimization-report",
+      "type": "architecture",
+      "candidate": "optimization-report.json",
+      "summary": "Validation sớm, OwnedProcessJob và summary thuần dùng chung cho result/CLI/export offline; nguồn chưa commit."
     }
   ]
 }

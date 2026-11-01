@@ -11,7 +11,7 @@
     "bytes": 4908
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.html",
     "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
     "bytes": 823010
   },
@@ -28,12 +28,12 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.6594ce00a0de4f87afcafa32f7d82ad4\\hooks-and-gates.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\hooks-and-gates.browser-check.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 3537,
+  "durationMs": 3819,
   "browserCheck": {
     "requested": true,
     "ran": true

@@ -13,3 +13,4 @@ antigravity_portable/** -text
 # Evidence receipts bind exact bytes; preserve their hashes across Windows checkouts.
 docs/tdq/** -text
 docs/architecture/** -text
+docs/.staging.*/** -text

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ba19a2b4-caf2-4a78-87ab-d5a1706bc108",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\optimization-report.json",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\optimization-report.html",
+  "specification": {
+    "sha256": "ef83b7effbcb1c3b7062f61cad2b58a9a3f657ee3b5add9ed9d4b2fc4acce2ac",
+    "bytes": 4466
+  },
+  "artifact": {
+    "sha256": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5",
+    "bytes": 820910
+  }
+}

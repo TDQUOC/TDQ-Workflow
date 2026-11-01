@@ -1,0 +1,27 @@
+{
+  "exit_code": 1,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 5.4899996030144393e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 42892,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "calibration-valid",
+  "stdout": "",
+  "stderr": "[2026-11-01T16:13:51] calibrate · --task 1 --lap 3 --ra C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime-evidence\\eaa83289fbb140f08f3203d56d028d6b\\calibration-valid\\measurement.json\n[2026-11-01T16:13:51] thuc-do → round 1/3 in a temp git repo\nTraceback (most recent call last):\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime_checks.py\", line 253, in <module>\n    raise SystemExit(main())\n                     ~~~~^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime_checks.py\", line 216, in main\n    return probe(args.probe, args.folder)\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime_checks.py\", line 172, in probe\n    exit_code = invoke(\"tdq_bench.py\", args)\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime_checks.py\", line 83, in invoke\n    runpy.run_path(sys.argv[0], run_name=\"__main__\")\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen runpy>\", line 294, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_bench.py\", line 823, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_bench.py\", line 813, in main\n    return LENH[args.lenh][0](args)\n           ~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_bench.py\", line 624, in lenh_thuc_do\n    for ten, gia_tri in _do_mot_luot(args.task).items():\n                        ~~~~~~~~~~~~^^^^^^^^^^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_bench.py\", line 396, in _do_mot_luot\n    repo, rel = _dung_repo_tam(goc, slug, so_task)\n                ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_bench.py\", line 341, in _dung_repo_tam\n    _git_init(repo)\n    ~~~~~~~~~^^^^^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_bench.py\", line 365, in _git_init\n    subprocess.run([\"git\", \"init\", \"-q\", \"-b\", \"main\", repo],\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                   capture_output=True,\n                   ^^^^^^^^^^^^^^^^^^^^\n                   encoding=\"utf-8\", errors=\"replace\", text=True, timeout=GIT_TIMEOUT, check=True)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\subprocess.py\", line 554, in run\n    with Popen(*popenargs, **kwargs) as process:\n         ~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\subprocess.py\", line 1039, in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                        pass_fds, cwd, env,\n                        ^^^^^^^^^^^^^^^^^^^\n    ...<5 lines>...\n                        gid, gids, uid, umask,\n                        ^^^^^^^^^^^^^^^^^^^^^^\n                        start_new_session, process_group)\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\subprocess.py\", line 1550, in _execute_child\n    sys.audit(\"subprocess.Popen\", executable, args, cwd, env)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime_checks.py\", line 70, in audit\n    record(\"process\", Path(os.fsdecode(args[0])).name)\n                           ~~~~~~~~~~~^^^^^^^^^\n  File \"<frozen os>\", line 862, in fsdecode\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n",
+  "duration_seconds": 0.38751269999920623,
+  "wall_seconds": 0.38751269999920623,
+  "execute_seconds": 0.3874578000031761,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-wtbei6f8\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-wtbei6f8\\temp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-wtbei6f8\\temp\\tdq-gku8r7r4\\pytest"
+  }
+}

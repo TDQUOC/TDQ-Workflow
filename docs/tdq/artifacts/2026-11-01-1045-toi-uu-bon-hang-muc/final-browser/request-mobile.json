@@ -1,0 +1,287 @@
+{
+  "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/request-report.html",
+  "title": "Báo cáo tối ưu bốn hạng mục",
+  "lang": "vi",
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "scroll_width": 375,
+  "client_width": 375,
+  "regions": [
+    {
+      "tag": "MAIN",
+      "id": "",
+      "width": 375,
+      "height": 4455.84375
+    },
+    {
+      "tag": "HEADER",
+      "id": "",
+      "width": 351,
+      "height": 488.625
+    },
+    {
+      "tag": "NAV",
+      "id": "",
+      "width": 317,
+      "height": 138.375
+    },
+    {
+      "tag": "SECTION",
+      "id": "results",
+      "width": 351,
+      "height": 377.625
+    },
+    {
+      "tag": "SECTION",
+      "id": "before-after",
+      "width": 351,
+      "height": 326.4375
+    },
+    {
+      "tag": "SECTION",
+      "id": "raw-samples",
+      "width": 351,
+      "height": 377.625
+    },
+    {
+      "tag": "SECTION",
+      "id": "limitations",
+      "width": 351,
+      "height": 454.40625
+    },
+    {
+      "tag": "SECTION",
+      "id": "recommendations",
+      "width": 351,
+      "height": 326.4375
+    },
+    {
+      "tag": "SECTION",
+      "id": "rollback",
+      "width": 351,
+      "height": 377.625
+    },
+    {
+      "tag": "SECTION",
+      "id": "evidence",
+      "width": 351,
+      "height": 377.625
+    },
+    {
+      "tag": "SECTION",
+      "id": "timing",
+      "width": 351,
+      "height": 1163.4375
+    }
+  ],
+  "headings": [
+    {
+      "level": "H1",
+      "text": "Tối ưu bốn hạng mục"
+    },
+    {
+      "level": "H2",
+      "text": "Kết quả"
+    },
+    {
+      "level": "H2",
+      "text": "Thay đổi đã đo"
+    },
+    {
+      "level": "H2",
+      "text": "Runtime và nguồn số liệu"
+    },
+    {
+      "level": "H2",
+      "text": "Giới hạn và trạng thái"
+    },
+    {
+      "level": "H2",
+      "text": "Đề xuất tiếp theo"
+    },
+    {
+      "level": "H2",
+      "text": "Vận hành và rollback"
+    },
+    {
+      "level": "H2",
+      "text": "Bằng chứng"
+    },
+    {
+      "level": "H2",
+      "text": "Thời gian"
+    }
+  ],
+  "links": [
+    {
+      "text": "Kết quả",
+      "href": "#results",
+      "width": 54.078125,
+      "height": 25.59375
+    },
+    {
+      "text": "Thay đổi đã đo",
+      "href": "#before-after",
+      "width": 105.5,
+      "height": 25.59375
+    },
+    {
+      "text": "Runtime và nguồn số liệu",
+      "href": "#raw-samples",
+      "width": 179.765625,
+      "height": 25.59375
+    },
+    {
+      "text": "Giới hạn và trạng thái",
+      "href": "#limitations",
+      "width": 151.96875,
+      "height": 25.59375
+    },
+    {
+      "text": "Đề xuất tiếp theo",
+      "href": "#recommendations",
+      "width": 121.984375,
+      "height": 25.59375
+    },
+    {
+      "text": "Vận hành và rollback",
+      "href": "#rollback",
+      "width": 146.96875,
+      "height": 25.59375
+    },
+    {
+      "text": "Top20 HTML",
+      "href": "slow-tests.html",
+      "width": 88.875,
+      "height": 21
+    },
+    {
+      "text": "Top20 Markdown",
+      "href": "slow-tests.md",
+      "width": 122.671875,
+      "height": 21
+    },
+    {
+      "text": "Raw Full result",
+      "href": "final-result.json",
+      "width": 101.734375,
+      "height": 21
+    },
+    {
+      "text": "Full kiểm chứng",
+      "href": "QC-F1-check.json",
+      "width": 111.6875,
+      "height": 21
+    },
+    {
+      "text": "Runtime evidence",
+      "href": "runtime.json",
+      "width": 126.015625,
+      "height": 21
+    },
+    {
+      "text": "Work counters",
+      "href": "final-work-proof.json",
+      "width": 102.609375,
+      "height": 21
+    },
+    {
+      "text": "Case/assertion mapping",
+      "href": "case-mapping.json",
+      "width": 170.28125,
+      "height": 21
+    },
+    {
+      "text": "Workflow blocker",
+      "href": "phase-transition-blocker.json",
+      "width": 123.34375,
+      "height": 21
+    },
+    {
+      "text": "Ngoại lệ đã duyệt",
+      "href": "telemetry-exception-approved.md",
+      "width": 125.75,
+      "height": 21
+    },
+    {
+      "text": "Review độc lập",
+      "href": "independent-qc.md",
+      "width": 105.3125,
+      "height": 21
+    }
+  ],
+  "tables": [],
+  "assets": [],
+  "forms": 0,
+  "body_font": "16px",
+  "body_color": "rgb(24, 34, 56)",
+  "body_background": "rgb(244, 246, 251)",
+  "text_length": 4890,
+  "html_sha256": "c1edca9d4f1d7420812579c559691e57b42ae8274076015eff81972627a0cc7d",
+  "interactions": {
+    "anchors": [
+      {
+        "href": "#results",
+        "focused": true,
+        "outline": "rgb(21, 77, 196) none 3px",
+        "target_exists": true,
+        "hash": "#results"
+      },
+      {
+        "href": "#before-after",
+        "focused": true,
+        "outline": "rgb(21, 77, 196) none 3px",
+        "target_exists": true,
+        "hash": "#before-after"
+      },
+      {
+        "href": "#raw-samples",
+        "focused": true,
+        "outline": "rgb(21, 77, 196) none 3px",
+        "target_exists": true,
+        "hash": "#raw-samples"
+      },
+      {
+        "href": "#limitations",
+        "focused": true,
+        "outline": "rgb(21, 77, 196) none 3px",
+        "target_exists": true,
+        "hash": "#limitations"
+      },
+      {
+        "href": "#recommendations",
+        "focused": true,
+        "outline": "rgb(21, 77, 196) none 3px",
+        "target_exists": true,
+        "hash": "#recommendations"
+      },
+      {
+        "href": "#rollback",
+        "focused": true,
+        "outline": "rgb(21, 77, 196) none 3px",
+        "target_exists": true,
+        "hash": "#rollback"
+      }
+    ],
+    "table_scroll": []
+  },
+  "keyboard_focus": {
+    "tag": "A",
+    "text": "Thay đổi đã đo",
+    "outline": "rgb(153, 92, 0) solid 3px"
+  },
+  "hover": {
+    "text": "Kết quả",
+    "color": "rgb(21, 77, 196)"
+  },
+  "console_errors": [],
+  "network_failures": [],
+  "network_responses": [
+    {
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/request-report.html",
+      "status": 200
+    }
+  ]
+}

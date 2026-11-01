@@ -1,0 +1,11 @@
+{
+  "command": [
+    "so",
+    "--json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"request\": \"req-1\", \"tron_bo\": 0, \"bo_sot\": 0, \"modules_bo_sot\": [], \"ngan_sach\": 2}\n",
+  "stderr": "[2026-11-01T14:11:39+07:00] tdq_test: so request=req-1 tron_bo=0 bo_sot=0 budget=2\n",
+  "ledger": "",
+  "results": []
+}

@@ -2,6 +2,18 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.85.0 — 2026-11-01
+
+Tối ưu calibration, quản lý tiến trình Codex và báo cáo test; giữ mặc định bảo thủ.
+
+- **Calibration từ chối input sai trước vòng đo**, không tạo output mới; giữ nguồn mẫu hợp lệ.
+- **Codex dùng process ownership chung**, dọn đúng descendants/HOME và giữ deadline riêng cho từng probe.
+- **Giảm công việc test lặp:** 11 ca kiểm thuần không gọi subprocess/calibration/Git; integration thực vẫn được giữ.
+- **Top20 case/module và export offline JSON/Markdown/HTML**, cộng execution phases đúng, không đếm subtest hai lần, giữ verdict và provenance của result gốc.
+- **Củng cố runner và timing:** lưu structured outcomes, kiểm inventory/receipt, giữ lỗi gốc, phân biệt wall/API/tool time và phần chưa đo được.
+- **Kiểm chứng nguồn trước bump:** Full 3.657 PASS, 8 SKIP; giữ 3.602 case baseline, thêm 63 case; QC 12/12 và browser desktop/mobile đạt. Timeout2s dọn trong 2,72s ở fixture Windows.
+- **Giới hạn:** D9/D10 `SKIPPED_USER`; chưa có A/B để kết luận % tăng tốc. Giữ worker1, cache/reuse off; chưa chứng nhận POSIX từ lượt Windows này.
+
 ## 0.84.2 — 2026-10-26
 
 Giảm Timeout Và Thời Gian Chờ agent-lsp (Mạch Ngắt Circuit Breaker & Idle Timeout 90s).
@@ -459,40 +471,9 @@ change**: skill `tdq-lsp-setup` đổi tên thành `tdq-setup`. Báo cáo:
   Nó hỏng đúng kiểu một index không ai dựng lại. Đo được 2026-09-28: đồ thị cũ 8 ngày, 34% node
   (845/2415) trỏ vào thư mục đã xoá.
 
-## 0.52.0 — 2026-09-27
-
-CI xanh trên cả ba hệ ở lần chạy thứ hai, và **breaking change**: sàn Python lên 3.11. Báo cáo:
-`docs/tdq/reports/2026-09-27-1905-ci-do-ba-he.md`.
-
-- **BREAKING — sàn Python 3.8 → 3.11.** `PYTHON_MIN` đổi, lớp dự phòng `tomllib = None` trong
-  `tdq_codex.py` bỏ hẳn cùng 6 guard `skipIf` của nó, ma trận CI đổi `3.10` → `3.11`. Ai đang
-  chạy 3.8–3.10 sẽ không dùng được bản này. 3.11 là bản đầu tiên có `tomllib` trong thư viện
-  chuẩn, và nay là bản thấp nhất được CI chạy thật.
-- **Header `SessionStart` không còn phụ thuộc độ dài đường dẫn** — lỗi sản phẩm, đo trên macOS.
-  Khối đầu có trần 600 ký tự và tính cả dòng `Project: <đường dẫn>`. Thư mục tạm của runner macOS
-  là `/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/tmpXXXX`, đủ dài để `cap()` cắt mất dòng
-  lệnh. Đường dẫn là dữ liệu của user, nên phần nhường là phần HIỂN THỊ.
-  `duong_hien_thi()` giữ hai đoạn cuối trong trần 32 ký tự (`…/ForAgentCode/TDQ-Workflow`), còn
-  `STATE.md` vẫn giữ đường dẫn tuyệt đối đầy đủ.
-- **Phép kiểm dấu ngã hỏi đúng câu** — `con_dau_nga_chua_bung()` trong `tdq_checkportable.py`,
-  dùng chung cho sản phẩm và ba file test. Bản cũ ("có ký tự ngã là sai") báo đỏ oan trên runner
-  Windows, nơi thư mục nhà có dạng 8.3 (`RUNNER~1`). Tệ hơn: nó nuốt luôn nhánh `elif` phía sau,
-  nên phép kiểm THẬT — bundle dựng dưới thư mục nhà của máy khác — không bao giờ chạy ở đó.
-- **Fixture test viết theo hệ đang chạy** — 9 ca của `test_shim_python3` dựng PATH giả bằng đường
-  dẫn Windows cho mọi hệ, mà `os.pathsep` trên POSIX là dấu hai chấm nên đường dẫn ổ đĩa bị xé
-  làm hai. Sản phẩm vốn đúng; nay 9 ca đó chạy THẬT trên cả ba hệ thay vì bị skip, cộng một ca
-  canh chính cái bẫy đó.
-- **Cổng D7 không còn tự tắt trong im lặng** — `_cham_d7` từng `continue` khi không đọc được mốc
-  thời gian của commit. Một mốc lạ vì thế làm cổng "agent khác vừa commit" tắt hẳn, mà trông y
-  như "không có ai commit thêm". Nay nó báo rõ là không kết luận được.
-- **Vá lỗi 0.50.0 để lại** — `_in_ket_qua` vẫn gọi `da_trusted()` và `duong_config_codex()`, hai
-  hàm biến mất cùng lớp trust: một `NameError` ngồi chờ từ bản đó tới nay.
-- **Đo trên máy thật, không đoán** — Linux (3.14.4) 1993 ca; macOS pyenv 3.13.15 và brew 3.14.7
-  đều 1993 ca; Windows 3.13.15 2016 ca. Tất cả 0 fail, 0 error. CI xanh cả 6 job (run 36322434130).
-
 ## Lịch sử cũ hơn
 
-Bản 0.51.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.51.0 dời ngày 2026-10-25). Bản 0.36.0 trở xuống
+Bản 0.52.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.52.0 dời ngày 2026-11-01; bản 0.51.0 dời ngày 2026-10-25). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.

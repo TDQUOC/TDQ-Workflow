@@ -1,0 +1,57 @@
+{
+  "schema": "tdq-task-source-change/v1",
+  "task": "T2.2",
+  "base": "6c00d6ea5087a0e50dd8f481fcb9aafa51dc0190",
+  "sources": {
+    "scripts/tdq_test.py": {
+      "baseline_sha256": "aa33671c0a64766ba43535b6ece8c9db9cbec9d345b28984e83f7a686e2b6bc4",
+      "candidate_sha256": "e6545bdab3a7a3fb6120dcbbc7f9599d37c134075290bbc099aefed73415a3a1"
+    },
+    "tests/test_tdq_runner_integration.py": {
+      "baseline_sha256": "c8854b3efb5a3ceafb162414b2b3e473a8b62c7cda45ba5738abf99475fd52b1",
+      "candidate_sha256": "5aebc5c72729f385433602ee2ebf325463f4b35b418e6e8f2dfba15b76d416c6"
+    }
+  },
+  "changed_old_case_definitions": [],
+  "old_case_definitions_preserved": 24,
+  "new_cases": [
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_fresh_result_persists_one_slow_test_summary",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_ledger_does_not_duplicate_summary_quality_payload",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_offline_cli_accepts_legacy_result_and_dotted_prefix",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_offline_dispatch_never_resolves_project_or_launches_runner",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_report_errors_do_not_publish_success_or_overwrite_input",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_report_requires_explicit_output_prefix",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_saved_failure_real_cli_roundtrip_does_not_execute_again",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_silent_cli_keeps_bound_marker_without_top_tables",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_summary_and_persistence_errors_keep_original_failure"
+  ],
+  "read_only_dependencies": {
+    "scripts/tdq_test_report.py": "5db020a09fd25cebac6c8c67eb14cf7109138b1efa30cb3eb14cea011cde035b",
+    "tests/test_tdq_test_report.py": "55f515e45d353a369d67b228a346b9010d8332913f324410c0ae09e53bc3c180"
+  },
+  "red": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T2.2-author\\runs\\T2.2-red-4b87b309b57f48d584e56adaeacb1a63\\receipt.json",
+    "sha256": "fe26a34fc6cd88b4d1d2c5d8219e4ef11f523332810595317ea61b8f0ff8507d"
+  },
+  "green": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T2.2-author\\runs\\T2.2-final-green-72c08cfe42d44263aa328a3c07aadf44\\receipt.json",
+    "sha256": "de6a8070023af5dd22bdddc38c836d91fbf4bbc8ac86398fa05db2c16f6d482a"
+  },
+  "selected_real_cli_proof": [
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_offline_cli_accepts_legacy_result_and_dotted_prefix",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_saved_failure_real_cli_roundtrip_does_not_execute_again",
+    "tests/test_tdq_runner_integration.py::RunnerIntegration::test_silent_cli_keeps_bound_marker_without_top_tables"
+  ],
+  "contracts": [
+    "Regular persisted jobs summarize once; CLI reads the stored field without reaggregation.",
+    "Report dispatch skips project resolution, process launch and state writes.",
+    "Required --result and --out-prefix only; no speculative output default.",
+    "FAIL/ERROR/INCOMPLETE report sources retain nonzero CLI exit and original metadata.",
+    "Summary/persist failure preserves executed FAIL evidence and removes stale summary, without recursion.",
+    "Ledger omits summary details; external input digest is not inserted into the source result."
+  ],
+  "limitations": [
+    "Fixture CLI roundtrips certify this adapter path, not a production Full or speedup.",
+    "Root parent/radius and final-source Full/runtime/browser gates remain leader-owned."
+  ]
+}
