@@ -109,7 +109,7 @@ def _gather_candidate_roots() -> list[Path]:
         current_file = Path(__file__).resolve()
         repo_root = current_file.parent.parent
         candidates.append(repo_root.parent / "archify")
-        for parent in current_file.parents[:3]:
+        for parent in current_file.parents[:6]:
             candidates.append(parent / "archify")
     except Exception:
         pass
