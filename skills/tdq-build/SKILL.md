@@ -5,8 +5,8 @@ description: Run an approved TDQ plan end to end in one turn, QC it against the 
 
 # TDQ Build — Implement → QC → Report
 <!-- muc-luc-dong:
-  Hard rules (all three phases)=15-76 · Part A — Implement (phase `implement`)=77-144 ·
-  Part B — QC (phase `qc`)=145-161 · Part C — Report (phase `report`)=162
+  Hard rules (all three phases)=15-75 · Part A — Implement (phase `implement`)=76-143 ·
+  Part B — QC (phase `qc`)=144-160 · Part C — Report (phase `report`)=161
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved = true`.
@@ -69,8 +69,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
   top of that file gives the exact line range, so the whole file never has to be read.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. `mcp__lsp__*` missing → say so in one line, fall through to graphify, then grep.
-- **No placeholders.** Missing information at this stage means the analysis fell short — say
-  so, do not stub.
+- **No placeholders; eval gate.** Skill changes require valid eval-plan before implement and certified evidence before report; do not stub.
 - **If a subagent is running, wait it out**, or set a trigger to resume automatically. Never
   end the turn while one is still running.
 

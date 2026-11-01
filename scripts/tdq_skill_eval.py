@@ -23,6 +23,7 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
+import utf8_io  # noqa: E402,F401
 import tdq_eval_contract
 import tdq_eval_hosts
 

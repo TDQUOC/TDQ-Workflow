@@ -28,8 +28,10 @@ PHASE1_RUNTIME_MODULES = {
     "tdq_transcript", "tdq_test_result", "tdq_readiness", "tdq_runtime_bench",
     "tdq_test_manifest", "tdq_test_process", "tdq_test_receipt", "tdq_transcript_cache",
 }
-# Current O4 is required in live packaging, but may not yet exist in Git HEAD.
-APPROVED_RUNTIME_MODULES = PHASE1_RUNTIME_MODULES | {"tdq_test_report"}
+# Current O4 and eval suite modules are required in live packaging, but may not yet exist in Git HEAD.
+APPROVED_RUNTIME_MODULES = PHASE1_RUNTIME_MODULES | {
+    "tdq_test_report", "tdq_eval_contract", "tdq_eval_hosts", "tdq_skill_eval",
+}
 
 
 def _imports_report(source):

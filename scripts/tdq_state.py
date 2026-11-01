@@ -97,6 +97,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "[--mode main|subagent|codex] "
          "[--by \"<user sentence>\"] [--expected-sha <sha256>] [--strict] [--bo-qua-do \"<user's reason>\"] | "
          "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
+         "eval-waive --reason \"<reason>\" --by \"<user words>\" [--scope <scope>] | "
          "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
          "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
          "reset | phases-doc | modes [--json]")
@@ -280,6 +281,9 @@ def default_state():
         "loai_request": None,
         "nhanh_goc": None,
         "nhanh_request": None,
+        # eval-gate integration (T3.1)
+        "eval_plan_file": None,
+        "eval_waiver": None,
         # phase history: [{"phase": "spec", "at": "<iso>"}, ...], one mark per
         # phase CHANGE. Re-entering an old phase still adds a mark — that is what
         # counting re-entries is built on.
@@ -2219,6 +2223,145 @@ def _chan_worktree_con_mo(cwd):
           "Clean them up first: python3 scripts/tdq_team.py sweep --clean")
 
 
+def _extract_plan_targets(cwd, state):
+    """Extract all target paths declared on `Chạm:` lines in the plan."""
+    rel = state.get("plan_file")
+    if not rel:
+        req = state.get("active_request")
+        if not req:
+            return []
+        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    if not os.path.isfile(path):
+        return []
+    targets = []
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith("- Chạm:") or stripped.startswith("Chạm:"):
+                    for target in re.findall(r"`([^`]+)`", stripped):
+                        clean = target.strip().replace("\\", "/")
+                        if clean and clean not in targets:
+                            targets.append(clean)
+    except OSError:
+        pass
+    return targets
+
+
+def _chan_eval_plan_chua_co(cwd, state):
+    """Gate `implement`: target thay đổi hành vi skill/hook/plugin đòi hỏi eval-plan hợp lệ."""
+    if state.get("eval_waiver"):
+        return
+    targets = _extract_plan_targets(cwd, state)
+    if not targets:
+        return
+    try:
+        import tdq_eval_contract
+    except ImportError:
+        return
+    classification = tdq_eval_contract.classify_targets(targets)
+    if not classification.get("requires_eval"):
+        return
+    plan_rel = state.get("eval_plan_file")
+    if not plan_rel:
+        _fail(
+            "Target chạm thay đổi hành vi skill/hook/plugin nhưng chưa có eval-plan hợp lệ.\n"
+            "Tạo hoặc đăng ký plan qua `python3 scripts/tdq_skill_eval.py plan` rồi `set eval_plan_file=<path>`,\n"
+            "hoặc nếu user cho miễn: `python3 scripts/tdq_state.py eval-waive --reason \"...\" --by \"...\"`."
+        )
+    plan_path = plan_rel if os.path.isabs(plan_rel) else os.path.join(cwd, plan_rel)
+    if not os.path.isfile(plan_path):
+        _fail(f"File eval-plan không tồn tại: {plan_rel}")
+    try:
+        with open(plan_path, encoding="utf-8") as f:
+            plan_data = json.load(f)
+    except Exception as exc:
+        _fail(f"Không đọc được eval-plan JSON ({plan_rel}): {exc}")
+    val_res = tdq_eval_contract.validate_eval_plan(plan_data)
+    if not val_res.get("valid"):
+        _fail(f"eval-plan không hợp lệ: {', '.join(val_res.get('errors', []))}")
+
+
+def _chan_eval_evidence_chua_co(cwd, state):
+    """Gate `report`: target thay đổi hành vi đòi hỏi chứng cứ Eval hợp lệ, không thiếu hay stale."""
+    if state.get("eval_waiver"):
+        return
+    targets = _extract_plan_targets(cwd, state)
+    if not targets:
+        return
+    try:
+        import tdq_eval_contract
+    except ImportError:
+        return
+    classification = tdq_eval_contract.classify_targets(targets)
+    if not classification.get("requires_eval"):
+        return
+    plan_rel = state.get("eval_plan_file")
+    if not plan_rel:
+        _fail("Chưa có eval-plan để đối chiếu chứng cứ Eval (trạng thái INCOMPLETE).")
+    plan_path = plan_rel if os.path.isabs(plan_rel) else os.path.join(cwd, plan_rel)
+    if not os.path.isfile(plan_path):
+        _fail(f"File eval-plan không tồn tại: {plan_rel}")
+    try:
+        with open(plan_path, encoding="utf-8") as f:
+            plan_data = json.load(f)
+    except Exception as exc:
+        _fail(f"Không đọc được eval-plan ({plan_rel}): {exc}")
+
+    slug = state.get("active_request")
+    art_dir = os.path.join(cwd, "docs", "tdq", "artifacts", str(slug))
+    records = []
+    if os.path.isdir(art_dir):
+        for fname in os.listdir(art_dir):
+            if fname.endswith(".json") and fname not in ("analysis-baseline.json", "evidence-index.json"):
+                try:
+                    with open(os.path.join(art_dir, fname), encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, dict):
+                            records.append(data)
+                except Exception:
+                    pass
+
+    gate_res = tdq_eval_contract.check_eval_gate(
+        plan_data,
+        stage="pre_report",
+        evidence_records=records,
+    )
+    if gate_res.get("verdict") != "PASS":
+        reason = gate_res.get("reason") or "missing_or_stale_evidence"
+        _fail(
+            f"Chưa có chứng cứ Eval hợp lệ cho target hành vi (trạng thái INCOMPLETE: {reason}).\n"
+            "Chạy `python3 scripts/tdq_skill_eval.py run/report` hoặc kiểm tra chứng cứ trước khi sang report."
+        )
+
+
+def _cli_eval_waive(cwd, rest):
+    """`eval-waive --reason "<reason>" --by "<user words>" [--scope "<scope>"]`"""
+    flags = _flag_pairs(rest, {"--reason", "--by", "--scope"}, "eval-waive")
+    reason = flags.get("--reason", "").strip()
+    by = flags.get("--by", "").strip()
+    scope = flags.get("--scope", "request").strip()
+    if not reason:
+        _fail("eval-waive needs --reason \"<why eval is waived>\"")
+    if not by:
+        _fail("eval-waive needs --by \"<the user's own words>\"")
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+    waiver = {
+        "verdict": "WAIVED_USER",
+        "reason": reason[:400],
+        "by": by[:200],
+        "scope": scope[:100],
+        "at": now_iso(),
+    }
+    state["eval_waiver"] = waiver
+    save(cwd, state, expect_updated_at=stamp)
+    print(f"✅ eval-waive: verdict=WAIVED_USER reason={waiver['reason']!r} by={waiver['by']!r}")
+
+
 def _pop_json_flag(argv):
     """Strip the `--json` flag out of argv. By default the CLI prints a 1-line summary to
     keep context cheap; with `--json` it prints the whole state as before (for inspection/debug)."""
@@ -2638,12 +2781,19 @@ def cli(argv):
                 _chan_worktree_con_mo(cwd)
             if key == "phase" and value == "plan":
                 _chan_spec_chua_duyet(state)
+            if key == "phase" and value == "implement":
+                _chan_eval_plan_chua_co(cwd, state)
+            if key == "phase" and value == "report":
+                _chan_eval_evidence_chua_co(cwd, state)
             state[key] = value
             if key == "phase":
                 ghi_moc_phase(state, value)
         save(cwd, state, expect_updated_at=stamp)
         _echo_state("set", state, want_json)
         return
+
+    if cmd == "eval-waive":
+        return _cli_eval_waive(cwd, argv[1:])
 
     if cmd in ("pause", "resume"):
         return _cli_implement_pause(cwd, cmd, argv[1:])
