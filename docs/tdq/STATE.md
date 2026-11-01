@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-01T18:40:24+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-01T19:47:06+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-01-1045-toi-uu-bon-hang-muc |
+| Request | 2026-11-01-1854-eval-chat-luong-skill |
 | Lane | full |
 | Phase | implement |
-| Spec | docs/tdq/spec/2026-11-01-1045-toi-uu-bon-hang-muc.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-11-01-1045-toi-uu-bon-hang-muc.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-11-01-1854-eval-chat-luong-skill.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-11-01-1854-eval-chat-luong-skill.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | ultra |
