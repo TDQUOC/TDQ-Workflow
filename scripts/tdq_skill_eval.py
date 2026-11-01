@@ -421,7 +421,7 @@ def _render_markdown_report(report_data: Dict[str, Any]) -> str:
         "- **DROP**: Hồi quy chất lượng hoặc tỷ lệ trigger trượt quá biên độ cho phép.",
         "- **INCONCLUSIVE**: Chưa đủ mẫu, thiếu chỉ số đo bắt buộc, hoặc baseline đã chạm trần.",
         "",
-        "Báo cáo được tổng hợp ngoại tuyến (offline) hoàn toàn từ các bản ghi đối chứng.",
+        "Báo cáo mang nguồn gốc synthetic/offline, được tổng hợp ngoại tuyến hoàn toàn từ các bản ghi đối chứng, không đại diện cho chứng nhận hiệu quả mô hình sống.",
     ])
     return "\n".join(lines)
 
@@ -466,6 +466,7 @@ def generate_report(
         }
 
     report_data = {
+        "provenance": "synthetic/offline",
         "cells": cells_report,
         "total_records": len(records),
         "total_cells": len(cells_report),
