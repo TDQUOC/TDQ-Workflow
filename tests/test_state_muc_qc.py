@@ -3,7 +3,7 @@
 Vì sao khoá bằng test chứ không bằng tài liệu: mức QC quyết định phase `qc` chạy bao nhiêu phép
 kiểm. Một giá trị rác lọt qua mà im lặng hạ mức xuống thấp nhất thì request vẫn tuyên bố "xong"
 trong khi chưa chạy gì — hỏng đúng kiểu không ai thấy. Nên luật fail-closed (mọi thứ không hợp lệ
-đều ra `full`) phải có phép kiểm riêng, y như `muc_gat` từ 0.48.0.
+đều ra `full`) phải có phép kiểm riêng; mặc định QC độc lập với `muc_gat`.
 
 Ba nhóm chạy riêng được bằng `-k`: `chuan_hoa`, `hien_thi`, `log`.
 """

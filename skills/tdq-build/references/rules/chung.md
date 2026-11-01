@@ -142,12 +142,12 @@ why the rung below it failed. That line is mandatory at `muc_gat` = `ultra`; at 
 
 | `muc_gat` | The ladder | This table and the examples | The say-out-loud line |
 |---|---|---|---|
-| `off` | off — only an explicit user request selects it, and every new request starts back at `full` | not loaded | not required |
+| `off` | off — only an explicit user request selects it, and every new request starts back at `ultra` | not loaded | not required |
 | `lite` | on | not loaded | new file only |
-| `full` (the default) | on | loaded | new file only |
-| `ultra` | on | loaded | always |
+| `full` | on | loaded | new file only |
+| `ultra` (the default) | on | loaded | always |
 
-An unreadable or unknown value behaves as `full`. No reasoning of yours can select `off`.
+An unreadable or unknown value behaves as `ultra`. No reasoning of yours can select `off`.
 
 ### Extra at level ultra
 
