@@ -161,15 +161,15 @@ def normalize_doc_lang(raw):
 
 
 VALID_MUC_GAT = ("lite", "full", "ultra", "off")
-MUC_GAT_MAC_DINH = "full"
+MUC_GAT_MAC_DINH = "ultra"
 
 
 def normalize_muc_gat(raw):
-    """Mức gắt của luật tinh gọn, chuẩn hoá. Mọi thứ không hợp lệ đều ra `full`.
+    """Normalize lean intensity; missing or invalid values default to `ultra`.
 
-    Fail-closed có chủ ý: khoá trống, giá trị rác, kiểu sai hay `None` đều về `full`, nên
-    không suy luận nào của agent tắt được luật — chỉ user gõ `set muc_gat=off` mới tắt
-    (bảng cường độ trong skills/tdq-build/references/rules/chung.md).
+    Fail closed: an empty key, invalid type or None cannot disable the law.
+    Explicit valid levels, including `off`, remain unchanged; see the intensity
+    table in skills/tdq-build/references/rules/chung.md.
     """
     if not isinstance(raw, str):
         return MUC_GAT_MAC_DINH
@@ -178,7 +178,7 @@ def normalize_muc_gat(raw):
 
 
 def muc_gat_hieu_luc(state):
-    """Mức gắt đọc từ state (state None hay khoá thiếu → `full`)."""
+    """Read lean intensity from state; absent state or key defaults to `ultra`."""
     return normalize_muc_gat((state or {}).get("muc_gat"))
 
 

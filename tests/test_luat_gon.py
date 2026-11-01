@@ -3,7 +3,7 @@
 T2.1: `doc_than_luat(goc)` lấy khối giữa cặp marker `luat-gon` trong
 skills/tdq-build/references/rules/chung.md (thiếu marker → chuỗi rỗng + một dòng cảnh báo,
 cấm ném lỗi); `loc_than_luat(than, muc_gat)` lọc theo bốn mức `lite|full|ultra|off`, mức lạ
-/ rỗng / None đều ra y như `full` (fail-closed — không có suy luận nào chọn được `off`).
+/ rỗng / None đều ra y như `ultra` (fail-closed — không có suy luận nào chọn được `off`).
 """
 import io
 import os
@@ -89,12 +89,12 @@ class LocThanLuat(unittest.TestCase):
         for muc in (MUC_BANG_CUONG_DO, MUC_VI_DU, MUC_ULTRA):
             self.assertIn(muc, ra, f"ultra phải giữ {muc}")
 
-    def test_muc_la_rong_none_deu_ve_full(self):
-        nhu_full = luat_gon.loc_than_luat(self.than, "full")
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
         for muc in ("xyz", "", None, "OFF ", "review", 7):
             with self.subTest(muc=muc):
-                self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_full,
-                                 f"mức {muc!r} phải xử như `full`")
+                self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"mức {muc!r} phải xử như `ultra`")
 
     def test_moi_muc_khac_off_deu_du_7_bac(self):
         for muc in ("lite", "full", "ultra"):

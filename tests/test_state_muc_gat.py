@@ -1,6 +1,6 @@
 """Test khoá `muc_gat` trong scripts/tdq_state.py (T2.2).
 
-Bốn giá trị `lite|full|ultra|off`; khoá trống hay giá trị lạ đều ra `full` (fail-closed —
+Bốn giá trị `lite|full|ultra|off`; khoá trống hay giá trị lạ đều ra `ultra` (fail-closed —
 chỉ user đặt được `off`); đọc/ghi qua `tdq_state.py set muc_gat=<giá trị>`; mức hiện tại
 phải hiện trên mặt trạng thái user đọc (`next` và docs/tdq/STATE.md), không dựng mặt hiển
 thị thứ hai.
@@ -15,36 +15,37 @@ import tdq_state
 
 
 class MacDinhVaChuanHoa(unittest.TestCase):
-    def test_default_state_la_full(self):
-        self.assertEqual(tdq_state.default_state()["muc_gat"], "full")
+    def test_default_state_la_ultra(self):
+        self.assertEqual(tdq_state.default_state()["muc_gat"], "ultra")
+        self.assertEqual(tdq_state.default_state()["muc_qc"], "full")
 
     def test_bon_gia_tri_hop_le_giu_nguyen(self):
         for muc in ("lite", "full", "ultra", "off"):
             with self.subTest(muc=muc):
                 self.assertEqual(tdq_state.normalize_muc_gat(muc), muc)
 
-    def test_gia_tri_la_rong_none_ve_full(self):
+    def test_gia_tri_la_rong_none_ve_ultra(self):
         for raw in ("xyz", "review", "", None, 7, [], "  "):
             with self.subTest(raw=raw):
-                self.assertEqual(tdq_state.normalize_muc_gat(raw), "full")
+                self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
 
     def test_hoa_thuong_va_khoang_trang_van_nhan(self):
         for raw in (" OFF ", "Ultra", "LITE"):
             with self.subTest(raw=raw):
                 self.assertEqual(tdq_state.normalize_muc_gat(raw), raw.strip().lower())
 
-    def test_khoa_thieu_trong_file_state_doc_ra_full(self):
+    def test_khoa_thieu_trong_file_state_doc_ra_ultra(self):
         with tempfile.TemporaryDirectory() as cwd:
             os.makedirs(os.path.join(cwd, "docs", "tdq"))
             with open(os.path.join(cwd, "docs", "tdq", "state.json"), "w",
                       encoding="utf-8") as f:
                 json.dump({"phase": "implement"}, f)
-            self.assertEqual(tdq_state.muc_gat_hieu_luc(read_state(cwd)), "full")
+            self.assertEqual(tdq_state.muc_gat_hieu_luc(read_state(cwd)), "ultra")
 
-    def test_gia_tri_rac_trong_file_state_doc_ra_full(self):
+    def test_gia_tri_rac_trong_file_state_doc_ra_ultra(self):
         with tempfile.TemporaryDirectory() as cwd:
             write_state(cwd, muc_gat="xyz")
-            self.assertEqual(tdq_state.muc_gat_hieu_luc(read_state(cwd)), "full")
+            self.assertEqual(tdq_state.muc_gat_hieu_luc(read_state(cwd)), "ultra")
 
 
 class QuaCLI(unittest.TestCase):
@@ -55,12 +56,12 @@ class QuaCLI(unittest.TestCase):
             self.assertEqual(ma, 0, loi)
             self.assertEqual(run_state_cli(cwd, "get", "muc_gat")[1], "off")
 
-    def test_set_gia_tri_la_ve_full_chu_khong_bao_loi(self):
+    def test_set_gia_tri_la_ve_ultra_chu_khong_bao_loi(self):
         with tempfile.TemporaryDirectory() as cwd:
             write_state(cwd, active_request="r", lane="full", phase="implement")
             ma, _, loi = run_state_cli(cwd, "set", "muc_gat=xyz")
-            self.assertEqual(ma, 0, f"giá trị lạ phải về full, không fail: {loi}")
-            self.assertEqual(run_state_cli(cwd, "get", "muc_gat")[1], "full")
+            self.assertEqual(ma, 0, f"giá trị lạ phải về ultra, không fail: {loi}")
+            self.assertEqual(run_state_cli(cwd, "get", "muc_gat")[1], "ultra")
 
     def test_next_in_muc_gat_hien_tai(self):
         with tempfile.TemporaryDirectory() as cwd:

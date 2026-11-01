@@ -1,0 +1,251 @@
+.F.F.F.F.............   [100%]
+================================== FAILURES ===================================
+________________ MacDinhVaChuanHoa.test_default_state_la_ultra ________________
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_default_state_la_ultra>
+
+    def test_default_state_la_ultra(self):
+>       self.assertEqual(tdq_state.default_state()["muc_gat"], "ultra")
+E       AssertionError: 'full' != 'ultra'
+E       - full
+E       + ultra
+
+tests\test_state_muc_gat.py:19: AssertionError
+______ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw='xyz') _______
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+_____ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw='review') _____
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+________ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw='') ________
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+_______ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw=None) _______
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+________ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw=7) _________
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+________ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw=[]) ________
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+_______ MacDinhVaChuanHoa.test_gia_tri_la_rong_none_ve_ultra (raw='  ') _______
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_la_rong_none_ve_ultra>
+
+    def test_gia_tri_la_rong_none_ve_ultra(self):
+        for raw in ("xyz", "review", "", None, 7, [], "  "):
+            with self.subTest(raw=raw):
+>               self.assertEqual(tdq_state.normalize_muc_gat(raw), "ultra")
+E               AssertionError: 'full' != 'ultra'
+E               - full
+E               + ultra
+
+tests\test_state_muc_gat.py:30: AssertionError
+______ MacDinhVaChuanHoa.test_gia_tri_rac_trong_file_state_doc_ra_ultra _______
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_gia_tri_rac_trong_file_state_doc_ra_ultra>
+
+    def test_gia_tri_rac_trong_file_state_doc_ra_ultra(self):
+        with tempfile.TemporaryDirectory() as cwd:
+            write_state(cwd, muc_gat="xyz")
+>           self.assertEqual(tdq_state.muc_gat_hieu_luc(read_state(cwd)), "ultra")
+E           AssertionError: 'full' != 'ultra'
+E           - full
+E           + ultra
+
+tests\test_state_muc_gat.py:48: AssertionError
+_______ MacDinhVaChuanHoa.test_khoa_thieu_trong_file_state_doc_ra_ultra _______
+
+self = <test_state_muc_gat.MacDinhVaChuanHoa testMethod=test_khoa_thieu_trong_file_state_doc_ra_ultra>
+
+    def test_khoa_thieu_trong_file_state_doc_ra_ultra(self):
+        with tempfile.TemporaryDirectory() as cwd:
+            os.makedirs(os.path.join(cwd, "docs", "tdq"))
+            with open(os.path.join(cwd, "docs", "tdq", "state.json"), "w",
+                      encoding="utf-8") as f:
+                json.dump({"phase": "implement"}, f)
+>           self.assertEqual(tdq_state.muc_gat_hieu_luc(read_state(cwd)), "ultra")
+E           AssertionError: 'full' != 'ultra'
+E           - full
+E           + ultra
+
+tests\test_state_muc_gat.py:43: AssertionError
+____________ QuaCLI.test_set_gia_tri_la_ve_ultra_chu_khong_bao_loi ____________
+
+self = <test_state_muc_gat.QuaCLI testMethod=test_set_gia_tri_la_ve_ultra_chu_khong_bao_loi>
+
+    def test_set_gia_tri_la_ve_ultra_chu_khong_bao_loi(self):
+        with tempfile.TemporaryDirectory() as cwd:
+            write_state(cwd, active_request="r", lane="full", phase="implement")
+            ma, _, loi = run_state_cli(cwd, "set", "muc_gat=xyz")
+            self.assertEqual(ma, 0, f"gi\xe1 tr\u1ecb l\u1ea1 ph\u1ea3i v\u1ec1 ultra, kh\xf4ng fail: {loi}")
+>           self.assertEqual(run_state_cli(cwd, "get", "muc_gat")[1], "ultra")
+E           AssertionError: 'full' != 'ultra'
+E           - full
+E           + ultra
+
+tests\test_state_muc_gat.py:64: AssertionError
+_________ LocThanLuat.test_muc_la_rong_none_deu_ve_ultra (muc='xyz') __________
+
+self = <test_luat_gon.LocThanLuat testMethod=test_muc_la_rong_none_deu_ve_ultra>
+
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
+        for muc in ("xyz", "", None, "OFF ", "review", 7):
+            with self.subTest(muc=muc):
+>               self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"m\u1ee9c {muc!r} ph\u1ea3i x\u1eed nh\u01b0 `ultra`")
+E               AssertionError: '## T[5436 chars]off`.' != '## T[5436 chars]off`.\n\n### Extra at level ultra\n\nName the [1588 chars]ten.'
+E               Diff is 7208 characters long. Set self.maxDiff to None to see it. : m\u1ee9c 'xyz' ph\u1ea3i x\u1eed nh\u01b0 `ultra`
+
+tests\test_luat_gon.py:96: AssertionError
+___________ LocThanLuat.test_muc_la_rong_none_deu_ve_ultra (muc='') ___________
+
+self = <test_luat_gon.LocThanLuat testMethod=test_muc_la_rong_none_deu_ve_ultra>
+
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
+        for muc in ("xyz", "", None, "OFF ", "review", 7):
+            with self.subTest(muc=muc):
+>               self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"m\u1ee9c {muc!r} ph\u1ea3i x\u1eed nh\u01b0 `ultra`")
+E               AssertionError: '## T[5436 chars]off`.' != '## T[5436 chars]off`.\n\n### Extra at level ultra\n\nName the [1588 chars]ten.'
+E               Diff is 7208 characters long. Set self.maxDiff to None to see it. : m\u1ee9c '' ph\u1ea3i x\u1eed nh\u01b0 `ultra`
+
+tests\test_luat_gon.py:96: AssertionError
+__________ LocThanLuat.test_muc_la_rong_none_deu_ve_ultra (muc=None) __________
+
+self = <test_luat_gon.LocThanLuat testMethod=test_muc_la_rong_none_deu_ve_ultra>
+
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
+        for muc in ("xyz", "", None, "OFF ", "review", 7):
+            with self.subTest(muc=muc):
+>               self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"m\u1ee9c {muc!r} ph\u1ea3i x\u1eed nh\u01b0 `ultra`")
+E               AssertionError: '## T[5436 chars]off`.' != '## T[5436 chars]off`.\n\n### Extra at level ultra\n\nName the [1588 chars]ten.'
+E               Diff is 7208 characters long. Set self.maxDiff to None to see it. : m\u1ee9c None ph\u1ea3i x\u1eed nh\u01b0 `ultra`
+
+tests\test_luat_gon.py:96: AssertionError
+_________ LocThanLuat.test_muc_la_rong_none_deu_ve_ultra (muc='OFF ') _________
+
+self = <test_luat_gon.LocThanLuat testMethod=test_muc_la_rong_none_deu_ve_ultra>
+
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
+        for muc in ("xyz", "", None, "OFF ", "review", 7):
+            with self.subTest(muc=muc):
+>               self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"m\u1ee9c {muc!r} ph\u1ea3i x\u1eed nh\u01b0 `ultra`")
+E               AssertionError: '## T[5436 chars]off`.' != '## T[5436 chars]off`.\n\n### Extra at level ultra\n\nName the [1588 chars]ten.'
+E               Diff is 7208 characters long. Set self.maxDiff to None to see it. : m\u1ee9c 'OFF ' ph\u1ea3i x\u1eed nh\u01b0 `ultra`
+
+tests\test_luat_gon.py:96: AssertionError
+________ LocThanLuat.test_muc_la_rong_none_deu_ve_ultra (muc='review') ________
+
+self = <test_luat_gon.LocThanLuat testMethod=test_muc_la_rong_none_deu_ve_ultra>
+
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
+        for muc in ("xyz", "", None, "OFF ", "review", 7):
+            with self.subTest(muc=muc):
+>               self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"m\u1ee9c {muc!r} ph\u1ea3i x\u1eed nh\u01b0 `ultra`")
+E               AssertionError: '## T[5436 chars]off`.' != '## T[5436 chars]off`.\n\n### Extra at level ultra\n\nName the [1588 chars]ten.'
+E               Diff is 7208 characters long. Set self.maxDiff to None to see it. : m\u1ee9c 'review' ph\u1ea3i x\u1eed nh\u01b0 `ultra`
+
+tests\test_luat_gon.py:96: AssertionError
+___________ LocThanLuat.test_muc_la_rong_none_deu_ve_ultra (muc=7) ____________
+
+self = <test_luat_gon.LocThanLuat testMethod=test_muc_la_rong_none_deu_ve_ultra>
+
+    def test_muc_la_rong_none_deu_ve_ultra(self):
+        nhu_ultra = luat_gon.loc_than_luat(self.than, "ultra")
+        for muc in ("xyz", "", None, "OFF ", "review", 7):
+            with self.subTest(muc=muc):
+>               self.assertEqual(luat_gon.loc_than_luat(self.than, muc), nhu_ultra,
+                                 f"m\u1ee9c {muc!r} ph\u1ea3i x\u1eed nh\u01b0 `ultra`")
+E               AssertionError: '## T[5436 chars]off`.' != '## T[5436 chars]off`.\n\n### Extra at level ultra\n\nName the [1588 chars]ten.'
+E               Diff is 7208 characters long. Set self.maxDiff to None to see it. : m\u1ee9c 7 ph\u1ea3i x\u1eed nh\u01b0 `ultra`
+
+tests\test_luat_gon.py:96: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_default_state_la_ultra
+SUBFAILED(raw='xyz') tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+SUBFAILED(raw='review') tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+SUBFAILED(raw='') tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+SUBFAILED(raw=None) tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+SUBFAILED(raw=7) tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+SUBFAILED(raw=[]) tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+SUBFAILED(raw='  ') tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_la_rong_none_ve_ultra
+FAILED tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_gia_tri_rac_trong_file_state_doc_ra_ultra
+FAILED tests/test_state_muc_gat.py::MacDinhVaChuanHoa::test_khoa_thieu_trong_file_state_doc_ra_ultra
+FAILED tests/test_state_muc_gat.py::QuaCLI::test_set_gia_tri_la_ve_ultra_chu_khong_bao_loi
+SUBFAILED(muc='xyz') tests/test_luat_gon.py::LocThanLuat::test_muc_la_rong_none_deu_ve_ultra
+SUBFAILED(muc='') tests/test_luat_gon.py::LocThanLuat::test_muc_la_rong_none_deu_ve_ultra
+SUBFAILED(muc=None) tests/test_luat_gon.py::LocThanLuat::test_muc_la_rong_none_deu_ve_ultra
+SUBFAILED(muc='OFF ') tests/test_luat_gon.py::LocThanLuat::test_muc_la_rong_none_deu_ve_ultra
+SUBFAILED(muc='review') tests/test_luat_gon.py::LocThanLuat::test_muc_la_rong_none_deu_ve_ultra
+SUBFAILED(muc=7) tests/test_luat_gon.py::LocThanLuat::test_muc_la_rong_none_deu_ve_ultra
+17 failed, 17 passed, 36 subtests passed in 1.20s

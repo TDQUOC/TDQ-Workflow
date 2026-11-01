@@ -21539,11 +21539,11 @@
     },
     {
       "id": "scripts_tdq_state_rationale_168",
-      "label": "M\u1ee9c g\u1eaft c\u1ee7a lu\u1eadt tinh g\u1ecdn, chu\u1ea9n ho\u00e1. M\u1ecdi th\u1ee9 kh\u00f4ng h\u1ee3p l\u1ec7 \u0111\u1ec1u ra `full`. Fail-\u2026",
+      "label": "Normalize lean intensity; missing or invalid values default to `ultra`. Fail\u2026",
       "_origin": "ast",
       "community": 0,
       "file_type": "rationale",
-      "norm_label": "muc gat cua luat tinh gon, chuan hoa. moi thu khong hop le \u0111eu ra `full`. fail-...",
+      "norm_label": "normalize lean intensity; missing or invalid values default to `ultra`. fail...",
       "source_file": "scripts/tdq_state.py",
       "source_location": "L168"
     },
@@ -31356,11 +31356,11 @@
     },
     {
       "id": "scripts_tdq_state_rationale_181",
-      "label": "M\u1ee9c g\u1eaft \u0111\u1ecdc t\u1eeb state (state None hay kho\u00e1 thi\u1ebfu \u2192 `full`).",
+      "label": "Read lean intensity from state; absent state or key defaults to `ultra`.",
       "_origin": "ast",
       "community": 54,
       "file_type": "rationale",
-      "norm_label": "muc gat \u0111oc tu state (state none hay khoa thieu \u2192 `full`).",
+      "norm_label": "read lean intensity from state; absent state or key defaults to `ultra`.",
       "source_file": "scripts/tdq_state.py",
       "source_location": "L181"
     },
@@ -117783,5 +117783,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f3fdfd791dabc373949155a8bc4cf5dbdbe4356b"
+  "built_at_commit": "2f972f9c231a097938c527044e1c3ed11a0269c9"
 }

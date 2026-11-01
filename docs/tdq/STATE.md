@@ -1,5 +1,5 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-01T18:13:23+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-01T18:40:24+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
@@ -10,7 +10,7 @@ Updated: 2026-11-01T18:13:23+07:00 · Project: C:\Users\admin\Documents\Projects
 | Plan | docs/tdq/plan/2026-11-01-1045-toi-uu-bon-hang-muc.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
-| Lean level | full |
+| Lean level | ultra |
 | QC level | ultra |
 | Run mode | subagent |
 

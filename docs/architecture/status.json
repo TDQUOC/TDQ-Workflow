@@ -2,7 +2,10 @@
   "schema_version": 1,
   "status": "stale",
   "reasons": [
-    "Source file modified: scripts/tdq_test_report.py"
+    "Source file modified: hooks/scripts/luat_gon.py",
+    "Source file modified: scripts/tdq_state.py",
+    "Source file modified: scripts/tdq_test_report.py",
+    "Source file modified: skills/tdq-build/references/rules/chung.md"
   ],
-  "checked_at": "2026-11-01T11:24:46Z"
+  "checked_at": "2026-11-01T11:42:24Z"
 }
