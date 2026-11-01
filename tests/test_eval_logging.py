@@ -242,6 +242,7 @@ def test_cli_subprocess_logging_toggle():
             [sys.executable, script_path, "plan", "--plan", str(plan_path)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
             env=env_default,
             cwd=str(ROOT),
         )
@@ -257,6 +258,7 @@ def test_cli_subprocess_logging_toggle():
             [sys.executable, script_path, "plan", "--plan", str(plan_path)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
             env=env_silenced,
             cwd=str(ROOT),
         )
@@ -271,6 +273,7 @@ def test_cli_subprocess_logging_toggle():
             [sys.executable, script_path, "plan", "--plan", str(plan_path)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
             env=env_tdq_log_off,
             cwd=str(ROOT),
         )
