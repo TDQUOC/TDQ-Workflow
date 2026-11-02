@@ -1,0 +1,15 @@
+tdq-browser-research | Deep web research and SPA web scraping through Chrome DevToo | plugin:tdq-workflow
+tdq-browser-test | E2E and visual UI/UX verification through Chrome DevTools MC | plugin:tdq-workflow
+tdq-build | Run an approved TDQ plan end to end in one turn, QC it again | plugin:tdq-workflow
+tdq-check-status | Recover an unfinished TDQ request: read the disk directly, r … Use when an old session died, when switching machi | plugin:tdq-workflow
+tdq-conventions | Shared TDQ workflow rules (one-turn protocol, state, approva | plugin:tdq-workflow
+tdq-intake | Open a new TDQ request - record the ask, pick the lane, init | plugin:tdq-workflow
+tdq-lean | Hunt over-engineering and name what can be deleted - review … Use when code feels bigger than the request. | plugin:tdq-workflow
+tdq-plan | Turn an approved spec into a checkbox plan, one test per tas … Use when a deep-pipeline spec has been approved. | plugin:tdq-workflow
+[2026-11-01T18:58:05+07:00] ℹ️ skill_inventory: filtered on 'eval skill benchmark' — kept 11, hid 18
+tdq-setup | Install and prove every dependency the workflow searches wit … Use when opening a request, when a search tool fai | plugin:tdq-workflow
+tdq-spec | Write the spec for a TDQ request in the user's document lang … Use when the deep pipeline has finished analyze. | plugin:tdq-workflow
+tdq-status | Report the current TDQ state (request, lane, phase, executio … Use when the user asks where the workflow stands. | plugin:tdq-workflow
+— The table above only holds the skills on disk.
+— ALSO COPY the built-in skills visible in context into the inventory table, then give a verdict per line.
+— Hid 18 skill(s) not matching "eval skill benchmark"; see them all: python3 scripts/skill_inventory.py --tat-ca

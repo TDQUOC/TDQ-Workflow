@@ -2204,7 +2204,7 @@ def _chan_spec_chua_duyet(state):
           "record it with `approve spec --by \"...\"` before moving to phase=plan.")
 
 
-def _chan_worktree_con_mo(cwd):
+def _chan_worktree_con_mo(cwd, state=None):
     """Gate `qc`: an open row in the worktree ledger stops the phase from moving.
 
     QC is the last moment anyone still looks at this request. Let it through and the
@@ -2214,7 +2214,11 @@ def _chan_worktree_con_mo(cwd):
     """
     try:
         import tdq_worktree_registry as so_wt
-        mo = so_wt.dong_mo(cwd)
+        slug = (state or {}).get("active_request") if state else None
+        if not slug:
+            s = load(cwd)
+            slug = (s or {}).get("active_request")
+        mo = so_wt.dong_mo(cwd, slug=slug)
     except Exception:
         return
     if not mo:
@@ -2787,7 +2791,7 @@ def cli(argv):
                           f"2026-09-01 — use phase={PHASE_DA_GO[value]} instead.")
                 _fail("Invalid phase (idle|analyze|spec|plan|mode|implement|qc|report).")
             if key == "phase" and value == "qc":
-                _chan_worktree_con_mo(cwd)
+                _chan_worktree_con_mo(cwd, state)
             if key == "phase" and value == "plan":
                 _chan_spec_chua_duyet(state)
             if key == "phase" and value == "implement":

@@ -3,9 +3,22 @@
   "status": "stale",
   "reasons": [
     "Source file modified: hooks/scripts/luat_gon.py",
+    "Source file modified: scripts/archify_delivery.py",
+    "Source file modified: scripts/tdq_eval.py",
     "Source file modified: scripts/tdq_state.py",
+    "Source file modified: scripts/tdq_test_receipt.py",
     "Source file modified: scripts/tdq_test_report.py",
-    "Source file modified: skills/tdq-build/references/rules/chung.md"
+    "Source file modified: skills/tdq-build/SKILL.md",
+    "Source file modified: skills/tdq-build/references/qc.md",
+    "Source file modified: skills/tdq-build/references/rules/chung.md",
+    "Source file modified: skills/tdq-intake/SKILL.md",
+    "Source file modified: skills/tdq-plan/SKILL.md",
+    "Source file modified: skills/tdq-spec/SKILL.md",
+    "Source file modified: skills/tdq-spec/references/spec-template.md",
+    "Source file added: scripts/tdq_eval_contract.py",
+    "Source file added: scripts/tdq_eval_hosts.py",
+    "Source file added: scripts/tdq_skill_eval.py",
+    "Source file added: skills/tdq-build/references/skill-eval.md"
   ],
-  "checked_at": "2026-11-01T12:41:15Z"
+  "checked_at": "2026-11-01T19:20:15Z"
 }

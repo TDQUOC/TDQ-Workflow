@@ -1,0 +1,238 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Eval skill và plugin — thiết kế dự kiến",
+    "subtitle": "Repo TDQ và project cài plugin · gate không gọi model · Ponytail giữ ultra",
+    "output": "2026-11-01-1854-eval-chat-luong-skill-preview.html",
+    "locale": "vi",
+    "animation": "trace",
+    "visual_preset": "blueprint",
+    "quality_profile": "standard",
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "Skills và kế hoạch"
+        },
+        "backend": {
+          "label": "Core Eval dùng chung"
+        },
+        "security": {
+          "label": "Gate chứng cứ"
+        },
+        "external": {
+          "label": "Caller chủ động"
+        },
+        "messagebus": {
+          "label": "Adapter host"
+        },
+        "database": {
+          "label": "Raw trace và artifact"
+        }
+      }
+    },
+    "translations": {
+      "viewer.kind.frontend": "Skills và kế hoạch",
+      "legend.workflow.frontend": "Skills và kế hoạch",
+      "viewer.kind.backend": "Core Eval dùng chung",
+      "legend.workflow.backend": "Core Eval dùng chung",
+      "viewer.kind.security": "Gate chứng cứ",
+      "legend.workflow.security": "Gate chứng cứ",
+      "viewer.kind.external": "Caller chủ động",
+      "legend.workflow.external": "Caller chủ động",
+      "viewer.kind.messagebus": "Adapter host",
+      "legend.workflow.messagebus": "Adapter host",
+      "viewer.kind.database": "Raw trace và artifact",
+      "legend.workflow.database": "Raw trace và artifact"
+    }
+  },
+  "lanes": [
+    {
+      "id": "workflow",
+      "label": "Workflow và gate dùng chung"
+    },
+    {
+      "id": "execution",
+      "label": "Chỉ khi caller chủ động gọi live run"
+    },
+    {
+      "id": "exceptions",
+      "label": "Thiếu dữ liệu không phải PASS",
+      "variant": "exception"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "scope",
+      "lane": "workflow",
+      "col": 0,
+      "type": "frontend",
+      "label": "Phân loại",
+      "sublabel": "skill / hook / plugin",
+      "width": 152
+    },
+    {
+      "id": "plan",
+      "lane": "workflow",
+      "col": 1,
+      "type": "frontend",
+      "label": "Khóa kế hoạch",
+      "sublabel": "targets + cases + rubric",
+      "width": 152
+    },
+    {
+      "id": "before",
+      "lane": "workflow",
+      "col": 2,
+      "type": "security",
+      "label": "Gate đầu",
+      "sublabel": "plan hợp lệ",
+      "width": 152
+    },
+    {
+      "id": "change",
+      "lane": "workflow",
+      "col": 3,
+      "type": "backend",
+      "label": "Triển khai",
+      "sublabel": "tạo evidence đúng loại",
+      "width": 152
+    },
+    {
+      "id": "final",
+      "lane": "workflow",
+      "col": 4,
+      "type": "security",
+      "label": "Gate cuối",
+      "sublabel": "source + identity",
+      "width": 152
+    },
+    {
+      "id": "report",
+      "lane": "workflow",
+      "col": 5,
+      "type": "backend",
+      "label": "Báo cáo",
+      "sublabel": "riêng host / model",
+      "width": 152
+    },
+    {
+      "id": "run",
+      "lane": "execution",
+      "col": 1,
+      "type": "external",
+      "label": "Run rõ ràng",
+      "sublabel": "profile + hạn mức",
+      "width": 152
+    },
+    {
+      "id": "hosts",
+      "lane": "execution",
+      "col": 2,
+      "type": "messagebus",
+      "label": "Claude / Codex",
+      "sublabel": "Windows + ownership",
+      "width": 152
+    },
+    {
+      "id": "trace",
+      "lane": "execution",
+      "col": 3,
+      "type": "database",
+      "label": "Raw evidence",
+      "sublabel": "hash + outcome + usage",
+      "width": 152
+    },
+    {
+      "id": "incomplete",
+      "lane": "exceptions",
+      "col": 4,
+      "type": "security",
+      "label": "Chưa đủ",
+      "sublabel": "INCOMPLETE / UNTESTED",
+      "width": 152
+    }
+  ],
+  "edges": [
+    {
+      "from": "scope",
+      "to": "plan"
+    },
+    {
+      "from": "plan",
+      "to": "before"
+    },
+    {
+      "from": "before",
+      "to": "change"
+    },
+    {
+      "from": "change",
+      "to": "final"
+    },
+    {
+      "from": "final",
+      "to": "report"
+    },
+    {
+      "from": "run",
+      "to": "hosts"
+    },
+    {
+      "from": "hosts",
+      "to": "trace"
+    },
+    {
+      "from": "plan",
+      "to": "run",
+      "label": "opt-in",
+      "variant": "dashed",
+      "route": "drop",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "trace",
+      "to": "final",
+      "label": "evidence",
+      "role": "branch"
+    },
+    {
+      "from": "final",
+      "to": "incomplete",
+      "label": "thiếu / stale",
+      "role": "error",
+      "variant": "security",
+      "route": "drop",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Năm cải tiến đã duyệt",
+      "items": [
+        "Eval-plan trước sửa; baseline/candidate cùng điều kiện.",
+        "Trigger, outcome và chi phí đo riêng; report theo host/model.",
+        "Giữ / rút / bỏ hoặc chưa kết luận dựa trên evidence."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Phạm vi chứng nhận",
+      "items": [
+        "QC cơ chế dùng fixture có nhãn, không giả model thật.",
+        "Legacy records chỉ là lịch sử; missing usage không thành 0 USD."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Giữ quyền quyết định của user",
+      "items": [
+        "Không chạy A/B Ponytail full/ultra; mặc định ultra giữ nguyên.",
+        "Không tự launch model từ gate, install hoặc report."
+      ]
+    }
+  ]
+}

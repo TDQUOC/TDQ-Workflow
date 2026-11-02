@@ -1,0 +1,39 @@
+{
+  "schema": "tdq-scope-observation/v1",
+  "slug": "2026-11-01-1854-eval-chat-luong-skill",
+  "kind": "regression",
+  "status": "PASS",
+  "exit_code": 0,
+  "paid_model_calls": 0,
+  "timed_out": false,
+  "failures": [],
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "--junitxml=C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1854-eval-chat-luong-skill\\junit-q8.xml",
+    "tests/test_eval_workflow_gate.py",
+    "tests/test_eval_logging.py"
+  ],
+  "source_files": {
+    "scripts/tdq_state.py": "323aec62388945d792cedb25c720a22500021288aae1e5aa793ce4c6aaa4b6bb",
+    "skills/tdq-build/SKILL.md": "d06ef15018e2c0655736dba7735ee739f596e8e1fd0b461c3c2b224a782f6a4c",
+    "skills/tdq-build/references/qc.md": "7dc117ddd21f1ac6659dbe523a2de986c3bf62b37443eb44b16105f768a24a74",
+    "skills/tdq-intake/SKILL.md": "d7d1b08a1b0446fb1d6a650dff29bcef067e57e21108584f394fc5d9ef3efc87",
+    "skills/tdq-plan/SKILL.md": "a85f9b646f52da6e7bd8cf0245ba17910a3031925378a16cebe36ed528501026",
+    "skills/tdq-spec/SKILL.md": "9e295358c9db3beed7b7dc2cd346084f40912299578b173c073944da2414f5ca",
+    "skills/tdq-spec/references/spec-template.md": "799788baaa57306920f4e43531f52fa446cd05c5d2f80c11890e0cd3c39e328d",
+    "tests/test_eval_logging.py": "19a7465c30e8490c9d6e08b496161a7d2f87bd9f7b1dea70012ae07c7e31d8e6",
+    "tests/test_eval_workflow_gate.py": "cbb0e980f702cff41d4d290640a5e299831518940333a96f5fa97f6a16788f61"
+  },
+  "source_sha256": "bd6858a866746c84b659233beb0b368bafcd09879336f3da4bce75f7e7b39445",
+  "result": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/result-q8.json",
+    "sha256": "29004821b0082716557369df8a43003ccadcacdc3f04a4489dad8c5a5b39680f"
+  },
+  "stdout": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/stdout-q8.txt",
+    "sha256": "b98756f99ee27a1e13e0fa71a8dcd58cb9b5d86cd0a5c7f9d4eead40445cabf6"
+  }
+}

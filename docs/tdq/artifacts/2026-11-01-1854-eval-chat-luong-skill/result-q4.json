@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "source_sha256": "36a8de96a2e88def84ed5c655936d9dd3869dad8f564fa093af12b44a67f3bd7",
+  "junit": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/junit-q4.xml",
+    "sha256": "96385eb1bfd6fcb58efb338d00f3d78502d53fe9b21da04894901be4f6744b3b"
+  },
+  "cases": [
+    {
+      "id": "tests.test_tdq_eval_hosts::test_preflight_unsupported_host",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_preflight_blocks_missing_isolation_or_real_home",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_preflight_ready_and_failure_with_process_fixture",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_prepare_trial_environment_isolation_and_path_guard",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_run_host_trial_timeout_and_descendant_cleanup",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_run_host_trial_retry_cap_and_attempt_preservation",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_hash_file_streaming_and_trace_budget_exceeded",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_parse_trace_stream_unknown_schema_and_malformed_json",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_parse_trace_stream_claude_and_codex_metrics_and_null_cost",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_hosts::test_logging_on_off_and_redaction",
+      "status": "PASS",
+      "assertions": 1
+    }
+  ]
+}
