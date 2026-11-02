@@ -1,0 +1,501 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "source_sha256": "88d621958a2d4d407eed0434c1ddff382628909e13b1fa00a6900d3757965aac",
+  "junit": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/junit-q2.xml",
+    "sha256": "16dc20c6f5d3052a214d4407b6026c7e4a2d48e0c072625f5878656ceb526329"
+  },
+  "cases": [
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[skills/build/SKILL.md]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[skills/build/references/qc.md]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[agents/build.md]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[hooks/check.py]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[.claude-plugin/plugin.json]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[.agents/plugins/a.json]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[.opencode/plugins/a.js]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_behavioral[manifest.json]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_runtime_requires_explicit_context",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_exempt[README.md-docs_only]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_exempt[CHANGELOG-1.md-docs_only]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_exempt[docs/guide.md-docs_only]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_exempt[docs/tdq/plan/a.md-bookkeeping]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_exempt[graphify-out/a.json-bookkeeping]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_exempt[src/main.py-app_code]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[../a]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[skills/../README.md]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[/tmp/a]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[C:\\\\a]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[docs/a.md:stream]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[docs//a.md]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[docs/a.md ]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[docs/./a.md]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_fail_closed_paths[unknown.conf]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bookkeeping_only_when_diff_proves_no_instruction_change",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_plan_create_hash_and_no_mutation",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[plan_version]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[experiment_id]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[targets]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[base_identity]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[candidate_identity]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[change_kind]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[hypothesis]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[evaluation_kind]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[corpus_id]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[dev_cases_sha256]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[holdout_cases_sha256]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[rubric_version]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[scorer_version]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[expected_triggers]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[negative_cases]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[required_metrics]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[cells]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[repetitions]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[order_policy]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_missing_plan_fields[thresholds]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_model_alias[latest]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_model_alias[default]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_model_alias[auto]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_model_alias[]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_model_alias[model-latest]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[repetitions-True]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[repetitions-0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[base_identity-main]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[candidate_identity-branch]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[targets-value4]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[cells-value5]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[order_policy-AB]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[evaluation_kind-unknown]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[thresholds-value8]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_bad_plan[thresholds-value9]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_gate_complete_coverage_and_staleness",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_gate_unavailable_metrics_and_wrong_claim",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_waiver_not_pass_or_live_authorization",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[host]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[model]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[permission_profile]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[scorer_version]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[corpus_version]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[check_set]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[tool_aliases]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[cache_profile]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[evaluation_kind]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_identity_mismatch_and_missing[rubric_version]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_baseline_probes_and_legacy_never_certified",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_metrics_missing_zero_partial_and_no_mutation",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_failure_never_pass[failed]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_failure_never_pass[timeout]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_failure_never_pass[missing]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_failure_never_pass[unknown_schema]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_failure_never_pass[unexpected]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_trigger_requires_boolean_observation_and_provenance",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_rate_estimate_is_not_bill_and_requires_complete_usage",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_invalid_numeric_metric_rejected[nan]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_invalid_numeric_metric_rejected[inf]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_invalid_numeric_metric_rejected[-1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_invalid_numeric_metric_rejected[True]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_invalid_numeric_metric_rejected[12]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_schedule_deterministic_unique_balanced",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_recommendation[1-1-1000-INCONCLUSIVE]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_recommendation[1-1-600-TRIM]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_recommendation[0.5-1-1000-KEEP]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_recommendation[1-0.5-1000-DROP]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_no_recommendation_from_missing_policy_samples_or_invalid_pairs",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_pair_manifest_binds_cell_and_complexity_savings",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_malformed_schema_never_crashes_gate",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_tdq_eval_contract::test_logging_and_pure_core",
+      "status": "PASS",
+      "assertions": 1
+    }
+  ]
+}

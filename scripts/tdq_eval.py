@@ -40,6 +40,10 @@ sys.path.insert(0, SCRIPTS_DIR)
 import tdq_state  # noqa: E402 — shares xoa_cay
 import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 import tdq_ten_lenh  # noqa: E402
+import tdq_eval_contract  # noqa: E402
+
+validate_paired_identity = tdq_eval_contract.validate_paired_identity
+classify_record_provenance = tdq_eval_contract.classify_record_provenance
 
 BANG_TEN = tdq_ten_lenh.BANG_DOI_TEN["tdq_eval.py"]
 LENH = ("setup", "run", "score", "report")
@@ -984,6 +988,12 @@ def kiem_tra_paired_experiment(manifest_base, manifest_candidate=None):
     if not hop_le_c:
         return False, f"Candidate manifest invalid: {ly_do_c}"
 
+    if "host" in manifest_base and "host" in manifest_candidate:
+        hop_le_contract = validate_paired_identity(manifest_base, manifest_candidate)
+        if not hop_le_contract["valid"]:
+            ly_do_list = hop_le_contract["errors"] + [f"mismatched {f}" for f in hop_le_contract["mismatched_fields"]]
+            return False, "; ".join(ly_do_list)
+
     if manifest_base.get("corpus_version") != manifest_candidate.get("corpus_version"):
         return False, (
             f"Different corpus: base has '{manifest_base.get('corpus_version')}' "
@@ -1042,6 +1052,7 @@ def rescore_append_only(thu_muc_goc, thu_muc_dich=None, phien_ban=2, manifest=No
             continue
 
         ban_ghi_moi = dict(ban_ghi_cu)
+        provenance = ban_ghi_cu.get("provenance") or classify_record_provenance(ban_ghi_cu)
         ban_ghi_moi.update({
             "ket_qua": moi["ket_qua"],
             "rescore_version": phien_ban,
@@ -1049,6 +1060,7 @@ def rescore_append_only(thu_muc_goc, thu_muc_dich=None, phien_ban=2, manifest=No
             "raw_trace": os.path.abspath(transcript),
             "scorer_identity": manifest.get("scorer_version", VERSION_SCORER) if manifest else VERSION_SCORER,
             "manifest_identity": manifest.get("phien_ban") if manifest else None,
+            "provenance": provenance,
             "thoi_gian_rescore": datetime.now().isoformat(timespec="seconds"),
         })
         if "nhiem" in moi:

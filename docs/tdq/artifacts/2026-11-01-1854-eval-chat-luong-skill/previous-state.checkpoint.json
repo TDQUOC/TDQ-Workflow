@@ -1,0 +1,83 @@
+{
+  "schema_version": 6,
+  "active_request": "2026-11-01-1045-toi-uu-bon-hang-muc",
+  "previous_request": "2026-10-27-1846-kiem-chung-tang-toc",
+  "lane": "full",
+  "phase": "implement",
+  "brief_file": null,
+  "spec_file": "docs/tdq/spec/2026-11-01-1045-toi-uu-bon-hang-muc.md",
+  "spec_approved": true,
+  "spec_sha256": "ce368806186f0c4b392a09c32a5b98bfd9a408ec99aa9fd634185fb4d9897eed",
+  "spec_approved_at": "2026-11-01T11:00:43+07:00",
+  "spec_descriptor": {
+    "target": "spec",
+    "request": "2026-11-01-1045-toi-uu-bon-hang-muc",
+    "lane": "full",
+    "file": "docs/tdq/spec/2026-11-01-1045-toi-uu-bon-hang-muc.md",
+    "sha256": "ce368806186f0c4b392a09c32a5b98bfd9a408ec99aa9fd634185fb4d9897eed",
+    "by": "duyệt spec",
+    "at": "2026-11-01T11:00:43+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "spec_approved_by": "duyệt spec",
+  "spec_bo_qua_do": null,
+  "lsp_bo_qua": null,
+  "plan_file": "docs/tdq/plan/2026-11-01-1045-toi-uu-bon-hang-muc.md",
+  "plan_approved": true,
+  "plan_sha256": "bb44e926afd4e905b8d99d1e9b85cdd4116203e560c8b51b5c0bbec6e61f1b86",
+  "plan_approved_at": "2026-11-01T11:12:20+07:00",
+  "plan_approved_by": "duyệt plan",
+  "plan_descriptor": {
+    "target": "plan",
+    "request": "2026-11-01-1045-toi-uu-bon-hang-muc",
+    "lane": "full",
+    "file": "docs/tdq/plan/2026-11-01-1045-toi-uu-bon-hang-muc.md",
+    "sha256": "bb44e926afd4e905b8d99d1e9b85cdd4116203e560c8b51b5c0bbec6e61f1b86",
+    "by": "duyệt plan",
+    "at": "2026-11-01T11:12:20+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "quick_approved": false,
+  "quick_approved_at": null,
+  "quick_approved_by": null,
+  "quick_descriptor": null,
+  "implement_mode": "subagent",
+  "implement_pause": null,
+  "lech_spec": [],
+  "doc_lang": "vi",
+  "muc_gat": "ultra",
+  "muc_qc": "ultra",
+  "started_at": "2026-11-01T10:50:35+07:00",
+  "loai_request": null,
+  "nhanh_goc": null,
+  "nhanh_request": null,
+  "phase_history": [
+    {
+      "phase": "idle",
+      "at": "2026-11-01T10:50:35+07:00"
+    },
+    {
+      "phase": "analyze",
+      "at": "2026-11-01T10:50:49+07:00"
+    },
+    {
+      "phase": "spec",
+      "at": "2026-11-01T10:56:31+07:00"
+    },
+    {
+      "phase": "plan",
+      "at": "2026-11-01T11:00:44+07:00"
+    },
+    {
+      "phase": "mode",
+      "at": "2026-11-01T11:12:46+07:00"
+    },
+    {
+      "phase": "implement",
+      "at": "2026-11-01T11:13:50+07:00"
+    }
+  ],
+  "updated_at": "2026-11-01T18:40:24+07:00"
+}

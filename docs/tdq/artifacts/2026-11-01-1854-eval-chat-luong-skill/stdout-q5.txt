@@ -1,0 +1,4 @@
+................                                                         [100%]
+16 passed in 0.23s
+
+TDQ_SCOPE_RESULT {"path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/result-q5.json", "sha256": "d3c72e6532f93e7cdfea2c490a3b01936f159aa1cc4a661e598a299436bcffc5"}

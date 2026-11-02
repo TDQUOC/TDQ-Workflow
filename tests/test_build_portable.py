@@ -28,8 +28,11 @@ PHASE1_RUNTIME_MODULES = {
     "tdq_transcript", "tdq_test_result", "tdq_readiness", "tdq_runtime_bench",
     "tdq_test_manifest", "tdq_test_process", "tdq_test_receipt", "tdq_transcript_cache",
 }
-# Current O4 is required in live packaging, but may not yet exist in Git HEAD.
-APPROVED_RUNTIME_MODULES = PHASE1_RUNTIME_MODULES | {"tdq_test_report"}
+# Current O4 and eval suite modules are required in live packaging, but may not yet exist in Git HEAD.
+APPROVED_RUNTIME_MODULES = PHASE1_RUNTIME_MODULES | {
+    "tdq_test_report", "tdq_eval_contract", "tdq_eval_hosts", "tdq_skill_eval",
+}
+APPROVED_RELEASE_DOCS = {"skills/tdq-build/references/skill-eval.md"}
 
 
 def _imports_report(source):
@@ -641,7 +644,7 @@ class TestSinhNhanhRelease(TempDest):
         if _imports_report(source.stdout):
             self.assertIn("scripts/tdq_test_report.py", paths,
                           "HEAD imports tdq_test_report; release must keep it")
-        approved_paths = {f"scripts/{module}.py" for module in APPROVED_RUNTIME_MODULES}
+        approved_paths = {f"scripts/{module}.py" for module in APPROVED_RUNTIME_MODULES} | APPROVED_RELEASE_DOCS
         # The existing budget stays unchanged for every other release file.
         self.assertLessEqual(len(paths - approved_paths), 160)
         self.assertGreaterEqual(len(kept), 120)

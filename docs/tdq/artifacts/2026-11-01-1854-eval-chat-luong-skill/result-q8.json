@@ -1,0 +1,696 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "source_sha256": "bd6858a866746c84b659233beb0b368bafcd09879336f3da4bce75f7e7b39445",
+  "junit": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/junit-q8.xml",
+    "sha256": "0f870417ee180f1ceae7642128f316fff6bffa6b42530c5eccf824e9ac382ddc"
+  },
+  "cases": [
+    {
+      "id": "tests.test_eval_workflow_gate.TestEvalWorkflowGate::test_eval_waiver_records_waived_user_and_allows_implement",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_workflow_gate.TestEvalWorkflowGate::test_implement_allows_exempt_targets_without_eval_plan",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_workflow_gate.TestEvalWorkflowGate::test_implement_requires_eval_plan_when_behavioral_targets_present",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_workflow_gate.TestEvalWorkflowGate::test_report_gate_blocks_when_evidence_missing_or_incomplete",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_default_logging_enabled[log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_default_logging_enabled[log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_default_logging_enabled[_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[thong-tin-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[thong-tin-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[thong-tin-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[canh-bao-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[canh-bao-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[canh-bao-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[loi-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[loi-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_allowed_log_levels[loi-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[debug-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[debug-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[debug-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[warn-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[warn-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[warn-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[error-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[error-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[error-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[INFO-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[INFO-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[INFO-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[CRITICAL-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[CRITICAL-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[CRITICAL-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[unknown-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[unknown-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_invalid_log_level_rejected[unknown-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0-TDQ_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0-TDQ_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0-TDQ_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0-TDQ_EVAL_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0-TDQ_EVAL_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0-TDQ_EVAL_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[false-TDQ_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[false-TDQ_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[false-TDQ_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[false-TDQ_EVAL_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[false-TDQ_EVAL_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[false-TDQ_EVAL_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[off-TDQ_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[off-TDQ_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[off-TDQ_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[off-TDQ_EVAL_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[off-TDQ_EVAL_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[off-TDQ_EVAL_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0 -TDQ_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0 -TDQ_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0 -TDQ_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0 -TDQ_EVAL_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0 -TDQ_EVAL_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[0 -TDQ_EVAL_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[FALSE-TDQ_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[FALSE-TDQ_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[FALSE-TDQ_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[FALSE-TDQ_EVAL_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[FALSE-TDQ_EVAL_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[FALSE-TDQ_EVAL_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[Off-TDQ_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[Off-TDQ_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[Off-TDQ_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[Off-TDQ_EVAL_LOG-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[Off-TDQ_EVAL_LOG-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_clean_silencing_via_env[Off-TDQ_EVAL_LOG-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_either_env_var_can_silence[log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_either_env_var_can_silence[log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_either_env_var_can_silence[_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_metadata_fields_whitelisting[log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_metadata_fields_whitelisting[log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_metadata_fields_whitelisting[_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[secret_phrase-contains sensitive secret word-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[secret_phrase-contains sensitive secret word-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[secret_phrase-contains sensitive secret word-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[token_xyz-authorization token value-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[token_xyz-authorization token value-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[token_xyz-authorization token value-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[my_prompt-system prompt instructions-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[my_prompt-system prompt instructions-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[my_prompt-system prompt instructions-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[big_payload-request payload body-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[big_payload-request payload body-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[big_payload-request payload body-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[bearer_token-Bearer eyJhbGciOi...-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[bearer_token-Bearer eyJhbGciOi...-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[bearer_token-Bearer eyJhbGciOi...-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[admin_password-database password123-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[admin_password-database password123-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[admin_password-database password123-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[api_key_val-api_key=ab12cd34-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[api_key_val-api_key=ab12cd34-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[api_key_val-api_key=ab12cd34-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[api-key-val-api-key: xyz-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[api-key-val-api-key: xyz-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[api-key-val-api-key: xyz-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[sk_key-sk-proj-1234567890abcdef-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[sk_key-sk-proj-1234567890abcdef-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_message[sk_key-sk-proj-1234567890abcdef-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[secret_phrase-contains sensitive secret word-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[secret_phrase-contains sensitive secret word-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[secret_phrase-contains sensitive secret word-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[token_xyz-authorization token value-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[token_xyz-authorization token value-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[token_xyz-authorization token value-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[my_prompt-system prompt instructions-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[my_prompt-system prompt instructions-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[my_prompt-system prompt instructions-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[big_payload-request payload body-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[big_payload-request payload body-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[big_payload-request payload body-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[bearer_token-Bearer eyJhbGciOi...-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[bearer_token-Bearer eyJhbGciOi...-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[bearer_token-Bearer eyJhbGciOi...-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[admin_password-database password123-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[admin_password-database password123-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[admin_password-database password123-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[api_key_val-api_key=ab12cd34-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[api_key_val-api_key=ab12cd34-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[api_key_val-api_key=ab12cd34-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[api-key-val-api-key: xyz-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[api-key-val-api-key: xyz-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[api-key-val-api-key: xyz-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[sk_key-sk-proj-1234567890abcdef-log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[sk_key-sk-proj-1234567890abcdef-log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_redaction_sensitive_metadata_values[sk_key-sk-proj-1234567890abcdef-_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_newline_sanitization[log0]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_newline_sanitization[log1]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_newline_sanitization[_log]",
+      "status": "PASS",
+      "assertions": 1
+    },
+    {
+      "id": "tests.test_eval_logging::test_cli_subprocess_logging_toggle",
+      "status": "PASS",
+      "assertions": 1
+    }
+  ]
+}

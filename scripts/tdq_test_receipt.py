@@ -30,8 +30,8 @@ EXCLUDED_DIRS = {".git", ".venv", ".venv-tokens", "node_modules", "__pycache__",
                  ".pytest_cache", ".tdq-worktrees"}
 # Nested agent checkouts are generated independent worktrees, not project inputs.
 # Keep .claude/settings.json and all other project configuration in the envelope.
-GENERATED_PREFIXES = ("docs/tdq/cache/", "docs/tdq/artifacts/", ".claude/worktrees/")
-GENERATED_FILES = {"docs/tdq/.tdq-test.jsonl"}
+GENERATED_PREFIXES = ("docs/tdq/", ".claude/worktrees/", "docs/workinglog/", "docs/working-log/")
+GENERATED_FILES = {"docs/architecture/status.json"}
 
 
 def _log(reason, action):
