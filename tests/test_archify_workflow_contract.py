@@ -45,3 +45,27 @@ class ArchifyWorkflowContract(unittest.TestCase):
 
     def test_plan_reuses_approved_preview(self):
         self.assertIn("manifest", text("skills/tdq-plan/references/plan-template.md"))
+
+    def test_full_and_quick_render_one_before_after_explainer(self):
+        """2026-11-02: both lanes render ONE explainer page holding the before and after diagrams."""
+        for path in ("skills/tdq-spec/references/archify-ba.md",
+                     "skills/tdq-intake/references/archify-quick.md"):
+            with self.subTest(path=path):
+                body = text(path)
+                self.assertIn("--type explainer", body)
+                self.assertIn("before", body.lower())
+                self.assertIn("after", body.lower())
+                self.assertIn("supporting", body.lower())
+
+    def test_explainer_pins_locale_and_avoids_lanes(self):
+        """QC1.1: default locale is zh-CN, and lane rows rendered a 0x0 diagram (measured)."""
+        body = text("skills/tdq-spec/references/archify-ba.md")
+        self.assertIn("@meta locale=en", body)
+        self.assertIn("lane", body)
+
+    def test_quick_drops_two_module_threshold(self):
+        quick = text("skills/tdq-intake/references/archify-quick.md")
+        self.assertNotIn("at least two modules", quick)
+        self.assertIn("changes something that already exists", quick)
+        self.assertNotIn("Multi-module/refactor work: follow",
+                         text("skills/tdq-intake/references/quick-lane.md"))

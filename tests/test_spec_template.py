@@ -64,6 +64,27 @@ class TestSpecHuongDanAndSkill(unittest.TestCase):
         self.assertIn("Trước vs Sau (§2c)", content)
         self.assertIn("Giải thuật 1-2-3 (§3c)", content)
 
+    def test_checklist_html_truoc_sau(self):
+        """Checklist phải hỏi có HTML sơ đồ Trước/Sau không."""
+        self.assertIn("HTML Trước/Sau (§2c)", _read_file(PATH_HUONG_DAN))
+
+
+class TestSpecTruocSauVaDod(unittest.TestCase):
+    """Luật 2026-11-02: hiện trạng do sơ đồ dẫn; §6 bám nghiệp vụ."""
+
+    def setUp(self):
+        self.content = _read_file(PATH_TEMPLATE)
+
+    def test_2c_co_co_che_hien_tai_do_so_do_dan(self):
+        self.assertIn("Cơ chế hiện tại vs Sau update", self.content)
+        self.assertIn("Hiện trạng: chưa có", self.content)
+        self.assertIn("chữ chỉ phụ trợ", self.content)
+        self.assertIn("Mermaid dự phòng", self.content)
+
+    def test_dod_truy_ve_nghiep_vu(self):
+        self.assertIn("hành vi nghiệp vụ", self.content)
+        self.assertIn("luồng cũ phải giữ", self.content)
+
     def test_skill_spec_yeu_cau_fresher_elements(self):
         """SKILL.md phải yêu cầu các section 2c, 3c, 3d và tóm tắt chat block."""
         content = _read_file(PATH_SKILL)

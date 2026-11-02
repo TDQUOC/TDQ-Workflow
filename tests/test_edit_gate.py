@@ -352,3 +352,46 @@ class TickBlockTest(unittest.TestCase):
         self.assertIn("surgical", out.lower())
         self.assertIn("no single-use abstraction", out.lower())
 
+
+
+class TestEditGateSubagentChiDoc(unittest.TestCase):
+    """Subagent (payload có `agent_id`) không sửa project trước implement; docs/ vẫn ghi được."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = self._tmp.name
+        write_file(self.cwd, today_log_rel(), "# log\n")
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def sua(self, rel, phase, agent_id="agent-abc123"):
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase,
+                    spec_file="docs/tdq/spec/r1.md", spec_approved=True,
+                    spec_sha256="abc", spec_approved_at=now_iso(),
+                    plan_file="docs/tdq/plan/r1.md", plan_approved=True,
+                    plan_sha256="def", plan_approved_at=now_iso(), implement_mode="main")
+        write_file(self.cwd, "docs/tdq/plan/r1.md", "# Plan\n- [~] **T1.1** a — Test: x\n")
+        payload = load_fixture("edit_src.json", cwd=self.cwd, session_id="s-sub")
+        payload["tool_input"] = {"file_path": os.path.join(self.cwd, rel)}
+        if agent_id:
+            payload["agent_id"] = agent_id
+            payload["agent_type"] = "Explore"
+        return run_hook("edit_gate.py", payload)[1]
+
+    def test_subagent_spec_src_bi_chan(self):
+        out = self.sua("src/a.py", "spec")
+        self.assertEqual(decision(out)[0], "deny")
+        self.assertIn("TDQ:TEAM", out)
+
+    def test_subagent_docs_van_ghi_duoc(self):
+        out = self.sua("docs/tdq/research/r1.md", "spec")
+        self.assertNotIn("deny", out)
+
+    def test_main_spec_src_khong_bi_chan(self):
+        out = self.sua("src/a.py", "spec", agent_id="")
+        self.assertNotIn("deny", out)
+
+    def test_subagent_implement_src_khong_bi_nhanh_moi_chan(self):
+        out = self.sua("src/a.py", "implement")
+        self.assertNotIn("deny", out)

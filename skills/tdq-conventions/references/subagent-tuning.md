@@ -51,6 +51,14 @@ WHEN the user has the session on `high`. Only set `low` on purely mechanical age
 Making effort genuinely vary per task would require splitting each agent into several variants —
 considered and REJECTED (spec 2026-08-04-workflow-linh-hoat §3): twice the files, easy to drift.
 
+## Read-only sub-agents in any phase
+
+The main agent may open research/analysis sub-agents in any phase, one job per sub-agent, several
+in one batch. Each writes its findings under `docs/` (e.g. `docs/tdq/research/<slug>.md`) and
+returns a short digest; the main agent decides and edits. A sub-agent never changes the project
+before phase `implement`, and in implement only inside its task's `Chạm:` — `edit_gate` denies <!-- i18n-allow: canonical plan field name -->
+both with `TDQ:TEAM`. Prefer agent types without Edit/Write (`Explore`, `Plan`, `tdq-reviewer`).
+
 ## Sources
 
 - https://code.claude.com/docs/en/sub-agents — frontmatter field table (`model`,

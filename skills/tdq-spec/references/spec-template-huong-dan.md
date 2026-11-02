@@ -3,8 +3,8 @@
   §6 holds the CONDITION, never the check command=14-32 ·
   Measure every numeric threshold BEFORE approval=33-48 · Check before presenting=49-62 ·
   The scope checklist — every box answered before presenting=63-76 ·
-  Fresher Accessibility Check — thẩm định độ thấu suốt cho Fresher Dev=77-92 ·
-  Quy tắc chi tiết các phần điều kiện trong Spec=93
+  Fresher Accessibility Check — thẩm định độ thấu suốt cho Fresher Dev=77-93 ·
+  Quy tắc chi tiết các phần điều kiện trong Spec=94
 -->
 
 Split out of `spec-template.md` on 2026-10-02 (954 tokens). The three sections below are SELF-CHECK
@@ -82,6 +82,7 @@ Tự kiểm tra độ thân thiện và minh bạch của bản đặc tả vớ
 |---|---|---|
 | **Sơ đồ luồng (§2c)** | Có sơ đồ Mermaid rõ luồng gọi và dữ liệu di chuyển | §2c Luồng hoạt động |
 | **Trước vs Sau (§2c)** | Bắt buộc với refactor/update: rõ thành phần cũ vs mới | §2c Bảng đối chiếu |
+| **HTML Trước/Sau (§2c)** | Request sửa thứ đã có: 1 HTML có sơ đồ hiện tại cạnh sơ đồ sau update, đã bind | §2c Cơ chế hiện tại vs Sau update |
 | **Giải thuật 1-2-3 (§3c)** | Từng bước logic mạch lạc, fresher có thể code lại | §3c Giải thuật |
 | **Độ phức tạp (§3c)** | Có định lượng $O(T)$ và $O(S)$ kèm giải thích ngắn | §3c Độ phức tạp |
 | **Ca góc hiểm (§3c)** | Nêu tối thiểu 2 edge cases kèm cách phòng thủ | §3c Ca góc hiểm |

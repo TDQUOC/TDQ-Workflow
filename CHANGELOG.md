@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.86.0 — 2026-11-02
+
+Spec Trước/Sau trực quan và subagent nghiên cứu chỉ đọc.
+
+- Spec chuyên sâu và mini-plan nhanh khi sửa thứ đã có dùng một HTML Archify `explainer` gồm sơ đồ hiện tại và sau cập nhật; chữ chỉ mô tả phụ trợ, feature mới ghi rõ chưa có hiện trạng.
+- `edit_gate` nhận diện subagent qua `agent_id`, chặn sửa project ngoài `docs/` trước phase `implement`, vẫn cho phép research/log/report và giữ rào `Chạm:` khi triển khai.
+- QC/DoD truy về hành vi nghiệp vụ hoặc luồng cũ phải giữ; test đỏ trước, report sinh sẵn thân PR nhưng không tự mở PR.
+- Bổ sung regression cho hook, template spec, cả hai pipeline Archify, luật subagent và report; vùng chạm đạt 199 test + 382 subtest, smoke hook thật PASS.
+
 ## 0.85.1 — 2026-11-01
 
 Đặt mặc định Ponytail ở mức `ultra`.
