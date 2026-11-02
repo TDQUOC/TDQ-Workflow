@@ -86,7 +86,7 @@ already written in Part A), `## Hiểu & kiến thức`, `## Hỏi đáp`. <!-- 
 5. **Settle the knowledge.** Write into the brief under `## Hiểu & kiến thức`: settled <!-- i18n-allow: canonical section name in the default language -->
    decisions, constraints, the chosen approach + why, the rejected options + why, sources.
 
-5b. **Decide the route.** Add `### Lộ trình` to that section: a table `Bước/phase | CÓ-BỎ | <!-- i18n-allow: canonical section name in the default language -->
+5b. **Decide the route.** For `deep_ultracode`, Workflow analyze and DoD-bound QC are the base route; optional `spec review`, `plan review`, and `Workflow implement` add no new gate/state and keep TDQ team ownership. Add `### Lộ trình` to that section: a table `Bước/phase | CÓ-BỎ | <!-- i18n-allow: canonical section name in the default language -->
    Vì sao` for each remaining step (extra research, independent QC by an agent, deep <!-- i18n-allow: canonical section name in the default language -->
    review, splitting across subagents…). The invariant frame that can never be dropped:
    analysis → spec/plan → implement → report. Cut only the steps that are REDUNDANT for

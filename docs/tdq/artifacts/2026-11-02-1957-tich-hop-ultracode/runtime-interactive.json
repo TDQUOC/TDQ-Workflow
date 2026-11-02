@@ -1,0 +1,34 @@
+{
+  "schema": "tdq.runtime-probe.v1",
+  "host": "claude-code-interactive subagent",
+  "requested_model": "cc1",
+  "observed_model": "cc4",
+  "request": "2026-11-02-1957-tich-hop-ultracode",
+  "expected": 4,
+  "completed": 4,
+  "null": 0,
+  "errors": [
+    "Workflow tool not exposed to tdq-implementer",
+    "requested cc1 mapped to runtime cc4",
+    "harness worktree isolation denied writes to the TDQ worktree before TDQ hooks decided"
+  ],
+  "omitted": [
+    "Workflow multi-agent probe",
+    "TDQ edit_gate source-deny decision",
+    "TDQ assigned-docs allow decision",
+    "bash_gate subagent mutation check"
+  ],
+  "truncated": false,
+  "complete": false,
+  "verdict": "UNSUPPORTED",
+  "hook_identity_observed": "PARTIAL: SubagentStart ledger records tdq-workflow:tdq-implementer; agent_id is not logged",
+  "source_mutation_denied": "DENIED_BY_HARNESS_NOT_TDQ",
+  "assigned_docs_write": "DENIED_BY_HARNESS",
+  "structured_fallback": true,
+  "evidence": [
+    "ToolSearch did not expose Workflow inside implementer",
+    "Git/Edit/Write targeting .tdq-worktrees/t4.1 were refused by harness isolation",
+    "TDQ:SEARCH hook fired in the subagent, proving TDQ PreToolUse hooks are active",
+    "Agent returned this structured fallback without bypassing the gate"
+  ]
+}

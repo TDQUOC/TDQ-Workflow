@@ -1,9 +1,9 @@
 # QC — quality control
 <!-- muc-luc-dong:
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
-  The three execution steps=58-88 · What to run=89-130 ·
-  The 120-second cap on smoke and runtime checks=131-151 · Recording the result=152-182 ·
-  Explicit Anti-Patterns=183-189 · When it FAILs=190
+  The three execution steps=58-88 · What to run=89-129 ·
+  The 120-second cap on smoke and runtime checks=130-150 · Recording the result=151-181 ·
+  Explicit Anti-Patterns=182-188 · When it FAILs=189
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
@@ -108,14 +108,13 @@ the DoD:
   yes/no answer in the qc file. Any "no" → fix the code and record what was fixed, never fix the
   answer. No source file touched → write `KHÔNG ÁP DỤNG — không sửa file code`. <!-- i18n-allow: canonical marker written into the qc file -->
 
-Beyond the items above, add no item that is not in the DoD.
+Beyond the items above, add no item that is not in the DoD. Ultracode: [contract](../../tdq-conventions/references/ultracode.md).
 
-The things below are **checked only when the DoD reaches them**; do not run them for
-completeness:
+The things below run only when the DoD reaches them:
 
-- Edges & error paths: empty input, wrong type, missing file, permission denied, network down.
+- Edges/errors: empty, wrong type, missing file, permission/network failure.
 - Log service: on by default, timestamped, switchable off/down through config; visual & 3-tier scenario checks per [vision-test-loop.md](vision-test-loop.md).
-- No placeholders or unverified skill changes: TODO/FIXME; skill edits require certified eval evidence (skill-eval.md).
+- No placeholders; skill edits require certified evidence ([skill eval](skill-eval.md)).
 - Skill contract: for EVERY `Dùng:` block in the plan, run the command in its `Kiểm` field; the <!-- i18n-allow: canonical field names of the plan -->
   artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus <!-- i18n-allow: canonical verdict value -->
   a closing reason, then rerun

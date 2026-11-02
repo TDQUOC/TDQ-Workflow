@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PreToolUse (Antigravity/agy) — hard deny on 2 fixed, pre-existing rules.
 
-Unlike Claude Code's PreToolUse (`hooks/scripts/bash_gate.py`), which only ever REMINDS,
+Unlike Claude Code's PreToolUse (`hooks/scripts/bash_gate.py`), which reminds normally but denies pre-implement sub-agent mutation,
 agy's PreToolUse deny is a genuine hard block (see
 docs/tdq/brief/2026-09-03-1440-kiem-tuong-thich-3-host.md, sources N5–N6). This hook
 enforces exactly 2 cases that are already-locked project rules, not "not yet approved"

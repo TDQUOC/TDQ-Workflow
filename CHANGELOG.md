@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.87.0 — 2026-11-03
+
+Tích hợp điều phối Ultracode qua hậu tố lane, bảo toàn độc quyền kiểm soát TDQ và siết chặt an toàn subagent.
+
+- **Hậu tố lane `_ultracode`:** Hỗ trợ `express_ultracode`, `deep_ultracode`, `1a_ultracode` từ input người dùng; bóc tách trước khi ghi nhận state để bảo tồn hai lane canonical `quick` và `full`.
+- **Định tuyến Express & Deep có kiểm soát:** Express tự động kích hoạt workflow hữu hạn kèm fallback mini-plan và hạch toán hoàn tất (fail-closed completion accounting) trong 1 cổng duyệt; Deep hỗ trợ khảo sát analyze/QC và review spec/plan song song.
+- **Siết chặt quyền hạn subagent (Least Privilege):** Edit/Bash mutation gate chặn subagent sửa mã nguồn hoặc file state trước phase `implement`. Subagent chỉ được ghi báo cáo tại `docs/tdq/artifacts/<request>/<agent-id>.md` hoặc trả structured fallback.
+- **Quản lý worktree đơn quyền:** Bác bỏ Workflow native isolation (`isolation: 'worktree'`), toàn bộ nhiệm vụ thực thi phân tán được ủy quyền và kiểm soát va chạm độc quyền qua `tdq_team.py`.
+- **Đánh giá và kiểm thử toàn diện:** Bổ sung kiểm thử hợp đồng, định tuyến và bộ rào chắn; full test suite đạt 3.991 test PASS, 5 SKIP, 0 FAIL.
+
 ## 0.86.0 — 2026-11-02
 
 Spec Trước/Sau trực quan và subagent nghiên cứu chỉ đọc.
@@ -437,61 +447,9 @@ Báo cáo: `docs/tdq/reports/2026-10-03-0015-ep-luat-tim-kiem.md`.
 - **`scripts/search_replay.py`** phát lại một transcript qua đúng luật của cổng, để đo lại N khi
   có thêm phiên thật.
 
-## 0.54.0 — 2026-10-02
-
-Workflow nạp ít chữ hơn mà không mất một luật nào: **sàn tuân thủ của một request lane `full`
-giảm 55.439 → 49.531 token (−10,7%)**, trong khi số mục luật TĂNG 334 → 342. Báo cáo:
-`docs/tdq/reports/2026-09-28-2324-toi-uu-context-workflow.md`.
-
-- **Cổng nhắc đọc lại (`hooks/scripts/read_gate.py`).** Đo trên một phiên thật 22,76 MB:
-  `tdq_state.py` bị đọc 12 lần, `build_portable.py` 19 lần. Riêng hai file đó là 28% nội dung
-  đọc vào. Và 98,2% input của phiên là đọc lại context đã giữ. Cổng CHỈ NHẮC, một lần cho mỗi
-  file, và im khi `offset/limit` nhắm vùng chưa đọc hoặc khi file đã đổi. Nó giữ SỔ RIÊNG chứ
-  không dùng sổ lượt chung. Lý do: sổ lượt bị xoá ở mỗi prompt. Ký ức dựng trên đó không thấy
-  được đúng cái nó phải bắt — việc đọc lại qua nhiều lượt của một phiên.
-- **Chỉ mục dòng cho file luật dài (`scripts/doc_index.py`).** Mỗi file dài nhận một khối chú
-  thích HTML `<!-- muc-luc-dong: Tên=đầu-cuối · … -->`, nhờ đó đọc ĐÚNG MỘT MỤC bằng
-  `offset/limit` thay cho đọc trọn file. Khối ở dạng chú thích chứ không phải bảng vì một bảng
-  cùng lượng thông tin tốn ~230 token/file — tốn đúng vào ngân sách nó đang đi tiết kiệm.
-- **Trần 3.500 token mỗi file luật, cưỡng chế được ở CI.** CI cố ý không có tokenizer, nên
-  `scripts/token_budget.py` đo trên máy CÓ tokenizer và khoá con số bằng `sha256` trong
-  `docs/tdq/token-budget.json`; rule **R13** của `doc_lint` chỉ so hash. Không dùng dòng hay byte
-  làm đại lượng thay thế: đo trên 43 file, token/dòng lệch 4,1 lần và byte/token lệch 1,81 lần.
-  Ba file vượt trần đã được dời phần CÓ ĐIỀU KIỆN sang file em — không nén luật, theo `soul.md`.
-- **Bảy file em TẦNG 1.** Phần chỉ cần khi gặp đúng ca được tách khỏi file cha và trỏ thẳng từ
-  `SKILL.md`, đúng luật một tầng. `plan-template` 5.067 → 3.493, `quick-lane` 4.356 → 3.419,
-  `team-mode` 3.652 → 3.313, `uu-tien-tim-kiem` 3.449 → 2.067 token.
-- **Câu luật tìm kiếm còn một bản.** Sáu bản nguyên văn của cùng một câu (1.125 token) thành một
-  bản gốc + năm con trỏ ba dòng.
-- **CI in bảng bề mặt context** (`continue-on-error`, một tổ hợp). Nó là SỐ ĐO, không phải luật:
-  luật trần token mới được làm đỏ build.
-
-## 0.53.0 — 2026-09-28
-
-Bộ tìm kiếm chuyển từ "có cài" sang "chứng minh được là đang trả lời đúng", và **breaking
-change**: skill `tdq-lsp-setup` đổi tên thành `tdq-setup`. Báo cáo:
-`docs/tdq/reports/2026-09-28-0910-lumen-check-va-setup-tool.md`.
-
-- **BREAKING — `tdq-lsp-setup` → `tdq-setup`.** Không giữ bí danh: gõ tên cũ sẽ không thấy gì.
-  Tên cũ nói skill này chỉ lo LSP. Thực tế nó vốn đã cài cả lumen, và nay nhận luôn việc cài đủ
-  phụ thuộc cho workflow. Bốn nhóm đã đổi theo: bảng trần dòng của `doc_lint`, danh sách thứ tự
-  nạp của `build_portable`, năm chỗ trích luật tìm kiếm, và file test chống lệch.
-- **Bậc 5 hết mù với chuyện "sống mà trả lời sai".** Nó từng chỉ hỏi "ollama có chạy không", nên
-  suốt phiên 2026-09-28 nó báo ĐẠT trong khi MCP `lumen` chết cả phiên (`CONNECTION_CLOSED`).
-  Nay nó hỏi lumen một câu thật rồi đọc câu trả lời, và đo xem index có nội dung MỚI của cây làm
-  việc hay không. Cả hai phép đo đi bằng CLI: lumen 0.0.42 khai `defaultFreshnessTTL = 30s`, nên
-  đường MCP có thể trả lời từ một lần "fresh" đã cũ.
-- **Bậc 5 không còn dò ollama bằng PATH.** Socket được hỏi TRƯỚC; `which` chỉ còn để phân biệt
-  "cài rồi mà đang ngủ" với "chưa cài bao giờ". Đo trên macOS: `/opt/homebrew/bin/ollama` có
-  thật và login shell tìm ra, nhưng `shutil.which` từ tiến trình không-login trả `None` — thứ tự
-  cũ kết luận "thiếu ollama" và in lệnh cài cho một daemon đang phục vụ.
-- **Thêm bậc 8 — đồ thị graphify.** Công cụ thứ tư của bộ tìm kiếm trước nay không có bậc nào.
-  Nó hỏng đúng kiểu một index không ai dựng lại. Đo được 2026-09-28: đồ thị cũ 8 ngày, 34% node
-  (845/2415) trỏ vào thư mục đã xoá.
-
 ## Lịch sử cũ hơn
 
-Bản 0.52.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.52.0 dời ngày 2026-11-01; bản 0.51.0 dời ngày 2026-10-25). Bản 0.36.0 trở xuống
+Bản 0.54.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
+chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.54.0 và 0.53.0 dời ngày 2026-11-03; bản 0.52.0 dời ngày 2026-11-01; bản 0.51.0 dời ngày 2026-10-25). Bản 0.36.0 trở xuống
 nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
 không xoá dòng nào.

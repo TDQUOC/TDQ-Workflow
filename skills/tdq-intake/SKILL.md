@@ -75,7 +75,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
    [references/nhanh-request.md](references/nhanh-request.md)). Shape:
    `Loại request: **feature** — sửa lại nếu bạn thấy khác.` It lands in `loai_request` at step <!-- i18n-allow: option sample in the default language -->
    3b; the user says nothing about the type → your proposal stands.
-   **STOP and wait for the user's answer.** Never pick the lane yourself.
+   **STOP and wait for the user's answer.** Never pick the lane yourself. `_ultracode` modifier: [lane decision](references/lane-decision.md).
    Ngoại lệ `_tdq_direct`: prompt chứa `_tdq_direct` (không phân biệt hoa thường) → bỏ qua bước hỏi này. Tự động `init <slug> quick`, mở branch git và chuyển thẳng Part C để lập mini-plan.
 
 3. **Init state** as soon as the user settles the lane: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>`.

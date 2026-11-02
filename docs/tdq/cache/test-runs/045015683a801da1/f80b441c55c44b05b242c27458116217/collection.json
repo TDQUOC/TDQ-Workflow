@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "schema_version": 1,
+    "backend": "pytest",
+    "selectors": [
+      "tests/test_tdq_eval_hosts.py"
+    ],
+    "scope": "direct",
+    "case_ids": [
+      "tests/test_tdq_eval_hosts.py::test_preflight_unsupported_host",
+      "tests/test_tdq_eval_hosts.py::test_preflight_blocks_missing_isolation_or_real_home",
+      "tests/test_tdq_eval_hosts.py::test_preflight_ready_and_failure_with_process_fixture",
+      "tests/test_tdq_eval_hosts.py::test_prepare_trial_environment_isolation_and_path_guard",
+      "tests/test_tdq_eval_hosts.py::test_run_host_trial_timeout_and_descendant_cleanup",
+      "tests/test_tdq_eval_hosts.py::test_run_host_trial_retry_cap_and_attempt_preservation",
+      "tests/test_tdq_eval_hosts.py::test_hash_file_streaming_and_trace_budget_exceeded",
+      "tests/test_tdq_eval_hosts.py::test_parse_trace_stream_unknown_schema_and_malformed_json",
+      "tests/test_tdq_eval_hosts.py::test_parse_trace_stream_claude_and_codex_metrics_and_null_cost",
+      "tests/test_tdq_eval_hosts.py::test_logging_on_off_and_redaction"
+    ],
+    "diagnostics": [],
+    "fingerprint": null,
+    "complete": true
+  },
+  "outcomes": [],
+  "completed": false,
+  "exit_code": 0
+}

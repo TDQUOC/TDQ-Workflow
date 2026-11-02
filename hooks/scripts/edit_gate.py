@@ -99,6 +99,11 @@ def main():
     # (2) remind
     state_file = os.path.realpath(state_path(cwd))
     state_md = os.path.realpath(state_md_path(cwd))
+    if abs_target in (state_file, state_md) and payload.get("agent_id"):
+        block(cwd, payload, "TDQ:STATE", [
+            "A sub-agent may not write TDQ state or its generated mirror.",
+            "Return structured output to the TDQ leader; only tdq_state.py writes state.",
+        ])
     if abs_target in (state_file, state_md):
         remind(cwd, payload, "TDQ:STATE", [
             "Do not hand-edit the state file — write it through the CLI.",
