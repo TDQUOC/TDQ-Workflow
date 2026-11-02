@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PreToolUse (Bash) — observe + remind, NEVER block.
+"""PreToolUse (Bash) — observe/remind; deny sub-agent mutation before implement.
 
 1. Observe into the turn ledger: `state_cli` when the command calls scripts/tdq_state.py,
    `next_run` when that command is `next`. This is the evidence letting stop_gate know the
@@ -14,8 +14,16 @@
 import os
 import re
 
-from _common import (echo_line, observe, payload_cwd, read_payload, remind,
-                     remind_force, turn_rows)
+from _common import (
+    block,
+    echo_line,
+    observe,
+    payload_cwd,
+    read_payload,
+    remind,
+    remind_force,
+    turn_rows,
+)
 
 BAN = re.compile(r"^(claude|antigravity|gemini|codex)", re.IGNORECASE)
 BRANCH_PATTERNS = [
@@ -59,6 +67,12 @@ STATE_CLI = re.compile(r"tdq_state\.py\s+(\w[\w-]*)")
 APPROVE_CLI = re.compile(r"tdq_state\.py\s+approve\s+(spec|plan|quick|nhanh|express)\b")
 SETPHASE_CLI = re.compile(r"tdq_state\.py\s+set\b.*?\bphase=(\w+)")
 NEXT_PHASE_TARGET = {"plan": "spec", "implement": "plan"}
+SHELL_MUTATOR = re.compile(
+    r"^\s*(?:rm\b|sed\b.*(?:^|\s)-i(?:\s|$)|(?:cp|mv|tee)\b|"
+    r"(?:Set-Content|Add-Content|Out-File|Copy-Item|Move-Item|Remove-Item|New-Item|Set-Item)\b|"
+    r"python3?\b.*\bopen\([^)]*['\"](?:w|a)['\"])", re.IGNORECASE)
+STDOUT_WRITE = re.compile(r"(?<!\d)>{1,2}\s*(?!&)(\S+)")
+DOCS_ARTIFACT = re.compile(r"docs[\\/]tdq[\\/]artifacts[\\/]", re.IGNORECASE)
 
 
 def _latest_signal(rows, target):
@@ -75,8 +89,8 @@ def _check_signal_mismatch(cwd, payload, target, rows):
         return
     if row.get("matched") is False or row.get("mode_conflict") is True:
         remind_force(cwd, payload, "TDQ:APPROVE", [
-            f"The latest prompt is NOT clearly an approval of {target} (or the mode differs) "
-            "— STOP, do not run this command.",
+            (f"The latest prompt is NOT clearly an approval of {target} (or the mode differs) "
+             "— STOP, do not run this command."),
             "How: ASK the user to confirm the approval before calling approve/set phase.",
             echo_line("TDQ:APPROVE", "asked again and got a clear confirmation"),
         ])
@@ -93,6 +107,20 @@ def main():
         return
     cwd = payload_cwd(payload)
     rows = turn_rows(cwd, payload)  # P0-3: read once, reused by every check below
+    state = __import__("tdq_state").load(cwd) or {}
+    parts = [part.strip() for part in re.split(r"[;&]", cmd) if part.strip()]
+    mutates_outside_docs = any(
+        (SHELL_MUTATOR.search(part) and not DOCS_ARTIFACT.search(part))
+        or any(not DOCS_ARTIFACT.search(target) and target.lower() not in ("/dev/null", "$null")
+               for target in STDOUT_WRITE.findall(part))
+        for part in parts)
+    if payload.get("agent_id") and state.get("active_request") \
+            and state.get("phase") not in ("implement", "qc") and mutates_outside_docs:
+        block(cwd, payload, "TDQ:TEAM", [
+            "A sub-agent may not mutate the project through Bash/PowerShell before implement.",
+            "Return structured output, or write only the assigned report under docs/tdq/artifacts/.",
+            "The TDQ leader remains the state and source writer.",
+        ])
 
     # (1) observe
     for sub in STATE_CLI.findall(cmd):
@@ -137,11 +165,11 @@ def main():
 
     if DUMP.search(cmd) and not GIOI_HAN.search(cmd) and not CAT_GHI.search(cmd):
         remind(cwd, payload, "TDQ:OUTPUT", [
-            "This command dumps its whole content into context — every output is re-read on "
-            "every API call after it.",
-            "How: limit it inside the command (`head`/`tail`/`sed -n`/`-n`/`--stat`/"
-            "`--oneline`), or use Read with `offset`/`limit`. Genuinely need the whole file? "
-            "Then run it — quality outranks context cost.",
+            ("This command dumps its whole content into context — every output is re-read on "
+             "every API call after it."),
+            ("How: limit it inside the command (`head`/`tail`/`sed -n`/`-n`/`--stat`/"
+             "`--oneline`), or use Read with `offset`/`limit`. Genuinely need the whole file? "
+             "Then run it — quality outranks context cost."),
             echo_line("TDQ:OUTPUT", "limited the output, or confirmed the whole is needed"),
         ], rows=rows)
 

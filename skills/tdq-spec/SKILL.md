@@ -37,6 +37,8 @@ user's document language `doc_lang` (deliberate repetition — the original is
    and 2 of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the
    top of that file gives the exact line range, so the whole file never has to be read.
 
+Selected `deep_ultracode` spec review follows the [Ultracode contract](../tdq-conventions/references/ultracode.md): evidence only, no edit/gate.
+
 2. **Self-review.** Re-read it for holes and contradictions. Run Fresher Accessibility
    Check in `references/spec-template-huong-dan.md` to ensure a fresher grasps the logic.
    Run the machine check (R8 inspects §3b, R14 inspects thresholds):

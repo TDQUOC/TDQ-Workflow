@@ -1,12 +1,13 @@
 # Team mode — the leader assigns the whole plan, sub-agents run in parallel
 <!-- muc-luc-dong:
-  Table of contents=17-23 · When it applies=24-42 · What to do=43-44 ·
-  Step 0 — assign the WHOLE plan before typing the first line of code=45-62 ·
-  Decision table — default GIAO, keeping a task must match exactly one row=63-77 ·
-  The wave loop=78-91 · What the machine checks for you, so you do not have to=92-116 ·
-  The delegation prompt template — all 9 fields, none left out=117-136 ·
-  RIGHT/WRONG examples=137-146 · Explicit Anti-Patterns=147-154 · Self-check=155-172 ·
-  Sổ worktree=173
+  Table of contents=18-24 · When it applies=25-43 · What to do=44-45 ·
+  Step 0 — assign the WHOLE plan before typing the first line of code=46-63 ·
+  Decision table — default GIAO, keeping a task must match exactly one row=64-78 ·
+  Workflow implement ownership=79-83 · The wave loop=84-97 ·
+  What the machine checks for you, so you do not have to=98-122 ·
+  The delegation prompt template — all 9 fields, none left out=123-142 ·
+  RIGHT/WRONG examples=143-152 · Explicit Anti-Patterns=153-160 · Self-check=161-178 ·
+  Sổ worktree=179
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
@@ -74,6 +75,11 @@ in the region of a task recorded as `giao` without having opened its branch.
 These five groups are a CLOSED set. Inventing a sixth reason ("this is faster if I do it",
 "this task is too small", "explaining it to a sub-agent takes longer than doing it") is working
 around the rule, and `audit` will go red.
+
+### Workflow implement ownership
+
+For selected `deep_ultracode`, Workflow invokes existing `tdq-implementer` only in TDQ worktrees;
+use no Workflow-native isolation. Leader alone runs `assign/audit/open/check/merge/tick/sweep`.
 
 ### The wave loop
 

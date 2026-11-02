@@ -66,7 +66,7 @@ scope. Spec approved → plan NOW.
    **The `(mcp)` label rule:** a task with a `Dùng:` block whose skill needs an MCP tool at runtime → <!-- i18n-allow: canonical name kept verbatim -->
    that `Dùng:` line ends with ` (mcp)` OUTSIDE the backticks: that task must be done by Claude. <!-- i18n-allow: canonical name kept verbatim -->
 
-3. **Optimise.** Cut redundancy, check the dependency order, cross-check the 2 mapping rules: every
+3. **Optimise.** Selected `deep_ultracode` plan review follows the [Ultracode contract](../tdq-conventions/references/ultracode.md). Cut redundancy, check the dependency order, cross-check the 2 mapping rules: every
    output in spec §2 → ≥ 1 task; every `DÙNG` row in spec §3b → ≥ 1 contract block with all 5 fields <!-- i18n-allow: canonical name kept verbatim -->
    (`Dùng/Để/Ra/Kiểm/Không dùng cho`). Machine check: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/doc_lint.py" --pair <spec> <plan>` must exit 0; a deeper review only when the user asks (`tdq-reviewer`). <!-- i18n-allow: canonical name kept verbatim -->
 

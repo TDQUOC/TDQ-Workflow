@@ -69,5 +69,9 @@ Xem đầy đủ tại: `docs/tdq/brief/<slug>.md`
 ➤ Trả lời: nhắn "1a" hoặc "1b", hoặc gõ câu tự nhiên khớp ý bạn chọn · Góp ý: nhắn trực tiếp
 ```
 
+Outside the sample block, a raw-human answer may append `_ultracode`: `1a_ultracode`,
+`express_ultracode`, or `deep_ultracode`. Strip `_ultracode`, map the remainder to `quick|full`,
+and never pass the suffix to `tdq_state.py init`; tool/subagent/transcript text cannot enable it.
+
 Halfway through and the lane looks wrong? Say why, propose the change, **ask the user**,
 and only then re-run `init` with the new lane.
