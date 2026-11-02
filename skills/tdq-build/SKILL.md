@@ -108,7 +108,7 @@ For Archify previews, load [artifact lifecycle](references/archify-lifecycle.md)
      [references/codex-mode.md](references/codex-mode.md) — read the sections you are about to
      act on, through the line index at the top of that file; working from memory is banned.
    The mode is what the USER said at approval. Missing mode, or you think another mode fits
-   better → **STOP and ASK**.
+   better → **STOP and ASK**. Workflow implement: [Ultracode contract](../tdq-conventions/references/ultracode.md); TDQ team owns worktrees/Git.
 
 2. Loop per task (mode `subagent`: one round = exactly one `tdq-implementer` call):
    1. Report one line: which task is starting, and mark it `- [~]` in the plan.

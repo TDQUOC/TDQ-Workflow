@@ -1,0 +1,109 @@
+.............................................. [  1%]
+......................................s......................s..... [  2%]
+..............s.....................................F................. [  4%]
+...................................................................ss... [  6%]
+.................................................................................................... [  8%]
+...............................................................................F......................... [ 11%]
+................................................ [ 12%]
+..................................... [ 13%]
+.................................................................. [ 15%]
+...................................... [ 16%]
+.................................................... [ 17%]
+...................................................ss....................................................... [ 20%]
+......................................... [ 21%]
+........................................................................ [ 23%]
+........................................................................ [ 25%]
+.......................................................................................................................... [ 28%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................................................................................................................................... [ 36%]
+............................................ [ 37%]
+..............................................................................F........................................................... [ 41%]
+........................................................................................................ [ 43%]
+.................................................................................... [ 45%]
+..................F.......................................... [ 47%]
+.............................................................. [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 52%]
+........................................................................................................................................................................................................................................... [ 58%]
+........................................................................ [ 60%]
+........................................................................ [ 62%]
+................................................. [ 63%]
+....................................................... [ 64%]
+......................................................................................... [ 67%]
+..................................................... [ 68%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+................................................................ [ 73%]
+.............................................................................................................................. [ 76%]
+................................................................................................s........... [ 79%]
+........................................................................ [ 81%]
+......................................................................................... [ 83%]
+...........................................s................ [ 85%]
+.................................................................... [ 86%]
+................................................................ [ 88%]
+.......................................s.................................................................. [ 91%]
+................................................................ [ 92%]
+.............................................................................................................................. [ 96%]
+................................................................................................................... [ 98%]
+...........................................     [100%]
+================================== FAILURES ===================================
+E   AssertionError: 1 != 0 : {
+      "ok": false,
+      "status": "fail",
+      "diagnostics": [
+        {
+          "code": "delivery/command-build-failed",
+          "severity": "error",
+          "message": "Archify binary script (archify.mjs) not found"
+        }
+      ]
+    }
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 0 : {
+E   AssertionError: 1 != 0 : {
+      "ok": false,
+      "status": "fail",
+      "diagnostics": [
+        {
+          "code": "delivery/command-build-failed",
+          "severity": "error",
+          "message": "Archify binary script (archify.mjs) not found"
+        }
+      ]
+    }
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 0 : {
+E   AssertionError: 1 != 0 : Error during sync_master: Failed to finalize view 'overview': {'ok': False, 'status': 'fail', 'diagnostics': [{'code': 'delivery/command-build-failed', 'severity': 'error', 'message': 'Archify binary script (archify.mjs) not found'}]}
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 0 : Error during sync_master: Failed to finalize view 'overview': {'ok': False, 'status': 'fail', 'diagnostics': [{'code': 'delivery/command-build-failed', 'severity': 'error', 'message': 'Archify binary script (archify.mjs) not found'}]}
+E   AssertionError: 161 not less than or equal to 160
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 161 not less than or equal to 160
+E   AssertionError: Lists differ: ['tests\\test_eval_logging.py:241', 'tests[58 chars]270'] != []
+    
+    First list contains 3 additional elements.
+    First extra element 0:
+    'tests\\test_eval_logging.py:241'
+    
+    + []
+    - ['tests\\test_eval_logging.py:241',
+    -  'tests\\test_eval_logging.py:256',
+    -  'tests\\\\test_eval_logging.py:270'] : text=True m\xe0 thi\u1ebfu encoding= \u2014 Windows s\u1ebd gi\u1ea3i m\xe3 b\u1eb1ng cp1252:
+    tests\test_eval_logging.py:241
+    tests\test_eval_logging.py:256
+    tests\test_eval_logging.py:270
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['tests\\test_eval_logging.py:241', 'tests[58 chars]270'] != []
+E   AssertionError: Lists differ: [] != ['tdq-build\\references\\skill-eval.md']
+    
+    Second list contains 1 additional elements.
+    First extra element 0:
+    'tdq-build\\references\\skill-eval.md'
+    
+    - []
+    + ['tdq-build\\\\references\\\\skill-eval.md'] : C\xe1c file reference sau KH\xd4NG \u0111\u01b0\u1ee3c `SKILL.md` n\xe0o tr\u1ecf th\u1eb3ng, t\u1ee9c n\u1eb1m \u1edf t\u1ea7ng 2 tr\u1edf xu\u1ed1ng v\xe0 c\xf3 nguy c\u01a1 b\u1ecb \u0111\u1ecdc n\u1eeda v\u1eddi \u2014 th\xeam m\u1ed9t d\xf2ng tr\u1ecf \u1edf th\xe2n skill t\u01b0\u01a1ng \u1ee9ng: ['tdq-build\\\\references\\\\skill-eval.md']
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: [] != ['tdq-build\\references\\skill-eval.md']
+=========================== short test summary info ===========================
+SUBFAILED(lane='full') tests/test_archify_e2e.py::RealArchifyE2E::test_full_and_quick_native_binding_and_mutation
+SUBFAILED(lane='quick') tests/test_archify_e2e.py::RealArchifyE2E::test_full_and_quick_native_binding_and_mutation
+FAILED tests/test_archify_e2e.py::RealArchifyE2E::test_master_html_freshness_and_refresh
+FAILED tests/test_build_portable.py::TestSinhNhanhRelease::test_release_budget_excludes_only_approved_runtime_modules
+FAILED tests/test_ma_hoa_subprocess.py::MaHoaLenhCon::test_moi_loi_goi_van_ban_deu_khai_encoding
+FAILED tests/test_reference_mot_tang.py::MotTang::test_moi_reference_duoc_skill_md_tro_thang
+6 failed, 3944 passed, 10 skipped, 2516 subtests passed in 799.17s (0:13:19)

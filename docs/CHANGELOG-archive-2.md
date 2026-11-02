@@ -1,10 +1,63 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.52.0 đến 0.37.0, tách khỏi `CHANGELOG.md` để file chính dưới trần R6 500 dòng
+Các bản 0.54.0 đến 0.37.0, tách khỏi `CHANGELOG.md` để file chính dưới trần R6 500 dòng
 (`docs/CHANGELOG-archive.md` đã đầy). Bản 0.51.0 được chuyển sang ngày 2026-10-25.
 Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Ngày 2026-11-01 chuyển nguyên mục 0.52.0 từ changelog chính vào đây.
+Ngày 2026-11-03 chuyển nguyên mục 0.54.0 và 0.53.0 từ changelog chính vào đây.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.54.0 — 2026-10-02
+
+Workflow nạp ít chữ hơn mà không mất một luật nào: **sàn tuân thủ của một request lane `full`
+giảm 55.439 → 49.531 token (−10,7%)**, trong khi số mục luật TĂNG 334 → 342. Báo cáo:
+`docs/tdq/reports/2026-09-28-2324-toi-uu-context-workflow.md`.
+
+- **Cổng nhắc đọc lại (`hooks/scripts/read_gate.py`).** Đo trên một phiên thật 22,76 MB:
+  `tdq_state.py` bị đọc 12 lần, `build_portable.py` 19 lần. Riêng hai file đó là 28% nội dung
+  đọc vào. Và 98,2% input của phiên là đọc lại context đã giữ. Cổng CHỈ NHẮC, một lần cho mỗi
+  file, và im khi `offset/limit` nhắm vùng chưa đọc hoặc khi file đã đổi. Nó giữ SỔ RIÊNG chứ
+  không dùng sổ lượt chung. Lý do: sổ lượt bị xoá ở mỗi prompt. Ký ức dựng trên đó không thấy
+  được đúng cái nó phải bắt — việc đọc lại qua nhiều lượt của một phiên.
+- **Chỉ mục dòng cho file luật dài (`scripts/doc_index.py`).** Mỗi file dài nhận một khối chú
+  thích HTML `<!-- muc-luc-dong: Tên=đầu-cuối · … -->`, nhờ đó đọc ĐÚNG MỘT MỤC bằng
+  `offset/limit` thay cho đọc trọn file. Khối ở dạng chú thích chứ không phải bảng vì một bảng
+  cùng lượng thông tin tốn ~230 token/file — tốn đúng vào ngân sách nó đang đi tiết kiệm.
+- **Trần 3.500 token mỗi file luật, cưỡng chế được ở CI.** CI cố ý không có tokenizer, nên
+  `scripts/token_budget.py` đo trên máy CÓ tokenizer và khoá con số bằng `sha256` trong
+  `docs/tdq/token-budget.json`; rule **R13** của `doc_lint` chỉ so hash. Không dùng dòng hay byte
+  làm đại lượng thay thế: đo trên 43 file, token/dòng lệch 4,1 lần và byte/token lệch 1,81 lần.
+  Ba file vượt trần đã được dời phần CÓ ĐIỀU KIỆN sang file em — không nén luật, theo `soul.md`.
+- **Bảy file em TẦNG 1.** Phần chỉ cần khi gặp đúng ca được tách khỏi file cha và trỏ thẳng từ
+  `SKILL.md`, đúng luật một tầng. `plan-template` 5.067 → 3.493, `quick-lane` 4.356 → 3.419,
+  `team-mode` 3.652 → 3.313, `uu-tien-tim-kiem` 3.449 → 2.067 token.
+- **Câu luật tìm kiếm còn một bản.** Sáu bản nguyên văn của cùng một câu (1.125 token) thành một
+  bản gốc + năm con trỏ ba dòng.
+- **CI in bảng bề mặt context** (`continue-on-error`, một tổ hợp). Nó là SỐ ĐO, không phải luật:
+  luật trần token mới được làm đỏ build.
+
+## 0.53.0 — 2026-09-28
+
+Bộ tìm kiếm chuyển từ "có cài" sang "chứng minh được là đang trả lời đúng", và **breaking
+change**: skill `tdq-lsp-setup` đổi tên thành `tdq-setup`. Báo cáo:
+`docs/tdq/reports/2026-09-28-0910-lumen-check-va-setup-tool.md`.
+
+- **BREAKING — `tdq-lsp-setup` → `tdq-setup`.** Không giữ bí danh: gõ tên cũ sẽ không thấy gì.
+  Tên cũ nói skill này chỉ lo LSP. Thực tế nó vốn đã cài cả lumen, và nay nhận luôn việc cài đủ
+  phụ thuộc cho workflow. Bốn nhóm đã đổi theo: bảng trần dòng của `doc_lint`, danh sách thứ tự
+  nạp của `build_portable`, năm chỗ trích luật tìm kiếm, và file test chống lệch.
+- **Bậc 5 hết mù với chuyện "sống mà trả lời sai".** Nó từng chỉ hỏi "ollama có chạy không", nên
+  suốt phiên 2026-09-28 nó báo ĐẠT trong khi MCP `lumen` chết cả phiên (`CONNECTION_CLOSED`).
+  Nay nó hỏi lumen một câu thật rồi đọc câu trả lời, và đo xem index có nội dung MỚI của cây làm
+  việc hay không. Cả hai phép đo đi bằng CLI: lumen 0.0.42 khai `defaultFreshnessTTL = 30s`, nên
+  đường MCP có thể trả lời từ một lần "fresh" đã cũ.
+- **Bậc 5 không còn dò ollama bằng PATH.** Socket được hỏi TRƯỚC; `which` chỉ còn để phân biệt
+  "cài rồi mà đang ngủ" với "chưa cài bao giờ". Đo trên macOS: `/opt/homebrew/bin/ollama` có
+  thật và login shell tìm ra, nhưng `shutil.which` từ tiến trình không-login trả `None` — thứ tự
+  cũ kết luận "thiếu ollama" và in lệnh cài cho một daemon đang phục vụ.
+- **Thêm bậc 8 — đồ thị graphify.** Công cụ thứ tư của bộ tìm kiếm trước nay không có bậc nào.
+  Nó hỏng đúng kiểu một index không ai dựng lại. Đo được 2026-09-28: đồ thị cũ 8 ngày, 34% node
+  (845/2415) trỏ vào thư mục đã xoá.
 
 ## 0.52.0 — 2026-09-27
 

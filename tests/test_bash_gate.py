@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest import mock
 
-from helper import HOOKS, run_hook, load_fixture, decision, tdq_state
+from helper import HOOKS, decision, load_fixture, run_hook, tdq_state, write_state
 
 
 class TestBashGate(unittest.TestCase):
@@ -26,6 +26,41 @@ class TestBashGate(unittest.TestCase):
         payload = load_fixture("bash_cmd.json", cwd=self.cwd, session_id=command[:40])
         payload["tool_input"] = {"command": command}
         return run_hook("bash_gate.py", payload)
+
+    def subagent_bash(self, command, phase="analyze"):
+        write_state(self.cwd, active_request="r1", lane="full", phase=phase)
+        payload = load_fixture("bash_cmd.json", cwd=self.cwd, session_id="ultra-" + command[:30])
+        payload["agent_id"] = "agent-ultra"
+        payload["agent_type"] = "Explore"
+        payload["tool_input"] = {"command": command}
+        return run_hook("bash_gate.py", payload)
+
+    def test_ultracode_subagent_source_shell_write_denied_before_implement(self):
+        for command in ("echo x > src/a.py", "Set-Content src/a.py x", "cp a skills/x.md"):
+            with self.subTest(command=command):
+                self.assertEqual(decision(self.subagent_bash(command)[1])[0], "deny")
+
+    def test_ultracode_subagent_docs_report_write_allowed(self):
+        self.assertNotIn("deny", self.subagent_bash("Set-Content docs/tdq/artifacts/r1/agent-ultra.md report")[1])
+
+    def test_ultracode_read_commands_with_redirect_noise_are_allowed(self):
+        for command in ("python -m pytest -q 2>&1 | tail -5", "ls > /dev/null",
+                        "Get-ChildItem 2>$null", "grep -n 'cp' README.md"):
+            with self.subTest(command=command):
+                self.assertNotIn("deny", self.subagent_bash(command)[1])
+
+    def test_ultracode_docs_text_does_not_mask_source_write(self):
+        command = "echo x > src/a.py; type docs/tdq/artifacts/r1/agent-ultra.md"
+        self.assertEqual(decision(self.subagent_bash(command)[1])[0], "deny")
+
+    def test_ultracode_additional_mutators_are_denied(self):
+        for command in ("rm -rf src", "sed -i s/a/b/ src/a.py", "Remove-Item src/a.py",
+                        "New-Item src/a.py", "python -c \"open('src/a.py','w')\""):
+            with self.subTest(command=command):
+                self.assertEqual(decision(self.subagent_bash(command)[1])[0], "deny")
+
+    def test_ultracode_subagent_implement_keeps_existing_gate_behavior(self):
+        self.assertNotIn("deny", self.subagent_bash("echo x > src/a.py", phase="implement")[1])
 
     def assert_remind(self, command, needle=None):
         rc, out, _ = self.bash(command)

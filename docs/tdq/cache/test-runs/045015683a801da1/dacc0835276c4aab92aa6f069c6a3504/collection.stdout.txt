@@ -1,0 +1,4 @@
+tests/test_archify_e2e.py::RealArchifyE2E::test_full_and_quick_native_binding_and_mutation
+tests/test_archify_e2e.py::RealArchifyE2E::test_master_html_freshness_and_refresh
+
+2 tests collected in 0.10s

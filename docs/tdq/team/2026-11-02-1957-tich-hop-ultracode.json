@@ -1,0 +1,150 @@
+{
+  "slug": "2026-11-02-1957-tich-hop-ultracode",
+  "plan_file": "docs\\tdq\\plan\\2026-11-02-1957-tich-hop-ultracode.md",
+  "plan_sha": "dec1ef3bd05f0d2fef83a0c7aaedc8ec67148817471df0a92bcee1b1ef625798",
+  "projection_version": "v1",
+  "projection_mode": "legacy-conservative",
+  "plan_assignment_sha": "e879c929756704a226e81f2cf444e5d0294ef59575d3fad1c5e1bd55eb4e0fa2",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/SKILL.md",
+        "skills/tdq-intake/references/lane-decision.md",
+        "tests/test_ultracode_routing.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/references/quick-lane.md",
+        "tests/test_ultracode_routing.py"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/references/analyze-full.md",
+        "skills/tdq-spec/SKILL.md",
+        "skills/tdq-plan/SKILL.md",
+        "skills/tdq-build/SKILL.md",
+        "tests/test_ultracode_routing.py"
+      ],
+      "dot": 3
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/references/ultracode.md",
+        "skills/tdq-conventions/SKILL.md",
+        "tests/test_ultracode_contract.py"
+      ],
+      "dot": 4
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/edit_gate.py",
+        "hooks/scripts/bash_gate.py",
+        "tests/test_edit_gate.py",
+        "tests/test_bash_gate.py",
+        "tests/test_ultracode_contract.py"
+      ],
+      "dot": 5
+    },
+    "T2.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/references/ultracode.md",
+        "tests/test_ultracode_contract.py"
+      ],
+      "dot": 6
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/references/team-mode.md",
+        "skills/tdq-conventions/references/ultracode.md",
+        "tests/test_ultracode_contract.py"
+      ],
+      "dot": 7
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/references/qc.md",
+        "skills/tdq-conventions/references/ultracode.md",
+        "tests/test_ultracode_contract.py"
+      ],
+      "dot": 8
+    },
+    "T3.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/references/skill-eval.md",
+        "skills/tdq-conventions/references/ultracode.md",
+        "tests/test_ultracode_contract.py"
+      ],
+      "dot": 9
+    },
+    "T3.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/SKILL.md",
+        "skills/tdq-intake/SKILL.md",
+        "skills/tdq-plan/SKILL.md",
+        "skills/tdq-build/SKILL.md",
+        "skills/tdq-intake/references/quick-lane.md",
+        "skills/tdq-build/references/qc.md",
+        "skills/tdq-conventions/references/ultracode.md"
+      ],
+      "dot": 10
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/artifacts/2026-11-02-1957-tich-hop-ultracode/runtime-interactive.json"
+      ],
+      "dot": 11
+    },
+    "T4.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 11
+    },
+    "T4.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 11
+    },
+    "T4.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-11-02-1957-tich-hop-ultracode-preview.png"
+      ],
+      "dot": 11
+    },
+    "Tx.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 11
+    }
+  }
+}

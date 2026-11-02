@@ -1,8 +1,8 @@
 # Skill and Plugin Quality Evaluation
 <!-- muc-luc-dong:
-  1. Purpose and scope=17-35 · 2. Preflight and isolation=36-54 ·
-  3. Eval-plan contract=55-75 · 4. Execution and pairing=76-95 ·
-  5. Metrics and reporting=96-120 · 6. Decision policy=121
+  1. Purpose and scope=10-23 · 2. Preflight and isolation=24-36 · 3. Eval-plan contract=37-51 ·
+  4. Execution and pairing=52-62 · 5. Metrics and reporting=63-77 ·
+  Ultracode routing evaluation=78-83 · 6. Decision policy=84
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
@@ -74,6 +74,12 @@ The report generator (`scripts/tdq_skill_eval.py report`) runs fully offline:
   `observed_usage`, `rate_estimate` (derived from dated rate cards), and `provider_billed`.
 - **Cell separation**: Results are grouped per `(host, model)` cell. Aggregating across
   disparate hosts or models into a single score is prohibited.
+
+## Ultracode routing evaluation
+
+Compare Workflow with batch Agent on the same case/host/model/permission envelope. KEEP only when
+unique verified findings or completeness rises without higher false-positive rate; token/latency
+remain reported evidence, not ceilings.
 
 ## 6. Decision policy
 

@@ -1,8 +1,8 @@
 # Express pipeline — detail
 <!-- muc-luc-dong:
-  How deep the analysis goes — B0, B1, B2=27-42 · The ten execution steps=43-112 ·
-  Mini spec/plan template (≤ 40 lines)=113-139 ·
-  The block that presents the mini-plan to the user=140-162 · Ba phần tách sang file em=163
+  How deep the analysis goes — B0, B1, B2=27-44 · The ten execution steps=45-114 ·
+  Mini spec/plan template (≤ 40 lines)=115-141 ·
+  The block that presents the mini-plan to the user=142-164 · Ba phần tách sang file em=165
 -->
 
 Express differs from the deep pipeline by **merging the documents and merging the
@@ -39,6 +39,8 @@ NO approval gate of its own — express keeps exactly one gate. How deep it goes
 section, shape `Bỏ B0: <lý do>`. A step dropped in silence is a QC defect; B1 is never skipped. <!-- i18n-allow: sample line in the default language -->
 
 Why not "always all three": chạy cả 3 bước khiến express chậm hơn ~70% (median 533s vs 372s, đo trên 43 requests; xem `docs/tdq/report/2026-09-01-2122-lane-nhanh-kiem-ke-nang-luc.md`).
+
+**`express_ultracode` policy.** Follow [the TDQ Ultracode contract](../../tdq-conventions/references/ultracode.md): auto-select finite analyze/QC routes, record route/fallback/accounting before the one gate, and fall back visibly when unavailable.
 
 ## The ten execution steps
 

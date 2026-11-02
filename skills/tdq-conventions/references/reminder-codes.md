@@ -39,7 +39,9 @@ gets you reminded again at the end of the turn.
    the assignment map does not hand to whoever is editing (`TDQ:TEAM`). To clear it: mark the
    task `[~]`, or delegate it as the map says. It also denies a sub-agent (hook input carries
    `agent_id`) editing a project file outside `docs/` before phase `implement`; the sub-agent
-   writes its report under `docs/` and the main agent edits.
+   writes only an assigned report under `docs/tdq/artifacts/` (or returns structured output) and
+   the main agent edits. The Bash/PowerShell gate applies the same pre-implement rule; TDQ state
+   remains forbidden even though it is under `docs/`.
 4. **Starting LSP on the wrong server (`TDQ:LSP`, since 0.59.0).** The `PreToolUse` gate on
    `mcp__lsp__start_lsp` denies a start without `language_id` (agent-lsp would start every server
    and make TypeScript current) or on a (root, language) pair outside the module table. It blocks

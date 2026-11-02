@@ -388,6 +388,14 @@ class TestEditGateSubagentChiDoc(unittest.TestCase):
         out = self.sua("docs/tdq/research/r1.md", "spec")
         self.assertNotIn("deny", out)
 
+    def test_ultracode_subagent_khong_duoc_sua_state_trong_docs(self):
+        out = self.sua("docs/tdq/state.json", "spec")
+        self.assertEqual(decision(out)[0], "deny")
+
+    def test_ultracode_subagent_duoc_ghi_artifact_report(self):
+        out = self.sua("docs/tdq/artifacts/r1/agent-abc123.md", "spec")
+        self.assertNotIn("deny", out)
+
     def test_main_spec_src_khong_bi_chan(self):
         out = self.sua("src/a.py", "spec", agent_id="")
         self.assertNotIn("deny", out)
