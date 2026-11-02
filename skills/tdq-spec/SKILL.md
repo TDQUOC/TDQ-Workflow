@@ -25,7 +25,7 @@ user's document language `doc_lang` (deliberate repetition — the original is
    approach + reason · **Năng lực & công cụ** (§3b — verdict table checked by R8) ·
    **Giải thuật cốt lõi** (§3c — step-by-step logic, O(T), O(S), edge cases) ·
    **Mental Model cho Fresher** (§3d — analogy + glossary) ·
-   standing requirements (log service ON by default, no placeholder, a test per part) ·
+   standing requirements (log service ON by default, eval-plan for skill changes, no placeholder, a test per part) ·
    constraints & risks · QC scope + Definition of Done (visual checks per [vision-test-loop.md](../tdq-build/references/vision-test-loop.md)).
    The "open questions" section MUST be empty — a question left → back to phase `analyze`.
 

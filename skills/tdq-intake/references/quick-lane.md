@@ -62,7 +62,7 @@ steps below before doing step 1; working from memory is banned.
    `[ ]` not started · `[~]` in progress · `[>]` handed to a sub-agent · `[x]` done. At
    implement time (step 8) mark `[~]` when the task starts and switch to `[x]` the moment
    the test is green.
-   Multi-module/refactor work: follow [Archify quick BA](archify-quick.md) before approval.
+   Change to something that already exists: follow [Archify quick BA](archify-quick.md) (before/after page) before approval.
 4. **Present a ≤ 10-line summary** in chat: what will be done, which files it touches, and
    how it is validated. Add exactly 1 line `Ước tính sẽ dùng skill: <the skills that will be <!-- i18n-allow: canonical name in the default language -->
    USED, or "không có">` (in doubt → USE). <!-- i18n-allow: label written in the default language -->

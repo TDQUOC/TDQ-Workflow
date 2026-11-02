@@ -1,6 +1,6 @@
 # The spec shape
 <!-- muc-luc-dong:
-  File em=149
+  File em=150
 -->
 
 Copy the whole block below into `docs/tdq/spec/<slug>.md` and fill it in. Drop a section
@@ -59,8 +59,7 @@ Bắt buộc với lane full (lane quick BỎ). Một module = một vùng file 
 
 ## 2c. Luồng hoạt động & Sơ đồ kiến trúc
 
-Trực quan hóa luồng dữ liệu và tương tác hệ thống. Bắt buộc có sơ đồ Mermaid (Sequence Diagram hoặc Flowchart) để fresher dev dễ hình dung.
-Preview và manifest: theo [Archify BA](archify-ba.md) để dựng, bind trước duyệt, ghi fallback khi thiếu công cụ và phân biệt thiết kế với hiện trạng.
+Trực quan hóa luồng dữ liệu và tương tác hệ thống. Mermaid dự phòng (Sequence/Flowchart) khi không có HTML Archify.
 
 ```mermaid
 sequenceDiagram
@@ -75,7 +74,7 @@ sequenceDiagram
     Core-->>User: Phản hồi kết quả
 ```
 
-Nếu việc này là cập nhật, tối ưu hoặc refactor mã nguồn: BẮT BUỘC có bảng đối chiếu Trước vs Sau:
+Cơ chế hiện tại vs Sau update — BẮT BUỘC khi sửa thứ đã có: HTML Trước/Sau theo [Archify BA](archify-ba.md) là nội dung chính, chữ chỉ phụ trợ (bảng dưới); dựng mới ghi `Hiện trạng: chưa có`.
 
 | Khía cạnh | Hiện trạng (Trước) | Thiết kế mới (Sau) |
 |---|---|---|
@@ -123,7 +122,7 @@ Bóc tách thuật toán chi tiết để lập trình viên fresher nắm chắ
 ## 4. Yêu cầu bắt buộc
 - Log service bật mặc định: timestamp, đủ chi tiết debug, tắt/giảm được qua config.
   Dòng này bắt buộc **chỉ khi việc này có runtime** — tức plan sẽ có ít nhất một task tạo hoặc sửa mã chạy được; không runtime thì ghi BỎ và lý do.
-- Không placeholder, không TODO stub, không mock trình bày như dữ liệu thật.
+- Không placeholder, không TODO stub; thay đổi hành vi skill cần eval-plan trước implement.
 - Mỗi thành phần có unit test riêng, chạy được bằng một lệnh.
 - Bám 5 nguyên tắc SOLID và rule ngôn ngữ trong `skills/tdq-build/references/rules/`.
 
@@ -139,6 +138,8 @@ Không chạm dòng nào → ghi `Ràng buộc kiến trúc phải giữ: không
 | # | Hạng mục kiểm | Điều kiện PASS | Đo trước | Dự phòng nếu trượt |
 |---|---|---|---|---|
 | Q1 | | | <số đo hoặc —> | <phương án hoặc —> |
+
+Mỗi dòng truy về hành vi nghiệp vụ hoặc luồng cũ phải giữ; test đỏ trước.
 
 DoD: <liệt kê điều kiện đủ để tuyên bố xong; có tham chiếu thị giác thì kèm Vision Test Loop>
 

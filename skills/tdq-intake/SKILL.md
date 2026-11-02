@@ -43,7 +43,7 @@ first, then come back to step 1 below.
 1. **Record the request.** Create `docs/tdq/brief/<slug>.md` with slug
    `YYYY-MM-DD-HHMM-<kebab, ≤5 words, no accents>`. The brief is the ONLY file of the intake +
    analyze phases, with exactly 3 sections: `## Nguyên văn` (the user's words verbatim <!-- i18n-allow: canonical name in the default language -->
-   plus your first reading: goal, guessed scope, unclear spots), `## Hiểu & kiến thức`, <!-- i18n-allow: canonical name in the default language -->
+   plus your first reading: goal, scope, eval need for skill changes, unclear spots), `## Hiểu & kiến thức`, <!-- i18n-allow: canonical name in the default language -->
    `## Hỏi đáp`. Write only the first section here; Part B fills the other two. Line 2 — right <!-- i18n-allow: canonical name in the default language -->
    under the title — copies this verbatim (spec/plan/qc/report carry it too):
 
@@ -129,7 +129,7 @@ questions remain, present them and stop.
 
 ## Part C — Express pipeline
 
-For multi-module/refactor work, load [Archify quick BA](references/archify-quick.md) before mini-plan approval.
+For a change to something that already exists, load [Archify quick BA](references/archify-quick.md) (before/after page) before mini-plan approval.
 Express is a shortened path, NOT a path with thinking steps cut out. The ten
 execution steps — from analysis to asking about the commit — live in
 [references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`. The tick

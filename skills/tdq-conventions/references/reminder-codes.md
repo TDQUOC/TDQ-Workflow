@@ -37,7 +37,9 @@ gets you reminded again at the end of the turn.
 3. **Editing code in team mode (`TDQ:TICK`, `TDQ:TEAM`).** The `PreToolUse` edit gate denies a
    source edit during implement/qc while the plan has no task marked `[~]` (`TDQ:TICK`), or one
    the assignment map does not hand to whoever is editing (`TDQ:TEAM`). To clear it: mark the
-   task `[~]`, or delegate it as the map says.
+   task `[~]`, or delegate it as the map says. It also denies a sub-agent (hook input carries
+   `agent_id`) editing a project file outside `docs/` before phase `implement`; the sub-agent
+   writes its report under `docs/` and the main agent edits.
 4. **Starting LSP on the wrong server (`TDQ:LSP`, since 0.59.0).** The `PreToolUse` gate on
    `mcp__lsp__start_lsp` denies a start without `language_id` (agent-lsp would start every server
    and make TypeScript current) or on a (root, language) pair outside the module table. It blocks

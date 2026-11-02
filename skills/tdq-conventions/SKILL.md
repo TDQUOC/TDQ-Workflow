@@ -164,7 +164,7 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 
 - The `description` of every Agent call reads `<model>-<effort>-<task-kebab>` (e.g.
   `sonnet-low-research-doc`) — the name alone tells which model and effort are running.
-- Default model/effort per role plus the override rule: [references/subagent-tuning.md](references/subagent-tuning.md).
+- Default model/effort per role plus the override rule: [references/subagent-tuning.md](references/subagent-tuning.md) (also: read-only sub-agents in any phase).
 
 ## 10. One-batch rule (tier 2 — runtime) and context cost
 

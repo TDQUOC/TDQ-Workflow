@@ -1,7 +1,7 @@
 # Report template
 <!-- muc-luc-dong:
-  Table of contents=7-13 · The execution steps=14-84 · The report shape=85-123 ·
-  Check before presenting=124
+  Table of contents=7-13 · The execution steps=14-84 · The report shape=85-133 ·
+  Check before presenting=134
 -->
 
 ## Table of contents
@@ -108,7 +108,17 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 ## Thời gian
 
 <dán nguyên output của `tdq_timing.py show`, gồm bảng timing v2, quality và chú thích nguồn>
+
+## Thân PR (soạn sẵn)
+
+**Tóm tắt:** <thay đổi gì, vì sao — 1–2 câu>
+**Trước/Sau:** <link HTML Trước/Sau đã duyệt, hoặc "không có — <lý do>">
+**Đã kiểm:** <lệnh test/QC + kết quả thật, mỗi lệnh một dòng>
+**Rủi ro hồi quy:** <luồng cũ nào có thể bị ảnh hưởng và test nào đang giữ nó>
 ```
+
+**PR body is drafted, never sent.** The report carries the `Thân PR (soạn sẵn)` block for the <!-- i18n-allow: canonical section name -->
+user to paste; the workflow never opens the PR itself.
 
 **Spec deviations ride on the commit question.** When `tdq_state.py lech list` shows pending
 items, the closing block asks, before the commit question, one line per deviation: approve

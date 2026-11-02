@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — observe + remind; blocks exactly 1 case.
+"""PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — observe + remind; denies only the cases below.
 
-Only `TDQ:TICK` denies: editing source code during implement/qc while the plan carries no
-task marked `[~]`. Every other code only reminds.
+Denies: `TDQ:TICK` (source edit in implement/qc without a `[~]` task), `TDQ:TEAM` (team-map
+breach, or a sub-agent editing outside docs/ before implement). Every other code only reminds.
 
 Two jobs, in this order:
 1. Write `observe` rows into the turn ledger: `edit:<path>` for every file edit,
@@ -111,6 +111,19 @@ def main():
         return
     if within(abs_target, os.path.realpath(os.path.join(cwd, "docs"))):
         return  # docs/** needs no reminder: brief/spec/plan/research/log
+
+    # A sub-agent (Claude Code puts `agent_id` on hook input only inside one) is a reader until
+    # implement: it reports into docs/, the main agent alone changes the project before then.
+    # ponytail: Edit/Write only, a sub-agent writing through Bash/PowerShell slips past — widen to
+    # bash_gate once a real case is measured.
+    if isinstance(payload.get("agent_id"), str) and payload["agent_id"] \
+            and within(abs_target, os.path.realpath(cwd)) \
+            and effective_phase(state, warn=False) not in ("implement", "qc"):
+        block(cwd, payload, "TDQ:TEAM", [
+            "A sub-agent may not change the project before phase implement.",
+            "Write findings/logs under docs/ (e.g. docs/tdq/research/) and report to the main agent.",
+            "The main agent edits after the plan is approved.",
+        ])
 
     # The gate-picking rule lives in `tdq_state.cong_dang_cho` — shared with `stop_gate`.
     # Copying the rule into both hooks is an open invitation for the two to drift: that exact

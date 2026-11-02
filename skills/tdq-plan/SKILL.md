@@ -45,7 +45,7 @@ scope. Spec approved → plan NOW.
    [references/plan-template-huong-dan.md](references/plan-template-huong-dan.md) for scoring
    `eNm`, the `Mode thực thi` line (`main|subagent|codex`) and the self-check.
    Must be there: the status header + source spec · **a line of its own**
-   `Mode thực thi: <main|subagent|codex> — <reason>` · the phases with checkbox tasks · a task of its own for <!-- i18n-allow: canonical name kept verbatim -->
+   `Mode thực thi: <main|subagent|codex> — <reason>` · eval-plan if skills change · phases with checkbox tasks · <!-- i18n-allow: canonical name kept verbatim -->
    the log service and for unit tests · a Definition of Done pointing back at §6 of the spec, **every
    DoD line checkable by one command** (QC counts its items off that exact number of lines).
    One task = one piece of work + one measurable check, carrying the minute estimate `(eNm)`:

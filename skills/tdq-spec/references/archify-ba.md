@@ -8,14 +8,28 @@ Record the actor, trigger, inputs, business rules, happy path, exceptions/fallba
 
 Read the installed Archify SKILL.md and the selected schema/example. Keep candidates and receipts outside the spec Markdown namespace, for example under `docs/tdq/artifacts/<slug>/`. Always customize `meta.legend.entries` and `meta.translations` (`viewer.kind.*`, `legend.architecture.*`, `legend.workflow.*`) to match the domain roles of the system (e.g., `Host Adapters`, `Skills & Agents`, `Lifecycle Hooks`, `CLI Runtime`) instead of leaving Web-App defaults (`Frontend`, `Backend`, `Database`). Use committed citations only against their actual revision; sources use `path`, `line`, `end_line`. Never invent a repository URL or source for planned code.
 
+## Before and after on one page
+
+A request that changes something that already exists (extended feature, bugfix, refactor, update) renders ONE explainer page, `docs/tdq/artifacts/<slug>/truoc-sau.archify.md`, where the diagrams carry the explanation and the text is supporting only:
+
+- One panel per view, before then after: the current architecture/flow (from code you read; its supporting text names the files) next to the same view after the update. Keep node names stable across the pair so the reader sees what moved. The page is a design proposal, so `--evidence-kind planned` applies to the whole page.
+- Up to four native diagrams per page (`@workflow`, `@architecture`, `@sequence`…, syntax in Archify `references/explainer-authoring.md`). Diagram ids must differ from panel ids.
+- Text under a diagram only says what the diagram cannot: why it changed, an exception.
+- A brand-new feature with nothing before: one line `Hiện trạng: chưa có`, after diagrams only.
+- Put `@meta locale=en` right under the title (the engine defaults to `zh-CN` chrome). Skip `lane` rows: measured 2026-11-02, a lane workflow inside an explainer rendered 0×0.
+
+Validate before rendering: `node <archify>/bin/archify.mjs validate explainer <candidate>`.
+
 ## Render and bind before approval
 
 Run from the target project's root, using the plugin's absolute CLI path. Check Node and Archify first. Replace placeholders with actual paths; the command is a template, not evidence that it ran.
 
 ```sh
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" check
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" render --type workflow --candidate "docs/tdq/artifacts/<slug>/candidate.json" --out "docs/tdq/spec/<slug>-preview.html" --document "docs/tdq/spec/<slug>.md" --request "<slug>" --lane full --evidence-kind planned
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" render --type explainer --candidate "docs/tdq/artifacts/<slug>/truoc-sau.archify.md" --out "docs/tdq/spec/<slug>-preview.html" --document "docs/tdq/spec/<slug>.md" --request "<slug>" --lane full --evidence-kind planned
 ```
+
+A request with nothing before and a single view may still render `--type workflow` from `candidate.json`.
 
 Finish the spec's content before rendering/binding. The CLI writes a manifest beside the HTML and binds its hash to the document. Any later content edit requires rerender/rebinding before presentation. After approval, do not rewrite the binding silently: a design change needs the existing spec approval again.
 
