@@ -1,27 +1,27 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-03T00:02:18+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-03T00:05:25+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-02-1957-tich-hop-ultracode |
-| Lane | full |
-| Phase | report |
-| Spec | docs/tdq/spec/2026-11-02-1957-tich-hop-ultracode.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-11-02-1957-tich-hop-ultracode.md — ✔ approved |
+| Request | (none) |
+| Lane | (not chosen) |
+| Phase | idle |
+| Spec | (none) |
+| Plan | (none) |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | ultra |
-| QC level | ultra |
-| Run mode | subagent |
+| QC level | full |
+| Run mode | (not settled) |
 
 ## Where we are
-QC has PASSed. Forbidden: Committing or pushing before the user asks for it.
+No TDQ request is open. Forbidden: Editing code before a request is open.
 
 ## What comes next
-Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing.
+Ask the user to pick a lane, then open a new request.
 ```
-python3 scripts/tdq_state.py set phase=idle
+python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
 ```
-Done when: The report is written and the user has been asked about committing
+Done when: state.json has active_request and lane
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.
