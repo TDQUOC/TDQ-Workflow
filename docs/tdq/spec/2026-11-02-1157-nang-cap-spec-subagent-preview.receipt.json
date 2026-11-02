@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-02-1157-nang-cap-spec-subagent\\truoc-sau.archify.md",
+    "sha256": "1483bcde34ba336abd3c82d47cba9fba5cc31e7475469f76c82991d40ac6b1e7",
+    "bytes": 2781
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-02-1157-nang-cap-spec-subagent-preview.2c99b5714670402ca0958e3061a8348c.html",
+    "sha256": "9524c99d48e9a34a844984cf0b5c8930ddc0abd1d7750e3c8a6193a06430bc53",
+    "bytes": 1611610
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-02-1157-nang-cap-spec-subagent-preview.2c99b5714670402ca0958e3061a8348c.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-02-1157-nang-cap-spec-subagent-preview.2c99b5714670402ca0958e3061a8348c.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2898,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}
