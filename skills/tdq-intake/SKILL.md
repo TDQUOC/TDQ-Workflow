@@ -135,14 +135,14 @@ execution steps — from analysis to asking about the commit — live in
 [references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`. The tick
 rule, this lane's QC and the fix loop live in the tier-1 sibling
 [references/quick-lane-qc.md](references/quick-lane-qc.md) — read at the step that needs it,
-not at step 1.
+not at step 1. The mini-plan template and approval block are in the tier-1 sibling
+[references/quick-lane-mini.md](references/quick-lane-mini.md) — read at step 3.
 Read THAT section before doing step 1, through the line index at the top of the file; working
 from memory is banned. How deep the analysis goes (B1 always, B0 and B2 on thresholds), the
-mini-plan template, the tick rule, the QC rule and the fix round are separate sections in the
-same index — fetch each when you reach it.
+tick rule, the QC rule and the fix round are indexed separately; fetch each when needed.
 
 Step 1 sets `phase=analyze`, showing the express analysis as its own row (`quick_analyze`) in the
 phase table. That phase has **NO approval gate** — express keeps one gate, the approval at step 6.
 
-Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
-Next step: phase `idle` — ask about the commit, the request is over → `... set phase=idle`.
+Done when: `quick_approved = true`, the log is written, `## QC` exists, no red test.
+Next step: phase `report` — shared Markdown + Archify HTML, then `... set phase=idle`.

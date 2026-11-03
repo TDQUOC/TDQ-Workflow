@@ -74,6 +74,7 @@ MAU = (
     ("tdq-plan", "references", "mode-gate.md"),
     ("tdq-intake", "references", "lane-decision.md"),
     ("tdq-intake", "references", "quick-lane.md"),
+    ("tdq-intake", "references", "quick-lane-mini.md"),
     ("tdq-intake", "references", "interview.md"),
     ("tdq-build", "references", "report-template.md"),
     ("tdq-status", "SKILL.md"),
@@ -100,7 +101,8 @@ SO_KHOI = {
     # 2026-08-22: 1 → 2. Bước 4 của chín bước trước đây nhét dòng `➤` vào giữa câu văn
     # bằng nháy ngược; bản dịch tách nó ra khối ``` riêng để cụm `i18n-allow` miễn đúng
     # dòng mẫu đó. Khối mới là khối thật, chịu luật 1/3/7 như mọi khối khác.
-    "tdq-intake/references/quick-lane.md": 2,
+    "tdq-intake/references/quick-lane.md": 1,
+    "tdq-intake/references/quick-lane-mini.md": 1,
     "tdq-intake/references/interview.md": 0,
     "tdq-build/references/report-template.md": 1,
     "tdq-status/SKILL.md": 0,

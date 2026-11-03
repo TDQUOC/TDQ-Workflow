@@ -97,7 +97,16 @@ class PhaseTableTest(unittest.TestCase):
         self.assertNotIn("--no-qc", row["cmd"])
         joined = " ".join(row["checklist"])
         self.assertIn("muc_qc", joined)
-        self.assertIn("set phase=idle", joined)
+        self.assertIn("set phase=report", joined)
+        self.assertNotIn("set phase=idle", joined)
+
+    def test_quick_report_reuses_existing_phase_and_gate(self):
+        base = {"active_request": "r", "lane": "quick"}
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "report", "quick_approved": True}), "report")
+        self.assertEqual(tdq_state.phase_key({**base, "phase": "report", "quick_approved": False}), "quick")
+        self.assertEqual(tdq_state.PHASE_TABLE["report"]["cmd"], "python3 scripts/tdq_state.py set phase=idle")
+        self.assertEqual(tdq_state.CONG_THEO_LANE["quick"], ("quick",))
+        self.assertNotIn("report", tdq_state.APPROVE_TARGETS)
 
     def test_render_plugin_root_variant(self):
         """A40: bản chạy trong ngữ cảnh plugin phải in path plugin-root."""

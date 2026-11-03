@@ -75,6 +75,15 @@ class TestSessionStart(unittest.TestCase):
                 self.assertLessEqual(len(dau), 600, phase)
                 self.assertLessEqual(len(dau.splitlines()), 12, phase)
 
+    def test_quick_report_session_guides_report_not_intake(self):
+        write_state(self.cwd, active_request="2026-11-03-0715-express-report", lane="quick",
+                    phase="report", quick_approved=True, quick_approved_at=now_iso())
+        rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "quick-report"})
+        self.assertEqual(rc, 0)
+        self.assertIn("phase report", out)
+        self.assertIn("set phase=idle", out)
+        self.assertNotIn("[TDQ:INTAKE]", out)
+
     def test_no_state_still_guides(self):
         rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})
         self.assertEqual(rc, 0)

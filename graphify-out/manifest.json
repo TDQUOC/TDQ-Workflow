@@ -6,10 +6,10 @@
     "semantic_hash": "80ef98b882da0cfb57f0bc2a2c634788"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1793613500.8746,
-    "seen": 1793629958.395155,
-    "ast_hash": "6f3d4b9c2f1488c66349333bf9d869ec",
-    "semantic_hash": "6f3d4b9c2f1488c66349333bf9d869ec"
+    "mtime": 1793677202.5438218,
+    "seen": 1793678463.6168454,
+    "ast_hash": "796ae31975dca7b2562987f25afaa8a7",
+    "semantic_hash": "796ae31975dca7b2562987f25afaa8a7"
   },
   ".claude/settings.json": {
     "mtime": 1789900266.4991295,
@@ -30,14 +30,14 @@
     "semantic_hash": "556c5552d34b4f831cb340853bd720bc"
   },
   "hooks/scripts/bash_gate.py": {
-    "mtime": 1793631292.135678,
-    "seen": 1793631386.3668144,
+    "mtime": 1793639139.7705367,
+    "seen": 1793642338.5992095,
     "ast_hash": "f4cf58c47076eaaa0b05e32c79b59953",
     "semantic_hash": "f4cf58c47076eaaa0b05e32c79b59953"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1793631238.502445,
-    "seen": 1793631386.3673098,
+    "mtime": 1793639139.7705367,
+    "seen": 1793642338.5996442,
     "ast_hash": "1eac5b747b1e3df49f2f5e9652739a25",
     "semantic_hash": "1eac5b747b1e3df49f2f5e9652739a25"
   },
@@ -132,10 +132,10 @@
     "semantic_hash": "ccdef2c2cb7bee748da648dc45d36c97"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1793589319.6281755,
-    "seen": 1793629958.4106095,
-    "ast_hash": "7e0d3dd720b540e6525d61ac6da2d4a3",
-    "semantic_hash": "7e0d3dd720b540e6525d61ac6da2d4a3"
+    "mtime": 1793642726.4768739,
+    "seen": 1793642765.9912179,
+    "ast_hash": "f4720d6a0b2fbc7b1c0cb0f803c00b73",
+    "semantic_hash": "f4720d6a0b2fbc7b1c0cb0f803c00b73"
   },
   "scripts/token_audit.py": {
     "mtime": 1793505009.5254688,
@@ -349,8 +349,8 @@
     "semantic_hash": "b34b09e0c75172e5d41b2b9ee4aa27c2"
   },
   "hooks/scripts/agy_pretooluse_gate.py": {
-    "mtime": 1793631332.4299822,
-    "seen": 1793631386.3662362,
+    "mtime": 1793639139.7695317,
+    "seen": 1793642338.5987718,
     "ast_hash": "9b35348baec09a1d1fcb683cf122ae9d",
     "semantic_hash": "9b35348baec09a1d1fcb683cf122ae9d"
   },
@@ -361,8 +361,8 @@
     "semantic_hash": "941e417516758f2a3386fdef3bf3e142"
   },
   "pyrightconfig.json": {
-    "mtime": 1793629299.2853153,
-    "seen": 1793629958.4041686,
+    "mtime": 1793677281.1613207,
+    "seen": 1793678463.6254437,
     "ast_hash": "9d75580abaee0ad92642c94b1590ac75",
     "semantic_hash": "9d75580abaee0ad92642c94b1590ac75"
   },
@@ -439,10 +439,10 @@
     "semantic_hash": "41b15e96b67c441f2d65a1125974b705"
   },
   ".codex-plugin/plugin.json": {
-    "mtime": 1793613500.8751247,
-    "seen": 1793629958.3954384,
-    "ast_hash": "89f15fef12bf66e2beb4c18f85585bae",
-    "semantic_hash": "89f15fef12bf66e2beb4c18f85585bae"
+    "mtime": 1793677208.4650393,
+    "seen": 1793678463.6173182,
+    "ast_hash": "c4cc0f99fd2e2ed42d4d80c053b74771",
+    "semantic_hash": "c4cc0f99fd2e2ed42d4d80c053b74771"
   },
   ".opencode/plugins/tdq-workflow.js": {
     "mtime": 1790138252.4325833,

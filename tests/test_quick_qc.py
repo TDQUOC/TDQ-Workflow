@@ -45,6 +45,11 @@ def read(path):
 class QuickQcDocTest(unittest.TestCase):
     """N1: quick-lane.md phải định nghĩa QC, không chỉ nói 'chạy validate'."""
 
+    def test_quick_qc_enters_shared_report_before_idle(self):
+        self.assertIn("set phase=report", read(N1_QC))
+        self.assertIn("set phase=report", " ".join(tdq_state.PHASE_TABLE["quick"]["checklist"]))
+        self.assertIn("report-template.md", read(N1_QC))
+
     def test_quick_lane_has_qc_section(self):
         text = read(N1) + read(N1_QC)
         self.assertTrue(any(m in text for m in

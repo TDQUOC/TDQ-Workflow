@@ -266,6 +266,19 @@ class TestState(unittest.TestCase):
         self.assertIn("main", tdq_state.PHASE_TABLE["mode"]["cmd"])
         self.assertIn("subagent", tdq_state.PHASE_TABLE["mode"]["cmd"])
 
+    def test_quick_report_transition_requires_report_before_idle(self):
+        run_state_cli(self.cwd, "init", "2026-11-03-0715-express-report", "quick")
+        run_state_cli(self.cwd, "approve", "quick", "--by", "duyệt nhanh")
+        rc, _, err = run_state_cli(self.cwd, "set", "phase=idle")
+        self.assertNotEqual(rc, 0, err)
+        self.assertEqual(read_state(self.cwd)["phase"], "implement")
+        rc, _, err = run_state_cli(self.cwd, "set", "phase=report")
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(tdq_state.phase_key(read_state(self.cwd)), "report")
+        rc, _, err = run_state_cli(self.cwd, "set", "phase=idle")
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(tdq_state.phase_key(read_state(self.cwd)), "idle")
+
     def test_approve_quick_moves_phase_to_implement(self):
         """A6: duyệt quick phải đẩy phase=implement để idle sau đó thành terminal."""
         run_state_cli(self.cwd, "init", "2026-08-04-0900-r1", "quick")

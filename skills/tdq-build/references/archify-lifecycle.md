@@ -1,4 +1,7 @@
 # Archify artifact lifecycle
+<!-- muc-luc-dong:
+  Before code=8-17 · Refresh Master=18-30 · Evidence for report=31
+-->
 
 Load before implementation when the approved spec or mini-plan includes an Archify manifest, and again after source changes or merge. Do not create another approval gate.
 
@@ -27,4 +30,4 @@ Retain last-good output if any required view fails. An existing lock is not perm
 
 ## Evidence for report
 
-Keep candidate, manifest, engine receipt, command exit and test evidence together. Report static gates, native browser gates and visual review separately. Finish every background check before concluding PASS. Missing engine, native browser pipe failure or timeout is not success; give the recovery instructions and preserve unresolved status. Never disable the browser sandbox just to obtain a green receipt.
+Author `docs/tdq/reports/<slug>.html` from actual task, DoD, QC, outputs and limits. Render it with `tdq_archify.py render --type explainer --candidate docs/tdq/artifacts/<slug>/bao-cao.archify.md --out docs/tdq/reports/<slug>.html --document docs/tdq/reports/<slug>.md --request <slug> --lane <quick|full> --evidence-kind working-tree`; use `committed` only with a verified clean revision. The CLI accepts only `planned`, `working-tree`, `committed`, `partial` — never pass `actual`. In prose, describe verified outcomes as actual, not proposed; the manifest's evidence kind describes source provenance. Verify manifest binding before linking. Keep candidate, manifest, engine receipt, command exit and test evidence together. A missing, failed or stale Archify artifact is a disclosed fallback; never link it as current. Report static gates, native browser gates and visual review separately. Finish every background check before concluding PASS. Missing engine, native browser pipe failure or timeout is not success; give recovery instructions and preserve unresolved status. Never disable browser sandbox just to obtain a green receipt.

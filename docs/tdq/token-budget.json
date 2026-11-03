@@ -1,7 +1,7 @@
 {
   "skills/tdq-build/references/archify-lifecycle.md": {
-    "sha256": "abf1141b2b5a354924a5b88d72dd93873691147e506cb217b9fcf85271e89d26",
-    "token": 538
+    "sha256": "81413dfee2de65313dccb4f7a4e22681a947541b98bea03e327ef9f7cc0fce27",
+    "token": 756
   },
   "skills/tdq-build/references/codex-mode.md": {
     "sha256": "f8aa605c69e86e5d3495bf169c1f4c5b3f84f902b17e0b20c588fc2ba4a1955f",
@@ -12,8 +12,8 @@
     "token": 3498
   },
   "skills/tdq-build/references/report-template.md": {
-    "sha256": "ab700d40e3c1f3a3d91f2164a3c7b123c354d051658ce9a2f93b53a417d20dad",
-    "token": 2595
+    "sha256": "8d0531b233cdeaa53c1766661f3a207b8df61d2212f9b157d8d9f1110498d833",
+    "token": 2701
   },
   "skills/tdq-build/references/rules/chung.md": {
     "sha256": "d21c9922a9413b2720be84fb286f06e55cfdd64cbd806bdcdf977dd44bbf66f5",
@@ -112,8 +112,8 @@
     "token": 541
   },
   "skills/tdq-conventions/references/phases.md": {
-    "sha256": "9310823aa5feb10122bb5438823f04b01c0de310f80a2610bc8ed5fdcb1e5f74",
-    "token": 1841
+    "sha256": "eaa76a099b4a1ca03bbb221fc25605d41f766b624f6bd0599916fb986aaab54e",
+    "token": 1835
   },
   "skills/tdq-conventions/references/plugin-routing.md": {
     "sha256": "c995a6f79eb8b6019ed2c2473360d2f5fcfbb7d9b1c57f413e52ad2af3dd6d74",
@@ -179,13 +179,17 @@
     "sha256": "70ce7fad97b2b958a1282ff9d7703e35d55d8d3c935b49b76a13e7b935c907a8",
     "token": 952
   },
+  "skills/tdq-intake/references/quick-lane-mini.md": {
+    "sha256": "d42c6b259f247020245616625405121a9991dc8509bcc41ce9680f83ed97b666",
+    "token": 720
+  },
   "skills/tdq-intake/references/quick-lane-qc.md": {
-    "sha256": "8a21867aac4b977ac7e760f493f9b32e6fd2f910c306df7b98f6ce08fa13fda1",
-    "token": 1276
+    "sha256": "002329fb6d4dd606f6bb047b71936640febc6589f343be82475cca74c3516d52",
+    "token": 1437
   },
   "skills/tdq-intake/references/quick-lane.md": {
-    "sha256": "0d877ad9553a3a5a57eb1b48c06003d4ea561aef9474b1fa48fc1735d2ae6cee",
-    "token": 3497
+    "sha256": "cf8eebf3f8c609f4acba2ca22cf96e329b4d5abaa7a18453d7d0f431c0338978",
+    "token": 2820
   },
   "skills/tdq-intake/references/scope-round.md": {
     "sha256": "cf0d8c355914939bd5f28db1976c7503c7570e5efe093ac24999702e157817bf",

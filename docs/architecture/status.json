@@ -12,17 +12,20 @@
     "Source file modified: scripts/tdq_test_receipt.py",
     "Source file modified: scripts/tdq_test_report.py",
     "Source file modified: skills/tdq-build/SKILL.md",
+    "Source file modified: skills/tdq-build/references/archify-lifecycle.md",
     "Source file modified: skills/tdq-build/references/qc.md",
     "Source file modified: skills/tdq-build/references/report-template.md",
     "Source file modified: skills/tdq-build/references/rules/chung.md",
     "Source file modified: skills/tdq-build/references/team-mode.md",
     "Source file modified: skills/tdq-conventions/SKILL.md",
+    "Source file modified: skills/tdq-conventions/references/phases.md",
     "Source file modified: skills/tdq-conventions/references/reminder-codes.md",
     "Source file modified: skills/tdq-conventions/references/subagent-tuning.md",
     "Source file modified: skills/tdq-intake/SKILL.md",
     "Source file modified: skills/tdq-intake/references/analyze-full.md",
     "Source file modified: skills/tdq-intake/references/archify-quick.md",
     "Source file modified: skills/tdq-intake/references/lane-decision.md",
+    "Source file modified: skills/tdq-intake/references/quick-lane-qc.md",
     "Source file modified: skills/tdq-intake/references/quick-lane.md",
     "Source file modified: skills/tdq-plan/SKILL.md",
     "Source file modified: skills/tdq-spec/SKILL.md",
@@ -33,7 +36,8 @@
     "Source file added: scripts/tdq_eval_hosts.py",
     "Source file added: scripts/tdq_skill_eval.py",
     "Source file added: skills/tdq-build/references/skill-eval.md",
-    "Source file added: skills/tdq-conventions/references/ultracode.md"
+    "Source file added: skills/tdq-conventions/references/ultracode.md",
+    "Source file added: skills/tdq-intake/references/quick-lane-mini.md"
   ],
-  "checked_at": "2026-11-02T16:52:26Z"
+  "checked_at": "2026-11-03T04:00:58Z"
 }
