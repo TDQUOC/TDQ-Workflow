@@ -1,0 +1,2 @@
+TDQ local-only fixture — kiểm upload/download Unicode.
+Không chứa dữ liệu cá nhân.

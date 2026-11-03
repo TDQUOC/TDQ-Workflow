@@ -10,9 +10,12 @@ và file ngoài repo không phải thứ test của repo được phép đòi h�
 """
 
 import os
+import struct
 import sys
 import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORE = os.path.join(REPO, "docs", "claude-md-mau.md")
@@ -33,7 +36,9 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
 # chưa bật plugin. Bản mẫu đo 5.6 KB sau khi đồng bộ lại; cùng phán quyết soul.md: nâng trần.
 # 2026-10-15: 6000 → 6500. Thêm hướng dẫn khởi tạo LSP và tra symbol vào khối ghim; cùng phán quyết.
 # 2026-10-20: 6500 → 10000. Bổ sung MCP-First, LSP-Autonomy, Auto-carry dirty zone, Khảo sát 3 chiều và Ngoại lệ Refactor; cùng phán quyết soul.md.
-MAX_BYTES = 10000
+# 2026-11-03: 10000 -> 11500. Verified completion, permission boundaries and
+# tool handoff are tier-1 rules; measured template is 11181 bytes, not optional detail.
+MAX_BYTES = 11500
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
 # Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file
@@ -196,6 +201,433 @@ class KhoiHuongDanToolTest(unittest.TestCase):
         nguon = _read(os.path.join(REPO, "tests", "test_claude_md_core.py"))
         self.assertGreater(MAX_BYTES, 3800, "thêm luật mà không nâng trần là sẽ phải nén luật")
         self.assertIn("2026-09-28", nguon, "mỗi lần nâng trần phải ghi lý do kèm ngày")
+
+
+class AclDescriptorTest(unittest.TestCase):
+    @staticmethod
+    def descriptor(reverse=False, sid=18, masks=(0x1f01ff, 0x120089), control=0x8004,
+                   ace_flags=(0, 0), revision=2, dacl="acl", padding=0):
+        owner = bytes((1, 1)) + b"\0\0\0\0\0\5" + struct.pack("<I", sid)
+        group = bytes((1, 1)) + b"\0\0\0\0\0\5" + struct.pack("<I", 32)
+        aces = [struct.pack("<BBHI", 0, flag, 20, mask) + owner
+                for mask, flag in zip(masks, ace_flags)]
+        acl = struct.pack("<BBHHH", revision, 0, 8 + sum(map(len, aces)) + padding,
+                          len(aces), 0) + b"".join(aces) + b"\0" * padding
+        parts = {"owner": owner, "group": group, "dacl": acl}
+        order = ("dacl", "group", "owner") if reverse else ("owner", "group", "dacl")
+        data, offsets = b"", {"dacl": 0}
+        for name in order:
+            if name == "dacl" and dacl != "acl":
+                continue
+            offsets[name] = 20 + len(data)
+            data += parts[name]
+        if dacl == "absent":
+            control &= ~4
+        return struct.pack("<BBHIIII", 1, 0, control, offsets["owner"],
+                           offsets["group"], 0, offsets["dacl"]) + data
+
+    def test_equivalent_storage(self):
+        first, second = self.descriptor(), self.descriptor(reverse=True, padding=8)
+        self.assertNotEqual(first, second)
+        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(first, second))
+        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(None, None))
+        self.assertFalse(tdq_setup._acl_instruction_bang_nhau(first, None))
+
+    def test_changed_semantics(self):
+        first = self.descriptor()
+        changes = (self.descriptor(sid=19), self.descriptor(masks=(0x120089, 0x1f01ff)),
+                   self.descriptor(masks=(0x1f01ff, 1)), self.descriptor(ace_flags=(16, 0)),
+                   self.descriptor(control=0x9004), self.descriptor(control=0x8404),
+                   self.descriptor(control=0x8005), self.descriptor(control=0x8006),
+                   self.descriptor(control=0x800c), self.descriptor(revision=4))
+        for change in changes:
+            with self.subTest(change=change):
+                self.assertFalse(tdq_setup._acl_instruction_bang_nhau(first, change))
+        variants = [self.descriptor(dacl="absent"), self.descriptor(dacl="null"),
+                    self.descriptor(masks=(), ace_flags=())]
+        for index, left in enumerate(variants):
+            for right in variants[index + 1:]:
+                self.assertFalse(tdq_setup._acl_instruction_bang_nhau(left, right))
+
+    def test_invalid_descriptors_rejected_even_when_identical(self):
+        valid = self.descriptor()
+        malformed = [valid[:size] for size in range(len(valid))]
+        for offset, data in ((0, b"\2"), (2, b"\4\0"), (4, struct.pack("<I", 9999)),
+                             (20, b"\2"), (21, b"\xff"), (44, b"\3"),
+                             (46, b"\xff\xff"), (48, b"\xff\xff"), (54, b"\xff\xff")):
+            bad = bytearray(valid)
+            bad[offset:offset + len(data)] = data
+            malformed.append(bytes(bad))
+        for bad in malformed:
+            with self.subTest(size=len(bad)), self.assertRaisesRegex(OSError, "ACL"):
+                tdq_setup._acl_instruction_bang_nhau(bad, bad)
+
+
+class SafeWriterTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.path = Path(self.tmp.name) / "instruction.md"
+        self.log = mock.patch.object(tdq_setup, "_log")
+        self.log.start()
+        self.addCleanup(self.log.stop)
+        self.stamp = mock.patch.object(tdq_setup, "ghi_update_stamp")
+        self.stamp_mock = self.stamp.start()
+        self.addCleanup(self.stamp.stop)
+
+    def write(self, data):
+        self.path.write_bytes(data)
+        return data
+
+    def run_writer(self):
+        return tdq_setup.ghim_huong_dan_tool(str(self.path), "/fixture/tdq")
+
+    def backups(self):
+        return list(self.path.parent.glob(self.path.name + ".bak.*"))
+
+    def test_invalid_utf8_unchanged(self):
+        old = self.write(b"private\xff\n")
+        with self.assertRaisesRegex((ValueError, OSError), "instruction.md"):
+            self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual(list(self.path.parent.iterdir()), [self.path])
+
+    def test_bad_markers_unchanged(self):
+        start, end = tdq_setup.MOC_MO, tdq_setup.MOC_DONG
+        for content in (start, end, end + start, start + start + end,
+                        start + end + end, start + end + start + end):
+            with self.subTest(content=content):
+                old = self.write(content.encode())
+                with self.assertRaisesRegex(ValueError, "instruction.md"):
+                    self.run_writer()
+                self.assertEqual(self.path.read_bytes(), old)
+                self.assertEqual(self.backups(), [])
+
+    def test_replace_preserves_bom_mixed_newlines_and_outside_bytes(self):
+        before = b"\xef\xbb\xbf# private\r\n\n  "
+        after = "\r\n# Cuối\n  \r".encode()
+        old = self.write(before + tdq_setup.MOC_MO.encode() + b"\nold\n"
+                         + tdq_setup.MOC_DONG.encode() + after)
+        self.assertTrue(self.run_writer())
+        block = (tdq_setup.MOC_MO + "\n" + tdq_setup.khoi_huong_dan("/fixture/tdq")
+                 + "\n" + tdq_setup.MOC_DONG).replace("\n", "\r\n").encode()
+        self.assertEqual(self.path.read_bytes(), before + block + after)
+        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+        self.stamp_mock.assert_not_called()
+
+    def test_append_preserves_all_original_bytes(self):
+        for old in (b"private  \r\n \t", b"\xef\xbb\xbf", b"\n\r\n", b"private"):
+            with self.subTest(old=old):
+                self.write(old)
+                self.assertTrue(self.run_writer())
+                data = self.path.read_bytes()
+                self.assertTrue(data.startswith(old))
+                newline = b"\r\n" if old == b"private  \r\n \t" else b"\n"
+                self.assertIn(tdq_setup.MOC_MO.encode() + newline, data)
+
+    def test_new_file_and_noop_without_io_changes(self):
+        self.assertTrue(self.run_writer())
+        self.assertEqual(self.backups(), [])
+        old, info = self.path.read_bytes(), self.path.stat()
+        with mock.patch.object(tdq_setup.tempfile, "mkstemp", side_effect=AssertionError("write")), \
+                mock.patch.object(tdq_setup.os, "replace", side_effect=AssertionError("replace")):
+            self.assertFalse(self.run_writer())
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual(self.path.stat().st_mtime_ns, info.st_mtime_ns)
+        self.assertEqual(self.path.stat().st_ino, info.st_ino)
+        self.assertEqual(self.backups(), [])
+        self.stamp_mock.assert_not_called()
+
+    def test_unique_backups(self):
+        old = self.write(b"private\n")
+        self.run_writer()
+        first = self.path.read_bytes()
+        tdq_setup.ghim_huong_dan_tool(str(self.path), "/fixture/other")
+        self.assertCountEqual([p.read_bytes() for p in self.backups()], [old, first])
+
+    def test_temp_creation_failure_preserves_source(self):
+        old = self.write(b"private\n")
+        with mock.patch.object(tdq_setup.tempfile, "mkstemp", side_effect=OSError("temp failure")):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+
+    def test_replace_failure_preserves_source_and_backup(self):
+        old = self.write(b"private\n")
+        with mock.patch.object(tdq_setup.os, "replace", side_effect=OSError("replace failure")):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+        self.assertEqual(len(list(self.path.parent.iterdir())), 2)
+
+    def test_readback_failure_restores_source(self):
+        old = self.write(b"private\n")
+        real_open, replaced = tdq_setup.io.open, []
+        real_replace = tdq_setup.os.replace
+
+        def replace(src, dst):
+            real_replace(src, dst)
+            replaced.append(dst)
+
+        def fail_readback(path, mode="r", *args, **kwargs):
+            if str(path) == str(self.path) and mode == "rb" and len(replaced) == 1:
+                raise OSError("readback failure")
+            return real_open(path, mode, *args, **kwargs)
+
+        with mock.patch.object(tdq_setup.os, "replace", side_effect=replace), \
+                mock.patch.object(tdq_setup.io, "open", side_effect=fail_readback):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+
+    def test_rollback_failures_report_existing_unique_backup(self):
+        real_open = tdq_setup.io.open
+        real_replace = tdq_setup.os.replace
+        create = tdq_setup._tam_instruction
+        for failure in ("create", "replace", "readback"):
+            with self.subTest(failure=failure):
+                old = self.write(b"private\n")
+                existing = set(self.backups())
+                replaced = []
+
+                def replace(src, dst):
+                    if replaced and failure == "replace":
+                        raise OSError("restore replace failure")
+                    real_replace(src, dst)
+                    replaced.append(dst)
+
+                def stage(*args):
+                    if replaced and failure == "create":
+                        raise OSError("restore creation failure")
+                    return create(*args)
+
+                def fail_readback(path, mode="r", *args, **kwargs):
+                    if str(path) == str(self.path) and mode == "rb" and replaced:
+                        raise OSError("readback failure")
+                    return real_open(path, mode, *args, **kwargs)
+
+                with mock.patch.object(tdq_setup, "_tam_instruction", side_effect=stage), \
+                        mock.patch.object(tdq_setup.os, "replace", side_effect=replace), \
+                        mock.patch.object(tdq_setup.io, "open", side_effect=fail_readback):
+                    with self.assertRaises(OSError) as error:
+                        self.run_writer()
+                backups = set(self.backups()) - existing
+                self.assertEqual(len(backups), 1)
+                backup = backups.pop()
+                self.assertEqual(backup.read_bytes(), old)
+                self.assertIn(str(backup), str(error.exception))
+                self.assertEqual(list(self.path.parent.glob("*.tmp.*")), [])
+
+    def test_staged_acl_mismatch_preserves_original(self):
+        old = self.write(b"private\n")
+        read_acl = tdq_setup._acl_instruction
+
+        def mismatch(path, descriptor=None):
+            if descriptor is None and ".tmp." in str(path):
+                return b"mismatched ACL"
+            return read_acl(path, descriptor)
+
+        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=mismatch), \
+                mock.patch.object(tdq_setup.os, "replace") as replace:
+            with self.assertRaisesRegex(OSError, "ACL"):
+                self.run_writer()
+            replace.assert_not_called()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+        self.assertEqual(list(self.path.parent.glob("*.tmp.*")), [])
+
+    def test_concurrent_acl_change_blocks_replace(self):
+        old = self.write(b"private\n")
+        first = AclDescriptorTest.descriptor()
+        changed = AclDescriptorTest.descriptor(ace_flags=(16, 0))
+        reads = []
+
+        def read_acl(path, descriptor=None):
+            if descriptor is None:
+                reads.append(path)
+                return changed if len(reads) == 4 else first
+
+        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl), \
+                mock.patch.object(tdq_setup.os, "replace") as replace:
+            with self.assertRaisesRegex(OSError, "ACL instruction đổi đồng thời"):
+                self.run_writer()
+            replace.assert_not_called()
+        self.assertEqual(self.path.read_bytes(), old)
+
+    def test_readback_acl_change_restores_original(self):
+        old = self.write(b"private\n")
+        first = AclDescriptorTest.descriptor()
+        changed = AclDescriptorTest.descriptor(control=0x9004)
+        reads = []
+
+        def read_acl(path, descriptor=None):
+            if descriptor is None:
+                reads.append(path)
+                return changed if len(reads) == 5 else first
+
+        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl):
+            with self.assertRaisesRegex(OSError, "ACL đọc lại instruction không khớp"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual(len(reads), 7)
+
+    def test_backup_write_failure_preserves_source(self):
+        old = self.write(b"private\n")
+        with mock.patch.object(tdq_setup.os, "fsync", side_effect=OSError("backup flush")):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual(list(self.path.parent.iterdir()), [self.path])
+
+    def test_temp_write_failure_preserves_source_and_backup(self):
+        old = self.write(b"private\n")
+        with mock.patch.object(tdq_setup.os, "fsync", side_effect=[None, OSError("temp flush")]):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+        self.assertEqual(len(list(self.path.parent.iterdir())), 2)
+
+    def test_concurrent_source_change_not_overwritten(self):
+        self.write(b"private\n")
+        create = tdq_setup._tam_instruction
+
+        def change_after_stage(*args):
+            result = create(*args)
+            if args[-1] == ".tmp.":
+                self.path.write_bytes(b"concurrent writer\n")
+            return result
+
+        with mock.patch.object(tdq_setup, "_tam_instruction", side_effect=change_after_stage):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), b"concurrent writer\n")
+
+    def test_equivalent_descriptor_storage_during_staging_and_concurrency(self):
+        self.write(b"private\n")
+        descriptors = [AclDescriptorTest.descriptor(), AclDescriptorTest.descriptor(reverse=True)]
+        reads = []
+
+        def read_acl(path, descriptor=None):
+            if descriptor is None:
+                reads.append(path)
+                return descriptors[len(reads) % 2]
+
+        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl):
+            self.assertTrue(self.run_writer())
+        self.assertGreaterEqual(len(reads), 5)
+
+    @unittest.skipUnless(os.name == "nt", "Windows security descriptor")
+    def test_unprotected_inherited_native_roundtrip(self):
+        parent_acl = tdq_setup._acl_instruction(str(self.path.parent))
+        assert isinstance(parent_acl, bytes)
+        parent = bytearray(parent_acl)
+        # Cha protected (0x1000), AUTO_INHERITED (0x400), AUTO_INHERIT_REQ (0x100).
+        # Chỉ cha bị protected; file con mới vẫn nhận ACE kế thừa.
+        parent[2:4] = (int.from_bytes(parent[2:4], "little") | 0x1500).to_bytes(2, "little")
+        dacl = int.from_bytes(parent[16:20], "little")
+        cursor = dacl + 8
+        for _ in range(int.from_bytes(parent[dacl + 4:dacl + 6], "little")):
+            parent[cursor + 1] |= 3
+            cursor += int.from_bytes(parent[cursor + 2:cursor + 4], "little")
+        tdq_setup._acl_instruction(str(self.path.parent), bytes(parent))
+        parent_readback = tdq_setup._acl_instruction(str(self.path.parent))
+        assert isinstance(parent_readback, bytes)
+        self.assertEqual(int.from_bytes(parent_readback[2:4], "little") & 0x1500, 0x1400)
+        self.write(b"private\n")
+        acl = tdq_setup._acl_instruction(str(self.path))
+        assert isinstance(acl, bytes)
+        control = int.from_bytes(acl[2:4], "little")
+        self.assertFalse(control & 0x1000)
+        self.assertTrue(control & 0x400)
+        with tempfile.TemporaryDirectory() as other:
+            target = Path(other) / "different-parent.md"
+            target.write_bytes(b"fixture\n")
+            before = tdq_setup._acl_instruction(str(target))
+            self.assertFalse(tdq_setup._acl_instruction_bang_nhau(acl, before))
+            tdq_setup._acl_instruction(str(target), acl)
+            self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
+                acl, tdq_setup._acl_instruction(str(target))))
+        dacl = int.from_bytes(acl[16:20], "little")
+        self.assertGreater(int.from_bytes(acl[dacl + 4:dacl + 6], "little"), 0)
+        self.assertTrue(acl[dacl + 9] & 16)
+        self.assertTrue(self.run_writer())
+        for path in [self.path, *self.backups()]:
+            self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
+                acl, tdq_setup._acl_instruction(str(path))))
+
+    def test_mode_acl_and_same_directory_replace(self):
+        self.write(b"private\n")
+        if os.name != "nt":
+            self.path.chmod(0o640)
+        mode = self.path.stat().st_mode
+        acl = tdq_setup._acl_instruction(str(self.path))
+        if os.name == "nt":
+            assert isinstance(acl, bytes)
+            protected = bytearray(acl)
+            control = int.from_bytes(protected[2:4], "little") | 0x1000
+            protected[2:4] = control.to_bytes(2, "little")
+            tdq_setup._acl_instruction(str(self.path), bytes(protected))
+            acl = tdq_setup._acl_instruction(str(self.path))
+            assert isinstance(acl, bytes)
+            self.assertTrue(int.from_bytes(acl[2:4], "little") & 0x1000)
+        replace = tdq_setup.os.replace
+
+        def same_directory(src, dst):
+            self.assertEqual(Path(src).parent, self.path.parent)
+            self.assertEqual(Path(dst), self.path)
+            replace(src, dst)
+
+        with mock.patch.object(tdq_setup.os, "replace", side_effect=same_directory):
+            self.assertTrue(self.run_writer())
+        self.assertEqual(self.path.stat().st_mode, mode)
+        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
+            tdq_setup._acl_instruction(str(self.path)), acl))
+        if os.name == "nt":
+            assert isinstance(acl, bytes)
+            self.assertGreater(len(acl), 20)
+        self.assertFalse(self.run_writer())
+        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
+            tdq_setup._acl_instruction(str(self.path)), acl))
+
+    def test_symlink_or_reparse_rejected_without_read(self):
+        self.write(b"private\n")
+        info = mock.Mock(st_mode=0o120777, st_file_attributes=0x400)
+        with mock.patch.object(tdq_setup.os, "lstat", return_value=info), \
+                mock.patch.object(tdq_setup.os, "open", side_effect=AssertionError("follow link")):
+            with self.assertRaisesRegex(ValueError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), b"private\n")
+
+    def test_readback_mismatch_restores_source(self):
+        old = self.write(b"private\n")
+        real_open, replaced = tdq_setup.io.open, []
+        real_replace = tdq_setup.os.replace
+
+        def replace(src, dst):
+            real_replace(src, dst)
+            replaced.append(dst)
+
+        def mismatch(path, mode="r", *args, **kwargs):
+            if str(path) == str(self.path) and mode == "rb" and len(replaced) == 1:
+                return tdq_setup.io.BytesIO(b"wrong readback")
+            return real_open(path, mode, *args, **kwargs)
+
+        with mock.patch.object(tdq_setup.os, "replace", side_effect=replace), \
+                mock.patch.object(tdq_setup.io, "open", side_effect=mismatch):
+            with self.assertRaisesRegex(OSError, "instruction.md"):
+                self.run_writer()
+        self.assertEqual(self.path.read_bytes(), old)
+        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+
+    def test_nonregular_rejected(self):
+        self.path.mkdir()
+        with self.assertRaisesRegex((ValueError, OSError), "instruction.md"):
+            self.run_writer()
+        self.assertTrue(self.path.is_dir())
+        self.assertEqual(self.backups(), [])
 
 
 if __name__ == "__main__":

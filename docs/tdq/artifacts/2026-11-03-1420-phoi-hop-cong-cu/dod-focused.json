@@ -1,0 +1,27 @@
+{
+  "Q1": {
+    "passed": 14,
+    "skipped": 2,
+    "subtests": 10
+  },
+  "Q2": {
+    "passed": 1
+  },
+  "Q3": {
+    "passed": 2
+  },
+  "Q4": {
+    "passed": 30,
+    "subtests": 31
+  },
+  "Q5": {
+    "passed": 61,
+    "subtests": 18
+  },
+  "Q6": {
+    "passed": 3,
+    "scope": "policy coverage; runtime deviation separate"
+  },
+  "Q7": "pending final full suite; eval inconclusive",
+  "Q8": "not applied"
+}

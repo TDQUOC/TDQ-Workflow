@@ -235,11 +235,13 @@ def main():
     except Exception:  # noqa: BLE001
         pass
     da_cap_nhat_ver = False
+    loi_cap_nhat = ""
     try:
         if la_project_that(cwd) and tdq_setup.can_cap_nhat_phien_ban(cwd, goc_plugin=GOC_PLUGIN):
             da_cap_nhat_ver = tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(cwd, goc_plugin=GOC_PLUGIN)
-    except Exception:  # noqa: BLE001
-        pass
+    except Exception as exc:  # noqa: BLE001 — keep session usable, but never hide sync failure
+        loi_cap_nhat = (f"[TDQ:SETUP] Update failed ({type(exc).__name__}); "
+                       "version stamp not advanced. Fix the setup error and retry next session.")
     can_setup = False
     try:
         can_setup = kiem_can_setup_lan_dau(cwd)
@@ -259,6 +261,7 @@ def main():
     nhac = [n for n in (
         thong_bao_update_plugin,
         thong_bao_update_nen,
+        loi_cap_nhat,
         "[TDQ] Đã tự động cập nhật instruction và cấu hình cho phiên bản mới." if da_cap_nhat_ver else "",
         nhac_setup,
         "" if shutil.which("graphify") else

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
+    "sha256": "f2c1e7ae9ca07ad7edb59e6f203289a032cd8edd3a719424e77aeb663066cfee",
+    "bytes": 4448
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.81688276e0f4482987258b0314b7a144.html",
+    "sha256": "3b1d676b4dd9a7eff7010e157c7c2b1c82d03f9baa336af54ba931541520c154",
+    "bytes": 2662455
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 38 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
+        "line": 80,
+        "component": "prose",
+        "panelId": "ket-qua"
+      },
+      "evidence": {
+        "reason": "Sentence has 38 reading units, above the configured en limit of 28.",
+        "example": "\u5148\u67e5\u7f13\u5b58\u3002\u672a\u547d\u4e2d\u65f6\u518d\u67e5\u6570\u636e\u5e93\u3002 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 38,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.81688276e0f4482987258b0314b7a144.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.81688276e0f4482987258b0314b7a144.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 4283,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  },
+  "published_artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\2026-11-03-1420-phoi-hop-cong-cu.html",
+  "artifact_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\2026-11-03-1420-phoi-hop-cong-cu.html",
+  "receipt_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\2026-11-03-1420-phoi-hop-cong-cu.receipt.json",
+  "binding": "bound",
+  "binding_status": "registered",
+  "manifest_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\2026-11-03-1420-phoi-hop-cong-cu.manifest.json",
+  "document_bound": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\2026-11-03-1420-phoi-hop-cong-cu.md"
+}

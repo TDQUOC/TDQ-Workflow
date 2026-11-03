@@ -1,6 +1,9 @@
 """session_start.py + prompt_context.py (0.3.0) — bơm context theo state."""
+from contextlib import ExitStack
 import datetime
+import io
 import json
+from unittest import mock
 import tempfile
 import unittest
 
@@ -83,6 +86,38 @@ class TestSessionStart(unittest.TestCase):
         self.assertIn("phase report", out)
         self.assertIn("set phase=idle", out)
         self.assertNotIn("[TDQ:INTAKE]", out)
+
+    def test_update_failure_is_visible_and_redacted(self):
+        spec = importlib.util.spec_from_file_location("session_start_fixture", os.path.join(HOOKS, "session_start.py"))
+        assert spec is not None and spec.loader is not None
+        session_start = importlib.util.module_from_spec(spec)
+        import sys
+        with mock.patch.object(sys, "path", [HOOKS] + sys.path):
+            spec.loader.exec_module(session_start)
+        with ExitStack() as stack:
+            stack.enter_context(mock.patch.dict(os.environ, {
+                "HOME": self.cwd, "USERPROFILE": self.cwd,
+                "TDQ_PROJECT_DIR": self.cwd, "TDQ_KHONG_CHAM_MAY": "1"}))
+            stack.enter_context(mock.patch.object(session_start, "read_payload",
+                                                  return_value={"cwd": self.cwd}))
+            for name, value in {"la_project_that": True, "can_khoi_tao": False,
+                                "kiem_can_setup_lan_dau": False, "kich_hoat_nen": False,
+                                "doc_than_luat": "", "can_nhac_ten_lenh": ""}.items():
+                stack.enter_context(mock.patch.object(session_start, name, return_value=value))
+            for name, value in {"tu_dong_cap_nhat_plugin_user": (False, ""),
+                                "doc_thong_bao_update_moi": "",
+                                "kich_hoat_kiem_tra_remote_nen": None,
+                                "can_cap_nhat_phien_ban": True}.items():
+                stack.enter_context(mock.patch.object(session_start.tdq_setup, name, return_value=value))
+            stack.enter_context(mock.patch.object(session_start.tdq_devtool_mcp,
+                                                  "check_session_start", return_value=""))
+            stack.enter_context(mock.patch.object(session_start.tdq_setup,
+                "tu_dong_cap_nhat_khi_doi_phien_ban", side_effect=OSError("private-secret-fixture")))
+            output = stack.enter_context(mock.patch("sys.stdout", new_callable=io.StringIO))
+            session_start.main()
+        self.assertIn("[TDQ:SETUP] Update failed", output.getvalue())
+        self.assertNotIn("private-secret-fixture", output.getvalue())
+        self.assertNotIn("Đã tự động cập nhật instruction", output.getvalue())
 
     def test_no_state_still_guides(self):
         rc, out, _ = run_hook("session_start.py", {"cwd": self.cwd, "session_id": "s1"})

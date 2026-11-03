@@ -2,6 +2,18 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.89.0 — 2026-11-03
+
+Tự chủ phối hợp công cụ có kiểm chứng, giữ nguyên dữ liệu người dùng khi ghim instruction.
+
+- Luật thường trực có "tool completion loop": xem inventory công cụ thật, lập bước nội bộ, preflight kết nối, thực thi bằng một công cụ nếu đủ, kiểm kết quả thật, handoff theo identity mới; delivery mơ hồ thì quan sát trước khi lặp.
+- Thiếu công cụ: tìm nguồn chính thức, đề xuất cài user-level kèm kiểm chứng/gỡ; chờ duyệt trước khi cài. Bỏ luật cũ tự cài dependency LSP trong managed instruction.
+- Writer instruction: marker đúng một cặp, UTF-8 strict, giữ byte ngoài block, backup duy nhất, file tạm cùng thư mục, fsync/readback, `os.replace`, rollback báo đường backup, lượt hai no-op không tạo backup.
+- Windows ACL so theo semantics: owner/group/control/revision và từng ACE đúng thứ tự; bỏ khác biệt offset/padding. Giữ `SE_DACL_AUTO_INHERITED` bằng request bit chỉ trên bản copy của lời gọi `SetFileSecurityW`; descriptor lỗi bị từ chối trước khi đọc pointer.
+- Lỗi writer không tiến version stamp và không báo thành công giả; hook SessionStart hiển thị lỗi đã lọc, không lộ nội dung riêng.
+- Evaluator fail-closed: trace rỗng/thiếu terminal không PASS, kiểm UTF-8/schema, gắn corpus/model/A-B snapshot, khóa scorer theo source+bytecode+rubric, thiếu cost thì ghi `unavailable` chứ không ghi 0.
+- Hồi quy: 4.126 passed, 12 skipped, 0 failures trên 4.138 ca; 2.669 subtest; Pyright 0 lỗi trên writer và test ACL.
+
 ## 0.88.0 — 2026-11-03
 
 Report nghiệm thu trực quan chung cho Express và Deep.

@@ -180,7 +180,7 @@ def test_run_host_trial_retry_cap_and_attempt_preservation(tmp_path):
         "print(json.dumps({'type': 'assistant', 'sessionId': 's1', 'cwd': 'C:/ws', "
         "'message': {'id': 'm1', 'stop_reason': 'end_turn', 'content': [{'type': 'tool_use', 'id': 't1', 'name': 'Skill', 'input': {'skill': 'tdq-intake'}}], "
         "'usage': {'input_tokens': 10, 'output_tokens': 5, 'cache_read_input_tokens': 2, 'cache_creation_input_tokens': 1}}}))\n"
-        "print(json.dumps({'type': 'result', 'sessionId': 's1', 'cwd': 'C:/ws', 'is_error': False}))\n"
+        "print(json.dumps({'type': 'result', 'sessionId': 's1', 'cwd': 'C:/ws', 'is_error': False, 'subtype': 'success', 'result': 'finished'}))\n"
     )
     rec_result = tdq_eval_hosts.run_host_trial(
         "claude",
@@ -228,6 +228,51 @@ def test_parse_trace_stream_unknown_schema_and_malformed_json():
     assert malformed["reason"] == "malformed_json"
 
 
+def test_trace_rejects_invalid_utf8_without_replacement(tmp_path):
+    raw = b'{"type":"result","is_error":false,"result":"bad\xff"}\n'
+    trace = tmp_path / "invalid-utf8.jsonl"
+    trace.write_bytes(raw)
+    for source in ([raw], trace):
+        parsed = tdq_eval_hosts.parse_trace_stream(source)
+        assert parsed["execution_status"] == "failed"
+        assert parsed["reason"] == "invalid_utf8"
+
+
+@pytest.mark.parametrize("field", ["message", "payload"])
+@pytest.mark.parametrize("value", [None, [], 0, False, ""])
+def test_trace_rejects_falsey_nonobject_fields(field, value):
+    records = [{"type": "assistant", field: value},
+               {"type": "result", "is_error": False, "result": "done"}]
+    parsed = tdq_eval_hosts.parse_trace_stream(map(json.dumps, records))
+    assert parsed["execution_status"] == "unknown_schema"
+
+
+@pytest.mark.parametrize("event_type", ["assistant", "user"])
+@pytest.mark.parametrize("content", [None, 0, False, {}, [None], [0], ["text"],
+                                     [{}], [{"type": []}], [{"type": "text", "text": 0}]])
+def test_trace_rejects_malformed_message_content(event_type, content):
+    records = [{"type": event_type, "message": {"content": content}},
+               {"type": "result", "is_error": False, "result": "done"}]
+    parsed = tdq_eval_hosts.parse_trace_stream(map(json.dumps, records))
+    assert parsed["execution_status"] == "unknown_schema"
+
+
+@pytest.mark.parametrize("usage", [None, [], 0, False, "", {"input_tokens": []},
+                                   {"output_tokens": False}, {"input_tokens": -1}])
+@pytest.mark.parametrize("location", ["message", "payload", "terminal"])
+def test_trace_rejects_malformed_usage(location, usage):
+    if location == "message":
+        records = [{"type": "assistant", "message": {"usage": usage}},
+                   {"type": "result", "is_error": False, "result": "done"}]
+    else:
+        records = [{"type": "item.completed", "item": {"type": "agent_message", "text": "done"}}]
+        if location == "payload":
+            records.append({"type": "event_msg", "payload": {"type": "token_count", "usage": usage}})
+        records.append(dict({"type": "turn.completed"}, **({"usage": usage} if location == "terminal" else {})))
+    parsed = tdq_eval_hosts.parse_trace_stream(map(json.dumps, records))
+    assert parsed["execution_status"] == "unknown_schema"
+
+
 def test_parse_trace_stream_claude_and_codex_metrics_and_null_cost(tmp_path):
     claude_lines = [
         json.dumps({"type": "api-request", "id": "req-1", "sessionId": "s1", "cwd": "C:/ws", "timestamp": "2026-11-01T10:00:00Z"}),
@@ -258,7 +303,7 @@ def test_parse_trace_stream_claude_and_codex_metrics_and_null_cost(tmp_path):
             "timestamp": "2026-11-01T10:00:02Z",
             "message": {"content": [{"type": "tool_result", "tool_use_id": "tu-1", "content": "ok"}]},
         }),
-        json.dumps({"type": "result", "sessionId": "s1", "cwd": "C:/ws", "is_error": False}),
+        json.dumps({"type": "result", "sessionId": "s1", "cwd": "C:/ws", "is_error": False, "subtype": "success", "result": "finished"}),
     ]
     claude_parsed = tdq_eval_hosts.parse_trace_stream(claude_lines, expected_trigger=True)
     assert claude_parsed["host"] == "claude"
@@ -303,6 +348,8 @@ def test_parse_trace_stream_claude_and_codex_metrics_and_null_cost(tmp_path):
             "payload": {"type": "token_count", "usage": {"input_tokens": 200, "output_tokens": 80, "cached_input_tokens": 50}},
         }),
     ]
+    codex_lines.append(json.dumps({"type": "event_msg", "payload": {
+        "type": "task_complete", "last_agent_message": "finished"}}))
     codex_parsed = tdq_eval_hosts.parse_trace_stream(codex_lines, expected_trigger=False)
     assert codex_parsed["host"] == "codex"
     assert codex_parsed["execution_status"] == "completed"
@@ -315,6 +362,95 @@ def test_parse_trace_stream_claude_and_codex_metrics_and_null_cost(tmp_path):
     assert codex_parsed["tokens"]["cache_write_tokens"] is None
     assert codex_parsed["normalized_metrics"]["efficiency_metrics"]["tokens"]["availability"] == "partial"
     assert codex_parsed["total_cost_usd"] is None
+
+
+@pytest.mark.parametrize("records", [
+    [],
+    [{"type": "system", "subtype": "init"}],
+    [{"type": "assistant", "message": {"content": [{"type": "text", "text": "partial"}]}}],
+    [{"type": "result", "subtype": "error_during_execution", "is_error": True}],
+    [{"type": "result", "subtype": "success", "is_error": False, "result": ""}],
+])
+def test_trace_requires_successful_terminal_response(records):
+    parsed = tdq_eval_hosts.parse_trace_stream([json.dumps(r) for r in records])
+    assert parsed["execution_status"] != "completed"
+
+
+def test_successful_trace_does_not_certify_quality():
+    parsed = tdq_eval_hosts.parse_trace_stream([json.dumps({
+        "type": "result", "subtype": "success", "is_error": False,
+        "result": "An answer, not evidence of compliance",
+    })])
+    assert parsed["normalized_metrics"]["outcome_quality"]["passed"] is None
+    assert parsed["normalized_metrics"]["outcome_quality"]["availability"] == "unavailable"
+
+
+def test_current_codex_trace_requires_terminal_and_preserves_response():
+    records = [
+        {"type": "thread.started", "thread_id": "fixture-thread"},
+        {"type": "turn.started"},
+        {"type": "item.completed", "item": {"type": "agent_message", "text": "finished"}},
+    ]
+    partial = tdq_eval_hosts.parse_trace_stream([json.dumps(r) for r in records])
+    assert partial["execution_status"] == "incomplete"
+    records.append({"type": "turn.completed", "usage": {"input_tokens": 12, "output_tokens": 3}})
+    parsed = tdq_eval_hosts.parse_trace_stream([json.dumps(r) for r in records])
+    assert parsed["execution_status"] == "completed"
+    assert parsed["host"] == "codex"
+    assert parsed["response_text"] == "finished"
+    assert parsed["observed_model"] is None
+    assert parsed["tokens"]["input_tokens"] == 12
+    assert parsed["model_calls_count"] == 1
+    assert parsed["normalized_metrics"]["outcome_quality"]["passed"] is None
+
+
+@pytest.mark.parametrize("records,reason", [
+    ([{"type": "system"}, {"type": "turn.started"}], "mixed_hosts"),
+    ([{"type": "system", "model": "one"}, {"type": "assistant", "message": {"model": "two"}}], "mixed_models"),
+    ([{"type": "result", "is_error": False, "result": "done"}, {"type": "system"}], "events_after_terminal"),
+    ([{"type": "turn.failed", "error": {"message": "failed"}}], "host_error"),
+    ([{"type": "item.completed", "item": None}], "invalid_item"),
+    ([{"type": "item.completed", "item": []}], "invalid_item"),
+])
+def test_trace_rejects_conflicting_or_invalid_events(records, reason):
+    parsed = tdq_eval_hosts.parse_trace_stream([json.dumps(r) for r in records])
+    assert parsed["execution_status"] != "completed"
+    assert parsed["reason"] == reason
+
+
+def test_run_blocks_missing_isolation_before_process(monkeypatch):
+    def forbidden_job(*args, **kwargs):
+        pytest.fail("process launched without isolation")
+    monkeypatch.setattr(tdq_eval_hosts, "OwnedProcessJob", forbidden_job)
+    result = tdq_eval_hosts.run_host_trial("claude", {}, {})
+    assert result["execution_status"] == "failed"
+    assert result["reason"] == "isolation_not_satisfied"
+    assert result["attempts"] == []
+
+
+def test_attempt_missing_duration_is_not_zero(tmp_path):
+    attempt = tdq_eval_hosts._record_attempt({}, tmp_path / "missing.jsonl")
+    assert attempt["duration_seconds"] is None
+
+
+@pytest.mark.parametrize("durations,expected", [([0.25, 0.75], 1.0), ([None, 0.75], None)])
+def test_trial_latency_includes_all_attempts(tmp_path, monkeypatch, durations, expected):
+    from unittest.mock import MagicMock
+    profile = tdq_eval_hosts.prepare_trial_environment(tmp_path, "claude", "latency")
+    profile["max_retries"] = 1
+    terminal = json.dumps({"type": "result", "is_error": False, "result": "done"})
+    job = MagicMock()
+    job.__enter__.return_value = job
+    job.run.side_effect = [
+        {"exit_code": 1, "stdout": "", "duration_seconds": durations[0]},
+        {"exit_code": 0, "stdout": terminal, "duration_seconds": durations[1]},
+    ]
+    monkeypatch.setattr(tdq_eval_hosts, "OwnedProcessJob", lambda *a, **kw: job)
+    result = tdq_eval_hosts.run_host_trial("claude", {"command": ["fixture"]}, profile)
+    assert result["execution_status"] == "completed"
+    assert len(result["attempts"]) == 2
+    assert result.get("wall_latency_seconds") == expected
+    assert "wall_latency_seconds" in result
 
 
 def test_logging_on_off_and_redaction(monkeypatch, capsys):

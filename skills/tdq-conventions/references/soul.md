@@ -2,8 +2,8 @@
 <!-- muc-luc-dong:
   Table of contents=12-20 · The four principles=21-22 · 1. What the harness is for=23-28 ·
   2. Priority order: chất lượng > runtime > context cost=29-45 ·
-  3. Write for the weakest model=46-54 · 4. Scope=55-66 · When it applies=67-75 · What to do=76-90 ·
-  Which tier a law belongs to=91-110 · Clean Code Invariants=111-126 · Self-check=127
+  3. Write for the weakest model=46-54 · 4. Scope=55-66 · When it applies=67-75 · What to do=76-96 ·
+  Which tier a law belongs to=97-116 · Clean Code Invariants=117-132 · Self-check=133
 -->
 
 Soul stands above every other law in the workflow. A law that contradicts soul — old or new —
@@ -82,6 +82,12 @@ Signs — hitting any one of these means soul is present:
 4. Opening a new request document → put the `Soul:` line at the top of the file, right under
    the title.
 5. Two laws collide → run the tie-break law in principle 2 and record the ruling.
+6. For tool tasks, plan internal steps, discover real capabilities, combine tools only when useful,
+   and verify each handoff and final output. Prefer the shortest correct, authorized route.
+7. Recover installed tools within permission; missing tools need official-source research and
+   an installation proposal, then user approval. Never trade quality or permission for speed.
+8. Uncertain delivery means observe before retry; report partial work rather than invent success.
+   RIGHT: one browser tool suffices, use it and verify. WRONG: switch tools to bypass denial.
 
 RIGHT example: dropping a duplicate research round because the result is already in the brief —
 saves tokens without losing information (tier 3 serving tier 1).

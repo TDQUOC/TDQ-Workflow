@@ -1,0 +1,20 @@
+[
+  {
+    "case": "normal",
+    "exit": 0,
+    "stdout": "{\"ready\":true}\n",
+    "stderr": ""
+  },
+  {
+    "case": "all-private",
+    "exit": 1,
+    "stdout": "{\"ready\":false,\"error\":\"Error: Chrome DevTools protocol timeout failed: Target.getTargets: timed out after 5000ms [ERR_CHROME_CDP_TIMEOUT]\\nChrome process: still running.\\nChrome stderr:\\nDevTools remote debugging requires a non-default data directory. Specify this using --user-data-dir.\\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\\nChrome transport: Node v24.21.0, libuv 1.52.1, win32; pid=26636, exitCode=null, signalCode=null.\\nChrome read pipe: readable=true, ended=false, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0.\"}\n",
+    "stderr": ""
+  },
+  {
+    "case": "localappdata-only",
+    "exit": 0,
+    "stdout": "{\"ready\":true}\n",
+    "stderr": ""
+  }
+]

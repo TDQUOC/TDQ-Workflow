@@ -1,0 +1,955 @@
+--- a/scripts/tdq_skill_eval.py
++++ b/scripts/tdq_skill_eval.py
+@@ -185,6 +185,22 @@
+ 
+ 
+ # ------------------------------------------------------------------- run
++def _trial_identity(plan: Dict[str, Any], trial: Dict[str, Any], checks: Dict[str, Any]) -> Dict[str, Any]:
++    manifest = dict(
++        {k: trial[k] for k in tdq_eval_contract.CELL_FIELDS},
++        base_commit=plan["base_identity"], candidate_commit=plan["candidate_identity"],
++        corpus_version=plan["corpus_id"], scorer_version=plan["scorer_version"],
++        rubric_version=plan["rubric_version"], evaluation_kind=plan["evaluation_kind"],
++        check_set=list(checks.keys()),
++    )
++    return dict(
++        trial, manifest=manifest,
++        **{k: plan[k] for k in ("base_identity", "candidate_identity", "targets",
++                               "dev_cases_sha256", "holdout_cases_sha256", "scorer_version",
++                               "rubric_version", "evaluation_kind")},
++    )
++
++
+ def _build_trial_record(
+     plan: Dict[str, Any],
+     trial: Dict[str, Any],
+@@ -201,29 +217,9 @@
+         "execution_status": exec_status, "score": score, "passed": passed, "checks": checks,
+         "response_text": trial_res.get("response_text"),
+     })
+-    manifest = dict(
+-        {k: trial[k] for k in tdq_eval_contract.CELL_FIELDS},
+-        base_commit=plan["base_identity"],
+-        candidate_commit=plan["candidate_identity"],
+-        corpus_version=plan["corpus_id"],
+-        scorer_version=plan["scorer_version"],
+-        rubric_version=plan["rubric_version"],
+-        evaluation_kind=plan["evaluation_kind"],
+-        check_set=list(checks.keys()),
+-    )
+-
+     expected_prov = "synthetic/offline" if plan["evaluation_kind"] == "mechanism" else "live"
+-
+     rec: Dict[str, Any] = dict(
+-        trial,
+-        base_identity=plan["base_identity"],
+-        candidate_identity=plan["candidate_identity"],
+-        targets=plan["targets"],
+-        dev_cases_sha256=plan["dev_cases_sha256"],
+-        holdout_cases_sha256=plan["holdout_cases_sha256"],
+-        scorer_version=plan["scorer_version"],
+-        rubric_version=plan["rubric_version"],
+-        evaluation_kind=plan["evaluation_kind"],
++        _trial_identity(plan, trial, checks),
+         raw_trace_sha256=raw_trace_sha,
+         outcome_sha256=outcome_sha,
+         provenance=expected_prov,
+@@ -238,7 +234,6 @@
+         passed=passed,
+         score=score,
+         checks=checks,
+-        manifest=manifest,
+         tool_calls_count=trial_res.get("tool_calls_count", 0),
+         model_calls_count=trial_res.get("model_calls_count", 0),
+         retries_count=trial_res.get("retries_count", 0),
+@@ -251,7 +246,7 @@
+         }),
+         total_cost_usd=trial_res.get("total_cost_usd"),
+         billed_cost_usd=trial_res.get("billed_cost_usd"),
+-        wall_latency_seconds=trial_res.get("wall_latency_seconds", 0.0),
++        wall_latency_seconds=trial_res.get("wall_latency_seconds"),
+     )
+     return rec
+ 
+@@ -273,6 +268,126 @@
+     })
+ 
+ 
++def _validate_run_plan(plan: Dict[str, Any], scorer: Any) -> None:
++    val = tdq_eval_contract.validate_eval_plan(plan)
++    if not val["valid"]:
++        raise ValueError(f"invalid plan: {'; '.join(val['errors'])}")
++    if scorer is not None and scorer_identity(scorer, plan["rubric_version"]) != plan["scorer_version"]:
++        raise ValueError("scorer_binding_mismatch")
++
++
++def _index_cases(cases: List[Dict[str, Any]]) -> Dict[str, Any]:
++    by_id = {}
++    for case in cases:
++        case_id = case.get("case_id", case.get("id"))
++        if (not isinstance(case_id, str) or not case_id or case_id in by_id
++                or case.get("split") not in {"dev", "holdout"}
++                or not isinstance(case.get("prompt"), str) or not case["prompt"].strip()):
++            raise ValueError("invalid_case")
++        by_id[case_id] = case
++    return by_id
++
++
++def _verify_corpus_hashes(cases: List[Dict[str, Any]], plan: Dict[str, Any]) -> None:
++    for split in ("dev", "holdout"):
++        split_cases = [c for c in cases if c.get("split") == split]
++        if tdq_eval_contract._digest(split_cases) != plan[f"{split}_cases_sha256"]:
++            raise ValueError(f"corpus_hash_mismatch:{split}")
++
++
++def _load_bound_cases(cases_path: Union[str, Path], plan: Dict[str, Any]) -> Dict[str, Any]:
++    corpus = _load_json(cases_path)
++    cases = corpus.get("cases") if isinstance(corpus, dict) else corpus
++    if not isinstance(cases, list) or not cases or not all(isinstance(c, dict) for c in cases):
++        raise ValueError("invalid_corpus")
++    _verify_corpus_hashes(cases, plan)
++    by_id = _index_cases(cases)
++    if set(by_id) != set(plan["expected_triggers"] + plan["negative_cases"]):
++        raise ValueError("case_set_mismatch")
++    return by_id
++
++
++def _read_snapshot(source: Dict[str, Any], targets: Any, variant: str) -> Dict[str, str]:
++    hashes = source.get("hashes")
++    if not source.get("root") or not isinstance(hashes, dict) or set(hashes) != set(targets):
++        raise ValueError(f"missing_source_snapshot:{variant}")
++    root = Path(source["root"]).resolve(strict=True)
++    contents = []
++    for name, expected in sorted(hashes.items()):
++        path = (root / name).resolve(strict=True)
++        if not path.is_relative_to(root):
++            raise ValueError("unsafe_source_path")
++        raw = path.read_bytes()
++        if hashlib.sha256(raw).hexdigest() != expected:
++            raise ValueError(f"source_hash_mismatch:{variant}:{name}")
++        contents.append(f"--- {name} ---\n{raw.decode('utf-8')}")
++    return {"instructions": "\n\n".join(contents),
++            "source_sha256": tdq_eval_contract._digest(hashes)}
++
++
++def _bind_snapshots(plan: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
++    snapshots = {
++        variant: _read_snapshot(profile.get("sources", {}).get(variant, {}), plan["targets"], variant)
++        for variant in ("A", "B")
++    }
++    if (not isinstance(plan["targets"], dict) or plan["targets"] != profile["sources"]["B"]["hashes"]
++            or plan["candidate_identity"] != snapshots["B"]["source_sha256"]):
++        raise ValueError("unbound_candidate_snapshot")
++    if plan["base_identity"] != snapshots["A"]["source_sha256"]:
++        raise ValueError("unbound_baseline_snapshot")
++    return snapshots
++
++
++def _validate_cost_quota(profile: Dict[str, Any]) -> None:
++    quota = float(profile.get("quota_usd", float("inf")))
++    if math.isnan(quota) or quota < 0:
++        raise ValueError("invalid_cost_quota")
++    # ponytail: adapters have no enforceable cost cap; add host-side caps before finite budgets.
++    if math.isfinite(quota):
++        raise ValueError("cost_quota_unavailable")
++
++
++def _validate_scorer_outcome(outcome: Any) -> None:
++    if (not isinstance(outcome, dict) or type(outcome.get("passed")) is not bool
++            or type(outcome.get("score")) not in (int, float)
++            or not math.isfinite(outcome["score"]) or not 0 <= outcome["score"] <= 1
++            or not isinstance(outcome.get("checks"), dict) or not outcome["checks"]):
++        raise ValueError("invalid_scorer_outcome")
++
++
++def _score_trial(case: Dict[str, Any], trial: Dict[str, Any], result: Dict[str, Any], scorer: Any) -> Dict[str, Any]:
++    result = dict(result)
++    result.pop("outcome", None)
++    verified = (result.get("execution_status") == "completed"
++                and isinstance(result.get("response_text"), str)
++                and bool(result["response_text"].strip())
++                and result.get("observed_model") == trial["model"]
++                and result.get("host") == tdq_eval_hosts.canonical_host_name(trial["host"]))
++    result["outcome_reason"] = "missing_scorer" if verified else "unverified_response"
++    if scorer is not None and verified:
++        outcome = scorer(case, dict(result))
++        _validate_scorer_outcome(outcome)
++        result["outcome"] = outcome
++        result["outcome_reason"] = "explicit_scorer"
++    return result
++
++
++def _execute_trial(plan, trial, case, profile, out_path, command_builder, scorer) -> None:
++    trial_env = tdq_eval_hosts.prepare_trial_environment(
++        base_dir=out_path / "env", host=trial["host"], trial_id=trial["trial_id"],
++        plugin_dir=profile.get("plugin_dir"),
++    )
++    trial_res = tdq_eval_hosts.run_host_trial(
++        host=trial["host"], trial_spec=trial, profile=dict(profile, **trial_env),
++        command_builder=command_builder,
++    )
++    trial_res = _score_trial(case, trial, trial_res, scorer)
++    attempts = trial_res.get("attempts", [])
++    raw_trace_sha = attempts[-1].get("raw_trace_sha256") if attempts else "0" * 64
++    rec = _build_trial_record(plan, trial, trial_res, raw_trace_sha)
++    _write_json(rec, out_path / f"trial_{trial['trial_id']}.json")
++
++
+ def run_eval(
+     plan_path: Union[str, Path],
+     cases_path: Union[str, Path],
+@@ -281,125 +396,30 @@
+     command_builder: Optional[Any] = None,
+     scorer: Optional[Any] = None,
+ ) -> Dict[str, Any]:
+-    """Run bound instruction snapshots; scorer(case, response) must supply explicit outcome.
+-
+-    Profile sources maps A/B to {root, hashes}; hashes must cover every plan target.
+-    Each source identity is the canonical digest of its target hash map. No scorer
+-    means unavailable quality, never process-exit grading. Before locking the plan,
+-    set scorer_version = scorer_identity(scorer, rubric_version); run never rebinds it.
++    """Run bound snapshots; lock scorer_identity(scorer, rubric_version) before running.
++
++    Profile sources maps A/B to {root, hashes}, covering every plan target. Source
++    identity is the hash-map digest. Missing scorer leaves quality unavailable.
+     """
+     plan = _load_json(plan_path)
+-    val = tdq_eval_contract.validate_eval_plan(plan)
+-    if not val["valid"]:
+-        raise ValueError(f"invalid plan: {'; '.join(val['errors'])}")
+-    if scorer is not None and scorer_identity(scorer, plan["rubric_version"]) != plan["scorer_version"]:
+-        raise ValueError("scorer_binding_mismatch")
+-
+-    corpus = _load_json(cases_path)
+-    cases = corpus.get("cases") if isinstance(corpus, dict) else corpus
+-    if not isinstance(cases, list) or not cases or not all(isinstance(c, dict) for c in cases):
+-        raise ValueError("invalid_corpus")
+-    for split in ("dev", "holdout"):
+-        split_cases = [c for c in cases if c.get("split") == split]
+-        if tdq_eval_contract._digest(split_cases) != plan[f"{split}_cases_sha256"]:
+-            raise ValueError(f"corpus_hash_mismatch:{split}")
+-    by_id = {}
+-    for case in cases:
+-        case_id = case.get("case_id", case.get("id"))
+-        if (not isinstance(case_id, str) or not case_id or case_id in by_id
+-                or case.get("split") not in {"dev", "holdout"}
+-                or not isinstance(case.get("prompt"), str) or not case["prompt"].strip()):
+-            raise ValueError("invalid_case")
+-        by_id[case_id] = case
+-    if set(by_id) != set(plan["expected_triggers"] + plan["negative_cases"]):
+-        raise ValueError("case_set_mismatch")
++    _validate_run_plan(plan, scorer)
++    by_id = _load_bound_cases(cases_path, plan)
+     profile = _load_json(profile_path)
+-    snapshots = {}
+-    for variant in ("A", "B"):
+-        source = profile.get("sources", {}).get(variant, {})
+-        hashes = source.get("hashes")
+-        if not source.get("root") or not isinstance(hashes, dict) or set(hashes) != set(plan["targets"]):
+-            raise ValueError(f"missing_source_snapshot:{variant}")
+-        root = Path(source["root"]).resolve(strict=True)
+-        contents = []
+-        for name, expected in sorted(hashes.items()):
+-            path = (root / name).resolve(strict=True)
+-            if not path.is_relative_to(root):
+-                raise ValueError("unsafe_source_path")
+-            raw = path.read_bytes()
+-            if hashlib.sha256(raw).hexdigest() != expected:
+-                raise ValueError(f"source_hash_mismatch:{variant}:{name}")
+-            contents.append(f"--- {name} ---\n{raw.decode('utf-8')}")
+-        snapshots[variant] = {"instructions": "\n\n".join(contents),
+-                              "source_sha256": tdq_eval_contract._digest(hashes)}
+-    if (not isinstance(plan["targets"], dict) or plan["targets"] != profile["sources"]["B"]["hashes"]
+-            or plan["candidate_identity"] != snapshots["B"]["source_sha256"]):
+-        raise ValueError("unbound_candidate_snapshot")
+-    if plan["base_identity"] != snapshots["A"]["source_sha256"]:
+-        raise ValueError("unbound_baseline_snapshot")
++    snapshots = _bind_snapshots(plan, profile)
++    _validate_cost_quota(profile)
+     exp_hash = tdq_eval_contract.compute_experiment_hash(plan)
+-
+     schedule = tdq_eval_contract.build_ab_ba_schedule(
+         list(by_id), plan["cells"], plan["repetitions"], exp_hash
+     )
+-
+     out_path = Path(out_dir).resolve()
+     out_path.mkdir(parents=True, exist_ok=True)
+-
+     completed = 0
+-    quota_usd = float(profile.get("quota_usd", float("inf")))
+-    spent_usd = 0.0
+-
+     for trial in schedule:
+-        trial_id = trial["trial_id"]
+-        if spent_usd > quota_usd:
+-            _log("quota exceeded, stopping run", muc="canh-bao", trial=trial_id)
+-            break
+-
+         case = by_id[trial["case_id"]]
+         trial.update(snapshots[trial["variant"]], prompt=case["prompt"],
+                      expected_trigger=trial["case_id"] in plan["expected_triggers"])
+-        host = trial["host"]
+-        trial_env = tdq_eval_hosts.prepare_trial_environment(
+-            base_dir=out_path / "env",
+-            host=host,
+-            trial_id=trial_id,
+-            plugin_dir=profile.get("plugin_dir"),
+-        )
+-        trial_profile = dict(profile, **trial_env)
+-
+-        trial_res = tdq_eval_hosts.run_host_trial(
+-            host=host,
+-            trial_spec=trial,
+-            profile=trial_profile,
+-            command_builder=command_builder,
+-        )
+-
+-        trial_res = dict(trial_res)
+-        trial_res.pop("outcome", None)
+-        verified = (trial_res.get("execution_status") == "completed"
+-                    and isinstance(trial_res.get("response_text"), str)
+-                    and bool(trial_res["response_text"].strip())
+-                    and trial_res.get("observed_model") == trial["model"]
+-                    and trial_res.get("host") == tdq_eval_hosts.canonical_host_name(host))
+-        trial_res["outcome_reason"] = "missing_scorer" if verified else "unverified_response"
+-        if scorer is not None and verified:
+-            outcome = scorer(case, dict(trial_res))
+-            if (not isinstance(outcome, dict) or type(outcome.get("passed")) is not bool
+-                    or type(outcome.get("score")) not in (int, float)
+-                    or not math.isfinite(outcome["score"]) or not 0 <= outcome["score"] <= 1
+-                    or not isinstance(outcome.get("checks"), dict) or not outcome["checks"]):
+-                raise ValueError("invalid_scorer_outcome")
+-            trial_res["outcome"] = outcome
+-            trial_res["outcome_reason"] = "explicit_scorer"
+-        attempts = trial_res.get("attempts", [])
+-        raw_trace_sha = attempts[-1].get("raw_trace_sha256") if attempts else "0" * 64
+-
+-        rec = _build_trial_record(plan, trial, trial_res, raw_trace_sha)
+-        record_file = out_path / f"trial_{trial_id}.json"
+-        _write_json(rec, record_file)
++        _execute_trial(plan, trial, case, profile, out_path, command_builder, scorer)
+         completed += 1
+-
+     summary = {
+         "experiment_hash": exp_hash,
+         "total_trials": len(schedule),
+@@ -516,9 +536,25 @@
+         "- **DROP**: Hồi quy chất lượng hoặc tỷ lệ trigger trượt quá biên độ cho phép.",
+         "- **INCONCLUSIVE**: Chưa đủ mẫu, thiếu chỉ số đo bắt buộc, hoặc baseline đã chạm trần.",
+         "",
+-        "Báo cáo mang nguồn gốc synthetic/offline, được tổng hợp ngoại tuyến hoàn toàn từ các bản ghi đối chứng, không đại diện cho chứng nhận hiệu quả mô hình sống.",
++        f"Nguồn gốc bản ghi: {report_data['provenance']}. Tổng hợp ngoại tuyến; không tự chứng nhận hiệu quả mô hình sống.",
+     ])
+     return "\n".join(lines)
++
++
++def _report_provenance(records: List[Dict[str, Any]]) -> str:
++    labels = {record.get("provenance") or "unavailable" for record in records}
++    if not labels:
++        return "unavailable"
++    return next(iter(labels)) if len(labels) == 1 else "mixed"
++
++
++def _group_report_cells(records: List[Dict[str, Any]]) -> Dict[Tuple[str, str], List[Dict[str, Any]]]:
++    by_cell: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
++    for record in records:
++        host, model = record.get("host"), record.get("model")
++        if host and model:
++            by_cell.setdefault((host, model), []).append(record)
++    return by_cell
+ 
+ 
+ def generate_report(
+@@ -535,13 +571,7 @@
+ 
+     records = [_load_json(f) for f in record_files]
+ 
+-    # Group by cell (host, model)
+-    by_cell: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
+-    for r in records:
+-        host = r.get("host")
+-        model = r.get("model")
+-        if host and model:
+-            by_cell.setdefault((host, model), []).append(r)
++    by_cell = _group_report_cells(records)
+ 
+     active_policy = policy or {"min_pairs": 1, "quality_margin": 0.05, "efficiency_margin": 0.1}
+ 
+@@ -561,7 +591,7 @@
+         }
+ 
+     report_data = {
+-        "provenance": "synthetic/offline",
++        "provenance": _report_provenance(records),
+         "cells": cells_report,
+         "total_records": len(records),
+         "total_cells": len(cells_report),
+--- a/scripts/tdq_eval_hosts.py
++++ b/scripts/tdq_eval_hosts.py
+@@ -295,142 +295,92 @@
+             yield raw, len(raw)
+ 
+ 
+-def parse_trace_stream(
+-    path_or_lines: Union[str, Path, Iterable[Any]],
+-    max_bytes: int = DEFAULT_MAX_BYTES,
+-    max_events: int = DEFAULT_MAX_EVENTS,
+-    expected_trigger: Optional[bool] = None,
+-) -> Dict[str, Any]:
+-    """Parse JSONL trace events line by line within explicit byte and count budgets."""
+-    total_bytes = 0
+-    event_count = 0
+-    detected_host: Optional[str] = None
+-    terminal = False
+-    response_text = ""
+-    observed_model = None
+-
+-    stats: Dict[str, Any] = {
+-        "tool_calls": 0,
+-        "model_calls": 0,
+-        "user_interventions": 0,
+-        "observed_trigger": False,
+-        "trigger_provenance": "unavailable",
+-    }
+-    tokens: Dict[str, Optional[int]] = {
+-        "input_tokens": None,
+-        "output_tokens": None,
+-        "cache_read_tokens": None,
+-        "cache_write_tokens": None,
+-    }
+-
+-    for line_bytes, byte_len in _iter_lines(path_or_lines):
+-        total_bytes += byte_len
+-        event_count += 1
+-        if total_bytes > max_bytes or event_count > max_events:
+-            return {
+-                "execution_status": "failed",
+-                "reason": "budget_exceeded",
+-                "truncated": True,
+-                "paid_model_calls": 0,
+-            }
+-
+-        line_str = line_bytes.decode("utf-8-sig", errors="replace").strip()
+-        if not line_str:
+-            continue
+-
+-        try:
+-            record = json.loads(line_str)
+-        except Exception:
+-            return {
+-                "execution_status": "failed",
+-                "reason": "malformed_json",
+-                "paid_model_calls": 0,
+-            }
+-
+-        if not isinstance(record, dict) or not isinstance(record.get("type"), str):
+-            return {
+-                "execution_status": "unknown_schema",
+-                "reason": "unknown_schema",
+-                "paid_model_calls": 0,
+-            }
+-
+-        event_type = record["type"]
+-        if event_type not in KNOWN_EVENT_TYPES:
+-            return {
+-                "execution_status": "unknown_schema",
+-                "reason": "unknown_schema",
+-                "paid_model_calls": 0,
+-            }
+-
+-        event_host = "claude" if event_type in CLAUDE_EVENT_TYPES else (
+-            "codex" if event_type in CODEX_EVENT_TYPES else None
+-        )
+-        if event_host and detected_host and event_host != detected_host:
+-            return {"execution_status": "failed", "reason": "mixed_hosts"}
+-        detected_host = event_host or detected_host
+-        payload = record.get("payload") or {}
+-        message = record.get("message") or {}
+-        if not isinstance(payload, dict) or not isinstance(message, dict):
+-            return {"execution_status": "unknown_schema", "reason": "invalid_message"}
+-        model = message.get("model") or record.get("model") or payload.get("model")
+-        if isinstance(model, str) and model.strip():
+-            if observed_model and observed_model != model:
+-                return {"execution_status": "failed", "reason": "mixed_models"}
+-            observed_model = model
+-        if record.get("is_error") or event_type in {"error", "turn.failed"} or (
+-            event_type == "result" and record.get("subtype", "success") != "success"
+-        ):
+-            return {"execution_status": "failed", "reason": "host_error"}
+-        if terminal:
+-            return {"execution_status": "failed", "reason": "events_after_terminal"}
+-        if event_host == "claude":
+-            _process_claude_event(record, stats, tokens)
+-            if event_type == "result":
+-                terminal = record.get("is_error") is False
+-                response_text = record.get("result", "")
+-        elif event_host == "codex":
+-            _process_codex_event(record, stats, tokens)
+-            if event_type == "item.completed":
+-                item = record.get("item")
+-                if not isinstance(item, dict):
+-                    return {"execution_status": "unknown_schema", "reason": "invalid_item"}
+-                if item.get("type") == "agent_message":
+-                    response_text = item.get("text", "")
+-                    stats["model_calls"] += 1
+-                elif item.get("type") in {"command_execution", "mcp_tool_call"}:
+-                    stats["tool_calls"] += 1
+-            elif event_type == "turn.completed":
+-                terminal = True
+-                _extract_codex_usage({"type": "token_count", "usage": record.get("usage")}, tokens)
+-            elif event_type == "event_msg" and payload.get("type") in {"task_complete", "turn_complete"}:
+-                terminal = True
+-                response_text = payload.get("last_agent_message", "")
+-
+-    if not terminal or not isinstance(response_text, str) or not response_text.strip():
++def _decode_trace_event(line: str) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
++    try:
++        record = json.loads(line)
++    except ValueError:
++        return None, {"execution_status": "failed", "reason": "malformed_json", "paid_model_calls": 0}
++    if (not isinstance(record, dict) or not isinstance(record.get("type"), str)
++            or record["type"] not in KNOWN_EVENT_TYPES):
++        return None, {"execution_status": "unknown_schema", "reason": "unknown_schema", "paid_model_calls": 0}
++    return record, None
++
++
++def _bind_trace_model(record: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
++    payload = record.get("payload") or {}
++    message = record.get("message") or {}
++    if not isinstance(payload, dict) or not isinstance(message, dict):
++        return {"execution_status": "unknown_schema", "reason": "invalid_message"}
++    model = message.get("model") or record.get("model") or payload.get("model")
++    if isinstance(model, str) and model.strip():
++        if state["observed_model"] not in (None, model):
++            return {"execution_status": "failed", "reason": "mixed_models"}
++        state["observed_model"] = model
++    return None
++
++
++def _validate_trace_event(record, event_host, state) -> Optional[Dict[str, Any]]:
++    if event_host and state["host"] not in (None, event_host):
++        return {"execution_status": "failed", "reason": "mixed_hosts"}
++    state["host"] = event_host or state["host"]
++    error = _bind_trace_model(record, state)
++    if error:
++        return error
++    event_type = record["type"]
++    if record.get("is_error") or event_type in {"error", "turn.failed"} or (
++        event_type == "result" and record.get("subtype", "success") != "success"
++    ):
++        return {"execution_status": "failed", "reason": "host_error"}
++    if state["terminal"]:
++        return {"execution_status": "failed", "reason": "events_after_terminal"}
++    return None
++
++
++def _process_codex_response(record, state, stats, tokens) -> Optional[Dict[str, Any]]:
++    event_type = record["type"]
++    payload = record.get("payload") or {}
++    _process_codex_event(record, stats, tokens)
++    if event_type == "item.completed":
++        item = record.get("item")
++        if not isinstance(item, dict):
++            return {"execution_status": "unknown_schema", "reason": "invalid_item"}
++        if item.get("type") == "agent_message":
++            state["response_text"] = item.get("text", "")
++            stats["model_calls"] += 1
++        elif item.get("type") in {"command_execution", "mcp_tool_call"}:
++            stats["tool_calls"] += 1
++    elif event_type == "turn.completed":
++        state["terminal"] = True
++        _extract_codex_usage({"type": "token_count", "usage": record.get("usage")}, tokens)
++    elif event_type == "event_msg" and payload.get("type") in {"task_complete", "turn_complete"}:
++        state["terminal"] = True
++        state["response_text"] = payload.get("last_agent_message", "")
++    return None
++
++
++def _consume_trace_event(record, state, stats, tokens) -> Optional[Dict[str, Any]]:
++    event_type = record["type"]
++    event_host = "claude" if event_type in CLAUDE_EVENT_TYPES else (
++        "codex" if event_type in CODEX_EVENT_TYPES else None
++    )
++    error = _validate_trace_event(record, event_host, state)
++    if error:
++        return error
++    if event_host == "claude":
++        _process_claude_event(record, stats, tokens)
++        if event_type == "result":
++            state["terminal"] = record.get("is_error") is False
++            state["response_text"] = record.get("result", "")
++    elif event_host == "codex":
++        return _process_codex_response(record, state, stats, tokens)
++    return None
++
++
++def _trace_result(state, stats, tokens, expected_trigger) -> Dict[str, Any]:
++    response = state["response_text"]
++    if not state["terminal"] or not isinstance(response, str) or not response.strip():
+         return {"execution_status": "incomplete", "reason": "missing_terminal_response"}
+-
+-    raw_record: Dict[str, Any] = {
+-        "execution_status": "completed",
+-        "passed": None,
+-        "score": None,
+-        "expected_trigger": expected_trigger,
+-        "observed_trigger": stats["observed_trigger"],
+-        "trigger_provenance": stats["trigger_provenance"],
+-        "tool_calls_count": stats["tool_calls"],
+-        "model_calls_count": stats["model_calls"],
+-        "user_interventions_count": stats["user_interventions"],
+-        "retries_count": 0,
+-        "tokens": tokens,
+-        "total_cost_usd": None,
+-        "billed_cost_usd": None,
+-    }
+-
+-    normalized = tdq_eval_contract.normalize_trial_metrics(raw_record)
+-
+-    return {
+-        "host": detected_host,
+-        "observed_model": observed_model,
+-        "response_text": response_text,
++    metrics = {
+         "execution_status": "completed",
+         "observed_trigger": stats["observed_trigger"],
+         "trigger_provenance": stats["trigger_provenance"],
+@@ -440,8 +390,41 @@
+         "tokens": tokens,
+         "total_cost_usd": None,
+         "billed_cost_usd": None,
+-        "normalized_metrics": normalized,
+     }
++    normalized = tdq_eval_contract.normalize_trial_metrics(dict(
++        metrics, passed=None, score=None, expected_trigger=expected_trigger, retries_count=0,
++    ))
++    return dict(metrics, host=state["host"], observed_model=state["observed_model"],
++                response_text=response, normalized_metrics=normalized)
++
++
++def parse_trace_stream(
++    path_or_lines: Union[str, Path, Iterable[Any]],
++    max_bytes: int = DEFAULT_MAX_BYTES,
++    max_events: int = DEFAULT_MAX_EVENTS,
++    expected_trigger: Optional[bool] = None,
++) -> Dict[str, Any]:
++    """Parse JSONL trace events line by line within explicit byte and count budgets."""
++    total_bytes = 0
++    state = {"host": None, "terminal": False, "response_text": "", "observed_model": None}
++    stats = {"tool_calls": 0, "model_calls": 0, "user_interventions": 0,
++             "observed_trigger": False, "trigger_provenance": "unavailable"}
++    tokens = {key: None for key in tdq_eval_contract.TOKEN_FIELDS}
++    for event_count, (line_bytes, byte_len) in enumerate(_iter_lines(path_or_lines), 1):
++        total_bytes += byte_len
++        if total_bytes > max_bytes or event_count > max_events:
++            return {"execution_status": "failed", "reason": "budget_exceeded",
++                    "truncated": True, "paid_model_calls": 0}
++        line_str = line_bytes.decode("utf-8-sig", errors="replace").strip()
++        if not line_str:
++            continue
++        record, error = _decode_trace_event(line_str)
++        if error:
++            return error
++        error = _consume_trace_event(record, state, stats, tokens)
++        if error:
++            return error
++    return _trace_result(state, stats, tokens, expected_trigger)
+ 
+ 
+ def _record_attempt(
+@@ -452,7 +435,7 @@
+     return {
+         "exit_code": result.get("exit_code"),
+         "timed_out": bool(result.get("timed_out")),
+-        "duration_seconds": result.get("duration_seconds", 0.0),
++        "duration_seconds": result.get("duration_seconds"),
+         "cleanup_complete": bool(result.get("cleanup_complete")),
+         "ownership": result.get("ownership", {}),
+         "raw_trace_sha256": trace_sha,
+@@ -476,6 +459,63 @@
+     raise ValueError("unsupported_host")
+ 
+ 
++def _parse_attempt(result, trace_file, trial_spec, canonical) -> Dict[str, Any]:
++    if result.get("timed_out"):
++        return {"execution_status": "timeout", "reason": "process_timeout"}
++    if result.get("exit_code") != 0:
++        return {"execution_status": "failed", "reason": result.get("reason", f"exit_{result.get('exit_code')}")}
++    parsed = parse_trace_stream(trace_file, expected_trigger=trial_spec.get("expected_trigger"))
++    parsed.setdefault("reason", "success")
++    if parsed.get("execution_status") == "completed" and trial_spec.get("model") and (
++        parsed.get("observed_model") != trial_spec["model"] or parsed.get("host") != canonical
++    ):
++        parsed.update(execution_status="incomplete", reason="unverified_host_model")
++    return parsed
++
++
++def _run_attempts(command, workspace, active_env, profile, trial_spec, canonical):
++    timeout_sec = int(max(1, round(float(profile.get("timeout_seconds", 1800)))))
++    max_retries = int(profile.get("max_retries", 0))
++    max_attempts = int(profile.get("max_total_attempts", max_retries + 1))
++    attempts_cap = min(max_retries + 1, max_attempts)
++    attempts = []
++    parsed = {"execution_status": "failed", "reason": "retry_cap_exceeded"}
++    for attempt_idx in range(attempts_cap):
++        trace_file = workspace / f"trace_{attempt_idx + 1}.jsonl"
++        with OwnedProcessJob(workspace, timeout_seconds=timeout_sec, env=active_env) as job:
++            result = job.run(command, phase=f"trial_attempt_{attempt_idx + 1}")
++            trace_file.write_text(result.get("stdout", ""), encoding="utf-8")
++            attempts.append(_record_attempt(result, trace_file))
++            parsed = _parse_attempt(result, trace_file, trial_spec, canonical)
++            if result.get("exit_code") == 0 and not result.get("timed_out"):
++                return attempts, parsed
++    if parsed["execution_status"] != "timeout":
++        parsed["reason"] = "retry_cap_exceeded"
++    return attempts, parsed
++
++
++def _trial_output(trial_spec, canonical, attempts, parsed) -> Dict[str, Any]:
++    durations = [attempt["duration_seconds"] for attempt in attempts]
++    latency = sum(durations) if durations and all(value is not None for value in durations) else None
++    output = {
++        "trial_id": trial_spec.get("trial_id"),
++        "case_id": trial_spec.get("case_id"),
++        "host": canonical,
++        "execution_status": parsed["execution_status"],
++        "reason": parsed["reason"],
++        "timed_out": parsed["execution_status"] == "timeout",
++        "attempts": attempts,
++        "retries_count": max(0, len(attempts) - 1),
++        "wall_latency_seconds": latency,
++    }
++    output.update({key: parsed[key] for key in (
++        "response_text", "observed_model", "observed_trigger", "trigger_provenance",
++        "tool_calls_count", "model_calls_count", "user_interventions_count", "tokens",
++        "total_cost_usd", "billed_cost_usd", "normalized_metrics",
++    ) if key in parsed})
++    return output
++
++
+ def run_host_trial(
+     host: str,
+     trial_spec: Dict[str, Any],
+@@ -486,12 +526,6 @@
+     canonical = canonical_host_name(host)
+     if canonical not in SUPPORTED_HOSTS:
+         return {"execution_status": "failed", "reason": "unsupported_host", "attempts": []}
+-
+-    timeout_sec = int(max(1, round(float(profile.get("timeout_seconds", 1800)))))
+-    max_retries = int(profile.get("max_retries", 0))
+-    max_attempts = int(profile.get("max_total_attempts", max_retries + 1))
+-    attempts_cap = min(max_retries + 1, max_attempts)
+-
+     iso_ok, iso_reason = _verify_isolation(profile)
+     if not iso_ok:
+         return {"execution_status": "failed", "reason": iso_reason, "attempts": []}
+@@ -501,64 +535,5 @@
+         active_env["CLAUDECODE"] = os.environ["CLAUDECODE"]
+     command = trial_spec.get("command") or (command_builder(trial_spec, profile) if command_builder
+                                              else build_host_command(canonical, trial_spec))
+-
+-    attempts: List[Dict[str, Any]] = []
+-    final_execution_status = "failed"
+-    final_reason = "attempts_exhausted"
+-    last_parsed: Optional[Dict[str, Any]] = None
+-
+-    for attempt_idx in range(attempts_cap):
+-        trace_file = workspace / f"trace_{attempt_idx + 1}.jsonl"
+-        with OwnedProcessJob(workspace, timeout_seconds=timeout_sec, env=active_env) as job:
+-            res = job.run(command, phase=f"trial_attempt_{attempt_idx + 1}")
+-            stdout_text = res.get("stdout", "")
+-            trace_file.write_text(stdout_text, encoding="utf-8")
+-            attempt_rec = _record_attempt(res, trace_file)
+-            attempts.append(attempt_rec)
+-
+-            if res.get("timed_out"):
+-                final_execution_status = "timeout"
+-                final_reason = "process_timeout"
+-            elif res.get("exit_code") == 0:
+-                parsed = parse_trace_stream(trace_file, expected_trigger=trial_spec.get("expected_trigger"))
+-                last_parsed = parsed
+-                final_execution_status = parsed.get("execution_status", "completed")
+-                final_reason = parsed.get("reason", "success")
+-                if final_execution_status == "completed" and trial_spec.get("model") and (
+-                    parsed.get("observed_model") != trial_spec["model"] or parsed.get("host") != canonical
+-                ):
+-                    final_execution_status = "incomplete"
+-                    final_reason = "unverified_host_model"
+-                break
+-            else:
+-                final_execution_status = "failed"
+-                final_reason = res.get("reason", f"exit_{res.get('exit_code')}")
+-
+-    if last_parsed is None and final_execution_status != "completed" and len(attempts) >= attempts_cap:
+-        if final_execution_status != "timeout":
+-            final_reason = "retry_cap_exceeded"
+-
+-    output: Dict[str, Any] = {
+-        "trial_id": trial_spec.get("trial_id"),
+-        "case_id": trial_spec.get("case_id"),
+-        "host": canonical,
+-        "execution_status": final_execution_status,
+-        "reason": final_reason,
+-        "timed_out": final_execution_status == "timeout",
+-        "attempts": attempts,
+-        "retries_count": max(0, len(attempts) - 1),
+-    }
+-
+-    if last_parsed:
+-        output.update({
+-            "response_text": last_parsed.get("response_text"),
+-            "observed_model": last_parsed.get("observed_model"),
+-            "observed_trigger": last_parsed.get("observed_trigger"),
+-            "trigger_provenance": last_parsed.get("trigger_provenance"),
+-            "tool_calls_count": last_parsed.get("tool_calls_count"),
+-            "model_calls_count": last_parsed.get("model_calls_count"),
+-            "tokens": last_parsed.get("tokens"),
+-            "normalized_metrics": last_parsed.get("normalized_metrics"),
+-        })
+-
+-    return output
++    attempts, parsed = _run_attempts(command, workspace, active_env, profile, trial_spec, canonical)
++    return _trial_output(trial_spec, canonical, attempts, parsed)
+--- a/tests/test_tdq_skill_eval.py
++++ b/tests/test_tdq_skill_eval.py
+@@ -10,6 +10,7 @@
+    rescore_append_only with provenance tracking.
+ """
+ 
++import ast
+ import hashlib
+ import inspect
+ import json
+@@ -144,6 +145,45 @@
+     return records
+ 
+ 
++def _cognitive_score(node, depth=0):
++    # Conservative AST count: boolean operators and comprehensions also count.
++    control = isinstance(node, (ast.If, ast.IfExp, ast.For, ast.While, ast.ExceptHandler))
++    score = 1 + depth if control else 0
++    if isinstance(node, (ast.BoolOp, ast.comprehension)):
++        score += 1
++    for child in ast.iter_child_nodes(node):
++        elif_branch = isinstance(node, ast.If) and child in node.orelse and isinstance(child, ast.If)
++        score += _cognitive_score(child, depth + int(control and not elif_branch))
++    return score
++
++
++def test_refactored_functions_stay_within_size_and_branch_limits():
++    targets = {
++        tdq_skill_eval: "_trial_identity _build_trial_record _validate_run_plan _index_cases "
++        "_verify_corpus_hashes _load_bound_cases _read_snapshot _bind_snapshots _validate_cost_quota "
++        "_validate_scorer_outcome _score_trial _execute_trial run_eval _render_markdown_report "
++        "_report_provenance _group_report_cells generate_report",
++        tdq_eval_hosts: "_decode_trace_event _bind_trace_model _validate_trace_event _process_codex_response "
++        "_consume_trace_event _trace_result parse_trace_stream _record_attempt _parse_attempt "
++        "_run_attempts _trial_output run_host_trial",
++    }
++    for module, names in targets.items():
++        functions = {node.name: node for node in ast.parse(inspect.getsource(module)).body
++                     if isinstance(node, ast.FunctionDef)}
++        for name in names.split():
++            node = functions[name]
++            assert node.end_lineno - node.lineno + 1 <= 50, name
++            branches = sum(
++                len(child.values) - 1 if isinstance(child, ast.BoolOp) else
++                len(child.ifs) + 1 if isinstance(child, ast.comprehension) else 1
++                for child in ast.walk(node)
++                if isinstance(child, (ast.If, ast.IfExp, ast.For, ast.While,
++                                      ast.ExceptHandler, ast.BoolOp, ast.comprehension))
++            )
++            assert branches + 1 <= 10, (name, branches + 1)
++            assert _cognitive_score(node) <= 15, (name, _cognitive_score(node))
++
++
+ class TestTdqSkillEvalPlan(unittest.TestCase):
+     """Test `plan` subcommand: offline validation, hashing, rejection."""
+ 
+@@ -258,7 +298,6 @@
+         profile = {
+             "timeout_seconds": 10,
+             "max_retries": 1,
+-            "quota_usd": 1.0,
+         }
+         profile["sources"] = {}
+         target = plan["targets"][0]
+@@ -410,6 +449,23 @@
+         rec = json.loads(next((self.root / "out").glob("trial_*.json")).read_text(encoding="utf-8"))
+         self.assertIsNone(rec["score"])
+ 
++    def test_finite_quota_blocks_before_launch_without_cost_enforcement(self):
++        for quota in (0, 1.0):
++            self.profile["quota_usd"] = quota
++            (self.root / "profile.json").write_text(json.dumps(self.profile), encoding="utf-8")
++            with mock.patch("tdq_eval_hosts.run_host_trial") as run:
++                with self.assertRaisesRegex(ValueError, "cost_quota_unavailable"):
++                    self.run_eval()
++                run.assert_not_called()
++            self.assertFalse((self.root / "out").exists())
++
++    def test_missing_latency_stays_unavailable_in_record(self):
++        trial = tdq_eval_contract.build_ab_ba_schedule(["pos_case_01"], self.plan["cells"], 1, "e" * 64)[0]
++        rec = tdq_skill_eval._build_trial_record(self.plan, trial, {}, "f" * 64)
++        self.assertIsNone(rec["wall_latency_seconds"])
++        rec = tdq_skill_eval._build_trial_record(self.plan, trial, {"wall_latency_seconds": 1.25}, "f" * 64)
++        self.assertEqual(rec["wall_latency_seconds"], 1.25)
++
+     def test_changed_corpus_blocks_before_launch(self):
+         self.cases[0]["prompt"] = "changed"
+         (self.root / "cases.json").write_text(json.dumps({"cases": self.cases}), encoding="utf-8")
+@@ -561,6 +617,20 @@
+         cell_key = f"{cell['host']}:{cell['model']}"
+         self.assertEqual(res["cells"][cell_key]["recommendation"]["verdict"], "DROP")
+ 
++    def test_report_provenance_matches_records(self):
++        for labels, expected in ((["live"], "live"), (["synthetic/offline"], "synthetic/offline"),
++                                 (["live", "synthetic/offline"], "mixed"), ([None], "unavailable")):
++            with self.subTest(labels=labels):
++                results_dir = self.tmp_path / expected.replace('/', '-')
++                results_dir.mkdir()
++                for idx, label in enumerate(labels):
++                    (results_dir / f"trial_{idx}.json").write_text(
++                        json.dumps({"provenance": label}), encoding="utf-8")
++                out_md = self.tmp_path / f"{expected.replace('/', '-')}.md"
++                report = tdq_skill_eval.generate_report(results_dir, out_md=out_md)
++                self.assertEqual(report["provenance"], expected)
++                self.assertIn(f"Nguồn gốc bản ghi: {expected}", out_md.read_text(encoding="utf-8"))
++
+     def test_report_preserves_null_metrics_without_defaulting_zero(self):
+         plan = make_valid_plan(repetitions=1)
+         cell = plan["cells"][0]
+--- a/tests/test_tdq_eval_hosts.py
++++ b/tests/test_tdq_eval_hosts.py
+@@ -383,6 +383,31 @@
+     assert result["attempts"] == []
+ 
+ 
++def test_attempt_missing_duration_is_not_zero(tmp_path):
++    attempt = tdq_eval_hosts._record_attempt({}, tmp_path / "missing.jsonl")
++    assert attempt["duration_seconds"] is None
++
++
++@pytest.mark.parametrize("durations,expected", [([0.25, 0.75], 1.0), ([None, 0.75], None)])
++def test_trial_latency_includes_all_attempts(tmp_path, monkeypatch, durations, expected):
++    from unittest.mock import MagicMock
++    profile = tdq_eval_hosts.prepare_trial_environment(tmp_path, "claude", "latency")
++    profile["max_retries"] = 1
++    terminal = json.dumps({"type": "result", "is_error": False, "result": "done"})
++    job = MagicMock()
++    job.__enter__.return_value = job
++    job.run.side_effect = [
++        {"exit_code": 1, "stdout": "", "duration_seconds": durations[0]},
++        {"exit_code": 0, "stdout": terminal, "duration_seconds": durations[1]},
++    ]
++    monkeypatch.setattr(tdq_eval_hosts, "OwnedProcessJob", lambda *a, **kw: job)
++    result = tdq_eval_hosts.run_host_trial("claude", {"command": ["fixture"]}, profile)
++    assert result["execution_status"] == "completed"
++    assert len(result["attempts"]) == 2
++    assert result.get("wall_latency_seconds") == expected
++    assert "wall_latency_seconds" in result
++
++
+ def test_logging_on_off_and_redaction(monkeypatch, capsys):
+     monkeypatch.setenv("TDQ_EVAL_LOG", "1")
+     monkeypatch.setenv("TDQ_LOG", "1")
