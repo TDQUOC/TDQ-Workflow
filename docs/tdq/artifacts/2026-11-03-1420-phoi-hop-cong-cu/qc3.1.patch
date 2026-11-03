@@ -1,0 +1,269 @@
+--- a/scripts/tdq_skill_eval.py
++++ b/scripts/tdq_skill_eval.py
+@@ -11,11 +11,14 @@
+ """
+ 
+ import argparse
++import builtins
++import dis
+ import glob
+ import hashlib
+ import inspect
+ import json
+ import math
++import marshal
+ import os
+ from pathlib import Path
+ import sys
+@@ -251,12 +254,34 @@
+     return rec
+ 
+ 
++def _validate_scorer_dependencies(code, scorer) -> None:
++    allowed = {"abs", "all", "any", "bool", "dict", "enumerate", "float", "int", "len",
++               "list", "max", "min", "range", "round", "set", "sorted", "str", "sum",
++               "tuple", "zip", "AssertionError", "ValueError"}
++    for instruction in dis.get_instructions(code):
++        if instruction.opname in {"IMPORT_NAME", "STORE_GLOBAL", "DELETE_GLOBAL"}:
++            raise ValueError("unsupported_scorer_identity")
++        if instruction.opname == "LOAD_GLOBAL":
++            name = instruction.argval
++            if (name not in allowed or name in scorer.__globals__
++                    or scorer.__builtins__.get(name) is not getattr(builtins, name)):
++                raise ValueError("unsupported_scorer_identity")
++    for constant in code.co_consts:
++        if inspect.iscode(constant):
++            _validate_scorer_dependencies(constant, scorer)
++
++
+ def scorer_identity(scorer: Any, rubric_version: str) -> str:
+-    """Bind a source-defined scorer and rubric into the plan's locked scorer_version."""
+-    # ponytail: source-only functions, upgrade: add a dependency manifest when stateful/decorated scorers are needed.
++    """Lock source, actual bytecode and rubric; code hashes are interpreter-local.
++
++    Accept source-defined functions using inputs, locals and allowlisted unshadowed
++    builtins only, including nested code. No global/nonlocal state or imports.
++    """
++    # ponytail: pure scorers only; add a dependency manifest when stateful scorers are needed.
+     if (not inspect.isfunction(scorer) or scorer.__closure__ or scorer.__defaults__
+             or scorer.__kwdefaults__ or hasattr(scorer, "__wrapped__")):
+         raise ValueError("unsupported_scorer_identity")
++    _validate_scorer_dependencies(scorer.__code__, scorer)
+     try:
+         source = inspect.getsource(scorer)
+     except (OSError, TypeError) as exc:
+@@ -264,6 +289,7 @@
+     return "sha256:" + tdq_eval_contract._digest({
+         "module": scorer.__module__, "qualname": scorer.__qualname__,
+         "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
++        "code_sha256": hashlib.sha256(marshal.dumps(scorer.__code__)).hexdigest(),
+         "rubric_version": rubric_version,
+     })
+ 
+--- a/scripts/tdq_eval_hosts.py
++++ b/scripts/tdq_eval_hosts.py
+@@ -306,11 +306,48 @@
+     return record, None
+ 
+ 
++def _valid_trace_content(content) -> bool:
++    if isinstance(content, str):
++        return True
++    if not isinstance(content, list):
++        return False
++    for block in content:
++        if not isinstance(block, dict) or not isinstance(block.get("type"), str):
++            return False
++        if "text" in block and not isinstance(block["text"], str):
++            return False
++    return True
++
++
++def _valid_trace_usage(usage) -> bool:
++    if not isinstance(usage, dict):
++        return False
++    fields = ("input_tokens", "output_tokens", "cache_read_input_tokens",
++              "cache_creation_input_tokens", "cached_input_tokens")
++    return all(type(usage[key]) is int and usage[key] >= 0 for key in fields if key in usage)
++
++
++def _validate_trace_fields(record) -> Optional[Dict[str, Any]]:
++    containers = [record]
++    for key in ("message", "payload"):
++        value = record.get(key, {})
++        if not isinstance(value, dict):
++            return {"execution_status": "unknown_schema", "reason": "invalid_message"}
++        containers.append(value)
++    for container in containers:
++        if "content" in container and not _valid_trace_content(container["content"]):
++            return {"execution_status": "unknown_schema", "reason": "invalid_content"}
++        if "usage" in container and not _valid_trace_usage(container["usage"]):
++            return {"execution_status": "unknown_schema", "reason": "invalid_usage"}
++    return None
++
++
+ def _bind_trace_model(record: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+-    payload = record.get("payload") or {}
+-    message = record.get("message") or {}
+-    if not isinstance(payload, dict) or not isinstance(message, dict):
+-        return {"execution_status": "unknown_schema", "reason": "invalid_message"}
++    error = _validate_trace_fields(record)
++    if error:
++        return error
++    payload = record.get("payload", {})
++    message = record.get("message", {})
+     model = message.get("model") or record.get("model") or payload.get("model")
+     if isinstance(model, str) and model.strip():
+         if state["observed_model"] not in (None, model):
+@@ -415,7 +452,10 @@
+         if total_bytes > max_bytes or event_count > max_events:
+             return {"execution_status": "failed", "reason": "budget_exceeded",
+                     "truncated": True, "paid_model_calls": 0}
+-        line_str = line_bytes.decode("utf-8-sig", errors="replace").strip()
++        try:
++            line_str = line_bytes.decode("utf-8-sig").strip()
++        except UnicodeDecodeError:
++            return {"execution_status": "failed", "reason": "invalid_utf8", "paid_model_calls": 0}
+         if not line_str:
+             continue
+         record, error = _decode_trace_event(line_str)
+--- a/tests/test_tdq_skill_eval.py
++++ b/tests/test_tdq_skill_eval.py
+@@ -14,11 +14,13 @@
+ import hashlib
+ import inspect
+ import json
++import marshal
+ import os
+ from pathlib import Path
+ import subprocess
+ import sys
+ import tempfile
++import types
+ import unittest
+ from unittest import mock
+ 
+@@ -159,11 +161,13 @@
+ 
+ def test_refactored_functions_stay_within_size_and_branch_limits():
+     targets = {
+-        tdq_skill_eval: "_trial_identity _build_trial_record _validate_run_plan _index_cases "
++        tdq_skill_eval: "_validate_scorer_dependencies scorer_identity "
++        "_trial_identity _build_trial_record _validate_run_plan _index_cases "
+         "_verify_corpus_hashes _load_bound_cases _read_snapshot _bind_snapshots _validate_cost_quota "
+         "_validate_scorer_outcome _score_trial _execute_trial run_eval _render_markdown_report "
+         "_report_provenance _group_report_cells generate_report",
+-        tdq_eval_hosts: "_decode_trace_event _bind_trace_model _validate_trace_event _process_codex_response "
++        tdq_eval_hosts: "_valid_trace_content _valid_trace_usage _validate_trace_fields "
++        "_decode_trace_event _bind_trace_model _validate_trace_event _process_codex_response "
+         "_consume_trace_event _trace_result parse_trace_stream _record_attempt _parse_attempt "
+         "_run_attempts _trial_output run_host_trial",
+     }
+@@ -386,9 +390,53 @@
+     def bind_scorer(self, scorer):
+         binding = {"module": scorer.__module__, "qualname": scorer.__qualname__,
+                    "source_sha256": hashlib.sha256(inspect.getsource(scorer).encode("utf-8")).hexdigest(),
++                   "code_sha256": hashlib.sha256(marshal.dumps(scorer.__code__)).hexdigest(),
+                    "rubric_version": self.plan["rubric_version"]}
+         self.plan["scorer_version"] = "sha256:" + tdq_eval_contract._digest(binding)
+         (self.root / "plan.json").write_text(json.dumps(self.plan), encoding="utf-8")
++
++    def test_shadowed_builtin_scorer_rejected_before_launch(self):
++        self.bind_scorer(_score_response)
++        altered = types.FunctionType(_score_response.__code__,
++                                     dict(_score_response.__globals__, all=lambda values: True))
++        self.assertFalse(_score_response(self.cases[0], {"response_text": "wrong"})["passed"])
++        self.assertTrue(altered(self.cases[0], {"response_text": "wrong"})["passed"])
++        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
++            with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
++                self.run_eval(scorer=altered)
++            run.assert_not_called()
++
++    def test_custom_builtins_scorer_rejected(self):
++        altered = types.FunctionType(_score_response.__code__,
++                                     dict(_score_response.__globals__, __builtins__={"all": lambda xs: True}))
++        with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
++            tdq_skill_eval.scorer_identity(altered, "rubric-v1")
++
++    def test_global_dependency_in_nested_code_rejected(self):
++        def scorer(case, response):
++            return all(os.name for text in case["required"])
++
++        with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
++            tdq_skill_eval.scorer_identity(scorer, "rubric-v1")
++
++    def test_nonlocal_dependency_rejected(self):
++        threshold = 1
++        def scorer(case, response):
++            return threshold
++
++        with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
++            tdq_skill_eval.scorer_identity(scorer, "rubric-v1")
++
++    def test_mutated_code_rejected_before_launch(self):
++        self.bind_scorer(_score_response)
++        code = _score_response.__code__
++        altered = types.FunctionType(code.replace(co_consts=tuple(
++            "different_check" if value == "rule_compliance" else value for value in code.co_consts
++        )), _score_response.__globals__)
++        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
++            with self.assertRaisesRegex(ValueError, "scorer_binding_mismatch"):
++                self.run_eval(scorer=altered)
++            run.assert_not_called()
+ 
+     def test_changed_scorer_rejected_before_launch(self):
+         self.bind_scorer(_score_response)
+--- a/tests/test_tdq_eval_hosts.py
++++ b/tests/test_tdq_eval_hosts.py
+@@ -226,6 +226,51 @@
+     ])
+     assert malformed["execution_status"] == "failed"
+     assert malformed["reason"] == "malformed_json"
++
++
++def test_trace_rejects_invalid_utf8_without_replacement(tmp_path):
++    raw = b'{"type":"result","is_error":false,"result":"bad\xff"}\n'
++    trace = tmp_path / "invalid-utf8.jsonl"
++    trace.write_bytes(raw)
++    for source in ([raw], trace):
++        parsed = tdq_eval_hosts.parse_trace_stream(source)
++        assert parsed["execution_status"] == "failed"
++        assert parsed["reason"] == "invalid_utf8"
++
++
++@pytest.mark.parametrize("field", ["message", "payload"])
++@pytest.mark.parametrize("value", [None, [], 0, False, ""])
++def test_trace_rejects_falsey_nonobject_fields(field, value):
++    records = [{"type": "assistant", field: value},
++               {"type": "result", "is_error": False, "result": "done"}]
++    parsed = tdq_eval_hosts.parse_trace_stream(map(json.dumps, records))
++    assert parsed["execution_status"] == "unknown_schema"
++
++
++@pytest.mark.parametrize("event_type", ["assistant", "user"])
++@pytest.mark.parametrize("content", [None, 0, False, {}, [None], [0], ["text"],
++                                     [{}], [{"type": []}], [{"type": "text", "text": 0}]])
++def test_trace_rejects_malformed_message_content(event_type, content):
++    records = [{"type": event_type, "message": {"content": content}},
++               {"type": "result", "is_error": False, "result": "done"}]
++    parsed = tdq_eval_hosts.parse_trace_stream(map(json.dumps, records))
++    assert parsed["execution_status"] == "unknown_schema"
++
++
++@pytest.mark.parametrize("usage", [None, [], 0, False, "", {"input_tokens": []},
++                                   {"output_tokens": False}, {"input_tokens": -1}])
++@pytest.mark.parametrize("location", ["message", "payload", "terminal"])
++def test_trace_rejects_malformed_usage(location, usage):
++    if location == "message":
++        records = [{"type": "assistant", "message": {"usage": usage}},
++                   {"type": "result", "is_error": False, "result": "done"}]
++    else:
++        records = [{"type": "item.completed", "item": {"type": "agent_message", "text": "done"}}]
++        if location == "payload":
++            records.append({"type": "event_msg", "payload": {"type": "token_count", "usage": usage}})
++        records.append(dict({"type": "turn.completed"}, **({"usage": usage} if location == "terminal" else {})))
++    parsed = tdq_eval_hosts.parse_trace_stream(map(json.dumps, records))
++    assert parsed["execution_status"] == "unknown_schema"
+ 
+ 
+ def test_parse_trace_stream_claude_and_codex_metrics_and_null_cost(tmp_path):

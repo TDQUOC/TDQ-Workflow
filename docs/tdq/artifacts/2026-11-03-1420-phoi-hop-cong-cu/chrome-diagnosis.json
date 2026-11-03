@@ -1,0 +1,18 @@
+{
+  "cause_verified": "Chrome remote-debugging-pipe fails when USERPROFILE points to synthetic isolated directory on this Windows host.",
+  "observations": {
+    "normal": "ready=true, 0.56s",
+    "all_private": "CDP timeout, 0 received bytes",
+    "HOME_only": "ready=true",
+    "USERPROFILE_only": "CDP timeout; stderr says non-default data directory required despite explicit temporary --user-data-dir",
+    "HOMEPATH_only": "ready=true",
+    "HOMEDRIVE_only": "ready=true",
+    "TEMP_group_only": "ready=true",
+    "APPDATA_only": "ready=true",
+    "LOCALAPPDATA_only": "ready=true",
+    "all_private_without_USERPROFILE": "ready=true, 0.625s"
+  },
+  "probe": "Existing Archify ChromeVisualBrowser with explicit private profile; 5-second diagnostic startup limit, not an increased production timeout.",
+  "proposed_fix": "For isolated real-browser test subprocess only, omit synthetic USERPROFILE; keep HOME, config roots, APPDATA, LOCALAPPDATA and explicit temporary browser --user-data-dir. No user-profile browser access, no sandbox flags or permission changes.",
+  "external_engine_changed": false
+}

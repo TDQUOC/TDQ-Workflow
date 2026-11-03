@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "b10e61a9-95c9-4503-8070-2158233e508a",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+  "specification": {
+    "sha256": "1e454b1c177216aadd3d635718d377f3c04d7a08b7cdd69e5d7597f368ffd606",
+    "bytes": 1670
+  },
+  "artifact": {
+    "sha256": "64088403ba9c0f4ea9946bb6e5ecab9031420ed6ccb031852183acf9a7e7431c",
+    "bytes": 488986
+  },
+  "explainer": {
+    "preparedSha256": "f45f0612ba7ee13c31503f6711591e539d76e3295d28414771d6792bf62e86a0",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "mastermap-readme-flow",
+        "inline": true,
+        "sha256": "35addcfaab963c516eb91a73a1111796e23310ce352aeabe7c2df2daada517d8",
+        "bytes": 910
+      }
+    ]
+  }
+}

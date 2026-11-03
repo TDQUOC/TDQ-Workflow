@@ -1,0 +1,165 @@
+{
+  "skillListingMaxDescChars": 300,
+  "env": {
+    "TAVILY_API_KEY_PRIMARY": "<đã che>",
+    "TAVILY_API_KEY_BACKUP": "<đã che>",
+    "EXPRESS_SERVER_URL": "http://127.0.0.1:17739"
+  },
+  "permissions": {
+    "ask": [
+      "WebSearch"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "opus",
+  "skillOverrides": {
+    "unity-skills": "user-invocable-only",
+    "build-live-game": "name-only",
+    "excalidraw-skill": "name-only",
+    "figma-implement": "name-only",
+    "graphify": "name-only",
+    "implement-in-app-purchases": "name-only",
+    "mem0-memory": "name-only",
+    "ui": "name-only",
+    "ui-imgui": "name-only",
+    "ui-ugui": "name-only",
+    "ui-uitk": "name-only",
+    "unity-addressables-design": "name-only",
+    "unity-adr": "name-only",
+    "unity-architecture": "name-only",
+    "unity-asmdef": "name-only",
+    "unity-async": "name-only",
+    "unity-blueprints": "name-only",
+    "unity-dotween-design": "name-only",
+    "unity-inspector": "name-only",
+    "unity-mcp-orchestrator": "name-only",
+    "unity-netcode-design": "name-only",
+    "unity-patterns": "name-only",
+    "unity-performance": "name-only",
+    "unity-primetween-design": "name-only",
+    "unity-project-scout": "name-only",
+    "unity-scene-contracts": "name-only",
+    "unity-script-roles": "name-only",
+    "unity-scriptdesign": "name-only",
+    "unity-shadergraph-design": "name-only",
+    "unity-testability": "name-only",
+    "unity-unitask-design": "name-only",
+    "unity-yaml-editing": "name-only",
+    "unity-yooasset-design": "name-only"
+  },
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/scripts/plugin_tiers.py\" reset",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/scripts/plugin_tiers.py\" reset",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"/Users/truongdinhquoc/Documents/Add_on_for_claude/ClaudeStatusBar/scripts/tdq_token_append.sh\""
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0,
+    "refreshInterval": 10
+  },
+  "enabledPlugins": {
+    "tdq-workflow@tdq-local": true,
+    "skill-creator@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": true,
+    "remember@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true,
+    "agent-sdk-dev@claude-plugins-official": true,
+    "playground@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true,
+    "csharp-lsp@claude-plugins-official": true,
+    "greptile@claude-plugins-official": true,
+    "firecrawl@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "huggingface-skills@claude-plugins-official": true,
+    "php-lsp@claude-plugins-official": true,
+    "mcp-server-dev@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "postman@claude-plugins-official": true,
+    "kotlin-lsp@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true,
+    "learning-output-style@claude-plugins-official": true,
+    "jdtls-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true,
+    "cloudflare@claude-plugins-official": true,
+    "data-engineering@claude-plugins-official": true,
+    "mongodb@claude-plugins-official": true,
+    "ruby-lsp@claude-plugins-official": true,
+    "desktop-commander@claude-plugins-official": true,
+    "adobe-for-creativity@claude-plugins-official": true,
+    "base44@claude-plugins-official": true,
+    "redis-development@claude-plugins-official": true,
+    "qt-development-skills@claude-plugins-official": true,
+    "sonarqube@claude-plugins-official": true,
+    "hyperframes@claude-plugins-official": true,
+    "lumen@claude-plugins-official": true,
+    "unreal-engine-skills-for-claude-code@claude-plugins-official": true,
+    "datarobot-agent-skills@claude-plugins-official": true,
+    "tavily@claude-plugins-official": true,
+    "canva@claude-plugins-official": true,
+    "notion@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+  },
+  "extraKnownMarketplaces": {
+    "tdq-local": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/truongdinhquoc/Documents/TDQWorkflow"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/truongdinhquoc/Documents/Add_on_for_claude/ui-ux-pro-max-skill"
+      }
+    }
+  },
+  "viewMode": "focus",
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": true,
+  "hasCompletedOnboarding": true
+}

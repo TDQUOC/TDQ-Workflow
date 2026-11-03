@@ -1,0 +1,17 @@
+....................................................... [ 10%]
+.......................F.................................................................................................... [ 34%]
+................................................................ [ 47%]
+...............................F...................... [ 58%]
+............................................................ [ 69%]
+...................................................................... [ 83%]
+..s............................................................. [ 95%]
+.....................   [100%]
+================================== FAILURES ===================================
+E   AssertionError: 162 not less than or equal to 161
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 162 not less than or equal to 161
+E   AssertionError: 43 not less than or equal to 40 : KHOI_HUONG_DAN qu� d�i: 43 d�ng
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 43 not less than or equal to 40 : KHOI_HUONG_DAN qu� d�i: 43 d�ng
+=========================== short test summary info ===========================
+FAILED tests/test_build_portable.py::TestSinhNhanhRelease::test_release_budget_excludes_only_approved_runtime_modules
+FAILED tests/test_tdq_setup.py::TestKhoiHuongDan::test_khoi_huong_dan_co_cac_buoc_lsp_va_duoi_25_dong
+2 failed, 509 passed, 1 skipped, 206 subtests passed in 120.89s (0:02:00)

@@ -1,0 +1,20 @@
+{
+  "ca": "duyet-plan-thieu-mode",
+  "nhanh": "lai",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-plan-thieu-mode__lai__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L010": "vi-pham",
+    "L149": "khong-ap-dung",
+    "L012": "khong-ap-dung",
+    "L209": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 0.47230799999999995,
+  "so_luot": 10,
+  "nhiem": [
+    "bản plugin cài trên máy"
+  ]
+}

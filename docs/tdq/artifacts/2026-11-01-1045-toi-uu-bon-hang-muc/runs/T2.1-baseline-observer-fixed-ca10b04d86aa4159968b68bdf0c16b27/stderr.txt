@@ -1,0 +1,6 @@
+ERROR: not found: C:\Users\admin\.codex\worktrees\tdq-optimize-t0\TDQ-Workflow\tests\test_bench.py::LogCodexTest::test_log_gia_du_3_mau_tom_tat_vao_file_do
+(no match in any of [<UnitTestCase LogCodexTest>])
+
+ERROR: not found: C:\Users\admin\.codex\worktrees\tdq-optimize-t0\TDQ-Workflow\tests\test_bench.py::LogCodexTest::test_khong_luoc_can_nam_du_3_mau
+(no match in any of [<UnitTestCase LogCodexTest>])
+

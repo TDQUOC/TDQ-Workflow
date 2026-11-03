@@ -1,0 +1,113 @@
+.F..............F.                                                       [100%]
+================================== FAILURES ===================================
+______ test_generated_portable_report_runs_outside_project_without_jobs _______
+
+mixed_artifact = (b'{\r\n  "status": "FAIL",\r\n  "backend": "pytest",\r\n  "tests_run": 4,\r\n  "skipped": 1,\r\n  "failed_modules": [...}', WindowsPath('C:/Users/admin/AppData/Local/Temp/tdq-d5bfd40d/temp/pytest-of-admin/pytest-0/mixed-report-contract0'))
+tmp_path = WindowsPath('C:/Users/admin/AppData/Local/Temp/tdq-d5bfd40d/temp/pytest-of-admin/pytest-0/test_generated_portable_report0')
+
+    def test_generated_portable_report_runs_outside_project_without_jobs(mixed_artifact, tmp_path):
+        raw, project = mixed_artifact
+        bundle = Path(build_portable.sinh_ban_antigravity(ROOT, str(tmp_path / "bundle")))
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        source, prefix = outside / "input.json", outside / "portable-report.v1"
+        source.write_bytes(raw)
+        ledger = (project / "docs/tdq/.tdq-test.jsonl").read_bytes()
+        environment = {**os.environ, "PYTHONPATH": "", "PYTHONDONTWRITEBYTECODE": "1",
+                       "TDQ_LOG": "0", "TDQ_PROJECT_DIR": str(outside / "nonexistent-project")}
+        bootstrap = '''import json,runpy,sys
+    launches = []
+    def audit(event, args):
+        if event in {"subprocess.Popen", "os.system", "os.posix_spawn", "os.fork", "os.exec"}:
+            launches.append(event)
+    sys.addaudithook(audit)
+    sys.argv = sys.argv[1:]
+    try:
+        runpy.run_path(sys.argv[0], run_name="__main__")
+    except SystemExit:
+        print("TDQ_PACKAGED_PROCESS_EVENTS " + json.dumps(launches), flush=True)
+        raise
+    '''
+        run = subprocess.run([sys.executable, "-c", bootstrap, str(bundle / "scripts/tdq_test.py"), "report",
+                              "--result", str(source), "--out-prefix", str(prefix)],
+                             cwd=outside, env=environment, capture_output=True, text=True,
+                             encoding="utf-8", errors="replace", timeout=30)
+        assert run.returncode == 1, run.stdout + run.stderr  # Source FAIL is preserved.
+        assert run.stderr == ""
+        marker = json.loads(next(line.removeprefix("TDQ_REPORT ") for line in run.stdout.splitlines()
+                                 if line.startswith("TDQ_REPORT ")))
+        assert marker["result_status"] == "FAIL"
+        events = json.loads(next(line.removeprefix("TDQ_PACKAGED_PROCESS_EVENTS ")
+            for line in run.stdout.splitlines() if line.startswith("TDQ_PACKAGED_PROCESS_EVENTS ")))
+        assert events == [], events
+        assert marker["input_sha256"] == hashlib.sha256(raw).hexdigest()
+        assert source.read_bytes() == raw
+        assert {path.name for path in outside.iterdir()} == {
+            "input.json", "portable-report.v1.json", "portable-report.v1.md", "portable-report.v1.html"}
+        assert (project / "docs/tdq/.tdq-test.jsonl").read_bytes() == ledger
+        assert not (bundle / "docs/tdq/state.json").exists()
+        assert not (outside / "docs").exists()
+        for binding in marker["outputs"].values():
+            assert digest(binding["path"]) == binding["sha256"]
+        packaged = json.loads((outside / "portable-report.v1.json").read_text())
+        assert packaged["result_status"] == "FAIL" and packaged["case_count"] == 4
+>       assert digest(bundle / "scripts/tdq_test_report.py") == digest(Path(ROOT, "scripts/tdq_test_report.py"))
+E       AssertionError: assert '439056315b9a...bec80eb590860' == '9d2412e269b9...d69dba94dc275'
+E         
+E         - 9d2412e269b956d798a9a1637ae05632839f651b1a40eb14d26d69dba94dc275
+E         + 439056315b9a8e5a94a06ae53e0f468d723d9d2a9d5b7f78d1fbec80eb590860
+
+tests\test_optimize_contracts.py:134: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[2026-11-01T15:34:49+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-11-01T15:34:49+07:00] manifest: 141 file(s) in antigravity_portable
+_ test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting _
+
+project = WindowsPath('C:/Users/admin/AppData/Local/Temp/tdq-d5bfd40d/temp/tdq-contract-gke9cqo5')
+
+    def test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting(project):
+        (project / "tests/test_case.py").write_text("def test_ok(): assert 2 + 3 == 5\n", encoding="utf-8")
+        declare_fixture(project)
+        state_path = project / "docs/tdq/state.json"
+        before = state_path.read_bytes()
+        environment = dict(os.environ)
+        options = ({"reuse": "auto"}, {"reuse": "auto"},
+                   {"reuse": "off", "fresh": True}, {"reuse": "auto"}, {})
+        runs = [run_project(project, environment=environment, **option) for option in options]
+>       assert [result["action"] for result in runs] == ["executed", "reused", "executed", "executed", "executed"]
+E       AssertionError: assert ['executed', ...', 'executed'] == ['executed', ...', 'executed']
+E         
+E         At index 1 diff: 'executed' != 'reused'
+E         Use -v to get more diff
+
+tests\test_runtime_contracts.py:165: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[2026-11-01T08:34:53+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.811810 cleanup=0.000056 cleanup_complete=True
+[2026-11-01T08:34:54+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.797284 cleanup=0.000054 cleanup_complete=True
+[2026-11-01T08:34:55.002948+00:00] receipt action=executed reason=cache_miss
+[2026-11-01T15:34:55+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-01T15:34:55+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=2.6341930000053253 reason=Executed tests completed successfully
+[2026-11-01T08:34:56+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.938685 cleanup=0.000066 cleanup_complete=True
+[2026-11-01T08:34:57+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.901355 cleanup=0.000052 cleanup_complete=True
+[2026-11-01T08:34:57.918867+00:00] receipt action=executed reason=cache_miss
+[2026-11-01T15:34:58+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=INCOMPLETE
+[2026-11-01T15:34:58+07:00] tdq_test: tron-bo backend=pytest scope=full status=INCOMPLETE tests_run=1 details_complete=False fallback=none seconds=2.906815499998629 reason=Executed tests completed successfully; Source/environment changed during runner job
+[2026-11-01T08:34:59+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.811420 cleanup=0.000057 cleanup_complete=True
+[2026-11-01T08:35:00+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.845859 cleanup=0.000058 cleanup_complete=True
+[2026-11-01T08:35:00.081260+00:00] receipt action=executed reason=fresh
+[2026-11-01T15:35:00+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-01T15:35:00+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=2.1440394000019296 reason=Executed tests completed successfully
+[2026-11-01T08:35:01+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.837300 cleanup=0.000052 cleanup_complete=True
+[2026-11-01T08:35:02+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.854819 cleanup=0.000061 cleanup_complete=True
+[2026-11-01T08:35:02.852335+00:00] receipt action=executed reason=cache_miss
+[2026-11-01T15:35:03+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-01T15:35:03+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=2.7785968000025605 reason=Executed tests completed successfully
+[2026-11-01T08:35:04+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=1.051620 cleanup=0.000069 cleanup_complete=True
+[2026-11-01T08:35:05+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.848140 cleanup=0.000068 cleanup_complete=True
+[2026-11-01T08:35:05.301147+00:00] receipt action=executed reason=reuse_off
+[2026-11-01T15:35:05+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-01T15:35:05+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=2.4052960999979405 reason=Executed tests completed successfully
+=========================== short test summary info ===========================
+FAILED tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs
+FAILED tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting
+2 failed, 16 passed in 18.85s

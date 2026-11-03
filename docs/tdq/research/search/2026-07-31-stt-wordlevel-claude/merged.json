@@ -1,0 +1,200 @@
+{
+  "run_id": "2026-07-31-stt-wordlevel-claude",
+  "findings": [
+    {
+      "source_url": "https://developers.deepgram.com/docs/recovering-from-connection-errors-and-timeouts-when-live-streaming-audio",
+      "routes": [
+        "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+      ],
+      "claim": "Deepgram Streaming API (WebSocket) trả timestamp cho TỪNG từ trong chế độ live streaming; timestamp tính từ đầu stream nên khi reconnect phải tự offset lại.",
+      "evidence_quote": "Deepgram returns transcripts that include timestamps for every transcribed word. Timestamps correspond to the moments when the words are spoken within the audio. Every time you reconnect to our API, you create a new connection, so the timestamps on your audio begin from 00:00:00 again.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://developers.openai.com/api/docs/guides/realtime-transcription",
+      "routes": [
+        "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+      ],
+      "claim": "OpenAI Realtime transcription (model gpt-live-transcribe) KHÔNG trả word-level timestamps trong streaming — docs chính thức khuyên dùng model file transcription tương thích hoặc fallback ở tầng ứng dụng nếu cần timestamp; latency chỉ tune gián tiếp qua audio.input.transcription.delay (minimal/low/medium/high/xhigh), không có con số công bố.",
+      "evidence_quote": "`gpt-live-transcribe` doesn’t return word-level timestamps, speaker labels, or transcription confidence scores. If your application requires timestamps or speaker labels, use a compatible file transcription model or add an application-level fallback.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://docs.cloud.google.com/speech-to-text/docs/v1/speech-to-text-requests",
+      "routes": [
+        "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+      ],
+      "claim": "Google Cloud Speech-to-Text hỗ trợ word time offsets (start/end mỗi từ, độ phân giải 100ms) cho cả phương thức streamingrecognize khi bật enableWordTimeOffsets=true; lưu ý (theo Google Developer forum) interim results is_final=false thường chưa có word timestamps, chỉ chắc chắn khi is_final=true.",
+      "evidence_quote": "Cloud STT can include time offset values (timestamps) for the beginning and end of each spoken word that is recognized in the supplied audio. A time offset value represents the amount of time that has elapsed from the beginning of the audio, in increments of 100ms. [...] Time offsets are supported for all our recognition methods: recognize, streamingrecognize, and longrunningrecognize.",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-speech-recognition-results",
+      "routes": [
+        "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+      ],
+      "claim": "Azure AI Speech (Speech SDK, realtime recognition) trả offset + duration cho từng từ trong event Recognized khi bật SpeechConfig.requestWordLevelTimestamps(); đơn vị ticks (100ns).",
+      "evidence_quote": "Once an utterance has been recognized, you can get the offset and duration of the recognized speech. With the `Recognized` event, you can also get the offset and duration per word. To request the offset and duration per word, first you must set the corresponding `SpeechConfig` property as shown here: speechConfig.requestWordLevelTimestamps();",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://www.assemblyai.com/docs/speech-to-text/universal-streaming",
+      "routes": [
+        "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+      ],
+      "claim": "AssemblyAI Universal-Streaming (WebSocket wss://streaming.assemblyai.com/v3/ws) trả message Turn có mảng words với start/end (ms), confidence và cờ word_is_final cho từng từ — tức word-level timestamp mặc định trong realtime; trang sản phẩm công bố latency ~300 ms P50.",
+      "evidence_quote": "\"words\": [\n { \"text\": \"Smoke\", \"start\": 0, \"end\": 399, \"confidence\": 0.99, \"word_is_final\": true }\n ]",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://docs.nvidia.com/deeplearning/riva/user-guide/docs/asr/asr-overview.html",
+      "routes": [
+        "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+      ],
+      "claim": "NVIDIA Riva ASR hỗ trợ streaming mode trả intermediate transcript độ trễ thấp và có word-level timestamps + word-level confidences trong danh sách tính năng chính thức.",
+      "evidence_quote": "Riva ASR features include:\n\nSupport for offline and streaming use cases\n\nA streaming mode that returns intermediate transcripts with low latency\n\nGPU-accelerated feature extraction\n\nMultiple (and growing) acoustic model architecture options accelerated by\nNVIDIA TensorRT\n\nBeam search decoder based on n-gram language models\n\nVoice activity detection algorithms (CTC-based)\n\nAutomatic punctuation\n\nAbility to return top-N transcripts from beam decoder\n\nWord-level timestamps\n\nWord-level confidences",
+      "score": 9,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://developers.deepgram.com/docs/measuring-streaming-latency",
+      "routes": [
+        "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"
+      ],
+      "claim": "Deepgram công bố transcription latency (thời gian server xử lý và trả kết quả) cho streaming là ≤ 300 ms; docs cũng lưu ý timestamp start/duration không đảm bảo chính xác mức millisecond nên không dùng để đo latency.",
+      "evidence_quote": "Transcription latency is the time Deepgram’s servers take to process audio and return results. Deepgram’s models are optimized to deliver transcription latency in 300 milliseconds or less for streaming workloads.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/SYSTRAN/faster-whisper",
+      "routes": [
+        "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+      ],
+      "claim": "faster-whisper là backend được khuyến nghị cho realtime Whisper streaming, với chính sách streaming có độ trễ tự thích ứng (self-adaptive latency) theo độ phức tạp nguồn audio; bản thân faster-whisper có mục 'Word-level timestamps' trong README (bật qua word_timestamps=True).",
+      "evidence_quote": "Whisper-Streaming implements real-time mode for offline Whisper-like speech-to-text models with faster-whisper as the most recommended back-end. It implements a streaming policy with self-adaptive latency based on the actual source complexity, and demonstrates the state of the art.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/alphacep/vosk-api",
+      "routes": [
+        "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+      ],
+      "claim": "Vosk (nền Kaldi) là STT mã nguồn mở offline hỗ trợ streaming API với phản hồi zero-latency, model nhỏ (~50 MB), transcription từ vựng lớn liên tục — nền tảng để trả start/end từng từ trong kết quả JSON (bật qua SetWords).",
+      "evidence_quote": "Vosk models are small (50 Mb) but provide continuous large vocabulary transcription, zero-latency response with streaming API, reconfigurable vocabulary and speaker identification.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://github.com/ufal/whisper_streaming",
+      "routes": [
+        "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+      ],
+      "claim": "whisper_streaming (UFAL) hiện thực chế độ realtime streaming cho Whisper dựa trên word-level timestamp do faster-whisper sinh ra; transcript được commit bằng chính sách LocalAgreement (xác nhận sau 2 vòng lặp trên chunk audio mới).",
+      "evidence_quote": "However, it doesn't do any sentence segmentation, but Whisper produces punctuation and the libraries `faster-whisper` and `whisper_transcribed` make word-level timestamps. In short: we consecutively process new audio chunks, emit the transcripts that are confirmed by 2 iterations, and scroll the audio processing buffer on a timestamp of a confirmed complete sentence.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3",
+      "routes": [
+        "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+      ],
+      "claim": "NVIDIA Parakeet TDT 0.6B v3 (NeMo, 25 ngôn ngữ châu Âu) sinh timestamp ở mức char/word/segment mặc định khi transcribe với timestamps=True; kiến trúc FastConformer + TDT decoder (duration prediction) — dạng batch/offline, biến thể streaming là multitalker-parakeet-streaming-0.6b-v1.",
+      "evidence_quote": "output = asr_model.transcribe(['2086-149220-0033.wav'], timestamps=True)\n# by default, timestamps are enabled for char, word and segment level\nword_timestamps = output.timestamp['word'] # word level timestamps for first sample",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://ar5iv.labs.arxiv.org/html/2010.11148",
+      "routes": [
+        "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+      ],
+      "claim": "Trong streaming ASR, latency phát từ (emission latency) được đo chuẩn bằng Partial Recognition latency: hiệu thời điểm token cuối được emit so với thời điểm người nói kết thúc (xác định bằng forced alignment) — định nghĩa trong paper FastEmit (Google, ICASSP 2021), phương pháp regularization sequence-level để giảm delay emit từng từ của model transducer.",
+      "evidence_quote": "Partial Recognition (PR) Latency is defined as the timestamps difference of two events as illustrated in Figure 3: (1) when the last token is emitted in the finalized recognition result, (2) the end of the speech when a user finishes speaking estimated by forced alignment.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://ar5iv.labs.arxiv.org/html/2310.17864",
+      "routes": [
+        "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+      ],
+      "claim": "TorchAudio cung cấp API forced alignment CTC chính thức (torchaudio.functional.forced_align) tính alignment mức frame giữa audio và transcript bằng model CTC, có bản GPU scale được cho audio dài — được công bố là giải pháp GPU forced alignment public đầu tiên (paper TorchAudio 2.1).",
+      "evidence_quote": "We have added support for forced alignment generation, which computes frame-level alignments between audio and transcripts using a CTC-trained neural network model . The function forced_align is compatible with both CPU [20, 28] and GPU , providing flexibility to users. The GPU implementation is highly scalable and enables efficient processing of long audio files, and represents the first publicly available GPU-based solution for computing forced alignments.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://arxiv.org/html/2406.19363v1",
+      "routes": [
+        "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+      ],
+      "claim": "WhisperX tạo word-level timestamp bằng cách cắt audio theo VAD rồi forced alignment phoneme với model wav2vec 2.0 bên ngoài — tức timestamp không đến từ chính Whisper mà từ một aligner CTC riêng chạy sau bước nhận dạng.",
+      "evidence_quote": "Bain et al. proposed to segment the speech into 30 sec chunks using an external voice activity detector (VAD). Following this segmentation, they employ forced phoneme alignment with an external phoneme model to generate word-level timestamps. The phoneme model was based on the character-based wav2vec 2.0 pre-trained base model",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://huggingface.co/nvidia/stt_en_fastconformer_hybrid_large_streaming_multi",
+      "routes": [
+        "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+      ],
+      "claim": "Model streaming cache-aware FastConformer-Hybrid (CTC + Transducer) của NVIDIA NeMo hỗ trợ nhiều mức look-ahead cho các mức latency 0ms/80ms/480ms/1040ms (worst-case; latency trung bình bằng một nửa), là con số latency công bố chính thức trên model card.",
+      "evidence_quote": "These models are trained for streaming ASR, which be used for streaming applications with a variety of latencies (0ms, 80ms, 480s, 1040ms).\nThese are the worst latency and average latency of the model for each case would be half of these numbers.",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    },
+    {
+      "source_url": "https://www.isca-archive.org/interspeech_2025/hu25e_interspeech.pdf",
+      "routes": [
+        "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+      ],
+      "claim": "Cơ chế phổ biến nhất để tạo word-level timestamp trong ASR end-to-end là forced alignment trên đầu ra CTC: dù model CTC không được train trực tiếp với alignment phoneme/word, có thể chạy Viterbi decoding trên log-probability của CTC cùng transcript tham chiếu để ép ra alignment từng từ (paper Interspeech 2025 về word-level timestamp cho ASR).",
+      "evidence_quote": "although models like connectionist tempo-ral classification (CTC) are not directly trained with phoneme or word alignments, one can still use Viterbi decoding to the log-probabilities output by CTC models and reference text for forced alignment",
+      "score": 8,
+      "url_alive": true,
+      "confirmed_by_routes": 1
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "AssemblyAI streaming speech-to-text word-level timestamps Universal-Streaming latency",
+    "Azure AI Speech real-time speech to text word-level timestamps offset duration recognized",
+    "CTC forced alignment word-level timestamps streaming ASR paper",
+    "Deepgram streaming API word-level timestamps realtime latency docs",
+    "FastEmit low latency streaming ASR sequence-level emission regularization arxiv",
+    "Google Cloud Speech-to-Text streaming enable_word_time_offsets word timestamps documentation",
+    "NVIDIA Parakeet TDT word-level timestamps model card",
+    "NVIDIA Riva streaming ASR word time offsets word-level timestamps documentation",
+    "NeMo cache-aware streaming FastConformer lookahead latency milliseconds docs",
+    "OpenAI Realtime API transcription word timestamps gpt-4o-transcribe streaming",
+    "Vosk streaming speech recognition word timestamps result words start end",
+    "faster-whisper word_timestamps streaming word-level timestamps",
+    "streaming speech recognition word timestamp latency benchmark emission latency CTC RNN-T",
+    "torchaudio CTC forced alignment API word-level timestamps tutorial pytorch"
+  ],
+  "routes_failed": [],
+  "empty_routes": []
+}

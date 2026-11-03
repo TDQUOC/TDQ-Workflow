@@ -1,0 +1,86 @@
+{
+  "schema_version": 6,
+  "active_request": "2026-10-24-2348-hoan-thien-archify",
+  "previous_request": "2026-10-24-2145-nghien-cuu-tich-hop-archify",
+  "lane": "full",
+  "phase": "implement",
+  "brief_file": "docs/tdq/brief/2026-10-24-2348-hoan-thien-archify.md",
+  "spec_file": "docs/tdq/spec/2026-10-24-2348-hoan-thien-archify.md",
+  "spec_approved": true,
+  "spec_sha256": "4e7a2d0a65e6230f943b980ea09dd5dd4b9451aa976b1d6763d4ff755a29b2be",
+  "spec_approved_at": "2026-10-25T00:13:28+07:00",
+  "spec_descriptor": {
+    "target": "spec",
+    "request": "2026-10-24-2348-hoan-thien-archify",
+    "lane": "full",
+    "file": "docs/tdq/spec/2026-10-24-2348-hoan-thien-archify.md",
+    "sha256": "4e7a2d0a65e6230f943b980ea09dd5dd4b9451aa976b1d6763d4ff755a29b2be",
+    "by": "duyệt spec",
+    "at": "2026-10-25T00:13:28+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "spec_approved_by": "duyệt spec",
+  "spec_bo_qua_do": null,
+  "lsp_bo_qua": {
+    "ly_do": "Mo request de khao sat va lap spec ke thua; chua sua code. Phai xac minh LSP truoc trien khai.",
+    "at": "2026-10-24T23:50:31+07:00",
+    "module": [
+      "python:. → HET_HAN (kết quả cũ hơn 24 giờ)"
+    ]
+  },
+  "plan_file": "docs/tdq/plan/2026-10-24-2348-hoan-thien-archify.md",
+  "plan_approved": true,
+  "plan_sha256": "d1af43109e090a9b62ba4bd4dcc086e31a5ac6b1cd80f014fab674b8b75f96ea",
+  "plan_approved_at": "2026-10-25T00:30:41+07:00",
+  "plan_approved_by": "Duyệt plan",
+  "plan_descriptor": {
+    "target": "plan",
+    "request": "2026-10-24-2348-hoan-thien-archify",
+    "lane": "full",
+    "file": "docs/tdq/plan/2026-10-24-2348-hoan-thien-archify.md",
+    "sha256": "d1af43109e090a9b62ba4bd4dcc086e31a5ac6b1cd80f014fab674b8b75f96ea",
+    "by": "Duyệt plan",
+    "at": "2026-10-25T00:30:41+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "quick_approved": false,
+  "quick_approved_at": null,
+  "quick_approved_by": null,
+  "quick_descriptor": null,
+  "implement_mode": "subagent",
+  "implement_pause": {
+    "loai": "pha-huy",
+    "ly_do": "Gate chuyen phase qc bi chan boi 6 worktree dirty. Da nhap patch va kiem thu tren main nhung worktrees con ban ban giao chua commit; khong tu commit hoac xoa cuong buc theo plan. Giu nguyen du lieu. Suite sau QC2.1 van dang chay va se thu ket qua khi co thong bao, khong coi pause la nghiem thu.",
+    "at": "2026-10-25T02:22:58+07:00",
+    "by": "claude"
+  },
+  "lech_spec": [],
+  "doc_lang": "vi",
+  "muc_gat": "full",
+  "muc_qc": "ultra",
+  "started_at": "2026-10-24T23:50:31+07:00",
+  "loai_request": "feature",
+  "nhanh_goc": "feature/nghien-cuu-tich-hop-archify",
+  "nhanh_request": "feature/hoan-thien-archify",
+  "phase_history": [
+    {
+      "phase": "idle",
+      "at": "2026-10-24T23:50:31+07:00"
+    },
+    {
+      "phase": "analyze",
+      "at": "2026-10-24T23:50:40+07:00"
+    },
+    {
+      "phase": "spec",
+      "at": "2026-10-25T00:04:08+07:00"
+    },
+    {
+      "phase": "plan",
+      "at": "2026-10-25T00:13:28+07:00"
+    }
+  ],
+  "updated_at": "2026-10-25T02:22:58+07:00"
+}

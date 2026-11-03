@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "C:/Users/admin/.codex/plugins/cache/tdq-local/tdq-workflow/0.84.2/scripts/tdq_team.py",
+    "sweep",
+    "--clean"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:29:22.907566+07:00",
+  "seconds": 0.187,
+  "exit_code": 0,
+  "stdout": "team-cleanup.stdout.txt",
+  "stderr": "team-cleanup.stderr.txt"
+}

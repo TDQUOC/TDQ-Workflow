@@ -1,0 +1,7 @@
+tests/test_skill_quality_corpus.py::test_corpus_top_level_metadata_and_live_separation
+tests/test_skill_quality_corpus.py::test_dev_holdout_disjoint_and_case_schema
+tests/test_skill_quality_corpus.py::test_forward_test_prompts_do_not_leak_internal_answers
+tests/test_skill_quality_corpus.py::test_contract_classify_targets_and_eval_plan_binding
+tests/test_skill_quality_corpus.py::test_synthetic_traces_normalization_and_fail_closed_semantics
+
+5 tests collected in 0.12s

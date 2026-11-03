@@ -1,0 +1,20 @@
+{
+  "ca": "duyet-spec",
+  "nhanh": "viet",
+  "lan": 3,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-spec__viet__3/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L149": "dat",
+    "L275": "dat",
+    "L012": "dat",
+    "L121": "dat",
+    "L210": "vi-pham"
+  },
+  "chi_phi": 1.2255369999999999,
+  "so_luot": 26,
+  "nhiem": [
+    "bản plugin cài trên máy"
+  ]
+}

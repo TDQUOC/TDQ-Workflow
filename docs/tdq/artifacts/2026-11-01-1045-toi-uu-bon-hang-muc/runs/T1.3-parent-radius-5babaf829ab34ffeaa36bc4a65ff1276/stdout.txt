@@ -1,0 +1,3 @@
+vung-cham: 2 changed file(s); selected 1/179 modules (direct): test_tdq_test_report.py; no fallback
+[TDQ:TEST] PASS — scope=direct backend=pytest tests=24 skipped=0 in 5.03s.
+TDQ_RESULT {"path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\cache\\test-runs\\e37e717ca14c6170\\68a88a841e3841bc89bd2310357fcace\\result.json", "sha256": "e3995936cfff549643c07073098b4ee490b3e31c3dd498adf81a7f86e4aeb075"}

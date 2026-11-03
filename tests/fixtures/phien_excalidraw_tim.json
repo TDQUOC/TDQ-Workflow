@@ -1,0 +1,394 @@
+{
+ "nguon": "cdf604ee-40eb-452e-8afe-d26c31ca0f0f.jsonl",
+ "ghi_chu": "Ordered search, read, concept-layer and skill events extracted from the excalidraw session transcript; prompt text is NOT stored, only identifier tokens.",
+ "su_kien": [
+  {
+   "luot": 0,
+   "loai": "prompt",
+   "token": [
+    "anlysis",
+    "project"
+   ]
+  },
+  {
+   "luot": 1,
+   "loai": "skill",
+   "cong_cu": "Skill"
+  },
+  {
+   "luot": 2,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "cat package.json | head -80 && ls && ls packages excalidraw-app && for d in packages/* excalidraw-app; do echo \"$d: $(git ls-files $d | grep -E '\\.(ts|tsx)$' | wc -l) ts files, $(git ls-files $d | grep -E '\\.(ts|tsx)$' | xargs cat 2>/dev/null | wc -l) lines\"; done"
+  },
+  {
+   "luot": 3,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "ls packages/excalidraw packages/excalidraw/{actions,components,data,renderer,scene} 2>/dev/null | head -150; ls packages/element/src | head -90; ls excalidraw-app/{collab,data,share}; wc -l packages/excalidraw/components/App.tsx; cat packages/excalidraw/package.json | sed -n '1,20p;/\"dependencies\"/,/}/p'; ls graphify-out docs dev-docs | head -30"
+  },
+  {
+   "luot": 4,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "ls packages/excalidraw/{renderer,scene,data} | tr '\\n' ' '; echo; git ls-files | grep -cE '\\.test\\.tsx?$'; git ls-files packages/excalidraw/locales | wc -l; grep -nE \"class (Store|Scene|History|ActionManager)\\b\" -r packages --include=*.ts --include=*.tsx | head; grep -n \"VITE_APP_WS_SERVER_URL\\|VITE_APP_FIREBASE\" excalidraw-app/../.env.development 2>/dev/null | head -4; git log --oneline | wc -l"
+  },
+  {
+   "luot": 5,
+   "loai": "prompt",
+   "token": [
+    "app",
+    "current",
+    "electron",
+    "nhanh",
+    "okay",
+    "request",
+    "update"
+   ]
+  },
+  {
+   "luot": 6,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "S=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts; python $S/tdq_state.py init 2026-10-02-2303-phan-tich-electron-app nhanh && python $S/tdq_state.py set loai_request=docs; python $S/tdq_state.py next | head -20; python $S/tdq_finish.py --help 2>&1 | head -20"
+  },
+  {
+   "luot": 7,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -rn \"fileHandle\" packages/excalidraw/data/json.ts packages/excalidraw/data/filesystem.ts | head -15; echo ---; grep -n \"export const\\|export async\\|export function\" packages/excalidraw/data/json.ts packages/excalidraw/data/filesystem.ts | head -30; echo ---; grep -n \"UIOptions\\|canvasActions\\|saveToActiveFile\\|loadScene\\|onChange\" packages/excalidraw/types.ts | head -30; echo ---; grep -n \"base\\|VITE_APP_DISABLE\\|registerSW\\|VitePWA\" excalidraw-app/vite.config.mts | head -15"
+  },
+  {
+   "luot": 8,
+   "loai": "prompt",
+   "token": []
+  },
+  {
+   "luot": 9,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -nE \"^export\" packages/excalidraw/index.tsx | head -80; echo ---; grep -nE \"updateScene|resetScene|getSceneElements|getAppState|getFiles|addFiles|onChange|setToast\" packages/excalidraw/types.ts | head -20; echo ---; grep -rn \"EXCALIDRAW_ASSET_PATH\" packages/ --include=*.ts --include=*.tsx | head -5; ls examples"
+  },
+  {
+   "luot": 10,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "sed -n 400,460p packages/excalidraw/index.tsx; sed -n 140,175p packages/excalidraw/fonts/ExcalidrawFontFace.ts; grep -rn \"saveFileToDisk\\|saveToActiveFile\\|isSaved\\|beforeunload\" packages/excalidraw/actions/actionExport.tsx packages/excalidraw/components/App.tsx | head -12; grep -n \"supported\\|legacy\" packages/excalidraw/data/filesystem.ts | head"
+  },
+  {
+   "luot": 11,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -rn \"ASSETS_FALLBACK_URL\\s*=\" -A3 packages/excalidraw/fonts/ExcalidrawFontFace.ts; grep -n \"keyTest\\|perform\" packages/excalidraw/actions/actionExport.tsx | sed -n 1,30p | grep -n \"\" | head -5; sed -n 254,300p packages/excalidraw/actions/actionExport.tsx"
+  },
+  {
+   "luot": 12,
+   "loai": "prompt",
+   "token": [
+    "duy",
+    "quick"
+   ]
+  },
+  {
+   "luot": 13,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "sed -i 's/^- \\[ \\] T1/- [~] T1/' docs/tdq/plan/2026-10-02-2303-phan-tich-electron-app.md && cat > /tmp/t1.sh <<'EOF'\ncd /c/Users/admin/Documents/excalidraw\nD=docs/tdq/research/2026-10-02-2303-phan-tich-electron-app.md\nfail=0\n[ -f \"$D\" ] || { echo \"FAIL: thiếu $D\"; exit 1; }\nfor s in serializeAsJSON loadFromBlob restoreElements restoreAppState updateScene resetScene getSceneElements getFiles addFiles MainMenu saveToActiveFile EXCALIDRAW_ASSET_PATH hashElementsVersion; do\n  n=$(grep -rl \"$s\" packages/excalidraw --include=*.ts --include=*.tsx | wc -l)\n  [ \"$n\" -gt 0 ] || { echo \"FAIL: $s không có trong repo\"; fail=1; }\n  grep -q \"$s\" \"$D\" || { echo \"FAIL: tài liệu không nhắc $s\"; fail=1; }\ndone\nfor h in \"Kết luận\" \"Kiến trúc\" \"Ánh xạ\" \"Rủi ro\" \"Log service\" \"Ước lượng\"; do grep -q \"^## .*$h\" \"$D\" || { echo \"FAIL: thiếu mục $h\"; fail=1; }; done\nL=$(wc -l < \"$D\"); [ \"$L\" -le 150 ] || { echo \"FAIL: $L dòng > 150\"; fail=1; }\n[ $fail = 0 ] && echo \"PASS ($L dòng)\"; exit $fail\nEOF\nbash /tmp/t1.sh; echo \"exit=$?\"; grep -n \"export const serializeAsJSON\" -A8 packages/excalidraw/data/json.ts; grep -n \"export const loadFromBlob\" -A8 packages/excalidraw/data/blob.ts; grep -n \"LoadScene\\|SaveToActiveFile\\|SaveAsImage\\|Export\\b\" packages/excalidraw/components/main-menu/DefaultItems.tsx | head; grep -n \"hashElementsVersion\\|getSceneVersion\" -r packages/element/src/index.ts packages/element/src/*.ts | head -3"
+  },
+  {
+   "luot": 14,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "bash /tmp/t1.sh; echo \"exit=$?\"; sed -n 1125,1160p packages/excalidraw/types.ts | grep -n \"saveFileToDisk\\|export\\|loadScene\\|saveToActiveFile\"; grep -rn \"fonts\" packages/excalidraw/package.json scripts/buildPackage.js 2>/dev/null | head -5; grep -rln \"EXCALIDRAW_ASSET_PATH\" packages/excalidraw/README.md dev-docs/docs 2>/dev/null | head -3"
+  },
+  {
+   "luot": 15,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -n \"saveFileToDisk\" packages/excalidraw/types.ts | head -3; grep -n -B2 -A6 \"EXCALIDRAW_ASSET_PATH\" dev-docs/docs/@excalidraw/excalidraw/installation.mdx | head -30"
+  },
+  {
+   "luot": 16,
+   "loai": "prompt",
+   "token": [
+    "app",
+    "build",
+    "chyaj",
+    "offline",
+    "request"
+   ]
+  },
+  {
+   "luot": 17,
+   "loai": "prompt",
+   "token": [
+    "device",
+    "fujitsu",
+    "optime",
+    "q507"
+   ]
+  },
+  {
+   "luot": 18,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "S=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow; python $S/scripts/tdq_state.py init 2026-10-02-2316-electron-app-offline full && git switch -c feature/electron-app-offline && python $S/scripts/tdq_state.py set loai_request=feature nhanh_goc=master nhanh_request=feature/electron-app-offline && python $S/scripts/tdq_state.py set phase=analyze; cat $S/skills/tdq-intake/references/analyze-full.md"
+  },
+  {
+   "luot": 19,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "ls docs/kien-truc.md 2>&1 | head -1; python C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/skill_inventory.py --loc \"electron desktop app offline build performance\" 2>&1 | head -40"
+  },
+  {
+   "luot": 20,
+   "loai": "tim",
+   "cong_cu": "Grep",
+   "lenh": "fetch\\(|https://[a-z0-9.-]+\\.(com|dev|sh|io|net|app|org)"
+  },
+  {
+   "luot": 21,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -rnE \"https://(libraries|plus|docs|github|www\\.youtube|esm|unpkg|discord|x\\.com|twitter)\" packages/common/src packages/excalidraw/components --include=*.ts --include=*.tsx | grep -v test | cut -c1-170 | head -20; grep -n \"\\\"version\\\"\" packages/excalidraw/package.json; npm view @excalidraw/excalidraw version time.modified 2>/dev/null | head -3; grep -c \"\" packages/excalidraw/CHANGELOG.md; sed -n 1,12p packages/excalidraw/CHANGELOG.md"
+  },
+  {
+   "luot": 22,
+   "loai": "tim",
+   "cong_cu": "Grep",
+   "lenh": "lowPerf|isLowEnd|hardwareConcurrency|deviceMemory|PERFORMANCE|devicePixelRatio"
+  },
+  {
+   "luot": 23,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "(graphify god-nodes 2>&1 || python -m graphify god-nodes 2>&1) | head -15"
+  },
+  {
+   "luot": 24,
+   "loai": "he_thong"
+  },
+  {
+   "luot": 25,
+   "loai": "he_thong"
+  },
+  {
+   "luot": 26,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "sed -n 25,45p packages/excalidraw/reactUtils.ts; node -v; cargo --version 2>&1 | head -1; rustc --version 2>&1 | head -1"
+  },
+  {
+   "luot": 27,
+   "loai": "prompt",
+   "token": []
+  },
+  {
+   "luot": 28,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -n \"alias\\|find:\\|replacement\\|woff2\\|fonts\\|EXCALIDRAW_ASSET_PATH\\|THROTTLE\" excalidraw-app/vite.config.mts excalidraw-app/index.html | head -30; ls packages/excalidraw/fonts | head; grep -rn \"woff2\" packages/excalidraw/fonts/Excalifont/index.ts | head -3"
+  },
+  {
+   "luot": 29,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -n \"http\\|esm\\|unpkg\\|cdn\\|apply\\|name:\" scripts/woff2/woff2-vite-plugins.js | head -20; sed -n 125,140p excalidraw-app/vite.config.mts"
+  },
+  {
+   "luot": 30,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "sed -n 1,60p scripts/woff2/woff2-vite-plugins.js"
+  },
+  {
+   "luot": 31,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "S=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow; sed -i 's/^- (chưa có — chờ người dùng duyệt bản nháp này)/- 2026-10-02: người dùng chốt toàn bộ bản nháp (\"10a\"). Vẫn giữ tiêu đề cảnh báo cho tới khi xoá chữ \"BẢN NHÁP\"./' docs/kien-truc.md && sed -i '1s/(BẢN NHÁP, chờ người dùng chốt)/(đã chốt 2026-10-02)/' docs/kien-truc.md && sed -i '3,4d' docs/kien-truc.md && sed -i 's/- 2026-10-02: người dùng chốt toàn bộ bản nháp (\"10a\"). Vẫn giữ tiêu đề cảnh báo cho tới khi xoá chữ \"BẢN NHÁP\"./- 2026-10-02: người dùng chốt toàn bộ hồ sơ (\"10a\"), gồm vị trí `desktop-app\\/` và luật chỉ import entry công khai./' docs/kien-truc.md && head -4 docs/kien-truc.md && tail -2 docs/kien-truc.md; python $S/scripts/tdq_state.py set muc_qc=full && python $S/scripts/tdq_state.py set phase=spec; sed -n 1,200p $S/skills/tdq-spec/SKILL.md"
+  },
+  {
+   "luot": 32,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "sed -i '2{/^$/d}' docs/kien-truc.md; S=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/skills/tdq-spec/references; cat $S/spec-template.md; sed -n 1,80p $S/spec-template-huong-dan.md"
+  },
+  {
+   "luot": 33,
+   "loai": "prompt",
+   "token": [
+    "add",
+    "font",
+    "khi",
+    "sung"
+   ]
+  },
+  {
+   "luot": 34,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -n \"static\\|register\\|export\\|class \" packages/excalidraw/fonts/Fonts.ts | head -40; grep -n \"FONT_FAMILY\\b\\s*=\" -A25 packages/common/src/constants.ts | head -40; grep -n \"setCustomTextMetricsProvider\\|customFont\\|registerFont\" -r packages --include=*.ts --include=*.tsx | grep -v test | head"
+  },
+  {
+   "luot": 35,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "sed -n 46,80p packages/excalidraw/fonts/Fonts.ts; sed -n 335,400p packages/excalidraw/fonts/Fonts.ts; ls packages/excalidraw/components/FontPicker; grep -n \"FONT_FAMILY\\|DEFAULT_FONTS\\|fontFamilies\\|getFontFamilies\\|registered\" packages/excalidraw/components/FontPicker/*.tsx | head -20"
+  },
+  {
+   "luot": 36,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -n \"registered\\|Fonts\\.\\|FONT_FAMILY\\|getFontFamilyString\\|metadata\" packages/excalidraw/components/FontPicker/FontPickerList.tsx | head -15; grep -rn \"export const getFontFamilyString\" -A12 packages/common/src | head -16"
+  },
+  {
+   "luot": 37,
+   "loai": "prompt",
+   "token": [
+    "check",
+    "lsp",
+    "lumen",
+    "rule",
+    "sao",
+    "work"
+   ]
+  },
+  {
+   "luot": 38,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "F=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/skills/tdq-setup/references/uu-tien-tim-kiem.md; sed -n 1,15p $F"
+  },
+  {
+   "luot": 39,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "F=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/skills/tdq-setup/references/uu-tien-tim-kiem.md; sed -n 14,56p $F"
+  },
+  {
+   "luot": 40,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__plugin_lumen_lumen__semantic_search"
+  },
+  {
+   "luot": 41,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__find_symbol"
+  },
+  {
+   "luot": 42,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__start_lsp"
+  },
+  {
+   "luot": 43,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__start_lsp"
+  },
+  {
+   "luot": 44,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__find_symbol"
+  },
+  {
+   "luot": 45,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__find_references"
+  },
+  {
+   "luot": 46,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__find_references"
+  },
+  {
+   "luot": 47,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -rlw \"getFontFamilyString\" packages excalidraw-app --include=*.ts --include=*.tsx | wc -l; python C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_lsp.py check 2>&1 | grep -E \"Bậc (3|7)\"; ls tsconfig.json; grep -n \"include\\|paths\" tsconfig.json | head"
+  },
+  {
+   "luot": 48,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__get_server_capabilities"
+  },
+  {
+   "luot": 49,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__open_document"
+  },
+  {
+   "luot": 50,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__find_references"
+  },
+  {
+   "luot": 51,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__inspect_symbol"
+  },
+  {
+   "luot": 52,
+   "loai": "khai_niem",
+   "cong_cu": "mcp__lsp__list_symbols"
+  },
+  {
+   "luot": 53,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "grep -rn \"agent-lsp\\|typescript-language-server\\|vtsls\" .mcp.json .claude/settings*.json ~/.claude.json 2>/dev/null | cut -c1-250 | head -8; F=C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/skills/tdq-intake/references/kiem-lsp-hieu-ung.md; sed -n 1,30p $F"
+  },
+  {
+   "luot": 54,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "python C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_finish.py --files docs/tdq/brief/2026-10-02-2316-electron-app-offline.md --log \"Người dùng hỏi về luật tìm kiếm. Chạy kiểm hiệu ứng: lumen ĐẠT; agent-lsp FAIL (find_references getFontFamilyString 0 file vs grep 6; list_symbols cắt cụt ở dòng 43) dù ladder 8/8 ĐẠT. Ghi vào brief. Thừa nhận đã bỏ qua kiểm hiệu ứng ở intake 1b và dùng grep thay LSP/lumen.\""
+  },
+  {
+   "luot": 55,
+   "loai": "prompt",
+   "token": []
+  },
+  {
+   "luot": 56,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "sed -n 2055,2085p /c/Users/admin/.claude.json; ls /c/Users/admin/.local/bin | head; which typescript-language-server vtsls 2>&1 | head"
+  },
+  {
+   "luot": 57,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "python - <<'EOF'\nimport json\nd=json.load(open(r\"C:\\Users\\admin\\.claude.json\",encoding=\"utf-8\"))\nfor k,v in d.get(\"projects\",{}).items():\n    if \"excalidraw\" in k.lower():\n        s=v.get(\"mcpServers\",{})\n        print(k, {n:(c.get(\"command\"),c.get(\"args\")) for n,c in s.items() if n==\"lsp\"})\nEOF\nls .mcp.json 2>&1; grep -n \"lsp\" .claude/settings.json .claude/settings.local.json 2>/dev/null | head; grep -n \"def.*bac3\\|bậc 3\\|typescript\" C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_lsp.py | head"
+  },
+  {
+   "luot": 58,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "sed -n 289,330p C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_lsp.py; /c/Users/admin/.local/bin/agent-lsp.exe --help 2>&1 | head -30"
+  },
+  {
+   "luot": 59,
+   "loai": "tim",
+   "cong_cu": "Bash",
+   "lenh": "ls /c/Users/admin/AppData/Roaming/fnm/aliases/default/ | grep -i \"typescript\\|tsserver\\|pyright\"; claude mcp get lsp 2>&1 | head -12"
+  },
+  {
+   "luot": 60,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "B='C:\\\\Users\\\\admin\\\\AppData\\\\Roaming\\\\fnm\\\\aliases\\\\default\\\\'; J=\"{\\\"type\\\":\\\"stdio\\\",\\\"command\\\":\\\"C:\\\\\\\\Users\\\\\\\\admin\\\\\\\\.local\\\\\\\\bin\\\\\\\\agent-lsp.exe\\\",\\\"args\\\":[\\\"typescript:${B}typescript-language-server.cmd,--stdio\\\",\\\"python:${B}pyright-langserver.cmd,--stdio\\\",\\\"json:${B}vscode-json-language-server.cmd,--stdio\\\",\\\"html:${B}vscode-html-language-server.cmd,--stdio\\\"]}\"; echo \"$J\" | python -c \"import json,sys; print(json.loads(sys.stdin.read())['args'][0])\" && claude mcp remove lsp -s user && claude mcp add-json lsp \"$J\" -s user && claude mcp get lsp | sed -n 1,8p"
+  },
+  {
+   "luot": 61,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "cat > /tmp/mk.py <<'EOF'\nimport json\nb = \"C:\\\\Users\\\\admin\\\\AppData\\\\Roaming\\\\fnm\\\\aliases\\\\default\\\\\"\nservers = [(\"typescript\", \"typescript-language-server\"), (\"python\", \"pyright-langserver\"),\n           (\"json\", \"vscode-json-language-server\"), (\"html\", \"vscode-html-language-server\")]\nprint(json.dumps({\"type\": \"stdio\", \"command\": \"C:\\\\Users\\\\admin\\\\.local\\\\bin\\\\agent-lsp.exe\",\n                  \"args\": [f\"{l}:{b}{s}.cmd,--stdio\" for l, s in servers]}))\nEOF\nJ=$(python /tmp/mk.py) && echo \"$J\" && claude mcp remove lsp -s user && claude mcp add-json lsp \"$J\" -s user && claude mcp get lsp | sed -n 1,8p"
+  },
+  {
+   "luot": 62,
+   "loai": "doc",
+   "cong_cu": "Bash",
+   "lenh": "cat > /tmp/mk.py <<'EOF'\nimport json\nbs = chr(92)\nb = \"C:/Users/admin/AppData/Roaming/fnm/aliases/default/\".replace(\"/\", bs)\nservers = [(\"typescript\", \"typescript-language-server\"), (\"python\", \"pyright-langserver\"),\n           (\"json\", \"vscode-json-language-server\"), (\"html\", \"vscode-html-language-server\")]\nprint(json.dumps({\"type\": \"stdio\", \"command\": \"C:/Users/admin/.local/bin/agent-lsp.exe\".replace(\"/\", bs),\n                  \"args\": [f\"{l}:{b}{s}.cmd,--stdio\" for l, s in servers]}))\nEOF\nJ=$(python /tmp/mk.py) && echo \"$J\" && claude mcp remove lsp -s user && claude mcp add-json lsp \"$J\" -s user && claude mcp get lsp | sed -n 1,8p"
+  }
+ ]
+}

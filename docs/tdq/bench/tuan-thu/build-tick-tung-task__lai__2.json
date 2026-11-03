@@ -1,0 +1,20 @@
+{
+  "ca": "build-tick-tung-task",
+  "nhanh": "lai",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/build-tick-tung-task__lai__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L003": "dat",
+    "L013": "dat",
+    "L145": "dat",
+    "L012": "vi-pham",
+    "L121": "vi-pham",
+    "L209": "khong-ap-dung",
+    "L210": "vi-pham"
+  },
+  "chi_phi": 0.598056,
+  "so_luot": 20,
+  "nhiem": []
+}

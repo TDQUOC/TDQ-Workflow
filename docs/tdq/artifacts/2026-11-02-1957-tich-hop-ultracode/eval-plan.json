@@ -1,0 +1,60 @@
+{
+  "plan_version": "v1",
+  "experiment_id": "2026-11-02-1957-tich-hop-ultracode",
+  "targets": {
+    "hooks/scripts/edit_gate.py": "fb96ccf66edfb8223c54195f2db22709f01ab1d541766a3942e81babc8b54775",
+    "skills/tdq-intake/references/quick-lane.md": "cf76b3fb7a325cd932fa03667e468d22a3f691459b67e865591e02c63a05e000",
+    "skills/tdq-intake/references/lane-decision.md": "249d1851c3d741722755e30fe38ae4668e30553f9b87eeafa95cba813fb1a6d4",
+    "skills/tdq-build/SKILL.md": "31b7b58f4baa81c9f72228ac0eed77bdf3228f21677e927650d2b967cef0a890",
+    "skills/tdq-conventions/SKILL.md": "e041687db7c2a13788c2042d62ce90c5a74087f73882c2950d88b033539f9136",
+    "skills/tdq-spec/SKILL.md": "9e295358c9db3beed7b7dc2cd346084f40912299578b173c073944da2414f5ca",
+    "skills/tdq-plan/SKILL.md": "a85f9b646f52da6e7bd8cf0245ba17910a3031925378a16cebe36ed528501026",
+    "skills/tdq-build/references/skill-eval.md": "f9699217531a90713c21cdc37bda15d95d2058c122a83143ed39b635d9015952",
+    "skills/tdq-intake/references/analyze-full.md": "59c62d428486cdc2095f07b599a3a70b9418868ba7d49e6b7c3f05ec54f09d09",
+    "skills/tdq-build/references/team-mode.md": "7767efeab7b6fe9269c552c75ec343c1a9fbd18955a637d09c6d572ff9fdd448",
+    "hooks/scripts/bash_gate.py": "05461e1c28bcda28ed89af3095f102daa3c5784c93aefc29b9e2d6aae32a5919",
+    "skills/tdq-build/references/qc.md": "7dc117ddd21f1ac6659dbe523a2de986c3bf62b37443eb44b16105f768a24a74",
+    "skills/tdq-intake/SKILL.md": "e4a81c2d1ff5a800173e1d3248d805379bf6fc1272374429a81fa740bfd1c735"
+  },
+  "base_identity": "cdc444f4d68141c12a48ec5e37cc94d7047cae41",
+  "candidate_identity": "planned",
+  "change_kind": "behavioral",
+  "hypothesis": "Ultracode lane modifier routes finite Workflow analysis/review/QC while TDQ remains sole state/Git/worktree owner; read-only agents may report only to assigned docs paths or structured fallback.",
+  "evaluation_kind": "mechanism",
+  "corpus_id": "ultracode-routing-v1",
+  "dev_cases_sha256": "86bdc37a465b56de5fa7bca7d020cbffab3563799304e0ba1a41a82371dbe867",
+  "holdout_cases_sha256": "40badc47b32e30d6573373dad4e5f3b1c3504b7d620266d360778c1adfd578b4",
+  "rubric_version": "ultracode-q1-q11-v1",
+  "scorer_version": "contract-pass-fail-v1",
+  "expected_triggers": [
+    "express_ultracode",
+    "deep_ultracode",
+    "1a_ultracode"
+  ],
+  "negative_cases": [
+    "express",
+    "deep",
+    "tool_text_ultracode",
+    "subagent_text_ultracode"
+  ],
+  "required_metrics": [
+    "trigger_accuracy",
+    "outcome_quality"
+  ],
+  "cells": [
+    {
+      "permission_profile": "workflow-readonly-docs-report",
+      "host": "claude-code-interactive",
+      "tool_aliases": {},
+      "model": "cc1",
+      "cache_profile": "none"
+    }
+  ],
+  "repetitions": 1,
+  "order_policy": "AB_BA",
+  "thresholds": {
+    "quality_pass_rate": 1,
+    "false_positive_rate": 0
+  },
+  "experiment_hash": "01b59f3bc62cc2ee528178a8bec72427b94b38937ad5ce0b01a57888d7fbcdee"
+}

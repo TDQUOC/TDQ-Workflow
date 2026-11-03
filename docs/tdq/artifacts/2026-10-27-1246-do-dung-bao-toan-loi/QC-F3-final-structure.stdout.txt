@@ -1,0 +1,709 @@
+{
+  "method": "AST structural review; branch count estimate, not ruff/radon/cognitive certification",
+  "files": [
+    {
+      "file": "scripts/tdq_transcript.py",
+      "imports": [
+        "collections",
+        "datetime",
+        "json",
+        "ntpath",
+        "os",
+        "pathlib",
+        "posixpath",
+        "re",
+        "sys"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "_log",
+          "line": 28,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_windows_path",
+          "line": 34,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_absolute_project",
+          "line": 38,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "normalize_project",
+          "line": 47,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "claude_transcript_dir",
+          "line": 53,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "parse_timestamp",
+          "line": 60,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_walk_jsonl",
+          "line": 71,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_claude_directories",
+          "line": 84,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_candidate_paths",
+          "line": 96,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_new_source",
+          "line": 113,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_issue",
+          "line": 122,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_iter_records",
+          "line": 128,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_identity_value",
+          "line": 147,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_read_metadata",
+          "line": 161,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_mark",
+          "line": 181,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_claude_blocks",
+          "line": 197,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_claude_response",
+          "line": 217,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_read_claude",
+          "line": 232,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_read_codex",
+          "line": 247,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_fallback_session",
+          "line": 262,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_metadata_conflicts",
+          "line": 268,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "_selection_rejection",
+          "line": 273,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_select_session",
+          "line": 286,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_select_source",
+          "line": 294,
+          "cc_ast_estimate": 9
+        },
+        {
+          "name": "_read_source",
+          "line": 309,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_collect_marks",
+          "line": 330,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_collect_mark",
+          "line": 345,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_bucket_span",
+          "line": 362,
+          "cc_ast_estimate": 10
+        },
+        {
+          "name": "_pair_spans",
+          "line": 379,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_coverage_issues",
+          "line": 391,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_quality",
+          "line": 403,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_public_sources",
+          "line": 413,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "read_transcripts",
+          "line": 423,
+          "cc_ast_estimate": 8
+        }
+      ]
+    },
+    {
+      "file": "scripts/tdq_test_result.py",
+      "imports": [
+        "posixpath",
+        "re",
+        "unittest",
+        "xml"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "_inventory_paths",
+          "line": 8,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_aliases",
+          "line": 13,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_longest_match",
+          "line": 19,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_identifier_module",
+          "line": 27,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_file_module",
+          "line": 39,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_module_for",
+          "line": 50,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "_failure",
+          "line": 59,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_result",
+          "line": 64,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "empty_result",
+          "line": 78,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_status",
+          "line": 86,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_test_id",
+          "line": 96,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "_unittest_failures",
+          "line": 105,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_valid_count",
+          "line": 117,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "from_unittest_result",
+          "line": 122,
+          "cc_ast_estimate": 10
+        },
+        {
+          "name": "_tag",
+          "line": 147,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_case_outcomes",
+          "line": 151,
+          "cc_ast_estimate": 10
+        },
+        {
+          "name": "_xml_counts",
+          "line": 173,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_counter_issues",
+          "line": 185,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_read_cases",
+          "line": 200,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_xml_report",
+          "line": 220,
+          "cc_ast_estimate": 9
+        },
+        {
+          "name": "_output_failures",
+          "line": 240,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_summary_identity",
+          "line": 253,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_append_output_failures",
+          "line": 259,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_exit_failure",
+          "line": 273,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_retain_exit_failure",
+          "line": 283,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_reconcile_exit",
+          "line": 297,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_reason",
+          "line": 308,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "from_junit_xml",
+          "line": 317,
+          "cc_ast_estimate": 2
+        }
+      ]
+    },
+    {
+      "file": "scripts/token_audit.py",
+      "imports": [
+        "argparse",
+        "base64",
+        "bisect",
+        "collections",
+        "datetime",
+        "glob",
+        "hashlib",
+        "json",
+        "os",
+        "skill_tokens",
+        "struct",
+        "sys",
+        "tdq_transcript",
+        "utf8_io"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "default_transcript_dir",
+          "line": 144,
+          "cc_ast_estimate": 1
+        }
+      ]
+    },
+    {
+      "file": "scripts/tdq_timing.py",
+      "imports": [
+        "argparse",
+        "datetime",
+        "json",
+        "os",
+        "sys",
+        "tdq_state",
+        "tdq_transcript"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "_aware_time",
+          "line": 72,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "_phase_mark",
+          "line": 78,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_phase_marks",
+          "line": 86,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_phase_window",
+          "line": 104,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "cua_so_phase",
+          "line": 113,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_merge_intervals",
+          "line": 130,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_clip_intervals",
+          "line": 140,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_phase_intersections",
+          "line": 145,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_prepared_intervals",
+          "line": 161,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_observation_quality",
+          "line": 170,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_metric",
+          "line": 179,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_metrics",
+          "line": 192,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_phase_totals",
+          "line": 206,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "tong_hop",
+          "line": 222,
+          "cc_ast_estimate": 10
+        },
+        {
+          "name": "_legacy_markdown",
+          "line": 249,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_metric_text",
+          "line": 259,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "bang_markdown",
+          "line": 263,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_current_phase_clock",
+          "line": 284,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "dong_ho_ngan",
+          "line": 293,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "da_dong_so",
+          "line": 307,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_cli_time",
+          "line": 346,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "main",
+          "line": 354,
+          "cc_ast_estimate": 9
+        }
+      ]
+    },
+    {
+      "file": "scripts/tdq_test.py",
+      "imports": [
+        "argparse",
+        "ast",
+        "contextlib",
+        "importlib",
+        "json",
+        "os",
+        "re",
+        "subprocess",
+        "sys",
+        "tdq_state",
+        "tdq_ten_lenh",
+        "tdq_test_result",
+        "tempfile",
+        "time",
+        "unittest",
+        "utf8_io",
+        "xml"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "_ly_do_khong_doc_duoc",
+          "line": 394,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "chay_module",
+          "line": 592,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_suite_modules",
+          "line": 597,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_run_unittest_suite",
+          "line": 615,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "chay_module_result",
+          "line": 640,
+          "cc_ast_estimate": 8
+        },
+        {
+          "name": "_changed_files",
+          "line": 676,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_select_tests",
+          "line": 683,
+          "cc_ast_estimate": 9
+        },
+        {
+          "name": "_output_stream",
+          "line": 705,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "_record_result",
+          "line": 713,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_print_result",
+          "line": 732,
+          "cc_ast_estimate": 2
+        },
+        {
+          "name": "cmd_vung_cham",
+          "line": 740,
+          "cc_ast_estimate": 10
+        },
+        {
+          "name": "chay_tron_bo",
+          "line": 776,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_result_inventory",
+          "line": 782,
+          "cc_ast_estimate": 5
+        },
+        {
+          "name": "_pytest_available",
+          "line": 791,
+          "cc_ast_estimate": 3
+        },
+        {
+          "name": "_junit_modules",
+          "line": 800,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_read_pytest_result",
+          "line": 822,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_partial_output",
+          "line": 839,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "_run_pytest",
+          "line": 846,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "chay_tron_bo_result",
+          "line": 868,
+          "cc_ast_estimate": 6
+        },
+        {
+          "name": "_radius_rows",
+          "line": 893,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "module_bo_sot",
+          "line": 901,
+          "cc_ast_estimate": 10
+        },
+        {
+          "name": "co_vung_cham",
+          "line": 921,
+          "cc_ast_estimate": 1
+        },
+        {
+          "name": "_radius_complete",
+          "line": 926,
+          "cc_ast_estimate": 7
+        },
+        {
+          "name": "_radius_summary",
+          "line": 940,
+          "cc_ast_estimate": 9
+        },
+        {
+          "name": "dem",
+          "line": 953,
+          "cc_ast_estimate": 9
+        },
+        {
+          "name": "_report_misses",
+          "line": 976,
+          "cc_ast_estimate": 9
+        },
+        {
+          "name": "cmd_tron_bo",
+          "line": 999,
+          "cc_ast_estimate": 4
+        },
+        {
+          "name": "cmd_so",
+          "line": 1031,
+          "cc_ast_estimate": 4
+        }
+      ]
+    },
+    {
+      "file": "scripts/tdq_state.py",
+      "imports": [
+        "datetime",
+        "doc_lint",
+        "hashlib",
+        "json",
+        "lsp_module",
+        "os",
+        "re",
+        "shutil",
+        "stat",
+        "subprocess",
+        "sys",
+        "tdq_ten_lenh",
+        "tdq_test",
+        "tdq_timing",
+        "tdq_worktree_registry",
+        "tempfile",
+        "utf8_io"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "_dong_so_request_cu",
+          "line": 453,
+          "cc_ast_estimate": 6
+        }
+      ]
+    },
+    {
+      "file": "scripts/step_audit.py",
+      "imports": [
+        "argparse",
+        "datetime",
+        "math",
+        "os",
+        "sys",
+        "token_audit",
+        "utf8_io"
+      ],
+      "forbidden_imports": [],
+      "changed_functions": [
+        {
+          "name": "report",
+          "line": 164,
+          "cc_ast_estimate": 2
+        }
+      ]
+    }
+  ],
+  "new_modules_stdlib_only": true,
+  "forbidden_imports": 0,
+  "max_cc_ast_estimate": 10
+}

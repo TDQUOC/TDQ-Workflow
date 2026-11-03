@@ -1,0 +1,65 @@
+{
+  "agent": 3,
+  "routes": [
+    "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Cơ chế phổ biến nhất để tạo word-level timestamp trong ASR end-to-end là forced alignment trên đầu ra CTC: dù model CTC không được train trực tiếp với alignment phoneme/word, có thể chạy Viterbi decoding trên log-probability của CTC cùng transcript tham chiếu để ép ra alignment từng từ (paper Interspeech 2025 về word-level timestamp cho ASR).",
+      "evidence_quote": "although models like connectionist tempo-ral classification (CTC) are not directly trained with phoneme or word alignments, one can still use Viterbi decoding to the log-probabilities output by CTC models and reference text for forced alignment",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 8,
+      "source_url": "https://www.isca-archive.org/interspeech_2025/hu25e_interspeech.pdf",
+      "url_alive": true
+    },
+    {
+      "claim": "WhisperX tạo word-level timestamp bằng cách cắt audio theo VAD rồi forced alignment phoneme với model wav2vec 2.0 bên ngoài — tức timestamp không đến từ chính Whisper mà từ một aligner CTC riêng chạy sau bước nhận dạng.",
+      "evidence_quote": "Bain et al. proposed to segment the speech into 30 sec chunks using an external voice activity detector (VAD). Following this segmentation, they employ forced phoneme alignment with an external phoneme model to generate word-level timestamps. The phoneme model was based on the character-based wav2vec 2.0 pre-trained base model",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 8,
+      "source_url": "https://arxiv.org/html/2406.19363v1",
+      "url_alive": true
+    },
+    {
+      "claim": "Benchmark độ chính xác word boundary (corpus Buckeye, ngưỡng sai lệch 10/25/50/100 ms): Montreal Forced Aligner (HMM truyền thống) đạt 41.6/72.8/89.4/97.4% — vẫn cao hơn hai aligner CTC end-to-end là MMS và WhisperX ở mọi ngưỡng, theo paper so sánh forced alignment 2024.",
+      "evidence_quote": "| MFA | 41.6 | 72.8 | 89.4 | 97.4 |\n| MMS | 18.6 | 43.5 | 75.7 | 94.7 |\n| WhisperX | 22.4 | 52.7 | 82.4 | 94.2 |",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 7,
+      "source_url": "https://arxiv.org/html/2406.19363v1",
+      "url_alive": true
+    },
+    {
+      "claim": "TorchAudio cung cấp API forced alignment CTC chính thức (torchaudio.functional.forced_align) tính alignment mức frame giữa audio và transcript bằng model CTC, có bản GPU scale được cho audio dài — được công bố là giải pháp GPU forced alignment public đầu tiên (paper TorchAudio 2.1).",
+      "evidence_quote": "We have added support for forced alignment generation, which computes frame-level alignments between audio and transcripts using a CTC-trained neural network model . The function forced_align is compatible with both CPU [20, 28] and GPU , providing flexibility to users. The GPU implementation is highly scalable and enables efficient processing of long audio files, and represents the first publicly available GPU-based solution for computing forced alignments.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 8,
+      "source_url": "https://ar5iv.labs.arxiv.org/html/2310.17864",
+      "url_alive": true
+    },
+    {
+      "claim": "Trong streaming ASR, latency phát từ (emission latency) được đo chuẩn bằng Partial Recognition latency: hiệu thời điểm token cuối được emit so với thời điểm người nói kết thúc (xác định bằng forced alignment) — định nghĩa trong paper FastEmit (Google, ICASSP 2021), phương pháp regularization sequence-level để giảm delay emit từng từ của model transducer.",
+      "evidence_quote": "Partial Recognition (PR) Latency is defined as the timestamps difference of two events as illustrated in Figure 3: (1) when the last token is emitted in the finalized recognition result, (2) the end of the speech when a user finishes speaking estimated by forced alignment.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 8,
+      "source_url": "https://ar5iv.labs.arxiv.org/html/2010.11148",
+      "url_alive": true
+    },
+    {
+      "claim": "Model streaming cache-aware FastConformer-Hybrid (CTC + Transducer) của NVIDIA NeMo hỗ trợ nhiều mức look-ahead cho các mức latency 0ms/80ms/480ms/1040ms (worst-case; latency trung bình bằng một nửa), là con số latency công bố chính thức trên model card.",
+      "evidence_quote": "These models are trained for streaming ASR, which be used for streaming applications with a variety of latencies (0ms, 80ms, 480s, 1040ms).\nThese are the worst latency and average latency of the model for each case would be half of these numbers.",
+      "route": "kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming",
+      "score": 8,
+      "source_url": "https://huggingface.co/nvidia/stt_en_fastconformer_hybrid_large_streaming_multi",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "CTC forced alignment word-level timestamps streaming ASR paper",
+    "streaming speech recognition word timestamp latency benchmark emission latency CTC RNN-T",
+    "FastEmit low latency streaming ASR sequence-level emission regularization arxiv",
+    "torchaudio CTC forced alignment API word-level timestamps tutorial pytorch",
+    "NeMo cache-aware streaming FastConformer lookahead latency milliseconds docs"
+  ]
+}

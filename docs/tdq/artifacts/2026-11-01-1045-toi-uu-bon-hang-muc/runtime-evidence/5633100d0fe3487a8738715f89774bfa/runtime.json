@@ -1,0 +1,286 @@
+{
+  "schema": "tdq-optimize-runtime/v1",
+  "source_sha256": "6f03e5bec06c11ed1bc7d9c14609d09ce9f3b55f2fc0b069057c80cce97543bc",
+  "scenarios": [
+    {
+      "name": "calibration-valid",
+      "classification": "fixture-process",
+      "elapsed_seconds": 10.910527599997295,
+      "deadline_seconds": 120.0,
+      "exit_code": 0,
+      "process": {
+        "pid": 8440,
+        "ownership_verified": true,
+        "cleanup_complete": true
+      },
+      "facts": {
+        "measurement_calls": 3,
+        "command_exit_code": 0,
+        "output_exists": true,
+        "new_output_files": [
+          "measurement.json"
+        ],
+        "observer_enabled": true,
+        "observed_process_calls": 45
+      },
+      "evidence": [
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime_checks.py",
+          "sha256": "cbcc6bf590479ce8155175d5d9587588ad0ad6fc73c9845be5b1e00a1fbf74b3"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/source-inventory.json",
+          "sha256": "e42377dca2b19d35f1e5fd79b31dee85416059a4ae9f38cb07c151bd8ccde888"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/facts.json",
+          "sha256": "f2ee4aad4d9da721f7a8c56a275062f531c9e8902224456a8ab9e90d6f5b30f1"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/fixture-bin/true.cmd",
+          "sha256": "c6ea9607a678e3ad00bdb834b28bd709996c9027eb340e151982218d1875c061"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/measurement.json",
+          "sha256": "ea730e7d80a78aff27768c888fe2f9b01ee6a414a0d838d263ed77cf01873dcb"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/observer.jsonl",
+          "sha256": "47d1a4e2916c8475f97f1653e769c93ea1f39006c33156727a2087ad27cc44c4"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/process.json",
+          "sha256": "1118dccc4cbf7faf082a4cfbc09a1da55702085cbcb3104d10f99fd9c7bd8d82"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/stderr.txt",
+          "sha256": "a4ec5621e5fe8039f6fcd1a3813e8f186d2f591ffe1703649ecb312b61a812bf"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/calibration-valid/stdout.txt",
+          "sha256": "49bd03182b98084f11e87d546914a4de5087cc3f667fddf9a3d675c5cb45462f"
+        }
+      ]
+    },
+    {
+      "name": "reject-early",
+      "classification": "real-process",
+      "elapsed_seconds": 0.33546170000045095,
+      "deadline_seconds": 120.0,
+      "exit_code": 0,
+      "process": {
+        "pid": 26368,
+        "ownership_verified": true,
+        "cleanup_complete": true
+      },
+      "facts": {
+        "measurement_calls": 0,
+        "command_exit_code": 1,
+        "output_exists": false,
+        "new_output_files": [],
+        "observer_enabled": true,
+        "observed_process_calls": 0
+      },
+      "evidence": [
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime_checks.py",
+          "sha256": "cbcc6bf590479ce8155175d5d9587588ad0ad6fc73c9845be5b1e00a1fbf74b3"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/source-inventory.json",
+          "sha256": "e42377dca2b19d35f1e5fd79b31dee85416059a4ae9f38cb07c151bd8ccde888"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/reject-early/facts.json",
+          "sha256": "52177aa2d8fc48ff44d1f35c858151bff94b378071ca146719019ef94d3a80a5"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/reject-early/observer.jsonl",
+          "sha256": "743bb5f30d2b74247deead48a7e69388873177540699bdb438ed49b325ca0f43"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/reject-early/process.json",
+          "sha256": "48b8e887c858b491ea3bdad52e93a0dd9cfddd500ce15d60028cba894029920d"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/reject-early/stderr.txt",
+          "sha256": "927b55764cc63b79681fb3ba1d6231409934e98612fbe55df6c481388a6af776"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/reject-early/stdout.txt",
+          "sha256": "a1ee4b41a46f0e15b08246ef9251d3155ab452652e9ad63b9edb53a353d64678"
+        }
+      ]
+    },
+    {
+      "name": "timeout-cleanup",
+      "classification": "fixture-process",
+      "elapsed_seconds": 2.707400499995856,
+      "deadline_seconds": 120.0,
+      "exit_code": 0,
+      "process": {
+        "pid": 32884,
+        "ownership_verified": true,
+        "cleanup_complete": true
+      },
+      "facts": {
+        "timeout_seconds": 2,
+        "call_elapsed_seconds": 2.1973342999990564,
+        "ready_observed": true,
+        "descendants_observed": [
+          31732,
+          25944
+        ],
+        "descendants_alive_after": [],
+        "home_existed_before": true,
+        "home_exists_after": false,
+        "unrelated_before": {
+          "pid": 41908,
+          "identity": "134379981329608424",
+          "alive": true,
+          "home_exists": true,
+          "marker_sha256": "414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445"
+        },
+        "unrelated_after": {
+          "pid": 41908,
+          "identity": "134379981329608424",
+          "alive": true,
+          "home_exists": true,
+          "marker_sha256": "414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445"
+        },
+        "alive_result": false,
+        "version": "",
+        "reason": "say hi quá hạn 2s — model không trả lời",
+        "caller_home_preserved": true,
+        "caller_userprofile_preserved": true,
+        "observer_enabled": true,
+        "observed_process_calls": 3
+      },
+      "evidence": [
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime_checks.py",
+          "sha256": "cbcc6bf590479ce8155175d5d9587588ad0ad6fc73c9845be5b1e00a1fbf74b3"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/source-inventory.json",
+          "sha256": "e42377dca2b19d35f1e5fd79b31dee85416059a4ae9f38cb07c151bd8ccde888"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/facts.json",
+          "sha256": "240eb20a4ac11593fa58bdf146717ddf0c87285235f8e1088b44d29899928b0a"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/fixture-codex.cmd",
+          "sha256": "91a33639034352e6e31c8f2c2dd9f10caa00a971171a5ca9f528051c733caf9e"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/fixture-codex.py",
+          "sha256": "8750d7acbc16097d0d86fc301de81a810d316a3dc930f613c5b15f4d67a3c89e"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/observer.jsonl",
+          "sha256": "88fe30d5a458021b43dff94fe6bdbef6af511771425276129667878e6ffe8d5d"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/process.json",
+          "sha256": "8d8595cceb19f94ee6beffeb07939f164e3d2e0cfe7d7a4f33ffaa62a3d9e12c"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/ready.json",
+          "sha256": "86f895765206d622e4abdaf0505ff256eec5979cade0cf57037b127d0258611e"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/stderr.txt",
+          "sha256": "5d1b8813492534b736cda6f2d5022bd2c24cb236e52ce7cc178d815bf069909b"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/stdout.txt",
+          "sha256": "9d9d93f3355b5a9be454e1c69594bbbb080f78e666aebe70a23acc8727133de7"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/timeout-cleanup/unrelated-home/marker.txt",
+          "sha256": "414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445"
+        }
+      ]
+    },
+    {
+      "name": "report-offline",
+      "classification": "real-process",
+      "elapsed_seconds": 1.281176399999822,
+      "deadline_seconds": 120.0,
+      "exit_code": 0,
+      "process": {
+        "pid": 42848,
+        "ownership_verified": true,
+        "cleanup_complete": true
+      },
+      "facts": {
+        "input": {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/final-result.json",
+          "sha256": "ec60b7816e0f7efc06f5b4784e3fd3f5c3ea0adf604ddbbeaac8cff700e7d7d2"
+        },
+        "input_sha256": "ec60b7816e0f7efc06f5b4784e3fd3f5c3ea0adf604ddbbeaac8cff700e7d7d2",
+        "runner_calls": 0,
+        "outputs": [
+          {
+            "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/offline-report.v1.json",
+            "sha256": "3aeb0b498cebcd958666eef6f6713a4fb4a7cf415874f3fb9e6794da66f0e102"
+          },
+          {
+            "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/offline-report.v1.md",
+            "sha256": "452e7188e2784ebcb9d10c9ff4e5fd8d6d8ef67a35b4ffae4e85eb21ea9d873e"
+          },
+          {
+            "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/offline-report.v1.html",
+            "sha256": "a5ef1fb44dfbfdcae3be2b907da73c958bace32a93b3d3e730de141d46fac5df"
+          }
+        ],
+        "command_exit_code": 0,
+        "observer_enabled": true,
+        "observed_process_calls": 0
+      },
+      "evidence": [
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime_checks.py",
+          "sha256": "cbcc6bf590479ce8155175d5d9587588ad0ad6fc73c9845be5b1e00a1fbf74b3"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/source-inventory.json",
+          "sha256": "e42377dca2b19d35f1e5fd79b31dee85416059a4ae9f38cb07c151bd8ccde888"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/facts.json",
+          "sha256": "f2f62d10bb8cc2286f7950387c950a24ce1a4005305ab2b98f4b734a8c9349af"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/observer.jsonl",
+          "sha256": "b60f32706b2f49e0030500a2b62047b188f7f36c25259a86c156d08aec38df58"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/offline-report.v1.html",
+          "sha256": "a5ef1fb44dfbfdcae3be2b907da73c958bace32a93b3d3e730de141d46fac5df"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/offline-report.v1.json",
+          "sha256": "3aeb0b498cebcd958666eef6f6713a4fb4a7cf415874f3fb9e6794da66f0e102"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/offline-report.v1.md",
+          "sha256": "452e7188e2784ebcb9d10c9ff4e5fd8d6d8ef67a35b4ffae4e85eb21ea9d873e"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/process.json",
+          "sha256": "e3606a782facdcaf017837d3fa64a661853429eb65945e74dcd9a2fb0c78ae58"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/stderr.txt",
+          "sha256": "255314fdfc9ae871beb1cd003d20a48b2d0bc69dd11cf64acbf3ff5e1b5d4fe8"
+        },
+        {
+          "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/5633100d0fe3487a8738715f89774bfa/report-offline/stdout.txt",
+          "sha256": "e8e32860b24e761363d6be77eb676327eb0b0fa2a79c7717fd5972647e08d012"
+        }
+      ]
+    }
+  ]
+}

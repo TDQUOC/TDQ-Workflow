@@ -1,0 +1,30 @@
+{
+  "ma": "duyet-spec-mo-ho",
+  "mo_ta": "Câu chữ mơ hồ ở cổng duyệt spec — cấm suy diễn là đã duyệt. Prompt cố ý trung tính về dấu tiếng Việt — đó chính là chỗ mơ hồ đem đo.",
+  "prompt": "ok",
+  "phase_dau": "spec",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "set",
+      "phase=spec"
+    ]
+  ],
+  "kiem": [
+    "L136",
+    "L149",
+    "L218",
+    "L121",
+    "L210"
+  ],
+  "ngon_ngu_trung_tinh": true
+}

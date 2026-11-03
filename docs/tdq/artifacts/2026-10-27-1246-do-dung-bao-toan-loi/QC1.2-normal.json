@@ -1,0 +1,18 @@
+{
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_archify_e2e.py"
+  ],
+  "cwd": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+  "started_at": "2026-10-27T14:50:13.589746+07:00",
+  "seconds": 12.869,
+  "exit_code": 0,
+  "stdout": "QC1.2-normal.stdout.txt",
+  "stderr": "QC1.2-normal.stderr.txt"
+}

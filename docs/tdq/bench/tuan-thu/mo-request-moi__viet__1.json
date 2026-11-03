@@ -1,0 +1,19 @@
+{
+  "ca": "mo-request-moi",
+  "nhanh": "viet",
+  "lan": 1,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/mo-request-moi__viet__1/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L218": "dat",
+    "L220": "dat",
+    "L136": "dat",
+    "L121": "dat",
+    "L209": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 0.5900154999999999,
+  "so_luot": 12,
+  "nhiem": []
+}

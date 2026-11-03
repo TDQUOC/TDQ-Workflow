@@ -1,0 +1,30 @@
+{
+  "ma": "duyet-spec-tieng-anh",
+  "mo_ta": "User duyệt spec bằng tiếng Anh — vẫn phải ghi duyệt có --by và viết plan ngay cùng turn, và tài liệu viết theo ngôn ngữ user.",
+  "prompt": "approve spec",
+  "ngon_ngu_trung_tinh": true,
+  "phase_dau": "spec",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "set",
+      "phase=spec"
+    ]
+  ],
+  "kiem": [
+    "L149",
+    "L275",
+    "L012",
+    "L121",
+    "L210"
+  ]
+}

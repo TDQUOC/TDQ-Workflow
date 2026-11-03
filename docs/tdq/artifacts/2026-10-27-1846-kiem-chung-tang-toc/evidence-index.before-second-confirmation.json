@@ -1,0 +1,10 @@
+{
+  "schema": "tdq-evidence-index/v2",
+  "full_receipt": "runs/QC-F1-after-writers-stopped-20261031-dd68c0bd37a142bb9f89d1eef8ba3609/receipt.json",
+  "baseline": {
+    "path": "docs/tdq/artifacts/2026-10-27-1246-do-dung-bao-toan-loi/review-collection.json",
+    "sha256": "ba31b3b2df65709a2096d0430b95481d886a24509f57abe822e1ef5778eacd00"
+  },
+  "remaps": [],
+  "checks": {}
+}

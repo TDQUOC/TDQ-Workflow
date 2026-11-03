@@ -1,0 +1,3 @@
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0032", "name": "Bash", "input": {"command": "python3 scripts/tdq_state.py approve plan --by \"duyệt plan\""}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0032", "content": "✅ ghi nhận", "is_error": false}]}}
+{"type": "result", "subtype": "success", "result": "Plan đã duyệt. Bạn muốn tôi chạy theo cách nào?\n- A: làm trực tiếp (inline implement)\n- B: giao trợ lý (sub-agent implement)", "total_cost_usd": 0.42, "num_turns": 6, "is_error": false}

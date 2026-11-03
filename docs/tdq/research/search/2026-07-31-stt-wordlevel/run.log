@@ -1,0 +1,16 @@
+[2026-07-31T15:40:54+07:00] agent=1 agy=1.1.9 route=API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime call=search attempt=1 model=gemini-3.6-flash-low exit=0 findings=4 secs=62.0
+[2026-07-31T15:41:39+07:00] agent=1 agy=1.1.9 route=API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=0 secs=45.1
+[2026-07-31T15:41:58+07:00] agent=1 agy=1.1.9 route=API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=19.4
+[2026-07-31T15:42:38+07:00] agent=1 agy=1.1.9 route=API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=0 secs=39.4
+[2026-07-31T15:42:38+07:00] agent=1 drop url-chết: https://www.assemblyai.com/docs/models/real-time
+[2026-07-31T15:42:42+07:00] agent=1 agy=1.1.9 exit=0 findings=4 routes_failed=0 report=docs/tdq/research/search/2026-07-31-stt-wordlevel/agent-1.json
+[2026-07-31T15:40:39+07:00] agent=2 agy=1.1.9 route=open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet call=search attempt=1 model=gemini-3.6-flash-low exit=0 findings=4 secs=44.2
+[2026-07-31T15:40:51+07:00] agent=2 agy=1.1.9 route=open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=11.9
+[2026-07-31T15:41:01+07:00] agent=2 agy=1.1.9 route=open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=10.7
+[2026-07-31T15:41:29+07:00] agent=2 agy=1.1.9 route=open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=0 secs=28.0
+[2026-07-31T15:41:31+07:00] agent=2 agy=1.1.9 exit=0 findings=6 routes_failed=0 report=docs/tdq/research/search/2026-07-31-stt-wordlevel/agent-2.json
+[2026-07-31T15:42:02+07:00] agent=3 agy=1.1.9 route=kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming call=search attempt=1 model=gemini-3.6-flash-low exit=0 findings=2 secs=126.0
+[2026-07-31T15:42:13+07:00] agent=3 agy=1.1.9 route=kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=2 secs=11.5
+[2026-07-31T15:42:30+07:00] agent=3 agy=1.1.9 route=kỹ thuật word-level timestamp + benchmark latency: forced alignment CTC streaming call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=16.1
+[2026-07-31T15:42:32+07:00] agent=3 agy=1.1.9 exit=0 findings=5 routes_failed=0 report=docs/tdq/research/search/2026-07-31-stt-wordlevel/agent-3.json
+[2026-07-31T15:43:28+07:00] merge run=2026-07-31-stt-wordlevel agents=3 findings=9 routes_failed=0

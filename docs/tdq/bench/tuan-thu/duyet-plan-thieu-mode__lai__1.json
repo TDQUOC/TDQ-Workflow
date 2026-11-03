@@ -1,0 +1,18 @@
+{
+  "ca": "duyet-plan-thieu-mode",
+  "nhanh": "lai",
+  "lan": 1,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-plan-thieu-mode__lai__1/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L010": "vi-pham",
+    "L149": "khong-ap-dung",
+    "L012": "khong-ap-dung",
+    "L209": "khong-ap-dung",
+    "L210": "dat"
+  },
+  "chi_phi": 0.247822,
+  "so_luot": 9,
+  "nhiem": []
+}

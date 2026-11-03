@@ -1,0 +1,3 @@
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_0008", "name": "Bash", "input": {"command": "python3 scripts/tdq_state.py approve plan --mode main --by \"duyệt plan, làm trực tiếp đi\""}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_0008", "content": "✅ ghi nhận", "is_error": false}]}}
+{"type": "result", "subtype": "success", "result": "Plan đã duyệt. Bạn muốn tôi bắt đầu từ task nào?", "total_cost_usd": 0.42, "num_turns": 6, "is_error": false}

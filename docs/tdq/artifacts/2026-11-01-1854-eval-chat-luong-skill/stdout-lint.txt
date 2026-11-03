@@ -1,0 +1,1 @@
+TDQ_SCOPE_RESULT {"path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/result-lint.json", "sha256": "ec49e4e679789b3d3539cec7ff78d931a6af161a0ccf74c6eb3b373741880a63"}

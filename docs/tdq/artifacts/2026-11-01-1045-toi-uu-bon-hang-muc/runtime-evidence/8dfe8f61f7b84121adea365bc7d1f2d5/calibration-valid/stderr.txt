@@ -1,0 +1,17 @@
+[2026-11-01T16:14:21] calibrate · --task 1 --lap 3 --ra C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime-evidence\8dfe8f61f7b84121adea365bc7d1f2d5\calibration-valid\measurement.json
+[2026-11-01T16:14:21] thuc-do → round 1/3 in a temp git repo
+kiem T1.1 reported an unexpected conflict: CODE error at T1.1: `true` exited 1 in C:\Users\admin\AppData\Local\Temp\tdq-43_s_vcq\temp\tdq-bench-vyf3c88_\worktrees\2026-01-01-0000-plan-mau-bench\t1.1.
+'true' is not recognized as an internal or external command,
+operable program or batch file.
+Traceback (most recent call last):
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime_checks.py", line 255, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime_checks.py", line 217, in main
+    return probe(args.probe, args.folder)
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime_checks.py", line 179, in probe
+    require(exit_code == 0 and facts["measurement_calls"] > 0 and output.is_file(), "Valid calibration failed")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime_checks.py", line 50, in require
+    raise RuntimeError(reason)
+RuntimeError: Valid calibration failed

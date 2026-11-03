@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "command": "deliver",
+  "status": "pending",
+  "receiptId": "fc90a29e-522f-40b6-9c3f-8c9ed2f5c4c6",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.html"
+}

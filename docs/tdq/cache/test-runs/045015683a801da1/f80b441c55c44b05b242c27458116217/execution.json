@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "schema_version": 1,
+    "backend": "pytest",
+    "selectors": [
+      "tests/test_tdq_eval_hosts.py"
+    ],
+    "scope": "direct",
+    "case_ids": [
+      "tests/test_tdq_eval_hosts.py::test_preflight_unsupported_host",
+      "tests/test_tdq_eval_hosts.py::test_preflight_blocks_missing_isolation_or_real_home",
+      "tests/test_tdq_eval_hosts.py::test_preflight_ready_and_failure_with_process_fixture",
+      "tests/test_tdq_eval_hosts.py::test_prepare_trial_environment_isolation_and_path_guard",
+      "tests/test_tdq_eval_hosts.py::test_run_host_trial_timeout_and_descendant_cleanup",
+      "tests/test_tdq_eval_hosts.py::test_run_host_trial_retry_cap_and_attempt_preservation",
+      "tests/test_tdq_eval_hosts.py::test_hash_file_streaming_and_trace_budget_exceeded",
+      "tests/test_tdq_eval_hosts.py::test_parse_trace_stream_unknown_schema_and_malformed_json",
+      "tests/test_tdq_eval_hosts.py::test_parse_trace_stream_claude_and_codex_metrics_and_null_cost",
+      "tests/test_tdq_eval_hosts.py::test_logging_on_off_and_redaction"
+    ],
+    "diagnostics": [],
+    "fingerprint": null,
+    "complete": true
+  },
+  "outcomes": [
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_preflight_unsupported_host",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00021579999884124845
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00014509999891743064
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00028160000510979444
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_preflight_blocks_missing_isolation_or_real_home",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0017439000075682998
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0028734000079566613
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.001363100003800355
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_preflight_ready_and_failure_with_process_fixture",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0004893000004813075
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.22100249999493826
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0035921000089729205
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_prepare_trial_environment_isolation_and_path_guard",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005722000059904531
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.005482799999299459
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0028300999983912334
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_run_host_trial_timeout_and_descendant_cleanup",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005442999972729012
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 1.018900199997006
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0019122000085189939
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_run_host_trial_retry_cap_and_attempt_preservation",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0004386999935377389
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.33401589999266434
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.003336300011142157
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_hash_file_streaming_and_trace_budget_exceeded",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0004236999957356602
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0013658000098075718
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005149000062374398
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_parse_trace_stream_unknown_schema_and_malformed_json",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00014980000560171902
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00018740000086836517
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013070000568404794
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_parse_trace_stream_claude_and_codex_metrics_and_null_cost",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003682999958982691
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003164999943692237
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003485000052023679
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_tdq_eval_hosts.py::test_logging_on_off_and_redaction",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003302999975858256
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002455999929225072
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001981999957934022
+        }
+      ],
+      "subtests": []
+    }
+  ],
+  "completed": true,
+  "exit_code": 0
+}

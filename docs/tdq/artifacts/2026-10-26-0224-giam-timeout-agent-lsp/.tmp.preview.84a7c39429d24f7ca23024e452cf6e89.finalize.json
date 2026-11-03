@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "workflow",
+  "quality": "showcase",
+  "startedAt": "2026-10-26T08:08:57.725Z",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+    "sha256": "86d0fd8f79aa8ae6636ac9d91a7982f341cc25594e97c6cab22711a9490631a2",
+    "bytes": 2323
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.html"
+  },
+  "stages": {
+    "validate": {
+      "status": "fail",
+      "exitCode": 1,
+      "durationMs": null,
+      "command": [
+        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "deliver",
+        "workflow",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": false,
+        "command": "deliver",
+        "receiptId": "fc90a29e-522f-40b6-9c3f-8c9ed2f5c4c6",
+        "stage": "input",
+        "type": "workflow",
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.html",
+        "error": "Could not read delivery input \"C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md\": Unexpected token '#', \"# Giảm tim\"... is not valid JSON",
+        "diagnostics": [
+          {
+            "code": "input/json-parse",
+            "severity": "error",
+            "message": "Input JSON could not be parsed: Unexpected token '#', \"# Giảm tim\"... is not valid JSON",
+            "subject": {
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md"
+            },
+            "evidence": {
+              "reason": "Unexpected token '#', \"# Giảm tim\"... is not valid JSON"
+            },
+            "supportedFixes": [
+              "repair the JSON syntax and run validation again"
+            ]
+          }
+        ],
+        "provenance": "absent"
+      },
+      "execution": "embedded-in-deliver"
+    },
+    "deliver": {
+      "status": "not-run",
+      "execution": "blocked-by-validate"
+    }
+  },
+  "browserCheck": {
+    "requested": true,
+    "ran": false
+  },
+  "diagnostics": [
+    {
+      "code": "input/json-parse",
+      "severity": "error",
+      "message": "Input JSON could not be parsed: Unexpected token '#', \"# Giảm tim\"... is not valid JSON",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md"
+      },
+      "evidence": {
+        "reason": "Unexpected token '#', \"# Giảm tim\"... is not valid JSON"
+      },
+      "supportedFixes": [
+        "repair the JSON syntax and run validation again"
+      ]
+    }
+  ],
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "failedStage": "validate",
+  "finishedAt": "2026-10-26T08:08:58.104Z",
+  "durationMs": 379,
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  }
+}

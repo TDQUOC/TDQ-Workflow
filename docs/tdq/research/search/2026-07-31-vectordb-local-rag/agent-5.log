@@ -1,0 +1,6 @@
+[2026-07-31T17:07:18+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=66.2
+[2026-07-31T17:07:38+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=5 secs=20.2
+[2026-07-31T17:07:58+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=20.5
+[2026-07-31T17:08:22+07:00] agent=5 agy=1.1.9 route=hybrid search local: Qdrant Query API BM25 miniCOIL fusion vs Weaviate vs pgvector full-text call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=0 secs=23.9
+[2026-07-31T17:08:26+07:00] agent=5 drop url-chết: https://dev.to/pgvector-hybrid-search-rrf
+[2026-07-31T17:08:30+07:00] agent=5 agy=1.1.9 exit=0 findings=13 routes_failed=0 report=docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-5.json

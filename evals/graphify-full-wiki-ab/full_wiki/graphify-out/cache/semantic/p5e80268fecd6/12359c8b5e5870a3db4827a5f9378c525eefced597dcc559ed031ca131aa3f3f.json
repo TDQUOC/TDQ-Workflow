@@ -1,0 +1,1 @@
+{"nodes": [{"id": "readme", "label": "TDQ Workflow README", "file_type": "document", "source_file": "README.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Describes TDQ Workflow as a spec-driven plugin workflow with mandatory user approval before code changes."}], "edges": [], "hyperedges": []}

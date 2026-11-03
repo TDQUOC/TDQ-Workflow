@@ -1,0 +1,258 @@
+{
+  "slug": "2026-10-17-1741-nang-cap-tdq-toan-dien",
+  "plan_file": "docs\\tdq\\plan\\2026-10-17-1741-nang-cap-tdq-toan-dien.md",
+  "plan_sha": "6cbecdebaaf8478aa7dad5f1ce6e4e2b3b4e7bbe47b99d939f059cb2396c3b7e",
+  "tasks": {
+    "T1.0": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_tdq_eval.py"
+      ],
+      "dot": 1
+    },
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_report_kien_truc_ecc.py"
+      ],
+      "dot": 2
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "evals/tdq-upgrade-offline.json",
+        "tests/test_upgrade_corpus.py"
+      ],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/_common.py",
+        "tests/test_hook_resilience.py",
+        "tests/test_common.py"
+      ],
+      "dot": 3
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_approval_contract.py",
+        "tests/test_state.py",
+        "tests/test_state_phase.py",
+        "tests/test_state_file.py"
+      ],
+      "dot": 3
+    },
+    "T2.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/search_rules.py",
+        "scripts/search_replay.py",
+        "tests/test_search_rules.py",
+        "tests/test_search_replay.py"
+      ],
+      "dot": 3
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_team.py",
+        "tests/test_team_identity.py",
+        "tests/test_team_mode.py",
+        "tests/test_team_chong_conflict.py"
+      ],
+      "dot": 4
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_eval.py",
+        "tests/test_tdq_eval.py"
+      ],
+      "dot": 3
+    },
+    "T3.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_eval.py",
+        "tests/test_eval_manifest.py"
+      ],
+      "dot": 4
+    },
+    "T3.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/skill_inventory.py",
+        "scripts/skill_router.py",
+        "scripts/skill_tokens.py",
+        "scripts/setup_status.py",
+        "tests/test_skill_inventory.py",
+        "tests/test_skill_router.py",
+        "tests/test_skill_tokens.py",
+        "tests/test_setup_status.py"
+      ],
+      "dot": 3
+    },
+    "T3.5": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/references/knowledge-template.md",
+        "scripts/tdq_knowledge.py",
+        "tests/test_knowledge_contract.py"
+      ],
+      "dot": 4
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/prompt_context.py",
+        "tests/test_prompt_context.py"
+      ],
+      "dot": 4
+    },
+    "T4.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_gate.py",
+        "hooks/scripts/search_observe.py",
+        "tests/test_search_gate.py",
+        "tests/test_search_observe.py"
+      ],
+      "dot": 4
+    },
+    "T4.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "hooks/scripts/stop_gate.py",
+        "tests/test_plan_tick.py",
+        "tests/test_stop_gate.py"
+      ],
+      "dot": 4
+    },
+    "T4.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/_common.py",
+        "tests/test_reminder_contract.py",
+        "tests/test_common.py"
+      ],
+      "dot": 5
+    },
+    "T4.5": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/session_start.py",
+        "tests/test_context_hooks.py"
+      ],
+      "dot": 5
+    },
+    "T4.6": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/hooks.json",
+        "scripts/tdq_ten_lenh.py",
+        "scripts/tdq_codex_mcp.py",
+        "scripts/utf8_io.py",
+        "scripts/build_portable.py",
+        ".opencode/plugins/tdq-workflow.js",
+        "tests/test_hook_windows.py",
+        "tests/test_codex_hooks_json.py",
+        "tests/test_codex_mcp.py",
+        "tests/test_build_portable.py",
+        "tests/test_agy_hooks.py",
+        "tests/test_ten_lenh_he.py",
+        "tests/test_utf8_io.py"
+      ],
+      "dot": 6
+    },
+    "T5.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/context_surface.py",
+        "hooks/scripts/bash_gate.py",
+        "hooks/scripts/bash_dispatch.py",
+        "tests/test_context_surface.py",
+        "tests/test_hook_dispatch_contract.py"
+      ],
+      "dot": 7
+    },
+    "T5.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/hooks.json",
+        "scripts/build_portable.py",
+        "tests/test_build_portable.py",
+        "tests/test_codex_hooks_json.py"
+      ],
+      "dot": 8
+    },
+    "T5.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/references/approval.md",
+        "skills/tdq-conventions/references/subagent-tuning.md",
+        "skills/tdq-build/references/qc.md",
+        "skills/tdq-build/references/team-mode.md",
+        "agents/tdq-reviewer.md",
+        "agents/tdq-qc-tester.md",
+        "docs/kien-truc.md",
+        "docs/tdq/token-budget.json"
+      ],
+      "dot": 9
+    },
+    "T5.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_upgrade_logging.py"
+      ],
+      "dot": 9
+    },
+    "T5.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_upgrade_corpus.py"
+      ],
+      "dot": 10
+    },
+    "T6.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 11
+    },
+    "T6.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-10-17-1741-nang-cap-tdq-toan-dien.md",
+        "docs/tdq/reports/2026-10-17-1741-nang-cap-tdq-toan-dien.md"
+      ],
+      "dot": 12
+    }
+  }
+}

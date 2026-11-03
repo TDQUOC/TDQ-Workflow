@@ -1,0 +1,63 @@
+{
+  "agent": 1,
+  "routes": ["API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime"],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Deepgram Streaming API (WebSocket) trả timestamp cho TỪNG từ trong chế độ live streaming; timestamp tính từ đầu stream nên khi reconnect phải tự offset lại.",
+      "evidence_quote": "Deepgram returns transcripts that include timestamps for every transcribed word. Timestamps correspond to the moments when the words are spoken within the audio. Every time you reconnect to our API, you create a new connection, so the timestamps on your audio begin from 00:00:00 again.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 9,
+      "source_url": "https://developers.deepgram.com/docs/recovering-from-connection-errors-and-timeouts-when-live-streaming-audio",
+      "url_alive": true
+    },
+    {
+      "claim": "Deepgram công bố transcription latency (thời gian server xử lý và trả kết quả) cho streaming là ≤ 300 ms; docs cũng lưu ý timestamp start/duration không đảm bảo chính xác mức millisecond nên không dùng để đo latency.",
+      "evidence_quote": "Transcription latency is the time Deepgram’s servers take to process audio and return results. Deepgram’s models are optimized to deliver transcription latency in 300 milliseconds or less for streaming workloads.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 8,
+      "source_url": "https://developers.deepgram.com/docs/measuring-streaming-latency",
+      "url_alive": true
+    },
+    {
+      "claim": "AssemblyAI Universal-Streaming (WebSocket wss://streaming.assemblyai.com/v3/ws) trả message Turn có mảng words với start/end (ms), confidence và cờ word_is_final cho từng từ — tức word-level timestamp mặc định trong realtime; trang sản phẩm công bố latency ~300 ms P50.",
+      "evidence_quote": "\"words\": [\n { \"text\": \"Smoke\", \"start\": 0, \"end\": 399, \"confidence\": 0.99, \"word_is_final\": true }\n ]",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 9,
+      "source_url": "https://www.assemblyai.com/docs/speech-to-text/universal-streaming",
+      "url_alive": true
+    },
+    {
+      "claim": "Google Cloud Speech-to-Text hỗ trợ word time offsets (start/end mỗi từ, độ phân giải 100ms) cho cả phương thức streamingrecognize khi bật enableWordTimeOffsets=true; lưu ý (theo Google Developer forum) interim results is_final=false thường chưa có word timestamps, chỉ chắc chắn khi is_final=true.",
+      "evidence_quote": "Cloud STT can include time offset values (timestamps) for the beginning and end of each spoken word that is recognized in the supplied audio. A time offset value represents the amount of time that has elapsed from the beginning of the audio, in increments of 100ms. [...] Time offsets are supported for all our recognition methods: recognize, streamingrecognize, and longrunningrecognize.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 9,
+      "source_url": "https://docs.cloud.google.com/speech-to-text/docs/v1/speech-to-text-requests",
+      "url_alive": true
+    },
+    {
+      "claim": "Azure AI Speech (Speech SDK, realtime recognition) trả offset + duration cho từng từ trong event Recognized khi bật SpeechConfig.requestWordLevelTimestamps(); đơn vị ticks (100ns).",
+      "evidence_quote": "Once an utterance has been recognized, you can get the offset and duration of the recognized speech. With the `Recognized` event, you can also get the offset and duration per word. To request the offset and duration per word, first you must set the corresponding `SpeechConfig` property as shown here: speechConfig.requestWordLevelTimestamps();",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 9,
+      "source_url": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-speech-recognition-results",
+      "url_alive": true
+    },
+    {
+      "claim": "OpenAI Realtime transcription (model gpt-live-transcribe) KHÔNG trả word-level timestamps trong streaming — docs chính thức khuyên dùng model file transcription tương thích hoặc fallback ở tầng ứng dụng nếu cần timestamp; latency chỉ tune gián tiếp qua audio.input.transcription.delay (minimal/low/medium/high/xhigh), không có con số công bố.",
+      "evidence_quote": "`gpt-live-transcribe` doesn’t return word-level timestamps, speaker labels, or transcription confidence scores. If your application requires timestamps or speaker labels, use a compatible file transcription model or add an application-level fallback.",
+      "route": "API thương mại realtime word-level: Deepgram AssemblyAI Google Azure OpenAI Realtime",
+      "score": 9,
+      "source_url": "https://developers.openai.com/api/docs/guides/realtime-transcription",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "Deepgram streaming API word-level timestamps realtime latency docs",
+    "AssemblyAI streaming speech-to-text word-level timestamps Universal-Streaming latency",
+    "Google Cloud Speech-to-Text streaming enable_word_time_offsets word timestamps documentation",
+    "Azure AI Speech real-time speech to text word-level timestamps offset duration recognized",
+    "OpenAI Realtime API transcription word timestamps gpt-4o-transcribe streaming"
+  ]
+}

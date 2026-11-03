@@ -1,0 +1,36 @@
+{
+  "schema": "tdq-scope-observation/v1",
+  "slug": "2026-11-01-1854-eval-chat-luong-skill",
+  "kind": "regression",
+  "status": "PASS",
+  "exit_code": 0,
+  "paid_model_calls": 0,
+  "timed_out": false,
+  "failures": [],
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "--junitxml=C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1854-eval-chat-luong-skill\\junit-q2.xml",
+    "tests/test_tdq_eval_contract.py"
+  ],
+  "source_files": {
+    "evals/skill-quality/corpus.json": "b0d521c64d7a7dddb13c978cc1035bfb345745c2a5932b5c5ec8100d42e14ea7",
+    "scripts/tdq_eval.py": "c7098d7e55cd5212024ded9cfdc43010d9d73839896d22754a208ec7fc95a95a",
+    "scripts/tdq_eval_contract.py": "8c04d49a6b2e8989c5bc095d3dc1b6720aac73700a0135e222aa7ac3dd2a5594",
+    "tests/test_eval_manifest.py": "2e8003c074a6b5187e623078df9c3964b71c63aa65485f23d9fac00e092a89d8",
+    "tests/test_skill_quality_corpus.py": "152d9567dd8ebf3db66b0ac8bea6c01bea05cdc9388bae5acda2820accb4d3ca",
+    "tests/test_tdq_eval.py": "9a3335a859e1b01563df6289f55c50021541643d7261982feb6e2113cad9c5a1",
+    "tests/test_tdq_eval_contract.py": "ac1ca601cf41216d88bbbee6be639edf8f5b05fa9ad6a995629f07644152b60e"
+  },
+  "source_sha256": "88d621958a2d4d407eed0434c1ddff382628909e13b1fa00a6900d3757965aac",
+  "result": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/result-q2.json",
+    "sha256": "b2eddf3887b31d0e173a221e65f7b8a5c068588d7db1b8c0856bb37dc22e9a5e"
+  },
+  "stdout": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/stdout-q2.txt",
+    "sha256": "1f5ccff40915467dab08abb2354702d18805a4ea213ad43a391480f6dc10b1e0"
+  }
+}

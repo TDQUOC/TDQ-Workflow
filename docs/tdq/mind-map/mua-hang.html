@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mua hàng</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --bg: #fbfbf9; --fg: #1c1c1a; --muted: #6b6b64; --border: #d8d8d2;
+  --card: #eceae4; --err: #a32020; --accent: #1d5f8a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16171a; --fg: #e8e8e4; --muted: #9a9a92; --border: #33343a;
+    --card: #23252b; --err: #e08a8a; --accent: #7ab6dd;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16171a; --fg: #e8e8e4; --muted: #9a9a92; --border: #33343a;
+  --card: #23252b; --err: #e08a8a; --accent: #7ab6dd;
+}
+body {
+  margin: 0; padding: 24px 18px 60px; background: var(--bg); color: var(--fg);
+  font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 900px; margin: 0 auto; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2, h3 { font-size: 15px; margin: 20px 0 8px; }
+.nhanh { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+button { font: inherit; padding: 6px 12px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--card); color: var(--fg); cursor: pointer; }
+[hidden] { display: none !important; }
+ol.steps, ul.calls-list, ul.depends { list-style: none; margin: 0; padding-left: 0; }
+li.step { border-left: 2px solid var(--border); padding: 6px 0 6px 12px; margin-bottom: 2px; }
+li.step.is-error { border-left-color: var(--err); }
+.err { color: var(--err); font-size: 12px; }
+.muted, .canh-bao { color: var(--muted); }
+.canh-bao { border: 1px solid var(--border); background: var(--card); border-radius: 6px;
+  padding: 8px 12px; font-size: 13px; margin: 0 0 16px; }
+code { background: var(--card); border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+code.dim, .dim { opacity: .55; }
+.calls-list li { padding: 2px 0; font-size: 13px; }
+.loc { color: var(--accent); font-weight: 600; margin-right: 4px; }
+.flow-wrap { overflow-x: auto; max-width: 100%; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); padding: 14px 12px; margin: 0 0 18px; }
+figure.flow-fig { margin: 0; }
+figure.flow-fig svg { display: block; height: auto; max-width: 100%; }
+figure.flow-fig .node-loi { color: var(--err); }
+figure.call-fig { margin: 10px 0 4px; }
+figure.call-fig svg { max-width: 100%; height: auto; display: block; }
+figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.step-detail { border-top: 1px solid var(--border); padding: 10px 0; }
+details summary { cursor: pointer; color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Mua hàng</h1>
+<p class="nhanh">Thương mại &gt; Mua hàng</p>
+<button id="btn-lop" type="button">Xem lớp chi tiết</button>
+</header>
+<section id="lop-nghiep-vu"><div class="flow-wrap"><figure class="flow-fig"><svg viewBox="0 0 640 610" role="img" aria-label="Luồng nghiệp vụ: 6 bước chính, 2 nhánh lỗi — mũi tên đi từ trên xuống, nhánh lỗi rẽ sang phải"><defs><marker id="mui-ten-luong" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="currentColor"/></marker></defs><line x1="160" y1="52" x2="160" y2="96" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><line x1="310" y1="146.5" x2="380" y2="146" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="357" y="143.2" font-size="11" text-anchor="middle" fill="currentColor">lỗi</text><line x1="160" y1="197" x2="160" y2="241" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="172" y="216" font-size="11" text-anchor="middle" fill="currentColor">ok</text><line x1="160" y1="283" x2="160" y2="327" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><line x1="310" y1="377.5" x2="380" y2="378" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="357" y="374.8" font-size="11" text-anchor="middle" fill="currentColor">lỗi</text><line x1="160" y1="428" x2="160" y2="472" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><text x="172" y="447" font-size="11" text-anchor="middle" fill="currentColor">ok</text><line x1="160" y1="514" x2="160" y2="558" stroke="currentColor" stroke-width="1.4" marker-end="url(#mui-ten-luong)"/><rect x="10" y="10" width="300" height="42" rx="21.0" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="35.3">Bấm đặt hàng trên giỏ</tspan></text><polygon points="160,96 310,146.5 160,197 10,146.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="142.3">Đọc token phiên đang</tspan><tspan x="160" y="159.3">giữ</tspan></text><rect x="380" y="118" width="250" height="56" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2" class="node-loi"/><text text-anchor="middle" font-size="13" fill="currentColor" class="node-loi"><tspan x="505" y="141.8">không có token thì đẩy sang</tspan><tspan x="505" y="158.8">màn đăng nhập</tspan></text><rect x="10" y="241" width="300" height="42" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="266.3">Gửi đơn kèm token</tspan></text><polygon points="160,327 310,377.5 160,428 10,377.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="373.3">Xác thực token rồi</tspan><tspan x="160" y="390.3">khoá tồn kho</tspan></text><rect x="380" y="350" width="250" height="56" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2" class="node-loi"/><text text-anchor="middle" font-size="13" fill="currentColor" class="node-loi"><tspan x="505" y="373.8">token hết hạn thì trả lỗi</tspan><tspan x="505" y="390.8">phiên và không khoá tồn kho</tspan></text><rect x="10" y="472" width="300" height="42" rx="6" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="497.3">Ghi đơn và phát sự kiện thanh toán</tspan></text><rect x="10" y="558" width="300" height="42" rx="21.0" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/><text text-anchor="middle" font-size="13" fill="currentColor"><tspan x="160" y="583.3">Hiện màn xác nhận đơn</tspan></text></svg><figcaption>Luồng nghiệp vụ: 6 bước chính, 2 nhánh lỗi — mũi tên đi từ trên xuống, nhánh lỗi rẽ sang phải.</figcaption></figure></div><ol class="steps"><li class="step"><strong>B1</strong> · Bấm đặt hàng trên giỏ <code>src/pages/cart.tsx::CartPage.onCheckout</code></li><li class="step"><strong>B2</strong> · Đọc token phiên đang giữ <code>src/lib/session.ts::readSessionToken</code></li><li class="step is-error"><strong>B2!</strong> · không có token thì đẩy sang màn đăng nhập <span class="err">[nhánh lỗi]</span> <code>src/lib/session.ts::redirectToLogin</code></li><li class="step"><strong>B3</strong> · Gửi đơn kèm token <code>src/api/order.ts::orderApi.create</code></li><li class="step"><strong>B4</strong> · Xác thực token rồi khoá tồn kho <code>server/controllers/order.py::OrderController.create</code></li><li class="step is-error"><strong>B4!</strong> · token hết hạn thì trả lỗi phiên và không khoá tồn kho <span class="err">[nhánh lỗi]</span> <code>server/controllers/order.py::deny_order</code></li><li class="step"><strong>B5</strong> · Ghi đơn và phát sự kiện thanh toán <code>server/services/order.py::OrderService.place</code></li><li class="step"><strong>B6</strong> · Hiện màn xác nhận đơn <span class="muted">(chưa rõ vị trí code)</span></li></ol><h2>Phụ thuộc</h2><ul class="depends"><li><code>dang-nhap</code> — cần token phiên do đăng nhập phát ra</li></ul></section>
+<section id="lop-chi-tiet" hidden><p class="canh-bao">Thứ tự dưới đây là thứ tự VIẾT (theo dòng đặt lời gọi trong file), KHÔNG phải thứ tự CHẠY thực tế lúc thực thi.</p><div class="step-detail"><h3>B1 · <code>src/pages/cart.tsx::CartPage.onCheckout</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B2 · <code>src/lib/session.ts::readSessionToken</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B2! · <code>src/lib/session.ts::redirectToLogin</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B3 · <code>src/api/order.ts::orderApi.create</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B4 · <code>server/controllers/order.py::OrderController.create</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B4! · <code>server/controllers/order.py::deny_order</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div><div class="step-detail"><h3>B5 · <code>server/services/order.py::OrderService.place</code></h3><p class="muted">không tìm thấy trong graph.json — hàm chưa được đồ thị hoá</p></div></section>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('btn-lop');
+  var nghiepVu = document.getElementById('lop-nghiep-vu');
+  var chiTiet = document.getElementById('lop-chi-tiet');
+  if (!btn) { return; }
+  btn.addEventListener('click', function () {
+    var showDetail = chiTiet.hasAttribute('hidden');
+    if (showDetail) {
+      chiTiet.removeAttribute('hidden');
+      nghiepVu.setAttribute('hidden', '');
+    } else {
+      chiTiet.setAttribute('hidden', '');
+      nghiepVu.removeAttribute('hidden');
+    }
+    btn.textContent = showDetail ? 'Xem lớp nghiệp vụ' : 'Xem lớp chi tiết';
+  });
+});
+</script>
+</body>
+</html>

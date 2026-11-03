@@ -1,0 +1,106 @@
+{
+  "agent": 3,
+  "routes": [
+    "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Ở quy mô 50 triệu vector (768 chiều), PostgreSQL kết hợp pgvector và pgvectorscale đạt throughput 471.57 QPS ở mức recall 99% (gấp 11.4 lần Qdrant với 41.47 QPS) và 1,589.79 QPS ở mức recall 90% (gấp 4.4 lần Qdrant với 360.81 QPS).",
+      "evidence_quote": "At 99% Recall: PostgreSQL achieves 471.57 QPS, which is 11.4x higher than Qdrant’s 41.47 QPS. At 90% Recall: PostgreSQL achieves 1,589.79 QPS, compared to Qdrant's 360.81 QPS, marking a 4.4x performance advantage.",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Về độ trễ (latency) ở mức recall 90%, Qdrant đạt latency thấp hơn với p50 = 4.74 ms, p95 = 5.50 ms, p99 = 5.79 ms so với PostgreSQL (p50 = 9.54 ms, p95 = 13.30 ms, p99 = 15.73 ms).",
+      "evidence_quote": "Qdrant Latency: 4.74 ms (p50), 5.50 ms (p95), and 5.79 ms (p99). PostgreSQL Latency: 9.54 ms (p50), 13.30 ms (p95), and 15.73 ms (p99).",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 9,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant xây dựng chỉ mục (index build) nhanh hơn đáng kể ở quy mô 50M vector (mất khoảng 3.3 giờ) so với pgvectorscale (mất khoảng 11.1 giờ) do cơ chế xây dựng index hiện tại của pgvectorscale chạy đơn luồng (serial).",
+      "evidence_quote": "Qdrant: Approximately 3.3 hours to build the index for 50M vectors. Postgres (pgvectorscale): Approximately 11.1 hours. Note: The documentation attributes this difference to the current serial, single-threaded implementation of index building in pgvectorscale",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 9,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Thử nghiệm benchmark 50M vector được thực hiện trên cấu hình máy chủ AWS r6id.4xlarge (16 vCPUs, 128 GB RAM, ổ đĩa NVMe SSD cục bộ) dựa trên bản fork của công cụ ANN-Benchmarks được chỉnh sửa để đo thông lượng truy vấn song song (parallel throughput measurement).",
+      "evidence_quote": "The tests were conducted on AWS r6id.4xlarge instances, which feature 16 vCPUs, 128 GB of RAM, and locally attached NVMe SSDs. The benchmarks generally utilized a fork of the ANN-Benchmarks tool modified for parallel throughput measurement.",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 9,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Phương pháp đo dùng fork của ANN-benchmarks trên tập dữ liệu 50 triệu vector Cohere (768 chiều), gồm 29,000 truy vấn warm-up và 1,000 truy vấn kiểm thử, vận hành trên máy AWS EC2 r6id.4xlarge (16 vCPU, 128 GB RAM, ổ NVMe SSD 950 GB gắn cục bộ, hệ điều hành Ubuntu 24.04).",
+      "evidence_quote": "We used AWS r6id.4xlarge EC2 machines, which have 16 vCPUs and 128 GB RAM. Disk storage used a 950 GB locally attached NVMe SSD. The machine ran Ubuntu 24.04.",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant vượt trội về độ trễ tail latency ở mức recall 99% (p50: 30.75 ms vs 31.07 ms; p95: 36.73 ms vs 60.42 ms; p99: 38.71 ms vs 74.60 ms) với biến động giữa các percentile nhỏ hơn.",
+      "evidence_quote": "Qdrant delivers better single-query latency performance, with 1 % better p50 latency (30.75 ms vs. 31.07 ms), 39 % better p95 latency (36.73 ms vs. 60.42 ms), and 48 % better p99 latency (38.71 ms vs. 74.60 ms).",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở mức recall 90%, Qdrant tiếp tục duy trì độ trễ truy vấn thấp hơn Postgres + pgvector + pgvectorscale khoảng 50–63% (p50: 4.74 ms vs 9.54 ms; p95: 5.50 ms vs 13.30 ms; p99: 5.79 ms vs 15.73 ms).",
+      "evidence_quote": "At a 90 % recall threshold, Qdrant achieves 50.3 % lower p50 query latency (4.74 ms vs. 9.54 ms), 58.6 % lower p95 latency (5.50 ms vs. 13.30 ms), and 63.2 % lower p99 query latency (5.79 ms vs. 15.73 ms).",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Postgres kết hợp pgvector và pgvectorscale (StreamingDiskANN) đạt thông lượng QPS vượt trội trên 1 node so với Qdrant: gấp 11.4 lần ở recall 99% (471.57 QPS so với 41.47 QPS).",
+      "evidence_quote": "In terms of throughput at 99 % recall, Postgres with pgvector and pgvectorscale demonstrates significantly higher capacity on a single node, achieving 11.4x more throughput than Qdrant (471.57 queries per second vs. 41.47 QPS).",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Ở mức recall 90%, thông lượng truy vấn của Postgres + pgvector + pgvectorscale cao gấp 4.4 lần so với Qdrant (1,589 QPS so với 360 QPS).",
+      "evidence_quote": "At 90% recall, Postgres with pgvector and pgvectorscale achieves 4.4x higher throughput than Qdrant when searching over 50M embeddings, with Postgres able to handle 1,589 queries per second compared to Qdrant's 360.",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Qdrant xây dựng chỉ mục (index build) cho 50 triệu vector nhanh hơn đáng kể so với pgvectorscale (mất 3.3 giờ so với 11.1 giờ của pgvectorscale), do pgvectorscale hiện tại dùng cơ chế build đơn luồng (single-threaded).",
+      "evidence_quote": "Pgvectorscale took around 11.1 hours to build an index for 50M vectors. Qdrant took only around 3.3 hours to build the same index.",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    },
+    {
+      "claim": "Thử nghiệm sử dụng Postgres 16.8, pgvector 0.6.1, pgvectorscale 0.7.0 (StreamingDiskANN + Binary Quantization) so sánh với Qdrant 1.13.4 (HNSW + Binary Quantization).",
+      "evidence_quote": "We ran Postgres version 16.8, pgvector version 0.6.1, pgvectorscale version 0.7.0.",
+      "route": "benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build",
+      "score": 10,
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"50M\" \"QPS\" \"Qdrant\" \"pgvectorscale\" OR \"pgvector\" site:tigerdata.com OR site:timescale.com",
+    "\"pgvectorscale\" \"Qdrant\" \"50M\" site:timescale.com OR site:tigerdata.com OR site:qdrant.tech",
+    "\"r6id\" \"50M\" \"pgvector\" \"qdrant\" site:tigerdata.com OR site:timescale.com",
+    "pgvector pgvectorscale vs qdrant 50 million vectors benchmark",
+    "site:qdrant.tech \"pgvector\" OR \"pgvectorscale\" OR \"timescale\" benchmark",
+    "site:qdrant.tech/benchmarks OR \"qdrant benchmarks\" OR \"vector db benchmark\" qdrant"
+  ]
+}

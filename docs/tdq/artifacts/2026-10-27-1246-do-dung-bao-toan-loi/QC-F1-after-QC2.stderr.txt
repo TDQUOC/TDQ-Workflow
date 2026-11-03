@@ -1,0 +1,1024 @@
+[2026-10-27T15:05:04+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:05:04+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:05:04+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpg61v8c9r\tdq-workflow
+................................................[2026-10-27T15:05:08+07:00] setup_status: graphify --version: rc=0 in 0.0s
+...........................[2026-10-27T15:05:14] archify_delivery: Warning: ARCHIFY_ROOT is set to 'C:\Users\admin\AppData\Local\Temp\tmpl02p98jw\nonexistent' but is not a valid Archify root.
+......s.....[2026-10-27T15:05:14] archify_delivery: Error: Target artifact is not an existing HTML file: C:\Users\admin\AppData\Local\Temp\tmpcpbn1vjz\payload.exe
+[2026-10-27T15:05:14] archify_delivery: Error: Target artifact is not an existing HTML file: C:\Users\admin\AppData\Local\Temp\tmpcpbn1vjz\script.py
+.[2026-10-27T15:05:14] archify_delivery: Error: Target artifact is not an existing HTML file: C:\Users\admin\AppData\Local\Temp\tmpghiqlgyr\ghost.html
+.........[2026-10-27T15:05:14] archify_delivery: [stderr] some warnings
+[2026-10-27T15:05:14] archify_delivery: [stderr] some warnings
+[2026-10-27T15:05:14] archify_delivery: [stderr] some warnings
+[2026-10-27T15:05:14] archify_delivery: [stderr] some warnings
+[2026-10-27T15:05:14] archify_delivery: [stderr] some warnings
+[2026-10-27T15:05:14] archify_delivery: [stderr] some warnings
+..[2026-10-27T15:05:14] archify_delivery: Notice: Native diagram browser-check gate 'fail' accepted via Windows elevated fallback
+...[2026-10-27T15:05:14] archify_delivery: [stderr] Failure
+.[2026-10-27T15:05:14] archify_delivery: Finalize command timed out after 5s: Command 'finalize' timed out after 5 seconds
+.[2026-10-27T15:05:14] archify_delivery: [stderr] some log
+........[2026-10-27T15:05:14] archify_delivery: Warning: ARCHIFY_ROOT is set to 'C:\Users\admin\AppData\Local\Temp\tmpw68kcwxq\nonexistent\fake_archify' but is not a valid Archify root.
+[2026-10-27T15:05:14] archify_delivery: Warning: ARCHIFY_ROOT is set to 'C:\Users\admin\AppData\Local\Temp\tmpw68kcwxq\nonexistent\fake_archify' but is not a valid Archify root.
+........................................................................Error during bridge conversion: Graph contains no nodes
+.Error during bridge conversion: Graph data must be a JSON object (dict)
+......Error during render publication: Simulated bind failure
+.Error during render publication: Simulated bind failure
+..Error: Document file not found: C:\Users\admin\AppData\Local\Temp\tmppbo3vvli\nonexistent.md
+........Error: Master model validation failed: View 'escaped' candidate path escapes root or contains path traversal: '../outside.json'
+.Error: Working tree is dirty (1 source files modified: ['src/main.py']). Committed evidence requires a clean git status.
+.Error: Master model validation failed: repository.revision (0000000000000000000000000000000000000000) must equal envelope revision (e8dcbc7f451f6662ee56bd7be606c79fd27acb0e) for committed model
+.Error: Master model file is empty: C:\Users\admin\AppData\Local\Temp\tmp4megcab3\models\empty.json
+..Error during sync_master: Failed to finalize view 'overview': {'ok': False, 'status': 'fail'}
+.Error: Working tree is dirty (1 source files modified: ['src/kiến_trúc.py']). Committed evidence requires a clean git status.
+........................[2026-10-27T15:05:48] đã đặt CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT=90000 tại C:\Users\admin\AppData\Local\Temp\tmpqwvlr47n\fake_home_env\.claude\settings.json
+.......[2026-10-27T15:05:48] tự động cập nhật cho phiên bản 0.62.0 (từ 0.61.0) tại C:\Users\admin\AppData\Local\Temp\tmpulvmvxo7
+[2026-10-27T15:05:48] thực hiện setup bù từ 0.61.0 lên 0.62.0 tại C:\Users\admin\AppData\Local\Temp\tmpulvmvxo7
+[2026-10-27T15:05:48] ghim hướng dẫn 3 tầng vào C:\Users\admin\AppData\Local\Temp\tmpulvmvxo7\CLAUDE.md
+..[2026-10-27T15:05:48] cập nhật marketplace tdq-local...
+[2026-10-27T15:05:48] phát hiện bản mới 0.63.0 trên marketplace (hiện tại 0.60.0) — cập nhật...
+.[2026-10-27T15:05:48] tự động cập nhật cho phiên bản 0.62.0 (từ 0.0.0) tại C:\Users\admin\AppData\Local\Temp\tmpl13640ld
+[2026-10-27T15:05:48] thực hiện setup bù từ 0.0.0 lên 0.62.0 tại C:\Users\admin\AppData\Local\Temp\tmpl13640ld
+[2026-10-27T15:05:48] ghim hướng dẫn 3 tầng vào C:\Users\admin\AppData\Local\Temp\tmpl13640ld\CLAUDE.md
+.[2026-10-27T15:05:48] phát hiện bản cài tdq-workflow@tdq-local 0.60.0 cũ hơn nguồn 0.62.0 — tiến hành tự động cập nhật
+[2026-10-27T15:05:48] đã tự động cập nhật tdq-workflow@tdq-local lên 0.62.0
+.............[2026-10-27T15:05:48] kiem · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow
+[2026-10-27T15:05:55] lsp_module: do_module C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow → 2 module trong 0.10s
+[2026-10-27T15:05:55] bậc 1 binary agent-lsp → ĐẠT
+[2026-10-27T15:05:55] bậc 2 MCP `lsp` → ĐẠT
+[2026-10-27T15:05:55] bậc 3 language server theo project → ĐẠT
+[2026-10-27T15:05:55] bậc 4 quyền tool `mcp__lsp__*` → ĐẠT
+[2026-10-27T15:05:55] bậc 5 hook plugin ngoài xung đột → ĐẠT
+[2026-10-27T15:05:55] bậc 6 cấu hình gốc import theo ngôn ngữ → ĐẠT
+[2026-10-27T15:05:55] bậc 7 đồ thị graphify → THIẾU
+[2026-10-27T15:05:55] bậc 8 LSP theo module → ĐẠT
+................................................[2026-10-27T15:05:59] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:05:59] tcas-collision → T1.2 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.5 (Direct file collision: {'src/chung.py'}) at wave 5
+.[2026-10-27T15:05:59] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:05:59] tcas-collision → T1.2 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.5 (Direct file collision: {'src/chung.py'}) at wave 5
+[2026-10-27T15:05:59] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:05:59] tcas-collision → T1.2 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.5 (Direct file collision: {'src/chung.py'}) at wave 5
+[2026-10-27T15:05:59] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:05:59] tcas-collision → T1.2 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.4 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.5 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.2 (Direct file collision: {'src/chung.py'}) at wave 2
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.3 (Direct file collision: {'src/chung.py'}) at wave 3
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.4 (Direct file collision: {'src/chung.py'}) at wave 4
+[2026-10-27T15:05:59] tcas-collision → T1.6 collisions with T1.5 (Direct file collision: {'src/chung.py'}) at wave 5
+..[2026-10-27T15:05:59] chia-dot → no task declares a dependency line, falling back to phase-name order
+.[2026-10-27T15:05:59] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:05:59] tcas-collision → T1.2 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+...............[2026-10-27T15:06:00] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:06:00] tcas-collision → T1.2 collisions with T1.1 (Direct file collision: {'src/chung.py'}) at wave 1
+..............................[2026-10-27T15:08:37+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:37+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:37+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:37+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:37+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:37+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:37+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:37+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:38+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:38+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:38+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:38+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:38+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:38+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:38+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:38+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:38+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:38+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:39+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:39+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:39+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:39+07:00] manifest: 133 file(s) in antigravity_portable
+.[2026-10-27T15:08:39+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:39+07:00] manifest: 133 file(s) in antigravity_portable
+...................[2026-10-27T15:08:42+07:00] build_portable: dry-run dev@8725e5d -> main · kept=4 dropped=6
+[2026-10-27T15:08:42+07:00] build_portable: published main@78dcffd from dev@8725e5d · tree=5734f53 · kept=4 · dropped=6
+[2026-10-27T15:08:43+07:00] build_portable: main already up to date with dev@8725e5d (tree=5734f53, kept=4, dropped=6)
+[2026-10-27T15:08:43+07:00] build_portable: main already up to date with dev@457e086 (tree=5734f53, kept=4, dropped=6)
+[2026-10-27T15:08:44+07:00] build_portable: published main@99ec277 from dev@7e1d19c · tree=5fb517b · kept=4 · dropped=6
+.........................................................[2026-10-27T15:08:49+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:49+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:49+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpve_anc0w\tdq-workflow
+.[2026-10-27T15:08:49+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:49+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:49+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpfntkzi0z\tdq-workflow
+.[2026-10-27T15:08:50+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:50+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:50+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpe_eroww5\tdq-workflow
+..[2026-10-27T15:08:50+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:50+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:50+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmp98fc94ob\tdq-workflow
+.[2026-10-27T15:08:50+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:50+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:50+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmp2q2duagj\tdq-workflow
+.[2026-10-27T15:08:50+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:50+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:50+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpieai1c3r\tdq-workflow
+[2026-10-27T15:08:50+07:00] backed up README.md → README.md.tdq-bak-20261027-150850
+.[2026-10-27T15:08:50+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:50+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:50+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpejeh8cpb\tdq-workflow
+.[2026-10-27T15:08:51+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:51+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:51+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpd6xo78h_\tdq-workflow
+.[2026-10-27T15:08:51+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:51+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:51+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmp52stcd24\tdq-workflow
+.[2026-10-27T15:08:51+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:08:51+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:08:51+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmphtvp_hl1\tdq-workflow
+................................................................usage: claude_export.py [-h] {build,check} ...
+claude_export.py: error: argument cmd: invalid choice: 'khong-co-lenh-nay' (choose from 'build', 'check')
+................[2026-10-27T15:09:27] ghim hướng dẫn 3 tầng vào C:\Users\admin\AppData\Local\Temp\tmp48yyh8_n\CLAUDE.md
+...[2026-10-27T15:09:27] ghim hướng dẫn 3 tầng vào C:\Users\admin\AppData\Local\Temp\tmpwr5rwyi6\CLAUDE.md
+........................[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=gpt-5
+[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=(not set)
+.[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=gpt-5
+..[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=gpt-5
+.[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: no · model=(not set)
+....[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=gpt-5
+...[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: no · model=model-cu
+..[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=m1
+...[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:27+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmppam1cd2x\docs\tdq\.tdq-codex-home\tdq-codex-home-2cc61kai (mode 700) · provider=r
+[2026-10-27T15:09:27+07:00] tdq_codex: say hi: exit 0 · 0.1s · model=m-test · reply=2 chars
+.[2026-10-27T15:09:27+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:27+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpt_ehv4md\docs\tdq\.tdq-codex-home\tdq-codex-home-kmtbeyko (mode 700) · provider=r
+[2026-10-27T15:09:28+07:00] tdq_codex: say hi: exit 1 · 0.1s · model=m-test · reply=0 chars
+.[2026-10-27T15:09:28+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:28+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpki411izj\docs\tdq\.tdq-codex-home\tdq-codex-home-pgeycuj9 (mode 700) · provider=r
+[2026-10-27T15:09:28+07:00] tdq_codex: say hi: exit 0 · 0.1s · model=m-test · reply=2 chars
+.[2026-10-27T15:09:28+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:28+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpldjemhqi\docs\tdq\.tdq-codex-home\tdq-codex-home-e7danqay (mode 700) · provider=r
+[2026-10-27T15:09:28+07:00] tdq_codex: say hi: exit 0 · 0.1s · model=m-test · reply=2 chars
+.[2026-10-27T15:09:28+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:28+07:00] tdq_codex: consent flag: yes · model=(not set)
+.[2026-10-27T15:09:28+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:28+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpv3xbu04a\docs\tdq\.tdq-codex-home\tdq-codex-home-6wd8c276 (mode 700) · provider=r
+[2026-10-27T15:09:28+07:00] tdq_codex: say hi: exit 0 · 0.1s · model=m-test · reply=0 chars
+.[2026-10-27T15:09:28+07:00] tdq_codex: consent flag: yes · model=m-test
+[2026-10-27T15:09:28+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpwt7t3wmo\docs\tdq\.tdq-codex-home\tdq-codex-home-xd1p3_k7 (mode 700) · provider=r
+[2026-10-27T15:09:58+07:00] tdq_codex: say hi: timeout 2s · model=m-test
+.[2026-10-27T15:09:58+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:09:59+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:09:59+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:10:00+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:10:00+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:10:01+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:10:01+07:00] tdq_codex: consent flag: yes · model=m-test
+.[2026-10-27T15:10:02+07:00] tdq_codex: consent flag: yes · model=m-test
+.....................................[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+....s[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:03+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmphjvkqgra\docs\tdq\.tdq-codex-home\tdq-codex-home-g2m_339s (mode 700) · provider=9router
+[2026-10-27T15:10:03+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:03+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpqkjz375r\docs\tdq\.tdq-codex-home\tdq-codex-home-o90g9wpl (mode 700) · provider=(codex default)
+[2026-10-27T15:10:03+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpqkjz375r\docs\tdq\.tdq-codex-home\tdq-codex-home-pk5sa2s_ (mode 700) · provider=(codex default)
+[2026-10-27T15:10:03+07:00] tdq_codex: cleanup: deleted 2 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:03+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmp4mbi8pyu\docs\tdq\.tdq-codex-home\tdq-codex-home-6oqy2keb (mode 700) · provider=9router
+[2026-10-27T15:10:03+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:03+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmpzp6syiu6\docs\tdq\.tdq-codex-home\tdq-codex-home-r4_yfzq7 (mode 700) · provider=(codex default)
+[2026-10-27T15:10:03+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:03+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmp_u77549r\docs\tdq\.tdq-codex-home\tdq-codex-home-j9hulsst (mode 700) · provider=9router
+[2026-10-27T15:10:03+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:03+07:00] tdq_codex: cleanup: no temporary CODEX_HOME at all
+.[2026-10-27T15:10:03+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: cleanup: no temporary CODEX_HOME at all
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmplukitjau\docs\tdq\.tdq-codex-home\tdq-codex-home-8dp6zxqp (mode 700) · provider=(codex default)
+[2026-10-27T15:10:04+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+[2026-10-27T15:10:04+07:00] tdq_codex: cleanup: no temporary CODEX_HOME at all
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: cleanup: no temporary CODEX_HOME at all
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmppzar0d9i\docs\tdq\.tdq-codex-home\tdq-codex-home-z6s9hcr3 (mode 700) · provider=(codex default)
+[2026-10-27T15:10:04+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\AppData\Local\Temp\tmp_r3v4a2k\docs\tdq\.tdq-codex-home\tdq-codex-home-iokr82l8 (mode 700) · provider=(codex default)
+[2026-10-27T15:10:04+07:00] tdq_codex: cleanup: deleted 1 temporary CODEX_HOME(s)
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.s...[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+...[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=(not set)
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=(not set)
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.[2026-10-27T15:10:04+07:00] tdq_codex: consent flag: yes · model=gpt-5-codex
+.................[2026-10-27T15:10:04] tdq_codex_mcp: added 1, updated 4 entries in C:\Users\admin\AppData\Local\Temp\tmp1b55bnia\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmpj0h1v16p\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmpdd4e6jy7\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: hooks.json event PostToolUse has an entry without a `hooks` list
+.[2026-10-27T15:10:04] tdq_codex_mcp: hooks.json event PreToolUse is str, not a list
+.[2026-10-27T15:10:04] tdq_codex_mcp: hooks.json unreadable: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmph6qbrgll\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow is the plugin's own repo - its .codex/hooks.json is hand-written
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmpkuxjdl08\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmpa19m2sr4\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmp__2qzsj5\.codex\hooks.json
+.[2026-10-27T15:10:04] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmplr5b4_35\.codex\hooks.json
+...............[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_input.command
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_input.command
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_input.pattern
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_input.root_dir
+.[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_input
+.[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: cwd
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: session_id
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_name
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: prompt
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: stop_hook_active
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload field rejected: tool_input
+.[2026-10-27T15:10:04+07:00] ⚠️ Hook payload rejected: expected an object
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload rejected: expected an object
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload rejected: expected an object
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload rejected: expected an object
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload rejected: expected an object
+[2026-10-27T15:10:04+07:00] ⚠️ Hook payload rejected: expected an object
+..........................................................................................[2026-10-27T15:10:23+07:00] doc_dup: scanning 1 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 0 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 0 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 1 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+......[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+[2026-10-27T15:10:23+07:00] doc_dup: found 1 duplicate block(s)
+.[2026-10-27T15:10:23+07:00] doc_dup: scanning 2 file(s), window 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 1 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 2 section(s) · block 3 line(s)
+......[2026-10-27T15:10:23] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+[2026-10-27T15:10:23] doc_index: f.md · 5 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+....[2026-10-27T15:10:23] doc_index: f.md · 2 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+..[2026-10-27T15:10:23] doc_index: f.md · 4 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 3 section(s) · block 3 line(s)
+.[2026-10-27T15:10:23] doc_index: f.md · 2 section(s) · block 3 line(s)
+............................................................................................................................................................................................................................................................................[2026-10-27T15:11:01+07:00] tdq_knowledge: FAIL invalid.md: Candidate knowledge cannot set auto_policy=true (manual review required)
+.[2026-10-27T15:11:01+07:00] tdq_knowledge: PASS valid.md: Valid knowledge entry
+...........................................................................[2026-10-27T15:11:11] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-wls7372y → 2 module trong 0.00s
+[2026-10-27T15:11:11] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-wls7372y → 2 module trong 0.00s
+..[2026-10-27T15:11:11] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-8qfhfads → 1 module trong 0.00s
+[2026-10-27T15:11:12] lsp_module: ghi_ket_qua python:. → DAT
+[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-8qfhfads → 1 module trong 0.00s
+..[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-6192io9n → 1 module trong 0.00s
+[2026-10-27T15:11:12] lsp_module: ghi_ket_qua python:. → TRUOT
+[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-6192io9n → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-3owst8vc → 1 module trong 0.00s
+[2026-10-27T15:11:12] lsp_module: ghi_ket_qua python:. → DAT
+[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-3owst8vc → 1 module trong 0.00s
+[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-3owst8vc → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-m0xv1pj_ → 0 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-osjzi5jy → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: tắt broker mồ côi pid=3 goc=C:\Users\admin\AppData\Local\Temp\tdq-broker-ou_vll3l\da-xoa lang=typescript
+[2026-10-27T15:11:12] lsp_module: tắt broker mồ côi pid=1 goc=C:\Users\admin\AppData\Local\Temp\tdq-broker-ou_vll3l lang=python
+.....[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-l3bp8aip → 1 module trong 0.05s
+[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-l3bp8aip → 1 module trong 0.05s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-eyizw0b5 → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-6qdn_u7b → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-s_56a8ow → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-zumho9vm → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-bae5x7c3 → 1 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-4xqtajt5 → 1 module trong 0.00s
+[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-4xqtajt5 → 3 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-_zxs2q40 → 2 module trong 0.00s
+.[2026-10-27T15:11:12] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-8qskpto2 → 2 module trong 0.00s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-uqqio47i → 1 module trong 0.05s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-48tkacc8 → 2 module trong 0.00s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-qt6cg0_3 → 1 module trong 0.00s
+[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-qt6cg0_3 → 1 module trong 0.00s
+[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-qt6cg0_3 → 1 module trong 0.00s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-zdvzn7y_ → 1 module trong 0.00s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-ojbuhz69 → 1 module trong 0.00s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-5zo58p63 → 1 module trong 0.00s
+.[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-ykj7qzvv → 2 module trong 0.00s
+...[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-dovbfbbp → 1 module trong 0.00s
+[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-dovbfbbp → 1 module trong 0.00s
+[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-dovbfbbp → 2 module trong 0.00s
+[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-dovbfbbp → 2 module trong 0.00s
+[2026-10-27T15:11:13] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-lsp-module-dovbfbbp → 2 module trong 0.00s
+.......................................................................[2026-10-27T15:11:15] phát hiện bản cài tdq-workflow@tdq-local 0.70.0 cũ hơn nguồn 0.84.2 — tiến hành tự động cập nhật
+[2026-10-27T15:11:15] đã tự động cập nhật tdq-workflow@tdq-local lên 0.84.2
+..[2026-10-27T15:11:15] thực hiện setup bù từ 0.73.0 lên 0.75.0 tại C:\Users\admin\AppData\Local\Temp\tmplqdhec54
+[2026-10-27T15:11:15] ghim hướng dẫn 3 tầng vào C:\Users\admin\AppData\Local\Temp\tmplqdhec54\home/.claude/CLAUDE.md
+[2026-10-27T15:11:15] tdq_codex_mcp: config=C:\Users\admin\AppData\Local\Temp\tmplqdhec54\home/.codex\config.toml present=[]
+[2026-10-27T15:11:15] tdq_codex_mcp: added 5, updated 0 entries in C:\Users\admin\AppData\Local\Temp\tmplqdhec54\.codex\hooks.json
+.............................................................................................................................................................................................................................................................................................................................................................[2026-10-27T15:11:46] search_replay: 63 events · 21 searches · denied 11 · false denials 0 · leaks 0
+...[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 3 · false denials 1 · leaks 2
+.[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 3 · false denials 1 · leaks 2
+[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 1 · false denials 1 · leaks 4
+.[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 3 · false denials 1 · leaks 2
+.[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 3 · false denials 1 · leaks 2
+.[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 3 · false denials 1 · leaks 2
+.[2026-10-27T15:11:46] search_replay: 12 events · 6 searches · denied 3 · false denials 1 · leaks 2
+...............................[2026-10-27T15:11:47] search_replay: 63 events · 21 searches · denied 11 · false denials 0 · leaks 0
+...............................................................[2026-10-27T15:11:47+07:00] setup_status: x --version: rc=0 in 0.0s
+.[2026-10-27T15:11:47+07:00] setup_status: x: failed to start — hỏng
+.[2026-10-27T15:11:47+07:00] setup_status: x: timed out after 90s
+.[2026-10-27T15:11:47+07:00] setup_status: graphify: not installed
+.................[2026-10-27T15:11:47+07:00] setup_status: wrote C:\Users\admin\AppData\Local\Temp\tmp2ab8uvej\setup_status.html in 0.0s
+.[2026-10-27T15:11:47+07:00] setup_status: wrote C:\Users\admin\AppData\Local\Temp\tmpb821sy48\setup_status.html in 0.0s
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+[2026-10-27T15:11:47+07:00] setup_status: wrote C:\Users\admin\AppData\Local\Temp\tmp603kvehm\setup_status.html in 0.0s
+.......[2026-10-27T15:11:47+07:00] setup_status: collecting all four blocks
+.[2026-10-27T15:11:47+07:00] setup_status: received: 0 MCP server · 0/3 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: received: 4 MCP server · 3/3 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: received: 4 MCP server · 3/2 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: received: 4 MCP server · 3/3 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: received: 4 MCP server · 3/3 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: received: 0 MCP server · 0/3 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: received: 4 MCP server · 3/3 LSP answered
+.[2026-10-27T15:11:47+07:00] setup_status: workflow: 0 skill · 0 doc row · 2 rung
+.[2026-10-27T15:11:47+07:00] setup_status: workflow: 2 skill · 0 doc row · 0 rung
+.[2026-10-27T15:11:47+07:00] setup_status: source bac failed — agent-lsp biến mất
+[2026-10-27T15:11:47+07:00] setup_status: workflow: 0 skill · 0 doc row · 0 rung
+.[2026-10-27T15:11:47+07:00] setup_status: workflow: 0 skill · 0 doc row · 0 rung
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+..[2026-10-27T15:11:47+07:00] setup_status_render: rendered 5 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+.[2026-10-27T15:11:47+07:00] setup_status_render: rendered 4 block(s)
+................................................................[2026-10-27T15:11:53+07:00] SKILL.md map: 58 lookup key(s)
+.....[2026-10-27T15:11:53+07:00] SKILL.md map: 58 lookup key(s)
+[2026-10-27T15:11:53+07:00] store built: 28 record(s) from 28 enabled skill(s)
+[2026-10-27T15:11:53+07:00] warning: 14 skill(s) with no SKILL.md found (declared name differs from the directory name), e.g. ['bao-cao-tan-an-hoi', 'built-in-browser', 'chrome-browser']
+...................................[2026-10-27T15:11:55+07:00] SKILL.md map: 58 lookup key(s)
+.sssss...s........................................................................................[2026-10-27T15:12:02+07:00] ⚠️ state.json is corrupt → kept at state.json.corrupt-20261027-151202; state rebuilt from defaults.
+........................................................................................................................................................................................[2026-10-27T15:12:26+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
+[2026-10-27T15:12:26+07:00] manifest: 133 file(s) in tdq-workflow
+[2026-10-27T15:12:26+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpeenpceq4\tdq-workflow
+.......................Error during bridge conversion: Graph contains no nodes
+....Error: Candidate file not found: C:\Users\admin\AppData\Local\Temp\tmpagxvz2w6\missing.json
+..Test failed: Mismatch
+.................[2026-10-27T15:12:27] archify_delivery: Error: Target artifact is not an existing HTML file: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\missing_file.html
+.[2026-10-27T15:12:27] archify_delivery: Failed to open artifact: Exec failed
+....Warning: Graph file not found: C:\Users\admin\AppData\Local\Temp\tmpb50om4hw\not_there.json, skipping sync.
+............................................[2026-10-27T15:12:33] thong-tin: lai: built worktree C:\Users\admin\AppData\Local\Temp\tmpte_80fpx\nhanh\lai @ f620094
+[2026-10-27T15:12:33] thong-tin: viet: built worktree C:\Users\admin\AppData\Local\Temp\tmpte_80fpx\nhanh\viet @ ea0cdbd
+...[2026-10-27T15:12:43] thong-tin: lai: built worktree C:\Users\admin\AppData\Local\Temp\tmpw8eslf4o\nhanh\lai @ f620094
+[2026-10-27T15:12:44] thong-tin: viet: built worktree C:\Users\admin\AppData\Local\Temp\tmpw8eslf4o\nhanh\viet @ ea0cdbd
+.[2026-10-27T15:12:45] thong-tin: sandbox duyet-plan-kem-mode: C:\Users\admin\AppData\Local\Temp\tmpudn3og1h\phien
+.[2026-10-27T15:12:46] thong-tin: sandbox duyet-plan-kem-mode: C:\Users\admin\AppData\Local\Temp\tmp1rcs6ln_\phien
+...............................................................[2026-10-27T15:12:47] canh-bao: session red-green/viet/1 failed, retry 1
+[2026-10-27T15:12:47] canh-bao: session red-green/viet/1 failed, retry 2
+.[2026-10-27T15:12:47] canh-bao: session red-green/viet/1 failed, retry 1
+.[2026-10-27T15:12:47] canh-bao: stopping early: spent 4.00 USD, hit the cap 3.00
+........[2026-10-27T15:12:48] token_budget: 58 file · cap 3500 · docs\tdq\token-budget.json
+......................................[2026-10-27T15:12:51] kiem · project=C:\Users\admin\AppData\Local\Temp\tmpec841ch8
+[2026-10-27T15:12:58] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tmpec841ch8 → 1 module trong 0.00s
+[2026-10-27T15:12:58] bậc 1 binary agent-lsp → ĐẠT
+[2026-10-27T15:12:58] bậc 2 MCP `lsp` → ĐẠT
+[2026-10-27T15:12:58] bậc 3 language server theo project → ĐẠT
+[2026-10-27T15:12:58] bậc 4 quyền tool `mcp__lsp__*` → ĐẠT
+[2026-10-27T15:12:58] bậc 5 hook plugin ngoài xung đột → ĐẠT
+[2026-10-27T15:12:58] bậc 6 cấu hình gốc import theo ngôn ngữ → ĐẠT
+[2026-10-27T15:12:58] bậc 7 đồ thị graphify → THIẾU
+[2026-10-27T15:12:58] bậc 8 LSP theo module → THIẾU
+............[2026-10-27T15:12:58] done · 0 bậc thiếu · 1 cảnh báo · 0 tầng trượt
+.[2026-10-27T15:12:58] done · 1 bậc thiếu · 0 cảnh báo · 0 tầng trượt
+...[2026-10-27T15:12:58] cài agent-lsp v9.9.9 → C:\Users\admin\AppData\Local\Temp\tdq-agent-lsp-n85v7964\agent-lsp.exe (sha256 a8831c01552d)
+...........[2026-10-27T15:12:58] lsp_module: tắt broker mồ côi pid=7 goc=/khong/con/ton/tai lang=python
+.......[2026-10-27T15:12:58] MCP lsp: thêm 1 server → typescript
+...[2026-10-27T15:12:58] MCP lsp: thêm 1 server → html
+.[2026-10-27T15:12:58] MCP lsp: thêm 2 server → html, javascript
+.[2026-10-27T15:12:58] đã đặt CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT=90000 tại C:\Users\admin\AppData\Local\Temp\tdq-plugin-user-mxg6cpck\.claude\settings.json
+[2026-10-27T15:12:58] plugin user: tdq-workflow@tdq-local: chưa có khóa→True (C:\Users\admin\AppData\Local\Temp\tdq-plugin-user-mxg6cpck\.claude\settings.json)
+.[2026-10-27T15:12:58] plugin user: chưa có bản cài tdq-workflow scope user
+.[2026-10-27T15:12:58] đã đặt CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT=90000 tại C:\Users\admin\AppData\Local\Temp\tdq-plugin-user-6pwsvkeb\.claude\settings.json
+..[2026-10-27T15:12:58] plugin user: tdq-workflow@tdq-local 0.59.0 lệch 1.0.0
+[2026-10-27T15:12:58] đã đặt CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT=90000 tại C:\Users\admin\AppData\Local\Temp\tdq-plugin-user-np9i8_cn\.claude\settings.json
+...............[2026-10-27T15:12:58] vá hook plugin plugin-ngoai: gỡ 1 khối PreToolUse
+.[2026-10-27T15:12:58] vá hook plugin plugin-ngoai: gỡ 1 khối PreToolUse
+..[2026-10-27T15:12:58] vá hook plugin plugin-ngoai: gỡ 1 khối PreToolUse
+.................[2026-10-27T15:12:58] lsp_module: do_module C:\Users\admin\AppData\Local\Temp\tdq-cong-lsp-da0cq4aj → 1 module trong 0.00s
+[2026-10-27T15:12:59] lsp_module: ghi_ket_qua python:. → DAT
+................................................................................................................................................[2026-10-27T15:13:14] tdq_vision_diff: Input resolution error: Source image not found: C:\Users\admin\AppData\Local\Temp\tmpjo0oue10\nonexistent.png
+ERROR: Source image not found: C:\Users\admin\AppData\Local\Temp\tmpjo0oue10\nonexistent.png
+...[2026-10-27T15:13:14] tdq_vision_diff: Fetched Figma node 45:67 from file KeyXYZ987 -> C:\Users\admin\AppData\Local\Temp\tmp1do0qar6\fetched_figma.png
+...[2026-10-27T15:13:14] tdq_vision_diff: round=1 canvas=100x100 mismatch_rate=0.1600 threshold=0.0100 boxes=1 passed=False report=C:\Users\admin\AppData\Local\Temp\tmptoiy8utp\out_rounds\timeline-ui.md
+[2026-10-27T15:13:14] tdq_vision_diff: round=2 canvas=100x100 mismatch_rate=0.0000 threshold=0.0100 boxes=0 passed=True report=C:\Users\admin\AppData\Local\Temp\tmptoiy8utp\out_rounds\timeline-ui.md
+..[2026-10-27T15:13:14] tdq_vision_diff: round=1 canvas=160x120 mismatch_rate=0.0469 threshold=0.0100 boxes=1 passed=False report=C:\Users\admin\AppData\Local\Temp\tmpmsyupkyi\out_rel\sample-ui.md
+[2026-10-27T15:13:14] tdq_vision_diff: round=2 canvas=160x120 mismatch_rate=0.0469 threshold=0.1000 boxes=1 passed=True report=C:\Users\admin\AppData\Local\Temp\tmpmsyupkyi\out_b64\sample-ui.md
+....................[2026-10-27T15:13:42] gate → T1.1 writes scripts/z.py, outside its declared area
+.........[2026-10-27T15:13:56] chia-dot → 2/3 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:13:56] assign → 3 task(s) · assigned 3 · kept 0 · 3 wave(s)
+.[2026-10-27T15:13:56] chia-dot → 2/3 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:13:56] assign → 3 task(s) · assigned 3 · kept 0 · 3 wave(s)
+..........................[2026-10-27T15:13:57] chia-dot → 1/4 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:13:57] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'scripts/c.py'}) at wave 1
+.[2026-10-27T15:13:57] chia-dot → 1/4 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:13:57] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'scripts/c.py'}) at wave 1
+..[2026-10-27T15:13:57] chia-dot → 2/4 task(s) declare dependencies, ordering by graph
+.[2026-10-27T15:13:57] chia-dot → no task declares a dependency line, falling back to phase-name order
+..[2026-10-27T15:13:57] chia-dot → 2/4 task(s) declare dependencies, ordering by graph
+.[2026-10-27T15:13:57] chia-dot → 2/2 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:13:57] chia-dot → cut the dependency cycle at T1.1, T1.2
+.[2026-10-27T15:13:57] chia-dot → 2/2 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:13:57] chia-dot → cut the dependency cycle at T1.1, T1.2
+..........................................................................................................................s...........................................................................................................[2026-10-27T15:15:35+07:00] counted 1 chunk(s) through the python of .venv-tokens
+[2026-10-27T15:15:35+07:00] s.jsonl: 2 tool result
+.[2026-10-27T15:15:35+07:00] counted 1 chunk(s) through the python of .venv-tokens
+[2026-10-27T15:15:35+07:00] s.jsonl: 3 tool result
+...........[2026-10-27T15:15:36+07:00] counted 1 chunk(s) through the python of .venv-tokens
+[2026-10-27T15:15:36+07:00] s.jsonl: 1 tool result
+...[2026-10-27T15:15:36+07:00] s.jsonl: 2 tool result
+...[2026-10-27T15:15:36+07:00] s.jsonl: skipped 1 unreadable line(s)
+.[2026-10-27T15:15:36+07:00] skipping that.jsonl: [Errno 2] No such file or directory: '/khong/co/that.jsonl'
+.......[2026-10-27T15:15:36+07:00] counted 5 chunk(s) through the python of .venv-tokens
+[2026-10-27T15:15:36+07:00] s.jsonl: 5 tool result
+.[2026-10-27T15:15:36+07:00] counted 5 chunk(s) through the python of .venv-tokens
+[2026-10-27T15:15:37+07:00] s.jsonl: 5 tool result
+.....[2026-10-27T15:15:37+07:00] counted 1 chunk(s) through the python of .venv-tokens
+................[2026-10-27T15:15:40] token_budget: 2 file · cap 3500 · docs\tdq\token-budget.json
+[2026-10-27T15:15:41] token_budget: 1 file · cap 3500 · docs\tdq\token-budget.json
+.[2026-10-27T15:15:41] token_budget: 1 file · cap 3500 · docs\tdq\token-budget.json
+[2026-10-27T15:15:41] token_budget: 1 file · cap 3500 · docs\tdq\token-budget.json
+.[2026-10-27T15:15:41] token_budget: 2 file · cap 3500 · docs\tdq\token-budget.json
+..................................................................................................................[2026-10-27T15:16:06+07:00] ⚠️ could not run git status (FileNotFoundError) — skipping disk evidence
+..........................................WARNING: missing file portable/workflow/02-spec.md
+WARNING: missing file portable/workflow/03-plan.md
+WARNING: missing file portable/workflow/references/user-facing-block.md
+........................[2026-10-27T15:16:10] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:10] tcas-collision → T1.2 collisions with T1.1 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'tests/test_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'tests/test_bench.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'tests/test_bench.py'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-ket-qua.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.4 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.7 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.7 collisions with T6.4 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T6.5 collisions with T6.3 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.5 collisions with T6.4 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T6.5 collisions with T6.7 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T6.6 collisions with T6.1 (Direct file collision: {'docs/tdq/qc/2026-08-17-2001-smoke-test-main-vs-doi.md'}) at wave 1
+[2026-10-27T15:16:10] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:10] tcas-collision → T1.2 collisions with T1.1 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'tests/test_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'tests/test_bench.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'tests/test_bench.py'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-ket-qua.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.4 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.7 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.7 collisions with T6.4 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T6.5 collisions with T6.3 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T6.5 collisions with T6.4 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T6.5 collisions with T6.7 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T6.6 collisions with T6.1 (Direct file collision: {'docs/tdq/qc/2026-08-17-2001-smoke-test-main-vs-doi.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'scripts/skill_tokens.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T1.4 collisions with T1.2 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T1.4 collisions with T1.3 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T2.3 collisions with T2.2 (TCAS AST collision: tests/test_skill_router.py imports modified module {'skill_router'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T5.3 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T5.3 collisions with T5.2 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 2
+[2026-10-27T15:16:10] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:10] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'scripts/skill_tokens.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T1.4 collisions with T1.2 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T1.4 collisions with T1.3 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T2.3 collisions with T2.2 (TCAS AST collision: tests/test_skill_router.py imports modified module {'skill_router'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T5.3 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T5.3 collisions with T5.2 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T1.4 collisions with T1.3 (Direct file collision: {'skills/tdq-plan/references/plan-template.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T2.2 collisions with T2.1 (TCAS AST collision: tests/test_doc_lint.py imports modified module {'doc_lint'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T2.3 collisions with T2.1 (Direct file collision: {'tests/test_doc_lint.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T2.3 collisions with T2.2 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T3.5 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.5 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.5 collisions with T3.3 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T3.5 collisions with T3.4 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:10] tcas-collision → T3.6 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.6 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.6 collisions with T3.3 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T3.6 collisions with T3.4 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:10] tcas-collision → T3.6 collisions with T3.5 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:10] tcas-collision → T3.7 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T3.7 collisions with T3.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T3.7 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:10] tcas-collision → T3.7 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:10] tcas-collision → T3.7 collisions with T3.5 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:10] tcas-collision → T3.7 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:10] tcas-collision → T4.3 collisions with T4.2 (Direct file collision: {'skills/tdq-build/references/team-mode.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T4.4 collisions with T4.2 (Direct file collision: {'skills/tdq-build/references/team-mode.md'}) at wave 1
+[2026-10-27T15:16:10] tcas-collision → T4.4 collisions with T4.3 (Direct file collision: {'skills/tdq-build/references/team-mode.md', 'tests/test_uu_tien_song_song.py'}) at wave 2
+[2026-10-27T15:16:10] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'tests/test_edit_gate.py'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.1 collisions with Tx.1 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.2 collisions with Tx.1 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:11] tcas-collision → QC1.3 collisions with Tx.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:11] tcas-collision → QC1.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:11] tcas-collision → QC1.5 collisions with Tx.1 (Direct file collision: {'hooks/scripts/edit_gate.py'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.5 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:11] tcas-collision → QC1.5 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:11] tcas-collision → QC1.6 collisions with Tx.1 (Direct file collision: {'scripts/doc_lint.py'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.7 collisions with Tx.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:11] tcas-collision → QC1.7 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:11] tcas-collision → QC1.7 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:11] tcas-collision → QC1.7 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 4
+[2026-10-27T15:16:11] chia-dot → 18/39 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:16:12] tcas-collision → T3.1 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:12] tcas-collision → T3.6 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:12] tcas-collision → T3.6 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:12] tcas-collision → QC1.1 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:12] tcas-collision → QC1.1 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:12] tcas-collision → QC1.1 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:12] tcas-collision → QC1.2 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:12] tcas-collision → QC1.2 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:12] tcas-collision → QC1.2 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:12] tcas-collision → QC1.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:12] tcas-collision → QC1.3 collisions with T1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:12] tcas-collision → QC1.3 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:12] tcas-collision → QC1.3 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:12] tcas-collision → QC1.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:12] tcas-collision → QC1.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:12] tcas-collision → QC1.5 collisions with T1.3 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:12] tcas-collision → QC1.5 collisions with T3.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:12] tcas-collision → QC1.5 collisions with T3.6 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:12] tcas-collision → QC1.5 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:12] tcas-collision → QC1.5 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:12] tcas-collision → QC1.6 collisions with T2.1 (Direct file collision: {'tests/test_doc_lint.py'}) at wave 1
+[2026-10-27T15:16:13] tcas-collision → QC1.7 collisions with T1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:13] tcas-collision → QC1.7 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:13] tcas-collision → QC1.7 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:13] tcas-collision → QC1.7 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:13] tcas-collision → QC1.7 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:13] tcas-collision → QC1.7 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 6
+[2026-10-27T15:16:13] tcas-collision → QC1.8 collisions with T4.5 (Direct file collision: {'skills/tdq-intake/references/quick-lane.md'}) at wave 1
+[2026-10-27T15:16:13] tcas-collision → QC1.9 collisions with T5.1 (Direct file collision: {'tests/test_edit_gate.py'}) at wave 1
+[2026-10-27T15:16:13] tcas-collision → T2.2 collisions with QC1.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:13] tcas-collision → T3.2 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:13] tcas-collision → T3.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:13] tcas-collision → T3.2 collisions with QC1.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:13] tcas-collision → T3.2 collisions with QC1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:13] tcas-collision → T3.2 collisions with QC1.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 7
+[2026-10-27T15:16:13] tcas-collision → T3.3 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:13] tcas-collision → T3.3 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:13] tcas-collision → T3.3 collisions with QC1.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:13] tcas-collision → T3.3 collisions with QC1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:13] tcas-collision → T3.3 collisions with QC1.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 7
+[2026-10-27T15:16:13] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 8
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 6
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with QC1.7 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 7
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with T3.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 8
+[2026-10-27T15:16:13] tcas-collision → T4.3 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 9
+[2026-10-27T15:16:13] tcas-collision → T4.6 collisions with QC1.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:13] tcas-collision → T4.6 collisions with T2.2 (Direct file collision: {'scripts/doc_lint.py'}) at wave 3
+[2026-10-27T15:16:14] tcas-collision → T5.2 collisions with T3.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:14] tcas-collision → T5.2 collisions with T3.6 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:14] tcas-collision → T5.2 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:14] tcas-collision → T5.2 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:14] tcas-collision → T5.2 collisions with QC1.5 (Direct file collision: {'tests/test_edit_gate.py', 'hooks/scripts/edit_gate.py'}) at wave 6
+[2026-10-27T15:16:14] tcas-collision → T2.3 collisions with T4.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 4
+[2026-10-27T15:16:14] tcas-collision → T3.4 collisions with T4.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 10
+[2026-10-27T15:16:14] tcas-collision → T3.7 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 9
+[2026-10-27T15:16:14] tcas-collision → T3.7 collisions with T4.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 10
+[2026-10-27T15:16:14] tcas-collision → T3.7 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 11
+[2026-10-27T15:16:14] tcas-collision → T4.4 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 11
+[2026-10-27T15:16:14] tcas-collision → T4.4 collisions with T3.7 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 12
+[2026-10-27T15:16:14] tcas-collision → T3.5 collisions with T3.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 12
+[2026-10-27T15:16:14] tcas-collision → T3.5 collisions with T4.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 13
+.[2026-10-27T15:16:14] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:15] tcas-collision → T1.2 collisions with T1.1 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'tests/test_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'tests/test_bench.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'tests/test_bench.py'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-ket-qua.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.4 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.7 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.7 collisions with T6.4 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T6.5 collisions with T6.3 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.5 collisions with T6.4 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T6.5 collisions with T6.7 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T6.6 collisions with T6.1 (Direct file collision: {'docs/tdq/qc/2026-08-17-2001-smoke-test-main-vs-doi.md'}) at wave 1
+[2026-10-27T15:16:15] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:15] tcas-collision → T1.2 collisions with T1.1 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'tests/test_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'tests/test_bench.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'tests/test_bench.py'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-ket-qua.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.4 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.7 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.7 collisions with T6.4 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T6.5 collisions with T6.3 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T6.5 collisions with T6.4 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T6.5 collisions with T6.7 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T6.6 collisions with T6.1 (Direct file collision: {'docs/tdq/qc/2026-08-17-2001-smoke-test-main-vs-doi.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'scripts/skill_tokens.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T1.4 collisions with T1.2 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T1.4 collisions with T1.3 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T2.3 collisions with T2.2 (TCAS AST collision: tests/test_skill_router.py imports modified module {'skill_router'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T5.3 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T5.3 collisions with T5.2 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 2
+[2026-10-27T15:16:15] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:15] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'scripts/skill_tokens.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T1.4 collisions with T1.2 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T1.4 collisions with T1.3 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T2.3 collisions with T2.2 (TCAS AST collision: tests/test_skill_router.py imports modified module {'skill_router'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T5.3 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T5.3 collisions with T5.2 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T1.4 collisions with T1.3 (Direct file collision: {'skills/tdq-plan/references/plan-template.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T2.2 collisions with T2.1 (TCAS AST collision: tests/test_doc_lint.py imports modified module {'doc_lint'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T2.3 collisions with T2.1 (Direct file collision: {'tests/test_doc_lint.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T2.3 collisions with T2.2 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T3.5 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.5 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.5 collisions with T3.3 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T3.5 collisions with T3.4 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:15] tcas-collision → T3.6 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.6 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.6 collisions with T3.3 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T3.6 collisions with T3.4 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:15] tcas-collision → T3.6 collisions with T3.5 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:15] tcas-collision → T3.7 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T3.7 collisions with T3.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T3.7 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:15] tcas-collision → T3.7 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:15] tcas-collision → T3.7 collisions with T3.5 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:15] tcas-collision → T3.7 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:15] tcas-collision → T4.3 collisions with T4.2 (Direct file collision: {'skills/tdq-build/references/team-mode.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T4.4 collisions with T4.2 (Direct file collision: {'skills/tdq-build/references/team-mode.md'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → T4.4 collisions with T4.3 (Direct file collision: {'skills/tdq-build/references/team-mode.md', 'tests/test_uu_tien_song_song.py'}) at wave 2
+[2026-10-27T15:16:15] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'tests/test_edit_gate.py'}) at wave 1
+[2026-10-27T15:16:15] tcas-collision → QC1.1 collisions with Tx.1 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → QC1.2 collisions with Tx.1 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → QC1.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:16] tcas-collision → QC1.3 collisions with Tx.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → QC1.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:16] tcas-collision → QC1.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:16] tcas-collision → QC1.5 collisions with Tx.1 (Direct file collision: {'hooks/scripts/edit_gate.py'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → QC1.5 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:16] tcas-collision → QC1.5 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:16] tcas-collision → QC1.6 collisions with Tx.1 (Direct file collision: {'scripts/doc_lint.py'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → QC1.7 collisions with Tx.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → QC1.7 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:16] tcas-collision → QC1.7 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:16] tcas-collision → QC1.7 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 4
+[2026-10-27T15:16:16] chia-dot → 18/39 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:16:16] tcas-collision → T3.1 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → T3.6 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:16] tcas-collision → T3.6 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:17] tcas-collision → QC1.1 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.1 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:17] tcas-collision → QC1.1 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:17] tcas-collision → QC1.2 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.2 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:17] tcas-collision → QC1.2 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:17] tcas-collision → QC1.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:17] tcas-collision → QC1.3 collisions with T1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.3 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:17] tcas-collision → QC1.3 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:17] tcas-collision → QC1.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:17] tcas-collision → QC1.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:17] tcas-collision → QC1.5 collisions with T1.3 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.5 collisions with T3.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:17] tcas-collision → QC1.5 collisions with T3.6 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:17] tcas-collision → QC1.5 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:17] tcas-collision → QC1.5 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:17] tcas-collision → QC1.6 collisions with T2.1 (Direct file collision: {'tests/test_doc_lint.py'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.7 collisions with T1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.7 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:17] tcas-collision → QC1.7 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:17] tcas-collision → QC1.7 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:17] tcas-collision → QC1.7 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:17] tcas-collision → QC1.7 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 6
+[2026-10-27T15:16:17] tcas-collision → QC1.8 collisions with T4.5 (Direct file collision: {'skills/tdq-intake/references/quick-lane.md'}) at wave 1
+[2026-10-27T15:16:17] tcas-collision → QC1.9 collisions with T5.1 (Direct file collision: {'tests/test_edit_gate.py'}) at wave 1
+[2026-10-27T15:16:18] tcas-collision → T2.2 collisions with QC1.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:18] tcas-collision → T3.2 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:18] tcas-collision → T3.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:18] tcas-collision → T3.2 collisions with QC1.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:18] tcas-collision → T3.2 collisions with QC1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:18] tcas-collision → T3.2 collisions with QC1.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 7
+[2026-10-27T15:16:18] tcas-collision → T3.3 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:18] tcas-collision → T3.3 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:18] tcas-collision → T3.3 collisions with QC1.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:18] tcas-collision → T3.3 collisions with QC1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:18] tcas-collision → T3.3 collisions with QC1.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 7
+[2026-10-27T15:16:18] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 8
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 6
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with QC1.7 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 7
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with T3.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 8
+[2026-10-27T15:16:18] tcas-collision → T4.3 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 9
+[2026-10-27T15:16:18] tcas-collision → T4.6 collisions with QC1.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:18] tcas-collision → T4.6 collisions with T2.2 (Direct file collision: {'scripts/doc_lint.py'}) at wave 3
+[2026-10-27T15:16:18] tcas-collision → T5.2 collisions with T3.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:18] tcas-collision → T5.2 collisions with T3.6 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:18] tcas-collision → T5.2 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:18] tcas-collision → T5.2 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:18] tcas-collision → T5.2 collisions with QC1.5 (Direct file collision: {'tests/test_edit_gate.py', 'hooks/scripts/edit_gate.py'}) at wave 6
+[2026-10-27T15:16:18] tcas-collision → T2.3 collisions with T4.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 4
+[2026-10-27T15:16:19] tcas-collision → T3.4 collisions with T4.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 10
+[2026-10-27T15:16:19] tcas-collision → T3.7 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 9
+[2026-10-27T15:16:19] tcas-collision → T3.7 collisions with T4.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 10
+[2026-10-27T15:16:19] tcas-collision → T3.7 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 11
+[2026-10-27T15:16:19] tcas-collision → T4.4 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 11
+[2026-10-27T15:16:19] tcas-collision → T4.4 collisions with T3.7 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 12
+[2026-10-27T15:16:19] tcas-collision → T3.5 collisions with T3.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 12
+[2026-10-27T15:16:19] tcas-collision → T3.5 collisions with T4.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 13
+.[2026-10-27T15:16:19] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:19] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:19] tcas-collision → T1.2 collisions with T1.1 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T2.2 collisions with T2.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T3.2 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T3.3 collisions with T3.1 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'tests/test_bench.py', 'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:19] tcas-collision → T3.4 collisions with T3.1 (Direct file collision: {'tests/test_bench.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T3.4 collisions with T3.2 (Direct file collision: {'tests/test_bench.py'}) at wave 2
+[2026-10-27T15:16:19] tcas-collision → T3.4 collisions with T3.3 (Direct file collision: {'tests/test_bench.py'}) at wave 3
+[2026-10-27T15:16:19] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/bench/2026-08-17-2001-smoke-test-main-vs-doi-ket-qua.md'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T6.4 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T6.7 collisions with T6.3 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T6.7 collisions with T6.4 (Direct file collision: {'scripts/tdq_bench.py'}) at wave 2
+[2026-10-27T15:16:19] tcas-collision → T6.5 collisions with T6.3 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T6.5 collisions with T6.4 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 2
+[2026-10-27T15:16:19] tcas-collision → T6.5 collisions with T6.7 (TCAS AST collision: tests/test_bench.py imports modified module {'tdq_bench'}) at wave 3
+[2026-10-27T15:16:19] tcas-collision → T6.6 collisions with T6.1 (Direct file collision: {'docs/tdq/qc/2026-08-17-2001-smoke-test-main-vs-doi.md'}) at wave 1
+[2026-10-27T15:16:19] chia-dot → no task declares a dependency line, falling back to phase-name order
+[2026-10-27T15:16:19] tcas-collision → T1.3 collisions with T1.2 (Direct file collision: {'scripts/skill_tokens.py'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T1.4 collisions with T1.2 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T1.4 collisions with T1.3 (TCAS AST collision: tests/test_skill_tokens.py imports modified module {'skill_tokens'}) at wave 2
+[2026-10-27T15:16:19] tcas-collision → T2.3 collisions with T2.2 (TCAS AST collision: tests/test_skill_router.py imports modified module {'skill_router'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T5.2 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T5.3 collisions with T5.1 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 1
+[2026-10-27T15:16:19] tcas-collision → T5.3 collisions with T5.2 (Direct file collision: {'docs/tdq/audit/de-an-toi-uu-context.md'}) at wave 2
+[2026-10-27T15:16:19] chia-dot → 18/39 task(s) declare dependencies, ordering by graph
+[2026-10-27T15:16:20] tcas-collision → T3.1 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → T3.6 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → T3.6 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:20] tcas-collision → QC1.1 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → QC1.1 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:20] tcas-collision → QC1.1 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:20] tcas-collision → QC1.2 collisions with T1.3 (Direct file collision: {'scripts/tdq_team.py'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → QC1.2 collisions with T3.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 2
+[2026-10-27T15:16:20] tcas-collision → QC1.2 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:20] tcas-collision → QC1.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:20] tcas-collision → QC1.3 collisions with T1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → QC1.3 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:20] tcas-collision → QC1.3 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:20] tcas-collision → QC1.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:20] tcas-collision → QC1.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:20] tcas-collision → QC1.5 collisions with T1.3 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → QC1.5 collisions with T3.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:20] tcas-collision → QC1.5 collisions with T3.6 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:20] tcas-collision → QC1.5 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:20] tcas-collision → QC1.5 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:20] tcas-collision → QC1.6 collisions with T2.1 (Direct file collision: {'tests/test_doc_lint.py'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → QC1.7 collisions with T1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 1
+[2026-10-27T15:16:20] tcas-collision → QC1.7 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:20] tcas-collision → QC1.7 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:20] tcas-collision → QC1.7 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:20] tcas-collision → QC1.7 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:20] tcas-collision → QC1.7 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 6
+[2026-10-27T15:16:21] tcas-collision → QC1.8 collisions with T4.5 (Direct file collision: {'skills/tdq-intake/references/quick-lane.md'}) at wave 1
+[2026-10-27T15:16:21] tcas-collision → QC1.9 collisions with T5.1 (Direct file collision: {'tests/test_edit_gate.py'}) at wave 1
+[2026-10-27T15:16:21] tcas-collision → T2.2 collisions with QC1.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:21] tcas-collision → T3.2 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:21] tcas-collision → T3.2 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:21] tcas-collision → T3.2 collisions with QC1.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:21] tcas-collision → T3.2 collisions with QC1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:21] tcas-collision → T3.2 collisions with QC1.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 7
+[2026-10-27T15:16:21] tcas-collision → T3.3 collisions with T3.6 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 3
+[2026-10-27T15:16:21] tcas-collision → T3.3 collisions with QC1.1 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 4
+[2026-10-27T15:16:21] tcas-collision → T3.3 collisions with QC1.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 5
+[2026-10-27T15:16:21] tcas-collision → T3.3 collisions with QC1.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 6
+[2026-10-27T15:16:21] tcas-collision → T3.3 collisions with QC1.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 7
+[2026-10-27T15:16:21] tcas-collision → T3.3 collisions with T3.2 (Direct file collision: {'scripts/tdq_team.py', 'tests/test_team_mode.py'}) at wave 8
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with T3.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with T3.6 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with QC1.1 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with QC1.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with QC1.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 6
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with QC1.7 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 7
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with T3.2 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 8
+[2026-10-27T15:16:21] tcas-collision → T4.3 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 9
+[2026-10-27T15:16:21] tcas-collision → T4.6 collisions with QC1.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 2
+[2026-10-27T15:16:21] tcas-collision → T4.6 collisions with T2.2 (Direct file collision: {'scripts/doc_lint.py'}) at wave 3
+[2026-10-27T15:16:21] tcas-collision → T5.2 collisions with T3.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 2
+[2026-10-27T15:16:21] tcas-collision → T5.2 collisions with T3.6 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 3
+[2026-10-27T15:16:21] tcas-collision → T5.2 collisions with QC1.1 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 4
+[2026-10-27T15:16:22] tcas-collision → T5.2 collisions with QC1.2 (TCAS AST collision: hooks/scripts/edit_gate.py imports modified module {'tdq_team'}) at wave 5
+[2026-10-27T15:16:22] tcas-collision → T5.2 collisions with QC1.5 (Direct file collision: {'tests/test_edit_gate.py', 'hooks/scripts/edit_gate.py'}) at wave 6
+[2026-10-27T15:16:22] tcas-collision → T2.3 collisions with T4.6 (Direct file collision: {'scripts/doc_lint.py'}) at wave 4
+[2026-10-27T15:16:22] tcas-collision → T3.4 collisions with T4.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 10
+[2026-10-27T15:16:22] tcas-collision → T3.7 collisions with T3.3 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 9
+[2026-10-27T15:16:22] tcas-collision → T3.7 collisions with T4.3 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 10
+[2026-10-27T15:16:22] tcas-collision → T3.7 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 11
+[2026-10-27T15:16:22] tcas-collision → T4.4 collisions with T3.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 11
+[2026-10-27T15:16:22] tcas-collision → T4.4 collisions with T3.7 (Direct file collision: {'tests/test_uu_tien_song_song.py'}) at wave 12
+[2026-10-27T15:16:22] tcas-collision → T3.5 collisions with T3.7 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 12
+[2026-10-27T15:16:22] tcas-collision → T3.5 collisions with T4.4 (TCAS AST collision: tests/test_uu_tien_song_song.py imports modified module {'tdq_team'}) at wave 13
+.......[2026-10-27T15:16:23+07:00] tdq_vungfile: chup-moc: dirty tree → stash sha fc43357a
+[2026-10-27T15:16:23+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+.[2026-10-27T15:16:23+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD 91347f12
+[2026-10-27T15:16:23+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+.[2026-10-27T15:16:24+07:00] tdq_vungfile: chup-moc: dirty tree → stash sha b92cb7ca
+[2026-10-27T15:16:24+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+.[2026-10-27T15:16:24+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD 04371184
+[2026-10-27T15:16:24+07:00] tdq_vungfile: chup-moc: 1 untracked file(s) at snapshot time
+.[2026-10-27T15:16:24+07:00] tdq_vungfile: chup-moc: dirty tree → stash sha 576ac74b
+[2026-10-27T15:16:24+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:24+07:00] tdq_vungfile: hau-kiem: PASS — 1 file(s) touched, all inside the zone
+.[2026-10-27T15:16:25+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD 79fe049c
+[2026-10-27T15:16:25+07:00] tdq_vungfile: chup-moc: 1 untracked file(s) at snapshot time
+[2026-10-27T15:16:25+07:00] tdq_vungfile: hau-kiem: PASS — 1 file(s) touched, all inside the zone
+.[2026-10-27T15:16:25+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD 79fe049c
+[2026-10-27T15:16:25+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:25+07:00] tdq_vungfile: hau-kiem: STRAY — outside the zone ['c.py'] · locked zone touched []
+.[2026-10-27T15:16:26+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD e27cc747
+[2026-10-27T15:16:26+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:26+07:00] tdq_vungfile: hau-kiem: STRAY — outside the zone ['b.py'] · locked zone touched []
+.[2026-10-27T15:16:26+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD e27cc747
+[2026-10-27T15:16:26+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:26+07:00] tdq_vungfile: hau-kiem: PASS — 1 file(s) touched, all inside the zone
+.[2026-10-27T15:16:27+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD e7092a60
+[2026-10-27T15:16:27+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:27+07:00] tdq_vungfile: hoan-tac: restored to the mark [] · deleted new file(s) ['rac.py']
+.[2026-10-27T15:16:27+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD e7092a60
+[2026-10-27T15:16:27+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:27+07:00] tdq_vungfile: hoan-tac: restored to the mark ['b.py'] · deleted new file(s) []
+.[2026-10-27T15:16:28+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD e7092a60
+[2026-10-27T15:16:28+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:28+07:00] tdq_vungfile: hoan-tac: restored to the mark ['b.py'] · deleted new file(s) []
+.[2026-10-27T15:16:28+07:00] tdq_vungfile: chup-moc: dirty tree → stash sha 71fe8ad6
+[2026-10-27T15:16:28+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:28+07:00] tdq_vungfile: hoan-tac: restored to the mark ['b.py'] · deleted new file(s) []
+....[2026-10-27T15:16:30+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD d0a25fa9
+[2026-10-27T15:16:30+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:30+07:00] tdq_vungfile: hau-kiem: STRAY — outside the zone [] · locked zone touched ['test_a.py']
+.[2026-10-27T15:16:30+07:00] tdq_vungfile: chup-moc: clean tree → falling back to HEAD d0a25fa9
+[2026-10-27T15:16:30+07:00] tdq_vungfile: chup-moc: 0 untracked file(s) at snapshot time
+[2026-10-27T15:16:30+07:00] tdq_vungfile: hau-kiem: PASS — 1 file(s) touched, all inside the zone
+..[2026-10-27T15:16:31] worktree-so: unreadable ledger, treating it as empty and leaving it alone: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+[2026-10-27T15:16:31] worktree-so: unreadable ledger, treating it as empty and leaving it alone: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+.[2026-10-27T15:16:31] worktree-so: unreadable ledger, treating it as empty and leaving it alone: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+..........[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpdlvfrrpx\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+.[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpjzpi_vva\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.2 → C:\Users\admin\AppData\Local\Temp\tmpjzpi_vva\.tdq-worktrees\2026-01-01-0000-thu\t1.2
+.[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.2 → C:\Users\admin\AppData\Local\Temp\tmp6q2nw6_d\.tdq-worktrees\2026-01-01-0000-thu\t1.2
+[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmp6q2nw6_d\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+..[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpqcgg2zka\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+.[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmp805x1ajy\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+[2026-10-27T15:16:31] worktree-so: close 2026-01-01-0000-thu/T1.1 (merged)
+.[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpf_3sh1bx\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.2 → C:\Users\admin\AppData\Local\Temp\tmpf_3sh1bx\.tdq-worktrees\2026-01-01-0000-thu\t1.2
+[2026-10-27T15:16:31] worktree-so: close 2026-01-01-0000-thu/T1.1 (merged)
+.[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmprn9ckdte\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+.[2026-10-27T15:16:31] worktree-so: open 2026-01-01-0000-thu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpdk_s3kjm\.tdq-worktrees\2026-01-01-0000-thu\t1.1
+.[2026-10-27T15:16:31] worktree-so: open slug-cu/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpn8ngu8wq\.tdq-worktrees\slug-cu\t1.1
+[2026-10-27T15:16:31] worktree-so: open slug-moi/T1.1 → C:\Users\admin\AppData\Local\Temp\tmpn8ngu8wq\.tdq-worktrees\slug-moi\t1.1
+.
+----------------------------------------------------------------------
+Ran 3206 tests in 686.773s
+
+OK (skipped=10)
+[2026-10-27T15:16:31+07:00] tdq_test: backend=unittest status=PASS tests_run=3206 reason=Executed tests completed successfully
+[2026-10-27T15:16:31+07:00] tdq_test: tron-bo backend=unittest scope=full status=PASS tests_run=3206 details_complete=True fallback=none seconds=688.08 reason=Executed tests completed successfully

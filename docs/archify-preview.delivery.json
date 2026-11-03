@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ef569a4b-4fe5-4a6f-9a91-4d3805badca4",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\archify-preview.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\archify-preview.html",
+  "specification": {
+    "sha256": "e404022feb4a9e47ea14cc82db402f36b5e91a35b7acb4e27342f63a6b9e457d",
+    "bytes": 7030
+  },
+  "artifact": {
+    "sha256": "08c28cd26960596e14060f31b18deab27093f518dd534711efe7ee59b36685a8",
+    "bytes": 914101
+  },
+  "explainer": {
+    "preparedSha256": "843da5887e0caeffce6a5359f43bd1871ad75deef4c380c3636ff83ed89385ca",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "architecture-view",
+        "inline": true,
+        "sha256": "0c436486e21c68d249e6272d705d2790806e3167261c8ea50d749b5cb787f660",
+        "bytes": 1181
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "ba-flow",
+        "inline": true,
+        "sha256": "3c48968f87396f772041f9e5a52747e783b338f0fe30b061d63456e43eabf6fc",
+        "bytes": 1135
+      }
+    ]
+  }
+}

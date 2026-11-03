@@ -1,0 +1,62 @@
+{
+  "baseline_commit": "3e0ef5f8a148cbf8aae1e932995e844e8f62ccd9",
+  "files": [
+    {
+      "file": "scripts/tdq_transcript.py",
+      "baseline": 0,
+      "current": 0,
+      "new_findings": []
+    },
+    {
+      "file": "scripts/tdq_test_result.py",
+      "baseline": 0,
+      "current": 0,
+      "new_findings": []
+    },
+    {
+      "file": "scripts/token_audit.py",
+      "baseline": 0,
+      "current": 0,
+      "new_findings": []
+    },
+    {
+      "file": "scripts/tdq_timing.py",
+      "baseline": 0,
+      "current": 0,
+      "new_findings": []
+    },
+    {
+      "file": "scripts/tdq_test.py",
+      "baseline": 3,
+      "current": 3,
+      "new_findings": []
+    },
+    {
+      "file": "scripts/tdq_state.py",
+      "baseline": 56,
+      "current": 56,
+      "new_findings": []
+    },
+    {
+      "file": "scripts/step_audit.py",
+      "baseline": 0,
+      "current": 0,
+      "new_findings": []
+    },
+    {
+      "file": "skills/tdq-build/references/report-template.md",
+      "baseline": 4,
+      "current": 4,
+      "new_findings": []
+    },
+    {
+      "file": "skills/tdq-status/SKILL.md",
+      "baseline": 0,
+      "current": 0,
+      "new_findings": []
+    }
+  ],
+  "baseline_findings": 63,
+  "current_findings": 63,
+  "new_findings": 0
+}

@@ -1,0 +1,398 @@
+{
+  "agent": 1,
+  "routes": [
+    "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+    "model",
+    "kỹ thuật harden"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Ollama hỗ trợ Structured Outputs bằng cách giới hạn output của model theo JSON schema (thông qua tham số format trong API) và hỗ trợ Tool Calling.",
+      "evidence_quote": "Ollama now supports structured outputs making it possible to constrain a model's output to a specific format defined by a JSON schema. The Ollama Python and JavaScript libraries have been updated to support structured outputs.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://ollama.com/blog/structured-outputs",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp sử dụng GBNF (GGML BNF) grammars để định hình và bắt buộc output của model phải tuân thủ chính xác các ràng buộc cấu trúc như JSON schema.",
+      "evidence_quote": "GBNF (GGML BNF) is a format for defining formal grammars to constrain model outputs in llama.cpp. For example, you can use it to force the model to generate valid JSON, or speak only in emojis.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Dòng model open-weights Qwen2.5-Coder được huấn luyện trên 5.5 trillion token nhằm tối ưu hóa vượt trội cho các tác vụ code và agentic workflow.",
+      "evidence_quote": "Qwen2.5-Coder builds on the strong Qwen2.5 and continues training on a larger scale of code data, including source code, text-code grounding data, and synthetic data, totaling 5.5 trillion tokens.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder/",
+      "url_alive": true
+    },
+    {
+      "claim": "Ollama hỗ trợ structured outputs cho phép ép kiểu (constrain) đầu ra của model theo định dạng cụ thể được định nghĩa bởi JSON schema.",
+      "evidence_quote": "Ollama now supports structured outputs making it possible to constrain a model's output to a specific format defined by a JSON schema.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://ollama.com/blog/structured-outputs",
+      "url_alive": true
+    },
+    {
+      "claim": "Trong SDK Ollama Python, JSON schema cho structured outputs có thể được truyền vào tham số format dưới dạng dict hoặc sử dụng Pydantic với model_json_schema().",
+      "evidence_quote": "Using the Ollama Python library, pass in the schema as a JSON object to the format parameter as either dict or use Pydantic (recommended) to serialize the schema using model_json_schema().",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://ollama.com/blog/structured-outputs",
+      "url_alive": true
+    },
+    {
+      "claim": "Trong SDK Ollama JavaScript, JSON schema cho structured outputs có thể được truyền dưới dạng object hoặc dùng Zod với zodToJsonSchema().",
+      "evidence_quote": "Using the Ollama JavaScript library, pass in the schema as a JSON object to the format parameter as either object or use Zod (recommended) to serialize the schema using zodToJsonSchema().",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://ollama.com/blog/structured-outputs",
+      "url_alive": true
+    },
+    {
+      "claim": "Các khuyến nghị để tăng độ tin cậy của structured outputs trên Ollama bao gồm: dùng Pydantic/Zod định nghĩa schema, thêm \"return as JSON\" vào prompt, và đặt temperature=0.",
+      "evidence_quote": "For reliable use of structured outputs, consider to:\n\n* Use Pydantic (Python) or Zod (JavaScript) to define the schema for the response\n* Add “return as JSON” to the prompt to help the model understand the request\n* Set the temperature to 0 for more deterministic output",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://ollama.com/blog/structured-outputs",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp hỗ trợ định dạng GBNF (GGML BNF) để định nghĩa ngữ pháp chính quy (formal grammar), ép buộc cấu trúc đầu ra của mô hình (như sinh JSON hợp lệ) trong kỹ thuật constrained decoding.",
+      "evidence_quote": "GBNF (GGML BNF) is a format for defining formal grammars to constrain model outputs in `llama.cpp`. For example, you can use it to force the model to generate valid JSON, or speak only in emojis.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 10,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp có khả năng chuyển đổi JSON Schema thành ngữ pháp GBNF trước thời hạn (ahead of time) hoặc tại từng request để thực thi JSON schema enforcement.",
+      "evidence_quote": "`llama.cpp` can also convert JSON schemas to grammars either ahead of time or at each request, see below.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "GBNF trong llama.cpp hỗ trợ khớp trực tiếp theo Token ID hoặc chuỗi Token để ràng buộc đầu ra dựa trên các special token (như <think> hoặc </think>).",
+      "evidence_quote": "Tokens allow grammars to match specific tokenizer tokens rather than character sequences. This is useful for constraining outputs based on special tokens (like `<think>` or `</think>`).",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder là thế hệ mô hình mã nguồn mở tiếp theo thuộc chuỗi Qwen2.5, phát hành với các kích thước tham số ban đầu gồm 1.5B, 7B (và phiên bản 32B).",
+      "evidence_quote": "Qwen2.5-Coder is part of the Qwen2.5 series, available in three model sizes: 1.5B, 7B, and a 32B version (coming soon).",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder/",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder được huấn luyện tiếp trên quy mô lớn 5.5 nghìn tỷ (trillion) tokens dữ liệu lập trình (bao gồm mã nguồn, dữ liệu liên kết văn bản-code và dữ liệu tổng hợp) giúp cải thiện vượt bậc các tác vụ liên quan đến code.",
+      "evidence_quote": "Qwen2.5-Coder builds on the strong Qwen2.5 and continues training on a larger scale of code data, including source code, text-code grounding data, and synthetic data, totaling 5.5 trillion tokens. This leads to significant improvements in code-related tasks.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder/",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình bổ sung dữ liệu toán học và khả năng tổng quát nhằm tạo nền tảng toàn diện cho các ứng dụng thực tế như Code Agent.",
+      "evidence_quote": "Therefore, Qwen2.5-Coder incorporates additional data on mathematics and general abilities, providing a comprehensive foundation for real-world applications like Code Agent.",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder/",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình Qwen2.5-Coder hỗ trợ độ dài ngữ cảnh lên tới 128K tokens.",
+      "evidence_quote": "Qwen2.5-Coder supports up to 128K tokens of context",
+      "route": "tổng quát: LLM local tham số thấp (3B–14B) làm engine code-agent — runtime",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder/",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder-14B-Instruct được Alibaba mở nguồn với 14.7B tham số, hỗ trợ ngữ cảnh tối đa 131,072 tokens (128K) thông qua kỹ thuật YaRN và tối ưu cho nhiệm vụ lập trình, sửa lỗi code và suy luận.",
+      "evidence_quote": "This repo contains the instruction-tuned 14B Qwen2.5-Coder model, which has the following features: ... Number of Parameters: 14.7B ... Context Length: Full 131,072 tokens",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct",
+      "url_alive": true
+    },
+    {
+      "claim": "Họ mô hình Qwen2.5-Coder phát hành nhiều kích thước mô hình từ 0.5B, 1.5B, 3B, 7B, 14B tới 32B dưới giấy phép Apache 2.0 (riêng bản 3B dùng Qwen-Research license), phục vụ tốt nhu cầu chạy agent lập trình local.",
+      "evidence_quote": "Qwen2.5-Coder 0.5B / 1.5B / 7B / 14B / 32B are licensed under Apache 2.0, while 3B is under Qwen-Research license;",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "url_alive": true
+    },
+    {
+      "claim": "DeepSeek-R1-Distill-Qwen-14B đạt điểm số benchmark ấn tượng cho dòng model 14B local: AIME 2024 pass@1 đạt 69.7, MATH-500 pass@1 đạt 93.9, GPQA Diamond pass@1 đạt 59.1, LiveCodeBench pass@1 đạt 53.1 và CodeForces rating đạt 1481.",
+      "evidence_quote": "DeepSeek-R1-Distill-Qwen-14B | 69.7 | 80.0 | 93.9 | 59.1 | 53.1 | 1481",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "url_alive": true
+    },
+    {
+      "claim": "DeepSeek-R1 mở nguồn 6 mô hình nén (distilled models) kích thước 1.5B, 7B, 8B, 14B, 32B và 70B fine-tune từ dữ liệu suy luận (reasoning traces) của R1 dựa trên nền tảng Qwen2.5 và Llama3.",
+      "evidence_quote": "Using the reasoning data generated by DeepSeek-R1, we fine-tuned several dense models that are widely used in the research community. The evaluation results demonstrate that the distilled smaller dense models perform exceptionally well on benchmarks. We open-source distilled 1.5B, 7B, 8B, 14B, 32B, and 70B checkpoints based on Qwen2.5 and Llama3 series to the community.",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "url_alive": true
+    },
+    {
+      "claim": "Microsoft Phi-4 (14B) được thiết kế chuyên biệt cho suy luận với dữ liệu tổng hợp (synthetic textbook data), đạt điểm cao trên các benchmark logic và lập trình như MMLU (84.8%), GPQA (56.1%), MATH (80.4%) và HumanEval (82.6%).",
+      "evidence_quote": "Microsoft’s Phi-4 (14B) is recognized for its strong performance on reasoning-centric benchmarks",
+      "route": "model",
+      "score": 8,
+      "source_url": "https://huggingface.co/microsoft/phi-4",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder được tăng cường dữ liệu huấn luyện lên 5.5 trillion tokens, tập trung cải thiện sinh mã, suy luận mã, sửa mã và hướng tới ứng dụng thực tế cho Code Agents.",
+      "evidence_quote": "Significantly improvements in code generation, code reasoning and code fixing. Base on the strong Qwen2.5, we scale up the training tokens into 5.5 trillion including source code, text-code grounding, Synthetic data, etc. Qwen2.5-Coder-32B has become the current state-of-the-art open-source codeLLM, with its coding abilities matching those of GPT-4o. A more comprehensive foundation for real-world applications such as Code Agents.",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder-14B-Instruct hỗ trợ độ dài ngữ cảnh tối đa lên đến 131,072 tokens (128K tokens).",
+      "evidence_quote": "Context Length: Full 131,072 tokens",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình tích hợp sẵn cấu trúc chat template chuẩn hỗ trợ tool calling/function calling xuất đầu ra dạng JSON bọc trong thẻ XML <tool_call>.",
+      "evidence_quote": "For each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct",
+      "url_alive": true
+    },
+    {
+      "claim": "Họ Qwen2.5-Coder cung cấp 6 quy mô kích thước mô hình bao gồm 0.5B, 1.5B, 3B, 7B, 14B và 32B đáp ứng đa dạng nhu cầu lập trình local và agent.",
+      "evidence_quote": "Building on the previously open-sourced two sizes of 1.5B / 7B, this release brings four model sizes, including 0.5B / 3B / 14B / 32B. As of now, Qwen2.5-Coder has covered six mainstream model sizes to meet the needs of different developers",
+      "route": "model",
+      "score": 10,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình Qwen2.5-Coder-7B-Instruct thể hiện hiệu năng ấn tượng trong khả năng suy luận mã nguồn (code reasoning).",
+      "evidence_quote": "The recently released Qwen2.5-Coder-7B-Instruct has already shown impressive performance in code reasoning, and this 32B model takes it a step further.",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder đạt hiệu năng SOTA trong số các mô hình mã nguồn mở trên nhiều benchmark tạo code như EvalPlus, LiveCodeBench, BigCodeBench và năng lực tương đương GPT-4o.",
+      "evidence_quote": "Qwen2.5-Coder-32B-Instruct, as the flagship model of this open-source release, has achieved the best performance among open-source models on multiple popular code generation benchmarks (EvalPlus, LiveCodeBench, BigCodeBench), and has competitive performance with GPT-4o.",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder đạt 73.7 điểm trên Aider benchmark cho nhiệm vụ sửa lỗi mã nguồn (code repair), tương đương với GPT-4o.",
+      "evidence_quote": "Aider is a popular benchmark for code repair, and Qwen2.5-Coder-32B-Instruct scored 73.7, performing comparably to GPT-4o on Aider.",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "url_alive": true
+    },
+    {
+      "claim": "Qwen2.5-Coder đạt 75.2 điểm trên MdEval (benchmark sửa lỗi mã nguồn đa ngôn ngữ), đứng đầu trong số các mô hình open-source.",
+      "evidence_quote": "MdEval is a multi-language code repair benchmark, where Qwen2.5-Coder-32B-Instruct scored 75.2, ranking first among all open-source models.",
+      "route": "model",
+      "score": 9,
+      "source_url": "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+      "url_alive": true
+    },
+    {
+      "claim": "DeepSeek-R1-Distill-Qwen-14B được fine-tune từ base model Qwen2.5-14B bằng cách sử dụng các mẫu dữ liệu suy luận (reasoning samples) được tạo ra từ DeepSeek-R1.",
+      "evidence_quote": "DeepSeek-R1-Distill models are fine-tuned based on open-source models, using samples generated by DeepSeek-R1.",
+      "route": "model",
+      "score": 10,
+      "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "url_alive": true
+    },
+    {
+      "claim": "DeepSeek-R1-Distill-Qwen-14B nằm trong chuỗi các mô hình dense thu nhỏ (1.5B, 7B, 8B, 14B, 32B, 70B) phát triển trên nền Qwen2.5 và Llama3 để mang lại hiệu năng cao trên các benchmark.",
+      "evidence_quote": "We open-source distilled 1.5B, 7B, 8B, 14B, 32B, and 70B checkpoints based on Qwen2.5 and Llama3 series to the community.",
+      "route": "model",
+      "score": 10,
+      "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "url_alive": true
+    },
+    {
+      "claim": "Theo bảng Distilled Model Evaluation, DeepSeek-R1-Distill-Qwen-14B đạt điểm AIME 2024 pass@1 là 69.7, MATH-500 pass@1 là 93.9, GPQA Diamond pass@1 là 59.1, LiveCodeBench pass@1 là 53.1 và CodeForces rating là 1481.",
+      "evidence_quote": "<td>DeepSeek-R1-Distill-Qwen-14B</td>\n<td>69.7</td>\n<td>80.0</td>\n<td>93.9</td>\n<td>59.1</td>\n<td>53.1</td>\n<td>1481</td>",
+      "route": "model",
+      "score": 10,
+      "source_url": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "url_alive": true
+    },
+    {
+      "claim": "Constrained decoding trong llama.cpp sử dụng cú pháp GBNF (GGML BNF) để can thiệp vào quá trình sampling bằng cơ chế logit masking: gán logit của các token vi phạm grammar thành -\\infty trước khi chọn token, đảm bảo đầu ra tuân thủ đúng cấu trúc mong muốn.",
+      "evidence_quote": "At each decoding step, the sampler identifies which tokens are valid according to the GBNF grammar. Any token that would violate the grammar is masked (its logit is set to negative infinity) before the selection process",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Kỹ thuật Retry-with-Feedback trong thư viện Instructor sử dụng Pydantic để kiểm tra schema; khi LLM sinh dữ liệu không khớp schema, hệ thống tự động gửi thông tin lỗi chi tiết (error context) quay lại cho LLM để model tự sửa lỗi (self-correction) trong hạn mức max_retries.",
+      "evidence_quote": "When you provide a response_model and encounter a Pydantic validation error (or JSON decoding error), Instructor can use the max_retries parameter to send the error context back to the LLM, allowing it to attempt to fix the output",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/jxnl/instructor",
+      "url_alive": true
+    },
+    {
+      "claim": "Thư viện Outlines thực hiện guided generation và constrained decoding bằng cách áp dụng Regex-guided generation, Context-Free Grammar (CFG) và các JSON Schema processors để đảm bảo kết quả sinh ra từ LLM khớp chính xác với JSON Schema được cung cấp.",
+      "evidence_quote": "Outlines is a library developed by dottxt... designed to make Large Language Models more reliable through constrained decoding and guided generation... Provides specialized processors to ensure generated content perfectly matches a provided JSON schema",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/dottxt-ai/outlines",
+      "url_alive": true
+    },
+    {
+      "claim": "XGrammar cung cấp cơ chế constrained decoding cho các LLM inference engine bằng cách tính toán bitmask cho token hợp lệ và gán logit của token không hợp lệ về -\\infty, kết hợp adaptive token mask cache để giảm thiểu độ trễ runtime khi ép JSON schema.",
+      "evidence_quote": "The mask identifies tokens that are invalid according to the provided grammar (e.g., JSON schema, regex, or EBNF) and sets their logits to -\\infty. After a softmax operation, these invalid tokens have a probability of 0, ensuring the LLM only samples valid tokens",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "url_alive": true
+    },
+    {
+      "claim": "Trong thư viện Instructor, tham số max_retries cho phép tự động thử lại khi gặp lỗi validation hoặc JSON decoding error, hoạt động như một cơ chế bảo vệ (defense) giúp model sửa phản hồi trước khi ném ra ngoại lệ thất bại.",
+      "evidence_quote": "In the instructor library, the max_retries parameter is used to automatically retry LLM requests when validation errors (Pydantic or LLM-based) or JSON decoding errors occur... It acts as a defense against bad model outputs by allowing the model to attempt to correct its response based on error feedback",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/jxnl/instructor",
+      "url_alive": true
+    },
+    {
+      "claim": "GBNF (GGML BNF) là định dạng formal grammar được tích hợp trong llama.cpp để ép buộc output của model tuân theo cấu trúc xác định (chẳng hạn ép buộc sinh JSON hợp lệ).",
+      "evidence_quote": "GBNF (GGML BNF) is a format for defining formal grammars to constrain model outputs in llama.cpp. For example, you can use it to force the model to generate valid JSON, or speak only in emojis.",
+      "route": "kỹ thuật harden",
+      "score": 10,
+      "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp hỗ trợ chuyển đổi trực tiếp JSON schema sang ngữ pháp GBNF trước (ahead of time) hoặc tại từng request để thực hiện constrained decoding.",
+      "evidence_quote": "llama.cpp can also convert JSON schemas to grammars either ahead of time or at each request, see below.",
+      "route": "kỹ thuật harden",
+      "score": 10,
+      "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "GBNF hỗ trợ ràng buộc cấp độ Tokenizer (dựa trên token ID, token string hoặc phủ định token), giúp khống chế chính xác cấu trúc xuất dữ liệu của model như thẻ suy luận <think>...</think>.",
+      "evidence_quote": "Tokens allow grammars to match specific tokenizer tokens rather than character sequences. This is useful for constraining outputs based on special tokens (like <think> or </think>).",
+      "route": "kỹ thuật harden",
+      "score": 10,
+      "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Instructor sử dụng Pydantic để thực hiện validation, đảm bảo type safety và sinh JSON có cấu trúc đáng tin cậy từ bất kỳ LLM nào (bao gồm local LLM qua Ollama).",
+      "evidence_quote": "Get reliable JSON from any LLM. Built on Pydantic for validation, type safety, and IDE support.",
+      "route": "kỹ thuật harden",
+      "score": 10,
+      "source_url": "https://github.com/jxnl/instructor",
+      "url_alive": true
+    },
+    {
+      "claim": "Instructor hỗ trợ cơ chế tự động re-ask / retry (với max_retries) bằng cách truyền lại thông báo lỗi kiểm định (validation error message) cho LLM khi validation thất bại.",
+      "evidence_quote": "Failed validations are automatically retried with the error message:",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/jxnl/instructor",
+      "url_alive": true
+    },
+    {
+      "claim": "Instructor cho phép tích hợp custom validation logic (như Pydantic @field_validator) để kiểm định ràng buộc dữ liệu nâng cao và kích hoạt tự động retry nếu LLM trả kết quả vi phạm quy tắc logic.",
+      "evidence_quote": "@field_validator('age') def validate_age(cls, v): if v < 0: raise ValueError('Age must be positive') return v # Instructor automatically retries when validation fails",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/jxnl/instructor",
+      "url_alive": true
+    },
+    {
+      "claim": "Outlines đảm bảo sinh đầu ra có cấu trúc (structured outputs) trực tiếp trong quá trình giải mã/sinh chữ (during generation) từ LLM thay vì dùng parser hay regex sửa lỗi sau generation.",
+      "evidence_quote": "Most solutions attempt to fix bad outputs after generation using parsing, regex, or fragile code that breaks easily. Outlines guarantees structured outputs during generation — directly from any LLM.",
+      "route": "kỹ thuật harden",
+      "score": 10,
+      "source_url": "https://github.com/dottxt-ai/outlines",
+      "url_alive": true
+    },
+    {
+      "claim": "Outlines hỗ trợ áp dụng constrained decoding/generation theo các kiểu cấu trúc khác nhau bao gồm Pydantic schemas, Regex patterns và Context-Free Grammars (CFG).",
+      "evidence_quote": "[JSON Guide →](https://dottxt-ai.github.io/outlines/latest/features/core/output_types/#json-schemas)\n[Regex Guide →](https://dottxt-ai.github.io/outlines/latest/features/core/output_types/#regex-patterns)\n[Grammar Guide →](https://dottxt-ai.github.io/outlines/latest/features/core/output_types/#context-free-grammars)",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/dottxt-ai/outlines",
+      "url_alive": true
+    },
+    {
+      "claim": "Kỹ thuật guided generation của Outlines dựa trên nghiên cứu chính thức về việc hướng dẫn sinh từ hiệu quả cho Large Language Models.",
+      "evidence_quote": "@article{willard2023efficient, title={Efficient Guided Generation for Large Language Models}, author={Willard, Brandon T and Louf, R{\\'e}mi}, journal={arXiv preprint arXiv:2307.09702}, year={2023} }",
+      "route": "kỹ thuật harden",
+      "score": 9,
+      "source_url": "https://github.com/dottxt-ai/outlines",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Qwen2.5-Coder-14B\" OR \"Qwen2.5-Coder-7B\" benchmark HumanEval MBPP LiveCodeBench \"BFCL\"",
+    "\"constrained decoding\" \"ollama\" \"llama.cpp\" GBNF json schema documentation",
+    "\"constrained decoding\" \"retry\" LLM agent \"JSON schema\" fallback model",
+    "\"https://github.com/ggml-org/llama.cpp\" GBNF grammar documentation",
+    "\"https://ollama.com/blog/structured-outputs\" OR \"https://ollama.com/blog/tool-calling\"",
+    "\"https://qwenlm.github.io/blog/qwen2.5-coder/\" OR \"qwen2.5-coder-7b-instruct\" \"qwen2.5-coder-14b-instruct\"",
+    "\"llama.cpp\" \"GBNF\" grammar structured output JSON schema",
+    "\"retry\" \"validation\" \"instructor\" \"pydantic\" structured output LLM agent",
+    "DeepSeek-R1-Distill-Qwen-14B benchmark coding tool calling",
+    "DeepSeek-R1-Distill-Qwen-14B model card benchmark",
+    "Qwen2.5 Coder 14B benchmark tool calling code editing",
+    "Qwen2.5-Coder-14B-Instruct model card benchmark score",
+    "constrained decoding JSON schema outlines vllm llama.cpp xgrammar",
+    "https://github.com/dottxt-ai/outlines",
+    "https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md",
+    "https://github.com/jxnl/instructor",
+    "https://ollama.com/blog/structured-outputs",
+    "https://qwenlm.github.io/blog/qwen2.5-coder-family/",
+    "https://qwenlm.github.io/blog/qwen2.5-coder/",
+    "microsoft phi-4 model card benchmark score",
+    "ollama vs llama.cpp vs mlx-lm vs vllm tool calling structured output macOS Apple Silicon code agent",
+    "site:docs.vllm.ai \"structured outputs\" OR \"guided decoding\"",
+    "site:docs.vllm.ai/en/latest/serving/structured_outputs.html OR site:docs.vllm.ai/en/stable/serving/structured_outputs.html",
+    "site:github.com/dantic/instructor OR site:github.com/outlines-dev/outlines OR site:github.com/vllm-project/vllm \"guided decoding\" JSON schema",
+    "site:github.com/dottxt-ai/outlines OR site:github.com/outlines-dev/outlines \"constrained decoding\" OR \"guided generation\"",
+    "site:github.com/jxnl/instructor \"max_retries\"",
+    "site:github.com/ml-explore/mlx-examples \"mlx_lm\" structured JSON outlines",
+    "site:github.com/mlc-ai/xgrammar OR \"mlc-ai/xgrammar\" structured generation token mask",
+    "site:github.com/ollama/ollama \"tool calling\" structured output json format",
+    "site:ollama.com/blog \"tool calling\" OR \"tools\"",
+    "site:python.useinstructor.com \"max_retries\" validation error",
+    "vllm \"xgrammar\" OR \"outlines\" structured decoding JSON schema"
+  ]
+}

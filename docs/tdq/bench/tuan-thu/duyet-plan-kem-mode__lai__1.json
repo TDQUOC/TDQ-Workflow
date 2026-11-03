@@ -1,0 +1,22 @@
+{
+  "ca": "duyet-plan-kem-mode",
+  "nhanh": "lai",
+  "lan": 1,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-plan-kem-mode__lai__1/transcript.jsonl",
+  "ket_qua": {
+    "L001": "dat",
+    "L003": "dat",
+    "L005": "dat",
+    "L012": "dat",
+    "L149": "dat",
+    "L121": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 1.573809,
+  "so_luot": 32,
+  "ma_thoat": 0,
+  "nhiem": [
+    "bản plugin cài trên máy"
+  ]
+}

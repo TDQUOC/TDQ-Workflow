@@ -1,0 +1,21 @@
+{
+  "ca": "commit-khong-push",
+  "nhanh": "viet",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/commit-khong-push__viet__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L002": "dat",
+    "L012": "khong-ap-dung",
+    "L003": "khong-ap-dung",
+    "L035": "vi-pham",
+    "L121": "vi-pham",
+    "L210": "vi-pham"
+  },
+  "chi_phi": 0.5881344999999999,
+  "so_luot": 13,
+  "nhiem": [
+    "repo gốc đang phát triển"
+  ]
+}

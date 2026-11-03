@@ -1,0 +1,24 @@
+{
+  "status": "PASS_EXPLICIT_TELEMETRY_EXCEPTION",
+  "policy": "claude-pluginUsage-scalar-values/v1",
+  "parent_receipt": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/telemetry-parent-632843acb347444099d7c277cc16fb4b/receipt.json",
+    "sha256": "ed9026fd30a9b13ca1a36717bc5c800b528b492752e760a360e2ad443a9fe21e"
+  },
+  "adapter": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/safe_run_telemetry.py",
+    "sha256": "4691d65c5fbedfd4500d13f42ff3d7d6628a449cbaadf6f00df3c40bb6eba1e6"
+  },
+  "approval": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/telemetry-exception-approved.md",
+    "sha256": "497bc6b0624c2e43fa01df5c5457816ae7907805e93f6b478b12832fa5c35167"
+  },
+  "tests": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/test_safe_run_telemetry.py",
+    "sha256": "0b83d8d95f39978c5c64c8844e304c6c6934005d80e90dbc342566dab4dbd496"
+  },
+  "reviewer": "/root/gpt61sol_high_review_qc13",
+  "review_findings_remaining": 0,
+  "raw_config_changed": false,
+  "old_fail_receipts": "preserved; never upgraded"
+}

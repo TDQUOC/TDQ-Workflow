@@ -1,85 +1,61 @@
-# Cẩm Nang: Nguyên Tắc MCP-First & Kịch Bản Pre-flight Connection Check
-<!-- muc-luc-dong:
-  1. Nguyên Tắc MCP-First (Ưu Tiên MCP Hàng Đầu)=13-24 ·
-  2. Kịch Bản Kiểm Tra Kết Nối Trước Khi Thực Thi (Pre-flight Check)=25-28 ·
-  Bảng Kiểm Tra Các Nền Tảng Phổ Biến=29-39 · 3. Quy Trình Xử Lý Khi Chưa Kết Nối Được=40-45 ·
-  Mẫu Thông Báo Hướng Dẫn Người Dùng=46-79 · 4. Tóm Tắt Quy Tắc Cho Agent=80
--->
+# MCP-first connection and recovery guide
 
-Tài liệu chuẩn hóa nguyên tắc ưu tiên sử dụng Model Context Protocol (MCP) và bộ kỹ năng của MCP trong toàn bộ quy trình TDQ Workflow (từ phân tích, lập spec, lên plan đến triển khai thực tế).
+## When it applies
 
----
+Use for tool discovery, spec/plan capability choices and runtime operations. Inventory, schema,
+connection and permission are separate checks; a configured server does not prove readiness.
 
-## 1. Nguyên Tắc MCP-First (Ưu Tiên MCP Hàng Đầu)
+## What to do
 
-1. **Ưu tiên công cụ chuyên biệt thay vì thao tác mù mờ:**
-   - Khi làm việc với các môi trường chuyên biệt như **Roblox Studio**, **Unity Engine**, **Google Chrome**, **PostgreSQL**, **Docker**...: Agent **BẮT BUỘC** phải rà soát các MCP server hiện có. Nếu có MCP hoặc skill tương ứng, phải ưu tiên sử dụng.
-   - Nếu có MCP hỗ trợ: Phải lấy MCP làm công cụ thực thi và kiểm chứng chính, tuyệt đối không dùng các lệnh shell mù mờ hoặc đoán định trạng thái runtime.
+1. Identify the goal, input file, destination and authorized action. Make short internal steps
+   with a completion check; ask only for missing facts that change the result.
+2. Inspect tools and skills available in this session. Prefer specialized MCP tools over blind
+   shell/UI guesses, but use one tool if sufficient; do not add hops for their own sake.
+3. Pre-flight Check: probe the actual configured connection before a deep operation or delegation. Default ports
+   below are examples, not proof that the server uses them.
 
-2. **Tích hợp vào Spec & Plan:**
-   - Trong giai đoạn soạn thảo Spec (§3b Năng lực & công cụ): Phải định danh rõ các MCP tools/skills sẽ được huy động.
-   - Trong Plan: Phải đặt task kiểm tra kết nối MCP (Pre-flight check) ở đầu đợt thực thi trước khi gọi các lệnh thao tác sâu.
+| Runtime | Safe probe | Ready means |
+|---|---|---|
+| Chrome DevTools MCP | Configured CDP endpoint, e.g. `http://127.0.0.1:9222/json/version`, then page listing | Endpoint responds and intended page/profile is identifiable |
+| Unity Engine | Configured Editor MCP status/socket | Editor/plugin handshake succeeds |
+| Roblox Studio | Configured Studio plugin bridge status | Intended Place is connected |
+| Database | Authorized read-only `SELECT 1` | Connection responds within its permission scope |
+| Native desktop | Installed agent-desktop status and fresh window snapshot | Interactive session and intended process/window are accessible |
 
----
+4. Web uses Chrome MCP. Native dialogs/apps use agent-desktop when needed; local file work uses
+   dedicated file/CLI tools. Direct upload_file is preferred if exposed and file is accessible
+   on the browser host. A JavaScript dialog handler is not a Windows file-picker handler.
+5. On handoff, verify page/process/window identity, file and destination from fresh observations.
+   After upload, verify attachment. After download/Save As, verify final file existence, type
+   and expected content; a click or partial download is insufficient.
+6. Disconnected installed tool: inspect the cause; launch/reconnect the existing app or dedicated
+   profile only within existing authorization. Probe again. Do not close personal windows,
+   overwrite profiles, run OAuth or change permission settings to force readiness.
+7. If recovery needs user interaction, provide the exact connection instructions and blocker.
+   Do not guess runtime state or claim success. Never bypass a denied action with another tool.
+8. Missing tool or dependency (including LSP): research official sources, confirm OS support,
+   propose user-level installation, required permissions, verification and uninstall commands.
+   Wait for user approval before installing; do not fetch/run installers merely to probe them.
+9. Delivery unknown: observe destination before retrying a send/upload. Retry only after new
+   evidence or changed conditions; no-progress failures end with a blocker. Prefer completion
+   events/tool waits to tight polling. Report partial and unsupported work separately.
 
-## 2. Kịch Bản Kiểm Tra Kết Nối Trước Khi Thực Thi (Pre-flight Check)
+## Connection instructions
 
-Trước khi gọi công cụ MCP hoặc giao việc cho sub-agent, Agent phải kiểm tra tính sẵn sàng của kết nối.
+- Chrome: use an existing dedicated debug profile and configured localhost endpoint; never ask
+  to close all personal Chrome windows. If approved and already installed, the existing
+  `python scripts/tdq_devtool_mcp.py launch` path may start it. Check its scope before invoking.
+- Unity: open the intended project, open the installed MCP plugin's status panel and start its
+  configured server. Menu names depend on the installed plugin; inspect rather than invent.
+- Roblox: open the intended Place and enable the installed bridge. If a setting or permission
+  change is required, explain it and request authorization instead of changing it silently.
+- Native desktop: use the current interactive session. UAC secure desktop, a locked desktop
+  and another session are unsupported; do not elevate or alter ACLs to bypass them.
 
-### Bảng Kiểm Tra Các Nền Tảng Phổ Biến
+## Self-check
 
-| Nền tảng MCP | Mục đích | Cách kiểm tra trước (Pre-flight Probe) | Trạng thái sẵn sàng |
-|---|---|---|---|
-| **Chrome DevTools MCP** | Điều khiển trình duyệt, E2E UI/UX, scraping | Kiểm tra cổng TCP `9222` (`Test-NetConnection -Port 9222` hoặc probe HTTP `http://127.0.0.1:9222/json/version`) | Cổng 9222 trả về HTTP 200 / JSON version |
-| **Unity Engine MCP** | Đọc cấu trúc scene, GameObject, chạy test, điều khiển Editor | Kiểm tra cổng/socket nội bộ của Unity MCP Server (thường là WebSocket hoặc TCP endpoint cấu hình trong Editor) | Socket phản hồi bắt tay thành công |
-| **Roblox Studio MCP** | Đọc DataModel, tạo Script/Part, kiểm thử Luau | Kiểm tra endpoint giao tiếp giữa plugin Roblox Studio và MCP server cục bộ | Server cục bộ phản hồi kết nối từ Studio plugin |
-| **Database MCP (Postgres/MySQL)** | Tra cứu schema, kiểm tra dữ liệu | Kiểm tra kết nối chuỗi connection string qua ping / query SELECT 1 | Kết nối cơ sở dữ liệu mở thành công |
-
----
-
-## 3. Quy Trình Xử Lý Khi Chưa Kết Nối Được
-
-Khi MCP đã được cấu hình trong hệ thống nhưng **chưa thể kết nối tới runtime/ứng dụng**:
-- **CẤM:** Tự ý fallback sang phán đoán mã nguồn mù mờ hoặc báo lỗi crash hệ thống.
-- **BẮT BUỘC:** Tạm dừng và in thông báo rõ ràng, lịch sự hướng dẫn người dùng mở ứng dụng và kích hoạt kết nối theo kịch bản chuẩn.
-
-### Mẫu Thông Báo Hướng Dẫn Người Dùng
-
-#### 1. Dành cho Google Chrome (Chrome DevTools MCP):
-```
-[MCP:CHROME-DEVTOOLS] Chưa kết nối được với Google Chrome qua cổng Remote Debugging 9222.
-Hướng dẫn mở:
-1. Đảm bảo đã tắt các cửa sổ Chrome thông thường nếu dùng chung profile.
-2. Khởi chạy Chrome với lệnh debug:
-   "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="%USERPROFILE%\ChromeDevProfile" --remote-allow-origins=*
-3. Hoặc chạy script auto-launch: python3 scripts/tdq_devtool_mcp.py launch
-```
-
-#### 2. Dành cho Unity Engine:
-```
-[MCP:UNITY] Đã phát hiện cấu hình Unity MCP nhưng chưa kết nối được với Unity Editor.
-Hướng dẫn kết nối:
-1. Mở Unity Editor và mở project mục tiêu.
-2. Vào Window -> MCP Server (hoặc menu cấu hình MCP của Unity plugin).
-3. Bấm "Start Server" / xác nhận cổng kết nối đang ở trạng thái Listening.
-4. Sau khi kết nối sẵn sàng, nhắn "tiếp tục" để tôi tiến hành kiểm thử và đồng bộ mã nguồn.
-```
-
-#### 3. Dành cho Roblox Studio:
-```
-[MCP:ROBLOX] Đã phát hiện cấu hình Roblox MCP nhưng chưa nhận được tín hiệu từ Roblox Studio.
-Hướng dẫn kết nối:
-1. Khởi động Roblox Studio và mở Place / Project cần lập trình.
-2. Tại thanh Plugins, kích hoạt plugin "Roblox MCP Bridge" / "Local Server Bridge".
-3. Xác nhận tính năng "Allow HTTP Requests" đã được bật trong Game Settings -> Security.
-4. Nhắn "tiếp tục" để tôi tra cứu DataModel và triển khai script Luau chính xác.
-```
-
----
-
-## 4. Tóm Tắt Quy Tắc Cho Agent
-
-1. **Nhận diện tác vụ:** Gặp Roblox/Unity/Web/DB -> Nghĩ ngay đến MCP.
-2. **Pre-flight Check:** Kiểm tra cổng / socket / status trước khi bắt đầu.
-3. **Chưa mở -> Hướng dẫn:** Nếu chưa mở, in hướng dẫn rõ ràng từng bước cho người dùng mở lên.
-4. **Đã mở -> Triển khai:** Sử dụng đầy đủ bộ công cụ và kỹ năng mà MCP cung cấp để kiểm tra, thực thi và thẩm định kết quả.
+Does each claimed result have observable evidence? Does every recovery keep the original
+permission scope, identity and destination? Were missing tools proposed rather than installed?
+RIGHT: reconnect an authorized test profile, probe, upload directly, verify attachment and file.
+WRONG: assume a configured server is live, force a native hop, install without approval or
+repeat an upload after timeout without checking whether it already arrived.

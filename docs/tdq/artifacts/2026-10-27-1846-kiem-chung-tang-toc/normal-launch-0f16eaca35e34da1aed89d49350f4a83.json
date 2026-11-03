@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "elevated": false,
+  "self_test": false,
+  "evidence_dir": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc",
+  "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\runs\\QC1.4-0f73bacd1cc34d45b5f4fed19537bc74\\receipt.json",
+  "failure": null
+}

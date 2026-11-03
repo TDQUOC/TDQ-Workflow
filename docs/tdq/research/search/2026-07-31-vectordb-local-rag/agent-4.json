@@ -1,0 +1,123 @@
+{
+  "agent": 4,
+  "routes": [
+    "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "sqlite-vec hiện tại tập trung vào tìm kiếm chính xác dạng brute-force (với bảng ảo vec0), chưa hỗ trợ sẵn các index ANN (như HNSW hay IVF); việc tích hợp chỉ số ANN đang nằm trong roadmap phát triển dài hạn của dự án.",
+      "evidence_quote": "sqlite-vec is currently focused on fast brute-force (exact) vector search. It does not currently support ANN indexes (such as HNSW or IVF). The addition of ANN indexing has been a noted goal on the project's roadmap.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://github.com/asg017/sqlite-vec",
+      "url_alive": true
+    },
+    {
+      "claim": "Milvus Lite hoạt động như một thư viện đơn tiến trình (single-process) sử dụng cơ chế file locking. Mặc dù máy chủ gRPC tích hợp hỗ trợ đọc đồng thời (concurrent reads), việc ghi đồng thời (concurrent writes) vào cùng một collection không được hỗ trợ an toàn.",
+      "evidence_quote": "Milvus Lite runs as a single process. It uses a local file for data storage and employs file locking to protect this local storage. While the gRPC server integrated into Milvus Lite supports concurrent reads, concurrent writes to the same collection are not supported safely.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://milvus.io/docs/milvus_lite.md",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB áp dụng triết lý index dựa trên đĩa (disk-based) với kĩ thuật IVF-PQ. Index được lưu trên đĩa và chỉ nạp các trang làm việc (working set) vào bộ nhớ RAM thông qua cache memory-mapped, giúp dung lượng RAM không phình theo tổng kích thước tập dữ liệu.",
+      "evidence_quote": "Instead of requiring the entire index to reside in RAM, LanceDB is designed to scale with storage... keeping compute costs relatively flat as the dataset grows. Its implementation of IVF-PQ allows search by selectively accessing disk-resident partitions, determined by the hot working set rather than the total size of the corpus.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "sqlite-vec là tiện ích mở rộng (extension) SQLite viết bằng ngôn ngữ C thuần, không phụ thuộc thư viện ngoài, hỗ trợ lưu trữ và truy vấn vector kiểu float, int8 và binary trên bảng ảo vec0.",
+      "evidence_quote": "Store and query float, int8, and binary vectors in vec0 virtual tables\n- Written in pure C, no dependencies, runs anywhere SQLite runs",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://github.com/asg017/sqlite-vec",
+      "url_alive": true
+    },
+    {
+      "claim": "Kiến trúc tìm kiếm vector mặc định của sqlite-vec vận hành theo cơ chế quét toàn bộ (full-scan / brute-force) qua kế hoạch truy vấn VEC0_QUERY_PLAN_FULLSCAN.",
+      "evidence_quote": "| `VEC0_QUERY_PLAN_FULLSCAN` | `'1'` | Perform a full-scan on all rows                                        |",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/asg017/sqlite-vec/main/ARCHITECTURE.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Lộ trình (roadmap) phát triển thuật toán tìm kiếm xấp xỉ ANN cho sqlite-vec đang được triển khai qua các nhánh thử nghiệm DiskANN (diskann-yolo2), IVF (ivf-yolo3), và Annoy (annoy-yolo2) cùng bộ hạ tầng benchmark benchmarks-ann/.",
+      "evidence_quote": "- [x] Rebase `diskann-yolo2` onto `ann` (1 commit: DiskANN implementation)\n- [x] Rebase `ivf-yolo3` onto `ann` (1 commit: IVF implementation)\n- [x] Rebase `annoy-yolo2` onto `ann` (2 commits: Annoy implementation + schema fix)",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/asg017/sqlite-vec/main/TODO.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Milvus Lite là phiên bản nhẹ cho local development và thử nghiệm, cho phép truy xuất qua local file .db hoặc gRPC server nhúng với API tương thích PyMilvus.",
+      "evidence_quote": "Milvus Lite is a lightweight version of Milvus for local development, notebooks, tests, and small-scale AI applications. It exposes the familiar `pymilvus` API through a local `.db` file or an embedded gRPC server, so code written against Milvus Lite can move to Milvus Standalone, Milvus Distributed, or Zilliz Cloud with minimal changes.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/milvus-io/milvus-lite/main/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Milvus Lite thế hệ mới được viết lại bằng pure Python sử dụng LSM-style storage engine với WAL, memtable, Parquet segments và FAISS indexes.",
+      "evidence_quote": "This generation of Milvus Lite is rebuilt from scratch in pure Python. Instead of wrapping the full C++ Milvus core, it uses a local LSM-style storage engine with WAL, in-memory memtables, immutable Parquet segments, segment-level FAISS indexes, scalar filtering, BM25 full text search, and a Milvus-compatible gRPC adapter.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/milvus-io/milvus-lite/main/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Khi cần xử lý nhiều client đồng thời hoặc chạy tiến trình local dài hạn, Milvus Lite khuyến nghị chuyển sang dạng standalone gRPC server.",
+      "evidence_quote": "Use server mode when you want a long-running local process or more than one client.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 8,
+      "source_url": "https://raw.githubusercontent.com/milvus-io/milvus-lite/main/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB là thư viện retrieval dạng nhúng (embedded retrieval library) nguồn mở 100%, chạy local hoặc trên cloud cho các ứng dụng AI đa thức (multimodal AI).",
+      "evidence_quote": "Developer-friendly OSS embedded retrieval library for multimodal AI. Search More; Manage Less.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB được thiết kế cho vector search tốc độ cao, quy mô lớn, được xây dựng trên nền tảng định dạng dạng cột Lance (Lance columnar format) và hỗ trợ đồng thời vector search, full-text search lẫn SQL.",
+      "evidence_quote": "LanceDB is designed for fast, scalable, and production-ready vector search. It is built on top of the Lance columnar format. You can store, index, and search over petabytes of multimodal data and vectors with ease.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 9,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    },
+    {
+      "claim": "LanceDB có các tính năng nâng cao như zero-copy, tự động đánh phiên bản dữ liệu (automatic versioning) không cần hạ tầng phụ trợ, cùng sự hỗ trợ của GPU khi tạo chỉ mục vector.",
+      "evidence_quote": "Advanced Features: Zero-copy, automatic versioning, manage versions of your data without needing extra infrastructure. GPU support in building vector index.",
+      "route": "giới hạn embedded local: sqlite-vec ANN roadmap + Milvus Lite concurrency + LanceDB IVF-PQ disk",
+      "score": 8,
+      "source_url": "https://github.com/lancedb/lancedb",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"LanceDB\" \"IVF-PQ\" OR \"disk\" RAM memory scale \"working set\" site:lancedb.github.io OR site:lance.dev OR site:lancedb.com",
+    "\"LanceDB\" \"disk-based\" \"IVF-PQ\" \"working set\" RAM",
+    "\"Milvus Lite\" \"single process\" site:milvus.io",
+    "\"Milvus Lite\" concurrency OR \"write\" OR \"multi-process\" OR limitations site:milvus.io OR site:github.com/milvus-io",
+    "\"milvus_lite.md\" \"Milvus Lite\" site:github.com/milvus-io/milvus-docs",
+    "\"milvus_lite.md\" site:github.com/milvus-io/milvus-docs/blob",
+    "\"sqlite-vec\" \"v0.1.0\" OR \"ann\" OR \"brute force\" site:alexgarcia.xyz",
+    "\"sqlite-vec\" site:alexgarcia.xyz blog",
+    "site:github.com/asg017/sqlite-vec \"ANN\" OR \"brute force\" OR \"roadmap\"",
+    "site:github.com/asg017/sqlite-vec \"brute force\" OR \"ANN\" OR \"knn\"",
+    "site:github.com/milvus-io/milvus-docs milvus_lite.md",
+    "site:github.com/milvus-io/milvus-lite \"concurrency\" OR \"multi-client\" OR \"lock\"",
+    "site:lancedb.com/blog \"IVF-PQ\" OR \"disk\" OR \"working set\" OR \"RAM\"",
+    "site:milvus.io/docs milvus_lite.md concurrency limits",
+    "sqlite-vec ANN roadmap brute force hnsw KNN"
+  ]
+}

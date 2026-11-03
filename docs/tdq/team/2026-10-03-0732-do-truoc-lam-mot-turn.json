@@ -1,0 +1,165 @@
+{
+  "slug": "2026-10-03-0732-do-truoc-lam-mot-turn",
+  "plan_file": "docs\\tdq\\plan\\2026-10-03-0732-do-truoc-lam-mot-turn.md",
+  "plan_sha": "f9d382e8399f0853e3a2dcbbcd0d5779738cdbadac8c6fe7ebc904cb8b5ca2d9",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/doc_lint.py",
+        "tests/test_doc_lint_r14.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/doc_lint.py",
+        "tests/test_doc_lint_r14.py"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_approve_do_truoc.py"
+      ],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "scripts/tdq_ten_lenh.py",
+        "tests/test_lech_spec.py"
+      ],
+      "dot": 1
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_implement_pause.py"
+      ],
+      "dot": 3
+    },
+    "T2.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_lech_spec.py"
+      ],
+      "dot": 4
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/ask_gate.py",
+        "hooks/scripts/_common.py",
+        "hooks/hooks.json",
+        "tests/test_ask_gate.py",
+        "tests/test_subagent_start.py"
+      ],
+      "dot": 4
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/stop_gate.py",
+        "hooks/scripts/agy_stop_gate.py",
+        "tests/test_stop_gate.py",
+        "tests/test_agy_hooks.py"
+      ],
+      "dot": 4
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "tdq-build/SKILL.md",
+        "tdq-conventions/SKILL.md",
+        "skills/tdq-build/SKILL.md",
+        "skills/tdq-conventions/SKILL.md",
+        "skills/tdq-conventions/references/phases.md",
+        "tests/test_luat_dung.py"
+      ],
+      "dot": 1
+    },
+    "T4.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "tdq-spec/SKILL.md",
+        "skills/tdq-spec/references/spec-template.md",
+        "skills/tdq-spec/references/spec-template-huong-dan.md",
+        "skills/tdq-spec/SKILL.md",
+        "tests/test_luat_dung.py"
+      ],
+      "dot": 2
+    },
+    "T4.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/references/qc.md",
+        "skills/tdq-build/references/report-template.md",
+        "tests/test_luat_dung.py"
+      ],
+      "dot": 3
+    },
+    "T4.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "docs/kien-truc.md",
+        "skills/tdq-conventions/references/reminder-codes.md",
+        "docs/tdq/token-budget.json"
+      ],
+      "dot": 5
+    },
+    "T5.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T5.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T5.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-10-03-0732-do-truoc-lam-mot-turn.md"
+      ],
+      "dot": 3
+    },
+    "T5.4": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 4
+    },
+    "T5.5": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        ".claude-plugin/plugin.json",
+        ".codex-plugin/plugin.json"
+      ],
+      "dot": 5
+    }
+  }
+}

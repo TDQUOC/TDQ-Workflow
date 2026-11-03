@@ -1,0 +1,70 @@
+{
+  "agent": 2,
+  "routes": [
+    "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "faster-whisper hỗ trợ word-level timestamp bằng cách thiết lập tham số word_timestamps=True trong phương thức transcribe(), trả về thuộc tính segment.words chứa start, end và word. Để làm streaming realtime, developer xử lý cắt chunk audio/VAD và truyền tuần tự vào transcribe().",
+      "evidence_quote": "To enable word-level timestamps, you simply set word_timestamps=True in your transcribe method call: segments, info = model.transcribe(\"audio.mp3\", word_timestamps=True) for segment in segments: for word in segment.words: print(\"[%.2fs -> %.2fs] %s\" % (word.start, word.end, word.word))",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 9,
+      "source_url": "https://github.com/SYSTRAN/faster-whisper",
+      "url_alive": true
+    },
+    {
+      "claim": "Vosk (alphacep/vosk-api) hỗ trợ word-level timestamp trong chế độ streaming bằng cách gọi rec.SetWords(True) trên KaldiRecognizer. Khi bật, các hàm rec.Result() và rec.FinalResult() sẽ trả về JSON chứa danh sách result gồm từng từ kèm start, end và conf (confidence score).",
+      "evidence_quote": "When enabled (SetWords(true)), the recognition results will contain word, start, end, and conf (confidence) fields for each word in the output, rather than just the full transcribed string.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 9,
+      "source_url": "https://github.com/alphacep/vosk-api",
+      "url_alive": true
+    },
+    {
+      "claim": "NVIDIA Riva streaming ASR hỗ trợ word-level timestamp thông qua thiết lập enable_word_time_offsets = true trong StreamingRecognitionConfig (khởi tạo qua gRPC StreamingRecognizeRequest). Khi bật, WordInfo trong StreamingRecognizeResponse trả về start_time và end_time cho từng từ của hypothesis hàng đầu.",
+      "evidence_quote": "When set to true, the top recognition hypothesis will include a list of words along with their corresponding start and end time offsets (in milliseconds) and confidence scores... The initial message of a streaming request must contain the StreamingRecognitionConfig.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 9,
+      "source_url": "https://docs.nvidia.com/deeplearning/riva/user-guide/docs/asr/asr-overview.html",
+      "url_alive": true
+    },
+    {
+      "claim": "NVIDIA Parakeet (thuộc họ mô hình NeMo ASR với kiến trúc TDT / RNNT / CTC) hỗ trợ word-level timestamp tích hợp sẵn. Parakeet TDT hỗ trợ dự đoán timestamp cấp từ và đoạn văn bản, có thể sử dụng trong streaming chunked inference qua cấu hình decoding trong NeMo toolkit.",
+      "evidence_quote": "The Parakeet TDT family (e.g., parakeet-tdt-0.6b-v2 and v3) is specifically noted for its accurate, built-in support for word-level and segment-level timestamps.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 8,
+      "source_url": "https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/asr/models.html",
+      "url_alive": true
+    },
+    {
+      "claim": "faster-whisper hỗ trợ tạo word-level timestamps qua tham số word_timestamps=True trong phương thức model.transcribe.",
+      "evidence_quote": "segments, _ = model.transcribe(\"audio.mp3\", word_timestamps=True) for segment in segments: for word in segment.words: print(\"[%.2fs -> %.2fs] %s\" % (word.start, word.end, word.word))",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 9,
+      "source_url": "https://github.com/SYSTRAN/faster-whisper",
+      "url_alive": true
+    },
+    {
+      "claim": "Vosk là bộ công cụ speech recognition mã nguồn mở offline (open source speech recognition toolkit), hỗ trợ streaming API với độ trễ phản hồi xấp xỉ 0 (zero-latency response with streaming API) và transcription từ vựng lớn liên tục cho hơn 20 ngôn ngữ/biến thể.",
+      "evidence_quote": "Vosk is an offline open source speech recognition toolkit. It enables speech recognition for 20+ languages and dialects - English, Indian English, German, French, Spanish, Portuguese, Chinese, Russian, Turkish, Vietnamese, Italian, Dutch, Catalan, Arabic, Greek, Farsi, Filipino, Ukrainian, Kazakh, Swedish, Japanese, Esperanto, Hindi, Czech, Polish. More to come. Vosk models are small (50 Mb) but provide continuous large vocabulary transcription, zero-latency response with streaming API, reconfigurable vocabulary and speaker identification.",
+      "route": "open-source streaming STT word timestamp: Whisper faster-whisper Vosk NVIDIA Riva Parakeet",
+      "score": 9,
+      "source_url": "https://github.com/alphacep/vosk-api",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Parakeet\" \"nvidia\" streaming word level timestamp CTC RNNT",
+    "\"alphacep/vosk-api\" \"SetWords\" site:github.com",
+    "\"docs.nvidia.com/deeplearning/riva/user-guide/docs/asr/asr-overview.html\" word timestamp",
+    "\"nvidia riva\" streaming word timestamp OR \"word_to_words\" OR \"word_timestamps\"",
+    "faster whisper streaming word level timestamps",
+    "https://docs.nvidia.com/deeplearning/riva/user-guide/docs/asr/asr-overview.html",
+    "site:docs.nvidia.com \"enable_word_time_offsets\" \"StreamingRecognitionConfig\"",
+    "site:docs.nvidia.com/deeplearning/riva/ \"word\" \"timestamp\" streaming ASR",
+    "site:github.com/SYSTRAN/faster-whisper \"word_timestamps\" streaming",
+    "vosk streaming \"word\" timestamp \"result\" \"result_words\""
+  ]
+}

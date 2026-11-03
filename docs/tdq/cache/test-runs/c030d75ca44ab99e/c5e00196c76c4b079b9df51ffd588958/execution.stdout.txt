@@ -1,0 +1,679 @@
+.............................................. [  1%]
+......................................s......................s..... [  3%]
+..............s.....................................F................. [  5%]
+...................................................................ss... [  7%]
+...................................................FF.................FF..FF...F...........F........ [  9%]
+................................................... [ 11%]
+..................................................................................................... [ 14%]
+........................................................ [ 15%]
+.............................................................................................................................................. [ 19%]
+...............................ss [ 20%]
+.........................................................F.F..FFFF..FF.FFF..FF..F..F.....FFFFFFFF.FFFFFFFF.FF...FF.F.............. [ 24%]
+........................................................................ [ 26%]
+........................................................................ [ 28%]
+...............FF....F..FFFFFF..FF..FFFF.F.F..F.F. [ 29%]
+.............................................FF........................................ [ 32%]
+...FFF..FF....F.F............................................................................................................................... [ 36%]
+................................................FF.. [ 37%]
+...................F....................... [ 38%]
+........................................... [ 39%]
+.................................................................................................FF.FF.FFF.FF..F.F.FF......................F................................................ [ 45%]
+.......................................................... [ 46%]
+................................................................. [ 48%]
+........................................................................ [ 50%]
+........................................................................ [ 52%]
+....................................................... [ 54%]
+............................................................................. [ 56%]
+.......................................... [ 57%]
+..............................................................................................................F.F...........F.....F.FFFFF. [ 61%]
+.FF.FFF....F.FF.F.F.F.........F.FFFFF.......FFFFFFF.......FF.F...FF [ 63%]
+.F....FFF...F.....FFFF.F....................F.F.............................................................. [ 66%]
+...................................... [ 67%]
+........................................................................................................ [ 70%]
+.................................................................. [ 72%]
+.............................................................................................................................. [ 75%]
+.............................................................................s.............................. [ 78%]
+........................................................................ [ 80%]
+............................................ [ 81%]
+............................................s............... [ 83%]
+F................................................................... [ 85%]
+.................................................FF..FFF........ [ 87%]
+........................................s................................................................. [ 90%]
+................................................................ [ 92%]
+............................................................. [ 93%]
+................................................................. [ 95%]
+..............................FFF...............................................................F.................. [ 98%]
+............................................    [100%]
+================================== FAILURES ===================================
+E   AssertionError: 1 != 0 : {
+      "ok": false,
+      "status": "fail",
+      "diagnostics": [
+        {
+          "code": "delivery/command-build-failed",
+          "severity": "error",
+          "message": "Archify binary script (archify.mjs) not found"
+        }
+      ]
+    }
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 0 : {
+E   AssertionError: 1 != 0 : {
+      "ok": false,
+      "status": "fail",
+      "diagnostics": [
+        {
+          "code": "delivery/command-build-failed",
+          "severity": "error",
+          "message": "Archify binary script (archify.mjs) not found"
+        }
+      ]
+    }
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 0 : {
+E   AssertionError: 1 != 0 : Error during sync_master: Failed to finalize view 'overview': {'ok': False, 'status': 'fail', 'diagnostics': [{'code': 'delivery/command-build-failed', 'severity': 'error', 'message': 'Archify binary script (archify.mjs) not found'}]}
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 0 : Error during sync_master: Failed to finalize view 'overview': {'ok': False, 'status': 'fail', 'diagnostics': [{'code': 'delivery/command-build-failed', 'severity': 'error', 'message': 'Archify binary script (archify.mjs) not found'}]}
+E   AssertionError: 0 != 1
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1
+E   AssertionError: 0 != 3
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 3
+E   AssertionError: None != 'allow' : python3 scripts/tdq_state.py approve spec --by "duy\u1ec7t spec"
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:900: AssertionError: None != 'allow' : python3 scripts/tdq_state.py approve spec --by "duy\u1ec7t spec"
+E   AssertionError: None != 'allow' : python3 scripts/tdq_state.py approve spec --by "duy\u1ec7t spec"
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:900: AssertionError: None != 'allow' : python3 scripts/tdq_state.py approve spec --by "duy\u1ec7t spec"
+E   AssertionError: 'state_cli' not found in []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'state_cli' not found in []
+E   AssertionError: 'state_cli' not found in []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'state_cli' not found in []
+E   AssertionError: None != 'allow' : python3 scripts/tdq_state.py set phase=plan
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow' : python3 scripts/tdq_state.py set phase=plan
+E   AssertionError: None != 'allow' : git log
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow' : git log
+E   AssertionError: '--mode subagent' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '--mode subagent' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' : duy\u1ec7t spec
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' : duy\u1ec7t spec
+E   AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn � unchanged)' : ok spec
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn � unchanged)' : ok spec
+E   AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' : \u0111\u1ed3ng \xfd spec
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' : \u0111\u1ed3ng \xfd spec
+E   AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' : ch\u1ed1t spec nh\xe9
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:APPROVE] The user just approved spec' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' : ch\u1ed1t spec nh\xe9
+E   AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'NOT clearly an approval' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'state_cli' not found in []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'state_cli' not found in []
+E   AssertionError: None != 'allow' : git worktree add ../codex-wt
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow' : git worktree add ../codex-wt
+E   AssertionError: None != 'allow' : git commit -m 'fix
+    
+    Generated with Claude'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow' : git commit -m 'fix
+E   AssertionError: None != 'allow' : sed -i '' s/a/b/ docs/tdq/STATE.md
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow' : sed -i '' s/a/b/ docs/tdq/STATE.md
+E   AssertionError: False is not true :
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:744: AssertionError: False is not true :
+E   AssertionError: ('edit', 'src/a.py') not found in []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: ('edit', 'src/a.py') not found in []
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: '[TDQ:NEXT] 2026-07-29-0900-demo � lane full � phase qc' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT] 2026-07-29-0900-demo � lane full � phase qc' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: Lists differ: ['remind'] != ['turn_start', 'signal']
+    
+    First differing element 0:
+    'remind'
+    'turn_start'
+    
+    Second list contains 1 additional elements.
+    First extra element 1:
+    'signal'
+    
+    - ['remind']
+    + ['turn_start', 'signal']
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['remind'] != ['turn_start', 'signal']
+E   AssertionError: 0 != 1
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: '2026-07-27-0900-demo' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '2026-07-27-0900-demo' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+E   AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+E   FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-z48_uivz\\temp\\tdq-ut3ejdti\\workers\\controller\\tmp\\tmppli42ii7\\docs\\tdq\\.tdq-turn.jsonl'
+C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_context_hooks.py:173: FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-z48_uivz\\temp\\tdq-ut3ejdti\\workers\\controller\\tmp\\tmppli42ii7\\docs\\tdq\\.tdq-turn.jsonl'
+E   AssertionError: 770 not less than 770
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 770 not less than 770
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane' : thi\u1ebfu m\u1ed1c th\xe2n lu\u1eadt
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane' : thi\u1ebfu m\u1ed1c th\xe2n lu\u1eadt
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane' : thi\u1ebfu m\u1ed1c th\xe2n lu\u1eadt
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane' : thi\u1ebfu m\u1ed1c th\xe2n lu\u1eadt
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane' : thi\u1ebfu m\u1ed1c th\xe2n lu\u1eadt
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane' : thi\u1ebfu m\u1ed1c th\xe2n lu\u1eadt
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+E   AssertionError: '[TDQ:APPROVE]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:APPROVE]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: Lists differ: ['observe'] != ['turn_start']
+    
+    First differing element 0:
+    'observe'
+    'turn_start'
+    
+    - ['observe']
+    + ['turn_start']
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['observe'] != ['turn_start']
+E   AssertionError: 'phase implement' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'phase implement' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'approve plan --mode main' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'approve plan --mode main' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'approve plan --mode main' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'approve plan --mode main' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'the plan proposes sub-agent implement' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'the plan proposes sub-agent implement' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'the plan proposes inline implement' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'the plan proposes inline implement' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'r1' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'r1' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: '--mode subagent' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '--mode subagent' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: '\u26a0\ufe0f' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '\u26a0\ufe0f' not found in '[TDQ:INTAKE] (same as last turn \u2014 unchanged)'
+E   AssertionError: '--mode subagent' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '--mode subagent' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'approve plan' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'approve plan' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'approve plan' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'approve plan' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: '[TDQ:QC]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:QC]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: 1 != 2
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 1 != 2
+E   AssertionError: 'approve quick' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'approve quick' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'sha256 mismatch' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'sha256 mismatch' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: 0 != 1 : [TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : [TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).
+E   AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+E   AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+E   AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:ANCHOR]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: 'main' not found in '' : d\xf2ng g\u1ee3i \xfd kh\xf4ng nh\u1eafc mode main
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'main' not found in '' : d\xf2ng g\u1ee3i \xfd kh\xf4ng nh\u1eafc mode main
+E   AssertionError: 'subagent' not found in '' : d\xf2ng g\u1ee3i \xfd kh\xf4ng nh\u1eafc mode subagent
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'subagent' not found in '' : d\xf2ng g\u1ee3i \xfd kh\xf4ng nh\u1eafc mode subagent
+E   AssertionError: 'codex' not found in '' : d\xf2ng g\u1ee3i \xfd kh\xf4ng nh\u1eafc mode codex
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'codex' not found in '' : d\xf2ng g\u1ee3i \xfd kh\xf4ng nh\u1eafc mode codex
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: 'edit' not found in []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'edit' not found in []
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: None != 'allow'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: None != 'allow'
+E   AssertionError: 'deny' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'deny' not found in ''
+E   AssertionError: 'deny' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'deny' not found in ''
+E   AssertionError: 'deny' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'deny' not found in ''
+E   AssertionError: 'TDQ:RULE:PY' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'TDQ:RULE:PY' not found in ''
+E   AssertionError: 'TDQ:RULE:TS' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'TDQ:RULE:TS' not found in ''
+E   AssertionError: 'deny' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'deny' not found in ''
+E   AssertionError: 'TDQ:TEAM' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'TDQ:TEAM' not found in ''
+E   AssertionError: 'TDQ:TICK' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'TDQ:TICK' not found in ''
+E   AssertionError: 'deny' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'deny' not found in ''
+E   AssertionError: 'tmpoqhzo0kx' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'tmpoqhzo0kx' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+E   AssertionError: 'thu-muc-long-mot-cai-ten-dai' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 scripts/tdq_state.py next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'thu-muc-long-mot-cai-ten-dai' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 scripts/tdq_state.py next\\nDone when: state.json has active_request and lane'
+E   AssertionError: 0 != 1 : [TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.
+    [TDQ:NEXT] no request � phase idle � Project: �/tdq-z48_uivz/project
+    Lean level: full
+    QC level: full
+    Next: Ask the user to pick a lane, then open a new request
+    Command:
+      python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
+    Full checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next
+    Done when: state.json has active_request and lane
+    
+    [TDQ:GON] The build-less-than-asked law (muc_gat=full) � full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).
+    [TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.
+    [TDQ:NEXT] no request � phase idle � Project: �/tdq-z48_uivz/project
+    Lean level: full
+    QC level: full
+    Next: Ask the user to pick a lane, then open a new request
+    Command:
+      python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
+    Full checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next
+    Done when: state.json has active_request and lane
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:900: AssertionError: 0 != 1 : [TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.
+E   AssertionError: 0 != 1 : []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : []
+E   AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' not found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane'
+E   AssertionError: 0 != 1 : []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : []
+E   AssertionError: '[TDQ:GON]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:GON]' not found in ''
+E   AssertionError: 0 != 1
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1
+E   AssertionError: '[TDQ:GON]' unexpectedly found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:GON]' unexpectedly found in '[TDQ] Rule: a [TDQ:<CODE>] line means do exactly that job FIRST, then print \u2713 [TDQ:<CODE>]. Write state only via scripts/tdq_state.py.\\n[TDQ:NEXT] no request \xb7 phase idle \xb7 Project: \u2026/tdq-z48_uivz/project\\nLean level: full\\nQC level: full\\nNext: Ask the user to pick a lane, then open a new request\\nCommand:\\n  python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]\\nFull checklist: python3 "C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/scripts/tdq_state.py" next\\nDone when: state.json has active_request and lane\\n\\n[TDQ:GON] The build-less-than-asked law (muc_gat=full) \u2014 full ladder loads during phase implement (see skills/tdq-build/references/rules/chung.md).'
+E   AssertionError: Lists differ: ['L141 (skills/tdq-conventions/SKILL.md:17[188 chars]run'] != []
+    
+    First list contains 2 additional elements.
+    First extra element 0:
+    'L141 (skills/tdq-conventions/SKILL.md:172): That is why this rule belongs to the **runtime** tier, not t'
+    
+    + []
+    - ['L141 (skills/tdq-conventions/SKILL.md:172): That is why this rule belongs to '
+    -  'the **runtime** tier, not t',
+    -  'L160 (skills/tdq-conventions/references/context-budget.md:33): command '
+    -  'joined by `&&`, or `;` when you want them all to run'] : 2 lu\u1eadt bi\u1ebfn m\u1ea5t kh\u1ecfi skill:
+    L141 (skills/tdq-conventions/SKILL.md:172): That is why this rule belongs to the **runtime** tier, not t
+    L160 (skills/tdq-conventions/references/context-budget.md:33): command joined by `&&`, or `;` when you want them all to run
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['L141 (skills/tdq-conventions/SKILL.md:17[188 chars]run'] != []
+E   AssertionError: 9.72644376899696 not less than 5.0 : 32/329 d\xf2ng l\u1ec7ch (9.7%) \u2014 d\u1ef1ng l\u1ea1i luat-hien-co.md
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 9.72644376899696 not less than 5.0 : 32/329 d\xf2ng l\u1ec7ch (9.7%) \u2014 d\u1ef1ng l\u1ea1i luat-hien-co.md
+E   AssertionError: Lists differ: ['tests\\helper.py:85'] != []
+    
+    First list contains 1 additional elements.
+    First extra element 0:
+    'tests\\helper.py:85'
+    
+    - ['tests\\helper.py:85']
+    + [] : text=True m\xe0 thi\u1ebfu encoding= \u2014 Windows s\u1ebd gi\u1ea3i m\xe3 b\u1eb1ng cp1252:
+    tests\helper.py:85
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['tests\\helper.py:85'] != []
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: '[TDQ:INTAKE]' unexpectedly found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:INTAKE]' unexpectedly found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 'No request is open' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'No request is open' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: '[TDQ:INTAKE]' unexpectedly found in "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' \u2192 ch\u1ea1y ch\u1ebf \u0111\u1ed9 direct: t\u1ef1 \u0111\u1ed9ng ph\xe2n t\xedch & t\xecm ki\u1ebfm, l\u1eadp mini-plan v\xe0 ch\u1ec9 d\u1eebng \u1edf 1 c\u1ed5ng duy\u1ec7t mini-plan (kh\xf4ng h\u1ecfi ch\u1ecdn pipeline, kh\xf4ng ph\u1ecfng v\u1ea5n)."
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:INTAKE]' unexpectedly found in "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' \u2192 ch\u1ea1y ch\u1ebf \u0111\u1ed9 direct: t\u1ef1 \u0111\u1ed9ng ph\xe2n t\xedch & t\xecm ki\u1ebfm, l\u1eadp mini-plan v\xe0 ch\u1ec9 d\u1eebng \u1edf 1 c\u1ed5ng duy\u1ec7t mini-plan (kh\xf4ng h\u1ecfi ch\u1ecdn pipeline, kh\xf4ng ph\u1ecfng v\u1ea5n)."
+E   AssertionError: '[TDQ:NEXT]' not found in "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' \u2192 ch\u1ea1y ch\u1ebf \u0111\u1ed9 direct: t\u1ef1 \u0111\u1ed9ng ph\xe2n t\xedch & t\xecm ki\u1ebfm, l\u1eadp mini-plan v\xe0 ch\u1ec9 d\u1eebng \u1edf 1 c\u1ed5ng duy\u1ec7t mini-plan (kh\xf4ng h\u1ecfi ch\u1ecdn pipeline, kh\xf4ng ph\u1ecfng v\u1ea5n)."
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:NEXT]' not found in "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' \u2192 ch\u1ea1y ch\u1ebf \u0111\u1ed9 direct: t\u1ef1 \u0111\u1ed9ng ph\xe2n t\xedch & t\xecm ki\u1ebfm, l\u1eadp mini-plan v\xe0 ch\u1ec9 d\u1eebng \u1edf 1 c\u1ed5ng duy\u1ec7t mini-plan (kh\xf4ng h\u1ecfi ch\u1ecdn pipeline, kh\xf4ng ph\u1ecfng v\u1ea5n)."
+E   AssertionError: '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' != "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' [142 chars]\u1ea5n)."
+    - [TDQ:INTAKE] (same as last turn � unchanged)
+    + [TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' \u2192 ch\u1ea1y ch\u1ebf \u0111\u1ed9 direct: t\u1ef1 \u0111\u1ed9ng ph\xe2n t\xedch & t\xecm ki\u1ebfm, l\u1eadp mini-plan v\xe0 ch\u1ec9 d\u1eebng \u1edf 1 c\u1ed5ng duy\u1ec7t mini-plan (kh\xf4ng h\u1ecfi ch\u1ecdn pipeline, kh\xf4ng ph\u1ecfng v\u1ea5n).
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' != "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' [142 chars]\u1ea5n)."
+E   AssertionError: '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' != "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' [142 chars]\u1ea5n)."
+    - [TDQ:INTAKE] (same as last turn � unchanged)
+    + [TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' \u2192 ch\u1ea1y ch\u1ebf \u0111\u1ed9 direct: t\u1ef1 \u0111\u1ed9ng ph\xe2n t\xedch & t\xecm ki\u1ebfm, l\u1eadp mini-plan v\xe0 ch\u1ec9 d\u1eebng \u1edf 1 c\u1ed5ng duy\u1ec7t mini-plan (kh\xf4ng h\u1ecfi ch\u1ecdn pipeline, kh\xf4ng ph\u1ecfng v\u1ea5n).
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '[TDQ:INTAKE] (same as last turn \u2014 unchanged)' != "[TDQ:INTAKE] Y\xeau c\u1ea7u ch\u1ee9a '_tdq_direct' [142 chars]\u1ea5n)."
+E   AssertionError: 0 != 1 : [TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : [TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).
+E   FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-z48_uivz\\temp\\tdq-ut3ejdti\\workers\\controller\\tmp\\tmp56g3udud\\docs\\tdq\\.tdq-turn.jsonl'
+C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_prompt_context.py:284: FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-z48_uivz\\temp\\tdq-ut3ejdti\\workers\\controller\\tmp\\tmp56g3udud\\docs\\tdq\\.tdq-turn.jsonl'
+E   AssertionError: 0 != 1 : [TDQ:INTAKE] (same as last turn � unchanged)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : [TDQ:INTAKE] (same as last turn � unchanged)
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:NEXT]' not found in '[TDQ:INTAKE] No request is open � unless this prompt belongs to an intake round already running, open tdq-workflow:tdq-intake (or tdq-intake).'
+E   AssertionError: [] is not true
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:744: AssertionError: [] is not true
+E   AssertionError: 0 != 1 : []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : []
+E   AssertionError: '[TDQ:APPROVE]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:APPROVE]' not found in '[TDQ:INTAKE] (same as last turn � unchanged)'
+E   AssertionError: 6 != 4 : b\u1ea3ng c\u1ea5m g\u1ed9p ph\u1ea3i c\xf3 \u0111\xfang 4 ca
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:900: AssertionError: 6 != 4 : b\u1ea3ng c\u1ea5m g\u1ed9p ph\u1ea3i c\xf3 \u0111\xfang 4 ca
+E   AssertionError: '- **Batch tool calls.**' not found in '# Step cost & context cost\\n<!-- muc-luc-dong:\\n  Table of contents=18-22 \xb7 Step cost (tier 2 \u2014 runtime)=23-42 \xb7\\n  Five cases where re-reading is MANDATORY=43-55 \xb7 Re-reading by RULE or by FORGETTING=56-83 \xb7\\n  Never batch these=84-102 \xb7 Context cost (tier 3)=103\\n-->\\n\\nTwo different costs, sitting on two different tiers of [soul.md](soul.md). Filing a rule in the\\nwrong tier is how a rule gets legitimately ignored, so each part stays in its own part.\\n\\nMeasure with two commands:\\n\\n```\\npython3 "${CLAUDE_PLUGIN_ROOT}/scripts/step_audit.py" --sessions 2\\npython3 "${CLAUDE_PLUGIN_ROOT}/scripts/token_audit.py" --sessions 2 --top 8\\n```\\n\\n## Table of contents\\n\\n- [Step cost (tier 2 \u2014 runtime)](#Step cost (tier 2 \u2014 runtime))\\n- [Context cost (tier 3)](#Context cost (tier 3))\\n\\n## Step cost (tier 2 \u2014 runtime)\\n\\nOne tool call = one round-trip. Measured on real sessions: median **3.3 s** per step, p90\\n12.3 s. Total time scales DIRECTLY with the number of steps, so this is the runtime tier, not\\ncontext cost.\\n\\n- **Batch independent reads.** Knowing 2\u20135 independent read-only calls up front \u2192 submit\\n  them concurrently in one batch and await all results. Inspect each result, including errors;\\n  one failed call must not hide the remaining results. Keep each command\\'s exit status and output.\\n- **Shell sequencing is not concurrency.** `&&` runs sequentially and stops after failure;\\n  `;` also runs sequentially. Use the host\\'s concurrent tool-call facility when available.\\n  Without one, run reads sequentially and describe that honestly. Never add a process framework\\n  just to batch a few reads.\\n- **Conditional re-reading (SOFT rule).** When the information is still complete and intact in\\n  context, do not re-read the file. But you MUST re-read on any of the five cases below. This\\n  rule must never be turned into a blocking check.\\n- **Waiting on long work.** A long-running command (build, big test suite, server) \u2192 run it in\\n  the background and wait on a condition. No `sleep` polling loop: each round is a whole step\\n  that adds no information.\\n\\n### Five cases where re-reading is MANDATORY\\n\\n1. Context has been compacted \u2014 what remains is a summary, not the file\\'s content.\\n2. Last time you read only part of it (`offset`/`limit`), not the whole file.\\n3. The file may have changed since: you just edited it, a command regenerated it, a sub-agent\\n   or the user touched it.\\n4. You are about to edit that very file \u2014 before an Edit you must hold the latest content.\\n5. You are not sure you remember, or you need a detail you skipped last time.\\n\\n**When in doubt, re-read: quality stands above runtime.** One redundant read costs 3.3 seconds;\\nreasoning over stale content costs a whole wrong fix cycle. This rule does not carry across to a\\nsub-agent \u2014 an agent has its own context and must read for itself.\\n\\n### Re-reading by RULE or by FORGETTING\\n\\nMeasured over 5 real sessions (`token_audit.py --sessions 5`): `Read` was called 451 times,\\n**64.1% of them re-reads of a file already read in the same session**, median 1,786 tokens each.\\nThat number is NOT evidence of waste: the five cases above make re-reading mandatory, and most\\nre-reads land squarely in them. It only means the distinction is worth drawing clearly.\\n\\nA re-read counts as "by FORGETTING" when **all five** statements below hold \u2014 i.e. it falls into\\nnone of the five mandatory cases:\\n\\n- Context has not been compacted since the previous read.\\n- Last time you read the WHOLE file, no `offset`/`limit`.\\n- Nobody has touched the file since: you have not edited it, no command regenerated it, no\\n  sub-agent or user went near it.\\n- You are not about to Edit that file.\\n- You still remember the passage clearly and need no detail you skipped last time.\\n\\nThe three fastest signs, all three being re-reads out of habit:\\n\\n- Re-reading a whole file just to confirm ONE line \u2192 `grep -n` answers exactly that question.\\n- Re-reading right after `Edit` reported success \u2192 `Edit` would have failed on a mismatch, so\\n  the re-read adds nothing.\\n- Re-reading a file you just `Write`-verbatim in the same session.\\n\\nThe two error directions are not symmetric: skipping a NEEDED read means reasoning over stale\\ncontent and losing a whole fix cycle; one redundant read costs 3.3 seconds and one carry. So\\nwhenever the five conditions are not certainly all true \u2014 **when in doubt, re-read**.\\n\\n### Never batch these\\n\\nSplitting the four cases below is RIGHT and batching them is WRONG, even where batching is\\ntechnically possible.\\n\\n| Case | Why batching it is banned here |\\n|---|---|\\n| The red step \u2192 green step of TDD | batched, there is no evidence the test really went red; red-green becomes theatre |\\n| Isolating a failure | batch 5 commands and you cannot tell which failed, so you rerun them one by one \u2014 more steps, not fewer |\\n| Destructive or hard-to-undo commands | delete, overwrite, `git reset` \u2014 you must see the previous command\\'s result before running the next |\\n| A command that needs the previous command\\'s result | batched, the later command runs on an assumption and returns a wrong result nobody notices |\\n| State mutations, approval gates or shared lock ownership | the next action must observe the completed transition |\\n| Performance samples and unrelated test/setup jobs | overlapping workloads change the conditions being measured |\\n\\nRIGHT example: one turn issuing `Read a.py`, `Read b.py`, `grep -n "foo" c.py` \u2014 three unrelated\\npieces of work; you reason only after all three land.\\nWRONG example: one turn running `pytest` (expecting red), then `Edit`, then `pytest` again \u2014 the red\\nstep loses its evidence, and the first run is meaningless because the file was not yet changed.\\n\\n## Context cost (tier 3)\\n\\nEvery tool call = 1 API call = the model re-reads the ENTIRE context: one output costs\\n`its token count \xd7 the number of API calls after it` \u2014 **carry-cost**. Measure with\\n`token_audit.py` (counting with a real tokenizer; the chars/4 estimate is badly off exactly in\\nthe priciest group). Images are counted by 28\xd728 px patches, not by base64 length.\\n\\n- **Lint the exact file.** Run `doc_lint.py` on EXACTLY the file you just changed, never pass a\\n  whole directory (`docs/tdq`): linting a directory prints ~8,000 characters of unrelated errors\\n  from old files.\\n- **Quiet CLI.** `tdq_state.py init|set|reset` prints one line by default; add `--json` only\\n  when you genuinely need to inspect the state. Use `next --brief` instead of `next` unless you\\n  need the full checklist.\\n- **Read just enough.** Files over 200 lines: locate with `grep -n`, then Read with\\n  `offset`/`limit`. No `cat` (use Read), no `grep -A5 -B5` when `-c`/`-l` already answers.\\n- **Give heavy work to a subagent.** Web research and reading \u22654 files go to a separate agent \u2014\\n  an agent has its own context window and returns only a digest to the main conversation.\\n- **Output cap for external tools (MCP).** An MCP tool is third-party code: TDQ cannot change\\n  what it returns, only cap it. Set `MAX_MCP_OUTPUT_TOKENS` in `~/.claude/settings.json`\\n  (Claude Code\\'s default is 50,000, with a warning from 10,000). Measured over 5 real sessions:\\n  every existing MCP group stays under 8,800 tokens per call and the whole MCP cluster is only\\n  **1.9%** of total carry-cost. This cap does NOT cut current cost. It stops the rare giant case\\n  in the future \u2014 one call is enough to inflate a whole session.\\n  Over the cap the output is truncated with a marker: on seeing the marker \u2192 call again with\\n  narrower parameters (filter, paginate, select fields); never treat the readable part as enough\\n  and conclude from it.\\n- **Soul decides.** Every rule above only cuts cost when the output does not change. Work that\\n  demands reading WHOLE files or running every check gets done in full: quality stands above\\n  context cost, per [soul.md](soul.md).\\n' : m\u1ea5t lu\u1eadt c\u0169: - **Batch tool calls.**
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: '- **Batch tool calls.**' not found in '# Step cost & context cost\\n<!-- muc-luc-dong:\\n  Table of contents=18-22 \xb7 Step cost (tier 2 \u2014 runtime)=23-42 \xb7\\n  Five cases where re-reading is MANDATORY=43-55 \xb7 Re-reading by RULE or by FORGETTING=56-83 \xb7\\n  Never batch these=84-102 \xb7 Context cost (tier 3)=103\\n-->\\n\\nTwo different costs, sitting on two different tiers of [soul.md](soul.md). Filing a rule in the\\nwrong tier is how a rule gets legitimately ignored, so each part stays in its own part.\\n\\nMeasure with two commands:\\n\\n```\\npython3 "${CLAUDE_PLUGIN_ROOT}/scripts/step_audit.py" --sessions 2\\npython3 "${CLAUDE_PLUGIN_ROOT}/scripts/token_audit.py" --sessions 2 --top 8\\n```\\n\\n## Table of contents\\n\\n- [Step cost (tier 2 \u2014 runtime)](#Step cost (tier 2 \u2014 runtime))\\n- [Context cost (tier 3)](#Context cost (tier 3))\\n\\n## Step cost (tier 2 \u2014 runtime)\\n\\nOne tool call = one round-trip. Measured on real sessions: median **3.3 s** per step, p90\\n12.3 s. Total time scales DIRECTLY with the number of steps, so this is the runtime tier, not\\ncontext cost.\\n\\n- **Batch independent reads.** Knowing 2\u20135 independent read-only calls up front \u2192 submit\\n  them concurrently in one batch and await all results. Inspect each result, including errors;\\n  one failed call must not hide the remaining results. Keep each command\\'s exit status and output.\\n- **Shell sequencing is not concurrency.** `&&` runs sequentially and stops after failure;\\n  `;` also runs sequentially. Use the host\\'s concurrent tool-call facility when available.\\n  Without one, run reads sequentially and describe that honestly. Never add a process framework\\n  just to batch a few reads.\\n- **Conditional re-reading (SOFT rule).** When the information is still complete and intact in\\n  context, do not re-read the file. But you MUST re-read on any of the five cases below. This\\n  rule must never be turned into a blocking check.\\n- **Waiting on long work.** A long-running command (build, big test suite, server) \u2192 run it in\\n  the background and wait on a condition. No `sleep` polling loop: each round is a whole step\\n  that adds no information.\\n\\n### Five cases where re-reading is MANDATORY\\n\\n1. Context has been compacted \u2014 what remains is a summary, not the file\\'s content.\\n2. Last time you read only part of it (`offset`/`limit`), not the whole file.\\n3. The file may have changed since: you just edited it, a command regenerated it, a sub-agent\\n   or the user touched it.\\n4. You are about to edit that very file \u2014 before an Edit you must hold the latest content.\\n5. You are not sure you remember, or you need a detail you skipped last time.\\n\\n**When in doubt, re-read: quality stands above runtime.** One redundant read costs 3.3 seconds;\\nreasoning over stale content costs a whole wrong fix cycle. This rule does not carry across to a\\nsub-agent \u2014 an agent has its own context and must read for itself.\\n\\n### Re-reading by RULE or by FORGETTING\\n\\nMeasured over 5 real sessions (`token_audit.py --sessions 5`): `Read` was called 451 times,\\n**64.1% of them re-reads of a file already read in the same session**, median 1,786 tokens each.\\nThat number is NOT evidence of waste: the five cases above make re-reading mandatory, and most\\nre-reads land squarely in them. It only means the distinction is worth drawing clearly.\\n\\nA re-read counts as "by FORGETTING" when **all five** statements below hold \u2014 i.e. it falls into\\nnone of the five mandatory cases:\\n\\n- Context has not been compacted since the previous read.\\n- Last time you read the WHOLE file, no `offset`/`limit`.\\n- Nobody has touched the file since: you have not edited it, no command regenerated it, no\\n  sub-agent or user went near it.\\n- You are not about to Edit that file.\\n- You still remember the passage clearly and need no detail you skipped last time.\\n\\nThe three fastest signs, all three being re-reads out of habit:\\n\\n- Re-reading a whole file just to confirm ONE line \u2192 `grep -n` answers exactly that question.\\n- Re-reading right after `Edit` reported success \u2192 `Edit` would have failed on a mismatch, so\\n  the re-read adds nothing.\\n- Re-reading a file you just `Write`-verbatim in the same session.\\n\\nThe two error directions are not symmetric: skipping a NEEDED read means reasoning over stale\\ncontent and losing a whole fix cycle; one redundant read costs 3.3 seconds and one carry. So\\nwhenever the five conditions are not certainly all true \u2014 **when in doubt, re-read**.\\n\\n### Never batch these\\n\\nSplitting the four cases below is RIGHT and batching them is WRONG, even where batching is\\ntechnically possible.\\n\\n| Case | Why batching it is banned here |\\n|---|---|\\n| The red step \u2192 green step of TDD | batched, there is no evidence the test really went red; red-green becomes theatre |\\n| Isolating a failure | batch 5 commands and you cannot tell which failed, so you rerun them one by one \u2014 more steps, not fewer |\\n| Destructive or hard-to-undo commands | delete, overwrite, `git reset` \u2014 you must see the previous command\\'s result before running the next |\\n| A command that needs the previous command\\'s result | batched, the later command runs on an assumption and returns a wrong result nobody notices |\\n| State mutations, approval gates or shared lock ownership | the next action must observe the completed transition |\\n| Performance samples and unrelated test/setup jobs | overlapping workloads change the conditions being measured |\\n\\nRIGHT example: one turn issuing `Read a.py`, `Read b.py`, `grep -n "foo" c.py` \u2014 three unrelated\\npieces of work; you reason only after all three land.\\nWRONG example: one turn running `pytest` (expecting red), then `Edit`, then `pytest` again \u2014 the red\\nstep loses its evidence, and the first run is meaningless because the file was not yet changed.\\n\\n## Context cost (tier 3)\\n\\nEvery tool call = 1 API call = the model re-reads the ENTIRE context: one output costs\\n`its token count \xd7 the number of API calls after it` \u2014 **carry-cost**. Measure with\\n`token_audit.py` (counting with a real tokenizer; the chars/4 estimate is badly off exactly in\\nthe priciest group). Images are counted by 28\xd728 px patches, not by base64 length.\\n\\n- **Lint the exact file.** Run `doc_lint.py` on EXACTLY the file you just changed, never pass a\\n  whole directory (`docs/tdq`): linting a directory prints ~8,000 characters of unrelated errors\\n  from old files.\\n- **Quiet CLI.** `tdq_state.py init|set|reset` prints one line by default; add `--json` only\\n  when you genuinely need to inspect the state. Use `next --brief` instead of `next` unless you\\n  need the full checklist.\\n- **Read just enough.** Files over 200 lines: locate with `grep -n`, then Read with\\n  `offset`/`limit`. No `cat` (use Read), no `grep -A5 -B5` when `-c`/`-l` already answers.\\n- **Give heavy work to a subagent.** Web research and reading \u22654 files go to a separate agent \u2014\\n  an agent has its own context window and returns only a digest to the main conversation.\\n- **Output cap for external tools (MCP).** An MCP tool is third-party code: TDQ cannot change\\n  what it returns, only cap it. Set `MAX_MCP_OUTPUT_TOKENS` in `~/.claude/settings.json`\\n  (Claude Code\\'s default is 50,000, with a warning from 10,000). Measured over 5 real sessions:\\n  every existing MCP group stays under 8,800 tokens per call and the whole MCP cluster is only\\n  **1.9%** of total carry-cost. This cap does NOT cut current cost. It stops the rare giant case\\n  in the future \u2014 one call is enough to inflate a whole session.\\n  Over the cap the output is truncated with a marker: on seeing the marker \u2192 call again with\\n  narrower parameters (filter, paginate, select fields); never treat the readable part as enough\\n  and conclude from it.\\n- **Soul decides.** Every rule above only cuts cost when the output does not change. Work that\\n  demands reading WHOLE files or running every check gets done in full: quality stands above\\n  context cost, per [soul.md](soul.md).\\n' : m\u1ea5t lu\u1eadt c\u0169: - **Batch tool calls.**
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: '[TDQ:LOG]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:LOG]' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: '[TDQ:LOG]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:LOG]' not found in ''
+E   AssertionError: '[TDQ:LOG]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:LOG]' not found in ''
+E   AssertionError: '[TDQ:LOG]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:LOG]' not found in ''
+E   AssertionError: 'stop_gate:' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'stop_gate:' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: '[TDQ:DOD]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:DOD]' not found in ''
+E   AssertionError: '[TDQ:DOD]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:DOD]' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: '[TDQ:DOD]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:DOD]' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: '[TDQ:TICK]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:TICK]' not found in ''
+E   AssertionError: '[TDQ:TICK]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:TICK]' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+E   AssertionError: '[TDQ:UNFINISHED]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:UNFINISHED]' not found in ''
+E   AssertionError: '[TDQ:UNFINISHED]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:UNFINISHED]' not found in ''
+E   AssertionError: '[TDQ:UNFINISHED]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:UNFINISHED]' not found in ''
+E   AssertionError: '[TDQ:UNFINISHED]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:UNFINISHED]' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py:363: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+E   AssertionError: 'TDQ:UNFINISHED' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 'TDQ:UNFINISHED' not found in ''
+E   AssertionError: '[TDQ:UNFINISHED]' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '[TDQ:UNFINISHED]' not found in ''
+E   AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 'ch\u1edd kho\xe1 API c\u1ee7a user' not found in ''
+E   FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-z48_uivz\\temp\\tdq-ut3ejdti\\workers\\controller\\tmp\\tmpzueznskj\\docs\\tdq\\.tdq-turn.jsonl'
+C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_subagent_start.py:84: FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-z48_uivz\\temp\\tdq-ut3ejdti\\workers\\controller\\tmp\\tmpzueznskj\\docs\\tdq\\.tdq-turn.jsonl'
+E   AssertionError: 5463 not less than 5463
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: 5463 not less than 5463
+E   AssertionError: '"deny"' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '"deny"' not found in ''
+E   AssertionError: '"deny"' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '"deny"' not found in ''
+E   AssertionError: '"deny"' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '"deny"' not found in ''
+E   AssertionError: '"deny"' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '"deny"' not found in ''
+E   AssertionError: '"deny"' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '"deny"' not found in ''
+E   AssertionError: '"deny"' not found in ''
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: '"deny"' not found in ''
+E   AssertionError: 0 != 1 : []
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1 : []
+E   AssertionError: 0 != 1
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1
+E   AssertionError: 0 != 1
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:900: AssertionError: 0 != 1
+E   AssertionError: Lists differ: ['scripts/tdq_runtime_bench.py'] != []
+    
+    First list contains 1 additional elements.
+    First extra element 0:
+    'scripts/tdq_runtime_bench.py'
+    
+    - ['scripts/tdq_runtime_bench.py']
+    + [] : 1 entry point(s) never reach utf8_io
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['scripts/tdq_runtime_bench.py'] != []
+=========================== short test summary info ===========================
+SUBFAILED(lane='full') tests/test_archify_e2e.py::RealArchifyE2E::test_full_and_quick_native_binding_and_mutation
+SUBFAILED(lane='quick') tests/test_archify_e2e.py::RealArchifyE2E::test_full_and_quick_native_binding_and_mutation
+FAILED tests/test_archify_e2e.py::RealArchifyE2E::test_master_html_freshness_and_refresh
+FAILED tests/test_bao_cao_da_nen_tang.py::SoLieuTest::test_so_import_posix_khop
+FAILED tests/test_bao_cao_da_nen_tang.py::SoLieuTest::test_so_open_thieu_encoding_khop
+FAILED tests/test_bash_gate.py::TestBashGate::test_approve_not_swallowed_by_prior_edit_gate_remind
+FAILED tests/test_bash_gate.py::TestBashGate::test_approve_reminds_when_signal_mismatch
+FAILED tests/test_bash_gate.py::TestBashGate::test_observes_set_without_next
+FAILED tests/test_bash_gate.py::TestBashGate::test_observes_state_cli_and_next
+FAILED tests/test_bash_gate.py::TestBashGate::test_setphase_reminds_when_signal_mismatch
+FAILED tests/test_bash_gate.py::TestNhacTranOutput::test_nhac_khi_do_nguyen_file_hoac_lich_su
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_approve_plan_captures_mode
+SUBFAILED(prompt='duy\u1ec7t spec') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='ok spec') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='\u0111\u1ed3ng \xfd spec') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='ch\u1ed1t spec nh\xe9') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='ok t\xf4i hi\u1ec3u r\u1ed3i') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='spec n\xe0y \u1ed5n kh\xf4ng?') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='duy\u1ec7t ch\u01b0a?') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+SUBFAILED(prompt='ok') tests/test_compliance_protocol.py::ProtocolTest::test_approve_signal_and_counterexamples
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_bash_gate_observes
+SUBFAILED(cmd='git worktree add ../codex-wt') tests/test_compliance_protocol.py::ProtocolTest::test_bash_gate_reminders
+SUBFAILED(cmd="git commit -m 'fix\n\nGenerated with Claude'") tests/test_compliance_protocol.py::ProtocolTest::test_bash_gate_reminders
+SUBFAILED(cmd="sed -i '' s/a/b/ docs/tdq/STATE.md") tests/test_compliance_protocol.py::ProtocolTest::test_bash_gate_reminders
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_edit_gate_log_reminder
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_edit_gate_observes
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_edit_gate_reminders
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_hooks_reuse_next
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_prompt_clears_session_rows
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_remind_format_and_dedupe
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_stop_gate_budget_and_state_hint
+FAILED tests/test_compliance_protocol.py::ProtocolTest::test_stop_gate_decision_matrix
+FAILED tests/test_context_hooks.py::TestSessionStart::test_active_request_prints_next_and_rule
+FAILED tests/test_context_hooks.py::TestThanLuatKenhPhien::test_compact_source_boms_khoi_neo_phuc_hoi
+FAILED tests/test_context_hooks.py::TestThanLuatKenhPhien::test_ghi_mot_dong_log_kenh
+FAILED tests/test_context_hooks.py::TestThanLuatKenhPhien::test_lite_ngan_hon_full_ngan_hon_ultra
+SUBFAILED(source='startup') tests/test_context_hooks.py::TestThanLuatKenhPhien::test_moi_source_deu_co_than_luat
+SUBFAILED(source='resume') tests/test_context_hooks.py::TestThanLuatKenhPhien::test_moi_source_deu_co_than_luat
+SUBFAILED(source='compact') tests/test_context_hooks.py::TestThanLuatKenhPhien::test_moi_source_deu_co_than_luat
+FAILED tests/test_context_hooks.py::TestThanLuatKenhPhien::test_phase_implement_bom_day_du_than_luat
+SUBFAILED(phase='idle') tests/test_context_hooks.py::TestThanLuatKenhPhien::test_phase_ngoai_implement_chi_bom_dong_tom_tat
+SUBFAILED(phase='analyze') tests/test_context_hooks.py::TestThanLuatKenhPhien::test_phase_ngoai_implement_chi_bom_dong_tom_tat
+SUBFAILED(phase='spec') tests/test_context_hooks.py::TestThanLuatKenhPhien::test_phase_ngoai_implement_chi_bom_dong_tom_tat
+FAILED tests/test_context_hooks.py::TestPromptContext::test_changed_state_does_not_shrink
+FAILED tests/test_context_hooks.py::TestPromptContext::test_clears_previous_turn_rows
+FAILED tests/test_context_hooks.py::TestPromptContext::test_full_implement_phase_line
+FAILED tests/test_context_hooks.py::TestPromptContext::test_mode_answer_in_new_name_maps_to_machine_value
+FAILED tests/test_context_hooks.py::TestPromptContext::test_mode_answer_is_recognised
+FAILED tests/test_context_hooks.py::TestPromptContext::test_mode_hint_uses_mode_from_plan_file
+FAILED tests/test_context_hooks.py::TestPromptContext::test_mode_hint_without_mode_line_falls_back
+FAILED tests/test_context_hooks.py::TestPromptContext::test_next_line_names_open_request_and_project
+FAILED tests/test_context_hooks.py::TestPromptContext::test_plan_approval_mode_match_no_warn
+FAILED tests/test_context_hooks.py::TestPromptContext::test_plan_approval_mode_mismatch_warns
+FAILED tests/test_context_hooks.py::TestPromptContext::test_plan_approval_with_new_name_is_not_a_conflict
+FAILED tests/test_context_hooks.py::TestPromptContext::test_plan_approval_without_mode_no_longer_needs_mode
+FAILED tests/test_context_hooks.py::TestPromptContext::test_plan_hint_no_longer_asks_for_mode
+FAILED tests/test_context_hooks.py::TestPromptContext::test_qc_phase_injects_checklist
+FAILED tests/test_context_hooks.py::TestPromptContext::test_quick_approved_terminal_intake_and_next
+FAILED tests/test_context_hooks.py::TestPromptContext::test_quick_unapproved
+FAILED tests/test_context_hooks.py::TestPromptContext::test_spec_drift_warning
+FAILED tests/test_context_hooks.py::TestNhacWorktree::test_worktree_con_mo_thi_nhac_dung_mot_dong
+FAILED tests/test_context_hooks.py::TestSessionStartCheckpointO10::test_anchor_derived_fields_doing_dispatched_owner_source_next_worktree
+FAILED tests/test_context_hooks.py::TestSessionStartCheckpointO10::test_anchor_resume_recovery_source
+FAILED tests/test_context_hooks.py::TestSessionStartCheckpointO10::test_cap_sau_rewrite_preserves_anchor_under_budget
+FAILED tests/test_e2e_chain.py::TestFullLaneChain::test_full_chain - Assertio...
+FAILED tests/test_e2e_chain.py::TestQuickLaneChain::test_quick_chain - Assert...
+SUBFAILED(ma='main') tests/test_edit_gate.py::TestEditGate::test_goi_y_mode_in_du_moi_mode_dang_co
+SUBFAILED(ma='subagent') tests/test_edit_gate.py::TestEditGate::test_goi_y_mode_in_du_moi_mode_dang_co
+SUBFAILED(ma='codex') tests/test_edit_gate.py::TestEditGate::test_goi_y_mode_in_du_moi_mode_dang_co
+FAILED tests/test_edit_gate.py::TestEditGate::test_lane_hong_van_nhac_thay_vi_im_lang
+FAILED tests/test_edit_gate.py::TestEditGate::test_observes_edit_and_log_rows
+FAILED tests/test_edit_gate.py::TestEditGate::test_plan_pending_mode_placeholder_lists_modes
+FAILED tests/test_edit_gate.py::TestEditGate::test_quick_remind_unapproved - ...
+FAILED tests/test_edit_gate.py::TestEditGate::test_remind_log_when_today_file_missing
+FAILED tests/test_edit_gate.py::TestEditGate::test_remind_src_when_full_unapproved
+FAILED tests/test_edit_gate.py::TestEditGate::test_remind_src_when_plan_pending
+FAILED tests/test_edit_gate.py::TestEditGate::test_state_md_mirror_also_reminds
+FAILED tests/test_edit_gate.py::TickBlockTest::test_chan_lap_lai_khong_dedupe
+FAILED tests/test_edit_gate.py::TickBlockTest::test_hai_task_cung_doing_thi_chan
+FAILED tests/test_edit_gate.py::TickBlockTest::test_implement_chua_tick_thi_chan
+FAILED tests/test_edit_gate.py::TickBlockTest::test_jit_moms_quy_tac_ngon_ngu_lan_dau
+FAILED tests/test_edit_gate.py::TickBlockTest::test_jit_moms_quy_tac_typescript_lan_dau
+FAILED tests/test_edit_gate.py::TickBlockTest::test_ngoai_project_doi_chung_trong_project_van_chan
+FAILED tests/test_edit_gate.py::TickBlockTest::test_ngoai_project_nhanh_team_trong_project_van_chan
+FAILED tests/test_edit_gate.py::TickBlockTest::test_phase_qc_van_chan - Asser...
+FAILED tests/test_edit_gate.py::TickBlockTest::test_streak_3_lan_sua_lien_tiep_khong_tick_thi_chan_lan_4
+FAILED tests/test_header_duong_dan.py::HeaderTest::test_header_duong_dan_ngan_thi_in_nguyen
+FAILED tests/test_header_duong_dan.py::HeaderTest::test_header_giu_ten_thu_muc_cuoi
+FAILED tests/test_kenh_luat_dedupe.py::TestKenhPhien::test_chay_hai_lan_cung_luot_thi_than_luat_dung_mot_lan
+FAILED tests/test_kenh_luat_dedupe.py::TestKenhPhien::test_hai_lan_chay_chi_ghi_mot_dong_log
+FAILED tests/test_kenh_luat_dedupe.py::TestKenhPhien::test_luot_moi_thi_nhac_lai
+FAILED tests/test_kenh_luat_dedupe.py::TestKenhSubagent::test_hai_lan_chay_chi_ghi_mot_dong_log
+FAILED tests/test_kenh_luat_dedupe.py::TestKenhSubagent::test_luot_moi_thi_nhac_lai
+FAILED tests/test_kenh_luat_dedupe.py::TestMotCoCheDuyNhat::test_hai_kenh_khac_nhau_cung_luot_cung_chi_chen_mot_lan
+FAILED tests/test_kenh_luat_dedupe.py::TestMotCoCheDuyNhat::test_muc_off_thi_khong_kenh_nao_in_va_khong_dong_log_nao
+FAILED tests/test_luat_skill.py::KhoaLuatTest::test_moi_luat_con_nguyen_trong_skill
+FAILED tests/test_luat_skill.py::KhoaLuatTest::test_so_dong_ghi_trong_bang_van_tro_dung_cho
+FAILED tests/test_ma_hoa_subprocess.py::MaHoaLenhCon::test_moi_loi_goi_van_ban_deu_khai_encoding
+FAILED tests/test_prompt_context.py::TestIntakeReminder::test_c_idle_with_active_request_prints_next_and_intake
+FAILED tests/test_prompt_context.py::TestIntakeReminder::test_d_open_request_has_no_intake
+FAILED tests/test_prompt_context.py::TestIntakeDirectReminder::test_prompt_binh_thuong_khong_phat_direct
+FAILED tests/test_prompt_context.py::TestIntakeDirectReminder::test_prompt_co_active_request_phase_not_idle_khong_phat_intake
+FAILED tests/test_prompt_context.py::TestIntakeDirectReminder::test_prompt_direct_phase_idle
+FAILED tests/test_prompt_context.py::TestIntakeDirectReminder::test_prompt_direct_state_none
+FAILED tests/test_prompt_context.py::TestIntakeDirectReminder::test_prompt_direct_without_active_request
+FAILED tests/test_prompt_context.py::TestNhacGonKenhLuot::test_dong_nhac_trong_tran_rieng
+FAILED tests/test_prompt_context.py::TestNhacGonKenhLuot::test_ghi_dung_mot_dong_log
+FAILED tests/test_prompt_context.py::TestNhacGonKenhLuot::test_khong_doc_than_luat
+FAILED tests/test_prompt_context.py::TestNhacGonKenhLuot::test_phase_implement_thi_nhac
+SUBFAILED(phase='analyze') tests/test_prompt_context.py::TestNhacGonKenhLuot::test_phase_khac_thi_khong_nhac
+SUBFAILED(phase='spec') tests/test_prompt_context.py::TestNhacGonKenhLuot::test_phase_khac_thi_khong_nhac
+SUBFAILED(phase='plan') tests/test_prompt_context.py::TestNhacGonKenhLuot::test_phase_khac_thi_khong_nhac
+SUBFAILED(phase='qc') tests/test_prompt_context.py::TestNhacGonKenhLuot::test_phase_khac_thi_khong_nhac
+SUBFAILED(phase='report') tests/test_prompt_context.py::TestNhacGonKenhLuot::test_phase_khac_thi_khong_nhac
+FAILED tests/test_prompt_context.py::TestSignalWritten::test_signal_mode_conflict
+FAILED tests/test_prompt_context.py::TestSignalWritten::test_signal_written_matched_and_unmatched
+FAILED tests/test_prompt_context.py::ShaDriftTest::test_sha_doi_noi_dung_thi_van_canh_bao
+FAILED tests/test_step_budget.py::LuatMotLuot::test_cam_gop_du_bon_ca - Asser...
+FAILED tests/test_step_budget.py::LuatMotLuot::test_luat_cu_con_nguyen - Asse...
+FAILED tests/test_stop_gate.py::TestStopGate::test_block_when_repo_changed_without_log
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_approve_reminded_and_still_unapproved
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_block_wins_over_hints
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_budget - json.decoder...
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_git_reminder_is_repeated
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_lane_full_giu_nguyen_thu_tu_spec_roi_plan
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_lane_quick_chua_duyet_thi_nhac_dung_ten_cong
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_next_reminded_but_never_run
+FAILED tests/test_stop_gate.py::TestStopGateHints::test_state_reminded_but_no_cli_call
+FAILED tests/test_stop_gate.py::TestStopGateDiskEffects::test_last_turn_start_row_wins
+FAILED tests/test_stop_gate.py::TestStopGateDiskEffects::test_malformed_turn_start_row
+FAILED tests/test_stop_gate.py::TestStopGateDiskEffects::test_no_snapshot_behaves_like_030
+FAILED tests/test_stop_gate.py::TestStopGateDiskEffects::test_shell_only_change_is_blocked
+FAILED tests/test_stop_gate.py::TestStopGateDiskEffects::test_untouched_log_still_blocks
+FAILED tests/test_stop_gate.py::TestStopGateNoFalseBlock::test_block_logs_to_stderr
+FAILED tests/test_stop_gate.py::TestStopGateNoFalseBlock::test_real_change_still_blocked
+FAILED tests/test_stop_gate.py::TestStopGateNoFalseBlock::test_tdq_log_0_silences_stderr
+FAILED tests/test_stop_gate.py::TestDodNhac::test_dod_ghi_log_neu_ly_do - Ass...
+FAILED tests/test_stop_gate.py::TestDodNhac::test_dod_khong_bi_cat_khi_du_bon_nhac_khac
+FAILED tests/test_stop_gate.py::TestDodNhac::test_dod_nhac_khi_dong_so_con_o_trong
+FAILED tests/test_stop_gate.py::TestDodNhac::test_dod_nhac_khi_qc_4_cot_toan_pass
+FAILED tests/test_stop_gate.py::TestDodNhac::test_dod_nhac_neu_ca_so_task_lan_so_o_dod
+FAILED tests/test_stop_gate.py::TestDodNhac::test_dod_nhac_o_phase_idle - Ass...
+FAILED tests/test_stop_gate.py::TestStopGateTick::test_chan_khi_code_doi_ma_plan_dung_yen
+FAILED tests/test_stop_gate.py::TestStopGateTick::test_log_service_tat_duoc_bang_bien_moi_truong
+FAILED tests/test_stop_gate.py::TestStopGateTick::test_qc_van_chan - Assertio...
+FAILED tests/test_stop_gate.py::TestStopGateTick::test_thieu_log_thi_uu_tien_bao_log_truoc
+FAILED tests/test_stop_gate.py::TestStopGateReprint::test_reprint_log_bao_dung_lenh_tdq_finish
+FAILED tests/test_stop_gate.py::TestStopGateReprint::test_reprint_trong_loi_chan_log
+FAILED tests/test_stop_gate.py::TestStopGateReprint::test_reprint_trong_loi_chan_tick
+FAILED tests/test_stop_gate.py::TestStopGateReprint::test_reprint_van_trong_tran_voi_duong_dan_dai
+FAILED tests/test_stop_gate.py::TestStopGateUnfinished::test_unfinished_chan_lap_khi_co_cua_bat
+FAILED tests/test_stop_gate.py::TestStopGateUnfinished::test_unfinished_chan_luot_khong_sua_file
+FAILED tests/test_stop_gate.py::TestStopGateUnfinished::test_unfinished_mien_khi_da_tam_hoan
+FAILED tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_chan_lap_khi_co_cua_bat
+FAILED tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_chan_luot_khong_sua_file
+FAILED tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_mien_khi_da_tam_hoan
+SUBFAILED(lan=0) tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_tran_ba_lan
+SUBFAILED(lan=1) tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_tran_ba_lan
+SUBFAILED(lan=2) tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_tran_ba_lan
+FAILED tests/test_stop_gate.py::TestUnfinishedTran::test_unfinished_tran_reset_khi_co_tien_trien
+FAILED tests/test_stop_gate.py::TestUnfinishedImLang::test_unfinished_chan_lap_khi_co_cua_bat
+FAILED tests/test_stop_gate.py::TestUnfinishedImLang::test_unfinished_chan_luot_khong_sua_file
+FAILED tests/test_stop_gate.py::TestUnfinishedImLang::test_unfinished_mien_khi_da_tam_hoan
+FAILED tests/test_stop_gate.py::TestUnfinishedLog::test_unfinished_chan_lap_khi_co_cua_bat
+FAILED tests/test_stop_gate.py::TestUnfinishedLog::test_unfinished_chan_luot_khong_sua_file
+FAILED tests/test_stop_gate.py::TestUnfinishedLog::test_unfinished_log - Asse...
+FAILED tests/test_stop_gate.py::TestUnfinishedLog::test_unfinished_log_tat_duoc
+FAILED tests/test_stop_gate.py::TestUnfinishedLog::test_unfinished_mien_khi_da_tam_hoan
+FAILED tests/test_subagent_start.py::TestKenhSubagent::test_ghi_dung_mot_dong_log
+FAILED tests/test_subagent_start.py::TestKenhSubagent::test_lite_ngan_hon_full_ngan_hon_ultra
+FAILED tests/test_team_chong_conflict.py::GateChanNgoaiVungTest::test_gate_chan_ngoai_vung_chan_va_noi_du_ba_thu
+FAILED tests/test_team_mode.py::HookTest::test_chua_phan_cong_ma_sua_code_o_main_thi_bi_chan
+FAILED tests/test_team_mode.py::HookTest::test_da_giao_ma_khong_co_nhanh_thi_bi_chan
+FAILED tests/test_team_mode.py::HookTest::test_hai_dau_dang_lam_van_bi_chan
+FAILED tests/test_team_mode.py::HookTest::test_khong_dau_nao_van_bi_chan - As...
+FAILED tests/test_team_mode.py::HookTest::test_main_sua_file_cua_task_giao_thi_bi_chan
+FAILED tests/test_turn_ledger.py::TurnStartRowTest::test_prompt_context_writes_turn_start
+FAILED tests/test_turn_ledger.py::TurnStartRowTest::test_turn_start_is_reset_each_turn
+FAILED tests/test_turn_ledger.py::TurnStartRowTest::test_turn_start_scoped_to_session
+FAILED tests/test_utf8_io.py::EntryPointTest::test_entrypoint_moi_file_deu_toi_duoc_utf8_io
+180 failed, 3419 passed, 10 skipped, 2436 subtests passed in 868.63s (0:14:28)

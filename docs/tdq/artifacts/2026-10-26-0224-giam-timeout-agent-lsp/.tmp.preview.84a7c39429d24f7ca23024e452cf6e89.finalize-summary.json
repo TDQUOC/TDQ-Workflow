@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "workflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+    "sha256": "86d0fd8f79aa8ae6636ac9d91a7982f341cc25594e97c6cab22711a9490631a2",
+    "bytes": 2323
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.html"
+  },
+  "gates": {
+    "validate": "fail",
+    "deliver": "not-run",
+    "check": "not-run",
+    "browser-check": "not-run"
+  },
+  "failedStage": "validate",
+  "diagnostics": [
+    {
+      "code": "input/json-parse",
+      "severity": "error",
+      "message": "Input JSON could not be parsed: Unexpected token '#', \"# Giảm tim\"... is not valid JSON",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md"
+      },
+      "evidence": {
+        "reason": "Unexpected token '#', \"# Giảm tim\"... is not valid JSON"
+      },
+      "supportedFixes": [
+        "repair the JSON syntax and run validation again"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.84a7c39429d24f7ca23024e452cf6e89.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 379,
+  "browserCheck": {
+    "requested": true,
+    "ran": false
+  },
+  "nextAction": {
+    "action": "edit-in-place",
+    "candidate": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+    "constraint": "Preserve unaffected semantics and geometry; apply each diagnostic's supportedFixes, or the fix its message names, and do not replace the whole candidate.",
+    "then": "finalize-once"
+  }
+}

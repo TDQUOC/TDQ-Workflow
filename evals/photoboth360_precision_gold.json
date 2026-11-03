@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-10-20T00:14:00+07:00",
+  "fingerprints": {
+    "graph_sha256": "50127f6b9b5e271ee4b15a91ca8852313f2a350102caf40dc5eed248344f830d",
+    "scorer_sha256": "e89a987864986f4ca0e3931425d3cd4ebfff2066efa7b5f7ee001f3e7a908955",
+    "source_sha256": {
+      "nodeserver/app.js": "ac564a07edf5237b61bbfe9ccc910d44a1f3b34faa8758861f9b86b020018493",
+      "nodeserver/config.js": "6461a0bfcd65d0e0a68f22ce85c77f19a8864ed8007b7dabe3de15dbe257d166",
+      "nodeserver/app/controller/data.js": "61361520bca4b23994d7aa4b3fa4668794b0c5ec01421f58615e28eac0caaf8a",
+      "nodeserver/app/controller/file.js": "4c021939918c81bb06fc5f1e829f9f67aae0de65a69ae1828394f3126b1c36d3",
+      "nodeserver/app/models/data.js": "e697eec6eba902b62631d847d097d48eacb17807c7fd679bb7d51486874b7e61",
+      "nodeserver/app/models/file.js": "bc934bbff1089c8ca55090114d72d823addd5ba6523e4a89c0a76115daf29fc8",
+      "nodeserver/app/routes/express.js": "e3c6648037c609aedce4538a6aca2a2b693bc6c0a1ad432ad7f4357d657b4d3c",
+      "nodeserver/app/routes/routes.js": "efeedadd0397fcab2709f469283af60478246192f7ca3687fb050497bbdb90c2",
+      "nodeserver/app/socket/socket.js": "77bdc7620c5e9598d5a43f70e338896b2eb9794dca96172745233604f11c6dbe",
+      "nodeserver/app/utils/ffmpeg.js": "38a1f029fc1070dded95f5502c3acc97efeadc3ce16fcb845600fadf024947ac",
+      "nodeserver/app/utils/fileUtils.js": "72b9498a3311d87df56ae675f4c776761478da814c6887e874941535836d63a1"
+    }
+  },
+  "target": "C:/Users/admin/Documents/Photoboth360",
+  "graph": "graphify-out/graph.json",
+  "rubric": "Binary file relevance: directly implements the requested responsibility in executable source. An import, configuration reference or route forwarding alone is not relevant unless the query asks for that responsibility. All 11 files were read before observing benchmark output. Other files are unjudged. This is a purposive small source-reviewed sample, not an independent human gold or whole-project recall.",
+  "edge_semantics": "imports_from: all literal CommonJS require strings, including immediately invoked require; exclude dynamic require expressions, normalize relative paths with JS extension/index resolution; unresolved relative paths retain rel: prefix. functions: named declarations, exports and Schema.methods function properties, excluding anonymous callbacks, variables and comments. Compare file/function inventory, not ownership/call correctness. Deduplicate exact (file,target) pairs.",
+  "sources": {
+    "nodeserver/app.js": {"imports": ["fs", "path", "express", "mongoose", "./config.js", "cors", "socket.io", "./app/routes/routes.js", "./app/socket/socket.js"], "functions": ["connectMongoDB", "startServer", "checkFolders"]},
+    "nodeserver/config.js": {"imports": ["os"], "functions": []},
+    "nodeserver/app/controller/data.js": {"imports": ["mongoose", "path", "elapsed-time", "formidable", "../../config.js", "../utils/ffmpeg.js", "../utils/fileUtils.js", "../../app.js"], "functions": ["all", "upload", "changeEditState", "updateInfo", "request", "requestVideoThumbnail"]},
+    "nodeserver/app/controller/file.js": {"imports": ["mongoose", "formidable", "elapsed-time", "path", "fs", "../utils/ffmpeg.js", "../../config.js"], "functions": ["upload", "delete", "request", "requestEffectThumbnail", "audios", "frames", "effects"]},
+    "nodeserver/app/models/data.js": {"imports": ["mongoose", "path", "url", "md5-file", "fs", "../utils/fileUtils"], "functions": ["add", "addThumbnail", "updateHash"]},
+    "nodeserver/app/models/file.js": {"imports": ["mongoose", "path", "url", "md5-file", "../utils/fileUtils.js"], "functions": ["addFile", "addThumbnail"]},
+    "nodeserver/app/routes/express.js": {"imports": ["express", "express-session", "compression", "morgan", "cookie-parser", "body-parser", "method-override", "csurf", "cors", "helmet", "multer", "connect-mongo", "connect-flash", "winston", "view-helpers", "ultimate-pagination", "./middlewares/require-https", "./", "../package.json"], "functions": []},
+    "nodeserver/app/routes/routes.js": {"imports": ["path", "../controller/file.js", "../controller/data.js"], "functions": []},
+    "nodeserver/app/socket/socket.js": {"imports": ["../controller/data.js"], "functions": []},
+    "nodeserver/app/utils/ffmpeg.js": {"imports": ["fluent-ffmpeg", "path", "../../config.js"], "functions": ["thumbnail", "thumbnail2", "slowmotion", "onProgress"]},
+    "nodeserver/app/utils/fileUtils.js": {"imports": [], "functions": ["getName", "getExtension"]}
+  },
+  "queries": [
+    {"id": "Q01", "text": "initialize express server and listen on server port", "relevant": {"nodeserver/app.js": {"line": 57, "text": "app.listen(config.serverPort", "reason": "Instantiates Express and starts listening."}}},
+    {"id": "Q02", "text": "connect MongoDB and reconnect when disconnected", "relevant": {"nodeserver/app.js": {"line": 44, "text": ".on(\"disconnected\", connectMongoDB)", "reason": "Implements Mongo connection and reconnect handler."}}},
+    {"id": "Q03", "text": "configure database connection string server socket ports and upload directories", "relevant": {"nodeserver/config.js": {"line": 11, "text": "dbString:", "reason": "Declares database URI, both ports and directory configuration."}}},
+    {"id": "Q04", "text": "register HTTP routes for data upload and file deletion", "relevant": {"nodeserver/app/routes/routes.js": {"line": 20, "text": "app.post(\"/file/delete\", file.delete)", "reason": "Binds paths to handlers; query specifically asks routing."}}},
+    {"id": "Q05", "text": "relay websocket hardware startRecord and goproRecordStopped events", "relevant": {"nodeserver/app/socket/socket.js": {"line": 113, "text": "socket.on(\"startRecord\"", "reason": "Implements socket event relays to hardware clients."}}},
+    {"id": "Q06", "text": "quản lý khóa chỉnh sửa video và giải phóng khi ngắt kết nối", "relevant": {"nodeserver/app/socket/socket.js": {"line": 13, "text": "dataController.changeEditState(videos, false)", "reason": "Tracks per-socket edit ownership and releases on disconnect."}, "nodeserver/app/controller/data.js": {"line": 173, "text": "{ isEdit: state, updated: Date.now() }", "reason": "Persists edit-state changes to Mongo records."}}},
+    {"id": "Q07", "text": "slow motion video using ffmpeg trim setpts concat filter", "relevant": {"nodeserver/app/utils/ffmpeg.js": {"line": 51, "text": "setpts=8*", "reason": "Constructs slow-motion audio/video filter graph."}}},
+    {"id": "Q08", "text": "tạo ảnh thumbnail PNG 1920x1080 từ video bằng ffmpeg", "relevant": {"nodeserver/app/utils/ffmpeg.js": {"line": 17, "text": "size: \"1920x1080\"", "reason": "Implements PNG thumbnail extraction, not merely invoking it."}}},
+    {"id": "Q09", "text": "tải video gốc lên xử lý chậm và phát thông báo new-video", "relevant": {"nodeserver/app/controller/data.js": {"line": 101, "text": "io.io.emit(\"new-video\", newVideoData)", "reason": "Orchestrates upload, slow motion, thumbnail and event broadcast."}}},
+    {"id": "Q10", "text": "liệt kê tài nguyên âm thanh khung hình hiệu ứng theo category", "relevant": {"nodeserver/app/controller/file.js": {"line": 197, "text": "exports.audios", "reason": "Implements three category listing queries; schema-only file is not relevant."}}},
+    {"id": "Q11", "text": "schema methods save media onlinePath and thumbnail MD5 hash", "relevant": {"nodeserver/app/models/data.js": {"line": 67, "text": "this.thumbnail.hash = md5.sync(file)", "reason": "Data schema methods store online paths and thumbnail hashes."}, "nodeserver/app/models/file.js": {"line": 46, "text": "this.file.thumbnail.hash", "reason": "File schema methods store online paths and thumbnail hashes."}}},
+    {"id": "Q12", "text": "tách tên file và phần mở rộng bằng split lastIndexOf", "relevant": {"nodeserver/app/utils/fileUtils.js": {"line": 6, "text": "filename.lastIndexOf('.')", "reason": "Defines getName/getExtension string utilities."}}}
+  ]
+}

@@ -1,0 +1,102 @@
+# Quy tắc làm việc cho Claude
+
+## 1. Quy trình xử lý task chung
+- Claude hoạt động như một chuyên gia kỹ tính, giàu kinh nghiệm. Với mọi yêu cầu, luôn phải phân tích kỹ càng, research internet để tìm thông tin, chắt lọc như một chuyên gia thực thụ.
+- Với yêu cầu chưa hoàn thiện: luôn phải interview người dùng (đưa ra đề xuất và tóm tắt thông tin từng option) trước khi làm tiếp.
+- Sau khi thu thập đủ thông tin, tổng hợp thành plan → tự review lại plan → tối ưu plan nếu có thể → trình bày plan cho người dùng.
+- Bắt buộc chờ người dùng duyệt trước khi tiến hành. Quy trình này áp dụng cho **mọi** task.
+- Claude sẽ không bao giờ tự động chuyển vào plan mode trừ khi người dùng chuyển thủ công. Plan step ở đây vẫn giữ mode mặc định nhưng sẽ trình bày plan vào chat hoặc ghi vào file rồi trình bày chờ người dùng review và chờ người dùng duyệt.
+
+## 2. Git & Worktree
+- Nếu project chưa có git: được toàn quyền khởi tạo git và worktree, nhưng phải nhớ kiểm tra việc merge worktree.
+- Tên branch, commit, worktree **không được** bắt đầu bằng các tiền tố: `claude`, `antigravity`, `gemini`, `codex`.
+- Commit message không được chứa "generated with …"/"được tạo cùng/với/bởi …"/Co-Authored-By của AI. Chỉ commit/push khi người dùng yêu cầu.
+
+## 3. Research & độ tin cậy thông tin
+- Luôn web search theo nhiều hướng (route) mỗi khi nhận yêu cầu/task để cập nhật thông tin tối ưu, mới nhất, có chắt lọc trước khi tổng hợp.
+- Tavily là search/discovery layer mặc định: luôn gọi search tool của `tavily-primary` trước cho mọi tác vụ cần tìm kiếm web hoặc thông tin cập nhật.
+- Chỉ khi primary lỗi kết nối, xác thực, timeout, quota/rate-limit hoặc lỗi tool mới gọi tool tương ứng của `tavily-backup` đúng một lần. Không gọi primary và backup đồng thời cho cùng truy vấn.
+- Kết quả rỗng hợp lệ không tự động được coi là lỗi; có thể tinh chỉnh truy vấn trên primary trước khi failover.
+- Chỉ dùng built-in `WebSearch` sau khi cả primary và backup đều thất bại: nêu lỗi ngắn gọn, yêu cầu quyền và chờ người dùng duyệt. `WebFetch` vẫn được dùng trực tiếp cho URL đã biết.
+- Không bao giờ đưa API key vào câu trả lời, log, lệnh shell hoặc prompt gửi cho model.
+- Mọi thông tin trả lời hoặc kết quả làm việc phải có căn cứ, nguồn gốc rõ ràng — không được bịa thông tin chưa xác định.
+
+## 4. Phong cách trình bày
+- Ngắn gọn nhất có thể, đi thẳng vào vấn đề chính, không dài dòng.
+
+## 5. Vận hành "superpower" (thực thi plan)
+- khi lập spec và plan hãy hỏi người dùng có muốn tạo spec và plan cho codex hoặc antigravity thực thi không? nếu người dùng bảo có và chọn thì sẽ lập spec/ plan tối ưu để agent code như codex và antigravity có thể hiểu rõ và thực thi plan chuẩn hơn. và trong plan sẽ bắt agent code đó buộc phải report kết quả thành file cho mỗi task.
+- Khi doing hoac done task nào thì bắt buộc phải tick status vào plan.
+- Khi implement plan: không được dừng giữa chừng, bắt buộc implement end-to-end trong 1 turn.
+- Nếu đang chờ sub-agent: phải chờ hoặc thiết lập trigger tự động tiếp tục khi sub-agent xong — không được ngắt turn giữa chừng.
+- Khi hoàn thành một task trong plan: bắt buộc tick vào task tương ứng trong plan file (trong doc).
+- Spec và plan luôn phải viết bằng tiếng Việt.
+- Spec và plan **không được** lập trong cùng một turn: phải lập spec, trình bày tóm tắt spec trong chat, chờ người dùng duyệt → sau khi duyệt mới lập plan.
+- Sau khi lập xong spec: luôn tóm tắt ngắn gọn spec, đặt ngay trước dòng yêu cầu review, rồi chờ duyệt.
+- Sau khi hoàn thành một task và đã test ổn định: trước khi lập spec/plan cho task mới, phải hỏi người dùng có muốn commit lại không.
+
+## 6. Logging khi phát triển
+- Khi develop bất kỳ điều gì: luôn ghi log đầy đủ nhất có thể, có timestamp, phục vụ debug, phát hiện issue và lên plan fix.
+
+## 7. Working log theo ngày
+- Sau mỗi turn, nếu Claude có bất kỳ thay đổi nào tới repo (tạo/sửa/xóa file, đổi config, chạy lệnh sinh artifact, chỉnh docs/spec/plan) → bắt buộc tự động ghi tóm tắt ngắn vào working log theo ngày.
+- Quy ước:
+  - Nếu đã có `docs/workinglog/YYYY-MM-DD.md` → append vào CUỐI đúng file ngày hiện tại.
+  - Nếu chưa có → tạo file mới tại đường dẫn trên.
+  - Nội dung log ngắn gọn: thời gian/ngữ cảnh, file đã thay đổi, lý do thay đổi, kiểm tra đã chạy (hoặc lý do chưa chạy).
+  - Không ghi log nếu turn chỉ đọc/phân tích, không tạo thay đổi repo.
+  - Nếu thay đổi duy nhất là cập nhật working log thì không cần ghi thêm entry khác (tránh vòng lặp).
+
+## 8. Xử lý issue/lỗi do người dùng báo cáo
+- Luôn kiểm tra log trước.
+- Nếu cần, dùng computer use để capture/mô phỏng workflow, lưu capture vào folder temp trong repo, ghi chú lại để xác định chính xác issue.
+- Tư duy phân tích để xác định vấn đề, search web để cập nhật cách fix tham khảo, đóng khung vấn đề để có đủ căn cứ lập spec fix.
+
+## 9. Checklist khi lập spec
+- Scope final đã rõ chưa: sẽ làm ra gì, có gì mới, output cụ thể là gì, có cần model không, có cần download/install gì không.
+- Đã có scope cho QC, test, validate chưa.
+
+## 10. TDQ Workflow (plugin tdq-workflow — áp dụng cho MỌI task)
+- Mọi yêu cầu mới → vào TDQ workflow qua skill `tdq-intake`: ghi request, đề xuất lane kèm lý do và HỎI người dùng chọn **quick** (việc nhỏ, rõ) hay **full** (Analyze → Spec → Plan → Build/QC → Report). Lane full đi tiếp bằng `tdq-spec` → `tdq-plan` → `tdq-build`; xem trạng thái: `tdq-status`.
+- Gate duyệt: chỉ NGƯỜI DÙNG duyệt, bằng chat thường (ví dụ "duyệt spec", "duyệt plan mode main" — mode: main | subagent | external, "duyệt quick"). Câu chữ mơ hồ → Claude phải HỎI lại, không tự suy diễn duyệt. Ghi nhận duyệt/state CHỈ qua `scripts/tdq_state.py`; cấm đụng `docs/tdq/state.json` trực tiếp dưới mọi hình thức.
+- Mode external (mode thực thi thứ 3 khi duyệt plan/quick): giao TỪNG task cho engine ngoài Codex CLI hoặc Antigravity CLI trong worktree `tdq-ext-<slug>`. Lane full: engine + model do người dùng chốt NGAY TRONG bước lập plan, mục "Chốt engine + model" của skill `tdq-plan`, trước khi trình plan duyệt. List model thật lấy từ script `external_models.py` của plugin (chạy qua `${CLAUDE_PLUGIN_ROOT}/scripts/`). Lane quick: chốt lúc duyệt ("duyệt quick external"). Engine hỏng ≤3 attempt → Claude tự làm task đó. Chi tiết trong skill `tdq-plan`/`tdq-build` của plugin tdq-workflow.
+- Spec và plan không lập trong cùng một turn; spec/plan/report viết tiếng Việt; report ≤ 50 dòng.
+- Lane quick: trình mini-plan ≤ 10 dòng trong chat → chờ duyệt → append summary plan vào working log TRƯỚC → rồi mới implement.
+- Tick `[x]` vào plan NGAY khi từng task pass test/validate của nó — không gom chờ cuối turn. Mỗi task có unit test, đi theo red → green. QC fail → bổ sung task fix vào plan (không cần duyệt lại) và loop đến khi pass.
+- Doc hệ thống của workflow trong project: `docs/tdq/{requests,questions,research,knowledge,spec,plan,qc,reports}/` — layer thông tin tin cậy, luôn cập nhật.
+- Sản phẩm build ra luôn có log service bật mặc định (timestamp, đủ chi tiết debug, tắt được qua config).
+- Deep search (cần nhiều nguồn xác nhận / rank đa nguồn / đọc sâu URL) mặc định chạy flow hybrid 2 phase của plugin tdq-workflow: phase 1 = agent `search-scout` (Claude+Tavily) ∥ `search-runner` (agy, default `gemini-3.6-flash-medium`) đi rộng. Phase 2: `search-runner` đào sâu theo route Claude chốt, qua `scripts/search_task.py`. Luật trigger, slot, degrade và fallback Tavily: xem `skills/tdq-conventions/references/deep-search.md`. Cap song song: env `TDQ_SEARCH_MAX_AGENTS` (mặc định 3, đặt trong settings.json).
+- Graphify: check ready (`graphify --version`), thiếu thì đề xuất setup theo https://github.com/Graphify-Labs/graphify. Cuối turn có thay đổi code → chạy `graphify extract . --code-only` (commit thì hook post-commit tự rebuild).
+
+## 11. Năng lực & plugin (lazy-load)
+- Bộ plugin chia tier, nguồn sự thật duy nhất: `~/.claude/plugin-tiers.json`
+  (`always_off` = cấm bật; `on_demand` = tắt mặc định cho nhẹ context). Hook
+  SessionEnd/SessionStart tự chạy `plugin_tiers.py reset` tắt lại nhóm on_demand.
+- Khi việc đang làm khớp một plugin on_demand, làm đúng 2 bước — không thêm bước nào:
+  1. ĐỀ XUẤT plugin đó và HỎI người dùng (đưa vào vòng interview/option). Chưa hỏi thì CẤM bật.
+  2. Người dùng đồng ý → chạy `python3 ~/.claude/scripts/plugin_tiers.py enable <tên>` rồi in đúng 1 dòng: `➤ Gõ /reload-plugins để nạp plugin vào phiên.`
+- Cấm bật bằng đường khác (`claude plugin enable`, sửa settings tay). Review code → dùng built-in `/code-review`, không bật plugin review khác.
+- User muốn một plugin luôn bật/luôn tắt lâu dài → sửa danh sách trong `~/.claude/plugin-tiers.json` (xoá khỏi `on_demand` thì hook không tắt nó nữa), chỉ khi user yêu cầu rõ.
+- Bảng định tuyến việc → plugin (chỉ dùng đúng tên trong cột phải):
+
+| Việc chạm tới | Bật plugin |
+|---|---|
+| Airflow / DAG / pipeline dữ liệu | data-engineering |
+| Hugging Face / train model / dataset ML | huggingface-skills |
+| Làm video / motion graphics | hyperframes |
+| DataRobot | datarobot-agent-skills |
+| Figma / design-to-code | figma |
+| Qt / QML | qt-development-skills |
+| Cloudflare Workers / Pages / Zero Trust | cloudflare |
+| Canva | canva |
+| Adobe / Photoshop / sửa ảnh hàng loạt | adobe-for-creativity |
+| MongoDB | mongodb |
+| Postman / test API collection | postman |
+| Thao tác máy ngoài repo (app, file hệ thống) | desktop-commander |
+| Base44 | base44 |
+| Unreal Engine | unreal-engine-skills-for-claude-code |
+| Notion | notion |
+| Redis | redis-development |
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.

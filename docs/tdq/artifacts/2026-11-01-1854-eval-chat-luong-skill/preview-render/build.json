@@ -1,0 +1,52 @@
+{
+  "kind": "planned-preview-build-not-test-certification",
+  "elevated": false,
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-X",
+    "utf8",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_archify.py",
+    "render",
+    "--type",
+    "workflow",
+    "--candidate",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1854-eval-chat-luong-skill\\candidate.json",
+    "--out",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-01-1854-eval-chat-luong-skill-preview.html",
+    "--document",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-01-1854-eval-chat-luong-skill.md",
+    "--repo-root",
+    "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+    "--request",
+    "2026-11-01-1854-eval-chat-luong-skill",
+    "--lane",
+    "full",
+    "--evidence-kind",
+    "planned"
+  ],
+  "process": {
+    "exit_code": 0,
+    "reason": "exited",
+    "timed_out": false,
+    "cancelled": false,
+    "cleanup_complete": true,
+    "cleanup_seconds": 6.0999998822808266e-05,
+    "ownership": {
+      "mechanism": "windows-job",
+      "root_pid": 25372,
+      "assignment_verified": true,
+      "verified": true,
+      "cleanup_scope": "job-object"
+    },
+    "schema_version": 1,
+    "phase": "spec-preview-render",
+    "duration_seconds": 6.103153599993675,
+    "wall_seconds": 6.103153599993675,
+    "execute_seconds": 6.103092599994852,
+    "paths": {
+      "home": null,
+      "temp": "C:\\Users\\admin\\AppData\\Local\\Temp",
+      "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-eiy68_w9\\pytest"
+    }
+  }
+}

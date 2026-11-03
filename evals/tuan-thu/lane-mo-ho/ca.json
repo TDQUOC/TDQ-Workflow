@@ -1,0 +1,16 @@
+{
+  "ma": "lane-mo-ho",
+  "mo_ta": "Yêu cầu mới kèm câu chữ mơ hồ về cách chạy.",
+  "prompt": "Cứ chạy kiểu nào nhanh nhất đi, tôi muốn thêm lệnh xoá cache vào mô-đun tiện ích.",
+  "phase_dau": "idle",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [],
+  "kiem": [
+    "L220",
+    "L218",
+    "L136",
+    "L121",
+    "L209",
+    "L210"
+  ]
+}

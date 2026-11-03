@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+    "sha256": "1e454b1c177216aadd3d635718d377f3c04d7a08b7cdd69e5d7597f368ffd606",
+    "bytes": 1670
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.html",
+    "sha256": "64088403ba9c0f4ea9946bb6e5ecab9031420ed6ccb031852183acf9a7e7431c",
+    "bytes": 488986
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-verdict-emphasis",
+      "severity": "warning",
+      "message": "Most of the conclusion is bold, so nothing stands out.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\candidate.archify.md",
+        "line": 3,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Most of the conclusion is bold, so nothing stands out.",
+        "example": "先做**模块化单体**，等边界稳定后再拆。 / Keep a **modular monolith** until boundaries settle.",
+        "rule": "verdict-emphasis"
+      },
+      "supportedFixes": [
+        "Bold only the few words that carry the decision."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-25-1648-mastermap-va-readme-pro\\.tmp.preview.bd6bfc7c40724824a6f7389d091cc5e3.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1793,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

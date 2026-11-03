@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {"title": "Task BA: validate and save", "output": "flow.html", "quality_profile": "standard"},
+  "lanes": [{"id": "app", "label": "Application"}],
+  "nodes": [
+    {"id": "request", "lane": "app", "col": 0, "type": "external", "label": "Request"},
+    {"id": "validate", "lane": "app", "col": 1, "type": "backend", "label": "Validate"},
+    {"id": "save", "lane": "app", "col": 2, "type": "database", "label": "Save"}
+  ],
+  "edges": [{"id": "check", "from": "request", "to": "validate"}, {"id": "write", "from": "validate", "to": "save"}],
+  "mainPath": ["request", "validate", "save"]
+}

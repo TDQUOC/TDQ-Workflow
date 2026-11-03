@@ -1,0 +1,31 @@
+{
+  "schema": "tdq-scope-observation/v1",
+  "slug": "2026-11-01-1854-eval-chat-luong-skill",
+  "kind": "regression",
+  "status": "PASS",
+  "exit_code": 0,
+  "paid_model_calls": 0,
+  "timed_out": false,
+  "failures": [],
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "--junitxml=C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1854-eval-chat-luong-skill\\junit-q4.xml",
+    "tests/test_tdq_eval_hosts.py"
+  ],
+  "source_files": {
+    "scripts/tdq_eval_hosts.py": "15e8d9a8d02605412396f1b0771af7db4234877f008579e74450bd708a64abf9",
+    "tests/test_tdq_eval_hosts.py": "a4a8a36eabc9aeb28efc61a23bab94a37efcea1f107164d20920d24cb01f39e6"
+  },
+  "source_sha256": "36a8de96a2e88def84ed5c655936d9dd3869dad8f564fa093af12b44a67f3bd7",
+  "result": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/result-q4.json",
+    "sha256": "664d0744f12ad597562f37ca98309b93617dd6410f9c4175107134b0ad552e74"
+  },
+  "stdout": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/stdout-q4.txt",
+    "sha256": "d692fe2ed4b74fc96bdf9696a81b1647243aa316dc608bc1c9e4c0897bde3cd7"
+  }
+}

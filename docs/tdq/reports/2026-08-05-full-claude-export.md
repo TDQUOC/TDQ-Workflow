@@ -1,0 +1,8 @@
+# REPORT — Full claude export multi-repo (`2026-08-05-full-claude-export` · lane full · mode main · 23 task tick đủ)
+
+Đã làm: P1 `claude-export/local-repos.json` (2 repo) · P2 clone N-repo + `.remember` per-repo trong `claude_export.py` · P3 tổng quát `CONFIG_DIRS`→quét mọi `skills/*` + copy LaunchAgent plist khớp tên repo · P4 `manifest.json`/`README.md`/`check` hỗ trợ N repo (giữ tương thích ngược `repo_commit`) · P5 log rà soát + full suite · P6 build thật + QC độc lập + ghi log
+Kết quả: test `test_claude_export` 46 → 64 (18 test mới, 0 fail) · bundle 1709 file → 2121 file, zip 8,5 MB → 10,9 MB, 1 repo → 2 repo (`tdqworkflow-repo`@453e3702, `mem0-repo`@bb3ad38a)
+Kiểm: `unittest test_claude_export -v` 64/64 PASS · `graphify extract . --code-only` exit 0 · build exit 0 + "quét secret: sạch" · `check` "0 mục lệch" · `unzip -t` "No errors detected" · QC agent `tdq-qc-tester` PASS 4/4 mục (git repo, config skills, launch-agents plist, không rò rỉ TAVILY key) · QC file 6/6 hạng mục DoD PASS, 0 defect
+Đầu ra: `~/Documents/claude-code-export` (+ `.zip`) đè bản cũ tại đúng vị trí · `scripts/claude_export.py` · `tests/test_claude_export.py` · `claude-export/local-repos.json`
+Giới hạn: bundle không kèm các repo local dependency khác nếu có phát sinh sau này — phải tự thêm vào `local-repos.json`; README chỉ có bảng động repo/marketplace, phần hướng dẫn cài đặt tĩnh trong `README.template.md` vẫn viết theo `tdqworkflow-repo`/`skills-graphify` như bản gốc (đúng phạm vi spec, không mở rộng)
+Git: chưa commit — thay đổi gồm `scripts/claude_export.py`, `tests/test_claude_export.py`, `claude-export/local-repos.json`, `docs/tdq/{plan,qc,reports}/2026-08-05-full-claude-export.md`, `claude-export/EXPORT_LOG.md`, `docs/workinglog/2026-08-05.md`, `graphify-out/*`

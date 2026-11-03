@@ -1,0 +1,22 @@
+{
+  "ca": "duyet-plan-kem-mode",
+  "nhanh": "lai",
+  "lan": 3,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-plan-kem-mode__lai__3/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L001": "dat",
+    "L003": "khong-ap-dung",
+    "L005": "dat",
+    "L012": "dat",
+    "L149": "dat",
+    "L121": "dat",
+    "L210": "vi-pham"
+  },
+  "chi_phi": 0.8031125,
+  "so_luot": 21,
+  "nhiem": [
+    "repo gốc đang phát triển"
+  ]
+}

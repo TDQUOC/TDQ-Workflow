@@ -1,0 +1,90 @@
+{
+  "schema_version": 6,
+  "active_request": "2026-10-25-1113-phan-tich-muoi-issue",
+  "previous_request": "2026-10-24-2348-hoan-thien-archify",
+  "lane": "full",
+  "phase": "implement",
+  "brief_file": "docs/tdq/brief/2026-10-25-1113-phan-tich-muoi-issue.md",
+  "spec_file": "docs/tdq/spec/2026-10-25-1113-phan-tich-muoi-issue.md",
+  "spec_approved": true,
+  "spec_sha256": "254ff67d4dbd5e5b791549a42a2abc9c64993ce5049feff599b65380d1c90b2c",
+  "spec_approved_at": "2026-10-25T12:23:37+07:00",
+  "spec_descriptor": {
+    "target": "spec",
+    "request": "2026-10-25-1113-phan-tich-muoi-issue",
+    "lane": "full",
+    "file": "docs/tdq/spec/2026-10-25-1113-phan-tich-muoi-issue.md",
+    "sha256": "254ff67d4dbd5e5b791549a42a2abc9c64993ce5049feff599b65380d1c90b2c",
+    "by": "duyệt spec",
+    "at": "2026-10-25T12:23:37+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "spec_approved_by": "duyệt spec",
+  "spec_bo_qua_do": null,
+  "lsp_bo_qua": {
+    "ly_do": "Request chi phan tich/de xuat tai lieu, khong sua code. MCP LSP da start thanh cong; chung nhan module het han va graph stale duoc ghi gioi han, doi chieu source truc tiep.",
+    "at": "2026-10-25T11:17:36+07:00",
+    "module": [
+      "python:. → HET_HAN (kết quả cũ hơn 24 giờ)"
+    ]
+  },
+  "plan_file": "docs/tdq/plan/2026-10-25-1113-phan-tich-muoi-issue.md",
+  "plan_approved": true,
+  "plan_sha256": "aa602b29dbf7791eeaba4119dc659fb422ec931803351feb6b5f9ccc8b0ea98f",
+  "plan_approved_at": "2026-10-25T12:28:26+07:00",
+  "plan_approved_by": "duyệt plan",
+  "plan_descriptor": {
+    "target": "plan",
+    "request": "2026-10-25-1113-phan-tich-muoi-issue",
+    "lane": "full",
+    "file": "docs/tdq/plan/2026-10-25-1113-phan-tich-muoi-issue.md",
+    "sha256": "aa602b29dbf7791eeaba4119dc659fb422ec931803351feb6b5f9ccc8b0ea98f",
+    "by": "duyệt plan",
+    "at": "2026-10-25T12:28:26+07:00",
+    "assurance": "cli-verified",
+    "version": 1
+  },
+  "quick_approved": false,
+  "quick_approved_at": null,
+  "quick_approved_by": null,
+  "quick_descriptor": null,
+  "implement_mode": "main",
+  "implement_pause": {
+    "loai": "pha-huy",
+    "ly_do": "5tasks bao cao de xuat da hoan tat, full suite da ket thuc2974tests9fail2error; khong con tac vu kiem nen. Gate qc/report bi chan6worktrees dirty Archify cu, user yeu cau giu de continue. Khong tu xoa/commit hay bypass gate; noi dung va QC da ban giao, san pham van FAIL, chua fix10issue.",
+    "at": "2026-10-25T13:34:56+07:00",
+    "by": "claude"
+  },
+  "lech_spec": [],
+  "doc_lang": "vi",
+  "muc_gat": "full",
+  "muc_qc": "full",
+  "started_at": "2026-10-25T11:17:36+07:00",
+  "loai_request": "docs",
+  "nhanh_goc": "feature/hoan-thien-archify",
+  "nhanh_request": "docs/phan-tich-muoi-issue",
+  "phase_history": [
+    {
+      "phase": "idle",
+      "at": "2026-10-25T11:17:36+07:00"
+    },
+    {
+      "phase": "analyze",
+      "at": "2026-10-25T11:17:36+07:00"
+    },
+    {
+      "phase": "spec",
+      "at": "2026-10-25T12:05:26+07:00"
+    },
+    {
+      "phase": "plan",
+      "at": "2026-10-25T12:23:37+07:00"
+    },
+    {
+      "phase": "implement",
+      "at": "2026-10-25T13:14:15+07:00"
+    }
+  ],
+  "updated_at": "2026-10-25T13:34:56+07:00"
+}

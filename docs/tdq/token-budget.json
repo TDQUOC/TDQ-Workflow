@@ -1,0 +1,250 @@
+{
+  "skills/tdq-build/references/archify-lifecycle.md": {
+    "sha256": "81413dfee2de65313dccb4f7a4e22681a947541b98bea03e327ef9f7cc0fce27",
+    "token": 756
+  },
+  "skills/tdq-build/references/codex-mode.md": {
+    "sha256": "f8aa605c69e86e5d3495bf169c1f4c5b3f84f902b17e0b20c588fc2ba4a1955f",
+    "token": 2582
+  },
+  "skills/tdq-build/references/qc.md": {
+    "sha256": "e413a51c0ae8bd844ec1c594445c2f7d71450fde2d276ea15834734859c148ae",
+    "token": 3498
+  },
+  "skills/tdq-build/references/report-template.md": {
+    "sha256": "8d0531b233cdeaa53c1766661f3a207b8df61d2212f9b157d8d9f1110498d833",
+    "token": 2701
+  },
+  "skills/tdq-build/references/rules/chung.md": {
+    "sha256": "d21c9922a9413b2720be84fb286f06e55cfdd64cbd806bdcdf977dd44bbf66f5",
+    "token": 3352
+  },
+  "skills/tdq-build/references/rules/cookbooks/python-cookbook.md": {
+    "sha256": "854c4ba66cd31a24cee6af9da3fd4d7848baf7d7716ac3162ac9a62ff1040b7a",
+    "token": 1241
+  },
+  "skills/tdq-build/references/rules/cookbooks/typescript-js-cookbook.md": {
+    "sha256": "44ab61add38109e2c97188f776a152e30e84cf7abeb1599be269e01c05daa36c",
+    "token": 1262
+  },
+  "skills/tdq-build/references/rules/cpp.md": {
+    "sha256": "09fc5a2ad661500d211b4eb9accab4f1a537dd8723d6277bdd9b768fcc268c61",
+    "token": 894
+  },
+  "skills/tdq-build/references/rules/csharp.md": {
+    "sha256": "5249688853b58b3d72a4b6ad8300f2463b2a87d088d9cc71d3cc54086d0c7215",
+    "token": 831
+  },
+  "skills/tdq-build/references/rules/go.md": {
+    "sha256": "4ff7fe79795bd30126c489022b4ac8f42cbdeebc0b8095868f58d1975c99f7ab",
+    "token": 901
+  },
+  "skills/tdq-build/references/rules/html.md": {
+    "sha256": "7a153451aa1b6223e0345ed933768e1bb46ae99dac73eb0442918a3608cf2350",
+    "token": 927
+  },
+  "skills/tdq-build/references/rules/index.md": {
+    "sha256": "36ce70f3b6314132c508f3c1fb0509261c24bb835beabb1df1c4c8de1ae2ef4f",
+    "token": 1055
+  },
+  "skills/tdq-build/references/rules/python.md": {
+    "sha256": "74cdf6561f40a566f395a85262ad281747fd4275682eadc7b9a0f2d3e8a6a63a",
+    "token": 823
+  },
+  "skills/tdq-build/references/rules/rust.md": {
+    "sha256": "49cdf1b4ec82ed413462d4abea57acfcc6d3e6a58f2757372e4b8a4ab524e18b",
+    "token": 844
+  },
+  "skills/tdq-build/references/rules/them-ngon-ngu.md": {
+    "sha256": "848291cd0a52a4f8af87583307953c5b29835e60573b50d5ebfedd5381bcf265",
+    "token": 838
+  },
+  "skills/tdq-build/references/rules/typescript-js.md": {
+    "sha256": "c9d665ff8c3ad99dad6d26acecdf1dd031d7cdb98c5a8f2ce12e6158b8e1295c",
+    "token": 958
+  },
+  "skills/tdq-build/references/runtime-speed.md": {
+    "sha256": "390e55f8b67aa818a5866e19f28a6b0ebfdbf0e06505fa2c34d704d5458528b0",
+    "token": 1106
+  },
+  "skills/tdq-build/references/skill-eval.md": {
+    "sha256": "72f00282030109f89baeafd4f1ca3d9689ad3439bb1c1490c68689df054ae7ff",
+    "token": 1238
+  },
+  "skills/tdq-build/references/team-mode-tra-cuu.md": {
+    "sha256": "6eacac324af8d49c3678a2eb2f66840c487ff5c3495f160e5b762fb02cc68295",
+    "token": 1070
+  },
+  "skills/tdq-build/references/team-mode.md": {
+    "sha256": "d129cdda68805a7b31d18d5ebf34e86426fca8e3bb54a2c9322bdfab6a4a0fc8",
+    "token": 3442
+  },
+  "skills/tdq-build/references/vision-test-loop.md": {
+    "sha256": "64c283fb985585203670f226ba0bd1404850c69402598095d9f86372844d46fc",
+    "token": 3322
+  },
+  "skills/tdq-check-status/references/bang-lech.md": {
+    "sha256": "b2380e933af0c59f555fc085fa30df023d60775ebd9999657cfcc6142f53c4ae",
+    "token": 2136
+  },
+  "skills/tdq-check-status/references/report-template.md": {
+    "sha256": "7441f53768eb6027981eae26aa78fff111e37ce936ccc249974c61c2efdcbd5f",
+    "token": 1317
+  },
+  "skills/tdq-conventions/references/approval.md": {
+    "sha256": "dc30172d1be530e98c379c037c2837e2bf7b942b1c91ec29490b3657298f7c00",
+    "token": 1351
+  },
+  "skills/tdq-conventions/references/clean-code.md": {
+    "sha256": "74f84584187fe2107e51da66a62636361e9693b33d378698ae7f390430f45174",
+    "token": 1852
+  },
+  "skills/tdq-conventions/references/context-budget.md": {
+    "sha256": "80eeb5680eed5710013212e774571fcb041c493509b91c378bbc174c10dd3969",
+    "token": 2025
+  },
+  "skills/tdq-conventions/references/knowledge-template.md": {
+    "sha256": "08239ab13e471b74b92466b4209884eeca2cd725601dad37926ea6bb9f680889",
+    "token": 1422
+  },
+  "skills/tdq-conventions/references/measure-scenario.md": {
+    "sha256": "c494c705bab0fd7708eadcc2cb57e75c06903cbe9d16ea2a8ce060fc27a2f449",
+    "token": 541
+  },
+  "skills/tdq-conventions/references/phases.md": {
+    "sha256": "eaa76a099b4a1ca03bbb221fc25605d41f766b624f6bd0599916fb986aaab54e",
+    "token": 1835
+  },
+  "skills/tdq-conventions/references/plugin-routing.md": {
+    "sha256": "4928d5e5ca54109a7cae1eb2a8330285e72f08db8e9daeda3c436a2efdece8b5",
+    "token": 1711
+  },
+  "skills/tdq-conventions/references/reminder-codes.md": {
+    "sha256": "2be0812d39135f9eb472454ce289c3bd458b1adcdbaf50d08794b438757b32c8",
+    "token": 1767
+  },
+  "skills/tdq-conventions/references/soul.md": {
+    "sha256": "1a723bf57dd5ed13aa82f4f2f745a5b3d15468f57162d846a595cb7fa6e88c6a",
+    "token": 1795
+  },
+  "skills/tdq-conventions/references/subagent-tuning.md": {
+    "sha256": "0bf232d1b4074586fe85144639e9bda8b2f7d8abcf50616c5478f3831b1468fa",
+    "token": 1086
+  },
+  "skills/tdq-conventions/references/tavily.md": {
+    "sha256": "1f2e19794b95b79a241b59fd151c88051b189270059b3e14c981ac8bb330173d",
+    "token": 507
+  },
+  "skills/tdq-conventions/references/ultracode.md": {
+    "sha256": "0c204bc4287e841b56d266fd1e0f316684f87ec09a37f3f9ae60efd167b76caa",
+    "token": 816
+  },
+  "skills/tdq-conventions/references/user-facing-block-vi-du.md": {
+    "sha256": "65ac500c24c75134fed4dbc505f763234b966d6da6acfab8ebba8b2d1fb0ed85",
+    "token": 1085
+  },
+  "skills/tdq-conventions/references/user-facing-block.md": {
+    "sha256": "969b295c9b00d9450bd0b6a1fec0f7982dba350a8cbc10f21b7b78d86c9514c4",
+    "token": 2392
+  },
+  "skills/tdq-conventions/references/worklog-images.md": {
+    "sha256": "a4cada8935d0db3dedd422f86df7c5824866e573ed386b56abb81b01abe3f7bd",
+    "token": 300
+  },
+  "skills/tdq-intake/references/analyze-full.md": {
+    "sha256": "a58b4e3566b967040a021ba65512225b805a1de15a86bef9f4eccfde2bd84a8d",
+    "token": 2822
+  },
+  "skills/tdq-intake/references/archify-quick.md": {
+    "sha256": "72d4233f3b6adac6ebc5df7907566b79bce32d298cd96eabeeb62e046ce468a2",
+    "token": 554
+  },
+  "skills/tdq-intake/references/interview.md": {
+    "sha256": "4c3675f95c711f9ab3118242c759b3f1434b89bbde8a00f4f79986fd73da7ef3",
+    "token": 1652
+  },
+  "skills/tdq-intake/references/issue-triage.md": {
+    "sha256": "edec01e8bd7cc3f708a03a39fd96ec7bd85772237cd58dd4a1b437364a4b84e8",
+    "token": 458
+  },
+  "skills/tdq-intake/references/kiem-lsp-hieu-ung.md": {
+    "sha256": "4612da969eceb98f4593b98956811255ee44ce3ed9a0b846019706779c451621",
+    "token": 1324
+  },
+  "skills/tdq-intake/references/lane-decision.md": {
+    "sha256": "2074c7c70a10e3312c5d1f62f426d999aafb42bb0f1417a428e54d0af3477e1b",
+    "token": 1253
+  },
+  "skills/tdq-intake/references/nhanh-request.md": {
+    "sha256": "70ce7fad97b2b958a1282ff9d7703e35d55d8d3c935b49b76a13e7b935c907a8",
+    "token": 952
+  },
+  "skills/tdq-intake/references/quick-lane-mini.md": {
+    "sha256": "d42c6b259f247020245616625405121a9991dc8509bcc41ce9680f83ed97b666",
+    "token": 720
+  },
+  "skills/tdq-intake/references/quick-lane-qc.md": {
+    "sha256": "002329fb6d4dd606f6bb047b71936640febc6589f343be82475cca74c3516d52",
+    "token": 1437
+  },
+  "skills/tdq-intake/references/quick-lane.md": {
+    "sha256": "cf8eebf3f8c609f4acba2ca22cf96e329b4d5abaa7a18453d7d0f431c0338978",
+    "token": 2820
+  },
+  "skills/tdq-intake/references/scope-round.md": {
+    "sha256": "cf0d8c355914939bd5f28db1976c7503c7570e5efe093ac24999702e157817bf",
+    "token": 2066
+  },
+  "skills/tdq-intake/references/skill-inventory.md": {
+    "sha256": "3a46ee4bbfef3e761eb53d09fd10c915e4af717682f4be15499f3dd556f32543",
+    "token": 1483
+  },
+  "skills/tdq-plan/references/mode-gate.md": {
+    "sha256": "a98423fc0da0d0f30209fabead68423e27672b7e4173eb756053101fc7d70de2",
+    "token": 3149
+  },
+  "skills/tdq-plan/references/plan-template-co-che.md": {
+    "sha256": "6e3580cfbe1d201aaa6b1245b3414ff246d99d8da89791cb3442b2b1077a2051",
+    "token": 3151
+  },
+  "skills/tdq-plan/references/plan-template-huong-dan.md": {
+    "sha256": "18e7d9e7c52ec008b434f08ff879336a6d93bc287d1811d4b352af842edc0db6",
+    "token": 597
+  },
+  "skills/tdq-plan/references/plan-template.md": {
+    "sha256": "e35f83cefb7783516bc04ecc4839eefa4d18d7c405894e8d957d2f7d689b818a",
+    "token": 3410
+  },
+  "skills/tdq-setup/references/chrome-devtools-mcp-guide.md": {
+    "sha256": "666c4f171488c23c445209eb08a251cbb7be628d3222dc695619a75a01500148",
+    "token": 773
+  },
+  "skills/tdq-setup/references/languages.md": {
+    "sha256": "b31c78227a57017f86e0f27b4558fd509ba9b52374e072bb30eae26f1ca29129",
+    "token": 1367
+  },
+  "skills/tdq-setup/references/mcp-first-guide.md": {
+    "sha256": "75d2cc5a4ef129d1452934437bbb31bad9f896d24a4c38868fcdef3d8915b45f",
+    "token": 908
+  },
+  "skills/tdq-setup/references/uu-tien-tim-kiem-chi-tiet.md": {
+    "sha256": "537030bfe3a039aa249d1c751938a537892298aafbacca63a965a791675d452d",
+    "token": 1244
+  },
+  "skills/tdq-setup/references/uu-tien-tim-kiem.md": {
+    "sha256": "bc8fabe8b3e423ace3c5966327e0bc26114ead4bec2804ef9bdcad1ce555c8ef",
+    "token": 3439
+  },
+  "skills/tdq-spec/references/archify-ba.md": {
+    "sha256": "8994ad4209eb554437d263ae27fc2d8e4b69bc12aa470f55e7c8573913e14013",
+    "token": 1088
+  },
+  "skills/tdq-spec/references/spec-template-huong-dan.md": {
+    "sha256": "cdbc763c3bb4ace74039502f06f0dcf9840e0524bae99eb6c09f529dcd19da68",
+    "token": 2840
+  },
+  "skills/tdq-spec/references/spec-template.md": {
+    "sha256": "5b1d5ed3f89fb9101b8db6c7e24a05e4289bc82b099103b6c3104064b666ccd5",
+    "token": 3477
+  }
+}

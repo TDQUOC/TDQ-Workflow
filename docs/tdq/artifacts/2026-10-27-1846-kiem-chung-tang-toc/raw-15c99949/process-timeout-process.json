@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 5.630002124235034e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 13424,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "process-timeout",
+  "stdout": "",
+  "stderr": "[2026-10-31T11:47:21+00:00] tdq_test_process reason=timeout exit_code=None wall=3.019523 cleanup=0.003881\n",
+  "duration_seconds": 3.4342589000007138,
+  "wall_seconds": 3.4342589000007138,
+  "execute_seconds": 3.4342025999794714,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-z8wztp2q\\workers\\controller\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-z8wztp2q\\workers\\controller\\tmp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-mkv3la28\\temp\\tdq-z8wztp2q\\pytest"
+  }
+}

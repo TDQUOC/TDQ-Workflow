@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TDQ Workflow — báo cáo kiểm chứng</title>
+<style>
+:root{color-scheme:light;--ink:#172b42;--muted:#526478;--line:#dce4ec;--accent:#176b8c}*{box-sizing:border-box}body{overflow-wrap:anywhere;margin:0;background:#f4f7fa;color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1140px;margin:0 auto;padding:36px 24px 64px}header{border-top:5px solid var(--accent);padding:24px 28px;background:#fff;border-radius:0 0 14px 14px}h1{font-size:clamp(1.65rem,4vw,2.3rem);line-height:1.2;margin:0 0 18px}h2{font-size:1.35rem;margin:0 0 20px}header p{color:var(--muted);font-size:.92rem}nav{display:flex;flex-wrap:wrap;gap:8px 20px;padding:18px 0}a{color:#075e8a;text-underline-offset:3px;overflow-wrap:anywhere}section{margin:18px 0;padding:28px;background:#fff;border:1px solid var(--line);border-radius:14px;min-width:0}p{margin:12px 0}strong{font-weight:700}code{background:#eef3f7;padding:2px 5px;border-radius:4px;font-size:.86em;overflow-wrap:anywhere}pre{background:#112b3d;color:#f2f6fa;border-radius:8px;padding:16px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82rem}pre code{background:none;color:inherit;padding:0}.table-scroll{max-width:100%;overflow-x:auto;margin:18px 0}table{border-collapse:collapse;width:100%;min-width:520px;font-size:.88rem}th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}th{background:#edf4f8;color:#24465e}tbody tr:nth-child(even){background:#f8fafc}details{border:1px solid var(--line);padding:14px;border-radius:8px;margin-top:20px}summary{cursor:pointer;font-weight:600}footer{color:var(--muted);font-size:.88rem;padding:12px 4px}@media(max-width:600px){main{padding:14px 12px 36px}header,section{padding:20px 16px}nav{font-size:.9rem;gap:8px 14px}section{margin:12px 0}th,td{padding:9px}body{font-size:15px}}
+</style></head><body><main><header><h1>Kiểm chứng TDQ Workflow — tổng hợp bàn giao</h1>
+<p>Soul: chất lượng &gt; runtime &gt; context cost · luật gốc: skills/tdq-conventions/references/soul.md</p>
+<p>Ngày: 2026-10-31 · Request: <code>2026-10-27-1846-kiem-chung-tang-toc</code> · <a href="../qc/2026-10-27-1846-kiem-chung-tang-toc.md">QC</a> · <a href="2026-10-27-1846-kiem-chung-tang-toc.html">Bản HTML</a></p>
+</header><nav aria-label="Mục báo cáo"><a href="#results">Kết quả</a><a href="#raw-samples">Mẫu thô</a><a href="#limitations">Giới hạn/timing</a><a href="#before-after">Trước và sau</a><a href="#recommendations">Khuyến nghị</a><a href="#rollback">Rollback</a></nav><section id="results"><h2>Kết quả</h2>
+<p>Full fresh cuối: <strong>3594 PASS, 8 skip, 3602 case</strong>, 0 fail/error/xfail/xpass; đủ 3306 case gốc và thêm 296, không remap/missing/duplicate. Runner wall <strong>1117.67 giây</strong>; <a href="../cache/test-runs/c030d75ca44ab99e/e23f6ac6de544713b9cc3c68b5224dda/result.json">result JSON</a> giữ số gốc 1117.6745853999746, <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/QC-F1-final-after-QC3-20261031-6add68337dd44ca9b785b1603918f786/receipt.json">receipt</a> xác nhận quyền thường, guard sạch, cleanup complete. Source: <code>81c1946345d8495ef32dbb3924de801020c957c5599918b9c3d4317c5f3278ad</code>.</p>
+<p>D1–D8 semantic PASS; D11 PASS trong phạm vi correctness/runtime/architecture, <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/qc-final-user-waiver.md">QC độc lập</a> có 0 finding chưa xử lý. D9/D10 <strong>SKIPPED_USER</strong> theo yêu cầu “có thể skip bench mà tổng hợp cho tôi ko?” và <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/benchmark-user-waiver-20261031.md">waiver</a>. Các benchmark còn thiếu đã dừng; không kết luận phần trăm tăng tốc hoặc median giảm 20%.</p>
+<p><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/runtime-final.json">Runtime cuối</a>: 6/6 smoke fixture bằng process thật đạt ngân sách 120 giây/scenario; nhãn raw là simulation. Thời gian dưới đây làm tròn 6 chữ số, số gốc nằm trong JSON.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th style="text-align:right">Giây</th>
+<th>Kết quả/phạm vi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>process-timeout</td>
+<td style="text-align:right">3.422056</td>
+<td>PASS · simulation</td>
+</tr>
+<tr>
+<td>process-cancel</td>
+<td style="text-align:right">0.641515</td>
+<td>PASS · simulation</td>
+</tr>
+<tr>
+<td>join</td>
+<td style="text-align:right">5.785336</td>
+<td>PASS · simulation</td>
+</tr>
+<tr>
+<td>owner-crash</td>
+<td style="text-align:right">5.926354</td>
+<td>PASS · simulation</td>
+</tr>
+<tr>
+<td>freshness</td>
+<td style="text-align:right">5.685250</td>
+<td>PASS · simulation</td>
+</tr>
+<tr>
+<td>transcript</td>
+<td style="text-align:right">0.353202</td>
+<td>PASS · simulation</td>
+</tr>
+</tbody>
+</table></div>
+</section><section id="raw-samples"><h2>Mẫu thô và hồ sơ lịch sử</h2>
+<p>Các dòng sau là Full scope lịch sử, không phải bộ A/B đã chứng nhận. Cột source là prefix fingerprint của runner từng mẫu; raw JSON chứa key đầy đủ. Không gộp các source hoặc dùng các timing này suy ra hiệu quả của source bàn giao.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Hồ sơ</th>
+<th style="text-align:right">Workers</th>
+<th style="text-align:right">Wall giây</th>
+<th>Kết quả child/raw</th>
+<th>Source key</th>
+<th>Tình trạng bộ mẫu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/benchmark-full.interrupted-20261031-1905.json">interrupted-20261031-1905</a></td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1179.746893</td>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/raw-e29c206a/0/df7ed806ebc94b09b923d0e46534c589/result.json">INCOMPLETE: 3593 pass + 8 skip / 3601</a></td>
+<td><code>2ebc8c54e2f2</code></td>
+<td>Ngắt; source/environment đổi; còn thiếu 5/6 mẫu</td>
+</tr>
+<tr>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/benchmark-full.parity-failed-20261031.json">parity-failed-20261031</a></td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1113.663399</td>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/raw-bbb9c700/0/8573a30b75c443dea3ef752a7f9e9abb/result.json">PASS: 3593 pass + 8 skip / 3601</a></td>
+<td><code>bb58af068eef</code></td>
+<td>Pair không đạt parity; còn thiếu 4/6 mẫu</td>
+</tr>
+<tr>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/benchmark-full.parity-failed-20261031.json">parity-failed-20261031</a></td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">610.233829</td>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/raw-bbb9c700/1/fa7edc0fa9af4c6eb0bcdc584312c809/result.json">PASS: 3593 pass + 8 skip / 3601</a></td>
+<td><code>bb58af068eef</code></td>
+<td>Pair không đạt parity; còn thiếu 4/6 mẫu</td>
+</tr>
+<tr>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/benchmark-full.config-drift-QC3-20261031.json">config-drift-QC3-20261031</a></td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1159.991913</td>
+<td><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/raw-5cc9afd1/0/839110b0b0b546c996ed9f55add3e439/result.json">PASS: 3594 pass + 8 skip / 3602</a></td>
+<td><code>6c21a4434b3b</code></td>
+<td>Child PASS; harness FAIL config_guard; còn thiếu 5/6 mẫu</td>
+</tr>
+</tbody>
+</table></div>
+<p>Giữ <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/benchmark-full-after-writers-stopped-20261031-5ed8df791a8c45e2a2376e6d27d5eea1/receipt.json">receipt lượt ngắt</a>, <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/benchmark-full-second-confirmation-20261031-600569d1c8a04060afbab87731124f12/receipt.json">receipt parity fail</a> và <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/benchmark-full-final-after-QC3-9e893fa657584476a8a85ee20c8110ae/receipt.json">receipt config drift</a>. Pair cũ có 293 case khác metadata; QC3 đã sửa producer/fixture, nhưng không dùng lại mẫu cũ để chứng nhận parity source cuối.</p>
+</section><section id="limitations"><h2>Giới hạn và thời gian ghi nhận</h2>
+<p>8 skip đều có reason/capability trong result: 3 symlink, 4 giới hạn POSIX/permission, 1 CLI không có argparse help. POSIX chưa được chứng nhận trên host thật. Runtime simulation không thay số đo toàn workflow/log thật; nhãn <code>PERFORMANCE_MET</code> chỉ nói ngân sách smoke. Ruff unavailable.</p>
+<p>D12 gate gốc còn yêu cầu benchmark nên chưa được gọi PASS; component <code>verify_report</code> kiểm nội dung/link/browser theo waiver riêng. Kiểm browser bằng Chrome DevTools MCP ở viewport desktop 1440×900 và mobile 375×812; xem <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/report-browser.json">bằng chứng trình duyệt</a> và <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/summary-scope-validation.json">kết quả kiểm phạm vi tổng hợp</a>. Đây là viewport trình duyệt, không phải kiểm trên thiết bị vật lý.</p>
+<p><a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/timing-report-summary.txt">Timing output</a> dưới đây được giữ nguyên. Wall có cả thời gian chờ và phần chưa quy nguồn; không gọi 98 giờ implement là CPU/compute hoặc công sức model.</p>
+<p>Request <code>2026-10-27-1846-kiem-chung-tang-toc</code> · lane full · opened at 2026-10-27T19:02:05+07:00</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Wall clock</th>
+<th>API request</th>
+<th>Tool wait</th>
+<th>Background job</th>
+<th>Observed union</th>
+<th>Unattributed</th>
+<th>Times entered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idle</td>
+<td>5s</td>
+<td>— [partial]</td>
+<td>1s [partial]</td>
+<td>— [unavailable]</td>
+<td>1s [partial]</td>
+<td>4s [partial]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>analyze</td>
+<td>9 min</td>
+<td>— [partial]</td>
+<td>1 min [partial]</td>
+<td>— [unavailable]</td>
+<td>1 min [partial]</td>
+<td>8 min [partial]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>spec</td>
+<td>26 min</td>
+<td>— [partial]</td>
+<td>34s [partial]</td>
+<td>— [unavailable]</td>
+<td>34s [partial]</td>
+<td>26 min [partial]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>plan</td>
+<td>8 min</td>
+<td>— [partial]</td>
+<td>13s [partial]</td>
+<td>— [unavailable]</td>
+<td>13s [partial]</td>
+<td>7 min [partial]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>mode</td>
+<td>56s</td>
+<td>— [partial]</td>
+<td>2s [partial]</td>
+<td>— [unavailable]</td>
+<td>2s [partial]</td>
+<td>54s [partial]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>implement</td>
+<td>98h 46min</td>
+<td>— [partial]</td>
+<td>3h 18min [partial]</td>
+<td>— [unavailable]</td>
+<td>3h 18min [partial]</td>
+<td>95h 27min [partial]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Total</td>
+<td>99h 29min</td>
+<td>— [partial]</td>
+<td>3h 20min [partial]</td>
+<td>— [unavailable]</td>
+<td>3h 20min [partial]</td>
+<td>96h 08min [partial]</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Model compute time is unavailable (<code>model_giay=null</code>). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.</p>
+<ul>
+<li>api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window</li>
+<li>tool_call_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source</li>
+<li>background_job_seconds: schema_has_no_confirmed_lifecycle</li>
+<li>observed_union_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema</li>
+<li>unattributed_seconds: wall_minus_observed_union;conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema</li>
+</ul>
+<details><summary>Nguyên văn timing output</summary><pre>Request `2026-10-27-1846-kiem-chung-tang-toc` · lane full · opened at 2026-10-27T19:02:05+07:00
+
+| Phase | Wall clock | API request | Tool wait | Background job | Observed union | Unattributed | Times entered |
+|---|---|---|---|---|---|---|---|
+| idle | 5s | — [partial] | 1s [partial] | — [unavailable] | 1s [partial] | 4s [partial] | 1 |
+| analyze | 9 min | — [partial] | 1 min [partial] | — [unavailable] | 1 min [partial] | 8 min [partial] | 1 |
+| spec | 26 min | — [partial] | 34s [partial] | — [unavailable] | 34s [partial] | 26 min [partial] | 1 |
+| plan | 8 min | — [partial] | 13s [partial] | — [unavailable] | 13s [partial] | 7 min [partial] | 1 |
+| mode | 56s | — [partial] | 2s [partial] | — [unavailable] | 2s [partial] | 54s [partial] | 1 |
+| implement | 98h 46min | — [partial] | 3h 18min [partial] | — [unavailable] | 3h 18min [partial] | 95h 27min [partial] | 1 |
+| Total | 99h 29min | — [partial] | 3h 20min [partial] | — [unavailable] | 3h 20min [partial] | 96h 08min [partial] |  |
+
+Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.
+- api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window
+- tool_call_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source
+- background_job_seconds: schema_has_no_confirmed_lifecycle
+- observed_union_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- unattributed_seconds: wall_minus_observed_union;conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+</pre></details></section><section id="before-after"><h2>Trước và sau</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Trước</th>
+<th>Sau và giới hạn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O1 — manifest/result</td>
+<td>Đếm tổng hợp, Full cũ có nguy cơ thiếu hàm pytest</td>
+<td>Từng case/phase/subtest có ID và verdict; đối chiếu đủ baseline.</td>
+</tr>
+<tr>
+<td>O2 — process/helper</td>
+<td>Worker tự động, fixture và cleanup chưa đủ cô lập</td>
+<td>Mặc định 1 worker; temp riêng, timeout/cancel có ownership; tokenizer portable.</td>
+</tr>
+<tr>
+<td>O3 — receipt/join</td>
+<td>Chạy lặp, thiếu proof để reuse</td>
+<td>Fingerprint, eligibility default-deny, lease/nonce và provenance executed/reused/joined; correctness đã kiểm.</td>
+</tr>
+<tr>
+<td>O4 — readiness/batch</td>
+<td>Lặp probe/đọc tuần tự</td>
+<td>Cache phần tĩnh opt-in, live checks giữ nguyên; batch chỉ các read độc lập.</td>
+</tr>
+<tr>
+<td>O5 — transcript</td>
+<td>Parse lại toàn bộ</td>
+<td>Cache trace từng file sau hash toàn bytes; tính lại filter/dedup/quality, giữ trạng thái partial.</td>
+</tr>
+<tr>
+<td>O6 — đo A/B</td>
+<td>Chưa có bộ mẫu đủ đại diện</td>
+<td>Có CLI/verifier và lưu mẫu thô; D9/D10 SKIPPED_USER, chưa chứng nhận hiệu quả.</td>
+</tr>
+<tr>
+<td>O7 — QC/bàn giao</td>
+<td>Evidence phân tán</td>
+<td>Full và runtime bind source, QC độc lập, MD/HTML và kiểm browser/link theo phạm vi điều chỉnh.</td>
+</tr>
+</tbody>
+</table></div>
+<p>QC1 sửa project anchor của helper, cô lập Archify/browser, UTF-8/scanner binary và registry luật batch. QC2 sửa fixture sinh token lock để không dùng repo/HOME thật. QC3 giữ metadata subtest canonical trước xdist và reason sau hook; sắp thứ tự nhánh, dùng nhãn payload ổn định, giữ đủ scenario/assertion.</p>
+</section><section id="recommendations"><h2>Khuyến nghị</h2>
+<p>Giữ <strong>1 worker</strong>, reuse/readiness/transcript cache <strong>off</strong>. Các đường opt-in đã có kiểm correctness nhưng lợi ích hiệu năng chưa được chứng nhận. Nếu cần đánh giá sau này, đo bộ mẫu mới trên cùng source và môi trường; không lấy mẫu lịch sử làm kết luận. <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/dod-checks-final-QC3.json">DoD D1–D8</a>, <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/qc-final-user-waiver.json">QC máy đọc</a>, <a href="../artifacts/2026-10-27-1846-kiem-chung-tang-toc/runs/runtime-final-after-QC3-ed06898fbca3436baf4a965c036e004a/receipt.json">receipt runtime</a>.</p>
+</section><section id="rollback"><h2>Tắt tối ưu và quay về fresh</h2>
+<pre><code class="language-sh">python scripts/tdq_test.py tron-bo --repo . --workers 1 --fresh --reuse off --timeout-seconds 1800
+</code></pre>
+<p>Giữ <code>--readiness-cache off</code> cho setup/LSP và <code>--transcript-cache off</code> cho timing. Không cần xóa cache hoặc sửa cấu hình cá nhân. Git chưa commit/push/merge; nhánh giữ <code>bugfix/kiem-chung-tang-toc</code>.</p>
+</section><footer>Bằng chứng browser: report-browser.json · Kiểm tổng hợp: summary-scope-validation.json. D9/D10 SKIPPED_USER theo quyết định người dùng.</footer></main></body></html>

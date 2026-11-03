@@ -1,0 +1,16 @@
+{
+  "checks": {
+    "hook_exit_zero": true,
+    "fake_home_config_created_despite_safety_flag": true,
+    "managed_block_points_to_checkout": true,
+    "real_user_config_unchanged": true
+  },
+  "scope": "Existing SessionStart version-upgrade branch; not changed by phase 1",
+  "safety": "Private HOME/USERPROFILE/project; no raw user config or hook payload retained",
+  "source": [
+    "hooks/scripts/session_start.py:235",
+    "scripts/tdq_setup.py:1200",
+    "tests/test_tu_khoi_tao.py:346",
+    "tests/helper.py:25"
+  ]
+}

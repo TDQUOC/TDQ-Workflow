@@ -1,0 +1,3 @@
+[2026-07-31T15:31:20+07:00] agent=1 agy=1.1.9 route=python.org official call=search attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=28.2
+[2026-07-31T15:31:32+07:00] agent=1 agy=1.1.9 route=python.org official call=read-url attempt=1 model=gemini-3.6-flash-low exit=0 findings=1 secs=11.7
+[2026-07-31T15:31:32+07:00] agent=1 agy=1.1.9 exit=0 findings=2 routes_failed=0 report=docs/tdq/research/search/2026-07-31-trigger-test/agent-1.json

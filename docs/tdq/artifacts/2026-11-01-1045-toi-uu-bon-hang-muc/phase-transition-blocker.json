@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-01T15:47:54.300455+07:00",
+  "requested_phase": "qc",
+  "recorded_phase": "implement",
+  "status": "BLOCKED_BY_FOREIGN_DIRTY_WORKTREES",
+  "foreign_request": "2026-10-27-1846-kiem-chung-tang-toc",
+  "open_rows": 11,
+  "actions": "Read-only sweep; no worktree/source/ledger deleted or marked closed. Continue explicitly approved plan T4.1 verification; phase remains truthful and unresolved.",
+  "guard_changed": false
+}

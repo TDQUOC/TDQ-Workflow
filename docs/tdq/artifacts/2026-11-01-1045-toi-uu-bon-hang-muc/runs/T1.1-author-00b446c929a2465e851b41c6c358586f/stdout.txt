@@ -1,0 +1,732 @@
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::KhungTest::test_bon_lenh_con_deu_co_that_trong_bang_lenh", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-883e3d544ee4.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::KhungTest::test_help_exit_0_va_liet_ke_du_4_lenh_con", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-fa9da7b50420.jsonl", "observation_sha256": "33c589e9c06c3fff5fc34b5a489d02c2804d8eb277c59f4742759e962b26035c"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::KhungTest::test_log_service_bat_mac_dinh_va_tat_bang_bien_moi_truong", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 2, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-dfb22b8138e1.jsonl", "observation_sha256": "2877dd663d0660430acb35e15ed4522ead4eb95d82acf86a4c4cad81a36a4929"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::KhungTest::test_thieu_lenh_con_thi_exit_2_chu_khong_lam_gi", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-dffedff988b2.jsonl", "observation_sha256": "4baa4e7e869e49a1d60add6bac22ef6c33f2552bf0b0316cdd3d81e51e994f8d"}
+uuuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::DungPlanTest::test_dung_so_task_va_dung_so_cap_chong_file", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-0ee07d60e43f.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::DungPlanTest::test_moi_task_khai_vung_file_nen_khong_roi_vao_vung_khoa", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-f542be168a32.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::DungPlanTest::test_phu_thuoc_lam_task_bi_giu_lai_cho_leader", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-f7596ae70a00.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::DungPlanTest::test_plan_sinh_ra_qua_duoc_doc_lint", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 2, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-200685e0ec34.jsonl", "observation_sha256": "4f60f0665c79cfcf35a286661e452a5d79997b80d6e4d9c61b0f0b28417b1768"}
+uuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::DungPlanTest::test_tham_so_vo_ly_thi_loi_chu_khong_sinh_plan_rac", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 3, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-34886f155381.jsonl", "observation_sha256": "5a054ebca6bece0360981e37a067eb83fa7eda81acc59e71affee2b91796ecad"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::PlanMauChayThatTest::test_phan_cong_va_kiem_ke_chay_sach_tren_plan_mau", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 7, "calibration_calls": 0, "git_calls": 5, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-7f04a6fe4145.jsonl", "observation_sha256": "8f77fa24cab434d8d125581381aed9e76e70044f2b3b8b8318dd86f85fe0c830"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HangSoTest::test_file_thuc_do_hong_thi_bao_do_lai_chu_khong_van_traceback", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-56453112b59d.jsonl", "observation_sha256": "5f83aa9c55bf87e5d72f70322af066eb3b07f8e4f9b68b9b384abc3fbe719401"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HangSoTest::test_file_thuc_do_khong_ton_tai_thi_neu_ten_file_phai_co", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-926abf5e3b4d.jsonl", "observation_sha256": "73a567378cc3999c349d9bf95cb2eb521136080b2b7d9ff6141588461149a57e"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HangSoTest::test_hang_so_ghi_0_mau_bi_tu_choi", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-f561378c8ef6.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HangSoTest::test_thieu_file_thuc_do_thi_loi_va_khong_in_bang", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-3be6178b669b.jsonl", "observation_sha256": "ca1721ec322dcc39979e526014ea07ca2109511bf20601593dea9d34bfc24a6f"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HangSoTest::test_thieu_mot_hang_so_thi_goi_ten_hang_so_do", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-fd4c24fefd97.jsonl", "observation_sha256": "6a2cd1824bf905bf88c35b593b735268e4ed65adead4fdde10de13572d90ceed"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::CongThucTest::test_bang_in_ra_co_du_dong_va_cau_ket_luan_thang", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-857aefb2df26.jsonl", "observation_sha256": "09c29a2836418da8176ca7aa6bb6cf7b025646ffb82ba8a03e506979fd82c9d6"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::CongThucTest::test_leader_lam_chen_duoc_cong_dung_phan_vuot", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-c1240e661fad.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::CongThucTest::test_vi_du_4_task_2_dot_khop_so_tinh_tay", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-0ed84fa9cf66.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::QuetTest::test_quet_in_bang_va_neu_ro_nguong_doi_chieu", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-a7db837e5f77.jsonl", "observation_sha256": "78f1d89e34f5f68ca24e8f49d0269c94fb277dc0903798655aa100de918932f3"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::QuetTest::test_quet_khong_dung_hang_so_bia_khi_thieu_file", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-3e68e5bbdda0.jsonl", "observation_sha256": "9ab554c8c9f00a67f7b4c0f1184ed0df7bee15ba6b3ab613c6885c6a9a7e7c94"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::BienTest::test_bien_6_task_cung_mot_file_thi_doi_khong_nhanh_hon", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-e5c870af8dcc.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+uuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::BienTest::test_bien_giu_dung_voi_moi_bo_hang_so_duong", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-c735fc86d17e.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::ThucDoTest::test_khong_du_3_mau_thi_tu_choi_ghi_file", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-a51c5f1f652d.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+uuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::ThucDoTest::test_mau_that_sai_khuon_thi_loi_ro_rang", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-e750457b983b.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::ThucDoTest::test_mau_that_thay_han_so_stub_va_danh_dau_nguon", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-93fd47a29b75.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::ThucDoTest::test_repo_that_khong_moc_nhanh_hay_worktree_nao", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 139, "calibration_calls": 1, "git_calls": 118, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-48e55b022968.jsonl", "observation_sha256": "493840e93a8fd094cf8924a39177d7fe2dd31d2e54252044934454d1318c05ac"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::ThucDoTest::test_thuc_do_ghi_du_6_hang_so_kem_so_mau_va_do_tan", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 403, "calibration_calls": 3, "git_calls": 342, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-006e83b7dbc0.jsonl", "observation_sha256": "94ffc6fac8c4f733052c191b8de8f082775f430b805ee33cfafe75170f9f2bf0"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::ThucDoTest::test_thuc_do_khong_de_lai_worktree_hay_thu_muc_tam", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 135, "calibration_calls": 1, "git_calls": 114, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-2fc51683e376.jsonl", "observation_sha256": "1d30acae5aaacf582ab28c90898ab5c16815987a2e9ea376026b0139da927872"}
+uuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::VongFix1Test::test_hang_so_am_hoac_vo_cuc_bi_tu_choi", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 3, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-8dbb35907f4a.jsonl", "observation_sha256": "f900fc1b96f7abcb8535488f3c642be2ca3e05ff867a4e7a2dcfe05f2e18a811"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::VongFix1Test::test_he_so_agent_lam_doi_thua_khi_agent_con_cham_hon", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 3, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-9c0dcedd6636.jsonl", "observation_sha256": "09caf539cd3266350f3dd2ea1167f3be067ded5b66e5f15316e21c293fcb0aaa"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::VongFix1Test::test_lap_0_bi_tu_choi", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-89bd0b6a8fff.jsonl", "observation_sha256": "880d05c9940d51f00d5b6857ccf88954484c5b02b7b5c4b5df5b48326b945395"}
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::VongFix1Test::test_mau_that_ghi_ro_la_nhap_tay", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-66f24ee25c39.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+uuuuuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::VongFix1Test::test_moi_ca_hong_deu_bao_loi_co_lenh_sua", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 6, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-a278dd05b354.jsonl", "observation_sha256": "34a3d52b2066bb89303b80bd489c99c56cfae5f400e4c57203880e8fb11a3609"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::VongFix1Test::test_so_mau_duoi_nguong_bi_tu_choi_luc_doc", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-0a36e67d87d3.jsonl", "observation_sha256": "fac64ed5e563c6c0ba74fb4cb16694357b325ebcbd04fc88279172196e11130d"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HeSoCodexTest::test_co_khoa_thi_in_ba_mode", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-7f452f779dc2.jsonl", "observation_sha256": "8776fd36894c53de64e4e04640994e268810bdc4e20cf6b29f6a6d166409688a"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HeSoCodexTest::test_file_do_cu_khong_co_khoa_van_chay_nhu_truoc", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-1c3caec80630.jsonl", "observation_sha256": "9a64caaf38ede7af8057ded9c3bd511e5ac8ca0cb54b30fe8b193da041cf3c43"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HeSoCodexTest::test_he_so_codex_khong_duoc_viet_cung_trong_nguon", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-df5faaecd08d.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HeSoCodexTest::test_khai_nua_voi_thi_bao_thieu_chu_khong_doan_not", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-8c7983833e9a.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HeSoCodexTest::test_khoi_dong_co_dinh_cong_vao_tung_task", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-cde9a1a35b4b.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::HeSoCodexTest::test_so_mau_duoi_nguong_thi_tu_choi_khoa_codex", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-848dbb0bbdf5.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::LogCodexTest::test_ba_mau_thi_ghi_duoc_hang_so_codex", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-7592bd179810.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+uuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::LogCodexTest::test_bo_qua_luot_khong_xong", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-14514e28109e.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::LogCodexTest::test_doc_dung_dong_that_do_tdq_codex_sinh_ra", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-78346c779c34.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::LogCodexTest::test_doc_dung_giay_va_ma_task", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-3e2d5f026a2a.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::LogCodexTest::test_hai_mau_thi_tu_choi_va_noi_con_thieu_may_mau", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-8b701b53a927.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::LogCodexTest::test_khong_dua_log_thi_file_do_khong_co_khoa_codex", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-8c862ae5f40a.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_actual_machine_shortfall_is_still_checked_after_measurement", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-f7047559b006.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+uuuuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_bad_log_and_missing_codex_samples_never_measure_or_create_output", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-0f7cb383fb23.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+uuuuuuuuu.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-c860681bed2e.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_cli_rejects_nonfinite_samples_without_output", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 1, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-d4f1b727779e.jsonl", "observation_sha256": "188356b902429f179c2845a42425f4685b798fc0ab26e9161ade5ed2ed68fe3a"}
+Measurement: C:\Users\admin\AppData\Local\Temp\tdq-k4cpy3te\temp\tmp0dpw59hq\output.json
+  t_task     100.000s  ±0.000  n=1  source=stub  method=may
+  t_tick      10.000s  ±0.000  n=1  source=stub  method=may
+  t_phat      20.000s  ±0.000  n=1  source=stub  method=may
+  t_kiem       5.000s  ±0.000  n=1  source=stub  method=may
+  t_hop        5.000s  ±0.000  n=1  source=stub  method=may
+  t_don       15.000s  ±0.000  n=1  source=stub  method=may
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_debug_short_samples_still_require_a_machine_round", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-125c09d591c8.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+.
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_predictable_machine_shortfall_never_measures", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-10aadbecb941.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+F
+TDQ_SCOPE_WORK {"case_id": "tests/test_bench.py::EarlyValidationTest::test_valid_inputs_measure_and_preserve_machine_provenance", "source_file_sha256": "2c91e7cb1aa6ea716bde61777d4dc17264ea34038efd5ce23310615e03ee23d1", "subprocess_calls": 0, "calibration_calls": 0, "git_calls": 0, "observation_log": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\work-observations-5391ff984d7a43beb9725cf9f3caddf7-c61503e1fa7f.jsonl", "observation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+
+================================== FAILURES ===================================
+_________ ThucDoTest.test_mau_that_thay_han_so_stub_va_danh_dau_nguon _________
+
+self = <test_bench.ThucDoTest testMethod=test_mau_that_thay_han_so_stub_va_danh_dau_nguon>
+
+    def test_mau_that_thay_han_so_stub_va_danh_dau_nguon(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            ra = os.path.join(tmp, "thuc-do.json")
+>           rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
+                                 "--cho-it-mau",
+                                 "--mau-that", "t_task=91.2,t_task=104.7,t_task=88.0")
+
+tests\test_bench.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:177: in _calibrate_fixture
+    code = tdq_bench.main(list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:812: in main
+    return LENH[args.lenh][0](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000002961F395C60>
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+________________ VongFix1Test.test_mau_that_ghi_ro_la_nhap_tay ________________
+
+self = <test_bench.VongFix1Test testMethod=test_mau_that_ghi_ro_la_nhap_tay>
+
+    def test_mau_that_ghi_ro_la_nhap_tay(self):
+        """Số người nhập phải mang cach_do=nhap-tay, và mẫu máy đo phải còn ở mau_may."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            ra = os.path.join(tmp, "thuc-do.json")
+            chuoi = "t_task=90.0,t_task=100.0,t_task=110.0"
+>           rc, _out, _err = _calibrate_fixture("calibrate", "--ra", ra, "--task", "3", "--lap", "1",
+                                  "--cho-it-mau", "--mau-that", chuoi)
+
+tests\test_bench.py:436: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:177: in _calibrate_fixture
+    code = tdq_bench.main(list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:812: in main
+    return LENH[args.lenh][0](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000002961F3B9840>
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_____________ LogCodexTest.test_ba_mau_thi_ghi_duoc_hang_so_codex _____________
+
+self = <test_bench.LogCodexTest testMethod=test_ba_mau_thi_ghi_duoc_hang_so_codex>
+
+    def test_ba_mau_thi_ghi_duoc_hang_so_codex(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            log = self._log(tmp, [101.5, 110.0, 99.5])
+            ra = os.path.join(tmp, "thuc-do.json")
+>           rc, out, err = _calibrate_fixture("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
+                                "--log-codex", log,
+                                "--mau-that", "t_codex_khoi_dong=5.0,t_codex_khoi_dong=5.2,"
+                                              "t_codex_khoi_dong=4.9")
+
+tests\test_bench.py:649: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:177: in _calibrate_fixture
+    code = tdq_bench.main(list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:812: in main
+    return LENH[args.lenh][0](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000002961F404E50>
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_______ LogCodexTest.test_hai_mau_thi_tu_choi_va_noi_con_thieu_may_mau ________
+
+self = <test_bench.LogCodexTest testMethod=test_hai_mau_thi_tu_choi_va_noi_con_thieu_may_mau>
+
+    def test_hai_mau_thi_tu_choi_va_noi_con_thieu_may_mau(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            log = self._log(tmp, [101.5, 110.0])
+            ra = os.path.join(tmp, "thuc-do.json")
+>           rc, _out, err = _calibrate_fixture("calibrate", "--ra", ra, "--lap", "3", "--task", "3",
+                                 "--log-codex", log)
+
+tests\test_bench.py:669: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:177: in _calibrate_fixture
+    code = tdq_bench.main(list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:812: in main
+    return LENH[args.lenh][0](args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:611: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(mau_codex)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000002961E86BD60>
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_log_and_missing_codex_samples_never_measure_or_create_output (kind='missing') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_log_and_missing_codex_samples_never_measure_or_create_output>
+
+    def test_bad_log_and_missing_codex_samples_never_measure_or_create_output(self):
+        for kind in ("missing", "empty", "unfinished", "short", "zero"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                log_path = os.path.join(tmp, "codex.log")
+                if kind != "missing":
+                    line = LogCodexTest.DONG
+                    text = {"empty": "", "unfinished": line.replace("· xong ·", "· timeout ·"),
+                            "short": line + "\n" + line, "zero": line.replace("101.5s", "0.0s")}[kind]
+                    with open(log_path, "w", encoding="utf-8") as stream:
+                        stream.write(text)
+                output = os.path.join(tmp, "output.json")
+>               self.reject_before_measurement(
+                    output, "--log-codex", log_path, "--mau-that",
+                    "t_codex_khoi_dong=1,t_codex_khoi_dong=1,t_codex_khoi_dong=1")
+
+tests\test_bench.py:722: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_log_and_missing_codex_samples_never_measure_or_create_output (kind='empty') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_log_and_missing_codex_samples_never_measure_or_create_output>
+
+    def test_bad_log_and_missing_codex_samples_never_measure_or_create_output(self):
+        for kind in ("missing", "empty", "unfinished", "short", "zero"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                log_path = os.path.join(tmp, "codex.log")
+                if kind != "missing":
+                    line = LogCodexTest.DONG
+                    text = {"empty": "", "unfinished": line.replace("· xong ·", "· timeout ·"),
+                            "short": line + "\n" + line, "zero": line.replace("101.5s", "0.0s")}[kind]
+                    with open(log_path, "w", encoding="utf-8") as stream:
+                        stream.write(text)
+                output = os.path.join(tmp, "output.json")
+>               self.reject_before_measurement(
+                    output, "--log-codex", log_path, "--mau-that",
+                    "t_codex_khoi_dong=1,t_codex_khoi_dong=1,t_codex_khoi_dong=1")
+
+tests\test_bench.py:722: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_log_and_missing_codex_samples_never_measure_or_create_output (kind='unfinished') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_log_and_missing_codex_samples_never_measure_or_create_output>
+
+    def test_bad_log_and_missing_codex_samples_never_measure_or_create_output(self):
+        for kind in ("missing", "empty", "unfinished", "short", "zero"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                log_path = os.path.join(tmp, "codex.log")
+                if kind != "missing":
+                    line = LogCodexTest.DONG
+                    text = {"empty": "", "unfinished": line.replace("· xong ·", "· timeout ·"),
+                            "short": line + "\n" + line, "zero": line.replace("101.5s", "0.0s")}[kind]
+                    with open(log_path, "w", encoding="utf-8") as stream:
+                        stream.write(text)
+                output = os.path.join(tmp, "output.json")
+>               self.reject_before_measurement(
+                    output, "--log-codex", log_path, "--mau-that",
+                    "t_codex_khoi_dong=1,t_codex_khoi_dong=1,t_codex_khoi_dong=1")
+
+tests\test_bench.py:722: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_log_and_missing_codex_samples_never_measure_or_create_output (kind='short') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_log_and_missing_codex_samples_never_measure_or_create_output>
+
+    def test_bad_log_and_missing_codex_samples_never_measure_or_create_output(self):
+        for kind in ("missing", "empty", "unfinished", "short", "zero"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                log_path = os.path.join(tmp, "codex.log")
+                if kind != "missing":
+                    line = LogCodexTest.DONG
+                    text = {"empty": "", "unfinished": line.replace("· xong ·", "· timeout ·"),
+                            "short": line + "\n" + line, "zero": line.replace("101.5s", "0.0s")}[kind]
+                    with open(log_path, "w", encoding="utf-8") as stream:
+                        stream.write(text)
+                output = os.path.join(tmp, "output.json")
+>               self.reject_before_measurement(
+                    output, "--log-codex", log_path, "--mau-that",
+                    "t_codex_khoi_dong=1,t_codex_khoi_dong=1,t_codex_khoi_dong=1")
+
+tests\test_bench.py:722: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_log_and_missing_codex_samples_never_measure_or_create_output (kind='zero') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_log_and_missing_codex_samples_never_measure_or_create_output>
+
+    def test_bad_log_and_missing_codex_samples_never_measure_or_create_output(self):
+        for kind in ("missing", "empty", "unfinished", "short", "zero"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                log_path = os.path.join(tmp, "codex.log")
+                if kind != "missing":
+                    line = LogCodexTest.DONG
+                    text = {"empty": "", "unfinished": line.replace("· xong ·", "· timeout ·"),
+                            "short": line + "\n" + line, "zero": line.replace("101.5s", "0.0s")}[kind]
+                    with open(log_path, "w", encoding="utf-8") as stream:
+                        stream.write(text)
+                output = os.path.join(tmp, "output.json")
+>               self.reject_before_measurement(
+                    output, "--log-codex", log_path, "--mau-that",
+                    "t_codex_khoi_dong=1,t_codex_khoi_dong=1,t_codex_khoi_dong=1")
+
+tests\test_bench.py:722: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_manual_input_keeps_existing_output_and_never_measures (value='t_task=nan') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_manual_input_keeps_existing_output_and_never_measures>
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+>               self.reject_before_measurement(output, "--mau-that", value)
+
+tests\test_bench.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_manual_input_keeps_existing_output_and_never_measures (value='t_task=inf') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_manual_input_keeps_existing_output_and_never_measures>
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+>               self.reject_before_measurement(output, "--mau-that", value)
+
+tests\test_bench.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_manual_input_keeps_existing_output_and_never_measures (value='t_task=-1') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_manual_input_keeps_existing_output_and_never_measures>
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+>               self.reject_before_measurement(output, "--mau-that", value)
+
+tests\test_bench.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_manual_input_keeps_existing_output_and_never_measures (value='t_task=0') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_manual_input_keeps_existing_output_and_never_measures>
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+>               self.reject_before_measurement(output, "--mau-that", value)
+
+tests\test_bench.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_manual_input_keeps_existing_output_and_never_measures (value='t_task=1,t_task=2') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_manual_input_keeps_existing_output_and_never_measures>
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+>               self.reject_before_measurement(output, "--mau-that", value)
+
+tests\test_bench.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+_ EarlyValidationTest.test_bad_manual_input_keeps_existing_output_and_never_measures (value='t_codex=1,t_codex=2,t_codex=3') _
+
+self = <test_bench.EarlyValidationTest testMethod=test_bad_manual_input_keeps_existing_output_and_never_measures>
+
+    def test_bad_manual_input_keeps_existing_output_and_never_measures(self):
+        values = ("t_task", "unknown=1", "t_task=bad", "t_task=nan", "t_task=inf",
+                  "t_task=-1", "t_task=0", "t_task=1,t_task=2",
+                  "t_codex=1,t_codex=2,t_codex=3")
+        for value in values:
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as tmp:
+                output = os.path.join(tmp, "existing.json")
+                with open(output, "w", encoding="utf-8") as stream:
+                    stream.write("existing evidence")
+>               self.reject_before_measurement(output, "--mau-that", value)
+
+tests\test_bench.py:707: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_bench.py:695: in reject_before_measurement
+    tdq_bench.lenh_thuc_do(args)
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+____ EarlyValidationTest.test_cli_rejects_nonfinite_samples_without_output ____
+
+self = <test_bench.EarlyValidationTest testMethod=test_cli_rejects_nonfinite_samples_without_output>
+
+    def test_cli_rejects_nonfinite_samples_without_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            code, _out, error = chay("calibrate", "--ra", output, "--lap", "1",
+                                    "--task", "1", "--cho-it-mau", "--mau-that", "t_task=nan")
+            self.assertEqual(code, 1)
+>           self.assertNotIn("Traceback", error)
+E           AssertionError: 'Traceback' unexpectedly found in 'Traceback (most recent call last):\n  File "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_bench.py", line 822, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_bench.py", line 812, in main\n    return LENH[args.lenh][0](args)\n           ~~~~~~~~~~~~~~~~~~^^^^^^\n  File "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_bench.py", line 617, in lenh_thuc_do\n    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)\n                                  ~~~~~~~~~~~~~~~~~^^^^^^\n  File "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_bench.py", line 605, in _chuan_bi_thuc_do\n    _kiem_gia_tri_mau(that)\n    ~~~~~~~~~~~~~~~~~^^^^^^\n  File "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_bench.py", line 564, in _kiem_gia_tri_mau\n    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):\n       ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_bench.py", line 564, in <genexpr>\n    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):\n               ^^^^\nNameError: name \'math\' is not defined. Did you forget to import \'math\'?\n'
+
+tests\test_bench.py:786: AssertionError
+_ EarlyValidationTest.test_valid_inputs_measure_and_preserve_machine_provenance _
+
+self = <test_bench.EarlyValidationTest testMethod=test_valid_inputs_measure_and_preserve_machine_provenance>
+
+    def test_valid_inputs_measure_and_preserve_machine_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = os.path.join(tmp, "output.json")
+            log_path = os.path.join(tmp, "codex.log")
+            with open(log_path, "w", encoding="utf-8") as stream:
+                stream.write((LogCodexTest.DONG + "\n") * 3)
+            args = tdq_bench.build_parser().parse_args([
+                "calibrate", "--ra", output, "--lap", "3", "--log-codex", log_path,
+                "--mau-that", "t_task=90,t_task=100,t_task=110,"
+                "t_codex_khoi_dong=1,t_codex_khoi_dong=2,t_codex_khoi_dong=3"])
+            samples = {name: [value] for name, value in HS_KIEM_TAY.items()}
+            with mock.patch.object(tdq_bench, "_do_mot_luot", return_value=samples) as measured, \
+                    mock.patch.object(tdq_bench, "nap_log_codex", wraps=tdq_bench.nap_log_codex) as read_log:
+>               self.assertEqual(tdq_bench.lenh_thuc_do(args), 0)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_bench.py:746: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+scripts\tdq_bench.py:617: in lenh_thuc_do
+    that, mau_codex, cach_codex = _chuan_bi_thuc_do(args)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^
+scripts\tdq_bench.py:605: in _chuan_bi_thuc_do
+    _kiem_gia_tri_mau(that)
+scripts\tdq_bench.py:564: in _kiem_gia_tri_mau
+    if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000002961F6064D0>
+
+>   if any(not math.isfinite(giay) or giay <= 0 for giay in gia_tri):
+               ^^^^
+E   NameError: name 'math' is not defined. Did you forget to import 'math'?
+
+scripts\tdq_bench.py:564: NameError
+=========================== short test summary info ===========================
+FAILED tests/test_bench.py::ThucDoTest::test_mau_that_thay_han_so_stub_va_danh_dau_nguon
+FAILED tests/test_bench.py::VongFix1Test::test_mau_that_ghi_ro_la_nhap_tay - ...
+FAILED tests/test_bench.py::LogCodexTest::test_ba_mau_thi_ghi_duoc_hang_so_codex
+FAILED tests/test_bench.py::LogCodexTest::test_hai_mau_thi_tu_choi_va_noi_con_thieu_may_mau
+SUBFAILED(kind='missing') tests/test_bench.py::EarlyValidationTest::test_bad_log_and_missing_codex_samples_never_measure_or_create_output
+SUBFAILED(kind='empty') tests/test_bench.py::EarlyValidationTest::test_bad_log_and_missing_codex_samples_never_measure_or_create_output
+SUBFAILED(kind='unfinished') tests/test_bench.py::EarlyValidationTest::test_bad_log_and_missing_codex_samples_never_measure_or_create_output
+SUBFAILED(kind='short') tests/test_bench.py::EarlyValidationTest::test_bad_log_and_missing_codex_samples_never_measure_or_create_output
+SUBFAILED(kind='zero') tests/test_bench.py::EarlyValidationTest::test_bad_log_and_missing_codex_samples_never_measure_or_create_output
+SUBFAILED(value='t_task=nan') tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures
+SUBFAILED(value='t_task=inf') tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures
+SUBFAILED(value='t_task=-1') tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures
+SUBFAILED(value='t_task=0') tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures
+SUBFAILED(value='t_task=1,t_task=2') tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures
+SUBFAILED(value='t_codex=1,t_codex=2,t_codex=3') tests/test_bench.py::EarlyValidationTest::test_bad_manual_input_keeps_existing_output_and_never_measures
+FAILED tests/test_bench.py::EarlyValidationTest::test_cli_rejects_nonfinite_samples_without_output
+FAILED tests/test_bench.py::EarlyValidationTest::test_valid_inputs_measure_and_preserve_machine_provenance
+17 failed, 47 passed, 28 subtests passed in 56.82s

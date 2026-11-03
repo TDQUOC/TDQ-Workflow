@@ -1,0 +1,53 @@
+{
+  "plan_version": "v1",
+  "experiment_id": "2026-11-02-1157-nang-cap-spec-subagent",
+  "targets": {
+    "hooks/scripts/edit_gate.py": "aff2d30468b7ffaa457dca697d50ec1f19f3c068d7bb13748138e3bd2507c936",
+    "skills/tdq-spec/references/spec-template.md": "ff883b5950aa71fe9b1b2b718688a59cc3cfe11fb88f73d3aeaa3f1949f94c8d",
+    "skills/tdq-spec/references/spec-template-huong-dan.md": "8dfa64a5b3aa1c7f248f7b890bdb2b7de90b014de5eaa9cf8deec1cd84851815",
+    "skills/tdq-spec/references/archify-ba.md": "cb3ddbfb2bf1aa39ff75189151c6f7a7230cf27287c12594e6f51ffa66170c01",
+    "skills/tdq-intake/references/archify-quick.md": "72d4233f3b6adac6ebc5df7907566b79bce32d298cd96eabeeb62e046ce468a2",
+    "skills/tdq-intake/references/quick-lane.md": "25aa6f2fbb7c341b6bfd99816dfd0fca0fdf71e4778bcb299de5d1364b3f3c97",
+    "skills/tdq-intake/SKILL.md": "be420c85a5d6c524b2a922300de1bf4fd4149f58e6114192de8b6e092a95649e",
+    "skills/tdq-conventions/SKILL.md": "a8350b77cd99268810d65d95d12e784fb18322803eb40b97794c92b0c98bd125",
+    "skills/tdq-conventions/references/reminder-codes.md": "8a488aff4d0eefcbdb984f7a2a42a7caae56672cbad2d2bfdd657f444241e0e3",
+    "skills/tdq-conventions/references/subagent-tuning.md": "08bdd562d579762df4cfd2ab267ec20f7ad37d8e8ef731d1b170a61e17f13cf2",
+    "skills/tdq-build/references/report-template.md": "6e642cbf3bcb928fde76987673fe0d984a5c455e21c0749031f361065b41ff2f"
+  },
+  "base_identity": "ece7bd23a18080c6058c30241712f5cab601af19",
+  "candidate_identity": "75f4d0cbdb59aa7dc1b921247189371898e213fe8b2a64ca3d6de9dc593bef8a",
+  "change_kind": "behavioral",
+  "hypothesis": "Subagent edits outside docs/ before implement are denied with TDQ:TEAM while main-agent and implement-phase flows stay unchanged; rule files carry the before/after, subagent, DoD and PR-body rules.",
+  "evaluation_kind": "mechanism",
+  "corpus_id": "offline-unittest-2026-11-02-1157",
+  "dev_cases_sha256": "74aa036a146de63ca6e76664df8a2e5a347f5143b6a087e36da5afd7ec8f6c48",
+  "holdout_cases_sha256": "8de4e62fdcffae20797ed170df8ddea42897d9d564fb6df87d1dcb94e9d5fc38",
+  "rubric_version": "spec-q1-q10-v1",
+  "scorer_version": "unittest-pass-fail-v1",
+  "expected_triggers": [
+    "subagent_spec_src"
+  ],
+  "negative_cases": [
+    "subagent_docs",
+    "main_spec_src",
+    "subagent_implement_src"
+  ],
+  "required_metrics": [
+    "outcome_quality"
+  ],
+  "cells": [
+    {
+      "permission_profile": "run_hook-subprocess",
+      "host": "claude-code-hook",
+      "tool_aliases": {},
+      "model": "offline-unittest-no-model",
+      "cache_profile": "none"
+    }
+  ],
+  "repetitions": 1,
+  "order_policy": "AB_BA",
+  "thresholds": {
+    "quality_pass_rate": 1
+  },
+  "experiment_hash": "349b5b3f187290b02ac8285874eb650e9b89021d56341c634cfa441fe9c887f2"
+}

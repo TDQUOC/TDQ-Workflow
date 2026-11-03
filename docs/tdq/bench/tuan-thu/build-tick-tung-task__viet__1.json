@@ -1,0 +1,22 @@
+{
+  "ca": "build-tick-tung-task",
+  "nhanh": "viet",
+  "lan": 1,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/build-tick-tung-task__viet__1/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L003": "dat",
+    "L013": "dat",
+    "L145": "dat",
+    "L012": "vi-pham",
+    "L121": "dat",
+    "L209": "khong-ap-dung",
+    "L210": "dat"
+  },
+  "chi_phi": 0.799634,
+  "so_luot": 23,
+  "nhiem": [
+    "bản plugin cài trên máy"
+  ]
+}

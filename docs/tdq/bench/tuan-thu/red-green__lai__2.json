@@ -1,0 +1,20 @@
+{
+  "ca": "red-green",
+  "nhanh": "lai",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/red-green__lai__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L005": "vi-pham",
+    "L003": "dat",
+    "L012": "dat",
+    "L121": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 0.6265789999999998,
+  "so_luot": 21,
+  "nhiem": [
+    "repo gốc đang phát triển"
+  ]
+}

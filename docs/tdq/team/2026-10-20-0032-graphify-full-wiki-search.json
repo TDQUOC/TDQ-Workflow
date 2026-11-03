@@ -1,0 +1,84 @@
+{
+  "slug": "2026-10-20-0032-graphify-full-wiki-search",
+  "plan_file": "docs\\tdq\\plan\\2026-10-20-0032-graphify-full-wiki-search.md",
+  "plan_sha": "f56492673d5bb537750829a3b5d080980a876ae15d135c707940f0ad380ed76c",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "902c569546c6b53ca415da5484e84d7f76be37ee2f63cd1603e0e35d07ecefd1",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "scripts/tdq_graphify.py",
+        "tests/test_tdq_graphify.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_finish.py",
+        "tests/test_tdq_finish.py"
+      ],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_setup.py",
+        "tests/test_tu_khoi_tao.py"
+      ],
+      "dot": 2
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_lsp.py",
+        "tests/test_bac_graphify.py"
+      ],
+      "dot": 3
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "evals/audit_graphify_full_wiki_ab.py",
+        "evals/test_graphify_full_wiki_ab.py",
+        "evals/graphify_full_wiki_ab_logs.jsonl",
+        "docs/tdq/bench/2026-10-20-0032-graphify-full-wiki-ab.md"
+      ],
+      "dot": 4
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-setup/references/uu-tien-tim-kiem.md",
+        "tests/test_luat_4_tang.py",
+        "tests/test_search_observe.py",
+        "tests/test_search_replay.py"
+      ],
+      "dot": 5
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_tdq_finish.py"
+      ],
+      "dot": 3
+    },
+    "T4.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/plan/2026-10-20-0032-graphify-full-wiki-search.md"
+      ],
+      "dot": 6
+    }
+  }
+}

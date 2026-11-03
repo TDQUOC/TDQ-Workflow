@@ -1,0 +1,46 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Báo cáo tối ưu bốn hạng mục</title><style>body{font:16px/1.6 system-ui,sans-serif;margin:0;color:#182238;background:#f4f6fb}main{max-width:960px;margin:auto;padding:24px}header,section{background:white;border:1px solid #dce3ef;border-radius:12px;padding:22px;margin-bottom:18px}h1{font-size:30px;line-height:1.2}h2{font-size:22px}a{color:#154dc4}nav{display:flex;gap:12px;flex-wrap:wrap}p,li,code,pre{overflow-wrap:anywhere}pre{white-space:pre-wrap;font-size:12px}a:focus{outline:3px solid #995c00;outline-offset:3px}@media(max-width:480px){main{padding:12px}header,section{padding:16px}h1{font-size:25px}}</style><main><header><h1>Tối ưu bốn hạng mục</h1><p>2026-11-01-1045-toi-uu-bon-hang-muc · lane full · subagent</p><p>Source SHA256: 6f03e5bec06c11ed1bc7d9c14609d09ce9f3b55f2fc0b069057c80cce97543bc</p><p>Input SHA256: ec60b7816e0f7efc06f5b4784e3fd3f5c3ea0adf604ddbbeaac8cff700e7d7d2</p><nav aria-label="Mục báo cáo">
+<a href="#results">Kết quả</a>
+<a href="#before-after">Thay đổi đã đo</a>
+<a href="#raw-samples">Runtime và nguồn số liệu</a>
+<a href="#limitations">Giới hạn và trạng thái</a>
+<a href="#recommendations">Đề xuất tiếp theo</a>
+<a href="#rollback">Vận hành và rollback</a>
+</nav></header>
+<section id="results"><h2>Kết quả</h2><p>Đã triển khai bốn hạng mục: validation calibration sớm; timeout và ownership tiến trình Codex; giảm công việc lặp trong kiểm thuần; Top20 case/module cùng export offline JSON/MD/HTML. Full: 3657 PASS, 8 SKIP, 3665 case; giữ đủ 3602 case baseline và thêm 63 case. Wall 1030.256894399994 giây; tổng execution phases 1018.7496596999772 giây, hai đại lượng được tách riêng.</p></section>
+<section id="before-after"><h2>Thay đổi đã đo</h2><p>11 ca kiểm thuần có 0 lời gọi subprocess/calibration/Git sau chuyển đổi; mapping giữ 43 assertion anchors. Bốn integration thực vẫn có 403/3/39/18 lời gọi subprocess được observer Python ghi nhận. Đây là audit Python, không phải đếm mọi lần OS tạo tiến trình; không suy ra phần trăm tăng tốc Full.</p></section>
+<section id="raw-samples"><h2>Runtime và nguồn số liệu</h2><p>Bốn scenario thực: calibration-valid 11.3050513s; reject-early 0.3452787s, không đo và không tạo output; timeout-cleanup 2.7218578s với timeout 2s, descendants hết và HOME được dọn; report-offline 1.2800396s, không gọi runner. Mỗi scenario có cap 120s; timeout có ngưỡng 8s gồm cleanup. Calibration dùng private true.cmd fixture trên Windows; không phải kiểm mô hình từ xa.</p></section>
+<section id="limitations"><h2>Giới hạn và trạng thái</h2><p>Benchmark A/B D9/D10 giữ SKIPPED_USER; chưa chứng nhận phần trăm hiệu năng, POSIX hay thiết bị vật lý. Giữ worker1/cacheoff. Các receipt FAIL trung gian vẫn được bảo toàn, chỉ receipt cuối đúng source được dùng chứng nhận. Guard chỉ bỏ qua giá trị usageCount/lastUsedAt đã duyệt; cấu trúc/type/presence và cấu hình khác vẫn được bảo vệ. Metadata workflow còn phase=implement do 11 worktree cũ dirty; không xóa dữ liệu hoặc bypass guard. Chưa commit/push; nhánh codex/toi-uu-bon-hang-muc.</p></section>
+<section id="recommendations"><h2>Đề xuất tiếp theo</h2><p>Dùng Top20 từ mỗi result để chọn vùng tối ưu tiếp; tiếp tục ưu tiên loại bỏ công việc lặp ở kiểm thuần và giữ integration thật. Chưa bật worker/cache mặc định khi chưa có A/B phù hợp. Review độc lập, kết quả Q1–Q8 và browser được lưu riêng, liên kết bên dưới; metadata blocker không được trình bày thành workflow đã đóng.</p></section>
+<section id="rollback"><h2>Vận hành và rollback</h2><p>Đọc report offline bằng python scripts/tdq_test.py report --result &lt;result.json&gt; --out-prefix &lt;prefix&gt;. Kiểm bảo thủ dùng python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off. Chưa tạo commit triển khai mới nên chưa có commit rollback; preimages theo task trong integration-backup/, chỉ hoàn nguyên đúng file thuộc request sau khi đối chiếu diff, giữ dữ liệu người dùng.</p></section>
+<section id="evidence"><h2>Bằng chứng</h2><ul>
+<li><a href="slow-tests.html">Top20 HTML</a></li>
+<li><a href="slow-tests.md">Top20 Markdown</a></li>
+<li><a href="final-result.json">Raw Full result</a></li>
+<li><a href="QC-F1-check.json">Full kiểm chứng</a></li>
+<li><a href="runtime.json">Runtime evidence</a></li>
+<li><a href="final-work-proof.json">Work counters</a></li>
+<li><a href="case-mapping.json">Case/assertion mapping</a></li>
+<li><a href="phase-transition-blocker.json">Workflow blocker</a></li>
+<li><a href="telemetry-exception-approved.md">Ngoại lệ đã duyệt</a></li>
+<li><a href="independent-qc.md">Review độc lập</a></li>
+</ul></section>
+<section id="timing"><h2>Thời gian</h2><p>Output tdq_timing.py show; partial/unavailable không được suy đoán.</p><pre>Request `2026-11-01-1045-toi-uu-bon-hang-muc` · lane full · opened at 2026-11-01T10:50:35+07:00
+
+| Phase | Wall clock | API request | Tool wait | Background job | Observed union | Unattributed | Times entered |
+|---|---|---|---|---|---|---|---|
+| idle | 14s | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| analyze | 6 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| spec | 4 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| plan | 12 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| mode | 1 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| implement | 5h 08min | — [partial] | 18 min [partial] | — [unavailable] | 18 min [partial] | 4h 51min [partial] | 1 |
+| Total | 5h 31min | — [partial] | 18 min [partial] | — [unavailable] | 18 min [partial] | 5h 14min [partial] |  |
+
+Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.
+- api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window
+- tool_call_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source
+- background_job_seconds: schema_has_no_confirmed_lifecycle
+- observed_union_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- unattributed_seconds: wall_minus_observed_union;conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+</pre></section></main></html>

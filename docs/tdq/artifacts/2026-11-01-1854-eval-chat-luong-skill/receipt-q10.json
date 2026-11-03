@@ -1,0 +1,38 @@
+{
+  "schema": "tdq-scope-observation/v1",
+  "slug": "2026-11-01-1854-eval-chat-luong-skill",
+  "kind": "regression",
+  "status": "PASS",
+  "exit_code": 0,
+  "paid_model_calls": 0,
+  "timed_out": false,
+  "failures": [],
+  "command": [
+    "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "--junitxml=C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1854-eval-chat-luong-skill\\junit-q10.xml",
+    "tests/test_eval_contracts_e2e.py"
+  ],
+  "source_files": {
+    "docs/tdq/qc/2026-11-01-1854-eval-chat-luong-skill.md": "319f3c87bcf757bce35ee335f0548667c5710d55a6dd8f709b7d68fc25751703",
+    "docs/tdq/reports/2026-11-01-1854-eval-chat-luong-skill.md": "677ba1786641fe6cf2bcf63a5b8f5c2e0ab526057aa6bbee83ab774ea1cb71aa",
+    "docs/tdq/spec/2026-11-01-1854-eval-chat-luong-skill-preview.html": "a2632cc8a2d30915507aeedfc94ae176642f517132164a0423f7e79050b5fdc5",
+    "docs/tdq/spec/2026-11-01-1854-eval-chat-luong-skill-preview.manifest.json": "9dc2d3cb0e1099a49caf3320daff5ef80251ed32077afd40a895bdba9ce79aa5",
+    "docs/tdq/spec/2026-11-01-1854-eval-chat-luong-skill.md": "820e1aa93c1a6eeeddb1e962d73706541625b08415c46b401f6a045b72902df9",
+    "docs/tdq/token-budget.json": "bab99ac3f3b77ef6a5b901016f66fdca062f85d851601eddf18a98468d0cd3cc",
+    "scripts/build_portable.py": "3b1420673ab9d4ceabd1e6b801ade5fb99813a7c42b2570f30ac6a071f93b46f",
+    "skills/tdq-build/references/skill-eval.md": "e7a6de9d5ae9ba0864e544227528e5c2cd401bde82d7be8cd9b792dc4b0b5495",
+    "tests/test_build_portable.py": "d227712d2ffc49a8bd40ee05c4d2312a54c234afb917bb31a0292c4fd6e31852"
+  },
+  "source_sha256": "b222098602c9c2368e672d698c10f450829803bc94883b285c43884830b6a4e4",
+  "result": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/result-q10.json",
+    "sha256": "1fa446e4e223cbfeee0cdfa1e27787b069f03d2f5a0e5b7826177d6bb7b018cf"
+  },
+  "stdout": {
+    "path": "docs/tdq/artifacts/2026-11-01-1854-eval-chat-luong-skill/stdout-q10.txt",
+    "sha256": "d7450945a3823da3e8f2e4840360c388fdfb2f298ca65fe23f4e7bedff4136e3"
+  }
+}

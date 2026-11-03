@@ -1,0 +1,72 @@
+{
+  "phien_ban": "1.0",
+  "tinh_nang": "Đăng nhập",
+  "thuoc_nhanh": "Xác thực > Đăng nhập",
+  "cap_nhat": "2026-08-23",
+  "buoc": [
+    {
+      "ma": "B1",
+      "ten": "Nhập email và mật khẩu",
+      "phia": "client",
+      "tiep": ["B2"],
+      "code": [
+        {"file": "src/pages/login.tsx", "ham": "LoginForm.onSubmit", "module": "pages"}
+      ]
+    },
+    {
+      "ma": "B2",
+      "ten": "Kiểm tra tại chỗ trước khi gửi",
+      "phia": "client",
+      "tiep": ["B3"],
+      "loi": [
+        {"khi": "email sai khuôn", "xu_ly": "hiện lỗi dưới ô nhập, dừng luồng"},
+        {"khi": "mật khẩu ngắn hơn 6 ký tự", "xu_ly": "hiện lỗi dưới ô nhập, dừng luồng"}
+      ],
+      "code": [
+        {"file": "src/lib/validators.ts", "ham": "validateCredentials", "module": "helper"},
+        {"file": "src/lib/form-ui.ts", "ham": "showFieldError", "module": "helper"}
+      ]
+    },
+    {
+      "ma": "B3",
+      "ten": "Gửi yêu cầu đăng nhập qua kênh mã hoá",
+      "phia": "client",
+      "tiep": ["B4"],
+      "code": [
+        {"file": "src/api/auth.ts", "ham": "authApi.login", "module": "api"}
+      ]
+    },
+    {
+      "ma": "B4",
+      "ten": "Tra người dùng theo email và đối chiếu mật khẩu băm",
+      "phia": "server",
+      "tiep": ["B5"],
+      "loi": [
+        {"khi": "không có người dùng, hoặc băm không khớp", "xu_ly": "trả một lỗi chung, không nói sai ở đâu"}
+      ],
+      "code": [
+        {"file": "server/controllers/auth.py", "ham": "AuthController.login", "module": "controller"},
+        {"file": "server/repo/user.py", "ham": "UserRepo.find_by_email", "module": "repo"},
+        {"file": "server/controllers/auth.py", "ham": "deny_login", "module": "controller"}
+      ]
+    },
+    {
+      "ma": "B5",
+      "ten": "Phát token phiên và token làm mới",
+      "phia": "server",
+      "tiep": ["B6"],
+      "code": [
+        {"file": "server/services/token.py", "ham": "TokenService.issue_pair", "module": "service"}
+      ]
+    },
+    {
+      "ma": "B6",
+      "ten": "Lưu token và chuyển sang màn hình chính",
+      "phia": "client",
+      "tiep": [],
+      "code": [
+        {"file": "src/store/session.ts", "ham": "session.persist", "module": "store"}
+      ]
+    }
+  ]
+}

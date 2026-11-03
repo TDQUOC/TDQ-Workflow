@@ -1,0 +1,22 @@
+{
+  "version": "0.85.1",
+  "feature_commit": "cf2389f51ed8b8a4c2761c9300e235c485c9ddf2",
+  "dev_merge": "be0ba7ae458bfbaf5229a18d95d77206e405c570",
+  "main_release": "fe528a8ad120dc4ee1103a563149930b033b0516",
+  "files": 169,
+  "compiled_python_files": 70,
+  "archive_sha256": "89f65fedae46ded0190f0e7712f82da82eb246f32858e8aa077c85a012a8c6bb",
+  "release_package_smoke": {
+    "default": "ultra",
+    "qc_default": "full",
+    "explicit_full": "full"
+  },
+  "smoke_timeout_seconds": 15,
+  "tests": {
+    "passed": 194,
+    "subtests_passed": 296,
+    "guard": "PASS"
+  },
+  "full_run": false,
+  "preexisting_ci_failure_not_fixed": true
+}

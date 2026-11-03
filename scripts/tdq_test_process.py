@@ -224,13 +224,27 @@ class OwnedProcessJob:
 
     def __enter__(self):
         self.deadline = time.monotonic() + self.timeout_seconds
+        self._cleanup_deadline = None
         self._temporary = tempfile.TemporaryDirectory(prefix="tdq-", dir=self.temp_parent)
         self.root = Path(self._temporary.name).resolve()
         return self
 
     def __exit__(self, exc_type, exc, traceback):
+        deadline = self._cleanup_deadline
+        if deadline is None:
+            deadline = time.monotonic() + 5
         try:
-            self._temporary.cleanup()
+            while True:
+                try:
+                    self._temporary.cleanup()
+                    break
+                except OSError as error:
+                    # Windows can report zero active processes before inherited
+                    # output handles finish closing. Spend only the budget left.
+                    remaining = deadline - time.monotonic()
+                    if getattr(error, "winerror", None) != 32 or remaining <= 0:
+                        raise
+                    time.sleep(min(.01, remaining))
         finally:
             self.deadline = None
 
@@ -315,6 +329,7 @@ class OwnedProcessJob:
         except (OSError, subprocess.SubprocessError):
             reason = "launch-error"
         finally:
+            self._cleanup_deadline = time.monotonic() + 5
             complete, cleanup_seconds = self._cleanup(owner, child)
         return {
             "exit_code": exit_code, "reason": reason,

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "e24c1c0b-1d4f-462b-88f7-c32728fcf889",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\candidate.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-26-0224-giam-timeout-agent-lsp\\.tmp.preview.0abadd14f0d5467f9f8cc65d13eba402.html",
+  "specification": {
+    "sha256": "86d0fd8f79aa8ae6636ac9d91a7982f341cc25594e97c6cab22711a9490631a2",
+    "bytes": 2323
+  },
+  "artifact": {
+    "sha256": "a0ca1ce87e774f6accf61fd5f29ff85416b6583e36f85e3a2f8a05ec84ee3f8e",
+    "bytes": 492129
+  },
+  "explainer": {
+    "preparedSha256": "be2daa3991b749c0d77d5c6a5d2cc950b5121f195d7e95b9894a7a8e3230e013",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "lsp-timeout-flow",
+        "inline": true,
+        "sha256": "cb64a0e0358e8ef00eb1d5cd9ca7ec28784f088d2700241118b4bf63e67188b8",
+        "bytes": 971
+      }
+    ]
+  }
+}

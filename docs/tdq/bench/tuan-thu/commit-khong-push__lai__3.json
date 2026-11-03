@@ -1,0 +1,19 @@
+{
+  "ca": "commit-khong-push",
+  "nhanh": "lai",
+  "lan": 3,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/commit-khong-push__lai__3/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L002": "dat",
+    "L012": "khong-ap-dung",
+    "L003": "khong-ap-dung",
+    "L035": "vi-pham",
+    "L121": "dat",
+    "L210": "dat"
+  },
+  "chi_phi": 0.613855,
+  "so_luot": 17,
+  "nhiem": []
+}

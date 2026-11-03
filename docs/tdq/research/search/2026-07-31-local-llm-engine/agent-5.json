@@ -1,0 +1,123 @@
+{
+  "agent": 5,
+  "routes": [
+    "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "Ollama v0.19 (03/2026) tích hợp thêm engine MLX song song với backend llama.cpp tối ưu riêng cho kiến trúc bộ nhớ hợp nhất trên Apple Silicon, giúp tăng đáng kể throughput và tốc độ decode cho các model safetensors.",
+      "evidence_quote": "The MLX engine was introduced in Ollama v0.19 (released March 30, 2026). It is purpose-built for Apple Silicon’s unified memory architecture, allowing models to run with significantly lower memory overhead and higher throughput by avoiding data copying between CPU and GPU.",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ollama/ollama",
+      "url_alive": true
+    },
+    {
+      "claim": "Khi dùng giao diện tương thích OpenAI API (/v1/chat/completions) trên Ollama với stream: true, việc gọi tool call vẫn gặp các lỗi bất ổn định như index: 0 cố định cho các chunk, finish_reason trả về stop thay vì tool_calls, khiến khuyến nghị hiện tại cho coding agent là dùng stream: false hoặc API native /api/chat.",
+      "evidence_quote": "when multiple tool calls are streamed, all chunks may incorrectly report index: 0 instead of incrementing indices... Some implementations have been observed returning finish_reason: 'stop' instead of the expected finish_reason: 'tool_calls' when a tool call is made during streaming... For reliable tool calling, many developers currently recommend using stream: false.",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ollama/ollama",
+      "url_alive": true
+    },
+    {
+      "claim": "llama-server (llama.cpp) hỗ trợ tăng tốc Metal mặc định trên Apple Silicon (-ngl 99) và OpenAI-compatible API với streaming, nhưng bắt buộc bật template Jinja (--jinja) để parse tool calls và không thể kết hợp đồng thời custom GBNF grammar với OpenAI-style tools (trả lỗi 400).",
+      "evidence_quote": "The llama-server uses chat templates (typically enabled via the --jinja flag) to instruct the model on how to format tool definitions and output... Currently, llama-server cannot simultaneously use custom GBNF grammars and OpenAI-style tools; the server will return a 400 error if both are requested.",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ggml-org/llama.cpp",
+      "url_alive": true
+    },
+    {
+      "claim": "mlx_lm.server cung cấp HTTP server tương thích OpenAI API cơ bản cho MLX trên macOS, nhưng để parse chính xác các delimiter tool call (như <tool_call>) trong workflow agent, các wrapper chuyên dụng như mlx-openai-server (với --tool-call-parser) hoặc vllm-mlx thường được ưu tiên sử dụng.",
+      "evidence_quote": "The mlx_lm library provides an OpenAI-compatible HTTP server that allows you to serve local MLX models... If you encounter issues with standard mlx-lm tool-call detection, it is usually because the model generates delimiters (like <tool_call>) that are tokenized as multiple sub-tokens. Using specialized servers like mlx-openai-server or vllm-mlx is generally preferred because they include optimized parsers",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ml-explore/mlx-examples",
+      "url_alive": true
+    },
+    {
+      "claim": "So sánh 3 runtime trên Apple Silicon cho coding agent: llama-server chín chắn nhất về Jinja template & GBNF grammar, mlx-lm server (hoặc mlx-openai-server) đạt hiệu năng Metal/Unified Memory cao nhất với MLX, còn Ollama tiện dụng với backend kép (MLX + llama.cpp) nhưng nên chạy non-streaming cho tool calling.",
+      "evidence_quote": "Serves text, multimodal, image, embedding, and Whisper models. It supports specific parsers (e.g., qwen3_coder) to ensure reasoning and tool-call outputs are parsed correctly... standard mlx-lm.server supports the OpenAI endpoint structure, users often find that specific model-dependent chat templates or tool-call parsers are needed",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ml-explore/mlx-examples",
+      "url_alive": true
+    },
+    {
+      "claim": "Ollama tích hợp backend MLX trực tiếp trên Apple Silicon, thể hiện qua các file cấu hình phiên bản MLX_VERSION và MLX_C_VERSION trong mã nguồn chính của repository.",
+      "evidence_quote": "[MLX_C_VERSION](https://github.com/ollama/ollama/blob/main/MLX_C_VERSION)\n[MLX_VERSION](https://github.com/ollama/ollama/blob/main/MLX_VERSION)",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ollama/ollama",
+      "url_alive": true
+    },
+    {
+      "claim": "Ollama hỗ trợ song song backend llama.cpp cùng với việc tích hợp các phiên bản MLX cho hệ thống inference local.",
+      "evidence_quote": "[LLAMA_CPP_VERSION](https://github.com/ollama/ollama/blob/main/LLAMA_CPP_VERSION)\n[MLX_C_VERSION](https://github.com/ollama/ollama/blob/main/MLX_C_VERSION)",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ollama/ollama",
+      "url_alive": true
+    },
+    {
+      "claim": "Ollama cung cấp REST API chuẩn cho endpoint chat hỗ trợ kiểm soát streaming và JSON payload phục vụ tích hợp coding agent.",
+      "evidence_quote": "Ollama has a REST API for running and managing models.\n\n```\ncurl http://localhost:11434/api/chat -d '{ \"model\": \"gemma4\", \"messages\": [{ \"role\": \"user\", \"content\": \"Why is the sky blue?\" }], \"stream\": false }'\n```",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 8,
+      "source_url": "https://github.com/ollama/ollama",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp tối ưu hóa native cho macOS Apple Silicon với vị thế first-class citizen thông qua ARM NEON, Accelerate và Metal framework.",
+      "evidence_quote": "Apple silicon is a first-class citizen - optimized via ARM NEON, Accelerate and Metal frameworks",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 10,
+      "source_url": "https://github.com/ggml-org/llama.cpp",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp hỗ trợ khởi chạy HTTP API server tương thích chuẩn OpenAI thông qua lệnh llama serve.",
+      "evidence_quote": "Launch OpenAI-compatible API server llama serve -hf ggml-org/Qwen3.5-0.8B-GGUF",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 10,
+      "source_url": "https://github.com/ggml-org/llama.cpp",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp cung cấp công cụ GBNF grammars hỗ trợ cấu trúc đầu ra (structured output) và định hình cú pháp tool call.",
+      "evidence_quote": "[GBNF grammars](https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md)",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ggml-org/llama.cpp",
+      "url_alive": true
+    },
+    {
+      "claim": "Repo mlx-examples cung cấp các ví dụ triển khai mô hình trên framework MLX cho Apple Silicon và định hướng sử dụng gói mlx-lm (MLX LM) như giải pháp Python chuyên dụng, đầy đủ tính năng cho LLM.",
+      "evidence_quote": "This repo contains a variety of standalone examples using the MLX framework. The MNIST example is a good starting point to learn how to use MLX. Some more useful examples are listed below. Check-out MLX LM for a more fully featured Python package for LLMs with MLX.",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 9,
+      "source_url": "https://github.com/ml-explore/mlx-examples",
+      "url_alive": true
+    },
+    {
+      "claim": "MLX trên Apple Silicon hỗ trợ sinh văn bản quy mô lớn (LLaMA, Mistral, Mixtral 8x7B MoE) cùng các kỹ thuật tinh chỉnh tham số hiệu quả như LoRA và QLoRA.",
+      "evidence_quote": "Minimal examples of large scale text generation with LLaMA, Mistral, and more in the LLMs directory. - A mixture-of-experts (MoE) language model with Mixtral 8x7B. - Parameter efficient fine-tuning with LoRA or QLoRA.",
+      "route": "chốt runtime coding-agent Apple Silicon — Ollama-MLX vs mlx-lm server vs llama.cpp / tool parser / streaming / OpenAI API",
+      "score": 8,
+      "source_url": "https://github.com/ml-explore/mlx-examples",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"llama-server\" OR \"llama.cpp\" tool calling streaming OpenAI API JSON schema Apple Silicon metal",
+    "Ollama MLX backend Apple Silicon 2026 release notes tool calling OpenAI API",
+    "mlx-lm server openai api tool calling streaming structured output apple silicon",
+    "site:github.com/ggml-org/llama.cpp \"tool_calls\" OR \"tools\" \"llama-server\"",
+    "site:github.com/ml-explore/mlx-examples \"mlx_lm.server\" OR \"tool\" OR \"chat\"",
+    "site:github.com/ml-explore/mlx-examples/tree/main/llms/mlx_lm \"server\" OR \"openai\"",
+    "site:github.com/ollama/ollama \"tool_calls\" streaming OpenAI compatibility"
+  ]
+}

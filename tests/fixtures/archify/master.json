@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "title": "Fixture project architecture",
+  "evidence_kind": "working-tree",
+  "source_paths": ["src"],
+  "coverage": {"modules": [{"id": "app", "status": "selected"}], "unknown": ["Illustrative fixture, not a production architecture"], "excluded": []},
+  "views": [{"id": "overview", "type": "architecture", "candidate": "ba.json", "summary": "Illustrative component responsibilities"}]
+}

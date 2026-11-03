@@ -1,0 +1,10 @@
+{
+  "include": ["scripts", "hooks", "tests"],
+  "exclude": [
+    "**/__pycache__",
+    "portable_claude",
+    "portable_codex",
+    "antigravity_portable"
+  ],
+  "extraPaths": ["scripts", "hooks/scripts"]
+}

@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "violations": 0,
+  "source_sha256": "b222098602c9c2368e672d698c10f450829803bc94883b285c43884830b6a4e4",
+  "files": [
+    "docs/tdq/spec/2026-11-01-1854-eval-chat-luong-skill.md",
+    "skills/tdq-build/references/skill-eval.md"
+  ]
+}

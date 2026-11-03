@@ -1,0 +1,16 @@
+{
+  "ma": "bao-loi",
+  "mo_ta": "Yêu cầu mới nhưng là báo lỗi chứ không phải làm tính năng.",
+  "prompt": "Hàm dem_tu chạy sai với chuỗi rỗng, sửa giúp tôi.",
+  "phase_dau": "idle",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [],
+  "kiem": [
+    "L218",
+    "L220",
+    "L136",
+    "L121",
+    "L209",
+    "L210"
+  ]
+}

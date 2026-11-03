@@ -1,0 +1,105 @@
+{
+  "agent": 2,
+  "routes": ["scout: clone-setting-to-codex Codex CLI config structure"],
+  "routes_failed": [],
+  "findings": [
+    {
+      "route": "scout: config.toml schema chính thức",
+      "claim": "config.toml chính thức hỗ trợ approval_policy, sandbox_mode, mcp_servers.*, features.*, plugins.*, hooks (khối); field cũ ask_for_approval/sandbox/experimental_use_rmcp_client/top-level [env] đang là bug tương thích.",
+      "source_url": "https://github.com/openai/codex/issues/17012",
+      "evidence_quote": "The published schema rejects exactly these 4 top-level fields from the real config: `ask_for_approval = \"never\"` `sandbox = \"danger-full-access\"` `experimental_use_rmcp_client = true` top-level `[env]`",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: config.toml hooks key chính thức",
+      "claim": "config.toml có khối [hooks] chính thức dùng cùng schema event với hooks.json.",
+      "source_url": "https://learn.chatgpt.com/docs/config-file/config-reference",
+      "evidence_quote": "Key hooks | Type / Values table | Details Lifecycle hooks configured inline in config.toml. Uses the same event schema as hooks.json; see the Hooks guide for examples and supported events.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: AGENTS.md discovery config keys",
+      "claim": "project_doc_fallback_filenames và project_doc_max_bytes là config key chính thức điều khiển việc đọc AGENTS.md.",
+      "source_url": "https://learn.chatgpt.com/docs/config-file/config-reference",
+      "evidence_quote": "project_doc_fallback_filenames | array | Additional filenames to try when AGENTS.md is missing. | project_doc_max_bytes | number | Maximum bytes read from AGENTS.md",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: AGENTS.md discovery order chi tiết",
+      "claim": "Global scope AGENTS.override.md/AGENTS.md tại ~/.codex/, project scope đi từ git root xuống cwd, file gần cwd hơn ưu tiên cao hơn, cap 32KiB mặc định.",
+      "source_url": "https://www.verdent.ai/guides/codex-agents-md-explained",
+      "evidence_quote": "Global scope: `~/.codex/AGENTS.override.md` if it exists, otherwise `~/.codex/AGENTS.md`. Only one file from this level. ... Total instruction size is capped at 32 KiB by default (project_doc_max_bytes).",
+      "score": 6,
+      "url_alive": true
+    },
+    {
+      "route": "scout: plugin manifest structure chính thức",
+      "claim": "Plugin Codex có manifest bắt buộc .codex-plugin/plugin.json, kèm skills/, hooks/hooks.json, .app.json, .mcp.json tùy chọn.",
+      "source_url": "https://developers.openai.com/plugins/build/plugins",
+      "evidence_quote": "Every plugin has a manifest at `.codex-plugin/plugin.json`. It can also include a `skills/` directory, a `hooks/` directory for lifecycle hooks, an `.app.json` file that maps registered MCP server connections, an `.mcp.json` file that configures bundled MCP servers, and assets used to present the plugin across supported surfaces.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: plugin hooks cần user trust",
+      "claim": "Plugin-bundled hooks không tự chạy, là non-managed hooks, cần user review/trust qua /hooks.",
+      "source_url": "https://developers.openai.com/plugins/build/plugins",
+      "evidence_quote": "Installing or enabling a plugin doesn't automatically trust its hooks. Plugin-bundled hooks are non-managed hooks, so Codex skips them until the user reviews and trusts the current hook definition.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: hooks event list chính thức",
+      "claim": "Danh sách event hooks chính thức gồm PreToolUse, PermissionRequest, PostToolUse, PreCompact, PostCompact, SessionStart, SessionEnd, SubagentStart, SubagentStop, UserPromptSubmit, Stop.",
+      "source_url": "https://learn.chatgpt.com/docs/config-file/config-reference",
+      "evidence_quote": "Matcher groups for hook events such as PreToolUse, PermissionRequest, PostToolUse, PreCompact, PostCompact, SessionStart, SessionEnd, SubagentStart, SubagentStop, UserPromptSubmit, or Stop.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: mcp_servers TOML key format chính thức",
+      "claim": "Top-level table trong config.toml phải là mcp_servers (snake_case), không phải mcpServers như Claude Code JSON.",
+      "source_url": "https://github.com/openai/codex/commit/2e95e5602d5736ea5b3a41e89c20f9db0b820282",
+      "evidence_quote": "The top-level table name must be `mcp_servers` ... The sub-table name (`server-name` in this example) can be anything you would like.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: enterprise MCP allowlist identity matching",
+      "claim": "requirements.toml cho phép allowlist MCP server theo identity (command/url, match exact/prefix/regex) ở cấp admin-managed.",
+      "source_url": "https://developers.openai.com/codex/enterprise/managed-configuration",
+      "evidence_quote": "If you configure an `mcp_servers` allowlist, the client enables an MCP server only when both its name and identity match an approved entry; otherwise, the client disables it.",
+      "score": 7,
+      "url_alive": true
+    },
+    {
+      "route": "scout: Codex Skills cấu trúc & discovery repo-scoped",
+      "claim": "Codex Agent Skills dùng SKILL.md + frontmatter YAML, quét .agents/skills/ từ cwd lên repo root, cộng user/admin/system locations; progressive disclosure tương tự Claude Code.",
+      "source_url": "https://axiomstudio.ai/learn/codex-agent-skills",
+      "evidence_quote": "Codex reads skills from repository, user, admin, and system locations. For repositories, it scans .agents/skills in directories from the current working directory up to the repository root.",
+      "score": 6,
+      "url_alive": true
+    },
+    {
+      "route": "scout: hooks stable/experimental timeline",
+      "claim": "Hooks bắt đầu experimental v0.99-0.116, PreToolUse/PostToolUse ~v0.117, UserPromptSubmit ~PR#14626 tháng 3/2026, stable từ v0.124.0 (23/4/2026), có thể khai inline trong config.toml từ đó.",
+      "source_url": "https://blakecrosley.com/blog/claude-code-to-codex-migration",
+      "evidence_quote": "Codex has hooks too... OpenAI's hooks doc shows `[features] codex_hooks = true` in `config.toml`, and my local `codex features list` reports `hooks` as stable and enabled on Codex CLI 0.130.0.",
+      "score": 5,
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "OpenAI Codex CLI config.toml schema mcp_servers approval_policy sandbox_mode profiles",
+    "Codex CLI AGENTS.md instructions file discovery global project priority",
+    "Codex CLI skills SKILL.md \"codex skills\" official documentation",
+    "Codex CLI plugin marketplace manifest \"codex plugin add\" hooks lifecycle events official",
+    "developers.openai.com codex config mcp_servers command args env official reference",
+    "developers.openai.com codex hooks SessionStart PreToolUse configuration reference stable",
+    "tavily-extract: developers.openai.com/plugins/build/plugins, learn.chatgpt.com/docs/config-file/config-reference, developers.openai.com/codex/enterprise/managed-configuration"
+  ]
+}

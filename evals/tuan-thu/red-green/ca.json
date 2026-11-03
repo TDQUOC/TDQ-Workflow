@@ -1,0 +1,47 @@
+{
+  "ma": "red-green",
+  "mo_ta": "Làm đúng một task — phải chạy check đỏ trước rồi mới code.",
+  "prompt": "làm task T1.1 thôi",
+  "phase_dau": "implement",
+  "slug": "2026-08-19-0900-them-lenh-xoa-cache",
+  "state_lenh": [
+    [
+      "init",
+      "2026-08-19-0900-them-lenh-xoa-cache",
+      "full"
+    ],
+    [
+      "set",
+      "spec_file=docs/tdq/spec/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "spec",
+      "--by",
+      "duyệt spec"
+    ],
+    [
+      "set",
+      "plan_file=docs/tdq/plan/2026-08-19-0900-them-lenh-xoa-cache.md"
+    ],
+    [
+      "approve",
+      "plan",
+      "--mode",
+      "main",
+      "--by",
+      "duyệt plan, làm trực tiếp"
+    ],
+    [
+      "set",
+      "phase=implement"
+    ]
+  ],
+  "kiem": [
+    "L005",
+    "L003",
+    "L012",
+    "L121",
+    "L210"
+  ]
+}

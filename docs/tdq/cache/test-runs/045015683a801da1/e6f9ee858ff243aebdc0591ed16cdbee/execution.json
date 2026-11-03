@@ -1,0 +1,916 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "schema_version": 1,
+    "backend": "pytest",
+    "selectors": [
+      "tests/test_eval_contracts_e2e.py"
+    ],
+    "scope": "direct",
+    "case_ids": [
+      "tests/test_eval_contracts_e2e.py::test_edge_nonfinite_rejected_in_plan_metrics_and_policy",
+      "tests/test_eval_contracts_e2e.py::test_edge_duplicate_cases_and_trials",
+      "tests/test_eval_contracts_e2e.py::test_edge_path_traversal_and_unnormalized_paths",
+      "tests/test_eval_contracts_e2e.py::test_edge_hash_mismatch_and_stale_target_and_planned_candidate",
+      "tests/test_eval_contracts_e2e.py::test_edge_unresolved_model_aliases",
+      "tests/test_eval_contracts_e2e.py::test_edge_mismatched_permissions_tools_cache_manifest",
+      "tests/test_eval_contracts_e2e.py::test_edge_holdout_or_dev_split_mutation",
+      "tests/test_eval_contracts_e2e.py::test_edge_transport_error_partial_usage_no_zero_dollars",
+      "tests/test_eval_contracts_e2e.py::test_edge_event_and_byte_budget_exceeded",
+      "tests/test_eval_contracts_e2e.py::test_edge_unmeasured_model_cell_inconclusive",
+      "tests/test_eval_contracts_e2e.py::test_edge_moving_branch_rejected_in_plan",
+      "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_plan_creation_and_canonical_hash",
+      "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_schedule_ab_ba_alternation",
+      "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_target_classification_scopes",
+      "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_recommendation_verdicts_keep_trim_drop",
+      "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_plan_eval_workflow",
+      "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_check_eval_pre_implement",
+      "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_generate_report_markdown_and_json",
+      "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_run_eval_bounded_quota_stop",
+      "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_canonical_host_names",
+      "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_trial_environment_private_directories",
+      "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_parse_trace_stream_claude_events",
+      "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_parse_trace_stream_codex_events",
+      "tests/test_eval_contracts_e2e.py::TestO4WorkflowGateIntegration::test_valid_user_waiver_handling",
+      "tests/test_eval_contracts_e2e.py::TestO4WorkflowGateIntegration::test_invalid_waiver_rejected",
+      "tests/test_eval_contracts_e2e.py::TestO4WorkflowGateIntegration::test_pre_report_gate_complete_evidence_pass",
+      "tests/test_eval_contracts_e2e.py::TestO5ManifestAndLegacyCompatibility::test_historical_unverified_record_classification",
+      "tests/test_eval_contracts_e2e.py::TestO5ManifestAndLegacyCompatibility::test_tdq_eval_wrapper_imports_and_manifest_compatibility",
+      "tests/test_eval_contracts_e2e.py::TestO6PackagingAndDependencyConstraints::test_contract_uses_standard_library_only",
+      "tests/test_eval_contracts_e2e.py::TestO6PackagingAndDependencyConstraints::test_preflight_and_check_never_call_model",
+      "tests/test_eval_contracts_e2e.py::TestO7EvidenceAndArtifactAuditing::test_streaming_sha256_hashing",
+      "tests/test_eval_contracts_e2e.py::TestO7EvidenceAndArtifactAuditing::test_evidence_manifest_commit_binding"
+    ],
+    "diagnostics": [],
+    "fingerprint": null,
+    "complete": true
+  },
+  "outcomes": [
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_nonfinite_rejected_in_plan_metrics_and_policy",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00017299999308306724
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00039409998862538487
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00015269999857991934
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_duplicate_cases_and_trials",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013169999874662608
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0012057999992975965
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013190000026952475
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_path_traversal_and_unnormalized_paths",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012240000069141388
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0008828000136418268
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012969999806955457
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_hash_mismatch_and_stale_target_and_planned_candidate",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013899999612476677
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005464999994728714
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012489999062381685
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_unresolved_model_aliases",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001213000068673864
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005936999950790778
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012419999984558672
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_mismatched_permissions_tools_cache_manifest",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011990001075901091
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00029349999385885894
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001221999991685152
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_holdout_or_dev_split_mutation",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011910000466741621
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0007307999912882224
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001221000129589811
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_transport_error_partial_usage_no_zero_dollars",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001252999936696142
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001652999926591292
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011870000162161887
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_event_and_byte_budget_exceeded",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011789999553002417
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000182100004167296
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012200001219753176
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_unmeasured_model_cell_inconclusive",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011760000779759139
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000262100002146326
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012009999772999436
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::test_edge_moving_branch_rejected_in_plan",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011660000018309802
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00035770000249613076
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001213000068673864
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_plan_creation_and_canonical_hash",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011920000542886555
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00033799999800976366
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011900000390596688
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_schedule_ab_ba_alternation",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011950000771321356
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00033460000122431666
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012870000500697643
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_target_classification_scopes",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011660000018309802
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00038270000368356705
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012310000602155924
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO1CoreContract::test_recommendation_verdicts_keep_trim_drop",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011759999324567616
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0008022999973036349
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012209999840706587
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_plan_eval_workflow",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0011021999962395057
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0012313000042922795
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005336000031093135
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_check_eval_pre_implement",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012399999832268804
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000381199992261827
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012579999747686088
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_generate_report_markdown_and_json",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00048260000767186284
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.005943600001046434
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0014160999999148771
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO2SkillEvalCLIAndReport::test_run_eval_bounded_quota_stop",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005414000042947009
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.003155400001560338
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0010137000062968582
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_canonical_host_names",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013050000416114926
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013440000475384295
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011990001075901091
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_trial_environment_private_directories",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0003888000064762309
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0019057000026805326
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0013464999938150868
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_parse_trace_stream_claude_events",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001441999920643866
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00022899999748915434
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001238999975612387
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO3HostAdaptersAndStreaming::test_parse_trace_stream_codex_events",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012739999510813504
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.000195999993593432
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001244999875780195
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO4WorkflowGateIntegration::test_valid_user_waiver_handling",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011910000466741621
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00014560000272467732
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011949999316129833
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO4WorkflowGateIntegration::test_invalid_waiver_rejected",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011780000932049006
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0002857999934349209
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012840000272262841
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO4WorkflowGateIntegration::test_pre_report_gate_complete_evidence_pass",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011779999476857483
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0007855000003473833
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012379999679978937
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO5ManifestAndLegacyCompatibility::test_historical_unverified_record_classification",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012760001118294895
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00013549999857787043
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001286000042455271
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO5ManifestAndLegacyCompatibility::test_tdq_eval_wrapper_imports_and_manifest_compatibility",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011980000999756157
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00018090000958181918
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012080000306013972
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO6PackagingAndDependencyConstraints::test_contract_uses_standard_library_only",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011910000466741621
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0007913999870652333
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001252999936696142
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO6PackagingAndDependencyConstraints::test_preflight_and_check_never_call_model",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00011860000086016953
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.004575300001306459
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00015350000467151403
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO7EvidenceAndArtifactAuditing::test_streaming_sha256_hashing",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00038520000816788524
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0010610000026645139
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0005298000032780692
+        }
+      ],
+      "subtests": []
+    },
+    {
+      "case_id": "tests/test_eval_contracts_e2e.py::TestO7EvidenceAndArtifactAuditing::test_evidence_manifest_commit_binding",
+      "outcome": "pass",
+      "reason": "",
+      "capability": null,
+      "phases": [
+        {
+          "phase": "setup",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00012430000060703605
+        },
+        {
+          "phase": "call",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.00034890000824816525
+        },
+        {
+          "phase": "teardown",
+          "outcome": "pass",
+          "reason": "",
+          "duration_seconds": 0.0001252999936696142
+        }
+      ],
+      "subtests": []
+    }
+  ],
+  "completed": true,
+  "exit_code": 0
+}

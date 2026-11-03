@@ -1,0 +1,156 @@
+{
+  "agent": 4,
+  "routes": [
+    "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema"
+  ],
+  "routes_failed": [],
+  "findings": [
+    {
+      "claim": "mlx-lm phụ thuộc vào các thư viện bên ngoài như Outlines hoặc llm-structured-output để thực thi constrained decoding / JSON Schema, trong khi máy chủ mlx_server native chưa hỗ trợ đầy đủ tham số response_format.",
+      "evidence_quote": "The most common way to achieve constrained decoding (guaranteed JSON schema compliance) with mlx-lm in Python is through the Outlines library. [...] If you are running an mlx_server, note that standard response_format requests in the current native server implementation may be ignored (resulting in unconstrained text).",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp áp dụng GBNF (GGML BNF) grammars để kiểm soát quá trình lấy mẫu token (grammar-based sampling), cho phép tự động chuyển đổi từ JSON Schema sang grammar qua tham số response_format / json_schema hoặc cờ CLI.",
+      "evidence_quote": "GBNF (GGML BNF) is a format for defining formal grammars to constrain model outputs in llama.cpp. For example, you can use it to force the model to generate valid JSON, or speak only in emojis.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 10,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "XGrammar (với phiên bản XGrammar-2 phát hành 05/2026) hỗ trợ sinh dữ liệu có cấu trúc hiệu năng cao trên Apple Silicon thông qua gói metal (pip install \"xgrammar[metal]\").",
+      "evidence_quote": "XGrammar-2 has been released! Check out our blog for more information. [...] For use with MPS on Apple Silicon, install with: pip install \"xgrammar[metal]\"",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 10,
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "url_alive": true
+    },
+    {
+      "claim": "Ollama hỗ trợ ép JSON Schema trên runner GGUF tiêu chuẩn, tuy nhiên backend runner MLX trên Apple Silicon bị ghi nhận lỗi bỏ qua tham số format (JSON Schema).",
+      "evidence_quote": "While Ollama’s standard GGUF-based runners support JSON schema enforcement, the MLX runner for Apple Silicon has been reported to ignore the format (JSON Schema) parameter",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://github.com/ollama/ollama",
+      "url_alive": true
+    },
+    {
+      "claim": "Outlines hỗ trợ tích hợp trực tiếp với mlx-lm, cho phép thực thi các mô hình LLM nhanh chóng trên Apple Silicon thông qua thư viện MLX.",
+      "evidence_quote": "Outlines provides an integration with mlx-lm, allowing models to be run quickly on Apple Silicon via the mlx library.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+      "url_alive": true
+    },
+    {
+      "claim": "Là một mô hình chạy local trong Outlines, MLXLM hỗ trợ toàn bộ các hình thức sinh văn bản có cấu trúc (structured generation) của Outlines bao gồm Basic Type, JSON Schema (thông qua Pydantic BaseModel), Multiple Choice (Literal), Regex và Context-Free Grammar (CFG).",
+      "evidence_quote": "As a local model, MLXLM supports all forms of structured generation available in Outlines.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+      "url_alive": true
+    },
+    {
+      "claim": "Mô hình MLXLM được khởi tạo trong Outlines bằng hàm outlines.from_mlxlm(), tiếp nhận đầu ra của hàm mlx_lm.load() gồm một instance mlx.nn.Module và một transformers.PreTrainedTokenizer.",
+      "evidence_quote": "To create a MLXLM model instance, you can use the from_mlxlm function. It takes 2 arguments: model: an mlx.nn.Module instance tokenizer: a transformers.PreTrainedTokenizer instance",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 8,
+      "source_url": "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+      "url_alive": true
+    },
+    {
+      "claim": "MLXLM hỗ trợ sinh văn bản theo lô (batch generation) thông qua phương thức model.batch(), tuy nhiên constrained generation (truyền output_type) hiện không được hỗ trợ khi thực hiện batching.",
+      "evidence_quote": "The MLXLM model supports generating text in batches. To do so, use the batch method and provide a list of strings as a model input. However, constrained generation is not supported with batching, so you cannot provide an output_type.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+      "url_alive": true
+    },
+    {
+      "claim": "GBNF (GGML BNF) là định dạng grammar chính thức dùng để ràng buộc (constrain) output của model trong llama.cpp (ví dụ ép sinh JSON hợp lệ) và được hỗ trợ trong tools/cli, tools/completion, tools/server.",
+      "evidence_quote": "GBNF (GGML BNF) is a format for defining formal grammars to constrain model outputs in llama.cpp. For example, you can use it to force the model to generate valid JSON, or speak only in emojis. GBNF grammars are supported in various ways in tools/cli, tools/completion and tools/server.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 10,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "llama.cpp có khả năng tự động chuyển đổi JSON schema sang GBNF grammar trước (ahead of time) hoặc tại từng request.",
+      "evidence_quote": "llama.cpp can also convert JSON schemas to grammars either ahead of time or at each request, see below.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Quy tắc `root` trong GBNF luôn đóng vai trò là điểm bắt đầu (starting point) định nghĩa toàn bộ mẫu mà đầu ra của model phải khớp.",
+      "evidence_quote": "In a full grammar, the root rule always defines the starting point of the grammar. In other words, it specifies what the entire output must match.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "GBNF hỗ trợ khớp chính xác theo tokenizer tokens (sử dụng Token ID `<[token-id]>` hoặc Token string `<token>`) cũng như cho phép phủ định token (`!`) để giới hạn các đoạn đặc biệt như block `<think>...</think>`.",
+      "evidence_quote": "Tokens allow grammars to match specific tokenizer tokens rather than character sequences. This is useful for constraining outputs based on special tokens (like <think> or </think>).",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "Ký tự terminal trong GBNF hỗ trợ toàn bộ dải Unicode trực tiếp trong grammar hoặc thông qua mã escape 8-bit, 16-bit, 32-bit.",
+      "evidence_quote": "Terminals support the full range of Unicode. Unicode characters can be specified directly in the grammar, for example hiragana ::= [ぁ-ゟ], or with escapes: 8-bit (\\xXX), 16-bit (\\uXXXX) or 32-bit (\\UXXXXXXXX).",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 8,
+      "source_url": "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+      "url_alive": true
+    },
+    {
+      "claim": "XGrammar hỗ trợ constrained decoding trên Apple Silicon / macOS thông qua MPS (Metal acceleration) với gói cài đặt xgrammar[metal].",
+      "evidence_quote": "For use with MPS on Apple Silicon, install with:\n\npip install \"xgrammar[metal]\"",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 10,
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "url_alive": true
+    },
+    {
+      "claim": "XGrammar-2 đã phát hành phiên bản mới phục vụ Dynamic and Efficient Structured Generation cho Agentic LLMs (ACM 2026).",
+      "evidence_quote": "[2026/5] XGrammar-2 has been released! Check out our blog for more information.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "url_alive": true
+    },
+    {
+      "claim": "XGrammar ứng dụng constrained decoding để đảm bảo 100% độ chính xác về mặt cấu trúc (JSON, regex, custom context-free grammar).",
+      "evidence_quote": "It leverages constrained decoding to ensure 100% structural correctness of the output. It supports general context-free grammar to enable a broad range of structures, including JSON, regex, custom context-free grammar, etc.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 10,
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "url_alive": true
+    },
+    {
+      "claim": "XGrammar trở thành backend mặc định cho structured generation trên các inference engine hàng đầu như vLLM, SGLang, TensorRT-LLM, MLC-LLM.",
+      "evidence_quote": "It is the default structured generation backend for most LLM inference engines, including vLLM, SGLang, TensorRT-LLM, and MLC-LLM, as well as many other companies.",
+      "route": "constrained decoding stack local macOS — mlx-lm / llama.cpp GBNF / XGrammar-2 / Ollama-MLX schema",
+      "score": 9,
+      "source_url": "https://github.com/mlc-ai/xgrammar",
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "\"Ollama\" MLX backend support JSON schema format structured outputs",
+    "\"Ollama\" structured outputs JSON schema format",
+    "\"XGrammar\" structured generation json schema LLM macOS mlx-lm llama.cpp",
+    "\"llama.cpp\" GBNF grammar JSON schema constrained decoding structured output",
+    "\"mlx-lm\" structured output json schema constrained decoding",
+    "https://dottxt-ai.github.io/outlines/latest/features/models/mlxlm/",
+    "https://raw.githubusercontent.com/ggerganov/llama.cpp/master/grammars/README.md",
+    "site:github.com/ollama/ollama/issues \"mlx\" \"format\" OR \"schema\" OR \"json\""
+  ]
+}

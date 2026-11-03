@@ -1,0 +1,2 @@
+vung-cham: 4 changed file(s); selected 7/164 modules (direct): test_check_status.py test_gitflow_van_ban.py test_luat_dung.py test_soul_rules.py test_step_budget.py test_timing.py test_user_facing_block.py; no fallback
+[TDQ:TEST] PASS — scope=direct backend=unittest tests=155 skipped=0 in 8.91s.

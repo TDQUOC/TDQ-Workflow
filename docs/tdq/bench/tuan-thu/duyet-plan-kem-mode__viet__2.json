@@ -1,0 +1,20 @@
+{
+  "ca": "duyet-plan-kem-mode",
+  "nhanh": "viet",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/duyet-plan-kem-mode__viet__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L001": "dat",
+    "L003": "dat",
+    "L005": "dat",
+    "L012": "dat",
+    "L149": "dat",
+    "L121": "dat",
+    "L210": "vi-pham"
+  },
+  "chi_phi": 1.110808,
+  "so_luot": 25,
+  "nhiem": []
+}

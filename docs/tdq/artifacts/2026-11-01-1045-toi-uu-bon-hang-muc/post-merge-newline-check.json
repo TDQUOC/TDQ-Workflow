@@ -1,0 +1,12 @@
+{
+  "runtime_test_hook_files": 313,
+  "exact_full_byte_matches": 312,
+  "newline_only_exception": "scripts/tdq_test_report.py",
+  "full_verified_sha256": "9d2412e269b956d798a9a1637ae05632839f651b1a40eb14d26d69dba94dc275",
+  "git_release_sha256": "6f36b509c713d8ec642ebe4e10405103d9bb5765b9f2661ab6349b9de457196b",
+  "normalized_bytes_equal": true,
+  "python_ast_equal": true,
+  "verified_full_copy": "verified-full-source/tdq_test_report.py",
+  "source_git_status": "clean",
+  "master_map": "stale from newline-only source fingerprint difference; no new architecture certification claimed"
+}

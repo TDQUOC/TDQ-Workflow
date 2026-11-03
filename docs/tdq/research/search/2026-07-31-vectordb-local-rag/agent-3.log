@@ -1,0 +1,3 @@
+[2026-07-31T17:06:49+07:00] agent=3 agy=1.1.9 route=benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build call=search attempt=1 model=gemini-3.6-flash-medium exit=0 findings=4 secs=49.8
+[2026-07-31T17:07:21+07:00] agent=3 agy=1.1.9 route=benchmark pgvector pgvectorscale vs Qdrant 50M vector: phương pháp đo + recall + tail latency + index build call=read-url attempt=1 model=gemini-3.6-flash-medium exit=0 findings=7 secs=31.8
+[2026-07-31T17:07:23+07:00] agent=3 agy=1.1.9 exit=0 findings=11 routes_failed=0 report=docs/tdq/research/search/2026-07-31-vectordb-local-rag/agent-3.json

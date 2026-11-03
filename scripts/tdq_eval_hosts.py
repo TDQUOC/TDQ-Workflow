@@ -28,6 +28,8 @@ CLAUDE_EVENT_TYPES = {
 }
 CODEX_EVENT_TYPES = {
     "session_meta", "response_item", "event_msg", "turn_context",
+    "thread.started", "turn.started", "turn.completed", "turn.failed",
+    "item.started", "item.updated", "item.completed", "error",
 }
 KNOWN_EVENT_TYPES = (
     CLAUDE_EVENT_TYPES | CODEX_EVENT_TYPES | tdq_transcript.UNTIMED_TYPES
@@ -293,6 +295,146 @@ def _iter_lines(path_or_lines: Union[str, Path, Iterable[Any]]) -> Iterable[Tupl
             yield raw, len(raw)
 
 
+def _decode_trace_event(line: str) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    try:
+        record = json.loads(line)
+    except ValueError:
+        return None, {"execution_status": "failed", "reason": "malformed_json", "paid_model_calls": 0}
+    if (not isinstance(record, dict) or not isinstance(record.get("type"), str)
+            or record["type"] not in KNOWN_EVENT_TYPES):
+        return None, {"execution_status": "unknown_schema", "reason": "unknown_schema", "paid_model_calls": 0}
+    return record, None
+
+
+def _valid_trace_content(content) -> bool:
+    if isinstance(content, str):
+        return True
+    if not isinstance(content, list):
+        return False
+    for block in content:
+        if not isinstance(block, dict) or not isinstance(block.get("type"), str):
+            return False
+        if "text" in block and not isinstance(block["text"], str):
+            return False
+    return True
+
+
+def _valid_trace_usage(usage) -> bool:
+    if not isinstance(usage, dict):
+        return False
+    fields = ("input_tokens", "output_tokens", "cache_read_input_tokens",
+              "cache_creation_input_tokens", "cached_input_tokens")
+    return all(type(usage[key]) is int and usage[key] >= 0 for key in fields if key in usage)
+
+
+def _validate_trace_fields(record) -> Optional[Dict[str, Any]]:
+    containers = [record]
+    for key in ("message", "payload"):
+        value = record.get(key, {})
+        if not isinstance(value, dict):
+            return {"execution_status": "unknown_schema", "reason": "invalid_message"}
+        containers.append(value)
+    for container in containers:
+        if "content" in container and not _valid_trace_content(container["content"]):
+            return {"execution_status": "unknown_schema", "reason": "invalid_content"}
+        if "usage" in container and not _valid_trace_usage(container["usage"]):
+            return {"execution_status": "unknown_schema", "reason": "invalid_usage"}
+    return None
+
+
+def _bind_trace_model(record: Dict[str, Any], state: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    error = _validate_trace_fields(record)
+    if error:
+        return error
+    payload = record.get("payload", {})
+    message = record.get("message", {})
+    model = message.get("model") or record.get("model") or payload.get("model")
+    if isinstance(model, str) and model.strip():
+        if state["observed_model"] not in (None, model):
+            return {"execution_status": "failed", "reason": "mixed_models"}
+        state["observed_model"] = model
+    return None
+
+
+def _validate_trace_event(record, event_host, state) -> Optional[Dict[str, Any]]:
+    if event_host and state["host"] not in (None, event_host):
+        return {"execution_status": "failed", "reason": "mixed_hosts"}
+    state["host"] = event_host or state["host"]
+    error = _bind_trace_model(record, state)
+    if error:
+        return error
+    event_type = record["type"]
+    if record.get("is_error") or event_type in {"error", "turn.failed"} or (
+        event_type == "result" and record.get("subtype", "success") != "success"
+    ):
+        return {"execution_status": "failed", "reason": "host_error"}
+    if state["terminal"]:
+        return {"execution_status": "failed", "reason": "events_after_terminal"}
+    return None
+
+
+def _process_codex_response(record, state, stats, tokens) -> Optional[Dict[str, Any]]:
+    event_type = record["type"]
+    payload = record.get("payload") or {}
+    _process_codex_event(record, stats, tokens)
+    if event_type == "item.completed":
+        item = record.get("item")
+        if not isinstance(item, dict):
+            return {"execution_status": "unknown_schema", "reason": "invalid_item"}
+        if item.get("type") == "agent_message":
+            state["response_text"] = item.get("text", "")
+            stats["model_calls"] += 1
+        elif item.get("type") in {"command_execution", "mcp_tool_call"}:
+            stats["tool_calls"] += 1
+    elif event_type == "turn.completed":
+        state["terminal"] = True
+        _extract_codex_usage({"type": "token_count", "usage": record.get("usage")}, tokens)
+    elif event_type == "event_msg" and payload.get("type") in {"task_complete", "turn_complete"}:
+        state["terminal"] = True
+        state["response_text"] = payload.get("last_agent_message", "")
+    return None
+
+
+def _consume_trace_event(record, state, stats, tokens) -> Optional[Dict[str, Any]]:
+    event_type = record["type"]
+    event_host = "claude" if event_type in CLAUDE_EVENT_TYPES else (
+        "codex" if event_type in CODEX_EVENT_TYPES else None
+    )
+    error = _validate_trace_event(record, event_host, state)
+    if error:
+        return error
+    if event_host == "claude":
+        _process_claude_event(record, stats, tokens)
+        if event_type == "result":
+            state["terminal"] = record.get("is_error") is False
+            state["response_text"] = record.get("result", "")
+    elif event_host == "codex":
+        return _process_codex_response(record, state, stats, tokens)
+    return None
+
+
+def _trace_result(state, stats, tokens, expected_trigger) -> Dict[str, Any]:
+    response = state["response_text"]
+    if not state["terminal"] or not isinstance(response, str) or not response.strip():
+        return {"execution_status": "incomplete", "reason": "missing_terminal_response"}
+    metrics = {
+        "execution_status": "completed",
+        "observed_trigger": stats["observed_trigger"],
+        "trigger_provenance": stats["trigger_provenance"],
+        "tool_calls_count": stats["tool_calls"],
+        "model_calls_count": stats["model_calls"],
+        "user_interventions_count": stats["user_interventions"],
+        "tokens": tokens,
+        "total_cost_usd": None,
+        "billed_cost_usd": None,
+    }
+    normalized = tdq_eval_contract.normalize_trial_metrics(dict(
+        metrics, passed=None, score=None, expected_trigger=expected_trigger, retries_count=0,
+    ))
+    return dict(metrics, host=state["host"], observed_model=state["observed_model"],
+                response_text=response, normalized_metrics=normalized)
+
+
 def parse_trace_stream(
     path_or_lines: Union[str, Path, Iterable[Any]],
     max_bytes: int = DEFAULT_MAX_BYTES,
@@ -301,100 +443,28 @@ def parse_trace_stream(
 ) -> Dict[str, Any]:
     """Parse JSONL trace events line by line within explicit byte and count budgets."""
     total_bytes = 0
-    event_count = 0
-    detected_host: Optional[str] = None
-
-    stats: Dict[str, Any] = {
-        "tool_calls": 0,
-        "model_calls": 0,
-        "user_interventions": 0,
-        "observed_trigger": False,
-        "trigger_provenance": "unavailable",
-    }
-    tokens: Dict[str, Optional[int]] = {
-        "input_tokens": None,
-        "output_tokens": None,
-        "cache_read_tokens": None,
-        "cache_write_tokens": None,
-    }
-
-    for line_bytes, byte_len in _iter_lines(path_or_lines):
+    state = {"host": None, "terminal": False, "response_text": "", "observed_model": None}
+    stats = {"tool_calls": 0, "model_calls": 0, "user_interventions": 0,
+             "observed_trigger": False, "trigger_provenance": "unavailable"}
+    tokens = {key: None for key in tdq_eval_contract.TOKEN_FIELDS}
+    for event_count, (line_bytes, byte_len) in enumerate(_iter_lines(path_or_lines), 1):
         total_bytes += byte_len
-        event_count += 1
         if total_bytes > max_bytes or event_count > max_events:
-            return {
-                "execution_status": "failed",
-                "reason": "budget_exceeded",
-                "truncated": True,
-                "paid_model_calls": 0,
-            }
-
-        line_str = line_bytes.decode("utf-8-sig", errors="replace").strip()
+            return {"execution_status": "failed", "reason": "budget_exceeded",
+                    "truncated": True, "paid_model_calls": 0}
+        try:
+            line_str = line_bytes.decode("utf-8-sig").strip()
+        except UnicodeDecodeError:
+            return {"execution_status": "failed", "reason": "invalid_utf8", "paid_model_calls": 0}
         if not line_str:
             continue
-
-        try:
-            record = json.loads(line_str)
-        except Exception:
-            return {
-                "execution_status": "failed",
-                "reason": "malformed_json",
-                "paid_model_calls": 0,
-            }
-
-        if not isinstance(record, dict) or not isinstance(record.get("type"), str):
-            return {
-                "execution_status": "unknown_schema",
-                "reason": "unknown_schema",
-                "paid_model_calls": 0,
-            }
-
-        event_type = record["type"]
-        if event_type not in KNOWN_EVENT_TYPES:
-            return {
-                "execution_status": "unknown_schema",
-                "reason": "unknown_schema",
-                "paid_model_calls": 0,
-            }
-
-        if event_type in CLAUDE_EVENT_TYPES:
-            detected_host = "claude"
-            _process_claude_event(record, stats, tokens)
-        elif event_type in CODEX_EVENT_TYPES:
-            detected_host = "codex"
-            _process_codex_event(record, stats, tokens)
-
-    raw_record: Dict[str, Any] = {
-        "execution_status": "completed",
-        "passed": True,
-        "score": 1.0,
-        "expected_trigger": expected_trigger,
-        "observed_trigger": stats["observed_trigger"],
-        "trigger_provenance": stats["trigger_provenance"],
-        "tool_calls_count": stats["tool_calls"],
-        "model_calls_count": stats["model_calls"],
-        "user_interventions_count": stats["user_interventions"],
-        "retries_count": 0,
-        "tokens": tokens,
-        "total_cost_usd": None,
-        "billed_cost_usd": None,
-    }
-
-    normalized = tdq_eval_contract.normalize_trial_metrics(raw_record)
-
-    return {
-        "host": detected_host,
-        "execution_status": "completed",
-        "observed_trigger": stats["observed_trigger"],
-        "trigger_provenance": stats["trigger_provenance"],
-        "tool_calls_count": stats["tool_calls"],
-        "model_calls_count": stats["model_calls"],
-        "user_interventions_count": stats["user_interventions"],
-        "tokens": tokens,
-        "total_cost_usd": None,
-        "billed_cost_usd": None,
-        "normalized_metrics": normalized,
-    }
+        record, error = _decode_trace_event(line_str)
+        if error:
+            return error
+        error = _consume_trace_event(record, state, stats, tokens)
+        if error:
+            return error
+    return _trace_result(state, stats, tokens, expected_trigger)
 
 
 def _record_attempt(
@@ -405,11 +475,85 @@ def _record_attempt(
     return {
         "exit_code": result.get("exit_code"),
         "timed_out": bool(result.get("timed_out")),
-        "duration_seconds": result.get("duration_seconds", 0.0),
+        "duration_seconds": result.get("duration_seconds"),
         "cleanup_complete": bool(result.get("cleanup_complete")),
         "ownership": result.get("ownership", {}),
         "raw_trace_sha256": trace_sha,
     }
+
+
+def build_host_command(host: str, trial_spec: Dict[str, Any]) -> List[str]:
+    """Instruction-only trials; no plugin loading or permission bypass flags."""
+    prompt, model, instructions = (trial_spec.get(k) for k in ("prompt", "model", "instructions"))
+    if not all(isinstance(v, str) and v.strip() for v in (prompt, model, instructions)):
+        raise ValueError("missing_prompt_model_or_instructions")
+    if host == "claude":
+        return ["claude", "--print", "--verbose", "--output-format", "stream-json",
+                "--model", model, "--system-prompt", instructions, "--tools", "",
+                "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}',
+                "--setting-sources", "", "--", prompt]
+    if host == "codex":
+        return ["codex", "exec", "--json", "--model", model, "--sandbox", "read-only",
+                "--skip-git-repo-check", "-c", "developer_instructions=" + json.dumps(instructions),
+                "--", prompt]
+    raise ValueError("unsupported_host")
+
+
+def _parse_attempt(result, trace_file, trial_spec, canonical) -> Dict[str, Any]:
+    if result.get("timed_out"):
+        return {"execution_status": "timeout", "reason": "process_timeout"}
+    if result.get("exit_code") != 0:
+        return {"execution_status": "failed", "reason": result.get("reason", f"exit_{result.get('exit_code')}")}
+    parsed = parse_trace_stream(trace_file, expected_trigger=trial_spec.get("expected_trigger"))
+    parsed.setdefault("reason", "success")
+    if parsed.get("execution_status") == "completed" and trial_spec.get("model") and (
+        parsed.get("observed_model") != trial_spec["model"] or parsed.get("host") != canonical
+    ):
+        parsed.update(execution_status="incomplete", reason="unverified_host_model")
+    return parsed
+
+
+def _run_attempts(command, workspace, active_env, profile, trial_spec, canonical):
+    timeout_sec = int(max(1, round(float(profile.get("timeout_seconds", 1800)))))
+    max_retries = int(profile.get("max_retries", 0))
+    max_attempts = int(profile.get("max_total_attempts", max_retries + 1))
+    attempts_cap = min(max_retries + 1, max_attempts)
+    attempts = []
+    parsed = {"execution_status": "failed", "reason": "retry_cap_exceeded"}
+    for attempt_idx in range(attempts_cap):
+        trace_file = workspace / f"trace_{attempt_idx + 1}.jsonl"
+        with OwnedProcessJob(workspace, timeout_seconds=timeout_sec, env=active_env) as job:
+            result = job.run(command, phase=f"trial_attempt_{attempt_idx + 1}")
+            trace_file.write_text(result.get("stdout", ""), encoding="utf-8")
+            attempts.append(_record_attempt(result, trace_file))
+            parsed = _parse_attempt(result, trace_file, trial_spec, canonical)
+            if result.get("exit_code") == 0 and not result.get("timed_out"):
+                return attempts, parsed
+    if parsed["execution_status"] != "timeout":
+        parsed["reason"] = "retry_cap_exceeded"
+    return attempts, parsed
+
+
+def _trial_output(trial_spec, canonical, attempts, parsed) -> Dict[str, Any]:
+    durations = [attempt["duration_seconds"] for attempt in attempts]
+    latency = sum(durations) if durations and all(value is not None for value in durations) else None
+    output = {
+        "trial_id": trial_spec.get("trial_id"),
+        "case_id": trial_spec.get("case_id"),
+        "host": canonical,
+        "execution_status": parsed["execution_status"],
+        "reason": parsed["reason"],
+        "timed_out": parsed["execution_status"] == "timeout",
+        "attempts": attempts,
+        "retries_count": max(0, len(attempts) - 1),
+        "wall_latency_seconds": latency,
+    }
+    output.update({key: parsed[key] for key in (
+        "response_text", "observed_model", "observed_trigger", "trigger_provenance",
+        "tool_calls_count", "model_calls_count", "user_interventions_count", "tokens",
+        "total_cost_usd", "billed_cost_usd", "normalized_metrics",
+    ) if key in parsed})
+    return output
 
 
 def run_host_trial(
@@ -422,66 +566,14 @@ def run_host_trial(
     canonical = canonical_host_name(host)
     if canonical not in SUPPORTED_HOSTS:
         return {"execution_status": "failed", "reason": "unsupported_host", "attempts": []}
-
-    timeout_sec = int(max(1, round(float(profile.get("timeout_seconds", 1800)))))
-    max_retries = int(profile.get("max_retries", 0))
-    max_attempts = int(profile.get("max_total_attempts", max_retries + 1))
-    attempts_cap = min(max_retries + 1, max_attempts)
-
+    iso_ok, iso_reason = _verify_isolation(profile)
+    if not iso_ok:
+        return {"execution_status": "failed", "reason": iso_reason, "attempts": []}
     workspace = Path(profile["workspace_dir"]).resolve()
     active_env = dict(profile.get("env", {}))
-    command = trial_spec.get("command") or (command_builder(trial_spec, profile) if command_builder else [canonical])
-
-    attempts: List[Dict[str, Any]] = []
-    final_execution_status = "failed"
-    final_reason = "attempts_exhausted"
-    last_parsed: Optional[Dict[str, Any]] = None
-
-    for attempt_idx in range(attempts_cap):
-        trace_file = workspace / f"trace_{attempt_idx + 1}.jsonl"
-        with OwnedProcessJob(workspace, timeout_seconds=timeout_sec, env=active_env) as job:
-            res = job.run(command, phase=f"trial_attempt_{attempt_idx + 1}")
-            stdout_text = res.get("stdout", "")
-            trace_file.write_text(stdout_text, encoding="utf-8")
-            attempt_rec = _record_attempt(res, trace_file)
-            attempts.append(attempt_rec)
-
-            if res.get("timed_out"):
-                final_execution_status = "timeout"
-                final_reason = "process_timeout"
-            elif res.get("exit_code") == 0:
-                parsed = parse_trace_stream(trace_file, expected_trigger=trial_spec.get("expected_trigger"))
-                last_parsed = parsed
-                final_execution_status = parsed.get("execution_status", "completed")
-                final_reason = parsed.get("reason", "success")
-                break
-            else:
-                final_execution_status = "failed"
-                final_reason = res.get("reason", f"exit_{res.get('exit_code')}")
-
-    if final_execution_status != "completed" and len(attempts) >= attempts_cap:
-        if final_execution_status != "timeout":
-            final_reason = "retry_cap_exceeded"
-
-    output: Dict[str, Any] = {
-        "trial_id": trial_spec.get("trial_id"),
-        "case_id": trial_spec.get("case_id"),
-        "host": canonical,
-        "execution_status": final_execution_status,
-        "reason": final_reason,
-        "timed_out": final_execution_status == "timeout",
-        "attempts": attempts,
-        "retries_count": max(0, len(attempts) - 1),
-    }
-
-    if last_parsed and final_execution_status == "completed":
-        output.update({
-            "observed_trigger": last_parsed.get("observed_trigger"),
-            "trigger_provenance": last_parsed.get("trigger_provenance"),
-            "tool_calls_count": last_parsed.get("tool_calls_count"),
-            "model_calls_count": last_parsed.get("model_calls_count"),
-            "tokens": last_parsed.get("tokens"),
-            "normalized_metrics": last_parsed.get("normalized_metrics"),
-        })
-
-    return output
+    if "CLAUDECODE" in os.environ:
+        active_env["CLAUDECODE"] = os.environ["CLAUDECODE"]
+    command = trial_spec.get("command") or (command_builder(trial_spec, profile) if command_builder
+                                             else build_host_command(canonical, trial_spec))
+    attempts, parsed = _run_attempts(command, workspace, active_env, profile, trial_spec, canonical)
+    return _trial_output(trial_spec, canonical, attempts, parsed)

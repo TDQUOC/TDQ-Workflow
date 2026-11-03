@@ -1,0 +1,120 @@
+{
+  "agent": 2,
+  "routes": ["scout: vector database chạy local cho RAG 2026"],
+  "routes_failed": [],
+  "findings": [
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Benchmark của Timescale/TigerData (50M vector, 768d, cùng hardware AWS r6id.4xlarge): Postgres + pgvector + pgvectorscale đạt 471.57 QPS ở 99% recall so với Qdrant 41.47 QPS — lợi thế throughput 11.4x cho pgvectorscale ở scale 50M.",
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "evidence_quote": "Postgres with pgvector and pgvectorscale shows a substantial advantage in processing capacity, handling 471.57 queries per second compared to Qdrant's 41.47 QPS. This 11.4x performance gap suggests Postgres may be better suited for high-throughput applications where maintaining high recall is critical.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Cùng benchmark TigerData: Qdrant thắng về tail latency — ở 90% recall trên 50M vector, Qdrant p50/p95/p99 = 4.74/5.50/5.79 ms so với Postgres 9.54/13.30/15.73 ms; Qdrant phù hợp khi tail latency quan trọng hơn throughput.",
+      "source_url": "https://www.tigerdata.com/blog/pgvector-vs-qdrant",
+      "evidence_quote": "Qdrant shows faster response times (4.74 ms, 5.50 ms, and 5.79 ms at p50, p95, and p99, respectively) compared to Postgres (9.54 ms, 13.30 ms, and 15.73 ms) when tested on a 50M embedding dataset with 768 dimensions.",
+      "score": 9,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Benchmark độc lập AIMultiple trên 7 engine open-source (MedRAG-50k, single thread): Redis 764 QPS/559 MB RAM dẫn đầu, tiếp theo Qdrant 377, Milvus 342, Weaviate 341, pgvector 257, Chroma 197, LanceDB 70 QPS — chênh 10x giữa đầu và cuối; LanceDB đánh đổi RAM lấy latency (~22 ms p95, on-disk).",
+      "source_url": "https://aimultiple.com/open-source-vector-databases",
+      "evidence_quote": "On a single client thread, Redis serves 764 QPS on MedRAG-50k at 559 MB peak RAM, the highest throughput and the lowest memory in the set. The single-thread order is Redis 764, Qdrant 377, Milvus 342, Weaviate 341, pgvector 257, Chroma 197, LanceDB 70, a 10x spread from top to bottom.",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Benchmark AIMultiple về RAM footprint ở 50k vector: từ 559 MB (Redis) đến 3,300 MB (Milvus); Weaviate 1,201 MB, LanceDB 1,574 MB, Chroma 1,800 MB, pgvector 2,024 MB — Milvus nặng nhất cho deploy 1 máy nhỏ.",
+      "source_url": "https://aimultiple.com/open-source-vector-databases",
+      "evidence_quote": "At 50k vectors, peak RAM runs from 559 MB (Redis, in-RAM, persistence off) to 3,300 MB (Milvus), with Weaviate at 1,201, LanceDB at 1,574, Chroma at 1,800, and pgvector at 2,024.",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "sqlite-vec (tác giả chính thức): chỉ brute-force, giới hạn lộ rõ ở 1 triệu vector — float vector không dim nào qua nổi smoke test 100ms (192d mất 192ms, 3072d mất 8.52s); binary quantization mới kéo về ~124ms. Phù hợp <1M vector hoặc bitvector.",
+      "source_url": "https://alexgarcia.xyz/blog/2024/sqlite-vec-stable-release/index.html",
+      "evidence_quote": "However, the limits of `sqlite-vec` really show at 1 million vectors. The results: None of the float vectors at any dimension pass the 100ms smoke test — the 3072 dimension vectors take a whooping 8.52s to return, and even the tiny 192-dimensional vectors take 192ms.",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Milvus Lite (repo chính thức) có giới hạn cứng cho embedded mode: 1 process/data_dir (file lock), không concurrent writer, không RBAC/TLS, không binary/fp16/int8 vector, không Product Quantization — chỉ hợp prototype/notebook, không hợp multi-process app.",
+      "source_url": "https://github.com/milvus-io/milvus-lite",
+      "evidence_quote": "Single process per `data_dir`; Milvus Lite uses a file lock to protect local storage. The gRPC server supports concurrent reads, but writes to the same collection must be serialized; concurrent writers are not supported safely.",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Chroma sau rewrite Rust-core v1.0 (2025) nhanh hơn 4x bản Python, nhưng throughput vẫn sập theo scale: ~2,000-5,000 QPS ở 100K vector rơi xuống ~112 QPS ở 10M vector, trong khi Qdrant/Milvus giữ hàng nghìn QPS ở 10M.",
+      "source_url": "https://123ofai.com/qnalab/system-design/blocks/chromadb",
+      "evidence_quote": "Benchmarks show Chroma achieving ~2,000-5,000 QPS at 100K vectors but dropping to ~112 QPS at 10 million vectors. For comparison, Qdrant and Milvus maintain thousands of QPS at 10M vectors. The Rust-core rewrite in v1.0 improved this significantly (4x faster than the pure-Python predecessor), but Chroma is still not designed to compete with production databases on raw throughput.",
+      "score": 7,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "LanceDB là embedded DB (in-process, không cần server) trên format cột Lance/Arrow, hỗ trợ index IVF-PQ trên disk cho dataset lớn hơn RAM và tự động versioning — điểm khác biệt chính so với Chroma cho local-first ≤10M vector.",
+      "source_url": "https://encore.dev/articles/best-vector-databases",
+      "evidence_quote": "LanceDB is an open-source embedded vector database built on the Lance columnar format. It runs in-process with zero-copy access to data, making it fast for local workloads without a running server.",
+      "score": 7,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Qdrant có Query API hybrid/multi-stage chính thức từ v1.10.0 (dense + sparse/BM25 + fusion RRF/DBSF, prefetch nhiều tầng), chạy được hoàn toàn local single-node — nguồn docs chính thức cho tiêu chí hybrid search.",
+      "source_url": "https://qdrant.tech/documentation/search/hybrid-queries",
+      "evidence_quote": "Available as of v1.10.0 With the introduction of multiple named vectors per point, there are use-cases when the best search is obtained by combining multiple queries, or by performing the search in more than one stage. Qdrant has a flexible and universal interface to make this possible, called `Query API`",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "VectorDBBench (Zilliz, open-source) là công cụ benchmark tiêu chuẩn để tự đo QPS/recall/latency trên workload của mình; bản cập nhật June 2026 thêm cả benchmark Full Text Search (BM25) trên MS MARCO/HotpotQA — nguồn số liệu độc lập tái lập được cho phase 2.",
+      "source_url": "https://github.com/zilliztech/vectordbbench",
+      "evidence_quote": "June 2026 update: Full Text Search has landed in VectorDBBench. We now benchmark BM25-style retrieval across supported backends, starting with MS MARCO and HotpotQA datasets, payload profiles, recall, QPS, and load metrics ready to compare.",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Validation độc lập của NetApp bằng VectorDBBench (Cohere 10M vector, 768d, HNSW): pgvecto.rs đạt 1,068 QPS nhưng recall chỉ 0.6344, còn Milvus 106 QPS với recall 0.9842 — minh họa trade-off QPS vs recall phải đọc kèm nhau, đúng cỡ 10M vector của brief.",
+      "source_url": "https://docs.netapp.com/us-en/netapp-solutions-ai/vector-db/ai-vdb-perf-validation.html",
+      "evidence_quote": "We found that pgvecto.rs achieved a Queries per Second (QPS) rate of 1,068 with a recall of 0.6344, while Milvus achieved a QPS rate of 106 with a recall of 0.9842.",
+      "score": 8,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Tổng hợp Firecrawl 2026 (dựa VectorDBBench): định vị theo use case — Qdrant cho team tiết kiệm chi phí dưới 50M vector, pgvector+pgvectorscale cho user Postgres <100M, ChromaDB chỉ cho prototyping/MVP, LanceDB cho edge/local-first không cần server.",
+      "source_url": "https://www.firecrawl.dev/blog/best-vector-databases",
+      "evidence_quote": "| pgvector + pgvectorscale | PostgreSQL users with under 100M vectors | | Weaviate | Hybrid search (vector + BM25 + metadata filters) | | Qdrant | Budget-conscious teams, best free tier, under 50M vectors | | ChromaDB | Prototyping and MVPs only | | LanceDB | Edge, local-first, or data science (no server required) |",
+      "score": 7,
+      "url_alive": true
+    },
+    {
+      "route": "scout: vector database chạy local cho RAG 2026",
+      "claim": "Bench cá nhân độc lập cho embedded local RAG (không Docker): FAISS ingest 743,099 vec/s, search p95 0.65ms, recall@10 = 1.000 nhưng không có filtering; Chroma recall@10 chỉ 0.840; LanceDB recall 1.000 với p95 12.20ms và có filter — FAISS nhanh nhất nhưng thiếu tính năng DB.",
+      "source_url": "https://medium.com/@stefentaime_10958/i-benchmarked-5-vector-databases-for-a-local-rag-only-one-actually-surprised-me-67d5abfd67f4",
+      "evidence_quote": "EngineIngest (vec/s)Search p95Recall@10Filter p95Filter recall@10FAISS743,0990.65 ms1.000n/ano filteringNumPy exact2,412,2312.59 ms1.0009.25 ms1.000Chroma2,0113.14 ms0.84018.76 ms1.000VectLite 0.10.01545.71 ms0.96610.28 ms0.966LanceDB20,12012.20 ms1.00014.11 ms1.000",
+      "score": 6,
+      "url_alive": true
+    }
+  ],
+  "not_found": false,
+  "queries_used": [
+    "best local self-hosted vector database for RAG 2026 comparison Qdrant Chroma Milvus LanceDB pgvector",
+    "vector database benchmark 2025 QPS recall VectorDBBench Qdrant Milvus pgvector performance numbers",
+    "embedded vector database Python sqlite-vec vs LanceDB vs Milvus Lite vs Chroma local RAG 2025",
+    "sqlite-vec vector search extension limits brute force performance 2025",
+    "Chroma 1.0 Rust rewrite performance Milvus Lite limitations embedded official docs 2025",
+    "Qdrant hybrid search BM25 miniCOIL payload filtering 2025 release notes local single node"
+  ]
+}

@@ -1,0 +1,521 @@
+[
+  {
+    "method": "Page.frameStartedNavigating",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+      "loaderId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "navigationType": "differentDocument"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStartedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Network.requestWillBeSent",
+    "params": {
+      "requestId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "loaderId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "documentURL": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+      "request": {
+        "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+        "method": "GET",
+        "headers": {
+          "sec-ch-ua": "\"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\", \"Google Chrome\";v=\"156\"",
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": "\"Windows\""
+        },
+        "mixedContentType": "none",
+        "initialPriority": "VeryHigh",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "isSameSite": true
+      },
+      "timestamp": 63176.350141,
+      "wallTime": 1793525063.546661,
+      "initiator": {
+        "type": "other"
+      },
+      "redirectHasExtraInfo": false,
+      "type": "Document",
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "hasUserGesture": false
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Network.responseReceived",
+    "params": {
+      "requestId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "loaderId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "timestamp": 63176.357885,
+      "type": "Document",
+      "response": {
+        "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/html",
+          "Last-Modified": "Sun, 01 Nov 2026 09:18:55 GMT"
+        },
+        "mimeType": "text/html",
+        "charset": "",
+        "connectionReused": false,
+        "connectionId": 0,
+        "remoteIPAddress": "",
+        "remotePort": 0,
+        "fromDiskCache": false,
+        "fromServiceWorker": false,
+        "fromPrefetchCache": false,
+        "encodedDataLength": -1,
+        "protocol": "file",
+        "alternateProtocolUsage": "alternativeJobWonWithoutRace",
+        "securityState": "secure"
+      },
+      "hasExtraInfo": false,
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Runtime.executionContextsCleared",
+    "params": {},
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Runtime.executionContextsCleared",
+    "params": {},
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameNavigated",
+    "params": {
+      "frame": {
+        "id": "C55187072F9F48C4FD12EA19A7EC4CB3",
+        "loaderId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+        "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+        "domainAndRegistry": "",
+        "securityOrigin": "file://",
+        "securityOriginDetails": {
+          "isLocalhost": false
+        },
+        "mimeType": "text/html",
+        "adFrameStatus": {
+          "adFrameType": "none"
+        },
+        "secureContextType": "Secure",
+        "crossOriginIsolatedContextType": "NotIsolated",
+        "gatedAPIFeatures": []
+      },
+      "type": "Navigation"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Network.policyUpdated",
+    "params": {},
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Runtime.executionContextCreated",
+    "params": {
+      "context": {
+        "id": 2,
+        "origin": "file://",
+        "name": "",
+        "uniqueId": "-8783224972548113864.-4033378299487061259",
+        "auxData": {
+          "isDefault": true,
+          "type": "default",
+          "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+        }
+      }
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Network.dataReceived",
+    "params": {
+      "requestId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "timestamp": 63176.362854,
+      "dataLength": 7081,
+      "encodedDataLength": 0
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Network.loadingFinished",
+    "params": {
+      "requestId": "2E7DD5E8423C04DAA74BED3DAFE5E1CC",
+      "timestamp": 63176.354148,
+      "encodedDataLength": 7081
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.domContentEventFired",
+    "params": {
+      "timestamp": 63176.363961
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.loadEventFired",
+    "params": {
+      "timestamp": 63176.364961
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStoppedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Accessibility.loadComplete",
+    "params": {
+      "root": {
+        "nodeId": "149",
+        "ignored": false,
+        "role": {
+          "type": "internalRole",
+          "value": "RootWebArea"
+        },
+        "chromeRole": {
+          "type": "internalRole",
+          "value": 144
+        },
+        "name": {
+          "type": "computedString",
+          "value": "Execution timing report",
+          "sources": [
+            {
+              "type": "relatedElement",
+              "attribute": "aria-labelledby"
+            },
+            {
+              "type": "attribute",
+              "attribute": "aria-label"
+            },
+            {
+              "type": "attribute",
+              "attribute": "aria-label",
+              "superseded": true
+            },
+            {
+              "type": "relatedElement",
+              "value": {
+                "type": "computedString",
+                "value": "Execution timing report"
+              },
+              "nativeSource": "title"
+            }
+          ]
+        },
+        "properties": [
+          {
+            "name": "focusable",
+            "value": {
+              "type": "booleanOrUndefined",
+              "value": true
+            }
+          },
+          {
+            "name": "focused",
+            "value": {
+              "type": "booleanOrUndefined",
+              "value": true
+            }
+          },
+          {
+            "name": "url",
+            "value": {
+              "type": "string",
+              "value": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html"
+            }
+          }
+        ],
+        "childIds": [
+          "150"
+        ],
+        "backendDOMNodeId": 149,
+        "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+      }
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "delay": 0,
+      "reason": "anchorClick",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#top-cases"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStartedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.navigatedWithinDocument",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#top-cases",
+      "navigationType": "fragment"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStoppedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameClearedScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "delay": 0,
+      "reason": "anchorClick",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#top-modules"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStartedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.navigatedWithinDocument",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#top-modules",
+      "navigationType": "fragment"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStoppedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameClearedScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "delay": 0,
+      "reason": "anchorClick",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#quality"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStartedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.navigatedWithinDocument",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#quality",
+      "navigationType": "fragment"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStoppedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameClearedScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "delay": 0,
+      "reason": "anchorClick",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#provenance"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStartedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.navigatedWithinDocument",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html#provenance",
+      "navigationType": "fragment"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStoppedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameClearedScheduledNavigation",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStartedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.navigatedWithinDocument",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3",
+      "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html",
+      "navigationType": "historyApi"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameStoppedLoading",
+    "params": {
+      "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameResized",
+    "params": {},
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Page.frameResized",
+    "params": {},
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  },
+  {
+    "method": "Accessibility.nodesUpdated",
+    "params": {
+      "nodes": [
+        {
+          "nodeId": "149",
+          "ignored": false,
+          "role": {
+            "type": "internalRole",
+            "value": "RootWebArea"
+          },
+          "chromeRole": {
+            "type": "internalRole",
+            "value": 144
+          },
+          "name": {
+            "type": "computedString",
+            "value": "Execution timing report",
+            "sources": [
+              {
+                "type": "relatedElement",
+                "attribute": "aria-labelledby"
+              },
+              {
+                "type": "attribute",
+                "attribute": "aria-label"
+              },
+              {
+                "type": "attribute",
+                "attribute": "aria-label",
+                "superseded": true
+              },
+              {
+                "type": "relatedElement",
+                "value": {
+                  "type": "computedString",
+                  "value": "Execution timing report"
+                },
+                "nativeSource": "title"
+              }
+            ]
+          },
+          "properties": [
+            {
+              "name": "focusable",
+              "value": {
+                "type": "booleanOrUndefined",
+                "value": true
+              }
+            },
+            {
+              "name": "focused",
+              "value": {
+                "type": "booleanOrUndefined",
+                "value": true
+              }
+            },
+            {
+              "name": "url",
+              "value": {
+                "type": "string",
+                "value": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/slow-tests.html"
+              }
+            }
+          ],
+          "childIds": [
+            "150"
+          ],
+          "backendDOMNodeId": 149,
+          "frameId": "C55187072F9F48C4FD12EA19A7EC4CB3"
+        }
+      ]
+    },
+    "sessionId": "E2F119E53FC842DC666B0CF9E7A9071C"
+  }
+]

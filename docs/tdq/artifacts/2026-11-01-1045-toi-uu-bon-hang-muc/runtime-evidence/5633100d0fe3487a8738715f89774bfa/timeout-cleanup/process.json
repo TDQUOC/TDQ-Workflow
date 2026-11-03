@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 6.930000381544232e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 32884,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "timeout-cleanup",
+  "stdout": "TDQ_RUNTIME_FACTS {\"timeout_seconds\": 2, \"call_elapsed_seconds\": 2.1973342999990564, \"ready_observed\": true, \"descendants_observed\": [31732, 25944], \"descendants_alive_after\": [], \"home_existed_before\": true, \"home_exists_after\": false, \"unrelated_before\": {\"pid\": 41908, \"identity\": \"134379981329608424\", \"alive\": true, \"home_exists\": true, \"marker_sha256\": \"414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445\"}, \"unrelated_after\": {\"pid\": 41908, \"identity\": \"134379981329608424\", \"alive\": true, \"home_exists\": true, \"marker_sha256\": \"414268b77487bbe50cb7d0af435d646922b2c0109d085f3a9bfed1bee154b445\"}, \"alive_result\": false, \"version\": \"\", \"reason\": \"say hi qu\\u00e1 h\\u1ea1n 2s \\u2014 model kh\\u00f4ng tr\\u1ea3 l\\u1eddi\", \"caller_home_preserved\": true, \"caller_userprofile_preserved\": true, \"observer_enabled\": true, \"observed_process_calls\": 3}\n",
+  "stderr": "[2026-11-01T09:15:33+00:00] tdq_test_process reason=exited phase=codex-version exit_code=0 wall=0.166249 cleanup=0.000099 cleanup_complete=True\n[2026-11-01T16:15:33+07:00] tdq_codex: temporary CODEX_HOME: C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\runtime-evidence\\5633100d0fe3487a8738715f89774bfa\\timeout-cleanup\\caller\\docs\\tdq\\.tdq-codex-home\\tdq-codex-home-mxsne847 (mode 700) · provider=(codex default)\n[2026-11-01T09:15:35+00:00] tdq_test_process reason=timeout phase=codex-say-hi exit_code=None wall=2.014058 cleanup=0.003113 cleanup_complete=True\n[2026-11-01T16:15:35+07:00] tdq_codex: say hi: timeout 2s · model=fixture-only\n",
+  "duration_seconds": 2.703154499999073,
+  "wall_seconds": 2.703154499999073,
+  "execute_seconds": 2.7030851999952574,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-7zwrb9so\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-7zwrb9so\\temp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-7zwrb9so\\temp\\tdq-0xvmtequ\\pytest"
+  }
+}

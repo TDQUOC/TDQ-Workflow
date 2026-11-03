@@ -1,0 +1,145 @@
+{
+  "schema": "tdq-independent-qc/v1",
+  "request": "2026-11-01-1045-toi-uu-bon-hang-muc",
+  "task": "T4.3",
+  "date": "2026-11-01",
+  "source_sha256": "6f03e5bec06c11ed1bc7d9c14609d09ce9f3b55f2fc0b069057c80cce97543bc",
+  "reviewer": "/root/gpt61sol_high_review_qc13",
+  "implementers": [
+    "/root",
+    "/root/gpt61sol_high_review_qc11"
+  ],
+  "verdict": "PASS",
+  "scope": "Final-source correctness, runtime, architecture/SOLID and Q1-Q7; Q8/report/browser handoff and workflow phase blocker remain separate",
+  "performance_certified": false,
+  "all_request_tasks_complete": false,
+  "report": {
+    "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/independent-qc.md",
+    "sha256": "98a6dbc291372d45d253090e3d5419476b0570f2a258e87d06537386f83e1d0f"
+  },
+  "findings": [
+    {
+      "id": "F-TELEMETRY-01",
+      "severity": "P2",
+      "status": "resolved",
+      "title": "Frozen helper executed before hash validation",
+      "resolution": "Both pinned legacy helper hashes are checked with stdlib hashlib before every module load; mismatch regression proves no helper execution.",
+      "evidence": {
+        "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/safe_run_telemetry.py",
+        "sha256": "4691d65c5fbedfd4500d13f42ff3d7d6628a449cbaadf6f00df3c40bb6eba1e6"
+      },
+      "regression": {
+        "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/test_safe_run_telemetry.py",
+        "sha256": "0b83d8d95f39978c5c64c8844e304c6c6934005d80e90dbc342566dab4dbd496"
+      }
+    },
+    {
+      "id": "F-TELEMETRY-02",
+      "severity": "P2",
+      "status": "resolved",
+      "title": "Permissive JSON receipt validation",
+      "resolution": "Strict preparse rejects duplicate keys and nonfinite numbers; frozen validation is retained and raw receipt bytes are rechecked for identity.",
+      "evidence": {
+        "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/safe_run_telemetry.py",
+        "sha256": "4691d65c5fbedfd4500d13f42ff3d7d6628a449cbaadf6f00df3c40bb6eba1e6"
+      },
+      "regression": {
+        "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/test_safe_run_telemetry.py",
+        "sha256": "0b83d8d95f39978c5c64c8844e304c6c6934005d80e90dbc342566dab4dbd496"
+      }
+    },
+    {
+      "id": "F-TELEMETRY-03",
+      "severity": "P2",
+      "status": "resolved",
+      "title": "Boolean exit code aliases zero",
+      "resolution": "Command and harness exit code checks require exact int type and value zero.",
+      "evidence": {
+        "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/safe_run_telemetry.py",
+        "sha256": "4691d65c5fbedfd4500d13f42ff3d7d6628a449cbaadf6f00df3c40bb6eba1e6"
+      },
+      "regression": {
+        "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/test_safe_run_telemetry.py",
+        "sha256": "0b83d8d95f39978c5c64c8844e304c6c6934005d80e90dbc342566dab4dbd496"
+      }
+    }
+  ],
+  "unresolved_findings": [],
+  "checks": {
+    "QC_F1": "PASS",
+    "QC_F2": "PASS_Q1_Q7",
+    "QC_F3": "PASS",
+    "QC_F4": "PASS_MANUAL_REVIEW",
+    "Q1": "PASS",
+    "Q2": "PASS",
+    "Q3": "PASS",
+    "Q4": "PASS",
+    "Q5": "PASS",
+    "Q6": "PASS",
+    "Q7": "PASS_WITH_THIS_QC_BINDING",
+    "Q8": "SEPARATE_HANDOFF_VERIFICATION"
+  },
+  "evidence": {
+    "full_receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/QC-F1-final-a114787b746743078d2bfb03a7fdfab9/receipt.json",
+      "sha256": "af40162d77cec49688bdd0f1c161d6ec66bd61bb89c7e7584571a89eb08e4d63"
+    },
+    "full_result": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/final-result.json",
+      "sha256": "ec60b7816e0f7efc06f5b4784e3fd3f5c3ea0adf604ddbbeaac8cff700e7d7d2"
+    },
+    "runtime_receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/T4.2-author-final-4c5dde6a400d4dabb8afddff8638efad/receipt.json",
+      "sha256": "c554ebdc609b2dde9513bdd151fa1c823db96007df0f529924de069838271a7e"
+    },
+    "runtime": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime.json",
+      "sha256": "9cbbeb1d82b78a282591367e20c789b3df2a8fff4f62f79bd9a47854063c27b2"
+    },
+    "work_proof": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/final-work-proof.json",
+      "sha256": "58a9e85cc52de707fbc9a361d4a15e6a85bb09ee66320f96ecdb3ab4fc99f54d"
+    },
+    "offline_export_receipt": {
+      "path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runs/final-offline-export-ed7b52e79d6c40d4859e87c4e2cfb4d0/receipt.json",
+      "sha256": "38f66c3b5b604094e903103ddebbf8005a2a55d7edb01ba6dd95601abf498aae"
+    }
+  },
+  "verification": {
+    "new_test_jobs": 0,
+    "new_runtime_jobs": 0,
+    "new_benchmarks": 0,
+    "readonly_source_and_semantic_verifiers": true,
+    "baseline_cases": 3602,
+    "current_cases": 3665,
+    "remapped": 0,
+    "counts": {
+      "pass": 3657,
+      "fail": 0,
+      "error": 0,
+      "skip": 8,
+      "xfail": 0,
+      "xpass": 0
+    },
+    "runtime_scenarios": 4,
+    "pure_cases_zero_work": 11,
+    "preserved_actual_integrations": 4,
+    "regressions": {
+      "Q1": 53,
+      "Q2": 57,
+      "Q3": 322,
+      "Q4": 25,
+      "Q5": 58,
+      "Q6": 7,
+      "Q7": 9
+    },
+    "source_snapshot_method": "Frozen safe_run.source_snapshot(root)"
+  },
+  "limitations": {
+    "posix": "Not certified on a real POSIX host",
+    "ruff": "UNAVAILABLE; no installation and no Ruff PASS claimed",
+    "performance": "No equivalent Full A/B speedup certification; old D9/D10 not reopened",
+    "workflow_phase": "Recorded implement; QC phase transition blocked by 11 foreign dirty worktree rows, preserved without bypass",
+    "browser": "Q8 is a separate handoff verification"
+  }
+}

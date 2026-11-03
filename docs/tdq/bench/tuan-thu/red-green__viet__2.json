@@ -1,0 +1,18 @@
+{
+  "ca": "red-green",
+  "nhanh": "viet",
+  "lan": 2,
+  "trang_thai": "xong",
+  "transcript": "/private/tmp/tdq-eval-phien/red-green__viet__2/transcript.jsonl",
+  "ma_thoat": 0,
+  "ket_qua": {
+    "L005": "vi-pham",
+    "L003": "dat",
+    "L012": "dat",
+    "L121": "vi-pham",
+    "L210": "dat"
+  },
+  "chi_phi": 0.46816749999999996,
+  "so_luot": 15,
+  "nhiem": []
+}

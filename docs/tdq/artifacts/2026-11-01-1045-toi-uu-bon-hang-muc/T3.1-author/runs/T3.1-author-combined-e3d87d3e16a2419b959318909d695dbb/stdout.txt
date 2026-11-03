@@ -1,0 +1,21 @@
+.............................................. [ 33%]
+......F.................................................... [ 76%]
+..........s......................                                        [100%]
+================================== FAILURES ===================================
+_ RenderTest.test_default_logging_is_timestamped_metadata_only_and_can_be_disabled _
+
+self = <test_tdq_test_report.RenderTest testMethod=test_default_logging_is_timestamped_metadata_only_and_can_be_disabled>
+
+    def test_default_logging_is_timestamped_metadata_only_and_can_be_disabled(self):
+        payload = result([case("tests/SECRET_PAYLOAD.py::test_x")])
+        default, quiet = io.StringIO(), io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=False), redirect_stderr(default):
+            os.environ.pop("TDQ_LOG", None)
+            reports.summarize_result(payload)
+>       self.assertRegex(default.getvalue(), r"\[\d{4}-\d{2}-\d{2}T")
+E       AssertionError: Regex didn't match: '\\[\\d{4}-\\d{2}-\\d{2}T' not found in ''
+
+tests\test_tdq_test_report.py:220: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tdq_test_report.py::RenderTest::test_default_logging_is_timestamped_metadata_only_and_can_be_disabled
+1 failed, 136 passed, 1 skipped, 39 subtests passed in 112.83s (0:01:52)

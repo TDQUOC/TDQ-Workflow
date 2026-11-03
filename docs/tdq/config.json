@@ -1,0 +1,8 @@
+{
+  "GRAPHIFY_CUSTOM_PROVIDER": {
+    "enabled": false,
+    "endpoint": "https://your-openai-compatible-endpoint/v1",
+    "model": "your-model-name",
+    "api_key_env": "GRAPHIFY_CUSTOM_API_KEY"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "task": "T3.2",
+  "classification": "author guarded regression evidence; parent certification remains separate",
+  "files": [
+    {
+      "path": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\tests\\test_optimize_contracts.py",
+      "sha256": "de9cde51dba8bdaa54237fbbcbaec8d3a136336a8eb1384fc0b62489e411d556"
+    }
+  ],
+  "new_case_ids": [
+    "tests/test_optimize_contracts.py::test_mixed_identity_and_legacy_verdict_survive_summary_and_export",
+    "tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs"
+  ],
+  "old_case_defs_changed": [],
+  "proof_obligations": {
+    "Q6_mixed_compatibility": [
+      "real fresh four-case manifest/sidecar identity",
+      "pass/fail/skip and two subevents preserved",
+      "FAIL source verdict and legacy ledger keys unchanged",
+      "stored summary and offline export share all fields",
+      "external input SHA and output artifact bindings"
+    ],
+    "Q6_packaged_offline": [
+      "actual generated antigravity portable bundle",
+      "full packaged module text matches source after builder newline normalization",
+      "outside empty project, PYTHONPATH cleared, nonexistent TDQ_PROJECT_DIR",
+      "actual CPython process audit contains no process launches",
+      "only three report files written; input/project ledger unchanged; no state created"
+    ]
+  },
+  "source_provenance": [
+    {
+      "path": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_test.py",
+      "sha256": "04086c0f6c525aede81d5df722a36011d6714f21387d505c2d571c1270cc71a3"
+    },
+    {
+      "path": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_test_process.py",
+      "sha256": "a4342947fd03f6fd548584b40e2f63c60e649731d38b981af2d12aff15133ce7"
+    },
+    {
+      "path": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\scripts\\tdq_test_report.py",
+      "sha256": "9d2412e269b956d798a9a1637ae05632839f651b1a40eb14d26d69dba94dc275"
+    },
+    {
+      "path": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-calibration\\TDQ-Workflow\\tests\\test_runtime_contracts.py",
+      "sha256": "9841e89c99ba6c311548bed32506aa813756a8781413c4cf39e18d3d4fc6e7de"
+    }
+  ],
+  "receipts": {
+    "historical_red": {
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T3.2-author\\runs\\T3.2-historical-red-06a7d77f51ab4059beda66a646744a78\\receipt.json",
+      "sha256": "cec994f0629c7c7909f4b6602575e97cdec80a025351ae08b559adf95f8a340a"
+    },
+    "initial_two_module_fail": {
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T3.2-author\\runs\\T3.2-author-37715926225a4586b162994a257da433\\receipt.json",
+      "sha256": "1e39325d408e3ecd4b3274ff069472aaa3055d3ca46c43c465399852acf90cc8"
+    },
+    "runtime_diagnostic": {
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T3.2-author\\runs\\T3.2-runtime-diagnostic-6d3ec6994f3a4f7ca41d364c4b1f0601\\receipt.json",
+      "sha256": "075c7522002a6e60a314390cc165c017854cd462d1199c82a082ce1d77fec195"
+    },
+    "final_green": {
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-01-1045-toi-uu-bon-hang-muc\\T3.2-author\\runs\\T3.2-author-final-075b23647bb149fc8739bbae52aa5aaa\\receipt.json",
+      "sha256": "197fcbc9898fa1acd159cac7f2cf651f275d508509bebebb413b1b9cc3d692a0"
+    }
+  },
+  "historical_red": {
+    "baseline_runner": {
+      "path": "C:\\Users\\admin\\.codex\\worktrees\\tdq-optimize-t0\\TDQ-Workflow\\scripts\\tdq_test.py",
+      "sha256": "aa33671c0a64766ba43535b6ece8c9db9cbec9d345b28984e83f7a686e2b6bc4"
+    },
+    "assertion": "Fresh mixed execution must retain its derived summary",
+    "result": "1 failed in 2.59s; all preceding identity/status/subtest/evidence assertions passed",
+    "not_current_source_certification": true
+  },
+  "initial_failure_disposition": {
+    "portable_hash": "builder rewrites text with platform newline convention; corrected to full decoded text equality, actual packaged operation already succeeded",
+    "runtime_reuse": "initial full module failed action reuse and one source/environment guard; guarded diagnostic selected case passed, all five runner before/after diffs empty; original cause not recovered from cleaned fixture, retained without certification"
+  },
+  "final_green": {
+    "tests": 18,
+    "passed": 18,
+    "seconds": 18.13,
+    "guard_failures": []
+  },
+  "checks": {
+    "lsp_diagnostics": 0,
+    "trailing_whitespace": [],
+    "production_changed": false,
+    "commit_created": false
+  }
+}

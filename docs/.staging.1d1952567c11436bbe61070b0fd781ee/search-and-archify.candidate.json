@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "3-Tier Search Triangle & Archify 2-Tier Visual Engine",
+    "subtitle": "LSP + Graphify + Grep Triangulation Feeding Task BA Previews & Master Map Portal",
+    "output": "search-and-archify.html",
+    "locale": "en",
+    "animation": "trace",
+    "visual_preset": "blueprint",
+    "quality_profile": "standard",
+    "legend": {
+      "entries": {
+        "cloud": { "label": "3-Tier Search Engine" },
+        "backend": { "label": "CLI Bridge & Adapter" },
+        "frontend": { "label": "Personal BA Authoring" },
+        "security": { "label": "4-Gate Verifier" },
+        "database": { "label": "Signed Artifacts & Map" }
+      }
+    },
+    "translations": {
+      "legend.architecture.cloud": "3-Tier Search Engine",
+      "legend.architecture.backend": "CLI Bridge & Adapter",
+      "legend.architecture.frontend": "Personal BA Authoring",
+      "legend.architecture.security": "4-Gate Verifier",
+      "legend.architecture.database": "Signed Artifacts & Map",
+      "viewer.kind.cloud": "3-Tier Search Engine",
+      "viewer.kind.backend": "CLI Bridge & Adapter",
+      "viewer.kind.frontend": "Personal BA Authoring",
+      "viewer.kind.security": "4-Gate Verifier",
+      "viewer.kind.database": "Signed Artifacts & Map"
+    }
+  },
+  "components": [
+    {
+      "id": "lsp_tier",
+      "type": "cloud",
+      "label": "Tier 1: Agent-LSP",
+      "sublabel": "definitions · callers · types",
+      "tag": "semantic",
+      "pos": [50, 90],
+      "size": [200, 72]
+    },
+    {
+      "id": "graphify_tier",
+      "type": "cloud",
+      "label": "Tier 2: Graphify AST",
+      "sublabel": "2862 nodes · 2-hop blast",
+      "tag": "topology",
+      "pos": [50, 310],
+      "size": [200, 72]
+    },
+    {
+      "id": "bridge_cli",
+      "type": "backend",
+      "label": "tdq_archify & Model",
+      "sublabel": "bridge · render · sync-master",
+      "tag": "adapter",
+      "pos": [380, 200],
+      "size": [210, 72]
+    },
+    {
+      "id": "ba_author",
+      "type": "frontend",
+      "label": "Personal BA Author",
+      "sublabel": "Spec/Plan JSON + master.model",
+      "tag": "authoring",
+      "pos": [720, 90],
+      "size": [210, 72]
+    },
+    {
+      "id": "four_gates",
+      "type": "security",
+      "label": "Archify 4-Gate Engine",
+      "sublabel": "validate · deliver · check · cdp",
+      "tag": "4-gates",
+      "pos": [720, 310],
+      "size": [210, 72]
+    },
+    {
+      "id": "task_preview",
+      "type": "database",
+      "label": "Tier 1: Task BA Preview",
+      "sublabel": "preview.html + SHA-256 bind",
+      "tag": "per-request",
+      "pos": [1070, 90],
+      "size": [215, 72]
+    },
+    {
+      "id": "master_portal",
+      "type": "database",
+      "label": "Tier 2: Master Map Portal",
+      "sublabel": "docs/architecture/index.html",
+      "tag": "project-wide",
+      "pos": [1070, 310],
+      "size": [215, 72]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "3-Tier Code Intelligence & Bridge",
+      "wraps": ["lsp_tier", "graphify_tier", "bridge_cli"],
+      "pad": 22
+    },
+    {
+      "kind": "security-group",
+      "label": "2-Tier Archify Visual Delivery & Cryptographic Binding",
+      "wraps": ["ba_author", "four_gates", "task_preview", "master_portal"],
+      "pad": 22
+    }
+  ],
+  "connections": [
+    { "id": "s1", "from": "lsp_tier", "to": "bridge_cli", "label": "symbols" },
+    { "id": "s2", "from": "graphify_tier", "to": "bridge_cli", "label": "graph.json" },
+    { "id": "s3", "from": "bridge_cli", "to": "ba_author", "label": "evidence", "variant": "emphasis" },
+    { "id": "s4", "from": "ba_author", "to": "four_gates", "label": "candidate", "variant": "security", "labelAt": [825, 236] },
+    { "id": "s5", "from": "bridge_cli", "to": "four_gates", "label": "finalize" },
+    { "id": "s6", "from": "four_gates", "to": "task_preview", "label": "bind spec" },
+    { "id": "s7", "from": "four_gates", "to": "master_portal", "label": "sync-master", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "3-Tier Search Triangulation",
+      "items": [
+        "Agent-LSP resolves compiler-accurate definitions, references, and call hierarchies",
+        "Graphify computes 2-hop AST blast radius across 2,862 nodes and 162 communities"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "2-Tier Visual Architecture",
+      "items": [
+        "Tier 1 binds interactive BA HTML previews directly to Spec/Plan before coding",
+        "Tier 2 publishes the multi-view Master Map Portal and tracks freshness via tdq_finish.py"
+      ]
+    }
+  ]
+}

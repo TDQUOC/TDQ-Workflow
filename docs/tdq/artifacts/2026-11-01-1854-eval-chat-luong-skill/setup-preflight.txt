@@ -1,0 +1,57 @@
+[2026-11-01T18:55:24] setup · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · máy=DESKTOP-QNBEKDT
+[2026-11-01T18:55:24] kiem · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow
+[2026-11-01T18:55:31] lsp_module: do_module C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow → 2 module trong 0.11s
+[2026-11-01T18:55:31] bậc 1 binary agent-lsp → ĐẠT
+[2026-11-01T18:55:31] bậc 2 MCP `lsp` → ĐẠT
+[2026-11-01T18:55:31] bậc 3 language server theo project → ĐẠT
+[2026-11-01T18:55:31] bậc 4 quyền tool `mcp__lsp__*` → ĐẠT
+[2026-11-01T18:55:31] bậc 5 hook plugin ngoài xung đột → ĐẠT
+[2026-11-01T18:55:31] bậc 6 cấu hình gốc import theo ngôn ngữ → ĐẠT
+[2026-11-01T18:55:31] bậc 7 đồ thị graphify → THIẾU
+[2026-11-01T18:55:31] bậc 8 LSP theo module → THIẾU
+[2026-11-01T18:55:32] plugin user: tdq-workflow@tdq-local 0.84.2 lệch 0.85.0
+[2026-11-01T18:55:32] ghim hướng dẫn 3 tầng vào C:\Users\admin/.claude/CLAUDE.md
+[2026-11-01T18:55:32] tdq_codex_mcp: config=C:\Users\admin/.codex\config.toml present=['chrome-devtools', 'lsp', 'node_repl']
+[2026-11-01T18:55:32] tdq_codex_mcp: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow is the plugin's own repo - its .codex/hooks.json is hand-written
+[2026-11-01T18:55:32] kiem · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow
+[2026-11-01T18:55:40] lsp_module: do_module C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow → 2 module trong 0.12s
+[2026-11-01T18:55:40] bậc 1 binary agent-lsp → ĐẠT
+[2026-11-01T18:55:40] bậc 2 MCP `lsp` → ĐẠT
+[2026-11-01T18:55:40] bậc 3 language server theo project → ĐẠT
+[2026-11-01T18:55:40] bậc 4 quyền tool `mcp__lsp__*` → ĐẠT
+[2026-11-01T18:55:40] bậc 5 hook plugin ngoài xung đột → ĐẠT
+[2026-11-01T18:55:40] bậc 6 cấu hình gốc import theo ngôn ngữ → ĐẠT
+[2026-11-01T18:55:40] bậc 7 đồ thị graphify → THIẾU
+[2026-11-01T18:55:40] bậc 8 LSP theo module → THIẾU
+[2026-11-01T18:55:42] done · 1 bậc thiếu · 1 cảnh báo · 0 tầng trượt
+đã cài · shim `python3` đã sẵn sàng
+đã cài · hook dry-run: hook dry-run thành công với `python3`
+đã cài · ghim hướng dẫn 3 tầng vào ~/.claude/CLAUDE.md
+đã cài · Chrome DevTools MCP đã sẵn sàng
+đã cài · tiện ích Archify: Node.js v24.21.0 (>= 18) · Archify tại C:\Users\admin\Documents\archify\archify\bin\archify.mjs
+cảnh báo · bản cài tdq-workflow@tdq-local 0.84.2 lệch instruction 0.85.0 — chạy /plugin update tdq-workflow@tdq-local
+codex · lsp: already present, left unchanged
+codex · Codex hook: this is the TDQ plugin's own repo - its .codex/hooks.json is the hand-written file fence of `codex implement`, left unchanged.
+
+Bậc 1 · binary agent-lsp → ĐẠT (0.19.2)
+Bậc 2 · MCP `lsp` → ĐẠT (2 server đã đăng ký)
+Bậc 3 · language server theo project → ĐẠT (đủ cho 2 ngôn ngữ: HTML, Python, khởi động thử ok)
+Bậc 4 · quyền tool `mcp__lsp__*` → ĐẠT (1 mục trong allow)
+Bậc 5 · hook plugin ngoài xung đột → ĐẠT (không plugin nào chèn thứ tự tìm kiếm khác)
+Bậc 6 · cấu hình gốc import theo ngôn ngữ → ĐẠT (2 ngôn ngữ đều có file mốc ở gốc dự án)
+Bậc 7 · đồ thị graphify → CẢNH BÁO (đồ thị cũ hơn mã nguồn 0 phút)
+  Xử lý: cd C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow && graphify extract . --code-only
+Bậc 8 · LSP theo module → THIẾU (python:. CHUA_KIEM)
+  Cài: python3 scripts/tdq_lsp.py kich-ban → gửi đúng các lời gọi MCP nó in → python3 scripts/tdq_lsp.py ghi-kiem <module> <số tham chiếu>
+
+Smoke test ba tầng:
+  grep      ĐẠT  · tìm ra định nghĩa trong agy_pretooluse_gate.py
+  LSP       ĐẠT  · trả lời được
+  graphify  ĐẠT  · trả lời được
+
+Tổng: CHƯA ĐẠT · 6/8 bậc ĐẠT · smoke 3/3 tầng trả lời được · 1 bậc cần bạn cho phép cài · 1 cảnh báo không chặn
+Script này KHÔNG tự cài: `python3 scripts/tdq_setup.py` tự cài phần thiếu, rồi chạy kịch bản của bậc 8.
+nợ · bậc 7 (đồ thị graphify): lệnh có ký tự của shell — không chạy chuỗi ghép, hãy khai từng lệnh một — `cd C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow && graphify extract . --code-only`
+nợ · bản mẫu instruction trỏ tới skill `mem0-memory` — máy này không có nó
+
+Nợ: 2 món (0 dòng mới) → docs\tdq\no-phu-thuoc.md
