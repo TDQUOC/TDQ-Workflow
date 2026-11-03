@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "next_present": true,
+  "rule_present": true,
+  "timeout_seconds": 120,
+  "scope": "real SessionStart process in temporary HOME/project, no user config mutation"
+}

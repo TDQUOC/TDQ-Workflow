@@ -578,7 +578,7 @@ class TestO2SkillEvalCLIAndReport:
         assert report_data["total_records"] == len(records)
         assert len(report_data["cells"]) == 1
 
-    def test_run_eval_bounded_quota_stop(self, temp_dir):
+    def test_run_eval_invalid_corpus_rejected_before_launch(self, temp_dir):
         plan_dict = make_plan(candidate_identity="e" * 64)
         plan_file = temp_dir / "plan.json"
         plan_file.write_text(json.dumps(plan_dict), encoding="utf-8")
@@ -587,13 +587,15 @@ class TestO2SkillEvalCLIAndReport:
         cases_file.write_text(json.dumps(["case-trigger-pos", "case-trigger-neg"]), encoding="utf-8")
 
         profile_file = temp_dir / "profile.json"
-        # Zero quota forces early exit
+        # Invalid corpus must reject even before quota handling.
         profile_file.write_text(json.dumps({"quota_usd": -1.0}), encoding="utf-8")
 
         out_dir = temp_dir / "run_out"
-        summary = tdq_skill_eval.run_eval(plan_file, cases_file, profile_file, out_dir)
-        assert summary["completed_trials"] == 0
-        assert (out_dir / "run_summary.json").exists()
+        with patch.object(tdq_eval_hosts, "run_host_trial") as run:
+            with pytest.raises(ValueError, match="invalid_corpus"):
+                tdq_skill_eval.run_eval(plan_file, cases_file, profile_file, out_dir)
+            run.assert_not_called()
+        assert not out_dir.exists()
 
 
 # ===================================================================
@@ -631,6 +633,8 @@ class TestO3HostAdaptersAndStreaming:
             }) + "\n",
             json.dumps({"type": "user", "message": {"content": [{"type": "text", "text": "continue"}]}}) + "\n",
         ]
+        assert tdq_eval_hosts.parse_trace_stream(events)["execution_status"] == "incomplete"
+        events.append(json.dumps({"type": "result", "is_error": False, "result": "done"}) + "\n")
         res = tdq_eval_hosts.parse_trace_stream(events, expected_trigger=True)
         assert res["execution_status"] == "completed"
         assert res["model_calls_count"] == 1
@@ -647,6 +651,10 @@ class TestO3HostAdaptersAndStreaming:
             json.dumps({"type": "response_item", "payload": {"type": "function_call", "name": "execute_command"}}) + "\n",
             json.dumps({"type": "event_msg", "payload": {"type": "token_count", "usage": {"input_tokens": 200, "output_tokens": 50, "cached_input_tokens": 20}}}) + "\n",
         ]
+        assert tdq_eval_hosts.parse_trace_stream(events)["execution_status"] == "incomplete"
+        events.append(json.dumps({"type": "event_msg", "payload": {
+            "type": "task_complete", "last_agent_message": "done",
+        }}) + "\n")
         res = tdq_eval_hosts.parse_trace_stream(events)
         assert res["execution_status"] == "completed"
         assert res["model_calls_count"] == 1

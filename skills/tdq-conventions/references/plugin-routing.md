@@ -1,16 +1,34 @@
 # Routing work → plugin
+<!-- muc-luc-dong:
+  When it applies=9-12 · Protocol=13-25 · Self-check=26-32 · Routing table=33-64 ·
+  UI/UX — three layers=65-95 · Appendix=96
+-->
 
-**Status since 2026-08-06: EVERY plugin is already enabled at user scope.**
+Availability comes from the current inventory and connection, not historical installation claims.
+
+## When it applies
+
+Any task using a tool, MCP, plugin or native application; the table suggests candidates, not installed capabilities.
 
 ## Protocol
 
-1. An enabled plugin → **use it directly, no permission needed**. The table below only picks
-   the right plugin for the right job; it is no longer an approval gate.
-2. You must still **ASK the user first** before: installing a NEW plugin/marketplace; running
-   OAuth or entering a credential for a service; calling a tool that **writes or deletes on an
-   external service** (create a Notion page, write to a DB, deploy, upload an asset…). Reading
-   is free.
-3. Code review → use the built-in `/code-review`, not another review plugin.
+1. Read the session inventory and relevant skill/tool schema. Probe the configured endpoint before acting.
+2. Use existing tools within the user's authorization. An explicitly requested external action need not be asked again; its file, service, recipient and destination remain fixed. Ask before new installation, OAuth, credentials, destructive actions or scope expansion.
+3. Never perform a denied action through another tool or change permissions to bypass it. Reading still obeys data-access permissions.
+4. Prefer one tool when enough. Chrome MCP owns web/DOM; agent-desktop owns native apps/dialogs; dedicated file/CLI tools own local processing. Do not force a desktop hop.
+5. Prefer upload_file directly when schema exposes it and the browser host can access the file. Verify attachment before submission. A missing capability is not a reason to invent an API.
+6. A native picker or Save As needs a fresh desktop snapshot: verify process/window, filename and destination, then return to browser to verify the handoff. handle_dialog is not assumed to control Windows dialogs; CDP support is not proof that an MCP exposes it.
+7. A download click is not completion: wait for a completion event when available, then verify the final file, type and expected content. A partial file is not success.
+8. If delivery is uncertain, observe before retry; do not duplicate a send/upload. Retry only after new evidence or changed conditions; without progress, change to an authorized route or report a blocker.
+9. Missing tool: research official sources, propose a compatible user-level install with required permissions, verification and uninstall; wait for approval. Recover installed connections only within existing permission.
+10. Code review → use the built-in `/code-review`, not another review plugin.
+
+## Self-check
+
+Can each step name its input, output, tool and observed completion? Did handoff preserve identity and permission?
+RIGHT: direct upload, attachment check, one submit, wait, file check.
+WRONG: install silently, repeat an uncertain send, or close personal Chrome to resolve launch ambiguity.
+Native automation needs an interactive session; UAC secure desktop, locked desktop or another session are unsupported, not permission to elevate.
 
 ## Routing table
 

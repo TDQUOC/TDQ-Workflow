@@ -1,0 +1,14 @@
+{
+  "request": "2026-11-03-1420-phoi-hop-cong-cu",
+  "source_snapshot": {
+    "scripts/tdq_setup.py": "594b34b644250d34dcfbac4ac5001b6902460694df0344560cb66a1cd62a5ae8",
+    "hooks/scripts/session_start.py": "cff58fbb9864d62f50f8b8fdb2baa118b75389043a4bec781737b9aab7e78594"
+  },
+  "writer_regression": {
+    "tests": 256,
+    "status": "PASS",
+    "details_complete": true
+  },
+  "live_instruction_applied": false,
+  "config_scope": "CLAUDE.md managed block only after final regression"
+}

@@ -11,9 +11,14 @@ Zero model calls in plan, check, and report commands.
 """
 
 import argparse
+import builtins
+import dis
 import glob
+import hashlib
+import inspect
 import json
 import math
+import marshal
 import os
 from pathlib import Path
 import sys
@@ -183,6 +188,22 @@ def cmd_check(args: argparse.Namespace) -> int:
 
 
 # ------------------------------------------------------------------- run
+def _trial_identity(plan: Dict[str, Any], trial: Dict[str, Any], checks: Dict[str, Any]) -> Dict[str, Any]:
+    manifest = dict(
+        {k: trial[k] for k in tdq_eval_contract.CELL_FIELDS},
+        base_commit=plan["base_identity"], candidate_commit=plan["candidate_identity"],
+        corpus_version=plan["corpus_id"], scorer_version=plan["scorer_version"],
+        rubric_version=plan["rubric_version"], evaluation_kind=plan["evaluation_kind"],
+        check_set=list(checks.keys()),
+    )
+    return dict(
+        trial, manifest=manifest,
+        **{k: plan[k] for k in ("base_identity", "candidate_identity", "targets",
+                               "dev_cases_sha256", "holdout_cases_sha256", "scorer_version",
+                               "rubric_version", "evaluation_kind")},
+    )
+
+
 def _build_trial_record(
     plan: Dict[str, Any],
     trial: Dict[str, Any],
@@ -190,35 +211,18 @@ def _build_trial_record(
     raw_trace_sha: str,
 ) -> Dict[str, Any]:
     expected_trig = trial["case_id"] in plan["expected_triggers"]
-    exec_status = trial_res.get("execution_status", "completed")
-    score = 1.0 if exec_status == "completed" else 0.0
-    passed = exec_status == "completed"
-    outcome_sha = tdq_eval_contract._digest({"execution_status": exec_status, "score": score})
-
-    checks = {"rule_compliance": "pass"} if passed else {"rule_compliance": "fail"}
-    manifest = dict(
-        {k: trial[k] for k in tdq_eval_contract.CELL_FIELDS},
-        base_commit=plan["base_identity"],
-        candidate_commit=plan["candidate_identity"],
-        corpus_version=plan["corpus_id"],
-        scorer_version=plan["scorer_version"],
-        rubric_version=plan["rubric_version"],
-        evaluation_kind=plan["evaluation_kind"],
-        check_set=list(checks.keys()),
-    )
-
+    exec_status = trial_res.get("execution_status", "incomplete")
+    outcome = trial_res.get("outcome") or {}
+    score = outcome.get("score")
+    passed = outcome.get("passed")
+    checks = outcome.get("checks", {"rule_compliance": "unavailable"})
+    outcome_sha = tdq_eval_contract._digest({
+        "execution_status": exec_status, "score": score, "passed": passed, "checks": checks,
+        "response_text": trial_res.get("response_text"),
+    })
     expected_prov = "synthetic/offline" if plan["evaluation_kind"] == "mechanism" else "live"
-
     rec: Dict[str, Any] = dict(
-        trial,
-        base_identity=plan["base_identity"],
-        candidate_identity=plan["candidate_identity"],
-        targets=plan["targets"],
-        dev_cases_sha256=plan["dev_cases_sha256"],
-        holdout_cases_sha256=plan["holdout_cases_sha256"],
-        scorer_version=plan["scorer_version"],
-        rubric_version=plan["rubric_version"],
-        evaluation_kind=plan["evaluation_kind"],
+        _trial_identity(plan, trial, checks),
         raw_trace_sha256=raw_trace_sha,
         outcome_sha256=outcome_sha,
         provenance=expected_prov,
@@ -226,10 +230,13 @@ def _build_trial_record(
         observed_trigger=trial_res.get("observed_trigger", False),
         trigger_provenance=trial_res.get("trigger_provenance", "event:trial_run"),
         execution_status=exec_status,
+        response_text=trial_res.get("response_text"),
+        observed_model=trial_res.get("observed_model"),
+        outcome_availability="available" if passed is not None and score is not None else "unavailable",
+        outcome_reason=trial_res.get("outcome_reason", "missing_scorer"),
         passed=passed,
         score=score,
         checks=checks,
-        manifest=manifest,
         tool_calls_count=trial_res.get("tool_calls_count", 0),
         model_calls_count=trial_res.get("model_calls_count", 0),
         retries_count=trial_res.get("retries_count", 0),
@@ -242,9 +249,169 @@ def _build_trial_record(
         }),
         total_cost_usd=trial_res.get("total_cost_usd"),
         billed_cost_usd=trial_res.get("billed_cost_usd"),
-        wall_latency_seconds=trial_res.get("wall_latency_seconds", 0.0),
+        wall_latency_seconds=trial_res.get("wall_latency_seconds"),
     )
     return rec
+
+
+def _validate_scorer_dependencies(code, scorer) -> None:
+    allowed = {"abs", "all", "any", "bool", "dict", "enumerate", "float", "int", "len",
+               "list", "max", "min", "range", "round", "set", "sorted", "str", "sum",
+               "tuple", "zip", "AssertionError", "ValueError"}
+    for instruction in dis.get_instructions(code):
+        if instruction.opname in {"IMPORT_NAME", "STORE_GLOBAL", "DELETE_GLOBAL"}:
+            raise ValueError("unsupported_scorer_identity")
+        if instruction.opname == "LOAD_GLOBAL":
+            name = instruction.argval
+            if (name not in allowed or name in scorer.__globals__
+                    or scorer.__builtins__.get(name) is not getattr(builtins, name)):
+                raise ValueError("unsupported_scorer_identity")
+    for constant in code.co_consts:
+        if inspect.iscode(constant):
+            _validate_scorer_dependencies(constant, scorer)
+
+
+def scorer_identity(scorer: Any, rubric_version: str) -> str:
+    """Lock source, actual bytecode and rubric; code hashes are interpreter-local.
+
+    Accept source-defined functions using inputs, locals and allowlisted unshadowed
+    builtins only, including nested code. No global/nonlocal state or imports.
+    """
+    # ponytail: pure scorers only, add a dependency manifest when stateful scorers are needed.
+    if (not inspect.isfunction(scorer) or scorer.__closure__ or scorer.__defaults__
+            or scorer.__kwdefaults__ or hasattr(scorer, "__wrapped__")):
+        raise ValueError("unsupported_scorer_identity")
+    _validate_scorer_dependencies(scorer.__code__, scorer)
+    try:
+        source = inspect.getsource(scorer)
+    except (OSError, TypeError) as exc:
+        raise ValueError("unavailable_scorer_source") from exc
+    return "sha256:" + tdq_eval_contract._digest({
+        "module": scorer.__module__, "qualname": scorer.__qualname__,
+        "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
+        "code_sha256": hashlib.sha256(marshal.dumps(scorer.__code__)).hexdigest(),
+        "rubric_version": rubric_version,
+    })
+
+
+def _validate_run_plan(plan: Dict[str, Any], scorer: Any) -> None:
+    val = tdq_eval_contract.validate_eval_plan(plan)
+    if not val["valid"]:
+        raise ValueError(f"invalid plan: {'; '.join(val['errors'])}")
+    if scorer is not None and scorer_identity(scorer, plan["rubric_version"]) != plan["scorer_version"]:
+        raise ValueError("scorer_binding_mismatch")
+
+
+def _index_cases(cases: List[Dict[str, Any]]) -> Dict[str, Any]:
+    by_id = {}
+    for case in cases:
+        case_id = case.get("case_id", case.get("id"))
+        if (not isinstance(case_id, str) or not case_id or case_id in by_id
+                or case.get("split") not in {"dev", "holdout"}
+                or not isinstance(case.get("prompt"), str) or not case["prompt"].strip()):
+            raise ValueError("invalid_case")
+        by_id[case_id] = case
+    return by_id
+
+
+def _verify_corpus_hashes(cases: List[Dict[str, Any]], plan: Dict[str, Any]) -> None:
+    for split in ("dev", "holdout"):
+        split_cases = [c for c in cases if c.get("split") == split]
+        if tdq_eval_contract._digest(split_cases) != plan[f"{split}_cases_sha256"]:
+            raise ValueError(f"corpus_hash_mismatch:{split}")
+
+
+def _load_bound_cases(cases_path: Union[str, Path], plan: Dict[str, Any]) -> Dict[str, Any]:
+    corpus = _load_json(cases_path)
+    cases = corpus.get("cases") if isinstance(corpus, dict) else corpus
+    if not isinstance(cases, list) or not cases or not all(isinstance(c, dict) for c in cases):
+        raise ValueError("invalid_corpus")
+    _verify_corpus_hashes(cases, plan)
+    by_id = _index_cases(cases)
+    if set(by_id) != set(plan["expected_triggers"] + plan["negative_cases"]):
+        raise ValueError("case_set_mismatch")
+    return by_id
+
+
+def _read_snapshot(source: Dict[str, Any], targets: Any, variant: str) -> Dict[str, str]:
+    hashes = source.get("hashes")
+    if not source.get("root") or not isinstance(hashes, dict) or set(hashes) != set(targets):
+        raise ValueError(f"missing_source_snapshot:{variant}")
+    root = Path(source["root"]).resolve(strict=True)
+    contents = []
+    for name, expected in sorted(hashes.items()):
+        path = (root / name).resolve(strict=True)
+        if not path.is_relative_to(root):
+            raise ValueError("unsafe_source_path")
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != expected:
+            raise ValueError(f"source_hash_mismatch:{variant}:{name}")
+        contents.append(f"--- {name} ---\n{raw.decode('utf-8')}")
+    return {"instructions": "\n\n".join(contents),
+            "source_sha256": tdq_eval_contract._digest(hashes)}
+
+
+def _bind_snapshots(plan: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
+    snapshots = {
+        variant: _read_snapshot(profile.get("sources", {}).get(variant, {}), plan["targets"], variant)
+        for variant in ("A", "B")
+    }
+    if (not isinstance(plan["targets"], dict) or plan["targets"] != profile["sources"]["B"]["hashes"]
+            or plan["candidate_identity"] != snapshots["B"]["source_sha256"]):
+        raise ValueError("unbound_candidate_snapshot")
+    if plan["base_identity"] != snapshots["A"]["source_sha256"]:
+        raise ValueError("unbound_baseline_snapshot")
+    return snapshots
+
+
+def _validate_cost_quota(profile: Dict[str, Any]) -> None:
+    quota = float(profile.get("quota_usd", float("inf")))
+    if math.isnan(quota) or quota < 0:
+        raise ValueError("invalid_cost_quota")
+    # ponytail: adapters have no enforceable cost cap, upgrade: add host-side caps when finite budgets are needed.
+    if math.isfinite(quota):
+        raise ValueError("cost_quota_unavailable")
+
+
+def _validate_scorer_outcome(outcome: Any) -> None:
+    if (not isinstance(outcome, dict) or type(outcome.get("passed")) is not bool
+            or type(outcome.get("score")) not in (int, float)
+            or not math.isfinite(outcome["score"]) or not 0 <= outcome["score"] <= 1
+            or not isinstance(outcome.get("checks"), dict) or not outcome["checks"]):
+        raise ValueError("invalid_scorer_outcome")
+
+
+def _score_trial(case: Dict[str, Any], trial: Dict[str, Any], result: Dict[str, Any], scorer: Any) -> Dict[str, Any]:
+    result = dict(result)
+    result.pop("outcome", None)
+    verified = (result.get("execution_status") == "completed"
+                and isinstance(result.get("response_text"), str)
+                and bool(result["response_text"].strip())
+                and result.get("observed_model") == trial["model"]
+                and result.get("host") == tdq_eval_hosts.canonical_host_name(trial["host"]))
+    result["outcome_reason"] = "missing_scorer" if verified else "unverified_response"
+    if scorer is not None and verified:
+        outcome = scorer(case, dict(result))
+        _validate_scorer_outcome(outcome)
+        result["outcome"] = outcome
+        result["outcome_reason"] = "explicit_scorer"
+    return result
+
+
+def _execute_trial(plan, trial, case, profile, out_path, command_builder, scorer) -> None:
+    trial_env = tdq_eval_hosts.prepare_trial_environment(
+        base_dir=out_path / "env", host=trial["host"], trial_id=trial["trial_id"],
+        plugin_dir=profile.get("plugin_dir"),
+    )
+    trial_res = tdq_eval_hosts.run_host_trial(
+        host=trial["host"], trial_spec=trial, profile=dict(profile, **trial_env),
+        command_builder=command_builder,
+    )
+    trial_res = _score_trial(case, trial, trial_res, scorer)
+    attempts = trial_res.get("attempts", [])
+    raw_trace_sha = attempts[-1].get("raw_trace_sha256") if attempts else "0" * 64
+    rec = _build_trial_record(plan, trial, trial_res, raw_trace_sha)
+    _write_json(rec, out_path / f"trial_{trial['trial_id']}.json")
 
 
 def run_eval(
@@ -253,58 +420,32 @@ def run_eval(
     profile_path: Union[str, Path],
     out_dir: Union[str, Path],
     command_builder: Optional[Any] = None,
+    scorer: Optional[Any] = None,
 ) -> Dict[str, Any]:
-    """Execute balanced AB/BA schedule trials with bounded quota and deadline."""
+    """Run bound snapshots; lock scorer_identity(scorer, rubric_version) before running.
+
+    Profile sources maps A/B to {root, hashes}, covering every plan target. Source
+    identity is the hash-map digest. Missing scorer leaves quality unavailable.
+    """
     plan = _load_json(plan_path)
-    val = tdq_eval_contract.validate_eval_plan(plan)
-    if not val["valid"]:
-        raise ValueError(f"invalid plan: {'; '.join(val['errors'])}")
-
-    cases = _load_json(cases_path)
+    _validate_run_plan(plan, scorer)
+    by_id = _load_bound_cases(cases_path, plan)
     profile = _load_json(profile_path)
+    snapshots = _bind_snapshots(plan, profile)
+    _validate_cost_quota(profile)
     exp_hash = tdq_eval_contract.compute_experiment_hash(plan)
-
     schedule = tdq_eval_contract.build_ab_ba_schedule(
-        cases, plan["cells"], plan["repetitions"], exp_hash
+        list(by_id), plan["cells"], plan["repetitions"], exp_hash
     )
-
     out_path = Path(out_dir).resolve()
     out_path.mkdir(parents=True, exist_ok=True)
-
     completed = 0
-    quota_usd = float(profile.get("quota_usd", float("inf")))
-    spent_usd = 0.0
-
     for trial in schedule:
-        trial_id = trial["trial_id"]
-        if spent_usd > quota_usd:
-            _log("quota exceeded, stopping run", muc="canh-bao", trial=trial_id)
-            break
-
-        host = trial["host"]
-        trial_env = tdq_eval_hosts.prepare_trial_environment(
-            base_dir=out_path / "env",
-            host=host,
-            trial_id=trial_id,
-            plugin_dir=profile.get("plugin_dir"),
-        )
-        trial_profile = dict(profile, **trial_env)
-
-        trial_res = tdq_eval_hosts.run_host_trial(
-            host=host,
-            trial_spec=trial,
-            profile=trial_profile,
-            command_builder=command_builder,
-        )
-
-        attempts = trial_res.get("attempts", [])
-        raw_trace_sha = attempts[-1].get("raw_trace_sha256") if attempts else "0" * 64
-
-        rec = _build_trial_record(plan, trial, trial_res, raw_trace_sha)
-        record_file = out_path / f"trial_{trial_id}.json"
-        _write_json(rec, record_file)
+        case = by_id[trial["case_id"]]
+        trial.update(snapshots[trial["variant"]], prompt=case["prompt"],
+                     expected_trigger=trial["case_id"] in plan["expected_triggers"])
+        _execute_trial(plan, trial, case, profile, out_path, command_builder, scorer)
         completed += 1
-
     summary = {
         "experiment_hash": exp_hash,
         "total_trials": len(schedule),
@@ -316,14 +457,10 @@ def run_eval(
 
 
 def cmd_run(args: argparse.Namespace) -> int:
-    res = run_eval(
-        plan_path=args.plan,
-        cases_path=args.cases,
-        profile_path=args.profile,
-        out_dir=args.out_dir,
-    )
-    print(json.dumps(res, indent=2))
-    return 0 if res["completed_trials"] == res["total_trials"] else 1
+    # ponytail: CLI has no registered scorer, upgrade: wire a registered scorer when available; use run_eval(scorer=...) meanwhile.
+    _log("run blocked", muc="canh-bao", reason="missing_scorer")
+    print(json.dumps({"status": "blocked", "reason": "missing_scorer"}, indent=2))
+    return 1
 
 
 # ------------------------------------------------------------------- report
@@ -425,9 +562,25 @@ def _render_markdown_report(report_data: Dict[str, Any]) -> str:
         "- **DROP**: Hồi quy chất lượng hoặc tỷ lệ trigger trượt quá biên độ cho phép.",
         "- **INCONCLUSIVE**: Chưa đủ mẫu, thiếu chỉ số đo bắt buộc, hoặc baseline đã chạm trần.",
         "",
-        "Báo cáo mang nguồn gốc synthetic/offline, được tổng hợp ngoại tuyến hoàn toàn từ các bản ghi đối chứng, không đại diện cho chứng nhận hiệu quả mô hình sống.",
+        f"Nguồn gốc bản ghi: {report_data['provenance']}. Tổng hợp ngoại tuyến; không tự chứng nhận hiệu quả mô hình sống.",
     ])
     return "\n".join(lines)
+
+
+def _report_provenance(records: List[Dict[str, Any]]) -> str:
+    labels = {record.get("provenance") or "unavailable" for record in records}
+    if not labels:
+        return "unavailable"
+    return next(iter(labels)) if len(labels) == 1 else "mixed"
+
+
+def _group_report_cells(records: List[Dict[str, Any]]) -> Dict[Tuple[str, str], List[Dict[str, Any]]]:
+    by_cell: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
+    for record in records:
+        host, model = record.get("host"), record.get("model")
+        if host and model:
+            by_cell.setdefault((host, model), []).append(record)
+    return by_cell
 
 
 def generate_report(
@@ -444,13 +597,7 @@ def generate_report(
 
     records = [_load_json(f) for f in record_files]
 
-    # Group by cell (host, model)
-    by_cell: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
-    for r in records:
-        host = r.get("host")
-        model = r.get("model")
-        if host and model:
-            by_cell.setdefault((host, model), []).append(r)
+    by_cell = _group_report_cells(records)
 
     active_policy = policy or {"min_pairs": 1, "quality_margin": 0.05, "efficiency_margin": 0.1}
 
@@ -470,7 +617,7 @@ def generate_report(
         }
 
     report_data = {
-        "provenance": "synthetic/offline",
+        "provenance": _report_provenance(records),
         "cells": cells_report,
         "total_records": len(records),
         "total_cells": len(cells_report),

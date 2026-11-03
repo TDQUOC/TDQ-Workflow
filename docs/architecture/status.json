@@ -6,9 +6,13 @@
     "Source file modified: hooks/scripts/bash_gate.py",
     "Source file modified: hooks/scripts/edit_gate.py",
     "Source file modified: hooks/scripts/luat_gon.py",
+    "Source file modified: hooks/scripts/session_start.py",
     "Source file modified: scripts/archify_delivery.py",
+    "Source file modified: scripts/doc_lint.py",
     "Source file modified: scripts/tdq_eval.py",
+    "Source file modified: scripts/tdq_setup.py",
     "Source file modified: scripts/tdq_state.py",
+    "Source file modified: scripts/tdq_test_process.py",
     "Source file modified: scripts/tdq_test_receipt.py",
     "Source file modified: scripts/tdq_test_report.py",
     "Source file modified: skills/tdq-build/SKILL.md",
@@ -19,7 +23,9 @@
     "Source file modified: skills/tdq-build/references/team-mode.md",
     "Source file modified: skills/tdq-conventions/SKILL.md",
     "Source file modified: skills/tdq-conventions/references/phases.md",
+    "Source file modified: skills/tdq-conventions/references/plugin-routing.md",
     "Source file modified: skills/tdq-conventions/references/reminder-codes.md",
+    "Source file modified: skills/tdq-conventions/references/soul.md",
     "Source file modified: skills/tdq-conventions/references/subagent-tuning.md",
     "Source file modified: skills/tdq-intake/SKILL.md",
     "Source file modified: skills/tdq-intake/references/analyze-full.md",
@@ -28,6 +34,8 @@
     "Source file modified: skills/tdq-intake/references/quick-lane-qc.md",
     "Source file modified: skills/tdq-intake/references/quick-lane.md",
     "Source file modified: skills/tdq-plan/SKILL.md",
+    "Source file modified: skills/tdq-setup/SKILL.md",
+    "Source file modified: skills/tdq-setup/references/mcp-first-guide.md",
     "Source file modified: skills/tdq-spec/SKILL.md",
     "Source file modified: skills/tdq-spec/references/archify-ba.md",
     "Source file modified: skills/tdq-spec/references/spec-template-huong-dan.md",
@@ -39,5 +47,5 @@
     "Source file added: skills/tdq-conventions/references/ultracode.md",
     "Source file added: skills/tdq-intake/references/quick-lane-mini.md"
   ],
-  "checked_at": "2026-11-03T04:00:58Z"
+  "checked_at": "2026-11-03T13:28:20Z"
 }

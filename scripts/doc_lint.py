@@ -71,7 +71,9 @@ SKILL_LINE_LIMITS = {
     "tdq-status": 60,
     # 2026-08-23: new skill. The setup ladder plus the runbook for re-configuring a machine
     # are read whole when the ladder reports a missing rung, so they stay in the body.
-    "tdq-setup": 130,
+    # 2026-11-03: 130 → 132. Tool-composition routing is tier 1 in soul.md;
+    # keep it in the body and raise the tier-3 line cap rather than compress the rule.
+    "tdq-setup": 132,
     # 2026-08-15: 120 → 130. The one-sweep rule (§10) is a runtime-tier rule, so it has to
     # sit in the skill body to be loaded every turn. Soul ranks runtime above context cost,
     # hence 10 more lines to keep the rule readable instead of squeezing it to fit.
@@ -103,7 +105,9 @@ SKILL_LINE_LIMITS = {
     # forward slash, which lane opens one). It is read on every request, so the short form
     # stays in the body; the commands and the full table live in
     # skills/tdq-intake/references/nhanh-request.md.
-    "tdq-conventions": 192,
+    # 2026-11-03: 192 → 209. Tool-composition rules are tier 1 in soul.md;
+    # runtime rules outrank the tier-3 line cap and must remain readable in the body.
+    "tdq-conventions": 209,
     # The recovery skill: its 7 steps plus the hard "lose no data" rule block must sit in the
     # skill body, because a weak model that skips the reference runs the very command that
     # destroys the whole request.

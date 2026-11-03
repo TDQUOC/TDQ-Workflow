@@ -1,0 +1,53 @@
+--- a/scripts/doc_lint.py
++++ b/scripts/doc_lint.py
+@@ -71,7 +71,9 @@
+     "tdq-status": 60,
+     # 2026-08-23: new skill. The setup ladder plus the runbook for re-configuring a machine
+     # are read whole when the ladder reports a missing rung, so they stay in the body.
+-    "tdq-setup": 130,
++    # 2026-11-03: 130 → 132. Tool-composition routing is tier 1 in soul.md;
++    # keep it in the body and raise the tier-3 line cap rather than compress the rule.
++    "tdq-setup": 132,
+     # 2026-08-15: 120 → 130. The one-sweep rule (§10) is a runtime-tier rule, so it has to
+     # sit in the skill body to be loaded every turn. Soul ranks runtime above context cost,
+     # hence 10 more lines to keep the rule readable instead of squeezing it to fit.
+@@ -103,7 +105,9 @@
+     # forward slash, which lane opens one). It is read on every request, so the short form
+     # stays in the body; the commands and the full table live in
+     # skills/tdq-intake/references/nhanh-request.md.
+-    "tdq-conventions": 192,
++    # 2026-11-03: 192 → 209. Tool-composition rules are tier 1 in soul.md;
++    # runtime rules outrank the tier-3 line cap and must remain readable in the body.
++    "tdq-conventions": 209,
+     # The recovery skill: its 7 steps plus the hard "lose no data" rule block must sit in the
+     # skill body, because a weak model that skips the reference runs the very command that
+     # destroys the whole request.
+--- a/scripts/tdq_skill_eval.py
++++ b/scripts/tdq_skill_eval.py
+@@ -253,7 +253,7 @@
+ 
+ def scorer_identity(scorer: Any, rubric_version: str) -> str:
+     """Bind a source-defined scorer and rubric into the plan's locked scorer_version."""
+-    # ponytail: source-only functions; stateful/decorated scorers need a dependency manifest.
++    # ponytail: source-only functions, upgrade: add a dependency manifest when stateful/decorated scorers are needed.
+     if (not inspect.isfunction(scorer) or scorer.__closure__ or scorer.__defaults__
+             or scorer.__kwdefaults__ or hasattr(scorer, "__wrapped__")):
+         raise ValueError("unsupported_scorer_identity")
+@@ -342,7 +342,7 @@
+     quota = float(profile.get("quota_usd", float("inf")))
+     if math.isnan(quota) or quota < 0:
+         raise ValueError("invalid_cost_quota")
+-    # ponytail: adapters have no enforceable cost cap; add host-side caps before finite budgets.
++    # ponytail: adapters have no enforceable cost cap, upgrade: add host-side caps when finite budgets are needed.
+     if math.isfinite(quota):
+         raise ValueError("cost_quota_unavailable")
+ 
+@@ -431,7 +431,7 @@
+ 
+ 
+ def cmd_run(args: argparse.Namespace) -> int:
+-    # ponytail: CLI has no registered scorer; use run_eval(scorer=...) until one exists.
++    # ponytail: CLI has no registered scorer, upgrade: wire a registered scorer when available; use run_eval(scorer=...) meanwhile.
+     _log("run blocked", muc="canh-bao", reason="missing_scorer")
+     print(json.dumps({"status": "blocked", "reason": "missing_scorer"}, indent=2))
+     return 1

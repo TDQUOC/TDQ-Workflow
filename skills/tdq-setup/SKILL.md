@@ -5,10 +5,10 @@ description: Install and prove every dependency the workflow searches with: 7 ru
 
 # TDQ Setup — installing and proving the workflow's three search layers
 <!-- muc-luc-dong:
-  The one hard rule of this skill=27-32 ·
-  The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=33-71 ·
-  Rung 5 — a conflicting plugin hook=72-79 ·
-  Runbook — setting a machine up, and re-configuring it later=80
+  The one hard rule of this skill=27-39 ·
+  The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`=40-78 ·
+  Rung 5 — a conflicting plugin hook=79-86 ·
+  Runbook — setting a machine up, and re-configuring it later=87
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md).
@@ -29,6 +29,13 @@ in 0.58.0 — measured, no significant loss without them.
 **Never install anything, never edit another plugin's files, without the user saying yes first.**
 `${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py` only ever DIAGNOSES and prints the exact command. A human approves, then the
 command runs. This holds even when a rung is trivially fixable and even when the build is blocked.
+For each tool task, inspect current inventory/schema, plan internal steps and probe the configured
+connection. Recover installed tools within existing authorization; do not repeat approval for an
+already authorized action. Missing tools (including LSP) require official-source research and a
+user-level proposal with permissions, verification and uninstall, then approval before install.
+Web uses Chrome MCP; native dialogs use agent-desktop only when needed. Prefer direct upload_file,
+verify handoff identity and final output, and observe uncertain delivery before retrying.
+Self-check: no permission expansion, duplicate effects or success claimed without evidence.
 
 ## The ladder — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_lsp.py" check`
 

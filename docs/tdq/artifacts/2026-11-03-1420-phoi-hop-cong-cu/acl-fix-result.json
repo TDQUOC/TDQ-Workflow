@@ -1,0 +1,18 @@
+{
+  "task": "ACL1.1",
+  "status": "focused_full_regression_and_live_apply_pass",
+  "comparator": "_acl_instruction_bang_nhau(trai, phai)",
+  "preserved": ["owner SID", "group SID", "control/defaulted flags", "DACL absent/null/empty", "ACL revision", "ordered ACE bytes and flags"],
+  "ignored_representation": ["storage offsets", "unused padding"],
+  "malformed_descriptor": "OSError before native pointer validation",
+  "native_finding": "SetFileSecurityW with control 0x8404 returned 0x8004; adding AUTO_INHERIT_REQ only to call input preserved readback 0x8404",
+  "native_fixtures": ["protected DACL", "unprotected inherited DACL", "different-parent roundtrip"],
+  "focused_command": "python -m pytest tests/test_claude_md_core.py tests/test_auto_update_setup.py -q",
+  "root_focused": {"passed": 51, "subtests_passed": 142},
+  "team_check": "PASS ACL1.1",
+  "integration": "incremental uncommitted patch; original worktree patch retained; own worktree cleaned",
+  "live_instruction_applied": true,
+  "full_suite_after_acl": {"tests_run": 4138, "passed": 4126, "skipped": 12, "failures": 0, "details_complete": true},
+  "independent_verification": "Target and backup hashes match; full-suite source snapshots match current writer and test; 8 evidence file hashes match",
+  "limits": ["POSIX not executed on this Windows host", "owner/group/DACL only, SACL not captured", "full suite 4131 PASS predates this ACL fix", "behavioral eval remains INCONCLUSIVE"]
+}

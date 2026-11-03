@@ -524,10 +524,11 @@ class DonMay(unittest.TestCase):
 
 
 class TestKhoiHuongDan(unittest.TestCase):
-    def test_khoi_huong_dan_co_cac_buoc_lsp_va_duoi_25_dong(self):
+    def test_khoi_huong_dan_co_cac_buoc_lsp_va_gioi_han_dong(self):
         huong_dan = tdq_setup.khoi_huong_dan()
         dong = huong_dan.splitlines()
-        self.assertLessEqual(len(dong), 40, f"KHOI_HUONG_DAN quá dài: {len(dong)} dòng")
+        # 2026-11-03: verified tool completion and permission boundaries are tier 1.
+        self.assertLessEqual(len(dong), 50, f"KHOI_HUONG_DAN quá dài: {len(dong)} dòng")
         self.assertIn("mcp__lsp__start_lsp", huong_dan)
         self.assertIn("open_document", huong_dan)
         self.assertIn("list_symbols", huong_dan)

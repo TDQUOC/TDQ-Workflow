@@ -1,0 +1,916 @@
+diff --git a/docs/claude-md-mau.md b/docs/claude-md-mau.md
+index e81294c..282dce3 100644
+--- a/docs/claude-md-mau.md
++++ b/docs/claude-md-mau.md
+@@ -43,9 +43,9 @@ Quy ước chung (working log, failover tavily, định tuyến plugin, QC): `sk
+ Lane, tầng `nhỏ`, khuôn spec/plan, mode thực thi: các skill `tdq-*`.
+ 
+ ## 8. Plugin ngoài
+-Mọi plugin đã bật sẵn ở user scope → không phải xin phép để dùng tool. Vẫn HỎI trước khi:
+-cài plugin/marketplace MỚI; chạy OAuth hay nhập credential; gọi tool GHI/XOÁ ra dịch vụ
+-ngoài (tạo page Notion, ghi DB, deploy, upload…).
++Kiểm inventory và kết nối thực; không giả định plugin đã bật. Dùng tool trong quyền đã cấp,
++không hỏi lại hành động user yêu cầu rõ. HỎI trước cài mới, OAuth/credential, thao tác phá hủy
++hoặc mở rộng file/dịch vụ/người nhận. Không đổi tool để vượt từ chối quyền.
+ 
+ ## 9. Bộ nhớ dài hạn
+ Việc quan trọng (kiến trúc, sở thích user, lỗi tái diễn) → search mem0
+@@ -60,17 +60,17 @@ Chi tiết: skill `mem0-memory`.
+   Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
+   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
+ - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
+-- Kiểm cả 7 bậc và cài phần thiếu: `python3 <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
++- Kiểm các bậc bằng `python <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_lsp.py check`; thiếu công cụ thì research nguồn chính thức và đề xuất cài user-level, chờ user duyệt. Chỉ chạy `python <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py` khi phạm vi setup đã được duyệt (Windows có thể dùng `py -3`).
+   Luật đầy đủ kèm số đo: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+ - Khảo sát code 3 chiều (Triangulation Code Exploration) trong phase analyze/quick_analyze: Quét rộng bằng Grep tự do không giới hạn quota. Đào sâu cấu trúc bằng LSP (find_references, go_to_definition) và quét vỡ lan bằng Graphify (affected 2 bước). Lập bảng đối chiếu vùng chạm để không bỏ sót mã nguồn khi refactor hoặc mở rộng.
+-- Toàn quyền tự quyết xử lý LSP: Agent có toàn quyền áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` khi mở request cho tài liệu, nghiên cứu, hoặc cài MCP. Tương tự khi kiểm chứng chỉ có tham chiếu nội tệp trong dự án phát triển, không dừng lại hỏi người dùng. Khi thiếu Language Server hoặc phụ thuộc của LSP, Agent tự tìm kiếm và cài đặt dependency (qua `npm i -g`, `uv tool install`, `pipx`, `brew`...). Môi trường được cấu hình tự động để hoạt động đúng và đủ.
++- Tự quyết xử lý LSP: áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` cho tài liệu/nghiên cứu/cài MCP hoặc tham chiếu nội tệp khi phù hợp. Phục hồi công cụ đã cài trong quyền hiện có; thiếu Language Server/dependency thì tìm nguồn chính thức, đề xuất cài user-level và chờ user duyệt, không tự cài hoặc nới quyền.
+ 
+ ## Nguyên tắc TDQ Workflow bắt buộc
+ 
+ - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
+ - Yêu cầu chứa '_tdq_direct' → tự động phân tích & tìm kiếm mã nguồn, lập mini-plan và chỉ dừng ở 1 cổng duyệt mini-plan (không hỏi chọn pipeline, không phỏng vấn).
+ - Ngoại lệ Refactor & Kiến trúc sạch (Rung 1): Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc Clean Architecture/SOLID, cấu trúc sạch và tính mở rộng module đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các tầng/lớp hợp lý thành hàm phẳng nếu làm vỡ chủ đích thiết kế.
+-- Tự phục hồi môi trường (Self-healing): Khi gặp lỗi 'Python was not found' hoặc lỗi hook, Agent tự động chạy lệnh setup bằng Python hiện có (`python <đường dẫn thư mục cài TDQ-Workflow>/scripts/tdq_setup.py` hoặc `py -3 ...`) để tự vá shim và sửa môi trường.
++- Tự phục hồi môi trường (Self-healing): lỗi 'Python was not found' thì dùng Python đã cài (`python` hoặc `py -3`). Chẩn đoán trước; chỉ sửa kết nối/shim trong quyền đã cấp. Không chạy setup toàn phần nếu sẽ cài mới hoặc đổi permission/host ngoài phạm vi.
+ - Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-intake/SKILL.md`, thay `${CLAUDE_PLUGIN_ROOT}` bằng `<đường dẫn thư mục cài TDQ-Workflow>`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
+ - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
+ - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
+@@ -78,10 +78,20 @@ Chi tiết: skill `mem0-memory`.
+ ## Nguyên tắc Ưu tiên MCP & Bộ kỹ năng MCP (MCP-First)
+ 
+ - Luôn ưu tiên dùng MCP và bộ skill của MCP (nếu có); ưu tiên lập phương án dùng MCP trong spec/plan để giải quyết trọn vẹn yêu cầu người dùng.
+-- Kiểm tra kết nối trước (Pre-flight check): Trước khi gọi hoặc lập plan dùng tool MCP, phải kiểm tra trạng thái kết nối hoặc cổng service (ví dụ: port 9222 cho Chrome DevTools, cổng/môi trường cho Roblox/Unity...). Nếu có MCP mà chưa kết nối được, BẮT BUỘC hướng dẫn người dùng cách bật/kết nối trước khi thực thi hoặc báo lỗi.
++- Kiểm tra kết nối trước (Pre-flight check): kiểm inventory, schema và endpoint cấu hình thực trước thao tác MCP. Nếu chưa kết nối, tự phục hồi công cụ đã cài trong quyền hiện có rồi probe lại; cần thao tác ngoài quyền thì hướng dẫn user. Không suy trạng thái runtime từ cấu hình.
+ - Ví dụ: Khi phát triển mã nguồn Roblox hoặc Unity, luôn kiểm tra sự hiện diện của MCP và bộ skill/tool của MCP tương ứng để thực hiện và kiểm chứng thay vì thao tác mù mờ.
+ Chi tiết cẩm nang: `<đường dẫn thư mục cài TDQ-Workflow>/skills/tdq-setup/references/mcp-first-guide.md`.
+ 
++## Tự chủ phối hợp công cụ có kiểm chứng
++
++- Mọi task: xác định mục tiêu, input, đích và quyền; lập bước nội bộ ngắn với tool, output và điều kiện xong. Không yêu cầu xuất suy luận kín. Chỉ hỏi thông tin thiếu làm đổi kết quả; giữ gate TDQ.
++- Khám phá tool/skill thực trong phiên. Web ưu tiên Chrome MCP; native app/dialog dùng agent-desktop khi cần; file/CLI dùng tool chuyên biệt. Một tool đủ thì không ép phối hợp nhiều tool; chọn đường ít bước nhất vẫn đúng và có quyền.
++- Ưu tiên upload_file trực tiếp nếu schema có và browser host đọc được file. Khi chuyển browser/native: kiểm trang, process/window, file và đích bằng quan sát/ref mới; xác minh attachment trước gửi. handle_dialog không mặc định điều khiển Windows picker.
++- Download/Save As phải kiểm file cuối tồn tại, loại và nội dung phù hợp; click thành công chưa phải hoàn tất. Chờ event/tool wait nếu có, không poll dồn dập.
++- Delivery gửi/upload chưa rõ: quan sát đích trước, không lặp thao tác khi chưa biết kết quả. Retry chỉ khi có dữ kiện mới/điều kiện đổi; không tiến triển thì đổi phương án hợp lệ hoặc báo blocker. Không đổi tool để vượt hành động đã bị từ chối.
++- Thiếu tool: research nguồn chính thức, kiểm OS/quyền, đề xuất lệnh cài user-level kèm kiểm chứng và gỡ; chờ user duyệt. Không tự cài mới, đổi permission, OAuth hoặc nới phạm vi file/dịch vụ/người nhận.
++- Tự kiểm từng bước và output cuối; báo rõ hoàn tất/partial/blocker bằng bằng chứng. Chất lượng > runtime > context cost. ĐÚNG: upload trực tiếp, kiểm attachment, gửi một lần, kiểm file tải. SAI: gửi lại khi timeout chưa rõ hoặc báo xong chỉ từ click.
++
+ ## Quy tắc Git và Attribution bắt buộc
+ 
+ - Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
+diff --git a/scripts/tdq_setup.py b/scripts/tdq_setup.py
+index 32a0dba..57a90a3 100644
+--- a/scripts/tdq_setup.py
++++ b/scripts/tdq_setup.py
+@@ -29,6 +29,7 @@ graphify graph) under a pid lock, ending in the readiness stamp
+ Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
+ """
+ import argparse
++import ctypes
+ import hashlib
+ import io
+ import json
+@@ -37,6 +38,8 @@ import platform
+ import re
+ import shlex
+ import shutil
++import stat
++import struct
+ import subprocess
+ import sys
+ import tarfile
+@@ -994,17 +997,17 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
+   Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
+   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
+ - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
+-- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
++- Kiểm các bậc bằng `python {goc}/scripts/tdq_lsp.py check`; thiếu công cụ thì research nguồn chính thức và đề xuất cài user-level, chờ user duyệt. Chỉ chạy `python {goc}/scripts/tdq_setup.py` khi phạm vi setup đã được duyệt (Windows có thể dùng `py -3`).
+   Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
+ - Khảo sát code 3 chiều (Triangulation Code Exploration) trong phase analyze/quick_analyze: Quét rộng bằng Grep tự do không giới hạn quota. Đào sâu cấu trúc bằng LSP (find_references, go_to_definition) và quét vỡ lan bằng Graphify (affected 2 bước). Lập bảng đối chiếu vùng chạm để không bỏ sót mã nguồn khi refactor hoặc mở rộng.
+-- Toàn quyền tự quyết xử lý LSP: Agent có toàn quyền áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` khi mở request cho tài liệu, nghiên cứu, hoặc cài MCP. Tương tự khi kiểm chứng chỉ có tham chiếu nội tệp trong dự án phát triển, không dừng lại hỏi người dùng. Khi thiếu Language Server hoặc phụ thuộc của LSP, Agent tự tìm kiếm và cài đặt dependency (qua `npm i -g`, `uv tool install`, `pipx`, `brew`...). Môi trường được cấu hình tự động để hoạt động đúng và đủ.
++- Tự quyết xử lý LSP: áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` cho tài liệu/nghiên cứu/cài MCP hoặc tham chiếu nội tệp khi phù hợp. Phục hồi công cụ đã cài trong quyền hiện có; thiếu Language Server/dependency thì tìm nguồn chính thức, đề xuất cài user-level và chờ user duyệt, không tự cài hoặc nới quyền.
+ 
+ ## Nguyên tắc TDQ Workflow bắt buộc
+ 
+ - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
+ - Yêu cầu chứa '_tdq_direct' → tự động phân tích & tìm kiếm mã nguồn, lập mini-plan và chỉ dừng ở 1 cổng duyệt mini-plan (không hỏi chọn pipeline, không phỏng vấn).
+ - Ngoại lệ Refactor & Kiến trúc sạch (Rung 1): Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc Clean Architecture/SOLID, cấu trúc sạch và tính mở rộng module đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các tầng/lớp hợp lý thành hàm phẳng nếu làm vỡ chủ đích thiết kế.
+-- Tự phục hồi môi trường (Self-healing): Khi gặp lỗi 'Python was not found' hoặc lỗi hook, Agent tự động chạy lệnh setup bằng Python hiện có (`python {goc}/scripts/tdq_setup.py` hoặc `py -3 ...`) để tự vá shim và sửa môi trường.
++- Tự phục hồi môi trường (Self-healing): lỗi 'Python was not found' thì dùng Python đã cài (`python` hoặc `py -3`). Chẩn đoán trước; chỉ sửa kết nối/shim trong quyền đã cấp. Không chạy setup toàn phần nếu sẽ cài mới hoặc đổi permission/host ngoài phạm vi.
+ - Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `{goc}/skills/tdq-intake/SKILL.md`, thay `{bien_plugin}` bằng `{goc}`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
+ - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
+ - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
+@@ -1012,10 +1015,20 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
+ ## Nguyên tắc Ưu tiên MCP & Bộ kỹ năng MCP (MCP-First)
+ 
+ - Luôn ưu tiên dùng MCP và bộ skill của MCP (nếu có); ưu tiên lập phương án dùng MCP trong spec/plan để giải quyết trọn vẹn yêu cầu người dùng.
+-- Kiểm tra kết nối trước (Pre-flight check): Trước khi gọi hoặc lập plan dùng tool MCP, phải kiểm tra trạng thái kết nối hoặc cổng service (ví dụ: port 9222 cho Chrome DevTools, cổng/môi trường cho Roblox/Unity...). Nếu có MCP mà chưa kết nối được, BẮT BUỘC hướng dẫn người dùng cách bật/kết nối trước khi thực thi hoặc báo lỗi.
++- Kiểm tra kết nối trước (Pre-flight check): kiểm inventory, schema và endpoint cấu hình thực trước thao tác MCP. Nếu chưa kết nối, tự phục hồi công cụ đã cài trong quyền hiện có rồi probe lại; cần thao tác ngoài quyền thì hướng dẫn user. Không suy trạng thái runtime từ cấu hình.
+ - Ví dụ: Khi phát triển mã nguồn Roblox hoặc Unity, luôn kiểm tra sự hiện diện của MCP và bộ skill/tool của MCP tương ứng để thực hiện và kiểm chứng thay vì thao tác mù mờ.
+ Chi tiết cẩm nang: `{goc}/skills/tdq-setup/references/mcp-first-guide.md`.
+ 
++## Tự chủ phối hợp công cụ có kiểm chứng
++
++- Mọi task: xác định mục tiêu, input, đích và quyền; lập bước nội bộ ngắn với tool, output và điều kiện xong. Không yêu cầu xuất suy luận kín. Chỉ hỏi thông tin thiếu làm đổi kết quả; giữ gate TDQ.
++- Khám phá tool/skill thực trong phiên. Web ưu tiên Chrome MCP; native app/dialog dùng agent-desktop khi cần; file/CLI dùng tool chuyên biệt. Một tool đủ thì không ép phối hợp nhiều tool; chọn đường ít bước nhất vẫn đúng và có quyền.
++- Ưu tiên upload_file trực tiếp nếu schema có và browser host đọc được file. Khi chuyển browser/native: kiểm trang, process/window, file và đích bằng quan sát/ref mới; xác minh attachment trước gửi. handle_dialog không mặc định điều khiển Windows picker.
++- Download/Save As phải kiểm file cuối tồn tại, loại và nội dung phù hợp; click thành công chưa phải hoàn tất. Chờ event/tool wait nếu có, không poll dồn dập.
++- Delivery gửi/upload chưa rõ: quan sát đích trước, không lặp thao tác khi chưa biết kết quả. Retry chỉ khi có dữ kiện mới/điều kiện đổi; không tiến triển thì đổi phương án hợp lệ hoặc báo blocker. Không đổi tool để vượt hành động đã bị từ chối.
++- Thiếu tool: research nguồn chính thức, kiểm OS/quyền, đề xuất lệnh cài user-level kèm kiểm chứng và gỡ; chờ user duyệt. Không tự cài mới, đổi permission, OAuth hoặc nới phạm vi file/dịch vụ/người nhận.
++- Tự kiểm từng bước và output cuối; báo rõ hoàn tất/partial/blocker bằng bằng chứng. Chất lượng > runtime > context cost. ĐÚNG: upload trực tiếp, kiểm attachment, gửi một lần, kiểm file tải. SAI: gửi lại khi timeout chưa rõ hoặc báo xong chỉ từ click.
++
+ ## Quy tắc Git và Attribution bắt buộc
+ 
+ - Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
+@@ -1036,31 +1049,243 @@ def khoi_huong_dan(goc=None):
+                                  bien_plugin="${CLAUDE_PLUGIN_ROOT}")
+ 
+ 
+-def ghim_huong_dan_tool(duong, goc=None):
+-    """Ghim bản ngắn của luật 3 tầng vào instruction user-level, trong một khối có dấu mốc.
++def _doc_instruction(duong):
++    """Snapshot byte + metadata; không theo symlink/reparse point hoặc đọc FIFO."""
++    try:
++        info = os.lstat(duong)
++    except FileNotFoundError:
++        return b"", None
++    if (not stat.S_ISREG(info.st_mode) or
++            getattr(info, "st_file_attributes", 0) & 0x400):
++        raise ValueError("instruction không phải file thường")
++    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
++    fd = os.open(duong, flags)
++    with os.fdopen(fd, "rb") as fh:
++        opened = os.fstat(fh.fileno())
++        if (opened.st_dev, opened.st_ino) != (info.st_dev, info.st_ino):
++            raise OSError("instruction đổi trong lúc mở")
++        data = fh.read()
++        if (_dau_instruction(os.fstat(fh.fileno())) != _dau_instruction(opened) or
++                _dau_instruction(os.lstat(duong)) != _dau_instruction(info)):
++            raise OSError("instruction đổi trong lúc đọc")
++    return data, info
++
++
++def _dau_instruction(info):
++    return None if info is None else (info.st_dev, info.st_ino, info.st_size,
++                                      info.st_mtime_ns, info.st_ctime_ns, info.st_mode)
++
++
++def _noi_instruction(cu, goc):
++    text = cu.decode("utf-8")
++    counts = text.count(MOC_MO), text.count(MOC_DONG)
++    if counts not in ((0, 0), (1, 1)):
++        raise ValueError("marker TDQ:TOOLS thiếu hoặc lặp")
++    if counts == (1, 1) and text.index(MOC_MO) > text.index(MOC_DONG):
++        raise ValueError("marker TDQ:TOOLS đảo thứ tự")
++    match = re.search(rb"\r\n|\r|\n", cu)
++    newline = match.group() if match else b"\n"
++    khoi = f"{MOC_MO}\n{khoi_huong_dan(goc)}\n{MOC_DONG}".encode().replace(b"\n", newline)
++    if counts == (1, 1):
++        start, end = cu.index(MOC_MO.encode()), cu.index(MOC_DONG.encode()) + len(MOC_DONG)
++        return cu[:start] + khoi + cu[end:]
++    separator = b"" if cu in (b"", b"\xef\xbb\xbf") else newline * 2
++    return cu + separator + khoi + newline
++
++
++def _mien_acl(data, offset, size):
++    if offset < 20 or offset % 4 or size < 0 or offset + size > len(data):
++        raise OSError("ACL descriptor vượt biên")
++    return data[offset:offset + size]
++
++
++def _sid_acl(data, offset):
++    if not offset:
++        return None
++    header = _mien_acl(data, offset, 8)
++    if header[0] != 1 or header[1] > 15:
++        raise OSError("ACL SID không hợp lệ")
++    return _mien_acl(data, offset, 8 + 4 * header[1])
+ 
+-    Dấu mốc là thứ làm cho lệnh này chạy lại được: ghi lần hai THAY khối cũ thay vì nối thêm một
+-    khối nữa, và không bao giờ đụng vào phần user tự viết quanh nó. Đây là cách duy nhất còn lại —
+-    Claude Code không có cơ chế nào để một plugin ghi đè hay tắt một phần instruction của user.
+ 
+-    -> True khi file đổi nội dung, False khi đã đúng sẵn.
+-    """
+-    khoi = f"{MOC_MO}\n{khoi_huong_dan(goc)}\n{MOC_DONG}"
+-    cu = ""
+-    if os.path.isfile(duong):
+-        with io.open(duong, encoding="utf-8", errors="replace") as fh:
+-            cu = fh.read()
+-    if MOC_MO in cu and MOC_DONG in cu:
+-        truoc, con_lai = cu.split(MOC_MO, 1)
+-        _, sau = con_lai.split(MOC_DONG, 1)
+-        moi = truoc + khoi + sau
+-    else:
+-        moi = (cu.rstrip() + "\n\n" + khoi + "\n") if cu.strip() else khoi + "\n"
+-    if moi == cu:
+-        return False
+-    os.makedirs(os.path.dirname(os.path.abspath(duong)), exist_ok=True)
+-    with io.open(duong, "w", encoding="utf-8", newline="\n") as fh:
+-        fh.write(moi)
++def _danh_sach_acl(data, offset):
++    if not offset:
++        return None
++    revision, _, size, count, _ = struct.unpack("<BBHHH", _mien_acl(data, offset, 8))
++    if revision not in (2, 4) or size < 8:
++        raise OSError("ACL header không hợp lệ")
++    acl = _mien_acl(data, offset, size)
++    aces, cursor = [], 8
++    for _ in range(count):
++        if cursor + 4 > size:
++            raise OSError("ACL ACE thiếu header")
++        ace_size = int.from_bytes(acl[cursor + 2:cursor + 4], "little")
++        if ace_size < 4 or ace_size % 4 or cursor + ace_size > size:
++            raise OSError("ACL ACE vượt biên")
++        aces.append(acl[cursor:cursor + ace_size])
++        cursor += ace_size
++    if os.name == "nt":
++        valid = ctypes.WinDLL("advapi32", use_last_error=True).IsValidAcl
++        valid.argtypes, valid.restype = [ctypes.c_void_p], ctypes.c_int
++        if not valid(ctypes.create_string_buffer(acl)):
++            raise OSError("ACL không hợp lệ trên Windows")
++    return revision, tuple(aces)
++
++
++def _nghia_acl_instruction(data):
++    if data is None:
++        return None
++    if not isinstance(data, bytes) or len(data) < 20:
++        raise OSError("ACL descriptor thiếu header")
++    revision, resource, control, owner, group, sacl, dacl = struct.unpack("<BBHIIII", data[:20])
++    if revision != 1 or not control & 0x8000:
++        raise OSError("ACL descriptor không self-relative")
++    if (sacl and not control & 0x10) or (dacl and not control & 4):
++        raise OSError("ACL offset không khớp cờ present")
++    result = (revision, resource if control & 0x4000 else 0, control,
++              _sid_acl(data, owner), _sid_acl(data, group),
++              _danh_sach_acl(data, sacl), _danh_sach_acl(data, dacl))
++    if os.name == "nt":
++        valid = ctypes.WinDLL("advapi32", use_last_error=True).IsValidSecurityDescriptor
++        valid.argtypes, valid.restype = [ctypes.c_void_p], ctypes.c_int
++        if not valid(ctypes.create_string_buffer(data)):
++            raise OSError("ACL descriptor không hợp lệ trên Windows")
++    return result
++
++
++def _acl_instruction_bang_nhau(trai, phai):
++    """So semantics; giữ control, SID, thứ tự/flags ACE; bỏ offset và vùng dư."""
++    return _nghia_acl_instruction(trai) == _nghia_acl_instruction(phai)
++
++
++def _acl_instruction(duong, descriptor=None):
++    """Windows owner/group/DACL, gồm cờ protected; không cần package ngoài."""
++    if os.name != "nt":
++        return None
++    from ctypes import wintypes
++    api = ctypes.WinDLL("advapi32", use_last_error=True)
++    get = api.GetFileSecurityW
++    get.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_void_p,
++                    wintypes.DWORD, ctypes.POINTER(wintypes.DWORD)]
++    get.restype = wintypes.BOOL
++    if descriptor is None:
++        size = wintypes.DWORD()
++        get(duong, 7, None, 0, ctypes.byref(size))
++        if not size.value:
++            raise ctypes.WinError(ctypes.get_last_error())
++        buf = ctypes.create_string_buffer(size.value)
++        if not get(duong, 7, buf, size.value, ctypes.byref(size)):
++            raise ctypes.WinError(ctypes.get_last_error())
++        return buf.raw
++    _nghia_acl_instruction(descriptor)
++    control = int.from_bytes(descriptor[2:4], "little")
++    # SetFileSecurityW giữ AUTO_INHERITED chỉ khi kèm AUTO_INHERIT_REQ.
++    # Cờ request chỉ dành cho lời gọi; descriptor gốc vẫn dùng để kiểm readback.
++    requested = control | (0x100 if control & 0x400 else 0)
++    buf = ctypes.create_string_buffer(descriptor[:2] + requested.to_bytes(2, "little") + descriptor[4:])
++    set_security = api.SetFileSecurityW
++    set_security.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_void_p]
++    set_security.restype = wintypes.BOOL
++    flags = 7 | (0x80000000 if control & 0x1000 else 0x20000000)
++    if not set_security(duong, flags, buf):
++        raise ctypes.WinError(ctypes.get_last_error())
++
++
++def _tam_instruction(duong, data, info, acl, suffix):
++    fd, tam = tempfile.mkstemp(prefix=os.path.basename(duong) + suffix,
++                               dir=os.path.dirname(duong))
++    try:
++        with os.fdopen(fd, "wb") as fh:
++            if info is not None:
++                _acl_instruction(tam, acl)
++                if os.name != "nt":
++                    os.fchown(fh.fileno(), info.st_uid, info.st_gid)
++                    os.fchmod(fh.fileno(), stat.S_IMODE(info.st_mode))
++            fh.write(data)
++            fh.flush()
++            os.fsync(fh.fileno())
++        if info is not None and os.name == "nt":
++            os.chmod(tam, stat.S_IMODE(info.st_mode))
++        with io.open(tam, "rb") as fh:
++            if fh.read() != data:
++                raise OSError("file tạm không khớp dữ liệu")
++        if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(tam), acl):
++            raise OSError("ACL file tạm không khớp instruction")
++        return tam
++    except BaseException:
++        os.unlink(tam)
++        raise
++
++
++def _khoi_phuc_instruction(duong, cu, info, acl, staged, backup):
++    restore = None
++    try:
++        current = os.lstat(duong)
++        if ((current.st_dev, current.st_ino, current.st_size, current.st_mtime_ns) !=
++                (staged.st_dev, staged.st_ino, staged.st_size, staged.st_mtime_ns)):
++            raise OSError("instruction đổi sau replace")
++        if info is None:
++            os.unlink(duong)
++        else:
++            restore = _tam_instruction(duong, cu, info, acl, ".tmp.")
++            os.replace(restore, duong)
++            with io.open(duong, "rb") as fh:
++                if fh.read() != cu:
++                    raise OSError("khôi phục không khớp")
++            if not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
++                raise OSError("ACL khôi phục không khớp")
++    except OSError as exc:
++        raise OSError(f"{exc}; backup: {backup}") from exc
++    finally:
++        if restore is not None and os.path.lexists(restore):
++            try:
++                os.unlink(restore)
++            except OSError as exc:
++                raise OSError(f"{exc}; backup: {backup}") from exc
++
++
++def _thay_instruction(duong, cu, moi, info, acl):
++    backup = _tam_instruction(duong, cu, info, acl, ".bak.") if info else None
++    tam = _tam_instruction(duong, moi, info, acl, ".tmp.")
++    try:
++        observed, current = _doc_instruction(duong)
++        if observed != cu or _dau_instruction(current) != _dau_instruction(info):
++            raise OSError("instruction đổi đồng thời; không ghi đè")
++        if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
++            raise OSError("ACL instruction đổi đồng thời; không ghi đè")
++        staged = os.lstat(tam)
++        os.replace(tam, duong)
++        try:
++            with io.open(duong, "rb") as fh:
++                if fh.read() != moi:
++                    raise OSError("đọc lại instruction không khớp")
++            if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
++                raise OSError("ACL đọc lại instruction không khớp")
++        except OSError:
++            _khoi_phuc_instruction(duong, cu, info, acl, staged, backup)
++            raise
++    finally:
++        if os.path.lexists(tam):
++            os.unlink(tam)
++
++
++def ghim_huong_dan_tool(duong, goc=None):
++    """Ghim nguyên tử; True khi đổi, False khi no-op, lỗi không tiến stamp."""
++    duong = os.path.abspath(duong)
++    try:
++        cu, info = _doc_instruction(duong)
++        moi = _noi_instruction(cu, goc)
++        if moi == cu:
++            return False
++        acl = _acl_instruction(duong) if info else None
++        os.makedirs(os.path.dirname(duong), exist_ok=True)
++        _thay_instruction(duong, cu, moi, info, acl)
++    except UnicodeError as exc:
++        _log(f"lỗi ghim hướng dẫn tại {duong}: UTF-8 không hợp lệ")
++        raise ValueError(f"{duong}: UTF-8 không hợp lệ") from exc
++    except (OSError, ValueError) as exc:
++        _log(f"lỗi ghim hướng dẫn tại {duong}: {type(exc).__name__}")
++        raise type(exc)(f"{duong}: {exc}") from exc
+     _log(f"ghim hướng dẫn 3 tầng vào {duong}")
+     return True
+ 
+@@ -1197,12 +1422,9 @@ def thuc_hien_setup_bu(project, v_cu, v_moi, goc_plugin=None):
+     except Exception as exc:  # noqa: BLE001
+         _log(f"lỗi kiểm tra shim khi setup bù: {exc}")
+ 
+-    # 2. Đồng bộ instruction CLAUDE.md
+-    try:
+-        ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
+-        ket_qua.append("ghim instruction mới")
+-    except Exception as exc:  # noqa: BLE001
+-        _log(f"lỗi ghim instruction khi setup bù: {exc}")
++    # Required sync: propagate failure so the version stamp remains retryable.
++    ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
++    ket_qua.append("ghim instruction mới")
+ 
+     # 3. Đồng bộ Codex MCP & hook nếu có
+     if _tim_cong_cu("codex"):
+@@ -1246,8 +1468,8 @@ def tu_dong_cap_nhat_khi_doi_phien_ban(project, goc_plugin=None):
+         return False
+     _log(f"tự động cập nhật cho phiên bản {hien_tai} (từ {v_cu}) tại {project}")
+     thuc_hien_setup_bu(project, v_cu, hien_tai, goc_plugin=goc_plugin)
+-    if hien_tai:
+-        ghi_phat_hanh(project, hien_tai)
++    if not hien_tai or not ghi_phat_hanh(project, hien_tai):
++        raise OSError("Setup version stamp was not written; update remains retryable")
+     return True
+ 
+ 
+diff --git a/tests/test_auto_update_setup.py b/tests/test_auto_update_setup.py
+index 4111632..d77c896 100644
+--- a/tests/test_auto_update_setup.py
++++ b/tests/test_auto_update_setup.py
+@@ -77,6 +77,32 @@ class TestAutoUpdateSetup(unittest.TestCase):
+                 tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir)
+                 self.assertFalse(tdq_setup.can_cap_nhat_phien_ban(self.project, self.plugin_dir))
+ 
++    def test_instruction_failure_keeps_stamp_then_retries(self):
++        inst_path = os.path.join(self.project, "CLAUDE.md")
++        tdq_setup.ghi_phat_hanh(self.project, "0.61.0")
++        with open(inst_path, "w", encoding="utf-8") as stream:
++            stream.write(tdq_setup.MOC_MO + "\nprivate text")
++        with mock.patch("tdq_setup.DUONG_INSTRUCTION", inst_path), \
++             mock.patch("tdq_setup.kiem_va_cai_shim_python3", return_value=([], [], [])), \
++             mock.patch("tdq_setup._tim_cong_cu", return_value=None), \
++             mock.patch("tdq_setup.tdq_devtool_mcp.check_session_start", return_value=""), \
++             mock.patch("tdq_setup.kiem_dryrun_hook", return_value=(True, "fixture")), \
++             mock.patch("tdq_setup.don_may", return_value=([], [])):
++            with self.assertRaises(ValueError):
++                tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir)
++            self.assertEqual((tdq_setup.doc_phat_hanh(self.project) or {}).get("phien_ban"), "0.61.0")
++            self.assertTrue(tdq_setup.can_cap_nhat_phien_ban(self.project, self.plugin_dir))
++            with open(inst_path, "w", encoding="utf-8") as stream:
++                stream.write("private text\n")
++            self.assertTrue(tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir))
++            self.assertEqual((tdq_setup.doc_phat_hanh(self.project) or {}).get("phien_ban"), "0.62.0")
++
++    def test_stamp_failure_does_not_report_update_success(self):
++        with mock.patch("tdq_setup.thuc_hien_setup_bu", return_value=[]), \
++             mock.patch("tdq_setup.ghi_phat_hanh", return_value=False):
++            with self.assertRaises(OSError):
++                tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir)
++
+     def test_tach_version(self):
+         self.assertEqual(tdq_setup.tach_version("0.82.0"), (0, 82, 0))
+         self.assertEqual(tdq_setup.tach_version("v1.2.3-rc1"), (1, 2, 3, 1))
+diff --git a/tests/test_claude_md_core.py b/tests/test_claude_md_core.py
+index 86c48d0..a5a8034 100644
+--- a/tests/test_claude_md_core.py
++++ b/tests/test_claude_md_core.py
+@@ -10,9 +10,12 @@ và file ngoài repo không phải thứ test của repo được phép đòi h
+ """
+ 
+ import os
++import struct
+ import sys
+ import tempfile
+ import unittest
++from pathlib import Path
++from unittest import mock
+ 
+ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ CORE = os.path.join(REPO, "docs", "claude-md-mau.md")
+@@ -33,7 +36,9 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
+ # chưa bật plugin. Bản mẫu đo 5.6 KB sau khi đồng bộ lại; cùng phán quyết soul.md: nâng trần.
+ # 2026-10-15: 6000 → 6500. Thêm hướng dẫn khởi tạo LSP và tra symbol vào khối ghim; cùng phán quyết.
+ # 2026-10-20: 6500 → 10000. Bổ sung MCP-First, LSP-Autonomy, Auto-carry dirty zone, Khảo sát 3 chiều và Ngoại lệ Refactor; cùng phán quyết soul.md.
+-MAX_BYTES = 10000
++# 2026-11-03: 10000 -> 11500. Verified completion, permission boundaries and
++# tool handoff are tier-1 rules; measured template is 11181 bytes, not optional detail.
++MAX_BYTES = 11500
+ 
+ # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
+ # Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file
+@@ -198,5 +203,432 @@ class KhoiHuongDanToolTest(unittest.TestCase):
+         self.assertIn("2026-09-28", nguon, "mỗi lần nâng trần phải ghi lý do kèm ngày")
+ 
+ 
++class AclDescriptorTest(unittest.TestCase):
++    @staticmethod
++    def descriptor(reverse=False, sid=18, masks=(0x1f01ff, 0x120089), control=0x8004,
++                   ace_flags=(0, 0), revision=2, dacl="acl", padding=0):
++        owner = bytes((1, 1)) + b"\0\0\0\0\0\5" + struct.pack("<I", sid)
++        group = bytes((1, 1)) + b"\0\0\0\0\0\5" + struct.pack("<I", 32)
++        aces = [struct.pack("<BBHI", 0, flag, 20, mask) + owner
++                for mask, flag in zip(masks, ace_flags)]
++        acl = struct.pack("<BBHHH", revision, 0, 8 + sum(map(len, aces)) + padding,
++                          len(aces), 0) + b"".join(aces) + b"\0" * padding
++        parts = {"owner": owner, "group": group, "dacl": acl}
++        order = ("dacl", "group", "owner") if reverse else ("owner", "group", "dacl")
++        data, offsets = b"", {"dacl": 0}
++        for name in order:
++            if name == "dacl" and dacl != "acl":
++                continue
++            offsets[name] = 20 + len(data)
++            data += parts[name]
++        if dacl == "absent":
++            control &= ~4
++        return struct.pack("<BBHIIII", 1, 0, control, offsets["owner"],
++                           offsets["group"], 0, offsets["dacl"]) + data
++
++    def test_equivalent_storage(self):
++        first, second = self.descriptor(), self.descriptor(reverse=True, padding=8)
++        self.assertNotEqual(first, second)
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(first, second))
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(None, None))
++        self.assertFalse(tdq_setup._acl_instruction_bang_nhau(first, None))
++
++    def test_changed_semantics(self):
++        first = self.descriptor()
++        changes = (self.descriptor(sid=19), self.descriptor(masks=(0x120089, 0x1f01ff)),
++                   self.descriptor(masks=(0x1f01ff, 1)), self.descriptor(ace_flags=(16, 0)),
++                   self.descriptor(control=0x9004), self.descriptor(control=0x8404),
++                   self.descriptor(control=0x8005), self.descriptor(control=0x8006),
++                   self.descriptor(control=0x800c), self.descriptor(revision=4))
++        for change in changes:
++            with self.subTest(change=change):
++                self.assertFalse(tdq_setup._acl_instruction_bang_nhau(first, change))
++        variants = [self.descriptor(dacl="absent"), self.descriptor(dacl="null"),
++                    self.descriptor(masks=(), ace_flags=())]
++        for index, left in enumerate(variants):
++            for right in variants[index + 1:]:
++                self.assertFalse(tdq_setup._acl_instruction_bang_nhau(left, right))
++
++    def test_invalid_descriptors_rejected_even_when_identical(self):
++        valid = self.descriptor()
++        malformed = [valid[:size] for size in range(len(valid))]
++        for offset, data in ((0, b"\2"), (2, b"\4\0"), (4, struct.pack("<I", 9999)),
++                             (20, b"\2"), (21, b"\xff"), (44, b"\3"),
++                             (46, b"\xff\xff"), (48, b"\xff\xff"), (54, b"\xff\xff")):
++            bad = bytearray(valid)
++            bad[offset:offset + len(data)] = data
++            malformed.append(bytes(bad))
++        for bad in malformed:
++            with self.subTest(size=len(bad)), self.assertRaisesRegex(OSError, "ACL"):
++                tdq_setup._acl_instruction_bang_nhau(bad, bad)
++
++
++class SafeWriterTest(unittest.TestCase):
++    def setUp(self):
++        self.tmp = tempfile.TemporaryDirectory()
++        self.addCleanup(self.tmp.cleanup)
++        self.path = Path(self.tmp.name) / "instruction.md"
++        self.log = mock.patch.object(tdq_setup, "_log")
++        self.log.start()
++        self.addCleanup(self.log.stop)
++        self.stamp = mock.patch.object(tdq_setup, "ghi_update_stamp")
++        self.stamp_mock = self.stamp.start()
++        self.addCleanup(self.stamp.stop)
++
++    def write(self, data):
++        self.path.write_bytes(data)
++        return data
++
++    def run_writer(self):
++        return tdq_setup.ghim_huong_dan_tool(str(self.path), "/fixture/tdq")
++
++    def backups(self):
++        return list(self.path.parent.glob(self.path.name + ".bak.*"))
++
++    def test_invalid_utf8_unchanged(self):
++        old = self.write(b"private\xff\n")
++        with self.assertRaisesRegex((ValueError, OSError), "instruction.md"):
++            self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual(list(self.path.parent.iterdir()), [self.path])
++
++    def test_bad_markers_unchanged(self):
++        start, end = tdq_setup.MOC_MO, tdq_setup.MOC_DONG
++        for content in (start, end, end + start, start + start + end,
++                        start + end + end, start + end + start + end):
++            with self.subTest(content=content):
++                old = self.write(content.encode())
++                with self.assertRaisesRegex(ValueError, "instruction.md"):
++                    self.run_writer()
++                self.assertEqual(self.path.read_bytes(), old)
++                self.assertEqual(self.backups(), [])
++
++    def test_replace_preserves_bom_mixed_newlines_and_outside_bytes(self):
++        before = b"\xef\xbb\xbf# private\r\n\n  "
++        after = "\r\n# Cuối\n  \r".encode()
++        old = self.write(before + tdq_setup.MOC_MO.encode() + b"\nold\n"
++                         + tdq_setup.MOC_DONG.encode() + after)
++        self.assertTrue(self.run_writer())
++        block = (tdq_setup.MOC_MO + "\n" + tdq_setup.khoi_huong_dan("/fixture/tdq")
++                 + "\n" + tdq_setup.MOC_DONG).replace("\n", "\r\n").encode()
++        self.assertEqual(self.path.read_bytes(), before + block + after)
++        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
++        self.stamp_mock.assert_not_called()
++
++    def test_append_preserves_all_original_bytes(self):
++        for old in (b"private  \r\n \t", b"\xef\xbb\xbf", b"\n\r\n", b"private"):
++            with self.subTest(old=old):
++                self.write(old)
++                self.assertTrue(self.run_writer())
++                data = self.path.read_bytes()
++                self.assertTrue(data.startswith(old))
++                newline = b"\r\n" if old == b"private  \r\n \t" else b"\n"
++                self.assertIn(tdq_setup.MOC_MO.encode() + newline, data)
++
++    def test_new_file_and_noop_without_io_changes(self):
++        self.assertTrue(self.run_writer())
++        self.assertEqual(self.backups(), [])
++        old, info = self.path.read_bytes(), self.path.stat()
++        with mock.patch.object(tdq_setup.tempfile, "mkstemp", side_effect=AssertionError("write")), \
++                mock.patch.object(tdq_setup.os, "replace", side_effect=AssertionError("replace")):
++            self.assertFalse(self.run_writer())
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual(self.path.stat().st_mtime_ns, info.st_mtime_ns)
++        self.assertEqual(self.path.stat().st_ino, info.st_ino)
++        self.assertEqual(self.backups(), [])
++        self.stamp_mock.assert_not_called()
++
++    def test_unique_backups(self):
++        old = self.write(b"private\n")
++        self.run_writer()
++        first = self.path.read_bytes()
++        tdq_setup.ghim_huong_dan_tool(str(self.path), "/fixture/other")
++        self.assertCountEqual([p.read_bytes() for p in self.backups()], [old, first])
++
++    def test_temp_creation_failure_preserves_source(self):
++        old = self.write(b"private\n")
++        with mock.patch.object(tdq_setup.tempfile, "mkstemp", side_effect=OSError("temp failure")):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++
++    def test_replace_failure_preserves_source_and_backup(self):
++        old = self.write(b"private\n")
++        with mock.patch.object(tdq_setup.os, "replace", side_effect=OSError("replace failure")):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
++        self.assertEqual(len(list(self.path.parent.iterdir())), 2)
++
++    def test_readback_failure_restores_source(self):
++        old = self.write(b"private\n")
++        real_open, replaced = tdq_setup.io.open, []
++        real_replace = tdq_setup.os.replace
++
++        def replace(src, dst):
++            real_replace(src, dst)
++            replaced.append(dst)
++
++        def fail_readback(path, mode="r", *args, **kwargs):
++            if str(path) == str(self.path) and mode == "rb" and len(replaced) == 1:
++                raise OSError("readback failure")
++            return real_open(path, mode, *args, **kwargs)
++
++        with mock.patch.object(tdq_setup.os, "replace", side_effect=replace), \
++                mock.patch.object(tdq_setup.io, "open", side_effect=fail_readback):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
++
++    def test_rollback_failures_report_existing_unique_backup(self):
++        real_open = tdq_setup.io.open
++        real_replace = tdq_setup.os.replace
++        create = tdq_setup._tam_instruction
++        for failure in ("create", "replace", "readback"):
++            with self.subTest(failure=failure):
++                old = self.write(b"private\n")
++                existing = set(self.backups())
++                replaced = []
++
++                def replace(src, dst):
++                    if replaced and failure == "replace":
++                        raise OSError("restore replace failure")
++                    real_replace(src, dst)
++                    replaced.append(dst)
++
++                def stage(*args):
++                    if replaced and failure == "create":
++                        raise OSError("restore creation failure")
++                    return create(*args)
++
++                def fail_readback(path, mode="r", *args, **kwargs):
++                    if str(path) == str(self.path) and mode == "rb" and replaced:
++                        raise OSError("readback failure")
++                    return real_open(path, mode, *args, **kwargs)
++
++                with mock.patch.object(tdq_setup, "_tam_instruction", side_effect=stage), \
++                        mock.patch.object(tdq_setup.os, "replace", side_effect=replace), \
++                        mock.patch.object(tdq_setup.io, "open", side_effect=fail_readback):
++                    with self.assertRaises(OSError) as error:
++                        self.run_writer()
++                backups = set(self.backups()) - existing
++                self.assertEqual(len(backups), 1)
++                backup = backups.pop()
++                self.assertEqual(backup.read_bytes(), old)
++                self.assertIn(str(backup), str(error.exception))
++                self.assertEqual(list(self.path.parent.glob("*.tmp.*")), [])
++
++    def test_staged_acl_mismatch_preserves_original(self):
++        old = self.write(b"private\n")
++        read_acl = tdq_setup._acl_instruction
++
++        def mismatch(path, descriptor=None):
++            if descriptor is None and ".tmp." in str(path):
++                return b"mismatched ACL"
++            return read_acl(path, descriptor)
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=mismatch), \
++                mock.patch.object(tdq_setup.os, "replace") as replace:
++            with self.assertRaisesRegex(OSError, "ACL"):
++                self.run_writer()
++            replace.assert_not_called()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
++        self.assertEqual(list(self.path.parent.glob("*.tmp.*")), [])
++
++    def test_concurrent_acl_change_blocks_replace(self):
++        old = self.write(b"private\n")
++        first = AclDescriptorTest.descriptor()
++        changed = AclDescriptorTest.descriptor(ace_flags=(16, 0))
++        reads = []
++
++        def read_acl(path, descriptor=None):
++            if descriptor is None:
++                reads.append(path)
++                return changed if len(reads) == 4 else first
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl), \
++                mock.patch.object(tdq_setup.os, "replace") as replace:
++            with self.assertRaisesRegex(OSError, "ACL instruction đổi đồng thời"):
++                self.run_writer()
++            replace.assert_not_called()
++        self.assertEqual(self.path.read_bytes(), old)
++
++    def test_readback_acl_change_restores_original(self):
++        old = self.write(b"private\n")
++        first = AclDescriptorTest.descriptor()
++        changed = AclDescriptorTest.descriptor(control=0x9004)
++        reads = []
++
++        def read_acl(path, descriptor=None):
++            if descriptor is None:
++                reads.append(path)
++                return changed if len(reads) == 5 else first
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl):
++            with self.assertRaisesRegex(OSError, "ACL đọc lại instruction không khớp"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual(len(reads), 7)
++
++    def test_backup_write_failure_preserves_source(self):
++        old = self.write(b"private\n")
++        with mock.patch.object(tdq_setup.os, "fsync", side_effect=OSError("backup flush")):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual(list(self.path.parent.iterdir()), [self.path])
++
++    def test_temp_write_failure_preserves_source_and_backup(self):
++        old = self.write(b"private\n")
++        with mock.patch.object(tdq_setup.os, "fsync", side_effect=[None, OSError("temp flush")]):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
++        self.assertEqual(len(list(self.path.parent.iterdir())), 2)
++
++    def test_concurrent_source_change_not_overwritten(self):
++        self.write(b"private\n")
++        create = tdq_setup._tam_instruction
++
++        def change_after_stage(*args):
++            result = create(*args)
++            if args[-1] == ".tmp.":
++                self.path.write_bytes(b"concurrent writer\n")
++            return result
++
++        with mock.patch.object(tdq_setup, "_tam_instruction", side_effect=change_after_stage):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), b"concurrent writer\n")
++
++    def test_equivalent_descriptor_storage_during_staging_and_concurrency(self):
++        self.write(b"private\n")
++        descriptors = [AclDescriptorTest.descriptor(), AclDescriptorTest.descriptor(reverse=True)]
++        reads = []
++
++        def read_acl(path, descriptor=None):
++            if descriptor is None:
++                reads.append(path)
++                return descriptors[len(reads) % 2]
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl):
++            self.assertTrue(self.run_writer())
++        self.assertGreaterEqual(len(reads), 5)
++
++    @unittest.skipUnless(os.name == "nt", "Windows security descriptor")
++    def test_unprotected_inherited_native_roundtrip(self):
++        parent_acl = tdq_setup._acl_instruction(str(self.path.parent))
++        assert isinstance(parent_acl, bytes)
++        parent = bytearray(parent_acl)
++        # Cha protected (0x1000), AUTO_INHERITED (0x400), AUTO_INHERIT_REQ (0x100).
++        # Chỉ cha bị protected; file con mới vẫn nhận ACE kế thừa.
++        parent[2:4] = (int.from_bytes(parent[2:4], "little") | 0x1500).to_bytes(2, "little")
++        dacl = int.from_bytes(parent[16:20], "little")
++        cursor = dacl + 8
++        for _ in range(int.from_bytes(parent[dacl + 4:dacl + 6], "little")):
++            parent[cursor + 1] |= 3
++            cursor += int.from_bytes(parent[cursor + 2:cursor + 4], "little")
++        tdq_setup._acl_instruction(str(self.path.parent), bytes(parent))
++        parent_readback = tdq_setup._acl_instruction(str(self.path.parent))
++        assert isinstance(parent_readback, bytes)
++        self.assertEqual(int.from_bytes(parent_readback[2:4], "little") & 0x1500, 0x1400)
++        self.write(b"private\n")
++        acl = tdq_setup._acl_instruction(str(self.path))
++        assert isinstance(acl, bytes)
++        control = int.from_bytes(acl[2:4], "little")
++        self.assertFalse(control & 0x1000)
++        self.assertTrue(control & 0x400)
++        with tempfile.TemporaryDirectory() as other:
++            target = Path(other) / "different-parent.md"
++            target.write_bytes(b"fixture\n")
++            before = tdq_setup._acl_instruction(str(target))
++            self.assertFalse(tdq_setup._acl_instruction_bang_nhau(acl, before))
++            tdq_setup._acl_instruction(str(target), acl)
++            self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++                acl, tdq_setup._acl_instruction(str(target))))
++        dacl = int.from_bytes(acl[16:20], "little")
++        self.assertGreater(int.from_bytes(acl[dacl + 4:dacl + 6], "little"), 0)
++        self.assertTrue(acl[dacl + 9] & 16)
++        self.assertTrue(self.run_writer())
++        for path in [self.path, *self.backups()]:
++            self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++                acl, tdq_setup._acl_instruction(str(path))))
++
++    def test_mode_acl_and_same_directory_replace(self):
++        self.write(b"private\n")
++        if os.name != "nt":
++            self.path.chmod(0o640)
++        mode = self.path.stat().st_mode
++        acl = tdq_setup._acl_instruction(str(self.path))
++        if os.name == "nt":
++            assert isinstance(acl, bytes)
++            protected = bytearray(acl)
++            control = int.from_bytes(protected[2:4], "little") | 0x1000
++            protected[2:4] = control.to_bytes(2, "little")
++            tdq_setup._acl_instruction(str(self.path), bytes(protected))
++            acl = tdq_setup._acl_instruction(str(self.path))
++            assert isinstance(acl, bytes)
++            self.assertTrue(int.from_bytes(acl[2:4], "little") & 0x1000)
++        replace = tdq_setup.os.replace
++
++        def same_directory(src, dst):
++            self.assertEqual(Path(src).parent, self.path.parent)
++            self.assertEqual(Path(dst), self.path)
++            replace(src, dst)
++
++        with mock.patch.object(tdq_setup.os, "replace", side_effect=same_directory):
++            self.assertTrue(self.run_writer())
++        self.assertEqual(self.path.stat().st_mode, mode)
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++            tdq_setup._acl_instruction(str(self.path)), acl))
++        if os.name == "nt":
++            assert isinstance(acl, bytes)
++            self.assertGreater(len(acl), 20)
++        self.assertFalse(self.run_writer())
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++            tdq_setup._acl_instruction(str(self.path)), acl))
++
++    def test_symlink_or_reparse_rejected_without_read(self):
++        self.write(b"private\n")
++        info = mock.Mock(st_mode=0o120777, st_file_attributes=0x400)
++        with mock.patch.object(tdq_setup.os, "lstat", return_value=info), \
++                mock.patch.object(tdq_setup.os, "open", side_effect=AssertionError("follow link")):
++            with self.assertRaisesRegex(ValueError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), b"private\n")
++
++    def test_readback_mismatch_restores_source(self):
++        old = self.write(b"private\n")
++        real_open, replaced = tdq_setup.io.open, []
++        real_replace = tdq_setup.os.replace
++
++        def replace(src, dst):
++            real_replace(src, dst)
++            replaced.append(dst)
++
++        def mismatch(path, mode="r", *args, **kwargs):
++            if str(path) == str(self.path) and mode == "rb" and len(replaced) == 1:
++                return tdq_setup.io.BytesIO(b"wrong readback")
++            return real_open(path, mode, *args, **kwargs)
++
++        with mock.patch.object(tdq_setup.os, "replace", side_effect=replace), \
++                mock.patch.object(tdq_setup.io, "open", side_effect=mismatch):
++            with self.assertRaisesRegex(OSError, "instruction.md"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual([p.read_bytes() for p in self.backups()], [old])
++
++    def test_nonregular_rejected(self):
++        self.path.mkdir()
++        with self.assertRaisesRegex((ValueError, OSError), "instruction.md"):
++            self.run_writer()
++        self.assertTrue(self.path.is_dir())
++        self.assertEqual(self.backups(), [])
++
++
+ if __name__ == "__main__":
+     unittest.main()

@@ -29,6 +29,7 @@ graphify graph) under a pid lock, ending in the readiness stamp
 Env: TDQ_PROJECT_DIR anchors the project; TDQ_LOG=0 silences the log.
 """
 import argparse
+import ctypes
 import hashlib
 import io
 import json
@@ -37,6 +38,8 @@ import platform
 import re
 import shlex
 import shutil
+import stat
+import struct
 import subprocess
 import sys
 import tarfile
@@ -994,17 +997,17 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
   Tên chính xác đã biết → grep. Vỡ lan, bản đồ kiến trúc → graphify.
   Khái niệm mơ hồ → `graphify query "<câu hỏi>"` song song grep nhiều từ đồng nghĩa, rồi gộp.
 - Mỗi tầng có phụ thuộc riêng và chết trong im lặng; tầng nào chết thì rơi xuống grep.
-- Kiểm cả 7 bậc và cài phần thiếu: `python3 {goc}/scripts/tdq_setup.py` (trên Windows có thể dùng `py -3` hoặc `python` nếu máy chưa có `python3`).
+- Kiểm các bậc bằng `python {goc}/scripts/tdq_lsp.py check`; thiếu công cụ thì research nguồn chính thức và đề xuất cài user-level, chờ user duyệt. Chỉ chạy `python {goc}/scripts/tdq_setup.py` khi phạm vi setup đã được duyệt (Windows có thể dùng `py -3`).
   Luật đầy đủ kèm số đo: `{goc}/skills/tdq-setup/references/uu-tien-tim-kiem.md`.
 - Khảo sát code 3 chiều (Triangulation Code Exploration) trong phase analyze/quick_analyze: Quét rộng bằng Grep tự do không giới hạn quota. Đào sâu cấu trúc bằng LSP (find_references, go_to_definition) và quét vỡ lan bằng Graphify (affected 2 bước). Lập bảng đối chiếu vùng chạm để không bỏ sót mã nguồn khi refactor hoặc mở rộng.
-- Toàn quyền tự quyết xử lý LSP: Agent có toàn quyền áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` khi mở request cho tài liệu, nghiên cứu, hoặc cài MCP. Tương tự khi kiểm chứng chỉ có tham chiếu nội tệp trong dự án phát triển, không dừng lại hỏi người dùng. Khi thiếu Language Server hoặc phụ thuộc của LSP, Agent tự tìm kiếm và cài đặt dependency (qua `npm i -g`, `uv tool install`, `pipx`, `brew`...). Môi trường được cấu hình tự động để hoạt động đúng và đủ.
+- Tự quyết xử lý LSP: áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` cho tài liệu/nghiên cứu/cài MCP hoặc tham chiếu nội tệp khi phù hợp. Phục hồi công cụ đã cài trong quyền hiện có; thiếu Language Server/dependency thì tìm nguồn chính thức, đề xuất cài user-level và chờ user duyệt, không tự cài hoặc nới quyền.
 
 ## Nguyên tắc TDQ Workflow bắt buộc
 
 - Mọi yêu cầu mới từ người dùng BẮT BUỘC phải mở bằng skill `tdq-workflow:tdq-intake` (hoặc `tdq-intake` nếu cài cục bộ) và chạy theo pipeline của TDQ Workflow (quick hoặc full). Tuyệt đối KHÔNG tự ý chuyển sang plan mode của harness (`EnterPlanMode`) khi nhận yêu cầu.
 - Yêu cầu chứa '_tdq_direct' → tự động phân tích & tìm kiếm mã nguồn, lập mini-plan và chỉ dừng ở 1 cổng duyệt mini-plan (không hỏi chọn pipeline, không phỏng vấn).
 - Ngoại lệ Refactor & Kiến trúc sạch (Rung 1): Khi người dùng yêu cầu Refactor, tái cấu trúc hoặc Clean Architecture/SOLID, cấu trúc sạch và tính mở rộng module đứng TRÊN luật phẫu thuật 1 dòng tối thiểu. Cấm tự ý ép gộp các tầng/lớp hợp lý thành hàm phẳng nếu làm vỡ chủ đích thiết kế.
-- Tự phục hồi môi trường (Self-healing): Khi gặp lỗi 'Python was not found' hoặc lỗi hook, Agent tự động chạy lệnh setup bằng Python hiện có (`python {goc}/scripts/tdq_setup.py` hoặc `py -3 ...`) để tự vá shim và sửa môi trường.
+- Tự phục hồi môi trường (Self-healing): lỗi 'Python was not found' thì dùng Python đã cài (`python` hoặc `py -3`). Chẩn đoán trước; chỉ sửa kết nối/shim trong quyền đã cấp. Không chạy setup toàn phần nếu sẽ cài mới hoặc đổi permission/host ngoài phạm vi.
 - Skill báo `Unknown skill` → plugin chưa bật ở project này: đọc `{goc}/skills/tdq-intake/SKILL.md`, thay `{bien_plugin}` bằng `{goc}`, làm theo; nhắc người dùng chạy lệnh setup ở trên để bật plugin.
 - Không được tự ý đổi mode làm việc hiện tại (`EnterPlanMode`, `ExitPlanMode`...).
 - Mọi câu hỏi, lựa chọn option và duyệt gate PHẢI trao đổi trực tiếp trong chat (dạng `1a 2b 3c`, "duyệt spec", "duyệt plan", "duyệt nhanh" hoặc câu tự nhiên). Tuyệt đối CẤM mở popup question UI (`AskUserQuestion`) của agent code.
@@ -1012,9 +1015,19 @@ KHOI_HUONG_DAN = """## Bộ tìm kiếm 3 tầng
 ## Nguyên tắc Ưu tiên MCP & Bộ kỹ năng MCP (MCP-First)
 
 - Luôn ưu tiên dùng MCP và bộ skill của MCP (nếu có); ưu tiên lập phương án dùng MCP trong spec/plan để giải quyết trọn vẹn yêu cầu người dùng.
-- Kiểm tra kết nối trước (Pre-flight check): Trước khi gọi hoặc lập plan dùng tool MCP, phải kiểm tra trạng thái kết nối hoặc cổng service (ví dụ: port 9222 cho Chrome DevTools, cổng/môi trường cho Roblox/Unity...). Nếu có MCP mà chưa kết nối được, BẮT BUỘC hướng dẫn người dùng cách bật/kết nối trước khi thực thi hoặc báo lỗi.
+- Kiểm tra kết nối trước (Pre-flight check): kiểm inventory, schema và endpoint cấu hình thực trước thao tác MCP. Nếu chưa kết nối, tự phục hồi công cụ đã cài trong quyền hiện có rồi probe lại; cần thao tác ngoài quyền thì hướng dẫn user. Không suy trạng thái runtime từ cấu hình.
 - Ví dụ: Khi phát triển mã nguồn Roblox hoặc Unity, luôn kiểm tra sự hiện diện của MCP và bộ skill/tool của MCP tương ứng để thực hiện và kiểm chứng thay vì thao tác mù mờ.
 Chi tiết cẩm nang: `{goc}/skills/tdq-setup/references/mcp-first-guide.md`.
+
+## Tự chủ phối hợp công cụ có kiểm chứng
+
+- Mọi task: xác định mục tiêu, input, đích và quyền; lập bước nội bộ ngắn với tool, output và điều kiện xong. Không yêu cầu xuất suy luận kín. Chỉ hỏi thông tin thiếu làm đổi kết quả; giữ gate TDQ.
+- Khám phá tool/skill thực trong phiên. Web ưu tiên Chrome MCP; native app/dialog dùng agent-desktop khi cần; file/CLI dùng tool chuyên biệt. Một tool đủ thì không ép phối hợp nhiều tool; chọn đường ít bước nhất vẫn đúng và có quyền.
+- Ưu tiên upload_file trực tiếp nếu schema có và browser host đọc được file. Khi chuyển browser/native: kiểm trang, process/window, file và đích bằng quan sát/ref mới; xác minh attachment trước gửi. handle_dialog không mặc định điều khiển Windows picker.
+- Download/Save As phải kiểm file cuối tồn tại, loại và nội dung phù hợp; click thành công chưa phải hoàn tất. Chờ event/tool wait nếu có, không poll dồn dập.
+- Delivery gửi/upload chưa rõ: quan sát đích trước, không lặp thao tác khi chưa biết kết quả. Retry chỉ khi có dữ kiện mới/điều kiện đổi; không tiến triển thì đổi phương án hợp lệ hoặc báo blocker. Không đổi tool để vượt hành động đã bị từ chối.
+- Thiếu tool: research nguồn chính thức, kiểm OS/quyền, đề xuất lệnh cài user-level kèm kiểm chứng và gỡ; chờ user duyệt. Không tự cài mới, đổi permission, OAuth hoặc nới phạm vi file/dịch vụ/người nhận.
+- Tự kiểm từng bước và output cuối; báo rõ hoàn tất/partial/blocker bằng bằng chứng. Chất lượng > runtime > context cost. ĐÚNG: upload trực tiếp, kiểm attachment, gửi một lần, kiểm file tải. SAI: gửi lại khi timeout chưa rõ hoặc báo xong chỉ từ click.
 
 ## Quy tắc Git và Attribution bắt buộc
 
@@ -1036,31 +1049,243 @@ def khoi_huong_dan(goc=None):
                                  bien_plugin="${CLAUDE_PLUGIN_ROOT}")
 
 
+def _doc_instruction(duong):
+    """Snapshot byte + metadata; không theo symlink/reparse point hoặc đọc FIFO."""
+    try:
+        info = os.lstat(duong)
+    except FileNotFoundError:
+        return b"", None
+    if (not stat.S_ISREG(info.st_mode) or
+            getattr(info, "st_file_attributes", 0) & 0x400):
+        raise ValueError("instruction không phải file thường")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(duong, flags)
+    with os.fdopen(fd, "rb") as fh:
+        opened = os.fstat(fh.fileno())
+        if (opened.st_dev, opened.st_ino) != (info.st_dev, info.st_ino):
+            raise OSError("instruction đổi trong lúc mở")
+        data = fh.read()
+        if (_dau_instruction(os.fstat(fh.fileno())) != _dau_instruction(opened) or
+                _dau_instruction(os.lstat(duong)) != _dau_instruction(info)):
+            raise OSError("instruction đổi trong lúc đọc")
+    return data, info
+
+
+def _dau_instruction(info):
+    return None if info is None else (info.st_dev, info.st_ino, info.st_size,
+                                      info.st_mtime_ns, info.st_ctime_ns, info.st_mode)
+
+
+def _noi_instruction(cu, goc):
+    text = cu.decode("utf-8")
+    counts = text.count(MOC_MO), text.count(MOC_DONG)
+    if counts not in ((0, 0), (1, 1)):
+        raise ValueError("marker TDQ:TOOLS thiếu hoặc lặp")
+    if counts == (1, 1) and text.index(MOC_MO) > text.index(MOC_DONG):
+        raise ValueError("marker TDQ:TOOLS đảo thứ tự")
+    match = re.search(rb"\r\n|\r|\n", cu)
+    newline = match.group() if match else b"\n"
+    khoi = f"{MOC_MO}\n{khoi_huong_dan(goc)}\n{MOC_DONG}".encode().replace(b"\n", newline)
+    if counts == (1, 1):
+        start, end = cu.index(MOC_MO.encode()), cu.index(MOC_DONG.encode()) + len(MOC_DONG)
+        return cu[:start] + khoi + cu[end:]
+    separator = b"" if cu in (b"", b"\xef\xbb\xbf") else newline * 2
+    return cu + separator + khoi + newline
+
+
+def _mien_acl(data, offset, size):
+    if offset < 20 or offset % 4 or size < 0 or offset + size > len(data):
+        raise OSError("ACL descriptor vượt biên")
+    return data[offset:offset + size]
+
+
+def _sid_acl(data, offset):
+    if not offset:
+        return None
+    header = _mien_acl(data, offset, 8)
+    if header[0] != 1 or header[1] > 15:
+        raise OSError("ACL SID không hợp lệ")
+    return _mien_acl(data, offset, 8 + 4 * header[1])
+
+
+def _danh_sach_acl(data, offset):
+    if not offset:
+        return None
+    revision, _, size, count, _ = struct.unpack("<BBHHH", _mien_acl(data, offset, 8))
+    if revision not in (2, 4) or size < 8:
+        raise OSError("ACL header không hợp lệ")
+    acl = _mien_acl(data, offset, size)
+    aces, cursor = [], 8
+    for _ in range(count):
+        if cursor + 4 > size:
+            raise OSError("ACL ACE thiếu header")
+        ace_size = int.from_bytes(acl[cursor + 2:cursor + 4], "little")
+        if ace_size < 4 or ace_size % 4 or cursor + ace_size > size:
+            raise OSError("ACL ACE vượt biên")
+        aces.append(acl[cursor:cursor + ace_size])
+        cursor += ace_size
+    if os.name == "nt":
+        valid = ctypes.WinDLL("advapi32", use_last_error=True).IsValidAcl
+        valid.argtypes, valid.restype = [ctypes.c_void_p], ctypes.c_int
+        if not valid(ctypes.create_string_buffer(acl)):
+            raise OSError("ACL không hợp lệ trên Windows")
+    return revision, tuple(aces)
+
+
+def _nghia_acl_instruction(data):
+    if data is None:
+        return None
+    if not isinstance(data, bytes) or len(data) < 20:
+        raise OSError("ACL descriptor thiếu header")
+    revision, resource, control, owner, group, sacl, dacl = struct.unpack("<BBHIIII", data[:20])
+    if revision != 1 or not control & 0x8000:
+        raise OSError("ACL descriptor không self-relative")
+    if (sacl and not control & 0x10) or (dacl and not control & 4):
+        raise OSError("ACL offset không khớp cờ present")
+    result = (revision, resource if control & 0x4000 else 0, control,
+              _sid_acl(data, owner), _sid_acl(data, group),
+              _danh_sach_acl(data, sacl), _danh_sach_acl(data, dacl))
+    if os.name == "nt":
+        valid = ctypes.WinDLL("advapi32", use_last_error=True).IsValidSecurityDescriptor
+        valid.argtypes, valid.restype = [ctypes.c_void_p], ctypes.c_int
+        if not valid(ctypes.create_string_buffer(data)):
+            raise OSError("ACL descriptor không hợp lệ trên Windows")
+    return result
+
+
+def _acl_instruction_bang_nhau(trai, phai):
+    """So semantics; giữ control, SID, thứ tự/flags ACE; bỏ offset và vùng dư."""
+    return _nghia_acl_instruction(trai) == _nghia_acl_instruction(phai)
+
+
+def _acl_instruction(duong, descriptor=None):
+    """Windows owner/group/DACL, gồm cờ protected; không cần package ngoài."""
+    if os.name != "nt":
+        return None
+    from ctypes import wintypes
+    api = ctypes.WinDLL("advapi32", use_last_error=True)
+    get = api.GetFileSecurityW
+    get.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_void_p,
+                    wintypes.DWORD, ctypes.POINTER(wintypes.DWORD)]
+    get.restype = wintypes.BOOL
+    if descriptor is None:
+        size = wintypes.DWORD()
+        get(duong, 7, None, 0, ctypes.byref(size))
+        if not size.value:
+            raise ctypes.WinError(ctypes.get_last_error())
+        buf = ctypes.create_string_buffer(size.value)
+        if not get(duong, 7, buf, size.value, ctypes.byref(size)):
+            raise ctypes.WinError(ctypes.get_last_error())
+        return buf.raw
+    _nghia_acl_instruction(descriptor)
+    control = int.from_bytes(descriptor[2:4], "little")
+    # SetFileSecurityW giữ AUTO_INHERITED chỉ khi kèm AUTO_INHERIT_REQ.
+    # Cờ request chỉ dành cho lời gọi; descriptor gốc vẫn dùng để kiểm readback.
+    requested = control | (0x100 if control & 0x400 else 0)
+    buf = ctypes.create_string_buffer(descriptor[:2] + requested.to_bytes(2, "little") + descriptor[4:])
+    set_security = api.SetFileSecurityW
+    set_security.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_void_p]
+    set_security.restype = wintypes.BOOL
+    flags = 7 | (0x80000000 if control & 0x1000 else 0x20000000)
+    if not set_security(duong, flags, buf):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+
+def _tam_instruction(duong, data, info, acl, suffix):
+    fd, tam = tempfile.mkstemp(prefix=os.path.basename(duong) + suffix,
+                               dir=os.path.dirname(duong))
+    try:
+        with os.fdopen(fd, "wb") as fh:
+            if info is not None:
+                _acl_instruction(tam, acl)
+                if os.name != "nt":
+                    os.fchown(fh.fileno(), info.st_uid, info.st_gid)
+                    os.fchmod(fh.fileno(), stat.S_IMODE(info.st_mode))
+            fh.write(data)
+            fh.flush()
+            os.fsync(fh.fileno())
+        if info is not None and os.name == "nt":
+            os.chmod(tam, stat.S_IMODE(info.st_mode))
+        with io.open(tam, "rb") as fh:
+            if fh.read() != data:
+                raise OSError("file tạm không khớp dữ liệu")
+        if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(tam), acl):
+            raise OSError("ACL file tạm không khớp instruction")
+        return tam
+    except BaseException:
+        os.unlink(tam)
+        raise
+
+
+def _khoi_phuc_instruction(duong, cu, info, acl, staged, backup):
+    restore = None
+    try:
+        current = os.lstat(duong)
+        if ((current.st_dev, current.st_ino, current.st_size, current.st_mtime_ns) !=
+                (staged.st_dev, staged.st_ino, staged.st_size, staged.st_mtime_ns)):
+            raise OSError("instruction đổi sau replace")
+        if info is None:
+            os.unlink(duong)
+        else:
+            restore = _tam_instruction(duong, cu, info, acl, ".tmp.")
+            os.replace(restore, duong)
+            with io.open(duong, "rb") as fh:
+                if fh.read() != cu:
+                    raise OSError("khôi phục không khớp")
+            if not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
+                raise OSError("ACL khôi phục không khớp")
+    except OSError as exc:
+        raise OSError(f"{exc}; backup: {backup}") from exc
+    finally:
+        if restore is not None and os.path.lexists(restore):
+            try:
+                os.unlink(restore)
+            except OSError as exc:
+                raise OSError(f"{exc}; backup: {backup}") from exc
+
+
+def _thay_instruction(duong, cu, moi, info, acl):
+    backup = _tam_instruction(duong, cu, info, acl, ".bak.") if info else None
+    tam = _tam_instruction(duong, moi, info, acl, ".tmp.")
+    try:
+        observed, current = _doc_instruction(duong)
+        if observed != cu or _dau_instruction(current) != _dau_instruction(info):
+            raise OSError("instruction đổi đồng thời; không ghi đè")
+        if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
+            raise OSError("ACL instruction đổi đồng thời; không ghi đè")
+        staged = os.lstat(tam)
+        os.replace(tam, duong)
+        try:
+            with io.open(duong, "rb") as fh:
+                if fh.read() != moi:
+                    raise OSError("đọc lại instruction không khớp")
+            if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
+                raise OSError("ACL đọc lại instruction không khớp")
+        except OSError:
+            _khoi_phuc_instruction(duong, cu, info, acl, staged, backup)
+            raise
+    finally:
+        if os.path.lexists(tam):
+            os.unlink(tam)
+
+
 def ghim_huong_dan_tool(duong, goc=None):
-    """Ghim bản ngắn của luật 3 tầng vào instruction user-level, trong một khối có dấu mốc.
-
-    Dấu mốc là thứ làm cho lệnh này chạy lại được: ghi lần hai THAY khối cũ thay vì nối thêm một
-    khối nữa, và không bao giờ đụng vào phần user tự viết quanh nó. Đây là cách duy nhất còn lại —
-    Claude Code không có cơ chế nào để một plugin ghi đè hay tắt một phần instruction của user.
-
-    -> True khi file đổi nội dung, False khi đã đúng sẵn.
-    """
-    khoi = f"{MOC_MO}\n{khoi_huong_dan(goc)}\n{MOC_DONG}"
-    cu = ""
-    if os.path.isfile(duong):
-        with io.open(duong, encoding="utf-8", errors="replace") as fh:
-            cu = fh.read()
-    if MOC_MO in cu and MOC_DONG in cu:
-        truoc, con_lai = cu.split(MOC_MO, 1)
-        _, sau = con_lai.split(MOC_DONG, 1)
-        moi = truoc + khoi + sau
-    else:
-        moi = (cu.rstrip() + "\n\n" + khoi + "\n") if cu.strip() else khoi + "\n"
-    if moi == cu:
-        return False
-    os.makedirs(os.path.dirname(os.path.abspath(duong)), exist_ok=True)
-    with io.open(duong, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(moi)
+    """Ghim nguyên tử; True khi đổi, False khi no-op, lỗi không tiến stamp."""
+    duong = os.path.abspath(duong)
+    try:
+        cu, info = _doc_instruction(duong)
+        moi = _noi_instruction(cu, goc)
+        if moi == cu:
+            return False
+        acl = _acl_instruction(duong) if info else None
+        os.makedirs(os.path.dirname(duong), exist_ok=True)
+        _thay_instruction(duong, cu, moi, info, acl)
+    except UnicodeError as exc:
+        _log(f"lỗi ghim hướng dẫn tại {duong}: UTF-8 không hợp lệ")
+        raise ValueError(f"{duong}: UTF-8 không hợp lệ") from exc
+    except (OSError, ValueError) as exc:
+        _log(f"lỗi ghim hướng dẫn tại {duong}: {type(exc).__name__}")
+        raise type(exc)(f"{duong}: {exc}") from exc
     _log(f"ghim hướng dẫn 3 tầng vào {duong}")
     return True
 
@@ -1197,12 +1422,9 @@ def thuc_hien_setup_bu(project, v_cu, v_moi, goc_plugin=None):
     except Exception as exc:  # noqa: BLE001
         _log(f"lỗi kiểm tra shim khi setup bù: {exc}")
 
-    # 2. Đồng bộ instruction CLAUDE.md
-    try:
-        ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
-        ket_qua.append("ghim instruction mới")
-    except Exception as exc:  # noqa: BLE001
-        _log(f"lỗi ghim instruction khi setup bù: {exc}")
+    # Required sync: propagate failure so the version stamp remains retryable.
+    ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
+    ket_qua.append("ghim instruction mới")
 
     # 3. Đồng bộ Codex MCP & hook nếu có
     if _tim_cong_cu("codex"):
@@ -1246,8 +1468,8 @@ def tu_dong_cap_nhat_khi_doi_phien_ban(project, goc_plugin=None):
         return False
     _log(f"tự động cập nhật cho phiên bản {hien_tai} (từ {v_cu}) tại {project}")
     thuc_hien_setup_bu(project, v_cu, hien_tai, goc_plugin=goc_plugin)
-    if hien_tai:
-        ghi_phat_hanh(project, hien_tai)
+    if not hien_tai or not ghi_phat_hanh(project, hien_tai):
+        raise OSError("Setup version stamp was not written; update remains retryable")
     return True
 
 

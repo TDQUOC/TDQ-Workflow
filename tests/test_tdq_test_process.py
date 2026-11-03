@@ -149,6 +149,74 @@ def test_cleanup_shares_one_budget(monkeypatch):
     assert elapsed == 5.0
 
 
+@pytest.mark.skipif(os.name != "nt", reason="Windows sharing violation proof")
+@pytest.mark.parametrize("release", [True, False])
+def test_cleanup_locked_output_uses_remaining_budget(tmp_path, release):
+    job = process.OwnedProcessJob(tmp_path)
+    job.__enter__()
+    result = job.run(python("import sys; print('diagnostic', file=sys.stderr)"), phase="lock")
+    assert result["exit_code"] == 0
+    output = job.root / "1.err"
+    locked = output.open("rb")
+    timer = threading.Timer(.05, locked.close)
+    # Model process teardown having already consumed most of its five seconds.
+    job._cleanup_deadline = time.monotonic() + .2
+    started = time.monotonic()
+    try:
+        if release:
+            timer.start()
+            job.__exit__(None, None, None)
+            assert not job.root.exists()
+        else:
+            with pytest.raises(PermissionError) as caught:
+                job.__exit__(None, None, None)
+            assert caught.value.winerror == 32
+            assert Path(caught.value.filename) == output
+            assert output.read_text().strip() == "diagnostic"
+            assert time.monotonic() - started >= .18
+        assert time.monotonic() - started < 1
+        assert job.deadline is None
+    finally:
+        if release:
+            timer.join()
+        locked.close()
+        job._temporary.cleanup()
+
+
+def test_cleanup_does_not_retry_other_errors(tmp_path, monkeypatch):
+    job = process.OwnedProcessJob(tmp_path)
+    job.__enter__()
+    cleanup = job._temporary.cleanup
+    error = PermissionError("access denied")
+    error.winerror = 5
+    attempts = []
+    def fail():
+        attempts.append(1)
+        raise error
+    monkeypatch.setattr(job._temporary, "cleanup", fail)
+    try:
+        with pytest.raises(PermissionError) as caught:
+            job.__exit__(None, None, None)
+        assert caught.value is error
+        assert attempts == [1]
+    finally:
+        cleanup()
+
+
+def test_nested_codex_timeout_cleanup():
+    repo = Path(__file__).resolve().parents[1]
+    with process.IsolatedJob(repo, timeout_seconds=110) as job:
+        root = job.root
+        result = job.run([sys.executable, "-m", "pytest",
+                          str(repo / "tests/test_codex_cli.py"), "-q",
+                          "-k", "treo_thi_qua_han or version_timeout_owns or windows_cmd_descendant",
+                          "-p", "no:cacheprovider", *job.pytest_args()], phase="nested-codex")
+    assert result["exit_code"] == 0, result
+    assert result["cleanup_complete"], result
+    assert "3 passed" in result["stdout"] if os.name == "nt" else "1 passed" in result["stdout"]
+    assert not root.exists()
+
+
 def test_missing_command_is_error(tmp_path):
     with process.IsolatedJob(tmp_path) as job:
         result = job.run([str(tmp_path / "missing-executable")], phase="run")

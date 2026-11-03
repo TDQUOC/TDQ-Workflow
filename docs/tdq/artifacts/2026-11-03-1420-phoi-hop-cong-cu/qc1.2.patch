@@ -1,0 +1,17 @@
+diff --git a/tests/test_build_portable.py b/tests/test_build_portable.py
+index fdd1280..c10dd32 100644
+--- a/tests/test_build_portable.py
++++ b/tests/test_build_portable.py
+@@ -32,7 +32,11 @@ PHASE1_RUNTIME_MODULES = {
+ APPROVED_RUNTIME_MODULES = PHASE1_RUNTIME_MODULES | {
+     "tdq_test_report", "tdq_eval_contract", "tdq_eval_hosts", "tdq_skill_eval",
+ }
+-APPROVED_RELEASE_DOCS = {"skills/tdq-build/references/skill-eval.md"}
++APPROVED_RELEASE_DOCS = {
++    "skills/tdq-build/references/skill-eval.md",
++    # Shipped in v0.87.0 (9827127), before the v0.88.0 quick-lane budget increase.
++    "skills/tdq-conventions/references/ultracode.md",
++}
+ 
+ 
+ def _imports_report(source):

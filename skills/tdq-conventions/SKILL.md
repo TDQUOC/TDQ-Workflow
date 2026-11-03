@@ -9,8 +9,8 @@ user-invocable: false
   0. Language — three reader layers=18-36 · 1. One-turn protocol (mandatory, in this order)=37-85 ·
   2. Phase table=86-91 · 3. State=92-104 · 4. Recording approval=105-114 ·
   5. Document tree=115-129 · 6. Working log=130-138 · 7. Git=139-152 · 8. Research=153-162 ·
-  9. Sub-agents=163-168 · 10. One-batch rule (tier 2 — runtime) and context cost=169-183 ·
-  11. Quality=184
+  9. Sub-agents=163-168 · Tool completion loop (tier 1 — quality)=169-185 ·
+  10. One-batch rule (tier 2 — runtime) and context cost=186-200 · 11. Quality=201
 -->
 
 Rules shared by every phase. Other skills link here instead of copying them.
@@ -165,6 +165,23 @@ three sections — verbatim request · understanding & knowledge · Q&A. The hea
 - The `description` of every Agent call reads `<model>-<effort>-<task-kebab>` (e.g.
   `sonnet-low-research-doc`) — the name alone tells which model and effort are running.
 - Default model/effort per role plus the override rule: [references/subagent-tuning.md](references/subagent-tuning.md) (read-only sub-agents in any phase). Workflow agents additionally obey the [TDQ Ultracode contract](references/ultracode.md).
+
+## Tool completion loop (tier 1 — quality)
+
+When a task needs tools, own its completion within the user's permission; do not wait for
+button-by-button instructions. This does not replace TDQ approval gates.
+1. Confirm goal, inputs, destination and permission; ask only when missing facts change the result.
+2. Inspect available tools/skills and schemas, then probe the configured connection before acting.
+3. Plan short internal steps with input, tool, output and a completion check; do not expose private reasoning.
+4. Prefer one tool when sufficient: Chrome MCP for web, agent-desktop for native UI, dedicated file/CLI tools for local work. Prefer direct upload_file over a native picker when accessible.
+5. At each handoff, verify page/window, file and destination against fresh observations; verify final output, not merely a click acknowledgement.
+6. Recover installed tools within existing permission. Retry only with new evidence or changed conditions; uncertain delivery means observe before retry. Never switch tools to perform a denied action.
+7. Missing tools: research official sources and propose a user-level install, permissions, verification and uninstall; wait for approval. Do not change permission settings, OAuth or accounts silently.
+8. Wait on completion events when available; no tight polling. Report completed, partial and blocked work separately, with evidence.
+Self-check: does every claimed result have an observed output, and did every action stay authorized?
+RIGHT: attach directly, verify attachment, submit once, verify downloaded file.
+WRONG: force desktop for a web task, repeat an uncertain upload, or call a click a completed download.
+Details: [tool routing](references/plugin-routing.md), [connection recovery](../tdq-setup/references/mcp-first-guide.md).
 
 ## 10. One-batch rule (tier 2 — runtime) and context cost
 

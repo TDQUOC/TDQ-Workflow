@@ -1,0 +1,343 @@
+--- a/scripts/tdq_setup.py
++++ b/scripts/tdq_setup.py
+@@ -39,6 +39,7 @@
+ import shlex
+ import shutil
+ import stat
++import struct
+ import subprocess
+ import sys
+ import tarfile
+@@ -1092,6 +1093,71 @@
+     return cu + separator + khoi + newline
+ 
+ 
++def _mien_acl(data, offset, size):
++    if offset < 20 or offset % 4 or size < 0 or offset + size > len(data):
++        raise OSError("ACL descriptor vượt biên")
++    return data[offset:offset + size]
++
++
++def _sid_acl(data, offset):
++    if not offset:
++        return None
++    header = _mien_acl(data, offset, 8)
++    if header[0] != 1 or header[1] > 15:
++        raise OSError("ACL SID không hợp lệ")
++    return _mien_acl(data, offset, 8 + 4 * header[1])
++
++
++def _danh_sach_acl(data, offset):
++    if not offset:
++        return None
++    revision, _, size, count, _ = struct.unpack("<BBHHH", _mien_acl(data, offset, 8))
++    if revision not in (2, 4) or size < 8:
++        raise OSError("ACL header không hợp lệ")
++    acl = _mien_acl(data, offset, size)
++    aces, cursor = [], 8
++    for _ in range(count):
++        if cursor + 4 > size:
++            raise OSError("ACL ACE thiếu header")
++        ace_size = int.from_bytes(acl[cursor + 2:cursor + 4], "little")
++        if ace_size < 4 or ace_size % 4 or cursor + ace_size > size:
++            raise OSError("ACL ACE vượt biên")
++        aces.append(acl[cursor:cursor + ace_size])
++        cursor += ace_size
++    if os.name == "nt":
++        valid = ctypes.WinDLL("advapi32", use_last_error=True).IsValidAcl
++        valid.argtypes, valid.restype = [ctypes.c_void_p], ctypes.c_int
++        if not valid(ctypes.create_string_buffer(acl)):
++            raise OSError("ACL không hợp lệ trên Windows")
++    return revision, tuple(aces)
++
++
++def _nghia_acl_instruction(data):
++    if data is None:
++        return None
++    if not isinstance(data, bytes) or len(data) < 20:
++        raise OSError("ACL descriptor thiếu header")
++    revision, resource, control, owner, group, sacl, dacl = struct.unpack("<BBHIIII", data[:20])
++    if revision != 1 or not control & 0x8000:
++        raise OSError("ACL descriptor không self-relative")
++    if (sacl and not control & 0x10) or (dacl and not control & 4):
++        raise OSError("ACL offset không khớp cờ present")
++    result = (revision, resource if control & 0x4000 else 0, control,
++              _sid_acl(data, owner), _sid_acl(data, group),
++              _danh_sach_acl(data, sacl), _danh_sach_acl(data, dacl))
++    if os.name == "nt":
++        valid = ctypes.WinDLL("advapi32", use_last_error=True).IsValidSecurityDescriptor
++        valid.argtypes, valid.restype = [ctypes.c_void_p], ctypes.c_int
++        if not valid(ctypes.create_string_buffer(data)):
++            raise OSError("ACL descriptor không hợp lệ trên Windows")
++    return result
++
++
++def _acl_instruction_bang_nhau(trai, phai):
++    """So semantics; giữ control, SID, thứ tự/flags ACE; bỏ offset và vùng dư."""
++    return _nghia_acl_instruction(trai) == _nghia_acl_instruction(phai)
++
++
+ def _acl_instruction(duong, descriptor=None):
+     """Windows owner/group/DACL, gồm cờ protected; không cần package ngoài."""
+     if os.name != "nt":
+@@ -1111,8 +1177,12 @@
+         if not get(duong, 7, buf, size.value, ctypes.byref(size)):
+             raise ctypes.WinError(ctypes.get_last_error())
+         return buf.raw
+-    buf = ctypes.create_string_buffer(descriptor)
++    _nghia_acl_instruction(descriptor)
+     control = int.from_bytes(descriptor[2:4], "little")
++    # SetFileSecurityW giữ AUTO_INHERITED chỉ khi kèm AUTO_INHERIT_REQ.
++    # Cờ request chỉ dành cho lời gọi; descriptor gốc vẫn dùng để kiểm readback.
++    requested = control | (0x100 if control & 0x400 else 0)
++    buf = ctypes.create_string_buffer(descriptor[:2] + requested.to_bytes(2, "little") + descriptor[4:])
+     set_security = api.SetFileSecurityW
+     set_security.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_void_p]
+     set_security.restype = wintypes.BOOL
+@@ -1139,7 +1209,7 @@
+         with io.open(tam, "rb") as fh:
+             if fh.read() != data:
+                 raise OSError("file tạm không khớp dữ liệu")
+-        if info is not None and _acl_instruction(tam) != acl:
++        if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(tam), acl):
+             raise OSError("ACL file tạm không khớp instruction")
+         return tam
+     except BaseException:
+@@ -1162,6 +1232,8 @@
+             with io.open(duong, "rb") as fh:
+                 if fh.read() != cu:
+                     raise OSError("khôi phục không khớp")
++            if not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
++                raise OSError("ACL khôi phục không khớp")
+     except OSError as exc:
+         raise OSError(f"{exc}; backup: {backup}") from exc
+     finally:
+@@ -1179,7 +1251,7 @@
+         observed, current = _doc_instruction(duong)
+         if observed != cu or _dau_instruction(current) != _dau_instruction(info):
+             raise OSError("instruction đổi đồng thời; không ghi đè")
+-        if info is not None and _acl_instruction(duong) != acl:
++        if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
+             raise OSError("ACL instruction đổi đồng thời; không ghi đè")
+         staged = os.lstat(tam)
+         os.replace(tam, duong)
+@@ -1187,6 +1259,8 @@
+             with io.open(duong, "rb") as fh:
+                 if fh.read() != moi:
+                     raise OSError("đọc lại instruction không khớp")
++            if info is not None and not _acl_instruction_bang_nhau(_acl_instruction(duong), acl):
++                raise OSError("ACL đọc lại instruction không khớp")
+         except OSError:
+             _khoi_phuc_instruction(duong, cu, info, acl, staged, backup)
+             raise
+--- a/tests/test_claude_md_core.py
++++ b/tests/test_claude_md_core.py
+@@ -10,6 +10,7 @@
+ """
+ 
+ import os
++import struct
+ import sys
+ import tempfile
+ import unittest
+@@ -202,6 +203,66 @@
+         self.assertIn("2026-09-28", nguon, "mỗi lần nâng trần phải ghi lý do kèm ngày")
+ 
+ 
++class AclDescriptorTest(unittest.TestCase):
++    @staticmethod
++    def descriptor(reverse=False, sid=18, masks=(0x1f01ff, 0x120089), control=0x8004,
++                   ace_flags=(0, 0), revision=2, dacl="acl", padding=0):
++        owner = bytes((1, 1)) + b"\0\0\0\0\0\5" + struct.pack("<I", sid)
++        group = bytes((1, 1)) + b"\0\0\0\0\0\5" + struct.pack("<I", 32)
++        aces = [struct.pack("<BBHI", 0, flag, 20, mask) + owner
++                for mask, flag in zip(masks, ace_flags)]
++        acl = struct.pack("<BBHHH", revision, 0, 8 + sum(map(len, aces)) + padding,
++                          len(aces), 0) + b"".join(aces) + b"\0" * padding
++        parts = {"owner": owner, "group": group, "dacl": acl}
++        order = ("dacl", "group", "owner") if reverse else ("owner", "group", "dacl")
++        data, offsets = b"", {"dacl": 0}
++        for name in order:
++            if name == "dacl" and dacl != "acl":
++                continue
++            offsets[name] = 20 + len(data)
++            data += parts[name]
++        if dacl == "absent":
++            control &= ~4
++        return struct.pack("<BBHIIII", 1, 0, control, offsets["owner"],
++                           offsets["group"], 0, offsets["dacl"]) + data
++
++    def test_equivalent_storage(self):
++        first, second = self.descriptor(), self.descriptor(reverse=True, padding=8)
++        self.assertNotEqual(first, second)
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(first, second))
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(None, None))
++        self.assertFalse(tdq_setup._acl_instruction_bang_nhau(first, None))
++
++    def test_changed_semantics(self):
++        first = self.descriptor()
++        changes = (self.descriptor(sid=19), self.descriptor(masks=(0x120089, 0x1f01ff)),
++                   self.descriptor(masks=(0x1f01ff, 1)), self.descriptor(ace_flags=(16, 0)),
++                   self.descriptor(control=0x9004), self.descriptor(control=0x8404),
++                   self.descriptor(control=0x8005), self.descriptor(control=0x8006),
++                   self.descriptor(control=0x800c), self.descriptor(revision=4))
++        for change in changes:
++            with self.subTest(change=change):
++                self.assertFalse(tdq_setup._acl_instruction_bang_nhau(first, change))
++        variants = [self.descriptor(dacl="absent"), self.descriptor(dacl="null"),
++                    self.descriptor(masks=(), ace_flags=())]
++        for index, left in enumerate(variants):
++            for right in variants[index + 1:]:
++                self.assertFalse(tdq_setup._acl_instruction_bang_nhau(left, right))
++
++    def test_invalid_descriptors_rejected_even_when_identical(self):
++        valid = self.descriptor()
++        malformed = [valid[:size] for size in range(len(valid))]
++        for offset, data in ((0, b"\2"), (2, b"\4\0"), (4, struct.pack("<I", 9999)),
++                             (20, b"\2"), (21, b"\xff"), (44, b"\3"),
++                             (46, b"\xff\xff"), (48, b"\xff\xff"), (54, b"\xff\xff")):
++            bad = bytearray(valid)
++            bad[offset:offset + len(data)] = data
++            malformed.append(bytes(bad))
++        for bad in malformed:
++            with self.subTest(size=len(bad)), self.assertRaisesRegex(OSError, "ACL"):
++                tdq_setup._acl_instruction_bang_nhau(bad, bad)
++
++
+ class SafeWriterTest(unittest.TestCase):
+     def setUp(self):
+         self.tmp = tempfile.TemporaryDirectory()
+@@ -377,6 +438,41 @@
+         self.assertEqual([p.read_bytes() for p in self.backups()], [old])
+         self.assertEqual(list(self.path.parent.glob("*.tmp.*")), [])
+ 
++    def test_concurrent_acl_change_blocks_replace(self):
++        old = self.write(b"private\n")
++        first = AclDescriptorTest.descriptor()
++        changed = AclDescriptorTest.descriptor(ace_flags=(16, 0))
++        reads = []
++
++        def read_acl(path, descriptor=None):
++            if descriptor is None:
++                reads.append(path)
++                return changed if len(reads) == 4 else first
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl), \
++                mock.patch.object(tdq_setup.os, "replace") as replace:
++            with self.assertRaisesRegex(OSError, "ACL instruction đổi đồng thời"):
++                self.run_writer()
++            replace.assert_not_called()
++        self.assertEqual(self.path.read_bytes(), old)
++
++    def test_readback_acl_change_restores_original(self):
++        old = self.write(b"private\n")
++        first = AclDescriptorTest.descriptor()
++        changed = AclDescriptorTest.descriptor(control=0x9004)
++        reads = []
++
++        def read_acl(path, descriptor=None):
++            if descriptor is None:
++                reads.append(path)
++                return changed if len(reads) == 5 else first
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl):
++            with self.assertRaisesRegex(OSError, "ACL đọc lại instruction không khớp"):
++                self.run_writer()
++        self.assertEqual(self.path.read_bytes(), old)
++        self.assertEqual(len(reads), 7)
++
+     def test_backup_write_failure_preserves_source(self):
+         old = self.write(b"private\n")
+         with mock.patch.object(tdq_setup.os, "fsync", side_effect=OSError("backup flush")):
+@@ -408,6 +504,59 @@
+             with self.assertRaisesRegex(OSError, "instruction.md"):
+                 self.run_writer()
+         self.assertEqual(self.path.read_bytes(), b"concurrent writer\n")
++
++    def test_equivalent_descriptor_storage_during_staging_and_concurrency(self):
++        self.write(b"private\n")
++        descriptors = [AclDescriptorTest.descriptor(), AclDescriptorTest.descriptor(reverse=True)]
++        reads = []
++
++        def read_acl(path, descriptor=None):
++            if descriptor is None:
++                reads.append(path)
++                return descriptors[len(reads) % 2]
++
++        with mock.patch.object(tdq_setup, "_acl_instruction", side_effect=read_acl):
++            self.assertTrue(self.run_writer())
++        self.assertGreaterEqual(len(reads), 5)
++
++    @unittest.skipUnless(os.name == "nt", "Windows security descriptor")
++    def test_unprotected_inherited_native_roundtrip(self):
++        parent_acl = tdq_setup._acl_instruction(str(self.path.parent))
++        assert isinstance(parent_acl, bytes)
++        parent = bytearray(parent_acl)
++        # Cha protected (0x1000), AUTO_INHERITED (0x400), AUTO_INHERIT_REQ (0x100).
++        # Chỉ cha bị protected; file con mới vẫn nhận ACE kế thừa.
++        parent[2:4] = (int.from_bytes(parent[2:4], "little") | 0x1500).to_bytes(2, "little")
++        dacl = int.from_bytes(parent[16:20], "little")
++        cursor = dacl + 8
++        for _ in range(int.from_bytes(parent[dacl + 4:dacl + 6], "little")):
++            parent[cursor + 1] |= 3
++            cursor += int.from_bytes(parent[cursor + 2:cursor + 4], "little")
++        tdq_setup._acl_instruction(str(self.path.parent), bytes(parent))
++        parent_readback = tdq_setup._acl_instruction(str(self.path.parent))
++        assert isinstance(parent_readback, bytes)
++        self.assertEqual(int.from_bytes(parent_readback[2:4], "little") & 0x1500, 0x1400)
++        self.write(b"private\n")
++        acl = tdq_setup._acl_instruction(str(self.path))
++        assert isinstance(acl, bytes)
++        control = int.from_bytes(acl[2:4], "little")
++        self.assertFalse(control & 0x1000)
++        self.assertTrue(control & 0x400)
++        with tempfile.TemporaryDirectory() as other:
++            target = Path(other) / "different-parent.md"
++            target.write_bytes(b"fixture\n")
++            before = tdq_setup._acl_instruction(str(target))
++            self.assertFalse(tdq_setup._acl_instruction_bang_nhau(acl, before))
++            tdq_setup._acl_instruction(str(target), acl)
++            self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++                acl, tdq_setup._acl_instruction(str(target))))
++        dacl = int.from_bytes(acl[16:20], "little")
++        self.assertGreater(int.from_bytes(acl[dacl + 4:dacl + 6], "little"), 0)
++        self.assertTrue(acl[dacl + 9] & 16)
++        self.assertTrue(self.run_writer())
++        for path in [self.path, *self.backups()]:
++            self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++                acl, tdq_setup._acl_instruction(str(path))))
+ 
+     def test_mode_acl_and_same_directory_replace(self):
+         self.write(b"private\n")
+@@ -416,11 +565,13 @@
+         mode = self.path.stat().st_mode
+         acl = tdq_setup._acl_instruction(str(self.path))
+         if os.name == "nt":
++            assert isinstance(acl, bytes)
+             protected = bytearray(acl)
+             control = int.from_bytes(protected[2:4], "little") | 0x1000
+             protected[2:4] = control.to_bytes(2, "little")
+             tdq_setup._acl_instruction(str(self.path), bytes(protected))
+             acl = tdq_setup._acl_instruction(str(self.path))
++            assert isinstance(acl, bytes)
+             self.assertTrue(int.from_bytes(acl[2:4], "little") & 0x1000)
+         replace = tdq_setup.os.replace
+ 
+@@ -432,12 +583,14 @@
+         with mock.patch.object(tdq_setup.os, "replace", side_effect=same_directory):
+             self.assertTrue(self.run_writer())
+         self.assertEqual(self.path.stat().st_mode, mode)
+-        self.assertEqual(tdq_setup._acl_instruction(str(self.path)), acl)
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++            tdq_setup._acl_instruction(str(self.path)), acl))
+         if os.name == "nt":
+-            self.assertIsInstance(acl, bytes)
++            assert isinstance(acl, bytes)
+             self.assertGreater(len(acl), 20)
+         self.assertFalse(self.run_writer())
+-        self.assertEqual(tdq_setup._acl_instruction(str(self.path)), acl)
++        self.assertTrue(tdq_setup._acl_instruction_bang_nhau(
++            tdq_setup._acl_instruction(str(self.path)), acl))
+ 
+     def test_symlink_or_reparse_rejected_without_read(self):
+         self.write(b"private\n")

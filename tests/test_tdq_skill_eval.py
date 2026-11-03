@@ -10,13 +10,17 @@ Covers:
    rescore_append_only with provenance tracking.
 """
 
+import ast
 import hashlib
+import inspect
 import json
+import marshal
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 from unittest import mock
 
@@ -143,6 +147,47 @@ def make_paired_records(plan, cell, score_delta=0.1, count=1):
     return records
 
 
+def _cognitive_score(node, depth=0):
+    # Conservative AST count: boolean operators and comprehensions also count.
+    control = isinstance(node, (ast.If, ast.IfExp, ast.For, ast.While, ast.ExceptHandler))
+    score = 1 + depth if control else 0
+    if isinstance(node, (ast.BoolOp, ast.comprehension)):
+        score += 1
+    for child in ast.iter_child_nodes(node):
+        elif_branch = isinstance(node, ast.If) and child in node.orelse and isinstance(child, ast.If)
+        score += _cognitive_score(child, depth + int(control and not elif_branch))
+    return score
+
+
+def test_refactored_functions_stay_within_size_and_branch_limits():
+    targets = {
+        tdq_skill_eval: "_validate_scorer_dependencies scorer_identity "
+        "_trial_identity _build_trial_record _validate_run_plan _index_cases "
+        "_verify_corpus_hashes _load_bound_cases _read_snapshot _bind_snapshots _validate_cost_quota "
+        "_validate_scorer_outcome _score_trial _execute_trial run_eval _render_markdown_report "
+        "_report_provenance _group_report_cells generate_report",
+        tdq_eval_hosts: "_valid_trace_content _valid_trace_usage _validate_trace_fields "
+        "_decode_trace_event _bind_trace_model _validate_trace_event _process_codex_response "
+        "_consume_trace_event _trace_result parse_trace_stream _record_attempt _parse_attempt "
+        "_run_attempts _trial_output run_host_trial",
+    }
+    for module, names in targets.items():
+        functions = {node.name: node for node in ast.parse(inspect.getsource(module)).body
+                     if isinstance(node, ast.FunctionDef)}
+        for name in names.split():
+            node = functions[name]
+            assert node.end_lineno - node.lineno + 1 <= 50, name
+            branches = sum(
+                len(child.values) - 1 if isinstance(child, ast.BoolOp) else
+                len(child.ifs) + 1 if isinstance(child, ast.comprehension) else 1
+                for child in ast.walk(node)
+                if isinstance(child, (ast.If, ast.IfExp, ast.For, ast.While,
+                                      ast.ExceptHandler, ast.BoolOp, ast.comprehension))
+            )
+            assert branches + 1 <= 10, (name, branches + 1)
+            assert _cognitive_score(node) <= 15, (name, _cognitive_score(node))
+
+
 class TestTdqSkillEvalPlan(unittest.TestCase):
     """Test `plan` subcommand: offline validation, hashing, rejection."""
 
@@ -241,21 +286,37 @@ class TestTdqSkillEvalRun(unittest.TestCase):
     def test_run_builds_schedule_and_executes_trials(self):
         plan = make_valid_plan(repetitions=1)
         plan_file = self.tmp_path / "plan.json"
-        plan_file.write_text(json.dumps(plan), encoding="utf-8")
 
         cases = [
             {"case_id": "pos_case_01", "kind": "positive"},
             {"case_id": "pos_case_02", "kind": "positive"},
             {"case_id": "neg_case_01", "kind": "negative"},
         ]
+        for case in cases:
+            case.update(prompt=f"Handle {case['case_id']}", split="dev")
         cases_file = self.tmp_path / "cases.json"
         cases_file.write_text(json.dumps(cases), encoding="utf-8")
+        plan["dev_cases_sha256"] = tdq_eval_contract._digest(cases)
+        plan["holdout_cases_sha256"] = tdq_eval_contract._digest([])
 
         profile = {
             "timeout_seconds": 10,
             "max_retries": 1,
-            "quota_usd": 1.0,
         }
+        profile["sources"] = {}
+        target = plan["targets"][0]
+        for variant in ("A", "B"):
+            source = self.tmp_path / variant
+            path = source / target
+            path.parent.mkdir(parents=True)
+            path.write_text(f"Instructions {variant}", encoding="utf-8")
+            profile["sources"][variant] = {
+                "root": str(source), "hashes": {target: tdq_eval_hosts.hash_file_streaming(path)},
+            }
+        plan["targets"] = profile["sources"]["B"]["hashes"]
+        plan["base_identity"] = tdq_eval_contract._digest(profile["sources"]["A"]["hashes"])
+        plan["candidate_identity"] = tdq_eval_contract._digest(plan["targets"])
+        plan_file.write_text(json.dumps(plan), encoding="utf-8")
         profile_file = self.tmp_path / "profile.json"
         profile_file.write_text(json.dumps(profile), encoding="utf-8")
 
@@ -287,6 +348,260 @@ class TestTdqSkillEvalRun(unittest.TestCase):
             self.assertTrue(out_dir.exists())
             result_files = list(out_dir.glob("trial_*.json"))
             self.assertEqual(len(result_files), 6)
+
+
+def _score_response(case, response):
+    passed = all(text in response["response_text"] for text in case["required"])
+    return {"passed": passed, "score": float(passed),
+            "checks": {"rule_compliance": "pass" if passed else "fail"}}
+
+
+class TestEvaluatorBinding(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.plan = make_valid_plan()
+        self.cases = [{"id": "pos_case_01", "split": "dev", "prompt": "Inspect title",
+                       "required": ["verify title"], "forbidden": ["install"]}]
+        self.plan["expected_triggers"] = ["pos_case_01"]
+        self.plan["negative_cases"] = []
+        self.plan["dev_cases_sha256"] = tdq_eval_contract._digest(self.cases)
+        self.plan["holdout_cases_sha256"] = tdq_eval_contract._digest([])
+        self.profile = {"sources": {}}
+        target = self.plan["targets"][0]
+        for variant in ("A", "B"):
+            source = self.root / variant
+            path = source / target
+            path.parent.mkdir(parents=True)
+            path.write_text(f"Instructions {variant}", encoding="utf-8")
+            hashes = {target: tdq_eval_hosts.hash_file_streaming(path)}
+            self.profile["sources"][variant] = {"root": str(source), "hashes": hashes}
+        self.plan["targets"] = self.profile["sources"]["B"]["hashes"]
+        self.plan["base_identity"] = tdq_eval_contract._digest(self.profile["sources"]["A"]["hashes"])
+        self.plan["candidate_identity"] = tdq_eval_contract._digest(self.plan["targets"])
+        for name, data in (("plan", self.plan), ("cases", {"cases": self.cases}), ("profile", self.profile)):
+            (self.root / f"{name}.json").write_text(json.dumps(data), encoding="utf-8")
+
+    def run_eval(self, **kwargs):
+        return tdq_skill_eval.run_eval(self.root / "plan.json", self.root / "cases.json",
+                                       self.root / "profile.json", self.root / "out", **kwargs)
+
+    def bind_scorer(self, scorer):
+        binding = {"module": scorer.__module__, "qualname": scorer.__qualname__,
+                   "source_sha256": hashlib.sha256(inspect.getsource(scorer).encode("utf-8")).hexdigest(),
+                   "code_sha256": hashlib.sha256(marshal.dumps(scorer.__code__)).hexdigest(),
+                   "rubric_version": self.plan["rubric_version"]}
+        self.plan["scorer_version"] = "sha256:" + tdq_eval_contract._digest(binding)
+        (self.root / "plan.json").write_text(json.dumps(self.plan), encoding="utf-8")
+
+    def test_shadowed_builtin_scorer_rejected_before_launch(self):
+        self.bind_scorer(_score_response)
+        altered = types.FunctionType(_score_response.__code__,
+                                     dict(_score_response.__globals__, all=lambda values: True))
+        self.assertFalse(_score_response(self.cases[0], {"response_text": "wrong"})["passed"])
+        self.assertTrue(altered(self.cases[0], {"response_text": "wrong"})["passed"])
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
+                self.run_eval(scorer=altered)
+            run.assert_not_called()
+
+    def test_custom_builtins_scorer_rejected(self):
+        altered = types.FunctionType(_score_response.__code__,
+                                     dict(_score_response.__globals__, __builtins__={"all": lambda xs: True}))
+        with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
+            tdq_skill_eval.scorer_identity(altered, "rubric-v1")
+
+    def test_global_dependency_in_nested_code_rejected(self):
+        def scorer(case, response):
+            return all(os.name for text in case["required"])
+
+        with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
+            tdq_skill_eval.scorer_identity(scorer, "rubric-v1")
+
+    def test_nonlocal_dependency_rejected(self):
+        threshold = 1
+        def scorer(case, response):
+            return threshold
+
+        with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
+            tdq_skill_eval.scorer_identity(scorer, "rubric-v1")
+
+    def test_mutated_code_rejected_before_launch(self):
+        self.bind_scorer(_score_response)
+        code = _score_response.__code__
+        altered = types.FunctionType(code.replace(co_consts=tuple(
+            "different_check" if value == "rule_compliance" else value for value in code.co_consts
+        )), _score_response.__globals__)
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "scorer_binding_mismatch"):
+                self.run_eval(scorer=altered)
+            run.assert_not_called()
+
+    def test_changed_scorer_rejected_before_launch(self):
+        self.bind_scorer(_score_response)
+
+        def changed(case, response):
+            return {"passed": True, "score": 1.0, "checks": {"rule_compliance": "pass"}}
+
+        changed.__qualname__ = _score_response.__qualname__
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "scorer_binding_mismatch"):
+                self.run_eval(scorer=changed)
+            run.assert_not_called()
+        self.assertFalse((self.root / "out").exists())
+
+    def test_changed_rubric_rejected_before_launch(self):
+        self.bind_scorer(_score_response)
+        self.plan["rubric_version"] = "different-rubric"
+        (self.root / "plan.json").write_text(json.dumps(self.plan), encoding="utf-8")
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "scorer_binding_mismatch"):
+                self.run_eval(scorer=_score_response)
+            run.assert_not_called()
+
+    def test_scorer_identity_matches_locked_binding(self):
+        self.bind_scorer(_score_response)
+        self.assertEqual(tdq_skill_eval.scorer_identity(_score_response, self.plan["rubric_version"]),
+                         self.plan["scorer_version"])
+
+    def test_callable_without_source_rejected_before_launch(self):
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "unsupported_scorer_identity"):
+                self.run_eval(scorer=mock.Mock())
+            run.assert_not_called()
+
+    def test_unbound_scorer_rejected_before_launch(self):
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "scorer_binding_mismatch"):
+                self.run_eval(scorer=_score_response)
+            run.assert_not_called()
+
+    def test_completed_is_not_quality_oracle(self):
+        trial = tdq_eval_contract.build_ab_ba_schedule(["pos_case_01"], self.plan["cells"], 1, "e" * 64)[0]
+        rec = tdq_skill_eval._build_trial_record(self.plan, trial, {"execution_status": "completed"}, "f" * 64)
+        self.assertIsNone(rec["passed"])
+        self.assertIsNone(rec["score"])
+        self.assertEqual(rec["checks"], {"rule_compliance": "unavailable"})
+
+    def test_case_model_and_distinct_sources_reach_runner(self):
+        with mock.patch("tdq_eval_hosts.run_host_trial", return_value={"execution_status": "incomplete"}) as run:
+            self.run_eval()
+        specs = [call.kwargs["trial_spec"] for call in run.call_args_list]
+        self.assertEqual(len(specs), 2)
+        self.assertEqual([s["prompt"] for s in specs], ["Inspect title"] * 2)
+        self.assertEqual([s["model"] for s in specs], [self.plan["cells"][0]["model"]] * 2)
+        self.assertIn("Instructions A", specs[0]["instructions"])
+        self.assertIn("Instructions B", specs[1]["instructions"])
+        self.assertNotEqual(specs[0]["source_sha256"], specs[1]["source_sha256"])
+        rec = json.loads(next((self.root / "out").glob("trial_*.json")).read_text(encoding="utf-8"))
+        self.assertIsNone(rec["score"])
+
+    def test_finite_quota_blocks_before_launch_without_cost_enforcement(self):
+        for quota in (0, 1.0):
+            self.profile["quota_usd"] = quota
+            (self.root / "profile.json").write_text(json.dumps(self.profile), encoding="utf-8")
+            with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+                with self.assertRaisesRegex(ValueError, "cost_quota_unavailable"):
+                    self.run_eval()
+                run.assert_not_called()
+            self.assertFalse((self.root / "out").exists())
+
+    def test_missing_latency_stays_unavailable_in_record(self):
+        trial = tdq_eval_contract.build_ab_ba_schedule(["pos_case_01"], self.plan["cells"], 1, "e" * 64)[0]
+        rec = tdq_skill_eval._build_trial_record(self.plan, trial, {}, "f" * 64)
+        self.assertIsNone(rec["wall_latency_seconds"])
+        rec = tdq_skill_eval._build_trial_record(self.plan, trial, {"wall_latency_seconds": 1.25}, "f" * 64)
+        self.assertEqual(rec["wall_latency_seconds"], 1.25)
+
+    def test_changed_corpus_blocks_before_launch(self):
+        self.cases[0]["prompt"] = "changed"
+        (self.root / "cases.json").write_text(json.dumps({"cases": self.cases}), encoding="utf-8")
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "corpus_hash_mismatch"):
+                self.run_eval()
+            run.assert_not_called()
+
+    def test_changed_source_blocks_before_launch(self):
+        (self.root / "A" / next(iter(self.plan["targets"]))).write_text("changed", encoding="utf-8")
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "source_hash_mismatch"):
+                self.run_eval()
+            run.assert_not_called()
+
+    def test_baseline_identity_blocks_rebound_snapshot(self):
+        source = self.profile["sources"]["A"]
+        target = next(iter(source["hashes"]))
+        path = Path(source["root"]) / target
+        path.write_text("Different baseline", encoding="utf-8")
+        source["hashes"][target] = tdq_eval_hosts.hash_file_streaming(path)
+        (self.root / "profile.json").write_text(json.dumps(self.profile), encoding="utf-8")
+        with mock.patch("tdq_eval_hosts.run_host_trial") as run:
+            with self.assertRaisesRegex(ValueError, "unbound_baseline_snapshot"):
+                self.run_eval()
+            run.assert_not_called()
+
+    def test_cli_without_scorer_blocks_before_launch(self):
+        with mock.patch("tdq_skill_eval.run_eval", return_value={"completed_trials": 2, "total_trials": 2}) as run, mock.patch("builtins.print") as output:
+            rc = tdq_skill_eval.main([
+                "run", "--plan", str(self.root / "plan.json"),
+                "--cases", str(self.root / "cases.json"),
+                "--profile", str(self.root / "profile.json"), "--out-dir", str(self.root / "out"),
+            ])
+        self.assertEqual(rc, 1)
+        run.assert_not_called()
+        self.assertEqual(json.loads(output.call_args.args[0])["reason"], "missing_scorer")
+
+    def test_verified_response_without_scorer_stays_unavailable(self):
+        response = {"execution_status": "completed", "response_text": "verify title",
+                    "observed_model": self.plan["cells"][0]["model"], "host": "claude",
+                    "outcome": {"passed": True, "score": 1, "checks": {"rule_compliance": "pass"}}}
+        with mock.patch("tdq_eval_hosts.run_host_trial", return_value=response):
+            self.run_eval()
+        records = [json.loads(p.read_text(encoding="utf-8")) for p in (self.root / "out").glob("trial_*.json")]
+        self.assertEqual(len(records), 2)
+        for record in records:
+            self.assertIsNone(record["passed"])
+            self.assertIsNone(record["score"])
+            self.assertEqual(record["outcome_availability"], "unavailable")
+            self.assertEqual(record["outcome_reason"], "missing_scorer")
+
+    def test_explicit_scorer_can_pass_verified_response(self):
+        response = {"execution_status": "completed", "response_text": "verify title",
+                    "observed_model": self.plan["cells"][0]["model"], "host": "claude"}
+        self.bind_scorer(_score_response)
+        with mock.patch("tdq_eval_hosts.run_host_trial", return_value=response):
+            self.run_eval(scorer=_score_response)
+        records = [json.loads(p.read_text(encoding="utf-8")) for p in (self.root / "out").glob("trial_*.json")]
+        self.assertEqual(len(records), 2)
+        for record in records:
+            self.assertIs(record["passed"], True)
+            self.assertEqual(record["score"], 1.0)
+            self.assertEqual(record["outcome_reason"], "explicit_scorer")
+
+    def test_unverified_model_never_reaches_scorer(self):
+        response = {"execution_status": "completed", "response_text": "verify title",
+                    "observed_model": "different-model", "host": "claude"}
+        def scorer(case, response):
+            raise AssertionError("unverified response reached scorer")
+
+        self.bind_scorer(scorer)
+        with mock.patch("tdq_eval_hosts.run_host_trial", return_value=response):
+            self.run_eval(scorer=scorer)
+        records = [json.loads(p.read_text(encoding="utf-8")) for p in (self.root / "out").glob("trial_*.json")]
+        self.assertEqual(len(records), 2)
+        for record in records:
+            self.assertIsNone(record["score"])
+            self.assertEqual(record["outcome_reason"], "unverified_response")
+
+    def test_explicit_scorer_grades_observed_response(self):
+        response = {"execution_status": "completed", "response_text": "wrong answer",
+                    "observed_model": self.plan["cells"][0]["model"], "host": "claude"}
+        self.bind_scorer(_score_response)
+        with mock.patch("tdq_eval_hosts.run_host_trial", return_value=response):
+            self.run_eval(scorer=_score_response)
+        records = [json.loads(p.read_text(encoding="utf-8")) for p in (self.root / "out").glob("trial_*.json")]
+        self.assertTrue(all(r["passed"] is False and r["score"] == 0 for r in records))
 
 
 class TestTdqSkillEvalReport(unittest.TestCase):
@@ -349,6 +664,20 @@ class TestTdqSkillEvalReport(unittest.TestCase):
         )
         cell_key = f"{cell['host']}:{cell['model']}"
         self.assertEqual(res["cells"][cell_key]["recommendation"]["verdict"], "DROP")
+
+    def test_report_provenance_matches_records(self):
+        for labels, expected in ((["live"], "live"), (["synthetic/offline"], "synthetic/offline"),
+                                 (["live", "synthetic/offline"], "mixed"), ([None], "unavailable")):
+            with self.subTest(labels=labels):
+                results_dir = self.tmp_path / expected.replace('/', '-')
+                results_dir.mkdir()
+                for idx, label in enumerate(labels):
+                    (results_dir / f"trial_{idx}.json").write_text(
+                        json.dumps({"provenance": label}), encoding="utf-8")
+                out_md = self.tmp_path / f"{expected.replace('/', '-')}.md"
+                report = tdq_skill_eval.generate_report(results_dir, out_md=out_md)
+                self.assertEqual(report["provenance"], expected)
+                self.assertIn(f"Nguồn gốc bản ghi: {expected}", out_md.read_text(encoding="utf-8"))
 
     def test_report_preserves_null_metrics_without_defaulting_zero(self):
         plan = make_valid_plan(repetitions=1)

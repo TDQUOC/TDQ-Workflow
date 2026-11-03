@@ -77,6 +77,32 @@ class TestAutoUpdateSetup(unittest.TestCase):
                 tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir)
                 self.assertFalse(tdq_setup.can_cap_nhat_phien_ban(self.project, self.plugin_dir))
 
+    def test_instruction_failure_keeps_stamp_then_retries(self):
+        inst_path = os.path.join(self.project, "CLAUDE.md")
+        tdq_setup.ghi_phat_hanh(self.project, "0.61.0")
+        with open(inst_path, "w", encoding="utf-8") as stream:
+            stream.write(tdq_setup.MOC_MO + "\nprivate text")
+        with mock.patch("tdq_setup.DUONG_INSTRUCTION", inst_path), \
+             mock.patch("tdq_setup.kiem_va_cai_shim_python3", return_value=([], [], [])), \
+             mock.patch("tdq_setup._tim_cong_cu", return_value=None), \
+             mock.patch("tdq_setup.tdq_devtool_mcp.check_session_start", return_value=""), \
+             mock.patch("tdq_setup.kiem_dryrun_hook", return_value=(True, "fixture")), \
+             mock.patch("tdq_setup.don_may", return_value=([], [])):
+            with self.assertRaises(ValueError):
+                tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir)
+            self.assertEqual((tdq_setup.doc_phat_hanh(self.project) or {}).get("phien_ban"), "0.61.0")
+            self.assertTrue(tdq_setup.can_cap_nhat_phien_ban(self.project, self.plugin_dir))
+            with open(inst_path, "w", encoding="utf-8") as stream:
+                stream.write("private text\n")
+            self.assertTrue(tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir))
+            self.assertEqual((tdq_setup.doc_phat_hanh(self.project) or {}).get("phien_ban"), "0.62.0")
+
+    def test_stamp_failure_does_not_report_update_success(self):
+        with mock.patch("tdq_setup.thuc_hien_setup_bu", return_value=[]), \
+             mock.patch("tdq_setup.ghi_phat_hanh", return_value=False):
+            with self.assertRaises(OSError):
+                tdq_setup.tu_dong_cap_nhat_khi_doi_phien_ban(self.project, self.plugin_dir)
+
     def test_tach_version(self):
         self.assertEqual(tdq_setup.tach_version("0.82.0"), (0, 82, 0))
         self.assertEqual(tdq_setup.tach_version("v1.2.3-rc1"), (1, 2, 3, 1))
