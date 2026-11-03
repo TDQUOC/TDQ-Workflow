@@ -8,7 +8,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 **Đầu ra:** `C:\Users\admin\.claude\CLAUDE.md` (managed block mới) · báo cáo `docs/tdq/reports/2026-11-03-1420-phoi-hop-cong-cu.md` + `.html` · receipt `docs/tdq/artifacts/2026-11-03-1420-phoi-hop-cong-cu/instruction-receipt.json`.
 **Giới hạn:** eval hành vi `INCONCLUSIVE`/`unavailable_metrics`, trial dùng nguồn trước sửa rollback/ACL nên không chứng nhận nguồn cuối, không chứng minh browser/native hay tốc độ · smoke browser thủ công không có deadline toàn chuỗi 120 giây và chọn đích native bị `POLICY_DENIED` · Ruff chưa cài · **ACL adapter chỉ đọc `OWNER|GROUP|DACL` (mask 7), không đọc/ghi/so SACL**: audit policy riêng của file đích không được bảo toàn qua replace, và thay đổi SACL không bị phát hiện; chưa sửa vì đọc SACL cần `SE_SECURITY_NAME` — **người dùng đã được giải thích và chọn giữ nguyên (phương án 1)** sau khi request kết thúc · Master kiến trúc còn stale · POSIX chưa chạy trên máy Windows này.
 **Lệch spec chờ duyệt:** không còn — #1 (Q7 eval), #2 (Q6 smoke 120s), #3 (Q7 Ruff) đều đã duyệt bằng lời người dùng «auto duyệt lệch hãy chạy end to end đến hết plan đi».
-**Git:** chưa commit, chưa push; **chưa bump version/phát hành**, HEAD vẫn `24a8c15`; branch `feature/phoi-hop-cong-cu`. Lưu ý: `docs/tdq/.tdq-phat-hanh.json` chỉ đổi mốc `cap_nhat` sang `2026-11-03T18:58:36`, `phien_ban` vẫn `0.88.0`; nguyên nhân đổi mốc chưa xác định trong phiên. Branch không có upstream nên không kiểm chứng được push từ máy này.
+**Git:** đã commit `be1812c1` trên `feature/phoi-hop-cong-cu`, merge `--no-ff` vào `dev` (`22da6584`), push `dev`; phát hành `v0.89.0` với commit release `076394c` trên `main` và tag `v0.89.0`; plugin cục bộ đã cập nhật `0.88.0 → 0.89.0` (cần khởi động lại để áp dụng). Bản phát hành gỡ track `trials/env` (21 MB đường dẫn sâu) khỏi repo. Branch request đã xóa.
 
 ## Thời gian
 
@@ -33,5 +33,5 @@ Model compute time is unavailable (`model_giay=null`). API includes network/prov
 **Rủi ro hồi quy:** writer chạm mọi luồng ghim instruction (setup CLI, auto-update, SessionStart hook); tests `test_claude_md_core.py`, `test_auto_update_setup.py`, `test_context_hooks.py` giữ byte ngoài block, backup, stamp và báo lỗi hook. Evaluator đổi hành vi fail-closed; `test_tdq_eval_hosts.py`, `test_tdq_skill_eval.py`, `test_eval_contracts_e2e.py` giữ. **Rủi ro còn mở:** SACL của file instruction không được đọc/ghi/so, nên audit policy riêng (nếu có) không được bảo toàn khi replace; chưa sửa vì cần `SE_SECURITY_NAME`.
 <!-- tdq-archify-binding:start -->
 <!-- manifest: 2026-11-03-1420-phoi-hop-cong-cu.manifest.json -->
-<!-- manifest_digest: 64c176f8b6ff1e4676c1f4b4df858395998d341c79a1a84f844a23378d768d83 -->
+<!-- manifest_digest: 9d3b873d9260f7a1ae84b5af4d600db19a773e32fc2dd432e0ee92c8462c7114 -->
 <!-- tdq-archify-binding:end -->

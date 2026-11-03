@@ -5,14 +5,14 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-03T13:28:12.783Z",
+  "startedAt": "2026-11-03T13:42:59.908Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
     "sha256": "f2c1e7ae9ca07ad7edb59e6f203289a032cd8edd3a719424e77aeb663066cfee",
     "bytes": 4448
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
     "sha256": "3b1d676b4dd9a7eff7010e157c7c2b1c82d03f9baa336af54ba931541520c154",
     "bytes": 2662455
   },
@@ -32,7 +32,7 @@
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 2108,
+      "durationMs": 2275,
       "command": [
         "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\27096_1793683214684\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "6ffa4ead-7f0a-4679-b244-b84fa09494f8",
+        "receiptId": "b0ae166c-16a0-4285-a5ef-68d8d238df21",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
         "explainer": {
-          "preparedSha256": "711b9bd1e79d1448ef42a79c6dbaebec1244a7b581f26f8d650cecf79a9932d1",
+          "preparedSha256": "4210fdf923a2c25fd8f21aace9512a89efb2c2503e7811c24e972bb20d272b14",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -192,17 +192,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1178,
+      "durationMs": 1162,
       "command": [
         "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\27096_1793683214684\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
         "family": "explainer",
         "artifact": {
           "sha256": "3b1d676b4dd9a7eff7010e157c7c2b1c82d03f9baa336af54ba931541520c154",
@@ -256,7 +256,7 @@
               "id": "vong-lap",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-6M1dSm\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-p18ktL\\child.html",
                 "artifact": {
                   "sha256": "2c19c2d1c72dc0addae5071964cf26e94674a8c10b16500d57bb809bf290e10f",
                   "bytes": 808935
@@ -383,7 +383,7 @@
               "id": "vong-chay",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-LIATBg\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-xXOVB8\\child.html",
                 "artifact": {
                   "sha256": "cd6459d7b1c2ac5384e3531f3eab4cb7e5137ce6f119d50288f178b3f8ac6106",
                   "bytes": 809206
@@ -510,7 +510,7 @@
               "id": "writer-vao",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-6M9d1U\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-RQxi7G\\child.html",
                 "artifact": {
                   "sha256": "09b6178506fbd8156842215e633cd0fe5e7607d44a3739704b67afbf5584962b",
                   "bytes": 808689
@@ -637,7 +637,7 @@
               "id": "writer-ra",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-7iC0FT\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-5M8is5\\child.html",
                 "artifact": {
                   "sha256": "988a63472e8605047961ad6db6fe5ef6a9984ef067fd31d631c932f7b594a9e7",
                   "bytes": 808654
@@ -764,7 +764,7 @@
               "id": "acl-doc",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-f3vM6o\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-9groBL\\child.html",
                 "artifact": {
                   "sha256": "38da7d7ae460df2f6152d254447776a659afdce8d1b6491503804698105236eb",
                   "bytes": 806797
@@ -891,7 +891,7 @@
               "id": "acl-ghi",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-tComnv\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-ujKobW\\child.html",
                 "artifact": {
                   "sha256": "f71ff8bc0619e515d39e9972edabe289e9885073b9134c9db2fc7ca9b506d6ff",
                   "bytes": 807303
@@ -1018,7 +1018,7 @@
               "id": "ket-qua-flow",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-HmANhA\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-6a0Fz7\\child.html",
                 "artifact": {
                   "sha256": "2ef2e5660bdcfbd1a34fa7d34d1a51ec0cf228b0447340920bbd569dcb004d8c",
                   "bytes": 808443
@@ -1145,7 +1145,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "6ffa4ead-7f0a-4679-b244-b84fa09494f8"
+        "deliveryReceiptId": "b0ae166c-16a0-4285-a5ef-68d8d238df21"
       }
     }
   },
@@ -1177,12 +1177,12 @@
     }
   ],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-03T13:28:16.761Z",
-  "durationMs": 3978,
+  "finishedAt": "2026-11-03T13:43:04.011Z",
+  "durationMs": 4103,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

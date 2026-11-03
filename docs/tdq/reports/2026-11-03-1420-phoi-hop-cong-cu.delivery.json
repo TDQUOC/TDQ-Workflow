@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "6ffa4ead-7f0a-4679-b244-b84fa09494f8",
+  "receiptId": "b0ae166c-16a0-4285-a5ef-68d8d238df21",
   "status": "current",
   "command": "deliver",
   "type": "explainer",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-1420-phoi-hop-cong-cu\\bao-cao.archify.md",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
   "specification": {
     "sha256": "f2c1e7ae9ca07ad7edb59e6f203289a032cd8edd3a719424e77aeb663066cfee",
     "bytes": 4448
@@ -15,7 +15,7 @@
     "bytes": 2662455
   },
   "explainer": {
-    "preparedSha256": "711b9bd1e79d1448ef42a79c6dbaebec1244a7b581f26f8d650cecf79a9932d1",
+    "preparedSha256": "4210fdf923a2c25fd8f21aace9512a89efb2c2503e7811c24e972bb20d272b14",
     "dependencies": [
       {
         "kind": "diagram-spec",

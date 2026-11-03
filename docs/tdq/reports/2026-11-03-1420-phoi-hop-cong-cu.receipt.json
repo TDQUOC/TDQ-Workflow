@@ -11,7 +11,7 @@
     "bytes": 4448
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.html",
     "sha256": "3b1d676b4dd9a7eff7010e157c7c2b1c82d03f9baa336af54ba931541520c154",
     "bytes": 2662455
   },
@@ -50,11 +50,11 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.b48578a1096b42e3ab7d15b52a64687a.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-1420-phoi-hop-cong-cu.d9db67b7dd464c1b8fdfbf39342659cf.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 3978,
+  "durationMs": 4103,
   "browserCheck": {
     "requested": false,
     "ran": false
