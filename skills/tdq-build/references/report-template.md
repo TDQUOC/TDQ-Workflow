@@ -1,7 +1,7 @@
 # Report template
 <!-- muc-luc-dong:
-  Table of contents=7-13 · The execution steps=14-84 · The report shape=85-133 ·
-  Check before presenting=134
+  Table of contents=7-13 · The execution steps=14-88 · The report shape=89-137 ·
+  Check before presenting=138
 -->
 
 ## Table of contents
@@ -22,6 +22,10 @@ below before writing the report; working from memory is banned.
    limit; ~10-20 lines recommended. Template: section `## The report shape` in this file. The timing table is
    **mandatory**: run `tdq_timing.py show` and paste the whole table into the report; never
    estimate the numbers yourself.
+
+7b. **Both lanes** write the paired visual report `docs/tdq/reports/<slug>.html` from actual
+   task, DoD, QC, output and limit evidence via [Archify lifecycle](archify-lifecycle.md).
+   Render with `--evidence-kind working-tree` for uncommitted sources (or `committed` for a verified clean revision); CLI has no `actual` evidence kind. Verify before linking; unavailable/stale output gets a disclosed text fallback.
 
 8. Close the books: tick the leftover boxes of BOTH kinds — the task boxes in each phase AND
    the Definition of Done boxes — change the plan header to HOÀN THÀNH, then run <!-- i18n-allow: canonical status value -->

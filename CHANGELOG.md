@@ -2,6 +2,14 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.88.0 — 2026-11-03
+
+Report nghiệm thu trực quan chung cho Express và Deep.
+
+- Express chuyển từ `implement/QC` sang phase `report` đã có, rồi mới sang `idle`; CLI từ chối đóng trực tiếp từ `implement`.
+- Cả hai lane dùng chung báo cáo Markdown và HTML Archify độc lập từ task, DoD, QC và kết quả thực tế. Manifest ghi đúng provenance `working-tree`; output thiếu hoặc stale phải báo fallback.
+- Giữ duy nhất một cổng duyệt Express, không thêm phase, state key hay renderer. Tăng regression cho state, hook, report và Archify.
+
 ## 0.87.0 — 2026-11-03
 
 Tích hợp điều phối Ultracode qua hậu tố lane, bảo toàn độc quyền kiểm soát TDQ và siết chặt an toàn subagent.

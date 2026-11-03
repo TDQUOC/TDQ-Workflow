@@ -645,8 +645,8 @@ class TestSinhNhanhRelease(TempDest):
             self.assertIn("scripts/tdq_test_report.py", paths,
                           "HEAD imports tdq_test_report; release must keep it")
         approved_paths = {f"scripts/{module}.py" for module in APPROVED_RUNTIME_MODULES} | APPROVED_RELEASE_DOCS
-        # The existing budget stays unchanged for every other release file.
-        self.assertLessEqual(len(paths - approved_paths), 160)
+        # One new tier-1 quick-lane template ships with the runtime skill; no new runtime module.
+        self.assertLessEqual(len(paths - approved_paths), 161)
         self.assertGreaterEqual(len(kept), 120)
         for path in paths:
             self.assertFalse(path.startswith(("docs/", "tests/", "evals/", "graphify-out/")))

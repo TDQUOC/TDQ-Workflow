@@ -1,27 +1,27 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-03T00:05:25+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-03T01:23:49+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | (none) |
-| Lane | (not chosen) |
+| Request | 2026-11-03-0715-express-report |
+| Lane | quick |
 | Phase | idle |
 | Spec | (none) |
 | Plan | (none) |
-| Quick approval | (not applicable) |
+| Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | ultra |
-| QC level | full |
+| QC level | ultra |
 | Run mode | (not settled) |
 
 ## Where we are
-No TDQ request is open. Forbidden: Editing code before a request is open.
+Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
 
 ## What comes next
-Ask the user to pick a lane, then open a new request.
+Wait for a new request from the user.
 ```
 python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
 ```
-Done when: state.json has active_request and lane
+Done when: A new request is open
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.

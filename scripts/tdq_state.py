@@ -1366,10 +1366,10 @@ PHASE_TABLE = {
             "Add tasks to the plan's 'QC round N — fixes' section, fix red→green. "
             "Re-run the FAILed items plus any item the fix could have broken. "
             "Three rounds maximum; over the cap STOP, tell the user, propose switching to deep mode",
-            "Close the job: run `python3 scripts/tdq_state.py set phase=idle` — the terminal of express mode",
+            "QC passes → run `python3 scripts/tdq_state.py set phase=report`; write the shared visual report before closing to idle",
         ],
-        "done_when": "quick_approved = true, the log is written, the plan's QC section exists (evidence or the skipped-at-user's-request line), no red test is left, phase is back to idle",
-        "forbidden": "Implementing before the working log is written; batching the ticks at the end of the turn or leaving several tasks marked [~]; closing the job with a red test or a known bug; running set phase=idle after the 3-round fix cap without telling the user",
+        "done_when": "quick_approved = true, the log is written, the plan's QC section exists (evidence or the skipped-at-user's-request line), no red test is left, phase is report",
+        "forbidden": "Implementing before the working log is written; batching the ticks at the end of the turn or leaving several tasks marked [~]; entering report with a red test or a known bug; entering report after the 3-round fix cap without telling the user",
     },
 }
 
@@ -1492,8 +1492,8 @@ def phase_key(state):
         # A6: the terminal of lane quick — approved AND phase set to idle means done
         # (approve quick pushes phase=implement, so a later idle can only be a
         # deliberate close).
-        if state.get("quick_approved") and effective_phase(state, warn=False) == "idle":
-            return "idle"
+        if state.get("quick_approved") and effective_phase(state, warn=False) in ("report", "idle"):
+            return effective_phase(state, warn=False)
         # Phương án 2a (2026-09-01): bước phân tích của lane nhanh có hàng riêng để
         # NHÌN THẤY được, nhưng không kèm cổng duyệt — `CONG_THEO_LANE["quick"]` vẫn
         # đúng một cổng. Đã duyệt rồi thì phân tích xong từ lâu, không quay lại hàng này.
@@ -2790,6 +2790,10 @@ def cli(argv):
                     _fail(f"Phase {value} was removed from the workflow on "
                           f"2026-09-01 — use phase={PHASE_DA_GO[value]} instead.")
                 _fail("Invalid phase (idle|analyze|spec|plan|mode|implement|qc|report).")
+            if (key == "phase" and value == "idle" and state.get("active_request")
+                    and effective_lane(state, warn=False) == "quick" and state.get("quick_approved")
+                    and effective_phase(state, warn=False) == "implement"):
+                _fail("Express must enter phase=report before closing to idle.")
             if key == "phase" and value == "qc":
                 _chan_worktree_con_mo(cwd, state)
             if key == "phase" and value == "plan":
