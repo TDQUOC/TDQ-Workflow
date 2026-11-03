@@ -1,8 +1,7 @@
 # Express pipeline — detail
 <!-- muc-luc-dong:
-  How deep the analysis goes — B0, B1, B2=27-44 · The ten execution steps=45-114 ·
-  Mini spec/plan template (≤ 40 lines)=115-141 ·
-  The block that presents the mini-plan to the user=142-164 · Ba phần tách sang file em=165
+  How deep the analysis goes — B0, B1, B2=26-43 · The ten execution steps=44-114 ·
+  Mini spec/plan template=115-119 · Ba phần tách sang file em=120
 -->
 
 Express differs from the deep pipeline by **merging the documents and merging the
@@ -107,60 +106,16 @@ steps below before doing step 1; working from memory is banned.
    could have broken. There is a 3-round cap — over the cap, STOP, tell the user, propose
    moving to the deep pipeline, and leave the phase as it is. (Full version in
    `## The fix round` in this file.)
-10. Append the result to the working log; ask the user about the commit.
+10. QC passes → follow [report handoff](quick-lane-qc.md#report-handoff).
 
-Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test.
-Next step: ask the user about the commit; the request is over → `... set phase=idle`.
+Done when: `quick_approved = true`, the log is written, section `## QC` exists, no red test,
+and `phase=report`.
+Next step: phase `report` — create the shared visual report, then `... set phase=idle`.
 
-## Mini spec/plan template (≤ 40 lines)
+## Mini spec/plan template
 
-The template below is written in the default document language; when `doc_lang` is not `vi`,
-translate the headings and labels into that language and keep the shape.
-
-<!-- i18n-allow: document template written in the default language -->
-```markdown
-# QUICK — <tên việc>
-
-**Ngày:** YYYY-MM-DD · Brief: ../brief/<slug>.md · Lane: quick
-**Trạng thái:** CHỜ DUYỆT
-**Ước tính sẽ dùng skill:** <skill sẽ DÙNG, hoặc "không có">
-
-## Phạm vi
-- Trong: <gạch đầu dòng>
-- NGOÀI: <gạch đầu dòng>
-
-## Task
-- [ ] **T1** <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
-- [ ] **T2** <việc cụ thể> — Test: <lệnh>
-
-## Definition of Done
-- <điều kiện đo được, có lệnh kiểm>
-```
-Going past 40 lines means this work is no longer quick — say so to the user and propose
-moving to the deep pipeline.
-
-## The block that presents the mini-plan to the user
-
-Per [user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) — all 5
-components, the approval block at the end of the message, no emoji:
-
-<!-- i18n-allow: sample block written in the default language -->
-```
-Tôi đã lên kế hoạch gọn cho yêu cầu của bạn.
-
-**Sẽ làm:** <gạch đầu dòng ngắn>.
-**Đụng tới:** <file/khu vực>.
-**Kiểm thế nào:** <lệnh hoặc tiêu chí>.
-**Ước tính sẽ dùng skill:** <skill sẽ DÙNG, hoặc "không có">.
-
-Xem đầy đủ tại: `docs/tdq/plan/<slug>.md`
-
----
-
-**Bạn duyệt để tôi làm luôn chứ?**
-
-➤ Duyệt: nhắn "duyệt nhanh" kèm mức QC (vd "duyệt nhanh, QC full"); "duyệt quick" vẫn chạy — duyệt xong tôi làm ngay · Góp ý: nhắn trực tiếp
-```
+Read [quick-lane-mini.md](quick-lane-mini.md) at step 3 for the full ≤ 40-line template and
+[user-facing-block.md](../../tdq-conventions/references/user-facing-block.md) approval block.
 
 ## Ba phần tách sang file em
 

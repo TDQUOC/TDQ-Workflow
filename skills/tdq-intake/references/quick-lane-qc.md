@@ -1,4 +1,8 @@
 # Express lane: the tick rule, QC, and the fix loop
+<!-- muc-luc-dong:
+  The tick rule — `[ ]` - `[~]` - `[x]`=14-34 · QC in the express pipeline=35-69 ·
+  The fix round=70-79 · Report handoff=80
+-->
 
 Split out of `quick-lane.md` on 2026-10-02, measured: these three parts add up to **1,120 tokens**
 inside a 4,356-token file, and not one of them is needed at STEP 1. The tick rule is needed when a
@@ -71,4 +75,11 @@ exist, with exactly 1 line: <!-- i18n-allow: sample sentence in the default lang
   `[x]` as soon as it is green. <!-- i18n-allow: canonical heading in the default language -->
 - After the fix, re-run the items that FAILed plus the items the fix could have broken.
 - **3-round cap.** Over the cap → STOP, tell the user, propose moving to the deep pipeline.
-  Keep `phase=implement`, do NOT run `set phase=idle`.
+  Keep `phase=implement`, do NOT run `set phase=report` or `set phase=idle`.
+
+## Report handoff
+
+When QC passes, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=report`.
+Both lanes then follow the [shared report contract](../../tdq-build/references/report-template.md),
+including paired Markdown and independent Archify HTML created from actual task, DoD, QC,
+output and limit evidence. No new approval gate.
