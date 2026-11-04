@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "<string>", line 26, in <module>
-    assert all(row["subprocess_calls"]==row["calibration_calls"]==row["git_calls"]==0 for row in observed),"Zero-work contract failed on actual guarded baseline observations"
-           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: Zero-work contract failed on actual guarded baseline observations

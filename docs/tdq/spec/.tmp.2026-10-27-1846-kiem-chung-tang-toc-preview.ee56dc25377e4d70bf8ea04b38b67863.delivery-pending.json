@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "command": "deliver",
-  "status": "pending",
-  "receiptId": "397d42ae-c73c-4ec7-9c8f-4fbb0b2e673b",
-  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-10-27-1846-kiem-chung-tang-toc\\candidate.json",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-10-27-1846-kiem-chung-tang-toc-preview.ee56dc25377e4d70bf8ea04b38b67863.html"
-}

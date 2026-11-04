@@ -1,3 +1,0 @@
-vung-cham: 3 changed file(s); selected 19/167 modules (transitive): test_adapter_host.py test_build_portable.py test_doc_index.py test_docs_consistency.py test_gitflow_van_ban.py test_luat_dung.py test_luat_gate_chat.py test_luat_skill.py test_luat_test.py test_ranh_gioi.py test_reference_mot_tang.py test_rules_library.py test_skill_shape.py test_skill_tokens.py test_soul_rules.py test_tdq_setup_skill.py test_timing.py test_token_budget.py test_user_facing_block.py; no fallback
-[TDQ:TEST] FAIL — scope=transitive backend=unittest tests=278 skipped=6 in 15.31s.
-  Test failure or unexpected success

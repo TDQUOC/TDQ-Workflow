@@ -1,8 +1,0 @@
-{
-  "status": "PASS",
-  "scope": "public writer in child process, temporary HOME",
-  "backup_count": 1,
-  "outside_bytes_preserved": true,
-  "second_run_noop": true,
-  "timeout_seconds": 120
-}

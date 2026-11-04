@@ -1,7 +1,0 @@
-{
-  "SRP": "CÓ — pure summary/render tách khỏi export I/O; OwnedProcessJob sở hữu lifecycle, Codex giữ probe policy; lỗi purity đã sửa tại owner T1.3.",
-  "OCP": "CÓ — phase/ranking/format và validation sets dùng dữ liệu, không thêm abstraction một use case; primitive có hai consumer Codex/IsolatedJob thực.",
-  "LSP": "CÓ — IsolatedJob giữ hợp đồng OwnedProcessJob và thêm pytest isolation; regression giữ caller env/HOME, stdin và error contracts; summary trả cùng schema quality.",
-  "ISP": "CÓ — summary chỉ nhận result, renderer nhận summary/provenance; process chỉ nhận launch/ownership inputs cần dùng.",
-  "DIP": "CÓ — Codex/pytest đi qua OwnedProcessJob, summary/export dùng tdq_test_report; state vẫn qua shared tdq_state; không nhân bản backend process."
-}

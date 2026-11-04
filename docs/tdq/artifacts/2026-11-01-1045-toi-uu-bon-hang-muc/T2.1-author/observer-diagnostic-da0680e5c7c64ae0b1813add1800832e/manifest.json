@@ -1,7 +1,0 @@
-{
-  "classification": "diagnostic only; no task certification",
-  "case_id": "tests/test_tdq_test.py::So::test_so_json_dem_va_ngan_sach",
-  "source_file_sha256": "b634510b17a76b5db9413f8bd4f0391755f9beb905fa85506d7fbcce16658f19",
-  "plugin_sha256": "dcbc5a86a2fbaa8059dae1674fe3ca55d19e1aa9bea3b84f81c430f413ffce69",
-  "calls": 4
-}

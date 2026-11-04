@@ -1,2 +1,0 @@
-vung-cham: 1 changed file(s); selected 3/167 modules (transitive): test_build_portable.py test_ma_hoa_subprocess.py test_mcp_first_auto_setup.py; no fallback
-[TDQ:TEST] PASS — scope=transitive backend=unittest tests=46 skipped=0 in 9.9s.

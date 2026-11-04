@@ -1,1 +1,0 @@
-TDQ_SCOPE_RUNTIME {"path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime.json", "sha256": "9cbbeb1d82b78a282591367e20c789b3df2a8fff4f62f79bd9a47854063c27b2"}

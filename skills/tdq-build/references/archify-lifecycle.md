@@ -17,16 +17,16 @@ On stale or invalid binding, identify whether the document, candidate, artifact 
 
 ## Refresh Master
 
-Finish checks freshness and writes a separate status file; it does not call an AI endpoint or automatically turn planned task diagrams into committed architecture. The agent must read the relevant source changes and author a new model.
+Finish checks freshness and writes a separate status file; it does not call an AI endpoint or automatically turn planned task diagrams into committed architecture. When stale, inspect changed source and tests, then update model and candidate before syncing; never set status current manually or use stale graph as evidence.
 
 ```sh
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" status
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" sync-master --model "docs/tdq/artifacts/master/model.json" --project "." --out "docs/architecture"
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" sync-master --model "docs/tdq/models/master.model.json" --project "." --out "docs/architecture"
 ```
 
-The model inventories modules and coverage, identifies unknown/excluded areas and lists views with relative candidate paths. Use `committed` only for a verified clean source snapshot at the declared Git revision. Use `working-tree` for uncommitted bytes and `planned` for proposed behavior. Do not invent committed citations for either. Recheck the destination revision after merge; source changes outside workflow are detected only on the next status/finish/refresh invocation.
+The model inventories modules and coverage, identifies unknown/excluded areas and lists views with relative candidate paths. Render each flow card beside overview so clicking opens a modal for detail diagram inside the same HTML (Escape/close returns focus), and verify diagram target IDs before publish; never inject onclick into native node or claim native node already links to child. Include only steps with a source-backed call edge, route or test (`path`/`line`), mark unknown details unverified (`chưa xác minh`), and do not invent password algorithm, HTTP endpoint or parameter lineage. Use `committed` only for a verified clean source snapshot at the declared Git revision, `working-tree` for uncommitted bytes and `planned` for proposed behavior; verify source fingerprint after sync and recheck after merge.
 
-Retain last-good output if any required view fails. An existing lock is not permission to delete it: establish ownership before recovery. A diagram's motion is illustrative, not a runtime trace. `compare` visualizes differences, never merges the model.
+Retain and preserve last-good output if the engine is missing or any required view fails; report stale or incomplete with no current claim, and never publish a partial bundle or silently present old master as current. An existing lock is not permission to delete it: establish ownership before recovery. A diagram's motion is illustrative, not a runtime trace. `compare` visualizes differences, never merges the model.
 
 ## Evidence for report
 

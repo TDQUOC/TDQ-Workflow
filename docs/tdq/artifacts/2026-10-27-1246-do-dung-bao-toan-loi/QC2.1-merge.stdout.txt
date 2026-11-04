@@ -1,8 +1,0 @@
-Merged tdq/2026-10-27-1246-do-dung-bao-toan-loi/qc2.1 into bugfix/do-dung-bao-toan-loi.
-Gathered on: bugfix/do-dung-bao-toan-loi (C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow)
-NOT CLEANED UP YET: 1 worktree(s)
-  QC2.1  C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\qc2.1
-        reason: ignored files here do not regenerate, and cleaning up would delete them (docs/tdq/.tdq-prompt-last.json, docs/tdq/.tdq-turn.jsonl)
-        → look at the list first — these are files git hides: git -C C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\qc2.1 status --porcelain --ignored=matching
-        → move what matters somewhere safe, then sweep again: mv C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\qc2.1/<file> <a folder you keep> && python3 scripts/tdq_team.py sweep --clean
-        → delete them for good — this frees the worktree in one step: git -C C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\.tdq-worktrees\2026-10-27-1246-do-dung-bao-toan-loi\qc2.1 clean -fdx && python3 scripts/tdq_team.py sweep --clean

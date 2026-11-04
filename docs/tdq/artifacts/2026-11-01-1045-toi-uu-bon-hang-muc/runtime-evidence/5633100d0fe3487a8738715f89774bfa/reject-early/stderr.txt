@@ -1,2 +1,0 @@
-[2026-11-01T16:15:32] calibrate · --task 1 --lap 3 --ra C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime-evidence\5633100d0fe3487a8738715f89774bfa\reject-early\measurement.json --mau-that t_phat=1,t_phat=2
-Not yet 3 samples for: t_phat. Raise --lap or --task, or feed real numbers with --mau-that.

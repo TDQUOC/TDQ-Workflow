@@ -1,2 +1,0 @@
-[2026-10-27T15:28:34] doc_lint: lint 2 file: 2026-10-27-1246-do-dung-bao-toan-loi.md, 2026-10-27-1246-do-dung-bao-toan-loi.md
-[2026-10-27T15:28:34] doc_lint: done — 0 violation(s) total, exit 0

@@ -1,4 +1,0 @@
-[2026-10-27T15:04:02] merge · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow
-[2026-10-27T15:04:03] rebase tdq/2026-10-27-1246-do-dung-bao-toan-loi/qc2.1 → onto bugfix/do-dung-bao-toan-loi
-[2026-10-27T15:04:03] merge tdq/2026-10-27-1246-do-dung-bao-toan-loi/qc2.1 → into bugfix/do-dung-bao-toan-loi
-[2026-10-27T15:04:04] keep QC2.1 — bo-qua

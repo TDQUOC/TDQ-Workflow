@@ -1,3 +1,0 @@
-[2026-10-27T14:39:46+07:00] antigravity_portable: 10 skill(s), 3 hook(s), 2 MCP server(s), 0 plugin variable left
-[2026-10-27T14:39:46+07:00] manifest: 133 file(s) in tdq-workflow
-[2026-10-27T14:39:46+07:00] agy: đã sinh C:\Users\admin\AppData\Local\Temp\tmpkutcb3o1\tdq-workflow

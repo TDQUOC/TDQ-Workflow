@@ -1,1 +1,0 @@
-{"request": "2026-10-27-1246-do-dung-bao-toan-loi", "tron_bo": 3, "bo_sot": 5, "modules_bo_sot": ["test_archify_e2e.py", "test_build_portable.py", "test_doc_index.py", "test_luat_skill.py", "test_mcp_first_auto_setup.py"], "ngan_sach": 3, "radius_complete": true, "radius_reason": "Recorded comparisons have complete failure mapping"}

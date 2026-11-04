@@ -1,1 +1,0 @@
-@"C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe" "C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime-evidence\5633100d0fe3487a8738715f89774bfa\timeout-cleanup\fixture-codex.py" %*

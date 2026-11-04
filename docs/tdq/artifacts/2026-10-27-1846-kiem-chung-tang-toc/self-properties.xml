@@ -1,1 +1,0 @@
-<testsuite><testcase classname="fixture" name="case"><properties><property name="kind" value="fixture"/></properties><failure>actual failure</failure></testcase></testsuite>

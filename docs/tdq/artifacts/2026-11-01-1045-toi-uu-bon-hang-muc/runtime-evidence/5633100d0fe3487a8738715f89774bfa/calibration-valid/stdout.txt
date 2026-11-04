@@ -1,8 +1,0 @@
-Measurement: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime-evidence\5633100d0fe3487a8738715f89774bfa\calibration-valid\measurement.json
-  t_task       0.118s  ±0.001  n=3  source=stub  method=may
-  t_tick       0.001s  ±0.000  n=3  source=stub  method=may
-  t_phat       0.926s  ±0.012  n=3  source=stub  method=may
-  t_kiem       0.361s  ±0.004  n=3  source=stub  method=may
-  t_hop        1.094s  ±0.053  n=3  source=stub  method=may
-  t_don        0.461s  ±0.016  n=3  source=stub  method=may
-TDQ_RUNTIME_FACTS {"measurement_calls": 3, "command_exit_code": 0, "output_exists": true, "new_output_files": ["measurement.json"], "observer_enabled": true, "observed_process_calls": 45}

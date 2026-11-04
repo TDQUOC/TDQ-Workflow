@@ -1,8 +1,0 @@
-Measurement: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime-evidence\b95baa6451194b51bd9a5f787651de6f\calibration-valid\measurement.json
-  t_task       0.125s  ±0.005  n=3  source=stub  method=may
-  t_tick       0.001s  ±0.000  n=3  source=stub  method=may
-  t_phat       0.986s  ±0.024  n=3  source=stub  method=may
-  t_kiem       0.382s  ±0.015  n=3  source=stub  method=may
-  t_hop        1.107s  ±0.040  n=3  source=stub  method=may
-  t_don        0.472s  ±0.002  n=3  source=stub  method=may
-TDQ_RUNTIME_FACTS {"measurement_calls": 3, "command_exit_code": 0, "output_exists": true, "new_output_files": ["measurement.json", "sample-plan-1.md", "sample-plan-2.md", "sample-plan-3.md"], "sample_plans": [{"path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/b95baa6451194b51bd9a5f787651de6f/calibration-valid/sample-plan-1.md", "sha256": "909e7fb578f29c50c37537c0dcb3da8757f1ff89c75fcd7e4bbae9447111ba32"}, {"path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/b95baa6451194b51bd9a5f787651de6f/calibration-valid/sample-plan-2.md", "sha256": "909e7fb578f29c50c37537c0dcb3da8757f1ff89c75fcd7e4bbae9447111ba32"}, {"path": "docs/tdq/artifacts/2026-11-01-1045-toi-uu-bon-hang-muc/runtime-evidence/b95baa6451194b51bd9a5f787651de6f/calibration-valid/sample-plan-3.md", "sha256": "909e7fb578f29c50c37537c0dcb3da8757f1ff89c75fcd7e4bbae9447111ba32"}], "observer_enabled": true, "observed_process_calls": 45}

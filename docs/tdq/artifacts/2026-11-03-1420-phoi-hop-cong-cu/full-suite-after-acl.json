@@ -1,9 +1,0 @@
-{
-  "status": "PASS",
-  "tests_run": 4138,
-  "skipped": 12,
-  "failures": [],
-  "details_complete": true,
-  "reason": "Executed tests completed successfully",
-  "receipt": "docs\\tdq\\cache\\test-runs\\d62619eb6441fbab\\ebaab9fca3284d1e93a969a284b14665\\result.json"
-}

@@ -1,3 +1,0 @@
-tron-bo: running the full suite (178 modules)
-[TDQ:TEST] PASS — scope=full backend=pytest tests=3601 skipped=8 in 1124.95s.
-TDQ_RESULT {"path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\cache\\test-runs\\c030d75ca44ab99e\\f1572131457d462989b5a7f866819431\\result.json", "sha256": "b74ab7a0a36e7dd2efd53d41c72ab759ad5afe788f423519fc13e304c9bcdf56"}

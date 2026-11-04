@@ -1,2 +1,0 @@
-[2026-10-27T15:03:59] check · project=C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow
-[2026-10-27T15:03:59] check tdq/2026-10-27-1246-do-dung-bao-toan-loi/qc2.1 → clean

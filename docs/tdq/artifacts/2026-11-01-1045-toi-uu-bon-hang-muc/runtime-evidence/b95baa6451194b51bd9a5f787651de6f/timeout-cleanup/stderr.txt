@@ -1,4 +1,0 @@
-[2026-11-01T09:16:50+00:00] tdq_test_process reason=exited phase=codex-version exit_code=0 wall=0.172305 cleanup=0.000087 cleanup_complete=True
-[2026-11-01T16:16:50+07:00] tdq_codex: temporary CODEX_HOME: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\docs\tdq\artifacts\2026-11-01-1045-toi-uu-bon-hang-muc\runtime-evidence\b95baa6451194b51bd9a5f787651de6f\timeout-cleanup\caller\docs\tdq\.tdq-codex-home\tdq-codex-home-fbn7fo7b (mode 700) · provider=(codex default)
-[2026-11-01T09:16:52+00:00] tdq_test_process reason=timeout phase=codex-say-hi exit_code=None wall=2.000499 cleanup=0.003164 cleanup_complete=True
-[2026-11-01T16:16:52+07:00] tdq_codex: say hi: timeout 2s · model=fixture-only

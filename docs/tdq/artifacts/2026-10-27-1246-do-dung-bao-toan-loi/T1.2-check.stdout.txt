@@ -1,2 +1,0 @@
-Test of T1.2 passed: `python -m unittest discover -s tests -p test_tdq_test_result.py`
-Clean: tdq/2026-10-27-1246-do-dung-bao-toan-loi/t1.2 merges into bugfix/do-dung-bao-toan-loi.

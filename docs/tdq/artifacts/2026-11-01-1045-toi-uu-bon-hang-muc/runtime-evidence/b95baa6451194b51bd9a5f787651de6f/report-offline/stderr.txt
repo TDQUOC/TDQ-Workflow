@@ -1,5 +1,0 @@
-[2026-11-01T09:16:53.361299+00:00] test-report stage=read 
-[2026-11-01T09:16:54.085089+00:00] test-report stage=summary cases=3665 ranked=3665 quality=complete result_status=PASS
-[2026-11-01T09:16:54.093857+00:00] test-report stage=stage outputs=3
-[2026-11-01T09:16:54.107433+00:00] test-report stage=commit outputs=3
-[2026-11-01T09:16:54.109370+00:00] test-report stage=exported outputs=3 result_status=PASS

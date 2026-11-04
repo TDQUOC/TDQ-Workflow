@@ -1,7 +1,0 @@
-test_atomic_delivery_rejects_symlink (test_archify_delivery.TestAtomicDelivery.test_atomic_delivery_rejects_symlink)
-Refuses to deliver to a symlink target. ... skipped 'Symlinks not supported in this environment'
-
-----------------------------------------------------------------------
-Ran 1 test in 0.004s
-
-OK (skipped=1)
