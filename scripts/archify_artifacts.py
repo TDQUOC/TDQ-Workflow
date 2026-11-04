@@ -415,6 +415,7 @@ def build_manifest(
     request: Optional[str] = None,
     lane: Optional[str] = None,
     source_paths: Optional[Iterable[Union[str, Path]]] = None,
+    source_files: Optional[Dict[str, str]] = None,
     child_files: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
     """Constructs schema_version=1 manifest with portable paths and hashes.
@@ -441,7 +442,11 @@ def build_manifest(
     cand_digest = _hash_file(cand_abs)
     art_digest = _hash_file(art_abs)
 
-    source_files = source_fingerprint(project_path, paths=source_paths_tuple)
+    resolved_sources = (
+        dict(source_files)
+        if source_files is not None
+        else source_fingerprint(project_path, paths=source_paths_tuple)
+    )
     clean_receipt = _sanitize_secrets(receipt)
     engine = receipt.get("engine") or receipt.get("generator") or "archify"
 
@@ -462,7 +467,7 @@ def build_manifest(
         "artifact_path": art_rel,
         "artifact_digest": art_digest,
         "source_paths": source_paths_list,
-        "source_files": source_files,
+        "source_files": resolved_sources,
         "coverage": coverage or {},
         "engine": engine,
         "receipt": clean_receipt,

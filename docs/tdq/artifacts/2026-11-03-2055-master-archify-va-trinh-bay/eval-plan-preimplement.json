@@ -1,0 +1,49 @@
+{
+  "plan_version": "v1",
+  "experiment_id": "2026-11-03-2055-master-archify-va-trinh-bay",
+  "targets": [
+    "skills/tdq-build/references/archify-lifecycle.md"
+  ],
+  "base_identity": "3d909ef147712deb33e84fb405070723a0ac00d7",
+  "candidate_identity": "planned",
+  "change_kind": "behavioral",
+  "hypothesis": "Master card drill-down and source-freshness instructions improve evidence fidelity without invented flow details.",
+  "evaluation_kind": "agent-effectiveness",
+  "corpus_id": "archify-master-2026-11-04-v1",
+  "dev_cases_sha256": "5c2a434b86cfc9cd214d0c50784440f326b261ae65468f4c4f0c256819a2b144",
+  "holdout_cases_sha256": "bc9b15fe92eece73778c307a6d9d4b8a4b5682a1d8fe18e29e6304496f689792",
+  "rubric_version": "master-freshness-v1",
+  "scorer_version": "master-observed-response-v1",
+  "expected_triggers": [
+    "overview-card",
+    "stale-source",
+    "missing-evidence",
+    "render-failure"
+  ],
+  "negative_cases": [],
+  "required_metrics": [
+    "trigger_accuracy",
+    "outcome_quality"
+  ],
+  "cells": [
+    {
+      "host": "claude",
+      "model": "cc3[1m]",
+      "permission_profile": "local-fixtures-no-external-actions",
+      "tool_aliases": {},
+      "cache_profile": "isolated-per-trial"
+    }
+  ],
+  "repetitions": 2,
+  "order_policy": "AB_BA",
+  "thresholds": {
+    "min_pairs": 8,
+    "quality_margin": 0,
+    "efficiency_margin": 0.1
+  },
+  "execution_notes": {
+    "status": "preimplementation",
+    "scorer": "No scorer is registered; do not claim quality PASS. Bind source and actual model before trials.",
+    "isolation": "Only local fixture prompts, no external services, no user-home credential read."
+  }
+}

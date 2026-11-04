@@ -207,6 +207,25 @@ def _verify_candidate_confinement(model_file: Path, views: list[dict]) -> bool:
     return True
 
 
+def _verify_master_sources(model: dict, project_root: Path) -> bool:
+    """Reject missing, escaping or out-of-range flow evidence before rendering."""
+    root = project_root.resolve()
+    try:
+        for flow in model.get("master", {}).get("flows", []):
+            for step in flow.get("steps", []):
+                for source in step.get("sources", []):
+                    path = (root / source["path"].replace("\\", "/")).resolve()
+                    path.relative_to(root)
+                    with path.open("r", encoding="utf-8") as stream:
+                        line_count = sum(1 for _ in stream)
+                    if source.get("end_line", source["line"]) > line_count:
+                        raise ValueError(f"Source line range exceeds file: {source['path']}")
+    except (OSError, ValueError) as exc:
+        sys.stderr.write(f"Error: Master flow evidence invalid: {exc}\n")
+        return False
+    return True
+
+
 def _render_views_to_staging(
     views: list[dict],
     model_parent: Path,
@@ -347,6 +366,98 @@ def _generate_index_html(validated_model: dict, rendered_views: list[dict]) -> s
 </html>"""
 
 
+def _alloc_id(base: str, used: set[str]) -> str:
+    cand = "".join(c if c.isalnum() or c in "_-" else "-" for c in base).strip("-") or "item"
+    if not cand[0].isalpha() or cand.startswith("explainer-"):
+        cand = f"m-{cand}"
+    out, idx = cand[:90], 1
+    while out in used:
+        out, idx = f"{cand[:84]}-{idx}", idx + 1
+    used.add(out)
+    return out
+
+
+def _step_detail_text(step: dict[str, Any]) -> str:
+    refs = [
+        f"`{s['path']}:{s['line']}" + (f"-{s['end_line']}`" if s.get("end_line", s["line"]) != s["line"] else "`")
+        for s in step.get("sources", [])
+    ]
+    detail = step.get("detail", "").strip()
+    return f"{detail} ({', '.join(refs)})" if detail and refs else (detail or ", ".join(refs))
+
+
+def _build_master_explainer(validated_model: dict[str, Any], quality: str) -> dict[str, Any]:
+    master = validated_model["master"]
+    views = validated_model["views"]
+    views_by_id = {v["id"]: v for v in views}
+    overview_id, flows = master["overview"], master["flows"]
+    used = {"answer", "diagram-dialog", "diagram-dialog-title", "toast"} | set(views_by_id)
+    used.update(f["id"] for f in flows)
+    used.update(s["id"] for f in flows for s in f.get("steps", []))
+
+    overview_view = views_by_id[overview_id]
+    overview_blocks: list[dict[str, Any]] = [{
+        "id": overview_id,
+        "type": "diagram",
+        "diagramType": overview_view["type"],
+        "source": f"{overview_id}.candidate.json",
+    }]
+    if flows:
+        overview_blocks.append({
+            "id": _alloc_id("master-flows", used),
+            "type": "steps",
+            "items": [
+                {k: f[k] for k in ("id", "text", "detail", "target") if f.get(k)}
+                for f in flows
+            ],
+        })
+    panels: list[dict[str, Any]] = [{
+        "id": _alloc_id(f"{overview_id}-panel", used),
+        "title": overview_view.get("summary") or "Overview",
+        "blocks": overview_blocks,
+    }]
+    for v in views:
+        vid = v["id"]
+        if vid == overview_id or v["type"] == "explainer":
+            continue
+        blocks: list[dict[str, Any]] = [{
+            "id": vid,
+            "type": "diagram",
+            "diagramType": v["type"],
+            "source": f"{vid}.candidate.json",
+        }]
+        for f in (fl for fl in flows if (fl.get("target") or {}).get("diagram") == vid):
+            blocks.append({
+                "id": _alloc_id(f"{f['id']}-steps", used),
+                "type": "steps",
+                "items": [
+                    {"id": s["id"], "text": s["text"], "detail": _step_detail_text(s)}
+                    for s in f.get("steps", [])
+                ],
+            })
+        panels.append({
+            "id": _alloc_id(f"{vid}-panel", used),
+            "title": v.get("summary") or vid,
+            "blocks": blocks,
+        })
+
+    title = str(validated_model.get("title", "Master Architecture"))
+    return {
+        "schema_version": 1,
+        "diagram_type": "explainer",
+        "meta": {
+            "id": _alloc_id("master-architecture", used),
+            "title": title,
+            "locale": "en",
+            "output": "index.html",
+            "quality_profile": quality,
+        },
+        "answer": {"summary": f"{title} ({validated_model.get('evidence_kind', 'working-tree')})."},
+        "panels": panels,
+        "sources": [],
+    }
+
+
 def _derive_stable_source_paths(
     project_root: Path,
     dest_dir: Path,
@@ -354,30 +465,30 @@ def _derive_stable_source_paths(
     validated_model: dict,
 ) -> list[str]:
     """Derive stable project source_paths excluding outputs, dest, and staging directories."""
+    dest_rel = dest_dir.resolve().relative_to(project_root).as_posix() if _is_within(dest_dir, project_root) else ""
+    model_rel = model_file.resolve().relative_to(project_root).as_posix() if _is_within(model_file, project_root) else ""
     declared = validated_model.get("source_paths")
-    if declared is not None:
-        return list(declared)
+    base_paths = list(declared) if declared is not None else list(source_fingerprint(project_root).keys())
+    model_parent = model_file.parent.resolve()
+    extra_abs = [
+        *((model_parent / v.get("candidate", "")).resolve() for v in validated_model.get("views", [])),
+        *(
+            (project_root / src["path"].replace("\\", "/")).resolve()
+            for flow in validated_model.get("master", {}).get("flows", [])
+            for step in flow.get("steps", [])
+            for src in step.get("sources", [])
+        ),
+    ]
+    for p_abs in extra_abs:
+        if _is_within(p_abs, project_root):
+            base_paths.append(p_abs.relative_to(project_root).as_posix())
 
-    all_sources = source_fingerprint(project_root)
-    dest_rel = ""
-    if _is_within(dest_dir, project_root):
-        dest_rel = dest_dir.resolve().relative_to(project_root).as_posix()
-
-    model_rel = ""
-    if _is_within(model_file, project_root):
-        model_rel = model_file.resolve().relative_to(project_root).as_posix()
-
-    clean_paths = []
-    for p in all_sources.keys():
-        if dest_rel and (p == dest_rel or p.startswith(dest_rel + "/")):
-            continue
-        if ".staging" in p or "staging." in p:
-            continue
-        if model_rel and p == model_rel:
-            continue
-        clean_paths.append(p)
-
-    return sorted(clean_paths)
+    clean = list(dict.fromkeys(
+        p for p in base_paths
+        if p != model_rel and ".staging" not in p and "staging." not in p
+        and not (dest_rel and (p == dest_rel or p.startswith(dest_rel + "/")))
+    ))
+    return clean if declared is not None else sorted(clean)
 
 
 def _build_and_publish_manifest(
@@ -389,10 +500,18 @@ def _build_and_publish_manifest(
     rendered_views: list[dict],
     child_files: dict[str, str],
     receipts: dict[str, Any],
+    source_paths: Optional[list[str]] = None,
+    pre_sources: Optional[dict[str, str]] = None,
+    pre_model_hash: Optional[str] = None,
 ) -> Path:
     """Construct aggregate manifest, rebase final paths, and publish bundle atomically."""
     staging_index = staging_dir / "index.html"
-    source_paths = _derive_stable_source_paths(project_root, dest_dir, model_file, validated_model)
+    if source_paths is None:
+        source_paths = _derive_stable_source_paths(project_root, dest_dir, model_file, validated_model)
+    if pre_model_hash is not None and _hash_file(model_file) != pre_model_hash:
+        raise RuntimeError("Master model modified during render")
+    if pre_sources is not None and source_fingerprint(project_root, paths=source_paths) != pre_sources:
+        raise RuntimeError("Source or candidate modified during render")
 
     aggregate_receipt = {
         "ok": True,
@@ -412,6 +531,7 @@ def _build_and_publish_manifest(
         revision=validated_model.get("revision"),
         coverage=validated_model.get("coverage", {}),
         source_paths=source_paths,
+        source_files=pre_sources,
     )
 
     final_art_rel = (dest_dir / "index.html").resolve().relative_to(project_root).as_posix()
@@ -423,7 +543,11 @@ def _build_and_publish_manifest(
     staging_manifest = staging_dir / "manifest.json"
     staging_manifest.write_text(json.dumps(raw_manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    return publish_bundle(staging=staging_dir, destination=dest_dir)
+    published_index = publish_bundle(staging=staging_dir, destination=dest_dir)
+    readback = check_manifest(project_root, dest_dir / "manifest.json")
+    if readback.get("status") != "current":
+        raise RuntimeError(f"Post-publish readback not current: {readback.get('reasons')}")
+    return published_index
 
 
 def _sync_legacy_graph(graph_path: Union[str, Path], out_path: Optional[Union[str, Path]], max_nodes: int) -> bool:
@@ -525,22 +649,47 @@ def sync_master(
     views = validated_model.get("views", [])
     if not _verify_candidate_confinement(model_file, views):
         return False
+    if not _verify_master_sources(validated_model, project_root):
+        return False
 
     dest_dir.parent.mkdir(parents=True, exist_ok=True)
     staging_dir = dest_dir.parent / f".staging.{uuid.uuid4().hex}"
     staging_dir.mkdir(parents=True, exist_ok=True)
 
     try:
+        source_paths = _derive_stable_source_paths(project_root, dest_dir, model_file, validated_model)
+        pre_sources = source_fingerprint(project_root, paths=source_paths)
+        pre_model_hash = _hash_file(model_file)
+
         rendered_views, child_files, receipts = _render_views_to_staging(
             views, model_file.parent.resolve(), staging_dir, project_root, quality
         )
 
-        index_html = _generate_index_html(validated_model, rendered_views)
-        (staging_dir / "index.html").write_text(index_html, encoding="utf-8")
+        index_out = staging_dir / "index.html"
+        if "master" in validated_model:
+            master_cand = staging_dir / "master.candidate.json"
+            master_cand.write_text(
+                json.dumps(_build_master_explainer(validated_model, quality), indent=2),
+                encoding="utf-8",
+            )
+            res = run_finalize(
+                diagram_type="explainer",
+                candidate_path=master_cand,
+                output_path=index_out,
+                quality=quality,
+                repo_root=project_root,
+            )
+            if not res.status or not index_out.is_file():
+                raise RuntimeError(f"Failed to finalize master explainer: {res.receipt}")
+            child_files["master.candidate.json"] = _hash_file(master_cand)
+            receipts["master"] = res.receipt
+        else:
+            index_out.write_text(_generate_index_html(validated_model, rendered_views), encoding="utf-8")
 
         published_index = _build_and_publish_manifest(
             project_root, dest_dir, staging_dir, model_file,
-            validated_model, rendered_views, child_files, receipts
+            validated_model, rendered_views, child_files, receipts,
+            source_paths=source_paths, pre_sources=pre_sources, pre_model_hash=pre_model_hash,
         )
         print(f"Master architecture published: {published_index}")
         return True

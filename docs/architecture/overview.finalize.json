@@ -5,16 +5,16 @@
   "status": "pass",
   "type": "architecture",
   "quality": "showcase",
-  "startedAt": "2026-11-01T08:35:25.267Z",
+  "startedAt": "2026-11-04T11:37:51.841Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-    "sha256": "9927f3980f8ebc366f88da103551ca959e9ae67fe0c97edf53830878c8c2ce47",
-    "bytes": 6420
+    "sha256": "ed30328c54254bf706c559243e72e0834623f3b8393b6347caef34f64b3faba7",
+    "bytes": 6456
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
-    "sha256": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
-    "bytes": 826463
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
+    "sha256": "804d1ff75b4ee35e24cb3c64fbeef786a69373d79924ea0817850e6b526931f9",
+    "bytes": 826497
   },
   "stages": {
     "validate": {
@@ -23,12 +23,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "architecture",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -40,8 +40,8 @@
         "ok": true,
         "command": "validate",
         "specification": {
-          "sha256": "9927f3980f8ebc366f88da103551ca959e9ae67fe0c97edf53830878c8c2ce47",
-          "bytes": 6420
+          "sha256": "ed30328c54254bf706c559243e72e0834623f3b8393b6347caef34f64b3faba7",
+          "bytes": 6456
         },
         "validation": {
           "checksPassed": 9,
@@ -56,14 +56,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 648,
+      "durationMs": 585,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "architecture",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -72,19 +72,19 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "9d02c5ef-0b5f-42ac-8175-d9934c59b239",
+        "receiptId": "4ab4fe33-ee43-4a80-ac75-a456cc3b7a72",
         "ok": true,
         "command": "deliver",
         "type": "architecture",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
         "specification": {
-          "sha256": "9927f3980f8ebc366f88da103551ca959e9ae67fe0c97edf53830878c8c2ce47",
-          "bytes": 6420
+          "sha256": "ed30328c54254bf706c559243e72e0834623f3b8393b6347caef34f64b3faba7",
+          "bytes": 6456
         },
         "artifact": {
-          "sha256": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
-          "bytes": 826463
+          "sha256": "804d1ff75b4ee35e24cb3c64fbeef786a69373d79924ea0817850e6b526931f9",
+          "bytes": 826497
         },
         "validation": {
           "checksPassed": 9,
@@ -110,20 +110,20 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 226,
+      "durationMs": 242,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
         "artifact": {
-          "sha256": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
-          "bytes": 826463
+          "sha256": "804d1ff75b4ee35e24cb3c64fbeef786a69373d79924ea0817850e6b526931f9",
+          "bytes": 826497
         },
         "checks": [
           {
@@ -251,18 +251,18 @@
           "issues": []
         },
         "provenance": "current",
-        "deliveryReceiptId": "9d02c5ef-0b5f-42ac-8175-d9934c59b239"
+        "deliveryReceiptId": "4ab4fe33-ee43-4a80-ac75-a456cc3b7a72"
       }
     },
     "browser-check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1846,
+      "durationMs": 1729,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "browser-check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
         "--json",
         "--require-provenance"
       ],
@@ -275,11 +275,11 @@
         "status": "pass",
         "visualReview": "not-requested",
         "provenance": "current",
-        "deliveryReceiptId": "9d02c5ef-0b5f-42ac-8175-d9934c59b239",
+        "deliveryReceiptId": "4ab4fe33-ee43-4a80-ac75-a456cc3b7a72",
         "artifact": {
-          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.html",
-          "sha256": "75912aadafd83cd5ac1a80c8a54e636f4b2cd0dbef3983bfe8bba7546495a988",
-          "bytes": 826463
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.html",
+          "sha256": "804d1ff75b4ee35e24cb3c64fbeef786a69373d79924ea0817850e6b526931f9",
+          "bytes": 826497
         },
         "state": {
           "detail": "read",
@@ -287,7 +287,7 @@
         },
         "chrome": {
           "status": "available",
-          "executable": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+          "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         },
         "diagnostics": [],
         "containment": {
@@ -996,13 +996,13 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\overview.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\overview.browser-check.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-01T08:35:28.763Z",
-  "durationMs": 3495,
+  "finishedAt": "2026-11-04T11:37:55.314Z",
+  "durationMs": 3473,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

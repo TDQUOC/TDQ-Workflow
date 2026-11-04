@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "14ffdc66-7ccd-4675-b77c-b12fe35eccd7",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\bao-cao.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-03-2055-master-archify-va-trinh-bay.885fff4a04e848709139c2b7e0c838f7.html",
+  "specification": {
+    "sha256": "c494fb288b20d24776312feda9c18815b558040b16785ce9c1a62c16c161613b",
+    "bytes": 5667
+  },
+  "artifact": {
+    "sha256": "82b335c5c7ad6c79f454500226aef04c87775ac1f4085fe4df3f864f01024cf8",
+    "bytes": 1986567
+  },
+  "explainer": {
+    "preparedSha256": "715f42fdd2213c568acd67c2b109681038779cb9ea7fe34ef4318f3a1f990a61",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-master",
+        "inline": true,
+        "sha256": "2dcc05adb3e35f2f9c588aa6ee26a35c40c76384636ecb97734f584c75086f36",
+        "bytes": 1023
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-master",
+        "inline": true,
+        "sha256": "1e79917c2c0542642387746d5a6e4789e0f2f33777872b2ffc6f6a104a21d007",
+        "bytes": 1079
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-model",
+        "inline": true,
+        "sha256": "fea8ec6576f017ea70013e793f37982e36c7953f46083f98f8142538c10d873e",
+        "bytes": 1060
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-freshness",
+        "inline": true,
+        "sha256": "a93abbab6dba8275b84af9a2dae380ed530194d5430b40a9ae8495c4767e6f19",
+        "bytes": 1073
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-kiem-chung",
+        "inline": true,
+        "sha256": "fe15b2e9f6f1fff7edb6784cf46b4fc3b01cccccf443d00ad7c1a34cd44ac770",
+        "bytes": 1104
+      }
+    ]
+  }
+}

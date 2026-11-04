@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.90.0 — 2026-11-04
+
+Master kiến trúc Archify: overview, luồng chi tiết và nguồn bằng chứng kiểm chứng được.
+
+- Trang master có 6 trụ cột và 5 thẻ luồng mở sơ đồ con trong modal; hỗ trợ bàn phím, trả focus, không chèn `onclick` vào SVG native.
+- Model luồng gắn file/dòng/test, ghi `chưa xác minh` khi thiếu bằng chứng; dự án docs-only không bịa luồng mẫu.
+- Freshness kiểm model, candidate, HTML con và source; publish atomic giữ last-good khi lỗi, cảnh báo stale tại cổng report/idle.
+- Browser desktop/mobile PASS; hồi quy 4.161 passed, 10 skipped, 0 failures. Eval paid-model AB/BA chưa chạy: `INCONCLUSIVE` theo lệch Q6 đã duyệt.
+
 ## 0.89.0 — 2026-11-03
 
 Tự chủ phối hợp công cụ có kiểm chứng, giữ nguyên dữ liệu người dùng khi ghim instruction.

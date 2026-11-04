@@ -1,0 +1,46 @@
+tron-bo: running the full suite (193 modules)
+[TDQ:TEST] PASS — scope=full backend=pytest tests=4161 skipped=10 in 1279.99s.
+Slow-test duration quality: complete; execution phases=1262.8789363996475s; wall=1279.864313900005s (separate).
+Top20 cases (execution phase seconds)
+  29.078083  tests/test_bench.py::ThucDoTest::test_thuc_do_ghi_du_6_hang_so_kem_so_mau_va_do_tan  pass
+  27.637408  tests/test_tdq_runtime_bench.py::test_runtime_all_scenarios_use_real_processes_and_persist_proof  pass
+  24.726818  tests/test_tdq_runtime_bench.py::test_cache_fixture_triples_have_parity_and_real_warm_hits  pass
+  24.221215  tests/test_archify_e2e.py::RealArchifyE2E::test_master_html_freshness_and_refresh  pass
+  19.696271  tests/test_tdq_runtime_bench.py::test_full_fixture_runs_six_real_jobs_and_binds_raw_evidence  pass
+  14.819768  tests/test_tdq_runtime_bench.py::test_six_actual_serial_jobs_cannot_be_relabeled_as_parallel  pass
+  12.356544  tests/test_tdq_runtime_bench.py::test_join_remains_joined_when_second_caller_arrives_late  pass
+  12.034317  tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting  pass
+  10.906573  tests/test_archify_e2e.py::RealArchifyE2E::test_full_and_quick_native_binding_and_mutation  pass
+  10.127338  tests/test_bench.py::ThucDoTest::test_repo_that_khong_moc_nhanh_hay_worktree_nao  pass
+  9.824065  tests/test_bench.py::ThucDoTest::test_thuc_do_khong_de_lai_worktree_hay_thu_muc_tam  pass
+  7.584781  tests/test_tdq_runner_integration.py::RunnerIntegration::test_external_runner_implementation_change_invalidates_receipt  pass
+  7.488728  tests/test_archify_finish.py::TestFinishArchifyIntegration::test_finish_report_phase_with_stale_master_never_claims_current_and_logs  pass
+  7.443879  tests/test_tdq_test_process.py::test_nested_codex_timeout_cleanup  pass
+  7.346600  tests/test_team_mode.py::GitTest::test_hop_ba_nhanh_roi_nhau_du_ba_commit  pass
+  6.988874  tests/test_tdq_runner_integration.py::RunnerIntegration::test_real_reuse_fresh_and_ledger_execution_counts  pass
+  6.385618  tests/test_tdq_runner_integration.py::RunnerIntegration::test_post_execution_proof_errors_retain_observed_failures  pass
+  6.229796  tests/test_tdq_test.py::VungCham::test_vung_cham_lay_file_tu_git  pass
+  6.022524  tests/test_uu_tien_song_song.py::SoDotTest::test_so_dot_giam_that_o_it_nhat_mot_plan  pass
+  5.878995  tests/test_uu_tien_song_song.py::SoDotTest::test_so_dot_khong_tang_tren_plan_that  pass
+Top20 modules (execution phase seconds)
+  125.465473  tests/test_tdq_test.py  cases=97
+  115.203947  tests/test_team_mode.py  cases=154
+  103.895950  tests/test_tdq_runtime_bench.py  cases=16
+  85.409368  tests/test_tdq_runner_integration.py  cases=33
+  72.002317  tests/test_tdq_test_receipt.py  cases=109
+  54.921869  tests/test_bench.py  cases=53
+  51.911521  tests/test_team_chong_conflict.py  cases=41
+  45.480427  tests/test_claude_export.py  cases=64
+  35.374711  tests/test_archify_e2e.py  cases=3
+  27.004232  tests/test_tu_khoi_tao.py  cases=38
+  24.103986  tests/test_stop_gate.py  cases=108
+  22.166347  tests/test_archify_finish.py  cases=18
+  19.868398  tests/test_context_hooks.py  cases=47
+  19.466213  tests/test_codex_cli.py  cases=40
+  18.704078  tests/test_phase1_logging.py  cases=9
+  16.803077  tests/test_tdq_test_process.py  cases=26
+  15.862437  tests/test_uu_tien_song_song.py  cases=13
+  15.051467  tests/test_tdq_test_manifest.py  cases=17
+  14.765248  tests/test_runtime_contracts.py  cases=16
+  14.133942  tests/test_archify_pipeline.py  cases=32
+TDQ_RESULT {"path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\cache\\test-runs\\5185b41e309a6cb6\\72018f0b4eea4efab299cfb2462d47f8\\result.json", "sha256": "8f898b1e26a71e89dd69f303af5d30868c4476e689c2a4778aaf93355c21d980"}

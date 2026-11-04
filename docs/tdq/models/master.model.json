@@ -83,5 +83,229 @@
       "candidate": "optimization-report.json",
       "summary": "Validation sớm, OwnedProcessJob và summary thuần dùng chung cho result/CLI/export offline; nguồn chưa commit."
     }
-  ]
+  ],
+  "master": {
+    "overview": "overview",
+    "flows": [
+      {
+        "id": "flow-pipeline-lifecycle",
+        "text": "Luồng trạng thái Spec-Driven và cổng duyệt",
+        "detail": "Từ khởi tạo state, chuyển pha, khóa cổng duyệt chat đến kiểm tra stale trước report/idle",
+        "target": {
+          "diagram": "pipeline-lifecycle"
+        },
+        "steps": [
+          {
+            "id": "step-state-cli",
+            "text": "Điều phối trạng thái request và cổng duyệt qua CLI",
+            "detail": "Đọc/ghi state.json và kiểm tra pha hợp lệ",
+            "sources": [
+              {
+                "path": "scripts/tdq_state.py",
+                "line": 2642,
+                "end_line": 2834
+              }
+            ]
+          },
+          {
+            "id": "step-finish-phase",
+            "text": "Chuyển pha và kiểm tra độ tươi Master khi kết thúc lượt",
+            "detail": "Ghi workinglog, cập nhật phase và đánh dấu stale khi qua report/idle",
+            "sources": [
+              {
+                "path": "scripts/tdq_finish.py",
+                "line": 134,
+                "end_line": 264
+              },
+              {
+                "path": "tests/test_archify_finish.py",
+                "line": 405,
+                "end_line": 427
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "flow-search-and-archify",
+        "text": "Luồng tìm kiếm 3 tầng và đồng bộ Master Archify",
+        "detail": "Kiểm tra LSP, xác thực master model, dựng explainer cùng thẻ drill-down và kiểm chứng manifest",
+        "target": {
+          "diagram": "search-and-archify"
+        },
+        "steps": [
+          {
+            "id": "step-lsp-check",
+            "text": "Kiểm tra ngôn ngữ và máy chủ LSP theo bậc",
+            "detail": "Xác minh binary bậc 1 và kết nối MCP bậc 2",
+            "sources": [
+              {
+                "path": "scripts/tdq_lsp.py",
+                "line": 281,
+                "end_line": 324
+              }
+            ]
+          },
+          {
+            "id": "step-model-validate",
+            "text": "Xác thực hợp đồng master model và evidence nguồn",
+            "detail": "Kiểm tra overview, target diagram và dải dòng source-backed",
+            "sources": [
+              {
+                "path": "scripts/archify_model.py",
+                "line": 728,
+                "end_line": 780
+              },
+              {
+                "path": "tests/test_archify_model.py",
+                "line": 607,
+                "end_line": 726
+              }
+            ]
+          },
+          {
+            "id": "step-sync-master",
+            "text": "Dựng Master explainer, xuất bản nguyên tử và kiểm tra readback",
+            "detail": "Render các view vào staging, khóa fingerprint trước/sau render và phát hiện trôi dạt",
+            "sources": [
+              {
+                "path": "scripts/tdq_archify.py",
+                "line": 389,
+                "end_line": 700
+              },
+              {
+                "path": "scripts/archify_artifacts.py",
+                "line": 731,
+                "end_line": 778
+              },
+              {
+                "path": "tests/test_archify_pipeline.py",
+                "line": 596,
+                "end_line": 859
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "flow-hooks-and-gates",
+        "text": "Luồng cổng chặn PreToolUse và kiểm chứng Stop",
+        "detail": "Chặn tìm kiếm sai thứ tự, bảo vệ vùng ghi theo pha/team và đối chiếu hiệu ứng đĩa cuối lượt",
+        "target": {
+          "diagram": "hooks-and-gates"
+        },
+        "steps": [
+          {
+            "id": "step-search-gate",
+            "text": "Cổng kiểm soát thứ tự tìm kiếm 3 tầng",
+            "detail": "Kiểm tra mốc LSP/Graphify trước khi cho phép Grep",
+            "sources": [
+              {
+                "path": "hooks/scripts/search_gate.py",
+                "line": 132,
+                "end_line": 197
+              }
+            ]
+          },
+          {
+            "id": "step-edit-gate",
+            "text": "Cổng bảo vệ ghi file theo pha và bản đồ phân công",
+            "detail": "Kiểm tra trạng thái duyệt, tick plan và SHA-256 team map",
+            "sources": [
+              {
+                "path": "hooks/scripts/edit_gate.py",
+                "line": 77,
+                "end_line": 278
+              }
+            ]
+          },
+          {
+            "id": "step-stop-gate",
+            "text": "Cổng Verify-by-Effect khi kết thúc lượt",
+            "detail": "Đối chiếu thay đổi thực trên đĩa và chặn báo cáo dở dang",
+            "sources": [
+              {
+                "path": "hooks/scripts/stop_gate.py",
+                "line": 154,
+                "end_line": 340
+              },
+              {
+                "path": "tests/test_context_hooks.py",
+                "line": 541,
+                "end_line": 653
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "flow-runtime-verification",
+        "text": "Luồng chạy kiểm thử cô lập và đối chiếu kết quả",
+        "detail": "Thu thập test, cô lập tiến trình/HOME và tổng hợp kết quả kiểm chứng",
+        "target": {
+          "diagram": "runtime-verification"
+        },
+        "steps": [
+          {
+            "id": "step-isolated-job",
+            "text": "Thực thi tiến trình kiểm thử trong môi trường cô lập",
+            "detail": "Quản lý vòng đời tiến trình con, thời hạn và dọn dẹp tài nguyên",
+            "sources": [
+              {
+                "path": "scripts/tdq_test_process.py",
+                "line": 269,
+                "end_line": 401
+              }
+            ]
+          },
+          {
+            "id": "step-test-runner",
+            "text": "Điều phối chạy kiểm thử trọn bộ và vùng chạm",
+            "detail": "Tổng hợp kết quả thực thi và trạng thái hoàn tất",
+            "sources": [
+              {
+                "path": "scripts/tdq_test.py",
+                "line": 1386,
+                "end_line": 1520
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "flow-optimization-report",
+        "text": "Luồng kiểm tra hợp đồng đánh giá và xuất báo cáo kiểm thử",
+        "detail": "Xác thực kế hoạch eval-plan/trial và xuất báo cáo Markdown/HTML an toàn qua staging",
+        "target": {
+          "diagram": "optimization-report"
+        },
+        "steps": [
+          {
+            "id": "step-skill-eval",
+            "text": "Kiểm tra hợp đồng eval-plan và đối chứng trial",
+            "detail": "Xác thực oracle, provenance baseline và kiểm tra đầu vào đánh giá",
+            "sources": [
+              {
+                "path": "scripts/tdq_skill_eval.py",
+                "line": 71,
+                "end_line": 254
+              }
+            ]
+          },
+          {
+            "id": "step-test-report",
+            "text": "Kết xuất và xuất bản báo cáo kiểm thử offline",
+            "detail": "Dựng bảng tổng hợp Markdown/HTML và hoán đổi nguyên tử qua staging",
+            "sources": [
+              {
+                "path": "scripts/tdq_test_report.py",
+                "line": 217,
+                "end_line": 383
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

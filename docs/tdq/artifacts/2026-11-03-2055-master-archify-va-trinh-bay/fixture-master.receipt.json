@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\fixture-master.archify.md",
+    "sha256": "26122ee7d38c234b9f2d939798276494f09d59970725363aa7b07719932e8f01",
+    "bytes": 436
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\.tmp.fixture-master.d35e11702f934993a18a741338e87240.html",
+    "sha256": "a21ddd48578dd7afab2200f256599f4a21073f8e85a256c9dcda97030a09be3b",
+    "bytes": 804578
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\.tmp.fixture-master.d35e11702f934993a18a741338e87240.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\.tmp.fixture-master.d35e11702f934993a18a741338e87240.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2111,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

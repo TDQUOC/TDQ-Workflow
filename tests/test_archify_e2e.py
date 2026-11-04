@@ -112,3 +112,22 @@ class RealArchifyE2E(unittest.TestCase):
         self.assertEqual(stale["status"], "stale")
         self.run_cli(*args)
         self.assertEqual(json.loads(self.run_cli("status").stdout)["status"], "current")
+        master_data = json.loads((self.models / "master.json").read_text(encoding="utf-8"))
+        master_data["views"].append(
+            {"id": "flow", "type": "workflow", "candidate": "workflow.json", "summary": "Read flow diagram"}
+        )
+        master_data["master"] = {
+            "overview": "overview",
+            "flows": [{
+                "id": "open_flow",
+                "text": "Read flow",
+                "target": {"diagram": "flow"},
+                "steps": [{"id": "read_step", "text": "Read source", "sources": [{"path": "src/app.py", "line": 1}]}],
+            }],
+        }
+        (self.models / "master.json").write_text(json.dumps(master_data), encoding="utf-8")
+        self.run_cli(*args)
+        html_text = index.read_text(encoding="utf-8")
+        self.assertIn("Read flow", html_text)
+        self.assertIn('data-diagram-link="flow"', html_text)
+        self.assertIn("diagram-dialog", html_text)

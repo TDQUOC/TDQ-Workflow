@@ -1,0 +1,84 @@
+{
+  "slug": "2026-11-03-2055-master-archify-va-trinh-bay",
+  "plan_file": "docs\\tdq\\plan\\2026-11-03-2055-master-archify-va-trinh-bay.md",
+  "plan_sha": "632394f0cba9dfe70b47452e3e0b919b795e4a8d642977cf93500102c231f7dd",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "c2f358f958be5c33578e69b4989bae30d5753daa8c8a6d7b3a76a337382eb856",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/archify_model.py",
+        "scripts/tdq_archify.py",
+        "tests/test_archify_model.py",
+        "tests/test_archify_pipeline.py"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "scripts/tdq_archify.py",
+        "tests/test_archify_pipeline.py",
+        "tests/test_archify_e2e.py",
+        "docs/architecture/index.html"
+      ],
+      "dot": 3
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "hop-dong",
+      "vung_file": [
+        "scripts/archify_artifacts.py",
+        "scripts/tdq_archify.py",
+        "tests/test_archify_artifacts.py",
+        "tests/test_archify_pipeline.py"
+      ],
+      "dot": 4
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "scripts/tdq_finish.py",
+        "skills/tdq-build/references/archify-lifecycle.md",
+        "tests/test_archify_finish.py",
+        "tests/test_archify_workflow_contract.py",
+        "tests/test_context_hooks.py"
+      ],
+      "dot": 5
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "docs/tdq/models/master.model.json",
+        "docs/tdq/models/overview.json",
+        "docs/architecture/index.html",
+        "docs/architecture/manifest.json"
+      ],
+      "dot": 6
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [],
+      "dot": 7
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 8
+    }
+  }
+}

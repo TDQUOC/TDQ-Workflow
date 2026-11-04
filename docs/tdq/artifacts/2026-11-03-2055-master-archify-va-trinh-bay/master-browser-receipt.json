@@ -1,0 +1,27 @@
+{
+  "request": "2026-11-03-2055-master-archify-va-trinh-bay",
+  "url": "file:///C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow/docs/architecture/index.html",
+  "verified_at": "2026-11-04T00:00:00Z",
+  "panels_validated": 6,
+  "flows_rendered": 5,
+  "desktop": {
+    "viewport": "1440x900",
+    "clicked_flow_href": "#search-and-archify",
+    "modal_title": "3-Tier Search Triangle & Archify 2-Tier Visual Engine",
+    "escape_closed_dialog": true,
+    "focus_restored_href": "#search-and-archify",
+    "horizontal_overflow": false,
+    "screenshot": "docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/master-desktop-modal.png"
+  },
+  "mobile": {
+    "viewport": "375x812x2,mobile,touch",
+    "clicked_flow_href": "#pipeline-lifecycle",
+    "modal_title": "TDQ-Workflow — Spec-Driven State Machine & Approval Gates",
+    "escape_closed_dialog": true,
+    "focus_restored_href": "#pipeline-lifecycle",
+    "screenshot": "docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/master-mobile-modal.png"
+  },
+  "console_errors": 0,
+  "network_failures": 0,
+  "status": "PASS"
+}

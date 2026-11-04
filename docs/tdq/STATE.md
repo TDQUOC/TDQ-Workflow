@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-03T20:43:15+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-04T23:50:34+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-03-1420-phoi-hop-cong-cu |
+| Request | 2026-11-03-2055-master-archify-va-trinh-bay |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-11-03-1420-phoi-hop-cong-cu.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-11-03-1420-phoi-hop-cong-cu.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-11-03-2055-master-archify-va-trinh-bay.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-11-03-2055-master-archify-va-trinh-bay.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | ultra |

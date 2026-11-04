@@ -1,0 +1,18 @@
+{
+  "ready": false,
+  "gate": {
+    "verdict": "INCOMPLETE",
+    "reason": "incomplete_trial_coverage",
+    "passed": false,
+    "live_run_authorized": false
+  },
+  "cells_preflight": {
+    "claude:cc3[1m]": {
+      "host": "claude",
+      "status": "BLOCKED",
+      "ready": false,
+      "reason": "isolation_not_satisfied",
+      "paid_model_calls": 0
+    }
+  }
+}

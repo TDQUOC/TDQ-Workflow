@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\truoc-sau.archify.md",
+    "sha256": "ad5167f220e11f3d2f70edd7a1081815eb02e516212138d036fb42fd10bfc922",
+    "bytes": 2459
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-03-2055-master-archify-va-trinh-bay-preview.6edb389406464e49a04e6801f8fd90e5.html",
+    "sha256": "5facb5421437ae8f2585122d129a93f68b1a76a4a9f80cb5de7fa904e8596f22",
+    "bytes": 1265346
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-03-2055-master-archify-va-trinh-bay-preview.6edb389406464e49a04e6801f8fd90e5.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-03-2055-master-archify-va-trinh-bay-preview.6edb389406464e49a04e6801f8fd90e5.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2519,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  },
+  "published_artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-03-2055-master-archify-va-trinh-bay-preview.html",
+  "artifact_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-03-2055-master-archify-va-trinh-bay-preview.html",
+  "receipt_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-03-2055-master-archify-va-trinh-bay-preview.receipt.json",
+  "binding": "bound",
+  "binding_status": "registered",
+  "manifest_path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-03-2055-master-archify-va-trinh-bay-preview.manifest.json",
+  "document_bound": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\2026-11-03-2055-master-archify-va-trinh-bay.md"
+}

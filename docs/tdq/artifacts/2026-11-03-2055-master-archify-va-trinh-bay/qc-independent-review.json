@@ -1,0 +1,55 @@
+{
+  "request": "2026-11-03-2055-master-archify-va-trinh-bay",
+  "agent_id": "ac6c01ec4a053119c",
+  "subagent_type": "tdq-workflow:tdq-qc-tester",
+  "verdict": "PASS",
+  "dod_accounting": [
+    {
+      "id": "Q1",
+      "command": "python -m pytest tests/test_archify_pipeline.py tests/test_archify_e2e.py -q",
+      "output": "35 passed, 9 subtests passed in 44.37s",
+      "browser_receipt": "docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/master-browser-receipt.json",
+      "verdict": "PASS"
+    },
+    {
+      "id": "Q2",
+      "command": "python -m pytest tests/test_archify_model.py tests/test_archify_pipeline.py -q",
+      "output": "89 passed, 38 subtests passed in 15.01s",
+      "verdict": "PASS"
+    },
+    {
+      "id": "Q3",
+      "command": "python -m pytest tests/test_archify_artifacts.py tests/test_archify_pipeline.py -q",
+      "output": "74 passed, 2 skipped, 3 subtests passed in 19.88s",
+      "verdict": "PASS"
+    },
+    {
+      "id": "Q4",
+      "command": "python -m pytest tests/test_archify_finish.py tests/test_archify_workflow_contract.py -q",
+      "output": "28 passed, 21 subtests passed in 18.56s",
+      "verdict": "PASS"
+    },
+    {
+      "id": "Q5",
+      "command": "python -m pytest tests/test_archify_pipeline.py tests/test_archify_distribution.py -q",
+      "output": "48 passed, 3 subtests passed in 14.46s",
+      "verdict": "PASS"
+    },
+    {
+      "id": "Q6",
+      "command": "python scripts/tdq_archify.py status && python scripts/tdq_skill_eval.py plan --plan docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/eval-plan-bound.json && python scripts/tdq_skill_eval.py check --plan docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/eval-plan-bound.json --stage pre_report --actual-targets docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/actual-targets.json",
+      "output": "status=current; preview binding.valid=true; eval plan valid=true (experiment_hash=628de8ae438ace4f2c7742c724e61ac609f24dcd2e844ed4d92b0e336631edbb); pre_report verdict=INCOMPLETE (incomplete_trial_coverage)",
+      "verdict": "PASS"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "LOW",
+      "blocking": false,
+      "file": "scripts/archify_artifacts.py",
+      "line": 32,
+      "summary": "source_fingerprint without explicit source_paths scans .pytest_cache and .ruff_cache when present",
+      "failure_scenario": "Preview manifest created without explicit source_paths marks source_changed after pytest/ruff updates cache directories, while binding.valid remains true"
+    }
+  ]
+}
