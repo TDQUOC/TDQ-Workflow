@@ -90,7 +90,7 @@ Trạng thái plan: CHỜ DUYỆT
 
 ## P4 — Báo cáo
 
-- [~] **T4.1** (e7m) Báo cáo nghiệm thu Markdown + HTML Archify với Before/After và giới hạn thật — Test: `python scripts/tdq_archify.py verify --document docs/tdq/reports/2026-11-03-2055-master-archify-va-trinh-bay.md --manifest docs/tdq/reports/2026-11-03-2055-master-archify-va-trinh-bay.manifest.json`
+- [x] **T4.1** (e7m) Báo cáo nghiệm thu Markdown + HTML Archify với Before/After và giới hạn thật — Test: `python scripts/tdq_archify.py verify --document docs/tdq/reports/2026-11-03-2055-master-archify-va-trinh-bay.md --manifest docs/tdq/reports/2026-11-03-2055-master-archify-va-trinh-bay.manifest.json`
   - Cần: T3.2
   - Ra: report có timing thật, eval verdict, master current hay stale và lý do; không gộp preview planned với runtime.
 
