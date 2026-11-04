@@ -1,0 +1,11 @@
+{
+  "provenance": "unavailable",
+  "cells": {},
+  "total_records": 15,
+  "total_cells": 0,
+  "policy": {
+    "min_pairs": 8,
+    "quality_margin": 0,
+    "efficiency_margin": 0.1
+  }
+}

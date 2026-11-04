@@ -645,7 +645,7 @@ def _validate_coverage_dict(coverage: Any) -> None:
 def _validate_view_id_and_type(v: dict[str, Any], seen_ids: set[str]) -> str:
     """Validate view ID and diagram type."""
     vid = v.get("id")
-    if not vid or not isinstance(vid, str) or not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", vid):
+    if not vid or not isinstance(vid, str) or not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_-]*", vid):
         raise ValueError(f"Invalid view id: '{vid}'")
     if vid in seen_ids:
         raise ValueError(f"Duplicate view id: '{vid}'")
@@ -691,6 +691,81 @@ def _validate_views_list(views: Any) -> None:
         _validate_single_view(v, seen_ids, seen_candidates)
 
 
+def _validate_flow_item(item: Any, seen_ids: set[str], allowed: set[str]) -> None:
+    """Cards and detail steps share Archify's document-wide ID namespace."""
+    if not isinstance(item, dict) or set(item) - allowed:
+        raise ValueError("Invalid flow/step fields")
+    item_id = item.get("id")
+    if (not isinstance(item_id, str) or len(item_id) > 100
+            or not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_-]*", item_id) or item_id in seen_ids):
+        raise ValueError(f"Invalid or duplicate flow/step id: {item_id!r}")
+    seen_ids.add(item_id)
+    if not isinstance(item.get("text"), str) or not item["text"].strip():
+        raise ValueError("Flow/step text must be non-empty")
+    if "detail" in item and (not isinstance(item["detail"], str) or not item["detail"].strip()):
+        raise ValueError("Flow/step detail must be non-empty text")
+
+
+def _validate_step_sources(step: dict) -> None:
+    """Use native common.schema source references, not explainer source lines."""
+    sources = step.get("sources", [])
+    if not isinstance(sources, list):
+        raise ValueError("Step sources must be a list")
+    if not sources and step.get("detail", "").strip().casefold() != "chưa xác minh":
+        raise ValueError("Step needs sources or detail 'chưa xác minh'")
+    for source in sources:
+        if not isinstance(source, dict) or set(source) - {"path", "line", "end_line"}:
+            raise ValueError("Invalid step source fields")
+        path = source.get("path")
+        if not isinstance(path, str) or not _is_safe_relative_path(path):
+            raise ValueError("Invalid step source path")
+        line = source.get("line")
+        end = source.get("end_line", line)
+        if type(line) is not int or type(end) is not int or line < 1 or end < line:
+            raise ValueError("Invalid step source line range")
+
+
+def _validate_master(model: dict) -> None:
+    """Optional master maps native card targets to views/candidates; legacy views stay valid.
+
+    master = {overview: view_id, flows: [{id, text, detail?, target: {diagram: view_id},
+              steps: [{id, text, detail?, sources: [{path, line, end_line?}]}]}]}.
+    A flow without evidence has only id/text/detail='chưa xác minh', never a target.
+    Sources are project-relative; filesystem checks happen before sync renders.
+    """
+    if "master" not in model:
+        return
+    master = model["master"]
+    if not isinstance(master, dict) or set(master) != {"overview", "flows"}:
+        raise ValueError("master requires overview and flows")
+    views = {view["id"]: view for view in model["views"]}
+    overview = master["overview"]
+    if not isinstance(overview, str) or overview not in views or views[overview]["type"] != "architecture":
+        raise ValueError("master.overview must reference an architecture view")
+    if not isinstance(master["flows"], list):
+        raise ValueError("master.flows must be a list")
+    seen_ids = set(views)
+    for flow in master["flows"]:
+        _validate_flow_item(flow, seen_ids, {"id", "text", "detail", "target", "steps"})
+        if "target" not in flow:
+            if "steps" in flow or flow.get("detail", "").strip().casefold() != "chưa xác minh":
+                raise ValueError("Flow without target must say 'chưa xác minh' and omit steps")
+            continue
+        target = flow["target"]
+        if not isinstance(target, dict) or set(target) != {"diagram"}:
+            raise ValueError("Flow target must contain only diagram")
+        diagram = target["diagram"]
+        if (not isinstance(diagram, str) or diagram not in views or diagram == overview
+                or views[diagram]["type"] == "explainer"):
+            raise ValueError("Flow target must reference a native detail view")
+        steps = flow.get("steps")
+        if not isinstance(steps, list) or not steps:
+            raise ValueError("Flow target requires non-empty steps")
+        for step in steps:
+            _validate_flow_item(step, seen_ids, {"id", "text", "detail", "sources"})
+            _validate_step_sources(step)
+
+
 def validate_model(model: dict) -> dict:
     """Validate Master model envelope per contract."""
     if not isinstance(model, dict):
@@ -701,4 +776,5 @@ def validate_model(model: dict) -> dict:
     _validate_source_paths(model.get("source_paths"))
     _validate_coverage_dict(model.get("coverage"))
     _validate_views_list(model.get("views"))
+    _validate_master(model)
     return model

@@ -517,7 +517,20 @@ class TestSyncMasterPipeline(unittest.TestCase):
         def fake_run_finalize(diagram_type, candidate_path, output_path, **kwargs):
             out_p = Path(output_path)
             out_p.parent.mkdir(parents=True, exist_ok=True)
-            out_p.write_text(f"<html>{diagram_type} content</html>", encoding="utf-8")
+            if diagram_type == "explainer":
+                cand = json.loads(Path(candidate_path).read_text(encoding="utf-8"))
+                links = []
+                for panel in cand.get("panels", []):
+                    for block in panel.get("blocks", []):
+                        for item in block.get("items", []):
+                            diag = (item.get("target") or {}).get("diagram", "")
+                            links.append(f'<a data-diagram-link="{diag}">{item.get("text", "")}</a>')
+                out_p.write_text(
+                    f"<html>{''.join(links)}<dialog id=\"diagram-dialog\"></dialog></html>",
+                    encoding="utf-8",
+                )
+            else:
+                out_p.write_text(f"<html>{diagram_type} content</html>", encoding="utf-8")
             return archify_delivery.FinalizeResult(
                 status=True,
                 receipt={
@@ -528,6 +541,73 @@ class TestSyncMasterPipeline(unittest.TestCase):
                 },
             )
         return fake_run_finalize
+
+    def test_master_flow_evidence_checked_before_render(self):
+        self.model_data["evidence_kind"] = "working-tree"
+        source = {"path": "src/main.py", "line": 1}
+        self.model_data["master"] = {"overview": "overview", "flows": [{
+            "id": "read_flow", "text": "Read", "target": {"diagram": "flow"},
+            "steps": [{"id": "read_step", "text": "Read source", "sources": [source]}],
+        }]}
+        out_dir = self.repo_dir / "docs" / "architecture"
+        out_dir.mkdir(parents=True)
+        last_good = out_dir / "index.html"
+        last_good.write_text("LAST_GOOD", encoding="utf-8")
+        for path, line in (("src/missing.py", 1), ("src/main.py", 2), ("../outside.py", 1)):
+            with self.subTest(path=path, line=line):
+                source.update(path=path, line=line)
+                self.model_path.write_text(json.dumps(self.model_data), encoding="utf-8")
+                with mock.patch("tdq_archify.run_finalize", side_effect=self._mock_run_finalize_builder()) as render:
+                    self.assertFalse(tdq_archify.sync_master(model=self.model_path, project=self.repo_dir))
+                    render.assert_not_called()
+                self.assertEqual(last_good.read_text(encoding="utf-8"), "LAST_GOOD")
+        source.update(path="src/main.py", line=1)
+        self.model_path.write_text(json.dumps(self.model_data), encoding="utf-8")
+        with mock.patch("tdq_archify.run_finalize", side_effect=self._mock_run_finalize_builder()) as render:
+            self.assertTrue(tdq_archify.sync_master(model=self.model_path, project=self.repo_dir))
+            self.assertEqual(render.call_count, 3)
+
+    def test_master_source_resolved_path_cannot_escape_project(self):
+        model = {"master": {"flows": [{"steps": [{"sources": [
+            {"path": "src/main.py", "line": 1},
+        ]}]}]}}
+        outside = self.repo_dir.parent / "outside.py"
+        # Emulate a symlink/junction resolution without requiring Windows symlink privileges.
+        with mock.patch.object(Path, "resolve", side_effect=[self.repo_dir, outside]):
+            self.assertFalse(tdq_archify._verify_master_sources(model, self.repo_dir))
+
+    def test_master_source_end_line_must_exist(self):
+        model = {"master": {"flows": [{"steps": [{"sources": [
+            {"path": "src/main.py", "line": 1, "end_line": 2},
+        ]}]}]}}
+        self.assertFalse(tdq_archify._verify_master_sources(model, self.repo_dir))
+
+    def test_master_dangling_target_preserves_last_good(self):
+        self.model_data["evidence_kind"] = "working-tree"
+        self.model_data["master"] = {"overview": "overview", "flows": [{
+            "id": "read_flow", "text": "Read", "target": {"diagram": "missing"},
+            "steps": [{"id": "read_step", "text": "Read", "detail": "chưa xác minh"}],
+        }]}
+        self.model_path.write_text(json.dumps(self.model_data), encoding="utf-8")
+        with mock.patch("tdq_archify.run_finalize", side_effect=self._mock_run_finalize_builder()) as render:
+            self.assertFalse(tdq_archify.sync_master(model=self.model_path, project=self.repo_dir))
+            render.assert_not_called()
+
+    def test_master_card_opens_detail_in_same_html(self):
+        self.model_data["evidence_kind"] = "working-tree"
+        self.model_data["master"] = {"overview": "overview", "flows": [{
+            "id": "read_flow", "text": "Read flow", "target": {"diagram": "flow"},
+            "steps": [{"id": "read_step", "text": "Read source",
+                       "sources": [{"path": "src/main.py", "line": 1}]}],
+        }]}
+        self.model_path.write_text(json.dumps(self.model_data), encoding="utf-8")
+        with mock.patch("tdq_archify.run_finalize", side_effect=self._mock_run_finalize_builder()) as render:
+            self.assertTrue(tdq_archify.sync_master(model=self.model_path, project=self.repo_dir))
+        index = (self.repo_dir / "docs" / "architecture" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("Read flow", index)
+        self.assertIn("data-diagram-link=\"flow\"", index)
+        self.assertIn("diagram-dialog", index)
+        self.assertEqual(render.call_count, 3)
 
     def test_sync_master_empty_or_invalid_model_fails(self):
         """Empty or invalid model file must fail and not publish."""
@@ -715,6 +795,69 @@ class TestSyncMasterPipeline(unittest.TestCase):
 
         self.assertTrue((out_dir / "index.html").is_file())
         self.assertEqual((out_dir / "index.html").read_text(encoding="utf-8"), initial_index_content)
+
+    def test_sync_master_tracks_child_candidates_and_step_sources(self):
+        tdq_models = self.repo_dir / "docs" / "tdq" / "models"
+        tdq_models.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(self.cand1, tdq_models / "overview.json")
+        shutil.copy2(self.cand2, tdq_models / "flow.json")
+        extra_src = self.repo_dir / "docs" / "notes.md"
+        extra_src.parent.mkdir(parents=True, exist_ok=True)
+        extra_src.write_text("# Line 1\n", encoding="utf-8")
+
+        model_data = dict(self.model_data, evidence_kind="working-tree")
+        model_data["master"] = {
+            "overview": "overview",
+            "flows": [{
+                "id": "read_flow",
+                "text": "Read flow",
+                "target": {"diagram": "flow"},
+                "steps": [{"id": "s1", "text": "Step", "sources": [{"path": "docs/notes.md", "line": 1}]}],
+            }],
+        }
+        tdq_model_path = tdq_models / "master.model.json"
+        tdq_model_path.write_text(json.dumps(model_data), encoding="utf-8")
+
+        with mock.patch("tdq_archify.run_finalize", side_effect=self._mock_run_finalize_builder()):
+            self.assertTrue(tdq_archify.sync_master(model=tdq_model_path, project=self.repo_dir))
+        self.assertEqual(tdq_archify.check_master_status(self.repo_dir)["status"], "current")
+
+        (tdq_models / "flow.json").write_text(json.dumps({"schema_version": 1, "diagram_type": "workflow", "steps": [{"id": "new"}]}), encoding="utf-8")
+        stale_cand = tdq_archify.check_master_status(self.repo_dir)
+        self.assertEqual(stale_cand["status"], "stale")
+        self.assertTrue(any("docs/tdq/models/flow.json" in r for r in stale_cand["reasons"]))
+
+        shutil.copy2(self.cand2, tdq_models / "flow.json")
+        self.assertEqual(tdq_archify.check_master_status(self.repo_dir)["status"], "current")
+
+        extra_src.write_text("# Line 1 changed\n", encoding="utf-8")
+        stale_src = tdq_archify.check_master_status(self.repo_dir)
+        self.assertEqual(stale_src["status"], "stale")
+        self.assertTrue(any("docs/notes.md" in r for r in stale_src["reasons"]))
+
+    def test_sync_master_concurrent_edit_during_render_rejects_and_keeps_last_good(self):
+        self.model_data["evidence_kind"] = "working-tree"
+        self.model_path.write_text(json.dumps(self.model_data), encoding="utf-8")
+        out_dir = self.repo_dir / "docs" / "architecture"
+
+        with mock.patch("tdq_archify.run_finalize", side_effect=self._mock_run_finalize_builder()):
+            self.assertTrue(tdq_archify.sync_master(model=self.model_path, project=self.repo_dir))
+        last_good_html = (out_dir / "index.html").read_text(encoding="utf-8")
+        last_good_manifest = (out_dir / "manifest.json").read_text(encoding="utf-8")
+
+        base_finalize = self._mock_run_finalize_builder()
+        def mutating_finalize(diagram_type, candidate_path, output_path, **kwargs):
+            res = base_finalize(diagram_type, candidate_path, output_path, **kwargs)
+            (self.repo_dir / "src" / "main.py").write_text("print('mutated mid-render')\n", encoding="utf-8")
+            return res
+
+        with mock.patch("tdq_archify.run_finalize", side_effect=mutating_finalize):
+            self.assertFalse(tdq_archify.sync_master(model=self.model_path, project=self.repo_dir))
+
+        self.assertEqual((out_dir / "index.html").read_text(encoding="utf-8"), last_good_html)
+        self.assertEqual((out_dir / "manifest.json").read_text(encoding="utf-8"), last_good_manifest)
+        self.assertEqual(tdq_archify.check_master_status(self.repo_dir)["status"], "stale")
+
 
 
 class TestStatusAndVerifyCli(unittest.TestCase):

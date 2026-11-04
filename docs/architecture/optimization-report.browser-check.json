@@ -6,9 +6,9 @@
   "status": "pass",
   "visualReview": "not-requested",
   "provenance": "current",
-  "deliveryReceiptId": "ba19a2b4-caf2-4a78-87ab-d5a1706bc108",
+  "deliveryReceiptId": "a9ecd774-f2c6-41eb-a952-6ae85e2f1238",
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\optimization-report.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\optimization-report.html",
     "sha256": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5",
     "bytes": 820910
   },
@@ -18,7 +18,7 @@
   },
   "chrome": {
     "status": "available",
-    "executable": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+    "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
   },
   "diagnostics": [],
   "containment": {

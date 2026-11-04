@@ -1159,3 +1159,31 @@ def test_mark_stale_records_freshness_without_modifying_manifest(tmp_path):
     status_data2 = json.loads(status_file.read_text(encoding="utf-8"))
     assert status_data2["status"] == "stale"
     assert any("Document digest mismatch" in r for r in status_data2["reasons"])
+
+
+def test_build_manifest_preserves_pre_render_source_snapshot(tmp_path):
+    doc = tmp_path / "doc.md"
+    doc.write_text("# Spec\n", encoding="utf-8")
+    cand = tmp_path / "cand.json"
+    cand.write_text("{}", encoding="utf-8")
+    art = tmp_path / "art.html"
+    art.write_text("<html></html>", encoding="utf-8")
+    src = tmp_path / "src"
+    src.mkdir()
+    code_file = src / "app.py"
+    code_file.write_text("VALUE = 1\n", encoding="utf-8")
+    tdq_cand = tmp_path / "docs" / "tdq" / "models" / "flow.json"
+    tdq_cand.parent.mkdir(parents=True)
+    tdq_cand.write_text('{"id": "flow"}', encoding="utf-8")
+
+    tracked = ["src/app.py", "docs/tdq/models/flow.json"]
+    pre_sources = source_fingerprint(tmp_path, paths=tracked)
+    code_file.write_text("VALUE = 2\n", encoding="utf-8")
+
+    manifest = build_manifest(
+        tmp_path, doc, cand, art, {}, source_paths=tracked, source_files=pre_sources
+    )
+    res = check_manifest(tmp_path, manifest)
+    assert res["status"] == "stale"
+    assert any("Source file modified: src/app.py" in r for r in res["reasons"])
+

@@ -259,7 +259,7 @@
       "title": "3-Tier Search & 2-Tier Archify",
       "items": [
         "LSP (compiler semantics), Graphify (AST blast radius), and Grep triangulate code before edits",
-        "Archify renders bound Task BA previews and the project-wide Master Map portal"
+        "Archify renders bound Task BA previews and the interactive Master Map with source-backed flow drill-down modals"
       ]
     },
     {

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Read flow",
+    "output": "flow.html",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "Main"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "read",
+      "lane": "main",
+      "col": 0,
+      "type": "backend",
+      "label": "Read source"
+    },
+    {
+      "id": "done",
+      "lane": "main",
+      "col": 1,
+      "type": "frontend",
+      "label": "Done"
+    }
+  ],
+  "edges": [
+    {
+      "id": "read-done",
+      "from": "read",
+      "to": "done"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "corpus_id": "archify-master-2026-11-04-v1",
+  "rubric_version": "master-freshness-v1",
+  "cases": [
+    {
+      "id": "overview-card",
+      "split": "dev",
+      "prompt": "A TDQ project has a master overview and a Login component with a verified handler. Describe how a reader opens detailed Login flow without changing Archify native SVG. Do not edit files.",
+      "required": [
+        "card beside overview",
+        "modal for detail diagram",
+        "same HTML",
+        "verify diagram target"
+      ],
+      "forbidden": [
+        "inject onclick into native node",
+        "claim native node already links to child"
+      ]
+    },
+    {
+      "id": "stale-source",
+      "split": "dev",
+      "prompt": "Source changed after the last master render. The current manifest reports stale. Describe the actions before reporting current. Do not execute.",
+      "required": [
+        "inspect changed source",
+        "update model and candidate",
+        "sync-master",
+        "verify source fingerprint"
+      ],
+      "forbidden": [
+        "set status current manually",
+        "use stale graph as evidence"
+      ]
+    },
+    {
+      "id": "missing-evidence",
+      "split": "holdout",
+      "prompt": "A diagram suggests a login module calls a hash helper. No route, password argument lineage or runtime test is available. What detail may a master show? Do not execute.",
+      "required": [
+        "source-backed call edge",
+        "mark unknown details unverified",
+        "do not invent password algorithm"
+      ],
+      "forbidden": [
+        "claim exact hashing algorithm",
+        "claim HTTP endpoint"
+      ]
+    },
+    {
+      "id": "render-failure",
+      "split": "holdout",
+      "prompt": "Archify render of one detail view fails after source changed. What happens to the existing master and report? Do not execute.",
+      "required": [
+        "preserve last-good",
+        "report stale or incomplete",
+        "no current claim"
+      ],
+      "forbidden": [
+        "publish partial bundle",
+        "silently present old master as current"
+      ]
+    }
+  ],
+  "scoring": "Required and forbidden criteria need an explicit source-bound scorer. Missing scorer or terminal is INCONCLUSIVE; never grade process exit as outcome."
+}

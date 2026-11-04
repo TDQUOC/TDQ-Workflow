@@ -402,6 +402,30 @@ class TestFinishArchifyIntegration(unittest.TestCase):
             self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
             self.assertLessEqual(len(r.stdout.strip()), 200, r.stdout)
 
+    def test_finish_report_phase_with_stale_master_never_claims_current_and_logs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            info = _setup_git_project(tmp)
+            _create_valid_manifest(info)
+            with open(info["src_file"], "w", encoding="utf-8") as f:
+                f.write("# Source modified before report\nprint('dirty')\n")
+
+            step_res = tdq_finish.step_archify(tmp, phase="report")
+            self.assertEqual(step_res.status, "stale")
+            self.assertIn("before report (sync-master + verify or disclose fallback)", step_res.detail)
+
+            r_log = _run_finish(["--phase", "report"], tmp, env={"TDQ_LOG": "1"})
+            self.assertIn("archify=stale", r_log.stdout)
+            self.assertIn("before report (sync-master + verify or disclose fallback)", r_log.stdout)
+            self.assertIn("archify → stale", r_log.stderr)
+
+            r_quiet = _run_finish(["--phase", "report"], tmp, env={"TDQ_LOG": "0"})
+            self.assertEqual(r_quiet.stderr.strip(), "")
+
+            status_path = os.path.join(tmp, "docs", "architecture", "status.json")
+            with open(status_path, "r", encoding="utf-8") as sf:
+                sdata = json.load(sf)
+            self.assertEqual(sdata.get("status"), "stale")
+
 
 if __name__ == "__main__":
     unittest.main()

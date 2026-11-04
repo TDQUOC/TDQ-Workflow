@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-03T20:43:15+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-04T19:15:32+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-03-1420-phoi-hop-cong-cu |
+| Request | 2026-11-03-2055-master-archify-va-trinh-bay |
 | Lane | full |
-| Phase | idle |
-| Spec | docs/tdq/spec/2026-11-03-1420-phoi-hop-cong-cu.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-11-03-1420-phoi-hop-cong-cu.md — ✔ approved |
+| Phase | qc |
+| Spec | docs/tdq/spec/2026-11-03-2055-master-archify-va-trinh-bay.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-11-03-2055-master-archify-va-trinh-bay.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | ultra |
@@ -15,13 +15,13 @@ Updated: 2026-11-03T20:43:15+07:00 · Project: C:\Users\admin\Documents\Projects
 | Run mode | subagent |
 
 ## Where we are
-Finished, or no request opened yet. Forbidden: Overwriting an unfinished request without asking the user.
+Implementation is finished. Forbidden: Ignoring a failing test; reporting PASS without running it.
 
 ## What comes next
-Wait for a new request from the user.
+Run the spec's Definition of Done, record the results, fix what fails.
 ```
-python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]
+python3 scripts/tdq_state.py set phase=report
 ```
-Done when: A new request is open
+Done when: Every QC item of the spec PASSes, with evidence
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.

@@ -5,14 +5,14 @@
   "status": "pass",
   "type": "lifecycle",
   "quality": "showcase",
-  "startedAt": "2026-11-01T08:35:29.067Z",
+  "startedAt": "2026-11-04T11:37:55.669Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\pipeline-lifecycle.json",
-    "sha256": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
-    "bytes": 4207
+    "sha256": "15c8bdede572f4eebed294b93d2c2a3545c85d87b9811dd1305b8bf4d2574bc1",
+    "bytes": 4128
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
     "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
     "bytes": 824757
   },
@@ -23,12 +23,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "lifecycle",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\pipeline-lifecycle.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -40,8 +40,8 @@
         "ok": true,
         "command": "validate",
         "specification": {
-          "sha256": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
-          "bytes": 4207
+          "sha256": "15c8bdede572f4eebed294b93d2c2a3545c85d87b9811dd1305b8bf4d2574bc1",
+          "bytes": 4128
         },
         "validation": {
           "checksPassed": 9,
@@ -56,14 +56,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 499,
+      "durationMs": 566,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "lifecycle",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\pipeline-lifecycle.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -72,15 +72,15 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "1d2c1896-33dd-4ca3-af0b-4ebfb93d289a",
+        "receiptId": "97a1a8b2-16da-48cd-a544-267bae0c88d3",
         "ok": true,
         "command": "deliver",
         "type": "lifecycle",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\pipeline-lifecycle.json",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
         "specification": {
-          "sha256": "d447db272ea7c74d39e334f5a6083f8554ecd271d52917a6a7be24a35eae2a43",
-          "bytes": 4207
+          "sha256": "15c8bdede572f4eebed294b93d2c2a3545c85d87b9811dd1305b8bf4d2574bc1",
+          "bytes": 4128
         },
         "artifact": {
           "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
@@ -110,17 +110,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 226,
+      "durationMs": 252,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
         "artifact": {
           "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
           "bytes": 824757
@@ -240,18 +240,18 @@
           "issues": []
         },
         "provenance": "current",
-        "deliveryReceiptId": "1d2c1896-33dd-4ca3-af0b-4ebfb93d289a"
+        "deliveryReceiptId": "97a1a8b2-16da-48cd-a544-267bae0c88d3"
       }
     },
     "browser-check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1580,
+      "durationMs": 1752,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\20448_1793461942188\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\31852_1793789163713\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "browser-check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
         "--json",
         "--require-provenance"
       ],
@@ -264,9 +264,9 @@
         "status": "pass",
         "visualReview": "not-requested",
         "provenance": "current",
-        "deliveryReceiptId": "1d2c1896-33dd-4ca3-af0b-4ebfb93d289a",
+        "deliveryReceiptId": "97a1a8b2-16da-48cd-a544-267bae0c88d3",
         "artifact": {
-          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.html",
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.html",
           "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
           "bytes": 824757
         },
@@ -276,7 +276,7 @@
         },
         "chrome": {
           "status": "available",
-          "executable": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+          "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         },
         "diagnostics": [],
         "containment": {
@@ -961,13 +961,13 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\pipeline-lifecycle.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\pipeline-lifecycle.browser-check.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-01T08:35:32.120Z",
-  "durationMs": 3052,
+  "finishedAt": "2026-11-04T11:37:59.150Z",
+  "durationMs": 3480,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

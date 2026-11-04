@@ -7,11 +7,11 @@
   "quality": "showcase",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\search-and-archify.json",
-    "sha256": "d002eb22caba2406d1659b77167231ae20f40ab2dcd350a91dbee02c4ceb0e0e",
-    "bytes": 4803
+    "sha256": "da28a34fe219d0ad42fac31aa775d95a84fa17834b6bc6be714232df14d1906a",
+    "bytes": 4663
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\search-and-archify.html",
     "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
     "bytes": 824633
   },
@@ -28,12 +28,12 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.4864ef83470e41be8e8d9ee55b8169fc\\search-and-archify.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\search-and-archify.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\search-and-archify.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\search-and-archify.browser-check.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 3196,
+  "durationMs": 3327,
   "browserCheck": {
     "requested": true,
     "ran": true

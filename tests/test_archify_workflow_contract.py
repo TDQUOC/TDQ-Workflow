@@ -69,3 +69,28 @@ class ArchifyWorkflowContract(unittest.TestCase):
         self.assertIn("changes something that already exists", quick)
         self.assertNotIn("Multi-module/refactor work: follow",
                          text("skills/tdq-intake/references/quick-lane.md"))
+
+    def test_lifecycle_covers_master_cards_source_evidence_and_fallback_gate(self):
+        body = text("skills/tdq-build/references/archify-lifecycle.md")
+        self.assertIn("docs/tdq/models/master.model.json", body)
+        for phrase in (
+            "card beside overview",
+            "modal for detail diagram",
+            "same HTML",
+            "verify diagram target",
+            "inject onclick into native node",
+            "inspect changed source",
+            "update model and candidate",
+            "verify source fingerprint",
+            "set status current manually",
+            "use stale graph as evidence",
+            "source-backed call edge",
+            "mark unknown details unverified",
+            "chưa xác minh",
+            "do not invent password algorithm",
+            "preserve last-good",
+            "report stale or incomplete",
+            "no current claim",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, body)

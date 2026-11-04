@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "63fffdfe-f621-4bcb-8664-3a0bb6cec502",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\fixture-master.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\.tmp.fixture-master.d35e11702f934993a18a741338e87240.html",
+  "specification": {
+    "sha256": "26122ee7d38c234b9f2d939798276494f09d59970725363aa7b07719932e8f01",
+    "bytes": 436
+  },
+  "artifact": {
+    "sha256": "a21ddd48578dd7afab2200f256599f4a21073f8e85a256c9dcda97030a09be3b",
+    "bytes": 804578
+  },
+  "explainer": {
+    "preparedSha256": "8f2e7b313f1ea302eb4163ad773e26a7af040ecfaccba912933393d99792884c",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "overview",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\fixture-overview.json",
+        "relativePath": "fixture-overview.json",
+        "sha256": "dec15b6449294b28886970b83c2edfd6c318da1a219a34fed29454bd483f6ef0",
+        "bytes": 698
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "flow",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\fixture-flow.json",
+        "relativePath": "fixture-flow.json",
+        "sha256": "3e742dc2dd35692825a936b147523cb379261f719c771ea235e5af548df13b56",
+        "bytes": 627
+      }
+    ]
+  }
+}

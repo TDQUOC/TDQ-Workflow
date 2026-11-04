@@ -1,0 +1,18 @@
+{
+  "task": "T1.3",
+  "fixture_html": "docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/fixture-master.html",
+  "screenshot": "docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/fixture-master-modal.png",
+  "click_target": "[data-diagram-link=\"flow\"]",
+  "modal_opened": true,
+  "native_loaded": "flow",
+  "iframe_url": "about:srcdoc#focus=read",
+  "escape_closed_dialog": true,
+  "focus_returned_to": {
+    "tag": "A",
+    "data_diagram_link": "flow",
+    "text": "Read flow ↗"
+  },
+  "console_errors": 0,
+  "network_errors": 0,
+  "status": "pass"
+}

@@ -604,6 +604,128 @@ class TestValidateModel(unittest.TestCase):
             archify_model.validate_model(model)
 
 
+class TestMasterFlowContract(unittest.TestCase):
+    def setUp(self):
+        self.model = {
+            "schema_version": 1, "title": "Master", "evidence_kind": "working-tree",
+            "views": [
+                {"id": "overview", "type": "architecture", "candidate": "overview.json"},
+                {"id": "detail", "type": "workflow", "candidate": "detail.json"},
+            ],
+            "master": {"overview": "overview", "flows": [{
+                "id": "flow", "text": "Read source", "target": {"diagram": "detail"},
+                "steps": [{"id": "read", "text": "Read file", "sources": [
+                    {"path": "src/main.py", "line": 1, "end_line": 2},
+                ]}],
+            }]},
+        }
+
+    def test_valid_master_preserves_native_target(self):
+        self.assertIs(archify_model.validate_model(self.model), self.model)
+        self.assertEqual(self.model["master"]["flows"][0]["target"], {"diagram": "detail"})
+
+    def test_missing_diagram_target_rejected(self):
+        self.model["master"]["flows"][0]["target"]["diagram"] = "missing"
+        with self.assertRaisesRegex(ValueError, "target"):
+            archify_model.validate_model(self.model)
+
+    def test_master_overview_must_exist(self):
+        self.model["master"]["overview"] = "missing"
+        with self.assertRaisesRegex(ValueError, "overview"):
+            archify_model.validate_model(self.model)
+
+    def test_card_and_step_ids_share_namespace(self):
+        for invalid in ("overview", "flow", "read\n", "../read", 3):
+            with self.subTest(invalid=invalid):
+                self.model["master"]["flows"][0]["steps"][0]["id"] = invalid
+                with self.assertRaisesRegex(ValueError, "id"):
+                    archify_model.validate_model(self.model)
+
+    def test_step_requires_evidence_or_explicit_unknown(self):
+        step = self.model["master"]["flows"][0]["steps"][0]
+        del step["sources"]
+        with self.assertRaisesRegex(ValueError, "sources|chưa xác minh"):
+            archify_model.validate_model(self.model)
+        step["detail"] = "chưa xác minh"
+        self.assertIs(archify_model.validate_model(self.model), self.model)
+
+    def test_invalid_evidence_rejected(self):
+        for source in ({"path": "../secret", "line": 1},
+                       {"path": "C:/secret", "line": 1},
+                       {"path": "src/main.py", "line": 0},
+                       {"path": "src/main.py", "line": True},
+                       {"path": "src/main.py", "line": 3, "end_line": 2},
+                       {"path": "src/main.py", "lines": [1, 2]},
+                       "src/main.py"):
+            with self.subTest(source=source):
+                self.model["master"]["flows"][0]["steps"][0]["sources"] = [source]
+                with self.assertRaisesRegex(ValueError, "source"):
+                    archify_model.validate_model(self.model)
+
+    def test_unverified_flow_has_no_click_target_or_steps(self):
+        flow = self.model["master"]["flows"][0]
+        del flow["target"]
+        with self.assertRaises(ValueError):
+            archify_model.validate_model(self.model)
+        del flow["steps"]
+        flow["detail"] = "chưa xác minh"
+        self.assertIs(archify_model.validate_model(self.model), self.model)
+
+    def test_target_must_be_diagram_only_and_not_overview(self):
+        for target in ({"diagram": "overview"}, {"diagram": "detail", "node": "fake"},
+                       {"diagram": "detail", "candidate": "other.json"}, None, "detail"):
+            with self.subTest(target=target):
+                self.model["master"]["flows"][0]["target"] = target
+                with self.assertRaisesRegex(ValueError, "target"):
+                    archify_model.validate_model(self.model)
+
+    def test_docs_only_master_has_no_invented_flows(self):
+        self.model["master"]["flows"] = []
+        self.assertIs(archify_model.validate_model(self.model), self.model)
+
+    def test_legacy_six_views_unchanged(self):
+        del self.model["master"]
+        self.model["views"] = [
+            {"id": kind, "type": kind, "candidate": f"{kind}.json"}
+            for kind in ("architecture", "workflow", "sequence", "dataflow", "lifecycle", "erd")
+        ]
+        self.assertIs(archify_model.validate_model(self.model), self.model)
+        self.assertEqual(len(self.model["views"]), 6)
+
+    def test_malformed_master_rejected(self):
+        for master in (None, [], {}, {"overview": "overview"},
+                       {"overview": [], "flows": []},
+                       {"overview": "overview", "flows": None},
+                       {"overview": "overview", "flows": [None]},
+                       {"overview": "overview", "flows": [], "typo": True}):
+            with self.subTest(master=master):
+                model = dict(self.model, master=master)
+                with self.assertRaises(ValueError):
+                    archify_model.validate_model(model)
+
+    def test_malformed_flow_and_step_rejected(self):
+        for location, key, value in (
+            ("flow", "id", "bad/id"), ("flow", "text", " "),
+            ("flow", "detail", []), ("flow", "target", {"diagram": []}),
+            ("flow", "steps", []), ("flow", "steps", {}),
+            ("step", "text", None), ("step", "sources", {}),
+            ("step", "sources", []), ("step", "typo", True),
+        ):
+            with self.subTest(location=location, key=key, value=value):
+                model = json.loads(json.dumps(self.model))
+                flow = model["master"]["flows"][0]
+                item = flow if location == "flow" else flow["steps"][0]
+                item[key] = value
+                with self.assertRaises(ValueError):
+                    archify_model.validate_model(model)
+
+    def test_master_view_ids_reject_trailing_newline(self):
+        self.model["views"][0]["id"] = "overview\n"
+        self.model["master"]["overview"] = "overview\n"
+        with self.assertRaisesRegex(ValueError, "id"):
+            archify_model.validate_model(self.model)
+
+
 class TestRealArchifySchemaValidation(unittest.TestCase):
     """Validation test using real local Archify validate CLI."""
 

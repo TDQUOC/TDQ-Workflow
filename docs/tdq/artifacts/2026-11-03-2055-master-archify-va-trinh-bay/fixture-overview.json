@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Overview",
+    "output": "overview.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "entry",
+      "type": "frontend",
+      "label": "Entry",
+      "pos": [
+        60,
+        90
+      ],
+      "size": [
+        170,
+        70
+      ]
+    },
+    {
+      "id": "flow",
+      "type": "backend",
+      "label": "Read flow",
+      "pos": [
+        330,
+        90
+      ],
+      "size": [
+        170,
+        70
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "entry-flow",
+      "from": "entry",
+      "to": "flow"
+    }
+  ]
+}

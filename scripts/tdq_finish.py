@@ -207,7 +207,7 @@ def step_graphify(project, files):
     return Step("graphify", "ok")
 
 
-def step_archify(project):
+def step_archify(project, phase=None):
     """Archify freshness check: reads docs/architecture/manifest.json, updates status.json.
 
     Absent manifest -> skip.
@@ -251,7 +251,12 @@ def step_archify(project):
 
     if status_val == "stale":
         reason_txt = reasons[0] if reasons else "source or revision changed"
-        return Step("archify", "stale", f"refresh needed: {reason_txt}"[:120])
+        prefix = (
+            f"refresh needed before {phase} (sync-master + verify or disclose fallback)"
+            if phase in ("report", "idle")
+            else "refresh needed"
+        )
+        return Step("archify", "stale", f"{prefix}: {reason_txt}"[:120])
 
     if status_val == "current":
         return Step("archify", "ok", "current")
@@ -302,7 +307,7 @@ def main(argv):
                      lambda: step_worklog(project, args.summary),
                      lambda: step_dong_so(project, args.phase),
                      lambda: step_phase(project, args.phase),
-                     lambda: step_archify(project),
+                     lambda: step_archify(project, args.phase),
                      lambda: step_graphify(project, files)):
         step = run_step()
         steps.append(step)

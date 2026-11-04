@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6c816d37-1927-4b86-aa9f-1b90302e921a",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-03-2055-master-archify-va-trinh-bay\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-03-2055-master-archify-va-trinh-bay-preview.6edb389406464e49a04e6801f8fd90e5.html",
+  "specification": {
+    "sha256": "ad5167f220e11f3d2f70edd7a1081815eb02e516212138d036fb42fd10bfc922",
+    "bytes": 2459
+  },
+  "artifact": {
+    "sha256": "5facb5421437ae8f2585122d129a93f68b1a76a4a9f80cb5de7fa904e8596f22",
+    "bytes": 1265346
+  },
+  "explainer": {
+    "preparedSha256": "362857b59c9bddd2c99d39d8706dfc89babc674d4412814c4cbeb0473890b4e6",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-portal",
+        "inline": true,
+        "sha256": "6bfe744a9ca25e05383941adc4e3e288fcfde98b76c2e431c1e985d3a62f5a2e",
+        "bytes": 903
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-portal",
+        "inline": true,
+        "sha256": "3e9483773873bf5a337324e3168db74282041804dace6872a9780ae58a06f32b",
+        "bytes": 1205
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "cong-flow",
+        "inline": true,
+        "sha256": "bdd7917328f4078da385e998888efd22ac100f08c4195eb49b78f84048ba610f",
+        "bytes": 1504
+      }
+    ]
+  }
+}
