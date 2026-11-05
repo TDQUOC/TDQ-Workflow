@@ -1,0 +1,56 @@
+{
+  "slug": "2026-11-05-2104-eval-chi-chay-khi-duoc-duyet",
+  "plan_file": "docs\\tdq\\plan\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.md",
+  "plan_sha": "f2c4645accc944d578f7f98a5797f711f28655e84477c321b7d5846b60490d3c",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "6d82a429e9fcd759af86dd664c5f903c800199c1bd487bd7196e489bff8b4cc1",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_state.py",
+        "tests/test_eval_workflow_gate.py"
+      ],
+      "dot": 1
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/SKILL.md",
+        "skills/tdq-build/references/qc.md",
+        "skills/tdq-build/references/skill-eval.md",
+        "skills/tdq-spec/SKILL.md",
+        "skills/tdq-spec/references/spec-template.md",
+        "skills/tdq-plan/SKILL.md",
+        "skills/tdq-intake/SKILL.md",
+        "tests/test_eval_workflow_gate.py"
+      ],
+      "dot": 2
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "docs/tdq/audit/luat-hien-co.md",
+        "docs/tdq/token-budget.json",
+        "skills/tdq-conventions/references/phases.md"
+      ],
+      "dot": 3
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 4
+    },
+    "T4.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 5
+    }
+  }
+}

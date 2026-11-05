@@ -1,0 +1,18 @@
+Request `2026-11-05-2104-eval-chi-chay-khi-duoc-duyet` · lane full · opened at 2026-11-05T21:17:27+07:00
+
+| Phase | Wall clock | API request | Tool wait | Background job | Observed union | Unattributed | Times entered |
+|---|---|---|---|---|---|---|---|
+| idle | 4s | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| analyze | 3 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| spec | 8 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| plan | 33 min | 2 min [partial] | 31s [partial] | — [unavailable] | 3 min [partial] | 30 min [partial] | 1 |
+| qc | 21 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| Total | 1h 05min | 2 min [partial] | 31s [partial] | — [unavailable] | 3 min [partial] | 1h 02min [partial] |  |
+
+Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.
+- api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- tool_call_seconds: conflicts,unknown_events,unreadable_or_uncertain_source
+- background_job_seconds: schema_has_no_confirmed_lifecycle
+- observed_union_seconds: conflicts,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- unattributed_seconds: wall_minus_observed_union;conflicts,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema

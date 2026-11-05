@@ -1,11 +1,38 @@
 # Changelog — bản lưu trữ 2
 
-Các bản 0.54.0 đến 0.37.0, tách khỏi `CHANGELOG.md` để file chính dưới trần R6 500 dòng
+Các bản 0.55.0 đến 0.37.0, tách khỏi `CHANGELOG.md` để file chính dưới trần R6 500 dòng
 (`docs/CHANGELOG-archive.md` đã đầy). Bản 0.51.0 được chuyển sang ngày 2026-10-25.
 Mới nhất trên cùng, chữ nghĩa copy nguyên văn.
 Ngày 2026-11-01 chuyển nguyên mục 0.52.0 từ changelog chính vào đây.
 Ngày 2026-11-03 chuyển nguyên mục 0.54.0 và 0.53.0 từ changelog chính vào đây.
+Ngày 2026-11-06 chuyển nguyên mục 0.55.0 từ changelog chính vào đây.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
+
+## 0.55.0 — 2026-10-03
+
+Luật tìm kiếm 4 tầng giờ được **cưỡng chế**, không chỉ được nhắc. Soi một phiên thật trên
+excalidraw: ~20 lần grep qua 4 request, 0 lần hỏi lumen hay LSP cho tới khi user phải hỏi luật.
+Báo cáo: `docs/tdq/reports/2026-10-03-0015-ep-luat-tim-kiem.md`.
+
+- **Cổng tìm kiếm (`hooks/scripts/search_gate.py`, mã `TDQ:SEARCH`).** `PreToolUse` trên
+  `Bash|Grep|PowerShell` **chặn** lần tìm code đi tắt tầng khái niệm. Request chưa hỏi
+  lumen/LSP/graphify → chặn. Một lần hỏi mở khoá 10 lần tìm; sau đó grep kiểu đoán mò bị chặn
+  lại. Miễn: lọc danh sách file, và tên có nguyên văn trong prompt. Phát lại phiên excalidraw:
+  bắt 11, bắt oan 0, lọt 0. Đây là một điểm chặn mới — quyết định ghi ở `docs/kien-truc.md`.
+- **Không kẹt.** Cổng đứng xuống khi tầng khái niệm chưa dựng xong hoặc mốc báo không tầng nào
+  sẵn sàng. Nó cũng đứng xuống sau 3 lần chặn mà request chưa ghi được lần hỏi nào. Mỗi lần đứng
+  xuống, nó nói ra một lần mỗi lượt.
+- **Codex có cùng cổng.** Codex đã bỏ hook đi theo plugin, nên `tdq-setup` ghi `.codex/hooks.json`
+  cấp project bằng đường tuyệt đối; khi plugin lên bản, entry cũ được sửa tại chỗ, không nhân
+  đôi. `tdq-setup` cũng khai MCP lumen + LSP qua `codex mcp add` — chỉ thêm, có backup.
+- **Tự dựng bộ tìm kiếm.** `SessionStart` ở một project thật (có `.git`) chưa sẵn sàng sẽ khởi
+  động dựng nền tách rời, có khoá pid chống chạy chồng; tắt bằng `TDQ_KHOI_TAO_NEN=0`.
+- **Thang kiểm thật hơn.** Bậc 3 khởi động language server thật; smoke grep theo ngôn ngữ thật
+  của project; thang 8 bậc + smoke 4 tầng chạy bằng một lệnh.
+- **Đường dẫn tuyệt đối trong output hook** khi project không có `scripts/` của plugin — lệnh in
+  ra ở project khác giờ chạy được nguyên văn.
+- **`scripts/search_replay.py`** phát lại một transcript qua đúng luật của cổng, để đo lại N khi
+  có thêm phiên thật.
 
 ## 0.54.0 — 2026-10-02
 

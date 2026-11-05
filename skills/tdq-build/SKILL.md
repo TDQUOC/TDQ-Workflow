@@ -69,7 +69,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
   top of that file gives the exact line range, so the whole file never has to be read.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. `mcp__lsp__*` missing → say so in one line, fall through to graphify, then grep.
-- **No placeholders; eval gate.** Skill changes require valid eval-plan and certified evidence per [references/skill-eval.md](references/skill-eval.md); do not stub.
+- **No placeholders; eval is opt-in.** Eval never opens by itself: run it only when the user asks and agrees (`tdq_state.py eval-enable --by "<user words>"`); until then the report says one line `eval: chưa kích hoạt (opt-in)`. Once enabled, see [references/skill-eval.md](references/skill-eval.md); do not stub.
 - **If a subagent is running, wait it out**, or set a trigger to resume automatically. Never
   end the turn while one is still running.
 

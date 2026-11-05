@@ -8,7 +8,7 @@
     "token": 2582
   },
   "skills/tdq-build/references/qc.md": {
-    "sha256": "274a6befe511272bb49aa565a79da988afe8a1398729257fc0e23db73af9eba3",
+    "sha256": "677d26e10a0a80b6ea6647ed32087498b17cd97196ffebe14384987ad4db5966",
     "token": 3496
   },
   "skills/tdq-build/references/report-template.md": {
@@ -68,8 +68,8 @@
     "token": 1239
   },
   "skills/tdq-build/references/skill-eval.md": {
-    "sha256": "72f00282030109f89baeafd4f1ca3d9689ad3439bb1c1490c68689df054ae7ff",
-    "token": 1238
+    "sha256": "a25ff65c287c43d2fb597f5534256a7c30f80a77d8964ffa11985e91bf9046c0",
+    "token": 1322
   },
   "skills/tdq-build/references/team-mode-tra-cuu.md": {
     "sha256": "6eacac324af8d49c3678a2eb2f66840c487ff5c3495f160e5b762fb02cc68295",
@@ -244,7 +244,7 @@
     "token": 2840
   },
   "skills/tdq-spec/references/spec-template.md": {
-    "sha256": "5b1d5ed3f89fb9101b8db6c7e24a05e4289bc82b099103b6c3104064b666ccd5",
-    "token": 3477
+    "sha256": "8ebccc8e1d391c49fd235af4b65d6567242d22ed599d9fe1eb89f6de41b9e9ac",
+    "token": 3486
   }
 }
