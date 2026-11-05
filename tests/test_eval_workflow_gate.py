@@ -73,6 +73,12 @@ class TestEvalWorkflowGate(unittest.TestCase):
             "# Plan\n- [ ] **T1.1** test\n  - Chạm: `skills/tdq-build/SKILL.md`\n",
             encoding="utf-8"
         )
+        # Not opted in: gate skipped
+        proc = self._run_state("set", "phase=implement")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        # Opted in without eval-plan: blocked
+        self._run_state("set", "phase=plan")
+        self._run_state("eval-enable", "--by", "user approved", check=True)
         proc = self._run_state("set", "phase=implement")
         self.assertNotEqual(proc.returncode, 0)
         self.assertIn("eval-plan", proc.stderr.lower())
@@ -89,23 +95,41 @@ class TestEvalWorkflowGate(unittest.TestCase):
         st = tdq_state.load(str(self.cwd))
         self.assertEqual(st.get("phase"), "implement")
 
-    def test_eval_waiver_records_waived_user_and_allows_implement(self):
-        self._init_state()
+    def _write_skill_plan(self):
         plan_file = self.cwd / f"docs/tdq/plan/{self.slug}.md"
         plan_file.write_text(
             "# Plan\n- [ ] **T1.1** test\n  - Chạm: `skills/tdq-build/SKILL.md`\n",
             encoding="utf-8"
         )
-        # Record waiver
-        proc_waive = self._run_state("eval-waive", "--reason", "Emergency hotfix waived", "--by", "user approved")
-        self.assertEqual(proc_waive.returncode, 0)
-        st = tdq_state.load(str(self.cwd))
-        self.assertIsNotNone(st.get("eval_waiver"))
-        self.assertEqual(st["eval_waiver"]["verdict"], "WAIVED_USER")
 
-        # Now set phase=implement should succeed
+    def test_eval_enable_records_by_and_at(self):
+        self._init_state()
+        proc = self._run_state("eval-enable", "--by", "user approved")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        st = tdq_state.load(str(self.cwd))
+        self.assertEqual(st["eval_enabled"]["by"], "user approved")
+        self.assertTrue(st["eval_enabled"]["at"])
+
+    def test_eval_enable_requires_by(self):
+        self._init_state()
+        self.assertNotEqual(self._run_state("eval-enable").returncode, 0)
+        self.assertNotEqual(self._run_state("eval-enable", "--by", "").returncode, 0)
+        self.assertFalse(tdq_state.load(str(self.cwd)).get("eval_enabled"))
+
+    def test_eval_waive_command_removed(self):
+        self._init_state()
+        proc = self._run_state("eval-waive", "--reason", "x", "--by", "user approved")
+        self.assertNotEqual(proc.returncode, 0)
+
+    def test_legacy_eval_waiver_key_is_ignored(self):
+        self._init_state()
+        self._write_skill_plan()
+        state_path = Path(tdq_state.state_path(str(self.cwd)))
+        st = json.loads(state_path.read_text(encoding="utf-8"))
+        st["eval_waiver"] = {"verdict": "WAIVED_USER", "by": "old", "reason": "old"}
+        state_path.write_text(json.dumps(st), encoding="utf-8")
         proc = self._run_state("set", "phase=implement")
-        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
 
     def test_report_gate_blocks_when_evidence_missing_or_incomplete(self):
         self._init_state()
@@ -139,12 +163,20 @@ class TestEvalWorkflowGate(unittest.TestCase):
         )
         eval_plan_path.write_text(json.dumps(plan_data), encoding="utf-8")
         self._run_state("set", f"eval_plan_file={eval_plan_path}", check=True)
+        self._run_state("eval-enable", "--by", "user approved", check=True)
         self._run_state("set", "phase=implement", check=True)
 
         # Attempting to move to report without certified evidence
         proc_rep = self._run_state("set", "phase=report")
         self.assertNotEqual(proc_rep.returncode, 0)
         self.assertIn("incomplete", proc_rep.stderr.lower())
+
+    def test_report_gate_skipped_without_eval_enable(self):
+        self._init_state()
+        self._write_skill_plan()
+        self._run_state("set", "phase=implement", check=True)
+        proc = self._run_state("set", "phase=report")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
 
 
 if __name__ == "__main__":

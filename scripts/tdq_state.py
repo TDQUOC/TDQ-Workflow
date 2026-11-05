@@ -98,7 +98,7 @@ USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
          "[--mode main|subagent|codex] "
          "[--by \"<user sentence>\"] [--expected-sha <sha256>] [--strict] [--bo-qua-do \"<user's reason>\"] | "
          "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
-         "eval-waive --reason \"<reason>\" --by \"<user words>\" [--scope <scope>] | "
+         "eval-enable --by \"<user words>\" | "
          "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
          "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
          "reset | phases-doc | modes [--json]")
@@ -284,7 +284,7 @@ def default_state():
         "nhanh_request": None,
         # eval-gate integration (T3.1)
         "eval_plan_file": None,
-        "eval_waiver": None,
+        "eval_enabled": None,
         # phase history: [{"phase": "spec", "at": "<iso>"}, ...], one mark per
         # phase CHANGE. Re-entering an old phase still adds a mark — that is what
         # counting re-entries is built on.
@@ -2256,8 +2256,8 @@ def _extract_plan_targets(cwd, state):
 
 
 def _chan_eval_plan_chua_co(cwd, state):
-    """Gate `implement`: target thay đổi hành vi skill/hook/plugin đòi hỏi eval-plan hợp lệ."""
-    if state.get("eval_waiver"):
+    """Gate `implement`: chỉ chạy khi đã eval-enable; target hành vi skill/hook/plugin đòi hỏi eval-plan hợp lệ."""
+    if not state.get("eval_enabled"):
         return
     targets = _extract_plan_targets(cwd, state)
     if not targets:
@@ -2273,8 +2273,7 @@ def _chan_eval_plan_chua_co(cwd, state):
     if not plan_rel:
         _fail(
             "Target chạm thay đổi hành vi skill/hook/plugin nhưng chưa có eval-plan hợp lệ.\n"
-            "Tạo hoặc đăng ký plan qua `python3 scripts/tdq_skill_eval.py plan` rồi `set eval_plan_file=<path>`,\n"
-            "hoặc nếu user cho miễn: `python3 scripts/tdq_state.py eval-waive --reason \"...\" --by \"...\"`."
+            "Tạo hoặc đăng ký plan qua `python3 scripts/tdq_skill_eval.py plan` rồi `set eval_plan_file=<path>`."
         )
     plan_path = plan_rel if os.path.isabs(plan_rel) else os.path.join(cwd, plan_rel)
     if not os.path.isfile(plan_path):
@@ -2290,8 +2289,8 @@ def _chan_eval_plan_chua_co(cwd, state):
 
 
 def _chan_eval_evidence_chua_co(cwd, state):
-    """Gate `report`: target thay đổi hành vi đòi hỏi chứng cứ Eval hợp lệ, không thiếu hay stale."""
-    if state.get("eval_waiver"):
+    """Gate `report`: chỉ chạy khi đã eval-enable; target hành vi đòi hỏi chứng cứ Eval hợp lệ, không thiếu hay stale."""
+    if not state.get("eval_enabled"):
         return
     targets = _extract_plan_targets(cwd, state)
     if not targets:
@@ -2350,30 +2349,19 @@ def _chan_eval_evidence_chua_co(cwd, state):
         )
 
 
-def _cli_eval_waive(cwd, rest):
-    """`eval-waive --reason "<reason>" --by "<user words>" [--scope "<scope>"]`"""
-    flags = _flag_pairs(rest, {"--reason", "--by", "--scope"}, "eval-waive")
-    reason = flags.get("--reason", "").strip()
+def _cli_eval_enable(cwd, rest):
+    """`eval-enable --by "<user words>"` — opt in to the eval gates for this request."""
+    flags = _flag_pairs(rest, {"--by"}, "eval-enable")
     by = flags.get("--by", "").strip()
-    scope = flags.get("--scope", "request").strip()
-    if not reason:
-        _fail("eval-waive needs --reason \"<why eval is waived>\"")
     if not by:
-        _fail("eval-waive needs --by \"<the user's own words>\"")
+        _fail("eval-enable needs --by \"<the user's own words>\"")
     state = load(cwd)
     if state is None:
         _fail("No state yet — run init first.")
     stamp = state.get("updated_at")
-    waiver = {
-        "verdict": "WAIVED_USER",
-        "reason": reason[:400],
-        "by": by[:200],
-        "scope": scope[:100],
-        "at": now_iso(),
-    }
-    state["eval_waiver"] = waiver
+    state["eval_enabled"] = {"by": by[:200], "at": now_iso()}
     save(cwd, state, expect_updated_at=stamp)
-    print(f"✅ eval-waive: verdict=WAIVED_USER reason={waiver['reason']!r} by={waiver['by']!r}")
+    print(f"✅ eval-enable: by={state['eval_enabled']['by']!r}")
 
 
 def _pop_json_flag(argv):
@@ -2810,8 +2798,8 @@ def cli(argv):
         _echo_state("set", state, want_json)
         return
 
-    if cmd == "eval-waive":
-        return _cli_eval_waive(cwd, argv[1:])
+    if cmd == "eval-enable":
+        return _cli_eval_enable(cwd, argv[1:])
 
     if cmd in ("pause", "resume"):
         return _cli_implement_pause(cwd, cmd, argv[1:])
