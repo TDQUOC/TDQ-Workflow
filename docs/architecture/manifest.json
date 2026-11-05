@@ -52,7 +52,7 @@
     "docs/tdq/models/pipeline-lifecycle.json": "15c8bdede572f4eebed294b93d2c2a3545c85d87b9811dd1305b8bf4d2574bc1",
     "docs/tdq/models/runtime-verification.json": "6cdfbc0286fe2098905d2ca3fc35f267482d34a17e2148faed1971d93cd0e90e",
     "docs/tdq/models/search-and-archify.json": "da28a34fe219d0ad42fac31aa775d95a84fa17834b6bc6be714232df14d1906a",
-    "hooks/hooks.json": "b29e3f3f45892f3ddb56274d5c722e241cfb2756a83948df0254007cfe883dee",
+    "hooks/hooks.json": "888fe5ccce2cd08c13663876815723dcd741aec3d54c889a1c48eedbb2139913",
     "hooks/scripts/_common.py": "ed1acb347fa77d32d2e1ba0c8acce68577d1892f376635c816940276fbaa2159",
     "hooks/scripts/agy_pretooluse_gate.py": "f0ae7e243015e70eaa8f4293db711cfe8f6700e6e65cd53d23cda91bc4dfbde5",
     "hooks/scripts/agy_stop_gate.py": "45cc49db2fbc4d74fabea0bbc647bd78553ae5aa24581e8c18b4e7736ab0a4a8",
@@ -95,7 +95,7 @@
     "scripts/samples/transcript-step-audit.jsonl": "0c027ee9ed37512db10b14428e07d7ec96b499c15ccd82dfa953d0b196af0bd6",
     "scripts/scan_block_symbols.py": "b676c10d91c8ce0102e845cb5d7964dc9a00b8e1eba1ed9c7555021f98482874",
     "scripts/search_replay.py": "62a43b58f9ec14b8fab36bdd76bbf123f2b91c60eaa4bc9b8860aaf56e1ccf07",
-    "scripts/search_rules.py": "c9d15eb6802d4458c6d9bf4afe96240ec918410add835a276d297e82db0d56d4",
+    "scripts/search_rules.py": "ee9582703815cefe970c30832fc78de7a7029c93d1095c9588e990e208860f7f",
     "scripts/setup_status.py": "992b1b82b77d2cbeb9a0e04b4dc8dc9d592f4d8f4b73751433e622223f672d25",
     "scripts/setup_status_render.py": "92ed6e0ee3fbc0ff9636dfbc9bea0254074a67d1f958d060c78ad34a9a9a76b4",
     "scripts/skill_inventory.py": "36787cd79015a4c7bb3d09a4e526b71fcd36021e16c25c5f0489ee7515367d04",
@@ -116,11 +116,11 @@
     "scripts/tdq_graphify.py": "1a28616755a8a6f1698f63fadd6d510ab73b7a5634b74356194b391ba0c74ac7",
     "scripts/tdq_harvest.py": "fc4f710b5360d036221930b02e34cabc2679ef8fd956090995bc2c9c1dfa59bb",
     "scripts/tdq_knowledge.py": "3ec06513f22f11f2bf3ccca576e06fd6f5204d2a84860632cebbb5de91c53ad2",
-    "scripts/tdq_lsp.py": "9f6d06cc6178f5079ff708cec59bdf9c81c2a6d30d6f8c78716cd2c82955cf47",
+    "scripts/tdq_lsp.py": "a86aadfae890082716f5e49695a5ae2b32d0e3d02bbd28c666bea9fcdf04bc8b",
     "scripts/tdq_no.py": "af5981ce57bca5e3e51b70c939eb5f0511289063b671ab47cd4599db563b7197",
     "scripts/tdq_readiness.py": "9eee5c8cc4106290c149bea9d4b81c3a5c18c1c3336f190a3d91f0b98476603b",
     "scripts/tdq_runtime_bench.py": "d172e87bd579f94f589fa4283f2357c69904efad8b6a4bdbed045df189e507d1",
-    "scripts/tdq_setup.py": "d5456be4a723dccf79bd716ff4d719dce440e784f892314b6270c6028d924660",
+    "scripts/tdq_setup.py": "65a7c47def568747d69b78d1a0a495bbcdfb0eba2e6969fcafeaa44380e2f985",
     "scripts/tdq_skill_eval.py": "fe001638eeae5764bdd428d679d1234a64030b7a392b19154f62b54bba45ea36",
     "scripts/tdq_state.py": "cb7f9311ff37fb150429cfab716ffc0eebce3a876f2c94a6cde85c46917b58af",
     "scripts/tdq_team.py": "7f24a5bae1b8112016145a2757ea304a04b4269ed6047f5271a03bdaff1ada1d",
@@ -338,7 +338,7 @@
         "bytes": 6456
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\overview.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\overview.html",
         "sha256": "804d1ff75b4ee35e24cb3c64fbeef786a69373d79924ea0817850e6b526931f9",
         "bytes": 826497
       },
@@ -355,12 +355,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\overview.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\overview.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\overview.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\overview.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\overview.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\overview.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 2898,
+      "durationMs": 2895,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -379,7 +379,7 @@
         "bytes": 4128
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\pipeline-lifecycle.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\pipeline-lifecycle.html",
         "sha256": "71a30a835c55ce430f5bde38452b25f274ad8f6bfe56c42b819648f13f522b8d",
         "bytes": 824757
       },
@@ -396,12 +396,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\pipeline-lifecycle.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\pipeline-lifecycle.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\pipeline-lifecycle.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\pipeline-lifecycle.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\pipeline-lifecycle.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\pipeline-lifecycle.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 2847,
+      "durationMs": 3162,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -420,7 +420,7 @@
         "bytes": 4663
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\search-and-archify.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\search-and-archify.html",
         "sha256": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
         "bytes": 824633
       },
@@ -437,12 +437,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\search-and-archify.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\search-and-archify.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\search-and-archify.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\search-and-archify.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\search-and-archify.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\search-and-archify.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3108,
+      "durationMs": 2977,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -461,7 +461,7 @@
         "bytes": 4824
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\hooks-and-gates.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
         "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
         "bytes": 823010
       },
@@ -478,12 +478,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\hooks-and-gates.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\hooks-and-gates.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\hooks-and-gates.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3379,
+      "durationMs": 3372,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -502,7 +502,7 @@
         "bytes": 4891
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\runtime-verification.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\runtime-verification.html",
         "sha256": "1baa8767763441c77436fba4151fe3ec992831404dceae7643a23b0548bc679a",
         "bytes": 822816
       },
@@ -544,12 +544,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\runtime-verification.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\runtime-verification.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\runtime-verification.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\runtime-verification.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\runtime-verification.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\runtime-verification.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3078,
+      "durationMs": 3312,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -597,7 +597,7 @@
         "bytes": 4466
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\optimization-report.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.html",
         "sha256": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5",
         "bytes": 820910
       },
@@ -639,12 +639,12 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\optimization-report.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\optimization-report.finalize-summary.json",
-        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\optimization-report.browser-check.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.finalize-summary.json",
+        "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.browser-check.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3066,
+      "durationMs": 3162,
       "browserCheck": {
         "requested": true,
         "ran": true
@@ -658,12 +658,12 @@
       "type": "explainer",
       "quality": "showcase",
       "specification": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\master.candidate.json",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\master.candidate.json",
         "sha256": "83b7af199a7358ed72e6f612facb5949f7db17760252c8a4f5634e553aaf069a",
         "bytes": 10628
       },
       "artifact": {
-        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\index.html",
+        "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\index.html",
         "sha256": "ff6ae9bb4991ec10625b9f1703b97dd969f56b2ee5cbb779c3cb7d036116671e",
         "bytes": 2614221
       },
@@ -680,11 +680,11 @@
         "truncated": false
       },
       "evidence": {
-        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\index.finalize.json",
-        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\index.finalize-summary.json"
+        "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\index.finalize.json",
+        "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\index.finalize-summary.json"
       },
       "visualReview": "not-requested",
-      "durationMs": 3413,
+      "durationMs": 3444,
       "browserCheck": {
         "requested": false,
         "ran": false

@@ -6,9 +6,9 @@
   "status": "pass",
   "visualReview": "not-requested",
   "provenance": "current",
-  "deliveryReceiptId": "3625628d-6e14-4e3a-9def-edd16e0c7345",
+  "deliveryReceiptId": "03b93de8-65b5-4690-ae19-716b6d4a7f40",
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\hooks-and-gates.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
     "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
     "bytes": 823010
   },

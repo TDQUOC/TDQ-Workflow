@@ -6,9 +6,9 @@
   "status": "pass",
   "visualReview": "not-requested",
   "provenance": "current",
-  "deliveryReceiptId": "2ac47499-fba1-44c4-b4e2-1ecc45622fd0",
+  "deliveryReceiptId": "4c810b99-199d-4b1c-862c-302f28974734",
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\overview.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\overview.html",
     "sha256": "804d1ff75b4ee35e24cb3c64fbeef786a69373d79924ea0817850e6b526931f9",
     "bytes": 826497
   },

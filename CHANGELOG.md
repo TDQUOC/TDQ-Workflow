@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.92.0 — 2026-11-05
+
+Khắc phục tự động MCP plugin `tdq-workflow` bị đứt trên Claude Desktop sau update.
+
+- Tự đồng bộ `mcpServers` từ `~/.claude.json` vào `.mcp.json` trong cache plugin active khi setup, chạy nền `--nen`, auto-update và setup bù.
+- Tự mở quyền cho MCP plugin LSP và Chrome DevTools.
+- Hook/Search Gate nhận đúng `mcp__plugin_tdq-workflow_lsp__*`, nhưng từ chối server không thuộc TDQ dù tên chứa `lsp`.
+- Kiểm thử: 206 passed, 4 subtests passed, 0 failures; QC ultra độc lập PASS.
+
 ## 0.91.0 — 2026-11-05
 
 Chuẩn hóa Report dễ hiểu kèm Archify HTML, cập nhật Soul và tự động ghim vào User-Instruction.
@@ -487,7 +496,5 @@ Báo cáo: `docs/tdq/reports/2026-10-03-0015-ep-luat-tim-kiem.md`.
 
 ## Lịch sử cũ hơn
 
-Bản 0.54.0 đến 0.37.0 nằm ở `docs/CHANGELOG-archive-2.md`. Các bản này được tách dần để giữ file
-chính dưới trần 500 dòng của `doc_lint` R6 (bản 0.54.0 và 0.53.0 dời ngày 2026-11-03; bản 0.52.0 dời ngày 2026-11-01; bản 0.51.0 dời ngày 2026-10-25). Bản 0.36.0 trở xuống
-nằm ở `docs/CHANGELOG-archive.md` — tách ra ngày 2026-09-17 vì cùng lý do. Chữ nghĩa giữ nguyên,
-không xoá dòng nào.
+Bản 0.54.0 đến 0.37.0: `docs/CHANGELOG-archive-2.md`; bản 0.36.0 trở xuống:
+`docs/CHANGELOG-archive.md`. Tách để giữ file chính dưới 500 dòng; chữ nghĩa giữ nguyên.

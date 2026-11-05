@@ -595,6 +595,106 @@ def _cai_dat_env_timeout_mcp(duong_settings, cham_may=None):
         return False
 
 
+def _doc_mcp_servers(duong_cjson):
+    if not os.path.isfile(duong_cjson):
+        return {}
+    try:
+        with io.open(duong_cjson, "r", encoding="utf-8") as fh:
+            cjson = json.load(fh)
+        return (cjson.get("mcpServers") or {}) if isinstance(cjson, dict) else {}
+    except Exception as exc:  # noqa: BLE001
+        _log(f"không đọc được mcpServers từ {duong_cjson}: {exc}")
+        return {}
+
+
+def _tim_cache_plugin_active(home):
+    tep_json = os.path.join(home, ".claude", "plugins", "installed_plugins.json")
+    du_lieu = tdq_lsp._doc_json(tep_json)
+    target_caches = []
+    if isinstance(du_lieu, dict) and "plugins" in du_lieu:
+        for k, v in du_lieu["plugins"].items():
+            if k.startswith("tdq-workflow@") and isinstance(v, list):
+                for item in v:
+                    if isinstance(item, dict) and item.get("installPath"):
+                        ip = item["installPath"]
+                        if os.path.isdir(ip) and ip not in target_caches:
+                            target_caches.append(ip)
+    if target_caches:
+        return target_caches
+    goc_cache = os.path.join(home, ".claude", "plugins", "cache", "tdq-local", "tdq-workflow")
+    if os.path.isdir(goc_cache):
+        subs = [os.path.join(goc_cache, s) for s in os.listdir(goc_cache)
+                if os.path.isdir(os.path.join(goc_cache, s))]
+        if subs:
+            subs.sort(key=lambda p: tach_version(os.path.basename(p)), reverse=True)
+            return [subs[0]]
+    return []
+
+
+def _cap_nhat_permissions_allow(home):
+    duong_settings = os.path.join(home, ".claude", "settings.json")
+    st_data = {}
+    if os.path.isfile(duong_settings):
+        try:
+            with io.open(duong_settings, "r", encoding="utf-8") as fh:
+                noi_dung = fh.read().strip()
+                if noi_dung:
+                    st_data = json.loads(noi_dung)
+        except Exception:
+            return False
+    if not isinstance(st_data, dict):
+        return False
+    allow = st_data.setdefault("permissions", {}).setdefault("allow", [])
+    if not isinstance(allow, list):
+        return False
+    can_them = ("mcp__lsp__*", "mcp__plugin_tdq-workflow_lsp__*", "mcp__plugin_tdq-workflow_chrome-devtools__*")
+    doi = False
+    for rule in can_them:
+        if rule not in allow:
+            allow.append(rule)
+            doi = True
+    if not doi:
+        return True
+    try:
+        os.makedirs(os.path.dirname(os.path.abspath(duong_settings)), exist_ok=True)
+        tam = f"{duong_settings}.{os.getpid()}.tmp"
+        with io.open(tam, "w", encoding="utf-8", newline="\n") as fh:
+            json.dump(st_data, fh, indent=2, ensure_ascii=False)
+            fh.write("\n")
+        os.replace(tam, duong_settings)
+        return True
+    except Exception as exc:  # noqa: BLE001
+        _log(f"lỗi cập nhật permissions.allow tại {duong_settings}: {exc}")
+        return False
+
+
+def dong_bo_mcp_plugin_cache(home=None, duong_cau_hinh="~/.claude.json", cham_may=None):
+    """Đồng bộ mcpServers từ ~/.claude.json vào <active_plugin_cache>/.mcp.json và cấp quyền allow."""
+    if cham_may is False or (cham_may is None and _khong_cham_may()):
+        return False
+    home = home or os.path.expanduser("~")
+    duong_cjson = os.path.expanduser(duong_cau_hinh) if isinstance(duong_cau_hinh, str) else str(duong_cau_hinh)
+    servers = _doc_mcp_servers(duong_cjson)
+    if not servers:
+        return False
+    caches = _tim_cache_plugin_active(home)
+    ghi_thanh_cong = False
+    for cache_dir in caches:
+        mcp_file = os.path.join(cache_dir, ".mcp.json")
+        try:
+            tam = f"{mcp_file}.{os.getpid()}.tmp"
+            with io.open(tam, "w", encoding="utf-8", newline="\n") as fh:
+                json.dump({"mcpServers": servers}, fh, indent=2, ensure_ascii=False)
+                fh.write("\n")
+            os.replace(tam, mcp_file)
+            _log(f"đã đồng bộ {len(servers)} mcpServers vào {mcp_file}")
+            ghi_thanh_cong = True
+        except Exception as exc:  # noqa: BLE001
+            _log(f"lỗi ghi {mcp_file}: {exc}")
+    _cap_nhat_permissions_allow(home)
+    return ghi_thanh_cong
+
+
 def _da_bat(duong_settings, khoa):
     du_lieu = tdq_lsp._doc_json(duong_settings)
     bat = du_lieu.get("enabledPlugins") if isinstance(du_lieu, dict) else None
@@ -626,6 +726,7 @@ def kiem_plugin_user(home=None, goc_plugin=None, cham_may=None):
                         f"/plugin update {khoa}")
     duong = os.path.join(home, ".claude", "settings.json")
     _cai_dat_env_timeout_mcp(duong, cham_may)
+    dong_bo_mcp_plugin_cache(home=home, cham_may=cham_may)
     if _da_bat(duong, khoa):
         return da_cai, canh_bao, no
     if not cham_may:
@@ -747,6 +848,7 @@ def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None, cwd
 
     if thanh_cong:
         _log(f"đã tự động cập nhật {khoa} lên {v_nguon}")
+        dong_bo_mcp_plugin_cache(home=home)
         return True, f"[TDQ] Đã tự động cập nhật plugin tdq-workflow lên phiên bản {v_nguon}."
     return False, ""
 
@@ -846,6 +948,7 @@ def thuc_hien_cap_nhat_remote(home=None, chay_lenh=None):
             stamp["updated_at"] = _now()
             stamp.pop("last_error", None)
             ghi_update_stamp(home, stamp)
+            dong_bo_mcp_plugin_cache(home=home)
             return True, f"đã cập nhật {khoa} lên {v_mkt}"
         else:
             stamp["last_error"] = f"plugin update error: {out_up}"
@@ -1429,6 +1532,7 @@ def thuc_hien_setup_bu(project, v_cu, v_moi, goc_plugin=None):
 
     # Required sync: propagate failure so the version stamp remains retryable.
     ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=goc_plugin)
+    dong_bo_mcp_plugin_cache()
     ket_qua.append("ghim instruction mới")
 
     # 3. Đồng bộ Codex MCP & hook nếu có
@@ -1742,6 +1846,7 @@ def khoi_tao_nen(project, chay=None, *, cache_mode="off", request=None):
 
         def instruction():
             ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=GOC_REPO)
+            dong_bo_mcp_plugin_cache()
             phien_ban = doc_phien_ban_plugin(GOC_REPO)
             if phien_ban:
                 ghi_phat_hanh(project, phien_ban)
@@ -1859,6 +1964,8 @@ def main(argv, khai_codex=None):
         no.append(f"hook dry-run thất bại: {chi_tiet_dryrun}")
     if ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION)):
         da_cai.append(f"ghim hướng dẫn 3 tầng vào {DUONG_INSTRUCTION}")
+    if dong_bo_mcp_plugin_cache():
+        da_cai.append("đồng bộ .mcp.json vào cache plugin và mở permissions.allow")
     if tdq_devtool_mcp.is_enabled(cwd=project):
         st = tdq_devtool_mcp.check_devtool_setup()
         if not st["all_ready"]:

@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-05T12:19:24+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-05T13:28:07+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-05-1140-report-de-hieu-soul-instruction |
+| Request | 2026-11-05-1247-sua-mcp-plugin-desktop |
 | Lane | quick |
 | Phase | idle |
 | Spec | (none) |
-| Plan | docs/tdq/plan/2026-11-05-1140-report-de-hieu-soul-instruction.md — ⏳ awaiting approval |
+| Plan | docs/tdq/plan/2026-11-05-1247-sua-mcp-plugin-desktop.md — ⏳ awaiting approval |
 | Quick approval | ✔ approved |
 | Doc language | vi |
 | Lean level | ultra |
