@@ -310,6 +310,33 @@ class VungCham(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.goc, ignore_errors=True)
         lam_repo_vung_cham(self.goc)
 
+    def test_plan_only_chon_module_khong_chay_hay_ghi_so(self):
+        p = chay_cli(self.goc, "--files", "tests/test_b.py", "--plan-only")
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("scope=direct", p.stdout)
+        self.assertIn("selected=1/9", p.stdout)
+        self.assertIn("selectors=tests/test_b.py", p.stdout)
+        self.assertIn("modules=test_b.py", p.stdout)
+        self.assertIn("reason=no fallback", p.stdout)
+        self.assertNotIn("failed", p.stderr)
+        self.assertFalse(os.path.exists(os.path.join(self.goc, "docs/tdq/.tdq-test.jsonl")))
+        self.assertFalse(os.path.exists(os.path.join(self.goc, "docs/tdq/cache/test-runs")))
+
+    def test_plan_only_fallback_va_rong_khong_ghi_so(self):
+        full = chay_cli(self.goc, "--files", "tools/build.sh", "--plan-only")
+        self.assertEqual(full.returncode, 0, full.stdout + full.stderr)
+        self.assertIn("scope=full selected=9/9 selectors=tests", full.stdout)
+        self.assertIn("modules=test_a.py,test_b.py", full.stdout)
+        self.assertIn("reason=", full.stdout)
+        ghi(self.goc, "tests/nested/test_extra.py", TEST_DAT)
+        nested = chay_cli(self.goc, "--files", "tools/build.sh", "--plan-only")
+        self.assertIn("selected=10/10", nested.stdout)
+        empty = chay_cli(self.goc, "--files", "--plan-only")
+        self.assertEqual(empty.returncode, 0, empty.stdout + empty.stderr)
+        self.assertIn("scope=none selected=0/10 selectors=(none) modules=(none)", empty.stdout)
+        self.assertFalse(os.path.exists(os.path.join(self.goc, "docs/tdq/.tdq-test.jsonl")))
+        self.assertFalse(os.path.exists(os.path.join(self.goc, "docs/tdq/cache/test-runs")))
+
     def test_vung_cham_files_chi_chay_module_chon_dat(self):
         p = chay_cli(self.goc, "--files", "tests/test_a.py")
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)

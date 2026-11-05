@@ -8,11 +8,11 @@
     "token": 2582
   },
   "skills/tdq-build/references/qc.md": {
-    "sha256": "e413a51c0ae8bd844ec1c594445c2f7d71450fde2d276ea15834734859c148ae",
-    "token": 3498
+    "sha256": "274a6befe511272bb49aa565a79da988afe8a1398729257fc0e23db73af9eba3",
+    "token": 3496
   },
   "skills/tdq-build/references/report-template.md": {
-    "sha256": "582575b9c6343eb6e05657ae65cb80c707ad289ff8e582213f57b2a9d4d45906",
+    "sha256": "2b46132e6ff5d25acb5160883c7efcf872c9d55da3d2c4c909cfc4635adff3db",
     "token": 3084
   },
   "skills/tdq-build/references/rules/chung.md": {
@@ -64,8 +64,8 @@
     "token": 958
   },
   "skills/tdq-build/references/runtime-speed.md": {
-    "sha256": "390e55f8b67aa818a5866e19f28a6b0ebfdbf0e06505fa2c34d704d5458528b0",
-    "token": 1106
+    "sha256": "d7d85bbe49f7b25e5200e35f4f2f0b8984f07e2f17fa3c60c503865e7519c632",
+    "token": 1239
   },
   "skills/tdq-build/references/skill-eval.md": {
     "sha256": "72f00282030109f89baeafd4f1ca3d9689ad3439bb1c1490c68689df054ae7ff",
@@ -80,8 +80,8 @@
     "token": 3442
   },
   "skills/tdq-build/references/vision-test-loop.md": {
-    "sha256": "64c283fb985585203670f226ba0bd1404850c69402598095d9f86372844d46fc",
-    "token": 3322
+    "sha256": "2d0d874af6e57ef4c91a48ab8775aa6464a81749874d78a7627882b45b643266",
+    "token": 3456
   },
   "skills/tdq-check-status/references/bang-lech.md": {
     "sha256": "b2380e933af0c59f555fc085fa30df023d60775ebd9999657cfcc6142f53c4ae",
@@ -112,8 +112,8 @@
     "token": 541
   },
   "skills/tdq-conventions/references/phases.md": {
-    "sha256": "2adec31e7d323bb3298baa93784ad844ae5757340318dc634fb03fedc7094fb1",
-    "token": 1868
+    "sha256": "89c6fc2cedf17472617203ff60a20af31853d6a42389281eb650fe67db833a83",
+    "token": 1846
   },
   "skills/tdq-conventions/references/plugin-routing.md": {
     "sha256": "4928d5e5ca54109a7cae1eb2a8330285e72f08db8e9daeda3c436a2efdece8b5",
@@ -124,7 +124,7 @@
     "token": 1767
   },
   "skills/tdq-conventions/references/soul.md": {
-    "sha256": "0265a4cb5316d4fca41a00dae2c85ec6f08eaf7f358ada797d8c2897229c8bce",
+    "sha256": "6193541d6bc9725c1b0ec276f6a531447e04bceee3ef34a67226f45c80cd99d1",
     "token": 1867
   },
   "skills/tdq-conventions/references/subagent-tuning.md": {

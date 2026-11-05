@@ -18,6 +18,8 @@ not establish a speed improvement. Keep the approved gates, case inventory and Q
    python scripts/tdq_test.py tron-bo --repo . --workers 1 --fresh --reuse off --timeout-seconds 1800
    ```
 
+Before each affected-zone execution, inspect `tdq_test.py vung-cham --plan-only --files <changed files>` for scope, selectors, reason and module count. The plan-only command executes no test and produces no PASS receipt. Map selected cases to feature/risk/oracle; keep fallback full when mapping is incomplete. Schedule a single final fresh full suite at QC-F1 after the last source edit. Smoke totals of 5 minutes (full) and 10 minutes (ultra) are recommendations, never reasons to drop risk cases; the 120-second cap on each ultra smoke/runtime check remains unchanged.
+
 2. Batch only independent read calls. Await every result and inspect each failure separately.
    Keep mutations, approvals, lock transitions and dependent calls sequential. `&&` does not
    execute commands concurrently. Do not overlap benchmark samples with any other test job.
