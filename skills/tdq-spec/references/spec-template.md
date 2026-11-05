@@ -122,7 +122,7 @@ Bóc tách thuật toán chi tiết để lập trình viên fresher nắm chắ
 ## 4. Yêu cầu bắt buộc
 - Log service bật mặc định: timestamp, đủ chi tiết debug, tắt/giảm được qua config.
   Dòng này bắt buộc **chỉ khi việc này có runtime** — tức plan sẽ có ít nhất một task tạo hoặc sửa mã chạy được; không runtime thì ghi BỎ và lý do.
-- Không placeholder, không TODO stub; thay đổi hành vi skill cần eval-plan trước implement.
+- Không placeholder, không TODO stub; eval chỉ chạy khi người dùng yêu cầu và đồng ý.
 - Mỗi thành phần có unit test riêng, chạy được bằng một lệnh.
 - Bám 5 nguyên tắc SOLID và rule ngôn ngữ trong `skills/tdq-build/references/rules/`.
 

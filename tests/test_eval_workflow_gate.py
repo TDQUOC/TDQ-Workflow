@@ -179,5 +179,27 @@ class TestEvalWorkflowGate(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
 
+class TestEvalOptInRules(unittest.TestCase):
+    """Eval is opt-in: no rule file forces an eval-plan on skill changes."""
+    FORCING = {
+        "skills/tdq-build/SKILL.md": "Skill changes require valid eval-plan",
+        "skills/tdq-build/references/qc.md": "skill edits require certified evidence",
+        "skills/tdq-spec/SKILL.md": "eval-plan for skill changes",
+        "skills/tdq-spec/references/spec-template.md": "cần eval-plan trước implement",
+        "skills/tdq-plan/SKILL.md": "eval-plan if skills change",
+        "skills/tdq-intake/SKILL.md": "eval need for skill changes",
+    }
+
+    def test_no_rule_forces_eval_plan(self):
+        for rel, phrase in self.FORCING.items():
+            self.assertNotIn(phrase, (ROOT / rel).read_text(encoding="utf-8"), rel)
+
+    def test_opt_in_stated_where_eval_is_defined(self):
+        for rel in ("skills/tdq-build/SKILL.md", "skills/tdq-build/references/skill-eval.md"):
+            body = (ROOT / rel).read_text(encoding="utf-8")
+            self.assertIn("eval-enable", body, rel)
+            self.assertIn("opt-in", body, rel)
+
+
 if __name__ == "__main__":
     unittest.main()

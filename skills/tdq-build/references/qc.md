@@ -111,7 +111,7 @@ The things below run only when the DoD reaches them:
 
 - Edges/errors: empty, wrong type, missing file, permission/network failure.
 - Log service: on by default, timestamped, switchable off/down through config; visual & 3-tier scenario checks per [vision-test-loop.md](vision-test-loop.md).
-- No placeholders; skill edits require certified evidence ([skill eval](skill-eval.md)).
+- No placeholders; eval is opt-in ([skill eval](skill-eval.md)).
 - Skill contract: for EVERY `Dùng:` block in the plan, run the command in its `Kiểm` field; the <!-- i18n-allow: canonical field names of the plan -->
   artifact in its `Ra` field must exist. No artifact → change that spec §3b line to `KHÔNG` plus <!-- i18n-allow: canonical verdict value -->
   a closing reason, then rerun

@@ -23,27 +23,27 @@ Trạng thái plan: ĐÃ DUYỆT.
 
 ## P1 — Gate và lệnh trong state
 
-- [>] **T1.1** (e10m) Red→green: thêm `eval-enable --by`, hai gate bỏ qua khi thiếu `eval_enabled`, bỏ `eval-waive` và khóa `eval_waiver` — Test: `python -m pytest tests/test_eval_workflow_gate.py -q`
+- [x] **T1.1** (e10m) Red→green: thêm `eval-enable --by`, hai gate bỏ qua khi thiếu `eval_enabled`, bỏ `eval-waive` và khóa `eval_waiver` — Test: `python -m pytest tests/test_eval_workflow_gate.py -q`
   - Chạm: `scripts/tdq_state.py`, `tests/test_eval_workflow_gate.py` → `_chan_eval_plan_chua_co`, `_chan_eval_evidence_chua_co`, `_cli_eval_waive` (thay bằng `_cli_eval_enable`), `cli()` (dispatch + usage), `default_state`; LSP refs + Graphify affected: chỉ `cli()` gọi các hàm này; `tdq_eval_contract.py` chỉ được gọi, không sửa.
   - Ra: `eval-enable` ghi `eval_enabled` {by, at}, thiếu `--by` hoặc chưa init thì lỗi; chưa bật thì `phase=implement|report` qua; đã bật thì chặn như cũ; state cũ có `eval_waiver` vẫn load.
 
 ## P2 — Luật opt-in
 
-- [ ] **T2.1** (e12m) Red→green: sửa luật để eval là opt-in, bỏ câu ép eval-plan, thêm câu "eval chỉ chạy khi người dùng yêu cầu và đồng ý; chưa bật thì report ghi một dòng" — Test: `python -m pytest tests/test_eval_workflow_gate.py tests/test_ultracode_contract.py -q`
+- [x] **T2.1** (e12m) Red→green: sửa luật để eval là opt-in, bỏ câu ép eval-plan, thêm câu "eval chỉ chạy khi người dùng yêu cầu và đồng ý; chưa bật thì report ghi một dòng" — Test: `python -m pytest tests/test_eval_workflow_gate.py tests/test_ultracode_contract.py -q`
   - Chạm: `skills/tdq-build/SKILL.md`, `skills/tdq-build/references/qc.md`, `skills/tdq-build/references/skill-eval.md`, `skills/tdq-spec/SKILL.md`, `skills/tdq-spec/references/spec-template.md`, `skills/tdq-plan/SKILL.md`, `skills/tdq-intake/SKILL.md`, `tests/test_eval_workflow_gate.py`
   - Cần: T1.1
   - Ra: không file nào còn ép eval-plan cho đổi skill; có câu opt-in; một test đọc 7 file khẳng định điều này.
 
 ## P3 — Chỉ mục và ngân sách
 
-- [ ] **T3.1** (e8m) Đồng bộ chỉ mục luật, ngân sách token và `phases.md` sau khi sửa luật — Test: `python scripts/tdq_test.py vung-cham --files skills/tdq-build/SKILL.md skills/tdq-build/references/qc.md skills/tdq-spec/SKILL.md scripts/tdq_state.py`
+- [x] **T3.1** (e8m) Đồng bộ chỉ mục luật, ngân sách token và `phases.md` sau khi sửa luật — Test: `python scripts/tdq_test.py vung-cham --files skills/tdq-build/SKILL.md skills/tdq-build/references/qc.md skills/tdq-spec/SKILL.md scripts/tdq_state.py`
   - Chạm: `docs/tdq/audit/luat-hien-co.md`, `docs/tdq/token-budget.json`, `skills/tdq-conventions/references/phases.md`
   - Cần: T2.1
   - Ra: `doc_index.py`, `token_budget.py`, `phases-doc --plugin-root` chạy xong; neo luật khớp dòng mới.
 
 ## P4 — QC và báo cáo
 
-- [ ] **T4.1** (e12m) QC full: rà diff, hồi quy vùng chạm, một full fresh cuối, đối chiếu DoD — Test: `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off`
+- [~] **T4.1** (e12m) QC full: rà diff, hồi quy vùng chạm, một full fresh cuối, đối chiếu DoD — Test: `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off`
   - Dùng: `tdq-lean`
   - Để: review diff, tìm phần thừa của lệnh/gate mới.
   - Ra: danh sách `delete/shrink` nếu có, hoặc `Lean already. Ship.`

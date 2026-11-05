@@ -1,13 +1,15 @@
 # Skill and Plugin Quality Evaluation
 <!-- muc-luc-dong:
-  1. Purpose and scope=10-23 · 2. Preflight and isolation=24-36 · 3. Eval-plan contract=37-51 ·
-  4. Execution and pairing=52-62 · 5. Metrics and reporting=63-77 ·
-  Ultracode routing evaluation=78-83 · 6. Decision policy=84
+  1. Purpose and scope=10-25 · 2. Preflight and isolation=26-38 · 3. Eval-plan contract=39-53 ·
+  4. Execution and pairing=54-64 · 5. Metrics and reporting=65-79 ·
+  Ultracode routing evaluation=80-85 · 6. Decision policy=86
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
 ## 1. Purpose and scope
+
+**Opt-in.** Eval never opens by itself. The gates below stay off until the user asks for eval and agrees; the agent then records it with `tdq_state.py eval-enable --by "<user words>"`. Without it the report carries one line, `eval: chưa kích hoạt (opt-in)`, and the agent does not propose eval.
 
 This procedure governs quality, behavioral, and efficiency evaluation for TDQ
 skills, hooks, and plugins. It applies whenever a change alters instruction text,
