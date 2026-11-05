@@ -200,7 +200,7 @@ before/after carry-cost measurement scenario: [references/measure-scenario.md](r
 
 ## 11. Quality
 
-- Soul — the rule above every rule: quality > runtime > context cost. Writing or changing a rule, rules that contradict each other, or a plan to cut steps → open [references/soul.md](references/soul.md).
+- Soul — the rule above every rule: quality > runtime > context cost. Always present information in a simple, easy-to-understand, concise, yet visual and complete style (`đơn giản, dễ hiểu, ngắn gọn`, `trực quan, đầy đủ thông tin`). Writing or changing a rule, rules that contradict each other, or a plan to cut steps → open [references/soul.md](references/soul.md).
 - Clean code is standing behaviour, not a gate you ask about. Every time you write or change code, shape the project,
   scripts, functions and classes as cleanly as the five SOLID principles allow. Two-reader table, RIGHT/WRONG examples,
   five-question checklist: [references/clean-code.md](references/clean-code.md).

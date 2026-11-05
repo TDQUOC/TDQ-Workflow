@@ -1289,11 +1289,12 @@ PHASE_TABLE = {
     },
     "report": {
         "entry": "QC has PASSed",
-        "action": "Write a short report (10-20 lines recommended, no hard limit) then ask the user about committing",
+        "action": "Write a short, plain, visual & complete report (docs/tdq/reports/<slug>.md + docs/tdq/reports/<slug>.html: before/after state & flow, what was tested & actual test results) then ask the user about committing",
         "cmd": "python3 scripts/tdq_state.py set phase=idle",
         "checklist": [
-            "Write docs/tdq/reports/<slug>.md briefly (10-20 lines recommended): "
-            "what was done, the QC result, what is still limited",
+            "Write docs/tdq/reports/<slug>.md and docs/tdq/reports/<slug>.html briefly (10-20 lines recommended, "
+            "plain, visual & complete): before/after state & flow, what was done, what was tested & actual test results, "
+            "the QC result, and what is still limited",
             "Append to the working log docs/workinglog/<today>.md",
             "Spec deviations still waiting (`tdq_state.py lech list`): ask the user to approve or reject "
             "each one; rejected → add a fix task to the plan and `set phase=implement`",
