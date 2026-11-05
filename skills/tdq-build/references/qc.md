@@ -1,9 +1,9 @@
 # QC — quality control
 <!-- muc-luc-dong:
   Table of contents=11-21 · The QC level — what each level runs=22-57 ·
-  The three execution steps=58-88 · What to run=89-129 ·
-  The 120-second cap on smoke and runtime checks=130-150 · Recording the result=151-181 ·
-  Explicit Anti-Patterns=182-188 · When it FAILs=189
+  The three execution steps=58-88 · What to run=89-126 ·
+  The 120-second cap on smoke and runtime checks=127-147 · Recording the result=148-178 ·
+  Explicit Anti-Patterns=179-185 · When it FAILs=186
 -->
 
 QC means running things for real and pasting the evidence. There is no "probably fine".
@@ -94,10 +94,7 @@ pasted. Drop no DoD line. A DoD line that cannot be checked by command is a defe
 fix that line to be measurable before doing QC. The four fixed items always run, independent of
 the DoD:
 
-- QC-F1 — the whole test suite via `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_test.py" tron-bo`, pasting the real
-  pass/fail numbers, plus `tdq_test.py so` (full runs vs the 2-gate budget, radius misses).
-  A radius miss is a module QC-F1 failed that `vung-cham` never selected — record the count. Long suite → `<test command> > /tmp/qc-run.log 2>&1; tail -n 40 /tmp/qc-run.log`,
-  pasting verbatim only where a FAIL needs evidence.
+- QC-F1 — at `full`/`ultra`, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_test.py" tron-bo --workers 1 --fresh --reuse off` once after the last source edit. At `lite`, use touched-area tests only, per the level table. Record real results, `tdq_test.py so` (run count, radius misses), and separate executed/reused/joined counts. Earlier receipts are not final verdicts. A radius miss is a failed module never selected by `vung-cham`. For long suites, keep output in a log and quote failures.
 - QC-F2 — touched-area regression: for every `Chạm:` line in the plan, run the tests of the <!-- i18n-allow: canonical field name of the plan -->
   module holding the affected node. A node with no test → write `KHÔNG CÓ TEST: <node>` into the <!-- i18n-allow: canonical marker written into the qc file -->
   QC file; that is technical debt to raise in the report and must not count as PASS.

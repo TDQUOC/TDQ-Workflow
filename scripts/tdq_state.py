@@ -1289,7 +1289,7 @@ PHASE_TABLE = {
     },
     "report": {
         "entry": "QC has PASSed",
-        "action": "Write a short, plain, visual & complete report (docs/tdq/reports/<slug>.md + docs/tdq/reports/<slug>.html: before/after state & flow, what was tested & actual test results) then ask the user about committing",
+        "action": "Write docs/tdq/reports/<slug>.html + Markdown: before/after state & flow, what was tested & actual test results; ask about commit",
         "cmd": "python3 scripts/tdq_state.py set phase=idle",
         "checklist": [
             "Write docs/tdq/reports/<slug>.md and docs/tdq/reports/<slug>.html briefly (10-20 lines recommended, "
