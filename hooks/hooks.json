@@ -73,7 +73,7 @@
         ]
       },
       {
-        "matcher": "mcp__lsp__(start_lsp|blast_radius)",
+        "matcher": "mcp__(plugin_tdq-workflow_)?lsp__(start_lsp|blast_radius)",
         "hooks": [
           {
             "type": "command",
@@ -82,7 +82,7 @@
         ]
       },
       {
-        "matcher": "mcp__lsp__.*",
+        "matcher": "mcp__(plugin_tdq-workflow_)?lsp__.*",
         "hooks": [
           {
             "type": "command",
@@ -102,7 +102,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__lsp__.*|Bash|PowerShell",
+        "matcher": "mcp__(plugin_tdq-workflow_)?lsp__.*|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
@@ -113,7 +113,7 @@
     ],
     "PostToolUseFailure": [
       {
-        "matcher": "mcp__lsp__.*",
+        "matcher": "mcp__(plugin_tdq-workflow_)?lsp__.*",
         "hooks": [
           {
             "type": "command",
