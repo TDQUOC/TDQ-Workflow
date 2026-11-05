@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "receiptId": "37171461-a0c9-4ba7-aaeb-b12b5a3711bf",
+  "receiptId": "f73ed91d-d499-48ef-9dd5-a6b1a6e5628e",
   "status": "current",
   "command": "deliver",
   "type": "explainer",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
   "specification": {
-    "sha256": "a8e3d30193de6cdf0acb7ffc3dbe27cb82cf7511de6151f2e8c72b4a5f638320",
-    "bytes": 4460
+    "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+    "bytes": 4359
   },
   "artifact": {
-    "sha256": "c536a730324a88318ae94a34084cfd84dc86741891f593f4255a795d02171b44",
-    "bytes": 1236153
+    "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+    "bytes": 1234183
   },
   "explainer": {
-    "preparedSha256": "93a0f5e93d7607e75cab50fc02bc464737c6ab36384cf1235f2325e0a3b21a1f",
+    "preparedSha256": "a41910aa867b56353f614110b17e507c40e962a636dd41adb7930a707dda253f",
     "dependencies": [
       {
         "kind": "diagram-spec",

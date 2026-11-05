@@ -2,7 +2,7 @@
 
 @meta locale=vi
 
-Cách chọn và viết test đã đổi. **Toàn bộ test trên mã mới chạy xanh**, nhưng yêu cầu **chưa hoàn tất**: chưa đánh giá được hiệu quả quy tắc mới, còn ba điểm chờ bạn quyết định. Đây là kết quả working-tree, không phải thiết kế planned. Chưa commit, push hoặc merge.
+Cách chọn và viết test đã đổi. **Toàn bộ test trên mã mới chạy xanh**; bạn đã duyệt ba lệch và miễn bước đánh giá hiệu quả cho request này, kết quả đánh giá vẫn **INCONCLUSIVE**. Đã commit `054266b0` trên nhánh request; merge vào `dev` rồi cập nhật `main`, chưa push.
 
 ## 1. Trước request: test được tạo và chạy ra sao? {#truoc}
 
@@ -51,6 +51,6 @@ Kiểm xem trước khi file thay đổi, không có file thay đổi, thiếu l
 
 **Test trên mã mới: ĐẠT.** Lượt chạy toàn bộ cuối: 4.162 đạt, 7 bỏ qua, 2.724 kiểm tra con (đã nằm trong ca kiểm, không cộng thêm); 4.169 mã ca, kết quả đầy đủ và cùng mã nguồn trước/sau. Chạy mới, không dùng kết quả cũ. Mất 857,25 giây: **đây là thời gian toàn bộ test, không phải smoke**. Receipt SHA256 `71dd2a235402dbff0236922e540611e45d4e45e0ea8de41cd030b8aae1df8e44`.
 
-**Yêu cầu tổng thể: CHƯA ĐẠT CỔNG CUỐI.** (1) Hiệu quả quy tắc mới: 0 lượt đánh giá thực tế, nên chưa biết AI chọn test tốt hơn không; cổng báo cáo cuối đang chặn. (2) Chạy toàn bộ 5 lượt thay vì ngân sách 3 do phải sửa lỗi và một lượt mất hiệu lực khi nguồn đổi cùng lúc. (3) Chưa đo smoke đầy đủ mức full/ultra, nên chưa biết mốc khuyến nghị 5/10 phút có đạt không. Ba điểm Q3/Q5/Q6 chờ bạn quyết định; không tự miễn cổng.
+**Yêu cầu tổng thể: HOÀN TẤT kèm ba lệch đã duyệt (2026-11-05).** (1) Hiệu quả quy tắc mới: 0 lượt đánh giá thực tế, eval miễn theo bạn, vẫn INCONCLUSIVE. (2) Chạy toàn bộ 5 lượt thay vì ngân sách 3 do phải sửa lỗi và một lượt mất hiệu lực khi nguồn đổi cùng lúc. (3) Chưa đo smoke đầy đủ mức full/ultra, mốc khuyến nghị 5/10 phút chưa xác nhận; đo ở request sau.
 
 `bo_sot=0` nhưng `radius_complete=false` **không chứng minh** không bỏ sót test. Các lượt full trước ERROR/FAIL/INCOMPLETE không tính PASS. Preview thiết kế đã cũ sau sửa; trang này gắn nguồn đang làm việc. Kiểm trình duyệt native có fallback Windows, không gọi đó là PASS native.

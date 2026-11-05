@@ -5,16 +5,16 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-05T13:29:17.989Z",
+  "startedAt": "2026-11-05T13:41:41.481Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-    "sha256": "a8e3d30193de6cdf0acb7ffc3dbe27cb82cf7511de6151f2e8c72b4a5f638320",
-    "bytes": 4460
+    "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+    "bytes": 4359
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
-    "sha256": "c536a730324a88318ae94a34084cfd84dc86741891f593f4255a795d02171b44",
-    "bytes": 1236153
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+    "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+    "bytes": 1234183
   },
   "stages": {
     "browser-check": {
@@ -27,12 +27,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\40252_1793885804723\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -44,8 +44,8 @@
         "ok": true,
         "command": "validate",
         "specification": {
-          "sha256": "a8e3d30193de6cdf0acb7ffc3dbe27cb82cf7511de6151f2e8c72b4a5f638320",
-          "bytes": 4460
+          "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+          "bytes": 4359
         },
         "validation": {
           "checksPassed": 4,
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1263,
+      "durationMs": 1207,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\40252_1793885804723\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "37171461-a0c9-4ba7-aaeb-b12b5a3711bf",
+        "receiptId": "f73ed91d-d499-48ef-9dd5-a6b1a6e5628e",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
         "explainer": {
-          "preparedSha256": "93a0f5e93d7607e75cab50fc02bc464737c6ab36384cf1235f2325e0a3b21a1f",
+          "preparedSha256": "a41910aa867b56353f614110b17e507c40e962a636dd41adb7930a707dda253f",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -109,12 +109,12 @@
           ]
         },
         "specification": {
-          "sha256": "a8e3d30193de6cdf0acb7ffc3dbe27cb82cf7511de6151f2e8c72b4a5f638320",
-          "bytes": 4460
+          "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+          "bytes": 4359
         },
         "artifact": {
-          "sha256": "c536a730324a88318ae94a34084cfd84dc86741891f593f4255a795d02171b44",
-          "bytes": 1236153
+          "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+          "bytes": 1234183
         },
         "validation": {
           "checksPassed": 4,
@@ -128,7 +128,7 @@
           {
             "code": "explainer/writing-sentence-length",
             "severity": "warning",
-            "message": "Sentence has 30 reading units, above the configured en limit of 28.",
+            "message": "Sentence has 29 reading units, above the configured en limit of 28.",
             "subject": {
               "line": 5,
               "component": "answer",
@@ -136,9 +136,9 @@
             },
             "evidence": {
               "rule": "sentence-length",
-              "reason": "Sentence has 30 reading units, above the configured en limit of 28.",
+              "reason": "Sentence has 29 reading units, above the configured en limit of 28.",
               "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
-              "units": 30,
+              "units": 29,
               "limit": 28
             },
             "supportedFixes": [
@@ -207,27 +207,6 @@
             "supportedFixes": [
               "Split at a logical action or condition boundary while preserving qualifications and causal links."
             ]
-          },
-          {
-            "code": "explainer/writing-paragraph-length",
-            "severity": "warning",
-            "message": "This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace.",
-            "subject": {
-              "line": 54,
-              "component": "prose",
-              "panelId": "ket-qua",
-              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md"
-            },
-            "evidence": {
-              "rule": "paragraph-length",
-              "reason": "This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace.",
-              "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
-              "units": 95,
-              "limit": 120
-            },
-            "supportedFixes": [
-              "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
-            ]
           }
         ],
         "update": {
@@ -242,26 +221,26 @@
           "reason": "disabled"
         }
       },
-      "stderr": "archify: Sentence has 30 reading units, above the configured en limit of 28.\narchify: This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.\narchify: This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.\narchify: Sentence has 35 reading units, above the configured en limit of 28.\narchify: This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace."
+      "stderr": "archify: Sentence has 29 reading units, above the configured en limit of 28.\narchify: This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.\narchify: This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.\narchify: Sentence has 35 reading units, above the configured en limit of 28."
     },
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 593,
+      "durationMs": 618,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\40252_1793885804723\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
         "family": "explainer",
         "artifact": {
-          "sha256": "c536a730324a88318ae94a34084cfd84dc86741891f593f4255a795d02171b44",
-          "bytes": 1236153
+          "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+          "bytes": 1234183
         },
         "checks": [
           {
@@ -307,7 +286,7 @@
               "id": "truoc-test",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-BZBQvB\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-NV1wuh\\child.html",
                 "artifact": {
                   "sha256": "8049330dacac51f5feda12e84c8bd3ada485046d74b7ba82ceb91a3a659cce6e",
                   "bytes": 808933
@@ -434,7 +413,7 @@
               "id": "sau-test",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-8WCHvy\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-fKl5nA\\child.html",
                 "artifact": {
                   "sha256": "fbde950c2fee74e70792064973030785e817d08be11e4895a44e45afe46904ce",
                   "bytes": 811051
@@ -561,7 +540,7 @@
               "id": "bang-chung",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-LyLUnF\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-7V6VAI\\child.html",
                 "artifact": {
                   "sha256": "96a40c1d0869a697ef82e679496c957bce8fbf9c4e9a5cf50286219e4c9a8557",
                   "bytes": 808817
@@ -688,7 +667,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "37171461-a0c9-4ba7-aaeb-b12b5a3711bf"
+        "deliveryReceiptId": "f73ed91d-d499-48ef-9dd5-a6b1a6e5628e"
       }
     }
   },
@@ -700,17 +679,17 @@
     {
       "code": "explainer/writing-sentence-length",
       "severity": "warning",
-      "message": "Sentence has 30 reading units, above the configured en limit of 28.",
+      "message": "Sentence has 29 reading units, above the configured en limit of 28.",
       "subject": {
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
         "line": 5,
         "component": "answer"
       },
       "evidence": {
-        "reason": "Sentence has 30 reading units, above the configured en limit of 28.",
+        "reason": "Sentence has 29 reading units, above the configured en limit of 28.",
         "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
         "rule": "sentence-length",
-        "units": 30,
+        "units": 29,
         "limit": 28
       },
       "supportedFixes": [
@@ -779,36 +758,15 @@
       "supportedFixes": [
         "Split at a logical action or condition boundary while preserving qualifications and causal links."
       ]
-    },
-    {
-      "code": "explainer/writing-paragraph-length",
-      "severity": "warning",
-      "message": "This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace.",
-      "subject": {
-        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-        "line": 54,
-        "component": "prose",
-        "panelId": "ket-qua"
-      },
-      "evidence": {
-        "reason": "This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace.",
-        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
-        "rule": "paragraph-length",
-        "units": 95,
-        "limit": 120
-      },
-      "supportedFixes": [
-        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
-      ]
     }
   ],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-05T13:29:20.553Z",
-  "durationMs": 2564,
+  "finishedAt": "2026-11-05T13:41:43.932Z",
+  "durationMs": 2450,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

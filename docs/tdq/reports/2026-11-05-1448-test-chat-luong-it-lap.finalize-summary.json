@@ -7,13 +7,13 @@
   "quality": "showcase",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-    "sha256": "a8e3d30193de6cdf0acb7ffc3dbe27cb82cf7511de6151f2e8c72b4a5f638320",
-    "bytes": 4460
+    "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+    "bytes": 4359
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.html",
-    "sha256": "c536a730324a88318ae94a34084cfd84dc86741891f593f4255a795d02171b44",
-    "bytes": 1236153
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+    "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+    "bytes": 1234183
   },
   "gates": {
     "validate": "pass",
@@ -25,17 +25,17 @@
     {
       "code": "explainer/writing-sentence-length",
       "severity": "warning",
-      "message": "Sentence has 30 reading units, above the configured en limit of 28.",
+      "message": "Sentence has 29 reading units, above the configured en limit of 28.",
       "subject": {
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
         "line": 5,
         "component": "answer"
       },
       "evidence": {
-        "reason": "Sentence has 30 reading units, above the configured en limit of 28.",
+        "reason": "Sentence has 29 reading units, above the configured en limit of 28.",
         "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
         "rule": "sentence-length",
-        "units": 30,
+        "units": 29,
         "limit": 28
       },
       "supportedFixes": [
@@ -104,40 +104,19 @@
       "supportedFixes": [
         "Split at a logical action or condition boundary while preserving qualifications and causal links."
       ]
-    },
-    {
-      "code": "explainer/writing-paragraph-length",
-      "severity": "warning",
-      "message": "This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace.",
-      "subject": {
-        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
-        "line": 54,
-        "component": "prose",
-        "panelId": "ket-qua"
-      },
-      "evidence": {
-        "reason": "This paragraph has 5 sentences and 95 reading units; long paragraphs are what the page should replace.",
-        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
-        "rule": "paragraph-length",
-        "units": 95,
-        "limit": 120
-      },
-      "supportedFixes": [
-        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
-      ]
     }
   ],
   "diagnosticSummary": {
-    "total": 5,
-    "shown": 5,
+    "total": 4,
+    "shown": 4,
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.0f8f20d132f94d778f48e85047dc076c.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 2564,
+  "durationMs": 2450,
   "browserCheck": {
     "requested": false,
     "ran": false

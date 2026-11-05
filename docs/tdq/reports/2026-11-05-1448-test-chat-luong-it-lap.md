@@ -2,7 +2,7 @@
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
-**Tóm tắt:** Cách *chọn và viết* test đã đổi. Toàn bộ test trên mã mới chạy xanh, nhưng **yêu cầu chưa hoàn tất**: bước đánh giá hiệu quả quy tắc mới chưa chạy được, còn ba điểm cần bạn quyết định. Trạng thái Git được ghi tại thời điểm lập báo cáo; kiểm lại lịch sử commit để biết trạng thái mới nhất.
+**Tóm tắt:** Cách *chọn và viết* test đã đổi. Toàn bộ test trên mã mới chạy xanh. Bạn đã duyệt ba lệch và miễn bước đánh giá hiệu quả cho request này; kết quả đánh giá vẫn ghi **INCONCLUSIVE** (0 lượt chạy thực). Trạng thái Git ghi tại lúc lập báo cáo; kiểm lịch sử commit để biết mới nhất.
 
 ## 1. Trước request: test được tạo và chạy ra sao?
 
@@ -28,17 +28,17 @@ Mỗi tính năng bị yêu cầu ít nhất **1 ca thường + 2 ca biên + 1 c
 
 **Test toàn repo: ĐẠT.** Lượt chạy cuối có **4.169 mã ca test**: 4.162 đạt + 7 bỏ qua; **2.724 kiểm tra con** nằm trong các ca trên, không cộng thêm vào 4.169. Chạy mới, không dùng kết quả cũ; kết quả gắn với cùng mã nguồn trước/sau và đủ danh sách ca. Mất **857,25 giây (~14 phút 17 giây)** — đây là *toàn bộ bộ test*, không phải thời gian smoke. [Chi tiết QC](../qc/2026-11-05-1448-test-chat-luong-it-lap.md) · [Bản HTML trực quan](2026-11-05-1448-test-chat-luong-it-lap.html).
 
-**Yêu cầu tổng thể: CHƯA ĐẠT CỔNG CUỐI.** Ba điểm còn mở:
+**Yêu cầu tổng thể: HOÀN TẤT, kèm ba lệch đã được bạn duyệt (2026-11-05) và eval được miễn.** Hiệu quả quy tắc mới trên model vẫn **INCONCLUSIVE**. Ba điểm:
 
-1. **Đánh giá hiệu quả quy tắc mới:** Kế hoạch đánh giá hợp lệ, nhưng môi trường chạy thử chưa cô lập và chưa có bộ chấm kết quả. **0 lượt đánh giá thực tế**; chưa thể nói quy tắc mới làm AI chọn test tốt hơn. Cổng chuyển sang báo cáo cuối đang chặn. Đây là lệch **#1/Q6**.
-2. **Chạy toàn bộ nhiều hơn dự kiến:** **5 lượt có kết quả so với ngân sách 3**; các lượt trước gặp lỗi cần sửa, một lượt test xanh nhưng chứng cứ mất hiệu lực vì sơ đồ kiến trúc được cập nhật cùng lúc. Chỉ lượt cuối được tính đạt. Đây là lệch **#2/Q3**.
-3. **Mốc tốc độ smoke:** Hai ca xem trước mất 0,72 giây, **không đại diện** cho smoke đầy đủ ở mức full/ultra. Vì chưa đo tổng thời gian tương ứng, chưa kết luận đạt mốc khuyến nghị 5/10 phút. Giữ giới hạn 120 giây cho từng phép kiểm. Đây là lệch **#3/Q5**.
+1. **Đánh giá hiệu quả quy tắc mới:** Kế hoạch đánh giá hợp lệ, nhưng môi trường chạy thử chưa cô lập và chưa có bộ chấm kết quả. **0 lượt đánh giá thực tế**; chưa thể nói quy tắc mới làm AI chọn test tốt hơn. Bạn đã miễn cổng này cho request; kết quả vẫn INCONCLUSIVE. Đây là lệch **#1/Q6** (đã duyệt).
+2. **Chạy toàn bộ nhiều hơn dự kiến:** **5 lượt có kết quả so với ngân sách 3**; các lượt trước gặp lỗi cần sửa, một lượt test xanh nhưng chứng cứ mất hiệu lực vì sơ đồ kiến trúc được cập nhật cùng lúc. Chỉ lượt cuối được tính đạt. Đây là lệch **#2/Q3** (đã duyệt).
+3. **Mốc tốc độ smoke:** Hai ca xem trước mất 0,72 giây, **không đại diện** cho smoke đầy đủ ở mức full/ultra. Vì chưa đo tổng thời gian tương ứng, chưa kết luận đạt mốc khuyến nghị 5/10 phút. Giữ giới hạn 120 giây cho từng phép kiểm. Đây là lệch **#3/Q5** (đã duyệt; đo smoke đại diện để request sau).
 
 **Lưu ý:** Báo cáo bỏ sót cho biết `bo_sot=0`, nhưng phép đo bán kính chưa đầy đủ (`radius_complete=false`); không hiểu số 0 là chứng nhận không bỏ sót test. Bản xem trước thiết kế đã cũ sau khi sửa mã; HTML đính kèm dùng nguồn đang làm việc, đã xác minh. Kiểm tra trình duyệt gốc có fallback Windows, không gọi đó là PASS trình duyệt native.
 
-**Bằng chứng kỹ thuật:** [Receipt đầy đủ của lượt chạy cuối](../cache/test-runs/50bfcfb1b6d39502/340a3e2fad5044f8b116c074e7813579/result.json), SHA256 `71dd2a235402dbff0236922e540611e45d4e45e0ea8de41cd030b8aae1df8e44`. Log gốc `docs/tdq/artifacts/2026-11-05-1448-test-chat-luong-it-lap/qc-full-stable.log` bị Git ignore, vẫn còn trên máy. Ba lệch chờ quyết định; chưa tự miễn cổng đánh giá.
+**Bằng chứng kỹ thuật:** [Receipt đầy đủ của lượt chạy cuối](../cache/test-runs/50bfcfb1b6d39502/340a3e2fad5044f8b116c074e7813579/result.json), SHA256 `71dd2a235402dbff0236922e540611e45d4e45e0ea8de41cd030b8aae1df8e44`. Log gốc `docs/tdq/artifacts/2026-11-05-1448-test-chat-luong-it-lap/qc-full-stable.log` bị Git ignore, vẫn còn trên máy. Ba lệch và miễn eval do bạn duyệt ngày 2026-11-05.
 
-**Git:** Báo cáo lập khi request còn ở cổng QC; lưu commit trên nhánh request không đồng nghĩa đã duyệt ba lệch hoặc merge vào nhánh chính.
+**Git:** Commit `054266b0` trên nhánh request; theo yêu cầu của bạn, merge vào `dev` rồi cập nhật `main` (chưa push).
 
 **Archify HTML:** [Mở báo cáo trực quan](2026-11-05-1448-test-chat-luong-it-lap.html).
 
@@ -70,8 +70,8 @@ Transcript attribution: project_window. Complete covers selected supported obser
 **Tóm tắt:** Chọn test theo feature/rủi ro, thêm `--plan-only` và giữ full fresh cuối. Không thay CI hoặc xóa case thiếu bằng chứng.
 **Trước/Sau:** Preview planned `../spec/2026-11-05-1448-test-chat-luong-it-lap-preview.html`; manifest source stale sau implement, không dùng làm bằng chứng nghiệm thu.
 **Đã kiểm:** Full fresh 4.162 passed, 7 skipped; smoke 2 passed; runtime/report contract 41 passed.
-**Rủi ro hồi quy:** Mapping thiếu fallback full; nested module được tính đúng mẫu số; Q3/Q5/Q6 chờ quyết định.
+**Rủi ro hồi quy:** Mapping thiếu fallback full; nested module được tính đúng mẫu số; Q3/Q5/Q6 lệch đã duyệt; eval INCONCLUSIVE.
 <!-- tdq-archify-binding:start -->
 <!-- manifest: 2026-11-05-1448-test-chat-luong-it-lap.manifest.json -->
-<!-- manifest_digest: 91568cc011dd28d55ad407372a608b45698bf14d7a21206779f517edcabc798a -->
+<!-- manifest_digest: 6b9bf7b3f42bd0aae6fce7f8301bb15980ba9d50c8cb8a62bd625732df8fee1b -->
 <!-- tdq-archify-binding:end -->
