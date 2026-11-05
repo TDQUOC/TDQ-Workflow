@@ -1,0 +1,18 @@
+Request `2026-11-05-1448-test-chat-luong-it-lap` · lane full · opened at 2026-11-05T14:53:38+07:00
+
+| Phase | Wall clock | API request | Tool wait | Background job | Observed union | Unattributed | Times entered |
+|---|---|---|---|---|---|---|---|
+| idle | 0s | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| analyze | 59 min | 14 min [partial] | 2 min [partial] | — [unavailable] | 14 min [partial] | 45 min [partial] | 1 |
+| spec | 8 min | 7 min [partial] | 22s [partial] | — [unavailable] | 7 min [partial] | 1 min [partial] | 1 |
+| plan | 1h 27min | 41 min [partial] | 9 min [partial] | — [unavailable] | 49 min [partial] | 39 min [partial] | 1 |
+| qc | 1h 09min | 1h 02min [partial] | 6 min [partial] | — [unavailable] | 1h 08min [partial] | 1 min [partial] | 1 |
+| Total | 3h 43min | 2h 03min [partial] | 18 min [partial] | — [unavailable] | 2h 17min [partial] | 1h 25min [partial] |  |
+
+Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.
+- api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- tool_call_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source
+- background_job_seconds: schema_has_no_confirmed_lifecycle
+- observed_union_seconds: conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema
+- unattributed_seconds: wall_minus_observed_union;conflicts,missing_pairs,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema

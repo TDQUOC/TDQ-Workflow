@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+    "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+    "bytes": 4359
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+    "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+    "bytes": 1234183
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 29 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 5,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Sentence has 29 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 29,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    },
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 22,
+        "component": "prose",
+        "panelId": "sau"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 73,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    },
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 52,
+        "component": "prose",
+        "panelId": "ket-qua"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 63,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    },
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 35 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 52,
+        "component": "prose",
+        "panelId": "ket-qua"
+      },
+      "evidence": {
+        "reason": "Sentence has 35 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 35,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 4,
+    "shown": 4,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2450,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

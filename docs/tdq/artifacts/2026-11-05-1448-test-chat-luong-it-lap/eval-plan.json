@@ -1,0 +1,52 @@
+{
+  "plan_version": "v1",
+  "experiment_id": "2026-11-05-1448-test-chat-luong-it-lap",
+  "targets": [
+    "skills/tdq-build/references/vision-test-loop.md",
+    "skills/tdq-build/references/qc.md",
+    "skills/tdq-build/references/runtime-speed.md"
+  ],
+  "base_identity": "c7233bf51b81f17dd4a18c8a1cc67f747e762725",
+  "candidate_identity": "planned",
+  "change_kind": "behavioral",
+  "hypothesis": "Feature-risk scenarios and a scheduled final full suite avoid redundant low-value cases and repeated executions without losing negative cases or verified coverage.",
+  "evaluation_kind": "agent-effectiveness",
+  "corpus_id": "feature-risk-test-selection-2026-11-05-v1",
+  "dev_cases_sha256": "bd926a7080ffdca08fe3019ed5b092e56eddaeee8d934e8c9765ad86eaec4053",
+  "holdout_cases_sha256": "f8ce59a0ad67137a2385532c42984bea6f5865621482e8fc133886cf6d6315a1",
+  "rubric_version": "feature-risk-observed-v1",
+  "scorer_version": "feature-risk-observed-v1",
+  "expected_triggers": [
+    "state-change-happy-path",
+    "runner-unknown-dependency",
+    "feature-negative-case",
+    "same-suite-repeated"
+  ],
+  "negative_cases": [],
+  "required_metrics": [
+    "trigger_accuracy",
+    "outcome_quality"
+  ],
+  "cells": [
+    {
+      "host": "claude",
+      "model": "cc3",
+      "permission_profile": "local-fixture-no-external-actions",
+      "tool_aliases": {},
+      "cache_profile": "isolated-per-trial"
+    }
+  ],
+  "repetitions": 2,
+  "order_policy": "AB_BA",
+  "thresholds": {
+    "min_pairs": 8,
+    "quality_margin": 0,
+    "efficiency_margin": 0.1
+  },
+  "execution_notes": {
+    "status": "preimplementation_no_model_calls",
+    "isolation": "Only fake local TDQ fixtures; do not read user-home credentials or call external services.",
+    "baseline_rule_sha256": "cbeb41a32a2925e8ca9f52adec4a1df7b0589b2e0df68e6678fe1f4c4d00389f",
+    "scorer": "No executable outcome scorer registered: report INCONCLUSIVE until source-bound live trials and scorer exist."
+  }
+}

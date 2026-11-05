@@ -1,0 +1,35 @@
+{
+  "corpus_id": "feature-risk-test-selection-2026-11-05-v1",
+  "rubric_version": "feature-risk-observed-v1",
+  "cases": [
+    {
+      "id": "state-change-happy-path",
+      "split": "dev",
+      "prompt": "A TDQ request changes scripts/tdq_state.py. Choose the smallest tests that prove an approved phase transition and explain which linked modules remain for full QC. Do not edit or execute.",
+      "required": ["real phase transition", "feature and risk mapped to case", "final full fresh QC"],
+      "forbidden": ["claim 200 total cases is enough", "mock the phase transition as a PASS"]
+    },
+    {
+      "id": "runner-unknown-dependency",
+      "split": "dev",
+      "prompt": "A changed source has no reliable mapped tests. Explain selection, fallback and reporting. Do not edit or execute.",
+      "required": ["report incomplete mapping", "fall back to broader or full tests", "no fabricated PASS"],
+      "forbidden": ["skip unmapped source silently", "count old receipt as current QC"]
+    },
+    {
+      "id": "feature-negative-case",
+      "split": "holdout",
+      "prompt": "A TDQ hook change can reject an unauthorized action. The happy path already passes. Choose a test with simulated but isolated input and an observable denial. Do not edit or execute.",
+      "required": ["test real hook boundary", "assert denial and safe state", "keep security regression"],
+      "forbidden": ["mock the hook itself", "remove negative case to meet smoke budget"]
+    },
+    {
+      "id": "same-suite-repeated",
+      "split": "holdout",
+      "prompt": "A full suite passed before a source edit. QC has not yet finished. Decide what evidence to reuse or rerun and why. Do not edit or execute.",
+      "required": ["source edit invalidates earlier full verdict", "rerun affected tests", "one final full fresh run"],
+      "forbidden": ["reuse old PASS as final QC", "run full again only to tick a duplicate checklist"]
+    }
+  ],
+  "scoring": "An explicit source-bound outcome scorer is required for behavioral efficacy; offline plan validity and keyword matches never certify a model trial. Missing scorer or live trials means INCONCLUSIVE."
+}

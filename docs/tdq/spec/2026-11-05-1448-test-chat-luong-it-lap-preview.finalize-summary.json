@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\truoc-sau.archify.md",
+    "sha256": "2fd17caa8e5e04b0f9e6d27f84d3aa8de05f0c04de2cda13c7b41280caa94f5b",
+    "bytes": 2544
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-05-1448-test-chat-luong-it-lap-preview.0a913266cd6749b0a2dcee02e6902d0e.html",
+    "sha256": "01bb02c41b5597ae404d5f0319834cd64b9ef7c880c81737827097d6b09e5a79",
+    "bytes": 854775
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-05-1448-test-chat-luong-it-lap-preview.0a913266cd6749b0a2dcee02e6902d0e.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-05-1448-test-chat-luong-it-lap-preview.0a913266cd6749b0a2dcee02e6902d0e.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1902,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

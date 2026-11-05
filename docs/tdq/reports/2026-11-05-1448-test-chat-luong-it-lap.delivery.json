@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "f73ed91d-d499-48ef-9dd5-a6b1a6e5628e",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+  "specification": {
+    "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+    "bytes": 4359
+  },
+  "artifact": {
+    "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+    "bytes": 1234183
+  },
+  "explainer": {
+    "preparedSha256": "a41910aa867b56353f614110b17e507c40e962a636dd41adb7930a707dda253f",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-test",
+        "inline": true,
+        "sha256": "705813f0d0493e124c533dae0514cd463e4f66b3332b81ab55098d4b7d2c5fcd",
+        "bytes": 1023
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-test",
+        "inline": true,
+        "sha256": "da8e38770a684cb9713151e40c929e811fda09ab2b26ed271d08dfc161a1460d",
+        "bytes": 1199
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "bang-chung",
+        "inline": true,
+        "sha256": "129b7cdefc46b446c171688e7d9c1edbe1f24dfa8703cbf91b5215f52edfc25a",
+        "bytes": 935
+      }
+    ]
+  }
+}

@@ -38,6 +38,14 @@ class TestVisionTestLoopDoc(unittest.TestCase):
         self.assertIn("WRONG", content)
         self.assertIn("RIGHT", content)
 
+    def test_scenarios_follow_feature_risk_not_fixed_case_quota(self):
+        content = VISION_DOC.read_text(encoding="utf-8")
+        self.assertIn("feature/risk", content)
+        self.assertIn("fixture", content)
+        self.assertIn("oracle", content)
+        self.assertNotIn("At least 2 boundary cases", content)
+        self.assertNotIn("At least 1 failure recovery case", content)
+
     def test_six_mechanical_steps_and_box_mapping(self):
         """Document must have 6 numbered mechanical steps, box-to-CSS mapping, caps, and self-check."""
         content = VISION_DOC.read_text(encoding="utf-8")

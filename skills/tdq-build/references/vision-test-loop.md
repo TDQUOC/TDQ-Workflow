@@ -1,10 +1,10 @@
 # User-Scenario-Driven Testing and the Vision Test Loop
 <!-- muc-luc-dong:
-  Table of contents=13-23 · Trigger decision table=24-37 · Three-tier scenario framework=38-48 ·
-  Six banned test anti-patterns (ANTI-1 to ANTI-6)=49-75 ·
-  The 6 steps of the Vision Test Loop=76-112 · Bounding box to CSS mapping table=113-124 ·
-  Loop caps and Reviewer Sub-agent=125-130 · Human-in-the-loop escalations=131-143 ·
-  Self-check=144
+  Table of contents=13-23 · Trigger decision table=24-37 · Three-tier scenario framework=38-50 ·
+  Six banned test anti-patterns (ANTI-1 to ANTI-6)=51-77 ·
+  The 6 steps of the Vision Test Loop=78-114 · Bounding box to CSS mapping table=115-126 ·
+  Loop caps and Reviewer Sub-agent=127-132 · Human-in-the-loop escalations=133-145 ·
+  Self-check=146
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
@@ -33,18 +33,20 @@ Every visual task with a reference artifact must run the loop so the user does n
 | Reference screenshot or baseline UI capture | YES — MANDATORY | `--source <path/to/screenshot.png>` | Run `pause --loai dau-vao-user` and ask for the baseline image | <!-- i18n-allow: canonical pause kind -->
 | HTML/web prototype or live reference URL | YES — MANDATORY | Capture reference to `source.png`, then pass `--source source.png` | Run `pause --loai dau-vao-user` if the prototype URL is unreachable | <!-- i18n-allow: canonical pause kind -->
 | Figma link (`https://www.figma.com/...`) | YES — MANDATORY | `--figma-url "<url>"` (reads `FIGMA_TOKEN` from env) | Exit code `3` → run `pause --loai dau-vao-user` and ask for `FIGMA_TOKEN` or a local export | <!-- i18n-allow: canonical pause kind -->
-| Pure backend, CLI, or UI without any visual reference | NO — SKIP LOOP | Do not run `tdq_vision_diff.py` | Run the three-tier scenario tests only |
+| Pure backend, CLI, or UI without any visual reference | NO — SKIP LOOP | Do not run `tdq_vision_diff.py` | Select risk-relevant scenarios using the three-tier checklist |
 
 ## Three-tier scenario framework
 
 Every test in `spec`, `plan`, `implement`, and `qc` must represent a real user journey rather than an implementation detail.
-Write each test scenario using the exact `Given - When - Then` formula across all three mandatory tiers:
+Write each selected scenario using `Given - When - Then`. Map feature/risk to a public entry point, isolated simulation fixture, observable oracle and case ID before adding a test. The tiers are a risk checklist, not a fixed number of cases per feature. Keep security, data-loss and regression negatives even when smoke is over budget. For an absent boundary or failure scenario, state why that risk cannot occur or which existing case covers it; never add a no-op case to fill a quota.
 
-| Tier | Name | Mandatory `Given - When - Then` formula | Minimum required per feature |
-|---|---|---|---|
-| Tier 1 | Core User Journey (Happy Path) | **Given** realistic user state and input · **When** the user triggers the public entry point · **Then** the final output, persisted state, and rendered UI match the expected result | At least 1 end-to-end flow |
-| Tier 2 | Boundary & Edge Scenarios | **Given** empty, maximum-length, Unicode, or concurrent input · **When** the action runs · **Then** layout and state stay intact without truncation or crash | At least 2 boundary cases |
-| Tier 3 | Failure & Recovery Scenarios | **Given** a network timeout, missing token, or invalid payload · **When** the call fails · **Then** a clear error appears, state rolls back cleanly, and the user can retry | At least 1 failure recovery case |
+| Tier | Name | Given - When - Then and selection criterion |
+|---|---|---|
+| Tier 1 | Core User Journey (Happy Path) | **Given** realistic user state and input · **When** the user triggers the public entry point · **Then** the final output and persisted state match the expected result. Select the smallest real journey proving the feature. |
+| Tier 2 | Boundary & Edge Scenarios | **Given** a relevant empty, maximum-length, Unicode or concurrent input · **When** the action runs · **Then** state stays intact without crash. Select only boundaries with a plausible distinct failure and oracle. |
+| Tier 3 | Failure & Recovery Scenarios | **Given** a reachable timeout, missing token or invalid payload · **When** the call fails · **Then** the error is clear and safe state remains. Keep negative and recovery cases when the failure is reachable. |
+
+Before execution, list selector, mapped feature/risk, reason and expected module count. Run affected tests while implementing; keep one final full fresh suite for deep QC. Do not treat old receipts as a fresh verdict or count joined/reused work as executed.
 
 ## Six banned test anti-patterns (ANTI-1 to ANTI-6)
 
@@ -54,7 +56,7 @@ Never write a test that matches any of the six patterns below; `tdq-qc-tester` r
 |---|---|---|---|
 | `ANTI-1` | Tautological / Mock-Returns-Mock | Mocking the function under test and asserting the mock's own return value | Call the real function or pipeline and assert on the produced output |
 | `ANTI-2` | Existence-Only Assertion | Asserting only `is not None`, `True`, or `status == 200` without checking payload fields | Assert exact field values, data structure invariants, and state transitions |
-| `ANTI-3` | Happy-Path-Only Bias | Writing tests that only pass valid inputs while ignoring malformed or missing inputs | Add Tier 2 boundary tests and Tier 3 failure tests in the same test file |
+| `ANTI-3` | Happy-Path-Only Bias | Ignoring reachable malformed or missing inputs with distinct risk | Test relevant Tier 2/Tier 3 risks or cite existing coverage; do not add cases solely to fill tiers |
 | `ANTI-4` | Source-String / Regex Scraping | Reading `.py` or `.html` source text with `in` or regex instead of executing the code | Import and run the function, CLI, or DOM render and check runtime behavior |
 | `ANTI-5` | Implementation-Coupled Spying | Asserting internal private helper call counts instead of public outputs | Assert only on the public return value, files written, or observable side effects |
 | `ANTI-6` | Blind Visual / DOM-Only UI Check | Checking only that `<div class="card">` exists without pixel comparison against the reference design | Render the page in a headless browser and run `tdq_vision_diff.py` |
@@ -144,7 +146,7 @@ When the loop cannot proceed automatically, run the exact pause command below an
 ## Self-check
 
 - [ ] Checked the Trigger decision table for every mockup, wireframe, screenshot, prototype, or Figma reference
-- [ ] Wrote tests covering Tier 1 (Happy Path), Tier 2 (Boundary), and Tier 3 (Failure Recovery) using `Given - When - Then`
+- [ ] Selected feature/risk scenarios across Tier 1, Tier 2 and Tier 3 using `Given - When - Then`; documented why any tier needs no new case and kept reachable negatives
 - [ ] Confirmed zero `ANTI-1` through `ANTI-6` patterns exist in the test suite
 - [ ] Ran `tdq_vision_diff.py` and verified `metrics.json`, `diff_highlight.png`, `<slug>.md`, and `<slug>.html` exist
 - [ ] Resolved all red bounding boxes `[1]`, `[2]` within ≤ 3 rounds and ≤ 1 Reviewer Sub-agent turn

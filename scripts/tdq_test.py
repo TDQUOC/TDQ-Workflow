@@ -849,8 +849,15 @@ def cmd_vung_cham(args):
     modules, reason, scope = _select_tests(files, repo, can_ep, reason)
     if scope == "full":
         modules = _result_inventory(repo)
-    total = len(tat_ca_module(repo))
+    total = len(_result_inventory(repo)) if getattr(args, "plan_only", False) else len(tat_ca_module(repo))
     silent = getattr(args, "silent", False)
+    if getattr(args, "plan_only", False):
+        selectors = ["tests"] if scope == "full" else ["tests/" + m for m in modules]
+        print(f"scope={scope} selected={len(modules)}/{total} "
+              f"selectors={','.join(selectors) or '(none)'} "
+              f"modules={','.join(modules) or '(none)'} "
+              f"reason={reason or 'no fallback'}")
+        return 0
     if not silent:
         _print_selection(files, modules, total, scope, reason)
     with _output_stream(repo, silent) as stream:
@@ -1500,6 +1507,8 @@ def main(argv=None):
                    help="ép chạy toàn bộ suite khi vượt ngưỡng radius (mặc định tắt trong phase implement)")
     p.add_argument("--khong-ep-tron-bo", action="store_true", default=False,
                    help="không ép chạy toàn bộ suite ngay cả ngoài phase implement")
+    p.add_argument("--plan-only", action="store_true",
+                   help="print selected scope, selectors and reason without running tests")
     _add_run_options(p)
     p.set_defaults(func=cmd_vung_cham)
     p = sub.add_parser("tron-bo", parents=[common], help="run the full mixed suite and log misses")

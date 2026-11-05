@@ -1,0 +1,781 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "startedAt": "2026-11-05T13:41:41.481Z",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+    "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+    "bytes": 4359
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+    "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+    "bytes": 1234183
+  },
+  "stages": {
+    "browser-check": {
+      "status": "not-run",
+      "execution": "not-requested"
+    },
+    "validate": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": null,
+      "execution": "embedded-in-deliver",
+      "command": [
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\40252_1793885804723\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "deliver",
+        "explainer",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": true,
+        "command": "validate",
+        "specification": {
+          "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+          "bytes": 4359
+        },
+        "validation": {
+          "checksPassed": 4,
+          "checkCount": 4,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    },
+    "deliver": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 1207,
+      "command": [
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\40252_1793885804723\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "deliver",
+        "explainer",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "receiptId": "f73ed91d-d499-48ef-9dd5-a6b1a6e5628e",
+        "ok": true,
+        "command": "deliver",
+        "type": "explainer",
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+        "explainer": {
+          "preparedSha256": "a41910aa867b56353f614110b17e507c40e962a636dd41adb7930a707dda253f",
+          "dependencies": [
+            {
+              "kind": "diagram-spec",
+              "id": "truoc-test",
+              "inline": true,
+              "sha256": "705813f0d0493e124c533dae0514cd463e4f66b3332b81ab55098d4b7d2c5fcd",
+              "bytes": 1023
+            },
+            {
+              "kind": "diagram-spec",
+              "id": "sau-test",
+              "inline": true,
+              "sha256": "da8e38770a684cb9713151e40c929e811fda09ab2b26ed271d08dfc161a1460d",
+              "bytes": 1199
+            },
+            {
+              "kind": "diagram-spec",
+              "id": "bang-chung",
+              "inline": true,
+              "sha256": "129b7cdefc46b446c171688e7d9c1edbe1f24dfa8703cbf91b5215f52edfc25a",
+              "bytes": 935
+            }
+          ]
+        },
+        "specification": {
+          "sha256": "86ea1dc79528d0ddfc8c1fd6f4368b7a96bbd5574f3bfa1d34b3fed7a1bb3466",
+          "bytes": 4359
+        },
+        "artifact": {
+          "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+          "bytes": 1234183
+        },
+        "validation": {
+          "checksPassed": 4,
+          "checkCount": 4,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        },
+        "diagnostics": [
+          {
+            "code": "explainer/writing-sentence-length",
+            "severity": "warning",
+            "message": "Sentence has 29 reading units, above the configured en limit of 28.",
+            "subject": {
+              "line": 5,
+              "component": "answer",
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md"
+            },
+            "evidence": {
+              "rule": "sentence-length",
+              "reason": "Sentence has 29 reading units, above the configured en limit of 28.",
+              "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+              "units": 29,
+              "limit": 28
+            },
+            "supportedFixes": [
+              "Split at a logical action or condition boundary while preserving qualifications and causal links."
+            ]
+          },
+          {
+            "code": "explainer/writing-paragraph-length",
+            "severity": "warning",
+            "message": "This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.",
+            "subject": {
+              "line": 22,
+              "component": "prose",
+              "panelId": "sau",
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md"
+            },
+            "evidence": {
+              "rule": "paragraph-length",
+              "reason": "This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.",
+              "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+              "units": 73,
+              "limit": 120
+            },
+            "supportedFixes": [
+              "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+            ]
+          },
+          {
+            "code": "explainer/writing-paragraph-length",
+            "severity": "warning",
+            "message": "This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.",
+            "subject": {
+              "line": 52,
+              "component": "prose",
+              "panelId": "ket-qua",
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md"
+            },
+            "evidence": {
+              "rule": "paragraph-length",
+              "reason": "This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.",
+              "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+              "units": 63,
+              "limit": 120
+            },
+            "supportedFixes": [
+              "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+            ]
+          },
+          {
+            "code": "explainer/writing-sentence-length",
+            "severity": "warning",
+            "message": "Sentence has 35 reading units, above the configured en limit of 28.",
+            "subject": {
+              "line": 52,
+              "component": "prose",
+              "panelId": "ket-qua",
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md"
+            },
+            "evidence": {
+              "rule": "sentence-length",
+              "reason": "Sentence has 35 reading units, above the configured en limit of 28.",
+              "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+              "units": 35,
+              "limit": 28
+            },
+            "supportedFixes": [
+              "Split at a logical action or condition boundary while preserving qualifications and causal links."
+            ]
+          }
+        ],
+        "update": {
+          "status": "unavailable",
+          "installedVersion": null,
+          "availableVersion": null,
+          "releaseNotes": null,
+          "checkedAt": null,
+          "source": null,
+          "noticeRequired": false,
+          "noticeText": null,
+          "reason": "disabled"
+        }
+      },
+      "stderr": "archify: Sentence has 29 reading units, above the configured en limit of 28.\narchify: This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.\narchify: This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.\narchify: Sentence has 35 reading units, above the configured en limit of 28."
+    },
+    "check": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 618,
+      "command": [
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\40252_1793885804723\\node.EXE",
+        "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
+        "check",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+        "--require-provenance"
+      ],
+      "receipt": {
+        "ok": true,
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.html",
+        "family": "explainer",
+        "artifact": {
+          "sha256": "6a9fec2f69b0d8b7679b1763442f6c8bf45603cc027aee4c9943629997465140",
+          "bytes": 1234183
+        },
+        "checks": [
+          {
+            "name": "explainer_structure",
+            "ok": true,
+            "details": [
+              "56 unique DOM IDs"
+            ]
+          },
+          {
+            "name": "explainer_payload_identity",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "explainer_dependencies",
+            "ok": true,
+            "details": [
+              "3 frozen dependencies"
+            ]
+          },
+          {
+            "name": "explainer_native_diagrams",
+            "ok": true,
+            "details": [
+              "truoc-test: pass",
+              "sau-test: pass",
+              "bang-chung: pass"
+            ]
+          }
+        ],
+        "composition": {
+          "schemaVersion": 1,
+          "profile": "showcase",
+          "status": "pass",
+          "summary": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "issues": [],
+          "nativeDiagrams": [
+            {
+              "id": "truoc-test",
+              "receipt": {
+                "ok": true,
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-NV1wuh\\child.html",
+                "artifact": {
+                  "sha256": "8049330dacac51f5feda12e84c8bd3ada485046d74b7ba82ceb91a3a659cce6e",
+                  "bytes": 808933
+                },
+                "checks": [
+                  {
+                    "name": "single_svg",
+                    "ok": true,
+                    "details": [
+                      "found 1 <svg> block(s)"
+                    ]
+                  },
+                  {
+                    "name": "finite_svg",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "orthogonal_arrows",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "label_route_clearance",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_crossings",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_corridors",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "container_border_runs",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "route_rhythm",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "legend_clearance",
+                    "ok": true,
+                    "details": []
+                  }
+                ],
+                "composition": {
+                  "schemaVersion": 1,
+                  "profile": "showcase",
+                  "status": "pass",
+                  "summary": {
+                    "errors": 0,
+                    "warnings": 0
+                  },
+                  "metrics": {
+                    "properCrossings": 0,
+                    "resolvedCrossovers": 0,
+                    "ambiguousCorridors": 0,
+                    "arrowheadCollisions": 0,
+                    "containerBorderRuns": 0,
+                    "labelRouteClearanceIssues": 0,
+                    "labelCanvasOverflowIssues": 0,
+                    "minLabelRouteClearance": 52,
+                    "desktopReadabilityIssues": 0,
+                    "viewportHeightIssues": 0,
+                    "minProjectedNodeTextPx": 7.484909456740443,
+                    "maxBends": 0,
+                    "routesOverSuggestedBends": 0,
+                    "maxStretch": 1,
+                    "routesOverSuggestedStretch": 0,
+                    "minSegmentPx": 19,
+                    "minInteriorSegmentPx": null,
+                    "shortSegmentCount": 0,
+                    "shortEndpointSegmentCount": 0,
+                    "shortInteriorSegmentCount": 0,
+                    "microSegmentCount": 0
+                  },
+                  "suggestedLimits": {
+                    "bendsPerRelationship": 2,
+                    "stretch": 1.35,
+                    "segmentPx": 16,
+                    "microSegmentPx": 8
+                  },
+                  "routeReview": {
+                    "crossings": [],
+                    "detours": []
+                  },
+                  "leadingSpace": {
+                    "measured": false,
+                    "reviewSuggested": false
+                  },
+                  "desktopReadability": {
+                    "budgetBasis": "legacy-930",
+                    "readerContract": "declared-wide-v1",
+                    "availableDiagramWidth": 930,
+                    "actualBudgetPx": 930,
+                    "limit": "legacy",
+                    "requestedTargetPx": null,
+                    "requestedTargetMet": null,
+                    "hardFloorPx": 6,
+                    "hardFloorMet": true,
+                    "minimumOwner": {
+                      "kind": "edge",
+                      "id": "feature-to-quota-1",
+                      "from": "feature",
+                      "to": "quota"
+                    },
+                    "minimumSourceTextPx": 8,
+                    "minimumProjectedTextPx": 7.484909456740443,
+                    "semanticTextCount": 7
+                  },
+                  "issues": []
+                }
+              }
+            },
+            {
+              "id": "sau-test",
+              "receipt": {
+                "ok": true,
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-fKl5nA\\child.html",
+                "artifact": {
+                  "sha256": "fbde950c2fee74e70792064973030785e817d08be11e4895a44e45afe46904ce",
+                  "bytes": 811051
+                },
+                "checks": [
+                  {
+                    "name": "single_svg",
+                    "ok": true,
+                    "details": [
+                      "found 1 <svg> block(s)"
+                    ]
+                  },
+                  {
+                    "name": "finite_svg",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "orthogonal_arrows",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "label_route_clearance",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_crossings",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_corridors",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "container_border_runs",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "route_rhythm",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "legend_clearance",
+                    "ok": true,
+                    "details": []
+                  }
+                ],
+                "composition": {
+                  "schemaVersion": 1,
+                  "profile": "showcase",
+                  "status": "pass",
+                  "summary": {
+                    "errors": 0,
+                    "warnings": 0
+                  },
+                  "metrics": {
+                    "properCrossings": 0,
+                    "resolvedCrossovers": 0,
+                    "ambiguousCorridors": 0,
+                    "arrowheadCollisions": 0,
+                    "containerBorderRuns": 0,
+                    "labelRouteClearanceIssues": 0,
+                    "labelCanvasOverflowIssues": 0,
+                    "minLabelRouteClearance": 34,
+                    "desktopReadabilityIssues": 0,
+                    "viewportHeightIssues": 0,
+                    "minProjectedNodeTextPx": 6.2784810126582276,
+                    "maxBends": 0,
+                    "routesOverSuggestedBends": 0,
+                    "maxStretch": 1,
+                    "routesOverSuggestedStretch": 0,
+                    "minSegmentPx": 19,
+                    "minInteriorSegmentPx": null,
+                    "shortSegmentCount": 0,
+                    "shortEndpointSegmentCount": 0,
+                    "shortInteriorSegmentCount": 0,
+                    "microSegmentCount": 0
+                  },
+                  "suggestedLimits": {
+                    "bendsPerRelationship": 2,
+                    "stretch": 1.35,
+                    "segmentPx": 16,
+                    "microSegmentPx": 8
+                  },
+                  "routeReview": {
+                    "crossings": [],
+                    "detours": []
+                  },
+                  "leadingSpace": {
+                    "measured": false,
+                    "reviewSuggested": false
+                  },
+                  "desktopReadability": {
+                    "budgetBasis": "legacy-930",
+                    "readerContract": "declared-wide-v1",
+                    "availableDiagramWidth": 930,
+                    "actualBudgetPx": 930,
+                    "limit": "legacy",
+                    "requestedTargetPx": null,
+                    "requestedTargetMet": null,
+                    "hardFloorPx": 6,
+                    "hardFloorMet": true,
+                    "minimumOwner": {
+                      "kind": "edge",
+                      "id": "feature-to-oracle-1",
+                      "from": "feature",
+                      "to": "oracle"
+                    },
+                    "minimumSourceTextPx": 8,
+                    "minimumProjectedTextPx": 6.2784810126582276,
+                    "semanticTextCount": 9
+                  },
+                  "issues": []
+                }
+              }
+            },
+            {
+              "id": "bang-chung",
+              "receipt": {
+                "ok": true,
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-7V6VAI\\child.html",
+                "artifact": {
+                  "sha256": "96a40c1d0869a697ef82e679496c957bce8fbf9c4e9a5cf50286219e4c9a8557",
+                  "bytes": 808817
+                },
+                "checks": [
+                  {
+                    "name": "single_svg",
+                    "ok": true,
+                    "details": [
+                      "found 1 <svg> block(s)"
+                    ]
+                  },
+                  {
+                    "name": "finite_svg",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "orthogonal_arrows",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "label_route_clearance",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_crossings",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "relationship_corridors",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "container_border_runs",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "route_rhythm",
+                    "ok": true,
+                    "details": []
+                  },
+                  {
+                    "name": "legend_clearance",
+                    "ok": true,
+                    "details": []
+                  }
+                ],
+                "composition": {
+                  "schemaVersion": 1,
+                  "profile": "showcase",
+                  "status": "pass",
+                  "summary": {
+                    "errors": 0,
+                    "warnings": 0
+                  },
+                  "metrics": {
+                    "properCrossings": 0,
+                    "resolvedCrossovers": 0,
+                    "ambiguousCorridors": 0,
+                    "arrowheadCollisions": 0,
+                    "containerBorderRuns": 0,
+                    "labelRouteClearanceIssues": 0,
+                    "labelCanvasOverflowIssues": 0,
+                    "minLabelRouteClearance": 161.1,
+                    "desktopReadabilityIssues": 0,
+                    "viewportHeightIssues": 0,
+                    "minProjectedNodeTextPx": 6.073469387755102,
+                    "maxBends": 0,
+                    "routesOverSuggestedBends": 0,
+                    "maxStretch": 1,
+                    "routesOverSuggestedStretch": 0,
+                    "minSegmentPx": 80.4,
+                    "minInteriorSegmentPx": null,
+                    "shortSegmentCount": 0,
+                    "shortEndpointSegmentCount": 0,
+                    "shortInteriorSegmentCount": 0,
+                    "microSegmentCount": 0
+                  },
+                  "suggestedLimits": {
+                    "bendsPerRelationship": 2,
+                    "stretch": 1.35,
+                    "segmentPx": 16,
+                    "microSegmentPx": 8
+                  },
+                  "routeReview": {
+                    "crossings": [],
+                    "detours": []
+                  },
+                  "leadingSpace": {
+                    "measured": false,
+                    "reviewSuggested": false
+                  },
+                  "desktopReadability": {
+                    "budgetBasis": "legacy-930",
+                    "readerContract": "declared-wide-v1",
+                    "availableDiagramWidth": 930,
+                    "actualBudgetPx": 930,
+                    "limit": "legacy",
+                    "requestedTargetPx": null,
+                    "requestedTargetMet": null,
+                    "hardFloorPx": 6,
+                    "hardFloorMet": true,
+                    "minimumOwner": {
+                      "kind": "edge",
+                      "id": "contract-to-full-1",
+                      "from": "contract",
+                      "to": "full"
+                    },
+                    "minimumSourceTextPx": 8,
+                    "minimumProjectedTextPx": 6.073469387755102,
+                    "semanticTextCount": 7
+                  },
+                  "issues": []
+                }
+              }
+            }
+          ]
+        },
+        "diagnostics": [],
+        "provenance": "current",
+        "deliveryReceiptId": "f73ed91d-d499-48ef-9dd5-a6b1a6e5628e"
+      }
+    }
+  },
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 29 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 5,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Sentence has 29 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 29,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    },
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 22,
+        "component": "prose",
+        "panelId": "sau"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 73 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 73,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    },
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 52,
+        "component": "prose",
+        "panelId": "ket-qua"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 63 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 63,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    },
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 35 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1448-test-chat-luong-it-lap\\bao-cao.archify.md",
+        "line": 52,
+        "component": "prose",
+        "panelId": "ket-qua"
+      },
+      "evidence": {
+        "reason": "Sentence has 35 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 35,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    }
+  ],
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1448-test-chat-luong-it-lap.c34b222edb0c499db853e9e6c151c21d.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "finishedAt": "2026-11-05T13:41:43.932Z",
+  "durationMs": 2450,
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  }
+}

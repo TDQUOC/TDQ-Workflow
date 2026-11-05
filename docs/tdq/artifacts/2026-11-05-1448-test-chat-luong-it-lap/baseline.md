@@ -1,0 +1,10 @@
+# Baseline — test theo feature và lịch QC trước implement
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
+
+- Source revision trước implement: `c7233bf51b81f17dd4a18c8a1cc67f747e762725` (nhánh feature từ `dev`); nguồn luật `skills/tdq-build/references/vision-test-loop.md` SHA256 `cbeb41a32a2925e8ca9f52adec4a1df7b0589b2e0df68e6678fe1f4c4d00389f`.
+- Eval corpus: `corpus.json`, dev hash `bd926a7080ffdca08fe3019ed5b092e56eddaeee8d934e8c9765ad86eaec4053`, holdout hash `f8ce59a0ad67137a2385532c42984bea6f5865621482e8fc133886cf6d6315a1`; `eval-plan-bound.json` hợp lệ, experiment hash `c048c3d094ffc4a27d7e3e020c83d2a55f3506a183eabdf4e9b94020a6deb5cd`. `pre_implement`: plan PASS, host readiness `BLOCKED/isolation_not_satisfied`; 0 model calls, **không** có outcome verdict.
+- Receipt full lịch sử request `2026-11-03-2055-master-archify-va-trinh-bay`: `docs/tdq/artifacts/2026-11-03-2055-master-archify-va-trinh-bay/full-suite-result.json` → `PASS`, 4.161 nodeid duy nhất, 10 skipped, 193 module, wall ~1279,9 giây; **không** chứng minh suite hôm nay xanh hay smoke hôm nay đạt thời gian.
+- Inventory hiện tại: `tests/test_*.py` = 193 module; `python -m pytest tests/test_tdq_test.py tests/test_tdq_test_receipt.py --collect-only -q` → `206 tests collected in 0.14s` (chỉ tập pilot). `tdq_test.py so --json` cho request này trước implement: `tron_bo=0`, `bo_sot=0`, `ngan_sach=2`.
+- Runner hiện chọn direct ở implement, QC có radius; ngưỡng fallback full ≥60% module, thiếu mapping có thể fallback; `--reuse off` mặc định, `docs/tdq/reuse-policy.json` chưa có. CI chạy `unittest discover tests` trên 3 OS × 2 Python; request không đổi CI.
+- Chưa có phép đo smoke end-to-end trên source cuối hoặc flake/mutation coverage; mục tiêu tổng smoke ≤5 phút (`full`), ≤10 phút (`ultra`) chỉ là khuyến nghị, phải báo đạt/trượt sau khi chạy thực. Trần 120 giây mỗi check của QC ultra giữ nguyên.
+- Bằng chứng full historical không dùng làm verdict cuối; cổng QC-F1 sẽ chạy đúng một full `--fresh --reuse off` sau khi nguồn ổn, trừ khi có vòng fix làm bằng chứng cũ hết hiệu lực.
