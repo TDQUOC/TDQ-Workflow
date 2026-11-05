@@ -3,7 +3,7 @@
 Ngày: 2026-11-05 · Spec: ../spec/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — đề xuất, chờ người dùng chốt; mô phỏng 5 task với hệ số agent 1.5: main 10,2 phút, team 8,2 phút (đội nhanh hơn 2,0 phút). Hai file nóng (`scripts/tdq_state.py`, test gate) vẫn do một chủ ghi theo cụm.
-Trạng thái plan: ĐÃ DUYỆT.
+Trạng thái plan: HOÀN THÀNH.
 
 ## Quy tắc thi hành
 
@@ -43,14 +43,14 @@ Trạng thái plan: ĐÃ DUYỆT.
 
 ## P4 — QC và báo cáo
 
-- [~] **T4.1** (e12m) QC full: rà diff, hồi quy vùng chạm, một full fresh cuối, đối chiếu DoD — Test: `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off`
+- [x] **T4.1** (e12m) QC full: rà diff, hồi quy vùng chạm, một full fresh cuối, đối chiếu DoD — Test: `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off`
   - Dùng: `tdq-lean`
   - Để: review diff, tìm phần thừa của lệnh/gate mới.
   - Ra: danh sách `delete/shrink` nếu có, hoặc `Lean already. Ship.`
   - Kiểm: `git diff dev...HEAD --stat` chỉ gồm file trong Chạm của T1.1–T3.1.
   - Không dùng cho: sửa code hoặc xóa test.
   - Cần: T3.1
-- [ ] **T4.2** (e8m) Báo cáo Markdown + Archify HTML: trước/sau, đã test gì, kết quả; ghi "eval: chưa kích hoạt (opt-in)" — Test: `python scripts/tdq_archify.py verify --document docs/tdq/reports/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.md --manifest docs/tdq/reports/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.manifest.json`
+- [x] **T4.2** (e8m) Báo cáo Markdown + Archify HTML: trước/sau, đã test gì, kết quả; ghi "eval: chưa kích hoạt (opt-in)" — Test: `python scripts/tdq_archify.py verify --document docs/tdq/reports/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.md --manifest docs/tdq/reports/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.manifest.json`
   - Cần: T4.1
 
 ## Cụm song song & file nóng
@@ -63,12 +63,12 @@ Trạng thái plan: ĐÃ DUYỆT.
 
 ## Definition of Done
 
-- [ ] Q1 `eval-enable` ghi `eval_enabled` có `by`, `at`; thiếu `--by` hoặc chưa init thì lỗi — `python -m pytest tests/test_eval_workflow_gate.py -q`
-- [ ] Q2 Chưa bật: plan chạm skill vẫn qua `phase=implement` và `phase=report` — `python -m pytest tests/test_eval_workflow_gate.py -q`
-- [ ] Q3 Đã bật: thiếu eval-plan chặn `implement`, thiếu chứng cứ chặn `report` — `python -m pytest tests/test_eval_workflow_gate.py -q`
-- [ ] Q4 `eval-waive` không còn; state cũ có `eval_waiver` vẫn load — `python -m pytest tests/test_eval_workflow_gate.py -q`
-- [ ] Q5 7 file luật không còn ép eval-plan; chỉ mục, ngân sách token, `phases.md` khớp — `python scripts/tdq_test.py vung-cham --files skills/tdq-build/SKILL.md skills/tdq-build/references/qc.md skills/tdq-spec/SKILL.md scripts/tdq_state.py`
-- [ ] Q6 Hồi quy toàn repo, CI và hợp đồng eval không đổi — `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off`
+- [x] Q1 `eval-enable` ghi `eval_enabled` có `by`, `at`; thiếu `--by` hoặc chưa init thì lỗi — `python -m pytest tests/test_eval_workflow_gate.py -q`
+- [x] Q2 Chưa bật: plan chạm skill vẫn qua `phase=implement` và `phase=report` — `python -m pytest tests/test_eval_workflow_gate.py -q`
+- [x] Q3 Đã bật: thiếu eval-plan chặn `implement`, thiếu chứng cứ chặn `report` — `python -m pytest tests/test_eval_workflow_gate.py -q`
+- [x] Q4 `eval-waive` không còn; state cũ có `eval_waiver` vẫn load — `python -m pytest tests/test_eval_workflow_gate.py -q`
+- [x] Q5 7 file luật không còn ép eval-plan; chỉ mục, ngân sách token, `phases.md` khớp — `python scripts/tdq_test.py vung-cham --files skills/tdq-build/SKILL.md skills/tdq-build/references/qc.md skills/tdq-spec/SKILL.md scripts/tdq_state.py`
+- [x] Q6 Hồi quy toàn repo, CI và hợp đồng eval không đổi — `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off`
 
 Khi nhiều DoD gọi cùng selector mà code chưa đổi, chạy chung một lượt và dán cùng receipt/đầu ra. QC-F1 là nơi duy nhất chạy `tron-bo`.
 

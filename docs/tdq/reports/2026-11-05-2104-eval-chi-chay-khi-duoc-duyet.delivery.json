@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "714ca08b-9e49-43d6-9bca-1bde9133459e",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\bao-cao.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+  "specification": {
+    "sha256": "c7a17fb43241e1e0ad95523ac0029257da12b08890ae6b3725462870be54f7b8",
+    "bytes": 2637
+  },
+  "artifact": {
+    "sha256": "840d09002c4f6b57b2bf3a1b8cd171f41574c2b9385f01f6a3eb554df725b75b",
+    "bytes": 858804
+  },
+  "explainer": {
+    "preparedSha256": "ac2ee06c7894154a61d6991b99a347d5473a483aa076fb0304788d4519b79c20",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "luong-truoc",
+        "inline": true,
+        "sha256": "cf8be89f2f2cf6183bda716716ed31937da45cf4c7213f2392cb8b92cf107a54",
+        "bytes": 1021
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-sau",
+        "inline": true,
+        "sha256": "71ef807e7c59bbe2685f7f802243b8a15f4483699ffb8dafaf92b49056c5ba9a",
+        "bytes": 951
+      }
+    ]
+  }
+}
