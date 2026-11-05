@@ -11,7 +11,7 @@
     "bytes": 2637
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
     "sha256": "840d09002c4f6b57b2bf3a1b8cd171f41574c2b9385f01f6a3eb554df725b75b",
     "bytes": 858804
   },
@@ -28,11 +28,11 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 1980,
+  "durationMs": 1921,
   "browserCheck": {
     "requested": false,
     "ran": false

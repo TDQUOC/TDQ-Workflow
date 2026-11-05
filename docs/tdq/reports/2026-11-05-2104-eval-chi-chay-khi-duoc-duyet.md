@@ -16,7 +16,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 **Lệch spec chờ duyệt:** Không có.
 
-**Git:** Commit triển khai `00417c75`, `9065302b`, `181233e4`, `65ef78c5`; cập nhật tài liệu cuối và bump `0.93.0` sẽ commit theo yêu cầu. Chưa merge, chưa push.
+**Git:** Đã commit thay đổi và bump `0.93.0` (`6ea4d98b`), merge vào `dev` (`9a2fb7f4`). Chưa push, chưa cập nhật `main`.
 
 ## Thời gian
 
@@ -47,5 +47,5 @@ Transcript attribution: project_window. Complete covers selected supported obser
 **Rủi ro hồi quy:** Gate bật nhưng thiếu plan/chứng cứ vẫn chặn, test gate và full suite giữ luồng này; chưa có model trial.
 <!-- tdq-archify-binding:start -->
 <!-- manifest: 2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.manifest.json -->
-<!-- manifest_digest: 485c5301d52ea964e757e0227eb331f97e81a5c5e010d5649726f4fce91d3f8f -->
+<!-- manifest_digest: e2fa61f8992fae76daa397e74c157e2891038ef430d69e3b00c15ef10946104f -->
 <!-- tdq-archify-binding:end -->

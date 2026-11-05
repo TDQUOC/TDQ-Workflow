@@ -5,14 +5,14 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-05T19:14:31.320Z",
+  "startedAt": "2026-11-05T19:19:35.885Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\bao-cao.archify.md",
     "sha256": "c7a17fb43241e1e0ad95523ac0029257da12b08890ae6b3725462870be54f7b8",
     "bytes": 2637
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
     "sha256": "840d09002c4f6b57b2bf3a1b8cd171f41574c2b9385f01f6a3eb554df725b75b",
     "bytes": 858804
   },
@@ -32,7 +32,7 @@
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 934,
+      "durationMs": 923,
       "command": [
         "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\41280_1793905818341\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "714ca08b-9e49-43d6-9bca-1bde9133459e",
+        "receiptId": "ff870667-5ddc-4c85-af3f-747143c8ed9d",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\bao-cao.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
         "explainer": {
-          "preparedSha256": "ac2ee06c7894154a61d6991b99a347d5473a483aa076fb0304788d4519b79c20",
+          "preparedSha256": "cc5cf7d6befeb57930d1cf0f3405e2d19a0dca4439abcd804384f6367ce5af8e",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -133,17 +133,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 483,
+      "durationMs": 456,
       "command": [
         "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\41280_1793905818341\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
         "family": "explainer",
         "artifact": {
           "sha256": "840d09002c4f6b57b2bf3a1b8cd171f41574c2b9385f01f6a3eb554df725b75b",
@@ -192,7 +192,7 @@
               "id": "luong-truoc",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-euQroj\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-q5scK3\\child.html",
                 "artifact": {
                   "sha256": "41b3ad773f4d7a85c4904d15833f74e23d1c843a877fd2a03126edce66f180b0",
                   "bytes": 809942
@@ -319,7 +319,7 @@
               "id": "luong-sau",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-kp2q2I\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-dxBsyf\\child.html",
                 "artifact": {
                   "sha256": "39d62adab52769e4a3e006342259cde4065352fa71ecb079b4db576e95841c22",
                   "bytes": 809633
@@ -446,7 +446,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "714ca08b-9e49-43d6-9bca-1bde9133459e"
+        "deliveryReceiptId": "ff870667-5ddc-4c85-af3f-747143c8ed9d"
       }
     }
   },
@@ -456,12 +456,12 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-05T19:14:33.301Z",
-  "durationMs": 1980,
+  "finishedAt": "2026-11-05T19:19:37.807Z",
+  "durationMs": 1921,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

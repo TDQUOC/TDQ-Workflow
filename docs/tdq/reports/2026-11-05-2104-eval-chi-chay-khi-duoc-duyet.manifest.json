@@ -5,7 +5,7 @@
   "evidence_kind": "working-tree",
   "revision": null,
   "document_path": "docs/tdq/reports/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.md",
-  "document_digest": "6cca8c1c834acd11007c216621ed51854ca4a85b8c54ca98d547c2d67766a08d",
+  "document_digest": "5f655a3a786320746bce750d4aa01d3bfb7509c2235936020109fa5ee12dad9f",
   "candidate_path": "docs/tdq/artifacts/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet/bao-cao.archify.md",
   "candidate_digest": "c7a17fb43241e1e0ad95523ac0029257da12b08890ae6b3725462870be54f7b8",
   "artifact_path": "docs/tdq/reports/2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.html",
@@ -3281,7 +3281,7 @@
     ".venv-tokens/Scripts/pythonw.exe": "545e379a8f1129dc7491645cac0561d257c4c00485d257c9ac66584d97a3e055",
     ".venv-tokens/pyvenv.cfg": "c5668a39ef4db160c3d64c4dae2494ff21f2fa0cdf2ba70b91681896be9de236",
     "CHANGELOG-archive.md": "7773a3f6f71302ee4928e5fee7ea9724fbb8253e933a9e3c07b3498d0abdd657",
-    "CHANGELOG.md": "65652318be43bc744208deedeebe3a24f9b67e3f3f9db82572286d8e8c98580a",
+    "CHANGELOG.md": "de2d8697aef9b8b4e5f20dc04ae928a02621b180a287256ae0b64ec2f0aca614",
     "README.md": "9c86de2658ff9c1e8cea73b3e70f8b6d9aa5ab00325be2d4382510f76af6f20d",
     "agents/tdq-build-resolver.md": "a2af63a919381ec105f13a96db758787ab2183abec0265b59980f8fce329a301",
     "agents/tdq-implementer.md": "4d1a6de007d494d452c43167ab75716fac3e8cd94eecdc2d0720d847f7d699b8",
@@ -3547,7 +3547,7 @@
     "docs/.staging.e0ac191dac9d4216a563bd063d26c567/search-and-archify.finalize-summary.json": "026cad2ad13b107689a85f819f6dcebb975d301bd5d37e127295e9c2ba510eab",
     "docs/.staging.e0ac191dac9d4216a563bd063d26c567/search-and-archify.finalize.json": "c3a0c307aaf0b59c1e6e02ccbebde3092ff35cf108cbd70c81287907c9ab6426",
     "docs/.staging.e0ac191dac9d4216a563bd063d26c567/search-and-archify.html": "b8c61b7c7b928309fe3c274247065ea51be1e87721553f9fef2c33758219f33e",
-    "docs/CHANGELOG-archive-2.md": "48341cbd7bcb98950cdb4f8bdf209a53163109f5f3dd6c8a42ba73d7e602e1fb",
+    "docs/CHANGELOG-archive-2.md": "1f2084800fd0ac82e67cb321c961b3af5c30390369e020ad7ff9478a37fdb5c1",
     "docs/CHANGELOG-archive.md": "2efa8b6692d6a1b52ff97e3907445495c6a26ffd0ae90d06b9c5d9253bf2f627",
     "docs/archify-preview.archify.md": "52a26ad35cbafebafe37535404f1dd50cc01d06e44e5ae54dd710251e7ee6029",
     "docs/archify-preview.delivery.json": "aa3821e3a8d17092143f3f03c5317d1b8871a43e784646827620cfba680612f3",
@@ -3738,7 +3738,7 @@
     "skills/tdq-build/references/rules/them-ngon-ngu.md": "bc5e4c73aa17ff54e62bc6338ce73c17eaceb521a3ba674946a1936cf0b0b0dd",
     "skills/tdq-build/references/rules/typescript-js.md": "e128fe1b6deeb027f5113fa8ddbeaa49f53e9c19be71efb392297bab61b6f26e",
     "skills/tdq-build/references/runtime-speed.md": "45ac50aad05e9a7f725477a66bb35282d8422e8a50cfa0930037c82586fa161d",
-    "skills/tdq-build/references/skill-eval.md": "a25ff65c287c43d2fb597f5534256a7c30f80a77d8964ffa11985e91bf9046c0",
+    "skills/tdq-build/references/skill-eval.md": "3ca5ef136835d55833a2eb348c68130a37bdfc4da02dd76ab1171f0721315c98",
     "skills/tdq-build/references/team-mode-tra-cuu.md": "2350b9380bced576c6e1693b1c6c1b8e0f81ac5cd72e0701edda159efbcd9f15",
     "skills/tdq-build/references/team-mode.md": "1869baaff7fb1d5a717bf07cc34c9071d17793c67a1edd9495332b2e2dd1c85e",
     "skills/tdq-build/references/vision-test-loop.md": "298ac6231d79aeded02598891b5a953694a9313415361327bbdba748be0910a7",
@@ -4049,7 +4049,7 @@
       "bytes": 2637
     },
     "artifact": {
-      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
       "sha256": "840d09002c4f6b57b2bf3a1b8cd171f41574c2b9385f01f6a3eb554df725b75b",
       "bytes": 858804
     },
@@ -4066,11 +4066,11 @@
       "truncated": false
     },
     "evidence": {
-      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.finalize.json",
-      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.finalize-summary.json"
+      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.finalize.json",
+      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.finalize-summary.json"
     },
     "visualReview": "not-requested",
-    "durationMs": 1980,
+    "durationMs": 1921,
     "browserCheck": {
       "requested": false,
       "ran": false

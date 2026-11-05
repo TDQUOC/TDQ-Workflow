@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "714ca08b-9e49-43d6-9bca-1bde9133459e",
+  "receiptId": "ff870667-5ddc-4c85-af3f-747143c8ed9d",
   "status": "current",
   "command": "deliver",
   "type": "explainer",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\bao-cao.archify.md",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.c87f4582c6fa4dde94a449e805ab8af9.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet.fb4d97d9b7404cbdb779fa34229e3ecd.html",
   "specification": {
     "sha256": "c7a17fb43241e1e0ad95523ac0029257da12b08890ae6b3725462870be54f7b8",
     "bytes": 2637
@@ -15,7 +15,7 @@
     "bytes": 858804
   },
   "explainer": {
-    "preparedSha256": "ac2ee06c7894154a61d6991b99a347d5473a483aa076fb0304788d4519b79c20",
+    "preparedSha256": "cc5cf7d6befeb57930d1cf0f3405e2d19a0dca4439abcd804384f6367ce5af8e",
     "dependencies": [
       {
         "kind": "diagram-spec",
