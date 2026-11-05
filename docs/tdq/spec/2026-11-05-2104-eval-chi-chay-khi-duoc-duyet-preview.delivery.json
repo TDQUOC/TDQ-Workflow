@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "c4b465e7-cae4-455e-951d-f2f85da3126a",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-2104-eval-chi-chay-khi-duoc-duyet\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-05-2104-eval-chi-chay-khi-duoc-duyet-preview.d2af3b7d3d844a33b715bcbcf5b4fee5.html",
+  "specification": {
+    "sha256": "3a2b6af234236b2e1521eb9f16c12e54b31cb6e23ecd55d49cbac0b863b38bf6",
+    "bytes": 1449
+  },
+  "artifact": {
+    "sha256": "8cde8139cce5aeb6f8aaba1859a1bab2a341752bd9fb1e628f498b0cc46c62be",
+    "bytes": 847555
+  },
+  "explainer": {
+    "preparedSha256": "63a0a22f592a156b91dae3a9f992ae2b8f3b1c729a872f21020a8a0ae7684155",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-gate",
+        "inline": true,
+        "sha256": "56bad9508d5f1ed34f3c2aa154afe6f8ecd45673a85a2c873d40a76cde038a29",
+        "bytes": 1045
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-gate",
+        "inline": true,
+        "sha256": "9d332e95c6e64a528917dbb686f4244f0e21754e95f145be29521d0c6c03c9d3",
+        "bytes": 969
+      }
+    ]
+  }
+}
