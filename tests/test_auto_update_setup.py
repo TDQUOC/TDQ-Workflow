@@ -203,6 +203,30 @@ class TestAutoUpdateSetup(unittest.TestCase):
             # Lần 2 đã xóa -> rỗng
             self.assertEqual(tdq_setup.doc_thong_bao_update_moi(home=fake_home), "")
 
+    def test_khoi_tao_nen_cung_ghim_instruction_va_stamp_version(self):
+        inst_path = os.path.join(self.project, "CLAUDE.md")
+        with mock.patch("tdq_setup.DUONG_INSTRUCTION", inst_path), \
+             mock.patch("tdq_setup.GOC_REPO", self.plugin_dir), \
+             mock.patch("tdq_setup.smoke_grep", return_value=(True, "ok")), \
+             mock.patch("tdq_setup.kiem_va_cai_shim_python3", return_value=([], [], [])), \
+             mock.patch("tdq_setup.tdq_lsp.chay_kiem", return_value=[]), \
+             mock.patch("tdq_setup.khai_server_mcp", return_value=([], [])), \
+             mock.patch("tdq_setup.don_may", return_value=([], [])), \
+             mock.patch("tdq_setup._tim_cong_cu", return_value=None), \
+             mock.patch("tdq_setup.tdq_lsp.chay_smoke", return_value=[("grep", True, "ok"), ("lsp", True, "ok"), ("graphify", True, "ok")]):
+            rc = tdq_setup.khoi_tao_nen(self.project)
+            self.assertEqual(rc, 0)
+            self.assertTrue(os.path.isfile(inst_path))
+            with open(inst_path, encoding="utf-8") as f:
+                content = f.read()
+            self.assertIn("đơn giản, dễ hiểu, ngắn gọn", content)
+            self.assertIn("trực quan, đầy đủ thông tin", content)
+            self.assertIn("Archify HTML", content)
+            stamp = tdq_setup.doc_phat_hanh(self.project)
+            self.assertIsNotNone(stamp)
+            assert stamp is not None
+            self.assertEqual(stamp.get("phien_ban"), "0.62.0")
+
     def test_cai_dat_env_timeout_mcp(self):
         fake_home = os.path.join(self.project, "fake_home_env")
         settings_path = os.path.join(fake_home, ".claude", "settings.json")

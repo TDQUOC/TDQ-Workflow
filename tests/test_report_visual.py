@@ -36,6 +36,28 @@ class ReportVisualContract(unittest.TestCase):
         self.assertNotIn("renderer", law.lower())
         self.assertNotIn("approve report", handoff.lower())
 
+    def test_report_requires_plain_language_visual_four_parts_and_archify_html(self):
+        template = text("skills/tdq-build/references/report-template.md")
+        lifecycle = text("skills/tdq-build/references/archify-lifecycle.md")
+        state_py = text("scripts/tdq_state.py")
+        phases_md = text("skills/tdq-conventions/references/phases.md")
+        for item in (
+            "Trước request (trạng thái/flow)",
+            "Sau request (trạng thái/flow)",
+            "Đã test gì",
+            "Kết quả test",
+            "docs/tdq/reports/<slug>.html",
+            "đơn giản, dễ hiểu",
+            "trực quan, đầy đủ thông tin",
+        ):
+            self.assertIn(item, template)
+        for item in ("before-request state/flow", "after-request state/flow", "what was tested", "actual test results"):
+            self.assertIn(item.lower(), lifecycle.lower())
+        for target in (state_py, phases_md):
+            self.assertIn("docs/tdq/reports/<slug>.html", target)
+            self.assertIn("before/after state & flow", target.lower())
+            self.assertIn("what was tested & actual test results", target.lower())
+
 
 if __name__ == "__main__":
     unittest.main()

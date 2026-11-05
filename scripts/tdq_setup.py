@@ -1032,7 +1032,12 @@ Chi tiết cẩm nang: `{goc}/skills/tdq-setup/references/mcp-first-guide.md`.
 ## Quy tắc Git và Attribution bắt buộc
 
 - Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
-- Vùng tự động mang theo khi đổi/hợp nhất nhánh: Khi mở nhánh request hoặc khi merge về nhánh gốc, nếu working tree dirty nhưng CHỈ thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` thì TỰ ĐỘNG mang theo, commit hoặc merge. Không cần dừng lại hỏi người dùng. Chỉ dừng hỏi khi có thay đổi dirty ở mã nguồn (`scripts/`, `src/`, `hooks/`, `tests/`...)."""
+- Vùng tự động mang theo khi đổi/hợp nhất nhánh: Khi mở nhánh request hoặc khi merge về nhánh gốc, nếu working tree dirty nhưng CHỈ thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` thì TỰ ĐỘNG mang theo, commit hoặc merge. Không cần dừng lại hỏi người dùng. Chỉ dừng hỏi khi có thay đổi dirty ở mã nguồn (`scripts/`, `src/`, `hooks/`, `tests/`...).
+
+## Chuẩn Trình bày & Báo cáo (Soul & Report)
+
+- Luôn trình bày đơn giản, dễ hiểu, ngắn gọn nhưng trực quan, đầy đủ thông tin để mọi người đọc đều nắm được bản chất và bằng chứng.
+- Phase `report` luôn xuất cặp `docs/tdq/reports/<slug>.md` và `Archify HTML` (`docs/tdq/reports/<slug>.html`); khi có cập nhật bắt buộc nêu rõ 4 phần: (1) Trước request trạng thái/flow thế nào, (2) Sau request thế nào, (3) Đã test gì, và (4) Kết quả test ra được cái gì."""
 
 
 def khoi_huong_dan(goc=None):
@@ -1735,7 +1740,14 @@ def khoi_tao_nen(project, chay=None, *, cache_mode="off", request=None):
                                   TIMEOUT_GRAPHIFY_NEN)
             _log(f"nền: graphify → {'xong' if rc == 0 else 'hỏng: ' + ra[-120:]}")
 
-        for ten, ham in (("cài", cai), ("dọn", don), ("codex", codex), ("graphify", graphify)):
+        def instruction():
+            ghim_huong_dan_tool(os.path.expanduser(DUONG_INSTRUCTION), goc=GOC_REPO)
+            phien_ban = doc_phien_ban_plugin(GOC_REPO)
+            if phien_ban:
+                ghi_phat_hanh(project, phien_ban)
+
+        for ten, ham in (("instruction", instruction), ("cài", cai), ("dọn", don),
+                         ("codex", codex), ("graphify", graphify)):
             buoc(ten, ham)
 
         smoke = []

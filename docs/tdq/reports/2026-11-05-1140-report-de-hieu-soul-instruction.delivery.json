@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "abb89f8e-7f91-471e-b364-cb707beb0947",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1140-report-de-hieu-soul-instruction\\bao-cao.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-05-1140-report-de-hieu-soul-instruction.546f24b9021548c7b1e4a25f82aaade6.html",
+  "specification": {
+    "sha256": "31cec8ccf61866693276fc954ab887ebd6d045afc0461fa989fc0405644b7469",
+    "bytes": 5215
+  },
+  "artifact": {
+    "sha256": "a745dcb010834aee722cefff69295a27e1cc89b597fd6bf638f83360c2e3bd47",
+    "bytes": 1250637
+  },
+  "explainer": {
+    "preparedSha256": "56cf4e04398223f0a6b8fd56e2a4febd34e82fc935137aa99757d6834003fef8",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-request",
+        "inline": true,
+        "sha256": "3253e4229d90f01d1ec1c3c3b1ed4d708d9fe9dcb873c79b09c56449252c71c3",
+        "bytes": 1228
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-request",
+        "inline": true,
+        "sha256": "6b86ad1854837775cf252c3ae075b00a0cd8cea9c690472e5a6e5c7636b44215",
+        "bytes": 1254
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-test",
+        "inline": true,
+        "sha256": "876e9b7115dae64fa07629690be7d82b20bdfa80d003285f7d68966fa9fb772b",
+        "bytes": 1076
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "76634e64-6f81-4253-b830-b8434a37971e",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1140-report-de-hieu-soul-instruction\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\.tmp.2026-11-05-1140-report-de-hieu-soul-instruction-flow.2a3deb79d5c54701a0c73ffdabdfaf16.html",
+  "specification": {
+    "sha256": "93eff3f49a734ae37260547e21994b5cf07a37a9fe8eb33aeba1c1f347bf12ca",
+    "bytes": 2760
+  },
+  "artifact": {
+    "sha256": "7558d0cf60276353db83eeeb8c4ad3ec1776c3aee21eb77b9622d28d766a3098",
+    "bytes": 867758
+  },
+  "explainer": {
+    "preparedSha256": "036ba350cae12c165d07e379cae18b3a8c69e7eb4c088c02ca93f8010ea66ab1",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-cap-nhat",
+        "inline": true,
+        "sha256": "17e403f1a0ed86625b46aa963b6a65b6fd0515eb6abedff4e4b6f81ed61b8845",
+        "bytes": 1206
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-cap-nhat",
+        "inline": true,
+        "sha256": "ae34162f891a1a9200e6f12a15c75829678366a8f916642073e00313477c74e5",
+        "bytes": 1195
+      }
+    ]
+  }
+}
