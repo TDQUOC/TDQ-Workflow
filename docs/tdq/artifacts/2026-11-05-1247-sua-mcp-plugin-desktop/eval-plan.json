@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "request": "2026-11-05-1247-sua-mcp-plugin-desktop",
+  "targets": ["scripts/tdq_setup.py", "scripts/search_rules.py", "hooks/hooks.json"],
+  "cases": [{"id": "mcp-plugin-cache-sync", "oracle": "active plugin cache contains mcpServers"}]
+}

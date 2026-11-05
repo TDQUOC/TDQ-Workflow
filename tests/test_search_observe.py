@@ -283,9 +283,21 @@ class TelemetryLSP(BaseSo):
             hooks = json.load(fh)["hooks"]
         self.assertIn("PostToolUseFailure", hooks)
         post_fail = hooks["PostToolUseFailure"]
-        khop = [m for m in post_fail if re.fullmatch(m.get("matcher", ""), "mcp__lsp__blast_radius")]
-        self.assertTrue(any(h["command"].endswith('search_observe.py"')
-                            for m in khop for h in m["hooks"]), khop)
+        for ten in ("mcp__lsp__blast_radius", "mcp__plugin_tdq-workflow_lsp__blast_radius"):
+            khop = [m for m in post_fail if re.fullmatch(m.get("matcher", ""), ten)]
+            self.assertTrue(any(h["command"].endswith('search_observe.py"')
+                                for m in khop for h in m["hooks"]), (ten, khop))
+        for ten in ("mcp__lsp__start_lsp", "mcp__plugin_tdq-workflow_lsp__start_lsp"):
+            pre_gate = [m for m in hooks["PreToolUse"] if re.fullmatch(m.get("matcher", ""), ten)]
+            self.assertTrue(any(h["command"].endswith('lsp_gate.py"')
+                                for m in pre_gate for h in m["hooks"]), (ten, pre_gate))
+        for ten in ("mcp__lsp__find_symbol", "mcp__plugin_tdq-workflow_lsp__find_symbol"):
+            pre_obs = [m for m in hooks["PreToolUse"] if re.fullmatch(m.get("matcher", ""), ten)]
+            self.assertTrue(any(h["command"].endswith('search_observe.py"')
+                                for m in pre_obs for h in m["hooks"]), (ten, pre_obs))
+            post_obs = [m for m in hooks["PostToolUse"] if re.fullmatch(m.get("matcher", ""), ten)]
+            self.assertTrue(any(h["command"].endswith('search_observe.py"')
+                                for m in post_obs for h in m["hooks"]), (ten, post_obs))
 
 
 class LogService(BaseSo):

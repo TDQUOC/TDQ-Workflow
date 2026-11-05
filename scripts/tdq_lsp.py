@@ -456,7 +456,7 @@ def bac4_quyen_tool():
     """Rung 4 — the mcp__lsp__* tools allowed without a prompt each time."""
     cau_hinh = _doc_json("~/.claude/settings.json")
     allow = (cau_hinh.get("permissions") or {}).get("allow") or []
-    khop = [m for m in allow if isinstance(m, str) and TOOL_PATTERN in m]
+    khop = [m for m in allow if isinstance(m, str) and (TOOL_PATTERN in m or "mcp__plugin_tdq-workflow_lsp__" in m)]
     if khop:
         return Bac(4, f"quyền tool `{TOOL_PATTERN}*`", True, f"{len(khop)} mục trong allow")
     return Bac(4, f"quyền tool `{TOOL_PATTERN}*`", False,

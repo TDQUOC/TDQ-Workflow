@@ -253,3 +253,47 @@ class TestAutoUpdateSetup(unittest.TestCase):
         with mock.patch.dict(os.environ, {"TDQ_KHONG_CHAM_MAY": "1"}):
             self.assertFalse(tdq_setup._cai_dat_env_timeout_mcp(settings_path, cham_may=True))
 
+    def test_dong_bo_mcp_plugin_cache_va_quyen_allow(self):
+        fake_home = os.path.join(self.project, "fake_home_mcp_sync")
+        plugins_dir = os.path.join(fake_home, ".claude", "plugins")
+        cache_062 = os.path.join(plugins_dir, "cache", "tdq-local", "tdq-workflow", "0.62.0")
+        os.makedirs(cache_062, exist_ok=True)
+        installed = {
+            "version": 2,
+            "plugins": {
+                "tdq-workflow@tdq-local": [
+                    {
+                        "scope": "user",
+                        "installPath": cache_062,
+                        "version": "0.62.0",
+                    }
+                ]
+            },
+        }
+        with open(os.path.join(plugins_dir, "installed_plugins.json"), "w", encoding="utf-8") as fh:
+            json.dump(installed, fh)
+        cjson_path = os.path.join(fake_home, ".claude.json")
+        mcp_cfg = {
+            "mcpServers": {
+                "lsp": {"type": "stdio", "command": "agent-lsp", "args": ["python:pyright-langserver,--stdio"]},
+                "chrome-devtools": {"type": "stdio", "command": "npx", "args": ["-y", "chrome-devtools-mcp@latest"]},
+            }
+        }
+        with open(cjson_path, "w", encoding="utf-8") as fh:
+            json.dump(mcp_cfg, fh)
+
+        ok = tdq_setup.dong_bo_mcp_plugin_cache(home=fake_home, duong_cau_hinh=cjson_path, cham_may=True)
+        self.assertTrue(ok)
+        plugin_mcp = os.path.join(cache_062, ".mcp.json")
+        self.assertTrue(os.path.isfile(plugin_mcp))
+        with open(plugin_mcp, encoding="utf-8") as fh:
+            synced = json.load(fh)
+        self.assertEqual(set((synced.get("mcpServers") or {}).keys()), {"lsp", "chrome-devtools"})
+
+        settings_path = os.path.join(fake_home, ".claude", "settings.json")
+        with open(settings_path, encoding="utf-8") as fh:
+            st = json.load(fh)
+        allow = (st.get("permissions") or {}).get("allow") or []
+        for rule in ("mcp__lsp__*", "mcp__plugin_tdq-workflow_lsp__*", "mcp__plugin_tdq-workflow_chrome-devtools__*"):
+            self.assertIn(rule, allow)
+

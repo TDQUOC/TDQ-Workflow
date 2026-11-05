@@ -537,11 +537,17 @@ class GoiKhaiNiem(unittest.TestCase):
     def test_mo_khoa_lsp_chi_tool_hoi(self):
         """Danh sách CHO PHÉP: `run_tests`, `apply_edit`, `format_document` không hỏi gì cả."""
         for ten in ("mcp__lsp__run_tests", "mcp__lsp__apply_edit", "mcp__lsp__format_document",
-                    "mcp__lsp__start_lsp", "mcp__lsp__open_document"):
+                    "mcp__lsp__start_lsp", "mcp__lsp__open_document",
+                    "mcp__plugin_tdq-workflow_lsp__start_lsp",
+                    "mcp__plugin_tdq-workflow_lsp__open_document"):
             self.assertIsNone(sr.la_goi_khai_niem(ten, {}), ten)
         for ten in ("mcp__lsp__find_references", "mcp__lsp__inspect_symbol",
-                    "mcp__lsp__explore_symbol", "mcp__lsp__blast_radius"):
+                    "mcp__lsp__explore_symbol", "mcp__lsp__blast_radius",
+                    "mcp__plugin_tdq-workflow_lsp__find_symbol",
+                    "mcp__plugin_tdq-workflow_lsp__find_references",
+                    "mcp__plugin_tdq-workflow_lsp__blast_radius"):
             self.assertIsNotNone(sr.la_goi_khai_niem(ten, {}), ten)
+        self.assertIsNone(sr.la_goi_khai_niem("mcp__other_lsp__find_symbol", {}))
 
     def test_mo_khoa_bi_chan_khong_an_vao_cua_so(self):
         tt = sr.trang_thai([{"loai": "khai_niem"},

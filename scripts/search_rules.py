@@ -865,7 +865,7 @@ def quyet_dinh(pl, trang_thai):
 # Name shapes differ by host: Claude Code says `mcp__lsp__find_references`; Codex MCP names could
 # not be observed yet (Codex not logged in on the dev machine, 2026-10-03), so the match is on the
 # server name and the last segment. lumen `semantic_search` counted until 0.58.0.
-LSP = re.compile(r"(^|__|\.)lsp(__|\.)")
+LSP = re.compile(r"^(?:mcp__lsp__|mcp__plugin_tdq-workflow_lsp__|lsp\.)")
 # LSP tools that ASK a question about the code — an ALLOWLIST. The first version excluded a list
 # of housekeeping tools instead, which let `run_tests`, `apply_edit` or `format_document` count as
 # a concept query and unlock grep without a single question asked.

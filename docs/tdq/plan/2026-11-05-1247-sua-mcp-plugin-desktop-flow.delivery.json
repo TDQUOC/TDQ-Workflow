@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "f907a571-3c4e-4d63-aad2-557443b8bac4",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-05-1247-sua-mcp-plugin-desktop\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\.tmp.2026-11-05-1247-sua-mcp-plugin-desktop-flow.e5a0f941b3604d35b26085ac2c983ee8.html",
+  "specification": {
+    "sha256": "6e97d3c8cc126b19e0d8c4d2f2bdc1291b081b5e8eedd241f7f1e43ac17e7aa1",
+    "bytes": 2050
+  },
+  "artifact": {
+    "sha256": "e5959bd6a26c167d9c2c67c093ed66d049f9b45e7d4bb72f2bd5cfea53d980af",
+    "bytes": 858509
+  },
+  "explainer": {
+    "preparedSha256": "733a0fb92843e67f671bb0b282a91f1a9e4527c00c3ee5ece25f40cb6b5b7bea",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-sua",
+        "inline": true,
+        "sha256": "a256a236eaef16edecc79e78a32eb1d6b3e4ed61e0aa801511a2fb622d898e59",
+        "bytes": 1165
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-sua",
+        "inline": true,
+        "sha256": "05fa1b92f223495ac596be30adfac477f807efb49881a036f82ce7d04d0befdf",
+        "bytes": 1119
+      }
+    ]
+  }
+}
