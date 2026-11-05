@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "request": "2026-11-05-1140-report-de-hieu-soul-instruction",
+  "targets": [
+    "skills/tdq-build/references/report-template.md",
+    "skills/tdq-build/references/archify-lifecycle.md",
+    "skills/tdq-conventions/references/soul.md",
+    "skills/tdq-conventions/SKILL.md",
+    "skills/tdq-conventions/references/phases.md"
+  ],
+  "cases": [
+    {
+      "id": "c1",
+      "prompt": "report template check",
+      "oracle": "4 sections"
+    }
+  ]
+}

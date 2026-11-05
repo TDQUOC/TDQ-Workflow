@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "014327d1-8348-4d8b-b61b-1837e34c4496",
+  "receiptId": "3625628d-6e14-4e3a-9def-edd16e0c7345",
   "status": "current",
   "command": "deliver",
   "type": "workflow",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.7e0e59d7d7e244ae87973170b4c20aef\\hooks-and-gates.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.683d0d9cb9184bea964c4e22d074ed21\\hooks-and-gates.html",
   "specification": {
     "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
     "bytes": 4824

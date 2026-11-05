@@ -124,6 +124,14 @@ class SoulPointers(unittest.TestCase):
         self.assertTrue(_co_uu_tien(text), "tầng luôn nạp phải in nguyên văn thứ tự ưu tiên")
         self.assertIn("references/soul.md", text, "thiếu dòng trỏ về soul")
 
+    def test_soul_and_conventions_require_simple_visual_complete_presentation(self):
+        soul_text = _read(SOUL)
+        conv_text = _read(CONV_SKILL)
+        for phrase in ("đơn giản, dễ hiểu, ngắn gọn", "trực quan, đầy đủ thông tin"):
+            self.assertIn(phrase, soul_text)
+            self.assertIn(phrase, conv_text)
+        self.assertLess(len(soul_text.splitlines()), 150)
+
 
 if __name__ == "__main__":
     unittest.main()

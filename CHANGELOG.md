@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.91.0 — 2026-11-05
+
+Chuẩn hóa Report dễ hiểu kèm Archify HTML, cập nhật Soul và tự động ghim vào User-Instruction.
+
+- Phase `report` luôn sinh cặp `docs/tdq/reports/<slug>.md` và `Archify HTML` (`docs/tdq/reports/<slug>.html`) dễ hiểu, trực quan cho mọi độc giả. Khi có cập nhật bắt buộc nêu rõ: Trước request, Sau request, Đã test gì, Kết quả test.
+- `soul.md` và `tdq-conventions/SKILL.md` khóa nguyên tắc luôn trình bày đơn giản, dễ hiểu, ngắn gọn nhưng trực quan, đầy đủ thông tin.
+- `KHOI_HUONG_DAN` (`scripts/tdq_setup.py`, `docs/claude-md-mau.md`) tự động ghim vào `~/.claude/CLAUDE.md` cả khi cài mới (`tdq_setup.py` & `--nen`) lẫn khi update. Phần riêng của người dùng ngoài `<!-- TDQ:TOOLS -->` được bảo toàn nguyên vẹn.
+- Kiểm thử: 94 passed, 170 subtests passed, 0 failures; QC độc lập (`muc_qc=ultra`) PASS.
+
 ## 0.90.0 — 2026-11-04
 
 Master kiến trúc Archify: overview, luồng chi tiết và nguồn bằng chứng kiểm chứng được.

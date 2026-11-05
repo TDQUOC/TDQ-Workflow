@@ -19,12 +19,18 @@ below before writing the report; working from memory is banned.
 
 <!-- doc-lint: allow R1 -->
 7. Write `docs/tdq/reports/<slug>.md` — in the user's document language, with NO hard line
-   limit; ~10-20 lines recommended. Template: section `## The report shape` in this file. The timing table is
-   **mandatory**: run `tdq_timing.py show` and paste the whole table into the report; never
-   estimate the numbers yourself.
+   limit; ~10-20 lines recommended. Write in plain, accessible language so any reader can
+   understand it (`đơn giản, dễ hiểu`, `trực quan, đầy đủ thông tin`), explicitly stating:
+   (1) before-request state/flow (`Trước request (trạng thái/flow)`),
+   (2) after-request state/flow (`Sau request (trạng thái/flow)`),
+   (3) what was tested (`Đã test gì`), and
+   (4) actual test results (`Kết quả test`). Template: section `## The report shape` in this file.
+   The timing table is **mandatory**: run `tdq_timing.py show` and paste the whole table into the
+   report; never estimate the numbers yourself.
 
 7b. **Both lanes** write the paired visual report `docs/tdq/reports/<slug>.html` from actual
-   task, DoD, QC, output and limit evidence via [Archify lifecycle](archify-lifecycle.md).
+   task, DoD, QC, output and limit evidence via [Archify lifecycle](archify-lifecycle.md),
+   visually presenting the before/after state & flow, what was tested, and actual test results.
    Render with `--evidence-kind working-tree` for uncommitted sources (or `committed` for a verified clean revision); CLI has no `actual` evidence kind. Verify before linking; unavailable/stale output gets a disclosed text fallback.
 
 8. Close the books: tick the leftover boxes of BOTH kinds — the task boxes in each phase AND
@@ -92,7 +98,7 @@ Next step: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_state.py" set phase=idle`
 
 `docs/tdq/reports/<slug>.md` — in the user's document language, with NO hard line limit.
 **As short as possible, around 10-20 lines**; longer than that, say why (many proposals, many
-tasks…) instead of cutting the truth. Compress each item into ONE line, separating ideas with
+tasks…) instead of cutting the truth. Keep wording simple, clear, visual, and complete (`đơn giản, dễ hiểu`, `trực quan, đầy đủ thông tin`) for every reader; compress each item into ONE line, separating ideas with
 `·`, and take every number straight from real output.
 
 <!-- i18n-allow: report template written in the default document language -->
@@ -101,10 +107,11 @@ tasks…) instead of cutting the truth. Compress each item into ONE line, separa
 
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 
-**Đã làm:** <P1 …> · <P2 …> · <P3 …>
-**Kết quả:** <chỉ số> <trước> → <sau> · <chỉ số> <trước> → <sau>
-**Kiểm:** <lệnh test + kết quả> · <lint> · QC <PASS x/y mục DoD, defect đã sửa>
-**Đầu ra:** <đường dẫn file chính> · Backup: <đường dẫn, nếu có sửa ngoài repo>
+**Trước request (trạng thái/flow):** <trạng thái và luồng trước khi sửa, dễ hiểu cho mọi người đọc>
+**Sau request (trạng thái/flow):** <trạng thái và luồng sau khi sửa> · **Đã làm:** <P1 …> · <P2 …> · <P3 …>
+**Đã test gì:** <các kịch bản, vùng chạm và lệnh kiểm thử đã chạy>
+**Kết quả test:** <output thực tế, số test pass/skip/fail> · **Kết quả:** <chỉ số> <trước> → <sau> · **Kiểm:** <lint> · QC <PASS x/y mục DoD, defect đã sửa>
+**Đầu ra:** <đường dẫn file chính> · **Archify HTML:** `docs/tdq/reports/<slug>.html` · Backup: <đường dẫn, nếu có sửa ngoài repo>
 **Giới hạn:** <cái gì chưa làm, vì sao, ảnh hưởng gì>
 **Lệch spec chờ duyệt:** <mỗi lệch một dòng: Qn · ngưỡng → đo được · phương án đã áp — hoặc "không có">
 **Git:** <chưa commit / commit nào đã tạo>

@@ -96,4 +96,9 @@ Chi tiết cẩm nang: `<đường dẫn thư mục cài TDQ-Workflow>/skills/td
 
 - Tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude Code...` hoặc bất kỳ attribution trailer nào vào git commit message hoặc PR body. Mọi commit và PR chỉ chứa nội dung kỹ thuật thuần túy do người dùng và agent trao đổi.
 - Vùng tự động mang theo khi đổi/hợp nhất nhánh: Khi mở nhánh request hoặc khi merge về nhánh gốc, nếu working tree dirty nhưng CHỈ thuộc `docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**` thì TỰ ĐỘNG mang theo, commit hoặc merge. Không cần dừng lại hỏi người dùng. Chỉ dừng hỏi khi có thay đổi dirty ở mã nguồn (`scripts/`, `src/`, `hooks/`, `tests/`...).
+
+## Chuẩn Trình bày & Báo cáo (Soul & Report)
+
+- Luôn trình bày đơn giản, dễ hiểu, ngắn gọn nhưng trực quan, đầy đủ thông tin để mọi người đọc đều nắm được bản chất và bằng chứng.
+- Phase `report` luôn xuất cặp `docs/tdq/reports/<slug>.md` và `Archify HTML` (`docs/tdq/reports/<slug>.html`); khi có cập nhật bắt buộc nêu rõ 4 phần: (1) Trước request trạng thái/flow thế nào, (2) Sau request thế nào, (3) Đã test gì, và (4) Kết quả test ra được cái gì.
 <!-- /TDQ:TOOLS -->

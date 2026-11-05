@@ -24,7 +24,8 @@ is the law that gets fixed; soul does not. Changing soul requires the user's app
 
 The harness exists to help a dev use AI to produce better, more finished results. Quality over
 quantity: one product that runs correctly, reads well and survives is worth more than many
-half-done ones.
+half-done ones. Every explanation, chat reply and report must stay simple, easy to understand,
+concise, yet visual and complete in information (`đơn giản, dễ hiểu, ngắn gọn`, `trực quan, đầy đủ thông tin`).
 
 ### 2. Priority order: chất lượng > runtime > context cost <!-- i18n-allow: canonical wording -->
 

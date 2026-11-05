@@ -1,7 +1,7 @@
 {
   "skills/tdq-build/references/archify-lifecycle.md": {
-    "sha256": "7b3eac67e47ffc74cf77ed0a88e54898f3cfdb3781b5f84a3dabe74d8b6c80cb",
-    "token": 878
+    "sha256": "d91c72edb3309b6fd2764d614bc3525ad0f0a03be1f630b7944528f9d9f38437",
+    "token": 960
   },
   "skills/tdq-build/references/codex-mode.md": {
     "sha256": "f8aa605c69e86e5d3495bf169c1f4c5b3f84f902b17e0b20c588fc2ba4a1955f",
@@ -12,8 +12,8 @@
     "token": 3498
   },
   "skills/tdq-build/references/report-template.md": {
-    "sha256": "8d0531b233cdeaa53c1766661f3a207b8df61d2212f9b157d8d9f1110498d833",
-    "token": 2701
+    "sha256": "582575b9c6343eb6e05657ae65cb80c707ad289ff8e582213f57b2a9d4d45906",
+    "token": 3084
   },
   "skills/tdq-build/references/rules/chung.md": {
     "sha256": "d21c9922a9413b2720be84fb286f06e55cfdd64cbd806bdcdf977dd44bbf66f5",
@@ -112,8 +112,8 @@
     "token": 541
   },
   "skills/tdq-conventions/references/phases.md": {
-    "sha256": "eaa76a099b4a1ca03bbb221fc25605d41f766b624f6bd0599916fb986aaab54e",
-    "token": 1835
+    "sha256": "2adec31e7d323bb3298baa93784ad844ae5757340318dc634fb03fedc7094fb1",
+    "token": 1868
   },
   "skills/tdq-conventions/references/plugin-routing.md": {
     "sha256": "4928d5e5ca54109a7cae1eb2a8330285e72f08db8e9daeda3c436a2efdece8b5",
@@ -124,8 +124,8 @@
     "token": 1767
   },
   "skills/tdq-conventions/references/soul.md": {
-    "sha256": "1a723bf57dd5ed13aa82f4f2f745a5b3d15468f57162d846a595cb7fa6e88c6a",
-    "token": 1795
+    "sha256": "0265a4cb5316d4fca41a00dae2c85ec6f08eaf7f358ada797d8c2897229c8bce",
+    "token": 1867
   },
   "skills/tdq-conventions/references/subagent-tuning.md": {
     "sha256": "0bf232d1b4074586fe85144639e9bda8b2f7d8abcf50616c5478f3831b1468fa",

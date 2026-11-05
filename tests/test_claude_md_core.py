@@ -38,7 +38,10 @@ import tdq_setup  # noqa: E402 — chủ của khối ghim, để test và sản
 # 2026-10-20: 6500 → 10000. Bổ sung MCP-First, LSP-Autonomy, Auto-carry dirty zone, Khảo sát 3 chiều và Ngoại lệ Refactor; cùng phán quyết soul.md.
 # 2026-11-03: 10000 -> 11500. Verified completion, permission boundaries and
 # tool handoff are tier-1 rules; measured template is 11181 bytes, not optional detail.
-MAX_BYTES = 11500
+# 2026-11-05: 11500 -> 12500. Plain, visual, complete presentation and the 4-part
+# Before/After + Tested/Result report contract with Archify HTML are tier-1 rules
+# pinned in TDQ:TOOLS so every session and project receives them on install/update.
+MAX_BYTES = 12500
 
 # (mô tả, đường dẫn file đích tương đối repo, các chuỗi phải có mặt)
 # Đích có thể là MỘT file hay MỘT CẶP file: 2026-10-02 vài file luật bị tách làm file anh + file
@@ -201,6 +204,19 @@ class KhoiHuongDanToolTest(unittest.TestCase):
         nguon = _read(os.path.join(REPO, "tests", "test_claude_md_core.py"))
         self.assertGreater(MAX_BYTES, 3800, "thêm luật mà không nâng trần là sẽ phải nén luật")
         self.assertIn("2026-09-28", nguon, "mỗi lần nâng trần phải ghi lý do kèm ngày")
+
+    def test_khoi_co_chuan_trinh_bay_va_report_de_hieu_archify(self):
+        khoi = tdq_setup.khoi_huong_dan(tdq_setup.GOC_MAU)
+        for cum in (
+            "đơn giản, dễ hiểu, ngắn gọn",
+            "trực quan, đầy đủ thông tin",
+            "Archify HTML",
+            "Trước request",
+            "Sau request",
+            "Đã test gì",
+            "Kết quả test",
+        ):
+            self.assertIn(cum, khoi)
 
 
 class AclDescriptorTest(unittest.TestCase):
