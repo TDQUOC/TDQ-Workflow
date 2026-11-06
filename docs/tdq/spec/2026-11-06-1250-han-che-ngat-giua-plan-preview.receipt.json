@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\truoc-sau.archify.md",
+    "sha256": "794a7eae665e2668d31dad7ed3a70d149bddfad5f536f6318591fb1e255e6d69",
+    "bytes": 1840
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan-preview.bb2b78b62a2b4138bc773051cfcb689f.html",
+    "sha256": "6889bf1460c4461346799a429eb1737e3ed07f146ac9939d1c7a23efba4ef726",
+    "bytes": 861004
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan-preview.bb2b78b62a2b4138bc773051cfcb689f.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan-preview.bb2b78b62a2b4138bc773051cfcb689f.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1925,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "0967b93a-4e98-4687-9263-c4f0e88af9d1",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan-preview.bb2b78b62a2b4138bc773051cfcb689f.html",
+  "specification": {
+    "sha256": "794a7eae665e2668d31dad7ed3a70d149bddfad5f536f6318591fb1e255e6d69",
+    "bytes": 1840
+  },
+  "artifact": {
+    "sha256": "6889bf1460c4461346799a429eb1737e3ed07f146ac9939d1c7a23efba4ef726",
+    "bytes": 861004
+  },
+  "explainer": {
+    "preparedSha256": "9cbc1bf49eebf0946329c1a1895913c6985e2a042607ceff56d32cda082d09e6",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-stop",
+        "inline": true,
+        "sha256": "03bfe1dbda2c991c38466c76b0906aabb78101ba2f08b1237c5c2030f887ba19",
+        "bytes": 1010
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-stop",
+        "inline": true,
+        "sha256": "b1284cf622cbd6c3f44ff8fbba767f40d5e734754271bb40a5724ade94a33c44",
+        "bytes": 1350
+      }
+    ]
+  }
+}

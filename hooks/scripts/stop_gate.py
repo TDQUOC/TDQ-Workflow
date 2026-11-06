@@ -23,7 +23,7 @@ import os
 from _common import payload_cwd, read_payload, turn_rows
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
-from tdq_state import (BOOKKEEPING_PATHS, _info, _warn,  # noqa: E402
+from tdq_state import (BOOKKEEPING_PATHS, _TASK_LINE, _info, _warn,  # noqa: E402
                        cong_dang_cho, dod_tick_state, effective_phase, load,
                        plan_tick_state, qc_result_state, task_open_count,
                        repo_status_digest, repo_status_paths, sha256_file,
@@ -169,10 +169,30 @@ def unfinished_reason(state, tick, open_count=None):
         # The stop was declared with a reason — the legal way out, handled by the caller.
         return None
     con_ho = tick.get("total", 0) if open_count is None else open_count
-    return (f"[TDQ:UNFINISHED] The plan still has {con_ho} open task(s) and the phase is still "
-            "implement. Keep going to the end of the plan: mark [~], do the task, mark [x]. "
-            "Unmet spec threshold → `lech add`, carry on. Force majeure only → "
-            "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`, tell the user.")
+    return (f"[TDQ:UNFINISHED] {con_ho} open task(s). Keep working to the approved spec: "
+            "mark [~], test, mark [x]. Small drift → `lech add`, continue; "
+            "only true blockers → `tdq_state.py pause --loai <kind> --ly-do \"<why>\"`.")
+
+
+def _next_task(path):
+    """Read one open task from the plan; prefer a task already in progress."""
+    try:
+        with open(path, encoding="utf-8") as plan:
+            open_task = None
+            for line in plan:
+                match = _TASK_LINE.match(line)
+                if not match or match.group(1) in ("x", ">"):
+                    continue
+                task = match.group(2)
+                check = line.rsplit("— Test:", 1)[-1].strip() if "— Test:" in line else ""
+                hint = f"{task} Test: {check[:40]}" if check else task
+                if match.group(1) == "~":
+                    return hint
+                if open_task is None:
+                    open_task = hint
+            return open_task
+    except (OSError, UnicodeError, TypeError):
+        return None
 
 
 def _streak_bump(cwd, sha):
@@ -210,6 +230,8 @@ def _chan_chua_xong(cwd, state):
         if pause and effective_phase(state, warn=False) == "implement":
             _info(f"stop_gate: implement paused on purpose · reason={str(pause.get('ly_do'))[:120]}")
         return False
+    task = _next_task(tick.get("path"))
+    next_step = f" Next: {task}; read plan and check tool/receipt before retry." if task else ""
     dem = _streak_bump(cwd, tick.get("sha", ""))
     if dem > MAX_STREAK:
         # Nothing has moved for MAX_STREAK stops in a row: blocking again would only trap the
@@ -217,13 +239,14 @@ def _chan_chua_xong(cwd, state):
         _info(f"stop_gate: TDQ:UNFINISHED stepped down after {dem - 1} block(s) with no progress")
         print(json.dumps({"hookSpecificOutput": {
             "hookEventName": "Stop",
-            "additionalContext": ("[TDQ:STUCK] The plan has not moved across several stops. "
-                                  "Either finish the remaining tasks, or run "
-                                  "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"` and tell the user."),
+            "additionalContext": (f"[TDQ:STUCK] {task_open_count(cwd)} open task(s).{next_step} "
+                                  "Finish plan or declare a genuine blocker with "
+                                  "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`."),
         }}, ensure_ascii=False))
         return True
     _info(f"stop_gate: block TDQ:UNFINISHED · phase=implement · open={task_open_count(cwd)} "
           f"· plan={tick.get('path')} · streak={dem}")
+    reason = (reason + next_step)[:MAX_CHARS]
     print(json.dumps({"decision": "block", "reason": reason, "stop_hook_active": False},
                      ensure_ascii=False))
     return True

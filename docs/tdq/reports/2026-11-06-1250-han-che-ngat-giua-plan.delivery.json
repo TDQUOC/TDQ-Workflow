@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "c9a47064-534d-44b8-974d-7beb23276c01",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\bao-cao.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+  "specification": {
+    "sha256": "16c424c174257739e9950db5966eaa546aba695a3c07f7aab70390ab22549d65",
+    "bytes": 2719
+  },
+  "artifact": {
+    "sha256": "7495a7d9f076f0aa5844af14134995dc63d66c8bba78ed2065609c86ec04deda",
+    "bytes": 862583
+  },
+  "explainer": {
+    "preparedSha256": "c0414812ee8c8d48a310c65d65986744387760830aad83b225f2dac7c0d3fc81",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-bao-cao",
+        "inline": true,
+        "sha256": "8ede69571fe8cf67a7b426952fa19c8b6cb62558cc0469e8aecb10a6bdf491cc",
+        "bytes": 945
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-bao-cao",
+        "inline": true,
+        "sha256": "bb6b595b3f7f0dbf0fd20cc5e9acfc8a54c4a59ff3e2e581e05968e80d5dc25f",
+        "bytes": 1174
+      }
+    ]
+  }
+}

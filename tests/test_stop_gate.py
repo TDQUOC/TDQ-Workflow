@@ -774,7 +774,18 @@ class TestStopGateUnfinished(StopGateBase):
         data = json.loads(out)
         self.assertEqual(data["decision"], "block")
         self.assertIn("[TDQ:UNFINISHED]", data["reason"])
+        self.assertIn("T1", data["reason"])
         self.assertLessEqual(len(data["reason"]), 300)
+
+    def test_unfinished_uu_tien_task_dang_lam(self):
+        self.dung(plan="- [ ] **T1** a — Test: x\n- [~] **T2** b — Test: y\n")
+        reason = json.loads(self.stop()[1])["reason"]
+        self.assertIn("T2", reason)
+        self.assertIn("Test: y", reason)
+
+    def test_unfinished_task_id_dai_khong_vuot_tran(self):
+        self.dung(plan="- [~] **T" + "x" * 400 + "** b — Test: x\n")
+        self.assertLessEqual(len(json.loads(self.stop()[1])["reason"]), 300)
 
     def test_unfinished_chan_lap_khi_co_cua_bat(self):
         self.dung()
@@ -820,7 +831,11 @@ class TestUnfinishedTran(TestStopGateUnfinished):
         for lan in range(3):
             with self.subTest(lan=lan):
                 self.assertIn("[TDQ:UNFINISHED]", self.stop()[1])
-        self.assertNotIn("[TDQ:UNFINISHED]", self.stop()[1])
+        out = self.stop()[1]
+        self.assertNotIn("[TDQ:UNFINISHED]", out)
+        self.assertIn("[TDQ:STUCK]", out)
+        self.assertIn("T1", out)
+        self.assertIn("2 open", out)
 
     def test_unfinished_tran_reset_khi_co_tien_trien(self):
         self.dung()
