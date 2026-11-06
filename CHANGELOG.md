@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.94.0 — 2026-11-06
+
+Giảm khả năng dừng giữa plan trên Claude Code và làm rõ cách khôi phục công việc.
+
+- Stop hook nhắc mã task và `Test:` đang cần làm; sau ba lần plan không tiến triển, báo task/số việc còn mở rồi cho dừng an toàn, không lặp vô hạn.
+- SessionStart ở resume/compact nhắc task `[~]` hoặc task đầu `[ ]`; task `[>]` đang giao trợ lý thì chờ thay vì chạy trùng.
+- Luật build ưu tiên plan, lấy spec đã duyệt làm chuẩn khi xung đột; lệch nhỏ dùng `lech add` rồi tiếp tục. `/goal` chỉ là tùy chọn người dùng chủ động bật, không tự chạy model đánh giá.
+- Kiểm thử: full fresh 4.180 passed, 7 skipped, 2.724 subtests; 4.187 case ID, receipt PASS. Chưa đo hiệu quả trên model nhỏ ngoài thực địa; không cứu API/tool treo giữa lượt.
+
 ## 0.93.0 — 2026-11-06
 
 Eval cho thay đổi skill/hook/plugin chuyển sang opt-in, chỉ kích hoạt khi người dùng yêu cầu và đồng ý.

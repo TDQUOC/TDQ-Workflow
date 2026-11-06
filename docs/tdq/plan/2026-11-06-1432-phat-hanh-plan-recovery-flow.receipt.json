@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1432-phat-hanh-plan-recovery\\truoc-sau.archify.md",
+    "sha256": "d02fd906694af01a00015f1af424cd3e9b66232a30ff1eebf9469e3d633b3d4d",
+    "bytes": 1168
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\.tmp.2026-11-06-1432-phat-hanh-plan-recovery-flow.dc5f212f0ba8483a94a096b7b4f2c214.html",
+    "sha256": "8c493c6d62501354897cd50c8d089ada712d5b895b4b02d6fdeb258fcea12a29",
+    "bytes": 834327
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\.tmp.2026-11-06-1432-phat-hanh-plan-recovery-flow.dc5f212f0ba8483a94a096b7b4f2c214.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\.tmp.2026-11-06-1432-phat-hanh-plan-recovery-flow.dc5f212f0ba8483a94a096b7b4f2c214.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2023,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

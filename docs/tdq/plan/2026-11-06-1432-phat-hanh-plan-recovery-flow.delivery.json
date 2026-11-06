@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "0a24999a-2dc0-4402-aa76-6d5cf38a0f4a",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1432-phat-hanh-plan-recovery\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\plan\\.tmp.2026-11-06-1432-phat-hanh-plan-recovery-flow.dc5f212f0ba8483a94a096b7b4f2c214.html",
+  "specification": {
+    "sha256": "d02fd906694af01a00015f1af424cd3e9b66232a30ff1eebf9469e3d633b3d4d",
+    "bytes": 1168
+  },
+  "artifact": {
+    "sha256": "8c493c6d62501354897cd50c8d089ada712d5b895b4b02d6fdeb258fcea12a29",
+    "bytes": 834327
+  },
+  "explainer": {
+    "preparedSha256": "b0aaa2e411770fd001f825e6af88ca4d9a1f5b5f4cea458dd7de5edd48734e4c",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-release",
+        "inline": true,
+        "sha256": "7d8aec2a47c0dbf609dd09daf8de053a9341818490b5605286d39785777066a1",
+        "bytes": 688
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-release",
+        "inline": true,
+        "sha256": "de872cad3c7d6790c9d29ecda69390cfaf438c064c677fb9fee0077514fdc5a3",
+        "bytes": 837
+      }
+    ]
+  }
+}
