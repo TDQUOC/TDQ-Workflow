@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "724bdce1-1b17-4642-b2eb-1cecd4a020b6",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1549-ra-soat-thoi-gian-workflow\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-06-1549-ra-soat-thoi-gian-workflow-preview.4f84c2371a5d4aa28302ae2ce26e847a.html",
+  "specification": {
+    "sha256": "bb6b5be3f74f4631dc0afce57d6f73b2fd38629997c05ba212b7e890430c6b0c",
+    "bytes": 1285
+  },
+  "artifact": {
+    "sha256": "4b0e186f700cc39f69f882d302139ae51b836de1efeae13123e73a731238fb3e",
+    "bytes": 832848
+  },
+  "explainer": {
+    "preparedSha256": "e41322f5ef27ad0a0aead80fcb06017c0de0a28f1caf02248dd5997a856adc40",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-audit",
+        "inline": true,
+        "sha256": "e617b88556b2412c5ca2b6ad83d79283168680be7f7ef4631fd35d14d017be5f",
+        "bytes": 746
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-audit",
+        "inline": true,
+        "sha256": "ff061d8b245bd802fe8e443fabc15d3bc9681606276f5893a0476c7d62595878",
+        "bytes": 884
+      }
+    ]
+  }
+}
