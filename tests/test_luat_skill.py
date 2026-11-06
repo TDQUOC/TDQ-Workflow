@@ -95,6 +95,25 @@ class BangLuatTest(unittest.TestCase):
                 self.assertTrue(os.path.exists(os.path.join(ROOT, p)), p)
 
 
+class UuTienPlanSpecTest(unittest.TestCase):
+    def test_lech_nho_khong_dung_va_giu_gate(self):
+        path = os.path.join(ROOT, "skills", "tdq-build", "SKILL.md")
+        with open(path, encoding="utf-8") as skill:
+            law = skill.read()
+        for phrase in ("follow the approved plan", "approved spec takes priority",
+                       "`lech add`", "Only blocker commits"):
+            self.assertIn(phrase.casefold(), law.casefold())
+
+
+class GoalHuongDanTest(unittest.TestCase):
+    def test_goal_chi_huong_dan_khi_nguoi_dung_xac_nhan(self):
+        path = os.path.join(ROOT, "skills", "tdq-build", "SKILL.md")
+        with open(path, encoding="utf-8") as skill:
+            law = skill.read()
+        for phrase in ("`/goal`", "user confirms", "task", "DoD", "QC", "not start"):
+            self.assertIn(phrase, law)
+
+
 class KhoaLuatTest(unittest.TestCase):
     """Phần chính: mọi điểm neo phải còn nguyên trong file skill thật."""
 

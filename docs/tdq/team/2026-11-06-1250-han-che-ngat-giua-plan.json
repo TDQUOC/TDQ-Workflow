@@ -1,0 +1,52 @@
+{
+  "slug": "2026-11-06-1250-han-che-ngat-giua-plan",
+  "plan_file": "docs\\tdq\\plan\\2026-11-06-1250-han-che-ngat-giua-plan.md",
+  "plan_sha": "1984aec1b1aa1ecef7fbecb75edd5906e4ee4054402b5e18007e71f8cfe6809e",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "b77d09c910940963963c96b0596b0c906db8d18f18baeadba602e746b1dfff39",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "hooks/scripts/stop_gate.py",
+        "tests/test_stop_gate.py"
+      ],
+      "dot": 1
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/session_start.py",
+        "tests/test_context_hooks.py",
+        "tests/test_prompt_context.py",
+        "hooks/scripts/prompt_context.py"
+      ],
+      "dot": 2
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/SKILL.md"
+      ],
+      "dot": 3
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/SKILL.md"
+      ],
+      "dot": 4
+    },
+    "T4.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 5
+    }
+  }
+}

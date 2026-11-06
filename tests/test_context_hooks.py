@@ -594,6 +594,8 @@ class TestSessionStartCheckpointO10(unittest.TestCase):
         self.assertIn("owner=subagent", out)
         self.assertIn("doing=T1.1", out)
         self.assertIn("dispatched=T1.2", out)
+        self.assertIn("resume_task=T1.1", out)
+        self.assertIn("check tool/receipt before retry", out)
         self.assertIn("worktree=root", out)
         self.assertIn("plan=docs/tdq/plan/2026-10-17-test-o10.md", out)
         self.assertIn("Core anti-patterns: ANTI-1", out)
@@ -612,6 +614,32 @@ class TestSessionStartCheckpointO10(unittest.TestCase):
         self.assertIn("owner=main", out)
         self.assertIn("doing=none", out)
         self.assertIn("dispatched=none", out)
+
+    def test_anchor_resume_first_open_task_when_none_in_progress(self):
+        plan_rel = "docs/tdq/plan/2026-10-17-first-open.md"
+        write_file(self.cwd, plan_rel,
+                   "- [x] **T1.0** done\n- [ ] **T1.1** next\n- [ ] **T1.2** later\n")
+        write_state(self.cwd, active_request="2026-10-17-first-open", lane="full",
+                    phase="implement", plan_file=plan_rel)
+        rc, out, _ = run_hook("session_start.py", {
+            "cwd": self.cwd, "session_id": "s-first-open", "source": "resume"
+        })
+        self.assertEqual(rc, 0)
+        self.assertIn("resume_task=T1.1", out)
+
+    def test_anchor_dispatched_task_not_replayed(self):
+        plan_rel = "docs/tdq/plan/2026-10-17-dispatched.md"
+        write_file(self.cwd, plan_rel,
+                   "- [>] **T1.1** waiting\n- [ ] **T1.2** later\n")
+        write_state(self.cwd, active_request="2026-10-17-dispatched", lane="full",
+                    phase="implement", plan_file=plan_rel)
+        rc, out, _ = run_hook("session_start.py", {
+            "cwd": self.cwd, "session_id": "s-dispatched", "source": "compact"
+        })
+        self.assertEqual(rc, 0)
+        self.assertIn("dispatched=T1.1", out)
+        self.assertIn("resume_task=wait:T1.1", out)
+        self.assertNotIn("resume_task=T1.2", out)
 
     def test_anchor_worktree_detection(self):
         """Phát hiện chính xác môi trường worktree tách biệt."""
