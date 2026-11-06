@@ -16,7 +16,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 
 **Lệch spec chờ duyệt:** Không có.
 
-**Git:** Chưa commit thay đổi của request, chưa merge về `dev`, chưa push.
+**Git:** Đã commit `3442ed24`, merge về `dev` tại `22e17c48`; chưa push, chưa cập nhật `main`.
 
 ## Thời gian
 
@@ -47,5 +47,5 @@ Transcript attribution: project_window. Complete covers selected supported obser
 **Rủi ro hồi quy:** Hint sai khi plan hỏng, block lặp; test giữ fallback, pause, task `[>]`, trần 3 và reset khi tick.
 <!-- tdq-archify-binding:start -->
 <!-- manifest: 2026-11-06-1250-han-che-ngat-giua-plan.manifest.json -->
-<!-- manifest_digest: d40da62728cc7645268f6e5a610c97244d2014ea0d3c9a72d848bba34255adf6 -->
+<!-- manifest_digest: 140780c0dd258bc13509beec7613cae16dc1b0f7f5491b82ccf11a76e0cfc4fe -->
 <!-- tdq-archify-binding:end -->

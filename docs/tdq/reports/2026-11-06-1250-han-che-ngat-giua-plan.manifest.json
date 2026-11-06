@@ -5,7 +5,7 @@
   "evidence_kind": "working-tree",
   "revision": null,
   "document_path": "docs/tdq/reports/2026-11-06-1250-han-che-ngat-giua-plan.md",
-  "document_digest": "c8b71b301712b3d80f11401839ecec1eddcdc1e360ef7bfc629e3296816bfc3a",
+  "document_digest": "5879ae29e4e628ee9e480173a889651534240d38f0d2d3e0e9169a5d5811d5ab",
   "candidate_path": "docs/tdq/artifacts/2026-11-06-1250-han-che-ngat-giua-plan/bao-cao.archify.md",
   "candidate_digest": "16c424c174257739e9950db5966eaa546aba695a3c07f7aab70390ab22549d65",
   "artifact_path": "docs/tdq/reports/2026-11-06-1250-han-che-ngat-giua-plan.html",
@@ -3732,7 +3732,7 @@
     "scripts/utf8_io.py": "877b1d17abec12356c0a63d71b9cd1be27e6a8bf5752f1683d0518976779f513",
     "skills/tdq-browser-research/SKILL.md": "5a0f0e3b89f5958eb79b815ac22b658e6a8bc121bd49b4950bfc3087b5819881",
     "skills/tdq-browser-test/SKILL.md": "45afb7ab46cca9b46462f794ef9366305bc226d105c2db69293b6d6da1457e0a",
-    "skills/tdq-build/SKILL.md": "2b9881d753b8e65ce0236edf6aaace9e9c2ddd5a0ea685f7e7bfe449d8d17c92",
+    "skills/tdq-build/SKILL.md": "75c741132bc85a670a425d463f4fbd651a29fb91ccb5ecc2baa50427279f6ad3",
     "skills/tdq-build/references/archify-lifecycle.md": "95bf8ff73946096f1950ab5ba37c64c3a68aaf45b67361a133b7f972138b7d12",
     "skills/tdq-build/references/codex-mode.md": "e286d113878265cbf251292bf29ef50b592fbd639fa65aacd7b78d6f00ef6049",
     "skills/tdq-build/references/qc.md": "17d177c6bd7824d46070d31ca994a3f930b323814b59e669df5b7cfd4dc4121d",
@@ -4061,7 +4061,7 @@
       "bytes": 2719
     },
     "artifact": {
-      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
       "sha256": "7495a7d9f076f0aa5844af14134995dc63d66c8bba78ed2065609c86ec04deda",
       "bytes": 862583
     },
@@ -4078,11 +4078,11 @@
       "truncated": false
     },
     "evidence": {
-      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.finalize.json",
-      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.finalize-summary.json"
+      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.finalize.json",
+      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.finalize-summary.json"
     },
     "visualReview": "not-requested",
-    "durationMs": 2345,
+    "durationMs": 1956,
     "browserCheck": {
       "requested": false,
       "ran": false

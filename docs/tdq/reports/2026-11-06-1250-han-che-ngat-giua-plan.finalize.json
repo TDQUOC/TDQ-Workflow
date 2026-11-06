@@ -5,14 +5,14 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-06T07:18:27.887Z",
+  "startedAt": "2026-11-06T07:25:15.419Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\bao-cao.archify.md",
     "sha256": "16c424c174257739e9950db5966eaa546aba695a3c07f7aab70390ab22549d65",
     "bytes": 2719
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
     "sha256": "7495a7d9f076f0aa5844af14134995dc63d66c8bba78ed2065609c86ec04deda",
     "bytes": 862583
   },
@@ -27,12 +27,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\14984_1793946549668\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\30904_1793949757165\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1085,
+      "durationMs": 937,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\14984_1793946549668\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\30904_1793949757165\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\bao-cao.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "c9a47064-534d-44b8-974d-7beb23276c01",
+        "receiptId": "bba719bf-b382-405e-a374-ae1d52d0a098",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1250-han-che-ngat-giua-plan\\bao-cao.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
         "explainer": {
-          "preparedSha256": "c0414812ee8c8d48a310c65d65986744387760830aad83b225f2dac7c0d3fc81",
+          "preparedSha256": "4791b8e7457e7173ba0b0fd4f117c47f63fafec9b2e2da9cb34635eea93f4bb8",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -133,17 +133,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 571,
+      "durationMs": 470,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\14984_1793946549668\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\30904_1793949757165\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.html",
         "family": "explainer",
         "artifact": {
           "sha256": "7495a7d9f076f0aa5844af14134995dc63d66c8bba78ed2065609c86ec04deda",
@@ -192,7 +192,7 @@
               "id": "truoc-bao-cao",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-RsrOus\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-HUFtO8\\child.html",
                 "artifact": {
                   "sha256": "b3c4e522b4c42c2528b4627fe717b4479885e9d8a8cf38348404a5a36b12da20",
                   "bytes": 809621
@@ -319,7 +319,7 @@
               "id": "sau-bao-cao",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-52NmEe\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-cbhD4W\\child.html",
                 "artifact": {
                   "sha256": "3c15c4531e635a0d0cda695c7a7d5c503ab5f5c2e49d6453cb8413fd461801ac",
                   "bytes": 810536
@@ -444,7 +444,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "c9a47064-534d-44b8-974d-7beb23276c01"
+        "deliveryReceiptId": "bba719bf-b382-405e-a374-ae1d52d0a098"
       }
     }
   },
@@ -454,12 +454,12 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.f31f147f49e748709a2c196e8ce5daf2.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1250-han-che-ngat-giua-plan.ff5e62f3399c46eaa17523032fd13dba.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-06T07:18:30.233Z",
-  "durationMs": 2345,
+  "finishedAt": "2026-11-06T07:25:17.376Z",
+  "durationMs": 1956,
   "update": {
     "status": "unavailable",
     "installedVersion": null,
