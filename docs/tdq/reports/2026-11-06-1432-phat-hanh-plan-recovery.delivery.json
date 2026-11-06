@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "16f37486-cca8-4b53-b15c-3c8767e15735",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1432-phat-hanh-plan-recovery\\bao-cao.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1432-phat-hanh-plan-recovery.7b73c9e08e3346c4b85d7668902ecfd1.html",
+  "specification": {
+    "sha256": "ed2353d0406d8aacf77c907f33aee3e5487c8f337aa2e8ae9f7103b0fa047fec",
+    "bytes": 1738
+  },
+  "artifact": {
+    "sha256": "43720bea0c7800268db34309fa8d517cd0025c1834773c5a2c165ac50d12ce3c",
+    "bytes": 844307
+  },
+  "explainer": {
+    "preparedSha256": "dca6d44c7c1291549da56b9a22931eabee0d410d58fa6a07a037200bbad5cf70",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "truoc-publish",
+        "inline": true,
+        "sha256": "6e5717fef7c22d2fddf70c7fbb1d916664d630e0abd997882aa0aa1d4c055d11",
+        "bytes": 821
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "sau-publish",
+        "inline": true,
+        "sha256": "975b15270765ca1b33e012a0be62b223fe7d342dd4733ee55598dc2f03f57146",
+        "bytes": 770
+      }
+    ]
+  }
+}
