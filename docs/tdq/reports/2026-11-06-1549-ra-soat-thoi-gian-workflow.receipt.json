@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-06-1549-ra-soat-thoi-gian-workflow\\truoc-sau.archify.md",
+    "sha256": "bb6b5be3f74f4631dc0afce57d6f73b2fd38629997c05ba212b7e890430c6b0c",
+    "bytes": 1285
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1549-ra-soat-thoi-gian-workflow.a617f2e21ea54a39a140a8d0b1a67e6b.html",
+    "sha256": "4b0e186f700cc39f69f882d302139ae51b836de1efeae13123e73a731238fb3e",
+    "bytes": 832848
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1549-ra-soat-thoi-gian-workflow.a617f2e21ea54a39a140a8d0b1a67e6b.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-06-1549-ra-soat-thoi-gian-workflow.a617f2e21ea54a39a140a8d0b1a67e6b.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1958,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

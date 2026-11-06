@@ -1,0 +1,36 @@
+{
+  "slug": "2026-11-06-1549-ra-soat-thoi-gian-workflow",
+  "plan_file": "docs\\tdq\\plan\\2026-11-06-1549-ra-soat-thoi-gian-workflow.md",
+  "plan_sha": "1cc45123a6d26b2a35071fa8dd82e371aa0f1413739fb769f034a03aae67a825",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "6f5beae7adbe5bac8fe7034522bdbe77390a82624939744c457db73bb93b1858",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "vung-khoa",
+      "vung_file": [],
+      "dot": 3
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-11-06-1549-ra-soat-thoi-gian-workflow.html"
+      ],
+      "dot": 4
+    }
+  }
+}
