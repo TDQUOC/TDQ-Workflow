@@ -2,6 +2,23 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.94.0 — 2026-11-06
+
+Giảm khả năng dừng giữa plan trên Claude Code và làm rõ cách khôi phục công việc.
+
+- Stop hook nhắc mã task và `Test:` đang cần làm; sau ba lần plan không tiến triển, báo task/số việc còn mở rồi cho dừng an toàn, không lặp vô hạn.
+- SessionStart ở resume/compact nhắc task `[~]` hoặc task đầu `[ ]`; task `[>]` đang giao trợ lý thì chờ thay vì chạy trùng.
+- Luật build ưu tiên plan, lấy spec đã duyệt làm chuẩn khi xung đột; lệch nhỏ dùng `lech add` rồi tiếp tục. `/goal` chỉ là tùy chọn người dùng chủ động bật, không tự chạy model đánh giá.
+- Kiểm thử: full fresh 4.180 passed, 7 skipped, 2.724 subtests; 4.187 case ID, receipt PASS. Chưa đo hiệu quả trên model nhỏ ngoài thực địa; không cứu API/tool treo giữa lượt.
+
+## 0.93.0 — 2026-11-06
+
+Eval cho thay đổi skill/hook/plugin chuyển sang opt-in, chỉ kích hoạt khi người dùng yêu cầu và đồng ý.
+
+- Thêm `tdq_state.py eval-enable --by "<lời người dùng>"` ghi sự đồng ý và thời điểm vào state; trước khi bật, gate `implement`/`report` không chặn. Khi bật, gate vẫn kiểm eval-plan và chứng cứ như cũ.
+- Bỏ `eval-waive`; state cũ còn khóa `eval_waiver` vẫn đọc được nhưng khóa này không còn hiệu lực. Đồng bộ luật intake/spec/plan/build/QC và tài liệu đánh giá.
+- Kiểm thử: full fresh 4.168 passed, 7 skipped, 2.724 subtests; vùng chạm 2.068 passed, 2 skipped; eval model chưa kích hoạt (opt-in), không có kết luận hiệu quả model.
+
 ## 0.92.0 — 2026-11-05
 
 Khắc phục tự động MCP plugin `tdq-workflow` bị đứt trên Claude Desktop sau update.
@@ -468,33 +485,7 @@ lần đọc trang tải ở lúc viết spec là bắt được. Báo cáo:
 - **Hook `ask_gate.py` (`TDQ:ASK`).** Nó nhắc khi agent hỏi user bằng popup ở implement/qc —
   đường dừng mà cổng Stop không thấy. Chỉ nhắc, không chặn, không trả quyết định quyền.
 
-## 0.55.0 — 2026-10-03
-
-Luật tìm kiếm 4 tầng giờ được **cưỡng chế**, không chỉ được nhắc. Soi một phiên thật trên
-excalidraw: ~20 lần grep qua 4 request, 0 lần hỏi lumen hay LSP cho tới khi user phải hỏi luật.
-Báo cáo: `docs/tdq/reports/2026-10-03-0015-ep-luat-tim-kiem.md`.
-
-- **Cổng tìm kiếm (`hooks/scripts/search_gate.py`, mã `TDQ:SEARCH`).** `PreToolUse` trên
-  `Bash|Grep|PowerShell` **chặn** lần tìm code đi tắt tầng khái niệm. Request chưa hỏi
-  lumen/LSP/graphify → chặn. Một lần hỏi mở khoá 10 lần tìm; sau đó grep kiểu đoán mò bị chặn
-  lại. Miễn: lọc danh sách file, và tên có nguyên văn trong prompt. Phát lại phiên excalidraw:
-  bắt 11, bắt oan 0, lọt 0. Đây là một điểm chặn mới — quyết định ghi ở `docs/kien-truc.md`.
-- **Không kẹt.** Cổng đứng xuống khi tầng khái niệm chưa dựng xong hoặc mốc báo không tầng nào
-  sẵn sàng. Nó cũng đứng xuống sau 3 lần chặn mà request chưa ghi được lần hỏi nào. Mỗi lần đứng
-  xuống, nó nói ra một lần mỗi lượt.
-- **Codex có cùng cổng.** Codex đã bỏ hook đi theo plugin, nên `tdq-setup` ghi `.codex/hooks.json`
-  cấp project bằng đường tuyệt đối; khi plugin lên bản, entry cũ được sửa tại chỗ, không nhân
-  đôi. `tdq-setup` cũng khai MCP lumen + LSP qua `codex mcp add` — chỉ thêm, có backup.
-- **Tự dựng bộ tìm kiếm.** `SessionStart` ở một project thật (có `.git`) chưa sẵn sàng sẽ khởi
-  động dựng nền tách rời, có khoá pid chống chạy chồng; tắt bằng `TDQ_KHOI_TAO_NEN=0`.
-- **Thang kiểm thật hơn.** Bậc 3 khởi động language server thật; smoke grep theo ngôn ngữ thật
-  của project; thang 8 bậc + smoke 4 tầng chạy bằng một lệnh.
-- **Đường dẫn tuyệt đối trong output hook** khi project không có `scripts/` của plugin — lệnh in
-  ra ở project khác giờ chạy được nguyên văn.
-- **`scripts/search_replay.py`** phát lại một transcript qua đúng luật của cổng, để đo lại N khi
-  có thêm phiên thật.
-
 ## Lịch sử cũ hơn
 
-Bản 0.54.0 đến 0.37.0: `docs/CHANGELOG-archive-2.md`; bản 0.36.0 trở xuống:
+Bản 0.55.0 đến 0.37.0: `docs/CHANGELOG-archive-2.md`; bản 0.36.0 trở xuống:
 `docs/CHANGELOG-archive.md`. Tách để giữ file chính dưới 500 dòng; chữ nghĩa giữ nguyên.

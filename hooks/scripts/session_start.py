@@ -302,17 +302,27 @@ def main():
         owner = state.get("implement_mode") or "main"
         pts = plan_tick_state(cwd)
         doing_tasks = []
+        first_open = None
         if pts.get("path") and os.path.isfile(str(pts["path"])):
             try:
                 with open(str(pts["path"]), encoding="utf-8") as f:
                     for line in f:
                         m = _TASK_LINE.match(line)
-                        if m and m.group(1) == "~":
+                        if not m:
+                            continue
+                        if m.group(1) == "~":
                             doing_tasks.append(m.group(2))
+                        elif m.group(1) == " " and first_open is None:
+                            first_open = m.group(2)
             except OSError:
                 pass
         doing_str = ",".join(doing_tasks) or "none"
         dispatched_str = ",".join(pts.get("dispatched_ids", [])) or "none"
+        resume_task = (doing_tasks[0] if doing_tasks else
+                       f"wait:{pts['dispatched_ids'][0]}" if pts.get("dispatched_ids") else
+                       first_open)
+        resume_hint = (f" resume_task={resume_task}; check tool/receipt before retry"
+                       if pha == "implement" and resume_task else "")
         row = phase_row(state)
         next_hint = row.get("cmd") or row.get("action") or "none"
 
@@ -331,7 +341,7 @@ def main():
         label = "Compact recovery:" if src == "compact" else f"{src.capitalize()} recovery:"
         anchor_block = (
             f"[TDQ:ANCHOR] {label} request={req} phase={pha} source={src} owner={owner} "
-            f"plan={plan_f} doing={doing_str} dispatched={dispatched_str} next={next_hint} worktree={wt_str}\n"
+            f"plan={plan_f} doing={doing_str} dispatched={dispatched_str}{resume_hint} next={next_hint} worktree={wt_str}\n"
             f"MCP-First: ưu tiên MCP & bộ skill MCP, pre-flight check kết nối; LSP-Autonomy: toàn quyền tự quyết gate LSP (--bo-qua-lsp cho doc/research/internal-ref), tự tìm & cài dependency LSP thiếu, không hỏi người dùng.\n"
             f"Core anti-patterns: ANTI-1 (no fake red) · ANTI-2 (no blind assert) · ANTI-3 (clean git state) · "
             f"ANTI-4 (tick before code) · ANTI-5 (cap logs <= 15 lines) · ANTI-6 (explicit files in Cham)."

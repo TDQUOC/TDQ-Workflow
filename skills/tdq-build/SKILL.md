@@ -5,8 +5,8 @@ description: Run an approved TDQ plan end to end in one turn, QC it against the 
 
 # TDQ Build — Implement → QC → Report
 <!-- muc-luc-dong:
-  Hard rules (all three phases)=15-75 · Part A — Implement (phase `implement`)=76-143 ·
-  Part B — QC (phase `qc`)=144-160 · Part C — Report (phase `report`)=161
+  Hard rules (all three phases)=15-73 · Part A — Implement (phase `implement`)=74-141 ·
+  Part B — QC (phase `qc`)=142-158 · Part C — Report (phase `report`)=159
 -->
 
 Load [tdq-conventions](../tdq-conventions/SKILL.md). Requires `plan_approved = true`.
@@ -18,6 +18,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
   turn.** Do not make the user send another message, do not stop halfway to ask "shall I
   continue". The ONLY stops are the four `pause --loai` kinds below, plus a missing/ambiguous
   `implement_mode`.
+- **Optional `/goal` for long plans.** Before build, offer a checkable condition bound to the request's plan: task and DoD boxes ticked, QC receipt valid, or an authorized `pause` explaining a genuine blocker. Only after the user confirms, show how they can start `/goal` in this session; do not start it yourself, spawn another session, or promise completion. Its small-model evaluator costs tokens and may stop on errors/no progress. Never push without approval.
 - **The end of the turn is gated, not merely asked for.** While the phase is `implement` and
   the plan still has an open task, the Stop hook refuses to close the turn with
   `[TDQ:UNFINISHED]` and pushes you to keep going. A real force-majeure stop → run
@@ -27,14 +28,11 @@ This skill owns three phases: `implement` → `qc` → `report`.
   access, broken tool, no workaround) · `pha-huy` (destructive or hard-to-undo beyond a commit:
   data deletion, DB schema, public API, push/publish) · `dau-vao-user` (secret, account, payment,
   adding/dropping a spec §2 output) · `tran-qc` (QC fix loop hit its 3-round cap).
-- **An unreachable spec threshold is NOT a stop.** Apply that §6 row's fallback column (none →
-  the option you would recommend), record it with the state command `lech add` (its flags:
-  `--q --nguong --do --chon --ly-do`), finish the plan; the report asks for approval of each.
-  Asking mid-run (a question popup too) is the failure this removes; `[TDQ:ASK]` reminds you.
+- **Plan before drift.** Follow the approved plan; if it conflicts with the approved spec, the approved spec takes priority. An unreachable threshold or small drift is NOT a stop: use the §6 fallback (none → recommended option), record `lech add` (`--q --nguong --do --chon --ly-do`), finish the plan, and ask for deviation approval at report. Never silently drop a spec §2 output, safety test, permission gate, or data protection; `[TDQ:ASK]` reminds against mid-run questions.
 - **Technical blocker → take the proposed option, do not ask.** When an option exists, TAKE
   IT, write one decision line plus the reason into the working log, and carry on. You may
   COMMIT ON YOUR OWN to clear a blocker (message describing the change, NO push, and list that
-  commit in the report).
+  commit in the report). Only blocker commits are allowed mid-run; small drift alone does not require one.
 - **Tick immediately.** Starting a task marks it `- [~]`; a passing test turns it into
   `- [x]` BEFORE the next task starts. Never batch ticks at the end of a turn. Three states:
   `[ ]` not started · `[~]` in progress · `[x]` done. The `[~]` mark is the only thing that
@@ -69,7 +67,7 @@ This skill owns three phases: `implement` → `qc` → `report`.
   top of that file gives the exact line range, so the whole file never has to be read.
   It is a soft rule: reaching for grep on a symbol without trying LSP first is a QC defect, not a
   blocked edit. `mcp__lsp__*` missing → say so in one line, fall through to graphify, then grep.
-- **No placeholders; eval gate.** Skill changes require valid eval-plan and certified evidence per [references/skill-eval.md](references/skill-eval.md); do not stub.
+- **No placeholders; eval is opt-in.** Eval never opens by itself: run it only when the user asks and agrees (`tdq_state.py eval-enable --by "<user words>"`); until then the report says one line `eval: chưa kích hoạt (opt-in)`. Once enabled, see [references/skill-eval.md](references/skill-eval.md); do not stub.
 - **If a subagent is running, wait it out**, or set a trigger to resume automatically. Never
   end the turn while one is still running.
 
