@@ -187,7 +187,14 @@ def full_pairs(repo, output, *, pairs=3, workers=(1, 2), reuse="off", simulation
         row.update(result_path=artifact["path"], result_sha256=artifact["sha256"])
         report["samples"].append(row)
         write_report(output, report)
-    report["recommendation"] = {"workers": 1, "reason": "Serial until paired evidence meets threshold"}
+    first = [r["wall_seconds"] for r in report["samples"] if r.get("workers") == 1]
+    second = [r["wall_seconds"] for r in report["samples"] if r.get("workers") == 2]
+    summary = performance_summary(first, second, .2) if first and second else {}
+    if summary.get("met"):
+        report["recommendation"] = {"workers": 2, "scope": "hermetic-only",
+                                    "reason": f"Workers=2 speedup {summary['reduction']:.1%} >= 20% with complete parity"}
+    else:
+        report["recommendation"] = {"workers": 1, "reason": "Serial until paired evidence meets threshold"}
     return _finish(repo, output, report, environment)
 
 
@@ -349,8 +356,17 @@ def cache_pairs(repo, output, *, pairs=3, readiness_fixture=False,
     if sources:
         _cache_group(report, raw, output, "transcript-real", pairs,
                      lambda request, mode: _transcript_call(repo, sources, request, mode), "real-transcripts")
-    report["recommendation"] = {"cache_modes": {"reuse": "off", "readiness": "off", "transcript": "off"},
-                                "reason": "Keep defaults off; recommendations require measured valid pairs"}
+    groups = {row.get("group") for row in report["samples"]}
+    perf = {group: _cache_performance([row for row in report["samples"] if row.get("group") == group])
+            for group in sorted(groups)}
+    promoted = {group: "auto" for group, s in perf.items() if s.get("met") and s.get("reduction", 0) >= 0.25}
+    modes = {m: promoted.get(m, "off") for m in ("reuse", "readiness", "transcript")}
+    if any(mode == "auto" for mode in modes.values()):
+        report["recommendation"] = {"cache_modes": modes, "scope": "hermetic-only",
+                                    "reason": "Promoted hermetic cache modes meeting warm reduction >= 25%"}
+    else:
+        report["recommendation"] = {"cache_modes": {"reuse": "off", "readiness": "off", "transcript": "off"},
+                                    "reason": "Keep defaults off; recommendations require measured valid pairs"}
     return _finish(repo, output, report, environment)
 
 
