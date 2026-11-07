@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "ok": true,
+  "ok": false,
   "command": "finalize",
-  "status": "pass",
+  "status": "fail",
   "type": "architecture",
   "quality": "showcase",
   "specification": {
@@ -11,7 +11,7 @@
     "bytes": 4466
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\optimization-report.html",
     "sha256": "25e0219714bb2065bc3b7394b6f06a8ec4af1c8ac1b7b6c0521a39db0cda34f5",
     "bytes": 820910
   },
@@ -19,31 +19,22 @@
     "validate": "pass",
     "deliver": "pass",
     "check": "pass",
-    "browser-check": "pass"
+    "browser-check": "fail"
   },
+  "failedStage": "browser-check",
   "diagnostics": [
     {
-      "code": "i18n/locale-fallback",
-      "severity": "warning",
-      "message": "meta.locale \"vi\" has no bundled catalog and no usable meta.translations; the Viewer chrome and <html lang> fall back to English.",
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
       "subject": {
-        "diagramType": "architecture",
-        "path": "/meta/locale"
+        "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\optimization-report.html"
       },
       "evidence": {
-        "locale": "vi",
-        "bundledLocales": [
-          "en",
-          "zh-CN",
-          "zh-TW",
-          "es",
-          "ko",
-          "ar"
-        ]
+        "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=39084, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
       },
       "supportedFixes": [
-        "Supply meta.translations for this locale.",
-        "Use a bundled locale: en, zh-CN, zh-TW, es, ko, ar."
+        "resolve the reported Chrome inspection error, then rerun browser-check"
       ]
     }
   ],
@@ -53,14 +44,14 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\optimization-report.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\optimization-report.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\optimization-report.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\optimization-report.browser-check.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 3162,
+  "durationMs": 1391,
   "browserCheck": {
     "requested": true,
-    "ran": true
+    "ran": false
   }
 }

@@ -1,0 +1,10 @@
+{
+  "request": "2026-11-07-0928-toi-uu-runtime-toan-dien",
+  "timestamp": 1794026711.9660769,
+  "source_fingerprint": "dev-HEAD",
+  "environment": "win32-python3",
+  "samples": {
+    "lsp_check": "PASS",
+    "runtime_smoke": "PERFORMANCE_MET"
+  }
+}

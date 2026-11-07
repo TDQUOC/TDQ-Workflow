@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "ff19b8fe-cd21-4f45-b137-70e5d3b3d56f",
+  "receiptId": "d40fec7e-d745-44a5-a620-7e4e44907454",
   "status": "current",
   "command": "deliver",
   "type": "architecture",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\runtime-verification.json",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\runtime-verification.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\runtime-verification.html",
   "specification": {
     "sha256": "6cdfbc0286fe2098905d2ca3fc35f267482d34a17e2148faed1971d93cd0e90e",
     "bytes": 4891

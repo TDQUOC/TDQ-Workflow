@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-07-0928-toi-uu-runtime-toan-dien\\truoc-sau.archify.md",
+    "sha256": "1ab9cc64b3becddeb7f750ad4351a91f2083ed6cbbb2c3b5f6cd308489e4553c",
+    "bytes": 1858
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-07-0928-toi-uu-runtime-toan-dien.ccfe621d98404741914af77c681f7820.html",
+    "sha256": "e3253df92bb141b4e4d70328b051e8c1a87b4c77122c49af4622a3816892b182",
+    "bytes": 857485
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 57 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-07-0928-toi-uu-runtime-toan-dien\\truoc-sau.archify.md",
+        "line": 33,
+        "component": "prose",
+        "panelId": "sau"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 57 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 57,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-07-0928-toi-uu-runtime-toan-dien.ccfe621d98404741914af77c681f7820.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-07-0928-toi-uu-runtime-toan-dien.ccfe621d98404741914af77c681f7820.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2017,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

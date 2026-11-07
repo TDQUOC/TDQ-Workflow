@@ -1,0 +1,162 @@
+.............................................. [  1%]
+................................................................... [  2%]
+.................................................................. [  4%]
+............................................................................................................................................... [  7%]
+................................................ [  8%]
+............................................ [  9%]
+................................................. [ 11%]
+........................................................ [ 12%]
+......................................... [ 13%]
+........................................................ [ 14%]
+............................................ [ 15%]
+................................................................................ [ 17%]
+....................................................................... [ 19%]
+....ss......................................... [ 20%]
+............................. [ 21%]
+...................................................... [ 22%]
+........................................................................ [ 24%]
+F....................................................................... [ 26%]
+.................................................. [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 30%]
+........................................................................ [ 32%]
+.......................... [ 33%]
+............................................................. [ 34%]
+............................................ [ 35%]
+.................................................................................................... [ 37%]
+............................. [ 38%]
+......FF.................................................................................................EE.. [ 41%]
+.......F..F.F............................................................................................................................................................................... [ 45%]
+...............................................FF............ [ 47%]
+.............................................................. [ 48%]
+........................................................................ [ 50%]
+........................................................................ [ 52%]
+....................................................................................................................................................................... [ 56%]
+................................................................ [ 57%]
+.......................................................................... [ 59%]
+........................................................................ [ 61%]
+................................................. [ 62%]
+....................................................... [ 63%]
+......................................................................................... [ 65%]
+..................................................... [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+................................................................ [ 73%]
+.......................................................................................................................... [ 76%]
+.................................................................... [ 78%]
+........................................ [ 79%]
+..................s..................................................... [ 81%]
+....................................................................................................... [ 83%]
+.............................................. [ 84%]
+.............s.......................................................... [ 86%]
+............................................................ [ 87%]
+.....................................................................s [ 89%]
+......................................................................................................... [ 92%]
+.......................................................... [ 93%]
+........s..s................................................. [ 94%]
+........................................................................ [ 96%]
+........................................................ [ 97%]
+....................... [ 98%]
+................................... [ 99%]
+............................                    [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of test_mixed_identity_and_legacy_verdict_survive_summary_and_export _
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'tron-bo', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\pytest\\mixed-report-contract0', '--workers', '1', '--fresh', '--reuse', 'off', '--silent']' timed out after 45 seconds
+_ ERROR at setup of test_generated_portable_report_runs_outside_project_without_jobs _
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'tron-bo', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\pytest\\mixed-report-contract0', '--workers', '1', '--fresh', '--reuse', 'off', '--silent']' timed out after 45 seconds
+================================== FAILURES ===================================
+E   AssertionError: True is not false : report: kh\u1ed1i \u0111\u1ea7u b\u1ecb c\u1eaft tr\u1ea7n
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:738: AssertionError: True is not false : report: kh\u1ed1i \u0111\u1ea7u b\u1ecb c\u1eaft tr\u1ea7n
+E   AssertionError: Lists differ: ['C:\\Users\\admin\\Documents\\Projects\\F[416 chars].md'] != []
+    
+    First list contains 4 additional elements.
+    First extra element 0:
+    'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\skills\\tdq-build\\references\\qc.md'
+    
+    + []
+    - ['C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\skills\\tdq-build\\references\\qc.md',
+    -  'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\skills\\tdq-build\\references\\report-template.md',
+    -  'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\skills\\tdq-build\\references\\vision-test-loop.md',
+    -  'C:\\\\Users\\\\admin\\\\Documents\\\\Projects\\\\ForAgentCode\\\\TDQ-Workflow\\\\skills\\\\tdq-conventions\\\\references\\\\soul.md'] : 4 file c\xf3 ch\u1ec9 m\u1ee5c \u0111\xe3 l\u1ec7ch v\u1edbi n\u1ed9i dung
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['C:\\Users\\admin\\Documents\\Projects\\F[416 chars].md'] != []
+E   AssertionError: Lists differ: ['L032 (skills/tdq-build/references/report[75 chars]e r'] != []
+    
+    First list contains 1 additional elements.
+    First extra element 0:
+    'L032 (skills/tdq-build/references/report-template.md:22): limit; ~10-20 lines recommended. Template: section `## The r'
+    
+    + []
+    - ['L032 (skills/tdq-build/references/report-template.md:22): limit; ~10-20 '
+    -  'lines recommended. Template: section `## The r'] : 1 lu\u1eadt bi\u1ebfn m\u1ea5t kh\u1ecfi skill:
+    L032 (skills/tdq-build/references/report-template.md:22): limit; ~10-20 lines recommended. Template: section `## The r
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\unittest\case.py:732: AssertionError: Lists differ: ['L032 (skills/tdq-build/references/report[75 chars]e r'] != []
+E   AssertionError: 6.68693009118541 not less than 5.0 : 22/329 d\xf2ng l\u1ec7ch (6.7%) \u2014 d\u1ef1ng l\u1ea1i luat-hien-co.md
+C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\unittest\\case.py:732: AssertionError: 6.68693009118541 not less than 5.0 : 22/329 d\xf2ng l\u1ec7ch (6.7%) \u2014 d\u1ef1ng l\u1ea1i luat-hien-co.md
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-contract-y4mz0v6e\\project', '--files', 'scripts/core.py']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-contract-y4mz0v6e\\project', '--files', 'scripts/core.py']' timed out after 30 seconds
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-contract-_qj53ljq\\project', '--files', 'scripts/core.py', '--silent']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-contract-_qj53ljq\\project', '--files', 'scripts/core.py', '--silent']' timed out after 30 seconds
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-x4386p11\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/uncovered.py']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-x4386p11\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/uncovered.py']' timed out after 30 seconds
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-j_yoiueb\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/uncovered.py']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-j_yoiueb\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/uncovered.py']' timed out after 30 seconds
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-j_yoiueb\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/uncovered.py']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-j_yoiueb\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/uncovered.py']' timed out after 30 seconds
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-t6qp8jr7\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/core.py']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-t6qp8jr7\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/core.py']' timed out after 30 seconds
+E   subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-t6qp8jr7\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/core.py']' timed out after 30 seconds
+C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\subprocess.py:1665: subprocess.TimeoutExpired: Command '['C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', 'C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\scripts\\tdq_test.py', 'vung-cham', '--repo', 'C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-i8262x8s\\workers\\controller\\tmp\\tdq-log-contract-t6qp8jr7\\project', '--silent', '--khong-ep-tron-bo', '--files', 'scripts/core.py']' timed out after 30 seconds
+E   AssertionError: assert ('INCOMPLETE' == 'ERROR'
+      
+      - ERROR
+      + INCOMPLETE)
+---------------------------- Captured stderr call -----------------------------
+[2026-11-05T09:56:40+00:00] tdq_test_process reason=timeout phase=collection exit_code=None wall=30.011333 cleanup=0.002457 cleanup_complete=True
+[2026-11-05T16:56:40+07:00] tdq_test: summary stage=complete cases=0 quality=unavailable status=INCOMPLETE
+[2026-11-05T16:56:40+07:00] tdq_test: tron-bo backend=pytest scope=full status=INCOMPLETE tests_run=0 details_complete=False fallback=none seconds=30.306525499996496 reason=Collection is empty, malformed, duplicated, or incomplete; Run did not complete normally; Pytest did not complete a test run (exit None); Legacy report incomplete: JUnit report is missing or empty; Pytest did not complete a test run (exit None); Report module mapping is incomplete; Process timeout; cleanup verified=True
+C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_runtime_contracts.py:125: AssertionError: assert ('INCOMPLETE' == 'ERROR'
+E   AssertionError: assert ['executed', ...', 'executed'] == ['executed', ...', 'executed']
+      
+      At index 1 diff: 'executed' != 'reused'
+      Use -v to get more diff
+---------------------------- Captured stderr call -----------------------------
+[2026-11-05T09:57:10+00:00] tdq_test_process reason=timeout phase=collection exit_code=None wall=30.011440 cleanup=0.002600 cleanup_complete=True
+[2026-11-05T16:57:10+07:00] tdq_test: summary stage=complete cases=0 quality=unavailable status=INCOMPLETE
+[2026-11-05T16:57:10+07:00] tdq_test: tron-bo backend=pytest scope=full status=INCOMPLETE tests_run=0 details_complete=False fallback=none seconds=30.306291099986993 reason=Collection is empty, malformed, duplicated, or incomplete; Run did not complete normally; Pytest did not complete a test run (exit None); Legacy report incomplete: JUnit report is missing or empty; Pytest did not complete a test run (exit None); Report module mapping is incomplete; Process timeout; cleanup verified=True
+[2026-11-05T09:57:40+00:00] tdq_test_process reason=timeout phase=collection exit_code=None wall=30.006649 cleanup=0.002895 cleanup_complete=True
+[2026-11-05T16:57:40+07:00] tdq_test: summary stage=complete cases=0 quality=unavailable status=INCOMPLETE
+[2026-11-05T16:57:40+07:00] tdq_test: tron-bo backend=pytest scope=full status=INCOMPLETE tests_run=0 details_complete=False fallback=none seconds=30.306869399995776 reason=Collection is empty, malformed, duplicated, or incomplete; Run did not complete normally; Pytest did not complete a test run (exit None); Legacy report incomplete: JUnit report is missing or empty; Pytest did not complete a test run (exit None); Report module mapping is incomplete; Process timeout; cleanup verified=True
+[2026-11-05T09:58:08+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=27.271189 cleanup=0.000054 cleanup_complete=True
+[2026-11-05T09:58:08+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.516327 cleanup=0.000048 cleanup_complete=True
+[2026-11-05T09:58:08.789192+00:00] receipt action=executed reason=fresh
+[2026-11-05T16:58:08+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-05T16:58:08+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=28.105072599995765 reason=Executed tests completed successfully
+[2026-11-05T09:58:09+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.491762 cleanup=0.000050 cleanup_complete=True
+[2026-11-05T09:58:10+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.520314 cleanup=0.000061 cleanup_complete=True
+[2026-11-05T09:58:10.427113+00:00] receipt action=executed reason=cache_miss
+[2026-11-05T16:58:10+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-05T16:58:10+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=1.6322025999979815 reason=Executed tests completed successfully
+[2026-11-05T09:58:11+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.498573 cleanup=0.000059 cleanup_complete=True
+[2026-11-05T09:58:11+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.501742 cleanup=0.000067 cleanup_complete=True
+[2026-11-05T09:58:11.738424+00:00] receipt action=executed reason=reuse_off
+[2026-11-05T16:58:11+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS
+[2026-11-05T16:58:11+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=1.3215447999973549 reason=Executed tests completed successfully
+C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow\tests\test_runtime_contracts.py:165: AssertionError: assert ['executed', ...', 'executed'] == ['executed', ...', 'executed']
+=========================== short test summary info ===========================
+SUBFAILED(phase='report') tests/test_context_hooks.py::TestSessionStart::test_never_truncated_in_any_phase
+FAILED tests/test_doc_index.py::CoMatDuTrenRepo::test_khop_moi_chi_muc_tren_repo_con_dung
+FAILED tests/test_luat_skill.py::KhoaLuatTest::test_moi_luat_con_nguyen_trong_skill
+FAILED tests/test_luat_skill.py::KhoaLuatTest::test_so_dong_ghi_trong_bang_van_tro_dung_cho
+FAILED tests/test_phase1_contract.py::Compatibility::test_mixed_ledger_keeps_scopes_and_full_failure
+FAILED tests/test_phase1_contract.py::RunnerRecovery::test_regression_direct_empty_failure_then_repair_keeps_history
+FAILED tests/test_phase1_logging.py::Phase1Logging::test_ledger_json_stays_clean_with_default_and_disabled_logs
+SUBFAILED(log=None) tests/test_phase1_logging.py::Phase1Logging::test_runner_full_fallback_logs_success_reason
+SUBFAILED(log='0') tests/test_phase1_logging.py::Phase1Logging::test_runner_full_fallback_logs_success_reason
+SUBFAILED(log=None) tests/test_phase1_logging.py::Phase1Logging::test_runner_transitive_fallback_logs_failure_reason
+SUBFAILED(log='0') tests/test_phase1_logging.py::Phase1Logging::test_runner_transitive_fallback_logs_failure_reason
+FAILED tests/test_runtime_contracts.py::test_mixed_failure_survives_artifact_ledger_and_existing_state_consumer
+FAILED tests/test_runtime_contracts.py::test_fresh_off_rollback_revokes_warm_receipt_and_preserves_timing_accounting
+ERROR tests/test_optimize_contracts.py::test_mixed_identity_and_legacy_verdict_survive_summary_and_export
+ERROR tests/test_optimize_contracts.py::test_generated_portable_report_runs_outside_project_without_jobs
+13 failed, 4152 passed, 7 skipped, 2 errors, 2719 subtests passed in 1250.95s (0:20:50)

@@ -1,0 +1,285 @@
+{
+  "schema": "tdq-runtime-test-attempt/v1",
+  "verification": {
+    "valid": true,
+    "verdict": "PERFORMANCE_MET",
+    "errors": [],
+    "summary": {
+      "met": true,
+      "scenario_count": 6,
+      "scenarios": [
+        {
+          "scenario": "process-timeout",
+          "valid": true,
+          "errors": [],
+          "facts": {
+            "outer_exit": 0,
+            "outer_reason": "exited",
+            "outer_cleanup": true,
+            "elapsed_seconds": 3.3139809999847785,
+            "ready_observed": true,
+            "heartbeat_before": "40068:1793948901363822200",
+            "heartbeat_after": "40068:1793948901363822200",
+            "handshake": null,
+            "execution_count": null,
+            "actions": [],
+            "statuses": [],
+            "owner_exit_code": null,
+            "warm_hit": null,
+            "inner_reason": "timeout",
+            "error": null
+          }
+        },
+        {
+          "scenario": "process-cancel",
+          "valid": true,
+          "errors": [],
+          "facts": {
+            "outer_exit": 0,
+            "outer_reason": "exited",
+            "outer_cleanup": true,
+            "elapsed_seconds": 0.4952725999755785,
+            "ready_observed": true,
+            "heartbeat_before": "42608:1793948901867097400",
+            "heartbeat_after": "42608:1793948901867097400",
+            "handshake": null,
+            "execution_count": null,
+            "actions": [],
+            "statuses": [],
+            "owner_exit_code": null,
+            "warm_hit": null,
+            "inner_reason": "cancelled",
+            "error": null
+          }
+        },
+        {
+          "scenario": "join",
+          "valid": true,
+          "errors": [],
+          "facts": {
+            "outer_exit": 0,
+            "outer_reason": "exited",
+            "outer_cleanup": true,
+            "elapsed_seconds": 5.3918839000107255,
+            "ready_observed": null,
+            "heartbeat_before": null,
+            "heartbeat_after": null,
+            "handshake": {
+              "owner_ready_at": 149925.6273155,
+              "join_ready_at": 149926.9887478
+            },
+            "execution_count": 1,
+            "actions": [
+              "executed",
+              "joined"
+            ],
+            "statuses": [
+              "PASS",
+              "PASS"
+            ],
+            "owner_exit_code": null,
+            "warm_hit": null,
+            "inner_reason": null,
+            "error": null
+          }
+        },
+        {
+          "scenario": "owner-crash",
+          "valid": true,
+          "errors": [],
+          "facts": {
+            "outer_exit": 0,
+            "outer_reason": "exited",
+            "outer_cleanup": true,
+            "elapsed_seconds": 4.937786700000288,
+            "ready_observed": null,
+            "heartbeat_before": null,
+            "heartbeat_after": null,
+            "handshake": null,
+            "execution_count": null,
+            "actions": [],
+            "statuses": [],
+            "owner_exit_code": 1,
+            "warm_hit": null,
+            "inner_reason": null,
+            "error": null
+          }
+        },
+        {
+          "scenario": "freshness",
+          "valid": true,
+          "errors": [],
+          "facts": {
+            "outer_exit": 0,
+            "outer_reason": "exited",
+            "outer_cleanup": true,
+            "elapsed_seconds": 4.268662799993763,
+            "ready_observed": null,
+            "heartbeat_before": null,
+            "heartbeat_after": null,
+            "handshake": null,
+            "execution_count": null,
+            "actions": [
+              "executed",
+              "reused",
+              "executed"
+            ],
+            "statuses": [
+              "PASS",
+              "PASS",
+              "PASS"
+            ],
+            "owner_exit_code": null,
+            "warm_hit": null,
+            "inner_reason": null,
+            "error": null
+          }
+        },
+        {
+          "scenario": "transcript",
+          "valid": true,
+          "errors": [],
+          "facts": {
+            "outer_exit": 0,
+            "outer_reason": "exited",
+            "outer_cleanup": true,
+            "elapsed_seconds": 0.24764200000208803,
+            "ready_observed": null,
+            "heartbeat_before": null,
+            "heartbeat_after": null,
+            "handshake": null,
+            "execution_count": null,
+            "actions": [],
+            "statuses": [],
+            "owner_exit_code": null,
+            "warm_hit": true,
+            "inner_reason": null,
+            "error": null
+          }
+        }
+      ]
+    }
+  },
+  "report_digest": "a6aed0d2a092650b48d59b561266b3d4a2794d9334ba72d4dd64ad86c69f4f1c",
+  "facts": [
+    {
+      "outer_exit": 0,
+      "outer_reason": "exited",
+      "outer_cleanup": true,
+      "elapsed_seconds": 3.3139809999847785,
+      "ready_observed": true,
+      "heartbeat_before": "40068:1793948901363822200",
+      "heartbeat_after": "40068:1793948901363822200",
+      "handshake": null,
+      "execution_count": null,
+      "actions": [],
+      "statuses": [],
+      "owner_exit_code": null,
+      "warm_hit": null,
+      "inner_reason": "timeout",
+      "error": null
+    },
+    {
+      "outer_exit": 0,
+      "outer_reason": "exited",
+      "outer_cleanup": true,
+      "elapsed_seconds": 0.4952725999755785,
+      "ready_observed": true,
+      "heartbeat_before": "42608:1793948901867097400",
+      "heartbeat_after": "42608:1793948901867097400",
+      "handshake": null,
+      "execution_count": null,
+      "actions": [],
+      "statuses": [],
+      "owner_exit_code": null,
+      "warm_hit": null,
+      "inner_reason": "cancelled",
+      "error": null
+    },
+    {
+      "outer_exit": 0,
+      "outer_reason": "exited",
+      "outer_cleanup": true,
+      "elapsed_seconds": 5.3918839000107255,
+      "ready_observed": null,
+      "heartbeat_before": null,
+      "heartbeat_after": null,
+      "handshake": {
+        "owner_ready_at": 149925.6273155,
+        "join_ready_at": 149926.9887478
+      },
+      "execution_count": 1,
+      "actions": [
+        "executed",
+        "joined"
+      ],
+      "statuses": [
+        "PASS",
+        "PASS"
+      ],
+      "owner_exit_code": null,
+      "warm_hit": null,
+      "inner_reason": null,
+      "error": null
+    },
+    {
+      "outer_exit": 0,
+      "outer_reason": "exited",
+      "outer_cleanup": true,
+      "elapsed_seconds": 4.937786700000288,
+      "ready_observed": null,
+      "heartbeat_before": null,
+      "heartbeat_after": null,
+      "handshake": null,
+      "execution_count": null,
+      "actions": [],
+      "statuses": [],
+      "owner_exit_code": 1,
+      "warm_hit": null,
+      "inner_reason": null,
+      "error": null
+    },
+    {
+      "outer_exit": 0,
+      "outer_reason": "exited",
+      "outer_cleanup": true,
+      "elapsed_seconds": 4.268662799993763,
+      "ready_observed": null,
+      "heartbeat_before": null,
+      "heartbeat_after": null,
+      "handshake": null,
+      "execution_count": null,
+      "actions": [
+        "executed",
+        "reused",
+        "executed"
+      ],
+      "statuses": [
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "owner_exit_code": null,
+      "warm_hit": null,
+      "inner_reason": null,
+      "error": null
+    },
+    {
+      "outer_exit": 0,
+      "outer_reason": "exited",
+      "outer_cleanup": true,
+      "elapsed_seconds": 0.24764200000208803,
+      "ready_observed": null,
+      "heartbeat_before": null,
+      "heartbeat_after": null,
+      "handshake": null,
+      "execution_count": null,
+      "actions": [],
+      "statuses": [],
+      "owner_exit_code": null,
+      "warm_hit": true,
+      "inner_reason": null,
+      "error": null
+    }
+  ]
+}

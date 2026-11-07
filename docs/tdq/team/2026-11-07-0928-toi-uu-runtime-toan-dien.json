@@ -1,0 +1,98 @@
+{
+  "slug": "2026-11-07-0928-toi-uu-runtime-toan-dien",
+  "plan_file": "docs\\tdq\\plan\\2026-11-07-0928-toi-uu-runtime-toan-dien.md",
+  "plan_sha": "2b3d0ab6aee79f84cd6d423c3d9e9bd8702c599da1b7adb271cf5345a3139e65",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "32bed242b0df6775775b8891c2d9b7da04c667ebd36569b8bd11df4755d7d449",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "mcp",
+      "vung_file": [
+        "docs/tdq/brief/2026-11-07-0928-toi-uu-runtime-toan-dien.md"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/session_start.py",
+        "scripts/tdq_lsp.py",
+        "scripts/tdq_readiness.py",
+        "tests/test_auto_update_setup.py",
+        "tests/test_tdq_lsp.py"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_finish.py",
+        "tests/test_tdq_finish.py"
+      ],
+      "dot": 2
+    },
+    "T1.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_test.py",
+        "scripts/tdq_test_receipt.py",
+        "tests/test_tdq_test_receipt.py",
+        "tests/test_tdq_test_process.py"
+      ],
+      "dot": 2
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/tdq_runtime_bench.py",
+        "tests/test_tdq_runtime_bench.py"
+      ],
+      "dot": 3
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/search_observe.py",
+        "hooks/scripts/read_gate.py",
+        "tests/test_search_observe.py",
+        "tests/test_read_gate.py",
+        "tests/test_search_gate.py"
+      ],
+      "dot": 2
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/references/runtime-speed.md",
+        "tests/test_compliance_protocol.py"
+      ],
+      "dot": 2
+    },
+    "T3.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/SKILL.md",
+        "skills/tdq-intake/references/quick-lane.md",
+        "tests/test_compliance_protocol.py"
+      ],
+      "dot": 3
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-11-07-0928-toi-uu-runtime-toan-dien.md"
+      ],
+      "dot": 4
+    }
+  }
+}

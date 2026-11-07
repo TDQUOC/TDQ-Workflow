@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "65721d5f-ebce-4cf3-8994-f9887d85b92a",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-07-0928-toi-uu-runtime-toan-dien\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-07-0928-toi-uu-runtime-toan-dien.ccfe621d98404741914af77c681f7820.html",
+  "specification": {
+    "sha256": "1ab9cc64b3becddeb7f750ad4351a91f2083ed6cbbb2c3b5f6cd308489e4553c",
+    "bytes": 1858
+  },
+  "artifact": {
+    "sha256": "e3253df92bb141b4e4d70328b051e8c1a87b4c77122c49af4622a3816892b182",
+    "bytes": 857485
+  },
+  "explainer": {
+    "preparedSha256": "946e1ff065d74929f889ea3a24b6c26da951912bd141d3531238b65456332a18",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "runtime-truoc",
+        "inline": true,
+        "sha256": "094444baaeb08f467d01404810027ec82e244761877cdfac16d1fee01963ac66",
+        "bytes": 1151
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "runtime-sau",
+        "inline": true,
+        "sha256": "def782ea4926fca8527b5f8a189840cb7e120da347618c78313d6a3d8421bed3",
+        "bytes": 1150
+      }
+    ]
+  }
+}

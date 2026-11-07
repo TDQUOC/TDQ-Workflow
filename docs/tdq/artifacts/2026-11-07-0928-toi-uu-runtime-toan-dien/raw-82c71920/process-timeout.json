@@ -1,0 +1,32 @@
+{
+  "process": {
+    "exit_code": null,
+    "reason": "timeout",
+    "timed_out": true,
+    "cancelled": false,
+    "cleanup_complete": true,
+    "cleanup_seconds": 0.0036718999908771366,
+    "ownership": {
+      "mechanism": "windows-job",
+      "root_pid": 36220,
+      "assignment_verified": true,
+      "verified": true,
+      "cleanup_scope": "job-object"
+    },
+    "schema_version": 1,
+    "phase": "runtime-tree",
+    "stdout": "",
+    "stderr": "",
+    "duration_seconds": 3.0070165999932215,
+    "wall_seconds": 3.0070165999932215,
+    "execute_seconds": 3.0033447000023443,
+    "paths": {
+      "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-02sy4j19\\workers\\controller\\tmp\\tdq-65xy_xkp\\workers\\controller\\home",
+      "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-02sy4j19\\workers\\controller\\tmp\\tdq-65xy_xkp\\workers\\controller\\tmp",
+      "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-02sy4j19\\workers\\controller\\tmp\\tdq-65xy_xkp\\pytest"
+    }
+  },
+  "ready_observed": true,
+  "heartbeat_before": "28112:1794026689021371400",
+  "heartbeat_after": "28112:1794026689021371400"
+}

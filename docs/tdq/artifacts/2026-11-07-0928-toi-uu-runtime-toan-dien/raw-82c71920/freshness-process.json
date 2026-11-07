@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 5.110001075081527e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 50736,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "freshness",
+  "stdout": "",
+  "stderr": "[2026-11-07T04:45:01+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.491254 cleanup=0.000049 cleanup_complete=True\n[2026-11-07T04:45:01+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.502214 cleanup=0.000062 cleanup_complete=True\n[2026-11-07T04:45:02.110614+00:00] receipt action=executed reason=cache_miss\n[2026-11-07T11:45:02+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS\n[2026-11-07T11:45:02+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=1.661044199980097 reason=Executed tests completed successfully\n[2026-11-07T04:45:02+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.506378 cleanup=0.000048 cleanup_complete=True\n[2026-11-07T04:45:03.215482+00:00] receipt action=reused reason=valid_terminal_receipt\n[2026-11-07T11:45:03+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS\n[2026-11-07T11:45:03+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=1.1084256999893114 reason=Executed tests completed successfully\n[2026-11-07T04:45:04+00:00] tdq_test_process reason=exited phase=collection exit_code=0 wall=0.501520 cleanup=0.000057 cleanup_complete=True\n[2026-11-07T04:45:04+00:00] tdq_test_process reason=exited phase=execution exit_code=0 wall=0.506982 cleanup=0.000057 cleanup_complete=True\n[2026-11-07T04:45:04.553684+00:00] receipt action=executed reason=fresh\n[2026-11-07T11:45:04+07:00] tdq_test: summary stage=complete cases=1 quality=complete status=PASS\n[2026-11-07T11:45:04+07:00] tdq_test: tron-bo backend=pytest scope=full status=PASS tests_run=1 details_complete=True fallback=none seconds=1.3632838999910746 reason=Executed tests completed successfully\n",
+  "duration_seconds": 4.367264200001955,
+  "wall_seconds": 4.367264200001955,
+  "execute_seconds": 4.367213099991204,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ukdmwvz2\\workers\\controller\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ukdmwvz2\\workers\\controller\\tmp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-ukdmwvz2\\pytest"
+  }
+}
