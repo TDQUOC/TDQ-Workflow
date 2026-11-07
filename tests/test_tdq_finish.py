@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from unittest import mock
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from helper import ROOT, write_file
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -243,6 +244,39 @@ class OutputSizeTest(unittest.TestCase):
             r = _run(["--files", xau], tmp)
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("lint", r.stdout + r.stderr)
+
+
+class GraphifyFreshnessTest(unittest.TestCase):
+    """T1.3 — Kiểm chứng tính đồng bộ và bảo đảm freshness của bước Graphify trong finish."""
+
+    def test_graphify_bo_qua_khi_khong_cham_code(self):
+        import tdq_finish
+        step = tdq_finish.step_graphify(ROOT, [os.path.join(ROOT, "README.md")])
+        self.assertEqual(step.status, "skip")
+        self.assertEqual(step.detail, "no code file changed")
+
+    def test_graphify_chay_khi_cham_code(self):
+        import tdq_finish
+        with tempfile.TemporaryDirectory() as tmp:
+            py_file = os.path.join(tmp, "test_sample.py")
+            with open(py_file, "w", encoding="utf-8") as fh:
+                fh.write("def sample_func(): pass\n")
+            with mock.patch("tdq_finish.shutil.which", return_value="graphify"), \
+                 mock.patch("tdq_finish._run", return_value=(0, "ok")):
+                step = tdq_finish.step_graphify(tmp, [py_file])
+                self.assertEqual(step.status, "ok")
+
+    def test_graphify_fail_khi_lenh_loi(self):
+        import tdq_finish
+        with tempfile.TemporaryDirectory() as tmp:
+            py_file = os.path.join(tmp, "test_sample.py")
+            with open(py_file, "w", encoding="utf-8") as fh:
+                fh.write("def sample_func(): pass\n")
+            with mock.patch("tdq_finish.shutil.which", return_value="graphify"), \
+                 mock.patch("tdq_finish._run", return_value=(1, "graphify extract error")):
+                step = tdq_finish.step_graphify(tmp, [py_file])
+                self.assertEqual(step.status, "fail")
+                self.assertIn("graphify extract error", step.detail)
 
 
 if __name__ == "__main__":

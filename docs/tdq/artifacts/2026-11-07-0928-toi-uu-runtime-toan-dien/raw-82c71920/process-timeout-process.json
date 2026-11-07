@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "reason": "exited",
+  "timed_out": false,
+  "cancelled": false,
+  "cleanup_complete": true,
+  "cleanup_seconds": 5.600001895800233e-05,
+  "ownership": {
+    "mechanism": "windows-job",
+    "root_pid": 41664,
+    "assignment_verified": true,
+    "verified": true,
+    "cleanup_scope": "job-object"
+  },
+  "schema_version": 1,
+  "phase": "process-timeout",
+  "stdout": "",
+  "stderr": "[2026-11-07T04:44:49+00:00] tdq_test_process reason=timeout phase=runtime-tree exit_code=None wall=3.007017 cleanup=0.003672 cleanup_complete=True\n",
+  "duration_seconds": 3.311118199984776,
+  "wall_seconds": 3.311118199984776,
+  "execute_seconds": 3.311062199965818,
+  "paths": {
+    "home": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-02sy4j19\\workers\\controller\\home",
+    "temp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-02sy4j19\\workers\\controller\\tmp",
+    "basetemp": "C:\\Users\\admin\\AppData\\Local\\Temp\\tdq-02sy4j19\\pytest"
+  }
+}

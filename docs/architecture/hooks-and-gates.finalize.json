@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "ok": true,
+  "ok": false,
   "command": "finalize",
-  "status": "pass",
+  "status": "fail",
   "type": "workflow",
   "quality": "showcase",
-  "startedAt": "2026-11-05T06:24:26.138Z",
+  "startedAt": "2026-11-05T11:00:53.047Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
     "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
     "bytes": 4824
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
     "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
     "bytes": 823010
   },
@@ -23,12 +23,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\21280_1793853033207\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "workflow",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -58,12 +58,12 @@
       "exitCode": 0,
       "durationMs": 590,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\21280_1793853033207\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "workflow",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -72,12 +72,12 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "03b93de8-65b5-4690-ae19-716b6d4a7f40",
+        "receiptId": "6ee52c95-5153-4d4b-a277-495596a46847",
         "ok": true,
         "command": "deliver",
         "type": "workflow",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\hooks-and-gates.json",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
         "specification": {
           "sha256": "94b1b0fb6f9adf2c0b5198a9f6b5a8a8c675a3455704da5224b397f078fe8368",
           "bytes": 4824
@@ -110,17 +110,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 219,
+      "durationMs": 214,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\21280_1793853033207\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
         "artifact": {
           "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
           "bytes": 823010
@@ -240,33 +240,33 @@
           "issues": []
         },
         "provenance": "current",
-        "deliveryReceiptId": "03b93de8-65b5-4690-ae19-716b6d4a7f40"
+        "deliveryReceiptId": "6ee52c95-5153-4d4b-a277-495596a46847"
       }
     },
     "browser-check": {
-      "status": "pass",
-      "exitCode": 0,
-      "durationMs": 1782,
+      "status": "fail",
+      "exitCode": 1,
+      "durationMs": 95,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\21280_1793853033207\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "browser-check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
         "--json",
         "--require-provenance"
       ],
       "execution": "in-process",
       "receipt": {
         "schemaVersion": 1,
-        "ok": true,
+        "ok": false,
         "command": "browser-check",
         "evidenceKind": "automated-browser",
-        "status": "pass",
+        "status": "fail",
         "visualReview": "not-requested",
         "provenance": "current",
-        "deliveryReceiptId": "03b93de8-65b5-4690-ae19-716b6d4a7f40",
+        "deliveryReceiptId": "6ee52c95-5153-4d4b-a277-495596a46847",
         "artifact": {
-          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.html",
+          "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html",
           "sha256": "255abdf04d958abd27da71f0bd964376bee46f104e0bd5fa80362abe5d5d175e",
           "bytes": 823010
         },
@@ -278,1162 +278,39 @@
           "status": "available",
           "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         },
-        "diagnostics": [],
+        "diagnostics": [
+          {
+            "code": "viewer/browser-check-runtime",
+            "severity": "error",
+            "message": "browser-check could not complete its Chrome inspection.",
+            "subject": {
+              "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html"
+            },
+            "evidence": {
+              "reason": "Chrome DevTools write pipe failed: stream closed\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=40536, exitCode=null, signalCode=null.\nChrome read pipe: readable=true, ended=false, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=true, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+            },
+            "supportedFixes": [
+              "resolve the reported Chrome inspection error, then rerun browser-check"
+            ]
+          }
+        ],
         "containment": {
-          "status": "pass",
+          "status": "fail",
           "policy": "fit-or-reader-declared-readable-vertical-scroll",
-          "viewports": [
-            {
-              "width": 1440,
-              "height": 900,
-              "theme": "light",
-              "innerWidth": 1440,
-              "innerHeight": 900,
-              "scrollWidth": 1440,
-              "scrollHeight": 900,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1282,
-              "diagramWidth": 1252,
-              "pageComposition": {
-                "bodyPaddingPx": 12,
-                "headerPx": 78,
-                "diagramChromePx": 78,
-                "svgPx": 720,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 70,
-                  "spaceAboveNodesPx": 57,
-                  "spaceBelowNodesPx": 16
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 92,
-                  "spaceAboveNodesPx": 46,
-                  "spaceBelowNodesPx": 5
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 92,
-                  "spaceAboveNodesPx": 46,
-                  "spaceBelowNodesPx": 5
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 1600,
-              "height": 1000,
-              "theme": "light",
-              "innerWidth": 1600,
-              "innerHeight": 1000,
-              "scrollWidth": 1600,
-              "scrollHeight": 1000,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1341,
-              "diagramWidth": 1311,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 86,
-                "diagramChromePx": 84,
-                "svgPx": 754,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 73,
-                  "spaceAboveNodesPx": 59,
-                  "spaceBelowNodesPx": 17
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 96,
-                  "spaceAboveNodesPx": 48,
-                  "spaceBelowNodesPx": 6
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 96,
-                  "spaceAboveNodesPx": 48,
-                  "spaceBelowNodesPx": 6
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 1920,
-              "height": 1080,
-              "theme": "light",
-              "innerWidth": 1920,
-              "innerHeight": 1080,
-              "scrollWidth": 1920,
-              "scrollHeight": 1080,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1480,
-              "diagramWidth": 1450,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 86,
-                "diagramChromePx": 84,
-                "svgPx": 834,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 81,
-                  "spaceAboveNodesPx": 66,
-                  "spaceBelowNodesPx": 19
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 106,
-                  "spaceAboveNodesPx": 53,
-                  "spaceBelowNodesPx": 6
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 106,
-                  "spaceAboveNodesPx": 53,
-                  "spaceBelowNodesPx": 6
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 2048,
-              "height": 1320,
-              "theme": "light",
-              "innerWidth": 2048,
-              "innerHeight": 1320,
-              "scrollWidth": 2048,
-              "scrollHeight": 1320,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1886,
-              "diagramWidth": 1836,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 94,
-                "diagramChromePx": 94,
-                "svgPx": 1056,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 103,
-                  "spaceAboveNodesPx": 83,
-                  "spaceBelowNodesPx": 24
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 135,
-                  "spaceAboveNodesPx": 67,
-                  "spaceBelowNodesPx": 8
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 135,
-                  "spaceAboveNodesPx": 67,
-                  "spaceBelowNodesPx": 8
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 44,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            }
-          ]
+          "viewports": []
         },
         "themeStates": {
-          "status": "pass",
-          "viewports": [
-            {
-              "width": 1440,
-              "height": 900,
-              "requestedTheme": "light",
-              "resolvedTheme": "light",
-              "ok": true
-            },
-            {
-              "width": 1600,
-              "height": 1000,
-              "requestedTheme": "light",
-              "resolvedTheme": "light",
-              "ok": true
-            },
-            {
-              "width": 1920,
-              "height": 1080,
-              "requestedTheme": "light",
-              "resolvedTheme": "light",
-              "ok": true
-            },
-            {
-              "width": 2048,
-              "height": 1320,
-              "requestedTheme": "light",
-              "resolvedTheme": "light",
-              "ok": true
-            },
-            {
-              "width": 1440,
-              "height": 900,
-              "requestedTheme": "dark",
-              "resolvedTheme": "dark",
-              "ok": true
-            },
-            {
-              "width": 2048,
-              "height": 1320,
-              "requestedTheme": "dark",
-              "resolvedTheme": "dark",
-              "ok": true
-            }
-          ]
+          "status": "fail",
+          "viewports": []
         },
         "readability": {
-          "status": "pass",
+          "status": "fail",
           "minimumProjectedNodeTextPx": 6,
-          "viewports": [
-            {
-              "width": 1440,
-              "height": 900,
-              "theme": "light",
-              "innerWidth": 1440,
-              "innerHeight": 900,
-              "scrollWidth": 1440,
-              "scrollHeight": 900,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1282,
-              "diagramWidth": 1252,
-              "pageComposition": {
-                "bodyPaddingPx": 12,
-                "headerPx": 78,
-                "diagramChromePx": 78,
-                "svgPx": 720,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 70,
-                  "spaceAboveNodesPx": 57,
-                  "spaceBelowNodesPx": 16
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 92,
-                  "spaceAboveNodesPx": 46,
-                  "spaceBelowNodesPx": 5
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 92,
-                  "spaceAboveNodesPx": 46,
-                  "spaceBelowNodesPx": 5
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 1600,
-              "height": 1000,
-              "theme": "light",
-              "innerWidth": 1600,
-              "innerHeight": 1000,
-              "scrollWidth": 1600,
-              "scrollHeight": 1000,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1341,
-              "diagramWidth": 1311,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 86,
-                "diagramChromePx": 84,
-                "svgPx": 754,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 73,
-                  "spaceAboveNodesPx": 59,
-                  "spaceBelowNodesPx": 17
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 96,
-                  "spaceAboveNodesPx": 48,
-                  "spaceBelowNodesPx": 6
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 96,
-                  "spaceAboveNodesPx": 48,
-                  "spaceBelowNodesPx": 6
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 1920,
-              "height": 1080,
-              "theme": "light",
-              "innerWidth": 1920,
-              "innerHeight": 1080,
-              "scrollWidth": 1920,
-              "scrollHeight": 1080,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1480,
-              "diagramWidth": 1450,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 86,
-                "diagramChromePx": 84,
-                "svgPx": 834,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 81,
-                  "spaceAboveNodesPx": 66,
-                  "spaceBelowNodesPx": 19
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 106,
-                  "spaceAboveNodesPx": 53,
-                  "spaceBelowNodesPx": 6
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 106,
-                  "spaceAboveNodesPx": 53,
-                  "spaceBelowNodesPx": 6
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 2048,
-              "height": 1320,
-              "theme": "light",
-              "innerWidth": 2048,
-              "innerHeight": 1320,
-              "scrollWidth": 2048,
-              "scrollHeight": 1320,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1886,
-              "diagramWidth": 1836,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 94,
-                "diagramChromePx": 94,
-                "svgPx": 1056,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 103,
-                  "spaceAboveNodesPx": 83,
-                  "spaceBelowNodesPx": 24
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 135,
-                  "spaceAboveNodesPx": 67,
-                  "spaceBelowNodesPx": 8
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 135,
-                  "spaceAboveNodesPx": 67,
-                  "spaceBelowNodesPx": 8
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 44,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            }
-          ]
+          "viewports": []
         },
         "viewerChrome": {
-          "status": "pass",
-          "viewports": [
-            {
-              "width": 1440,
-              "height": 900,
-              "theme": "light",
-              "innerWidth": 1440,
-              "innerHeight": 900,
-              "scrollWidth": 1440,
-              "scrollHeight": 900,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1282,
-              "diagramWidth": 1252,
-              "pageComposition": {
-                "bodyPaddingPx": 12,
-                "headerPx": 78,
-                "diagramChromePx": 78,
-                "svgPx": 720,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 70,
-                  "spaceAboveNodesPx": 57,
-                  "spaceBelowNodesPx": 16
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 92,
-                  "spaceAboveNodesPx": 46,
-                  "spaceBelowNodesPx": 5
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 143,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 92,
-                  "spaceAboveNodesPx": 46,
-                  "spaceBelowNodesPx": 5
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 1600,
-              "height": 1000,
-              "theme": "light",
-              "innerWidth": 1600,
-              "innerHeight": 1000,
-              "scrollWidth": 1600,
-              "scrollHeight": 1000,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1341,
-              "diagramWidth": 1311,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 86,
-                "diagramChromePx": 84,
-                "svgPx": 754,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 73,
-                  "spaceAboveNodesPx": 59,
-                  "spaceBelowNodesPx": 17
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 96,
-                  "spaceAboveNodesPx": 48,
-                  "spaceBelowNodesPx": 6
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 150,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 96,
-                  "spaceAboveNodesPx": 48,
-                  "spaceBelowNodesPx": 6
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 1920,
-              "height": 1080,
-              "theme": "light",
-              "innerWidth": 1920,
-              "innerHeight": 1080,
-              "scrollWidth": 1920,
-              "scrollHeight": 1080,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1480,
-              "diagramWidth": 1450,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 86,
-                "diagramChromePx": 84,
-                "svgPx": 834,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 81,
-                  "spaceAboveNodesPx": 66,
-                  "spaceBelowNodesPx": 19
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 106,
-                  "spaceAboveNodesPx": 53,
-                  "spaceBelowNodesPx": 6
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 166,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 106,
-                  "spaceAboveNodesPx": 53,
-                  "spaceBelowNodesPx": 6
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 54,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            },
-            {
-              "width": 2048,
-              "height": 1320,
-              "theme": "light",
-              "innerWidth": 2048,
-              "innerHeight": 1320,
-              "scrollWidth": 2048,
-              "scrollHeight": 1320,
-              "overflowX": false,
-              "overflowY": false,
-              "verticalScrollAccepted": false,
-              "overflowDisposition": "contained",
-              "readerLayout": "adaptive",
-              "readerOverflow": null,
-              "readerFit": null,
-              "ok": true,
-              "readerWidth": 1886,
-              "diagramWidth": 1836,
-              "pageComposition": {
-                "bodyPaddingPx": 64,
-                "headerPx": 94,
-                "diagramChromePx": 94,
-                "svgPx": 1056,
-                "cardsPx": 0,
-                "viewBoxHeight": 534
-              },
-              "viewBoxWidth": 928,
-              "workflowLanes": [
-                {
-                  "frameId": "lane-0",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "ev_start",
-                    "ev_pretool",
-                    "ev_stop"
-                  ],
-                  "nodeSpanPx": 103,
-                  "spaceAboveNodesPx": 83,
-                  "spaceBelowNodesPx": 24
-                },
-                {
-                  "frameId": "lane-1",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "hk_context",
-                    "hk_pre_gates",
-                    "hk_stop_gate"
-                  ],
-                  "nodeSpanPx": 135,
-                  "spaceAboveNodesPx": 67,
-                  "spaceBelowNodesPx": 8
-                },
-                {
-                  "frameId": "lane-2",
-                  "heightPx": 210,
-                  "nodeCount": 3,
-                  "nodeIds": [
-                    "baseline_sha",
-                    "hk_observers",
-                    "state_ledger"
-                  ],
-                  "nodeSpanPx": 135,
-                  "spaceAboveNodesPx": 67,
-                  "spaceBelowNodesPx": 8
-                }
-              ],
-              "minimumProjectedNodeTextPx": 7.2,
-              "minimumProjectedNonEdgeTextPx": 7.2,
-              "minimumProjectedEdgeTextPx": null,
-              "minimumProjectedNodeText": "search · lsp · edit · bash · ask",
-              "minimumProjectedNodeTextDetail": "context",
-              "minimumProjectedNodeTextOwner": {
-                "kind": "node",
-                "id": "hk_pre_gates"
-              },
-              "minimumRequiredNodeTextPx": 6,
-              "readabilityOk": true,
-              "hasLegend": true,
-              "hasNavigationDock": true,
-              "legendDockIntersectionArea": 0,
-              "dockStageIntersectionArea": 0,
-              "dockStageGap": 10,
-              "requiredDockStageGap": 10,
-              "viewerChromeStageOk": true,
-              "viewerChromeReserve": 44,
-              "viewerChromeActive": true,
-              "viewerChromeOk": true,
-              "resolvedTheme": "light"
-            }
-          ]
+          "status": "fail",
+          "viewports": []
         },
         "captures": {
           "status": "not-requested",
@@ -1443,23 +320,40 @@
         "sidecars": {
           "receipt": "hooks-and-gates.browser-check.json",
           "files": []
-        }
+        },
+        "error": "Chrome DevTools write pipe failed: stream closed\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=40536, exitCode=null, signalCode=null.\nChrome read pipe: readable=true, ended=false, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=true, completedWrites=1, writtenBytes=50, bufferedBytes=0."
       }
     }
   },
   "browserCheck": {
     "requested": true,
-    "ran": true
+    "ran": false
   },
-  "diagnostics": [],
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.html"
+      },
+      "evidence": {
+        "reason": "Chrome DevTools write pipe failed: stream closed\nChrome process: still running.\nWindows browser startup may have relaunched before connecting to the DevTools pipe. Retry from a non-elevated PowerShell opened normally, outside an elevated or compatibility-mode parent. Archify does not disable browser de-elevation or the sandbox to preserve pipe handles.\nChrome transport: Node v24.19.0, libuv 1.52.1, win32; pid=40536, exitCode=null, signalCode=null.\nChrome read pipe: readable=true, ended=false, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=false, ended=true, destroyed=true, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.finalize-summary.json",
-    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\hooks-and-gates.browser-check.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\hooks-and-gates.browser-check.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-05T06:24:29.511Z",
-  "durationMs": 3372,
+  "failedStage": "browser-check",
+  "finishedAt": "2026-11-05T11:00:54.468Z",
+  "durationMs": 1421,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

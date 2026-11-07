@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "4c810b99-199d-4b1c-862c-302f28974734",
+  "receiptId": "1dfcf8a1-1562-4725-a33a-889a1ed6c07e",
   "status": "current",
   "command": "deliver",
   "type": "architecture",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\models\\overview.json",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.536ce19c7d49483588dafeceb3baaa77\\overview.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\.staging.42a9652f3fcc4f52a07c30266cf57006\\overview.html",
   "specification": {
     "sha256": "ed30328c54254bf706c559243e72e0834623f3b8393b6347caef34f64b3faba7",
     "bytes": 6456

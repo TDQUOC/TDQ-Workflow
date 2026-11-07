@@ -1,0 +1,17 @@
+Request `2026-11-06-1549-ra-soat-thoi-gian-workflow` · lane full · opened at 2026-11-06T15:51:54+07:00
+
+| Phase | Wall clock | API request | Tool wait | Background job | Observed union | Unattributed | Times entered |
+|---|---|---|---|---|---|---|---|
+| idle | 0s | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| analyze | 5 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| spec | 6h 14min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| plan | 11 min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] | 1 |
+| Total | 6h 30min | — [partial] | — [partial] | — [unavailable] | — [partial] | — [partial] |  |
+
+Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+Transcript attribution: project_window. Complete covers selected supported observations only.
+- api_request_seconds: missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window
+- tool_call_seconds: conflicts,unknown_events,unreadable_or_uncertain_source;no_confirmed_span_in_window
+- background_job_seconds: schema_has_no_confirmed_lifecycle
+- observed_union_seconds: conflicts,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window
+- unattributed_seconds: wall_minus_observed_union;conflicts,unknown_events,unreadable_or_uncertain_source;missing_pairs,unknown_events,unreadable_or_uncertain_source,unsupported_source_schema;no_confirmed_span_in_window

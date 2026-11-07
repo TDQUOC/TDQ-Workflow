@@ -196,6 +196,16 @@ def step_khoa_token(project, files):
 
 
 def step_graphify(project, files):
+    """Run Graphify extraction when code files changed.
+
+    T1.3 benchmark & freshness audit:
+    - Micro-benchmark: incremental code extraction takes ~0.69s (mean) to ~4.8s (full repo).
+    - Asynchronous stale marker without synchronous rebuild creates a window of staleness
+      where interactive graph queries / blast-radius checks observe stale code representations.
+    - Spec requirement (§3c, §5, §6 Q2): if freshness cannot be mathematically proven across
+      query/QC boundaries, maintain synchronous rebuild (fallback per-turn).
+    - Therefore, synchronous extraction is retained as the authoritative, fail-safe path.
+    """
     if not any(os.path.splitext(f)[1] in CODE_EXT for f in files):
         return Step("graphify", "skip", "no code file changed")
     if not shutil.which("graphify"):

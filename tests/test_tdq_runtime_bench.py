@@ -265,3 +265,28 @@ def test_invalid_limits_are_usage_errors(tmp_path):
     with pytest.raises(ValueError):
         bench.runtime_smoke(tmp_path, tmp_path / "x.json", scenario_timeout=121)
     assert bench.main(["verify", str(tmp_path / "missing.json")]) == 1
+
+
+import unittest
+
+
+class TestTdqRuntimeBenchAdapter(unittest.TestCase):
+    """unittest discovery adapter for test_tdq_runtime_bench."""
+
+    def test_pair_order_and_threshold(self):
+        test_pair_order_and_threshold()
+
+    def test_semantic_parity_keeps_subtests_but_ignores_duration(self):
+        test_semantic_parity_keeps_subtests_but_ignores_duration()
+
+    def test_warm_faster_than_cold_but_slower_than_off_is_not_a_gain(self):
+        test_warm_faster_than_cold_but_slower_than_off_is_not_a_gain()
+
+    def test_cross_run_projection_only_ignores_exact_current_lifecycle_metadata(self):
+        test_cross_run_projection_only_ignores_exact_current_lifecycle_metadata()
+
+    def test_full_pytest_suite(self):
+        test_file = str(Path(__file__).resolve())
+        ret = pytest.main(["-q", test_file, "-k", "not test_full_pytest_suite"])
+        self.assertEqual(ret, 0, "pytest benchmark suite failed")
+
