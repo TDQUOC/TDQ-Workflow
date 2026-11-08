@@ -5,16 +5,16 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-08T06:14:45.625Z",
+  "startedAt": "2026-11-08T06:32:35.208Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-    "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
-    "bytes": 1764
+    "sha256": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
+    "bytes": 2557
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
-    "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
-    "bytes": 848415
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
+    "sha256": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
+    "bytes": 854281
   },
   "stages": {
     "browser-check": {
@@ -27,12 +27,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\43640_1794119149034\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -44,8 +44,8 @@
         "ok": true,
         "command": "validate",
         "specification": {
-          "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
-          "bytes": 1764
+          "sha256": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
+          "bytes": 2557
         },
         "validation": {
           "checksPassed": 4,
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 951,
+      "durationMs": 954,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\43640_1794119149034\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "7186688a-e30f-4fef-ae85-1362ee3100a1",
+        "receiptId": "264379b6-d130-4566-86b6-978aa45bcd09",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
         "explainer": {
-          "preparedSha256": "34458d009f75877837df39c91f7b1725bd35c36dd924148c3d940536b1d5d7d3",
+          "preparedSha256": "95bb7775dcf4dce79a89e2e3d9a7669c783e450d802a65034d0a49c05d1a5e93",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -102,12 +102,12 @@
           ]
         },
         "specification": {
-          "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
-          "bytes": 1764
+          "sha256": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
+          "bytes": 2557
         },
         "artifact": {
-          "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
-          "bytes": 848415
+          "sha256": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
+          "bytes": 854281
         },
         "validation": {
           "checksPassed": 4,
@@ -117,6 +117,29 @@
           "errors": 0,
           "warnings": 0
         },
+        "diagnostics": [
+          {
+            "code": "explainer/writing-paragraph-length",
+            "severity": "warning",
+            "message": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+            "subject": {
+              "line": 11,
+              "component": "prose",
+              "panelId": "phat-hanh",
+              "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md"
+            },
+            "evidence": {
+              "rule": "paragraph-length",
+              "reason": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+              "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+              "units": 38,
+              "limit": 120
+            },
+            "supportedFixes": [
+              "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+            ]
+          }
+        ],
         "update": {
           "status": "unavailable",
           "installedVersion": null,
@@ -128,33 +151,34 @@
           "noticeText": null,
           "reason": "disabled"
         }
-      }
+      },
+      "stderr": "archify: This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace."
     },
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 487,
+      "durationMs": 480,
       "command": [
-        "C:\\Program Files\\nodejs\\node.EXE",
+        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\43640_1794119149034\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
         "family": "explainer",
         "artifact": {
-          "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
-          "bytes": 848415
+          "sha256": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
+          "bytes": 854281
         },
         "checks": [
           {
             "name": "explainer_structure",
             "ok": true,
             "details": [
-              "37 unique DOM IDs"
+              "40 unique DOM IDs"
             ]
           },
           {
@@ -192,7 +216,7 @@
               "id": "gate-truoc",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-xuiHbV\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-q16ggf\\child.html",
                 "artifact": {
                   "sha256": "2d96bd660b74f94e6b07843c10dcde13f29ed539e11d43194d24a5d69a39057e",
                   "bytes": 810014
@@ -317,7 +341,7 @@
               "id": "gate-sau",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-wfjqNp\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-Kifq46\\child.html",
                 "artifact": {
                   "sha256": "1ef078e41f3f1a23abadc2d37b279d2b4db2547f5157eb4b9f1e4c66b7678bf3",
                   "bytes": 808638
@@ -442,7 +466,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "7186688a-e30f-4fef-ae85-1362ee3100a1"
+        "deliveryReceiptId": "264379b6-d130-4566-86b6-978aa45bcd09"
       }
     }
   },
@@ -450,14 +474,36 @@
     "requested": false,
     "ran": false
   },
-  "diagnostics": [],
+  "diagnostics": [
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
+        "line": 11,
+        "component": "prose",
+        "panelId": "phat-hanh"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 38,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    }
+  ],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-08T06:14:47.655Z",
-  "durationMs": 2029,
+  "finishedAt": "2026-11-08T06:32:37.208Z",
+  "durationMs": 2000,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

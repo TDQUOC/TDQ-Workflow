@@ -7,13 +7,13 @@
   "quality": "showcase",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-    "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
-    "bytes": 1764
+    "sha256": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
+    "bytes": 2557
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
-    "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
-    "bytes": 848415
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
+    "sha256": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
+    "bytes": 854281
   },
   "gates": {
     "validate": "pass",
@@ -21,18 +21,40 @@
     "check": "pass",
     "browser-check": "not-run"
   },
-  "diagnostics": [],
+  "diagnostics": [
+    {
+      "code": "explainer/writing-paragraph-length",
+      "severity": "warning",
+      "message": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
+        "line": 11,
+        "component": "prose",
+        "panelId": "phat-hanh"
+      },
+      "evidence": {
+        "reason": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+        "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+        "rule": "paragraph-length",
+        "units": 38,
+        "limit": 120
+      },
+      "supportedFixes": [
+        "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+      ]
+    }
+  ],
   "diagnosticSummary": {
-    "total": 0,
-    "shown": 0,
+    "total": 1,
+    "shown": 1,
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 2029,
+  "durationMs": 2000,
   "browserCheck": {
     "requested": false,
     "ran": false

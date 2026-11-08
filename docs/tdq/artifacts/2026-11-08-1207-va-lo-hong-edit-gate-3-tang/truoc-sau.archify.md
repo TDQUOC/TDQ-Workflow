@@ -2,7 +2,13 @@
 
 @meta locale=vi
 
-Sự cố play3clone 2026-11-08: user nhắn "1a", agent tự `approve spec`, tự `approve plan` rồi sửa `server/index.js` trong cùng một lượt. Bản vá chặn ở 3 chỗ; full fresh 4202 test PASS.
+Sự cố play3clone 2026-11-08: user nhắn "1a", agent tự `approve spec`, tự `approve plan` rồi sửa `server/index.js` trong cùng một lượt. Bản vá bổ sung chặn tại hook và sửa hướng dẫn lane quick. Full fresh trước bump: 4202 case gồm 4192 passed, 10 skipped; receipt PASS. Version phát hành: 0.95.0.
+
+## Kiểm chứng và phát hành {#phat-hanh}
+
+Đã test đỏ–xanh từng tầng, hồi quy hook và bảng phase; full fresh trước bump đạt 4192 passed, 10 skipped. Sau bump, bộ kiểm đóng gói/host/version đạt 225 passed, 55 subtests passed. Không chạy lại full suite cho riêng thay đổi version.
+
+Bản vá `d6116f2c` đã merge vào dev tại `093a2e0c`. Snapshot sạch `main@6f03655c` và tag `v0.95.0` đã push. GitHub Release https://github.com/TDQUOC/TDQ-Workflow/releases/tag/v0.95.0 có ZIP 175 file và SHA256SUMS.txt, digest GitHub khớp local. Plugin đang cài chưa được cập nhật trong lượt phát hành này.
 
 ## Trước: hook chỉ nhắc {#truoc}
 

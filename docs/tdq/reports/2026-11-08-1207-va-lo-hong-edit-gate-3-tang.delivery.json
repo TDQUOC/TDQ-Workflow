@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "receiptId": "7186688a-e30f-4fef-ae85-1362ee3100a1",
+  "receiptId": "264379b6-d130-4566-86b6-978aa45bcd09",
   "status": "current",
   "command": "deliver",
   "type": "explainer",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
   "specification": {
-    "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
-    "bytes": 1764
+    "sha256": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
+    "bytes": 2557
   },
   "artifact": {
-    "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
-    "bytes": 848415
+    "sha256": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
+    "bytes": 854281
   },
   "explainer": {
-    "preparedSha256": "34458d009f75877837df39c91f7b1725bd35c36dd924148c3d940536b1d5d7d3",
+    "preparedSha256": "95bb7775dcf4dce79a89e2e3d9a7669c783e450d802a65034d0a49c05d1a5e93",
     "dependencies": [
       {
         "kind": "diagram-spec",

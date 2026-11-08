@@ -5,11 +5,11 @@
   "evidence_kind": "working-tree",
   "revision": null,
   "document_path": "docs/tdq/reports/2026-11-08-1207-va-lo-hong-edit-gate-3-tang.md",
-  "document_digest": "422b6191fc35f605227051f326a091da6d3bfc220b2f35c5444a69f7688220f0",
+  "document_digest": "5c7cb5915a6fa900d40ba81214846844472c2b97855c5949774b69166f180b19",
   "candidate_path": "docs/tdq/artifacts/2026-11-08-1207-va-lo-hong-edit-gate-3-tang/truoc-sau.archify.md",
-  "candidate_digest": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
+  "candidate_digest": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
   "artifact_path": "docs/tdq/reports/2026-11-08-1207-va-lo-hong-edit-gate-3-tang.html",
-  "artifact_digest": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
+  "artifact_digest": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
   "source_paths": [
     ".agents/plugins/marketplace.json",
     ".claude-plugin/marketplace.json",
@@ -2031,8 +2031,8 @@
   "source_files": {
     ".agents/plugins/marketplace.json": "ca4a37b86712143bba1b2a999a644eaef1420b71feb676354ab1b42991f9f203",
     ".claude-plugin/marketplace.json": "4d3b7a678a713cdd9bde547f55d0d4778d0ac51cff0e58ff2811d8b29d3b9f89",
-    ".claude-plugin/plugin.json": "1331450a0a43b082aeaa292d2122ad9accc7d502e26844f284da93289bc0454d",
-    ".codex-plugin/plugin.json": "5dad11a835994db4a675a3849e147357ba9b6ea7620a3c8abb78dbacbd4e085b",
+    ".claude-plugin/plugin.json": "642d25e85a7251a5915ae4e3cad3892e4c9815d8441cc460e84ef5eb0fe26534",
+    ".codex-plugin/plugin.json": "1d0c35c93c003e0c52dc97e8b12c310966c9dae43cfe831142faaeed58c33545",
     ".codex/config.toml": "d535dcde6ba6d5b37ec4435b7cabb860628a0162de23e09c53ec23eded6451a2",
     ".codex/hooks.json": "88b670a3fd928056570205f7d0a4bae2629b8c90724834a8f00dfc89ff17c2c1",
     ".gitattributes": "136165537e84627dbc0007bd2acc71213bf9162b2b6690753af540beb7608f7e",
@@ -3293,7 +3293,7 @@
     ".venv-tokens/Scripts/pythonw.exe": "545e379a8f1129dc7491645cac0561d257c4c00485d257c9ac66584d97a3e055",
     ".venv-tokens/pyvenv.cfg": "c5668a39ef4db160c3d64c4dae2494ff21f2fa0cdf2ba70b91681896be9de236",
     "CHANGELOG-archive.md": "7773a3f6f71302ee4928e5fee7ea9724fbb8253e933a9e3c07b3498d0abdd657",
-    "CHANGELOG.md": "17f321d96a66f9b6b70e30c0b4488ef7abe424762a9918f4a17903f26943a6bb",
+    "CHANGELOG.md": "0bfb6f71626ffe0e39fa4750291c6e98c4d82f751ba3bf472de69c9aa5177928",
     "README.md": "9c86de2658ff9c1e8cea73b3e70f8b6d9aa5ab00325be2d4382510f76af6f20d",
     "agents/tdq-build-resolver.md": "a2af63a919381ec105f13a96db758787ab2183abec0265b59980f8fce329a301",
     "agents/tdq-implementer.md": "4d1a6de007d494d452c43167ab75716fac3e8cd94eecdc2d0720d847f7d699b8",
@@ -4057,13 +4057,13 @@
     "quality": "showcase",
     "specification": {
       "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
-      "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
-      "bytes": 1764
+      "sha256": "1df5790c0e762c86925ac452ea8a7ad00c354d5502b5a63e1217320492ef2f8c",
+      "bytes": 2557
     },
     "artifact": {
-      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
-      "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
-      "bytes": 848415
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.html",
+      "sha256": "a37369be871e156a08c0e3e75b8486a0495c579aed6ddfdfe9c49f94270ec63b",
+      "bytes": 854281
     },
     "gates": {
       "validate": "pass",
@@ -4071,18 +4071,40 @@
       "check": "pass",
       "browser-check": "not-run"
     },
-    "diagnostics": [],
+    "diagnostics": [
+      {
+        "code": "explainer/writing-paragraph-length",
+        "severity": "warning",
+        "message": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+        "subject": {
+          "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
+          "line": 11,
+          "component": "prose",
+          "panelId": "phat-hanh"
+        },
+        "evidence": {
+          "reason": "This paragraph has 5 sentences and 38 reading units; long paragraphs are what the page should replace.",
+          "example": "把并列要点写成列表，把先后动作写成 @steps，把方案差异写成对比表。 / Turn parallel points into a list, ordered actions into @steps and option differences into a comparison.",
+          "rule": "paragraph-length",
+          "units": 38,
+          "limit": 120
+        },
+        "supportedFixes": [
+          "Split the paragraph into a list, steps or a comparison; keep at most two or three short sentences of prose."
+        ]
+      }
+    ],
     "diagnosticSummary": {
-      "total": 0,
-      "shown": 0,
+      "total": 1,
+      "shown": 1,
       "truncated": false
     },
     "evidence": {
-      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.finalize.json",
-      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.finalize-summary.json"
+      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.finalize.json",
+      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.24cc63da432b4fa4a1995f903af5d0ea.finalize-summary.json"
     },
     "visualReview": "not-requested",
-    "durationMs": 2029,
+    "durationMs": 2000,
     "browserCheck": {
       "requested": false,
       "ran": false

@@ -8,7 +8,7 @@ Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conve
 | Q2 Ca play3clone (có `turn_start`, không signal) → deny; signal khớp → im; không `turn_start` → chỉ nhắc | `python -m unittest tests.test_bash_gate` | PASS | `test_approve_denied_without_any_signal_play3clone`, `test_approve_silent_when_signal_matched`, `test_failopen_no_signal_row`, `test_approve_reminds_when_signal_mismatch_without_prompt_hook` |
 | Q3 Signal `spec` khớp mà `approve plan` cùng prompt → deny | `python -m unittest tests.test_bash_gate` | PASS | `test_one_prompt_opens_one_gate` |
 | Q4 Không còn `set phase=implement` trước duyệt quick; lint 0 lỗi | `python scripts/doc_lint.py skills/tdq-intake/references/quick-lane.md skills/tdq-conventions/references/phases.md` | PASS | `test_quick_analyze_khong_nhay_implement_truoc_duyet`; doc_lint exit 0 sau khi đo lại `token_budget.py` |
-| Q5 Full fresh xanh | `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off` | PASS | 4202 test, 10 skip, 926 s, `details_complete=True`; result `docs/tdq/cache/test-runs/3df348232a8e68c3/3ad8dab13edb4d1c91efcf5f18af95b3/result.json` sha256 `47de563a…` |
+| Q5 Full fresh xanh | `python scripts/tdq_test.py tron-bo --workers 1 --fresh --reuse off` | PASS | 4202 case: 4192 passed, 10 skipped, 926 s; source_before = source_after; `details_complete=True`; result `docs/tdq/cache/test-runs/3df348232a8e68c3/3ad8dab13edb4d1c91efcf5f18af95b3/result.json` sha256 `47de563a…` |
 
 ## Vòng fix 1
 

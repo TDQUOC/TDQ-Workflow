@@ -1,0 +1,51 @@
+{
+  "version": "0.95.0",
+  "request": "2026-11-08-1207-va-lo-hong-edit-gate-3-tang",
+  "authorization": "bumpver +B + release và push",
+  "feature_commit": "d6116f2c",
+  "merge_commit": "093a2e0c",
+  "bump_commit": "9bde4e13",
+  "dev_source": "b3480d0cf3d58d2602189a3cba6b92177d04c82c",
+  "main_sha": "6f03655caaa02252ecb8a9332303b2f1e1771b8a",
+  "tag": "v0.95.0",
+  "tag_object": "5c2bb858a8be78b9528ae3f4e6d1589f7a067d69",
+  "tag_target_verified": true,
+  "remote_branches_verified": true,
+  "release_url": "https://github.com/TDQUOC/TDQ-Workflow/releases/tag/v0.95.0",
+  "published_at": "2026-11-08T06:30:49Z",
+  "draft": false,
+  "prerelease": false,
+  "asset": {
+    "name": "TDQ-Workflow-0.95.0.zip",
+    "size": 811509,
+    "files": 175,
+    "sha256": "8311df3d953136b17db9fda0b20ebb160b7f6cecb56d8ceca74f746d06c9e4a4",
+    "github_digest_matches_local": true,
+    "checksum_asset": "SHA256SUMS.txt",
+    "zip_integrity": "pass",
+    "archive_files_match_main": true,
+    "both_manifest_versions": "0.95.0"
+  },
+  "tests": {
+    "full_fresh_before_bump": {
+      "cases": 4202,
+      "passed": 4192,
+      "skipped": 10,
+      "status": "PASS",
+      "source_stable_during_job": true,
+      "result_sha256": "47de563a45b7e517fecb2fbf8bddeffde1267dab28888eb64c91d0bbbaa85b35"
+    },
+    "release_related_after_bump": {
+      "passed": 225,
+      "subtests_passed": 55,
+      "seconds": 48.43
+    },
+    "full_suite_rerun_after_bump": false
+  },
+  "local_plugin_updated": false,
+  "notes": [
+    "The docs evidence commit on dev may follow dev_source without changing the main release snapshot.",
+    "Source edits through the main agent shell and direct CLI calls outside these hooks remain outside the enforcement boundary.",
+    "Missing turn_start retains legacy behavior; no universal sandbox guarantee."
+  ]
+}
