@@ -24,6 +24,8 @@ from _common import (
     remind_force,
     turn_rows,
 )
+# Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path.
+from tdq_state import _info  # noqa: E402
 
 BAN = re.compile(r"^(claude|antigravity|gemini|codex)", re.IGNORECASE)
 BRANCH_PATTERNS = [
@@ -67,6 +69,9 @@ STATE_CLI = re.compile(r"tdq_state\.py\s+(\w[\w-]*)")
 APPROVE_CLI = re.compile(r"tdq_state\.py\s+approve\s+(spec|plan|quick|nhanh|express)\b")
 SETPHASE_CLI = re.compile(r"tdq_state\.py\s+set\b.*?\bphase=(\w+)")
 NEXT_PHASE_TARGET = {"plan": "spec", "implement": "plan"}
+# CLI aliases → the gate name prompt_context writes into `signal` rows. `approve plan --mode`
+# is also the answer to the mode gate, so a matched `mode` signal opens it too.
+SIGNAL_TARGETS = {"nhanh": ("quick",), "express": ("quick",), "plan": ("plan", "mode")}  # i18n-allow
 SHELL_MUTATOR = re.compile(
     r"^\s*(?:rm\b|sed\b.*(?:^|\s)-i(?:\s|$)|(?:cp|mv|tee)\b|"
     r"(?:Set-Content|Add-Content|Out-File|Copy-Item|Move-Item|Remove-Item|New-Item|Set-Item)\b|"
@@ -75,25 +80,39 @@ STDOUT_WRITE = re.compile(r"(?<!\d)>{1,2}\s*(?!&)(\S+)")
 DOCS_ARTIFACT = re.compile(r"docs[\\/]tdq[\\/]artifacts[\\/]", re.IGNORECASE)
 
 
-def _latest_signal(rows, target):
-    """The LATEST kind="signal" row matching target (walking the turn ledger backwards)."""
+def _latest_signal(rows, targets):
+    """The LATEST kind="signal" row matching one of targets (walking the turn ledger backwards)."""
     for row in reversed(rows):
-        if row.get("kind") == "signal" and row.get("target") == target:
+        if row.get("kind") == "signal" and row.get("target") in targets:
             return row
     return None
 
 
 def _check_signal_mismatch(cwd, payload, target, rows):
-    row = _latest_signal(rows, target)
-    if row is None:
+    """Deny an approval the user's own prompt this turn did not give.
+
+    One user prompt opens one gate: prompt_context classifies the prompt and writes a `signal`
+    row. A `turn_start` row proves that hook ran this turn, so a missing or unmatched signal
+    means the approval came from the agent, not the user (play3clone 2026-11-08: "1a", then
+    `approve spec` + `approve plan` in the same turn). No `turn_start` → a host without the
+    prompt hook: keep the old reminder rather than deadlock every approval.
+    """
+    targets = SIGNAL_TARGETS.get(target, (target,))
+    row = _latest_signal(rows, targets)
+    if row is not None and row.get("matched") is True and not row.get("mode_conflict"):
         return
-    if row.get("matched") is False or row.get("mode_conflict") is True:
-        remind_force(cwd, payload, "TDQ:APPROVE", [
-            (f"The latest prompt is NOT clearly an approval of {target} (or the mode differs) "
-             "— STOP, do not run this command."),
-            "How: ASK the user to confirm the approval before calling approve/set phase.",
-            echo_line("TDQ:APPROVE", "asked again and got a clear confirmation"),
-        ])
+    lines = [
+        (f"The user's prompt this turn did not approve {target} (or the mode differs) "
+         "— STOP, do not run this command."),
+        f"How: present {target}, END the turn, wait for the user's own approval message.",
+        echo_line("TDQ:APPROVE", "asked again and got a clear confirmation"),
+    ]
+    if any(r.get("kind") == "turn_start" for r in rows):
+        _info(f"bash_gate: block TDQ:APPROVE · target={target} · "
+              f"signal={'none' if row is None else 'unmatched'}")
+        block(cwd, payload, "TDQ:APPROVE", lines, day_du=True)
+    if row is not None:
+        remind_force(cwd, payload, "TDQ:APPROVE", lines)
 
 
 def _clean(raw):
@@ -135,7 +154,9 @@ def main():
     setphase_match = SETPHASE_CLI.search(cmd)
     if setphase_match:
         target = NEXT_PHASE_TARGET.get(setphase_match.group(1))
-        if target:
+        # A gate already approved needs no fresh consent to move on: the QC fix round goes
+        # back with `set phase=implement` long after the plan was approved, no signal written.
+        if target and not state.get(f"{target}_approved"):
             _check_signal_mismatch(cwd, payload, target, rows)
 
     branch_names = []

@@ -1,7 +1,7 @@
 # Express pipeline — detail
 <!-- muc-luc-dong:
-  How deep the analysis goes — B0, B1, B2=26-43 · The ten execution steps=44-114 ·
-  Mini spec/plan template=115-119 · Ba phần tách sang file em=120
+  How deep the analysis goes — B0, B1, B2=26-43 · The ten execution steps=44-115 ·
+  Mini spec/plan template=116-120 · Ba phần tách sang file em=121
 -->
 
 Express differs from the deep pipeline by **merging the documents and merging the
@@ -55,7 +55,8 @@ steps below before doing step 1; working from memory is banned.
 2. **Write what the analysis settled into `docs/tdq/brief/<slug>.md`** — the file Part A
    already created — under `## Hiểu & kiến thức`, then register it with <!-- i18n-allow: canonical section name in the default language -->
    `... set brief_file=docs/tdq/brief/<slug>.md`. Do NOT stop for approval here: this phase
-   has no gate. Then `... set phase=implement` and go straight on to step 3.
+   has no gate. Keep `phase=analyze` — `approve quick` at step 6 moves it to `implement`;
+   setting implement yourself skips the express gate. Go straight on to step 3.
 3. **Write the mini spec/plan MERGED into 1 file** `docs/tdq/plan/<slug>.md`, ≤ 40 lines:
    scope in/out, one checkbox task per test, DoD with every line checkable by a command.
    **Every task that edits source must carry a `Chạm:` line** listing the paths in <!-- i18n-allow: canonical name in the default language -->

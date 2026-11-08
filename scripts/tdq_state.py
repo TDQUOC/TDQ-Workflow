@@ -1316,8 +1316,11 @@ PHASE_TABLE = {
     "quick_analyze": {
         "entry": "lane = quick and phase = analyze, before the express approval",
         "action": "Analyse and write what you learned into docs/tdq/brief/<slug>.md, then go "
-                  "straight on to the mini spec/plan — this phase has NO approval gate",
-        "cmd": "python3 scripts/tdq_state.py set phase=implement",
+                  "straight on to the mini spec/plan — this phase has NO approval gate of its own; "
+                  "the phase stays analyze until the express approval",
+        # Never `set phase=implement` here: that moved the request past the express gate before
+        # the user saw the mini-plan (play3clone 2026-11-08). `approve quick` sets implement.
+        "cmd": "python3 scripts/tdq_state.py approve quick --by \"<the user's sentence verbatim>\"",
         "checklist": [
             "B1 read the code — ALWAYS, never skipped. The target is a code symbol → call "
             "mcp__lsp__* first (start_lsp if it answers 'not initialized'); a vague concept → "
