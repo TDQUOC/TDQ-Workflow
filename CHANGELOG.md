@@ -2,6 +2,15 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.95.0 — 2026-11-08
+
+Chặn agent tự sửa code và tự duyệt khi người dùng chưa duyệt (sự cố play3clone: nhắn "1a" rồi agent tự `approve spec`, `approve plan` và sửa `server/index.js` trong cùng một lượt).
+
+- `edit_gate`: còn cổng chờ duyệt → từ chối sửa file mã nguồn trong project (trước chỉ nhắc rồi cho chạy). `docs/**` và file ngoài project giữ như cũ.
+- `bash_gate`: từ chối `approve X` và `set phase=plan|implement` khi lượt này hook prompt đã chạy mà không ghi nhận câu duyệt đúng cổng X — một tin nhắn của người dùng mở đúng một cổng. Host không có hook UserPromptSubmit vẫn chỉ nhắc; vòng fix QC khi plan đã duyệt không bị chặn.
+- Lane quick: `quick_analyze` chỉ lệnh kế là `approve quick`; `quick-lane.md` bước 2 giữ `phase=analyze` thay vì nhảy sang `implement` trước duyệt.
+- Kiểm thử: full fresh 4.202 passed, 10 skipped. Giới hạn: ghi file qua shell của agent chính chưa đi qua `edit_gate`.
+
 ## 0.94.0 — 2026-11-06
 
 Giảm khả năng dừng giữa plan trên Claude Code và làm rõ cách khôi phục công việc.
