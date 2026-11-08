@@ -30,16 +30,16 @@
     "semantic_hash": "556c5552d34b4f831cb340853bd720bc"
   },
   "hooks/scripts/bash_gate.py": {
-    "mtime": 1793639139.7705367,
-    "seen": 1793642338.5992095,
-    "ast_hash": "f4cf58c47076eaaa0b05e32c79b59953",
-    "semantic_hash": "f4cf58c47076eaaa0b05e32c79b59953"
+    "mtime": 1794116213.247404,
+    "seen": 1794116425.635036,
+    "ast_hash": "1b968676f49eac404c741db279c7eef5",
+    "semantic_hash": "1b968676f49eac404c741db279c7eef5"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1793639139.7705367,
-    "seen": 1793642338.5996442,
-    "ast_hash": "1eac5b747b1e3df49f2f5e9652739a25",
-    "semantic_hash": "1eac5b747b1e3df49f2f5e9652739a25"
+    "mtime": 1794115928.072683,
+    "seen": 1794116425.6353648,
+    "ast_hash": "c8c77659aea2ef121457ead8c938711d",
+    "semantic_hash": "c8c77659aea2ef121457ead8c938711d"
   },
   "hooks/scripts/prompt_context.py": {
     "mtime": 1792250782.761787,
@@ -126,16 +126,16 @@
     "semantic_hash": "28f6d477685c456d720b8a3a9bea6736"
   },
   "scripts/tdq_finish.py": {
-    "mtime": 1794027175.1832745,
-    "seen": 1794027221.44955,
+    "mtime": 1794072505.4518316,
+    "seen": 1794116425.6431086,
     "ast_hash": "69283d1cc59fb5f3010e2eec719ac7c6",
     "semantic_hash": "69283d1cc59fb5f3010e2eec719ac7c6"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1793906319.0581315,
-    "seen": 1794027221.451068,
-    "ast_hash": "80d66391655ef2ecc8f7594853d25bbf",
-    "semantic_hash": "80d66391655ef2ecc8f7594853d25bbf"
+    "mtime": 1794116289.0371277,
+    "seen": 1794116425.6441884,
+    "ast_hash": "55323d8458152cf4c69ca96d450138b9",
+    "semantic_hash": "55323d8458152cf4c69ca96d450138b9"
   },
   "scripts/token_audit.py": {
     "mtime": 1793505009.5254688,
@@ -691,10 +691,10 @@
     "semantic_hash": "b316441360c658b44adacda00276af50"
   },
   "scripts/tdq_runtime_bench.py": {
-    "mtime": 1793505009.5146909,
-    "seen": 1793510652.0004835,
-    "ast_hash": "0ed759054bb58aeeac15e08eaa5259e5",
-    "semantic_hash": "0ed759054bb58aeeac15e08eaa5259e5"
+    "mtime": 1794072505.4529142,
+    "seen": 1794116425.6439145,
+    "ast_hash": "0fa94bc15ac0c2bd917afd2ef41e3163",
+    "semantic_hash": "0fa94bc15ac0c2bd917afd2ef41e3163"
   },
   "scripts/tdq_test_manifest.py": {
     "mtime": 1793505009.5196755,

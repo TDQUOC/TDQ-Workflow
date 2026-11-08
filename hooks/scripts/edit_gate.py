@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """PreToolUse (Edit|Write|MultiEdit|NotebookEdit) — observe + remind; denies only the cases below.
 
-Denies: `TDQ:TICK` (source edit in implement/qc without a `[~]` task), `TDQ:TEAM` (team-map
+Denies: `TDQ:APPROVE` (project source edited while the lane's approval gate is open),
+`TDQ:TICK` (source edit in implement/qc without a `[~]` task), `TDQ:TEAM` (team-map
 breach, or a sub-agent editing outside docs/ before implement). Every other code only reminds.
 
 Two jobs, in this order:
@@ -138,12 +139,20 @@ def main():
         # Name both the machine value and the label the user sees at the mode gate — both accepted.
         mode = f" --mode <{goi_y_mode()}>" if pending == "plan" else ""
         # Command before advice: the 200-char ceiling must cut the least needed part.
-        remind(cwd, payload, "TDQ:APPROVE", [
+        loi = [
             f"Editing a file outside docs/ while {pending} has no recorded approval.",
             f"User approved → python3 scripts/tdq_state.py approve {pending}{mode} "
             f"--by \"<the user's words>\".",
-            f"Not approved yet → present the {pending} and ask for approval.",
-        ])
+            f"Not approved yet → present the {pending}, END the turn and wait; never run approve yourself.",
+        ]
+        # A reminder here was an open door: play3clone 2026-11-08 — the edit ran, the agent read
+        # the hint and approved on the user's behalf. Project source is now denied; a file outside
+        # the project is not under this plan's authority, so it keeps the old reminder.
+        # ponytail: Edit/Write only — a main-agent shell write (`node -e`, Set-Content) slips past;
+        # widen to bash_gate once a real case is measured.
+        if within(abs_target, os.path.realpath(cwd)):
+            block(cwd, payload, "TDQ:APPROVE", loi, day_du=True)
+        remind(cwd, payload, "TDQ:APPROVE", loi)
 
     # repo changed → remind about the working log now, do not save it up for Stop
     if not os.path.isfile(os.path.join(cwd, log_rel)):

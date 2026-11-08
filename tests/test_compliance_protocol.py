@@ -82,11 +82,12 @@ class ProtocolTest(unittest.TestCase):
 
     # T2.5 -----------------------------------------------------------
     def test_edit_gate_reminders(self):
+        # Spec 2026-11-08-1207: source edit with the gate open is DENIED (was allow + remind).
         self.full_state(spec_approved=False, plan_approved=False)
         rc, out, _ = run_hook("edit_gate.py", self.payload("edit_src.json"))
-        perm, context = decision(out)
-        self.assertEqual(perm, "allow")
-        self.assertTrue(context.startswith("[TDQ:APPROVE]"), context)
+        perm, _ = decision(out)
+        self.assertEqual(perm, "deny")
+        self.assertIn("[TDQ:APPROVE]", out)
 
         # docs/** không bao giờ bị nhắc duyệt
         tdq_state.turn_log_clear(self.cwd, SESSION)

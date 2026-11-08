@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-08T12:02:40+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-08T13:21:41+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-08-1141-dieu-tra-gate-chua-duyet-tu-dong-edit |
+| Request | 2026-11-08-1207-va-lo-hong-edit-gate-3-tang |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-11-08-1141-dieu-tra-gate-chua-duyet-tu-dong-edit.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-11-08-1141-dieu-tra-gate-chua-duyet-tu-dong-edit.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-11-08-1207-va-lo-hong-edit-gate-3-tang.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-11-08-1207-va-lo-hong-edit-gate-3-tang.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | ultra |

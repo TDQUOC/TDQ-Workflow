@@ -41,18 +41,23 @@ class TestEditGate(unittest.TestCase):
             self.assertIn(needle, context)
         return context
 
-    def test_remind_src_when_full_unapproved(self):
+    def assert_deny(self, out, *needles):
+        self.assertIn('"deny"', out)
+        for needle in needles:
+            self.assertIn(needle, out)
+
+    def test_deny_src_when_full_unapproved(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="spec")
         rc, out, _ = self.edit("edit_src.json")
         self.assertEqual(rc, 0)
-        self.assert_remind(out, "[TDQ:APPROVE]", "spec has no recorded approval", "approve spec")
+        self.assert_deny(out, "[TDQ:APPROVE]", "spec has no recorded approval", "approve spec")
 
-    def test_remind_src_when_plan_pending(self):
+    def test_deny_src_when_plan_pending(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
                     spec_file="docs/tdq/spec/x.md", spec_approved=True,
                     spec_sha256="abc", spec_approved_at=now_iso())
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "[TDQ:APPROVE]", "plan has no recorded approval", "approve plan")
+        self.assert_deny(out, "[TDQ:APPROVE]", "plan has no recorded approval", "approve plan")
 
     def test_plan_pending_mode_placeholder_lists_modes(self):
         write_state(self.cwd, active_request="r1", lane="full", phase="plan",
@@ -60,7 +65,7 @@ class TestEditGate(unittest.TestCase):
                     spec_sha256="abc", spec_approved_at=now_iso())
         rc, out, _ = self.edit("edit_src.json")
         # Nêu cả định danh máy lẫn nhãn mới ở cổng mode.
-        self.assert_remind(out, "main|inline")
+        self.assert_deny(out, "main|inline")
         self.assertIn("sub-agent", out)
 
     def test_goi_y_mode_in_du_moi_mode_dang_co(self):
@@ -103,17 +108,17 @@ class TestEditGate(unittest.TestCase):
         rc, out, _ = self.edit("edit_src.json", rel=os.path.join("docs", "tdq", "STATE.md"))
         self.assert_remind(out, "[TDQ:STATE]")
 
-    def test_quick_remind_unapproved(self):
+    def test_quick_deny_unapproved(self):
         write_state(self.cwd, active_request="r1", lane="quick")
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "[TDQ:APPROVE]", "quick has no recorded approval", "approve quick")
+        self.assert_deny(out, "[TDQ:APPROVE]", "quick has no recorded approval", "approve quick")
 
-    def test_lane_hong_van_nhac_thay_vi_im_lang(self):
+    def test_lane_hong_van_chan_thay_vi_im_lang(self):
         # State không có lane (hỏng, hoặc request cũ) — trước đây edit_gate im lặng
-        # hoàn toàn. Im lặng lúc state hỏng là bỏ lọt: vẫn hỏi cổng đầu tiên.
+        # hoàn toàn. Im lặng lúc state hỏng là bỏ lọt: vẫn đòi cổng đầu tiên.
         write_state(self.cwd, active_request="r1", lane=None)
         rc, out, _ = self.edit("edit_src.json")
-        self.assert_remind(out, "[TDQ:APPROVE]", "spec has no recorded approval")
+        self.assert_deny(out, "[TDQ:APPROVE]", "spec has no recorded approval")
 
     def test_remind_log_when_today_file_missing(self):
         write_state(self.cwd, active_request="r1", lane="quick",
@@ -156,8 +161,8 @@ class TestEditGate(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual(out, "")
 
-    def test_never_denies_outside_tick(self):
-        """Ngoài TDQ:TICK, mọi ca khác chỉ nhắc — không ca nào deny."""
+    def test_unapproved_gate_denies_source_only(self):
+        """Cổng chưa duyệt → chặn mã nguồn; docs/** và state file chỉ nhắc, không bao giờ deny."""
         scenarios = [
             dict(active_request="r1", lane="full", phase="spec"),
             dict(active_request="r1", lane="quick"),
@@ -165,10 +170,12 @@ class TestEditGate(unittest.TestCase):
         ]
         for i, overrides in enumerate(scenarios):
             write_state(self.cwd, **overrides)
-            for fixture in ("edit_src.json", "edit_state_json.json", "edit_docs_spec.json"):
+            for fixture in ("edit_state_json.json", "edit_docs_spec.json"):
                 rc, out, _ = self.edit(fixture, session=f"sc{i}-{fixture}")
                 self.assertEqual(rc, 0)
                 self.assertNotIn('"deny"', out, f"{overrides} / {fixture}")
+            rc, out, _ = self.edit("edit_src.json", session=f"sc{i}-src")
+            self.assertIn('"deny"', out, f"{overrides} / edit_src.json")
 
 
 if __name__ == "__main__":
