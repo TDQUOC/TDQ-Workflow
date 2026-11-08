@@ -51,11 +51,10 @@ class TestFullLaneChain(ChainBase):
         rc, _, err = run_state_cli(self.cwd, "init", f"{today()}-0900-demo", "full")
         self.assertEqual(rc, 0, err)
 
-        # 2. trước khi duyệt: sửa src vẫn CHẠY được, chỉ kèm lời nhắc
+        # 2. trước khi duyệt: sửa src bị CHẶN (spec 2026-11-08-1207 — trước là chỉ nhắc)
         self.new_turn()
         dec, context = self.edit()
-        self.assertEqual(dec, "allow")
-        self.assertIn("approve spec", context)
+        self.assertEqual(dec, "deny")
 
         # 3. spec viết trong docs (im lặng) và đăng ký
         write_file(self.cwd, "docs/tdq/spec/demo.md", "# spec demo\nnoi dung\n")
@@ -68,11 +67,10 @@ class TestFullLaneChain(ChainBase):
         self.assertEqual(rc, 0, err)
         self.assertIn("Recorded", out)
 
-        # 5. vẫn nhắc tiếp: plan chưa duyệt (nhưng không chặn)
+        # 5. plan chưa duyệt → sửa src vẫn bị chặn
         self.new_turn()
         dec, context = self.edit()
-        self.assertEqual(dec, "allow")
-        self.assertIn("approve plan", context)
+        self.assertEqual(dec, "deny")
 
         # 6. pha `diagram` đã bị gỡ: spec duyệt xong là đi thẳng sang plan,
         # không cổng nào chen giữa.
@@ -126,8 +124,7 @@ class TestQuickLaneChain(ChainBase):
 
         self.new_turn()
         dec, context = self.edit()
-        self.assertEqual(dec, "allow")
-        self.assertIn("approve quick", context)
+        self.assertEqual(dec, "deny")
 
         out = self.new_turn("duyệt quick")
         self.assertIn("approve quick", out)

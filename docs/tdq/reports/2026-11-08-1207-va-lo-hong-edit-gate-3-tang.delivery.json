@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "7186688a-e30f-4fef-ae85-1362ee3100a1",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-08-1207-va-lo-hong-edit-gate-3-tang\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-08-1207-va-lo-hong-edit-gate-3-tang.4c4ae716ec074e9dabc1e9041852ceeb.html",
+  "specification": {
+    "sha256": "476bee1d3549cfa365f68ec9c34a718bcc518f1b543a22aa10dde05fa5a7ff13",
+    "bytes": 1764
+  },
+  "artifact": {
+    "sha256": "1b718065f50b04d1f7a58ea2be1f101d62a78396fce8bbc4fdee30f5d923f0e7",
+    "bytes": 848415
+  },
+  "explainer": {
+    "preparedSha256": "34458d009f75877837df39c91f7b1725bd35c36dd924148c3d940536b1d5d7d3",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "gate-truoc",
+        "inline": true,
+        "sha256": "415adfb2b367577fc20d7e739277a754fe89259eea542395f03e2272bdaeee85",
+        "bytes": 1169
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "gate-sau",
+        "inline": true,
+        "sha256": "e91402d9fd49beee0419e2fe9e58bc7ccf5fffcdbddea90e569c615c3b596940",
+        "bytes": 1017
+      }
+    ]
+  }
+}

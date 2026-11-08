@@ -2,6 +2,8 @@
   "schema_version": 1,
   "status": "stale",
   "reasons": [
+    "Source file modified: hooks/scripts/bash_gate.py",
+    "Source file modified: hooks/scripts/edit_gate.py",
     "Source file modified: hooks/scripts/session_start.py",
     "Source file modified: hooks/scripts/stop_gate.py",
     "Source file modified: scripts/tdq_finish.py",
@@ -12,12 +14,14 @@
     "Source file modified: skills/tdq-build/references/report-template.md",
     "Source file modified: skills/tdq-build/references/skill-eval.md",
     "Source file modified: skills/tdq-build/references/vision-test-loop.md",
+    "Source file modified: skills/tdq-conventions/references/phases.md",
     "Source file modified: skills/tdq-conventions/references/soul.md",
     "Source file modified: skills/tdq-intake/SKILL.md",
+    "Source file modified: skills/tdq-intake/references/quick-lane.md",
     "Source file modified: skills/tdq-plan/SKILL.md",
     "Source file modified: skills/tdq-spec/SKILL.md",
     "Source file modified: skills/tdq-spec/references/spec-template.md",
     "Source file modified: tests/test_context_hooks.py"
   ],
-  "checked_at": "2026-11-07T05:34:40Z"
+  "checked_at": "2026-11-08T06:15:05Z"
 }

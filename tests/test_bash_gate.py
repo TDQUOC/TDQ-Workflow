@@ -150,39 +150,100 @@ class TestBashGate(unittest.TestCase):
     def _pre_remind(self, session, code):
         tdq_state.turn_log_append(self.cwd, "remind", session=session, code=code)
 
-    def test_approve_reminds_when_signal_mismatch(self):
+    def _turn_start(self, session):
+        """What prompt_context writes at every user prompt — proof the prompt hook ran."""
+        tdq_state.turn_log_append(self.cwd, "turn_start", session=session)
+
+    def assert_deny(self, command, needle=None):
+        rc, out, _ = self.bash(command)
+        self.assertEqual(rc, 0, command)
+        self.assertEqual(decision(out)[0], "deny", command)
+        if needle:
+            self.assertIn(needle, out)
+
+    def test_approve_reminds_when_signal_mismatch_without_prompt_hook(self):
+        # No turn_start: a host without UserPromptSubmit — keep the reminder, never deadlock.
         cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
         self._signal(cmd[:40], "spec", matched=False)
         self.assert_remind(cmd, "TDQ:APPROVE")
 
+    def test_approve_denied_when_signal_mismatch(self):
+        cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
+        self._turn_start(cmd[:40])
+        self._signal(cmd[:40], "spec", matched=False)
+        self.assert_deny(cmd, "TDQ:APPROVE")
+
+    def test_approve_denied_without_any_signal_play3clone(self):
+        # play3clone 2026-11-08: the user typed "1a" while no gate was pending → no signal row;
+        # the agent then ran `approve spec --by "duyet spec"` in that same turn.
+        cmd = 'python3 scripts/tdq_state.py approve spec --by "duyet spec"'
+        self._turn_start(cmd[:40])
+        self.assert_deny(cmd, "TDQ:APPROVE")
+
+    def test_one_prompt_opens_one_gate(self):
+        # "duyệt spec" matched spec — it must not also carry `approve plan` in the same turn.
+        cmd = 'python3 scripts/tdq_state.py approve plan --by "duyet plan"'
+        self._turn_start(cmd[:40])
+        self._signal(cmd[:40], "spec", matched=True)
+        self.assert_deny(cmd, "TDQ:APPROVE")
+
     def test_approve_silent_when_signal_matched(self):
         cmd = 'python3 scripts/tdq_state.py approve plan --mode main --by "duyệt plan mode main"'
+        self._turn_start(cmd[:40])
         self._signal(cmd[:40], "plan", matched=True, mode_conflict=False)
         self.assert_silent(cmd)
 
-    def test_setphase_reminds_when_signal_mismatch(self):
+    def test_approve_plan_accepts_mode_gate_signal(self):
+        cmd = 'python3 scripts/tdq_state.py approve plan --mode main --by "main"'
+        self._turn_start(cmd[:40])
+        self._signal(cmd[:40], "mode", matched=True)
+        self.assert_silent(cmd)
+
+    def test_quick_aliases_map_to_quick_signal(self):
+        for alias in ("nhanh", "express"):
+            with self.subTest(alias=alias):
+                cmd = f'python3 scripts/tdq_state.py approve {alias} --by "duyệt nhanh {alias}"'
+                self._turn_start(cmd[:40])
+                self._signal(cmd[:40], "quick", matched=True)
+                self.assert_silent(cmd)
+
+    def test_setphase_denied_when_signal_mismatch(self):
         cmd_a = "python3 scripts/tdq_state.py set phase=plan"
+        self._turn_start(cmd_a[:40])
         self._signal(cmd_a[:40], "spec", matched=False)
-        self.assert_remind(cmd_a, "TDQ:APPROVE")
+        self.assert_deny(cmd_a, "TDQ:APPROVE")
 
         cmd_b = "python3 scripts/tdq_state.py set phase=implement"
+        self._turn_start(cmd_b[:40])
         self._signal(cmd_b[:40], "plan", matched=False)
-        self.assert_remind(cmd_b, "TDQ:APPROVE")
+        self.assert_deny(cmd_b, "TDQ:APPROVE")
 
     def test_setphase_silent_when_signal_matched(self):
         cmd = "python3 scripts/tdq_state.py set phase=plan"
+        self._turn_start(cmd[:40])
         self._signal(cmd[:40], "spec", matched=True, mode_conflict=False)
         self.assert_silent(cmd)
 
+    def test_setphase_fix_round_after_plan_approved_not_denied(self):
+        # QC/report → rejected deviation → `set phase=implement`: plan was approved long ago,
+        # no gate pending, so prompt_context wrote no signal. Must not be denied.
+        write_state(self.cwd, active_request="r1", lane="full", phase="report",
+                    spec_approved=True, plan_approved=True)
+        cmd = "python3 scripts/tdq_state.py set phase=implement"
+        self._turn_start(cmd[:40])
+        self.assert_silent(cmd)
+
     def test_failopen_no_signal_row(self):
+        # No turn_start either: host without the prompt hook — stays silent as before.
         cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
         self.assert_silent(cmd)
 
     def test_approve_not_swallowed_by_prior_edit_gate_remind(self):
         cmd = 'python3 scripts/tdq_state.py approve spec --by "duyệt spec"'
+        self._turn_start(cmd[:40])
         self._pre_remind(cmd[:40], "TDQ:APPROVE")
         self._signal(cmd[:40], "spec", matched=False)
-        self.assert_remind(cmd, "TDQ:APPROVE")
+        self.assert_deny(cmd, "TDQ:APPROVE")
 
 
 class TestBashGateSingleTurnRead(unittest.TestCase):

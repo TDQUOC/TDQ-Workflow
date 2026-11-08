@@ -68,6 +68,13 @@ class PhaseTableTest(unittest.TestCase):
     def test_lane_quick_van_chi_mot_cong(self):
         """Canh 2a không trượt thành 2c: thêm pha phân tích KHÔNG được thêm cổng duyệt."""
         self.assertEqual(tdq_state.CONG_THEO_LANE["quick"], ("quick",))
+
+    def test_quick_analyze_khong_nhay_implement_truoc_duyet(self):
+        """play3clone 2026-11-08: `cmd` cũ bảo `set phase=implement` khi quick CHƯA duyệt —
+        hàng này chỉ hiện trước `quick_approved`, nên lệnh kế phải là chính cổng duyệt."""
+        cmd = tdq_state.PHASE_TABLE["quick_analyze"]["cmd"]
+        self.assertNotIn("phase=implement", cmd)
+        self.assertIn("approve quick", cmd)
         self.assertNotIn("analyze", tdq_state.APPROVE_TARGETS)
         state = {"active_request": "r", "lane": "quick", "phase": "analyze"}
         self.assertEqual(tdq_state.cong_dang_cho(state), "quick")
