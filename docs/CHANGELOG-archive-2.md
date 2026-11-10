@@ -8,6 +8,28 @@ Ngày 2026-11-03 chuyển nguyên mục 0.54.0 và 0.53.0 từ changelog chính 
 Ngày 2026-11-06 chuyển nguyên mục 0.55.0 từ changelog chính vào đây.
 Lần tách sau: chuyển các bản cũ nhất còn trong `CHANGELOG.md` vào ĐẦU file này.
 
+## 0.56.0 — 2026-10-03
+
+Đo ngưỡng ở spec, không dừng giữa implement vì ngưỡng. Ca gốc: một phiên excalidraw dừng giữa
+plan để hỏi nâng ngưỡng installer 200 → 250 MB. Riêng bộ cài WebView2 offline đã 212 MB, và một
+lần đọc trang tải ở lúc viết spec là bắt được. Báo cáo:
+`docs/tdq/reports/2026-10-03-0732-do-truoc-lam-mot-turn.md`.
+
+- **Đo trước ở spec (luật R14 của `doc_lint`).** Mỗi ngưỡng số ở §6 của spec mới phải có cột
+  `Đo trước` (số đo thật, hoặc ước lượng có nguồn) và cột `Dự phòng nếu trượt`. Thử trên spec
+  cũ: nhận đúng 10/10 hàng có ngưỡng, 0/10 hàng phép tồn tại. Spec cũ không bị áp hồi tố; tên cột
+  tiếng Anh cũng được nhận.
+- **`approve spec` từ chối khi R14 đỏ.** Lối thoát duy nhất là `--bo-qua-do "<lý do>"` của user,
+  ghi vào state.
+- **Lệch spec thay cho câu hỏi giữa chừng.** Ngưỡng trượt lúc implement/qc → áp cột dự phòng,
+  ghi bằng `tdq_state.py lech add`, làm tiếp. QC ghi "PASS (lệch, chờ duyệt)". `next` ở qc/report
+  liệt kê lệch chờ duyệt, và report hỏi duyệt từng cái (`lech duyet`/`lech bac`).
+- **`pause` chỉ nhận 4 loại bất khả kháng** (`--loai`): mất truy cập/công cụ hỏng · việc phá huỷ
+  khó đảo ngược · đầu vào chỉ user có · QC chạm trần 3 vòng. "Đổi phạm vi spec" không còn là lý
+  do dừng.
+- **Hook `ask_gate.py` (`TDQ:ASK`).** Nó nhắc khi agent hỏi user bằng popup ở implement/qc —
+  đường dừng mà cổng Stop không thấy. Chỉ nhắc, không chặn, không trả quyết định quyền.
+
 ## 0.55.0 — 2026-10-03
 
 Luật tìm kiếm 4 tầng giờ được **cưỡng chế**, không chỉ được nhắc. Soi một phiên thật trên
