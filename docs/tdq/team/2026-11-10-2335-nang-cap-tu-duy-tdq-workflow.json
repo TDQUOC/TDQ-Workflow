@@ -1,0 +1,75 @@
+{
+  "slug": "2026-11-10-2335-nang-cap-tu-duy-tdq-workflow",
+  "plan_file": "docs\\tdq\\plan\\2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.md",
+  "plan_sha": "7f85664546b1b9ab874b91fe9c848f029159f142befa2a6db537d427778a9f39",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "fc0195f3db9bc586db685ccc97b9b40384fa25327998bef0b1c6d6d4150f917e",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_read_gate.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/read_gate.py"
+      ],
+      "dot": 4
+    },
+    "T1.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/read_gate.py"
+      ],
+      "dot": 5
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-conventions/references/soul.md"
+      ],
+      "dot": 1
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-intake/references/quick-lane.md"
+      ],
+      "dot": 1
+    },
+    "T2.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/artifacts/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow/truoc-sau.archify.md",
+        "docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow-preview.html"
+      ],
+      "dot": 1
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "hooks/scripts/read_gate.py"
+      ],
+      "dot": 2
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_read_gate.py"
+      ],
+      "dot": 3
+    }
+  }
+}

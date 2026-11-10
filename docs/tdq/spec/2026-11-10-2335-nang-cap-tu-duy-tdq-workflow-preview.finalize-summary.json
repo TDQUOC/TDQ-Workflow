@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-10-2335-nang-cap-tu-duy-tdq-workflow\\truoc-sau.archify.md",
+    "sha256": "37168a4caee1d353cc0feae3cc488b4742afca7a1778816b376c7236a21666fc",
+    "bytes": 2760
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-10-2335-nang-cap-tu-duy-tdq-workflow-preview.ef3bdd175b4a491d8a7724a6f5ba58d3.html",
+    "sha256": "ec3447bf44ecb9ff5c2ccec5edfb18b7543c652e6094596b982103cd57d17a6a",
+    "bytes": 874903
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 40 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-10-2335-nang-cap-tu-duy-tdq-workflow\\truoc-sau.archify.md",
+        "line": 5,
+        "component": "answer"
+      },
+      "evidence": {
+        "reason": "Sentence has 40 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 40,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    },
+    {
+      "code": "explainer/writing-sentence-length",
+      "severity": "warning",
+      "message": "Sentence has 32 reading units, above the configured en limit of 28.",
+      "subject": {
+        "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-10-2335-nang-cap-tu-duy-tdq-workflow\\truoc-sau.archify.md",
+        "line": 35,
+        "component": "prose",
+        "panelId": "sau"
+      },
+      "evidence": {
+        "reason": "Sentence has 32 reading units, above the configured en limit of 28.",
+        "example": "先查缓存。未命中时再查数据库。 / Check the cache first. Query the database on a miss.",
+        "rule": "sentence-length",
+        "units": 32,
+        "limit": 28
+      },
+      "supportedFixes": [
+        "Split at a logical action or condition boundary while preserving qualifications and causal links."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 2,
+    "shown": 2,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-10-2335-nang-cap-tu-duy-tdq-workflow-preview.ef3bdd175b4a491d8a7724a6f5ba58d3.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-10-2335-nang-cap-tu-duy-tdq-workflow-preview.ef3bdd175b4a491d8a7724a6f5ba58d3.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1975,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}

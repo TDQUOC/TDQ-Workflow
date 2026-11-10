@@ -131,6 +131,12 @@ Mandatory structural baselines applicable across all implemented code in TDQ:
    - Always establish the Red baseline before authoring implementation code.
    - Never write speculative implementation ahead of a failing test assertion.
 
+4. **Reflective Thought & Hypothesis**:
+   - Trước khi khảo sát mã nguồn: Xác định giả thuyết rõ ràng (đang tìm gì, ở đâu, tại sao). Cấm gọi công cụ dò dẫm mù mờ liên hoàn không có định hướng.
+   - Sau khi đọc mã nguồn: Phải tổng hợp kết quả, kiểm chứng giả thuyết trước khi chuyển bước tiếp theo.
+   - Đọc dải rộng trọn vẹn: Khảo sát một dải đủ rộng (100–300 dòng) bao quát toàn bộ hàm hoặc luồng xử lý; cấm xé vụn thành các lượt đọc 30–50 dòng trượt trùm lặp liên tiếp gây bẫy tự hồi quy (autoregressive attractor).
+   - Chất lượng > Tốc độ: Không bao giờ vội vàng kết luận sửa triệu chứng ngoài da khi chưa hoàn thành truy vết nguyên nhân gốc rễ (Root Cause Analysis - 5 Whys).
+
 ## Self-check
 
 - Yes/no question: "Does the change I am about to make lower quality in exchange for speed or
