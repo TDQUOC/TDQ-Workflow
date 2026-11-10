@@ -51,7 +51,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P2 — Trực quan hóa Kiến trúc Trước/Sau & Xuất bản Báo cáo nghiệm thu
 
-- [>] **T2.1** (e4m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
+- [x] **T2.1** (e4m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
   - Chạm: `docs/tdq/artifacts/2026-11-11-0035-nang-cap-do-chi-tiet-plan/truoc-sau.archify.md`
   - Dùng: Archify CLI (`tdq_archify.py`)
   - Để: Render và verify preview HTML cho spec và report
