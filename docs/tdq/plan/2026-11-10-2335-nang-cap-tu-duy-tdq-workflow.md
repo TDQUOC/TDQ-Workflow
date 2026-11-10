@@ -3,7 +3,7 @@
 Ngày: 2026-11-11 · Spec: ../spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — tdq_bench đo nhanh hơn 6.1 phút qua 2 wave (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: ĐÃ DUYỆT
+Trạng thái plan: HOÀN THÀNH
 
 ## Mục lục
 
@@ -39,12 +39,12 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P1 — Hiện thực thuật toán Range Overlap trong read_gate.py (TDD)
 
-- [>] **T1.1** (e5m) Viết test case đỏ kiểm chứng hành vi Range Overlap và đọc file dài — Test: `pytest tests/test_read_gate.py -k "test_im_vung_khac_thi_khong_nhac or test_nhac_khi_lap_doan_offset_limit"`
+- [x] **T1.1** (e5m) Viết test case đỏ kiểm chứng hành vi Range Overlap và đọc file dài — Test: `pytest tests/test_read_gate.py -k "test_im_vung_khac_thi_khong_nhac or test_nhac_khi_lap_doan_offset_limit"`
   - Chạm: `tests/test_read_gate.py` → cập nhật test suite với các ca kiểm thử mới
-- [ ] **T1.2** (e8m) Cập nhật hàm `_vung`, bổ sung hàm tính độ trùng lặp `_tinh_overlap_ratio` và phát hiện đọc lặp đoạn trong `read_gate.py` — Test: `pytest tests/test_read_gate.py -k test_nhac_khi_lap_doan_offset_limit`
+- [x] **T1.2** (e8m) Cập nhật hàm `_vung`, bổ sung hàm tính độ trùng lặp `_tinh_overlap_ratio` và phát hiện đọc lặp đoạn trong `read_gate.py` — Test: `pytest tests/test_read_gate.py -k test_nhac_khi_lap_doan_offset_limit`
   - Chạm: `hooks/scripts/read_gate.py` → hàm `_tinh_overlap_ratio`, `_dem_lap_doan`, `main`
   - Cần: T1.1
-- [ ] **T1.3** (e4m) Định dạng thông điệp nhắc nhở `[TDQ:DOC]` trực diện cho AI thoát bẫy lặp — Test: `pytest tests/test_read_gate.py -k test_thong_diep_remind_ai`
+- [x] **T1.3** (e4m) Định dạng thông điệp nhắc nhở `[TDQ:DOC]` trực diện cho AI thoát bẫy lặp — Test: `pytest tests/test_read_gate.py -k test_thong_diep_remind_ai`
   - Chạm: `hooks/scripts/read_gate.py` → chuỗi format nhắc nhở trong `main`
   - Cần: T1.2
 
@@ -52,11 +52,11 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P2 — Cập nhật quy chuẩn tư duy phản tư trong Soul và Quick Lane
 
-- [ ] **T2.1** (e4m) Bổ sung quy tắc "Reflective Thought & Hypothesis" vào `soul.md` — Test: `python scripts/doc_lint.py skills/tdq-conventions/references/soul.md`
+- [x] **T2.1** (e4m) Bổ sung quy tắc "Reflective Thought & Hypothesis" vào `soul.md` — Test: `python scripts/doc_lint.py skills/tdq-conventions/references/soul.md`
   - Chạm: `skills/tdq-conventions/references/soul.md` → bổ sung mục Reflective Thought
-- [ ] **T2.2** (e4m) Cập nhật hướng dẫn khảo sát mã nguồn trong `quick-lane.md` (đọc dải rộng trọn vẹn, cấm xé vụn) — Test: `python scripts/doc_lint.py skills/tdq-intake/references/quick-lane.md`
+- [x] **T2.2** (e4m) Cập nhật hướng dẫn khảo sát mã nguồn trong `quick-lane.md` (đọc dải rộng trọn vẹn, cấm xé vụn) — Test: `python scripts/doc_lint.py skills/tdq-intake/references/quick-lane.md`
   - Chạm: `skills/tdq-intake/references/quick-lane.md` → bổ sung lưu ý đọc dải rộng
-- [>] **T2.3** (e3m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.md --manifest docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow-preview.manifest.json`
+- [x] **T2.3** (e3m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.md --manifest docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow-preview.manifest.json`
   - Chạm: `docs/tdq/artifacts/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow/truoc-sau.archify.md`
   - Dùng: Archify CLI (`tdq_archify.py`)
   - Để: Render và verify preview HTML cho spec và report
@@ -68,20 +68,20 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P3 — Log & test bắt buộc
 
-- [ ] **T3.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_read_gate.py -k test_log_bat_mac_dinh_co_timestamp`
+- [x] **T3.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_read_gate.py -k test_log_bat_mac_dinh_co_timestamp`
   - Chạm: `hooks/scripts/read_gate.py` → hàm `_log`
-- [ ] **T3.2** (e5m) Chạy toàn bộ test suite và kiểm chứng không có hồi quy — Test: `pytest tests/test_read_gate.py`
+- [x] **T3.2** (e5m) Chạy toàn bộ test suite và kiểm chứng không có hồi quy — Test: `pytest tests/test_read_gate.py`
   - Chạm: `tests/test_read_gate.py`
 
 **Xong P3 khi**: Test suite `tests/test_read_gate.py` hoàn toàn xanh 100%.
 
 ## Definition of Done
 
-- [ ] Q1 Đọc nhiều đoạn khác nhau file dài: Hook im lặng hoàn toàn (`dang_nhac = False`) — `pytest tests/test_read_gate.py -k test_im_vung_khac_thi_khong_nhac`
-- [ ] Q2 Đọc lặp lại cùng 1 đoạn ≥ 2 lần: Hook kích hoạt nhắc nhở `[TDQ:DOC]` — `pytest tests/test_read_gate.py -k test_nhac_khi_lap_doan_offset_limit`
-- [ ] Q3 Đọc toàn bộ file lần 2: Hook kích hoạt nhắc nhở như cũ — `pytest tests/test_read_gate.py -k test_nhac_lan_doc_thu_hai_cua_file_khong_doi`
-- [ ] Q4 Thời gian chạy của hook: Dưới 10ms mỗi lần gọi — `pytest tests/test_read_gate.py -k test_nhe_khong_spawn_tien_trinh_con`
-- [ ] Q5 Lint tài liệu và format: `doc_lint.py` thoát mã 0 — `python scripts/doc_lint.py docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.md`
+- [x] Q1 Đọc nhiều đoạn khác nhau file dài: Hook im lặng hoàn toàn (`dang_nhac = False`) — `pytest tests/test_read_gate.py -k test_im_vung_khac_thi_khong_nhac`
+- [x] Q2 Đọc lặp lại cùng 1 đoạn ≥ 2 lần: Hook kích hoạt nhắc nhở `[TDQ:DOC]` — `pytest tests/test_read_gate.py -k test_nhac_khi_lap_doan_offset_limit`
+- [x] Q3 Đọc toàn bộ file lần 2: Hook kích hoạt nhắc nhở như cũ — `pytest tests/test_read_gate.py -k test_nhac_lan_doc_thu_hai_cua_file_khong_doi`
+- [x] Q4 Thời gian chạy của hook: Dưới 10ms mỗi lần gọi — `pytest tests/test_read_gate.py -k test_nhe_khong_spawn_tien_trinh_con`
+- [x] Q5 Lint tài liệu và format: `doc_lint.py` thoát mã 0 — `python scripts/doc_lint.py docs/tdq/spec/2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.md`
 
 ## Cụm song song
 

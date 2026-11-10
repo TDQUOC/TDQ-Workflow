@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6b994d83-4aa1-4d30-af91-c590e72305b1",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-10-2335-nang-cap-tu-duy-tdq-workflow\\report.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-10-2335-nang-cap-tu-duy-tdq-workflow.7a393a77d4d74af8b50f1246d90004f5.html",
+  "specification": {
+    "sha256": "2f0d4f8eea4d87d8053dd957892f9cf885c01ba3e9bb6c0124a75bf32b6de83a",
+    "bytes": 2511
+  },
+  "artifact": {
+    "sha256": "7ea7e105441c90c6271ef16fbc21deb74de99a49f3006834ce1de8ba4383204c",
+    "bytes": 873962
+  },
+  "explainer": {
+    "preparedSha256": "a42d22bd18415a8c7f0267a56d6ab8efee70b38dc790adf301c30b7f3a54a04f",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "luong-truoc",
+        "inline": true,
+        "sha256": "f3fe0511be36ae3e8e380b523fab63fe47baf70618e520a8ec0368766c4d3b80",
+        "bytes": 1480
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-sau",
+        "inline": true,
+        "sha256": "40c45c484ce529cb916ea3d774f2aa5a27dda21678b36f800d1de26afa468472",
+        "bytes": 1576
+      }
+    ]
+  }
+}

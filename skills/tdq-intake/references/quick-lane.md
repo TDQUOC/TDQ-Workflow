@@ -30,7 +30,7 @@ NO approval gate of its own — express keeps exactly one gate. How deep it goes
 
 | Step | Express rule |
 |---|---|
-| B1 read the code | **ALWAYS.** Khảo sát 3 chiều: Grep tự do diện rộng gom file (không giới hạn quota trong analyze) → LSP đào sâu cấu trúc symbol → Graphify quét vỡ lan; tránh sót mã nguồn. |
+| B1 read the code | **ALWAYS.** Khảo sát 3 chiều: Grep tự do diện rộng gom file (không giới hạn quota trong analyze) → LSP đào sâu cấu trúc symbol → Graphify quét vỡ lan; tránh sót mã nguồn. Đọc dải rộng trọn vẹn (100–300 dòng) thay vì xé vụn 30–50 dòng gây bẫy lặp tool; tự phản tư trước khi chuyển bước. |
 | B0 capability inventory | ONLY when the request touches ground with no precedent — no earlier report under `docs/tdq/report/` touched the same directory |
 | B2 research | ONLY when an unknown outside the repo exists (a library, an API, a version, third-party behaviour) — hand it to a sub-agent, digest ≤ 1,500 characters |
 

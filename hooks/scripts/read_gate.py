@@ -137,7 +137,45 @@ def _da_doc_tron(rows, duong):
 
 
 def _da_nhac(rows, duong):
-    return any(r.get("path") == duong and r.get("da_nhac") for r in rows)
+    return any(r.get("path") == duong and not r.get("dau") and not r.get("cuoi") and r.get("da_nhac") for r in rows)
+
+
+def _tinh_overlap_ratio(dau, cuoi, r_dau, r_cuoi):
+    """Tỉ lệ phần trăm các dòng trong dải [dau, cuoi] trùng lặp với [r_dau, r_cuoi]."""
+    chieu_dai = cuoi - dau
+    if chieu_dai <= 0:
+        return 0.0
+    giao = max(0, min(cuoi, r_cuoi) - max(dau, r_dau))
+    return giao / chieu_dai
+
+
+def _dem_lap_doan(rows, duong, dau, cuoi, mtime):
+    """Đếm số lần các dải đọc trước đó trùng lặp >= 70% với dải [dau, cuoi]."""
+    lap_count = 0
+    for r in rows:
+        if r.get("path") != duong or r.get("mtime") != int(mtime):
+            continue
+        r_dau = int(r.get("dau") or 0)
+        r_cuoi = int(r.get("cuoi") or 0)
+        if not r_dau and not r_cuoi:
+            lap_count += 1
+            continue
+        if _tinh_overlap_ratio(dau, cuoi, r_dau, r_cuoi) >= 0.7:
+            lap_count += 1
+    return lap_count
+
+
+def _tao_thong_diep(ten, kb, dau, cuoi, lap_count):
+    """Thông điệp nhắc nhở trực diện cho AI."""
+    if not dau and not cuoi:
+        return [
+            f"[{MA}] {ten} ({kb} KB) is already in context from an earlier read, unchanged.",
+            "Need another part? Read it with offset/limit. Need the same part? Do not re-read.",
+        ]
+    return [
+        f"[{MA}] Đoạn dòng {dau}-{cuoi} trong '{ten}' trùng lặp với {lap_count} lần đọc trước đó (overlap >= 70%).",
+        "Nội dung đoạn này đã nằm trong ngữ cảnh. Hãy dừng đọc lặp, tổng hợp thông tin và viết giải pháp.",
+    ]
 
 
 def main():
@@ -158,19 +196,22 @@ def main():
     dau, cuoi = _vung(vao)
     phien = _common.session_id(payload)
     rows = _doc_so(cwd, phien)
-    truoc = _da_doc_tron(rows, duong) if not dau and not cuoi else None
-    # One chain, in the order of the three silent cases in the module docstring: no earlier whole
-    # read · too small to be worth the reminder line · size or mtime changed, so the content is
-    # genuinely new. Plus the dedupe: one reminder per file per session.
-    dang_nhac = (truoc is not None
-                 and so.st_size >= NGUONG_BYTE
-                 and truoc.get("byte") == so.st_size
-                 and truoc.get("mtime") == int(so.st_mtime)
-                 and not _da_nhac(rows, duong))
+
+    lap_count = 0
+    if not dau and not cuoi:
+        truoc = _da_doc_tron(rows, duong)
+        dang_nhac = (truoc is not None
+                     and so.st_size >= NGUONG_BYTE
+                     and truoc.get("byte") == so.st_size
+                     and truoc.get("mtime") == int(so.st_mtime)
+                     and not _da_nhac(rows, duong))
+    else:
+        lap_count = _dem_lap_doan(rows, duong, dau, cuoi, so.st_mtime)
+        dang_nhac = (lap_count >= 2)
 
     _ghi_so(cwd, {"ts": time.time(), "session": phien, "path": duong, "dau": dau, "cuoi": cuoi,
                   "byte": so.st_size, "mtime": int(so.st_mtime), "da_nhac": dang_nhac}, rows)
-    _log(f"{os.path.basename(duong)} · {so.st_size}B · vung=({dau},{cuoi}) · "
+    _log(f"{os.path.basename(duong)} · {so.st_size}B · vung=({dau},{cuoi}) · lap={lap_count} · "
          f"{'nhac' if dang_nhac else 'im'}")
     if not dang_nhac:
         sys.exit(0)
@@ -182,10 +223,7 @@ def main():
             "hookEventName": "PreToolUse",
             "permissionDecision": "allow",
             "permissionDecisionReason": "TDQ: a reminder, not a block.",
-            "additionalContext": _common.trim([
-                f"[{MA}] {ten} ({kb} KB) is already in context from an earlier read, unchanged.",
-                "Need another part? Read it with offset/limit. Need the same part? Do not re-read.",
-            ]),
+            "additionalContext": _common.trim(_tao_thong_diep(ten, kb, dau, cuoi, lap_count)),
         }
     }, ensure_ascii=False))
     sys.exit(0)

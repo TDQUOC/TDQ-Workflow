@@ -119,6 +119,15 @@ class NhacKhiDocLai(BaseReadGate):
         self.assertTrue(any(tu in nhac.lower() for tu in ("lặp", "overlap", "trùng", "repeat")),
                         f"thông điệp nhắc phải đề cập lặp/trùng lặp: {nhac}")
 
+    def test_thong_diep_remind_ai(self):
+        """Thông điệp nhắc AI phải mang số dòng, tên file và chỉ dẫn hành động rõ ràng."""
+        self.goi(offset=1000, limit=100)
+        self.goi(offset=1005, limit=100)
+        nhac = self.nhac_trong(self.goi(offset=1010, limit=100))
+        self.assertIn("to-sach.md", nhac)
+        self.assertIn("1010-1110", nhac)
+        self.assertIn("tổng hợp", nhac.lower())
+
 
 class ImLangDungCho(BaseReadGate):
     def test_im_vung_khac_thi_khong_nhac(self):
