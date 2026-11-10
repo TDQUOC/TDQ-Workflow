@@ -11,7 +11,7 @@
     "bytes": 2162
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
     "sha256": "1c27d608f5492799cea1ba9931c0ef1b325576ea2aa2a648d2ae4549834bbdc5",
     "bytes": 872057
   },
@@ -28,11 +28,11 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 2133,
+  "durationMs": 2146,
   "browserCheck": {
     "requested": false,
     "ran": false

@@ -5,7 +5,7 @@
   "evidence_kind": "working-tree",
   "revision": null,
   "document_path": "docs/tdq/reports/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md",
-  "document_digest": "7fd1e6a0418355b7607add422d1605f1742b8b3ccf03c95fc427c5805af5f8ba",
+  "document_digest": "a9b8e6680e9b03ad59518ef4fd4762becab8915ddee51f04d2a2d22b132a6def",
   "candidate_path": "docs/tdq/artifacts/2026-11-11-0035-nang-cap-do-chi-tiet-plan/report.archify.md",
   "candidate_digest": "d65dd31c3bb94fc24c03857361ad8665730708ca3c7d7fa01f119deffb619a50",
   "artifact_path": "docs/tdq/reports/2026-11-11-0035-nang-cap-do-chi-tiet-plan.html",
@@ -3783,7 +3783,7 @@
       "bytes": 2162
     },
     "artifact": {
-      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
       "sha256": "1c27d608f5492799cea1ba9931c0ef1b325576ea2aa2a648d2ae4549834bbdc5",
       "bytes": 872057
     },
@@ -3800,11 +3800,11 @@
       "truncated": false
     },
     "evidence": {
-      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.finalize.json",
-      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.finalize-summary.json"
+      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.finalize.json",
+      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.finalize-summary.json"
     },
     "visualReview": "not-requested",
-    "durationMs": 2133,
+    "durationMs": 2146,
     "browserCheck": {
       "requested": false,
       "ran": false

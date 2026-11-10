@@ -3,7 +3,7 @@
 Ngày: 2026-11-11 · Spec: ../spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md (bản 1.1, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — tdq_bench đo nhanh hơn 2.0 phút qua 4 wave (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: ĐÃ DUYỆT
+Trạng thái plan: HOÀN THÀNH
 
 ## Mục lục
 
@@ -71,7 +71,7 @@ Log: BỎ — không có runtime mã nguồn thực thi, chỉ xuất bản tài
 - [x] **T3.1** (e5m) Thực hiện Self-Review của tác giả theo 5 khía cạnh chất lượng và tính khả thi — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T2.2
-- [>] **T3.2** (e6m) Recheck độc lập bằng Agent `tdq-qc-tester` thẩm định toàn bộ luận điểm và đề xuất — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] **T3.2** (e6m) Recheck độc lập bằng Agent `tdq-qc-tester` thẩm định toàn bộ luận điểm và đề xuất — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T3.1
 
@@ -79,11 +79,11 @@ Log: BỎ — không có runtime mã nguồn thực thi, chỉ xuất bản tài
 
 ## Definition of Done
 
-- [ ] Q1 Báo cáo nghiên cứu chuyên sâu: Đầy đủ 5 phần phân tích chuyên sâu tại file research — `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
-- [ ] Q2 Sơ đồ trực quan Trước/Sau Archify: Render thành công, manifest digest khớp tài liệu — `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json`
-- [ ] Q3 Biên bản Self-Review của tác giả: Có mục đánh giá 5 khía cạnh chất lượng trong file QC — `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
-- [ ] Q4 Báo cáo Recheck độc lập của Agent: Agent QC xác nhận PASS toàn bộ luận điểm và đề xuất — `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
-- [ ] Q5 Lint tài liệu spec và research: `doc_lint.py` thoát mã 0 trên toàn bộ file — `python scripts/doc_lint.py docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] Q1 Báo cáo nghiên cứu chuyên sâu: Đầy đủ 5 phần phân tích chuyên sâu tại file research — `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] Q2 Sơ đồ trực quan Trước/Sau Archify: Render thành công, manifest digest khớp tài liệu — `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json`
+- [x] Q3 Biên bản Self-Review của tác giả: Có mục đánh giá 5 khía cạnh chất lượng trong file QC — `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] Q4 Báo cáo Recheck độc lập của Agent: Agent QC xác nhận PASS toàn bộ luận điểm và đề xuất — `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] Q5 Lint tài liệu spec và research: `doc_lint.py` thoát mã 0 trên toàn bộ file — `python scripts/doc_lint.py docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
 
 ## Cụm song song
 

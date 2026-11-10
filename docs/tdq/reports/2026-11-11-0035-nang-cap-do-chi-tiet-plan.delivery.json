@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "1eee0673-a9d0-415a-8918-3fe8f1960348",
+  "receiptId": "e7885a0c-f43a-4f67-a3a7-8733359f11c5",
   "status": "current",
   "command": "deliver",
   "type": "explainer",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0035-nang-cap-do-chi-tiet-plan\\report.archify.md",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
   "specification": {
     "sha256": "d65dd31c3bb94fc24c03857361ad8665730708ca3c7d7fa01f119deffb619a50",
     "bytes": 2162
@@ -15,7 +15,7 @@
     "bytes": 872057
   },
   "explainer": {
-    "preparedSha256": "234d9897a9c436ad9c0b6e1bc50739858f0f75939885a9727ee338ac4bf0cfd4",
+    "preparedSha256": "2654768fee12c38a1d5c1c38c19fde67d0dfbb3cf28fbf0cd1c9c24e349fb853",
     "dependencies": [
       {
         "kind": "diagram-spec",

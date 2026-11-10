@@ -5,14 +5,14 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-10T18:45:44.777Z",
+  "startedAt": "2026-11-10T18:56:26.339Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0035-nang-cap-do-chi-tiet-plan\\report.archify.md",
     "sha256": "d65dd31c3bb94fc24c03857361ad8665730708ca3c7d7fa01f119deffb619a50",
     "bytes": 2162
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
     "sha256": "1c27d608f5492799cea1ba9931c0ef1b325576ea2aa2a648d2ae4549834bbdc5",
     "bytes": 872057
   },
@@ -32,7 +32,7 @@
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0035-nang-cap-do-chi-tiet-plan\\report.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1044,
+      "durationMs": 1018,
       "command": [
         "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\10012_1794327842488\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0035-nang-cap-do-chi-tiet-plan\\report.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "1eee0673-a9d0-415a-8918-3fe8f1960348",
+        "receiptId": "e7885a0c-f43a-4f67-a3a7-8733359f11c5",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0035-nang-cap-do-chi-tiet-plan\\report.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
         "explainer": {
-          "preparedSha256": "234d9897a9c436ad9c0b6e1bc50739858f0f75939885a9727ee338ac4bf0cfd4",
+          "preparedSha256": "2654768fee12c38a1d5c1c38c19fde67d0dfbb3cf28fbf0cd1c9c24e349fb853",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -133,17 +133,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 494,
+      "durationMs": 503,
       "command": [
         "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\10012_1794327842488\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.html",
         "family": "explainer",
         "artifact": {
           "sha256": "1c27d608f5492799cea1ba9931c0ef1b325576ea2aa2a648d2ae4549834bbdc5",
@@ -192,7 +192,7 @@
               "id": "luong-truoc",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-9XaioE\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-g7poht\\child.html",
                 "artifact": {
                   "sha256": "07d5d38647775794b982af4f4b29ba151dc48c4ba5907cbc50e015b8a0611307",
                   "bytes": 811940
@@ -317,7 +317,7 @@
               "id": "luong-sau",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-vcNZiK\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-psOUEp\\child.html",
                 "artifact": {
                   "sha256": "64f8e4d4c1df840d8c3487cb22285944560b4f8f4bc7d46588363ef978a73fa2",
                   "bytes": 812486
@@ -442,7 +442,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "1eee0673-a9d0-415a-8918-3fe8f1960348"
+        "deliveryReceiptId": "e7885a0c-f43a-4f67-a3a7-8733359f11c5"
       }
     }
   },
@@ -452,12 +452,12 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.f2e276a81bec4b6fbe71f858c0d5fa71.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan.145868bff6ae4e419210483075ef5525.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-10T18:45:46.910Z",
-  "durationMs": 2133,
+  "finishedAt": "2026-11-10T18:56:28.486Z",
+  "durationMs": 2146,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

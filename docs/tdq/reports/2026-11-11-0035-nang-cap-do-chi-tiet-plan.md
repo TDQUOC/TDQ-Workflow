@@ -62,11 +62,12 @@ Request `2026-11-11-0035-nang-cap-do-chi-tiet-plan` · lane full · opened at 20
 | analyze | 11 min | 4 min [partial] | 23s [partial] | — [unavailable] | 4 min [partial] | 7 min [partial] | 1 |
 | spec | 18 min | 3 min [partial] | 37s [partial] | — [unavailable] | 3 min [partial] | 15 min [partial] | 1 |
 | plan | 4 min | 1 min [partial] | 9s [partial] | — [unavailable] | 2 min [partial] | 3 min [partial] | 1 |
-| implement | 8 min | 7 min [partial] | 4 min [partial] | — [unavailable] | 8 min [partial] | 6s [partial] | 1 |
-| Total | 43 min | 16 min [partial] | 5 min [partial] | — [unavailable] | 18 min [partial] | 25 min [partial] |  |
+| implement | 24 min | 21 min [partial] | 8 min [partial] | — [unavailable] | 24 min [partial] | 10s [partial] | 1 |
+| report | 7s | 6s [partial] | 1s [partial] | — [unavailable] | 7s [partial] | 0s [partial] | 1 |
+| Total | 58 min | 30 min [partial] | 9 min [partial] | — [unavailable] | 33 min [partial] | 25 min [partial] |  |
 
 Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
 <!-- tdq-archify-binding:start -->
 <!-- manifest: 2026-11-11-0035-nang-cap-do-chi-tiet-plan.manifest.json -->
-<!-- manifest_digest: 6bc59ee471b53033cf2424502a6f610138c6fef862aeb99180cfbd2c38435886 -->
+<!-- manifest_digest: fc393c06d17522afec2c72e2ebd4e5b165b528491ff7484643ad151f2593999b -->
 <!-- tdq-archify-binding:end -->

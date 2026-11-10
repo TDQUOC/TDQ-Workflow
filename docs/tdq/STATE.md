@@ -1,11 +1,11 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-11T01:31:48+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-11T01:55:39+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
 | Request | 2026-11-11-0035-nang-cap-do-chi-tiet-plan |
 | Lane | full |
-| Phase | implement |
+| Phase | report |
 | Spec | docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md — ✔ approved |
 | Plan | docs/tdq/plan/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md — ✔ approved |
 | Quick approval | (not applicable) |
@@ -15,13 +15,13 @@ Updated: 2026-11-11T01:31:48+07:00 · Project: C:\Users\admin\Documents\Projects
 | Run mode | subagent |
 
 ## Where we are
-plan_approved = true and implement_mode = subagent. Forbidden: Doing a task the map marked as dispatched yourself on main; merging before `check` passes; leaving several tasks marked [~].
+QC has PASSed. Forbidden: Committing or pushing before the user asks for it.
 
 ## What comes next
-Assign the WHOLE plan first (step 0), then release wave by wave to sub-agents, merging one wave before releasing the next — the leader only does what cannot be split.
+Write docs/tdq/reports/<slug>.html + Markdown: before/after state & flow, what was tested & actual test results; ask about commit.
 ```
-python3 scripts/tdq_state.py set phase=qc
+python3 scripts/tdq_state.py set phase=idle
 ```
-Done when: Every task in the plan is ticked [x] and no leftover worktree remains
+Done when: The report is written and the user has been asked about committing
 
 > Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.
