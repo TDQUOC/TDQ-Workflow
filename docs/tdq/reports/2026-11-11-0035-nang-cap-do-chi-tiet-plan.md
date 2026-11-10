@@ -66,3 +66,7 @@ Request `2026-11-11-0035-nang-cap-do-chi-tiet-plan` · lane full · opened at 20
 | Total | 43 min | 16 min [partial] | 5 min [partial] | — [unavailable] | 18 min [partial] | 25 min [partial] |  |
 
 Model compute time is unavailable (`model_giay=null`). API includes network/provider latency; tool time is host wait. Observed metrics may overlap; unattributed time is not assumed user/model time.
+<!-- tdq-archify-binding:start -->
+<!-- manifest: 2026-11-11-0035-nang-cap-do-chi-tiet-plan.manifest.json -->
+<!-- manifest_digest: 6bc59ee471b53033cf2424502a6f610138c6fef862aeb99180cfbd2c38435886 -->
+<!-- tdq-archify-binding:end -->
