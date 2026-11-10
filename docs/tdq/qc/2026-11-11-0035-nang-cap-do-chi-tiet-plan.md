@@ -12,7 +12,7 @@ Tài liệu này ghi nhận kết quả kiểm định chất lượng (QC) và 
 | Q1 | Báo cáo nghiên cứu chuyên sâu | **PASS** | Đầy đủ 5 phần phân tích chuyên sâu tại `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`; kiểm tra linter `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md` đạt 0 vi phạm (exit 0). |
 | Q2 | Sơ đồ trực quan Trước/Sau Archify | **PASS** | Artifact `docs/tdq/artifacts/2026-11-11-0035-nang-cap-do-chi-tiet-plan/truoc-sau.archify.md` được biên dịch thành công; lệnh `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json` trả về status current, 0 sai lệch. |
 | Q3 | Biên bản Self-Review của tác giả | **PASS** | Hoàn tất tự đánh giá toàn diện trên 5 khía cạnh chất lượng tại mục bên dưới; linter `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md` đạt 0 vi phạm. |
-| Q4 | Báo cáo Recheck độc lập của Agent | **SẴN SÀNG CHO T3.2** | Cấu trúc biên bản và các tiêu chí thẩm định đã sẵn sàng cho bước Recheck độc lập của subagent `tdq-qc-tester` tại Task T3.2. |
+| Q4 | Báo cáo Recheck độc lập của Agent | **PASS** | Hoàn tất thẩm định độc lập toàn diện 4 trụ cột kỹ thuật (5 hệ lụy, 8 trường chuẩn, kinh tế học token, phân tầng thích ứng) tại mục Recheck độc lập; linter đạt 0 vi phạm. |
 | Q5 | Lint tài liệu spec và research | **PASS** | Cả hai tệp tài liệu cốt lõi đều đạt chuẩn format tuyệt đối; lệnh `python scripts/doc_lint.py docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md` và file research đều thoát mã 0. |
 
 ## Biên bản Self-Review của tác giả (Author Self-Review)
@@ -63,13 +63,51 @@ Tác giả thực hiện tự rà soát nghiêm ngặt toàn bộ nội dung ngh
   - *Tier 3 (Context Cost):* Đứng vị trí phục vụ. Tăng nhẹ context cost ở bước Plan là một khoản đầu tư có chủ đích nhằm bảo vệ chất lượng Tier 1 và tối ưu runtime Tier 2.
 - **Thực thi Nguyên lý 3 của Soul:** Giải pháp hiện thực hóa trọn vẹn tôn chỉ "Viết cho model yếu nhất trong bầy" (Write for the weakest model). Cấu trúc Plan mới đảm bảo hệ thống vận hành bền bỉ trên bất kỳ dòng model nào, không bị phụ thuộc vào năng lực phán đoán của các model đầu bảng đắt đỏ.
 
+## Báo cáo Recheck độc lập (Independent Recheck)
+
+Được thực hiện độc lập bởi subagent `tdq-qc-tester`. Thẩm định khách quan toàn diện cơ sở lý luận, thiết kế mẫu chuẩn hóa và tính khả thi kinh tế học của đề xuất.
+
+### 1. Thẩm định luận điểm 5 hệ lụy của "Căn bệnh 1 dòng"
+- **Đánh giá:** **ĐẠT**
+- **Căn cứ xác thực:**
+  - Báo cáo nghiên cứu đã xác thực chuẩn xác cơ chế sinh token tự hồi quy của mô hình ngôn ngữ nhỏ. Khi thiếu chữ ký hàm và kiểu dữ liệu tường minh, model tier thấp (Haiku, Local LLM 7B-32B) buộc phải tự suy diễn theo xác suất tiền huấn luyện. Điều này kích hoạt hiện tượng hallucination và phá vỡ hợp đồng giao tiếp giữa các module.
+  - Nguy cơ đứt gãy giao tiếp trong Subagent Team Mode được mô tả sát thực: hai worker song song tự quy ước kiểu dữ liệu trả về khác nhau (`dict` vs `object`), gây lỗi runtime không thể vá khi hợp nhất.
+  - Nguy cơ sinh mã thừa vi phạm YAGNI và bẫy kiểm chứng mù (ANTI-2) phản ánh chính xác các hạn chế cố hữu của model nhỏ khi thiếu neo chặn kỹ thuật.
+
+### 2. Thẩm định cấu trúc Self-Contained Task Block
+- **Đánh giá:** **ĐẠT**
+- **Căn cứ xác thực:**
+  - Khung mẫu 8 trường thông tin chuẩn hóa (`Header`, `Chạm:`, `Cần:`, `Mục tiêu:`, `Đặc tả kỹ thuật:`, `Logic cốt lõi:`, `Ca góc hiểm:`, `Tiêu chí TDD:`) đã bao quát trọn vẹn vòng đời thi công một task độc lập.
+  - Tương thích cơ học 100% với bộ parser hiện hành: Dòng đầu giữ nguyên định dạng `_TASK` của `scripts/tdq_team.py` và `scripts/tdq_checkstatus.py`. Các trường con thụt lề 2 khoảng trắng được gom tự nhiên vào thuộc tính `text` của task mà không gây lỗi cú pháp.
+  - Khóa chặt biên độ thi công: Mục tiêu ranh giới, chữ ký hàm, luồng giải thuật và ca biên giúp model cấp thấp chuyển đổi cơ học sang code mà không cần suy luận phỏng đoán.
+
+### 3. Thẩm định bài toán kinh tế học token
+- **Đánh giá:** **ĐẠT**
+- **Căn cứ xác thực:**
+  - Xác thực mô hình định lượng chi phí: Format 1 dòng tốn ~50 tokens ở bước Plan nhưng phát sinh trung bình 2 vòng lặp sửa lỗi (~6,750 tokens/vòng), đẩy tổng chi phí thực thi lên tới ~14,350 tokens/task.
+  - Format Self-Contained Task Block đầu tư thêm ~250 tokens ở bước Plan (~300 tokens/task) nhưng giảm tỷ lệ khuyết tật từ ~80% xuống dưới 5%, cắt giảm triệt để các vòng lặp gỡ lỗi.
+  - Hiệu quả ròng: Tiết kiệm ~10,000 tokens/task (tiết kiệm ~50% tổng token toàn request) và giảm 75% thời gian runtime. Tỷ suất hoàn vốn đầu tư đạt mức ROI 40x (4,000%), tuân thủ tuyệt đối thang ưu tiên Soul: Chất lượng (Tier 1) > Runtime (Tier 2) > Context Cost (Tier 3).
+
+### 4. Thẩm định chiến lược phân tầng thích ứng (Dual-Track Task Sizing)
+- **Đánh giá:** **ĐẠT**
+- **Căn cứ xác thực:**
+  - Thiết kế phân tầng kép giải quyết triệt để rủi ro quá tải định dạng (over-specification):
+    - **Track A (Full Micro-Task Block):** Bắt buộc áp dụng cho mã nguồn nghiệp vụ mới, giải thuật Spec §3c, task giao chạy song song (`giao`), và các hợp đồng dùng chung.
+    - **Track B (Compact Task Block):** Áp dụng cho tác vụ cơ học (tài liệu, cấu hình tĩnh, xóa tệp thừa), chỉ yêu cầu `Header`, `Chạm:`, `Cần:`, `Test:`.
+  - Phân tầng thích ứng giúp tối ưu hóa công sức của kiến trúc sư và giữ cho file Plan cân bằng giữa độ chi tiết và tính tinh gọn.
+
+### 5. Kết luận thẩm định độc lập
+- **Trạng thái:** **PASS TOÀN BỘ (5/5 TIÊU CHÍ)**
+- **Khuyến nghị:** Toàn bộ luận điểm lý thuyết, thiết kế khuôn mẫu task block, và phương án kinh tế học token đều đạt chuẩn chất lượng xuất sắc. Khuyến nghị Ban chỉ đạo phê duyệt đề xuất để đưa vào chuẩn hóa chính thức của quy trình TDQ Workflow.
+
 ## Lệch spec chờ duyệt
 
 Không có. Toàn bộ nội dung nghiên cứu, phân tích nguyên nhân, thiết kế mẫu chuẩn hóa và định hướng kinh tế học token đều bám sát 100% mục tiêu đã cam kết tại Spec §2.
 
 ## Kết luận
 
-Biên bản Self-Review của tác giả xác nhận:
-1. Mọi khía cạnh chất lượng, tính tương thích cơ học và tính kinh tế token đều đã được kiểm chứng thỏa đáng.
-2. Tài liệu nghiên cứu và báo cáo tổng kết đạt độ sâu kỹ thuật cao và bám sát tuyệt đối triết lý Soul TDQ.
-3. Đợt thi công đạt trạng thái **PASS** ở khâu Self-Review, sẵn sàng bàn giao cho bước Recheck độc lập của Agent `tdq-qc-tester` (Task T3.2).
+Biên bản tổng hợp xác nhận:
+1. Tác giả hoàn thành tự rà soát (Author Self-Review) đạt chuẩn trên toàn bộ 5 khía cạnh chất lượng.
+2. Subagent `tdq-qc-tester` thực hiện Recheck độc lập và thẩm định ĐẠT toàn bộ 4 trụ cột kỹ thuật.
+3. Tài liệu nghiên cứu, đề xuất kiến trúc và bài toán kinh tế học token đạt độ sâu kỹ thuật cao và bám sát tuyệt đối triết lý Soul TDQ.
+4. Đợt thi công đạt trạng thái nghiệm thu **PASS TOÀN BỘ (5/5 tiêu chí DoD)**, đủ điều kiện phê duyệt đề xuất.
