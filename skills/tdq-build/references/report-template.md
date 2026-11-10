@@ -31,7 +31,7 @@ below before writing the report; working from memory is banned.
 7b. **Both lanes** write the paired visual report `docs/tdq/reports/<slug>.html` from actual
    task, DoD, QC, output and limit evidence via [Archify lifecycle](archify-lifecycle.md),
    visually presenting the before/after state & flow, what was tested, and actual test results.
-   Render with `--evidence-kind working-tree` for uncommitted sources (or `committed` for a verified clean revision); CLI has no `actual` evidence kind. Verify before linking; unavailable/stale output gets a disclosed text fallback.
+   Render with `--evidence-kind working-tree` for uncommitted sources (or `committed` for a verified clean revision); CLI has no `actual` evidence kind. Render and verify AFTER all Markdown edits: gate `set phase=idle` blocks if report manifest is missing or not current (unless bypassed via `--bo-qua-archify`). Verify before linking; unavailable/stale output gets a disclosed text fallback.
 
 8. Close the books: tick the leftover boxes of BOTH kinds — the task boxes in each phase AND
    the Definition of Done boxes — change the plan header to HOÀN THÀNH, then run <!-- i18n-allow: canonical status value -->

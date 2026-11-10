@@ -1,13 +1,13 @@
 # TDQ STATE (generated — do not hand-edit)
-Updated: 2026-11-08T13:21:41+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
+Updated: 2026-11-10T12:29:40+07:00 · Project: C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow · schema 3
 
 | Field | Value |
 |---|---|
-| Request | 2026-11-08-1207-va-lo-hong-edit-gate-3-tang |
+| Request | 2026-11-09-0143-gate-truoc-sau-archify |
 | Lane | full |
 | Phase | idle |
-| Spec | docs/tdq/spec/2026-11-08-1207-va-lo-hong-edit-gate-3-tang.md — ✔ approved |
-| Plan | docs/tdq/plan/2026-11-08-1207-va-lo-hong-edit-gate-3-tang.md — ✔ approved |
+| Spec | docs/tdq/spec/2026-11-09-0143-gate-truoc-sau-archify.md — ✔ approved |
+| Plan | docs/tdq/plan/2026-11-09-0143-gate-truoc-sau-archify.md — ✔ approved |
 | Quick approval | (not applicable) |
 | Doc language | vi |
 | Lean level | ultra |

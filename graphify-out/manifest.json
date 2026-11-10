@@ -6,10 +6,10 @@
     "semantic_hash": "80ef98b882da0cfb57f0bc2a2c634788"
   },
   ".claude-plugin/plugin.json": {
-    "mtime": 1793952697.895555,
-    "seen": 1794027221.4342473,
-    "ast_hash": "994de5681fcc534d6072466eed0c00e3",
-    "semantic_hash": "994de5681fcc534d6072466eed0c00e3"
+    "mtime": 1794118990.850397,
+    "seen": 1794162935.4440203,
+    "ast_hash": "ee383745aa7a903fec0fe991966a3b6b",
+    "semantic_hash": "ee383745aa7a903fec0fe991966a3b6b"
   },
   ".claude/settings.json": {
     "mtime": 1789900266.4991295,
@@ -30,14 +30,14 @@
     "semantic_hash": "556c5552d34b4f831cb340853bd720bc"
   },
   "hooks/scripts/bash_gate.py": {
-    "mtime": 1794116213.247404,
-    "seen": 1794116425.635036,
+    "mtime": 1794118958.0605497,
+    "seen": 1794162935.4521117,
     "ast_hash": "1b968676f49eac404c741db279c7eef5",
     "semantic_hash": "1b968676f49eac404c741db279c7eef5"
   },
   "hooks/scripts/edit_gate.py": {
-    "mtime": 1794115928.072683,
-    "seen": 1794116425.6353648,
+    "mtime": 1794118958.0616212,
+    "seen": 1794162935.452582,
     "ast_hash": "c8c77659aea2ef121457ead8c938711d",
     "semantic_hash": "c8c77659aea2ef121457ead8c938711d"
   },
@@ -132,8 +132,8 @@
     "semantic_hash": "69283d1cc59fb5f3010e2eec719ac7c6"
   },
   "scripts/tdq_state.py": {
-    "mtime": 1794116289.0371277,
-    "seen": 1794116425.6441884,
+    "mtime": 1794118958.063241,
+    "seen": 1794162935.467666,
     "ast_hash": "55323d8458152cf4c69ca96d450138b9",
     "semantic_hash": "55323d8458152cf4c69ca96d450138b9"
   },
@@ -439,10 +439,10 @@
     "semantic_hash": "41b15e96b67c441f2d65a1125974b705"
   },
   ".codex-plugin/plugin.json": {
-    "mtime": 1793952697.8960857,
-    "seen": 1794027221.4345257,
-    "ast_hash": "2cfa0fb52717970f62f42a2f26a90ea1",
-    "semantic_hash": "2cfa0fb52717970f62f42a2f26a90ea1"
+    "mtime": 1794118990.8519015,
+    "seen": 1794162935.4445035,
+    "ast_hash": "9394f30723111abada37d2bd781ecf07",
+    "semantic_hash": "9394f30723111abada37d2bd781ecf07"
   },
   ".opencode/plugins/tdq-workflow.js": {
     "mtime": 1790138252.4325833,

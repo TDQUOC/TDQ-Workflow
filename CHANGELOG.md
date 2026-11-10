@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.96.0 — 2026-11-10
+
+Gate cứng bắt buộc sơ đồ Trước/Sau và Archify ở spec, quick plan và report (`2026-11-09-0143-gate-truoc-sau-archify`).
+
+- `tdq_state.py`: Thêm `_archify_gate` chặn `approve spec` và `approve quick` nếu thiếu file preview/flow manifest hoặc manifest không `current` đối với slug mở từ mốc `2026-11-09-0143`.
+- `tdq_state.py`: Thêm `_chan_report_thieu` chặn lệnh `set phase=idle` khi report thiếu bất kỳ mục nào trong 4 mục bắt buộc (*Trước request, Sau request, Đã test, Kết quả test*) hoặc thiếu report manifest `current`.
+- Cờ thoát khẩn cấp: `--bo-qua-archify "<lý do>"` ghi lý do vào trường `archify_bo_qua` trong state.
+- Cập nhật tài liệu quy chuẩn `archify-ba.md`, `archify-quick.md`, `report-template.md` và đồng bộ `phases.md`.
+- Kiểm thử: 7/7 test chuyên biệt `tests/test_archify_gate.py` PASS; 142/142 test liên đới PASS; full fresh 4.207 passed, 7 skipped.
+
 ## 0.95.0 — 2026-11-08
 
 Chặn agent tự sửa code và tự duyệt khi người dùng chưa duyệt (sự cố play3clone: nhắn "1a" rồi agent tự `approve spec`, `approve plan` và sửa `server/index.js` trong cùng một lượt).

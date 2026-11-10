@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "20d9c657-3c58-4f20-82d5-64ed79dbb465",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-09-0143-gate-truoc-sau-archify\\report.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-09-0143-gate-truoc-sau-archify.c4f3ebdce5ef4739b662cb2ba48201fe.html",
+  "specification": {
+    "sha256": "a237f6f8bf810252b405b81aef7064aa3ec4c8d0b72db966dd6c41204796eeec",
+    "bytes": 1418
+  },
+  "artifact": {
+    "sha256": "c21811f1447c9b88800bc1ae22da371347c832225dcf1006bf568cba4e1cf677",
+    "bytes": 840389
+  },
+  "explainer": {
+    "preparedSha256": "6f7477b7a90c862af3f9619b8c3446393b3b9c9a676799bd31cc2b90d27048f4",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "luong-truoc",
+        "inline": true,
+        "sha256": "6bb12b1788e6f00e188a8c2efea46f5cf0153a4cd390d4b57c3c0f3e36bb510d",
+        "bytes": 876
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-sau",
+        "inline": true,
+        "sha256": "d0a2ab6bd5693b0b4521d4a6e2a29c1a7927ed67fe4e3cd9ef1422e1305a414d",
+        "bytes": 1072
+      }
+    ]
+  }
+}

@@ -41,3 +41,8 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" open "docs/tdq/spec/<slug
 ```
 
 Plan references the approved preview and manifest rather than creating another design. No HTML asset replaces the spec's measurable requirements. A standalone HTML is a snapshot, not a live project scanner.
+
+## Approval Gate
+
+`approve spec` enforces that `docs/tdq/spec/<slug>-preview.manifest.json` is `current` (bound and hash-matched) for requests opened after mốc `2026-11-09-0143`. If the preview manifest is missing or stale, `approve spec` exits non-zero and refuses to approve.
+Emergency bypass (requires user consent in chat): pass `--bo-qua-archify "<reason>"` to record the bypass in state.

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "explainer",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-09-0143-gate-truoc-sau-archify\\report.archify.md",
+    "sha256": "a237f6f8bf810252b405b81aef7064aa3ec4c8d0b72db966dd6c41204796eeec",
+    "bytes": 1418
+  },
+  "artifact": {
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-09-0143-gate-truoc-sau-archify.c4f3ebdce5ef4739b662cb2ba48201fe.html",
+    "sha256": "c21811f1447c9b88800bc1ae22da371347c832225dcf1006bf568cba4e1cf677",
+    "bytes": 840389
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "not-run"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-09-0143-gate-truoc-sau-archify.c4f3ebdce5ef4739b662cb2ba48201fe.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-09-0143-gate-truoc-sau-archify.c4f3ebdce5ef4739b662cb2ba48201fe.finalize-summary.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1919,
+  "browserCheck": {
+    "requested": false,
+    "ran": false
+  }
+}
