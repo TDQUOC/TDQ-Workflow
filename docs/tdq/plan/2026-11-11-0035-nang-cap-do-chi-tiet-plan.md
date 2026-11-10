@@ -43,7 +43,7 @@ Trạng thái plan: ĐÃ DUYỆT
 - [x] **T1.2** (e6m) Chuẩn hóa khung mẫu Self-Contained Task Block và cơ chế phân tầng thích ứng (Adaptive) — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T1.1
-- [>] **T1.3** (e4m) Đánh giá bài toán kinh tế học token và kiểm chứng tính tương thích với parser `tdq_team.py` — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] **T1.3** (e4m) Đánh giá bài toán kinh tế học token và kiểm chứng tính tương thích với parser `tdq_team.py` — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T1.2
 
@@ -68,7 +68,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 Log: BỎ — không có runtime mã nguồn thực thi, chỉ xuất bản tài liệu nghiên cứu và báo cáo.
 
-- [>] **T3.1** (e5m) Thực hiện Self-Review của tác giả theo 5 khía cạnh chất lượng và tính khả thi — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] **T3.1** (e5m) Thực hiện Self-Review của tác giả theo 5 khía cạnh chất lượng và tính khả thi — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T2.2
 - [ ] **T3.2** (e6m) Recheck độc lập bằng Agent `tdq-qc-tester` thẩm định toàn bộ luận điểm và đề xuất — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
