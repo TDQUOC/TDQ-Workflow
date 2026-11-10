@@ -1,0 +1,67 @@
+{
+  "slug": "2026-11-11-0035-nang-cap-do-chi-tiet-plan",
+  "plan_file": "docs\\tdq\\plan\\2026-11-11-0035-nang-cap-do-chi-tiet-plan.md",
+  "plan_sha": "1d44d17780ed26c2aac418e8b4340913164a6c4ad811acfeab57cd0cd3923f90",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "c7e15994687dd24ea0a96066259459381d9ca774b899139704924b45b90ae778",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md"
+      ],
+      "dot": 2
+    },
+    "T1.3": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md"
+      ],
+      "dot": 3
+    },
+    "T2.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/artifacts/2026-11-11-0035-nang-cap-do-chi-tiet-plan/truoc-sau.archify.md",
+        "docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.html"
+      ],
+      "dot": 1
+    },
+    "T2.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/reports/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md"
+      ],
+      "dot": 2
+    },
+    "T3.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md"
+      ],
+      "dot": 3
+    },
+    "T3.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md"
+      ],
+      "dot": 4
+    }
+  }
+}
