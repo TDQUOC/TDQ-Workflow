@@ -40,7 +40,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 - [x] **T1.1** (e5m) Hoàn thiện phân tích 5 hệ lụy của task 1 dòng và đối chiếu Nguyên lý 3 của Soul — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
-- [>] **T1.2** (e6m) Chuẩn hóa khung mẫu Self-Contained Task Block và cơ chế phân tầng thích ứng (Adaptive) — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] **T1.2** (e6m) Chuẩn hóa khung mẫu Self-Contained Task Block và cơ chế phân tầng thích ứng (Adaptive) — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T1.1
 - [ ] **T1.3** (e4m) Đánh giá bài toán kinh tế học token và kiểm chứng tính tương thích với parser `tdq_team.py` — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
@@ -58,7 +58,7 @@ Trạng thái plan: ĐÃ DUYỆT
   - Ra: `docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.html`
   - Kiểm: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json`
   - Không dùng cho: Sửa đổi logic hook
-- [>] **T2.2** (e5m) Soạn thảo Báo cáo tổng kết nghiệm thu & Đề xuất kiến trúc 4 phần — Test: `python scripts/doc_lint.py docs/tdq/reports/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] **T2.2** (e5m) Soạn thảo Báo cáo tổng kết nghiệm thu & Đề xuất kiến trúc 4 phần — Test: `python scripts/doc_lint.py docs/tdq/reports/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/reports/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T2.1
 
