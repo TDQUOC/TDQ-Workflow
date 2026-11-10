@@ -106,12 +106,25 @@ class NhacKhiDocLai(BaseReadGate):
         nhac = self.nhac_trong(self.goi())
         self.assertRegex(nhac, r"\d", "dòng nhắc phải mang con số")
 
+    def test_nhac_khi_lap_doan_offset_limit(self):
+        """Đọc lặp lại cùng một đoạn có overlap >= 70% từ lần 2 trở lên thì phải nhắc."""
+        # Lần 1: đọc [1000, 1100] (offset=1000, limit=100) -> lần đầu, im lặng ("")
+        self.assertEqual(self.nhac_trong(self.goi(offset=1000, limit=100)), "")
+        # Lần 2: đọc [1020, 1120] (offset=1020, limit=100, overlap 80/100 = 80% >= 70%) -> repeat_count < 2 -> vẫn im lặng
+        self.assertEqual(self.nhac_trong(self.goi(offset=1020, limit=100)), "")
+        # Lần 3: đọc [1010, 1110] (offset=1010, limit=100, overlap >= 70%) -> repeat_count >= 2 -> nhắc [TDQ:DOC]
+        nhac = self.nhac_trong(self.goi(offset=1010, limit=100))
+        self.assertIn("TDQ:DOC", nhac)
+        self.assertIn("to-sach.md", nhac)
+        self.assertTrue(any(tu in nhac.lower() for tu in ("lặp", "overlap", "trùng", "repeat")),
+                        f"thông điệp nhắc phải đề cập lặp/trùng lặp: {nhac}")
+
 
 class ImLangDungCho(BaseReadGate):
     def test_im_vung_khac_thi_khong_nhac(self):
         """Đọc vùng khác KHÔNG phải đọc lại — đó chính là việc cổng này muốn khuyến khích."""
-        self.goi()
         self.assertEqual(self.nhac_trong(self.goi(offset=200, limit=40)), "")
+        self.assertEqual(self.nhac_trong(self.goi(offset=500, limit=50)), "")
 
     def test_im_doi_file_thi_khong_nhac(self):
         self.goi()
