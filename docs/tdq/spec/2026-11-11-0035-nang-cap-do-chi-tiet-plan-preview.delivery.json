@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "bd326062-e44a-4f4c-93d5-a69a54790918",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0035-nang-cap-do-chi-tiet-plan\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.4b5eb3a6765a4c0eb364508e89f866df.html",
+  "specification": {
+    "sha256": "42b6b2d94fa7a269fa057ff677682583ecdb478be08b5fbb9c4444689250ff03",
+    "bytes": 2233
+  },
+  "artifact": {
+    "sha256": "39f305b234d4d6bb0e993e5b05c982fa8faaec8d0b665270d4f81f570dedf9c7",
+    "bytes": 872342
+  },
+  "explainer": {
+    "preparedSha256": "dfeb2864a16256edc819a321d36f55aa213845729a80c6826602d6054dbf7c7b",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "luong-truoc",
+        "inline": true,
+        "sha256": "1e7abb1314ba121a8e2935e1ff0bb1b9680fdeeb9b0e53103ad7c9c37c350132",
+        "bytes": 1444
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-sau",
+        "inline": true,
+        "sha256": "860980cd3939eedc41bf4a6e50c3e41bd0da240e32ab4b6530003263cf9fa234",
+        "bytes": 1553
+      }
+    ]
+  }
+}
