@@ -356,9 +356,9 @@ QC Pass: 1,500 tokens.
 
 ## Tài liệu Tham khảo & Nguồn Nghiên cứu Chính thức
 
-1. **Anthropic** (2024–2026): *Effective Context Engineering for AI Agents* & *Prompting Claude Haiku*. Anthropic Research Platform Docs.
-2. **SWE-bench Team & OpenAI** (2024–2026): *SWE-bench Verified: Resolving Real-World GitHub Issues with Autonomous Agents*. Princeton NLP & OpenAI Research.
-3. **Yang et al.** (2024–2025): *SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering*. arXiv:2405.15793.
-4. **Cognition AI** (2024–2026): *Devin Architecture & Micro-Task Decomposition in Long-Horizon Software Development*. Cognition Technical Blog.
-5. **Aider / Paul Gauthier** (2024–2026): *Architecting Code Edits: Linting, Repomap, and Task Isolation in Autonomous Coding*. Aider Engineering Journal.
-6. **TDQ Conventions Core** (2026): `skills/tdq-conventions/references/soul.md` (Soul Nguyên lý 1, 2, 3) & `skills/tdq-conventions/references/clean-code.md`.
+- 1. **Anthropic** (2024–2026): *Effective Context Engineering for AI Agents* & *Prompting Claude Haiku*. Tài liệu nghiên cứu kỹ thuật từ Anthropic Research Platform Docs.
+- 2. **SWE-bench Team & OpenAI** (2024–2026): *SWE-bench Verified: Resolving Real-World GitHub Issues with Autonomous Agents*. Nghiên cứu từ Princeton NLP & OpenAI Research.
+- 3. **Yang et al.** (2024–2025): *SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering*. Kỷ yếu nghiên cứu arXiv:2405.15793.
+- 4. **Cognition AI** (2024–2026): *Devin Architecture & Micro-Task Decomposition in Long-Horizon Software Development*. Bài viết kỹ thuật từ Cognition Technical Blog.
+- 5. **Aider / Paul Gauthier** (2024–2026): *Architecting Code Edits: Linting, Repomap, and Task Isolation in Autonomous Coding*. Tạp chí kỹ thuật Aider Engineering Journal.
+- 6. **TDQ Conventions Core** (2026): `skills/tdq-conventions/references/soul.md` (Soul Nguyên lý 1, 2, 3) & `skills/tdq-conventions/references/clean-code.md`.
