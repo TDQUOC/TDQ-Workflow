@@ -181,7 +181,7 @@ Kiến trúc sư (Model mạnh ở Phase Spec & Plan) có nhiệm vụ "tiêu h�
 
 ---
 
-## Phần 4: Đề xuất Cấu trúc Mẫu Task Mới (The Self-Contained Task Block)
+## Phần 4: Đề xuất Cấu trúc Mẫu Task Mới: The Self-Contained Task Block
 
 ### 4.1. Nguyên tắc Kế thừa & Tương thích Cơ học (Zero-Breaking Invariant)
 
@@ -199,34 +199,36 @@ Mọi cải tiến cho cấu trúc Plan BẮT BUỘC phải đảm bảo tính t
   - Chạm: `<đường/dẫn/file_chính.py>`, `<đường/dẫn/test_file.py>`
   - Cần: <Mã các task phụ thuộc, hoặc "không">
   - Dùng: `<tên skill>` (nếu có; thêm `(mcp)` nếu cần MCP tool)
-  - Ngữ cảnh: <1–2 câu nêu rõ task hiện thực hóa mục nào của Spec §2/§3c; ranh giới không được vượt>
-  - Đặc tả:
+  - Mục tiêu: <1–2 câu nêu rõ mục đích kỹ thuật và vị trí trong luồng hệ thống, ranh giới không được vượt>
+  - Đặc tả kỹ thuật (Signature):
     - Signature: `<chữ ký hàm/phương thức chính xác kèm type hints đầy đủ>`
     - Input: `<mô tả cấu trúc dữ liệu đầu vào, kiểu dữ liệu, ràng buộc giá trị>`
     - Output: `<kiểu dữ liệu trả về, cấu trúc schema dữ liệu>`
-  - Giải thuật:
+  - Logic cốt lõi (Pseudo-code):
     1. Bước 1: <hành động cụ thể, đọc dữ liệu, kiểm tra hợp lệ ban đầu>
     2. Bước 2: <vòng lặp / tính toán biến đổi / logic nghiệp vụ cốt lõi>
     3. Bước 3: <tổng hợp kết quả / trả về trạng thái mới bất biến>
-  - Ca góc hiểm:
+  - Ca góc hiểm (Defensive):
     - Rỗng/Null: <cách phòng thủ khi input rỗng, None, hoặc thiếu key>
     - Ngoại lệ: <ném loại Exception nào, mã lỗi gì khi gặp dữ liệu sai định dạng>
     - Bất biến: <Clean Code Invariant: không mutate tham số đầu vào, hàm dưới 50 dòng>
-  - Kiểm chứng (TDD):
+  - Tiêu chí TDD:
     - Đỏ (Red): <đoạn assertion cụ thể sẽ viết vào test file để thấy FAIL trước>
-    - Xanh (Green): <tiêu chí kết quả trả về chính xác khi chạy lại lệnh Test>`
+    - Xanh (Green): <tiêu chí kết quả trả về chính xác khi chạy lại lệnh Test>
 ```
 
-### 4.3. Phân tích Chi tiết 6 Trường Thông tin Mở rộng
+### 4.3. Phân tích Chi tiết 8 Trường Thông tin Chuẩn hóa
 
 | Trường | Vai trò với Model Tier Thấp | Hậu quả nếu thiếu |
 |---|---|---|
-| **Dòng Header + Chạm + Cần** | Giữ tương thích 100% với máy (`tdq_team.py`, `tdq_checkstatus.py`). Khóa chặt vùng file được sửa. | Tool tự động báo lỗi cú pháp; xung đột merge git giữa các worktree. |
-| **Ngữ cảnh (Context & Purpose)** | Định vị mục tiêu task trong bức tranh tổng thể của Spec §2. Chỉ định rõ ranh giới (Out-of-scope) để model không lan man. | Model đi sửa lan sang các file lân cận hoặc cố gắng giải quyết luôn bài toán của task sau. |
-| **Đặc tả (Technical Contract)** | Khóa cứng: tên hàm, tên tham số, type annotations, và kiểu dữ liệu trả về. | Model tự chế chữ ký hàm; vỡ hợp đồng giao tiếp với các task khác khi tích hợp. |
-| **Giải thuật (Step-by-Step Logic)** | Cung cấp luồng suy luận tuyến tính từng bước. Model tier thấp chỉ việc dịch sang ngôn ngữ lập trình. | Model bị bẫy tự hồi quy (autoregressive trap), viết code vòng lặp luẩn quẩn, thuật toán sai độ phức tạp. |
-| **Ca góc hiểm (Edge Cases)** | Hướng dẫn phòng thủ cụ thể: `None`, chuỗi rỗng, file hỏng, timeout. | Model chỉ viết "happy-path", hệ thống sập khi gặp dữ liệu thực tế tại phase QC. |
-| **Kiểm chứng (TDD Red-Green)** | Khóa chặt tiêu chí nghiệm thu bằng assertion mẫu cụ thể. | Model viết test mù (`assert True`), vi phạm ANTI-2, che giấu lỗi ngầm. |
+| **Header (Dòng Task)** | Giữ tương thích 100% với máy (`tdq_team.py`, `tdq_checkstatus.py`). Khai báo ID, thời gian ước lượng, và lệnh test đơn nhất. | Tool tự động không parse được task; mất liên kết trạng thái thi công. |
+| **Chạm** | Khóa chặt danh sách tệp được phép sửa đổi trong worktree cô lập. | Subagent sửa lan sang tệp của worker khác, gây xung đột merge git nghiêm trọng. |
+| **Cần** | Thiết lập đồ thị phụ thuộc DAG (`NHAN_CAN`) để lập lịch chạy song song an toàn. | Task chạy trước khi phụ thuộc sẵn sàng, nổ lỗi thiếu module/dữ liệu runtime. |
+| **Mục tiêu** | Định vị mục tiêu kỹ thuật trong tổng thể Spec §2/§3c và phân định ranh giới (Out-of-scope). | Model đi sửa lan man, over-engineering hoặc làm lấn sang phạm vi task kế tiếp. |
+| **Đặc tả kỹ thuật (Signature)** | Khóa cứng: tên hàm, danh sách tham số, type annotations và kiểu dữ liệu trả về. | Model tự bịa chữ ký hàm; vỡ hợp đồng giao tiếp giữa các module khi tích hợp. |
+| **Logic cốt lõi (Pseudo-code)** | Cung cấp luồng giải thuật tuyến tính 1-2-3 rõ ràng. Model chỉ việc chuyển thể sang code. | Model rơi vào bẫy tự hồi quy (autoregressive trap), viết code sai thuật toán. |
+| **Ca góc hiểm (Defensive)** | Chỉ định rõ cách phòng thủ: `None`, chuỗi rỗng, timeout, dữ liệu hỏng. | Model chỉ viết happy-path; mã nguồn sập ngay khi gặp dữ liệu thực tế tại phase QC. |
+| **Tiêu chí TDD** | Khóa cứng tiêu chí nghiệm thu bằng điều kiện Red (fail có chủ đích) và Green (pass toàn diện). | Model viết test mù (`assert True`), vi phạm ANTI-2, che giấu lỗi ngầm. |
 
 ### 4.4. Ví dụ Thực chiến Đối chiếu: Hiện tại vs Mẫu mới
 
@@ -245,29 +247,87 @@ Giả sử hệ thống cần phát triển tính năng: **Phân giải và ki�
 - [ ] **T2.1** (e15m) Viết hàm parse_hex_color chuẩn hóa mã màu sang RGB tuple — Test: pytest tests/test_color.py -k test_parse_hex_color
   - Chạm: `src/utils/color.py`, `tests/test_color.py`
   - Cần: T1.2
-  - Ngữ cảnh: Hiện thực hóa Spec §2 Đầu ra #3 (Module xử lý màu sắc). Chỉ viết tiện ích chuyển đổi thuần túy, không tạo class quản lý Theme.
-  - Đặc tả:
+  - Mục tiêu: Hiện thực hóa Spec §2 Đầu ra #3 (Module xử lý màu sắc). Chỉ viết tiện ích chuyển đổi thuần túy, không tạo class quản lý Theme.
+  - Đặc tả kỹ thuật (Signature):
     - Signature: `def parse_hex_color(hex_code: str) -> tuple[int, int, int]:`
     - Input: `hex_code` dạng chuỗi (VD: `"#FFFFFF"`, `"#fff"`, `"000000"`). Cho phép có hoặc không có tiền tố `#`.
     - Output: Tuple 3 số nguyên `(r, g, b)` với mỗi giá trị nằm trong đoạn `[0, 255]`.
-  - Giải thuật:
+  - Logic cốt lõi (Pseudo-code):
     1. Bước 1: Strip khoảng trắng 2 đầu chuỗi; loại bỏ tiền tố `#` nếu tồn tại.
     2. Bước 2: Kiểm tra độ dài: nếu là 3 ký tự (shorthand `RGB`), nhân đôi từng ký tự thành 6 ký tự (`RRGGBB`).
     3. Bước 3: Kiểm tra tính hợp lệ: chuỗi phải đúng 6 ký tự và thuộc tập `[0-9a-fA-F]`; nếu không ném `ValueError`.
     4. Bước 4: Cắt chuỗi thành 3 cặp 2 ký tự, chuyển đổi từng cặp qua `int(pair, 16)` và trả về tuple `(r, g, b)`.
-  - Ca góc hiểm:
+  - Ca góc hiểm (Defensive):
     - Rỗng/Null: Chuỗi rỗng hoặc None -> ném `ValueError("Mã màu không được để trống")`.
     - Ký tự lạ: Ký tự ngoài hex (VD: `"#GG0011"`, `"xyz"`) -> ném `ValueError("Ký tự hex không hợp lệ")`.
     - Độ dài sai: Không phải 3 hoặc 6 ký tự (VD: `"#12"`, `"#12345"`) -> ném `ValueError("Độ dài mã hex phải là 3 hoặc 6 ký tự")`.
     - Bất biến: Không sử dụng biến toàn cục; hàm thuần túy (pure function) không side-effect; độ dài hàm < 30 dòng.
-  - Kiểm chứng (TDD):
-    - Đỏ (Red): Trong `tests/test_color.py`, viết test case gọi `parse_hex_color("#ff0000")` và assert bằng `(255, 0, 0)`. Kiểm tra chạy lệnh test báo đỏ (ImportError hoặc AssertionError).
+  - Tiêu chí TDD:
+    - Đỏ (Red): Trong `tests/test_color.py`, viết test case gọi `parse_hex_color("#ff0000")` và assert bằng `(255, 0, 0)`. Kiểm tra chạy lệnh test báo đỏ (ImportError hoặc NameError do chưa có hàm).
     - Xanh (Green): Sau khi viết hàm, chạy `pytest tests/test_color.py -k test_parse_hex_color` pass 100% với cả test hợp lệ lẫn test ném `ValueError`.
+```
+
+#### Mã nguồn Thực thi Cụ thể (Concrete Implementation):
+Nhờ chỉ dẫn kỹ thuật tự chứa đựng, model tier thấp (Haiku) sinh ra mã nguồn sạch, chuẩn xác 100% mà không thêm bất kỳ abstraction thừa nào:
+
+```python
+# src/utils/color.py
+import re
+
+HEX_PATTERN = re.compile(r"^[0-9a-fA-F]{6}$")
+
+def parse_hex_color(hex_code: str) -> tuple[int, int, int]:
+    """Phân giải chuỗi mã màu hex (3 hoặc 6 ký tự, có/không dấu #) sang tuple (r, g, b)."""
+    if not hex_code:
+        raise ValueError("Mã màu không được để trống")
+
+    cleaned = hex_code.strip()
+    if cleaned.startswith("#"):
+        cleaned = cleaned[1:]
+
+    if len(cleaned) == 3:
+        cleaned = "".join(char * 2 for char in cleaned)
+    elif len(cleaned) != 6:
+        raise ValueError("Độ dài mã hex phải là 3 hoặc 6 ký tự")
+
+    if not HEX_PATTERN.match(cleaned):
+        raise ValueError("Ký tự hex không hợp lệ")
+
+    r = int(cleaned[0:2], 16)
+    g = int(cleaned[2:4], 16)
+    b = int(cleaned[4:6], 16)
+    return (r, g, b)
+```
+
+#### Bộ Kiểm thử TDD Cụ thể (Concrete TDD Test Suite):
+Test suite được định hình chính xác, chặn đứng hoàn toàn bẫy test mù (ANTI-2 Blind Assertion):
+
+```python
+# tests/test_color.py
+import pytest
+from src.utils.color import parse_hex_color
+
+def test_parse_hex_color_valid_standard():
+    assert parse_hex_color("#FF5733") == (255, 87, 51)
+    assert parse_hex_color("000000") == (0, 0, 0)
+    assert parse_hex_color("#ffffff") == (255, 255, 255)
+
+def test_parse_hex_color_shorthand():
+    assert parse_hex_color("#fff") == (255, 255, 255)
+    assert parse_hex_color("0f0") == (0, 255, 0)
+
+def test_parse_hex_color_defensive_edge_cases():
+    with pytest.raises(ValueError, match="Mã màu không được để trống"):
+        parse_hex_color("")
+    with pytest.raises(ValueError, match="Độ dài mã hex phải là 3 hoặc 6 ký tự"):
+        parse_hex_color("#12")
+    with pytest.raises(ValueError, match="Ký tự hex không hợp lệ"):
+        parse_hex_color("#GG0011")
 ```
 
 ---
 
-## Phần 5: Phân tích Tác động (Impact Analysis) & Khuyến nghị Phân tầng
+## Phần 5: Bảng So sánh & Kinh tế học Token (Impact Analysis & Dual-Track Sizing)
 
 ### 5.1. Bảng So sánh Toàn diện: Hiện tại vs Đề xuất Mới
 
@@ -317,7 +377,7 @@ QC Pass: 1,500 tokens.
 
 ### 5.3. Chiến lược Áp dụng Phân tầng (Dual-Track Task Sizing)
 
-Để tránh lãng phí công sức thiết kế vào các thao tác tầm thường nhưng vẫn bảo vệ tuyệt đối các phần logic cốt lõi, TDQ Workflow nên áp dụng cơ chế phân tầng (Dual-Track Task Sizing):
+Để tránh lãng phí công sức thiết kế vào các thao tác tầm thường nhưng vẫn bảo vệ tuyệt đối các phần logic cốt lõi, TDQ Workflow áp dụng cơ chế phân tầng (Dual-Track Task Sizing):
 
 ```
                                   PHÂN TẦNG TASK
@@ -331,19 +391,107 @@ QC Pass: 1,500 tokens.
     - Giao cho Subagent song song (`giao`)         - Bump version, sửa typo
     - Sửa file nóng / Shared contract              - Task dọn dẹp file thừa (dead code)
     - Model implement là Tier thấp (Haiku, Local)  - Lệnh migration cơ học có sẵn
-    - Áp dụng đầy đủ 6 trường chi tiết.            - Chỉ cần Header + Chạm + Cần + Test.
+    - Áp dụng đầy đủ 8 trường chuẩn hóa.           - Chỉ cần Header + Chạm + Cần + Test.
 ```
 
-1. **Track A — Full Micro-Task Block (Bắt buộc áp dụng khi):**
-   - Task hiện thực hóa giải thuật cốt lõi (Spec §3c) hoặc sinh code nghiệp vụ mới.
-   - Task được gắn nhãn `giao` (chạy trên Subagent độc lập hoặc worktree song song).
-   - Task chạm vào hợp đồng dùng chung (`hop-dong`): Models, DTOs, Enums, Constants, Interfaces.
-   - Mode thực thi được cấu hình với model tier thấp (Haiku, Local LLM) hoặc Codex.
-2. **Track B — Compact Task Block (Rút gọn — Được phép dùng khi):**
-   - Task chỉ chỉnh sửa tài liệu, cấu hình tĩnh hoặc cập nhật bản ghi version.
-   - Task thuộc nhóm cơ học thuần túy: Xóa file rác đã đánh dấu, đổi tên biến nội bộ đơn giản.
-   - Task do chính Main Agent thực hiện trực tiếp (`tu_lam`) trong lane `quick` với phạm vi dưới 10 dòng diff.
-   - *Định dạng Compact:* Chỉ cần Header task + Chạm + Cần + Test.
+#### 1. Track A — Full Micro-Task Block (Bắt buộc áp dụng khi):
+- Task hiện thực hóa giải thuật cốt lõi (Spec §3c) hoặc sinh code nghiệp vụ mới.
+- Task được gắn nhãn `giao` (chạy trên Subagent độc lập hoặc worktree song song).
+- Task chạm vào hợp đồng dùng chung (`hop-dong`): Models, DTOs, Enums, Constants, Interfaces.
+- Mode thực thi được cấu hình với model tier thấp (Haiku, Local LLM) hoặc Codex.
+
+*Mẫu Task Block Track A hoàn chỉnh (Đầy đủ 8 trường chuẩn hóa):*
+```markdown
+- [ ] **T1.1** (e15m) Viết hàm verify_session_token kiểm định tính hợp lệ của JWT token — Test: pytest tests/test_auth.py -k test_verify_session_token
+  - Chạm: `src/auth/token.py`, `tests/test_auth.py`
+  - Cần: không
+  - Mục tiêu: Hiện thực hóa Spec §2 Đầu ra #1 (Module chứng thực). Giải mã Bearer token từ header và trả về payload nếu hợp lệ, chặn truy cập trái phép.
+  - Đặc tả kỹ thuật (Signature):
+    - Signature: `def verify_session_token(token: str, secret_key: str) -> dict[str, Any]:`
+    - Input: `token` (chuỗi JWT token), `secret_key` (chuỗi bí mật dùng để xác thực chữ ký HMAC-SHA256).
+    - Output: Dictionary chứa payload decoded (`user_id: str`, `role: str`, `exp: int`).
+  - Logic cốt lõi (Pseudo-code):
+    1. Bước 1: Kiểm tra tính rỗng của `token` và `secret_key`. Loại bỏ tiền tố "Bearer " nếu tồn tại.
+    2. Bước 2: Tách token thành 3 phần (header, payload, signature) ngăn cách bởi dấu chấm `.`. Nếu không đúng 3 phần -> ném `AuthenticationError`.
+    3. Bước 3: Tính toán chữ ký HMAC-SHA256 trên chuỗi `header.payload` với `secret_key` và so sánh an toàn bằng `hmac.compare_digest`. Nếu không khớp -> ném `AuthenticationError`.
+    4. Bước 4: Giải mã Base64URL phần payload sang JSON dict. Kiểm tra timestamp `exp`: nếu `exp < current_timestamp` -> ném `TokenExpiredError`.
+    5. Bước 5: Trả về payload dict đã kiểm định.
+  - Ca góc hiểm (Defensive):
+    - Rỗng/Null: Token rỗng hoặc None -> ném `AuthenticationError("Token không được để trống")`.
+    - Chữ ký giả mạo: Chữ ký không khớp -> ném `AuthenticationError("Chữ ký token không hợp lệ")`.
+    - Hết hạn: Timestamp hiện tại > `exp` -> ném `TokenExpiredError("Token đã hết hạn")`.
+    - Bất biến: Dùng `hmac.compare_digest` để chống timing attack; không cache token trong biến toàn cục.
+  - Tiêu chí TDD:
+    - Đỏ (Red): Trong `tests/test_auth.py`, gọi `verify_session_token("invalid", "key")` mong đợi ném `AuthenticationError`. Chạy test báo đỏ (ImportError do module chưa tồn tại).
+    - Xanh (Green): Sau khi viết hàm, chạy `pytest tests/test_auth.py -k test_verify_session_token` pass 100% cho cả 4 test cases (hợp lệ, sai chữ ký, hết hạn, rỗng).
+```
+
+*Mã nguồn Thực thi Track A Cụ thể (Concrete Implementation):*
+```python
+# src/auth/token.py
+import base64
+import hashlib
+import hmac
+import json
+import time
+from typing import Any
+
+class AuthenticationError(Exception):
+    """Lỗi xác thực token không hợp lệ."""
+
+class TokenExpiredError(AuthenticationError):
+    """Lỗi token đã hết hạn."""
+
+def _b64url_decode(payload_str: str) -> bytes:
+    remainder = len(payload_str) % 4
+    if remainder > 0:
+        payload_str += "=" * (4 - remainder)
+    return base64.urlsafe_b64decode(payload_str.encode("utf-8"))
+
+def verify_session_token(token: str, secret_key: str) -> dict[str, Any]:
+    """Xác thực chữ ký HMAC-SHA256 và giải mã JWT token."""
+    if not token or not secret_key:
+        raise AuthenticationError("Token không được để trống")
+
+    raw_token = token.strip()
+    if raw_token.startswith("Bearer "):
+        raw_token = raw_token[7:].strip()
+
+    parts = raw_token.split(".")
+    if len(parts) != 3:
+        raise AuthenticationError("Cấu trúc token không đúng định dạng")
+
+    header_b64, payload_b64, signature_b64 = parts
+    signed_content = f"{header_b64}.{payload_b64}".encode("utf-8")
+    expected_sig = base64.urlsafe_b64encode(
+        hmac.new(secret_key.encode("utf-8"), signed_content, hashlib.sha256).digest()
+    ).rstrip(b"=").decode("utf-8")
+
+    if not hmac.compare_digest(signature_b64.rstrip("="), expected_sig):
+        raise AuthenticationError("Chữ ký token không hợp lệ")
+
+    try:
+        payload = json.loads(_b64url_decode(payload_b64).decode("utf-8"))
+    except Exception as exc:
+        raise AuthenticationError(f"Payload không thể phân giải: {exc}") from exc
+
+    if "exp" in payload and payload["exp"] < int(time.time()):
+        raise TokenExpiredError("Token đã hết hạn")
+
+    return payload
+```
+
+#### 2. Track B — Compact Task Block (Rút gọn — Được phép dùng khi):
+- Task chỉ chỉnh sửa tài liệu, cấu hình tĩnh hoặc cập nhật bản ghi version.
+- Task thuộc nhóm cơ học thuần túy: Xóa file rác đã đánh dấu, đổi tên biến nội bộ đơn giản.
+- Task do chính Main Agent thực hiện trực tiếp (`tu_lam`) trong lane `quick` với phạm vi dưới 10 dòng diff.
+
+*Mẫu Task Block Track B Cụ thể (Chỉ cần Header + Chạm + Cần):*
+```markdown
+- [ ] **T4.1** (e5m) Dọn dẹp các tệp log tạm thời và cập nhật CHANGELOG.md — Test: python scripts/doc_lint.py CHANGELOG.md
+  - Chạm: `CHANGELOG.md`, `logs/tmp_test.log`
+  - Cần: T3.2
+```
 
 ### 5.4. Lộ trình Triển khai Đề xuất vào TDQ Workflow
 
