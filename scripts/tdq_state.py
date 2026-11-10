@@ -234,6 +234,9 @@ def default_state():
         # without a prior measurement / fallback). None = no bypass. Shape when set:
         # {"ly_do": "<user's reason>", "at": "<iso>", "so_loi": <number of R14 findings>}.
         "spec_bo_qua_do": None,
+        # Lối thoát gate Archify (2026-11-09-0143): bypass manifest/binding với lý do rõ ràng.
+        # Shape: {"ly_do": "<reason>", "at": "<iso>", "cong": "spec|quick"}.
+        "archify_bo_qua": None,
         # The request was opened past the LSP gate of `init` (0.59.0): some LSP module of the
         # project was not proven through MCP. None = no bypass. Shape when set:
         # {"ly_do": "<user's reason>", "at": "<iso>", "module": ["<id> → <status> (<detail>)", ...]}.
@@ -1295,6 +1298,7 @@ PHASE_TABLE = {
             "Write docs/tdq/reports/<slug>.md and docs/tdq/reports/<slug>.html briefly (10-20 lines recommended, "
             "plain, visual & complete): before/after state & flow, what was done, what was tested & actual test results, "
             "the QC result, and what is still limited",
+            "Render Archify report HTML after all Markdown edits and verify manifest status is current (gate idle blocks on missing/stale manifest)",
             "Append to the working log docs/workinglog/<today>.md",
             "Spec deviations still waiting (`tdq_state.py lech list`): ask the user to approve or reject "
             "each one; rejected → add a fix task to the plan and `set phase=implement`",
@@ -1958,6 +1962,7 @@ def _parse_approve_args(rest):
     if rest[0] == "diagram":
         _fail(LOI_SO_DO_DA_GO)
     target, mode, by, bo_qua_do, expected_sha, strict = rest[0], None, None, None, None, False
+    bo_qua_archify = None
     # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
     if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
         target = "quick"
@@ -1974,7 +1979,7 @@ def _parse_approve_args(rest):
             _fail("Flag --no-qc was removed on 2026-09-23 — the QC level is a state key now: "
                   "run `python3 scripts/tdq_state.py set muc_qc=off` instead "
                   "(levels: lite|full|ultra|off).")
-        if flag in ("--mode", "--by", "--bo-qua-do", "--expected-sha"):
+        if flag in ("--mode", "--by", "--bo-qua-do", "--bo-qua-archify", "--expected-sha"):
             if i + 1 >= len(rest):
                 _fail(f"Missing value for {flag}")
             value = rest[i + 1]
@@ -1982,6 +1987,10 @@ def _parse_approve_args(rest):
                 if not value.strip():
                     _fail("--bo-qua-do needs the user's reason — an empty reason is refused.")
                 bo_qua_do = value.strip()[:BY_MAX]
+            elif flag == "--bo-qua-archify":
+                if not value.strip():
+                    _fail("--bo-qua-archify needs the user's reason — an empty reason is refused.")
+                bo_qua_archify = value.strip()[:BY_MAX]
             elif flag == "--expected-sha":
                 expected_sha = value.strip().lower()
             elif flag == "--mode":
@@ -2005,7 +2014,7 @@ def _parse_approve_args(rest):
             i += 1
             continue
         _fail(f"Invalid argument: {flag}")
-    return target, mode, by, bo_qua_do, expected_sha, strict
+    return target, mode, by, bo_qua_do, bo_qua_archify, expected_sha, strict
 
 
 def _file_changed_since_approval(cwd, state, target):
@@ -2073,6 +2082,76 @@ def _r14_gate(cwd, state, target, bo_qua_do):
     sys.exit(1)
 
 
+ARCHIFY_MOC = "2026-11-09-0143"
+
+
+def _archify_bat_buoc(state):
+    """True khi active_request là slug hợp lệ và mở từ mốc ARCHIFY_MOC trở đi."""
+    slug = (state or {}).get("active_request")
+    if not slug or not isinstance(slug, str):
+        return False
+    if not re.match(r"^\d{4}-\d{2}-\d{2}-\d{4}", slug):
+        return False
+    return slug[:15] >= ARCHIFY_MOC
+
+
+def _archify_gate(cwd, state, target, bo_qua):
+    """Gate Archify cho approve spec (lane full) và approve quick.
+
+    Fail-open khi module tdq_archify hỏng hoặc quăng ngoại lệ (như R14).
+    """
+    if target == "plan":
+        return
+    if not _archify_bat_buoc(state):
+        return
+    if target == "spec" and effective_lane(state) != "full":
+        return
+
+    slug = state.get("active_request")
+    if target == "spec":
+        doc_rel = state.get("spec_file")
+        if not doc_rel:
+            return
+        man_rel = os.path.join("docs", "tdq", "spec", f"{slug}-preview.manifest.json")
+    else:  # quick
+        doc_rel = os.path.join("docs", "tdq", "plan", f"{slug}.md")
+        man_rel = os.path.join("docs", "tdq", "plan", f"{slug}-flow.manifest.json")
+
+    doc_path = doc_rel if os.path.isabs(doc_rel) else os.path.join(cwd, doc_rel)
+    man_path = man_rel if os.path.isabs(man_rel) else os.path.join(cwd, man_rel)
+
+    try:
+        import tdq_archify
+        res = tdq_archify.verify_document_and_manifest(doc_path, man_path, project=cwd)
+        status = res.get("status")
+        reasons = res.get("reasons", [])
+    except Exception as exc:  # noqa: BLE001 — fail-open như R14
+        _warn(f"Archify check skipped — tdq_archify failed ({type(exc).__name__}); approving without it.")
+        return
+
+    if status == "current":
+        return
+
+    if bo_qua:
+        state["archify_bo_qua"] = {"ly_do": bo_qua, "at": now_iso(), "cong": target}
+        _warn(f"Archify gate: {doc_rel} manifest status is {status} — "
+              f"approved anyway via --bo-qua-archify (reason: {bo_qua}).")
+        return
+
+    # Chặn duyệt
+    print(f"Refusal: {doc_rel} Archify preview/flow is missing or not current (status: {status}).", file=sys.stderr)
+    if reasons:
+        for r in reasons:
+            print(f"  - {r}", file=sys.stderr)
+    if target == "spec":
+        print(f"Render preview command: python3 scripts/tdq_archify.py render --candidate <cand> --out docs/tdq/spec/{slug}-preview.html --document {doc_rel} --type architecture", file=sys.stderr)
+    else:
+        print(f"Render flow command: python3 scripts/tdq_archify.py render --candidate <cand> --out docs/tdq/plan/{slug}-flow.html --document {doc_rel} --type flow", file=sys.stderr)
+    print('Or bypass with user confirmation: --bo-qua-archify "<reason>"', file=sys.stderr)
+    _warn(f"approve {target} refused by Archify gate ({status}): {man_rel} — approval unchanged.")
+    sys.exit(1)
+
+
 def _cli_approve(cwd, rest):
     """Record that the user approved. Mostly not a gate: it warns on a mismatch but
     STILL writes and exits 0 — deadlock-by-gate is what 0.2.0 removed.
@@ -2083,7 +2162,7 @@ def _cli_approve(cwd, rest):
     slug, it fails open when the check cannot run, and the user always holds an escape —
     `--bo-qua-do "<reason>"` approves anyway and records the reason in spec_bo_qua_do.
     An already approved, unchanged spec is not re-checked."""  # i18n-allow
-    target, mode, by, bo_qua_do, expected_sha, strict = _parse_approve_args(rest)
+    target, mode, by, bo_qua_do, bo_qua_archify, expected_sha, strict = _parse_approve_args(rest)
     state = load(cwd)
     if state is None:
         _warn("No state yet — building the default state then recording the approval. Run init first.")
@@ -2155,6 +2234,7 @@ def _cli_approve(cwd, rest):
         _fail(f"Approval hash mismatch: expected {expected_sha}, computed {actual_sha}.")
 
     _r14_gate(cwd, state, target, bo_qua_do)
+    _archify_gate(cwd, state, target, bo_qua_archify)
 
     state[f"{target}_approved"] = True
     state[f"{target}_approved_at"] = now_iso()
@@ -2350,6 +2430,69 @@ def _chan_eval_evidence_chua_co(cwd, state):
             f"Chưa có chứng cứ Eval hợp lệ cho target hành vi (trạng thái INCOMPLETE: {reason}).\n"
             "Chạy `python3 scripts/tdq_skill_eval.py run/report` hoặc kiểm tra chứng cứ trước khi sang report."
         )
+
+
+def _chan_report_thieu(cwd, state):
+    """Gate `set phase=idle`: bắt buộc report đầy đủ 4 mục và manifest current.
+
+    Chỉ áp dụng khi _archify_bat_buoc(state) và request đã duyệt gate (spec_approved hoặc quick_approved).
+    """
+    if not _archify_bat_buoc(state):
+        return
+    if not (state.get("spec_approved") or state.get("quick_approved")):
+        return
+
+    slug = state.get("active_request")
+    rep_rel = os.path.join("docs", "tdq", "reports", f"{slug}.md")
+    rep_path = rep_rel if os.path.isabs(rep_rel) else os.path.join(cwd, rep_rel)
+
+    if not os.path.isfile(rep_path):
+        _fail(f"Report file not found: {rep_rel}. Write report before closing to idle.")
+
+    try:
+        with open(rep_path, "r", encoding="utf-8-sig") as f:
+            content = f.read().lower()
+    except Exception as exc:
+        _fail(f"Cannot read report file {rep_rel}: {exc}")
+
+    muc_bat_buoc = [
+        ("trước request", "before request", "Trước request / Before request"),
+        ("sau request", "after request", "Sau request / After request"),
+        ("đã test", "what was tested", "Đã test / What was tested"),
+        ("kết quả test", "test result", "Kết quả test / Test result"),
+    ]
+
+    thieu = []
+    for vi, en, nhan in muc_bat_buoc:
+        if vi not in content and en not in content:
+            thieu.append(nhan)
+
+    if thieu:
+        _fail(f"Report {rep_rel} is missing required section(s):\n  - " + "\n  - ".join(thieu))
+
+    if state.get("archify_bo_qua"):
+        return
+
+    man_rel = os.path.join("docs", "tdq", "reports", f"{slug}.manifest.json")
+    man_path = man_rel if os.path.isabs(man_rel) else os.path.join(cwd, man_rel)
+
+    try:
+        import tdq_archify
+        res = tdq_archify.verify_document_and_manifest(rep_path, man_path, project=cwd)
+        status = res.get("status")
+        reasons = res.get("reasons", [])
+    except Exception as exc:
+        _warn(f"Archify report check skipped — tdq_archify failed ({type(exc).__name__}); closing without it.")
+        return
+
+    if status != "current":
+        print(f"Refusal: Report {rep_rel} Archify diagram is missing or not current (status: {status}).", file=sys.stderr)
+        if reasons:
+            for r in reasons:
+                print(f"  - {r}", file=sys.stderr)
+        print(f"Render report command: python3 scripts/tdq_archify.py render --candidate <cand> --out docs/tdq/reports/{slug}.html --document {rep_rel} --type architecture", file=sys.stderr)
+        _warn(f"set phase=idle refused by Archify report gate ({status}): {man_rel}")
+        sys.exit(1)
 
 
 def _cli_eval_enable(cwd, rest):
@@ -2786,6 +2929,8 @@ def cli(argv):
                     and effective_lane(state, warn=False) == "quick" and state.get("quick_approved")
                     and effective_phase(state, warn=False) == "implement"):
                 _fail("Express must enter phase=report before closing to idle.")
+            if key == "phase" and value == "idle":
+                _chan_report_thieu(cwd, state)
             if key == "phase" and value == "qc":
                 _chan_worktree_con_mo(cwd, state)
             if key == "phase" and value == "plan":

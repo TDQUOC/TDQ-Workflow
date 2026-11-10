@@ -14,4 +14,5 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" render --type explainer -
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/tdq_archify.py" verify --document "docs/tdq/plan/<slug>.md" --manifest "docs/tdq/plan/<slug>-flow.manifest.json"
 ```
 
-Show the HTML link in the existing short summary only after successful delivery. If Node/Archify/browser is unavailable, disclose the missing verification and keep a textual before/after (two Mermaid blocks); do not output a nonexistent or stale preview link. Binding uses the finished mini-plan before approval. Verify again before code; changing approved design requires the existing quick approval, not a new diagram gate. Progress tick edits may invalidate the binding: preserve the approval snapshot and distinguish progress-only updates from a changed design rather than silently rebinding.
+Always render Archify preview for express pipeline; for a brand-new feature with nothing before, write `Hiện trạng: chưa có` after diagrams only.
+`approve quick` enforces that `docs/tdq/plan/<slug>-flow.manifest.json` is `current` for requests opened after mốc `2026-11-09-0143`. If the flow manifest is missing or stale, `approve quick` refuses approval. Bypass via `--bo-qua-archify "<reason>"` is available only with user agreement.

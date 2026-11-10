@@ -17,11 +17,13 @@
     "Source file modified: skills/tdq-conventions/references/phases.md",
     "Source file modified: skills/tdq-conventions/references/soul.md",
     "Source file modified: skills/tdq-intake/SKILL.md",
+    "Source file modified: skills/tdq-intake/references/archify-quick.md",
     "Source file modified: skills/tdq-intake/references/quick-lane.md",
     "Source file modified: skills/tdq-plan/SKILL.md",
     "Source file modified: skills/tdq-spec/SKILL.md",
+    "Source file modified: skills/tdq-spec/references/archify-ba.md",
     "Source file modified: skills/tdq-spec/references/spec-template.md",
     "Source file modified: tests/test_context_hooks.py"
   ],
-  "checked_at": "2026-11-08T06:15:05Z"
+  "checked_at": "2026-11-10T05:29:28Z"
 }

@@ -63,7 +63,7 @@ class TestFullLaneChain(ChainBase):
         # 4. user nhắn "duyệt spec" → hook gợi đúng lệnh, Claude chạy lệnh đó
         out = self.new_turn("duyệt spec")
         self.assertIn("approve spec", out)
-        rc, out, err = self.approve("spec", "--by", "duyệt spec")
+        rc, out, err = self.approve("spec", "--by", "duyệt spec", "--bo-qua-archify", "e2e-test")
         self.assertEqual(rc, 0, err)
         self.assertIn("Recorded", out)
 
@@ -128,7 +128,7 @@ class TestQuickLaneChain(ChainBase):
 
         out = self.new_turn("duyệt quick")
         self.assertIn("approve quick", out)
-        rc, out, err = self.approve("quick", "--by", "duyệt quick")
+        rc, out, err = self.approve("quick", "--by", "duyệt quick", "--bo-qua-archify", "e2e-test")
         self.assertEqual(rc, 0, err)
         self.assertEqual(read_state(self.cwd)["quick_approved_by"], "duyệt quick")
 
