@@ -71,7 +71,7 @@ Log: BỎ — không có runtime mã nguồn thực thi, chỉ xuất bản tài
 - [x] **T3.1** (e5m) Thực hiện Self-Review của tác giả theo 5 khía cạnh chất lượng và tính khả thi — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T2.2
-- [ ] **T3.2** (e6m) Recheck độc lập bằng Agent `tdq-qc-tester` thẩm định toàn bộ luận điểm và đề xuất — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [>] **T3.2** (e6m) Recheck độc lập bằng Agent `tdq-qc-tester` thẩm định toàn bộ luận điểm và đề xuất — Test: `python scripts/doc_lint.py docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/qc/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Cần: T3.1
 
