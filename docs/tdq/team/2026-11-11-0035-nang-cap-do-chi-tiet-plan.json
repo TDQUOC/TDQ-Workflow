@@ -1,10 +1,10 @@
 {
   "slug": "2026-11-11-0035-nang-cap-do-chi-tiet-plan",
   "plan_file": "docs\\tdq\\plan\\2026-11-11-0035-nang-cap-do-chi-tiet-plan.md",
-  "plan_sha": "3eaa982208e7a20b17f61fbc8589275f187ccc0fd402eb3bd3e62137c813c9a2",
+  "plan_sha": "7ddf960f8d598ae22461c3bfb253a5866f8ff6f817aa9fbd55d1d290e33bef7d",
   "projection_version": "v1",
   "projection_mode": "explicit",
-  "plan_assignment_sha": "c6adf0b72f5226218d648c66383068b6f15d93ccc09ac556982f1f541bc08f55",
+  "plan_assignment_sha": "c7e15994687dd24ea0a96066259459381d9ca774b899139704924b45b90ae778",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",

@@ -38,7 +38,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P1 — Nghiên cứu chuyên sâu & Hoàn thiện Báo cáo nghiên cứu
 
-- [>] **T1.1** (e5m) Hoàn thiện phân tích 5 hệ lụy của task 1 dòng và đối chiếu Nguyên lý 3 của Soul — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
+- [x] **T1.1** (e5m) Hoàn thiện phân tích 5 hệ lụy của task 1 dòng và đối chiếu Nguyên lý 3 của Soul — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
 - [ ] **T1.2** (e6m) Chuẩn hóa khung mẫu Self-Contained Task Block và cơ chế phân tầng thích ứng (Adaptive) — Test: `python scripts/doc_lint.py docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
   - Chạm: `docs/tdq/research/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md`
@@ -51,7 +51,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P2 — Trực quan hóa Kiến trúc Trước/Sau & Xuất bản Báo cáo nghiệm thu
 
-- [>] **T2.1** (e4m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json`
+- [>] **T2.1** (e4m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan.md --manifest docs/tdq/spec/2026-11-11-0035-nang-cap-do-chi-tiet-plan-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
   - Chạm: `docs/tdq/artifacts/2026-11-11-0035-nang-cap-do-chi-tiet-plan/truoc-sau.archify.md`
   - Dùng: Archify CLI (`tdq_archify.py`)
   - Để: Render và verify preview HTML cho spec và report
