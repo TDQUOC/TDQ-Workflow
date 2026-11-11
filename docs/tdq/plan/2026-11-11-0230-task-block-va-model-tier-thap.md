@@ -54,7 +54,7 @@ Trạng thái plan: ĐÃ DUYỆT
     3. Tạo plan tạm có task chạm file `.md` 1 dòng -> chạy `doc_lint.py` -> mong đợi 0 vi phạm.
   - Ca góc hiểm & TDD:
     - RED: Lệnh `pytest tests/test_doc_lint_r15.py` phải fail vì doc_lint chưa có hàm `rule_r15`.
-- [ ] **T1.2** (e8m) Hiện thực hàm `rule_r15` trong `scripts/doc_lint.py` và tích hợp vào danh sách RULES — Test: `pytest tests/test_doc_lint_r15.py`
+- [>] **T1.2** (e8m) Hiện thực hàm `rule_r15` trong `scripts/doc_lint.py` và tích hợp vào danh sách RULES — Test: `pytest tests/test_doc_lint_r15.py`
   - Chạm: `scripts/doc_lint.py`
   - Cần: T1.1
   - Mục tiêu: Bổ sung logic kiểm tra độ sâu kỹ thuật cho các task can thiệp mã nguồn trong Plan.
