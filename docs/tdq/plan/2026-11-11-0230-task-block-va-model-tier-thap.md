@@ -138,10 +138,10 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P4 — Log & test bắt buộc
 
-- [>] **T4.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_doc_lint_r15.py`
+- [x] **T4.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_doc_lint_r15.py`
   - Chạm: `scripts/doc_lint.py` → hàm `_log`
   - Cần: T1.2
-- [>] **T4.2** (e5m) Chạy toàn bộ test suite kiểm tra không có hồi quy — Test: `pytest tests/test_doc_lint.py tests/test_doc_lint_r15.py`
+- [x] **T4.2** (e5m) Chạy toàn bộ test suite kiểm tra không có hồi quy — Test: `pytest tests/test_doc_lint.py tests/test_doc_lint_r15.py`
   - Chạm: `tests/test_doc_lint_r15.py`
   - Dùng: `tdq-build`
   - Để: Thực thi build và QC mức ultra
