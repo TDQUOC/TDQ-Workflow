@@ -1,10 +1,10 @@
 {
   "slug": "2026-11-11-0230-task-block-va-model-tier-thap",
   "plan_file": "docs\\tdq\\plan\\2026-11-11-0230-task-block-va-model-tier-thap.md",
-  "plan_sha": "d706638d29982c7aeeaa541c9eea298a3e68309ae2444262e26f0a48c5e2df45",
+  "plan_sha": "232ad4d9fb40329f95e62594ec977e0fdcb38a0659d214347fd7b26eaa5f6fb0",
   "projection_version": "v1",
   "projection_mode": "explicit",
-  "plan_assignment_sha": "cf48ce066ea5d4eb779ec24a6e41c5d24d958db083dd405a066a5872be44f157",
+  "plan_assignment_sha": "0854ba62af2007e678e52530ce733694d38d8755c4df92f3c7668293d7822326",
   "tasks": {
     "T1.1": {
       "quyet_dinh": "giao",
@@ -69,7 +69,7 @@
       "vung_file": [
         "scripts/doc_lint.py"
       ],
-      "dot": 1
+      "dot": 3
     },
     "T4.2": {
       "quyet_dinh": "giao",
