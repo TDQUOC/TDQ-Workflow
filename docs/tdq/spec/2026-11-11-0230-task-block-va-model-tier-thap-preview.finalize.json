@@ -5,14 +5,14 @@
   "status": "pass",
   "type": "explainer",
   "quality": "showcase",
-  "startedAt": "2026-11-11T05:30:21.537Z",
+  "startedAt": "2026-11-11T07:29:04.428Z",
   "specification": {
     "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0230-task-block-va-model-tier-thap\\truoc-sau.archify.md",
     "sha256": "d0238e4c859735ec5bdfd195efa2793a01a5a2d9310e33b98e2423593c27ad62",
     "bytes": 2425
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
     "sha256": "3e34c6c1765ac6e625c9c0c2b3c733669c5015fdeeba6aee2cb333b9564ee3ae",
     "bytes": 873591
   },
@@ -27,12 +27,12 @@
       "durationMs": null,
       "execution": "embedded-in-deliver",
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\10012_1794327842488\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0230-task-block-va-model-tier-thap\\truoc-sau.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -60,14 +60,14 @@
     "deliver": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 1028,
+      "durationMs": 930,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\10012_1794327842488\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "deliver",
         "explainer",
         "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0230-task-block-va-model-tier-thap\\truoc-sau.archify.md",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
         "--quality",
         "showcase",
         "--repo-root",
@@ -76,14 +76,14 @@
       ],
       "receipt": {
         "schemaVersion": 1,
-        "receiptId": "279b2b31-1dc1-4a33-a7d8-9fb99d57593b",
+        "receiptId": "d9966305-4a44-4823-808e-baab7390ab57",
         "ok": true,
         "command": "deliver",
         "type": "explainer",
         "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0230-task-block-va-model-tier-thap\\truoc-sau.archify.md",
-        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+        "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
         "explainer": {
-          "preparedSha256": "117925aea0a64df730854ae002fa87d99fe0f6815c4d0a3b73e1d601f9bf5079",
+          "preparedSha256": "e680e4096a29906cf3ab21a2939066cf87761fe0416dafbd94f84d4b052f7cbb",
           "dependencies": [
             {
               "kind": "diagram-spec",
@@ -133,17 +133,17 @@
     "check": {
       "status": "pass",
       "exitCode": 0,
-      "durationMs": 489,
+      "durationMs": 454,
       "command": [
-        "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\10012_1794327842488\\node.EXE",
+        "C:\\Program Files\\nodejs\\node.EXE",
         "C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs",
         "check",
-        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+        "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
         "--require-provenance"
       ],
       "receipt": {
         "ok": true,
-        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+        "file": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
         "family": "explainer",
         "artifact": {
           "sha256": "3e34c6c1765ac6e625c9c0c2b3c733669c5015fdeeba6aee2cb333b9564ee3ae",
@@ -192,7 +192,7 @@
               "id": "luong-truoc",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-rQaAUs\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-mORzFj\\child.html",
                 "artifact": {
                   "sha256": "f08925da151988ec6b23056340f94657254380f288cd2ec2fde577f59386d2a8",
                   "bytes": 812288
@@ -317,7 +317,7 @@
               "id": "luong-sau",
               "receipt": {
                 "ok": true,
-                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-Ym1HtL\\child.html",
+                "file": "C:\\Users\\admin\\AppData\\Local\\Temp\\archify-explainer-check-jexgVc\\child.html",
                 "artifact": {
                   "sha256": "29d635b866b9462d23daacf73dcaaf67c73a45740614e04e4aeef4c518912005",
                   "bytes": 812216
@@ -442,7 +442,7 @@
         },
         "diagnostics": [],
         "provenance": "current",
-        "deliveryReceiptId": "279b2b31-1dc1-4a33-a7d8-9fb99d57593b"
+        "deliveryReceiptId": "d9966305-4a44-4823-808e-baab7390ab57"
       }
     }
   },
@@ -452,12 +452,12 @@
   },
   "diagnostics": [],
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "finishedAt": "2026-11-11T05:30:23.632Z",
-  "durationMs": 2094,
+  "finishedAt": "2026-11-11T07:29:06.345Z",
+  "durationMs": 1917,
   "update": {
     "status": "unavailable",
     "installedVersion": null,

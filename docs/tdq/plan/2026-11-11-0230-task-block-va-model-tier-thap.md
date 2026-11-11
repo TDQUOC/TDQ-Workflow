@@ -3,7 +3,7 @@
 Ngày: 2026-11-11 · Spec: ../spec/2026-11-11-0230-task-block-va-model-tier-thap.md (bản 1.0, ĐÃ DUYỆT) · Lane: full
 Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
 Mode thực thi: subagent — tdq_bench đo nhanh hơn 10.2 phút qua 2 wave (ĐỀ XUẤT, user chốt lúc duyệt)
-Trạng thái plan: ĐÃ DUYỆT
+Trạng thái plan: HOÀN THÀNH
 
 ## Mục lục
 
@@ -161,14 +161,14 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## Definition of Done
 
-- [ ] Q1 Mẫu Plan Template 8 trường: `plan-template.md` chứa cấu trúc Task Block 8 trường và 4 chốt an toàn — `python scripts/doc_lint.py skills/tdq-plan/references/plan-template.md`
-- [ ] Q2 Hướng dẫn phân tầng thích ứng: `plan-template-huong-dan.md` có hướng dẫn Adaptive Granularity — `python scripts/doc_lint.py skills/tdq-plan/references/plan-template-huong-dan.md`
-- [ ] Q3 Linter Rule R15 bắt đúng lỗi: `doc_lint.py` bắt đúng lỗi exit 1 khi task code viết 1 dòng sơ sài — `pytest tests/test_doc_lint_r15.py -k test_r15_fails_on_single_line_code_task`
-- [ ] Q4 Linter Rule R15 cho qua plan chi tiết: `doc_lint.py` thoát mã 0 với task có đặc tả logic hoặc task docs — `pytest tests/test_doc_lint_r15.py -k test_r15_passes_on_detailed_code_task`
-- [ ] Q5 Cấu hình subagent `tdq-implementer`: `agents/tdq-implementer.md` có `model: haiku` — `grep -E "^model:\s*haiku" agents/tdq-implementer.md`
-- [ ] Q6 Hướng dẫn delegation trong team-mode: `team-mode.md` có hướng dẫn nạp trọn vẹn Task Block — `python scripts/doc_lint.py skills/tdq-build/references/team-mode.md`
-- [ ] Q7 Test suite kiểm thử Rule R15: Unit tests trong `tests/` chạy qua 100% green — `pytest tests/test_doc_lint_r15.py`
-- [ ] Q8 Bản xem trước Archify HTML: Render thành công, manifest digest khớp tài liệu — `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap.md --manifest docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
+- [x] Q1 Mẫu Plan Template 8 trường: `plan-template.md` chứa cấu trúc Task Block 8 trường và 4 chốt an toàn — `python scripts/doc_lint.py skills/tdq-plan/references/plan-template.md`
+- [x] Q2 Hướng dẫn phân tầng thích ứng: `plan-template-huong-dan.md` có hướng dẫn Adaptive Granularity — `python scripts/doc_lint.py skills/tdq-plan/references/plan-template-huong-dan.md`
+- [x] Q3 Linter Rule R15 bắt đúng lỗi: `doc_lint.py` bắt đúng lỗi exit 1 khi task code viết 1 dòng sơ sài — `pytest tests/test_doc_lint_r15.py -k test_r15_fails_on_single_line_code_task`
+- [x] Q4 Linter Rule R15 cho qua plan chi tiết: `doc_lint.py` thoát mã 0 với task có đặc tả logic hoặc task docs — `pytest tests/test_doc_lint_r15.py -k test_r15_passes_on_detailed_code_task`
+- [x] Q5 Cấu hình subagent `tdq-implementer`: `agents/tdq-implementer.md` có `model: haiku` — `grep -E "^model:\s*haiku" agents/tdq-implementer.md`
+- [x] Q6 Hướng dẫn delegation trong team-mode: `team-mode.md` có hướng dẫn nạp trọn vẹn Task Block — `python scripts/doc_lint.py skills/tdq-build/references/team-mode.md`
+- [x] Q7 Test suite kiểm thử Rule R15: Unit tests trong `tests/` chạy qua 100% green — `pytest tests/test_doc_lint_r15.py`
+- [x] Q8 Bản xem trước Archify HTML: Render thành công, manifest digest khớp tài liệu — `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap.md --manifest docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
 
 ## Cụm song song
 

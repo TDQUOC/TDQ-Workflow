@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "request": "2026-11-11-0230-task-block-va-model-tier-thap",
-  "lane": "full",
+  "request": null,
+  "lane": null,
   "evidence_kind": "planned",
   "revision": null,
   "document_path": "docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap.md",
@@ -1503,7 +1503,6 @@
     "hooks/scripts/subagent_start.py",
     "portable_src/skills/tdq-checkportable/SKILL.md",
     "pyrightconfig.json",
-    "pyrightconfig.json.agent-lsp-backup",
     "scripts/archify_artifacts.py",
     "scripts/archify_delivery.py",
     "scripts/archify_model.py",
@@ -1742,6 +1741,7 @@
     "tests/test_doc_index.py",
     "tests/test_doc_lint.py",
     "tests/test_doc_lint_r14.py",
+    "tests/test_doc_lint_r15.py",
     "tests/test_docs_consistency.py",
     "tests/test_duong_dan_tuyet_doi.py",
     "tests/test_e2e_chain.py",
@@ -1892,8 +1892,8 @@
   "source_files": {
     ".agents/plugins/marketplace.json": "ca4a37b86712143bba1b2a999a644eaef1420b71feb676354ab1b42991f9f203",
     ".claude-plugin/marketplace.json": "4d3b7a678a713cdd9bde547f55d0d4778d0ac51cff0e58ff2811d8b29d3b9f89",
-    ".claude-plugin/plugin.json": "b653610ea303752e15a5c3799c933e0c14d2cb96ae58a84905d5177b4be99bdb",
-    ".codex-plugin/plugin.json": "26596741fc0fb2fb41fada8b773b036468e47fa9dd4b8805462e9a705947cf13",
+    ".claude-plugin/plugin.json": "fa94caa47ffd791e8e0e45e8ba10d4aa90b91da216f8f7e45485038c045f4866",
+    ".codex-plugin/plugin.json": "d51a70eca06e519da46000d89e24681d98ddd1a8adfe5fe9d37e269d14827dd2",
     ".codex/config.toml": "d535dcde6ba6d5b37ec4435b7cabb860628a0162de23e09c53ec23eded6451a2",
     ".codex/hooks.json": "88b670a3fd928056570205f7d0a4bae2629b8c90724834a8f00dfc89ff17c2c1",
     ".gitattributes": "136165537e84627dbc0007bd2acc71213bf9162b2b6690753af540beb7608f7e",
@@ -1906,7 +1906,7 @@
     ".pytest_cache/CACHEDIR.TAG": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4",
     ".pytest_cache/README.md": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad",
     ".pytest_cache/v/cache/lastfailed": "a4e6a39b47161ab2247a0bce7ed7989ca033a4e8a8399607bd08376a91c7aae4",
-    ".pytest_cache/v/cache/nodeids": "e2d6ce7af060d12bf04b46775fe7c9cf2c0db74cc5d392622128aa4f4f561ad7",
+    ".pytest_cache/v/cache/nodeids": "0d91573433971d0e48fcfb16aa6c0bb488beb14f2ad8e72cd7c64c9fa2dd9e31",
     ".remember/.gitignore": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b",
     ".remember/.install-marker": "f55a5d395f057eea0a409f92128ceeaba7a1bf175940e916cde73b851ca41fad",
     ".remember/archive.md": "5f2d472f489a370b70e6bc4e35bfed9a7b04fe8e26fc35ba9606b05280f85812",
@@ -3154,7 +3154,7 @@
     ".venv-tokens/Scripts/pythonw.exe": "545e379a8f1129dc7491645cac0561d257c4c00485d257c9ac66584d97a3e055",
     ".venv-tokens/pyvenv.cfg": "c5668a39ef4db160c3d64c4dae2494ff21f2fa0cdf2ba70b91681896be9de236",
     "CHANGELOG-archive.md": "7773a3f6f71302ee4928e5fee7ea9724fbb8253e933a9e3c07b3498d0abdd657",
-    "CHANGELOG.md": "9600e59d1f417fe6c3fce4849f100795ff11d668758fe71bfde5c78a45752ca1",
+    "CHANGELOG.md": "f59845b095d99481d4210a9875ea9fceb9c0bb32ce4b0ab366f91e4ae486282a",
     "README.md": "9c86de2658ff9c1e8cea73b3e70f8b6d9aa5ab00325be2d4382510f76af6f20d",
     "agents/tdq-build-resolver.md": "a2af63a919381ec105f13a96db758787ab2183abec0265b59980f8fce329a301",
     "agents/tdq-implementer.md": "5fc600c55284a9d0624c17ff83db2c3b2c30cc9b79f2c761c980a9c3c8c66ab6",
@@ -3382,7 +3382,6 @@
     "hooks/scripts/subagent_start.py": "225f17027f7c00b4c29f4f03cd31f085f5333e7cc23dcbf8086e924bcbb4d339",
     "portable_src/skills/tdq-checkportable/SKILL.md": "a65c99fb40c3328f50a9b114d72f541a87b787e7f8ac10fd13b0bafdf054ec35",
     "pyrightconfig.json": "056552fdc5b9350aa85b09ae9daacc1ad15524f347a55aa2f4a6ef3a352a3a1a",
-    "pyrightconfig.json.agent-lsp-backup": "056552fdc5b9350aa85b09ae9daacc1ad15524f347a55aa2f4a6ef3a352a3a1a",
     "scripts/archify_artifacts.py": "3ccb8943d9e2d1f2572a49afbd02f0028cdf379a6166869a33b565f5afd243ce",
     "scripts/archify_delivery.py": "7a34b1d46bbf90415155e1cfdd95cf8524ebf773dedc9ef564151c1eff7198f2",
     "scripts/archify_model.py": "23cdf024e4eaa59073ab842648ca293785728a5d5fd6067d2d5ff750808f687c",
@@ -3397,7 +3396,7 @@
     "scripts/context_surface.py": "04f8939f14201ea7ff6ffbb5f38408eefc893abb3feabce86bb132c5b7cdf8d7",
     "scripts/doc_dup.py": "12d49544c03078ae5d159c38c177d0bc80eaa86f6d38171da32230b842a5094f",
     "scripts/doc_index.py": "18a03b322d94d9f1dae66848a1b537e8cf3261e9e6fbd13077d419ca11a7f3ec",
-    "scripts/doc_lint.py": "cfedd9382d3c167f65a83cd793cf6dbb474b9fce71685edd0a54a23a3dfedaa5",
+    "scripts/doc_lint.py": "b48d0dc1e4602721cdbe8b63b069164b5685e48982540d15ceac701e02abdb51",
     "scripts/i18n_check.py": "01e2303f5442539e141397420089211aa429dfdee080985351629218d248ac37",
     "scripts/kiem_no_marker.py": "fa7f88870dfadfd0c070fc5a25ff0a58c5860f3fd11b6487796a1e1c8d2b621c",
     "scripts/lsp_module.py": "a48b15f31e9eb959253695f6b850b3203eba30a1bf53cce7b7be0c2c82ec2611",
@@ -3473,7 +3472,7 @@
     "skills/tdq-build/references/runtime-speed.md": "45ac50aad05e9a7f725477a66bb35282d8422e8a50cfa0930037c82586fa161d",
     "skills/tdq-build/references/skill-eval.md": "3ca5ef136835d55833a2eb348c68130a37bdfc4da02dd76ab1171f0721315c98",
     "skills/tdq-build/references/team-mode-tra-cuu.md": "2350b9380bced576c6e1693b1c6c1b8e0f81ac5cd72e0701edda159efbcd9f15",
-    "skills/tdq-build/references/team-mode.md": "1869baaff7fb1d5a717bf07cc34c9071d17793c67a1edd9495332b2e2dd1c85e",
+    "skills/tdq-build/references/team-mode.md": "189ffdaf2acc73a0955ea179c4015ca6a510d0366c21b56f1409d0790422c8e9",
     "skills/tdq-build/references/vision-test-loop.md": "298ac6231d79aeded02598891b5a953694a9313415361327bbdba748be0910a7",
     "skills/tdq-check-status/SKILL.md": "b9477bb7248c6476b022b01e08bdcdaf567113b1a16ce71de658f81b890a3fbf",
     "skills/tdq-check-status/references/bang-lech.md": "8358c252fe43d22b1bd5f7717ec221ebf4b7420a9f3569849b766f5b9cecf4b0",
@@ -3512,8 +3511,8 @@
     "skills/tdq-plan/SKILL.md": "42ce897f232a9f907b902c73aa200c76fbb66380f05b0e60e0db750a7fbe3ab1",
     "skills/tdq-plan/references/mode-gate.md": "3ede2aa46faba08009e8db086487edfd9335842d53c3485a93af9bcc46d4bb22",
     "skills/tdq-plan/references/plan-template-co-che.md": "1684ba4e69507b2c0aa0e581861345420d739718479095842c4d73824fff4e7c",
-    "skills/tdq-plan/references/plan-template-huong-dan.md": "154f58e6645c1a558ece38d2f05ca18a3f8b9aa9c0c54bb48cb64056b4ee987e",
-    "skills/tdq-plan/references/plan-template.md": "e61002d95ea38a9a9c822ff6a96c0aca81bac058b30f8f279b1af2b02dec4e4d",
+    "skills/tdq-plan/references/plan-template-huong-dan.md": "f8a040eb33dbe8dc9d7dba1b31f2388fde15689018c931e4ab0a94ec273c6399",
+    "skills/tdq-plan/references/plan-template.md": "24b424d7c6b0f10aaa4e00280eb88f81a6377651dd4bc9e3825ae960f51ffd8c",
     "skills/tdq-setup/SKILL.md": "3e68636d249db794edacfb85dbebadf1b9c6138aaf617bc045f0b02354d4c9f3",
     "skills/tdq-setup/references/chrome-devtools-mcp-guide.md": "78f0041f646b254927afe63f992721f72cfc8a7484c7010cab395df23b6f0629",
     "skills/tdq-setup/references/languages.md": "b8c39cd8d8de1905d0bbb64f3ed1ee18e214d27318cc8e66ca271e0cfd3811b6",
@@ -3621,6 +3620,7 @@
     "tests/test_doc_index.py": "2fe2eb7febf61fdbfe97bece84507ef7e49076ca0ac462cbc4e0b05921ccc4cf",
     "tests/test_doc_lint.py": "fe595f8675b96c4a4b3e47fd48c696a7b286f4d883f3196566e335a6efa1556f",
     "tests/test_doc_lint_r14.py": "dc1fc8c51a2de7a153b35cdec4d46d0873d404b053d1412045952b8ff5e45d21",
+    "tests/test_doc_lint_r15.py": "8ce86ce7fe3f232073ab70afc39c26e88d5e9ac72c290c9e4b91d70a0534fff7",
     "tests/test_docs_consistency.py": "500f59cc876db1f17bb5fa02a1d47a4b2b598c99401c61a74e4036ccebf3fa82",
     "tests/test_duong_dan_tuyet_doi.py": "348002481c9d40186ddef6305e06f823bc268eb341fed690808db1d50a121ca9",
     "tests/test_e2e_chain.py": "3cccb24cc6e942708d20047d6f7950c5e687cd6517441a2e475adf5a81296545",
@@ -3783,7 +3783,7 @@
       "bytes": 2425
     },
     "artifact": {
-      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
+      "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.html",
       "sha256": "3e34c6c1765ac6e625c9c0c2b3c733669c5015fdeeba6aee2cb333b9564ee3ae",
       "bytes": 873591
     },
@@ -3800,11 +3800,11 @@
       "truncated": false
     },
     "evidence": {
-      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.finalize.json",
-      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.finalize-summary.json"
+      "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.finalize.json",
+      "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.5fcba36ea5b64a6ebd930907404b77e6.finalize-summary.json"
     },
     "visualReview": "not-requested",
-    "durationMs": 2094,
+    "durationMs": 1917,
     "browserCheck": {
       "requested": false,
       "ran": false

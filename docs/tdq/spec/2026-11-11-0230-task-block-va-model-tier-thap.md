@@ -239,5 +239,5 @@ DoD:
 (Trống — mọi quyết định đã được người dùng chốt tại brief.)
 <!-- tdq-archify-binding:start -->
 <!-- manifest: 2026-11-11-0230-task-block-va-model-tier-thap-preview.manifest.json -->
-<!-- manifest_digest: 03edfcb7aacdee6344828d5017fe88ee50a2b3ac1c608fbf7cd4bf630727c178 -->
+<!-- manifest_digest: 382c0fbcc6948c46756811defeb3906583a6abd1ceb23064e6f9236a14f43b93 -->
 <!-- tdq-archify-binding:end -->
