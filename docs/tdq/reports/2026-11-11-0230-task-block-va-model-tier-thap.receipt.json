@@ -11,7 +11,7 @@
     "bytes": 2425
   },
   "artifact": {
-    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap.a07d5979f3504c469f1aa5a0c79583f6.html",
+    "path": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap.3ae0f55750e84b68bc12258dacfccf3e.html",
     "sha256": "3e34c6c1765ac6e625c9c0c2b3c733669c5015fdeeba6aee2cb333b9564ee3ae",
     "bytes": 873591
   },
@@ -28,11 +28,11 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap.a07d5979f3504c469f1aa5a0c79583f6.finalize.json",
-    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap.a07d5979f3504c469f1aa5a0c79583f6.finalize-summary.json"
+    "receipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap.3ae0f55750e84b68bc12258dacfccf3e.finalize.json",
+    "summaryReceipt": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\reports\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap.3ae0f55750e84b68bc12258dacfccf3e.finalize-summary.json"
   },
   "visualReview": "not-requested",
-  "durationMs": 1992,
+  "durationMs": 1940,
   "browserCheck": {
     "requested": false,
     "ran": false

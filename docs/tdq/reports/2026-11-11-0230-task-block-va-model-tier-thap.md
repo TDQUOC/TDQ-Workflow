@@ -37,3 +37,7 @@ Model compute time is unavailable (`model_giay=null`). API includes network/prov
 - `python scripts/token_budget.py --kiem`: 62 file, cap 3500, clean exit 0
 - `python scripts/tdq_archify.py verify`: valid: true, status: current
 **Rủi ro hồi quy:** Không ảnh hưởng các plan tài liệu (Rule R15 chỉ kiểm tra task can thiệp mã nguồn có đuôi code). Các regex parser `_TASK` và `_PATH` của `tdq_team.py` được bảo toàn nguyên vẹn 100%.
+<!-- tdq-archify-binding:start -->
+<!-- manifest: 2026-11-11-0230-task-block-va-model-tier-thap.manifest.json -->
+<!-- manifest_digest: 1662114d823d4b0fdaccd758113960d65f5882ea41a982268b2c1053f31c92c7 -->
+<!-- tdq-archify-binding:end -->
