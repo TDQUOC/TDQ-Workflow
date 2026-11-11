@@ -522,8 +522,53 @@ def kiem_tran_token(paths):
     return [f"{token_budget.FILE_KHOA}:1: [R13] {d}" for d in token_budget.kiem_khoa(goc)]
 
 
+# --------------------- R15: a task touching source code in a plan must carry technical specs / pseudo-code
+def rule_r15(doc, out):
+    """A task modifying source code in a plan must carry technical specs or pseudo-code."""
+    if os.path.basename(os.path.dirname(os.path.abspath(doc.path))) != "plan":
+        return
+    EXT_MA_NGUON = (".py", ".ts", ".tsx", ".js", ".jsx", ".go", ".rs", ".c", ".cpp", ".cs", ".rb", ".php", ".java")
+    TU_KHOA_LOGIC = ("đặc tả", "logic", "giải thuật", "thuật toán", "pseudo-code")  # i18n-allow
+
+    tasks = []
+    curr_idx = None
+    curr_lines = []
+    for i, line in enumerate(doc.lines):
+        if line.startswith(("- [ ] **T", "- [x] **T", "- [~] **T", "- [>] **T")):
+            if curr_idx is not None:
+                tasks.append((curr_idx, curr_lines))
+            curr_idx = i
+            curr_lines = []
+        elif curr_idx is not None:
+            if line.startswith((" ", "\t")):
+                curr_lines.append(line)
+            elif not line.strip():
+                continue
+            else:
+                tasks.append((curr_idx, curr_lines))
+                curr_idx = None
+                curr_lines = []
+    if curr_idx is not None:
+        tasks.append((curr_idx, curr_lines))
+
+    for task_idx, indented_lines in tasks:
+        has_code = False
+        for l in indented_lines:
+            low = l.lower()
+            if "chạm:" in low or "cham:" in low:  # i18n-allow
+                paths = re.findall(r"[A-Za-z0-9_./\\-]+\.[A-Za-z0-9]+", l)
+                if any(p.lower().endswith(EXT_MA_NGUON) for p in paths):
+                    has_code = True
+                    break
+        if has_code:
+            has_logic = any(any(kw in l.lower() for kw in TU_KHOA_LOGIC) for l in indented_lines)
+            if not has_logic:
+                _report(out, doc, task_idx, "R15",
+                        "task can thiệp mã nguồn nhưng thiếu khối đặc tả kỹ thuật/pseudo-code (Rule R15: Self-Contained Task Block)")  # i18n-allow
+
+
 RULES = [rule_r1, rule_r2, rule_r3, rule_r4, rule_r5, rule_r6, rule_r7, rule_r8,
-         rule_r9, rule_r10, rule_r11]
+         rule_r9, rule_r10, rule_r11, rule_r15]
 
 # Directories holding records / machine-generated files — bound by R8 only, see lint_file().
 OUTPUT_DIRS = (os.path.join("docs", "tdq"), os.path.join("docs", "workinglog"),
@@ -813,7 +858,7 @@ def lint_file(path):
     abs_path = os.path.abspath(path)
     is_output = any(f"{os.sep}{d}{os.sep}" in abs_path for d in OUTPUT_DIRS)
     if is_output:
-        for rule in (rule_r8, rule_r10, rule_r11, rule_r12, rule_r14):
+        for rule in (rule_r8, rule_r10, rule_r11, rule_r12, rule_r14, rule_r15):
             rule(doc, out)
     else:
         for rule in RULES:
