@@ -139,8 +139,12 @@ Trạng thái plan: ĐÃ DUYỆT
 ## P4 — Log & test bắt buộc
 
 - [x] **T4.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_doc_lint_r15.py`
-  - Chạm: `scripts/doc_lint.py` → hàm `_log`
+  - Chạm: `scripts/doc_lint.py`
   - Cần: T1.2
+  - Đặc tả kỹ thuật:
+    Hàm `_log(message)` ghi log ra stderr khi `TDQ_LOG != "0"`.
+  - Logic cốt lõi:
+    Kiểm tra cơ chế log service trong `doc_lint.py` xuất stderr kèm timestamp chuẩn ISO.
 - [x] **T4.2** (e5m) Chạy toàn bộ test suite kiểm tra không có hồi quy — Test: `pytest tests/test_doc_lint.py tests/test_doc_lint_r15.py`
   - Chạm: `tests/test_doc_lint_r15.py`
   - Dùng: `tdq-build`
@@ -148,6 +152,10 @@ Trạng thái plan: ĐÃ DUYỆT
   - Ra: `docs/tdq/qc/2026-11-11-0230-task-block-va-model-tier-thap.md`
   - Kiểm: `pytest tests/test_doc_lint.py tests/test_doc_lint_r15.py`
   - Không dùng cho: Sửa đổi file ngoài phạm vi
+  - Đặc tả kỹ thuật:
+    Chạy toàn bộ 68 test case trong các tệp kiểm thử doc_lint.
+  - Logic cốt lõi:
+    Thực thi pytest trên `tests/test_doc_lint.py` và `tests/test_doc_lint_r15.py`, xác nhận 100% green.
 
 **Xong P4 khi**: Toàn bộ unit tests linter và hệ thống chạy qua 100% green.
 
