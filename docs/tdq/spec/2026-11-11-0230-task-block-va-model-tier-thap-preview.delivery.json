@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "receiptId": "e6ea0d63-4c16-42b1-b586-279bacf1df87",
+  "receiptId": "279b2b31-1dc1-4a33-a7d8-9fb99d57593b",
   "status": "current",
   "command": "deliver",
   "type": "explainer",
   "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0230-task-block-va-model-tier-thap\\truoc-sau.archify.md",
-  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.b288d5dc5b8c4365a8e23a5efeb631b6.html",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.3bb2a29cf7034ba58ce50b0454824d08.html",
   "specification": {
     "sha256": "d0238e4c859735ec5bdfd195efa2793a01a5a2d9310e33b98e2423593c27ad62",
     "bytes": 2425
@@ -15,7 +15,7 @@
     "bytes": 873591
   },
   "explainer": {
-    "preparedSha256": "1743ca987d09a1dd27c2566775a0cab7d4d86c4b3ea85255a81efbde187f20cd",
+    "preparedSha256": "117925aea0a64df730854ae002fa87d99fe0f6815c4d0a3b73e1d601f9bf5079",
     "dependencies": [
       {
         "kind": "diagram-spec",
