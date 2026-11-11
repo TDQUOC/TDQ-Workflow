@@ -54,7 +54,7 @@ Trạng thái plan: ĐÃ DUYỆT
     3. Tạo plan tạm có task chạm file `.md` 1 dòng -> chạy `doc_lint.py` -> mong đợi 0 vi phạm.
   - Ca góc hiểm & TDD:
     - RED: Lệnh `pytest tests/test_doc_lint_r15.py` phải fail vì doc_lint chưa có hàm `rule_r15`.
-- [>] **T1.2** (e8m) Hiện thực hàm `rule_r15` trong `scripts/doc_lint.py` và tích hợp vào danh sách RULES — Test: `pytest tests/test_doc_lint_r15.py`
+- [x] **T1.2** (e8m) Hiện thực hàm `rule_r15` trong `scripts/doc_lint.py` và tích hợp vào danh sách RULES — Test: `pytest tests/test_doc_lint_r15.py`
   - Chạm: `scripts/doc_lint.py`
   - Cần: T1.1
   - Mục tiêu: Bổ sung logic kiểm tra độ sâu kỹ thuật cho các task can thiệp mã nguồn trong Plan.
@@ -79,7 +79,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P2 — Cập nhật Plan Template, Hướng dẫn và Tài liệu Team Mode
 
-- [ ] **T2.1** (e5m) Cập nhật `plan-template.md` với cú pháp Task Block 8 trường và 4 chốt an toàn — Test: `python scripts/doc_lint.py skills/tdq-plan/references/plan-template.md`
+- [x] **T2.1** (e5m) Cập nhật `plan-template.md` với cú pháp Task Block 8 trường và 4 chốt an toàn — Test: `python scripts/doc_lint.py skills/tdq-plan/references/plan-template.md`
   - Chạm: `skills/tdq-plan/references/plan-template.md`
   - Cần: T1.2
   - Mục tiêu: Cung cấp bản mẫu chuẩn của Self-Contained Task Block và các ví dụ thi công trực quan.
@@ -93,7 +93,7 @@ Trạng thái plan: ĐÃ DUYỆT
     2. Bổ sung mục giải thích 4 chốt an toàn cơ học cho model 30B/Haiku.
   - Ca góc hiểm & TDD:
     - Kiểm tra `doc_lint.py` trên `plan-template.md` đạt 0 lỗi.
-- [ ] **T2.2** (e4m) Cập nhật `plan-template-huong-dan.md` bổ sung quy tắc phân tầng thích ứng (Adaptive) — Test: `python scripts/doc_lint.py skills/tdq-plan/references/plan-template-huong-dan.md`
+- [x] **T2.2** (e4m) Cập nhật `plan-template-huong-dan.md` bổ sung quy tắc phân tầng thích ứng (Adaptive) — Test: `python scripts/doc_lint.py skills/tdq-plan/references/plan-template-huong-dan.md`
   - Chạm: `skills/tdq-plan/references/plan-template-huong-dan.md`
   - Cần: T2.1
   - Mục tiêu: Hướng dẫn người viết plan khi nào dùng Full Block (bắt buộc cho code), khi nào dùng Compact (cho docs).
@@ -102,7 +102,7 @@ Trạng thái plan: ĐÃ DUYỆT
   - Ràng buộc: Ngắn gọn, súc tích, dễ hiểu cho mọi model.
   - Logic cốt lõi:
     Quy định rõ: Task sửa code -> Bắt buộc Full Block (Rule R15 kiểm soát); Task docs -> Dạng 1 dòng.
-- [ ] **T2.3** (e4m) Cập nhật `skills/tdq-build/references/team-mode.md` với mẫu prompt delegation nạp đủ Task Block và cơ chế model override linh hoạt — Test: `python scripts/doc_lint.py skills/tdq-build/references/team-mode.md`
+- [x] **T2.3** (e4m) Cập nhật `skills/tdq-build/references/team-mode.md` với mẫu prompt delegation nạp đủ Task Block và cơ chế model override linh hoạt — Test: `python scripts/doc_lint.py skills/tdq-build/references/team-mode.md`
   - Chạm: `skills/tdq-build/references/team-mode.md`
   - Cần: T2.1
   - Mục tiêu: Hướng dẫn Leader sao chép trọn vẹn Task Block vào prompt chuyển giao cho subagent, và cho phép override model tier cao khi task phức tạp.
@@ -138,15 +138,15 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P4 — Log & test bắt buộc
 
-- [ ] **T4.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_doc_lint_r15.py`
+- [>] **T4.1** (e3m) Log service bật mặc định kiểm chứng log stderr qua `TDQ_LOG` — Test: `pytest tests/test_doc_lint_r15.py`
   - Chạm: `scripts/doc_lint.py` → hàm `_log`
   - Cần: T1.2
-- [ ] **T4.2** (e5m) Chạy toàn bộ test suite kiểm tra không có hồi quy — Test: `pytest tests/test_doc_lint*.py`
+- [>] **T4.2** (e5m) Chạy toàn bộ test suite kiểm tra không có hồi quy — Test: `pytest tests/test_doc_lint.py tests/test_doc_lint_r15.py`
   - Chạm: `tests/test_doc_lint_r15.py`
   - Dùng: `tdq-build`
   - Để: Thực thi build và QC mức ultra
   - Ra: `docs/tdq/qc/2026-11-11-0230-task-block-va-model-tier-thap.md`
-  - Kiểm: `pytest tests/test_doc_lint*.py`
+  - Kiểm: `pytest tests/test_doc_lint.py tests/test_doc_lint_r15.py`
   - Không dùng cho: Sửa đổi file ngoài phạm vi
 
 **Xong P4 khi**: Toàn bộ unit tests linter và hệ thống chạy qua 100% green.
