@@ -36,3 +36,18 @@ runtime, not human waiting time). The unit is always minutes, an integer 1–999
   "finish X".
 - The first task of each phase opens a red → green path early.
 - No task depends on a task placed after it.
+
+## Phân tầng thích ứng (Adaptive Granularity)
+
+- **Task can thiệp mã nguồn** (`.py`, `.ts`, `.tsx`, `.js`, `.jsx`, `.go`, `.rs`, `.c`, `.cpp`, `.cs`...):
+  BẮT BUỘC dùng cấu trúc **Self-Contained Task Block** đầy đủ (8 trường con: `Chạm:`, `Cần:`, `Mục tiêu:`, `Vị trí neo:`, `Công cụ:`, `Ràng buộc:`, `Đặc tả kỹ thuật:`, `Logic cốt lõi:`, `Ca góc hiểm & TDD:`). Linter Rule R15 tự động cưỡng chế chặn cứng (exit 1) nếu phát hiện task sửa code mà thiếu khối đặc tả kỹ thuật / pseudo-code.
+- **Task tài liệu, cấu hình, template** (`.md`, `.json`, `.yaml`, `.txt`...):
+  Cho phép dùng dạng **Compact** ngắn gọn: dòng task 1 dòng `- [ ] **Tx.y** (eNm) <nội dung> — Test: <lệnh>` kèm `Chạm:` nếu chạm nhiều file. Không ép buộc khối đặc tả hàm hay pseudo-code để tối ưu token.
+
+## 4 chốt an toàn cơ học cho Model nhỏ (30B / Haiku)
+
+Mọi task can thiệp mã nguồn BẮT BUỘC tích hợp 4 chốt an toàn cơ học trong Task Block:
+1. **Vị trí neo chính xác (Exact Insertion Anchor):** Nêu rõ hàm đứng trước và đứng sau thay vì chỉ dùng số dòng. Cách này giúp model giữ định vị không gian trong file lớn trên 1.000 dòng.
+2. **Chỉ thị công cụ dứt khoát (Tool Directives):** Bắt buộc dùng `Edit` trên file có sẵn, CẤM dùng `Write` để triệt tiêu lỗi cắt cụt mã (`# ... rest of code unchanged ...`). Chỉ dùng `Write` khi tạo file mới 100%.
+3. **Đoạn mã Assertion cụ thể (Concrete Test Snippets):** Cung cấp cú pháp assert cụ thể trong phần `Ca góc hiểm & TDD` để chống bẫy assert mù (`ANTI-2 Blind Assertion`).
+4. **Bất biến môi trường (Environment Invariants):** Giới hạn thư viện thuần stdlib, cấm tự ý cài đặt hoặc import thư viện lạ để tránh ảo giác dependency.
