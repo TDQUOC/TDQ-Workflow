@@ -1,7 +1,7 @@
 {
   "slug": "2026-11-11-0230-task-block-va-model-tier-thap",
   "plan_file": "docs\\tdq\\plan\\2026-11-11-0230-task-block-va-model-tier-thap.md",
-  "plan_sha": "bf3dd7c9a7be6433c745c1ba00e696191d800eebeb9d31b622e0832f5a22e803",
+  "plan_sha": "3668c20834a29f1671262a52f762ed41ffbdc841eb113694db0ed0e8e153a665",
   "projection_version": "v1",
   "projection_mode": "explicit",
   "plan_assignment_sha": "0854ba62af2007e678e52530ce733694d38d8755c4df92f3c7668293d7822326",
@@ -20,7 +20,7 @@
       "vung_file": [
         "scripts/doc_lint.py"
       ],
-      "dot": 2
+      "dot": 3
     },
     "T2.1": {
       "quyet_dinh": "tu_lam",
@@ -28,7 +28,7 @@
       "vung_file": [
         "skills/tdq-plan/references/plan-template.md"
       ],
-      "dot": 3
+      "dot": 4
     },
     "T2.2": {
       "quyet_dinh": "tu_lam",
@@ -36,7 +36,7 @@
       "vung_file": [
         "skills/tdq-plan/references/plan-template-huong-dan.md"
       ],
-      "dot": 4
+      "dot": 5
     },
     "T2.3": {
       "quyet_dinh": "tu_lam",
@@ -44,7 +44,7 @@
       "vung_file": [
         "skills/tdq-build/references/team-mode.md"
       ],
-      "dot": 4
+      "dot": 5
     },
     "T2.4": {
       "quyet_dinh": "giao",
@@ -69,7 +69,7 @@
       "vung_file": [
         "scripts/doc_lint.py"
       ],
-      "dot": 3
+      "dot": 4
     },
     "T4.2": {
       "quyet_dinh": "giao",

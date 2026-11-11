@@ -40,7 +40,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P1 — Hiện thực Rule R15 trong doc_lint.py và bộ Unit Test (TDD)
 
-- [>] **T1.1** (e5m) Viết test suite đỏ cho Rule R15 kiểm chứng bắt plan sơ sài và chấp thuận plan chi tiết — Test: `pytest tests/test_doc_lint_r15.py`
+- [x] **T1.1** (e5m) Viết test suite đỏ cho Rule R15 kiểm chứng bắt plan sơ sài và chấp thuận plan chi tiết — Test: `pytest tests/test_doc_lint_r15.py`
   - Chạm: `tests/test_doc_lint_r15.py`
   - Mục tiêu: Thiết lập tiêu chí kiểm thử cho Rule R15: task sửa code không có logic -> báo lỗi exit 1; task sửa code có logic -> pass exit 0; task docs 1 dòng -> pass exit 0.
   - Vị trí neo: Tạo mới file `tests/test_doc_lint_r15.py`.
