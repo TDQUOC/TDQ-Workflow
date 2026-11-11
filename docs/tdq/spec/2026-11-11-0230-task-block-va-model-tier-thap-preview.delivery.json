@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "e6ea0d63-4c16-42b1-b586-279bacf1df87",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\artifacts\\2026-11-11-0230-task-block-va-model-tier-thap\\truoc-sau.archify.md",
+  "output": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow\\docs\\tdq\\spec\\.tmp.2026-11-11-0230-task-block-va-model-tier-thap-preview.b288d5dc5b8c4365a8e23a5efeb631b6.html",
+  "specification": {
+    "sha256": "d0238e4c859735ec5bdfd195efa2793a01a5a2d9310e33b98e2423593c27ad62",
+    "bytes": 2425
+  },
+  "artifact": {
+    "sha256": "3e34c6c1765ac6e625c9c0c2b3c733669c5015fdeeba6aee2cb333b9564ee3ae",
+    "bytes": 873591
+  },
+  "explainer": {
+    "preparedSha256": "1743ca987d09a1dd27c2566775a0cab7d4d86c4b3ea85255a81efbde187f20cd",
+    "dependencies": [
+      {
+        "kind": "diagram-spec",
+        "id": "luong-truoc",
+        "inline": true,
+        "sha256": "cccf162497a615be7371b861abb691ab1629e5dadc807ae8b206d5a23206bbb4",
+        "bytes": 1517
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "luong-sau",
+        "inline": true,
+        "sha256": "ef030b63c38833ed5e8a9d45db9e67a29e988eaf97a820119f0af97b232e7ceb",
+        "bytes": 1501
+      }
+    ]
+  }
+}
