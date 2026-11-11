@@ -111,7 +111,7 @@ Trạng thái plan: ĐÃ DUYỆT
   - Logic cốt lõi:
     1. Cập nhật trường `TASK:` trong template delegation: chép nguyên văn cả dòng task lẫn các dòng thụt lề đặc tả logic bên dưới.
     2. Bổ sung nguyên tắc điều phối: Mặc định subagent chạy `model: haiku`; khi task phức tạp (thuật toán nặng, bảo mật, core module), Leader chủ động override `model: "sonnet"` hoặc `model: "opus"` qua tham số gọi Agent. Không bó cứng.
-- [>] **T2.4** (e3m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap.md --manifest docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
+- [x] **T2.4** (e3m) Đồng bộ sơ đồ Trước/Sau và bản xem trước Archify HTML — Test: `python scripts/tdq_archify.py verify --document docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap.md --manifest docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap-preview.manifest.json --project C:/Users/admin/Documents/Projects/ForAgentCode/TDQ-Workflow`
   - Chạm: `docs/tdq/artifacts/2026-11-11-0230-task-block-va-model-tier-thap/truoc-sau.archify.md`
   - Dùng: Archify CLI (`tdq_archify.py`)
   - Để: Render và verify preview HTML cho spec và report
@@ -123,7 +123,7 @@ Trạng thái plan: ĐÃ DUYỆT
 
 ## P3 — Cập nhật cấu hình Model cho subagent tdq-implementer
 
-- [~] **T3.1** (e3m) Cập nhật cấu hình frontmatter trong `agents/tdq-implementer.md` sang `model: haiku` (hỗ trợ override tier cao) — Test: `grep -E "^model:\s*haiku" agents/tdq-implementer.md`
+- [x] **T3.1** (e3m) Cập nhật cấu hình frontmatter trong `agents/tdq-implementer.md` sang `model: haiku` (hỗ trợ override tier cao) — Test: `grep -E "^model:\s*haiku" agents/tdq-implementer.md`
   - Chạm: `agents/tdq-implementer.md`
   - Mục tiêu: Cấu hình subagent thực thi tự động chạy trên model Haiku làm mặc định để tiết kiệm chi phí, đồng thời tài liệu hóa khả năng ghi đè model tier cao.
   - Vị trí neo: Dòng 4 của `agents/tdq-implementer.md`.
