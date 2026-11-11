@@ -22,16 +22,11 @@ Trạng thái plan: CHỜ DUYỆT
 - Thiết kế Trước vs Sau (khi bổ sung hoặc refactor)
 - P1 — <tên phase>
 - P2 — <tên phase>
-- Dòng `Chạm:` (đặt NGAY DƯỚI mọi task TẠO hoặc SỬA file mã nguồn)
-- Luật file nóng (một file, nhiều task chạm)
-- Dòng `Cần:` (khai phụ thuộc giữa các task)
 - Cụm song song
+- Luật file nóng (một file, nhiều task chạm)
 - Khuôn khối hợp đồng skill (đặt NGAY DƯỚI dòng task dùng skill đó, ≤6 dòng)
 - Px — Log & test bắt buộc
 - Definition of Done
-- Ước tính phút `(eNm)`
-- Dòng `Mode thực thi`
-- Kiểm trước khi trình
 
 ## Quy tắc thi hành (áp cho mọi task)
 1. Thứ tự phase là thứ tự phụ thuộc — không đảo.
@@ -52,30 +47,29 @@ Trạng thái plan: CHỜ DUYỆT
 *Đối chiếu sơ đồ kiến trúc:* Khi spec có Archify preview, tham chiếu lại HTML và manifest đã duyệt. WBS ánh xạ task tới node, boundary, quy tắc và tiêu chí nghiệm thu; không sinh bản thiết kế khác trong plan. Kiểm binding trước code; thay đổi thiết kế thì dùng lại cổng duyệt spec hiện có.
 
 ## P1 — <tên phase>
+<!-- i18n-allow: mẫu Self-Contained Task Block 8 trường cho task can thiệp mã nguồn -->
 - [ ] **T1.1** (e6m) <việc cụ thể> — Test: <lệnh hoặc tiêu chí pass>
+  - Chạm: `<đường/dẫn/file.py>`
+  - Cần: <mã task phụ thuộc nếu có>
+  - Mục tiêu: <1 câu nêu rõ mục đích kỹ thuật và vị trí trong luồng hệ thống>
+  - Vị trí neo: <hàm hoặc dòng neo cụ thể trong file, vd: sau hàm foo() và trước bar()>
+  - Công cụ: <Dùng Edit. CẤM dùng Write trên file có sẵn để chống mất mã nguồn>
+  - Ràng buộc: <thuần stdlib, không thêm dependency mới, hàm dưới 40 dòng, complexity <= 10>
+  - Đặc tả kỹ thuật:
+    `<chữ ký hàm, kiểu dữ liệu đối số đầu vào, kiểu dữ liệu trả về>`
+  - Logic cốt lõi:
+    1. Bước 1: <khởi tạo, kiểm tra điều kiện đầu vào>
+    2. Bước 2: <vòng lặp, biến đổi dữ liệu, gọi phụ thuộc>
+    3. Bước 3: <xử lý kết quả và trả về>
+  - Ca góc hiểm & TDD:
+    - Ca hiểm: <giá trị rỗng, số âm, ngoại lệ biên, timeout>
+    - Tiêu chí: <đoạn mã assert cụ thể cho kiểm thử unit test>
 - [ ] **T1.2** (e12m) <việc cụ thể> — Test: <...>
 
 **Xong P1 khi**: <điều kiện đo được>
 
 ## P2 — <tên phase>
 - [ ] **T2.1** (e20m) <...> — Test: <...>
-
-## Dòng `Chạm:` (đặt NGAY DƯỚI mọi task TẠO hoặc SỬA file mã nguồn)
-- [ ] **T<x.y>** <việc sửa hàm/file sẵn có> — Test: <...>
-  - Chạm: `<đường/dẫn/file.py>`, `<tests/test_file.py>` → <node bị ảnh hưởng> (nguồn: `graphify affected "<X>" --depth 2`)
-- [ ] **T<x.z>** <việc tạo file mới> — Test: <...>
-  - Chạm: `<đường/dẫn/file-moi.py>` → file mới, chưa node nào phụ thuộc
-
-**Mọi task tạo hoặc sửa file mã nguồn đều phải có dòng `Chạm:`**, đường dẫn trong backtick tính từ gốc repo. Task chỉ sửa tài liệu thì bỏ dòng này. Chi tiết: [plan-template-co-che.md](plan-template-co-che.md).
-
-## Dòng `Cần:` (khai phụ thuộc giữa các task)
-
-Đặt ngay dưới task, sau dòng `Chạm:` nếu có. Một dòng, mã task ngoài backtick:
-
-- [ ] **T3.2** việc đọc đầu ra của task khác — Test: <...>
-  - Cần: T3.1, T1.3
-
-Task ĐỌC đầu ra của task khác BẮT BUỘC khai. Cấm khai vòng: A cần B mà B cần A. Chi tiết: [plan-template-co-che.md](plan-template-co-che.md).
 
 ## Cụm song song
 

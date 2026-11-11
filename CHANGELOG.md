@@ -2,6 +2,16 @@
 
 Mới nhất trên cùng. Ngày theo múi giờ máy phát hành.
 
+## 0.97.0 — 2026-11-11
+
+Cấu trúc Self-Contained Task Block 8 trường, Rule R15 trong doc_lint và cơ chế tự động gọi model tier thấp (Haiku) ở implement (`2026-11-11-0230-task-block-va-model-tier-thap`).
+
+- Plan Template: Chuẩn hóa khối Task Block 8 trường (`Chạm`, `Cần`, `Mục tiêu`, `Vị trí neo`, `Công cụ`, `Ràng buộc`, `Đặc tả kỹ thuật`, `Logic cốt lõi`, `Ca góc hiểm & TDD`) kèm 4 chốt an toàn cơ học cho model 30B/Haiku trong `plan-template.md`.
+- Hướng dẫn Plan: Bổ sung quy tắc phân tầng thích ứng (Adaptive Granularity - Full Block cho code, Compact cho docs) trong `plan-template-huong-dan.md`.
+- Linter Rule R15: Bổ sung `rule_r15` vào `scripts/doc_lint.py` chặn cứng (exit 1) các plan sơ sài khi task sửa code thiếu khối đặc tả kỹ thuật/pseudo-code, kèm unit test `tests/test_doc_lint_r15.py`.
+- Subagent Implementer: Đổi cấu hình mặc định trong `agents/tdq-implementer.md` sang `model: haiku` (`effort: medium`) tiết kiệm token 15x, hỗ trợ Dynamic Model Tier Routing cho phép Leader ghi đè `model: sonnet / opus` khi task phức tạp.
+- Team Mode: Cập nhật template delegation prompt trong `skills/tdq-build/references/team-mode.md` sao chép trọn vẹn khối Task Block cho subagent.
+
 ## 0.96.0 — 2026-11-10
 
 Gate cứng bắt buộc sơ đồ Trước/Sau và Archify ở spec, quick plan và report (`2026-11-09-0143-gate-truoc-sau-archify`).

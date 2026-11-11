@@ -124,7 +124,7 @@ sub-agent (several allowed) · `[x]` done and merged back.
 
 <!-- i18n-allow: field names of the prompt template, pinned by the tests -->
 ```
-TASK: T1.1 — <chép nguyên văn dòng task trong plan, kể cả phần Test:>
+TASK: T1.1 — <chép nguyên văn task và khối Task Block con: Chạm, Vị trí neo, Công cụ, Ràng buộc, Đặc tả, Logic, TDD>
 CỤM: đợt 2/5 · chạy song song với T1.2, T1.4
 BASE: <nhánh request, vd feature/gitflow-nhanh-theo-request>
 WORKTREE: /đường/dẫn/tuyệt/đối/.tdq-worktrees/<slug>/t1.1
@@ -137,8 +137,10 @@ TỰ KIỂM: <đúng MỘT lệnh agent con chạy được trước khi báo xo
 TRẢ VỀ: đúng khuôn TASK/STATUS/FILES/TEST/BRANCH/TICK-READY/NOTES ở agents/tdq-implementer.md
 ```
 
-Include the spec and plan paths in the prompt body. A sub-agent CANNOT read this conversation —
-a missing field means it has to guess, and a wrong guess is paid for at merge time.
+Include spec and plan paths in prompt body. Subagent cannot read this conversation.
+
+### Dynamic Model Tier Routing (Điều phối model)
+Subagent defaults to `model: haiku` (`effort: medium`). For complex tasks (heavy math, security, core module), leader overrides to `model: sonnet` or `model: opus`. Never hard-locked.
 
 ### RIGHT/WRONG examples
 
@@ -171,10 +173,7 @@ git worktree list                            # only the root worktree left
 grep -c '^- \[x\]' docs/tdq/plan/<slug>.md   # equals the total task count
 ```
 
-And one question to ask yourself, answerable with a number: **how many delegated / how many in
-total?** That number must appear in the report. A low delegation ratio with no reason from the
-lookup table means you worked around the user's rule — the user picked team mode to get a team,
-not a promise.
+Question to answer with a number: **how many delegated / how many in total?** That number must appear in the report. A low delegation ratio with no lookup table reason violates team mode.
 
 ## Sổ worktree
 

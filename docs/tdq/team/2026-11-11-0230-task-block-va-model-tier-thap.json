@@ -1,0 +1,85 @@
+{
+  "slug": "2026-11-11-0230-task-block-va-model-tier-thap",
+  "plan_file": "docs\\tdq\\plan\\2026-11-11-0230-task-block-va-model-tier-thap.md",
+  "plan_sha": "5ab283d4c519ce236eb34f40bdbe45d901ebe91a233052490084b20e3cf4179e",
+  "projection_version": "v1",
+  "projection_mode": "explicit",
+  "plan_assignment_sha": "38164c5fa3f79ec9798d4dda26e70cbcc262160587b614b812d31c45d6565782",
+  "tasks": {
+    "T1.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_doc_lint_r15.py"
+      ],
+      "dot": 1
+    },
+    "T1.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/doc_lint.py"
+      ],
+      "dot": 3
+    },
+    "T2.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-plan/references/plan-template.md"
+      ],
+      "dot": 4
+    },
+    "T2.2": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-plan/references/plan-template-huong-dan.md"
+      ],
+      "dot": 5
+    },
+    "T2.3": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "skills/tdq-build/references/team-mode.md"
+      ],
+      "dot": 5
+    },
+    "T2.4": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "docs/tdq/artifacts/2026-11-11-0230-task-block-va-model-tier-thap/truoc-sau.archify.md",
+        "docs/tdq/spec/2026-11-11-0230-task-block-va-model-tier-thap-preview.html"
+      ],
+      "dot": 1
+    },
+    "T3.1": {
+      "quyet_dinh": "tu_lam",
+      "ly_do": "file-luat",
+      "vung_file": [
+        "agents/tdq-implementer.md"
+      ],
+      "dot": 1
+    },
+    "T4.1": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "scripts/doc_lint.py"
+      ],
+      "dot": 4
+    },
+    "T4.2": {
+      "quyet_dinh": "giao",
+      "ly_do": "",
+      "vung_file": [
+        "tests/test_doc_lint_r15.py",
+        "docs/tdq/qc/2026-11-11-0230-task-block-va-model-tier-thap.md",
+        "tests/test_doc_lint.py"
+      ],
+      "dot": 2
+    }
+  }
+}

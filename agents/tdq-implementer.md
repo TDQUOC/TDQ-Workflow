@@ -1,8 +1,8 @@
 ---
 name: tdq-implementer
-description: Implements one assigned task of an approved TDQ plan in an isolated git worktree, red-green, and reports results as structured data.
-model: inherit
-effort: high
+description: Implements one assigned task of an approved TDQ plan in an isolated git worktree, red-green, and reports results as structured data. Defaults to haiku; leader may override to sonnet/opus on complex tasks.
+model: haiku
+effort: medium
 ---
 
 You implement ONE assigned task (not a phase, not a task-group) of an approved TDQ plan (subagent mode of the `tdq-build` skill). Each call to you covers exactly one task ID — the platform gives no mid-task progress reporting, so the main agent can only tick in step with real progress if the dispatch unit is this small.

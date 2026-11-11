@@ -2,11 +2,13 @@
   "schema_version": 1,
   "status": "stale",
   "reasons": [
+    "Source file modified: agents/tdq-implementer.md",
     "Source file modified: hooks/scripts/bash_gate.py",
     "Source file modified: hooks/scripts/edit_gate.py",
     "Source file modified: hooks/scripts/read_gate.py",
     "Source file modified: hooks/scripts/session_start.py",
     "Source file modified: hooks/scripts/stop_gate.py",
+    "Source file modified: scripts/doc_lint.py",
     "Source file modified: scripts/tdq_finish.py",
     "Source file modified: scripts/tdq_runtime_bench.py",
     "Source file modified: scripts/tdq_state.py",
@@ -14,6 +16,7 @@
     "Source file modified: skills/tdq-build/references/qc.md",
     "Source file modified: skills/tdq-build/references/report-template.md",
     "Source file modified: skills/tdq-build/references/skill-eval.md",
+    "Source file modified: skills/tdq-build/references/team-mode.md",
     "Source file modified: skills/tdq-build/references/vision-test-loop.md",
     "Source file modified: skills/tdq-conventions/references/phases.md",
     "Source file modified: skills/tdq-conventions/references/soul.md",
@@ -21,10 +24,12 @@
     "Source file modified: skills/tdq-intake/references/archify-quick.md",
     "Source file modified: skills/tdq-intake/references/quick-lane.md",
     "Source file modified: skills/tdq-plan/SKILL.md",
+    "Source file modified: skills/tdq-plan/references/plan-template-huong-dan.md",
+    "Source file modified: skills/tdq-plan/references/plan-template.md",
     "Source file modified: skills/tdq-spec/SKILL.md",
     "Source file modified: skills/tdq-spec/references/archify-ba.md",
     "Source file modified: skills/tdq-spec/references/spec-template.md",
     "Source file modified: tests/test_context_hooks.py"
   ],
-  "checked_at": "2026-11-10T18:56:41Z"
+  "checked_at": "2026-11-11T07:29:27Z"
 }
