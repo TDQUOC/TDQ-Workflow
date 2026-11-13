@@ -1,0 +1,630 @@
+#!/usr/bin/env python3
+"""tdq_checkportable.py — check a portable bundle ON THE TARGET MACHINE and patch what is missing.
+
+This is the one script of the portable set that runs before everything else. Why it exists:
+a portable bundle is hand-copied onto a strange machine, so three things break unnoticed —
+files dropped or edited on the way, Python too old, an outside command not installed. All
+three surface late, as a puzzling error in the middle of a half-finished request.
+
+Two commands:
+    check   only compares against `manifest.json`, changes nothing. Exit 0 clean, 1 on drift.
+    setup   patches what can be patched: creates missing directories, and rebuilds the two
+            config files the bundle carries enough data to recreate (`.claude/settings.json`
+            from the bundled `hooks.json`, and `.mcp.json`). EVERY overwrite leaves a
+            `<file>.tdq-bak-<timestamp>`. Any other missing/drifting file prints `LEFT …`
+            and exits non-zero — the right content exists only in the original, never invent it.
+    setup --trust
+            does one SINGLE thing outside the bundle: declaring the bundle a trusted project
+            in the `config.toml` of Codex CLI (`~/.codex`, or `$CODEX_HOME`). Without the flag
+            no path in this file touches that directory. Untrusted, Codex ignores the whole
+            `.codex/` layer of the bundle — MCP is not loaded, hooks are not read.
+
+Secret-key rule: this script prints environment variable NAMES, never their values. It runs on
+somebody else's machine and its output is usually pasted into a chat or a log.
+
+Env: TDQ_LOG=0 mutes the progress log (the log goes to stderr).
+Exit: 0 clean · 1 drift/missing · 2 bad syntax.
+"""
+
+import argparse
+import datetime
+import hashlib
+import json
+import os
+import shutil
+import sys
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
+
+MANIFEST_NAME = "manifest.json"
+EXIT_LECH = 1
+
+# ------------------------------------------------------------------ the `python3` shim
+# Windows resolves `python3` to a Microsoft Store stub that exits 49 instead of running Python,
+# so every command line the rule layer prints (`python3 scripts/tdq_state.py next` and 95 more)
+# is unusable as written. Two one-line files placed EARLIER on PATH than that stub fix all of
+# them at once, without touching a single rule file. `.cmd` serves cmd.exe and PowerShell, the
+# extension-less one serves Git Bash; measured working in all three.
+SHIM_CMD = "@py -3 %*\r\n"
+SHIM_SH = '#!/bin/sh\nexec py -3 "$@"\n'
+SHIM_FILES = (("python3.cmd", SHIM_CMD), ("python3", SHIM_SH))
+STUB_DIR = "windowsapps"
+# PATH entries that exist only for the life of one shell. Measured on the user's machine: fnm
+# prepends `...\fnm_multishells\<pid>_<timestamp>` to PATH per shell, and it was the first
+# writable entry — so the first version of this code put the shim there, where it would rot as
+# unreachable litter the moment that shell closed. A shim has to outlive the shell that made it.
+THU_MUC_TAM = frozenset(("fnm_multishells", "nvm_multishells", "temp", "tmp"))
+
+# The ONLY two config files a target machine can rebuild from what the bundle carries:
+# `settings.json` generated from the bundled `hooks/hooks.json`, `.mcp.json` from the constant below.
+# Every other file has exactly one right source, the original — `setup` must not invent content.
+GOC_TDQ = ".claude/tdq"
+BIEN_MOI = "CLAUDE_PROJECT_DIR"
+MCP_SERVERS = ("tavily-primary", "tavily-backup")
+
+# Variable names treated as holding a secret. Used to decide WHAT TO PRINT, never to read a value.
+DAU_HIEU_BI_MAT = ("KEY", "TOKEN", "SECRET", "PASSWORD")
+
+
+def _log_enabled():
+    return os.environ.get("TDQ_LOG", "1") != "0"
+
+
+def log(message):
+    """Progress log on stderr with a timestamp. Muted with TDQ_LOG=0."""
+    if _log_enabled():
+        stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+        print(f"[{stamp}] {message}", file=sys.stderr)
+
+
+def sha256_of(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for khoi in iter(lambda: f.read(65536), b""):
+            h.update(khoi)
+    return h.hexdigest()
+
+
+def to_ten_khoa(moi_truong):
+    """Turn an env dict into lines safe to print: only the KEY name + set/unset, no values."""
+    return [
+        f"{ten}: {'set' if moi_truong.get(ten) else 'NOT set'}"
+        for ten in sorted(moi_truong)
+    ]
+
+
+def bien_moi_truong_mcp(manifest, moi_truong=None):
+    """State of the key variables the manifest MCP needs — variable NAMES, no values."""
+    if not manifest.get("mcp_servers"):
+        return []
+    moi_truong = os.environ if moi_truong is None else moi_truong
+    can = sorted({
+        ten for ten in moi_truong
+        if any(d in ten.upper() for d in DAU_HIEU_BI_MAT) and ten.startswith("TAVILY")
+    } | {"TAVILY_" + "API" + "_KEY"})
+    return to_ten_khoa({ten: moi_truong.get(ten) for ten in can})
+
+
+# ------------------------------------------------------------------- check
+
+def tim_goc_bundle(bat_dau=None):
+    """Walk up from the script location to the first directory holding a `manifest.json`.
+
+    Not a fixed `dirname(dirname(__file__))`: this script sits in `.claude/tdq/scripts/` in the
+    claude bundle but in `scripts/` in the codex one, so the depth to the bundle root differs
+    between them. Hard-coding the number of levels is guaranteed wrong for one of the two.
+    """
+    duong = os.path.abspath(bat_dau or os.path.dirname(os.path.abspath(__file__)))
+    while True:
+        if os.path.isfile(os.path.join(duong, MANIFEST_NAME)):
+            return duong
+        cha = os.path.dirname(duong)
+        if cha == duong:
+            return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        duong = cha
+
+
+# ---------------------------------------------------- regenerate config files
+
+def sinh_settings(goc_bundle, duong_hooks_json):
+    """`hooks.json` (shipped with the bundle) → the `.claude/settings.json` of the target project.
+
+    Placed HERE and not in `build_portable.py` because `build_portable.py` deliberately does not
+    travel with the bundle: for the target machine to rebuild this file, the logic has to live in
+    a file present there. `build_portable.py` imports it back, so there is still one copy of it.
+    """
+    with open(duong_hooks_json, encoding="utf-8") as f:
+        goc = json.load(f)
+    tho = json.dumps(goc["hooks"], ensure_ascii=False)
+    tho = tho.replace("${CLAUDE_PLUGIN_ROOT}", "${" + BIEN_MOI + "}/" + GOC_TDQ)
+    tho = tho.replace("$CLAUDE_PLUGIN_ROOT", "${" + BIEN_MOI + "}/" + GOC_TDQ)
+    return {"hooks": json.loads(tho)}
+
+
+def sinh_mcp():
+    """The content of `.mcp.json`: servers + env variable NAMES only, never a key value."""
+    ten_bien = "TAVILY_" + "API" + "_KEY"
+    return {
+        "mcpServers": {
+            ten: {
+                "command": "npx",
+                "args": ["-y", "tavily-mcp@latest"],
+                "env": {ten_bien: "${" + ten_bien + "}"},
+            }
+            for ten in MCP_SERVERS
+        }
+    }
+
+
+def doc_manifest(goc):
+    duong = os.path.join(goc, MANIFEST_NAME)
+    if not os.path.isfile(duong):
+        raise FileNotFoundError(f"no {MANIFEST_NAME} found in {goc}")
+    with open(duong, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def kiem_file(goc, manifest):
+    """Compare each file with its sha256 in the manifest → dict `thieu` / `lech`.
+
+    It does not stop at the first error: whoever sits at the target machine needs the WHOLE list
+    in one run, because each rerun may cost another round of copying files over a network.
+    """
+    thieu, lech = [], []
+    for tuong_doi, cho_doi in sorted(manifest.get("files", {}).items()):
+        duong = os.path.join(goc, tuong_doi.replace("/", os.sep))
+        if not os.path.isfile(duong):
+            thieu.append(tuong_doi)
+        elif sha256_of(duong) != cho_doi:
+            lech.append(tuong_doi)
+    return {"thieu": thieu, "lech": lech}
+
+
+def kiem_moi_truong(manifest, tim_lenh=None):
+    """Check the minimum Python, outside commands, MCP servers → dict `thieu` / `luu_y`.
+
+    `tim_lenh` is injectable so tests do not depend on the running machine. Everything absent is
+    returned as data, never raised: this script runs on a strange machine, and a traceback here
+    means the user loses the way to patch things.
+    """
+    tim_lenh = tim_lenh or shutil.which
+    thieu, luu_y = [], []
+
+    toi_thieu = str(manifest.get("python_min") or "3.11")
+    can = tuple(int(p) for p in toi_thieu.split("."))
+    if sys.version_info[:len(can)] < can:
+        dang_co = ".".join(str(p) for p in sys.version_info[:3])
+        thieu.append(f"Python >= {toi_thieu} (found {dang_co})")
+
+    for lenh in manifest.get("external_commands", []):
+        if tim_lenh(lenh) is None:
+            thieu.append(f"outside command `{lenh}` is not on PATH")
+
+    for may_chu in manifest.get("mcp_servers", []):
+        # Only a person can approve an MCP server in the harness UI — no machine can do it for them.
+        luu_y.append(f"MCP `{may_chu}` needs you to approve it manually once")
+
+    return {"thieu": thieu, "luu_y": luu_y}
+
+
+# ------------------------------------------------------------------- setup
+
+def ghi_de_co_backup(duong, noi_dung_moi):
+    """Overwrite a file but always leave a `<file>.tdq-bak-<timestamp>`. Returns the backup path.
+
+    There is no option to skip the backup: an overwritten file may carry something the user added
+    (an `env` block, say), so being able to undo is the only thing keeping self-patching safe.
+    """
+    sao_luu = None
+    if os.path.isfile(duong):
+        dau = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        sao_luu = f"{duong}.tdq-bak-{dau}"
+        shutil.copy2(duong, sao_luu)
+        log(f"backed up {os.path.basename(duong)} → {os.path.basename(sao_luu)}")
+    with open(duong, "w", encoding="utf-8") as f:
+        f.write(noi_dung_moi)
+    return sao_luu
+
+
+def _ghi_json_co_backup(duong, du_lieu):
+    noi_dung = json.dumps(du_lieu, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    if _doc(duong) == noi_dung:
+        return None
+    ghi_de_co_backup(duong, noi_dung)
+    return duong
+
+
+def _doc(duong):
+    try:
+        with open(duong, encoding="utf-8") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
+def chay_setup(goc, manifest):
+    """Patch what can be patched, returning `(what was done, what could NOT be patched)`.
+
+    The boundary is deliberately narrow: only the two config files rebuildable from bundle data.
+    For any other drifting file the only right source is the original — inventing content for it
+    is worse than leaving it, because `check` would then call a broken bundle clean.
+    """
+    da_lam, chiu = [], []
+
+    for tuong_doi in kiem_file(goc, manifest)["thieu"]:
+        thu_muc = os.path.dirname(os.path.join(goc, tuong_doi.replace("/", os.sep)))
+        if thu_muc and not os.path.isdir(thu_muc):
+            os.makedirs(thu_muc, exist_ok=True)
+            da_lam.append(f"created directory {os.path.relpath(thu_muc, goc)}")
+
+    # Patch only what the manifest really asks for: the codex bundle has no `.mcp.json`, and
+    # adding one dirties the bundle — the next `check` finds a stray file nobody can explain.
+    trong_manifest = set(manifest.get("files", {}))
+    if ".mcp.json" in trong_manifest:
+        if _ghi_json_co_backup(os.path.join(goc, ".mcp.json"), sinh_mcp()):
+            da_lam.append("regenerated .mcp.json")
+
+    duong_hooks = os.path.join(goc, GOC_TDQ.replace("/", os.sep), "hooks", "hooks.json")
+    duong_settings = os.path.join(goc, ".claude", "settings.json")
+    if ".claude/settings.json" in trong_manifest and os.path.isfile(duong_hooks):
+        cai_dat = sinh_settings(goc, duong_hooks)
+        cu = _doc(duong_settings)
+        if cu:  # keep the user's existing `env` block — only the hook part is rebuilt
+            try:
+                cai_dat.setdefault("env", json.loads(cu).get("env", {}))
+            except ValueError:
+                pass
+        mat_trang = cu is None
+        if _ghi_json_co_backup(duong_settings, cai_dat):
+            da_lam.append(
+                "regenerated .claude/settings.json (the hook part; the `env` block cannot be"
+                " recreated — copy it back from the original if you ever added variables there)"
+                if mat_trang else "regenerated .claude/settings.json")
+
+    con = kiem_file(goc, manifest)
+    chiu = [f"{t} (copy it back from the original)" for t in con["thieu"] + con["lech"]]
+    return da_lam, chiu
+
+
+# ------------------------------------------------ Codex layer: ask before installing
+
+# These sentences are the OUTPUT of the command, not commentary — the user reads the exact
+# words here and types the command back, so the command is spelled out rather than described.
+# They stay in the user's language: everything spoken to the user follows `doc_lang`.
+CAU_HOI_CODEX = (
+    "mode `codex` gọi một CLI ngoài (`codex`) chạy trên máy bạn. Workflow KHÔNG tự bật nó.",  # i18n-allow
+    "Đồng ý thì chạy: python3 scripts/tdq_codex.py dong-y --model <tên-model>"  # i18n-allow
+    "  (trong bản portable, python3 scripts/tdq_checkportable.py setup --codex cũng được)",  # i18n-allow
+    "Không đồng ý thì bỏ qua — hai mode `main` và `subagent` vẫn chạy như thường.",  # i18n-allow
+)
+CAU_CAI_CODEX = ("chưa có `codex` trên máy này — cài trước: "  # i18n-allow
+                 "npm i -g @openai/codex (rồi `codex login`)")  # i18n-allow
+
+
+# -------------------------------------------------- project trust for Codex CLI
+
+# The config directory of Codex. `CODEX_HOME` is the variable Codex itself reads, so honouring
+# it is also what lets the tests run without ever touching the real `~/.codex`.
+THU_MUC_CODEX_MAC_DINH = "~/.codex"
+
+
+# ------------------------------------------------------- agy plugin layout
+
+def kiem_layout_agy(goc, manifest):
+    """Notes specific to the agy bundle → list of strings (never raises, never blocks).
+
+    Recognised by `plugin.json` sitting at the bundle ROOT — that is the file that makes agy
+    treat a directory as a plugin, and it exists in no other bundle. Two things are worth
+    saying that the manifest hash check cannot say by itself:
+
+    1. `config/settings.json` must be gone. Older bundles shipped one and told the user to
+       copy it over `~/.gemini/antigravity-cli/settings.json`, which destroyed their own
+       `model`/`colorScheme`/`trustedWorkspaces` while adding no guard.
+    2. `hooks.json` carries an ABSOLUTE `command`, expanded at BUILD time. A bundle built
+       under a different `$HOME` points its hooks at a path that does not exist here, and agy
+       fails such a hook silently — which is indistinguishable from a hook with nothing to say.
+    """
+    if not os.path.isfile(os.path.join(goc, "plugin.json")):
+        return []
+    ghi_chu = []
+    if os.path.isfile(os.path.join(goc, "config", "settings.json")):
+        ghi_chu.append("stale config/settings.json — an old bundle; rebuild it, do NOT copy that "
+                       "file over your own ~/.gemini/antigravity-cli/settings.json")
+    duong_hooks = os.path.join(goc, "hooks.json")
+    noi_dung = _doc(duong_hooks)
+    if noi_dung is None:
+        ghi_chu.append("hooks.json is missing from the plugin root — the hooks will never load")
+        return ghi_chu
+    try:
+        du_lieu = json.loads(noi_dung)
+    except ValueError as loi:
+        ghi_chu.append(f"hooks.json is not valid JSON ({loi}) — agy cannot load a single hook")
+        return ghi_chu
+    lenh = _moi_command(du_lieu)
+    if not lenh:
+        ghi_chu.append("hooks.json declares no `command` — the hooks will never run")
+        return ghi_chu
+    # Only the `command` values matter here. The old check scanned the whole file, and the
+    # file's own description mentions `~/.gemini/...` — so it always fired, and the branch
+    # below (the only one that catches a bundle built under someone else's home) was dead.
+    nha = os.path.expanduser("~")
+    if any(con_dau_nga_chua_bung(c) for c in lenh):
+        ghi_chu.append("hooks.json still holds an unexpanded `~` — agy needs an absolute command")
+    elif not any(nha in c for c in lenh):
+        ghi_chu.append(f"hooks.json was built under another home folder (not {nha}) — rebuild "
+                       "with `python3 scripts/build_portable.py` before installing")
+    return ghi_chu
+
+
+def con_dau_nga_chua_bung(lenh):
+    """True khi `lenh` còn dấu `~` CHƯA BUNG của thư mục nhà.
+
+    Không phải mọi dấu `~` đều sai. Windows sinh tên 8.3 như `C:\\Users\\RUNNER~1\\AppData\\...`
+    — đường dẫn đó đã tuyệt đối và chạy đúng. Phép kiểm cũ ("có `~` là sai") báo đỏ oan trên
+    runner CI của GitHub, và tệ hơn: nó nuốt luôn nhánh `elif` phía sau, nên phép kiểm THẬT
+    (bundle dựng dưới thư mục nhà của máy khác) không bao giờ chạy ở đó.
+
+    Dấu `~` chỉ sai khi đứng ở ĐẦU một token — `~`, `~/x`, `~\\x`, `~someone/x`. Đó là dạng
+    shell phải bung, mà trong nháy kép thì nó không bung, và hook chết với exit 127.
+    """
+    for token in str(lenh or "").split():
+        if token.strip("\"'").startswith("~"):
+            return True
+    return False
+
+
+def _moi_command(nut):
+    """Mọi giá trị `command` ở bất kỳ độ sâu nào của cây JSON."""
+    ket = []
+    if isinstance(nut, dict):
+        if isinstance(nut.get("command"), str):
+            ket.append(nut["command"])
+        for gia_tri in nut.values():
+            ket.extend(_moi_command(gia_tri))
+    elif isinstance(nut, list):
+        for gia_tri in nut:
+            ket.extend(_moi_command(gia_tri))
+    return ket
+
+
+# ---------------------------------------------------------------------- CLI
+
+def _in_ket_qua(goc, manifest):
+    file_ = kiem_file(goc, manifest)
+    moi_truong = kiem_moi_truong(manifest)
+    for tuong_doi in file_["thieu"]:
+        print(f"MISSING  {tuong_doi}")
+    for tuong_doi in file_["lech"]:
+        print(f"DRIFT    {tuong_doi}")
+    for dong in moi_truong["thieu"]:
+        print(f"MISSING  {dong}")
+    for dong in moi_truong["luu_y"]:
+        print(f"NOTE     {dong}")
+    for dong in bien_moi_truong_mcp(manifest):
+        print(f"NOTE     variable {dong}")
+    for dong in kiem_layout_agy(goc, manifest):
+        print(f"NOTE     {dong}")
+    # 2026-09-27: khối báo trạng thái trust của Codex đã gỡ. Nó gọi `da_trusted()` và
+    # `duong_config_codex()`, hai hàm biến mất cùng lớp trust ở 0.50.0 — tức từ bản đó tới nay
+    # đây là một `NameError` ngồi chờ, chỉ chưa nổ vì không manifest nào còn khai
+    # `.codex/config.toml`. Codex nay đọc repo qua `.agents/plugins/marketplace.json`, không qua
+    # bundle, nên trạng thái trust không còn là việc của lệnh này.
+    # A manifest listing no file proves nothing. Reporting "clean, 0 files" here turns a broken
+    # manifest into a certificate of safety.
+    if not manifest.get("files"):
+        print("ERROR    the manifest lists no file — the portable bundle is broken, copy it again")
+        return False
+    sach = not (file_["thieu"] or file_["lech"] or moi_truong["thieu"])
+    if sach:
+        print(f"CLEAN    {len(manifest.get('files', {}))} file(s) match the manifest")
+    return sach
+
+
+def thu_ghi_duoc(thu_muc):
+    """Can we really write here? Create a probe file and delete it.
+
+    `os.access(d, os.W_OK)` is not an answer on Windows: it reports the read-only ATTRIBUTE and
+    ignores ACLs, so it says yes for `C:\\Program Files\\Git\\mingw64\\bin` and the write then
+    fails with EACCES. Measured — that exact directory is what broke the first version.
+    """
+    if not os.path.isdir(thu_muc):
+        return False
+    probe = os.path.join(thu_muc, ".tdq-shim-probe")
+    try:
+        with open(probe, "w", encoding="utf-8") as f:
+            f.write("")
+        os.remove(probe)
+        return True
+    except OSError:
+        return False
+
+
+def chon_thu_muc_shim(chuoi_path, ghi_duoc=None):
+    """The directory the shim must live in: on PATH, writable, BEFORE the Store stub.
+
+    Order is the whole point. A shim placed after the stub never runs, so a directory that
+    merely exists and is writable is not enough. Returns (path, reason-it-failed).
+    """
+    ghi_duoc = ghi_duoc or thu_ghi_duoc
+    muc = [d for d in (chuoi_path or "").split(os.pathsep) if d.strip()]
+    for duong in muc:
+        thuong = duong.lower()
+        if STUB_DIR in thuong.replace(os.sep, "/"):
+            return None, ("every writable PATH entry sits after the Microsoft Store stub "
+                          f"({duong}) — move one earlier, then run this again")
+        # Matched per path COMPONENT, not as a substring: `C:\Windows\Temp` has no separator
+        # after `temp`, and a substring test silently let it through.
+        if THU_MUC_TAM.intersection(thuong.replace("\\", "/").split("/")):
+            continue
+        if ghi_duoc(duong):
+            return duong, ""
+    return None, "no writable directory found on PATH"
+
+
+def chon_thu_muc_du_phong_scripts():
+    """-> thư mục Scripts của Python interpreter thực tế hoặc User bin khả dụng."""
+    cac_ung_vien = []
+    goc_exe = os.path.dirname(sys.executable)
+    if goc_exe:
+        cac_ung_vien.append(os.path.join(goc_exe, "Scripts"))
+        cac_ung_vien.append(goc_exe)
+    user_bin = os.path.join(os.path.expanduser("~"), ".local", "bin")
+    cac_ung_vien.append(user_bin)
+    for muc in cac_ung_vien:
+        if STUB_DIR not in muc.lower().replace(os.sep, "/"):
+            return muc
+    return None
+
+
+def them_thu_muc_user_path_windows(thu_muc):
+    """Thêm thư mục vào User PATH trong Registry HKCU\\Environment (Windows only)."""
+    if not sys.platform.startswith("win"):
+        return False
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0,
+                            winreg.KEY_READ | winreg.KEY_WRITE) as key:
+            try:
+                cu, kieu = winreg.QueryValueEx(key, "Path")
+            except OSError:
+                cu, kieu = "", winreg.REG_EXPAND_SZ
+            muc_list = [p for p in cu.split(os.pathsep) if p]
+            if thu_muc.lower() not in [p.lower() for p in muc_list]:
+                moi = thu_muc + (os.pathsep + cu if cu else "")
+                winreg.SetValueEx(key, "Path", 0, kieu, moi)
+                return True
+    except Exception:  # noqa: BLE001
+        return False
+    return False
+
+
+def cai_shim_python3(nen_tang=None, chuoi_path=None, ghi_duoc=None, ghi_file=None,
+                     tu_dong_them_path=False):
+    """Write the two shim files so `python3` becomes typeable. Returns (done, notes).
+
+    Idempotent: a file already holding the right bytes is left alone and reported as such.
+    Every input is injectable so the Windows branch stays testable from a macOS machine — the
+    same discipline that `ten_lenh_python` follows, and for the same reason.
+    """
+    nen_tang = nen_tang or sys.platform
+    if not nen_tang.startswith("win"):
+        return [], [f"skipped --shim: `python3` already runs Python on {nen_tang}"]
+
+    chuoi_path = os.environ.get("PATH", "") if chuoi_path is None else chuoi_path
+    thu_muc, ly_do = chon_thu_muc_shim(chuoi_path, ghi_duoc)
+    ghi_duoc_fn = ghi_duoc or thu_ghi_duoc
+    ghi_chu_them = []
+
+    if thu_muc is None and tu_dong_them_path:
+        du_phong = chon_thu_muc_du_phong_scripts()
+        if du_phong:
+            try:
+                os.makedirs(du_phong, exist_ok=True)
+            except OSError:
+                pass
+            if ghi_duoc_fn(du_phong):
+                thu_muc = du_phong
+                ly_do = ""
+                os.environ["PATH"] = du_phong + os.pathsep + os.environ.get("PATH", "")
+                if them_thu_muc_user_path_windows(du_phong):
+                    ghi_chu_them.append(f"added {du_phong} to User PATH")
+
+    if thu_muc is None:
+        return [], [f"skipped --shim: {ly_do}"]
+
+    def _ghi(duong, noi_dung):
+        with open(duong, "w", encoding="utf-8", newline="") as f:
+            f.write(noi_dung)
+
+    ghi_file = ghi_file or _ghi
+    da_lam = []
+    for ten, noi_dung in SHIM_FILES:
+        duong = os.path.join(thu_muc, ten)
+        try:
+            with open(duong, encoding="utf-8", newline="") as f:
+                if f.read() == noi_dung:
+                    continue
+        except OSError:
+            pass
+        ghi_file(duong, noi_dung)
+        da_lam.append(f"wrote the `python3` shim {duong}")
+    if not da_lam:
+        return [], [f"--shim: already correct in {thu_muc}"] + ghi_chu_them
+    return da_lam, [f"--shim: `python3` now runs Python 3 from {thu_muc}"] + ghi_chu_them
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="tdq_checkportable.py",
+        description="Check a portable bundle against its manifest and patch what is missing.")
+    parser.add_argument("lenh", choices=("check", "setup"))
+    parser.add_argument("--root", help="bundle root, by default derived from the script location")
+    parser.add_argument(
+        "--shim", action="store_true",
+        help="only with `setup`: install the `python3` shim so every command line printed by "
+             "the rule layer is typeable on Windows. No-op on macOS and Linux.")
+    args = parser.parse_args(argv)
+
+    # Handled BEFORE the manifest is read: the shim has nothing to do with a bundle, and this
+    # command has to run from a plain repo checkout where no manifest.json exists at all.
+    if args.shim:
+        if args.lenh != "setup":
+            print("ERROR    --shim only works with `setup`")
+            return 2
+        try:
+            da_lam, ghi_chu = cai_shim_python3()
+        except OSError as loi:
+            print(f"ERROR    cannot write the shim: {loi}")
+            return EXIT_LECH
+        for viec in da_lam:
+            print(f"DONE     {viec}")
+        for dong in ghi_chu:
+            print(f"NOTE     {dong}")
+        return 0
+
+    goc = args.root or tim_goc_bundle()
+    try:
+        manifest = doc_manifest(goc)
+    except FileNotFoundError:
+        # Không có manifest KHÔNG còn là lỗi. Từ 0.50.0 repo này tự nó là plugin: mỗi host đọc
+        # một manifest mỏng trỏ vào `skills/` dùng chung, nên không có bundle nào để đối chiếu
+        # sha256. Chỉ layout agy — thứ duy nhất còn sinh ra file thật — mới mang manifest.
+        # Vẫn chạy phần kiểm môi trường, vì đó là phần còn giá trị ở mọi máy.
+        print("NOTE     không thấy bundle ở đây — repo này tự là plugin, mỗi host đọc một "
+              "manifest mỏng trỏ vào `skills/` dùng chung")
+        print("NOTE     cần layout Antigravity thì sinh bằng: "
+              "python3 scripts/build_portable.py --sinh-agy")
+        for dong in kiem_moi_truong({})["thieu"]:
+            print(f"MISSING  {dong}")
+        for dong in kiem_moi_truong({})["luu_y"]:
+            print(f"NOTE     {dong}")
+        return 0
+    except ValueError as loi:
+        print(f"ERROR    {loi}")
+        return EXIT_LECH
+
+    log(f"{args.lenh} · root={goc}")
+    if args.lenh == "setup":
+        try:
+            da_lam, chiu = chay_setup(goc, manifest)
+        except OSError as loi:
+            # A bundle unpacked with wrong permissions, or sitting on a read-only mount, is a common
+            # case on a strange machine. A traceback here only makes the user think the script broke.
+            print(f"ERROR    cannot write into the bundle: {loi}")
+            print("         fix the directory permissions (chmod -R u+w), then run `setup` again")
+            return EXIT_LECH
+        for viec in da_lam:
+            print(f"DONE     {viec}")
+        if not da_lam:
+            print("DONE     (nothing needed patching)")
+        for viec in chiu:
+            print(f"LEFT     {viec}")
+        sach = _in_ket_qua(goc, manifest)
+        # Patched and still broken means exit 0 would be a lie — the user walks on and hits the
+        # real error in the middle of a half-finished request.
+        return 0 if sach else EXIT_LECH
+
+    return 0 if _in_ket_qua(goc, manifest) else EXIT_LECH
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,608 @@
+{
+  "generated_at": "2026-11-14T01:42:05+07:00",
+  "workspace": "C:\\Users\\admin\\Documents\\Projects\\TDQ-Workflow-Antigravity",
+  "plugin_dir": "C:\\Users\\admin\\Documents\\Projects\\TDQ-Workflow-Antigravity\\plugins\\tdq-workflow",
+  "build": {
+    "upstream": "C:\\Users\\admin\\Documents\\Projects\\TDQ-Workflow-Antigravity",
+    "upstream_sha": "b423ee06",
+    "output": "C:\\Users\\admin\\Documents\\Projects\\TDQ-Workflow-Antigravity\\plugins\\tdq-workflow",
+    "copied": {
+      "scripts": 61,
+      "hooks": 19,
+      "skills_files": 75,
+      "agents": 6
+    },
+    "ast_checked_py": 81,
+    "md_checked_budget": 22,
+    "status": "OK"
+  },
+  "agy_validate": {
+    "strict_json": {
+      "dir": "C:\\Users\\admin\\Documents\\Projects\\TDQ-Workflow-Antigravity\\plugins\\tdq-workflow",
+      "manifest": "plugin.json",
+      "name": "tdq-workflow",
+      "agentPluginsSpec": false,
+      "components": {
+        "agents": 6,
+        "hooks": 6,
+        "mcpServers": 3,
+        "rules": 10,
+        "sidecars": 0,
+        "skills": 12
+      },
+      "findings": []
+    },
+    "returncode": 0,
+    "install_dry_run_rc": 0,
+    "install_staged_rc": 0,
+    "staged_validate_json": {
+      "dir": "C:\\Users\\admin\\AppData\\Local\\Temp\\tmp4j2adshh",
+      "manifest": "plugin.json",
+      "name": "tdq-workflow",
+      "agentPluginsSpec": false,
+      "components": {
+        "agents": 6,
+        "hooks": 6,
+        "mcpServers": 3,
+        "rules": 10,
+        "sidecars": 0,
+        "skills": 12
+      },
+      "findings": []
+    }
+  },
+  "pytest": {
+    "returncode": 0,
+    "duration_ms": 16996.7,
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "cases": [
+      {
+        "nodeid": "tests/test_agy_plugin_validate.py::test_v1_agy_plugin_validate_strict_json",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_agy_plugin_validate.py::test_v1_install_dry_run_and_staged_validate",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_agy_plugin_validate.py::test_v2_python_ast_and_md_budgets_and_no_traps",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_cli_fixes_new01_28.py::test_new01_tdq_finish_vietnamese_z_paths_and_watched_rules",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_cli_fixes_new01_28.py::test_new02_03_04_lsp_module_and_search_rules",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_cli_fixes_new01_28.py::test_new05_tdq_state_hotfix_prune_and_atomic_retry",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_cli_fixes_new01_28.py::test_new06_to_new14_setup_lsp_codex_harvest_knowledge_devtool_team_doclint",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_cli_fixes_new01_28.py::test_new15_to_new28_transcript_eval_hosts_test_isolation_tokens",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_e2e_workflow.py::test_v5_live_mcp_agent_lsp_stdio_and_7_companion_extensions",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_e2e_workflow.py::test_v6_full_10_step_e2e_pipeline",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_hooks_dual_protocol.py::test_all_24_tdq_codes_registered",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_hooks_dual_protocol.py::test_ec01_to_ec14_live_cmd_hooks",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_ntfs_concurrency.py::test_ntfs_8process_320_writes_zero_loss",
+        "status": "PASSED"
+      },
+      {
+        "nodeid": "tests/test_ntfs_concurrency.py::test_real_antigravity_transcript_parsing",
+        "status": "PASSED"
+      }
+    ]
+  },
+  "linters": {
+    "doc_lint_skills": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/doc_lint.py skills",
+      "returncode": 0,
+      "duration_ms": 141.2,
+      "stdout": "",
+      "stderr": "[2026-11-14T01:42:04] doc_lint: lint 74 file: SKILL.md, SKILL.md, SKILL.md, archify-lifecycle.md, codex-mode.md, qc.md, report-template.md, chung.md, python-cookbook.md, typescript-js-cookbook.md, cpp.md, csharp.md, go.md, html.md, index.md, python.md, rust.md, them-ngon-ngu.md, typescript-js.md, runtime-speed.md, skill-eval.md, team-mode-tra-cuu.md, team-mode.md, vision-test-loop.md, SKILL.md, bang-lech.md, report-template.md, SKILL.md, SKILL.md, approval.md, clean-code.md, context-budget.md, knowledge-template.md, measure-scenario.md, phases.md, plugin-routing.md, reminder-codes.md, soul.md, subagent-tuning.md, tavily.md, ultracode.md, user-facing-block-vi-du.md, user-facing-block.md, worklog-images.md, SKILL.md, analyze-full.md, archify-quick.md, interview.md, issue-triage.md, kiem-lsp-hieu-ung.md, lane-decision.md, nhanh-request.md, quick-lane-mini.md, quick-lane-qc.md, quick-lane.md, scope-round.md, skill-inventory.md, SKILL.md, SKILL.md, mode-gate.md, plan-template-co-che.md, plan-template-huong-dan.md, plan-template.md, SKILL.md, chrome-devtools-mcp-guide.md, languages.md, mcp-first-guide.md, uu-tien-tim-kiem-chi-tiet.md, uu-tien-tim-kiem.md, SKILL.md, archify-ba.md, spec-template-huong-dan.md, spec-template.md, SKILL.md\n[2026-11-14T01:42:04] doc_lint: done — 0 violation(s) total, exit 0"
+    },
+    "doc_lint_agents": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/doc_lint.py agents",
+      "returncode": 0,
+      "duration_ms": 54.5,
+      "stdout": "",
+      "stderr": "[2026-11-14T01:42:04] doc_lint: lint 6 file: tdq-build-resolver.md, tdq-implementer.md, tdq-qc-tester.md, tdq-refactor-cleaner.md, tdq-reviewer.md, tdq-security-reviewer.md\n[2026-11-14T01:42:04] doc_lint: done — 0 violation(s) total, exit 0"
+    },
+    "doc_lint_rules": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/doc_lint.py rules",
+      "returncode": 0,
+      "duration_ms": 56.0,
+      "stdout": "",
+      "stderr": "[2026-11-14T01:42:04] doc_lint: lint 10 file: AGENTS.md, domain-git-safety.md, domain-mcp-first.md, lang-csharp.md, lang-go.md, lang-python.md, lang-rust.md, lang-shell-powershell.md, lang-sql-migration.md, lang-typescript.md\n[2026-11-14T01:42:04] doc_lint: done — 0 violation(s) total, exit 0"
+    },
+    "token_budget_kiem": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/token_budget.py --kiem",
+      "returncode": 0,
+      "duration_ms": 66.7,
+      "stdout": "",
+      "stderr": ""
+    },
+    "scan_block_symbols": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/scan_block_symbols.py --chi-khoi",
+      "returncode": 0,
+      "duration_ms": 52.3,
+      "stdout": "| Char | Codepoint | Unicode name | Count | In whitelist? |\n|---|---|---|---|---|\n| `—` | U+2014 | EM DASH | 28 | YES |\n| `·` | U+00B7 | MIDDLE DOT | 22 | YES |\n| `–` | U+2013 | EN DASH | 7 | YES |\n| `➤` | U+27A4 | BLACK RIGHTWARDS ARROWHEAD | 7 | YES |\n| `…` | U+2026 | HORIZONTAL ELLIPSIS | 3 | YES |\n| `→` | U+2192 | RIGHTWARDS ARROW | 2 | YES |\n\nTotal: 6 distinct symbol(s) across 9 file(s) · 0 character(s) OUTSIDE the whitelist need a decision.",
+      "stderr": ""
+    },
+    "i18n_new_hooks": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/i18n_check.py hooks/scripts/_common.py hooks/scripts/post_invocation.py hooks/scripts/subagent_dispatch_gate.py",
+      "returncode": 0,
+      "duration_ms": 48.4,
+      "stdout": "0 Vietnamese line(s) in 3 file(s)",
+      "stderr": "[2026-11-14T01:42:04] i18n_check: scan 3 file(s), kind=all\n[2026-11-14T01:42:04] i18n_check: done — 0 line(s), exit 0"
+    }
+  },
+  "extensions": {
+    "agent_lsp_mcp": {
+      "binary": "C:\\Users\\admin\\.local\\bin\\agent-lsp.exe",
+      "binary_exists": true,
+      "latency_ms": 36.3,
+      "instructions": "This server provides 66 code intelligence tools and 24 multi-step workflow skills across 31 languages. IMPORTANT: call blast_radius before editing any file. It returns all exported symbols with their callers partitioned into test vs non-test in one call. This replaces manual loops over find_references. Pass scope='all' to include unexported symbols for dead code detection. Task-to-tool mapping: all callers of all exports in a file -> blast_radius (one call); see file structure -> list_symbols; find symbol by name -> find_symbol; find usages of one symbol -> find_references; understand a symbol -> inspect_symbol; what calls this function -> find_callers; preview edit impact -> preview_edit; replace a function body -> replace_symbol_body; delete unused code -> safe_delete_symbol; available quick fixes -> suggest_fixes; full context on a symbol -> explore_symbol (one call); safe edit (preview + apply) -> safe_apply_edit. Workflow: blast_radius before editing, preview_edit before applying, get_diagnostics after changes. Prefer these tools over text search for code intelligence tasks. Call prompts/get with a skill name (e.g. lsp-refactor, lsp-inspect, lsp-verify) for full workflow instructions. Tool responses use GCF format: symbols are @id kind qname score provenance, edges are @target<@source type, sections marked with ##. Tabular arrays use pipe-separated rows with field names declared once in the header (## name [count]{field1,field2,...}). A quoted header column containing > is a flattened nested-object path: \"caller>name\" decodes to {caller:{name:...}}. A ^ in a row cell instead marks a variable-shape or array value attached below as an indented .fieldname block (a [N]{fields} tabular array); such rows take an @id prefix and a repeated {fields} schema may be omitted. In a cell, - is null and ~ is absent (key not present).",
+      "tools_count": 65,
+      "tools": [
+        "activate_skill",
+        "add_workspace_folder",
+        "apply_edit",
+        "blast_radius",
+        "callers",
+        "close_document",
+        "commit_session",
+        "create_simulation_session",
+        "deactivate_skill",
+        "destroy_session",
+        "detect_changes",
+        "detect_lsp_servers",
+        "did_change_watched_files",
+        "discard_session",
+        "evaluate_session",
+        "execute_command",
+        "explore",
+        "explore_symbol",
+        "export_cache",
+        "find_callers",
+        "find_references",
+        "find_symbol",
+        "format_document",
+        "format_range",
+        "get_completions",
+        "get_cross_repo_references",
+        "get_diagnostics",
+        "get_document_highlights",
+        "get_inlay_hints",
+        "get_semantic_tokens",
+        "get_server_capabilities",
+        "get_signature_help",
+        "get_skill_phase",
+        "get_symbol_documentation",
+        "get_symbol_source",
+        "get_tests_for_file",
+        "go_to_declaration",
+        "go_to_definition",
+        "go_to_implementation",
+        "go_to_symbol",
+        "go_to_type_definition",
+        "import_cache",
+        "insert_after_symbol",
+        "insert_before_symbol",
+        "inspect_symbol",
+        "list_symbols",
+        "list_workspace_folders",
+        "open_document",
+        "prepare_rename",
+        "preview_edit",
+        "remove_workspace_folder",
+        "rename_symbol",
+        "replace_symbol_body",
+        "restart_lsp_server",
+        "run_build",
+        "run_tests",
+        "safe_apply_edit",
+        "safe_delete_symbol",
+        "safe_edit",
+        "set_log_level",
+        "simulate_chain",
+        "simulate_edit",
+        "start_lsp",
+        "suggest_fixes",
+        "type_hierarchy"
+      ]
+    },
+    "chrome_devtools_mcp": {
+      "configured": true,
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--userDataDir=C:/Users/admin/.gemini/chrome-devtools-profile"
+      ],
+      "npx_version": {
+        "cmd": "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\42416_1794595305260\\npx.cmd --version",
+        "returncode": 0,
+        "duration_ms": 259.8,
+        "stdout": "11.19.0",
+        "stderr": ""
+      }
+    },
+    "tavily_mcp": {
+      "configured": true,
+      "args": [
+        "-y",
+        "tavily-mcp@latest"
+      ],
+      "no_variables_trap": true
+    },
+    "archify_visual_ba": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/tdq_setup.py --kiem-archify",
+      "returncode": 0,
+      "duration_ms": 213.7,
+      "stdout": "archify · ĐẠT (Node.js v24.21.0 (>= 18) · Archify tại C:\\Users\\admin\\Documents\\archify\\archify\\bin\\archify.mjs)",
+      "stderr": ""
+    },
+    "graphify_ast": {
+      "tdq_graphify": {
+        "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/tdq_graphify.py --help",
+        "returncode": 0,
+        "duration_ms": 65.1,
+        "stdout": "",
+        "stderr": ""
+      },
+      "graphify_cli": {
+        "cmd": "graphify --help",
+        "returncode": 0,
+        "duration_ms": 168.1,
+        "stdout": "Usage: graphify <command>\n\nCommands:\n  install [--platform P]  copy skill to platform config dir (claude|windows|codebuddy|codex|opencode|aider|amp|agents|claw|droid|trae|trae-cn|gemini|cursor|antigravity|hermes|kiro|pi|devin)\n  uninstall               remove graphify from all detected platforms in one shot\n    --purge                 also delete graphify-out/ directory\n  path \"A\" \"B\"            shortest path between two nodes in graph.json\n    --graph <path>          path to graph.json (default graphify-out/graph.json)\n  explain \"X\"             plain-language explanation of a node and its neighbors\n    --graph <path>          path to graph.json (default graphify-out/graph.json)\n  diagnose multigraph    report same-endpoint edge collapse risk in graph.json\n    --graph <path>          path to graph/extraction JSON\n                            (default graphify-out/graph.json)\n    --json                  emit machine-readable JSON\n    --max-examples N        max same-endpoint examples to print (default 5)\n    --directed              force directed post-build simulation\n    --undirected            force undirected post-build simulation\n                            (default follows JSON directed flag;\n                             raw extraction with no flag defaults directed)\n    --extract-path PATH     extractor source for suppression scan\n  clone <github-url>      clone a GitHub repo locally and print its path for /graphify\n  merge-driver <base> <current> <other>  git merge driver: union-merge two graph.json files (set up via hook install)\n  merge-graphs <g1> <g2>  merge two or more graph.json files into one cross-repo graph\n    --out <path>            output path (default: graphify-out/merged-graph.json)\n    --branch <branch>       checkout a specific branch (default: repo default)\n    --out <dir>             clone to a custom directory (default: ~/.graphify/repos/<owner>/<repo>)\n  add <url>               fetch a URL and save it to ./raw, then update the graph\n    --author \"Name\"         tag the author of the content\n    --contributor \"Name\"    tag who added it to the corpus\n    --dir <path>            target directory (default: ./raw)\n  watch <path>            watch a folder and rebuild the graph on code changes\n  update <path>           re-extract code files and update the graph (no LLM needed)\n    --force                 overwrite graph.json even if the rebuild has fewer nodes\n                            (also: GRAPHIFY_FORCE=1 env var; use after refactors that delete code)\n    --no-cluster            skip clustering, write raw extraction only\n  cluster-only <path>     rerun clustering on an existing graph.json and regenerate report\n    --no-viz                skip graph.html generation (useful for >5000 node graphs / CI)\n    --graph <path>          path to graph.json (default <path>/graphify-out/graph.json)\n    --no-label              keep 'Community N' placeholders (skip LLM community naming)\n    --backend=<name>        backend to use for community naming (default: auto-detect)\n    --model=<name>          model to use for community naming\n    --max-concurrency=N     parallel community-labeling LLM calls (default 4; forced to 1 for ollama/claude-cli)\n    --batch-size=N          communities per labeling LLM call (default 100)\n  label <path>            (re)name communities with the configured LLM backend, regenerate report\n    --missing-only         keep existing labels and only name missing/placeholder communities\n    --backend=<name>        backend to use (default: auto-detect from API keys)\n    --model=<name>          model to use for community naming\n    --max-concurrency=N     parallel labeling LLM calls (default 4; forced to 1 for ollama/claude-cli)\n    --batch-size=N          communities per labeling LLM call (default 100)\n  query \"<question>\"       BFS traversal of graph.json for a question\n    --dfs                   use depth-first instead of breadth-first\n    --context C             explicit edge-context filter (repeatable)\n    --budget N              cap output at N tokens (default 2000)\n    --graph <path>          path to graph.json (default graphify-out/graph.json)\n  affected \"X\"             reverse traversal to find nodes impacted by X\n    --relation R            edge relation to traverse in reverse (repeatable)\n    --depth N               reverse traversal depth (default 2)\n    --graph <path>          path to graph.json (default graphify-out/graph.json)\n  god-nodes               list the most connected nodes (architectural hubs)\n    --top N                 how many to show (default 10)\n    --graph <path>          path to graph.json (default graphify-out/graph.json)\n    --json                  emit JSON instead of text\n  prs                     PR dashboard: CI state, review status, worktree mapping\n  save-result             save a Q&A result to graphify-out/memory/ for graph feedback loop\n    --question Q            the question asked\n    --answer A              the answer to save\n    --type T                query type: query|path_query|explain (default: query)\n    --nodes N1 N2 ...       source node labels cited in the answer\n    --outcome O             work-memory signal: useful|dead_end|corrected\n    --correction TEXT       what the right answer was (pairs with --outcome corrected)\n    --memory-dir DIR        memory directory (default: graphify-out/memory)\n  reflect                 aggregate graphify-out/memory/ outcomes into a deterministic lessons doc\n    --memory-dir DIR        memory directory (default: graphify-out/memory)\n    --out FILE              output path (default: graphify-out/reflections/LESSONS.md)\n    --graph PATH            graph.json, for community grouping + dropping stale nodes (optional)\n    --analysis PATH         .graphify_analysis.json (optional, auto-detected next to --graph)\n    --labels PATH           .graphify_labels.json (optional, auto-detected next to --graph)\n    --half-life-days N      signal weight halves every N days (default 30)\n    --min-corroboration N   distinct useful results to prefer a node (default 2)\n  check-update <path>     check needs_update flag and notify if semantic re-extraction is pending (cron-safe)\n  tree                    emit a D3 v7 collapsible-tree HTML for graph.json\n    --graph PATH            path to graph.json (default graphify-out/graph.json)\n    --output HTML           output path (default graphify-out/GRAPH_TREE.html)\n    --root PATH             filesystem root for the hierarchy\n    --max-children N        cap children per node (default 200)\n    --top-k-edges N         per-symbol outbound edges in inspector (default 12)\n    --label NAME            project label in header\n  extract <path>          headless full extraction (AST + semantic LLM) for CI/scripts\n    --backend B             gemini|kimi|claude|openai|deepseek|ollama (default: whichever API key is set)\n                            openai also reaches self-hosted OpenAI-compatible servers (llama.cpp,\n                            vLLM, LM Studio): set OPENAI_BASE_URL (e.g. http://localhost:8080/v1)\n                            and OPENAI_MODEL to the model name your server serves\n                            claude also reaches custom Anthropic-compatible endpoints (LiteLLM\n                            proxy, gateways): set ANTHROPIC_BASE_URL and ANTHROPIC_MODEL\n    --model M               override backend default model\n    --mode deep             aggressive INFERRED-edge semantic extraction\n    --force                 full re-scan and re-dispatch: skip the incremental\n                            manifest gate and semantic cache reads (env: GRAPHIFY_FORCE=1)\n    --max-workers N         AST extraction subprocess count (default: cpu_count)\n    --token-budget N        per-chunk token cap for semantic extraction (default: 60000)\n    --max-concurrency N     parallel semantic chunks in flight (default: 4; set 1 for local LLMs)\n    --api-timeout S         per-request timeout in seconds for the LLM client (default: 600)\n    --out DIR, --output DIR output dir (default: <path>); writes <DIR>/graphify-out/\n    --google-workspace      export .gdoc/.gsheet/.gslides shortcuts via gws before extraction\n    --no-gitignore         ignore .gitignore and .git/info/exclude (prioritizes .graphifyignore)\n    --no-cluster            skip clustering, write raw extraction only\n    --code-only             index code (local AST, no API key) and skip doc/paper/image files\n    --postgres DSN          extract schema from a live PostgreSQL database\n                            maps tables, views, functions + FK relationships;\n                            column-level detail is not represented in the graph\n    --cargo                 extract crate→crate deps from Cargo.toml\n    --global                also merge the resulting graph into the global graph\n    --as <tag>              repo tag for --global (default: target directory name)\n  provider [list|show|add|remove]  manage custom LLM providers\n  global add <graph.json>  add/update a project graph in the global graph (~/.graphify/global-graph.json)\n    --as <tag>               repo tag (default: parent directory name)\n  global remove <tag>      remove a repo's nodes from the global graph\n  global list              list repos in the global graph\n  global path              print path to the global graph file\n  benchmark [graph.json]  measure token reduction vs naive full-corpus approach\n  export html             emit interactive graph.html [--graph PATH] [--labels PATH] [--node-limit N] [--no-viz]\n  export callflow-html    emit Mermaid-based architecture/call-flow HTML\n                          [GRAPH|DIR] [--graph PATH] [--labels PATH] [--report PATH] [--sections PATH] [--output HTML]\n                          [--lang auto|zh-CN|en] [--max-sections N] [--diagram-scale N]\n  export obsidian         emit Obsidian vault notes + canvas [--graph PATH] [--labels PATH] [--dir PATH]\n  export wiki             emit wiki markdown articles [--graph PATH] [--labels PATH]\n  export svg              emit graph.svg [--graph PATH] [--labels PATH]\n  export graphml          emit GraphML [--graph PATH]\n  export neo4j            emit Cypher or push to Neo4j [--graph PATH] [--push URI] [--user U] [--password P]\n                          (or set NEO4J_PASSWORD instead of --password to keep it off argv)\n  export falkordb         emit Cypher or push to FalkorDB [--graph PATH] [--push URI] [--user U] [--password P]\n                          (or set FALKORDB_PASSWORD instead of --password to keep it off argv)\n  hook install            install post-commit/post-checkout git hooks (all platforms)\n  hook uninstall          remove git hooks\n  hook status             check if git hooks are installed\n  gemini install          write GEMINI.md section + BeforeTool hook (Gemini CLI)\n  gemini uninstall        remove GEMINI.md section + BeforeTool hook\n  cursor install          write .cursor/rules/graphify.mdc (Cursor)\n  cursor uninstall        remove .cursor/rules/graphify.mdc\n  claude install          write graphify section to CLAUDE.md + PreToolUse hook (Claude Code)\n  claude uninstall        remove graphify section from CLAUDE.md + PreToolUse hook\n  codebuddy install       write graphify section to CODEBUDDY.md + PreToolUse hook (CodeBuddy)\n  codebuddy uninstall     remove graphify section from CODEBUDDY.md + PreToolUse hook\n  codex install           write graphify section to AGENTS.md (Codex)\n  codex uninstall         remove graphify section from AGENTS.md\n  opencode install        write graphify section to AGENTS.md + tool.execute.before plugin (OpenCode)\n  opencode uninstall      remove graphify section from AGENTS.md + plugin\n  kilo install            install native Kilo skill + command + AGENTS.md + .kilo plugin\n  kilo uninstall          remove native Kilo skill + command + AGENTS.md + .kilo plugin\n  aider install           write graphify section to AGENTS.md (Aider)\n  aider uninstall         remove graphify section from AGENTS.md\n  copilot install         copy graphify skill to ~/.copilot/skills (GitHub Copilot CLI)\n  copilot uninstall       remove graphify skill from ~/.copilot/skills\n  vscode install          configure VS Code Copilot Chat (skill + .github/copilot-instructions.md)\n  vscode uninstall        remove VS Code Copilot Chat configuration\n  claw install            write graphify section to AGENTS.md (OpenClaw)\n  claw uninstall          remove graphify section from AGENTS.md\n  droid install           write graphify section to AGENTS.md (Factory Droid)\n  droid uninstall        remove graphify section from AGENTS.md\n  trae install            write graphify section to AGENTS.md (Trae)\n  trae uninstall         remove graphify section from AGENTS.md\n  trae-cn install         write graphify section to AGENTS.md (Trae CN)\n  trae-cn uninstall      remove graphify section from AGENTS.md\n  antigravity install     write .agents/rules + .agents/workflows + skill (Google Antigravity)\n  antigravity uninstall   remove .agents/rules, .agents/workflows, and skill\n  hermes install          write skill to ~/.hermes/skills/graphify/ (Hermes)\n  hermes uninstall        remove skill from ~/.hermes/skills/graphify/\n  kiro install            write skill to .kiro/skills/graphify/ + steering file (Kiro IDE/CLI)\n  kiro uninstall          remove skill + steering file\n  pi install              write skill to ~/.pi/agent/skills/graphify/ (Pi coding agent)\n  pi uninstall            remove skill from ~/.pi/agent/skills/graphify/\n  devin install           write skill to ~/.config/devin/skills/graphify/ (Devin CLI)\n  devin uninstall         remove skill from ~/.config/devin/skills/graphify/",
+        "stderr": ""
+      }
+    },
+    "vision_diff": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -X utf8 scripts/tdq_vision_diff.py --help",
+      "returncode": 0,
+      "duration_ms": 115.7,
+      "stdout": "usage: tdq_vision_diff.py [-h] [--source SOURCE] [--figma-url FIGMA_URL]\n                          --dist DIST --out-dir OUT_DIR [--slug SLUG]\n                          [--threshold THRESHOLD]\n                          [--color-tolerance COLOR_TOLERANCE]\n                          [--ignore-boxes IGNORE_BOXES]\n                          [--grid-size GRID_SIZE] [--min-area MIN_AREA]\n                          [--embed-base64] [--round ROUND]\n\nCompare design source vs rendered dist image and generate visual diff reports.\n\noptions:\n  -h, --help            show this help message and exit\n  --source SOURCE       Path to reference design image (PNG/JPG).\n  --figma-url FIGMA_URL\n                        Figma node URL to fetch reference image.\n  --dist DIST           Path to rendered screenshot image.\n  --out-dir OUT_DIR     Directory for output reports and artifacts.\n  --slug SLUG           Report filename slug.\n  --threshold THRESHOLD\n                        Max allowed mismatch_rate (0..1).\n  --color-tolerance COLOR_TOLERANCE\n                        Per-channel delta tolerance (0..255).\n  --ignore-boxes IGNORE_BOXES\n                        Semicolon-separated x,y,w,h regions to ignore.\n  --grid-size GRID_SIZE\n                        Grid cell size in px for clustering.\n  --min-area MIN_AREA   Minimum bounding box area in px.\n  --embed-base64        Embed images as Base64 data URIs in HTML.\n  --round ROUND         Current auto-fix iteration number.",
+      "stderr": ""
+    },
+    "codex_cli": {
+      "cmd": "C:\\Users\\admin\\AppData\\Local\\fnm_multishells\\42416_1794595305260\\codex.CMD --version",
+      "returncode": 0,
+      "duration_ms": 112.3,
+      "stdout": "codex-cli 0.166.0",
+      "stderr": ""
+    }
+  },
+  "inventory": {
+    "rules_count": 10,
+    "rules": [
+      {
+        "file": "AGENTS.md",
+        "bytes": 3231,
+        "trigger": "always_on"
+      },
+      {
+        "file": "domain-git-safety.md",
+        "bytes": 548,
+        "trigger": "model_decision"
+      },
+      {
+        "file": "domain-mcp-first.md",
+        "bytes": 632,
+        "trigger": "model_decision"
+      },
+      {
+        "file": "lang-csharp.md",
+        "bytes": 193,
+        "trigger": "glob"
+      },
+      {
+        "file": "lang-go.md",
+        "bytes": 238,
+        "trigger": "glob"
+      },
+      {
+        "file": "lang-python.md",
+        "bytes": 409,
+        "trigger": "glob"
+      },
+      {
+        "file": "lang-rust.md",
+        "bytes": 237,
+        "trigger": "glob"
+      },
+      {
+        "file": "lang-shell-powershell.md",
+        "bytes": 273,
+        "trigger": "glob"
+      },
+      {
+        "file": "lang-sql-migration.md",
+        "bytes": 191,
+        "trigger": "glob"
+      },
+      {
+        "file": "lang-typescript.md",
+        "bytes": 294,
+        "trigger": "glob"
+      }
+    ],
+    "skills_count": 12,
+    "skills_total_files": 75,
+    "skills": [
+      {
+        "name": "tdq-browser-research",
+        "files_count": 1,
+        "skill_md_bytes": 2872
+      },
+      {
+        "name": "tdq-browser-test",
+        "files_count": 1,
+        "skill_md_bytes": 4041
+      },
+      {
+        "name": "tdq-build",
+        "files_count": 22,
+        "skill_md_bytes": 14351
+      },
+      {
+        "name": "tdq-check-status",
+        "files_count": 3,
+        "skill_md_bytes": 4555
+      },
+      {
+        "name": "tdq-checkportable",
+        "files_count": 1,
+        "skill_md_bytes": 3303
+      },
+      {
+        "name": "tdq-conventions",
+        "files_count": 17,
+        "skill_md_bytes": 15753
+      },
+      {
+        "name": "tdq-intake",
+        "files_count": 13,
+        "skill_md_bytes": 11504
+      },
+      {
+        "name": "tdq-lean",
+        "files_count": 1,
+        "skill_md_bytes": 3783
+      },
+      {
+        "name": "tdq-plan",
+        "files_count": 5,
+        "skill_md_bytes": 8764
+      },
+      {
+        "name": "tdq-setup",
+        "files_count": 6,
+        "skill_md_bytes": 8990
+      },
+      {
+        "name": "tdq-spec",
+        "files_count": 4,
+        "skill_md_bytes": 5825
+      },
+      {
+        "name": "tdq-status",
+        "files_count": 1,
+        "skill_md_bytes": 3232
+      }
+    ],
+    "agents_count": 6,
+    "agents": [
+      {
+        "file": "tdq-build-resolver.md",
+        "bytes": 1763,
+        "model": "flash",
+        "tools": "[read_file, edit_file, write_file, run_command, send_message]"
+      },
+      {
+        "file": "tdq-implementer.md",
+        "bytes": 5779,
+        "model": "flash",
+        "tools": "[read_file, edit_file, write_file, run_command, send_message]"
+      },
+      {
+        "file": "tdq-qc-tester.md",
+        "bytes": 2062,
+        "model": "inherit",
+        "tools": "[read_file, run_command, send_message]"
+      },
+      {
+        "file": "tdq-refactor-cleaner.md",
+        "bytes": 1722,
+        "model": "inherit",
+        "tools": "[read_file, edit_file, write_file, run_command, send_message]"
+      },
+      {
+        "file": "tdq-reviewer.md",
+        "bytes": 2599,
+        "model": "inherit",
+        "tools": "[read_file, run_command, send_message]"
+      },
+      {
+        "file": "tdq-security-reviewer.md",
+        "bytes": 2571,
+        "model": "pro",
+        "tools": "[read_file, run_command, send_message]"
+      }
+    ],
+    "hooks_events": [
+      "SessionStart",
+      "PreInvocation",
+      "PreToolUse",
+      "PostToolUse",
+      "PostInvocation",
+      "Stop"
+    ],
+    "hook_py_count": 21,
+    "hook_py_files": [
+      "_common.py",
+      "agy_pretooluse_gate.py",
+      "agy_stop_gate.py",
+      "ask_gate.py",
+      "bash_gate.py",
+      "codex_edit_gate.py",
+      "doc_file_gate.py",
+      "edit_gate.py",
+      "lsp_gate.py",
+      "luat_gon.py",
+      "post_invocation.py",
+      "prompt_context.py",
+      "read_gate.py",
+      "search_gate.py",
+      "search_observe.py",
+      "session_start.py",
+      "stop_batch_checker.py",
+      "stop_gate.py",
+      "strategic_compact_gate.py",
+      "subagent_dispatch_gate.py",
+      "subagent_start.py"
+    ],
+    "tdq_codes_count": 24,
+    "tdq_codes": [
+      "EDIT",
+      "TEST",
+      "TICK",
+      "DIRTY",
+      "LOG",
+      "READ",
+      "SEARCH",
+      "NO-PLAN-MODE",
+      "LSP",
+      "LSP-WAIT",
+      "COMPACT",
+      "GON",
+      "UNFINISHED",
+      "PAUSE",
+      "LECH",
+      "SETUP",
+      "SUBAGENT",
+      "VUNG",
+      "GATE",
+      "ANCHOR",
+      "ZERO-POPUP",
+      "READONLY",
+      "SCOPE",
+      "FEEDBACK"
+    ],
+    "scripts_count": 60,
+    "scripts": [
+      "archify_artifacts.py",
+      "archify_delivery.py",
+      "archify_model.py",
+      "claude_export.py",
+      "context_surface.py",
+      "doc_dup.py",
+      "doc_index.py",
+      "doc_lint.py",
+      "i18n_check.py",
+      "kiem_no_marker.py",
+      "lsp_module.py",
+      "luat_phan_loai.py",
+      "plugin_tiers.py",
+      "scan_block_symbols.py",
+      "search_replay.py",
+      "search_rules.py",
+      "setup_status.py",
+      "setup_status_render.py",
+      "skill_inventory.py",
+      "skill_router.py",
+      "skill_tokens.py",
+      "step_audit.py",
+      "tdq_archify.py",
+      "tdq_bench.py",
+      "tdq_checkportable.py",
+      "tdq_checkstatus.py",
+      "tdq_codex.py",
+      "tdq_codex_mcp.py",
+      "tdq_devtool_mcp.py",
+      "tdq_eval.py",
+      "tdq_eval_contract.py",
+      "tdq_eval_hosts.py",
+      "tdq_finish.py",
+      "tdq_graphify.py",
+      "tdq_harvest.py",
+      "tdq_knowledge.py",
+      "tdq_lsp.py",
+      "tdq_no.py",
+      "tdq_readiness.py",
+      "tdq_runtime_bench.py",
+      "tdq_setup.py",
+      "tdq_skill_eval.py",
+      "tdq_state.py",
+      "tdq_team.py",
+      "tdq_ten_lenh.py",
+      "tdq_test.py",
+      "tdq_test_manifest.py",
+      "tdq_test_process.py",
+      "tdq_test_receipt.py",
+      "tdq_test_report.py",
+      "tdq_test_result.py",
+      "tdq_timing.py",
+      "tdq_transcript.py",
+      "tdq_transcript_cache.py",
+      "tdq_vision_diff.py",
+      "tdq_vungfile.py",
+      "tdq_worktree_registry.py",
+      "token_audit.py",
+      "token_budget.py",
+      "utf8_io.py"
+    ],
+    "scripts_other_files": [
+      "samples/transcript-step-audit.jsonl"
+    ],
+    "excluded_scripts_count": 7,
+    "excluded_scripts": [
+      "build_portable.py",
+      "canvas_a4_ch4_ch7.py",
+      "canvas_a4_rebuild.py",
+      "canvas_draw.py",
+      "canvas_layout_apply.py",
+      "canvas_move_block.py",
+      "check_canvas_layout.py"
+    ]
+  },
+  "safety_isolation": {
+    "upstream_repo": "C:\\Users\\admin\\Documents\\Projects\\ForAgentCode\\TDQ-Workflow",
+    "upstream_head_sha": "b423ee06",
+    "upstream_git_status_short": "M docs/architecture/status.json\n M docs/tdq/.tdq-phat-hanh.json\n M docs/tdq/STATE.md\n M docs/tdq/timing.jsonl\n M docs/workinglog/2026-11-11.md\n?? docs/tdq/brief/2026-11-11-1435-chan-tu-sua-khi-feedback.md",
+    "upstream_code_clean": true,
+    "upstream_clean": false,
+    "global_config_exists": true,
+    "global_config_sha256": "3525858d7521b7b54147410e29966dd58325604676e7befefb7df67f2b03a646",
+    "workspace_agents_plugins_json": {
+      "entries": [
+        {
+          "path": "./plugins"
+        }
+      ]
+    }
+  }
+}

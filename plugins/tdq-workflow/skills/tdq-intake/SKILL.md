@@ -1,0 +1,148 @@
+---
+name: tdq-intake
+description: Open a new TDQ request - record the ask, pick the lane, init state, analyse + interview until nothing is vague. Use for EVERY new prompt, including questions, checks and small jobs.
+---
+
+# TDQ Intake — open the request & analyse
+<!-- muc-luc-dong:
+  Tier `nhỏ` — answer or fix on the spot, no request opened=17-32 ·
+  Part A — Open the request (phase `no_state`)=33-102 ·
+  Part B — Analysis (phase `analyze`, deep pipeline only)=103-129 · Part C — Express pipeline=130
+-->
+
+Load [tdq-conventions](../tdq-conventions/SKILL.md) first. Every output for the user is written
+in the user's language (`doc_lang`, default Vietnamese).
+This skill owns two phases: `no_state` → `analyze`.
+
+## Tier `nhỏ` — answer or fix on the spot, no request opened <!-- i18n-allow: canonical name in the default language -->
+
+Enter tier `nhỏ` only when **all 4** conditions hold: <!-- i18n-allow: canonical name in the default language -->
+
+1. Product behaviour does not change, or exactly one obvious spot changes (typo,
+   constant, display string, version number).
+2. No source file is added and none is deleted.
+3. Nothing touches hooks, state, or an approval gate.
+4. It finishes inside one turn, with nothing the user has to decide.
+
+At this tier: answer or fix straight away. No request, no `init` state, no plan, no QC.
+If the repo changed, still run `tdq_finish.py --log` like every other turn.
+
+**Escape rule (mandatory).** Break any condition midway → STOP, name the condition that
+broke, then open a normal request from Part A. Never keep going at tier `nhỏ`. <!-- i18n-allow: canonical name in the default language -->
+
+## Part A — Open the request (phase `no_state`)
+
+Definition of a "new request": ANY user prompt while NO request is open — open means
+`active_request` exists AND `phase != idle`. When phase ≠ idle the user's message belongs
+to the running request (approval, feedback, interview answer); never nest a new request.
+Any new request MUST use tdq-intake; switching mode or entering harness plan mode is banned.
+The request is a BUG REPORT rather than a feature ("it runs wrong", "it hangs", "the result
+is not what I expected") → follow [references/issue-triage.md](references/issue-triage.md)
+first, then come back to step 1 below.
+
+1. **Record the request.** Create `docs/tdq/brief/<slug>.md` with slug
+   `YYYY-MM-DD-HHMM-<kebab, ≤5 words, no accents>`. The brief is the ONLY file of the intake +
+   analyze phases, with exactly 3 sections: `## Nguyên văn` (the user's words verbatim <!-- i18n-allow: canonical name in the default language -->
+   plus your first reading: goal, scope, unclear spots), `## Hiểu & kiến thức`, <!-- i18n-allow: canonical name in the default language -->
+   `## Hỏi đáp`. Write only the first section here; Part B fills the other two. Line 2 — right <!-- i18n-allow: canonical name in the default language -->
+   under the title — copies this verbatim (spec/plan/qc/report carry it too):
+
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line copied verbatim -->
+
+1b. **Set up and prove the search layer — automatic, nothing asked (0.59.0).** Run
+   `python3 "${PLUGIN_ROOT}/scripts/tdq_setup.py"` (installs what is missing, declares a
+   newly appeared language in MCP `lsp` — it then asks for a reconnect: have the user run `/mcp` on `lsp`),
+   then `python3 "${PLUGIN_ROOT}/scripts/tdq_lsp.py" check`. Rung 8 not passing → the per-module effect check in
+   [references/kiem-lsp-hieu-ung.md](references/kiem-lsp-hieu-ung.md). `init` từ chối khi module
+   chưa đạt; Agent toàn quyền tự quyết định áp dụng `--bo-qua-lsp "<lý do>"` (cho docs/research/cài MCP hoặc tham chiếu nội tệp) mà không dừng hỏi người dùng. Never edit another plugin's file. Details: [tdq-setup](../tdq-setup/SKILL.md).
+   The search order that follows is binding on every phase: <!-- i18n-allow: canonical rule sentence in the default language -->
+   The 3-layer search order is a MANDATORY rule (BẮT BUỘC) in every phase. Read sections 1 and 2
+   of `skills/tdq-setup/references/uu-tien-tim-kiem.md` — the line-index block at the top of that
+   file gives the exact line range, so the whole file never has to be read.
+   Phase khảo sát (`analyze`/`quick_analyze`) áp dụng Tam Giác Khảo Sát 3 Chiều: Grep tự do quét rộng gom đủ file, LSP đào sâu cấu trúc, Graphify quét vỡ lan; không giới hạn quota grep.
+
+2. **Propose a lane, then ASK.** In chat: 2–3 lines summarising what the user wants.
+   Judging size/need (`Cỡ:/Cần:`) is an INTERNAL step — it picks which option you <!-- i18n-allow: canonical name in the default language -->
+   recommend, and that line is NEVER printed to chat. Then ask which pipeline the user
+   wants, with one option per line per [references/interview.md](references/interview.md),
+   the recommendation always at A. The question line is NUMBERED `1.` per rule 8 of
+   [user-facing-block.md](../tdq-conventions/references/user-facing-block.md).
+   Shape: `1. Bạn muốn chạy pipeline nào?` then `- A (đề xuất): chế độ nhanh (express) — <lý do>` on the next line `- B: chế độ chuyên sâu (deep) — <lý do>`. <!-- i18n-allow: option sample in the default language -->
+   Full template, including the block explaining the 2 pipelines:
+   [references/lane-decision.md](references/lane-decision.md).
+   **In the SAME block, propose the request TYPE — never a second question.** One line under the
+   two options, one of five: `feature`, `bugfix`, `hotfix`, `chore`, `docs` (what each covers:
+   [references/nhanh-request.md](references/nhanh-request.md)). Shape:
+   `Loại request: **feature** — sửa lại nếu bạn thấy khác.` It lands in `loai_request` at step <!-- i18n-allow: option sample in the default language -->
+   3b; the user says nothing about the type → your proposal stands.
+   **STOP and wait for the user's answer.** Never pick the lane yourself. `_ultracode` modifier: [lane decision](references/lane-decision.md).
+   Ngoại lệ `_tdq_direct`: prompt chứa `_tdq_direct` (không phân biệt hoa thường) → bỏ qua bước hỏi này. Tự động `init <slug> quick`, mở branch git và chuyển thẳng Part C để lập mini-plan.
+
+3. **Init state** as soon as the user settles the lane: `python3 "${PLUGIN_ROOT}/scripts/tdq_state.py" init <slug> <quick|full>`.
+   Bị từ chối do module LSP chưa đạt → Agent tự động áp dụng `--bo-qua-lsp "<lý do rõ ràng>"` theo loại request
+   (docs/research, hoặc symbol chỉ có tham chiếu nội tệp) để mở request tiếp tục, không dừng hỏi người dùng.
+   This command **wipes** the old state. If another request is still unfinished → name the
+   slug and phase about to be lost, **ask the user first**, then run it.
+
+3b. **Open the request branch** — right after `init`, same turn, in lane `full` and
+   `quick` alike. Tier `nhỏ` never reaches this step; no git repo → skip, keys stay empty. <!-- i18n-allow: canonical name in the default language -->
+   `git status --porcelain`: dirty but ONLY docs/logs/graphify (`docs/**`, `*.md`, `logs/**`, `*.log`, `graphify-out/**`)
+   → switch and carry them along. ANY other dirty file (source code in `scripts/`, `src/`, `hooks/`, `tests/`...)
+   → **STOP**, print them, ask the user, do not switch. Clean/Docs/Graphify → current branch is `nhanh_goc`;
+   `git switch -c <loại>/<mô tả>`; record `loai_request`, `nhanh_goc`, `nhanh_request` in one `set` call; say in chat
+   which branch you opened and where it merges back.
+   Commands, the five types, the naming rule: [references/nhanh-request.md](references/nhanh-request.md).
+
+4. **Branch:**
+   - `full` → `... set phase=analyze`, continue with Part B inside this same turn.
+   - `quick` → do Part C, skipping Part B.
+
+Done when: `state.json` has `active_request` and the `lane` the user chose.
+Next step: phase `analyze` (deep, Part B) or `quick_analyze` (express, Part C) — the lane decides.
+
+## Part B — Analysis (phase `analyze`, deep pipeline only)
+
+Deep pipeline only. Follow [runtime speed](../tdq-build/references/runtime-speed.md) for batch reads/opt-in readiness; keep live checks and gates. Play the
+expert of that exact field; the goal is to leave this phase with ZERO guesswork. Do all 6
+steps (capability inventory, read the code, research, interview, settle the knowledge,
+gate check) per [references/analyze-full.md](references/analyze-full.md). The verdict
+table template for the capability-inventory step (B0):
+[references/skill-inventory.md](references/skill-inventory.md).
+The interview runs general → specific: the **scope round** first (which areas + context in
+numbers), and only then the detail questions inside the areas the user picked. The scope round
+is conditional; skip it and one line of reasoning goes into the brief.
+[references/scope-round.md](references/scope-round.md) is read ONLY when you actually run that
+round — the whole file is the procedure for it, so a request that skips the round pays 2,066
+tokens for a procedure it never performs.
+
+The LAST step of this phase is step 5c: ask the QC level and write it into `muc_qc`. It sits
+here and not later because spec §6 is written from it.
+
+Done when: `brief/<slug>.md` has all 3 sections (including `### Lộ trình`), `muc_qc` is settled, <!-- i18n-allow: canonical name in the default language -->
+and all 3 gate questions can be answered.
+The `### Lộ trình` you write here runs `spec` → `plan` with nothing in between: approving the <!-- i18n-allow: canonical name in the default language -->
+spec approves the route. Name the feature flows the request is built from, one line per flow.
+
+Next step: phase `spec` — `python3 "${PLUGIN_ROOT}/scripts/tdq_state.py" set phase=spec`
+then on to [tdq-spec](../tdq-spec/SKILL.md) — same turn if the interview is finished; if
+questions remain, present them and stop.
+
+## Part C — Express pipeline
+
+For a change to something that already exists, load [Archify quick BA](references/archify-quick.md) (before/after page) before mini-plan approval.
+Express is a shortened path, NOT a path with thinking steps cut out. The ten
+execution steps — from analysis to asking about the commit — live in
+[references/quick-lane.md](references/quick-lane.md) under `## The ten execution steps`. The tick
+rule, this lane's QC and the fix loop live in the tier-1 sibling
+[references/quick-lane-qc.md](references/quick-lane-qc.md) — read at the step that needs it,
+not at step 1. The mini-plan template and approval block are in the tier-1 sibling
+[references/quick-lane-mini.md](references/quick-lane-mini.md) — read at step 3.
+Read THAT section before doing step 1, through the line index at the top of the file; working
+from memory is banned. How deep the analysis goes (B1 always, B0 and B2 on thresholds), the
+tick rule, the QC rule and the fix round are indexed separately; fetch each when needed.
+
+Step 1 sets `phase=analyze`, showing the express analysis as its own row (`quick_analyze`) in the
+phase table. That phase has **NO approval gate** — express keeps one gate, the approval at step 6.
+
+Done when: `quick_approved = true`, the log is written, `## QC` exists, no red test.
+Next step: phase `report` — shared Markdown + Archify HTML, then `... set phase=idle`.

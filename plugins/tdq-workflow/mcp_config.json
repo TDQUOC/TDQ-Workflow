@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "lsp": {
+      "command": "C:\\Users\\admin\\.local\\bin\\agent-lsp.exe",
+      "args": [
+        "typescript:C:\\Users\\admin\\AppData\\Roaming\\fnm\\aliases\\default\\typescript-language-server.cmd,--stdio",
+        "python:C:\\Users\\admin\\AppData\\Roaming\\fnm\\aliases\\default\\pyright-langserver.cmd,--stdio",
+        "json:C:\\Users\\admin\\AppData\\Roaming\\fnm\\aliases\\default\\vscode-json-language-server.cmd,--stdio",
+        "html:C:\\Users\\admin\\AppData\\Roaming\\fnm\\aliases\\default\\vscode-html-language-server.cmd,--stdio",
+        "css:C:\\Users\\admin\\AppData\\Roaming\\fnm\\aliases\\default\\vscode-css-language-server.CMD,--stdio",
+        "rust:C:\\Users\\admin\\.cargo\\bin\\rust-analyzer.EXE",
+        "csharp:C:\\Users\\admin\\.local\\share\\omnisharp\\OmniSharp.exe,-lsp"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--userDataDir=C:/Users/admin/.gemini/chrome-devtools-profile"
+      ]
+    },
+    "tavily-primary": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "tavily-mcp@latest"
+      ]
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "tdq-session-start": {
+    "enabled": true,
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "py -3 -X utf8 \"hooks/scripts/session_start.py\" --event SessionStart"
+      }
+    ]
+  },
+  "tdq-pre-invocation": {
+    "enabled": true,
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "py -3 -X utf8 \"hooks/scripts/prompt_context.py\" --event PreInvocation"
+      },
+      {
+        "type": "command",
+        "command": "py -3 -X utf8 \"hooks/scripts/search_observe.py\" --event PreInvocation"
+      }
+    ]
+  },
+  "tdq-pre-tool-gates": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "edit_file|write_to_file|write_file|replace_file_content|multi_replace_file_content|notebook_edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/edit_gate.py\" --event PreToolUse"
+          }
+        ]
+      },
+      {
+        "matcher": "read_file|view_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/read_gate.py\" --event PreToolUse"
+          }
+        ]
+      },
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/bash_gate.py\" --event PreToolUse"
+          }
+        ]
+      },
+      {
+        "matcher": "run_command|grep_search|find_by_name|list_dir|search_directory|find_file|list_directory",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/search_gate.py\" --event PreToolUse"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp_.*lsp_.*|call_mcp_tool",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/lsp_gate.py\" --event PreToolUse"
+          },
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/search_observe.py\" --event PreToolUse"
+          }
+        ]
+      },
+      {
+        "matcher": "ask_question|ask_user_question",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/ask_gate.py\" --event PreToolUse"
+          }
+        ]
+      },
+      {
+        "matcher": "invoke_subagent|swarm|define_subagent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/subagent_dispatch_gate.py\" --event PreToolUse"
+          }
+        ]
+      }
+    ]
+  },
+  "tdq-post-tool-observe": {
+    "enabled": true,
+    "PostToolUse": [
+      {
+        "matcher": "run_command|read_file|view_file|grep_search|find_by_name|list_dir|search_directory|find_file|list_directory|mcp_.*(lsp|graphify|txtai).*|call_mcp_tool",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 -X utf8 \"hooks/scripts/search_observe.py\" --event PostToolUse"
+          }
+        ]
+      }
+    ]
+  },
+  "tdq-post-invocation": {
+    "enabled": true,
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "py -3 -X utf8 \"hooks/scripts/post_invocation.py\" --event PostInvocation"
+      }
+    ]
+  },
+  "tdq-stop-gate": {
+    "enabled": true,
+    "Stop": [
+      {
+        "type": "command",
+        "command": "py -3 -X utf8 \"hooks/scripts/stop_gate.py\" --event Stop"
+      }
+    ]
+  }
+}

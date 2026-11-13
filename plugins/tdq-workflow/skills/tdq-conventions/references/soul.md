@@ -1,0 +1,146 @@
+# Soul — the root law of TDQ Workflow
+<!-- muc-luc-dong:
+  Table of contents=12-20 · The four principles=21-22 · 1. What the harness is for=23-29 ·
+  2. Priority order: chất lượng > runtime > context cost=30-46 ·
+  3. Write for the weakest model=47-55 · 4. Scope=56-67 · When it applies=68-76 · What to do=77-97 ·
+  Which tier a law belongs to=98-117 · Clean Code Invariants=118-133 · Self-check=134
+-->
+
+Soul stands above every other law in the workflow. A law that contradicts soul — old or new —
+is the law that gets fixed; soul does not. Changing soul requires the user's approval.
+
+## Table of contents
+
+- The four principles
+- When it applies
+- What to do
+- Which tier a law belongs to
+- Clean Code Invariants
+- Self-check
+
+## The four principles
+
+### 1. What the harness is for
+
+The harness exists to help a dev use AI to produce better, more finished results. Quality over
+quantity: one product that runs correctly, reads well and survives is worth more than many
+half-done ones. Every explanation, chat reply and report must stay simple, easy to understand,
+concise, yet visual and complete in information (`đơn giản, dễ hiểu, ngắn gọn`, `trực quan, đầy đủ thông tin`).
+
+### 2. Priority order: chất lượng > runtime > context cost <!-- i18n-allow: canonical wording -->
+
+Read in English: quality first, then runtime, then context cost. The Vietnamese wording above is
+the canonical string — it is the one copied into the `Soul:` line of every request document.
+
+- **Tier 1 — quality**: the code the agent produces must be a real MVP — it runs, it has
+  tests, and no foreseeable technical debt is left undeclared.
+- **Tier 2 — runtime**: how long the workflow and the product take to run. Optimise only when
+  it does not lower tier 1.
+- **Tier 3 — context cost**: tokens fed to the model. Cut only when it lowers neither tier
+  above.
+
+**Tie-break law** when two laws collide:
+1. The law serving the higher tier wins.
+2. Same tier → pick the law whose check can be run as a command.
+3. Still tied → ask the user, and record the ruling in the open request's documents.
+
+### 3. Write for the weakest model
+
+Every rule and behaviour must be detailed enough that a low model like Haiku reads it and does
+the right thing — not only a high model like Opus. A rule meets the bar when it has all three
+sections: `## When it applies` (signs recognisable by eye or by command),
+`## What to do` (numbered steps, one action per step, imperative sentences),
+`## Self-check` (one command, or one yes/no question). Anywhere easy to misread must carry a
+RIGHT/WRONG example.
+
+### 4. Scope
+
+Soul applies to every skill, every script, every template, and to every document of a request:
+brief, spec, plan, qc, report — including the documents of the request that created soul itself.
+It applies retroactively to existing laws and to every later addition. Each request document
+opens with the line:
+
+<!-- i18n-allow: khuôn dòng Soul chép nguyên văn vào tài liệu -->
+```
+Soul: chất lượng > runtime > context cost · luật gốc: skills/tdq-conventions/references/soul.md
+```
+
+## When it applies
+
+Signs — hitting any one of these means soul is present:
+
+- About to write or change a law, a skill, a document template, or a workflow script.
+- Two laws point in different directions on the same piece of work.
+- About to cut a step (test, QC, log, research) to run faster or to save tokens.
+- About to open a new request document (brief, spec, plan, qc, report).
+
+## What to do
+
+1. Place the work in its tier: quality, runtime, or context cost.
+2. Check: does this change lower a higher tier? Yes → stop, follow the higher tier.
+3. Write the new rule in the three-section shape from principle 3; add a RIGHT/WRONG example
+   wherever it is easy to misread.
+4. Opening a new request document → put the `Soul:` line at the top of the file, right under
+   the title.
+5. Two laws collide → run the tie-break law in principle 2 and record the ruling.
+6. For tool tasks, plan internal steps, discover real capabilities, combine tools only when useful,
+   and verify each handoff and final output. Prefer the shortest correct, authorized route.
+7. Recover installed tools within permission; missing tools need official-source research and
+   an installation proposal, then user approval. Never trade quality or permission for speed.
+8. Uncertain delivery means observe before retry; report partial work rather than invent success.
+   RIGHT: one browser tool suffices, use it and verify. WRONG: switch tools to bypass denial.
+
+RIGHT example: dropping a duplicate research round because the result is already in the brief —
+saves tokens without losing information (tier 3 serving tier 1).
+WRONG example: dropping the write-the-test-first step to build faster — runtime overriding
+quality.
+
+## Which tier a law belongs to
+
+Filing a law in the wrong tier is how a correct law gets legitimately ignored: a law that cuts
+time but is labelled "saves tokens" drops to tier 3 — the lowest tier, the one you may skip when
+busy. So before writing or changing any law, ask: **which number does this law change?**
+
+| Which number the law changes | Tier | Example |
+|---|---|---|
+| The correctness of the output | 1 — quality | test before fixing, no fake mock passed off as real data |
+| The NUMBER OF STEPS (tool calls, waiting rounds) | 2 — runtime | batch independent tool calls, no `sleep` polling loop |
+| The NUMBER OF TOKENS loaded into the model | 3 — context cost | lint the exact file instead of the whole tree, terse CLI output |
+
+A law that changes several numbers is filed in the **highest** tier it touches. The batch-the-
+tool-calls law cuts both steps and tokens → tier 2, not tier 3.
+
+Consequence for placement: tier 1 and tier 2 laws must live in the body of a skill loaded every
+turn; only tier 3 laws and detailed tables get pushed into a reference file. A skill's line cap
+is a tier 3 constraint — hitting the cap means raising the cap, never compressing a tier 2 law
+to fit.
+
+## Clean Code Invariants
+
+Mandatory structural baselines applicable across all implemented code in TDQ:
+
+1. **Immutability by Default**:
+   - Prefer immutable data structures; eliminate hidden in-place mutations and unintended side-effects.
+   - Functions must return new state structures rather than mutating inputs in-place unless an explicit performance-critical memory buffer is required.
+
+2. **Function Length Ceiling ($\le 50$ lines)**:
+   - Every function and method must stay under 50 physical lines.
+   - When logic expands beyond 50 lines, split into single-responsibility private helper functions.
+
+3. **Strict Test-Driven Development (TDD)**:
+   - Always establish the Red baseline before authoring implementation code.
+   - Never write speculative implementation ahead of a failing test assertion.
+
+4. **Reflective Thought & Hypothesis**:
+   - Trước khi khảo sát mã nguồn: Xác định giả thuyết rõ ràng (đang tìm gì, ở đâu, tại sao). Cấm gọi công cụ dò dẫm mù mờ liên hoàn không có định hướng.
+   - Sau khi đọc mã nguồn: Phải tổng hợp kết quả, kiểm chứng giả thuyết trước khi chuyển bước tiếp theo.
+   - Đọc dải rộng trọn vẹn: Khảo sát một dải đủ rộng (100–300 dòng) bao quát toàn bộ hàm hoặc luồng xử lý; cấm xé vụn thành các lượt đọc 30–50 dòng trượt trùm lặp liên tiếp gây bẫy tự hồi quy (autoregressive attractor).
+   - Chất lượng > Tốc độ: Không bao giờ vội vàng kết luận sửa triệu chứng ngoài da khi chưa hoàn thành truy vết nguyên nhân gốc rễ (Root Cause Analysis - 5 Whys).
+
+## Self-check
+
+- Yes/no question: "Does the change I am about to make lower quality in exchange for speed or
+  tokens?" — Yes → do not make it.
+- Yes/no question: "The rule I just wrote — hand it to Haiku with no spoken explanation, would
+  it do the right thing?" — No → rewrite it in the three-section shape.
+- Command: `python3 -m pytest tests/test_soul_rules.py -q` must be green.

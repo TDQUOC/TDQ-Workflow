@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TDQ_HANDOFF_PAYLOAD",
+  "type": "object",
+  "required": [
+    "task_id",
+    "status",
+    "files",
+    "test_result",
+    "branch",
+    "merge_ready",
+    "tick_ready"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "done",
+        "blocked",
+        "completed",
+        "failed"
+      ]
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "test_result": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "merge_ready": {
+      "type": "boolean"
+    },
+    "tick_ready": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1500
+    }
+  }
+}

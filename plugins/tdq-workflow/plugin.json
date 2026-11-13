@@ -1,0 +1,25 @@
+{
+  "name": "tdq-workflow",
+  "displayName": "TDQ Workflow",
+  "version": "0.97.0",
+  "description": "Spec-driven engineering workflow for Google Antigravity: intake -> spec -> plan -> implement -> QC -> report. Includes 24 [TDQ:*] lifecycle gates, LSP-first 3-tier search discipline, Chrome DevTools & Archify verification, and 6 domain subagents.",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "/tdq-intake Open a new feature/bugfix/hotfix request under TDQ Workflow",
+    "/tdq-check-status Recover or inspect current TDQ request state from disk evidence",
+    "/tdq-setup Verify and configure 3-tier search (LSP, Graphify, Chrome DevTools)"
+  ],
+  "author": {
+    "name": "TDQ"
+  },
+  "license": "MIT",
+  "keywords": [
+    "tdq-workflow",
+    "spec-driven",
+    "sdd",
+    "lsp",
+    "qc",
+    "hooks",
+    "antigravity"
+  ]
+}

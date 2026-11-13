@@ -1,0 +1,3025 @@
+#!/usr/bin/env python3
+"""State helper for the TDQ workflow plugin (stdlib only).
+
+Machine-read state: <project>/docs/tdq/state.json — EVERY change must go through
+this module. The mirror humans and models read: <project>/docs/tdq/STATE.md,
+regenerated after every write (never hand-edited).
+
+Principles since 0.3.0:
+- Never exit != 0 because of STATE (corrupt state, bad enum, missing request...).
+  Only a bad COMMAND SYNTAX exits 2. State must never become a dead end.
+- `next` is the single source answering "where am I, what comes next" — hooks call
+  that same function instead of copying its words into a second place.
+"""
+import hashlib
+import json
+import os
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+from datetime import datetime, timezone
+from typing import NoReturn
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Import order matters: `utf8_io` first, because everything below it prints Vietnamese and a
+# Windows console defaults to cp1252. It carries no import of its own from this package, so
+# there is no cycle.
+import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
+import tdq_ten_lenh  # noqa: E402
+
+STATE_REL = os.path.join("docs", "tdq", "state.json")
+STATE_MD_REL = os.path.join("docs", "tdq", "STATE.md")
+TURN_LOG_REL = os.path.join("docs", "tdq", ".tdq-turn.jsonl")
+
+APPROVE_TARGETS = ("spec", "plan", "quick")
+VALID_MODES = ("main", "subagent", "codex")
+BY_MAX = 200
+VALID_LANES = {"quick", "full", None}
+
+# READER-FACING labels. The machine identifiers stay "quick"/"full" — two separate
+# layers so the wording can change without migrating live state or touching tests
+# that pin the identifiers.
+LANE_LABELS = {
+    "quick": "express mode",
+    "full": "deep mode",
+}
+
+# TYPED aliases -> machine identifier. The old words (quick/full) keep working so
+# existing users are not broken. Keys are lowercase, already stripped of accents
+# and spaces by normalize_lane. Vietnamese spellings stay on purpose: they are what
+# a Vietnamese user types, not text this tool prints.
+LANE_ALIASES = {
+    "quick": "quick", "nhanh": "quick", "express": "quick",
+    "full": "full", "deep": "full",
+    "chuyen-sau": "full", "chuyensau": "full", "chuyên sâu": "full",  # i18n-allow
+    "chuyen sau": "full", "chuyên-sâu": "full",  # i18n-allow
+}
+# Mode uses the same two layers as lane: the machine identifiers stay "main"/
+# "subagent", so old state, old plans (the `Mode thực thi:` line) and tests that  # i18n-allow
+# pin those names need no migration.
+MODE_LABELS = {
+    "main": "inline implement",
+    "subagent": "sub-agent implement",
+    "codex": "codex implement",
+}
+
+# TYPED aliases -> machine identifier. Old names keep working; the newer ones are
+# accepted with a hyphen, with a space and with the "implement" tail, because that
+# is the wording the user reads at the mode gate.
+MODE_ALIASES = {
+    "main": "main", "inline": "main",
+    "inline implement": "main", "inline-implement": "main",
+    "subagent": "subagent", "sub-agent": "subagent", "sub agent": "subagent",
+    "sub-agent implement": "subagent", "sub agent implement": "subagent",
+    "subagent implement": "subagent", "sub-agent-implement": "subagent",
+    "codex": "codex", "codex implement": "codex", "codex-implement": "codex",
+}
+VALID_PHASES = {"idle", "analyze", "spec", "plan", "mode", "implement", "qc", "report"}
+
+# Phase `diagram` was removed from the workflow on 2026-09-01. A state written
+# before that day may still carry it; `load` lifts such a phase back to the one
+# it came from instead of failing, so an old session stays usable.
+PHASE_DA_GO = {"diagram": "spec"}
+
+# Every door the removed diagram phase used to open answers with this one line.
+# A bare "unknown command" would read as a typo; the caller needs to learn that
+# the phase itself is gone, not that they mistyped it.
+LOI_SO_DO_DA_GO = ("The diagram phase was removed from the workflow on "
+                   "2026-09-01 — there is no diagram to register or approve "
+                   "any more; go straight from spec to plan.")
+
+USAGE = ("Usage: tdq_state.py next [--brief] | get [key] | "
+         "init <slug> [nhanh|express|quick — express mode | chuyen-sau|deep|full — "  # i18n-allow
+         "deep mode] [--lang <code>] [--bo-qua-lsp \"<user's reason>\"] | "
+         "set k=v ... | approve <spec|plan|quick (aliases: nhanh|express)> "  # i18n-allow
+         "[--mode main|subagent|codex] "
+         "[--by \"<user sentence>\"] [--expected-sha <sha256>] [--strict] [--bo-qua-do \"<user's reason>\"] | "
+         "pause --loai mat-truy-cap|pha-huy|dau-vao-user|tran-qc --ly-do \"<why>\" | resume | "
+         "eval-enable --by \"<user words>\" | "
+         "lech add --q Qn --nguong \"<..>\" --do \"<..>\" --chon \"<..>\" --ly-do \"<..>\" | "
+         "lech list [--json] | lech duyet|bac <id> --by \"<user sentence>\" | "
+         "reset | phases-doc | modes [--json]")
+
+EXIT_SYNTAX = 2
+
+
+# ------------------------------------------------------------------ slug
+#
+# Two formats live side by side: the OLD slug carries only a date (269 documents
+# are already named that way and the user chose to keep them), the NEW slug adds
+# hour and minute. Reading accepts both; writing a new one requires the time —
+# that check sits in the `init` branch of `cli()`.
+SLUG_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-(.+)$")
+SLUG_FORMULA = "YYYY-MM-DD-HHMM-<kebab, <=5 words, no accents>"
+
+
+def parse_slug(slug):
+    """Split a slug into (date, HHMM or None, text part). No match → None.
+
+    Four digits at the head of the text part count as a time only when it is a
+    REAL time (00:00–23:59); `2026-08-15-9999-viec` stays an old slug whose text
+    part is `9999-viec`.
+    """
+    if not isinstance(slug, str):
+        return None
+    match = SLUG_RE.match(slug.strip())
+    if not match:
+        return None
+    year, month, day, rest = match.groups()
+    try:
+        datetime(int(year), int(month), int(day))
+    except ValueError:
+        return None
+    ngay = f"{year}-{month}-{day}"
+    head, _, tail = rest.partition("-")
+    if len(head) == 4 and head.isdigit() and tail:
+        if int(head[:2]) <= 23 and int(head[2:]) <= 59:
+            return (ngay, head, tail)
+    return (ngay, None, rest)
+
+
+# Language of the documents this request writes (spec/plan/qc/report and the
+# conversation with the user). Rules and machine-printed strings are always
+# English; only the documents follow this field. Declared once at
+# `init --lang <code>` and constant for the whole request. Missing → "vi".
+DEFAULT_DOC_LANG = "vi"
+DOC_LANG_RE = re.compile(r"^[a-z]{2,3}(-[a-z]{2,8})*$")
+
+
+def normalize_doc_lang(raw):
+    """Return the normalised language code, or None when it is not a valid code.
+
+    Accepts short BCP 47 codes: `vi`, `en`, `ja`, `pt-br`. Free-form names
+    ("Vietnamese", "English") are refused — this field is a machine code, not a
+    label.
+    """
+    if not isinstance(raw, str):
+        return None
+    ma = raw.strip().lower()
+    return ma if DOC_LANG_RE.match(ma) else None
+
+
+VALID_MUC_GAT = ("lite", "full", "ultra", "off")
+MUC_GAT_MAC_DINH = "ultra"
+
+
+def normalize_muc_gat(raw):
+    """Normalize lean intensity; missing or invalid values default to `ultra`.
+
+    Fail closed: an empty key, invalid type or None cannot disable the law.
+    Explicit valid levels, including `off`, remain unchanged; see the intensity
+    table in skills/tdq-build/references/rules/chung.md.
+    """
+    if not isinstance(raw, str):
+        return MUC_GAT_MAC_DINH
+    muc = raw.strip().lower()
+    return muc if muc in VALID_MUC_GAT else MUC_GAT_MAC_DINH
+
+
+def muc_gat_hieu_luc(state):
+    """Read lean intensity from state; absent state or key defaults to `ultra`."""
+    return normalize_muc_gat((state or {}).get("muc_gat"))
+
+
+# Mức QC của request (2026-09-23). Dùng CHUNG bộ từ với `muc_gat` để user chỉ phải nhớ một
+# thang, nhưng là khoá rời: `muc_gat` lọc luật tinh gọn lúc implement, `muc_qc` quyết phase `qc`
+# chạy bao nhiêu phép kiểm. Bảng mức → loại kiểm nằm ở skills/tdq-build/references/qc.md.
+VALID_MUC_QC = ("lite", "full", "ultra", "off")
+MUC_QC_MAC_DINH = "full"
+
+
+def normalize_muc_qc(raw):
+    """Mức QC chuẩn hoá. Mọi thứ không hợp lệ đều ra `full`.
+
+    Fail-closed như `muc_gat`, và ở đây lý do còn gắt hơn: một giá trị rác im lặng hạ mức QC
+    xuống thấp nhất nghĩa là request tuyên bố "xong" mà chưa chạy trọn suite. Rơi về mức an
+    toàn thì tệ nhất cũng chỉ là chạy thừa. `off` tồn tại nhưng chỉ đến từ tay user
+    (`set muc_qc=off`) — luồng hỏi không bao giờ bày nó ra.
+    """
+    if not isinstance(raw, str):
+        return MUC_QC_MAC_DINH
+    muc = raw.strip().lower()
+    return muc if muc in VALID_MUC_QC else MUC_QC_MAC_DINH
+
+
+def muc_qc_hieu_luc(state):
+    """Mức QC đọc từ state (state None hay khoá thiếu → `full`)."""
+    return normalize_muc_qc((state or {}).get("muc_qc"))
+
+
+def default_state():
+    return {
+        "schema_version": 6,
+        "active_request": None,
+        # slug of the request replaced at the last init (trace/log only)
+        "previous_request": None,
+        "lane": None,
+        "phase": "idle",
+        # Sản phẩm của bước phân tích. Cả hai lane đều đẻ ra brief ngay ở intake, nhưng
+        # trước 2026-09-01 không đâu ghi lại đường dẫn — khác hẳn spec_file/plan_file.
+        "brief_file": None,
+        "spec_file": None,
+        "spec_approved": False,
+        "spec_sha256": None,
+        "spec_approved_at": None,
+        "spec_descriptor": None,
+        # the user's approval sentence verbatim (cut at 200 chars) — the only
+        # trace left after the hard gate was dropped, must be checkable against
+        # the transcript
+        "spec_approved_by": None,
+        # The user approved the spec past the R14 gate (doc_lint: a numeric threshold in §6
+        # without a prior measurement / fallback). None = no bypass. Shape when set:
+        # {"ly_do": "<user's reason>", "at": "<iso>", "so_loi": <number of R14 findings>}.
+        "spec_bo_qua_do": None,
+        # Lối thoát gate Archify (2026-11-09-0143): bypass manifest/binding với lý do rõ ràng.
+        # Shape: {"ly_do": "<reason>", "at": "<iso>", "cong": "spec|quick"}.
+        "archify_bo_qua": None,
+        # The request was opened past the LSP gate of `init` (0.59.0): some LSP module of the
+        # project was not proven through MCP. None = no bypass. Shape when set:
+        # {"ly_do": "<user's reason>", "at": "<iso>", "module": ["<id> → <status> (<detail>)", ...]}.
+        # The report reads it out, so a request built on grep alone never passes as a normal one.
+        "lsp_bo_qua": None,
+        "plan_file": None,
+        "plan_approved": False,
+        "plan_sha256": None,
+        "plan_approved_at": None,
+        "plan_approved_by": None,
+        "plan_descriptor": None,
+        "quick_approved": False,
+        "quick_approved_at": None,
+        "quick_approved_by": None,
+        "quick_descriptor": None,
+        "implement_mode": None,
+        # Phase `implement` may only end early through a DECLARED pause: the
+        # Stop gate refuses to close a turn while the plan still has open tasks,
+        # and this key is the single legal way out. Shape when set:
+        # {"ly_do": "<why the run stopped>", "at": "<iso>", "by": "<who>"}.
+        # None means "no pause declared", so the gate stays armed. A hook cannot
+        # tell whether an error is self-fixable, so whoever stops must say why,
+        # and that sentence is what gets shown to the user.
+        "implement_pause": None,
+        # Spec deviations: a DoD threshold found unreachable during implement/qc.
+        # The agent applies the fallback, records it here with `lech add` and keeps
+        # working; the report asks the user to approve or reject each one. Item shape:
+        # {"id", "q", "nguong", "do", "chon", "ly_do", "trang_thai": cho|duyet|bac,
+        #  "at", "by"} plus "quyet_at"/"quyet_by" once decided.
+        "lech_spec": [],
+        # language code of this request's documents (see DEFAULT_DOC_LANG)
+        "doc_lang": DEFAULT_DOC_LANG,
+        # Mức gắt của luật tinh gọn (2026-09-17): lite|full|ultra|off. Ba kênh nạp luật đọc
+        # khoá này qua muc_gat_hieu_luc() rồi lọc bằng hooks/scripts/luat_gon.py.
+        "muc_gat": MUC_GAT_MAC_DINH,
+        # Mức QC của request (2026-09-23): lite|full|ultra|off. Phase `qc` đọc khoá này qua
+        # muc_qc_hieu_luc() để biết chạy bao nhiêu phép kiểm; user được hỏi ở cuối phase
+        # `analyze` (lane full) hoặc tại cổng `approve quick` (lane express).
+        "muc_qc": MUC_QC_MAC_DINH,
+        # request opening mark (schema 4) — the origin of every wall-clock count
+        "started_at": None,
+        # Git branch life-cycle of the request (schema 5). `loai_request` is one of
+        # feature|bugfix|hotfix|chore|docs; `nhanh_goc` is the branch the user stood on when
+        # the request opened — the one the work merges back into; `nhanh_request` is the
+        # branch opened for it. All three stay None at tier `nhỏ` and in a repo-less project.
+        "loai_request": None,
+        "nhanh_goc": None,
+        "nhanh_request": None,
+        # eval-gate integration (T3.1)
+        "eval_plan_file": None,
+        "eval_enabled": None,
+        # phase history: [{"phase": "spec", "at": "<iso>"}, ...], one mark per
+        # phase CHANGE. Re-entering an old phase still adds a mark — that is what
+        # counting re-entries is built on.
+        "phase_history": [],
+        "updated_at": None,
+    }
+
+
+def state_path(cwd):
+    return os.path.join(cwd, STATE_REL)
+
+
+def state_md_path(cwd):
+    return os.path.join(cwd, STATE_MD_REL)
+
+
+def turn_log_path(cwd):
+    return os.path.join(cwd, TURN_LOG_REL)
+
+
+_MISSING = object()
+PRUNE_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build",
+              ".next", "target", ".pytest_cache", ".idea", ".claude", ".gemini", ".agents", ".tdq-worktrees"}
+
+
+# ---------------------------------------------------------------- log service
+
+def log_enabled():
+    return os.environ.get("TDQ_LOG", "1") != "0"
+
+
+def _warn(msg):
+    """Warning on stderr with a timestamp (spec §4.1). Off with TDQ_LOG=0.
+
+    Never logs file contents or sensitive values — only paths and field names.
+    """
+    if log_enabled():
+        print(f"[{now_iso()}] ⚠️ {msg}", file=sys.stderr)
+
+
+def _info(msg):
+    if log_enabled():
+        print(f"[{now_iso()}] ℹ️ {msg}", file=sys.stderr)
+
+
+def _fail(msg: str) -> NoReturn:
+    """Only for a BAD COMMAND SYNTAX — exit 2 (spec §2.9.4)."""
+    print(msg, file=sys.stderr)
+    print(USAGE, file=sys.stderr)
+    sys.exit(EXIT_SYNTAX)
+
+
+# ------------------------------------------------------------- project root
+
+def resolve_project_dir(cwd=None, env=_MISSING):
+    """State project root: TDQ_PROJECT_DIR > git root > a dir holding state > cwd.
+
+    Running the CLI from a subdirectory without resolving would create a 'shadow
+    state' right there; the hook (cwd = repo root) would write in one place while
+    the model reads another.
+    """
+    if env is _MISSING:
+        env = os.environ.get("TDQ_PROJECT_DIR")
+    if env:
+        return env
+    start = os.path.abspath(cwd or os.getcwd())
+    current, git_root, state_dir = start, None, None
+    while True:
+        if state_dir is None and os.path.isfile(state_path(current)):
+            state_dir = current
+        if git_root is None and os.path.exists(os.path.join(current, ".git")):
+            git_root = current
+        parent = os.path.dirname(current)
+        if parent == current:
+            break
+        current = parent
+    # the git root wins: a state accidentally created in a subdirectory must not
+    # be allowed to take over
+    return git_root or state_dir or start
+
+
+def find_shadow_states(root):
+    """Misplaced state/mirror: state.json outside root, or an orphan STATE.md (S6)."""
+    found = []
+    root = os.path.abspath(root)
+    canonical_state = os.path.normpath(state_path(root))
+    canonical_md = os.path.normpath(state_md_path(root))
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in PRUNE_DIRS]
+        if not dirpath.endswith(os.path.join("docs", "tdq")):
+            continue
+        has_state = "state.json" in files
+        if has_state:
+            path = os.path.normpath(os.path.join(dirpath, "state.json"))
+            if path != canonical_state:
+                found.append(os.path.relpath(path, root))
+        if "STATE.md" in files and not has_state:
+            path = os.path.normpath(os.path.join(dirpath, "STATE.md"))
+            if path != canonical_md or not os.path.isfile(canonical_state):
+                found.append(os.path.relpath(path, root) + " (orphan mirror, no state.json)")
+    return sorted(found)
+
+
+def now_iso():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+# ------------------------------------------------------------------ load/save
+
+def load(cwd, heal=True):
+    """Read the state. Returns None when the file does not exist yet.
+
+    Corrupt file (S2): renamed to state.json.corrupt-<ts>, warned about, None
+    returned — the next command rebuilds a clean state. Old data is NEVER deleted.
+    Unknown keys are kept (S3); missing keys are filled in from default_state().
+    """
+    path = state_path(cwd)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            raw = f.read()
+    except OSError:
+        return None
+    try:
+        data = json.loads(raw)
+        if not isinstance(data, dict):
+            raise ValueError("state is not an object")
+    except ValueError:
+        if heal:
+            stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            broken = f"{path}.corrupt-{stamp}"
+            try:
+                os.replace(path, broken)
+                _warn(f"state.json is corrupt → kept at {os.path.basename(broken)}; "
+                      "state rebuilt from defaults.")
+            except OSError:
+                _warn("state.json is corrupt and could not be renamed — using defaults.")
+        return None
+    state = default_state()
+    state.update(data)              # unknown keys are kept as they are (S3)
+    for key, value in default_state().items():
+        state.setdefault(key, value)
+    state["schema_version"] = default_state()["schema_version"]
+    # An older state may carry a phase_history of the wrong type (or junk marks).
+    # Healed here so no downstream script has to defend itself.
+    state["phase_history"] = [m for m in state["phase_history"]
+                              if isinstance(m, dict) and m.get("phase") and m.get("at")] \
+        if isinstance(state.get("phase_history"), list) else []
+    # Key of the removed diagram phase: dropped in silence, so the next `save`
+    # writes a state without it and nothing downstream ever reads it again.
+    state.pop("diagrams", None)
+    state["phase"] = _nang_pha_da_go(state.get("phase"))
+    return state
+
+
+def _nang_pha_da_go(phase):
+    """Lift a phase that no longer exists back onto the phase it came from.
+
+    A request left mid-flight while phase `diagram` was still part of the
+    workflow would otherwise sit on a phase no gate accepts — every `set` would
+    refuse it and the request would have no legal move left. Warn, then hand
+    back the predecessor phase so the run continues where the user left it.
+    """
+    if phase in PHASE_DA_GO:
+        thay = PHASE_DA_GO[phase]
+        _warn(f"phase {phase} was removed from the workflow on 2026-09-01 — "
+              f"this request is read as phase {thay}.")
+        return thay
+    return phase
+
+
+def _dong_so_request_cu(cwd):
+    """Close the timing books of the open request into docs/tdq/timing.jsonl.
+
+    The import is LATE on purpose: `tdq_timing` imports this module back, so a
+    top-of-file import would be circular. This function only runs inside `cli()`,
+    by which time the module is fully loaded.
+    A failed close must never block `init` — at worst one statistics line is lost.
+    """
+    cu = os.environ.get("TDQ_LOG")
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import tdq_timing
+        state = load(cwd, heal=False)
+        if not state or not state.get("active_request"):
+            return False
+        # Silence the timing layer for this call only: a clean stderr on `init` is
+        # a contract a test guards (init over a finished request must stay quiet).
+        # For the details, call `tdq_timing.py close` directly.
+        os.environ["TDQ_LOG"] = "0"
+        so_lieu = tdq_timing.tong_hop(state, datetime.now().astimezone(),
+                                      project_dir=cwd)
+        return bool(so_lieu) and tdq_timing.dong_so(cwd, so_lieu)
+    except Exception as exc:                     # noqa: BLE001 — must not block init
+        error_name = exc.__class__.__name__
+    finally:
+        if cu is None:
+            os.environ.pop("TDQ_LOG", None)
+        else:
+            os.environ["TDQ_LOG"] = cu
+    # Report failure after restoring the caller's logging preference.
+    _warn(f"could not close the timing books of the old request: {error_name}")
+    return False
+
+
+def ghi_moc_phase(state, phase, at=None):
+    """Append a mark to `phase_history` when the phase REALLY changes. True if written.
+
+    Setting the phase already in force is skipped: a 0-second mark only dirties
+    the timing table.
+    """
+    lich_su = state.setdefault("phase_history", [])
+    if lich_su and lich_su[-1].get("phase") == phase:
+        return False
+    lich_su.append({"phase": phase, "at": at or now_iso()})
+    return True
+
+
+def _atomic_write(path, text):
+    import time as _time
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), prefix=".tdq-", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        for attempt in range(5):
+            try:
+                os.replace(tmp, path)
+                break
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                _time.sleep(0.015 * (2 ** attempt))
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+
+
+def save(cwd, state, expect_updated_at=_MISSING):
+    """Atomically write state.json + regenerate STATE.md (S1, the mirror).
+
+    expect_updated_at: the `updated_at` value seen at read time. If the disk now
+    differs → another session has just written: warn but STILL write (S7, no
+    multi-session lock).
+    """
+    if expect_updated_at is not _MISSING:
+        on_disk = load(cwd, heal=False)
+        if on_disk and on_disk.get("updated_at") != expect_updated_at:
+            _warn(f"state was written by another process at {on_disk.get('updated_at')} — "
+                  "overwriting anyway, check if two sessions are running.")
+    state["updated_at"] = now_iso()
+    _atomic_write(state_path(cwd), json.dumps(state, ensure_ascii=False, indent=2) + "\n")
+    try:
+        _atomic_write(state_md_path(cwd), render_state_md(cwd, state))
+    except OSError as exc:                       # a broken mirror must not block work
+        _warn(f"could not write {STATE_MD_REL}: {exc.__class__.__name__}")
+    return state
+
+
+def xoa_cay(path, bo_qua_loi=False):
+    """Delete a directory tree, read-only files included. Returns True when it is gone.
+
+    `shutil.rmtree` cannot remove a read-only file on Windows: `os.unlink` raises
+    PermissionError (WinError 5). Git marks every object in `.git/objects` read-only, so any
+    tree holding a clone — an export bundle, a worktree, an eval session — refuses to go.
+    Measured: `claude_export build` over its own previous bundle died there, and the callers
+    using `ignore_errors=True` were quietly WORSE, reporting success while leaving the tree
+    behind for the next run to trip over.
+
+    The retry clears the read-only bit and tries once more, which is the documented fix and
+    the reason `onexc` exists.
+    """
+    def _thu_lai(ham, duong, _loi):
+        os.chmod(duong, stat.S_IWRITE)
+        ham(duong)
+
+    # `onexc` only exists from Python 3.12; `onerror` is the name every older version knows and
+    # it still works in 3.12+ (deprecated, not removed). This module has to keep running on the
+    # oldest Python the repo still supports — `tdq_codex` carries a fallback for < 3.11, so the
+    # floor is below 3.12 and passing `onexc` blindly would raise TypeError there.
+    khoa = "onexc" if sys.version_info >= (3, 12) else "onerror"
+    try:
+        shutil.rmtree(path, **{khoa: _thu_lai})
+    except OSError:
+        if not bo_qua_loi:
+            raise
+    return not os.path.exists(path)
+
+
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def sha256_noi_dung(path):
+    """Hash the CONTENT part of a spec/plan: from the first `##` heading onward.
+
+    Why not the whole file: the head of the file is the workflow's own bookkeeping
+    (date, version, status, path to the brief). Hashing all of it turns every
+    bookkeeping write into "the document changed after approval" and the approval
+    gate complains for a harmless reason — measured in 2 of 7 cases in
+    `docs/tdq/reports/2026-08-18-2050-spec-doi-sau-khi-duyet.md`. A gate that cries
+    wolf often enough is no longer heard when it is right.
+
+    No `##` heading at all → the boundary cannot be inferred, hash the whole file.
+    """
+    with open(path, encoding="utf-8") as f:
+        lines = f.read().splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        if line.startswith("## "):
+            than = "".join(lines[i:])
+            break
+    else:
+        than = "".join(lines)
+    return hashlib.sha256(than.encode("utf-8")).hexdigest()
+
+
+# ------------------------------------------- turn-start effect snapshot (0.3.1)
+#
+# The turn log only sees actions going through the Edit/Write tools; anything done
+# through the shell is invisible. The two helpers below let the hook look straight
+# at the DISK, so they do not depend on bash syntax (heredocs, pipes, variables —
+# none of it is guessable with a regex).
+
+GIT_STATUS_TIMEOUT = 2
+UNTRACKED_STAT_CAP = 200            # number of untracked FILES marked (not status lines)
+UNTRACKED_HASH_MAX_BYTES = 262144   # <=256 KB → hash the content; bigger falls back to size:mtime
+UNTRACKED_HASH_BUDGET = 4194304     # total bytes readable per fingerprint pass
+
+# The workflow's "bookkeeping" directories: state.json / STATE.md / the turn log
+# change on nearly every turn — the hook itself appends to the turn log RIGHT AFTER
+# taking the baseline. Counting them into the fingerprint would make even a
+# read-only turn look like "the repo changed" (the false block of 0.3.1).
+# Always written with `/`: git prints paths with `/` on every OS, so using os.sep
+# would silently disable this filter on Windows.
+# `graphify-out` is the same kind: `tdq_finish.py` rebuilds the graph every turn so
+# that directory almost always changes, and that is an effect of the workflow
+# itself, not of the work the user asked for.
+BOOKKEEPING_PATHS = ("docs/tdq", "docs/workinglog", "graphify-out")
+_EXCLUDE = tuple(f":(top,exclude){p}" for p in BOOKKEEPING_PATHS)
+_ROOT_CACHE = {}
+
+
+def today_log_rel():
+    """Today's working log, relative to the project, ALWAYS with forward slashes.
+
+    Not `os.path.join`: this value is compared against `git status` output and against the
+    turn ledger, and both speak `/` on every host. Joining with the Windows separator made the
+    build compare a backslash path with a forward-slash one, decide the log had not been
+    written, and block a turn that had written it. Opening the file still works: Windows
+    accepts forward slashes in a path.
+    """
+    return "docs/workinglog/" + datetime.now().strftime("%Y-%m-%d") + ".md"
+
+
+def _git(cwd, *args):
+    """stdout (bytes) of a git command, or None when it cannot run."""
+    try:
+        kw = {"capture_output": True, "timeout": GIT_STATUS_TIMEOUT}
+        if sys.platform == "win32":
+            kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+        proc = subprocess.run(["git", "-C", cwd, *args], **kw)
+    except subprocess.TimeoutExpired:
+        _warn(f"git {args[0]} took over {GIT_STATUS_TIMEOUT}s in {cwd} — skipping disk evidence")
+        return None
+    except (OSError, subprocess.SubprocessError) as exc:
+        _warn(f"could not run git {args[0]} ({type(exc).__name__}) — skipping disk evidence")
+        return None
+    # rc!=0 = "not a git repo" / no HEAD yet: ordinary, not worth logging.
+    return proc.stdout if proc.returncode == 0 else None
+
+
+def repo_root(cwd):
+    """Repo root (porcelain prints paths from the root, not from cwd). None if not a repo."""
+    if cwd not in _ROOT_CACHE:
+        out = _git(cwd, "rev-parse", "--show-toplevel")
+        _ROOT_CACHE[cwd] = out.decode("utf-8", "replace").strip() if out else None
+    return _ROOT_CACHE[cwd]
+
+
+def _untracked_mark(path, budget):
+    """Fingerprint of an untracked file → (mark, bytes read).
+
+    CONTENT first: a changed mtime with identical content (touch, a formatter
+    rewriting byte-identical output) is not a change — counting it as one blocks
+    the turn for nothing.
+    """
+    if not os.path.isfile(path):
+        return None, 0
+    try:
+        st = os.stat(path)
+        if st.st_size <= UNTRACKED_HASH_MAX_BYTES and st.st_size <= budget:
+            return sha256_file(path), st.st_size
+        return f"{st.st_size}:{st.st_mtime_ns}", 0
+    except OSError:
+        return None, 0
+
+
+def repo_status_digest(cwd, status=None):
+    """Fingerprint of the repo working state, or None when it cannot be taken.
+
+    Covers both `status --porcelain` (added/deleted/renamed files) and `diff HEAD`
+    (content), because porcelain does NOT change when a file already marked `M` is
+    edited further — the most common case in a repo mid-work, so skipping it would
+    miss real changes.
+    Workflow bookkeeping is excluded in the git pathspec itself (0.3.2).
+
+    `status`: the bytes of `git status --porcelain` when already available (P0-2 —
+    `turn_snapshot` calls it once and passes it down, avoiding two git calls per
+    turn). None → fetch it here.
+
+    None means "no evidence", not "the repo is clean" — the caller must treat None
+    as a fallback to the old behaviour.
+    """
+    if status is None:
+        status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    if status is None:
+        return None
+    # a repo with no commit yet → no HEAD → rc!=0 → b""
+    diff = _git(cwd, "diff", "HEAD", "--", ":(top)", *_EXCLUDE) or b""
+    h = hashlib.sha256(status + b"\0" + diff)
+    # Untracked files: porcelain prints `?? path`, which does not change when the
+    # content changes, and `diff HEAD` never touches them — they need their own
+    # mark or the change is missed (QC1.1).
+    root = repo_root(cwd) or cwd
+    budget, seen = UNTRACKED_HASH_BUDGET, 0
+    for line in status.decode("utf-8", "replace").splitlines():
+        if not line.startswith("?? "):
+            continue
+        seen += 1
+        if seen > UNTRACKED_STAT_CAP:
+            break
+        rel = line[3:].strip().strip('"')
+        mark, used = _untracked_mark(os.path.join(root, rel), budget)
+        budget -= used
+        if mark is not None:
+            h.update(f"\0{rel}:{mark}".encode())
+    return h.hexdigest()
+
+
+def repo_status_paths(cwd, limit=400, status=None):
+    """Paths differing from HEAD (status flags dropped, renames keep the target).
+
+    Same exclusion zone as `repo_status_digest` — the decision and the naming must
+    look at exactly one set of paths; a mismatch is the source of the false block
+    of 0.3.1.
+
+    `status`: the bytes of `git status --porcelain` when already available (P0-2,
+    see `repo_status_digest`).
+    """
+    out = status if status is not None else _git(
+        cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    if out is None:
+        return []
+    paths = []
+    for line in out.decode("utf-8", "replace").splitlines():
+        if len(line) > 3:
+            path = line[3:].strip().strip('"')
+            paths.append(path.split(" -> ")[-1])
+        if len(paths) >= limit:
+            break
+    return paths
+
+
+# ------------------------------------------------- plan tick state (the fence)
+#
+# Both the status line and the tick-forcing fence need to know where the plan
+# "stands". The whole FILE is hashed (rather than counting `[x]` marks) because
+# `[ ]` → `[~]` is a valid update that leaves the `[x]` count untouched — counting
+# `[x]` would miss exactly the "task started" mark.
+
+#
+# The `>` mark = the task is DISPATCHED to a sub-agent currently running (team
+# mode). It differs from `~` in that `~` means the leader does it personally —
+# and there may be only ONE; `>` runs in parallel, so there may be MANY.
+# See skills/tdq-build/references/team-mode.md.
+# Task codes: a letter first, then letters/digits/dots freely mixed — real plans
+# carry `T2A.1` (a parallel branch inside one phase) and `T2.4b` (a variant). A
+# narrower character class makes those tasks invisible to both the tick counter
+# and the anti-stop gate.
+_TASK_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s*\*\*([A-Za-z][A-Za-z0-9.]*)\*\*")
+
+
+def _plan_path(cwd, state):
+    """Absolute path of the plan of the active request, or None when there is none."""
+    rel = state.get("plan_file")
+    if not rel:
+        req = state.get("active_request")
+        if not req:
+            return None
+        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
+    return rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+
+
+def plan_tick_state(cwd):
+    """Checkbox state of the current plan. Never raises."""
+    trong = {"path": None, "exists": False, "sha": "",
+             "has_doing": False, "all_done": False, "total": 0, "doing_count": 0,
+             "dispatched_count": 0, "dispatched_ids": []}
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    path = _plan_path(cwd, state)
+    if path is None:
+        return trong
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+        sha = sha256_file(path)
+    except OSError:
+        return trong
+
+    tong = xong = dang = 0
+    da_giao = []
+    for line in noi_dung.splitlines():
+        m = _TASK_LINE.match(line)
+        if not m:
+            continue
+        tong += 1
+        if m.group(1) == "x":
+            xong += 1
+        elif m.group(1) == "~":
+            dang += 1
+        elif m.group(1) == ">":
+            da_giao.append(m.group(2))
+
+    # `has_doing` = "work is in flight" in the broad sense: the leader is doing it
+    # OR a sub-agent is. The fence uses this flag to know whether the turn left
+    # work unfinished.
+    trong.update(exists=True, sha=sha, total=tong, doing_count=dang,
+                 dispatched_count=len(da_giao), dispatched_ids=da_giao,
+                 has_doing=dang > 0 or bool(da_giao),
+                 all_done=tong > 0 and xong == tong)
+    return trong
+
+
+# The Definition of Done checkbox is a SECOND counter, deliberately not `_TASK_LINE`.
+# A DoD line carries no bold task code (`- [ ] Q1 the condition — the command`), and
+# widening `_TASK_LINE` to reach it would let DoD lines into the task counter that feeds
+# stop_gate, edit_gate and the status line — `all_done` and the ETA would both go wrong.
+# So: same file, different section, different counter.
+_DOD_HEADING = "## definition of done"
+_DOD_LINE = re.compile(r"^\s*-\s*\[( |~|x|>)\]\s+")
+_FENCE = re.compile(r"^\s*(```|~~~)")
+
+
+def _dod_section(noi_dung):
+    """Every line under a DoD heading, up to the next `## ` heading.
+
+    Three details the naive version got wrong. A plan may carry the heading MORE THAN ONCE
+    (a round-2 section, a split plan), so all of them are collected, not just the first.
+    The heading is matched case-insensitively and may carry a suffix (`## Definition of Done
+    (19)`). And a heading inside a fenced block is a TEMPLATE, not a real section — skill
+    templates show the DoD shape that way — so fenced lines are skipped entirely.
+    """
+    phan = []
+    trong_muc = False
+    trong_rao = False
+    for line in noi_dung.splitlines():
+        if _FENCE.match(line):
+            trong_rao = not trong_rao
+            continue
+        if trong_rao:
+            continue
+        if line.startswith("## "):
+            trong_muc = line.strip().lower().startswith(_DOD_HEADING)
+            continue
+        if trong_muc:
+            phan.append(line)
+    return phan
+
+
+def dod_tick_state(cwd):
+    """Checkbox state of the plan's Definition of Done section. Never raises."""
+    trong = {"path": None, "exists": False, "total": 0, "done": 0, "all_done": False}
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    path = _plan_path(cwd, state)
+    if path is None:
+        return trong
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+    except (OSError, UnicodeDecodeError):
+        return trong
+
+    tong = xong = 0
+    for line in _dod_section(noi_dung):
+        m = _DOD_LINE.match(line)
+        if not m:
+            continue
+        tong += 1
+        if m.group(1) == "x":
+            xong += 1
+    trong.update(exists=True, total=tong, done=xong,
+                 all_done=tong > 0 and xong == tong)
+    return trong
+
+
+# The qc file is the machine-readable proof that QC already ran and passed. Its verdict
+# column is the LAST cell of a table row, so the reader takes the last cell rather than
+# searching the whole line: a row whose "Ket qua" cell merely mentions the word PASS must
+# not be counted twice.
+_QC_ROW = re.compile(r"^\s*\|.*\|\s*(PASS|FAIL|SKIP|TODO|PENDING|N/A)\s*\|\s*$")
+
+
+def qc_result_state(cwd):
+    """PASS/FAIL tally of the qc file of the active request. Never raises (O04).
+
+    Separates execution status from outcome verdict:
+    - Does not treat unknown, missing, timeout, or malformed rows as clean PASS.
+    - Accurately parses tables where verdict is in the last column or 'Ket qua' column.
+    - Detects execution failures (timeout, error) even if outcome claims PASS.
+    """
+    trong = {
+        "path": None,
+        "exists": False,
+        "passed": 0,
+        "failed": 0,
+        "pending": 0,
+        "timeout": 0,
+        "missing": 0,
+        "unknown": 0,
+        "total": 0,
+        "all_pass": False,
+    }
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return trong
+    req = state.get("active_request")
+    if not req:
+        return trong
+    path = os.path.join(cwd, "docs", "tdq", "qc", f"{req}.md")
+    trong["path"] = path
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+    except (OSError, UnicodeDecodeError):
+        return trong
+
+    trong_rao = False
+    dat = hong = cho = qua_gio = thieu = chua_ro = 0
+    verdict_col_idx = None
+    exec_col_idx = None
+
+    for line in noi_dung.splitlines():
+        if _FENCE.match(line):
+            trong_rao = not trong_rao
+            continue
+        if trong_rao:
+            continue
+
+        stripped = line.strip()
+        if not (stripped.startswith("|") and stripped.endswith("|")):
+            verdict_col_idx = None
+            exec_col_idx = None
+            continue
+
+        raw_cells = [c.strip() for c in stripped.strip("|").split("|")]
+        if len(raw_cells) < 2:
+            continue
+
+        # Check separator row
+        if all(re.match(r"^:?-+:?$", c) for c in raw_cells if c):
+            continue
+
+        lower_cells = [c.lower() for c in raw_cells]
+
+        # Check header row (only when verdict_col_idx is not yet established)
+        if verdict_col_idx is None:
+            hdr_verdict = None
+            hdr_result = None
+            hdr_evidence = None
+            hdr_cmd = None
+
+            for idx, c in enumerate(lower_cells):
+                if "pass/fail" in c or c in ("verdict", "trạng thái", "trang thai", "đánh giá", "danh gia"):
+                    hdr_verdict = idx
+                elif c in ("kết quả", "ket qua", "outcome", "result"):
+                    hdr_result = idx
+                elif c in ("lệnh", "lenh", "command", "lệnh đã chạy", "lenh da chay"):
+                    hdr_cmd = idx
+                elif c in ("bằng chứng", "bang chung", "evidence", "log", "chi tiết", "chi tiet", "ghi chú", "ghi chu"):
+                    hdr_evidence = idx
+
+            if hdr_verdict is not None:
+                verdict_col_idx = hdr_verdict
+                exec_col_idx = hdr_result if hdr_result is not None else (hdr_evidence if hdr_evidence is not None else hdr_cmd)
+                continue
+            elif hdr_result is not None:
+                verdict_col_idx = hdr_result
+                exec_col_idx = hdr_evidence if hdr_evidence is not None else hdr_cmd
+                continue
+
+        # Determine verdict cell and execution cell for data row
+        if verdict_col_idx is not None and verdict_col_idx < len(raw_cells):
+            verdict_text = raw_cells[verdict_col_idx]
+        else:
+            verdict_text = raw_cells[-1]
+
+        exec_text = ""
+        if exec_col_idx is not None and exec_col_idx < len(raw_cells):
+            exec_text = raw_cells[exec_col_idx]
+        elif len(raw_cells) >= 3 and (verdict_col_idx is None or verdict_col_idx == len(raw_cells) - 1):
+            exec_text = raw_cells[-2]
+
+        v_clean = re.sub(r"[*_`]", "", verdict_text).strip()
+        v_upper = v_clean.upper()
+        exec_lower = exec_text.lower()
+
+        # Check execution status (Execution và outcome tách)
+        exec_timeout = bool(re.search(r"\b(timeout|timed out|quá giờ|het gio|hết giờ)\b", exec_lower))
+        exec_error = bool(re.search(
+            r"\b(traceback|syntaxerror|nameerror|command not found|crash|killed)\b"
+            r"|\bexit (?:code )?[1-9]\d*\b"
+            r"|\b[1-9]\d*\s*(?:failed|errors?|lỗi)\b"
+            r"|\b(?:failures?|errors?)=[1-9]\d*\b",
+            exec_lower
+        ))
+        exec_missing = bool(re.search(r"\b(missing|not found|không tìm thấy|chưa có)\b", exec_lower))
+
+        if v_upper.startswith("TIMEOUT") or exec_timeout:
+            qua_gio += 1
+        elif v_upper.startswith("MISSING") or exec_missing:
+            thieu += 1
+        elif v_upper.startswith("FAIL") or v_upper.startswith("ERROR") or v_upper.startswith("HỎNG") or exec_error:
+            hong += 1
+        elif v_upper.startswith("PASS"):
+            dat += 1
+        elif (v_upper in ("SKIP", "TODO", "PENDING", "N/A", "HOLD", "CHỜ", "CHO")
+              or v_upper.startswith("CHỜ") or v_upper.startswith("BỊ CHẶN")
+              or v_upper.startswith("PARTIAL")):
+            cho += 1
+        else:
+            chua_ro += 1
+
+    total = dat + hong + cho + qua_gio + thieu + chua_ro
+    all_pass = (dat > 0 and hong == 0 and cho == 0 and qua_gio == 0 and thieu == 0 and chua_ro == 0)
+
+    trong.update(
+        exists=True,
+        passed=dat,
+        failed=hong,
+        pending=cho,
+        timeout=qua_gio,
+        missing=thieu,
+        unknown=chua_ro,
+        total=total,
+        all_pass=all_pass,
+    )
+    return trong
+
+
+def task_open_count(cwd):
+    """How many task boxes of the current plan are not `[x]` yet. Never raises.
+
+    A separate reader rather than a new key on `plan_tick_state`: four call sites depend on
+    that function's exact return shape, and one of them asserts the key set.
+    """
+    try:
+        state = load(cwd, heal=False) or {}
+    except Exception:
+        return 0
+    path = _plan_path(cwd, state)
+    if path is None:
+        return 0
+    try:
+        with open(path, encoding="utf-8") as f:
+            noi_dung = f.read()
+    except (OSError, UnicodeDecodeError):
+        return 0
+    return sum(1 for line in noi_dung.splitlines()
+               if (m := _TASK_LINE.match(line)) and m.group(1) != "x")
+
+
+def turn_snapshot(cwd):
+    """Turn-start state: today's log + the repo fingerprint + the list of dirty
+    paths + the plan fingerprint (to know whether a checkbox moved this turn)."""
+    log_rel = today_log_rel()
+    try:
+        log_sha = sha256_file(os.path.join(cwd, log_rel))
+    except OSError:
+        log_sha = None
+    status = _git(cwd, "status", "--porcelain", "--untracked-files=all", "--", ":(top)", *_EXCLUDE)
+    return {"log_rel": log_rel, "log_sha": log_sha,
+            "repo_sha": repo_status_digest(cwd, status=status),
+            "repo_paths": repo_status_paths(cwd, status=status),
+            "plan_sha": plan_tick_state(cwd)["sha"]}
+# ----------------------------------------------------------- safe enums (S4)
+
+def normalize_lane(raw):
+    """Alias -> machine identifier ("quick"/"full"). Unrecognised -> None (the
+    caller decides whether to fail or ignore). This is the ONLY entry point for a
+    lane typed by the user."""
+    if not isinstance(raw, str):
+        return None
+    return LANE_ALIASES.get(raw.strip().lower())
+
+
+def lane_label(lane):
+    """The label PRINTED to a reader. Being a display layer it does NOT validate:
+    an unknown lane comes back as it was, None comes back empty — printing
+    something ugly beats blowing up."""
+    if not lane:
+        return ""
+    return LANE_LABELS.get(lane, lane)
+
+
+def normalize_mode(raw):
+    """Alias -> machine identifier ("main"/"subagent"). The ONLY entry point for a
+    mode typed by the user. Unrecognised -> None; the caller decides."""
+    if not isinstance(raw, str):
+        return None
+    # Collapse runs of whitespace into one space: people type "sub-agent  implement".
+    return MODE_ALIASES.get(" ".join(raw.strip().lower().split()))
+
+
+def mode_label(mode):
+    """The label PRINTED to a reader, same rule as lane_label: an unknown mode comes
+    back as it was, None comes back empty — a display layer, not a check layer."""
+    if not mode:
+        return ""
+    return MODE_LABELS.get(mode, mode)
+
+
+def effective_lane(state, warn=True):
+    lane = (state or {}).get("lane")
+    if lane in VALID_LANES:
+        return lane
+    if warn:
+        _warn(f"invalid lane in state: {lane!r} — treated as no lane chosen.")
+    return None
+
+
+# The approval gates of each lane, in the order they must be passed. An empty or
+# unknown lane uses `None`: staying silent on a broken state would let work slip
+# through, so all three gates are still asked for, as in the older version.
+CONG_THEO_LANE = {
+    "quick": ("quick",),
+    "full": ("spec", "plan"),
+    None: ("spec", "plan", "quick"),
+}
+
+
+def cong_dang_cho(state):
+    """The approval gate still missing for the running lane, or None when all passed.
+
+    Why one shared function: `edit_gate` and `stop_gate` both need this answer. Back
+    when each wrote its own, `stop_gate` walked a hard-coded list ("spec", "plan",
+    "quick") without looking at the lane — lane quick has no `spec` gate at all, so
+    `spec_approved` stayed False forever and the hook kept saying "the spec is not
+    approved" even for a closed request. A gate that cries wolf often enough is no
+    longer heard when it is right.
+    """
+    lane = effective_lane(state, warn=False)
+    for cong in CONG_THEO_LANE.get(lane, CONG_THEO_LANE[None]):
+        if not (state or {}).get(f"{cong}_approved"):
+            return cong
+    return None
+
+
+def effective_phase(state, warn=True):
+    phase = (state or {}).get("phase")
+    if phase in VALID_PHASES:
+        return phase
+    if warn:
+        _warn(f"invalid phase in state: {phase!r} — treated as idle. "
+              "Restore with: python3 scripts/tdq_state.py set phase=<idle|analyze|spec|plan|implement|qc|report>")
+    return "idle"
+
+
+def effective_mode(state, warn=True):
+    mode = (state or {}).get("implement_mode")
+    if mode in VALID_MODES or mode is None:
+        return mode
+    if warn:
+        _warn(f"invalid implement_mode: {mode!r} — treated as no mode settled.")
+    return None
+
+
+# --------------------------------------------------------------- phase table
+
+# The ONE source of truth for "where am I, what comes next".
+# The docs (tdq-conventions) quote it from here; tests pin it.
+PHASE_TABLE = {
+    "no_state": {
+        "entry": "No TDQ request is open",
+        "action": "Ask the user to pick a lane, then open a new request",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]",  # i18n-allow
+        "checklist": [
+            "Summarise the user's request in 3-5 lines",
+            "Ask the user to pick a mode: express (a small, clear job) or "
+            "deep (Analysis→Spec→Plan→Implement→QC→Report)",
+            "Run the init command above with a slug shaped YYYY-MM-DD-HHMM-<kebab, <=5 words, no accents>",
+            "Write the request verbatim into docs/tdq/brief/<slug>.md under the first section",
+        ],
+        "done_when": "state.json has active_request and lane",
+        "forbidden": "Editing code before a request is open",
+    },
+    "analyze": {
+        "entry": "A request is open, deep mode",
+        "action": "Read the code, research, interview the user until nothing is vague",
+        "cmd": "python3 scripts/tdq_state.py set phase=spec",
+        "checklist": [
+            "Capability inventory (B0): run `python3 scripts/skill_inventory.py`, fill the "
+            "verdict table into the understanding section of docs/tdq/brief/<slug>.md",
+            "Read the related code/docs, write them into docs/tdq/research/<slug>.md",
+            "Scope round first (which areas + context in numbers) per "
+            "skills/tdq-intake/references/scope-round.md, or write one line skipping it with a reason",
+            "Ask the detail questions only inside the areas the user picked, write them "
+            "into the Q&A section of docs/tdq/brief/<slug>.md",
+            "Settle the decisions into the understanding section of docs/tdq/brief/<slug>.md",
+            "No question left that changes the outcome → run the command above",
+        ],
+        "done_when": "No question is left that would change the outcome",
+        "forbidden": "Writing the spec while anything is still vague",
+    },
+    "spec": {
+        "entry": "Analysis is finished",
+        "action": "Write the spec (with its roadmap section), register spec_file, present the summary and STOP for the user's approval",
+        "cmd": "python3 scripts/tdq_state.py approve spec --by \"<the user's sentence verbatim>\"",
+        "checklist": [
+            "Write docs/tdq/spec/<slug>.md (scope in/out, outputs, roadmap, QC + DoD)",
+            "Run: python3 scripts/tdq_state.py set spec_file=docs/tdq/spec/<slug>.md",
+            "Present a spec summary of at most 50 lines in chat",
+            "Print the approval invite line, then STOP",
+            "The user approves → run the approve command above RIGHT AWAY, then write the "
+            "plan in the SAME turn (never make the user send another message)",
+        ],
+        "done_when": "spec_approved = true",
+        "forbidden": "Inferring that the user approved; making the user send one more turn before the plan is written",
+    },
+    "plan": {
+        "entry": "spec_approved = true",
+        "action": "Write the plan with a PROPOSED mode, register plan_file, present it and STOP for approval",
+        "cmd": "python3 scripts/tdq_state.py approve plan --by \"<verbatim>\"",
+        "checklist": [
+            "PROPOSE the run mode inside the plan itself (main|subagent) + the reason — "
+            "do not ask about the mode here; the mode gate is its own phase right after",
+            "Write docs/tdq/plan/<slug>.md: one task = one job + one test, with a [ ] checkbox",
+            "Run: python3 scripts/tdq_state.py set plan_file=docs/tdq/plan/<slug>.md",
+            "Present the plan summary, invite the user to approve, then STOP",
+            "The user approves → run the approve command above RIGHT AWAY, then ask about the "
+            "mode in the SAME turn (if the user already named a mode, add --mode and build)",
+        ],
+        "done_when": "plan_approved = true",
+        "forbidden": "Editing code before the plan is approved; withholding the approval record until the user names a mode",
+    },
+    "mode": {
+        "entry": "plan_approved = true but implement_mode is not settled",
+        "action": "List the modes `modes --json` reports as offerable, ask the user to choose, "
+                  "STOP for the answer",
+        # The mode list is READ from VALID_MODES, never retyped: a fourth mode must not leave this
+        # command quietly naming three.
+        "cmd": "python3 scripts/tdq_state.py approve plan --mode <"
+               + "|".join(VALID_MODES) + "> --by \"<verbatim>\"",
+        "checklist": [
+            "Ask the machine which modes exist: python3 scripts/tdq_state.py modes --json — offer "
+            "exactly the rows with chon_duoc true, and print the ly_do of a row that is not",
+            "Present the mode block per the user-facing block rules, one line of meaning per mode: "
+            "inline implement = I do it sequentially right here; "
+            "sub-agent implement = several agents run in parallel; "
+            "codex implement = I write the red test, Codex makes it green inside the declared zone",
+            "Present 1-3 lines of reasoning for the proposal, grounded IN THE PLAN itself: task "
+            "count, tasks chained by dependency, how many files several tasks touch at once, "
+            "whether an (mcp) label is present; plus one sentence on why not the other option. "
+            "NEVER settle it for the user",
+            "STOP and wait for the user to choose",
+            "The user chooses → run the approve command above RIGHT AWAY, then build in the SAME turn",
+        ],
+        "done_when": "implement_mode is not null",
+        "forbidden": "Editing code before the mode is settled; choosing the mode for the user",
+    },
+    "implement": {
+        "entry": "plan_approved = true and implement_mode is settled",
+        "action": "Do the whole plan in one turn, mark [~] when a task starts, red→green, flip to [x] as soon as it passes",
+        "cmd": "python3 scripts/tdq_state.py set phase=qc",
+        "checklist": [
+            "Do the tasks in the order the plan gives",
+            "Each task: mark [~] → write the test (red) → code → test green → flip to [x] in the plan RIGHT AWAY",
+            "Never stop midway to ask 'shall I continue?'",
+            "All tasks done → run the command above",
+        ],
+        "done_when": "Every task in the plan is ticked [x]",
+        "forbidden": "Stopping midway; batching the ticks at the end of the turn; leaving several tasks marked [~]. Enforced, not merely advised: the Stop hook blocks the end of the turn with [TDQ:UNFINISHED] while a task is still open, and the only legal way out is `tdq_state.py pause --loai <kind> --ly-do \"<why>\"` (kinds: mat-truy-cap · pha-huy · dau-vao-user · tran-qc), whose reason is shown to the user; an unreachable spec threshold → `lech add`, not a pause",
+    },
+    "qc": {
+        "entry": "Implementation is finished",
+        "action": "Run the spec's Definition of Done, record the results, fix what fails",
+        "cmd": "python3 scripts/tdq_state.py set phase=report",
+        "checklist": [
+            "Run every QC item of the spec, write the evidence into docs/tdq/qc/<slug>.md",
+            "FAIL → add a fix task to the plan (no re-approval needed) and carry on",
+            "Repeat until every item PASSes",
+            "Missed a threshold but recorded `lech add` → write it 'PASS (lệch, chờ duyệt)', not FAIL",  # i18n-allow: canonical QC label
+        ],
+        "done_when": "Every QC item of the spec PASSes, with evidence",
+        "forbidden": "Ignoring a failing test; reporting PASS without running it",
+    },
+    "report": {
+        "entry": "QC has PASSed",
+        "action": "Write docs/tdq/reports/<slug>.html + Markdown: before/after state & flow, what was tested & actual test results; ask about commit",
+        "cmd": "python3 scripts/tdq_state.py set phase=idle",
+        "checklist": [
+            "Write docs/tdq/reports/<slug>.md and docs/tdq/reports/<slug>.html briefly (10-20 lines recommended, "
+            "plain, visual & complete): before/after state & flow, what was done, what was tested & actual test results, "
+            "the QC result, and what is still limited",
+            "Render Archify report HTML after all Markdown edits and verify manifest status is current (gate idle blocks on missing/stale manifest)",
+            "Append to the working log docs/workinglog/<today>.md",
+            "Spec deviations still waiting (`tdq_state.py lech list`): ask the user to approve or reject "
+            "each one; rejected → add a fix task to the plan and `set phase=implement`",
+            "Ask the user: commit or not?",
+        ],
+        "done_when": "The report is written and the user has been asked about committing",
+        "forbidden": "Committing or pushing before the user asks for it",
+    },
+    "idle": {
+        "entry": "Finished, or no request opened yet",
+        "action": "Wait for a new request from the user",
+        "cmd": "python3 scripts/tdq_state.py init <YYYY-MM-DD-HHMM-slug> <nhanh|chuyen-sau> [--lang <code>]",  # i18n-allow
+        "checklist": [
+            "A new request arrives → summarise it, ask for the lane, run the init command above",
+        ],
+        "done_when": "A new request is open",
+        "forbidden": "Overwriting an unfinished request without asking the user",
+    },
+    "quick_analyze": {
+        "entry": "lane = quick and phase = analyze, before the express approval",
+        "action": "Analyse and write what you learned into docs/tdq/brief/<slug>.md, then go "
+                  "straight on to the mini spec/plan — this phase has NO approval gate of its own; "
+                  "the phase stays analyze until the express approval",
+        # Never `set phase=implement` here: that moved the request past the express gate before
+        # the user saw the mini-plan (play3clone 2026-11-08). `approve quick` sets implement.
+        "cmd": "python3 scripts/tdq_state.py approve quick --by \"<the user's sentence verbatim>\"",
+        "checklist": [
+            "B1 read the code — ALWAYS, never skipped. The target is a code symbol → call "
+            "mcp__lsp__* first (start_lsp if it answers 'not initialized'); a vague concept → "
+            "graphify query plus grep over synonyms, merged; grep is the last layer",
+            "B0 capability inventory — ONLY when the request touches ground with no precedent "
+            "(no earlier report under docs/tdq/report/ touched the same directory). Touching "
+            "scripts/tdq_state.py or hooks/ again → skip it, the answer is already known",
+            "B2 research through tavily-primary — ONLY when an unknown outside the repo exists "
+            "(a library, an API, a version, third-party behaviour). Hand it to a sub-agent, "
+            "which returns a digest of at most 1,500 characters",
+            "SKIPPING B0 or B2 costs one line: write the reason under the mini-plan's Scope "
+            "section. A step dropped in silence is a QC defect",
+            "Write what you settled into the brief's 'Hiểu & kiến thức' section, then move on "
+            "to the mini spec/plan — do NOT stop to wait for the user here",
+        ],
+        "done_when": "The brief holds what the analysis settled, and every skipped step has its "
+                     "one-line reason ready for the mini-plan",
+        "forbidden": "Skipping B1; grepping for a symbol with no LSP or graphify attempt first; "
+                     "dropping B0 or B2 without writing the reason; waiting for an approval "
+                     "that this phase does not have",
+    },
+    "quick": {
+        "entry": "lane = quick",
+        "action": "Analyse → a mini spec/plan merged into one file → ask the QC level → wait for approval → write the working log FIRST → implement → QC at that level → a fix round if it FAILs",
+        "cmd": "python3 scripts/tdq_state.py approve quick --by \"<the user's sentence verbatim>\"",
+        "checklist": [
+            "Analyse: read the related code; an unknown outside the repo (a library, an API, a "
+            "version) → web search through tavily-primary before writing anything",
+            "Interview while a question can still CHANGE the outcome — per interview.md; "
+            "close the round with the 'anything to add?' question only when that round holds "
+            "at least one question, otherwise go straight on",
+            "Write the mini spec/plan MERGED into docs/tdq/plan/<slug>.md (<=40 lines: scope in/out, "
+            "tasks with tests, DoD) then present a summary of at most 10 lines in chat, "
+            "with one line naming the capabilities that will be used",
+            "Ask the QC level in the SAME block as the approval invite (lite|full|ultra, "
+            "default full), record it with `set muc_qc=<level>`, then STOP",
+            "The user approves → run the approve command above",
+            "Append the plan summary to docs/workinglog/<today>.md BEFORE editing any code",
+            "Implement task by task: mark [~] on the task BEFORE editing code "
+            "(the edit_gate hook BLOCKS when the plan has no [~]), red→green, "
+            "flip to [x] AS SOON AS that task's test is green — never batch the ticks",
+            "QC at the level in `muc_qc`: one command per DoD line, plus an item running each "
+            "task's test. The evidence goes into the QC section of the plan. "
+            "At muc_qc=off that section holds a single line "
+            "'SKIPPED at the user's request: \"<verbatim>\"'",
+            "QC FAIL or a bug spotted → fix it. "
+            "Add tasks to the plan's 'QC round N — fixes' section, fix red→green. "
+            "Re-run the FAILed items plus any item the fix could have broken. "
+            "Three rounds maximum; over the cap STOP, tell the user, propose switching to deep mode",
+            "QC passes → run `python3 scripts/tdq_state.py set phase=report`; write the shared visual report before closing to idle",
+        ],
+        "done_when": "quick_approved = true, the log is written, the plan's QC section exists (evidence or the skipped-at-user's-request line), no red test is left, phase is report",
+        "forbidden": "Implementing before the working log is written; batching the ticks at the end of the turn or leaving several tasks marked [~]; entering report with a red test or a known bug; entering report after the 3-round fix cap without telling the user",
+    },
+}
+
+
+# The variant of phase `implement` when the user settles on mode `subagent`. Kept
+# OUT of PHASE_TABLE on purpose: it is not a phase (state still records
+# `implement`, and `set phase=` does not accept this value) and it must not grow
+# an extra row in the generated phase table. Looked up via phase_row(), not
+# phase_key().
+IMPLEMENT_SUBAGENT_ROW = {
+
+    "entry": "plan_approved = true and implement_mode = subagent",
+    "action": "Assign the WHOLE plan first (step 0), then release wave by wave to sub-agents, "
+              "merging one wave before releasing the next — the leader only does what cannot be split",
+    "cmd": "python3 scripts/tdq_state.py set phase=qc",
+    "checklist": [
+        "Step 0: python3 scripts/tdq_team.py assign — read the whole plan, write the map "
+        "docs/tdq/team/<slug>.json (per task: dispatched / kept + reason + file zone + wave)",
+        "python3 scripts/tdq_team.py audit — a map breaking the rules exits non-zero, fix it and re-run",
+        "python3 scripts/tdq_team.py wave — take the next wave, open a branch with `open <task-id>`, "
+        "mark [>] on EVERY task just dispatched (many [>] is valid, [~] still only one)",
+        "A sub-agent reports done → `check <branch>` to scan for conflicts → `merge <branch>` → flip [>] to [x] RIGHT AWAY",
+        "Wave finished → `clean` to clean the worktrees, then `wave` for the next wave; repeat until no task is left",
+    ],
+    "done_when": "Every task in the plan is ticked [x] and no leftover worktree remains",
+    "forbidden": "Doing a task the map marked as dispatched yourself on main; merging before `check` passes; "
+                 "leaving several tasks marked [~]",
+}
+
+
+PHASE_ORDER = ["no_state", "analyze", "spec", "plan", "mode", "implement", "qc",
+               "report", "idle", "quick_analyze", "quick"]
+
+
+_SCRIPT_PATH = re.compile(r"python3 scripts/(\S+\.py)")
+# The plugin root is the parent of THIS file's `scripts/` folder — whichever copy is running: the
+# repo itself, or the plugin cache (`~/.claude/plugins/cache/<market>/<plugin>/<version>`).
+GOC_PLUGIN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_LENH_SCRIPT = re.compile(r"python3 scripts/([\w.-]+\.py)")
+
+
+def lenh_cho_project(text, cwd):
+    """Rewrite `python3 scripts/X.py` to the plugin's absolute path when the project cannot run it.
+
+    Measured 2026-10-02 on a project-level install in another repo (excalidraw): every command a
+    hook printed was `python3 scripts/tdq_state.py …`, and that project has no `scripts/` folder,
+    so the very first command the agent was told to run failed. Inside the plugin's own repo the
+    relative form resolves and stays as it is — shorter, and what the repo's docs and tests read.
+    The test is per command (`cwd/scripts/X.py` exists or not), never a guess about the project.
+    """
+    if not text or "python3 scripts/" not in text:
+        return text
+
+    def _thay(m):
+        ten = m.group(1)
+        if os.path.isfile(os.path.join(cwd or ".", "scripts", ten)):
+            return m.group(0)
+        duong = os.path.join(GOC_PLUGIN, "scripts", ten).replace(os.sep, "/")
+        return f'python3 "{duong}"'
+
+    return _LENH_SCRIPT.sub(_thay, text)
+
+
+def plugin_root_cmd(cmd):
+    """A40: the command form for docs running in the plugin context (conventions §1)."""
+    return _SCRIPT_PATH.sub(r'python3 "${CLAUDE_PLUGIN_ROOT}/scripts/\1"', cmd)
+
+
+def render_phases_md(plugin_root=False):
+    """Generate the phase-table doc out of PHASE_TABLE — that doc is NEVER hand-written.
+
+    Regenerate with: python3 scripts/tdq_state.py phases-doc > <file>
+    (add --plugin-root for the skills/tdq-conventions copy — paths per conventions §1).
+    tests/test_phase_table.py::test_docs_match_constant pins this synchronisation.
+    """
+    conv = plugin_root_cmd if plugin_root else (lambda c: c)
+    lines = [
+        "# TDQ phase table (generated — do NOT hand-edit)",
+        "",
+        "Regenerate: `" + conv("python3 scripts/tdq_state.py") + " phases-doc"
+        + (" --plugin-root" if plugin_root else "") + " > <file>`.",
+        "Source: the `PHASE_TABLE` constant in `scripts/tdq_state.py`.",
+        "Whatever phase you stand in, do only that phase's job, then run exactly its command.",
+        "",
+        "| phase | entered when | the single job | command onward | done when | forbidden |",
+        "|---|---|---|---|---|---|",
+    ]
+    def cell(text):
+        # A `|` inside <quick|full> would cut the markdown cell, even inside backticks.
+        return str(text).replace("|", "\\|")
+
+    for name in PHASE_ORDER:
+        row = PHASE_TABLE[name]
+        lines.append("| `{}` | {} | {} | `{}` | {} | {} |".format(
+            name, cell(row["entry"]), cell(row["action"]), cell(conv(row["cmd"])),
+            cell(row["done_when"]), cell(row["forbidden"])))
+    lines.append("")
+    lines.append("The commands verbatim (copy-paste, no escaping):")
+    lines.append("")
+    lines.append("```")
+    for name in PHASE_ORDER:
+        lines.append(f"{name}: {conv(PHASE_TABLE[name]['cmd'])}")
+    lines.append("```")
+    lines.append("")
+    # The per-phase checklists are NOT generated here (dropped 2026-08-09): they
+    # repeat the SKILL.md of that very phase. For the full checklist run
+    # `tdq_state.py next`.
+    lines.append("Detailed checklist of the running phase: `"
+                 + conv("python3 scripts/tdq_state.py") + " next`.")
+    lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def phase_key(state):
+    """The PHASE_TABLE lookup key for the current state."""
+    if not state or not state.get("active_request"):
+        return "no_state"
+    lane = effective_lane(state, warn=False)
+    if lane == "quick":
+        # A6: the terminal of lane quick — approved AND phase set to idle means done
+        # (approve quick pushes phase=implement, so a later idle can only be a
+        # deliberate close).
+        if state.get("quick_approved") and effective_phase(state, warn=False) in ("report", "idle"):
+            return effective_phase(state, warn=False)
+        # Phương án 2a (2026-09-01): bước phân tích của lane nhanh có hàng riêng để
+        # NHÌN THẤY được, nhưng không kèm cổng duyệt — `CONG_THEO_LANE["quick"]` vẫn
+        # đúng một cổng. Đã duyệt rồi thì phân tích xong từ lâu, không quay lại hàng này.
+        if (not state.get("quick_approved")
+                and effective_phase(state, warn=False) == "analyze"):
+            return "quick_analyze"
+        return "quick"
+    return effective_phase(state, warn=False)
+
+
+# The variant of phase `implement` when the user settles on mode `codex`. Same
+# reason as IMPLEMENT_SUBAGENT_ROW for staying out of PHASE_TABLE: state still
+# records the plain word `implement`.
+IMPLEMENT_CODEX_ROW = {
+
+    "entry": "plan_approved = true and implement_mode = codex",
+    "action": "The leader splits every task in two: the leader writes the failing test, "
+              "Codex makes it pass inside the declared file zone, the leader reruns it "
+              "and audits the zone — the leader never hands over the test file",
+    "cmd": "python3 scripts/tdq_state.py set phase=qc",
+    "checklist": [
+        "python3 scripts/tdq_codex.py check --json — Codex not runnable means STOP and "
+        "tell the user, never silently fall back to another mode",
+        "Per task: snapshot the mark first (python3 scripts/tdq_vungfile.py chup-moc), "
+        "write the test, run it to SEE it red",
+        "python3 scripts/tdq_codex.py run <task-id> — the file zone and the locked zone "
+        "travel with the call; the locked zone always holds that task's test file",
+        "Rerun the test and audit the zone (python3 scripts/tdq_vungfile.py hau-kiem); "
+        "a file outside the zone moved means roll back to the mark and redo the task",
+        "Flip to [x] in the plan RIGHT AWAY once the test is green and the audit passes; "
+        "a fail verdict with can_chay_lai_test: true means rerun the test yourself — green "
+        "plus a passed audit still ticks, with the note (cứu bằng test · ly_do=<mã>)",  # i18n-allow: canonical note written into the plan
+        "python3 scripts/tdq_codex.py cleanup at the end of the turn — the temporary "
+        "CODEX_HOME belongs to nobody else",
+    ],
+    "done_when": "every task in the plan is [x], every zone audit passed, and cleanup has run",
+    "forbidden": "Handing the test file to Codex; letting Codex run outside the file zone; "
+                 "falling back to another mode when Codex is unreachable; auditing the zone "
+                 "against HEAD instead of that task's own mark",
+}
+
+
+# Which PHASE_TABLE row phase `implement` shows, PER MODE. A lookup table rather
+# than a chain of `if mode == ...` so a fourth mode costs one line here and no
+# change to phase_row. `None` means "the plain implement row" — mode `main` is
+# the baseline the table is a variation on.
+MODE_ROWS = {
+    "main": None,
+    "subagent": IMPLEMENT_SUBAGENT_ROW,
+    "codex": IMPLEMENT_CODEX_ROW,
+}
+
+
+def kiem_bang_mode(valid_modes, mode_rows):
+    """A mode that is valid but undeclared is a SILENT display bug — `next` would
+    quietly show the wrong beat. Fail at load time instead, naming the mode."""
+    thieu = [m for m in valid_modes if m not in mode_rows]
+    if thieu:
+        raise RuntimeError(
+            "MODE_ROWS thiếu khai hàng phase `implement` cho mode: "  # i18n-allow
+            + ", ".join(thieu)
+            + " — mỗi mode trong VALID_MODES phải khai đúng một hàng.")  # i18n-allow
+    return True
+
+
+kiem_bang_mode(VALID_MODES, MODE_ROWS)
+
+
+# How the `codex` mode learns whether it is selectable. state.py is the source of
+# truth for the workflow and MUST NOT depend on the Codex layer (tests/test_kien_truc
+# pins that), so the probe runs tdq_codex.py as a SUBPROCESS and is injectable —
+# every test passes its own instead of depending on what the machine has installed.
+CODEX_CHECK_REL = os.path.join("scripts", "tdq_codex.py")
+CODEX_CHECK_TIMEOUT = 60
+
+
+def _probe_codex(cwd=None):
+    """-> (chon_duoc, ly_do). Never raises: an unreachable Codex layer is a
+    "not selectable" answer with a reason, not a crash of the mode gate."""
+    root = cwd or resolve_project_dir(os.getcwd())
+    script = os.path.join(root, CODEX_CHECK_REL)
+    if not os.path.exists(script):
+        return False, "chưa có tầng CLI Codex (scripts/tdq_codex.py)"  # i18n-allow
+    try:
+        kw = {"capture_output": True, "text": True, "encoding": "utf-8",
+              "timeout": CODEX_CHECK_TIMEOUT, "stdin": subprocess.DEVNULL}
+        if sys.platform == "win32":
+            kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+        proc = subprocess.run(
+            [sys.executable, script, "check", "--json"], **kw)
+        data = json.loads(proc.stdout or "{}")
+    except Exception as exc:  # noqa: BLE001 - any failure is the same answer
+        return False, f"không hỏi được tầng Codex: {type(exc).__name__}"  # i18n-allow
+    if data.get("chay_duoc"):
+        return True, ""
+    return False, data.get("ly_do") or "Codex không chạy được trên máy này"  # i18n-allow
+
+
+def liet_ke_modes(kiem_codex=None, cwd=None):
+    """The ONE list the mode gate is built from — four fields per mode.
+
+    Two modes are always selectable because they need nothing but this repo;
+    `codex` needs a working external CLI, so it carries a reason when it is not.
+    """
+    if kiem_codex is None:
+        def kiem_codex():
+            return _probe_codex(cwd)
+    rows = []
+    for ma in VALID_MODES:
+        if ma == "codex":
+            chon_duoc, ly_do = kiem_codex()
+        else:
+            chon_duoc, ly_do = True, ""
+        rows.append({"ma": ma, "nhan": MODE_LABELS[ma],
+                     "chon_duoc": bool(chon_duoc), "ly_do": ly_do or ""})
+    return rows
+
+
+def phase_row(state):
+    """The PHASE_TABLE row to DISPLAY for the current state.
+
+    Unlike `phase_key`, this function knows the mode. Phase `implement` has one
+    job per mode — the leader working alone (`main`), steering a team
+    (`subagent`), driving Codex (`codex`) — while state records the single word
+    `implement`, so the fork lives here. The fork reads MODE_ROWS; adding a mode
+    never touches this body.
+    """
+    key = phase_key(state)
+    if key == "implement":
+        row = MODE_ROWS.get(effective_mode(state or {}, warn=False))
+        if row is not None:
+            return row
+    return PHASE_TABLE[key]
+
+
+# ------------------------------------------------------------------ next
+
+def _mark(approved, registered):
+    if approved:
+        return "✔"
+    return "⏳ awaiting approval" if registered else "—"
+
+
+# 32 ký tự, đo trên chính khối đầu: với trần 60 thì dòng `[TDQ:NEXT]` dài 146 ký tự và khối đầu
+# chạm đúng 600, mất chữ ở dòng `Done when:`. Trần này giữ cho phần hiển thị đường dẫn không bao
+# giờ là thứ làm tràn khối đầu.
+TRAN_DUONG_HIEN_THI = 32
+
+
+def duong_hien_thi(duong, tran=TRAN_DUONG_HIEN_THI):
+    """Đường dẫn để IN RA trong khối đầu — dài quá thì rút, có trần cố định.
+
+    Vì sao phải rút: khối đầu của `SessionStart` có trần 600 ký tự (spec §2.7), mà dòng
+    `Project: <đường dẫn>` tính vào trần đó. Đường dẫn là dữ liệu của user — thư mục tạm của
+    macOS runner là `/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/tmpXXXXXXXX` — nên độ dài
+    không ai kiểm soát được. Trước 2026-09-27, một đường dẫn dài đẩy khối đầu vượt trần và `cap()`
+    cắt mất đuôi, tức mất chữ của dòng `Command:`; đo thật trên macOS ở CI run 35957834415.
+
+    Thứ nhường là phần hiển thị, không phải trần: giữ HAI đoạn cuối (đủ để user nhận ra project,
+    và tên thư mục cuối luôn còn), thêm `…` báo đã rút. Đường dẫn ĐẦY ĐỦ vẫn nằm trong `STATE.md`,
+    nơi không có trần nào.
+    """
+    day_du = os.path.abspath(duong)
+    if len(day_du) <= tran:
+        return day_du
+    phan = day_du.replace("\\", "/").rstrip("/").split("/")
+    # Thử hai đoạn cuối trước (đọc dễ hơn), không vừa trần thì lấy đúng đoạn cuối — tên thư mục
+    # cuối là thứ user nhận ra project, nên nó là phần được giữ đến cùng.
+    for so_doan in (2, 1):
+        gon = "…/" + "/".join(phan[-so_doan:])
+        if len(gon) <= tran:
+            return gon
+    # Cả tên thư mục cuối cũng dài quá trần → cắt từ ĐẦU, giữ đuôi.
+    return "…" + gon[-(tran - 1):]
+
+
+def next_headline(cwd, state):
+    """Line 1 of `next` — also the entire output of `next --brief`."""
+    if not state or not state.get("active_request"):
+        return f"[TDQ:NEXT] no request · phase idle · Project: {duong_hien_thi(cwd)}"
+    # phase_key, not the raw phase: lane quick keeps phase=idle while work is still
+    # left — printing "idle" makes the model think it is done (QC1.1).
+    return (f"[TDQ:NEXT] {state.get('active_request')} · lane {effective_lane(state, warn=False) or '?'} "
+            f"· phase {phase_key(state)} · Project: {duong_hien_thi(cwd)}")
+
+
+LECH_PHASES = ("qc", "report")   # phases where `next` surfaces pending spec deviations
+LECH_SHOW_MAX = 3                # items listed in full; the rest → `lech list` (20-line cap)
+
+
+def _cut(value, limit=60):
+    text = " ".join(str(value if value is not None else "").split())
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
+def _lech_block(pending):
+    """Lines for `next` (full mode): every pending deviation + the approval question."""
+    out = [f"Pending spec deviations ({len(pending)}) — ask the user to approve or reject each:"]
+    for m in pending[:LECH_SHOW_MAX]:
+        out.append(f"  #{m.get('id')} {_cut(m.get('q'), 8)}: {_cut(m.get('nguong'))} "
+                   f"→ measured {_cut(m.get('do'))} · applied: {_cut(m.get('chon'))}")
+    if len(pending) > LECH_SHOW_MAX:
+        out.append(f"  … +{len(pending) - LECH_SHOW_MAX} more: python3 scripts/tdq_state.py lech list")
+    out.append('  Decide: python3 scripts/tdq_state.py lech duyet|lech bac <id> --by "<user words>"'
+               " · rejected → fix task + set phase=implement")
+    return out
+
+
+TRON_BO_PHASES = ("implement", "qc")   # phases where `next` warns about a full suite over budget
+
+
+def _tron_bo_vuot(cwd, state):
+    """(runs, budget) when the request's full-suite runs exceed the budget, else None.
+
+    Reads the ledger through `tdq_test` (lazily) and fails OPEN: any error → None,
+    so `next` — run by every hook — never breaks on a bad ledger."""
+    if phase_key(state) not in TRON_BO_PHASES:
+        return None
+    try:
+        import tdq_test
+        counts = tdq_test.dem_repo(cwd, state.get("active_request"))
+        runs, budget = counts["tron_bo"], counts["ngan_sach"]
+    except Exception:
+        return None
+    return (runs, budget) if runs > budget else None
+
+
+def render_next(cwd, state, brief=False, compact=False):
+    """The 5-part block (spec §2.2), at most 20 lines.
+
+    brief=True   → exactly the 1 headline (used by UserPromptSubmit, every turn).
+    compact=True → no checklist, plus a pointer to the `next` command (used by
+                   SessionStart, where the cap is 600 characters and the rule line
+                   must sit on top — see hooks/scripts/session_start.py).
+    """
+    if state and state.get("active_request"):
+        effective_lane(state)          # warns (with recovery hints) on a bad enum
+        effective_phase(state)
+    head = next_headline(cwd, state)
+    pending = lech_cho(state) if phase_key(state) in LECH_PHASES else []
+    short = (f"{len(pending)} pending spec deviation(s) → "
+             "python3 scripts/tdq_state.py lech list") if pending else ""
+    over = _tron_bo_vuot(cwd, state) if state and state.get("active_request") else None
+    if over:
+        head = f"{head} · full suite {over[0]}/{over[1]}"
+    if brief:
+        return f"{head} · {short}" if short else head
+    row = phase_row(state)
+    lines = [head, f"Lean level: {muc_gat_hieu_luc(state)}",
+             f"QC level: {muc_qc_hieu_luc(state)}",
+             f"Next: {row['action']}", "Command:", f"  {row['cmd']}"]
+    if compact:
+        lines.append("Full checklist: python3 scripts/tdq_state.py next")
+    else:
+        lines.append("Checklist (copy into your answer, tick as you go):")
+        lines += [f"- [ ] {item}" for item in row["checklist"]]
+    lines.append(f"Done when: {row['done_when']}")
+    if over and not compact:
+        lines.append(f"Full test suite ran {over[0]} times this request (budget {over[1]}): "
+                     "between steps run python3 scripts/tdq_test.py vung-cham; "
+                     "the full suite belongs to the QC gates.")
+    if pending and compact:
+        lines.append(short)
+    elif pending:
+        lines += _lech_block(pending)
+    # Stays RELATIVE here on purpose: callers cap this text (SessionStart: 600 characters), and
+    # absolute paths added before the cap get the block cut short. Each caller rewrites paths
+    # with `lenh_cho_project` AFTER its own cap — the CLI `next` and `session_start.py` do.
+    return "\n".join(lines)
+
+
+def render_state_md(cwd, state):
+    """A markdown mirror of at most 30 lines for an agent/user to read (spec §2.3.1)."""
+    state = state or default_state()
+    lane = effective_lane(state, warn=False)
+    row = phase_row(state)
+    spec = state.get("spec_file") or "(none)"
+    if state.get("spec_file"):
+        spec += " — " + ("✔ approved" if state.get("spec_approved") else "⏳ awaiting approval")
+    plan = state.get("plan_file") or "(none)"
+    if state.get("plan_file"):
+        plan += " — " + ("✔ approved" if state.get("plan_approved") else "⏳ awaiting approval")
+    quick = "✔ approved" if state.get("quick_approved") else "⏳ awaiting approval"
+    lines = [
+        "# TDQ STATE (generated — do not hand-edit)",
+        f"Updated: {state.get('updated_at') or now_iso()} · Project: {os.path.abspath(cwd)} · schema 3",
+        "",
+        "| Field | Value |",
+        "|---|---|",
+        f"| Request | {state.get('active_request') or '(none)'} |",
+        f"| Lane | {lane or '(not chosen)'} |",
+        f"| Phase | {effective_phase(state, warn=False)} |",
+        f"| Spec | {spec} |",
+        f"| Plan | {plan} |",
+        f"| Quick approval | {quick if lane == 'quick' else '(not applicable)'} |",
+        f"| Doc language | {state.get('doc_lang') or DEFAULT_DOC_LANG} |",
+        f"| Lean level | {muc_gat_hieu_luc(state)} |",
+        f"| QC level | {muc_qc_hieu_luc(state)} |",
+        f"| Run mode | {effective_mode(state, warn=False) or '(not settled)'} |",
+        "",
+        "## Where we are",
+        f"{row['entry']}. Forbidden: {row['forbidden']}.",
+        "",
+        "## What comes next",
+        row["action"] + ".",
+        "```",
+        row["cmd"],
+        "```",
+        f"Done when: {row['done_when']}",
+        "",
+        "> Write state only through `python3 scripts/tdq_state.py …`. Unsure where you stand → run `tdq_state.py next`.",
+        "",
+    ]
+    return lenh_cho_project("\n".join(lines), cwd)
+
+
+# ------------------------------------------------------------------ turn log
+
+def turn_log_append(cwd, kind, session=None, **fields):
+    """Append one event to the turn log. I/O error → swallowed (a hook must not break)."""
+    row = {"ts": now_iso(), "session": session or "", "kind": kind}
+    row.update(fields)
+    path = turn_log_path(cwd)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+    return row
+
+
+TURN_STALE_SECONDS = 6 * 3600
+
+
+def _row_age_ok(row):
+    try:
+        ts = datetime.fromisoformat(row.get("ts", ""))
+    except (ValueError, TypeError):  # A18: a numeric/None ts must not kill the hook
+        return False
+    if ts.tzinfo is None:
+        ts = ts.astimezone()
+    return (datetime.now(timezone.utc) - ts.astimezone(timezone.utc)).total_seconds() <= TURN_STALE_SECONDS
+
+
+def turn_log_read(cwd, session=None):
+    """Events of the current session, skipping rows older than 6 hours (RR12)."""
+    rows = []
+    try:
+        with open(turn_log_path(cwd), "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if not isinstance(row, dict):
+                    continue
+                if session is not None and row.get("session") != session:
+                    continue
+                if not _row_age_ok(row):
+                    continue
+                rows.append(row)
+    except OSError:
+        return []
+    return rows
+
+
+def turn_log_clear(cwd, session):
+    """Drop this session's rows (at turn start). Other sessions' rows are kept."""
+    path = turn_log_path(cwd)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            kept = []
+            for line in f:
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                try:
+                    row = json.loads(stripped)
+                except ValueError:
+                    continue
+                if isinstance(row, dict) and row.get("session") == session:
+                    continue
+                if isinstance(row, dict) and not _row_age_ok(row):
+                    continue
+                kept.append(line if line.endswith("\n") else line + "\n")
+    except OSError:
+        return
+    try:
+        _atomic_write(path, "".join(kept))
+    except OSError:
+        pass
+
+
+# ---------------------------------------------------------- context dedupe
+
+PROMPT_CONTEXT_REL = os.path.join("docs", "tdq", ".tdq-prompt-last.json")
+
+
+def prompt_context_path(cwd):
+    return os.path.join(cwd, PROMPT_CONTEXT_REL)
+def prompt_context_last(cwd, session):
+    """Digest of the [TDQ:...] block printed last turn for this session, None if there is none."""
+    try:
+        with open(prompt_context_path(cwd), "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict) or data.get("session") != session:
+        return None
+    return data.get("digest")
+
+
+def prompt_context_save(cwd, session, digest):
+    """Store the digest just printed — turn_log_clear never touches this file
+    (dedupe must survive ACROSS turns, unlike the turn log wiped at each turn start)."""
+    path = prompt_context_path(cwd)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        _atomic_write(path, json.dumps({"session": session, "digest": digest}, ensure_ascii=False))
+    except OSError:
+        pass
+
+
+# ------------------------------------------------------------------- CLI
+
+def _parse_value(raw):
+    lowered = raw.lower()
+    if lowered == "null":
+        return None
+    if lowered == "true":
+        return True
+    if lowered == "false":
+        return False
+    return raw
+
+
+DONE_PHASES = {"idle", "report"}
+
+
+def _unfinished(state):
+    """An unfinished request: not yet at a terminal phase, or some gate already approved."""
+    if state.get("phase") not in DONE_PHASES:
+        return True
+    return any(state.get(k) for k in ("spec_approved", "plan_approved", "quick_approved"))
+
+
+def _parse_approve_args(rest):
+    """-> (target, mode, by, bo_qua_do). Fails only on genuinely wrong syntax.
+
+    bo_qua_do is the user's reason for approving past the R14 gate (None when absent);
+    an empty or blank reason is refused — a bypass must say why."""
+    if not rest:
+        _fail("Missing approval target (spec|plan|quick).")
+    if rest[0] == "diagram":
+        _fail(LOI_SO_DO_DA_GO)
+    target, mode, by, bo_qua_do, expected_sha, strict = rest[0], None, None, None, None, False
+    bo_qua_archify = None
+    # Aliases of lane quick: typing "approve nhanh" also writes the quick_* keys.
+    if target not in APPROVE_TARGETS and normalize_lane(target) == "quick":
+        target = "quick"
+    if target not in APPROVE_TARGETS:
+        _fail(f"Invalid approval target: {target} "
+              "(spec|plan|quick, aliases of quick: nhanh|express)")  # i18n-allow
+    i = 1
+    while i < len(rest):
+        flag = rest[i]
+        if flag == "--no-qc":
+            # Removed on 2026-09-23 — the QC scale replaced it. Dying with a pointer beats both
+            # accepting it silently (the user believes QC is off while it runs) and a bare usage
+            # dump (the user cannot tell what replaced it).
+            _fail("Flag --no-qc was removed on 2026-09-23 — the QC level is a state key now: "
+                  "run `python3 scripts/tdq_state.py set muc_qc=off` instead "
+                  "(levels: lite|full|ultra|off).")
+        if flag in ("--mode", "--by", "--bo-qua-do", "--bo-qua-archify", "--expected-sha"):
+            if i + 1 >= len(rest):
+                _fail(f"Missing value for {flag}")
+            value = rest[i + 1]
+            if flag == "--bo-qua-do":
+                if not value.strip():
+                    _fail("--bo-qua-do needs the user's reason — an empty reason is refused.")
+                bo_qua_do = value.strip()[:BY_MAX]
+            elif flag == "--bo-qua-archify":
+                if not value.strip():
+                    _fail("--bo-qua-archify needs the user's reason — an empty reason is refused.")
+                bo_qua_archify = value.strip()[:BY_MAX]
+            elif flag == "--expected-sha":
+                expected_sha = value.strip().lower()
+            elif flag == "--mode":
+                # Through normalize_mode: the labels shown at gate mode ("inline",
+                # "sub-agent implement") must land as the machine identifier.
+                mode = normalize_mode(value)
+                if mode is None:
+                    _fail("Invalid mode (" + " | ".join(VALID_MODES) + ").")
+            else:
+                by = value[:BY_MAX]
+            i += 2
+            continue
+        if flag == "--strict":
+            strict = True
+            i += 1
+            continue
+        # allow "approve plan main" (shorthand) — the mode sits right after the target.
+        # Aliases accepted too, but only while no mode is set: a stray argument must still blow up.
+        if mode is None and normalize_mode(flag):
+            mode = normalize_mode(flag)
+            i += 1
+            continue
+        _fail(f"Invalid argument: {flag}")
+    return target, mode, by, bo_qua_do, bo_qua_archify, expected_sha, strict
+
+
+def _file_changed_since_approval(cwd, state, target):
+    """True when the spec/plan file changed since it was approved. It tells
+    'a redundant re-approve command' apart from 'the file was edited during QC and
+    re-approved' — the latter must re-record the sha256, or the mismatch warning hangs forever."""
+    if target not in ("spec", "plan"):
+        return False
+    old = state.get(f"{target}_sha256")
+    rel = state.get(f"{target}_file")
+    if not old or not rel:
+        return False
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    try:
+        return sha256_noi_dung(path) != old
+    except OSError:
+        return False
+
+
+def _r14_findings(cwd, rel):
+    """-> [(line, msg)] from doc_lint R14 on the spec file; [] whenever the check cannot run.
+
+    Fail open: an unreadable file, a missing/broken doc_lint or a crash inside it only warns —
+    a broken linter must never block an approval. doc_lint is imported here, not at module
+    top, so every other command keeps working even when doc_lint does not import."""
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    try:
+        with open(path, encoding="utf-8-sig") as f:
+            text = f.read()
+    except (OSError, UnicodeDecodeError):
+        return []  # the sha256 step already warns about an unreadable spec_file
+    try:
+        import doc_lint
+        return list(doc_lint.r14_loi(text, os.path.basename(path)))
+    except Exception as exc:  # noqa: BLE001 — fail open on purpose
+        _warn(f"R14 check skipped — doc_lint failed ({type(exc).__name__}); approving without it.")
+        return []
+
+
+def _r14_gate(cwd, state, target, bo_qua_do):
+    """The one measured gate of `approve`: spec, lane full, spec_file set and readable.
+
+    -> None to go on recording; on a refusal it prints every finding and exits 1 without
+    touching state. With bo_qua_do (the user's reason) it records the bypass instead."""
+    if target != "spec":
+        return
+    # A fresh spec approval drops any bypass left by an earlier version of the spec.
+    state["spec_bo_qua_do"] = None
+    if effective_lane(state) != "full" or not state.get("spec_file"):
+        return
+    rel = state["spec_file"]
+    loi = _r14_findings(cwd, rel)
+    if not loi:
+        return
+    if bo_qua_do:
+        state["spec_bo_qua_do"] = {"ly_do": bo_qua_do, "at": now_iso(), "so_loi": len(loi)}
+        _warn(f"R14: {len(loi)} threshold row(s) in {rel} lack a prior measurement or a "
+              "fallback — approved anyway via --bo-qua-do (reason recorded in spec_bo_qua_do).")
+        return
+    for line, msg in loi:
+        print(f"{rel}:{line}: [R14] {msg}", file=sys.stderr)
+    print("Measure each threshold (Đo trước) and pick a fallback (Dự phòng nếu trượt), "  # i18n-allow
+          "or the user may pass --bo-qua-do \"<reason>\".", file=sys.stderr)
+    _warn(f"approve spec refused by R14: {len(loi)} finding(s) in {rel} — spec_approved unchanged.")
+    sys.exit(1)
+
+
+ARCHIFY_MOC = "2026-11-09-0143"
+
+
+def _archify_bat_buoc(state):
+    """True khi active_request là slug hợp lệ và mở từ mốc ARCHIFY_MOC trở đi."""
+    slug = (state or {}).get("active_request")
+    if not slug or not isinstance(slug, str):
+        return False
+    if not re.match(r"^\d{4}-\d{2}-\d{2}-\d{4}", slug):
+        return False
+    return slug[:15] >= ARCHIFY_MOC
+
+
+def _archify_gate(cwd, state, target, bo_qua):
+    """Gate Archify cho approve spec (lane full) và approve quick.
+
+    Fail-open khi module tdq_archify hỏng hoặc quăng ngoại lệ (như R14).
+    """
+    if target == "plan":
+        return
+    if not _archify_bat_buoc(state):
+        return
+    if target == "spec" and effective_lane(state) != "full":
+        return
+
+    slug = state.get("active_request")
+    if target == "spec":
+        doc_rel = state.get("spec_file")
+        if not doc_rel:
+            return
+        man_rel = os.path.join("docs", "tdq", "spec", f"{slug}-preview.manifest.json")
+    else:  # quick
+        doc_rel = os.path.join("docs", "tdq", "plan", f"{slug}.md")
+        man_rel = os.path.join("docs", "tdq", "plan", f"{slug}-flow.manifest.json")
+
+    doc_path = doc_rel if os.path.isabs(doc_rel) else os.path.join(cwd, doc_rel)
+    man_path = man_rel if os.path.isabs(man_rel) else os.path.join(cwd, man_rel)
+
+    try:
+        import tdq_archify
+        res = tdq_archify.verify_document_and_manifest(doc_path, man_path, project=cwd)
+        status = res.get("status")
+        reasons = res.get("reasons", [])
+    except Exception as exc:  # noqa: BLE001 — fail-open như R14
+        _warn(f"Archify check skipped — tdq_archify failed ({type(exc).__name__}); approving without it.")
+        return
+
+    if status == "current":
+        return
+
+    if bo_qua:
+        state["archify_bo_qua"] = {"ly_do": bo_qua, "at": now_iso(), "cong": target}
+        _warn(f"Archify gate: {doc_rel} manifest status is {status} — "
+              f"approved anyway via --bo-qua-archify (reason: {bo_qua}).")
+        return
+
+    # Chặn duyệt
+    print(f"Refusal: {doc_rel} Archify preview/flow is missing or not current (status: {status}).", file=sys.stderr)
+    if reasons:
+        for r in reasons:
+            print(f"  - {r}", file=sys.stderr)
+    if target == "spec":
+        print(f"Render preview command: python3 scripts/tdq_archify.py render --candidate <cand> --out docs/tdq/spec/{slug}-preview.html --document {doc_rel} --type architecture", file=sys.stderr)
+    else:
+        print(f"Render flow command: python3 scripts/tdq_archify.py render --candidate <cand> --out docs/tdq/plan/{slug}-flow.html --document {doc_rel} --type flow", file=sys.stderr)
+    print('Or bypass with user confirmation: --bo-qua-archify "<reason>"', file=sys.stderr)
+    _warn(f"approve {target} refused by Archify gate ({status}): {man_rel} — approval unchanged.")
+    sys.exit(1)
+
+
+def _cli_approve(cwd, rest):
+    """Record that the user approved. Mostly not a gate: it warns on a mismatch but
+    STILL writes and exits 0 — deadlock-by-gate is what 0.2.0 removed.
+
+    The single exception is a measured gate on new specs: `approve spec` (lane full) refuses
+    while doc_lint R14 finds a numeric DoD threshold without `Đo trước` / `Dự phòng nếu trượt`.
+    This does not bring the 0.2.0 deadlock back: R14 is silent on specs older than its cutoff
+    slug, it fails open when the check cannot run, and the user always holds an escape —
+    `--bo-qua-do "<reason>"` approves anyway and records the reason in spec_bo_qua_do.
+    An already approved, unchanged spec is not re-checked."""  # i18n-allow
+    target, mode, by, bo_qua_do, bo_qua_archify, expected_sha, strict = _parse_approve_args(rest)
+    state = load(cwd)
+    if state is None:
+        _warn("No state yet — building the default state then recording the approval. Run init first.")
+        state = default_state()
+    stamp = state.get("updated_at")
+
+    if state.get(f"{target}_approved") and not _file_changed_since_approval(cwd, state, target):
+        print(f"ℹ️ {target} was already approved at {state.get(f'{target}_approved_at')} — not recorded again, move on.")
+        if mode and state.get("implement_mode") != mode:
+            state["implement_mode"] = mode
+            # This is exactly the path where the user answers gate `mode`: the plan was
+            # approved earlier, this call only settles the mode → open the way to implement.
+            if target == "plan" and effective_phase(state, warn=False) == "mode":
+                state["phase"] = "implement"
+            save(cwd, state, expect_updated_at=stamp)
+            print(f"ℹ️ implement_mode updated to {mode}.")
+        return
+    reapproved = bool(state.get(f"{target}_approved"))
+
+    lane = effective_lane(state)
+    has_active = bool(state.get("active_request"))
+    lane_ok = (lane == "quick") if target == "quick" else (lane == "full")
+    order_ok = True if target != "plan" else bool(state.get("spec_approved"))
+    file_registered = True
+    file_readable = True
+    actual_sha = None
+    rel = None
+    if target in ("spec", "plan"):
+        rel = state.get(f"{target}_file")
+        if not rel:
+            file_registered = False
+        else:
+            path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+            try:
+                actual_sha = sha256_noi_dung(path)
+                state[f"{target}_sha256"] = actual_sha
+            except OSError:
+                file_readable = False
+
+    hash_match = True
+    if expected_sha:
+        if actual_sha is None or actual_sha != expected_sha:
+            hash_match = False
+
+    if strict:
+        if not has_active:
+            _fail("No TDQ request is open — run init first (--strict).")
+        if not lane_ok:
+            _fail(f"Approving {target} while the request sits in lane {lane} (--strict).")
+        if not order_ok:
+            _fail("Approving the plan while no spec approval is recorded — check the order (--strict).")
+        if not file_registered:
+            _fail(f"{target}_file is not registered in state — cannot compute the sha256 (--strict).")
+        elif not file_readable:
+            _fail(f"Cannot read {rel} — skipping the sha256 (--strict).")
+    else:
+        if not has_active:
+            _warn("No TDQ request is open — recording anyway, but you should run init first.")
+        if not lane_ok:
+            _warn(f"Approving {target} while the request sits in lane {lane}.")
+        if not order_ok:
+            _warn("Approving the plan while no spec approval is recorded — check the order.")
+        if not file_registered:
+            _warn(f"{target}_file is not registered in state — cannot compute the sha256.")
+        elif not file_readable:
+            _warn(f"Cannot read {rel} — skipping the sha256.")
+
+    if not hash_match:
+        _fail(f"Approval hash mismatch: expected {expected_sha}, computed {actual_sha}.")
+
+    _r14_gate(cwd, state, target, bo_qua_do)
+    _archify_gate(cwd, state, target, bo_qua_archify)
+
+    state[f"{target}_approved"] = True
+    state[f"{target}_approved_at"] = now_iso()
+    state[f"{target}_approved_by"] = by
+    old_desc = state.get(f"{target}_descriptor") or {}
+    version = (old_desc.get("version") or 0) + 1 if isinstance(old_desc, dict) else 1
+    state[f"{target}_descriptor"] = {
+        "target": target,
+        "request": state.get("active_request"),
+        "lane": lane,
+        "file": rel,
+        "sha256": actual_sha,
+        "by": by,
+        "at": state[f"{target}_approved_at"],
+        "assurance": "cli-verified" if (has_active and lane_ok and order_ok and file_registered and file_readable) else "legacy-unverified",
+        "version": version,
+    }
+    if mode:
+        state["implement_mode"] = mode
+    if target == "quick":
+        # A6: quick never walks the phase table — push implement so that `set phase=idle`
+        # at closing time becomes a terminal distinguishable from the idle before approval.
+        state["phase"] = "implement"
+    if target == "plan":
+        # The mode gate is split from the plan gate: approving the plan without settling the
+        # mode stops at phase `mode` (explain + ask). A user who named the mode inside the
+        # approval sentence skips that gate and goes straight to implement — never re-ask.
+        state["phase"] = "implement" if state.get("implement_mode") else "mode"
+    save(cwd, state, expect_updated_at=stamp)
+    if not by:
+        _warn("Missing --by \"<the user's exact words>\" — record it so who approved what stays checkable.")
+    extra = f", mode {mode}" if mode else ""
+    if reapproved:
+        print(f"✅ {target} changed since the previous approval — recorded the user's re-approval "
+              f"at {state[f'{target}_approved_at']}{extra}, sha256 updated.")
+    else:
+        print(f"✅ Recorded the user's approval of {target} at {state[f'{target}_approved_at']}{extra}.")
+
+
+def _chan_spec_chua_duyet(state):
+    """Gate `plan`: the user must have approved the spec first.
+
+    Until 2026-09-01 this door was guarded only by the diagram list, so removing
+    the diagram phase left it wide open — a plan could be written before anyone
+    approved the spec it is built on. `phases.md` has always stated the real
+    condition (`spec_approved = true`); this is that sentence turned into code.
+    """
+    if state.get("spec_approved"):
+        return
+    _fail("The spec has not been approved yet. The user approves it in chat, then "
+          "record it with `approve spec --by \"...\"` before moving to phase=plan.")
+
+
+def _chan_worktree_con_mo(cwd, state=None):
+    """Gate `qc`: an open row in the worktree ledger stops the phase from moving.
+
+    QC is the last moment anyone still looks at this request. Let it through and the
+    leftover worktree stays on disk forever — the exact drift this ledger exists to stop.
+    A missing or corrupt ledger is NOT evidence of a leftover worktree, so it never
+    blocks: a false block here would teach people to route around the gate.
+    """
+    try:
+        import tdq_worktree_registry as so_wt
+        slug = (state or {}).get("active_request") if state else None
+        if not slug:
+            s = load(cwd)
+            slug = (s or {}).get("active_request")
+        mo = so_wt.dong_mo(cwd, slug=slug)
+    except Exception:
+        return
+    if not mo:
+        return
+    ten = ", ".join(f"{d.get('ma_task')} ({d.get('duong_dan')})" for d in mo)
+    _fail(f"{len(mo)} worktree(s) still open: {ten}. "
+          "Clean them up first: python3 scripts/tdq_team.py sweep --clean")
+
+
+def _extract_plan_targets(cwd, state):
+    """Extract all target paths declared on `Chạm:` lines in the plan."""
+    rel = state.get("plan_file")
+    if not rel:
+        req = state.get("active_request")
+        if not req:
+            return []
+        rel = os.path.join("docs", "tdq", "plan", f"{req}.md")
+    path = rel if os.path.isabs(rel) else os.path.join(cwd, rel)
+    if not os.path.isfile(path):
+        return []
+    targets = []
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith("- Chạm:") or stripped.startswith("Chạm:"):
+                    for target in re.findall(r"`([^`]+)`", stripped):
+                        clean = target.strip().replace("\\", "/")
+                        if clean and clean not in targets:
+                            targets.append(clean)
+    except OSError:
+        pass
+    return targets
+
+
+def _chan_eval_plan_chua_co(cwd, state):
+    """Gate `implement`: chỉ chạy khi đã eval-enable; target hành vi skill/hook/plugin đòi hỏi eval-plan hợp lệ."""
+    if not state.get("eval_enabled"):
+        return
+    targets = _extract_plan_targets(cwd, state)
+    if not targets:
+        return
+    try:
+        import tdq_eval_contract
+    except ImportError:
+        return
+    classification = tdq_eval_contract.classify_targets(targets)
+    if not classification.get("requires_eval"):
+        return
+    plan_rel = state.get("eval_plan_file")
+    if not plan_rel:
+        _fail(
+            "Target chạm thay đổi hành vi skill/hook/plugin nhưng chưa có eval-plan hợp lệ.\n"
+            "Tạo hoặc đăng ký plan qua `python3 scripts/tdq_skill_eval.py plan` rồi `set eval_plan_file=<path>`."
+        )
+    plan_path = plan_rel if os.path.isabs(plan_rel) else os.path.join(cwd, plan_rel)
+    if not os.path.isfile(plan_path):
+        _fail(f"File eval-plan không tồn tại: {plan_rel}")
+    try:
+        with open(plan_path, encoding="utf-8") as f:
+            plan_data = json.load(f)
+    except Exception as exc:
+        _fail(f"Không đọc được eval-plan JSON ({plan_rel}): {exc}")
+    val_res = tdq_eval_contract.validate_eval_plan(plan_data)
+    if not val_res.get("valid"):
+        _fail(f"eval-plan không hợp lệ: {', '.join(val_res.get('errors', []))}")
+
+
+def _chan_eval_evidence_chua_co(cwd, state):
+    """Gate `report`: chỉ chạy khi đã eval-enable; target hành vi đòi hỏi chứng cứ Eval hợp lệ, không thiếu hay stale."""
+    if not state.get("eval_enabled"):
+        return
+    targets = _extract_plan_targets(cwd, state)
+    if not targets:
+        return
+    try:
+        import tdq_eval_contract
+    except ImportError:
+        return
+    classification = tdq_eval_contract.classify_targets(targets)
+    if not classification.get("requires_eval"):
+        return
+    plan_rel = state.get("eval_plan_file")
+    if not plan_rel:
+        _fail("Chưa có eval-plan để đối chiếu chứng cứ Eval (trạng thái INCOMPLETE).")
+    plan_path = plan_rel if os.path.isabs(plan_rel) else os.path.join(cwd, plan_rel)
+    if not os.path.isfile(plan_path):
+        _fail(f"File eval-plan không tồn tại: {plan_rel}")
+    try:
+        with open(plan_path, encoding="utf-8") as f:
+            plan_data = json.load(f)
+    except Exception as exc:
+        _fail(f"Không đọc được eval-plan ({plan_rel}): {exc}")
+
+    target_spec = plan_data.get("targets", {})
+    actual_hashes = {}
+    target_iterable = target_spec.keys() if isinstance(target_spec, dict) else (target_spec if isinstance(target_spec, list) else [])
+    for t in target_iterable:
+        t_path = os.path.join(cwd, str(t))
+        actual_hashes[str(t)] = sha256_noi_dung(t_path) if os.path.isfile(t_path) else ""
+
+    slug = state.get("active_request")
+    art_dir = os.path.join(cwd, "docs", "tdq", "artifacts", str(slug))
+    records = []
+    if os.path.isdir(art_dir):
+        for fname in os.listdir(art_dir):
+            if fname.endswith(".json") and (fname.startswith("trial_") or fname.startswith("rec_")):
+                try:
+                    with open(os.path.join(art_dir, fname), encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, dict) and ("trial_id" in data or data.get("schema") == "tdq-trial-record/v1"):
+                            records.append(data)
+                except Exception:
+                    pass
+
+    gate_res = tdq_eval_contract.check_eval_gate(
+        plan_data,
+        stage="pre_report",
+        actual_target_hashes=actual_hashes,
+        evidence_records=records,
+    )
+    if gate_res.get("verdict") != "PASS":
+        reason = gate_res.get("reason") or "missing_or_stale_evidence"
+        _fail(
+            f"Chưa có chứng cứ Eval hợp lệ cho target hành vi (trạng thái INCOMPLETE: {reason}).\n"
+            "Chạy `python3 scripts/tdq_skill_eval.py run/report` hoặc kiểm tra chứng cứ trước khi sang report."
+        )
+
+
+def _chan_report_thieu(cwd, state):
+    """Gate `set phase=idle`: bắt buộc report đầy đủ 4 mục và manifest current.
+
+    Chỉ áp dụng khi _archify_bat_buoc(state) và request đã duyệt gate (spec_approved hoặc quick_approved).
+    """
+    if not _archify_bat_buoc(state):
+        return
+    if not (state.get("spec_approved") or state.get("quick_approved")):
+        return
+
+    slug = state.get("active_request")
+    rep_rel = os.path.join("docs", "tdq", "reports", f"{slug}.md")
+    rep_path = rep_rel if os.path.isabs(rep_rel) else os.path.join(cwd, rep_rel)
+
+    if not os.path.isfile(rep_path):
+        _fail(f"Report file not found: {rep_rel}. Write report before closing to idle.")
+
+    try:
+        with open(rep_path, "r", encoding="utf-8-sig") as f:
+            content = f.read().lower()
+    except Exception as exc:
+        _fail(f"Cannot read report file {rep_rel}: {exc}")
+
+    muc_bat_buoc = [
+        ("trước request", "before request", "Trước request / Before request"),
+        ("sau request", "after request", "Sau request / After request"),
+        ("đã test", "what was tested", "Đã test / What was tested"),
+        ("kết quả test", "test result", "Kết quả test / Test result"),
+    ]
+
+    thieu = []
+    for vi, en, nhan in muc_bat_buoc:
+        if vi not in content and en not in content:
+            thieu.append(nhan)
+
+    if thieu:
+        _fail(f"Report {rep_rel} is missing required section(s):\n  - " + "\n  - ".join(thieu))
+
+    if state.get("archify_bo_qua"):
+        return
+
+    man_rel = os.path.join("docs", "tdq", "reports", f"{slug}.manifest.json")
+    man_path = man_rel if os.path.isabs(man_rel) else os.path.join(cwd, man_rel)
+
+    try:
+        import tdq_archify
+        res = tdq_archify.verify_document_and_manifest(rep_path, man_path, project=cwd)
+        status = res.get("status")
+        reasons = res.get("reasons", [])
+    except Exception as exc:
+        _warn(f"Archify report check skipped — tdq_archify failed ({type(exc).__name__}); closing without it.")
+        return
+
+    if status != "current":
+        print(f"Refusal: Report {rep_rel} Archify diagram is missing or not current (status: {status}).", file=sys.stderr)
+        if reasons:
+            for r in reasons:
+                print(f"  - {r}", file=sys.stderr)
+        print(f"Render report command: python3 scripts/tdq_archify.py render --candidate <cand> --out docs/tdq/reports/{slug}.html --document {rep_rel} --type architecture", file=sys.stderr)
+        _warn(f"set phase=idle refused by Archify report gate ({status}): {man_rel}")
+        sys.exit(1)
+
+
+def _cli_eval_enable(cwd, rest):
+    """`eval-enable --by "<user words>"` — opt in to the eval gates for this request."""
+    flags = _flag_pairs(rest, {"--by"}, "eval-enable")
+    by = flags.get("--by", "").strip()
+    if not by:
+        _fail("eval-enable needs --by \"<the user's own words>\"")
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+    state["eval_enabled"] = {"by": by[:200], "at": now_iso()}
+    save(cwd, state, expect_updated_at=stamp)
+    print(f"✅ eval-enable: by={state['eval_enabled']['by']!r}")
+
+
+def _pop_json_flag(argv):
+    """Strip the `--json` flag out of argv. By default the CLI prints a 1-line summary to
+    keep context cheap; with `--json` it prints the whole state as before (for inspection/debug)."""
+    rest = [a for a in argv if a != "--json"]
+    return rest, len(rest) != len(argv)
+
+
+def _pop_bo_qua_lsp(argv):
+    """Strip the `--bo-qua-lsp "<reason>"` pair out of the argv of `init` -> (rest, reason or None)."""
+    if "--bo-qua-lsp" not in argv:
+        return argv, None
+    i = argv.index("--bo-qua-lsp")
+    ly_do = argv[i + 1].strip() if i + 1 < len(argv) else ""
+    if not ly_do or ly_do.startswith("--"):
+        _fail('--bo-qua-lsp needs a reason: --bo-qua-lsp "<why this request runs without proven LSP>"')
+    return argv[:i] + argv[i + 2:], ly_do
+
+
+def _cong_lsp(cwd, bo_qua):
+    """The LSP gate of `init` (0.59.0) -> the `lsp_bo_qua` value to record (None when it passed).
+
+    A request may only open once every LSP module of the project (language, root) has been proven
+    through the MCP path the agent uses — `agent-lsp doctor` reported healthy in all three failures
+    measured 2026-10-07. The gate sits in this COMMAND, not in a hook, like the R14 gate of
+    `approve spec`; tier `nhỏ` never calls `init` and is never blocked. The import is lazy so
+    every other sub-command stays as cheap as before.
+    """
+    import lsp_module
+    # `init` is silent on a clean run (its own contract, tests pin it): the module scan's log line
+    # would be the only stderr output, so it is muted for this one call.
+    tat_truoc = lsp_module.tdq_lsp._LOG_TAT
+    lsp_module.tdq_lsp._LOG_TAT = True
+    try:
+        ok, dong = lsp_module.cong_init(cwd)
+    finally:
+        lsp_module.tdq_lsp._LOG_TAT = tat_truoc
+    if ok:
+        return None
+    if bo_qua:
+        _warn("Opening past the LSP gate (--bo-qua-lsp): " + "; ".join(dong))
+        return {"ly_do": bo_qua[:200], "at": now_iso(), "module": dong}
+    _fail(lenh_cho_project(
+        "LSP is not proven for every module of this project — init refused:\n  "
+        + "\n  ".join(dong)
+        + "\nFix: python3 scripts/tdq_setup.py (installs what is missing), then "
+          "python3 scripts/tdq_lsp.py kich-ban and send the MCP calls it prints, then "
+          "python3 scripts/tdq_lsp.py ghi-kiem <module> <N>.\n"
+          'Quyền tự quyết LSP: Agent tự động áp dụng --bo-qua-lsp "<lý do rõ ràng>" cho docs/research/cài MCP hoặc kịch bản tham chiếu nội tệp mà không dừng hỏi người dùng.', cwd))
+
+
+def _pop_lang_flag(argv):
+    """Strip the `--lang <code>` pair out of the argv of `init`.
+
+    Its position is free (before or after the lane) because whoever types the command
+    remembers the lane first and thinks of the language afterwards. A bad code stops
+    immediately — no half-written state.
+    """
+    rest = []
+    doc_lang = DEFAULT_DOC_LANG
+    i = 0
+    while i < len(argv):
+        if argv[i] == "--lang":
+            if i + 1 >= len(argv):
+                _fail("Missing the language code after --lang (example: --lang en).")
+            ma = normalize_doc_lang(argv[i + 1])
+            if ma is None:
+                _fail(f"Invalid language code: {argv[i + 1]} "
+                      "(expected the shape vi|en|ja|pt-br).")
+            doc_lang = ma
+            i += 2
+            continue
+        rest.append(argv[i])
+        i += 1
+    return rest, doc_lang
+
+
+def _echo_state(cmd, state, want_json):
+    """Print the result of a state-writing command: a 1-line summary, or the whole JSON with --json."""
+    if want_json:
+        print(json.dumps(state, ensure_ascii=False, indent=2))
+        return
+    print(f"✅ {cmd}: request={state.get('active_request')} "
+          f"lane={state.get('lane')} phase={state.get('phase')}")
+
+
+# The only kinds of stop that may end a turn while `implement` has open tasks
+# (spec 2026-10-03-0732 §2 row 5). Kind → one-line meaning; hooks may import it.
+LOAI_DUNG = {
+    "mat-truy-cap": "lost access/network/permission, or a broken tool or machine, "
+                    "with no workaround the agent may pick",
+    "pha-huy": "destructive or hard-to-undo work beyond a commit (data deletion, "
+               "DB schema, public API contract, push/publish)",
+    "dau-vao-user": "an input only the user holds (secret, account, payment, "
+                    "adding/dropping a spec §2 output)",
+    "tran-qc": "the QC fix loop hit its 3-round cap",
+}
+LECH_KHONG_DUNG = ("An unreachable spec threshold is not a stop: record it with "
+                   "`lech add` and carry on.")
+
+
+def _loai_dung_help():
+    """The refusal text: the 4 legal kinds, one line each, then the `lech add` pointer."""
+    lines = [f"  {k} — {v}" for k, v in LOAI_DUNG.items()]
+    return "\n".join(["Allowed --loai kinds:"] + lines + [LECH_KHONG_DUNG])
+
+
+def _flag_pairs(rest, allowed, cmd, hint=""):
+    """Parse `--flag value` pairs; an unknown flag or a missing value is a syntax error.
+
+    Shared by `pause` and `lech`. `hint` is appended to every syntax error message.
+    """
+    out = {}
+    i = 0
+    while i < len(rest):
+        flag = rest[i]
+        if flag not in allowed:
+            _fail(f"{cmd}: unexpected argument {flag!r}.{hint}")
+        if i + 1 >= len(rest):
+            _fail(f"{cmd}: missing a value after {flag}.{hint}")
+        out[flag] = rest[i + 1].strip()
+        i += 2
+    return out
+
+
+def _cli_implement_pause(cwd, cmd, rest):
+    """`pause --loai <kind> --ly-do "<why>"` declares the pause, `resume` clears it.
+
+    A declared pause is the only legal way to end a turn while the plan still
+    has open tasks, so both the kind (one of LOAI_DUNG) and the reason are
+    mandatory: an undeclared stop is exactly the silent exit the Stop gate
+    exists to refuse, and a missed spec threshold goes to `lech add` instead.
+    """
+    rest, want_json = _pop_json_flag(list(rest))
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+
+    if cmd == "resume":
+        if rest:
+            _fail("resume takes no argument.")
+        state["implement_pause"] = None
+        save(cwd, state, expect_updated_at=stamp)
+        _info("implement pause cleared — the Stop gate is armed again")
+        _echo_state("resume", state, want_json)
+        return
+
+    usage = 'pause --loai <kind> --ly-do "<why the run stopped>"'
+    flags = _flag_pairs(rest, ("--loai", "--ly-do"), "pause",
+                        hint=f" Use: {usage}.\n{_loai_dung_help()}")
+    kind = flags.get("--loai", "")
+    reason = flags.get("--ly-do", "")
+    if not kind:
+        _fail(f"pause needs a kind: {usage}.\n{_loai_dung_help()}")
+    if kind not in LOAI_DUNG:
+        _fail(f"pause: {kind!r} is not a legal stop kind.\n{_loai_dung_help()}")
+    if not reason:
+        _fail(f"pause needs a reason: {usage}.")
+    state["implement_pause"] = {
+        "loai": kind,
+        "ly_do": reason[:400],
+        "at": now_iso(),
+        "by": "claude",
+    }
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"implement pause declared [{kind}]: {reason[:120]}")
+    _echo_state("pause", state, want_json)
+
+
+# ------------------------------------------------------------ spec deviations
+
+LECH_TRUONG = (("--q", "q"), ("--nguong", "nguong"), ("--do", "do"),
+               ("--chon", "chon"), ("--ly-do", "ly_do"))
+LECH_QUYET = ("duyet", "bac")
+
+
+def lech_cho(state):
+    """Pending spec deviations (trang_thai == "cho"), in recording order.
+
+    Pure helper so `next` can surface what still waits for the user's decision.
+    Tolerates an old state without the key.
+    """
+    return [m for m in (state or {}).get("lech_spec") or []
+            if isinstance(m, dict) and m.get("trang_thai") == "cho"]
+
+
+def _cli_lech(cwd, rest):
+    """`lech add|list|duyet|bac` — record and decide spec deviations."""
+    rest, want_json = _pop_json_flag(list(rest))
+    if not rest:
+        _fail("lech needs a sub-command: add | list | duyet | bac.")
+    sub, rest = rest[0], rest[1:]
+    if sub not in ("add", "list") and sub not in LECH_QUYET:
+        _fail(f"lech: unknown sub-command {sub!r} (add | list | duyet | bac).")
+    state = load(cwd)
+    if state is None:
+        _fail("No state yet — run init first.")
+    stamp = state.get("updated_at")
+    items = [m for m in state.get("lech_spec") or [] if isinstance(m, dict)]
+
+    if sub == "list":
+        if rest:
+            _fail("lech list takes no argument besides --json.")
+        _info(f"spec deviation list: {len(items)} item(s), {len(lech_cho(state))} pending")
+        if want_json:
+            print(json.dumps(items, ensure_ascii=False, indent=2))
+        elif not items:
+            print("no spec deviation recorded")
+        else:
+            for m in items:
+                print(f"#{m.get('id')} [{m.get('trang_thai')}] {m.get('q')}: "
+                      f"threshold {m.get('nguong')!r}, measured {m.get('do')!r} -> "
+                      f"chose {m.get('chon')!r} ({m.get('ly_do')})")
+        return
+
+    if sub == "add":
+        flags = _flag_pairs(rest, {f for f, _ in LECH_TRUONG}, "lech")
+        missing = [f for f, _ in LECH_TRUONG if not flags.get(f)]
+        if missing:
+            _fail(f"lech add is missing: {', '.join(missing)}.")
+        if not re.fullmatch(r"Q\d+", flags["--q"]):
+            _fail(f"lech add: --q must look like Q3, got {flags['--q']!r}.")
+        new_id = max((m.get("id") or 0 for m in items), default=0) + 1
+        item = {"id": new_id}
+        for flag, key in LECH_TRUONG:
+            item[key] = flags[flag][:400]
+        item.update({"trang_thai": "cho", "at": now_iso(), "by": "claude"})
+        items.append(item)
+        state["lech_spec"] = items
+        save(cwd, state, expect_updated_at=stamp)
+        _info(f"spec deviation #{new_id} recorded on {item['q']}: pending user decision")
+        if want_json:
+            print(json.dumps(item, ensure_ascii=False, indent=2))
+        else:
+            print(f"✅ lech add: id={new_id} q={item['q']} trang_thai=cho")
+        return
+
+    # duyet | bac
+    if not rest:
+        _fail(f"lech {sub} needs an id: lech {sub} <id> --by \"<user sentence>\".")
+    raw_id, rest = rest[0], rest[1:]
+    by = _flag_pairs(rest, {"--by"}, "lech").get("--by")
+    if not by:
+        _fail(f"lech {sub} needs --by \"<the user's own words>\".")
+    item = next((m for m in items if str(m.get("id")) == raw_id), None)
+    if item is None:
+        _fail(f"lech {sub}: no spec deviation with id {raw_id!r}.")
+    before = item.get("trang_thai")
+    if before != "cho":
+        # stderr, not stdout: `--json` callers parse stdout and a note there breaks them.
+        print(f"note: deviation #{raw_id} was already decided ({before}); overriding.",
+              file=sys.stderr)
+    item["trang_thai"] = sub
+    item["quyet_at"] = now_iso()
+    item["quyet_by"] = by[:400]
+    state["lech_spec"] = items
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"spec deviation #{raw_id} set to {item['trang_thai']}")
+    if want_json:
+        print(json.dumps(item, ensure_ascii=False, indent=2))
+    else:
+        print(f"✅ lech {sub}: id={raw_id} trang_thai={item['trang_thai']}")
+
+
+def cli(argv):
+    started_in = os.getcwd()
+    env = os.environ.get("TDQ_PROJECT_DIR")
+    cwd = resolve_project_dir(started_in)
+    if not env and os.path.realpath(cwd) != os.path.realpath(started_in):
+        _info(f"Project root: {cwd} (command ran from {started_in})")
+    for shadow in find_shadow_states(cwd):
+        _warn(f"Stray state found: {shadow} — only {STATE_REL} at the project root counts, "
+              "delete the stray file so no wrong approval state gets read.")
+    if not argv:
+        _fail("Missing command.")
+    # Hidden alias (`tam-hoan` → `pause`); the table lives in tdq_ten_lenh.py.
+    _bi_danh = tdq_ten_lenh.giai_ten(argv[0], tdq_ten_lenh.BANG_DOI_TEN["tdq_state.py"])
+    if _bi_danh is not None:
+        argv = [_bi_danh] + list(argv[1:])
+    cmd = argv[0]
+
+    if cmd == "next":
+        brief = "--brief" in argv[1:]
+        for extra in argv[1:]:
+            if extra != "--brief":
+                _fail(f"Invalid argument: {extra}")
+        print(lenh_cho_project(render_next(cwd, load(cwd), brief=brief), cwd))
+        return
+
+    if cmd == "modes":
+        # Reads no state: it reports which run modes this machine can offer.
+        extra = argv[1:]
+        if extra not in ([], ["--json"]):
+            _fail(f"Invalid argument: {' '.join(extra)}")
+        rows = liet_ke_modes(cwd=cwd)
+        if extra:
+            print(json.dumps(rows, ensure_ascii=False))
+        else:
+            for r in rows:
+                dau = "o" if r["chon_duoc"] else "x"
+                duoi = "" if r["chon_duoc"] else f" — {r['ly_do']}"
+                print(f"[{dau}] {r['ma']} · {r['nhan']}{duoi}")
+        return
+
+    if cmd == "phases-doc":
+        # Reads/writes no state: it only dumps the PHASE_TABLE constant as markdown.
+        extra = argv[1:]
+        if extra not in ([], ["--plugin-root"]):
+            _fail(f"Invalid argument: {' '.join(extra)}")
+        print(render_phases_md(plugin_root=bool(extra)), end="")
+        return
+
+    if cmd == "get":
+        state = load(cwd) or default_state()
+        if len(argv) > 1:
+            key = argv[1]
+            if key not in state:
+                _warn(f"Key not in state: {key}")
+                print("")
+                return
+            value = state.get(key)
+            print("" if value is None else (json.dumps(value, ensure_ascii=False)
+                                            if not isinstance(value, str) else value))
+        else:
+            print(json.dumps(state, ensure_ascii=False, indent=2))
+        return
+
+    if cmd == "init":
+        argv, want_json = _pop_json_flag(argv)
+        argv, doc_lang = _pop_lang_flag(argv)
+        argv, bo_qua_lsp = _pop_bo_qua_lsp(argv)
+        if len(argv) < 2:
+            _fail(f"Missing slug. Formula: {SLUG_FORMULA}")
+        # Writing a new one requires the hour and minute. A bare warning changes no
+        # behaviour: the new standard would drift the first time someone skipped it.
+        # Reading still accepts the old slug shape.
+        phan_tich = parse_slug(argv[1])
+        if phan_tich is None:
+            _fail(f"Malformed slug: {argv[1]}. Formula: {SLUG_FORMULA}")
+        if phan_tich[1] is None:
+            _fail(f"Slug missing the hour and minute: {argv[1]}. Formula: {SLUG_FORMULA} "
+                  f"(example {phan_tich[0]}-{datetime.now().strftime('%H%M')}-{phan_tich[2]})")
+        lsp_bo_qua = _cong_lsp(cwd, bo_qua_lsp)
+        # init = OPEN A NEW REQUEST: it resets the whole state (request, lane, phase,
+        # spec/plan file, every approval field, implement_mode). If the open request is
+        # still unfinished a warning goes to stderr — it still runs, but leaves a trace.
+        old = load(cwd) or {}
+        old_slug = old.get("active_request")
+        if old_slug:
+            # init wipes the state. Without closing the books first, every timestamp of the
+            # old request is lost — this is the only door that catches an abandoned request.
+            _dong_so_request_cu(cwd)
+        state = default_state()
+        state["active_request"] = argv[1]
+        state["previous_request"] = old_slug
+        state["started_at"] = now_iso()
+        ghi_moc_phase(state, state["phase"], state["started_at"])
+        if old_slug and old_slug != argv[1] and _unfinished(old):
+            _warn(f"Overwriting request '{old_slug}' (lane {old.get('lane')}, "
+                  f"phase {old.get('phase')}) — every approval state of that request is erased.")
+        if len(argv) > 2:
+            lane = normalize_lane(argv[2])
+            if lane is None:
+                _fail("Invalid lane. Accepts: nhanh|express|quick "  # i18n-allow
+                      "(express mode) · chuyen-sau|deep|full (deep mode).")
+            state["lane"] = lane
+        state["doc_lang"] = doc_lang
+        state["lsp_bo_qua"] = lsp_bo_qua
+        save(cwd, state)
+        _echo_state("init", state, want_json)
+        return
+
+    if cmd == "set":
+        argv, want_json = _pop_json_flag(argv)
+        state = load(cwd)
+        if state is None:
+            _warn("No state yet — building the default state then applying the change. Run init first.")
+            state = default_state()
+        stamp = state.get("updated_at")
+        if len(argv) < 2:
+            _fail("Missing the key=value pair.")
+        for pair in argv[1:]:
+            if "=" not in pair:
+                _fail(f"Invalid argument: {pair} (expected the shape key=value)")
+            key, raw = pair.split("=", 1)
+            if key not in default_state():
+                _fail(f"Key does not exist in the schema: {key}")
+            value = _parse_value(raw)
+            if key == "lane" and value not in VALID_LANES:
+                _fail("Invalid lane (quick|full|null).")
+            if key == "doc_lang":
+                ma = normalize_doc_lang(value)
+                if ma is None:
+                    _fail("Invalid doc_lang: expected a language code such as vi|en|ja|pt-br.")
+                value = ma
+            if key == "muc_gat":
+                # Chuẩn hoá thay vì fail: giá trị lạ về `full`, đúng luật fail-closed.
+                value = normalize_muc_gat(value)
+            if key == "muc_qc":
+                value = normalize_muc_qc(value)
+                # Logged only when the level actually MOVES, and only for this key: how deep QC
+                # ran is the one setting a later reader needs an audit trail for, while a line on
+                # every `set` would be noise nobody reads. Normalising a typo shows up here too,
+                # which is how the user learns their `set muc_qc=lte` landed on `full`.
+                cu = muc_qc_hieu_luc(state)
+                if value != cu:
+                    _info(f"muc_qc: {cu} → {value} (QC depth for this request; "
+                          "the level table lives in skills/tdq-build/references/qc.md)")
+            if key == "diagrams":
+                _fail(LOI_SO_DO_DA_GO)
+            if key == "phase" and value not in VALID_PHASES:
+                if value in PHASE_DA_GO:
+                    _fail(f"Phase {value} was removed from the workflow on "
+                          f"2026-09-01 — use phase={PHASE_DA_GO[value]} instead.")
+                _fail("Invalid phase (idle|analyze|spec|plan|mode|implement|qc|report).")
+            if (key == "phase" and value == "idle" and state.get("active_request")
+                    and effective_lane(state, warn=False) == "quick" and state.get("quick_approved")
+                    and effective_phase(state, warn=False) == "implement"):
+                _fail("Express must enter phase=report before closing to idle.")
+            if key == "phase" and value == "idle":
+                _chan_report_thieu(cwd, state)
+            if key == "phase" and value == "qc":
+                _chan_worktree_con_mo(cwd, state)
+            if key == "phase" and value == "plan":
+                _chan_spec_chua_duyet(state)
+            if key == "phase" and value == "implement":
+                _chan_eval_plan_chua_co(cwd, state)
+            if key == "phase" and value == "report":
+                _chan_eval_evidence_chua_co(cwd, state)
+            state[key] = value
+            if key == "phase":
+                ghi_moc_phase(state, value)
+        save(cwd, state, expect_updated_at=stamp)
+        _echo_state("set", state, want_json)
+        return
+
+    if cmd == "eval-enable":
+        return _cli_eval_enable(cwd, argv[1:])
+
+    if cmd in ("pause", "resume"):
+        return _cli_implement_pause(cwd, cmd, argv[1:])
+
+    if cmd == "lech":
+        return _cli_lech(cwd, argv[1:])
+
+    if cmd == "approve":
+        return _cli_approve(cwd, argv[1:])
+
+    if cmd == "diagram":
+        _fail(LOI_SO_DO_DA_GO)
+
+    if cmd == "hotfix":
+        return _cli_hotfix(cwd, argv[1:])
+
+    if cmd == "reset":
+        argv, want_json = _pop_json_flag(argv)
+        state = default_state()
+        save(cwd, state)
+        _echo_state("reset", state, want_json)
+        return
+
+    _fail(f"Invalid command: {cmd}")
+
+
+def _cli_hotfix(cwd, rest):
+    """Open or pivot into a fast hotfix/feedback express implementation cycle."""
+    rest, want_json = _pop_json_flag(list(rest))
+    tier = "nho"
+    by = ""
+    positional = []
+    i = 0
+    while i < len(rest):
+        if rest[i] == "--tier" and i + 1 < len(rest):
+            tier = rest[i + 1].strip()
+            i += 2
+        elif rest[i] == "--by" and i + 1 < len(rest):
+            by = rest[i + 1].strip()
+            i += 2
+        else:
+            positional.append(rest[i])
+            i += 1
+    state = load(cwd) or default_state()
+    slug = positional[0] if positional else (state.get("active_request") or "")
+    if not slug:
+        _fail("hotfix requires a slug or an active_request.")
+    if parse_slug(slug) is None:
+        _fail(f"Malformed slug: {slug}. Formula: {SLUG_FORMULA}")
+    stamp = state.get("updated_at")
+    state["active_request"] = slug
+    state["lane"] = "quick"
+    state["loai_request"] = "hotfix"
+    state["quick_approved"] = True
+    state["quick_approved_at"] = now_iso()
+    state["quick_approved_by"] = (by or f"hotfix tier={tier}")[:BY_MAX]
+    state["implement_mode"] = state.get("implement_mode") or "main"
+    state["phase"] = "implement"
+    state["started_at"] = state.get("started_at") or now_iso()
+    ghi_moc_phase(state, "implement")
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"hotfix opened: slug={slug} tier={tier} phase=implement")
+    _echo_state("hotfix", state, want_json)
+
+
+if __name__ == "__main__":
+    cli(sys.argv[1:])
